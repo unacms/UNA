@@ -10,6 +10,11 @@ export const defaultHeader = {
 };
 // Atoms
 export const headerAtom = atom(defaultHeader);
+// Monotonic id of the last `setHeader` write. Blur resets compare against
+// this so a screen that already lost the atom does not wipe a newer owner
+// (sibling useEffects in one commit, or useFocusEffect before useEffect).
+let headerWriteGeneration = 0;
+export const getHeaderWriteGeneration = () => headerWriteGeneration;
 export const footerAtom = atom(true);
 export const scrollDirectionAtom = atom(0);
 export const scrollValueAtom = atom(0);
@@ -51,13 +56,18 @@ export const footerHeightAtom = atom(0);
 // On native, subHeader toggles must not zero height (Settings tabs clip); the
 // PageHeader container onLayout updates the total instead.
 export const setHeaderAtom = atom(null, (get, set, value) => {
+    headerWriteGeneration += 1;
     const prev = get(headerAtom);
     const next = typeof value === 'function' ? value(prev) : value;
     set(headerAtom, next);
     // Native: do not zero height when subHeader appears/disappears — that left
     // list content under Settings tabs until (or unless) a later measure. Keep
     // the previous offset; PageHeader container onLayout corrects the total.
-    if (!isWeb && (next?.header === false || next?.header !== prev?.header)) {
+    // Treat missing `header` as null so `setHeader({ subHeader })` after
+    // `defaultHeader` (`header: null`) does not look like a chrome change.
+    const prevSlot = prev?.header === false ? false : (prev?.header ?? null);
+    const nextSlot = next?.header === false ? false : (next?.header ?? null);
+    if (!isWeb && (nextSlot === false || nextSlot !== prevSlot)) {
         set(headerHeightAtom, 0);
     }
 });

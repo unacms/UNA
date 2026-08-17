@@ -6,9 +6,9 @@ export const settingsButtons = {
         default_variant: 'default', 
         xs: {
             rounded: 'rounded-md',
-            container: 'px-2 gap-1 h-7 min-w-7',
+            container: 'px-2 gap-1 h-7 min-w-7 ',
             container_icon_only: 'h-7 w-7 items-center justify-center',
-            text: 'text-xs leading-7',
+            text: 'text-xs ',
             icon_size: 14,
             hitSlop: 8,
         },
@@ -295,7 +295,11 @@ export const settingsButtons = {
         },
 
         // Native Expo UI buttons (iOS SwiftUI / Android Material3). Ignored on web.
-        // Unmapped icons, custom children, addons, selected, long-press stay JS-styled.
+        // Unmapped icons, custom children, addons, long-press, and selected on
+        // non-glass styles stay JS-styled. Unselected glass has no tint so
+        // iOS can invert label/icon color. Selected glass uses
+        // iosColors.glass.selected (accent fill + accent-foreground label)
+        // via `.glassProminent`.
         native: {
             enabled: true,
             styles: true,
@@ -323,8 +327,18 @@ export const settingsButtons = {
                     },
                 },
                 elevated: {
-                    default: { containerColor: '#e4e4e7', contentColor: '#27272a' },
-                    dark: { containerColor: '#27272a', contentColor: '#e4e4e7' },
+                    default: {
+                        containerColor: '#e4e4e7',
+                        contentColor: '#27272a',
+                        tintedContainerColor: '#dbeafe',
+                        tintedContentColor: '#2563eb',
+                    },
+                    dark: {
+                        containerColor: '#27272a',
+                        contentColor: '#e4e4e7',
+                        tintedContainerColor: '#172554',
+                        tintedContentColor: '#2563eb',
+                    },
                 },
                 text: {
                     default: { contentColor: '#27272a' },
@@ -349,8 +363,13 @@ export const settingsButtons = {
                     dark: { tint: '#e4e4e7' },
                 },
                 glass: {
-                    default: { tint: '#27272a' },
-                    dark: { tint: '#e4e4e7' },
+                    // Resting: no tint — label/icon invert over dark content.
+                    // Selected: tint = accent fill, foreground = accent-foreground.
+                    // iOS maps this to `.glassProminent` so tint paints the capsule.
+                    selected: {
+                        default: { tint: '#dbeafe', foreground: '#2563eb' },
+                        dark: { tint: '#172554', foreground: '#2563eb' },
+                    },
                 },
                 link: { default: { tint: '#2563eb' } },
                 borderedProminent: { default: { tint: '#2563eb' } },
@@ -566,7 +585,7 @@ export const settingsButtons = {
                     default: '',
                     hovered: 'bg-muted/50',
                     focused: 'bg-muted/50',
-                    pressed: 'bg-accent/50 web:hover:bg-accent',
+                    pressed: 'bg-accent/80 web:hover:bg-accent',
                     active: 'bg-muted/50 ',
                     pressedToggle: 'bg-muted',
                     disabled: 'opacity-50',
@@ -616,7 +635,7 @@ export const settingsButtons = {
                     focused: ' bg-popover/50',
                     pressed:  'bg-muted shadow-btn-glass-pressed dark:shadow-btn-glass-pressed-deep',
                     active: 'bg-muted/50 shadow-btn-glass-pressed dark:shadow-btn-glass-pressed-deep',
-                    pressedToggle: 'bg-muted/50 shadow-btn-glass-pressed dark:shadow-btn-glass-pressed-deep',
+                    pressedToggle: 'bg-accent shadow-btn-glass-pressed dark:shadow-btn-glass-pressed-deep',
                     disabled: 'bg-muted/50',
                 },
                 text: {
@@ -626,7 +645,7 @@ export const settingsButtons = {
                     focused: 'text-foreground',
                     pressed: 'text-foreground',
                     active: 'text-foreground',
-                    pressedToggle: 'text-foreground',
+                    pressedToggle: 'text-accent-foreground',
                     disabled: 'text-muted-foreground',
                 },
             },

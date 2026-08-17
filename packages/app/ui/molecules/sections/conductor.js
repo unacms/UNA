@@ -1,6 +1,6 @@
 import React, { useCallback, useState, useEffect, useMemo, useRef, useContext } from "react";
 import Animated, { useSharedValue, useAnimatedStyle, withTiming, interpolate, cancelAnimation } from 'react-native-reanimated';
-import { View, ScrollView, Row } from 'app/design/view';
+import { View, ScrollView, Row, Pressable } from 'app/design/view';
 import { Text } from 'app/design/typography';
 import UniList from 'app/ui/atoms/unilist'
 import { Icon } from 'app/ui/atoms/icon'
@@ -20,7 +20,7 @@ import { BlockByName } from 'app/components/block';
 import { Platform } from 'react-native';
 import Cover, { CoverSmall, CoverBackButton } from 'app/components/elements/cover';
 import emitter from 'app/context/emitter'
-import { useSetHeader, useScrollValue, getScrollValue, useListMaxScrollOffset, useSetCoverScrollCompensation, defaultHeader, useSetHeaderHeight } from 'app/context/jotai/layout';
+import { useSetHeader, useScrollValue, getScrollValue, useListMaxScrollOffset, useSetCoverScrollCompensation, defaultHeader, useSetHeaderHeight, getHeaderWriteGeneration } from 'app/context/jotai/layout';
 import { getComponent } from 'app/components/registry';
 import { useFocusEffect, useIsFocused, useRouter } from 'app/lib/hooks/router'
 import { appSetting } from 'app/lib/util'
@@ -379,32 +379,67 @@ const TabBar = React.memo(({
     if (!hasTabs && !hasMenus) return null;
 
     return (
-        <ScrollView horizontal={true} className=" bg-card ">
-            <Row className="px-3 gap-2 h-14 items-center" >
-                {hasTabs && visibleRoutes.map((a) => (
-                    <View
-                        className={` items-center justify-center ${a?.menu_settings?.class || ''}`}
-                        key={`tab-${a.index}`}
-                    >
-                        <MenuItemSubmenu
-                            title={a.title}
-                            pressed={a.index == index}
-                            disabled={a?.item?.disabled}
-                            addon={getAddon(a.addon)}
-                            onPress={() => {
-                                if (onSelectTab) {
-                                    onSelectTab(a);
-                                } else {
-                                    setIndex(a.index)
-                                    if (onChangeRoute) {
-                                        onChangeRoute(routesRef?.current?.[a.index] ?? a)
-                                    }
-                                }
-                            }}
-                            item={a}
-                        />
-                    </View>
-                ))}
+        <ScrollView
+            horizontal={true}
+            showsHorizontalScrollIndicator={false}
+            className="overflow-visible"
+        >
+            <Row className="px-3 pb-3 gap-2 items-center min-h-14" >
+                {hasTabs && visibleRoutes.map((a) => {
+                    const rawHref = a.link || a.key
+                    const href = rawHref
+                        ? (String(rawHref).startsWith('/') ? String(rawHref) : `/${rawHref}`)
+                        : undefined
+
+                    const selectTab = () => {
+                        if (onSelectTab) {
+                            onSelectTab(a);
+                        } else {
+                            setIndex(a.index)
+                            if (onChangeRoute) {
+                                onChangeRoute(routesRef?.current?.[a.index] ?? a)
+                            }
+                        }
+                    }
+
+                    // Custom tabs stay visually plain, but must still sync
+                    // conductor index / URL the same way submenu items do.
+                    if (a.icon === '*') {
+                        return (
+                            <View
+                                className={`flex-none items-center justify-center ${a?.menu_settings?.class || ''}`}
+                                key={`tab-${a.index}`}
+                            >
+                                <Pressable
+                                    accessibilityRole="link"
+                                    accessibilityLabel={a.title}
+                                    onPress={selectTab}
+                                >
+                                    <Text className="text-base font-medium text-card-foreground">
+                                        {a.title}
+                                    </Text>
+                                </Pressable>
+                            </View>
+                        )
+                    }
+
+                    return (
+                        <View
+                                className={`flex-none items-center justify-center ${a?.menu_settings?.class || ''}`}
+                            key={`tab-${a.index}`}
+                        >
+                            <MenuItemSubmenu
+                                title={a.title}
+                                pressed={a.index == index}
+                                disabled={a?.item?.disabled}
+                                addon={getAddon(a.addon)}
+                                href={href}
+                                onPress={selectTab}
+                                item={a}
+                            />
+                        </View>
+                    )
+                })}
                 {hasMenus && leftbarMenus.map((blockItem) => (
                     <LeftbarMenuDropdown
                         key={blockItem.id ?? blockItem.block?.name}
@@ -1317,28 +1352,44 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
 
     const subHeaderRef = useRef(sceneHeaderComp);
     subHeaderRef.current = sceneHeaderComp;
+    const headerWriteRef = useRef(0);
+    const setOwnedHeader = useCallback((value) => {
+        setHeader(value);
+        headerWriteRef.current = getHeaderWriteGeneration();
+    }, [setHeader]);
 
     useFocusEffect(
         useCallback(() => {
             if (useLocalHeader) {
-                setHeader({ header: false });
+                setOwnedHeader({ header: false });
                 setHeaderHeight(0);
             } else {
-                setHeader({ subHeader: subHeaderRef.current });
+                setOwnedHeader({ subHeader: subHeaderRef.current });
             }
-            return () => {
-                setHeader(defaultHeader);
-            };
-        }, [useLocalHeader, setHeader, setHeaderHeight])
+        }, [useLocalHeader, setOwnedHeader, setHeaderHeight])
     );
+
+    // Reset chrome only on a real blur. Subtab switches remount this conductor
+    // while the screen stays focused — a focus-effect cleanup would clear
+    // subHeader, zero the list offset, and PageHeader would not re-measure.
+    // Skip if another screen already wrote the shared header in this commit
+    // (sibling useEffects run in tree order; useFocusEffect can run first).
+    const wasFocusedRef = useRef(isFocused);
+    useEffect(() => {
+        const wasFocused = wasFocusedRef.current;
+        wasFocusedRef.current = isFocused;
+        if (wasFocused && !isFocused && headerWriteRef.current === getHeaderWriteGeneration()) {
+            setHeader(defaultHeader);
+        }
+    }, [isFocused, setHeader]);
 
     useEffect(() => {
         // Only the focused screen may update the shared subHeader; on refocus
         // the useFocusEffect above restores it from subHeaderRef.
         if (!useLocalHeader && isFocused) {
-            setHeader({ subHeader: sceneHeaderComp });
+            setOwnedHeader({ subHeader: sceneHeaderComp });
         }
-    }, [useLocalHeader, isFocused, sceneHeaderComp, setHeader]);
+    }, [useLocalHeader, isFocused, sceneHeaderComp, setOwnedHeader]);
 
     const tabSceneProps = {
         skeleton: skeleton,

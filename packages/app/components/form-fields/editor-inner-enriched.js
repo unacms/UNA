@@ -548,7 +548,7 @@ export default function RftTextEnriched(props) {
 
     const shellClass = 'relative flex-auto web:cursor-text overflow-visible'
     const surfaceClass = isToolBar
-        ? ' px-3 py-2 bg-input/60 shadow-input-outline dark:shadow-input-outline-deep rounded-lg flex-auto overflow-hidden text-card-foreground '
+        ? ' px-3 py-2 bg-input/60 shadow-input-outline dark:shadow-input-outline-deep rounded-xl flex-auto overflow-hidden text-card-foreground '
         : (bg == 'transparent' ? '' : cn(inputSettings.base, inputSettings.size.regular))
 
     return (

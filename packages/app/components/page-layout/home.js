@@ -315,7 +315,7 @@ export default function ({ data, blocks }) {
                             // Matches the sidebar menu items below (see
                             // menu-items/sidebar-with-wrapper.js) so the profile row
                             // is not taller than the list it sits above.
-                            controlSize="large"
+                            controlSize="regular"
                             width="fill"
                             align="start"
                             contentInsets={{ x: 8 }}

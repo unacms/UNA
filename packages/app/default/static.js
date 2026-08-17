@@ -42,8 +42,8 @@ const Logo = ({ mode = 'adaptive' }) => {
             <View className={`${markStyles[mode]}`}>
                 <Svg
                     aria-label="Logo Mark"
-                    width={40}
-                    height={40}
+                    width={32}
+                    height={32}
                     color={logoColor}
                     viewBox="0 0 40 40"
                     xmlns="http://www.w3.org/2000/svg"
@@ -77,8 +77,8 @@ const Logo = ({ mode = 'adaptive' }) => {
             <View className={`${textStyles[mode]}`}>
                 <Svg
                     aria-label="Logo Text"
-                    width={72}
-                    height={36}
+                    width={68}
+                    height={32}
                     viewBox="0 0 68 32"
                     color={logoColor}
                     xmlns="http://www.w3.org/2000/svg"

@@ -260,7 +260,7 @@ export function getUnitMenuItems(unitType, data, handleClick, t, moduleName) {
                         only_icon: true,
                         button_style: 'glass',
                         button_border_shape: 'circle',
-                        button_size: 'regular',
+                        button_size: 'small',
                     },
                 },
             };

@@ -86,7 +86,7 @@ const Gallery = React.memo(({ data, handleShowImage, windowWidthOr, containerWid
             w = undefined;
             return (
                 /*bg-secondary  */
-                <View className={`${max_image_width}  ${aspect} w-full items-center justify-center bg-muted  rounded-lg overflow-hidden`}>
+                <View className={`${max_image_width}  ${aspect} w-full items-center justify-center bg-muted/50 rounded-lg overflow-hidden`}>
                     <View style={{ aspectRatio: aspectStyle }} className='h-full max-w-full'>
                         <Image2 handleShowImage={handleShowImage} data={data} row={0} index={0} key={0} width={w} height={h} src={data[0].src} type={data[0].type} />
                     </View>

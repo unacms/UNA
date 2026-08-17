@@ -5,7 +5,7 @@ export const settingsHeaderToolbar = {
         /** Default NeoButton style/size for header toolbar items (per platform). Per-item `props.style` / `props.controlSize` override these. */
         neoButton: {
             desktop: { style: 'bordered', controlSize: 'regular' },
-            mobile: { style: 'borderless', controlSize: 'regular' },
+            mobile: { style: 'glass', controlSize: 'regular' },
         },
         hor: {
             loggedIn: [

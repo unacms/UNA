@@ -25,4 +25,5 @@ export {
 export {
     NeoButton, NeoButtonRef, NeoButtonLink,
     NeoButtonStyleProvider, NeoControlSizeProvider,
+    useNeoButtonNative,
 } from 'app/design/controls/neo-button';

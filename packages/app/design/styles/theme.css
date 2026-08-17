@@ -116,11 +116,11 @@
     --shadow-md-deep: 0 4px 6px rgb(0 0 0 / 0.5);
     --shadow-lg: 0 8px 16px rgb(0 0 0 / 0.1);
     --shadow-lg-deep: 0 8px 16px rgb(0 0 0 / 0.5);
-    --shadow-xl: 0 16px 24px rgb(0 0 0 / 0.1);
-    --shadow-xl-deep: 0 16px 24px rgb(0 0 0 / 0.5);
+    --shadow-xl: 0 12px 24px rgb(0 0 0 / 0.2);
+    --shadow-xl-deep: 0 12px 24px rgb(0 0 0 / 0.5);
     --shadow-2xl: 0 24px 48px rgb(0 0 0 / 0.1);
     --shadow-2xl-deep: 0 24px 48px rgb(0 0 0 / 0.5);
-    --shadow-border-b: 0 1px 0 0 rgb(0 0 0 / 0.05), 0 1px 4px -1px rgb(0 0 0 / 0.1);
+    --shadow-border-b: 0 1px 0 0 rgb(0 0 0 / 0.05), 0 1px 4px -1px rgb(0 0 0 / 0.05);
     --shadow-border-b-deep: 0 1px 0 0 rgb(255 255 255 / 0.05), 0 1px 4px -1px rgb(0 0 0 / 0.5);
     --shadow-avatar: inset 0 0 0 1px rgb(0 0 0 / 0.05);
     --shadow-avatar-deep: inset 0 0 0 1px rgb(255 255 255 / 0.05);
@@ -183,8 +183,8 @@
         --neo-shadow-btn-outline:        inset 0 0 0 1px rgb(0 0 0 / 0.04), inset 0 0 0 2px rgb(255 255 255 / 0.5), 0 1px 3px -1px rgb(0 0 0 / 0.05);
         --neo-shadow-btn-outline-deep:   inset 0 0 0 1px rgb(255 255 255 / 0.025), 0 4px 12px -4px rgb(0 0 0 / 0.5);
        
-        --neo-shadow-btn-glass:                        inset 0 0 0 1px rgb(255 255 255 / 0.50), inset 0 1px 0 0 rgb(255 255 255 / 0.50), 0 0 0 1px rgb(0 0 0 / 0.0), 0 2px 8px -2px rgb(0 0 0 / 0.05), 0 4px 16px -4px rgb(0 0 0 / 0.05);
-        --neo-shadow-btn-glass-deep:                   inset 0 0 0 1px rgb(255 255 255 / 0.05), inset 0 1px 0 0 rgb(255 255 255 / 0.10), 0 0 0 1px rgb(0 0 0 / 0.0), 0 2px 8px -2px rgb(0 0 0 / 0.5), 0 4px 16px -4px rgb(0 0 0 / 0.5);
+        --neo-shadow-btn-glass:                        inset 0 0 0 1px rgb(255 255 255 / 0.50), inset 0 1px 0 0 rgb(255 255 255 / 0.50), 0 0 0 1px rgb(0 0 0 / 0.05), 0 2px 8px -2px rgb(0 0 0 / 0.05), 0 4px 16px -4px rgb(0 0 0 / 0.05);
+        --neo-shadow-btn-glass-deep:                   inset 0 0 0 1px rgb(255 255 255 / 0.05), inset 0 1px 0 0 rgb(255 255 255 / 0.10), 0 0 0 1px rgb(0 0 0 / 0.2), 0 2px 8px -2px rgb(0 0 0 / 0.2), 0 4px 16px -4px rgb(0 0 0 / 0.2);
        
         --neo-shadow-btn-glass-pressed:                inset 0 0 0 1px rgb(255 255 255 / 0.50), inset 0 1px 0 0 rgb(255 255 255 / 0.50), 0 0 0 1px rgb(0 0 0 / 0.01), 0 1px 4px -1px rgb(0 0 0 / 0.1), 0 2px 8px -2px rgb(0 0 0 / 0.1);;
         --neo-shadow-btn-glass-pressed-deep:           inset 0 0 0 1px rgb(255 255 255 / 0.05), inset 0 1px 0 0 rgb(255 255 255 / 0.10), 0 0 0 1px rgb(0 0 0 / 0.05), 0 1px 4px -1px rgb(0 0 0 / 0.5), 0 2px 8px -2px rgb(0 0 0 / 0.5);

@@ -800,11 +800,17 @@ const TabSceneMainContent = ({
     useEffect(() => {
         if (isUseCurrentHeader) {
             setHeader(isDesktop ? defaultHeader : { header: false });
+            return;
         }
-        else {
-            setHeader(isDesktop ? defaultHeader : { subHeader: header });
+        // Desktop chrome is the shared default header. Do not write a new
+        // `{ subHeader }` object when `header` identity changes — that
+        // retriggers PageHeader layout and can loop during hydration.
+        if (isDesktop) {
+            setHeader(defaultHeader);
+            return;
         }
-    }, [isDesktop, header, setHeader]);
+        setHeader({ subHeader: header });
+    }, [isDesktop, isUseCurrentHeader, header, setHeader]);
 
     const NoContent = getComponent('molecule', 'no_content')
 
@@ -1300,6 +1306,64 @@ const AddMenu = ({ menu, filter }) => {
     )
 }
 
+const ConductorMenuItem = memo(function ConductorMenuItem({
+    item: a,
+    selectedIndex,
+    setIndex,
+    onChangeRoute,
+}) {
+    const MenuItemSubmenu = getComponent('menu-item', 'submenu');
+
+    if (a?.item?.id === 'hidden') return null;
+
+    const rawHref = a.link || a.key
+    const href = rawHref
+        ? (String(rawHref).startsWith('/') ? String(rawHref) : `/${rawHref}`)
+        : undefined
+
+    const selectTab = (event) => {
+        event?.preventDefault?.()
+        setIndex(a.index)
+        window.history.pushState({}, '', href || ('/' + a.key))
+        if (onChangeRoute) {
+            onChangeRoute(a)
+        }
+    }
+
+    // Custom tabs (icon === '*') stay visually plain, but must still sync
+    // conductor index. A Next.js Link changes the URL without popstate, so
+    // the mounted conductor would keep the previous tab.
+    if (a.icon === '*') {
+        return (
+            <View className={`${a?.menu_settings?.class || ''}`}>
+                <Pressable
+                    accessibilityRole="link"
+                    accessibilityLabel={a.title}
+                    onPress={selectTab}
+                >
+                    <Text className="text-base font-medium text-card-foreground">
+                        {a.title}
+                    </Text>
+                </Pressable>
+            </View>
+        )
+    }
+
+    return (
+        <View className={`${a?.menu_settings?.class || ''}`}>
+            <MenuItemSubmenu
+                title={a.title}
+                pressed={a.index == selectedIndex}
+                disabled={a?.item?.disabled}
+                addon={getAddon(a.addon)}
+                href={href}
+                onPress={selectTab}
+                item={a}
+            />
+        </View>
+    )
+})
+
 function ConductorMenu({
     routes,
     index,
@@ -1316,35 +1380,17 @@ function ConductorMenu({
         index = 0
     }
 
-    const MenuItemSubmenu = getComponent('menu-item', 'submenu');
-
-    const MenuItem = memo(
-        ({ item: a, itemRefs, index: index2, visibleItemsCount }) => {
-
-            if (a?.item?.id === 'hidden') return null;
-            return (
-                <View className={`${a?.menu_settings?.class || ''}`}>
-                    <MenuItemSubmenu
-                        title={a.title}
-                        pressed={a.index == index}
-                        disabled={a?.item?.disabled}
-                        addon={getAddon(a.addon)}
-                        onPress={() => {
-                            setIndex(a.index)
-                            window.history.pushState({}, '', '/' + a.key)
-                            if (onChangeRoute) {
-                                onChangeRoute(a)
-                            }
-                        }}
-                        item={a}
-                    />
-                </View>
-            )
-        }
+    const MenuItem = ({ item: a }) => (
+        <ConductorMenuItem
+            item={a}
+            selectedIndex={index}
+            setIndex={setIndex}
+            onChangeRoute={onChangeRoute}
+        />
     )
 
     const MenuItemEx = memo(({ item, index: itemIndex }) => {
-        const { title, addon, icon, link, menu_settings, key } = item
+        const { title, icon, menu_settings, key } = item
         const translatedTitle = (
             <Text className="text-muted-foreground web:hover:text-secondary-foreground leading-6 font-medium text-base">
                 {t(title)}
@@ -1363,12 +1409,17 @@ function ConductorMenu({
 
         if (icon === '*') {
             return (
-                <Link href={link}>
+                <Pressable
+                    className={' ' + menu_settings?.class ?? ''}
+                    accessibilityRole="link"
+                    accessibilityLabel={title}
+                    onPress={handlePress}
+                >
                     <Row className="justify-between items-center min-w-200">
                         {translatedTitle}
                         {addonContent}
                     </Row>
-                </Link>
+                </Pressable>
             )
         }
 
@@ -1404,10 +1455,12 @@ function ConductorMenu({
             <View className={menuClasses}>
                 {filteredItems.map((aItem, iKey) => {
                     return (
-                        <MenuItem
+                        <ConductorMenuItem
                             key={name + 'menu' + iKey}
                             item={aItem}
-                            index={iKey}
+                            selectedIndex={index}
+                            setIndex={setIndex}
+                            onChangeRoute={onChangeRoute}
                         />
                     )
                 })}
@@ -1492,7 +1545,7 @@ const LeftSideBarContainer = ({
                                                     key={`lmenu-${a.index}`}
                                                     alt={a.title}
                                                     style="borderless"
-                                                    controlSize="large"
+                                                    controlSize="regular"
                                                     width="fill"
                                                     align="start"
                                                     contentInsets={{ x: 8 }}
@@ -1510,7 +1563,7 @@ const LeftSideBarContainer = ({
                                                 key={`lmenu-${a.index}`}
                                                 alt={a.title}
                                                 style="borderless"
-                                                controlSize="large"
+                                                controlSize="regular"
                                                 width="fill"
                                                 align="start"
                                                 contentInsets={{ x: 8 }}
@@ -1693,7 +1746,7 @@ const TabBar = ({
                 icon={menuSettings?.icon || menu?.icon}
             >
                  {isShowSecondLine && <Row className="px-0 w-full items-center">
-                    <View className="flex-1 h-12 lg:h-14 min-w-0">
+                    <View className="flex-1 min-h-12 lg:min-h-14 min-w-0">
                         {routes.length > 1 && <ConductorMenu
                             routes={routes}
                             index={index}

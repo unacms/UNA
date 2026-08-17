@@ -27,7 +27,7 @@ export default function HeaderElement({ url, uri }) {
         : toolbarConfig?.loggedOut
 
     return (
-        <Row className="justify-end gap-2 items-center">
+        <Row className="justify-end gap-3 items-center">
             {itemsToRender?.filter(item => (isWeb ? item.web != false : item.native != false)).map((item, index) => (
                 <View key={index} className={item.className}>
                     {(() => {

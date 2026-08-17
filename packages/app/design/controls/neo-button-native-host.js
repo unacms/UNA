@@ -16,33 +16,35 @@ export function useFrozenHostSize({ contentKey, rnOwnsWidth, rnOwnsHeight }) {
     const freezeWidth = !rnOwnsWidth;
     const freezeHeight = !rnOwnsHeight;
     const active = freezeWidth || freezeHeight;
+    // Never pin width. The same label ("Manage") is reused on other screens;
+    // a stale or leftover-ScrollView measure left a hole before the next tab.
+    // Keep matchContents on so the capsule always hugs the title.
+    const pin = freezeHeight ? HOST_SIZE_CACHE.get(contentKey) : null;
 
     const onLayoutContent = React.useCallback((e) => {
         const { width, height } = e.nativeEvent;
-        if (!width || !height || HOST_SIZE_CACHE.has(contentKey)) return;
+        if (!freezeHeight || !width || !height || HOST_SIZE_CACHE.has(contentKey)) return;
         if (HOST_SIZE_CACHE.size >= CACHE_LIMIT) {
             HOST_SIZE_CACHE.delete(HOST_SIZE_CACHE.keys().next().value);
         }
         HOST_SIZE_CACHE.set(contentKey, { width, height });
-    }, [contentKey]);
+    }, [contentKey, freezeHeight]);
 
     if (!active) {
-        return { style: null, onLayoutContent: undefined, pinnedWidth: false, pinnedHeight: false };
+        return {
+            style: null,
+            onLayoutContent: undefined,
+            pinnedWidth: false,
+            pinnedHeight: false,
+        };
     }
 
-    const pin = HOST_SIZE_CACHE.get(contentKey);
-    const pinnedWidth = freezeWidth && !!pin;
     const pinnedHeight = freezeHeight && !!pin;
 
     return {
-        style: pin
-            ? {
-                ...(pinnedWidth ? { width: pin.width } : null),
-                ...(pinnedHeight ? { height: pin.height } : null),
-            }
-            : null,
-        onLayoutContent: pin ? undefined : onLayoutContent,
-        pinnedWidth,
+        style: pinnedHeight ? { height: pin.height } : null,
+        onLayoutContent: freezeHeight ? onLayoutContent : undefined,
+        pinnedWidth: false,
         pinnedHeight,
     };
 }
@@ -86,9 +88,14 @@ export function wrapNativeButtonHost(host, { hitSlop = 0, fill = false, onPress,
             pointerEvents="box-only"
             disabled={!!disabled}
             style={[
-                fill ? FILL_STYLE : null,
+                fill
+                    ? FILL_STYLE
+                    : {
+                        flexGrow: 0,
+                        flexShrink: 0,
+                        alignSelf: 'flex-start',
+                    },
                 {
-                    flexShrink: 0,
                     ...(height != null ? { height } : null),
                     ...(width != null ? { width } : null),
                 },

@@ -1,6 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { View } from 'app/design/view';
-import { appSetting } from 'app/lib/util';
 import {
     useScrollValue,
     useSetScrollValue,
@@ -9,13 +8,16 @@ import {
     PageHeaderBody,
     PageHeaderSmall,
     TextHeader,
+    getHeaderFadeClass,
+    getHeaderFadeExtend,
+    resolveHeaderContainerClassName,
+    resolveHeaderContentClassNames,
     usePageHeaderBase,
 } from 'app/ui/molecules/header/page-header-parts';
 
 /** Matches `web:duration-300` (must be a static class for Tailwind JIT). Dismiss unmount waits for transition end. */
 const FIXED_BAR_MOTION_MS = 300;
 const FIXED_BAR_DISMISS_MS = FIXED_BAR_MOTION_MS + 80;
-
 
 export { PageHeaderSmall, TextHeader };
 
@@ -33,53 +35,24 @@ function clearEnterFrame(frameRef) {
     }
 }
 
-const DEFAULT_CONTENT_PINNED_FIXED =
-    ' bg-card backdrop-blur-xl shadow-sm ';
-
-/**
- * Resolves flow + fixed-overlay content classNames.
- * When `layout.header.content_scrolled` is unset/blank, output matches the legacy paths exactly.
- */
-function resolveHeaderContentClassNames({ usesFixedOverlayHeader, isScrolled }) {
-    const content = ` ${appSetting('layout', 'header', 'content')}`;
-    const contentScrolledRaw = appSetting('layout', 'header', 'content_scrolled');
-    const contentScrolled =
-        typeof contentScrolledRaw === 'string' ? contentScrolledRaw.trim() : '';
-    const usesScrollContentStyles = contentScrolled.length > 0;
-
-    if (!usesScrollContentStyles) {
-        const flowHeaderContentClassName = usesFixedOverlayHeader
-            ? `${content} `
-            : content;
-        const fixedHeaderContentClassName =
-            appSetting('layout', 'header', 'content_pinned_fixed') ||
-            DEFAULT_CONTENT_PINNED_FIXED;
-        const fixedOverlayContentClassName = `${content} ${fixedHeaderContentClassName}`;
-        return { flowHeaderContentClassName, fixedOverlayContentClassName };
+function HeaderFade({ headerHeight, isScrolled }) {
+    const fadeClass = getHeaderFadeClass();
+    const fadeExtend = getHeaderFadeExtend();
+    if (!fadeClass || headerHeight <= 0) {
+        return null;
     }
 
-    const scrolledSuffix = isScrolled ? ` ${contentScrolled}` : '';
-    const flowHeaderContentClassName = usesFixedOverlayHeader
-        ? `${content}${scrolledSuffix} `
-        : `${content}${scrolledSuffix}`;
-
-    const pinnedRaw = appSetting('layout', 'header', 'content_pinned_fixed');
-    const pinnedExtra = typeof pinnedRaw === 'string' ? pinnedRaw.trim() : '';
-    const pinnedSuffix = isScrolled && pinnedExtra.length > 0 ? ` ${pinnedExtra}` : '';
-    const fixedOverlayContentClassName = `${content}${scrolledSuffix}${pinnedSuffix}`;
-
-    return { flowHeaderContentClassName, fixedOverlayContentClassName };
-}
-
-/** Optional `layout.header.container_scrolled` suffix; blank/undefined leaves container classes unchanged. */
-function getContainerScrolledSuffix(isScrolled) {
-    if (!isScrolled) {
-        return '';
-    }
-    const containerScrolledRaw = appSetting('layout', 'header', 'container_scrolled');
-    const containerScrolled =
-        typeof containerScrolledRaw === 'string' ? containerScrolledRaw.trim() : '';
-    return containerScrolled.length > 0 ? ` ${containerScrolled}` : '';
+    return (
+        <div
+            aria-hidden
+            className={`pointer-events-none absolute left-0 right-0 top-0 z-0 lg:hidden ${fadeClass}`}
+            style={{
+                height: headerHeight + fadeExtend,
+                opacity: isScrolled ? 1 : 0,
+                transition: 'opacity 300ms ease-in-out',
+            }}
+        />
+    );
 }
 
 export const PageHeader = ({ pageData }) => {
@@ -171,22 +144,21 @@ export const PageHeader = ({ pageData }) => {
     const shouldRenderFixedLayer = usesFixedOverlayHeader && (isFixedMounted || isClosing);
     const allowPointerEvents = showFixedHeader && !isEntering;
     const isScrolled = scrollY > 0;
-    const headerContainerBaseClass =
-        appSetting('layout', 'header', 'container') + getContainerScrolledSuffix(isScrolled);
+    const headerContainerBaseClass = resolveHeaderContainerClassName(isScrolled);
     const fixedHeaderClass =
         ' ns--header-wrapper-fixed-- header-fixed web:fixed web:top-0 web:left-0 web:right-0 web:z-50 ne--';
     const flowTransitionClass =
         ` ns--header-wrapper--transition-- web:transition-[transform,opacity,background-color,border-color] web:duration-300 web:ease-in-out ne-- `;
     const flowHeaderContainerClassName = usesFixedOverlayHeader
-        ? `${headerContainerBaseClass} web:relative web:top-auto web:translate-y-0 ${flowTransitionClass}`
-        : `${headerContainerBaseClass} ${fixedHeaderClass} ${isCollapsibleHeader && scrollDirection === 1 ? 'web:-translate-y-full' : ' ns--header-position-start-- web:translate-y-0 ne--' } ${flowTransitionClass}`;
+        ? `${headerContainerBaseClass} web:relative web:top-auto web:translate-y-0 overflow-visible ${flowTransitionClass}`
+        : `${headerContainerBaseClass} ${fixedHeaderClass} ${isCollapsibleHeader && scrollDirection === 1 ? 'web:-translate-y-full' : ' ns--header-position-start-- web:translate-y-0 ne--' } overflow-visible ${flowTransitionClass}`;
     const fixedHeaderMotionClass =
         isClosing || isEntering
             ? 'web:-translate-y-full web:opacity-0'
             : 'web:translate-y-0 web:opacity-100';
     const fixedHeaderMotionTransition =
         'web:transition-[transform,opacity] web:duration-300 web:ease-in-out';
-    const fixedHeaderContainerClassName = `${headerContainerBaseClass} ${fixedHeaderClass} ${fixedHeaderMotionClass} ${fixedHeaderMotionTransition}`;
+    const fixedHeaderContainerClassName = `${headerContainerBaseClass} ${fixedHeaderClass} ${fixedHeaderMotionClass} ${fixedHeaderMotionTransition} overflow-visible`;
     const { flowHeaderContentClassName, fixedOverlayContentClassName } =
         resolveHeaderContentClassNames({ usesFixedOverlayHeader, isScrolled });
     const headerPointerEvents = usesFixedOverlayHeader && shouldRenderFixedLayer && !allowPointerEvents
@@ -208,22 +180,28 @@ export const PageHeader = ({ pageData }) => {
                 style={flowHeaderStyle}
                 onLayout={onHeaderLayout}
             >
-                <PageHeaderBody
-                    {...headerState}
-                    contentClassName={flowHeaderContentClassName}
-                    pageData={pageData}
-                />
+                <HeaderFade headerHeight={headerHeight} isScrolled={isScrolled} />
+                <View className="relative z-10">
+                    <PageHeaderBody
+                        {...headerState}
+                        contentClassName={flowHeaderContentClassName}
+                        pageData={pageData}
+                    />
+                </View>
             </View>
             {usesFixedOverlayHeader && shouldRenderFixedLayer && (
                 <View
                     className={fixedHeaderContainerClassName}
                     pointerEvents={headerPointerEvents}
                 >
-                    <PageHeaderBody
-                        {...headerState}
-                        contentClassName={fixedOverlayContentClassName}
-                        pageData={pageData}
-                    />
+                    <HeaderFade headerHeight={headerHeight} isScrolled={isScrolled} />
+                    <View className="relative z-10">
+                        <PageHeaderBody
+                            {...headerState}
+                            contentClassName={fixedOverlayContentClassName}
+                            pageData={pageData}
+                        />
+                    </View>
                 </View>
             )}
         </>

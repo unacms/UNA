@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react';
 import { View, Row, Pressable, ScrollView } from 'app/design/view'
-import { Button, Modal } from 'app/design/controls'
+import { Button, NeoButton } from 'app/design/controls'
 import { Text } from 'app/design/typography'
 
 export default function ScrollControl({ horisontal, children, step, initialValue, leftButton, rightButton, title }) {
@@ -77,12 +77,12 @@ export default function ScrollControl({ horisontal, children, step, initialValue
             </ScrollView>
             {(!title && offset.offset > 0) && (
                 <View className="absolute w-12 h-full bg-gradient-to-r to-transparent from-card/50 px-1 justify-center duration-500">
-                    {leftButton ? <Pressable onPress={scrollUp}>{leftButton}</Pressable> : <Button startDecorator="ChevronLeft" variant="default" rounded onPress={scrollUp} />}
+                    {leftButton ? <Pressable onPress={scrollUp}>{leftButton}</Pressable> : <NeoButton style="glass" controlSize="small" borderShape="circle" image="ChevronLeft" accessibilityLabel="Scroll left" onPress={scrollUp} />}
                 </View>)
             }
             {(!title && offset.offset + offset.scrollViewWidth < offset.contentWidth) && (
                 <View className="absolute w-12 right-0 h-full bg-gradient-to-l to-transparent from-card/50 px-1 justify-center duration-500 items-end">
-                    {rightButton ? <Pressable onPress={scrollDown}>{rightButton}</Pressable> : <Button startDecorator="ChevronRight" variant="default" rounded onPress={scrollDown} />}
+                    {rightButton ? <Pressable onPress={scrollDown}>{rightButton}</Pressable> : <NeoButton style="glass" controlSize="small" borderShape="circle" image="ChevronRight" accessibilityLabel="Scroll right" onPress={scrollDown} />}
                 </View>)}
         </View>
     );

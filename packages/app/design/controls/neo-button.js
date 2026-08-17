@@ -32,7 +32,8 @@
  *
  * Native: `neo_button.native.enabled` routes eligible buttons through
  * Expo UI (`neo-button-native.{ios,android}.js`). Unmapped icons, custom
- * children, addons, `selected`, and long-press stay on the JS surface.
+ * children, addons, long-press, and `selected` on non-glass styles stay
+ * on the JS surface. Glass + `selected` maps to a tinted native glass.
  */
 
 import React, { memo } from 'react';
@@ -312,8 +313,13 @@ function PressHighlight({ active, rounded, color }) {
 function canRenderNativeButton(props, native) {
     if (props.children !== undefined && props.children !== null && props.children !== false) return false;
     if (props.addon) return false;
-    if (props.selected !== undefined) return false;
     if (props.onLongPress) return false;
+    // Native selected is tint-mapped for glass only. Other styles keep the
+    // JS `selectedState` wash (borderless / bordered have no SwiftUI selected).
+    if (props.selected !== undefined) {
+        const style = props.buttonStyle ?? props.style;
+        if (style !== 'glass' && style !== 'glassProminent') return false;
+    }
 
     const label = props.label ?? props.title;
     const hasLabel = (typeof label === 'string' && label !== '') || typeof label === 'number';

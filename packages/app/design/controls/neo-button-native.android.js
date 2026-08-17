@@ -46,7 +46,7 @@ export function NeoButtonNative(props) {
     const {
         role, style, buttonStyle, controlSize, borderShape, tint,
         label, title, loadingLabel, image, systemImage, imagePlacement,
-        disabled = false, loading = false,
+        disabled = false, loading = false, selected = false,
         haptics, onPress, onPressIn,
         width, align,
         accessibilityLabel, alt,
@@ -89,10 +89,17 @@ export function NeoButtonNative(props) {
 
     const colorsConfig = resolveScoped(nativeConfig?.androidColors, resolved.env);
     const variantColors = colorsConfig?.[variant] ? { ...colorsConfig[variant] } : {};
-    const { tintedContainerColor, ...baseColors } = variantColors;
+    const { tintedContainerColor, tintedContentColor, ...baseColors } = variantColors;
     const explicitTint = isNativeColor(resolved.tint) ? resolved.tint : null;
     let colors;
-    if (explicitTint) {
+    if (selected && !explicitTint && isNativeColor(tintedContainerColor)) {
+        colors = {
+            containerColor: tintedContainerColor,
+            contentColor: isNativeColor(tintedContentColor)
+                ? tintedContentColor
+                : (baseColors.contentColor || explicitTint),
+        };
+    } else if (explicitTint) {
         if (variant === 'tonal') {
             colors = {
                 containerColor: isNativeColor(tintedContainerColor)

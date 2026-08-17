@@ -68,16 +68,23 @@ export const settingsLayout = {
         show_tabbar_on_mobile_non_logged: false,
 
         header: {
-            container: ' ns--header-wrapper-- w-full z-50 header-fixed web:fixed native:absolute bg-card web:top-0 web:transition-transform web:duration-300 web:ease-in-out border-b border-border/60 ne--',
+            container: ' ns--header-wrapper-- w-full z-50 header-fixed web:fixed native:absolute bg-card/60 web:top-0 shadow-border-b dark:shadow-border-b-deep web:transition-[transform,background-color,border-color] web:duration-300 web:ease-in-out  ne--',
+            /**
+             * Color wash behind glass chrome. Applied as an overlay that
+             * extends `fade_extend` below the measured header.
+             */
+            fade: 'bg-linear-to-b from-background to-background/0',
+            /** Extra px the color wash extends below the header. */
+            fade_extend: 8,
             /** Optional. When set (non-blank), appended to `container` while scrollY > 0 (full-width bar: shadow, border, etc.). */
-            container_scrolled: ' ns--header-wrapper-scrolled-- shadow-sm dark:shadow-sm-deep ne-- ',
+            container_scrolled: ' ns--header-wrapper-scrolled-- shadow-none lg:bg-card/60 lg:backdrop-blur-lg lg:shadow-border-b dark:lg:shadow-border-b-deep ne-- ',
             content: ' ns--header-content-- items-center justify-between h-16 mx-auto w-full ne-- ',
             /** Optional. When set (non-blank), applied to header content only while scrollY > 0. If unset, legacy `content_pinned_fixed` behavior is unchanged. */
             content_scrolled: ' ns--header-content-scrolled--  ',
-            content_pinned_fixed: ' bg-card ',
-            content_left: 'flex-none 2xl:w-full 2xl:max-w-1/4 px-3 sm:px-4 gap-2',
+            content_pinned_fixed: '  ',
+            content_left: 'flex-none 2xl:w-full 2xl:max-w-1/4 px-4 gap-3',
             content_center: ' hidden flex-1 lg:flex gap-2 items-center justify-center max-w-3xl px-4 ',
-            content_right: ' items-end flex-none 2xl:w-full 2xl:max-w-1/4 px-3 sm:px-4 gap-2',
+            content_right: ' items-end flex-none 2xl:w-full 2xl:max-w-1/4 px-4 gap-3',
             active_item_indicator: 'absolute -bottom-2 left-0 h-0.5 rounded-full flex-none bg-ring',
             active_item_indicator_bg: 'absolute bottom-0 left-0 h-12 w-full overflow-hidden rounded-lg flex-none',
         },

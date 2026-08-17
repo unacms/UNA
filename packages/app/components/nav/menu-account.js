@@ -85,7 +85,7 @@ export default function MenuAccount({ buttonProps, children }) {
         dUser.url_avatar = dUser.avatar
         dUser.url = ''
         profile = (
-            <Profile {...dUser} displayType="unit_wo_info" displaySize={isDesktop ? 'sm' : 'md'} />
+            <Profile {...dUser} displayType="unit_wo_info" displaySize="md" />
         )
     }
 

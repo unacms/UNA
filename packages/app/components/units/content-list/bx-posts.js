@@ -12,7 +12,7 @@ Units.Base = function Base({ data, listIndex }) {
     const isSkeleton = data?.skeleton;
     const isLcpCandidate = listIndex === 0;
     return (
-        <Card padding="p-1 gap-3">
+        <Card padding="p-2 gap-3">
             <View className="  aspect-video flex-none rounded-lg overflow-hidden mb-auto w-full bg-accent">
                 <Skeleton className="" rounded='rounded-lg' visible={isSkeleton}>
                     {data.image && (

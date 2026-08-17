@@ -912,7 +912,7 @@ export default function RftText(props) {
         <View
             onLayout={handleLayout}
             className={`relative flex-auto ${isToolBar
-                ? ' px-3 py-2 bg-input/60 shadow-input-outline dark:shadow-input-outline-deep rounded-lg focus:bg-card focus:ring-border flex-auto overflow-hidden placeholder-muted-foreground text-card-foreground web:duration-100 '
+                ? ' px-3 py-2 bg-input/60 shadow-input-outline dark:shadow-input-outline-deep rounded-xl focus:bg-card focus:ring-border flex-auto overflow-hidden placeholder-muted-foreground text-card-foreground web:duration-100 '
                 : (bg == 'transparent' ? '' : cn(inputSettings.base, inputSettings.size.regular))
                 }`}
         >

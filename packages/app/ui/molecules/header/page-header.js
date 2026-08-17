@@ -2,14 +2,24 @@ import { useEffect, useRef } from 'react';
 import { Animated, View } from 'react-native';
 import { nativeDriver } from 'app/lib/animation';
 import { appSetting } from 'app/lib/util';
+import { useScrollValue } from 'app/context/jotai/layout';
 import {
     PageHeaderBody,
     PageHeaderSmall,
     TextHeader,
+    getHeaderFadeClass,
+    getHeaderFadeExtend,
+    getHeaderRestingBackgroundClass,
+    resolveHeaderContainerClassName,
+    resolveHeaderContentClassNames,
+    stripHeaderSurfaceClasses,
     usePageHeaderBase,
 } from 'app/ui/molecules/header/page-header-parts';
 
 export { PageHeaderSmall, TextHeader };
+
+/** Matches web `duration-300` for the resting fill / fade. */
+const HEADER_BG_FADE_MS = 300;
 
 export const PageHeader = ({ pageData }) => {
 
@@ -22,7 +32,15 @@ export const PageHeader = ({ pageData }) => {
         scrollDirection,
     } = headerState;
 
+    const scrollY = useScrollValue();
+    const isScrolled = scrollY > 0;
     const headerTranslateY = useRef(new Animated.Value(0)).current;
+    const headerBgOpacity = useRef(new Animated.Value(isScrolled ? 0 : 1)).current;
+    const headerFadeOpacity = useRef(new Animated.Value(isScrolled ? 1 : 0)).current;
+    const restingBackgroundClass = getHeaderRestingBackgroundClass();
+    const fadeClass = getHeaderFadeClass();
+    const fadeExtend = getHeaderFadeExtend();
+    const fadeHeight = headerHeight > 0 ? headerHeight + fadeExtend : 0;
 
     useEffect(() => {
         if (!isCollapsibleHeader || headerHeight <= 0) {
@@ -31,10 +49,23 @@ export const PageHeader = ({ pageData }) => {
 
         Animated.timing(headerTranslateY, {
             toValue: scrollDirection === 1 ? -2 * headerHeight : 0,
-            duration: 300,
+            duration: HEADER_BG_FADE_MS,
             useNativeDriver: nativeDriver,
         }).start();
     }, [headerHeight, headerTranslateY, isCollapsibleHeader, scrollDirection]);
+
+    useEffect(() => {
+        Animated.timing(headerBgOpacity, {
+            toValue: isScrolled ? 0 : 1,
+            duration: HEADER_BG_FADE_MS,
+            useNativeDriver: nativeDriver,
+        }).start();
+        Animated.timing(headerFadeOpacity, {
+            toValue: isScrolled ? 1 : 0,
+            duration: HEADER_BG_FADE_MS,
+            useNativeDriver: nativeDriver,
+        }).start();
+    }, [headerBgOpacity, headerFadeOpacity, isScrolled]);
 
     if (header.header === false) {
         return null;
@@ -46,19 +77,46 @@ export const PageHeader = ({ pageData }) => {
             transform: [{ translateY: headerTranslateY }],
         }
         : undefined;
+    const { flowHeaderContentClassName } = resolveHeaderContentClassNames({
+        usesFixedOverlayHeader: false,
+        isScrolled,
+    });
+
+    const showFade = !!fadeClass && fadeHeight > 0;
+    const headerPointerEvents = isCollapsibleHeader && scrollDirection === 1
+        ? 'none'
+        : (showFade ? 'box-none' : 'auto');
 
     return (
         <HeaderContainer
-            className={appSetting('layout', 'header', 'container')}
-            style={headerContainerStyle}
-            pointerEvents={isCollapsibleHeader && scrollDirection === 1 ? 'none' : 'auto'}
-            onLayout={onHeaderLayout}
+            className={stripHeaderSurfaceClasses(resolveHeaderContainerClassName(isScrolled))}
+            style={[
+                headerContainerStyle,
+                showFade ? { minHeight: fadeHeight, overflow: 'visible' } : null,
+            ]}
+            pointerEvents={headerPointerEvents}
         >
-            <PageHeaderBody
-                {...headerState}
-                contentClassName={`${appSetting('layout', 'page_content_width_default')} ${appSetting('layout', 'header', 'content')}`}
-                pageData={pageData}
-            />
+            {restingBackgroundClass ? (
+                <Animated.View
+                    pointerEvents="none"
+                    className={`absolute inset-0 ${restingBackgroundClass}`}
+                    style={{ opacity: headerBgOpacity }}
+                />
+            ) : null}
+            {showFade ? (
+                <Animated.View
+                    pointerEvents="none"
+                    className={`absolute left-0 right-0 top-0 ${fadeClass}`}
+                    style={{ height: fadeHeight, opacity: headerFadeOpacity }}
+                />
+            ) : null}
+            <View pointerEvents="auto" onLayout={onHeaderLayout}>
+                <PageHeaderBody
+                    {...headerState}
+                    contentClassName={`${appSetting('layout', 'page_content_width_default')} ${flowHeaderContentClassName}`}
+                    pageData={pageData}
+                />
+            </View>
         </HeaderContainer>
     );
 };

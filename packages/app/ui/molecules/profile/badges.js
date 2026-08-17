@@ -7,7 +7,7 @@ export default function ({ badges, size = 'sm' }) {
         return null
 
     return (
-        <Row className='items-center gap-2'>
+        <Row className='items-center gap-1'>
             {badges.map((item, index) => {
                 return <Badge key={`bg-${index}`} data={item} size={size} />
             })}

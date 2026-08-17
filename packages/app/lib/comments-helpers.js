@@ -837,7 +837,7 @@ function CommentsFormInner ({ form: initialForm, requestUrl, module, objectId, i
     
     return (
         <View
-            className={` web:p-1.5 web:sm:p-2.5 native:px-1.5 ${FADE_SURFACE_CLASS[fadeSurface] || ''}`}
+            className={` web:p-3 web:sm:p-4 native:px-1.5 ${FADE_SURFACE_CLASS[fadeSurface] || ''}`}
             style={fadeSurface ? { paddingTop: FADE_RUN_UP } : undefined}
         >
             {

@@ -90,7 +90,7 @@ export default function FormComments(props) {
 
     return (
         
-        <View className={`w-full flex-auto bg-card/90 backdrop-blur-lg shadow-input-outline dark:shadow-input-outline-deep ${hasContent ? 'rounded-2xl' : 'rounded-full'}`}>
+        <View className={`w-full flex-auto bg-card/90 backdrop-blur-lg shadow-input-outline dark:shadow-input-outline-deep ${hasContent ? 'rounded-xl' : 'rounded-xl'}`}>
             {getFormFieldByData(
                 props.data.inputs['action'],
                 props.handleSubmit,

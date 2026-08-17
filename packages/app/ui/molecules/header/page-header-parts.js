@@ -8,7 +8,7 @@ import { appStatic } from 'app/lib/app-static';
 import { usePathname, useRouter } from 'app/lib/hooks/router';
 import { getComponent } from 'app/components/registry';
 import { useIsDesktop } from 'app/context/measure';
-import { NeoButton } from 'app/design/controls';
+import { NeoButton, NeoButtonLink } from 'app/design/controls';
 import Link from 'app/ui/atoms/link';
 import { canGoBackInTab, getTabKeyFromPathname, navigateBackInTab } from 'app/lib/tab-history';
 import {
@@ -21,6 +21,107 @@ import {
     useSetScrollDirection,
 } from 'app/context/jotai/layout';
 import MenuTop from 'app/components/nav/menu-top';
+
+const DEFAULT_CONTENT_PINNED_FIXED =
+    ' bg-card backdrop-blur-xl shadow-sm ';
+
+function settingString(value) {
+    return typeof value === 'string' ? value.trim() : '';
+}
+
+/** `bg-*` including variant prefixes (`lg:bg-card`, `dark:lg:bg-card/60`). */
+const BG_UTILITY = /(?:^|\s)(?:[\w-]+?:)*bg-[^\s]+/g;
+const HAS_BG_UTILITY = /(?:^|\s)(?:[\w-]+?:)*bg-/;
+
+/** Drop `bg-*` tokens so a later scrolled `bg-*` can win (Uniwind does not merge). */
+export function stripBackgroundClasses(className) {
+    return String(className || '').replace(BG_UTILITY, ' ');
+}
+
+/** Drop unprefixed fill + gradient stops so they can live on a native overlay. */
+export function stripHeaderSurfaceClasses(className) {
+    return String(className || '').replace(/(?:^|\s)(?:bg-|from-|via-|to-)[^\s]+/g, ' ');
+}
+
+/** Resting unprefixed `bg-*` tokens from `layout.header.container` (native fade overlay). */
+export function getHeaderRestingBackgroundClass() {
+    return (String(appSetting('layout', 'header', 'container') || '').match(/(?:^|\s)(bg-[^\s]+)/g) || [])
+        .map((token) => token.trim())
+        .join(' ');
+}
+
+const HEADER_FADE_TOKEN = /^(bg-(?:linear|gradient)-[^\s]+|from-[^\s]+|via-[^\s]+|to-[^\s]+)$/;
+const DEFAULT_HEADER_FADE_EXTEND = 48;
+
+/** Color wash. Prefer `layout.header.fade`; else gradient tokens on `container_scrolled`. */
+export function getHeaderFadeClass() {
+    const explicit = settingString(appSetting('layout', 'header', 'fade'));
+    if (explicit) {
+        return explicit;
+    }
+    return settingString(appSetting('layout', 'header', 'container_scrolled'))
+        .split(/\s+/)
+        .filter((token) => HEADER_FADE_TOKEN.test(token))
+        .join(' ');
+}
+
+/** Extra px the fade overlay extends below the measured header. */
+export function getHeaderFadeExtend() {
+    const value = Number(appSetting('layout', 'header', 'fade_extend'));
+    return Number.isFinite(value) && value > 0 ? value : DEFAULT_HEADER_FADE_EXTEND;
+}
+
+/**
+ * Resolves flow + fixed-overlay content classNames.
+ * When `layout.header.content_scrolled` is unset/blank, output matches the legacy paths exactly.
+ */
+export function resolveHeaderContentClassNames({ usesFixedOverlayHeader, isScrolled }) {
+    const content = ` ${appSetting('layout', 'header', 'content')}`;
+    const contentScrolled = settingString(appSetting('layout', 'header', 'content_scrolled'));
+    const usesScrollContentStyles = contentScrolled.length > 0;
+
+    if (!usesScrollContentStyles) {
+        const flowHeaderContentClassName = usesFixedOverlayHeader
+            ? `${content} `
+            : content;
+        const fixedHeaderContentClassName =
+            appSetting('layout', 'header', 'content_pinned_fixed') ||
+            DEFAULT_CONTENT_PINNED_FIXED;
+        const fixedOverlayContentClassName = `${content} ${fixedHeaderContentClassName}`;
+        return { flowHeaderContentClassName, fixedOverlayContentClassName };
+    }
+
+    const scrolledSuffix = isScrolled ? ` ${contentScrolled}` : '';
+    const flowHeaderContentClassName = usesFixedOverlayHeader
+        ? `${content}${scrolledSuffix} `
+        : `${content}${scrolledSuffix}`;
+
+    const pinnedExtra = settingString(appSetting('layout', 'header', 'content_pinned_fixed'));
+    const pinnedSuffix = isScrolled && pinnedExtra.length > 0 ? ` ${pinnedExtra}` : '';
+    const fixedOverlayContentClassName = `${content}${scrolledSuffix}${pinnedSuffix}`;
+
+    return { flowHeaderContentClassName, fixedOverlayContentClassName };
+}
+
+/** Optional `layout.header.container_scrolled` suffix; blank/undefined leaves container classes unchanged. */
+export function getContainerScrolledSuffix(isScrolled) {
+    if (!isScrolled) {
+        return '';
+    }
+    const containerScrolled = settingString(appSetting('layout', 'header', 'container_scrolled'));
+    return containerScrolled.length > 0 ? ` ${containerScrolled}` : '';
+}
+
+/** `layout.header.container` plus optional scrolled suffix. Fade wash lives on the overlay, not the bar. */
+export function resolveHeaderContainerClassName(isScrolled) {
+    const container = appSetting('layout', 'header', 'container') || '';
+    const suffix = getContainerScrolledSuffix(isScrolled);
+    if (!suffix) {
+        return container;
+    }
+    const base = HAS_BG_UTILITY.test(suffix) ? stripBackgroundClasses(container) : container;
+    return `${base}${suffix}`;
+}
 
 export const TextHeader = memo(({ text }) => {
     return (
@@ -98,8 +199,18 @@ export function usePageHeaderBase(pageData, { resetHeaderOnRoute = false } = {})
 
     const onHeaderLayout = useCallback((event) => {
         const { height } = event.nativeEvent.layout;
-        setHeaderHeightAtom((prev) => (prev === height ? prev : height));
-    }, [setHeaderHeightAtom]);
+        // Native Host remounts (glass selected tint) can report 0 for a frame,
+        // or main-only height before tabs finish layout — and may never emit
+        // another event. Keep the last full offset while subtabs are showing.
+        if (height <= 0) return;
+        setHeaderHeightAtom((prev) => {
+            if (prev === height) return prev;
+            // Host remount can report main-only (~64). Keep the last full
+            // offset then. Still allow coming down from an inflated measure.
+            if (!isWeb && header.subHeader && prev > height && height < 80) return prev;
+            return height;
+        });
+    }, [header.subHeader, isWeb, setHeaderHeightAtom]);
 
     const mainHeaderHeightRef = useRef(0);
     const subHeaderHeightRef = useRef(0);
@@ -110,6 +221,9 @@ export function usePageHeaderBase(pageData, { resetHeaderOnRoute = false } = {})
             return;
         }
         const total = mainHeaderHeightRef.current + (header.subHeader ? subHeaderHeightRef.current : 0);
+        // Do not publish 0 from unmeasured refs — that removes the list spacer
+        // and PageHeader often will not re-measure after a subtab remount.
+        if (total <= 0) return;
         setHeaderHeightAtom((prev) => (prev === total ? prev : total));
     }, [header.header, header.subHeader, setHeaderHeightAtom]);
 
@@ -137,9 +251,10 @@ export function usePageHeaderBase(pageData, { resetHeaderOnRoute = false } = {})
         if (!header.subHeader) {
             subHeaderHeightRef.current = 0;
         }
-        // Web: keep summing main + sub. Native: PageHeader onLayout owns the total;
-        // only sync here when there is no subHeader (main-only).
-        if (isWeb || !header.subHeader) {
+        // Web: keep summing main + sub. Native: PageHeader onLayout owns the
+        // total. Do not publish main-only (often 0 — the main ref is unused on
+        // native) when subHeader flickers during a subtab remount.
+        if (isWeb) {
             syncHeaderHeight();
         }
     }, [header.header, header.subHeader, isWeb, setHeaderHeightAtom, syncHeaderHeight]);
@@ -213,9 +328,46 @@ export const PageHeaderBody = memo(({
     );
 
     const Logo = (
-        <Link href="/home" alt="Home">
-            {appStatic('logo')}
-        </Link>
+        <>
+            <View className="sm:hidden">
+                <NeoButtonLink
+                    href="/home"
+                    alt="Home"
+                    style="glass"
+                    controlSize="regular"
+                    borderShape="capsule"
+                    contentInsets={{ x: 0 }}
+                    accessibilityLabel="Home"
+                >
+                    {appStatic('logo')}
+                </NeoButtonLink>
+            </View>
+            <View className="hidden sm:flex lg:hidden">
+                <NeoButtonLink
+                    href="/home"
+                    alt="Home"
+                    style="glass"
+                    controlSize="regular"
+                    borderShape="capsule"
+                    contentInsets={{ x: 12}}
+                    accessibilityLabel="Home"
+                >
+                    {appStatic('logo')}
+                </NeoButtonLink>
+            </View>
+            <View className="hidden lg:flex -ms-2">
+                <NeoButtonLink
+                    href="/home"
+                    alt="Home"
+                    style="borderless"
+                    controlSize="regular"
+                    contentInsets={{ x: 8 }}
+                    accessibilityLabel="Home"
+                >
+                    {appStatic('logo')}
+                </NeoButtonLink>
+            </View>
+        </>
     );
 
     const leftElement = (!currentUser || (appSetting('layout', 'lock_unconfirmed') && !currentUser?.confirmed)) ? (

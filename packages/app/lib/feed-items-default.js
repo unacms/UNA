@@ -72,7 +72,7 @@ export const GroupView = memo(({ data, styles, url, isCompact }) => {
             className={
                 isCompact
                     ? ' flex-row gap-3 2xl:gap-4 mx-4 overflow-hidden rounded-lg bg-muted/50  p-1'
-                    : ' flex-col md:flex-row gap-3 2xl:gap-4 overflow-hidden rounded-lg bg-muted p-1.5'
+                    : ' flex-col md:flex-row gap-3 2xl:gap-4 overflow-hidden rounded-lg bg-muted/50 p-1.5'
             }
         >
             {data.mainImage && (
@@ -249,7 +249,7 @@ export const MarketView = memo(({ data, styles, url, isCompact }) => {
 export const PostsView = memo(({ data, styles, url, isCompact, content_attach, fulltext }) => {
     const imgs = content_attach
     return (
-        <View className={isCompact ? 'flex-row-reverse gap-x-3' : 'w-full gap-y-2'}>
+        <View className={isCompact ? 'flex-row-reverse gap-x-3' : 'w-full gap-y-3'}>
             {data.mainImage && (
                 <View className={isCompact ? 'w-28 flex-none' : 'w-full mb-1'}>
                     <View
@@ -319,7 +319,7 @@ export const DefaultView = memo(
         const imgs = content_attach
         return (
 
-            <View className={isCompact ? 'flex-row-reverse' : ' w-full gap-y-2'}>
+            <View className={isCompact ? 'flex-row-reverse' : ' w-full gap-y-3'}>
                 {data.mainImage && (
                     <View
                         className={

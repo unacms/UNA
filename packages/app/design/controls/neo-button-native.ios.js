@@ -51,13 +51,21 @@ const SWIFTUI_ICON_PT = { mini: 13, small: 14, regular: 17, large: 20, extraLarg
 const isNativeColor = (color) =>
     typeof color === 'string' && color.length > 0 && !color.includes('var(');
 
-function resolveIosStyleColors(nativeConfig, style, env, explicitTint) {
-    const raw = resolveScoped(nativeConfig?.iosColors?.[style], env);
+function resolveIosStyleColors(nativeConfig, style, env, explicitTint, selected) {
+    // Unselected glass: no hex at all. SwiftUI `.glass` tints the *label*
+    // when you set `.tint()`, so a resting `#27272a` / `#dbeafe` pins ink
+    // and kills the invert over dark content behind the capsule.
+    if (style === 'glass' && !selected && !isNativeColor(explicitTint)) {
+        return { tint: null, foreground: null };
+    }
+    const styleColors = nativeConfig?.iosColors?.[style];
+    const selectedColors = selected ? styleColors?.selected : null;
+    const raw = resolveScoped(selectedColors || styleColors, env);
     const fallbackTint = resolveScoped(nativeConfig?.iosTint, env);
     const fromTheme = isNativeColor(raw)
         ? { tint: raw }
         : (raw && typeof raw === 'object' ? raw : {});
-    if (isNativeColor(explicitTint)) {
+    if (isNativeColor(explicitTint) && !(style === 'glass' && selected)) {
         return { tint: explicitTint, foreground: null };
     }
     return {
@@ -102,7 +110,7 @@ export function NeoButtonNative(props) {
     const {
         role, style, buttonStyle, controlSize, borderShape, tint,
         label, title, loadingLabel, image, systemImage, imagePlacement,
-        disabled = false, loading = false,
+        disabled = false, loading = false, selected = false,
         haptics, onPress, onPressIn,
         width, align,
         accessibilityLabel, alt,
@@ -201,9 +209,14 @@ export function NeoButtonNative(props) {
 
     const styleColors = resolved.role === 'destructive'
         ? { tint: null, foreground: null }
-        : resolveIosStyleColors(nativeConfig, resolved.style, resolved.env, mapping.tint);
+        : resolveIosStyleColors(nativeConfig, resolved.style, resolved.env, mapping.tint, !!selected);
     const tintValue = styleColors.tint;
     const foregroundValue = styleColors.foreground;
+    // `.glass` + tint paints the label. Selected needs the *fill* in accent
+    // and the label in accent-foreground — that is `.glassProminent`.
+    const nativeButtonStyle = (resolved.style === 'glass' && selected)
+        ? 'glassProminent'
+        : mapping.buttonStyle;
 
     // iosFont.family is a PostScript name — CSS `font-main` does not resolve here.
     const iosFont = resolveScoped(nativeConfig?.iosFont, resolved.env);
@@ -225,8 +238,20 @@ export function NeoButtonNative(props) {
     }
     if (foregroundValue) textModifiers.push(foregroundStyle(foregroundValue));
 
+    const frozen = useFrozenHostSize({
+        // Do not key on selected / tint / glassProminent — that flips
+        // Host `matchContents` on a live control and the capsules collapse.
+        contentKey: [
+            nativeLabel, sfSymbol || '', nativeControlSize, targetHeight,
+            mapping.buttonStyle, borderShape || '', 'host-fit-v2',
+            iosFont?.family || '', iosFont?.weight || '', String(nativeIconSize),
+        ].join('|'),
+        rnOwnsWidth,
+        rnOwnsHeight,
+    });
+
     const modifiers = [
-        buttonStyleModifier(mapping.buttonStyle),
+        buttonStyleModifier(nativeButtonStyle),
         controlSizeModifier(nativeControlSize),
     ];
 
@@ -271,17 +296,6 @@ export function NeoButtonNative(props) {
             options: parsedSymbol?.options || { repeat: 'nonRepeating' },
         })]
         : undefined;
-
-    const frozen = useFrozenHostSize({
-        contentKey: [
-            nativeLabel, sfSymbol || '', nativeControlSize, targetHeight,
-            mapping.buttonStyle, borderShape || '', 'host-fit',
-            iosFont?.family || '', iosFont?.weight || '', String(nativeIconSize),
-            tintValue || '', foregroundValue || '',
-        ].join('|'),
-        rnOwnsWidth,
-        rnOwnsHeight,
-    });
 
     const host = (
         <Host

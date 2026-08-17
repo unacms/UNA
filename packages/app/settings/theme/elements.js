@@ -4,7 +4,7 @@ export const settingsElements = {
     conductor: {
         menu: ' w-full items-left justify-center',
         menu_is_dynamic: false,
-        menu_cnt: ' flex-row flex-none gap-1 h-12 lg:h-14 items-center overflow-x-auto ',
+        menu_cnt: ' flex-row flex-none gap-2 min-h-12 lg:min-h-14 items-center overflow-x-auto ',
         menu_categ_indent: ' pl-8 ',
         topmenu_cnt:
             'w-full px-8 pt-6 items-stretch justify-stretch sticky z-50 t-8 gap-x-8 hidden lg:flex p',
@@ -15,7 +15,7 @@ export const settingsElements = {
         topmenu_button_size: 'base',
         topmenu_button_pressed: true,
         left_menu_cnt: '  ',
-        cover_base: 'ns--cover-base- w-full bg-card shadow-border-b dark:shadow-border-b-deep ne--',
+        cover_base: 'ns--cover-base- w-full bg-card  ne--',
         cover_content:
             'ns--conductor-cover-content-- items-center h-full w-full justify-between lg:p-4 ne--',
         cover_small: 'mx-auto flex-row items-center ',
@@ -29,7 +29,7 @@ export const settingsElements = {
         content_ver: '',
         content_hor: 'flex-row  ',
         item_ver:
-            ' web:group px-2 py-1.5 web:group flex h-12 flex-row items-center rounded-lg font-medium web:hover:bg-muted/50 text-card-foreground web:hover:text-foreground web:hover:cursor-pointer ',
+            ' web:group px-2 py-1.5 web:group flex h-12 flex-row items-center rounded-xl font-medium web:hover:bg-muted/50 text-card-foreground web:hover:text-foreground web:hover:cursor-pointer ',
         item_hor:
             'flex block web:dark:hover:text-white rounded-full web:hover:cursor-pointer text-muted-foreground web:duration-200 outline-none ',
         item_np:
@@ -63,8 +63,8 @@ export const settingsElements = {
     },
     cards: {
         'u-card-list': ' u-card-list bg-card/80 shadow-card-outline dark:shadow-card-outline-deep sm:rounded-2xl ',
-        'u-card-list-padding': 'p-3 lg:p-4 sm:rounded-2xl',
-        'u-card-base': 'u-card-base rounded-xl bg-card/80 text-card-foreground shadow-card-outline dark:shadow-card-outline-deep ',
+        'u-card-list-padding': 'p-4 sm:rounded-2xl',
+        'u-card-base': 'u-card-base rounded-2xl bg-card/80 text-card-foreground shadow-card-outline dark:shadow-card-outline-deep ',
         'u-card-padding': 'py-4 ',
         'u-card-header': 'px-4',
         'u-card-icon': ' ',
