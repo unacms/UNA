@@ -10495,10 +10495,10 @@ react-native-drawer-layout@^4.2.2:
     color "^4.2.3"
     use-latest-callback "^0.2.4"
 
-react-native-enriched-html@1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/react-native-enriched-html/-/react-native-enriched-html-1.0.1.tgz#190a8a9ed17c321443b577bc02c18dc3a7d1ea23"
-  integrity sha512-efdwwCSk1SWBfS89KkU0WNy2ZeBjoTcGQ8/AZlE5ybUmqb9/7RSE0sR/AEUVLjx/wdzbgAaLUiLREFHybA8ZdA==
+react-native-enriched-html@1.2.0-nightly-20260814-63d4eac2c:
+  version "1.2.0-nightly-20260814-63d4eac2c"
+  resolved "https://registry.yarnpkg.com/react-native-enriched-html/-/react-native-enriched-html-1.2.0-nightly-20260814-63d4eac2c.tgz#1b9129b0a91683040c76363a545457fb73335655"
+  integrity sha512-KuNPjNKiPTDdKHalH4BCaa3CWsr+baFYp4VoY7hTPdBy30KKF9iponU3NMvQYvkmMxI86pZvV2Ick0gHKPnEmw==
   dependencies:
     "@tiptap/core" "3.27.1"
     "@tiptap/extension-blockquote" "3.27.1"
@@ -10521,10 +10521,10 @@ react-native-enriched-html@1.0.1:
     "@tiptap/react" "3.27.1"
     dompurify "3.4.11"
 
-react-native-enriched-markdown@^0.7.4:
-  version "0.7.4"
-  resolved "https://registry.yarnpkg.com/react-native-enriched-markdown/-/react-native-enriched-markdown-0.7.4.tgz#d31ca6f4d40cd5b36284932139eb3784415c9af4"
-  integrity sha512-NXkqZL4d5vM6wOBwYwx0r1Xyw2h+E8SyobrS8nKnbpjYOyKZj6zIdOq1KJFrlenJNu/tXpbJ8jtQagaA4Wj4cg==
+react-native-enriched-markdown@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/react-native-enriched-markdown/-/react-native-enriched-markdown-1.0.1.tgz#e00f1788319352e4c74e118b10e13984072ed0a8"
+  integrity sha512-Wh23zYIjZmrJ5/dbezS1Ldc2k0tp++Y3cZrhJ4aRBfsfQpyxBtRNgvkfkWYFSlCCwX9RlCf/iyCDcG1Okp7F6g==
 
 react-native-gesture-handler@~2.32.0:
   version "2.32.0"
