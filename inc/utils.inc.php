@@ -632,7 +632,24 @@ function bx_get_svg_image_size($sUrl)
 {
     $iWidth = $iHeight = 0;
 
-    $sContent = bx_file_get_contents($sUrl);
+    $sContent = '';
+    if (defined('BX_DOL_URL_ROOT') && defined('BX_DIRECTORY_PATH_ROOT') && BX_DOL_URL_ROOT != '' && 0 === strpos($sUrl, BX_DOL_URL_ROOT)) {
+        $sRel = substr($sUrl, strlen(BX_DOL_URL_ROOT));
+        if (false !== ($iQ = strpos($sRel, '?')))
+            $sRel = substr($sRel, 0, $iQ);
+        if (false !== ($iH = strpos($sRel, '#')))
+            $sRel = substr($sRel, 0, $iH);
+        $sRel = rawurldecode(str_replace('\\', '/', $sRel));
+        if ('' !== $sRel && false === strpos($sRel, '..')) {
+            $sLocal = BX_DIRECTORY_PATH_ROOT . $sRel;
+            if (is_file($sLocal) && is_readable($sLocal))
+                $sContent = file_get_contents($sLocal);
+        }
+    }
+    else {
+        $sContent = bx_file_get_contents($sUrl);
+    }
+
     if(empty($sContent))
         return [$iWidth, $iHeight];
 
