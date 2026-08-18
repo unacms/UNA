@@ -16,6 +16,7 @@
 <div class="bx-install-shell">
     <header class="bx-install-topbar">
         <div class="bx-install-topbar-inner">
+            <img class="bx-install-header-logo" src="img/logo.svg" alt="UNA" />
             <span class="bx-install-brand-title"><?=$sTitle; ?></span>
             <?php if (!empty($aToolbarItem)): ?>
             <a class="bx-install-help" title="<?=$aToolbarItem['title']; ?>" href="<?=$aToolbarItem['link']; ?>" target="<?=$aToolbarItem['target']; ?>">

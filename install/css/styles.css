@@ -50,12 +50,22 @@ body.bx-install-body,
     position: relative;
     max-width: 720px;
     margin: 0 auto;
-    padding: 14px 20px;
+    padding: 10px 20px;
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    min-height: 48px;
+    min-height: 52px;
     box-sizing: border-box;
+}
+.bx-install-header-logo {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 28px;
+    height: 28px;
+    border-radius: 7px;
+    z-index: 1;
 }
 
 .bx-install-brand-title {
@@ -70,7 +80,7 @@ body.bx-install-body,
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: calc(100% - 120px);
+    max-width: calc(100% - 160px);
     text-align: center;
     pointer-events: none;
 }
@@ -370,8 +380,12 @@ a.bx-btn-disabled,
 }
 
 /* Permissions table → modern list */
+.bx-install-permissions-table-wrap {
+    overflow-x: auto;
+}
 .bx-permissions-table {
     width: 100% !important;
+    table-layout: auto;
     border-collapse: separate !important;
     border-spacing: 0 !important;
     border: 1px solid var(--bx-inst-border);
@@ -394,10 +408,20 @@ a.bx-btn-disabled,
 }
 
 .bx-permissions-table td {
-    padding: 12px !important;
+    padding: 10px 12px !important;
     border-bottom: 1px solid var(--bx-inst-border);
     vertical-align: middle;
     font-family: var(--bx-inst-font) !important;
+}
+td.bx-permissions-ok,
+td.bx-permissions-wrong {
+    display: table-cell !important;
+    background: transparent !important;
+    border-radius: 0 !important;
+    padding: 10px 12px !important;
+    font-size: inherit !important;
+    font-weight: inherit !important;
+    line-height: inherit !important;
 }
 
 .bx-permissions-table tbody tr:last-child td {
@@ -413,6 +437,13 @@ a.bx-btn-disabled,
     font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace !important;
     font-size: 12px;
     color: #374151;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+.bx-permissions-table td:nth-child(2),
+.bx-permissions-table td:nth-child(3) {
+    white-space: nowrap;
+    width: 1%;
 }
 
 .bx-permissions-table td:not(:first-child) {
@@ -420,8 +451,8 @@ a.bx-btn-disabled,
 }
 
 .bx-install-chip,
-.bx-permissions-ok,
-.bx-permissions-wrong,
+span.bx-permissions-ok,
+span.bx-permissions-wrong,
 .bx-install-audit b.ok,
 .bx-install-audit b.fail,
 .bx-install-audit b.warn,
@@ -439,14 +470,14 @@ a.bx-btn-disabled,
     white-space: nowrap;
 }
 
-.bx-permissions-ok,
+span.bx-permissions-ok,
 .bx-install-chip-ok,
 .bx-install-audit b.ok {
     color: var(--bx-inst-ok) !important;
     background: var(--bx-inst-ok-bg) !important;
 }
 
-.bx-permissions-wrong,
+span.bx-permissions-wrong,
 .bx-install-chip-bad,
 .bx-install-audit b.fail {
     color: var(--bx-inst-bad) !important;
