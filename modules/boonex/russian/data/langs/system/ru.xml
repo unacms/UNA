@@ -3325,9 +3325,10 @@
 	<string name="_sys_inst_msg_module_error"><![CDATA[{0} - {1}]]></string>
 	<string name="_sys_inst_msg_permissions_lead"><![CDATA[Эти пути должны быть доступны для записи или исполняемые, прежде чем продолжить.]]></string>
 	<string name="_sys_inst_msg_permissions_wrong"><![CDATA[Некоторым путям нужно внимание. Исправьте их, затем продолжите.]]></string>
-	<string name="_sys_inst_msg_remove_install"><![CDATA[Пожалуйста, удалите директорию INSTALL с сервера и перегрузите страницу, чтобы активировать сайт.<br />После удаления, Вы можете перейти по ссылке <a href="../studio/">в Студию</a>, чтобы добавить дополнительные модули и модифицировать сайт.]]></string>
+	<string name="_sys_inst_msg_remove_install"><![CDATA[Удалите папку <b>/install/</b> из корня сайта и обновите страницу, чтобы активировать сайт.<br />После этого можно открыть <a href="../studio/">Studio</a>, чтобы добавить модули и настроить сайт.]]></string>
 	<string name="_sys_inst_msg_script_isnt_installed"><![CDATA[Скрипт не установлен]]></string>
 	<string name="_sys_inst_refresh"><![CDATA[Обновить]]></string>
+	<string name="_sys_inst_remove_install"><![CDATA[Последний шаг]]></string>
 	<string name="_sys_inst_server_audit"><![CDATA[Аудит сервера]]></string>
 	<string name="_sys_inst_site_config"><![CDATA[Конфигурация сайта]]></string>
 	<string name="_sys_inst_site_config_lead"><![CDATA[Путь и URL подставляются, если их удалось определить. База данных должна уже существовать.]]></string>

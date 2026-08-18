@@ -3352,9 +3352,10 @@ If it is not enabled then please consider implementing this optimization, since 
 	<string name="_sys_inst_msg_module_error"><![CDATA[{0} - {1}]]></string>
 	<string name="_sys_inst_msg_permissions_lead"><![CDATA[These paths need to be writable, or executable, before you continue.]]></string>
 	<string name="_sys_inst_msg_permissions_wrong"><![CDATA[Some paths need attention. Fix them, then continue.]]></string>
-	<string name="_sys_inst_msg_remove_install"><![CDATA[Please, remove INSTALL directory from your server and reload this page to activate your site.<br />After deletion you can safely go <a href="../studio/">to the site Studio</a> to add additional modules and customize the site.]]></string>
+	<string name="_sys_inst_msg_remove_install"><![CDATA[Delete the <b>/install/</b> folder from the site root, then reload this page to activate the site.<br />After that you can open <a href="../studio/">Studio</a> to add modules and customize the site.]]></string>
 	<string name="_sys_inst_msg_script_isnt_installed"><![CDATA[Script isn't installed]]></string>
 	<string name="_sys_inst_refresh"><![CDATA[Refresh]]></string>
+	<string name="_sys_inst_remove_install"><![CDATA[One last step]]></string>
 	<string name="_sys_inst_server_audit"><![CDATA[Server audit]]></string>
 	<string name="_sys_inst_site_config"><![CDATA[Site configuration]]></string>
 	<string name="_sys_inst_site_config_lead"><![CDATA[Paths and URL are filled in when we can detect them. The database must already exist.]]></string>
