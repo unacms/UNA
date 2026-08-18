@@ -18,11 +18,6 @@ export default function FormFieldText(props) {
         isAdaptiveLabel,
     } = useFormField(props);
 
-    if (props.type == 'value') {
-        if (!field.value) return null;
-        return <Field {...props} caption={`${props.caption}: ${field.value}`} />;
-    }
-
     return (
         <Field {...props} value={field.value} focused={focused} isAdaptiveLabel={isAdaptiveLabel}>
             <Input
@@ -35,7 +30,7 @@ export default function FormFieldText(props) {
                 keyboardType="default"
                 autoFocus={props.auto_focus}
                 name={name}
-                readOnly={readOnly || props.type == "value"}
+                readOnly={readOnly}
                 placeholder={placeholder}
                 placeholderTextColor={placeholderTextColor}
                 onChangeText={field.onChange}

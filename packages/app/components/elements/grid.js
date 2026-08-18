@@ -32,6 +32,7 @@ import {
 import { getDataForMenu } from 'app/lib/util'
 import { Platform } from 'react-native'
 import { getPageData } from 'app/lib/util';
+import FormModal, { handleFormModal } from 'app/ui/molecules/dialogs/form-modal';
 
 /**
  * Flex-none columns use fixed width/minWidth so header + body rows share the
@@ -112,13 +113,26 @@ const normalizeGridHeader = (rawHeader, sampleRow) => {
     );
 };
 
-const getActionButtonIcon = (name) => {
-    if (name == 'delete') return 'Trash';
+const resolveActionPageUrl = (data) => {
+    const raw = data?.link || data?.url || data?.redirect_url || '';
+    if (!raw) return '';
+    const id = data?.attr?.bx_grid_action_data;
+    if (id == null || id === '' || !String(raw).includes('{id}')) return raw;
+    return String(raw).replaceAll('{id}', id);
+};
+
+const getActionButtonIcon = (name, icon) => {
+    if (name == 'delete' || name == 'remove' || icon == 'remove') return 'Trash';
     if (name == 'edit') return 'Pencil';
+    if (name == 'copy' || name == 'clone' || name == 'duplicate' || icon == 'copy') return 'Copy';
+    if (name == 'view' || name == 'preview' || name == 'info' || icon == 'eye') return 'Eye';
     if (name == 'promotion') return 'ChartLine';
     if (name == 'edit_budget') return 'Wallet';
     if (name == 'set_role') return 'UserRoundCog';
     if (name == 'actions') return 'Ellipsis';
+    if (icon == 'envelope' || name == 'envelope') return 'Mail';
+    if (icon == 'envelope-open' || name == 'envelope-open') return 'MailOpen';
+    if (typeof icon === 'string' && /^[A-Z][A-Za-z0-9]*$/.test(icon)) return icon;
     return false;
 };
 
@@ -135,7 +149,7 @@ const dedupeGridRowActions = (actions) => {
 
     return list.filter((action) => {
         if (action.name === 'edit' || action.name === 'delete') return true;
-        if (getActionButtonIcon(action.name)) return true;
+        if (getActionButtonIcon(action.name, action.icon)) return true;
 
         const title = String(action.title || '');
         if (/view\s*details/i.test(title)) return false;
@@ -260,7 +274,7 @@ const ActionButton = React.memo(({ id, index, itemAction, setTimeStamp, setShowC
         }
     }
 
-    let icon = getActionButtonIcon(itemAction.name);
+    let icon = getActionButtonIcon(itemAction.name, itemAction.icon);
 
     const excludedActions = ['clear_reports', 'set_acl_level'];
 
@@ -390,8 +404,10 @@ const ActionButton = React.memo(({ id, index, itemAction, setTimeStamp, setShowC
 const Cell = React.memo(({ cell, indexRow, id, toggleSwitch, setSelection, selected, setTimeStamp, setShowConfirm, deleteRows, updateRow, refetch, fetchData, handleBlock }) => {
     switch (cell?.type) {
         case 'time':
+            if (!Number(cell.data)) return null;
             return <Time ts={cell.data} stylesName={'text-sm text-secondary-foreground '}></Time>
         case 'datetime':
+            if (!Number(cell.data)) return null;
             return <Time ts={cell.data} format='datetime' stylesName={'text-xs text-secondary-foreground '}></Time>
         case 'link':
             return <Link href={cell.data.url}><Text className="text-primary">{cell.data.text}</Text></Link>
@@ -569,6 +585,7 @@ export default function ElementGrid(props) {
     const [timeStamp, setTimeStamp] = useState(Date.now());
     const [modalContent, setModalContent] = useState(false);
     const [modalContentElement, setModalContentElement] = useState(false);
+    const [pageData, setPageData] = useState(false);
     const { t } = useTranslation();
 
     const tableMinWidth = useMemo(() => getTableMinWidth(header), [header]);
@@ -708,9 +725,24 @@ export default function ElementGrid(props) {
 
     
 
+    const handlePageModalData = (value) => {
+        if (!value) {
+            setPageData(false);
+            setTimeStamp(Date.now());
+            return;
+        }
+        setPageData(value);
+    };
+
     const handleActionBlock = async (data) => {
 
         if (data.type == 'modal') {
+            const pageUrl = resolveActionPageUrl(data);
+            if (pageUrl && !data.action && !data.callback) {
+                setPageData('loading');
+                await handleFormModal({ link: pageUrl }, null, handlePageModalData);
+                return;
+            }
             let fetchedData = await fetchData(data.action, data.params, data.callback);
             let cnt = { content: fetchedData.data, designbox_id: 0 }
             setBottomSheetData({ title: cnt.content[0]?.title || data.title, content: <View className='px-1'><BlockByData onFormEmpty={() => handleUpdate()} block={cnt} /></View> });
@@ -844,8 +876,8 @@ export default function ElementGrid(props) {
     if (!data.header)
         return <></>
 
-    const actionsBulk = Object.values(data.actions.bulk);
-    const actionsIndependent = Object.values(data.actions.independent);
+    const actionsBulk = Object.values(data.actions?.bulk || {});
+    const actionsIndependent = Object.values(data.actions?.independent || {});
 
 
     /*   <Text className="tracking-tight text-lg font-bold text-popover-foreground  mb-2">{stripTags(props?.block?.title)}</Text>*/
@@ -867,6 +899,7 @@ export default function ElementGrid(props) {
             </Modal>
         )
         }
+        <FormModal pageData={pageData} setPageData={handlePageModalData} url={pageData?.url} />
 
 
         <Confirm onVisible={showConfirm.show} title={t("Are you sure?")} handleCancel={() => setShowConfirm({ show: false, cb: null })} handleOk={() => { setShowConfirm({ show: false, cb: null }); showConfirm.cb(); }} />

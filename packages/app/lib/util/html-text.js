@@ -237,6 +237,10 @@ export function stripTags(s) {
     return s;
 }
 
+export function looksLikeHtml(s) {
+    return /<[a-z][\s\S]*>/i.test(String(s ?? ''));
+}
+
 /**
  * True when rich-editor HTML has visible text or user-created line breaks.
  * Ignores TipTap/enriched empty states: one <br>, trailing ProseMirror <br>, empty <p>.

@@ -10,6 +10,7 @@ import Confirm from 'app/ui/molecules/dialogs/confirm';
 import Badge from 'app/ui/molecules/profile/badge';
 import emitter from 'app/context/emitter';
 import Link from 'app/ui/atoms/link';
+import { looksLikeHtml } from 'app/lib/util';
 import { isFormResponseComplete } from 'app/lib/form-helpers';
 import { useFocusEffect } from 'app/lib/hooks/router';
 
@@ -161,8 +162,6 @@ export default function ElementDeploy({ data, blockWrapperProps, url }) {
 
     const buttons = Array.isArray(blockData?.buttons) ? blockData.buttons : [];
     const containers = Array.isArray(blockData?.containers) ? blockData.containers : [];
-
-    const looksLikeHtml = (s) => /<[a-z][\s\S]*>/i.test(String(s ?? ''))
 
     return (
         <BlockWrapper {...blockWrapperProps}>

@@ -5,6 +5,7 @@ import Password from './password';
 import Submit from './submit';
 import Switcher from './switcher';
 import TextField from './text';
+import Value from './value';
 import Phone from './phone';
 import TextTranslatable from './text-translatable';
 import MarkdownTranslatable from './markdown-translatable';
@@ -55,7 +56,7 @@ export const componentsMapDefault = {
     text_translatable: TextTranslatable,
     markdown_translatable: MarkdownTranslatable,
     phone: Phone,
-    value: TextField,
+    value: Value,
     price: Price,
     textarea: Editor,
     textarea_markdown: EditorMarkdown,
