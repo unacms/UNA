@@ -6,7 +6,7 @@ import UniList from 'app/ui/atoms/unilist'
 import { Icon } from 'app/ui/atoms/icon'
 import DropdownMenu, { DropdownMenuOpenContext } from 'app/ui/atoms/dropdown-menu'
 import { deepEqual, getUnitModeBySource } from 'app/lib/util';
-import { fillTabs, parseData, fetchAndUpdateData, getAddon } from 'app/lib/conductor-helpers';
+import { fillTabs, parseData, fetchAndUpdateData, getAddon, findConductorRouteIndex, findConductorRouteIndexOrZero, hasConductorSubitems, conductorHref, ConductorCompactNav } from 'app/lib/conductor-helpers';
 import { ItemRenderer } from 'app/components/item-renderer';
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
 import { getSkeletonForList } from 'app/lib/skeleton-helpers';
@@ -373,10 +373,52 @@ const TabBar = React.memo(({
     const MenuItemSubmenu = getComponent('menu-item', 'submenu');
     const { t } = useTranslation();
     const visibleRoutes = routes.filter((aItem) => aItem.hideInTop != true);
-    const hasTabs = visibleRoutes.length > 1;
+    const useCompactNav = hasConductorSubitems(routes)
+    const hasTabs = useCompactNav || visibleRoutes.length > 1;
     const hasMenus = leftbarMenus.length > 0;
 
     if (!hasTabs && !hasMenus) return null;
+
+    const selectTab = (a) => {
+        if (onSelectTab) {
+            onSelectTab(a);
+        } else {
+            setIndex(a.index)
+            if (onChangeRoute) {
+                onChangeRoute(routesRef?.current?.[a.index] ?? a)
+            }
+        }
+    }
+
+    const renderPill = (a) => {
+        const href = conductorHref(a.link || a.key)
+
+        if (a.icon === '*') {
+            return (
+                <Pressable
+                    accessibilityRole="link"
+                    accessibilityLabel={a.title}
+                    onPress={() => selectTab(a)}
+                >
+                    <Text className="text-base font-medium text-card-foreground">
+                        {a.title}
+                    </Text>
+                </Pressable>
+            )
+        }
+
+        return (
+            <MenuItemSubmenu
+                title={a.title}
+                pressed={a.index == index}
+                disabled={a?.item?.disabled}
+                addon={getAddon(a.addon)}
+                href={href}
+                onPress={() => selectTab(a)}
+                item={a}
+            />
+        )
+    }
 
     return (
         <ScrollView
@@ -385,68 +427,28 @@ const TabBar = React.memo(({
             className="overflow-visible"
         >
             <Row className="px-3 pb-3 gap-2 items-center min-h-14" >
-                {hasTabs && visibleRoutes.map((a) => {
-                    const rawHref = a.link || a.key
-                    const href = rawHref
-                        ? (String(rawHref).startsWith('/') ? String(rawHref) : `/${rawHref}`)
-                        : undefined
-
-                    const selectTab = () => {
-                        if (onSelectTab) {
-                            onSelectTab(a);
-                        } else {
-                            setIndex(a.index)
-                            if (onChangeRoute) {
-                                onChangeRoute(routesRef?.current?.[a.index] ?? a)
-                            }
-                        }
-                    }
-
-                    // Custom tabs stay visually plain, but must still sync
-                    // conductor index / URL the same way submenu items do.
-                    if (a.icon === '*') {
-                        return (
-                            <View
-                                className={`flex-none items-center justify-center ${a?.menu_settings?.class || ''}`}
-                                key={`tab-${a.index}`}
-                            >
-                                <Pressable
-                                    accessibilityRole="link"
-                                    accessibilityLabel={a.title}
-                                    onPress={selectTab}
-                                >
-                                    <Text className="text-base font-medium text-card-foreground">
-                                        {a.title}
-                                    </Text>
-                                </Pressable>
-                            </View>
-                        )
-                    }
-
-                    return (
-                        <View
-                                className={`flex-none items-center justify-center ${a?.menu_settings?.class || ''}`}
-                            key={`tab-${a.index}`}
-                        >
-                            <MenuItemSubmenu
-                                title={a.title}
-                                pressed={a.index == index}
-                                disabled={a?.item?.disabled}
-                                addon={getAddon(a.addon)}
-                                href={href}
-                                onPress={selectTab}
-                                item={a}
-                            />
-                        </View>
-                    )
-                })}
-                {hasMenus && leftbarMenus.map((blockItem) => (
+                {hasTabs && (useCompactNav ? (
+                    <ConductorCompactNav
+                        routes={routes}
+                        index={index}
+                        onSelect={selectTab}
+                        renderPill={renderPill}
+                    />
+                ) : visibleRoutes.map((a) => (
+                    <View
+                        className={`flex-none items-center justify-center ${a?.menu_settings?.class || ''}`}
+                        key={`tab-${a.index}`}
+                    >
+                        {renderPill(a)}
+                    </View>
+                )))}
+                {hasMenus ? leftbarMenus.map((blockItem) => (
                     <LeftbarMenuDropdown
                         key={blockItem.id ?? blockItem.block?.name}
                         blockItem={blockItem}
                         t={t}
                     />
-                ))}
+                )) : null}
             </Row>
         </ScrollView>
     )
@@ -688,40 +690,11 @@ const TabScene = React.memo(({
  * Supports nested paths: `group-respect/9c882` → tab `group-respect`.
  * Returns -1 when no tab matches (callers that need a default use `?? 0`). */
 function findConductorTabIndex(tabRoutes, url, useSectionAsMenu) {
-    if (!tabRoutes?.length || url == null || url === '') return -1;
-    const cleanUrl = String(url).split('?')[0].replace(/^\//, '');
-    let bestIndex = -1;
-    let bestLen = -1;
-
-    for (let i = 0; i < tabRoutes.length; i++) {
-        const item = tabRoutes[i];
-        if (useSectionAsMenu) {
-            if (url === item.key) return i;
-            continue;
-        }
-        if (item.key?.includes('?')) {
-            if (url === item.key || cleanUrl === item.key.split('?')[0].replace(/^\//, '')) {
-                return i;
-            }
-            continue;
-        }
-        const itemKey = (item.key || '').replace(/^\//, '');
-        if (!itemKey) continue;
-        const matches =
-            cleanUrl === itemKey ||
-            cleanUrl.startsWith(`${itemKey}/`) ||
-            `/${cleanUrl}`.includes(`/${itemKey}`);
-        if (matches && itemKey.length > bestLen) {
-            bestIndex = i;
-            bestLen = itemKey.length;
-        }
-    }
-    return bestIndex;
+    return findConductorRouteIndex(tabRoutes, url, useSectionAsMenu);
 }
 
 function findConductorTabIndexOrZero(tabRoutes, url, useSectionAsMenu) {
-    const index = findConductorTabIndex(tabRoutes, url, useSectionAsMenu);
-    return index !== -1 ? index : 0;
+    return findConductorRouteIndexOrZero(tabRoutes, url, useSectionAsMenu);
 }
 
 export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSideBarBlocks, menu, layoutName, data, blocks, useSectionAsMenu, unitMode, skeleton, onChangeRoute, keyword, ts }) {
@@ -1186,7 +1159,7 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
             routes
                 .map(
                     (r) =>
-                        `${r.index}:${r.title}:${r.hideInTop ?? ''}:${r.key ?? ''}:${r.item?.disabled ?? ''}`
+                        `${r.index}:${r.title}:${r.hideInTop ?? ''}:${r.key ?? ''}:${r.item?.disabled ?? ''}:${r.hasChildren ?? ''}:${r.parentIndex ?? ''}`
                 )
                 .join('|'),
         [routes]
@@ -1194,7 +1167,7 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
 
     const tabBarRoutes = useMemo(
         () =>
-            routes.map(({ index: routeIndex, title, hideInTop, menu_settings, addon, item, key, link }) => ({
+            routes.map(({ index: routeIndex, title, hideInTop, menu_settings, addon, item, key, link, icon, hasChildren, childIndices, parentIndex, canNavigate, depth, image }) => ({
                 index: routeIndex,
                 title,
                 hideInTop,
@@ -1203,6 +1176,13 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
                 item,
                 key,
                 link,
+                icon,
+                hasChildren,
+                childIndices,
+                parentIndex,
+                canNavigate,
+                depth,
+                image,
             })),
         [tabBarMetaKey]
     );

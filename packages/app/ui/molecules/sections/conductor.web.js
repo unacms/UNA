@@ -24,7 +24,13 @@ import {
     removeItemFromUniListQueryCache,
     matchesFeedOwnerFilter,
     Addon,
-    getAddon
+    getAddon,
+    findConductorRouteIndex,
+    findConductorRouteIndexOrZero,
+    hasConductorSubitems,
+    conductorHref,
+    ConductorCompactNav,
+    ConductorSidebarNav,
 } from 'app/lib/conductor-helpers'
 import { ItemRenderer } from 'app/components/item-renderer'
 import { Button, NeoButton, NeoButtonLink } from 'app/design/controls'
@@ -85,7 +91,6 @@ export function Conductor({
     const { currentUser } = useCurrentUser()
     const { setBottomSheetData } = useBottomSheetData()
     const { layoutName: tmplLayout } = useLayoutSettings()
-    const cleanUrl = data.url.split('?')[0]
     const isDesktop = useIsDesktop()
     const pageHeaderHeight = useHeaderHeight()
     // Clear page header + cover/tab `header-fixed` stack (profile menus). Wiki's top:0
@@ -118,17 +123,8 @@ export function Conductor({
 
     // found current index from routes
     const getFoundIndex = useCallback(() => {
-        const found = routes.findIndex((item) => {
-            if (useSectionAsMenu) {
-                return data.url === item.key
-            } else {
-                return item.key.includes('?')
-                    ? data.url === item.key
-                    : cleanUrl === item.key
-            }
-        })
-        return found !== -1 ? found : 0
-    }, [routes, useSectionAsMenu, data.url, cleanUrl])
+        return findConductorRouteIndexOrZero(routes, data.url, useSectionAsMenu)
+    }, [routes, useSectionAsMenu, data.url])
 
     const initialIndex = useMemo(() => getFoundIndex(), [getFoundIndex])
     const playClick = useSound('click');
@@ -144,18 +140,10 @@ export function Conductor({
     useEffect(() => {
         const handlePopState = () => {
             // Get current URL from the browser
-            const currentPath = window.location.pathname.slice(1) // strip leading /
+            const currentPath = `${window.location.pathname.slice(1)}${window.location.search}`
 
             // Find matching index in routes
-            const foundIndex = routes.findIndex((item) => {
-                if (useSectionAsMenu) {
-                    return currentPath === item.key || '/' + currentPath === item.key
-                } else {
-                    return item.key.includes('?')
-                        ? '/' + currentPath === item.key
-                        : '/' + currentPath === item.key || currentPath === item.key
-                }
-            })
+            const foundIndex = findConductorRouteIndex(routes, currentPath, useSectionAsMenu)
 
             if (foundIndex !== -1 && foundIndex !== index) {
                 setIndex(foundIndex)
@@ -178,14 +166,7 @@ export function Conductor({
 
     useEffect(() => {
         setRoutes(initedTabs)
-        const foundIndex = initedTabs.findIndex((item) => {
-            if (useSectionAsMenu) {
-                return data.url === item.key
-            }
-            return item.key.includes('?')
-                ? data.url === item.key
-                : cleanUrl === item.key
-        })
+        const foundIndex = findConductorRouteIndex(initedTabs, data.url, useSectionAsMenu)
         const nextIndex = foundIndex !== -1 ? foundIndex : 0
         if (nextIndex !== index) setIndex(nextIndex)
     }, [ts])
@@ -1319,10 +1300,8 @@ const ConductorMenuItem = memo(function ConductorMenuItem({
 
     if (a?.item?.id === 'hidden') return null;
 
-    const rawHref = a.link || a.key
-    const href = rawHref
-        ? (String(rawHref).startsWith('/') ? String(rawHref) : `/${rawHref}`)
-        : undefined
+    const rawHref = a.canNavigate === false ? '' : (a.link || a.key)
+    const href = conductorHref(rawHref)
 
     const selectTab = (event) => {
         event?.preventDefault?.()
@@ -1376,11 +1355,21 @@ function ConductorMenu({
 }) {
     const name = 'cnd-main-menu'
 
+    const useCompactNav = hasConductorSubitems(routes)
     const filteredItems = routes.filter((aItem) => aItem.hideInTop != true)
     const menuClasses = conductorTheme.menu_cnt
 
-    if (index >= filteredItems.length) {
+    if (!useCompactNav && index >= filteredItems.length) {
         index = 0
+    }
+
+    const selectRoute = (item) => {
+        setIndex(item.index)
+        const href = conductorHref(item.link || item.key)
+        if (href) window.history.pushState({}, '', href)
+        if (onChangeRoute) {
+            onChangeRoute(item)
+        }
     }
 
     const MenuItem = ({ item: a }) => (
@@ -1456,7 +1445,21 @@ function ConductorMenu({
     if (!conductorTheme.menu_is_dynamic) {
         return (
             <View className={menuClasses}>
-                {filteredItems.map((aItem, iKey) => {
+                {useCompactNav ? (
+                    <ConductorCompactNav
+                        routes={routes}
+                        index={index}
+                        onSelect={selectRoute}
+                        renderPill={(aItem) => (
+                            <ConductorMenuItem
+                                item={aItem}
+                                selectedIndex={index}
+                                setIndex={setIndex}
+                                onChangeRoute={onChangeRoute}
+                            />
+                        )}
+                    />
+                ) : filteredItems.map((aItem, iKey) => {
                     return (
                         <ConductorMenuItem
                             key={name + 'menu' + iKey}
@@ -1535,7 +1538,17 @@ const LeftSideBarContainer = ({
                     <View className="flex-1 gap-4">
                         {layoutName == 'navigator' && routes.length > 1 && (
                             <View className=' gap-0.5 '>
-                                {routes
+                                {hasConductorSubitems(routes) ? (
+                                    <ConductorSidebarNav
+                                        routes={routes}
+                                        index={index}
+                                        onSelect={(a) => {
+                                            setIndex(a.index)
+                                            const href = conductorHref(a.link || a.key)
+                                            if (href) window.history.pushState({}, '', href)
+                                        }}
+                                    />
+                                ) : routes
                                     .filter((aItem) => aItem.hideInTop != true)
                                     .map((a) => {
                                         const isActive = a.index === index;

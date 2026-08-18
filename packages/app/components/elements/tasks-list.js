@@ -17,6 +17,7 @@ import { appSetting, cn, getLayoutName, getPageData } from 'app/lib/util';
 import { redirectTo, useRouter } from 'app/lib/hooks/router';
 import { useTranslation } from 'react-i18next';
 import emitter from 'app/context/emitter';
+import { useIsDesktop } from 'app/context/measure';
 import Confirm from 'app/ui/molecules/dialogs/confirm';
 import { isFormResponseComplete } from 'app/lib/form-helpers';
 import { Loading } from 'app/customization/loading';
@@ -473,17 +474,17 @@ function groupTasksByStatus(lists = []) {
         groups.get(title).push(task);
     }
 
-    return [...groups.entries()]
-        .map(([list_title, tasks]) => ({
-            list_id: `status-${normalizeTaskLabel(list_title).replace(/\s+/g, '-')}`,
-            list_title,
-            tasks: tasks.toSorted((a, b) => {
-                const byPriority = prioritySortIndex(a?.priority) - prioritySortIndex(b?.priority);
-                if (byPriority !== 0) return byPriority;
-                return String(a?.title || '').localeCompare(String(b?.title || ''));
-            }),
-        }))
-        .toSorted((a, b) => statusSortIndex(a.list_title) - statusSortIndex(b.list_title));
+    const grouped = [...groups.entries()].map(([list_title, tasks]) => ({
+        list_id: `status-${normalizeTaskLabel(list_title).replace(/\s+/g, '-')}`,
+        list_title,
+        tasks: [...tasks].sort((a, b) => {
+            const byPriority = prioritySortIndex(a?.priority) - prioritySortIndex(b?.priority);
+            if (byPriority !== 0) return byPriority;
+            return String(a?.title || '').localeCompare(String(b?.title || ''));
+        }),
+    }));
+
+    return grouped.sort((a, b) => statusSortIndex(a.list_title) - statusSortIndex(b.list_title));
 }
 
 async function runTaskAction(action, { setFormBlock, refreshLists, setShowConfirm }) {
@@ -644,9 +645,12 @@ function TasklistsPanel({
     setFormBlock,
     refreshLists,
     setShowConfirm,
+    defaultPanelCollapsed = false,
     t,
 }) {
+    const [panelExpanded, setPanelExpanded] = useState(!defaultPanelCollapsed);
     const [collapsed, setCollapsed] = useState({});
+
     if (!tasklists.length) return null;
 
     const grouped = tasklists.some(isTasklistGroup);
@@ -654,13 +658,23 @@ function TasklistsPanel({
 
     return (
         <Card className="w-full lg:w-72 shrink-0 gap-2 p-4">
-            <Row className="items-center justify-between gap-2 px-2">
+            <Pressable
+                onPress={() => setPanelExpanded((prev) => !prev)}
+                className="flex-row items-center justify-between gap-2 px-2 py-0.5 rounded-lg web:hover:bg-muted/50"
+                accessibilityRole="button"
+                accessibilityLabel={panelExpanded ? t('Collapse tasklists') : t('Expand tasklists')}
+            >
                 <Text className="text-base font-semibold text-foreground shrink-0">
                     {t('Tasklists')}
                 </Text>
-            </Row>
+                <Icon
+                    icon={panelExpanded ? 'ChevronDown' : 'ChevronRight'}
+                    size={16}
+                    className="text-muted-foreground shrink-0"
+                />
+            </Pressable>
 
-            {grouped ? tasklists.map((group) => {
+            {panelExpanded ? (grouped ? tasklists.map((group) => {
                 const groupId = String(group.id);
                 const expanded = !collapsed[groupId];
                 const groupSelected = selectedContextId != null
@@ -724,7 +738,7 @@ function TasklistsPanel({
                     selected={selectedId != null && String(selectedId) === String(item.id)}
                     {...rowProps}
                 />
-            ))}
+            ))) : null}
         </Card>
     );
 }
@@ -1338,6 +1352,7 @@ function TasksFilterSelector({
 
 export default function ElementTasksList({ data, blockWrapperProps }) {
     const { t } = useTranslation();
+    const isDesktop = useIsDesktop();
     const router = useRouter();
     const NoContent = getComponent('molecule', 'no_content');
     const [formBlock, setFormBlock] = useState(null);
@@ -1696,6 +1711,66 @@ export default function ElementTasksList({ data, blockWrapperProps }) {
     const menuActions = topActions.filter((action) => action.type === 'menu');
     const actionHandlers = { setFormBlock, refreshLists, setShowConfirm };
     const showTasklists = tasklists.length > 0;
+    const compactTasklists = !isDesktop;
+
+    const tasklistsPanel = showTasklists ? (
+        <TasklistsPanel
+            tasklists={tasklists}
+            selectedId={selectedTasklistId}
+            selectedContextId={selectedContextPid}
+            onSelect={applyTasklistFilter}
+            setFormBlock={setFormBlock}
+            refreshLists={refreshLists}
+            setShowConfirm={setShowConfirm}
+            defaultPanelCollapsed={compactTasklists}
+            t={t}
+        />
+    ) : null;
+
+    const tasksMainContent = (
+        <View className={cn('min-w-0 gap-4', showTasklists && 'lg:flex-1')}>
+            {statusLists.length === 0 ? (
+                <NoContent endpoint={{ request_url: listsData?.request_url, params: {} }} />
+            ) : (
+                statusLists.map((list) => {
+                    const tasks = list?.tasks || [];
+
+                    return (
+                        <View key={list.list_id || list.list_title} className="gap-2">
+                            <Row className="items-center justify-between gap-2 px-2">
+                                {list.list_title ? (
+                                    <Row className="items-center gap-2 min-w-0">
+                                        <Icon
+                                            icon={iconForTaskStatus(list.list_title)}
+                                            size={16}
+                                            className="text-foreground shrink-0"
+                                        />
+                                        <Text className="text-base font-semibold tracking-tight text-foreground">
+                                            {list.list_title}
+                                            {tasks.length ? ` · ${tasks.length}` : ''}
+                                        </Text>
+                                    </Row>
+                                ) : (
+                                    <View />
+                                )}
+                            </Row>
+
+                            {tasks.length > 0 ? (
+                                <BrowseSimple
+                                    data={{
+                                        data: tasks,
+                                        unit: 'general-content-list',
+                                        module: 'bx_tasks',
+                                    }}
+                                    blockWrapperProps={{ block: { designbox_id: null } }}
+                                />
+                            ) : null}
+                        </View>
+                    );
+                })
+            )}
+        </View>
+    );
 
     const headerActionButtons = (
         <>
@@ -1834,62 +1909,16 @@ export default function ElementTasksList({ data, blockWrapperProps }) {
                             </Row>
                         ) : null}
 
-                        <View className={cn('w-full gap-4', showTasklists && 'lg:flex-row lg:items-start')}>
-                            <View className={cn('min-w-0 gap-4', showTasklists && 'lg:flex-1')}>
-                                {statusLists.length === 0 ? (
-                                    <NoContent endpoint={{ request_url: listsData?.request_url, params: {} }} />
-                                ) : (
-                                    statusLists.map((list) => {
-                                        const tasks = list?.tasks || [];
-
-                                        return (
-                                            <View key={list.list_id || list.list_title} className="gap-2">
-                                                <Row className="items-center justify-between gap-2 px-2">
-                                                    {list.list_title ? (
-                                                        <Row className="items-center gap-2 min-w-0">
-                                                            <Icon
-                                                                icon={iconForTaskStatus(list.list_title)}
-                                                                size={16}
-                                                                className="text-foreground shrink-0"
-                                                            />
-                                                            <Text className="text-base font-semibold tracking-tight text-foreground">
-                                                                {list.list_title}
-                                                                {tasks.length ? ` · ${tasks.length}` : ''}
-                                                            </Text>
-                                                        </Row>
-                                                    ) : (
-                                                        <View />
-                                                    )}
-                                                </Row>
-
-                                                {tasks.length > 0 ? (
-                                                    <BrowseSimple
-                                                        data={{
-                                                            data: tasks,
-                                                            unit: 'general-content-list',
-                                                            module: 'bx_tasks',
-                                                        }}
-                                                        blockWrapperProps={{ block: { designbox_id: null } }}
-                                                    />
-                                                ) : null}
-                                            </View>
-                                        );
-                                    })
-                                )}
-                            </View>
-
-                            {showTasklists ? (
-                                <TasklistsPanel
-                                    tasklists={tasklists}
-                                    selectedId={selectedTasklistId}
-                                    selectedContextId={selectedContextPid}
-                                    onSelect={applyTasklistFilter}
-                                    setFormBlock={setFormBlock}
-                                    refreshLists={refreshLists}
-                                    setShowConfirm={setShowConfirm}
-                                    t={t}
-                                />
+                        <View className={cn('w-full gap-4', showTasklists && 'flex flex-col lg:flex-row lg:items-start')}>
+                            {tasklistsPanel ? (
+                                <View className="order-1 w-full shrink-0 lg:order-2 lg:w-auto">
+                                    {tasklistsPanel}
+                                </View>
                             ) : null}
+
+                            <View className={cn(showTasklists && 'order-2 lg:order-1')}>
+                                {tasksMainContent}
+                            </View>
                         </View>
                     </>
                 )}

@@ -1,17 +1,23 @@
+import { useContext, useEffect, useState } from 'react'
 import {
     appSetting,
     menuItemsByName,
+    menuItemsFilter,
     getURI,
     parseUrl,
     parseQueryString,
     storageKey,
-    strToObj
+    strToObj,
+    decodeText,
 } from 'app/lib/util'
 import { fetcher } from 'app/lib/fetcher'
 import { View, Row } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { Button } from 'app/design/controls'
 import { Icon } from 'app/ui/atoms/icon'
+import DropdownMenu, { DropdownMenuOpenContext } from 'app/ui/atoms/dropdown-menu'
+import { getComponent } from 'app/components/registry'
+import { useTranslation } from 'react-i18next'
 import {
     getBlocksFromData,
     getPageSettings,
@@ -184,6 +190,229 @@ export const isSameItemsForUniList = (a, b) => {
     return true
 }
 
+export function normalizeConductorLink(link) {
+    const raw = String(link || '').trim()
+    if (!raw || raw === 'javascript:void(0)') return ''
+    return raw.replace(/^page\//, '').replace(/^\/+/, '')
+}
+
+export function conductorHref(link) {
+    const normalized = normalizeConductorLink(link)
+    return normalized ? `/${normalized}` : undefined
+}
+
+export function findConductorRouteIndex(tabRoutes, url, useSectionAsMenu) {
+    if (!tabRoutes?.length || url == null || url === '') return -1
+
+    if (useSectionAsMenu) {
+        for (let i = 0; i < tabRoutes.length; i++) {
+            if (url === tabRoutes[i].key) return i
+        }
+        return -1
+    }
+
+    const pageLink = normalizeConductorLink(url)
+    if (!pageLink) return -1
+
+    for (let i = 0; i < tabRoutes.length; i++) {
+        const item = tabRoutes[i]
+        if (item?.canNavigate === false) continue
+        const itemLink = normalizeConductorLink(item.key || item.link)
+        if (itemLink && pageLink === itemLink) return i
+    }
+
+    if (pageLink.includes('?')) return -1
+
+    const cleanUrl = pageLink.split('?')[0]
+    let bestIndex = -1
+    let bestLen = -1
+    for (let i = 0; i < tabRoutes.length; i++) {
+        const item = tabRoutes[i]
+        if (item?.canNavigate === false) continue
+        const itemLink = normalizeConductorLink(item.key || item.link)
+        if (!itemLink || itemLink.includes('?')) continue
+        const itemKey = itemLink.split('?')[0]
+        if (!itemKey) continue
+        const matches =
+            cleanUrl === itemKey ||
+            cleanUrl.startsWith(`${itemKey}/`) ||
+            `/${cleanUrl}`.includes(`/${itemKey}`)
+        if (matches && itemKey.length > bestLen) {
+            bestIndex = i
+            bestLen = itemKey.length
+        }
+    }
+    return bestIndex
+}
+
+export function findConductorRouteIndexOrZero(tabRoutes, url, useSectionAsMenu) {
+    const index = findConductorRouteIndex(tabRoutes, url, useSectionAsMenu)
+    return index !== -1 ? index : 0
+}
+
+export function hasConductorSubitems(routes = []) {
+    return routes.some((route) => route?.hasChildren)
+}
+
+export function buildCompactNavEntries(routes = [], selectedIndex = 0) {
+    const entries = []
+    routes.forEach((route) => {
+        if (route.depth !== 0) return
+        if (route.hideInTop && !route.hasChildren) return
+
+        if (route.hasChildren) {
+            entries.push({ type: 'dropdown', route })
+            return
+        }
+
+        if (route.hideInTop) return
+        entries.push({ type: 'pill', route })
+    })
+    return entries
+}
+
+/** Indent class for conductor sidebar tree depth. */
+export function getConductorDepthClassName(depth) {
+    const depthClassNameMap = {
+        0: '',
+        1: conductorTheme.menu_categ_indent,
+        2: 'pl-12',
+        3: 'pl-16',
+    }
+    return depthClassNameMap[depth] || ''
+}
+
+export function getConductorRouteChildren(route, routes = []) {
+    return (route?.childIndices || [])
+        .map((childIndex) => routes[childIndex])
+        .filter(Boolean)
+}
+
+export function buildConductorSubitemsDropdownItems(route, routes, selectedIndex) {
+    return getConductorRouteChildren(route, routes).map((child) => ({
+        id: child.key || child.index,
+        title: child.title,
+        icon: child.icon,
+        image: child.image,
+        selected: child.index === selectedIndex,
+        routeIndex: child.index,
+        route: child,
+    }))
+}
+
+export function isConductorSubitemsDropdownActive(route, routes, selectedIndex) {
+    if (selectedIndex === route?.index) return true
+    return getConductorRouteChildren(route, routes).some(
+        (child) => child.index === selectedIndex
+    )
+}
+
+export function getConductorAncestorIndices(routes = [], selectedIndex = 0) {
+    const indices = []
+    let current = routes[selectedIndex]
+    while (current && current.parentIndex != null) {
+        indices.push(current.parentIndex)
+        current = routes[current.parentIndex]
+    }
+    return indices
+}
+
+export function buildConductorSidebarExpandedMap(routes = [], selectedIndex = 0) {
+    const map = {}
+    for (const parentIndex of getConductorAncestorIndices(routes, selectedIndex)) {
+        map[parentIndex] = true
+    }
+    return map
+}
+
+export function mergeConductorSidebarExpandedMap(prev, routes, selectedIndex) {
+    const next = { ...prev }
+    let changed = false
+    for (const parentIndex of getConductorAncestorIndices(routes, selectedIndex)) {
+        if (!next[parentIndex]) {
+            next[parentIndex] = true
+            changed = true
+        }
+    }
+    return changed ? next : prev
+}
+
+export function getConductorSidebarRootRoutes(routes = []) {
+    return routes.filter(
+        (route) => route.depth === 0 && !(route.hideInTop && !route.hasChildren)
+    )
+}
+
+function resolvePageRequestLink(link) {
+    const normalized = normalizeConductorLink(link)
+    if (!normalized) return ''
+    if (!normalized.includes('?')) return normalized
+    const urlObj = parseUrl(normalized)
+    const obj = parseQueryString(urlObj.queryString)
+    return `${String(urlObj.path || '').replace(/^\/+/, '')}&params[]=&params[]=${JSON.stringify(obj)}`
+}
+
+function isCurrentMenuItem(item, data, useSectionAsMenu, link) {
+    if (!link) return false
+    if (useSectionAsMenu) {
+        const itemUrl = parseUrl(link)
+        const itemQuery = parseQueryString(itemUrl?.queryString)
+        const pageUrl = parseUrl(data.url)
+        const pageQuery = parseQueryString(pageUrl?.queryString)
+        return pageQuery?.section == itemQuery?.section
+    }
+    return normalizeConductorLink(data.url) === link
+}
+
+function createConductorRoute(item, index, depth, parentIndex, link, canNavigate, hasChildren) {
+    const routeLink = canNavigate ? link : ''
+    let addon = item.addon
+    if (routeLink == 'friend-requests') {
+        addon = { text: item.addon || '', variant: 'primary' }
+    }
+    return {
+        key: canNavigate ? link : (item.name || `menu-${index}`),
+        title: decodeText(item.title || item.name || ''),
+        index,
+        depth,
+        parentIndex,
+        hasChildren,
+        canNavigate,
+        childIndices: [],
+        link: routeLink,
+        hideInTop: Boolean(item.hideInTop) || (hasChildren && !canNavigate) || depth > 0,
+        item,
+        ident: item.ident || (depth > 0 ? 1 : 0),
+        addon,
+        image: item.image || '',
+        icon: item.icon || 'Circle',
+        menu_settings: appSetting('layout', 'user_remote_config') && item.config
+            ? strToObj(item.config)
+            : item.settings,
+        storageKeyValue: storageKey(routeLink, false),
+        sidebar: {},
+        leftbar: {},
+        inited: false,
+        data: [],
+        config: null,
+    }
+}
+
+function applyCurrentPageToRoute(route, data, blocks) {
+    const contentAndEndpoint = processUrl(data, blocks)
+    route.data = contentAndEndpoint.content
+    route.inited = true
+    route.endpoint = contentAndEndpoint.endpoint
+    route.sidebar = contentAndEndpoint.sidebar
+    route.leftbar = contentAndEndpoint.leftbar
+    route.config = data?.config
+    route.blocks = blocks
+    route.pageData = data
+    if (appSetting('layout', 'user_remote_config') && route.item?.config) {
+        route.menu_settings = (strToObj(route.item.config)).settings
+    }
+}
+
 export function fillTabs(
     menu,
     data,
@@ -191,102 +420,51 @@ export function fillTabs(
     currentUser,
     useSectionAsMenu
 ) {
-
-    let menuItems = menuItemsByName(
+    const menuItems = menuItemsByName(
         menu.object,
         menu.items,
         currentUser,
         data.url,
         menu?.config
     )
+    const routes = []
 
-    return menuItems.map((item, index) => {
-        
-        //const menu_settings = item.config ? JSON.parse(item.config): null;
-
-        item.link = item.link.replace('page/', '')
-        //TOFIX
-        const i = { key: item.link, title: item.title, index }
-        //  let bCurrent = getURI(item.link) === data.uri;
-        let bCurrent = data.url.includes(item.link)
-        if (useSectionAsMenu) {
-            let b = parseUrl(item.link)
-            let d = parseQueryString(b?.queryString)
-            let c = parseUrl(data.url)
-            let e = parseQueryString(c?.queryString)
-
-            bCurrent = e?.section == d?.section
-        }
-        
-        if (bCurrent) {
-            let contentAndEndpoint = processUrl(data, blocks)
-            i.data = contentAndEndpoint.content
-            i.inited = true
-            i.link = item.link
-            i.hideInTop = item.hideInTop
-            i.item = item
-            i.ident = item.ident
-            i.addon = item.addon
-            if (i.link == 'friend-requests') {
-                i.addon = { text: item.addon || '', variant: 'primary' }
+    const visit = (items, depth, parentIndex) => {
+        const indices = []
+        ;(items || []).forEach((item) => {
+            const children = menuItemsFilter(item?.subitems || [], currentUser)
+            const link = normalizeConductorLink(item?.link || item?.url)
+            const canNavigate = Boolean(link)
+            const hasChildren = children.length > 0
+            const index = routes.length
+            const route = createConductorRoute(
+                item,
+                index,
+                depth,
+                parentIndex,
+                link,
+                canNavigate,
+                hasChildren
+            )
+            routes.push(route)
+            indices.push(index)
+            if (hasChildren) {
+                route.childIndices = visit(children, depth + 1, index)
             }
-            i.menu_settings = appSetting('layout', 'user_remote_config') && item.config ? (strToObj(item.config)).settings : item.settings;
-            i.icon = item.icon
-            i.endpoint = contentAndEndpoint.endpoint
-            i.sidebar = contentAndEndpoint.sidebar
-            i.leftbar = contentAndEndpoint.leftbar
-            i.config = data?.config
-            i.storageKeyValue = storageKey(i.link, false)
-            i.blocks = blocks
-            i.pageData = data
-            if (appSetting('cache', 'list')) {
-                /*let stateC = getDataFromCache('ul:state', i.storageKeyValue)
-                if (stateC) {
-                    // i.endpoint = stateC.endpoint;
-                    i.state = stateC.state
-                }
-*/
-                /*let stateD = getDataFromCache('ul:data', i.storageKeyValue)
-                if (stateD) {
-                    i.endpoint = stateD.endpoint
-                    i.data = stateD.data
-                    i.cached = true
-                }*/
-            }
-        } else {
-            //let contentAndEndpoint = processUrl(data, blocks)
-            i.sidebar = {}
-            i.leftbar = {}
-            i.link = item.link
-            i.hideInTop = item.hideInTop
-            i.item = item
-            i.ident = item.ident
-            i.addon = item.addon
-            if (i.link == 'friend-requests') {
-                i.addon = { text: item.addon || '', variant: 'primary' }
-            }
-            i.menu_settings = appSetting('layout', 'user_remote_config') && item.config ? strToObj(item.config) : item.settings;
-            i.icon = item.icon
-            i.inited = false
-            i.storageKeyValue = storageKey(i.link, false)
-            i.data = []
-            i.config = null
-            /*if (appSetting('cache', 'list')) {
-                let stateC = getDataFromCache('ul:state', i.storageKeyValue)
-                if (stateC) {
-                    //i.endpoint = stateC.endpoint;
-                    i.state = stateC.state
-                }
-                let stateD = getDataFromCache('ul:data', i.storageKeyValue)
-                if (stateD) {
-                    i.endpoint = stateD.endpoint
-                    i.data = stateD.data
-                }
-            }*/
-        }
+        })
+        return indices
+    }
 
-        return i
-    })
+    visit(menuItems, 0, null)
+
+    const currentIndex = routes.findIndex((route) =>
+        isCurrentMenuItem(route.item, data, useSectionAsMenu, route.link)
+    )
+    if (currentIndex !== -1) {
+        applyCurrentPageToRoute(routes[currentIndex], data, blocks)
+    }
+
+    return routes
 }
 
 export async function parseData(routes, index, setRoutes, newData) {
@@ -348,22 +526,16 @@ export async function parseData(routes, index, setRoutes, newData) {
 
 export async function fetchAndUpdateData(routes, index, setRoutes) {
     const currentRoute = routes.find((item) => item.index === index)
-    if (!currentRoute.inited) {
-        let link = currentRoute.link
-        if (currentRoute.link.includes('?')) {
-            const urlObj = parseUrl(currentRoute.link) 
+    if (!currentRoute || currentRoute.inited || currentRoute.canNavigate === false) {
+        return
+    }
+    const link = resolvePageRequestLink(currentRoute.link)
+    if (!link) return
 
-            let obj = parseQueryString(urlObj.queryString)
-            link =
-                urlObj.path.replace('/', '') +
-                '&params[]=&params[]=' +
-                JSON.stringify(obj)
-        }
-
-        const sResponse = await fetcher(
-            '/api.php?r=system/get_page_by_request/TemplServicePages&params[]=' +
-            link
-        )
+    const sResponse = await fetcher(
+        '/api.php?r=system/get_page_by_request/TemplServicePages&params[]=' +
+        link
+    )
 
         const settings = getPageSettings(sResponse.data?.config, getURI(currentRoute.link));
 
@@ -381,27 +553,20 @@ export async function fetchAndUpdateData(routes, index, setRoutes) {
             contentAndEndpoint.leftbar,
             sResponse.data
         )
-    }
 }
 /* new logic */
 export async function getDataForRoute(routes, index, setRoutes) {
     const currentRoute = routes.find((item) => item.index === index)
-    if (!currentRoute.inited) {
-        let link = currentRoute.link
-        if (currentRoute.link.includes('?')) {
-            const urlObj = parseUrl(currentRoute.link) 
+    if (!currentRoute || currentRoute.inited || currentRoute.canNavigate === false) {
+        return
+    }
+    const link = resolvePageRequestLink(currentRoute.link)
+    if (!link) return
 
-            let obj = parseQueryString(urlObj.queryString)
-            link =
-                urlObj.path.replace('/', '') +
-                '&params[]=&params[]=' +
-                JSON.stringify(obj)
-        }
-
-        const sResponse = await fetcher(
-            '/api.php?r=system/get_page_by_request/TemplServicePages&params[]=' +
-            link
-        )
+    const sResponse = await fetcher(
+        '/api.php?r=system/get_page_by_request/TemplServicePages&params[]=' +
+        link
+    )
 
         const settings = getPageSettings(sResponse.data?.config, getURI(currentRoute.link));
 
@@ -419,7 +584,6 @@ export async function getDataForRoute(routes, index, setRoutes) {
             contentAndEndpoint.leftbar,
             sResponse.data
         )
-    }
 }
 
 export function addMoreData(
@@ -666,8 +830,8 @@ export function Addon({item, index}) {
     let icon = !item.ident
         ? settings?.icon
             ? settings?.icon
-            : item?.icon.replace('*', '')
-        : item.icon.replace('*', '')
+            : String(item?.icon || '').replace('*', '')
+        : String(item?.icon || '').replace('*', '')
 
     const addon = getAddon(item?.addon)
     if (addon) {
@@ -682,4 +846,160 @@ export function Addon({item, index}) {
         }
     }
     return addonContent;
+}
+
+function ConductorSubitemsTrigger({ title, icon, isActive }) {
+    const isOpen = useContext(DropdownMenuOpenContext) ?? false
+    const showIcon = Boolean(icon) && icon !== 'Circle'
+    return (
+        <Row
+            className={`items-center h-9 px-2 gap-1 rounded-full shrink-0 ${
+                isOpen || isActive ? 'bg-muted' : ''
+            }`}
+        >
+            {showIcon ? (
+                <Icon
+                    icon={icon}
+                    size={16}
+                    className="text-secondary-foreground shrink-0"
+                />
+            ) : null}
+            <Text
+                numberOfLines={1}
+                className="text-sm font-semibold text-card-foreground max-w-40"
+            >
+                {title}
+            </Text>
+            <Icon
+                icon={isOpen ? 'ChevronUp' : 'ChevronDown'}
+                size={16}
+                className="text-muted-foreground shrink-0"
+            />
+        </Row>
+    )
+}
+
+function ConductorSubitemsDropdown({ route, routes, selectedIndex, onSelect, t }) {
+    const items = buildConductorSubitemsDropdownItems(route, routes, selectedIndex)
+    const isActive = isConductorSubitemsDropdownActive(route, routes, selectedIndex)
+
+    if (!items.length) return null
+
+    return (
+        <DropdownMenu
+            items={items}
+            title={t(route.title)}
+            triggerAccessibilityLabel={t(route.title)}
+            onSelect={(item) => {
+                const next = item?.route || routes[item?.routeIndex]
+                if (next) onSelect(next)
+            }}
+        >
+            <ConductorSubitemsTrigger
+                title={t(route.title)}
+                icon={route.icon}
+                isActive={isActive}
+            />
+        </DropdownMenu>
+    )
+}
+
+export function ConductorCompactNav({ routes, index, onSelect, renderPill }) {
+    const { t } = useTranslation()
+    if (!hasConductorSubitems(routes)) return null
+
+    const entries = buildCompactNavEntries(routes, index)
+    if (!entries.length) return null
+
+    return (
+        <Row className="items-center gap-2 shrink-0">
+            {entries.map((entry) => {
+                if (entry.type === 'dropdown') {
+                    return (
+                        <ConductorSubitemsDropdown
+                            key={`dd-${entry.route.index}`}
+                            route={entry.route}
+                            routes={routes}
+                            selectedIndex={index}
+                            onSelect={onSelect}
+                            t={t}
+                        />
+                    )
+                }
+                return (
+                    <View
+                        key={`pill-${entry.route.index}`}
+                        className="flex-none items-center justify-center"
+                    >
+                        {renderPill(entry.route)}
+                    </View>
+                )
+            })}
+        </Row>
+    )
+}
+
+export function ConductorSidebarNav({ routes, index, onSelect }) {
+    const MenuItemSidebarWithWrapper = getComponent('menu-item', 'sidebar_with_wrapper')
+    const [expandedMap, setExpandedMap] = useState(() => (
+        buildConductorSidebarExpandedMap(routes, index)
+    ))
+
+    useEffect(() => {
+        setExpandedMap((prev) => mergeConductorSidebarExpandedMap(prev, routes, index))
+    }, [index, routes])
+
+    const toggleExpanded = (itemIndex) => {
+        setExpandedMap((prev) => ({ ...prev, [itemIndex]: !prev[itemIndex] }))
+    }
+
+    const renderRoute = (route) => {
+        const children = getConductorRouteChildren(route, routes)
+        const hasChildren = children.length > 0
+        const isExpanded = Boolean(expandedMap[route.index])
+        const canNavigate = Boolean(route.canNavigate)
+        const isActive = route.index === index
+        const href = conductorHref(route.link || route.key)
+        const icon = route.image || route.icon || 'Circle'
+
+        return (
+            <View key={`lmenu-${route.index}`} className="w-full">
+                <MenuItemSidebarWithWrapper
+                    link={canNavigate ? href : undefined}
+                    title={route.title}
+                    icon={icon}
+                    iconEnd={
+                        !canNavigate && hasChildren
+                            ? (isExpanded ? 'ChevronDown' : 'ChevronRight')
+                            : undefined
+                    }
+                    isActive={isActive}
+                    onPress={
+                        !canNavigate && hasChildren
+                            ? () => toggleExpanded(route.index)
+                            : (event) => {
+                                event?.preventDefault?.()
+                                onSelect(route)
+                            }
+                    }
+                    className={getConductorDepthClassName(route.depth)}
+                />
+                {hasChildren && isExpanded ? (
+                    <View className="gap-0.5">
+                        {children.map((child) => renderRoute(child))}
+                    </View>
+                ) : null}
+            </View>
+        )
+    }
+
+    const roots = getConductorSidebarRootRoutes(routes)
+
+    if (!roots.length) return null
+
+    return (
+        <View className="w-full gap-0.5">
+            {roots.map((route) => renderRoute(route))}
+        </View>
+    )
 }

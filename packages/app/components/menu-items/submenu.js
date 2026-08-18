@@ -1,8 +1,5 @@
-import { Platform } from 'react-native';
-import { NeoButton, NeoButtonLink, useNeoButtonNative } from 'app/design/controls';
+import { NeoButton, NeoButtonLink } from 'app/design/controls';
 import { sanitazeUrl } from 'app/lib/util';
-
-const isWeb = Platform.OS === 'web';
 
 export default function MenuItemSubmenu({ icon, title, pressed, disabled, addon, onPress, href }) {
     const controlSize = 'small';
@@ -10,12 +7,9 @@ export default function MenuItemSubmenu({ icon, title, pressed, disabled, addon,
     // Do not branch on useIsDesktop() — SSR is forced desktop, then the first
     // layout effect flips it on narrow viewports and React 19 hydration
     // recovery can stack-overflow (see measure.js).
-    const style = isWeb
-        ? (pressed ? 'bordered' : 'borderless')
-        : 'glass';
-    const native = useNeoButtonNative({ style, controlSize, borderShape });
-    const useNativeGlass = !isWeb && !!native;
-
+    // Capsule + selected use JS NeoButton (rounded-full). Native glass maps to
+    // Material elevated, which is not pill-shaped on Android.
+    const style = pressed ? 'bordered' : 'borderless';
     const commonProps = {
         label: title,
         image: icon,
@@ -35,9 +29,8 @@ export default function MenuItemSubmenu({ icon, title, pressed, disabled, addon,
     const finalHref = sanitazeUrl(href);
     // Custom onPress (conductor tabs) owns navigation — a Link wrapper
     // nests role=button inside <a> and double-fires router.push + pushState.
-    if (finalHref && !useNativeGlass && !onPress) {
+    if (finalHref && !onPress) {
         return <NeoButtonLink {...commonProps} href={finalHref} />;
     }
-
     return <NeoButton {...commonProps} interactive />;
 }

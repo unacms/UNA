@@ -3,11 +3,23 @@ import { Platform } from 'react-native';
 import { Pressable, View, Row } from 'app/design/view';
 import { Text } from 'app/design/typography';
 import { Icon } from 'app/ui/atoms/icon';
+import Image from 'app/ui/atoms/image';
 import { isEmoji, appSetting } from 'app/lib/util';
 import Link from 'app/ui/atoms/link'
 const menuSettings = appSetting('theme', 'dropdown_menu');
 
 const getIcon = (oItem, iconSize = 20, rowHovered) => {
+    const image = oItem?.image
+    if (typeof image === 'string' && /^(https?:|file:|content:|data:)/i.test(image)) {
+        return (
+            <Image
+                src={image}
+                className="h-9 w-9 rounded-full"
+                view="cover"
+                sizes="auto"
+            />
+        )
+    }
     if (!oItem?.icon) return null;
 
     const className = [oItem?.class_item_icon, oItem?.addClassName]
@@ -92,7 +104,7 @@ export default function DropdownMenuItem({ item, index, link, handleSelect, clas
                 {(!!icon && !!menuSettings.item_icon) && <View className={menuSettings.item_icon}>{icon}</View>}
                 {!!item?.title &&
                     (typeof item.title === 'string' ? (
-                        <Text className={itemTextClass}>{item.title}</Text>
+                        <Text numberOfLines={2} className={`${itemTextClass} line-clamp-2`}>{item.title}</Text>
                     ) : (
                         item.title
                     ))
