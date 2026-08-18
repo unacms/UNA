@@ -1,0 +1,8 @@
+# Railway / Railpack image build only.
+# Do not add [deploy] startCommand here: the live start-command restore of
+# inc/header.inc.php (and /app/storage/plugins_public) remains the safety net.
+# Do not Railway-redeploy until header.inc.php persistence is solved.
+
+[build]
+builder = "RAILPACK"
+buildCommand = "composer install --optimize-autoloader --no-scripts --no-interaction --no-dev && sh scripts/build-plugins-public.sh"
