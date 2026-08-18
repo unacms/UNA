@@ -225,7 +225,7 @@ class BxMassMailerModule extends BxBaseModGeneralModule
 
     public function serviceGetSafeServices()
     {
-        return array ();
+        return parent::serviceGetSafeServices();
     }
 
     /**
@@ -427,6 +427,7 @@ class BxMassMailerModule extends BxBaseModGeneralModule
                 $aAttributesParts[$aModule['name']] = array($aModule['title'], $aTmp2);
             }
         }
+
         return $this->_oTemplate->getAttributes($aAttributesParts);
     }
     

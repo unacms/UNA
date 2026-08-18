@@ -82,19 +82,25 @@ class BxMassMailerFormEntry extends BxBaseModTextFormEntry
         if($this->_bCreative && isset($this->aInputs[$CNF['FIELD_BODY']])) {
             $sContent = !empty($aCampaignInfo['body']) ? $aCampaignInfo['body'] : '';
 
-            $this->aInputs[$CNF['FIELD_BODY']] = array_merge($this->aInputs[$CNF['FIELD_BODY']], [
-                'type' => 'custom',
-                'content' => $this->_oModule->_oTemplate->parseHtmlByName('campaign_body.html', [
-                    'name' => $this->aInputs[$CNF['FIELD_BODY']]['name'],
-                    'html_id' => $this->_oModule->_oConfig->getHtmlIds('campaign_body'),
-                    'content_html' => $sContent,
-                    'content_data' => json_encode([
-                        'pages' => [
-                            ['component' => $sContent]
-                        ]
-                    ])
-                ]),
-            ]);
+            if(!$this->_bIsApi)
+                $this->aInputs[$CNF['FIELD_BODY']] = array_merge($this->aInputs[$CNF['FIELD_BODY']], [
+                    'type' => 'custom',
+                    'content' => $this->_oModule->_oTemplate->parseHtmlByName('campaign_body.html', [
+                        'name' => $this->aInputs[$CNF['FIELD_BODY']]['name'],
+                        'html_id' => $this->_oModule->_oConfig->getHtmlIds('campaign_body'),
+                        'content_html' => $sContent,
+                        'content_data' => json_encode([
+                            'pages' => [
+                                ['component' => $sContent]
+                            ]
+                        ])
+                    ]),
+                ]);
+            else
+                $this->aInputs[$CNF['FIELD_BODY_INFO']] = array_merge($this->aInputs[$CNF['FIELD_BODY_INFO']], [
+                    'type' => 'value',
+                    'value' => $this->_oModule->serviceAttributes()
+                ]);
         }
 
         parent::initChecker ($aValues, $aSpecificValues);

@@ -102,7 +102,7 @@ INSERT INTO `sys_form_inputs` (`object`, `module`, `name`, `value`, `values`, `c
 (@sName, @sName, 'is_one_per_account', '1', '', 1, 'switcher', '_bx_massmailer_form_campaign_input_sys_is_one_per_account', '_bx_massmailer_form_campaign_input_is_one_per_account', '', 0, 0, 0, 0, '', '', '', '', '', '', 'Int', '', 1, 0),
 (@sName, @sName, 'is_track_links', '1', '', 1, 'switcher', '_bx_massmailer_form_campaign_input_sys_is_track_links', '_bx_massmailer_form_campaign_input_is_track_links', '', 0, 0, 0, 0, '', '', '', '', '', '', 'Int', '', 1, 0),
 (@sName, @sName, 'email', '', '', 0, 'text', '_bx_massmailer_form_campaign_input_sys_test_email', '_bx_massmailer_form_campaign_input_email', '', 1, 0, 0, 2, '', '', '', 'Email', '', '_sys_form_account_input_email_error', 'XssHtml', '', 1, 0),
-(@sName, @sName, 'campaign_info', '_bx_massmailer_form_campaign_input_from_name_info_value', '', 0, 'value', '_bx_massmailer_form_campaign_input_sys_campaign_info', '', '', 0, 0, 0, 2, '', '', '', '', '', '', 'XssHtml', '', 1, 0),
+(@sName, @sName, 'campaign_info', '_bx_massmailer_form_campaign_input_from_name_info_value', '', 0, 'value', '_bx_massmailer_form_campaign_input_sys_campaign_info', '_bx_massmailer_form_campaign_input_campaign_info', '', 0, 0, 0, 2, '', '', '', '', '', '', 'XssHtml', '', 1, 0),
 (@sName, @sName, 'cancel', '_bx_massmailer_form_entry_input_cancel', '', 0, 'button', '_bx_dev_bp_btn_sys_block_cancel', '', '', 0, 0, 0, 0, 'a:2:{s:7:"onclick";s:45:"$(''.bx-popup-applied:visible'').dolPopupHide()";s:5:"class";s:22:"bx-def-margin-sec-left";}', '', '', 'Avail', '', '', '', '', 0, 0),
 (@sName, @sName, 'controls', '', 'do_send,cancel', 0, 'input_set', '', '', '', 0, 0, 0, 0, '', '', '', '', '', '', '', '', 0, 0);
 

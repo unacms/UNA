@@ -23,20 +23,41 @@ class BxMassMailerFormsEntryHelper extends BxBaseModTextFormsEntryHelper
     {
         $CNF = &$this->_oModule->_oConfig->CNF;
         $CNF['TABLE_ENTRIES'] = $CNF['TABLE_CAMPAIGNS'];
-        return parent::editDataForm($iContentId, $CNF['OBJECT_FORM_ENTRY_DISPLAY_EDIT'], $sCheckFunction = false, $bErrorMsg = true);
+        return parent::editDataForm($iContentId, $CNF['OBJECT_FORM_ENTRY_DISPLAY_EDIT'], $sCheckFunction, $bErrorMsg);
     }
-    
+
     public function onDataEditAfter($iContentId, $aContentInfo, $aTrackTextFieldsChanges, $oProfile, $oForm)
     {
+        if($this->_bIsApi)
+            return '';
+
         $CNF = &$this->_oModule->_oConfig->CNF;
         $this->_redirectAndExit('page.php?i=' . $CNF['URI_MANAGE_CAMPAIGNS']);
-        return parent::onDataEditAfter($iContentId, $aContentInfo, $aTrackTextFieldsChanges, $oProfile, $oForm);
     }
-    
+
     public function onDataAddAfter($iAccountId, $iContentId)
     {
+        if($this->_bIsApi)
+            return '';
+
         $CNF = &$this->_oModule->_oConfig->CNF;
         $this->_redirectAndExit('page.php?i=' . $CNF['URI_MANAGE_CAMPAIGNS']);
+    }
+
+    public function redirectAfterAdd($aContentInfo, $sUrl = '')
+    {
+        if($this->_bIsApi)
+            return [];
+        
+        return parent::redirectAfterAdd($aContentInfo, $sUrl);
+    }
+
+    protected function redirectAfterEdit($aContentInfo, $sUrl = '')
+    {
+        if($this->_bIsApi)
+            return [];
+
+        return parent::redirectAfterEdit($aContentInfo, $sUrl);
     }
 }
 

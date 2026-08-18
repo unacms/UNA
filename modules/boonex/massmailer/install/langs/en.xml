@@ -54,7 +54,7 @@
   <string name="_bx_massmailer_grid_action_title_adm_edit"><![CDATA[Edit]]></string>
   <string name="_bx_massmailer_grid_action_title_adm_copy"><![CDATA[Copy]]></string>
   <string name="_bx_massmailer_grid_action_title_adm_delete"><![CDATA[Delete]]></string>
-  <string name="_bx_massmailer_grid_action_title_adm_view"><![CDATA[Report]]></string>
+  <string name="_bx_massmailer_grid_action_title_adm_view"><![CDATA[View]]></string>
   <string name="_bx_massmailer_grid_action_title_adm_send_test"><![CDATA[Send test]]></string>
   <string name="_bx_massmailer_grid_action_title_adm_send_all"><![CDATA[Send All]]></string>
   <string name="_bx_massmailer_grid_action_title_adm_add"><![CDATA[Add new campaign]]></string>
@@ -105,6 +105,7 @@
   <string name="_bx_massmailer_form_campaign_input_reply_to_err"><![CDATA[Email is not valid]]></string>
   <string name="_bx_massmailer_form_campaign_input_from_name_info_value"><![CDATA[The message will be sent to {0} profiles.]]></string>
   <string name="_bx_massmailer_form_campaign_input_sys_campaign_info"><![CDATA[Campaign info]]></string>
+  <string name="_bx_massmailer_form_campaign_input_campaign_info"><![CDATA[Info]]></string>
   <string name="_bx_massmailer_form_campaign_input_sys_receive_news"><![CDATA[Receive Newsletterso]]></string>
   <string name="_bx_massmailer_form_campaign_input_receive_news"><![CDATA[Receive Newsletters]]></string>
   <string name="_bx_massmailer_form_campaign_input_sys_code"><![CDATA[Code]]></string>
