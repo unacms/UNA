@@ -13,7 +13,7 @@ DELETE FROM `sys_pages_blocks` WHERE `module` = 'bx_tasks' OR `object` IN('bx_ta
 -- MENU
 DELETE FROM `sys_objects_menu` WHERE `module` = 'bx_tasks';
 DELETE FROM `sys_menu_sets` WHERE `module` = 'bx_tasks';
-DELETE FROM `sys_menu_items` WHERE `module` = 'bx_tasks' OR `set_name` IN('bx_tasks_create_task_attachments', 'bx_tasks_view', 'bx_tasks_view_actions', 'bx_tasks_view_submenu', 'bx_tasks_view_context_submenu', 'bx_tasks_use_tools_submenu', 'bx_tasks_manage_tools_submenu', 'bx_tasks_menu_manage_tools', 'bx_tasks_browse');
+DELETE FROM `sys_menu_items` WHERE `module` = 'bx_tasks' OR `set_name` IN('bx_tasks_create_task_attachments', 'bx_tasks_view', 'bx_tasks_view_actions', 'bx_tasks_submenu', 'bx_tasks_view_submenu', 'bx_tasks_view_context_submenu', 'bx_tasks_use_tools_submenu', 'bx_tasks_manage_tools_submenu', 'bx_tasks_menu_manage_tools', 'bx_tasks_browse');
 
 -- PRIVACY 
 DELETE FROM `sys_objects_privacy` WHERE `object` = 'bx_tasks_allow_view_to';

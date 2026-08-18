@@ -336,6 +336,9 @@
     <string name="_bx_tasks_menu_title_view_entry"><![CDATA[Task Actions]]></string>
     <string name="_bx_tasks_menu_title_submenu"><![CDATA[Tasks Submenu]]></string>
     <string name="_bx_tasks_menu_set_title_submenu"><![CDATA[Tasks Submenu]]></string>
+    <string name="_bx_tasks_menu_item_title_system_submenu_use"><![CDATA[Submenu: Usage]]></string>
+    <string name="_bx_tasks_menu_item_title_system_submenu_browse"><![CDATA[Submenu: Browse tasks in contexts]]></string>
+    <string name="_bx_tasks_menu_item_title_system_submenu_manage"><![CDATA[Submenu: Manage tasks]]></string>
     <string name="_bx_tasks_menu_item_title_system_create_entry"><![CDATA[Task]]></string>
     <string name="_bx_tasks_menu_item_title_create_entry"><![CDATA[Task]]></string>
     <string name="_bx_tasks_menu_item_title_system_edit_entry"><![CDATA[Edit]]></string>
@@ -402,10 +405,10 @@
     <string name="_bx_tasks_menu_title_manage_tools_submenu"><![CDATA[Manage Tools Submenu]]></string>
     <string name="_bx_tasks_menu_title_public_manage_tools_submenu"><![CDATA[Manage]]></string>
     <string name="_bx_tasks_menu_set_title_manage_tools_submenu"><![CDATA[Manage Tools Submenu]]></string>
-    <string name="_bx_tasks_menu_item_title_mt_submenu_entries_common"><![CDATA[My Tasks]]></string>
-    <string name="_bx_tasks_menu_item_title_mt_submenu_entries_administration"><![CDATA[All Tasks]]></string>
-    <string name="_bx_tasks_menu_item_title_mt_submenu_time_common"><![CDATA[My Time]]></string>
-    <string name="_bx_tasks_menu_item_title_mt_submenu_time_administration"><![CDATA[All Time]]></string>
+    <string name="_bx_tasks_menu_item_title_mt_submenu_entries_common"><![CDATA[Manage my tasks]]></string>
+    <string name="_bx_tasks_menu_item_title_mt_submenu_entries_administration"><![CDATA[Tasks administration]]></string>
+    <string name="_bx_tasks_menu_item_title_mt_submenu_time_common"><![CDATA[Manage my time]]></string>
+    <string name="_bx_tasks_menu_item_title_mt_submenu_time_administration"><![CDATA[Time administration]]></string>
     <string name="_bx_tasks_menu_title_browse"><![CDATA[Browse Tasks]]></string>
     <string name="_bx_tasks_menu_set_title_browse"><![CDATA[Browse Tasks]]></string>
 

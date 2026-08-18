@@ -1034,8 +1034,20 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
         
         $CNF = &$this->_oConfig->CNF;
 
+        $bAllowEdit = $this->isAllowEdit($iContentId);
+
+        if($this->_bIsApi) {
+            $aResult = parent::serviceEntityTextBlock($iContentId);
+            if($bAllowEdit) {
+                $aResult['0']['data']['editable'] = true;
+                $aResult['0']['data']['params']['request_url'] = $this->_aModule['name'] . '/set_property/&params[]=' . $iContentId  . '&params[]=';
+            }
+
+            return $aResult;
+        }
+
         $sResult = '';
-        if(!$this->isAllowEdit($iContentId))
+        if(!$bAllowEdit)
             $sResult = parent::serviceEntityTextBlock($iContentId);
         else 
             $sResult = $this->serviceEntityEdit($iContentId, $CNF['OBJECT_FORM_ENTRY_DISPLAY_EDIT_BODY']);
@@ -1709,7 +1721,7 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
         $this->logActivity($iContentId, ['key' => '_bx_tasks_txt_msg_edit_state', 'markers' => ['value' => $this->_oConfig->getStateTitle($iState)]]);
 
         $iCompleted = (int)$this->_oConfig->isCompleted($iState);
-        if($iCompleted != (int)$this->_oConfig->isCompleted($aContentInfo[$CNF['FIELD_STATE']]))
+        if($iCompleted != (int)$this->_oConfig->isCompleted($aContentInfo[$CNF['FIELD_STATE']]) || $iCompleted != (int)$aContentInfo[$CNF['FIELD_COMPLETED']])
             $this->complete($iContentId, $iCompleted);
     }
 
