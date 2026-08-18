@@ -72,8 +72,8 @@ class BxDolService extends BxDol
      */
     public static function callSerialized($s, $aMarkers = array(), $sReplaceIn = 'params')
     {
-        $a = @unserialize($s);
-        if (false === $a || !is_array($a))
+        $a = self::decodeServiceCall($s);
+        if (false === $a)
             return '';
 
         if (isset($a[$sReplaceIn]) && $aMarkers)
@@ -134,30 +134,27 @@ class BxDolService extends BxDol
     }
 
     /**
-     * Check if string is serialized array
+     * Check if string is a stored service call (JSON or historic PHP serialize).
      */
     public static function isSerializedService($s)
     {
-        return preg_match('/^a:[\d+]:\{/', $s);
+        return BxDolServiceCallCodec::isEncoded($s);
     }
 
     /**
-     * Serialized service call array
+     * Decode a stored service-call blob. Arrays/scalars only; objects are rejected.
+     */
+    public static function decodeServiceCall($s)
+    {
+        return BxDolServiceCallCodec::decode($s);
+    }
+
+    /**
+     * Encode a service call for storage. New writes are JSON, not PHP serialize.
      */
     public static function getSerializedService($mixedModule, $sMethod, $aParams = array(), $sClass = '')
     {
-		$aService = array(
-			'module' => $mixedModule,
-			'method' => $sMethod,
-		);
-
-		if(!empty($aParams))
-			$aService['params'] = $aParams;
-
-		if(!empty($sClass))
-			$aService['class'] = $sClass;
-
-		return serialize($aService);
+        return BxDolServiceCallCodec::encode($mixedModule, $sMethod, $aParams, $sClass);
     }
 
     protected static function getModule($mixed)

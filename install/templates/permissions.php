@@ -1,9 +1,12 @@
 <div class="bx-install-permissions">
 
     <h1 class="bx-def-font-h1"><?php echo _t('_adm_admtools_Permissions'); ?></h1>
+    <p class="bx-install-step-lead"><?php echo _t('_sys_inst_msg_permissions_lead'); ?></p>
 
    <?=$sPermissionsStyles; ?>
+   <div class="bx-install-permissions-table-wrap">
    <?=$sPermissionsTable; ?>
+   </div>
 
     <div class="bx-install-permissions-buttons bx-def-margin-top">
 
