@@ -1,89 +1,458 @@
+/* Install wizard — modern minimal shell (una-g). Same flow; visual refresh only. */
 
+:root {
+    --bx-inst-bg: #f4f5f7;
+    --bx-inst-surface: #ffffff;
+    --bx-inst-text: #111827;
+    --bx-inst-muted: #6b7280;
+    --bx-inst-border: #e5e7eb;
+    --bx-inst-accent: #2563eb;
+    --bx-inst-accent-hover: #1d4ed8;
+    --bx-inst-ok: #059669;
+    --bx-inst-ok-bg: #ecfdf5;
+    --bx-inst-bad: #dc2626;
+    --bx-inst-bad-bg: #fef2f2;
+    --bx-inst-warn: #d97706;
+    --bx-inst-warn-bg: #fffbeb;
+    --bx-inst-radius: 12px;
+    --bx-inst-shadow: 0 1px 2px rgba(16, 24, 40, 0.04), 0 8px 24px rgba(16, 24, 40, 0.06);
+    --bx-inst-font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
 
 html, body {
     margin: 0;
-	height: 100%;
+    min-height: 100%;
 }
 
-.bx-btn-primary {
-    background-color: #3b8686;
+body.bx-install-body,
+.bx-install-body {
+    font-family: var(--bx-inst-font) !important;
+    color: var(--bx-inst-text);
+    background: var(--bx-inst-bg) !important;
+    -webkit-font-smoothing: antialiased;
 }
 
-.bx-install-permissions .bx-btn,
-.bx-install-initial .bx-btn {
-    display:inline;
-    display:inline-block;
-    float:none;
+.bx-install-shell {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
+.bx-install-topbar {
+    background: var(--bx-inst-surface);
+    border-bottom: 1px solid var(--bx-inst-border);
+    position: sticky;
+    top: 0;
+    z-index: 20;
+}
+
+.bx-install-topbar-inner {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.bx-install-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+}
+
+.bx-install-brand-mark {
+    width: 10px;
+    height: 10px;
+    border-radius: 999px;
+    background: var(--bx-inst-accent);
+    flex: 0 0 auto;
+}
+
+.bx-install-brand-title {
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--bx-inst-text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.bx-install-help {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--bx-inst-accent);
+    text-decoration: none;
+}
+.bx-install-help:hover {
+    text-decoration: underline;
+}
+
+.bx-install-main {
+    flex: 1 0 auto;
+    width: 100%;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 32px 20px 48px;
+    box-sizing: border-box;
+}
+
+.bx-install-card {
+    background: var(--bx-inst-surface);
+    border: 1px solid var(--bx-inst-border);
+    border-radius: var(--bx-inst-radius);
+    box-shadow: var(--bx-inst-shadow);
+    padding: 28px 28px 32px;
+}
+
+.bx-install-footer {
+    flex: 0 0 auto;
+    text-align: center;
+    padding: 20px;
+    font-size: 12px;
+    color: var(--bx-inst-muted);
+}
+
+/* Kill the old teal header if any leftover classes still render */
+.bx-header.bx-def-color-bg-header,
+#bx-toolbar {
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+h1.bx-def-font-h1,
+.bx-install-card h1 {
+    font-family: var(--bx-inst-font) !important;
+    font-size: 22px !important;
+    font-weight: 650 !important;
+    letter-spacing: -0.02em;
+    margin: 0 0 20px !important;
+    color: var(--bx-inst-text) !important;
+}
+
+.bx-install-card p,
+.bx-install-card li,
+.bx-install-card .bx-def-font-large {
+    font-family: var(--bx-inst-font) !important;
+    color: var(--bx-inst-text);
+    line-height: 1.55;
+}
+
+/* Buttons */
+.bx-btn,
+a.bx-btn,
+button.bx-btn,
+.bx-install-site-config .bx-form-input-wrapper-submit button,
+.bx-install-site-config .bx-form-input-wrapper-submit input[type="submit"] {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    float: none !important;
+    margin: 0 8px 8px 0 !important;
+    padding: 10px 16px !important;
+    min-height: 40px;
+    border-radius: 8px !important;
+    border: 1px solid var(--bx-inst-border) !important;
+    background: var(--bx-inst-surface) !important;
+    color: var(--bx-inst-text) !important;
+    font-family: var(--bx-inst-font) !important;
+    font-size: 14px !important;
+    font-weight: 550 !important;
+    line-height: 1.2 !important;
+    text-decoration: none !important;
+    box-shadow: none !important;
+    cursor: pointer;
+    transition: background 0.12s ease, border-color 0.12s ease, color 0.12s ease;
+}
+
+.bx-btn:hover,
+a.bx-btn:hover,
+button.bx-btn:hover {
+    background: #f9fafb !important;
+    border-color: #d1d5db !important;
+}
+
+.bx-btn-primary,
+a.bx-btn-primary,
+button.bx-btn-primary,
+.bx-btn.bx-btn-primary {
+    background: var(--bx-inst-accent) !important;
+    border-color: var(--bx-inst-accent) !important;
+    color: #fff !important;
+}
+
+.bx-btn-primary:hover,
+a.bx-btn-primary:hover {
+    background: var(--bx-inst-accent-hover) !important;
+    border-color: var(--bx-inst-accent-hover) !important;
+    color: #fff !important;
+}
+
+.bx-btn-disabled,
+a.bx-btn-disabled,
+.bx-btn.bx-btn-disabled {
+    opacity: 0.45 !important;
+    pointer-events: none !important;
+    cursor: not-allowed !important;
+}
+
+.bx-install-permissions-buttons,
 .bx-install-initial,
 .bx-install-initial-langs,
-.bx-install-permissions-buttons,
 .bx-install-site-config .bx-form-input-wrapper-submit {
-    text-align:center;
+    text-align: center;
 }
+
 .bx-install-initial > a,
 .bx-install-initial-langs > a,
 .bx-install-permissions-buttons > a,
 .bx-install-site-config .bx-form-input-wrapper-submit > a {
-    display:inline-block;
+    display: inline-flex;
 }
 
-.bx-install-error-message {
-    border:1px solid #966;
-    background-color:#c99;
-    color:#000;
-    font-weight:bold;
-}
-
-.bx-install-page {
-	min-height: 100%;
-	height: auto !important;
-	height: 100%;
-	margin: 0 auto -60px; /* the bottom margin is the negative value of the footer's height */
-}
-.bx-install-footer-push,
-.bx-install-footer {
-    height: 60px;
-    line-height: 60px;
-}
-
+/* Initial / welcome */
 .bx-install-initial img.bx-install-img {
-    display:block;
-    margin-left:auto;
-    margin-right:auto;
-    width:400px;
-    max-width:90%;
+    display: block;
+    margin: 8px auto 24px;
+    width: 180px;
+    max-width: 55%;
 }
 
+.bx-install-initial-langs {
+    margin-bottom: 20px !important;
+}
 .bx-install-initial-langs img {
-    width:32px;
-    height:32px;
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    border: 1px solid var(--bx-inst-border);
+}
+.bx-install-initial-langs a {
+    margin: 0 4px;
 }
 
-.bx-install-site-config .bx-form-input-wrapper-submit button {
-    display:inline-block;
-} 
+.bx-install-initial-waring,
+.bx-install-initial-fail {
+    margin-top: 20px;
+    padding: 12px 14px;
+    border-radius: 8px;
+    background: var(--bx-inst-warn-bg);
+    border: 1px solid #fde68a;
+    color: #92400e;
+    font-size: 14px;
+    text-align: left;
+}
+
+.bx-install-error-message,
+.bx-install-initial-fail ul {
+    border: 1px solid #fecaca;
+    background: var(--bx-inst-bad-bg);
+    color: #991b1b;
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-weight: 500;
+}
+
+/* Permissions table → modern list */
+.bx-permissions-table {
+    width: 100% !important;
+    border-collapse: separate !important;
+    border-spacing: 0 !important;
+    border: 1px solid var(--bx-inst-border);
+    border-radius: 10px;
+    overflow: hidden;
+    font-size: 13px;
+}
+
+.bx-permissions-table thead td,
+.bx-permissions-table thead th {
+    font-weight: 600 !important;
+    font-size: 12px !important;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--bx-inst-muted) !important;
+    background: #fafafa;
+    border-bottom: 1px solid var(--bx-inst-border);
+    text-align: left !important;
+    padding: 10px 12px !important;
+}
+
+.bx-permissions-table td {
+    padding: 12px !important;
+    border-bottom: 1px solid var(--bx-inst-border);
+    vertical-align: middle;
+    font-family: var(--bx-inst-font) !important;
+}
+
+.bx-permissions-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.bx-permissions-table tbody tr.bx-def-color-bg-hl-even,
+.bx-permissions-table tbody tr {
+    background: #fff !important;
+}
+
+.bx-permissions-table td:first-child {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace !important;
+    font-size: 12px;
+    color: #374151;
+}
+
+.bx-permissions-table td:not(:first-child) {
+    text-align: left !important;
+}
+
+.bx-permissions-ok,
+.bx-permissions-wrong {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    line-height: 1.3;
+}
+
+.bx-permissions-ok {
+    color: var(--bx-inst-ok) !important;
+    background: var(--bx-inst-ok-bg) !important;
+}
+
+.bx-permissions-wrong {
+    color: var(--bx-inst-bad) !important;
+    background: var(--bx-inst-bad-bg) !important;
+}
+
+.bx-install-permissions-buttons {
+    margin-top: 24px !important;
+}
+
+.bx-install-permissions-buttons .bx-def-margin-bottom {
+    margin-bottom: 16px !important;
+    padding: 12px 14px;
+    border-radius: 8px;
+    background: var(--bx-inst-warn-bg);
+    border: 1px solid #fde68a;
+    color: #92400e;
+    font-size: 14px;
+    text-align: left;
+}
+
+/* Forms (site config) */
+.bx-install-site-config fieldset.bx-form-section {
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    margin: 0 0 18px !important;
+    padding: 0 !important;
+}
+
+.bx-install-site-config fieldset.bx-form-section .bx-form-section-content {
+    background: transparent !important;
+}
+
+.bx-install-site-config .bx-form-section-title,
+.bx-install-site-config legend {
+    font-size: 13px !important;
+    font-weight: 650 !important;
+    color: var(--bx-inst-muted) !important;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 10px !important;
+}
+
+.bx-install-site-config input[type="text"],
+.bx-install-site-config input[type="password"],
+.bx-install-site-config input[type="email"],
+.bx-install-site-config select,
+.bx-install-site-config textarea,
+.bx-install-finish textarea,
+.bx-form-input-text,
+.bx-form-input-password,
+.bx-form-input-select,
+.bx-form-input-textarea {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    border: 1px solid var(--bx-inst-border) !important;
+    border-radius: 8px !important;
+    padding: 10px 12px !important;
+    font-family: var(--bx-inst-font) !important;
+    font-size: 14px !important;
+    background: #fff !important;
+    color: var(--bx-inst-text) !important;
+    box-shadow: none !important;
+}
+
+.bx-install-site-config input:focus,
+.bx-install-site-config select:focus,
+.bx-install-site-config textarea:focus,
+.bx-install-finish textarea:focus {
+    outline: none !important;
+    border-color: var(--bx-inst-accent) !important;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15) !important;
+}
 
 .bx-install-finish textarea {
-    display:block;
-    width:70%;
-    height:60px;
+    display: block;
+    width: 100% !important;
+    height: 88px;
+    margin-top: 8px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace !important;
+    font-size: 12px !important;
 }
 
-
-.bx-header.bx-def-color-bg-header {
-    background-color: #3b8686;
+.bx-install-finish ol {
+    padding-left: 20px;
+    margin: 0;
 }
 
-fieldset.bx-form-section {
-    background-color:transparent !important;
-    border-left:none;
-    border-right:none;
-    border-bottom:none;
-    border-radius:0 !important;
+.bx-install-finish li {
+    margin-bottom: 16px;
 }
 
-fieldset.bx-form-section .bx-form-section-content {
-    background-color:transparent !important;
+/* Audit output */
+.bx-install-audit {
+    font-size: 13px;
+    overflow-x: auto;
+}
+.bx-install-audit table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid var(--bx-inst-border);
+    border-radius: 10px;
+    overflow: hidden;
+}
+.bx-install-audit td,
+.bx-install-audit th {
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--bx-inst-border);
+    text-align: left;
+}
+
+@media (max-width: 640px) {
+    .bx-install-card {
+        padding: 20px 16px 24px;
+    }
+    .bx-install-main {
+        padding: 20px 12px 36px;
+    }
+}
+
+.bx-install-step-lead {
+    margin: -8px 0 20px !important;
+    color: var(--bx-inst-muted) !important;
+    font-size: 14px !important;
+}
+.bx-install-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 4px;
 }

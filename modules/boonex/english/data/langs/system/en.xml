@@ -3326,6 +3326,7 @@ If it is not enabled then please consider implement this optimization, since it 
 	<string name="_sys_inst_conf_section_site_info"><![CDATA[Site info]]></string>
 	<string name="_sys_inst_continue"><![CDATA[Continue]]></string>
 	<string name="_sys_inst_finish"><![CDATA[Installation has been successfully completed]]></string>
+	<string name="_sys_inst_help"><![CDATA[Help]]></string>
 	<string name="_sys_inst_help_finish"><![CDATA[Help with cron jobs]]></string>
 	<string name="_sys_inst_help_permissions"><![CDATA[Setting permissions help]]></string>
 	<string name="_sys_inst_help_site_config"><![CDATA[Creating database help]]></string>
@@ -3342,6 +3343,7 @@ If it is not enabled then please consider implement this optimization, since it 
 	<string name="_sys_inst_msg_finish_goto_studio"><![CDATA[<a href="{0}studio/">Go to Studio</a> to add additional modules and customize the site.]]></string>
 	<string name="_sys_inst_msg_form_error"><![CDATA[Please fix form errors.]]></string>
 	<string name="_sys_inst_msg_module_error"><![CDATA[{0} - {1}]]></string>
+	<string name="_sys_inst_msg_permissions_lead"><![CDATA[Check that required paths are writable (or executable) before continuing.]]></string>
 	<string name="_sys_inst_msg_permissions_wrong"><![CDATA[Some files or folders rights aren't correct, please set necessary permissions then click "Continue".]]></string>
 	<string name="_sys_inst_msg_remove_install"><![CDATA[Please, remove INSTALL directory from your server and reload this page to activate your site.<br />After deletion you can safely go <a href="../studio/">to the site Studio</a> to add additional modules and customize the site.]]></string>
 	<string name="_sys_inst_msg_script_isnt_installed"><![CDATA[Script isn't installed]]></string>

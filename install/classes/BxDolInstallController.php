@@ -76,7 +76,7 @@ class BxDolInstallController
 
         $this->_oView->out('permissions.php', compact('sPermissionsStyles', 'sPermissionsTable', 'bPermissionsOk'));
 
-        $this->_oView->setToolbarItem('question', 'https://github.com/unaio/una/wiki/Installation', _t('_sys_inst_help_permissions'), '_blank');
+        $this->_oView->setToolbarItem('question', 'https://unacms.com/wiki/installation-overview', _t('_sys_inst_help_permissions'), '_blank');
 
         $this->_oView->pageEnd($this->_getTitle());
     }
@@ -90,7 +90,7 @@ class BxDolInstallController
 
         $this->_oView->out('site_config.php', compact('sForm'));
 
-        $this->_oView->setToolbarItem('question', 'https://github.com/unaio/una/wiki/Installation', _t('_sys_inst_help_site_config'), '_blank');
+        $this->_oView->setToolbarItem('question', 'https://unacms.com/wiki/installation-overview', _t('_sys_inst_help_site_config'), '_blank');
 
         $this->_oView->pageEnd($this->_getTitle());
     }
@@ -116,7 +116,7 @@ class BxDolInstallController
 
         $this->_oView->out('finish.php', compact('sPathToPhp'));
 
-        $this->_oView->setToolbarItem('question', 'https://github.com/unaio/una/wiki/Installation', _t('_sys_inst_help_finish'), '_blank');
+        $this->_oView->setToolbarItem('question', 'https://unacms.com/wiki/installation-overview', _t('_sys_inst_help_finish'), '_blank');
 
         $this->_oView->pageEnd($this->_getTitle());
 

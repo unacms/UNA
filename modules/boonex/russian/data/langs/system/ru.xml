@@ -3299,6 +3299,7 @@
 	<string name="_sys_inst_conf_section_site_info"><![CDATA[Инфо сайта]]></string>
 	<string name="_sys_inst_continue"><![CDATA[Продолжить]]></string>
 	<string name="_sys_inst_finish"><![CDATA[Установка удачно завершена]]></string>
+	<string name="_sys_inst_help"><![CDATA[Помощь]]></string>
 	<string name="_sys_inst_help_finish"><![CDATA[Помощь по планировщику заданий]]></string>
 	<string name="_sys_inst_help_permissions"><![CDATA[Помощь по установке разрешений]]></string>
 	<string name="_sys_inst_help_site_config"><![CDATA[Помощь по созданию базы данных]]></string>
@@ -3315,6 +3316,7 @@
 	<string name="_sys_inst_msg_finish_goto_studio"><![CDATA[<a href="{0}studio/">Перейти в Студию</a>, чтобы добавить дополнительные модули и модифицировать сайт.]]></string>
 	<string name="_sys_inst_msg_form_error"><![CDATA[Пожалуйста, исправьте ошибки формы.]]></string>
 	<string name="_sys_inst_msg_module_error"><![CDATA[{0} - {1}]]></string>
+	<string name="_sys_inst_msg_permissions_lead"><![CDATA[Проверьте, что указанные пути доступны для записи (или исполняемые) перед продолжением.]]></string>
 	<string name="_sys_inst_msg_permissions_wrong"><![CDATA[Неправильные разрешения для некоторых файлов и папок, установите правильные и нажмите "Продолжить".]]></string>
 	<string name="_sys_inst_msg_remove_install"><![CDATA[Пожалуйста, удалите директорию INSTALL с сервера и перегрузите страницу, чтобы активировать сайт.<br />После удаления, Вы можете перейти по ссылке <a href="../studio/">в Студию</a>, чтобы добавить дополнительные модули и модифицировать сайт.]]></string>
 	<string name="_sys_inst_msg_script_isnt_installed"><![CDATA[Скрипт не установлен]]></string>
