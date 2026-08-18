@@ -69,13 +69,59 @@ const tenPlayWebviewShimPath = require('fs').existsSync(tenPlayWebviewLocalPath)
 
 const reanimatedPath = path.resolve(__dirname, 'node_modules/react-native-reanimated');
 
+const workspaceResolvePaths = [
+    __dirname,
+    workspaceRoot,
+    path.resolve(__dirname, '../expo'),
+];
+
+// Yarn may hoist these to root, apps/next, apps/expo, or nest them under the
+// parent package. Vercel clean installs do not match a local Windows layout.
+function resolveFromPackage(pkg, subpath) {
+    const pkgRoots = workspaceResolvePaths.map((base) =>
+        path.resolve(base, 'node_modules', pkg)
+    );
+    for (const root of pkgRoots) {
+        const full = path.join(root, subpath);
+        if (fs.existsSync(full)) return full;
+    }
+    try {
+        const pkgJson = require.resolve(`${pkg}/package.json`, {
+            paths: workspaceResolvePaths,
+        });
+        const full = path.join(path.dirname(pkgJson), subpath);
+        if (fs.existsSync(full)) return full;
+    } catch {
+        // fall through
+    }
+    return path.join(pkgRoots[1], subpath);
+}
+
+function replaceEnrichedHtmlHook(fileStem, shimFile) {
+    return new webpack.NormalModuleReplacementPlugin(
+        new RegExp(`${fileStem}(?:\\.(?:js|ts))?$`),
+        (resource) => {
+            const ctx = resource.context || '';
+            const req = String(resource.request || '');
+            if (!ctx.includes('react-native-enriched-html')) return;
+            if (ctx.includes(`${path.sep}shims`) || ctx.includes('/shims/')) return;
+            if (req.includes('-real') || req.includes('enriched-use-')) return;
+            resource.request = path.resolve(__dirname, 'shims', shimFile);
+        }
+    );
+}
+
 // Реальный @tiptap/react (используется веб-сборкой react-native-enriched-html).
 // Подключается отдельным alias, чтобы шим '@tiptap/react' не вызывал сам себя.
-const tiptapReactLocalPath = path.resolve(__dirname, 'node_modules/@tiptap/react/dist/index.js');
-const tiptapReactRootPath = path.resolve(workspaceRoot, 'node_modules/@tiptap/react/dist/index.js');
-const tiptapReactRealPath = fs.existsSync(tiptapReactLocalPath)
-    ? tiptapReactLocalPath
-    : tiptapReactRootPath;
+const tiptapReactRealPath = resolveFromPackage('@tiptap/react', 'dist/index.js');
+const enrichedUseOnEditorChangeRealPath = resolveFromPackage(
+    'react-native-enriched-html',
+    'lib/module/web/useOnEditorChange.js'
+);
+const enrichedUseMentionEventsRealPath = resolveFromPackage(
+    'react-native-enriched-html',
+    'lib/module/web/pmPlugins/MentionPlugin/useMentionEvents.js'
+);
 
 const md4cEmscriptenLocalPath = path.resolve(
     __dirname,
@@ -213,6 +259,8 @@ const nextConfig = {
             // '$' — точное совпадение, поэтому '@tiptap/react/menus' и пр. не трогаем.
             '@tiptap/react$': path.resolve(__dirname, 'shims/tiptap-react.js'),
             '@tiptap-react-real$': tiptapReactRealPath,
+            '@enriched-use-on-editor-change-real$': enrichedUseOnEditorChangeRealPath,
+            '@enriched-use-mention-events-real$': enrichedUseMentionEventsRealPath,
             'md4c-emscripten-real$': md4cEmscriptenRealPath,
         };
 
@@ -261,7 +309,11 @@ const nextConfig = {
             new webpack.NormalModuleReplacementPlugin(
                 /^@expo\/ui(\/.*)?$/,
                 path.resolve(__dirname, 'stubs/expo-ui.js')
-            )
+            ),
+            // Null-guard TipTap hooks (editor is null on the first Next.js frame).
+            // In-repo shims so a clean Vercel install does not need patch-package.
+            replaceEnrichedHtmlHook('useOnEditorChange', 'enriched-use-on-editor-change.js'),
+            replaceEnrichedHtmlHook('useMentionEvents', 'enriched-use-mention-events.js')
         );
 
         config.module.rules.push({

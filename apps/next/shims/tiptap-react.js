@@ -1,12 +1,13 @@
 // Wrapper around @tiptap/react that always sets `immediatelyRender`.
 //
 // On Next.js, `window.next` exists on the client, so @tiptap/react treats the
-// runtime as SSR. Creating the editor during render then races with destroy
-// (`commandManager` becomes null) and throws:
-//   Cannot read properties of null (reading 'commands')
+// runtime as SSR and (if the option is omitted) creates the editor in useEffect.
+// We keep `false` on purpose: `true` races with TipTap's 1ms scheduleDestroy and
+// can null out `commandManager`.
 //
-// Default to false so the editor is created in useEffect. The enriched-html
-// patch null-guards hooks/handles that used to crash when editor was null.
+// enriched-html hooks then see `editor === null` on the first client frame and
+// call `editor.on(...)`. Those hooks are wrapped by webpack shims in
+// next.config.js (not patch-package) so a clean Vercel install still works.
 //
 // Real module is aliased as '@tiptap-react-real' (see next.config.js).
 export * from '@tiptap-react-real';

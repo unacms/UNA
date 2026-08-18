@@ -36,6 +36,7 @@
     "react-dom": "19.2.3",
     "react-grid-layout": "^1.4.4",
     "react-moveable": "^0.54.1",
+    "react-native-enriched-html": "1.2.0-nightly-20260814-63d4eac2c",
     "react-native-svg": "15.2.0",
     "react-onesignal": "3.0.1",
     "react-remove-scroll": "^2.6.0",
