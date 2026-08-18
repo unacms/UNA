@@ -7,6 +7,17 @@
  * @{
  */
 
+// Trust X-Forwarded-Proto from a TLS-terminating proxy (e.g. Railway).
+// header.inc.php is generated at install and often gitignored, so this lives here.
+if (empty($_SERVER['HTTPS']) || 'off' === $_SERVER['HTTPS']) {
+    $sFwdProto = $_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '';
+    if ('' !== $sFwdProto) {
+        $sFwdFirst = strtolower(trim(explode(',', $sFwdProto, 2)[0]));
+        if ('https' === $sFwdFirst)
+            $_SERVER['HTTPS'] = 'on';
+    }
+}
+
 define('BX_DOL_START', microtime ());
 
 //--- Main URLs ---//

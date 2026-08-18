@@ -2,10 +2,20 @@
 
 define('BX_DOL', 1);
 
+// Same proto detection as inc/params.inc.php, but runs before BX_DOL_URL_ROOT.
+if (empty($_SERVER['HTTPS']) || 'off' === $_SERVER['HTTPS']) {
+    $sFwdProto = $_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '';
+    if ('' !== $sFwdProto) {
+        $sFwdFirst = strtolower(trim(explode(',', $sFwdProto, 2)[0]));
+        if ('https' === $sFwdFirst)
+            $_SERVER['HTTPS'] = 'on';
+    }
+}
+
 if (isset($_ENV['UNA_HTTP_HOST']) || isset($_ENV['UNA_AUTO_HOSTNAME'])) {
     define('BX_DOL_URL_ROOT',
         (((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ||
-         ($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https')
+         'https' === strtolower(trim(explode(',', $_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '', 2)[0])))
         ? 'https://' : 'http://')
         . ($_ENV['UNA_HTTP_HOST'] ?? $_SERVER['HTTP_HOST'] ?? 'localhost') . '/' . ($_ENV['UNA_HTTP_PATH'] ?? '')
     );

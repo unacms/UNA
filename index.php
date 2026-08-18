@@ -90,6 +90,42 @@ if (!file_exists("./inc/header.inc.php")) {
     exit;
 }
 
+// php -S ignores .htaccess. Apache rewrites missing paths to r.php?_q=$1
+// (and /m/, /page/, /s/). When this file is the built-in-server 404 fallback
+// or router, do the same. Existing files stay files (return false as router).
+$sPhpSPath = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
+if (false === $sPhpSPath || null === $sPhpSPath || '' === $sPhpSPath)
+    $sPhpSPath = '/';
+$sPhpSPath = rawurldecode($sPhpSPath);
+$sPhpSScript = str_replace('\\', '/', $_SERVER['SCRIPT_NAME'] ?? '/index.php');
+if ('/' !== $sPhpSPath && '/index.php' !== $sPhpSPath && $sPhpSScript !== $sPhpSPath) {
+    $sPhpSRoot = rtrim(str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT'] ?? __DIR__), '/');
+    $sPhpSFile = $sPhpSRoot . $sPhpSPath;
+    if ('cli-server' === PHP_SAPI && is_file($sPhpSFile))
+        return false;
+
+    if (preg_match('#^/m/(.*)$#', $sPhpSPath, $aPhpS)) {
+        $_GET['r'] = $aPhpS[1];
+        require_once('./modules/index.php');
+        exit;
+    }
+    if (preg_match('#^/page/(.*)$#', $sPhpSPath, $aPhpS)) {
+        $_GET['i'] = $aPhpS[1];
+        require_once('./page.php');
+        exit;
+    }
+    if (preg_match('#^/s/([a-zA-Z0-9_]+)/([a-zA-Z0-9.]+)#', $sPhpSPath, $aPhpS)) {
+        $_GET['o'] = $aPhpS[1];
+        $_GET['f'] = $aPhpS[2];
+        require_once('./storage.php');
+        exit;
+    }
+
+    $_GET['_q'] = ltrim($sPhpSPath, '/');
+    require_once('./r.php');
+    exit;
+}
+
 require_once('./inc/header.inc.php');
 require_once(BX_DIRECTORY_PATH_INC . "profiles.inc.php");
 
