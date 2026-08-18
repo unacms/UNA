@@ -1,0 +1,13 @@
+{
+    "name": "unacms/cidaas-connect",
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/Cidaas/cidaas-sdk-php.git"
+        }
+    ],
+    "require": {
+        "php": ">=8.2",
+        "cidaas/oauth2-cidaas": "dev-master"
+    }
+}
