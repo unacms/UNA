@@ -47,31 +47,22 @@ body.bx-install-body,
 }
 
 .bx-install-topbar-inner {
+    position: relative;
     max-width: 720px;
     margin: 0 auto;
     padding: 14px 20px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-}
-
-.bx-install-brand {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    min-width: 0;
-}
-
-.bx-install-brand-mark {
-    width: 10px;
-    height: 10px;
-    border-radius: 999px;
-    background: var(--bx-inst-accent);
-    flex: 0 0 auto;
+    justify-content: flex-end;
+    min-height: 48px;
+    box-sizing: border-box;
 }
 
 .bx-install-brand-title {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
     font-size: 14px;
     font-weight: 600;
     letter-spacing: -0.01em;
@@ -79,9 +70,14 @@ body.bx-install-body,
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    max-width: calc(100% - 120px);
+    text-align: center;
+    pointer-events: none;
 }
 
 .bx-install-help {
+    position: relative;
+    z-index: 1;
     font-size: 13px;
     font-weight: 500;
     color: var(--bx-inst-accent);
@@ -218,8 +214,10 @@ a.bx-btn-disabled,
 .bx-install-initial img.bx-install-img {
     display: block;
     margin: 8px auto 24px;
-    width: 180px;
-    max-width: 55%;
+    width: 64px;
+    height: 64px;
+    max-width: 64px;
+    border-radius: 16px;
 }
 
 .bx-install-initial-langs {

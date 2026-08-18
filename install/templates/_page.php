@@ -16,10 +16,7 @@
 <div class="bx-install-shell">
     <header class="bx-install-topbar">
         <div class="bx-install-topbar-inner">
-            <div class="bx-install-brand">
-                <span class="bx-install-brand-mark" aria-hidden="true"></span>
-                <span class="bx-install-brand-title"><?=$sTitle; ?></span>
-            </div>
+            <span class="bx-install-brand-title"><?=$sTitle; ?></span>
             <?php if (!empty($aToolbarItem)): ?>
             <a class="bx-install-help" title="<?=$aToolbarItem['title']; ?>" href="<?=$aToolbarItem['link']; ?>" target="<?=$aToolbarItem['target']; ?>">
                 <?php echo _t('_sys_inst_help'); ?>
