@@ -207,6 +207,7 @@ class BxDolInstallSiteConfig
                 'def' => isset($_COOKIE['lang']) ? $_COOKIE['lang'] : (isset($_GET['lang']) ? $_GET['lang'] : 'en'),
                 'func' => 'rowSelect',
                 'vals' => $this->getSelectValues(BX_DOL_MODULE_TYPE_LANGUAGE),
+                'check' => array('checkSelectValue', 0),
             ),
 
             BX_DOL_MODULE_TYPE_TEMPLATE => array(
@@ -215,6 +216,7 @@ class BxDolInstallSiteConfig
                 'def' => 'artificer',
                 'func' => 'rowSelect',
                 'vals' => $this->getSelectValues(BX_DOL_MODULE_TYPE_TEMPLATE),
+                'check' => array('checkSelectValue', 0),
             ),
 
             BX_DOL_MODULE_TYPE_MODULE => array(
@@ -223,6 +225,7 @@ class BxDolInstallSiteConfig
                 'def' => 'persons',
                 'func' => 'rowSelect',
                 'vals' => $this->getSelectValues(BX_DOL_MODULE_TYPE_MODULE),
+                'check' => array('checkSelectValue', 0),
             ),
 
             'section_modules_close' => array(
@@ -405,7 +408,7 @@ EOF;
                 continue;
             $sErrorMessage = $this->processModuleByUri ($a[$sModuleType], array ('install', 'enable'), $sModuleType);
             if ($sErrorMessage)
-                return array(BX_INSTALL_ERR_GENERAL => $sErrorMessage);
+                return array(BX_INSTALL_ERR_GENERAL => $sErrorMessage, $sModuleType => true);
         }
 
         bx_import('BxDolAccount');
@@ -440,10 +443,23 @@ EOF;
         $oModulesTools = new BxDolInstallModulesTools();
 
         $aModules = $oModulesTools->getModules($sModuleType);
+        $aMatched = array();
         foreach ($aModules as $aConfig) {
-            if ($sModuleUri != $aConfig[$sField])
-                continue;
+            if ($sModuleUri == $aConfig[$sField])
+                $aMatched[] = $aConfig;
+        }
 
+        if (empty($aMatched) && 'title' != $sField) {
+            foreach ($aModules as $aConfig) {
+                if (isset($aConfig['title']) && $sModuleUri == $aConfig['title'])
+                    $aMatched[] = $aConfig;
+            }
+        }
+
+        if (empty($aMatched))
+            return _t('_sys_inst_msg_module_error', $sModuleUri, _t('_sys_inst_conf_error'));
+
+        foreach ($aMatched as $aConfig) {
             foreach ($aActions as $sAction) {
                 $aResult = BxDolStudioInstallerUtils::getInstance()->perform($aConfig['home_dir'], $sAction);
                 if ((!isset($aResult['code']) || $aResult['code']) && !empty($aResult['message']))
@@ -602,7 +618,16 @@ EOF;
     {
         if (empty($a['check']))
             return true;
-        return $this->{$a['check'][0]}($sValue, $a['check'][1]);
+        return $this->{$a['check'][0]}($sValue, $a['check'][1], $a);
+    }
+
+    protected function checkSelectValue ($s, $i, $a = array())
+    {
+        if (empty($a['vals']) || !is_array($a['vals']))
+            return false;
+        if (isset($a['vals'][$s]))
+            return true;
+        return in_array($s, $a['vals'], true);
     }
 
     protected function checkLength ($s, $i)
