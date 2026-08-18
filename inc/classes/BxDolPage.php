@@ -532,7 +532,7 @@ class BxDolPage extends BxDolFactory implements iBxDolFactoryObject, iBxDolRepla
                     } else {
                         $sSeoTitle = $oContentInfo->getContentTitle($sSeoParamValue);
                     }
-                    if (!$sSeoTitle)
+                    if (empty($sSeoTitle))
                         $sSeoTitle = base_convert((string)sprintf('%u', crc32($sSeoParamValue . BX_DOL_SECRET)), 10, 36);
                 }
                 elseif ('profile_id' == $sSeoParamName) {
