@@ -52,7 +52,7 @@ class BxDolInstallSiteConfig
 
             'site_url' => array(
                 'name' => _t('_sys_inst_conf_field_site_url'),
-                'ex' => 'http://www.mydomain.com/path/',
+                'ex' => 'https://example.com/',
                 'desc' => _t('_sys_inst_conf_desc_site_url'),
                 'def' => 'http://',
                 'def_exp' => array('defUrl', ''),
@@ -60,7 +60,7 @@ class BxDolInstallSiteConfig
             ),
             'root_dir' => array(
                 'name' => _t('_sys_inst_conf_field_root_dir'),
-                'ex' => '/home/mydomain/public_html/',
+                'ex' => '/var/www/html/',
                 'desc' => _t('_sys_inst_conf_desc_root_dir'),
                 'def_exp' => array('defPath', ''),
                 'check' => array('checkLength', 1),
@@ -87,7 +87,7 @@ class BxDolInstallSiteConfig
             ),
             'db_port' => array(
                 'name' => _t('_sys_inst_conf_field_db_port'),
-                'ex' => '5506',
+                'ex' => '3306',
                 'desc' => _t('_sys_inst_conf_desc_db_port'),
                 'db_conf' => 'port',
             ),
@@ -99,27 +99,27 @@ class BxDolInstallSiteConfig
             ),
             'db_name' => array(
                 'name' => _t('_sys_inst_conf_field_db_name'),
-                'ex' => 'mydomian_tri',
+                'ex' => 'una',
                 'desc' => _t('_sys_inst_conf_desc_db_name'),
                 'check' => array('checkLength', 1),
                 'db_conf' => 'name',
             ),
             'db_user' => array(
                 'name' => _t('_sys_inst_conf_field_db_user'),
-                'ex' => 'mydomian_tri',
+                'ex' => 'una',
                 'desc' => _t('_sys_inst_conf_desc_db_user'),
                 'check' => array('checkLength', 1),
                 'db_conf' => 'user',
             ),
             'db_password' => array(
                 'name' => _t('_sys_inst_conf_field_db_pwd'),
-                'ex' => 'Super*Secret#Word_1234',
                 'desc' => _t('_sys_inst_conf_desc_db_pwd'),
+                'input' => 'password',
                 'db_conf' => 'pwd',
             ),
             'db_engine' => array(
                 'name' => _t('_sys_inst_conf_field_db_engine'),
-                'ex' => 'INNODB',
+                'ex' => 'MYISAM',
                 'desc' => _t('_sys_inst_conf_desc_db_engine'),
                 'def' => 'MYISAM',
             ),
@@ -137,19 +137,19 @@ class BxDolInstallSiteConfig
 
             'site_title' => array(
                 'name' => _t('_sys_inst_conf_field_site_title'),
-                'ex' => 'The Best Community',
+                'ex' => 'My Community',
                 'desc' => _t('_sys_inst_conf_desc_site_title'),
                 'check' => array('checkLength', 1),
             ),
             'site_email' => array(
                 'name' => _t('_sys_inst_conf_field_site_email'),
-                'ex' => 'no-reply@youdomain.here',
+                'ex' => 'noreply@example.com',
                 'desc' => _t('_sys_inst_conf_desc_site_email'),
                 'check' => array('checkEmail', 3),
             ),
             'admin_email' => array(
                 'name' => _t('_sys_inst_conf_field_admin_email'),
-                'ex' => 'admin@email.here',
+                'ex' => 'admin@example.com',
                 'desc' => _t('_sys_inst_conf_desc_admin_email'),
                 'check' => array('checkEmail', 3),
             ),
@@ -161,8 +161,8 @@ class BxDolInstallSiteConfig
             ),
             'admin_password' => array(
                 'name' => _t('_sys_inst_conf_field_admin_pwd'),
-                'ex' => 'Super*Secret#Word_1234',
                 'desc' => _t('_sys_inst_conf_desc_admin_pwd'),
+                'input' => 'password',
                 'check' => array('checkLength', 1),
             ),
 
@@ -272,7 +272,7 @@ class BxDolInstallSiteConfig
         }
 
         $sRows = $this->getFormFields($aErrorFields, $aData);
-        $sSubmitTitle = _t('_Submit');
+        $sSubmitTitle = _t('_sys_inst_submit');
         return <<<EOF
             {$sErrorMessage}
             <form method="post">
@@ -524,7 +524,11 @@ EOF;
     {
         $sAutoMessage = '';
         $sValue = bx_html_attribute($this->def ($aData, $sKey, $a, $sAutoMessage));
-        $sInput = '<input type="text" name="' . $sKey. '" value="' . $sValue . '" class="bx-def-font-inputs bx-form-input-text" />';
+        $sType = (!empty($a['input']) && $a['input'] === 'password') ? 'password' : 'text';
+        $sPlaceholder = '';
+        if (!empty($a['ex']) && $sType !== 'password')
+            $sPlaceholder = ' placeholder="' . bx_html_attribute($a['ex']) . '"';
+        $sInput = '<input type="' . $sType . '" name="' . $sKey. '" value="' . $sValue . '"' . $sPlaceholder . ' class="bx-def-font-inputs bx-form-input-text" />';
         return $this->rowWrapper ($aData, $sInput, $sAutoMessage, 'text', $sKey, $a, $isError);
     }
 
@@ -541,15 +545,21 @@ EOF;
 
     protected function rowWrapper ($aData, $sInput, $sAutoMessage, $sType, $sKey, $a, $isError = false)
     {
-        $sDesc = _t('_sys_inst_conf_desc', $sAutoMessage, $a['desc'], isset($a['ex']) ? $a['ex'] : _t('_sys_inst_conf_no_example'));
+        if (!empty($a['ex']))
+            $sDesc = _t('_sys_inst_conf_desc', $sAutoMessage, $a['desc'], $a['ex']);
+        else
+            $sDesc = _t('_sys_inst_conf_desc_plain', $sAutoMessage, $a['desc']);
 
         $sError = '';
         if ($isError)
             $sError = '<div class="bx-form-warn">' . _t('_sys_inst_conf_error') . '</div>';
 
         $sRequired = '';
-        if (isset($a['check']) && $a['check'])
-            $sRequired = '<span class="bx-form-required">*</span>';
+        if (isset($a['check']) && $a['check']) {
+            $sCheck = is_array($a['check']) ? $a['check'][0] : $a['check'];
+            if ('checkLengthExactOrEmpty' !== $sCheck)
+                $sRequired = '<span class="bx-form-required">*</span>';
+        }
 
         return <<<EOF
             <div class="bx-form-element-wrapper bx-def-margin-top-auto">

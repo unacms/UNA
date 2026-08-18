@@ -679,3 +679,38 @@ span.bx-permissions-wrong,
     justify-content: center;
     gap: 4px;
 }
+
+/* Site config field help: readable size/contrast (overrides bx-def-font-small/grayed) */
+.bx-install-site-config .bx-form-info,
+.bx-install-card .bx-form-info {
+    margin-top: 6px;
+    font-size: 13px !important;
+    line-height: 1.45 !important;
+    color: #6b7280 !important;
+}
+
+/* Selects need a dropdown affordance — they otherwise match text inputs */
+.bx-install-site-config select,
+.bx-install-site-config .bx-form-input-select {
+    -webkit-appearance: none !important;
+    appearance: none !important;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat !important;
+    background-position: right 12px center !important;
+    background-size: 16px 16px !important;
+    padding-right: 36px !important;
+}
+
+/* Submit wrapper rule is more specific than .bx-btn-primary and was forcing an outline */
+.bx-install-site-config .bx-form-input-wrapper-submit button.bx-btn-primary,
+.bx-install-site-config .bx-form-input-wrapper-submit .bx-btn-primary {
+    background: var(--bx-inst-accent) !important;
+    border-color: var(--bx-inst-accent) !important;
+    color: #fff !important;
+}
+.bx-install-site-config .bx-form-input-wrapper-submit button.bx-btn-primary:hover,
+.bx-install-site-config .bx-form-input-wrapper-submit .bx-btn-primary:hover {
+    background: var(--bx-inst-accent-hover) !important;
+    border-color: var(--bx-inst-accent-hover) !important;
+    color: #fff !important;
+}
