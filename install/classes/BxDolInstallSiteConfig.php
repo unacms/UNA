@@ -481,7 +481,7 @@ EOF;
         $aMarkers['version'] = BX_DOL_VER;
         $aMarkers['time'] = time();
         $aMarkers['secret'] = genRndPwd(11);
-        $aMarkers['ffmpeg_path'] = $aMarkers['root_dir'] . 'plugins/ffmpeg/ffmpeg.exe';
+        $aMarkers['ffmpeg_path'] = BxDolIO::getFfmpegPath($aMarkers['root_dir']);
 
         $aJava = explode(' ', str_replace('java: ', '', trim(`whereis java`)));
         $aMarkers['java_path'] = isset($aJava[0]) && $aJava[0] && !is_dir($aJava[0]) ? $aJava[0] : '';

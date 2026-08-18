@@ -35,9 +35,48 @@ class BxDolIO extends BxDol
 		return $bResult;
     }
 
+    public static function getFfmpegPath($sRootDir = '')
+    {
+        if (defined('BX_SYSTEM_FFMPEG') && BX_SYSTEM_FFMPEG)
+            return BX_SYSTEM_FFMPEG;
+
+        $bWindows = strtoupper(substr(PHP_OS, 0, 3)) === 'WIN';
+        $sBundledRel = $bWindows ? 'plugins/ffmpeg/ffmpeg.exe' : 'plugins/ffmpeg/ffmpeg';
+
+        if ($sRootDir === '') {
+            if (defined('BX_INSTALL_DIR_ROOT'))
+                $sRootDir = BX_INSTALL_DIR_ROOT;
+            elseif (defined('BX_DIRECTORY_PATH_ROOT'))
+                $sRootDir = BX_DIRECTORY_PATH_ROOT;
+            else
+                $sRootDir = '';
+        }
+        $sRoot = $sRootDir === '' ? '' : rtrim($sRootDir, '/\\') . '/';
+
+        $sBundledAbs = $sRoot . $sBundledRel;
+        if ($sRoot !== '' && is_file($sBundledAbs) && is_executable($sBundledAbs))
+            return $sBundledAbs;
+
+        if (!$bWindows) {
+            foreach (array('/usr/bin/ffmpeg', '/usr/local/bin/ffmpeg', '/opt/homebrew/bin/ffmpeg') as $sCand) {
+                if (is_file($sCand) && is_executable($sCand))
+                    return $sCand;
+            }
+            $sWhich = trim((string)@shell_exec('command -v ffmpeg 2>/dev/null'));
+            if ($sWhich !== '' && $sWhich[0] === '/' && is_file($sWhich) && is_executable($sWhich))
+                return $sWhich;
+        }
+
+        return $sRoot !== '' ? $sRoot . $sBundledRel : $sBundledRel;
+    }
+
     public static function isExecutable($sFile)
     {
         clearstatcache();
+
+        $bAbsolute = (isset($sFile[0]) && $sFile[0] === '/') || (strlen($sFile) >= 2 && ctype_alpha($sFile[0]) && $sFile[1] === ':');
+        if ($bAbsolute)
+            return (is_file($sFile) && is_executable($sFile));
 
         $aPathInfo = pathinfo(__FILE__);
         $sFile = $aPathInfo['dirname'] . '/../../' . $sFile;

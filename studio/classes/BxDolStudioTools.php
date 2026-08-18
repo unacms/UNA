@@ -18,6 +18,7 @@ class BxDolStudioTools extends BxDolIO
 {
     protected $bInstallScript;
     protected $sRootPath;
+    protected $sFfmpegPath;
 
     public $aInstallPermissions;
     public $aPostInstallPermissions;
@@ -26,6 +27,11 @@ class BxDolStudioTools extends BxDolIO
     {
         parent::__construct();
 
+        $sFfmpegPath = self::getFfmpegPath();
+        if (defined('BX_DIRECTORY_PATH_ROOT') && BX_DIRECTORY_PATH_ROOT && strpos($sFfmpegPath, BX_DIRECTORY_PATH_ROOT) === 0)
+            $sFfmpegPath = bx_ltrim_str($sFfmpegPath, BX_DIRECTORY_PATH_ROOT);
+        $this->sFfmpegPath = $sFfmpegPath;
+
         $this->aInstallPermissions = array(
             'inc',
             'cache',
@@ -33,7 +39,7 @@ class BxDolStudioTools extends BxDolIO
             'logs',
             'tmp',
             'storage',
-            defined('BX_SYSTEM_FFMPEG') ? bx_ltrim_str(BX_SYSTEM_FFMPEG, BX_DIRECTORY_PATH_ROOT) : 'plugins/ffmpeg/ffmpeg.exe',
+            $sFfmpegPath,
         );
 
         // remove 'inc' folder if script is already installed
@@ -99,8 +105,11 @@ EOF;
             $isOk = BX_DOL_PERM_EXE == $sType ? $this->isExecutable($s) : $this->isWritable($s);
 
             $aMessages[$s] = array ('res' => $isOk ? BX_DOL_PERM_OK : BX_DOL_PERM_FAIL, 'type' => $sType);
-            if (!$isOk && $bRet)
-                $bRet = false;
+            if (!$isOk && $bRet) {
+                $bFfmpegInstallSkip = defined('BX_DOL_INSTALL') && BX_DOL_INSTALL && $s === $this->sFfmpegPath;
+                if (!$bFfmpegInstallSkip)
+                    $bRet = false;
+            }
         }
 
         if ($isShowModules && !$this->_checkPermissionsModules($aMessages) && $bRet)
@@ -249,8 +258,11 @@ EOF;
         $sType = BX_DOL_PERM_FILE;
         if (is_dir($this->sRootPath . $s))
             $sType = BX_DOL_PERM_DIR;
-        elseif (substr($s, -4) === '.exe')
-            $sType = BX_DOL_PERM_EXE;
+        else {
+            $sBase = basename($s);
+            if (substr($s, -4) === '.exe' || $sBase === 'ffmpeg' || strpos($sBase, 'ffmpeg') === 0)
+                $sType = BX_DOL_PERM_EXE;
+        }
         return $sType;
     }
 
