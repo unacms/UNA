@@ -33,6 +33,7 @@ class BxMassMailerConfig extends BxBaseModTextConfig
             'FIELD_FROM_NAME' => 'from_name',
             'FIELD_REPLY_TO' => 'reply_to',
             'FIELD_BODY' => 'body',
+            'FIELD_BODY_INFO' => 'body_info',
             'FIELD_EMAIL_LIST' => 'email_list',
             'FIELD_SEGMENTS' => 'segments',
             'FIELD_ADDED' => 'added',

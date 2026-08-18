@@ -334,6 +334,9 @@
     <string name="_bx_tasks_menu_title_view_entry"><![CDATA[Задание - Действия]]></string>
     <string name="_bx_tasks_menu_title_submenu"><![CDATA[Задания - Подменю]]></string>
     <string name="_bx_tasks_menu_set_title_submenu"><![CDATA[Задания - Подменю]]></string>
+    <string name="_bx_tasks_menu_item_title_system_submenu_use"><![CDATA[Подменю: Использование]]></string>
+    <string name="_bx_tasks_menu_item_title_system_submenu_browse"><![CDATA[Подменю: Просмотр задач в контекстах]]></string>
+    <string name="_bx_tasks_menu_item_title_system_submenu_manage"><![CDATA[Подменю: Управление задачами]]></string>
     <string name="_bx_tasks_menu_item_title_system_create_entry"><![CDATA[Задание]]></string>
     <string name="_bx_tasks_menu_item_title_create_entry"><![CDATA[Задание]]></string>
     <string name="_bx_tasks_menu_item_title_system_edit_entry"><![CDATA[Редактировать]]></string>

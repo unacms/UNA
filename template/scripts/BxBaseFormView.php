@@ -429,6 +429,11 @@ class BxBaseFormView extends BxDolForm
 
             $bType = isset($aInput['type']);
 
+            if ($bType && 'select' == $aInput['type']) {
+                if(($sK1 = 'value') && empty($aInput[$sK1]) && ($aValues = $aInput['values'] ?? false) && is_array($aValues))
+                    $aInput[$sK1] = reset($aValues)['key'] ?? key($aValues);
+            }
+
             if ($bType && 'files' == $aInput['type']) {
                 $oStorage = BxDolStorage::getObjectInstance($aInput['storage_object']);
                 $aInput['ext_allow'] = $oStorage->getObjectData()['ext_allow'];

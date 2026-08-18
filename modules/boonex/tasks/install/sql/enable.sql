@@ -237,6 +237,18 @@ INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `titl
 ('bx_tasks_view_actions', 'bx_tasks', 'more-auto', '_sys_menu_item_title_system_va_more_auto', '_sys_menu_item_title_va_more_auto', 'javascript:void(0)', '', '', 'ellipsis-v', '', '', 0, 2147483647, '', 1, 0, 9999);
 
 
+-- MENU: module sub-menu
+INSERT INTO `sys_objects_menu`(`object`, `title`, `set_name`, `module`, `template_id`, `deletable`, `active`, `override_class_name`, `override_class_file`) VALUES 
+('bx_tasks_submenu', '_bx_tasks_menu_title_submenu', 'bx_tasks_submenu', 'bx_tasks', 8, 0, 1, 'BxTasksMenuSubmenu', 'modules/boonex/tasks/classes/BxTasksMenuSubmenu.php');
+
+INSERT INTO `sys_menu_sets`(`set_name`, `module`, `title`, `deletable`) VALUES 
+('bx_tasks_submenu', 'bx_tasks', '_bx_tasks_menu_set_title_submenu', 0);
+
+INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `active`, `active_api`, `copyable`, `order`) VALUES 
+('bx_tasks_submenu', 'bx_tasks', 'use', '_bx_tasks_menu_item_title_system_submenu_use', '', '', '', '', '', 'bx_tasks_use_tools_submenu', 2147483646, 0, 1, 0, 1),
+('bx_tasks_submenu', 'bx_tasks', 'browse', '_bx_tasks_menu_item_title_system_submenu_browse', '', '', '', '', '', 'bx_tasks_browse', 2147483646, 0, 1, 0, 2),
+('bx_tasks_submenu', 'bx_tasks', 'manage', '_bx_tasks_menu_item_title_system_submenu_manage', '', '', '', '', '', 'bx_tasks_manage_tools_submenu', 2147483646, 0, 1, 0, 3);
+
 -- MENU: sub-menu for view entry
 INSERT INTO `sys_objects_menu`(`object`, `title`, `set_name`, `module`, `template_id`, `deletable`, `active`, `override_class_name`, `override_class_file`) VALUES 
 ('bx_tasks_view_submenu', '_bx_tasks_menu_title_view_entry_submenu', 'bx_tasks_view_submenu', 'bx_tasks', 8, 0, 1, 'BxTasksMenuView', 'modules/boonex/tasks/classes/BxTasksMenuView.php');

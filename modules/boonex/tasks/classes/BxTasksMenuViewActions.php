@@ -84,7 +84,7 @@ class BxTasksMenuViewActions extends BxBaseModTextMenuViewActions
                 ]
             ]);
 
-        return $aResult;
+        return true;
     }
 }
 

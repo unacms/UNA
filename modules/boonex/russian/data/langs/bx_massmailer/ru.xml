@@ -54,7 +54,7 @@
   <string name="_bx_massmailer_grid_action_title_adm_edit"><![CDATA[Редактировать]]></string>
   <string name="_bx_massmailer_grid_action_title_adm_copy"><![CDATA[Копировать]]></string>
   <string name="_bx_massmailer_grid_action_title_adm_delete"><![CDATA[Удалить]]></string>
-  <string name="_bx_massmailer_grid_action_title_adm_view"><![CDATA[Отчет]]></string>
+  <string name="_bx_massmailer_grid_action_title_adm_view"><![CDATA[Смотреть]]></string>
   <string name="_bx_massmailer_grid_action_title_adm_send_test"><![CDATA[Отправить тест]]></string>
   <string name="_bx_massmailer_grid_action_title_adm_send_all"><![CDATA[Отправить всем]]></string>
   <string name="_bx_massmailer_grid_action_title_adm_add"><![CDATA[Добавить новую кампанию]]></string>
@@ -105,6 +105,7 @@
   <string name="_bx_massmailer_form_campaign_input_reply_to_err"><![CDATA[Rmail имеет неправильный формат]]></string>
   <string name="_bx_massmailer_form_campaign_input_from_name_info_value"><![CDATA[Письмо будет отправлено {0} адресатам.]]></string>
   <string name="_bx_massmailer_form_campaign_input_sys_campaign_info"><![CDATA[Информация о кампании]]></string>
+  <string name="_bx_massmailer_form_campaign_input_campaign_info"><![CDATA[Информация]]></string>
   <string name="_bx_massmailer_form_campaign_input_sys_receive_news"><![CDATA[Получать письма]]></string>
   <string name="_bx_massmailer_form_campaign_input_receive_news"><![CDATA[Получать письма]]></string>
   <string name="_bx_massmailer_form_campaign_input_sys_code"><![CDATA[Код]]></string>
