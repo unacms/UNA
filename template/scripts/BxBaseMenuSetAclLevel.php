@@ -47,9 +47,7 @@ class BxBaseMenuSetAclLevel extends BxTemplMenu
     	$this->mixedProfileId = $mixedProfileId;
 
         if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest' && ($mixedProfileId = bx_get('profile_id', 'post')) && ($iAclLevelId = bx_get('level_id', 'post'))) {
-            $mixedProfileId = urldecode($mixedProfileId);
-            if(!is_numeric($mixedProfileId))
-                $mixedProfileId = json_decode($mixedProfileId, true);
+            $mixedProfileId = BxDolServiceCallCodec::decodeAclProfileId($mixedProfileId);
 
             echoJson($this->setMembership($mixedProfileId, $iAclLevelId, bx_get('duration', 'post') !== false ? (int)bx_get('duration', 'post') : 0, (int)bx_get('card', 'post') > 0));
             exit;

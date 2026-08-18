@@ -121,7 +121,9 @@ class BxDolAlerts extends BxDol
                     $oHandler = new $aHandler['class']();
                     $oHandler->response($this);
                 } else if(!empty($aHandler['service_call']) && BxDolService::isSerializedService($aHandler['service_call'])) {
-                    $aService = unserialize($aHandler['service_call']);
+                    $aService = BxDolService::decodeServiceCall($aHandler['service_call']);
+                    if (false === $aService)
+                        continue;
 
                     $aParams = array($this);
                     if(isset($aService['params']) && is_array($aService['params']))
