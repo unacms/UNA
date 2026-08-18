@@ -11,7 +11,6 @@
 
 require_once(BX_DIRECTORY_PATH_MODULES . 'boonex/cidaas_connect/vendor/autoload.php');
 
-use Cidaas\OAuth2\Client\Provider\Cidaas;
 use Cidaas\OAuth2\Client\Provider\GrantType;
 use GuzzleHttp\Exception\ClientException;
 
@@ -42,7 +41,7 @@ class BxCidaasConModule extends BxBaseModConnectModule
             $this->_redirect($this->_oConfig->sDefaultRedirectUrl);
         }
 
-        if (!$this->_oConfig->sBaseUrl || !$this->_oConfig->sClientID || !$this->_oConfig->sSecret) {
+        if (!$this->_oConfig->sBaseUrl || !$this->_oConfig->sClientID || (!$this->_oConfig->bPkce && !$this->_oConfig->sSecret)) {
             require_once(BX_DIRECTORY_PATH_INC . 'design.inc.php');
             bx_import('BxDolLanguages');
             $sCode = MsgBox(_t('_bx_cidaascon_profile_error_api_keys'));
@@ -201,14 +200,15 @@ class BxCidaasConModule extends BxBaseModConnectModule
     }
 
     /**
-     * @return Cidaas
+     * @return BxCidaasConProvider
      */
     protected function _getProvider()
     {
-        return new Cidaas(
+        bx_import('Provider', $this->_aModule);
+        return new BxCidaasConProvider(
             $this->_oConfig->sBaseUrl,
             $this->_oConfig->sClientID,
-            $this->_oConfig->sSecret,
+            $this->_oConfig->sSecret ? $this->_oConfig->sSecret : '',
             $this->_oConfig->sPageHandle,
             null,
             $this->_oConfig->bDebug
