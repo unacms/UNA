@@ -11,35 +11,43 @@
 
 class BxCidaasConConfig extends BxBaseModConnectConfig
 {
-    public $sTenantID = 'common';
+    public $sBaseUrl;
     public $sClientID;
     public $sSecret;
-
-    public $sAuthMethod = 'secret'; // certificate isn't supported yet
-    public $sScope = 'User.Read';// 'openid%20offline_access%20profile%20user.read';
-    public $sLogoutUrl = 'https://login.microsoftonline.com/common/wsfederation?wa=wsignout1.0';
+    public $sScope = 'openid profile email offline_access';
+    public $bPkce = false;
+    public $bDebug = false;
 
     public $sPageStart;
     public $sPageHandle;
+
+    public $sSessionCodeVerifier;
 
     function __construct($aModule)
     {
         parent::__construct($aModule);
 
-        $this -> sTenantID = getParam('bx_cidaascon_tenant_id');
-        $this -> sClientID = getParam('bx_cidaascon_client_id');
-        $this -> sSecret = getParam('bx_cidaascon_secret');
+        $this->sBaseUrl = rtrim(getParam('bx_cidaascon_base_url'), '/');
+        $this->sClientID = getParam('bx_cidaascon_client_id');
+        $this->sSecret = getParam('bx_cidaascon_secret');
+        $this->sScope = getParam('bx_cidaascon_scope') ? getParam('bx_cidaascon_scope') : $this->sScope;
+        $this->bPkce = (bool)getParam('bx_cidaascon_pkce');
+        $this->bDebug = (bool)getParam('bx_cidaascon_debug');
 
-        $this -> sEmailTemplatePasswordGenerated = 'bx_cidaascon_password_generated';
-        $this -> sDefaultTitleLangKey = '_bx_cidaascon';
+        $this->sSessionUid = 'cidaascon_session';
+        $this->sSessionProfile = 'cidaascon_session_profile';
+        $this->sSessionCodeVerifier = 'cidaascon_code_verifier';
 
-        $this -> sRedirectPage = getParam('bx_cidaascon_redirect_page');
-        $this -> sProfilesModule = getParam('bx_cidaascon_module');
-        $this -> isAlwaysConfirmEmail = (bool)getParam('bx_cidaascon_confirm_email'); 
-        $this -> isAlwaysAutoApprove = (bool)getParam('bx_cidaascon_approve');
+        $this->sEmailTemplatePasswordGenerated = 'bx_cidaascon_password_generated';
+        $this->sDefaultTitleLangKey = '_bx_cidaascon';
 
-        $this -> sPageStart = BX_DOL_URL_ROOT . $this -> getBaseUri() . 'start';
-        $this -> sPageHandle = BX_DOL_URL_ROOT . $this -> getBaseUri() . 'handle';
+        $this->sRedirectPage = getParam('bx_cidaascon_redirect_page');
+        $this->sProfilesModule = getParam('bx_cidaascon_module');
+        $this->isAlwaysConfirmEmail = (bool)getParam('bx_cidaascon_confirm_email');
+        $this->isAlwaysAutoApprove = (bool)getParam('bx_cidaascon_approve');
+
+        $this->sPageStart = BX_DOL_URL_ROOT . $this->getBaseUri() . 'start';
+        $this->sPageHandle = BX_DOL_URL_ROOT . $this->getBaseUri() . 'handle';
     }
 }
 

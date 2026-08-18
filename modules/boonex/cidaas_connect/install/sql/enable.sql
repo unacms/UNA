@@ -7,7 +7,7 @@ INSERT INTO `sys_email_templates` (`Module`, `NameSystem`, `Name`, `Subject`, `B
 -- Auth objects
 
 INSERT INTO `sys_objects_auths` (`Name`, `Title`, `Link`, `Icon`, `Style`) VALUES
-('bx_cidaascon', '_bx_cidaascon_auth_title', 'modules/?r=cidaascon/start', 'fab microsoft', 'a:1:{s:7:".bx-btn";a:1:{s:10:"background";s:18:"#0078d4 !important";}}');
+('bx_cidaascon', '_bx_cidaascon_auth_title', 'modules/?r=cidaascon/start', 'fas fingerprint', 'a:1:{s:7:".bx-btn";a:1:{s:10:"background";s:18:"#00a0b0 !important";}}');
 
 -- Alerts
 
@@ -35,10 +35,11 @@ INSERT INTO `sys_options` (`name`, `value`, `category_id`, `caption`, `type`, `c
 ('bx_cidaascon_base_url', '', @iCategId, '_bx_cidaascon_option_base_url', 'digit', '', '', 20, ''),
 ('bx_cidaascon_client_id', '', @iCategId, '_bx_cidaascon_option_client_id', 'digit', '', '', 22, ''),
 ('bx_cidaascon_secret', '', @iCategId, '_bx_cidaascon_option_secret', 'secret', '', '', 24, ''),
+('bx_cidaascon_scope', 'openid profile email offline_access', @iCategId, '_bx_cidaascon_option_scope', 'digit', '', '', 26, ''),
+('bx_cidaascon_pkce', '', @iCategId, '_bx_cidaascon_option_pkce', 'checkbox', '', '', 28, ''),
 ('bx_cidaascon_redirect_page', 'index', @iCategId, '_sys_connect_option_redirect', 'select', '', '', 40, 'join,settings,dashboard,index'),
 ('bx_cidaascon_module', 'bx_persons', @iCategId, '_sys_connect_option_module', 'select', '', '', 50, 'a:2:{s:6:"module";s:12:"bx_cidaascon";s:6:"method";s:20:"get_profiles_modules";}'),
 ('bx_cidaascon_privacy', '3', @iCategId, '_sys_connect_option_privacy', 'select', '', '', 54, 'a:2:{s:6:"module";s:12:"bx_cidaascon";s:6:"method";s:18:"get_privacy_groups";}'),
 ('bx_cidaascon_confirm_email', 'on', @iCategId, '_sys_connect_option_confirm_email', 'checkbox', '', '', 70, ''),
 ('bx_cidaascon_approve', '', @iCategId, '_sys_connect_option_approve', 'checkbox', '', '', 80, ''),
 ('bx_cidaascon_debug', '', @iCategId, '_bx_cidaascon_option_debug', 'checkbox', '', '', 90, '');
-
