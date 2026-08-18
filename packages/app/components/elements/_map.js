@@ -29,6 +29,7 @@ import Menu from './menu';
 import Deploy from './deploy';
 import Calendar from './calendar';
 import Grid from './grid';
+import DataTable from './table';
 import Pricing from './pricing';
 import Chart from './chart';
 import MultiPostForm from './multi-post-form';
@@ -81,6 +82,7 @@ export const componentsMapDefault = {
     browse_simple: BrowseSimple,
     browse_list: BrowseList,
     grid: Grid,
+    table: DataTable,
     pricing: Pricing,
     invite: Invite,
     map: Map,

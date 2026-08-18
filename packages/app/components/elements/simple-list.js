@@ -1,7 +1,13 @@
 import { View, Row } from 'app/design/view';
 import { Text } from 'app/design/typography';
 import Time from 'app/ui/atoms/time';
+import Html from 'app/ui/atoms/html';
 import { BlockWrapper } from 'app/components/block-wrapper'
+import { looksLikeHtml, stripTags } from 'app/lib/util';
+
+function normalize(s) {
+    return stripTags(s)?.trim() || '';
+}
 
 export default function ElementSimpleList({ data, blockWrapperProps }) {
     const keys = Object.keys(data[0]);
@@ -10,9 +16,15 @@ export default function ElementSimpleList({ data, blockWrapperProps }) {
         if (Number.isInteger(data) && data > 1000000000) {
             return <Time className='text-card-foreground' ts={data} format="datetime"></Time>
         }
-        else {
-            return <Text className='text-card-foreground'>{data}</Text>
+
+        const isHtml = looksLikeHtml(data);
+        const text = isHtml ? String(data ?? '') : normalize(data);
+
+        if (isHtml) {
+            return <Html data={text} />;
         }
+
+        return <Text className='text-card-foreground'>{text}</Text>
     }
 
     const renderItem = (item, index, view) => {
