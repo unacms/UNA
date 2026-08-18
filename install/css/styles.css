@@ -110,6 +110,27 @@ body.bx-install-body,
     padding: 20px;
     font-size: 12px;
     color: var(--bx-inst-muted);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 0 4px;
+}
+.bx-install-footer a {
+    color: var(--bx-inst-muted);
+    text-decoration: none;
+}
+.bx-install-footer a:hover {
+    color: var(--bx-inst-text);
+    text-decoration: underline;
+}
+.bx-install-footer-sep {
+    display: inline-block;
+    width: 1px;
+    height: 12px;
+    margin: 0 10px;
+    background: var(--bx-inst-border);
+    vertical-align: middle;
 }
 
 /* Kill the old teal header if any leftover classes still render */
@@ -149,9 +170,12 @@ button.bx-btn,
     gap: 6px;
     float: none !important;
     margin: 0 8px 8px 0 !important;
-    padding: 10px 16px !important;
-    min-height: 40px;
-    border-radius: 8px !important;
+    padding: 0 20px !important;
+    height: 48px !important;
+    min-height: 48px !important;
+    max-height: 48px !important;
+    box-sizing: border-box !important;
+    border-radius: 12px !important;
     border: 1px solid var(--bx-inst-border) !important;
     background: var(--bx-inst-surface) !important;
     color: var(--bx-inst-text) !important;
@@ -305,26 +329,49 @@ a.bx-btn-disabled,
     text-align: left !important;
 }
 
+.bx-install-chip,
 .bx-permissions-ok,
-.bx-permissions-wrong {
-    display: inline-flex;
+.bx-permissions-wrong,
+.bx-install-audit b.ok,
+.bx-install-audit b.fail,
+.bx-install-audit b.warn,
+.bx-install-audit b.undef {
+    display: inline-flex !important;
     align-items: center;
-    gap: 6px;
-    padding: 4px 10px;
-    border-radius: 999px;
-    font-size: 12px !important;
-    font-weight: 600 !important;
-    line-height: 1.3;
+    justify-content: center;
+    gap: 0;
+    padding: 2px 8px !important;
+    border-radius: 999px !important;
+    font-size: 11px !important;
+    font-weight: 500 !important;
+    line-height: 16px !important;
+    font-style: normal !important;
+    white-space: nowrap;
 }
 
-.bx-permissions-ok {
+.bx-permissions-ok,
+.bx-install-chip-ok,
+.bx-install-audit b.ok {
     color: var(--bx-inst-ok) !important;
     background: var(--bx-inst-ok-bg) !important;
 }
 
-.bx-permissions-wrong {
+.bx-permissions-wrong,
+.bx-install-chip-bad,
+.bx-install-audit b.fail {
     color: var(--bx-inst-bad) !important;
     background: var(--bx-inst-bad-bg) !important;
+}
+
+.bx-install-chip-warn,
+.bx-install-audit b.warn {
+    color: var(--bx-inst-warn) !important;
+    background: var(--bx-inst-warn-bg) !important;
+}
+
+.bx-install-audit b.undef {
+    color: var(--bx-inst-muted) !important;
+    background: #f3f4f6 !important;
 }
 
 .bx-install-permissions-buttons {
@@ -415,20 +462,77 @@ a.bx-btn-disabled,
     margin-bottom: 16px;
 }
 
-/* Audit output */
+/* Audit report card */
 .bx-install-audit {
     font-size: 13px;
+}
+.bx-install-audit-summary {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0 0 20px;
+}
+.bx-install-audit-body {
     overflow-x: auto;
 }
-.bx-install-audit table {
+.bx-install-audit-body > h1 {
+    font-family: var(--bx-inst-font) !important;
+    font-size: 13px !important;
+    font-weight: 650 !important;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--bx-inst-muted) !important;
+    margin: 22px 0 10px !important;
+}
+.bx-install-audit-body > h1:first-child {
+    margin-top: 0 !important;
+}
+.bx-install-audit-body .bx-audit-section-head {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: none;
+    color: var(--bx-inst-text);
+    margin: 16px 0 8px;
+}
+.bx-install-audit-body .bx-audit-section-head b {
+    display: inline;
+    font-weight: 600;
+}
+.bx-install-audit-body ul {
+    list-style: none;
+    margin: 0 0 8px;
+    padding: 0;
+    border: 1px solid var(--bx-inst-border);
+    border-radius: 10px;
+    overflow: hidden;
+    background: #fff;
+}
+.bx-install-audit-body li {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--bx-inst-border);
+    line-height: 1.45;
+    color: #374151;
+}
+.bx-install-audit-body li:last-child {
+    border-bottom: none;
+}
+.bx-install-audit-body li b.ok,
+.bx-install-audit-body li b.fail,
+.bx-install-audit-body li b.warn,
+.bx-install-audit-body li b.undef {
+    float: right;
+    margin-left: 8px;
+}
+.bx-install-audit-body table {
     width: 100%;
     border-collapse: collapse;
     border: 1px solid var(--bx-inst-border);
     border-radius: 10px;
     overflow: hidden;
 }
-.bx-install-audit td,
-.bx-install-audit th {
+.bx-install-audit-body td,
+.bx-install-audit-body th {
     padding: 8px 10px;
     border-bottom: 1px solid var(--bx-inst-border);
     text-align: left;

@@ -464,7 +464,7 @@
 	<string name="_adm_admtools_Executable"><![CDATA[Executable]]></string>
 	<string name="_adm_admtools_Non_Executable"><![CDATA[Not executable]]></string>
 	<string name="_adm_admtools_Non_Writable"><![CDATA[Not writable]]></string>
-	<string name="_adm_admtools_Not_Exists"><![CDATA[Not exists]]></string>
+	<string name="_adm_admtools_Not_Exists"><![CDATA[Missing]]></string>
 	<string name="_adm_admtools_Path"><![CDATA[Path]]></string>
 	<string name="_adm_admtools_Permissions"><![CDATA[Permissions]]></string>
 	<string name="_adm_admtools_Writable"><![CDATA[Writable]]></string>
@@ -2625,13 +2625,12 @@
 	<string name="_sys_audit_msg_optimization_warn"><![CDATA[installing PHP accelerator will speed-up file cache]]></string>
 	<string name="_sys_audit_msg_x_based_cache_engine"><![CDATA[ ({0} based cache engine)]]></string>
 	<string name="_sys_audit_msg_ffmpeg"><![CDATA[<pre class="code">{0}</pre>if you don't know if output is correct then <a href="#manual_audit">manual server audit</a> may be required.]]></string>
-	<string name="_sys_audit_msg_hardware_requirements"><![CDATA[Hardware requirements can not be determined automatically - <a href="#manual_audit">manual server audit</a> may be required.]]></string>
+	<string name="_sys_audit_msg_hardware_requirements"><![CDATA[Hardware cannot be checked automatically. A <a href="#manual_audit">manual server audit</a> may be needed.]]></string>
 	<string name="_sys_audit_msg_mail_send_failed"><![CDATA[mail send failed]]></string>
 	<string name="_sys_audit_msg_mail_sending"><![CDATA[<span id="bx-sys-adm-audit-test-email"><a href="javascript:void(0);" onclick="bx_sys_adm_audit_test_email()">click here</a> to send test email</span>]]></string>
 	<string name="_sys_audit_msg_mail_sent"><![CDATA[test mail was send, please check {0} mailbox]]></string>
 	<string name="_sys_audit_msg_manual_audit"><![CDATA[<p>
-Some things can not be determined automatically, manual server audit is required to check it. 
-If you don't know how to do it by yourself you can submit <a target="_blank" href="mailto:team@unacms.com?subject=Server Audit Request">Server Audit Request</a>.
+Some checks have to be done by hand. If you want help, <a target="_blank" href="mailto:team@unacms.com?subject=Server Audit Request">submit a server audit request</a>.
 </p>]]></string>
 	<string name="_sys_audit_msg_must_be"><![CDATA[must be {0} {1}]]></string>
 	<string name="_sys_audit_msg_optimization_apache_module"><![CDATA[To apply this optimization you need to have <b>{0}</b> - {1}]]></string>
@@ -2639,12 +2638,12 @@ If you don't know how to do it by yourself you can submit <a target="_blank" hre
 	<string name="_sys_audit_msg_php_accelerator_missing"><![CDATA[The script can be much faster if you install some PHP accelerator]]></string>
 	<string name="_sys_audit_msg_php_setup_inefficient"><![CDATA[your PHP setup maybe very inefficient, <a href="javascript:void(0)" onclick="bx_sys_adm_audit_phpinfo()">please check it for sure</a> and try to switch to mod_php, apache dso module or FastCGI]]></string>
 	<string name="_sys_audit_msg_serverside_compression"><![CDATA[
-can be checked <a href="#manual_audit">manually</a> or in "Page Speed" tool build-in into browser.<br />
-If it is not enabled then please consider implement this optimization, since it improve perceived site speed and save the bandwidth.<br />{0}]]></string>
+can be checked <a href="#manual_audit">manually</a> or in the PageSpeed tool built into the browser.<br />
+If it is not enabled then please consider implementing this optimization, since it improves perceived site speed and saves bandwidth.<br />{0}]]></string>
 	<string name="_sys_audit_msg_should_be"><![CDATA[should be {0} {1}]]></string>
 	<string name="_sys_audit_msg_userside_caching"><![CDATA[
-<a href="{0}">click here to check it in Google Page Speed</a><br />
-If it is not enabled then please consider implement this optimization, since it improve perceived site speed and save the bandwidth.<br />{1}]]></string>
+<a href="{0}">click here to check it in Google PageSpeed</a><br />
+If it is not enabled then please consider implementing this optimization, since it improves perceived site speed and saves bandwidth.<br />{1}]]></string>
 	<string name="_sys_audit_msg_value_checking_failed"><![CDATA[value checking failed]]></string>
 	<string name="_sys_audit_msg_version_is_incompatible"><![CDATA[your version is incompatible with UNA, must be at least {0}]]></string>
 	<string name="_sys_audit_msg_version_is_outdated"><![CDATA[your version is outdated, upgrade to the latest {0} maybe required]]></string>
@@ -2655,10 +2654,10 @@ If it is not enabled then please consider implement this optimization, since it 
 	<string name="_sys_audit_section_os"><![CDATA[OS]]></string>
 	<string name="_sys_audit_section_webserver"><![CDATA[Web-server]]></string>
 	<string name="_sys_audit_serverside_compression"><![CDATA[Server-side content compression]]></string>
-	<string name="_sys_audit_title_fail"><![CDATA[FAIL]]></string>
-	<string name="_sys_audit_title_ok"><![CDATA[OK]]></string>
-	<string name="_sys_audit_title_undef"><![CDATA[UNDEFINED]]></string>
-	<string name="_sys_audit_title_warn"><![CDATA[WARNING]]></string>
+	<string name="_sys_audit_title_fail"><![CDATA[Fail]]></string>
+	<string name="_sys_audit_title_ok"><![CDATA[Pass]]></string>
+	<string name="_sys_audit_title_undef"><![CDATA[Unknown]]></string>
+	<string name="_sys_audit_title_warn"><![CDATA[Warning]]></string>
 	<string name="_sys_audit_userside_caching"><![CDATA[User-side caching for static content]]></string>
 	<string name="_sys_audit_version"><![CDATA[version]]></string>
 	<string name="_sys_audit_version_script"><![CDATA[UNA version]]></string>
@@ -3275,6 +3274,10 @@ If it is not enabled then please consider implement this optimization, since it 
   <string name="_sys_grid_search"><![CDATA[Search...]]></string>
   <string name="_sys_grid_total_count"><![CDATA[Сount: {0}]]></string>
   <string name="_sys_grid_txt_account_manager"><![CDATA[Redirect to manage account.]]></string>
+	<string name="_sys_inst_audit_failed"><![CDATA[{0} failed]]></string>
+	<string name="_sys_inst_audit_lead"><![CDATA[A check of PHP, extensions, and paths on this host.]]></string>
+	<string name="_sys_inst_audit_passed"><![CDATA[{0} passed]]></string>
+	<string name="_sys_inst_audit_warnings"><![CDATA[{0} warnings]]></string>
 	<string name="_sys_inst_conf_desc"><![CDATA[{0}{1}<br />Example: {2}]]></string>
 	<string name="_sys_inst_conf_desc_admin_email"><![CDATA[Admin user e-mail address.]]></string>
 	<string name="_sys_inst_conf_desc_admin_pwd"><![CDATA[Admin user password here.]]></string>
@@ -3316,9 +3319,9 @@ If it is not enabled then please consider implement this optimization, since it 
 	<string name="_sys_inst_conf_field_site_title"><![CDATA[Site title]]></string>
 	<string name="_sys_inst_conf_field_site_url"><![CDATA[Site URL]]></string>
 	<string name="_sys_inst_conf_field_template"><![CDATA[Template]]></string>
-	<string name="_sys_inst_conf_found"><![CDATA[<span style="color:green">Found</span>]]></string>
+	<string name="_sys_inst_conf_found"><![CDATA[<span class="bx-install-chip bx-install-chip-ok">Found</span>]]></string>
 	<string name="_sys_inst_conf_no_example"><![CDATA[no example]]></string>
-	<string name="_sys_inst_conf_not_found"><![CDATA[<span style="color:red">Not found</span>]]></string>
+	<string name="_sys_inst_conf_not_found"><![CDATA[<span class="bx-install-chip bx-install-chip-bad">Not found</span>]]></string>
 	<string name="_sys_inst_conf_section_db_config"><![CDATA[DB config]]></string>
 	<string name="_sys_inst_conf_section_link_with_market"><![CDATA[Link with UNA market]]></string>
 	<string name="_sys_inst_conf_section_modules"><![CDATA[Modules]]></string>
@@ -3326,12 +3329,15 @@ If it is not enabled then please consider implement this optimization, since it 
 	<string name="_sys_inst_conf_section_site_info"><![CDATA[Site info]]></string>
 	<string name="_sys_inst_continue"><![CDATA[Continue]]></string>
 	<string name="_sys_inst_finish"><![CDATA[Installation has been successfully completed]]></string>
+	<string name="_sys_inst_footer_contact"><![CDATA[Contact UNA Team]]></string>
+	<string name="_sys_inst_footer_docs"><![CDATA[Documentation]]></string>
+	<string name="_sys_inst_footer_product"><![CDATA[UNA Community Management System]]></string>
 	<string name="_sys_inst_help"><![CDATA[Help]]></string>
 	<string name="_sys_inst_help_finish"><![CDATA[Help with cron jobs]]></string>
 	<string name="_sys_inst_help_permissions"><![CDATA[Setting permissions help]]></string>
 	<string name="_sys_inst_help_site_config"><![CDATA[Creating database help]]></string>
-	<string name="_sys_inst_hosting_fails"><![CDATA[Your hosting doesn't meet minimal requirements:]]></string>
-	<string name="_sys_inst_hosting_warnings"><![CDATA[Your hosting setup has some warnings, for the complete report go to <a href="?action=audit">server audit page</a>.]]></string>
+	<string name="_sys_inst_hosting_fails"><![CDATA[This host does not meet the minimum requirements:]]></string>
+	<string name="_sys_inst_hosting_warnings"><![CDATA[This host has a few warnings. See the full report on the <a href="?action=audit">server audit page</a>.]]></string>
 	<string name="_sys_inst_msg_admin_account_not_found"><![CDATA[Admin account wasn't found by email - {0}]]></string>
 	<string name="_sys_inst_msg_db_err_connect"><![CDATA[Database connect failed]]></string>
 	<string name="_sys_inst_msg_db_err_select"><![CDATA[Database select failed]]></string>
@@ -3343,8 +3349,8 @@ If it is not enabled then please consider implement this optimization, since it 
 	<string name="_sys_inst_msg_finish_goto_studio"><![CDATA[<a href="{0}studio/">Go to Studio</a> to add additional modules and customize the site.]]></string>
 	<string name="_sys_inst_msg_form_error"><![CDATA[Please fix form errors.]]></string>
 	<string name="_sys_inst_msg_module_error"><![CDATA[{0} - {1}]]></string>
-	<string name="_sys_inst_msg_permissions_lead"><![CDATA[Check that required paths are writable (or executable) before continuing.]]></string>
-	<string name="_sys_inst_msg_permissions_wrong"><![CDATA[Some files or folders rights aren't correct, please set necessary permissions then click "Continue".]]></string>
+	<string name="_sys_inst_msg_permissions_lead"><![CDATA[These paths need to be writable, or executable, before you continue.]]></string>
+	<string name="_sys_inst_msg_permissions_wrong"><![CDATA[Some paths need attention. Fix them, then continue.]]></string>
 	<string name="_sys_inst_msg_remove_install"><![CDATA[Please, remove INSTALL directory from your server and reload this page to activate your site.<br />After deletion you can safely go <a href="../studio/">to the site Studio</a> to add additional modules and customize the site.]]></string>
 	<string name="_sys_inst_msg_script_isnt_installed"><![CDATA[Script isn't installed]]></string>
 	<string name="_sys_inst_refresh"><![CDATA[Refresh]]></string>

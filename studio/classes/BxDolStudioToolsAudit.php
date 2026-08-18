@@ -209,9 +209,20 @@ class BxDolStudioToolsAudit extends BxDol
 
         $this->$sFunc(false, $aMessages);
 
-        foreach ($aMessages as $sName => $r)
-            if ($sType == $r['type'])
-                $aRet[] = "$sName = " . $this->format_output($r['params']['real_val'], isset($this->aPhpSettings[$sName]) ? $this->aPhpSettings[$sName] : '') . " - " . $this->getMsgHTML($sName, $r);        
+        foreach ($aMessages as $sName => $r) {
+            if ($sType != $r['type'])
+                continue;
+
+            $aSetting = isset($this->aPhpSettings[$sName]) ? $this->aPhpSettings[$sName] : array();
+            $sLabel = (!empty($aSetting['op']) && $aSetting['op'] === 'module') ? $aSetting['val'] : $sName;
+            $sValue = (!empty($aSetting['op']) && $aSetting['op'] === 'module') ? '' : $this->format_output($r['params']['real_val'], $aSetting);
+            $s = $sLabel;
+            if ($sValue !== '' && $sValue !== null)
+                $s .= ' = ' . $sValue;
+            if ($s !== '')
+                $s .= ' ';
+            $aRet[] = trim($s . $this->getMsgHTML($sName, $r));
+        }
 
         $this->restoreErrorReporting();
 
@@ -273,7 +284,10 @@ class BxDolStudioToolsAudit extends BxDol
         if ($bEcho) {
             $s = '';
             foreach ($aMessages as $sName => $r) {
-                $s .= $this->getBlock($sName, $this->format_output($r['params']['real_val'], isset($this->aPhpSettings[$sName]) ? $this->aPhpSettings[$sName] : ''), $this->getMsgHTML($sName, $r));
+                $aSetting = isset($this->aPhpSettings[$sName]) ? $this->aPhpSettings[$sName] : array();
+                $sLabel = (!empty($aSetting['op']) && $aSetting['op'] === 'module') ? $aSetting['val'] : $sName;
+                $sValue = (!empty($aSetting['op']) && $aSetting['op'] === 'module') ? '' : $this->format_output($r['params']['real_val'], $aSetting);
+                $s .= $this->getBlock($sLabel, $sValue, $this->getMsgHTML($sName, $r));
             }
             echo $this->getSection('PHP', '', $s);
         }
@@ -662,7 +676,12 @@ class BxDolStudioToolsAudit extends BxDol
 
     protected function getSection($sTitle, $sTitleAddon, $sContent)
     {
-        $s = '<b>' . $sTitle . '</b>: ' . $sTitleAddon;
+        $s = '<div class="bx-audit-section-head">';
+        if ($sTitle !== '')
+            $s .= '<b>' . $sTitle . '</b>';
+        if ($sTitleAddon !== '')
+            $s .= ($sTitle !== '' ? ': ' : '') . $sTitleAddon;
+        $s .= '</div>';
         $s .= '<ul>';
         $s .= $sContent;
         $s .= '</ul>';
@@ -673,11 +692,14 @@ class BxDolStudioToolsAudit extends BxDol
     {
         $s = $bWrapAsListItem ? '<li>'  : '';
         if ($sName !== '')
-            $s .= "$sName ";
+            $s .= $sName;
         if ($sValue !== '')
-            $s .= " = $sValue ";
-        if ($sMsg)
-                $s .= ($s ? " - " : '') . $sMsg;
+            $s .= ' = ' . $sValue;
+        if ($sMsg) {
+            if ($sName !== '' || $sValue !== '')
+                $s .= ' ';
+            $s .= $sMsg;
+        }
         return $s . ($bWrapAsListItem ? '</li>' : '') . "\n";
     }
 

@@ -462,7 +462,7 @@
 	<string name="_adm_admtools_Executable"><![CDATA[Исполняемый]]></string>
 	<string name="_adm_admtools_Non_Executable"><![CDATA[Неисполняемый]]></string>
 	<string name="_adm_admtools_Non_Writable"><![CDATA[Незаписываемый]]></string>
-	<string name="_adm_admtools_Not_Exists"><![CDATA[Несуществующий]]></string>
+	<string name="_adm_admtools_Not_Exists"><![CDATA[Отсутствует]]></string>
 	<string name="_adm_admtools_Path"><![CDATA[Путь]]></string>
 	<string name="_adm_admtools_Permissions"><![CDATA[Разрешения]]></string>
 	<string name="_adm_admtools_Writable"><![CDATA[Записываемый]]></string>
@@ -2598,13 +2598,12 @@
 	<string name="_sys_audit_msg_optimization_warn"><![CDATA[установка PHP-акселератора ускорит кэширование файлов]]></string>
 	<string name="_sys_audit_msg_x_based_cache_engine"><![CDATA[ ({0} кэш-движок)]]></string>
 	<string name="_sys_audit_msg_ffmpeg"><![CDATA[<pre class="code">{0}</pre>если Вы не уверены, корректен ли вывод, может понадобиться <a href="#manual_audit">ручной аудит сервера</a>.]]></string>
-	<string name="_sys_audit_msg_hardware_requirements"><![CDATA[Требования к "железу" невозможно установить автоматически - может быть необходим <a href="#manual_audit">ручной аудит сервера</a>.]]></string>
+	<string name="_sys_audit_msg_hardware_requirements"><![CDATA[Оборудование нельзя проверить автоматически. Может понадобиться <a href="#manual_audit">ручной аудит сервера</a>.]]></string>
 	<string name="_sys_audit_msg_mail_send_failed"><![CDATA[не удалось отослать письмо]]></string>
 	<string name="_sys_audit_msg_mail_sending"><![CDATA[<span id="bx-sys-adm-audit-test-email"><a href="javascript:void(0);" onclick="bx_sys_adm_audit_test_email()">нажмите здесь</a>, чтобы отослать тестовое сообщение</span>]]></string>
 	<string name="_sys_audit_msg_mail_sent"><![CDATA[тестовое сообщение отослано, пожалуйста, проверьте {0} эл. ящик]]></string>
 	<string name="_sys_audit_msg_manual_audit"><![CDATA[<p>
-Некоторые пункты не могут быть автоматически определены, ручной аудит сервера необходим для проверки. 
-Если Вы не знаете, как провести его самостоятельно, Вы можете запросить <a target="_blank" href="mailto:team@unacms.com?subject=Ручной аудит сервера">ручной аудит сервера</a>.
+Некоторые проверки нужно сделать вручную. Если нужна помощь, <a target="_blank" href="mailto:team@unacms.com?subject=Ручной аудит сервера">отправьте запрос на аудит сервера</a>.
 </p>]]></string>
 	<string name="_sys_audit_msg_must_be"><![CDATA[нужно {0} {1}]]></string>
 	<string name="_sys_audit_msg_optimization_apache_module"><![CDATA[Чтобы применить эту оптимизацию, Вам нужно иметь <b>{0}</b> - {1}]]></string>
@@ -2612,12 +2611,12 @@
 	<string name="_sys_audit_msg_php_accelerator_missing"><![CDATA[Можно значительно ускорить работу скрипта, если установить PHP-акселератор]]></string>
 	<string name="_sys_audit_msg_php_setup_inefficient"><![CDATA[Ваши PHP-настройки могут быть очень неэффективными, <a href="javascript:void(0)" onclick="bx_sys_adm_audit_phpinfo()">проверьте их</a> и попробуйте переключиться на mod_php, apache dso module или FastCGI]]></string>
 	<string name="_sys_audit_msg_serverside_compression"><![CDATA[
-может быть проверено <a href="#manual_audit">вручную</a> или с помощью интсрумента "Page Speed", встроенного в браузер.<br />
-Если он не задействован, тогда попробуйте применить эту оптимизацию, так как она улучшает скорость сайта и сохраняет трафик.<br />{0}]]></string>
+может быть проверено <a href="#manual_audit">вручную</a> или с помощью инструмента PageSpeed, встроенного в браузер.<br />
+Если он не задействован, тогда попробуйте применить эту оптимизацию, так как она улучшает скорость сайта и экономит трафик.<br />{0}]]></string>
 	<string name="_sys_audit_msg_should_be"><![CDATA[хорошо бы {0} {1}]]></string>
 	<string name="_sys_audit_msg_userside_caching"><![CDATA[
-<a href="{0}">нажмите здесь для проверки в Google Page Speed</a><br />
-Если он не задействован, тогда попробуйте применить эту оптимизацию, так как она улучшает скорость сайта и сохраняет трафик.<br />{1}]]></string>
+<a href="{0}">нажмите здесь для проверки в Google PageSpeed</a><br />
+Если он не задействован, тогда попробуйте применить эту оптимизацию, так как она улучшает скорость сайта и экономит трафик.<br />{1}]]></string>
 	<string name="_sys_audit_msg_value_checking_failed"><![CDATA[проверка значения не удалась]]></string>
 	<string name="_sys_audit_msg_version_is_incompatible"><![CDATA[Ваша версия несовместима с UNA, нужно как минимум {0}]]></string>
 	<string name="_sys_audit_msg_version_is_outdated"><![CDATA[Ваша версия устарела, может потребоваться обновление до последней версии {0}]]></string>
@@ -2628,10 +2627,10 @@
 	<string name="_sys_audit_section_os"><![CDATA[ОС]]></string>
 	<string name="_sys_audit_section_webserver"><![CDATA[Web-сервер]]></string>
 	<string name="_sys_audit_serverside_compression"><![CDATA[Сжатие содержимого на стороне сервера]]></string>
-	<string name="_sys_audit_title_fail"><![CDATA[ПРОВАЛ]]></string>
-	<string name="_sys_audit_title_ok"><![CDATA[ПОРЯДОК]]></string>
-	<string name="_sys_audit_title_undef"><![CDATA[НЕ ОПРЕДЕЛЕНО]]></string>
-	<string name="_sys_audit_title_warn"><![CDATA[ПРЕДУПРЕЖДЕНИЕ]]></string>
+	<string name="_sys_audit_title_fail"><![CDATA[Ошибка]]></string>
+	<string name="_sys_audit_title_ok"><![CDATA[Пройдено]]></string>
+	<string name="_sys_audit_title_undef"><![CDATA[Неизвестно]]></string>
+	<string name="_sys_audit_title_warn"><![CDATA[Предупреждение]]></string>
 	<string name="_sys_audit_userside_caching"><![CDATA[Кэширование статичного содержимого на стороне пользователя]]></string>
 	<string name="_sys_audit_version"><![CDATA[версия]]></string>
 	<string name="_sys_audit_version_script"><![CDATA[Версия UNA]]></string>
@@ -3248,6 +3247,10 @@
 	<string name="_sys_grid_search"><![CDATA[Поиск...]]></string>
   <string name="_sys_grid_total_count"><![CDATA[Всего записей: {0}]]></string>
   <string name="_sys_grid_txt_account_manager"><![CDATA[Перенаправить в Управление аккаунтом.]]></string>
+	<string name="_sys_inst_audit_failed"><![CDATA[{0} ошибок]]></string>
+	<string name="_sys_inst_audit_lead"><![CDATA[Проверка PHP, расширений и путей на этом хосте.]]></string>
+	<string name="_sys_inst_audit_passed"><![CDATA[{0} пройдено]]></string>
+	<string name="_sys_inst_audit_warnings"><![CDATA[{0} предупреждений]]></string>
 	<string name="_sys_inst_conf_desc"><![CDATA[{0}{1}<br />Пример: {2}]]></string>
 	<string name="_sys_inst_conf_desc_admin_email"><![CDATA[Администратор - email.]]></string>
 	<string name="_sys_inst_conf_desc_admin_pwd"><![CDATA[Администратор - пароль.]]></string>
@@ -3289,9 +3292,9 @@
 	<string name="_sys_inst_conf_field_site_title"><![CDATA[Заголовок сайта]]></string>
 	<string name="_sys_inst_conf_field_site_url"><![CDATA[URL сайта]]></string>
 	<string name="_sys_inst_conf_field_template"><![CDATA[Тема]]></string>
-	<string name="_sys_inst_conf_found"><![CDATA[<span style="color:green">Найдено</span>]]></string>
+	<string name="_sys_inst_conf_found"><![CDATA[<span class="bx-install-chip bx-install-chip-ok">Найдено</span>]]></string>
 	<string name="_sys_inst_conf_no_example"><![CDATA[нет примера]]></string>
-	<string name="_sys_inst_conf_not_found"><![CDATA[<span style="color:red">Не найдено</span>]]></string>
+	<string name="_sys_inst_conf_not_found"><![CDATA[<span class="bx-install-chip bx-install-chip-bad">Не найдено</span>]]></string>
 	<string name="_sys_inst_conf_section_db_config"><![CDATA[БД - конфигурация]]></string>
 	<string name="_sys_inst_conf_section_link_with_market"><![CDATA[Связать с UNA Market]]></string>
 	<string name="_sys_inst_conf_section_modules"><![CDATA[Модули]]></string>
@@ -3299,12 +3302,15 @@
 	<string name="_sys_inst_conf_section_site_info"><![CDATA[Инфо сайта]]></string>
 	<string name="_sys_inst_continue"><![CDATA[Продолжить]]></string>
 	<string name="_sys_inst_finish"><![CDATA[Установка удачно завершена]]></string>
+	<string name="_sys_inst_footer_contact"><![CDATA[Связаться с командой UNA]]></string>
+	<string name="_sys_inst_footer_docs"><![CDATA[Документация]]></string>
+	<string name="_sys_inst_footer_product"><![CDATA[UNA Community Management System]]></string>
 	<string name="_sys_inst_help"><![CDATA[Помощь]]></string>
 	<string name="_sys_inst_help_finish"><![CDATA[Помощь по планировщику заданий]]></string>
 	<string name="_sys_inst_help_permissions"><![CDATA[Помощь по установке разрешений]]></string>
 	<string name="_sys_inst_help_site_config"><![CDATA[Помощь по созданию базы данных]]></string>
-	<string name="_sys_inst_hosting_fails"><![CDATA[Ваш хостинг не соответствует минимальным требованиям:]]></string>
-	<string name="_sys_inst_hosting_warnings"><![CDATA[Есть некоторые замечания к настройкам сервера, можно перейти к <a href="?action=audit">аудиту сервера</a> для более подробной информации.]]></string>
+	<string name="_sys_inst_hosting_fails"><![CDATA[Этот хост не соответствует минимальным требованиям:]]></string>
+	<string name="_sys_inst_hosting_warnings"><![CDATA[На этом хосте есть предупреждения. Полный отчёт на <a href="?action=audit">странице аудита сервера</a>.]]></string>
 	<string name="_sys_inst_msg_admin_account_not_found"><![CDATA[Аккаунт админа не был найден по эл. адресу - {0}]]></string>
 	<string name="_sys_inst_msg_db_err_connect"><![CDATA[Ошибка соединения с базой]]></string>
 	<string name="_sys_inst_msg_db_err_select"><![CDATA[Ошибка выбора базы]]></string>
@@ -3316,8 +3322,8 @@
 	<string name="_sys_inst_msg_finish_goto_studio"><![CDATA[<a href="{0}studio/">Перейти в Студию</a>, чтобы добавить дополнительные модули и модифицировать сайт.]]></string>
 	<string name="_sys_inst_msg_form_error"><![CDATA[Пожалуйста, исправьте ошибки формы.]]></string>
 	<string name="_sys_inst_msg_module_error"><![CDATA[{0} - {1}]]></string>
-	<string name="_sys_inst_msg_permissions_lead"><![CDATA[Проверьте, что указанные пути доступны для записи (или исполняемые) перед продолжением.]]></string>
-	<string name="_sys_inst_msg_permissions_wrong"><![CDATA[Неправильные разрешения для некоторых файлов и папок, установите правильные и нажмите "Продолжить".]]></string>
+	<string name="_sys_inst_msg_permissions_lead"><![CDATA[Эти пути должны быть доступны для записи или исполняемые, прежде чем продолжить.]]></string>
+	<string name="_sys_inst_msg_permissions_wrong"><![CDATA[Некоторым путям нужно внимание. Исправьте их, затем продолжите.]]></string>
 	<string name="_sys_inst_msg_remove_install"><![CDATA[Пожалуйста, удалите директорию INSTALL с сервера и перегрузите страницу, чтобы активировать сайт.<br />После удаления, Вы можете перейти по ссылке <a href="../studio/">в Студию</a>, чтобы добавить дополнительные модули и модифицировать сайт.]]></string>
 	<string name="_sys_inst_msg_script_isnt_installed"><![CDATA[Скрипт не установлен]]></string>
 	<string name="_sys_inst_refresh"><![CDATA[Обновить]]></string>

@@ -7,8 +7,8 @@
     <style>
 <?=$sInlineCSS; ?>
     </style>
-    <link rel="stylesheet" href="css/styles.css" />
 <?=$sFilesCSS; ?>
+    <link rel="stylesheet" href="css/styles.css" />
 <?=$sFilesJS; ?>
 </head>
 <body class="bx-install-body bx-def-font">
@@ -32,7 +32,11 @@
     </main>
 
     <footer class="bx-install-footer">
-        <span>UNA Community Management System</span>
+        <a href="https://unacms.com" target="_blank" rel="noopener"><?php echo _t('_sys_inst_footer_product'); ?></a>
+        <span class="bx-install-footer-sep" aria-hidden="true"></span>
+        <a href="https://unacms.com/docs" target="_blank" rel="noopener"><?php echo _t('_sys_inst_footer_docs'); ?></a>
+        <span class="bx-install-footer-sep" aria-hidden="true"></span>
+        <a href="https://unacms.com/contact" target="_blank" rel="noopener"><?php echo _t('_sys_inst_footer_contact'); ?></a>
     </footer>
 </div>
 

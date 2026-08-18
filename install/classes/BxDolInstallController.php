@@ -36,8 +36,11 @@ class BxDolInstallController
 
         $oAudit = new BxDolStudioToolsAudit();
         $sAuditOutput = $oAudit->generate();
+        $iAuditPassed = preg_match_all('/class="ok"/', $sAuditOutput);
+        $iAuditWarnings = preg_match_all('/class="warn"/', $sAuditOutput);
+        $iAuditFailed = preg_match_all('/class="fail"/', $sAuditOutput);
 
-        $this->_oView->out('audit.php', compact('sAuditOutput'));
+        $this->_oView->out('audit.php', compact('sAuditOutput', 'iAuditPassed', 'iAuditWarnings', 'iAuditFailed'));
 
         $this->_oView->pageEnd($this->_getTitle());
     }
