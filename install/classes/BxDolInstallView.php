@@ -57,6 +57,11 @@ class BxDolInstallView
 
     function pageEnd ($sTitle)
     {
+        $oLang = BxDolInstallLang::getInstance();
+        $aLangs = $oLang->getAvailableLanguages();
+        $sLang = $oLang->getLang();
+        $sLangTitle = (isset($aLangs[$sLang]) && !empty($aLangs[$sLang]['title'])) ? $aLangs[$sLang]['title'] : $sLang;
+
         $aToolbarItem = $this->_aToolbarItem;
         $sInlineCSS = $this->_getInlineCSS();
         $sFilesCSS = $this->_getFilesCSS();

@@ -106,21 +106,33 @@ body.bx-install-body,
 
 .bx-install-footer {
     flex: 0 0 auto;
-    text-align: center;
-    padding: 20px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
     font-size: 12px;
     color: var(--bx-inst-muted);
+}
+.bx-install-footer-lang {
+    justify-self: start;
+    position: relative;
+}
+.bx-install-footer-links {
+    justify-self: center;
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
     align-items: center;
-    gap: 0 4px;
+    justify-content: center;
 }
-.bx-install-footer a {
+.bx-install-footer-spacer {
+    justify-self: end;
+}
+.bx-install-footer-links a {
     color: var(--bx-inst-muted);
     text-decoration: none;
 }
-.bx-install-footer a:hover {
+.bx-install-footer-links a:hover {
     color: var(--bx-inst-text);
     text-decoration: underline;
 }
@@ -131,6 +143,84 @@ body.bx-install-body,
     margin: 0 10px;
     background: var(--bx-inst-border);
     vertical-align: middle;
+}
+
+.bx-install-lang {
+    position: relative;
+}
+.bx-install-lang-trigger {
+    list-style: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 2px;
+    cursor: pointer;
+    color: var(--bx-inst-muted);
+    font-size: 13px;
+    font-weight: 500;
+    user-select: none;
+}
+.bx-install-lang-trigger::-webkit-details-marker {
+    display: none;
+}
+.bx-install-lang-trigger::marker {
+    content: "";
+}
+.bx-install-lang[open] .bx-install-lang-trigger,
+.bx-install-lang-trigger:hover {
+    color: var(--bx-inst-accent);
+    text-decoration: underline;
+}
+.bx-install-lang-current {
+    line-height: 1.2;
+}
+.bx-install-lang-icon {
+    display: block;
+    flex: 0 0 auto;
+}
+.bx-install-lang-menu {
+    position: absolute;
+    left: 0;
+    bottom: calc(100% + 8px);
+    min-width: 220px;
+    padding: 6px;
+    background: #fff;
+    border: 1px solid var(--bx-inst-border);
+    border-radius: 12px;
+    box-shadow: var(--bx-inst-shadow);
+    z-index: 30;
+}
+.bx-install-lang-item {
+    display: flex !important;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    color: var(--bx-inst-text) !important;
+    font-size: 13px;
+    text-decoration: none !important;
+}
+.bx-install-lang-item:hover {
+    background: #f3f4f6;
+}
+.bx-install-lang-item.is-selected {
+    background: #eff6ff;
+    color: var(--bx-inst-accent) !important;
+}
+.bx-install-lang-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 999px;
+    background: #f3f4f6;
+    color: var(--bx-inst-text);
+    flex: 0 0 auto;
+}
+.bx-install-lang-item.is-selected .bx-install-lang-badge {
+    background: #dbeafe;
+    color: var(--bx-inst-accent);
 }
 
 /* Kill the old teal header if any leftover classes still render */

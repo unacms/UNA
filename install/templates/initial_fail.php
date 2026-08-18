@@ -1,7 +1,5 @@
 <div class="bx-install-initial-fail">
 
-    <?php include('lang_swither.php'); ?>
-
     <?php echo _t('_sys_inst_hosting_fails'); ?>
     <ul>
     <?php foreach ($aErrors as $sMsg): ?>
