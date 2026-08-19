@@ -36,6 +36,8 @@ import {
     paddingForList
 } from 'app/customization/functions'
 
+const conductorTheme = appSetting('theme', 'conductor')
+
 // Scroll offset at which the full cover finishes crossfading into the small cover.
 const COVER_SWITCH_THRESHOLD = 100;
 // Matches the web crossfade/collapse duration in conductor.web.js.
@@ -193,7 +195,7 @@ const TabSceneHeader = React.memo(function TabSceneHeader2({
     const coverKey = `${ts ?? ''}:${coverBlock?.cover?.src ?? ''}:${coverBlock?.profile?.url_avatar ?? ''}`;
 
     const standaloneContextSelector = useStandaloneContextSelector ? (
-        <View className="items-center justify-center w-full h-14 px-2 ">
+        <View className={conductorTheme.standalone_context_selector}>
             <ContextSelector
                 data={pageContext}
                 url={pageUri}

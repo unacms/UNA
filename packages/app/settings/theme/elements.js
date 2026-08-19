@@ -23,6 +23,7 @@ export const settingsElements = {
         hide_top_menu_from: 'xl',
         // Section title + icon next to conductor tabs (TopSidebar).
         show_title: true,
+        standalone_context_selector: 'items-center justify-center w-full h-14 px-2',
     },
     dropdown_menu: {
         content_shadow: ' shadow-lg ',
