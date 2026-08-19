@@ -19,8 +19,12 @@ and must not be wiped casually:
 | Uploads / generated files | `storage/` (bind-mounted) | Lives on the host checkout. |
 | Frontend vendor assets | `plugins_public/` | Gitignored. Built by `scripts/build-plugins-public.sh` (Tailwind + jQuery). Required before the first page load. |
 
-`vendor/` is also host-side (Composer). `local-dev.sh` runs `composer:2` if
-`vendor/autoload.php` is missing.
+Composer `vendor-dir` is `plugins` (gitignored), not `vendor/`. There is no
+`vendor/autoload.php`. `local-dev.sh` runs `composer:2 install` only on first
+run, when `plugins/autoload.php` is missing. `--no-scripts` is omitted so the
+existing post-install (ffmpeg relocate + amazon-s3 patch) runs once; otherwise
+`ffmpeg.exe` never lands. Repeat runs skip Composer entirely if
+`plugins/autoload.php` already exists.
 
 ## First run
 
@@ -32,7 +36,7 @@ From the repo root (Docker Desktop running):
 
 The script uses the existing compose file unchanged. It:
 
-1. Installs PHP deps with `composer:2` if `vendor/autoload.php` is missing.
+1. First run only: if `plugins/autoload.php` is missing, installs PHP deps with `composer:2 install --ignore-platform-reqs --no-interaction` (no `--no-scripts`, so ffmpeg relocate + amazon-s3 patch run once). Repeat runs do not invoke Composer.
 2. Builds `plugins_public` with `node:22-bookworm-slim` if Tailwind/jQuery assets are missing (via `scripts/build-plugins-public.sh`).
 3. Runs `docker compose up -d --build`.
 

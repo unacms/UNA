@@ -16,8 +16,8 @@ if ! docker compose version >/dev/null 2>&1; then
   exit 1
 fi
 
-if [ ! -f vendor/autoload.php ]; then
-  docker run --rm -v "$PWD:/app" -w /app composer:2 install --ignore-platform-reqs --no-interaction --no-scripts
+if [ ! -f plugins/autoload.php ]; then
+  docker run --rm -v "$PWD:/app" -w /app composer:2 install --ignore-platform-reqs --no-interaction
 fi
 
 if [ ! -f plugins_public/tailwind/css/tailwind.min.css ] \
