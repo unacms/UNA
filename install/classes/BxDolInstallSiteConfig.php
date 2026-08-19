@@ -353,8 +353,14 @@ EOF;
         if (true !== $mixedRes)
             return $this->dbErrors2ErrorFields($mixedRes);
 
-        $sSqlDir = BX_INSTALL_DIR . 'sql/';
-        if (is_dir($sSqlDir)) {
+        $aSqlDirs = array(
+            BX_INSTALL_DIR . 'sql/',
+            BX_INSTALL_DIR_MODULES . 'system/install/sql/',
+        );
+        foreach ($aSqlDirs as $sSqlDir) {
+            if (!is_dir($sSqlDir))
+                continue;
+
             $aFiles = scandir($sSqlDir);
             foreach ($aFiles as $sFile) {
                 if ($sFile[0] === '.' || $sFile === 'system.sql' || $sFile === 'addon.sql') {
