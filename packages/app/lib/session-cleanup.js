@@ -39,16 +39,18 @@ export function clearClientSessionState() {
 }
 
 /**
- * Land on guest tab0 root after sign-out.
- * Do not walk other tabs with navigate() — that switches focus and can leave
- * stale deep-link params in a worse state. Tab remount via tabsSessionKey
- * (`user-guest`) resets inactive tabs' initialParams.
+ * Land on guest tab0 after sign-out. Also rewrite every tab's Expo params so a
+ * leftover `/logout` cannot load later and kill the next session.
+ *
+ * In this app Sign out lives on Dashboard (`/tab4`), not a Profile tab.
+ * `replace` only updates tab0 — without setParams the dashboard tab keeps `/logout`.
  */
-export function resetNavigationAfterSignOut(router, { url } = {}) {
+export function resetNavigationAfterSignOut(router, { url, navigation } = {}) {
     if (!router) return
 
     const guestTabs = appSetting('menu_items', 'menu_tabbar_non_logged') || []
     const targetUrl = url && url !== '/' ? url : (guestTabs[0]?.url || '/home')
+    const refresh = Date.now()
 
     resetAllTabHistory()
 
@@ -57,9 +59,71 @@ export function resetNavigationAfterSignOut(router, { url } = {}) {
         return
     }
 
+    clearAllTabParams(navigation, guestTabs, refresh)
+
     router.replace({
         pathname: '/tab0',
-        params: { url: targetUrl, name: 'tab0', refresh: Date.now() },
+        params: { url: targetUrl, name: 'tab0', refresh },
+    })
+}
+
+function findTabNavigator(navigation) {
+    let nav = navigation
+    for (let i = 0; i < 8 && nav; i++) {
+        const state = nav.getState?.()
+        const names = state?.routeNames || state?.routes?.map((route) => route.name) || []
+        if (names.some((name) => /tab0(?:\/|$)/.test(String(name)))) {
+            return nav
+        }
+        nav = nav.getParent?.()
+    }
+    return null
+}
+
+function tabIndexFromName(name) {
+    const match = String(name || '').match(/tab(\d+)/)
+    return match ? Number(match[1]) : null
+}
+
+function guestUrlForTab(guestTabs, index) {
+    let tabUrl = guestTabs[index]?.url || '/home'
+    if (tabUrl === '{profile}') tabUrl = '/home'
+    return tabUrl
+}
+
+function dispatchSetParams(nav, routeKey, navigatorKey, params) {
+    nav.dispatch({
+        type: 'SET_PARAMS',
+        payload: { params },
+        source: routeKey,
+        target: navigatorKey,
+    })
+}
+
+function clearAllTabParams(navigation, guestTabs, refresh) {
+    if (!navigation) return
+    const tabNav = findTabNavigator(navigation)
+    const state = tabNav?.getState?.()
+    if (!tabNav?.dispatch || !state?.routes?.length) return
+
+    state.routes.forEach((route, index) => {
+        if (!route?.key) return
+        const tabIndex = tabIndexFromName(route.name) ?? index
+        const params = {
+            url: guestUrlForTab(guestTabs, tabIndex),
+            name: `tab${tabIndex}`,
+            refresh,
+        }
+        try {
+            dispatchSetParams(tabNav, route.key, state.key, params)
+            const nested = route.state
+            const leaf = nested?.routes?.[nested.index ?? nested.routes.length - 1]
+            if (nested?.key && leaf?.key) {
+                dispatchSetParams(tabNav, leaf.key, nested.key, params)
+            }
+        } catch {
+            // keep going — tab0 replace still signs the user out
+        }
     })
 }
 

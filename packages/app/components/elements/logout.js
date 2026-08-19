@@ -1,4 +1,4 @@
-import { useRouter } from 'app/lib/hooks/router'
+import { useRouter, useNavigation } from 'app/lib/hooks/router'
 import { useEffect, useRef } from 'react';
 import { Text } from 'app/design/typography'
 import { View } from 'app/design/view'
@@ -9,6 +9,7 @@ import { clearClientSessionState, resetNavigationAfterSignOut } from 'app/lib/se
 export default function ElementLogout({ data }) {
     const { t } = useTranslation();
     const router = useRouter();
+    const navigation = useNavigation();
     const { setCurrentUser } = useCurrentUser();
     const didCleanupRef = useRef(false);
     const uri = data?.uri === '/' || !data?.uri ? '/home' : data.uri;
@@ -23,14 +24,14 @@ export default function ElementLogout({ data }) {
         setCurrentUser(false);
         clearClientSessionState();
 
-        const go = () => resetNavigationAfterSignOut(router, { url: uri });
+        const go = () => resetNavigationAfterSignOut(router, { url: uri, navigation });
 
         if (timeout) {
             const timeoutId = setTimeout(go, timeout);
             return () => clearTimeout(timeoutId);
         }
         go();
-    }, [uri, timeout, router, setCurrentUser]);
+    }, [uri, timeout, router, navigation, setCurrentUser]);
 
     return (
         <View className="flex-1 items-center justify-center">

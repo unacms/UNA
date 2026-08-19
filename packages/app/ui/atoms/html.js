@@ -40,7 +40,7 @@ export default function ElementHtml({ customClassName, data, innerRef }) {
     }, [router, glob?.name])
 
     if (!data) return null
-    const source = `<html>${unaLinksToMentions(preprocessHtml(data))}</html>`
+    const source = `<html>${(preprocessHtml(data))}</html>`
     // The library resolves mention styles by indicator ('@'/'#') or 'all'; a flat
     // object gets stored under an internal '_default' key that native never matches,
     // so it falls back to blue-on-yellow. Key it per indicator to apply our colors.
