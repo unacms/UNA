@@ -1,0 +1,9 @@
+# Copy to compose.override.yml (gitignored).
+# Docker Compose auto-loads compose.override.yml next to docker-compose.yml.
+# Remaps the public HTTP port of the `web` service so it *replaces* :80
+# instead of adding a second mapping.
+
+services:
+  web:
+    ports: !override
+      - "8088:80"

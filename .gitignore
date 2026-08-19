@@ -41,3 +41,6 @@ modules/vendor
 
 # Exclude IDE project folder
 .idea
+
+# Laptop-only Compose overlay (auto-loaded). Never commit.
+compose.override.yml
