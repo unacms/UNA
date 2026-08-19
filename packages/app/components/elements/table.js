@@ -2,7 +2,6 @@ import { ScrollView } from 'app/design/view';
 import { Text } from 'app/design/typography';
 import Time from 'app/ui/atoms/time';
 import Link from 'app/ui/atoms/link';
-import { isUrl } from 'app/lib/util';
 import { BlockWrapper } from 'app/components/block-wrapper';
 import {
     Table,
@@ -17,37 +16,62 @@ import {
 
 const UNIX_TS_MIN = 1000000000;
 
+function isHttpUrl(value) {
+    if (typeof value !== 'string') return false;
+    const trimmed = value.trim();
+    if (!/^https?:\/\//i.test(trimmed)) return false;
+    try {
+        const url = new URL(trimmed);
+        return url.protocol === 'http:' || url.protocol === 'https:';
+    } catch {
+        return false;
+    }
+}
+
 function isHeaderRow(row) {
     if (!row || typeof row !== 'object' || Array.isArray(row)) return false;
     const values = Object.values(row);
     if (!values.length) return false;
-    return values.every((value) => typeof value === 'string' && !isUrl(value));
+    return values.every((value) => typeof value === 'string' && !isHttpUrl(value));
 }
 
-function isUnixTs(value) {
-    return Number.isInteger(value) && value > UNIX_TS_MIN;
+function toUnixTs(value) {
+    if (typeof value === 'number' && Number.isInteger(value) && value > UNIX_TS_MIN) {
+        return value;
+    }
+    if (typeof value === 'string' && /^\d+$/.test(value.trim())) {
+        const n = Number(value);
+        if (Number.isInteger(n) && n > UNIX_TS_MIN) return n;
+    }
+    return null;
 }
 
-function columnKind(key, rows) {
-    const values = rows.map((row) => row?.[key]).filter((value) => value != null && value !== '');
-    if (values.some((value) => isUrl(String(value)))) return 'url';
-    if (values.some(isUnixTs)) return 'time';
-    if (values.length && values.every((value) => typeof value === 'number')) return 'number';
+function cellKind(value) {
+    if (value == null || value === '') return 'empty';
+    if (toUnixTs(value) != null) return 'time';
+    if (isHttpUrl(String(value))) return 'url';
+    if (typeof value === 'number') return 'number';
     return 'text';
 }
 
-function columnClass(kind) {
-    if (kind === 'url' || kind === 'text') return 'flex-2 min-w-0';
-    return 'flex-1 min-w-0';
+function columnClass(key, rows) {
+    const wide = rows.some((row) => {
+        const kind = cellKind(row?.[key]);
+        return kind === 'url' || kind === 'text';
+    });
+    return wide ? 'flex-2 min-w-0' : 'flex-1 min-w-0';
 }
 
-function CellValue({ value, kind }) {
+function CellValue({ value }) {
+    const kind = cellKind(value);
+
     if (kind === 'time') {
-        if (!Number(value)) return null;
-        return <Time ts={value} format="datetime" stylesName="" />;
+        const ts = toUnixTs(value);
+        if (!ts) return null;
+        return <Time ts={ts} format="datetime" stylesName="" />;
     }
 
-    if (kind === 'url' && isUrl(String(value))) {
+    if (kind === 'url') {
         return (
             <Link href={value}>
                 <Text className="text-primary" numberOfLines={1}>
@@ -57,7 +81,7 @@ function CellValue({ value, kind }) {
         );
     }
 
-    if (value == null || value === '') return null;
+    if (kind === 'empty') return null;
 
     return <TableCellText numberOfLines={1}>{String(value)}</TableCellText>;
 }
@@ -69,7 +93,6 @@ export default function ElementTable({ data, blockWrapperProps }) {
     const header = isHeaderRow(rows[0]) ? rows[0] : null;
     const body = header ? rows.slice(1) : rows;
     const keys = Object.keys(header || body[0] || {});
-    const kinds = Object.fromEntries(keys.map((key) => [key, columnKind(key, body)]));
 
     return (
         <BlockWrapper {...blockWrapperProps}>
@@ -83,7 +106,7 @@ export default function ElementTable({ data, blockWrapperProps }) {
                     <TableHeader>
                         <TableRow>
                             {keys.map((key) => (
-                                <TableHead key={key} className={columnClass(kinds[key])}>
+                                <TableHead key={key} className={columnClass(key, body)}>
                                     <TableHeaderText numberOfLines={1}>
                                         {header ? header[key] : key}
                                     </TableHeaderText>
@@ -95,8 +118,8 @@ export default function ElementTable({ data, blockWrapperProps }) {
                         {body.map((row, index) => (
                             <TableRow key={index}>
                                 {keys.map((key) => (
-                                    <TableCell key={key} className={columnClass(kinds[key])}>
-                                        <CellValue value={row?.[key]} kind={kinds[key]} />
+                                    <TableCell key={key} className={columnClass(key, body)}>
+                                        <CellValue value={row?.[key]} />
                                     </TableCell>
                                 ))}
                             </TableRow>
