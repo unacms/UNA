@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="en" flag="gb" title="English">
+	<string name="_sys_module_cidaascon"><![CDATA[Cidaas Connect]]></string>
+	<string name="_bx_cidaascon"><![CDATA[Cidaas Connect]]></string>
+	<string name="_bx_cidaascon_settings"><![CDATA[Cidaas Connect]]></string>
+	<string name="_bx_cidaascon_information_block"><![CDATA[
+        <p>This module logs users in through the Cidaas hosted login page using the official <a target="_blank" href="https://github.com/cidaas/cidaas-sdk-php">Cidaas PHP SDK</a>.</p>
+        <p>Create an application in your Cidaas tenant and set:</p>
+        <ul>
+            <li>Redirect URL: <strong>{0}</strong></li>
+            <li>Base URL: your Cidaas instance, e.g. https://yourtenant.cidaas.de</li>
+            <li>Client ID issued for that application</li>
+            <li>Client Secret — required unless PKCE is enabled for a public client</li>
+        </ul>
+        <p>Enable PKCE in module settings if the Cidaas app is configured for the PKCE authorization code flow. With PKCE, Client Secret can be left empty. For more info see <a target="_blank" href="https://docs.cidaas.com/">Cidaas documentation</a>.</p>
+        ]]></string>
+	<string name="_bx_cidaascon_profile_error_api_keys"><![CDATA[Please configure the module in admin panel (Base URL and Client ID are required; Client Secret is required unless PKCE is enabled)]]></string>
+	<string name="_bx_cidaascon_auth_title"><![CDATA[Login with Cidaas]]></string>
+
+    <string name="_bx_cidaascon_adm_stg_cpt_type"><![CDATA[Cidaas Connect]]></string>
+    <string name="_bx_cidaascon_option_base_url"><![CDATA[Base URL]]></string>
+    <string name="_bx_cidaascon_option_client_id"><![CDATA[Client ID]]></string>
+    <string name="_bx_cidaascon_option_secret"><![CDATA[Client Secret]]></string>
+    <string name="_bx_cidaascon_option_scope"><![CDATA[Scope]]></string>
+    <string name="_bx_cidaascon_option_pkce"><![CDATA[Enable PKCE flow]]></string>
+    <string name="_bx_cidaascon_option_debug"><![CDATA[Debug mode]]></string>
+
+	<string name="_bx_cidaascon_et_password_generated"><![CDATA[Cidaas connect temporary password]]></string>
+	<string name="_bx_cidaascon_et_password_generated_subject"><![CDATA[Temporary password]]></string>
+	<string name="_bx_cidaascon_et_password_generated_body"><![CDATA[{email_header}
+<p>Temporary password - <b>{password}</b></p>
+<p>Change it after logging-in.</p>
+{email_footer}]]></string>
+</resources>
