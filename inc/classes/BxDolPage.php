@@ -496,6 +496,7 @@ class BxDolPage extends BxDolFactory implements iBxDolFactoryObject, iBxDolRepla
         $aSeoParams = array('id', 'profile_id'); // supported SEO params which are transformed to SEO strings
         $sSeoParamName = '';
         $sSeoParamValue = '';
+        $sSeoTitle = '';
         if ('cmts-view' != $sPageUri) {
             foreach ($aSeoParams as $k) {
                 if (empty($aQueryParams[$k]) && empty($aParams[$k]))

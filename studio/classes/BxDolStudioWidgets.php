@@ -63,9 +63,11 @@ class BxDolStudioWidgets extends BxTemplStudioPage
 
     	$aResult = array();
     	foreach($aWidgets as $aWidget) {
+            $sNotices = '';
             if(BxDolService::isSerializedService($aWidget['cnt_notices'])) {
-                $aService = unserialize($aWidget['cnt_notices']);
-                $sNotices = BxDolService::call($aService['module'], $aService['method'], array_merge(array($aWidget), $aService['params']), $aService['class']);
+                $aService = BxDolService::decodeServiceCall($aWidget['cnt_notices']);
+                if ($aService)
+                    $sNotices = BxDolService::call($aService['module'], $aService['method'], array_merge(array($aWidget), isset($aService['params']) ? $aService['params'] : array()), isset($aService['class']) ? $aService['class'] : 'Module');
             }
 
             $aResult[$aWidget['id']] = $sNotices;

@@ -216,7 +216,7 @@ EOF;
         return <<<EOF
 <tr class="bx-def-color-bg-hl-even">
     <td class="bx-def-padding-thd">{$s}</td>
-    <td class="bx-def-padding-thd {$sClass}">{$sResultPerm}</td>
+    <td class="bx-def-padding-thd"><span class="{$sClass}">{$sResultPerm}</span></td>
     <td class="bx-def-padding-thd">{$sAwaitedPerm}</td>
 </tr>
 EOF;

@@ -53,16 +53,28 @@ class BxDolInstallLang
         return $sKey;
     }
 
+    public function getLang()
+    {
+        return $this->_sLang;
+    }
+
     public function getAvailableLanguages ()
     {
         $aRet = array();
         $aModules = $this->_oModulesTools->getModules('language');
-        foreach ($aModules as $aModuleConfig)
+        foreach ($aModules as $aModuleConfig) {
+            $sStudioTitle = $aModuleConfig['title'];
+            $sTitle = $sStudioTitle;
+            $aOwnStrings = $this->_oModulesTools->readLanguage($aModuleConfig);
+            if (!empty($aOwnStrings['__' . $sStudioTitle]))
+                $sTitle = $aOwnStrings['__' . $sStudioTitle];
+
             $aRet[$aModuleConfig['home_uri']] = array(
                 'code' => $aModuleConfig['home_uri'],
-                'title' => $aModuleConfig['title'],
+                'title' => $sTitle,
                 'icon' => BX_INSTALL_URL_MODULES . $aModuleConfig['home_dir'] . 'template/images/icons/' . (file_exists(BX_INSTALL_DIR_MODULES .  $aModuleConfig['home_dir'] . 'template/images/icons/std-pi.png') ? 'std-pi.png' : 'std-icon.svg'),
             );
+        }
         return $aRet;
     }
 

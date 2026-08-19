@@ -2,14 +2,9 @@
 
     <h1 class="bx-def-font-h1"><?php echo _t('_sys_inst_finish'); ?></h1>
 
-    <p class="bx-def-font-large" style="font-weight:bold;"><?php echo _t('_sys_inst_msg_finish'); ?></p>
+    <p class="bx-install-step-lead"><?php echo _t('_sys_inst_msg_finish'); ?></p>
 
     <ol>
-        <!--
-        <li>
-            change permissions back
-        <li>
-        -->
         <li>
             <?php echo _t('_sys_inst_msg_finish_cron_jobs'); ?>
             <textarea class="bx-form-input-textarea bx-def-font-inputs bx-def-margin-sec-top">

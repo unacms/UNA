@@ -1,69 +1,50 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="<?=bx_html_attribute($sLang); ?>">
 <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title><?=$sTitle; ?></title>
-
     <style>
-
 <?=$sInlineCSS; ?>
-
     </style>
-    <link rel="stylesheet" href="css/styles.css" />
-
 <?=$sFilesCSS; ?>
-
+    <link rel="stylesheet" href="css/styles.css" />
 <?=$sFilesJS; ?>
-
-    <script>
-        $(document).ready(function () {
-            $('#bx-toolbar').css({opacity: 0.9});
-        });
-    </script>
 </head>
-<body class="bx-def-font bx-def-color-bg-page">
+<body class="bx-install-body bx-def-font">
 
-<div class="bx-install-page bx-main">
-
-    <div id="bx-toolbar" class="bx-header bx-def-color-bg-header bx-def-z-index-nav bx-def-shadow bx-toolbar-anim headroom--top headroom--not-bottom">
-        <div class="bx-def-centered bx-def-padding-sec-leftright bx-def-page-width bx-def-box-sizing">
-                <div id="bx-toolbar-content" class="bx-toolbar-content bx-clearfix">
-                    <div id="bx-menu-toolbar-1-container" class="bx-toolbar-item bx-ti-left"></div>
-                    <div id="bx-logo-container" class="bx-toolbar-item bx-ti-logo bx-ti-stretcher"><a class="bx-def-font-contrasted"><span><?=$sTitle; ?></span></a></div>
-                    <div id="bx-menu-toolbar-2-container" class="bx-toolbar-item bx-ti-right">
-                        <?php if (!empty($aToolbarItem)): ?>
-                        <ul class="bx-menu-toolbar bx-menu-object-sys_toolbar_member">
-                            <li class="bx-def-color-bg-hl-hover ">
-                                <a title="<?=$aToolbarItem['title']; ?>" href="<?=$aToolbarItem['link']; ?>" target="<?=$aToolbarItem['target']; ?>" onclick="" class="bx-def-margin-sec-left bx-def-font-contrasted">
-                                    <i class="sys-icon <?=$aToolbarItem['icon']; ?> bx-def-margin-sec-leftright"></i>
-                                </a>
-                            </li>
-                        </ul>
-                        <?php endif; ?>
-                    </div>
-                </div>
-
+<div class="bx-install-shell">
+    <header class="bx-install-topbar">
+        <div class="bx-install-topbar-inner">
+            <img class="bx-install-header-logo" src="img/logo.svg" alt="UNA" />
+            <span class="bx-install-brand-title"><?=$sTitle; ?></span>
+            <?php if (!empty($aToolbarItem)): ?>
+            <a class="bx-install-help" title="<?=$aToolbarItem['title']; ?>" href="<?=$aToolbarItem['link']; ?>" target="<?=$aToolbarItem['target']; ?>">
+                <?php echo _t('_sys_inst_help'); ?>
+            </a>
+            <?php endif; ?>
         </div>
-    </div>
+    </header>
 
-    <div id="bx-menu-main-bar-wrapper"></div>
-
-    <div class="bx-page-wrapper bx-menu-toolbar-padding bx-def-centered bx-def-padding-sec-left bx-def-padding-sec-right bx-def-page-width">
-        <div id="bx-content-container" class="bx-def-padding-sec-left bx-def-padding-sec-right">
-            <div id="bx-content-main" class="bx-def-margin-top">
-                <?=$sCode; ?>
-            </div>
+    <main class="bx-install-main">
+        <div class="bx-install-card">
+            <?=$sCode; ?>
         </div>
-    </div>
-    <div class="bx-install-footer-push"></div>
-</div>
+    </main>
 
-<div class="bx-install-footer">
-    <div class="bx-def-centered bx-def-padding-sec-left bx-def-padding-sec-right bx-def-page-width">
-        <div id="bx-content-container" class="bx-def-padding-sec-left bx-def-padding-sec-right bx-clearfix">
-            &nbsp;
+    <footer class="bx-install-footer">
+        <div class="bx-install-footer-lang">
+            <?php include('lang_swither.php'); ?>
         </div>
-    </div>
+        <div class="bx-install-footer-links">
+            <a href="https://unacms.com" target="_blank" rel="noopener"><?php echo _t('_sys_inst_footer_product'); ?></a>
+            <span class="bx-install-footer-sep" aria-hidden="true"></span>
+            <a href="https://unacms.com/docs" target="_blank" rel="noopener"><?php echo _t('_sys_inst_footer_docs'); ?></a>
+            <span class="bx-install-footer-sep" aria-hidden="true"></span>
+            <a href="https://unacms.com/contact" target="_blank" rel="noopener"><?php echo _t('_sys_inst_footer_contact'); ?></a>
+        </div>
+        <div class="bx-install-footer-spacer" aria-hidden="true"></div>
+    </footer>
 </div>
 
 </body>
