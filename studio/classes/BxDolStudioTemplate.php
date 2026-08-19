@@ -105,7 +105,7 @@ class BxDolStudioTemplate extends BxDolTemplate implements iBxDolSingleton
         if(($sModuleIcon = $this->_getModuleIcon('path', $sName)) !== false)
             return $sModuleIcon;
 
-        return parent::getIconUrl($sName, $sCheckIn);
+        return parent::getIconPath($sName, $sCheckIn);
     }
 
     function _getAbsoluteLocation($sType, $sFolder, $sName, $sCheckIn = BX_DOL_TEMPLATE_CHECK_IN_BOTH)
