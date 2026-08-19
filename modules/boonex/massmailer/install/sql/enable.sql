@@ -92,6 +92,16 @@ INSERT INTO `sys_grid_actions` (`object`, `type`, `name`, `title`, `icon`, `icon
 ('bx_massmailer_campaigns', 'single', 'send_all', '_bx_massmailer_grid_action_title_adm_send_all', 'envelope', 1, 0, 7),
 ('bx_massmailer_campaigns', 'independent', 'add', '_bx_massmailer_grid_action_title_adm_add', '', 0, 0, 1);
 
+-- GRIDS: campaign subscribers
+INSERT INTO `sys_objects_grid` (`object`, `source_type`, `source`, `table`, `field_id`, `field_order`, `field_active`, `paginate_url`, `paginate_per_page`, `paginate_simple`, `paginate_get_start`, `paginate_get_per_page`, `filter_fields`, `filter_fields_translatable`, `filter_mode`, `sorting_fields`, `sorting_fields_translatable`, `visible_for_levels`, `override_class_name`, `override_class_file`) VALUES
+('bx_massmailer_letters', 'Sql', 'SELECT * FROM `bx_massmailer_letters` WHERE 1 ', 'bx_massmailer_letters', 'id', 'date_sent', '', '', 20, NULL, 'start', '', 'email', '', 'like', 'email,date_sent,date_seen,date_click', '', 2147483647, 'BxMassMailerGridLetters', 'modules/boonex/massmailer/classes/BxMassMailerGridLetters.php');
+
+INSERT INTO `sys_grid_fields` (`object`, `name`, `title`, `width`, `translatable`, `chars_limit`, `params`, `order`) VALUES
+('bx_massmailer_letters', 'email', '_bx_massmailer_txt_title_email', '55%', 0, '48', '', 1),
+('bx_massmailer_letters', 'date_sent', '_bx_massmailer_txt_title_date_sent', '15%', 0, '0', '', 2),
+('bx_massmailer_letters', 'date_seen', '_bx_massmailer_txt_title_date_seen', '15%', 0, '0', '', 3),
+('bx_massmailer_letters', 'date_click', '_bx_massmailer_txt_title_date_click', '15%', 0, '0', '', 4);
+
 -- EMAIL TEMPLATES
 INSERT INTO `sys_email_templates` (`Module`, `NameSystem`, `Name`, `Subject`, `Body`) VALUES
 (@sName, '_bx_massmailer_email_name', 'bx_massmailer_email', '_bx_massmailer_email_subject', '_bx_massmailer_email_body');

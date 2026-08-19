@@ -225,7 +225,9 @@ class BxMassMailerModule extends BxBaseModGeneralModule
 
     public function serviceGetSafeServices()
     {
-        return parent::serviceGetSafeServices();
+        return array_merge(parent::serviceGetSafeServices(), [
+            'CampagnSubscribers' => ''
+        ]);
     }
 
     /**
@@ -246,18 +248,30 @@ class BxMassMailerModule extends BxBaseModGeneralModule
     /** 
     * @ref bx_massmailer-campagn_subscribers "entity_view"
     */
-    public function serviceCampagnSubscribers ($iContentId = 0, $sDisplay = false)
+    public function serviceCampagnSubscribers ($iContentId = 0, $iStart = 0, $iPerPage = 20)
     {
         if(!$iContentId)
             $iContentId = bx_process_input(bx_get('id'), BX_DATA_INT);
 
         if(!$iContentId)
             return false;
-              
-        $aData = $this->_oDb->getLettersByCampaignId($iContentId);
-        if (count($aData) > 0)
-            return $this->_oTemplate->getSubscribers($aData);
-        return $iContentId;
+        
+        $CNF = &$this->_oConfig->CNF;
+
+        $sGrid = $CNF['OBJECT_GRID_LETTERS'];
+        $oGrid = BxDolGrid::getObjectInstance($sGrid);
+        if(!$oGrid)
+            return $this->_bIsApi ? [] : '';
+
+        if($iContentId)
+            $oGrid->setContentId($iContentId);
+
+        if($this->_bIsApi)
+            return [
+                bx_api_get_block('grid', $oGrid->getCodeAPI())
+            ];
+
+        return $oGrid->getCode();
     }
     
     /**
@@ -278,7 +292,7 @@ class BxMassMailerModule extends BxBaseModGeneralModule
     /** 
      * @ref bx_massmailer-campagn_info "campagn_info"
      */
-    public function serviceCampagnInfo ($iContentId = 0, $sDisplay = false)
+    public function serviceCampagnInfo ($iContentId = 0)
     {
         if(!$iContentId)
             $iContentId = bx_process_input(bx_get('id'), BX_DATA_INT);
@@ -286,7 +300,12 @@ class BxMassMailerModule extends BxBaseModGeneralModule
         if(!$iContentId)
             return false;
         
-        return $this->_oTemplate->getInfo($iContentId);
+        $mixedResult = $this->_oTemplate->getInfo($iContentId);
+
+        if($this->_bIsApi)
+            return [bx_api_get_block('simple_list',  $mixedResult)];
+
+        return $mixedResult;
     }
     
     /**
@@ -307,7 +326,7 @@ class BxMassMailerModule extends BxBaseModGeneralModule
     /** 
      * @ref bx_massmailer-campagn_links "campagn_links"
      */
-    public function serviceCampagnLinks ($iContentId = 0, $sDisplay = false)
+    public function serviceCampagnLinks ($iContentId = 0)
     {
         if(!$iContentId)
             $iContentId = bx_process_input(bx_get('id'), BX_DATA_INT);
@@ -316,9 +335,15 @@ class BxMassMailerModule extends BxBaseModGeneralModule
             return false;
         
         $aData = $this->_oDb->getClicksByCampaignId($iContentId);
-        if (count($aData) > 0)
-            return $this->_oTemplate->getClicks($aData);
-        return $iContentId;
+        if(!$aData || !is_array($aData))
+            return false;
+
+        $mixedResult = $this->_oTemplate->getClicks($aData);
+
+        if($this->_bIsApi)
+            return [bx_api_get_block('table',  $mixedResult)];
+
+        return $mixedResult;
     }
     
     /**
