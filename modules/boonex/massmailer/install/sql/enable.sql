@@ -40,8 +40,8 @@ INSERT INTO `sys_objects_page`(`object`, `title_system`, `title`, `module`, `lay
 INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title`, `designbox_id`, `visible_for_levels`, `type`, `content`, `deletable`, `copyable`, `order`) VALUES
 ('bx_massmailer_view_campaign', 1, @sName, '_bx_massmailer_page_block_title_entry_breadcrumb', 13, 2147483647, 'service', 'a:2:{s:6:"module";s:13:"bx_massmailer";s:6:"method";s:17:"entity_breadcrumb";}', 0, 0, 0),
 ('bx_massmailer_view_campaign', 1, @sName, '_bx_massmailer_page_block_title_view_campaign_info', 11, 128, 'service', 'a:2:{s:6:"module";s:13:"bx_massmailer";s:6:"method";s:12:"campagn_info";}', 0, 0, 1),
-('bx_massmailer_view_campaign', 1, @sName, '_bx_massmailer_page_block_title_view_campaign_subscribers', 11, 128, 'service', 'a:2:{s:6:"module";s:13:"bx_massmailer";s:6:"method";s:19:"campagn_subscribers";}', 0, 0, 2),
-('bx_massmailer_view_campaign', 1, @sName, '_bx_massmailer_page_block_title_view_campaign_links', 11, 128, 'service', 'a:2:{s:6:"module";s:13:"bx_massmailer";s:6:"method";s:13:"campagn_links";}', 0, 0, 3);
+('bx_massmailer_view_campaign', 1, @sName, '_bx_massmailer_page_block_title_view_campaign_links', 11, 128, 'service', 'a:2:{s:6:"module";s:13:"bx_massmailer";s:6:"method";s:13:"campagn_links";}', 0, 0, 2),
+('bx_massmailer_view_campaign', 1, @sName, '_bx_massmailer_page_block_title_view_campaign_subscribers', 11, 128, 'service', 'a:2:{s:6:"module";s:13:"bx_massmailer";s:6:"method";s:19:"campagn_subscribers";}', 0, 0, 3);
 
 -- PAGE: campaigns administration
 INSERT INTO `sys_objects_page`(`object`, `title_system`, `title`, `module`, `layout_id`, `visible_for_levels`, `visible_for_levels_editable`, `uri`, `url`, `meta_description`, `meta_keywords`, `meta_robots`, `cache_lifetime`, `cache_editable`, `deletable`, `override_class_name`, `override_class_file`) VALUES 

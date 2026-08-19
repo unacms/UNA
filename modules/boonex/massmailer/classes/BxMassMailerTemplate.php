@@ -11,36 +11,11 @@
 
 class BxMassMailerTemplate extends BxBaseModGeneralTemplate
 {
-    function __construct(&$oConfig, &$oDb)
+    public function __construct(&$oConfig, &$oDb)
     {
         parent::__construct($oConfig, $oDb);
     }
-    
-    function getSubscribers($aData)
-    {
-        $aList = [];
-        foreach($aData as $aItem)
-            $aList[] = [
-                'email' => $aItem['email'], 
-                'date_sent' => $this->_bIsApi ? $aItem['date_sent'] : ($aItem['date_sent'] > 0 ? bx_time_js($aItem['date_sent']) : ''), 
-                'date_seen' => $this->_bIsApi ? $aItem['date_seen'] : ($aItem['date_seen'] > 0 ? bx_time_js($aItem['date_seen']) : ''), 
-                'date_click' => $this->_bIsApi ? $aItem['date_click'] : ($aItem['date_click'] > 0 ? bx_time_js($aItem['date_click']) : '')
-            ];
 
-        if($this->_bIsApi)
-            return $aList;
-
-        $this->addJs(array(BX_DIRECTORY_PATH_MODULES . 'boonex/massmailer/plugins/datatables/|datatables.min.js'));
-        $this->addCss(array('main.css', BX_DIRECTORY_PATH_MODULES . 'boonex/massmailer/plugins/datatables/|datatables.min.css'));
-        return $this->parseHtmlByName('campaign_subscribers.html', array(
-             'bx_repeat:items' => $aList,
-             'email_title' => _t('_bx_massmailer_txt_title_email'),
-             'date_sent_title' => _t('_bx_massmailer_txt_title_date_sent'),
-             'date_seen_title' => _t('_bx_massmailer_txt_title_date_seen'),
-             'date_click_title' => _t('_bx_massmailer_txt_title_date_click'),
-            ));
-    }
-    
     function getClicks($aData)
     {
         $aList = [];
@@ -70,9 +45,7 @@ class BxMassMailerTemplate extends BxBaseModGeneralTemplate
              'last_click_title' => _t('_bx_massmailer_txt_last_click_title'),
             ));
     }
-    
-    
-    
+
     function getInfo($CampaignId)
     {
         $CNF = &$this->getModule()->_oConfig->CNF;
