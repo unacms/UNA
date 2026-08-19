@@ -12,6 +12,7 @@ import { View, Row, ScrollView } from 'app/design/view'
 import { Platform } from 'react-native'
 import UniList from 'app/ui/atoms/unilist'
 import { appSetting, isObjectsEqual } from 'app/lib/util'
+import { responsiveClasses } from 'app/lib/responsive-classes'
 import { Text } from 'app/design/typography'
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { getSkeletonForList } from 'app/lib/skeleton-helpers'
@@ -504,7 +505,7 @@ export default function Browse(props) {
         <BlockWrapper {...props.blockWrapperProps}>
             <View className={`w-full ${isOneLine ? '' : 'web:h-full '}`}>
                 <View className="w-full" ></View>
-                <View className={`w-full ${props.showBg ? blockTheme['u-block-bg'] + ' ' + blockTheme['u-block-pad'] + ' ' + blockTheme['u-block-base'] : ''} ${blockTheme['u-block-rounded-all']}`} style={isOneLine || !isWeb ? {} : styles}>
+                <View className={`w-full ${props.showBg ? blockTheme['u-block-bg'] + ' ' + blockTheme['u-block-pad'] + ' ' + blockTheme['u-block-base'] : ''} ${responsiveClasses('rounded', props.blockWrapperProps?.config?.rounded)}`} style={isOneLine || !isWeb ? {} : styles}>
                     {isShowTitleInside && (
                         <Row className={`items-center justify-between ${props.showBg ? '' : 'p-2 '}`}>
                              <View className="p-2">
