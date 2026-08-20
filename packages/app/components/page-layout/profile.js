@@ -1,6 +1,6 @@
 import { Conductor } from 'app/ui/molecules/sections/conductor';
 import { useState, useEffect, useMemo, memo, useCallback } from 'react';
-import { appSetting, getBlocksFromData, cloneObject, getPageData } from 'app/lib/util';
+import { appSetting, getBlocksFromData, getPageData } from 'app/lib/util';
 import { useFocusEffect } from 'app/lib/hooks/router'
 import { useCurrentUser } from 'app/context/user';
 import { subscribe } from 'app/ui/atoms/socket';
@@ -85,17 +85,16 @@ export default function PageLayoutProfile({ layoutName, data, uri, blocks }) {
     }
 
     const menu = useMemo(() => {
-        const base = pageData.menu?.items?.length ? cloneObject(pageData.menu) : { items: [] };
-        const isNamePresent = base.items.some(item => item.link === pageData.url);
-        if (!isNamePresent) {
-            base.items.push({ id: 'hidden', name: uri, title: '', link: pageData.url });
-        }
-        if (!base.config) {
-            base.title = base.title ?? '';
-            base.config = '{add:[]}';
-        }
-        return base;
-
+        const items = pageData.menu?.items ?? [];
+        const hasCurrent = items.some((item) => item.link === pageData.url);
+        return {
+            ...pageData.menu,
+            title: pageData.menu?.title ?? '',
+            config: pageData.menu?.config ?? '{add:[]}',
+            items: hasCurrent
+                ? items
+                : [...items, { id: 'hidden', name: uri, title: '', link: pageData.url }],
+        };
     }, [pageData.ts, pageData.timestamp, uri, pageData.url]);
 
     const isCoverDisabled = appSetting('cover', 'view_by_module', pageData.cover_block.profile?.module) == 'none';
