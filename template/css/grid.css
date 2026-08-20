@@ -172,3 +172,23 @@ td:last-child .bx-grid-cell-single-actions-wrapper {
 .bx-grid-table-wrapper td .bx-def-unit {
     margin-bottom:0;
 }
+
+.bx-grid-secret {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    min-width: 0;
+}
+.bx-grid-secret-value {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-family: monospace;
+}
+.bx-grid-secret-toggle {
+    flex-shrink: 0;
+    line-height: 1;
+    cursor: pointer;
+}

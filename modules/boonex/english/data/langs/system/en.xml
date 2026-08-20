@@ -3272,6 +3272,9 @@ If it is not enabled then please consider implementing this optimization, since 
 	<string name="_sys_grid_confirmation"><![CDATA[Are you sure?]]></string>
 	<string name="_sys_grid_delete_failed"><![CDATA[Delete failed]]></string>
   <string name="_sys_grid_search"><![CDATA[Search...]]></string>
+	<string name="_sys_grid_secret_hide"><![CDATA[Hide]]></string>
+	<string name="_sys_grid_secret_password_prompt"><![CDATA[Enter your current password]]></string>
+	<string name="_sys_grid_secret_reveal"><![CDATA[Show]]></string>
   <string name="_sys_grid_total_count"><![CDATA[Сount: {0}]]></string>
   <string name="_sys_grid_txt_account_manager"><![CDATA[Redirect to manage account.]]></string>
 	<string name="_sys_inst_audit_failed"><![CDATA[{0} failed]]></string>

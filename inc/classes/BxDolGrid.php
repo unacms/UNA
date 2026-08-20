@@ -140,6 +140,29 @@
  *
  *
  *
+ * @section grid_display_secret_cell Displaying secret cell
+ *
+ * To display a field as a masked secret (for example `abcd********xyz1`) with an eye icon to reveal it
+ * after the current account password is confirmed, call `_getCellSecret` from a custom cell method:
+ *
+ * @code
+ * protected function _getCellApiKey ($mixedValue, $sKey, $aField, $aRow)
+ * {
+ *     return $this->_getCellSecret($mixedValue, $sKey, $aField, $aRow);
+ * }
+ * @endcode
+ *
+ * Alternatively, set `secret` to `true` in the field `params` (serialized array in `sys_grid_fields.params`):
+ *
+ * @code
+ * a:1:{s:6:"secret";b:1;}
+ * @endcode
+ *
+ * The full value is never included in the page HTML. Revealing it requires the logged-in user's current password.
+ * Override `_getSecretValue` when the secret is stored encrypted or computed rather than read from the row field.
+ *
+ *
+ *
  * @section grid_display_custom_header Displaying custom column header
  *
  * This is working similar to displaying custom cell. It easily customize its design by specifying custom attributes as 'attr_head' in params field in sys_grid_fields table.
@@ -727,6 +750,24 @@ class BxDolGrid extends BxDolFactory implements iBxDolFactoryObject, iBxDolRepla
         $sQuery .= ' AND ' . $sFieldId . ' IN (' . $oDb->implode_escape($aIds) . ')';
 
         return $oDb->getAll($sQuery);
+    }
+
+    protected function _getDataArrayUpdated ($aIds)
+    {
+        if ($this->_aOptions['source'] && !is_array($this->_aOptions['source']))
+            $this->_aOptions['source'] = unserialize($this->_aOptions['source']);
+
+        if (empty($this->_aOptions['source']) || !is_array($this->_aOptions['source']) || !$this->_aOptions['field_id'] || !$aIds || !is_array($aIds))
+            return [];
+
+        $sFieldId = $this->_aOptions['field_id'];
+        $aResult = [];
+        foreach ($this->_aOptions['source'] as $aRow) {
+            if (isset($aRow[$sFieldId]) && in_array($aRow[$sFieldId], $aIds))
+                $aResult[] = $aRow;
+        }
+
+        return $aResult;
     }
 
     protected function _getCellData($sKey, $aField, $aRow)

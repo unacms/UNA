@@ -126,6 +126,36 @@ class BxBaseGrid extends BxDolGrid
         echo echoJson(array($sAction => $aAffectedIds));
     }
 
+    public function performActionRevealSecret()
+    {
+        $this->_replaceMarkers();
+
+        if (!isLogged())
+            return $this->_getActionResult(['msg' => _t('_Access denied')]);
+
+        if (!$this->_isCurrentPasswordValid(bx_get('password')))
+            return $this->_getActionResult(['msg' => _t('_sys_form_account_input_password_current_error')]);
+
+        $aIds = bx_get('ids');
+        $sKey = bx_process_input(bx_get('field'));
+        $mixedId = is_array($aIds) && $aIds ? reset($aIds) : false;
+
+        if ($mixedId === false || $sKey === false || $sKey === '' || empty($this->_aOptions['fields'][$sKey]))
+            return $this->_getActionResult(['msg' => _t('_sys_txt_error_occured')]);
+
+        $aRow = $this->_getSecretRow($mixedId);
+        if (!$aRow)
+            return $this->_getActionResult(['msg' => _t('_sys_txt_error_occured')]);
+
+        return $this->_getActionResult([
+            'secret' => [
+                'id' => $mixedId,
+                'field' => $sKey,
+                'value' => $this->_getSecretValue($mixedId, $sKey, $aRow),
+            ]
+        ]);
+    }
+
     public function getCode ($isDisplayHeader = true)
     {
         $this->_replaceMarkers ();
@@ -362,7 +392,7 @@ class BxBaseGrid extends BxDolGrid
             foreach($this->_aOptions['fields'] as $sKey => $aField) {
                 $sMethod = '_getCell' . $this->_genMethodName($sKey);
                 if(!method_exists($this, $sMethod))
-                    $sMethod = $sMethodDefault;
+                    $sMethod = !empty($aField['secret']) ? '_getCellSecret' : $sMethodDefault;
 
                 if(($aCell = $this->$sMethod(isset($aData[$iKey][$sKey]) ? $aData[$iKey][$sKey] : _t('_undefined'), $sKey, $aField, $aRow)))
                     $aDataRv[$iKey][$sKey] = $aCell;
@@ -644,13 +674,16 @@ class BxBaseGrid extends BxDolGrid
         $sCustomMethod = '_getCell' . $this->_genMethodName($sKey);
         if (method_exists($this, $sCustomMethod))
             $sMethod = $sCustomMethod;
+        else if (!empty($aField['secret']))
+            $sMethod = '_getCellSecret';
 
         $mixedValue = $this->_getCellData($sKey, $aField, $aRow);
 
         if ($aField['translatable'])
             $mixedValue = _t($mixedValue);
 
-        $mixedValue = $this->_limitMaxLength($mixedValue, $sKey, $aField, $aRow, $this->_isDisplayPopupOnTextOverflow);
+        if ($sMethod != '_getCellSecret')
+            $mixedValue = $this->_limitMaxLength($mixedValue, $sKey, $aField, $aRow, $this->_isDisplayPopupOnTextOverflow);
 
         return $this->$sMethod($mixedValue, $sKey, $aField, $aRow);
     }
@@ -750,6 +783,73 @@ class BxBaseGrid extends BxDolGrid
             isset($aField['width']) ? 'width:' . $aField['width'] : false // add default styles
         );
         return '<td ' . $sAttr . '>' . $mixedValue . '</td>';
+    }
+
+    /**
+     * Display a cell as a masked secret with an eye icon to reveal it after password confirmation.
+     * @see BxDolGrid grid_display_secret_cell
+     */
+    protected function _getCellSecret ($mixedValue, $sKey, $aField, $aRow)
+    {
+        $sRaw = '';
+        if (isset($aRow[$sKey]) && $aRow[$sKey] !== '' && $aRow[$sKey] !== null)
+            $sRaw = (string)$aRow[$sKey];
+        else if ($mixedValue !== '' && $mixedValue !== null && $mixedValue !== false)
+            $sRaw = (string)$mixedValue;
+
+        $sMasked = $sRaw !== '' ? bx_gen_secret($sRaw) : '';
+
+        if ($this->_bIsApi)
+            return ['type' => 'secret', 'value' => $sMasked];
+
+        $sAttr = $this->_convertAttrs(
+            $aField, 'attr_cell',
+            'bx-grid-cell' . (!empty($aField['name']) ? ' bx-gc-' . $aField['name'] : '') . ' bx-def-padding-sec-bottom bx-def-padding-sec-top',
+            isset($aField['width']) ? 'width:' . $aField['width'] : false
+        );
+
+        $sToggle = '';
+        if ($sRaw !== '' && isLogged()) {
+            $mixedId = $aRow[$this->_aOptions['field_id']];
+            $sToggle = '<a href="javascript:void(0);" class="bx-grid-secret-toggle" title="' . bx_html_attribute(_t('_sys_grid_secret_reveal')) . '" bx_grid_secret_id="' . bx_html_attribute($mixedId) . '" bx_grid_secret_field="' . bx_html_attribute($sKey) . '"><i class="sys-icon eye"></i></a>';
+        }
+
+        return '<td ' . $sAttr . '><div class="bx-grid-secret"><span class="bx-grid-secret-value" data-masked="' . bx_html_attribute($sMasked) . '">' . bx_process_output($sMasked) . '</span>' . $sToggle . '</div></td>';
+    }
+
+    protected function _getSecretRow($mixedId)
+    {
+        $aRows = $this->_getDataUpdated([$mixedId]);
+        if (!$aRows || !is_array($aRows))
+            return false;
+
+        $sFieldId = $this->_aOptions['field_id'];
+        foreach ($aRows as $aRow) {
+            if (isset($aRow[$sFieldId]) && (string)$aRow[$sFieldId] === (string)$mixedId)
+                return $aRow;
+        }
+
+        return reset($aRows);
+    }
+
+    /**
+     * Return the secret value for a revealed cell. Override when the value is encrypted or computed.
+     */
+    protected function _getSecretValue($mixedId, $sKey, $aRow)
+    {
+        return isset($aRow[$sKey]) ? $aRow[$sKey] : '';
+    }
+
+    protected function _isCurrentPasswordValid($sPassword)
+    {
+        if ($sPassword === false || $sPassword === '')
+            return false;
+
+        if (!class_exists('BxFormAccountCheckerHelper'))
+            bx_import('BxBaseFormAccount');
+
+        $oChecker = new BxFormAccountCheckerHelper();
+        return true === $oChecker->checkPasswordCurrent($sPassword);
     }
 
     protected function _getActions ($sType, $sActionData = false, $isSmall = false, $isDisabled = false, $isPermanentState = false, $aRow = array())
@@ -1077,7 +1177,12 @@ class BxBaseGrid extends BxDolGrid
         $this->_oTemplate->addJs('BxDolGrid.js');
         $this->_oTemplate->addCss('grid.css');
 
-        $this->_oTemplate->addJsTranslation('_sys_grid_confirmation');
+        $this->_oTemplate->addJsTranslation([
+            '_sys_grid_confirmation',
+            '_sys_grid_secret_reveal',
+            '_sys_grid_secret_hide',
+            '_sys_grid_secret_password_prompt',
+        ]);
     }
 }
 

@@ -308,6 +308,9 @@ BxDolGrid.prototype.processJson = function (oData, sAction, isDisableLoading) {
         if (oData && undefined != oData.eval) {
             eval(oData.eval);
         }
+        if (oData && undefined != oData.secret) {
+            $this.setSecretValue(oData.secret.id, oData.secret.field, oData.secret.value);
+        }
     };
 
     if (typeof(isDisableLoading) == 'undefined' || !isDisableLoading)
@@ -416,6 +419,15 @@ BxDolGrid.prototype._bindActions = function (isSkipSearchInput) {
     });
 
     this._bindActionsSingle ();
+
+    jQuery('#' + this._sIdWrapper + ' .bx-grid-secret-toggle').bind('click', function () {
+        var eWrap = $(this).closest('.bx-grid-secret');
+        if (eWrap.hasClass('bx-grid-secret-shown')) {
+            $this.hideSecret(eWrap);
+            return;
+        }
+        $this.revealSecret($(this).attr('bx_grid_secret_id'), $(this).attr('bx_grid_secret_field'));
+    });
     
     if (jQuery('#' + this._sIdWrapper + ' .bx-switcher-cont input').length) 
         jQuery('#' + this._sIdWrapper).addWebForms(); 
@@ -491,6 +503,59 @@ BxDolGrid.prototype._checkAppend = function (oInput, oData) {
         oData = $.extend({}, oData, oAppend);
 
     return oData;
+};
+
+BxDolGrid.prototype.revealSecret = function (sId, sField) {
+    var $this = this;
+    var oInput = $('#bx-popup-prompt-value');
+
+    $(document).dolPopupPrompt({
+        message: _t('_sys_grid_secret_password_prompt'),
+        value: '',
+        onClickOk: function (oPopup) {
+            var oData = {
+                o: $this._sObject,
+                a: 'reveal_secret',
+                'ids[]': sId,
+                field: sField,
+                password: oPopup.getValue(),
+                csrf_token: $this._sCsrfToken,
+                _r: Math.random()
+            };
+            if (typeof($this._oQueryAppend) == 'object')
+                oData = $.extend({}, $this._oQueryAppend, oData);
+
+            $this.loading(true);
+            $.post(sUrlRoot + 'grid.php', oData, function (oResult) {
+                $this.processJson(oResult, 'reveal_secret', false);
+            }, 'json');
+        },
+        onShow: function () {
+            oInput.attr('type', 'password').attr('autocomplete', 'current-password').val('').focus();
+        },
+        onHide: function () {
+            oInput.attr('type', 'text').removeAttr('autocomplete').val('');
+        }
+    });
+};
+
+BxDolGrid.prototype.hideSecret = function (eWrap) {
+    var sMasked = eWrap.find('.bx-grid-secret-value').attr('data-masked') || '';
+    eWrap.removeClass('bx-grid-secret-shown');
+    eWrap.find('.bx-grid-secret-value').text(sMasked);
+    eWrap.find('.bx-grid-secret-toggle').attr('title', _t('_sys_grid_secret_reveal'));
+    eWrap.find('.bx-grid-secret-toggle .sys-icon').removeClass('eye-slash').addClass('eye');
+};
+
+BxDolGrid.prototype.setSecretValue = function (sId, sField, sValue) {
+    var eToggle = jQuery('#' + this._sIdWrapper + ' .bx-grid-secret-toggle').filter(function () {
+        return $(this).attr('bx_grid_secret_id') == sId && $(this).attr('bx_grid_secret_field') == sField;
+    });
+    var eWrap = eToggle.closest('.bx-grid-secret');
+    eWrap.addClass('bx-grid-secret-shown');
+    eWrap.find('.bx-grid-secret-value').text(sValue);
+    eToggle.attr('title', _t('_sys_grid_secret_hide'));
+    eToggle.find('.sys-icon').removeClass('eye').addClass('eye-slash');
 };
 
 /** @} */

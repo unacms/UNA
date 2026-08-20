@@ -3245,6 +3245,9 @@
 	<string name="_sys_grid_confirmation"><![CDATA[Вы уверены?]]></string>
 	<string name="_sys_grid_delete_failed"><![CDATA[Удалить ошибочные]]></string>
 	<string name="_sys_grid_search"><![CDATA[Поиск...]]></string>
+	<string name="_sys_grid_secret_hide"><![CDATA[Скрыть]]></string>
+	<string name="_sys_grid_secret_password_prompt"><![CDATA[Введите текущий пароль]]></string>
+	<string name="_sys_grid_secret_reveal"><![CDATA[Показать]]></string>
   <string name="_sys_grid_total_count"><![CDATA[Всего записей: {0}]]></string>
   <string name="_sys_grid_txt_account_manager"><![CDATA[Перенаправить в Управление аккаунтом.]]></string>
 	<string name="_sys_inst_audit_failed"><![CDATA[{0} ошибок]]></string>
