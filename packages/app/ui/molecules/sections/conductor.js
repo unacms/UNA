@@ -20,7 +20,7 @@ import { BlockByName } from 'app/components/block';
 import { Platform } from 'react-native';
 import Cover, { CoverSmall, CoverBackButton } from 'app/components/elements/cover';
 import emitter from 'app/context/emitter'
-import { useSetHeader, useScrollValue, getScrollValue, useListMaxScrollOffset, useSetCoverScrollCompensation, defaultHeader, useSetHeaderHeight, getHeaderWriteGeneration } from 'app/context/jotai/layout';
+import { useSetHeader, useScrollValue, useGetScrollValue, useListMaxScrollOffset, useSetCoverScrollCompensation, useSetHeaderHeight } from 'app/context/jotai/layout';
 import { getComponent } from 'app/components/registry';
 import { useFocusEffect, useIsFocused, useRouter } from 'app/lib/hooks/router'
 import { appSetting } from 'app/lib/util'
@@ -733,9 +733,11 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
 
     const setHeader = useSetHeader();
     const setHeaderHeight = useSetHeaderHeight();
-    // Tab screens stay mounted when blurred (see tabs.js) — every write to the
-    // shared header atom and every global emitter command must be gated on
-    // focus, otherwise a background conductor clobbers the visible submenu.
+    const getScrollValue = useGetScrollValue();
+    // Tab screens stay mounted when blurred (see tabs.js) — global emitter
+    // commands must be gated on focus so a background conductor does not react
+    // to a command meant for the visible one. Header writes are already scoped:
+    // every tab screen owns its Jotai store (see expo-screen.js).
     const isFocused = useIsFocused();
     const isFocusedRef = useRef(isFocused);
     isFocusedRef.current = isFocused;
@@ -1095,7 +1097,7 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
             onStartRefresh();
         });
         return () => subscription.remove();
-    }, [setIndex, onStartRefresh]);
+    }, [setIndex, onStartRefresh, getScrollValue]);
 
     useEffect(() => {
         if (!refreshRequested) {
@@ -1345,44 +1347,26 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
 
     const subHeaderRef = useRef(sceneHeaderComp);
     subHeaderRef.current = sceneHeaderComp;
-    const headerWriteRef = useRef(0);
-    const setOwnedHeader = useCallback((value) => {
-        setHeader(value);
-        headerWriteRef.current = getHeaderWriteGeneration();
-    }, [setHeader]);
 
+    // Restore this screen's own header after a subtab remount. No blur reset:
+    // the store belongs to this tab alone, so a backgrounded conductor keeps
+    // its header instead of flashing the default one on the way back.
     useFocusEffect(
         useCallback(() => {
             if (useLocalHeader) {
-                setOwnedHeader({ header: false });
+                setHeader({ header: false });
                 setHeaderHeight(0);
             } else {
-                setOwnedHeader({ subHeader: subHeaderRef.current });
+                setHeader({ subHeader: subHeaderRef.current });
             }
-        }, [useLocalHeader, setOwnedHeader, setHeaderHeight])
+        }, [useLocalHeader, setHeader, setHeaderHeight])
     );
 
-    // Reset chrome only on a real blur. Subtab switches remount this conductor
-    // while the screen stays focused — a focus-effect cleanup would clear
-    // subHeader, zero the list offset, and PageHeader would not re-measure.
-    // Skip if another screen already wrote the shared header in this commit
-    // (sibling useEffects run in tree order; useFocusEffect can run first).
-    const wasFocusedRef = useRef(isFocused);
     useEffect(() => {
-        const wasFocused = wasFocusedRef.current;
-        wasFocusedRef.current = isFocused;
-        if (wasFocused && !isFocused && headerWriteRef.current === getHeaderWriteGeneration()) {
-            setHeader(defaultHeader);
+        if (!useLocalHeader) {
+            setHeader({ subHeader: sceneHeaderComp });
         }
-    }, [isFocused, setHeader]);
-
-    useEffect(() => {
-        // Only the focused screen may update the shared subHeader; on refocus
-        // the useFocusEffect above restores it from subHeaderRef.
-        if (!useLocalHeader && isFocused) {
-            setOwnedHeader({ subHeader: sceneHeaderComp });
-        }
-    }, [useLocalHeader, isFocused, sceneHeaderComp, setOwnedHeader]);
+    }, [useLocalHeader, sceneHeaderComp, setHeader]);
 
     const tabSceneProps = {
         skeleton: skeleton,

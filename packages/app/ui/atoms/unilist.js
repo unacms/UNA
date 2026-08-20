@@ -1,11 +1,12 @@
 import { View } from 'app/design/view'
 import { useRef, useCallback, useMemo, useEffect } from 'react';
-import { RefreshControl } from 'react-native';
+import { Platform, RefreshControl } from 'react-native';
 import { LegendList } from "@legendapp/list";
 import { useSetScrollDirection, useHeaderHeight, useSetScrollValue, useSetListMaxScrollOffset, useCoverScrollCompensation } from 'app/context/jotai/layout';
 import { getListScrollOffset, setListScrollOffset } from 'app/lib/tab-page-cache';
 import { useFocusEffect } from 'app/lib/hooks/router';
 import { paddingForList } from 'app/customization/functions';
+import { getHeaderFadeExtend } from 'app/ui/molecules/header/page-header-parts';
 
 const ESTIMATED_ITEM_SIZE_BY_UNIT = {
     feed: 140,
@@ -112,6 +113,18 @@ export default function UniList(props) {
         }
         return 0;
     }, [headerHeightFromAtom, scrollProps?.headerHeight]);
+
+    /** Native PageHeader chrome extends below measured content (`fade_extend`). */
+    const listHeaderOffset = useMemo(() => {
+        if (headerHeight <= 0) {
+            return 0;
+        }
+        const fadeExtra =
+            Platform.OS !== 'web' && !skipHeaderOffset && !inverted && !isModal
+                ? getHeaderFadeExtend()
+                : 0;
+        return headerHeight + fadeExtra;
+    }, [headerHeight, skipHeaderOffset, inverted, isModal]);
 
     const filteredData = useMemo(() => 
         data.filter((v, i, a) => a.findIndex(t => t.id === v.id) === i),
@@ -227,7 +240,7 @@ export default function UniList(props) {
 
     const progressViewOffset = typeof progressViewOffsetProp === 'number'
         ? progressViewOffsetProp
-        : headerHeight;
+        : listHeaderOffset;
 
     const refreshControl = useMemo(() => {
         if (refreshControlProp) {
@@ -251,20 +264,20 @@ export default function UniList(props) {
     const enhancedListHeaderComponent = useCallback(() => {
         return (
             <>
-                {shouldApplyHeaderOffset && headerHeight > 0 && (
-                    <View style={{ height: headerHeight }} />
+                {shouldApplyHeaderOffset && listHeaderOffset > 0 && (
+                    <View style={{ height: listHeaderOffset }} />
                 )}
                 {ListHeaderComponent && (
                     typeof ListHeaderComponent === 'function' 
                         ? <ListHeaderComponent /> 
                         : ListHeaderComponent
                 )}
-                {shouldApplyFooterOffset && headerHeight > 0 && inverted && (
-                    <View style={{ height: headerHeight }} />
+                {shouldApplyFooterOffset && listHeaderOffset > 0 && inverted && (
+                    <View style={{ height: listHeaderOffset }} />
                 )}
             </>
         );
-    }, [shouldApplyHeaderOffset, headerHeight, ListHeaderComponent, shouldApplyFooterOffset, inverted, skipHeaderOffset]);
+    }, [shouldApplyHeaderOffset, listHeaderOffset, ListHeaderComponent, shouldApplyFooterOffset, inverted, skipHeaderOffset]);
 
     const shouldApplyCoverCompensation =
         skipHeaderOffset && !inverted && !isModal && coverScrollCompensation > 0;
@@ -277,20 +290,20 @@ export default function UniList(props) {
                         ? <ListFooterComponent /> 
                         : ListFooterComponent
                 )}
-                {shouldApplyFooterOffset && headerHeight > 0 && !inverted && (
-                    <View style={{ height: headerHeight }} />
+                {shouldApplyFooterOffset && listHeaderOffset > 0 && !inverted && (
+                    <View style={{ height: listHeaderOffset }} />
                 )}
                 {shouldApplyCoverCompensation && (
                     <View style={{ height: coverScrollCompensation }} />
                 )}
             </>
         );
-    }, [shouldApplyFooterOffset, headerHeight, ListFooterComponent, inverted, shouldApplyCoverCompensation, coverScrollCompensation]);
+    }, [shouldApplyFooterOffset, listHeaderOffset, ListFooterComponent, inverted, shouldApplyCoverCompensation, coverScrollCompensation]);
 
     if (preloadComponent) {
         return (
             <View className="w-full">
-                <View className="w-full" style={{ height: headerHeight }} />
+                <View className="w-full" style={{ height: listHeaderOffset }} />
                 {preloadComponent}
             </View>
         );

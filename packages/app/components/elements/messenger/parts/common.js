@@ -33,9 +33,15 @@ import {
     PanelHandler,
 } from 'app/ui/molecules/page/resizable-panels'
 import { useIsDesktop } from 'app/context/measure';
-import { useSetHeader, defaultHeader } from 'app/context/jotai/layout';
+import { useSetHeader, useSetHeaderHeight, defaultHeader } from 'app/context/jotai/layout';
 import { getComponent } from 'app/components/registry';
 import { useSafeAreaInsets } from 'app/lib/hooks/router'
+
+/** Native: `header.content` uses fixed `h-16`; messenger title/actions can paint taller. */
+function messengerHeaderContentClass(isWeb) {
+    const content = appSetting('layout', 'header', 'content');
+    return isWeb ? content : String(content || '').replace(/\bh-16\b/g, 'min-h-16');
+}
 
 // Keep in sync with tabBarStyle.height in app/components/nav/tabs.js
 const TAB_BAR_HEIGHT = Platform.OS === 'ios' ? 52 : 56
@@ -572,6 +578,15 @@ const Convos = memo(({ layoutHeightLeft, data, pageData, selectedConvoIndex, cha
     const lastEmittedSearch = useRef(null);
 
     const setHeader = useSetHeader();
+    const setHeaderHeight = useSetHeaderHeight();
+
+    const onMessengerHeaderLayout = useCallback((event) => {
+        if (isWeb) return;
+        const { height } = event.nativeEvent.layout;
+        if (height > 0) {
+            setHeaderHeight(height);
+        }
+    }, [isWeb, setHeaderHeight]);
 
     // Keep typing local; only notify parent after debounce (skip initial empty — parent loads via menu).
     useEffect(() => {
@@ -601,25 +616,37 @@ const Convos = memo(({ layoutHeightLeft, data, pageData, selectedConvoIndex, cha
     const srch = <Input className="w-full min-w-0" size="small" rounded="full" name="search" placeholder={t('Search') + '...'} value={searchValue} onChangeText={onChangeSearch} />;
     const ContextSelector = getComponent('molecule', 'context_selector');
     const header = useMemo(() => (
-        <Row className={`${appSetting('layout', 'page_content_width_default')} ${appSetting('layout', 'header', 'content')}`}>
-            <View className='hidden lg:flex flex-1 min-w-0 w-full pe-2'>
-                {srch}
-            </View>
-            {!showSearch && <View className='flex-1 min-w-0 lg:hidden'><Row className={appSetting('layout', 'header', 'content_left')}>
-                {appSetting('messenger', 'back_button') && getBackButtonWeb()}
-                {appSetting('context_selector', 'show_always') ? <><ContextSelector url={pageData?.url} uri={pageData?.uri} data={pageData?.context} /></>:  <Text className={`font-bold truncate flex-1 leading-12 lg:px-2 text-card-foreground text-2xl tracking-tight font-main`}>{t('Messenger')}</Text>}
-            </Row></View>}
-            {showSearch && <View className={`${appSetting('layout', 'header', 'content_left')} flex-1 min-w-0 lg:hidden`}>
-                {srch}
-            </View>}
-            <Row className='my-auto shrink-0'>
-                <View className='lg:hidden mr-1 lg:mr-0 '>
-                    <Button size="base" startDecorator="Search" variant="text" rounded onPress={() => handleSearch2()} />
+        <View onLayout={onMessengerHeaderLayout} className="w-full">
+            <Row className={`${appSetting('layout', 'page_content_width_default')} ${messengerHeaderContentClass(isWeb)} max-w-full`}>
+                <View className='hidden lg:flex flex-1 min-w-0 w-full pe-2'>
+                    {srch}
                 </View>
-                {addButtons}
+                {!showSearch && (
+                    <Row className='flex-1 min-w-0 items-center gap-2 px-4 overflow-hidden lg:hidden'>
+                        {appSetting('messenger', 'back_button') ? getBackButtonWeb() : null}
+                        {appSetting('context_selector', 'show_always') ? (
+                            <ContextSelector url={pageData?.url} uri={pageData?.uri} data={pageData?.context} />
+                        ) : (
+                            <Text className='font-bold truncate flex-1 min-w-0 text-card-foreground text-2xl tracking-tight font-main' numberOfLines={1}>
+                                {t('Messenger')}
+                            </Text>
+                        )}
+                    </Row>
+                )}
+                {showSearch ? (
+                    <View className='flex-1 min-w-0 px-4 lg:hidden'>
+                        {srch}
+                    </View>
+                ) : null}
+                <Row className='my-auto shrink-0 items-center gap-x-1 pe-4'>
+                    <View className='lg:hidden'>
+                        <Button size="base" startDecorator="Search" variant="text" rounded onPress={() => handleSearch2()} />
+                    </View>
+                    {addButtons}
+                </Row>
             </Row>
-        </Row>
-    ), [showSearch, searchValue, addButtons, pageData, t]);
+        </View>
+    ), [showSearch, searchValue, addButtons, pageData, t, isWeb, onMessengerHeaderLayout]);
 
     useEffect(() => {
         if (!isWeb) return;
@@ -639,15 +666,15 @@ const Convos = memo(({ layoutHeightLeft, data, pageData, selectedConvoIndex, cha
     return (
         <View className='flex-1 bg-card' style={{ minHeight: layoutHeightLeft }}>
             {(isWeb && !isSmallScreen) && <View className='w-full px-4'>{header}</View>}
-            {data && data.length > 0 ? <View className=' w-full overflow-hidden web:flex-1'
-            style={{height:layoutHeightLeft}}
+            {data && data.length > 0 ? <View
+                className='w-full overflow-hidden web:flex-1'
+                style={{ height: layoutHeightLeft }}
             >
                 <UniList
-                  
                     data={data}
                     mode="simple"
                     useCustomScrollHandler={isSmallScreen ? true : false}
-                    height={layoutHeightLeft - 64}
+                    height={isWeb ? layoutHeightLeft - 64 : layoutHeightLeft}
                     renderItem={({ item, index }) => <ItemConvo selectedIndex={selectedConvoIndex} item={item} index={index} changeConvo={changeConvo} />}
                 /></View>
                 : <View className='items-center justify-center w-full h-full'><View className="pt-8">
@@ -693,29 +720,28 @@ const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots,
 
     const header = useMemo(() => (
 
-            <Row className={`${appSetting('layout', 'page_content_width_default')} ${appSetting('layout', 'header', 'content')}`}>
-                <Row className="">
-                    {isSmallScreen && <BackButton buttonProps={{ variant: "text", startDecorator: 'ArrowLeft', rounded: 'rounded' }} callback={showConvo} />}
-                    <View className="overflow-hidden flex-1">
-                    <Text numberOfLines={1} className="font-bold text-card-foreground text-lg sm:text-xl tracking-tight overflow-hidden text-ellipsis">{title}</Text>
-                    </View>
+            <Row className={`${appSetting('layout', 'page_content_width_default')}  ${messengerHeaderContentClass(isWeb)} max-w-full`}>
+                <Row className="flex-1 min-w-0 items-center gap-2 px-4 overflow-hidden">
+                    {isSmallScreen ? (
+                        <View className="shrink-0">
+                            <BackButton buttonProps={{ variant: "text", startDecorator: 'ArrowLeft', rounded: 'rounded' }} callback={showConvo} />
+                        </View>
+                    ) : null}
+                    <Text numberOfLines={1} className="flex-1 min-w-0 font-bold text-card-foreground text-lg sm:text-xl tracking-tight">{title}</Text>
                 </Row>
-                <Row className='items-center gap-x-2'>
-                    <View>
-                        <DropdownMenu onSelect={(oItem) => { handleManage(oItem) }} items={menuItems}>
-                            <Button
-                                variant="text"
-                                size="base"
-                                rounded
-
-                                startDecorator="Settings"
-                            />
-                        </DropdownMenu>
-                    </View>
-                </Row>
+                <View className="shrink-0 items-center justify-center pe-4">
+                    <DropdownMenu onSelect={(oItem) => { handleManage(oItem) }} items={menuItems}>
+                        <Button
+                            variant="text"
+                            size="base"
+                            rounded
+                            startDecorator="Settings"
+                        />
+                    </DropdownMenu>
+                </View>
             </Row>
         
-    ), [isSmallScreen, title, showConvo]);
+    ), [isSmallScreen, title, showConvo, isWeb]);
 
     useEffect(() => {
         if (!isWeb) return;
@@ -739,7 +765,7 @@ const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots,
                 onStartReached={startReached}
                 scrollToLastItem={true}
                 data={data}
-                height={layoutHeightRight - (isSmallScreen ? 64 : 64)}
+                height={layoutHeightRight - 64}
                 mode="simple"
                 useCustomScrollHandler={isSmallScreen ? true : false}
                 renderItem={({ item, index }) => <ItemJot handleReply={handleReply} item={item} index={index} />}

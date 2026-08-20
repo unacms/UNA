@@ -1,4 +1,6 @@
 import { atom, useSetAtom, useAtomValue } from 'jotai';
+import { useAtomCallback } from 'jotai/utils';
+import { useCallback } from 'react';
 import { Platform } from 'react-native'
 const isWeb = Platform.OS == 'web'
 
@@ -10,23 +12,12 @@ export const defaultHeader = {
 };
 // Atoms
 export const headerAtom = atom(defaultHeader);
-// Monotonic id of the last `setHeader` write. Blur resets compare against
-// this so a screen that already lost the atom does not wipe a newer owner
-// (sibling useEffects in one commit, or useFocusEffect before useEffect).
-let headerWriteGeneration = 0;
-export const getHeaderWriteGeneration = () => headerWriteGeneration;
 export const footerAtom = atom(true);
 export const scrollDirectionAtom = atom(0);
 export const scrollValueAtom = atom(0);
-// Non-reactive mirror. Scroll writers fire every frame — subscribe with
-// `useScrollValue()` only when the UI must track offset continuously
-// (cover collapse, overlay header). Callbacks should use `getScrollValue()`.
-let scrollValueCurrent = 0;
-export const getScrollValue = () => scrollValueCurrent;
-const setScrollValueAtom = atom(null, (_get, set, value) => {
+const setScrollValueAtom = atom(null, (get, set, value) => {
     const next = Math.round(Number(value));
-    if (!Number.isFinite(next) || next === scrollValueCurrent) return;
-    scrollValueCurrent = next;
+    if (!Number.isFinite(next) || next === get(scrollValueAtom)) return;
     set(scrollValueAtom, next);
 });
 /** Max scroll offset the active list can reach (content height − viewport). */
@@ -40,13 +31,14 @@ export const listMaxScrollOffsetAtom = atom(0);
 export const coverScrollCompensationAtom = atom(0);
 /** Scroll offset at which the native profile cover finishes collapsing (see conductor.js). */
 export const COVER_COLLAPSE_SCROLL = 500;
-/**
- * SSR/hydration seed for headerHeightAtom on web only.
- * After mount, PageHeader `onLayout` replaces this with the measured height.
- * Keep close to `layout.header.content` height (e.g. h-14 → 56) to minimize layout shift.
- */
+/** Keep close to `layout.header.content` height (e.g. h-16 → 64) to minimize layout shift. */
 export const DEFAULT_HEADER_HEIGHT = 64;
-export const headerHeightAtom = atom(isWeb ? DEFAULT_HEADER_HEIGHT : 0);
+/**
+ * SSR/hydration seed on web; on native each tab store starts here until PageHeader
+ * `onLayout` publishes the measured height. Use DEFAULT (not 0) so list spacers are
+ * not empty on first paint under the absolute header bar.
+ */
+export const headerHeightAtom = atom(DEFAULT_HEADER_HEIGHT);
 export const footerHeightAtom = atom(0);
 
 // Write-only atom: keep the last measured height while a visible header is
@@ -56,18 +48,15 @@ export const footerHeightAtom = atom(0);
 // On native, subHeader toggles must not zero height (Settings tabs clip); the
 // PageHeader container onLayout updates the total instead.
 export const setHeaderAtom = atom(null, (get, set, value) => {
-    headerWriteGeneration += 1;
     const prev = get(headerAtom);
     const next = typeof value === 'function' ? value(prev) : value;
     set(headerAtom, next);
-    // Native: do not zero height when subHeader appears/disappears — that left
-    // list content under Settings tabs until (or unless) a later measure. Keep
-    // the previous offset; PageHeader container onLayout corrects the total.
-    // Treat missing `header` as null so `setHeader({ subHeader })` after
-    // `defaultHeader` (`header: null`) does not look like a chrome change.
-    const prevSlot = prev?.header === false ? false : (prev?.header ?? null);
-    const nextSlot = next?.header === false ? false : (next?.header ?? null);
-    if (!isWeb && (nextSlot === false || nextSlot !== prevSlot)) {
+    // Native: only a hidden header is known to be 0 tall. Swapping the chrome
+    // for another element must keep the previous offset — React Native emits
+    // `onLayout` again only when the measured size actually changes, so zeroing
+    // on every swap leaves the list under a same-height bar (messenger, Settings
+    // tabs) with no second measure to correct it.
+    if (!isWeb && next?.header === false) {
         set(headerHeightAtom, 0);
     }
 });
@@ -85,6 +74,15 @@ export const useScrollDirection = () => useAtomValue(scrollDirectionAtom);
 
 export const useSetScrollValue = () => useSetAtom(setScrollValueAtom);
 export const useScrollValue = () => useAtomValue(scrollValueAtom);
+/**
+ * Non-reactive read of the current scroll offset. Scroll writers fire every
+ * frame — subscribe with `useScrollValue()` only when the UI must track the
+ * offset continuously (cover collapse, overlay header); callbacks should read
+ * through this hook, which resolves against the store of the screen it is
+ * mounted in (each native tab has its own).
+ */
+export const useGetScrollValue = () =>
+    useAtomCallback(useCallback((get) => get(scrollValueAtom), []));
 
 export const useSetListMaxScrollOffset = () => useSetAtom(listMaxScrollOffsetAtom);
 export const useListMaxScrollOffset = () => useAtomValue(listMaxScrollOffsetAtom);

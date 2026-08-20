@@ -2,7 +2,7 @@ import { View, ScrollView } from 'app/design/view';
 import { getPageWidth } from 'app/lib/util'
 import { Platform } from 'react-native'
 import { useScroll } from 'app/lib/hooks/useScroll';
-import { useHeaderHeight, useFooterHeight, useSetHeader, getScrollValue, defaultHeader } from 'app/context/jotai/layout';
+import { useHeaderHeight, useFooterHeight, useSetHeader, useGetScrollValue, defaultHeader } from 'app/context/jotai/layout';
 import { KbAvoidingViewScroll } from 'app/ui/atoms/kb-avoiding-view';
 import { useCallback, useEffect, useRef } from 'react';
 import { useFocusEffect }  from 'app/lib/hooks/router'
@@ -16,6 +16,7 @@ export default function Page({ children, data, page_width, processKeyboard=true,
     const Wrapper = isWeb ? View : processKeyboard? KbAvoidingViewScroll : ScrollView;
     const { onScroll } = useScroll();
     const setHeader = useSetHeader();
+    const getScrollValue = useGetScrollValue();
     const internalScrollRef = useRef(null);
     const scrollRef = scrollRefProp ?? internalScrollRef;
 
@@ -38,7 +39,7 @@ export default function Page({ children, data, page_width, processKeyboard=true,
 
             scrollContainerByDelta(scrollRef.current, delta, getScrollValue());
         });
-    }, [headerHeightFromAtom, scrollRef]);
+    }, [headerHeightFromAtom, scrollRef, getScrollValue]);
 
     return (
         <Wrapper

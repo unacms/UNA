@@ -1,4 +1,5 @@
 import { Root } from 'app/root'
+import { Provider as JotaiProvider } from 'jotai'
 import { useState, useEffect, useLayoutEffect, useRef } from 'react'
 import { useCurrentUser } from 'app/context/user';
 import { appSetting, parseUrl, parseQueryString, getURI } from 'app/lib/util'
@@ -210,8 +211,14 @@ const Content = ({ pagePath, currentUser, tabKey, isRoot, refreshToken }) => {
         }, 1000);
         return () => clearTimeout(timer);
     }, [pageData?.data]);
-    return pageData?.data ? (
-
-        <Root path={pagePath} data={pageData.data} uri={pageData.data.uri} />
-    ) : <></>;
+    // Every tab keeps its own Jotai store: expo-router holds all tab screens
+    // mounted, so a shared store would let five PageHeaders/lists overwrite
+    // each other's header, height and scroll state.
+    return (
+        <JotaiProvider>
+            {pageData?.data ? (
+                <Root path={pagePath} data={pageData.data} uri={pageData.data.uri} />
+            ) : null}
+        </JotaiProvider>
+    );
 };
