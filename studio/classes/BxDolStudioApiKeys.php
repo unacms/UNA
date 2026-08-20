@@ -14,6 +14,11 @@ class BxDolStudioApiKeys extends BxTemplStudioGrid
         parent::__construct ($aOptions, $oTemplate);
     }
 
+    protected function _getCellKey($mixedValue, $sKey, $aField, $aRow)
+    {
+        return $this->_getCellSecret($mixedValue, $sKey, $aField, $aRow);
+    }
+
     public function _performActionAdd($aForm, $aCustomValues = []) 
     {
         $oForm = new BxTemplFormView($aForm);

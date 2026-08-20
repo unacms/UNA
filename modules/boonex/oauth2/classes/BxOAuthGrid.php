@@ -33,6 +33,11 @@ class BxOAuthGrid extends BxTemplGrid
         return isAdmin();
     }
 
+    protected function _getCellClientSecret($mixedValue, $sKey, $aField, $aRow)
+    {
+        return $this->_getCellSecret($mixedValue, $sKey, $aField, $aRow);
+    }
+
     /**
      * 'add' action handler
      */
