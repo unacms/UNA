@@ -2523,6 +2523,7 @@ class BxBaseModProfileModule extends BxBaseModGeneralModule implements iBxDolCon
             'url' => bx_api_get_relative_url($this->serviceGetLink($iId)),
             'image' => $this->serviceGetThumb($iId),
             'cover' => $this->serviceGetCover($iId),
+            'badges' => $this->serviceGetBadges($iId, false, true)
         ];
 
         if(isset($aParams['template']) && $aParams['template'] == 'unit_wo_info')
