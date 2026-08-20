@@ -514,27 +514,32 @@ class BxDolSearchResult implements iBxDolReplaceable
 
     public function setCategoriesCondition($sKeyword)
     {
-		$this->aCurrent['join']['multicat'] = array(
+        $this->aCurrent['join']['multicat'] = [
             'type' => 'INNER',
             'table' => 'sys_categories2objects',
             'mainField' => 'id',
             'onField' => 'object_id',
-            'joinFields' => array(),
-        );
-		
-		if (isset($this->aCurrent['tableSearch'])){
-			$this->aCurrent['join']['multicat']['mainTable'] = $this->aCurrent['tableSearch'];
-		}
-		
-        $this->aCurrent['join']['multicat2'] = array(
-           'type' => 'INNER',
-           'table' => 'sys_categories',
-           'mainField' => 'category_id',
-           'mainTable' => 'sys_categories2objects',
-           'onField' => 'id',
-           'joinFields' => array(),
-       );
-       $this->aCurrent['restriction']['multicat'] = array('value' => $sKeyword, 'field' => 'value', 'operator' => '=', 'table' => 'sys_categories');
+            'joinFields' => [],
+        ];
+
+        if(isset($this->aCurrent['tableSearch']))
+            $this->aCurrent['join']['multicat']['mainTable'] = $this->aCurrent['tableSearch'];
+
+        $this->aCurrent['join']['multicat2'] = [
+            'type' => 'INNER',
+            'table' => 'sys_categories',
+            'mainField' => 'category_id',
+            'mainTable' => 'sys_categories2objects',
+            'onField' => 'id',
+            'joinFields' => []
+        ];
+
+        $this->aCurrent['restriction']['multicat'] = [
+           'value' => $sKeyword, 
+           'field' => 'value', 
+           'operator' => '=', 
+           'table' => 'sys_categories'
+        ];
     }
     
     /**
@@ -1106,8 +1111,9 @@ class BxDolSearchResult implements iBxDolReplaceable
                 'operator' => 'against'
             );
 
-            // for search results we need to show all items, not only public content
-            $this->setProcessPrivateContent(true);
+            // for 'keyword' search results (Site/Live search) we need to show all items, not only public content
+            if(!$this->_sCategoryObject)
+                $this->setProcessPrivateContent(true);
         }
 
         // owner
@@ -1173,7 +1179,7 @@ class BxDolSearchResult implements iBxDolReplaceable
         }
 
         // category
-        if ($this->_sCategoryObject) {
+        if($this->_sCategoryObject) {
             if(($o = BxDolCategory::getObjectInstance($this->_sCategoryObject)) && $this->_bSingleSearch) {
                 if ($this->aCurrent['name'] == $o->getSearchObject()) {
                     unset($this->aCurrent['restriction']['keyword']);
@@ -1183,7 +1189,7 @@ class BxDolSearchResult implements iBxDolReplaceable
                 $this->_setPageDescription('_sys_page_description_category', $o->getCategoryTitle($sKeyword), $this->aCurrent['title']);
             }
 
-            if ($this->_sCategoryObject == 'multi'){
+            if($this->_sCategoryObject == 'multi'){
                 unset($this->aCurrent['restriction']['keyword']);
                 $this->setCategoriesCondition($sKeyword);
             }
