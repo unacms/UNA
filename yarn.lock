@@ -1713,8 +1713,8 @@ headroom.js@^0.12.0:
 
 "highlight.js@github:highlightjs/highlight.js":
   version "11.12.0"
-  uid "5a811f0714d1385e2f32d061ca803c5057c4901c"
-  resolved "https://codeload.github.com/highlightjs/highlight.js/tar.gz/5a811f0714d1385e2f32d061ca803c5057c4901c"
+  uid "0bc57cfcfb7eab3de7b9ed07e51ff02f6dca441f"
+  resolved "https://codeload.github.com/highlightjs/highlight.js/tar.gz/0bc57cfcfb7eab3de7b9ed07e51ff02f6dca441f"
 
 hls.js@^1.7.0:
   version "1.7.0"
@@ -2172,8 +2172,8 @@ jstree@^3.3.17:
 
 "jush@https://github.com/vrana/jush":
   version "0.0.0"
-  uid c261782b85c352b76f4ce7d9cffeb170b74c7522
-  resolved "https://github.com/vrana/jush#c261782b85c352b76f4ce7d9cffeb170b74c7522"
+  uid "897e3b0c14d7af0a105ef862dc7cc6289ac6755d"
+  resolved "https://github.com/vrana/jush#897e3b0c14d7af0a105ef862dc7cc6289ac6755d"
 
 just-diff-apply@^5.2.0:
   version "5.5.0"

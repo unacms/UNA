@@ -11,38 +11,32 @@
 
 class BxMassMailerTemplate extends BxBaseModGeneralTemplate
 {
-    function __construct(&$oConfig, &$oDb)
+    public function __construct(&$oConfig, &$oDb)
     {
         parent::__construct($oConfig, $oDb);
     }
-    
-    function getSubscribers($aData)
-    {
-        $aList = array();
-        foreach($aData as $aItem){
-            $aList[] = array('email' => $aItem['email'], 'date_sent' => $aItem['date_sent'] > 0 ? bx_time_js($aItem['date_sent']) : '', 'date_seen' => $aItem['date_seen'] > 0 ? bx_time_js($aItem['date_seen']) : '', 'date_click' => $aItem['date_click'] > 0 ? bx_time_js($aItem['date_click']) : '');
-        }
-        
-        $this->addJs(array(BX_DIRECTORY_PATH_MODULES . 'boonex/massmailer/plugins/datatables/|datatables.min.js'));
-        $this->addCss(array('main.css', BX_DIRECTORY_PATH_MODULES . 'boonex/massmailer/plugins/datatables/|datatables.min.css'));
-        return $this->parseHtmlByName('campaign_subscribers.html', array(
-             'bx_repeat:items' => $aList,
-             'email_title' => _t('_bx_massmailer_txt_title_email'),
-             'date_sent_title' => _t('_bx_massmailer_txt_title_date_sent'),
-             'date_seen_title' => _t('_bx_massmailer_txt_title_date_seen'),
-             'date_click_title' => _t('_bx_massmailer_txt_title_date_click'),
-            ));
-    }
-    
+
     function getClicks($aData)
     {
-        $aList = array();
-        foreach($aData as $aItem){
-            $aList[] = array('title' => $aItem['title'], 'link' => $aItem['link'], 'last_click' => $aItem['last_click'] > 0 ? bx_time_js($aItem['last_click']) : '', 'click_count' => $aItem['click_count']);
-        }
-        
-        $this->addJs(array(BX_DIRECTORY_PATH_MODULES . 'boonex/massmailer/plugins/datatables/|datatables.min.js'));
-        $this->addCss(array('main.css', BX_DIRECTORY_PATH_MODULES . 'boonex/massmailer/plugins/datatables/|datatables.min.css'));
+        $aList = [];
+        foreach($aData as $aItem)
+            $aList[] = [
+                'title' => $aItem['title'], 
+                'link' => $aItem['link'], 
+                'last_click' => $this->_bIsApi ? $aItem['last_click'] : ($aItem['last_click'] > 0 ? bx_time_js($aItem['last_click']) : ''),
+                'click_count' => $aItem['click_count']
+            ];
+
+        if($this->_bIsApi)
+            return array_merge([[
+                'title' => _t('_bx_massmailer_txt_title_title'),
+                'link' => _t('_bx_massmailer_txt_link_title'),
+                'last_click' => _t('_bx_massmailer_txt_last_click_title'),
+                'click_count' => _t('_bx_massmailer_txt_click_count_title'),
+            ]], $aList);
+
+        $this->addJs([BX_DIRECTORY_PATH_MODULES . 'boonex/massmailer/plugins/datatables/|datatables.min.js']);
+        $this->addCss(['main.css', BX_DIRECTORY_PATH_MODULES . 'boonex/massmailer/plugins/datatables/|datatables.min.css']);
         return $this->parseHtmlByName('campaign_clicks.html', array(
              'bx_repeat:items' => $aList,
              'title_title' => _t('_bx_massmailer_txt_title_title'),
@@ -51,9 +45,7 @@ class BxMassMailerTemplate extends BxBaseModGeneralTemplate
              'last_click_title' => _t('_bx_massmailer_txt_last_click_title'),
             ));
     }
-    
-    
-    
+
     function getInfo($CampaignId)
     {
         $CNF = &$this->getModule()->_oConfig->CNF;
@@ -64,6 +56,24 @@ class BxMassMailerTemplate extends BxBaseModGeneralTemplate
         $this->addJs(array('chart.min.js', 'chart.js', BX_DIRECTORY_PATH_MODULES . 'boonex/massmailer/plugins/daterangepicker/|daterangepicker.js'));
         $this->addCss(array('main.css', BX_DIRECTORY_PATH_MODULES . 'boonex/massmailer/plugins/daterangepicker/|daterangepicker.css'));
         
+        if($this->_bIsApi) {
+            $aItems = [
+                ['title' => '_bx_massmailer_txt_subject_title', 'value' => $aData[$CNF['FIELD_SUBJECT']]],
+                ['title' => '_bx_massmailer_txt_body_title', 'value' => $aData[$CNF['FIELD_BODY']]],
+                ['title' => '_bx_massmailer_txt_from_name_title', 'value' => $aData[$CNF['FIELD_FROM_NAME']]],
+                ['title' => '_bx_massmailer_txt_reply_title', 'value' => $aData[$CNF['FIELD_REPLY_TO']]],
+                ['title' => '_bx_massmailer_txt_created_title', 'value' => $aData[$CNF['FIELD_ADDED']]],
+                ['title' => '_bx_massmailer_txt_sent_to_title', 'value' => $aData[$CNF['FIELD_DATE_SENT']]],
+                ['title' => '_bx_massmailer_txt_sent_to_title', 'value' => $this->getModule()->getSegments($aData[$CNF['FIELD_SEGMENTS']])]
+            ];
+
+            array_walk($aItems, function(&$aItem) {
+                $aItem['title'] = trim(_t($aItem['title']), ":");
+            });
+
+            return $aItems;
+        }
+
         return $this->getJsCode('chart', array('sChartName' => 'CAMPAIGN_REPORT', 'sReportName' => $CampaignId)) . $this->parseHtmlByName('campaign_info.html', array(
             'created_title' => _t('_bx_massmailer_txt_created_title'),
             'subject_title' => _t('_bx_massmailer_txt_subject_title'),

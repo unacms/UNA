@@ -139,10 +139,27 @@ class BxBaseModProfileFormEntry extends BxBaseModGeneralFormEntry
             $this->aInputs[$sField]['ghost_template'] = $this->_oModule->_oTemplate->parseHtmlByName('form_ghost_template.html', $this->_getProfilePhotoGhostTmplVars($sField, $aContentInfo));
         }
 
+        //--- Edit Settings: Fill in tabs list
+        if(($sDisplay = $CNF['OBJECT_FORM_ENTRY_DISPLAY_EDIT_SETTINGS'] ?? false) && $sDisplay == $this->aParams['display'])
+            if(($sField = $CNF['FIELD_STG_TABS'] ?? false) && !empty($this->aInputs[$sField]) && is_array($this->aInputs[$sField])) 
+                if(($sMenu = 'OBJECT_MENU_SUBMENU_VIEW_ENTRY') && !empty($CNF[$sMenu]) && ($oMenu = BxDolMenu::getObjectInstance($CNF[$sMenu])) !== false) {
+                    $oMenu->setContentId($aContentInfo[$CNF['FIELD_ID']]);
+                    if(($aMenuItems = $oMenu->getQueryObject()->getMenuItems()))
+                        foreach($aMenuItems as $aMenuItem) {
+                            if(!$oMenu->isMenuItemActive($aMenuItem) || !$oMenu->isMenuItemVisible($aMenuItem) || $aMenuItem['name'] == 'more-auto')
+                                continue;
+
+                            $this->aInputs[$sField]['values'][] = [
+                                'key' => $aMenuItem['name'],
+                                'value' => _t($aMenuItem['title'])
+                            ];
+                        }
+                }
+        
         parent::initChecker($aValues, $aSpecificValues);
 
-        if(($sField = 'FIELD_STG_TABS') && !empty($CNF[$sField]) && !empty($this->aInputs[$CNF[$sField]]) && is_array($this->aInputs[$CNF[$sField]]) && ($sValue = $this->aInputs[$CNF[$sField]]['value']))
-            $this->aInputs[$CNF[$sField]]['value'] = !is_array($sValue) ? explode(',', $sValue) : [];
+        if(($sField = $CNF['FIELD_STG_TABS'] ?? false) && !empty($this->aInputs[$sField]) && is_array($this->aInputs[$sField]) && ($sValue = $this->aInputs[$sField]['value']))
+            $this->aInputs[$sField]['value'] = !is_array($sValue) ? explode(',', $sValue) : [];
 
         if(($sDisplay = 'OBJECT_FORM_ENTRY_DISPLAY_EDIT_BADGE') && !empty($CNF[$sDisplay]) && $this->aParams['display'] == $CNF[$sDisplay]) {
             $sBadgeLink = $aContentInfo[$CNF['FIELD_BADGE_LINK']] ?? '';

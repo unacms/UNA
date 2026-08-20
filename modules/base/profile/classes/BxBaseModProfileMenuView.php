@@ -60,6 +60,16 @@ class BxBaseModProfileMenuView extends BxTemplMenuMoreAuto
         ));
     }
 
+    public function isMenuItemActive($a)
+    {
+        return parent::_isActive($a);
+    }
+
+    public function isMenuItemVisible($a)
+    {
+        return parent::_isVisible($a);
+    }
+
     /**
      * Check if menu items is visible with extended checking linked to "allow*" method of particular module
      * Associated "allow*" method with particular menu item is stored in module config in MENU_ITEM_TO_METHOD array.

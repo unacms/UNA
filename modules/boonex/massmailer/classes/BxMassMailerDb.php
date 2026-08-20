@@ -151,13 +151,6 @@ class BxMassMailerDb extends BxBaseModGeneralDb
         $this->query("DELETE FROM `" . $CNF['TABLE_UNSUBSCRIBE'] . "` WHERE `" . $CNF['FIELD_CAMPAIGN_ID'] . "` = :campaign_id", $aBindings);
     }
     
-    public function getLettersByCampaignId ($iCampaignId)
-    {
-        $CNF = &$this->_oConfig->CNF;
-        $sQuery = $this->prepare ("SELECT * FROM `" . $CNF['TABLE_LETTERS'] . "` WHERE `" . $CNF['FIELD_CAMPAIGN_ID'] . "` = ?", $iCampaignId);
-        return $this->getAll($sQuery);
-    }
-    
     public function getClicksByCampaignId ($iCampaignId)
     {
         $CNF = &$this->_oConfig->CNF;

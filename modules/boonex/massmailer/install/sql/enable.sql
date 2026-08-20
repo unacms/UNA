@@ -40,8 +40,8 @@ INSERT INTO `sys_objects_page`(`object`, `title_system`, `title`, `module`, `lay
 INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title`, `designbox_id`, `visible_for_levels`, `type`, `content`, `deletable`, `copyable`, `order`) VALUES
 ('bx_massmailer_view_campaign', 1, @sName, '_bx_massmailer_page_block_title_entry_breadcrumb', 13, 2147483647, 'service', 'a:2:{s:6:"module";s:13:"bx_massmailer";s:6:"method";s:17:"entity_breadcrumb";}', 0, 0, 0),
 ('bx_massmailer_view_campaign', 1, @sName, '_bx_massmailer_page_block_title_view_campaign_info', 11, 128, 'service', 'a:2:{s:6:"module";s:13:"bx_massmailer";s:6:"method";s:12:"campagn_info";}', 0, 0, 1),
-('bx_massmailer_view_campaign', 1, @sName, '_bx_massmailer_page_block_title_view_campaign_subscribers', 11, 128, 'service', 'a:2:{s:6:"module";s:13:"bx_massmailer";s:6:"method";s:19:"campagn_subscribers";}', 0, 0, 2),
-('bx_massmailer_view_campaign', 1, @sName, '_bx_massmailer_page_block_title_view_campaign_links', 11, 128, 'service', 'a:2:{s:6:"module";s:13:"bx_massmailer";s:6:"method";s:13:"campagn_links";}', 0, 0, 3);
+('bx_massmailer_view_campaign', 1, @sName, '_bx_massmailer_page_block_title_view_campaign_links', 11, 128, 'service', 'a:2:{s:6:"module";s:13:"bx_massmailer";s:6:"method";s:13:"campagn_links";}', 0, 0, 2),
+('bx_massmailer_view_campaign', 1, @sName, '_bx_massmailer_page_block_title_view_campaign_subscribers', 11, 128, 'service', 'a:2:{s:6:"module";s:13:"bx_massmailer";s:6:"method";s:19:"campagn_subscribers";}', 0, 0, 3);
 
 -- PAGE: campaigns administration
 INSERT INTO `sys_objects_page`(`object`, `title_system`, `title`, `module`, `layout_id`, `visible_for_levels`, `visible_for_levels_editable`, `uri`, `url`, `meta_description`, `meta_keywords`, `meta_robots`, `cache_lifetime`, `cache_editable`, `deletable`, `override_class_name`, `override_class_file`) VALUES 
@@ -91,6 +91,16 @@ INSERT INTO `sys_grid_actions` (`object`, `type`, `name`, `title`, `icon`, `icon
 ('bx_massmailer_campaigns', 'single', 'view', '_bx_massmailer_grid_action_title_adm_view', 'eye', 1, 0, 6),
 ('bx_massmailer_campaigns', 'single', 'send_all', '_bx_massmailer_grid_action_title_adm_send_all', 'envelope', 1, 0, 7),
 ('bx_massmailer_campaigns', 'independent', 'add', '_bx_massmailer_grid_action_title_adm_add', '', 0, 0, 1);
+
+-- GRIDS: campaign subscribers
+INSERT INTO `sys_objects_grid` (`object`, `source_type`, `source`, `table`, `field_id`, `field_order`, `field_active`, `paginate_url`, `paginate_per_page`, `paginate_simple`, `paginate_get_start`, `paginate_get_per_page`, `filter_fields`, `filter_fields_translatable`, `filter_mode`, `sorting_fields`, `sorting_fields_translatable`, `visible_for_levels`, `override_class_name`, `override_class_file`) VALUES
+('bx_massmailer_letters', 'Sql', 'SELECT * FROM `bx_massmailer_letters` WHERE 1 ', 'bx_massmailer_letters', 'id', 'date_sent', '', '', 20, NULL, 'start', '', 'email', '', 'like', 'email,date_sent,date_seen,date_click', '', 2147483647, 'BxMassMailerGridLetters', 'modules/boonex/massmailer/classes/BxMassMailerGridLetters.php');
+
+INSERT INTO `sys_grid_fields` (`object`, `name`, `title`, `width`, `translatable`, `chars_limit`, `params`, `order`) VALUES
+('bx_massmailer_letters', 'email', '_bx_massmailer_txt_title_email', '55%', 0, '48', '', 1),
+('bx_massmailer_letters', 'date_sent', '_bx_massmailer_txt_title_date_sent', '15%', 0, '0', '', 2),
+('bx_massmailer_letters', 'date_seen', '_bx_massmailer_txt_title_date_seen', '15%', 0, '0', '', 3),
+('bx_massmailer_letters', 'date_click', '_bx_massmailer_txt_title_date_click', '15%', 0, '0', '', 4);
 
 -- EMAIL TEMPLATES
 INSERT INTO `sys_email_templates` (`Module`, `NameSystem`, `Name`, `Subject`, `Body`) VALUES
