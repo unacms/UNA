@@ -194,6 +194,11 @@ export const uploadImage = async (uri, fetchUrl, calback, extraVar, options = {}
                 fileExt = 'svg';
             }
 
+        } else if (uri.startsWith('blob:')) {
+            // Enriched web paste: URL.createObjectURL — no filename/extension in the URI
+            fileType = extraVar?.mimeType || extraVar?.fileType || 'image/png';
+            fileExt = extFromMime(fileType) || 'png';
+            if (fileExt === 'svg+xml') fileExt = 'svg';
         } else {
             const fileName = uri.split('/').pop(); // file name
             fileExt = fileName.split('.').pop(); // extension

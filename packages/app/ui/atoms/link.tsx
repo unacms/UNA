@@ -71,9 +71,13 @@ export default function ElementLink({
               : `/${glob.name}`;
         return {
             pathname,
-            params: { url: finalHref },
+            params: { url: finalHref, tabHist: 'push' },
         };
     }, [target, finalHref, index, glob.name, tabPath]);
+
+    const currentPathname = glob.name ? `/${glob.name}` : '';
+    const targetPathname = typeof p === 'object' ? p.pathname : '';
+    const isSameTab = typeof p !== 'object' || !currentPathname || targetPathname === currentPathname;
 
 
     const sizeClass = (() => {
@@ -144,7 +148,7 @@ export default function ElementLink({
 
     return (
         <Link
-            push
+            push={isSameTab}
             href={p}
             asChild
             aria-label={accessibleLabel}

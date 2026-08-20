@@ -394,7 +394,12 @@ export default function FormFeed({ data, handleSubmit, exProps, name, response }
                                             data.inputs['video'],
                                             handleSubmit,
                                             'notitle',
-                                            { hide_button: true, list_only: true, form_name: name }
+                                            {
+                                                hide_button: true,
+                                                list_only: true,
+                                                form_name: name,
+                                                asDefaultStorage: !data.inputs['photo'],
+                                            }
                                         )
                                     }
                                     {

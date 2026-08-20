@@ -826,7 +826,7 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
         if (raw) {
             const tabUrl = String(raw).startsWith('/') ? String(raw) : `/${raw}`;
             try {
-                router.setParams({ url: tabUrl });
+                router.setParams({ url: tabUrl, tabHist: 'replace' });
             } catch (_) {
                 /* router may be unavailable outside a screen */
             }

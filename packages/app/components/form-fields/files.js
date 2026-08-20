@@ -660,20 +660,22 @@ export default function (props) {
 
     useEffect(() => {
         if (!formName) return undefined;
-        const asDefaultStorage = props.asDefaultStorage;
+        const acceptsPastedImages = !!(
+            props.asDefaultStorage || IMAGE_FIELD_NAMES.has(name)
+        );
         const subscription = emitter.addListener(`form_${formName}`, (data) => {
             if (data.action == 'submited') {
                 clearFieldImages(`${formName}:`);
                 setImages(props?.values_src);
             }
-            if (data.action == 'pasted_images' && asDefaultStorage && data.images?.length) {
+            if (data.action == 'pasted_images' && acceptsPastedImages && data.images?.length) {
                 uploadImages(data.images).then((k) => setImageSource({ images: k }));
             }
         });
         return () => {
             subscription.remove();
         };
-    }, [formName, props.asDefaultStorage]);
+    }, [formName, name, props.asDefaultStorage]);
 
     const handleDelete = useCallback(async (target) => {
         const isObj = target != null && typeof target === 'object';

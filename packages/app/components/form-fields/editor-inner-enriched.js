@@ -348,7 +348,7 @@ export default function RftTextEnriched(props) {
         lastSetValue.current = next
     }, [field, isPlainText, name, onFocus, resetField])
 
-    // ---- image paste ----
+    // ---- image paste (library onPasteImages: blob: on web, file:// on native) ----
     const onPasteImages = useCallback((e) => {
         const imgs = e?.nativeEvent?.images || []
         if (!imgs.length || !form_name) return

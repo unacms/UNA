@@ -1,7 +1,18 @@
+import { createContext, useContext } from 'react';
 import { Platform } from 'react-native';
+import { usePathname } from 'app/lib/hooks/router';
 import emitter from 'app/context/emitter';
 import { appSetting } from 'app/lib/util';
 import { useBottomSheetStore } from 'app/context/bottomsheet';
+
+/** Screen-owned tab key (`/tab0`…) so back never follows the focused tab's pathname. */
+export const TabKeyContext = createContext(null);
+
+export function useTabKey() {
+    const ctx = useContext(TabKeyContext);
+    const pathname = usePathname();
+    return ctx || getTabKeyFromPathname(pathname);
+}
 
 const OVERLAY_DISMISS_MS = Platform.OS === 'web' ? 0 : 120;
 
@@ -82,6 +93,28 @@ export function pushTabHistory(tabKey, url, currentUser) {
     }
 }
 
+/** Same page, different submenu (conductor tabs) — do not create a back entry. */
+export function replaceTabHistory(tabKey, url, currentUser) {
+    if (!tabKey || !url) {
+        return;
+    }
+    ensureTabHistory(tabKey, currentUser);
+    const stack = tabHistoryState.byTab[tabKey];
+    if (!stack.length) {
+        stack.push(url);
+        return;
+    }
+    stack[stack.length - 1] = url;
+}
+
+export function applyTabHistory(tabKey, url, currentUser, mode) {
+    if (mode === 'replace') {
+        replaceTabHistory(tabKey, url, currentUser);
+        return;
+    }
+    pushTabHistory(tabKey, url, currentUser);
+}
+
 export function canGoBackInTab(tabKey) {
     const stack = tabHistoryState.byTab[tabKey];
     if (!stack || stack.length <= 1) return false;
@@ -128,7 +161,7 @@ export function navigateBackInTab(router, tabKey, currentUser) {
     const navigate = () => {
         router.replace({
             pathname: normalizedTabKey,
-            params: { url: targetUrl, name: `tab${tabIndex}` },
+            params: { url: targetUrl, name: `tab${tabIndex}`, tabHist: 'push' },
         });
     };
 

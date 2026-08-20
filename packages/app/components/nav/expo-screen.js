@@ -6,8 +6,8 @@ import { appSetting, parseUrl, parseQueryString, getURI } from 'app/lib/util'
 import { Loading } from 'app/customization/loading'
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import { fetcher } from 'app/lib/fetcher';
-import { useLocalSearchParams } from 'app/lib/hooks/router'
-import { ensureTabHistory, pushTabHistory } from 'app/lib/tab-history';
+import { useIsFocused, useLocalSearchParams } from 'app/lib/hooks/router'
+import { applyTabHistory, ensureTabHistory, TabKeyContext } from 'app/lib/tab-history';
 import { getCachedPageData, setCachedPageData, clearAllPageCache } from 'app/lib/tab-page-cache';
 import emitter from 'app/context/emitter'
 import * as SplashScreen from 'expo-splash-screen';
@@ -79,13 +79,14 @@ export function Screen(params) {
             tabKey={pathname}
             isRoot={isRoot}
             refreshToken={local.refresh}
+            historyMode={routeParam(local.tabHist)}
         />
     );
 
 
 }
 
-const Content = ({ pagePath, currentUser, tabKey, isRoot, refreshToken }) => {
+const Content = ({ pagePath, currentUser, tabKey, isRoot, refreshToken, historyMode }) => {
 
 
     const [pageData, setPageData] = useState(null);
@@ -95,20 +96,21 @@ const Content = ({ pagePath, currentUser, tabKey, isRoot, refreshToken }) => {
     const currentUserRef = useRef(currentUser);
     const bottomSheetDataRef = useRef(bottomSheetData);
     const splashHiddenRef = useRef(false);
+    const isFocused = useIsFocused();
     pagePathRef.current = pagePath;
     tabKeyRef.current = tabKey;
     currentUserRef.current = currentUser;
     bottomSheetDataRef.current = bottomSheetData;
 
     useEffect(() => {
-        if (!tabKey) return;
+        if (!tabKey || !isFocused) return;
         ensureTabHistory(tabKey, currentUser, pagePath);
-    }, [tabKey, currentUser?.id, currentUser?.url, pagePath]);
+    }, [tabKey, currentUser?.id, currentUser?.url, pagePath, isFocused]);
 
     useEffect(() => {
-        if (!tabKey || !pagePath) return;
-        pushTabHistory(tabKey, pagePath, currentUser);
-    }, [tabKey, pagePath, currentUser?.id, currentUser?.url]);
+        if (!tabKey || !pagePath || !isFocused) return;
+        applyTabHistory(tabKey, pagePath, currentUser, historyMode === 'replace' ? 'replace' : 'push');
+    }, [tabKey, pagePath, currentUser?.id, currentUser?.url, isFocused, historyMode]);
 
     // Apply cached page synchronously when the in-tab URL changes (e.g. profile back).
     useLayoutEffect(() => {
@@ -215,10 +217,12 @@ const Content = ({ pagePath, currentUser, tabKey, isRoot, refreshToken }) => {
     // mounted, so a shared store would let five PageHeaders/lists overwrite
     // each other's header, height and scroll state.
     return (
-        <JotaiProvider>
-            {pageData?.data ? (
-                <Root path={pagePath} data={pageData.data} uri={pageData.data.uri} />
-            ) : null}
-        </JotaiProvider>
+        <TabKeyContext.Provider value={tabKey}>
+            <JotaiProvider>
+                {pageData?.data ? (
+                    <Root path={pagePath} data={pageData.data} uri={pageData.data.uri} />
+                ) : null}
+            </JotaiProvider>
+        </TabKeyContext.Provider>
     );
 };

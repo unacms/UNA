@@ -22,11 +22,11 @@ import { useTranslation } from 'react-i18next'
 import Link from 'app/ui/atoms/link'
 import Loading from 'app/ui/atoms/loading'
 import { Platform } from 'react-native'
-import { usePathname, useRouter } from 'app/lib/hooks/router'
+import { useRouter } from 'app/lib/hooks/router'
 import { getComponent } from 'app/components/registry'
 import { useIsDesktop } from 'app/context/measure'
 import { PageHeaderSmall } from 'app/ui/molecules/header/page-header'
-import { canGoBackInTab, getTabKeyFromPathname, navigateBackInTab } from 'app/lib/tab-history'
+import { canGoBackInTab, navigateBackInTab, useTabKey } from 'app/lib/tab-history'
 import { FeedbackHaptics } from 'app/lib/util'
 const conductorTheme = appSetting('theme', 'conductor')
 const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from')
@@ -37,9 +37,8 @@ function isCoverActionsMenuInNavbar(module, isDesktop) {
 
 const BackButton = ({ isPerson }) => {
     const router = useRouter()
-    const pathname = usePathname()
     const { currentUser } = useCurrentUser()
-    const currentTab = getTabKeyFromPathname(pathname)
+    const currentTab = useTabKey()
     const hasTabBack = canGoBackInTab(currentTab)
 
     const handleBackPress = () => {
@@ -295,7 +294,7 @@ function CoverImage({
                             <NeoButton
                                 image="RefreshCw"
                                 style="bordered"
-                                controlSize="regular"
+                                controlSize="small"
                                 borderShape="circle"
                                 onPress={() => handleSwitch(allowSwitch)}
                             />
@@ -305,7 +304,7 @@ function CoverImage({
                                 image="Camera"
                                 label="Edit Cover"
                                 style="bordered"
-                                controlSize="regular"
+                                controlSize="small"
                                 borderShape="capsule"
                                 disabled={isUploading}
                                 onPress={pick}
@@ -342,7 +341,7 @@ function CoverImage({
                         <NeoButton
                             image="Camera"
                             style="glass"
-                            controlSize="regular"
+                            controlSize="small"
                             borderShape="circle"
                             disabled={isUploading}
                             onPress={pick}

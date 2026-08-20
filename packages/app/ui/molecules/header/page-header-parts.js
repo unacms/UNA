@@ -5,12 +5,12 @@ import { Text } from 'app/design/typography';
 import { FeedbackHaptics, appSetting, getMenuSettings } from 'app/lib/util';
 import { useCurrentUser } from 'app/context/user';
 import { appStatic } from 'app/lib/app-static';
-import { usePathname, useRouter } from 'app/lib/hooks/router';
+import { useRouter } from 'app/lib/hooks/router';
 import { getComponent } from 'app/components/registry';
 import { useIsDesktop } from 'app/context/measure';
 import { NeoButton, NeoButtonLink } from 'app/design/controls';
 import Link from 'app/ui/atoms/link';
-import { canGoBackInTab, getTabKeyFromPathname, navigateBackInTab } from 'app/lib/tab-history';
+import { canGoBackInTab, navigateBackInTab, useTabKey } from 'app/lib/tab-history';
 import {
     defaultHeader,
     useHeader,
@@ -295,9 +295,8 @@ export const PageHeaderBody = memo(({
 }) => {
     const ContextSelector = getComponent('molecule', 'context_selector');
     const HeaderElement = getComponent('molecule', 'header_element');
-    const pathname = usePathname();
     const isDesktop = useIsDesktop();
-    const currentTab = getTabKeyFromPathname(pathname);
+    const currentTab = useTabKey();
     const canShowBackButton = isWeb
         ? (isBackButton &&
             (typeof isBackButton === 'function' || (typeof history !== 'undefined' && history.length > 2)))
