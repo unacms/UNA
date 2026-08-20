@@ -536,6 +536,12 @@ const TabScene = React.memo(({
     leftbarExcludedFromMainIds = null,
 }) => {
 
+    const unitType = useMemo(() => {
+        return getUnitModeBySource(route?.endpoint);
+    }, [route?.endpoint?.request_url]); // Dependency on route.endpoint.request_url
+
+
+
     const handleEndReached = useCallback(
 
         async (lastItemIndex) => {
@@ -547,6 +553,9 @@ const TabScene = React.memo(({
         },
         [refreshing, isFetchingNextPage, hasNextPage]
     )
+
+    const layout = layoutForList(route?.endpoint);
+    const paddings = paddingForList(route?.endpoint);
 
     const renderItem = useCallback(({ item, index }) => (
         <ItemRenderer
@@ -569,18 +578,9 @@ const TabScene = React.memo(({
         return unitType ? [baseSkeleton, unitType] : baseSkeleton
     }, [skeleton, route, unitType])
 
-    const unitType = useMemo(() => {
-        return getUnitModeBySource(route?.endpoint);
-    }, [route?.endpoint?.request_url]); // Dependency on route.endpoint.request_url
-
-
-
-    const layout = layoutForList(route?.endpoint);
-    const paddings = paddingForList(route?.endpoint);
-
     const Preload = useMemo(
         () => getSkeletonForList(SkeletonForRoute, 1, true, layout, renderItem, paddings),
-        [SkeletonForRoute, renderItem]
+        [SkeletonForRoute, renderItem, layout, paddings]
     )
 
     //
@@ -657,6 +657,15 @@ const TabScene = React.memo(({
         </>
     ) : undefined
 
+    const isEmpty = (route.data || []).filter((item) => item.type != 'block').length === 0
+    // Like web: Preload is outside the padded list (preloadComponent), not ListFooter.
+    const showPreload = !!(
+        route?.endpoint?.request_url &&
+        !route?.endpoint?.finished &&
+        !refreshing &&
+        isEmpty
+    )
+
     return (
         <UniList
             ListHeaderComponent={combinedHeader}
@@ -664,15 +673,17 @@ const TabScene = React.memo(({
             data={routeData}
             route={route}
             unit={route.endpoint?.unit}
+            endpoint={route?.endpoint}
+            layout={layout}
             renderItem={renderItem}
+            preloadComponent={showPreload ? Preload : undefined}
             ListFooterComponent={
-                (route?.endpoint?.request_url ? (
-                    route?.endpoint?.finished && !isFetchingNextPage && !refreshing
-                        ? ((route.data || []).filter((item) => item.type != 'block').length == 0
-                            ? <NoContent endpoint={route?.endpoint} />
-                            : <></>)
-                        : (route?.endpoint?.finished ? <></> : Preload)
-                ) : <></>)
+                (route?.endpoint?.request_url &&
+                    route?.endpoint?.finished &&
+                    !isFetchingNextPage &&
+                    !refreshing &&
+                    isEmpty
+                ) ? <NoContent endpoint={route?.endpoint} /> : <></>
             }
             maxToRenderPerBatch={5}
             initialNumToRender={5}

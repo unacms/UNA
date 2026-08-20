@@ -22,7 +22,7 @@ export default function Unit({ data, unitType, module }) {
     const isSkeleton = data?.skeleton;
     return (
         <UnitWrapper data={data} module={module} padding="p-1">
-            <View className="relative bg-secondary aspect-video overflow-hidden rounded-lg w-full">
+            <View className="bg-secondary aspect-video overflow-hidden rounded-xl w-full">
                 <UnitImage
                     image={data.cover}
                     alt={data.title}

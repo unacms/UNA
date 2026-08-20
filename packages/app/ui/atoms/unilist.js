@@ -5,6 +5,7 @@ import { LegendList } from "@legendapp/list";
 import { useSetScrollDirection, useHeaderHeight, useSetScrollValue, useSetListMaxScrollOffset, useCoverScrollCompensation } from 'app/context/jotai/layout';
 import { getListScrollOffset, setListScrollOffset } from 'app/lib/tab-page-cache';
 import { useFocusEffect } from 'app/lib/hooks/router';
+import { paddingForList } from 'app/customization/functions';
 
 const ESTIMATED_ITEM_SIZE_BY_UNIT = {
     feed: 140,
@@ -65,6 +66,7 @@ export default function UniList(props) {
     const { 
         preloadComponent, 
         contentContainerStyle: contentContainerStyleProp, 
+        contentContainerClassName: contentContainerClassNameProp,
         ListHeaderComponent, 
         scrollProps, 
         isModal, 
@@ -79,6 +81,8 @@ export default function UniList(props) {
         onRefresh, 
         url,
         unit,
+        layout,
+        endpoint,
         estimatedItemSize: estimatedItemSizeProp,
         refreshControl: refreshControlProp,
         progressViewOffset: progressViewOffsetProp,
@@ -127,6 +131,23 @@ export default function UniList(props) {
     const getEstimatedItemSize = useCallback(
         (_index, item) => estimateItemSize(unit, item, estimatedItemSize),
         [unit, estimatedItemSize]
+    );
+
+    // Match web UniList: layout wraps each item; paddings come from endpoint.
+    const listPadding = endpoint ? paddingForList(endpoint) : '';
+    const contentContainerClassName = [
+        '@container/list',
+        filteredData.length ? listPadding : '',
+        contentContainerClassNameProp || '',
+    ].filter(Boolean).join(' ').trim();
+
+    const listRenderItem = useCallback(
+        (info) => (
+            <View className={layout || 'w-full'}>
+                {renderItem(info)}
+            </View>
+        ),
+        [renderItem, layout]
     );
 
     useFocusEffect(
@@ -279,13 +300,14 @@ export default function UniList(props) {
         <LegendList
             key={url || undefined}
             contentContainerStyle={contentContainerStyleProp}
+            contentContainerClassName={contentContainerClassName || undefined}
             ref={setListRef}
             onEndReachedThreshold={1}
             data={filteredData}
             ListHeaderComponent={enhancedListHeaderComponent}
             ListFooterComponent={enhancedListFooterComponent}
             keyExtractor={item => item.id}
-            renderItem={renderItem}
+            renderItem={layout ? listRenderItem : renderItem}
             onEndReached={onEndReached}
             onStartReached={onStartReached}
             onScroll={handleScroll}

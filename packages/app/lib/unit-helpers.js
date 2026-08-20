@@ -237,17 +237,30 @@ export function UnitProfileList({
     data,
     label,
     unitType,
+    /** Which array on `data` to show when not a person unitType. Default: members_list */
+    listKey = 'members_list',
     countKey = 'members',
+    /** If primary count label is empty, try this key with members_count (events: going). */
+    fallbackCountKey,
     skeleton,
     labelClassName = 'truncate text-sm tracking-tight flex-auto text-secondary-foreground',
     maxCount = 3,
     displaySize = '2xs',
 }) {
     const isFollowers = !!unitType && isFollowersUnitType(unitType)
-    const list = unitType ? getPersonSocialList(data, { isFollowers }) : data?.members_list
+    const list = unitType
+        ? getPersonSocialList(data, { isFollowers })
+        : data?.[listKey]
+    const primaryCount =
+        listKey === 'followers_list' ? data?.followers_count : data?.members_count
     const resolvedLabel = unitType
         ? getPersonSocialLabel(data, { isFollowers })
-        : (label ?? getCountLabel(data?.members_count, countKey))
+        : (label ?? (
+            getCountLabel(primaryCount, countKey) ||
+            (fallbackCountKey
+                ? getCountLabel(data?.members_count, fallbackCountKey)
+                : '')
+        ))
 
     return (
         <Skeleton preset="profile-list" visible={skeleton}>

@@ -718,6 +718,7 @@ const TabSceneMainContent = ({
     }, [skeleton, pageRoute, unitType,])
 
     const layout = layoutForList(pageRoute?.endpoint);
+    console.log('layout', layout);
     const paddings = paddingForList(pageRoute?.endpoint);
 
     const Preload = useMemo(

@@ -35,7 +35,7 @@ export default function Unit({ data, unitType, module }) {
         return (
             <UnitWrapper data={data} module={module} padding="p-1">
                 <View className="flex-row sm:flex-col p-1">
-                    <View className="aspect-square sm:aspect-video w-1/3 sm:w-full rounded-lg overflow-hidden items-center justify-center bg-muted-foreground/20">
+                    <View className="aspect-square sm:aspect-video w-1/3 sm:w-full rounded-lg sm:rounded-xl overflow-hidden items-center justify-center bg-muted-foreground/20">
                         <UnitImage
                             image={data.cover}
                             alt={data.title}
