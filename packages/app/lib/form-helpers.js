@@ -72,11 +72,13 @@ export function trackFormUploadStart(formName, formInstanceId, hash) {
 
 export function trackFormUploadEnd(formName, formInstanceId, hash) {
     if (!formName || hash == null || hash === '') return;
-    const key = uploadFormKey(formName, formInstanceId);
-    const set = pendingUploadsByForm.get(key);
-    if (set) {
+    // Clear this upload id from every instance key — ImagePicker remounts can
+    // change useId while the same in-flight uploadId is still finishing.
+    const prefix = `${formName}:`;
+    for (const [k, set] of [...pendingUploadsByForm.entries()]) {
+        if (!k.startsWith(prefix)) continue;
         set.delete(hash);
-        if (set.size === 0) pendingUploadsByForm.delete(key);
+        if (set.size === 0) pendingUploadsByForm.delete(k);
     }
     emitter.emit(`form_${formName}`, {
         action: 'upload_end',
@@ -111,14 +113,17 @@ export function useFormUploading(formName) {
         }
         setUploading(formHasPendingUploads(formName, formInstanceId));
         const subscription = emitter.addListener(`form_${formName}`, (data) => {
-            if (formInstanceId != null && data.formInstanceId !== formInstanceId) return;
-            if (
-                data.action !== 'upload_start' &&
+            if (data.action === 'upload_start') {
+                // Starts are instance-scoped; ignore other forms' mounts.
+                if (formInstanceId != null && data.formInstanceId !== formInstanceId) return;
+            } else if (
                 data.action !== 'upload_end' &&
                 data.action !== 'upload_clear'
             ) {
                 return;
             }
+            // upload_end/clear: always re-check — remount may have a new useId
+            // while the finishing upload still carries the previous instance id.
             setUploading(formHasPendingUploads(formName, formInstanceId));
         });
         return () => subscription.remove();

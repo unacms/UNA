@@ -350,7 +350,10 @@ export default function (props) {
 
         const uploadOne = async (i, hash, uploadId) => {
             if (!uploadId || inFlightUploadIds.has(uploadId)) return;
-            if (cancelledUploadIds.has(uploadId)) return;
+            if (cancelledUploadIds.has(uploadId)) {
+                trackFormUploadEnd(formName, formInstanceId, uploadId);
+                return;
+            }
             inFlightUploadIds.add(uploadId);
             const controller = new AbortController();
             uploadAbortControllers.set(uploadId, controller);
@@ -463,7 +466,13 @@ export default function (props) {
                     uri,
                 });
             }
-            trackFormUploadStart(formName, formInstanceId, uploadId);
+            // If this uploadId is already flying (ImagePicker remount resume),
+            // do not re-start the pending marker — the original completion will
+            // end it. Re-starting after clearFormPendingUploads would stick
+            // Publish on a new useId forever.
+            if (!inFlightUploadIds.has(uploadId) && !cancelledUploadIds.has(uploadId)) {
+                trackFormUploadStart(formName, formInstanceId, uploadId);
+            }
             void uploadOne(i, hash, uploadId);
         }
 
