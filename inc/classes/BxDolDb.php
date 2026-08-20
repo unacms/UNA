@@ -380,8 +380,10 @@ class BxDolDb extends BxDolFactory implements iBxDolSingleton
         	return array();
 
         $aResult = $oStatement->fetch($iFetchType);
-        if($aResult === false)
+        if($aResult === false) {
+            $oStatement->closeCursor();
         	return array();
+        }
 
 		$this->_oStatement = $oStatement;
         return $aResult;
@@ -402,7 +404,9 @@ class BxDolDb extends BxDolFactory implements iBxDolSingleton
 		if($aResult !== false)
 			return $aResult;
 
+        $this->_oStatement->closeCursor();
 		$this->_oStatement = null;
+
     	return array();
     }
 
