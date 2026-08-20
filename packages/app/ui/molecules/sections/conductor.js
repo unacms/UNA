@@ -6,7 +6,7 @@ import UniList from 'app/ui/atoms/unilist'
 import { Icon } from 'app/ui/atoms/icon'
 import DropdownMenu, { DropdownMenuOpenContext } from 'app/ui/atoms/dropdown-menu'
 import { deepEqual, getUnitModeBySource } from 'app/lib/util';
-import { fillTabs, parseData, fetchAndUpdateData, getAddon, findConductorRouteIndex, findConductorRouteIndexOrZero, hasConductorSubitems, conductorHref, ConductorCompactNav } from 'app/lib/conductor-helpers';
+import { fillTabs, mergeConductorRoutes, parseData, fetchAndUpdateData, getAddon, getUnitType,findConductorRouteIndex, findConductorRouteIndexOrZero, hasConductorSubitems, conductorHref, ConductorCompactNav } from 'app/lib/conductor-helpers';
 import { ItemRenderer } from 'app/components/item-renderer';
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
 import { getSkeletonForList } from 'app/lib/skeleton-helpers';
@@ -20,7 +20,7 @@ import { BlockByName } from 'app/components/block';
 import { Platform } from 'react-native';
 import Cover, { CoverSmall, CoverBackButton } from 'app/components/elements/cover';
 import emitter from 'app/context/emitter'
-import { useSetHeader, useScrollValue, useGetScrollValue, useListMaxScrollOffset, useSetCoverScrollCompensation, useSetHeaderHeight } from 'app/context/jotai/layout';
+import { useSetHeader, useScrollValue, useGetScrollValue,  useListMaxScrollOffset, useSetCoverScrollCompensation, useSetHeaderHeight } from 'app/context/jotai/layout';
 import { getComponent } from 'app/components/registry';
 import { useFocusEffect, useIsFocused, useRouter } from 'app/lib/hooks/router'
 import { appSetting } from 'app/lib/util'
@@ -127,8 +127,11 @@ const DynamicCoverHeader = React.memo(function DynamicCoverHeader({
     }, [setCoverScrollCompensation]);
 
     useEffect(() => {
-        progress.set(withTiming(showSmall ? 1 : 0, { duration: COVER_SWITCH_DURATION }));
-    }, [showSmall, progress]);
+        const target = showSmall ? 1 : 0;
+        // Before both layers are measured the container has no animated height,
+        // so a timing animation would read as the cover folding by itself.
+        progress.set(measured ? withTiming(target, { duration: COVER_SWITCH_DURATION }) : target);
+    }, [showSmall, measured, progress]);
 
     const containerStyle = useAnimatedStyle(() => {
         if (!measured) return {};
@@ -187,27 +190,28 @@ const TabSceneHeader = React.memo(function TabSceneHeader2({
         pageContext &&
         headerMode === 'dynamic';
 
+    // Only lift the back button out of the cover when it shares a row with the
+    // standalone context selector — otherwise leave it in Cover/CoverSmall.
     const useStandaloneCoverBackButton =
-        Platform.OS !== 'web' && headerMode === 'dynamic';
+        Platform.OS !== 'web' &&
+        headerMode === 'dynamic' &&
+        useStandaloneContextSelector;
 
     // Remount covers on soft-reload (profile `ts`) so CoverImage local state
     // cannot stick after setPageData.
     const coverKey = `${ts ?? ''}:${coverBlock?.cover?.src ?? ''}:${coverBlock?.profile?.url_avatar ?? ''}`;
 
     const standaloneContextSelector = useStandaloneContextSelector ? (
-        <View className={conductorTheme.standalone_context_selector}>
-            <ContextSelector
-                data={pageContext}
-                url={pageUri}
-                uri={pageUri}
-            />
-        </View>
-    ) : null;
-
-    const standaloneCoverBackButton = useStandaloneCoverBackButton ? (
-        <View className="absolute top-3 left-3 z-50">
-            <CoverBackButton />
-        </View>
+        <Row className={`${conductorTheme.standalone_context_selector} gap-2 items-center `}>
+            {useStandaloneCoverBackButton ? <CoverBackButton /> : null}
+            <View className="flex-1 shrink">
+                <ContextSelector
+                    data={pageContext}
+                    url={pageUri}
+                    uri={pageUri}
+                />
+            </View>
+        </Row>
     ) : null;
 
     const coverHeader = useMemo(
@@ -242,15 +246,12 @@ const TabSceneHeader = React.memo(function TabSceneHeader2({
         return (
             <View className="w-full">
                 {standaloneContextSelector}
-                <View className="w-full relative">
-                    {standaloneCoverBackButton}
-                    <DynamicCoverHeader
-                        coverHeader={coverHeader}
-                        coverHeaderSmall={coverHeaderSmall}
-                        sceneHeader={sceneHeader}
-                        filter={filter}
-                    />
-                </View>
+                <DynamicCoverHeader
+                    coverHeader={coverHeader}
+                    coverHeaderSmall={coverHeaderSmall}
+                    sceneHeader={sceneHeader}
+                    filter={filter}
+                />
             </View>
         );
     }
@@ -537,10 +538,9 @@ const TabScene = React.memo(({
 }) => {
 
     const unitType = useMemo(() => {
-        return getUnitModeBySource(route?.endpoint);
-    }, [route?.endpoint?.request_url]); // Dependency on route.endpoint.request_url
-
-
+        const type = getUnitModeBySource(route?.endpoint)
+        return type === 'default' ? getUnitType(route) : type
+    }, [route?.endpoint, route?.blocks])
 
     const handleEndReached = useCallback(
 
@@ -577,6 +577,7 @@ const TabScene = React.memo(({
             route?.endpoint?.unit
         return unitType ? [baseSkeleton, unitType] : baseSkeleton
     }, [skeleton, route, unitType])
+
 
     const Preload = useMemo(
         () => getSkeletonForList(SkeletonForRoute, 1, true, layout, renderItem, paddings),
@@ -744,6 +745,13 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
 
     const listRef = useRef(null);
     const activeRequestUrlRef = useRef(null);
+    const pageRevRef = useRef({
+        url: data?.url,
+        keyword,
+        timestamp: data?.timestamp,
+        ts,
+        didMount: false,
+    });
 
     const setRoutes = /*useCallback(*/(a) => {
         setRoutes1(a);
@@ -752,7 +760,7 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
     useEffect(() => {
         if (!deepEqual(menu, menuState)) {
             setMenuState(menu);
-            setRoutes(initedTabs);
+            setRoutes((prev) => mergeConductorRoutes(initedTabs, prev));
         }
     }, [menu, menuState, initedTabs, data]);
 
@@ -772,7 +780,19 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
         indexRef.current = index;
     }, [index]);
 
-    // Persist list state only on unmount — avoid read/write cycle with useState cache bootstrap.
+    // Write-through while URL is stable so a timestamp remount can bootstrap
+    // from cache. Do not key this effect on data.url — a URL change would
+    // otherwise store the previous page's routes under the new URL.
+    useEffect(() => {
+        if (!layoutName || !data?.url || !routes?.some((route) => route.inited)) {
+            return;
+        }
+        setCachedConductorState(layoutName, data.url, {
+            routes,
+            index,
+        }, currentUser?.id);
+    }, [layoutName, routes, index, currentUser?.id]);
+
     useEffect(() => {
         return () => {
             if (!data?.url || !routesRef.current?.some((route) => route.inited)) {
@@ -814,8 +834,31 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
     }, [setIndex, router, onChangeRoute]);
 
     // Sync when page URL / soft-refresh timestamp changes (ts from profile soft-reload).
+    // Skip the first run: useState already bootstrapped from conductor cache.
+    // A mount setRoutes(fillTabs()) was wiping that cache (parsed layouts have
+    // no browse rows until parseData).
     useEffect(() => {
-        setRoutes(initedTabs);
+        const prev = pageRevRef.current;
+        const urlOrSearchChanged = prev.url !== data?.url || prev.keyword !== keyword;
+        const softRefresh = prev.timestamp !== data?.timestamp || prev.ts !== ts;
+        pageRevRef.current = {
+            url: data?.url,
+            keyword,
+            timestamp: data?.timestamp,
+            ts,
+            didMount: true,
+        };
+
+        if (!prev.didMount) {
+            return;
+        }
+
+        if (urlOrSearchChanged) {
+            setRoutes(initedTabs);
+        } else if (softRefresh) {
+            setRoutes((current) => mergeConductorRoutes(initedTabs, current));
+        }
+
         const foundIndex = findConductorTabIndex(initedTabs, data?.url, useSectionAsMenu);
         if (foundIndex !== -1 && foundIndex !== indexRef.current) {
             setIndex(foundIndex);

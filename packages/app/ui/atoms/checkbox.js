@@ -1,7 +1,9 @@
 import { Text } from 'app/design/typography'
 import { View, Pressable } from 'app/design/view'
 import * as CheckboxPrimitive from '@rn-primitives/checkbox'
+import { isValidElement } from 'react'
 import { appSetting, cn } from 'app/lib/util'
+import { Icon } from 'app/ui/atoms/icon'
 
 const checkboxTheme = appSetting('theme', 'checkbox')
 
@@ -32,6 +34,11 @@ export default function CheckBox2({
     compact = false,
 }) {
     const selected = status === 'checked'
+    const resolvedIcon = typeof icon === 'string'
+        ? <Icon icon={icon} width={24} height={24} />
+        : isValidElement(icon)
+            ? icon
+            : null
     const indicatorClass = cn(
         checkboxTheme['u-controls-checkbox-indicator'],
         checkboxTheme['u-controls-checkbox-indicator-border']
@@ -55,9 +62,9 @@ export default function CheckBox2({
             onPress={onPress}
             accessibilityRole="checkbox"
             accessibilityState={{ checked: selected }}
-            className={`${icon ? 'flex-row gap-x-3' : 'flex-row-reverse'} ${isBackground ? checkboxTheme['u-controls-checkbox-container-bg'] : ''} ${margin} ${checkboxTheme['u-controls-checkbox-container']}`}
+            className={`${resolvedIcon ? 'flex-row gap-x-3' : 'flex-row-reverse'} ${isBackground ? checkboxTheme['u-controls-checkbox-container-bg'] : ''} ${margin} ${checkboxTheme['u-controls-checkbox-container']}`}
         >
-            {!!icon && <View className="w-8">{icon}</View>}
+            {!!resolvedIcon && <View className="w-8">{resolvedIcon}</View>}
             <View className="flex-auto">
                 <Text className={checkboxTheme['u-controls-checkbox-text']}>{title}</Text>
             </View>

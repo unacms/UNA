@@ -31,6 +31,7 @@ import {
     conductorHref,
     ConductorCompactNav,
     ConductorSidebarNav,
+    getUnitType,
 } from 'app/lib/conductor-helpers'
 import { ItemRenderer } from 'app/components/item-renderer'
 import { Button, NeoButton, NeoButtonLink } from 'app/design/controls'
@@ -707,6 +708,7 @@ const TabSceneMainContent = ({
         [pageRoute, unitType]
     )
 
+    console.log('unitType', unitType)
     const SkeletonForRoute = useMemo(() => {
         const a = getSkeletonByEndPoint(pageRoute)
         if (a) return a
@@ -725,6 +727,7 @@ const TabSceneMainContent = ({
         () => getSkeletonForList(SkeletonForRoute, 5, true, layout, renderItem, paddings),
         [SkeletonForRoute, renderItem]
     )
+    console.log('SkeletonForRoute', SkeletonForRoute)
 
     const PreloadShort = useMemo(
         () => getSkeletonForList(SkeletonForRoute, refetchRef.current.skipToast ? 0 : 5, false, layout, renderItem, paddings),
@@ -1062,10 +1065,7 @@ const TabScene = ({
     )
 }
 
-const getUnitType = (currentRoute) =>
-    Object.values(currentRoute?.blocks ?? {}).find(
-        (b) => !b.sidebar && b.unitType
-    )?.unitType
+
 
 /** Re-apply conductor-stored form values into pageData form inputs (any field type). */
 function pageDataWithRestoredFormValues(pageData, formValues) {

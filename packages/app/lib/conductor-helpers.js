@@ -413,6 +413,86 @@ function applyCurrentPageToRoute(route, data, blocks) {
     }
 }
 
+function conductorListItemCount(route) {
+    return (route?.data || []).filter((item) => item?.type !== 'block').length
+}
+
+function conductorBlockItems(route) {
+    return (route?.data || []).filter((item) => item?.type === 'block')
+}
+
+function conductorNonBlockItems(route) {
+    return (route?.data || []).filter((item) => item?.type !== 'block')
+}
+
+function sameConductorEndpoint(a, b) {
+    const left = a?.request_url || ''
+    const right = b?.request_url || ''
+    if (!left || !right) return true
+    return left === right
+}
+
+/**
+ * Rebuild tab chrome from fresh page JSON without dropping already-fetched
+ * list pages. fillTabs() only hydrates the URL-matching tab, and parsed
+ * layouts put browse rows in the list only after parseData() — so a naive
+ * setRoutes(fillTabs()) on SWR/timestamp flashes skeletons then an empty list.
+ */
+export function mergeConductorRoutes(freshTabs, prevRoutes) {
+    if (!Array.isArray(freshTabs) || freshTabs.length === 0) return freshTabs || []
+    if (!Array.isArray(prevRoutes) || prevRoutes.length === 0) return freshTabs
+
+    const prevByLink = new Map()
+    for (const route of prevRoutes) {
+        const key = normalizeConductorLink(route?.link || route?.key)
+        if (key) prevByLink.set(key, route)
+    }
+
+    return freshTabs.map((route, i) => {
+        const routeKey = normalizeConductorLink(route?.link || route?.key)
+        const prev = (routeKey && prevByLink.get(routeKey))
+            || (normalizeConductorLink(prevRoutes[i]?.link || prevRoutes[i]?.key) === routeKey
+                ? prevRoutes[i]
+                : null)
+        if (!prev?.inited) return route
+
+        // fillTabs hydrates only the URL-matching tab; keep other inited tabs as-is.
+        if (!route.inited) {
+            return {
+                ...route,
+                inited: true,
+                data: prev.data,
+                endpoint: prev.endpoint,
+                sidebar: prev.sidebar,
+                leftbar: prev.leftbar,
+                pageData: prev.pageData,
+                blocks: prev.blocks,
+                config: prev.config,
+            }
+        }
+
+        const freshCount = conductorListItemCount(route)
+        const prevCount = conductorListItemCount(prev)
+        const keepPrevList = freshCount === 0
+            && (prevCount > 0 || Boolean(prev.endpoint?.finished))
+            && sameConductorEndpoint(route.endpoint, prev.endpoint)
+
+        if (!keepPrevList) return route
+
+        return {
+            ...route,
+            inited: true,
+            data: conductorBlockItems(route).concat(conductorNonBlockItems(prev)),
+            endpoint: prev.endpoint ?? route.endpoint,
+            sidebar: route.sidebar?.content?.length ? route.sidebar : prev.sidebar,
+            leftbar: route.leftbar?.content?.length ? route.leftbar : prev.leftbar,
+            pageData: route.pageData ?? prev.pageData,
+            blocks: route.blocks ?? prev.blocks,
+            config: route.config ?? prev.config,
+        }
+    })
+}
+
 export function fillTabs(
     menu,
     data,
@@ -938,6 +1018,11 @@ export function ConductorCompactNav({ routes, index, onSelect, renderPill }) {
         </Row>
     )
 }
+
+export const getUnitType = (currentRoute) =>
+    Object.values(currentRoute?.blocks ?? {}).find(
+        (b) => !b.sidebar && b.unitType
+    )?.unitType
 
 export function ConductorSidebarNav({ routes, index, onSelect }) {
     const MenuItemSidebarWithWrapper = getComponent('menu-item', 'sidebar_with_wrapper')

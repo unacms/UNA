@@ -9,8 +9,12 @@ function pageCacheKey(tabKey, url, userId, confirmed) {
     return `${tabKey}:${url}:${session}`;
 }
 
+function normalizeConductorCacheUrl(url) {
+    return String(url || '').replace(/^\/+/, '').replace(/\/+$/, '');
+}
+
 function conductorCacheKey(layoutName, url) {
-    return `${layoutName}:${url}`;
+    return `${layoutName}:${normalizeConductorCacheUrl(url)}`;
 }
 
 export function getCachedPageData(tabKey, url, userId, confirmed) {

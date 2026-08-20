@@ -219,6 +219,19 @@ export default function UniList(props) {
         scrollY.current = currentScrollY;
     }, [setScrollDirection, setScrollValue, setListMaxScrollOffset]);
 
+    // Scroll atoms live in the tab's Jotai store, so an in-tab navigation
+    // (list → profile) would otherwise leave the new list reporting the
+    // previous screen's offset — enough for the profile cover to collapse on
+    // its own. Publish this list's starting offset as soon as it mounts.
+    useEffect(() => {
+        scrollY.current = initialScrollOffset;
+        lastPublishedScrollRef.current = Math.round(initialScrollOffset);
+        scrollState.current = 0;
+        setScrollValue(lastPublishedScrollRef.current);
+        setScrollDirection(0);
+        setListMaxScrollOffset(0);
+    }, [url, initialScrollOffset, setScrollValue, setScrollDirection, setListMaxScrollOffset]);
+
     useEffect(() => {
         return () => {
             if (url) {
