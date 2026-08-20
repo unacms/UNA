@@ -15,10 +15,9 @@ import {
 } from '@10play/tentap-editor'
 import { EditorToolbar } from 'app/lib/editor-toolbar'
 import { useTentapToolbar } from 'app/lib/editor-toolbar-tentap'
-import { useFilesData } from 'app/context/files'
 import { Platform } from 'react-native'
 import { useThemeName } from 'app/design/theme'
-import { getAlert, stripTags, appSetting, cn } from 'app/lib/util'
+import { stripTags, appSetting, cn } from 'app/lib/util'
 import { commitEditorHtml, normalizeEditorHtml } from 'app/lib/editor-form'
 import { useEditorFormField } from 'app/lib/hooks/use-form-field'
 import emitter from 'app/context/emitter'
@@ -61,7 +60,6 @@ export default function RftText(props) {
     const isToolBar = html == 2 || html == 1
     const isPlainText = html == 3
     const suggestionsHeight = 130
-    const { setFilesData } = useFilesData()
     const [inputKey, setInputKey] = useState(0);
 
     // Shared mention pipeline (same fetch/recents/UI as enriched).
@@ -568,12 +566,7 @@ export default function RftText(props) {
         })
 
         if (images.length > 0) {
-            setFilesData(
-                getAlert('images:pasted', {
-                    images: images,
-                    form_name: formName,
-                })
-            )
+            emitter.emit(`form_${formName}`, { action: 'pasted_images', images })
         }
     }
 

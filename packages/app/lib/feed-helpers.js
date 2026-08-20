@@ -19,7 +19,6 @@ import {
     isObjectsEqual,
     menuItemsByName,
     visibilityById,
-    getAlert,
 } from 'app/lib/util'
 import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
@@ -358,9 +357,7 @@ const MenuManage_ = memo(({ id, menu, setViewState, defaultOpen }) => {
                 await fetcher(
                     '/api.php?r=bx_timeline/delete/&params[]=' + id
                 )
-                //setViewState({ view: 'deleted' });
                 emitter.emit('feed', { action: 'remove_content', id: id });
-                //setLayoutData(getAlert('feed:remove_content', id));// TODO REMOVE AFTER CUT setLayoutData/getAlert
                 break
         }
     }

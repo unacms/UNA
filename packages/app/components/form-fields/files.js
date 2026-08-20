@@ -12,7 +12,6 @@ import { uploadImage, md5 } from 'app/lib/util';
 import Loading from 'app/ui/atoms/loading'
 import { Text } from 'app/design/typography'
 import { Image as ImageNative, Alert, Linking, Platform } from 'react-native';
-import { useFilesData, useFilesDataStore } from 'app/context/files';
 import { Image as ImageRN } from 'react-native';
 import Video from 'app/ui/atoms/video';
 import Msg from 'app/ui/molecules/dialogs/msg';
@@ -136,14 +135,28 @@ function getImagePickerOptions(mediaTypes, bMultiple) {
     return options;
 }
 
+/** Survives ImagePicker remounts of the files field (same as abort maps). */
+const fieldImagesByKey = new Map();
+
 function readFieldImages(key) {
     if (!key) return undefined;
-    return useFilesDataStore.getState().fieldImages[key];
+    return fieldImagesByKey.get(key);
 }
 
 function writeFieldImages(key, images) {
     if (!key) return;
-    useFilesDataStore.getState().setFieldImages(key, images || []);
+    fieldImagesByKey.set(key, images || []);
+}
+
+function clearFieldImages(prefix) {
+    if (!prefix) return;
+    if (prefix.endsWith(':')) {
+        for (const key of [...fieldImagesByKey.keys()]) {
+            if (key.startsWith(prefix)) fieldImagesByKey.delete(key);
+        }
+        return;
+    }
+    fieldImagesByKey.delete(prefix);
 }
 
 const inFlightUploadIds = new Set();
@@ -167,23 +180,20 @@ export default function (props) {
     const name = props.name;
     const persistKey = [props.form_name, name].filter(Boolean).join(':');
     const [message, setMessage] = useState(false);
-    const persistedImages = useFilesDataStore((state) => (
-        persistKey ? state.fieldImages[persistKey] : undefined
-    ));
-    const [localImages, setLocalImages] = useState(() => props?.values_src);
-    const images = persistKey ? (persistedImages ?? localImages) : localImages;
+    const [images, setImages] = useState(() => {
+        if (persistKey && fieldImagesByKey.has(persistKey)) {
+            return fieldImagesByKey.get(persistKey);
+        }
+        return props?.values_src;
+    });
     const imageSource = { images };
     const setImageSource = (updater) => {
-        // Persist outside React setState so a picker remount still keeps previews.
-        if (persistKey) {
-            const prev = { images: readFieldImages(persistKey) ?? localImages ?? [] };
+        setImages((prevImages) => {
+            const prev = { images: prevImages ?? [] };
             const next = typeof updater === 'function' ? updater(prev) : updater;
-            writeFieldImages(persistKey, next?.images || []);
-            return;
-        }
-        setLocalImages((prevImages) => {
-            const next = typeof updater === 'function' ? updater({ images: prevImages }) : updater;
-            return next?.images;
+            const nextImages = next?.images || [];
+            if (persistKey) writeFieldImages(persistKey, nextImages);
+            return nextImages;
         });
     };
     const formContext = useFormContext();
@@ -192,7 +202,6 @@ export default function (props) {
     const video_source = formContext.watch('video_source');
     const rules = getValidationRules(props);
     const defaultValue = props?.value ? props.value : '';
-    const { filesData, setFilesData } = useFilesData();
     const { field } = useController({ name, rules, defaultValue });
     const bMultiple = props.multiple;
     const [hasPermissionCamera, requestPermissionCamera] = ImagePicker.useCameraPermissions();
@@ -205,7 +214,7 @@ export default function (props) {
 
     useEffect(() => {
         if (!persistKey) return;
-        if (readFieldImages(persistKey) == null && props?.values_src) {
+        if (!fieldImagesByKey.has(persistKey) && props?.values_src) {
             writeFieldImages(persistKey, props.values_src);
         }
     }, [persistKey, props?.values_src]);
@@ -292,20 +301,6 @@ export default function (props) {
             }));
         }
     }, [isAutoGhosts, bMultiple, formName, formInstanceId]);
-
-    useEffect(() => {
-        const uploadImagesAsync = async (assets) => {
-            const k = await uploadImages(assets);
-            setImageSource({ images: k });
-        };
-
-        if (filesData?.type == 'images:pasted' && props.asDefaultStorage) {
-            if (filesData.data.form_name == props.form_name) {
-                uploadImagesAsync(filesData.data.images)
-                setFilesData(null);
-            }
-        }
-    }, [filesData]);
 
     const isInitialFilesSync = useRef(true);
     useEffect(() => {
@@ -665,15 +660,20 @@ export default function (props) {
 
     useEffect(() => {
         if (!formName) return undefined;
+        const asDefaultStorage = props.asDefaultStorage;
         const subscription = emitter.addListener(`form_${formName}`, (data) => {
             if (data.action == 'submited') {
-                useFilesDataStore.getState().clearFieldImages(`${formName}:`);
+                clearFieldImages(`${formName}:`);
+                setImages(props?.values_src);
+            }
+            if (data.action == 'pasted_images' && asDefaultStorage && data.images?.length) {
+                uploadImages(data.images).then((k) => setImageSource({ images: k }));
             }
         });
         return () => {
             subscription.remove();
         };
-    }, [formName]);
+    }, [formName, props.asDefaultStorage]);
 
     const handleDelete = useCallback(async (target) => {
         const isObj = target != null && typeof target === 'object';

@@ -1,10 +1,9 @@
 import { useState, useMemo, useCallback, useRef } from 'react';
-import { appSetting, getAlert } from 'app/lib/util';
+import { appSetting } from 'app/lib/util';
 import { useActionsData } from 'app/context/actions';
 import { View } from 'app/design/view';
 import { NeoButton } from 'app/design/controls';
 import Redirect from 'app/ui/atoms/redirect';
-import { useLayoutData } from 'app/context/layout';
 import {
     objectKey,
     resolveDisplayFlags,
@@ -14,7 +13,7 @@ import {
     ActionMenuLayout,
 } from 'app/lib/object-helpers';
 
-const handleDo = (redirectRef, link, callback, event, setLayoutData) => {
+const handleDo = (redirectRef, link, callback, event) => {
     event.preventDefault();
 
     if (callback) {
@@ -23,12 +22,10 @@ const handleDo = (redirectRef, link, callback, event, setLayoutData) => {
     }
 
     if (!link) return;
-    setLayoutData(getAlert('comment:activate'));
     redirectRef.current.redirect(link);
 };
 
 export default function ElementComments(props) {
-    const { setLayoutData } = useLayoutData();
     const redirectRef = useRef();
     const settings = useMemo(
         () => ({ ...appSetting('social_actions', 'comment'), ...props.params }),
@@ -75,7 +72,7 @@ export default function ElementComments(props) {
 
     const handlePress = useCallback(
         (event) =>
-            handleDo(redirectRef, action?.link, props.callback, event, setLayoutData),
+            handleDo(redirectRef, action?.link, props.callback, event),
         [action?.link, props.callback]
     );
 

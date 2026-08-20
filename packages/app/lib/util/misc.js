@@ -84,13 +84,6 @@ export async function md52(str) {
     );
 }
 
-export function getAlert(type, data) {
-    /*
-    connections:action
-    */
-    return { type: type, data: data };
-}
-
 export function getRandomColor(str) {
     if (!str)
         str = 'a';

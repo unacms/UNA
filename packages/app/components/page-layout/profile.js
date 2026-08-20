@@ -1,8 +1,7 @@
 import { Conductor } from 'app/ui/molecules/sections/conductor';
 import { useState, useEffect, useMemo, memo, useCallback } from 'react';
 import { appSetting, getBlocksFromData, cloneObject, getPageData } from 'app/lib/util';
-import { useLayoutData } from 'app/context/layout';
-import { useRouter, redirectTo, useFocusEffect } from 'app/lib/hooks/router'
+import { useFocusEffect } from 'app/lib/hooks/router'
 import { useCurrentUser } from 'app/context/user';
 import { subscribe } from 'app/ui/atoms/socket';
 import { patchCachedPageDataByUrl } from 'app/lib/tab-page-cache';
@@ -12,7 +11,6 @@ const ConductorMemo = memo(Conductor, (prev, next) => (
 ));
 
 export default function PageLayoutProfile({ layoutName, data, uri, blocks }) {
-    const { layoutData, setLayoutData } = useLayoutData();
     const [pageData, setPageData] = useState(data);
     const { currentUser, setCurrentUser } = useCurrentUser();
 
@@ -30,23 +28,6 @@ export default function PageLayoutProfile({ layoutName, data, uri, blocks }) {
             currentUser?.confirmed,
         );
     }, [currentUser?.id, currentUser?.confirmed]);
-
-    const router = useRouter();
-    // After join/leave click: handle leave-redirect; page body comes from page:updated.
-    useEffect(() => {
-        if (!layoutData || layoutData?.type != 'connections:action') return;
-
-        // Leave/redirect: navigate away without soft-reloading the current group page first.
-        if (layoutData?.data?.data?.redirect) {
-            setLayoutData(null);
-            redirectTo(router, layoutData.data.data.redirect);
-            return;
-        }
-
-        if (layoutData?.data?.reload) {
-            setLayoutData(null);
-        }
-    }, [layoutData?.data?.time]);
 
     // When the current page was refetched after a connection change, apply it here.
     useEffect(() => {

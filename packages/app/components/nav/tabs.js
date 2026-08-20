@@ -24,13 +24,9 @@ import fonts from 'app/customization/design/fonts/fonts';
 import { Text } from 'app/design/typography'
 import { staticComponents } from 'app/customization/static';
 //import VersionCheck from 'react-native-version-check';
-import { Alert } from 'react-native';
-import { useLayoutData } from 'app/context/layout';
-import { getAlert } from 'app/lib/util';
 import { useLayoutSettings } from 'app/context/layout-settings';
 import { registerAll } from 'app/components/registry-init';
 import * as WebBrowser from 'expo-web-browser';
-import { getDomainFromUrl } from 'app/lib/util';
 import { useSound } from 'app/lib/hooks/useSound';
 import * as SplashScreen from 'expo-splash-screen';
 import {
@@ -148,7 +144,6 @@ function processUrl(url, router, currentUser, TabList) {
 export default function Tabs() {
     const { currentUser, setCurrentUser } = useCurrentUser();
     const [bootstrapError, setBootstrapError] = useState(false);
-    const { setLayoutData } = useLayoutData()
     const { themeName } = useLayoutSettings();
     const [fontsLoaded] = useFonts(fonts);
     const router = useRouter();

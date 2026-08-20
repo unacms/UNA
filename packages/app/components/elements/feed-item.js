@@ -1,43 +1,64 @@
-import { View, Row } from 'app/design/view';
+import { View } from 'app/design/view';
 import Html from 'app/ui/atoms/html';
 import { useState, useEffect } from 'react'
-import { useLayoutData } from 'app/context/layout';
 import Embed from 'app/ui/molecules/content/embed'
-import { storageSet, getDataFromCache, cloneObject } from 'app/lib/util';
+import { storageSet, getDataFromCache, cloneObject, appSetting } from 'app/lib/util';
 import { Platform } from 'react-native'
-import { appSetting } from 'app/lib/util'
+import { subscribe } from 'app/ui/atoms/socket';
 import { ActionMenu, CounterMenu } from 'app/lib/feed-helpers'
 import { UnitImages } from 'app/lib/feed-items'
 import { PollItem } from 'app/components/elements/entity-poll';
 import { BlockWrapper } from 'app/components/block-wrapper'
+import { fetcher } from 'app/lib/fetcher'
 
 export default function ElementFeedItem({ data, isModal, blockWrapperProps }) {
-    const { layoutData } = useLayoutData();
+    const eventId = data?.event?.id
     const [content, setContent] = useState(data.event.content)
-    const isWeb = Platform.OS == 'web' ? true : false;
-    useEffect(() => {
-        if (layoutData && layoutData.type == 'feed_item:content') {
-            setContent(layoutData.data.content)
-        }
-    }, [layoutData]);
+    const isWeb = Platform.OS == 'web'
 
-    if (isWeb) {
-        const sKey = 'feed_' + data.event.id;
+    // Same as UnitFeed card: refetch on timeline "edited" socket
+    useEffect(() => {
+        if (eventId == null) return
+
+        const onItemEdited = async (strData) => {
+            try {
+                const editedData = JSON.parse(strData)
+                const editedId = editedData?.id
+                if (editedId == null || editedId.toString() !== eventId.toString()) return
+
+                const result = await fetcher(
+                    '/api.php?r=' +
+                    appSetting('urls', 'feed_item') +
+                    '{"params":{"browse":"id","value":' +
+                    editedId +
+                    '}}'
+                )
+                if (result.data?.content) setContent(result.data.content)
+            } catch {
+                // ignore malformed socket payloads
+            }
+        }
+
+        const unsub = subscribe('bx_timeline_0', 'edited', onItemEdited)
+        return () => unsub()
+    }, [eventId])
+
+    if (isWeb && eventId != null) {
+        const sKey = 'feed_' + eventId
         const dataCache = getDataFromCache('li:data', sKey)
         if (dataCache) {
-            dataCache.ts = -1;
+            dataCache.ts = -1
         }
         storageSet('li:data', sKey, dataCache)
     }
 
-    const tlContent = content.text;//truncateHTML(data.content.text, 380);
-
+    const tlContent = content?.text
 
     let content_attach = [];
-    if (content.images_attach && content.images_attach.length > 0) {
+    if (content?.images_attach?.length > 0) {
         content_attach = content_attach.concat(content.images_attach);
     }
-    if (content.videos_attach && content.videos_attach.length > 0) {
+    if (content?.videos_attach?.length > 0) {
         content_attach = content_attach.concat(content.videos_attach);
     }
 
@@ -51,9 +72,9 @@ export default function ElementFeedItem({ data, isModal, blockWrapperProps }) {
     return (
         <BlockWrapper {...blockWrapperProps}>
             
-                <Html data={tlContent} customClassName="u-vanilla-html-small" />
-                {!!content.embed && <Embed data={content.embed} />}
-                {content.polls_attach.length > 0 && (
+                <Html key={tlContent || 'empty'} data={tlContent} customClassName="u-vanilla-html-small" />
+                {!!content?.embed && <Embed data={content.embed} />}
+                {content?.polls_attach?.length > 0 && (
                     <View className='w-full'>
                         {content.polls_attach.map((item, index) => {
                             return <View key={"att" + index} className='mt-4'><PollItem data={item} showTitle={true} results_url='/api.php?r=bx_timeline/get_block_poll_results' /></View>

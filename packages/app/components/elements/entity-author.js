@@ -1,4 +1,3 @@
-import { getAlert } from 'app/lib/util';
 import { useCurrentUser } from 'app/context/user';
 import { View, Row } from 'app/design/view';
 import Time from 'app/ui/atoms/time';
@@ -8,11 +7,10 @@ import Link from 'app/ui/atoms/link'
 import { Text } from 'app/design/typography'
 import { fetcher } from 'app/lib/fetcher'
 import Redirect from 'app/ui/atoms/redirect'
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState } from 'react';
 import useFetchForm from 'app/lib/hooks/fetch'
 import { Modal } from 'app/design/controls'
 import Form from 'app/components/elements/form'
-import { useLayoutData } from 'app/context/layout';
 import FormModal, { handleFormModal } from 'app/ui/molecules/dialogs/form-modal';
 import { useIsDesktop } from 'app/context/measure';
 import { BlockWrapper } from 'app/components/block-wrapper'
@@ -21,7 +19,6 @@ export default function ElementEntityAuthor({ data, blockWrapperProps }) {
     const { currentUser } = useCurrentUser();
     const [viewState, setViewState] = useState({ view: '' })
     const [postData, setPostData] = useState(null)
-    const { setLayoutData } = useLayoutData()
     const [pageData, setPageData] = useState(false);
     const isDesktop = useIsDesktop();
     const sInfo = (
@@ -48,19 +45,8 @@ export default function ElementEntityAuthor({ data, blockWrapperProps }) {
     const item_id = data?.entry_id;
     const redirectdRef = useRef();
 
-    /*const { data: dynamicData, error } = useSWR(
-        postData ? ['/api.php?r=bx_timeline/get_edit_form/&params[]=' + item_id, '', postData] : null,
-        fetcher,
-        !true ? undefined : { revalidateIfStale: false, revalidateOnFocus: false, revalidateOnReconnect: false }
-    )*/
-
-    const { data: dynamicData, error } = useFetchForm('/api.php?r=bx_timeline/get_edit_form/&params[]=' + item_id, postData);
-
-    useEffect(() => {
-        if (dynamicData?.data?.item) {
-            setLayoutData(getAlert('feed_item:content', dynamicData.data.item));
-        }
-    }, [dynamicData?.data?.item]);
+    // Submit edit form; UI refresh comes via bx_timeline_0 "edited" socket
+    useFetchForm('/api.php?r=bx_timeline/get_edit_form/&params[]=' + item_id, postData);
 
 
     const onFormSubmit = (formData, d) => {

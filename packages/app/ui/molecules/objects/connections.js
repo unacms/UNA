@@ -9,11 +9,11 @@
  *   primary         — button variant=primary
  */
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Platform } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { appSetting, getAlert, storageClear } from 'app/lib/util';
+import { appSetting, storageClear } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
 import {
     mergeState,
@@ -21,18 +21,14 @@ import {
     pickActionButton,
     resolveActionButtonFlags,
 } from 'app/lib/object-helpers';
-import { useLayoutData } from 'app/context/layout';
+import { useRouter, redirectTo } from 'app/lib/hooks/router';
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import { getComponent } from 'app/components/registry';
 import { BlockByDataInt as BlockByData } from 'app/components/block';
 import { View } from 'app/design/view';
 import { Modal, NeoButton } from 'app/design/controls';
 
-function connectionKey(o, iid, cid) {
-    return o + '_' + iid + '_' + cid;
-}
-
-async function connectionRequest(setLayoutData, o, iid, cid, key, action, params) {
+async function connectionRequest(o, iid, cid, action, params) {
     const body = { o, iid, cid, ...(params || {}) };
     const url =
         '/api.php?r=system/' +
@@ -47,28 +43,18 @@ async function connectionRequest(setLayoutData, o, iid, cid, key, action, params
     const isReload = response?.data?.a != 'questionnaire' && !hasRedirect;
     if (isReload) storageClear();
 
-    setLayoutData(
-        getAlert('connections:action', {
-            object: o,
-            time: Date.now(),
-            action: body,
-            data: response?.data,
-            key,
-            reload: isReload,
-        })
-    );
+    return response?.data;
 }
 
 export default function ElementConnections(props) {
     const { t } = useTranslation();
+    const router = useRouter();
     const DropdownMenuItem = getComponent('menu-item', 'dropdown');
-    const { layoutData, setLayoutData } = useLayoutData();
     const { setBottomSheetData } = useBottomSheetData();
 
     const settings = appSetting('social_actions', 'connection');
     const params = { ...settings, ...props.params };
 
-    const key = connectionKey(props.o, props.iid, props.cid);
     const icons =
         props?.o && settings[props.o]?.icons != undefined
             ? settings[props.o].icons
@@ -84,23 +70,6 @@ export default function ElementConnections(props) {
     const [elementData, setElementData] = useState(false);
     const [modalContent, setModalContent] = useState(false);
 
-    const request = (action, actionParams) =>
-        connectionRequest(
-            setLayoutData,
-            props.o,
-            props.iid,
-            props.cid,
-            key,
-            action,
-            actionParams
-        );
-
-    const doConnection = (actionName, event) => {
-        if (event) event.preventDefault();
-        if (typeof params?.on_do === 'function') params.on_do(actionName);
-        request('perform', { a: actionName });
-    };
-
     const applyResponse = (data) => {
         if (data?.a == 'questionnaire') {
             setModalContent({ content: data.data, designbox_id: 0 });
@@ -112,6 +81,27 @@ export default function ElementConnections(props) {
         if (typeof params?.on_done === 'function') params.on_done(data);
     };
 
+    const request = async (action, actionParams) => {
+        const data = await connectionRequest(
+            props.o,
+            props.iid,
+            props.cid,
+            action,
+            actionParams
+        );
+        if (data?.redirect) {
+            redirectTo(router, data.redirect);
+            return;
+        }
+        applyResponse(data);
+    };
+
+    const doConnection = (actionName, event) => {
+        if (event) event.preventDefault();
+        if (typeof params?.on_do === 'function') params.on_do(actionName);
+        request('perform', { a: actionName });
+    };
+
     const closeModal = () => setModalContent(false);
 
     const onFormSubmittedAndValid = () => {
@@ -120,17 +110,6 @@ export default function ElementConnections(props) {
             doConnection('add');
         }, 100);
     };
-
-    useEffect(() => {
-        if (
-            layoutData &&
-            layoutData?.type == 'connections:action' &&
-            layoutData?.data.key == key
-        ) {
-            applyResponse(layoutData.data.data);
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps -- same as original: react to alert time
-    }, [layoutData?.data?.time]);
 
     let actionName = props?.a || '';
     if (elementData?.a != undefined) actionName = elementData.a;

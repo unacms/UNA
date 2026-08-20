@@ -4,10 +4,9 @@ import { useState, useRef, useEffect, useMemo, useCallback, Component } from 're
 import { Platform } from 'react-native'
 import { EnrichedTextInput } from 'react-native-enriched-html'
 import { View } from 'app/design/view'
-import { useFilesData } from 'app/context/files'
 import { EditorToolbar, useEnrichedToolbar } from 'app/lib/editor-toolbar'
 import { useThemeName } from 'app/design/theme'
-import { getAlert, appSetting, cn } from 'app/lib/util'
+import { appSetting, cn } from 'app/lib/util'
 import { commitEditorHtml, normalizeEditorHtml } from 'app/lib/editor-form'
 import { useEditorFormField } from 'app/lib/hooks/use-form-field'
 import emitter from 'app/context/emitter'
@@ -83,7 +82,6 @@ export default function RftTextEnriched(props) {
     const isToolBar = html == 2 || html == 1
     const isPlainText = html == 3
     const isCommentsEditor = container_class === 'comments'
-    const { setFilesData } = useFilesData()
     const themeName = useThemeName() || 'light'
 
     const [styleState, setStyleState] = useState(null)
@@ -363,8 +361,8 @@ export default function RftTextEnriched(props) {
                 mimeType,
             }
         })
-        setFilesData(getAlert('images:pasted', { images, form_name }))
-    }, [form_name, setFilesData])
+        emitter.emit(`form_${form_name}`, { action: 'pasted_images', images })
+    }, [form_name])
 
     // ---- submit on enter (desktop only; mobile Enter inserts newline) ----
     const submitOnEnter = isDesktop && (

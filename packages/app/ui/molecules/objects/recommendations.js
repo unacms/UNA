@@ -11,7 +11,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { appSetting, getAlert, storageClear } from 'app/lib/util';
+import { appSetting, storageClear } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
 import {
     mergeState,
@@ -19,23 +19,10 @@ import {
     pickActionButton,
     resolveActionButtonFlags,
 } from 'app/lib/object-helpers';
-import { useLayoutData } from 'app/context/layout';
+import { useRouter, redirectTo } from 'app/lib/hooks/router';
 import { NeoButton } from 'app/design/controls';
 
-function recommendationKey(o, iid, cid) {
-    return o + '_' + iid + '_' + cid;
-}
-
-async function recommendationRequest(
-    setLayoutData,
-    o,
-    iid,
-    cid,
-    key,
-    action,
-    params,
-    onLoad
-) {
+async function recommendationRequest(o, iid, cid, action, params, onLoad) {
     const body = { o, iid, cid, ...(params || {}) };
     const url =
         '/api.php?r=system/' +
@@ -44,30 +31,19 @@ async function recommendationRequest(
         JSON.stringify(body);
 
     const response = await fetcher(url);
-    if (typeof onLoad === 'function') onLoad(response?.data);
-
     storageClear();
-    setLayoutData(
-        getAlert('connections:action', {
-            object: o,
-            time: Date.now(),
-            action: body,
-            data: response?.data,
-            key,
-        })
-    );
+    if (typeof onLoad === 'function') onLoad(response?.data);
+    return response?.data;
 }
 
 export default function ElementRecommendations(props) {
     const { t } = useTranslation();
-    const { setLayoutData } = useLayoutData();
+    const router = useRouter();
 
     const params = {
         ...appSetting('social_actions', 'recommendation'),
         ...props.params,
     };
-
-    const key = recommendationKey(props.o, props.iid, props.cid);
 
     const { showAsButton } = resolveActionButtonFlags(params);
     const buttonProps = {
@@ -79,11 +55,9 @@ export default function ElementRecommendations(props) {
 
     const request = (action, actionParams, onLoad) =>
         recommendationRequest(
-            setLayoutData,
             props.o,
             props.iid,
             props.cid,
-            key,
             action,
             actionParams,
             onLoad
@@ -93,6 +67,11 @@ export default function ElementRecommendations(props) {
         event.preventDefault();
 
         request('perform', { a: actionName }, (data) => {
+            if (data?.redirect) {
+                redirectTo(router, data.redirect);
+                return;
+            }
+
             let next = data;
 
             if (!data.a) {

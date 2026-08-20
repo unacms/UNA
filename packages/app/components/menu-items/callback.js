@@ -9,8 +9,7 @@ import { useBottomSheetData } from 'app/context/bottomsheet';
 import { Platform } from 'react-native';
 import RbList from 'app/ui/molecules/form-controls/radio-list';
 import ChkList from 'app/ui/molecules/form-controls/checkbox-list';
-import { storageClear, getAlert } from 'app/lib/util';
-import { useLayoutData } from 'app/context/layout';
+import { storageClear } from 'app/lib/util';
 import Badge from 'app/ui/molecules/profile/badge';
 import Msg from 'app/ui/molecules/dialogs/msg';
 import Stripe from 'app/ui/molecules/integrations/stripe';
@@ -30,7 +29,7 @@ const SUBMENU_MAP = {
     'bx_timeline_menu_item_share': SubmenuShare,
 };
 
-const handleClick = async (event, oProps, setBottomSheetData, setLayoutData, redirectdRef, buttonProps, setButtonProps, setShowMsg, setShowModal) => {
+const handleClick = async (event, oProps, setBottomSheetData, redirectdRef, buttonProps, setButtonProps, setShowMsg, setShowModal) => {
 
     const setMembership = async (val) => {
         oProps.data.value = val;
@@ -99,13 +98,13 @@ const handleClick = async (event, oProps, setBottomSheetData, setLayoutData, red
     if (oProps.data.on_callback == 'alert') {
         if (oProps.data.on_callback_clear_cache)
             storageClear();
-        setLayoutData(getAlert(oProps.data.on_callback_param, { time: Date.now(), reload: true }));
+        emitter.emit('connections', { action: 'changed', reload: true });
     }
     if (oProps.data.on_callback == 'alert,hide') {
         setButtonProps({ ...buttonProps, visible: false });
         if (oProps.data.on_callback_clear_cache)
             storageClear();
-        setLayoutData(getAlert(oProps.data.on_callback_param, { time: Date.now(), reload: true }));
+        emitter.emit('connections', { action: 'changed', reload: true });
     }
     if (oProps.data.on_callback == 'object') {
         const paymentData = {
@@ -124,8 +123,6 @@ export default function MenuItemCallback(oProps) {
     const [buttonProps, setButtonProps] = useState({ isVisible: true, title: oProps.title, request_url: oProps.data?.request_url });
     const [showMsg, setShowMsg] = useState(false);
     const [showModal, setShowModal] = useState(false);
-    const { setLayoutData } = useLayoutData();
-
     const { showVertical } = getMenuItemFlags(oProps);
 
     if (!buttonProps.isVisible)
@@ -153,7 +150,7 @@ export default function MenuItemCallback(oProps) {
 
     const sButtonIcon = resolveMenuItemIcon(oProps, { aliases: ICON_ALIASES, preferAliases: true });
 
-    const onPress = (event) => handleClick(event, oProps, setBottomSheetData, setLayoutData, redirectdRef, buttonProps, setButtonProps, setShowMsg, setShowModal);
+    const onPress = (event) => handleClick(event, oProps, setBottomSheetData, redirectdRef, buttonProps, setButtonProps, setShowMsg, setShowModal);
 
     return (
         <MenuItemActionBase
