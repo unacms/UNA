@@ -26,7 +26,7 @@ INSERT INTO `sys_options` (`name`, `value`, `category_id`, `caption`, `type`, `c
 ('bx_smtp_test_subj', '[TEST] ', @iCategId, '_bx_smtp_option_test_subj', 'digit', '', '', 104, '');
 
 INSERT INTO `sys_options_categories` (`type_id`, `name`, `caption`, `order` )  
-VALUES (@iTypeId, 'bx_smtp_oauth', '_bx_smtp_adm_stg_cpt_category_oauth', 1);
+VALUES (@iTypeId, 'bx_smtp_oauth', '_bx_smtp_adm_stg_cpt_category_oauth', 2);
 SET @iCategId = LAST_INSERT_ID();
 
 INSERT INTO `sys_options` (`name`, `value`, `category_id`, `caption`, `type`, `check`, `check_error`, `order`, `extra`) VALUES
@@ -35,7 +35,7 @@ INSERT INTO `sys_options` (`name`, `value`, `category_id`, `caption`, `type`, `c
 ('bx_smtp_oauth_tenant_id', '', @iCategId, '_bx_smtp_oauth_tenant_id', 'digit', '', '', 30, ''),
 ('bx_smtp_oauth_tenant_name', '', @iCategId, '_bx_smtp_oauth_tenant_name', 'digit', '', '', 40, ''),
 ('bx_smtp_oauth_cert_public', '', @iCategId, '_bx_smtp_oauth_cert_public', 'text', '', '', 50, ''),
-('bx_smtp_oauth_cert_private', '', @iCategId, '_bx_smtp_oauth_cert_private', 'text', '', '', 60, '');
+('bx_smtp_oauth_cert_private', '', @iCategId, '_bx_smtp_oauth_cert_private', 'secret_text', '', '', 60, '');
 
 
 -- logs

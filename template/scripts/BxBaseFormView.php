@@ -1572,7 +1572,11 @@ BLAH;
         }
 
         if (isset($aInput['name'])) $aAttrs['name'] = $aInput['name'];
+
         if (isset($aInput['value'])) $aAttrs['value'] = $aInput['value'];
+        if ($aInput['type'] == 'text' && ($aInput['secret'] ?? false) && ($sValue = $aAttrs['value'] ?? false))
+            $aAttrs['value'] = bx_gen_secret($sValue);
+
         if (isset($aInput['db']['pass']) && ('DateUtc' == $aInput['db']['pass'] || 'DateTimeUtc' == $aInput['db']['pass'])) $aAttrs['data-utc'] = 1;
 
         if (!isset($aAttrs['data-format-24h']))
@@ -1716,6 +1720,8 @@ BLAH;
 
         $bTagsAllowed = $bHtml || $bCode || ($aInput['html_tags'] ?? false);
         $sValue = isset($aInput['value']) ? bx_process_output($bTagsAllowed ? $aInput['value'] : strip_tags($aInput['value']), BX_DATA_TEXT, ['no_process_macros']) : '';
+        if(($aInput['secret'] ?? false) && $sValue)
+            $sValue = bx_gen_secret($sValue);
 
         $aAgent = [];
         if(!empty($this->_aAgentsFormObject)) {

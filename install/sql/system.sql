@@ -329,7 +329,7 @@ CREATE TABLE `sys_options` (
   `caption` varchar(255) NOT NULL default '',
   `info` varchar(255) NOT NULL default '',
   `value` mediumtext NOT NULL,
-  `type` enum('value','digit','secret','text','code','checkbox','select','combobox','file','image','list','rlist','rgb','rgba','datetime') NOT NULL default 'digit',
+  `type` enum('value','digit','secret','secret_text','text','code','checkbox','select','combobox','file','image','list','rlist','rgb','rgba','datetime') NOT NULL default 'digit',
   `extra` text NOT NULL default '',
   `check` varchar(32) NOT NULL,
   `check_params` text NOT NULL,

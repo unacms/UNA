@@ -630,16 +630,6 @@ class BxBaseStudioOptions extends BxDolStudioOptions
                 ];
                 break;
             case 'digit':
-                $aField = [
-                    'type' => 'text',
-                    'name' => $aItem['name'],
-                    'caption' => _t($aItem['caption']),
-                    'info' => _t($aItem['info']),
-                    'value' => $mixedValue,
-                    'attrs' => $aAttributes,
-                    'db' => ['pass' => 'Xss'],
-                ];
-                break;
             case 'secret':
                 $aField = [
                     'type' => 'text',
@@ -648,11 +638,13 @@ class BxBaseStudioOptions extends BxDolStudioOptions
                     'info' => _t($aItem['info']),
                     'value' => $mixedValue,
                     'attrs' => $aAttributes,
-                    'secret' => 1,
                     'db' => ['pass' => 'Xss'],
                 ];
+                if($aItem['type'] == 'secret')
+                    $aField['secret'] = 1;
                 break;
             case 'text':
+            case 'secret_text':
                 $aField = [
                     'type' => 'textarea',
                     'name' => $aItem['name'],
@@ -662,6 +654,8 @@ class BxBaseStudioOptions extends BxDolStudioOptions
                     'attrs' => $aAttributes,
                     'db' => ['pass' => 'XssHtml'],
                 ];
+                if($aItem['type'] == 'secret_text')
+                    $aField['secret'] = 1;
                 break;
             case 'code':
                 $aField = [

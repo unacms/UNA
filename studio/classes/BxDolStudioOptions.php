@@ -480,6 +480,7 @@ class BxDolStudioOptions extends BxDol
 
         switch($aOption['type']) {
             case 'secret':
+            case 'secret_text':
                 if(strcmp(bx_gen_secret($aOption['value']), $mixedValue) == 0)
                     $mixedValue = $aOption['value'];
                 break;
