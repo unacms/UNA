@@ -73,6 +73,11 @@ class BxBaseFormView extends BxDolForm
     protected $_bViewMode = false;
 
     /**
+     * Cached CSRF check for revealing a secret field in the current request.
+     */
+    protected $_bSecretRevealCsrfValid = null;
+
+    /**
      * Show or not sections which have no fileds
      */
     protected $_bShowEmptySections = false;
@@ -502,6 +507,11 @@ class BxBaseFormView extends BxDolForm
                 ];
             }
 
+            if ($this->_isSecretInput($aInput) && isset($aInput['value']) && $aInput['value'] !== '' && $aInput['value'] !== null && !is_array($aInput['value'])) {
+                if (!$this->isViewMode() || !$this->_isSecretRevealed($aInput['name']))
+                    $aInput['value'] = bx_gen_secret((string)$aInput['value']);
+            }
+
             /**
              * Everytime when [key => value] is used it should be converted to [key => ..., value => ...]
              */
@@ -918,6 +928,11 @@ BLAH;
         $sClass = !empty($aParams['class']) ? $aParams['class'] : '';
         $sClassValue = !empty($aParams['class_value']) ? $aParams['class_value'] : '';
 
+        if ($this->_isSecretInput($aInput)) {
+            $sValue = $this->_wrapSecretViewRowValue($aInput, $sValue, $this->_isSecretRevealed($aInput['name']));
+            $sClassValue .= ($sClassValue ? ' ' : '') . 'bx-form-row-view-value-secret';
+        }
+
         $aTmplVarsIcon = [];
         if(!empty($aInput['icon']))
             $aTmplVarsIcon = [
@@ -945,6 +960,11 @@ BLAH;
      */
     function genViewRowValue(&$aInput)
     {
+        if ($this->_isSecretInput($aInput) && !$this->_isSecretRevealed($aInput['name'])) {
+            $sRaw = $this->_getSecretRawValue($aInput);
+            return $sRaw !== '' ? bx_process_output(bx_gen_secret($sRaw)) : null;
+        }
+
         if (!empty($aInput['name'])) {
             $sCustomMethod = 'genCustomViewRowValue' . $this->_genMethodName($aInput['name']);
             if (method_exists($this, $sCustomMethod))
@@ -1046,6 +1066,52 @@ BLAH;
         if (isset($aInput['values_list_name'])  && ($oCategory = BxDolCategory::getObjectInstanceByFormAndList($this->aFormAttrs['name'], $aInput['values_list_name'])) !== false)
             return $oCategory->getCategoryLink($s, $aInput['value']);
         return $s;
+    }
+
+    protected function _isSecretInput($aInput)
+    {
+        return !empty($aInput['secret']) && !empty($aInput['name']);
+    }
+
+    protected function _isSecretRevealed($sName)
+    {
+        $mixed = bx_get('form_secret_reveal');
+        if ($mixed === false || $sName === '' || $sName === null)
+            return false;
+        if (is_array($mixed)) {
+            if (!in_array((string)$sName, array_map('strval', $mixed), true))
+                return false;
+        } else if ((string)$mixed !== (string)$sName) {
+            return false;
+        }
+
+        if ($this->_bSecretRevealCsrfValid === null) {
+            $mixedToken = bx_get('csrf_token');
+            $this->_bSecretRevealCsrfValid = BxDolForm::isCsrfTokenValid($mixedToken === false ? '' : $mixedToken);
+        }
+
+        return $this->_bSecretRevealCsrfValid;
+    }
+
+    protected function _getSecretRawValue(&$aInput)
+    {
+        if (!isset($aInput['value']) || $aInput['value'] === '' || $aInput['value'] === null || is_array($aInput['value']))
+            return '';
+        return (string)$aInput['value'];
+    }
+
+    protected function _wrapSecretViewRowValue(&$aInput, $sValue, $bRevealed = false)
+    {
+        $mixedToken = !$bRevealed ? BxDolForm::getCsrfToken() : false;
+
+        return $this->oTemplate->parseHtmlByName('form_view_secret.html', [
+            'class' => $bRevealed ? 'bx-form-secret-shown' : '',
+            'value' => $sValue,
+            'title' => bx_html_attribute(_t($bRevealed ? '_sys_form_secret_hide' : '_sys_form_secret_reveal')),
+            'name' => bx_html_attribute($aInput['name']),
+            'csrf' => $mixedToken ? bx_html_attribute($mixedToken) : '',
+            'icon' => $bRevealed ? 'eye-slash' : 'eye',
+        ]);
     }
 
     protected function genCustomRowBirthday(&$aInput)

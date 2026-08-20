@@ -3238,6 +3238,8 @@ If it is not enabled then please consider implementing this optimization, since 
 	<string name="_sys_form_review_input_caption_system_id"><![CDATA[Object ID]]></string>
 	<string name="_sys_form_review_input_caption_system_sys"><![CDATA[Object Type]]></string>
 	<string name="_sys_form_review_input_submit"><![CDATA[Post]]></string>
+	<string name="_sys_form_secret_hide"><![CDATA[Hide]]></string>
+	<string name="_sys_form_secret_reveal"><![CDATA[Show]]></string>
 	<string name="_sys_form_unsubscribe"><![CDATA[Unsubscribe]]></string>
 	<string name="_sys_form_unsubscribe_input_caption_system_code"><![CDATA[Security Code]]></string>
 	<string name="_sys_form_unsubscribe_input_caption_system_do_submit"><![CDATA[Submit]]></string>

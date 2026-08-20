@@ -159,7 +159,7 @@ function loadDynamicBlockAutoSort (e, sort, sAdditionalUrlParams) {
  * @param e - element inside the block
  * @return true on success, or false on error - particularly, if block isn't found
  */
-function loadDynamicBlockAuto(e, sUrl) {
+function loadDynamicBlockAuto(e, sUrl, oPostData) {
     var oContainer = $(e).parents('.bx-page-block-container:first:not(.no-dynamic)');
     var sId = oContainer.attr('id');
 
@@ -187,17 +187,54 @@ function loadDynamicBlockAuto(e, sUrl) {
     	sUrl = bx_append_url_params(sUrl, oParams);
     }
 
-    loadDynamicBlock(parseInt(aMatches[1]), sUrl);
+    loadDynamicBlock(parseInt(aMatches[1]), sUrl, oPostData);
     return true;
 }
 
-function loadDynamicBlock(iBlockID, sUrl) {
+/**
+ * Reload the current page block to show or hide a form secret field.
+ * Reveal is POSTed with a CSRF token so it cannot be triggered by a GET param alone.
+ * When the form is not inside a page block, the whole page is reloaded via POST.
+ */
+function bx_form_secret_toggle(e) {
+    var oToggle = $(e);
+    var bHide = oToggle.closest('.bx-form-secret').hasClass('bx-form-secret-shown');
+    var sField = oToggle.attr('bx_form_secret_field');
+    var sCsrfToken = oToggle.attr('bx_form_secret_csrf');
+
+    var sUrl = location.href;
+    try {
+        var oUrl = new URL(sUrl);
+        oUrl.searchParams.delete('form_secret_reveal');
+        oUrl.searchParams.delete('csrf_token');
+        sUrl = oUrl.toString();
+    } catch (oErr) {
+        sUrl = sUrl.replace(/([?&])form_secret_reveal=[^&]*/g, '$1').replace(/([?&])csrf_token=[^&]*/g, '$1').replace(/[?&]$/, '');
+    }
+
+    if (bHide) {
+        if (!loadDynamicBlockAuto(e, sUrl))
+            location.href = sUrl;
+        return false;
+    }
+
+    var oData = {form_secret_reveal: sField};
+    if (sCsrfToken)
+        oData.csrf_token = sCsrfToken;
+
+    return loadDynamicBlockAuto(e, sUrl, oData);
+}
+
+function loadDynamicBlock(iBlockID, sUrl, oPostData) {
     
     var oCallback = null;
     if($('#bx-page-block-' + iBlockID + ' .bx-base-unit-showcase-wrapper').length){
         oCallback = bx_showcase_view_init;
     }
-    getHtmlData($('#bx-page-block-' + iBlockID), bx_append_url_params(sUrl, 'dynamic=tab&pageBlock=' + iBlockID), oCallback);
+    if (typeof oPostData != 'undefined' && oPostData)
+        getHtmlData($('#bx-page-block-' + iBlockID), bx_append_url_params(sUrl, 'dynamic=tab&pageBlock=' + iBlockID), oCallback, 'post', false, oPostData);
+    else
+        getHtmlData($('#bx-page-block-' + iBlockID), bx_append_url_params(sUrl, 'dynamic=tab&pageBlock=' + iBlockID), oCallback);
     return true;
 }
 

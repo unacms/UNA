@@ -433,3 +433,24 @@ import url(../../../../../../../template/css/forms.css);
     border-bottom:none !important;
 }
 
+.bx-form-secret {
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0.5rem;
+    max-width: 100%;
+    min-width: 0;
+}
+.bx-form-secret-value {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-family: monospace;
+}
+.bx-form-secret-toggle {
+    flex-shrink: 0;
+    line-height: 1;
+    cursor: pointer;
+}
+
