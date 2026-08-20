@@ -222,7 +222,7 @@ INSERT INTO `bx_payment_providers_options`(`provider_id`, `name`, `type`, `capti
 (@iProviderId, 'pp_mode', 'select', '_bx_payment_pp_mode_cpt', '_bx_payment_pp_mode_dsc', '1|_bx_payment_pp_mode_live,2|_bx_payment_pp_mode_test', '', '', '', 2),
 (@iProviderId, 'pp_business', 'text', '_bx_payment_pp_business_cpt', '_bx_payment_pp_business_dsc', '', 'EmailOrEmpty', '', '_bx_payment_form_input_email_err_cor_or_emp', 3),
 (@iProviderId, 'pp_prc_type', 'select', '_bx_payment_pp_prc_type_cpt', '_bx_payment_pp_prc_type_dsc', '1|_bx_payment_pp_prc_type_direct,2|_bx_payment_pp_prc_type_pdt,3|_bx_payment_pp_prc_type_ipn', '', '', '', 4),
-(@iProviderId, 'pp_token', 'text', '_bx_payment_pp_token_cpt', '_bx_payment_pp_token_dsc', '', '', '', '', 5),
+(@iProviderId, 'pp_token', 'secret', '_bx_payment_pp_token_cpt', '_bx_payment_pp_token_dsc', '', '', '', '', 5),
 (@iProviderId, 'pp_sandbox', 'text', '_bx_payment_pp_sandbox_cpt', '_bx_payment_pp_sandbox_dsc', '', 'EmailOrEmpty', '', '_bx_payment_form_input_email_err_cor_or_emp', 6),
 (@iProviderId, 'pp_return_data_url', 'value', '_bx_payment_pp_return_data_url_cpt', '', '', '', '', '', 7);
 
@@ -237,10 +237,10 @@ INSERT INTO `bx_payment_providers_options`(`provider_id`, `name`, `type`, `capti
 (@iProviderId, 'pp_api_mode', 'select', '_bx_payment_pp_api_mode_cpt', '_bx_payment_pp_api_mode_dsc', '1|_bx_payment_pp_api_mode_live,2|_bx_payment_pp_api_mode_test', '', '', '', 3),
 (@iProviderId, 'pp_api_live_account', 'text', '_bx_payment_pp_api_live_account_cpt', '_bx_payment_pp_api_live_account_dsc', '', 'EmailOrEmpty', '', '_bx_payment_form_input_email_err_cor_or_emp', 4),
 (@iProviderId, 'pp_api_live_client_id', 'text', '_bx_payment_pp_api_live_client_id_cpt', '_bx_payment_pp_api_live_client_id_dsc', '', '', '', '', 5),
-(@iProviderId, 'pp_api_live_secret', 'text', '_bx_payment_pp_api_live_secret_cpt', '_bx_payment_pp_api_live_secret_dsc', '', '', '', '', 6),
+(@iProviderId, 'pp_api_live_secret', 'secret', '_bx_payment_pp_api_live_secret_cpt', '_bx_payment_pp_api_live_secret_dsc', '', '', '', '', 6),
 (@iProviderId, 'pp_api_test_account', 'text', '_bx_payment_pp_api_test_account_cpt', '_bx_payment_pp_api_test_account_dsc', '', 'EmailOrEmpty', '', '_bx_payment_form_input_email_err_cor_or_emp', 7),
 (@iProviderId, 'pp_api_test_client_id', 'text', '_bx_payment_pp_api_test_client_id_cpt', '_bx_payment_pp_api_test_client_id_dsc', '', '', '', '', 8),
-(@iProviderId, 'pp_api_test_secret', 'text', '_bx_payment_pp_api_test_secret_cpt', '_bx_payment_pp_api_test_secret_dsc', '', '', '', '', 9),
+(@iProviderId, 'pp_api_test_secret', 'secret', '_bx_payment_pp_api_test_secret_cpt', '_bx_payment_pp_api_test_secret_dsc', '', '', '', '', 9),
 (@iProviderId, 'pp_api_return_data_url', 'value', '_bx_payment_pp_api_return_data_url_cpt', '', '', '', '', '', 10),
 (@iProviderId, 'pp_api_notify_url', 'value', '_bx_payment_pp_api_notify_url_cpt', '', '', '', '', '', 11);
 
@@ -254,9 +254,9 @@ INSERT INTO `bx_payment_providers_options`(`provider_id`, `name`, `type`, `capti
 (@iProviderId, 'cbee_hidden', 'checkbox', '_bx_payment_cbee_hidden_cpt', '_bx_payment_cbee_hidden_dsc', '', '', '', '', 2),
 (@iProviderId, 'cbee_mode', 'select', '_bx_payment_cbee_mode_cpt', '_bx_payment_cbee_mode_dsc', '1|_bx_payment_cbee_mode_live,2|_bx_payment_cbee_mode_test', '', '', '', 3),
 (@iProviderId, 'cbee_live_site', 'text', '_bx_payment_cbee_live_site_cpt', '_bx_payment_cbee_live_site_dsc', '', '', '', '', 4),
-(@iProviderId, 'cbee_live_api_key', 'text', '_bx_payment_cbee_live_api_key_cpt', '_bx_payment_cbee_live_api_key_dsc', '', '', '', '', 5),
+(@iProviderId, 'cbee_live_api_key', 'secret', '_bx_payment_cbee_live_api_key_cpt', '_bx_payment_cbee_live_api_key_dsc', '', '', '', '', 5),
 (@iProviderId, 'cbee_test_site', 'text', '_bx_payment_cbee_test_site_cpt', '_bx_payment_cbee_test_site_dsc', '', '', '', '', 6),
-(@iProviderId, 'cbee_test_api_key', 'text', '_bx_payment_cbee_test_api_key_cpt', '_bx_payment_cbee_test_api_key_dsc', '', '', '', '', 7),
+(@iProviderId, 'cbee_test_api_key', 'secret', '_bx_payment_cbee_test_api_key_cpt', '_bx_payment_cbee_test_api_key_dsc', '', '', '', '', 7),
 (@iProviderId, 'cbee_check_amount', 'checkbox', '_bx_payment_cbee_check_amount_cpt', '_bx_payment_cbee_check_amount_dsc', '', '', '', '', 8),
 (@iProviderId, 'cbee_ssl', 'checkbox', '_bx_payment_cbee_ssl_cpt', '_bx_payment_cbee_ssl_dsc', '', '', '', '', 9),
 (@iProviderId, 'cbee_cancellation_email', 'text', '_bx_payment_cbee_cancellation_email_cpt', '', '', 'EmailOrEmpty', '', '_bx_payment_form_input_email_err_cor_or_emp', 10),
@@ -274,9 +274,9 @@ INSERT INTO `bx_payment_providers_options`(`provider_id`, `name`, `type`, `capti
 (@iProviderId, 'cbee_v3_hidden', 'checkbox', '_bx_payment_cbee_hidden_cpt', '_bx_payment_cbee_hidden_dsc', '', '', '', '', 2),
 (@iProviderId, 'cbee_v3_mode', 'select', '_bx_payment_cbee_mode_cpt', '_bx_payment_cbee_mode_dsc', '1|_bx_payment_cbee_mode_live,2|_bx_payment_cbee_mode_test', '', '', '', 3),
 (@iProviderId, 'cbee_v3_live_site', 'text', '_bx_payment_cbee_live_site_cpt', '_bx_payment_cbee_live_site_dsc', '', '', '', '', 4),
-(@iProviderId, 'cbee_v3_live_api_key', 'text', '_bx_payment_cbee_live_api_key_cpt', '_bx_payment_cbee_live_api_key_dsc', '', '', '', '', 5),
+(@iProviderId, 'cbee_v3_live_api_key', 'secret', '_bx_payment_cbee_live_api_key_cpt', '_bx_payment_cbee_live_api_key_dsc', '', '', '', '', 5),
 (@iProviderId, 'cbee_v3_test_site', 'text', '_bx_payment_cbee_test_site_cpt', '_bx_payment_cbee_test_site_dsc', '', '', '', '', 6),
-(@iProviderId, 'cbee_v3_test_api_key', 'text', '_bx_payment_cbee_test_api_key_cpt', '_bx_payment_cbee_test_api_key_dsc', '', '', '', '', 7),
+(@iProviderId, 'cbee_v3_test_api_key', 'secret', '_bx_payment_cbee_test_api_key_cpt', '_bx_payment_cbee_test_api_key_dsc', '', '', '', '', 7),
 (@iProviderId, 'cbee_v3_check_amount', 'checkbox', '_bx_payment_cbee_check_amount_cpt', '_bx_payment_cbee_check_amount_dsc', '', '', '', '', 8),
 (@iProviderId, 'cbee_v3_ssl', 'checkbox', '_bx_payment_cbee_ssl_cpt', '_bx_payment_cbee_ssl_dsc', '', '', '', '', 9),
 (@iProviderId, 'cbee_v3_cancellation_email', 'text', '_bx_payment_cbee_cancellation_email_cpt', '', '', 'EmailOrEmpty', '', '_bx_payment_form_input_email_err_cor_or_emp', 10),
@@ -294,9 +294,9 @@ INSERT INTO `bx_payment_providers_options`(`provider_id`, `name`, `type`, `capti
 (@iProviderId, 'strp_hidden', 'checkbox', '_bx_payment_strp_hidden_cpt', '_bx_payment_strp_hidden_dsc', '', '', '', '', 2),
 (@iProviderId, 'strp_mode', 'select', '_bx_payment_strp_mode_cpt', '_bx_payment_strp_mode_dsc', '1|_bx_payment_strp_mode_live,2|_bx_payment_strp_mode_test', '', '', '', 3),
 (@iProviderId, 'strp_live_pub_key', 'text', '_bx_payment_strp_live_pub_key_cpt', '_bx_payment_strp_live_pub_key_dsc', '', '', '', '', 4),
-(@iProviderId, 'strp_live_sec_key', 'text', '_bx_payment_strp_live_sec_key_cpt', '_bx_payment_strp_live_sec_key_dsc', '', '', '', '', 5),
+(@iProviderId, 'strp_live_sec_key', 'secret', '_bx_payment_strp_live_sec_key_cpt', '_bx_payment_strp_live_sec_key_dsc', '', '', '', '', 5),
 (@iProviderId, 'strp_test_pub_key', 'text', '_bx_payment_strp_test_pub_key_cpt', '_bx_payment_strp_test_pub_key_dsc', '', '', '', '', 6),
-(@iProviderId, 'strp_test_sec_key', 'text', '_bx_payment_strp_test_sec_key_cpt', '_bx_payment_strp_test_sec_key_dsc', '', '', '', '', 7),
+(@iProviderId, 'strp_test_sec_key', 'secret', '_bx_payment_strp_test_sec_key_cpt', '_bx_payment_strp_test_sec_key_dsc', '', '', '', '', 7),
 (@iProviderId, 'strp_check_amount', 'checkbox', '_bx_payment_strp_check_amount_cpt', '_bx_payment_strp_check_amount_dsc', '', '', '', '', 8),
 (@iProviderId, 'strp_ssl', 'checkbox', '_bx_payment_strp_ssl_cpt', '_bx_payment_strp_ssl_dsc', '', '', '', '', 9),
 (@iProviderId, 'strp_cancellation_email', 'text', '_bx_payment_strp_cancellation_email_cpt', '', '', 'EmailOrEmpty', '', '_bx_payment_form_input_email_err_cor_or_emp', 10),
@@ -313,9 +313,9 @@ INSERT INTO `bx_payment_providers_options`(`provider_id`, `name`, `type`, `value
 (@iProviderId, 'strp_v3_hidden', 'checkbox', '', '_bx_payment_strp_hidden_cpt', '_bx_payment_strp_hidden_dsc', '', '', '', '', 1, 2),
 (@iProviderId, 'strp_v3_mode', 'select', '1', '_bx_payment_strp_mode_cpt', '_bx_payment_strp_mode_dsc', '1|_bx_payment_strp_mode_live,2|_bx_payment_strp_mode_test', '', '', '', 2, 3),
 (@iProviderId, 'strp_v3_live_pub_key', 'text', '', '_bx_payment_strp_live_pub_key_cpt', '_bx_payment_strp_live_pub_key_dsc', '', '', '', '', 0, 4),
-(@iProviderId, 'strp_v3_live_sec_key', 'text', '', '_bx_payment_strp_live_sec_key_cpt', '_bx_payment_strp_live_sec_key_dsc', '', '', '', '', 0, 5),
+(@iProviderId, 'strp_v3_live_sec_key', 'secret', '', '_bx_payment_strp_live_sec_key_cpt', '_bx_payment_strp_live_sec_key_dsc', '', '', '', '', 0, 5),
 (@iProviderId, 'strp_v3_test_pub_key', 'text', '', '_bx_payment_strp_test_pub_key_cpt', '_bx_payment_strp_test_pub_key_dsc', '', '', '', '', 1, 6),
-(@iProviderId, 'strp_v3_test_sec_key', 'text', '', '_bx_payment_strp_test_sec_key_cpt', '_bx_payment_strp_test_sec_key_dsc', '', '', '', '', 1, 7),
+(@iProviderId, 'strp_v3_test_sec_key', 'secret', '', '_bx_payment_strp_test_sec_key_cpt', '_bx_payment_strp_test_sec_key_dsc', '', '', '', '', 1, 7),
 (@iProviderId, 'strp_v3_check_amount', 'checkbox', '', '_bx_payment_strp_check_amount_cpt', '_bx_payment_strp_check_amount_dsc', '', '', '', '', 1, 8),
 (@iProviderId, 'strp_v3_ssl', 'checkbox', 'on', '_bx_payment_strp_ssl_cpt', '_bx_payment_strp_ssl_dsc', '', '', '', '', 1, 9),
 (@iProviderId, 'strp_v3_cancellation_email', 'text', '', '_bx_payment_strp_cancellation_email_cpt', '', '', 'EmailOrEmpty', '', '_bx_payment_form_input_email_err_cor_or_emp', 0, 10),
@@ -341,7 +341,7 @@ SET @iProviderId = LAST_INSERT_ID();
 INSERT INTO `bx_payment_providers_options`(`provider_id`, `name`, `type`, `caption`, `description`, `extra`, `check_type`, `check_params`, `check_error`, `order`) VALUES
 (@iProviderId, 'aina_active', 'checkbox', '_bx_payment_aina_active_cpt', '_bx_payment_aina_active_dsc', '', '', '', '', 1),
 (@iProviderId, 'aina_hidden', 'checkbox', '_bx_payment_aina_hidden_cpt', '_bx_payment_aina_hidden_dsc', '', '', '', '', 2),
-(@iProviderId, 'aina_secret', 'text', '_bx_payment_aina_secret_cpt', '_bx_payment_aina_secret_dsc', '', '', '', '', 3),
+(@iProviderId, 'aina_secret', 'secret', '_bx_payment_aina_secret_cpt', '_bx_payment_aina_secret_dsc', '', '', '', '', 3),
 (@iProviderId, 'aina_notify_url', 'value', '_bx_payment_aina_notify_url_cpt', '', '', '', '', '', 4);
 
 -- GRIDS

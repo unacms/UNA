@@ -20,10 +20,15 @@ class BxSnipcartFormSettings extends BxTemplFormView
     public function __construct($aInfo, $oTemplate = false)
     {
         $this->_sModule = 'bx_snipcart';
+        $this->_oModule = BxDolModule::getInstance($this->_sModule);
 
         parent::__construct($aInfo, $oTemplate);
 
-        $this->_oModule = BxDolModule::getInstance($this->_sModule);
+        if(($sF = 'api_key_test') && isset($this->aInputs[$sF]))
+            $this->aInputs[$sF]['secret'] = 1;
+
+        if(($sF = 'api_key_live') && isset($this->aInputs[$sF]))
+            $this->aInputs[$sF]['secret'] = 1;
     }
 }
 

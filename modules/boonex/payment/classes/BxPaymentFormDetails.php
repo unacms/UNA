@@ -129,6 +129,13 @@ class BxPaymentFormDetails extends BxTemplFormView
             //--- Make some field dependent actions ---//
             $aAddon = [];
             switch($this->aInputs[$aInput['name']]['type']) {
+                case 'secret':
+                    $this->aInputs[$aInput['name']] = array_merge($this->aInputs[$aInput['name']], [
+                        'type' => 'text',
+                        'secret' => 1
+                    ]);
+                    break;
+
                 case 'select':
                     if(empty($aInput['extra']))
                        break;

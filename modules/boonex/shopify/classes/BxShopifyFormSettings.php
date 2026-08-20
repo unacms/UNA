@@ -20,10 +20,12 @@ class BxShopifyFormSettings extends BxTemplFormView
     public function __construct($aInfo, $oTemplate = false)
     {
         $this->_sModule = 'bx_shopify';
+        $this->_oModule = BxDolModule::getInstance($this->_sModule);
 
         parent::__construct($aInfo, $oTemplate);
 
-        $this->_oModule = BxDolModule::getInstance($this->_sModule);
+        if(($sF = 'access_token') && isset($this->aInputs[$sF]))
+            $this->aInputs[$sF]['secret'] = 1;
     }
 }
 
