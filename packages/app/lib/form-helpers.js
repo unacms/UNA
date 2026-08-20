@@ -85,6 +85,18 @@ export function trackFormUploadEnd(formName, formInstanceId, hash) {
     });
 }
 
+/** Drop all in-flight upload markers for a form instance (cancel / unmount). */
+export function clearFormPendingUploads(formName, formInstanceId) {
+    if (!formName) return;
+    const key = uploadFormKey(formName, formInstanceId);
+    if (!pendingUploadsByForm.has(key)) return;
+    pendingUploadsByForm.delete(key);
+    emitter.emit(`form_${formName}`, {
+        action: 'upload_clear',
+        formInstanceId,
+    });
+}
+
 /** True while this form instance has in-flight file uploads. */
 export function useFormUploading(formName) {
     const formInstanceId = useFormInstanceId();
@@ -100,7 +112,13 @@ export function useFormUploading(formName) {
         setUploading(formHasPendingUploads(formName, formInstanceId));
         const subscription = emitter.addListener(`form_${formName}`, (data) => {
             if (formInstanceId != null && data.formInstanceId !== formInstanceId) return;
-            if (data.action !== 'upload_start' && data.action !== 'upload_end') return;
+            if (
+                data.action !== 'upload_start' &&
+                data.action !== 'upload_end' &&
+                data.action !== 'upload_clear'
+            ) {
+                return;
+            }
             setUploading(formHasPendingUploads(formName, formInstanceId));
         });
         return () => subscription.remove();

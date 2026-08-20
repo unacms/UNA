@@ -181,7 +181,8 @@ export const prepareImageForUpload = async ({
     return processedImage.uri;
 }
 
-export const uploadImage = async (uri, fetchUrl, calback, extraVar) => {
+export const uploadImage = async (uri, fetchUrl, calback, extraVar, options = {}) => {
+    const { signal } = options;
     if (isWeb) {
         let fileType = '';
         let fileExt = '';
@@ -200,8 +201,17 @@ export const uploadImage = async (uri, fetchUrl, calback, extraVar) => {
         }
         const formData = new FormData();
         const file = await urltoFile(uri, genRnd(8) + '.' + fileExt, fileType);
+        if (signal?.aborted) {
+            const err = new Error('Aborted');
+            err.name = 'AbortError';
+            err.aborted = true;
+            throw err;
+        }
         formData.append("file", file);
-        const result = await fetcher([fetchUrl, null, formData], false, { timeoutMs: UPLOAD_TIMEOUT_MS });
+        const result = await fetcher([fetchUrl, null, formData], false, {
+            timeoutMs: UPLOAD_TIMEOUT_MS,
+            signal,
+        });
         // Always pass the full API payload so callers can read data.ghost
         // (passing only data.link dropped ghosts and left preload spinners).
         calback({ result, extraVar });
@@ -216,6 +226,9 @@ export const uploadImage = async (uri, fetchUrl, calback, extraVar) => {
         type,
     });
 
-    const result = await fetcher([fetchUrl, null, formData], false, { timeoutMs: UPLOAD_TIMEOUT_MS });
+    const result = await fetcher([fetchUrl, null, formData], false, {
+        timeoutMs: UPLOAD_TIMEOUT_MS,
+        signal,
+    });
     calback({ result, extraVar });
 };

@@ -66,6 +66,39 @@ export function setCachedConductorState(layoutName, url, state) {
     conductorCache.set(conductorCacheKey(layoutName, url), state);
 }
 
+/**
+ * Drop a conductor list snapshot. Prefer url-only (omit layoutName) so both
+ * `navigator` and `notif` page layouts are covered.
+ */
+export function clearCachedConductorState(layoutName, url) {
+    if (!url) return;
+    const normalized = normalizeConductorCacheUrl(url);
+    if (!normalized) return;
+
+    if (layoutName) {
+        conductorCache.delete(conductorCacheKey(layoutName, normalized));
+        return;
+    }
+
+    for (const key of [...conductorCache.keys()]) {
+        if (key.endsWith(`:${normalized}`)) {
+            conductorCache.delete(key);
+        }
+    }
+}
+
+let notificationsConductorStale = false;
+
+export function markNotificationsConductorStale() {
+    notificationsConductorStale = true;
+}
+
+export function consumeNotificationsConductorStale() {
+    if (!notificationsConductorStale) return false;
+    notificationsConductorStale = false;
+    return true;
+}
+
 export function getListScrollOffset(url) {
     if (!url) return 0;
     return scrollOffsetCache.get(url) ?? 0;

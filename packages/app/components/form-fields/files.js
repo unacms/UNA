@@ -147,6 +147,9 @@ function writeFieldImages(key, images) {
 }
 
 const inFlightUploadIds = new Set();
+/** Module-level so abort/cancel survives ImagePicker remounts of the files field. */
+const uploadAbortControllers = new Map();
+const cancelledUploadIds = new Set();
 
 function assetMimeType(asset) {
     if (asset?.mimeType) return asset.mimeType;
@@ -263,12 +266,19 @@ export default function (props) {
         const result = payload?.result;
         const ghost = result?.data?.ghost;
 
-        // Apply each completion immediately — do not funnel through a single
-        // uploadFinished state (parallel uploads were overwriting each other).
         if (uploadId) {
+            uploadAbortControllers.delete(uploadId);
             trackFormUploadEnd(formName, formInstanceId, uploadId);
         }
 
+        // Explicit cancel (or aborted preload) must not hydrate a ghost into persist.
+        if (uploadId && cancelledUploadIds.has(uploadId)) {
+            cancelledUploadIds.delete(uploadId);
+            return;
+        }
+
+        // Apply each completion immediately — do not funnel through a single
+        // uploadFinished state (parallel uploads were overwriting each other).
         if (isAutoGhosts && ghost) {
             setImageSourceN([{ ...ghost, hash }], bMultiple);
         } else if (isAutoGhosts) {
@@ -340,7 +350,10 @@ export default function (props) {
 
         const uploadOne = async (i, hash, uploadId) => {
             if (!uploadId || inFlightUploadIds.has(uploadId)) return;
+            if (cancelledUploadIds.has(uploadId)) return;
             inFlightUploadIds.add(uploadId);
+            const controller = new AbortController();
+            uploadAbortControllers.set(uploadId, controller);
             const uri = i.uri;
             const mimeType = assetMimeType(i);
             const extraVar = {
@@ -358,10 +371,15 @@ export default function (props) {
                 fileUri,
                 url + '&a=upload',
                 onUploadFinished,
-                fileMeta
+                fileMeta,
+                { signal: controller.signal }
             );
 
             try {
+                if (cancelledUploadIds.has(uploadId) || controller.signal.aborted) {
+                    trackFormUploadEnd(formName, formInstanceId, uploadId);
+                    return;
+                }
                 if (isImage && i?.cropped) {
                     await sendFile(uri);
                 } else if (isImage) {
@@ -370,6 +388,11 @@ export default function (props) {
                             uri,
                             async (width, height) => {
                                 try {
+                                    if (cancelledUploadIds.has(uploadId) || controller.signal.aborted) {
+                                        trackFormUploadEnd(formName, formInstanceId, uploadId);
+                                        resolve();
+                                        return;
+                                    }
                                     let preparedUri = uri;
                                     try {
                                         preparedUri = await prepareImageForUpload({
@@ -383,6 +406,11 @@ export default function (props) {
                                         });
                                     } catch (prepareErr) {
                                         console.warn('[files] image prepare failed, uploading original:', prepareErr);
+                                    }
+                                    if (cancelledUploadIds.has(uploadId) || controller.signal.aborted) {
+                                        trackFormUploadEnd(formName, formInstanceId, uploadId);
+                                        resolve();
+                                        return;
                                     }
                                     const preparedMeta = preparedUri === uri
                                         ? extraVar
@@ -402,12 +430,17 @@ export default function (props) {
                     await sendFile(uri);
                 }
             } catch (err) {
-                console.error('[files] upload failed:', err);
-                // Keep the preview — ImagePicker over a modal remounts the form and
-                // aborting the first attempt used to strip the attachment.
-                trackFormUploadEnd(formName, formInstanceId, uploadId);
+                if (err?.aborted || err?.name === 'AbortError') {
+                    trackFormUploadEnd(formName, formInstanceId, uploadId);
+                } else {
+                    console.error('[files] upload failed:', err);
+                    // Keep the preview — ImagePicker over a modal remounts the form and
+                    // aborting the first attempt used to strip the attachment.
+                    trackFormUploadEnd(formName, formInstanceId, uploadId);
+                }
             } finally {
                 inFlightUploadIds.delete(uploadId);
+                uploadAbortControllers.delete(uploadId);
             }
         };
 
@@ -633,23 +666,49 @@ export default function (props) {
         };
     }, [formName]);
 
-    const handleDelete = useCallback(async (id) => {
+    const handleDelete = useCallback(async (target) => {
+        const isObj = target != null && typeof target === 'object';
+        const fileId = isObj ? target.file_id : target;
+        const uploadId = isObj ? target.uploadId : null;
+        const hash = isObj ? target.hash : null;
+
+        // Preload cancel: end pending flag + abort network (file_id is still missing).
+        if (uploadId) {
+            cancelledUploadIds.add(uploadId);
+            const controller = uploadAbortControllers.get(uploadId);
+            if (controller) {
+                try {
+                    controller.abort();
+                } catch {
+                    // ignore
+                }
+                uploadAbortControllers.delete(uploadId);
+            }
+            inFlightUploadIds.delete(uploadId);
+            trackFormUploadEnd(formName, formInstanceId, uploadId);
+        }
+
         setImageSource(prev => ({
             ...prev,
-            images: prev.images.filter(item => item.file_id !== id)
+            images: (prev.images || []).filter((item) => {
+                if (isObj) {
+                    if (uploadId && item.uploadId === uploadId) return false;
+                    if (fileId != null && fileId !== '' && item.file_id === fileId) return false;
+                    if ((fileId == null || fileId === '') && hash && item.hash === hash) return false;
+                    return true;
+                }
+                return item.file_id !== target;
+            }),
         }));
 
-        await fetcher(url + "&a=delete&id=" + id);
-    }, [url, imageSource]);
+        if (fileId != null && fileId !== '') {
+            await fetcher(url + "&a=delete&id=" + fileId);
+        }
+    }, [url, formName, formInstanceId]);
 
-    const handleDeleteSingle = useCallback(async (id) => {
-        setImageSource(prev => ({
-            ...prev,
-            images: prev.images.filter(item => item.file_id !== id)
-        }));
-
-        
-    }, [url, imageSource]);
+    const handleDeleteSingle = useCallback(async (target) => {
+        await handleDelete(target);
+    }, [handleDelete]);
 
 
     // may be need improve in future
@@ -807,7 +866,7 @@ function ActionButton({ imagesList, props, selectImage, handleDelete, bMultiple,
                                 borderShape="circle"
                                 image="X"
                                 accessibilityLabel="Close"
-                                onPress={() => handleDelete(img.file_id)}
+                                onPress={() => handleDelete(img)}
                             />
                         </View>
                     </>)
@@ -866,7 +925,7 @@ function GhostsList(imagesList, bMultiple, handleDelete, props) {
                         borderShape="circle"
                         image="X"
                         accessibilityLabel="Close"
-                        onPress={() => handleDelete(img.file_id)}
+                        onPress={() => handleDelete(img)}
                     />
                 </View>
 

@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo, useCallback, useId, useRef } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
-import { getFormFieldByData, isFormResponseComplete, normalizeFormResponseData, updateFormDirtyState, isFormUnsavedCloseGuardSkipped, formHasPendingUploads } from 'app/lib/form-helpers'
+import { getFormFieldByData, isFormResponseComplete, normalizeFormResponseData, updateFormDirtyState, isFormUnsavedCloseGuardSkipped, formHasPendingUploads, clearFormPendingUploads } from 'app/lib/form-helpers'
 import { View, Row } from 'app/design/view'
 import { getComponent } from 'app/components/registry';
 import { FeedbackHaptics, storageSet, appSetting, isNumeric, storageGet, isObjectsEqual } from 'app/lib/util';
@@ -121,6 +121,14 @@ export default function Form({
         updateFormDirtyState(formInstanceId, dirty);
         return () => updateFormDirtyState(formInstanceId, false);
     }, [formInstanceId, isDirty, isSubmitSuccessful, trackUnsavedDirty]);
+
+    // Pending uploads live in a module Map keyed by useId() — that id is often
+    // reused when Create Post remounts, so orphaned ids would stick Publish in
+    // loading until a full page refresh. Clear markers only (do not abort
+    // network): ImagePicker remounts resume via uploadId + inFlightUploadIds.
+    useEffect(() => {
+        return () => clearFormPendingUploads(name, formInstanceId);
+    }, [name, formInstanceId]);
 
     // RHF quirk: field-level defaultValue (useController) is NOT merged into the
     // form-level _defaultValues, and useForm() here has no defaultValues. isDirty

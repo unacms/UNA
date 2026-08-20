@@ -5,7 +5,7 @@ import { Text } from 'app/design/typography';
 import UniList from 'app/ui/atoms/unilist'
 import { Icon } from 'app/ui/atoms/icon'
 import DropdownMenu, { DropdownMenuOpenContext } from 'app/ui/atoms/dropdown-menu'
-import { deepEqual, getUnitModeBySource } from 'app/lib/util';
+import { deepEqual, getUnitModeBySource, clearNotif } from 'app/lib/util';
 import { fillTabs, mergeConductorRoutes, parseData, fetchAndUpdateData, getAddon, getUnitType,findConductorRouteIndex, findConductorRouteIndexOrZero, hasConductorSubitems, conductorHref, ConductorCompactNav } from 'app/lib/conductor-helpers';
 import { ItemRenderer } from 'app/components/item-renderer';
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
@@ -28,6 +28,7 @@ import {
     getCachedConductorState,
     setCachedConductorState,
     setListScrollOffset,
+    consumeNotificationsConductorStale,
 } from 'app/lib/tab-page-cache';
 import { useTranslation } from 'react-i18next';
 import {
@@ -719,7 +720,9 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
     unitMode = unitMode || '';
     const isFormInitialized = useRef(false);
     const routesRef = useRef(null);
-    const { currentUser } = useCurrentUser();
+    const { currentUser, setCurrentUser } = useCurrentUser();
+    const currentUserRef = useRef(currentUser);
+    currentUserRef.current = currentUser;
 
     const { setBottomSheetData } = useBottomSheetData();
     const initedTabs = useMemo(() => fillTabs(menu, data, blocks, currentUser, useSectionAsMenu), [menu, data, blocks, currentUser, useSectionAsMenu]);;
@@ -1094,6 +1097,31 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
         setRefreshRequested(true);
     }, [index, activeRoute?.endpoint?.request_url]);
 
+    // CounterChecker emits when unread grows; only act if notifications list is focused.
+    useEffect(() => {
+        const subscription = emitter.addListener('notifications', (payload) => {
+            if (payload?.action !== 'arrived') return;
+            if (!isFocusedRef.current) return;
+            const unit = routesRef.current?.[indexRef.current]?.endpoint?.unit;
+            if (unit !== 'notifications') return;
+
+            consumeNotificationsConductorStale();
+            onStartRefresh();
+
+            const user = currentUserRef.current;
+            clearNotif();
+            setCurrentUser({
+                notifications: 0,
+                notificationsTs: Date.now(),
+                counters: {
+                    ...(user?.counters || {}),
+                    bx_notifications: 0,
+                },
+            });
+        });
+        return () => subscription.remove();
+    }, [onStartRefresh, setCurrentUser]);
+
     useEffect(() => {
         const subscription = emitter.addListener('list', (payload) => {
             if (!isFocusedRef.current) return;
@@ -1402,7 +1430,12 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
             } else {
                 setHeader({ subHeader: subHeaderRef.current });
             }
-        }, [useLocalHeader, setHeader, setHeaderHeight])
+            const unit =
+                routesRef.current?.[indexRef.current]?.endpoint?.unit;
+            if (unit === 'notifications' && consumeNotificationsConductorStale()) {
+                onStartRefresh();
+            }
+        }, [useLocalHeader, setHeader, setHeaderHeight, onStartRefresh])
     );
 
     useEffect(() => {

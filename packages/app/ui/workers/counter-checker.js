@@ -4,6 +4,16 @@ import useDaemon from 'app/lib/hooks/daemon';
 import { useSound } from 'app/lib/hooks/useSound';
 import { useAppState } from 'app/lib/hooks/useAppState';
 import { fetcher } from 'app/lib/fetcher';
+import { appSetting } from 'app/lib/util';
+import { clearCachedConductorState, markNotificationsConductorStale } from 'app/lib/tab-page-cache';
+import emitter from 'app/context/emitter';
+
+function onNotificationsArrived() {
+    // Url-only: covers navigator / notif layout keys after normalizeConductorCacheUrl.
+    clearCachedConductorState(null, appSetting('notifications', 'url'));
+    markNotificationsConductorStale();
+    emitter.emit('notifications', { action: 'arrived' });
+}
 
 const PROFILE_URL = '/api.php?r=system/profile_info/TemplServiceProfiles';
 let inflight = null;
@@ -42,6 +52,7 @@ export default function CounterChecker({ }) {
 
         if (currentNot > prevNot) {
             playSound();
+            onNotificationsArrived();
         }
 
         prevNotRef.current = currentNot;
@@ -69,6 +80,7 @@ export function CounterCheckerSingle() {
 
         if (currentNot > prevNot) {
             playSound();
+            onNotificationsArrived();
         }
 
         prevNotRef.current = currentNot;
