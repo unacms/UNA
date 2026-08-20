@@ -179,6 +179,14 @@
 
 /* --------------- content */
 
+/* Grow the footer’s sibling, not #bx-content-wrapper — that node is nested
+   and never participates in .bx-main’s column flex, so leftover viewport
+   space sat below the footer on short pages. */
+#bx-content-with-cover-wrapper {
+    -webkit-flex: 1 0 auto;
+    flex: 1 0 auto;
+}
+
 #bx-content-wrapper {
 	position: relative;
 	-webkit-flex-grow: 3; 
@@ -190,11 +198,10 @@
 #bx-footer-wrapper {
     position: relative;
 
-    -webkit-flex-grow: 0;
-    flex-grow: 0;
+    -webkit-flex: 0 0 auto;
+    flex: 0 0 auto;
 
     width: 100%;
-    bottom: 0;
 }
 #bx-footer-wrapper .bx-def-hr {
 	margin-top: 0px;

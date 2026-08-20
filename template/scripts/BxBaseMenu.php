@@ -157,9 +157,32 @@ class BxBaseMenu extends BxDolMenu
                 bx_content_cache_set($sCacheKey, $sRet);
         }
 
+        // Cached HTML bakes in whichever item was selected when the cache was
+        // first written. Re-apply the current page's selected item so site
+        // menus (sys_site, etc.) highlight the right tab on every request.
+        if ($bCacheUsed && $sRet)
+            $sRet = $this->_applySelectedClass($sRet);
+
         if (isset($GLOBALS['bx_profiler'])) $GLOBALS['bx_profiler']->endMenu($sMenuTitle, $this->_aObject['cache'] ?? 'undefined', $bCacheUsed);
         
         return $sRet;
+    }
+
+    /**
+     * Move `bx-menu-tab-active` onto the currently selected item in already-rendered HTML.
+     */
+    protected function _applySelectedClass($sHtml)
+    {
+        $sName = ($this->_sSelModule || $this->_sSelName) ? $this->_sSelName : self::$SEL_NAME;
+        $sHtml = preg_replace('/\s*bx-menu-tab-active/', '', $sHtml);
+        if($sName === '' || $sName === null)
+            return $sHtml;
+
+        return preg_replace(
+            '/(bx-menu-item-' . preg_quote($sName, '/') . ')(?=[\s"\'])/',
+            '$1 bx-menu-tab-active',
+            $sHtml
+        );
     }
 
     /**

@@ -265,47 +265,44 @@ import url(../../../../../../../template/css/forms.css);
 
 
 /*--- Form field: Location ---*/
-.bx-form-element .bx-form-value .bx-form-input-location-cont input,
+.bx-form-element .bx-form-value .bx-form-input-location-cont {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: stretch;
+    gap: 8px;
+}
+.bx-form-element .bx-form-value .bx-form-input-location-cont.bx-clearfix:before,
+.bx-form-element .bx-form-value .bx-form-input-location-cont.bx-clearfix:after {
+    content: none;
+    display: none;
+}
+.bx-form-element .bx-form-value .bx-form-input-location-cont input[type="hidden"] {
+    display: none !important;
+    position: absolute;
+    width: 0;
+    height: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+.bx-form-element .bx-form-value .bx-form-input-location-cont input:not([type="hidden"]),
 .bx-form-element .bx-form-value .bx-form-input-location-cont select {
-    display: inline-block;
-}
-.bx-form-element .bx-form-value .bx-form-input-location-cont.minimized input,
-.bx-form-element .bx-form-value .bx-form-input-location-cont.minimized select {
     display: block;
+    float: none;
+    margin: 0;
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+    box-sizing: border-box;
 }
-.bx-form-element .bx-form-input-location-cont:not(.minimized) .bx-form-input-location-country,
-.bx-form-element .bx-form-input-location-cont:not(.minimized) .bx-form-input-location-zip,
-.bx-form-element .bx-form-input-location-cont:not(.minimized) .bx-form-input-location-state,
-.bx-form-element .bx-form-input-location-cont:not(.minimized) .bx-form-input-location-city {
-    width:49%;
-}
-.bx-form-element .bx-form-input-location-street {
-    width:83%;
-}
-.bx-form-element .bx-form-input-location-street_number {
-    width:15%;
-}
-.bx-form-element .bx-form-input-location-street_number,
-.bx-form-element .bx-form-input-location-street,
-.bx-form-element .bx-form-input-location-state,
-.bx-form-element .bx-form-input-location-city {
-    margin-bottom: 0.25rem;
-}
-.bx-form-element .bx-form-input-location-cont:not(.minimized) .bx-form-input-location-street,
-.bx-form-element .bx-form-input-location-cont:not(.minimized) .bx-form-input-location-state,
-.bx-form-element .bx-form-input-location-cont:not(.minimized) .bx-form-input-location-country {
-    margin-left: 0.25rem;
-}
-.bx-dir-rtl .bx-form-element .bx-form-input-location-cont:not(.minimized) .bx-form-input-location-street,
-.bx-dir-rtl .bx-form-element .bx-form-input-location-cont:not(.minimized) .bx-form-input-location-state,
-.bx-dir-rtl .bx-form-element .bx-form-input-location-cont:not(.minimized) .bx-form-input-location-country {
-    margin-left: 0;
-    margin-right: 0.25rem;
+.bx-form-element .bx-form-value .bx-form-input-location-cont.minimized {
+    grid-template-columns: 1fr;
 }
 .bx-form-element .bx-form-input-location-cont .bx-form-input-location-status-cont {
-    float:none;
-    width:98%;
-    line-height:normal;
+    float: none;
+    grid-column: 1 / -1;
+    width: 100%;
+    line-height: normal;
 }
 .bx-form-element .bx-form-input-location-cont.minimized .bx-form-input-location-status-cont {
     display: flex;
@@ -431,5 +428,15 @@ import url(../../../../../../../template/css/forms.css);
 }
 .bx-form-input-wrapper-html .second-toolbar{
     border-bottom:none !important;
+}
+
+/* Fallback when the HTML editor does not attach: keep the textarea on the same
+   chrome as other form fields (full width, rounded, padded). */
+.bx-artificer textarea.bx-form-input-textarea {
+    display: block;
+    width: 100%;
+    min-height: 10rem;
+    box-sizing: border-box;
+    resize: vertical;
 }
 

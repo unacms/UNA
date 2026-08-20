@@ -22,6 +22,9 @@ a > img {
 
 html {
     height:100%;
+    min-height: 100%;
+    min-height: 100vh;
+    min-height: 100dvh;
 }
 /*-- Tailwind overwrite --*/
 html.hidden {
@@ -30,6 +33,7 @@ html.hidden {
 body {
 	min-height: 100%;
     min-height: 100vh;
+    min-height: 100dvh;
     padding: 0;
     margin: 0;
 }
@@ -62,6 +66,7 @@ blockquote {
     flex-direction: column;
     min-height: 100%;
     min-height: 100vh;
+    min-height: 100dvh;
 }
 
 /*-- Application mode: Sidebar --*/
@@ -447,6 +452,14 @@ body > .bx-popup-wrapper {
     width: 14rem;
 }
 
+/* Dialogs only — not menus, image lightboxes, stacked notices, or full-screen. */
+.bx-popup-box-wrapper:not(.bx-popup-full-screen):not(.bx-popup-chain) .bx-popup-box,
+.bx-popup-trans-wrapper:not(.bx-popup-full-screen):not(.bx-popup-image-wrapper):not(.bx-popup-menu):not(.bx-popup-chain) .bx-popup-trans {
+    min-width: min(360px, calc(100vw - 2rem));
+    min-height: min(320px, calc(100vh - 2rem));
+    min-height: min(320px, calc(100dvh - 2rem));
+}
+
 .bx-popup-border {
     border:1px solid #383d66;
 }
@@ -465,6 +478,7 @@ body > .bx-popup-wrapper {
 }
 
 .bx-popup {    
+    position: relative;
     overflow:hidden;
 }
 
@@ -539,15 +553,26 @@ body > .bx-popup-wrapper {
     text-align:right;
 }
 
-.bx-popup-trans-wrapper .bx-popup-close-wrapper {
-    display: -webkit-flex;
-    display: flex;
-    -webkit-justify-content: flex-end;
-    justify-content: flex-end;
+.bx-popup-menu .bx-popup-close-wrapper,
+.bx-popup-with-pointer .bx-popup-close-wrapper,
+.bx-popup-image-wrapper .bx-popup-close-wrapper {
+    display: none;
 }
+
+.bx-popup-trans-wrapper:not(.bx-popup-menu):not(.bx-popup-with-pointer):not(.bx-popup-image-wrapper) .bx-popup-close-wrapper {
+    display: flex;
+    position: absolute;
+    z-index: 2;
+    padding: 0;
+    inset-block-start: 0.75rem;
+    inset-inline-end: 0.75rem;
+}
+
 .bx-popup-trans-wrapper .bx-popup-close-wrapper .bx-popup-element-close {
     position: relative;
-    line-height: 1.2rem;
+    top: auto;
+    right: auto;
+    line-height: 0;
 }
 .bx-popup-image-wrapper .bx-def-border-radius-block {
     border-top-left-radius: 0 !important;

@@ -78,17 +78,27 @@ class BxDolInformer extends BxDolFactory implements iBxDolSingleton
      * @param $sId - message id
      * @param $sMsg - message text
      * @param $iType - message type: BX_INFORMER_ALERT, BX_INFORMER_INFO or BX_INFORMER_ERROR
+     * @param $aExtras - optional extras:
+     *      - `icon` - [string] indicator icon name, e.g. `plus` (uses the type icon when empty)
+     *      - `action_url` - [string] trailing action link
+     *      - `action_title` - [string] trailing action label
      */
-    public function add ($sId, $sMsg, $iType = BX_INFORMER_INFO)
+    public function add ($sId, $sMsg, $iType = BX_INFORMER_INFO, $aExtras = [])
     {
         if(!$this->_bEnabled)
             return;
+
+        if (!is_array($aExtras))
+            $aExtras = [];
 
         $this->_addJsCss();
         $this->_aMessages[$sId] = [
             'id' => $sId,
             'msg' => $sMsg,
             'type' => $iType,
+            'icon' => isset($aExtras['icon']) ? $aExtras['icon'] : '',
+            'action_url' => isset($aExtras['action_url']) ? $aExtras['action_url'] : '',
+            'action_title' => isset($aExtras['action_title']) ? $aExtras['action_title'] : '',
         ];
     }
 

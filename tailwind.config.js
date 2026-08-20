@@ -76,6 +76,7 @@ module.exports = {
     'bx-stl-mil', 'bx-stl-mii', 'bx-stl-mit', 'bx-stl-mia', 
 
     'bx-informer-msg-info', 'bx-informer-msg-alert', 'bx-informer-msg-error',
+    'bx-informer-has-action', 'bx-informer-has-icon-plus', 'bx-informer-action',
 
     'sys-action-counter', 'sys-ac-only', 'sys-ac-link',
 

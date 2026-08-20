@@ -758,6 +758,11 @@
             oCPopup.dolPopupHide();
         });
 
+        oCPopup.find('.bx-popup-element-close').off('click.popupDismiss').on('click.popupDismiss', function() {
+            if(bFuncNo)
+                options.onClickNo(oCPopup);
+        });
+
         var fOnShow = options.onShow;
         options.onShow = function(oPopup) {
             oBtnYes.focus();
@@ -776,6 +781,7 @@
              * if the last one was customized.
              */
             oCPopup.find('.bx-btn').unbind('click');
+            oCPopup.find('.bx-popup-element-close').off('click.popupDismiss');
             if(sDefMessage.length > 0)
                 oMessage.html(sDefMessage);
             if(sDefBtnYesTitle.length > 0)
@@ -844,6 +850,11 @@
             oPPopup.dolPopupHide();
         });
 
+        oPPopup.find('.bx-popup-element-close').off('click.popupDismiss').on('click.popupDismiss', function() {
+            if(bFuncCancel)
+                options.onClickCancel(oPPopup);
+        });
+
         var fOnShow = options.onShow;
         options.onShow = function(oPopup) {
             oBtnOk.focus();
@@ -862,6 +873,7 @@
              * if the last one was customized.
              */
             oPPopup.find('.bx-btn').unbind('click');
+            oPPopup.find('.bx-popup-element-close').off('click.popupDismiss');
             if(sDefMessage.length > 0)
                 oMessage.html(sDefMessage);
             if(sDefValue.length > 0)

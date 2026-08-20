@@ -40,6 +40,19 @@ import url(../../../../../../../template/css/common.css);
     background-repeat: no-repeat;
 }
 
+/*--- Page shell (sticky footer via flex, not position:sticky) ---*/
+html,
+body,
+.bx-main {
+    min-height: 100%;
+    min-height: 100vh;
+    min-height: 100dvh;
+}
+.bx-main {
+    display: flex;
+    flex-direction: column;
+}
+
 /*--- Application ---*/
 .bx-main.bx-pt-application .bx-menu-toolbar-padding {
     padding-top: 0;

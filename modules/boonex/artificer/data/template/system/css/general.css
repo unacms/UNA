@@ -92,6 +92,7 @@ import url(../../../../../../../template/css/general.css);
 
 /*--- Page Content with Cover ---*/
 #bx-content-with-cover-wrapper {
+    flex: 1 0 auto;
     opacity: 1;
     transition: opacity 400ms ease-out;
 }
@@ -115,6 +116,12 @@ import url(../../../../../../../template/css/general.css);
     display: none;
 }
 
+
+/*--- Footer ---*/
+#bx-footer-wrapper {
+    flex: 0 0 auto;
+    width: 100%;
+}
 
 /*--- Page Content ---*/
 #bx-content-wrapper.htmx-added {

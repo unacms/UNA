@@ -1687,7 +1687,8 @@ BLAH;
 
         $bHtml = $bHtmlEditor = false;
         if(($bHtmlEditor = ($bHtml = (bool)($aInput['html'] ?? false)) && $this->addHtmlEditor($aInput['html'], $aInput, $sUniq))) {
-            $sClassAdd .= ' bx-form-input-html ' . $sUniq;
+            // Editor JS adds `bx-form-input-html` on init and hides this field.
+            $sClassAdd .= ' ' . $sUniq;
         }
 
         $bCode = $bCodeEditor = false;
@@ -1755,6 +1756,8 @@ BLAH;
         $aAttrs = !empty($aInput['attrs']) ? $aInput['attrs'] : array();
 
         $aAttrs['name'] = $aInput['name'];
+        if(!isset($aAttrs['rows']))
+            $aAttrs['rows'] = 8;
 
         if(($sAreaLabel = $this->_genInputAreaLabel($aInput) ?: bx_html_attribute($this->_genInputCaption($aInput))))
             $aAttrs['area-label'] = $sAreaLabel;

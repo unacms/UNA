@@ -1,17 +1,16 @@
-
-.bx-informer-msg:first-child {
-    margin-top:0;
-}
 .bx-informer-icon {
     display: none;
-    vertical-align: top;
 }
-.bx-informer-msg-info .bx-informer-icon-info {
-    display: inline-block;
-}
-.bx-informer-msg-alert .bx-informer-icon-alert {
-    display: inline-block;
-}
+.bx-informer-msg-info .bx-informer-icon-info,
+.bx-informer-msg-alert .bx-informer-icon-alert,
 .bx-informer-msg-error .bx-informer-icon-error {
-    display: inline-block;
+    display: block;
+}
+.bx-informer-has-icon-plus .bx-informer-icon-info,
+.bx-informer-has-icon-plus .bx-informer-icon-alert,
+.bx-informer-has-icon-plus .bx-informer-icon-error {
+    display: none;
+}
+.bx-informer-has-icon-plus .bx-informer-icon-plus {
+    display: block;
 }

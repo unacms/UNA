@@ -22,7 +22,8 @@ fi
 
 if [ ! -f plugins_public/tailwind/css/tailwind.min.css ] \
   || [ ! -f plugins_public/jquery/jquery.min.js ] \
-  || [ ! -f plugins_public/jquery/jquery-migrate.min.js ]; then
+  || [ ! -f plugins_public/jquery/jquery-migrate.min.js ] \
+  || [ ! -f plugins_public/jquery-ui/jquery-ui.min.js ]; then
   docker run --rm -v "$PWD:/app" -w /app node:22-bookworm-slim sh scripts/build-plugins-public.sh
 fi
 

@@ -46,11 +46,33 @@ class BxBaseInformer extends BxDolInformer
 
         $aTmplVarsMessages = [];
         foreach ($this->_aMessages as $sId => $a) {
-            $a['class'] = $this->_aMapType2Class[$a['type']];
+            $sClass = $this->_aMapType2Class[$a['type']];
+            $sIcon = !empty($a['icon']) && preg_match('/^[a-z0-9_-]+$/i', $a['icon']) ? $a['icon'] : '';
+            $bAction = !empty($a['action_url']) && !empty($a['action_title']);
 
-            $aTmplVarsMessages[] = $a;
+            if ($sIcon)
+                $sClass .= ' bx-informer-has-icon-' . $sIcon;
+            if ($bAction)
+                $sClass .= ' bx-informer-has-action';
+
+            $aTmplVarsMessages[] = [
+                'id' => $sId,
+                'class' => $sClass,
+                'msg' => $a['msg'],
+                'type' => $a['type'],
+                'icon' => $sIcon,
+                'action_url' => $bAction ? $a['action_url'] : '',
+                'action_title' => $bAction ? $a['action_title'] : '',
+                'bx_if:action' => [
+                    'condition' => $bAction,
+                    'content' => [
+                        'action_url' => $bAction ? $a['action_url'] : '',
+                        'action_title' => $bAction ? $a['action_title'] : '',
+                    ],
+                ],
+            ];
         }
-        
+
         if (bx_is_api()){
             return $aTmplVarsMessages;
         }

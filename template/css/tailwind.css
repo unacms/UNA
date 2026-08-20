@@ -593,11 +593,31 @@
     }
 
     /* Common elements: Pages. */
+    html,
+    body,
+    .bx-main {
+        min-height: 100vh;
+        min-height: 100dvh;
+    }
+    .bx-main {
+        @apply flex flex-col;
+    }
+    #bx-content-with-cover-wrapper {
+        @apply grow shrink-0;
+    }
+    #bx-footer-wrapper {
+        @apply shrink-0;
+    }
     .bx-layout-wrapper{
         @apply gap-4 lg:gap-6 flex flex-col;
     }
     .bx-layout-row{
         @apply w-full flex relative flex-wrap md:flex-nowrap gap-y-4 lg:gap-y-6;
+    }
+    /* Empty cells still exist in the DOM (whitespace). Hide rows with no
+       rendered block so wrapper flex-gap does not stack. */
+    .bx-layout-row:not(:has(.bx-page-block-container)) {
+        display: none;
     }
     .bx-layout-col{
         @apply max-w-full w-full;
@@ -832,7 +852,7 @@
     .bx-std .bx-form-input-time,
     .bx-std .bx-form-input-datepicker,
     .bx-std .bx-form-input-datetime,
-    .bx-std .bx-form-input-textarea:not(.bx-form-input-html),
+    .bx-std .bx-form-input-textarea,
     .bx-std .bx-form-input-text,
     .bx-std .bx-form-input-price,
     .bx-std .bx-form-input-wrapper-price span,
@@ -844,7 +864,7 @@
     .bx-artificer .bx-form-input-time,
     .bx-artificer .bx-form-input-datepicker,
     .bx-artificer .bx-form-input-datetime,
-    .bx-artificer .bx-form-input-textarea:not(.bx-form-input-html),
+    .bx-artificer .bx-form-input-textarea,
     .bx-artificer .bx-form-input-text,
     .bx-artificer .bx-form-input-price,
     .bx-artificer .bx-form-input-wrapper-price span {
@@ -855,7 +875,49 @@
         @apply placeholder:text-gray-500 dark:focus:placeholder:text-gray-700 focus:placeholder:text-gray-300;
         @apply rounded-md;
     }
-	
+    .bx-std .bx-form-input-textarea,
+    .bx-artificer .bx-form-input-textarea {
+        @apply min-h-[10rem] h-auto resize-y;
+    }
+
+    /* Common elements: Forms: Location fields */
+    .bx-std .bx-form-input-location-cont,
+    .bx-artificer .bx-form-input-location-cont {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        align-items: stretch;
+        gap: 8px;
+    }
+    .bx-std .bx-form-input-location-cont.bx-clearfix:before,
+    .bx-std .bx-form-input-location-cont.bx-clearfix:after,
+    .bx-artificer .bx-form-input-location-cont.bx-clearfix:before,
+    .bx-artificer .bx-form-input-location-cont.bx-clearfix:after {
+        content: none;
+        display: none;
+    }
+    .bx-std .bx-form-input-location-cont input[type="hidden"],
+    .bx-artificer .bx-form-input-location-cont input[type="hidden"] {
+        display: none !important;
+    }
+    .bx-std .bx-form-input-location-cont input:not([type="hidden"]),
+    .bx-std .bx-form-input-location-cont select,
+    .bx-artificer .bx-form-input-location-cont input:not([type="hidden"]),
+    .bx-artificer .bx-form-input-location-cont select {
+        @apply m-0 block w-full;
+        min-width: 0;
+        max-width: none;
+        box-sizing: border-box;
+    }
+    .bx-std .bx-form-input-location-cont.minimized,
+    .bx-artificer .bx-form-input-location-cont.minimized {
+        grid-template-columns: 1fr;
+    }
+    .bx-std .bx-form-input-location-cont .bx-form-input-location-status-cont,
+    .bx-artificer .bx-form-input-location-cont .bx-form-input-location-status-cont {
+        grid-column: 1 / -1;
+        width: 100%;
+    }
+
     /* Common elements: Forms: Password Input */
     .bx-std .bx-form-input-wrapper-password,
     .bx-artificer .bx-form-input-wrapper-password {
@@ -1001,6 +1063,74 @@
         @apply w-56;
     }
 
+    /* Dialogs only — not menus, image lightboxes, stacked notices, or full-screen. */
+    .bx-artificer .bx-popup-box-wrapper:not(.bx-popup-full-screen):not(.bx-popup-chain) .bx-popup-box,
+    .bx-artificer .bx-popup-trans-wrapper:not(.bx-popup-full-screen):not(.bx-popup-image-wrapper):not(.bx-popup-menu):not(.bx-popup-chain) .bx-popup-trans {
+        min-width: min(360px, calc(100vw - 2rem));
+        min-height: min(320px, calc(100vh - 2rem));
+        min-height: min(320px, calc(100dvh - 2rem));
+    }
+
+    .bx-artificer .bx-popup-box-wrapper:not(.bx-popup-full-screen) .bx-popup-box > div {
+        @apply flex flex-col;
+        min-height: inherit;
+    }
+
+    .bx-artificer .bx-popup-box-wrapper:not(.bx-popup-full-screen) .bx-popup-content {
+        @apply flex-1;
+    }
+
+    #bx-popup-alert .bx-popup-trans,
+    #bx-popup-confirm .bx-popup-trans,
+    #bx-popup-prompt .bx-popup-trans {
+        @apply flex flex-col;
+    }
+
+    #bx-popup-alert .bx-popup-content,
+    #bx-popup-confirm .bx-popup-content,
+    #bx-popup-prompt .bx-popup-content {
+        @apply flex flex-1 flex-col justify-center;
+    }
+
+    .bx-popup-menu .bx-popup-close-wrapper,
+    .bx-popup-with-pointer .bx-popup-close-wrapper,
+    .bx-popup-image-wrapper .bx-popup-close-wrapper {
+        @apply hidden;
+    }
+
+    .bx-popup-trans-wrapper:not(.bx-popup-menu):not(.bx-popup-with-pointer):not(.bx-popup-image-wrapper) .bx-popup-close-wrapper {
+        @apply flex absolute z-10 p-0;
+        inset-block-start: 0.75rem;
+        inset-inline-end: 0.75rem;
+    }
+
+    .bx-popup-trans-wrapper .bx-popup-close-btn {
+        @apply relative inline-flex items-center justify-center w-9 h-9 p-0 m-0;
+        @apply rounded-lg border border-gray-300 dark:border-gray-600;
+        @apply bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300;
+        @apply hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-800 dark:hover:text-gray-100 hover:no-underline;
+        @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2;
+        @apply focus-visible:ring-offset-white dark:focus-visible:ring-offset-gray-800;
+        @apply transition-[background-color,color,transform] duration-150 cursor-pointer;
+        font-size: inherit !important;
+        line-height: 0;
+        top: auto;
+        right: auto;
+        inset-inline-end: auto;
+    }
+
+    .bx-popup-trans-wrapper .bx-popup-close-btn .bx-icon,
+    .bx-popup-trans-wrapper .bx-popup-close-btn .bx-icon-close,
+    .bx-popup-trans-wrapper .bx-popup-close-btn svg {
+        @apply w-4 h-4;
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+        .bx-popup-trans-wrapper .bx-popup-close-btn:active {
+            transform: scale(0.96);
+        }
+    }
+
     .bx-artificer .bx-popup-full-screen .bx-popup-width {
         @apply w-full md:w-full;
     }
@@ -1073,6 +1203,12 @@
         @apply border border-transparent;
         @apply rounded-md;
         @apply bx-stl-mil-hover-bg bx-stl-mil-active-bg;
+    }
+    .bx-menu-main .bx-stl-mil,
+    .bx-menu-main .bx-stl-mil-sm,
+    .bx-menu-main .bx-stl-mil-wo-gaps,
+    .bx-menu-main .bx-stl-mil-wo-gaps-sm {
+        @apply rounded-xl;
     }
     .bx-stl-mil.bx-stl-mib,
     .bx-stl-mil-sm.bx-stl-mib,
@@ -1236,18 +1372,73 @@
     }
 
 
-    /* Common elements: Informers */
-    .bx-informer-msg a {
-        @apply text-blue-600 hover:text-blue-700 dark:text-blue-500 dark:hover:text-blue-600;
+    /* Common elements: Informers
+       Visual language follows HeroUI Alert (soft status surface, indicator, content)
+       using UNA type classes and Tailwind ramps already in this file. */
+    .bx-informer-msg {
+        @apply flex items-start gap-3 p-4 rounded-2xl ring-1 text-sm leading-5;
+    }
+    .bx-informer-indicator {
+        @apply flex-none flex items-center justify-center w-8 h-8 mt-0.5 rounded-full;
+    }
+    .bx-informer-indicator .sys-icon {
+        @apply w-5 h-5;
+    }
+    .bx-informer-content {
+        @apply flex-1 min-w-0 pt-1.5 font-medium text-pretty;
+    }
+    .bx-informer-msg a:not(.bx-informer-action) {
+        @apply underline underline-offset-2 font-semibold;
+    }
+    .bx-informer-has-action {
+        @apply items-center;
+    }
+    .bx-informer-has-action .bx-informer-indicator {
+        @apply mt-0;
+    }
+    .bx-informer-has-action .bx-informer-content {
+        @apply pt-0;
+    }
+    .bx-informer-action {
+        @apply flex-none inline-flex items-center justify-center min-h-9 px-3.5 rounded-lg;
+        @apply text-sm font-semibold leading-5 whitespace-nowrap no-underline;
+        @apply bg-blue-600 text-white hover:bg-blue-500 hover:text-white hover:no-underline;
+        @apply active:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-500 dark:active:bg-blue-700;
+        @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2;
+        @apply focus-visible:ring-offset-blue-50 dark:focus-visible:ring-offset-blue-950;
+        @apply transition-[background-color,transform] duration-150;
+    }
+    @media (prefers-reduced-motion: no-preference) {
+        .bx-informer-action:active {
+            transform: scale(0.96);
+        }
     }
     .bx-informer-msg-info {
-        @apply bg-blue-50 text-blue-700;
+        @apply bg-blue-50 dark:bg-blue-950/40 text-blue-800 dark:text-blue-200 ring-blue-200/80 dark:ring-blue-800/60;
+    }
+    .bx-informer-msg-info .bx-informer-indicator {
+        @apply bg-blue-100 dark:bg-blue-900/60 text-blue-600 dark:text-blue-300;
+    }
+    .bx-informer-msg-info a:not(.bx-informer-action) {
+        @apply text-blue-700 hover:text-blue-800 dark:text-blue-300 dark:hover:text-blue-200;
     }
     .bx-informer-msg-alert {
-        @apply bg-yellow-50 text-yellow-700;
+        @apply bg-yellow-50 dark:bg-yellow-950/40 text-yellow-800 dark:text-yellow-200 ring-yellow-200/80 dark:ring-yellow-800/60;
+    }
+    .bx-informer-msg-alert .bx-informer-indicator {
+        @apply bg-yellow-100 dark:bg-yellow-900/60 text-yellow-600 dark:text-yellow-300;
+    }
+    .bx-informer-msg-alert a:not(.bx-informer-action) {
+        @apply text-yellow-800 hover:text-yellow-900 dark:text-yellow-200 dark:hover:text-yellow-100;
     }
     .bx-informer-msg-error {
-        @apply bg-red-50 text-red-700;
+        @apply bg-red-50 dark:bg-red-950/40 text-red-800 dark:text-red-200 ring-red-200/80 dark:ring-red-800/60;
+    }
+    .bx-informer-msg-error .bx-informer-indicator {
+        @apply bg-red-100 dark:bg-red-900/60 text-red-600 dark:text-red-300;
+    }
+    .bx-informer-msg-error a:not(.bx-informer-action) {
+        @apply text-red-700 hover:text-red-800 dark:text-red-300 dark:hover:text-red-200;
     }
 
 
