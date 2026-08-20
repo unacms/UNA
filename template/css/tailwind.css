@@ -881,41 +881,31 @@
     }
 
     /* Common elements: Forms: Location fields */
-    .bx-std .bx-form-input-location-cont,
-    .bx-artificer .bx-form-input-location-cont {
+    .bx-std .bx-form-input-location-grid,
+    .bx-artificer .bx-form-input-location-grid {
         display: grid;
         grid-template-columns: repeat(3, minmax(0, 1fr));
         align-items: stretch;
         gap: 8px;
     }
-    .bx-std .bx-form-input-location-cont.bx-clearfix:before,
-    .bx-std .bx-form-input-location-cont.bx-clearfix:after,
-    .bx-artificer .bx-form-input-location-cont.bx-clearfix:before,
-    .bx-artificer .bx-form-input-location-cont.bx-clearfix:after {
-        content: none;
-        display: none;
-    }
-    .bx-std .bx-form-input-location-cont input[type="hidden"],
-    .bx-artificer .bx-form-input-location-cont input[type="hidden"] {
+    .bx-std .bx-form-input-location-grid > input[type="hidden"],
+    .bx-artificer .bx-form-input-location-grid > input[type="hidden"] {
         display: none !important;
     }
-    .bx-std .bx-form-input-location-cont input:not([type="hidden"]),
-    .bx-std .bx-form-input-location-cont select,
-    .bx-artificer .bx-form-input-location-cont input:not([type="hidden"]),
-    .bx-artificer .bx-form-input-location-cont select {
+    .bx-std .bx-form-input-location-grid > input:not([type="hidden"]),
+    .bx-std .bx-form-input-location-grid > select,
+    .bx-artificer .bx-form-input-location-grid > input:not([type="hidden"]),
+    .bx-artificer .bx-form-input-location-grid > select {
         @apply m-0 block w-full;
+        margin: 0 !important;
+        width: 100% !important;
         min-width: 0;
-        max-width: none;
+        max-width: none !important;
         box-sizing: border-box;
     }
-    .bx-std .bx-form-input-location-cont.minimized,
-    .bx-artificer .bx-form-input-location-cont.minimized {
+    .bx-std .bx-form-input-location-cont.minimized .bx-form-input-location-grid,
+    .bx-artificer .bx-form-input-location-cont.minimized .bx-form-input-location-grid {
         grid-template-columns: 1fr;
-    }
-    .bx-std .bx-form-input-location-cont .bx-form-input-location-status-cont,
-    .bx-artificer .bx-form-input-location-cont .bx-form-input-location-status-cont {
-        grid-column: 1 / -1;
-        width: 100%;
     }
 
     /* Common elements: Forms: Password Input */

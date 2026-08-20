@@ -633,47 +633,34 @@
 
 /* Location field */
 
-.bx-form-input-location-cont {
+.bx-form-input-location-grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     align-items: stretch;
     gap: 8px;
 }
 
-.bx-form-input-location-cont.bx-clearfix:before,
-.bx-form-input-location-cont.bx-clearfix:after {
-    content: none;
-    display: none;
-}
-
-.bx-form-input-location-cont input[type="hidden"] {
+.bx-form-input-location-grid > input[type="hidden"] {
     display: none !important;
-    position: absolute;
-    width: 0;
-    height: 0;
-    margin: 0;
-    padding: 0;
-    border: 0;
 }
 
-.bx-form-input-location-cont input:not([type="hidden"]),
-.bx-form-input-location-cont select {
+.bx-form-input-location-grid > input:not([type="hidden"]),
+.bx-form-input-location-grid > select {
     display: block;
     float: none;
-    margin: 0;
-    width: 100%;
+    margin: 0 !important;
+    width: 100% !important;
     min-width: 0;
-    max-width: none;
+    max-width: none !important;
     box-sizing: border-box;
 }
 
-.bx-form-input-location-cont.minimized {
+.bx-form-input-location-cont.minimized .bx-form-input-location-grid {
     grid-template-columns: 1fr;
 }
 
 .bx-form-input-location-cont .bx-form-input-location-status-cont {
     float: none;
-    grid-column: 1 / -1;
     width: 100%;
     line-height: normal;
 }
