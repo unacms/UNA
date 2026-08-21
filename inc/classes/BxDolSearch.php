@@ -178,7 +178,7 @@ class BxDolSearch extends BxDol
 
             $sCode = [];
             foreach($aItems as $aItem)
-                if(($oContentInfo = BxDolContentInfo::getObjectInstance($aItem['content_info'])) !== false)
+                if(($oContentInfo = BxDolContentInfo::getObjectInstance($aItem['content_info'])))
                     $sCode[] = $oContentInfo->getContentInfoAPI($aItem['id'], $bExtendedUnits);
         }
 
