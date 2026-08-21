@@ -18,7 +18,7 @@ import UnitProject from './bx-projects';
 import UnitTasksTimer from './bx-tasks-timer';
 import UnitTasks from './bx-tasks';
 import UnitAlbums from './bx-albums';
-
+import UnitPrivate from './private';
 export const componentsMapDefault = {
     'bx_groups': memo(UnitGroup),
     'bx_spaces': memo(UnitSpace),
@@ -38,6 +38,7 @@ export const componentsMapDefault = {
     'bx_tasks_timer': memo(UnitTasksTimer),
     'bx_tasks': memo(UnitTasks),
     'bx_albums': memo(UnitAlbums),
+    'sys_private': memo(UnitPrivate),
     'default': memo(UnitDefault),
     
 };
