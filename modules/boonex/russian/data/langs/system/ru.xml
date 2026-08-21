@@ -3212,6 +3212,8 @@
 	<string name="_sys_form_review_input_caption_system_id"><![CDATA[ID объекта]]></string>
 	<string name="_sys_form_review_input_caption_system_sys"><![CDATA[Тип объекта]]></string>
 	<string name="_sys_form_review_input_submit"><![CDATA[Отправить]]></string>
+	<string name="_sys_form_secret_hide"><![CDATA[Скрыть]]></string>
+	<string name="_sys_form_secret_reveal"><![CDATA[Показать]]></string>
 	<string name="_sys_form_unsubscribe"><![CDATA[Отписаться]]></string>
 	<string name="_sys_form_unsubscribe_input_caption_system_code"><![CDATA[Код безопасности]]></string>
 	<string name="_sys_form_unsubscribe_input_caption_system_do_submit"><![CDATA[Выполнить]]></string>

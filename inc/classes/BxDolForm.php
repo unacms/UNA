@@ -175,6 +175,9 @@ bx_import('BxDolPrivacy');
  * - attrs
  * - attrs_tr
  * - attrs_wrapper
+ * - secret - if true, in view mode the value is shown masked (for example `abcd********xyz1`) with an eye icon on the right.
+ *            Clicking the icon reloads the current page block with that field revealed. Reveal is POSTed with a form CSRF token, so a GET param alone is not enough. The full value is not included in the initial HTML.
+ *            Example: `$this->aInputs['password']['secret'] = true;`
  *
  * We will not describe above list of parameters in every type, since they work the same way for all types.
  *
