@@ -152,6 +152,7 @@ class BxBaseStudioAgentsModels extends BxDolStudioAgentsGrid
                     'caption' => _t('_sys_agents_models_field_key'),
                     'info' => _t('_sys_agents_models_field_key_info'),
                     'value' => isset($aModel['key']) ? $aModel['key'] : '',
+                    'secret' => 1,
                     'db' => [
                         'pass' => 'Xss',
                     ]
