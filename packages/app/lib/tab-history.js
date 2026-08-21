@@ -4,6 +4,9 @@ import { usePathname } from 'app/lib/hooks/router';
 import emitter from 'app/context/emitter';
 import { appSetting } from 'app/lib/util';
 import { useBottomSheetStore } from 'app/context/bottomsheet';
+import { getTabKeyFromPathname } from 'app/lib/tab-path';
+
+export { getTabKeyFromPathname } from 'app/lib/tab-path';
 
 /** Screen-owned tab key (`/tab0`…) so back never follows the focused tab's pathname. */
 export const TabKeyContext = createContext(null);
@@ -25,11 +28,6 @@ export function dismissNavigationOverlays() {
     emitter.emit('dynamic_menu', { action: 'hide' });
     emitter.emit('editor', { action: 'blur' });
     return hadBottomSheet;
-}
-
-export function getTabKeyFromPathname(pathname) {
-    const match = String(pathname || '').match(/\/(tab\d+)(?:\/|$)/);
-    return match ? `/${match[1]}` : '/tab0';
 }
 
 /** In-tab Expo Router href. Always includes `name` so later lookups stay valid. */

@@ -248,7 +248,7 @@ const nextConfig = {
             'react-native/Libraries/Utilities/codegenNativeComponent$': tenPlayWebviewShimPath,
             'react-native-reanimated': reanimatedPath,  // <-- Pin version 3.10.1
             'react-native-localize': path.resolve(__dirname, 'stubs/react-native-localize.js'),
-            // Native-only. NeoButton web uses neo-button-native.web.js; this is a
+            // Native-only. NeoButton web uses neo-button-expoui.web.js; this is a
             // backstop if webpack ever follows .ios.js / .android.js.
             '@expo/ui': path.resolve(__dirname, 'stubs/expo-ui.js'),
             '@expo/ui/swift-ui': path.resolve(__dirname, 'stubs/expo-ui.js'),

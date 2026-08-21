@@ -22,8 +22,9 @@ import {
     padding,
     shapes,
 } from '@expo/ui/swift-ui/modifiers';
-import { useResolvedNeoButton, resolveScoped, parseNeoButtonAddon } from 'app/design/controls/neo-button-resolver';
-import { useFrozenHostSize, useLockedNativePress, wrapNativeButtonHost } from 'app/design/controls/neo-button-native-host';
+import { useThemeValue } from 'app/design/theme';
+import { useResolvedNeoButton, resolveScoped, parseNeoButtonAddon } from 'app/design/controls/neo-button/neo-button-resolver';
+import { useFrozenHostSize, useLockedNativePress, wrapNativeButtonHost } from 'app/design/controls/neo-button/neo-button-expoui-host';
 import { FeedbackHaptics, findIconFromRemote } from 'app/lib/util';
 
 // SF Symbol names are lowercase dot-separated identifiers ('square.and.arrow.up').
@@ -77,17 +78,13 @@ const SWIFTUI_ICON_PT = { mini: 13, small: 14, regular: 17, large: 20, extraLarg
 const isNativeColor = (color) =>
     typeof color === 'string' && color.length > 0 && !color.includes('var(');
 
-function resolveIosStyleColors(nativeConfig, style, env, explicitTint, selected) {
+function resolveIosStyleColors(style, explicitTint, selected, raw, fallbackTint) {
     // Unselected glass: no hex at all. SwiftUI `.glass` tints the *label*
     // when you set `.tint()`, so a resting `#27272a` / `#dbeafe` pins ink
     // and kills the invert over dark content behind the capsule.
     if (style === 'glass' && !selected && !isNativeColor(explicitTint)) {
         return { tint: null, foreground: null };
     }
-    const styleColors = nativeConfig?.iosColors?.[style];
-    const selectedColors = selected ? styleColors?.selected : null;
-    const raw = resolveScoped(selectedColors || styleColors, env);
-    const fallbackTint = resolveScoped(nativeConfig?.iosTint, env);
     const fromTheme = isNativeColor(raw)
         ? { tint: raw }
         : (raw && typeof raw === 'object' ? raw : {});
@@ -132,7 +129,7 @@ export function getNativeIcon(rawImage, config) {
     return resolveIosSymbol(rawImage, config)?.name ?? null;
 }
 
-export function NeoButtonNative(props) {
+export function NeoButtonExpoUI(props) {
     const {
         role, style, buttonStyle, controlSize, borderShape, tint,
         label, title, loadingLabel, image, systemImage, imagePlacement,
@@ -243,9 +240,14 @@ export function NeoButtonNative(props) {
         }));
     }
 
+    const tintMap = nativeConfig?.iosTint;
+    const fallbackTint = useThemeValue(tintMap?.default ?? tintMap, tintMap?.dark);
+    const styleColorMap = nativeConfig?.iosColors?.[resolved.style];
+    const stylePalette = (selected ? styleColorMap?.selected : null) || styleColorMap;
+    const styleRaw = useThemeValue(stylePalette?.default, stylePalette?.dark);
     const styleColors = resolved.role === 'destructive'
         ? { tint: null, foreground: null }
-        : resolveIosStyleColors(nativeConfig, resolved.style, resolved.env, mapping.tint, !!selected);
+        : resolveIosStyleColors(resolved.style, mapping.tint, !!selected, styleRaw, fallbackTint);
     const tintValue = styleColors.tint;
     const foregroundValue = styleColors.foreground;
     // `.tint()` on `.glass` paints the label. Tinted liquid glass is
@@ -253,7 +255,10 @@ export function NeoButtonNative(props) {
     // selected so Host/matchContents never remount on tab switch.
     const nativeButtonStyle = isGlass ? 'plain' : mapping.buttonStyle;
     const addonMeta = parseNeoButtonAddon(addon);
-    const addonColors = resolveIosStyleColors(nativeConfig, 'glass', resolved.env, null, true);
+    const glassSelectedMap = nativeConfig?.iosColors?.glass?.selected;
+    const addonRaw = useThemeValue(glassSelectedMap?.default, glassSelectedMap?.dark);
+    const addonColors = resolveIosStyleColors('glass', null, true, addonRaw, fallbackTint);
+    const addonWash = useThemeValue('#00000014', '#ffffff22');
 
     // Size comes from `controlSizes.*.font` (`text-sm` …). Weight comes from
     // style text classes (`font-medium` on glass). `iosFont` overrides both.
@@ -366,7 +371,7 @@ export function NeoButtonNative(props) {
                     addonMeta.variant === 'primary'
                         ? '#e11d48'
                         : (isSelectedGlass
-                            ? (resolved.env?.theme === 'dark' ? '#ffffff22' : '#00000014')
+                            ? addonWash
                             : (addonColors.tint || '#dbeafe')),
                     shapes.capsule(),
                 ),

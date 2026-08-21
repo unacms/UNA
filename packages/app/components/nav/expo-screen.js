@@ -1,7 +1,7 @@
 import { Root } from 'app/root'
 import { useState, useEffect, useLayoutEffect, useRef } from 'react'
 import { useCurrentUser } from 'app/context/user';
-import { appSetting, parseUrl, parseQueryString, getURI } from 'app/lib/util'
+import { appSetting, parseUrl, parseQueryString, getURI, isNativeTabsEnabled } from 'app/lib/util'
 import { Loading } from 'app/customization/loading'
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import { fetcher } from 'app/lib/fetcher';
@@ -10,10 +10,12 @@ import { ensureTabHistory, applyTabHistory } from 'app/lib/tab-history';
 import { getCachedPageData, setCachedPageData, clearAllPageCache } from 'app/lib/tab-page-cache';
 import emitter from 'app/context/emitter'
 import * as SplashScreen from 'expo-splash-screen';
-import { isNativeTabsEnabled } from 'app/design/controls';
-import { NativeTabPressSync } from 'app/components/nav/native-tabs';
 import { TabChromeProvider } from 'app/context/tab-chrome';
 import { TabSlide } from 'app/components/nav/tab-slide';
+
+const NativeTabPressSync = isNativeTabsEnabled()
+    ? require('./native-tab-press-sync').default
+    : null;
 
 export async function getData(path, token, origin, headers, callback, params) {
 
@@ -76,7 +78,7 @@ export function Screen(params) {
     // Stable key per tab — no remount on in-tab navigation. Shell refresh uses refreshToken (redirectTo), not key.
     return (
         <>
-            {isNativeTabsEnabled() ? <NativeTabPressSync tabKey={pathname} /> : null}
+            {NativeTabPressSync ? <NativeTabPressSync tabKey={pathname} /> : null}
             <TabChromeProvider tabKey={pathname}>
                 <Content
                     key={`${pathname}__${userKey}`}

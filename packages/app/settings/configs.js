@@ -12,10 +12,17 @@ export const settingsConfigs = {
         check_version: 'optional', // variants: [no, required, optional]
         collapsible_header: true,
         backbutton_in_header: false,
-        scroll_to_top_button: true,
          // Paths not stored in tab back-stack (repeat tab tap / header back). String prefix or { prefix }, { regex } on path without query.
         tab_history_exclude: [],
         allow_font_scaling: true,
+        // Expo UI NeoButton (iOS SwiftUI / Android Material).
+        expo_ui_buttons: true,
+        // System tab bar (expo-router NativeTabs). Requires expo_ui_buttons.
+        // false = JS tab bar while Expo UI buttons can stay on.
+        expo_native_tabs: true,
+        // Text under tab bar icons (web mobile footer + native JS / NativeTabs).
+        // false = icon-only. Per-tab empty `title` still hides that label.
+        tab_labels: true,
     },
     urls: {
         embeds: '/oembed.php?html=1&a=get_link&l=',

@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Platform } from 'react-native';
 import { getComponent } from 'app/components/registry';
-import { NeoButton } from "app/design/controls/neo-button";
+import { NeoButton } from "app/design/controls/neo-button/neo-button";
 import emitter from 'app/context/emitter';
 import { appSetting } from 'app/lib/util';
 import { useFormInstanceId } from 'app/context/form-instance';

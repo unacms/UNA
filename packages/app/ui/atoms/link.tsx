@@ -52,7 +52,7 @@ export default function ElementLink({
 
    
     // Match against tab urls + transpile_urls so in-app links route to the same
-    // tab as deep links (see processUrl in components/nav/tabs.js).
+    // tab as deep links (see processUrl in components/nav/tabs/index.js).
     const LinksForTabs = useMemo(() => {
         const baseLinks = TabList.map((item: any, i: number) => ({ url: item.url, index: i }));
         const additional = appSetting('menu_items', 'transpile_urls') || [];

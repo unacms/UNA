@@ -22,7 +22,7 @@ import {
     NeoButtonStyleProvider, NeoControlSizeProvider,
     useResolvedNeoButton, usePointerCapability,
     resolveScoped,
-} from 'app/design/controls/neo-button';
+} from 'app/design/controls/neo-button/neo-button';
 import { Icon } from 'app/ui/atoms/icon';
 import { appSetting } from 'app/lib/util';
 

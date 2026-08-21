@@ -4,7 +4,7 @@ import { Image as ReactNativeImage, Platform } from 'react-native'
 import { useCSSVariable, useResolveClassNames } from 'uniwind'
 import { Row, View } from 'app/design/view'
 import { Text } from 'app/design/typography'
-import { useTheme, useThemeName } from 'app/design/theme'
+import { useTheme, useThemeValue } from 'app/design/theme'
 import { appSetting, isExternalUrl, openExternalLink, sanitazeUrl } from 'app/lib/util'
 import { useRouter, useCurrentTabPath } from 'app/lib/hooks/router'
 import { nativeTabHref } from 'app/lib/tab-history'
@@ -295,7 +295,11 @@ function MarkdownSegments({
 // router and fall back to the system browser for external URLs.
 export default function ElementMarkdown({ data, customClassName, className = '', innerRef }) {
     const { colors } = useTheme()
-    const isDark = useThemeName() === 'dark'
+    const mutedBg = useThemeValue('rgba(3,7,18,0.05)', 'rgba(255,255,255,0.06)')
+    const borderColorFallback = useThemeValue('rgba(3,7,18,0.12)', 'rgba(255,255,255,0.12)')
+    const cardBgFallback = useThemeValue('rgba(255,255,255,1)', 'rgba(24,24,27,1)')
+    const pageBgFallback = useThemeValue('rgba(244,244,245,1)', 'rgba(12,12,14,1)')
+    const secondaryBgFallback = useThemeValue('rgba(228,228,231,1)', 'rgba(39,39,42,1)')
     const [
         secondaryForegroundToken,
         cardBackgroundToken,
@@ -342,19 +346,18 @@ export default function ElementMarkdown({ data, customClassName, className = '',
     }, [router, tabPath])
 
     const markdownStyle = useMemo(() => {
-        const mutedBg = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(3,7,18,0.05)'
         const borderColor = Platform.OS === 'web'
             ? 'var(--color-border)'
-            : (borderToken || (isDark ? 'rgba(255,255,255,0.12)' : 'rgba(3,7,18,0.12)'))
+            : (borderToken || borderColorFallback)
         const tableEvenBackground = Platform.OS === 'web'
             ? 'var(--color-card)'
-            : (cardBackgroundToken || (isDark ? 'rgba(24,24,27,1)' : 'rgba(255,255,255,1)'))
+            : (cardBackgroundToken || cardBgFallback)
         const tableOddBackground = Platform.OS === 'web'
             ? 'var(--color-background)'
-            : (pageBackgroundToken || (isDark ? 'rgba(12,12,14,1)' : 'rgba(244,244,245,1)'))
+            : (pageBackgroundToken || pageBgFallback)
         const tableHeaderBackground = Platform.OS === 'web'
             ? 'var(--color-secondary)'
-            : (secondaryBackgroundToken || (isDark ? 'rgba(39,39,42,1)' : 'rgba(228,228,231,1)'))
+            : (secondaryBackgroundToken || secondaryBgFallback)
         const tableForeground = Platform.OS === 'web'
             ? 'var(--color-card-foreground)'
             : (cardForegroundToken || colors.default)
@@ -389,17 +392,21 @@ export default function ElementMarkdown({ data, customClassName, className = '',
             thematicBreak: { color: borderColor },
         }
     }, [
+        borderColorFallback,
         borderToken,
         cardBackgroundToken,
+        cardBgFallback,
         cardForegroundToken,
         colors.default,
         colors.primary,
         fontSize,
-        isDark,
         isSmall,
         lineHeight,
+        mutedBg,
         pageBackgroundToken,
+        pageBgFallback,
         secondaryBackgroundToken,
+        secondaryBgFallback,
     ])
 
     const alertMarkdownStyle = useMemo(() => ({

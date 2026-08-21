@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { Animated, View } from 'react-native';
 import { nativeDriver } from 'app/lib/animation';
 import { appSetting } from 'app/lib/util';
-import { isNativeTabsEnabled } from 'app/design/controls';
+import { isNativeTabsEnabled } from 'app/lib/util';
 import { useIsScrolled } from 'app/context/jotai/layout';
 import { getWindowSafeAreaInsets } from 'app/lib/hooks/router';
 import {

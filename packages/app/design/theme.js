@@ -50,7 +50,7 @@ export function useTheme() {
         },
     };
 
-    return useThemeName() === 'dark' ? CustomDarkTheme : CustomLightTheme;
+    return useThemeValue(CustomLightTheme, CustomDarkTheme);
 }
 
 export function useResolvedThemeName() {
@@ -70,6 +70,12 @@ export function useThemeName() {
     return useResolvedThemeName();
 }
 
+/** Pick light vs dark value from the resolved theme name. */
+export function useThemeValue(light, dark) {
+    return useThemeName() === 'dark' ? dark ?? light : light;
+}
+
 export const Theme = useTheme;
 export const ThemeName = useThemeName;
+export const ThemeValue = useThemeValue;
 

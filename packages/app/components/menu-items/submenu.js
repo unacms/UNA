@@ -1,5 +1,5 @@
 import { Platform } from 'react-native';
-import { NeoButton, NeoButtonLink, useNeoButtonNative } from 'app/design/controls';
+import { NeoButton, NeoButtonLink, useNeoButtonExpoUI } from 'app/design/controls';
 import { sanitazeUrl } from 'app/lib/util';
 
 const isWeb = Platform.OS === 'web';
@@ -13,7 +13,7 @@ export default function MenuItemSubmenu({ icon, title, pressed, disabled, addon,
     const style = isWeb
         ? (pressed ? 'bordered' : 'borderless')
         : 'glass';
-    const native = useNeoButtonNative({ style, controlSize, borderShape });
+    const native = useNeoButtonExpoUI({ style, controlSize, borderShape });
     const useNativeGlass = !isWeb && !!native;
 
     const commonProps = {

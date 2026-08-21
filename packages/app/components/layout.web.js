@@ -10,7 +10,7 @@ import BottomSheet from 'app/ui/molecules/dialogs/bottomsheet-content';
 import { appSetting, storageClear, storageGet, decodeText } from 'app/lib/util'
 import { appStatic } from 'app/lib/app-static'
 import { scheduleOneSignalSubscription } from 'app/lib/one-signal';
-import { useThemeName } from 'app/design/theme';
+import { useThemeName, useThemeValue } from 'app/design/theme';
 import { useTranslation } from 'react-i18next'
 import { useLayoutSettings } from 'app/context/layout-settings';
 import { useIsDesktop } from 'app/context/measure';
@@ -77,7 +77,6 @@ export default function Layout(props) {
     const { layout, data, blocks, children } = props;
     const uri = data.uri;
     const { layoutName } = layout;
-    const isDesktop = useIsDesktop();
     const theme = useThemeName();
 
     // Set theme attributes - must be in useEffect for SSR compatibility
@@ -194,7 +193,7 @@ export default function Layout(props) {
 
     }, [currentUser?.notifications]);
 
-    const themeSuffix = theme === 'dark' ? '_dark' : '';
+    const themeSuffix = useThemeValue('', '_dark');
     const stylesBgImage = {
         backgroundAttachment: 'fixed',
         backgroundImage: appSetting('layout', `background_image${themeSuffix}`)

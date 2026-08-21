@@ -16,7 +16,7 @@ import {
 import { EditorToolbar } from 'app/lib/editor-toolbar'
 import { useTentapToolbar } from 'app/lib/editor-toolbar-tentap'
 import { Platform } from 'react-native'
-import { useThemeName } from 'app/design/theme'
+import { useThemeName, useThemeValue } from 'app/design/theme'
 import { stripTags, appSetting, cn } from 'app/lib/util'
 import { commitEditorHtml, normalizeEditorHtml } from 'app/lib/editor-form'
 import { useEditorFormField } from 'app/lib/hooks/use-form-field'
@@ -96,8 +96,7 @@ export default function RftText(props) {
             background: 'rgba(15, 25, 40, 1)',
         },
     }
-    const editorTextColor =
-        themeName === 'dark' ? editorPalette.dark.text : editorPalette.light.text
+    const editorTextColor = useThemeValue(editorPalette.light.text, editorPalette.dark.text)
 
     const buildEditorCSS = (mode) => {
         const isDark = mode === 'dark'
@@ -416,16 +415,13 @@ export default function RftText(props) {
         },
     }
 
-    const customEditorTheme =
-        themeName === 'dark'
-            ? {
+    const customEditorTheme = useThemeValue(lightTheme, {
                 ...darkEditorTheme,
                 toolbar: {
                     ...darkEditorTheme.toolbar,
                     ...darkThemeCustom.toolbar,
                 },
-            }
-            : lightTheme
+            })
 
     const handleSubmit = () => {
         if (onEnterSubmit) {

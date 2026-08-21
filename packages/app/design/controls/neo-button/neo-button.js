@@ -2,7 +2,7 @@
  * NeoButton — SwiftUI-faithful Button.
  *
  * Full prop reference and usage examples:
- *   packages/app/design/controls/neo-button.md
+ *   packages/app/design/controls/neo-button/neo-button.md
  *
  * The API mirrors SwiftUI's Button axes:
  *
@@ -30,8 +30,8 @@
  * use `image` + `imagePlacement` for the common case, children for the
  * rest. This keeps the API mappable 1:1 to `@expo/ui/swift-ui` Button.
  *
- * Native: `neo_button.native.enabled` routes eligible buttons through
- * Expo UI (`neo-button-native.{ios,android}.js`). Unmapped icons, custom
+ * Native: `native.expo_ui_buttons` (configs) routes eligible buttons through
+ * Expo UI (`neo-button-expoui.{ios,android}.js`). Unmapped icons, custom
  * children, long-press, and `selected` on non-glass styles stay on the JS
  * surface. Glass keeps Expo UI for selected (tinted liquid glass) and
  * for `addon` counters (SwiftUI child in the label).
@@ -56,10 +56,7 @@ import {
 import {
     useResolvedNeoButton,
     parseNeoButtonAddon,
-    useNeoButtonNative,
-    isNativeChromeEnabled,
-    isNativeTabsEnabled,
-    areTabBarLabelsEnabled,
+    useNeoButtonExpoUI,
     NeoButtonStyleProvider,
     NeoControlSizeProvider,
     useNeoButtonStyle,
@@ -67,8 +64,8 @@ import {
     usePointerCapability,
     useNeoEnv,
     resolveScoped,
-} from 'app/design/controls/neo-button-resolver';
-import { NeoButtonNative, getNativeIcon } from 'app/design/controls/neo-button-native';
+} from 'app/design/controls/neo-button/neo-button-resolver';
+import { NeoButtonExpoUI, getNativeIcon } from 'app/design/controls/neo-button/neo-button-expoui';
 
 // `width="fill"` takes leftover space in a flex parent (`flex-auto`), not
 // 100% of the parent (`w-full`) — that would shove siblings out of the row.
@@ -313,7 +310,7 @@ function isNativeGlassStyle(style) {
     return style === 'glass' || style === 'glassProminent';
 }
 
-function canRenderNativeButton(props, native) {
+function canRenderExpoUIButton(props, native) {
     if (props.children !== undefined && props.children !== null && props.children !== false) return false;
     if (props.onLongPress) return false;
     const style = props.buttonStyle ?? props.style;
@@ -336,10 +333,10 @@ function canRenderNativeButton(props, native) {
 /* -------------------------- main Button component ------------------------- */
 
 export const NeoButton = (props) => {
-    const native = useNeoButtonNative(props);
+    const native = useNeoButtonExpoUI(props);
 
-    if (native && NeoButtonNative && canRenderNativeButton(props, native)) {
-        return <NeoButtonNative {...props} nativeConfig={native.config} />;
+    if (native && NeoButtonExpoUI && canRenderExpoUIButton(props, native)) {
+        return <NeoButtonExpoUI {...props} nativeConfig={native.config} />;
     }
 
     return <NeoButtonStyled {...props} />;
@@ -445,7 +442,7 @@ const NeoButtonStyled = (props) => {
 
     // Fire on press-in (finger down), not onPress (finger up). SwiftUI's
     // built-in click is press-in; JS Pressable has none, so this is what
-    // makes styled buttons feel like native when `native.enabled` is off.
+    // makes styled buttons feel like native when `native.expo_ui_buttons` is off.
     const fireHaptics = () => {
         if (resolved.haptics) FeedbackHaptics(resolved.haptics);
     };
@@ -753,13 +750,16 @@ export {
     useNeoButtonStyle,
     useNeoControlSize,
     useResolvedNeoButton,
-    useNeoButtonNative,
-    isNativeChromeEnabled,
-    isNativeTabsEnabled,
-    areTabBarLabelsEnabled,
+    useNeoButtonExpoUI,
     usePointerCapability,
     resolveScoped,
 };
+
+export {
+    isExpoUI,
+    isNativeTabsEnabled,
+    isTabBarLabelsEnabled,
+} from 'app/lib/util';
 
 /* ----------------------------- internals ---------------------------------- */
 

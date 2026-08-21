@@ -1,9 +1,8 @@
 import { SafeAreaView } from 'react-native-safe-area-context';
-import Tabs from 'app/components/nav/tabs';
+import Tabs, { getNativeTabsHostStyle } from 'app/components/nav/tabs';
 import React, { useMemo } from 'react';
-import { ThemeProvider, DarkTheme, DefaultTheme } from "expo-router/react-navigation";
-import { useColorScheme } from 'react-native';
-import { appSetting } from 'app/lib/util';
+import { ThemeProvider } from "expo-router/react-navigation";
+import { isAndroid, isNativeTabsEnabled } from 'app/lib/util';
 import { useEffect } from 'react'
 import { PortalHost } from '@rn-primitives/portal';
 import { QueryClientProvider } from '@tanstack/react-query'
@@ -34,9 +33,8 @@ import { getRemoteSettings } from 'app/config';
 import { StatusBar } from 'react-native';
 import { useLayoutSettings } from 'app/context/layout-settings';
 import { Uniwind } from 'uniwind';
-import { Platform, View } from 'react-native';
-import { isNativeTabsEnabled } from 'app/design/controls';
-import { useNativeTabsHostStyle } from 'app/components/nav/native-tabs';
+import { View } from 'react-native';
+import { useTheme } from 'app/design/theme';
 
 const AppLayout = React.memo(() => {
 
@@ -45,10 +43,7 @@ const AppLayout = React.memo(() => {
         RNScreenshotPrevent.enableSecureView();
     }*/
 
-    // Call all hooks at the top in a stable order
-    // Call useLayoutSettings only once to avoid hook-order violations
     const { langCode, themeName } = useLayoutSettings();
-    const scheme = useColorScheme();
 
     useEffect(() => {
         (async () => {
@@ -81,37 +76,15 @@ const AppLayout = React.memo(() => {
         }
     }, [langCode]);
 
-    // Compute theme manually to avoid extra hook calls via useTheme()
-    const actualThemeName = themeName != 'auto' ? themeName : scheme;
-
     useEffect(() => {
-        Uniwind.setTheme(themeName != 'auto' ? themeName : 'system');
+        Uniwind.setTheme(themeName !== 'auto' ? themeName : 'system');
     }, [themeName]);
 
-    const theme = useMemo(() => {
-        const lightTheme = appSetting('theme', 'light');
-        const darkTheme = appSetting('theme', 'dark');
-        const CustomLightTheme = {
-            ...DefaultTheme,
-            colors: {
-                ...DefaultTheme.colors,
-                ...lightTheme
-            },
-        };
-        const CustomDarkTheme = {
-            ...DarkTheme,
-            colors: {
-                ...DarkTheme.colors,
-                ...darkTheme
-            },
-        };
-        return actualThemeName === 'dark' ? CustomDarkTheme : CustomLightTheme;
-    }, [actualThemeName]);
-
+    const theme = useTheme();
     const { colors } = theme;
 
     const nativeTabs = isNativeTabsEnabled();
-    const hostStyle = useNativeTabsHostStyle();
+    const hostStyle = nativeTabs ? getNativeTabsHostStyle() : { flex: 1 };
     const containerStyle = useMemo(() => [
         hostStyle,
         {
@@ -124,7 +97,7 @@ const AppLayout = React.memo(() => {
     // NativeTabs must be edge-to-edge. A SafeAreaView (even left/right only)
     // shrinks the host; iOS then adds the home-indicator gap again and the
     // floating bar sits higher than in other apps.
-    const safeEdges = Platform.OS === 'android'
+    const safeEdges = isAndroid
         ? ['top', 'bottom', 'left', 'right']
         : ['left', 'right'];
     const Shell = nativeTabs ? View : SafeAreaView;

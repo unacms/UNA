@@ -6,6 +6,23 @@ import { strToObj } from './object'
 export { cn } from 'cnfast';
 
 export const isWeb = Platform.OS === 'web'
+export const isIos = Platform.OS === 'ios'
+export const isAndroid = Platform.OS === 'android'
+
+/** Expo UI NeoButton (SwiftUI / Material). Off on web. */
+export function isExpoUI() {
+    return !isWeb && !!appSetting('native', 'expo_ui_buttons');
+}
+
+/** expo-router NativeTabs. Needs isExpoUI + expo_native_tabs. */
+export function isNativeTabsEnabled() {
+    return isExpoUI() && isIos && !!appSetting('native', 'expo_native_tabs');
+}
+
+/** Text under tab icons (web footer + native JS / NativeTabs). */
+export function isTabBarLabelsEnabled() {
+    return !!appSetting('native', 'tab_labels');
+}
 
 export const LAYOUT_BREAKPOINTS = {
     '2xl': 1536,

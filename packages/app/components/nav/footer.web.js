@@ -11,6 +11,7 @@ import { useTranslation } from 'react-i18next';
 import { useFooter, useSetFooterHeight } from 'app/context/jotai/layout';
 import { useCallback, useEffect, useState } from 'react';
 import { useSound } from 'app/lib/hooks/useSound';
+import { isTabBarLabelsEnabled } from 'app/lib/util';
 
 function isInStandaloneMode() {
     if (window.navigator.standalone) {
@@ -127,7 +128,9 @@ function MenuBottomItem({ link, title, badge, icon, isActive, iFrCounter, notifC
                             <Icon icon={icon} size={24} animated={useAnimatedIcon} active={useAnimatedIcon ? isActive : undefined} hovered={useAnimatedIcon ? groupHovered : undefined} className={iconClassName} />
                         }
                     </View>
-                    {<Text className={` web:group-hover:text-accent-foreground text-[11px] tracking-tight leading-none font-medium whitespace-nowrap ${isActive ? 'text-accent-foreground' : 'text-secondary-foreground web:group-hover:text-foreground'}`}>{title}</Text>}
+                    {isTabBarLabelsEnabled() && title ? (
+                        <Text className={` web:group-hover:text-accent-foreground text-[11px] tracking-tight leading-none font-medium whitespace-nowrap ${isActive ? 'text-accent-foreground' : 'text-secondary-foreground web:group-hover:text-foreground'}`}>{title}</Text>
+                    ) : null}
                     {badgeObj && <View className={`absolute bg-destructive border-2 border-card rounded-full px-1.5 min-w-6 items-center justify-center  -top-1 left-1/2 -translate-x-1/2 ml-4`}><Text className="text-white text-xs font-medium tracking-tight leading-5 ">{badgeObj.text}</Text></View>}
                 </View>
                 

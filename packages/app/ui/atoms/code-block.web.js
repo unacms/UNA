@@ -1,6 +1,6 @@
 'use client'
 
-import { useThemeName } from 'app/design/theme'
+import { useThemeValue } from 'app/design/theme'
 import { useHighlightedCode } from 'app/lib/syntax-highlighter/use-highlighted-code'
 
 function tokenStyle(token) {
@@ -17,7 +17,7 @@ function tokenStyle(token) {
 }
 
 export default function CodeBlock({ code, language }) {
-    const themeName = useThemeName() === 'dark' ? 'dark' : 'light'
+    const themeName = useThemeValue('light', 'dark')
     const tokens = useHighlightedCode(code, language, themeName)
 
     return (

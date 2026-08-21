@@ -9,7 +9,7 @@ import {
     LAYOUT_BREAKPOINTS,
 } from 'app/lib/util'
 import Profile from 'app/ui/molecules/profile/profile'
-import { NeoButton } from 'app/design/controls/neo-button'
+import { NeoButton } from 'app/design/controls/neo-button/neo-button'
 import { fetcher } from 'app/lib/fetcher'
 import { useProfileImageUpload } from 'app/lib/image/use-profile-image-upload'
 import { useCurrentUser } from 'app/context/user'

@@ -5,7 +5,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { EnrichedMarkdownTextInput } from 'react-native-enriched-markdown'
 import { Button } from 'app/design/controls'
 import { View } from 'app/design/view'
-import { useTheme, useThemeName } from 'app/design/theme'
+import { useTheme, useThemeValue } from 'app/design/theme'
 import { useCSSVariable } from 'uniwind'
 import { appSetting, cn } from 'app/lib/util'
 import emitter from 'app/context/emitter'
@@ -74,7 +74,6 @@ export function MarkdownTextInput({
     const { setValue } = useFormContext()
     const editorRef = useRef(null)
     const { colors } = useTheme()
-    const themeName = useThemeName() || 'light'
     const [styleState, setStyleState] = useState(null)
     const [foregroundToken] = useCSSVariable(['--color-card-foreground'])
 
@@ -120,9 +119,7 @@ export function MarkdownTextInput({
             )
 
     const editorTextColor = foregroundToken || colors.default
-    const linkColor = themeName === 'dark'
-        ? 'rgba(59, 130, 246, 1)'
-        : 'rgba(37, 99, 235, 1)'
+    const linkColor = useThemeValue('rgba(37, 99, 235, 1)', 'rgba(59, 130, 246, 1)')
 
     const markdownStyle = useMemo(
         () => ({

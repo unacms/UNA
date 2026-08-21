@@ -10,9 +10,12 @@
  * `resolveScoped(value, ctx)` flattens that into a single value by walking
  * the scopes in precedence order:
  *
- *   default → theme → platform (native then specific) → pointer → breakpoint
+ *   default → platform (native then specific) → pointer → breakpoint
  *   (smallest applicable to current, so larger overrides smaller, like Tailwind)
  *   → controlSize
+ *
+ * Light/dark is not a resolveScoped axis — use `useThemeValue` like the
+ * rest of the app.
  *
  * `useResolvedNeoButton(props)` reads the env (Platform.OS, breakpoint,
  * pointer capability, theme) and the two context providers
@@ -37,21 +40,20 @@
 import React, { createContext, useContext, useMemo } from 'react';
 import { Platform, useColorScheme } from 'react-native';
 import { useWindowWidth, useIsDesktop } from 'app/context/measure';
-import { appSetting, getBreakpoint } from 'app/lib/util';
-import { ThemeName } from 'app/design/theme';
+import { appSetting, getBreakpoint, isExpoUI } from 'app/lib/util';
+import { ThemeName, useThemeValue } from 'app/design/theme';
 
 /* ----------------------------- scope plumbing ----------------------------- */
 
 const PLATFORM_KEYS = new Set(['web', 'ios', 'android', 'native']);
 const POINTER_KEYS  = new Set(['touch', 'mouse']);
-const THEME_KEYS    = new Set(['light', 'dark']);
 const BP_ORDER      = ['sm', 'md', 'lg', 'xl', '2xl'];
 const BP_KEYS       = new Set(BP_ORDER);
 const SIZE_KEYS     = new Set(['mini', 'small', 'regular', 'large', 'xlarge']);
 
 const SCOPE_KEYS = new Set([
     'default',
-    ...THEME_KEYS, ...PLATFORM_KEYS, ...POINTER_KEYS, ...BP_KEYS, ...SIZE_KEYS,
+    ...PLATFORM_KEYS, ...POINTER_KEYS, ...BP_KEYS, ...SIZE_KEYS,
 ]);
 
 /* --------------------- numeric → utility-class maps ----------------------- *
@@ -149,10 +151,6 @@ export function resolveScoped(value, ctx) {
     }
 
     let result = 'default' in value ? resolveScoped(value.default, ctx) : undefined;
-
-    if (ctx.theme && THEME_KEYS.has(ctx.theme) && ctx.theme in value) {
-        result = mergeOrReplace(result, resolveScoped(value[ctx.theme], ctx));
-    }
 
     if (ctx.platform) {
         if (ctx.platform !== 'web' && 'native' in value) {
@@ -386,20 +384,19 @@ function resolveStyle({ propStyle, providerStyle, defaultsStyle, roleConfig, sty
     return FALLBACK_STYLE;
 }
 
-/** Theme gate for Expo UI rendering. Content eligibility is `canRenderNativeButton`. */
-export function useNeoButtonNative(props = {}) {
+/** Theme gate for Expo UI rendering. Content eligibility is `canRenderExpoUIButton`. */
+export function useNeoButtonExpoUI(props = {}) {
     const providerStyle = useNeoButtonStyle();
     const tree = appSetting('theme', 'neo_button');
+    const config = appSetting('theme', 'expo_ui', 'button');
 
     if (isWeb) return null;
-
-    const config = tree?.native;
     if (!config) return null;
 
     const platform = Platform.OS === 'ios' ? 'ios' : 'android';
     const ctx = { platform };
 
-    if (!resolveScoped(config.enabled, ctx)) return null;
+    if (!isExpoUI()) return null;
 
     const allowedStyles = resolveScoped(config.styles, ctx);
     if (allowedStyles === false) return null;
@@ -431,43 +428,12 @@ export function parseNeoButtonAddon(addon) {
     return { text: String(text), variant: isObj ? addon.variant : undefined };
 }
 
-/** Same gate as native NeoButton — Expo UI / system chrome when `native.enabled`. */
-export function isNativeChromeEnabled() {
-    if (isWeb) return false;
-    const config = appSetting('theme', 'neo_button')?.native;
-    if (!config) return false;
-    const platform = Platform.OS === 'ios' ? 'ios' : 'android';
-    return !!resolveScoped(config.enabled, { platform });
-}
-
-/**
- * NativeTabs (expo-router) when native chrome is on. Set `neo_button.native.tabs`
- * to `false` to keep the JS tab bar while leaving native buttons enabled.
- */
-export function isNativeTabsEnabled() {
-    if (!isNativeChromeEnabled()) return false;
-    const config = appSetting('theme', 'neo_button')?.native;
-    if (config?.tabs === false) return false;
-    return true;
-}
-
-/**
- * Bottom tab bar text labels on web-mobile and native (JS or NativeTabs).
- * Set `neo_button.native.tabLabels` to `false` for icon-only. Accepts a
- * scoped object (`{ default: true, web: false }`) like other neo_button leaves.
- */
-export function areTabBarLabelsEnabled() {
-    const config = appSetting('theme', 'neo_button')?.native;
-    if (!config || config.tabLabels === undefined) return true;
-    const platform = isWeb ? 'web' : Platform.OS === 'ios' ? 'ios' : 'android';
-    return resolveScoped(config.tabLabels, { platform }) !== false;
-}
-
 /**
  * Main hook used by `NeoButton`.
  */
 export function useResolvedNeoButton(props = {}) {
     const env = useNeoEnv();
+    const themeKey = useThemeValue('light', 'dark');
     const providerStyle = useNeoButtonStyle();
     const providerSize = useNeoControlSize();
     const tree = appSetting('theme', 'neo_button');
@@ -568,10 +534,11 @@ export function useResolvedNeoButton(props = {}) {
         // 8) Tint: prop > role default.
         const tint = props.tint ?? roleConfig.tint ?? null;
 
-        // 8b) Haptics: prop > native override > defaults. Applies to JS-styled
+        // 8b) Haptics: prop > expo_ui.button override > defaults. Applies to JS-styled
         // and Expo UI buttons. `false` / `''` opts out. Same `FeedbackHaptics`
         // types as tabs (`Select` / `Medium` / …).
-        const themeHaptics = (!isWeb ? resolveScoped(tree?.native?.haptics, ctx) : null)
+        const expoUiButton = appSetting('theme', 'expo_ui', 'button');
+        const themeHaptics = (!isWeb ? resolveScoped(expoUiButton?.haptics, ctx) : null)
             ?? resolveScoped(defaults.haptics, ctx)
             ?? null;
         const haptics = (props.haptics === false || props.haptics === '')
@@ -611,11 +578,11 @@ export function useResolvedNeoButton(props = {}) {
             // SwiftUI bridge
             nativeMapping,
             // Highlight overlay colours (used by the press feedback)
-            highlightBg: tree?.motion?.['highlightBackground' + (env.theme === 'dark' ? 'dark' : 'light')]
+            highlightBg: tree?.motion?.['highlightBackground' + themeKey]
                 ?? 'rgba(0,0,0,0.5)',
         };
     }, [
-        env, providerStyle, providerSize, tree,
+        env, themeKey, providerStyle, providerSize, tree,
         props.role, props.style, props.buttonStyle, props.controlSize, props.borderShape,
         props.imagePlacement, props.align, props.width,
         props.tint, props.transition, props.focusRing, props.pressAnimation,

@@ -25,8 +25,11 @@ export {
 export {
     NeoButton, NeoButtonRef, NeoButtonLink,
     NeoButtonStyleProvider, NeoControlSizeProvider,
-    useNeoButtonNative,
-    isNativeChromeEnabled,
+    useNeoButtonExpoUI,
+} from 'app/design/controls/neo-button/neo-button';
+
+export {
+    isExpoUI,
     isNativeTabsEnabled,
-    areTabBarLabelsEnabled,
-} from 'app/design/controls/neo-button';
+    isTabBarLabelsEnabled,
+} from 'app/lib/util';

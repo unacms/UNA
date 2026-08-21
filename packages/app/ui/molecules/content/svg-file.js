@@ -2,17 +2,16 @@ import { SvgXml } from 'react-native-svg';
 import { useEffect, useMemo, useState } from 'react';
 import { Text } from 'app/design/typography'
 import { appSetting } from 'app/lib/util';
-import { useTheme, useThemeName } from 'app/design/theme';
+import { useTheme, useThemeValue } from 'app/design/theme';
 import { useResolveClassNames } from 'uniwind';
 
 export default function ({ src_dark, src_default, width, height, colorize = false, className = '', color, alt = '', accessibilityLabel, style, ...props }) {
     const [xml, setXml] = useState(null);
     const [error, setError] = useState(null);
-    const theme = useThemeName();
     const { colors } = useTheme();
     const resolvedClassStyle = useResolveClassNames(className || '');
     const resolvedColor = color || resolvedClassStyle?.color || colors.default;
-    const src = theme === 'dark' && src_dark ? src_dark : src_default;
+    const src = useThemeValue(src_default, src_dark || src_default);
     const renderedXml = useMemo(() => {
         if (!xml) return null;
         if (!colorize || !resolvedColor) return xml;

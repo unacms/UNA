@@ -1,4 +1,5 @@
 import { settingsButtons } from 'app/settings/theme/buttons'; 
+import { settingsExpoUi } from 'app/settings/theme/expo_ui';
 import { settingsProfiles } from 'app/settings/theme/profiles';
 import { settingsBadges } from 'app/settings/theme/badges';
 import { settingsLinks } from 'app/settings/theme/links';
@@ -54,6 +55,7 @@ export const settingsTheme = {
             badgeTextSize: 'text-xs leading-4 font-semibold', // Customizable text size for badge
         },
         ...settingsButtons,
+        ...settingsExpoUi,
         ...settingsProfiles,
         ...settingsBadges,
         ...settingsLinks,

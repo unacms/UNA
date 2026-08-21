@@ -5,7 +5,7 @@ import { Platform } from 'react-native'
 import { EnrichedTextInput } from 'react-native-enriched-html'
 import { View } from 'app/design/view'
 import { EditorToolbar, useEnrichedToolbar } from 'app/lib/editor-toolbar'
-import { useThemeName } from 'app/design/theme'
+import { useThemeValue } from 'app/design/theme'
 import { appSetting, cn } from 'app/lib/util'
 import { commitEditorHtml, normalizeEditorHtml } from 'app/lib/editor-form'
 import { useEditorFormField } from 'app/lib/hooks/use-form-field'
@@ -82,7 +82,8 @@ export default function RftTextEnriched(props) {
     const isToolBar = html == 2 || html == 1
     const isPlainText = html == 3
     const isCommentsEditor = container_class === 'comments'
-    const themeName = useThemeName() || 'light'
+    const themeKey = useThemeValue('light', 'dark')
+    const mentionColorFallback = useThemeValue(mentionColors.light, mentionColors.dark)
 
     const [styleState, setStyleState] = useState(null)
     const [selection, setSelection] = useState({ start: 0, end: 0, text: '' })
@@ -495,11 +496,8 @@ export default function RftTextEnriched(props) {
 
     // ---- styles (htmlStyle) from theme ----
     const htmlStyle = useMemo(() => {
-        const isDark = themeName === 'dark'
-        const themeKey = isDark ? 'dark' : 'light'
         const mentionCfg = appSetting('editor', 'mention') || {}
-        const color =
-            mentionCfg.editor_color?.[themeKey] || (isDark ? mentionColors.dark : mentionColors.light)
+        const color = mentionCfg.editor_color?.[themeKey] || mentionColorFallback
         const backgroundColor = mentionCfg.editor_background?.[themeKey] || 'transparent'
         return {
             // No underline on links/mentions/tags — color alone marks them (the
@@ -507,9 +505,9 @@ export default function RftTextEnriched(props) {
             a: { color, textDecorationLine: 'none' },
             mention: { color, backgroundColor, textDecorationLine: 'none' },
         }
-    }, [themeName])
+    }, [themeKey, mentionColorFallback])
 
-    const editorTextColor = themeName === 'dark' ? 'rgba(225,230,240,1)' : 'rgba(30,40,55,1)'
+    const editorTextColor = useThemeValue('rgba(30,40,55,1)', 'rgba(225,230,240,1)')
 
     // Web: clicks on padding / empty chrome around ProseMirror (toolbar field
     // padding, areas outside the stretched contenteditable) should still focus.

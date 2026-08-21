@@ -20,8 +20,9 @@ import {
     fillMaxWidth,
     width as widthModifier,
 } from '@expo/ui/jetpack-compose/modifiers';
-import { useResolvedNeoButton, resolveScoped, parseNeoButtonAddon } from 'app/design/controls/neo-button-resolver';
-import { useFrozenHostSize, useLockedNativePress, wrapNativeButtonHost } from 'app/design/controls/neo-button-native-host';
+import { useThemeValue } from 'app/design/theme';
+import { useResolvedNeoButton, resolveScoped, parseNeoButtonAddon } from 'app/design/controls/neo-button/neo-button-resolver';
+import { useFrozenHostSize, useLockedNativePress, wrapNativeButtonHost } from 'app/design/controls/neo-button/neo-button-expoui-host';
 import { FeedbackHaptics, findIconFromRemote } from 'app/lib/util';
 
 const VARIANT_COMPONENTS = {
@@ -42,7 +43,7 @@ export function getNativeIcon(rawImage, config) {
     return config?.androidIcons?.[findIconFromRemote(rawImage)] ?? null;
 }
 
-export function NeoButtonNative(props) {
+export function NeoButtonExpoUI(props) {
     const {
         role, style, buttonStyle, controlSize, borderShape, tint,
         label, title, loadingLabel, image, systemImage, imagePlacement,
@@ -87,8 +88,9 @@ export function NeoButtonNative(props) {
     const variant = variants[resolved.style] ?? 'tonal';
     const ButtonComponent = VARIANT_COMPONENTS[variant] ?? FilledTonalButton;
 
-    const colorsConfig = resolveScoped(nativeConfig?.androidColors, resolved.env);
-    const variantColors = colorsConfig?.[variant] ? { ...colorsConfig[variant] } : {};
+    const colorMap = nativeConfig?.androidColors?.[variant];
+    const pickedColors = useThemeValue(colorMap?.default, colorMap?.dark);
+    const variantColors = pickedColors ? { ...pickedColors } : {};
     const { tintedContainerColor, tintedContentColor, ...baseColors } = variantColors;
     const explicitTint = isNativeColor(resolved.tint) ? resolved.tint : null;
     let colors;

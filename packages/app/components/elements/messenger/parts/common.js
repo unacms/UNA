@@ -43,7 +43,7 @@ function messengerHeaderContentClass(isWeb) {
     return isWeb ? content : String(content || '').replace(/\bh-16\b/g, 'min-h-16');
 }
 
-// Keep in sync with tabBarStyle.height in app/components/nav/tabs.js
+// Keep in sync with tabBarStyle.height in app/components/nav/tabs/native-tabs.js
 const TAB_BAR_HEIGHT = Platform.OS === 'ios' ? 52 : 56
 
 export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, fetchConvos, data, pageData, onSave, addButtons }) {

@@ -1,8 +1,7 @@
-import { useThemeName } from 'app/design/theme';
+import { useThemeValue } from 'app/design/theme';
 
 export default function ({src_web, src_dark, src_default, colorize = false, className = '', style, alt = '', ...props}) {
-    const theme = useThemeName();
-    const src = theme === 'dark' && src_dark ? src_dark : src_default; 
+    const src = useThemeValue(src_default, src_dark || src_default); 
 
     if (!src) {
         console.warn('SvgFile: No valid src provided');
