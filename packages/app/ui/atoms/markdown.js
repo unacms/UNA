@@ -6,7 +6,8 @@ import { Row, View } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { useTheme, useThemeName } from 'app/design/theme'
 import { appSetting, isExternalUrl, openExternalLink, sanitazeUrl } from 'app/lib/util'
-import { useRouter, useGlobalSearchParams } from 'app/lib/hooks/router'
+import { useRouter, useCurrentTabPath } from 'app/lib/hooks/router'
+import { nativeTabHref } from 'app/lib/tab-history'
 import { normalizeLinkHref } from 'app/components/form-fields/editor-mention-html'
 import { Icon } from 'app/ui/atoms/icon'
 import LazyCodeBlock from 'app/ui/atoms/code-block-lazy'
@@ -318,7 +319,7 @@ export default function ElementMarkdown({ data, customClassName, className = '',
         ? secondaryForeground
         : (leadTextStyle.color || secondaryForeground)
     const router = useRouter()
-    const glob = useGlobalSearchParams()
+    const tabPath = useCurrentTabPath()
 
     const isSmall = customClassName === 'u-vanilla-html-small'
     const fontSize = isSmall ? 14 : 16
@@ -337,8 +338,8 @@ export default function ElementMarkdown({ data, customClassName, className = '',
             router.push(relative)
             return
         }
-        router.push({ pathname: '/' + (glob?.name || ''), params: { url: relative } })
-    }, [router, glob?.name])
+        router.push(nativeTabHref(relative, tabPath))
+    }, [router, tabPath])
 
     const markdownStyle = useMemo(() => {
         const mutedBg = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(3,7,18,0.05)'

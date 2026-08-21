@@ -35,7 +35,7 @@ export const settingsTheme = {
         // iOS: `borderCurve: 'continuous'` on design View / inputs.
         // Set `enabled: false` to use plain CSS border-radius / no continuous curve.
         corner_smoothing: {
-            enabled: false,
+            enabled: true,
             factor: 1.6,
             full_factor: 1,
         },

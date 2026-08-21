@@ -163,7 +163,10 @@ export function NetworkStatus({ children }) {
     }, [applyOfflineNow, clearOfflineTimer]);
 
     if (blocked === null) {
-        return <View className="flex-1 bg-background" />;
+        // Keep the real tree mounted so the native-tab shell can apply the
+        // iOS edge offset immediately. A blank placeholder left the home-
+        // indicator slab visible until tabs finished bootstrapping.
+        return children;
     }
 
     if (blocked) {

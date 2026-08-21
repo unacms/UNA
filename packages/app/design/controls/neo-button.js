@@ -32,12 +32,12 @@
  *
  * Native: `neo_button.native.enabled` routes eligible buttons through
  * Expo UI (`neo-button-native.{ios,android}.js`). Unmapped icons, custom
- * children, addons, long-press, and `selected` on non-glass styles stay
- * on the JS surface. Glass + `selected` maps to a tinted native glass.
+ * children, long-press, and `selected` on non-glass styles stay on the JS
+ * surface. Glass keeps Expo UI for selected (tinted liquid glass) and
+ * for `addon` counters (SwiftUI child in the label).
  */
 
 import React, { memo } from 'react';
-import { Platform } from 'react-native';
 import { Pressable, View, MotionView, Row } from 'app/design/view';
 import { Text } from 'app/design/typography';
 import { Icon } from 'app/ui/atoms/icon';
@@ -46,6 +46,7 @@ import Tooltip from 'app/ui/atoms/tooltip';
 import Loading from 'app/ui/atoms/loading';
 import {
     cn,
+    isWeb,
     isEmoji,
     FeedbackHaptics,
     sanitazeUrl,
@@ -54,7 +55,11 @@ import {
 } from 'app/lib/util';
 import {
     useResolvedNeoButton,
+    parseNeoButtonAddon,
     useNeoButtonNative,
+    isNativeChromeEnabled,
+    isNativeTabsEnabled,
+    areTabBarLabelsEnabled,
     NeoButtonStyleProvider,
     NeoControlSizeProvider,
     useNeoButtonStyle,
@@ -64,9 +69,6 @@ import {
     resolveScoped,
 } from 'app/design/controls/neo-button-resolver';
 import { NeoButtonNative, getNativeIcon } from 'app/design/controls/neo-button-native';
-
-const isBrowserRuntime = typeof document !== 'undefined';
-const isWeb = Platform.OS === 'web' || process.env.EXPO_OS === 'web' || isBrowserRuntime;
 
 // `width="fill"` takes leftover space in a flex parent (`flex-auto`), not
 // 100% of the parent (`w-full`) — that would shove siblings out of the row.
@@ -98,17 +100,14 @@ const getAccessibleName = (accessibilityLabel, tooltip, label, image) => {
 };
 
 const getAddon = (addon, hasLabel) => {
-    if (!addon) return null;
+    const parsed = parseNeoButtonAddon(addon);
+    if (!parsed) return null;
 
-    const isObj = typeof addon === 'object' && addon !== null;
-    const text = isObj ? addon.text : addon;
-
-    if (!text) return null;
-    if (isObj && addon.hideZero && text == '0') return null;
-
-    const bg = isObj && addon.variant === 'primary' ? 'bg-destructive' : 'bg-accent';
-    const textColor = isObj && addon.variant === 'primary' ? 'text-destructive-foreground' : 'text-accent-foreground';
-    const pos = isObj && addon.position === 'bottom' ? 'bottom-0 -end-1' : '-top-2 -end-2';
+    const isPrimary = parsed.variant === 'primary';
+    const bg = isPrimary ? 'bg-destructive' : 'bg-accent';
+    const textColor = isPrimary ? 'text-destructive-foreground' : 'text-accent-foreground';
+    const pos = addon?.position === 'bottom' ? 'bottom-0 -end-1' : '-top-2 -end-2';
+    const text = parsed.text;
 
     if (!hasLabel) {
         return (
@@ -310,16 +309,19 @@ function PressHighlight({ active, rounded, color }) {
 
 /* --------------------------- native mode gating ---------------------------- */
 
+function isNativeGlassStyle(style) {
+    return style === 'glass' || style === 'glassProminent';
+}
+
 function canRenderNativeButton(props, native) {
     if (props.children !== undefined && props.children !== null && props.children !== false) return false;
-    if (props.addon) return false;
     if (props.onLongPress) return false;
-    // Native selected is tint-mapped for glass only. Other styles keep the
-    // JS `selectedState` wash (borderless / bordered have no SwiftUI selected).
-    if (props.selected !== undefined) {
-        const style = props.buttonStyle ?? props.style;
-        if (style !== 'glass' && style !== 'glassProminent') return false;
-    }
+    const style = props.buttonStyle ?? props.style;
+    const glass = isNativeGlassStyle(style);
+    // Glass keeps Expo UI for selected + addon. Other styles have no native
+    // selected/counter mapping and stay on the JS `selectedState` wash.
+    if (parseNeoButtonAddon(props.addon) && !glass) return false;
+    if (props.selected !== undefined && !glass) return false;
 
     const label = props.label ?? props.title;
     const hasLabel = (typeof label === 'string' && label !== '') || typeof label === 'number';
@@ -752,6 +754,9 @@ export {
     useNeoControlSize,
     useResolvedNeoButton,
     useNeoButtonNative,
+    isNativeChromeEnabled,
+    isNativeTabsEnabled,
+    areTabBarLabelsEnabled,
     usePointerCapability,
     resolveScoped,
 };

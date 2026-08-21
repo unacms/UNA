@@ -66,7 +66,7 @@ export default function Browse({ unitMode, data, limit_by, view, autoscroll, blo
         ) : view === BrowseSimpleView.Row ? (
             <Row className="@container/list -mx-2 -my-2 overflow-x-scroll">{items}</Row>
         ) : (
-            items
+            <View className="w-full gap-0.5">{items}</View>
         )
     return <BlockWrapper {...blockWrapperProps}>{content}</BlockWrapper>
 

@@ -29,7 +29,7 @@ import Snackbar from 'app/ui/atoms/snackbar'
 import DropdownPopup from 'app/ui/atoms/dropdown-popup'
 import { BlockWrapper } from 'app/components/block-wrapper'
 import { useIsFocused } from 'app/lib/hooks/router'
-import { useGetScrollValue } from 'app/context/jotai/layout'
+import { getScrollValue } from 'app/context/jotai/layout'
 import { setListScrollOffset } from 'app/lib/tab-page-cache'
 
 import {
@@ -56,7 +56,6 @@ export default function Browse(props) {
     const isFocused = useIsFocused();
     const isFocusedRef = useRef(isFocused);
     isFocusedRef.current = isFocused;
-    const getScrollValue = useGetScrollValue();
     const [refetchState, dispatch] = useReducer(refetchUniListReducer, {
         visibleItems: [],
         hasNewData: false
@@ -93,6 +92,12 @@ export default function Browse(props) {
     const windowHeight = useWindowHeight();
 
     const numColumns = props.perLine || 1;
+    const personListSkeleton = appSetting('browse', 'skeletons')?.[data.unit]
+    const isPersonList =
+        personListSkeleton === 'bx_persons' ||
+        data.module === 'bx_persons' ||
+        (data.unit || '').includes('person') ||
+        data.unit === 'general-profile-list'
 
 
 
@@ -329,7 +334,7 @@ export default function Browse(props) {
             refetch();
         });
         return () => subscription.remove();
-    }, [props.data?.unit, isOneLine, isOnePage, data.request_url, props?.url, refetch, getScrollValue]);
+    }, [props.data?.unit, isOneLine, isOnePage, data.request_url, props?.url, refetch]);
 
     const dataItems = refetchState.visibleItems
 
@@ -398,9 +403,9 @@ export default function Browse(props) {
                     data={item}
                 />);
             }
-            const margin = appSetting('browse', 'margin');
+            const margin = isOneLine && numColumns > 1 ? appSetting('browse', 'margin') : '';
             return (
-                <View key={`item${index}`} className={`${margin} ${data.unit !== 'feed' ? (isOneLine ? ' p-2 w-1/' + numColumns : 'w-full') : ''}`}>
+                <View key={`item${index}`} className={`${margin} ${data.unit !== 'feed' ? (isOneLine && numColumns > 1 ? ' p-2 w-1/' + numColumns : 'w-full') : ''}`}>
                     <Unit
                         unit={data.unit ? data.unit : ''}
                         mode={unitMode}
@@ -416,7 +421,9 @@ export default function Browse(props) {
             )
         })
         if (isOneLine && !props.noContainer) {
-            contentElement = <Row>{contentElement}</Row>
+            contentElement = isPersonList
+                ? <View className="w-full gap-0.5">{contentElement}</View>
+                : <Row>{contentElement}</Row>
         }
         if (isOneLine && props.noContainer) {
             contentElement = <ScrollView horizontal={true}><Row className='gap-4 pb-8'>{contentElement}</Row></ScrollView>
@@ -538,7 +545,7 @@ export default function Browse(props) {
                         </Row>
                     )}
                     {isDesktop && filterElement}
-                    <View className="w-full">
+                    <View className={`w-full ${!isOneLine || numColumns <= 1 ? 'gap-0.5' : ''}`}>
                     {contentElement}
                     </View>
                 </View>

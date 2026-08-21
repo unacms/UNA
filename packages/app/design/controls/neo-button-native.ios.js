@@ -17,8 +17,12 @@ import {
     frame,
     font as fontModifier,
     symbolEffect,
+    glassEffect,
+    background,
+    padding,
+    shapes,
 } from '@expo/ui/swift-ui/modifiers';
-import { useResolvedNeoButton, resolveScoped } from 'app/design/controls/neo-button-resolver';
+import { useResolvedNeoButton, resolveScoped, parseNeoButtonAddon } from 'app/design/controls/neo-button-resolver';
 import { useFrozenHostSize, useLockedNativePress, wrapNativeButtonHost } from 'app/design/controls/neo-button-native-host';
 import { FeedbackHaptics, findIconFromRemote } from 'app/lib/util';
 
@@ -39,11 +43,33 @@ const FONT_SIZE_PT = { mini: 14, small: 14, regular: 16, large: 16, extraLarge: 
 
 function fontSizeFromClass(fontCls, controlSize) {
     if (typeof fontCls === 'string') {
+        if (fontCls.includes('text-xl')) return 20;
         if (fontCls.includes('text-lg')) return 18;
-        if (fontCls.includes('text-sm')) return 14;
         if (fontCls.includes('text-base')) return 16;
+        if (fontCls.includes('text-sm')) return 14;
+        if (fontCls.includes('text-xs')) return 12;
     }
     return FONT_SIZE_PT[controlSize] ?? 16;
+}
+
+const FONT_WEIGHT_FROM_CLASS = [
+    ['font-extralight', 'ultraLight'],
+    ['font-thin', 'thin'],
+    ['font-light', 'light'],
+    ['font-semibold', 'semibold'],
+    ['font-extrabold', 'heavy'],
+    ['font-black', 'black'],
+    ['font-bold', 'bold'],
+    ['font-medium', 'medium'],
+    ['font-normal', 'regular'],
+];
+
+function fontWeightFromClass(cls) {
+    if (typeof cls !== 'string' || !cls) return null;
+    for (const [token, weight] of FONT_WEIGHT_FROM_CLASS) {
+        if (cls.includes(token)) return weight;
+    }
+    return null;
 }
 
 const SWIFTUI_ICON_PT = { mini: 13, small: 14, regular: 17, large: 20, extraLarge: 24 };
@@ -110,7 +136,7 @@ export function NeoButtonNative(props) {
     const {
         role, style, buttonStyle, controlSize, borderShape, tint,
         label, title, loadingLabel, image, systemImage, imagePlacement,
-        disabled = false, loading = false, selected = false,
+        disabled = false, loading = false, selected = false, addon,
         haptics, onPress, onPressIn,
         width, align,
         accessibilityLabel, alt,
@@ -171,6 +197,7 @@ export function NeoButtonNative(props) {
             ?? resolved.iconSize);
 
     const vPad = SWIFTUI_LABEL_VPAD[nativeControlSize] ?? SWIFTUI_LABEL_VPAD.regular;
+    const isSelectedGlass = resolved.style === 'glass' && !!selected;
     const targetHeight = (rnOwnsHeight
         && [flatHost.height, flatHost.minHeight].find((v) => typeof v === 'number'))
         || resolved.height;
@@ -206,45 +233,62 @@ export function NeoButtonNative(props) {
         }
         labelModifiers.push(frame(labelFrame));
     }
+    // Glass uses `.plain` + `glassEffect` in both states so selected
+    // does not remount or swap chrome. Pad once — same capsule either way.
+    const isGlass = resolved.style === 'glass';
+    if (isGlass) {
+        labelModifiers.push(padding({
+            horizontal: resolved.paddingX ?? 12,
+            vertical: vPad,
+        }));
+    }
 
     const styleColors = resolved.role === 'destructive'
         ? { tint: null, foreground: null }
         : resolveIosStyleColors(nativeConfig, resolved.style, resolved.env, mapping.tint, !!selected);
     const tintValue = styleColors.tint;
     const foregroundValue = styleColors.foreground;
-    // `.glass` + tint paints the label. Selected needs the *fill* in accent
-    // and the label in accent-foreground — that is `.glassProminent`.
-    const nativeButtonStyle = (resolved.style === 'glass' && selected)
-        ? 'glassProminent'
-        : mapping.buttonStyle;
+    // `.tint()` on `.glass` paints the label. Tinted liquid glass is
+    // `.plain` + `glassEffect`. Keep that recipe for resting *and*
+    // selected so Host/matchContents never remount on tab switch.
+    const nativeButtonStyle = isGlass ? 'plain' : mapping.buttonStyle;
+    const addonMeta = parseNeoButtonAddon(addon);
+    const addonColors = resolveIosStyleColors(nativeConfig, 'glass', resolved.env, null, true);
 
-    // iosFont.family is a PostScript name — CSS `font-main` does not resolve here.
+    // Size comes from `controlSizes.*.font` (`text-sm` …). Weight comes from
+    // style text classes (`font-medium` on glass). `iosFont` overrides both.
+    // Previously a null `iosFont` skipped the modifier entirely, so SwiftUI
+    // ignored theme type and subtabs looked unstyled.
     const iosFont = resolveScoped(nativeConfig?.iosFont, resolved.env);
-    const textModifiers = [];
+    const textState = selected ? 'pressedToggle' : 'default';
+    const textCls = typeof resolved.textCls === 'function' ? resolved.textCls(textState) : '';
+    const fontParams = {};
     if (iosFont && typeof iosFont === 'object') {
-        const fontParams = {};
         if (typeof iosFont.family === 'string' && iosFont.family) {
             fontParams.family = iosFont.family;
         }
         if (iosFont.weight) fontParams.weight = iosFont.weight;
         if (iosFont.design) fontParams.design = iosFont.design;
         if (iosFont.textStyle) fontParams.textStyle = iosFont.textStyle;
-        fontParams.size = typeof iosFont.size === 'number'
-            ? iosFont.size
-            : fontSizeFromClass(resolved.fontCls, nativeControlSize);
-        if (fontParams.family || fontParams.weight || fontParams.design || fontParams.textStyle) {
-            textModifiers.push(fontModifier(fontParams));
-        }
+        if (typeof iosFont.size === 'number') fontParams.size = iosFont.size;
     }
+    if (fontParams.size == null) {
+        fontParams.size = fontSizeFromClass(resolved.fontCls, nativeControlSize);
+    }
+    if (!fontParams.weight) {
+        fontParams.weight = fontWeightFromClass(`${resolved.fontCls || ''} ${textCls || ''}`) || 'medium';
+    }
+    const textModifiers = [fontModifier(fontParams)];
     if (foregroundValue) textModifiers.push(foregroundStyle(foregroundValue));
 
     const frozen = useFrozenHostSize({
-        // Do not key on selected / tint / glassProminent — that flips
-        // Host `matchContents` on a live control and the capsules collapse.
+        // Do not key on selected / tint — that remounts Host and the
+        // capsule flashes at 0 before matchContents measures.
         contentKey: [
             nativeLabel, sfSymbol || '', nativeControlSize, targetHeight,
-            mapping.buttonStyle, borderShape || '', 'host-fit-v2',
-            iosFont?.family || '', iosFont?.weight || '', String(nativeIconSize),
+            mapping.buttonStyle, borderShape || '', 'host-fit-v5',
+            iosFont?.family || '', fontParams.weight || '', String(fontParams.size ?? ''), String(nativeIconSize),
+            addonMeta?.text || '',
         ].join('|'),
         rnOwnsWidth,
         rnOwnsHeight,
@@ -263,7 +307,18 @@ export function NeoButtonNative(props) {
         );
     }
 
-    if (tintValue) modifiers.push(tintModifier(tintValue));
+    if (isGlass) {
+        modifiers.push(glassEffect({
+            glass: {
+                variant: 'regular',
+                interactive: true,
+                ...(isSelectedGlass && tintValue ? { tint: tintValue } : {}),
+            },
+            shape: borderShape === 'circle' ? 'circle' : 'capsule',
+        }));
+    } else if (tintValue) {
+        modifiers.push(tintModifier(tintValue));
+    }
     if (foregroundValue) labelModifiers.push(foregroundStyle(foregroundValue));
     if (isIconOnly && nativeLabel) modifiers.push(accessibilityLabelModifier(nativeLabel));
     // Do not use SwiftUI `disabled` — it changes intrinsic layout when the
@@ -296,6 +351,30 @@ export function NeoButtonNative(props) {
             options: parsedSymbol?.options || { repeat: 'nonRepeating' },
         })]
         : undefined;
+
+    const addonView = addonMeta ? (
+        <Text
+            modifiers={[
+                fontModifier({ size: 11, weight: 'semibold' }),
+                foregroundStyle(
+                    addonMeta.variant === 'primary'
+                        ? '#ffffff'
+                        : (foregroundValue || addonColors.foreground || '#2563eb'),
+                ),
+                padding({ horizontal: 6, vertical: 1 }),
+                background(
+                    addonMeta.variant === 'primary'
+                        ? '#e11d48'
+                        : (isSelectedGlass
+                            ? (resolved.env?.theme === 'dark' ? '#ffffff22' : '#00000014')
+                            : (addonColors.tint || '#dbeafe')),
+                    shapes.capsule(),
+                ),
+            ]}
+        >
+            {addonMeta.text}
+        </Text>
+    ) : null;
 
     const host = (
         <Host
@@ -336,6 +415,7 @@ export function NeoButtonNative(props) {
                     {(sfSymbol && resolved.imagePlacement === 'trailing') ? (
                         <Image systemName={sfSymbol} size={nativeIconSize} color={foregroundValue || undefined} modifiers={imageModifiers} />
                     ) : null}
+                    {addonView}
                 </HStack>
             </Button>
         </Host>

@@ -1,19 +1,20 @@
 import { useEffect, useRef, forwardRef, useCallback } from 'react';
-import { useRouter, useGlobalSearchParams } from 'app/lib/hooks/router'
+import { useRouter, useCurrentTabPath } from 'app/lib/hooks/router'
+import { nativeTabHref } from 'app/lib/tab-history'
 import { Platform } from 'react-native'
 
 const ElementRedirect = (props, ref) => {
     const router = useRouter();
-    const gsp = useGlobalSearchParams();
+    const tabPath = useCurrentTabPath();
     const routerRef = useRef(router);
-    const gspRef = useRef(gsp);
+    const tabPathRef = useRef(tabPath);
     const isMountedRef = useRef(true);
 
-    // Update refs when router or gsp changes
+    // Update refs when router or tab path changes
     useEffect(() => {
         routerRef.current = router;
-        gspRef.current = gsp;
-    }, [router, gsp]);
+        tabPathRef.current = tabPath;
+    }, [router, tabPath]);
 
     useEffect(() => {
         return () => {
@@ -29,7 +30,6 @@ const ElementRedirect = (props, ref) => {
         }
 
         const currentRouter = routerRef.current;
-        const currentGsp = gspRef.current;
 
         if (!currentRouter) {
             return;
@@ -38,7 +38,7 @@ const ElementRedirect = (props, ref) => {
         try {
             const target = Platform.OS === 'web'
                 ? sUrl
-                : { pathname: `/${currentGsp?.name}`, params: { url: sUrl } };
+                : nativeTabHref(sUrl, tabPathRef.current);
 
             currentRouter.push(target);
         } catch (error) {

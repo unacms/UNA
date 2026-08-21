@@ -1,16 +1,19 @@
 import { Root } from 'app/root'
-import { Provider as JotaiProvider } from 'jotai'
 import { useState, useEffect, useLayoutEffect, useRef } from 'react'
 import { useCurrentUser } from 'app/context/user';
 import { appSetting, parseUrl, parseQueryString, getURI } from 'app/lib/util'
 import { Loading } from 'app/customization/loading'
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import { fetcher } from 'app/lib/fetcher';
-import { useIsFocused, useLocalSearchParams } from 'app/lib/hooks/router'
-import { applyTabHistory, ensureTabHistory, TabKeyContext } from 'app/lib/tab-history';
+import { useLocalSearchParams } from 'app/lib/hooks/router'
+import { ensureTabHistory, applyTabHistory } from 'app/lib/tab-history';
 import { getCachedPageData, setCachedPageData, clearAllPageCache } from 'app/lib/tab-page-cache';
 import emitter from 'app/context/emitter'
 import * as SplashScreen from 'expo-splash-screen';
+import { isNativeTabsEnabled } from 'app/design/controls';
+import { NativeTabPressSync } from 'app/components/nav/native-tabs';
+import { TabChromeProvider } from 'app/context/tab-chrome';
+import { TabSlide } from 'app/components/nav/tab-slide';
 
 export async function getData(path, token, origin, headers, callback, params) {
 
@@ -72,15 +75,20 @@ export function Screen(params) {
     : 'guest';
     // Stable key per tab — no remount on in-tab navigation. Shell refresh uses refreshToken (redirectTo), not key.
     return (
-        <Content
-            key={`${pathname}__${userKey}`}
-            pagePath={_path}
-            currentUser={currentUser}
-            tabKey={pathname}
-            isRoot={isRoot}
-            refreshToken={local.refresh}
-            historyMode={routeParam(local.tabHist)}
-        />
+        <>
+            {isNativeTabsEnabled() ? <NativeTabPressSync tabKey={pathname} /> : null}
+            <TabChromeProvider tabKey={pathname}>
+                <Content
+                    key={`${pathname}__${userKey}`}
+                    pagePath={_path}
+                    currentUser={currentUser}
+                    tabKey={pathname}
+                    isRoot={isRoot}
+                    refreshToken={local.refresh}
+                    historyMode={routeParam(local.tabHist)}
+                />
+            </TabChromeProvider>
+        </>
     );
 
 
@@ -96,21 +104,20 @@ const Content = ({ pagePath, currentUser, tabKey, isRoot, refreshToken, historyM
     const currentUserRef = useRef(currentUser);
     const bottomSheetDataRef = useRef(bottomSheetData);
     const splashHiddenRef = useRef(false);
-    const isFocused = useIsFocused();
     pagePathRef.current = pagePath;
     tabKeyRef.current = tabKey;
     currentUserRef.current = currentUser;
     bottomSheetDataRef.current = bottomSheetData;
 
     useEffect(() => {
-        if (!tabKey || !isFocused) return;
+        if (!tabKey) return;
         ensureTabHistory(tabKey, currentUser, pagePath);
-    }, [tabKey, currentUser?.id, currentUser?.url, pagePath, isFocused]);
+    }, [tabKey, currentUser?.id, currentUser?.url, pagePath]);
 
     useEffect(() => {
-        if (!tabKey || !pagePath || !isFocused) return;
+        if (!tabKey || !pagePath) return;
         applyTabHistory(tabKey, pagePath, currentUser, historyMode === 'replace' ? 'replace' : 'push');
-    }, [tabKey, pagePath, currentUser?.id, currentUser?.url, isFocused, historyMode]);
+    }, [tabKey, pagePath, currentUser?.id, currentUser?.url, historyMode]);
 
     // Apply cached page synchronously when the in-tab URL changes (e.g. profile back).
     useLayoutEffect(() => {
@@ -213,16 +220,17 @@ const Content = ({ pagePath, currentUser, tabKey, isRoot, refreshToken, historyM
         }, 1000);
         return () => clearTimeout(timer);
     }, [pageData?.data]);
-    // Every tab keeps its own Jotai store: expo-router holds all tab screens
-    // mounted, so a shared store would let five PageHeaders/lists overwrite
-    // each other's header, height and scroll state.
+    const body = pageData?.data ? (
+        <Root path={pagePath} data={pageData.data} uri={pageData.data.uri} />
+    ) : null;
+
+    if (!isNativeTabsEnabled()) {
+        return body;
+    }
+
     return (
-        <TabKeyContext.Provider value={tabKey}>
-            <JotaiProvider>
-                {pageData?.data ? (
-                    <Root path={pagePath} data={pageData.data} uri={pageData.data.uri} />
-                ) : null}
-            </JotaiProvider>
-        </TabKeyContext.Provider>
+        <TabSlide tabKey={tabKey} ready={!!pageData?.data}>
+            {body}
+        </TabSlide>
     );
 };

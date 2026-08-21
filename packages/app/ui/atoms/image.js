@@ -135,6 +135,30 @@ function isSvgImageSrc(value) {
     return /\.svg(?:$|[?#])/i.test(String(value || ''));
 }
 
+function resolveAbsoluteImageSrc(src) {
+    if (!src) return '';
+    const isAbsoluteHttp = /^https?:\/\//i.test(src);
+    const isBlob = src.startsWith('blob:');
+    const isDataImage = src.startsWith('data:image');
+    const isStatic = src.startsWith('/static/');
+    if (isAbsoluteHttp || isBlob || isDataImage || isStatic) return src;
+    return UNA_URL + src;
+}
+
+/**
+ * Same Next optimizer URL the Image atom uses on native (and Profile avatars).
+ * `layoutWidth` is CSS/layout px — Next `w=` is picked from the shared size table.
+ */
+export function getNativeOptimizedImageUrl(src, layoutWidth) {
+    if (Platform.OS === 'web' || !src || isSvgImageSrc(src)) return null;
+    const nativeImagesUrl = String(appSetting('config', 'native_app_images_url') || APP_URL || '').replace(/\/+$/, '');
+    if (!nativeImagesUrl) return null;
+    const absoluteSrc = resolveAbsoluteImageSrc(src);
+    if (!absoluteSrc || absoluteSrc.includes('/_next/image?')) return absoluteSrc || null;
+    const w = normalizeWidth(layoutWidth);
+    return `${nativeImagesUrl}/_next/image?url=${encodeURIComponent(absoluteSrc)}&w=${w}&q=75`;
+}
+
 function ElementImageResolved(props) {
     let {
         width,
@@ -157,7 +181,7 @@ function ElementImageResolved(props) {
     const isStatic = src.startsWith("/static/");
 
     if (!isAbsoluteHttp && !isBlob && !isDataImage && !isStatic) {
-        const absoluteSrc = UNA_URL + src;
+        const absoluteSrc = resolveAbsoluteImageSrc(src);
         if (MULTITENANT_IMAGES_PROXY && Platform.OS === 'web') {
             src = MULTITENANT_IMAGES_PROXY + '/api/image?u=' + encodeURIComponent(absoluteSrc);
         } else {
@@ -187,20 +211,13 @@ function ElementImageResolved(props) {
         return style;
     }, [nobg, style]);
 
-    const nativeImagesUrl = appSetting('config', 'native_app_images_url') || APP_URL;
-
     const nativeOptimizedSrc = useMemo(() => {
-        if (Platform.OS === 'web' || !src || src.includes('.svg') || !nativeImagesUrl) {
-            return null;
-        }
-
         const layoutWidth =
             (typeof width === 'number' && width > 0 ? width : null) ??
             styleWidth ??
             Dimensions.get('screen').width;
-        const w = normalizeWidth(layoutWidth);
-        return `${nativeImagesUrl}/_next/image?url=${encodeURIComponent(src)}&w=${w}&q=75`;
-    }, [src, width, styleWidth, nativeImagesUrl]);
+        return getNativeOptimizedImageUrl(src, layoutWidth);
+    }, [src, width, styleWidth]);
 
     const [nativeSrcMode, setNativeSrcMode] = useState('optimized');
 

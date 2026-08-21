@@ -34,7 +34,9 @@ import { getRemoteSettings } from 'app/config';
 import { StatusBar } from 'react-native';
 import { useLayoutSettings } from 'app/context/layout-settings';
 import { Uniwind } from 'uniwind';
-import { Platform } from 'react-native';
+import { Platform, View } from 'react-native';
+import { isNativeTabsEnabled } from 'app/design/controls';
+import { useNativeTabsHostStyle } from 'app/components/nav/native-tabs';
 
 const AppLayout = React.memo(() => {
 
@@ -108,21 +110,39 @@ const AppLayout = React.memo(() => {
 
     const { colors } = theme;
 
-    const containerStyle = useMemo(() => ({
-        flex: 1,
-        backgroundColor: colors.safeAreaBackground || colors.barsBackground,
-    }), [colors.safeAreaBackground, colors.barsBackground]);
+    const nativeTabs = isNativeTabsEnabled();
+    const hostStyle = useNativeTabsHostStyle();
+    const containerStyle = useMemo(() => [
+        hostStyle,
+        {
+            backgroundColor: nativeTabs
+                ? (colors.background || 'transparent')
+                : (colors.safeAreaBackground || colors.barsBackground),
+        },
+    ], [hostStyle, nativeTabs, colors.background, colors.safeAreaBackground, colors.barsBackground]);
+
+    // NativeTabs must be edge-to-edge. A SafeAreaView (even left/right only)
+    // shrinks the host; iOS then adds the home-indicator gap again and the
+    // floating bar sits higher than in other apps.
+    const safeEdges = Platform.OS === 'android'
+        ? ['top', 'bottom', 'left', 'right']
+        : ['left', 'right'];
+    const Shell = nativeTabs ? View : SafeAreaView;
+    const shellProps = nativeTabs ? { style: containerStyle } : { edges: safeEdges, style: containerStyle };
 
     return (
         <ThemeProvider value={theme} >
-            <StatusBar backgroundColor={colors.barsBackground} translucent={true} />
+            <StatusBar
+                backgroundColor={nativeTabs ? 'transparent' : colors.barsBackground}
+                translucent={true}
+            />
             <JotaiProvider>
                 <NetworkStatus >
                     <QueryClientProvider client={queryClient}>
-                        <SafeAreaView edges={Platform.OS === 'android' ? ['top', 'bottom', 'left', 'right'] : ['left', 'right']} style={containerStyle}>
+                        <Shell {...shellProps}>
                             <Tabs />
                             <PortalHost />
-                        </SafeAreaView>
+                        </Shell>
                     </QueryClientProvider>
                 </NetworkStatus>
             </JotaiProvider>

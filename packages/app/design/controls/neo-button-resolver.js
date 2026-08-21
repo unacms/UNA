@@ -268,7 +268,9 @@ export function useNeoEnv() {
     // we always emit `isWeb ? desktop : mobile` so the rendered tree shape
     // (Tooltip wrapper, etc.) is identical across SSR boundary.
     const breakpoint = hydrated ? measuredBreakpoint : '';
-    const theme      = hydrated ? measuredTheme      : 'light';
+    // Native has no SSR — do not pin light for a frame or Expo UI Host
+    // captures light iosColors and never picks up dark selected glass.
+    const theme      = (hydrated || !isWeb) ? measuredTheme : 'light';
     const pointer    = hydrated ? measuredPointer    : (isWeb ? 'mouse' : 'touch');
     const isDesktop  = hydrated ? measuredIsDesktop  : isWeb;
 
@@ -417,6 +419,48 @@ export function useNeoButtonNative(props = {}) {
     }
 
     return { platform, config };
+}
+
+/** Counter / badge payload for NeoButton `addon` (conductor subtabs, etc.). */
+export function parseNeoButtonAddon(addon) {
+    if (addon == null || addon === false || addon === '') return null;
+    const isObj = typeof addon === 'object';
+    const text = isObj ? addon.text : addon;
+    if (text == null || text === '' || text === false) return null;
+    if (isObj && addon.hideZero && String(text) === '0') return null;
+    return { text: String(text), variant: isObj ? addon.variant : undefined };
+}
+
+/** Same gate as native NeoButton — Expo UI / system chrome when `native.enabled`. */
+export function isNativeChromeEnabled() {
+    if (isWeb) return false;
+    const config = appSetting('theme', 'neo_button')?.native;
+    if (!config) return false;
+    const platform = Platform.OS === 'ios' ? 'ios' : 'android';
+    return !!resolveScoped(config.enabled, { platform });
+}
+
+/**
+ * NativeTabs (expo-router) when native chrome is on. Set `neo_button.native.tabs`
+ * to `false` to keep the JS tab bar while leaving native buttons enabled.
+ */
+export function isNativeTabsEnabled() {
+    if (!isNativeChromeEnabled()) return false;
+    const config = appSetting('theme', 'neo_button')?.native;
+    if (config?.tabs === false) return false;
+    return true;
+}
+
+/**
+ * Bottom tab bar text labels on web-mobile and native (JS or NativeTabs).
+ * Set `neo_button.native.tabLabels` to `false` for icon-only. Accepts a
+ * scoped object (`{ default: true, web: false }`) like other neo_button leaves.
+ */
+export function areTabBarLabelsEnabled() {
+    const config = appSetting('theme', 'neo_button')?.native;
+    if (!config || config.tabLabels === undefined) return true;
+    const platform = isWeb ? 'web' : Platform.OS === 'ios' ? 'ios' : 'android';
+    return resolveScoped(config.tabLabels, { platform }) !== false;
 }
 
 /**

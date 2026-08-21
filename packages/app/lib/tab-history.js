@@ -32,6 +32,17 @@ export function getTabKeyFromPathname(pathname) {
     return match ? `/${match[1]}` : '/tab0';
 }
 
+/** In-tab Expo Router href. Always includes `name` so later lookups stay valid. */
+export function nativeTabHref(url, tabPath = '/tab0', extraParams) {
+    const normalized = String(tabPath || '/tab0');
+    const key = getTabKeyFromPathname(normalized.startsWith('/') ? normalized : `/${normalized}`);
+    const name = key.replace(/^\//, '') || 'tab0';
+    return {
+        pathname: `/${name}`,
+        params: { url, name, ...(extraParams || {}) },
+    };
+}
+
 const tabHistoryState = {
     byTab: {},
 };

@@ -19,7 +19,7 @@ import AsyncWorker from 'app/ui/molecules/system/async-worker';
 import Subscriber from 'app/ui/molecules/system/subscriber';
 import { useFonts } from 'expo-font';
 //import PushNotificationIOS from "@react-native-community/push-notification-ios";
-import { enableScreens } from 'react-native-screens';
+import { enableFreeze, enableScreens } from 'react-native-screens';
 import fonts from 'app/customization/design/fonts/fonts';
 import { Text } from 'app/design/typography'
 import { staticComponents } from 'app/customization/static';
@@ -27,7 +27,7 @@ import { staticComponents } from 'app/customization/static';
 import { useLayoutSettings } from 'app/context/layout-settings';
 import { registerAll } from 'app/components/registry-init';
 import * as WebBrowser from 'expo-web-browser';
-import { useSound } from 'app/lib/hooks/useSound';
+import { playTabFeedback } from 'app/components/nav/tab-feedback';
 import * as SplashScreen from 'expo-splash-screen';
 import {
     canGoBackInTab,
@@ -40,8 +40,14 @@ import { clearAllPageCache } from 'app/lib/tab-page-cache';
 import emitter from 'app/context/emitter';
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import BottomSheet from 'app/ui/molecules/dialogs/bottomsheet-content';
+import { isNativeTabsEnabled } from 'app/design/controls';
+import NativeTabNavigator from 'app/components/nav/native-tabs';
 
 enableScreens(appSetting('native', 'enable_screens'));
+// Frozen screens drop SwiftUI Hosts; thawing remounts glass subtabs (~0.5s slide-in).
+if (isNativeTabsEnabled()) {
+    enableFreeze(false);
+}
 
 /** Cold-start bootstrap: fail fast offline instead of 3×15s fetcher retries. */
 const BOOTSTRAP_TIMEOUT_MS = 5000;
@@ -95,12 +101,9 @@ function getBadgeForTab(currentUser, tab) {
     return null
 }
 
-function scheduleTabFeedback(playTabSound) {
-    if (!appSetting('layout', 'tab_sounds')) return;
-
+function scheduleTabFeedback() {
     setTimeout(() => {
-        playTabSound();
-        FeedbackHaptics('Select');
+        playTabFeedback();
     }, 0);
 }
 
@@ -151,7 +154,6 @@ export default function Tabs() {
     const { setBottomSheetData } = useBottomSheetData();
     registerAll();
 
-    const playTabSound = useSound('tab');
     // useTranslation must run after all other hooks to avoid hook-order issues
     // if i18n is not initialized, useTranslation may call hooks conditionally
     const { t } = useTranslation();
@@ -377,6 +379,28 @@ export default function Tabs() {
         return null;
     }
 
+    if (isNativeTabsEnabled()) {
+        return (
+            <>
+                <Suggestions />
+                <Subscriber />
+                <View className="flex-1">
+                    <NativeTabNavigator
+                        TabList={TabList}
+                        currentUser={currentUser}
+                        colors={colors}
+                        isShowTabs={isShowTabs}
+                        tabsSessionKey={tabsSessionKey}
+                    />
+                    <View pointerEvents="box-none" className="absolute top-0 left-0 right-0 z-50">
+                        <AsyncWorker />
+                    </View>
+                    <BottomSheet />
+                </View>
+            </>
+        );
+    }
+
     return (
         <>
             <Suggestions />
@@ -472,12 +496,12 @@ export default function Tabs() {
                                                     emitter.emit('conductor', { action: 'reset_to_first' });
                                                 }
 
-                                                scheduleTabFeedback(playTabSound);
+                                                scheduleTabFeedback();
                                                 return;
                                             }
 
                                             
-                                            scheduleTabFeedback(playTabSound);
+                                            scheduleTabFeedback();
                                         },
                                     }}
                                     options={options}

@@ -20,7 +20,7 @@ import {
     fillMaxWidth,
     width as widthModifier,
 } from '@expo/ui/jetpack-compose/modifiers';
-import { useResolvedNeoButton, resolveScoped } from 'app/design/controls/neo-button-resolver';
+import { useResolvedNeoButton, resolveScoped, parseNeoButtonAddon } from 'app/design/controls/neo-button-resolver';
 import { useFrozenHostSize, useLockedNativePress, wrapNativeButtonHost } from 'app/design/controls/neo-button-native-host';
 import { FeedbackHaptics, findIconFromRemote } from 'app/lib/util';
 
@@ -46,7 +46,7 @@ export function NeoButtonNative(props) {
     const {
         role, style, buttonStyle, controlSize, borderShape, tint,
         label, title, loadingLabel, image, systemImage, imagePlacement,
-        disabled = false, loading = false, selected = false,
+        disabled = false, loading = false, selected = false, addon,
         haptics, onPress, onPressIn,
         width, align,
         accessibilityLabel, alt,
@@ -131,8 +131,9 @@ export function NeoButtonNative(props) {
         : undefined;
     const handlePress = useLockedNativePress(firePress);
 
+    const addonMeta = parseNeoButtonAddon(addon);
     const frozen = useFrozenHostSize({
-        contentKey: [String(effectiveLabel), rawImage || '', variant].join('|'),
+        contentKey: [String(effectiveLabel), rawImage || '', variant, selected ? 'sel' : 'off', addonMeta?.text || ''].join('|'),
         rnOwnsWidth,
         rnOwnsHeight,
     });
@@ -177,6 +178,8 @@ export function NeoButtonNative(props) {
                 {resolved.imagePlacement !== 'trailing' ? icon : null}
                 {resolved.imagePlacement !== 'trailing' ? labelGapSpacer : null}
                 {hasLabel ? <ComposeText>{String(effectiveLabel)}</ComposeText> : null}
+                {addonMeta ? <Spacer modifiers={[widthModifier(resolved.labelGap)]} /> : null}
+                {addonMeta ? <ComposeText>{addonMeta.text}</ComposeText> : null}
                 {resolved.imagePlacement === 'trailing' ? labelGapSpacer : null}
                 {resolved.imagePlacement === 'trailing' ? icon : null}
             </ButtonComponent>

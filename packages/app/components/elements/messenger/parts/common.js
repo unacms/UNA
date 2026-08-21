@@ -5,7 +5,7 @@ import { memo, useState, useEffect, useRef, useCallback, useMemo,  } from 'react
 import { appSetting } from 'app/lib/util'
 import useDebounce from 'app/lib/hooks/debounce'
 import UniList from 'app/ui/atoms/unilist'
-import { Button, Input } from 'app/design/controls'
+import { Input, NeoButton } from 'app/design/controls'
 import Form from 'app/components/elements/form';
 import { Platform } from 'react-native'
 //import use-SWR from "swr";
@@ -640,7 +640,7 @@ const Convos = memo(({ layoutHeightLeft, data, pageData, selectedConvoIndex, cha
                 ) : null}
                 <Row className='my-auto shrink-0 items-center gap-x-1 pe-4'>
                     <View className='lg:hidden'>
-                        <Button size="base" startDecorator="Search" variant="text" rounded onPress={() => handleSearch2()} />
+                        <NeoButton style="bordered" controlSize="regular" borderShape="circle" image="Search" accessibilityLabel={t('Search')} onPress={() => handleSearch2()} />
                     </View>
                     {addButtons}
                 </Row>
@@ -694,6 +694,7 @@ const Convos = memo(({ layoutHeightLeft, data, pageData, selectedConvoIndex, cha
 
 const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots, showConvo, deleteConvo, leaveConvo, getConvo, editConvo, handleReply, startReached }) => {
     const isWeb = Platform.OS == 'web'
+    const { t } = useTranslation();
     const setHeader = useSetHeader();
     const menuItems = [
         { 'id': 'edit', 'title': 'Edit participants list', 'icon': 'Users' },
@@ -731,17 +732,18 @@ const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots,
                 </Row>
                 <View className="shrink-0 items-center justify-center pe-4">
                     <DropdownMenu onSelect={(oItem) => { handleManage(oItem) }} items={menuItems}>
-                        <Button
-                            variant="text"
-                            size="base"
-                            rounded
-                            startDecorator="Settings"
+                        <NeoButton
+                            style="bordered"
+                            controlSize="regular"
+                            borderShape="circle"
+                            image="Settings"
+                            accessibilityLabel={t('Settings')}
                         />
                     </DropdownMenu>
                 </View>
             </Row>
         
-    ), [isSmallScreen, title, showConvo, isWeb]);
+    ), [isSmallScreen, title, showConvo, isWeb, t]);
 
     useEffect(() => {
         if (!isWeb) return;
@@ -792,7 +794,7 @@ const FormContainer = memo(({ form, replyItem, onFormSubmit, handleCancelReply }
                                 <Text className='text-sm overflow-hidden text-popover-foreground ' numberOfLines={3}>{linkedText(replyItem.message, "hover:text-accent-foreground")}</Text>
                             </View>
                             <View className=" -right-1 -top-1">
-                                <Button align="start" rounded startDecorator="X" size="xs" variant="text" onPress={() => handleCancelReply()} />
+                                <NeoButton style="bordered" controlSize="mini" borderShape="circle" image="X" accessibilityLabel={t('Close')} align="start" onPress={() => handleCancelReply()} />
                             </View>
                         </Row>
                     </View>)

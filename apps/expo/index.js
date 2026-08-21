@@ -20,7 +20,7 @@ import Constants from 'expo-constants';
 import { View } from 'react-native';
 import { useColorScheme } from 'react-native';
 import { KeyboardProvider } from "react-native-keyboard-controller";
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { SafeAreaProvider, initialWindowMetrics } from 'react-native-safe-area-context';
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
 
@@ -54,7 +54,7 @@ export function App() {
 	const backgroundColor = scheme === 'dark' ? 'rgba(24,24,27,1)' : 'rgba(255,255,255,1)';
 	
 	return (
-		<SafeAreaProvider>
+		<SafeAreaProvider initialMetrics={initialWindowMetrics}>
 			<KeyboardProvider>
 				<GestureHandlerRootView style={{ flex: 1, backgroundColor }}>
 					{expoRootComponent}

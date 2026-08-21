@@ -4,7 +4,7 @@ import { useState, useRef, useMemo, useEffect } from 'react'
 import { getFormFieldByData } from 'app/lib/form-helpers'
 import KbAvoidingView, { useStickyComposerListInset } from 'app/ui/atoms/kb-avoiding-view'
 import { Platform, View as RNView } from 'react-native'
-import { useSafeAreaInsets } from 'app/lib/hooks/router'
+import { useStableSafeAreaInsets } from 'app/lib/hooks/router'
 import { useCurrentUser } from 'app/context/user'
 import Profile from 'app/ui/molecules/profile/profile'
 import { appSetting, stripTags } from 'app/lib/util'
@@ -247,7 +247,7 @@ export default function FormFeed({ data, handleSubmit, exProps, name, response }
     const isIos = Platform.OS === 'ios'
     const scrollViewRef = useRef(null)
     const screenHeight = useWindowHeight();
-    const insets = useSafeAreaInsets();
+    const insets = useStableSafeAreaInsets();
     const { currentUser } = useCurrentUser();
 
     // iOS: distance from screen top to KbAvoidingView = safe area + modal padding (16) + form header (~48) + gap (12).

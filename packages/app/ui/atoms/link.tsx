@@ -1,6 +1,7 @@
 import { Pressable } from 'app/design/view';
-import { useGlobalSearchParams, Link } from 'app/lib/hooks/router'
+import { useCurrentTabPath, Link } from 'app/lib/hooks/router'
 import { FeedbackHaptics, isExternalUrl, openExternalLink } from 'app/lib/util';
+import { nativeTabHref } from 'app/lib/tab-history';
 import { useCurrentUser } from 'app/context/user';
 import { appSetting, sanitazeUrl, cn } from 'app/lib/util';
 import { useMemo, useCallback } from 'react';
@@ -32,7 +33,7 @@ export default function ElementLink({
     ...rest 
 }: any) {
 
-    const glob = useGlobalSearchParams();
+    const currentTabPath = useCurrentTabPath();
     const { currentUser } = useCurrentUser();
 
     const finalHref = sanitazeUrl(href);
@@ -68,14 +69,12 @@ export default function ElementLink({
             ? tabPath
             : index !== -1
               ? `/tab${index}`
-              : `/${glob.name}`;
-        return {
-            pathname,
-            params: { url: finalHref, tabHist: 'push' },
-        };
-    }, [target, finalHref, index, glob.name, tabPath]);
+              : currentTabPath;
+        // Keep push history entry for in-tab navigations (submenu uses tabHist: replace).
+        return nativeTabHref(finalHref, pathname, { tabHist: 'push' });
+    }, [target, finalHref, index, currentTabPath, tabPath]);
 
-    const currentPathname = glob.name ? `/${glob.name}` : '';
+    const currentPathname = currentTabPath || '';
     const targetPathname = typeof p === 'object' ? p.pathname : '';
     const isSameTab = typeof p !== 'object' || !currentPathname || targetPathname === currentPathname;
 

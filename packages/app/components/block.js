@@ -223,7 +223,7 @@ export function BlockContent(props) {
     ));
 
     if (itemsToRender.length > 1) {
-        return <View className="gap-4">{content}</View>;
+        return <View className="gap-0.5">{content}</View>;
     }
 
     return content;

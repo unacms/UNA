@@ -145,9 +145,9 @@ export const AdView = memo(({ data, styles, url, isCompact }) => {
     }, [])
 
     return (
-        <View className=" flex-col md:flex-row space-x-2 overflow-hidden rounded-lg bg-muted/50  p-1">
+        <View className=" flex-col md:flex-row space-x-2 overflow-hidden rounded-xl bg-muted/50  p-1">
             {data.mainImage && (
-                <View className="w-full md:w-1/3 overflow-hidden rounded-xl">
+                <View className="w-full md:w-1/3 overflow-hidden rounded-lg">
                     <View
                         className="w-full aspect-video "
                         style={styles.card_image}

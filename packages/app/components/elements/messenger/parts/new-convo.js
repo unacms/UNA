@@ -2,7 +2,7 @@ import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
 import { fetcher } from 'app/lib/fetcher';
 import { useState } from 'react';
-import { Button, Modal } from 'app/design/controls'
+import { Modal, NeoButton } from 'app/design/controls'
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import { SelectUsers } from 'app/components/form-fields/initial-members';
 import Loading from 'app/ui/atoms/loading'
@@ -65,9 +65,9 @@ export function CreateConvoButton({ onSave, onShow, size = 'small', variant = 's
     let btn = null
 
     if (size == 'small')
-        btn = <View key={`add-1`} ><Button startDecorator={"Plus"} variant={variant} rounded onPress={() => newConvo()} /></View>
+        btn = <View key={`add-1`}><NeoButton style="bordered" controlSize="regular" borderShape="circle" image="Plus" accessibilityLabel={t('messenger_add_users')} onPress={() => newConvo()} /></View>
     else {
-        btn = <Button startDecorator={"Plus"} variant="secondary" title={t('messenger_create_first')} rounded onPress={() => { newConvo(), onShow() }} />
+        btn = <NeoButton style="bordered" controlSize="regular" image="Plus" label={t('messenger_create_first')} onPress={() => { newConvo(); onShow(); }} />
     }
     return <>
         {btn}

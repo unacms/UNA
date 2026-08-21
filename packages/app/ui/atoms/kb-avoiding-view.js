@@ -3,6 +3,7 @@ import { useHeaderHeight } from "expo-router/react-navigation";
 import { Keyboard, Platform } from 'react-native'
 import { KeyboardAwareScrollView, KeyboardAvoidingView, KeyboardProvider, KeyboardStickyView, useKeyboardState } from "react-native-keyboard-controller";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useStableSafeAreaInsets } from "app/lib/hooks/router";
 import Animated from "react-native-reanimated";
 
 /**
@@ -64,7 +65,6 @@ export function useStickyComposerListInset(formHeight = 0) {
 }*/
 
 export default function KbAvoidingView({children, className, modalOffset}) {
-    const { top } = useSafeAreaInsets();
     return (
         <KeyboardAvoidingView 
             className={className}
@@ -146,7 +146,7 @@ export const KbAvoidingViewScroll = forwardRef(function KbAvoidingViewScroll(
     },
     ref
 ) {
-    const { top } = useSafeAreaInsets();
+    const { top } = useStableSafeAreaInsets();
     const headerHeight = useHeaderHeight();
     const keyboardOffset = top + headerHeight + (Platform.OS === "ios" ? 58 : 44);
     return (
@@ -158,6 +158,8 @@ export const KbAvoidingViewScroll = forwardRef(function KbAvoidingViewScroll(
             onScroll={onScroll}
             keyboardShouldPersistTaps={keyboardShouldPersistTaps}
             contentContainerStyle={{ flexGrow: 1, justifyContent: "flex-start", paddingTop: paddingTop }}
+            contentInsetAdjustmentBehavior="never"
+            automaticallyAdjustContentInsets={false}
             bottomOffset={keyboardOffset}
             extraKeyboardSpace={0}
             enabled={true}

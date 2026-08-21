@@ -295,13 +295,20 @@ export const settingsButtons = {
         },
 
         // Native Expo UI buttons (iOS SwiftUI / Android Material3). Ignored on web.
-        // Unmapped icons, custom children, addons, long-press, and selected on
+        // Unmapped icons, custom children, long-press, and selected on
         // non-glass styles stay JS-styled. Unselected glass has no tint so
-        // iOS can invert label/icon color. Selected glass uses
-        // iosColors.glass.selected (accent fill + accent-foreground label)
-        // via `.glassProminent`.
+        // iOS can invert label/icon color. Selected glass stays Expo UI
+        // `.plain` + `glassEffect` tint from iosColors.glass.selected
+        // (liquid glass wash + accent-foreground label). Addon counters
+        // render as a SwiftUI child on glass — they do not fall back to JS.
         native: {
             enabled: true,
+            // System tab bar (expo-router NativeTabs) when `enabled` is on.
+            // Set `false` to keep the JS tab bar while native buttons stay on.
+            tabs: true,
+            // Text under tab bar icons (web-mobile + iOS/Android JS or system bar).
+            // Set `false` for icon-only. Per-tab empty `title` still hides that label.
+            tabLabels: false,
             styles: true,
             androidVariants: {
                 plain: 'text',
@@ -337,7 +344,7 @@ export const settingsButtons = {
                         containerColor: '#27272a',
                         contentColor: '#e4e4e7',
                         tintedContainerColor: '#172554',
-                        tintedContentColor: '#2563eb',
+                        tintedContentColor: '#bfdbfe',
                     },
                 },
                 text: {
@@ -364,18 +371,21 @@ export const settingsButtons = {
                 },
                 glass: {
                     // Resting: no tint — label/icon invert over dark content.
-                    // Selected: tint = accent fill, foreground = accent-foreground.
-                    // iOS maps this to `.glassProminent` so tint paints the capsule.
+                    // Selected: tint = liquid-glass wash, foreground = label/icon.
+                    // iOS applies tint via `glassEffect`, not `.glassProminent`.
                     selected: {
                         default: { tint: '#dbeafe', foreground: '#2563eb' },
-                        dark: { tint: '#172554', foreground: '#2563eb' },
+                        dark: { tint: '#172554', foreground: '#bfdbfe' },
                     },
                 },
                 link: { default: { tint: '#2563eb' } },
                 borderedProminent: { default: { tint: '#2563eb' } },
                 glassProminent: { default: { tint: '#2563eb' } },
             },
-            // PostScript name, e.g. { family: 'Inter', weight: 'medium' } — not CSS `font-main`.
+            // Native label type. Null still applies size/weight from
+            // `controlSizes.*.font` (`text-sm`) and style text (`font-medium`).
+            // Override: { size: 15, weight: 'semibold', family: 'Inter' }
+            // (`family` is a PostScript name — not CSS `font-main`).
             iosFont: null,
             iosIconSize: {
                 mini: 14,
@@ -442,6 +452,9 @@ export const settingsButtons = {
                 Award: 'rosette',
                 BadgeCheck: 'checkmark.seal',
                 House: 'house',
+                Bell: 'bell',
+                Compass: 'safari',
+                Contact: 'person.crop.circle',
             },
             androidIcons: null,
         },

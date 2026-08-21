@@ -1,16 +1,17 @@
-import { memo, useCallback, useEffect, useMemo, useRef } from 'react';
-import { Platform } from 'react-native';
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Animated, Platform } from 'react-native';
+import { nativeDriver } from 'app/lib/animation';
 import { View, Row } from 'app/design/view';
 import { Text } from 'app/design/typography';
 import { FeedbackHaptics, appSetting, getMenuSettings } from 'app/lib/util';
 import { useCurrentUser } from 'app/context/user';
 import { appStatic } from 'app/lib/app-static';
-import { useRouter } from 'app/lib/hooks/router';
+import { usePathname, useRouter } from 'app/lib/hooks/router';
 import { getComponent } from 'app/components/registry';
 import { useIsDesktop } from 'app/context/measure';
 import { NeoButton, NeoButtonLink } from 'app/design/controls';
 import Link from 'app/ui/atoms/link';
-import { canGoBackInTab, navigateBackInTab, useTabKey } from 'app/lib/tab-history';
+import { canGoBackInTab, getTabKeyFromPathname, navigateBackInTab } from 'app/lib/tab-history';
 import {
     defaultHeader,
     useHeader,
@@ -24,6 +25,59 @@ import MenuTop from 'app/components/nav/menu-top';
 
 const DEFAULT_CONTENT_PINNED_FIXED =
     ' bg-card backdrop-blur-xl shadow-sm ';
+
+const SUBTAB_SLOT_MIN = 56;
+const SUBTAB_REVEAL_DELAY_MS = 160;
+const SUBTAB_REVEAL_FADE_MS = 220;
+const HIDDEN_SUBHEADER_STYLE = { height: 0, overflow: 'hidden' };
+
+/**
+ * First visit: reserve the subtab row and fade Hosts in after they layout so
+ * the ~0.5s glass width-grow is not visible. Keep the last tree mounted when
+ * subHeader briefly clears (Page focus reset) so Hosts stay warm.
+ */
+function RevealingSubHeader({ subHeader, onLayout }) {
+    const lastNodeRef = useRef(subHeader);
+    const [revealed, setRevealed] = useState(false);
+    const opacity = useRef(new Animated.Value(0)).current;
+
+    if (subHeader) {
+        lastNodeRef.current = subHeader;
+    }
+    const node = subHeader || lastNodeRef.current;
+
+    const hasSubHeader = !!subHeader;
+    useEffect(() => {
+        if (!hasSubHeader || revealed) return;
+        const timer = setTimeout(() => {
+            setRevealed(true);
+            Animated.timing(opacity, {
+                toValue: 1,
+                duration: SUBTAB_REVEAL_FADE_MS,
+                useNativeDriver: nativeDriver,
+            }).start();
+        }, SUBTAB_REVEAL_DELAY_MS);
+        return () => clearTimeout(timer);
+    }, [hasSubHeader, opacity, revealed]);
+
+    if (!node) return null;
+
+    const visible = !!subHeader;
+    return (
+        <View
+            onLayout={onLayout}
+            collapsable={false}
+            pointerEvents={visible ? 'auto' : 'none'}
+            style={visible
+                ? (revealed ? undefined : { minHeight: SUBTAB_SLOT_MIN })
+                : HIDDEN_SUBHEADER_STYLE}
+        >
+            <Animated.View style={{ opacity }} collapsable={false}>
+                {node}
+            </Animated.View>
+        </View>
+    );
+}
 
 function settingString(value) {
     return typeof value === 'string' ? value.trim() : '';
@@ -51,7 +105,7 @@ export function getHeaderRestingBackgroundClass() {
 }
 
 const HEADER_FADE_TOKEN = /^(bg-(?:linear|gradient)-[^\s]+|from-[^\s]+|via-[^\s]+|to-[^\s]+)$/;
-const DEFAULT_HEADER_FADE_EXTEND = 48;
+const DEFAULT_HEADER_FADE_EXTEND = 0;
 
 /** Color wash. Prefer `layout.header.fade`; else gradient tokens on `container_scrolled`. */
 export function getHeaderFadeClass() {
@@ -295,8 +349,9 @@ export const PageHeaderBody = memo(({
 }) => {
     const ContextSelector = getComponent('molecule', 'context_selector');
     const HeaderElement = getComponent('molecule', 'header_element');
+    const pathname = usePathname();
     const isDesktop = useIsDesktop();
-    const currentTab = useTabKey();
+    const currentTab = getTabKeyFromPathname(pathname);
     const canShowBackButton = isWeb
         ? (isBackButton &&
             (typeof isBackButton === 'function' || (typeof history !== 'undefined' && history.length > 2)))
@@ -427,11 +482,18 @@ export const PageHeaderBody = memo(({
                 
                 </View>
             </Row>
-            {header.subHeader ? (
-                <View onLayout={onSubHeaderLayout}>
-                    {header.subHeader}
-                </View>
-            ) : null}
+            {isWeb ? (
+                header.subHeader ? (
+                    <View onLayout={onSubHeaderLayout}>
+                        {header.subHeader}
+                    </View>
+                ) : null
+            ) : (
+                <RevealingSubHeader
+                    subHeader={header.subHeader}
+                    onLayout={onSubHeaderLayout}
+                />
+            )}
         </>
     );
 });

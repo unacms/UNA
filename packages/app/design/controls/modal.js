@@ -1,16 +1,29 @@
 import { useEffect, useCallback, useRef } from 'react';
 import { Modal as ModalDef, Platform } from 'react-native'
+import { SafeAreaProvider, initialWindowMetrics } from 'react-native-safe-area-context';
 import { Pressable, View, ScrollView, Row } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { appSetting } from 'app/lib/util'
 import { RemoveScroll } from 'react-remove-scroll';
-import { useSafeAreaInsets } from 'app/lib/hooks/router'
+import { useStableSafeAreaInsets } from 'app/lib/hooks/router'
 import { useIsDesktop, useActualWindowHeight } from 'app/context/measure';
 import { NeoButton } from 'app/design/controls/neo-button';
 import emitter from 'app/context/emitter';
 import { confirmDiscardUnsavedFormChanges } from 'app/lib/form-helpers';
 import { ModalKbAwareScroll } from 'app/ui/atoms/kb-avoiding-view';
 import { pushFormEnsureVisibleHandler, scrollContainerByDelta } from 'app/lib/form-ensure-visible';
+
+function NativeModalSafePad({ autoHeight, sClassPosition, children }) {
+    const insets = useStableSafeAreaInsets();
+    return (
+        <View
+            style={{ paddingTop: insets.top, paddingBottom: insets.bottom }}
+            className={`flex-row ${autoHeight ? ' items-center  ' : sClassPosition} justify-center   left-0 right-0 z-50 w-full overflow-x-hidden overflow-y-auto h-full h-modal`}
+        >
+            {children}
+        </View>
+    );
+}
 
 const isWeb = Platform.OS === 'web';
 const isIosWeb = isWeb && typeof navigator !== 'undefined' && /iP(hone|od|ad)/.test(navigator.userAgent);
@@ -68,7 +81,7 @@ export function Modal({
     const { height: heightActual1, isKeyboardOpen } = useActualWindowHeight();
 
     const heightActual = isKeyboardOpen ? heightActual1 + 96 : heightActual1;
-    const insets = useSafeAreaInsets();
+    const insets = useStableSafeAreaInsets();
     const fogRef = useRef(null);
     const scrollRef = useRef(null);
     const scrollYRef = useRef(0);
@@ -338,32 +351,34 @@ export function Modal({
     else {
         return (
             <ModalDef visible={onVisible} animationType={animationType} transparent={isWeb} onRequestClose={handleRequestClose}>
-                <View
-                    className={`pointerEvents cursor-default flex justify-end w-full h-full ${modalSettings.fog}`}
-                    onPress={handleNativeOuterPress}
-                >
-                    <View style={{ paddingTop: insets?.top, paddingBottom: insets?.bottom }} className={`flex-row ${autoHeight ? ' items-center  ' : sClassPosition} justify-center   left-0 right-0 z-50 w-full overflow-x-hidden overflow-y-auto h-full h-modal`}>
-                        <View className={`w-full  ${maxWidth}  ${modalSettings.container}  ${autoHeight ? 'rounded-2xl ' : ''}`}>
-                            <View className={`${autoHeight ? '' : 'h-full'} ${modalSettings.content}`}>
-                                <ModalHeader
-                                    title={title}
-                                    headerBorder={headerBorder}
-                                    onClose={tryClose}
-                                />
-                                <Cnt
-                                    ref={scrollable ? scrollRef : undefined}
-                                    onScroll={scrollable ? handleScroll : undefined}
-                                    scrollEventThrottle={scrollable ? 16 : undefined}
-                                    style={styles}
-                                    className={`${padding} flex-auto `}
-                                    {...(scrollable ? { bottomOffset: modalBottomOffset } : {})}
-                                >
-                                    {children}
-                                </Cnt>
+                <SafeAreaProvider initialMetrics={initialWindowMetrics}>
+                    <View
+                        className={`pointerEvents cursor-default flex justify-end w-full h-full ${modalSettings.fog}`}
+                        onPress={handleNativeOuterPress}
+                    >
+                        <NativeModalSafePad autoHeight={autoHeight} sClassPosition={sClassPosition}>
+                            <View className={`w-full  ${maxWidth}  ${modalSettings.container}  ${autoHeight ? 'rounded-2xl ' : ''}`}>
+                                <View className={`${autoHeight ? '' : 'h-full'} ${modalSettings.content}`}>
+                                    <ModalHeader
+                                        title={title}
+                                        headerBorder={headerBorder}
+                                        onClose={tryClose}
+                                    />
+                                    <Cnt
+                                        ref={scrollable ? scrollRef : undefined}
+                                        onScroll={scrollable ? handleScroll : undefined}
+                                        scrollEventThrottle={scrollable ? 16 : undefined}
+                                        style={styles}
+                                        className={`${padding} flex-auto `}
+                                        {...(scrollable ? { bottomOffset: modalBottomOffset } : {})}
+                                    >
+                                        {children}
+                                    </Cnt>
+                                </View>
                             </View>
-                        </View>
+                        </NativeModalSafePad>
                     </View>
-                </View>
+                </SafeAreaProvider>
             </ModalDef>
         );
     }

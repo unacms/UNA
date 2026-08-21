@@ -68,14 +68,14 @@ export const settingsLayout = {
         show_tabbar_on_mobile_non_logged: false,
 
         header: {
-            container: ' ns--header-wrapper-- w-full z-50 header-fixed web:fixed native:absolute bg-card/60 web:top-0 shadow-border-b dark:shadow-border-b-deep web:transition-[transform,background-color,border-color] web:duration-300 web:ease-in-out  ne--',
+            container: ' ns--header-wrapper-- w-full z-50 header-fixed web:fixed native:absolute native:top-0 native:left-0 native:right-0 bg-card web:top-0  web:transition-[transform,background-color,border-color] web:duration-300 web:ease-in-out  ne--',
             /**
              * Color wash behind glass chrome. Applied as an overlay that
              * extends `fade_extend` below the measured header.
              */
-            fade: 'bg-linear-to-b from-background to-background/0',
+            fade: 'bg-linear-to-b from-card to-background/0',
             /** Extra px the color wash extends below the header. */
-            fade_extend: 8,
+            fade_extend: 0,
             /** Optional. When set (non-blank), appended to `container` while scrollY > 0 (full-width bar: shadow, border, etc.). */
             container_scrolled: ' ns--header-wrapper-scrolled-- shadow-none lg:bg-card/60 lg:backdrop-blur-lg lg:shadow-border-b dark:lg:shadow-border-b-deep ne-- ',
             content: ' ns--header-content-- items-center justify-between h-16 mx-auto w-full ne-- ',

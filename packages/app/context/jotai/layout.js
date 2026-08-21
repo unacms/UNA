@@ -1,7 +1,6 @@
 import { atom, useSetAtom, useAtomValue } from 'jotai';
-import { useAtomCallback } from 'jotai/utils';
-import { useCallback } from 'react';
 import { Platform } from 'react-native'
+import { useTabChromeKey } from 'app/context/tab-chrome';
 const isWeb = Platform.OS == 'web'
 
 export const defaultHeader = {
@@ -12,12 +11,25 @@ export const defaultHeader = {
 };
 // Atoms
 export const headerAtom = atom(defaultHeader);
+// Monotonic id of the last `setHeader` write. Blur resets compare against
+// this so a screen that already lost the atom does not wipe a newer owner
+// (sibling useEffects in one commit, or useFocusEffect before useEffect).
+let headerWriteGeneration = 0;
+export const getHeaderWriteGeneration = () => headerWriteGeneration;
 export const footerAtom = atom(true);
 export const scrollDirectionAtom = atom(0);
 export const scrollValueAtom = atom(0);
-const setScrollValueAtom = atom(null, (get, set, value) => {
+// Non-reactive mirror. Scroll writers fire every frame — subscribe with
+// `useScrollValue()` only when the UI must track offset continuously
+// (cover collapse, overlay header). Callbacks should use `getScrollValue()`.
+let scrollValueCurrent = 0;
+export const getScrollValue = () => scrollValueCurrent;
+/** Compat for callers that still hook `useGetScrollValue()`. */
+export const useGetScrollValue = () => getScrollValue;
+const setScrollValueAtom = atom(null, (_get, set, value) => {
     const next = Math.round(Number(value));
-    if (!Number.isFinite(next) || next === get(scrollValueAtom)) return;
+    if (!Number.isFinite(next) || next === scrollValueCurrent) return;
+    scrollValueCurrent = next;
     set(scrollValueAtom, next);
 });
 /** Max scroll offset the active list can reach (content height − viewport). */
@@ -31,15 +43,57 @@ export const listMaxScrollOffsetAtom = atom(0);
 export const coverScrollCompensationAtom = atom(0);
 /** Scroll offset at which the native profile cover finishes collapsing (see conductor.js). */
 export const COVER_COLLAPSE_SCROLL = 500;
-/** Keep close to `layout.header.content` height (e.g. h-16 → 64) to minimize layout shift. */
-export const DEFAULT_HEADER_HEIGHT = 64;
 /**
- * SSR/hydration seed on web; on native each tab store starts here until PageHeader
- * `onLayout` publishes the measured height. Use DEFAULT (not 0) so list spacers are
- * not empty on first paint under the absolute header bar.
+ * SSR/hydration seed for headerHeightAtom on web only.
+ * After mount, PageHeader `onLayout` replaces this with the measured height.
+ * Keep close to `layout.header.content` height (e.g. h-14 → 56) to minimize layout shift.
  */
-export const headerHeightAtom = atom(DEFAULT_HEADER_HEIGHT);
+export const DEFAULT_HEADER_HEIGHT = 64;
+export const headerHeightAtom = atom(isWeb ? DEFAULT_HEADER_HEIGHT : 0);
 export const footerHeightAtom = atom(0);
+
+const headerAtomsByTab = new Map([['web', headerAtom]]);
+const headerHeightAtomsByTab = new Map([['web', headerHeightAtom]]);
+const setHeaderAtomsByTab = new Map();
+
+function getHeaderAtomForTab(key) {
+    let next = headerAtomsByTab.get(key);
+    if (!next) {
+        next = atom(defaultHeader);
+        headerAtomsByTab.set(key, next);
+    }
+    return next;
+}
+
+function getHeaderHeightAtomForTab(key) {
+    let next = headerHeightAtomsByTab.get(key);
+    if (!next) {
+        next = atom(isWeb ? DEFAULT_HEADER_HEIGHT : 0);
+        headerHeightAtomsByTab.set(key, next);
+    }
+    return next;
+}
+
+function createSetHeaderAtom(key) {
+    return atom(null, (get, set, value) => {
+        headerWriteGeneration += 1;
+        const tabHeaderAtom = getHeaderAtomForTab(key);
+        const tabHeightAtom = getHeaderHeightAtomForTab(key);
+        const prev = get(tabHeaderAtom);
+        const next = typeof value === 'function' ? value(prev) : value;
+        set(tabHeaderAtom, next);
+        // Native: do not zero height when subHeader appears/disappears — that left
+        // list content under Settings tabs until (or unless) a later measure. Keep
+        // the previous offset; PageHeader container onLayout corrects the total.
+        // Treat missing `header` as null so `setHeader({ subHeader })` after
+        // `defaultHeader` (`header: null`) does not look like a chrome change.
+        const prevSlot = prev?.header === false ? false : (prev?.header ?? null);
+        const nextSlot = next?.header === false ? false : (next?.header ?? null);
+        if (!isWeb && (nextSlot === false || nextSlot !== prevSlot)) {
+            set(tabHeightAtom, 0);
+        }
+    });
+}
 
 // Write-only atom: keep the last measured height while a visible header is
 // being replaced. On web, the DOM may not emit another layout event if the
@@ -47,23 +101,21 @@ export const footerHeightAtom = atom(0);
 // tucked under the fixed header after HMR/theme/layout updates.
 // On native, subHeader toggles must not zero height (Settings tabs clip); the
 // PageHeader container onLayout updates the total instead.
-export const setHeaderAtom = atom(null, (get, set, value) => {
-    const prev = get(headerAtom);
-    const next = typeof value === 'function' ? value(prev) : value;
-    set(headerAtom, next);
-    // Native: only a hidden header is known to be 0 tall. Swapping the chrome
-    // for another element must keep the previous offset — React Native emits
-    // `onLayout` again only when the measured size actually changes, so zeroing
-    // on every swap leaves the list under a same-height bar (messenger, Settings
-    // tabs) with no second measure to correct it.
-    if (!isWeb && next?.header === false) {
-        set(headerHeightAtom, 0);
-    }
-});
+export const setHeaderAtom = createSetHeaderAtom('web');
+setHeaderAtomsByTab.set('web', setHeaderAtom);
 
-// Custom hooks
-export const useSetHeader = () => useSetAtom(setHeaderAtom);
-export const useHeader = () => useAtomValue(headerAtom);
+function getSetHeaderAtomForTab(key) {
+    let next = setHeaderAtomsByTab.get(key);
+    if (!next) {
+        next = createSetHeaderAtom(key);
+        setHeaderAtomsByTab.set(key, next);
+    }
+    return next;
+}
+
+// Custom hooks — scoped to the current tab so Posts/Messages keep their own chrome.
+export const useSetHeader = () => useSetAtom(getSetHeaderAtomForTab(useTabChromeKey()));
+export const useHeader = () => useAtomValue(getHeaderAtomForTab(useTabChromeKey()));
 
 export const useSetFooter = () => useSetAtom(footerAtom);
 export const useFooter = () => useAtomValue(footerAtom);
@@ -74,15 +126,9 @@ export const useScrollDirection = () => useAtomValue(scrollDirectionAtom);
 
 export const useSetScrollValue = () => useSetAtom(setScrollValueAtom);
 export const useScrollValue = () => useAtomValue(scrollValueAtom);
-/**
- * Non-reactive read of the current scroll offset. Scroll writers fire every
- * frame — subscribe with `useScrollValue()` only when the UI must track the
- * offset continuously (cover collapse, overlay header); callbacks should read
- * through this hook, which resolves against the store of the screen it is
- * mounted in (each native tab has its own).
- */
-export const useGetScrollValue = () =>
-    useAtomCallback(useCallback((get) => get(scrollValueAtom), []));
+/** True once the list has left the top. Does not update every scroll pixel. */
+export const isScrolledAtom = atom((get) => get(scrollValueAtom) > 0);
+export const useIsScrolled = () => useAtomValue(isScrolledAtom);
 
 export const useSetListMaxScrollOffset = () => useSetAtom(listMaxScrollOffsetAtom);
 export const useListMaxScrollOffset = () => useAtomValue(listMaxScrollOffsetAtom);
@@ -90,8 +136,8 @@ export const useListMaxScrollOffset = () => useAtomValue(listMaxScrollOffsetAtom
 export const useSetCoverScrollCompensation = () => useSetAtom(coverScrollCompensationAtom);
 export const useCoverScrollCompensation = () => useAtomValue(coverScrollCompensationAtom);
 
-export const useSetHeaderHeight = () => useSetAtom(headerHeightAtom);
-export const useHeaderHeight = () => useAtomValue(headerHeightAtom);
+export const useSetHeaderHeight = () => useSetAtom(getHeaderHeightAtomForTab(useTabChromeKey()));
+export const useHeaderHeight = () => useAtomValue(getHeaderHeightAtomForTab(useTabChromeKey()));
 
 export const useSetFooterHeight = () => useSetAtom(footerHeightAtom);
 export const useFooterHeight = () => useAtomValue(footerHeightAtom);

@@ -3,7 +3,8 @@ import { EnrichedText } from 'react-native-enriched-html'
 import { View } from 'app/design/view'
 import { appSetting, isExternalUrl, openExternalLink } from 'app/lib/util'
 import { useThemeName } from 'app/design/theme'
-import { useRouter, useGlobalSearchParams } from 'app/lib/hooks/router'
+import { useRouter, useCurrentTabPath } from 'app/lib/hooks/router'
+import { nativeTabHref } from 'app/lib/tab-history'
 import { unaLinksToMentions, normalizeLinkHref } from 'app/components/form-fields/editor-mention-html'
 import { preprocessHtml } from 'app/lib/html-helper'
 
@@ -15,7 +16,7 @@ import { preprocessHtml } from 'app/lib/html-helper'
 export default function ElementHtml({ customClassName, data, innerRef }) {
     const themeName = useThemeName() || 'light'
     const router = useRouter()
-    const glob = useGlobalSearchParams()
+    const tabPath = useCurrentTabPath()
 
     const isDark = themeName === 'dark'
     const themeKey = isDark ? 'dark' : 'light'
@@ -36,8 +37,8 @@ export default function ElementHtml({ customClassName, data, innerRef }) {
             return
         }
         const relative = url.replace(/^https?:\/\/[^/]+/, '') || url
-        router.push({ pathname: '/' + (glob?.name || ''), params: { url: relative } })
-    }, [router, glob?.name])
+        router.push(nativeTabHref(relative, tabPath))
+    }, [router, tabPath])
 
     if (!data) return null
     const source = `<html>${(preprocessHtml(data))}</html>`

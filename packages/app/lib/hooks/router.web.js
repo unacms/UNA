@@ -10,6 +10,10 @@ export function useGlobalSearchParams() {
     return null;
 }
 
+export function useCurrentTabPath() {
+    return '/tab0';
+}
+
 export function useNavigation() {
     return null;
 }
@@ -23,6 +27,14 @@ export function useIsFocused() {
 }
 
 export function useSafeAreaInsets() {
+    return { top: 0, right: 0, bottom: 0, left: 0 };
+}
+
+export function useStableSafeAreaInsets() {
+    return { top: 0, right: 0, bottom: 0, left: 0 };
+}
+
+export function getWindowSafeAreaInsets() {
     return { top: 0, right: 0, bottom: 0, left: 0 };
 }
 

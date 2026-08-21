@@ -14,7 +14,8 @@ import { getComponent } from 'app/components/registry';
 import { fetcher } from 'app/lib/fetcher';
 import { appSetting, tp } from 'app/lib/util';
 import { getUnitMenuItems } from 'app/customization/functions';
-import { useRouter, useGlobalSearchParams } from 'app/lib/hooks/router';
+import { useRouter, useCurrentTabPath } from 'app/lib/hooks/router';
+import { nativeTabHref } from 'app/lib/tab-history';
 import { useTranslation } from 'react-i18next';
 import { Card, CardList } from 'app/ui/molecules/page/card';
 import LinkOrModal from 'app/ui/molecules/dialogs/link-or-modal';
@@ -109,22 +110,21 @@ export function getStarsRatingData(data) {
 
 export function useUnitActions({ unitType, data, module, t = null }) {
     const router = useRouter();
-    const gsp = useGlobalSearchParams();
+    const tabPath = useCurrentTabPath();
     const routerRef = useRef(router);
-    const gspRef = useRef(gsp);
+    const tabPathRef = useRef(tabPath);
     routerRef.current = router;
-    gspRef.current = gsp;
+    tabPathRef.current = tabPath;
 
     return useMemo(
         () => getUnitMenuItems(unitType, data, (event, url) => {
             event?.preventDefault?.();
             const currentRouter = routerRef.current;
             if (!currentRouter || !url) return;
-            const currentGsp = gspRef.current;
             currentRouter.push(
                 Platform.OS === 'web'
                     ? url
-                    : { pathname: `/${currentGsp?.name}`, params: { url } },
+                    : nativeTabHref(url, tabPathRef.current),
             );
         }, t, module),
         [unitType, data, module, t],

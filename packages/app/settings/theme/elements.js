@@ -84,7 +84,7 @@ export const settingsElements = {
     },
     blocks: {
         'u-block-base':
-            ' text-card-foreground gap-3 sm:gap-4',
+            ' text-card-foreground gap-3 ',
         'u-block-bg':
             ' bg-card/60 shadow-block-outline dark:shadow-block-outline-deep ',
         'u-block-pad':
@@ -99,7 +99,7 @@ export const settingsElements = {
         'u-block-title':
             'text-card-foreground text-lg lg:text-xl font-bold tracking-tight',
         'u-block-description': 'text-muted-foreground text-xs lg:text-sm leading-5 px-px',
-        'u-block-content': 'gap-4 ',  
+        'u-block-content': 'gap-0.5 ',  
         'u-block-footer':
             'flex text-card-foreground gap-4 pt-2',
         'u-block-actions':

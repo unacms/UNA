@@ -11,7 +11,8 @@ import { useTheme } from 'app/design/theme';
 import { useState } from 'react';
 import Video from 'app/ui/atoms/video';
 import * as WebBrowser from 'expo-web-browser';
-import { useRouter, useGlobalSearchParams } from 'app/lib/hooks/router'
+import { useRouter, useCurrentTabPath } from 'app/lib/hooks/router'
+import { nativeTabHref } from 'app/lib/tab-history'
 import { useWindowSize } from 'app/context/measure';
 
 const renderers = {
@@ -180,7 +181,7 @@ logToReactNative('aaa')
         true; // Required for injectedJavaScript to work on Android
         */
 export default function ElementHtml(props) {
-    const glob = useGlobalSearchParams();
+    const tabPath = useCurrentTabPath();
     const routerExpo = useRouter();
     const { colors } = useTheme();
     const [iframeH, setIframeH] = useState({});
@@ -327,10 +328,7 @@ export default function ElementHtml(props) {
         if (isExternalUrl(url)) {
             await WebBrowser.openBrowserAsync(url);
         } else {
-            routerExpo.push({
-                pathname: '/' + glob.name,
-                params: { url: sanitazeUrl(url) }
-            });
+            routerExpo.push(nativeTabHref(sanitazeUrl(url), tabPath));
         }
     };
 

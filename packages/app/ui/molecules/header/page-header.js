@@ -2,7 +2,9 @@ import { useEffect, useRef } from 'react';
 import { Animated, View } from 'react-native';
 import { nativeDriver } from 'app/lib/animation';
 import { appSetting } from 'app/lib/util';
-import { useScrollValue } from 'app/context/jotai/layout';
+import { isNativeTabsEnabled } from 'app/design/controls';
+import { useIsScrolled } from 'app/context/jotai/layout';
+import { getWindowSafeAreaInsets } from 'app/lib/hooks/router';
 import {
     PageHeaderBody,
     PageHeaderSmall,
@@ -31,9 +33,9 @@ export const PageHeader = ({ pageData }) => {
         onHeaderLayout,
         scrollDirection,
     } = headerState;
+    const edgeToEdgeTop = isNativeTabsEnabled() ? (getWindowSafeAreaInsets().top || 0) : 0;
 
-    const scrollY = useScrollValue();
-    const isScrolled = scrollY > 0;
+    const isScrolled = useIsScrolled();
     const headerTranslateY = useRef(new Animated.Value(0)).current;
     const headerBgOpacity = useRef(new Animated.Value(isScrolled ? 0 : 1)).current;
     const headerFadeOpacity = useRef(new Animated.Value(isScrolled ? 1 : 0)).current;
@@ -72,11 +74,10 @@ export const PageHeader = ({ pageData }) => {
     }
 
     const HeaderContainer = isCollapsibleHeader ? Animated.View : View;
-    const headerContainerStyle = isCollapsibleHeader
-        ? {
-            transform: [{ translateY: headerTranslateY }],
-        }
-        : undefined;
+    const headerContainerStyle = [
+        isCollapsibleHeader ? { transform: [{ translateY: headerTranslateY }] } : null,
+        edgeToEdgeTop > 0 ? { top: 0, left: 0, right: 0 } : null,
+    ];
     const { flowHeaderContentClassName } = resolveHeaderContentClassNames({
         usesFixedOverlayHeader: false,
         isScrolled,
@@ -110,7 +111,11 @@ export const PageHeader = ({ pageData }) => {
                     style={{ height: fadeHeight, opacity: headerFadeOpacity }}
                 />
             ) : null}
-            <View pointerEvents="auto" onLayout={onHeaderLayout}>
+            <View
+                pointerEvents="auto"
+                onLayout={onHeaderLayout}
+                style={edgeToEdgeTop > 0 ? { paddingTop: edgeToEdgeTop } : undefined}
+            >
                 <PageHeaderBody
                     {...headerState}
                     contentClassName={`${appSetting('layout', 'page_content_width_default')} ${flowHeaderContentClassName}`}

@@ -188,9 +188,8 @@ export default function UniList(props) {
         const currentScrollY = contentOffset.y;
         const roundedScrollY = Math.round(currentScrollY);
 
-        setListMaxScrollOffset(
-            Math.max(0, contentSize.height - layoutMeasurement.height)
-        );
+        const maxOffset = Math.max(0, contentSize.height - layoutMeasurement.height);
+        setListMaxScrollOffset((prev) => (prev === maxOffset ? prev : maxOffset));
 
         if (roundedScrollY !== lastPublishedScrollRef.current) {
             lastPublishedScrollRef.current = roundedScrollY;
