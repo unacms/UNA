@@ -2509,6 +2509,15 @@ class BxBaseModProfileModule extends BxBaseModGeneralModule implements iBxDolCon
 
         $sModule = $this->getName();
         $iId = (int)$aData[$CNF['FIELD_ID']];
+
+        if(($mixedCheckResult = $this->serviceCheckAllowedViewForProfile($aData)) !== CHECK_ACTION_RESULT_ALLOWED)
+            return [
+                'id' => $iId, 
+                'module' => 'sys_private',
+                'module_src' => $sModule,
+                'title' => _t('_sys_private_content'),
+            ];
+
         $oProfile = BxDolProfile::getInstanceByContentAndType($iId, $sModule);
 
         $aResult = [

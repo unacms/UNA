@@ -648,6 +648,14 @@ class BxBaseModTextModule extends BxBaseModGeneralModule implements iBxDolConten
         $sModule = $this->getName();
         $iId = (int)$aData[$CNF['FIELD_ID']];
 
+        if(($mixedCheckResult = $this->checkAllowedView($aData)) !== CHECK_ACTION_RESULT_ALLOWED)
+            return [
+                'id' => $iId, 
+                'module' => 'sys_private',
+                'module_src' => $sModule,
+                'title' => _t('_sys_private_content'),
+            ];
+
         $sSummary = '';
         if(!empty($CNF['PARAM_CHARS_SUMMARY_PLAIN'])) {
             $sSummary = $this->_oTemplate->getText($aData);

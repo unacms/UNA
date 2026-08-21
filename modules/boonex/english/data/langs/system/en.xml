@@ -4101,6 +4101,7 @@ If it is not enabled then please consider implementing this optimization, since 
         <string name="_sys_profile_storage_quota_size"><![CDATA[Storage]]></string>
         <string name="_sys_profile_storage_quota_number"><![CDATA[Number of files]]></string>
 	<string name="_sys_private"><![CDATA[Private]]></string>
+        <string name="_sys_private_content"><![CDATA[Private content]]></string>
         <string name="_sys_privacy_forms_input_allow_view_to"><![CDATA[Visibility]]></string>
         <string name="_sys_privacy_groups_acl"><![CDATA[Membership Levels]]></string>
         <string name="_sys_pruning_db"><![CDATA[<h3>Database pruning:</h3>

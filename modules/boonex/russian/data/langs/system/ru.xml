@@ -4033,6 +4033,7 @@
     <string name="_sys_profile_storage_quota_size"><![CDATA[Хранилище]]></string>
         <string name="_sys_profile_storage_quota_number"><![CDATA[Количество файлов]]></string>
 	<string name="_sys_private"><![CDATA[Приватные]]></string>
+        <string name="_sys_private_content"><![CDATA[Приватный контент]]></string>
         <string name="_sys_privacy_forms_input_allow_view_to"><![CDATA[Видимость]]></string>
         <string name="_sys_privacy_groups_acl"><![CDATA[Членство]]></string>
     <string name="_sys_pruning_db"><![CDATA[<h3>Очистка базы данных:</h3>
