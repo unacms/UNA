@@ -1,7 +1,7 @@
 {
     "name": "una.io/una-tests",
     "require-dev": {
-        "phpunit/phpunit": "11.*",
+        "phpunit/phpunit": "12.*",
         "phpmd/phpmd": "@stable"
     }
 }
