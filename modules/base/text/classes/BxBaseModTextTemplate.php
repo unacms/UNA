@@ -441,12 +441,16 @@ class BxBaseModTextTemplate extends BxBaseModGeneralTemplate
 
     protected function checkPrivacy ($aData, $isCheckPrivateContent, $oModule, $sTemplateName = '')
     {
-        if ($isCheckPrivateContent && CHECK_ACTION_RESULT_ALLOWED !== ($sMsg = $oModule->checkAllowedView($aData))) {
-            $aVars = array (
+        $CNF = &$this->_oConfig->CNF;
+
+        if($isCheckPrivateContent && CHECK_ACTION_RESULT_ALLOWED !== ($sMsg = $oModule->checkAllowedView($aData)))
+            return $this->parseHtmlByName($sTemplateName ? str_replace('.html', '_private.html', $sTemplateName) : 'unit_private.html', [
+                'module_name' => _t($CNF['T']['txt_sample_single']),
+                'module_icon' => $CNF['ICON'],
+                'title' => _t('_sys_private_content'),
                 'summary' => $sMsg,
-            );
-            return $this->parseHtmlByName($sTemplateName ? str_replace('.html', '_private.html', $sTemplateName) : 'unit_private.html', $aVars);
-        }
+                'ts' => $aData[$CNF['FIELD_ADDED']],
+            ]);
 
         return '';
     }
