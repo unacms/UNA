@@ -64,7 +64,6 @@ export const settingsMenus = {
                 link: '/',
                 icon: 'House',
                 animated: true,
-                addClassName: 'icon-scene-fill web:group-hover:icon-scene-draw',
             },
             {
                 name: 'friends',
@@ -72,7 +71,6 @@ export const settingsMenus = {
                 link: '/friends',
                 icon: 'UsersRound',
                 animated: true,
-                addClassName: 'icon-scene-fill web:group-hover:icon-scene-draw',
                 nonlogged: false,
             },
             {
@@ -82,7 +80,6 @@ export const settingsMenus = {
                 icon: 'Compass',
                 logged: false,
                 animated: true,
-                addClassName: 'icon-scene-fill web:group-hover:icon-scene-draw',
             },
             {
                 name: 'videos-home',
@@ -90,7 +87,6 @@ export const settingsMenus = {
                 link: '/videos-home',
                 icon: 'TvMinimalPlay',
                 animated: true,
-                addClassName: 'icon-scene-fill web:group-hover:icon-scene-draw',
             },
             {
                 name: 'products-home',
@@ -98,7 +94,6 @@ export const settingsMenus = {
                 link: '/products-home',
                 icon: 'Store',
                 animated: true,
-                addClassName: 'icon-scene-fill web:group-hover:icon-scene-draw',
             },
             {
                 name: 'groups-home',
@@ -106,7 +101,6 @@ export const settingsMenus = {
                 link: '/groups-home',
                 icon: 'Shapes',
                 animated: true,
-                addClassName: 'icon-scene-fill web:group-hover:icon-scene-draw',
             },
             {
                 name: 'events-home',
@@ -114,7 +108,6 @@ export const settingsMenus = {
                 link: '/events-home',
                 icon: 'Calendar',
                 animated: true,
-                addClassName: 'icon-scene-fill web:group-hover:icon-scene-draw',
             }, 
             {
                 name: 'more',
@@ -124,7 +117,6 @@ export const settingsMenus = {
                 showTitle: false,
                 chevron: '',
                 animated: true,
-                addClassName: 'web:group-hover:icon-scene-draw',
                 items:[
                     {
                         name: 'events-home',
@@ -132,7 +124,6 @@ export const settingsMenus = {
                         link: '/events-home',
                         icon: 'Calendar',
                         animated: true,
-                        addClassName: 'icon-scene-fill web:group-hover:icon-scene-draw',
                     },
                     {
                         name: 'groups-home',
@@ -140,7 +131,6 @@ export const settingsMenus = {
                         link: '/groups-home',
                         icon: 'Shapes',
                         animated: true,
-                        addClassName: 'icon-scene-fill web:group-hover:icon-scene-draw',
                     },
                     {
                         name: 'videos-home',
@@ -148,7 +138,6 @@ export const settingsMenus = {
                         link: '/videos-home',
                         icon: 'TvMinimalPlay',
                         animated: true,
-                        addClassName: 'icon-scene-fill web:group-hover:icon-scene-draw',
                     },
                     {
                         name: 'wiki',
@@ -156,7 +145,6 @@ export const settingsMenus = {
                         link: '/docs',
                         icon: 'BookOpenText',
                         animated: true,
-                        addClassName: 'icon-scene-fill web:group-hover:icon-scene-draw',
                     },
                     {
                         name: 'discussions-home',
@@ -164,7 +152,6 @@ export const settingsMenus = {
                         link: '/discussions-home',
                         icon: 'MessagesSquare',
                         animated: true,
-                        addClassName: 'icon-scene-fill web:group-hover:icon-scene-draw',
                     },
                    
                     
@@ -181,7 +168,6 @@ export const settingsMenus = {
                 link: '/about',
                 icon: 'Info',
                 animated: true,
-                addClassName: 'icon-scene-fill web:group-hover:icon-scene-draw',
             },
             {
                 name: 'terms',
@@ -207,7 +193,6 @@ export const settingsMenus = {
                 link: '/contact',
                 icon: 'Mail',
                 animated: true,
-                addClassName: 'icon-scene-fill web:group-hover:icon-scene-draw',
             },
         ],
         menu_tabbar_logged: [
@@ -217,16 +202,14 @@ export const settingsMenus = {
                 url: '/home',
                 icon: 'House',
                 animated: true,
-                addClassName: 'icon-scene-fill web:group-hover:icon-scene-draw',
             },
             {
                 key: '/tab1',
                 title: 'Friends',
-                url: '/friends',
+                url: '/groups-home',
                 icon: 'UsersRound',
                 badge: 'friends',
                 animated: true,
-                addClassName: 'icon-scene-fill web:group-hover:icon-scene-draw',
             },
             {
                 key: '/tab2',
@@ -235,7 +218,6 @@ export const settingsMenus = {
                 icon: 'MessageCircleMore',
                 badge: 'messenger',
                 animated: true,
-                addClassName: 'icon-scene-fill web:group-hover:icon-scene-draw',
             },
             {
                 key: '/tab3',
@@ -244,7 +226,6 @@ export const settingsMenus = {
                 icon: 'Bell',
                 badge: 'notifications',
                 animated: true,
-                addClassName: 'icon-scene-fill web:group-hover:icon-scene-draw',
             },
             {
                 key: '/tab4',
@@ -261,7 +242,6 @@ export const settingsMenus = {
                 url: '/home',
                 icon: 'House',
                 animated: true,
-                addClassName: 'icon-scene-fill web:group-hover:icon-scene-draw',
             },
             {
                 key: '/tab1',
@@ -269,7 +249,6 @@ export const settingsMenus = {
                 url: '/explore',
                 icon: 'Compass',
                 animated: true,
-                addClassName: 'icon-scene-fill web:group-hover:icon-scene-draw',
             },
             {
                 key: '/tab2',
@@ -277,7 +256,6 @@ export const settingsMenus = {
                 url: '/about',
                 icon: 'Info',
                 animated: true,
-                addClassName: 'icon-scene-fill web:group-hover:icon-scene-draw',
             },
             {
                 key: '/tab3',

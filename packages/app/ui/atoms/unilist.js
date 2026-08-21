@@ -1,5 +1,5 @@
 import { View } from 'app/design/view'
-import { useRef, useCallback, useMemo, useEffect } from 'react';
+import { useRef, useCallback, useMemo, useEffect, useLayoutEffect } from 'react';
 import { Platform, RefreshControl } from 'react-native';
 import { LegendList } from "@legendapp/list";
 import { useSetScrollDirection, useHeaderHeight, useSetScrollValue, useSetListMaxScrollOffset, useCoverScrollCompensation } from 'app/context/jotai/layout';
@@ -218,18 +218,18 @@ export default function UniList(props) {
         scrollY.current = currentScrollY;
     }, [setScrollDirection, setScrollValue, setListMaxScrollOffset]);
 
-    // Scroll atoms live in the tab's Jotai store, so an in-tab navigation
-    // (list → profile) would otherwise leave the new list reporting the
-    // previous screen's offset — enough for the profile cover to collapse on
-    // its own. Publish this list's starting offset as soon as it mounts.
-    useEffect(() => {
-        scrollY.current = initialScrollOffset;
-        lastPublishedScrollRef.current = Math.round(initialScrollOffset);
+    // Scroll atoms live in the tab's Jotai store. Publishing a cached
+    // `initialScrollOffset` here collapsed the profile cover on feed load.
+    // Zero the atoms before paint; LegendList still restores position via
+    // `initialScrollOffset`, and `onScroll` then reports the real offset.
+    useLayoutEffect(() => {
+        scrollY.current = 0;
+        lastPublishedScrollRef.current = 0;
         scrollState.current = 0;
-        setScrollValue(lastPublishedScrollRef.current);
+        setScrollValue(0);
         setScrollDirection(0);
         setListMaxScrollOffset(0);
-    }, [url, initialScrollOffset, setScrollValue, setScrollDirection, setListMaxScrollOffset]);
+    }, [url, setScrollValue, setScrollDirection, setListMaxScrollOffset]);
 
     useEffect(() => {
         return () => {

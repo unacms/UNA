@@ -34,10 +34,8 @@ If a name is missing from the registry, `Icon` falls back to the normal (non-ani
 
 ## Enabling animation in menus / UI
 
-- Set **`animated: true`** on the item (e.g. in [`packages/app/settings/menus.js`](packages/app/settings/menus.js) or tab config) where the row passes props into `Icon`.
-- Use **`addClassName`** (or the appropriate class hook for that component) for scenes, e.g.  
-  `icon-scene-fill web:hover:icon-scene-draw`  
-  — **fill** for active/selected duotone-style treatment, **draw** for hover path / motion on web (`web:hover:` limits the variant to web).
+- Set **`animated: true`** on the item (e.g. in [`packages/app/settings/menus.js`](packages/app/settings/menus.js) or tab config) where the row passes props into `Icon`. That enables **fill** (active/selected duotone) and **draw** (hover path / motion on web) by default.
+- Override scenes only when needed via `className` / `addClassName` tokens such as `icon-scene-draw` (draw only) or `icon-scene-fill`. Any explicit `icon-scene-*` token replaces the default set. Do not prefix these with `web:` / `group-hover:` — they are not CSS utilities; hover is driven by the `hovered` prop / mouse handlers in `Icon`.
 
 Scene names supported by the parser: `fill`, `draw`, `morph`, `smoke`, `custom1`–`custom6` (see `parseIconSceneClasses` in `packages/app/ui/atoms/icon.js`).
 
@@ -61,7 +59,7 @@ Guidelines:
 ## Checklist
 
 - [ ] Registry key matches the **resolved** Lucide name (`House`, `Compass`, …).
-- [ ] Menu or parent passes `animated` + scene classes if fill/hover behavior is required.
+- [ ] Menu or parent passes `animated` (fill + draw are default; override with `icon-scene-*` only when needed).
 - [ ] New icon tested on **web** and **native** (or native-only features gated with `Platform.OS`).
 - [ ] No `measureLayout` / layout thrash introduced from the icon itself (icons should stay self-contained).
 

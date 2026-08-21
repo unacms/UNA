@@ -12,6 +12,7 @@ import emitter from 'app/context/emitter'
 import * as SplashScreen from 'expo-splash-screen';
 import { TabChromeProvider } from 'app/context/tab-chrome';
 import { TabSlide } from 'app/components/nav/tab-slide';
+import { conductorTrace, conductorTraceReset } from 'app/lib/conductor-trace';
 
 const NativeTabPressSync = isNativeTabsEnabled()
     ? require('./native-tab-press-sync').default
@@ -126,6 +127,7 @@ const Content = ({ pagePath, currentUser, tabKey, isRoot, refreshToken, historyM
         if (!tabKey || !pagePath || refreshToken) return;
         const cached = getCachedPageData(tabKey, pagePath, currentUser?.id, currentUser?.confirmed);
         if (cached) {
+            conductorTrace(pagePath, 'expo-screen:cache-hit');
             setPageData(cached);
         }
     }, [tabKey, pagePath, refreshToken, currentUser?.id, currentUser?.confirmed]);
@@ -149,7 +151,15 @@ const Content = ({ pagePath, currentUser, tabKey, isRoot, refreshToken, historyM
             try {
                 const { path: pathWithoutQuery, queryString } = parseUrl(pagePath);
                 const params = queryString ? JSON.stringify(parseQueryString(queryString)) : null;
+                if (!cached) conductorTraceReset(pagePath);
+                conductorTrace(pagePath, 'expo-screen:fetch:start', { cached: Boolean(cached) });
+                const t0 = Date.now();
                 const data = await getData(pathWithoutQuery, null, null, null, null, params);
+                conductorTrace(pagePath, 'expo-screen:fetch:done', {
+                    ms: Date.now() - t0,
+                    uri: data?.props?.data?.uri,
+                    url: data?.props?.data?.url,
+                });
                 if (cancelled || pagePathRef.current !== pathAtStart) return;
                 if (data?.props) {
                     // Bump timestamp on force refresh or after serving cache so profile/layout

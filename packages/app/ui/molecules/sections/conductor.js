@@ -1,5 +1,7 @@
-import React, { useCallback, useState, useEffect, useMemo, useRef, useContext } from "react";
+import React, { useCallback, useState, useEffect, useLayoutEffect, useMemo, useRef, useContext } from "react";
+import { InteractionManager, Platform } from 'react-native';
 import Animated, { useSharedValue, useAnimatedStyle, withTiming, interpolate, cancelAnimation } from 'react-native-reanimated';
+import { conductorTrace, pageTraceShape } from 'app/lib/conductor-trace';
 import { View, ScrollView, Row, Pressable } from 'app/design/view';
 import { Text } from 'app/design/typography';
 import UniList from 'app/ui/atoms/unilist'
@@ -17,10 +19,9 @@ import { fetcher } from 'app/lib/fetcher';
 import Snackbar from 'app/ui/atoms/snackbar';
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import { BlockByName } from 'app/components/block';
-import { Platform } from 'react-native';
 import Cover, { CoverSmall, CoverBackButton } from 'app/components/elements/cover';
 import emitter from 'app/context/emitter'
-import { useSetHeader, useScrollValue, getScrollValue, useListMaxScrollOffset, useSetCoverScrollCompensation, defaultHeader, useSetHeaderHeight, getHeaderWriteGeneration } from 'app/context/jotai/layout';
+import { useSetHeader, useScrollValue, useSetScrollValue, getScrollValue, useListMaxScrollOffset, useSetListMaxScrollOffset, useSetCoverScrollCompensation, defaultHeader, useSetHeaderHeight, getHeaderWriteGeneration } from 'app/context/jotai/layout';
 import { isTabScopedChromeKey, useTabChromeKey } from 'app/context/tab-chrome';
 import { getComponent } from 'app/components/registry';
 import { useFocusEffect, useIsFocused, useRouter } from 'app/lib/hooks/router'
@@ -52,17 +53,23 @@ const COVER_SWITCH_DURATION = 300;
  * small); height and opacities are derived from it.
  */
 const DynamicCoverHeader = React.memo(function DynamicCoverHeader({
+    pageKey,
     coverHeader,
     coverHeaderSmall,
     sceneHeader,
     filter,
 }) {
     const scrollValue = useScrollValue();
+    const setScrollValue = useSetScrollValue();
     const maxScrollOffset = useListMaxScrollOffset();
+    const setListMaxScrollOffset = useSetListMaxScrollOffset();
     const setCoverScrollCompensation = useSetCoverScrollCompensation();
-    const prevScrollRef = useRef(scrollValue);
+    const prevScrollRef = useRef(0);
     // Whether the list currently has compensating bottom padding (see unilist.js).
     const compensatedRef = useRef(false);
+    // Ignore leftover tab scroll from the previous screen until this profile's
+    // atoms have been reset (same bug weave diagnosed as stale scrollValue).
+    const armedRef = useRef(false);
     const [showSmall, setShowSmall] = useState(false);
 
     const [fullHeight, setFullHeight] = useState(0);
@@ -71,7 +78,28 @@ const DynamicCoverHeader = React.memo(function DynamicCoverHeader({
 
     const progress = useSharedValue(showSmall ? 1 : 0);
 
+    useLayoutEffect(() => {
+        armedRef.current = false;
+        prevScrollRef.current = 0;
+        compensatedRef.current = false;
+        setShowSmall(false);
+        setCoverScrollCompensation(0);
+        setScrollValue(0);
+        setListMaxScrollOffset(0);
+    }, [pageKey, setCoverScrollCompensation, setScrollValue, setListMaxScrollOffset]);
+
     useEffect(() => {
+        if (!armedRef.current) {
+            // Previous screen's offset is still in the tab atom — do not collapse.
+            if (scrollValue > COVER_SWITCH_THRESHOLD) {
+                prevScrollRef.current = 0;
+                return;
+            }
+            armedRef.current = true;
+            prevScrollRef.current = scrollValue;
+            return;
+        }
+
         // Global scrollDirection is forced to 0 below 100px (see unilist.js),
         // so track the direction locally from scrollValue deltas.
         const delta = scrollValue - prevScrollRef.current;
@@ -249,6 +277,7 @@ const TabSceneHeader = React.memo(function TabSceneHeader2({
             <View className="w-full">
                 {standaloneContextSelector}
                 <DynamicCoverHeader
+                    pageKey={coverKey}
                     coverHeader={coverHeader}
                     coverHeaderSmall={coverHeaderSmall}
                     sceneHeader={sceneHeader}
@@ -538,6 +567,8 @@ const TabScene = React.memo(({
     listRef,
     leftbarExcludedFromMainIds = null,
 }) => {
+    const sceneRenderN = useRef(0);
+    sceneRenderN.current += 1;
 
     const unitType = useMemo(() => {
         const type = getUnitModeBySource(route?.endpoint)
@@ -668,6 +699,19 @@ const TabScene = React.memo(({
         isEmpty
     )
 
+    conductorTrace(route?.pageData?.url || route?.link, 'TabScene', {
+        n: sceneRenderN.current,
+        index: route?.index,
+        inited: route?.inited,
+        items: routeData.length,
+        listItems: (route?.data || []).filter((item) => item?.type !== 'block').length,
+        blocks: (route?.data || []).filter((item) => item?.type === 'block').length,
+        leftbar: mobileLeftbarItems.length,
+        showPreload,
+        unit: route?.endpoint?.unit,
+        finished: route?.endpoint?.finished,
+    })
+
     return (
         <UniList
             ListHeaderComponent={combinedHeader}
@@ -720,6 +764,19 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
     unitMode = unitMode || '';
     const isFormInitialized = useRef(false);
     const routesRef = useRef(null);
+    const conductorRenderN = useRef(0);
+    conductorRenderN.current += 1;
+    const conductorUrlRef = useRef(undefined);
+    if (conductorUrlRef.current !== data?.url) {
+        conductorUrlRef.current = data?.url;
+        conductorTrace(data?.url, 'conductor:enter', {
+            layoutName,
+            ts,
+            timestamp: data?.timestamp,
+            page: pageTraceShape(data),
+            menuItems: menu?.items?.length ?? 0,
+        });
+    }
     const { currentUser } = useCurrentUser();
 
     const { setBottomSheetData } = useBottomSheetData();
@@ -779,6 +836,34 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
     useEffect(() => {
         indexRef.current = index;
     }, [index]);
+
+    useEffect(() => {
+        conductorTrace(data?.url, 'conductor:mounted', {
+            layoutName,
+            cached: Boolean(cachedConductor),
+            cachedRoutes: cachedConductor?.routes?.length ?? 0,
+            tabs: initedTabs.length,
+            hydrated: initedTabs.filter((r) => r.inited).length,
+            initialIndex,
+        });
+        const handle = InteractionManager.runAfterInteractions(() => {
+            conductorTrace(data?.url, 'conductor:afterInteractions', { layoutName });
+        });
+        return () => handle.cancel?.();
+        // First paint of this URL only.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [data?.url, layoutName]);
+
+    conductorTrace(data?.url, 'conductor:render', {
+        n: conductorRenderN.current,
+        layoutName,
+        index,
+        ts,
+        timestamp: data?.timestamp,
+        routes: routes.length,
+        activeInited: Boolean(routes.find((r) => r.index === index)?.inited),
+        activeItems: routes.find((r) => r.index === index)?.data?.length ?? 0,
+    });
 
     // Write-through while URL is stable so a timestamp remount can bootstrap
     // from cache. Do not key this effect on data.url — a URL change would
@@ -1016,7 +1101,16 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
 
     useEffect(() => {
         // Do not check hasNextPage===false here — a premature empty page marks false and blocks the real first fetch.
+        conductorTrace(data?.url, 'fetchNextPage:gate', {
+            bEnabled,
+            isFetchingNextPage,
+            inited: Boolean(activeRoute?.inited),
+            dataLen: activeRoute?.data?.length ?? 0,
+            finished: activeRoute?.endpoint?.finished,
+            request: Boolean(activeRoute?.endpoint?.request_url),
+        });
         if (!bEnabled || isFetchingNextPage) return;
+        conductorTrace(data?.url, 'fetchNextPage:go');
         fetchNextPage();
     }, [bEnabled, activeRoute?.data?.length, isFetchingNextPage, fetchNextPage]);
 
@@ -1063,6 +1157,11 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
     }, [currentRoute, isRevalidate, currentUser?.id]);
 
     useEffect(() => {
+        conductorTrace(data?.url, 'fetchAndUpdateData:effect', {
+            index,
+            inited: Boolean(routes.find((r) => r.index === index)?.inited),
+            link: routes.find((r) => r.index === index)?.link,
+        });
         fetchAndUpdateData(routes, index, setRoutes);
     }, [index]);
 
@@ -1369,7 +1468,7 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
     const coverMode = appSetting(
         'cover',
         'view_by_module',
-        currentRoute?.pageData?.cover_block?.profile?.module
+        data?.cover_block?.profile?.module ?? currentRoute?.pageData?.cover_block?.profile?.module
     );
 
     const isProfileLayout = layoutName === 'profile';
@@ -1379,6 +1478,15 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
         : hasDynamicCover
             ? 'dynamic' // person profile
             : 'small';    // group on weave profile
+
+    conductorTrace(data?.url, 'header', {
+        headerMode,
+        isCoverDisabled: Boolean(isCoverDisabled),
+        coverMode,
+        hasCover: Boolean(data?.cover_block),
+        useLocalHeader: headerMode === 'dynamic' ||
+            (headerMode === 'small' && !appSetting('native', 'collapsible_header')),
+    });
 
     const useLocalHeader =
         headerMode === 'dynamic' ||

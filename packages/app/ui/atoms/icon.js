@@ -53,14 +53,9 @@ export function AnimatedIcon({ AnimatedIconComponent, origIcon, className, anima
     );
 }
 
-function parseIconSceneClasses(className) {
-    if (!className || typeof className !== 'string') {
-        return {
-            scenes: {},
-            cleanedClassName: className || '',
-        };
-    }
+const DEFAULT_ANIMATED_SCENES = { fill: true, draw: true };
 
+function parseIconSceneClasses(className) {
     const scenes = {
         fill: false,
         draw: false,
@@ -74,12 +69,25 @@ function parseIconSceneClasses(className) {
         custom6: false,
     };
 
+    if (!className || typeof className !== 'string') {
+        return {
+            scenes: { ...scenes, ...DEFAULT_ANIMATED_SCENES },
+            cleanedClassName: className || '',
+        };
+    }
+
     const parts = className.split(/\s+/).filter(Boolean);
+    let hasExplicitScene = false;
     for (const tok of parts) {
         const m = tok.match(/icon-scene-(fill|draw|morph|smoke|custom[1-6])/);
         if (m && m[1] in scenes) {
+            hasExplicitScene = true;
             scenes[m[1]] = true;
         }
+    }
+
+    if (!hasExplicitScene) {
+        Object.assign(scenes, DEFAULT_ANIMATED_SCENES);
     }
 
     const cleanedClassName = parts.filter((t) => !t.includes('icon-scene-')).join(' ');
