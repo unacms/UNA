@@ -7,14 +7,43 @@ import { Icon } from 'app/ui/atoms/icon'
 import { appSetting, cn } from 'app/lib/util'
 import { useEditableRequest } from 'app/lib/form-helpers'
 import ProfilesList from 'app/ui/molecules/profile/profile-list'
-import Link from 'app/ui/atoms/link'
 import { BlockWrapper } from 'app/components/block-wrapper'
 import DropdownPopup from 'app/ui/atoms/dropdown-popup'
 import DatePicker from 'app/ui/atoms/date-picker'
 import { useTranslation } from 'react-i18next';
 import { formatDate } from 'app/lib/util'
+import { NeoButton, NeoButtonLink } from 'app/design/controls'
 
-const INFO_ICON_SIZE = 20
+const EDITABLE_VALUE_BUTTON = {
+    style: 'borderless',
+    controlSize: 'small',
+    borderShape: 'capsule',
+    align: 'start',
+}
+
+function ReadonlyValue({ href, label, children }) {
+    const props = {
+        ...EDITABLE_VALUE_BUTTON,
+        ...(label != null ? { label } : {}),
+    }
+    if (href) {
+        return (
+            <NeoButtonLink {...props} href={href} target="_blank">
+                {children}
+            </NeoButtonLink>
+        )
+    }
+    if (label != null) {
+        return <NeoButton {...props} disabled />
+    }
+    return (
+        <NeoButton {...props} disabled>
+            {children}
+        </NeoButton>
+    )
+}
+
+const INFO_ICON_SIZE = 16
 
 function isUrl(str) {
     if (typeof str !== 'string' || !str.trim()) return false;
@@ -206,6 +235,7 @@ function EditableDate({ field, requestUrl }) {
             type={field.type}
             name={field.name}
             onChange={handleChange}
+            buttonProps={EDITABLE_VALUE_BUTTON}
         >
            
             {field.type=='datetime' ? <Time stylesName=" text-sm text-secondary-foreground " ts={field.value}/> : 
@@ -239,11 +269,11 @@ function EditableSelect({ field, requestUrl }) {
 
     return (
         <DropdownPopup
-            trigger={
-                <Text className="text-secondary-foreground text-sm">
-                    {selected?.value ?? ''}
-                </Text>
-            }
+            buttonProps={{
+                ...EDITABLE_VALUE_BUTTON,
+                label: selected?.value ?? '',
+                accessibilityLabel: field.caption,
+            }}
             minPopupWidth={360}
             open={isOpen}
             onOpenChange={setIsOpen}
@@ -295,7 +325,11 @@ export default function ElementEntityInfo({ data, blockWrapperProps }) {
                     a.value = (new Date(a.value) / 1000);
                 }
 
-                return <Time stylesName=" text-sm text-secondary-foreground " ts={a.type=='datetime' ? a.value : (new Date(a.value) / 1000)}></Time>
+                return (
+                    <ReadonlyValue>
+                        <Time stylesName=" text-sm text-secondary-foreground " ts={a.type=='datetime' ? a.value : (new Date(a.value) / 1000)} />
+                    </ReadonlyValue>
+                )
 
             case 'select':
                 if (a.editable) {
@@ -310,9 +344,9 @@ export default function ElementEntityInfo({ data, blockWrapperProps }) {
                 if (a.value != 0 && a.value != '') {
                     const sel = a?.values?.find(item => item.key.toString() === a.value.toString())
                     return (
-                        <Text className=" text-secondary-foreground text-sm ">
-                            {a.values ? (sel ? sel.value : a.values[a.value]) : a.value}
-                        </Text>
+                        <ReadonlyValue
+                            label={a.values ? (sel ? sel.value : a.values[a.value]) : a.value}
+                        />
                     )
                 }
                
@@ -322,9 +356,7 @@ export default function ElementEntityInfo({ data, blockWrapperProps }) {
                 return <Html data={a.values ? a.values[a.value] : a.value} customClassName="u-vanilla-html-small" />
 
             case 'location':
-                return <Text className=" text-secondary-foreground text-sm ">
-                    {a.value.location_string}
-                </Text>
+                return <ReadonlyValue label={a.value.location_string} />
 
             case 'initial_members':
                 return <ProfilesList
@@ -337,9 +369,7 @@ export default function ElementEntityInfo({ data, blockWrapperProps }) {
                 />
 
             case 'switcher':
-                return <Text className=" text-secondary-foreground text-base ">
-                    {a.value == 1 ? 'Yes' : 'No'}
-                </Text>
+                return <ReadonlyValue label={a.value == 1 ? 'Yes' : 'No'} />
 
             default:
                 if (a.name == "profile_last_active") {
@@ -347,24 +377,24 @@ export default function ElementEntityInfo({ data, blockWrapperProps }) {
                         a.value = (new Date(a.value) / 1000);
                     }
 
-                    return <Time stylesName=" text-base text-secondary-foreground " ts={a.value}></Time>
+                    return (
+                        <ReadonlyValue>
+                            <Time stylesName=" text-base text-secondary-foreground " ts={a.value} />
+                        </ReadonlyValue>
+                    )
                 }
 
                 if (isUrl(a.value)) {
                     return (
-                        <Link href={a.value} target="_blank">
+                        <ReadonlyValue href={a.value}>
                             <Text className=" text-secondary-foreground text-sm whitespace-normal wrap-break-words">
                                 {getHandleForDisplay(a.value)}
                             </Text>
-                        </Link>
+                        </ReadonlyValue>
                     )
                 }
 
-                return (
-                    <Text className=" text-secondary-foreground text-sm whitespace-normal wrap-break-words">
-                        {a.value}
-                    </Text>
-                )
+                return <ReadonlyValue label={a.value} />
         }
     }
 
@@ -481,19 +511,19 @@ export default function ElementEntityInfo({ data, blockWrapperProps }) {
                 if (value || a.editable) {
                     const icon = getIcon(a)
                     return (
-                        <View className={(a.type != 'textarea' ? 'flex-row items-center flex-wrap web:hover:bg-muted/50 -mx-2 -my-2 px-2 py-2 rounded-lg ' : '') + " gap-2"} key={a.name}>
-                            <Row className="items-center gap-2 flex-none">
+                        <View className={(a.type != 'textarea' ? 'flex-row items-center flex-wrap  ' : '') + " gap-2"} key={a.name}>
+                            <Row className="items-center gap-2 flex-none w-1/3">
                                 {icon ? (
-                                    <View className="text-secondary-foreground overflow-hidden items-center justify-center w-5 h-5">{icon}</View>
+                                    <View className="text-secondary-foreground overflow-hidden items-center justify-center w-4 h-4">{icon}</View>
                                 ) : null}
-                                <View>
-                                    <Text className="font-bold text-sm text-card-foreground ">
+                                <View className="flex-auto">
+                                    <Text className=" text-sm leading-tight text-secondary-foreground ellipsis">
                                         {a.caption}
                                     </Text>
                                 </View>
                             </Row>
-                            <View className=" flex-auto">
-                                {getValue(a)}
+                            <View className="flex-auto">
+                                {value}
                             </View>
                         </View>
                     )
@@ -506,7 +536,7 @@ export default function ElementEntityInfo({ data, blockWrapperProps }) {
 
     return (
         <BlockWrapper {...blockWrapperProps}>
-            <View className='gap-3 lg:gap-4'>
+            <View className='gap-1'>
                 {inputs}
             </View>
         </BlockWrapper>

@@ -9,10 +9,10 @@ export default function ({ data, blockWrapperProps, uri }) {
     return (
         <BlockWrapper {...blockWrapperProps}>
             {!!data.cover && <View className="w-full h-28 ">
-                <Image alt={data.fullname} view="cover" src={data.cover.src} />
+                <Image alt={data.fullname} view="cover" src={data.cover.src} priority />
             </View>}
             <View className="p-4 w-full mx-auto bg-card h-min overflow-hidden rounded-2xl shadow-sm">
-                {!!data.image && <View className="w-28 h-28 overflow-hidden bg-background   rounded-full  "><Image alt={data.fullname} className="rounded-full" view="cover" src={data.image.src} /></View>}
+                {!!data.image && <View className="w-28 h-28 overflow-hidden bg-background   rounded-full  "><Image alt={data.fullname} className="rounded-full" view="cover" src={data.image.src} priority={!data.cover} /></View>}
                 <View className="flex-row flex-wrap ">
                     <View className=" flex-auto">
                         <Text className="text-2xl pt-4 font-bold text-secondary-foreground ">

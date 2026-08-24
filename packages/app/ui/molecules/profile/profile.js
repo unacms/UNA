@@ -79,6 +79,7 @@ function UnitWoInfo({ oProps, sSize, sSizeFontLetter, iSizeWidth, bShowLinks, em
                 width={iSizeWidth}
                 src={oProps.url_avatar}
                 alt={oProps.display_name}
+                priority={!!oProps.priority}
             />
             }
             <View

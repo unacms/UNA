@@ -388,7 +388,7 @@ export const settingsButtons = {
                     pressed: 'bg-button-hover ',
                     active: 'bg-button-hover ',
                     pressedToggle: 'bg-button-hover ',
-                    disabled: 'bg-button opacity-50 ',
+                    disabled: 'bg-button/50 ',
                 },
                 text: {
                     base: 'font-medium tracking-tight',
@@ -398,7 +398,7 @@ export const settingsButtons = {
                     pressed: 'text-button-foreground',
                     active: 'text-button-foreground',
                     pressedToggle: 'text-button-foreground',
-                    disabled: 'text-button-foreground/50',
+                    disabled: 'text-muted-foreground',
                 },
             },
 
@@ -436,17 +436,17 @@ export const settingsButtons = {
                     pressed: 'bg-accent/80 web:hover:bg-accent',
                     active: 'bg-muted/50 ',
                     pressedToggle: 'bg-muted',
-                    disabled: 'opacity-50',
+                    disabled: '',
                 },
                 text: {
-                    base: 'font-medium tracking-tight',
+                    base: 'font-semibold tracking-tight',
                     default: 'text-card-foreground',
                     hovered: 'text-foreground',
                     focused: 'text-foreground',
                     pressed: 'text-accent-foreground',
                     active: 'text-foreground',
                     pressedToggle: 'text-accent-foreground',
-                    disabled: 'text-muted-foreground',
+                    disabled: 'text-secondary-foreground',
                 },
             },
 

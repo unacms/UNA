@@ -2,7 +2,7 @@ import { View, Row, Pressable } from 'app/design/view'
 import Dropdown from 'app/ui/atoms/dropdown'
 import { Icon } from 'app/ui/atoms/icon'
 import { useState, useReducer, useMemo, useCallback, useEffect } from 'react';
-import { Modal, Button, InputWithIcons, TextInputClear } from 'app/design/controls'
+import { Modal, Button, InputWithIcons, TextInputClear, NeoButton } from 'app/design/controls'
 import { Text } from 'app/design/typography';
 import { Platform } from 'react-native'
 import { formatDate, appSetting } from 'app/lib/util'
@@ -209,7 +209,7 @@ function getDatePart(date, part) {
     return parts[part]
 }
 
-export default function ({ name, value = '', type, onChange, children }) {
+export default function ({ name, value = '', type, onChange, children, buttonProps }) {
     const bIsTime = type === 'datetime';
     const timeMode = appSetting('forms', 'time');
     const { t } = useTranslation();
@@ -318,14 +318,16 @@ export default function ({ name, value = '', type, onChange, children }) {
                 </View>
             </Modal>
             {children ? (
-                <Pressable
-                className="min-w-0 flex-1"
-                onPress={() => setShowModal(true)}
-                accessibilityRole="button"
-                accessibilityLabel={dValue ? formatDate(dValue, t, dateDisplayOpts) : 'Select date'}
-            >   
-                {children}
-            </Pressable>    
+                <NeoButton
+                    style="borderless"
+                    controlSize="small"
+                    align="start"
+                    {...buttonProps}
+                    onPress={() => setShowModal(true)}
+                    accessibilityLabel={dValue ? formatDate(dValue, t, dateDisplayOpts) : 'Select date'}
+                >
+                    {children}
+                </NeoButton>
             ) : (
             <Row className="w-full flex-nowrap items-center gap-3">
                 <Pressable

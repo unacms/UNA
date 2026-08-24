@@ -250,6 +250,7 @@ function CoverImage({
     profileDisplaySize,
     is_person,
     suppressCoverBackButton = false,
+    priority = false,
 }) {
     const { imageUrl, isUploading, pick, modal } = useProfileImageUpload({
         kind: mode,
@@ -282,6 +283,7 @@ function CoverImage({
                             sizes={LAYOUT_BREAKPOINTS.xl}
                             className="u-cover"
                             src={imageUrl}
+                            priority={priority}
                         />
                     ) : null}
                     {imageUrl?.includes('data:') || isUploading ? (
@@ -329,6 +331,7 @@ function CoverImage({
                         url_avatar={imageUrl}
                         displayType="unit_wo_info"
                         displaySize={profileDisplaySize}
+                        priority={priority}
                     />
                     {isUploading ? (
                         <View className="absolute inset-0 rounded-full bg-card/80 items-center justify-center">
@@ -397,6 +400,7 @@ export default function Cover({
     }
 
     const isMin = coverMode === 'min'
+    const hasCoverImage = !isMin && !!data?.cover?.src
     const menusInNavbar = isCoverActionsMenuInNavbar(
         profileData?.module,
         isDesktop,
@@ -458,6 +462,7 @@ export default function Cover({
                     allowEdit={bAllowEdit}
                     allowSwitch={isAllowSwitch}
                     suppressCoverBackButton={suppressCoverBackButton}
+                    priority
                 />
             )}
             <View
@@ -474,6 +479,7 @@ export default function Cover({
                                 profileData={profileData}
                                 allowEdit={bAllowEdit}
                                 allowSwitch={isAllowSwitch}
+                                priority={!hasCoverImage}
                             />
                         </View>
                     </View>
@@ -527,6 +533,7 @@ export default function Cover({
                                         profileData={profileData}
                                         allowEdit={bAllowEdit}
                                         allowSwitch={isAllowSwitch}
+                                        priority={!hasCoverImage}
                                     />
                                 </View>
                             </View>

@@ -292,6 +292,9 @@ function ElementImageResolved(props) {
         alt,
         sizes,
         ...(useOptimized ? { loader } : { unoptimized: true, loader: passthroughLoader }),
+        ...(Platform.OS === 'web' && imageRest.priority
+            ? { loading: imageRest.loading ?? 'eager' }
+            : {}),
     };
     const imageKey = Platform.OS === 'web'
         ? `${resolvedSrc}-${failedAttempts}`
