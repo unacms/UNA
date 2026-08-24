@@ -1,12 +1,11 @@
 import { Conductor } from 'app/ui/molecules/sections/conductor';
-import { useState, useEffect, useMemo, memo, useCallback, useRef } from 'react';
+import { useState, useEffect, useMemo, memo, useCallback } from 'react';
 import { appSetting, getBlocksFromData, getPageData } from 'app/lib/util';
 import { useFocusEffect } from 'app/lib/hooks/router'
 import { useCurrentUser } from 'app/context/user';
 import { subscribe } from 'app/ui/atoms/socket';
-import { patchCachedPageDataByUrl } from 'app/lib/tab-page-cache';
+import { patchCachedPageDataByUrl } from 'app/lib/cache/native-tab-page-cache';
 import emitter from 'app/context/emitter';
-import { conductorTrace } from 'app/lib/conductor-trace';
 
 const ConductorMemo = memo(Conductor, (prev, next) => (
     prev.ts === next.ts && prev.data?.timestamp === next.data?.timestamp
@@ -15,14 +14,6 @@ const ConductorMemo = memo(Conductor, (prev, next) => (
 export default function PageLayoutProfile({ layoutName, data, uri, blocks }) {
     const [pageData, setPageData] = useState(data);
     const { currentUser, setCurrentUser } = useCurrentUser();
-    const profileRenderN = useRef(0);
-    profileRenderN.current += 1;
-    conductorTrace(data?.url, 'profile:render', {
-        n: profileRenderN.current,
-        ts: pageData?.ts,
-        timestamp: pageData?.timestamp,
-        menu: pageData?.menu?.items?.length ?? 0,
-    });
 
     const adoptPageData = useCallback((next) => {
         if (!next) return;
@@ -63,10 +54,7 @@ export default function PageLayoutProfile({ layoutName, data, uri, blocks }) {
         if (!profileId || !pageUrl) return;
 
         return subscribe('profile_' + profileId, 'changed', async () => {
-            conductorTrace(pageUrl, 'profile:socket:changed');
-            const t0 = Date.now();
             const sResponse = await getPageData(pageUrl);
-            conductorTrace(pageUrl, 'profile:socket:getPageData', { ms: Date.now() - t0 });
             if (sResponse?.data) {
                 adoptPageData(sResponse.data);
             }
@@ -84,13 +72,7 @@ export default function PageLayoutProfile({ layoutName, data, uri, blocks }) {
         useCallback(() => {
             (async () => {
                 if (currentUser?.current_context && currentUser?.current_context != pageData?.user?.current_context) {
-                    conductorTrace(pageData?.url, 'profile:focus:refetch:start', {
-                        ctx: currentUser?.current_context,
-                        pageCtx: pageData?.user?.current_context,
-                    });
-                    const t0 = Date.now();
                     const sResponse = await getPageData(pageData.url);
-                    conductorTrace(pageData?.url, 'profile:focus:refetch:done', { ms: Date.now() - t0 });
                     if (sResponse.data != pageData) {
                         adoptPageData(sResponse.data);
                     }

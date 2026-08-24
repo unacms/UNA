@@ -1,45 +1,56 @@
 import { Root } from 'app/root'
-import { useState, useEffect, useLayoutEffect, useRef } from 'react'
+import { memo, useState, useEffect, useRef } from 'react'
 import { useCurrentUser } from 'app/context/user';
-import { appSetting, parseUrl, parseQueryString, getURI, isNativeTabsEnabled } from 'app/lib/util'
-import { Loading } from 'app/customization/loading'
+import { appSetting, parseUrl, parseQueryString, isNativeTabsEnabled } from 'app/lib/util'
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import { fetcher } from 'app/lib/fetcher';
 import { useLocalSearchParams } from 'app/lib/hooks/router'
 import { ensureTabHistory, applyTabHistory } from 'app/lib/tab-history';
-import { getCachedPageData, setCachedPageData, clearAllPageCache } from 'app/lib/tab-page-cache';
+import { getCachedPageData, setCachedPageData } from 'app/lib/cache/native-tab-page-cache';
+import { clearAllPageCache } from 'app/lib/cache/clear-page-cache';
 import emitter from 'app/context/emitter'
 import * as SplashScreen from 'expo-splash-screen';
 import { TabChromeProvider } from 'app/context/tab-chrome';
 import { TabSlide } from 'app/components/nav/tab-slide';
-import { conductorTrace, conductorTraceReset } from 'app/lib/conductor-trace';
 
 const NativeTabPressSync = isNativeTabsEnabled()
     ? require('./native-tab-press-sync').default
     : null;
 
-export async function getData(path, token, origin, headers, callback, params) {
+function isFetchablePagePath(path) {
+    return Boolean(path && path.startsWith('/') && !path.includes('/?url='));
+}
 
-    path = (!path || path.startsWith('expo-development-client')) ? 'home' : path;
-    path = path.startsWith('/') ? path.substr(1) : path;
-    path = `/api.php?r=system/get_page_by_request/TemplServicePages&params[]=${path}`;
+export async function getData(pagePath, params) {
+    let path = (!pagePath || pagePath.startsWith('expo-development-client')) ? 'home' : pagePath;
+    path = path.startsWith('/') ? path.slice(1) : path;
 
-    const uri = getURI(path);
-   // const settings = appSetting('l-ayouts', uri);
-    /*if (settings?.blocks) {
-        const blockNames = Object.values(settings.blocks).map(block => block.name).join(',');
-        path += `&params[]=${blockNames}`;
-    }
-*/
+    let apiPath = `/api.php?r=system/get_page_by_request/TemplServicePages&params[]=${path}`;
     if (params) {
-        path += `&params[]=&params[]=${params}`;
+        apiPath += `&params[]=&params[]=${params}`;
     }
 
-    const fetcherArgs = token || origin || headers || callback ? [path, token, '', origin, headers, callback] : path;
-   
-    const data = await fetcher(fetcherArgs);
+    const data = await fetcher(apiPath);
+    return { props: data };
+}
 
-    return { props: { uri: path.length ? path[0] : 'home', ...data } };
+async function fetchPageProps(pagePath) {
+    const { path: pathWithoutQuery, queryString } = parseUrl(pagePath);
+    const params = queryString ? JSON.stringify(parseQueryString(queryString)) : null;
+    const data = await getData(pathWithoutQuery, params);
+    return data;
+}
+
+function hideSplashOnce(splashHiddenRef, delayMs = 0) {
+    if (splashHiddenRef.current) return null;
+    splashHiddenRef.current = true;
+    if (delayMs > 0) {
+        return setTimeout(() => {
+            SplashScreen.hideAsync().catch(() => {});
+        }, delayMs);
+    }
+    void SplashScreen.hideAsync().catch(() => {});
+    return null;
 }
 
 function routeParam(value) {
@@ -47,13 +58,12 @@ function routeParam(value) {
     return Array.isArray(value) ? value[0] : value;
 }
 
-export function Screen(params) {
+function _Screen(params) {
     const local = useLocalSearchParams();
     const pathname = params.tabname;
     const { currentUser } = useCurrentUser();
     let _path = routeParam(local.url);
-    let isRoot = false;
-  
+
     // BOTTOM TABS NAVIGATION
     // Also detect a stale URL from the other user context (e.g. guest's /safety still
     // held by Expo Router after login). Recompute it from the current context's menu.
@@ -69,13 +79,12 @@ export function Screen(params) {
         if (_path === '{profile}') {
             _path = currentUser?.url;
         }
-        
-        isRoot = true;
     }
 
     const userKey = currentUser?.id
-    ? `${currentUser.id}-${currentUser.confirmed}`
-    : 'guest';
+        ? `${currentUser.id}-${currentUser.confirmed}`
+        : 'guest';
+
     // Stable key per tab — no remount on in-tab navigation. Shell refresh uses refreshToken (redirectTo), not key.
     return (
         <>
@@ -86,31 +95,59 @@ export function Screen(params) {
                     pagePath={_path}
                     currentUser={currentUser}
                     tabKey={pathname}
-                    isRoot={isRoot}
                     refreshToken={local.refresh}
                     historyMode={routeParam(local.tabHist)}
                 />
             </TabChromeProvider>
         </>
     );
-
-
 }
 
-const Content = ({ pagePath, currentUser, tabKey, isRoot, refreshToken, historyMode }) => {
+// The tab navigator re-renders every mounted route on each navigation state
+// change, and freeze is off for NativeTabs — so unfocused tabs must bail out here.
+export const Screen = memo(_Screen);
 
+/** Second barrier: expo-router route contexts can force Screen/Content to render. */
+const PageBody = memo(function PageBody({ path, data }) {
+    return <Root path={path} data={data} uri={data?.uri} />;
+});
 
-    const [pageData, setPageData] = useState(null);
-    const { bottomSheetData, setBottomSheetData } = useBottomSheetData();
+/** Cache read, tagged with the path it belongs to. */
+function readCachedPage(tabKey, pagePath, currentUser, refreshToken) {
+    if (!tabKey || !pagePath || refreshToken) return null;
+    const cached = getCachedPageData(tabKey, pagePath, currentUser?.id, currentUser?.confirmed);
+    if (!cached) return null;
+    return { path: pagePath, props: cached };
+}
+
+function resolvePageTimestamp(tabKey, pagePath, currentUser, { forceShellRefresh, hadCache }) {
+    if (forceShellRefresh || hadCache) return Date.now();
+    const existing = getCachedPageData(tabKey, pagePath, currentUser?.id, currentUser?.confirmed);
+    return existing?.data?.timestamp ?? Date.now();
+}
+
+const Content = memo(({ pagePath, currentUser, tabKey, refreshToken, historyMode }) => {
+    // Page state carries the path it was loaded for. When the path changes, read
+    // the cache during render (React "adjusting state while rendering") so body
+    // appears in the same pass — no empty frame + layout-effect re-render.
+    const [page, setPage] = useState(() => readCachedPage(tabKey, pagePath, currentUser, refreshToken));
+    let pageData = page?.path === pagePath ? page.props : null;
+    if (!pageData) {
+        const cached = readCachedPage(tabKey, pagePath, currentUser, refreshToken);
+        if (cached) {
+            pageData = cached.props;
+            setPage(cached);
+        }
+    }
+
+    const { setBottomSheetData } = useBottomSheetData();
     const pagePathRef = useRef(pagePath);
     const tabKeyRef = useRef(tabKey);
     const currentUserRef = useRef(currentUser);
-    const bottomSheetDataRef = useRef(bottomSheetData);
     const splashHiddenRef = useRef(false);
     pagePathRef.current = pagePath;
     tabKeyRef.current = tabKey;
     currentUserRef.current = currentUser;
-    bottomSheetDataRef.current = bottomSheetData;
 
     useEffect(() => {
         if (!tabKey) return;
@@ -122,74 +159,48 @@ const Content = ({ pagePath, currentUser, tabKey, isRoot, refreshToken, historyM
         applyTabHistory(tabKey, pagePath, currentUser, historyMode === 'replace' ? 'replace' : 'push');
     }, [tabKey, pagePath, currentUser?.id, currentUser?.url, historyMode]);
 
-    // Apply cached page synchronously when the in-tab URL changes (e.g. profile back).
-    useLayoutEffect(() => {
-        if (!tabKey || !pagePath || refreshToken) return;
-        const cached = getCachedPageData(tabKey, pagePath, currentUser?.id, currentUser?.confirmed);
-        if (cached) {
-            conductorTrace(pagePath, 'expo-screen:cache-hit');
-            setPageData(cached);
-        }
-    }, [tabKey, pagePath, refreshToken, currentUser?.id, currentUser?.confirmed]);
-
     // Stale-while-revalidate: show cache immediately, always refetch from server.
     useEffect(() => {
-        if (!(pagePath && pagePath.startsWith('/') && !pagePath.includes('/?url='))) return;
+        if (!isFetchablePagePath(pagePath)) return;
 
         const forceShellRefresh = Boolean(refreshToken);
         const cached = !forceShellRefresh
             ? getCachedPageData(tabKey, pagePath, currentUser?.id, currentUser?.confirmed)
             : null;
-        if (cached) {
-            setPageData(cached);
-        }
 
         let cancelled = false;
         const pathAtStart = pagePath;
 
-        const fetchPageData = async () => {
+        const run = async () => {
             try {
-                const { path: pathWithoutQuery, queryString } = parseUrl(pagePath);
-                const params = queryString ? JSON.stringify(parseQueryString(queryString)) : null;
-                if (!cached) conductorTraceReset(pagePath);
-                conductorTrace(pagePath, 'expo-screen:fetch:start', { cached: Boolean(cached) });
-                const t0 = Date.now();
-                const data = await getData(pathWithoutQuery, null, null, null, null, params);
-                conductorTrace(pagePath, 'expo-screen:fetch:done', {
-                    ms: Date.now() - t0,
-                    uri: data?.props?.data?.uri,
-                    url: data?.props?.data?.url,
-                });
+                const data = await fetchPageProps(pagePath);
                 if (cancelled || pagePathRef.current !== pathAtStart) return;
                 if (data?.props) {
                     // Bump timestamp on force refresh or after serving cache so profile/layout
                     // adopt fresh menu/actions (Trust, connections, etc.).
-                    if (forceShellRefresh || cached) {
-                        data.props.data.timestamp = Date.now();
-                    } else {
-                        const existing = getCachedPageData(tabKey, pagePath, currentUser?.id, currentUser?.confirmed);
-                        data.props.data.timestamp = existing?.data?.timestamp ?? Date.now();
-                    }
+                    data.props.data.timestamp = resolvePageTimestamp(
+                        tabKey,
+                        pagePath,
+                        currentUser,
+                        { forceShellRefresh, hadCache: Boolean(cached) },
+                    );
                     setCachedPageData(tabKey, pagePath, data.props, currentUser?.id, currentUser?.confirmed);
-                    setBottomSheetData(bottomSheetData !== false ? false : bottomSheetData);
-                    setPageData(data.props);
-                } else if (!splashHiddenRef.current) {
-                    splashHiddenRef.current = true;
-                    void SplashScreen.hideAsync().catch(() => {});
+                    setBottomSheetData(false);
+                    setPage({ path: pathAtStart, props: data.props });
+                } else {
+                    hideSplashOnce(splashHiddenRef);
                 }
             } catch {
                 if (cancelled) return;
-                if (!splashHiddenRef.current) {
-                    splashHiddenRef.current = true;
-                    void SplashScreen.hideAsync().catch(() => {});
-                }
+                hideSplashOnce(splashHiddenRef);
             }
         };
-        fetchPageData();
+
+        run();
         return () => {
             cancelled = true;
         };
-    }, [pagePath, currentUser?.id, currentUser?.confirmed, tabKey, refreshToken]);
+    }, [pagePath, currentUser?.id, currentUser?.confirmed, tabKey, refreshToken, setBottomSheetData]);
 
     // Language switch (and other page reloads): drop stale cached JSON and refetch.
     useEffect(() => {
@@ -201,39 +212,35 @@ const Content = ({ pagePath, currentUser, tabKey, isRoot, refreshToken, historyM
             const path = pagePathRef.current;
             const key = tabKeyRef.current;
             const user = currentUserRef.current;
-            if (!(path && path.startsWith('/') && !path.includes('/?url='))) return;
+            if (!isFetchablePagePath(path)) return;
 
-            const fetchPageData = async () => {
+            (async () => {
                 try {
-                    const { path: pathWithoutQuery, queryString } = parseUrl(path);
-                    const params = queryString ? JSON.stringify(parseQueryString(queryString)) : null;
-                    const data = await getData(pathWithoutQuery, null, null, null, null, params);
+                    const data = await fetchPageProps(path);
                     if (data?.props) {
                         data.props.data.timestamp = Date.now();
                         setCachedPageData(key, path, data.props, user?.id, user?.confirmed);
-                        const sheet = bottomSheetDataRef.current;
-                        setBottomSheetData(sheet !== false ? false : sheet);
-                        setPageData(data.props);
+                        setBottomSheetData(false);
+                        setPage({ path, props: data.props });
                     }
                 } catch {
                     // Keep showing last good pageData if any; splash already handled on cold start.
                 }
-            };
-            fetchPageData();
+            })();
         });
         return () => subscription.remove();
     }, [setBottomSheetData]);
 
     useEffect(() => {
-        if (!pageData?.data || splashHiddenRef.current) return;
-        splashHiddenRef.current = true;
-        const timer = setTimeout(() => {
-            SplashScreen.hideAsync().catch(() => {});
-        }, 1000);
-        return () => clearTimeout(timer);
+        if (!pageData?.data) return;
+        const timer = hideSplashOnce(splashHiddenRef, 1000);
+        return () => {
+            if (timer) clearTimeout(timer);
+        };
     }, [pageData?.data]);
+
     const body = pageData?.data ? (
-        <Root path={pagePath} data={pageData.data} uri={pageData.data.uri} />
+        <PageBody path={pagePath} data={pageData.data} />
     ) : null;
 
     if (!isNativeTabsEnabled()) {
@@ -245,4 +252,4 @@ const Content = ({ pagePath, currentUser, tabKey, isRoot, refreshToken, historyM
             {body}
         </TabSlide>
     );
-};
+});

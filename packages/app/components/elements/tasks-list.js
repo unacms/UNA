@@ -1916,7 +1916,7 @@ export default function ElementTasksList({ data, blockWrapperProps }) {
                                 </View>
                             ) : null}
 
-                            <View className={cn(showTasklists && 'order-2 lg:order-1')}>
+                            <View className={cn(showTasklists && 'order-2 lg:order-1 flex-auto')}>
                                 {tasksMainContent}
                             </View>
                         </View>

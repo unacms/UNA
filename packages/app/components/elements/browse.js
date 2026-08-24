@@ -1,3 +1,17 @@
+/** FOR old UNA versions only
+ * Full browse block (`browse` in elements/_map).
+ *
+ * Fetches a paginated UNA list (`useInfiniteQuery` + UniList). Supports several
+ * layouts: virtualized list, sidebar, showcase (one-line), gallery; filter form;
+ * realtime feed updates; "Show New" snackbar; optional in-block title / View All.
+ *
+ * Used for UNA page blocks with content type `browse`, and imported directly by
+ * notifications popup and suggestions.
+ *
+ * Differs from:
+ * - browse-list.js — same fetch/realtime pipeline, but list-only (no showcase/gallery/title).
+ * - browse-simple.tsx — no API: renders already-loaded `data.data` items.
+ */
 import Unit from 'app/components/unit'
 import {
     useCallback,
@@ -30,7 +44,7 @@ import DropdownPopup from 'app/ui/atoms/dropdown-popup'
 import { BlockWrapper } from 'app/components/block-wrapper'
 import { useIsFocused } from 'app/lib/hooks/router'
 import { getScrollValue } from 'app/context/jotai/layout'
-import { setListScrollOffset } from 'app/lib/tab-page-cache'
+import { setListScrollOffset } from 'app/lib/cache/list-scroll-cache'
 
 import {
     refetchUniListReducer,

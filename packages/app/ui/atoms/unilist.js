@@ -3,7 +3,7 @@ import { useRef, useCallback, useMemo, useEffect, useLayoutEffect } from 'react'
 import { Platform, RefreshControl } from 'react-native';
 import { LegendList } from "@legendapp/list";
 import { useSetScrollDirection, useHeaderHeight, useSetScrollValue, useSetListMaxScrollOffset, useCoverScrollCompensation } from 'app/context/jotai/layout';
-import { getListScrollOffset, setListScrollOffset } from 'app/lib/tab-page-cache';
+import { getListScrollOffset, setListScrollOffset } from 'app/lib/cache/list-scroll-cache';
 import { useFocusEffect } from 'app/lib/hooks/router';
 import { paddingForList } from 'app/customization/functions';
 import { getHeaderFadeExtend } from 'app/ui/molecules/header/page-header-parts';

@@ -1,3 +1,17 @@
+/**
+ * Static browse renderer (`browse_simple` in elements/_map).
+ *
+ * Does not fetch or paginate: maps already-loaded `data.data` items to Unit
+ * cards. Views: list (default), row, gallery (`BrowseSimpleView`). Optional
+ * `limit_by`.
+ *
+ * Used as a helper by search-sections, tasks-list, tasks-timers, and UNA
+ * blocks of type `browse_simple`.
+ *
+ * Differs from:
+ * - browse.js / browse-list.js — those load pages from UNA, virtualize, and
+ *   subscribe to realtime updates.
+ */
 // @ts-nocheck
 import Unit from 'app/components/unit'
 import Galery from 'app/ui/molecules/content/gallery'

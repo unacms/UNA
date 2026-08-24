@@ -27,7 +27,7 @@ import { useSetHeader, useHeaderHeight, defaultHeader } from 'app/context/jotai/
 import { useFocusEffect }  from 'app/lib/hooks/router'
 import { Button, ButtonLink, NeoButton, NeoButtonLink } from 'app/design/controls'
 import { Icon } from 'app/ui/atoms/icon';
-
+import Link from 'app/ui/atoms/link'
 const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from')
 
 const getTimelineBlock = (name, timelineBlocks) => {
@@ -82,8 +82,16 @@ const defineCells = (blocks, data) => {
 
 
 export default function ({ data, blocks }) {
-
-
+/*
+return <View className='bg-blue-500 w-full h-full pt-24'>
+ <Link
+                            href={'/view-persons-profile/dr-andrey-yasko-phd'}
+                    
+                          
+                        >
+                            <Text>df sdf sdf</Text>
+                        </Link>
+</View>*/
  /*   return  <>
    
     <NeoButton style="bordered" label="Save" image="Save" onPress={() => {}} />

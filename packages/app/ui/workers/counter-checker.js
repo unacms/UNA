@@ -5,7 +5,7 @@ import { useSound } from 'app/lib/hooks/useSound';
 import { useAppState } from 'app/lib/hooks/useAppState';
 import { fetcher } from 'app/lib/fetcher';
 import { appSetting } from 'app/lib/util';
-import { clearCachedConductorState, markNotificationsConductorStale } from 'app/lib/tab-page-cache';
+import { clearCachedConductorState, markNotificationsConductorStale } from 'app/lib/cache/native-conductor-cache';
 import emitter from 'app/context/emitter';
 
 function onNotificationsArrived() {

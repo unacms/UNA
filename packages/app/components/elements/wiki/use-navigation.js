@@ -6,7 +6,7 @@ import {
   getCachedWikiPage,
   setCachedWikiPage,
   wikiCacheKey,
-} from 'app/lib/wiki-page-cache'
+} from 'app/lib/cache/wiki-page-cache'
 import {
   getRouteParam,
   isWeb,

@@ -9,6 +9,7 @@ export * from './util/menu';
 export * from './util/page-data';
 export * from './util/misc';
 export * from './util/upload';
+export * from './util/debug';
 
 export { FeedbackHaptics } from 'app/lib/feedback-haptics';
 

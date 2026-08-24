@@ -20,6 +20,7 @@ export const settingsDefault = {
         native_app_images_url:'https://neo.so',
           
         noprefetch: false,
+        // Gates `_log`. Always off in production; forks can set false in customization.
         debug: true,
         use_proxy_web: true,
         use_proxy_native: false,

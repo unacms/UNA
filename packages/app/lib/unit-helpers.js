@@ -19,6 +19,7 @@ import { nativeTabHref } from 'app/lib/tab-history';
 import { useTranslation } from 'react-i18next';
 import { Card, CardList } from 'app/ui/molecules/page/card';
 import LinkOrModal from 'app/ui/molecules/dialogs/link-or-modal';
+import { NeoButtonLink } from 'app/design/controls'
 
 const UNIT_SURFACES = { card: Card, list: CardList };
 
@@ -394,7 +395,7 @@ export function UnitProfileRow({
     meta,
 }) {
     return (
-        <Link href={data.url} emulate={true} {...linkProps}>
+        <NeoButtonLink href={data.url} emulate={true} {...linkProps}>
             <View className={className}>
                 <Profile
                     url_avatar={data?.image?.src}
@@ -409,6 +410,6 @@ export function UnitProfileRow({
                     {meta ? <View className="flex-none">{meta}</View> : null}
                 </View>
             </View>
-        </Link>
+        </NeoButtonLink>
     );
 }

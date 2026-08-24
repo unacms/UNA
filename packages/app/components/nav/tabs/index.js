@@ -25,7 +25,7 @@ import {
     navigateBackInTab,
     resetAllTabHistory,
 } from 'app/lib/tab-history';
-import { clearAllPageCache } from 'app/lib/tab-page-cache';
+import { clearAllPageCache } from 'app/lib/cache/clear-page-cache';
 import BottomSheet from 'app/ui/molecules/dialogs/bottomsheet-content';
 import { getTabList, getTabsSessionKey } from './tab-menu';
 

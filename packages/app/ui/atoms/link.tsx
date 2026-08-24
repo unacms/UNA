@@ -8,7 +8,6 @@ import { useMemo, useCallback } from 'react';
 import { Text } from 'app/design/typography'
 import { Platform } from 'react-native'
 import emitter from 'app/context/emitter';
-
 const ThemeLinkSizes = appSetting('theme', 'link_sizes');
 const ThemeLinkStyles = appSetting('theme', 'link_styles');
 
@@ -120,7 +119,10 @@ export default function ElementLink({
 
         return (
             <Cnt
-                onPress={() => openExternalLink(finalHref)}
+                onPress={(e: any) => {
+                    handlePress(e);
+                    openExternalLink(finalHref);
+                }}
                 className={composedClassName}
                 aria-label={accessibleLabel}
                 accessibilityLabel={accessibleLabel}
@@ -137,7 +139,6 @@ export default function ElementLink({
         return (
             <Pressable
                 hitSlop={resolvedHitSlop}
-                onPress={handlePress}
                 className={composedClassName}
             >
                 {content}
@@ -150,6 +151,7 @@ export default function ElementLink({
             push={isSameTab}
             href={p}
             asChild
+            onPress={handlePress}
             aria-label={accessibleLabel}
             accessibilityLabel={accessibleLabel}
             {...rest}

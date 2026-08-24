@@ -2,7 +2,7 @@ import { Platform } from 'react-native'
 import { DEFAULT_HEADER_HEIGHT } from 'app/context/jotai/layout'
 import { appSetting } from 'app/lib/util'
 import { parseFrontMatter } from 'app/lib/markdown/frontmatter'
-import { wikiCacheKey } from 'app/lib/wiki-page-cache'
+import { wikiCacheKey } from 'app/lib/cache/wiki-page-cache'
 
 export const isWeb = Platform.OS === 'web'
 

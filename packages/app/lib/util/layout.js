@@ -16,7 +16,7 @@ export function isExpoUI() {
 
 /** expo-router NativeTabs. Needs isExpoUI + expo_native_tabs. */
 export function isNativeTabsEnabled() {
-    return isExpoUI() && isIos && !!appSetting('native', 'expo_native_tabs');
+    return isExpoUI() /*&& isIos*/ && !!appSetting('native', 'expo_native_tabs');
 }
 
 /** Text under tab icons (web footer + native JS / NativeTabs). */

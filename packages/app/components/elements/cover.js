@@ -455,15 +455,17 @@ export default function Cover({
                 <></>
             )}
             {!isMin && (
-                <CoverImage
-                    mode="cover"
-                    coverData={data?.cover}
-                    profileData={profileData}
-                    allowEdit={bAllowEdit}
-                    allowSwitch={isAllowSwitch}
-                    suppressCoverBackButton={suppressCoverBackButton}
-                    priority
-                />
+                <View className={`w-full ${appSetting('cover', 'aspect_ratio')}`}>
+                    <CoverImage
+                        mode="cover"
+                        coverData={data?.cover}
+                        profileData={profileData}
+                        allowEdit={bAllowEdit}
+                        allowSwitch={isAllowSwitch}
+                        suppressCoverBackButton={suppressCoverBackButton}
+                        priority
+                    />
+                </View>
             )}
             <View
                 className={`w-full lg:flex-row mx-auto gap-3 lg:gap-4 px-3 pt-3 lgpx-4 z-50`}

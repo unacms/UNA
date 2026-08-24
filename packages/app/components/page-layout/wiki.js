@@ -18,7 +18,7 @@ import { defaultHeader, useHeaderHeight, useSetHeader, DEFAULT_HEADER_HEIGHT } f
 import { useFocusEffect } from 'app/lib/hooks/router'
 import emitter from 'app/context/emitter'
 import { parseWikiFrontMatter } from 'app/lib/markdown/frontmatter'
-import { wikiCacheKey } from 'app/lib/wiki-page-cache'
+import { wikiCacheKey } from 'app/lib/cache/wiki-page-cache'
 import {
   buildWikiBreadcrumbs,
   extractMarkdownHeadings,

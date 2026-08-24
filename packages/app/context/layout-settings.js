@@ -8,7 +8,7 @@ import * as RNLocalize from "react-native-localize";
 import { fetcher } from 'app/lib/fetcher'
 import i18n from 'i18next'
 import emitter from 'app/context/emitter';
-import { clearAllPageCache } from 'app/lib/tab-page-cache';
+import { clearAllPageCache } from 'app/lib/cache/clear-page-cache';
 
 const STORAGE_KEY = 'layout-settings';
 const LANG_MODE_COOKIE = 'neo_lang';

@@ -1,4 +1,5 @@
 import { appSetting } from 'app/config'
+import { isPageCacheEnabled } from 'app/lib/cache/cache-flags'
 
 const wikiPageCache = new Map()
 
@@ -23,6 +24,8 @@ function hasCenterContent(page) {
 }
 
 export function getCachedWikiPage(path) {
+    if (!isPageCacheEnabled()) return null
+
     const key = wikiCacheKey(path)
     if (!key) return null
 
@@ -43,6 +46,8 @@ export function getCachedWikiPage(path) {
 }
 
 export function setCachedWikiPage(path, data) {
+    if (!isPageCacheEnabled()) return
+
     const key = wikiCacheKey(path)
     if (!key || !hasCenterContent(data)) return
 

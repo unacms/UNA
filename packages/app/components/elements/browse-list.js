@@ -1,3 +1,17 @@
+/**
+ * List-only browse block (`browse_list` in elements/_map).
+ *
+ * Same infinite-query + UniList + realtime pipeline as browse.js, but always
+ * renders a simple virtualized list (`UniList` mode `"simple"`). No showcase,
+ * gallery, sidebar row, or in-block title. Pagination uses `start`/`per_page`
+ * (browse.js uses a cursor).
+ *
+ * Used for UNA page blocks with content type `browse_list`.
+ *
+ * Differs from:
+ * - browse.js — full layouts (showcase, gallery, sidebar, title, cursor paging).
+ * - browse-simple.tsx — no fetch; maps already-loaded items to Unit cards.
+ */
 import Unit from 'app/components/unit'
 import {
     useCallback,
@@ -25,7 +39,7 @@ import emitter from 'app/context/emitter'
 import Snackbar from 'app/ui/atoms/snackbar'
 import { useIsFocused } from 'app/lib/hooks/router'
 import { useGetScrollValue } from 'app/context/jotai/layout'
-import { setListScrollOffset } from 'app/lib/tab-page-cache'
+import { setListScrollOffset } from 'app/lib/cache/list-scroll-cache'
 import {
     refetchUniListReducer,
     isSameItemsForUniList,

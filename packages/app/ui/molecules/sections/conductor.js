@@ -1,7 +1,6 @@
 import React, { useCallback, useState, useEffect, useLayoutEffect, useMemo, useRef, useContext } from "react";
-import { InteractionManager, Platform } from 'react-native';
-import Animated, { useSharedValue, useAnimatedStyle, withTiming, interpolate, cancelAnimation } from 'react-native-reanimated';
-import { conductorTrace, pageTraceShape } from 'app/lib/conductor-trace';
+import { Platform } from 'react-native';
+import Animated, { useSharedValue, useAnimatedStyle, withTiming, interpolate, cancelAnimation, runOnJS } from 'react-native-reanimated';
 import { View, ScrollView, Row, Pressable } from 'app/design/view';
 import { Text } from 'app/design/typography';
 import UniList from 'app/ui/atoms/unilist'
@@ -29,9 +28,9 @@ import { appSetting } from 'app/lib/util'
 import {
     getCachedConductorState,
     setCachedConductorState,
-    setListScrollOffset,
     consumeNotificationsConductorStale,
-} from 'app/lib/tab-page-cache';
+} from 'app/lib/cache/native-conductor-cache';
+import { setListScrollOffset } from 'app/lib/cache/list-scroll-cache';
 import { useTranslation } from 'react-i18next';
 import {
     getSkeletonByEndPoint,
@@ -49,8 +48,9 @@ const COVER_SWITCH_DURATION = 300;
 /**
  * Native counterpart to the web cover crossfade: blends the full cover into the
  * small cover and animates the container height so the tabs/filter below glide
- * up instead of jumping. `progress` is the ground-truth state (0 = full, 1 =
- * small); height and opacities are derived from it.
+ * up instead of jumping. The full layer stays in-flow (Yoga needs that height);
+ * the small layer overlays it. `progress` is the ground-truth state (0 = full,
+ * 1 = small); height and opacities are derived from it.
  */
 const DynamicCoverHeader = React.memo(function DynamicCoverHeader({
     pageKey,
@@ -71,6 +71,12 @@ const DynamicCoverHeader = React.memo(function DynamicCoverHeader({
     // atoms have been reset (same bug weave diagnosed as stale scrollValue).
     const armedRef = useRef(false);
     const [showSmall, setShowSmall] = useState(false);
+    // Reanimated keeps the last animated `height` on the native view even when
+    // useAnimatedStyle returns {}. While that sticky height is short, CoverImage
+    // (flex-1) collapses the banner to 0 and the overlapping avatar is clipped.
+    // Only attach the animated height style while collapsing/expanding.
+    const [heightLocked, setHeightLocked] = useState(false);
+    const hasCollapsedRef = useRef(false);
 
     const [fullHeight, setFullHeight] = useState(0);
     const [smallHeight, setSmallHeight] = useState(0);
@@ -82,11 +88,17 @@ const DynamicCoverHeader = React.memo(function DynamicCoverHeader({
         armedRef.current = false;
         prevScrollRef.current = 0;
         compensatedRef.current = false;
+        hasCollapsedRef.current = false;
         setShowSmall(false);
+        setHeightLocked(false);
+        setFullHeight(0);
+        setSmallHeight(0);
         setCoverScrollCompensation(0);
         setScrollValue(0);
         setListMaxScrollOffset(0);
-    }, [pageKey, setCoverScrollCompensation, setScrollValue, setListMaxScrollOffset]);
+        cancelAnimation(progress);
+        progress.set(0);
+    }, [pageKey, setCoverScrollCompensation, setScrollValue, setListMaxScrollOffset, progress]);
 
     useEffect(() => {
         if (!armedRef.current) {
@@ -157,32 +169,74 @@ const DynamicCoverHeader = React.memo(function DynamicCoverHeader({
     }, [setCoverScrollCompensation]);
 
     useEffect(() => {
-        const target = showSmall ? 1 : 0;
-        // Before both layers are measured the container has no animated height,
-        // so a timing animation would read as the cover folding by itself.
-        progress.set(measured ? withTiming(target, { duration: COVER_SWITCH_DURATION }) : target);
+        if (!measured) {
+            cancelAnimation(progress);
+            progress.set(showSmall ? 1 : 0);
+            setHeightLocked(false);
+            return;
+        }
+
+        if (showSmall) {
+            hasCollapsedRef.current = true;
+            setHeightLocked(true);
+            cancelAnimation(progress);
+            progress.set(withTiming(1, { duration: COVER_SWITCH_DURATION }));
+            return;
+        }
+
+        // Initial expanded state: never lock height — let Yoga size the cover.
+        if (!hasCollapsedRef.current) {
+            cancelAnimation(progress);
+            progress.set(0);
+            setHeightLocked(false);
+            return;
+        }
+
+        // Expanding after a collapse: keep height locked until the animation ends,
+        // then detach so a sticky Reanimated height cannot crush CoverImage.
+        setHeightLocked(true);
+        cancelAnimation(progress);
+        progress.set(
+            withTiming(0, { duration: COVER_SWITCH_DURATION }, (finished) => {
+                if (finished) {
+                    runOnJS(setHeightLocked)(false);
+                }
+            }),
+        );
     }, [showSmall, measured, progress]);
 
     const containerStyle = useAnimatedStyle(() => {
-        if (!measured) return {};
-        return { height: interpolate(progress.get(), [0, 1], [fullHeight, smallHeight]) };
-    }, [measured, fullHeight, smallHeight]);
+        return {
+            height: interpolate(progress.get(), [0, 1], [fullHeight, smallHeight]),
+            overflow: 'hidden',
+            justifyContent: 'flex-start',
+        };
+    }, [fullHeight, smallHeight]);
 
     const fullStyle = useAnimatedStyle(() => ({ opacity: 1 - progress.get() }));
     const smallStyle = useAnimatedStyle(() => ({ opacity: progress.get() }));
 
     const onFullLayout = useCallback((e) => {
-        setFullHeight(e.nativeEvent.layout.height);
-    }, []);
+        const height = e.nativeEvent.layout.height;
+        if (height <= 0 || showSmall || heightLocked) return;
+        setFullHeight((prev) => (height > prev ? height : prev));
+    }, [showSmall, heightLocked]);
     const onSmallLayout = useCallback((e) => {
-        setSmallHeight(e.nativeEvent.layout.height);
+        const height = e.nativeEvent.layout.height;
+        if (height <= 0) return;
+        setSmallHeight((prev) => (height > prev ? height : prev));
     }, []);
 
     return (
         <View className="w-full">
-            <Animated.View style={[{ width: '100%', overflow: 'hidden' }, containerStyle]}>
+            <Animated.View
+                style={[
+                    { width: '100%', position: 'relative', overflow: 'visible' },
+                    heightLocked ? containerStyle : null,
+                ]}
+            >
                 <Animated.View
-                    style={[measured ? { position: 'absolute', top: 0, left: 0, right: 0 } : { width: '100%' }, fullStyle]}
+                    style={[{ width: '100%' }, fullStyle]}
                     pointerEvents={showSmall ? 'none' : 'auto'}
                     onLayout={onFullLayout}
                 >
@@ -567,9 +621,6 @@ const TabScene = React.memo(({
     listRef,
     leftbarExcludedFromMainIds = null,
 }) => {
-    const sceneRenderN = useRef(0);
-    sceneRenderN.current += 1;
-
     const unitType = useMemo(() => {
         const type = getUnitModeBySource(route?.endpoint)
         return type === 'default' ? getUnitType(route) : type
@@ -699,19 +750,6 @@ const TabScene = React.memo(({
         isEmpty
     )
 
-    conductorTrace(route?.pageData?.url || route?.link, 'TabScene', {
-        n: sceneRenderN.current,
-        index: route?.index,
-        inited: route?.inited,
-        items: routeData.length,
-        listItems: (route?.data || []).filter((item) => item?.type !== 'block').length,
-        blocks: (route?.data || []).filter((item) => item?.type === 'block').length,
-        leftbar: mobileLeftbarItems.length,
-        showPreload,
-        unit: route?.endpoint?.unit,
-        finished: route?.endpoint?.finished,
-    })
-
     return (
         <UniList
             ListHeaderComponent={combinedHeader}
@@ -764,19 +802,6 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
     unitMode = unitMode || '';
     const isFormInitialized = useRef(false);
     const routesRef = useRef(null);
-    const conductorRenderN = useRef(0);
-    conductorRenderN.current += 1;
-    const conductorUrlRef = useRef(undefined);
-    if (conductorUrlRef.current !== data?.url) {
-        conductorUrlRef.current = data?.url;
-        conductorTrace(data?.url, 'conductor:enter', {
-            layoutName,
-            ts,
-            timestamp: data?.timestamp,
-            page: pageTraceShape(data),
-            menuItems: menu?.items?.length ?? 0,
-        });
-    }
     const { currentUser } = useCurrentUser();
 
     const { setBottomSheetData } = useBottomSheetData();
@@ -836,34 +861,6 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
     useEffect(() => {
         indexRef.current = index;
     }, [index]);
-
-    useEffect(() => {
-        conductorTrace(data?.url, 'conductor:mounted', {
-            layoutName,
-            cached: Boolean(cachedConductor),
-            cachedRoutes: cachedConductor?.routes?.length ?? 0,
-            tabs: initedTabs.length,
-            hydrated: initedTabs.filter((r) => r.inited).length,
-            initialIndex,
-        });
-        const handle = InteractionManager.runAfterInteractions(() => {
-            conductorTrace(data?.url, 'conductor:afterInteractions', { layoutName });
-        });
-        return () => handle.cancel?.();
-        // First paint of this URL only.
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [data?.url, layoutName]);
-
-    conductorTrace(data?.url, 'conductor:render', {
-        n: conductorRenderN.current,
-        layoutName,
-        index,
-        ts,
-        timestamp: data?.timestamp,
-        routes: routes.length,
-        activeInited: Boolean(routes.find((r) => r.index === index)?.inited),
-        activeItems: routes.find((r) => r.index === index)?.data?.length ?? 0,
-    });
 
     // Write-through while URL is stable so a timestamp remount can bootstrap
     // from cache. Do not key this effect on data.url — a URL change would
@@ -1101,16 +1098,7 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
 
     useEffect(() => {
         // Do not check hasNextPage===false here — a premature empty page marks false and blocks the real first fetch.
-        conductorTrace(data?.url, 'fetchNextPage:gate', {
-            bEnabled,
-            isFetchingNextPage,
-            inited: Boolean(activeRoute?.inited),
-            dataLen: activeRoute?.data?.length ?? 0,
-            finished: activeRoute?.endpoint?.finished,
-            request: Boolean(activeRoute?.endpoint?.request_url),
-        });
         if (!bEnabled || isFetchingNextPage) return;
-        conductorTrace(data?.url, 'fetchNextPage:go');
         fetchNextPage();
     }, [bEnabled, activeRoute?.data?.length, isFetchingNextPage, fetchNextPage]);
 
@@ -1157,11 +1145,6 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
     }, [currentRoute, isRevalidate, currentUser?.id]);
 
     useEffect(() => {
-        conductorTrace(data?.url, 'fetchAndUpdateData:effect', {
-            index,
-            inited: Boolean(routes.find((r) => r.index === index)?.inited),
-            link: routes.find((r) => r.index === index)?.link,
-        });
         fetchAndUpdateData(routes, index, setRoutes);
     }, [index]);
 
@@ -1478,15 +1461,6 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
         : hasDynamicCover
             ? 'dynamic' // person profile
             : 'small';    // group on weave profile
-
-    conductorTrace(data?.url, 'header', {
-        headerMode,
-        isCoverDisabled: Boolean(isCoverDisabled),
-        coverMode,
-        hasCover: Boolean(data?.cover_block),
-        useLocalHeader: headerMode === 'dynamic' ||
-            (headerMode === 'small' && !appSetting('native', 'collapsible_header')),
-    });
 
     const useLocalHeader =
         headerMode === 'dynamic' ||

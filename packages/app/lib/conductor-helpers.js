@@ -23,7 +23,6 @@ import {
     getPageSettings,
 } from 'app/lib/util'
 import { Platform } from 'react-native'
-import { conductorTrace, pageTraceShape } from 'app/lib/conductor-trace'
 
 const conductorTheme = appSetting('theme', 'conductor')
 
@@ -400,7 +399,6 @@ function createConductorRoute(item, index, depth, parentIndex, link, canNavigate
 }
 
 function applyCurrentPageToRoute(route, data, blocks) {
-    const t0 = typeof performance !== 'undefined' ? performance.now() : Date.now()
     const contentAndEndpoint = processUrl(data, blocks)
     route.data = contentAndEndpoint.content
     route.inited = true
@@ -413,14 +411,6 @@ function applyCurrentPageToRoute(route, data, blocks) {
     if (appSetting('layout', 'user_remote_config') && route.item?.config) {
         route.menu_settings = (strToObj(route.item.config)).settings
     }
-    conductorTrace(data?.url, 'hydrate:currentTab', {
-        ms: Math.round((typeof performance !== 'undefined' ? performance.now() : Date.now()) - t0),
-        link: route.link,
-        items: route.data?.length ?? 0,
-        unit: route.endpoint?.unit,
-        browse: Boolean(route.endpoint?.request_url),
-        page: pageTraceShape(data),
-    })
 }
 
 function conductorListItemCount(route) {
@@ -554,20 +544,11 @@ export function fillTabs(
         applyCurrentPageToRoute(routes[currentIndex], data, blocks)
     }
 
-    conductorTrace(data?.url, 'fillTabs', {
-        routes: routes.length,
-        currentIndex,
-        hydrated: currentIndex !== -1,
-        links: routes.slice(0, 8).map((r) => r.link),
-        pageUrl: data?.url,
-    })
-
     return routes
 }
 
 export async function parseData(routes, index, setRoutes, newData) {
     const currentRoute = routes.find((item) => item.index === index)
-    const url = currentRoute?.pageData?.url || currentRoute?.link
     if (
         currentRoute &&
         currentRoute.endpoint &&
@@ -582,15 +563,7 @@ export async function parseData(routes, index, setRoutes, newData) {
         const sRequest =
             currentRoute.endpoint.request_url + JSON.stringify({ params })
 
-        conductorTrace(url, 'parseData:fetch:start', {
-            index,
-            start: params?.start,
-            unit: endpoint.unit,
-            request: String(currentRoute.endpoint.request_url || '').slice(0, 120),
-        })
-        const tFetch = typeof performance !== 'undefined' ? performance.now() : Date.now()
         const sResponse = await fetcher(sRequest)
-        const fetchMs = Math.round((typeof performance !== 'undefined' ? performance.now() : Date.now()) - tFetch)
         const newData = sResponse.data[0]?.data?.data
             ? sResponse.data[0]?.data?.data
             : []
@@ -614,13 +587,6 @@ export async function parseData(routes, index, setRoutes, newData) {
         }
         endpoint.params = params
 
-        conductorTrace(url, 'parseData:fetch:done', {
-            ms: fetchMs,
-            items: Array.isArray(newData) ? newData.length : 0,
-            finished,
-            nextStart: params.start,
-        })
-
         if (newData.length > 0 || isFinished) {
             addMoreData(
                 newData,
@@ -635,56 +601,29 @@ export async function parseData(routes, index, setRoutes, newData) {
         }
         return { data: newData, endpoint: endpoint }
     }
-    conductorTrace(url, 'parseData:skip', {
-        index,
-        hasEndpoint: Boolean(currentRoute?.endpoint),
-        finished: currentRoute?.endpoint?.finished,
-    })
     return { data: [], endpoint: currentRoute?.endpoint }
 }
 
 export async function fetchAndUpdateData(routes, index, setRoutes) {
     const currentRoute = routes.find((item) => item.index === index)
-    const url = currentRoute?.pageData?.url || currentRoute?.link
     if (!currentRoute || currentRoute.inited || currentRoute.canNavigate === false) {
-        conductorTrace(url, 'fetchAndUpdateData:skip', {
-            index,
-            reason: !currentRoute ? 'no-route' : currentRoute.inited ? 'already-inited' : 'no-navigate',
-            link: currentRoute?.link,
-        })
         return
     }
     const link = resolvePageRequestLink(currentRoute.link)
     if (!link) {
-        conductorTrace(url, 'fetchAndUpdateData:skip', { index, reason: 'no-link', link: currentRoute.link })
         return
     }
 
-    conductorTrace(url, 'fetchAndUpdateData:page:start', { index, link })
-    const tFetch = typeof performance !== 'undefined' ? performance.now() : Date.now()
     const sResponse = await fetcher(
         '/api.php?r=system/get_page_by_request/TemplServicePages&params[]=' +
         link
     )
-    const fetchMs = Math.round((typeof performance !== 'undefined' ? performance.now() : Date.now()) - tFetch)
 
         const settings = getPageSettings(sResponse.data?.config, getURI(currentRoute.link));
 
-        const tProcess = typeof performance !== 'undefined' ? performance.now() : Date.now()
         const blocks = settings?.blocks || getBlocksFromData(sResponse.data)
 
         const contentAndEndpoint = processUrl(sResponse.data, settings?.blocks)
-        const processMs = Math.round((typeof performance !== 'undefined' ? performance.now() : Date.now()) - tProcess)
-
-        conductorTrace(url, 'fetchAndUpdateData:page:done', {
-            fetchMs,
-            processMs,
-            link,
-            items: contentAndEndpoint.content?.length ?? 0,
-            unit: contentAndEndpoint.endpoint?.unit,
-            browse: Boolean(contentAndEndpoint.endpoint?.request_url),
-            page: pageTraceShape(sResponse.data),
-        })
 
         addMoreData(
             contentAndEndpoint.content,

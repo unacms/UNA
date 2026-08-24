@@ -1,5 +1,5 @@
 import { Platform } from 'react-native'
-import { clearAllPageCache } from 'app/lib/tab-page-cache'
+import { clearAllPageCache } from 'app/lib/cache/clear-page-cache'
 import { dismissNavigationOverlays, resetAllTabHistory } from 'app/lib/tab-history'
 import { queryClient } from 'app/lib/query-client'
 import { appSetting, clearNativeMemoryCache, storageClear } from 'app/lib/util'
