@@ -21,6 +21,38 @@ const EDITABLE_VALUE_BUTTON = {
     align: 'start',
 }
 
+const TASKS_HOME_PATH = '/tasks-home'
+
+function tasksHomeHref(contextPid, listId) {
+    if (contextPid == null || contextPid === '') return null
+    const list = listId == null || listId === '' ? 0 : listId
+    return `${TASKS_HOME_PATH}?context_pid=${encodeURIComponent(contextPid)}&list=${encodeURIComponent(list)}`
+}
+
+function TasksListOpenLink({ href, label }) {
+    if (!href) return null
+    return (
+        <NeoButtonLink
+            href={href}
+            style="borderless"
+            controlSize="mini"
+            borderShape="circle"
+            image="ArrowRight"
+            accessibilityLabel={label}
+        />
+    )
+}
+
+function withTasksListLink(value, href, label) {
+    if (!href) return value
+    return (
+        <Row className="items-center gap-0.5 min-w-0">
+            {value}
+            <TasksListOpenLink href={href} label={label} />
+        </Row>
+    )
+}
+
 function ReadonlyValue({ href, label, children }) {
     const props = {
         ...EDITABLE_VALUE_BUTTON,
@@ -245,7 +277,7 @@ function EditableDate({ field, requestUrl }) {
     )
 }
 
-function EditableSelect({ field, requestUrl }) {
+function EditableSelect({ field, requestUrl, openHref }) {
 
     const [isOpen, setIsOpen] = useState(false)
     const {
@@ -267,7 +299,7 @@ function EditableSelect({ field, requestUrl }) {
         await commitSelectedKey(key)
     }
 
-    return (
+    const select = (
         <DropdownPopup
             buttonProps={{
                 ...EDITABLE_VALUE_BUTTON,
@@ -304,10 +336,14 @@ function EditableSelect({ field, requestUrl }) {
             </View>
         </DropdownPopup>
     )
+
+    const href = typeof openHref === 'function' ? openHref(selectedKey) : openHref
+    return withTasksListLink(select, href, field.caption)
 }
 
 export default function ElementEntityInfo({ data, blockWrapperProps }) {
     const defaultIcon = appSetting('entry', 'default_info_icon');
+    const contextPid = data.params?._context_id ?? data.params?.context_id
     function getValue(a) {
         switch (a.type) {
             case 'datepicker':
@@ -331,26 +367,37 @@ export default function ElementEntityInfo({ data, blockWrapperProps }) {
                     </ReadonlyValue>
                 )
 
-            case 'select':
+            case 'select': {
+                const isTasksList = a.name === 'tasks_list'
+                const listHref = isTasksList
+                    ? (listId) => tasksHomeHref(contextPid, listId)
+                    : undefined
+
                 if (a.editable) {
                     return (
                         <EditableSelect
                             field={a}
                             requestUrl={data.params.request_url}
+                            openHref={listHref}
                         />
                     )
                 }
 
-                if (a.value != 0 && a.value != '') {
-                    const sel = a?.values?.find(item => item.key.toString() === a.value.toString())
-                    return (
-                        <ReadonlyValue
-                            label={a.values ? (sel ? sel.value : a.values[a.value]) : a.value}
-                        />
-                    )
-                }
-               
-                return false
+                const hasValue = (a.value != 0 && a.value != '') || isTasksList
+                if (!hasValue) return false
+
+                const sel = a?.values?.find(item => item.key?.toString() === a.value?.toString())
+                const value = (
+                    <ReadonlyValue
+                        label={a.values ? (sel ? sel.value : a.values[a.value]) : a.value}
+                    />
+                )
+                return withTasksListLink(
+                    value,
+                    listHref?.(a.value),
+                    a.caption
+                )
+            }
 
             case 'textarea':
                 return <Html data={a.values ? a.values[a.value] : a.value} customClassName="u-vanilla-html-small" />
