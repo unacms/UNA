@@ -16,6 +16,13 @@ class BxCidaasConAlerts extends BxBaseModConnectAlerts
         parent::__construct();
         $this -> oModule = BxDolModule::getInstance('bx_cidaascon');
     }
+
+    public function response($o)
+    {
+        if ($o->sUnit == 'account' && $o->sAction == 'logout') {
+            bx_srv('bx_cidaascon', 'logout');
+        }
+    }
 }
 
 /** @} */
