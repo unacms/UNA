@@ -1713,8 +1713,8 @@ headroom.js@^0.12.0:
 
 "highlight.js@github:highlightjs/highlight.js":
   version "11.12.0"
-  uid "0bc57cfcfb7eab3de7b9ed07e51ff02f6dca441f"
-  resolved "https://codeload.github.com/highlightjs/highlight.js/tar.gz/0bc57cfcfb7eab3de7b9ed07e51ff02f6dca441f"
+  uid "080fbd8c0f941938c5f9564438d2bc2db39636fd"
+  resolved "https://codeload.github.com/highlightjs/highlight.js/tar.gz/080fbd8c0f941938c5f9564438d2bc2db39636fd"
 
 hls.js@^1.7.1:
   version "1.7.1"
