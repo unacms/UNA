@@ -10,7 +10,7 @@ import { Icon } from 'app/ui/atoms/icon'
 import { useTranslation } from 'react-i18next';
 import { useFormField } from 'app/lib/hooks/use-form-field';
 
-const User = ({ data, onSelect, type }) => {
+export const User = ({ data, onSelect, type }) => {
     if (type !== 'multi'){
         return (
             <Pressable className="" onPress={() => onSelect(data)}>

@@ -7,12 +7,14 @@ import { Icon } from 'app/ui/atoms/icon'
 import { appSetting, cn } from 'app/lib/util'
 import { useEditableRequest } from 'app/lib/form-helpers'
 import ProfilesList from 'app/ui/molecules/profile/profile-list'
+import Profile from 'app/ui/molecules/profile/profile'
 import { BlockWrapper } from 'app/components/block-wrapper'
 import DropdownPopup from 'app/ui/atoms/dropdown-popup'
 import DatePicker from 'app/ui/atoms/date-picker'
 import { useTranslation } from 'react-i18next';
 import { formatDate } from 'app/lib/util'
-import { NeoButton, NeoButtonLink } from 'app/design/controls'
+import { Modal, NeoButton, NeoButtonLink } from 'app/design/controls'
+import { SelectUsers, User } from 'app/components/form-fields/initial-members'
 
 const EDITABLE_VALUE_BUTTON = {
     style: 'borderless',
@@ -341,6 +343,136 @@ function EditableSelect({ field, requestUrl, openHref }) {
     return withTasksListLink(select, href, field.caption)
 }
 
+function dedupeProfiles(list) {
+    if (!Array.isArray(list)) return []
+    return list.filter((item, index, arr) => arr.findIndex((x) => x.id === item.id) === index)
+}
+
+function suggestionsRequestUrl(ajaxGetSuggestions) {
+    if (!ajaxGetSuggestions) return null
+    // Same URL build as FormFieldInitialMembers
+    return '/api.php?r=' + ajaxGetSuggestions + (ajaxGetSuggestions.includes('params[]') ? '' : '&params=')
+}
+
+function EditableInitialMembers({ field, requestUrl }) {
+    const [isEditorOpen, setIsEditorOpen] = useState(false)
+    const [isSelectOpen, setIsSelectOpen] = useState(false)
+    const [profiles, setProfiles] = useState(() => dedupeProfiles(field.value_data || []))
+    const {
+        commit: commitIds,
+    } = useEditableRequest({
+        initialValue: field.value || (field.value_data || []).map((item) => item.id),
+        requestUrl,
+        fieldName: field.name,
+        toParam: (ids) => encodeURIComponent((Array.isArray(ids) ? ids : []).join(',')),
+    })
+
+    const saveProfiles = async (nextProfiles) => {
+        const deduped = dedupeProfiles(nextProfiles)
+        const prevProfiles = profiles
+        setProfiles(deduped)
+        setIsSelectOpen(false)
+        const ok = await commitIds(deduped.map((item) => item.id))
+        if (!ok) setProfiles(prevProfiles)
+    }
+
+    // Same as FormFieldInitialMembers.onSave
+    const onSave = (data, isAdd = false) => {
+        if (isAdd) {
+            data = [...profiles, ...data]
+        }
+        saveProfiles(data)
+    }
+
+    const onRemove = (profile) => {
+        saveProfiles(profiles.filter((item) => item.id !== profile.id))
+    }
+
+    const suggestUrl = suggestionsRequestUrl(field.ajax_get_suggestions)
+    const openEditor = () => setIsEditorOpen(true)
+
+    // Screen 1: avatar stack. Click → modal with form control (screen 2).
+    return (
+        <>
+            <Modal
+                title={field.caption || 'Assign to'}
+                onVisible={!!isEditorOpen}
+                onClose={() => {
+                    setIsEditorOpen(false)
+                    setIsSelectOpen(false)
+                }}
+            >
+                {suggestUrl ? (
+                    <Modal
+                        title={field.caption || 'Choose users'}
+                        onVisible={!!isSelectOpen}
+                        onClose={() => setIsSelectOpen(false)}
+                    >
+                        <SelectUsers
+                            onSave={onSave}
+                            requestUrl={suggestUrl}
+                            initedData={[]}
+                        />
+                    </Modal>
+                ) : null}
+                <Row className="w-full px-1.5 py-1 items-center justify-between flex-wrap shadow-input-outline dark:shadow-input-outline-deep rounded-lg bg-input/60">
+                    <Row className="gap-2 items-center flex-wrap my-auto flex-1">
+                        {profiles.map((item) => (
+                            <User
+                                type="multi"
+                                key={item.id}
+                                data={item}
+                                onSelect={onRemove}
+                            />
+                        ))}
+                    </Row>
+                    <NeoButton
+                        image="Plus"
+                        style="borderless"
+                        controlSize="small"
+                        accessibilityLabel={field.caption || 'Add'}
+                        onPress={() => setIsSelectOpen(true)}
+                        disabled={!suggestUrl}
+                    />
+                </Row>
+            </Modal>
+
+            <Pressable
+                onPress={openEditor}
+                disabled={!suggestUrl && profiles.length === 0}
+                className="min-w-0 self-start"
+            >
+                {profiles.length > 0 ? (
+                    <Row className="items-center pointer-events-none">
+                        {profiles.slice(0, 3).map((item, index) => (
+                            <View
+                                key={item.id}
+                                className={(index > 0 ? ' -ml-2 ' : ' ') + 'bg-card rounded-full shadow-line p-px'}
+                            >
+                                <Profile
+                                    {...item}
+                                    displayType="unit_wo_info"
+                                    displaySize="xs"
+                                    showLinks={false}
+                                />
+                            </View>
+                        ))}
+                    </Row>
+                ) : (
+                    <NeoButton
+                        image="Plus"
+                        style="borderless"
+                        controlSize="small"
+                        accessibilityLabel={field.caption || 'Add'}
+                        onPress={openEditor}
+                        disabled={!suggestUrl}
+                    />
+                )}
+            </Pressable>
+        </>
+    )
+}
+
 export default function ElementEntityInfo({ data, blockWrapperProps }) {
     const defaultIcon = appSetting('entry', 'default_info_icon');
     const contextPid = data.params?._context_id ?? data.params?.context_id
@@ -406,14 +538,22 @@ export default function ElementEntityInfo({ data, blockWrapperProps }) {
                 return <ReadonlyValue label={a.value.location_string} />
 
             case 'initial_members':
-                return <ProfilesList
-                    data={
-                        a.value_data
-                    }
-                    showEmpty={false}
-                    maxCount={3}
-                    displaySize="xs"
-                />
+                if (a.editable) {
+                    return (
+                        <EditableInitialMembers
+                            field={a}
+                            requestUrl={data.params.request_url}
+                        />
+                    )
+                }
+                return (
+                    <ProfilesList
+                        data={a.value_data}
+                        showEmpty={false}
+                        maxCount={3}
+                        displaySize="xs"
+                    />
+                )
 
             case 'switcher':
                 return <ReadonlyValue label={a.value == 1 ? 'Yes' : 'No'} />
