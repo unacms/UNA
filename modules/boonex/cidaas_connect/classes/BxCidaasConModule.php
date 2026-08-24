@@ -262,6 +262,7 @@ class BxCidaasConModule extends BxBaseModConnectModule
 
         $aProfileFields['name'] = $sName;
         $aProfileFields['fullname'] = $sFullname;
+        $aProfileFields['first_name'] = !empty($aProfileInfo['given_name']) ? $aProfileInfo['given_name'] : '';
         $aProfileFields['last_name'] = !empty($aProfileInfo['family_name']) ? $aProfileInfo['family_name'] : '';
         $aProfileFields['email'] = $sEmail;
         $aProfileFields['picture'] = !empty($aProfileInfo['picture']) ? $aProfileInfo['picture'] : '';
