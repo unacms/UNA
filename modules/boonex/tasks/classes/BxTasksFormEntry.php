@@ -144,7 +144,7 @@ class BxTasksFormEntry extends BxBaseModTextFormEntry
         $aResult['params'] ??= [];
         if(($sK = 'view_mode') && isset($this->aParams[$sK]) && $this->aParams[$sK]) {
             $aResult['params']['request_url'] = $this->MODULE . '/set_property/&params[]=' . $this->_iContentId . '&params[]=';
-
+            $aResult['params']['context_id'] = (int)$this->_iContextId;
             foreach($aResult['inputs'] as $aInput)
                 if(($sName = $aInput['name'] ?? false) && in_array($sName, $this->_aProperties))
                     $aResult['inputs'][$sName]['editable'] = true;
