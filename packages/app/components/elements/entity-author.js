@@ -21,18 +21,32 @@ export default function ElementEntityAuthor({ data, blockWrapperProps }) {
     const [postData, setPostData] = useState(null)
     const [pageData, setPageData] = useState(false);
     const isDesktop = useIsDesktop();
+    const context = data?.entry_context;
+    const contextUrl = typeof context?.url === 'string' ? context.url.trim() : '';
+    const isContextLinkable = contextUrl && !/^\/?javascript:/i.test(contextUrl);
+
+    const contextIdentity = context ? (
+        <Row className='items-center gap-x-1 justify-start'>
+            <Profile {...context} displayType="unit_wo_info" displaySize="2xs" showLinks={false} />
+            <Text className="text-secondary-foreground text-xs leading-5 text-center font-medium ">{context.display_name}</Text>
+        </Row>
+    ) : null;
+
     const sInfo = (
         <Row className='flex-none gap-1 items-center justify-start text-muted-foreground text-sm font-medium leading-5 '>
             <Time className="text-muted-foreground text-xs leading-5 text-center font-medium " size="xs"
                 ts={data.entry_date}
             />
             {
-                !!data?.entry_context?.id && (
+                !!context?.id && (
 
                     <Row className='items-center gap-x-1 justify-start'>
                         <Text className=" text-center font-medium leading-5 text-xs text-secondary-foreground">in</Text>
-                        <Profile {...data.entry_context} displayType="unit_wo_info" displaySize="2xs" />
-                        <Text className="text-secondary-foreground text-xs leading-5 text-center font-medium ">{data.entry_context.display_name}</Text>
+                        {isContextLinkable ? (
+                            <Link href={contextUrl} size="xs" variant="secondary">
+                                {contextIdentity}
+                            </Link>
+                        ) : contextIdentity}
 
                     </Row>
 
