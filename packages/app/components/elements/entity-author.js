@@ -14,6 +14,7 @@ import Form from 'app/components/elements/form'
 import FormModal, { handleFormModal } from 'app/ui/molecules/dialogs/form-modal';
 import { useIsDesktop } from 'app/context/measure';
 import { BlockWrapper } from 'app/components/block-wrapper'
+import { runMenuItemCallback } from 'app/lib/util'
 
 export default function ElementEntityAuthor({ data, blockWrapperProps }) {
     const { currentUser } = useCurrentUser();
@@ -72,14 +73,15 @@ export default function ElementEntityAuthor({ data, blockWrapperProps }) {
     let aMenuManageItems = [];
     if (!!currentUser && data?.menu_manage?.items) {
         data.menu_manage.items.forEach((aItem) => {
-            if (aItem?.display_type && (aItem.display_type != 'link' && aItem.name != 'report'))
+            if (aItem?.display_type && (aItem.display_type != 'link' && aItem.display_type != 'callback' && aItem.name != 'report'))
                 return;
 
             aMenuManageItems.push({
                 id: aItem.id ? aItem.id : aItem.name,
                 link: '/' + aItem.link,
                 name: aItem.name,
-                title: aItem?.title ? aItem?.title : ''
+                title: aItem?.title ? aItem?.title : '',
+                data: aItem.data,
             });
         });
     }
@@ -88,9 +90,9 @@ export default function ElementEntityAuthor({ data, blockWrapperProps }) {
 
     if (data?.menu_manage?.object == 'bx_timeline_menu_item_manage') {
         handleMenuManageSelect = async (oItem, event) => {
-            setPageData('loading');
             switch (oItem.name) {
                 case 'item-edit':
+                    setPageData('loading');
                     const oResultEdit = await fetcher(
                         '/api.php?r=bx_timeline/get_edit_form/&params[]=' + item_id
                     )
@@ -98,10 +100,15 @@ export default function ElementEntityAuthor({ data, blockWrapperProps }) {
                     break
 
                 case 'item-delete':
+                    setPageData('loading');
                     const oResultDeleted = await fetcher(
                         '/api.php?r=bx_timeline/delete/&params[]=' + item_id
                     )
                     redirectdRef.current.redirect('/');
+                    break
+
+                default:
+                    await runMenuItemCallback(oItem)
                     break
             }
         }

@@ -19,6 +19,7 @@ import {
     isObjectsEqual,
     menuItemsByName,
     visibilityById,
+    runMenuItemCallback,
 } from 'app/lib/util'
 import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
@@ -272,6 +273,15 @@ export const ItemInfo = memo(({ data, t }) => {
             <></>
         )
 
+    const statusFlags = []
+    if (Number(data.pinned) > 0)
+        statusFlags.push({ key: 'pinned', icon: 'Pin' })
+    if (Number(data.promoted) > 0)
+        statusFlags.push({ key: 'promoted', icon: 'Flame' })
+    if (Number(data.sticked) > 0)
+        statusFlags.push({ key: 'sticked', icon: 'Pin' })
+    
+
     const FeedType = () => {
         const typeKey = 'feed_type_' + data.type
         let l = t(typeKey)
@@ -300,6 +310,12 @@ export const ItemInfo = memo(({ data, t }) => {
         <>
             <FeedType />
             <OwnersList />
+            {statusFlags.map(({ key, icon }) => (
+                <Row key={key} className="items-center">
+                    <Icon className="text-muted-foreground" icon="Dot" size={14} />
+                    <Icon className="text-secondary-foreground py-0.5" icon={icon} width={14} height={14} />
+                </Row>
+            ))}
         </>
     )
 })
@@ -359,6 +375,10 @@ const MenuManage_ = memo(({ id, menu, setViewState, defaultOpen }) => {
                 )
                 emitter.emit('feed', { action: 'remove_content', id: id });
                 break
+
+            default:
+                await runMenuItemCallback(oItem)
+                break
         }
     }
 
@@ -393,6 +413,7 @@ const MenuManage_ = memo(({ id, menu, setViewState, defaultOpen }) => {
                     name: aItem.name,
                     link: aItem.link,
                     title: sTitle,
+                    data: aItem.data,
                 }
             }
         )

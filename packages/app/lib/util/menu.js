@@ -21,6 +21,14 @@ export async function getDataForMenu(menu, callback) {
     return data.data
 }
 
+export async function runMenuItemCallback(oItem) {
+    const requestUrl = oItem?.data?.request_url
+    if (!requestUrl) return false
+
+    await fetcher('/api.php?r=' + requestUrl)
+    return true
+}
+
 export function findIconFromRemote(s) {
     if (!s || /^[A-Z][^\s]*$/.test(s))
         return s;
