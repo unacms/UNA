@@ -39,6 +39,8 @@ class BxTasksFormEntry extends BxBaseModTextFormEntry
         $CNF = &$this->_oModule->_oConfig->CNF;
 
         $this->_aProperties = $this->_oModule->_oConfig->getProperties();
+        if($this->_bIsApi)
+            $this->_aProperties[] = $CNF['FIELD_INITIAL_MEMBERS'];
 
         if(($sKf = $CNF['FIELD_ALLOW_VIEW_TO'] ?? false) && isset($this->aInputs[$sKf])) {
             if(!$this->_bIsApi) {
@@ -219,7 +221,7 @@ class BxTasksFormEntry extends BxBaseModTextFormEntry
             $this->processFiles($CNF['FIELD_COVER'], $iContentId, true);
 
             if(isset($this->aInputs['initial_members']))
-                $this->_setAssignments($iContentId, $this->aInputs['initial_members']['value']);
+                $this->_oModule->setAssignments($iContentId, $this->aInputs['initial_members']['value']);
         }
         return $iContentId;
     }
@@ -237,7 +239,7 @@ class BxTasksFormEntry extends BxBaseModTextFormEntry
         }
 
         if(isset($this->aInputs['initial_members'])) {
-            $this->_setAssignments($iContentId, $this->aInputs['initial_members']['value']);
+            $this->_oModule->setAssignments($iContentId, $this->aInputs['initial_members']['value']);
         }
 
         $aContentInfo = $this->_oModule->_oDb->getContentInfoById($iContentId);
@@ -304,68 +306,6 @@ class BxTasksFormEntry extends BxBaseModTextFormEntry
             ]
     	];
     }
-	
-    protected function _setAssignments($iContentId, $aMembers)
-    {
-        $CNF = &$this->_oModule->_oConfig->CNF;
-        $oConn = BxDolConnection::getObjectInstance($CNF['OBJECT_CONNECTION']);
-
-        if($this->_bIsApi && is_string($aMembers))
-            $aMembers = explode(',', $aMembers);
-
-        $aMembersCurrent = $oConn->getConnectedInitiators($iContentId);
-
-        $aMembersToAdd = [];
-        $aMembersToRemove = $aMembersCurrent;
-        if (is_array($aMembers)){
-            $aMembersToAdd = array_diff($aMembers, $aMembersCurrent);
-            $aMembersToRemove = array_diff($aMembersCurrent, $aMembers);
-        }    
-
-        $aContentInfo = $this->_oModule->_oDb->getContentInfoById($iContentId);
-
-        foreach($aMembersToAdd as $iProfileId){
-            $oConn->addConnection($iProfileId, $iContentId);
-
-             /**
-             * @hooks
-             * @hookdef hook-bx_tasks-assigned 'bx_tasks', 'assigned' - hook on task assigned to profile
-             * - $unit_name - equals `bx_tasks`
-             * - $action - equals `assigned` 
-             * - $object_id - task id 
-             * - $sender_id - not used 
-             * - $extra_params - array of additional params with the following array keys:
-             *      - `object_author_id` - [int] id for assigned profile
-             *      - `privacy_view` - [string] privacy view value
-             * @hook @ref hook-bx_tasks-assigned
-             */
-            bx_alert($this->MODULE, 'assigned', $iContentId, false, array(
-                'object_author_id' => $iProfileId,
-                'privacy_view' => $aContentInfo[$CNF['FIELD_ALLOW_VIEW_TO']]
-            ));
-        }
-
-        foreach($aMembersToRemove as $iProfileId){
-            $oConn->removeConnection($iProfileId, $iContentId);
-
-            /**
-             * @hooks
-             * @hookdef hook-bx_tasks-unassigned 'bx_tasks', 'unassigned' - hook on task unassigned to profile
-             * - $unit_name - equals `bx_tasks`
-             * - $action - equals `unassigned` 
-             * - $object_id - task id 
-             * - $sender_id - not used 
-             * - $extra_params - array of additional params with the following array keys:
-             *      - `object_author_id` - [int] id for unassigned profile
-             *      - `privacy_view` - [string] privacy view value
-             * @hook @ref hook-bx_tasks-unassigned
-             */
-            bx_alert($this->MODULE, 'unassigned', $iContentId, false, array(
-                'object_author_id' => $iProfileId,
-                'privacy_view' => $aContentInfo[$CNF['FIELD_ALLOW_VIEW_TO']]
-            ));
-        }
-    }
 
     protected function genCustomInputInitialMembers ($aInput)
     {
@@ -380,6 +320,17 @@ class BxTasksFormEntry extends BxBaseModTextFormEntry
             $aInput['ajax_get_suggestions'] = BX_DOL_URL_ROOT . "modules/?r=" . $this->_oModule->_oConfig->getUri() . "/ajax_get_initial_members/" . $this->_iContextId;
 
         return $this->genCustomInputUsernamesSuggestions($aInput);
+    }
+
+    protected function genCustomViewRowValueInitialMembers ($aInput)
+    {
+        if(empty($aInput['value']) || !is_array($aInput['value']))
+            return null;
+
+        return $this->_oModule->_oTemplate->entryAssignments($aInput['value'], [
+            'unit_name' => 'unit_wo_info',
+            'unit_size' => 'icon'
+        ]);
     }
 }
 
