@@ -10,7 +10,7 @@ const menuSettings = appSetting('theme', 'dropdown_menu');
 
 const getIcon = (oItem, iconSize = 20, rowHovered) => {
     const image = oItem?.image
-    if (typeof image === 'string' && /^(https?:|file:|content:|data:)/i.test(image)) {
+    if (typeof image === 'string' && image && /^(https?:|file:|content:|data:)/i.test(image)) {
         return (
             <Image
                 src={image}
