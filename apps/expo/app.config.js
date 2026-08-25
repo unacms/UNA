@@ -9,6 +9,17 @@ const expoConfig = {
     "slug": "neo",
     "scheme": "neo",
     "version": "1.0.0",
+    // OTA (EAS Update): forks set EAS_PROJECT_ID / override updates via customization/config/app.config.js
+    "runtimeVersion": {
+        "policy": "appVersion",
+    },
+    "updates": {
+        "enabled": false,
+        "checkAutomatically": "ON_LOAD",
+        "fallbackToCacheTimeout": 0,
+        // Forks: set EAS_PROJECT_ID in env (or override updates.url / enabled in customization/config/app.config.js)
+       // "url": `https://u.expo.dev/##EAS_PROJECT_ID##`,
+    },
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "splash": {
