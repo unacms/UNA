@@ -26,6 +26,7 @@ import { useEditorMentions } from 'app/lib/use-editor-mentions'
 import { MentionSuggestionsDropdown } from 'app/lib/mention-suggestions-dropdown'
 import { buildUnaMentionHtml } from 'app/lib/editor-mention-shared'
 import { useIsDesktop } from 'app/context/measure'
+import { getEditorPasteImagesMode } from 'app/lib/editor-paste-images'
 
 
 const inputSettings = appSetting('theme', 'inputs');
@@ -146,7 +147,10 @@ export default function RftText(props) {
         overflow-wrap: break-word;
     }
     img {
-        display: none;
+        max-width: 100%;
+        height: auto;
+        display: block;
+        border-radius: 8px;
     }
     body P, body p {
         margin-bottom: 12px;
@@ -516,6 +520,11 @@ export default function RftText(props) {
             if (data.action == 'set_content') {
                 editor.setContent(data.value)
             }
+            if (data.action == 'insert_inline_image') {
+                if (data.form_name && form_name && data.form_name !== form_name) return
+                if (!data.src || isPlainText) return
+                editor.setImage(data.src)
+            }
         })
 
         //                                 
@@ -589,6 +598,8 @@ export default function RftText(props) {
             const message = JSON.parse(event.nativeEvent.data)
 
             if (message?.type == 'paste') {
+                if (isPlainText) return
+                if (getEditorPasteImagesMode(unicFormName) === 'off') return
                 processImages(message.payload, message.form_name)
             }
 

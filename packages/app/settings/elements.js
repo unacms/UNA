@@ -131,5 +131,12 @@ export const settingsElements = {
         },
         css:'A.bx-mention-link, A.bx-tag{ color: rgba(37, 99, 235, 1)}',
         css_dark:'A.bx-mention-link, A.bx-tag{ color: rgba(59, 130, 246, 1)}}',
+        // Paste images: upload to the form's default files field (asDefaultStorage
+        // or first image/files input). `inline` also inserts <img> into the editor.
+        // Per-form override: exact name or prefix (`bx_tasks` → `bx_tasks_entry_add`).
+        paste_images: 'attachments', // off | attachments | inline
+        paste_images_forms: {
+            bx_tasks: 'inline',
+        },
     },
 }

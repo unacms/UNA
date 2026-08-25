@@ -117,6 +117,12 @@
         }
     }
 
+    .u-vanilla-html img,
+    .u-vanilla-html-small img {
+        max-width: 100%;
+        height: auto;
+    }
+
     /* Enriched Markdown defaults every block image to a fixed 200px height.
      * Standalone images are direct children of `.enrm-text`; inline images stay
      * inside paragraphs and retain the renderer's compact inline dimensions. */

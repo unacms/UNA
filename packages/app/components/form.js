@@ -1,6 +1,7 @@
 import { useEffect, useState, useMemo, useCallback, useId, useRef } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { getFormFieldByData, isFormResponseComplete, normalizeFormResponseData, updateFormDirtyState, isFormUnsavedCloseGuardSkipped, formHasPendingUploads, clearFormPendingUploads } from 'app/lib/form-helpers'
+import { getDefaultPasteStorageKey } from 'app/components/form-fields/media-attachments'
 import { View, Row } from 'app/design/view'
 import { getComponent } from 'app/components/registry';
 import { FeedbackHaptics, storageSet, appSetting, isNumeric, storageGet, isObjectsEqual } from 'app/lib/util';
@@ -50,8 +51,22 @@ function getFormFieldList(name, inputs, handleSubmit, isInitial = false, lastCha
         return;
     }
 
+    const defaultStorageKey = getDefaultPasteStorageKey(inputs)
+
     return Object.keys(inputs).map(function (key) {
-        return getFormFieldByData(inputs[key], handleSubmit, 'default', { ...formProps, form_name: name, last_changed: lastChangedField, saveOnChanges: saveOnChanges }, key)
+        return getFormFieldByData(
+            inputs[key],
+            handleSubmit,
+            'default',
+            {
+                ...formProps,
+                form_name: name,
+                last_changed: lastChangedField,
+                saveOnChanges: saveOnChanges,
+                ...(defaultStorageKey && key === defaultStorageKey ? { asDefaultStorage: true } : null),
+            },
+            key
+        )
     });
 }
 

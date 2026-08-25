@@ -38,6 +38,17 @@ export function getMediaFields(inputs) {
         }))
 }
 
+/** Field that should receive editor-pasted files (first image field, else first files). */
+export function getDefaultPasteStorageKey(inputs) {
+    const mediaFields = getMediaFields(inputs)
+    const fromMultiple = mediaFields.find((f) => f.kind === 'image')?.key ?? mediaFields[0]?.key
+    if (fromMultiple) return fromMultiple
+
+    const entries = Object.entries(inputs ?? {}).filter(([, v]) => v?.type === 'files')
+    const image = entries.find(([key]) => getMediaKind(key) === 'image')
+    return image?.[0] ?? entries[0]?.[0] ?? null
+}
+
 function getIconForKind(kind) {
     switch (kind) {
         case 'video':

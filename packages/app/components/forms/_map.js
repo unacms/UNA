@@ -14,6 +14,8 @@ export const componentsMapDefault = {
     bx_posts: FormPost,
     bx_ads: FormContent,
     bx_albums: FormContent,
+    bx_tasks: FormContent,
+    bx_tasks_entry_add: FormContent,
     bx_forum: FormPost,
     bx_messenger: Messenger,
     bx_payment: FormBxPayment,

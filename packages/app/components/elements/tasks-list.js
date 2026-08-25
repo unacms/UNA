@@ -1421,6 +1421,11 @@ export default function ElementTasksList({ data, blockWrapperProps }) {
         setActiveTask(null);
         setTaskPageData(null);
         setTaskPageLoading(false);
+
+        // Keep the existing list on screen, then refresh in the background.
+        if (options?.refresh) {
+            emitTasksListRefresh();
+        }
     }, []);
 
     const applyContextQuery = useCallback(async (contextPid, listId) => {
@@ -1468,7 +1473,7 @@ export default function ElementTasksList({ data, blockWrapperProps }) {
 
         const handlePopState = () => {
             if (activeTaskRef.current) {
-                closeTask({ restoreUrl: false });
+                closeTask({ restoreUrl: false, refresh: true });
                 return;
             }
             const { contextPid, listId } = tasksHomeQueryFromBrowser();
@@ -1827,7 +1832,7 @@ export default function ElementTasksList({ data, blockWrapperProps }) {
                                 size="sm"
                                 startDecorator="ArrowLeft"
                                 title={t('Back')}
-                                onPress={closeTask}
+                                onPress={() => closeTask({ refresh: true })}
                             />
                             {activeTask.title ? (
                                 <Text

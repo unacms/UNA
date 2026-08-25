@@ -26,6 +26,7 @@ import {
     isCommentEditorNewlineEnter,
 } from 'app/lib/comment-editor-keyboard'
 import { useIsDesktop } from 'app/context/measure'
+import { fitInlineImageSize, getEditorPasteImagesMode } from 'app/lib/editor-paste-images'
 
 const inputSettings = appSetting('theme', 'inputs')
 
@@ -153,9 +154,15 @@ export default function RftTextEnriched(props) {
                 lastSetValue.current = data.value
                 callEditor('setValue', unaLinksToMentions(data.value || ''))
             }
+            if (data.action === 'insert_inline_image') {
+                if (data.form_name && form_name && data.form_name !== form_name) return
+                if (!data.src || isPlainText) return
+                const size = fitInlineImageSize(data.width, data.height)
+                callEditor('setImage', data.src, size.width, size.height)
+            }
         })
         return () => sub.remove()
-    }, [])
+    }, [form_name, isPlainText])
 
     useEffect(() => {
         if (formState.isSubmitted && kb_stay_open != true) {
@@ -352,7 +359,8 @@ export default function RftTextEnriched(props) {
     // ---- image paste (library onPasteImages: blob: on web, file:// on native) ----
     const onPasteImages = useCallback((e) => {
         const imgs = e?.nativeEvent?.images || []
-        if (!imgs.length || !form_name) return
+        if (!imgs.length || !form_name || isPlainText) return
+        if (getEditorPasteImagesMode(form_name) === 'off') return
         const images = imgs.map((img, index) => {
             const mimeType = img.type || 'image/png'
             const ext = mimeType.split('/')[1] || 'png'
@@ -360,10 +368,12 @@ export default function RftTextEnriched(props) {
                 uri: img.uri,
                 fileName: `pasted-${Date.now()}-${index}.${ext}`,
                 mimeType,
+                width: img.width,
+                height: img.height,
             }
         })
         emitter.emit(`form_${form_name}`, { action: 'pasted_images', images })
-    }, [form_name])
+    }, [form_name, isPlainText])
 
     // ---- submit on enter (desktop only; mobile Enter inserts newline) ----
     const submitOnEnter = isDesktop && (

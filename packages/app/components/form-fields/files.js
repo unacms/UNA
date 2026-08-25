@@ -23,6 +23,7 @@ import { CaptionForFileInput } from 'app/customization/functions';
 import i18n from 'i18next';
 import { useFormInstanceId } from 'app/context/form-instance';
 import { trackFormUploadStart, trackFormUploadEnd } from 'app/lib/form-helpers';
+import { isInlineImagePaste, revokePastedBlobUri } from 'app/lib/editor-paste-images';
 
 function showPermissionAlert(type, canAskAgain) {
     const isCamera = type === 'camera';
@@ -274,11 +275,14 @@ export default function (props) {
         const uploadId = payload?.extraVar?.uploadId || hash;
         const result = payload?.result;
         const ghost = result?.data?.ghost;
+        const extraVar = payload?.extraVar || {};
 
         if (uploadId) {
             uploadAbortControllers.delete(uploadId);
             trackFormUploadEnd(formName, formInstanceId, uploadId);
         }
+
+        revokePastedBlobUri(extraVar.pastedUri)
 
         // Explicit cancel (or aborted preload) must not hydrate a ghost into persist.
         if (uploadId && cancelledUploadIds.has(uploadId)) {
@@ -289,7 +293,17 @@ export default function (props) {
         // Apply each completion immediately — do not funnel through a single
         // uploadFinished state (parallel uploads were overwriting each other).
         if (isAutoGhosts && ghost) {
-            setImageSourceN([{ ...ghost, hash }], bMultiple);
+            setImageSourceN([{ ...ghost, hash, inlinePaste: !!extraVar.inlinePaste }], bMultiple);
+            const src = ghost.file_url || ghost.url || result?.data?.link
+            if (extraVar.inlinePaste && src) {
+                emitter.emit('editor', {
+                    action: 'insert_inline_image',
+                    form_name: formName,
+                    src,
+                    width: extraVar.width,
+                    height: extraVar.height,
+                })
+            }
         } else if (isAutoGhosts) {
             console.error('[files] upload returned no ghost', result);
         } else if (hash) {
@@ -359,6 +373,10 @@ export default function (props) {
                 uploadId,
                 mimeType,
                 fileName: i.fileName || i.name,
+                inlinePaste: !!i.inlinePaste,
+                width: i.width,
+                height: i.height,
+                pastedUri: i.uri,
             };
             const isImage =
                 mimeType?.includes('image/') ||
@@ -428,6 +446,7 @@ export default function (props) {
                     await sendFile(uri);
                 }
             } catch (err) {
+                revokePastedBlobUri(extraVar.pastedUri)
                 if (err?.aborted || err?.name === 'AbortError') {
                     trackFormUploadEnd(formName, formInstanceId, uploadId);
                 } else {
@@ -459,6 +478,7 @@ export default function (props) {
                     hash,
                     uploadId,
                     uri,
+                    inlinePaste: !!i.inlinePaste,
                 });
             }
             // If this uploadId is already flying (ImagePicker remount resume),
@@ -669,7 +689,9 @@ export default function (props) {
                 setImages(props?.values_src);
             }
             if (data.action == 'pasted_images' && acceptsPastedImages && data.images?.length) {
-                uploadImages(data.images).then((k) => setImageSource({ images: k }));
+                const inlinePaste = isInlineImagePaste(formName)
+                const assets = data.images.map((img) => ({ ...img, inlinePaste }))
+                uploadImages(assets).then((k) => setImageSource({ images: k }));
             }
         });
         return () => {
@@ -829,7 +851,7 @@ function ActionButton({ imagesList, props, selectImage, handleDelete, bMultiple,
     let button = <Button startDecorator={props.icon ? props.icon : sIcon} tooltip={t("Add " + props.name)} title={props.title ? props.title : sTitle} size={props.size ? props.size : "base"} variant={props.variant ? props.variant : "text"} rounded={props.rounded ? props.rounded : false} onPress={() => selectImage(props.source ?? 'library')} />
 
     if (!bMultiple || props.useSingle) {
-        let img = imagesList && imagesList.length > 0 ? imagesList[0] : null;
+        let img = (imagesList || []).find((item) => !item?.inlinePaste) || null;
         if (!img && props.useUrl) {
             img = { file_url: props.value, file_type: "image/jpeg" };
         }
@@ -890,7 +912,8 @@ function ActionButton({ imagesList, props, selectImage, handleDelete, bMultiple,
 }
 
 function GhostsList(imagesList, bMultiple, handleDelete, props) {
-    if (!imagesList || imagesList.length === 0 || props.name === 'cover' || props.name === 'picture') {
+    const visible = (imagesList || []).filter((img) => !img?.inlinePaste)
+    if (!visible.length || props.name === 'cover' || props.name === 'picture') {
         return null;
     }
 
@@ -902,7 +925,7 @@ function GhostsList(imagesList, bMultiple, handleDelete, props) {
     ].join(" ");
 
     const sizes2 = isCover ? '100%' : 100;
-    return imagesList.map((img, index) => {
+    return visible.map((img, index) => {
         const isImage = img?.file_type?.includes('image/');
         const isVideo = img?.file_type?.includes('video/');
         const isPreload = img?.preload;
