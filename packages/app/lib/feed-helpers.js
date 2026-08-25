@@ -10,6 +10,7 @@ import {
     useState,
     useEffect,
     useCallback,
+    useRef,
 } from 'react'
 import { useCurrentUser } from 'app/context/user'
 import {
@@ -320,8 +321,17 @@ export const ItemInfo = memo(({ data, t }) => {
     )
 })
 
-export const MenuManage = ({ id, menu, setViewState }) => {
+export const MenuManage = ({ id, menu, setViewState, data }) => {
     const [menuData, setMenuData] = useState(false)
+    const fetchedRef = useRef(false)
+    const dataRef = useRef(data)
+
+    useEffect(() => {
+        if (dataRef.current === data) return
+        dataRef.current = data
+        if (!fetchedRef.current || !menu?.object || menu.items) return
+        getDataForMenu(menu, setMenuData)
+    }, [data, menu])
 
     if (!menu?.object) return null
 
@@ -337,6 +347,7 @@ export const MenuManage = ({ id, menu, setViewState }) => {
                     startDecorator="Ellipsis"
                     rounded="true"
                     onPress={() => {
+                        fetchedRef.current = true
                         if (Platform.OS === 'web')
                             setMenuData({
                                 ...menu,

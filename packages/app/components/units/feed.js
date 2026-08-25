@@ -126,6 +126,7 @@ function DefaultUnit({ data }) {
                                 id={data.id}
                                 menu={data?.menu_manage}
                                 setViewState={setViewState}
+                                data={data}
                             />
                         </Row>
                     </Skeleton>
@@ -155,6 +156,7 @@ function DefaultUnit({ data }) {
                             id={data.id}
                             menu={data?.menu_manage}
                             setViewState={setViewState}
+                            data={data}
                         /></View>
                 </Row>
                 {commentsData && (
