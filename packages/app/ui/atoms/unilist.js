@@ -1,5 +1,5 @@
 import { View } from 'app/design/view'
-import { useRef, useCallback, useMemo, useEffect, useLayoutEffect } from 'react';
+import { useRef, useCallback, useMemo, useEffect, useLayoutEffect, useState } from 'react';
 import { Platform, RefreshControl } from 'react-native';
 import { LegendList } from "@legendapp/list";
 import { useSetScrollDirection, useHeaderHeight, useSetScrollValue, useSetListMaxScrollOffset, useCoverScrollCompensation } from 'app/context/jotai/layout';
@@ -12,6 +12,12 @@ const ESTIMATED_ITEM_SIZE_BY_UNIT = {
     feed: 140,
     notifications: 64,
 };
+
+// Android SwipeRefreshLayout treats "scroll back to 0 + overscroll" as a
+// pull-to-refresh. Cover collapse/expand does exactly that, so keep the
+// control disarmed until the list has been at rest at the top.
+const COVER_REFRESH_DISARM_Y = 16;
+const COVER_REFRESH_REARM_MS = 400;
 
 function resolveEstimatedItemSize(unit, explicitSize) {
     if (typeof explicitSize === 'number' && explicitSize > 0) {
@@ -88,6 +94,8 @@ export default function UniList(props) {
         refreshControl: refreshControlProp,
         progressViewOffset: progressViewOffsetProp,
         skipHeaderOffset,
+        coverOverlayPad = 0,
+        coverScrollY,
         ...rest 
     } = props;
 
@@ -95,6 +103,58 @@ export default function UniList(props) {
     const scrollState = useRef(0);
     const isFocusedRef = useRef(true);
     const lastPublishedScrollRef = useRef(0);
+    const coverRefreshArmedRef = useRef(!coverScrollY);
+    const coverRefreshRearmTimerRef = useRef(null);
+    const [coverRefreshArmed, setCoverRefreshArmed] = useState(!coverScrollY);
+    const disarmCoverRefresh = useCallback(() => {
+        if (coverRefreshRearmTimerRef.current) {
+            clearTimeout(coverRefreshRearmTimerRef.current);
+            coverRefreshRearmTimerRef.current = null;
+        }
+        if (coverRefreshArmedRef.current) {
+            coverRefreshArmedRef.current = false;
+            setCoverRefreshArmed(false);
+        }
+    }, []);
+
+    const scheduleCoverRefreshRearm = useCallback(() => {
+        if (coverRefreshArmedRef.current || coverRefreshRearmTimerRef.current) {
+            return;
+        }
+        coverRefreshRearmTimerRef.current = setTimeout(() => {
+            coverRefreshArmedRef.current = true;
+            setCoverRefreshArmed(true);
+            coverRefreshRearmTimerRef.current = null;
+        }, COVER_REFRESH_REARM_MS);
+    }, []);
+
+    useEffect(() => {
+        return () => {
+            if (coverRefreshRearmTimerRef.current) {
+                clearTimeout(coverRefreshRearmTimerRef.current);
+            }
+        };
+    }, []);
+
+    // Spacer insertion at the list top can trip Android's refresh layout.
+    useEffect(() => {
+        if (!coverScrollY) {
+            return;
+        }
+        disarmCoverRefresh();
+        coverRefreshRearmTimerRef.current = setTimeout(() => {
+            coverRefreshArmedRef.current = true;
+            setCoverRefreshArmed(true);
+            coverRefreshRearmTimerRef.current = null;
+        }, COVER_REFRESH_REARM_MS);
+        return () => {
+            if (coverRefreshRearmTimerRef.current) {
+                clearTimeout(coverRefreshRearmTimerRef.current);
+                coverRefreshRearmTimerRef.current = null;
+            }
+        };
+    }, [coverOverlayPad, coverScrollY, disarmCoverRefresh]);
+
     const setScrollDirection = useSetScrollDirection();
     const setScrollValue = useSetScrollValue();
     const setListMaxScrollOffset = useSetListMaxScrollOffset();
@@ -196,6 +256,15 @@ export default function UniList(props) {
             setScrollValue(roundedScrollY);
         }
 
+        if (coverScrollY) {
+            coverScrollY.set(currentScrollY);
+            if (currentScrollY > COVER_REFRESH_DISARM_Y) {
+                disarmCoverRefresh();
+            } else {
+                scheduleCoverRefreshRearm();
+            }
+        }
+
         const previousScrollY = scrollY.current;
 
         let newScrollState;
@@ -216,7 +285,7 @@ export default function UniList(props) {
         }
 
         scrollY.current = currentScrollY;
-    }, [setScrollDirection, setScrollValue, setListMaxScrollOffset]);
+    }, [setScrollDirection, setScrollValue, setListMaxScrollOffset, coverScrollY, disarmCoverRefresh, scheduleCoverRefreshRearm]);
 
     // Scroll atoms live in the tab's Jotai store. Publishing a cached
     // `initialScrollOffset` here collapsed the profile cover on feed load.
@@ -229,7 +298,8 @@ export default function UniList(props) {
         setScrollValue(0);
         setScrollDirection(0);
         setListMaxScrollOffset(0);
-    }, [url, setScrollValue, setScrollDirection, setListMaxScrollOffset]);
+        coverScrollY?.set(0);
+    }, [url, setScrollValue, setScrollDirection, setListMaxScrollOffset, coverScrollY]);
 
     useEffect(() => {
         return () => {
@@ -250,9 +320,16 @@ export default function UniList(props) {
     const handleScrollToIndexFailed = useCallback(() => {
     }, []);
 
+    const handleRefresh = useCallback(() => {
+        if (coverScrollY && !coverRefreshArmedRef.current) {
+            return;
+        }
+        onRefresh?.();
+    }, [coverScrollY, onRefresh]);
+
     const progressViewOffset = typeof progressViewOffsetProp === 'number'
         ? progressViewOffsetProp
-        : listHeaderOffset;
+        : (coverOverlayPad > 0 ? coverOverlayPad : listHeaderOffset);
 
     const refreshControl = useMemo(() => {
         if (refreshControlProp) {
@@ -264,11 +341,12 @@ export default function UniList(props) {
         return (
             <RefreshControl
                 refreshing={!!refreshing}
-                onRefresh={onRefresh}
+                onRefresh={handleRefresh}
                 progressViewOffset={progressViewOffset}
+                enabled={!coverScrollY || coverRefreshArmed || !!refreshing}
             />
         );
-    }, [refreshControlProp, onRefresh, inverted, refreshing, progressViewOffset]);
+    }, [refreshControlProp, onRefresh, handleRefresh, inverted, refreshing, progressViewOffset, coverScrollY, coverRefreshArmed]);
 
     const shouldApplyHeaderOffset = !inverted && !isModal && !skipHeaderOffset;
     const shouldApplyFooterOffset = inverted && !isModal;
@@ -276,6 +354,9 @@ export default function UniList(props) {
     const enhancedListHeaderComponent = useCallback(() => {
         return (
             <>
+                {coverOverlayPad > 0 ? (
+                    <View style={{ height: coverOverlayPad }} />
+                ) : null}
                 {shouldApplyHeaderOffset && listHeaderOffset > 0 && (
                     <View style={{ height: listHeaderOffset }} />
                 )}
@@ -289,7 +370,7 @@ export default function UniList(props) {
                 )}
             </>
         );
-    }, [shouldApplyHeaderOffset, listHeaderOffset, ListHeaderComponent, shouldApplyFooterOffset, inverted, skipHeaderOffset]);
+    }, [coverOverlayPad, shouldApplyHeaderOffset, listHeaderOffset, ListHeaderComponent, shouldApplyFooterOffset, inverted]);
 
     const shouldApplyCoverCompensation =
         skipHeaderOffset && !inverted && !isModal && coverScrollCompensation > 0;
@@ -315,7 +396,7 @@ export default function UniList(props) {
     if (preloadComponent) {
         return (
             <View className="w-full">
-                <View className="w-full" style={{ height: listHeaderOffset }} />
+                <View className="w-full" style={{ height: coverOverlayPad > 0 ? coverOverlayPad : listHeaderOffset }} />
                 {preloadComponent}
             </View>
         );
