@@ -102,8 +102,10 @@ class BxTasksTemplate extends BxBaseModTextTemplate
         return array($sPhotoGallery, $sPhotoGallery);
     }
 
-    public function entryAssignments ($aProfiles)
+    public function entryAssignments ($aProfiles, $aParams = [])
     {
+        $aUnitParamsDefault = ['template' => ['name' => $aParams['unit_name'] ?? 'unit', 'size' => $aParams['unit_size'] ?? 'thumb']];
+                
         $aTmplVarsProfiles = [];
         foreach($aProfiles as $mixedProfile) {
             $bProfile = is_array($mixedProfile);
@@ -112,7 +114,7 @@ class BxTasksTemplate extends BxBaseModTextTemplate
             if(!$oProfile)
                 continue;
 
-            $aUnitParams = ['template' => ['name' => 'unit', 'size' => 'thumb']];
+            $aUnitParams = $aUnitParamsDefault;
             if($bProfile && is_array($mixedProfile['info']))
                 $aUnitParams['template']['vars'] = $mixedProfile['info'];
 

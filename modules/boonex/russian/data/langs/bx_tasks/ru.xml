@@ -585,6 +585,7 @@
     <string name="_bx_tasks_txt_msg_edit_estimate"><![CDATA[<a href="{author_link}">{author_name}</a> изменил 'выделенное время' на <b>{value}</b>]]></string>
     <string name="_bx_tasks_txt_msg_edit_due_date"><![CDATA[<a href="{author_link}">{author_name}</a> изменил 'срок выполнения' на <b>{value}</b>]]></string>
     <string name="_bx_tasks_txt_msg_edit_state"><![CDATA[<a href="{author_link}">{author_name}</a> изменил состояние на <b>{value}</b>]]></string>
+    <string name="_bx_tasks_txt_msg_edit_initial_members"><![CDATA[<a href="{author_link}">{author_name}</a> изменил список исполнителей на <b>{value}</b>]]></string>
     <string name="_bx_tasks_txt_msg_completed"><![CDATA[<a href="{author_link}">{author_name}</a> завершил задачу]]></string>
     <string name="_bx_tasks_txt_msg_uncompleted"><![CDATA[<a href="{author_link}">{author_name}</a> повторно открыл задачу]]></string>
     <string name="_bx_tasks_txt_msg_report_time_for_date"><![CDATA[<a href="{author_link}">{author_name}</a> сообщил, что {date} было потрачено {time}]]></string>
