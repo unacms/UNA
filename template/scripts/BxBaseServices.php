@@ -1791,6 +1791,41 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
         return echoJson(['code' => 200, 'msg' => $mixed]);
     }
 
+    public function serviceAiChat($iAgentId)
+    {
+        // TODO: tmp
+        // if (!bx_get_logged_profile_id())
+        //    return echoJson(['code' => 403, 'msg' => _t('_sys_agents_unauthorized')]);
+
+        if ('POST' !== ($_SERVER['REQUEST_METHOD'] ?? ''))
+            return echoJson(['code' => 405, 'msg' => _t('_error occured')]);
+
+        $iAgentId = (int)$iAgentId;
+        if (!$iAgentId)
+            return echoJson(['code' => 400, 'msg' => _t('_sys_agents_agent_not_found')]);
+
+        $aAgent = BxDolAiQuery::getAgentObject($iAgentId);
+        if (!$aAgent || !$aAgent['active'])
+            return echoJson(['code' => 404, 'msg' => _t('_sys_agents_agent_not_found')]);
+
+        $sJson = file_get_contents('php://input');
+        $aData = json_decode($sJson, true);
+        if (json_last_error() !== JSON_ERROR_NONE)
+            return echoJson(['code' => 400, 'msg' => _t('_sys_agents_json_field_err')]);
+
+        $oAi = BxDolAI::getInstance();
+        if (!$oAi)
+            return echoJson(['code' => 503, 'msg' => _t('_sys_agents_exception')]);
+
+        $sPrompt = $oAi->extractChatPromptFromRequest($aData);
+        if (!$sPrompt)
+            return echoJson(['code' => 400, 'msg' => _t('_sys_agents_json_field_err')]);
+
+        $oAi->streamAgentChat($iAgentId, $sPrompt, [
+            'sender_profile_id' => bx_get_logged_profile_id(),
+        ], $aData['threadId'] ?? null);
+    }
+
     protected function _getOptionsAiAssistants()
     {
         $aResult = ['' => _t('_Select_one')];

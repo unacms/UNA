@@ -173,7 +173,7 @@ class BxTimelineMenuItemActionsAll extends BxTimelineMenuItemActions
         if(empty($aItem) || !is_array($aItem))
             return false;
 
-        return $aItem['item'];
+        return $this->_bIsApi ? $aItem : $aItem['item'];
     }
 
     protected function _getMenuItemByNameManage($aItem, $aParams = array())
@@ -186,7 +186,7 @@ class BxTimelineMenuItemActionsAll extends BxTimelineMenuItemActions
         if(empty($aItem) || !is_array($aItem))
             return false;
 
-        return $aItem['item'];
+        return $this->_bIsApi ? $aItem : $aItem['item'];
     }
 
     private function _getUniquePart($sDelimiter = '')

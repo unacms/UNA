@@ -57,7 +57,12 @@ class BxTimelineMenuItemManage extends BxTimelineMenuItemActions
         if(!isset($aParams['content_id']))
             return false;
 
-        $this->setEventById($aParams['content_id']);
+        $aBrowseParams = [];
+        foreach(['name', 'view', 'type'] as $sKey)
+            if(isset($aParams[$sKey]) && $aParams[$sKey] !== '')
+                $aBrowseParams[$sKey] = $aParams[$sKey];
+
+        $this->setEventById($aParams['content_id'], $aBrowseParams);
 
         return parent::setContentParams($aParams);
     }
@@ -66,10 +71,21 @@ class BxTimelineMenuItemManage extends BxTimelineMenuItemActions
     {
         $bResult = parent::setEvent($aEvent, $aBrowseParams);
 
-        if($bResult) 
-            $this->_aContentParams = array_merge($this->_aContentParams, [
+        if($bResult) {
+            $aContentParams = [
                 'content_id' => $this->_iEvent
-            ]);
+            ];
+            foreach(['name', 'view', 'type'] as $sKey) {
+                if(!empty($aBrowseParams[$sKey]))
+                    $aContentParams[$sKey] = $aBrowseParams[$sKey];
+            }
+            if(empty($aContentParams['type']) && !empty($this->_sType))
+                $aContentParams['type'] = $this->_sType;
+            if(empty($aContentParams['view']) && !empty($this->_sView))
+                $aContentParams['view'] = $this->_sView;
+
+            $this->_aContentParams = array_merge($this->_aContentParams, $aContentParams);
+        }
 
         return $bResult;
     }

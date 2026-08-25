@@ -2344,7 +2344,7 @@ class BxTimelineTemplate extends BxBaseModNotificationsTemplate
         else
             $oMenuManage = $aEvent['menu_manage'];
 
-        $aEvent['menu_manage'] = $oMenuManage !== false && $oMenuManage->setEvent($aEvent) && $oMenuManage->isVisible() ? $oMenuManage->getShortCodeAPI() : [];
+        $aEvent['menu_manage'] = $oMenuManage !== false && $oMenuManage->setEvent($aEvent, $aParams) && $oMenuManage->isVisible() ? $oMenuManage->getShortCodeAPI() : [];
 
         //--- Menu: Counters
         if(empty($aEvent['menu_counters']))
@@ -2388,7 +2388,7 @@ class BxTimelineTemplate extends BxBaseModNotificationsTemplate
          */
 
         return array_intersect_key($aEvent, array_flip([
-            'id', 'type', 'object_privacy_view', 'content', 'labels', 'date', 'menu_actions', 'menu_counters', 'menu_manage', 'author_data', 'author_badges', 'author_actions', 'context_data', 'url', 'owners', 'cmts', 'module', 'title'
+            'id', 'type', 'object_privacy_view', 'content', 'labels', 'date', 'menu_actions', 'menu_counters', 'menu_manage', 'author_data', 'author_badges', 'author_actions', 'context_data', 'url', 'owners', 'cmts', 'module', 'title', 'pinned', 'sticked', 'promoted'
         ]));
     }
 

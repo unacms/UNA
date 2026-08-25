@@ -6810,7 +6810,8 @@ CREATE TABLE IF NOT EXISTS `sys_rewrite_rules` (
 INSERT INTO `sys_rewrite_rules` (`preg`, `service`, `active`) VALUES
 ('^sys-action/(.*)$', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:11:"wiki_action";s:6:"params";a:2:{i:0;s:3:"sys";i:1;s:3:"{1}";}s:5:"class";s:16:"TemplServiceWiki";}', '1'),
 ('^home/?$', 'a:3:{s:6:\"module\";s:6:\"system\";s:6:\"method\";s:13:\"home_redirect\";s:6:\"params\";a:0:{}}', 1),
-('^sys-agent-form-input/(.*)$', 'a:4:{s:6:\"module\";s:6:\"system\";s:6:\"method\";s:25:\"call_agent_for_form_input\";s:6:\"params\";a:1:{i:0;s:3:\"{1}\";}s:5:\"class\";s:13:\"TemplServices\";}', 1);
+('^sys-agent-form-input/(.*)$', 'a:4:{s:6:\"module\";s:6:\"system\";s:6:\"method\";s:25:\"call_agent_for_form_input\";s:6:\"params\";a:1:{i:0;s:3:\"{1}\";}s:5:\"class\";s:13:\"TemplServices\";}', 1),
+('^sys-ai-chat/(.*)$', 'a:4:{s:6:\"module\";s:6:\"system\";s:6:\"method\";s:7:\"ai_chat\";s:6:\"params\";a:1:{i:0;s:3:\"{1}\";}s:5:\"class\";s:13:\"TemplServices\";}', 1);
 
 -- --------------------------------------------------------
 
@@ -7494,6 +7495,7 @@ INSERT INTO `sys_preloader`(`module`, `type`, `content`, `active`, `order`) VALU
 ('system', 'js_system', 'BxDolNestedForm.js', 1, 43),
 ('system', 'js_system', 'BxDolConnection.js', 1, 44),
 ('system', 'js_system', 'BxDolSockets.js', 1, 45),
+('system', 'js_system', 'bundle.js', 1, 46),
 
 ('system', 'js_translation', '_Are_you_sure', 1, 1),
 ('system', 'js_translation', '_error occured', 1, 2),

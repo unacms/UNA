@@ -1,3 +1,6 @@
+.npm-pack
+.cursor
+
 # Exclude system cache folders
 packages/*
 cache/*

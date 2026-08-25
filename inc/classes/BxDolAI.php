@@ -415,6 +415,78 @@ class BxDolAI extends BxDolFactory implements iBxDolSingleton
         return $mixed;
     }
 
+    public function extractChatPromptFromRequest($aData)
+    {
+        if (!is_array($aData))
+            return '';
+
+        if (!empty($aData['prompt']) && is_string($aData['prompt']))
+            return trim($aData['prompt']);
+
+        if (empty($aData['messages']) || !is_array($aData['messages']))
+            return '';
+
+        for ($i = count($aData['messages']) - 1; $i >= 0; $i--) {
+            $aMessage = $aData['messages'][$i];
+            if (!is_array($aMessage))
+                continue;
+
+            if (($aMessage['role'] ?? '') !== 'user')
+                continue;
+
+            if (isset($aMessage['content']) && is_string($aMessage['content']))
+                return trim($aMessage['content']);
+
+            if (!empty($aMessage['parts']) && is_array($aMessage['parts'])) {
+                $aText = [];
+                foreach ($aMessage['parts'] as $aPart) {
+                    if (is_array($aPart) && ($aPart['type'] ?? '') === 'text' && isset($aPart['content']))
+                        $aText[] = $aPart['content'];
+                }
+                $s = trim(implode("\n", $aText));
+                if ($s !== '')
+                    return $s;
+            }
+        }
+
+        return '';
+    }
+
+    public function streamAgentChat($iAgentId, $sPrompt, $aParams = [], $sThreadId = null)
+    {
+        $aParams['chat_history_subindex'] = $aParams['sender_profile_id'] ?? 0;
+
+        $oAdapter = new NeuronAI\Chat\Messages\Stream\Adapters\AGUIAdapter($sThreadId);
+
+        foreach ($oAdapter->getHeaders() as $sName => $sValue)
+            header($sName . ': ' . $sValue);
+
+        if (function_exists('apache_setenv'))
+            @apache_setenv('no-gzip', '1');
+        @ini_set('zlib.output_compression', '0');
+        @ini_set('implicit_flush', '1');
+        while (ob_get_level())
+            ob_end_flush();
+
+        try {
+            $o = self::getAgentInstance((int)$iAgentId, $aParams);
+            $oHandler = $o->stream(new NeuronAI\Chat\Messages\UserMessage($sPrompt));
+
+            foreach ($oHandler->events($oAdapter) as $sEvent) {
+                echo $sEvent;
+                if (ob_get_level())
+                    ob_flush();
+                flush();
+            }
+        } catch (Exception $oException) {
+            bx_log('sys_agents', "Stream exception for agent {$iAgentId}: " . $oException->getMessage() . " INPUT:" . $sPrompt, BX_LOG_ERR);
+            echo 'data: ' . json_encode(['type' => 'RUN_ERROR', 'message' => _t('_sys_agents_exception')]) . "\n\n";
+            flush();
+        }
+
+        exit;
+    }
+
     public function sendMessengerMessage ($iSender, $iRecipient, $sMsg) 
     {        
         $oMessengerModule = BxDolModule::getInstance('bx_messenger');

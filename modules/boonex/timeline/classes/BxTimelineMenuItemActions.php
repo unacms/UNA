@@ -432,9 +432,6 @@ class BxTimelineMenuItemActions extends BxTemplMenuCustom
 
     protected function _getMenuItemDefaultApi ($aItem)
     {
-        $sType = $this->_aEvent['type'];
-        $sAction = $this->_aEvent['action'];
-
         if(!empty($aItem['submenu']) && ($oSubmenu = BxDolMenu::getObjectInstance($aItem['submenu'])) !== false) {
             $sMethod = 'setEventById';
             if(method_exists($oSubmenu, $sMethod))
@@ -446,7 +443,37 @@ class BxTimelineMenuItemActions extends BxTemplMenuCustom
             ]);
         }
 
+        switch($aItem['name'] ?? '') {
+            case 'item-pin':
+            case 'item-unpin':
+                $aItem = $this->_getMenuItemCallbackApi($aItem, 'pin');
+                break;
+
+            case 'item-stick':
+            case 'item-unstick':
+                $aItem = $this->_getMenuItemCallbackApi($aItem, 'stick');
+                break;
+
+            case 'item-promote':
+            case 'item-unpromote':
+                $aItem = $this->_getMenuItemCallbackApi($aItem, 'promote');
+                break;
+        }
+
         return $aItem;
+    }
+
+    protected function _getMenuItemCallbackApi($aItem, $sService)
+    {
+        if(!empty($aItem['link']) && strpos($aItem['link'], 'javascript:') === 0)
+            $aItem['link'] = '';
+
+        return array_merge($aItem, [
+            'display_type' => 'callback',
+            'data' => [
+                'request_url' => $this->_sModule . '/' . $sService . '/&params[]=' . $this->_iEvent
+            ]
+        ]);
     }
 
     protected function _getMenuItemElementApi($aItem, $aElement)
