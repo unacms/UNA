@@ -12,6 +12,19 @@ require_once($sHeaderPath);
 class BxDolTestCase extends \PHPUnit\Framework\TestCase
 {
 
+    protected function bxRequireAntispam()
+    {
+        bx_import('BxDolModule');
+        $oModule = BxDolModule::getInstance('bx_antispam');
+        if (!$oModule)
+            $this->markTestSkipped('bx_antispam module is not installed.');
+
+        if (!BxDolDb::getInstance()->isTableExists('bx_antispam_dnsbl_rules'))
+            $this->markTestSkipped('bx_antispam module is not installed (table bx_antispam_dnsbl_rules is missing).');
+
+        return $oModule;
+    }
+
     function bxMockGet ($sClass, $aModule = array(), $bDisableContructor = false)
     {
         if ($aModule)
@@ -32,7 +45,11 @@ class BxDolTestCase extends \PHPUnit\Framework\TestCase
 
     function bxMockFree (&$o)
     {
-        $sClassName = bx_ltrim_str(get_class($o), 'Mock_');
+        if (!$o)
+            return;
+
+        // PHPUnit 12 names doubles MockObject_* / TestStub_*; older versions used Mock_*.
+        $sClassName = preg_replace('/^(?:MockObject|TestStub|Mock)_/', '', get_class($o));
         $sClassName = preg_replace('/_[A-Za-z0-9]+$/', '', $sClassName);
         unset($GLOBALS['bxDolClasses'][$sClassName]);
         unset($o);

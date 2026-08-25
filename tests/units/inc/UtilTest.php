@@ -1,5 +1,7 @@
 <?php
 
+use PHPUnit\Framework\Attributes\DataProvider;
+
 /**
  * Test util functions
  */
@@ -7,8 +9,8 @@ class UtilTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @see clear_xss
-     * @dataProvider providerForClearXssAdmin
      */
+    #[DataProvider('providerForClearXssAdmin')]
     public function testClearXssAdmin($sInput, $sOutput)
     {
         $this->assertEquals(clear_xss($sInput), $sOutput);
@@ -19,8 +21,8 @@ class UtilTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @see clear_xss
-     * @dataProvider providerForClearXssNotAdmin
      */
+    #[DataProvider('providerForClearXssNotAdmin')]
     public function testClearXssNotAdmin($sInput, $sOutput)
     {
         $this->assertEquals(clear_xss($sInput), $sOutput);
@@ -66,8 +68,8 @@ class UtilTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @see return_bytes
-     * @dataProvider providerForReturnBytes
      */
+    #[DataProvider('providerForReturnBytes')]
     public function testReturnBytes($sInput, $sOutput)
     {
         $this->assertEquals(return_bytes($sInput), $sOutput);
@@ -87,8 +89,8 @@ class UtilTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @see title2uri
-     * @dataProvider providerForTitleToUri
      */
+    #[DataProvider('providerForTitleToUri')]
     function testTitleToUri($sIn, $sOut)
     {
         $this->assertEquals(title2uri($sIn), $sOut);
@@ -107,8 +109,8 @@ class UtilTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @see uri2title
-     * @dataProvider providerForUriToTitle
      */
+    #[DataProvider('providerForUriToTitle')]
     function testUriToTitle($sIn, $sOut)
     {
         $this->assertEquals(uri2title($sIn), $sOut);
@@ -127,8 +129,8 @@ class UtilTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @see bx_is_serialized
-     * @dataProvider providerForBxIsSerialized
      */
+    #[DataProvider('providerForBxIsSerialized')]
     function testBxIsSerialized($sIn, $sOut)
     {
         $this->assertEquals(bx_is_serialized($sIn), $sOut);
@@ -146,8 +148,8 @@ class UtilTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @see bx_process_output
-     * @dataProvider providerForBxProcessOutputHtml
      */
+    #[DataProvider('providerForBxProcessOutputHtml')]
     function testBxProcessOutputHtml($sIn, $sOut)
     {
         $this->assertEquals(bx_process_output($sIn, BX_DATA_HTML), $sOut);
@@ -165,8 +167,8 @@ class UtilTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @see bx_process_output
-     * @dataProvider providerForBxProcessOutputText
      */
+    #[DataProvider('providerForBxProcessOutputText')]
     function testBxProcessOutputText($sIn, $sOut)
     {
         $this->assertEquals(bx_process_output($sIn, BX_DATA_TEXT), $sOut);

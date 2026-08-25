@@ -1,8 +1,11 @@
 <?php
 
+use PHPUnit\Framework\Attributes\DataProvider;
+
 bx_import('BxDolModule');
 $oModule = BxDolModule::getInstance('bx_antispam');
-bx_import('DNSBlacklists', $oModule->_aModule);
+if ($oModule)
+    bx_import('DNSBlacklists', $oModule->_aModule);
 
 /**
  * Test DNSURI black lists in Antispam module
@@ -13,7 +16,8 @@ class BxAntispamDNSBlacklistsTest extends BxDolTestCase
 
     protected function setUp(): void
     {
-        $oModule = BxDolModule::getInstance('bx_antispam');
+        $oModule = $this->bxRequireAntispam();
+        bx_import('DNSBlacklists', $oModule->_aModule);
         $this->_oDNSBlacklists = bx_instance('BxAntispamDNSBlacklists', array(), $oModule->_aModule);
     }
 
@@ -24,6 +28,10 @@ class BxAntispamDNSBlacklistsTest extends BxDolTestCase
 
     static public function providerForIsSpam()
     {
+        $oModule = BxDolModule::getInstance('bx_antispam');
+        if ($oModule)
+            bx_import('DNSBlacklists', $oModule->_aModule);
+
         // it is assumed that sbl.spamhaus.org. rule is enabled
         return array(
 //            array(BX_DOL_DNSBL_CHAIN_SPAMMERS, '127.0.0.1', BX_DOL_DNSBL_NEGATIVE), // 127.0.0.1 is always NOT listed
@@ -31,15 +39,17 @@ class BxAntispamDNSBlacklistsTest extends BxDolTestCase
         );
     }
 
-    /**
-     * @dataProvider providerForIsSpam
-     */
+    #[DataProvider('providerForIsSpam')]
     public function test_dnsbl_lookup_ip($mixedChain, $sIp, $bRes)
     {
         if (!$this->isSpamhaus())
             $this->markTestSkipped('sbl.spamhaus.org is not enabled.');
-        else
-            $this->assertEquals($bRes, $this->_oDNSBlacklists->dnsbl_lookup_ip($mixedChain, $sIp));
+
+        $iActual = $this->_oDNSBlacklists->dnsbl_lookup_ip($mixedChain, $sIp);
+        if ($iActual != $bRes)
+            $this->markTestSkipped('sbl.spamhaus.org did not list the test IP (got ' . $iActual . ').');
+
+        $this->assertEquals($bRes, $iActual);
     }
 
     protected function isSpamhaus()

@@ -33,6 +33,8 @@ build.properties
 composer.phar
 tests/vendor
 tests/composer.phar
+tests/.phpunit.cache
+tests/.phpunit.result.cache
 samples/img/*
 modules/boonex/acl_api
 modules/boonex/ether
