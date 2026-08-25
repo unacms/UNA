@@ -25,6 +25,14 @@ class BxCidaasConModule extends BxBaseModConnectModule
         parent::__construct($aModule);
     }
 
+	public function actionLogout()
+	{
+		if (!isLogged())
+			return;
+
+        echo "TODO: logout";
+    }
+
 	/**
 	 * This service need to be called when we call logout from UNA,
 	 * so it will propagate logout to IDP
