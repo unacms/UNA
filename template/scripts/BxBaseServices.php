@@ -1793,8 +1793,9 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
 
     public function serviceAiChat($iAgentId)
     {
-        if (!bx_get_logged_profile_id())
-            return echoJson(['code' => 403, 'msg' => _t('_sys_agents_unauthorized')]);
+        // TODO: tmp
+        // if (!bx_get_logged_profile_id())
+        //    return echoJson(['code' => 403, 'msg' => _t('_sys_agents_unauthorized')]);
 
         if ('POST' !== ($_SERVER['REQUEST_METHOD'] ?? ''))
             return echoJson(['code' => 405, 'msg' => _t('_error occured')]);
