@@ -413,6 +413,8 @@ const MenuManage_ = memo(({ id, menu, setViewState, defaultOpen }) => {
                     name: aItem.name,
                     link: aItem.link,
                     title: sTitle,
+                    icon: aItem.icon,
+                    image: aItem.image,
                     data: aItem.data,
                 }
             }

@@ -81,6 +81,8 @@ export default function ElementEntityAuthor({ data, blockWrapperProps }) {
                 link: '/' + aItem.link,
                 name: aItem.name,
                 title: aItem?.title ? aItem?.title : '',
+                icon: aItem.icon,
+                image: aItem.image,
                 data: aItem.data,
             });
         });
