@@ -8,7 +8,6 @@ UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_tasks_edit_entry
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_tasks_delete_entry' AND `module`='bx_tasks' AND `title_system`='' AND `title`='_bx_tasks_page_block_title_delete_entry';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_tasks_view_entry' AND `module`='bx_tasks' AND `title_system`='' AND `title`='_bx_tasks_page_block_title_entry_text';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_tasks_view_entry' AND `module`='bx_tasks' AND `title_system`='' AND `title`='_bx_tasks_page_block_title_entry_author';
-UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_tasks_view_entry' AND `module`='bx_tasks' AND `title_system`='' AND `title`='_bx_tasks_page_block_title_entry_assignments';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_tasks_view_entry' AND `module`='bx_tasks' AND `title_system`='' AND `title`='_bx_tasks_page_block_title_entry_timer';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_tasks_view_entry' AND `module`='bx_tasks' AND `title_system`='' AND `title`='_bx_tasks_page_block_title_entry_info';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_tasks_view_entry' AND `module`='bx_tasks' AND `title_system`='' AND `title`='_bx_tasks_page_block_title_entry_all_actions';

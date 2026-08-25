@@ -590,17 +590,18 @@ INSERT INTO `sys_form_display_inputs`(`display_name`, `input_name`, `visible_for
 ('bx_tasks_entry_edit_due_date', 'do_submit', 2147483647, 1, 3),
 ('bx_tasks_entry_edit_due_date', 'do_cancel', 2147483647, 1, 4),
 
-('bx_tasks_entry_view', 'tasks_list', 2147483647, 1, 0),
-('bx_tasks_entry_view', 'stickers', 2147483647, 1, 1),
-('bx_tasks_entry_view', 'type', 2147483647, 1, 2),
-('bx_tasks_entry_view', 'priority', 2147483647, 1, 3),
-('bx_tasks_entry_view', 'estimate', 2147483647, 1, 4),
-('bx_tasks_entry_view', 'cat', 2147483647, 1, 5),
-('bx_tasks_entry_view', 'added', 2147483647, 1, 6),
-('bx_tasks_entry_view', 'changed', 2147483647, 1, 7),
-('bx_tasks_entry_view', 'due_date', 192, 1, 8),
-('bx_tasks_entry_view', 'state', 2147483647, 1, 9),
-('bx_tasks_entry_view', 'gh_issue_url', 2147483647, 1, 10);
+('bx_tasks_entry_view', 'tasks_list', 2147483647, 1, 1),
+('bx_tasks_entry_view', 'initial_members', 2147483647, 1, 2),
+('bx_tasks_entry_view', 'stickers', 2147483647, 1, 3),
+('bx_tasks_entry_view', 'type', 2147483647, 1, 4),
+('bx_tasks_entry_view', 'priority', 2147483647, 1, 5),
+('bx_tasks_entry_view', 'estimate', 2147483647, 1, 6),
+('bx_tasks_entry_view', 'cat', 2147483647, 1, 7),
+('bx_tasks_entry_view', 'added', 2147483647, 1, 8),
+('bx_tasks_entry_view', 'changed', 2147483647, 1, 9),
+('bx_tasks_entry_view', 'due_date', 192, 1, 10),
+('bx_tasks_entry_view', 'state', 2147483647, 1, 11),
+('bx_tasks_entry_view', 'gh_issue_url', 2147483647, 1, 12);
 
 
 -- FORMS: entry (tasklist)
