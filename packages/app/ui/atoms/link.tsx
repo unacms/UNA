@@ -29,6 +29,7 @@ export default function ElementLink({
     hitSlop,
     hitarea = true,
     alt,
+    emulate: _emulate,
     ...rest 
 }: any) {
 

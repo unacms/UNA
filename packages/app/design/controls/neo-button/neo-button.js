@@ -386,7 +386,7 @@ const NeoButtonStyled = (props) => {
         forwardedRef,
 
         // Link-related: forwarded by NeoButtonLink, ignored here.
-        href, target, asExternal, // eslint-disable-line no-unused-vars
+        href, target, asExternal, emulate, variant, size, mode, noprefetch, // eslint-disable-line no-unused-vars
 
         // Anything else (e.g. data-* attrs) is forwarded to the surface.
         ...rest
@@ -711,6 +711,7 @@ export const NeoButtonLink = ({
     target = '',
     asExternal = false,
     style,
+    emulate,
     ...props
 }) => {
     const finalHref = sanitazeUrl(href);
@@ -736,7 +737,7 @@ export const NeoButtonLink = ({
     const neoProps = { ...props, buttonStyle: style, hitarea: false, interactive: true };
 
     return (
-        <Link href={href} target={target} asExternal={asExternal} mode="plain" className={linkClassName}>
+        <Link href={href} target={target} asExternal={asExternal} emulate={emulate} mode="plain" className={linkClassName}>
             <NeoButton {...neoProps} />
         </Link>
     );

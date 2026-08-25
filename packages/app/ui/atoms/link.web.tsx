@@ -80,7 +80,7 @@ export default function ElementLink({
         return (
             <Pressable
                 {...rest}
-                className={composedClassName}
+                className={mode === 'plain' ? className : composedClassName}
                 onPress={handlePress}
                 aria-label={accessibleLabel}
                 accessibilityLabel={accessibleLabel}
