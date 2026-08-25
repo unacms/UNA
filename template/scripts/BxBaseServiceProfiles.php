@@ -1448,10 +1448,10 @@ class BxBaseServiceProfiles extends BxDol
         return BxDolContentFilter::getInstance()->isEnabled();
     }
 
-    public function serviceProfileCounters()
+    public function serviceProfileCounters($bInit = false)
     {
-        if(bx_is_api() && ($oLiveUpdates = BxDolLiveUpdates::getInstance()) !== false)
-            return $oLiveUpdates->performApi();
+        if($this->_bIsApi && ($oLiveUpdates = BxDolLiveUpdates::getInstance()) !== false)
+            return $oLiveUpdates->performApi($bInit);
     }
     
     public function serviceProfileInfo()

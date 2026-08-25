@@ -204,8 +204,8 @@ class BxDolProfile extends BxDolFactory implements iBxDolProfile
         ];
         
         if ($iId == bx_get_logged_profile_id()){
-            $aRv['counters'] = bx_srv('system', 'profile_counters', [], 'TemplServiceProfiles');
-            
+            $aRv['counters'] = bx_srv('system', 'profile_counters', [defined('BX_API_PAGE')], 'TemplServiceProfiles');
+
             $oInformer = BxDolInformer::getInstance($oTemplate);
             $sRet = $oInformer ? $oInformer->display() : '';
             if ($sRet){

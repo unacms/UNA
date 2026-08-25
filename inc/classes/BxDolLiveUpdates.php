@@ -150,21 +150,26 @@ class BxDolLiveUpdates extends BxDolFactory implements iBxDolSingleton
 
     	return $aResult;
     }
-    
-    
-    public function performApi()
+
+    public function performApi($bInit = false)
     {
-        $aRequested = $this->_getRequestedData(0, true);
+        $aCurrent = $this->_getCachedData($bInit);
+        if($bInit)
+            $aCurrent = array_intersect_key($aCurrent, array_flip($this->_aSystemsActive));
 
-        $aResult = [];
-        foreach($aRequested as $sName => $aData) {
-            if(is_array($aData))
-                $aResult[$sName] = isset($aData['count']) ? (int)$aData['count'] : 0;
-            else
-                $aResult[$sName] = (int)$aData;
-        }
+        $aRequested = $this->_getRequestedData(0, !$bInit, !$bInit ? $aCurrent : []);
 
-    	return $aResult;
+        $bUpdateCache = false;
+        foreach($aCurrent as $sName => &$iCount)
+            if(($iRequestedCount = (int)($aRequested[$sName]['count'] ?? 0)) && $iRequestedCount != (int)$iCount) {
+                $iCount = $iRequestedCount;
+                $bUpdateCache = true;
+            }
+
+        if($bUpdateCache)
+            $this->_updateCached('data', $aCurrent);
+
+        return $aCurrent;
     }
 
     protected function _addSystem($sName, $iFrequency, $sServiceCall, $mixedActive = true)
