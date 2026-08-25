@@ -13,35 +13,21 @@ export interface ChatOptions {
 
 declare const sUrlRoot: string | undefined;
 
-const CHAT_STYLES = `
-.bx-ai-chat-root .bx-ai-chat{display:flex;flex-direction:column;gap:.75rem;height:100%;min-height:18rem}
-.bx-ai-chat-root .bx-ai-chat-messages{flex:1 1 auto;overflow-y:auto;display:flex;flex-direction:column;gap:.5rem;padding:.75rem;border:1px solid rgba(0,0,0,.08);border-radius:.5rem;background:rgba(255,255,255,.6)}
-.bx-ai-chat-root .bx-ai-chat-message{display:flex}
-.bx-ai-chat-root .bx-ai-chat-message-user{justify-content:flex-end}
-.bx-ai-chat-root .bx-ai-chat-message-assistant{justify-content:flex-start}
-.bx-ai-chat-root .bx-ai-chat-message-inner{max-width:85%;padding:.5rem .75rem;border-radius:.75rem;line-height:1.4;word-break:break-word}
-.bx-ai-chat-root .bx-ai-chat-message-user .bx-ai-chat-message-inner{background:#2563eb;color:#fff}
-.bx-ai-chat-root .bx-ai-chat-message-assistant .bx-ai-chat-message-inner{background:#f3f4f6;color:#111827}
-.bx-ai-chat-root .bx-ai-chat-form{display:flex;gap:.5rem}
-.bx-ai-chat-root .bx-ai-chat-input{flex:1 1 auto}
-.bx-ai-chat-root .bx-ai-chat-error{color:#b91c1c;font-size:.875rem}
-.bx-ai-chat-root.bx-ai-chat-loading .bx-ai-chat-send{opacity:.7}`;
+const CLASSES = {
+    root: 'bx-ai-chat flex flex-col gap-3 h-full min-h-72 text-gray-800 dark:text-gray-200',
+    messages: 'bx-ai-chat-messages flex flex-1 flex-col gap-2 overflow-y-auto p-3 md:p-4 rounded-2xl ring-1 ring-gray-300/50 dark:ring-gray-600/50 bg-gray-50/80 dark:bg-gray-900/50',
+    form: 'bx-ai-chat-form flex items-center gap-2',
+    inputWrapper: 'bx-form-input-wrapper bx-form-input-wrapper-text flex-1 min-w-0',
+    input: 'bx-ai-chat-input bx-def-font-inputs bx-form-input-text',
+    send: 'bx-ai-chat-send bx-btn bx-btn-primary shrink-0',
+    messageUser: 'bx-ai-chat-message bx-ai-chat-message-user flex justify-end',
+    messageAssistant: 'bx-ai-chat-message bx-ai-chat-message-assistant flex justify-start',
+    bubbleUser: 'bx-ai-chat-message-inner max-w-[85%] px-3 py-2 rounded-2xl rounded-br-md text-sm leading-relaxed break-words bg-blue-600 text-white dark:bg-blue-500',
+    bubbleAssistant: 'bx-ai-chat-message-inner max-w-[85%] px-3 py-2 rounded-2xl rounded-bl-md text-sm leading-relaxed break-words bg-white text-gray-800 ring-1 ring-gray-200 dark:bg-gray-700 dark:text-gray-100 dark:ring-gray-600',
+    error: 'bx-ai-chat-error text-sm text-red-600 dark:text-red-400 px-1',
+};
 
-let stylesInjected = false;
-
-function injectStyles()
-{
-    if (stylesInjected || typeof document === 'undefined')
-        return;
-
-    const style = document.createElement('style');
-    style.setAttribute('data-bx-ai-chat', '1');
-    style.textContent = CHAT_STYLES;
-    document.head.appendChild(style);
-    stylesInjected = true;
-}
-
-function escapeHtml(text)
+function escapeHtml(text: string)
 {
     return text
         .replace(/&/g, '&amp;')
@@ -71,7 +57,10 @@ function renderMessages(container: HTMLElement, messages: UIMessage[]): void
         const role = message.role === 'user' ? 'user' : 'assistant';
         const text = escapeHtml(getMessageText(message)).replace(/\n/g, '<br>');
 
-        return `<div class="bx-ai-chat-message bx-ai-chat-message-${role}"><div class="bx-ai-chat-message-inner">${text || '&nbsp;'}</div></div>`;
+        const rowClass = role === 'user' ? CLASSES.messageUser : CLASSES.messageAssistant;
+        const bubbleClass = role === 'user' ? CLASSES.bubbleUser : CLASSES.bubbleAssistant;
+
+        return `<div class="${rowClass}"><div class="${bubbleClass}">${text || '&nbsp;'}</div></div>`;
     }).join('');
 
     list.scrollTop = list.scrollHeight;
@@ -79,14 +68,18 @@ function renderMessages(container: HTMLElement, messages: UIMessage[]): void
 
 function setLoading(container: HTMLElement, isLoading: boolean): void
 {
-    const input = container.querySelector('.bx-ai-chat-input');
-    const button = container.querySelector('.bx-ai-chat-send');
+    const input = container.querySelector<HTMLInputElement>('.bx-ai-chat-input');
+    const button = container.querySelector<HTMLButtonElement>('.bx-ai-chat-send');
 
     if (input)
         input.disabled = isLoading;
 
-    if (button)
+    if (button) {
         button.disabled = isLoading;
+        button.classList.toggle('bx-btn-disabled', isLoading);
+        button.classList.toggle('opacity-70', isLoading);
+        button.classList.toggle('cursor-wait', isLoading);
+    }
 
     container.classList.toggle('bx-ai-chat-loading', isLoading);
 }
@@ -94,11 +87,13 @@ function setLoading(container: HTMLElement, isLoading: boolean): void
 function buildMarkup(placeholder: string): string
 {
     return `
-<div class="bx-ai-chat">
-    <div class="bx-ai-chat-messages"></div>
-    <form class="bx-ai-chat-form">
-        <input type="text" class="bx-ai-chat-input bx-form-input" placeholder="${escapeHtml(placeholder)}" autocomplete="off" />
-        <button type="submit" class="bx-ai-chat-send bx-btn">Send</button>
+<div class="${CLASSES.root}">
+    <div class="${CLASSES.messages}"></div>
+    <form class="${CLASSES.form}">
+        <div class="${CLASSES.inputWrapper}">
+            <input type="text" class="${CLASSES.input}" placeholder="${escapeHtml(placeholder)}" autocomplete="off" />
+        </div>
+        <button type="submit" class="${CLASSES.send}">Send</button>
     </form>
 </div>`;
 }
@@ -128,8 +123,6 @@ export class Chat
         if (!el)
             throw new Error('Chat: container not found');
 
-        injectStyles();
-
         this._oContainer = el;
         this._oContainer.innerHTML = buildMarkup(options.placeholder || 'Type a message…');
         this._oContainer.classList.add('bx-ai-chat-root');
@@ -151,7 +144,7 @@ export class Chat
                     return;
 
                 const note = document.createElement('div');
-                note.className = 'bx-ai-chat-error';
+                note.className = CLASSES.error;
                 note.textContent = error.message;
                 list.appendChild(note);
                 list.scrollTop = list.scrollHeight;

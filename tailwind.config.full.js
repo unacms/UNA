@@ -17,7 +17,9 @@ module.exports = {
 
     './template/*.html',
     './template/scripts/*.php',
-    './template/scripts_templ/*.php'
+    './template/scripts_templ/*.php',
+
+    './src/**/*.ts'
   ],
   safelist: [
     {
