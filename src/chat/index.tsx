@@ -1,12 +1,16 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { fetchServerSentEvents, useChat, type UIMessage } from '@tanstack/ai-react';
+import Markdown, { type Components } from 'react-markdown';
+import remarkBreaks from 'remark-breaks';
+import remarkGfm from 'remark-gfm';
 
 export interface ChatOptions {
     agentId: number | string;
     endpoint?: string;
     placeholder?: string;
     credentials?: RequestCredentials;
+    formatting?: boolean;
 }
 
 declare const sUrlRoot: string | undefined;
@@ -22,8 +26,49 @@ const CLASSES = {
     messageAssistant: 'bx-ai-chat-message bx-ai-chat-message-assistant flex justify-start',
     bubbleUser: 'bx-ai-chat-message-inner max-w-[85%] px-3 py-2 rounded-2xl rounded-br-md text-sm leading-relaxed break-words whitespace-pre-wrap bg-blue-600 text-white dark:bg-blue-500',
     bubbleAssistant: 'bx-ai-chat-message-inner max-w-[85%] px-3 py-2 rounded-2xl rounded-bl-md text-sm leading-relaxed break-words whitespace-pre-wrap bg-white text-gray-800 ring-1 ring-gray-200 dark:bg-gray-700 dark:text-gray-100 dark:ring-gray-600',
+    markdown: 'bx-ai-chat-markdown bx-def-vanilla-html bx-def-vh-sm max-w-none whitespace-normal',
     error: 'bx-ai-chat-error text-sm text-red-600 dark:text-red-400 px-1',
 };
+
+function isSafeHref(href: string | undefined): href is string
+{
+    if (!href)
+        return false;
+
+    try {
+        const url = new URL(href, window.location.href);
+        return url.protocol === 'http:' || url.protocol === 'https:' || url.protocol === 'mailto:';
+    }
+    catch {
+        return false;
+    }
+}
+
+const markdownComponents: Components = {
+    a({ href, children, ...props }) {
+        return (
+            <a
+                {...props}
+                href={isSafeHref(href) ? href : undefined}
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                {children}
+            </a>
+        );
+    },
+};
+
+function MarkdownContent({ text }: { text: string })
+{
+    return (
+        <div className={CLASSES.markdown}>
+            <Markdown remarkPlugins={[remarkGfm, remarkBreaks]} components={markdownComponents}>
+                {text}
+            </Markdown>
+        </div>
+    );
+}
 
 function getMessageText(message: UIMessage): string
 {
@@ -51,6 +96,7 @@ function ChatView({
     endpoint,
     placeholder = 'Type a message…',
     credentials = 'same-origin',
+    formatting = false,
 }: ChatOptions)
 {
     const [input, setInput] = useState('');
@@ -94,7 +140,9 @@ function ChatView({
                             className={isUser ? CLASSES.messageUser : CLASSES.messageAssistant}
                         >
                             <div className={isUser ? CLASSES.bubbleUser : CLASSES.bubbleAssistant}>
-                                {text || '\u00a0'}
+                                {formatting && !isUser && text
+                                    ? <MarkdownContent text={text} />
+                                    : (text || '\u00a0')}
                             </div>
                         </div>
                     );
