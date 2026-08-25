@@ -1,8 +1,8 @@
 import { useState, useMemo } from 'react'
 import { appSetting } from 'app/lib/util'
 import { View, Row } from 'app/design/view'
-import { Text } from 'app/design/typography'
 import { useTranslation } from 'react-i18next'
+import { NeoButtonLink } from 'app/design/controls'
 import {
     CommentsSection,
     MenuManage,
@@ -26,7 +26,6 @@ import {
 import AnimatedBlock from 'app/ui/atoms/animated-block'
 import { getComponent } from 'app/components/registry'
 import Scroll from 'app/ui/molecules/page/scroll'
-import Link from 'app/ui/atoms/link'
 import { useOpenModalByUrl } from 'app/context/jotai/modal';
 import { Skeleton } from 'app/ui/atoms/skeleton';
 
@@ -84,19 +83,16 @@ function DefaultUnit({ data }) {
                     <View className="overflow-hidden px-px ">
                         <Scroll horizontal={true} step={300} className='w-full'><Row className="gap-3 bg-background/60 mt-3 p-3">{contentElement}</Row></Scroll>
                     </View>
-                    <View className="p-2 ">
-                    <Link
-                            variant="primary"
-                            size="sm"
+                    <View className="p-2">
+                        <NeoButtonLink
                             href={data.content.page_url}
+                            label={t('View all')}
+                            style="link"
+                            controlSize="small"
+                            width="fill"
                             haptics="Medium"
-                            className="text-center w-full"
-                        >
-                            <Text>
-                                {' '}
-                                {t('View all')}
-                            </Text>
-                        </Link></View>
+                        />
+                    </View>
 
                 </CardList>
             </AnimatedBlock>

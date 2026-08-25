@@ -271,8 +271,28 @@ function isTasklistGroup(item) {
     return Array.isArray(item?.children);
 }
 
+function parseListQueryParam(listId) {
+    if (listId == null || String(listId) === '') return null;
+    return listId;
+}
+
+function isInboxListId(listId) {
+    return String(listId) === '0';
+}
+
 function hasListId(listId) {
-    return listId != null && String(listId) !== '' && String(listId) !== '0';
+    return parseListQueryParam(listId) != null && !isInboxListId(listId);
+}
+
+function isSameListId(a, b) {
+    if (parseListQueryParam(a) == null || parseListQueryParam(b) == null) return false;
+    return String(a) === String(b);
+}
+
+function isTasklistRowSelected(item, selectedId, selectedContextId) {
+    if (!isSameListId(selectedId, item?.id)) return false;
+    if (item?.context_id == null || selectedContextId == null) return true;
+    return String(item.context_id) === String(selectedContextId);
 }
 
 function tasksModule(payload) {
@@ -349,7 +369,7 @@ function tasksHomeQueryFromBrowser() {
 
 function listIdFromBrowser() {
     const { listId } = tasksHomeQueryFromBrowser();
-    return hasListId(listId) ? listId : null;
+    return parseListQueryParam(listId);
 }
 
 function buildContextBrowseUrl(payload, contextPid, listId) {
@@ -679,7 +699,7 @@ function TasklistsPanel({
                 const expanded = !collapsed[groupId];
                 const groupSelected = selectedContextId != null
                     && String(selectedContextId) === groupId
-                    && selectedId == null;
+                    && parseListQueryParam(selectedId) == null;
                 return (
                     <View key={groupId} className="gap-0.5">
                         <Row
@@ -724,7 +744,7 @@ function TasklistsPanel({
                             <TasklistRow
                                 key={item.id}
                                 item={item}
-                                selected={selectedId != null && String(selectedId) === String(item.id)}
+                                selected={isTasklistRowSelected(item, selectedId, selectedContextId)}
                                 indented
                                 {...rowProps}
                             />
@@ -735,7 +755,7 @@ function TasklistsPanel({
                 <TasklistRow
                     key={item.id}
                     item={item}
-                    selected={selectedId != null && String(selectedId) === String(item.id)}
+                    selected={isTasklistRowSelected(item, selectedId, selectedContextId)}
                     {...rowProps}
                 />
             ))) : null}
@@ -1431,7 +1451,7 @@ export default function ElementTasksList({ data, blockWrapperProps }) {
     const applyContextQuery = useCallback(async (contextPid, listId) => {
         const requestId = ++contextRequestIdRef.current;
         setSelectedContextPid(contextPid || null);
-        setSelectedTasklistId(hasListId(listId) ? listId : null);
+        setSelectedTasklistId(parseListQueryParam(listId));
 
         if (!contextPid) {
             const home = homeDataRef.current;
@@ -1555,7 +1575,7 @@ export default function ElementTasksList({ data, blockWrapperProps }) {
         if (contextPid) {
             const url = buildContextBrowseUrl(browseContextRef.current, contextPid, listId);
             if (url) requestUrlRef.current = url;
-        } else if (selectedTasklistId != null) {
+        } else if (hasListId(selectedTasklistId)) {
             const selected = findTasklist(tasklists, selectedTasklistId);
             const filteredUrl = buildTasklistBrowseUrl(
                 browseContextRef.current,
@@ -1591,7 +1611,11 @@ export default function ElementTasksList({ data, blockWrapperProps }) {
         if (!dest) return;
 
         if (isTasksHomePath()) {
-            if (getBrowserLocation() === dest) return;
+            if (getBrowserLocation() === dest) {
+                setSelectedContextPid(contextId || null);
+                setSelectedTasklistId(parseListQueryParam(listId));
+                return;
+            }
             window.history.pushState({ tasksHomeQuery: true }, '', dest);
             applyContextQuery(contextId, listId);
             return;
@@ -1603,7 +1627,7 @@ export default function ElementTasksList({ data, blockWrapperProps }) {
     const refreshLists = useCallback(async () => {
         const selectedId = selectedTasklistId;
         let requestUrl = requestUrlRef.current;
-        if (selectedId != null) {
+        if (hasListId(selectedId)) {
             const selected = findTasklist(tasklists, selectedId);
             const filteredUrl = buildTasklistBrowseUrl(
                 browseContextRef.current,

@@ -154,6 +154,15 @@ export default function ElementMenu(oProps) {
                 return false;
             }
 
+            // menu-item/element returns nothing without a resolvable molecule —
+            // skip so wrappers don't leave an empty flex slot (cover actions gap).
+            if (sDisplayTypeItem === 'element') {
+                const moleculeType = aItem?.data?.type;
+                if (!moleculeType || !getComponent('molecule', String(moleculeType))) {
+                    return false;
+                }
+            }
+
             // If all checks pass, the item should be included in the filtered list
             return true;
         });
