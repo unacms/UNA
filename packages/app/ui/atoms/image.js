@@ -174,7 +174,7 @@ function ElementImageResolved(props) {
         key: _ignoredKey,
         ...rest
     } = props; // remove width & height
-
+    // return <></>;
     const isAbsoluteHttp = /^https?:\/\//i.test(src);
     const isBlob = src.startsWith("blob:");
     const isDataImage = src.startsWith("data:image");

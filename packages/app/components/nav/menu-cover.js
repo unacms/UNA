@@ -131,7 +131,7 @@ export function CoverMenu(props) {
                 button_primary_style: buttonStyle == 'bordered' ? 'borderedProminent' : 'glassProminent',
                 button_border_shape: 'capsule',
                 button_full_width: props?.params?.button_full_width ?? false,
-                className: 'flex-wrap gap-x-2 my-auto ',
+                className: 'flex-wrap gap-2 my-auto ',
                 isFixedCount: true,
             }}
         />
@@ -186,7 +186,7 @@ export function CoverMenuMore(props) {
                 button_style: buttonStyle,
                 button_size: buttonSize,
                 button_primary_style: buttonStyle == 'bordered' ? 'borderedProminent' : 'glassProminent',
-                button_border_shape: 'capsule',
+                button_border_shape: 'circle',
                 button_full_width: props?.params?.button_full_width ?? false,
                 className: '  gap-2  ',
                 isFixedCount: true,

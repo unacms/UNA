@@ -12,7 +12,7 @@ import Badge from 'app/ui/molecules/profile/badge';
 import { Skeleton } from 'app/ui/atoms/skeleton';
 import { getComponent } from 'app/components/registry';
 import { fetcher } from 'app/lib/fetcher';
-import { appSetting, tp } from 'app/lib/util';
+import { appSetting, cn, tp } from 'app/lib/util';
 import { getUnitMenuItems } from 'app/customization/functions';
 import { useRouter, useCurrentTabPath } from 'app/lib/hooks/router';
 import { nativeTabHref } from 'app/lib/tab-history';
@@ -378,38 +378,86 @@ export function UnitInvitationActions({
     );
 }
 
+const NEO_CONTROL_SIZES = new Set(['mini', 'small', 'regular', 'large', 'xlarge']);
+
+function recommendationControlSize(size) {
+    if (NEO_CONTROL_SIZES.has(size)) return size;
+    if (size === 'xs' || size === 'sm') return 'small';
+    return 'small';
+}
+
 export function UnitRecommendation({ data, params, primary = false }) {
     const itemData = data?.meta?.items?.[0]?.data;
     if (!itemData) return null;
 
+    const isIgnore = itemData.a === 'ignore';
     const Recommendation = getComponent('molecule', 'recommendation');
-    return <Recommendation {...itemData} primary={primary} params={params} />;
+    return (
+        <Recommendation
+            {...itemData}
+            primary={primary}
+            params={{
+                ...params,
+                button_style: params?.button_style ?? 'borderless',
+                button_size: recommendationControlSize(params?.button_size),
+                button_full_width: false,
+                only_icon: params?.only_icon ?? isIgnore,
+                button_border_shape: params?.button_border_shape ?? (isIgnore ? 'circle' : undefined),
+            }}
+        />
+    );
 }
 
 export function UnitProfileRow({
     data,
     displaySize = 'sm',
-    className = 'flex-row p-2 rounded-xl web:active:opacity-90 web:hover:bg-muted/50 items-center',
-    titleClassName = 'text-sm px-1.5 leading-tight font-semibold text-secondary-foreground',
+    className,
+    titleClassName,
     linkProps,
     meta,
 }) {
+    const neoLinkProps = { ...(linkProps || {}) };
+    const linkStyle = neoLinkProps.style;
+    const linkControlSize = neoLinkProps.controlSize;
+    const linkContentInsets = neoLinkProps.contentInsets;
+    const linkClassNames = neoLinkProps.classNames;
+    delete neoLinkProps.variant;
+    delete neoLinkProps.size;
+    delete neoLinkProps.emulate;
+    delete neoLinkProps.style;
+    delete neoLinkProps.controlSize;
+    delete neoLinkProps.contentInsets;
+    delete neoLinkProps.classNames;
+
     return (
-        <NeoButtonLink href={data.url} emulate={true} {...linkProps}>
-            <View className={className}>
-                <Profile
-                    url_avatar={data?.image?.src}
-                    displayType="unit_wo_info"
-                    displaySize={displaySize}
-                    display_name={data.title}
-                />
-                <View className="flex-row justify-between flex-auto items-center">
-                    <Text numberOfLines={2} className={titleClassName}>
-                        {data.title}
-                    </Text>
-                    {meta ? <View className="flex-none">{meta}</View> : null}
-                </View>
-            </View>
-        </NeoButtonLink>
+        <Row className={cn('w-full items-center', className)}>
+            <NeoButtonLink
+                href={data.url}
+                {...neoLinkProps}
+                style={linkStyle ?? 'borderless'}
+                width="fill"
+                align="start"
+                controlSize={linkControlSize ?? 'regular'}
+                contentInsets={linkContentInsets ?? 'mediaLeading'}
+                image={
+                    <View className="pointer-events-none">
+                        <Profile
+                            url_avatar={data?.image?.src}
+                            displayType="unit_wo_info"
+                            displaySize={displaySize}
+                            display_name={data.title}
+                            showLinks={false}
+                        />
+                    </View>
+                }
+                label={data.title}
+                className="group"
+                classNames={{
+                    ...linkClassNames,
+                    text: cn(linkClassNames?.text, titleClassName),
+                }}
+            />
+            {meta ? <View className="flex-none">{meta}</View> : null}
+        </Row>
     );
 }

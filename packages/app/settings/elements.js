@@ -12,7 +12,7 @@ export const settingsElements = {
     },
     cover: {
         use_background: true, 
-        aspect_ratio: 'aspect-3/1', 
+        aspect_ratio: 'aspect-video lg:aspect-3/1', 
         allow_edit: true, 
         allow_switch: true, 
         fixed: false, 

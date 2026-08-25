@@ -19,7 +19,7 @@ export const settingsConfigs = {
         expo_ui_buttons: true,
         // System tab bar (expo-router NativeTabs). Requires expo_ui_buttons.
         // false = JS tab bar while Expo UI buttons can stay on.
-        expo_native_tabs: false,
+        expo_native_tabs: true,
         // Text under tab bar icons (web mobile footer + native JS / NativeTabs).
         // false = icon-only. Per-tab empty `title` still hides that label.
         tab_labels: false,

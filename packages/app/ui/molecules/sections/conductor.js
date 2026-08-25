@@ -6,7 +6,7 @@ import { Text } from 'app/design/typography';
 import UniList from 'app/ui/atoms/unilist'
 import { Icon } from 'app/ui/atoms/icon'
 import DropdownMenu, { DropdownMenuOpenContext } from 'app/ui/atoms/dropdown-menu'
-import { deepEqual, getUnitModeBySource } from 'app/lib/util';
+import { appSetting, deepEqual, getUnitModeBySource, isNativeTabsEnabled } from 'app/lib/util';
 import { fillTabs, mergeConductorRoutes, parseData, fetchAndUpdateData, getAddon, getUnitType, findConductorRouteIndex, findConductorRouteIndexOrZero, hasConductorSubitems, conductorHref, ConductorCompactNav } from 'app/lib/conductor-helpers';
 import { ItemRenderer } from 'app/components/item-renderer';
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
@@ -23,8 +23,7 @@ import emitter from 'app/context/emitter'
 import { useSetHeader, useScrollValue, useSetScrollValue, getScrollValue, useListMaxScrollOffset, useSetListMaxScrollOffset, useSetCoverScrollCompensation, defaultHeader, useSetHeaderHeight, getHeaderWriteGeneration } from 'app/context/jotai/layout';
 import { isTabScopedChromeKey, useTabChromeKey } from 'app/context/tab-chrome';
 import { getComponent } from 'app/components/registry';
-import { useFocusEffect, useIsFocused } from 'app/lib/hooks/router'
-import { appSetting } from 'app/lib/util'
+import { getWindowSafeAreaInsets, useFocusEffect, useIsFocused } from 'app/lib/hooks/router'
 import {
     getCachedConductorState,
     setCachedConductorState,
@@ -328,17 +327,20 @@ const TabSceneHeader = React.memo(function TabSceneHeader2({
     // cannot stick after setPageData.
     const coverKey = `${ts ?? ''}:${coverBlock?.cover?.src ?? ''}:${coverBlock?.profile?.url_avatar ?? ''}`;
 
+    const nativeTabsTopInset = isNativeTabsEnabled() ? (getWindowSafeAreaInsets().top || 0) : 0;
     const standaloneContextSelector = useStandaloneContextSelector ? (
-        <Row className={`${conductorTheme.standalone_context_selector} gap-2 items-center `}>
-            {useStandaloneCoverBackButton ? <CoverBackButton /> : null}
-            <View className="flex-1 shrink">
-                <ContextSelector
-                    data={pageContext}
-                    url={pageUri}
-                    uri={pageUri}
-                />
-            </View>
-        </Row>
+        <View style={nativeTabsTopInset > 0 ? { paddingTop: nativeTabsTopInset } : undefined}>
+            <Row className={`${conductorTheme.standalone_context_selector} gap-2 items-center `}>
+                {useStandaloneCoverBackButton ? <CoverBackButton /> : null}
+                <View className="flex-1 shrink">
+                    <ContextSelector
+                        data={pageContext}
+                        url={pageUri}
+                        uri={pageUri}
+                    />
+                </View>
+            </Row>
+        </View>
     ) : null;
 
     const coverHeader = useMemo(

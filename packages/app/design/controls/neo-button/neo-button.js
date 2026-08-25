@@ -167,36 +167,40 @@ function renderLabel({
     return (
         <Row
             className={cn(
-                'flex-row items-center min-w-0',
+                'flex-row items-center min-w-0 max-w-full',
                 spreadTrailing && 'flex-1 w-full justify-between',
                 useGapClass && labelGapCls,
             )}
             style={(spreadTrailing || useGapClass) ? undefined : { columnGap: labelGap }}
         >
             {imagePlacement === 'leading' && effectiveImage ? (
-                <NeoImage
-                    source={effectiveImage}
-                    size={iconSize}
-                    color={tintColor}
-                    className={cn(textCls, classNames?.image)}
-                />
+                <View className="shrink-0">
+                    <NeoImage
+                        source={effectiveImage}
+                        size={iconSize}
+                        color={tintColor}
+                        className={cn(textCls, classNames?.image)}
+                    />
+                </View>
             ) : null}
             {label ? (
                 <Text
-                    className={cn(fontCls, textCls, classNames?.text)}
-                    numberOfLines={1}
+                    className={cn('min-w-0 shrink', fontCls, textCls, classNames?.text)}
+                    {...(isWeb ? {} : { numberOfLines: 1 })}
                     style={tintColor ? { color: tintColor } : undefined}
                 >
                     {label}
                 </Text>
             ) : null}
             {imagePlacement === 'trailing' && effectiveImage ? (
-                <NeoImage
-                    source={effectiveImage}
-                    size={iconSize}
-                    color={tintColor}
-                    className={cn(textCls, classNames?.image)}
-                />
+                <View className="shrink-0">
+                    <NeoImage
+                        source={effectiveImage}
+                        size={iconSize}
+                        color={tintColor}
+                        className={cn(textCls, classNames?.image)}
+                    />
+                </View>
             ) : null}
         </Row>
     );
@@ -523,7 +527,7 @@ const NeoButtonStyled = (props) => {
         paddingClass,
         `justify-${resolved.align}`,
         resolved.containerCls(stateKey),
-        resolved.width === 'fill' ? 'w-full' : '',
+        resolved.width === 'fill' ? 'w-full' : 'min-w-0 max-w-full',
         className,
         classNames?.container,
         classNames?.surface,
@@ -675,7 +679,7 @@ const NeoButtonStyled = (props) => {
     );
 
     const wrapperClass = cn(
-        resolved.width === 'fill' ? FILL_WIDTH_CLASS : 'self-start',
+        resolved.width === 'fill' ? FILL_WIDTH_CLASS : 'self-start max-w-full min-w-0',
         classNames?.root,
     );
 
@@ -730,9 +734,11 @@ export const NeoButtonLink = ({
     }
 
     const linkClassName = cn(
-        'u-neo-btn-link block',
+        'u-neo-btn-link',
         hitAreaCls,
-        props.width === 'fill' ? FILL_WIDTH_CLASS : '',
+        props.width === 'fill'
+            ? cn('block', FILL_WIDTH_CLASS)
+            : 'inline-flex items-center max-w-full min-w-0 shrink',
     );
     const neoProps = { ...props, buttonStyle: style, hitarea: false, interactive: true };
 

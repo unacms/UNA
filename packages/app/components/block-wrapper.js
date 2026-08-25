@@ -145,7 +145,7 @@ export function BlockWrapper({ config, block, wrapperClassses, showTitle, showBg
                                         label={t(config?.header_more_text || 'See all')}
                                         style="link"
                                         borderShape="roundedRectangle"
-                                        controlSize="small"
+                                        controlSize="mini"
                                     />
                                 ) : null}
                             </BlockActions>)}

@@ -137,6 +137,7 @@ export default function ElementRecommendations(props) {
                 controlSize={props.params?.button_size}
                 borderShape={props.params?.button_border_shape}
                 width={props.params?.button_full_width ? 'fill' : 'auto'}
+                accessibilityLabel={buttonProps.onlyIcon ? (props.title || t('Remove')) : undefined}
                 onPress={(event) => doRecommendation(actionName, event)}
                 disabled={disabled}
             />

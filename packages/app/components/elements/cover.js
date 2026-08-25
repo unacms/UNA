@@ -1,15 +1,15 @@
 import { View, Row, ScrollView } from 'app/design/view'
 import Image from 'app/ui/atoms/image'
 import { Text } from 'app/design/typography'
-import { Button } from 'app/design/controls'
 import {
     appSetting,
     formatDateInterval,
     cloneObject,
     LAYOUT_BREAKPOINTS,
+    isNativeTabsEnabled,
 } from 'app/lib/util'
 import Profile from 'app/ui/molecules/profile/profile'
-import { NeoButton } from 'app/design/controls/neo-button/neo-button'
+import { NeoButton, NeoButtonLink } from 'app/design/controls/neo-button/neo-button'
 import { fetcher } from 'app/lib/fetcher'
 import { useProfileImageUpload } from 'app/lib/image/use-profile-image-upload'
 import { useCurrentUser } from 'app/context/user'
@@ -19,10 +19,9 @@ import {
     CoverMenuMore,
 } from 'app/components/nav/menu-cover'
 import { useTranslation } from 'react-i18next'
-import Link from 'app/ui/atoms/link'
 import Loading from 'app/ui/atoms/loading'
 import { Platform } from 'react-native'
-import { useRouter } from 'app/lib/hooks/router'
+import { getWindowSafeAreaInsets, useRouter } from 'app/lib/hooks/router'
 import { getComponent } from 'app/components/registry'
 import { useIsDesktop } from 'app/context/measure'
 import { PageHeaderSmall } from 'app/ui/molecules/header/page-header'
@@ -30,6 +29,17 @@ import { canGoBackInTab, navigateBackInTab, useTabKey } from 'app/lib/tab-histor
 import { FeedbackHaptics } from 'app/lib/util'
 const conductorTheme = appSetting('theme', 'conductor')
 const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from')
+// Matches `top-3` overlay spacing on the full cover.
+const COVER_CONTROL_TOP = 10
+
+function getNativeTabsTopInset() {
+    return isNativeTabsEnabled() ? (getWindowSafeAreaInsets().top || 0) : 0
+}
+
+function nativeTabsTopPadStyle() {
+    const top = getNativeTabsTopInset()
+    return top > 0 ? { paddingTop: top } : undefined
+}
 
 function isCoverActionsMenuInNavbar(module, isDesktop) {
     return isDesktop && !!appSetting('cover', 'more_menu_in_navbar', module)
@@ -39,25 +49,37 @@ const BackButton = ({ isPerson }) => {
     const router = useRouter()
     const { currentUser } = useCurrentUser()
     const currentTab = useTabKey()
+    const isWeb = Platform.OS === 'web'
     const hasTabBack = canGoBackInTab(currentTab)
 
     const handleBackPress = () => {
         FeedbackHaptics('Medium')
+        if (isWeb) {
+            if (typeof window !== 'undefined' && window.history.length > 2) {
+                window.history.back()
+            } else if (router?.replace) {
+                router.replace('/')
+            }
+            return
+        }
         navigateBackInTab(router, currentTab, currentUser)
     }
 
-    if (!hasTabBack) {
+    if (!isWeb && !hasTabBack) {
         return null
     }
 
     return (
-        <Button
-            variant="default"
-            size="sm"
-            rounded={true}
-            startDecorator="ArrowLeft"
-            onPress={handleBackPress}
-        />
+        <View className="self-center">
+            <NeoButton
+                image="ArrowLeft"
+                style="glass"
+                controlSize="regular"
+                borderShape="circle"
+                accessibilityLabel="Back"
+                onPress={handleBackPress}
+            />
+        </View>
     )
 }
 
@@ -66,37 +88,7 @@ export function CoverBackButton({ isPerson }) {
 }
 
 function GetCoverBackButton({ isPerson }) {
-    const isWeb = Platform.OS === 'web'
-    const isDesktop = useIsDesktop()
-    const buttonVariant = isDesktop ? 'glass' : 'glass'
-    if (isWeb) return <></>
-    if (!isWeb) return <BackButton isPerson={isPerson} />
-    if (history.length > 2) {
-        return (
-            <View className="lg:hidden">
-                <NeoButton
-                    image="ArrowLeft"
-                    style={buttonVariant}
-                    controlSize="regular"
-                    borderShape="circle"
-                    onPress={() => history.back()}
-                />
-            </View>
-        )
-    } else {
-        return (
-            <View className="lg:hidden">
-                <Link href="/">
-                    <NeoButton
-                        image="ArrowLeft"
-                        style={buttonVariant}
-                        controlSize="regular"
-                        borderShape="circle"
-                    />
-                </Link>
-            </View>
-        )
-    }
+    return <BackButton isPerson={isPerson} />
 }
 
 function getCoverBackButton(is_person) {
@@ -106,7 +98,6 @@ function getCoverBackButton(is_person) {
 export function CoverSmall({ data, context, showMoreMenu, uri, mode, suppressContextSelector = false, suppressCoverBackButton = false }) {
     const isDesktop = useIsDesktop()
     const { currentUser } = useCurrentUser()
-    const isWeb = Platform.OS === 'web'
     if (!data?.profile?.module) return null
 
     const bPerson =
@@ -143,9 +134,9 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode, suppressCon
     }
 
     const smallCoverAvatarSize =
-        appSetting('cover', 'small_cover_avatar_display_size') || 'base'
-    const smallCoverNameSize =
-        appSetting('cover', 'small_cover_name_display_size') || (isDesktop ? '2xl' : 'lg')
+        appSetting('cover', 'small_cover_avatar_display_size') || 'md'
+    const profileTitle = data.profile.display_name || data.profile.title || ''
+    const profileUrl = data.profile.url || ''
     const menusInNavbar = isCoverActionsMenuInNavbar(
         data?.profile?.module,
         isDesktop,
@@ -153,42 +144,46 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode, suppressCon
 
     return (
         <Row
-            className={`${appSetting('layout', 'page_content_width_default')} ns--cover-small-title-wrapper-- px-3 lg:px-4 mx-auto ne-- `}
+            className={`${appSetting('layout', 'page_content_width_default')} ns--cover-small-title-wrapper-- px-3 lg:px-4 mx-auto items-center ne-- `}
+            style={nativeTabsTopPadStyle()}
         >
             {!currentUser && !bPerson ? (
                 <PageHeaderSmall />
             ) : (
                 <>
-                    <View className=" ns--cover-small-title-content-- flex-1 shrink items-center flex-row gap-2 h-14 ne-- ">
-                        {(!appSetting('context_selector', 'show_always') ||
-                            !isWeb) && !suppressCoverBackButton && (
-                                <>
+                    <View className=" ns--cover-small-title-content-- flex-1 shrink items-center flex-row gap-2 h-16 ne-- ">
+                        {!suppressCoverBackButton ? (
+                                <View className="h-16 justify-center web:lg:hidden">
                                     {getCoverBackButton(bPerson)}
-                                </>
-                            )}
+                                </View>
+                            ) : null}
 
                         <>
                             {(bPerson || coverMode !== 'none') && (
-                                <View className="items-center flex-row flex-1 shrink gap-2 ">
-                                    {bPerson && (
-                                        <View className="flex-none shrink-0">
-                                            <Profile
-                                                {...data.profile}
-                                                displayType="unit_wo_info"
-                                                displaySize={'base'}
-                                            />
-                                        </View>
-                                    )}
-                                    {(coverMode !== 'none') && (
-                                        <View className="flex-1 shrink overflow-hidden ">
-                                            <Profile
-                                                {...data.profile}
-                                                displayType="unit_wo_image"
-                                                displaySize={smallCoverNameSize}
-                                                showLinks={false}
-                                            />
-                                        </View>
-                                    )}
+                                <View className="flex-1 shrink min-w-0 h-16 justify-center">
+                                    <View className="max-w-full min-w-0 self-start justify-center">
+                                        <NeoButtonLink
+                                            href={profileUrl}
+                                            alt={profileTitle}
+                                            style="glass"
+                                            controlSize="regular"
+                                            borderShape={coverMode !== 'none' ? 'capsule' : 'circle'}
+                                            align="start"
+                                            contentInsets={coverMode !== 'none' ? 'mediaLeading' : undefined}
+                                            accessibilityLabel={profileTitle}
+                                            image={bPerson ? (
+                                                <View className="pointer-events-none shrink-0">
+                                                    <Profile
+                                                        {...data.profile}
+                                                        displayType="unit_wo_info"
+                                                        displaySize={smallCoverAvatarSize}
+                                                        showLinks={false}
+                                                    />
+                                                </View>
+                                            ) : undefined}
+                                            label={coverMode !== 'none' ? profileTitle : undefined}
+                                        />
+                                    </View>
                                 </View>
                             )}
                             {isAddSelector && !suppressContextSelector && (
@@ -207,8 +202,8 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode, suppressCon
 
                     </View>
                     {!menusInNavbar && (
-                        <View className=" ns--cover-small-title-menu-wrapper-- items-center justify-center h-14 ne--">
-                            <Row className=" ns--cover-small-title-menu-content-- w-full justify-between ne-- ">
+                        <View className=" ns--cover-small-title-menu-wrapper-- items-center justify-center h-16 ne--">
+                            <Row className=" ns--cover-small-title-menu-content-- w-full items-center justify-between ne-- ">
                                 {!showMoreMenu &&
                                     (!appSetting(
                                         'cover',
@@ -224,12 +219,14 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode, suppressCon
                                         </>
                                     )}
                                 <>
-                                    <CoverMenuMore
-                                        {...menu}
-                                        uri={uri}
-                                        allowZeroPersistant={!isDesktop}
-                                        isSplitMenu={!showMoreMenu}
-                                    />
+                                    <View className="h-16 justify-center">
+                                        <CoverMenuMore
+                                            {...menu}
+                                            uri={uri}
+                                            allowZeroPersistant={!isDesktop}
+                                            isSplitMenu={!showMoreMenu}
+                                        />
+                                    </View>
                                 </>
                             </Row>
                         </View>
@@ -270,6 +267,7 @@ function CoverImage({
 
     if (mode == 'cover') {
         const isCover = !!imageUrl
+        const overlayTop = COVER_CONTROL_TOP + getNativeTabsTopInset()
         return (
             <>
                 <View
@@ -291,7 +289,10 @@ function CoverImage({
                             <Loading />
                         </View>
                     ) : null}
-                    <Row className=" justify-end gap-2 absolute top-3 right-3  ">
+                    <Row
+                        className="justify-end gap-2 absolute right-3"
+                        style={{ top: overlayTop }}
+                    >
                         {allowSwitch ? (
                             <NeoButton
                                 image="RefreshCw"
@@ -304,16 +305,19 @@ function CoverImage({
                         {allowEdit ? (
                             <NeoButton
                                 image="Camera"
-                                label="Edit Cover"
-                                style="bordered"
-                                controlSize="small"
-                                borderShape="capsule"
+                                
+                                style="glass"
+                                controlSize="regular"
+                                borderShape="circle"
                                 disabled={isUploading}
                                 onPress={pick}
                             />
                         ) : null}
                     </Row>
-                    <View className="absolute lg:hidden top-3 left-3 z-50 ">
+                    <View
+                        className="absolute lg:hidden left-3 z-50"
+                        style={{ top: overlayTop }}
+                    >
                         {!suppressCoverBackButton ? getCoverBackButton(is_person) : null}
                     </View>
                 </View>
@@ -340,15 +344,27 @@ function CoverImage({
                     ) : null}
                 </View>
                 {allowEdit ? (
-                    <View className="absolute bottom-1 right-1 rounded-full bg-card p-1">
-                        <NeoButton
-                            image="Camera"
-                            style="glass"
-                            controlSize="small"
-                            borderShape="circle"
-                            disabled={isUploading}
-                            onPress={pick}
-                        />
+                    <View className="absolute bottom-0.5 lg:bottom-1 right-0.5 lg:right-1 rounded-full bg-card p-1">
+                        <View className="lg:hidden">
+                            <NeoButton
+                                image="Camera"
+                                style="glass"
+                                controlSize="mini"
+                                borderShape="circle"
+                                disabled={isUploading}
+                                onPress={pick}
+                            />
+                        </View>
+                        <View className="hidden lg:flex">
+                            <NeoButton
+                                image="Camera"
+                                style="glass"
+                                controlSize="small"
+                                borderShape="circle"
+                                disabled={isUploading}
+                                onPress={pick}
+                            />
+                        </View>
                     </View>
                 ) : null}
                 {modal}
@@ -415,22 +431,24 @@ export default function Cover({
         return (
             <>
                 {appSetting('context_selector', 'show_always') && !suppressContextSelector ? (
-                    <Row
-                        className={`web:${TABLET_MODE_FROM}:hidden items-center bg-card justify-between w-full px-3 h-14`}
-                    >
-                        <View className={`flex-1 justify-center`}>
-                            <ContextSelector data={context} url={uri} uri={uri} mode="compact" />
-                        </View>
-                        {!!data?.actions_menu && !menusInNavbar && (
-                            <View className={`bg-card/70`}>
-                                <CoverMenuMore
-                                    {...data.actions_menu}
-                                    uri={uri}
-                                    isSplitMenu={true}
-                                />
+                    <View style={nativeTabsTopPadStyle()}>
+                        <Row
+                            className={`web:${TABLET_MODE_FROM}:hidden items-center bg-card justify-between w-full px-3 h-14`}
+                        >
+                            <View className={`flex-1 justify-center`}>
+                                <ContextSelector data={context} url={uri} uri={uri} mode="compact" />
                             </View>
-                        )}
-                    </Row>
+                            {!!data?.actions_menu && !menusInNavbar && (
+                                <View className={`bg-card/70`}>
+                                    <CoverMenuMore
+                                        {...data.actions_menu}
+                                        uri={uri}
+                                        isSplitMenu={true}
+                                    />
+                                </View>
+                            )}
+                        </Row>
+                    </View>
                 ) : (
                     <></>
                 )}
@@ -441,16 +459,18 @@ export default function Cover({
     return (
         <View className={`${appSetting('layout', 'page_content_width_default')} ns--cover-wrapper-- mx-auto ne-- `}>
             {appSetting('context_selector', 'show_always') && !suppressContextSelector ? (
-                <Row
-                    className={`${TABLET_MODE_FROM}:hidden items-center w-full h-14 px-2 `}
-                >
-                    <View className={`${TABLET_MODE_FROM}:hidden flex-1`}>
-                        <View className="flex-1 justify-center ">
-                            <ContextSelector data={context} url={uri} uri={uri} mode="compact" />
+                <View style={nativeTabsTopPadStyle()}>
+                    <Row
+                        className={`${TABLET_MODE_FROM}:hidden items-center w-full h-14 px-2 `}
+                    >
+                        <View className={`${TABLET_MODE_FROM}:hidden flex-1`}>
+                            <View className="flex-1 justify-center ">
+                                <ContextSelector data={context} url={uri} uri={uri} mode="compact" />
+                            </View>
                         </View>
-                    </View>
-                    <View className="w-12 h-12 "></View>
-                </Row>
+                        <View className="w-12 h-12 "></View>
+                    </Row>
+                </View>
             ) : (
                 <></>
             )}
@@ -556,7 +576,7 @@ export default function Cover({
                         )}
                             {!isDesktop && <Row className="gap-2 min-w-0 overflow-hidden items-center min-h-10">
                             <Text
-                                className=" truncate tracking-tight text-xl sm:text-3xl font-bold text-foreground"
+                                className=" truncate tracking-tight text-2xl sm:text-3xl font-bold text-foreground"
                                 numberOfLines={1}
                             >
                                 {profileData.display_name ||
