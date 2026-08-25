@@ -23,7 +23,7 @@ import emitter from 'app/context/emitter'
 import { useSetHeader, useScrollValue, useSetScrollValue, getScrollValue, useListMaxScrollOffset, useSetListMaxScrollOffset, useSetCoverScrollCompensation, defaultHeader, useSetHeaderHeight, getHeaderWriteGeneration } from 'app/context/jotai/layout';
 import { isTabScopedChromeKey, useTabChromeKey } from 'app/context/tab-chrome';
 import { getComponent } from 'app/components/registry';
-import { useFocusEffect, useIsFocused, useRouter } from 'app/lib/hooks/router'
+import { useFocusEffect, useIsFocused } from 'app/lib/hooks/router'
 import { appSetting } from 'app/lib/util'
 import {
     getCachedConductorState,
@@ -70,6 +70,8 @@ const DynamicCoverHeader = React.memo(function DynamicCoverHeader({
     // Ignore leftover tab scroll from the previous screen until this profile's
     // atoms have been reset (same bug weave diagnosed as stale scrollValue).
     const armedRef = useRef(false);
+    // UniList zeros scroll+maxScrollOffset on submenu url change — do not treat that as scroll-to-top.
+    const preserveCollapsedRef = useRef(false);
     const [showSmall, setShowSmall] = useState(false);
     // Reanimated keeps the last animated `height` on the native view even when
     // useAnimatedStyle returns {}. While that sticky height is short, CoverImage
@@ -81,18 +83,26 @@ const DynamicCoverHeader = React.memo(function DynamicCoverHeader({
     const [fullHeight, setFullHeight] = useState(0);
     const [smallHeight, setSmallHeight] = useState(0);
     const measured = fullHeight > 0 && smallHeight > 0;
+    // A layout event only fires when the frame actually changes, so the measured
+    // heights must never be zeroed while mounted: the next cover may render at the
+    // same size, no onLayout arrives, and the header stays unmeasured forever —
+    // which disables the height animation and leaves the container at full height.
+    // Mark them stale instead; the next measurement replaces instead of growing.
+    const staleFullHeightRef = useRef(false);
+    const staleSmallHeightRef = useRef(false);
 
     const progress = useSharedValue(showSmall ? 1 : 0);
 
     useLayoutEffect(() => {
         armedRef.current = false;
+        preserveCollapsedRef.current = false;
         prevScrollRef.current = 0;
         compensatedRef.current = false;
         hasCollapsedRef.current = false;
         setShowSmall(false);
         setHeightLocked(false);
-        setFullHeight(0);
-        setSmallHeight(0);
+        staleFullHeightRef.current = true;
+        staleSmallHeightRef.current = true;
         setCoverScrollCompensation(0);
         setScrollValue(0);
         setListMaxScrollOffset(0);
@@ -108,6 +118,19 @@ const DynamicCoverHeader = React.memo(function DynamicCoverHeader({
                 return;
             }
             armedRef.current = true;
+            prevScrollRef.current = scrollValue;
+            return;
+        }
+
+        // Submenu tab switch: UniList resets atoms (unilist.js). Keep collapsed cover.
+        if (
+            maxScrollOffset === 0
+            && scrollValue <= 5
+            && prevScrollRef.current > 0
+        ) {
+            if (showSmall) {
+                preserveCollapsedRef.current = true;
+            }
             prevScrollRef.current = scrollValue;
             return;
         }
@@ -131,10 +154,20 @@ const DynamicCoverHeader = React.memo(function DynamicCoverHeader({
         const isLongList = expandedMax - heightGain > COVER_SWITCH_THRESHOLD + 50;
 
         const expand = () => {
+            preserveCollapsedRef.current = false;
             setShowSmall(false);
             compensatedRef.current = false;
             setCoverScrollCompensation(0);
         };
+
+        if (preserveCollapsedRef.current && showSmall) {
+            if (scrollValue > COVER_SWITCH_THRESHOLD) {
+                preserveCollapsedRef.current = false;
+            } else if (scrollValue < -5) {
+                expand();
+            }
+            return;
+        }
 
         if (showSmall) {
             if (isLongList) {
@@ -219,11 +252,21 @@ const DynamicCoverHeader = React.memo(function DynamicCoverHeader({
     const onFullLayout = useCallback((e) => {
         const height = e.nativeEvent.layout.height;
         if (height <= 0 || showSmall || heightLocked) return;
+        if (staleFullHeightRef.current) {
+            staleFullHeightRef.current = false;
+            setFullHeight(height);
+            return;
+        }
         setFullHeight((prev) => (height > prev ? height : prev));
     }, [showSmall, heightLocked]);
     const onSmallLayout = useCallback((e) => {
         const height = e.nativeEvent.layout.height;
         if (height <= 0) return;
+        if (staleSmallHeightRef.current) {
+            staleSmallHeightRef.current = false;
+            setSmallHeight(height);
+            return;
+        }
         setSmallHeight((prev) => (height > prev ? height : prev));
     }, []);
 
@@ -894,26 +937,17 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
         _setIndex(newIndex);
     }, []);
 
-    const router = useRouter();
-
-    // Web parity: history.pushState on submenu click so the shell URL tracks the tab.
-    // Without this, data.url stays on the entry page (group-respect/…) and re-opening
-    // that URL is a no-op — Expo does not re-render and url-only effects never run.
+    // Submenu tabs switch in place. The screen URL must stay on the page that
+    // owns the cover: changing it makes the shell look for page data under the
+    // new path, find none for a tab that was never opened, and unmount the whole
+    // page (cover included) until the fetch resolves. The tab content itself is
+    // loaded here by the route query, so no page-level navigation is needed.
     const onSelectTab = useCallback((tab) => {
         setIndex(tab.index);
-        const raw = tab?.link || tab?.key;
-        if (raw) {
-            const tabUrl = String(raw).startsWith('/') ? String(raw) : `/${raw}`;
-            try {
-                router.setParams({ url: tabUrl, tabHist: 'replace' });
-            } catch (_) {
-                /* router may be unavailable outside a screen */
-            }
-        }
         if (onChangeRoute) {
             onChangeRoute(routesRef.current?.[tab.index] ?? tab);
         }
-    }, [setIndex, router, onChangeRoute]);
+    }, [setIndex, onChangeRoute]);
 
     // Sync when page URL / soft-refresh timestamp changes (ts from profile soft-reload).
     // Skip the first run: useState already bootstrapped from conductor cache.
@@ -937,13 +971,15 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
 
         if (urlOrSearchChanged) {
             setRoutes(initedTabs);
+            // data.url points at the page, not at the active subtab, so only a real
+            // navigation may move the selection. On a soft refresh it would drag the
+            // user back to the entry tab.
+            const foundIndex = findConductorTabIndex(initedTabs, data?.url, useSectionAsMenu);
+            if (foundIndex !== -1 && foundIndex !== indexRef.current) {
+                setIndex(foundIndex);
+            }
         } else if (softRefresh) {
             setRoutes((current) => mergeConductorRoutes(initedTabs, current));
-        }
-
-        const foundIndex = findConductorTabIndex(initedTabs, data?.url, useSectionAsMenu);
-        if (foundIndex !== -1 && foundIndex !== indexRef.current) {
-            setIndex(foundIndex);
         }
     }, [keyword, data?.url, data?.timestamp, ts]);
 
@@ -1467,7 +1503,10 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
         (headerMode === 'small' && !appSetting('native', 'collapsible_header'));
 
     const coverBlock = data?.cover_block;
-    const pageUri = currentRoute?.pageData?.uri;
+    // Cover chrome (context selector, actions menu) belongs to the page that owns
+    // cover_block, so it must not follow the active subtab — otherwise every tab
+    // switch hands the cover a new uri and re-renders it.
+    const pageUri = data?.uri ?? currentRoute?.pageData?.uri;
     const pageContext = data?.context //currentRoute?.pageData?.context;
 
     const sceneHeaderComp = useMemo(
