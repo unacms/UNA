@@ -25,6 +25,27 @@ class BxCidaasConModule extends BxBaseModConnectModule
         parent::__construct($aModule);
     }
 
+	/**
+	 * This service need to be called when we call logout from UNA,
+	 * so it will propagate logout to IDP
+	 * Other words: logout in UNA, IDP and all other SP
+	 */
+	public function serviceLogout()
+	{
+		if (!isLogged())
+			return;
+
+		$sAccessToken = BxDolSession::getInstance()->getUnsetValue('cidaascon_access_token');
+		if (!$sAccessToken)
+			return;
+
+		try {
+			$this->_getProvider()->logout($sAccessToken)->wait();
+		} catch (Exception $oException) {
+            bx_log('bx_cidaas', $this->_getExceptionMessage($oException));
+        }
+	}
+
     /**
      * Redirect to Cidaas hosted login page.
      *
@@ -66,6 +87,20 @@ class BxCidaasConModule extends BxBaseModConnectModule
         exit;
     }
 
+    /**
+     * $aAuthData = [
+     *    [access_token] => eyJhbGciOiJSUz...
+     *    [id_token] => eyJhbGciOiJS...
+     *    [state] => TkkLRS6wp4ukNyEzPhZi
+     *    [expires_in] => 86400
+     *    [id_token_expires_in] => 86400
+     *    [token_type] => Bearer
+     *    [sub] => 21xxxxxx-9da8-4fd9-ad14-e5f3c615f55a
+     *    [sid] => c5xxxxxx-a54a-403e-b237-99c728059cc6
+     *    [identity_id] => 74e3bf36-d1d7-4e4c-a95b-5822abfc6b97
+     * ]
+     * @return void
+     */
     function actionHandle()
     {
         require_once(BX_DIRECTORY_PATH_INC . 'design.inc.php');
@@ -105,7 +140,10 @@ class BxCidaasConModule extends BxBaseModConnectModule
                 return;
             }
 
+            BxDolSession::getInstance()->setValue('cidaascon_access_token', $aAuthData['access_token']);
+
             $aRemoteProfileInfo = $oProvider->getUserProfile($aAuthData['access_token'])->wait();
+
         } catch (Exception $oException) {
             $this->_oTemplate->getPage(_t('_Error'), MsgBox($this->_getExceptionMessage($oException)));
             return;
@@ -163,6 +201,39 @@ class BxCidaasConModule extends BxBaseModConnectModule
     }
 
     /**
+     * 
+     * (
+     *     [last_used_identity_id] => 74e3bf36-d1d7-4e4c-a95b-5822abfc6b97
+     *     [sub] => 21e029a8-9da8-4fd9-ad14-e5f3c615f55a
+     *     [updated_at] => 1787238995
+     *     [createdTime] => 2026-08-20T15:16:35.513Z
+     *     [userStatus] => VERIFIED
+     *     [lastLoggedInTime] => 2026-08-24T10:05:34.3Z
+     *     [customFields] => Array
+     *         (
+     *             [city] => Sydney
+     *             [department] => Support
+     *             [job_title] => Support
+     *             [name_of_company] => UNA Inc
+     *             [other_interests] => IT
+     *             [responsibilty] => Support
+     *         )
+     * 
+     *     [email] => team@unacms.com
+     *     [email_verified] => 1
+     *     [provider] => self
+     *     [given_name] => UNA
+     *     [family_name] => Team
+     *     [address] => Array
+     *         (
+     *             [country] => Australia
+     *         )
+     * 
+     *     [user_status] => VERIFIED
+     *     [name] => UNA Team
+     *     [last_accessed_at] => 1787565934
+     * )
+     * 
      * @param $aProfileInfo - remote profile info
      * @param $sAlternativeName - suffix to add to NickName to make it unique
      * @return profile array info, ready for the local database
@@ -191,6 +262,7 @@ class BxCidaasConModule extends BxBaseModConnectModule
 
         $aProfileFields['name'] = $sName;
         $aProfileFields['fullname'] = $sFullname;
+        $aProfileFields['first_name'] = !empty($aProfileInfo['given_name']) ? $aProfileInfo['given_name'] : '';
         $aProfileFields['last_name'] = !empty($aProfileInfo['family_name']) ? $aProfileInfo['family_name'] : '';
         $aProfileFields['email'] = $sEmail;
         $aProfileFields['picture'] = !empty($aProfileInfo['picture']) ? $aProfileInfo['picture'] : '';
