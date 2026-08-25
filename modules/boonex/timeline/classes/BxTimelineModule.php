@@ -205,119 +205,50 @@ class BxTimelineModule extends BxBaseModNotificationsModule implements iBxDolCon
     function actionPin()
     {
         $iId = bx_process_input(bx_get('id'), BX_DATA_INT);
-        $aEvent = $this->_oDb->getEvents(array('browse' => 'id', 'value' => $iId));
-        if(empty($aEvent) || !is_array($aEvent))
-            return echoJson(array('code' => 1));
-
         $aParams = $this->_prepareParamsGet();
         $this->_iOwnerId = $aParams['owner_id'];
-        
-        $mixedAllowed = $this->{'isAllowed' . ((int)$aEvent['pinned'] == 0 ? 'Pin' : 'Unpin')}($aEvent, true);
-        if($mixedAllowed !== true)
-            return echoJson(array('code' => 2, 'message' => strip_tags($mixedAllowed)));
 
-        $aEvent['pinned'] = (int)$aEvent['pinned'] == 0 ? time() : 0;
-        if(!$this->_oDb->updateEvent(array('pinned' => $aEvent['pinned']), array('id' => $iId)))
-            return echoJson(array('code' => 3));
+        $a = $this->_performPin($iId);
+        if ((int)$a['code'] !== 0)
+            return echoJson($a);
 
-        $this->rebuildSlice();
-
-        echoJson(array(
-            'code' => 0, 
-            'id' => $iId, 
+        echoJson([
+            'code' => 0,
+            'id' => $a['id'],
             'eval' => $this->_oConfig->getJsObjectView($aParams) . '.onPinPost(oData)'
-        ));
+        ]);
     }
 
     function actionStick()
     {
-    	$iId = bx_process_input(bx_get('id'), BX_DATA_INT);
-    	$aEvent = $this->_oDb->getEvents(array('browse' => 'id', 'value' => $iId));
-        if(empty($aEvent) || !is_array($aEvent))
-            return echoJson(array('code' => 1));
-
+        $iId = bx_process_input(bx_get('id'), BX_DATA_INT);
         $aParams = $this->_prepareParamsGet();
         $this->_iOwnerId = $aParams['owner_id'];
 
-    	$mixedAllowed = $this->{'isAllowed' . ((int)$aEvent['sticked'] == 0 ? 'Stick' : 'Unstick')}($aEvent, true);
-    	if($mixedAllowed !== true)
-            return echoJson(array('code' => 2, 'message' => strip_tags($mixedAllowed)));
+        $a = $this->_performStick($iId);
+        if ((int)$a['code'] !== 0)
+            return echoJson($a);
 
-    	$aEvent['sticked'] = (int)$aEvent['sticked'] == 0 ? time() : 0;
-    	if(!$this->_oDb->updateEvent(array('sticked' => $aEvent['sticked']), array('id' => $iId)))
-            return echoJson(array('code' => 3));
-
-        $this->rebuildSlice();
-
-        bx_audit(
-            $iId, 
-            $this->getName(), 
-            '_sys_audit_action_' . ((int)$aEvent['sticked'] == 0 ? 'stick' : 'unstick'),  
-            $this->_prepareAuditParams($aEvent, false)
-        );
-        
-    	echoJson(array(
+        echoJson([
             'code' => 0,
-            'id' => $iId,
+            'id' => $a['id'],
             'eval' => $this->_oConfig->getJsObjectView($aParams) . '.onStickPost(oData)'
-        ));
+        ]);
     }
 
     function actionPromote()
     {
         $this->_iOwnerId = bx_process_input(bx_get('owner_id'), BX_DATA_INT);
-
         $iId = bx_process_input(bx_get('id'), BX_DATA_INT);
-        $aEvent = $this->_oDb->getEvents(array('browse' => 'id', 'value' => $iId));
 
-        $sAction = (int)$aEvent['promoted'] == 0 ? 'promote' : 'unpromote';
+        $a = $this->_performPromote($iId);
+        if ((int)$a['code'] !== 0)
+            return echoJson($a);
 
-        $mixedAllowed = $this->{'isAllowed' . ucfirst($sAction)}($aEvent, true);
-        if($mixedAllowed !== true)
-            return echoJson(array('code' => 1, 'message' => strip_tags($mixedAllowed)));
-
-        $aEvent['promoted'] = (int)$aEvent['promoted'] == 0 ? time() : 0;
-        if(!$this->_oDb->updateEvent(array('promoted' => $aEvent['promoted']), array('id' => $iId)))
-            return echoJson(array('code' => 2));
-
-        $this->rebuildSlice();
-
-        /**
-         * @hooks
-         * @hookdef hook-bx_timeline-promoted 'bx_timeline', 'promoted' - hook after an event was promoted
-         * - $unit_name - equals `bx_timeline`
-         * - $action - equals `promoted`
-         * - $object_id - event id
-         * - $sender_id - performer profile id
-         * - $extra_params - array of additional params with the following array keys:
-         *      - `owner_id` - [int] owner profile id
-         *      - `object_id` - [int] object id
-         *      - `object_author_id` - [int] object author profile id
-         * @hook @ref hook-bx_timeline-promoted
-         */
-        /**
-         * @hooks
-         * @hookdef hook-bx_timeline-unpromoted 'bx_timeline', 'unpromoted' - hook after an event was unpromoted
-         * It's equivalent to @ref hook-bx_timeline-promoted
-         * @hook @ref hook-bx_timeline-unpromoted
-         */
-        bx_alert($this->_oConfig->getObject('alert'), $sAction . 'd', $iId, (int)$this->getUserId(), [
-            'owner_id' => $aEvent['owner_id'],
-            'object_id' => $aEvent['object_id'],
-            'object_author_id' => $this->_oConfig->isSystem($aEvent['type'], $aEvent['action']) ? $aEvent['owner_id'] : $aEvent['object_id']
-        ]);
-        
-        bx_audit(
-            $iId, 
-            $this->getName(), 
-            '_sys_audit_action_' . $sAction,  
-            $this->_prepareAuditParams($aEvent, false)
-        );
-
-        echoJson(array(
-            'code' => 0, 
+        echoJson([
+            'code' => 0,
             'message' => _t('_bx_timeline_txt_msg_performed_action')
-        ));
+        ]);
     }
 
     function actionMarkAsRead()
@@ -975,6 +906,9 @@ class BxTimelineModule extends BxBaseModNotificationsModule implements iBxDolCon
             'Get' => '',
             'Repost' => '',
             'Delete' => '',
+            'Pin' => '',
+            'Stick' => '',
+            'Promote' => '',
             'GetEditForm' => '',
             'GetLiveUpdate' => ''
         ));
@@ -3361,6 +3295,106 @@ class BxTimelineModule extends BxBaseModNotificationsModule implements iBxDolCon
             return false;
 
         return true;
+    }
+
+    /**
+     * @page service Service Calls
+     * @section bx_timeline Timeline
+     * @subsection bx_timeline-other Other
+     * @subsubsection bx_timeline-pin pin
+     * 
+     * @code bx_srv('bx_timeline', 'pin', [...]); @endcode
+     * 
+     * Pin or unpin a timeline event by ID. Pin is shown on the profile timeline for the owner.
+     * 
+     * @param $iId integer value with event ID.
+     * @return array with the result of operation.
+     * 
+     * @see BxTimelineModule::servicePin
+     */
+    /** 
+     * @ref bx_timeline-pin "pin"
+     */
+    public function servicePin($iId)
+    {
+        $a = $this->_performPin((int)$iId);
+        if ((int)$a['code'] !== 0)
+            return $a;
+
+        return [
+            'code' => 0,
+            'id' => $a['id'],
+            'pinned' => $a['pinned'],
+            'title' => _t('_bx_timeline_menu_item_title_item_' . $a['next']),
+            'request_url' => $this->getName() . '/pin/&params[]=' . $a['id'],
+        ];
+    }
+
+    /**
+     * @page service Service Calls
+     * @section bx_timeline Timeline
+     * @subsection bx_timeline-other Other
+     * @subsubsection bx_timeline-stick stick
+     * 
+     * @code bx_srv('bx_timeline', 'stick', [...]); @endcode
+     * 
+     * Stick or unstick a timeline event by ID. Stick is shown on the public timeline for everybody.
+     * 
+     * @param $iId integer value with event ID.
+     * @return array with the result of operation.
+     * 
+     * @see BxTimelineModule::serviceStick
+     */
+    /** 
+     * @ref bx_timeline-stick "stick"
+     */
+    public function serviceStick($iId)
+    {
+        $a = $this->_performStick((int)$iId);
+        if ((int)$a['code'] !== 0)
+            return $a;
+
+        return [
+            'code' => 0,
+            'id' => $a['id'],
+            'sticked' => $a['sticked'],
+            'title' => _t('_bx_timeline_menu_item_title_item_' . $a['next']),
+            'request_url' => $this->getName() . '/stick/&params[]=' . $a['id'],
+        ];
+    }
+
+    /**
+     * @page service Service Calls
+     * @section bx_timeline Timeline
+     * @subsection bx_timeline-other Other
+     * @subsubsection bx_timeline-promote promote
+     * 
+     * @code bx_srv('bx_timeline', 'promote', [...]); @endcode
+     * 
+     * Promote or unpromote a timeline event by ID.
+     * 
+     * @param $iId integer value with event ID.
+     * @return array with the result of operation.
+     * 
+     * @see BxTimelineModule::servicePromote
+     */
+    /** 
+     * @ref bx_timeline-promote "promote"
+     */
+    public function servicePromote($iId)
+    {
+        $a = $this->_performPromote((int)$iId);
+        if ((int)$a['code'] !== 0)
+            return $a;
+
+        return [
+            'code' => 0,
+            'id' => $a['id'],
+            'promoted' => $a['promoted'],
+            'title' => _t('_bx_timeline_menu_item_title_item_' . $a['next']),
+            'request_url' => $this->getName() . '/promote/&params[]=' . $a['id'],
+            'message' => _t('_bx_timeline_txt_msg_performed_action')
+        ];
     }
 
     /**
@@ -5845,6 +5879,108 @@ class BxTimelineModule extends BxBaseModNotificationsModule implements iBxDolCon
             return;
 
         $this->_oDb->rebuildSlice();
+    }
+
+    protected function _performPin($iId)
+    {
+        $iId = (int)$iId;
+        $aEvent = $this->_oDb->getEvents(['browse' => 'id', 'value' => $iId]);
+        if(empty($aEvent) || !is_array($aEvent))
+            return ['code' => 1];
+
+        $bPin = (int)$aEvent['pinned'] == 0;
+        $mixedAllowed = $this->{'isAllowed' . ($bPin ? 'Pin' : 'Unpin')}($aEvent, true);
+        if($mixedAllowed !== true)
+            return ['code' => 2, 'message' => strip_tags($mixedAllowed)];
+
+        $aEvent['pinned'] = $bPin ? time() : 0;
+        if(!$this->_oDb->updateEvent(['pinned' => $aEvent['pinned']], ['id' => $iId]))
+            return ['code' => 3];
+
+        $this->rebuildSlice();
+        $this->onEdit($iId);
+
+        return [
+            'code' => 0,
+            'id' => $iId,
+            'pinned' => (int)$aEvent['pinned'],
+            'next' => $bPin ? 'unpin' : 'pin',
+        ];
+    }
+
+    protected function _performStick($iId)
+    {
+        $iId = (int)$iId;
+        $aEvent = $this->_oDb->getEvents(['browse' => 'id', 'value' => $iId]);
+        if(empty($aEvent) || !is_array($aEvent))
+            return ['code' => 1];
+
+        $bStick = (int)$aEvent['sticked'] == 0;
+        $mixedAllowed = $this->{'isAllowed' . ($bStick ? 'Stick' : 'Unstick')}($aEvent, true);
+        if($mixedAllowed !== true)
+            return ['code' => 2, 'message' => strip_tags($mixedAllowed)];
+
+        $aEvent['sticked'] = $bStick ? time() : 0;
+        if(!$this->_oDb->updateEvent(['sticked' => $aEvent['sticked']], ['id' => $iId]))
+            return ['code' => 3];
+
+        $this->rebuildSlice();
+        $this->onEdit($iId);
+
+        $sAction = $bStick ? 'stick' : 'unstick';
+        bx_audit(
+            $iId,
+            $this->getName(),
+            '_sys_audit_action_' . $sAction,
+            $this->_prepareAuditParams($aEvent, false)
+        );
+
+        return [
+            'code' => 0,
+            'id' => $iId,
+            'sticked' => (int)$aEvent['sticked'],
+            'next' => $bStick ? 'unstick' : 'stick',
+        ];
+    }
+
+    protected function _performPromote($iId)
+    {
+        $iId = (int)$iId;
+        $aEvent = $this->_oDb->getEvents(['browse' => 'id', 'value' => $iId]);
+        if(empty($aEvent) || !is_array($aEvent))
+            return ['code' => 1];
+
+        $sAction = (int)$aEvent['promoted'] == 0 ? 'promote' : 'unpromote';
+        $mixedAllowed = $this->{'isAllowed' . ucfirst($sAction)}($aEvent, true);
+        if($mixedAllowed !== true)
+            return ['code' => 1, 'message' => strip_tags($mixedAllowed)];
+
+        $aEvent['promoted'] = (int)$aEvent['promoted'] == 0 ? time() : 0;
+        if(!$this->_oDb->updateEvent(['promoted' => $aEvent['promoted']], ['id' => $iId]))
+            return ['code' => 2];
+
+        $this->rebuildSlice();
+        $this->onEdit($iId);
+
+        bx_alert($this->_oConfig->getObject('alert'), $sAction . 'd', $iId, (int)$this->getUserId(), [
+            'owner_id' => $aEvent['owner_id'],
+            'object_id' => $aEvent['object_id'],
+            'object_author_id' => $this->_oConfig->isSystem($aEvent['type'], $aEvent['action']) ? $aEvent['owner_id'] : $aEvent['object_id']
+        ]);
+
+        bx_audit(
+            $iId,
+            $this->getName(),
+            '_sys_audit_action_' . $sAction,
+            $this->_prepareAuditParams($aEvent, false)
+        );
+
+        return [
+            'code' => 0,
+            'id' => $iId,
+            'promoted' => (int)$aEvent['promoted'],
+            'next' => (int)$aEvent['promoted'] == 0 ? 'promote' : 'unpromote',
+        ];
     }
 
 
