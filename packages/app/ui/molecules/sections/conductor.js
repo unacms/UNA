@@ -1,6 +1,6 @@
 import React, { useCallback, useState, useEffect, useLayoutEffect, useMemo, useRef, useContext } from "react";
 import { Platform } from 'react-native';
-import Animated, { useSharedValue, useAnimatedStyle, withTiming, interpolate, cancelAnimation, runOnJS } from 'react-native-reanimated';
+import Animated, { useSharedValue, useAnimatedStyle, interpolate, Extrapolation, useAnimatedReaction, runOnJS } from 'react-native-reanimated';
 import { View, ScrollView, Row, Pressable } from 'app/design/view';
 import { Text } from 'app/design/typography';
 import UniList from 'app/ui/atoms/unilist'
@@ -20,7 +20,7 @@ import { useBottomSheetData } from 'app/context/bottomsheet';
 import { BlockByName } from 'app/components/block';
 import Cover, { CoverSmall, CoverBackButton } from 'app/components/elements/cover';
 import emitter from 'app/context/emitter'
-import { useSetHeader, useScrollValue, useSetScrollValue, getScrollValue, useListMaxScrollOffset, useSetListMaxScrollOffset, useSetCoverScrollCompensation, defaultHeader, useSetHeaderHeight, getHeaderWriteGeneration } from 'app/context/jotai/layout';
+import { useSetHeader, getScrollValue, defaultHeader, useSetHeaderHeight, getHeaderWriteGeneration } from 'app/context/jotai/layout';
 import { isTabScopedChromeKey, useTabChromeKey } from 'app/context/tab-chrome';
 import { getComponent } from 'app/components/registry';
 import { getWindowSafeAreaInsets, useFocusEffect, useIsFocused } from 'app/lib/hooks/router'
@@ -39,17 +39,10 @@ import {
 
 const conductorTheme = appSetting('theme', 'conductor')
 
-// Scroll offset at which the full cover finishes crossfading into the small cover.
-const COVER_SWITCH_THRESHOLD = 100;
-// Matches the web crossfade/collapse duration in conductor.web.js.
-const COVER_SWITCH_DURATION = 300;
-
 /**
- * Native counterpart to the web cover crossfade: blends the full cover into the
- * small cover and animates the container height so the tabs/filter below glide
- * up instead of jumping. The full layer stays in-flow (Yoga needs that height);
- * the small layer overlays it. `progress` is the ground-truth state (0 = full,
- * 1 = small); height and opacities are derived from it.
+ * Overlay + translateY like Showtime. Cover and CoverSmall are never
+ * mounted together — stacking their Hosts crashes the back button even
+ * before any scroll.
  */
 const DynamicCoverHeader = React.memo(function DynamicCoverHeader({
     pageKey,
@@ -57,243 +50,76 @@ const DynamicCoverHeader = React.memo(function DynamicCoverHeader({
     coverHeaderSmall,
     sceneHeader,
     filter,
+    leading,
+    coverScrollY,
+    onOverlayHeight,
 }) {
-    const scrollValue = useScrollValue();
-    const setScrollValue = useSetScrollValue();
-    const maxScrollOffset = useListMaxScrollOffset();
-    const setListMaxScrollOffset = useSetListMaxScrollOffset();
-    const setCoverScrollCompensation = useSetCoverScrollCompensation();
-    const prevScrollRef = useRef(0);
-    // Whether the list currently has compensating bottom padding (see unilist.js).
-    const compensatedRef = useRef(false);
-    // Ignore leftover tab scroll from the previous screen until this profile's
-    // atoms have been reset (same bug weave diagnosed as stale scrollValue).
-    const armedRef = useRef(false);
-    // UniList zeros scroll+maxScrollOffset on submenu url change — do not treat that as scroll-to-top.
-    const preserveCollapsedRef = useRef(false);
+    const [coverHeight, setCoverHeight] = useState(0);
     const [showSmall, setShowSmall] = useState(false);
-    // Reanimated keeps the last animated `height` on the native view even when
-    // useAnimatedStyle returns {}. While that sticky height is short, CoverImage
-    // (flex-1) collapses the banner to 0 and the overlapping avatar is clipped.
-    // Only attach the animated height style while collapsing/expanding.
-    const [heightLocked, setHeightLocked] = useState(false);
-    const hasCollapsedRef = useRef(false);
-
-    const [fullHeight, setFullHeight] = useState(0);
-    const [smallHeight, setSmallHeight] = useState(0);
-    const measured = fullHeight > 0 && smallHeight > 0;
-    // A layout event only fires when the frame actually changes, so the measured
-    // heights must never be zeroed while mounted: the next cover may render at the
-    // same size, no onLayout arrives, and the header stays unmeasured forever —
-    // which disables the height animation and leaves the container at full height.
-    // Mark them stale instead; the next measurement replaces instead of growing.
-    const staleFullHeightRef = useRef(false);
-    const staleSmallHeightRef = useRef(false);
-
-    const progress = useSharedValue(showSmall ? 1 : 0);
+    const overlayMaxRef = useRef(0);
+    const compactHeight = 64 + (isNativeTabsEnabled() ? (getWindowSafeAreaInsets().top || 0) : 0);
+    const collapseRange = Math.max(0, coverHeight - compactHeight);
 
     useLayoutEffect(() => {
-        armedRef.current = false;
-        preserveCollapsedRef.current = false;
-        prevScrollRef.current = 0;
-        compensatedRef.current = false;
-        hasCollapsedRef.current = false;
+        overlayMaxRef.current = 0;
+        setCoverHeight(0);
         setShowSmall(false);
-        setHeightLocked(false);
-        staleFullHeightRef.current = true;
-        staleSmallHeightRef.current = true;
-        setCoverScrollCompensation(0);
-        setScrollValue(0);
-        setListMaxScrollOffset(0);
-        cancelAnimation(progress);
-        progress.set(0);
-    }, [pageKey, setCoverScrollCompensation, setScrollValue, setListMaxScrollOffset, progress]);
+        coverScrollY?.set(0);
+        onOverlayHeight?.(0);
+    }, [pageKey, coverScrollY, onOverlayHeight]);
 
-    useEffect(() => {
-        if (!armedRef.current) {
-            // Previous screen's offset is still in the tab atom — do not collapse.
-            if (scrollValue > COVER_SWITCH_THRESHOLD) {
-                prevScrollRef.current = 0;
-                return;
-            }
-            armedRef.current = true;
-            prevScrollRef.current = scrollValue;
-            return;
-        }
+    useAnimatedReaction(
+        () => collapseRange > 0 && (coverScrollY?.get() ?? 0) >= collapseRange,
+        (collapsed, prev) => {
+            if (collapsed !== prev) runOnJS(setShowSmall)(!!collapsed);
+        },
+        [collapseRange]
+    );
 
-        // Submenu tab switch: UniList resets atoms (unilist.js). Keep collapsed cover.
-        if (
-            maxScrollOffset === 0
-            && scrollValue <= 5
-            && prevScrollRef.current > 0
-        ) {
-            if (showSmall) {
-                preserveCollapsedRef.current = true;
-            }
-            prevScrollRef.current = scrollValue;
-            return;
-        }
-
-        // Global scrollDirection is forced to 0 below 100px (see unilist.js),
-        // so track the direction locally from scrollValue deltas.
-        const delta = scrollValue - prevScrollRef.current;
-        prevScrollRef.current = scrollValue;
-
-        // Collapsing the cover grows the list viewport by heightGain, which
-        // shrinks maxScrollOffset and can clamp the scroll offset — the toggle
-        // then feeds back into itself and the cover oscillates. On short lists
-        // we neutralize this with compensating bottom padding (see unilist.js);
-        // on long lists no padding is applied, so add the gain back to compare
-        // against a value stable across collapse/expand.
-        const heightGain = measured ? fullHeight - smallHeight : 0;
-        const expandedMax =
-            maxScrollOffset + (showSmall && !compensatedRef.current ? heightGain : 0);
-        // Long list: even after collapsing, the offset cannot be clamped below
-        // the switch threshold, so the symmetric threshold rule is stable.
-        const isLongList = expandedMax - heightGain > COVER_SWITCH_THRESHOLD + 50;
-
-        const expand = () => {
-            preserveCollapsedRef.current = false;
-            setShowSmall(false);
-            compensatedRef.current = false;
-            setCoverScrollCompensation(0);
-        };
-
-        if (preserveCollapsedRef.current && showSmall) {
-            if (scrollValue > COVER_SWITCH_THRESHOLD) {
-                preserveCollapsedRef.current = false;
-            } else if (scrollValue < -5) {
-                expand();
-            }
-            return;
-        }
-
-        if (showSmall) {
-            if (isLongList) {
-                if (scrollValue <= COVER_SWITCH_THRESHOLD) expand();
-            } else if (scrollValue < -5 || (scrollValue <= 5 && delta < 0)) {
-                // Deliberate pull-down past the top (iOS bounce) or an upward
-                // scroll reaching the top (Android) expands the cover back.
-                expand();
-            }
-            return;
-        }
-
-        if (isLongList) {
-            if (scrollValue > COVER_SWITCH_THRESHOLD) setShowSmall(true);
-            return;
-        }
-
-        // Short list: collapse on a downward scroll and add compensating bottom
-        // padding so the list keeps its scroll range and the cover can always be
-        // expanded back. Skip barely scrollable lists where rubber-banding would
-        // settle inside the expand zone and cause flicker.
-        if (measured && delta > 0 && scrollValue > 0 && maxScrollOffset > 30) {
-            setShowSmall(true);
-            compensatedRef.current = true;
-            setCoverScrollCompensation(heightGain);
-        }
-    }, [scrollValue, maxScrollOffset, fullHeight, smallHeight, measured, showSmall, setCoverScrollCompensation]);
-
-    // Never leave stale padding behind when the header unmounts (tab/page change).
-    useEffect(() => {
-        return () => setCoverScrollCompensation(0);
-    }, [setCoverScrollCompensation]);
-
-    useEffect(() => {
-        if (!measured) {
-            cancelAnimation(progress);
-            progress.set(showSmall ? 1 : 0);
-            setHeightLocked(false);
-            return;
-        }
-
-        if (showSmall) {
-            hasCollapsedRef.current = true;
-            setHeightLocked(true);
-            cancelAnimation(progress);
-            progress.set(withTiming(1, { duration: COVER_SWITCH_DURATION }));
-            return;
-        }
-
-        // Initial expanded state: never lock height — let Yoga size the cover.
-        if (!hasCollapsedRef.current) {
-            cancelAnimation(progress);
-            progress.set(0);
-            setHeightLocked(false);
-            return;
-        }
-
-        // Expanding after a collapse: keep height locked until the animation ends,
-        // then detach so a sticky Reanimated height cannot crush CoverImage.
-        setHeightLocked(true);
-        cancelAnimation(progress);
-        progress.set(
-            withTiming(0, { duration: COVER_SWITCH_DURATION }, (finished) => {
-                if (finished) {
-                    runOnJS(setHeightLocked)(false);
-                }
-            }),
-        );
-    }, [showSmall, measured, progress]);
-
-    const containerStyle = useAnimatedStyle(() => {
-        return {
-            height: interpolate(progress.get(), [0, 1], [fullHeight, smallHeight]),
-            overflow: 'hidden',
-            justifyContent: 'flex-start',
-        };
-    }, [fullHeight, smallHeight]);
-
-    const fullStyle = useAnimatedStyle(() => ({ opacity: 1 - progress.get() }));
-    const smallStyle = useAnimatedStyle(() => ({ opacity: progress.get() }));
-
-    const onFullLayout = useCallback((e) => {
-        const height = e.nativeEvent.layout.height;
-        if (height <= 0 || showSmall || heightLocked) return;
-        if (staleFullHeightRef.current) {
-            staleFullHeightRef.current = false;
-            setFullHeight(height);
-            return;
-        }
-        setFullHeight((prev) => (height > prev ? height : prev));
-    }, [showSmall, heightLocked]);
-    const onSmallLayout = useCallback((e) => {
+    const onCoverLayout = useCallback((e) => {
         const height = e.nativeEvent.layout.height;
         if (height <= 0) return;
-        if (staleSmallHeightRef.current) {
-            staleSmallHeightRef.current = false;
-            setSmallHeight(height);
-            return;
-        }
-        setSmallHeight((prev) => (height > prev ? height : prev));
+        setCoverHeight((prev) => (height > prev ? height : prev));
     }, []);
 
+    const onRootLayout = useCallback((e) => {
+        const height = e.nativeEvent.layout.height;
+        if (height > overlayMaxRef.current) {
+            overlayMaxRef.current = height;
+            onOverlayHeight?.(height);
+        }
+    }, [onOverlayHeight]);
+
+    const translateStyle = useAnimatedStyle(() => {
+        if (showSmall) return { transform: [{ translateY: 0 }] };
+        const y = coverScrollY ? Math.max(0, coverScrollY.get()) : 0;
+        return {
+            transform: [{
+                translateY: collapseRange > 0
+                    ? interpolate(y, [0, collapseRange], [0, -collapseRange], Extrapolation.CLAMP)
+                    : 0,
+            }],
+        };
+    }, [collapseRange, coverScrollY, showSmall]);
+
     return (
-        <View className="w-full">
-            <Animated.View
-                style={[
-                    { width: '100%', position: 'relative', overflow: 'visible' },
-                    heightLocked ? containerStyle : null,
-                ]}
-            >
-                <Animated.View
-                    style={[{ width: '100%' }, fullStyle]}
-                    pointerEvents={showSmall ? 'none' : 'auto'}
-                    onLayout={onFullLayout}
-                >
-                    {coverHeader}
-                </Animated.View>
-                <Animated.View
-                    style={[{ position: 'absolute', top: 0, left: 0, right: 0 }, smallStyle]}
-                    pointerEvents={showSmall ? 'auto' : 'none'}
-                    onLayout={onSmallLayout}
-                >
-                    {coverHeaderSmall}
-                </Animated.View>
+        <View
+            pointerEvents="box-none"
+            onLayout={onRootLayout}
+            style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10 }}
+        >
+            {leading}
+            <Animated.View className="bg-background" style={translateStyle}>
+                {showSmall ? (
+                    coverHeaderSmall
+                ) : (
+                    <View onLayout={onCoverLayout}>
+                        {coverHeader}
+                    </View>
+                )}
+                {sceneHeader}
+                {filter}
             </Animated.View>
-            {sceneHeader}
-            {filter}
         </View>
     );
 });
@@ -306,11 +132,11 @@ const TabSceneHeader = React.memo(function TabSceneHeader2({
     sceneHeader,
     filter,
     ts,
+    coverScrollY,
+    onOverlayHeight,
 }) {
     const ContextSelector = getComponent('molecule', 'context_selector');
-    // One selector for dynamic cover profiles (groups/spaces). Full + small cover
-    // layers stay mounted during crossfade; each DropdownPopup owns an RN Modal and
-    // opening one while two are mounted crashes iOS.
+    // One selector for dynamic cover profiles (groups/spaces).
     const useStandaloneContextSelector =
         appSetting('context_selector', 'show_always') &&
         pageContext &&
@@ -373,16 +199,16 @@ const TabSceneHeader = React.memo(function TabSceneHeader2({
     );
     if (headerMode === 'dynamic') {
         return (
-            <View className="w-full">
-                {standaloneContextSelector}
-                <DynamicCoverHeader
-                    pageKey={coverKey}
-                    coverHeader={coverHeader}
-                    coverHeaderSmall={coverHeaderSmall}
-                    sceneHeader={sceneHeader}
-                    filter={filter}
-                />
-            </View>
+            <DynamicCoverHeader
+                pageKey={coverKey}
+                coverHeader={coverHeader}
+                coverHeaderSmall={coverHeaderSmall}
+                sceneHeader={sceneHeader}
+                filter={filter}
+                leading={standaloneContextSelector}
+                coverScrollY={coverScrollY}
+                onOverlayHeight={onOverlayHeight}
+            />
         );
     }
     if (headerMode === 'small') {
@@ -665,6 +491,8 @@ const TabScene = React.memo(({
     skipHeaderOffset,
     listRef,
     leftbarExcludedFromMainIds = null,
+    coverOverlayPad = 0,
+    coverScrollY,
 }) => {
     const unitType = useMemo(() => {
         const type = getUnitModeBySource(route?.endpoint)
@@ -823,6 +651,8 @@ const TabScene = React.memo(({
             refreshing={refreshing}
             onEndReached={handleEndReached}
             skipHeaderOffset={skipHeaderOffset}
+            coverOverlayPad={coverOverlayPad}
+            coverScrollY={coverScrollY}
             refer={listRef}
         />
     )
@@ -871,6 +701,11 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
     isFocusedRef.current = isFocused;
 
     const listRef = useRef(null);
+    const coverScrollY = useSharedValue(0);
+    const [coverOverlayPad, setCoverOverlayPad] = useState(0);
+    const onOverlayHeight = useCallback((height) => {
+        setCoverOverlayPad((prev) => (prev === height ? prev : height));
+    }, []);
     const activeRequestUrlRef = useRef(null);
     const pageRevRef = useRef({
         url: data?.url,
@@ -1521,9 +1356,11 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
                 sceneHeader={sceneHeader}
                 filter={filter}
                 ts={ts}
+                coverScrollY={coverScrollY}
+                onOverlayHeight={onOverlayHeight}
             />
         ),
-        [headerMode, coverBlock, pageUri, pageContext, sceneHeader, filter, ts]
+        [headerMode, coverBlock, pageUri, pageContext, sceneHeader, filter, ts, coverScrollY, onOverlayHeight]
     );
 
     const subHeaderRef = useRef(sceneHeaderComp);
@@ -1594,6 +1431,8 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
         skipHeaderOffset: useLocalHeader,
         listRef: listRef,
         leftbarExcludedFromMainIds,
+        coverOverlayPad: headerMode === 'dynamic' ? coverOverlayPad : 0,
+        coverScrollY: headerMode === 'dynamic' ? coverScrollY : undefined,
     };
 
     const Form = getComponent('element', 'form');
@@ -1623,10 +1462,11 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
 
     return (
         <View className="w-full h-full ">
-            <View className="w-full flex-1 ">
+            <View className="w-full flex-1 " style={headerMode === 'dynamic' ? { overflow: 'hidden' } : undefined}>
                 <Snackbar visible={snackbarVisible} onPress={showNewContent2} onDismiss={() => setSnackbarVisible(false)} variant="primary" title={t('Show New Posts')} size="sm" />
-                {useLocalHeader && sceneHeaderComp}
+                {useLocalHeader && headerMode !== 'dynamic' ? sceneHeaderComp : null}
                 <TabScene {...tabSceneProps} />
+                {useLocalHeader && headerMode === 'dynamic' ? sceneHeaderComp : null}
             </View>
         </View>
     );
