@@ -43,7 +43,7 @@ import Snackbar from 'app/ui/atoms/snackbar'
 import DropdownPopup from 'app/ui/atoms/dropdown-popup'
 import { BlockWrapper } from 'app/components/block-wrapper'
 import { useIsFocused } from 'app/lib/hooks/router'
-import { getScrollValue } from 'app/context/jotai/layout'
+import { useGetScrollValue } from 'app/context/jotai/layout'
 import { setListScrollOffset } from 'app/lib/cache/list-scroll-cache'
 
 import {
@@ -70,6 +70,7 @@ export default function Browse(props) {
     const isFocused = useIsFocused();
     const isFocusedRef = useRef(isFocused);
     isFocusedRef.current = isFocused;
+    const getScrollValue = useGetScrollValue();
     const [refetchState, dispatch] = useReducer(refetchUniListReducer, {
         visibleItems: [],
         hasNewData: false
@@ -348,7 +349,7 @@ export default function Browse(props) {
             refetch();
         });
         return () => subscription.remove();
-    }, [props.data?.unit, isOneLine, isOnePage, data.request_url, props?.url, refetch]);
+    }, [props.data?.unit, isOneLine, isOnePage, data.request_url, props?.url, refetch, getScrollValue]);
 
     const dataItems = refetchState.visibleItems
 

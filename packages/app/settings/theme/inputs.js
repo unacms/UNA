@@ -37,9 +37,9 @@ export const settingsInputs = {
         },
         // Shared control heights + default radius — text inputs, selects, matching surfaces.
         size:{
-            small: 'px-3 py-1.5 leading-4 min-h-10 rounded-lg',
-            regular: 'px-3 py-2 leading-5 min-h-12 rounded-xl',
-            large: 'px-4 py-2 leading-6 min-h-16 rounded-2xl',
+            small: 'px-3 py-1.5 leading-4 min-h-9 rounded-lg',
+            regular: 'px-3 py-2 leading-5 min-h-11 rounded-xl',
+            large: 'px-4 py-2 leading-6 min-h-14 rounded-2xl',
         },
         // Height-only tokens for chip wells / wrappers that bring their own padding.
         surface_size:{

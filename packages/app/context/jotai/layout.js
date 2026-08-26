@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import { atom, useSetAtom, useAtomValue } from 'jotai';
 import { Platform } from 'react-native'
 import { useTabChromeKey } from 'app/context/tab-chrome';
@@ -19,19 +20,16 @@ export const getHeaderWriteGeneration = () => headerWriteGeneration;
 export const footerAtom = atom(true);
 export const scrollDirectionAtom = atom(0);
 export const scrollValueAtom = atom(0);
-// Non-reactive mirror. Scroll writers fire every frame — subscribe with
-// `useScrollValue()` only when the UI must track offset continuously
-// (cover collapse, overlay header). Callbacks should use `getScrollValue()`.
-let scrollValueCurrent = 0;
-export const getScrollValue = () => scrollValueCurrent;
-/** Compat for callers that still hook `useGetScrollValue()`. */
-export const useGetScrollValue = () => getScrollValue;
-const setScrollValueAtom = atom(null, (_get, set, value) => {
-    const next = Math.round(Number(value));
-    if (!Number.isFinite(next) || next === scrollValueCurrent) return;
-    scrollValueCurrent = next;
-    set(scrollValueAtom, next);
-});
+// Non-reactive mirror, keyed per tab. Scroll writers fire every frame — subscribe
+// with `useScrollValue()` only when the UI must track offset continuously
+// (cover collapse, overlay header). Callbacks should use `useGetScrollValue()`.
+const scrollValueCurrentByTab = new Map();
+export const getScrollValue = (tabKey = 'web') => scrollValueCurrentByTab.get(tabKey) ?? 0;
+/** Tab-scoped getter: reads the scroll offset of the tab this component lives in. */
+export const useGetScrollValue = () => {
+    const tabKey = useTabChromeKey();
+    return useCallback(() => getScrollValue(tabKey), [tabKey]);
+};
 /** Max scroll offset the active list can reach (content height − viewport). */
 export const listMaxScrollOffsetAtom = atom(0);
 /**
@@ -55,6 +53,41 @@ export const footerHeightAtom = atom(0);
 const headerAtomsByTab = new Map([['web', headerAtom]]);
 const headerHeightAtomsByTab = new Map([['web', headerHeightAtom]]);
 const setHeaderAtomsByTab = new Map();
+
+function getTabAtom(map, key, create) {
+    let next = map.get(key);
+    if (!next) {
+        next = create(key);
+        map.set(key, next);
+    }
+    return next;
+}
+
+// Scroll state is per tab: native tab screens stay mounted when blurred, so a
+// single global atom would re-render chrome (PageHeader, menus) in every tab on
+// each scroll frame of the focused one.
+const scrollDirectionAtomsByTab = new Map([['web', scrollDirectionAtom]]);
+const scrollValueAtomsByTab = new Map([['web', scrollValueAtom]]);
+const setScrollValueAtomsByTab = new Map();
+const isScrolledAtomsByTab = new Map();
+const listMaxScrollOffsetAtomsByTab = new Map([['web', listMaxScrollOffsetAtom]]);
+const coverScrollCompensationAtomsByTab = new Map([['web', coverScrollCompensationAtom]]);
+
+const getScrollDirectionAtomForTab = (key) => getTabAtom(scrollDirectionAtomsByTab, key, () => atom(0));
+const getScrollValueAtomForTab = (key) => getTabAtom(scrollValueAtomsByTab, key, () => atom(0));
+const getListMaxScrollOffsetAtomForTab = (key) => getTabAtom(listMaxScrollOffsetAtomsByTab, key, () => atom(0));
+const getCoverScrollCompensationAtomForTab = (key) => getTabAtom(coverScrollCompensationAtomsByTab, key, () => atom(0));
+const getIsScrolledAtomForTab = (key) =>
+    getTabAtom(isScrolledAtomsByTab, key, (k) => atom((get) => get(getScrollValueAtomForTab(k)) > 0));
+const getSetScrollValueAtomForTab = (key) =>
+    getTabAtom(setScrollValueAtomsByTab, key, (k) =>
+        atom(null, (_get, set, value) => {
+            const next = Math.round(Number(value));
+            if (!Number.isFinite(next) || next === getScrollValue(k)) return;
+            scrollValueCurrentByTab.set(k, next);
+            set(getScrollValueAtomForTab(k), next);
+        })
+    );
 
 function getHeaderAtomForTab(key) {
     let next = headerAtomsByTab.get(key);
@@ -120,21 +153,21 @@ export const useHeader = () => useAtomValue(getHeaderAtomForTab(useTabChromeKey(
 export const useSetFooter = () => useSetAtom(footerAtom);
 export const useFooter = () => useAtomValue(footerAtom);
 
-export const useSetScrollDirection = () => useSetAtom(scrollDirectionAtom);
-export const useScrollDirection = () => useAtomValue(scrollDirectionAtom);
+export const useSetScrollDirection = () => useSetAtom(getScrollDirectionAtomForTab(useTabChromeKey()));
+export const useScrollDirection = () => useAtomValue(getScrollDirectionAtomForTab(useTabChromeKey()));
 
 
-export const useSetScrollValue = () => useSetAtom(setScrollValueAtom);
-export const useScrollValue = () => useAtomValue(scrollValueAtom);
+export const useSetScrollValue = () => useSetAtom(getSetScrollValueAtomForTab(useTabChromeKey()));
+export const useScrollValue = () => useAtomValue(getScrollValueAtomForTab(useTabChromeKey()));
 /** True once the list has left the top. Does not update every scroll pixel. */
-export const isScrolledAtom = atom((get) => get(scrollValueAtom) > 0);
-export const useIsScrolled = () => useAtomValue(isScrolledAtom);
+export const isScrolledAtom = getIsScrolledAtomForTab('web');
+export const useIsScrolled = () => useAtomValue(getIsScrolledAtomForTab(useTabChromeKey()));
 
-export const useSetListMaxScrollOffset = () => useSetAtom(listMaxScrollOffsetAtom);
-export const useListMaxScrollOffset = () => useAtomValue(listMaxScrollOffsetAtom);
+export const useSetListMaxScrollOffset = () => useSetAtom(getListMaxScrollOffsetAtomForTab(useTabChromeKey()));
+export const useListMaxScrollOffset = () => useAtomValue(getListMaxScrollOffsetAtomForTab(useTabChromeKey()));
 
-export const useSetCoverScrollCompensation = () => useSetAtom(coverScrollCompensationAtom);
-export const useCoverScrollCompensation = () => useAtomValue(coverScrollCompensationAtom);
+export const useSetCoverScrollCompensation = () => useSetAtom(getCoverScrollCompensationAtomForTab(useTabChromeKey()));
+export const useCoverScrollCompensation = () => useAtomValue(getCoverScrollCompensationAtomForTab(useTabChromeKey()));
 
 export const useSetHeaderHeight = () => useSetAtom(getHeaderHeightAtomForTab(useTabChromeKey()));
 export const useHeaderHeight = () => useAtomValue(getHeaderHeightAtomForTab(useTabChromeKey()));

@@ -350,7 +350,6 @@ export const PageHeaderBody = memo(({
     const ContextSelector = getComponent('molecule', 'context_selector');
     const HeaderElement = getComponent('molecule', 'header_element');
     const pathname = usePathname();
-    const isDesktop = useIsDesktop();
     const currentTab = getTabKeyFromPathname(pathname);
     const canShowBackButton = isWeb
         ? (isBackButton &&
@@ -371,9 +370,9 @@ export const PageHeaderBody = memo(({
     const BackButtonElement = ({ className = 'items-center' }) => (
         <View className={className}>
             <NeoButton
-                borderShape="circle" 
+                borderShape="circle"
                 image="ArrowLeft"
-                style={isDesktop ? 'bordered' : 'borderless'}
+                style="glass"
                 controlSize="regular"
                 accessibilityLabel="Back"
                 onPress={onBackPress}
@@ -384,13 +383,15 @@ export const PageHeaderBody = memo(({
     const Logo = (
         <>
             <View className="sm:hidden">
+                {/* 32px mark + 6px insets = 44px content — a true circle at the
+                    regular control height; wider marks degrade to a padded pill. */}
                 <NeoButtonLink
                     href="/home"
                     alt="Home"
                     style="glass"
                     controlSize="regular"
                     borderShape="capsule"
-                    contentInsets={{ x: 0 }}
+                    contentInsets={{ x: 6 }}
                     accessibilityLabel="Home"
                 >
                     {appStatic('logo')}
@@ -466,7 +467,7 @@ export const PageHeaderBody = memo(({
         <>
             <Row className={' ' + contentClassName} onLayout={onMainHeaderLayout}>
                 <View className={' ' + appSetting('layout', 'header', 'content_left')}>
-                    <Row className='flex-none  items-center gap-x-2'>
+                    <Row className='flex-none items-center gap-3'>
                         {canShowBackButton && (
                             <BackButtonElement />
                         )}

@@ -4,7 +4,7 @@ import { useCurrentUser } from 'app/context/user';
 import { appSetting, parseUrl, parseQueryString, isNativeTabsEnabled } from 'app/lib/util'
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import { fetcher } from 'app/lib/fetcher';
-import { useLocalSearchParams } from 'app/lib/hooks/router'
+import { useLocalSearchParams, useIsFocused } from 'app/lib/hooks/router'
 import { ensureTabHistory, applyTabHistory } from 'app/lib/tab-history';
 import { getCachedPageData, setCachedPageData } from 'app/lib/cache/native-tab-page-cache';
 import { clearAllPageCache } from 'app/lib/cache/clear-page-cache';
@@ -58,10 +58,37 @@ function routeParam(value) {
     return Array.isArray(value) ? value[0] : value;
 }
 
+/**
+ * NativeTabs mounts every screen at once and freeze is off (see tabs/index.js),
+ * so without this gate all five tabs fetch and render their full page trees —
+ * image feeds included — at launch. Activate a tab's content on first focus, or
+ * in the background after `lazy_tabs_preload_delay` ms so later switches are
+ * still instant. JS tabs already lazy-mount at the navigator level.
+ */
+function useLazyTabActivation() {
+    const isFocused = useIsFocused();
+    const [activated, setActivated] = useState(() => !isNativeTabsEnabled() || isFocused);
+    if (isFocused && !activated) {
+        setActivated(true);
+    }
+    useEffect(() => {
+        if (activated) return undefined;
+        const delay = Number(appSetting('native', 'lazy_tabs_preload_delay'));
+        if (!Number.isFinite(delay) || delay <= 0) {
+            setActivated(true);
+            return undefined;
+        }
+        const timer = setTimeout(() => setActivated(true), delay);
+        return () => clearTimeout(timer);
+    }, [activated]);
+    return activated;
+}
+
 function _Screen(params) {
     const local = useLocalSearchParams();
     const pathname = params.tabname;
     const { currentUser } = useCurrentUser();
+    const activated = useLazyTabActivation();
     let _path = routeParam(local.url);
 
     // BOTTOM TABS NAVIGATION
@@ -89,16 +116,18 @@ function _Screen(params) {
     return (
         <>
             {NativeTabPressSync ? <NativeTabPressSync tabKey={pathname} /> : null}
-            <TabChromeProvider tabKey={pathname}>
-                <Content
-                    key={`${pathname}__${userKey}`}
-                    pagePath={_path}
-                    currentUser={currentUser}
-                    tabKey={pathname}
-                    refreshToken={local.refresh}
-                    historyMode={routeParam(local.tabHist)}
-                />
-            </TabChromeProvider>
+            {activated ? (
+                <TabChromeProvider tabKey={pathname}>
+                    <Content
+                        key={`${pathname}__${userKey}`}
+                        pagePath={_path}
+                        currentUser={currentUser}
+                        tabKey={pathname}
+                        refreshToken={local.refresh}
+                        historyMode={routeParam(local.tabHist)}
+                    />
+                </TabChromeProvider>
+            ) : null}
         </>
     );
 }

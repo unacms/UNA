@@ -539,7 +539,7 @@ export default function Cover({
                         )}
                     </View>
 
-                    <View className="flex-row web:flex-auto lg:items-end lg:justify-end gap-2 ">
+                    <View className="flex-row web:flex-auto items-center lg:items-end lg:justify-end gap-2 ">
                         {bPerson && (
                             <View
                                 className={`${isMin ? 'h-24' : 'h-11'
@@ -574,17 +574,18 @@ export default function Cover({
                                 />
                             </View>
                         )}
-                            {!isDesktop && <Row className="gap-2 min-w-0 overflow-hidden items-center min-h-10">
+                            {!isDesktop && (
+                            <Row className="flex-1 min-w-0 flex-wrap items-center gap-2 min-h-10">
                             <Text
-                                className=" truncate tracking-tight text-2xl sm:text-3xl font-bold text-foreground"
-                                numberOfLines={1}
+                                className="min-w-0 flex-1 tracking-tight text-2xl sm:text-3xl font-bold text-foreground"
                             >
                                 {profileData.display_name ||
                                     profileData.title ||
                                     ''}
                             </Text>
                             <Badges badges={data.badges} size="xs" />
-                        </Row>}
+                        </Row>
+                            )}
                     </View>
 
                 </View>

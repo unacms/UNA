@@ -202,7 +202,7 @@ function AtomProfile_(oProps) {
     switch (sDisplayType) {
         case 'unit':
             return (
-                <Row className="gap-2 items-center flex-1 min-w-0">
+                <Row className="gap-3 items-center flex-1 min-w-0">
                     <View className="flex-none">
                         <UnitWoInfo oProps={oProps} sSize={sSize} sSizeFontLetter={sSizeFontLetter} emulate={emulate} iSizeWidth={iSizeWidth} bShowLinks={bShowLinks} hoverCardWrapper={hoverCardWrapper} />
                     </View>

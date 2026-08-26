@@ -1,6 +1,6 @@
 import React, { useCallback, useState, useEffect, useLayoutEffect, useMemo, useRef, useContext } from "react";
 import { Platform } from 'react-native';
-import Animated, { useSharedValue, useAnimatedStyle, interpolate, Extrapolation, useAnimatedReaction, runOnJS } from 'react-native-reanimated';
+import Animated, { useSharedValue, useAnimatedStyle, interpolate, Extrapolation, useAnimatedReaction, runOnJS, FadeIn } from 'react-native-reanimated';
 import { View, ScrollView, Row, Pressable } from 'app/design/view';
 import { Text } from 'app/design/typography';
 import UniList from 'app/ui/atoms/unilist'
@@ -20,7 +20,7 @@ import { useBottomSheetData } from 'app/context/bottomsheet';
 import { BlockByName } from 'app/components/block';
 import Cover, { CoverSmall, CoverBackButton } from 'app/components/elements/cover';
 import emitter from 'app/context/emitter'
-import { useSetHeader, getScrollValue, defaultHeader, useSetHeaderHeight, getHeaderWriteGeneration } from 'app/context/jotai/layout';
+import { useSetHeader, useGetScrollValue, defaultHeader, useSetHeaderHeight, getHeaderWriteGeneration } from 'app/context/jotai/layout';
 import { isTabScopedChromeKey, useTabChromeKey } from 'app/context/tab-chrome';
 import { getComponent } from 'app/components/registry';
 import { getWindowSafeAreaInsets, useFocusEffect, useIsFocused } from 'app/lib/hooks/router'
@@ -38,6 +38,13 @@ import {
 } from 'app/customization/functions'
 
 const conductorTheme = appSetting('theme', 'conductor')
+
+// Scroll jitter right at the collapse threshold must not flip-flop the
+// Cover/CoverSmall swap (each flip is a JS remount).
+const COVER_SWAP_HYSTERESIS = 8;
+// Masks the content pop of the hard swap. Entering-only: an exiting
+// animation would keep both covers mounted at once (see Host crash note).
+const COVER_SWAP_FADE_MS = 160;
 
 /**
  * Overlay + translateY like Showtime. Cover and CoverSmall are never
@@ -57,23 +64,41 @@ const DynamicCoverHeader = React.memo(function DynamicCoverHeader({
     const [coverHeight, setCoverHeight] = useState(0);
     const [showSmall, setShowSmall] = useState(false);
     const overlayMaxRef = useRef(0);
+    // Fade the full cover back in only after a real swap, never on first mount.
+    const hasSwappedRef = useRef(false);
+    const collapsedSV = useSharedValue(false);
     const compactHeight = 64 + (isNativeTabsEnabled() ? (getWindowSafeAreaInsets().top || 0) : 0);
     const collapseRange = Math.max(0, coverHeight - compactHeight);
 
     useLayoutEffect(() => {
         overlayMaxRef.current = 0;
+        hasSwappedRef.current = false;
         setCoverHeight(0);
         setShowSmall(false);
+        collapsedSV.set(false);
         coverScrollY?.set(0);
         onOverlayHeight?.(0);
-    }, [pageKey, coverScrollY, onOverlayHeight]);
+    }, [pageKey, coverScrollY, onOverlayHeight, collapsedSV]);
+
+    const applyShowSmall = useCallback((next) => {
+        hasSwappedRef.current = true;
+        setShowSmall(next);
+    }, []);
 
     useAnimatedReaction(
-        () => collapseRange > 0 && (coverScrollY?.get() ?? 0) >= collapseRange,
-        (collapsed, prev) => {
-            if (collapsed !== prev) runOnJS(setShowSmall)(!!collapsed);
+        () => coverScrollY?.get() ?? 0,
+        (y) => {
+            if (collapseRange <= 0) return;
+            const wasCollapsed = collapsedSV.get();
+            const next = wasCollapsed
+                ? y > collapseRange - COVER_SWAP_HYSTERESIS
+                : y >= collapseRange;
+            if (next !== wasCollapsed) {
+                collapsedSV.set(next);
+                runOnJS(applyShowSmall)(next);
+            }
         },
-        [collapseRange]
+        [collapseRange, applyShowSmall]
     );
 
     const onCoverLayout = useCallback((e) => {
@@ -111,11 +136,18 @@ const DynamicCoverHeader = React.memo(function DynamicCoverHeader({
             {leading}
             <Animated.View className="bg-background" style={translateStyle}>
                 {showSmall ? (
-                    coverHeaderSmall
+                    <Animated.View key="cover-swap-small" entering={FadeIn.duration(COVER_SWAP_FADE_MS)}>
+                        {coverHeaderSmall}
+                    </Animated.View>
                 ) : (
-                    <View onLayout={onCoverLayout}>
-                        {coverHeader}
-                    </View>
+                    <Animated.View
+                        key="cover-swap-full"
+                        entering={hasSwappedRef.current ? FadeIn.duration(COVER_SWAP_FADE_MS) : undefined}
+                    >
+                        <View onLayout={onCoverLayout}>
+                            {coverHeader}
+                        </View>
+                    </Animated.View>
                 )}
                 {sceneHeader}
                 {filter}
@@ -692,6 +724,7 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
 
     const setHeader = useSetHeader();
     const setHeaderHeight = useSetHeaderHeight();
+    const getScrollValue = useGetScrollValue();
     const tabScopedHeader = isTabScopedChromeKey(useTabChromeKey());
     // Tab screens stay mounted when blurred (see tabs.js) — every write to the
     // shared header atom and every global emitter command must be gated on
@@ -1110,7 +1143,7 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
             onStartRefresh();
         });
         return () => subscription.remove();
-    }, [setIndex, onStartRefresh]);
+    }, [setIndex, onStartRefresh, getScrollValue]);
 
     useEffect(() => {
         if (!refreshRequested) {

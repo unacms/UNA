@@ -1,7 +1,8 @@
 import { View } from 'app/design/view'
 import { useRef, useCallback, useMemo, useEffect, useLayoutEffect, useState } from 'react';
 import { Platform, RefreshControl } from 'react-native';
-import { LegendList } from "@legendapp/list";
+import { AnimatedLegendList } from "@legendapp/list/reanimated";
+import { useAnimatedScrollHandler, useSharedValue, runOnJS } from 'react-native-reanimated';
 import { useSetScrollDirection, useHeaderHeight, useSetScrollValue, useSetListMaxScrollOffset, useCoverScrollCompensation } from 'app/context/jotai/layout';
 import { getListScrollOffset, setListScrollOffset } from 'app/lib/cache/list-scroll-cache';
 import { useFocusEffect } from 'app/lib/hooks/router';
@@ -18,6 +19,13 @@ const ESTIMATED_ITEM_SIZE_BY_UNIT = {
 // control disarmed until the list has been at rest at the top.
 const COVER_REFRESH_DISARM_Y = 16;
 const COVER_REFRESH_REARM_MS = 400;
+
+// Scroll direction is forced to 0 below this offset (header stays visible near top).
+const SCROLL_DIRECTION_THRESHOLD = 100;
+// Minimum travel (px) between UI-thread → JS scroll publishes. The cover
+// overlay reads `coverScrollY` on the UI thread every frame; JS only needs
+// coarse offsets for atoms, scroll caching, and threshold checks.
+const SCROLL_PUBLISH_DELTA = 8;
 
 function resolveEstimatedItemSize(unit, explicitSize) {
     if (typeof explicitSize === 'number' && explicitSize > 0) {
@@ -238,54 +246,105 @@ export default function UniList(props) {
         }, [setScrollDirection, setScrollValue])
     );
 
-    const handleScroll = useCallback((event) => {
+    // Scroll handling is split across threads: the worklet below runs on the
+    // UI thread every frame (so the profile cover overlay tracks the finger
+    // even while JS is busy rendering list items) and crosses to JS only on
+    // meaningful changes — a direction flip, the refresh top-zone edge, the
+    // top boundary (isScrolled), or ~SCROLL_PUBLISH_DELTA px of travel.
+    const publishScrollValue = useCallback((y, maxOffset) => {
         if (!isFocusedRef.current) {
             return;
         }
-
-        const { contentOffset, contentSize, layoutMeasurement } = event.nativeEvent;
-        const SCROLL_OFFSET_THRESHOLD = 100;
-        const currentScrollY = contentOffset.y;
-        const roundedScrollY = Math.round(currentScrollY);
-
-        const maxOffset = Math.max(0, contentSize.height - layoutMeasurement.height);
+        scrollY.current = y;
         setListMaxScrollOffset((prev) => (prev === maxOffset ? prev : maxOffset));
-
-        if (roundedScrollY !== lastPublishedScrollRef.current) {
-            lastPublishedScrollRef.current = roundedScrollY;
-            setScrollValue(roundedScrollY);
+        const rounded = Math.round(y);
+        if (rounded !== lastPublishedScrollRef.current) {
+            lastPublishedScrollRef.current = rounded;
+            setScrollValue(rounded);
         }
+    }, [setListMaxScrollOffset, setScrollValue]);
 
-        if (coverScrollY) {
-            coverScrollY.set(currentScrollY);
-            if (currentScrollY > COVER_REFRESH_DISARM_Y) {
-                disarmCoverRefresh();
-            } else {
-                scheduleCoverRefreshRearm();
-            }
+    const publishScrollDirection = useCallback((direction) => {
+        if (!isFocusedRef.current) {
+            return;
         }
+        if (direction !== scrollState.current) {
+            setScrollDirection(direction);
+            scrollState.current = direction;
+        }
+    }, [setScrollDirection]);
 
-        const previousScrollY = scrollY.current;
-
-        let newScrollState;
-
-        if (currentScrollY < SCROLL_OFFSET_THRESHOLD) {
-            newScrollState = 0;
-        } else if (currentScrollY > previousScrollY && currentScrollY > 0) {
-            newScrollState = 1;
-        } else if (currentScrollY < previousScrollY) {
-            newScrollState = -1;
+    const publishCoverTopZone = useCallback((inTopZone) => {
+        if (!isFocusedRef.current) {
+            return;
+        }
+        if (inTopZone) {
+            scheduleCoverRefreshRearm();
         } else {
-            newScrollState = scrollState.current;
+            disarmCoverRefresh();
         }
+    }, [scheduleCoverRefreshRearm, disarmCoverRefresh]);
 
-        if (newScrollState !== scrollState.current) {
-            setScrollDirection(newScrollState);
-            scrollState.current = newScrollState;
-        }
+    const prevScrollYSV = useSharedValue(0);
+    const directionSV = useSharedValue(0);
+    const publishedScrollYSV = useSharedValue(0);
+    const coverTopZoneSV = useSharedValue(true);
 
-        scrollY.current = currentScrollY;
-    }, [setScrollDirection, setScrollValue, setListMaxScrollOffset, coverScrollY, disarmCoverRefresh, scheduleCoverRefreshRearm]);
+    const handleScroll = useAnimatedScrollHandler({
+        onScroll: (event) => {
+            const y = event.contentOffset.y;
+
+            if (coverScrollY) {
+                coverScrollY.set(y);
+                const inTopZone = y <= COVER_REFRESH_DISARM_Y;
+                if (inTopZone !== coverTopZoneSV.get()) {
+                    coverTopZoneSV.set(inTopZone);
+                    runOnJS(publishCoverTopZone)(inTopZone);
+                }
+            }
+
+            const prevY = prevScrollYSV.get();
+            prevScrollYSV.set(y);
+            let direction = directionSV.get();
+            if (y < SCROLL_DIRECTION_THRESHOLD) {
+                direction = 0;
+            } else if (y > prevY) {
+                direction = 1;
+            } else if (y < prevY) {
+                direction = -1;
+            }
+            if (direction !== directionSV.get()) {
+                directionSV.set(direction);
+                runOnJS(publishScrollDirection)(direction);
+            }
+
+            const published = publishedScrollYSV.get();
+            const crossedTopBoundary = (y <= 0) !== (published <= 0);
+            if (crossedTopBoundary || Math.abs(y - published) >= SCROLL_PUBLISH_DELTA) {
+                publishedScrollYSV.set(y);
+                runOnJS(publishScrollValue)(
+                    y,
+                    Math.max(0, event.contentSize.height - event.layoutMeasurement.height)
+                );
+            }
+        },
+        // Publish the exact resting offset so getScrollValue()/scroll caching
+        // are precise once the gesture settles.
+        onEndDrag: (event) => {
+            publishedScrollYSV.set(event.contentOffset.y);
+            runOnJS(publishScrollValue)(
+                event.contentOffset.y,
+                Math.max(0, event.contentSize.height - event.layoutMeasurement.height)
+            );
+        },
+        onMomentumEnd: (event) => {
+            publishedScrollYSV.set(event.contentOffset.y);
+            runOnJS(publishScrollValue)(
+                event.contentOffset.y,
+                Math.max(0, event.contentSize.height - event.layoutMeasurement.height)
+            );
+        },
+    }, [coverScrollY, publishCoverTopZone, publishScrollDirection, publishScrollValue]);
 
     // Scroll atoms live in the tab's Jotai store. Publishing a cached
     // `initialScrollOffset` here collapsed the profile cover on feed load.
@@ -299,7 +358,11 @@ export default function UniList(props) {
         setScrollDirection(0);
         setListMaxScrollOffset(0);
         coverScrollY?.set(0);
-    }, [url, setScrollValue, setScrollDirection, setListMaxScrollOffset, coverScrollY]);
+        prevScrollYSV.set(0);
+        directionSV.set(0);
+        publishedScrollYSV.set(0);
+        coverTopZoneSV.set(true);
+    }, [url, setScrollValue, setScrollDirection, setListMaxScrollOffset, coverScrollY, prevScrollYSV, directionSV, publishedScrollYSV, coverTopZoneSV]);
 
     useEffect(() => {
         return () => {
@@ -403,7 +466,7 @@ export default function UniList(props) {
     }
 
     return (
-        <LegendList
+        <AnimatedLegendList
             key={url || undefined}
             contentContainerStyle={contentContainerStyleProp}
             contentContainerClassName={contentContainerClassName || undefined}

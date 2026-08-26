@@ -69,16 +69,17 @@ export default function ElementConfirmEmail(props) {
                         </CardHeader>
                         <CardContent className="gap-4">
                             <Msg onVisible={showMsg} title={"New verification code emailed"} handleOk={() => { setShowMsg(false) }} />
-                            <View className='gap-y-4'>
-                                <Row className='w-full gap-x-2 items-start justify-between'>
+                            <View className='gap-4'>
+                                <Row className='w-full gap-3 items-center'>
                                     <View className='flex-auto'>
                                         <Input placeholder={t("Enter verification code")} value={inputValue} onChangeText={(value) => { setInputValue(value) }} />
                                     </View>
                                     <NeoButton
                                         style="borderedProminent"
-                                        controlSize="large"
+                                        controlSize="regular"
                                         label={t("Verify")}
                                         onPress={() => handleConfirm()}
+                                        classNames={{ root: 'self-center' }}
                                     />
                                 </Row>
                                 {inputError && <FormError errorText={t("Code invalid")} />}
@@ -90,7 +91,7 @@ export default function ElementConfirmEmail(props) {
                                 <View className="gap-y-2 w-full">
                                     <NeoButton
                                         style="bordered"
-                                        controlSize="large"
+                                        controlSize="regular"
                                         label={t("Resend verification email")}
                                         onPress={pressBack}
                                         width="fill"

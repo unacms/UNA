@@ -148,7 +148,7 @@ export default function PageLayout({ data, blocks, isModal = false, url, pageCla
 
     const aItems = useMemo(() => mainBlocks.map((value, index) => ({
         id: `block_${value.name}`,
-        data: <View className={'p-3 sm:px-4 ' + (index != 0 ? 'pt-0' : 'pt-3 sm:pt-4') }><BlockByName isModal={isModal} data={data} name={value} contentOnly={true} /></View>
+        data: <View className={'px-4 py-2.5 ' + (index != 0 ? 'pt-0' : 'sm:pb-3 sm:pt-4') }><BlockByName isModal={isModal} data={data} name={value} contentOnly={true} /></View>
     })), [blocks, data, isDesktop]);
 
     const isRightCol = sideBarBlocks.length > 0 && isDesktop
@@ -256,7 +256,9 @@ export default function PageLayout({ data, blocks, isModal = false, url, pageCla
     useEffect(() => {
         if (!isModal) {
             if (!isDesktop) {
-                setHeader({ subHeader: aItems[0].data, backButton: true, title: data.module == 'bx_timeline' ? 'Update ' : 'Post' });
+                // Author block stays in-flow in the list (like desktop/modal) —
+                // no subHeader lift into the pinned header chrome.
+                setHeader({ backButton: true, title: data.module == 'bx_timeline' ? 'Update' : 'Post' });
             }
             else {
                 setHeader(defaultHeader);
@@ -367,8 +369,6 @@ export default function PageLayout({ data, blocks, isModal = false, url, pageCla
     }
 
     if (!isWeb || !isDesktop ) {
-        const newItems = !isWeb || !isDesktop ? aItems.slice(1) : aItems;
-
         // Native page: same overlay composer as modal (KbStickyView). KbAvoidingView
         // padding + Keyboard.dismiss after submit floated the form mid-screen.
         if (!isWeb) {
@@ -378,7 +378,7 @@ export default function PageLayout({ data, blocks, isModal = false, url, pageCla
                         <View className="flex-1 w-full min-h-0">
                             <CommentsBrowse
                                 scrollToIndex={scrollToEnd}
-                                addItems={newItems}
+                                addItems={aItems}
                                 browse={commentsBrowse}
                                 module={commentsModule}
                                 requestUrl={commentsRequestUrl}
@@ -416,7 +416,7 @@ export default function PageLayout({ data, blocks, isModal = false, url, pageCla
                     >
                         <CommentsBrowse
                             scrollToIndex={scrollToEnd}
-                            addItems={newItems}
+                            addItems={aItems}
                             browse={commentsBrowse}
                             module={commentsModule}
                             requestUrl={commentsRequestUrl}
@@ -490,11 +490,7 @@ export default function PageLayout({ data, blocks, isModal = false, url, pageCla
                 </>
             )}
             <Panel {...centerPanelProps} className="mt-0.5 sm:m-0 sm:p-3 lg:p-4 ">
-                {/* `isBg` only — no `isPad`. Everything inside already pads itself:
-                    the list items carry `p-3 sm:px-4` (see `aItems`) and the composer
-                    its own inset. Adding the block's `p-4` on top double-padded the
-                    content. The modal and small-screen branches never wrapped in a
-                    Block, so they were always single-padded — this matches them. */}
+                
                 <Block isBg className={`w-full mx-auto `}>
                     <View
                         onLayout={handleListLayout}
