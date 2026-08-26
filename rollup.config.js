@@ -1,10 +1,9 @@
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import replace from '@rollup/plugin-replace';
-import typescript from '@rollup/plugin-typescript';
 
 export default {
-    input: 'src/index.ts',
+    input: 'tmp/ts-out/index.js',
 
     output: {
         file: 'plugins_public/bundle.js',
@@ -18,9 +17,5 @@ export default {
         }),
         resolve({ browser: true }),
         commonjs(),
-        typescript({
-            tsconfig: './tsconfig.json',
-            compilerOptions: { noEmit: false },
-        }),
     ],
 };

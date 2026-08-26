@@ -143,7 +143,7 @@
     "build:jekyll-toc": "cp node_modules/jekyll-toc/toc.js plugins_public; patch -p1 < patches/plugins_public_toc-js.txt",
     "build:urijs": "cp node_modules/urijs/src/URI.min.js plugins_public",
     "build:stripe": "mkdir -p plugins_public/stripe; cp -r node_modules/@stripe/connect-js/dist/ plugins_public/stripe",
-    "build:bundle": "mkdir -p plugins_public && rollup -c rollup.config.js",
+    "build:bundle": "mkdir -p plugins_public tmp/ts-out && tsc -p tsconfig.build.json && rollup -c rollup.config.js",
     "build": "mkdir -p plugins_public; rm -rf plugins_public/*; npm run install-bower-components; npm run; npm-run-all --parallel build:*",
     "postinstall": "npm run build"
   },

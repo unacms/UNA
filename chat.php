@@ -16,7 +16,7 @@ function PageCompMainCode()
 ?>
 <div id="bx-ai-chat" class="h-[32rem]"></div>
 <script>
-    una.Chat.init('#bx-ai-chat', { agentId: 1 });
+    una.Chat.init('#bx-ai-chat', { agentId: 1, formatting: true });
 </script>
 <?php
     return DesignBoxContent("AI Chat", ob_get_clean(), BX_DB_PADDING_DEF);
