@@ -6,7 +6,6 @@ import Html from 'app/ui/atoms/html'
 import { Icon } from 'app/ui/atoms/icon'
 import { appSetting, cn } from 'app/lib/util'
 import { useEditableRequest } from 'app/lib/form-helpers'
-import ProfilesList from 'app/ui/molecules/profile/profile-list'
 import Profile from 'app/ui/molecules/profile/profile'
 import { BlockWrapper } from 'app/components/block-wrapper'
 import DropdownPopup from 'app/ui/atoms/dropdown-popup'
@@ -229,6 +228,22 @@ function fieldValueToUnix(value) {
     return Math.floor(new Date(year, month - 1, day, hours, minutes, seconds).getTime() / 1000)
 }
 
+function calendarDayKey(date) {
+    if (!(date instanceof Date) || Number.isNaN(date.getTime())) return ''
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+}
+
+function dateToUnixParam(date, type) {
+    if (!(date instanceof Date) || Number.isNaN(date.getTime())) return ''
+    if (type === 'datetime') {
+        return Math.floor(date.getTime() / 1000)
+    }
+    // Date-only fields must not use local midnight: in UTC+N that instant is
+    // the previous calendar day on a UTC server, so each save walked the due
+    // date back by one day.
+    return Math.floor(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) / 1000)
+}
+
 function EditableDate({ field, requestUrl }) {
     const initialDate =
         field.value == null || field.value === ''
@@ -242,7 +257,7 @@ function EditableDate({ field, requestUrl }) {
         initialValue: initialDate,
         requestUrl,
         fieldName: field.name,
-        toParam: (date) => Math.floor(date.getTime() / 1000),
+        toParam: (date) => dateToUnixParam(date, field.type),
     })
 
     const toPickerString = (date, type) => {
@@ -257,6 +272,9 @@ function EditableDate({ field, requestUrl }) {
 
     const handleChange = async (unixTs) => {
         const nextPickerValue = new Date(unixTs * 1000)
+        if (field.type !== 'datetime' && calendarDayKey(nextPickerValue) === calendarDayKey(pickerValue)) {
+            return
+        }
         await commitPickerValue(nextPickerValue)
     }
 
@@ -348,6 +366,50 @@ function dedupeProfiles(list) {
     return list.filter((item, index, arr) => arr.findIndex((x) => x.id === item.id) === index)
 }
 
+function profileDisplayName(profile) {
+    return profile?.display_name || profile?.title || profile?.name || ''
+}
+
+function AssigneeChip({ profile, onPress, disabled }) {
+    const data = profile?.author_data || profile
+    const name = profileDisplayName(data)
+    return (
+        <NeoButton
+            {...EDITABLE_VALUE_BUTTON}
+            controlSize="mini"
+            image={
+                <Profile
+                    {...data}
+                    displayType="unit_wo_info"
+                    displaySize="3xs"
+                    showLinks={false}
+                />
+            }
+            label={name}
+            accessibilityLabel={name}
+            onPress={onPress}
+            disabled={disabled || !onPress}
+        />
+    )
+}
+
+function AssigneeChips({ profiles, onPress, disabled }) {
+    const list = dedupeProfiles(profiles)
+    if (!list.length) return null
+    return (
+        <Row className="items-center flex-wrap gap-0.5 min-w-0 self-start">
+            {list.map((item) => (
+                <AssigneeChip
+                    key={item.id}
+                    profile={item}
+                    onPress={onPress}
+                    disabled={disabled}
+                />
+            ))}
+        </Row>
+    )
+}
+
 function suggestionsRequestUrl(ajaxGetSuggestions) {
     if (!ajaxGetSuggestions) return null
     // Same URL build as FormFieldInitialMembers
@@ -391,7 +453,7 @@ function EditableInitialMembers({ field, requestUrl }) {
     const suggestUrl = suggestionsRequestUrl(field.ajax_get_suggestions)
     const openEditor = () => setIsEditorOpen(true)
 
-    // Screen 1: avatar stack. Click → modal with form control (screen 2).
+    // Screen 1: named profile chips. Click → modal with form control (screen 2).
     return (
         <>
             <Modal
@@ -402,7 +464,7 @@ function EditableInitialMembers({ field, requestUrl }) {
                     setIsSelectOpen(false)
                 }}
             >
-                {suggestUrl ? (
+                {suggestUrl && isSelectOpen ? (
                     <Modal
                         title={field.caption || 'Choose users'}
                         onVisible={!!isSelectOpen}
@@ -417,10 +479,10 @@ function EditableInitialMembers({ field, requestUrl }) {
                 ) : null}
                 <Row className="w-full px-1.5 py-1 items-center justify-between flex-wrap shadow-input-outline dark:shadow-input-outline-deep rounded-lg bg-input/60">
                     <Row className="gap-2 items-center flex-wrap my-auto flex-1">
-                        {profiles.map((item) => (
+                        {profiles.map((item, index) => (
                             <User
                                 type="multi"
-                                key={item.id}
+                                key={item.id ?? item.value ?? `assigned-${index}`}
                                 data={item}
                                 onSelect={onRemove}
                             />
@@ -437,38 +499,18 @@ function EditableInitialMembers({ field, requestUrl }) {
                 </Row>
             </Modal>
 
-            <Pressable
-                onPress={openEditor}
-                disabled={!suggestUrl && profiles.length === 0}
-                className="min-w-0 self-start"
-            >
-                {profiles.length > 0 ? (
-                    <Row className="items-center pointer-events-none">
-                        {profiles.slice(0, 3).map((item, index) => (
-                            <View
-                                key={item.id}
-                                className={(index > 0 ? ' -ml-2 ' : ' ') + 'bg-card rounded-full shadow-line p-px'}
-                            >
-                                <Profile
-                                    {...item}
-                                    displayType="unit_wo_info"
-                                    displaySize="xs"
-                                    showLinks={false}
-                                />
-                            </View>
-                        ))}
-                    </Row>
-                ) : (
-                    <NeoButton
-                        image="Plus"
-                        style="borderless"
-                        controlSize="small"
-                        accessibilityLabel={field.caption || 'Add'}
-                        onPress={openEditor}
-                        disabled={!suggestUrl}
-                    />
-                )}
-            </Pressable>
+            {profiles.length > 0 ? (
+                <AssigneeChips profiles={profiles} onPress={openEditor} />
+            ) : (
+                <NeoButton
+                    image="Plus"
+                    style="borderless"
+                    controlSize="small"
+                    accessibilityLabel={field.caption || 'Add'}
+                    onPress={openEditor}
+                    disabled={!suggestUrl}
+                />
+            )}
         </>
     )
 }
@@ -546,14 +588,7 @@ export default function ElementEntityInfo({ data, blockWrapperProps }) {
                         />
                     )
                 }
-                return (
-                    <ProfilesList
-                        data={a.value_data}
-                        showEmpty={false}
-                        maxCount={3}
-                        displaySize="xs"
-                    />
-                )
+                return <AssigneeChips profiles={a.value_data} />
 
             case 'switcher':
                 return <ReadonlyValue label={a.value == 1 ? 'Yes' : 'No'} />
@@ -701,7 +736,7 @@ export default function ElementEntityInfo({ data, blockWrapperProps }) {
                         <View className={(a.type != 'textarea' ? 'flex-row items-center flex-wrap  ' : '') + " gap-2"} key={a.name}>
                             <Row className="items-center gap-2 flex-none w-1/3">
                                 {icon ? (
-                                    <View className="text-secondary-foreground overflow-hidden items-center justify-center w-4 h-4">{icon}</View>
+                                    <View className="text-secondary-foreground overflow-hidden items-center justify-center w-5 h-5">{icon}</View>
                                 ) : null}
                                 <View className="flex-auto">
                                     <Text className=" text-sm leading-tight text-secondary-foreground ellipsis">

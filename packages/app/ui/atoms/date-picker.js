@@ -1,7 +1,7 @@
 import { View, Row, Pressable } from 'app/design/view'
 import Dropdown from 'app/ui/atoms/dropdown'
 import { Icon } from 'app/ui/atoms/icon'
-import { useState, useReducer, useMemo, useCallback, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { Modal, Button, InputWithIcons, TextInputClear, NeoButton } from 'app/design/controls'
 import { Text } from 'app/design/typography';
 import { Platform } from 'react-native'
@@ -225,10 +225,10 @@ export default function ({ name, value = '', type, onChange, children, buttonPro
     const [cValue, setcValue] = useState(value ? initValue : new Date());
     const [tValue, settValue] = useState(value ? [String(initValue.getHours()).padStart(2, '0'), String(initValue.getMinutes()).padStart(2, '0')] : ['00', '00']);
 
-    useEffect(() => {
-        if (dValue)
-            onChange((dValue.getTime()) / 1000)
-    }, [dValue]);
+    const emitChange = (date) => {
+        if (!date || Number.isNaN(date.getTime()) || typeof onChange !== 'function') return;
+        onChange(date.getTime() / 1000);
+    };
 
 
 
@@ -275,12 +275,11 @@ export default function ({ name, value = '', type, onChange, children, buttonPro
         const nextMinutes = pad ? String(minutes).padStart(2, '0') : String(minutes);
         settValue([nextHours, nextMinutes]);
         if (dValue) {
-            setdValue(prev => {
-                const d = new Date(prev.getTime());
-                d.setHours(parseInt(nextHours, 10) || 0);
-                d.setMinutes(parseInt(nextMinutes, 10) || 0);
-                return d;
-            });
+            const d = new Date(dValue.getTime());
+            d.setHours(parseInt(nextHours, 10) || 0);
+            d.setMinutes(parseInt(nextMinutes, 10) || 0);
+            setdValue(d);
+            emitChange(d);
         }
     };
 
@@ -298,9 +297,10 @@ export default function ({ name, value = '', type, onChange, children, buttonPro
         if (dValue) applyTimeValues(tValue[0], tValue[1], true);
     };
 
-    const onSelectDate = (value) => {
+    const onSelectDate = (next) => {
         setShowModal(false)
-        setdValue(value);
+        setdValue(next);
+        emitChange(next);
     }
 
    

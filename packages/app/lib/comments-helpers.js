@@ -461,7 +461,7 @@ export function CommentsBrowse({
         }
         return (
             <TouchableWithoutFeedback onPress={dismissComposerIfIdle}>
-                <View className="px-3 sm:px-4" key={index}>
+                <View className="px-4" key={index}>
                     <UnitComments
                         selectedId={scrollToIndex}
                         hideActions={hideActions}

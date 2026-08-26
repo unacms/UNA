@@ -20,7 +20,9 @@ export function useEditableRequest({ initialValue, requestUrl, fieldName, toPara
     const commit = useCallback(async (nextValue) => {
         const prevValue = valueRef.current
         // Skip no-op saves (e.g. blur/outside click without edits, or double-fire).
-        if (String(nextValue ?? '') === String(prevValue ?? '')) return true
+        // Compare the serialized param so Date objects for the same calendar
+        // day (local midnight vs UTC-parsed instant) are treated as equal.
+        if (String(toParam(nextValue) ?? '') === String(toParam(prevValue) ?? '')) return true
         setValue(nextValue)
         valueRef.current = nextValue
         if (!requestUrl) return false

@@ -11,7 +11,7 @@ export default function ({browse, form, url, blockWrapperProps}) {
         setAddData(data)
     }
 
-    const formContent = <View className='border-border border-t border-border/60 mt-12'>
+    const formContent = <View className=''>
         <CommentsForm 
             handleForm={handleForm} 
             objectId={browse?.data?.object_id} 
