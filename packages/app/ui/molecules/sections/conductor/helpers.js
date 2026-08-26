@@ -1,4 +1,3 @@
-import { useContext, useEffect, useState } from 'react'
 import {
     appSetting,
     menuItemsByName,
@@ -9,42 +8,14 @@ import {
     storageKey,
     strToObj,
     decodeText,
-} from 'app/lib/util'
-import { fetcher } from 'app/lib/fetcher'
-import { View, Row } from 'app/design/view'
-import { Text } from 'app/design/typography'
-import { Button } from 'app/design/controls'
-import { Icon } from 'app/ui/atoms/icon'
-import DropdownMenu, { DropdownMenuOpenContext } from 'app/ui/atoms/dropdown-menu'
-import { getComponent } from 'app/components/registry'
-import { useTranslation } from 'react-i18next'
-import {
     getBlocksFromData,
     getPageSettings,
 } from 'app/lib/util'
-import { Platform } from 'react-native'
+import { fetcher } from 'app/lib/fetcher'
 
 const conductorTheme = appSetting('theme', 'conductor')
 
-export function getBackButtonWeb() {
-    const isWeb = Platform.OS === 'web'
-    if (!isWeb) return <></>
-    if (history.length > 2) {
-        return (
-            <View className="lg:hidden mr-1">
-                <Button
-                    rounded={true}
-                    variant="secondary"
-                    size="base"
-                    startDecorator="ArrowLeft"
-                    onPress={() => history.back()}
-                />
-            </View>
-        )
-    }
-    return <></>
-}
-
+/** Split page blocks into main list vs leftbar. */
 export function processBlocks(blocks) {
     let leftBlocks = []
 
@@ -66,141 +37,20 @@ export function processBlocks(blocks) {
     return { mainBlocks: blocks, leftBlocks: leftBlocks }
 }
 
-export async function fetchUniListData({ pageParam, requestUrl, defaultParams }) {
-    const currentParam = pageParam || defaultParams
-
-    if (!requestUrl) {
-        return { data: [], params: currentParam || {} }
-    }
-
-    const sUrl =
-        requestUrl +
-        JSON.stringify({ params: currentParam })
-        
-    const res = await fetcher(sUrl)
-    const payload = Array.isArray(res?.data) ? res.data[0]?.data : undefined
-
-    const params = payload?.params ?? currentParam ?? {}
-    if (payload?.data) {
-        return {
-            data: payload.data,
-            params: params,
-            cursor:
-                payload.unit != 'notifications'
-                    ? params.start + params.per_page
-                    : params.start,
-        }
-    }
-
-    return { data: [], params: currentParam || {} }
-}
-
-export const refetchUniListReducer = (state, action) => {
-    switch (action.type) {
-        case 'SET_ITEMS':
-            return {
-                visibleItems: action.items,
-                hasNewData: false
-            }
-        case 'PREPEND_ITEM':
-            return {
-                ...state,
-                visibleItems: [action.item, ...state.visibleItems]
-            }
-        case 'APPEND_ITEM':
-            return {
-                ...state,
-                visibleItems: [...state.visibleItems, action.item]
-            }
-        case 'REMOVE_ITEM':
-            return {
-                ...state,
-                visibleItems: state.visibleItems.filter(item => item.id != action.id)
-            }
-        case 'SHOW_NEW_DATA':
-            return {
-                ...state,
-                hasNewData: true
-            }
-        default:
-            return state
-    }
-}
-
-export const flattenPagesForUniList = (pagesData) => (pagesData?.pages ?? []).flatMap((p) => p.data ?? [])
-
-export const prependItemToUniListQueryCache = (queryClient, queryKey, item) => {
-    if (!item?.id || !queryClient) return
-
-    queryClient.setQueryData(queryKey, (old) => {
-        if (!old?.pages?.length) return old
-
-        const exists = old.pages.some((page) =>
-            (page.data ?? []).some((i) => i.id == item.id)
-        )
-        if (exists) return old
-
-        const [firstPage, ...restPages] = old.pages
-        return {
-            ...old,
-            pages: [
-                {
-                    ...firstPage,
-                    data: [item, ...(firstPage.data ?? [])],
-                },
-                ...restPages,
-            ],
-        }
-    })
-}
-
-export const removeItemFromUniListQueryCache = (queryClient, queryKey, id) => {
-    if (id == null || !queryClient) return
-
-    queryClient.setQueryData(queryKey, (old) => {
-        if (!old?.pages?.length) return old
-
-        return {
-            ...old,
-            pages: old.pages.map((page) => ({
-                ...page,
-                data: (page.data ?? []).filter((item) => item.id != id),
-            })),
-        }
-    })
-}
-
-export const matchesFeedOwnerFilter = (pageRoute, item) => {
-    const ownerId = pageRoute?.endpoint?.params?.owner_id
-    if (!ownerId) return true
-
-    return (
-        Math.abs(ownerId) == Math.abs(item?.owner_id) ||
-        Math.abs(ownerId) == Math.abs(item?.object_privacy_view)
-    )
-}
-
-export const isSameItemsForUniList = (a, b) => {
-    if (a.length !== b.length) return false
-    for (let i = 0; i < a.length; i++) {
-        if (a[i].id !== b[i].id) {
-            return false
-        }
-    }
-    return true
-}
-
+/** Strip page/ prefix and leading slashes from a conductor link. */
 export function normalizeConductorLink(link) {
     const raw = String(link || '').trim()
     if (!raw || raw === 'javascript:void(0)') return ''
     return raw.replace(/^page\//, '').replace(/^\/+/, '')
 }
 
+/** Absolute path href from a conductor link, or undefined if empty. */
 export function conductorHref(link) {
     const normalized = normalizeConductorLink(link)
     return normalized ? `/${normalized}` : undefined
 }
 
+/** Match URL to a tab index; supports nested paths. Returns -1 if none. */
 export function findConductorRouteIndex(tabRoutes, url, useSectionAsMenu) {
     if (!tabRoutes?.length || url == null || url === '') return -1
 
@@ -245,15 +95,18 @@ export function findConductorRouteIndex(tabRoutes, url, useSectionAsMenu) {
     return bestIndex
 }
 
+/** Like findConductorRouteIndex, but defaults to 0 when no match. */
 export function findConductorRouteIndexOrZero(tabRoutes, url, useSectionAsMenu) {
     const index = findConductorRouteIndex(tabRoutes, url, useSectionAsMenu)
     return index !== -1 ? index : 0
 }
 
+/** Whether any route has nested children (compact/sidebar tree). */
 export function hasConductorSubitems(routes = []) {
     return routes.some((route) => route?.hasChildren)
 }
 
+/** Root-level pill/dropdown entries for the compact top nav. */
 export function buildCompactNavEntries(routes = [], selectedIndex = 0) {
     const entries = []
     routes.forEach((route) => {
@@ -271,7 +124,7 @@ export function buildCompactNavEntries(routes = [], selectedIndex = 0) {
     return entries
 }
 
-/** Indent class for conductor sidebar tree depth. */
+/** Indent className for sidebar tree depth. */
 export function getConductorDepthClassName(depth) {
     const depthClassNameMap = {
         0: '',
@@ -282,12 +135,14 @@ export function getConductorDepthClassName(depth) {
     return depthClassNameMap[depth] || ''
 }
 
+/** Resolve child route objects from a parent's childIndices. */
 export function getConductorRouteChildren(route, routes = []) {
     return (route?.childIndices || [])
         .map((childIndex) => routes[childIndex])
         .filter(Boolean)
 }
 
+/** DropdownMenu items for a parent route's children. */
 export function buildConductorSubitemsDropdownItems(route, routes, selectedIndex) {
     return getConductorRouteChildren(route, routes).map((child) => ({
         id: child.key || child.index,
@@ -300,6 +155,7 @@ export function buildConductorSubitemsDropdownItems(route, routes, selectedIndex
     }))
 }
 
+/** True if the selected tab is this route or one of its children. */
 export function isConductorSubitemsDropdownActive(route, routes, selectedIndex) {
     if (selectedIndex === route?.index) return true
     return getConductorRouteChildren(route, routes).some(
@@ -307,6 +163,7 @@ export function isConductorSubitemsDropdownActive(route, routes, selectedIndex) 
     )
 }
 
+/** Parent indices from selected tab up to the root. */
 export function getConductorAncestorIndices(routes = [], selectedIndex = 0) {
     const indices = []
     let current = routes[selectedIndex]
@@ -317,6 +174,7 @@ export function getConductorAncestorIndices(routes = [], selectedIndex = 0) {
     return indices
 }
 
+/** Expanded-map for sidebar: ancestors of the selected tab open. */
 export function buildConductorSidebarExpandedMap(routes = [], selectedIndex = 0) {
     const map = {}
     for (const parentIndex of getConductorAncestorIndices(routes, selectedIndex)) {
@@ -325,6 +183,7 @@ export function buildConductorSidebarExpandedMap(routes = [], selectedIndex = 0)
     return map
 }
 
+/** Merge ancestor expansion into an existing sidebar expanded map. */
 export function mergeConductorSidebarExpandedMap(prev, routes, selectedIndex) {
     const next = { ...prev }
     let changed = false
@@ -337,12 +196,14 @@ export function mergeConductorSidebarExpandedMap(prev, routes, selectedIndex) {
     return changed ? next : prev
 }
 
+/** Depth-0 routes shown as sidebar roots. */
 export function getConductorSidebarRootRoutes(routes = []) {
     return routes.filter(
         (route) => route.depth === 0 && !(route.hideInTop && !route.hasChildren)
     )
 }
 
+/** Build get_page_by_request link (path + optional query as params). */
 function resolvePageRequestLink(link) {
     const normalized = normalizeConductorLink(link)
     if (!normalized) return ''
@@ -352,6 +213,7 @@ function resolvePageRequestLink(link) {
     return `${String(urlObj.path || '').replace(/^\/+/, '')}&params[]=&params[]=${JSON.stringify(obj)}`
 }
 
+/** Whether a menu item matches the current page URL/section. */
 function isCurrentMenuItem(item, data, useSectionAsMenu, link) {
     if (!link) return false
     if (useSectionAsMenu) {
@@ -364,6 +226,7 @@ function isCurrentMenuItem(item, data, useSectionAsMenu, link) {
     return normalizeConductorLink(data.url) === link
 }
 
+/** Create one conductor route object from a menu item. */
 function createConductorRoute(item, index, depth, parentIndex, link, canNavigate, hasChildren) {
     const routeLink = canNavigate ? link : ''
     let addon = item.addon
@@ -398,6 +261,7 @@ function createConductorRoute(item, index, depth, parentIndex, link, canNavigate
     }
 }
 
+/** Hydrate a route with the current page's content/endpoint/sidebar. */
 function applyCurrentPageToRoute(route, data, blocks) {
     const contentAndEndpoint = processUrl(data, blocks)
     route.data = contentAndEndpoint.content
@@ -413,18 +277,22 @@ function applyCurrentPageToRoute(route, data, blocks) {
     }
 }
 
+/** Count non-block list items on a route. */
 function conductorListItemCount(route) {
     return (route?.data || []).filter((item) => item?.type !== 'block').length
 }
 
+/** Block-type items only from route.data. */
 function conductorBlockItems(route) {
     return (route?.data || []).filter((item) => item?.type === 'block')
 }
 
+/** Non-block list items from route.data. */
 function conductorNonBlockItems(route) {
     return (route?.data || []).filter((item) => item?.type !== 'block')
 }
 
+/** True if endpoints share the same request_url (or either missing). */
 function sameConductorEndpoint(a, b) {
     const left = a?.request_url || ''
     const right = b?.request_url || ''
@@ -433,10 +301,8 @@ function sameConductorEndpoint(a, b) {
 }
 
 /**
- * Rebuild tab chrome from fresh page JSON without dropping already-fetched
- * list pages. fillTabs() only hydrates the URL-matching tab, and parsed
- * layouts put browse rows in the list only after parseData() — so a naive
- * setRoutes(fillTabs()) on SWR/timestamp flashes skeletons then an empty list.
+ * Merge fresh fillTabs routes with prev inited list data so soft-reload
+ * does not flash empty skeletons.
  */
 export function mergeConductorRoutes(freshTabs, prevRoutes) {
     if (!Array.isArray(freshTabs) || freshTabs.length === 0) return freshTabs || []
@@ -493,6 +359,7 @@ export function mergeConductorRoutes(freshTabs, prevRoutes) {
     })
 }
 
+/** Build conductor tab routes from menu; hydrate the current URL tab. */
 export function fillTabs(
     menu,
     data,
@@ -547,6 +414,7 @@ export function fillTabs(
     return routes
 }
 
+/** Fetch next page for an unfinished list endpoint and append via addMoreData. */
 export async function parseData(routes, index, setRoutes, newData) {
     const currentRoute = routes.find((item) => item.index === index)
     if (
@@ -604,6 +472,7 @@ export async function parseData(routes, index, setRoutes, newData) {
     return { data: [], endpoint: currentRoute?.endpoint }
 }
 
+/** Load page JSON for an uninited navigable tab and merge into routes. */
 export async function fetchAndUpdateData(routes, index, setRoutes) {
     const currentRoute = routes.find((item) => item.index === index)
     if (!currentRoute || currentRoute.inited || currentRoute.canNavigate === false) {
@@ -636,7 +505,8 @@ export async function fetchAndUpdateData(routes, index, setRoutes) {
             sResponse.data
         )
 }
-/* new logic */
+
+/** Same as fetchAndUpdateData (web path alias). */
 export async function getDataForRoute(routes, index, setRoutes) {
     const currentRoute = routes.find((item) => item.index === index)
     if (!currentRoute || currentRoute.inited || currentRoute.canNavigate === false) {
@@ -668,6 +538,7 @@ export async function getDataForRoute(routes, index, setRoutes) {
         )
 }
 
+/** Append items / mark route inited in setRoutes state. */
 export function addMoreData(
     newItems,
     endpoint,
@@ -726,6 +597,7 @@ export function addMoreData(
     })
 }
 
+/** Resolve block content from page elements (browse vs generic block). */
 export function getContent(data, block) {
     const blockName = block.name
     if (!data || !data.elements || typeof data.elements !== 'object') {
@@ -740,6 +612,7 @@ export function getContent(data, block) {
         : { data: b, type: 'block', block: block }
 }
 
+/** Copy browse endpoint fields onto the accumulator. */
 function processEndpoint(acc, b) {
     return {
         ...acc.endpoint,
@@ -752,13 +625,14 @@ function processEndpoint(acc, b) {
     }
 }
 
+/** Merge a browse block into content + endpoint. */
 function processBrowse(acc, b) {
     acc.endpoint = processEndpoint(acc, b)
     acc.content = [...acc.content, ...b.data.data]
     return acc
 }
 
-
+/** Append a non-browse block into an accumulator content array. */
 function processContent(acc, b) {
     if (b?.data?.id || b.block?.id) {
         return [
@@ -769,6 +643,7 @@ function processContent(acc, b) {
     return acc.content
 }
 
+/** Split parsed layout cells into content blocks vs browse endpoint. */
 function mapLayoutBlocks(items = []) {
     const list = Array.isArray(items) ? items : []
     const getFirstContentType = (item) => item?.content?.[0]?.type
@@ -791,6 +666,7 @@ function mapLayoutBlocks(items = []) {
     return { content, endpoint: endpoint?.content?.[0]?.data }
 }
 
+/** Build content/endpoint/sidebar/leftbar from layout_parsed page data. */
 function processParsedUrl(data, blocks) {
     const elements = data?.elements || {}
     const cellCenter = mapLayoutBlocks(elements.cell_center)
@@ -804,6 +680,7 @@ function processParsedUrl(data, blocks) {
     }
 }
 
+/** Derive list content, browse endpoint, sidebar and leftbar from page JSON. */
 export function processUrl(data, blocks) {
     if (data.layout_parsed){
         const a = processParsedUrl(data, blocks);
@@ -843,62 +720,7 @@ export function processUrl(data, blocks) {
     return contentAndEndpoint
 }
 
-export function TopSidebar({
-    styles,
-    addButtons,
-    children,
-    title,
-    icon,
-    layout,
-    layoutName,
-    omitDefaultBackground = false,
-}) {
-    const isHideOnDesktop = layoutName !== 'profile';
-    return (
-        <View
-            style={styles}
-            className={`${!omitDefaultBackground ? conductorTheme.menu : ''} ${isHideOnDesktop ? conductorTheme.hide_top_menu_from + ':hidden' : ''
-                }`}
-        >
-            <View
-                className={`${isHideOnDesktop ? '' : 'mx-auto'} ${appSetting('layout', 'page_content_width_default')} px-3 lg:px-4 mx-auto`}
-            >
-                    {/*
-                      * Section title on the tab subbar, for the middle viewport range.
-                      * Below `lg` the title already shows in the page sub-header (see
-                      * the `setHeader` effect in conductor.web.js), and from
-                      * `hide_top_menu_from` (xl) up this whole bar is hidden and the
-                      * left sidebar carries the title — so `hidden lg:flex` alone lands
-                      * it exactly in the gap where nothing else shows it. No `xl:`
-                      * gate is needed: the parent is already hidden there.
-                      */}
-                    <Row className="w-full items-center gap-4 min-w-0">
-                        {(!!title && conductorTheme.show_title !== false && isHideOnDesktop) && (
-                            <Row className="hidden lg:flex items-center gap-2 shrink-0 min-w-0">
-                                {!!icon && (
-                                    <Icon
-                                        icon={icon}
-                                        size={22}
-                                        className="text-card-foreground shrink-0"
-                                    />
-                                )}
-                                <Text className="text-xl font-bold tracking-tight text-card-foreground font-main truncate">
-                                    {title}
-                                </Text>
-                            </Row>
-                        )}
-                        <View className="flex-1 min-w-0">{children}</View>
-                    </Row>
-                    {(layout != 'mixed' && layoutName !== 'profile') && (
-                        <Row className={`hidden ${conductorTheme.hide_top_menu_from}:flex cond-buttons-add`}>
-                            {addButtons}
-                        </Row>
-                    )}
-            </View>
-        </View>
-    )
-}
-
+/** Nav counter payload from addon count + conductor show_nav_counters setting. */
 export function getAddon(addon) {
     const show = appSetting('conductor', 'show_nav_counters');
     if (show == 'primary' && addon > 0 )
@@ -906,187 +728,195 @@ export function getAddon(addon) {
     return !!show && addon > 0 ? addon : null
 }
 
-export function Addon({item, index}) {
-    let addonContent = null;
-    const settings = getPageSettings(item?.config, item?.key);
-    let icon = !item.ident
-        ? settings?.icon
-            ? settings?.icon
-            : String(item?.icon || '').replace('*', '')
-        : String(item?.icon || '').replace('*', '')
-
-    const addon = getAddon(item?.addon)
-    if (addon) {
-        const addonClasses = addon.variant === 'primary' ? "bg-destructive" : "bg-secondary";
-        const addonText = addon.variant === 'primary' ? addon.text : addon;
-        if (addonText) {
-            addonContent = (
-                <Text className={`${addonClasses} rounded-full px-2 py-0.5  text-center items-center text-white text-xs font-semibold`}>
-                    {addonText}
-                </Text>
-            );
-        }
-    }
-    return addonContent;
-}
-
-function ConductorSubitemsTrigger({ title, icon, isActive }) {
-    const isOpen = useContext(DropdownMenuOpenContext) ?? false
-    const showIcon = Boolean(icon) && icon !== 'Circle'
-    return (
-        <Row
-            className={`items-center h-9 px-2 gap-1 rounded-full shrink-0 ${
-                isOpen || isActive ? 'bg-muted' : ''
-            }`}
-        >
-            {showIcon ? (
-                <Icon
-                    icon={icon}
-                    size={16}
-                    className="text-secondary-foreground shrink-0"
-                />
-            ) : null}
-            <Text
-                numberOfLines={1}
-                className="text-sm font-semibold text-card-foreground max-w-40"
-            >
-                {title}
-            </Text>
-            <Icon
-                icon={isOpen ? 'ChevronUp' : 'ChevronDown'}
-                size={16}
-                className="text-muted-foreground shrink-0"
-            />
-        </Row>
-    )
-}
-
-function ConductorSubitemsDropdown({ route, routes, selectedIndex, onSelect, t }) {
-    const items = buildConductorSubitemsDropdownItems(route, routes, selectedIndex)
-    const isActive = isConductorSubitemsDropdownActive(route, routes, selectedIndex)
-
-    if (!items.length) return null
-
-    return (
-        <DropdownMenu
-            items={items}
-            title={t(route.title)}
-            triggerAccessibilityLabel={t(route.title)}
-            onSelect={(item) => {
-                const next = item?.route || routes[item?.routeIndex]
-                if (next) onSelect(next)
-            }}
-        >
-            <ConductorSubitemsTrigger
-                title={t(route.title)}
-                icon={route.icon}
-                isActive={isActive}
-            />
-        </DropdownMenu>
-    )
-}
-
-export function ConductorCompactNav({ routes, index, onSelect, renderPill }) {
-    const { t } = useTranslation()
-    if (!hasConductorSubitems(routes)) return null
-
-    const entries = buildCompactNavEntries(routes, index)
-    if (!entries.length) return null
-
-    return (
-        <Row className="items-center gap-2 shrink-0">
-            {entries.map((entry) => {
-                if (entry.type === 'dropdown') {
-                    return (
-                        <ConductorSubitemsDropdown
-                            key={`dd-${entry.route.index}`}
-                            route={entry.route}
-                            routes={routes}
-                            selectedIndex={index}
-                            onSelect={onSelect}
-                            t={t}
-                        />
-                    )
-                }
-                return (
-                    <View
-                        key={`pill-${entry.route.index}`}
-                        className="flex-none items-center justify-center"
-                    >
-                        {renderPill(entry.route)}
-                    </View>
-                )
-            })}
-        </Row>
-    )
-}
-
+/** First non-sidebar block unitType on the current route. */
 export const getUnitType = (currentRoute) =>
     Object.values(currentRoute?.blocks ?? {}).find(
         (b) => !b.sidebar && b.unitType
     )?.unitType
 
-export function ConductorSidebarNav({ routes, index, onSelect }) {
-    const MenuItemSidebarWithWrapper = getComponent('menu-item', 'sidebar_with_wrapper')
-    const [expandedMap, setExpandedMap] = useState(() => (
-        buildConductorSidebarExpandedMap(routes, index)
-    ))
-
-    useEffect(() => {
-        setExpandedMap((prev) => mergeConductorSidebarExpandedMap(prev, routes, index))
-    }, [index, routes])
-
-    const toggleExpanded = (itemIndex) => {
-        setExpandedMap((prev) => ({ ...prev, [itemIndex]: !prev[itemIndex] }))
+/** Re-apply stored filter form values into pageData form inputs. */
+export function pageDataWithRestoredFormValues(pageData, formValues) {
+    if (!pageData?.elements || !formValues || Object.keys(formValues).length === 0) {
+        return pageData
     }
+    const elements = JSON.parse(JSON.stringify(pageData.elements))
+    const visit = (node) => {
+        if (!node || typeof node !== 'object') return
+        if (Array.isArray(node)) {
+            node.forEach(visit)
+            return
+        }
+        if (
+            (node.type === 'form' || node.content_type === 'form') &&
+            node.data?.inputs
+        ) {
+            Object.keys(formValues).forEach((key) => {
+                if (!node.data.inputs[key]) return
+                node.data.inputs[key].value = formValues[key]
+            })
+        }
+        Object.values(node).forEach(visit)
+    }
+    visit(elements)
+    return { ...pageData, elements }
+}
 
-    const renderRoute = (route) => {
-        const children = getConductorRouteChildren(route, routes)
-        const hasChildren = children.length > 0
-        const isExpanded = Boolean(expandedMap[route.index])
-        const canNavigate = Boolean(route.canNavigate)
-        const isActive = route.index === index
-        const href = conductorHref(route.link || route.key)
-        const icon = route.image || route.icon || 'Circle'
+/** Normalize a leftbar link item for DropdownMenu. */
+export function normalizeLeftbarMenuItem(item, index) {
+    const rawLink = item?.url || item?.link || ''
+    const link =
+        rawLink && rawLink !== 'javascript:void(0)'
+            ? rawLink.startsWith('/')
+                ? rawLink
+                : `/${rawLink}`
+            : ''
+    return {
+        id: item?.id ?? item?.name ?? index,
+        title: item?.title || item?.name || '',
+        icon: item?.icon || 'Circle',
+        link,
+    }
+}
 
-        return (
-            <View key={`lmenu-${route.index}`} className="w-full">
-                <MenuItemSidebarWithWrapper
-                    link={canNavigate ? href : undefined}
-                    title={route.title}
-                    icon={icon}
-                    iconEnd={
-                        !canNavigate && hasChildren
-                            ? (isExpanded ? 'ChevronDown' : 'ChevronRight')
-                            : undefined
-                    }
-                    isActive={isActive}
-                    onPress={
-                        !canNavigate && hasChildren
-                            ? () => toggleExpanded(route.index)
-                            : (event) => {
-                                event?.preventDefault?.()
-                                onSelect(route)
-                            }
-                    }
-                    className={getConductorDepthClassName(route.depth)}
-                />
-                {hasChildren && isExpanded ? (
-                    <View className="gap-0.5">
-                        {children.map((child) => renderRoute(child))}
-                    </View>
-                ) : null}
-            </View>
+/** Extract dropdown link items from a leftbar menu/categories block. */
+export function getDropdownItemsFromLeftbarBlock(blockItem) {
+    const elements = blockItem?.data?.content
+    if (!Array.isArray(elements)) return []
+
+    return elements
+        .flatMap((el) => {
+            const type = el?.type || el?.content_type
+            if (type === 'menu') {
+                const items = el?.data?.content?.items ?? el?.content?.items ?? []
+                return items.map(normalizeLeftbarMenuItem)
+            }
+            if (type === 'categories_list') {
+                const items = Array.isArray(el?.data)
+                    ? el.data
+                    : Array.isArray(el?.data?.content)
+                        ? el.data.content
+                        : []
+                return items.map(normalizeLeftbarMenuItem)
+            }
+            if (
+                Array.isArray(el?.data) &&
+                el.data[0] &&
+                (el.data[0].url || el.data[0].link || el.data[0].name || el.data[0].title)
+            ) {
+                return el.data.map(normalizeLeftbarMenuItem)
+            }
+            return []
+        })
+        .filter((item) => item.title)
+}
+
+/** Leftbar blocks visible on phone (not hidden_on phone / not excluded). */
+export function getMobileLeftbarItems(leftbarContent = [], excludedIds = null) {
+    return leftbarContent.filter((item) => {
+        if (item.data?.hidden_on?.includes?.('phone')) return false
+        if (excludedIds?.has?.(item?.id)) return false
+        return true
+    })
+}
+
+/** Split leftbar into top-menu dropdowns vs filter-sheet blocks. */
+export function partitionConductorLeftbar(leftbarContent = [], layoutName) {
+    const menuBlocks = leftbarContent.filter(
+        (item) =>
+            !item?.data?.config_api?.use_as_filter &&
+            !!item?.data?.config_api?.use_as_menu &&
+            getDropdownItemsFromLeftbarBlock(item).length > 0
+    )
+    const filterBlocks = leftbarContent.filter((item) => {
+        if (item?.data?.config_api?.use_as_filter) return true
+        if (layoutName !== 'navigator') return false
+        if (!item?.data?.config_api?.use_as_menu) return true
+        // Menu flag set but no extractable links → keep in Filters
+        return getDropdownItemsFromLeftbarBlock(item).length === 0
+    })
+    return { menuBlocks, filterBlocks }
+}
+
+/**
+ * Ids that should not also render in the main list.
+ * Desktop web: nothing excluded (sidebar owns leftbar).
+ * Navigator: all leftbar ids. Else: menu + filter blocks only.
+ */
+export function getLeftbarExcludedFromMainIds({
+    layoutName,
+    leftbarContent = [],
+    menuBlocks = [],
+    filterBlocks = [],
+    isDesktop = false,
+}) {
+    if (isDesktop) return new Set()
+    if (layoutName === 'navigator') {
+        return new Set(
+            leftbarContent.map((item) => item?.id).filter((id) => id != null)
         )
     }
-
-    const roots = getConductorSidebarRootRoutes(routes)
-
-    if (!roots.length) return null
-
-    return (
-        <View className="w-full gap-0.5">
-            {roots.map((route) => renderRoute(route))}
-        </View>
+    return new Set(
+        [...menuBlocks, ...filterBlocks]
+            .map((item) => item?.id)
+            .filter((id) => id != null)
     )
+}
+
+/** Form object → [{ name, value }] for conductor filter params. */
+export function formValuesToFilterEntries(values = {}) {
+    const filterValues = []
+    for (const key in values) {
+        filterValues.push({
+            name: key,
+            value: Array.isArray(values[key])
+                ? values[key].join(',')
+                : values[key],
+        })
+    }
+    return filterValues
+}
+
+/**
+ * Apply filter entries to one route. Returns next routes array, or `routes`
+ * unchanged when filters are identical (and optional raw form matches).
+ */
+export function patchConductorRouteFilters(
+    routes,
+    routeIndex,
+    filterEntries,
+    rawFormValues
+) {
+    if (!routes?.[routeIndex]?.endpoint?.params) return routes
+
+    const filters = {}
+    filterEntries.forEach((v) => {
+        filters[v.name] = v.value
+    })
+
+    const currentFilters = routes[routeIndex]?.endpoint?.params?.filters || {}
+    if (
+        JSON.stringify(currentFilters) === JSON.stringify(filters) &&
+        (rawFormValues == null ||
+            JSON.stringify(routes[routeIndex]?.endpoint?.filterFormValues) ===
+                JSON.stringify(rawFormValues))
+    ) {
+        return routes
+    }
+
+    const next = [...routes]
+    next[routeIndex] = {
+        ...next[routeIndex],
+        data: [],
+        endpoint: {
+            ...next[routeIndex].endpoint,
+            finished: false,
+            params: {
+                ...next[routeIndex].endpoint.params,
+                filters,
+                start: 0,
+            },
+            ...(rawFormValues != null ? { filterFormValues: rawFormValues } : {}),
+        },
+    }
+    return next
 }

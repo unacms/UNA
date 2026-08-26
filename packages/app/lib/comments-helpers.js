@@ -17,7 +17,7 @@ import { useInfiniteQuery } from '@tanstack/react-query'
 import {
     refetchUniListReducer,
     isSameItemsForUniList
-} from 'app/lib/conductor-helpers'
+} from 'app/lib/unilist-helpers'
 import Snackbar from 'app/ui/atoms/snackbar'
 import emitter from 'app/context/emitter'
 import { appStatic } from 'app/lib/app-static';

@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
-import { flattenPagesForUniList } from 'app/lib/conductor-helpers';
+import { flattenPagesForUniList } from 'app/lib/unilist-helpers';
 import {
     getDropdownFilterKeys,
     getNumberedFilterKeys,

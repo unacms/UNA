@@ -51,7 +51,7 @@ import {
     isSameItemsForUniList,
     flattenPagesForUniList,
     fetchUniListData
-} from 'app/lib/conductor-helpers'
+} from 'app/lib/unilist-helpers'
 import { getComponent } from 'app/components/registry';
 import { BrowseItem } from 'app/lib/common-helpers'
 import { useIsDesktop } from 'app/context/measure';
