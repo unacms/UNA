@@ -53,8 +53,10 @@ function TimerDisplay({ data }) {
     const parts = fromTotalSeconds(totalSeconds);
 
     return (
-        <Row className="items-center gap-1.5 flex-none">
+        <Row className="items-center gap-2 flex-none">
+            <View className="w-5 h-5 items-center justify-center">
             <Icon icon="Clock" size={16} className="text-muted-foreground" />
+            </View>
             <Text className="font-mono text-base font-semibold tabular-nums text-foreground">
                 {formatTimerParts(parts.hours, parts.minutes, parts.seconds)}
             </Text>

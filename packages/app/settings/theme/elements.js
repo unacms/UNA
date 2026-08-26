@@ -97,7 +97,7 @@ export const settingsElements = {
         'u-block-icon-size': 24, // Default icon size for block header icons
         'u-block-name': ' flex-auto gap-1 ',
         'u-block-title':
-            'text-card-foreground px-1 text-lg lg:text-xl font-bold tracking-tight',
+            'text-card-foreground px-0.5 text-lg lg:text-xl font-bold tracking-tight',
         'u-block-description': 'text-muted-foreground text-xs lg:text-sm leading-5 px-px',
         'u-block-content': 'gap-0.5 ',  
         'u-block-footer':

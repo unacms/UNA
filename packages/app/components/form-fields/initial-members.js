@@ -10,6 +10,22 @@ import { Icon } from 'app/ui/atoms/icon'
 import { useTranslation } from 'react-i18next';
 import { useFormField } from 'app/lib/hooks/use-form-field';
 
+function suggestionId(item, index) {
+    const id = item?.id ?? item?.value ?? item?.profile_id
+    if (id != null && id !== '') return String(id)
+    return index != null ? `user-${index}` : ''
+}
+
+function normalizeSuggestion(item) {
+    if (!item || typeof item !== 'object') return item
+    const id = item.id ?? item.value ?? item.profile_id
+    return {
+        ...item,
+        id,
+        display_name: item.display_name ?? item.label ?? item.title ?? item.name,
+    }
+}
+
 export const User = ({ data, onSelect, type }) => {
     if (type !== 'multi'){
         return (
@@ -51,7 +67,9 @@ export function SelectUsers({ onSave, initedData = [], requestUrl, isSingle = fa
 
     function reducer(state, action) {
         if (action.suggestedUsers)
-            action.suggestedUsers = action.suggestedUsers.filter((v, i, a) => a.map(e => e.id).indexOf(v.id) === i);
+            action.suggestedUsers = action.suggestedUsers
+                .map(normalizeSuggestion)
+                .filter((v, i, a) => a.map(e => e.id).indexOf(v.id) === i);
 
         if (action.selectedUsers)
             action.selectedUsers = action.selectedUsers.filter((v, i, a) => a.map(e => e.id).indexOf(v.id) === i);
@@ -73,7 +91,8 @@ export function SelectUsers({ onSave, initedData = [], requestUrl, isSingle = fa
     const onChangeText = useCallback(async (sValue) => {
         dispatch({ type: 'setLoading' })
         const sResponse = await fetcher(requestUrl + JSON.stringify({ term: sValue }));
-        dispatch({ type: 'searchFinished', suggestedUsers: sResponse.data, searchText: sValue })
+        const suggestions = Array.isArray(sResponse.data) ? sResponse.data : []
+        dispatch({ type: 'searchFinished', suggestedUsers: suggestions, searchText: sValue })
     }, []);
 
     const onSelectUser = useCallback((oData) => {
@@ -96,7 +115,7 @@ export function SelectUsers({ onSave, initedData = [], requestUrl, isSingle = fa
     return <View className="px-1">
         <ScrollView keyboardDismissMode="none" keyboardShouldPersistTaps="handled" className="w-full overflow-visible min-h-64" >
             <Row className="text-center w-full flex-wrap gap-1 pb-4">
-                {state.selectedUsers && state.selectedUsers.map((item) => <User key={item.id} data={item} onSelect={onRemove} />)}
+                {state.selectedUsers && state.selectedUsers.map((item, index) => <User key={suggestionId(item, index)} data={item} onSelect={onRemove} />)}
             </Row>
             <Row className="pb-4 gap-2 px-1">
                 <Input
@@ -108,7 +127,7 @@ export function SelectUsers({ onSave, initedData = [], requestUrl, isSingle = fa
                 <Button variant="primary" size="lg" disabled={state.selectedUsers.length == 0} startDecorator="Check" onPress={() => onSaveInt()} />
             </Row>
             <Row className="text-center w-full flex-wrap gap-1 ">
-                {state.suggestedUsers && !state.showLoading && state.suggestedUsers.map((item) => <User key={item.id} data={item} onSelect={onSelectUser} />)}
+                {state.suggestedUsers && !state.showLoading && state.suggestedUsers.map((item, index) => <User key={suggestionId(item, index)} data={item} onSelect={onSelectUser} />)}
                 {state.showLoading && <View className=' w-full items-center justify-center py-2'><Loading /></View>}
                 {state.suggestedUsers.length == 0 && state.searchText != '' && !state.showLoading && <Text className="text-sm py-2">{t('Nothing found')}</Text>}
             </Row>
