@@ -27,8 +27,14 @@ import { CardList } from 'app/ui/molecules/page/card'
 import { getPageData } from 'app/lib/util';
 import FormModal from 'app/ui/molecules/dialogs/form-modal';
 
+function isSystemRootComment(item) {
+    return item?.data?.author_data?.module === 'system' && item?.data?.cmt_level === 0
+}
+
 export default function UnitComments(props) {
-    const UnitView = props.mode == 'search' ? UnitCommentsSearch : UnitCommentsDefault
+    const UnitView = props.mode == 'search'
+        ? UnitCommentsSearch
+        : (isSystemRootComment(props) && getComponent('unit', 'activity')) || UnitCommentsDefault
     return <UnitView {...props} />
 }
 
@@ -57,7 +63,7 @@ function UnitCommentsSearch(props) {
                 border="border-y border-x-none sm:border-x"
                 className="mb-0.5 sm:mb-3"
             >
-                <UnitCommentsDefault contentUrl={url} handleReply={isCommentsModal ? showCommentsModal : 'link'} {...props.data[keys[0]]} />
+                <UnitComments contentUrl={url} handleReply={isCommentsModal ? showCommentsModal : 'link'} {...props.data[keys[0]]} module={props.module} />
             </CardList>
         </>
     )

@@ -1,4 +1,4 @@
-import { useCallback, useState, useEffect, useRef, useMemo, memo, useReducer, useContext } from 'react'
+import { useCallback, useState, useEffect, useLayoutEffect, useRef, useMemo, memo, useReducer, useContext } from 'react'
 import { Text } from 'app/design/typography'
 import { View, ViewRef, Row, Pressable } from 'app/design/view'
 import { Icon } from 'app/ui/atoms/icon'
@@ -44,7 +44,6 @@ import { useCurrentUser } from 'app/context/user'
 import Search from 'app/ui/molecules/sections/search'
 import DynamicMenu from 'app/components/nav/menu-dynamic'
 import { menuItemsFilter, storageSet, storageGet } from 'app/lib/util'
-import { subscribe } from 'app/ui/atoms/socket'
 import { useBottomSheetData } from 'app/context/bottomsheet'
 import {
     getSkeletonByEndPoint,
@@ -70,9 +69,27 @@ import { BlockByName2 } from 'app/components/block'
 import { useSound } from 'app/lib/hooks/useSound';
 import { getPageContentWidth } from 'app/lib/util'
 
-import { useStickyHeaderOffset, stickySidebarStyle } from 'app/lib/hooks/use-sticky-header-offset'
+import { useStickyHeaderOffset, stickySidebarStyle, measureHeaderFixedOffset } from 'app/lib/hooks/use-sticky-header-offset'
 
 const conductorTheme = appSetting('theme', 'conductor')
+
+// Written by HeaderContainer. Tab switches read it so a clamped scrollY
+// cannot expand the small cover or restore the previous tab's offset.
+const coverTabScroll = { collapsed: false, hold: false }
+
+function scrollConductorTabToStart() {
+    if (typeof window === 'undefined') return
+    if (!coverTabScroll.collapsed) {
+        window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
+        return
+    }
+    coverTabScroll.hold = true
+    const content = document.querySelector('.ns--conductor-tab-content--')
+    const headerOffset = measureHeaderFixedOffset()
+    if (!content || headerOffset <= 0) return
+    const top = Math.max(0, Math.round(window.scrollY + content.getBoundingClientRect().top - headerOffset))
+    window.scrollTo({ top, left: 0, behavior: 'auto' })
+}
 
 export function Conductor({
     isCoverDisabled,
@@ -487,7 +504,7 @@ export function Conductor({
         >
             {(isUseCurrentHeader || isDesktop) && headerComponent}
             <View
-                className={`${contentWidth} mx-auto ${tmplLayout == 'mixed' ? 'mt-12' : ''}`}
+                className={`ns--conductor-tab-content-- ${contentWidth} mx-auto ${tmplLayout == 'mixed' ? 'mt-12' : ''}`}
             >
                 <TabSceneHeader
                     route={currentRoute}
@@ -496,6 +513,7 @@ export function Conductor({
                 />
                 <TabScene
                     layoutName={layoutName}
+                    tabIndex={index}
                     pageRoute={tabRoute}
                     leftColumnContent={LeftColumnContent}
                     rightColumnContent={RightColumnContent}
@@ -894,6 +912,7 @@ const TabSceneMainContent = ({
 const TabScene = ({
     pageRoute,
     layoutName,
+    tabIndex,
     leftColumnContent,
     rightColumnContent,
     centerColumnContent
@@ -1002,9 +1021,19 @@ const TabScene = ({
         }
     }, [currentBreakpointName, pageRoute])
 
-    useEffect(() => {
-        window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
-    }, [pageRoute])
+    // `tabIndex` changes on click; `pageRoute.index` when the new tab mounts.
+    useLayoutEffect(() => {
+        if (typeof window === 'undefined') return
+        scrollConductorTabToStart()
+        const frame = requestAnimationFrame(() => scrollConductorTabToStart())
+        const releaseHold = setTimeout(() => {
+            coverTabScroll.hold = false
+        }, 80)
+        return () => {
+            cancelAnimationFrame(frame)
+            clearTimeout(releaseHold)
+        }
+    }, [tabIndex, pageRoute?.index, pageRoute?.inited])
 
     console.log('panelLayoutKey', panelLayoutKey)
     return (
@@ -1617,24 +1646,32 @@ const HeaderContainer = ({
     isHideCover,
     isCoverDisabled,
     contentWidth,
-    isUseCurrentHeader
+    isUseCurrentHeader,
 }) => {
     const [hideDefaultHeaderFrom, setHideDefaultHeaderFrom] = useState(100);
     const [smallCoverHeight, setSmallCoverHeight] = useState(79);
     const isDesktop = useIsDesktop()
+    const pageHeaderHeight = useHeaderHeight()
     const [isScrolled, setIsScrolled] = useState(isCoverDisabled)
     // Keeps the small cover mounted through its exit animation when scrolling back up.
     const [isSmallCoverMounted, setIsSmallCoverMounted] = useState(isCoverDisabled)
     // Measured height of the small cover so it can collapse smoothly on exit (tabs follow).
     const [smallCoverInnerHeight, setSmallCoverInnerHeight] = useState(0)
     const uri = pageData?.uri
+    coverTabScroll.collapsed = isScrolled
+    const collapseThreshold = hideDefaultHeaderFrom - smallCoverHeight - 10
 
     const handleScroll = useCallback(() => {
         requestAnimationFrame(() => {
-            const currentScrollY = window.scrollY;
-            setIsScrolled(currentScrollY > (hideDefaultHeaderFrom - smallCoverHeight - 10))
+            const next = window.scrollY > collapseThreshold
+            if (!next && coverTabScroll.collapsed && coverTabScroll.hold) {
+                scrollConductorTabToStart()
+                return
+            }
+            coverTabScroll.collapsed = next
+            setIsScrolled(next)
         })
-    }, [hideDefaultHeaderFrom, smallCoverHeight])
+    }, [collapseThreshold])
 
     useEffect(() => {
         if (!appSetting('cover', 'fixed') && isCover) {
@@ -1647,6 +1684,21 @@ const HeaderContainer = ({
             }
         }
     }, [handleScroll, isCover])
+
+    useLayoutEffect(() => {
+        const wrap = document.querySelector('.ns--conductor-wrapper--')
+        if (!wrap) return
+        wrap.style.minHeight = isScrolled
+            ? `calc(100dvh - ${pageHeaderHeight || 0}px + ${hideDefaultHeaderFrom}px)`
+            : `calc(100dvh - ${pageHeaderHeight || 0}px)`
+    }, [isScrolled, hideDefaultHeaderFrom, pageHeaderHeight])
+
+    useEffect(() => {
+        return () => {
+            coverTabScroll.hold = false
+            coverTabScroll.collapsed = false
+        }
+    }, [])
 
     useEffect(() => {
         if (isScrolled) {
@@ -1699,7 +1751,10 @@ const HeaderContainer = ({
                   
                 
             </View>
-            <View className={`header-fixed w-full ${conductorTheme.cover_base} ${(isScrolled ? 'fixed' : '')}`}>
+            <View
+                className={`header-fixed w-full ${conductorTheme.cover_base} ${isScrolled ? 'fixed left-0 right-0 z-40' : ''}`}
+                style={isScrolled ? { top: pageHeaderHeight || 0 } : undefined}
+            >
                 <View className={`${contentWidth} ${conductorTheme.cover_small} ${isScrolled ? 'animate-in fade-in slide-in-from-top-2 duration-300 ease-out' : ''}`}
                     style={{
                         display: isSmallCoverMounted ? 'flex' : 'none',

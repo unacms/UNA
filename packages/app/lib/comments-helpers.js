@@ -466,8 +466,8 @@ export function CommentsBrowse({
                         selectedId={scrollToIndex}
                         hideActions={hideActions}
                         replyId={replyId}
-                        module={browseParams.module}
                         {...item}
+                        module={browseParams.module}
                         view={viewMode}
                         max_level={browseParams.max_level}
                         isNewComment={false}
@@ -611,8 +611,8 @@ export function CommentsBrowseShort({
         <View key={item.id}>
             <UnitComments 
                 contentUrl={contentUrl} 
-                module={module} 
                 {...item} 
+                module={module} 
                 view={viewMode} 
                 max_level={browseData?.max_level} 
                 handleReply={handleReply} 

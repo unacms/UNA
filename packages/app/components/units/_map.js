@@ -2,6 +2,7 @@ import { memo } from "react";
 import GeneralContentList from './general-content-list';
 import GeneralProfileList from './general-profile-list';
 import Comments from './comments';
+import Activity from './activity';
 import Notifications from './notifications';
 import Feed from './feed';
 import Price from './price';
@@ -19,6 +20,7 @@ export const componentsMapDefault = {
     'general-profile-list': memo(GeneralProfileList),
     'mixed': GeneralContentList_,
     comments: memo(Comments),
+    activity: memo(Activity),
     notifications: memo(Notifications),
     invitations: memo(Invitations),
     feed: memo(Feed),
