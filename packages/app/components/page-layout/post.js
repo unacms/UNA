@@ -1,7 +1,7 @@
 import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import { View } from 'app/design/view';
 import { BlockByName, DataByName } from 'app/components/block';
-import { LAYOUT_BREAKPOINTS } from 'app/lib/util';
+import { LAYOUT_BREAKPOINTS, isNativeTabsEnabled } from 'app/lib/util';
 import { CommentsBrowse, CommentsForm } from 'app/lib/comments-helpers'
 import KbAvoidingView, { KbStickyView, useStickyComposerListInset } from 'app/ui/atoms/kb-avoiding-view';
 import { Platform } from 'react-native'
@@ -17,9 +17,19 @@ import {
     resolvePanelProps,
 } from 'app/ui/molecules/page/resizable-panels'
 import { useSetHeader, defaultHeader, useSetFooter, useHeaderHeight } from 'app/context/jotai/layout';
-import { useSafeAreaInsets } from 'app/lib/hooks/router'
+import { useSafeAreaInsets, getWindowSafeAreaInsets } from 'app/lib/hooks/router'
 import { useStickyHeaderOffset, stickySidebarStyle } from 'app/lib/hooks/use-sticky-header-offset'
 import { Loading } from 'app/customization/loading'
+// Keep in sync with TAB_BAR_RESERVE in app/components/nav/tab-slide.js —
+// with expo native tabs the screen extends behind the system tab bar.
+const NATIVE_TAB_BAR_RESERVE = 56;
+// Keep in sync with TAB_BAR_HEIGHT in app/components/nav/tabs/native-tabs.js —
+// the JS tab bar is in-flow, so the screen (and the composer's coordinate
+// space) ends this far above the window bottom.
+const JS_TAB_BAR_HEIGHT = Platform.OS === 'ios' ? 52 : 56;
+// JS tab bar bounds the screen; the composer just needs breathing room above it.
+const COMPOSER_FOOTER_GAP = 4;
+
 const mapLayoutBlocks = (items) =>
     (Array.isArray(items) ? items : []).map(({ source }) => ({
         name: source,
@@ -77,6 +87,26 @@ export default function PageLayout({ data, blocks, isModal = false, url, pageCla
     // Must track the composer's real height (measured by `handleLayout`) — a fixed
     // constant leaves the last comment stuck behind it.
     const { marginBottom: listBottomInset } = useStickyComposerListInset(formHeight);
+    // Resting gap between the composer and the screen bottom (native page only):
+    // with native tabs the page paints behind the system tab bar, so the composer
+    // must clear it; with JS tabs the screen already ends above the footer.
+    // Window insets, not `insets`: the NativeTabs nested SafeAreaProvider can
+    // report bottom = keyboard height, which would bounce the composer.
+    const composerBottomGap = isWeb
+        ? 0
+        : isNativeTabsEnabled()
+            ? NATIVE_TAB_BAR_RESERVE + (getWindowSafeAreaInsets().bottom || 0)
+            : COMPOSER_FOOTER_GAP;
+    // KeyboardStickyView translates by (keyboardHeight − opened), so landing the
+    // composer flush on the keyboard requires opened == its resting distance
+    // from the *window* bottom. NativeTabs: the screen is full-window, so that's
+    // just composerBottomGap. JS tabs: the in-flow tab bar (plus Android's root
+    // SafeAreaView bottom padding) sits below the screen and must be added.
+    const composerStickyOpened = isNativeTabsEnabled()
+        ? composerBottomGap
+        : JS_TAB_BAR_HEIGHT
+            + composerBottomGap
+            + (Platform.OS === 'android' ? (getWindowSafeAreaInsets().bottom || 0) : 0);
     const currentBreakpoint = useBreakpoint();
     const currentBreakpointName = useBreakpointName()
     const isLgUp = currentBreakpoint >= LAYOUT_BREAKPOINTS.lg;
@@ -383,12 +413,12 @@ export default function PageLayout({ data, blocks, isModal = false, url, pageCla
                                 module={commentsModule}
                                 requestUrl={commentsRequestUrl}
                                 replyId={replyId}
-                                marginBottom={listBottomInset}
+                                marginBottom={listBottomInset + composerBottomGap}
                             />
                         </View>
                         <KbStickyView
-                            style={{ position: 'absolute', left: 0, right: 0, bottom: 0 }}
-                            offset={{ closed: 0, opened: insets.bottom }}
+                            style={{ position: 'absolute', left: 0, right: 0, bottom: composerBottomGap }}
+                            offset={{ closed: 0, opened: composerStickyOpened }}
                         >
                             <View onLayout={handleLayout}>
                                 <CommentsForm
