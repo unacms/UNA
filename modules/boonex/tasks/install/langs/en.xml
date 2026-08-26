@@ -553,6 +553,7 @@
     <string name="_bx_tasks_txt_action_completed"><![CDATA[completed]]></string>
     <string name="_bx_tasks_txt_action_reopened"><![CDATA[reopened]]></string>
     <string name="_bx_tasks_txt_sample_comment_single"><![CDATA[comment to task]]></string>
+    <string name="_bx_tasks_txt_sample_comment_single_short"><![CDATA[comment]]></string>
     <string name="_bx_tasks_txt_sample_vote_single"><![CDATA[vote to task]]></string>
     <string name="_bx_tasks_txt_sample_reaction_single"><![CDATA['{0}' reaction to task]]></string>
     <string name="_bx_tasks_txt_sample_score_up_single"><![CDATA[score up vote to task]]></string>
@@ -616,6 +617,7 @@
     <string name="_bx_tasks_alert_action_expired_personal"><![CDATA[Expire task]]></string>
     <string name="_bx_tasks_alert_action_assigned_personal"><![CDATA[Assign task]]></string>
 
+    <string name="_bx_tasks_txt_subobject_added_in_context"><![CDATA[<b class="bx-ntfs-content-entry">{entry_caption}</b> in <b class="bx-ntfs-content-profile">{owner_name}</b> has got a {subentry_sample}]]></string>
     <string name="_bx_tasks_txt_notification_completed"><![CDATA[<b class="bx-ntfs-content-entry">{entry_caption}</b> {entry_sample} was completed]]></string>
     <string name="_bx_tasks_txt_notification_completed_in_context"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b>'s {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b> was completed]]></string>
     <string name="_bx_tasks_txt_notification_reopened"><![CDATA[<b class="bx-ntfs-content-entry">{entry_caption}</b> {entry_sample} was reopened]]></string>

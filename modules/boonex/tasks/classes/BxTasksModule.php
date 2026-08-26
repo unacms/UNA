@@ -932,6 +932,19 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
         return $aResult; 
     }
 
+    public function serviceGetNotificationsComment($aEvent)
+    {
+        $aResult = parent::serviceGetNotificationsComment($aEvent);
+
+        if((int)$aEvent['object_privacy_view'] < 0)
+            $aResult = array_merge($aResult, [
+                'subentry_sample' => '_bx_tasks_txt_sample_comment_single_short',
+                'lang_key' => '_bx_tasks_txt_subobject_added_in_context'
+            ]);
+
+        return $aResult;
+    }
+
     public function serviceGetNotificationsCompleted($aEvent)
     {
         return $this->_serviceGetNotificationsByAction($aEvent, 'completed');
