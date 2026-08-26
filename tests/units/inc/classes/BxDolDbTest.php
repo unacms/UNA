@@ -1,13 +1,13 @@
 <?php
 
+use PHPUnit\Framework\Attributes\DataProvider;
+
 /**
  * Test Antispam module
  */
 class BxDolDbTest extends BxDolTestCase
 {
-    /**
-     * @dataProvider providerForIsValidFieldName
-     */
+    #[DataProvider('providerForIsValidFieldName')]
     public function testIsValidFieldName($s, $bRes)
     {
         $this->assertEquals($bRes, (bool)BxDolDb::getInstance()->isValidFieldName($s));

@@ -19,7 +19,7 @@ module.exports = {
     './template/scripts/*.php',
     './template/scripts_templ/*.php',
 
-    './src/**/*.ts'
+    './src/**/*.{ts,tsx}'
   ],
   safelist: [
     {

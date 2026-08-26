@@ -1,5 +1,7 @@
 <?php
 
+use PHPUnit\Framework\Attributes\DataProvider;
+
 /**
  * Test DNSURI black lists in Antispam module
  */
@@ -10,8 +12,11 @@ class BxAntispamDNSURIBlacklistsTest extends BxDolTestCase
 
     protected function setUp(): void
     {
+        $oModule = $this->bxRequireAntispam();
+
         bx_import('BxDolModule');
-        $oModule = BxDolModule::getInstance('bx_antispam');
+        bx_import('DNSBlacklists', $oModule->_aModule);
+        bx_import('DNSURIBlacklists', $oModule->_aModule);
 
         $this->_oDNSBlacklists = bx_instance('BxAntispamDNSBlacklists', array(), $oModule->_aModule);
         $this->_oDNSURIBlacklists = bx_instance('BxAntispamDNSURIBlacklists', array(), $oModule->_aModule);
@@ -39,9 +44,7 @@ class BxAntispamDNSURIBlacklistsTest extends BxDolTestCase
         );
     }
 
-    /**
-     * @dataProvider providerForIsSpam
-     */
+    #[DataProvider('providerForIsSpam')]
     public function testIsSpam($sText, $bRes)
     {
         if (!$this->isSurbl())

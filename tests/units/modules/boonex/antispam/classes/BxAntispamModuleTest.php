@@ -1,8 +1,14 @@
 <?php
 
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\PreserveGlobalState;
+use PHPUnit\Framework\Attributes\RunInSeparateProcess;
+
 /**
  * Test Antispam module
  */
+#[AllowMockObjectsWithoutExpectations]
 class BxAntispamModuleTest extends BxDolTestCase
 {
     protected $_sSampleEmail = 'some@email.com';
@@ -18,8 +24,7 @@ class BxAntispamModuleTest extends BxDolTestCase
 
     protected function setUp(): void
     {
-        bx_import('BxDolModule');
-        $this->_oModule = BxDolModule::getInstance('bx_antispam');
+        $this->_oModule = $this->bxRequireAntispam();
 
         $this->_oMockIP = $this->bxMockGet('BxAntispamIP', $this->_oModule->_aModule);
         $this->_oMockDNSBlacklists = $this->bxMockGet('BxAntispamDNSBlacklists', $this->_oModule->_aModule, true);
@@ -30,15 +35,19 @@ class BxAntispamModuleTest extends BxDolTestCase
 
     protected function tearDown(): void
     {
-        // free all mock objects after each test call
-        $this->bxMockFree($this->_oMockIP);
-        $this->bxMockFree($this->_oMockDNSBlacklists);
-        $this->bxMockFree($this->_oMockDNSURIBlacklists);
-        $this->bxMockFree($this->_oMockStopForumSpam);
-        $this->bxMockFree($this->_oMockAkismet);
+        if ($this->_oMockIP)
+            $this->bxMockFree($this->_oMockIP);
+        if ($this->_oMockDNSBlacklists)
+            $this->bxMockFree($this->_oMockDNSBlacklists);
+        if ($this->_oMockDNSURIBlacklists)
+            $this->bxMockFree($this->_oMockDNSURIBlacklists);
+        if ($this->_oMockStopForumSpam)
+            $this->bxMockFree($this->_oMockStopForumSpam);
+        if ($this->_oMockAkismet)
+            $this->bxMockFree($this->_oMockAkismet);
 
-        // restore options after each test call
-        $this->_oModule->_oConfig->restoreAntispamOptions();
+        if ($this->_oModule && $this->_oModule->_oConfig)
+            $this->_oModule->_oConfig->restoreAntispamOptions();
     }
 
     static public function providerForServiceIsSpam()
@@ -58,9 +67,7 @@ class BxAntispamModuleTest extends BxDolTestCase
         );
     }
 
-    /**
-     * @dataProvider providerForServiceIsSpam
-     */
+    #[DataProvider('providerForServiceIsSpam')]
     public function testServiceIsSpam($isAdmin, $bIpWhitelisted, $sUriDnsblEnable, $bUriDnsblBlacklisted, $sAkismetlEnable, $bAkismetBlacklisted, $sBlock, $bRes)
     {
         $this->_oModule->_oConfig->setAntispamOption('antispam_report', ''); // turn off reporting during testing
@@ -76,25 +83,25 @@ class BxAntispamModuleTest extends BxDolTestCase
             $this->_oMockAkismet->expects($this->never())->method('isSpam');
         } else { // if not admin then check for whitelisting
             $this->_oMockIP->expects($this->once())->method('isIpWhitelisted')
-                ->will($this->returnValue($bIpWhitelisted));
+                ->willReturn($bIpWhitelisted);
         }
 
         if ('on' != $sUriDnsblEnable || $isAdmin || $bIpWhitelisted) { // don't check in DNDBL if anything is true
             $this->_oMockDNSURIBlacklists->expects($this->never())->method('isSpam');
         } else { // check in URIDNSBL if URIDNSBL is enabled, not admin and IP is not whitelisted
             $this->_oMockDNSURIBlacklists->expects($this->once())->method('isSpam')
-                ->will($this->returnValue($bUriDnsblBlacklisted));
+                ->willReturn($bUriDnsblBlacklisted);
         }
 
         if ('on' != $sAkismetlEnable || $isAdmin || $bIpWhitelisted || ($bUriDnsblBlacklisted && $sUriDnsblEnable)) { // don't check in Akismet if anything is true
             $this->_oMockAkismet->expects($this->never())->method('isSpam');
         } else { // check in Akismet if Akismet is enabled, not admin, IP is not whitelisted and not previouslu detected in DNSBL
             $this->_oMockAkismet->expects($this->once())->method('isSpam')
-                ->will($this->returnValue($bAkismetBlacklisted));
+                ->willReturn($bAkismetBlacklisted);
         }
 
         // check result boolean value
-        $sContent = $this->anything();
+        $sContent = 'test';
         $this->assertEquals($bRes, $this->_oModule->serviceIsSpam($sContent, $this->_sSampleIP));
     }
 
@@ -112,11 +119,9 @@ class BxAntispamModuleTest extends BxDolTestCase
         );
     }
 
-    /**
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     * @dataProvider providerForServiceCheckJoin
-     */
+    #[RunInSeparateProcess]
+    #[PreserveGlobalState(false)]
+    #[DataProvider('providerForServiceCheckJoin')]
     public function testServiceCheckJoin($bIpBlocked, $sDnsblEnable, $sDnsblBehaviour, $bDnsblIpBlacklisted, $bStopForumSpamSpammer, $bResultSetApprove, $bResultEmptyString)
     {
         // save exception handler
@@ -131,7 +136,7 @@ class BxAntispamModuleTest extends BxDolTestCase
             // first IP address block checking is called
             $this->_oMockIP->expects($this->once())->method('isIpBlocked')
                 ->with($this->equalTo($this->_sSampleIP))
-                ->will($this->returnValue($bIpBlocked));
+                ->willReturn($bIpBlocked);
 
             if ($bIpBlocked) { // if ip is blocked no other methods should be called
 
@@ -155,7 +160,7 @@ class BxAntispamModuleTest extends BxDolTestCase
                     $this->_oMockStopForumSpam->expects($this->never())->method('isSpammer');
                 } else {
                     $this->_oMockStopForumSpam->expects($this->once())->method('isSpammer')
-                        ->will($this->returnValue($bStopForumSpamSpammer));
+                        ->willReturn($bStopForumSpamSpammer);
                 }
             }
 
@@ -183,11 +188,9 @@ class BxAntispamModuleTest extends BxDolTestCase
         );
     }
 
-    /**
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     * @dataProvider providerForServiceCheckLogin
-     */
+    #[RunInSeparateProcess]
+    #[PreserveGlobalState(false)]
+    #[DataProvider('providerForServiceCheckLogin')]
     public function testServiceCheckLogin($bIpBlocked, $sDnsblEnable, $sDnsblBehaviour, $bDnsblIpBlacklisted, $bResultEmptyString)
     {
         // set different options
@@ -196,7 +199,7 @@ class BxAntispamModuleTest extends BxDolTestCase
 
         // first IP address block checking is called
         $this->_oMockIP->expects($this->once())->method('isIpBlocked')
-            ->will($this->returnValue($bIpBlocked));
+            ->willReturn($bIpBlocked);
 
         if ($bIpBlocked || 'on' != $sDnsblEnable) { // if ip is blocked, or DNSBL isn't enabled - DNSBL checking shouldn't be called
 
@@ -227,15 +230,13 @@ class BxAntispamModuleTest extends BxDolTestCase
         );
     }
 
-    /**
-     * @dataProvider providerForServiceIsIpDnsBlacklisted
-     */
+    #[DataProvider('providerForServiceIsIpDnsBlacklisted')]
     public function testServiceIsIpDnsBlacklisted($bDnsblSpammer, $bDnsblWhitelisted, $bRes)
     {
         // check of whitelisting should be called once
         $this->_oMockIP->expects($this->once())->method('isIpWhitelisted')
             ->with($this->equalTo($this->_sSampleIP))
-            ->will($this->returnValue(false));
+            ->willReturn(false);
 /*
         // check in 'spammers' chain
         $this->_oMockDNSBlacklists->expects($this->at(0))->method('dnsbl_lookup_ip')
@@ -260,7 +261,7 @@ class BxAntispamModuleTest extends BxDolTestCase
     public function testServiceIsIpDnsBlacklistedWhenIpIsWhiletisted()
     {
         $this->_oMockIP->expects($this->once())->method('isIpWhitelisted')
-            ->will($this->returnValue(true));
+            ->willReturn(true);
         $this->_oMockDNSBlacklists->expects($this->never())->method('dnsbl_lookup_ip');
 
         $this->assertEquals(false, $this->_oModule->serviceIsIpDnsBlacklisted($this->_sSampleIP));

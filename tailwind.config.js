@@ -25,7 +25,7 @@ module.exports = {
     './template/scripts/*.php',
     './template/scripts_templ/*.php',
 
-    './src/**/*.ts'
+    './src/**/*.{ts,tsx}'
   ],
   safelist: [
     'w-8', 'w-10', 'w-16', 'w-24', 'w-48', 'w-4/6', 
