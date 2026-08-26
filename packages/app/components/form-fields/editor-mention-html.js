@@ -145,6 +145,12 @@ export function linkifyHtml(html) {
 // this before navigating.
 export function normalizeLinkHref(href) {
     if (!href) return href
+    // iOS EnrichedText uses greedy href=".+" and can append leftover tag
+    // attributes (class/rel/target) onto the URL. Cut at the first raw
+    // quote or space so only the real href is opened.
+    if (/^https?:\/\//i.test(href) && /[\s"']/.test(href)) {
+        href = href.replace(/^(https?:\/\/[^\s"']+).*/i, '$1')
+    }
     if (/^(https?:|mailto:|tel:|\/|#|data:|blob:)/i.test(href)) return href
     // Bare domain or www. host (e.g. "example.com", "www.example.com/x") → add scheme.
     if (/^[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,24}(?:[/?#]|$)/.test(href)) {

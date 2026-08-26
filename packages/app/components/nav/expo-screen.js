@@ -22,7 +22,7 @@ function isFetchablePagePath(path) {
 }
 
 export async function getData(pagePath, params) {
-    let path = (!pagePath || pagePath.startsWith('expo-development-client')) ? 'home' : pagePath;
+    let path = (!pagePath || pagePath === '/' || pagePath.startsWith('expo-development-client')) ? 'home' : pagePath;
     path = path.startsWith('/') ? path.slice(1) : path;
 
     let apiPath = `/api.php?r=system/get_page_by_request/TemplServicePages&params[]=${path}`;
