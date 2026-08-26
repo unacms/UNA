@@ -889,7 +889,7 @@ export function TopSidebar({
                         )}
                         <View className="flex-1 min-w-0">{children}</View>
                     </Row>
-                    {layout != 'mixed' && (
+                    {(layout != 'mixed' && layoutName !== 'profile') && (
                         <Row className={`hidden ${conductorTheme.hide_top_menu_from}:flex cond-buttons-add`}>
                             {addButtons}
                         </Row>
