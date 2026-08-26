@@ -135,6 +135,8 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode, suppressCon
 
     const smallCoverAvatarSize =
         appSetting('cover', 'small_cover_avatar_display_size') || 'md'
+    const smallCoverNameSize =
+        appSetting('cover', 'small_cover_name_display_size') || '2xl'
     const profileTitle = data.profile.display_name || data.profile.title || ''
     const profileUrl = data.profile.url || ''
     const menusInNavbar = isCoverActionsMenuInNavbar(
@@ -160,31 +162,54 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode, suppressCon
 
                         <>
                             {(bPerson || coverMode !== 'none') && (
-                                <View className="flex-1 shrink min-w-0 h-16 justify-center">
-                                    <View className="max-w-full min-w-0 self-start justify-center">
-                                        <NeoButtonLink
-                                            href={profileUrl}
-                                            alt={profileTitle}
-                                            style="glass"
-                                            controlSize="regular"
-                                            borderShape={coverMode !== 'none' ? 'capsule' : 'circle'}
-                                            align="start"
-                                            contentInsets={coverMode !== 'none' ? 'mediaLeading' : undefined}
-                                            accessibilityLabel={profileTitle}
-                                            image={bPerson ? (
-                                                <View className="pointer-events-none shrink-0">
-                                                    <Profile
-                                                        {...data.profile}
-                                                        displayType="unit_wo_info"
-                                                        displaySize={smallCoverAvatarSize}
-                                                        showLinks={false}
-                                                    />
-                                                </View>
-                                            ) : undefined}
-                                            label={coverMode !== 'none' ? profileTitle : undefined}
-                                        />
+                                <>
+                                    <View className="flex-1 shrink min-w-0 h-16 justify-center lg:hidden">
+                                        <View className="max-w-full min-w-0 self-start justify-center">
+                                            <NeoButtonLink
+                                                href={profileUrl}
+                                                alt={profileTitle}
+                                                style="glass"
+                                                controlSize="regular"
+                                                borderShape={coverMode !== 'none' ? 'capsule' : 'circle'}
+                                                align="start"
+                                                contentInsets={coverMode !== 'none' ? 'mediaLeading' : undefined}
+                                                accessibilityLabel={profileTitle}
+                                                image={bPerson ? (
+                                                    <View className="pointer-events-none shrink-0">
+                                                        <Profile
+                                                            {...data.profile}
+                                                            displayType="unit_wo_info"
+                                                            displaySize={smallCoverAvatarSize}
+                                                            showLinks={false}
+                                                        />
+                                                    </View>
+                                                ) : undefined}
+                                                label={coverMode !== 'none' ? profileTitle : undefined}
+                                            />
+                                        </View>
                                     </View>
-                                </View>
+                                    <View className="hidden lg:flex flex-row items-center flex-1 shrink gap-2 min-w-0 h-16">
+                                        {bPerson ? (
+                                            <View className="flex-none shrink-0">
+                                                <Profile
+                                                    {...data.profile}
+                                                    displayType="unit_wo_info"
+                                                    displaySize={smallCoverAvatarSize}
+                                                />
+                                            </View>
+                                        ) : null}
+                                        {coverMode !== 'none' ? (
+                                            <View className="flex-1 shrink overflow-hidden min-w-0">
+                                                <Profile
+                                                    {...data.profile}
+                                                    displayType="unit_wo_image"
+                                                    displaySize={smallCoverNameSize}
+                                                    showLinks={false}
+                                                />
+                                            </View>
+                                        ) : null}
+                                    </View>
+                                </>
                             )}
                             {isAddSelector && !suppressContextSelector && (
                                 <View
