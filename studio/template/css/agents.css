@@ -1,3 +1,9 @@
+/**--- Agents ---**/
+.bx-agt-aica svg {
+    width: 1rem;
+    height: 1rem;
+}
+
 /**--- Automators ---**/
 .cmt .bx-menu-custom.bx-menu-custom-hor > li > span {
     margin-right: 0;

@@ -262,7 +262,7 @@ class BxBaseStudioAgents extends BxDolStudioAgents
                 'caption' => _t('_sys_agents_builder_view_' . $sTypeNew),
                 'title_only' => true,
                 'url' => $this->sSubpageUrl . $this->sPage . '&view=' . $sTypeNew,
-                'icon' => $aT2i[$sTypeNew]
+                'icon' => BxDolStudioTemplate::getInstance()->getIconContent($aT2i[$sTypeNew])
             ]],
             'content' => ($sMethod = 'getAgents' . bx_gen_method_name($sType)) && method_exists($this, $sMethod) ? $this->$sMethod() : ''
         ];
@@ -295,7 +295,7 @@ class BxBaseStudioAgents extends BxDolStudioAgents
 
             $sIcon = '';
             if(($sIcon = $aAgent['icon'])) {
-                list($sIcon, $sIconUrl, $sIconA, $sIconHtml) = $oTemplate->getTemplateFunctions()->getIcon($sIcon);
+                list($sIcon, $sIconUrl, $sIconA, $sIconHtml) = $oTemplate->getTemplateFunctions()->getIcon($sIcon, ['class' => 'sys-colored']);
 
                 if($sIcon)
                     $sIcon = $oTemplate->parseIcon(BxDolIconset::getObjectInstance()->getIcon($sIcon));
@@ -307,7 +307,7 @@ class BxBaseStudioAgents extends BxDolStudioAgents
             if(($sTrigger = $aAgent['trigger']))
                 $aTmplVarsTrigger = [
                     'trigger_title' => bx_html_attribute(_t('_sys_agents_field_trigger_' . str_replace(['-', ' '], '_', $sTrigger))),
-                    'trigger_icon_src' => $oTemplate->getIconUrl('agt-trg-' . $sTrigger . '.svg')
+                    'trigger_icon' => $oTemplate->getIconContent('agt-trg-' . $sTrigger . '.svg')
                 ];
 
             $aTmplVarsModel = [];
@@ -316,7 +316,7 @@ class BxBaseStudioAgents extends BxDolStudioAgents
                 if(($sModelTitle = $aModel['title'] ?? false))
                     $aTmplVarsModel['model_title'] = bx_html_attribute($sModelTitle);
                 if(($sModelIcon = $aModel['icon'] ?? false))
-                    $aTmplVarsModel['model_icon_src'] = $oTemplate->getIconUrl($sModelIcon);
+                    $aTmplVarsModel['model_icon'] = $oTemplate->getIconContent($sModelIcon);
             }
 
             $sProfile = '';
