@@ -580,11 +580,13 @@ class BxBaseModGeneralFormsEntryHelper extends BxDolProfileForms
             $this->redirectAfterDelete($aContentInfo);
     }
 
-    protected function redirectAfterDelete($aContentInfo)
+    protected function redirectAfterDelete($aContentInfo, $sUrl = '')
     {
         $CNF = &$this->_oModule->_oConfig->CNF;
 
-        $sUrl = $CNF['URL_HOME'];
+        if ($sUrl == '')
+            $sUrl = $CNF['URL_HOME'];
+
         $aMarkers = array(
             'account_id' => getLoggedId(),
             'profile_id' => bx_get_logged_profile_id(),

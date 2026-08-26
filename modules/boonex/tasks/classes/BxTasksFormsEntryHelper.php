@@ -73,18 +73,14 @@ class BxTasksFormsEntryHelper extends BxBaseModTextFormsEntryHelper
         return '';
     }
 
-    protected function redirectAfterDelete($aContentInfo)
+    protected function redirectAfterDelete($aContentInfo, $sUrl = '')
     {
         $CNF = &$this->_oModule->_oConfig->CNF;
 
-        $sUrl = BX_DOL_URL_ROOT;
         if((int)$aContentInfo[$CNF['FIELD_ALLOW_VIEW_TO']] < 0)
             $sUrl = 'page.php?i=' . $CNF['URI_ENTRIES_BY_CONTEXT'] . '&profile_id=' . abs($aContentInfo[$CNF['FIELD_ALLOW_VIEW_TO']]);
 
-        $this->_redirectAndExit($sUrl, true, array(
-            'account_id' => getLoggedId(),
-            'profile_id' => bx_get_logged_profile_id(),
-        ));
+        return parent::redirectAfterDelete($aContentInfo, $sUrl);
     }
 
     public function onDataDeleteAfter ($iContentId, $aContentInfo, $oProfile)
