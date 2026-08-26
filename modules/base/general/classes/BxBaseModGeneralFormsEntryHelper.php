@@ -40,6 +40,12 @@ class BxBaseModGeneralFormsEntryHelper extends BxDolProfileForms
      */
     protected $_bAbsoluteActionUrl;
 
+    /**
+     * Allows to process entity deletion using BxDolBackgroundJobs. 
+     * It's needed for 'heavy' entities which performs different time consuming subtasks during deletion.
+     */
+    protected $_bDeleteInBackground;
+
     protected $_mixedContextId;    
 
     public function __construct($oModule)
@@ -50,6 +56,7 @@ class BxBaseModGeneralFormsEntryHelper extends BxDolProfileForms
         $this->_bIsApi = bx_is_api();
 
         $this->_bDynamicMode = false;
+        $this->_bDeleteInBackground = false;
 
         $this->_bAjaxMode = false;
         $mixedAjaxMode = bx_get('ajax_mode');
@@ -556,7 +563,11 @@ class BxBaseModGeneralFormsEntryHelper extends BxDolProfileForms
         if (!$oForm->isSubmittedAndValid())
             return $this->_bIsApi ? $oForm : $oForm->getCode();
 
-        if ($sError = $this->deleteData($aContentInfo[$CNF['FIELD_ID']], $aContentInfo, $oProfile, $oForm))
+        $bScheduled = false;
+        if($this->_bDeleteInBackground)
+            $bScheduled = $this->deleteDataInBackground($iContentId);
+
+        if((!$this->_bDeleteInBackground || !$bScheduled) && ($sError = $this->deleteData($iContentId, $aContentInfo, $oProfile, $oForm)))
             return $this->_bIsApi ? bx_api_get_msg($sError) : MsgBox($sError);
 
         // perform action
@@ -654,6 +665,18 @@ class BxBaseModGeneralFormsEntryHelper extends BxDolProfileForms
         bx_alert($this->_oModule->getName(), 'deleted', $aContentInfo[$CNF['FIELD_ID']], false, $aAlertParams);
 
         return '';
+    }
+
+    public function deleteDataInBackground ($iContentId)
+    {
+        $CNF = &$this->_oModule->_oConfig->CNF;
+
+        $sModule = $this->_oModule->getName();        
+        $bResult = BxDolBackgroundJobs::getInstance()->add($sModule . '_delete_entity' . $iContentId, [$sModule, 'delete_entity', [$iContentId]]);
+        if($bResult && ($sFldStatusAdmin = $CNF['FIELD_STATUS_ADMIN'] ?? false))
+            $this->_oModule->_oDb->updateEntriesBy([$sFldStatusAdmin => 'deleting'], [$CNF['FIELD_ID'] => $iContentId]);
+
+        return $bResult;
     }
 
     public function viewDataForm ($iContentId, $sDisplay = false)
