@@ -356,6 +356,7 @@ class BxBaseStudioAgents extends BxDolStudioAgents
                     'content' => [
                         'id' => $aAgent['id'],
                         'js_object' => $sJsObject,
+                        'actions_icon' => $oTemplate->getIconContent('agt-actions.svg'),
                         'bx_repeat:actions' => $aTmplVarsActions
                     ]
                 ],
