@@ -387,7 +387,7 @@ class BxBaseStudioAgents extends BxDolStudioAgents
             if(!empty($aAction['icon'])) {
                 list($sIconFont, $sIconUrl, $sIconA, $sIconHtml) = $oFunctions->getIcon($aAction['icon']);
                 if($sIconFont)
-                    $sIcon = $oTemplate->parseIcon($oIconset->getIcon($sIconFont));
+                    $sIcon = $oTemplate->parseIcon($oIconset->getIcon($sIconFont), ['class' => 'sys-colored']);
                 else if($sIconHtml)
                     $sIcon = $sIconHtml;
                 else if($sIconUrl)
