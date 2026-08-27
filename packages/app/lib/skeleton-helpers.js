@@ -5,20 +5,26 @@ import { appSetting } from 'app/lib/util';
 const items = Array(5).fill('');
 
 export function getSkeletonForList(name, num = 5, isFirst = true, layout, renderItem, paddings) {
-
+    console.log('name', name, num , isFirst, layout, renderItem, paddings)
 
     const trimmed = isFirst ? items : items.slice(0, 2);
     const skeletonCount = Math.max(0, trimmed.length * num);
     const listClassName = 'u-max-width-block w-full mx-auto flex flex-wrap flex-row animate-pulse';
 
     if (appSetting('browse', 'new_skeletons') && typeof renderItem === 'function') {
+        // [baseModule, unitType]: prefer skeletons[unitType], else keep base module.
+        // Never fall through to a raw unitType that is missing from the map
+        // (e.g. context/author) — that resolves to an empty profile-list default.
         if (Array.isArray(name)) {
-            if (name.includes('feed'))
+            if (name.includes('feed')) {
                 name = 'feed';
-            else
-                name = name[1];
+            } else {
+                const [base, unitKey] = name;
+                const map = appSetting('browse', 'skeletons') || {};
+                name = (unitKey && map[unitKey]) || base || unitKey;
+            }
         }
-      
+
         const list = appSetting('browse', 'skeletons')
         const module = list[name] || name;
 

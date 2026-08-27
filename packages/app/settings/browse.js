@@ -17,6 +17,7 @@ export const settingsBrowse = {
         },
         unit_by_source: {
             'system/browse_friends': 'person_friends',
+            'system/browse_members': 'person_friends',
             'system/browse_recommendations_friends': 'person_friends_recommendations',
             'system/browse_invitations': 'invitations_in_context',
             'system/browse_friend_requested': 'person_friend_requested',

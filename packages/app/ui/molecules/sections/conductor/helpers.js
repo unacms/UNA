@@ -10,8 +10,10 @@ import {
     decodeText,
     getBlocksFromData,
     getPageSettings,
+    getUnitModeBySource,
 } from 'app/lib/util'
 import { fetcher } from 'app/lib/fetcher'
+import { getSkeletonByEndPoint } from 'app/customization/functions'
 
 const conductorTheme = appSetting('theme', 'conductor')
 
@@ -733,6 +735,31 @@ export const getUnitType = (currentRoute) =>
     Object.values(currentRoute?.blocks ?? {}).find(
         (b) => !b.sidebar && b.unitType
     )?.unitType
+
+/** Resolve list unitType for ItemRenderer / skeletons (web + native). */
+export function resolveConductorUnitType(route) {
+    console.log('route?.endpoint', route?.endpoint)
+    const type = getUnitModeBySource(route?.endpoint)
+    console.log('route?.endpoint-type', type)
+    return type === 'default' ? getUnitType(route) : type
+}
+
+/**
+ * Skeleton key for getSkeletonForList — same rules on web and native.
+ * Prefer endpoint override, then module/unit. Pair with unitType only when
+ * browse.skeletons remaps it (friends → bx_persons); otherwise keep base.
+ */
+export function resolveConductorSkeletonKey(route, skeletonProp, unitType) {
+    const fromEndpoint = getSkeletonByEndPoint(route)
+    if (fromEndpoint) return fromEndpoint
+    const baseSkeleton =
+        skeletonProp ||
+        route?.endpoint?.module ||
+        route?.endpoint?.unit
+    if (!unitType || !baseSkeleton) return baseSkeleton
+    const map = appSetting('browse', 'skeletons') || {}
+    return map[unitType] ? [baseSkeleton, unitType] : baseSkeleton
+}
 
 /** Re-apply stored filter form values into pageData form inputs. */
 export function pageDataWithRestoredFormValues(pageData, formValues) {

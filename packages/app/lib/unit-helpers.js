@@ -416,6 +416,15 @@ export function UnitProfileRow({
     linkProps,
     meta,
 }) {
+    // Profile-list units had no skeleton UI — empty Profile rows looked broken.
+    if (data?.skeleton) {
+        return (
+            <Row className={cn('w-full items-center py-1', className)}>
+                <Skeleton visible preset="author" className="w-full" />
+            </Row>
+        );
+    }
+
     const neoLinkProps = { ...(linkProps || {}) };
     const linkStyle = neoLinkProps.style;
     const linkControlSize = neoLinkProps.controlSize;

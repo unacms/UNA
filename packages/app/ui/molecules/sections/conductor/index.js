@@ -662,7 +662,8 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
         numColumns: numColumns,
         onRefresh: onStartRefresh,
         refreshing: isRefreshing,
-        route: currentRoute,
+        // Selected tab only — never prevRoute (that painted feed skeletons on members).
+        route: activeRoute ?? currentRoute,
         index: index,
         unitMode: unitMode,
         fetchNextPage: fetchNextPage,
@@ -673,6 +674,7 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
         leftbarExcludedFromMainIds,
         coverOverlayPad: headerMode === 'dynamic' ? coverOverlayPad : 0,
         coverScrollY: headerMode === 'dynamic' ? coverScrollY : undefined,
+        isInited: !!activeRoute?.inited,
     };
 
     const Form = getComponent('element', 'form');

@@ -3,8 +3,8 @@ import { Platform } from 'react-native';
 import Animated, { useSharedValue, useAnimatedStyle, interpolate, Extrapolation, useAnimatedReaction, runOnJS, FadeIn } from 'react-native-reanimated';
 import { View, ScrollView, Row } from 'app/design/view';
 import UniList from 'app/ui/atoms/unilist'
-import { appSetting, getUnitModeBySource, isNativeTabsEnabled } from 'app/lib/util';
-import { getUnitType, hasConductorSubitems, getMobileLeftbarItems } from './helpers';
+import { appSetting, isNativeTabsEnabled } from 'app/lib/util';
+import { getMobileLeftbarItems, hasConductorSubitems, resolveConductorUnitType, resolveConductorSkeletonKey } from './helpers';
 import { LeftbarMenuDropdown, ConductorTabList } from './shared-ui';
 import { ItemRenderer } from 'app/components/item-renderer';
 import { getSkeletonForList } from 'app/lib/skeleton-helpers';
@@ -14,7 +14,6 @@ import { getComponent } from 'app/components/registry';
 import { getWindowSafeAreaInsets } from 'app/lib/hooks/router'
 import { useTranslation } from 'react-i18next';
 import {
-    getSkeletonByEndPoint,
     layoutForList,
     paddingForList
 } from 'app/customization/functions'
@@ -318,11 +317,12 @@ export const TabScene = React.memo(({
     leftbarExcludedFromMainIds = null,
     coverOverlayPad = 0,
     coverScrollY,
+    isInited = true,
 }) => {
-    const unitType = useMemo(() => {
-        const type = getUnitModeBySource(route?.endpoint)
-        return type === 'default' ? getUnitType(route) : type
-    }, [route?.endpoint, route?.blocks])
+    const unitType = useMemo(
+        () => resolveConductorUnitType(route),
+        [route?.endpoint, route?.blocks]
+    )
 
     const handleEndReached = useCallback(
 
@@ -336,29 +336,26 @@ export const TabScene = React.memo(({
         [refreshing, isFetchingNextPage, hasNextPage]
     )
 
+    console.log('unitType', unitType)
     const renderItem = useCallback(({ item, index }) => (
         <ItemRenderer
             unitType={unitType}
             unitMode={unitMode}
             route={route}
             item={item}
-            unit={route?.endpoint?.unit}
-            module={route?.endpoint?.module}
+            unit={item?.unit || route?.endpoint?.unit}
+            module={item?.module || route?.endpoint?.module}
         />
     ), [unitType, unitMode, route]);
 
-    const SkeletonForRoute = useMemo(() => {
-        const a = getSkeletonByEndPoint(route)
-        if (a) return a
-        const baseSkeleton =
-            skeleton ||
-            route?.endpoint?.module ||
-            route?.endpoint?.unit
-        return unitType ? [baseSkeleton, unitType] : baseSkeleton
-    }, [skeleton, route, unitType])
+    const SkeletonForRoute = useMemo(
+        () => resolveConductorSkeletonKey(route, skeleton, unitType),
+        [skeleton, route, unitType]
+    )
 
     const layout = layoutForList(route?.endpoint);
     const paddings = paddingForList(route?.endpoint);
+    console.log('SkeletonForRoute', route?.endpoint)
 
     const Preload = useMemo(
         () => getSkeletonForList(SkeletonForRoute, 1, true, layout, renderItem, paddings),
@@ -435,15 +432,17 @@ export const TabScene = React.memo(({
     ) : undefined
 
     const isEmpty = (route.data || []).filter((item) => item.type != 'block').length === 0
-    // Like web: Preload is outside the padded list (preloadComponent), not ListFooter.
-    const showPreload = !!(
+    // Selected tab only (no prevRoute feed flash). Skeleton while uninited or empty loading.
+    const isInitialLoading = !isInited || !!(
         route?.endpoint?.request_url &&
         !route?.endpoint?.finished &&
         !refreshing &&
         isEmpty
     )
+    const showPreload = isInitialLoading
 
     return (
+       
         <UniList
             ListHeaderComponent={combinedHeader}
             index={route.index}

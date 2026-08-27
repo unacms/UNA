@@ -5,7 +5,6 @@ import { Icon } from 'app/ui/atoms/icon'
 import UniList from 'app/ui/atoms/unilist'
 import {
     appSetting,
-    getUnitModeBySource,
     getMenuSettings,
     menuItemsFilter,
     storageSet,
@@ -15,8 +14,9 @@ import {
     getAddon,
     hasConductorSubitems,
     conductorHref,
-    getUnitType,
     getMobileLeftbarItems,
+    resolveConductorUnitType,
+    resolveConductorSkeletonKey,
 } from './helpers'
 import {
     LeftbarMenuDropdown,
@@ -46,7 +46,6 @@ import { useCurrentUser } from 'app/context/user'
 import Search from 'app/ui/molecules/sections/search'
 import DynamicMenu from 'app/components/nav/menu-dynamic'
 import {
-    getSkeletonByEndPoint,
     layoutForList,
     paddingForList,
 } from 'app/customization/functions'
@@ -105,10 +104,10 @@ export const TabSceneMainContent = ({
 
     const setHeader = useSetHeader();
 
-    const unitType = useMemo(() => {
-        const type = getUnitModeBySource(pageRoute?.endpoint)
-        return type === 'default' ? getUnitType(pageRoute) : type
-    }, [pageRoute?.endpoint, pageRoute?.blocks])
+    const unitType = useMemo(
+        () => resolveConductorUnitType(pageRoute),
+        [pageRoute?.endpoint, pageRoute?.blocks]
+    )
 
     const [refetchState, dispatch] = useReducer(refetchUniListReducer, {
         visibleItems: [],
@@ -282,37 +281,29 @@ export const TabSceneMainContent = ({
                 route={pageRoute}
                 item={item}
                 index={index}
-                unit={pageRoute?.endpoint?.unit}
-                module={pageRoute?.endpoint?.module}
+                unit={item?.unit || pageRoute?.endpoint?.unit}
+                module={item?.module || pageRoute?.endpoint?.module}
             />
         ),
         [pageRoute, unitType]
     )
-
     console.log('unitType', unitType)
-    const SkeletonForRoute = useMemo(() => {
-        const a = getSkeletonByEndPoint(pageRoute)
-        if (a) return a
-        const baseSkeleton =
-            skeleton ||
-            pageRoute?.endpoint?.module ||
-            pageRoute?.endpoint?.unit
-        return unitType ? [baseSkeleton, unitType] : baseSkeleton
-    }, [skeleton, pageRoute, unitType,])
+    const SkeletonForRoute = useMemo(
+        () => resolveConductorSkeletonKey(pageRoute, skeleton, unitType),
+        [skeleton, pageRoute, unitType]
+    )
 
     const layout = layoutForList(pageRoute?.endpoint);
-    console.log('layout', layout);
     const paddings = paddingForList(pageRoute?.endpoint);
 
     const Preload = useMemo(
         () => getSkeletonForList(SkeletonForRoute, 5, true, layout, renderItem, paddings),
-        [SkeletonForRoute, renderItem]
+        [SkeletonForRoute, renderItem, layout, paddings]
     )
-    console.log('SkeletonForRoute', SkeletonForRoute)
 
     const PreloadShort = useMemo(
         () => getSkeletonForList(SkeletonForRoute, refetchRef.current.skipToast ? 0 : 5, false, layout, renderItem, paddings),
-        [SkeletonForRoute, refetchRef.current.skipToast, renderItem]
+        [SkeletonForRoute, refetchRef.current.skipToast, renderItem, layout, paddings]
     )
 
     // remove empty blocks
@@ -418,6 +409,7 @@ export const TabSceneMainContent = ({
                 </View>
                 }
                 {mobileLeftbarBlocks}
+                
                 <UniList
 
                     data={dataItems}
@@ -479,7 +471,6 @@ export const TabScene = ({
     const currentBreakpointName = useBreakpointName()
 
     const isRightCol = !!rightColumnContent
-    console.log('isRightCol', isRightCol, rightColumnContent)
     const isLeftCol = !!leftColumnContent
 
     const groupRef = useRef(null)
@@ -592,7 +583,6 @@ export const TabScene = ({
         }
     }, [tabIndex, pageRoute?.index, pageRoute?.inited])
 
-    console.log('panelLayoutKey', panelLayoutKey)
     return (
         <PanelGroup
             ref={groupRef}

@@ -284,7 +284,6 @@ export function Conductor({
     const tabRouteSidebarContent = tabRoute?.sidebar?.content ?? []
     const isLeftCol = tabRoute?.leftbar?.content?.length > 0 || layoutName == 'navigator'
     const isRightCol = tabRouteSidebarContent.length > 0 || tabRoute?.blocks?.browse_sidebar
-    console.log('isRightColx', tabRouteSidebarContent.length > 0, tabRoute?.blocks?.browse_sidebar)
     const sidebarUnitType = tabRoute?.blocks?.browse_sidebar?.unitType || 'default'
 
     const LeftColumnContent = isLeftCol ?
@@ -342,7 +341,7 @@ export function Conductor({
     ) : null
 
     const CenterColumnContent = <TabSceneMainContent
-        pageRoute={tabRoute}
+        pageRoute={currentRoute}
         isInited={currentRoute.inited}
         isCover={isCover}
         headerHeight={
