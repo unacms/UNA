@@ -16,13 +16,15 @@ Units.Base = function Base({ data, listIndex }) {
         <UnitWrapper data={data} padding="p-2 gap-3">
             <View className="  aspect-video flex-none rounded-lg overflow-hidden mb-auto w-full bg-accent">
                 <UnitImage
+                    view="cover"
                     image={data.image}
                     alt={data.title}
                     skeleton={isSkeleton}
-                    className="u-cover aspect-video"
+                    className="u-cover  absolute"
                     optimizedWidthCap={640}
                     priority={isLcpCandidate}
                 />
+               
             </View>
             <View className="flex-auto h-38 flex-col px-2 gap-y-3">
                 <UnitTitle

@@ -1,7 +1,7 @@
 /**
  * List-only browse block (`browse_list` in elements/_map).
  *
- * Same infinite-query + UniList + realtime pipeline as browse.js, but always
+ * Same `useUniListQuery` + UniList + realtime pipeline as browse.js, but always
  * renders a simple virtualized list (`UniList` mode `"simple"`). No showcase,
  * gallery, sidebar row, or in-block title. Pagination uses `start`/`per_page`
  * (browse.js uses a cursor).
@@ -16,20 +16,14 @@ import Unit from 'app/components/unit'
 import {
     useCallback,
     useEffect,
-    memo,
     useMemo,
     useRef,
-    useReducer,
     useState
 } from 'react'
-import { View, Row, ScrollView } from 'app/design/view'
+import { View, Row } from 'app/design/view'
 import { Platform } from 'react-native'
 import UniList from 'app/ui/atoms/unilist'
-import {
-    appSetting,
-} from 'app/lib/util'
 import { Text } from 'app/design/typography'
-import { useInfiniteQuery } from '@tanstack/react-query'
 import { getSkeletonForList } from 'app/lib/skeleton-helpers'
 import { subscribe } from 'app/ui/atoms/socket'
 import { useCurrentUser } from 'app/context/user'
@@ -40,12 +34,8 @@ import Snackbar from 'app/ui/atoms/snackbar'
 import { useIsFocused } from 'app/lib/hooks/router'
 import { useGetScrollValue } from 'app/context/jotai/layout'
 import { setListScrollOffset } from 'app/lib/cache/list-scroll-cache'
-import {
-    refetchUniListReducer,
-    isSameItemsForUniList,
-    flattenPagesForUniList,
-    fetchUniListData
-} from 'app/lib/unilist-helpers'
+import { startPerPageNextPageParam } from 'app/lib/unilist-helpers'
+import { useUniListQuery } from 'app/lib/use-unilist-query'
 import { getComponent } from 'app/components/registry';
 import { BrowseItem } from 'app/lib/common-helpers'
 import { BlockWrapper } from 'app/components/block-wrapper'
@@ -66,15 +56,6 @@ export default function Browse(props) {
     const isFocusedRef = useRef(isFocused);
     isFocusedRef.current = isFocused;
     const getScrollValue = useGetScrollValue();
-    const [refetchState, dispatch] = useReducer(refetchUniListReducer, {
-        visibleItems: [],
-        hasNewData: false
-    })
-    const refetchRef = useRef({
-        skipToast: false,
-        isFirstLoad: true,
-        prevItems: []
-    })
     //updateMode can be action, auto, none
     const updateMode = (props.updateMode || props.data.unit == 'feed') ? 'action' : 'none';
     const data = props.data
@@ -114,8 +95,6 @@ export default function Browse(props) {
             media: transformedValues.media,
             ...a
         }));
-        refetchRef.current.skipToast = true
-        refetch()
     });
 
     const hOffset = isWeb ? 64 : 56
@@ -128,68 +107,47 @@ export default function Browse(props) {
                 : windowHeight - hOffset,
         }
 
-    const qKey = [props.uri || '', data.request_url || '', currentUser?.id, props?.cachePrefix || '']
+    const numColumns = props.perLine || 1
+
+    const paramsKey = useMemo(() => {
+        const { start, ...rest } = defParams || {}
+        return JSON.stringify(rest)
+    }, [defParams])
+
+    const qKey = useMemo(
+        () => [
+            props.uri || '',
+            data.request_url || '',
+            currentUser?.id,
+            props?.cachePrefix || '',
+            paramsKey,
+        ],
+        [props.uri, data.request_url, currentUser?.id, props?.cachePrefix, paramsKey]
+    )
 
     const {
         status,
-        data: pagesData,
-        fetchNextPage,
+        listItems,
+        hasNewData,
+        acceptNewData,
         hasNextPage,
         isFetchingNextPage,
         refetch,
-        isRefetching
-    } = useInfiniteQuery({
+        isRefetching,
+        handleEndReached,
+        listReady,
+    } = useUniListQuery({
         queryKey: qKey,
-        //queryFn: fetchData,
-        queryFn: ({ pageParam }) => fetchUniListData({
-            pageParam,
-            requestUrl: data.request_url,
-            defaultParams: defParams
-        }),
-
-        getNextPageParam: (lastPage) => lastPage?.data.length > 0 ? { ...lastPage?.params, start: lastPage?.params.start + lastPage?.params.per_page } : undefined,
-        staleTime: appSetting('browse', 'stale_time'),
+        requestUrl: data.request_url,
+        defaultParams: defParams,
+        enabled: !!data.request_url,
+        deferNewItems: updateMode === 'action',
         refetchOnWindowFocus: updateMode != 'none',
         refetchOnReconnect: updateMode != 'none',
+        getNextPageParam: startPerPageNextPageParam,
+        listenPageReload: true,
+        listenFeed: props.data?.unit === 'feed',
     })
-
-    const handleEndReached = useCallback(
-        (lastItemIndex) => {
-            if (!data.request_url) return
-            if (!hasNextPage) return
-            if (isFetchingNextPage) return
-            if (lastItemIndex == false) return
-
-            refetchRef.current.skipToast = true
-            fetchNextPage()
-        },
-        [hasNextPage, isFetchingNextPage]
-    )
-
-    useEffect(() => {
-        if (!pagesData) return
-
-        const items = flattenPagesForUniList(pagesData)
-
-        if (refetchRef.current.isFirstLoad) {
-            dispatch({ type: 'SET_ITEMS', items })
-            refetchRef.current.prevItems = items
-            refetchRef.current.isFirstLoad = false
-            refetchRef.current.skipToast = false
-            return
-        }
-        if (!isSameItemsForUniList(refetchRef.current.prevItems, items)) {
-            if (refetchRef.current.skipToast) {
-                dispatch({ type: 'SET_ITEMS', items })
-                refetchRef.current.skipToast = false
-            } else if (updateMode == 'action') {
-                dispatch({ type: 'SHOW_NEW_DATA' })
-            } else {
-                dispatch({ type: 'SET_ITEMS', items })
-            }
-            refetchRef.current.prevItems = items
-        }
-    }, [pagesData, updateMode])
 
     let sSkeleton = data.module ? data.module : data.unit
     if (props?.skeleton) sSkeleton = props?.skeleton
@@ -239,40 +197,7 @@ export default function Browse(props) {
             offAdded();
             offDeleted();
         };
-    }, [])    
-
-    useEffect(() => {
-
-        const subscription = emitter.addListener(`page`, (data) => {
-            if (data.action == 'reload') {
-                refetchRef.current.skipToast = true
-                refetch();
-            }
-        })
-
-        const subscription2 = emitter.addListener(`feed`, (data) => {
-            if (props.data?.unit !== 'feed') return;
-            if (data.action == 'remove_content') {
-                dispatch({ type: 'REMOVE_ITEM', id: data.id })
-                if (refetchRef.current?.prevItems) {
-                    refetchRef.current.prevItems = refetchRef.current.prevItems.filter(item => item.id != data.id)
-                }
-                refetchRef.current.skipToast = true
-            }
-            if (data.action == 'new_content') {
-                dispatch({ type: 'PREPEND_ITEM', item: data.data })
-                if (refetchRef.current?.prevItems) {
-                    refetchRef.current.prevItems = [data.data, ...refetchRef.current.prevItems]
-                }
-                refetchRef.current.skipToast = true
-            }
-        })
-
-        return () => {
-            subscription.remove();
-            subscription2.remove()
-        }
-    }, [])
+    }, [refetch, props.data?.unit])    
 
     // Bottom-tab reselect (same event as Conductor / Browse): scroll to top, or reload if already at top.
     useEffect(() => {
@@ -295,16 +220,16 @@ export default function Browse(props) {
                 return;
             }
 
-            refetchRef.current.skipToast = true;
             refetch();
         });
         return () => subscription.remove();
     }, [props.no_scroll, data.request_url, props?.url, refetch, getScrollValue]);
 
-    const dataItems = refetchState.visibleItems
+    const dataItems = listItems
 
     if (
         dataItems.length == 0 &&
+        listReady &&
         status === 'success' &&
         data.unit == 'notifications' && !hasNextPage
     ) {
@@ -321,10 +246,11 @@ export default function Browse(props) {
 
     const NoContent = getComponent('molecule', 'no_content')
 
-    const PreloadComponent = !data?.hide_empty_msg && dataItems.length === 0 ? (hasNextPage === false
-        ? <NoContent endpoint={{request_url: data.request_url, params: {} }}/>
-        : (!dataItems.params?.loaded ? Preload : null)
-    ) : null;
+    const PreloadComponent = !data?.hide_empty_msg && dataItems.length === 0
+        ? (listReady && hasNextPage === false
+            ? <NoContent endpoint={{request_url: data.request_url, params: {} }}/>
+            : Preload)
+        : null;
 
     const uniListProps = {
         preloadComponent: PreloadComponent,
@@ -360,11 +286,9 @@ export default function Browse(props) {
             }
             <UniList {...uniListProps} />
             <Snackbar
-                visible={refetchState.hasNewData}
+                visible={hasNewData}
                 onPress={() => {
-                    const latestItems = flattenPagesForUniList(pagesData)
-                    dispatch({ type: 'SET_ITEMS', items: latestItems })
-                    refetchRef.current.prevItems = latestItems;
+                    acceptNewData()
                     if (uniRef.current) {
                         uniRef.current.scrollToIndex?.({
                             index: 0,

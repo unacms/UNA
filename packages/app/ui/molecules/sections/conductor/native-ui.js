@@ -2,21 +2,13 @@ import React, { useCallback, useState, useLayoutEffect, useMemo, useRef } from "
 import { Platform } from 'react-native';
 import Animated, { useSharedValue, useAnimatedStyle, interpolate, Extrapolation, useAnimatedReaction, runOnJS, FadeIn } from 'react-native-reanimated';
 import { View, ScrollView, Row } from 'app/design/view';
-import UniList from 'app/ui/atoms/unilist'
 import { appSetting, isNativeTabsEnabled } from 'app/lib/util';
-import { getMobileLeftbarItems, hasConductorSubitems, resolveConductorUnitType, resolveConductorSkeletonKey } from './helpers';
-import { LeftbarMenuDropdown, ConductorTabList } from './shared-ui';
-import { ItemRenderer } from 'app/components/item-renderer';
-import { getSkeletonForList } from 'app/lib/skeleton-helpers';
-import { BlockByName } from 'app/components/block';
+import { hasConductorSubitems } from './helpers';
+import { LeftbarMenuDropdown, ConductorTabList, ConductorListScene } from './shared-ui';
 import Cover, { CoverSmall, CoverBackButton } from 'app/components/elements/cover';
 import { getComponent } from 'app/components/registry';
 import { getWindowSafeAreaInsets } from 'app/lib/hooks/router'
 import { useTranslation } from 'react-i18next';
-import {
-    layoutForList,
-    paddingForList
-} from 'app/customization/functions'
 
 const conductorTheme = appSetting('theme', 'conductor')
 
@@ -304,11 +296,9 @@ export const AT_TOP_SCROLL_THRESHOLD = 50;
 export const TabScene = React.memo(({
     route,
     hasNextPage,
-    isFetchingNextPage,
     skeleton,
-    ListHeaderComponent,
     unitMode,
-    fetchNextPage,
+    handleEndReached,
     onRefresh,
     refreshing,
     numColumns,
@@ -318,161 +308,44 @@ export const TabScene = React.memo(({
     coverOverlayPad = 0,
     coverScrollY,
     isInited = true,
-}) => {
-    const unitType = useMemo(
-        () => resolveConductorUnitType(route),
-        [route?.endpoint, route?.blocks]
-    )
-
-    const handleEndReached = useCallback(
-
-        async (lastItemIndex) => {
-
-            if (isFetchingNextPage) return
-            if (hasNextPage === false) return
-            if (lastItemIndex === false) return
-            fetchNextPage()
-        },
-        [refreshing, isFetchingNextPage, hasNextPage]
-    )
-
-    console.log('unitType', unitType)
-    const renderItem = useCallback(({ item, index }) => (
-        <ItemRenderer
-            unitType={unitType}
-            unitMode={unitMode}
-            route={route}
-            item={item}
-            unit={item?.unit || route?.endpoint?.unit}
-            module={item?.module || route?.endpoint?.module}
-        />
-    ), [unitType, unitMode, route]);
-
-    const SkeletonForRoute = useMemo(
-        () => resolveConductorSkeletonKey(route, skeleton, unitType),
-        [skeleton, route, unitType]
-    )
-
-    const layout = layoutForList(route?.endpoint);
-    const paddings = paddingForList(route?.endpoint);
-    console.log('SkeletonForRoute', route?.endpoint)
-
-    const Preload = useMemo(
-        () => getSkeletonForList(SkeletonForRoute, 1, true, layout, renderItem, paddings),
-        [SkeletonForRoute, renderItem, layout, paddings]
-    )
-
-    //
-    const NoContent = getComponent('molecule', 'no_content')
-
-    const feedType = route?.endpoint?.params?.type;
-
-    const mobileLeftbarItems = useMemo(
-        () => getMobileLeftbarItems(route?.leftbar?.content, leftbarExcludedFromMainIds),
-        [route?.leftbar?.content, leftbarExcludedFromMainIds]
-    )
-
-    const routeData = useMemo(() => {
-        const leftbarContent = route?.leftbar?.content ?? []
-        const leftbarIds = new Set(
-            leftbarContent.map((item) => item?.id).filter((id) => id != null)
-        )
-        const excludedIds = leftbarExcludedFromMainIds
-
-        const rawBase = route?.endpoint
-            ? (route.data || [])
-            : [...(route.data || []), ...(route.sidebar?.content || [])]
-
-        // Drop leftbar blocks from main data (filters/menus or duplicates).
-        const base = rawBase.filter((item) => {
-            if (item?.type === 'block' && leftbarIds.has(item?.id)) return false
-            if (item?.type === 'block' && excludedIds?.has?.(item?.id)) return false
-            return true
-        })
-
-        // Leftbar rendered via BlockByName in header (same as desktop), not as list items.
-        if (!feedType) return base
-        return base.map((item) =>
-            item.feed_type === feedType ? item : { ...item, feed_type: feedType }
-        )
-    }, [
-        route?.endpoint,
-        route?.data,
-        route?.sidebar?.content,
-        route?.leftbar?.content,
-        feedType,
-        leftbarExcludedFromMainIds,
-    ]);
-
-    const leftbarHeader = mobileLeftbarItems.length > 0 ? (
-        <View className="my-3 mx-2 gap-y-4">
-            {mobileLeftbarItems.map((block, index) => {
-                const name = block?.block ?? block?.data?.source
-                if (!name) return null
-                return (
-                    <View key={`lb-${block.id ?? name ?? index}`}>
-                        <BlockByName
-                            data={route?.pageData}
-                            name={name}
-                            sidebar={true}
-                        />
-                    </View>
-                )
-            })}
-        </View>
-    ) : null
-
-    const combinedHeader = (ListHeaderComponent || leftbarHeader) ? () => (
-        <>
-            {typeof ListHeaderComponent === 'function'
-                ? ListHeaderComponent()
-                : ListHeaderComponent || null}
-            {leftbarHeader}
-        </>
-    ) : undefined
-
-    const isEmpty = (route.data || []).filter((item) => item.type != 'block').length === 0
-    // Selected tab only (no prevRoute feed flash). Skeleton while uninited or empty loading.
-    const isInitialLoading = !isInited || !!(
-        route?.endpoint?.request_url &&
-        !route?.endpoint?.finished &&
-        !refreshing &&
-        isEmpty
-    )
-    const showPreload = isInitialLoading
-
-    return (
-       
-        <UniList
-            ListHeaderComponent={combinedHeader}
-            index={route.index}
-            data={routeData}
-            route={route}
-            unit={route.endpoint?.unit}
-            endpoint={route?.endpoint}
-            layout={layout}
-            renderItem={renderItem}
-            preloadComponent={showPreload ? Preload : undefined}
-            ListFooterComponent={
-                (route?.endpoint?.request_url &&
-                    route?.endpoint?.finished &&
-                    !isFetchingNextPage &&
-                    !refreshing &&
-                    isEmpty
-                ) ? <NoContent endpoint={route?.endpoint} /> : <></>
-            }
-            maxToRenderPerBatch={5}
-            initialNumToRender={5}
-            numColumns={numColumns}
-            mode="simple"
-            url={route?.endpoint?.request_url}
-            onRefresh={onRefresh}
-            refreshing={refreshing}
-            onEndReached={handleEndReached}
-            skipHeaderOffset={skipHeaderOffset}
-            coverOverlayPad={coverOverlayPad}
-            coverScrollY={coverScrollY}
-            refer={listRef}
-        />
-    )
-});
+    listItems = [],
+    listReady = true,
+    isPending = false,
+    isFetching = false,
+    onFormChangedValues,
+}) => (
+    <ConductorListScene
+        route={route}
+        skeleton={skeleton}
+        unitMode={unitMode}
+        skeletonCount={1}
+        listItems={listItems}
+        includeSidebar
+        leftbarExcludedFromMainIds={leftbarExcludedFromMainIds}
+        onFormChangedValues={onFormChangedValues}
+        leftbarClassName="my-3 mx-2 gap-y-4"
+        isInited={isInited}
+        listReady={listReady}
+        refreshing={refreshing}
+        hasNextPage={hasNextPage}
+        isPending={isPending}
+        isFetching={isFetching}
+        preloadWhenEmpty
+        headerInList
+        showListPreload
+        listRef={listRef}
+        handleEndReached={handleEndReached}
+        onRefresh={onRefresh}
+        uniListProps={{
+            index: route.index,
+            maxToRenderPerBatch: 5,
+            initialNumToRender: 5,
+            numColumns,
+            mode: 'simple',
+            url: route?.endpoint?.request_url,
+            skipHeaderOffset,
+            coverOverlayPad,
+            coverScrollY,
+        }}
+    />
+));

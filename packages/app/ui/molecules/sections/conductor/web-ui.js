@@ -1,8 +1,7 @@
-import { useCallback, useState, useEffect, useLayoutEffect, useRef, useMemo, memo, useReducer } from 'react'
+import { useCallback, useState, useEffect, useLayoutEffect, useRef, useMemo, memo } from 'react'
 import { Text } from 'app/design/typography'
 import { View, Row, Pressable } from 'app/design/view'
 import { Icon } from 'app/ui/atoms/icon'
-import UniList from 'app/ui/atoms/unilist'
 import {
     appSetting,
     getMenuSettings,
@@ -14,41 +13,27 @@ import {
     getAddon,
     hasConductorSubitems,
     conductorHref,
-    getMobileLeftbarItems,
-    resolveConductorUnitType,
-    resolveConductorSkeletonKey,
+    conductorListQueryKey,
 } from './helpers'
 import {
     LeftbarMenuDropdown,
     TopSidebar,
     Addon,
     ConductorSidebarNav,
-    conductorLeftbarContent,
     ConductorTabItem,
     ConductorTabList,
+    ConductorListScene,
+    ConductorFiltersButton,
 } from './shared-ui'
-import {
-    refetchUniListReducer,
-    isSameItemsForUniList,
-    flattenPagesForUniList,
-    fetchUniListData,
-    prependItemToUniListQueryCache,
-    removeItemFromUniListQueryCache,
-    matchesFeedOwnerFilter,
-} from 'app/lib/unilist-helpers'
-import { ItemRenderer } from 'app/components/item-renderer'
+import { useConductorList } from './use-conductor-list'
 import { Button, NeoButton, NeoButtonLink } from 'app/design/controls'
 import Link from 'app/ui/atoms/link'
-import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
 import { getSkeletonForList } from 'app/lib/skeleton-helpers'
 import { useTranslation } from 'react-i18next'
 import { useCurrentUser } from 'app/context/user'
 import Search from 'app/ui/molecules/sections/search'
 import DynamicMenu from 'app/components/nav/menu-dynamic'
-import {
-    layoutForList,
-    paddingForList,
-} from 'app/customization/functions'
+import { layoutForList } from 'app/customization/functions'
 import FormModal, { handleFormModal } from 'app/ui/molecules/dialogs/form-modal'
 import emitter from 'app/context/emitter'
 import Cover, { CoverSmall } from 'app/components/elements/cover'
@@ -62,9 +47,10 @@ import {
 import { useLayoutSettings } from 'app/context/layout-settings'
 import { useIsDesktop, useBreakpointName } from 'app/context/measure'
 import Snackbar from 'app/ui/atoms/snackbar'
-import { useSetHeader, defaultHeader, useHeaderHeight } from 'app/context/jotai/layout'
+import { useHeaderHeight } from 'app/context/jotai/layout'
 import { getComponent } from 'app/components/registry'
-import { BlockByName2 } from 'app/components/block'
+import { ItemRenderer } from 'app/components/item-renderer'
+import { BlockByName } from 'app/components/block'
 import { measureHeaderFixedOffset } from 'app/lib/hooks/use-sticky-header-offset'
 
 const conductorTheme = appSetting('theme', 'conductor')
@@ -85,402 +71,143 @@ function scrollConductorTabToStart() {
     window.scrollTo({ top, left: 0, behavior: 'auto' })
 }
 
-export const TabSceneMainContent = ({
+export const TabScene = ({
     pageRoute,
-    header,
     isInited,
     skeleton,
     keyword,
     ts,
     timestamp,
     onFormChangedValues,
-    isUseCurrentHeader,
     leftbarExcludedFromMainIds = null,
 }) => {
     const isDesktop = useIsDesktop()
-    const pageData = pageRoute.pageData
     const uniRef = useRef()
-    const dataItemsPage = pageRoute?.data;
-
-    const setHeader = useSetHeader();
-
-    const unitType = useMemo(
-        () => resolveConductorUnitType(pageRoute),
-        [pageRoute?.endpoint, pageRoute?.blocks]
-    )
-
-    const [refetchState, dispatch] = useReducer(refetchUniListReducer, {
-        visibleItems: [],
-        hasNewData: false
-    })
-    const refetchRef = useRef({
-        skipToast: false,
-        isFirstLoad: true,
-        prevItems: []
-    })
-    const queryClient = useQueryClient()
     const { t } = useTranslation()
-    const pageRouteRef = useRef(pageRoute)
-    const qKeyRef = useRef(null)
+    const layout = layoutForList(pageRoute?.endpoint)
 
-    const endpointParamsKey = JSON.stringify(pageRoute?.endpoint?.params ?? null)
-    const qKey = [
-        pageRoute?.endpoint?.request_url,
-        pageRoute.link,
+    const qKey = conductorListQueryKey({
+        requestUrl: pageRoute?.endpoint?.request_url,
+        tabId: pageRoute.link,
         keyword,
-        endpointParamsKey,
+        params: pageRoute?.endpoint?.params ?? null,
         ts,
-        timestamp
-    ]
-
-    useEffect(() => {
-        pageRouteRef.current = pageRoute
-        qKeyRef.current = qKey
-    }, [pageRoute, endpointParamsKey, ts, timestamp, keyword, pageRoute?.endpoint?.request_url, pageRoute.link])
+        timestamp,
+    })
 
     const {
-        data: pagesData,
-        fetchNextPage,
+        listItems,
+        hasNewData,
+        acceptNewData,
         hasNextPage,
         isFetching,
-        isFetchingNextPage,
         isPending,
         refetch,
-        isRefetching
-    } = useInfiniteQuery({
+        isRefetching,
+        handleEndReached,
+        listReady,
+        skipToastRef,
+    } = useConductorList({
+        route: pageRoute,
         queryKey: qKey,
-        queryFn: ({ pageParam }) => fetchUniListData({
-            pageParam,
-            requestUrl: pageRoute?.endpoint?.request_url,
-            defaultParams: pageRoute?.endpoint?.params
-        }),
-
-        getNextPageParam: (lastPage) => {
-            return (lastPage?.data.length > 0 && lastPage?.cursor) ? { ...lastPage?.params, start: lastPage?.cursor } : undefined
-        },
-        staleTime: appSetting('browse', 'stale_time'),
+        enabled: !!pageRoute?.endpoint?.request_url,
+        deferNewItems: true,
         refetchOnWindowFocus: true,
-        refetchOnReconnect: true,
-        enabled: !!pageRoute?.endpoint?.request_url
+        listenPageReload: true,
     })
 
-    useEffect(() => {
-        if (pageRoute?.endpoint?.unit !== 'feed')
-            return
-        // DISABLED BY https://linear.app/unainc/issue/WEA-1139
-        /*const sub1 = subscribe('bx_timeline_0', 'added', test)
-        const sub2 = subscribe('bx_timeline_0', 'deleted', test1)
-
-        return () => {
-            sub1();
-            sub2();
-        };*/
-    }, [])
-
-    useEffect(() => {
-        const subscription = emitter.addListener(`page`, (data) => {
-            if (data.action == 'reload') {
-                refetchRef.current.skipToast = true
-                refetch()
-            }
-        })
-
-        const subscription2 = emitter.addListener('feed', (data) => {
-            const route = pageRouteRef.current
-            const cacheKey = qKeyRef.current
-
-            if (data.action == 'remove_content') {
-                removeItemFromUniListQueryCache(queryClient, cacheKey, data.id)
-                dispatch({ type: 'REMOVE_ITEM', id: data.id })
-                if (refetchRef.current?.prevItems) {
-                    refetchRef.current.prevItems = refetchRef.current.prevItems.filter(
-                        (item) => item.id != data.id
-                    )
-                }
-                refetchRef.current.skipToast = true
-            }
-
-            if (
-                data.action == 'new_content' &&
-                matchesFeedOwnerFilter(route, data?.data)
-            ) {
-                prependItemToUniListQueryCache(queryClient, cacheKey, data.data)
-                dispatch({ type: 'PREPEND_ITEM', item: data.data })
-                if (refetchRef.current?.prevItems) {
-                    refetchRef.current.prevItems = [data.data, ...refetchRef.current.prevItems]
-                }
-                refetchRef.current.skipToast = true
-            }
-        })
-
-        return () => {
-            subscription.remove()
-            subscription2.remove()
-        }
-    }, [queryClient, refetch])
-
-    useEffect(() => {
-        refetchRef.current.skipToast = true
-    }, [endpointParamsKey, ts, timestamp, keyword, pageRoute?.endpoint?.request_url, pageRoute.link])
-
-    // Soft-reload / endpoint params change (e.g. group status): wait for a fresh
-    // query result before showing NoContent — otherwise stale hasNextPage=false wins.
-    const [listReady, setListReady] = useState(!pageRoute?.endpoint?.request_url)
-    useEffect(() => {
-        refetchRef.current.skipToast = true
-        refetchRef.current.isFirstLoad = true
-        if (pageRoute?.endpoint?.request_url) {
-            setListReady(false)
-        } else {
-            setListReady(true)
-        }
-    }, [ts, endpointParamsKey, pageRoute?.endpoint?.request_url])
-
-
-    const handleEndReached = useCallback(
-        async (lastItemIndex) => {
-            if (isFetchingNextPage) return
-            if (hasNextPage === false) return
-            if (lastItemIndex === false) return
-            refetchRef.current.skipToast = true
-            fetchNextPage()
-        },
-        [isFetchingNextPage, hasNextPage]
-    )
-
-    useEffect(() => {
-        if (!pagesData) return
-
-        const items = flattenPagesForUniList(pagesData)
-
-        if (refetchRef.current.isFirstLoad) {
-            dispatch({ type: 'SET_ITEMS', items })
-            refetchRef.current.prevItems = items
-            refetchRef.current.isFirstLoad = false
-            refetchRef.current.skipToast = false
-            setListReady(true)
-            return
-        }
-
-        if (!isSameItemsForUniList(refetchRef.current.prevItems, items)) {
-            if (refetchRef.current.skipToast) {
-                dispatch({ type: 'SET_ITEMS', items })
-                refetchRef.current.skipToast = false
-            } else {
-                dispatch({ type: 'SHOW_NEW_DATA' })
-                refetchRef.current.skipToast = false
-            }
-            refetchRef.current.prevItems = items
-        }
-    }, [pagesData])
-
-    const renderItem = useCallback(
-        ({ item, index }) => (
-            <ItemRenderer
-                unitType={unitType}
-                route={pageRoute}
-                item={item}
-                index={index}
-                unit={item?.unit || pageRoute?.endpoint?.unit}
-                module={item?.module || pageRoute?.endpoint?.module}
+    const afterList = useCallback((scene) => (
+        <>
+            {pageRoute?.endpoint?.request_url && hasNextPage
+                ? getSkeletonForList(
+                    scene.skeletonKey,
+                    skipToastRef.current.skipToast ? 0 : 5,
+                    false,
+                    scene.layout,
+                    scene.renderItem,
+                    scene.paddings
+                )
+                : null}
+            <Snackbar
+                visible={hasNewData}
+                onPress={() => {
+                    acceptNewData()
+                    if (uniRef.current) {
+                        uniRef.current.scrollToIndex?.({
+                            index: 0,
+                            align: 'end',
+                            behavior: 'smooth',
+                        })
+                    }
+                }}
+                variant="primary"
+                title={t('Show New')}
+                size="sm"
             />
-        ),
-        [pageRoute, unitType]
-    )
-    console.log('unitType', unitType)
-    const SkeletonForRoute = useMemo(
-        () => resolveConductorSkeletonKey(pageRoute, skeleton, unitType),
-        [skeleton, pageRoute, unitType]
-    )
-
-    const layout = layoutForList(pageRoute?.endpoint);
-    const paddings = paddingForList(pageRoute?.endpoint);
-
-    const Preload = useMemo(
-        () => getSkeletonForList(SkeletonForRoute, 5, true, layout, renderItem, paddings),
-        [SkeletonForRoute, renderItem, layout, paddings]
-    )
-
-    const PreloadShort = useMemo(
-        () => getSkeletonForList(SkeletonForRoute, refetchRef.current.skipToast ? 0 : 5, false, layout, renderItem, paddings),
-        [SkeletonForRoute, refetchRef.current.skipToast, renderItem, layout, paddings]
-    )
-
-    // remove empty blocks
-    const dataItemsPageFiltered = useMemo(() =>
-        dataItemsPage?.filter(item => {
-            if (!item) return false;
-            const block = BlockByName2({
-                b: item.data,
-                name: item.block,
-            });
-            return block !== null;
-        }) ?? [],
-        [dataItemsPage]
-    );
-
-    const feedType = pageRoute?.endpoint?.params?.type;
-
-    // Mobile: same BlockByName path as desktop leftbar (needs pageData.url for active menu).
-    const mobileLeftbarItems = useMemo(() => {
-        if (isDesktop) return []
-        return getMobileLeftbarItems(pageRoute?.leftbar?.content, leftbarExcludedFromMainIds)
-    }, [
-        isDesktop,
-        pageRoute?.leftbar?.content,
-        leftbarExcludedFromMainIds,
+        </>
+    ), [
+        pageRoute?.endpoint?.request_url,
+        hasNextPage,
+        hasNewData,
+        acceptNewData,
+        skipToastRef,
+        t,
     ])
 
-    const dataItems = useMemo(() => {
-        const sidebarContent = pageRoute?.sidebar?.content ?? [];
-        const visibleItems = refetchState.visibleItems ?? [];
-
-        const base = isDesktop
-            ? [...dataItemsPageFiltered, ...visibleItems]
-            : [...dataItemsPageFiltered, ...visibleItems, ...sidebarContent.filter(item => !item.data?.hidden_on?.includes?.('phone'))];
-
-        if (!feedType) return base;
-        return base.map(item =>
-            item.feed_type === feedType ? item : { ...item, feed_type: feedType }
-        );
-    }, [dataItemsPageFiltered, refetchState.visibleItems, isDesktop, pageRoute?.endpoint?.request_url, pageRoute?.sidebar?.content, feedType]);
-
-    const mobileLeftbarBlocks = !isDesktop && mobileLeftbarItems.length > 0
-        ? conductorLeftbarContent(pageRoute, onFormChangedValues, mobileLeftbarItems)
-        : null
-
-    useEffect(() => {
-        if (isUseCurrentHeader) {
-            setHeader(isDesktop ? defaultHeader : { header: false });
-            return;
-        }
-        // Desktop chrome is the shared default header. Do not write a new
-        // `{ subHeader }` object when `header` identity changes — that
-        // retriggers PageHeader layout and can loop during hydration.
-        if (isDesktop) {
-            setHeader(defaultHeader);
-            return;
-        }
-        setHeader({ subHeader: header });
-    }, [isDesktop, isUseCurrentHeader, header, setHeader]);
-
-    const NoContent = getComponent('molecule', 'no_content')
-
-    const Form = getComponent('element', 'form');
-    const formProps = pageRoute?.endpoint?.filters;
-    const isInitialLoading = (pageRoute?.endpoint?.request_url && hasNextPage === undefined) || !isInited;
-    const [showContent, setShowContent] = useState(!isInitialLoading);
-    const revealTimerRef = useRef(null);
-
-    useEffect(() => {
-        if (revealTimerRef.current) {
-            clearTimeout(revealTimerRef.current);
-        }
-
-        if (isInitialLoading) {
-            setShowContent(false);
-            return;
-        }
-
-        revealTimerRef.current = setTimeout(() => {
-            setShowContent(true);
-        }, 140);
-
-        return () => {
-            if (revealTimerRef.current) {
-                clearTimeout(revealTimerRef.current);
-            }
-        };
-    }, [isInitialLoading, pageRoute?.key]);
-
     return (
-        <View className="relative">
-            <View
-                className={`transition-opacity duration-500 ease-out ${showContent ? 'opacity-100' : 'opacity-0 pointer-events-none'} ${!showContent ? 'absolute inset-x-0 top-0 h-0 overflow-hidden' : ''}`}
-            >
-                {(formProps) && <View className=" w-full">
-                    <Form
-                        {...formProps}
-                        key={`form-${pageRoute?.link || pageRoute?.pageData?.url || 'filters'}`}
-                        name={formProps.name}
-                        url={pageRoute?.link || pageRoute?.pageData?.url}
-                        onChange={onFormChangedValues}
-                    />
-                </View>
-                }
-                {mobileLeftbarBlocks}
-                
-                <UniList
-
-                    data={dataItems}
-                    endpoint={pageRoute.endpoint}
-                    listState={pageRoute?.state}
-                    layout={layout}
-                    mode={layout == 'w-full' ? 'simple' : ''}
-                    storagekey={pageRoute.storageKeyValue}
-                    refer={uniRef}
-                    route={pageRoute}
-                    unit={pageRoute.endpoint?.unit}
-                    useWindowScroll={true}
-                    onEndReached={handleEndReached}
-                    onRefresh={refetch}
-                    refreshing={isRefetching}
-                    renderItem={renderItem}
-
-                />
-                {(pageRoute?.endpoint?.request_url && hasNextPage) && PreloadShort}
-                {(pageRoute?.endpoint?.request_url && listReady && hasNextPage === false && !isPending && !isFetching && dataItems.filter((item) => item.type != 'block').length == 0) && <NoContent endpoint={pageRoute?.endpoint} />}
-                <Snackbar
-                    visible={refetchState.hasNewData}
-                    onPress={() => {
-                        const latestItems = flattenPagesForUniList(pagesData)
-                        dispatch({ type: 'SET_ITEMS', items: latestItems })
-                        refetchRef.current.prevItems = latestItems
-                        if (uniRef.current) {
-                            uniRef.current.scrollToIndex?.({
-                                index: 0,
-                                align: 'end',
-                                behavior: 'smooth',
-                            })
-                        }
-                    }}
-                    variant="primary"
-                    title={t('Show New')}
-                    size="sm"
-                />
-            </View>
-            {!showContent ? (
-                <View className="pointer-events-none transition-opacity duration-500 ease-out opacity-100">
-                    {Preload}
-                </View>
-            ) : null}
-        </View>
+        <ConductorListScene
+            route={pageRoute}
+            skeleton={skeleton}
+            skeletonCount={5}
+            listItems={listItems}
+            includeSidebar={!isDesktop}
+            showMobileLeftbar={!isDesktop}
+            leftbarExcludedFromMainIds={leftbarExcludedFromMainIds}
+            onFormChangedValues={onFormChangedValues}
+            isInited={isInited}
+            listReady={listReady}
+            refreshing={isRefetching}
+            hasNextPage={hasNextPage}
+            isPending={isPending}
+            isFetching={isFetching}
+            enableRevealFade
+            listRef={uniRef}
+            handleEndReached={handleEndReached}
+            onRefresh={refetch}
+            afterList={afterList}
+            uniListProps={{
+                listState: pageRoute?.state,
+                mode: layout == 'w-full' ? 'simple' : '',
+                storagekey: pageRoute.storageKeyValue,
+                useWindowScroll: true,
+            }}
+        />
     )
 };
 
-export const TabScene = ({
+export const TabSceneColumns = ({
     pageRoute,
     layoutName,
     tabIndex,
-    leftColumnContent,
-    rightColumnContent,
-    centerColumnContent
+    leftColumn,
+    rightColumn,
+    children,
 }) => {
     const pageData = pageRoute.pageData
 
     const currentBreakpointName = useBreakpointName()
 
-    const isRightCol = !!rightColumnContent
-    const isLeftCol = !!leftColumnContent
+    const isRightColumn = !!rightColumn
+    const isLeftColumn = !!leftColumn
 
     const groupRef = useRef(null)
 
     const layoutCols =
-        !isLeftCol && !isRightCol
+        !isLeftColumn && !isRightColumn
             ? 'c'
-            : !isLeftCol
+            : !isLeftColumn
                 ? 'c-r'
-                : !isRightCol
+                : !isRightColumn
                     ? 'l-c'
                     : 'l-c-r'
 
@@ -539,13 +266,13 @@ export const TabScene = ({
     function getLayouts() {
         const layouts = [];
 
-        if (isLeftCol && leftPanelProps.defaultSize) {
+        if (isLeftColumn && leftPanelProps.defaultSize) {
             layouts.push(leftPanelProps.defaultSize);
         }
         if (centerPanelProps.defaultSize)
             layouts.push(centerPanelProps.defaultSize);
 
-        if (isRightCol && rightPanelProps.defaultSize) {
+        if (isRightColumn && rightPanelProps.defaultSize) {
             layouts.push(rightPanelProps.defaultSize);
         }
 
@@ -590,19 +317,19 @@ export const TabScene = ({
                 }`}
 
             direction="horizontal"
-            className={(layoutName == 'navigator' ? '' : '') + ' h-full'}
+            className='h-full'
             // Default panel-group overflow:hidden creates a scrollport and breaks
             // window-scroll sticky. clip still contains resize overflow without that.
             style={{ overflow: 'clip' }}
             onLayout={onLayout}
         >
-            {isLeftCol && (
+            {isLeftColumn && (
                 <>
                     <Panel
                         className={`hidden ${leftBreakpoint}:block`}
                         {...leftPanelProps}
                     >
-                        {leftColumnContent}
+                        {leftColumn}
                     </Panel>
                     <PanelHandler
                         gap={`hidden ${leftBreakpoint}:block`}
@@ -613,16 +340,16 @@ export const TabScene = ({
             )}
             <Panel {...centerPanelProps}>
                 <View
-                    className={`${isRightCol ? 'flex-auto' : 'w-full mx-auto'
+                    className={`${isRightColumn ? 'flex-auto' : 'w-full mx-auto'
                         } ${layoutName !== 'navigator'
                             ? 'mt-0.5 sm:m-0 sm:p-3 lg:p-4'
                             : (!pageRoute?.endpoint?.request_url ? 'sm:p-4 ' : '')
                         }`}
                 >
-                    {centerColumnContent}
+                    {children}
                 </View>
             </Panel>
-            {isRightCol && (
+            {isRightColumn && (
                 <>
                     <PanelHandler
                         gap={`hidden ${rightBreakpoint}:block`}
@@ -633,7 +360,7 @@ export const TabScene = ({
                         className={`hidden ${rightBreakpoint}:block `}
                         {...rightPanelProps}
                     >
-                        {rightColumnContent}
+                        {rightColumn}
                     </Panel>
                 </>
             )}
@@ -848,14 +575,14 @@ const ConductorMenu = function ConductorMenu({
     )
 }
 
-export const LeftSideBarContainer = ({
+export const LeftColumnContainer = ({
     menu,
     routes,
     index,
     setIndex,
     children,
     layoutName,
-    stickyScrollStyle,
+    stickyColumnStyle,
 }) => {
     const { t } = useTranslation();
     const menuSettings = getMenuSettings(menu.object, menu.config, menu)
@@ -872,7 +599,7 @@ export const LeftSideBarContainer = ({
         <View className="h-full">
             <View
                 className={`web:sticky web:overflow-y-auto ${padClass}`}
-                style={stickyScrollStyle}
+                style={stickyColumnStyle}
             >
                 <View className={layoutName == 'profile' ? '' : appSetting('conductor', 'sidebar_inner_container')}>
                     {(!!title || !!addButtons?.length > 0) && (
@@ -966,15 +693,59 @@ export const LeftSideBarContainer = ({
     )
 }
 
+export const RightColumnContainer = ({ route, stickyColumnStyle }) => {
+    const items = route?.sidebar?.content ?? []
+    const unitType = route?.blocks?.browse_sidebar?.unitType || 'default'
+
+    return (
+        <View className="h-full">
+            <View
+                className={`web:sticky web:overflow-y-auto mt-0.5 sm:m-0 sm:p-3 lg:p-4 ${appSetting('conductor', 'sidebar_container')}`}
+                style={stickyColumnStyle}
+            >
+                {items.map((item) => (
+                    <ItemRenderer
+                        key={`${route?.index}-${item.id}`}
+                        unitType={unitType}
+                        route={route}
+                        sidebar={true}
+                        item={item}
+                        unit={route?.sidebar?.endpoint?.unit}
+                        module={route?.sidebar?.endpoint?.module || ''}
+                    />
+                ))}
+                <View>
+                    {!!route.pageData && (
+                        <BlockByName
+                            data={route.pageData}
+                            name={route.blocks?.browse_sidebar}
+                            sidebar={true}
+                            perLine={1}
+                            maxItems={1}
+                        />
+                    )}
+                </View>
+            </View>
+        </View>
+    )
+}
+
 export const HeaderContainer = ({
-    tabBarObj,
     pageData,
     headerSettings,
     isCover,
     isHideCover,
     isCoverDisabled,
     contentWidth,
-    isUseCurrentHeader,
+    menu,
+    routes,
+    layoutName,
+    index,
+    setIndex,
+    onChangeRoute,
+    leftbarMenus = [],
+    showFilters = false,
+    onShowFilters,
 }) => {
     const [hideDefaultHeaderFrom, setHideDefaultHeaderFrom] = useState(100);
     const [smallCoverHeight, setSmallCoverHeight] = useState(79);
@@ -1106,7 +877,23 @@ export const HeaderContainer = ({
                         )}
                     </View>
                 </View>
-                <View onLayout={onCoverLayout2}>{tabBarObj}</View>
+                <View onLayout={onCoverLayout2}>
+                    <TabBar
+                        menu={menu}
+                        routes={routes}
+                        layoutName={layoutName}
+                        index={index}
+                        setIndex={setIndex}
+                        onChangeRoute={onChangeRoute}
+                        pageData={pageData}
+                        leftbarMenus={leftbarMenus}
+                    />
+                    <ConductorFiltersButton
+                        visible={showFilters}
+                        onPress={onShowFilters}
+                        className="items-start px-3 lg:px-4 py-2"
+                    />
+                </View>
             </View>
         </View>
     )

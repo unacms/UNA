@@ -230,7 +230,7 @@ export const settingsMenus = {
             {
                 key: '/tab4',
                 title: 'Dashboard',
-                url: '/dashboard',
+                url: '/posts-home',
                 icon: 'Award',
             },
         ],

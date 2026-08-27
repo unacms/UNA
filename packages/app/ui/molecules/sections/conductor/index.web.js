@@ -4,37 +4,33 @@ import {
     appSetting,
     getHeaderSettings,
     getURI,
-    isObjectsEqual,
     getPageContentWidth,
 } from 'app/lib/util'
 import {
     fillTabs,
-    getDataForRoute,
+    ensureRouteInited,
     findConductorRouteIndex,
 } from './helpers'
 import {
     conductorLeftbarContent,
-    ConductorFiltersButton,
     openConductorFiltersSheet,
 } from './shared-ui'
 import {
-    TabSceneMainContent,
     TabScene,
-    LeftSideBarContainer,
+    TabSceneColumns,
+    LeftColumnContainer,
+    RightColumnContainer,
     HeaderContainer,
-    TabBar,
     TabSceneHeader,
 } from './web-ui'
 import { useConductorLeftbar, useConductorFilters } from './use-conductor'
 import { useConductorRoutes } from './use-conductor-routes'
-import { ItemRenderer } from 'app/components/item-renderer'
-import { BlockByName } from 'app/components/block'
 import { useTranslation } from 'react-i18next'
 import { useCurrentUser } from 'app/context/user'
 import { useBottomSheetData } from 'app/context/bottomsheet'
 import { useLayoutSettings } from 'app/context/layout-settings'
 import { useIsDesktop } from 'app/context/measure'
-import { useHeaderHeight } from 'app/context/jotai/layout'
+import { useSetHeader, defaultHeader, useHeaderHeight } from 'app/context/jotai/layout'
 import { useSound } from 'app/lib/hooks/useSound'
 import { useStickyHeaderOffset, stickySidebarStyle } from 'app/lib/hooks/use-sticky-header-offset'
 
@@ -49,7 +45,6 @@ export function Conductor({
     onChangeRoute,
     keyword,
     layoutName,
-    defaultHeaderHeight = 112,
 }) {
     const [timestamp] = useState(Date.now());
     const { t } = useTranslation()
@@ -57,19 +52,15 @@ export function Conductor({
     const { setBottomSheetData } = useBottomSheetData()
     const { layoutName: tmplLayout } = useLayoutSettings()
     const isDesktop = useIsDesktop()
+    const setHeader = useSetHeader()
     const pageHeaderHeight = useHeaderHeight()
     // Clear page header + cover/tab `header-fixed` stack (profile menus). Wiki's top:0
     // padding trick overlaps Conductor's opaque fixed cover bar when scrolled.
     const stickyTop = useStickyHeaderOffset(pageHeaderHeight)
-    const stickySidebarScrollStyle = stickySidebarStyle(stickyTop)
+    const stickyColumnStyle = stickySidebarStyle(stickyTop)
 
-    const coverMode = appSetting(
-        'cover',
-        'view_by_module',
-        data.cover_block?.profile?.module
-    )
-
-    const isCover = data.cover_block && coverMode != 'none' ? true : false
+    const coverMode = appSetting('cover', 'view_by_module',data.cover_block?.profile?.module)
+    const isCover = Boolean(data.cover_block) && coverMode != 'none'
 
     const initedTabs = useMemo(
         () => fillTabs(menu, data, blocks, currentUser, useSectionAsMenu),
@@ -146,44 +137,18 @@ export function Conductor({
         adapter: routesAdapter,
     })
 
-    // Web has no active/prev fallback — selected tab is currentRoute.
-    const currentRoute = activeRoute
-
-    const cellsCustomConfig =
-        appSetting('layouts', 'navigator') || appSetting('layouts', `cols-l-c`)
-    const initialHeaderSettings = getHeaderSettings(
-        getURI(currentRoute?.key),
-        isDesktop,
-        layoutName,
-        currentRoute?.config
-    )
-
+    const cellsCustomConfig = appSetting('layouts', 'navigator') || appSetting('layouts', `cols-l-c`)
     const contentWidth = getPageContentWidth(layoutName)
-
-    // Disable offset for adjustable panel layouts
-    if (cellsCustomConfig?.adjustable) {
-        initialHeaderSettings.offset = false
-    }
-    const [headerSettings, setHeaderSettings] = useState(initialHeaderSettings)
-
-    useEffect(() => {
-        if (currentRoute.inited) {
-            const headerSettingsN = getHeaderSettings(
-                getURI(currentRoute?.key),
-                isDesktop,
-                layoutName,
-                currentRoute.config
-            )
-            // Disable offset for adjustable panel layouts
-            if (cellsCustomConfig?.adjustable) {
-                headerSettingsN.offset = false
-            }
-
-            if (!isObjectsEqual(headerSettings, headerSettingsN)) {
-                setHeaderSettings(headerSettingsN)
-            }
-        }
-    }, [isDesktop, layoutName, currentRoute?.key, currentRoute.config])
+    const headerSettings = useMemo(() => {
+        const settings = getHeaderSettings(
+            getURI(activeRoute?.key),
+            isDesktop,
+            layoutName,
+            activeRoute?.config
+        )
+        if (!cellsCustomConfig?.adjustable) return settings
+        return { ...settings, offset: false }
+    }, [activeRoute?.key, activeRoute?.config, isDesktop, layoutName, cellsCustomConfig?.adjustable])
 
     useEffect(() => {
         setBottomSheetData(false)
@@ -196,10 +161,11 @@ export function Conductor({
     })
 
     useEffect(() => {
-        getDataForRoute(routes, index, setRoutes)
+        ensureRouteInited(routes, index, setRoutes)
     }, [index])
 
-    const leftbarContent = currentRoute?.leftbar?.content ?? []
+    const leftbarContent = activeRoute?.leftbar?.content ?? []
+
     const {
         leftbarMenuBlocks,
         leftbarFilterBlocks,
@@ -210,29 +176,9 @@ export function Conductor({
         isDesktop,
     })
 
-    const LeftBarContentBlocks = conductorLeftbarContent(
-        currentRoute,
-        onFormChangedValues
-    )
-    const LeftBarFilterBlocks = conductorLeftbarContent(
-        currentRoute,
-        onFormChangedValues,
-        leftbarFilterBlocks,
-        { restoreFormValues: true }
-    )
-
-    const showFilters = useCallback(() => {
-        openConductorFiltersSheet(setBottomSheetData, {
-            t,
-            content: LeftBarFilterBlocks,
-            snapPoints: ['50%', '75%'],
-            modal: true,
-        })
-    }, [LeftBarFilterBlocks, t, setBottomSheetData])
-
-    useEffect(() => {
-        setTimeout(() => window.dispatchEvent(new Event('resize_panel')), 100)
-    }, [])
+    const tabRoute = activeRoute.inited ? activeRoute : prevRoute
+    const hasLeftColumn = tabRoute?.leftbar?.content?.length > 0 || layoutName === 'navigator'
+    const hasRightColumn = (tabRoute?.sidebar?.content?.length > 0) || !!tabRoute?.blocks?.browse_sidebar
 
     const isHideCover =
         data?.cover_block?.profile &&
@@ -242,127 +188,111 @@ export function Conductor({
 
     // Mobile: Filters sheet for use_as_filter (any layout) + navigator non-menu leftbar.
     const showFiltersBtn = !isDesktop && leftbarFilterBlocks.length > 0
+    const isUseCurrentHeader = layoutName === 'profile' && (!isCoverDisabled || !isDesktop)
 
-    const isUseCurrentHeader = layoutName === 'profile' && (!isCoverDisabled || !isDesktop);
+    const leftColumnBlocks = hasLeftColumn
+        ? conductorLeftbarContent(tabRoute, onFormChangedValues)
+        : null
 
-    const headerComponent = (
-        <HeaderContainer
-            contentWidth={contentWidth}
-            isCover={isCover}
-            isCoverDisabled={isCoverDisabled}
-            isUseCurrentHeader={isUseCurrentHeader}
-            isHideCover={isHideCover}
-            tabBarObj={
-                <>
-                    <TabBar
-                        isHideCover={isHideCover}
-                        menu={menu}
-                        routes={routes}
-                        layoutName={layoutName}
-                        index={index}
-                        setIndex={setIndex}
-                        onChangeRoute={onChangeRoute}
-                        omitDefaultBackground={false}
-                        pageData={data}
-                        leftbarMenus={!isDesktop ? leftbarMenuBlocks : []}
-                    />
-                    <ConductorFiltersButton
-                        visible={showFiltersBtn}
-                        onPress={showFilters}
-                        className="items-start px-3 lg:px-4 py-2"
-                    />
-                </>
-            }
-            headerSettings={headerSettings}
-            pageData={data}
-        />
+    const showFilters = useCallback(() => {
+        openConductorFiltersSheet(setBottomSheetData, {
+            t,
+            content: conductorLeftbarContent(
+                activeRoute,
+                onFormChangedValues,
+                leftbarFilterBlocks,
+                { restoreFormValues: true }
+            ),
+            snapPoints: ['50%', '75%'],
+            modal: true,
+        })
+    }, [activeRoute, onFormChangedValues, leftbarFilterBlocks, t, setBottomSheetData])
+
+    useEffect(() => {
+        setTimeout(() => window.dispatchEvent(new Event('resize_panel')), 100)
+    }, [])
+
+    const headerComponent = useMemo(
+        () => (
+            <HeaderContainer
+                contentWidth={contentWidth}
+                isCover={isCover}
+                isCoverDisabled={isCoverDisabled}
+                isHideCover={isHideCover}
+                headerSettings={headerSettings}
+                pageData={data}
+                menu={menu}
+                routes={routes}
+                layoutName={layoutName}
+                index={index}
+                setIndex={setIndex}
+                onChangeRoute={onChangeRoute}
+                leftbarMenus={leftbarMenuBlocks}
+                showFilters={showFiltersBtn}
+                onShowFilters={showFilters}
+            />
+        ),
+        [
+            contentWidth,
+            isCover,
+            isCoverDisabled,
+            isHideCover,
+            headerSettings,
+            data?.uri,
+            data?.ts,
+            data?.cover_block,
+            data?.context,
+            data?.module,
+            menu,
+            routes,
+            layoutName,
+            index,
+            setIndex,
+            onChangeRoute,
+            leftbarMenuBlocks,
+            showFiltersBtn,
+            showFilters,
+        ]
     )
 
+    useEffect(() => {
+        if (isDesktop) {
+            setHeader(defaultHeader)
+            return
+        }
+        if (isUseCurrentHeader) {
+            setHeader({ header: false })
+        }
+    }, [isDesktop, isUseCurrentHeader, setHeader])
 
+    useEffect(() => {
+        if (isDesktop || isUseCurrentHeader) return
+        setHeader({ subHeader: headerComponent })
+    }, [isDesktop, isUseCurrentHeader, headerComponent, setHeader])
 
-    const tabRoute = currentRoute.inited ? currentRoute : prevRoute
-    const tabRouteSidebarContent = tabRoute?.sidebar?.content ?? []
-    const isLeftCol = tabRoute?.leftbar?.content?.length > 0 || layoutName == 'navigator'
-    const isRightCol = tabRouteSidebarContent.length > 0 || tabRoute?.blocks?.browse_sidebar
-    const sidebarUnitType = tabRoute?.blocks?.browse_sidebar?.unitType || 'default'
-
-    const LeftColumnContent = isLeftCol ?
-        <LeftSideBarContainer
+    const leftColumn = hasLeftColumn ? (
+        <LeftColumnContainer
             layoutName={layoutName}
             index={index}
             setIndex={setIndex}
             menu={menu}
             routes={routes}
-            headerSettings={headerSettings}
-            stickyScrollStyle={stickySidebarScrollStyle}
+            stickyColumnStyle={stickyColumnStyle}
         >
-            {LeftBarContentBlocks}
-        </LeftSideBarContainer> : null
-
-    const RightColumnContent = isRightCol ? (
-        <View className="h-full">
-            <View
-                className={`web:sticky web:overflow-y-auto mt-0.5 sm:m-0 sm:p-3 lg:p-4 ${appSetting('conductor', 'sidebar_container')}`}
-                style={stickySidebarScrollStyle}
-            >
-                {tabRouteSidebarContent.map((item, index) => {
-                    return (
-                        <ItemRenderer
-                            key={`${tabRoute?.index}-${item.id}`}
-                            unitType={sidebarUnitType}
-                            route={tabRoute}
-                            sidebar={true}
-                            item={item}
-                            unit={
-                                tabRoute?.sidebar?.endpoint?.unit
-                            }
-                            module={
-                                tabRoute?.sidebar?.endpoint?.module
-                                    ? tabRoute?.sidebar?.endpoint
-                                        ?.module
-                                    : ''
-                            }
-                        />
-                    )
-                })}
-                <View>
-                    {!!tabRoute.pageData && (
-                        <BlockByName
-                            data={tabRoute.pageData}
-                            name={tabRoute.blocks?.browse_sidebar}
-                            sidebar={true}
-                            perLine={1}
-                            maxItems={1}
-                        />
-                    )}
-                </View>
-            </View>
-        </View>
+            {leftColumnBlocks}
+        </LeftColumnContainer>
     ) : null
 
-    const CenterColumnContent = <TabSceneMainContent
-        pageRoute={currentRoute}
-        isInited={currentRoute.inited}
-        isCover={isCover}
-        headerHeight={
-            showFiltersBtn && routes.length > 1
-                ? defaultHeaderHeight + 52
-                : defaultHeaderHeight
-        }
-        header={isUseCurrentHeader ? null : headerComponent}
-        isUseCurrentHeader={isUseCurrentHeader}
-        onFormChangedValues={onFormChangedValues}
-        keyword={keyword}
-        ts={ts}
-        timestamp={timestamp}
-        skeleton={skeleton}
-        leftbarExcludedFromMainIds={leftbarExcludedFromMainIds}
-    />
+    const rightColumn = hasRightColumn ? (
+        <RightColumnContainer
+            route={tabRoute}
+            stickyColumnStyle={stickyColumnStyle}
+        />
+    ) : null
 
     return (
         <View
             className="ns--conductor-wrapper-- w-full h-full ne--"
-            scrollEnabled={false}
             style={{ minHeight: `calc(100dvh - ${pageHeaderHeight}px)` }}
         >
             {(isUseCurrentHeader || isDesktop) && headerComponent}
@@ -370,18 +300,28 @@ export function Conductor({
                 className={`ns--conductor-tab-content-- ${contentWidth} mx-auto ${tmplLayout == 'mixed' ? 'mt-12' : ''}`}
             >
                 <TabSceneHeader
-                    route={currentRoute}
+                    route={activeRoute}
                     setFilterValue={setFilterValue}
                     contentWidth={contentWidth}
                 />
-                <TabScene
+                <TabSceneColumns
                     layoutName={layoutName}
                     tabIndex={index}
                     pageRoute={tabRoute}
-                    leftColumnContent={LeftColumnContent}
-                    rightColumnContent={RightColumnContent}
-                    centerColumnContent={CenterColumnContent}
-                />
+                    leftColumn={leftColumn}
+                    rightColumn={rightColumn}
+                >
+                    <TabScene
+                        pageRoute={activeRoute}
+                        isInited={activeRoute.inited}
+                        onFormChangedValues={onFormChangedValues}
+                        keyword={keyword}
+                        ts={ts}
+                        timestamp={timestamp}
+                        skeleton={skeleton}
+                        leftbarExcludedFromMainIds={leftbarExcludedFromMainIds}
+                    />
+                </TabSceneColumns>
             </View>
         </View>
     )

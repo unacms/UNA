@@ -1,13 +1,17 @@
-import { useContext, useEffect, useMemo, useState, memo } from 'react'
+import { useCallback, useContext, useEffect, useMemo, useRef, useState, memo } from 'react'
 import { View, Row, Pressable } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { Icon } from 'app/ui/atoms/icon'
 import DropdownMenu, { DropdownMenuOpenContext } from 'app/ui/atoms/dropdown-menu'
+import UniList from 'app/ui/atoms/unilist'
 import { getComponent } from 'app/components/registry'
 import { BlockByName } from 'app/components/block'
+import { ItemRenderer } from 'app/components/item-renderer'
 import { Button } from 'app/design/controls'
 import { useTranslation } from 'react-i18next'
 import { appSetting, getPageSettings } from 'app/lib/util'
+import { getSkeletonForList } from 'app/lib/skeleton-helpers'
+import { layoutForList, paddingForList } from 'app/customization/functions'
 import {
     getAddon,
     getDropdownItemsFromLeftbarBlock,
@@ -22,6 +26,11 @@ import {
     getConductorDepthClassName,
     conductorHref,
     pageDataWithRestoredFormValues,
+    resolveConductorUnitType,
+    resolveConductorSkeletonKey,
+    getMobileLeftbarItems,
+    buildConductorListRows,
+    conductorListHasEntries,
 } from './helpers'
 
 const conductorTheme = appSetting('theme', 'conductor')
@@ -106,6 +115,25 @@ export function conductorLeftbarContent(
             saveOnChanges={saveOnChanges}
             className={className}
         />
+    )
+}
+
+/** Filter form above the conductor list (native header + web sibling). */
+export function ConductorListForm({ route, onChange }) {
+    const Form = getComponent('element', 'form')
+    const formProps = route?.endpoint?.filters
+    if (!formProps) return null
+    const formUrl = route?.link || route?.pageData?.url
+    return (
+        <View className="w-full">
+            <Form
+                {...formProps}
+                key={formUrl ? `form-${formUrl}` : 'form'}
+                name={formProps.name}
+                url={formUrl}
+                onChange={onChange}
+            />
+        </View>
     )
 }
 
@@ -514,6 +542,260 @@ export function ConductorSidebarNav({ routes, index, onSelect }) {
     return (
         <View className="w-full gap-0.5">
             {roots.map((route) => renderRoute(route))}
+        </View>
+    )
+}
+
+const EMPTY_LIST_ITEMS = []
+
+/**
+ * Shared conductor center-list chrome (native + small web).
+ * Query / snackbar / page header stay in the platform shells.
+ */
+export function useConductorListScene({
+    route,
+    skeleton,
+    unitMode,
+    skeletonCount = 1,
+    listItems = EMPTY_LIST_ITEMS,
+    includeSidebar = false,
+    showMobileLeftbar = includeSidebar,
+    leftbarExcludedFromMainIds = null,
+    onFormChangedValues,
+    leftbarClassName = 'gap-y-4',
+    isInited = true,
+    listReady = true,
+    refreshing = false,
+    hasNextPage,
+    isPending = false,
+    isFetching = false,
+    preloadWhenEmpty = false,
+}) {
+    const unitType = useMemo(
+        () => resolveConductorUnitType(route),
+        [route?.endpoint, route?.blocks]
+    )
+
+    const renderItem = useCallback(
+        ({ item, index }) => (
+            <ItemRenderer
+                unitType={unitType}
+                unitMode={unitMode}
+                route={route}
+                item={item}
+                index={index}
+                unit={item?.unit || route?.endpoint?.unit}
+                module={item?.module || route?.endpoint?.module}
+            />
+        ),
+        [route, unitType, unitMode]
+    )
+
+    const skeletonKey = useMemo(
+        () => resolveConductorSkeletonKey(route, skeleton, unitType),
+        [skeleton, route, unitType]
+    )
+
+    const layout = layoutForList(route?.endpoint)
+    const paddings = paddingForList(route?.endpoint)
+
+    const Preload = useMemo(
+        () => getSkeletonForList(skeletonKey, skeletonCount, true, layout, renderItem, paddings),
+        [skeletonKey, skeletonCount, layout, renderItem, paddings]
+    )
+
+    const feedType = route?.endpoint?.params?.type
+
+    const mobileLeftbarItems = useMemo(() => {
+        if (!showMobileLeftbar) return []
+        return getMobileLeftbarItems(route?.leftbar?.content, leftbarExcludedFromMainIds)
+    }, [showMobileLeftbar, route?.leftbar?.content, leftbarExcludedFromMainIds])
+
+    const rows = useMemo(
+        () =>
+            buildConductorListRows({
+                pageBlocks: route?.data,
+                listItems,
+                sidebarContent: route?.sidebar?.content,
+                includeSidebar,
+                feedType,
+            }),
+        [route?.data, route?.sidebar?.content, listItems, includeSidebar, feedType]
+    )
+
+    const leftbar = conductorLeftbarContent(
+        route,
+        onFormChangedValues,
+        mobileLeftbarItems,
+        { className: leftbarClassName }
+    )
+    const hasForm = !!route?.endpoint?.filters
+    const chrome = (hasForm || leftbar) ? (
+        <>
+            <ConductorListForm route={route} onChange={onFormChangedValues} />
+            {leftbar}
+        </>
+    ) : null
+
+    const isEmpty = !conductorListHasEntries(rows)
+    const requestUrl = route?.endpoint?.request_url
+    const showPreload = preloadWhenEmpty
+        ? (!isInited || !!(requestUrl && !listReady && !refreshing && isEmpty))
+        : !!(requestUrl && !listReady) || !isInited
+    const showNoContent = !!(
+        requestUrl &&
+        listReady &&
+        hasNextPage === false &&
+        !isPending &&
+        !isFetching &&
+        isEmpty
+    )
+
+    return {
+        unitType,
+        layout,
+        paddings,
+        renderItem,
+        skeletonKey,
+        Preload,
+        rows,
+        chrome,
+        showPreload,
+        showNoContent,
+        isEmpty,
+        feedType,
+    }
+}
+
+function ConductorListBody({
+    route,
+    scene,
+    headerInList,
+    showListPreload,
+    listRef,
+    handleEndReached,
+    onRefresh,
+    refreshing,
+    uniListProps = {},
+}) {
+    const NoContent = getComponent('molecule', 'no_content')
+    const {
+        ListFooterComponent: footerFromProps,
+        ...restUniListProps
+    } = uniListProps
+
+    return (
+        <>
+            {!headerInList ? scene.chrome : null}
+            <UniList
+                {...restUniListProps}
+                ListHeaderComponent={
+                    headerInList && scene.chrome ? () => scene.chrome : undefined
+                }
+                data={scene.rows}
+                route={route}
+                unit={route?.endpoint?.unit}
+                endpoint={route?.endpoint}
+                layout={scene.layout}
+                renderItem={scene.renderItem}
+                preloadComponent={
+                    showListPreload && scene.showPreload ? scene.Preload : undefined
+                }
+                ListFooterComponent={
+                    headerInList && scene.showNoContent
+                        ? <NoContent endpoint={route?.endpoint} />
+                        : (footerFromProps ?? null)
+                }
+                refer={listRef}
+                onEndReached={handleEndReached}
+                onRefresh={onRefresh}
+                refreshing={refreshing}
+            />
+            {!headerInList && scene.showNoContent ? (
+                <NoContent endpoint={route?.endpoint} />
+            ) : null}
+        </>
+    )
+}
+
+/**
+ * UniList + form/leftbar/empty. Native: header in list + preloadComponent.
+ * Web: chrome as siblings, window-scroll via uniListProps; optional reveal fade.
+ */
+export function ConductorListScene({
+    route,
+    headerInList = false,
+    showListPreload = false,
+    enableRevealFade = false,
+    listRef,
+    handleEndReached,
+    onRefresh,
+    refreshing,
+    uniListProps = {},
+    afterList,
+    ...sceneProps
+}) {
+    const scene = useConductorListScene({
+        route,
+        refreshing,
+        ...sceneProps,
+    })
+
+    const [showContent, setShowContent] = useState(!scene.showPreload)
+    const revealTimerRef = useRef(null)
+
+    useEffect(() => {
+        if (!enableRevealFade) return undefined
+        if (revealTimerRef.current) {
+            clearTimeout(revealTimerRef.current)
+        }
+        if (scene.showPreload) {
+            setShowContent(false)
+            return undefined
+        }
+        revealTimerRef.current = setTimeout(() => {
+            setShowContent(true)
+        }, 140)
+        return () => {
+            if (revealTimerRef.current) {
+                clearTimeout(revealTimerRef.current)
+            }
+        }
+    }, [enableRevealFade, scene.showPreload, route?.key])
+
+    const body = (
+        <>
+            <ConductorListBody
+                route={route}
+                scene={scene}
+                headerInList={headerInList}
+                showListPreload={showListPreload}
+                listRef={listRef}
+                handleEndReached={handleEndReached}
+                onRefresh={onRefresh}
+                refreshing={refreshing}
+                uniListProps={uniListProps}
+            />
+            {typeof afterList === 'function' ? afterList(scene) : afterList}
+        </>
+    )
+
+    if (!enableRevealFade) {
+        return body
+    }
+
+    return (
+        <View className="relative">
+            <View
+                className={`transition-opacity duration-500 ease-out ${showContent ? 'opacity-100' : 'opacity-0 pointer-events-none'} ${!showContent ? 'absolute inset-x-0 top-0 h-0 overflow-hidden' : ''}`}
+            >
+                {body}
+            </View>
+            {!showContent ? (
+                <View className="pointer-events-none transition-opacity duration-500 ease-out opacity-100">
+                    {scene.Preload}
+                </View>
+            ) : null}
         </View>
     )
 }

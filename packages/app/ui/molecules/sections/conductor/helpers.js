@@ -279,19 +279,9 @@ function applyCurrentPageToRoute(route, data, blocks) {
     }
 }
 
-/** Count non-block list items on a route. */
-function conductorListItemCount(route) {
-    return (route?.data || []).filter((item) => item?.type !== 'block').length
-}
-
-/** Block-type items only from route.data. */
-function conductorBlockItems(route) {
+/** Block-type items only from route.data (list items live in TanStack). */
+export function conductorBlockItems(route) {
     return (route?.data || []).filter((item) => item?.type === 'block')
-}
-
-/** Non-block list items from route.data. */
-function conductorNonBlockItems(route) {
-    return (route?.data || []).filter((item) => item?.type !== 'block')
 }
 
 /** True if endpoints share the same request_url (or either missing). */
@@ -322,14 +312,19 @@ export function mergeConductorRoutes(freshTabs, prevRoutes) {
             || (normalizeConductorLink(prevRoutes[i]?.link || prevRoutes[i]?.key) === routeKey
                 ? prevRoutes[i]
                 : null)
-        if (!prev?.inited) return route
+        if (!prev?.inited) {
+            return {
+                ...route,
+                data: conductorBlockItems(route),
+            }
+        }
 
         // fillTabs hydrates only the URL-matching tab; keep other inited tabs as-is.
         if (!route.inited) {
             return {
                 ...route,
                 inited: true,
-                data: prev.data,
+                data: conductorBlockItems(prev),
                 endpoint: prev.endpoint,
                 sidebar: prev.sidebar,
                 leftbar: prev.leftbar,
@@ -339,19 +334,17 @@ export function mergeConductorRoutes(freshTabs, prevRoutes) {
             }
         }
 
-        const freshCount = conductorListItemCount(route)
-        const prevCount = conductorListItemCount(prev)
-        const keepPrevList = freshCount === 0
-            && (prevCount > 0 || Boolean(prev.endpoint?.finished))
+        const keepPrevEndpoint =
+            Boolean(prev.endpoint)
             && sameConductorEndpoint(route.endpoint, prev.endpoint)
-
-        if (!keepPrevList) return route
 
         return {
             ...route,
             inited: true,
-            data: conductorBlockItems(route).concat(conductorNonBlockItems(prev)),
-            endpoint: prev.endpoint ?? route.endpoint,
+            data: conductorBlockItems(route).length
+                ? conductorBlockItems(route)
+                : conductorBlockItems(prev),
+            endpoint: keepPrevEndpoint ? (prev.endpoint ?? route.endpoint) : route.endpoint,
             sidebar: route.sidebar?.content?.length ? route.sidebar : prev.sidebar,
             leftbar: route.leftbar?.content?.length ? route.leftbar : prev.leftbar,
             pageData: route.pageData ?? prev.pageData,
@@ -416,66 +409,66 @@ export function fillTabs(
     return routes
 }
 
-/** Fetch next page for an unfinished list endpoint and append via addMoreData. */
-export async function parseData(routes, index, setRoutes, newData) {
-    const currentRoute = routes.find((item) => item.index === index)
-    if (
-        currentRoute &&
-        currentRoute.endpoint &&
-        !currentRoute.endpoint.finished
-    ) {
-        const prevFinished = currentRoute.endpoint.finished
-        const endpoint = {
-            ...currentRoute.endpoint,
-            params: { ...currentRoute.endpoint.params },
-        }
-        let params = { ...endpoint.params }
-        const sRequest =
-            currentRoute.endpoint.request_url + JSON.stringify({ params })
-
-        const sResponse = await fetcher(sRequest)
-        const newData = sResponse.data[0]?.data?.data
-            ? sResponse.data[0]?.data?.data
-            : []
-        let finished = newData?.length === 0 || !newData
-        let zeroRes = newData?.length == 0 //|| newData?.length < params.per_page //Commented for valid timeline calculation if some items groupped
-        if (params?.per_page && zeroRes) {
-            finished = true
-        }
-        const isFinished = prevFinished !== finished
-
-        endpoint.finished = finished
-
-        const ld = sResponse.data[0]?.data.params
-
-        if (ld) {
-            if (sResponse.data[0]?.data?.unit != 'notifications')
-                params.start = parseInt(ld.start) + parseInt(ld.per_page)
-            else {
-                params.start = parseInt(ld.start)
-            }
-        }
-        endpoint.params = params
-
-        if (newData.length > 0 || isFinished) {
-            addMoreData(
-                newData,
-                endpoint,
-                setRoutes,
-                index,
-                {},
-                false,
-                false,
-                null
-            )
-        }
-        return { data: newData, endpoint: endpoint }
+/**
+ * TanStack query key for a conductor list.
+ * `tabId` is tab index on native and `pageRoute.link` on web.
+ * Pass `timestamp` only on web (mount bust); omit on native so gcTime cache survives.
+ */
+export function conductorListQueryKey({ requestUrl, tabId, keyword, params, ts, timestamp }) {
+    const key = [
+        requestUrl ?? null,
+        tabId ?? null,
+        keyword,
+        JSON.stringify(params ?? null),
+        ts,
+    ]
+    if (timestamp !== undefined) {
+        key.push(timestamp)
     }
-    return { data: [], endpoint: currentRoute?.endpoint }
+    return key
+}
+
+/** Page JSON blocks that have a resolvable block name (no React tree). */
+export function filterConductorPageBlocks(pageBlocks) {
+    return (pageBlocks ?? []).filter((item) => {
+        if (!item) return false
+        const name = item.block
+        const blockName = typeof name === 'string' ? name : name?.name
+        return Boolean(blockName)
+    })
+}
+
+/**
+ * Center-column list rows (small web + native).
+ * Desktop omits sidebar (`includeSidebar: false`); phone always appends it.
+ */
+export function buildConductorListRows({
+    pageBlocks,
+    listItems = [],
+    sidebarContent,
+    includeSidebar = false,
+    feedType,
+}) {
+    const blocks = filterConductorPageBlocks(pageBlocks)
+    const sidebar = includeSidebar
+        ? (sidebarContent ?? []).filter(
+            (item) => !item.data?.hidden_on?.includes?.('phone')
+        )
+        : []
+    const base = [...blocks, ...(listItems ?? []), ...sidebar]
+    if (!feedType) return base
+    return base.map((item) =>
+        item.feed_type === feedType ? item : { ...item, feed_type: feedType }
+    )
+}
+
+/** True when the list has feed/profile items (not only page blocks). */
+export function conductorListHasEntries(items) {
+    return (items ?? []).some((item) => item.type != 'block')
 }
 
 /** Load page JSON for an uninited navigable tab and merge into routes. */
-export async function fetchAndUpdateData(routes, index, setRoutes) {
+export async function ensureRouteInited(routes, index, setRoutes) {
     const currentRoute = routes.find((item) => item.index === index)
     if (!currentRoute || currentRoute.inited || currentRoute.canNavigate === false) {
         return
@@ -490,57 +483,25 @@ export async function fetchAndUpdateData(routes, index, setRoutes) {
         link
     )
 
-        const settings = getPageSettings(sResponse.data?.config, getURI(currentRoute.link));
+    const settings = getPageSettings(sResponse.data?.config, getURI(currentRoute.link));
 
-        const blocks = settings?.blocks || getBlocksFromData(sResponse.data)
+    const blocks = settings?.blocks || getBlocksFromData(sResponse.data)
 
-        const contentAndEndpoint = processUrl(sResponse.data, settings?.blocks)
+    const contentAndEndpoint = processUrl(sResponse.data, settings?.blocks)
 
-        addMoreData(
-            contentAndEndpoint.content,
-            contentAndEndpoint.endpoint,
-            setRoutes,
-            index,
-            blocks,
-            contentAndEndpoint.sidebar,
-            contentAndEndpoint.leftbar,
-            sResponse.data
-        )
-}
-
-/** Same as fetchAndUpdateData (web path alias). */
-export async function getDataForRoute(routes, index, setRoutes) {
-    const currentRoute = routes.find((item) => item.index === index)
-    if (!currentRoute || currentRoute.inited || currentRoute.canNavigate === false) {
-        return
-    }
-    const link = resolvePageRequestLink(currentRoute.link)
-    if (!link) return
-
-    const sResponse = await fetcher(
-        '/api.php?r=system/get_page_by_request/TemplServicePages&params[]=' +
-        link
+    addMoreData(
+        contentAndEndpoint.content,
+        contentAndEndpoint.endpoint,
+        setRoutes,
+        index,
+        blocks,
+        contentAndEndpoint.sidebar,
+        contentAndEndpoint.leftbar,
+        sResponse.data
     )
-
-        const settings = getPageSettings(sResponse.data?.config, getURI(currentRoute.link));
-
-        const blocks = settings?.blocks || getBlocksFromData(sResponse.data)
-
-        const contentAndEndpoint = processUrl(sResponse.data, settings?.blocks)
-
-        addMoreData(
-            contentAndEndpoint.content,
-            contentAndEndpoint.endpoint,
-            setRoutes,
-            index,
-            blocks,
-            contentAndEndpoint.sidebar,
-            contentAndEndpoint.leftbar,
-            sResponse.data
-        )
 }
 
-/** Append items / mark route inited in setRoutes state. */
+/** Merge page chrome / blocks into setRoutes. List items live in TanStack, not route.data. */
 export function addMoreData(
     newItems,
     endpoint,
@@ -565,7 +526,9 @@ export function addMoreData(
                 ...route,
                 endpoint,
                 inited: true,
-                data: (route.data || []).concat(newItems || []),
+                data: conductorBlockItems({
+                    data: (route.data || []).concat(newItems || []),
+                }),
             }
 
             if (blocks && !route.blocks) {
@@ -627,10 +590,22 @@ function processEndpoint(acc, b) {
     }
 }
 
-/** Merge a browse block into content + endpoint. */
+/** Browse payload → conductor endpoint (no list items on the object). */
+function endpointFromBrowsePayload(payload) {
+    if (!payload?.request_url) return payload ?? null
+    return {
+        params: payload.params,
+        request_url: payload.request_url,
+        filters: payload.filters,
+        finished: false,
+        unit: payload.unit,
+        module: payload.module,
+    }
+}
+
+/** Merge a browse block into the endpoint (list items are fetched, not stored here). */
 function processBrowse(acc, b) {
     acc.endpoint = processEndpoint(acc, b)
-    acc.content = [...acc.content, ...b.data.data]
     return acc
 }
 
@@ -674,9 +649,10 @@ function processParsedUrl(data, blocks) {
     const cellCenter = mapLayoutBlocks(elements.cell_center)
     const cellRight = mapLayoutBlocks(elements.cell_right)
     const cellLeft = mapLayoutBlocks(elements.cell_left)
+    const browsePayload = cellCenter.endpoint
     return {
         content: cellCenter.content,
-        endpoint: cellCenter.endpoint,
+        endpoint: endpointFromBrowsePayload(browsePayload),
         sidebar: { endpoint: cellRight.endpoint, content: cellRight.content },
         leftbar: { endpoint: cellLeft.endpoint, content:  cellLeft.content },
     }
@@ -738,9 +714,7 @@ export const getUnitType = (currentRoute) =>
 
 /** Resolve list unitType for ItemRenderer / skeletons (web + native). */
 export function resolveConductorUnitType(route) {
-    console.log('route?.endpoint', route?.endpoint)
     const type = getUnitModeBySource(route?.endpoint)
-    console.log('route?.endpoint-type', type)
     return type === 'default' ? getUnitType(route) : type
 }
 
@@ -933,7 +907,7 @@ export function patchConductorRouteFilters(
     const next = [...routes]
     next[routeIndex] = {
         ...next[routeIndex],
-        data: [],
+        data: conductorBlockItems(next[routeIndex]),
         endpoint: {
             ...next[routeIndex].endpoint,
             finished: false,

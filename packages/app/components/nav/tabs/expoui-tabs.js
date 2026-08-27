@@ -17,7 +17,7 @@ import { playTabFeedback } from 'app/components/nav/tab-feedback';
 import { joinUnaUrl } from 'app/config';
 import { ImageManipulator, SaveFormat } from 'app/lib/image/manipulator';
 import { pngBase64WithCircleMask } from 'app/lib/image/circle-png';
-import { getNativeOptimizedImageUrl } from 'app/ui/atoms/image';
+import { getNativeOptimizedImageUrl } from 'app/lib/image-helpers';
 import { getBadgeLabel } from './badges';
 import { isDashboardTab } from './tab-menu';
 

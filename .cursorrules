@@ -50,7 +50,7 @@ See the `una-api` skill (`.agents/skills/una-api/SKILL.md`) for backend contract
 - Stabilized modules must not be casually rewritten (see `.cursor/rules/protected-cleaned-files.mdc`)
 - On `main`/`master`: if a task needs them — stop and strongly recommend a feature branch; only edit there (or if the user explicitly overrides)
 - In child/fork repos: prefer `packages/app/customization/` only; do not touch protected shared paths unless explicitly requested on a feature branch
-- Protected list lives in `.cursor/rules/protected-cleaned-files.mdc` (grid, form-fields, objects, menu-items, content-list, profile-list, …)
+- Protected list lives in `.cursor/rules/protected-cleaned-files.mdc` (grid, form-fields, objects, menu-items, content-list, profile-list, image atom, …)
 
 ## Red Flags - Always Investigate
 

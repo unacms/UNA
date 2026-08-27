@@ -3,6 +3,7 @@ import { appSetting } from 'app/lib/util'
 import { View, Row } from 'app/design/view'
 import { useTranslation } from 'react-i18next'
 import { NeoButtonLink } from 'app/design/controls'
+
 import {
     CommentsSection,
     MenuManage,
@@ -29,7 +30,51 @@ import Scroll from 'app/ui/molecules/page/scroll'
 import { useOpenModalByUrl } from 'app/context/jotai/modal';
 import { Skeleton } from 'app/ui/atoms/skeleton';
 
+function TimelineRecommendations({ data }) {
+    const { t } = useTranslation()
+    const Unit = getComponent('content-list', data.module)
+
+    return (
+        <AnimatedBlock>
+            <CardList className="mb-0.5 sm:mb-4" padding="py-2 overflow-hidden">
+                <CardHeader className=" px-3 lg:px-4 pt-2 sm:pt-3 flex-row items-center justify-between">
+                    <CardTitle className="text-secondary-foreground">{t(data.title)}</CardTitle>
+                </CardHeader>
+                <View className="overflow-hidden px-px ">
+                    <Scroll horizontal={true} step={300} className='w-full'>
+                        <Row className="gap-3 bg-background/60 mt-3 p-3">
+                            {data.content.data.map((item, index) => (
+                                <View className="w-[320px] gap-x-4" key={item.id ?? index}>
+                                    <Unit data={item} module={data.module} unitType={'context_recommendations'} />
+                                </View>
+                            ))}
+                        </Row>
+                    </Scroll>
+                </View>
+                <View className="p-2">
+                    <NeoButtonLink
+                        href={data.content.page_url}
+                        label={t('View all')}
+                        style="link"
+                        controlSize="small"
+                        width="fill"
+                        haptics="Medium"
+                    />
+                </View>
+            </CardList>
+        </AnimatedBlock>
+    )
+}
+
 function DefaultUnit({ data }) {
+    if (data.type == 'timeline_recommendations') {
+        return <TimelineRecommendations data={data} />
+    }
+
+    return <DefaultFeedUnit data={data} />
+}
+
+function DefaultFeedUnit({ data }) {
     const isSkeleton = data?.skeleton;
     const { t } = useTranslation()
     const [viewState, setViewState] = useState({ view: '' })
@@ -64,40 +109,6 @@ function DefaultUnit({ data }) {
 
     if (viewState.view == 'deleted') return null
 
-    if (data.type == 'timeline_recommendations') {
-        const Unit = getComponent('content-list', data.module);
-        const contentElement = data.content.data.map((item, index) => {
-            return (
-                <View className="w-[320px] gap-x-4" key={`item${index}_row`}>
-                    <Unit data={item} module={data.module} unitType={'context_recommendations'} />
-                </View>
-            )
-        })
-        return (
-            <AnimatedBlock>
-                <CardList className="mb-0.5 sm:mb-4" padding="py-2 overflow-hidden">
-                    <CardHeader className=" px-3 lg:px-4 pt-2 sm:pt-3 flex-row items-center justify-between">
-                        <CardTitle className="text-secondary-foreground">{t(data.title)}</CardTitle>
-                        
-                    </CardHeader>
-                    <View className="overflow-hidden px-px ">
-                        <Scroll horizontal={true} step={300} className='w-full'><Row className="gap-3 bg-background/60 mt-3 p-3">{contentElement}</Row></Scroll>
-                    </View>
-                    <View className="p-2">
-                        <NeoButtonLink
-                            href={data.content.page_url}
-                            label={t('View all')}
-                            style="link"
-                            controlSize="small"
-                            width="fill"
-                            haptics="Medium"
-                        />
-                    </View>
-
-                </CardList>
-            </AnimatedBlock>
-        );
-    }
     return (
         <AnimatedBlock>
             {viewState.view == 'edited' && (

@@ -1,7 +1,7 @@
 /** FOR old UNA versions only
  * Full browse block (`browse` in elements/_map).
  *
- * Fetches a paginated UNA list (`useInfiniteQuery` + UniList). Supports several
+ * Fetches a paginated UNA list (`useUniListQuery` + UniList). Supports several
  * layouts: virtualized list, sidebar, showcase (one-line), gallery; filter form;
  * realtime feed updates; "Show New" snackbar; optional in-block title / View All.
  *
@@ -16,10 +16,8 @@ import Unit from 'app/components/unit'
 import {
     useCallback,
     useEffect,
-    memo,
     useMemo,
     useRef,
-    useReducer,
     useState
 } from 'react'
 import { View, Row, ScrollView } from 'app/design/view'
@@ -28,7 +26,6 @@ import UniList from 'app/ui/atoms/unilist'
 import { appSetting, isObjectsEqual } from 'app/lib/util'
 import { responsiveClasses } from 'app/lib/responsive-classes'
 import { Text } from 'app/design/typography'
-import { useInfiniteQuery } from '@tanstack/react-query'
 import { getSkeletonForList } from 'app/lib/skeleton-helpers'
 import { useTranslation } from 'react-i18next'
 import { subscribe } from 'app/ui/atoms/socket'
@@ -45,13 +42,7 @@ import { BlockWrapper } from 'app/components/block-wrapper'
 import { useIsFocused } from 'app/lib/hooks/router'
 import { useGetScrollValue } from 'app/context/jotai/layout'
 import { setListScrollOffset } from 'app/lib/cache/list-scroll-cache'
-
-import {
-    refetchUniListReducer,
-    isSameItemsForUniList,
-    flattenPagesForUniList,
-    fetchUniListData
-} from 'app/lib/unilist-helpers'
+import { useUniListQuery } from 'app/lib/use-unilist-query'
 import { getComponent } from 'app/components/registry';
 import { BrowseItem } from 'app/lib/common-helpers'
 import { useIsDesktop } from 'app/context/measure';
@@ -71,15 +62,6 @@ export default function Browse(props) {
     const isFocusedRef = useRef(isFocused);
     isFocusedRef.current = isFocused;
     const getScrollValue = useGetScrollValue();
-    const [refetchState, dispatch] = useReducer(refetchUniListReducer, {
-        visibleItems: [],
-        hasNewData: false
-    })
-    const refetchRef = useRef({
-        skipToast: false,
-        isFirstLoad: true,
-        prevItems: []
-    })
     //updateMode can be action, auto, none
     const updateMode = (props.updateMode || props.data.unit == 'feed') ? 'action' : 'none';
     const data = props.data
@@ -128,10 +110,6 @@ export default function Browse(props) {
             );
             const by_context = transformedValues.by_context ? transformedValues.by_context.split('|') : [];
             const contexts = by_context[0] ? { type: by_context[0], context: by_context[1] } : { type: 'feed', context: '' };
-            dispatch({ type: 'SET_ITEMS', items: [] });
-            refetchRef.current.prevItems = [];
-            refetchRef.current.isFirstLoad = true;
-            refetchRef.current.skipToast = true;
 
             setDefParams(prev => ({
                 ...prev,
@@ -139,8 +117,6 @@ export default function Browse(props) {
                 media: transformedValues.media,
                 ...contexts
             }));
-
-            refetch()
         }
     });
 
@@ -163,73 +139,45 @@ export default function Browse(props) {
                 : windowHeight - hOffset,
         }
 
-    const qKey = [props.uri || '', data.request_url || '', currentUser?.id, props?.cachePrefix || '', defParams?.context || '', defParams?.modules || '', defParams?.media || '']
+    const paramsKey = useMemo(() => {
+        const { start, ...rest } = defParams || {}
+        return JSON.stringify(rest)
+    }, [defParams])
+
+    const qKey = useMemo(
+        () => [
+            props.uri || '',
+            data.request_url || '',
+            currentUser?.id,
+            props?.cachePrefix || '',
+            paramsKey,
+        ],
+        [props.uri, data.request_url, currentUser?.id, props?.cachePrefix, paramsKey]
+    )
 
     const {
         status,
-        data: pagesData,
-        fetchNextPage,
+        listItems,
+        hasNewData,
+        acceptNewData,
         hasNextPage,
         isFetchingNextPage,
         refetch,
-        isRefetching
-    } = useInfiniteQuery({
+        isRefetching,
+        handleEndReached,
+        listReady,
+    } = useUniListQuery({
         queryKey: qKey,
-        //queryFn: fetchData,
-        queryFn: ({ pageParam }) => fetchUniListData({
-            pageParam,
-            requestUrl: data.request_url,
-            defaultParams: defParams
-        }),
-
-        //getNextPageParam: (lastPage) => lastPage?.data.length > 0 ? { ...lastPage?.params, start: lastPage?.params.start + lastPage?.params.per_page } : undefined,
-        getNextPageParam: (lastPage) => {
-            return (lastPage?.data.length > 0 && lastPage?.cursor) ? { ...lastPage?.params, start: lastPage?.cursor } : undefined
-        },
-        staleTime: appSetting('browse', 'stale_time'),
+        requestUrl: data.request_url,
+        defaultParams: defParams,
+        enabled: !!data.request_url,
+        deferNewItems: updateMode === 'action',
         refetchOnWindowFocus: updateMode != 'none',
         refetchOnReconnect: updateMode != 'none',
+        listenPageReload: true,
+        listenFeed: props.data?.unit === 'feed',
+        canFetchNext: () => isOnePage != true && props.extraProps?.limit != true,
     })
-
-    const handleEndReached = useCallback(
-        (lastItemIndex) => {
-            if (!data.request_url) return
-            if (!hasNextPage) return
-            if (isOnePage == true) return
-            if (props.extraProps?.limit == true) return
-            if (isFetchingNextPage) return
-            if (lastItemIndex == false) return
-
-            refetchRef.current.skipToast = true
-            fetchNextPage()
-        },
-        [hasNextPage, isOnePage, isFetchingNextPage]
-    )
-
-    useEffect(() => {
-        if (!pagesData) return
-
-        const items = flattenPagesForUniList(pagesData)
-
-        if (refetchRef.current.isFirstLoad) {
-            dispatch({ type: 'SET_ITEMS', items })
-            refetchRef.current.prevItems = items
-            refetchRef.current.isFirstLoad = false
-            refetchRef.current.skipToast = false
-            return
-        }
-        if (!isSameItemsForUniList(refetchRef.current.prevItems, items)) {
-            if (refetchRef.current.skipToast) {
-                dispatch({ type: 'SET_ITEMS', items })
-                refetchRef.current.skipToast = false
-            } else if (updateMode == 'action') {
-                dispatch({ type: 'SHOW_NEW_DATA' })
-            } else {
-                dispatch({ type: 'SET_ITEMS', items })
-            }
-            refetchRef.current.prevItems = items
-        }
-    }, [pagesData, updateMode])
 
     let sSkeleton = data.module ? data.module : data.unit
     if (props?.skeleton) sSkeleton = props?.skeleton
@@ -280,44 +228,11 @@ export default function Browse(props) {
             offAdded();
             offDeleted();
         };
-    }, [])
-
-    useEffect(() => {
-        const subscription = emitter.addListener(`page`, (data) => {
-            if (data.action == 'reload') {
-                refetchRef.current.skipToast = true
-                refetch();
-            }
-        })
-
-        const subscription2 = emitter.addListener(`feed`, (data) => {
-            if (props.data?.unit !== 'feed') return;
-            if (data.action == 'remove_content') {
-                dispatch({ type: 'REMOVE_ITEM', id: data.id })
-                if (refetchRef.current?.prevItems) {
-                    refetchRef.current.prevItems = refetchRef.current.prevItems.filter(item => item.id != data.id)
-                }
-                refetchRef.current.skipToast = true
-            }
-            if (data.action == 'new_content') {
-                dispatch({ type: 'PREPEND_ITEM', item: data.data })
-                if (refetchRef.current?.prevItems) {
-                    refetchRef.current.prevItems = [data.data, ...refetchRef.current.prevItems]
-                }
-                refetchRef.current.skipToast = true
-            }
-        })
-
-        return () => {
-            subscription.remove();
-            subscription2.remove()
-        }
-    }, [])
+    }, [refetch, props.data?.unit])
 
     useEffect(() => {
         const subscription = emitter.addListener('list', (payload) => {
             if (payload?.action === 'refresh') {
-                refetchRef.current.skipToast = true;
                 refetch();
             }
         });
@@ -345,16 +260,16 @@ export default function Browse(props) {
                 return;
             }
 
-            refetchRef.current.skipToast = true;
             refetch();
         });
         return () => subscription.remove();
     }, [props.data?.unit, isOneLine, isOnePage, data.request_url, props?.url, refetch, getScrollValue]);
 
-    const dataItems = refetchState.visibleItems
+    const dataItems = listItems
 
     if (
         dataItems.length == 0 &&
+        listReady &&
         status === 'success' &&
         data.unit == 'notifications' && !hasNextPage
     ) {
@@ -393,35 +308,25 @@ export default function Browse(props) {
                 data={item}
             />
         ));
-        contentElement = items.length == 0 ? null : <Galery items={items} autoscroll={props.extraProps?.autoscroll ?? 5000} />
+        contentElement = items.length == 0
+            ? (!listReady ? Preload : null)
+            : <Galery items={items} autoscroll={props.extraProps?.autoscroll ?? 5000} />
     }
 
     if ((props.sidebar && !props.extraProps?.galery) || isOneLine) {
-        const uniqueItems = dataItems.filter(
-            (v, i, a) => a.findIndex((t) => t.id === v.id) === i
-        )
-        const limitedItems = props.extraProps?.limit
-            ? uniqueItems.slice(0, props.extraProps?.limit)
-            : (isOneLine && !props.noContainer) ? uniqueItems.slice(0, numColumns) : uniqueItems
-        contentElement = limitedItems.map((item, index) => {
-            if (props.noContainer) {
-                return (<Unit
-                    key={`item${index}`}
-                    unit={data.unit ? data.unit : ''}
-                    mode={unitMode}
-                    module={data.module ? data.module : ''}
-                    sidebar={props.sidebar}
-                    object_id={data.object_id ? data.object_id : ''}
-                    view={data.view ? data.view : ''}
-                    listIndex={index}
-                    {...props}
-                    data={item}
-                />);
-            }
-            const margin = isOneLine && numColumns > 1 ? appSetting('browse', 'margin') : '';
-            return (
-                <View key={`item${index}`} className={`${margin} ${data.unit !== 'feed' ? (isOneLine && numColumns > 1 ? ' p-2 w-1/' + numColumns : 'w-full') : ''}`}>
-                    <Unit
+        if (!listReady) {
+            contentElement = Preload
+        } else {
+            const uniqueItems = dataItems.filter(
+                (v, i, a) => a.findIndex((t) => t.id === v.id) === i
+            )
+            const limitedItems = props.extraProps?.limit
+                ? uniqueItems.slice(0, props.extraProps?.limit)
+                : (isOneLine && !props.noContainer) ? uniqueItems.slice(0, numColumns) : uniqueItems
+            contentElement = limitedItems.map((item, index) => {
+                if (props.noContainer) {
+                    return (<Unit
+                        key={`item${index}`}
                         unit={data.unit ? data.unit : ''}
                         mode={unitMode}
                         module={data.module ? data.module : ''}
@@ -431,26 +336,43 @@ export default function Browse(props) {
                         listIndex={index}
                         {...props}
                         data={item}
-                    />
-                </View>
-            )
-        })
-        if (isOneLine && !props.noContainer) {
-            contentElement = isPersonList
-                ? <View className="w-full gap-0.5">{contentElement}</View>
-                : <Row>{contentElement}</Row>
-        }
-        if (isOneLine && props.noContainer) {
-            contentElement = <ScrollView horizontal={true}><Row className='gap-4 pb-8'>{contentElement}</Row></ScrollView>
+                    />);
+                }
+                const margin = isOneLine && numColumns > 1 ? appSetting('browse', 'margin') : '';
+                return (
+                    <View key={`item${index}`} className={`${margin} ${data.unit !== 'feed' ? (isOneLine && numColumns > 1 ? ' p-2 w-1/' + numColumns : 'w-full') : ''}`}>
+                        <Unit
+                            unit={data.unit ? data.unit : ''}
+                            mode={unitMode}
+                            module={data.module ? data.module : ''}
+                            sidebar={props.sidebar}
+                            object_id={data.object_id ? data.object_id : ''}
+                            view={data.view ? data.view : ''}
+                            listIndex={index}
+                            {...props}
+                            data={item}
+                        />
+                    </View>
+                )
+            })
+            if (isOneLine && !props.noContainer) {
+                contentElement = isPersonList
+                    ? <View className="w-full gap-0.5">{contentElement}</View>
+                    : <Row>{contentElement}</Row>
+            }
+            if (isOneLine && props.noContainer) {
+                contentElement = <ScrollView horizontal={true}><Row className='gap-4 pb-8'>{contentElement}</Row></ScrollView>
+            }
         }
     }
 
     const NoContent = getComponent('molecule', 'no_content')
 
-    const PreloadComponent = !data?.hide_empty_msg && dataItems.length === 0 ? (hasNextPage === false
-        ? <NoContent endpoint={{ request_url: data.request_url, params: {} }} />
-        : (!dataItems.params?.loaded ? Preload : null)
-    ) : null;
+    const PreloadComponent = !data?.hide_empty_msg && dataItems.length === 0
+        ? (listReady && hasNextPage === false
+            ? <NoContent endpoint={{ request_url: data.request_url, params: {} }} />
+            : Preload)
+        : null;
 
 
     const handleOpenChange = (open) => {
@@ -521,7 +443,7 @@ export default function Browse(props) {
         contentElement = <UniList {...uniListProps} />
     }
 
-    if (!dataItems.length && isShowTitleInside)
+    if (!dataItems.length && listReady && isShowTitleInside)
         return;
 
     return (
@@ -565,11 +487,9 @@ export default function Browse(props) {
                     </View>
                 </View>
                 <Snackbar
-                    visible={refetchState.hasNewData}
+                    visible={hasNewData}
                     onPress={() => {
-                        const latestItems = flattenPagesForUniList(pagesData)
-                        dispatch({ type: 'SET_ITEMS', items: latestItems })
-                        refetchRef.current.prevItems = latestItems;
+                        acceptNewData()
                         if (uniRef.current) {
                             uniRef.current.scrollToIndex?.({
                                 index: 0,

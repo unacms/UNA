@@ -6,6 +6,14 @@ const conductorCache = new Map()
 /** normalizedUrl → Set of full conductor keys (all layouts). */
 const keysByUrl = new Map()
 
+function sanitizeCachedRoutes(routes) {
+    if (!Array.isArray(routes)) return routes || []
+    return routes.map((route) => ({
+        ...route,
+        data: (route?.data || []).filter((item) => item?.type === 'block'),
+    }))
+}
+
 function normalizeConductorCacheUrl(url) {
     return String(url || '').replace(/^\/+/, '').replace(/\/+$/, '')
 }
@@ -34,7 +42,12 @@ export function getCachedConductorState(layoutName, url) {
     if (!isPageCacheEnabled()) return null
     if (!layoutName || !url) return null
     const normalized = normalizeConductorCacheUrl(url)
-    return conductorCache.get(conductorCacheKey(layoutName, normalized)) ?? null
+    const state = conductorCache.get(conductorCacheKey(layoutName, normalized)) ?? null
+    if (!state?.routes?.length) return state
+    return {
+        ...state,
+        routes: sanitizeCachedRoutes(state.routes),
+    }
 }
 
 export function setCachedConductorState(layoutName, url, state) {
@@ -42,7 +55,10 @@ export function setCachedConductorState(layoutName, url, state) {
     if (!layoutName || !url || !state?.routes?.length) return
     const normalized = normalizeConductorCacheUrl(url)
     const key = conductorCacheKey(layoutName, normalized)
-    conductorCache.set(key, state)
+    conductorCache.set(key, {
+        ...state,
+        routes: sanitizeCachedRoutes(state.routes),
+    })
     indexAdd(normalized, key)
 }
 

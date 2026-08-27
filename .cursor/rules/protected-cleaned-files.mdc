@@ -16,8 +16,10 @@ These paths were stabilized. Do not casually rewrite them while vibe-coding.
 - `packages/app/components/menu-items/**`
 - `packages/app/components/units/content-list/**`
 - `packages/app/components/units/profile-list/**`
+- `packages/app/ui/atoms/image.js`
+- `packages/app/ui/atoms/image.web.js`
 
-Not included: `smart-grid*` (separate from `grid`).
+Not included: `smart-grid*` (separate from `grid`); `packages/app/lib/image-helpers.js` (optimizer URL helpers, not the atom).
 
 ## Upstream (this monorepo)
 

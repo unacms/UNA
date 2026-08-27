@@ -68,6 +68,23 @@ export const refetchUniListReducer = (state, action) => {
 
 export const flattenPagesForUniList = (pagesData) => (pagesData?.pages ?? []).flatMap((p) => p.data ?? [])
 
+/** Cursor paging (browse, conductor). */
+export function cursorNextPageParam(lastPage) {
+    return lastPage?.data?.length > 0 && lastPage?.cursor
+        ? { ...lastPage.params, start: lastPage.cursor }
+        : undefined
+}
+
+/** start/per_page paging (browse-list). */
+export function startPerPageNextPageParam(lastPage) {
+    return lastPage?.data?.length > 0
+        ? {
+            ...lastPage.params,
+            start: lastPage.params.start + lastPage.params.per_page,
+        }
+        : undefined
+}
+
 export const prependItemToUniListQueryCache = (queryClient, queryKey, item) => {
     if (!item?.id || !queryClient) return
 
