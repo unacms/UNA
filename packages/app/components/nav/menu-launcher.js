@@ -29,6 +29,7 @@ export default function MenuLauncher({ buttonProps }) {
                 link: '/' + item.link,
                 title: t(item.title),
                 icon: item.icon,
+                description: item.description ? t(item.description) : undefined,
             }))}
             buttonProps={{
                 tooltip: 'All Apps',

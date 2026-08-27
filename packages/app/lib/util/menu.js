@@ -29,6 +29,18 @@ export async function runMenuItemCallback(oItem) {
     return true
 }
 
+/** App settings use `description`; UNA Studio stores the same copy as `info`. */
+export function resolveMenuItemDescription(item) {
+    const candidates = [item?.description, item?.info];
+    for (const value of candidates) {
+        if (typeof value === 'string') {
+            const trimmed = value.trim();
+            if (trimmed) return trimmed;
+        }
+    }
+    return '';
+}
+
 export function findIconFromRemote(s) {
     if (!s || /^[A-Z][^\s]*$/.test(s))
         return s;
@@ -115,17 +127,21 @@ export function menuItemsFilter(items, currentUser) {
     }
 
     items = items.map(item => {
-        if (item.link === '{studio}') {
-            return { ...item, link: UNA_URL + '/studio/launcher.php' };
+        const description = resolveMenuItemDescription(item);
+        let next = description && item.description !== description
+            ? { ...item, description }
+            : item;
+        if (next.link === '{studio}') {
+            return { ...next, link: UNA_URL + '/studio/launcher.php' };
         }
-        if (item.link === '{profile}') {
-            return { ...item, link: currentUser?.url };
+        if (next.link === '{profile}') {
+            return { ...next, link: currentUser?.url };
         }
-        if (item?.link && item?.link?.includes("{profile_url_postfix}")) { // SHOULD BE IMPROVED by url_postfix
+        if (next?.link && next?.link?.includes("{profile_url_postfix}")) { // SHOULD BE IMPROVED by url_postfix
 
-            return { ...item, link: item.link.replace("{profile_url_postfix}", currentUser?.url.replace('/view-persons-profile/', '')) };
+            return { ...next, link: next.link.replace("{profile_url_postfix}", currentUser?.url.replace('/view-persons-profile/', '')) };
         }
-        return item;
+        return next;
     });
     return items;
 }

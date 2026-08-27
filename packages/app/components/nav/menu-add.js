@@ -42,7 +42,8 @@ export default function MenuAdd({ buttonProps, children }) {
                                 id: 'menu-' + index,
                                 link: item.link,
                                 title: item.title,
-                                icon: item.icon
+                                icon: item.icon,
+                                description: item.description,
                             }
                         )
                     }

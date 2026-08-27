@@ -30,7 +30,7 @@ export const settingsElements = {
         content_ver: '',
         content_hor: 'flex-row  ',
         item_ver:
-            ' web:group px-2 py-1.5 web:group flex h-12 flex-row items-center rounded-xl font-medium web:hover:bg-muted/50 text-card-foreground web:hover:text-foreground web:hover:cursor-pointer ',
+            ' web:group px-2 py-1.5 web:group flex min-h-12 flex-row items-center rounded-xl font-medium web:hover:bg-muted/50 text-card-foreground web:hover:text-foreground web:hover:cursor-pointer ',
         item_hor:
             'flex block web:dark:hover:text-white rounded-full web:hover:cursor-pointer text-muted-foreground web:duration-200 outline-none ',
         item_np:
@@ -51,6 +51,7 @@ export const settingsElements = {
         item_cnt: 'items-center w-full flex-row',
         item_cnt_tabs_overflow: 'items-center w-full flex-row justify-start flex-1',
         item_text: ' text-sm font-semibold text-secondary-foreground web:group-hover:text-foreground px-2',
+        item_description: 'text-xs font-normal leading-tight text-pretty text-muted-foreground px-2',
         item_icon:
             'flex items-center w-9 h-9 bg-muted/50 web:group-hover:bg-border rounded-full justify-center',
         icon_size: 20, // Default icon size for dropdown menu icons

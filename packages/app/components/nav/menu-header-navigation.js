@@ -14,7 +14,11 @@ export default function MenuHeaderNavigation(props) {
     const isDesktop = useIsDesktop()
     const source = appSetting('menu_items', 'menu_navigation')
     const resolved = menuItemsByName('main_menu', source, currentUser)
-    const items = resolved.map((item) => ({ ...item, title: t(item.title) }))
+    const items = resolved.map((item) => ({
+        ...item,
+        title: t(item.title),
+        ...(item.description || item.info ? { description: t(item.description || item.info) } : {}),
+    }))
 
     if (!items.length) {
         return null
