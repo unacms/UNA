@@ -18,7 +18,28 @@
                 </div>
                 <div class="bx-agt-a-ttl flex justify-between items-center gap-2 pt-1 min-w-0">
                     <div class="bx-agt-attl flex-1 min-w-0 font-semibold text-base truncate">__title__</div>
-                    <div class="bx-agt-attl-act">__switcher__</div>
+                    <div class="bx-agt-attl-act flex items-center shrink-0 gap-1">
+                        __switcher__
+                        <bx_if:show_actions>
+                            <a class="bx-agt-agent-more w-7 h-7 flex items-center justify-center rounded-full opacity-70 hover:opacity-100 hover:bg-gray-200/80 dark:hover:bg-gray-800/80" href="javascript:void(0)" onclick="__js_object__.agentActions(this)">
+                                <i class="sys-icon ellipsis-v"></i>
+                            </a>
+                            <div id="bx-agt-agent-actions-__id__" class="bx-agt-agent-actions bx-popup bx-popup-box bx-popup-color-bg bx-popup-border bx-def-round-corners" style="display:none">
+                                <ul class="bx-menu-ver bx-clearfix">
+                                    <bx_repeat:actions>
+                                        <li class="bx-menu-item bx-def-round-corners bx-def-color-bg-hl-hover bx-def-padding-sec-left">
+                                            <a href="javascript:void(0)" onclick="__js_object__.agentAction('__name__', __id__, __confirm__, __reset_paginate__)">
+                                                <div class="flex items-center p-2 truncate">
+                                                    <span class="bx-menu-item-icon bx-stl-mii">__icon__</span>
+                                                    <span class="bx-menu-item-title bx-stl-mit">__title__</span>
+                                                </div>
+                                            </a>
+                                        </li>
+                                    </bx_repeat:actions>
+                                </ul>
+                            </div>
+                        </bx_if:show_actions>
+                    </div>
                 </div>
                 <div class="bx-agt-a-dsc text-sm">__description__</div>
             </div>

@@ -4,6 +4,19 @@
     height: 1rem;
 }
 
+.bx-agt-agent-actions .bx-menu-item-icon {
+    width: 1.25rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 0.5rem;
+}
+.bx-agt-agent-actions .bx-menu-item-icon svg,
+.bx-agt-agent-more svg {
+    width: 1rem;
+    height: 1rem;
+}
+
 /**--- Automators ---**/
 .cmt .bx-menu-custom.bx-menu-custom-hor > li > span {
     margin-right: 0;

@@ -66,39 +66,5 @@
     </bx_if:display_footer>    
 </div>
 
-<script>
-    $(document).ready(function() {
-        if (typeof(glGrids) == 'undefined')
-            glGrids = {};
-        if (undefined == glGrids.__object__) {
-            glGrids.__object__ = new BxDolGrid('__object__', {
-                csrf_token: '__csrf_token__',
-                sortable: __sortable__,
-                sorting: __sorting__,
-                paginate_get_start: '__paginate_get_start__',
-                paginate_get_per_page: '__paginate_get_per_page__',
-                start: __start__,
-                per_page: __per_page__,
-                filter: '__filter__',
-                filter_get: '__filter_get__',
-                order_field: '__order_field__',
-                order_dir: '__order_dir__',
-                order_get_field: '__order_get_field__',
-                order_get_dir: '__order_get_dir__',
-                text_search_input: '<bx_text_js:_sys_grid_search />',
-                popup_options: __popup_options__,
-                query_append: __query_append__,
-                confirm_messages: __confirm_messages__,
-                columns: __columns__
-            });
-        }
-        else
-            glGrids.__object__.init({
-                start: __start__,
-                per_page: __per_page__,
-                filter: '__filter__',
-                query_append: __query_append__
-            });
-    });
-</script>
+<bx_include_auto:grid_js.html />
 

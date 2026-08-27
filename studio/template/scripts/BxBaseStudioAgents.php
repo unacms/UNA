@@ -276,6 +276,10 @@ class BxBaseStudioAgents extends BxDolStudioAgents
         $oAi = BxDolAI::getInstance();
         $aAgents = $oAi->getAgentsBy(['sample' => 'all']);
 
+        $oGrid = $this->getGrid($this->aGridObjects[BX_DOL_STUDIO_AGENTS_TYPE_AGENTS], true);
+        if($oGrid)
+            $this->aPageJsOptions['sObjNameGrid'] = $oGrid->getObject();
+
         $oForm = new BxTemplFormView([]);
         $aInput = [
             'type' => 'switcher',
@@ -325,8 +329,11 @@ class BxBaseStudioAgents extends BxDolStudioAgents
 
             $aInput['checked'] = (int)$aAgent['active'] != 0;
 
+            $aTmplVarsActions = $oGrid ? $this->_getAgentCardActions($oGrid, $aAgent, $oTemplate) : [];
+
             $aTmplVarsAgents[] = [
                 'id' => $aAgent['id'],
+                'js_object' => $sJsObject,
                 'icon' => $sIcon,
                 'bx_if:show_trigger' => [
                     'condition' => !empty($aTmplVarsTrigger),
@@ -342,8 +349,16 @@ class BxBaseStudioAgents extends BxDolStudioAgents
                         'unit' => $sProfile
                     ]
                 ],
-                'title' => $aAgent['title'],
+                'title' => $aAgent['title'] ?: $aAgent['name'],
                 'switcher' => $oForm->genInput($aInput),
+                'bx_if:show_actions' => [
+                    'condition' => !empty($aTmplVarsActions),
+                    'content' => [
+                        'id' => $aAgent['id'],
+                        'js_object' => $sJsObject,
+                        'bx_repeat:actions' => $aTmplVarsActions
+                    ]
+                ],
                 'description' => bx_process_output($aAgent['description'])
             ];
         }
@@ -351,9 +366,45 @@ class BxBaseStudioAgents extends BxDolStudioAgents
         return $oTemplate->parseHtmlByName('agents.html', [
             'content' => $oTemplate->parseHtmlByName('agents_agents.html', [
                 'bx_repeat:agents' => $aTmplVarsAgents,
-            ]),
+            ]) . ($oGrid ? $oGrid->getCodeJs() : ''),
             'js_content' => $this->getPageJsCode()
         ]);
+    }
+
+    protected function _getAgentCardActions($oGrid, $aAgent, $oTemplate)
+    {
+        $aActions = $oGrid->getActionsRaw('single', $aAgent['id'], $aAgent);
+        if(empty($aActions) || !is_array($aActions))
+            return [];
+
+        $oIconset = BxDolIconset::getObjectInstance();
+        $oFunctions = $oTemplate->getTemplateFunctions();
+
+        $aTmplVars = [];
+        foreach($aActions as $aAction) {
+            $sIcon = '';
+            if(!empty($aAction['icon'])) {
+                list($sIconFont, $sIconUrl, $sIconA, $sIconHtml) = $oFunctions->getIcon($aAction['icon']);
+                if($sIconFont)
+                    $sIcon = $oTemplate->parseIcon($oIconset->getIcon($sIconFont));
+                else if($sIconHtml)
+                    $sIcon = $sIconHtml;
+                else if($sIconUrl)
+                    $sIcon = '<img src="' . $sIconUrl . '" />';
+            }
+
+            $aTmplVars[] = [
+                'name' => $aAction['name'],
+                'title' => $aAction['title'],
+                'icon' => $sIcon,
+                'confirm' => (int)$aAction['confirm'],
+                'reset_paginate' => (int)$aAction['reset_paginate'],
+                'id' => $aAgent['id'],
+                'js_object' => $this->getPageJsObject(),
+            ];
+        }
+
+        return $aTmplVars;
     }
 
     protected function getAgentsGrid()
