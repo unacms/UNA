@@ -23,13 +23,14 @@ export default function Unit({ data, unitType, module }) {
     });
     const isSkeleton = data?.skeleton;
     return (
-        <Card padding="p-1" className="relative web:group active:opacity-80 active:scale-[0.98] active:shadow-btn-glass-pressed dark:active:shadow-btn-glass-pressed-deep transition-all duration-200">
+        <Card padding="p-1" className="relative web:group web:cursor-pointer active:opacity-80 active:scale-[0.98] active:shadow-btn-glass-pressed dark:active:shadow-btn-glass-pressed-deep transition-transform duration-200">
             <Link
                 href={data.url}
-                className="absolute inset-0 z-0 rounded-xl web:hover:bg-accent/20"
+                hitarea={false}
+                className="absolute inset-0 z-0 rounded-xl web:cursor-pointer web:group-hover:bg-accent/20"
                 alt={data.title}
             >
-                <View className="absolute inset-0" />
+                <View className="absolute inset-0 web:pointer-events-none" />
             </Link>
 
 
