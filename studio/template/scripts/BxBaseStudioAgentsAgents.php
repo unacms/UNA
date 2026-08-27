@@ -257,8 +257,37 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
         return parent::_getCellSwitcher ($mixedValue, $sKey, $aField, $aRow);
     }
 
-    protected function _getCellType($mixedValue, $sKey, $aField, $aRow)
+    protected function _getCellProfileId($mixedValue, $sKey, $aField, $aRow)
     {
+        $mixedValue = BxDolProfile::getInstanceMagic($mixedValue)->getUnit(0, ['template' => 'unit_wo_info']);
+        return parent::_getCellDefault($mixedValue, $sKey, $aField, $aRow);
+    }
+
+    protected function _getCellModelId($mixedValue, $sKey, $aField, $aRow)
+    {
+        $aModel = $this->_oDb->getModelsBy(['sample' => 'id', 'id' => $mixedValue]);
+        if(!empty($aModel) && is_array($aModel)) {
+            $mixedValue = $aModel['icon'];
+            if (strpos($mixedValue, '.svg') !== false)
+                $mixedValue = $this->_oTemplate->getIconContent($mixedValue);
+        } else {
+            $mixedValue = '';
+        }
+
+        return parent::_getCellDefault($mixedValue, $sKey, $aField, $aRow);
+    }
+
+    protected function _getCellTrigger($mixedValue, $sKey, $aField, $aRow)
+    {
+        $mixedValue = $this->_oTemplate->getIconContent('agt-trg-' . $mixedValue . '.svg');
+        return parent::_getCellDefault($mixedValue, $sKey, $aField, $aRow);
+    }
+
+    protected function _getCellName($mixedValue, $sKey, $aField, $aRow)
+    {
+        if (!empty($aRow['title']))
+            $mixedValue = $aRow['title'];
+
         return parent::_getCellDefault($mixedValue, $sKey, $aField, $aRow);
     }
     
