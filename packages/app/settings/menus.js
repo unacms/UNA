@@ -121,6 +121,7 @@ export const settingsMenus = {
                     {
                         name: 'events-home',
                         title: 'Events',
+                        description: 'Find what\'s happening.',
                         link: '/events-home',
                         icon: 'Calendar',
                         animated: true,
@@ -128,6 +129,7 @@ export const settingsMenus = {
                     {
                         name: 'groups-home',
                         title: 'Groups',
+                        description: 'Get together with others.',
                         link: '/groups-home',
                         icon: 'Shapes',
                         animated: true,
@@ -135,6 +137,7 @@ export const settingsMenus = {
                     {
                         name: 'videos-home',
                         title: 'Video',
+                        description: 'Watch and learn.',
                         link: '/videos-home',
                         icon: 'TvMinimalPlay',
                         animated: true,
@@ -142,6 +145,7 @@ export const settingsMenus = {
                     {
                         name: 'wiki',
                         title: 'Documentation',
+                        description: 'How to use our product.',
                         link: '/docs',
                         icon: 'BookOpenText',
                         animated: true,
@@ -149,6 +153,7 @@ export const settingsMenus = {
                     {
                         name: 'discussions-home',
                         title: 'Discussions',
+                        description: 'Talk about your interests.',
                         link: '/discussions-home',
                         icon: 'MessagesSquare',
                         animated: true,

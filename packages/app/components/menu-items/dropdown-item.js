@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { Platform } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { Pressable, View, Row } from 'app/design/view';
 import { Text } from 'app/design/typography';
 import { Icon } from 'app/ui/atoms/icon';
 import Image from 'app/ui/atoms/image';
-import { isEmoji, appSetting } from 'app/lib/util';
+import { isEmoji, appSetting, resolveMenuItemDescription } from 'app/lib/util';
 import Link from 'app/ui/atoms/link'
 const menuSettings = appSetting('theme', 'dropdown_menu');
 
@@ -44,6 +45,7 @@ const getIcon = (oItem, iconSize = 20, rowHovered) => {
 };
 
 export default function DropdownMenuItem({ item, index, link, handleSelect, classes, className,  counter, handleCounter, mode }) {
+    const { t } = useTranslation();
     const key = item.id ?? index;
     const iconSize = menuSettings.icon_size || 16;
     const [rowHovered, setRowHovered] = useState(false);
@@ -82,10 +84,14 @@ export default function DropdownMenuItem({ item, index, link, handleSelect, clas
     const itemTextKey = classes?.item_text_key || 'item_text';
     const itemTextClass =
         menuSettings[itemTextKey] ?? menuSettings.item_text;
+    const itemDescriptionClass =
+        menuSettings.item_description ?? 'text-xs font-normal leading-tight text-pretty text-muted-foreground px-2';
     const itemCntKey = classes?.item_cnt_key ?? 'item_cnt';
     const itemCntClass =
         menuSettings[itemCntKey] ?? menuSettings.item_cnt;
     const rowClassName = classes?.item_row ?? 'justify-between items-center';
+    const description = resolveMenuItemDescription(item);
+    const descriptionText = description ? t(description) : '';
 
     const Wrapper = handleSelect ? Pressable : View;
     const pressProps =
@@ -104,7 +110,12 @@ export default function DropdownMenuItem({ item, index, link, handleSelect, clas
                 {(!!icon && !!menuSettings.item_icon) && <View className={menuSettings.item_icon}>{icon}</View>}
                 {!!item?.title &&
                     (typeof item.title === 'string' ? (
-                        <Text numberOfLines={2} className={`${itemTextClass} line-clamp-2`}>{item.title}</Text>
+                        <View className="min-w-0 flex-1 flex flex-col justify-center">
+                            <Text numberOfLines={2} className={`${itemTextClass} line-clamp-2`}>{item.title}</Text>
+                            {!!descriptionText && (
+                                <Text numberOfLines={2} className={`${itemDescriptionClass} line-clamp-2`}>{descriptionText}</Text>
+                            )}
+                        </View>
                     ) : (
                         item.title
                     ))

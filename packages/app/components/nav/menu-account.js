@@ -235,7 +235,8 @@ export default function MenuAccount({ buttonProps, children }) {
                         target: item.target,
                         content: item.content,
                         icon: item.icon,
-                        className: item.className
+                        className: item.className,
+                        description: item.description,
                     }
                 })}
                 footer={

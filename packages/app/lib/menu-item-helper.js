@@ -183,7 +183,7 @@ export default function MenuItemActionBase({
             <>
                 {extra}
                 <DropdownMenuItem
-                    item={{ title: titleText, icon: iconValue }}
+                    item={{ title: titleText, icon: iconValue, description: item?.description || item?.info }}
                     handleSelect={onPress}
                     {...(dropdownLink ? { link: dropdownLink } : {})}
                 />
