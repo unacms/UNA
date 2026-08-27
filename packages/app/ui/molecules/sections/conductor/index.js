@@ -6,17 +6,16 @@ import {
     fillTabs,
     mergeConductorRoutes,
     ensureRouteInited,
-    pageDataWithRestoredFormValues,
     findConductorRouteIndex,
     conductorListQueryKey,
 } from './helpers'
 import {
-    ConductorLeftbarBlocks,
-    ConductorFiltersButton,
-    openConductorFiltersSheet,
+    LeftColumnContent,
+    FiltersButton,
+    openFiltersSheet,
 } from './shared-ui'
 import { TabSceneHeader, TabBar, TabScene, AT_TOP_SCROLL_THRESHOLD } from './native-ui'
-import { useConductorLeftbar, useConductorFilters } from './use-conductor'
+import { useLeftColumn, useConductorFilters } from './use-conductor'
 import { useConductorRoutes } from './use-conductor-routes'
 import { useConductorList } from './use-conductor-list'
 import { useCurrentUser } from 'app/context/user'
@@ -35,6 +34,17 @@ import {
 } from 'app/lib/cache/native-conductor-cache'
 import { setListScrollOffset } from 'app/lib/cache/list-scroll-cache'
 import { useTranslation } from 'react-i18next'
+
+function parseRevalidatePayload(value) {
+    if (typeof value === 'string') {
+        try {
+            return JSON.parse(value)
+        } catch {
+            return value
+        }
+    }
+    return value
+}
 
 export function Conductor({
     isCoverDisabled,
@@ -92,6 +102,20 @@ export function Conductor({
     }, [])
     const activeRequestUrlRef = useRef(null)
 
+    // Snapshot for persist.write / unmount. Unmount cleanup captures url at
+    // subscribe time so a URL change still writes the previous page (same as
+    // the old conductorCacheKey effect). write() does not key on data.url.
+    const persistCtxRef = useRef({
+        layoutName,
+        url: data?.url,
+        userId: currentUser?.id,
+    })
+    persistCtxRef.current = {
+        layoutName,
+        url: data?.url,
+        userId: currentUser?.id,
+    }
+
     // Native: cache, focus-gated links, no URL change on tab. Web adapter lives
     // in index.web.js (history + click sound).
     const routesAdapter = useMemo(
@@ -133,6 +157,31 @@ export function Conductor({
                 })
                 return () => sub.remove()
             },
+            persist: {
+                write(nextRoutes, nextIndex) {
+                    const { layoutName: layout, url, userId } = persistCtxRef.current
+                    if (!layout || !url || !nextRoutes?.some((route) => route.inited)) {
+                        return
+                    }
+                    setCachedConductorState(layout, url, {
+                        routes: nextRoutes,
+                        index: nextIndex,
+                    }, userId)
+                },
+                subscribeUnmount(getSnapshot) {
+                    const { layoutName: layout, url, userId } = persistCtxRef.current
+                    return () => {
+                        const { routes: nextRoutes, index: nextIndex } = getSnapshot()
+                        if (!url || !nextRoutes?.some((route) => route.inited)) {
+                            return
+                        }
+                        setCachedConductorState(layout, url, {
+                            routes: nextRoutes,
+                            index: nextIndex,
+                        }, userId)
+                    }
+                },
+            },
         }),
         []
     )
@@ -156,33 +205,10 @@ export function Conductor({
         useSectionAsMenu,
         onChangeRoute,
         menu,
+        persistKey: conductorCacheKey,
+        persistWriteKey: `${layoutName}:${currentUser?.id ?? 'guest'}`,
         adapter: routesAdapter,
     })
-
-    // Write-through while URL is stable so a timestamp remount can bootstrap
-    // from cache. Do not key this effect on data.url — a URL change would
-    // otherwise store the previous page's routes under the new URL.
-    useEffect(() => {
-        if (!layoutName || !data?.url || !routes?.some((route) => route.inited)) {
-            return
-        }
-        setCachedConductorState(layoutName, data.url, {
-            routes,
-            index,
-        }, currentUser?.id)
-    }, [layoutName, routes, index, currentUser?.id])
-
-    useEffect(() => {
-        return () => {
-            if (!data?.url || !routesRef.current?.some((route) => route.inited)) {
-                return
-            }
-            setCachedConductorState(layoutName, data.url, {
-                routes: routesRef.current,
-                index: indexRef.current,
-            }, currentUser?.id)
-        }
-    }, [conductorCacheKey, layoutName, data?.url, currentUser?.id])
 
     const tabRoute = useMemo(
         () => (activeRoute?.inited ? activeRoute : (prevRoute ?? activeRoute)),
@@ -258,13 +284,13 @@ export function Conductor({
         const hasEndpoint = Boolean(tabRoute?.endpoint)
         let endpointUpdateContent = ''
         let bUpdateContent = false
-        const revalidatedData = JSON.parse(isRevalidate)
+        const revalidatedData = parseRevalidatePayload(isRevalidate)
         if (hasEndpoint) {
             const a = [...new Set(cacheItems
                 .map(item => item.id)
             )].slice(0, 10).join(',')
 
-            if ((a || true) && revalidatedData.author_id != currentUser?.id && !tabRoute.endpoint.request_url.includes("system/get_results/TemplSearchExtendedServices")) {
+            if (revalidatedData?.author_id != currentUser?.id && !tabRoute.endpoint.request_url?.includes("system/get_results/TemplSearchExtendedServices")) {
                 endpointUpdateContent = tabRoute.endpoint.request_url + JSON.stringify({
                     'params': { ...tabRoute.endpoint.params, validate: a }
                 })
@@ -296,7 +322,7 @@ export function Conductor({
     // CounterChecker emits when unread grows; only act if notifications list is focused.
     // Keep the badge until the user leaves the tab (tabs/navigator still clear on enter).
     useEffect(() => {
-        const subscription = emitter.addListener('notifications', (payload) => {
+        const notifications = emitter.addListener('notifications', (payload) => {
             if (payload?.action !== 'arrived') return
             if (!isFocusedRef.current) return
             const unit = routesRef.current?.[indexRef.current]?.endpoint?.unit
@@ -305,31 +331,19 @@ export function Conductor({
             consumeNotificationsConductorStale()
             onStartRefresh()
         })
-        return () => subscription.remove()
-    }, [onStartRefresh])
-
-    useEffect(() => {
-        const subscription = emitter.addListener('list', (payload) => {
+        const list = emitter.addListener('list', (payload) => {
             if (!isFocusedRef.current) return
             if (payload?.action === 'refresh') {
                 onStartRefresh()
             }
         })
-        return () => subscription.remove()
-    }, [onStartRefresh])
-
-    useEffect(() => {
-        const subscription = emitter.addListener('page', (payload) => {
+        const page = emitter.addListener('page', (payload) => {
             if (!isFocusedRef.current) return
             if (payload?.action === 'reload') {
                 onStartRefresh()
             }
         })
-        return () => subscription.remove()
-    }, [onStartRefresh])
-
-    useEffect(() => {
-        const subscription = emitter.addListener('conductor', (payload) => {
+        const conductor = emitter.addListener('conductor', (payload) => {
             if (!isFocusedRef.current) return
             if (payload?.action !== 'reset_to_first') return
 
@@ -353,8 +367,13 @@ export function Conductor({
 
             onStartRefresh()
         })
-        return () => subscription.remove()
-    }, [setIndex, onStartRefresh, getScrollValue])
+        return () => {
+            notifications.remove()
+            list.remove()
+            page.remove()
+            conductor.remove()
+        }
+    }, [onStartRefresh, setIndex, getScrollValue])
 
     const { setFilterValue, onFormChangedValues, formValuesToFilterEntries } =
         useConductorFilters({
@@ -364,22 +383,19 @@ export function Conductor({
             skipFirstChange: true,
         })
 
-    const leftbarContent = tabRoute?.leftbar?.content ?? []
+    const leftColumnContent = tabRoute?.leftbar?.content ?? []
     const {
-        leftbarMenuBlocks,
-        leftbarFilterBlocks,
-        leftbarExcludedFromMainIds,
-    } = useConductorLeftbar({
-        leftbarContent,
+        leftColumnMenuBlocks,
+        leftColumnFilterBlocks,
+        leftColumnExcludedFromMainIds,
+    } = useLeftColumn({
+        leftColumnContent,
         layoutName,
     })
 
-    // Prefer route leftbar; keep legacy string-name prop as fallback.
-    const filtersSheetBlocks = useMemo(() => {
-        if (leftbarFilterBlocks.length > 0) return leftbarFilterBlocks
-        return Array.isArray(leftSideBarBlocks) ? leftSideBarBlocks : []
-    }, [leftbarFilterBlocks, leftSideBarBlocks])
-    const showFiltersBtn = filtersSheetBlocks.length > 0
+    const showFiltersBtn =
+        leftColumnFilterBlocks.length > 0 ||
+        (Array.isArray(leftSideBarBlocks) && leftSideBarBlocks.length > 0)
 
     const onFormSubmit = useCallback((formData, d) => {
         setFilterValue(formValuesToFilterEntries(d), d)
@@ -387,29 +403,30 @@ export function Conductor({
     }, [setFilterValue, formValuesToFilterEntries, setBottomSheetData])
 
     const showFilters = useCallback(() => {
-        const pageData = pageDataWithRestoredFormValues(
-            tabRoute?.pageData ?? data,
-            routesRef.current?.[index]?.endpoint?.filterFormValues
-        )
-        openConductorFiltersSheet(setBottomSheetData, {
+        openFiltersSheet(setBottomSheetData, {
             t,
             snapPoints: ['60%', '60%'],
             content: (
-                <ConductorLeftbarBlocks
-                    items={filtersSheetBlocks}
-                    data={pageData}
-                    onFormSubmit={onFormSubmit}
+                <LeftColumnContent
+                    route={tabRoute}
+                    items={
+                        leftColumnFilterBlocks.length > 0
+                            ? leftColumnFilterBlocks
+                            : (Array.isArray(leftSideBarBlocks) ? leftSideBarBlocks : [])
+                    }
                     onChange={onFormChangedValues}
-                    saveOnChanges
+                    restoreFormValues
                     className="my-3 mx-2 "
+                    onFormSubmit={onFormSubmit}
+                    saveOnChanges
                 />
             ),
         })
-    }, [filtersSheetBlocks, tabRoute?.pageData, data, onFormSubmit, onFormChangedValues, t, setBottomSheetData, index])
+    }, [leftColumnFilterBlocks, leftSideBarBlocks, tabRoute, onFormSubmit, onFormChangedValues, t, setBottomSheetData])
 
     const filter = useMemo(
         () => (
-            <ConductorFiltersButton
+            <FiltersButton
                 visible={showFiltersBtn}
                 onPress={showFilters}
                 className="items-start ml-3 mt-2 mb-1"
@@ -418,52 +435,19 @@ export function Conductor({
         [showFiltersBtn, showFilters]
     )
 
-    const tabBarMetaKey = useMemo(
-        () =>
-            routes
-                .map(
-                    (r) =>
-                        `${r.index}:${r.title}:${r.hideInTop ?? ''}:${r.key ?? ''}:${r.item?.disabled ?? ''}:${r.hasChildren ?? ''}:${r.parentIndex ?? ''}`
-                )
-                .join('|'),
-        [routes]
-    )
-
-    const tabBarRoutes = useMemo(
-        () =>
-            routes.map(({ index: routeIndex, title, hideInTop, menu_settings, addon, item, key, link, icon, hasChildren, childIndices, parentIndex, canNavigate, depth, image }) => ({
-                index: routeIndex,
-                title,
-                hideInTop,
-                menu_settings,
-                addon,
-                item,
-                key,
-                link,
-                icon,
-                hasChildren,
-                childIndices,
-                parentIndex,
-                canNavigate,
-                depth,
-                image,
-            })),
-        [tabBarMetaKey]
-    )
-
     const sceneHeader = useMemo(
         () => (
             <TabBar
-                routes={tabBarRoutes}
+                routes={routes}
                 routesRef={routesRef}
                 index={index}
                 setIndex={setIndex}
                 onChangeRoute={onChangeRoute}
                 onSelectTab={onSelectTab}
-                leftbarMenus={leftbarMenuBlocks}
+                leftColumnMenus={leftColumnMenuBlocks}
             />
         ),
-        [tabBarRoutes, index, setIndex, onChangeRoute, onSelectTab, leftbarMenuBlocks]
+        [routes, index, setIndex, onChangeRoute, onSelectTab, leftColumnMenuBlocks]
     )
 
     const coverMode = appSetting(
@@ -589,7 +573,7 @@ export function Conductor({
                     onFormChangedValues={onFormChangedValues}
                     skipHeaderOffset={useLocalHeader}
                     listRef={listRef}
-                    leftbarExcludedFromMainIds={leftbarExcludedFromMainIds}
+                    leftColumnExcludedFromMainIds={leftColumnExcludedFromMainIds}
                     coverOverlayPad={headerMode === 'dynamic' ? coverOverlayPad : 0}
                     coverScrollY={headerMode === 'dynamic' ? coverScrollY : undefined}
                     isInited={!!activeRoute?.inited}

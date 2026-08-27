@@ -12,8 +12,8 @@ import {
     findConductorRouteIndex,
 } from './helpers'
 import {
-    conductorLeftbarContent,
-    openConductorFiltersSheet,
+    LeftColumnContent,
+    openFiltersSheet,
 } from './shared-ui'
 import {
     TabScene,
@@ -23,7 +23,7 @@ import {
     HeaderContainer,
     TabSceneHeader,
 } from './web-ui'
-import { useConductorLeftbar, useConductorFilters } from './use-conductor'
+import { useLeftColumn, useConductorFilters } from './use-conductor'
 import { useConductorRoutes } from './use-conductor-routes'
 import { useTranslation } from 'react-i18next'
 import { useCurrentUser } from 'app/context/user'
@@ -154,7 +154,7 @@ export function Conductor({
         setBottomSheetData(false)
     }, [index])
 
-    const { setFilterValue, onFormChangedValues } = useConductorFilters({
+    const { onFormChangedValues } = useConductorFilters({
         index,
         setRoutes,
         skipFirstChange: false,
@@ -164,14 +164,14 @@ export function Conductor({
         ensureRouteInited(routes, index, setRoutes)
     }, [index])
 
-    const leftbarContent = activeRoute?.leftbar?.content ?? []
+    const leftColumnContent = activeRoute?.leftbar?.content ?? []
 
     const {
-        leftbarMenuBlocks,
-        leftbarFilterBlocks,
-        leftbarExcludedFromMainIds,
-    } = useConductorLeftbar({
-        leftbarContent,
+        leftColumnMenuBlocks,
+        leftColumnFilterBlocks,
+        leftColumnExcludedFromMainIds,
+    } = useLeftColumn({
+        leftColumnContent,
         layoutName,
         isDesktop,
     })
@@ -186,27 +186,25 @@ export function Conductor({
         data?.cover_block?.profile?.id === data?.context?.current?.id &&
         isDesktop
 
-    // Mobile: Filters sheet for use_as_filter (any layout) + navigator non-menu leftbar.
-    const showFiltersBtn = !isDesktop && leftbarFilterBlocks.length > 0
+    // Mobile: Filters sheet for use_as_filter (any layout) + navigator non-menu left column.
+    const showFiltersBtn = !isDesktop && leftColumnFilterBlocks.length > 0
     const isUseCurrentHeader = layoutName === 'profile' && (!isCoverDisabled || !isDesktop)
 
-    const leftColumnBlocks = hasLeftColumn
-        ? conductorLeftbarContent(tabRoute, onFormChangedValues)
-        : null
-
     const showFilters = useCallback(() => {
-        openConductorFiltersSheet(setBottomSheetData, {
+        openFiltersSheet(setBottomSheetData, {
             t,
-            content: conductorLeftbarContent(
-                activeRoute,
-                onFormChangedValues,
-                leftbarFilterBlocks,
-                { restoreFormValues: true }
+            content: (
+                <LeftColumnContent
+                    route={activeRoute}
+                    items={leftColumnFilterBlocks}
+                    onChange={onFormChangedValues}
+                    restoreFormValues
+                />
             ),
             snapPoints: ['50%', '75%'],
             modal: true,
         })
-    }, [activeRoute, onFormChangedValues, leftbarFilterBlocks, t, setBottomSheetData])
+    }, [activeRoute, onFormChangedValues, leftColumnFilterBlocks, t, setBottomSheetData])
 
     useEffect(() => {
         setTimeout(() => window.dispatchEvent(new Event('resize_panel')), 100)
@@ -227,7 +225,7 @@ export function Conductor({
                 index={index}
                 setIndex={setIndex}
                 onChangeRoute={onChangeRoute}
-                leftbarMenus={leftbarMenuBlocks}
+                leftColumnMenus={leftColumnMenuBlocks}
                 showFilters={showFiltersBtn}
                 onShowFilters={showFilters}
             />
@@ -249,7 +247,7 @@ export function Conductor({
             index,
             setIndex,
             onChangeRoute,
-            leftbarMenuBlocks,
+            leftColumnMenuBlocks,
             showFiltersBtn,
             showFilters,
         ]
@@ -279,7 +277,7 @@ export function Conductor({
             routes={routes}
             stickyColumnStyle={stickyColumnStyle}
         >
-            {leftColumnBlocks}
+            <LeftColumnContent route={tabRoute} onChange={onFormChangedValues} />
         </LeftColumnContainer>
     ) : null
 
@@ -301,7 +299,6 @@ export function Conductor({
             >
                 <TabSceneHeader
                     route={activeRoute}
-                    setFilterValue={setFilterValue}
                     contentWidth={contentWidth}
                 />
                 <TabSceneColumns
@@ -319,7 +316,7 @@ export function Conductor({
                         ts={ts}
                         timestamp={timestamp}
                         skeleton={skeleton}
-                        leftbarExcludedFromMainIds={leftbarExcludedFromMainIds}
+                        leftColumnExcludedFromMainIds={leftColumnExcludedFromMainIds}
                     />
                 </TabSceneColumns>
             </View>

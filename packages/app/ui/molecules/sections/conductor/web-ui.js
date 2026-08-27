@@ -1,4 +1,4 @@
-import { useCallback, useState, useEffect, useLayoutEffect, useRef, useMemo, memo } from 'react'
+import { useCallback, useState, useEffect, useLayoutEffect, useRef, useMemo, memo, createContext, useContext } from 'react'
 import { Text } from 'app/design/typography'
 import { View, Row, Pressable } from 'app/design/view'
 import { Icon } from 'app/ui/atoms/icon'
@@ -14,16 +14,20 @@ import {
     hasConductorSubitems,
     conductorHref,
     conductorListQueryKey,
+    buildConductorSidebarExpandedMap,
+    mergeConductorSidebarExpandedMap,
+    getConductorRouteChildren,
+    getConductorSidebarRootRoutes,
+    getConductorDepthClassName,
+    registeredComponent,
 } from './helpers'
 import {
-    LeftbarMenuDropdown,
-    TopSidebar,
+    LeftColumnMenuDropdown,
     Addon,
-    ConductorSidebarNav,
-    ConductorTabItem,
-    ConductorTabList,
-    ConductorListScene,
-    ConductorFiltersButton,
+    TabItem,
+    TabList,
+    ListScene,
+    FiltersButton,
 } from './shared-ui'
 import { useConductorList } from './use-conductor-list'
 import { Button, NeoButton, NeoButtonLink } from 'app/design/controls'
@@ -48,7 +52,6 @@ import { useLayoutSettings } from 'app/context/layout-settings'
 import { useIsDesktop, useBreakpointName } from 'app/context/measure'
 import Snackbar from 'app/ui/atoms/snackbar'
 import { useHeaderHeight } from 'app/context/jotai/layout'
-import { getComponent } from 'app/components/registry'
 import { ItemRenderer } from 'app/components/item-renderer'
 import { BlockByName } from 'app/components/block'
 import { measureHeaderFixedOffset } from 'app/lib/hooks/use-sticky-header-offset'
@@ -57,7 +60,7 @@ const conductorTheme = appSetting('theme', 'conductor')
 
 const coverTabScroll = { collapsed: false, hold: false }
 
-function scrollConductorTabToStart() {
+function scrollTabToStart() {
     if (typeof window === 'undefined') return
     if (!coverTabScroll.collapsed) {
         window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
@@ -79,21 +82,31 @@ export const TabScene = ({
     ts,
     timestamp,
     onFormChangedValues,
-    leftbarExcludedFromMainIds = null,
+    leftColumnExcludedFromMainIds = null,
 }) => {
     const isDesktop = useIsDesktop()
     const uniRef = useRef()
     const { t } = useTranslation()
     const layout = layoutForList(pageRoute?.endpoint)
 
-    const qKey = conductorListQueryKey({
-        requestUrl: pageRoute?.endpoint?.request_url,
-        tabId: pageRoute.link,
-        keyword,
-        params: pageRoute?.endpoint?.params ?? null,
-        ts,
-        timestamp,
-    })
+    const qKey = useMemo(
+        () => conductorListQueryKey({
+            requestUrl: pageRoute?.endpoint?.request_url,
+            tabId: pageRoute.link,
+            keyword,
+            params: pageRoute?.endpoint?.params ?? null,
+            ts,
+            timestamp,
+        }),
+        [
+            pageRoute?.endpoint?.request_url,
+            pageRoute.link,
+            keyword,
+            pageRoute?.endpoint?.params,
+            ts,
+            timestamp,
+        ]
+    )
 
     const {
         listItems,
@@ -154,15 +167,22 @@ export const TabScene = ({
         t,
     ])
 
+    const uniListProps = useMemo(() => ({
+        listState: pageRoute?.state,
+        mode: layout == 'w-full' ? 'simple' : '',
+        storagekey: pageRoute.storageKeyValue,
+        useWindowScroll: true,
+    }), [pageRoute?.state, layout, pageRoute.storageKeyValue])
+
     return (
-        <ConductorListScene
+        <ListScene
             route={pageRoute}
             skeleton={skeleton}
             skeletonCount={5}
             listItems={listItems}
             includeSidebar={!isDesktop}
-            showMobileLeftbar={!isDesktop}
-            leftbarExcludedFromMainIds={leftbarExcludedFromMainIds}
+            showMobileLeftColumn={!isDesktop}
+            leftColumnExcludedFromMainIds={leftColumnExcludedFromMainIds}
             onFormChangedValues={onFormChangedValues}
             isInited={isInited}
             listReady={listReady}
@@ -175,12 +195,7 @@ export const TabScene = ({
             handleEndReached={handleEndReached}
             onRefresh={refetch}
             afterList={afterList}
-            uniListProps={{
-                listState: pageRoute?.state,
-                mode: layout == 'w-full' ? 'simple' : '',
-                storagekey: pageRoute.storageKeyValue,
-                useWindowScroll: true,
-            }}
+            uniListProps={uniListProps}
         />
     )
 };
@@ -261,46 +276,50 @@ export const TabSceneColumns = ({
 
     const asId = cellsCustomConfig.sizable
         ? `cells-${panelLayoutKey}`
-        : undefined;
+        : undefined
 
-    function getLayouts() {
-        const layouts = [];
-
+    const defaultLayouts = useMemo(() => {
+        const layouts = []
         if (isLeftColumn && leftPanelProps.defaultSize) {
-            layouts.push(leftPanelProps.defaultSize);
+            layouts.push(leftPanelProps.defaultSize)
         }
-        if (centerPanelProps.defaultSize)
-            layouts.push(centerPanelProps.defaultSize);
-
+        if (centerPanelProps.defaultSize) {
+            layouts.push(centerPanelProps.defaultSize)
+        }
         if (isRightColumn && rightPanelProps.defaultSize) {
-            layouts.push(rightPanelProps.defaultSize);
+            layouts.push(rightPanelProps.defaultSize)
         }
+        return layouts.length > 0 ? layouts : null
+    }, [
+        isLeftColumn,
+        isRightColumn,
+        leftPanelProps.defaultSize,
+        centerPanelProps.defaultSize,
+        rightPanelProps.defaultSize,
+    ])
 
-        return layouts.length > 0 ? layouts : null;
-    }
-
-    const onLayout = (sizes) => {
-        const layouts = getLayouts();
-        if (JSON.stringify(sizes) != JSON.stringify(layouts) && asId && layouts) {
-            storageSet('rrp', asId + '-' + currentBreakpointName, sizes, true);
+    const onLayout = useCallback((sizes) => {
+        if (
+            JSON.stringify(sizes) != JSON.stringify(defaultLayouts) &&
+            asId &&
+            defaultLayouts
+        ) {
+            storageSet('rrp', asId + '-' + currentBreakpointName, sizes, true)
         }
         setTimeout(() => window.dispatchEvent(new Event('resize_panel')), 100)
-    }
+    }, [asId, currentBreakpointName, defaultLayouts])
 
     useEffect(() => {
-        const sl = storageGet('rrp', asId + '-' + currentBreakpointName, true);
-        if (groupRef) {
-            const l = sl || getLayouts()
-            if (l)
-                groupRef.current?.setLayout(sl || getLayouts())
-        }
-    }, [currentBreakpointName, pageRoute])
+        const stored = storageGet('rrp', asId + '-' + currentBreakpointName, true)
+        const next = stored || defaultLayouts
+        if (next) groupRef.current?.setLayout(next)
+    }, [asId, currentBreakpointName, defaultLayouts, pageRoute])
 
     // `tabIndex` changes on click; `pageRoute.index` when the new tab mounts.
     useLayoutEffect(() => {
         if (typeof window === 'undefined') return
-        scrollConductorTabToStart()
-        const frame = requestAnimationFrame(() => scrollConductorTabToStart())
+        scrollTabToStart()
+        const frame = requestAnimationFrame(() => scrollTabToStart())
         const releaseHold = setTimeout(() => {
             coverTabScroll.hold = false
         }, 80)
@@ -370,28 +389,22 @@ export const TabSceneColumns = ({
 
 
 
-const AddMenu = ({ menu, filter }) => {
-    const [pageData, setPageData] = useState(false)
-    const { currentUser } = useCurrentUser()
-    const { t } = useTranslation()
+function getAddMenuItems(menu, filter, currentUser) {
     const menuSettings = getMenuSettings(menu.object, menu.config)
-    let addButtonsSet = menuSettings?.add?.filter(
-        (item) => item[filter] !== true
-    )
-    addButtonsSet = menuItemsFilter(addButtonsSet, currentUser)
+    let items = menuSettings?.add?.filter((item) => item[filter] !== true)
+    items = menuItemsFilter(items, currentUser)
 
-    if (!addButtonsSet) {
-        addButtonsSet = []
-
+    if (!items) {
+        items = []
         if (menu.add_url && currentUser) {
-            addButtonsSet.push({
+            items.push({
                 icon: 'Plus',
                 name: 'Add',
                 link: menu.add_url,
             })
         }
         if (menu.name && menu.add_url) {
-            addButtonsSet.push({
+            items.push({
                 icon: 'Search',
                 name: 'Search',
                 link: '',
@@ -399,11 +412,20 @@ const AddMenu = ({ menu, filter }) => {
             })
         }
     }
+    return items
+}
+
+const AddMenu = ({ menu, filter }) => {
+    const [pageData, setPageData] = useState(false)
+    const { currentUser } = useCurrentUser()
+    const { t } = useTranslation()
+    const addButtonsSet = getAddMenuItems(menu, filter, currentUser)
+
     return (
         <Row className="gap-x-2">
             {addButtonsSet.map((button) => {
-                let btn = undefined
-                if (button.section)
+                let btn
+                if (button.section) {
                     btn = (
                         <Search
                             section={button.section}
@@ -415,7 +437,7 @@ const AddMenu = ({ menu, filter }) => {
                             }}
                         />
                     )
-                else {
+                } else {
                     btn = (
                         <NeoButton
                             label={t(button.title)}
@@ -429,149 +451,261 @@ const AddMenu = ({ menu, filter }) => {
                             }}
                         />
                     )
-                    btn =
-                        button.link && button.name != 'Add' ? (
-                            <Link href={button.link}>{btn}</Link>
-                        ) : (
-                            btn
-                        )
+                    if (button.link && button.name != 'Add') {
+                        btn = <Link href={button.link}>{btn}</Link>
+                    }
                 }
 
                 return (
                     <View key={`add-${button.icon}-${button.name}`}>
                         {btn}
-                        <FormModal
-                            pageData={pageData}
-                            setPageData={setPageData}
-                        />
                     </View>
                 )
             })}
+            <FormModal
+                pageData={pageData}
+                setPageData={setPageData}
+            />
         </Row>
     )
 }
 
-const ConductorMenu = function ConductorMenu({
+const TabMenuContext = createContext(null)
+
+function TabMenuItem({ item }) {
+    const { selectedIndex, onSelect } = useContext(TabMenuContext)
+    return (
+        <TabItem
+            item={item}
+            selectedIndex={selectedIndex}
+            onPress={onSelect}
+        />
+    )
+}
+
+const TabMenuItemEx = memo(function TabMenuItemEx({ item }) {
+    const { onSelect } = useContext(TabMenuContext)
+    const { t } = useTranslation()
+    const { title, icon, menu_settings } = item
+    const itemClassName = menu_settings?.class ? ` ${menu_settings.class}` : ''
+    const translatedTitle = (
+        <Text className="text-muted-foreground web:hover:text-secondary-foreground leading-6 font-medium text-base">
+            {t(title)}
+        </Text>
+    )
+    const addonContent = <Addon item={item} />
+
+    const handlePress = () => {
+        emitter.emit('dynamic_menu', { action: 'hide' })
+        onSelect(item)
+    }
+
+    if (icon === '*') {
+        return (
+            <Pressable
+                className={itemClassName}
+                accessibilityRole="link"
+                accessibilityLabel={title}
+                onPress={handlePress}
+            >
+                <Row className="justify-between items-center min-w-200">
+                    {translatedTitle}
+                    {addonContent}
+                </Row>
+            </Pressable>
+        )
+    }
+
+    return (
+        <Pressable
+            className={itemClassName}
+            onPress={handlePress}
+        >
+            <Row className="web:hover:cursor-pointer justify-between flex flex-row h-10 px-3 text-base rounded-xl web:hover:bg-muted items-center ">
+                {translatedTitle}
+                {addonContent}
+            </Row>
+        </Pressable>
+    )
+})
+
+const TabMenuButtonEx = memo(function TabMenuButtonEx({ visibleItemsCount }) {
+    const { selectedIndex } = useContext(TabMenuContext)
+    return (
+        <View className="pr-3">
+            <Button
+                startDecorator="ChevronDown"
+                variant="text"
+                rounded
+                pressed={visibleItemsCount <= selectedIndex ? true : false}
+                size="sm"
+            />
+        </View>
+    )
+})
+
+const TabMenu = function TabMenu({
     routes,
     index,
-    t,
     setIndex,
     onChangeRoute,
 }) {
     const name = 'cnd-main-menu'
-
     const useCompactNav = hasConductorSubitems(routes)
     const filteredItems = routes.filter((aItem) => aItem.hideInTop != true)
     const menuClasses = conductorTheme.menu_cnt
+    const selectedIndex = !useCompactNav && index >= filteredItems.length ? 0 : index
 
-    if (!useCompactNav && index >= filteredItems.length) {
-        index = 0
-    }
-
-    // Web tab click: index + history URL (native does not pushState).
-    const onSelect = (item) => {
+    const onSelect = useCallback((item) => {
         setIndex(item.index)
         const rawHref = item.canNavigate === false ? '' : item.link || item.key
         const href = conductorHref(rawHref)
         if (typeof window !== 'undefined') {
             window.history.pushState({}, '', href || `/${item.key}`)
         }
-        if (onChangeRoute) {
-            onChangeRoute(item)
-        }
+        onChangeRoute?.(item)
+    }, [setIndex, onChangeRoute])
+
+    const menuContext = useMemo(
+        () => ({ selectedIndex, onSelect }),
+        [selectedIndex, onSelect]
+    )
+
+    return (
+        <TabMenuContext.Provider value={menuContext}>
+            {!conductorTheme.menu_is_dynamic ? (
+                <View className={menuClasses}>
+                    <TabList
+                        routes={routes}
+                        index={selectedIndex}
+                        onSelect={onSelect}
+                        itemWrapperClassName=""
+                    />
+                </View>
+            ) : (
+                <DynamicMenu
+                    name={name}
+                    offsetWidth={80}
+                    ButtonEx={TabMenuButtonEx}
+                    MenuItemEx={TabMenuItemEx}
+                    MenuItem={TabMenuItem}
+                    containerClasses="w-full justify-between "
+                    items={filteredItems}
+                    isButtonOutside={false}
+                    menuClasses={menuClasses}
+                    menuExClasses="mr-auto ml-4 items-end"
+                />
+            )}
+        </TabMenuContext.Provider>
+    )
+}
+
+export function SidebarNav({ routes, index, onSelect }) {
+    const MenuItemSidebarWithWrapper = registeredComponent('menu-item', 'sidebar_with_wrapper')
+    const [expandedMap, setExpandedMap] = useState(() => (
+        buildConductorSidebarExpandedMap(routes, index)
+    ))
+
+    useEffect(() => {
+        setExpandedMap((prev) => mergeConductorSidebarExpandedMap(prev, routes, index))
+    }, [index, routes])
+
+    const toggleExpanded = (itemIndex) => {
+        setExpandedMap((prev) => ({ ...prev, [itemIndex]: !prev[itemIndex] }))
     }
 
-    const MenuItem = ({ item: a }) => (
-        <ConductorTabItem
-            item={a}
-            selectedIndex={index}
-            onPress={onSelect}
+    const renderRoute = (route) => {
+        const children = getConductorRouteChildren(route, routes)
+        const hasChildren = children.length > 0
+        const isExpanded = Boolean(expandedMap[route.index])
+        const canNavigate = Boolean(route.canNavigate)
+        const isActive = route.index === index
+        const href = conductorHref(route.link || route.key)
+        const icon = route.image || route.icon || 'Circle'
+
+        return (
+            <View key={`lmenu-${route.index}`} className="w-full">
+                <MenuItemSidebarWithWrapper
+                    link={canNavigate ? href : undefined}
+                    title={route.title}
+                    icon={icon}
+                    iconEnd={
+                        !canNavigate && hasChildren
+                            ? (isExpanded ? 'ChevronDown' : 'ChevronRight')
+                            : undefined
+                    }
+                    isActive={isActive}
+                    onPress={
+                        !canNavigate && hasChildren
+                            ? () => toggleExpanded(route.index)
+                            : (event) => {
+                                event?.preventDefault?.()
+                                onSelect(route)
+                            }
+                    }
+                    className={getConductorDepthClassName(route.depth)}
+                />
+                {hasChildren && isExpanded ? (
+                    <View className="gap-0.5">
+                        {children.map((child) => renderRoute(child))}
+                    </View>
+                ) : null}
+            </View>
+        )
+    }
+
+    const roots = getConductorSidebarRootRoutes(routes)
+
+    if (!roots.length) return null
+
+    return (
+        <View className="w-full gap-0.5">
+            {roots.map((route) => renderRoute(route))}
+        </View>
+    )
+}
+
+function NavigatorMenuLink({ item, index, setIndex }) {
+    const MenuItemSidebar = registeredComponent('menu-item', 'sidebar')
+    const isActive = item.index === index
+    const isStar = item?.icon == '*'
+    const btn = (
+        <MenuItemSidebar
+            addon={getAddon(item.addon)}
+            title={item.title}
+            icon={item.icon || 'Circle'}
+            isActive={isActive}
         />
     )
 
-    const MenuItemEx = memo(({ item, index: itemIndex }) => {
-        const { title, icon, menu_settings, key } = item
-        const translatedTitle = (
-            <Text className="text-muted-foreground web:hover:text-secondary-foreground leading-6 font-medium text-base">
-                {t(title)}
-            </Text>
-        )
-        const addonContent = <Addon item={item} index={itemIndex} />
-
-        const handlePress = () => {
-            emitter.emit('dynamic_menu', { action: 'hide' })
-            onSelect(item)
-        }
-
-        if (icon === '*') {
-            return (
-                <Pressable
-                    className={' ' + menu_settings?.class ?? ''}
-                    accessibilityRole="link"
-                    accessibilityLabel={title}
-                    onPress={handlePress}
-                >
-                    <Row className="justify-between items-center min-w-200">
-                        {translatedTitle}
-                        {addonContent}
-                    </Row>
-                </Pressable>
-            )
-        }
-
-        return (
-            <Pressable
-                className={' ' + menu_settings?.class ?? ''}
-                onPress={handlePress}
-            >
-                <Row className="web:hover:cursor-pointer justify-between flex flex-row h-10 px-3 text-base rounded-xl web:hover:bg-muted items-center ">
-                    {translatedTitle}
-                    {addonContent}
-                </Row>
-            </Pressable>
-        )
-    })
-
-    const ButtonEx = memo(({ visibleItemsCount }) => {
-        return (
-            <View className="pr-3">
-                <Button
-                    startDecorator="ChevronDown"
-                    variant="text"
-                    rounded
-                    pressed={visibleItemsCount <= index ? true : false}
-                    size="sm"
-                />
-            </View>
-        )
-    })
-
-    if (!conductorTheme.menu_is_dynamic) {
-        return (
-            <View className={menuClasses}>
-                <ConductorTabList
-                    routes={routes}
-                    index={index}
-                    onSelect={onSelect}
-                    itemWrapperClassName=""
-                />
-            </View>
-        )
-    }
-
     return (
-        <DynamicMenu
-            name={name}
-            offsetWidth={80}
-            ButtonEx={ButtonEx}
-            MenuItemEx={MenuItemEx}
-            MenuItem={MenuItem}
-            containerClasses="w-full justify-between "
-            items={filteredItems}
-            isButtonOutside={false}
-            menuClasses={menuClasses}
-            menuExClasses="mr-auto ml-4 items-end"
-        />
+        <NeoButtonLink
+            href={isStar ? item.link : item.key}
+            alt={item.title}
+            style="borderless"
+            controlSize="regular"
+            width="fill"
+            align="start"
+            contentInsets={{ x: 8 }}
+            selected={isActive}
+            selectedState="pressed"
+            className={
+                isStar
+                    ? 'group'
+                    : `group ${item.ident ? conductorTheme.menu_categ_indent : ''}`.trim()
+            }
+            onPress={
+                isStar
+                    ? undefined
+                    : (event) => {
+                        setIndex(item.index)
+                        window.history.pushState({}, '', item.key)
+                        event.preventDefault()
+                    }
+            }
+        >
+            {btn}
+        </NeoButtonLink>
     )
 }
 
@@ -584,16 +718,23 @@ export const LeftColumnContainer = ({
     layoutName,
     stickyColumnStyle,
 }) => {
-    const { t } = useTranslation();
+    const { t } = useTranslation()
+    const { currentUser } = useCurrentUser()
     const menuSettings = getMenuSettings(menu.object, menu.config, menu)
+    const addMenuItems = getAddMenuItems(menu, 'hideInSideBar', currentUser)
     const addButtons = <AddMenu menu={menu} filter="hideInSideBar" />
     const title = layoutName == 'profile' ? '' : t(menuSettings?.name)
     const icon = layoutName == 'profile' ? '' : (menuSettings?.icon || menu?.icon)
-    const MenuItemSidebar = getComponent('menu-item', 'sidebar');
     const padClass =
         layoutName == 'profile'
             ? 'mt-0.5 sm:m-0 sm:p-3 lg:p-4'
             : appSetting('conductor', 'sidebar_container')
+
+    const onSelectSidebar = useCallback((item) => {
+        setIndex(item.index)
+        const href = conductorHref(item.link || item.key)
+        if (href) window.history.pushState({}, '', href)
+    }, [setIndex])
 
     return (
         <View className="h-full">
@@ -602,7 +743,7 @@ export const LeftColumnContainer = ({
                 style={stickyColumnStyle}
             >
                 <View className={layoutName == 'profile' ? '' : appSetting('conductor', 'sidebar_inner_container')}>
-                    {(!!title || !!addButtons?.length > 0) && (
+                    {(!!title || addMenuItems.length > 0) && (
                         <Row className={appSetting('conductor', 'sidebar_title')}>
                             <Row className="items-center mr-auto min-w-0 hidden lg:flex">
                                 {!!icon && (
@@ -624,63 +765,21 @@ export const LeftColumnContainer = ({
                         {layoutName == 'navigator' && routes.length > 1 && (
                             <View className=' gap-0.5 '>
                                 {hasConductorSubitems(routes) ? (
-                                    <ConductorSidebarNav
+                                    <SidebarNav
                                         routes={routes}
                                         index={index}
-                                        onSelect={(a) => {
-                                            setIndex(a.index)
-                                            const href = conductorHref(a.link || a.key)
-                                            if (href) window.history.pushState({}, '', href)
-                                        }}
+                                        onSelect={onSelectSidebar}
                                     />
                                 ) : routes
                                     .filter((aItem) => aItem.hideInTop != true)
-                                    .map((a) => {
-                                        const isActive = a.index === index;
-                                        const btn = <MenuItemSidebar addon={getAddon(a.addon)} title={a.title} icon={a.icon || 'Circle'} isActive={isActive} />
-
-                                        if (a?.icon == '*') {
-                                            return (
-                                                <NeoButtonLink
-                                                    href={a.link}
-                                                    key={`lmenu-${a.index}`}
-                                                    alt={a.title}
-                                                    style="borderless"
-                                                    controlSize="regular"
-                                                    width="fill"
-                                                    align="start"
-                                                    contentInsets={{ x: 8 }}
-                                                    selected={isActive}
-                                                    selectedState="pressed"
-                                                    className="group"
-                                                >
-                                                    {btn}
-                                                </NeoButtonLink>
-                                            )
-                                        }
-                                        return (
-                                            <NeoButtonLink
-                                                href={a.key}
-                                                key={`lmenu-${a.index}`}
-                                                alt={a.title}
-                                                style="borderless"
-                                                controlSize="regular"
-                                                width="fill"
-                                                align="start"
-                                                contentInsets={{ x: 8 }}
-                                                selected={isActive}
-                                                selectedState="pressed"
-                                                className={`group ${a.ident ? conductorTheme.menu_categ_indent : ''}`.trim()}
-                                                onPress={(event) => {
-                                                    setIndex(a.index)
-                                                    window.history.pushState({}, '', a.key)
-                                                    event.preventDefault()
-                                                }}
-                                            >
-                                                {btn}
-                                            </NeoButtonLink>
-                                        )
-                                    })}
+                                    .map((item) => (
+                                        <NavigatorMenuLink
+                                            key={`lmenu-${item.index}`}
+                                            item={item}
+                                            index={index}
+                                            setIndex={setIndex}
+                                        />
+                                    ))}
                             </View>
                         )}
 
@@ -743,7 +842,7 @@ export const HeaderContainer = ({
     index,
     setIndex,
     onChangeRoute,
-    leftbarMenus = [],
+    leftColumnMenus = [],
     showFilters = false,
     onShowFilters,
 }) => {
@@ -757,14 +856,17 @@ export const HeaderContainer = ({
     // Measured height of the small cover so it can collapse smoothly on exit (tabs follow).
     const [smallCoverInnerHeight, setSmallCoverInnerHeight] = useState(0)
     const uri = pageData?.uri
-    coverTabScroll.collapsed = isScrolled
     const collapseThreshold = hideDefaultHeaderFrom - smallCoverHeight - 10
+
+    useLayoutEffect(() => {
+        coverTabScroll.collapsed = isScrolled
+    }, [isScrolled])
 
     const handleScroll = useCallback(() => {
         requestAnimationFrame(() => {
             const next = window.scrollY > collapseThreshold
             if (!next && coverTabScroll.collapsed && coverTabScroll.hold) {
-                scrollConductorTabToStart()
+                scrollTabToStart()
                 return
             }
             coverTabScroll.collapsed = next
@@ -886,14 +988,71 @@ export const HeaderContainer = ({
                         setIndex={setIndex}
                         onChangeRoute={onChangeRoute}
                         pageData={pageData}
-                        leftbarMenus={leftbarMenus}
+                        leftColumnMenus={leftColumnMenus}
                     />
-                    <ConductorFiltersButton
+                    <FiltersButton
                         visible={showFilters}
                         onPress={onShowFilters}
                         className="items-start px-3 lg:px-4 py-2"
                     />
                 </View>
+            </View>
+        </View>
+    )
+}
+
+/** Web-only tab subbar. Wired from HeaderContainer in this file; page header lives in index.web.js. */
+export function TopSidebar({
+    styles,
+    addButtons,
+    children,
+    title,
+    icon,
+    layout,
+    layoutName,
+    omitDefaultBackground = false,
+}) {
+    const isHideOnDesktop = layoutName !== 'profile'
+    return (
+        <View
+            style={styles}
+            className={`${!omitDefaultBackground ? conductorTheme.menu : ''} ${isHideOnDesktop ? conductorTheme.hide_top_menu_from + ':hidden' : ''
+                }`}
+        >
+            <View
+                className={`${isHideOnDesktop ? '' : 'mx-auto'} ${appSetting('layout', 'page_content_width_default')} px-3 lg:px-4 mx-auto`}
+            >
+                    {/*
+                      * Section title on the tab subbar, for the middle viewport range.
+                      * Below `lg` the title already shows in the page sub-header (see
+                      * the `setHeader` effect in index.web.js), and from
+                      * `hide_top_menu_from` (xl) up this whole bar is hidden and the
+                      * left column carries the title — so `hidden lg:flex` alone lands
+                      * it exactly in the gap where nothing else shows it. No `xl:`
+                      * gate is needed: the parent is already hidden there.
+                      */}
+                    <Row className="w-full items-center gap-4 min-w-0">
+                        {(!!title && conductorTheme.show_title !== false && isHideOnDesktop) && (
+                            <Row className="hidden lg:flex items-center gap-2 shrink-0 min-w-0">
+                                {!!icon && (
+                                    <Icon
+                                        icon={icon}
+                                        size={22}
+                                        className="text-card-foreground shrink-0"
+                                    />
+                                )}
+                                <Text className="text-xl font-bold tracking-tight text-card-foreground font-main truncate">
+                                    {title}
+                                </Text>
+                            </Row>
+                        )}
+                        <View className="flex-1 min-w-0">{children}</View>
+                    </Row>
+                    {(layout != 'mixed' && layoutName !== 'profile') && (
+                        <Row className={`hidden ${conductorTheme.hide_top_menu_from}:flex cond-buttons-add`}>
+                            {addButtons}
+                        </Row>
+                    )}
             </View>
         </View>
     )
@@ -908,44 +1067,44 @@ export const TabBar = ({
     setIndex,
     onChangeRoute,
     omitDefaultBackground = false,
-    leftbarMenus = [],
+    leftColumnMenus = [],
 }) => {
     const { t } = useTranslation()
     const { layoutName: layout } = useLayoutSettings()
     const menuSettings = getMenuSettings(menu.object, menu.config, menu)
     const isDesktop = useIsDesktop()
-    const hasLeftbarMenus = !isDesktop && leftbarMenus.length > 0
+    const hasLeftColumnMenus = !isDesktop && leftColumnMenus.length > 0
 
-    if (routes.length > 0) {
-        const addButtons = <AddMenu menu={menu} filter="hideInTopBar" />
-        const isShowSecondLine = (
-            routes.length > 1 ||
-            !!pageData.cover_block?.actions_menu ||
-            hasLeftbarMenus
-        )
-        return (
-            <TopSidebar
-                layoutName={layoutName}
-                omitDefaultBackground={omitDefaultBackground}
-                addButtons={addButtons}
-                layout={layout}
-                title={t(menuSettings?.name)}
-                icon={menuSettings?.icon || menu?.icon}
-            >
-                 {isShowSecondLine && <Row className="px-0 w-full items-center">
-                    <View className="flex-1 min-h-12 lg:min-h-14 min-w-0">
-                        {routes.length > 1 && <ConductorMenu
-                            routes={routes}
-                            index={index}
-                            t={t}
-                            setIndex={setIndex}
-                            onChangeRoute={onChangeRoute}
-                        />}
-                    </View>
-                    {hasLeftbarMenus && (
+    if (!routes.length) return null
+
+    const addButtons = <AddMenu menu={menu} filter="hideInTopBar" />
+    const isShowSecondLine = (
+        routes.length > 1 ||
+        !!pageData.cover_block?.actions_menu ||
+        hasLeftColumnMenus
+    )
+    return (
+        <TopSidebar
+            layoutName={layoutName}
+            omitDefaultBackground={omitDefaultBackground}
+            addButtons={addButtons}
+            layout={layout}
+            title={t(menuSettings?.name)}
+            icon={menuSettings?.icon || menu?.icon}
+        >
+             {isShowSecondLine && <Row className="px-0 w-full items-center">
+                <View className="flex-1 min-h-12 lg:min-h-14 min-w-0">
+                    {routes.length > 1 && <TabMenu
+                        routes={routes}
+                        index={index}
+                        setIndex={setIndex}
+                        onChangeRoute={onChangeRoute}
+                    />}
+                </View>
+                    {hasLeftColumnMenus && (
                         <Row className="items-center gap-1 shrink-0 pl-1">
-                            {leftbarMenus.map((blockItem) => (
-                                <LeftbarMenuDropdown
+                            {leftColumnMenus.map((blockItem) => (
+                                <LeftColumnMenuDropdown
                                     key={blockItem.id ?? blockItem.block?.name}
                                     blockItem={blockItem}
                                     t={t}
@@ -979,13 +1138,9 @@ export const TabBar = ({
                 </Row>}
             </TopSidebar>
         )
-    }
 }
 
-export const TabSceneHeader = ({ route, setFilterValue, contentWidth }) => {
-    const filters = appSetting('conductor', 'hide_browse_filter')
-        ? null
-        : route?.endpoint?.filters
+export const TabSceneHeader = ({ route, contentWidth }) => {
     const counter = appSetting('conductor', 'show_nav_counters')
         ? 0
         : route.addon

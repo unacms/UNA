@@ -29,6 +29,11 @@ import {
  *   }
  * }
  *
+ * persistKey — native cache unmount / URL-change cleanup (same as the old
+ * conductorCacheKey effect). persistWriteKey is layout+user only — do not
+ * put the page URL in it, or a URL change would store the previous routes
+ * under the new URL. Write-through stays on routes/index (+ persistWriteKey).
+ *
  * ctx: { initedTabs, pageUrl, keyword, useSectionAsMenu, setRoutes, setIndex,
  *        indexRef, routesRef, onChangeRoute, tab? }
  */
@@ -42,6 +47,8 @@ export function useConductorRoutes({
     useSectionAsMenu = false,
     onChangeRoute,
     menu,
+    persistKey,
+    persistWriteKey,
     adapter,
 }) {
     if (!adapter?.getInitialRoutes) {
@@ -54,10 +61,10 @@ export function useConductorRoutes({
     const routesRef = useRef(routes)
     routesRef.current = routes
 
-    // Bootstrap index once from initial routes + page URL (cache-aware routes).
+    // Bootstrap index once from the same initial routes + page URL.
     const [index, _setIndex] = useState(() =>
         findConductorRouteIndexOrZero(
-            adapter.getInitialRoutes(initedTabs),
+            routes,
             pageUrl,
             useSectionAsMenu
         )
@@ -217,7 +224,7 @@ export function useConductorRoutes({
         const persist = adapterRef.current.persist
         if (!persist?.write) return
         persist.write(routes, index)
-    }, [routes, index])
+    }, [routes, index, persistWriteKey])
 
     useEffect(() => {
         const persist = adapterRef.current.persist
@@ -226,7 +233,7 @@ export function useConductorRoutes({
             routes: routesRef.current,
             index: indexRef.current,
         }))
-    }, [])
+    }, [persistKey])
 
     const activeRoute = useMemo(
         () => routes.find((item) => item.index === index),

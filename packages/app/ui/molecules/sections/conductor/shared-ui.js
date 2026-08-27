@@ -4,71 +4,74 @@ import { Text } from 'app/design/typography'
 import { Icon } from 'app/ui/atoms/icon'
 import DropdownMenu, { DropdownMenuOpenContext } from 'app/ui/atoms/dropdown-menu'
 import UniList from 'app/ui/atoms/unilist'
-import { getComponent } from 'app/components/registry'
 import { BlockByName } from 'app/components/block'
 import { ItemRenderer } from 'app/components/item-renderer'
 import { Button } from 'app/design/controls'
 import { useTranslation } from 'react-i18next'
-import { appSetting, getPageSettings } from 'app/lib/util'
 import { getSkeletonForList } from 'app/lib/skeleton-helpers'
 import { layoutForList, paddingForList } from 'app/customization/functions'
 import {
     getAddon,
-    getDropdownItemsFromLeftbarBlock,
+    getDropdownItemsFromLeftColumnBlock,
     hasConductorSubitems,
     buildCompactNavEntries,
-    buildConductorSubitemsDropdownItems,
-    isConductorSubitemsDropdownActive,
-    buildConductorSidebarExpandedMap,
-    mergeConductorSidebarExpandedMap,
-    getConductorRouteChildren,
-    getConductorSidebarRootRoutes,
-    getConductorDepthClassName,
+    buildSubitemsDropdownItems,
+    isSubitemsDropdownActive,
     conductorHref,
     pageDataWithRestoredFormValues,
     resolveConductorUnitType,
     resolveConductorSkeletonKey,
-    getMobileLeftbarItems,
+    getMobileLeftColumnItems,
     buildConductorListRows,
     conductorListHasEntries,
+    registeredComponent,
 } from './helpers'
 
-const conductorTheme = appSetting('theme', 'conductor')
-
-/** Block name for BlockByName: string entry or object from leftbar JSON. */
-function resolveLeftbarBlockName(block) {
+/** Block name for BlockByName: string entry or object from UNA leftbar JSON. */
+function resolveLeftColumnBlockName(block) {
     if (typeof block === 'string') return block
     return block?.block ?? block?.data?.source ?? null
 }
 
-function leftbarBlockKey(block, index) {
+function leftColumnBlockKey(block, index) {
     if (typeof block === 'string') return block
     return block?.id ?? block?.data?.id ?? block?.block ?? index
 }
 
 /**
- * Shared leftbar / filters block list (native sheet + web sidebar/mobile).
+ * Shared left-column / filters block list (native sheet + web sidebar/mobile).
+ * Pass `route` to read UNA `route.leftbar.content`; `items` overrides that list.
  */
-export const ConductorLeftbarBlocks = memo(function ConductorLeftbarBlocks({
-    items,
+export const LeftColumnContent = memo(function LeftColumnContent({
+    items: itemsProp,
+    route,
     data,
     onChange,
     onFormSubmit,
     saveOnChanges = false,
+    restoreFormValues = false,
     className = 'gap-y-4',
 }) {
-    if (!items?.length) return null
+    const items = itemsProp ?? route?.leftbar?.content ?? []
+    if (!items.length) return null
+
+    const pageData = restoreFormValues
+        ? pageDataWithRestoredFormValues(
+              route?.pageData,
+              route?.endpoint?.filterFormValues
+          )
+        : (data ?? route?.pageData)
 
     return (
         <View className={className}>
             {items.map((block, index) => {
-                const name = resolveLeftbarBlockName(block)
+                const name = resolveLeftColumnBlockName(block)
                 if (!name) return null
                 return (
-                    <View key={`lb-${leftbarBlockKey(block, index)}`}>
+                    <View key={`lb-${leftColumnBlockKey(block, index)}`}>
                         <BlockByName
                             name={name}
-                            data={data}
+                            data={pageData}
                             onChange={onChange}
                             onFormSubmit={onFormSubmit}
                             saveOnChanges={saveOnChanges}
@@ -81,48 +84,11 @@ export const ConductorLeftbarBlocks = memo(function ConductorLeftbarBlocks({
     )
 })
 
-/**
- * Web-style helper: leftbar from route (+ optional restore of filter form values).
- * Same return shape as the old LeftBarContent() function.
- */
-export function conductorLeftbarContent(
-    route,
-    onChange,
-    itemsOverride,
-    {
-        restoreFormValues = false,
-        className = 'gap-y-4',
-        onFormSubmit,
-        saveOnChanges = false,
-    } = {}
-) {
-    const items = itemsOverride ?? route?.leftbar?.content ?? []
-    if (!items.length) return null
-
-    const pageData = restoreFormValues
-        ? pageDataWithRestoredFormValues(
-              route?.pageData,
-              route?.endpoint?.filterFormValues
-          )
-        : route?.pageData
-
-    return (
-        <ConductorLeftbarBlocks
-            items={items}
-            data={pageData}
-            onChange={onChange}
-            onFormSubmit={onFormSubmit}
-            saveOnChanges={saveOnChanges}
-            className={className}
-        />
-    )
-}
-
-/** Filter form above the conductor list (native header + web sibling). */
-export function ConductorListForm({ route, onChange }) {
-    const Form = getComponent('element', 'form')
+/** Filter form above the list (native header + web sibling). */
+export function ListForm({ route, onChange }) {
+    const Form = registeredComponent('element', 'form')
     const formProps = route?.endpoint?.filters
-    if (!formProps) return null
+    if (!Form || !formProps) return null
     const formUrl = route?.link || route?.pageData?.url
     return (
         <View className="w-full">
@@ -138,7 +104,7 @@ export function ConductorListForm({ route, onChange }) {
 }
 
 /** Open the shared Filters bottom sheet (platform snapPoints / modal differ). */
-export function openConductorFiltersSheet(
+export function openFiltersSheet(
     setBottomSheetData,
     { t, content, snapPoints, modal = false }
 ) {
@@ -152,7 +118,7 @@ export function openConductorFiltersSheet(
 }
 
 /** Filters trigger under the tab bar (native / mobile web). */
-export function ConductorFiltersButton({
+export function FiltersButton({
     onPress,
     visible = true,
     className = 'items-start px-3 py-2',
@@ -172,16 +138,25 @@ export function ConductorFiltersButton({
     )
 }
 
-export function LeftbarMenuTrigger({ title, icon }) {
+function MenuTrigger({ title, icon, isActive = false, compact = false }) {
     const isOpen = useContext(DropdownMenuOpenContext) ?? false
+    const showIcon = Boolean(icon) && (!compact || icon !== 'Circle')
+    const highlighted = isOpen || isActive
     return (
         <Row
             className={`items-center h-9 px-2 gap-1 rounded-full shrink-0 web:cursor-pointer ${
-                isOpen ? 'bg-muted' : 'web:hover:bg-muted/50'
+                highlighted ? 'bg-muted' : 'web:hover:bg-muted/50'
             }`}
         >
-            <Icon icon={icon} size={16} className="text-secondary-foreground shrink-0" />
-            <Text className="text-sm font-semibold text-card-foreground whitespace-nowrap">
+            {showIcon ? (
+                <Icon icon={icon} size={16} className="text-secondary-foreground shrink-0" />
+            ) : null}
+            <Text
+                numberOfLines={compact ? 1 : undefined}
+                className={`text-sm font-semibold text-card-foreground ${
+                    compact ? 'max-w-40' : 'whitespace-nowrap'
+                }`}
+            >
                 {title}
             </Text>
             <Icon
@@ -193,9 +168,9 @@ export function LeftbarMenuTrigger({ title, icon }) {
     )
 }
 
-export function LeftbarMenuDropdown({ blockItem, t }) {
+export function LeftColumnMenuDropdown({ blockItem, t }) {
     const items = useMemo(
-        () => getDropdownItemsFromLeftbarBlock(blockItem),
+        () => getDropdownItemsFromLeftColumnBlock(blockItem),
         [blockItem]
     )
     if (!items.length) return null
@@ -209,125 +184,27 @@ export function LeftbarMenuDropdown({ blockItem, t }) {
             mode="popup"
             triggerAccessibilityLabel={title}
         >
-            <LeftbarMenuTrigger title={title} icon={icon} />
+            <MenuTrigger title={title} icon={icon} />
         </DropdownMenu>
     )
 }
 
-export function TopSidebar({
-    styles,
-    addButtons,
-    children,
-    title,
-    icon,
-    layout,
-    layoutName,
-    omitDefaultBackground = false,
-}) {
-    const isHideOnDesktop = layoutName !== 'profile'
-    return (
-        <View
-            style={styles}
-            className={`${!omitDefaultBackground ? conductorTheme.menu : ''} ${isHideOnDesktop ? conductorTheme.hide_top_menu_from + ':hidden' : ''
-                }`}
-        >
-            <View
-                className={`${isHideOnDesktop ? '' : 'mx-auto'} ${appSetting('layout', 'page_content_width_default')} px-3 lg:px-4 mx-auto`}
-            >
-                    {/*
-                      * Section title on the tab subbar, for the middle viewport range.
-                      * Below `lg` the title already shows in the page sub-header (see
-                      * the `setHeader` effect in conductor.web.js), and from
-                      * `hide_top_menu_from` (xl) up this whole bar is hidden and the
-                      * left sidebar carries the title — so `hidden lg:flex` alone lands
-                      * it exactly in the gap where nothing else shows it. No `xl:`
-                      * gate is needed: the parent is already hidden there.
-                      */}
-                    <Row className="w-full items-center gap-4 min-w-0">
-                        {(!!title && conductorTheme.show_title !== false && isHideOnDesktop) && (
-                            <Row className="hidden lg:flex items-center gap-2 shrink-0 min-w-0">
-                                {!!icon && (
-                                    <Icon
-                                        icon={icon}
-                                        size={22}
-                                        className="text-card-foreground shrink-0"
-                                    />
-                                )}
-                                <Text className="text-xl font-bold tracking-tight text-card-foreground font-main truncate">
-                                    {title}
-                                </Text>
-                            </Row>
-                        )}
-                        <View className="flex-1 min-w-0">{children}</View>
-                    </Row>
-                    {(layout != 'mixed' && layoutName !== 'profile') && (
-                        <Row className={`hidden ${conductorTheme.hide_top_menu_from}:flex cond-buttons-add`}>
-                            {addButtons}
-                        </Row>
-                    )}
-            </View>
-        </View>
-    )
-}
-
-export function Addon({ item, index }) {
-    let addonContent = null
-    const settings = getPageSettings(item?.config, item?.key)
-    let icon = !item.ident
-        ? settings?.icon
-            ? settings?.icon
-            : String(item?.icon || '').replace('*', '')
-        : String(item?.icon || '').replace('*', '')
-
+export function Addon({ item }) {
     const addon = getAddon(item?.addon)
-    if (addon) {
-        const addonClasses = addon.variant === 'primary' ? 'bg-destructive' : 'bg-secondary'
-        const addonText = addon.variant === 'primary' ? addon.text : addon
-        if (addonText) {
-            addonContent = (
-                <Text className={`${addonClasses} rounded-full px-2 py-0.5  text-center items-center text-white text-xs font-semibold`}>
-                    {addonText}
-                </Text>
-            )
-        }
-    }
-    return addonContent
-}
-
-function ConductorSubitemsTrigger({ title, icon, isActive }) {
-    const isOpen = useContext(DropdownMenuOpenContext) ?? false
-    const showIcon = Boolean(icon) && icon !== 'Circle'
+    if (!addon) return null
+    const isPrimary = addon.variant === 'primary'
+    const addonText = isPrimary ? addon.text : addon
+    if (!addonText) return null
     return (
-        <Row
-            className={`items-center h-9 px-2 gap-1 rounded-full shrink-0 ${
-                isOpen || isActive ? 'bg-muted' : ''
-            }`}
-        >
-            {showIcon ? (
-                <Icon
-                    icon={icon}
-                    size={16}
-                    className="text-secondary-foreground shrink-0"
-                />
-            ) : null}
-            <Text
-                numberOfLines={1}
-                className="text-sm font-semibold text-card-foreground max-w-40"
-            >
-                {title}
-            </Text>
-            <Icon
-                icon={isOpen ? 'ChevronUp' : 'ChevronDown'}
-                size={16}
-                className="text-muted-foreground shrink-0"
-            />
-        </Row>
+        <Text className={`${isPrimary ? 'bg-destructive' : 'bg-secondary'} rounded-full px-2 py-0.5  text-center items-center text-white text-xs font-semibold`}>
+            {addonText}
+        </Text>
     )
 }
 
-function ConductorSubitemsDropdown({ route, routes, selectedIndex, onSelect, t }) {
-    const items = buildConductorSubitemsDropdownItems(route, routes, selectedIndex)
-    const isActive = isConductorSubitemsDropdownActive(route, routes, selectedIndex)
+function SubitemsDropdown({ route, routes, selectedIndex, onSelect, t }) {
+    const items = buildSubitemsDropdownItems(route, routes, selectedIndex)
+    const isActive = isSubitemsDropdownActive(route, routes, selectedIndex)
 
     if (!items.length) return null
 
@@ -341,10 +218,11 @@ function ConductorSubitemsDropdown({ route, routes, selectedIndex, onSelect, t }
                 if (next) onSelect(next)
             }}
         >
-            <ConductorSubitemsTrigger
+            <MenuTrigger
                 title={t(route.title)}
                 icon={route.icon}
                 isActive={isActive}
+                compact
             />
         </DropdownMenu>
     )
@@ -353,8 +231,8 @@ function ConductorSubitemsDropdown({ route, routes, selectedIndex, onSelect, t }
 /**
  * One top-tab pill. Click policy stays outside (`onPress(item, event)`).
  */
-export function ConductorTabItem({ item, selectedIndex, onPress }) {
-    const MenuItemSubmenu = getComponent('menu-item', 'submenu')
+export function TabItem({ item, selectedIndex, onPress }) {
+    const MenuItemSubmenu = registeredComponent('menu-item', 'submenu')
 
     if (item?.item?.id === 'hidden') return null
 
@@ -382,6 +260,8 @@ export function ConductorTabItem({ item, selectedIndex, onPress }) {
         )
     }
 
+    if (!MenuItemSubmenu) return null
+
     return (
         <View className={`${item?.menu_settings?.class || ''}`}>
             <MenuItemSubmenu
@@ -397,12 +277,24 @@ export function ConductorTabItem({ item, selectedIndex, onPress }) {
     )
 }
 
+function TabPill({ item, selectedIndex, onPress, className }) {
+    return (
+        <View className={className || undefined}>
+            <TabItem
+                item={item}
+                selectedIndex={selectedIndex}
+                onPress={onPress}
+            />
+        </View>
+    )
+}
+
 /**
  * Flat or compact top-tab list. Does not own URL / history — caller passes onSelect.
  *
  * @param {string} [itemWrapperClassName] — native uses flex-none wrapper; web often ''
  */
-export function ConductorTabList({
+export function TabList({
     routes,
     index,
     onSelect,
@@ -411,21 +303,12 @@ export function ConductorTabList({
     const useCompactNav = hasConductorSubitems(routes)
     const visibleRoutes = routes.filter((item) => item.hideInTop != true)
 
-    const renderPill = (item) => (
-        <ConductorTabItem
-            item={item}
-            selectedIndex={index}
-            onPress={onSelect}
-        />
-    )
-
     if (useCompactNav) {
         return (
-            <ConductorCompactNav
+            <CompactNav
                 routes={routes}
                 index={index}
                 onSelect={onSelect}
-                renderPill={renderPill}
             />
         )
     }
@@ -433,20 +316,17 @@ export function ConductorTabList({
     if (!visibleRoutes.length) return null
 
     return visibleRoutes.map((item) => (
-        <View
+        <TabPill
             key={`tab-${item.index}`}
-            className={itemWrapperClassName || undefined}
-        >
-            <ConductorTabItem
-                item={item}
-                selectedIndex={index}
-                onPress={onSelect}
-            />
-        </View>
+            item={item}
+            selectedIndex={index}
+            onPress={onSelect}
+            className={itemWrapperClassName}
+        />
     ))
 }
 
-export function ConductorCompactNav({ routes, index, onSelect, renderPill }) {
+export function CompactNav({ routes, index, onSelect }) {
     const { t } = useTranslation()
     if (!hasConductorSubitems(routes)) return null
 
@@ -458,7 +338,7 @@ export function ConductorCompactNav({ routes, index, onSelect, renderPill }) {
             {entries.map((entry) => {
                 if (entry.type === 'dropdown') {
                     return (
-                        <ConductorSubitemsDropdown
+                        <SubitemsDropdown
                             key={`dd-${entry.route.index}`}
                             route={entry.route}
                             routes={routes}
@@ -469,80 +349,16 @@ export function ConductorCompactNav({ routes, index, onSelect, renderPill }) {
                     )
                 }
                 return (
-                    <View
+                    <TabPill
                         key={`pill-${entry.route.index}`}
+                        item={entry.route}
+                        selectedIndex={index}
+                        onPress={onSelect}
                         className="flex-none items-center justify-center"
-                    >
-                        {renderPill(entry.route)}
-                    </View>
+                    />
                 )
             })}
         </Row>
-    )
-}
-
-export function ConductorSidebarNav({ routes, index, onSelect }) {
-    const MenuItemSidebarWithWrapper = getComponent('menu-item', 'sidebar_with_wrapper')
-    const [expandedMap, setExpandedMap] = useState(() => (
-        buildConductorSidebarExpandedMap(routes, index)
-    ))
-
-    useEffect(() => {
-        setExpandedMap((prev) => mergeConductorSidebarExpandedMap(prev, routes, index))
-    }, [index, routes])
-
-    const toggleExpanded = (itemIndex) => {
-        setExpandedMap((prev) => ({ ...prev, [itemIndex]: !prev[itemIndex] }))
-    }
-
-    const renderRoute = (route) => {
-        const children = getConductorRouteChildren(route, routes)
-        const hasChildren = children.length > 0
-        const isExpanded = Boolean(expandedMap[route.index])
-        const canNavigate = Boolean(route.canNavigate)
-        const isActive = route.index === index
-        const href = conductorHref(route.link || route.key)
-        const icon = route.image || route.icon || 'Circle'
-
-        return (
-            <View key={`lmenu-${route.index}`} className="w-full">
-                <MenuItemSidebarWithWrapper
-                    link={canNavigate ? href : undefined}
-                    title={route.title}
-                    icon={icon}
-                    iconEnd={
-                        !canNavigate && hasChildren
-                            ? (isExpanded ? 'ChevronDown' : 'ChevronRight')
-                            : undefined
-                    }
-                    isActive={isActive}
-                    onPress={
-                        !canNavigate && hasChildren
-                            ? () => toggleExpanded(route.index)
-                            : (event) => {
-                                event?.preventDefault?.()
-                                onSelect(route)
-                            }
-                    }
-                    className={getConductorDepthClassName(route.depth)}
-                />
-                {hasChildren && isExpanded ? (
-                    <View className="gap-0.5">
-                        {children.map((child) => renderRoute(child))}
-                    </View>
-                ) : null}
-            </View>
-        )
-    }
-
-    const roots = getConductorSidebarRootRoutes(routes)
-
-    if (!roots.length) return null
-
-    return (
-        <View className="w-full gap-0.5">
-            {roots.map((route) => renderRoute(route))}
-        </View>
     )
 }
 
@@ -552,17 +368,17 @@ const EMPTY_LIST_ITEMS = []
  * Shared conductor center-list chrome (native + small web).
  * Query / snackbar / page header stay in the platform shells.
  */
-export function useConductorListScene({
+export function useListScene({
     route,
     skeleton,
     unitMode,
     skeletonCount = 1,
     listItems = EMPTY_LIST_ITEMS,
     includeSidebar = false,
-    showMobileLeftbar = includeSidebar,
-    leftbarExcludedFromMainIds = null,
+    showMobileLeftColumn = includeSidebar,
+    leftColumnExcludedFromMainIds = null,
     onFormChangedValues,
-    leftbarClassName = 'gap-y-4',
+    leftColumnClassName = 'gap-y-4',
     isInited = true,
     listReady = true,
     refreshing = false,
@@ -606,10 +422,10 @@ export function useConductorListScene({
 
     const feedType = route?.endpoint?.params?.type
 
-    const mobileLeftbarItems = useMemo(() => {
-        if (!showMobileLeftbar) return []
-        return getMobileLeftbarItems(route?.leftbar?.content, leftbarExcludedFromMainIds)
-    }, [showMobileLeftbar, route?.leftbar?.content, leftbarExcludedFromMainIds])
+    const mobileLeftColumnItems = useMemo(() => {
+        if (!showMobileLeftColumn) return []
+        return getMobileLeftColumnItems(route?.leftbar?.content, leftColumnExcludedFromMainIds)
+    }, [showMobileLeftColumn, route?.leftbar?.content, leftColumnExcludedFromMainIds])
 
     const rows = useMemo(
         () =>
@@ -623,19 +439,31 @@ export function useConductorListScene({
         [route?.data, route?.sidebar?.content, listItems, includeSidebar, feedType]
     )
 
-    const leftbar = conductorLeftbarContent(
-        route,
-        onFormChangedValues,
-        mobileLeftbarItems,
-        { className: leftbarClassName }
-    )
+    const hasLeftColumnItems = mobileLeftColumnItems.length > 0
     const hasForm = !!route?.endpoint?.filters
-    const chrome = (hasForm || leftbar) ? (
-        <>
-            <ConductorListForm route={route} onChange={onFormChangedValues} />
-            {leftbar}
-        </>
-    ) : null
+    const chrome = useMemo(() => {
+        if (!hasForm && !hasLeftColumnItems) return null
+        return (
+            <>
+                <ListForm route={route} onChange={onFormChangedValues} />
+                {hasLeftColumnItems ? (
+                    <LeftColumnContent
+                        route={route}
+                        items={mobileLeftColumnItems}
+                        onChange={onFormChangedValues}
+                        className={leftColumnClassName}
+                    />
+                ) : null}
+            </>
+        )
+    }, [
+        hasForm,
+        hasLeftColumnItems,
+        route,
+        mobileLeftColumnItems,
+        onFormChangedValues,
+        leftColumnClassName,
+    ])
 
     const isEmpty = !conductorListHasEntries(rows)
     const requestUrl = route?.endpoint?.request_url
@@ -667,7 +495,7 @@ export function useConductorListScene({
     }
 }
 
-function ConductorListBody({
+function ListBody({
     route,
     scene,
     headerInList,
@@ -678,20 +506,18 @@ function ConductorListBody({
     refreshing,
     uniListProps = {},
 }) {
-    const NoContent = getComponent('molecule', 'no_content')
-    const {
-        ListFooterComponent: footerFromProps,
-        ...restUniListProps
-    } = uniListProps
+    const NoContent = registeredComponent('molecule', 'no_content')
+    const emptyFooter =
+        headerInList && scene.showNoContent && NoContent
+            ? <NoContent endpoint={route?.endpoint} />
+            : (uniListProps.ListFooterComponent ?? null)
 
     return (
         <>
             {!headerInList ? scene.chrome : null}
             <UniList
-                {...restUniListProps}
-                ListHeaderComponent={
-                    headerInList && scene.chrome ? () => scene.chrome : undefined
-                }
+                {...uniListProps}
+                ListHeaderComponent={headerInList ? scene.chrome : undefined}
                 data={scene.rows}
                 route={route}
                 unit={route?.endpoint?.unit}
@@ -701,17 +527,13 @@ function ConductorListBody({
                 preloadComponent={
                     showListPreload && scene.showPreload ? scene.Preload : undefined
                 }
-                ListFooterComponent={
-                    headerInList && scene.showNoContent
-                        ? <NoContent endpoint={route?.endpoint} />
-                        : (footerFromProps ?? null)
-                }
+                ListFooterComponent={emptyFooter}
                 refer={listRef}
                 onEndReached={handleEndReached}
                 onRefresh={onRefresh}
                 refreshing={refreshing}
             />
-            {!headerInList && scene.showNoContent ? (
+            {!headerInList && scene.showNoContent && NoContent ? (
                 <NoContent endpoint={route?.endpoint} />
             ) : null}
         </>
@@ -719,10 +541,10 @@ function ConductorListBody({
 }
 
 /**
- * UniList + form/leftbar/empty. Native: header in list + preloadComponent.
+ * UniList + form/left column/empty. Native: header in list + preloadComponent.
  * Web: chrome as siblings, window-scroll via uniListProps; optional reveal fade.
  */
-export function ConductorListScene({
+export function ListScene({
     route,
     headerInList = false,
     showListPreload = false,
@@ -735,7 +557,7 @@ export function ConductorListScene({
     afterList,
     ...sceneProps
 }) {
-    const scene = useConductorListScene({
+    const scene = useListScene({
         route,
         refreshing,
         ...sceneProps,
@@ -765,7 +587,7 @@ export function ConductorListScene({
 
     const body = (
         <>
-            <ConductorListBody
+            <ListBody
                 route={route}
                 scene={scene}
                 headerInList={headerInList}

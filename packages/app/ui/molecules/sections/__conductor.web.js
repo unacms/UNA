@@ -420,7 +420,6 @@ export function Conductor({
     const tabRouteSidebarContent = tabRoute?.sidebar?.content ?? []
     const isLeftCol = tabRoute?.leftbar?.content?.length > 0 || layoutName == 'navigator'
     const isRightCol = tabRouteSidebarContent.length > 0 || tabRoute?.blocks?.browse_sidebar
-    console.log('isRightColx', tabRouteSidebarContent.length > 0, tabRoute?.blocks?.browse_sidebar)
     const sidebarUnitType = tabRoute?.blocks?.browse_sidebar?.unitType || 'default'
 
     const LeftColumnContent = isLeftCol ?
@@ -726,7 +725,6 @@ const TabSceneMainContent = ({
         [pageRoute, unitType]
     )
 
-    console.log('unitType', unitType)
     const SkeletonForRoute = useMemo(() => {
         const a = getSkeletonByEndPoint(pageRoute)
         if (a) return a
@@ -738,14 +736,12 @@ const TabSceneMainContent = ({
     }, [skeleton, pageRoute, unitType,])
 
     const layout = layoutForList(pageRoute?.endpoint);
-    console.log('layout', layout);
     const paddings = paddingForList(pageRoute?.endpoint);
 
     const Preload = useMemo(
         () => getSkeletonForList(SkeletonForRoute, 5, true, layout, renderItem, paddings),
         [SkeletonForRoute, renderItem]
     )
-    console.log('SkeletonForRoute', SkeletonForRoute)
 
     const PreloadShort = useMemo(
         () => getSkeletonForList(SkeletonForRoute, refetchRef.current.skipToast ? 0 : 5, false, layout, renderItem, paddings),
@@ -922,7 +918,6 @@ const TabScene = ({
     const currentBreakpointName = useBreakpointName()
 
     const isRightCol = !!rightColumnContent
-    console.log('isRightCol', isRightCol, rightColumnContent)
     const isLeftCol = !!leftColumnContent
 
     const groupRef = useRef(null)
@@ -1035,7 +1030,6 @@ const TabScene = ({
         }
     }, [tabIndex, pageRoute?.index, pageRoute?.inited])
 
-    console.log('panelLayoutKey', panelLayoutKey)
     return (
         <PanelGroup
             ref={groupRef}

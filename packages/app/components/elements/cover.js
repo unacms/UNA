@@ -321,8 +321,8 @@ function CoverImage({
                         {allowSwitch ? (
                             <NeoButton
                                 image="RefreshCw"
-                                style="bordered"
-                                controlSize="small"
+                                style="glass"
+                                controlSize="regular"
                                 borderShape="circle"
                                 onPress={() => handleSwitch(allowSwitch)}
                             />
@@ -330,7 +330,6 @@ function CoverImage({
                         {allowEdit ? (
                             <NeoButton
                                 image="Camera"
-                                
                                 style="glass"
                                 controlSize="regular"
                                 borderShape="circle"

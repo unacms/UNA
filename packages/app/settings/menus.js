@@ -206,7 +206,7 @@ export const settingsMenus = {
             {
                 key: '/tab1',
                 title: 'Friends',
-                url: '/groups-home',
+                url: '/friends',
                 icon: 'UsersRound',
                 badge: 'friends',
                 animated: true,
@@ -230,7 +230,7 @@ export const settingsMenus = {
             {
                 key: '/tab4',
                 title: 'Dashboard',
-                url: '/posts-home',
+                url: '/dashboard',
                 icon: 'Award',
             },
         ],

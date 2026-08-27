@@ -14,8 +14,20 @@ import {
 } from 'app/lib/util'
 import { fetcher } from 'app/lib/fetcher'
 import { getSkeletonByEndPoint } from 'app/customization/functions'
+import { getComponent } from 'app/components/registry'
 
 const conductorTheme = appSetting('theme', 'conductor')
+
+const registeredComponents = Object.create(null)
+/** Cache getComponent; skip undefined so a late registry fill still works. */
+export function registeredComponent(type, name) {
+    const key = `${type}:${name}`
+    const cached = registeredComponents[key]
+    if (cached) return cached
+    const component = getComponent(type, name)
+    if (component) registeredComponents[key] = component
+    return component
+}
 
 /** Split page blocks into main list vs leftbar. */
 export function processBlocks(blocks) {
@@ -145,7 +157,7 @@ export function getConductorRouteChildren(route, routes = []) {
 }
 
 /** DropdownMenu items for a parent route's children. */
-export function buildConductorSubitemsDropdownItems(route, routes, selectedIndex) {
+export function buildSubitemsDropdownItems(route, routes, selectedIndex) {
     return getConductorRouteChildren(route, routes).map((child) => ({
         id: child.key || child.index,
         title: child.title,
@@ -158,7 +170,7 @@ export function buildConductorSubitemsDropdownItems(route, routes, selectedIndex
 }
 
 /** True if the selected tab is this route or one of its children. */
-export function isConductorSubitemsDropdownActive(route, routes, selectedIndex) {
+export function isSubitemsDropdownActive(route, routes, selectedIndex) {
     if (selectedIndex === route?.index) return true
     return getConductorRouteChildren(route, routes).some(
         (child) => child.index === selectedIndex
@@ -762,8 +774,8 @@ export function pageDataWithRestoredFormValues(pageData, formValues) {
     return { ...pageData, elements }
 }
 
-/** Normalize a leftbar link item for DropdownMenu. */
-export function normalizeLeftbarMenuItem(item, index) {
+/** Normalize a left-column link item for DropdownMenu. */
+export function normalizeLeftColumnMenuItem(item, index) {
     const rawLink = item?.url || item?.link || ''
     const link =
         rawLink && rawLink !== 'javascript:void(0)'
@@ -779,8 +791,8 @@ export function normalizeLeftbarMenuItem(item, index) {
     }
 }
 
-/** Extract dropdown link items from a leftbar menu/categories block. */
-export function getDropdownItemsFromLeftbarBlock(blockItem) {
+/** Extract dropdown link items from a left-column menu/categories block. */
+export function getDropdownItemsFromLeftColumnBlock(blockItem) {
     const elements = blockItem?.data?.content
     if (!Array.isArray(elements)) return []
 
@@ -789,7 +801,7 @@ export function getDropdownItemsFromLeftbarBlock(blockItem) {
             const type = el?.type || el?.content_type
             if (type === 'menu') {
                 const items = el?.data?.content?.items ?? el?.content?.items ?? []
-                return items.map(normalizeLeftbarMenuItem)
+                return items.map(normalizeLeftColumnMenuItem)
             }
             if (type === 'categories_list') {
                 const items = Array.isArray(el?.data)
@@ -797,55 +809,55 @@ export function getDropdownItemsFromLeftbarBlock(blockItem) {
                     : Array.isArray(el?.data?.content)
                         ? el.data.content
                         : []
-                return items.map(normalizeLeftbarMenuItem)
+                return items.map(normalizeLeftColumnMenuItem)
             }
             if (
                 Array.isArray(el?.data) &&
                 el.data[0] &&
                 (el.data[0].url || el.data[0].link || el.data[0].name || el.data[0].title)
             ) {
-                return el.data.map(normalizeLeftbarMenuItem)
+                return el.data.map(normalizeLeftColumnMenuItem)
             }
             return []
         })
         .filter((item) => item.title)
 }
 
-/** Leftbar blocks visible on phone (not hidden_on phone / not excluded). */
-export function getMobileLeftbarItems(leftbarContent = [], excludedIds = null) {
-    return leftbarContent.filter((item) => {
+/** Left-column blocks visible on phone (not hidden_on phone / not excluded). */
+export function getMobileLeftColumnItems(leftColumnContent = [], excludedIds = null) {
+    return leftColumnContent.filter((item) => {
         if (item.data?.hidden_on?.includes?.('phone')) return false
         if (excludedIds?.has?.(item?.id)) return false
         return true
     })
 }
 
-/** Split leftbar into top-menu dropdowns vs filter-sheet blocks. */
-export function partitionConductorLeftbar(leftbarContent = [], layoutName) {
-    const menuBlocks = leftbarContent.filter(
+/** Split left column into top-menu dropdowns vs filter-sheet blocks. */
+export function partitionLeftColumn(leftColumnContent = [], layoutName) {
+    const menuBlocks = leftColumnContent.filter(
         (item) =>
             !item?.data?.config_api?.use_as_filter &&
             !!item?.data?.config_api?.use_as_menu &&
-            getDropdownItemsFromLeftbarBlock(item).length > 0
+            getDropdownItemsFromLeftColumnBlock(item).length > 0
     )
-    const filterBlocks = leftbarContent.filter((item) => {
+    const filterBlocks = leftColumnContent.filter((item) => {
         if (item?.data?.config_api?.use_as_filter) return true
         if (layoutName !== 'navigator') return false
         if (!item?.data?.config_api?.use_as_menu) return true
         // Menu flag set but no extractable links → keep in Filters
-        return getDropdownItemsFromLeftbarBlock(item).length === 0
+        return getDropdownItemsFromLeftColumnBlock(item).length === 0
     })
     return { menuBlocks, filterBlocks }
 }
 
 /**
  * Ids that should not also render in the main list.
- * Desktop web: nothing excluded (sidebar owns leftbar).
- * Navigator: all leftbar ids. Else: menu + filter blocks only.
+ * Desktop web: nothing excluded (right sidebar owns the left column).
+ * Navigator: all left-column ids. Else: menu + filter blocks only.
  */
-export function getLeftbarExcludedFromMainIds({
+export function getLeftColumnExcludedFromMainIds({
     layoutName,
-    leftbarContent = [],
+    leftColumnContent = [],
     menuBlocks = [],
     filterBlocks = [],
     isDesktop = false,
@@ -853,7 +865,7 @@ export function getLeftbarExcludedFromMainIds({
     if (isDesktop) return new Set()
     if (layoutName === 'navigator') {
         return new Set(
-            leftbarContent.map((item) => item?.id).filter((id) => id != null)
+            leftColumnContent.map((item) => item?.id).filter((id) => id != null)
         )
     }
     return new Set(

@@ -1,13 +1,11 @@
 import React, { useCallback, useState, useLayoutEffect, useMemo, useRef } from "react";
-import { Platform } from 'react-native';
 import Animated, { useSharedValue, useAnimatedStyle, interpolate, Extrapolation, useAnimatedReaction, runOnJS, FadeIn } from 'react-native-reanimated';
 import { View, ScrollView, Row } from 'app/design/view';
 import { appSetting, isNativeTabsEnabled } from 'app/lib/util';
-import { hasConductorSubitems } from './helpers';
-import { LeftbarMenuDropdown, ConductorTabList, ConductorListScene } from './shared-ui';
+import { hasConductorSubitems, registeredComponent } from './helpers';
+import { LeftColumnMenuDropdown, TabList, ListScene } from './shared-ui';
 import Cover, { CoverSmall, CoverBackButton } from 'app/components/elements/cover';
-import { getComponent } from 'app/components/registry';
-import { getWindowSafeAreaInsets } from 'app/lib/hooks/router'
+import { useStableSafeAreaInsets } from 'app/lib/hooks/router'
 import { useTranslation } from 'react-i18next';
 
 const conductorTheme = appSetting('theme', 'conductor')
@@ -18,6 +16,8 @@ const COVER_SWAP_HYSTERESIS = 8;
 // Masks the content pop of the hard swap. Entering-only: an exiting
 // animation would keep both covers mounted at once (see Host crash note).
 const COVER_SWAP_FADE_MS = 160;
+
+const COVER_OVERLAY_STYLE = { position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10 }
 
 /**
  * Overlay + translateY like Showtime. Cover and CoverSmall are never
@@ -33,6 +33,7 @@ const DynamicCoverHeader = React.memo(function DynamicCoverHeader({
     leading,
     coverScrollY,
     onOverlayHeight,
+    nativeTabsTopInset = 0,
 }) {
     const [coverHeight, setCoverHeight] = useState(0);
     const [showSmall, setShowSmall] = useState(false);
@@ -40,7 +41,7 @@ const DynamicCoverHeader = React.memo(function DynamicCoverHeader({
     // Fade the full cover back in only after a real swap, never on first mount.
     const hasSwappedRef = useRef(false);
     const collapsedSV = useSharedValue(false);
-    const compactHeight = 64 + (isNativeTabsEnabled() ? (getWindowSafeAreaInsets().top || 0) : 0);
+    const compactHeight = 64 + nativeTabsTopInset;
     const collapseRange = Math.max(0, coverHeight - compactHeight);
 
     useLayoutEffect(() => {
@@ -104,7 +105,7 @@ const DynamicCoverHeader = React.memo(function DynamicCoverHeader({
         <View
             pointerEvents="box-none"
             onLayout={onRootLayout}
-            style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10 }}
+            style={COVER_OVERLAY_STYLE}
         >
             {leading}
             <Animated.View className="bg-background" style={translateStyle}>
@@ -129,7 +130,7 @@ const DynamicCoverHeader = React.memo(function DynamicCoverHeader({
     );
 });
 
-export const TabSceneHeader = React.memo(function TabSceneHeader2({
+export const TabSceneHeader = React.memo(function TabSceneHeader({
     headerMode,
     coverBlock,
     pageUri,
@@ -140,39 +141,52 @@ export const TabSceneHeader = React.memo(function TabSceneHeader2({
     coverScrollY,
     onOverlayHeight,
 }) {
-    const ContextSelector = getComponent('molecule', 'context_selector');
+    const ContextSelector = registeredComponent('molecule', 'context_selector');
+    const { top: stableTopInset } = useStableSafeAreaInsets();
     // One selector for dynamic cover profiles (groups/spaces).
     const useStandaloneContextSelector =
         appSetting('context_selector', 'show_always') &&
         pageContext &&
         headerMode === 'dynamic';
 
-    // Only lift the back button out of the cover when it shares a row with the
+    // Lift the back button out of the cover when it shares a row with the
     // standalone context selector — otherwise leave it in Cover/CoverSmall.
-    const useStandaloneCoverBackButton =
-        Platform.OS !== 'web' &&
-        headerMode === 'dynamic' &&
-        useStandaloneContextSelector;
+    const useStandaloneCoverBackButton = !!useStandaloneContextSelector;
 
     // Remount covers on soft-reload (profile `ts`) so CoverImage local state
     // cannot stick after setPageData.
     const coverKey = `${ts ?? ''}:${coverBlock?.cover?.src ?? ''}:${coverBlock?.profile?.url_avatar ?? ''}`;
 
-    const nativeTabsTopInset = isNativeTabsEnabled() ? (getWindowSafeAreaInsets().top || 0) : 0;
-    const standaloneContextSelector = useStandaloneContextSelector ? (
-        <View style={nativeTabsTopInset > 0 ? { paddingTop: nativeTabsTopInset } : undefined}>
-            <Row className={`${conductorTheme.standalone_context_selector} gap-2 items-center `}>
-                {useStandaloneCoverBackButton ? <CoverBackButton /> : null}
-                <View className="flex-1 shrink">
-                    <ContextSelector
-                        data={pageContext}
-                        url={pageUri}
-                        uri={pageUri}
-                    />
-                </View>
-            </Row>
-        </View>
-    ) : null;
+    const nativeTabsTopInset = isNativeTabsEnabled() ? (stableTopInset || 0) : 0;
+    const selectorPadStyle = useMemo(
+        () => (nativeTabsTopInset > 0 ? { paddingTop: nativeTabsTopInset } : undefined),
+        [nativeTabsTopInset]
+    );
+
+    const standaloneContextSelector = useMemo(() => {
+        if (!useStandaloneContextSelector || !ContextSelector) return null
+        return (
+            <View style={selectorPadStyle}>
+                <Row className={`${conductorTheme.standalone_context_selector} gap-2 items-center `}>
+                    {useStandaloneCoverBackButton ? <CoverBackButton /> : null}
+                    <View className="flex-1 shrink">
+                        <ContextSelector
+                            data={pageContext}
+                            url={pageUri}
+                            uri={pageUri}
+                        />
+                    </View>
+                </Row>
+            </View>
+        )
+    }, [
+        useStandaloneContextSelector,
+        useStandaloneCoverBackButton,
+        selectorPadStyle,
+        ContextSelector,
+        pageContext,
+        pageUri,
+    ]);
 
     const coverHeader = useMemo(
         () => (
@@ -213,6 +227,7 @@ export const TabSceneHeader = React.memo(function TabSceneHeader2({
                 leading={standaloneContextSelector}
                 coverScrollY={coverScrollY}
                 onOverlayHeight={onOverlayHeight}
+                nativeTabsTopInset={nativeTabsTopInset}
             />
         );
     }
@@ -243,17 +258,15 @@ export const TabBar = React.memo(({
     onChangeRoute,
     routesRef,
     onSelectTab,
-    leftbarMenus = [],
+    leftColumnMenus = [],
 }) => {
     const { t } = useTranslation();
     const visibleRoutes = routes.filter((aItem) => aItem.hideInTop != true);
     const useCompactNav = hasConductorSubitems(routes)
     const hasTabs = useCompactNav || visibleRoutes.length > 1;
-    const hasMenus = leftbarMenus.length > 0;
+    const hasLeftColumnMenus = leftColumnMenus.length > 0;
 
-    if (!hasTabs && !hasMenus) return null;
-
-    const selectTab = (a) => {
+    const selectTab = useCallback((a) => {
         if (onSelectTab) {
             onSelectTab(a);
         } else {
@@ -262,7 +275,9 @@ export const TabBar = React.memo(({
                 onChangeRoute(routesRef?.current?.[a.index] ?? a)
             }
         }
-    }
+    }, [onSelectTab, setIndex, onChangeRoute, routesRef])
+
+    if (!hasTabs && !hasLeftColumnMenus) return null;
 
     return (
         <ScrollView
@@ -272,14 +287,14 @@ export const TabBar = React.memo(({
         >
             <Row className="px-3 pb-3 gap-2 items-center min-h-14" >
                 {hasTabs ? (
-                    <ConductorTabList
+                    <TabList
                         routes={routes}
                         index={index}
                         onSelect={selectTab}
                     />
                 ) : null}
-                {hasMenus ? leftbarMenus.map((blockItem) => (
-                    <LeftbarMenuDropdown
+                {hasLeftColumnMenus ? leftColumnMenus.map((blockItem) => (
+                    <LeftColumnMenuDropdown
                         key={blockItem.id ?? blockItem.block?.name}
                         blockItem={blockItem}
                         t={t}
@@ -293,7 +308,7 @@ export const TabBar = React.memo(({
 
 export const AT_TOP_SCROLL_THRESHOLD = 50;
 
-export const TabScene = React.memo(({
+export const TabScene = React.memo(function TabScene({
     route,
     hasNextPage,
     skeleton,
@@ -304,48 +319,60 @@ export const TabScene = React.memo(({
     numColumns,
     skipHeaderOffset,
     listRef,
-    leftbarExcludedFromMainIds = null,
+    leftColumnExcludedFromMainIds = null,
     coverOverlayPad = 0,
     coverScrollY,
     isInited = true,
-    listItems = [],
+    listItems,
     listReady = true,
     isPending = false,
     isFetching = false,
     onFormChangedValues,
-}) => (
-    <ConductorListScene
-        route={route}
-        skeleton={skeleton}
-        unitMode={unitMode}
-        skeletonCount={1}
-        listItems={listItems}
-        includeSidebar
-        leftbarExcludedFromMainIds={leftbarExcludedFromMainIds}
-        onFormChangedValues={onFormChangedValues}
-        leftbarClassName="my-3 mx-2 gap-y-4"
-        isInited={isInited}
-        listReady={listReady}
-        refreshing={refreshing}
-        hasNextPage={hasNextPage}
-        isPending={isPending}
-        isFetching={isFetching}
-        preloadWhenEmpty
-        headerInList
-        showListPreload
-        listRef={listRef}
-        handleEndReached={handleEndReached}
-        onRefresh={onRefresh}
-        uniListProps={{
-            index: route.index,
-            maxToRenderPerBatch: 5,
-            initialNumToRender: 5,
-            numColumns,
-            mode: 'simple',
-            url: route?.endpoint?.request_url,
-            skipHeaderOffset,
-            coverOverlayPad,
-            coverScrollY,
-        }}
-    />
-));
+}) {
+    const uniListProps = useMemo(() => ({
+        index: route.index,
+        maxToRenderPerBatch: 5,
+        initialNumToRender: 5,
+        numColumns,
+        mode: 'simple',
+        url: route?.endpoint?.request_url,
+        skipHeaderOffset,
+        coverOverlayPad,
+        coverScrollY,
+    }), [
+        route.index,
+        route?.endpoint?.request_url,
+        numColumns,
+        skipHeaderOffset,
+        coverOverlayPad,
+        coverScrollY,
+    ])
+
+    return (
+        <ListScene
+            route={route}
+            skeleton={skeleton}
+            unitMode={unitMode}
+            skeletonCount={1}
+            listItems={listItems}
+            includeSidebar
+            showMobileLeftColumn
+            leftColumnExcludedFromMainIds={leftColumnExcludedFromMainIds}
+            onFormChangedValues={onFormChangedValues}
+            leftColumnClassName="my-3 mx-2 gap-y-4"
+            isInited={isInited}
+            listReady={listReady}
+            refreshing={refreshing}
+            hasNextPage={hasNextPage}
+            isPending={isPending}
+            isFetching={isFetching}
+            preloadWhenEmpty
+            headerInList
+            showListPreload
+            listRef={listRef}
+            handleEndReached={handleEndReached}
+            onRefresh={onRefresh}
+            uniListProps={uniListProps}
+        />
+    )
+});

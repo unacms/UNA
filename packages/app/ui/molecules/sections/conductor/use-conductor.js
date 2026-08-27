@@ -1,14 +1,14 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 import {
-    partitionConductorLeftbar,
-    getLeftbarExcludedFromMainIds,
+    partitionLeftColumn,
+    getLeftColumnExcludedFromMainIds,
     formValuesToFilterEntries,
     patchConductorRouteFilters,
 } from './helpers'
 
 /**
  * Shared conductor pieces that are identical on web and native:
- * leftbar partition + filter form → route.endpoint.
+ * left column partition + filter form → route.endpoint.
  *
  * Routes / index: `use-conductor-routes.js` (shared state machine).
  * Platform specifics stay inline in index.js / index.web.js as `adapter`.
@@ -16,39 +16,40 @@ import {
  */
 
 /**
- * Leftbar menu vs filters vs “don’t also render in main list” ids.
+ * Left column menu vs filters vs “don’t also render in main list” ids.
+ * Source data is still route.leftbar (UNA JSON).
  *
  * @param {object} opts
- * @param {array}  opts.leftbarContent
+ * @param {array}  opts.leftColumnContent
  * @param {string} opts.layoutName
  * @param {boolean} [opts.isDesktop=false] — web only; native always false
  */
-export function useConductorLeftbar({
-    leftbarContent = [],
+export function useLeftColumn({
+    leftColumnContent = [],
     layoutName,
     isDesktop = false,
 }) {
     const { menuBlocks, filterBlocks } = useMemo(
-        () => partitionConductorLeftbar(leftbarContent, layoutName),
-        [leftbarContent, layoutName]
+        () => partitionLeftColumn(leftColumnContent, layoutName),
+        [leftColumnContent, layoutName]
     )
 
     const excludedFromMainIds = useMemo(
         () =>
-            getLeftbarExcludedFromMainIds({
+            getLeftColumnExcludedFromMainIds({
                 layoutName,
-                leftbarContent,
+                leftColumnContent,
                 menuBlocks,
                 filterBlocks,
                 isDesktop,
             }),
-        [layoutName, leftbarContent, menuBlocks, filterBlocks, isDesktop]
+        [layoutName, leftColumnContent, menuBlocks, filterBlocks, isDesktop]
     )
 
     return {
-        leftbarMenuBlocks: menuBlocks,
-        leftbarFilterBlocks: filterBlocks,
-        leftbarExcludedFromMainIds: excludedFromMainIds,
+        leftColumnMenuBlocks: menuBlocks,
+        leftColumnFilterBlocks: filterBlocks,
+        leftColumnExcludedFromMainIds: excludedFromMainIds,
     }
 }
 
