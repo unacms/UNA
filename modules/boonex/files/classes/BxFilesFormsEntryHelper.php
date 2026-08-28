@@ -22,17 +22,14 @@ class BxFilesFormsEntryHelper extends BxBaseModFilesFormsEntryHelper
         parent::__construct($oModule);
     }
 
-    protected function redirectAfterDelete($aContentInfo)
+    protected function redirectAfterDelete($aContentInfo, $sUrl = '')
     {
         $CNF = &$this->_oModule->_oConfig->CNF;
-        $oProfile = BxDolProfile::getInstance($aContentInfo[$CNF['FIELD_AUTHOR']]);
-        if ($oProfile)
-            $this->_redirectAndExit('page.php?i=' . $CNF['URI_AUTHOR_ENTRIES'] . '&profile_id=' . $oProfile->id());
-        else
-            $this->_redirectAndExit($CNF['URL_HOME'], true, array(
-                'account_id' => getLoggedId(),
-                'profile_id' => bx_get_logged_profile_id(),
-            ));
+
+        if (($oProfile = BxDolProfile::getInstance($aContentInfo[$CNF['FIELD_AUTHOR']])) !== false)
+            $sUrl = 'page.php?i=' . $CNF['URI_AUTHOR_ENTRIES'] . '&profile_id=' . $oProfile->id();
+
+        return parent::redirectAfterDelete($aContentInfo, $sUrl);
     }
 }
 

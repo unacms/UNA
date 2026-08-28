@@ -326,6 +326,112 @@ class BxBaseGrid extends BxDolGrid
         return $this->_oTemplate->parseHtmlByName('grid.html', $aVars);
     }
 
+    protected function _getJsCodeVars()
+    {
+        $sFilter = $this->_getFilterValue();
+        $sOrderField = $this->_getOrderValue();
+        $sOrderDir = 0 === strcasecmp('desc', bx_get($this->_aOptions['order_get_dir'])) ? 'DESC' : 'ASC';
+
+        $iStart = 0;
+        if($this->_aOptions['paginate_get_start'] && ($iStartGet = (int)bx_get($this->_aOptions['paginate_get_start'])) >= 0)
+            $iStart = $iStartGet;
+
+        $iPerPage = 10;
+        if($this->_aOptions['paginate_get_per_page'] && ($iPerPageGet = (int)bx_get($this->_aOptions['paginate_get_per_page'])) > 0)
+            $iPerPage = $iPerPageGet;
+        else if($this->_aOptions['paginate_per_page'])
+            $iPerPage = (int)$this->_aOptions['paginate_per_page'];
+
+        $sPopupOptions = '{}';
+        if (!empty($this->_aPopupOptions) && is_array($this->_aPopupOptions))
+            $sPopupOptions = json_encode($this->_aPopupOptions);
+
+        $aQueryAppend = array_merge(is_array($this->_aQueryAppend) ? $this->_aQueryAppend : array(), is_array($this->_aMarkers) ? $this->_aMarkers : array());
+        if(!empty($this->_aQueryAppendExclude) && is_array($this->_aQueryAppendExclude))
+            $aQueryAppend = array_diff_key($aQueryAppend, array_flip($this->_aQueryAppendExclude));
+
+        $sQueryAppend = '{}';
+        if (!empty($aQueryAppend) && is_array($aQueryAppend))
+            $sQueryAppend = json_encode($aQueryAppend);
+
+        $sConfirmMessages = '{}';
+        if (!empty($this->_aConfirmMessages) && is_array($this->_aConfirmMessages))
+            $sConfirmMessages = json_encode($this->_aConfirmMessages);
+
+        return [
+            'object' => $this->_sObject,
+            'csrf_token' => BxDolForm::getCsrfToken(),
+            'sortable' => empty($this->_aOptions['field_order']) ? 0 : 1,
+            'sorting' => empty($this->_getOrderFields()) ? 0 : 1,
+            'paginate_get_start' => $this->_aOptions['paginate_get_start'],
+            'paginate_get_per_page' => $this->_aOptions['paginate_get_per_page'],
+            'start' => $iStart,
+            'per_page' => $iPerPage,
+            'filter' => bx_js_string($sFilter, BX_ESCAPE_STR_APOS),
+            'filter_get' => bx_js_string($this->_aOptions['filter_get']),
+            'order_field' => bx_js_string($sOrderField, BX_ESCAPE_STR_APOS),
+            'order_dir' => bx_js_string($sOrderDir, BX_ESCAPE_STR_APOS),
+            'order_get_field' => bx_js_string($this->_aOptions['order_get_field']),
+            'order_get_dir' => bx_js_string($this->_aOptions['order_get_dir']),
+            'popup_options' => $sPopupOptions,
+            'query_append' => $sQueryAppend,
+            'confirm_messages' => $sConfirmMessages,
+            'columns' => count($this->_aOptions['fields']),
+        ];
+    }
+
+    /**
+     * Init grid JS class without rendering grid HTML.
+     * @return string
+     */
+    public function getCodeJs()
+    {
+        $this->_replaceMarkers();
+        $this->_addJsCss();
+
+        return $this->_oTemplate->parseHtmlByName('grid_js.html', $this->_getJsCodeVars());
+    }
+
+    /**
+     * Get raw actions list (name, title, icon, confirm) without HTML.
+     * Custom `_getAction[Name]` methods that return empty hide the action, same as in the grid.
+     * @param string $sType action type: single, bulk, independent
+     * @param mixed $sActionData row id for single actions
+     * @param array $aRow row data, used by custom action methods
+     * @return array
+     */
+    public function getActionsRaw($sType, $sActionData = false, $aRow = [])
+    {
+        $sActionsType = 'actions_' . $sType;
+        if (empty($this->_aOptions[$sActionsType]) || !is_array($this->_aOptions[$sActionsType]))
+            return [];
+
+        $aResult = [];
+        foreach ($this->_aOptions[$sActionsType] as $sKey => $a) {
+            if(!$a['active'] || (!$a['title'] && !$a['icon']))
+                continue;
+
+            $sFunc = '_getAction' . $this->_genMethodName($sKey);
+            if (method_exists($this, $sFunc)) {
+                if (!isset($a['attr']))
+                    $a['attr'] = [];
+                $mixed = $this->$sFunc($sType, $sKey, $a, false, false, $aRow);
+                if ($mixed === '' || $mixed === false)
+                    continue;
+            }
+
+            $aResult[] = [
+                'name' => $sKey,
+                'title' => $a['title'],
+                'icon' => !empty($a['icon']) ? $a['icon'] : '',
+                'confirm' => !empty($a['confirm']) ? 1 : 0,
+                'reset_paginate' => false === strpos($sKey, 'delete') ? 0 : 1,
+            ];
+        }
+
+        return $aResult;
+    }
+
     /**
      * Get grid code API.
      * @return array

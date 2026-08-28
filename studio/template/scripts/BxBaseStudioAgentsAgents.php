@@ -263,6 +263,26 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
         return parent::_getCellDefault($mixedValue, $sKey, $aField, $aRow);
     }
 
+    protected function _getCellIcon($mixedValue, $sKey, $aField, $aRow)
+    {
+        $sIcon = '';
+        if($mixedValue) {
+            list($sIcon, $sIconUrl, $sIconA, $sIconHtml) = $this->_oTemplate->getTemplateFunctions()->getIcon($mixedValue, ['class' => 'sys-colored']);
+
+            if($sIcon)
+                $sIcon = $this->_oTemplate->parseIcon(BxDolIconset::getObjectInstance()->getIcon($sIcon));
+            else if($sIconHtml)
+                $sIcon = $sIconHtml;
+            else if($sIconUrl)
+                $sIcon = '<img src="' . bx_html_attribute($sIconUrl) . '" />';
+        }
+
+        if (!$sIcon)
+            $sIcon = '<i class="sys-icon robot"></i>';
+
+        return parent::_getCellDefault($sIcon, $sKey, $aField, $aRow);
+    }
+
     protected function _getCellModelId($mixedValue, $sKey, $aField, $aRow)
     {
         $aModel = $this->_oDb->getModelsBy(['sample' => 'id', 'id' => $mixedValue]);
@@ -381,6 +401,7 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
                     'caption' => _t('_sys_agents_field_icon'),
                     'info' => _t('_sys_agents_field_icon_info'),
                     'value' => $aAgent['icon'] ?? '',
+                    'code' => 1,
                     'db' => [
                         'pass' => 'Xss',
                     ],

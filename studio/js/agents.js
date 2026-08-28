@@ -15,18 +15,41 @@ function BxDolStudioPageAgents(oOptions)
 
     this.sActionUrlCmts = oOptions.sActionUrlCmts == undefined ? this.sActionUrl : oOptions.sActionUrlCmts;
     this.sActionUrlGrid = oOptions.sActionUrlGrid == undefined ? this.sActionUrl : oOptions.sActionUrlGrid;
+    this.sObjNameGrid = oOptions.sObjNameGrid == undefined ? '' : oOptions.sObjNameGrid;
 
-    /*
-     * Note. Are needed for Grid and don't used for now.
-     * 
-    this.sObjNameGrid = oOptions.sObjNameGrid;
-    this.sParamsDivider = oOptions.sParamsDivider == undefined ? '#-#' : oOptions.sParamsDivider;
-    this.sTextSearchInput = oOptions.sTextSearchInput == undefined ? '' : oOptions.sTextSearchInput;
-    */
+    var $this = this;
+    $(document).ready(function () {
+        $this.initGrid();
+    });
 }
 
 BxDolStudioPageAgents.prototype = Object.create(BxDolStudioPage.prototype);
 BxDolStudioPageAgents.prototype.constructor = BxDolStudioPageAgents;
+
+BxDolStudioPageAgents.prototype.initGrid = function() {
+    if (typeof(glGrids) == 'undefined' || !this.sObjNameGrid || !glGrids[this.sObjNameGrid])
+        return;
+
+    glGrids[this.sObjNameGrid].setOnReload(function() {
+        document.location = document.location;
+    });
+};
+
+BxDolStudioPageAgents.prototype.agentActions = function(oSource) {
+    var iId = $(oSource).parents('.bx-agt-agent:first').attr('data-id');
+    bx_menu_popup_inline('#bx-agt-agent-actions-' + iId, oSource);
+};
+
+BxDolStudioPageAgents.prototype.agentAction = function(sAction, iId, iConfirm, iResetPaginate) {
+    $('.bx-popup-applied:visible').dolPopupHide();
+    if (typeof(glGrids) == 'undefined' || !this.sObjNameGrid || !glGrids[this.sObjNameGrid])
+        return;
+
+    glGrids[this.sObjNameGrid].actionSingle(sAction, iId, {
+        confirm: iConfirm,
+        reset_paginate: iResetPaginate
+    });
+};
 
 BxDolStudioPageAgents.prototype.agentActivate = function(oSource) {
     var oDate = new Date();

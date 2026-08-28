@@ -1459,7 +1459,9 @@
         @apply text-sm font-medium leading-10;
     }
     .bx-std .bx-btn:not(.bx-btn-primary),
-    .bx-std .bx-btn:not(.bx-btn-primary) .sys-icon:not(.sys-colored) {
+    .bx-std .bx-btn:not(.bx-btn-primary) .sys-icon:not(.sys-colored),
+    .bx-std .bx-act,
+    .bx-std .bx-act .sys-icon:not(.sys-colored) {
         @apply text-gray-800 dark:text-gray-200 hover:text-gray-900 dark:hover:text-gray-50 active:text-gray-900 dark:active:text-gray-50;
     }
 

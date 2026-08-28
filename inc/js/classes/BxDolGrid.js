@@ -26,6 +26,7 @@ function BxDolGrid (sObject, oOptions) {
     }, oOptions.popup_options);
     this._oQueryAppend = oOptions.query_append;
     this._oConfirmMessages = oOptions.confirm_messages;
+    this.onReload = null;
 
     this.init(oOptions);
 }
@@ -164,6 +165,20 @@ BxDolGrid.prototype._blinkCallback = function (sId) {
     e.removeClass('bx-def-color-bg-active');
 };
 
+BxDolGrid.prototype.actionSingle = function (sAction, sId, oExtra) {
+    oExtra = oExtra || {};
+    var isConfirm = typeof(oExtra.confirm) != 'undefined' ? oExtra.confirm : 0;
+    var iActionResetPaginate = typeof(oExtra.reset_paginate) != 'undefined' ? parseInt(oExtra.reset_paginate) : (String(sAction).indexOf('delete') === -1 ? 0 : 1);
+    var oData = iActionResetPaginate ? {} : this._getActionDataForReload();
+    if (typeof(oExtra.data) == 'object')
+        oData = $.extend({}, oData, oExtra.data);
+    this.actionWithId(sId, sAction, oData, typeof(oExtra.post_data) != 'undefined' ? oExtra.post_data : '', false, isConfirm);
+};
+
+BxDolGrid.prototype.setOnReload = function (fCallback) {
+    this.onReload = typeof(fCallback) == 'function' ? fCallback : null;
+};
+
 BxDolGrid.prototype.actionWithId = function (sId, sAction, oData, sData, isDisableLoading, isConfirm) {
     var sDataAdd = 'ids[]=' + sId;
     if (typeof(sData) == "undefined" || !sData.length) {
@@ -253,12 +268,16 @@ BxDolGrid.prototype.action = function (sAction, oData, sData, isDisableLoading, 
 BxDolGrid.prototype.processJson = function (oData, sAction, isDisableLoading) {
     var $this = this;
     var fContinue = function() {
-    	if (oData && undefined != oData.grid) {        
-            $('#' + $this._sIdContainer).html($(oData.grid).find('#' + $this._sIdContainer).html());
-            var sFooter = $(oData.grid).find('.bx-grid-footer').size() ? $(oData.grid).find('.bx-grid-footer').html() : '';
-            $('#' + $this._sIdWrapper).find('.bx-grid-footer').html(sFooter);
-            $('#' + $this._sIdWrapper).find('.bx-grid-header-controls-counter-value').html(oData.total_count_f);
-            $this._onDataReloaded(true);
+    	if (oData && undefined != oData.grid) {
+            if (typeof($this.onReload) == 'function') {
+                $this.onReload(oData);
+            } else {
+                $('#' + $this._sIdContainer).html($(oData.grid).find('#' + $this._sIdContainer).html());
+                var sFooter = $(oData.grid).find('.bx-grid-footer').size() ? $(oData.grid).find('.bx-grid-footer').html() : '';
+                $('#' + $this._sIdWrapper).find('.bx-grid-footer').html(sFooter);
+                $('#' + $this._sIdWrapper).find('.bx-grid-header-controls-counter-value').html(oData.total_count_f);
+                $this._onDataReloaded(true);
+            }
         }
     	if (oData && undefined != oData.blink) {
             if ('object' == typeof(oData.blink)) {
@@ -326,6 +345,8 @@ BxDolGrid.prototype.processJson = function (oData, sAction, isDisableLoading) {
 };
 
 BxDolGrid.prototype.loading = function (bShow) {
+    if (!$('#' + this._sIdContainer).length)
+        return;
     bx_loading(this._sIdContainer, bShow);
 };
 
@@ -385,9 +406,11 @@ BxDolGrid.prototype._bindActionsSingle = function (eElement) {
         var sActionConfirm = $(this).attr('bx_grid_action_confirm');
         var sActionData = $(this).attr('bx_grid_action_data');
         var iActionResetPaginate = parseInt($(this).attr('bx_grid_action_reset_paginate'));
-        var oData = iActionResetPaginate ? {} : $this._getActionDataForReload();
-        oData = $this._checkAppend(this, oData);
-        $this.actionWithId (sActionData, sAction, oData, '', false, sActionConfirm);
+        $this.actionSingle(sAction, sActionData, {
+            confirm: sActionConfirm,
+            reset_paginate: iActionResetPaginate,
+            data: $this._checkAppend(this, {})
+        });
     });
 };
 

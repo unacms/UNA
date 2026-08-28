@@ -95,7 +95,7 @@ class BxDolAiAgent extends RAG
     protected function chatHistory(): NeuronAI\Chat\History\ChatHistoryInterface
     {
         if ($this->aAgent['chat_history_context']) {
-            return new NeuronAI\Chat\History\SQLChatHistory(
+            return new BxDolAiChatHistory(
                 thread_id: $this->getСhatHistoryThreadId(),
                 pdo: BxDolDb::getInstance()->getLink(),
                 table: 'sys_agents_chat_history',
@@ -107,6 +107,18 @@ class BxDolAiAgent extends RAG
                 contextWindow: 50000
             );
         }
+    }
+
+    /**
+     * Turn tool exceptions into a tool result so chat history stays a valid sequence.
+     *
+     * @return callable|null fn(\Throwable $e, \NeuronAI\Tools\ToolInterface $tool): string
+     */
+    protected function resolveToolErrorHandler(): ?callable
+    {
+        return function (\Throwable $e, NeuronAI\Tools\ToolInterface $tool): string {
+            return 'Tool "' . $tool->getName() . '" failed: ' . $e->getMessage();
+        };
     }
 
     protected function getСhatHistoryThreadId(): string

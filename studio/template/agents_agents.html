@@ -6,23 +6,36 @@
                     <div class="bx-agt-aic grow-0">__icon__</div>
                     <div class="bx-agt-aic-aux flex items-center justify-center gap-1 shrink-0">
                         <bx_if:show_trigger>
-                            <div class="bx-agt-aic-trigger w-7 h-7 flex items-center justify-center bg-gray-200/80 dark:bg-gray-800/80 rounded-full overflow-hidden">
-                                <img class="w-4 h-4" src="__trigger_icon_src__" title="__trigger_title__" />
-                            </div>
+                            <div class="bx-act bx-agt-aica bx-agt-aic-trigger w-7 h-7 flex items-center justify-center bg-gray-200/80 dark:bg-gray-800/80 rounded-full overflow-hidden" title="__trigger_title__">__trigger_icon__</div>
                         </bx_if:show_trigger>
                         <bx_if:show_model>
-                            <div class="bx-agt-aic-model w-7 h-7 flex items-center justify-center bg-gray-200/80 dark:bg-gray-800/80 rounded-full overflow-hidden">
-                                <img class="w-4 h-4" src="__model_icon_src__" title="__model_title__" />
-                            </div>
+                            <div class="bx-act bx-agt-aica bx-agt-aic-model w-7 h-7 flex items-center justify-center bg-gray-200/80 dark:bg-gray-800/80 rounded-full overflow-hidden" title="__model_title__">__model_icon__</div>
                         </bx_if:show_model>
                         <bx_if:show_profile>
-                            <div class="bx-agt-aic-profile w-7 h-7 flex items-center justify-center rounded-full overflow-hidden">__unit__</div>
+                            <div class="bx-agt-aica bx-agt-aic-profile w-7 h-7 flex items-center justify-center rounded-full overflow-hidden">__unit__</div>
                         </bx_if:show_profile>
+                        <bx_if:show_actions>
+                            <a class="bx-act bx-agt-aica bx-agt-aic-more w-7 h-7 flex items-center justify-center bg-gray-200/80 dark:bg-gray-800/80 rounded-full" href="javascript:void(0)" onclick="__js_object__.agentActions(this)">__actions_icon__</a>
+                            <div id="bx-agt-agent-actions-__id__" class="bx-agt-agent-actions bx-popup bx-popup-box bx-popup-color-bg bx-popup-border bx-def-round-corners" style="display:none">
+                                <ul class="bx-menu-ver bx-clearfix">
+                                    <bx_repeat:actions>
+                                        <li class="bx-menu-item bx-stl-mil-wo-gaps group">
+                                            <a class="bx-stl-mil-gaps flex flex-2 items-center truncate" href="javascript:void(0)" onclick="__js_object__.agentAction('__name__', __id__, __confirm__, __reset_paginate__)">
+                                                <span class="bx-menu-item-icon bx-stl-mii group-hover:text-gray-700 dark:group-hover:text-gray-300">__icon__</span>
+                                                <span class="bx-menu-item-title bx-stl-mit">__title__</span>
+                                            </a>
+                                        </li>
+                                    </bx_repeat:actions>
+                                </ul>
+                            </div>
+                        </bx_if:show_actions>
                     </div>
                 </div>
                 <div class="bx-agt-a-ttl flex justify-between items-center gap-2 pt-1 min-w-0">
                     <div class="bx-agt-attl flex-1 min-w-0 font-semibold text-base truncate">__title__</div>
-                    <div class="bx-agt-attl-act">__switcher__</div>
+                    <div class="bx-agt-attl-act flex items-center shrink-0 gap-1">
+                        __switcher__
+                    </div>
                 </div>
                 <div class="bx-agt-a-dsc text-sm">__description__</div>
             </div>

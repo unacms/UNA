@@ -8,7 +8,9 @@
     "esModuleInterop": true,
     "jsx": "react-jsx",
     "noEmit": true,
-    "lib": ["ES2020", "DOM", "DOM.Iterable"]
+    "lib": ["ES2020", "DOM"],
+    "rootDir": "./src",
+    "types": []
   },
   "include": ["src"]
 }
