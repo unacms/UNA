@@ -12,6 +12,7 @@ import PageCustomLogin from 'app/components/page-layout/login';
 import PageUniversal from 'app/components/page-layout/universal';
 import PagePlayground from 'app/components/page-layout/_playground/playground';
 import PagePlaygroundForm from 'app/components/page-layout/_playground/playground-form-layout';
+import PagePlaygroundAiChat from 'app/components/page-layout/_playground/playground-ai-chat-layout';
 import PageWiki from 'app/components/page-layout/wiki';
 
 export const componentsMapDefault = {
@@ -19,6 +20,7 @@ export const componentsMapDefault = {
     'post': PageCustomPost,
     'playground': PagePlayground,
     'playground-form': PagePlaygroundForm,
+    'playground-ai-chat': PagePlaygroundAiChat,
     'discussion': PageCustomPost,
     'post-without-comments': PageCustomPostWithoutComments,
     'navigator': PageCustomNavigator,

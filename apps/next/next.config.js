@@ -233,6 +233,9 @@ const nextConfig = {
         '@openspacelabs/react-native-zoomable-view',
         'lucide-react-native',
         'web-haptics',
+        '@tanstack/ai-react',
+        '@tanstack/ai-client',
+        '@tanstack/ai',
     ],
     webpack: (config, { isServer }) => {
         // Add aliases
