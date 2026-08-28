@@ -1797,7 +1797,11 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
         // if (!bx_get_logged_profile_id())
         //    return echoJson(['code' => 403, 'msg' => _t('_sys_agents_unauthorized')]);
 
-        if ('POST' !== ($_SERVER['REQUEST_METHOD'] ?? ''))
+        $sMethod = $_SERVER['REQUEST_METHOD'] ?? '';
+        if ('GET' === $sMethod)
+            return $this->_aiChatHydrate($iAgentId);
+
+        if ('POST' !== $sMethod)
             return echoJson(['code' => 405, 'msg' => _t('_error occured')]);
 
         $iAgentId = (int)$iAgentId;
@@ -1824,6 +1828,36 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
         $oAi->streamAgentChat($iAgentId, $sPrompt, [
             'sender_profile_id' => bx_get_logged_profile_id(),
         ], $aData['threadId'] ?? null);
+    }
+
+    /**
+     * GET hydrate for TanStack `useChat({ persistence: true })`.
+     * Same route as the SSE POST; join/resume (`?offset=`) is not supported.
+     */
+    protected function _aiChatHydrate($iAgentId)
+    {
+        if (false !== bx_get('offset'))
+            return echoJson(['code' => 405, 'msg' => _t('_error occured')]);
+
+        $iAgentId = (int)$iAgentId;
+        if (!$iAgentId)
+            return echoJson(['code' => 400, 'msg' => _t('_sys_agents_agent_not_found')]);
+
+        $aAgent = BxDolAiQuery::getAgentObject($iAgentId);
+        if (!$aAgent || !$aAgent['active'])
+            return echoJson(['code' => 404, 'msg' => _t('_sys_agents_agent_not_found')]);
+
+        $oAi = BxDolAI::getInstance();
+        if (!$oAi)
+            return echoJson(['code' => 503, 'msg' => _t('_sys_agents_exception')]);
+
+        return echoJson([
+            'messages' => $oAi->getChatHistoryUiMessages($iAgentId, [
+                'sender_profile_id' => bx_get_logged_profile_id(),
+            ]),
+            'activeRun' => null,
+            'interrupts' => null,
+        ]);
     }
 
     protected function _getOptionsAiAssistants()

@@ -452,6 +452,86 @@ class BxDolAI extends BxDolFactory implements iBxDolSingleton
         return '';
     }
 
+    /**
+     * Transcript for TanStack `useChat` hydrate / `initialMessages`.
+     * Loads the same NeuronAI chat history the agent uses when streaming.
+     */
+    public function getChatHistoryUiMessages($iAgentId, $aParams = [])
+    {
+        $aParams['chat_history_subindex'] = $aParams['sender_profile_id'] ?? 0;
+
+        $aAgent = BxDolAiQuery::getAgentObject((int)$iAgentId);
+        if (!$aAgent || empty($aAgent['chat_history_context']))
+            return [];
+
+        $sThreadId = $aAgent['trigger'] . ':' . $aAgent['id'] . ':' . $aParams['chat_history_subindex'];
+        $sJson = $this->_oDb->getOne("SELECT `messages` FROM `sys_agents_chat_history` WHERE `thread_id` = :t", [
+            't' => $sThreadId,
+        ]);
+        $aStored = json_decode((string)$sJson, true);
+        if (!is_array($aStored) || $aStored === [])
+            return [];
+
+        try {
+            $o = self::getAgentInstance((int)$iAgentId, $aParams);
+        } catch (Exception $oException) {
+            bx_log('sys_agents', "Hydrate exception for agent {$iAgentId}: " . $oException->getMessage(), BX_LOG_ERR);
+            return [];
+        }
+
+        return $this->neuronMessagesToUiMessages($o->getChatHistory()->getMessages());
+    }
+
+    /**
+     * @param NeuronAI\Chat\Messages\Message[] $aMessages
+     * @return array<int, array<string, mixed>>
+     */
+    protected function neuronMessagesToUiMessages($aMessages)
+    {
+        $aResult = [];
+        $i = 0;
+
+        foreach ($aMessages as $oMessage) {
+            if (
+                $oMessage instanceof NeuronAI\Chat\Messages\ToolCallMessage
+                || $oMessage instanceof NeuronAI\Chat\Messages\ToolResultMessage
+            ) {
+                continue;
+            }
+
+            $sRole = $oMessage->getRole();
+            if ($sRole === 'model')
+                $sRole = 'assistant';
+            if ($sRole !== 'user' && $sRole !== 'assistant')
+                continue;
+
+            $aParts = [];
+            foreach ($oMessage->getContentBlocks() as $oBlock) {
+                if ($oBlock instanceof NeuronAI\Chat\Messages\ContentBlocks\ReasoningContent) {
+                    if ($oBlock->content !== '')
+                        $aParts[] = ['type' => 'thinking', 'content' => $oBlock->content];
+                    continue;
+                }
+
+                if ($oBlock instanceof NeuronAI\Chat\Messages\ContentBlocks\TextContent && $oBlock->content !== '')
+                    $aParts[] = ['type' => 'text', 'content' => $oBlock->content];
+            }
+
+            if (!$aParts)
+                continue;
+
+            $sId = $oMessage->getMetadata('__id');
+            $aResult[] = [
+                'id' => is_string($sId) && $sId !== '' ? $sId : ('msg_' . $i),
+                'role' => $sRole,
+                'parts' => $aParts,
+            ];
+            $i++;
+        }
+
+        return $aResult;
+    }
+
     public function streamAgentChat($iAgentId, $sPrompt, $aParams = [], $sThreadId = null)
     {
         $aParams['chat_history_subindex'] = $aParams['sender_profile_id'] ?? 0;

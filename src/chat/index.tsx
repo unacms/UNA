@@ -11,6 +11,8 @@ export interface ChatOptions {
     placeholder?: string;
     credentials?: RequestCredentials;
     formatting?: boolean;
+    initialMessages?: UIMessage[];
+    threadId?: string;
 }
 
 declare const sUrlRoot: string | undefined;
@@ -91,23 +93,36 @@ function getChatEndpoint(agentId: number | string, endpoint?: string): string
     return `${root}sys-ai-chat/${agentId}`;
 }
 
+function getChatThreadId(agentId: number | string, threadId?: string): string
+{
+    return threadId || `agent:${agentId}`;
+}
+
 function ChatView({
     agentId,
     endpoint,
     placeholder = 'Type a message…',
     credentials = 'same-origin',
     formatting = false,
+    initialMessages,
+    threadId,
 }: ChatOptions)
 {
     const [input, setInput] = useState('');
     const messagesRef = useRef<HTMLDivElement>(null);
+    const chatThreadId = getChatThreadId(agentId, threadId);
 
     const connection = useMemo(
         () => fetchServerSentEvents(getChatEndpoint(agentId, endpoint), { credentials }),
         [agentId, endpoint, credentials],
     );
 
-    const { messages, sendMessage, isLoading, error } = useChat({ connection });
+    const { messages, sendMessage, isLoading, error } = useChat({
+        connection,
+        persistence: true,
+        threadId: chatThreadId,
+        initialMessages: initialMessages ?? [],
+    });
 
     useEffect(() => {
         const list = messagesRef.current;
