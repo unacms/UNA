@@ -2,8 +2,8 @@
 
 import { View, Pressable } from 'app/design/view'
 import { Text } from 'app/design/typography'
-import { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react'
-import Svg, { ClipPath, Defs, Path, Rect } from 'react-native-svg'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import Svg, { Path } from 'react-native-svg'
 import { useCSSVariable } from 'uniwind'
 import DropdownPopup from 'app/ui/atoms/dropdown-popup'
 import { useScrollValue } from 'app/context/jotai/layout'
@@ -37,6 +37,10 @@ function arraysEqual(a, b) {
         if (a[i] !== b[i]) return false
     }
     return true
+}
+
+function isFiniteNumber(value) {
+    return typeof value === 'number' && Number.isFinite(value)
 }
 
 function findHeadingElement(id, contentRoot) {
@@ -263,6 +267,7 @@ function buildTrackGeometry(items, layouts) {
         const x = getLineOffset(item.level) + 0.5
         const top = layout.top
         const bottom = layout.bottom
+        if (!isFiniteNumber(top) || !isFiniteNumber(bottom) || bottom <= top) continue
 
         width = Math.max(width, x + 8)
         height = Math.max(height, bottom)
@@ -289,7 +294,6 @@ function buildTrackGeometry(items, layouts) {
 }
 
 function WikiTocTrack({ geometry, activeIds }) {
-    const clipId = `wiki-toc-clip-${useId().replace(/:/g, '')}`
     const [primaryToken, borderToken] = useCSSVariable(['--color-primary', '--color-border'])
     const primary = isWeb ? 'var(--color-primary)' : (primaryToken || '#f59e0b')
     const border = isWeb ? 'var(--color-border)' : (borderToken || 'rgba(128,128,128,0.35)')
@@ -306,11 +310,16 @@ function WikiTocTrack({ geometry, activeIds }) {
     })()
 
     if (!geometry) return null
+    if (!isFiniteNumber(geometry.width) || !isFiniteNumber(geometry.height) || geometry.width <= 0 || geometry.height <= 0) {
+        return null
+    }
+    if (!geometry.d || /nan/i.test(geometry.d)) return null
 
     const hasActiveRange = startIdx >= 0 && endIdx >= 0
     const trackTop = hasActiveRange ? geometry.positions[startIdx][0] : 0
     const trackBottom = hasActiveRange ? geometry.positions[endIdx][1] : 0
     const clipHeight = Math.max(0, trackBottom - trackTop)
+    const canClipActive = hasActiveRange && isFiniteNumber(trackTop) && isFiniteNumber(clipHeight) && clipHeight > 0
 
     return (
         <View
@@ -322,20 +331,7 @@ function WikiTocTrack({ geometry, activeIds }) {
                 width={geometry.width}
                 height={geometry.height}
                 viewBox={`0 0 ${geometry.width} ${geometry.height}`}
-                style={{ display: 'block' }}
             >
-                {hasActiveRange ? (
-                    <Defs>
-                        <ClipPath id={clipId}>
-                            <Rect
-                                x={0}
-                                y={trackTop}
-                                width={geometry.width}
-                                height={clipHeight}
-                            />
-                        </ClipPath>
-                    </Defs>
-                ) : null}
                 <Path
                     d={geometry.d}
                     stroke={border}
@@ -344,18 +340,29 @@ function WikiTocTrack({ geometry, activeIds }) {
                     strokeLinecap="round"
                     strokeLinejoin="round"
                 />
-                {hasActiveRange ? (
-                    <Path
-                        d={geometry.d}
-                        stroke={primary}
-                        strokeWidth={1}
-                        fill="none"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        clipPath={`url(#${clipId})`}
-                    />
-                ) : null}
             </Svg>
+            {canClipActive ? (
+                <View
+                    className="absolute left-0 overflow-hidden"
+                    style={{ top: trackTop, width: geometry.width, height: clipHeight, overflow: 'hidden' }}
+                >
+                    <Svg
+                        width={geometry.width}
+                        height={geometry.height}
+                        viewBox={`0 0 ${geometry.width} ${geometry.height}`}
+                        style={{ marginTop: -trackTop }}
+                    >
+                        <Path
+                            d={geometry.d}
+                            stroke={primary}
+                            strokeWidth={1}
+                            fill="none"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                        />
+                    </Svg>
+                </View>
+            ) : null}
         </View>
     )
 }
@@ -432,29 +439,43 @@ export function WikiTocList({ items, activeIds = [], focusedId = null, onPress, 
         const container = containerRef.current
         if (!container) return
 
-        const pending = itemIds.map((id) => new Promise((resolve) => {
-            const node = itemNodeRefs.current.get(id)
-            if (!node?.measureLayout) {
-                resolve(null)
-                return
-            }
-            node.measureLayout(
-                container,
-                (_x, y, _w, h) => {
-                    const pad = 6
-                    resolve({ id, top: y + pad, bottom: y + h - pad })
-                },
-                () => resolve(null),
-            )
-        }))
+        const measureItems = () => {
+            const pending = itemIds.map((id) => new Promise((resolve) => {
+                const node = itemNodeRefs.current.get(id)
+                if (!node?.measureLayout) {
+                    resolve(null)
+                    return
+                }
+                node.measureLayout(
+                    container,
+                    (_x, y, _w, h) => {
+                        const pad = 6
+                        resolve({ id, top: y + pad, bottom: y + h - pad })
+                    },
+                    () => resolve(null),
+                )
+            }))
 
-        Promise.all(pending).then((rows) => {
-            const next = {}
-            for (const row of rows) {
-                if (row) next[row.id] = { top: row.top, bottom: row.bottom }
-            }
-            setLayouts(next)
-        })
+            Promise.all(pending).then((rows) => {
+                const next = {}
+                for (const row of rows) {
+                    if (row) next[row.id] = { top: row.top, bottom: row.bottom }
+                }
+                setLayouts(next)
+            })
+        }
+
+        // Display-none Uniwind `hidden` views still exist in the tree. Measuring
+        // them on Android can abort the process with no JS exception.
+        if (typeof container.measure === 'function') {
+            container.measure((_x, _y, width, height) => {
+                if (!width || !height) return
+                measureItems()
+            })
+            return
+        }
+
+        measureItems()
     }, [itemIds, showTrack])
 
     useEffect(() => {
@@ -519,7 +540,7 @@ export function WikiTocList({ items, activeIds = [], focusedId = null, onPress, 
                                 ? 'bg-accent/60'
                                 : 'web:hover:bg-muted/50'
                         }`}
-                        style={{ paddingInlineStart: padStart }}
+                        style={isWeb ? { paddingInlineStart: padStart } : { paddingStart: padStart }}
                         accessibilityRole="link"
                         accessibilityState={{ selected: isFocused || isInView }}
                     >
@@ -582,7 +603,7 @@ export function WikiTocDropdown({ items, activeIds, focusedId = null, onPress, l
     return (
         <DropdownPopup
             minPopupWidth={256}
-            contentClasses="rounded-xl border border-popover mt-2 bg-popover/60 backdrop-blur shadow-md"
+            contentClasses={isWeb ? 'rounded-xl border border-popover mt-2 bg-popover/60 backdrop-blur shadow-md' : undefined}
             buttonProps={{
                 label,
                 style: 'borderless',
@@ -602,4 +623,3 @@ export function WikiTocDropdown({ items, activeIds, focusedId = null, onPress, l
         </DropdownPopup>
     )
 }
-

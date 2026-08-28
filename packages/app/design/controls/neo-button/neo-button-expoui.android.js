@@ -83,6 +83,9 @@ export function NeoButtonExpoUI(props) {
         || flatHost.width != null || flatHost.flexGrow != null
         || flatHost.flex != null || flatHost.flexBasis != null;
     const rnOwnsHeight = true;
+    // JS NeoButton stretches when classNames.root has w-full/flex. Host with
+    // width="auto" used alignSelf:flex-start and collapsed to 0 on Android.
+    const fillWrapper = fill || (rnOwnsWidth && iconHostWidth == null);
 
     const variants = resolveScoped(nativeConfig?.androidVariants, resolved.env) || {};
     const variant = variants[resolved.style] ?? 'tonal';
@@ -167,7 +170,7 @@ export function NeoButtonExpoUI(props) {
                     opacity: (disabled || loading) ? 0.6 : 1,
                 },
                 iconHostWidth != null ? { width: iconHostWidth } : null,
-                fill ? { width: '100%' } : null,
+                fillWrapper ? { width: '100%' } : null,
                 frozen.style,
             ]}
         >
@@ -190,7 +193,7 @@ export function NeoButtonExpoUI(props) {
 
     return wrapNativeButtonHost(host, {
         hitSlop: resolved.hitSlop,
-        fill,
+        fill: fillWrapper,
         height: resolved.height,
         width: iconHostWidth,
         onPress: handlePress,

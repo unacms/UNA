@@ -203,6 +203,9 @@ export function NeoButtonExpoUI(props) {
         : (pinToSquare
             ? targetHeight
             : Math.max(targetHeight, (resolved.paddingX ?? 0) * 2 + (resolved.iconSize ?? 0)));
+    // JS NeoButton stretches when classNames.root has w-full/flex. Host with
+    // width="auto" used alignSelf:flex-start and collapsed to 0.
+    const fillWrapper = fill || (rnOwnsWidth && iconHostWidth == null);
     const labelFrameHeight = Math.max(resolved.iconSize, targetHeight - vPad * 2);
 
     // FrameModifier drops min/max when `height` is set — use minHeight/maxHeight
@@ -399,7 +402,7 @@ export function NeoButtonExpoUI(props) {
                     opacity: (disabled || loading) ? 0.6 : 1,
                 },
                 iconHostWidth != null ? { width: iconHostWidth } : null,
-                fill ? { width: '100%' } : null,
+                fillWrapper ? { width: '100%' } : null,
                 frozen.style,
             ]}
         >
@@ -428,7 +431,7 @@ export function NeoButtonExpoUI(props) {
 
     return wrapNativeButtonHost(host, {
         hitSlop: resolved.hitSlop,
-        fill,
+        fill: fillWrapper,
         height: targetHeight,
         width: iconHostWidth,
         onPress: handlePress,

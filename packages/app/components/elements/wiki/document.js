@@ -122,23 +122,14 @@ function WikiDocumentIcon({ alt, size, src }) {
 
     return (
         <View className="relative rounded-lg overflow-hidden h-10 w-10 lg:h-12 lg:w-12 bg-muted">
-            {!loaded ? (
-                <Skeleton
-                    visible
-                    rounded="rounded-lg"
-                    className="absolute inset-0 h-full w-full animate-pulse"
-                />
-            ) : null}
             <Image
                 alt={alt}
+                className="h-full w-full"
                 contentFit="contain"
-                height={size}
+                fill
                 nobg
                 onLoad={handleLoad}
-                sizes={`${size}px`}
                 src={src}
-                style={{ borderRadius: 12, height: size, width: size }}
-                width={size}
             />
         </View>
     )
@@ -341,7 +332,7 @@ export function WikiArticleBlock({
     const hasDocHeader = Boolean(attributes?.title);
 
     return (
-        <BlockWrapper block={block} config={block?.config_api} showTitle={!hasDocHeader}>
+        <BlockWrapper showTitle={false}  block={block} config={block?.config_api} showTitle={!hasDocHeader}>
             {hasDocHeader ? (
                 <WikiDocumentHeader
                     markdownSource={raw}

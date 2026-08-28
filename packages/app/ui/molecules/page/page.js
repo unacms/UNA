@@ -10,7 +10,7 @@ import { pushFormEnsureVisibleHandler, scrollContainerByDelta } from 'app/lib/fo
 
 const isWeb = Platform.OS === 'web';
 
-export default function Page({ children, data, page_width, processKeyboard=true, scrollRef: scrollRefProp }) {
+export default function Page({ children, data, page_width, processKeyboard=true, scrollRef: scrollRefProp, resetHeaderOnFocus = true }) {
     const headerHeightFromAtom = useHeaderHeight();
     const footerHeightFromAtom = useFooterHeight();
     const Wrapper = isWeb ? View : processKeyboard? KbAvoidingViewScroll : ScrollView;
@@ -22,8 +22,10 @@ export default function Page({ children, data, page_width, processKeyboard=true,
 
     useFocusEffect(
         useCallback(() => {
-            setHeader(defaultHeader);
-        }, [])
+            if (resetHeaderOnFocus) {
+                setHeader(defaultHeader);
+            }
+        }, [resetHeaderOnFocus, setHeader])
     );
 
     useEffect(() => {

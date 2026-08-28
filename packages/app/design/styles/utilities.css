@@ -39,9 +39,9 @@
  * - Web-only CSS (multi-value font-family, overflow-wrap/word-break) is gated
  *   under `@variant web` so Uniwind doesn't try to translate it to RN styles.
  *
- * Per-tag styling (`.u-vanilla-html h1`, `.u-vanilla-html ul`, links, first/last-child
- * margin resets, etc.) is web-only by nature and lives in
- * `packages/app/design/styles/global.css`.
+ * Per-tag styling (`.u-vanilla-html ul`, `p`/`h2` margins, links) is web-only.
+ * Uniwind has no descendant matching — those rules would apply to the host
+ * View on native. They live under `@variant web` below.
  */
 @layer utilities {
     .u-vanilla-html {
@@ -90,6 +90,7 @@
         }
     }
 
+    @variant web {
     .u-vanilla-html
         :where(p):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
         margin-top: 12px !important;
@@ -332,6 +333,7 @@
     .u-vanilla-html-small A:hover,
     .u-vanilla-html-small .link:hover {
         text-decoration: underline;
+    }
     }
 
     .bx-mention-link,

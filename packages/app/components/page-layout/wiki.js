@@ -1,6 +1,7 @@
 import { View } from 'app/design/view'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { appSetting, LAYOUT_BREAKPOINTS, stripTags } from 'app/lib/util'
+import { useFocusEffect } from 'app/lib/hooks/router'
 import Page from 'app/ui/molecules/page/page'
 import MenuFooter from 'app/components/nav/menu-footer'
 import { useTranslation } from 'react-i18next'
@@ -15,7 +16,6 @@ import { BlockWrapper } from 'app/components/block-wrapper'
 import { BlockByData } from 'app/components/block'
 import DropdownPopup from 'app/ui/atoms/dropdown-popup'
 import { defaultHeader, useHeaderHeight, useSetHeader, DEFAULT_HEADER_HEIGHT } from 'app/context/jotai/layout'
-import { useFocusEffect } from 'app/lib/hooks/router'
 import emitter from 'app/context/emitter'
 import { parseWikiFrontMatter } from 'app/lib/markdown/frontmatter'
 import { wikiCacheKey } from 'app/lib/cache/wiki-page-cache'
@@ -147,7 +147,8 @@ function PageContentWiki({ data, scrollRef, url }) {
         [centerHtmlContent]
     )
     const tocItems = markdownHeadings
-    const showBothMobilePanels = showMobileLeftPanel && showMobileRightPanel && tocItems.length >= 2
+    const showTocMenu = isWeb && tocItems.length >= 2
+    const showBothMobilePanels = showMobileLeftPanel && showMobileRightPanel && showTocMenu
     // Avoid DOM reads during render; measured offset is used for click-to-scroll.
     const headerOffset = (Number(headerHeight) || DEFAULT_HEADER_HEIGHT) + TOC_SCROLL_GAP
 
@@ -246,7 +247,7 @@ function PageContentWiki({ data, scrollRef, url }) {
         return () => observer.disconnect()
     }, [headerOffset, isWeb, tocItems])
 
-    const showTocMenu = tocItems.length >= 2
+    const mountRightSidebar = showTocMenu
     const tocMenuLabel = stripTags(rightBlock?.title) || t('On this page')
 
     // Below left-nav breakpoint only. From lg–xl the TOC trigger sits on the
@@ -263,7 +264,7 @@ function PageContentWiki({ data, scrollRef, url }) {
                         <View className="shrink-0">
                             <DropdownPopup
                                 minPopupWidth={256}
-                                contentClasses="rounded-xl border border-popover mt-2 bg-popover/60 backdrop-blur shadow-md"
+                                contentClasses={isWeb ? 'rounded-xl border border-popover mt-2 bg-popover/60 backdrop-blur shadow-md' : undefined}
                                 buttonProps={{
                                     style: 'borderless',
                                     controlSize: 'regular',
@@ -305,6 +306,7 @@ function PageContentWiki({ data, scrollRef, url }) {
         breadcrumbs,
         focusedTocId,
         handleTocPress,
+        isWeb,
         leftMenu,
         navigateToWikiPath,
         pageData.url,
@@ -326,8 +328,8 @@ function PageContentWiki({ data, scrollRef, url }) {
             if (!isWeb) {
                 setHeader(isDesktop ? defaultHeader : { subHeader: mobileHeaderControls });
             }
-        }, [isDesktop, isWeb, mobileHeaderControls, setHeader])
-    );
+        }, [isWeb, isDesktop, mobileHeaderControls, setHeader])
+    )
 
     // Sticky pin stays at top:0; header clearance lives in scroll content padding so tall
     // sidebars can still scroll behind translucent/floating headers. Negative margin cancels
@@ -343,7 +345,7 @@ function PageContentWiki({ data, scrollRef, url }) {
                     ref={groupRef}
                     key={`cells-wiki${cellsCustomConfig.sizable ? 'sizable' : 'static'}`}
                     direction="horizontal"
-                    className={`mx-auto flex-auto relative flex-row`}
+                    className={`mx-auto flex-auto relative flex-row `}
                     // Default panel-group overflow:hidden creates a scrollport and breaks
                     // window-scroll sticky. clip still contains resize overflow without that.
                     style={isWeb ? { overflow: 'clip' } : undefined}
@@ -374,14 +376,14 @@ function PageContentWiki({ data, scrollRef, url }) {
                         </View>
                     </Panel>
                     <PanelHandler gap={`hidden ${leftBreakpoint}:block`} sizable={cellsCustomConfig.sizable} panelLine={cellsCustomConfig['panel-line']} />
-                    <Panel className={`native:w-full ${currentBreakpointName}:w-full`} {...centerPanelProps}>
-                        <View ref={centerContentRef} className="p-3 sm:p-4 lg:px-6 lg:py-6 xl:px-8 2xl:px-12 gap-6 lg:gap-8">
-                            {(breadcrumbs.length || showTocMenu) ? (
-                                <View className="gap-3">
+                    <Panel className={`native:w-full   ${currentBreakpointName}:w-full`} {...centerPanelProps}>
+                        <View ref={centerContentRef} className="sm:p-4 lg:px-6 lg:py-6 xl:px-8 2xl:px-12 gap-6 lg:gap-8">
+                            {(breadcrumbs.length >1 || showTocMenu) ? (
+                                <View className={`gap-3 bg-pink-500 hidden ${leftBreakpoint}:flex`}>
                                     {/* CSS visibility only — do not gate on useBreakpoint (SSR mismatch).
                                         Breadcrumb from left-nav bp; TOC trigger until right sidebar bp. */}
                                     <View className={`hidden ${leftBreakpoint}:flex flex-row items-center justify-between gap-2 min-w-0`}>
-                                        {breadcrumbs.length ? (
+                                        {breadcrumbs.length >1 ? (
                                             <View className="min-w-0 flex-1">
                                                 <WikiBreadcrumb
                                                     items={breadcrumbs}
@@ -405,7 +407,7 @@ function PageContentWiki({ data, scrollRef, url }) {
                                     </View>
                                 </View>
                             ) : null}
-                            {wikiCenterBlocks.map((block) => (
+                           {wikiCenterBlocks.map((block) => (
                                 isWikiActionBlock(block) ? (
                                     <BlockByData
                                         key={`wiki-action-${block.id || block.source}`}
@@ -423,7 +425,10 @@ function PageContentWiki({ data, scrollRef, url }) {
                             ))}
                         </View>
                     </Panel>
+                    {mountRightSidebar ? (
                     <PanelHandler gap={`hidden ${rightBreakpoint}:block`} sizable={cellsCustomConfig.sizable} panelLine={cellsCustomConfig['panel-line']} />
+                    ) : null}
+                    {mountRightSidebar ? (
                     <Panel className={`${showTocMenu ? `hidden ${rightBreakpoint}:block` : 'hidden'} ${currentBreakpointName}:w-full`} {...rightPanelProps}>
                         <View className="h-full">
                             <View
@@ -449,6 +454,7 @@ function PageContentWiki({ data, scrollRef, url }) {
                             </View>
                         </View>
                     </Panel>
+                    ) : null}
                 </PanelGroup>
         </View>
     )
@@ -458,7 +464,7 @@ export default function PageLayoutWiki({ data }) {
     const scrollRef = useRef(null)
 
     return (
-        <Page data={data} processKeyboard={false} scrollRef={scrollRef}>
+        <Page data={data} processKeyboard={false} scrollRef={scrollRef} resetHeaderOnFocus={false}>
             <PageContentWiki data={data} scrollRef={scrollRef} />
             <View className="flex-1" />
             <MenuFooter />

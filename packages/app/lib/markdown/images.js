@@ -86,7 +86,7 @@ function collectSizedImages(markdown) {
         if (image) images.push(image)
     }
 
-    return images.toSorted((left, right) => left.index - right.index)
+    return [...images].sort((left, right) => left.index - right.index)
 }
 
 export function splitSizedMarkdownImages(markdown) {

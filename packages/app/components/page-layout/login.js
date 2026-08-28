@@ -43,20 +43,14 @@ export default function PageLayout({ data, children, pageClasses }) {
 
     return (
         <Page data={data}>
-            {isWeb ? (
-                <View className={`${contentWidth} ${padding} ${gap} mx-auto my-auto`}>
-                    {showLoginAside
+            <View className={`${contentWidth} ${padding} ${gap} mx-auto my-auto`}>
+                    {showLoginAside && isWeb
                         ? appStatic('components_logincontent')
                         : null}
                     <View className={`w-full mx-auto ${contentWidth}`}>
                         <PageContent>{children}</PageContent>
                     </View>
-                </View>
-            ) : (
-                <View className="flex-1">
-                    <PageContent>{children}</PageContent>
-                </View>
-            )}
+            </View>
             <MenuFooter />
         </Page>
     )

@@ -363,7 +363,10 @@ export default function ElementMarkdown({ data, customClassName, className = '',
             : (cardForegroundToken || colors.default)
         const headingStyle = {
             color: Platform.OS === 'web' ? 'var(--color-popover-foreground)' : colors.default,
-            fontFamily: Platform.OS === 'web' ? 'var(--font-title)' : 'font-title',
+            // Native EnrichedMarkdown looks up a typeface by this string.
+            // Passing the Uniwind token `font-title` can abort Android after
+            // the first heading lays out — keep the family on web only.
+            ...(Platform.OS === 'web' ? { fontFamily: 'var(--font-title)' } : {}),
         }
         const headings = headingScale[isSmall ? 'small' : 'regular']
         return {
