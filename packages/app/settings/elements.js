@@ -39,6 +39,12 @@ export const settingsElements = {
         in_reply: true, //OLD appSetting('layout', 'show_in_reply_comments')
         submit_comment_on_enter: true,
     },
+    ai_chat: {
+        assistant_name: 'Assistant',
+        placeholder: 'Write a comment',
+        empty_text: '',
+        show_clear: true,
+    },
     carousel: {
         image_width: '', //appSetting('layout', 'carousel_image_width')
         image_aspect_ratio: ' aspect-square ', //appSetting('layout', 'carousel_image_aspect')
