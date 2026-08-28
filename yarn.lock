@@ -1434,10 +1434,10 @@ deep-equal@^1.0.1:
     object-keys "^1.1.1"
     regexp.prototype.flags "^1.5.1"
 
-deepmerge-ts@^7.1.5:
-  version "7.1.5"
-  resolved "https://registry.yarnpkg.com/deepmerge-ts/-/deepmerge-ts-7.1.5.tgz#ff818564007f5c150808d2b7b732cac83aa415ab"
-  integrity sha512-HOJkrhaYsweh+W+e74Yn7YStZOilkoPb6fycpwNLKzSPtruFs48nYis0zy5yJz1+ktUhHxoRDJ27RQAWLIJVJw==
+deepmerge-ts@^8.0.0:
+  version "8.0.2"
+  resolved "https://registry.yarnpkg.com/deepmerge-ts/-/deepmerge-ts-8.0.2.tgz#4f3e5588c3a7c59ea80d54b583948d6f404cf13e"
+  integrity sha512-uqbvqLUMrc6p0MO+WBRtTxY55hmyh94WRwI5a++PZe54X+bfVh59FSN7uWCBCW1CCVjzjnrwzfI8zidE2obMMw==
 
 deepmerge@^4.2.2:
   version "4.3.1"
@@ -4379,13 +4379,13 @@ shell-quote@^1.6.1:
   resolved "https://registry.yarnpkg.com/shell-quote/-/shell-quote-1.10.0.tgz#482033e192e4f5c07151521ffa03400ec71b1b0f"
   integrity sha512-w1aiOKwKuRgtwAReIIj89puqg+I7GvX4IbLrvmhXbzQsj1+Zwi4VO3+fa6ZF91TWSjIxoEkKnMeHcLEODK5ZXA==
 
-shepherd.js@^15.2.3:
-  version "15.2.3"
-  resolved "https://registry.yarnpkg.com/shepherd.js/-/shepherd.js-15.2.3.tgz#c3778c4f1d418070b3c80de28006b46ed44e1a18"
-  integrity sha512-FyLH/c25YlTS5d+cL9oLajzfW0TzNl43sysQG6EK4bf60n9les7TsIUekHTTKyMEtcARIVHW2d1N9sqeDkIsbQ==
+shepherd.js@^15.3.0:
+  version "15.3.0"
+  resolved "https://registry.yarnpkg.com/shepherd.js/-/shepherd.js-15.3.0.tgz#1f5d1520ad15274f1b3166145d067bd438c1beb4"
+  integrity sha512-A9plZQ1qGX1aDLTrX0cbVowdnE0mOc1pjRie7O9c2cQHiDHI1zaxH2fVe65WH/2ch5nbK0JPu+vQecD7WYw5zw==
   dependencies:
     "@floating-ui/dom" "^1.8.0"
-    deepmerge-ts "^7.1.5"
+    deepmerge-ts "^8.0.0"
 
 side-channel-list@^1.0.1:
   version "1.0.1"
