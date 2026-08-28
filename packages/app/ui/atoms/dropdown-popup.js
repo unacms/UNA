@@ -38,6 +38,10 @@ export default function DropdownPopup({
     contentClassName = '',
     /** Accessible name for custom trigger wrappers (when `buttonProps` is omitted). */
     triggerAccessibilityLabel,
+    /** Extra classes on the trigger Pressable (e.g. `flex-1` for tab-bar More). */
+    triggerClassName = '',
+    /** RN layout style for the trigger Pressable (e.g. tab-bar button `style`). */
+    triggerStyle,
 }) {
     const buttonRef = useRef(null);
     const isDesktop = useIsDesktop();
@@ -309,7 +313,8 @@ export default function DropdownPopup({
                         accessibilityLabel={triggerAccessibilityLabel}
                         aria-haspopup="menu"
                         aria-expanded={isRealOpen}
-                        className=" web:active:scale-95 web:duration-100"
+                        style={triggerStyle}
+                        className={cn('web:active:scale-95 web:duration-100', triggerClassName)}
                     >
                         {trigger}
                     </Pressable>
@@ -331,7 +336,19 @@ export default function DropdownPopup({
                     }}
                 >
                     {isWeb ? (
-                        <View className="web:flex-1 web:min-h-0 web:relative" style={{ flex: 1 }}>
+                        <View
+                            className="web:fixed web:inset-0 web:z-[9999]"
+                            style={{
+                                position: 'fixed',
+                                left: 0,
+                                right: 0,
+                                top: 0,
+                                bottom: 0,
+                                width: '100%',
+                                height: '100%',
+                                zIndex: 9999,
+                            }}
+                        >
                             <Pressable
                                 accessibilityRole="button"
                                 accessibilityLabel="Dismiss menu"

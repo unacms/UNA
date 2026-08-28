@@ -1,5 +1,5 @@
-import { forwardRef, useEffect, useState } from 'react';
-import { useHeaderHeight } from "expo-router/react-navigation";
+import { forwardRef, use, useEffect, useState } from 'react';
+import { HeaderHeightContext } from "expo-router/react-navigation";
 import { Keyboard, Platform } from 'react-native'
 import { KeyboardAwareScrollView, KeyboardAvoidingView, KeyboardProvider, KeyboardStickyView, useKeyboardState } from "react-native-keyboard-controller";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -147,7 +147,8 @@ export const KbAvoidingViewScroll = forwardRef(function KbAvoidingViewScroll(
     ref
 ) {
     const { top } = useStableSafeAreaInsets();
-    const headerHeight = useHeaderHeight();
+    // NativeTabs has no stack header; useHeaderHeight() throws without this fallback.
+    const headerHeight = use(HeaderHeightContext) ?? 0;
     const keyboardOffset = top + headerHeight + (Platform.OS === "ios" ? 58 : 44);
     return (
         <KeyboardAwareScrollView

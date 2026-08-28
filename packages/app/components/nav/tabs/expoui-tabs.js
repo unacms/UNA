@@ -6,11 +6,11 @@
  * tab0–tab4 slots are full-screen routes, so NativeTabs is the fit.
  */
 import { NativeTabs } from 'expo-router/unstable-native-tabs';
-import { useEffect, useState } from 'react';
-import { PixelRatio } from 'react-native';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { PixelRatio, Platform } from 'react-native';
 import { Image } from 'expo-image';
 import { View } from 'app/design/view';
-import { appSetting, findIconFromRemote, isAndroid, isIos, isTabBarLabelsEnabled } from 'app/lib/util';
+import { appSetting, findIconFromRemote, isAndroid, isIos, isTabBarLabelsEnabled, FeedbackHaptics, clearNotif } from 'app/lib/util';
 import { useTranslation } from 'react-i18next';
 import { TabSlideHost } from 'app/components/nav/tab-slide';
 import { playTabFeedback } from 'app/components/nav/tab-feedback';
@@ -19,7 +19,35 @@ import { ImageManipulator, SaveFormat } from 'app/lib/image/manipulator';
 import { pngBase64WithCircleMask } from 'app/lib/image/circle-png';
 import { getNativeOptimizedImageUrl } from 'app/lib/image-helpers';
 import { getBadgeLabel } from './badges';
-import { isDashboardTab } from './tab-menu';
+import {
+    MORE_TAB_ICON,
+    buildTabBarMoreMenuItems,
+    isDashboardTab,
+    isExternalTabUrl,
+    resolveTabUrl,
+    splitTabBarItems,
+} from './tab-menu';
+import DropdownMenu from 'app/ui/atoms/dropdown-menu';
+import { useRouter, usePathname, useSafeAreaInsets } from 'app/lib/hooks/router';
+import { nativeTabHref } from 'app/lib/tab-history';
+import emitter from 'app/context/emitter';
+import * as WebBrowser from 'expo-web-browser';
+import { useBottomSheetData } from 'app/context/bottomsheet';
+import { useCurrentUser } from 'app/context/user';
+
+const TAB_BAR_HEIGHT = Platform.OS === 'ios' ? 52 : 56;
+
+function isMoreTabPath(pathname, moreTabIndex) {
+    return !!pathname?.startsWith(`/tab${moreTabIndex}`);
+}
+
+/** NativeTabs (esp. Android) may switch tabs before JS tabPress — snap back to prior tab. */
+function scheduleStayOnTab(router, stayOn) {
+    if (!stayOn) return;
+    requestAnimationFrame(() => {
+        router.navigate(stayOn);
+    });
+}
 
 function resolveTabIcons(icon) {
     const lucide = findIconFromRemote(icon) || icon;
@@ -32,6 +60,19 @@ function resolveTabIcons(icon) {
     return { sf: 'circle', md: 'circle' };
 }
 
+function getOverflowBadgeLabel(currentUser, overflow = []) {
+    let total = 0;
+    for (const tab of overflow) {
+        if (tab?.hide === true) continue;
+        const label = getBadgeLabel(currentUser, tab);
+        if (!label) continue;
+        const n = parseInt(label, 10);
+        if (n > 0) total += n;
+    }
+    if (total <= 0) return null;
+    return total > 99 ? '99+' : String(total);
+}
+
 /** UITabBar draws `src` icons square at intrinsic size — resize + circle-mask once. */
 const TAB_AVATAR_PT = 28;
 const avatarIconCache = new Map();
@@ -42,7 +83,6 @@ async function loadCircledTabAvatar(avatar) {
     const scale = PixelRatio.get();
     const px = Math.round(TAB_AVATAR_PT * scale);
     const remote = getNativeOptimizedImageUrl(uri, TAB_AVATAR_PT) || uri;
-    // The manipulator wants a local file — warm expo-image's disk cache and reuse it.
     await Image.prefetch(remote);
     const cached = await Image.getCachePathAsync(remote);
     const context = ImageManipulator.manipulate(cached ? `file://${cached}` : remote);
@@ -57,7 +97,6 @@ async function loadCircledTabAvatar(avatar) {
     };
 }
 
-/** Circle-masked avatar icon source; null (SF-symbol fallback) until ready or on failure. */
 function useDashboardAvatarIcon(avatar) {
     const [source, setSource] = useState(() => (avatar ? avatarIconCache.get(avatar) ?? null : null));
     useEffect(() => {
@@ -76,6 +115,104 @@ function useDashboardAvatarIcon(avatar) {
     return source;
 }
 
+function renderTabTrigger({
+    tab,
+    index,
+    currentUser,
+    dashboardAvatarSource,
+    hideLabels,
+    t,
+}) {
+    const icons = resolveTabIcons(tab.icon);
+    const badge = getBadgeLabel(currentUser, tab);
+    const avatarSource = isDashboardTab(tab, currentUser) ? dashboardAvatarSource : null;
+
+    return (
+        <NativeTabs.Trigger
+            key={`tab${index}`}
+            name={`tab${index}`}
+            hidden={tab.hide === true}
+            disablePopToTop
+            disableScrollToTop
+            disableAutomaticContentInsets
+        >
+            {avatarSource ? (
+                <NativeTabs.Trigger.Icon
+                    src={avatarSource}
+                    renderingMode="original"
+                />
+            ) : (
+                <NativeTabs.Trigger.Icon sf={icons.sf} md={icons.md} />
+            )}
+            {hideLabels || tab.title === '' ? (
+                <NativeTabs.Trigger.Label hidden>
+                    {tab.title ? t(tab.title) : undefined}
+                </NativeTabs.Trigger.Label>
+            ) : (
+                <NativeTabs.Trigger.Label>{t(tab.title)}</NativeTabs.Trigger.Label>
+            )}
+            {badge ? <NativeTabs.Trigger.Badge>{badge}</NativeTabs.Trigger.Badge> : null}
+        </NativeTabs.Trigger>
+    );
+}
+
+/** Transparent hit target over the native More tab — opens the same popup as JS tabs. */
+function NativeTabsMoreOverlay({
+    visible,
+    isShowTabs,
+    overflowMenuItems,
+    onSelectOverflow,
+    moreMenuOpen,
+    onMoreMenuOpenChange,
+    onMoreTriggerPress,
+    tabBarHeight,
+}) {
+    const { t } = useTranslation();
+
+    if (!isShowTabs || !overflowMenuItems?.length) return null;
+
+    return (
+        <View
+            pointerEvents="box-none"
+            collapsable={false}
+            style={{
+                position: 'absolute',
+                left: 0,
+                right: 0,
+                bottom: 0,
+                height: tabBarHeight,
+                zIndex: 9999,
+                ...(isAndroid ? { elevation: 24 } : null),
+            }}
+        >
+            <View pointerEvents="box-none" className="h-full flex-row">
+                {visible.map((tab, index) => (
+                    <View key={tab.key || `spacer-${index}`} className="flex-1" pointerEvents="none" />
+                ))}
+                <View className="flex-1" collapsable={false}>
+                    <DropdownMenu
+                        mode="popup"
+                        showOnTop
+                        variant="tabs-overflow"
+                        openOnFocus={false}
+                        open={moreMenuOpen}
+                        onOpenChange={onMoreMenuOpenChange}
+                        items={overflowMenuItems}
+                        onSelect={onSelectOverflow}
+                        triggerAccessibilityLabel={t('More')}
+                        triggerClassName="flex-1 w-full h-full"
+                    >
+                        <View
+                            className="flex-1 w-full h-full"
+                            onTouchEnd={() => onMoreTriggerPress()}
+                        />
+                    </DropdownMenu>
+                </View>
+            </View>
+        </View>
+    );
+}
+
 export default function ExpoUITabNavigator({
     TabList,
     currentUser,
@@ -84,8 +221,157 @@ export default function ExpoUITabNavigator({
     tabsSessionKey,
 }) {
     const { t } = useTranslation();
+    const pathname = usePathname();
+    const router = useRouter();
+    const insets = useSafeAreaInsets();
+    const { setCurrentUser } = useCurrentUser();
+    const { setBottomSheetData } = useBottomSheetData();
     const hideLabels = !isTabBarLabelsEnabled() || TabList.every((tab) => tab.title === '');
     const dashboardAvatarSource = useDashboardAvatarIcon(isIos ? currentUser?.avatar : null);
+    const pathnameRef = useRef(pathname);
+    const lastNonMoreTabRef = useRef('/tab0');
+    const skipMoreBounceRef = useRef(false);
+    pathnameRef.current = pathname;
+
+    const { visible, overflow, moreTabIndex } = useMemo(
+        () => splitTabBarItems(TabList),
+        [TabList]
+    );
+
+    const [activeOverflowUrl, setActiveOverflowUrl] = useState(null);
+    const [moreMenuOpen, setMoreMenuOpen] = useState(false);
+
+    const tabBarHeight = TAB_BAR_HEIGHT + (isAndroid ? insets.bottom : 0);
+
+    useEffect(() => {
+        if (pathname && !isMoreTabPath(pathname, moreTabIndex)) {
+            lastNonMoreTabRef.current = pathname;
+        }
+    }, [pathname, moreTabIndex]);
+
+    const openMoreMenu = useCallback((stayOnPath) => {
+        const stayOn = stayOnPath ?? (
+            isMoreTabPath(pathnameRef.current, moreTabIndex)
+                ? lastNonMoreTabRef.current
+                : pathnameRef.current
+        );
+        setMoreMenuOpen(true);
+        if (stayOn && !isMoreTabPath(stayOn, moreTabIndex)) {
+            skipMoreBounceRef.current = true;
+            scheduleStayOnTab(router, stayOn);
+        }
+    }, [moreTabIndex, router]);
+
+    useEffect(() => {
+        const subscription = emitter.addListener('tabs-more', (data) => {
+            if (data?.action === 'open') openMoreMenu(data?.stayOn);
+            if (data?.action === 'close') setMoreMenuOpen(false);
+        });
+        return () => subscription.remove();
+    }, [openMoreMenu]);
+
+    /** Fallback when native tab bar switches to More before JS preventDefault runs. */
+    useEffect(() => {
+        if (!overflow.length) return;
+        if (skipMoreBounceRef.current) {
+            skipMoreBounceRef.current = false;
+            return;
+        }
+        if (
+            isMoreTabPath(pathname, moreTabIndex) &&
+            !activeOverflowUrl &&
+            !moreMenuOpen
+        ) {
+            const prev = lastNonMoreTabRef.current;
+            if (prev && !isMoreTabPath(prev, moreTabIndex)) {
+                skipMoreBounceRef.current = true;
+                scheduleStayOnTab(router, prev);
+            }
+            setMoreMenuOpen(true);
+        }
+    }, [pathname, overflow.length, moreTabIndex, activeOverflowUrl, moreMenuOpen, router]);
+
+    const handleMoreTabPress = useCallback((e) => {
+        e?.preventDefault?.();
+        openMoreMenu();
+    }, [openMoreMenu]);
+
+    const moreTabListeners = useMemo(
+        () => ({
+            tabPress: handleMoreTabPress,
+        }),
+        [handleMoreTabPress]
+    );
+
+    const screenListeners = useMemo(() => {
+        if (!overflow.length) {
+            return {
+                tabPress: () => {
+                    playTabFeedback();
+                },
+            };
+        }
+        return ({ route }) => ({
+            tabPress: (e) => {
+                if (route.name === `tab${moreTabIndex}`) {
+                    handleMoreTabPress(e);
+                    return;
+                }
+                playTabFeedback();
+            },
+        });
+    }, [overflow.length, moreTabIndex, handleMoreTabPress]);
+
+    const overflowMenuItems = useMemo(
+        () => buildTabBarMoreMenuItems({
+            visible,
+            overflow,
+            moreTabIndex,
+            currentUser,
+            t,
+            pathname,
+            activeOverflowUrl,
+            mode: 'native',
+        }),
+        [visible, overflow, moreTabIndex, currentUser, t, pathname, activeOverflowUrl]
+    );
+
+    const handleOverflowSelect = useCallback(async (item) => {
+        if (item?.type === 'separator' || !item?.tab) return;
+
+        const tab = item.tab;
+        const tabUrl = resolveTabUrl(tab, currentUser);
+        const routeIndex = item.isOverflow ? moreTabIndex : item.tabIndex;
+        setBottomSheetData(null);
+
+        if (isExternalTabUrl(tabUrl)) {
+            await WebBrowser.openBrowserAsync(tabUrl);
+            FeedbackHaptics('Medium');
+            return;
+        }
+
+        const notificationUrl = appSetting('notifications', 'url');
+        if (tabUrl === notificationUrl) {
+            clearNotif();
+            setCurrentUser({
+                notifications: 0,
+                notificationsTs: Date.now(),
+                counters: {
+                    ...(currentUser?.counters || {}),
+                    bx_notifications: 0,
+                },
+            });
+        }
+
+        playTabFeedback();
+        setMoreMenuOpen(false);
+        setActiveOverflowUrl(item.isOverflow ? tabUrl : null);
+        router.push(nativeTabHref(tabUrl, `/tab${routeIndex}`));
+    }, [currentUser, moreTabIndex, router, setBottomSheetData, setCurrentUser]);
+
+    const moreIcons = resolveTabIcons(MORE_TAB_ICON);
+    const overflowBadge = getOverflowBadgeLabel(currentUser, overflow);
+    const collapsed = overflow.length > 0;
 
     return (
         <View className="flex-1">
@@ -105,56 +391,65 @@ export default function ExpoUITabNavigator({
                     default: { color: colors.barsColor },
                     selected: { color: colors.primary },
                 }}
-                // Android Material: `auto` hides labels when there are 4+ tabs.
                 labelVisibilityMode={hideLabels ? 'unlabeled' : 'labeled'}
                 tabBarRespectsIMEInsets={isAndroid}
-                screenListeners={{
-                    tabPress: () => {
-                        playTabFeedback();
-                    },
-                }}
+                screenListeners={screenListeners}
                 unstable_nativeProps={{
                     nativeContainerStyle: {
                         backgroundColor: isIos ? 'transparent' : colors.barsBackground,
                     },
                 }}
             >
-                {TabList.map((tab, index) => {
-                    const icons = resolveTabIcons(tab.icon);
-                    const badge = getBadgeLabel(currentUser, tab);
-                    const avatarSource = isDashboardTab(tab, currentUser)
-                        ? dashboardAvatarSource
-                        : null;
-
-                    return (
-                        <NativeTabs.Trigger
-                            key={`tab${index}`}
-                            name={`tab${index}`}
-                            hidden={tab.hide === true}
-                            disablePopToTop
-                            disableScrollToTop
-                            disableAutomaticContentInsets
-                        >
-                            {avatarSource ? (
-                                <NativeTabs.Trigger.Icon
-                                    src={avatarSource}
-                                    renderingMode="original"
-                                />
-                            ) : (
-                                <NativeTabs.Trigger.Icon sf={icons.sf} md={icons.md} />
-                            )}
-                            {hideLabels || tab.title === '' ? (
-                                <NativeTabs.Trigger.Label hidden>
-                                    {tab.title ? t(tab.title) : undefined}
-                                </NativeTabs.Trigger.Label>
-                            ) : (
-                                <NativeTabs.Trigger.Label>{t(tab.title)}</NativeTabs.Trigger.Label>
-                            )}
-                            {badge ? <NativeTabs.Trigger.Badge>{badge}</NativeTabs.Trigger.Badge> : null}
-                        </NativeTabs.Trigger>
-                    );
-                })}
+                {collapsed
+                    ? visible.map((tab, index) => renderTabTrigger({
+                        tab,
+                        index,
+                        currentUser,
+                        dashboardAvatarSource,
+                        hideLabels,
+                        t,
+                    }))
+                    : TabList.map((tab, index) => renderTabTrigger({
+                        tab,
+                        index,
+                        currentUser,
+                        dashboardAvatarSource,
+                        hideLabels,
+                        t,
+                    }))}
+                {collapsed ? (
+                    <NativeTabs.Trigger
+                        key={`tab${moreTabIndex}`}
+                        name={`tab${moreTabIndex}`}
+                        disablePopToTop
+                        disableScrollToTop
+                        disableAutomaticContentInsets
+                        listeners={moreTabListeners}
+                    >
+                        <NativeTabs.Trigger.Icon sf={moreIcons.sf} md={moreIcons.md} />
+                        {hideLabels ? (
+                            <NativeTabs.Trigger.Label hidden>{t('More')}</NativeTabs.Trigger.Label>
+                        ) : (
+                            <NativeTabs.Trigger.Label>{t('More')}</NativeTabs.Trigger.Label>
+                        )}
+                        {overflowBadge ? (
+                            <NativeTabs.Trigger.Badge>{overflowBadge}</NativeTabs.Trigger.Badge>
+                        ) : null}
+                    </NativeTabs.Trigger>
+                ) : null}
             </NativeTabs>
+            {collapsed ? (
+                <NativeTabsMoreOverlay
+                    visible={visible}
+                    isShowTabs={isShowTabs}
+                    overflowMenuItems={overflowMenuItems}
+                    onSelectOverflow={handleOverflowSelect}
+                    moreMenuOpen={moreMenuOpen}
+                    onMoreMenuOpenChange={setMoreMenuOpen}
+                    onMoreTriggerPress={openMoreMenu}
+                    tabBarHeight={tabBarHeight}
+                />
+            ) : null}
             <TabSlideHost
                 sessionKey={tabsSessionKey}
                 backgroundColor={colors.background}

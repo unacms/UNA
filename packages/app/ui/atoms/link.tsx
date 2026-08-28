@@ -2,16 +2,14 @@ import { Pressable } from 'app/design/view';
 import { useCurrentTabPath, Link } from 'app/lib/hooks/router'
 import { FeedbackHaptics, isExternalUrl, openExternalLink } from 'app/lib/util';
 import { nativeTabHref } from 'app/lib/tab-history';
+import { buildTabUrlIndex } from 'app/components/nav/tabs/tab-menu';
 import { useCurrentUser } from 'app/context/user';
 import { appSetting, sanitazeUrl, cn } from 'app/lib/util';
 import { useMemo, useCallback } from 'react';
 import { Text } from 'app/design/typography'
-import { Platform } from 'react-native'
 import emitter from 'app/context/emitter';
 const ThemeLinkSizes = appSetting('theme', 'link_sizes');
 const ThemeLinkStyles = appSetting('theme', 'link_styles');
-
-const isIos = Platform.OS === 'ios';
 
 export default function ElementLink({
     href = '',
@@ -53,11 +51,7 @@ export default function ElementLink({
    
     // Match against tab urls + transpile_urls so in-app links route to the same
     // tab as deep links (see processUrl in components/nav/tabs/index.js).
-    const LinksForTabs = useMemo(() => {
-        const baseLinks = TabList.map((item: any, i: number) => ({ url: item.url, index: i }));
-        const additional = appSetting('menu_items', 'transpile_urls') || [];
-        return [...baseLinks, ...additional];
-    }, [TabList]);
+    const LinksForTabs = useMemo(() => buildTabUrlIndex(TabList), [TabList]);
 
     const index = LinksForTabs.find((item: any) => finalHref.includes(item.url))?.index ?? -1;
 

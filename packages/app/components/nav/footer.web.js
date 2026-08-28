@@ -9,9 +9,11 @@ import { getFriendsCounter } from 'app/customization/functions';
 import { Icon } from 'app/ui/atoms/icon'
 import { useTranslation } from 'react-i18next';
 import { useFooter, useSetFooterHeight } from 'app/context/jotai/layout';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSound } from 'app/lib/hooks/useSound';
 import { isTabBarLabelsEnabled } from 'app/lib/util';
+import DropdownMenu from 'app/ui/atoms/dropdown-menu';
+import { splitTabBarItems, buildTabBarMoreMenuItems } from 'app/components/nav/tabs/tab-menu';
 
 function isInStandaloneMode() {
     if (window.navigator.standalone) {
@@ -25,6 +27,10 @@ function isInStandaloneMode() {
 export default function () {
     const { currentUser } = useCurrentUser();
     const TabList = currentUser ? appSetting('menu_items', 'menu_tabbar_logged') : appSetting('menu_items', 'menu_tabbar_non_logged');
+    const { visible: visibleTabs, overflow: overflowTabs } = useMemo(
+        () => splitTabBarItems(TabList || []),
+        [TabList]
+    );
     const { t } = useTranslation();
     const notifCount = currentUser ? currentUser.notifications : 0;
     const iFrCounter = getFriendsCounter(currentUser);
@@ -63,10 +69,18 @@ export default function () {
                 className={`z-50 w-full pb-0 ${isInStandaloneMode() ? "h-12" : "h-16"}`}
             >
                 <Row className="flex-auto items-center flex-row w-full px-2 gap-2">
-                    {TabList.filter(item => !item.hide).map((tab, index) => {
+                    {visibleTabs.filter(item => !item.hide).map((tab, index) => {
                         const isActive = appSetting('messenger', 'url') === tab.url ? pathname.includes(tab.url) : pathname === tab.url;
                         return <MenuBottomItem key={`bmi-${index}`} notifCount={notifCount} iFrCounter={iFrCounter} link={tab.url} badge={tab.badge} index={index} icon={tab.icon} title={t(tab.title)} isActive={isActive} animated={tab.animated} addClassName={tab.addClassName} />
                     })}
+                    {overflowTabs.length > 0 ? (
+                        <MoreBottomItem
+                            visibleTabs={visibleTabs}
+                            overflowTabs={overflowTabs}
+                            pathname={pathname}
+                            currentUser={currentUser}
+                        />
+                    ) : null}
                 </Row>
             </View>
         </View>
@@ -112,7 +126,7 @@ function MenuBottomItem({ link, title, badge, icon, isActive, iFrCounter, notifC
             <Link
                 href={link1}
                 noprefetch={link1 === appSetting('notifications', 'url') ? "false" : "true"}
-                className="group w-full"
+                className="group flex-1"
                 alt={title}
                  onClick={handlePress}
             >
@@ -135,5 +149,40 @@ function MenuBottomItem({ link, title, badge, icon, isActive, iFrCounter, notifC
                 </View>
                 
             </Link>
+    );
+}
+
+function MoreBottomItem({ visibleTabs, overflowTabs, pathname, currentUser }) {
+    const { t } = useTranslation();
+    const items = useMemo(
+        () => buildTabBarMoreMenuItems({
+            visible: visibleTabs,
+            overflow: overflowTabs,
+            currentUser,
+            t,
+            pathname,
+            mode: 'web',
+        }),
+        [visibleTabs, overflowTabs, currentUser, t, pathname]
+    );
+
+    return (
+        <View className="flex-1">
+            <DropdownMenu
+                mode="popup"
+                showOnTop
+                variant="tabs-overflow"
+                openOnFocus={false}
+                items={items}
+                triggerClassName="flex-1 w-full h-full"
+            >
+                <View className="group h-full w-full items-center justify-center rounded-xl p-1.5 text-center gap-1.5 web:hover:bg-muted/50">
+                    <Icon icon="ChevronsUpDown" size={24} className="text-secondary-foreground web:group-hover:text-foreground" />
+                    {isTabBarLabelsEnabled() ? (
+                        <Text className="web:group-hover:text-accent-foreground text-[11px] tracking-tight leading-none font-medium whitespace-nowrap text-secondary-foreground">{t('More')}</Text>
+                    ) : null}
+                </View>
+            </DropdownMenu>
+        </View>
     );
 }

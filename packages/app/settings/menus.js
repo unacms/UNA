@@ -238,6 +238,14 @@ export const settingsMenus = {
                 url: '/dashboard',
                 icon: 'Award',
             },
+            { key: '/tab5', title: 'Groups', url: '/groups-home', icon: 'UsersRound' },
+            { key: '/tab6', title: 'Events', url: '/events-home', icon: 'CalendarCheck' },
+            { key: '/tab7', title: 'Market', url: '/products-home', icon: 'Store' },
+            { key: '/tab8', title: 'Tasks', url: '/tasks-home', icon: 'ListChecks' },
+            { key: '/tab9', title: 'Docs', url: '/docs', icon: 'Book' },
+            { key: '/tab10', title: 'Blog', url: '/posts-home', icon: 'PencilLine' },
+            { key: '/tab11', title: 'Pricing', url: '/start', icon: 'Tag' },
+            { key: '/tab12', title: 'Sign out', url: '/logout', icon: 'LogOut' },
         ],
 
         menu_tabbar_non_logged: [

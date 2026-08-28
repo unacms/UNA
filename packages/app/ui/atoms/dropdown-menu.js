@@ -63,6 +63,8 @@ function DropdownMenuPopup({
     contentClassName: contentClassNameProp,
     resolveContent,
     triggerAccessibilityLabel,
+    triggerClassName,
+    triggerStyle,
 }) {
     const DropdownMenuItem = getComponent('menu-item', 'dropdown');
     const redirectdRef = useRef();
@@ -128,6 +130,8 @@ function DropdownMenuPopup({
                 )}
                 open={isOpen}
                 onOpenChange={setIsOpen}
+                triggerClassName={triggerClassName}
+                triggerStyle={triggerStyle}
                 trigger={
                     buttonProps ? undefined : (
                         <SafeMenuTrigger>{children}</SafeMenuTrigger>
@@ -297,6 +301,8 @@ export default function DropdownMenu({
     contentClassName,
     resolveContent,
     triggerAccessibilityLabel,
+    triggerClassName,
+    triggerStyle,
 }) {
     const isWeb = Platform.OS === 'web';
 
@@ -318,6 +324,8 @@ export default function DropdownMenu({
                 resolveContent={resolveContent}
                 buttonProps={buttonProps}
                 triggerAccessibilityLabel={triggerAccessibilityLabel}
+                triggerClassName={triggerClassName}
+                triggerStyle={triggerStyle}
             />
         );
     }

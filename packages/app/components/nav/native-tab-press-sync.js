@@ -2,8 +2,9 @@ import { useEffect } from 'react';
 import { useCurrentUser } from 'app/context/user';
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import { useNavigation, usePathname, useRouter } from 'app/lib/hooks/router';
-import { getTabList } from 'app/components/nav/tabs/tab-menu';
+import { getTabList, splitTabBarItems } from 'app/components/nav/tabs/tab-menu';
 import { handleTabPress } from 'app/components/nav/tabs/tab-press';
+import emitter from 'app/context/emitter';
 
 /**
  * NativeTabs has no Screen `listeners`. Re-tap / external / notif-clear live
@@ -21,9 +22,17 @@ export default function NativeTabPressSync({ tabKey }) {
 
         const onTabPress = async (e) => {
             const TabList = getTabList(currentUser) || [];
+            const { visible, overflow, moreTabIndex } = splitTabBarItems(TabList);
             const match = String(tabKey || '').match(/^\/tab(\d+)$/);
             const tabIndex = match ? Number(match[1]) : 0;
-            const tab = TabList[tabIndex];
+
+            if (overflow.length > 0 && tabIndex === moreTabIndex) {
+                e.preventDefault?.();
+                emitter.emit('tabs-more', { action: 'open', stayOn: pathname });
+                return;
+            }
+
+            const tab = overflow.length > 0 ? visible[tabIndex] : TabList[tabIndex];
             if (!tab) return;
 
             await handleTabPress({

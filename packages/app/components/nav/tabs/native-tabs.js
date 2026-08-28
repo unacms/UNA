@@ -2,13 +2,18 @@ import { Tabs as RouterTabs, useRouter, usePathname } from 'app/lib/hooks/router
 import { View } from 'app/design/view';
 import { Icon } from 'app/ui/atoms/icon';
 import { useCurrentUser } from 'app/context/user';
-import { appSetting, isTabBarLabelsEnabled } from 'app/lib/util';
+import { appSetting, isTabBarLabelsEnabled, FeedbackHaptics, clearNotif } from 'app/lib/util';
 import { Platform } from 'react-native';
 import Profile from 'app/ui/molecules/profile/profile';
-import { useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { getBadgeForTab } from './badges';
-import { isDashboardTab, resolveTabUrl } from './tab-menu';
+import * as WebBrowser from 'expo-web-browser';
+import DropdownMenu from 'app/ui/atoms/dropdown-menu';
+import { nativeTabHref } from 'app/lib/tab-history';
+import { playTabFeedback } from 'app/components/nav/tab-feedback';
+import { Text } from 'app/design/typography';
+import { getBadgeForTab, getBadgeLabel } from './badges';
+import { isDashboardTab, isExternalTabUrl, resolveTabUrl, splitTabBarItems, buildTabBarMoreMenuItems, MORE_TAB_ICON } from './tab-menu';
 import { handleTabPress } from './tab-press';
 import { useBottomSheetData } from 'app/context/bottomsheet';
 
@@ -18,8 +23,30 @@ const DETACH_INACTIVE_SCREENS = Platform.OS !== 'ios';
 const TAB_BAR_ITEM_STYLE = appSetting('theme', 'native_tabs', 'tabBarItemStyle');
 const TAB_BAR_BADGE_BACKGROUND = appSetting('theme', 'native_tabs', 'badgeBackground');
 
-function TabBarIcon({ tab, tabUrl, currentUser, color, focused }) {
-    if (isDashboardTab(tab, currentUser)) {
+function getOverflowBadgeCount(currentUser, overflow = []) {
+    let total = 0;
+    for (const tab of overflow) {
+        if (tab?.hide === true) continue;
+        const label = getBadgeLabel(currentUser, tab);
+        if (!label) continue;
+        const n = parseInt(label, 10);
+        if (n > 0) total += n;
+    }
+    return total;
+}
+
+function getBadgeForOverflow(currentUser, overflow = []) {
+    const count = getOverflowBadgeCount(currentUser, overflow);
+    if (count <= 0) return null;
+    const badgeTextSize = appSetting('theme', 'native_tabs', 'badgeTextSize') || 'text-xs';
+    return (
+        <Text className={`${badgeTextSize} text-white font-medium`}>
+            {count > 99 ? 99 : count}
+        </Text>
+    );
+}
+
+function TabBarIcon({ tab, tabUrl, currentUser, color, focused }) {    if (isDashboardTab(tab, currentUser)) {
         return (
             <View className="h-full">
                 <View className="rounded-full">
@@ -49,6 +76,23 @@ function TabBarIcon({ tab, tabUrl, currentUser, color, focused }) {
                 className={tab.addClassName}
             />
         </View>
+    );
+}
+
+function MoreTabBarButton({ children, style, overflowItems, onSelectOverflow, accessibilityLabel }) {
+    return (
+        <DropdownMenu
+            mode="popup"
+            showOnTop
+            variant="tabs-overflow"
+            items={overflowItems}
+            onSelect={onSelectOverflow}
+            triggerAccessibilityLabel={accessibilityLabel}
+            triggerStyle={style}
+            openOnFocus={false}
+        >
+            {children}
+        </DropdownMenu>
     );
 }
 
@@ -93,6 +137,36 @@ function getScreenOptions(colors, isShowTabs) {
     };
 }
 
+function tabScreenOptions({ tab, tabUrl, currentUser, t, extra = {} }) {
+    const options = {
+        tabBarBadge: extra.tabBarBadge ?? getBadgeForTab(currentUser, tab),
+        tabBarBadgeAllowFontScaling: false,
+        title: extra.title ?? t(tab.title),
+        headerShown: false,
+        tabBarIcon: extra.tabBarIcon ?? (({ color, focused }) => (
+            <TabBarIcon
+                tab={tab}
+                tabUrl={tabUrl}
+                currentUser={currentUser}
+                color={color}
+                focused={focused}
+            />
+        )),
+        ...extra.screenOptions,
+    };
+
+    if ((extra.title ?? tab.title) === '' || !isTabBarLabelsEnabled()) {
+        options.tabBarLabel = () => null;
+        options.tabBarLabelPosition = 'beside-icon';
+    }
+
+    if (tab.hide === true) {
+        options.href = null;
+    }
+
+    return options;
+}
+
 export default function NativeTabNavigator({
     TabList,
     currentUser,
@@ -105,11 +179,66 @@ export default function NativeTabNavigator({
     const pathname = usePathname();
     const router = useRouter();
     const { t } = useTranslation();
-    
+
     const screenOptions = useMemo(
         () => getScreenOptions(colors, isShowTabs),
         [colors, isShowTabs]
     );
+
+    const { visible, overflow, moreTabIndex } = useMemo(
+        () => splitTabBarItems(TabList),
+        [TabList]
+    );
+
+    const [activeOverflowUrl, setActiveOverflowUrl] = useState(null);
+
+    const overflowMenuItems = useMemo(
+        () => buildTabBarMoreMenuItems({
+            visible,
+            overflow,
+            moreTabIndex,
+            currentUser,
+            t,
+            pathname,
+            activeOverflowUrl,
+            mode: 'native',
+        }),
+        [visible, overflow, t, currentUser, activeOverflowUrl, pathname, moreTabIndex]
+    );
+
+    const handleOverflowSelect = useCallback(async (item) => {
+        if (item?.type === 'separator' || !item?.tab) return;
+
+        const tab = item.tab;
+        const tabUrl = resolveTabUrl(tab, currentUser);
+        const routeIndex = item.isOverflow ? moreTabIndex : item.tabIndex;
+        setBottomSheetData(null);
+
+        if (isExternalTabUrl(tabUrl)) {
+            await WebBrowser.openBrowserAsync(tabUrl);
+            FeedbackHaptics('Medium');
+            return;
+        }
+
+        const notificationUrl = appSetting('notifications', 'url');
+        if (tabUrl === notificationUrl) {
+            clearNotif();
+            setCurrentUser({
+                notifications: 0,
+                notificationsTs: Date.now(),
+                counters: {
+                    ...(currentUser?.counters || {}),
+                    bx_notifications: 0,
+                },
+            });
+        }
+
+        playTabFeedback();
+        setActiveOverflowUrl(item.isOverflow ? tabUrl : null);
+        router.push(nativeTabHref(tabUrl, `/tab${routeIndex}`));
+    }, [currentUser, moreTabIndex, router, setBottomSheetData, setCurrentUser]);
+
+    const moreTab = overflow[0];
 
     return (
         <RouterTabs
@@ -118,33 +247,9 @@ export default function NativeTabNavigator({
             detachInactiveScreens={DETACH_INACTIVE_SCREENS}
             screenOptions={screenOptions}
         >
-            {TabList.map((tab, index) => {
+            {visible.map((tab, index) => {
                 const tabRouteName = `tab${index}/index`;
                 const tabUrl = resolveTabUrl(tab, currentUser);
-                const options = {
-                    tabBarBadge: getBadgeForTab(currentUser, tab),
-                    tabBarBadgeAllowFontScaling: false,
-                    title: t(tab.title),
-                    headerShown: false,
-                    tabBarIcon: ({ color, focused }) => (
-                        <TabBarIcon
-                            tab={tab}
-                            tabUrl={tabUrl}
-                            currentUser={currentUser}
-                            color={color}
-                            focused={focused}
-                        />
-                    ),
-                };
-
-                if (tab.title === '' || !isTabBarLabelsEnabled()) {
-                    options.tabBarLabel = () => null;
-                    options.tabBarLabelPosition = 'beside-icon';
-                }
-
-                if (tab.hide === true)
-                    options.href = null;
-
                 return (
                     <RouterTabs.Screen
                         key={`tab${index}`}
@@ -163,10 +268,58 @@ export default function NativeTabNavigator({
                                 variant: 'js',
                             }),
                         }}
-                        options={options}
+                        options={tabScreenOptions({ tab, tabUrl, currentUser, t })}
                     />
                 );
             })}
+            {moreTab ? (
+                <RouterTabs.Screen
+                    key={`tab${moreTabIndex}`}
+                    name={`tab${moreTabIndex}/index`}
+                    initialParams={{
+                        url: resolveTabUrl(moreTab, currentUser),
+                        name: `tab${moreTabIndex}`,
+                    }}
+                    listeners={{
+                        tabPress: (e) => {
+                            e.preventDefault?.();
+                            e.stopPropagation?.();
+                        },
+                    }}
+                    options={tabScreenOptions({
+                        tab: { ...moreTab, icon: MORE_TAB_ICON, title: t('More') },
+                        tabUrl: resolveTabUrl(moreTab, currentUser),
+                        currentUser,
+                        t,
+                        extra: {
+                            title: t('More'),
+                            tabBarBadge: getBadgeForOverflow(currentUser, overflow),
+                            tabBarIcon: ({ color }) => (
+                                <View className="h-full">
+                                    <Icon
+                                        icon={MORE_TAB_ICON}
+                                        width={TAB_ICON_SIZE}
+                                        height={TAB_ICON_SIZE}
+                                        color={color}
+                                    />
+                                </View>
+                            ),
+                            screenOptions: {
+                                tabBarButton: (props) => (
+                                    <MoreTabBarButton
+                                        style={props.style}
+                                        overflowItems={overflowMenuItems}
+                                        onSelectOverflow={handleOverflowSelect}
+                                        accessibilityLabel={t('More')}
+                                    >
+                                        {props.children}
+                                    </MoreTabBarButton>
+                                ),
+                            },
+                        },
+                    })}
+                />
+            ) : null}
         </RouterTabs>
     );
 }

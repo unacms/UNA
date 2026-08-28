@@ -27,7 +27,7 @@ import {
 } from 'app/lib/tab-history';
 import { clearAllPageCache } from 'app/lib/cache/clear-page-cache';
 import BottomSheet from 'app/ui/molecules/dialogs/bottomsheet-content';
-import { getTabList, getTabsSessionKey } from './tab-menu';
+import { buildTabUrlIndex, getTabList, getTabRouteRootUrl, getTabsSessionKey } from './tab-menu';
 
 function getTabNavigator() {
     return isNativeTabsEnabled()
@@ -70,18 +70,10 @@ registerAll();
 const BOOTSTRAP_TIMEOUT_MS = 5000;
 /** AbortController is unreliable on some Android RN builds — race a hard timer. */
 const BOOTSTRAP_HARD_TIMEOUT_MS = 5500;
-console.log('Tabs');
+
 function processUrl(url, router, currentUser, TabList) {
     if (currentUser?.id) {
-        const LinksForTabs = (() => {
-            const baseLinks = TabList.map((item, index) => ({
-                url: item.url,
-                index
-            }));
-
-            const additionalLinks = appSetting('menu_items', 'transpile_urls');
-            return [...baseLinks, ...additionalLinks];
-        })();
+        const LinksForTabs = buildTabUrlIndex(TabList);
 
         let a = parseUrl(url);
         let _path = '/' + a.path + (a.queryString ? '?' + a.queryString : '')
@@ -89,7 +81,7 @@ function processUrl(url, router, currentUser, TabList) {
             _path = '/home';
 
         const index = LinksForTabs?.find((item) => _path.includes(item.url))?.index ?? -1;
-        const isRoot = TabList.some((item) => item.url === _path); // to root of tab or not
+        const isRoot = index > -1 && getTabRouteRootUrl(index, TabList, currentUser) === _path;
 
 
         if (index > -1) {
@@ -122,7 +114,7 @@ export default function Tabs() {
         () => getTabList(currentUser),
         [currentUser?.id]
     );
-    console.log('Tabs1');
+
     const tabsSessionKey = getTabsSessionKey(currentUser);
 
 
@@ -258,63 +250,21 @@ export default function Tabs() {
             void SplashScreen.hideAsync().catch(() => {});
         }
     }, [fontsReady, currentUser]);
-    console.log('Tabs2');
+
     // Conditional render: all hooks must run before this point
     // Prefer offline UI even if fonts are still loading (empty font map / hang).
     if (bootstrapError) {
-        console.log('Tabs5', bootstrapError);
+
         const OfflineScreen = staticComponents.bootstrap_offline;
         return OfflineScreen
             ? <OfflineScreen onRetry={() => setBootstrapError(false)} />
-            : <Text>bootstrapError</Text>;
+            : <Text>OfflineScreen</Text>;
     }
 
     if (!fontsReady || currentUser === null) {
-        const fontStatus = fontError
-            ? `Шрифты: ошибка (${fontError.message || fontError})`
-            : fontsLoaded
-                ? 'Шрифты: готовы'
-                : 'Шрифты: загрузка Onest / expo-font…';
-        const userStatus = currentUser === null
-            ? 'Сессия: запрос home к UNA…'
-            : 'Сессия: готова';
-        const textColor = colors.default || colors.text || '#111111';
-        const mutedColor = colors.barsColor || '#52525b';
-        console.log('Tabs3');
-        return (
-            <View
-                style={{
-                    flex: 1,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: 12,
-                    padding: 24,
-                    backgroundColor: colors.safeAreaBackground || colors.background || '#ffffff',
-                }}
-            >
-                <Text
-                    style={{
-                        color: textColor,
-                        fontSize: 18,
-                        fontWeight: '600',
-                        textAlign: 'center',
-                    }}
-                >
-                    Экран ещё не собран
-                </Text>
-                <Text style={{ color: mutedColor, fontSize: 15, textAlign: 'center' }}>
-                    {fontStatus}
-                </Text>
-                <Text style={{ color: mutedColor, fontSize: 15, textAlign: 'center' }}>
-                    {userStatus}
-                </Text>
-                <Text style={{ color: mutedColor, fontSize: 13, textAlign: 'center' }}>
-                    Если это не сменяется — шрифт variable на Android или API недоступен.
-                </Text>
-            </View>
-        );
+        return null;
     }
-    console.log('Tabs4');
+    
     const nativeTabs = isNativeTabsEnabled();
     const Navigator = getTabNavigator();
 

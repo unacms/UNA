@@ -1,6 +1,13 @@
+import { createElement } from 'react';
+import { View } from 'app/design/view';
 import { appSetting } from 'app/lib/util';
 
 /** Shared by JS RouterTabs and NativeTabs. */
+
+/** Max tab-bar slots (`tab0`…`tab4`). Extra menu items go into More. */
+export const TAB_BAR_VISIBLE_LIMIT = 5;
+
+export const MORE_TAB_ICON = 'ChevronsUpDown';
 
 export function getTabList(currentUser) {
     return currentUser?.id
@@ -8,10 +15,67 @@ export function getTabList(currentUser) {
         : appSetting('menu_items', 'menu_tabbar_non_logged');
 }
 
+/**
+ * Collapse 6+ tab-bar items into 4 tabs + a trailing More tab.
+ * Web footer, JS RouterTabs, and expo-router NativeTabs.
+ */
+export function shouldCollapseTabBar(tabList) {
+    return (tabList?.length || 0) > TAB_BAR_VISIBLE_LIMIT;
+}
+
+export function splitTabBarItems(tabList = []) {
+    if (!shouldCollapseTabBar(tabList)) {
+        return {
+            visible: tabList,
+            overflow: [],
+            moreTabIndex: -1,
+        };
+    }
+    const moreTabIndex = TAB_BAR_VISIBLE_LIMIT - 1;
+    return {
+        visible: tabList.slice(0, moreTabIndex),
+        overflow: tabList.slice(moreTabIndex),
+        moreTabIndex,
+    };
+}
+
+/** Map a menu / transpile_urls index onto the Expo route (`tab0`…`tab4`). */
+export function mapMenuIndexToTabRoute(index, tabList) {
+    const { overflow, moreTabIndex } = splitTabBarItems(tabList);
+    if (overflow.length > 0 && index >= moreTabIndex) {
+        return moreTabIndex;
+    }
+    return index;
+}
+
+/** Tab url → route index list, including `transpile_urls`. Overflow urls land on the More tab. */
+export function buildTabUrlIndex(tabList = []) {
+    const additional = appSetting('menu_items', 'transpile_urls') || [];
+    const baseLinks = tabList.map((item, index) => ({
+        url: item.url,
+        index: mapMenuIndexToTabRoute(index, tabList),
+    }));
+    const extra = additional.map((item) => ({
+        ...item,
+        index: mapMenuIndexToTabRoute(item.index, tabList),
+    }));
+    return [...baseLinks, ...extra];
+}
+
 export function getTabsSessionKey(currentUser) {
     return currentUser?.id
         ? `user-${currentUser.id}-${currentUser.confirmed}`
         : 'user-guest';
+}
+
+/** Default page URL for an Expo tab route (`0`…`4`). More tab uses the first overflow item. */
+export function getTabRouteRootUrl(routeIndex, tabList = [], currentUser) {
+    const { overflow, moreTabIndex } = splitTabBarItems(tabList);
+    const item = overflow.length > 0 && routeIndex === moreTabIndex
+        ? tabList[moreTabIndex]
+        : tabList[routeIndex];
+    if (!item) return '/home';
+    return resolveTabUrl(item, currentUser) || '/home';
 }
 
 export function resolveTabUrl(tab, currentUser) {
@@ -25,4 +89,75 @@ export function isDashboardTab(tab, currentUser) {
 
 export function isExternalTabUrl(tabUrl) {
     return !!(tabUrl && (tabUrl.startsWith('http://') || tabUrl.startsWith('https://')));
+}
+
+export function isTabBarUrlActive(pathname, url) {
+    if (!url) return false;
+    return appSetting('messenger', 'url') === url ? pathname.includes(url) : pathname === url;
+}
+
+export function tabBarMoreSeparator() {
+    return {
+        id: 'tabbar-more-separator',
+        type: 'separator',
+        title: createElement(View, { className: 'h-px w-full bg-border my-1.5' }),
+    };
+}
+
+/**
+ * More popup items: visible bar tabs, separator, overflow tabs.
+ * `mode: 'native'` keeps tab metadata for custom onSelect; `mode: 'web'` adds `link`.
+ */
+export function buildTabBarMoreMenuItems({
+    visible = [],
+    overflow = [],
+    moreTabIndex = -1,
+    currentUser,
+    t,
+    pathname = '',
+    activeOverflowUrl = null,
+    mode = 'native',
+}) {
+    const moreRootUrl = overflow[0] ? resolveTabUrl(overflow[0], currentUser) : null;
+    const selectedOverflowUrl = activeOverflowUrl || moreRootUrl;
+
+    const mapTab = (tab, tabIndex, isOverflow) => {
+        if (!tab || tab.hide === true) return null;
+        const url = resolveTabUrl(tab, currentUser);
+        const selected = mode === 'web'
+            ? isTabBarUrlActive(pathname, url)
+            : isOverflow
+                ? pathname?.startsWith(`/tab${moreTabIndex}`) && url === selectedOverflowUrl
+                : pathname?.startsWith(`/tab${tabIndex}`);
+
+        const item = {
+            id: tab.key || `tab-${tabIndex}`,
+            title: t(tab.title),
+            icon: tab.icon,
+            animated: tab.animated,
+            addClassName: tab.addClassName,
+            selected,
+        };
+
+        if (mode === 'web') {
+            item.link = url;
+        } else {
+            item.tab = tab;
+            item.tabIndex = tabIndex;
+            item.isOverflow = !!isOverflow;
+        }
+
+        return item;
+    };
+
+    const visibleItems = visible.map((tab, tabIndex) => mapTab(tab, tabIndex, false)).filter(Boolean);
+    const overflowItems = overflow
+        .map((tab, overflowIndex) => mapTab(tab, moreTabIndex + overflowIndex, true))
+        .filter(Boolean);
+
+    if (visibleItems.length === 0 || overflowItems.length === 0) {
+        return [...visibleItems, ...overflowItems];
+    }
+
+    return [...visibleItems, tabBarMoreSeparator(), ...overflowItems];
 }

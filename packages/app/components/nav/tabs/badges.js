@@ -10,14 +10,16 @@ function formatBadgeCount(count) {
 
 export function getBadgeForTab(currentUser, tab) {
     const badgeTextSize = appSetting('theme', 'native_tabs', 'badgeTextSize') || 'text-xs';
+    const notifCount = Number(currentUser?.notifications) || 0;
+    const msgCount = Number(currentUser?.counters?.bx_messenger_new_messages) || 0;
 
     if (
         (tab.url === appSetting('notifications', 'url') || tab.badge === 'notifications') &&
-        currentUser?.notifications
+        notifCount > 0
     ) {
         return (
             <Text className={`${badgeTextSize} text-white font-medium`}>
-                {formatBadgeCount(currentUser?.notifications)}
+                {formatBadgeCount(notifCount)}
             </Text>
         )
     }
@@ -35,13 +37,10 @@ export function getBadgeForTab(currentUser, tab) {
             </Text>
         )
     }
-    if (
-        tab.url === appSetting('messenger', 'url') &&
-        currentUser?.counters?.bx_messenger_new_messages
-    ) {
+    if (tab.url === appSetting('messenger', 'url') && msgCount > 0) {
         return (
             <Text className={`${badgeTextSize} text-white font-medium`}>
-                {formatBadgeCount(currentUser?.counters?.bx_messenger_new_messages)}
+                {formatBadgeCount(msgCount)}
             </Text>
         )
     }
