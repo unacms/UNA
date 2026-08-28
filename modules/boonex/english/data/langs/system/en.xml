@@ -2530,6 +2530,7 @@
     <string name="_sys_agents_assistants_chats_btn_store"><![CDATA[Store for future usage]]></string>
     <string name="_sys_agents_assistants_chats_btn_unstore"><![CDATA[Remove from store]]></string>
     <string name="_sys_agents_agents_act_wipe_chat_history"><![CDATA[Wipe chat history]]></string>
+    <string name="_sys_agents_agents_act_message"><![CDATA[Message]]></string>
     <string name="_sys_agents_assistants_chats_field_name"><![CDATA[Name]]></string>
     <string name="_sys_agents_assistants_chats_field_description"><![CDATA[Description]]></string>
     <string name="_sys_agents_assistants_chats_popup_add"><![CDATA[Add chat]]></string>
@@ -2559,6 +2560,7 @@
     <string name="_sys_agents_assistants_popup_ask"><![CDATA[Ask Assistant]]></string>
     <string name="_sys_agents_assistants_msg_knowledge_added"><![CDATA[Knowledge was added.]]></string>
     <string name="_sys_agents_logs_popup"><![CDATA["{0}" agent logs]]></string>
+    <string name="_sys_agents_agents_popup_message"><![CDATA[Chat with "{0}"]]></string>
     <string name="_sys_agents_err_failed"><![CDATA[Error occurred. Try to check log file for more info.]]></string>
     <string name="_sys_agents_exception"><![CDATA[The AI encountered an error while completing your request. Please try again or rephrase your input.]]></string>
 

@@ -2503,6 +2503,7 @@
         <string name="_sys_agents_assistants_chats_btn_store"><![CDATA[Сохранить для будущего использования]]></string>
         <string name="_sys_agents_assistants_chats_btn_unstore"><![CDATA[Удалить из хранилища]]></string>
         <string name="_sys_agents_agents_act_wipe_chat_history"><![CDATA[Очистить историю чата]]></string>
+        <string name="_sys_agents_agents_act_message"><![CDATA[Сообщение]]></string>
         <string name="_sys_agents_assistants_chats_field_name"><![CDATA[Название]]></string>
         <string name="_sys_agents_assistants_chats_field_description"><![CDATA[Описание]]></string>
         <string name="_sys_agents_assistants_chats_popup_add"><![CDATA[Добавить чат]]></string>
@@ -2532,6 +2533,7 @@
         <string name="_sys_agents_assistants_popup_ask"><![CDATA[Ask Assistant]]></string>
         <string name="_sys_agents_assistants_msg_knowledge_added"><![CDATA[Знания были добавлены.]]></string>
         <string name="_sys_agents_logs_popup"><![CDATA[Логи агента "{0}"]]></string>
+        <string name="_sys_agents_agents_popup_message"><![CDATA[Чат с "{0}"]]></string>
         <string name="_sys_agents_err_failed"><![CDATA[Произошла ошибка. Попробуйте проверить файл журнала для получения дополнительной информации.]]></string>
         <string name="_sys_agents_exception"><![CDATA[ИИ столкнулся с ошибкой при выполнении вашего запроса. Пожалуйста, повторите попытку или переформулируйте ваш ввод.]]></string>
 

@@ -5906,10 +5906,11 @@ INSERT INTO `sys_grid_fields` (`object`, `name`, `title`, `width`, `translatable
 INSERT INTO `sys_grid_actions` (`object`, `type`, `name`, `title`, `icon`, `icon_only`, `confirm`, `order`) VALUES
 ('sys_studio_agents_agents', 'bulk', 'delete', '_Delete', '', 0, 1, 1),
 ('sys_studio_agents_agents', 'single', 'manual', '_Run', 'play', 1, 0, 1),
-('sys_studio_agents_agents', 'single', 'logs', '_Logs', 'file-alt', 1, 0, 2),
-('sys_studio_agents_agents', 'single', 'edit', '_Edit', 'pencil-alt', 1, 0, 3),
-('sys_studio_agents_agents', 'single', 'wipe_chat_history', '_sys_agents_agents_act_wipe_chat_history', 'eraser', 1, 1, 4),
-('sys_studio_agents_agents', 'single', 'delete', '_Delete', 'remove', 1, 1, 5),
+('sys_studio_agents_agents', 'single', 'message', '_sys_agents_agents_act_message', 'comment', 1, 0, 2),
+('sys_studio_agents_agents', 'single', 'logs', '_Logs', 'file-alt', 1, 0, 3),
+('sys_studio_agents_agents', 'single', 'edit', '_Edit', 'pencil-alt', 1, 0, 4),
+('sys_studio_agents_agents', 'single', 'wipe_chat_history', '_sys_agents_agents_act_wipe_chat_history', 'eraser', 1, 1, 5),
+('sys_studio_agents_agents', 'single', 'delete', '_Delete', 'remove', 1, 1, 6),
 ('sys_studio_agents_agents', 'independent', 'add', '_adm_form_btn_field_add', '', 0, 0, 1);
 
 -- GRID: Agents Logs

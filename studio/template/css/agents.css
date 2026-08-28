@@ -13,6 +13,14 @@
     vertical-align: middle;
 }
 
+#grid-popup-sys_studio_agents_agents-message .bx-popup-width {
+    width: 42rem;
+    max-width: calc(100vw - 2rem);
+}
+.bx-agents-popup-chat {
+    height: 32rem;
+}
+
 /**--- Automators ---**/
 .cmt .bx-menu-custom.bx-menu-custom-hor > li > span {
     margin-right: 0;

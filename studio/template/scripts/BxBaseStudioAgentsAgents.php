@@ -249,6 +249,36 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
         return echoJson(['popup' => ['html' => $sContent, 'options' => ['closeOnOuterClick' => false]]]);
     }
 
+    public function performActionMessage()
+    {
+        $iId = $this->_getId();
+        $aAgent = BxDolAiQuery::getAgentObject($iId);
+        if (!$aAgent) {
+            echoJson(['msg' => _t('_sys_txt_error_occured')]);
+            return;
+        }
+        if (!$aAgent['active']) {
+            echoJson(['msg' => _t('_sys_txt_agent_inactive')]);
+            return;
+        }
+
+        $sChatId = 'bx-ai-chat-' . $iId;
+        $sName = !empty($aAgent['title']) ? $aAgent['title'] : $aAgent['name'];
+        $sContent = BxTemplStudioFunctions::getInstance()->popupBox('popup_agent_chat_' . $iId, _t('_sys_agents_agents_popup_message', $sName), $this->_oTemplate->parseHtmlByName('agents_popup_chat.html', [
+            'chat_id' => $sChatId,
+        ]));
+
+        $sJsObject = $this->getPageJsObject();
+        return echoJson(['popup' => [
+            'html' => $sContent,
+            'options' => [
+                'closeOnOuterClick' => false,
+                'onShow' => $sJsObject . ".initAgentChat('#" . $sChatId . "', " . $iId . ");",
+                'onHide' => $sJsObject . ".destroyAgentChat();",
+            ]
+        ]]);
+    }
+
     protected function _getCellSwitcher ($mixedValue, $sKey, $aField, $aRow)
     {
         // if(empty($aRow['code']) || $aRow['status'] != BX_DOL_AI_AUTOMATOR_STATUS_READY)

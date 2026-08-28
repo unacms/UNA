@@ -35,6 +35,29 @@ BxDolStudioPageAgents.prototype.initGrid = function() {
     });
 };
 
+BxDolStudioPageAgents.prototype.initAgentChat = function(sSelector, iAgentId) {
+    var $this = this;
+    var fInit = function() {
+        $this.destroyAgentChat();
+        if (typeof una === 'undefined' || !una.Chat)
+            return;
+        $this._oAgentChat = una.Chat.init(sSelector, { agentId: iAgentId, formatting: true });
+    };
+
+    if (typeof una !== 'undefined' && una.Chat)
+        fInit();
+};
+
+BxDolStudioPageAgents.prototype.destroyAgentChat = function() {
+    if (!this._oAgentChat)
+        return;
+
+    try {
+        this._oAgentChat.destroy();
+    } catch (e) {}
+    this._oAgentChat = null;
+};
+
 BxDolStudioPageAgents.prototype.agentActions = function(oSource) {
     var iId = $(oSource).parents('.bx-agt-agent:first').attr('data-id');
     bx_menu_popup_inline('#bx-agt-agent-actions-' + iId, oSource);
