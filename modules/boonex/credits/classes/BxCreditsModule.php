@@ -568,7 +568,7 @@ class BxCreditsModule extends BxBaseModGeneralModule
             return $this->_bIsApi ? [bx_api_get_msg($aResult['message'])] : $aResult;
 
         return $this->_bIsApi ? [
-            'url' => bx_api_get_relative_url($oPayments->getCartUrl($iVendor))
+            'url' => $oPayments->getCartUrl($iVendor)
         ] : $aResult;
     }
 
