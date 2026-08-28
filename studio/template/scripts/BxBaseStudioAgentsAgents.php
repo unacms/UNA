@@ -135,6 +135,7 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
 
             $sTools = is_array($oForm->getCleanValue('tools')) ? implode(',', $oForm->getCleanValue('tools')) : '';
             $aValsToAdd['tools'] = $sTools;
+            $aValsToAdd['acl_levels'] = (int)$oForm->getCleanValue('acl_levels');
 
             $bIsValid = true;
             if($bIsValid) {
@@ -203,6 +204,7 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
 
             $sTools = is_array($oForm->getCleanValue('tools')) ? implode(',', $oForm->getCleanValue('tools')) : '';
             $aValsToAdd['tools'] = $sTools;
+            $aValsToAdd['acl_levels'] = (int)$oForm->getCleanValue('acl_levels');
 
             $bIsValid = true;
             if($bIsValid) {
@@ -467,6 +469,17 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
                     ],
                     'db' => [
                         'pass' => 'Int',
+                    ]
+                ],
+                'acl_levels' => [
+                    'type' => 'checkbox_set',
+                    'name' => 'acl_levels',
+                    'caption' => _t('_sys_agents_field_acl_levels'),
+                    'info' => _t('_sys_agents_field_acl_levels_info'),
+                    'value' => [],
+                    'values' => [],
+                    'db' => [
+                        'pass' => 'Set',
                     ]
                 ],
                 'trigger' => [
@@ -743,6 +756,8 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
         }
 
         $this->_getMultiField('tools', $aAgent, 'getTools', 'toolAdd', 'agents_agents_form_tools.html', $aForm);
+
+        BxDolStudioUtils::getVisibilityValues((int)($aAgent['acl_levels'] ?? 0), $aForm['inputs']['acl_levels']['values'], $aForm['inputs']['acl_levels']['value']);
 
         return $aForm;
     }

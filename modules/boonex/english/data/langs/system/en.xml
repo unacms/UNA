@@ -2296,6 +2296,8 @@
     <string name="_sys_agents_form_input_info"><![CDATA[Form input where AI-generated text should be pasted]]></string>
     <string name="_sys_agents_agent_form_input_popup_text"><![CDATA[Please describe what you want to insert into this field.]]></string>
     <string name="_sys_agents_json_field_err"><![CDATA[Invalid JSON format.]]></string>
+    <string name="_sys_agents_unauthorized"><![CDATA[You are not allowed to interact with this agent.]]></string>
+    <string name="_sys_agents_agent_not_found"><![CDATA[Agent was not found or is inactive.]]></string>
     <string name="_sys_agents_automators_txt_active"><![CDATA[Active]]></string>
     <string name="_sys_agents_automators_txt_name"><![CDATA[Name]]></string>
     <string name="_sys_agents_automators_txt_type"><![CDATA[Type]]></string>
@@ -2336,6 +2338,8 @@
     <string name="_sys_agents_automators_field_profile_id_inf"><![CDATA[Leave empty to use default.]]></string>
     <string name="_sys_agents_field_profile_id"><![CDATA[Profile]]></string>
     <string name="_sys_agents_field_profile_id_inf"><![CDATA[AI agent will perform actions under this profile]]></string>
+    <string name="_sys_agents_field_acl_levels"><![CDATA[Who can interact]]></string>
+    <string name="_sys_agents_field_acl_levels_info"><![CDATA[Membership levels that may chat with this agent, use it in messenger, or fill form fields with it. Leave empty for Nobody. Studio operators can always use the agent to debug. Unauthenticated allows guests.]]></string>
     <string name="_sys_agents_automators_field_type"><![CDATA[Type]]></string>
     <string name="_sys_agents_automators_field_type_event"><![CDATA[Event]]></string>
     <string name="_sys_agents_automators_field_type_scheduler"><![CDATA[Scheduler]]></string>

@@ -7238,6 +7238,7 @@ CREATE TABLE `sys_agents_agents` (
   `icon` text NOT NULL,
   `model_id` int(11) NOT NULL DEFAULT 0,
   `profile_id` int(11) NOT NULL DEFAULT 0,
+  `acl_levels` int(10) UNSIGNED NOT NULL DEFAULT 0,
   `prompt_system` text NOT NULL,
   `prompt_steps` text NOT NULL,
   `prompt_output` text NOT NULL,

@@ -393,7 +393,7 @@ class BxDolAI extends BxDolFactory implements iBxDolSingleton
         // set additional params
         $aParams = [];
         if ('message' == $sType || 'form-input' == $sType || 'alert' == $sType) {
-            $aParams = ['chat_history_subindex' => $mixedParams['sender_profile_id']];
+            $aParams = ['chat_history_subindex' => (int)($mixedParams['sender_profile_id'] ?? 0)];
         }
 
         // call agent
@@ -413,6 +413,41 @@ class BxDolAI extends BxDolFactory implements iBxDolSingleton
         }
 
         return $mixed;
+    }
+
+    /**
+     * Whether the current (or given) member may interact with the agent
+     * via chat, messenger, or form-input. Empty acl_levels means Nobody.
+     * Site admins / Studio operators always may, so they can debug.
+     */
+    public function canInteract($aAgent, $iProfileId = false, $bAllowOperators = true)
+    {
+        if (!is_array($aAgent) || empty($aAgent['id']))
+            return false;
+
+        if ($bAllowOperators && isAdmin())
+            return true;
+
+        $iLevels = (int)($aAgent['acl_levels'] ?? 0);
+        if (!$iLevels)
+            return false;
+
+        return (bool)BxDolAcl::getInstance()->isMemberLevelInSet($iLevels, $iProfileId);
+    }
+
+    /**
+     * Direct HTTP chat (`sys-ai-chat`). Operators may talk to any trigger;
+     * everyone else only `manual` and `message` agents they can interact with.
+     */
+    public function canChatDirectly($aAgent, $iProfileId = false)
+    {
+        if (!$this->canInteract($aAgent, $iProfileId))
+            return false;
+
+        if (isAdmin())
+            return true;
+
+        return in_array($aAgent['trigger'] ?? '', ['manual', 'message'], true);
     }
 
     public function extractChatPromptFromRequest($aData)
@@ -458,7 +493,7 @@ class BxDolAI extends BxDolFactory implements iBxDolSingleton
      */
     public function getChatHistoryUiMessages($iAgentId, $aParams = [])
     {
-        $aParams['chat_history_subindex'] = $aParams['sender_profile_id'] ?? 0;
+        $aParams['chat_history_subindex'] = (int)($aParams['sender_profile_id'] ?? 0);
 
         $aAgent = BxDolAiQuery::getAgentObject((int)$iAgentId);
         if (!$aAgent || empty($aAgent['chat_history_context']))
@@ -534,7 +569,7 @@ class BxDolAI extends BxDolFactory implements iBxDolSingleton
 
     public function streamAgentChat($iAgentId, $sPrompt, $aParams = [], $sThreadId = null)
     {
-        $aParams['chat_history_subindex'] = $aParams['sender_profile_id'] ?? 0;
+        $aParams['chat_history_subindex'] = (int)($aParams['sender_profile_id'] ?? 0);
 
         $oAdapter = new NeuronAI\Chat\Messages\Stream\Adapters\AGUIAdapter($sThreadId);
 

@@ -2270,6 +2270,8 @@
         <string name="_sys_agents_form_input_info"><![CDATA[Поле формы, в которое нужно вставить текст, сгенерированный ИИ]]></string>
         <string name="_sys_agents_agent_form_input_popup_text"><![CDATA[Опишите, что вы хотите вставить в это поле.]]></string>
         <string name="_sys_agents_json_field_err"><![CDATA[Неверный формат JSON.]]></string>
+        <string name="_sys_agents_unauthorized"><![CDATA[Вам не разрешено взаимодействовать с этим агентом.]]></string>
+        <string name="_sys_agents_agent_not_found"><![CDATA[Агент не найден или неактивен.]]></string>
         <string name="_sys_agents_automators_txt_active"><![CDATA[Активный]]></string>
         <string name="_sys_agents_automators_txt_name"><![CDATA[Название]]></string>
         <string name="_sys_agents_automators_txt_type"><![CDATA[Тип]]></string>
@@ -2308,6 +2310,8 @@
         <string name="_sys_agents_automators_field_profile_id_inf"><![CDATA[Оставьте пустым, чтобы использовать значение по умолчанию.]]></string>
         <string name="_sys_agents_field_profile_id"><![CDATA[Профиль]]></string>
         <string name="_sys_agents_field_profile_id_inf"><![CDATA[Профайл, от имени которого ИИ агент выполняет действия.]]></string>
+        <string name="_sys_agents_field_acl_levels"><![CDATA[Кто может взаимодействовать]]></string>
+        <string name="_sys_agents_field_acl_levels_info"><![CDATA[Уровни членства, которые могут общаться с этим агентом, писать ему в мессенджере или заполнять поля форм с его помощью. Оставьте пустым — никто. Операторы Studio всегда могут использовать агента для отладки. «Неаутентифицированный» разрешает гостям.]]></string>
         <string name="_sys_agents_automators_field_type"><![CDATA[Тип]]></string>
         <string name="_sys_agents_automators_field_type_event"><![CDATA[Событие]]></string>
         <string name="_sys_agents_automators_field_type_scheduler"><![CDATA[Планировщик]]></string>

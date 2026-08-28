@@ -29,6 +29,8 @@ class BxDolAiAlertResponse extends BxDolAlertsResponse
         if($aAgents = $oAi->getAgentsByProfileId($iRecipient)) {
             $GLOBALS['glAgentsCallQueue'] = [];
             foreach($aAgents as $a) {
+                if (!$oAi->canInteract($a, $iSender))
+                    continue;
                 if (!$a['message_profile_id'] || $iSender == $a['message_profile_id']) {
 
                     $aParams = [
