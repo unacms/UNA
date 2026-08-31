@@ -102,10 +102,19 @@ function ChatBubble({ message, user, assistant, isStreaming }) {
 }
 
 function resolveSettings(props) {
-    const incoming = { ...(props.params || {}), ...(props.settings || {}) };
+    const incoming = {
+        ...(props.data && typeof props.data === 'object' && !Array.isArray(props.data) ? props.data : {}),
+        ...(props.params || {}),
+        ...(props.settings || {}),
+    };
     const showClearDefault = appSetting('ai_chat', 'show_clear');
     const agentIdRaw = String(
-        props.agentId ?? incoming.agentId ?? incoming.agent_id ?? incoming.agent ?? ''
+        props.agentId ??
+            props.agent_id ??
+            incoming.agentId ??
+            incoming.agent_id ??
+            incoming.agent ??
+            ''
     ).trim();
     const agentId = isUnaAiChatAgentId(agentIdRaw) ? agentIdRaw : '';
     const connection = props.connection ?? incoming.connection;
@@ -199,13 +208,25 @@ export default function AiChat(props) {
 
     const last = messages[messages.length - 1];
     const streamingId = isLoading && last?.role === 'assistant' ? last.id : null;
+    const lastText = last ? messageText(last) : '';
+
+    useLayoutEffect(() => {
+        if (!pinnedToBottomRef.current) return;
+        scrollChatToEnd(listRef.current);
+    }, [messages.length, lastText, isLoading]);
+
+    const onListScroll = useCallback((event) => {
+        pinnedToBottomRef.current = isNearBottom(listRef.current, event?.nativeEvent);
+    }, []);
 
     const send = useCallback(async () => {
         const text = input.trim();
         if (!text || isLoading) return;
+        pinnedToBottomRef.current = true;
         setInput('');
-        await sendMessage(text);
-        listRef.current?.scrollToEnd?.({ animated: true });
+        const pending = sendMessage(text);
+        scrollChatToEnd(listRef.current);
+        await pending;
     }, [input, isLoading, sendMessage]);
 
     const onComposerKey = useCallback(
@@ -243,7 +264,9 @@ export default function AiChat(props) {
             <ScrollView
                 ref={listRef}
                 className="max-h-[28rem] px-4 py-3"
-                contentContainerClassName="gap-1 pb-2"
+                contentContainerClassName="gap-1 pb-3"
+                onScroll={onListScroll}
+                scrollEventThrottle={16}
             >
                 {messages.length === 0 ? (
                     <View className="py-10 px-2">

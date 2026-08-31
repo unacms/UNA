@@ -55,6 +55,7 @@ import WikiBlocks from './wiki-blocks';
 import WikiHistory from './wiki-history';
 import CreditsCheckout from './credits-checkout';
 import PaymentOrderAdd from './payment-order-add';
+import AiChat from './ai-chat';
 
 
 export const componentsMapDefault = {
@@ -123,5 +124,6 @@ export const componentsMapDefault = {
     get_block_contacts_messenger: ProfileContacts,
     get_create_post_form: MultiPostForm,
     simple_list: SimpleList,
-    stripe_connect: StripeConnect
+    stripe_connect: StripeConnect,
+    ai_chat: AiChat
 };

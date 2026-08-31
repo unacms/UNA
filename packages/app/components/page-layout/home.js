@@ -28,6 +28,7 @@ import { useFocusEffect }  from 'app/lib/hooks/router'
 import { Button, ButtonLink, NeoButton, NeoButtonLink } from 'app/design/controls'
 import { Icon } from 'app/ui/atoms/icon';
 import Link from 'app/ui/atoms/link'
+import ElementAiChat from 'app/components/elements/ai-chat'
 const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from')
 
 const getTimelineBlock = (name, timelineBlocks) => {
@@ -405,6 +406,7 @@ return <View className='bg-blue-500 w-full h-full pt-24'>
             }}
             className="fixed overflow-scroll p-4 gap-4"
         >
+            <ElementAiChat data={{ agent_id: '1' }} />
             {AsideContent}
         </View>
     )
