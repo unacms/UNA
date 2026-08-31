@@ -1,16 +1,17 @@
 'use client'
 
-import { View, Row } from 'app/design/view'
+import { View, Row, ScrollView } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import {
     appSetting,
     formatDateInterval,
     cloneObject,
     cn,
+    isWeb
 } from 'app/lib/util'
 import { useTranslation } from 'react-i18next'
 import { useCurrentUser } from 'app/context/user'
-import { useIsDesktop } from 'app/context/measure'
+import { useIsDesktop, useBreakpointName } from 'app/context/measure'
 import { getComponent } from 'app/components/registry'
 import {
     CoverMenuMeta,
@@ -59,6 +60,7 @@ export function CoverMorphBody({
     const { t } = useTranslation()
     const { currentUser } = useCurrentUser()
     const isDesktop = useIsDesktop()
+    const breakpointName = useBreakpointName()
     const sizing = getCoverMorphSizing(isDesktop)
     const profileData = data?.profile
     const canShowBack = useShowCoverBackButton()
@@ -98,16 +100,20 @@ export function CoverMorphBody({
     const collapseActionsToMore = collapsed && !isDesktop
 
     const profileTitle = profileData.display_name || profileData.title || ''
+    const metaMenuItems = (data.meta_menu?.items || []).slice(
+        0,
+        breakpointName ? undefined : 2,
+    )
     const metaMenuCompact = data?.meta_menu
         ? {
-              ...data.meta_menu,
-              items: (data.meta_menu.items || []).map((item) => {
-                  if (!item?.list?.length) return item
-                  const next = { ...item }
-                  delete next.list
-                  return next
-              }),
-          }
+            ...data.meta_menu,
+            items: metaMenuItems.map((item) => {
+                if (!item?.list?.length) return item
+                const next = { ...item }
+                delete next.list
+                return next
+            }),
+        }
         : null
     const metaDate = !!profileData.info?.date_start && (
         <Text
@@ -125,7 +131,7 @@ export function CoverMorphBody({
     // Same source as Cover — do not gate on a separate flag (actions_menu is enough).
     let menu = data?.actions_menu ? cloneObject(data.actions_menu) : null
     if (menu && menu.persistent > 1) {
-       // menu.persistent = 1
+        menu.persistent = 1
     }
 
     const ContextSelector = getComponent('molecule', 'context_selector')
@@ -220,13 +226,13 @@ export function CoverMorphBody({
                         <View
                             aria-hidden={!collapsed}
                             className={cn(
-                                'web:lg:hidden justify-center overflow-hidden web:transition-[width,opacity]',
+                                'web:lg:hidden justify-center web:overflow-hidden web:transition-[width,opacity]',
                                 MORPH_TRANSITION,
                                 collapsed
                                     ? cn(
-                                          avatarHeightClass,
-                                          `${avatarCollapsedWidthClass} opacity-100`,
-                                      )
+                                        avatarHeightClass,
+                                        `${avatarCollapsedWidthClass} opacity-100`,
+                                    )
                                     : 'hidden',
                             )}
                         >
@@ -241,13 +247,13 @@ export function CoverMorphBody({
                                 MORPH_TRANSITION,
                                 collapsed
                                     ? cn(
-                                          avatarHeightClass,
-                                          avatarCollapsedWidthClass,
-                                      )
+                                        avatarHeightClass,
+                                        avatarCollapsedWidthClass,
+                                    )
                                     : cn(
-                                          avatarHeightClass,
-                                          'w-28 lg:h-24 lg:w-42',
-                                      ),
+                                        avatarHeightClass,
+                                        'w-28 lg:h-24 lg:w-42',
+                                    ),
                             )}
                         >
                             <View
@@ -312,17 +318,13 @@ export function CoverMorphBody({
                                 </Row>
                                 <Row
                                     className={cn(
-                                        'items-center gap-3 flex-wrap min-w-0',
+                                        'items-center gap-1 min-w-0',
                                         collapsed && 'hidden',
                                     )}
                                 >
-                                    <CoverMenuMeta
-                                        {...data.meta_menu}
-                                        button_size={
-                                            isDesktop ? 'regular' : 'small'
-                                        }
-                                    />
-                                    {metaDate}
+                                     <CoverMenuMeta {...data.meta_menu} items={metaMenuItems} />
+                                     {metaDate}
+
                                 </Row>
                                 <Row
                                     className={cn(
