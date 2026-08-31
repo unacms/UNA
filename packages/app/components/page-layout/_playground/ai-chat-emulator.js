@@ -1,9 +1,9 @@
 /**
- * Playground stand-in for the future UNA Agents AG-UI endpoint.
+ * Playground stand-in for UNA Agents AG-UI.
  *
  * Speaks the same StreamChunk types `useChat` expects
- * (RUN_STARTED → TEXT_MESSAGE_* → RUN_FINISHED). Swap the connection
- * adapter to the real UNA URL when it exists.
+ * (RUN_STARTED → TEXT_MESSAGE_* → RUN_FINISHED). Live web chat uses
+ * `createUnaAiChatConnection` → `/sys-ai-chat/{AgentId}`.
  */
 
 const ASSISTANT_NAME = 'UNA Assistant';
@@ -39,7 +39,7 @@ function buildReply(userText) {
             `Я эмулятор ассистента UNA, не живая модель.`,
             `Ключ, модель и prompt по-прежнему будут жить в Studio → Agents.`,
             `Сейчас эндпоинт UNA ещё неизвестен, поэтому я отвечаю локально на ${quoted}`,
-            `Когда появится AG-UI стрим с chat.php / api.php, этот же useChat переключится на него без смены UI.`,
+            `Живой агент на вебе: /pg/ai?agent={id} → /sys-ai-chat/{id}.`,
         ].join(' ');
     }
 
@@ -47,7 +47,7 @@ function buildReply(userText) {
         `I'm the UNA assistant emulator, not a live model.`,
         `API key, model, and prompt will stay in Studio → Agents.`,
         `The UNA endpoint is not wired yet, so I answer locally to ${quoted}.`,
-        `When the AG-UI stream from chat.php / api.php lands, this same useChat hook will point at it.`,
+        `Live agent on web: /pg/ai?agent={id} streams /sys-ai-chat/{id}.`,
     ].join(' ');
 }
 

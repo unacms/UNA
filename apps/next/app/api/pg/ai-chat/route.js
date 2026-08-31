@@ -1,8 +1,7 @@
 /**
- * Dev-only AG-UI SSE stand-in for the future UNA Agents chat endpoint.
+ * Dev-only AG-UI SSE stand-in used by `/pg/ai` in emulator mode.
  *
- * `useChat({ connection: fetchServerSentEvents('/api/pg/ai-chat') })` talks
- * to this route. Swap the URL to UNA when the real contract exists.
+ * Live web chat goes to same-origin `/sys-ai-chat/{AgentId}` (proxied to UNA).
  */
 
 import { toServerSentEventsResponse } from '@tanstack/ai';

@@ -1,8 +1,8 @@
 /**
  * Dev playground page-layout (`/pg/ai`).
  *
- * UNA-style AI chat (Ask AI / chat.php) with an AG-UI emulator
- * until the real UNA endpoint is known.
+ * UNA-style AI chat (Ask AI). Web can stream `/sys-ai-chat/{AgentId}`;
+ * the local AG-UI emulator remains the fallback (and the native path).
  */
 
 import { ScrollView, View } from 'app/design/view';

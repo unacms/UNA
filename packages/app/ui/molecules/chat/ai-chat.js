@@ -1,13 +1,51 @@
 'use client';
 
-import { useCallback, useMemo, useRef, useState } from 'react';
-import { fetchServerSentEvents, useChat } from '@tanstack/ai-react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { Platform } from 'react-native';
+import { fetchServerSentEvents, stream, useChat } from '@tanstack/ai-react';
 import { View, Row, ScrollView } from 'app/design/view';
 import { Text } from 'app/design/typography';
 import { Input, NeoButton } from 'app/design/controls';
 import Profile from 'app/ui/molecules/profile/profile';
 import { useCurrentUser } from 'app/context/user';
 import { appSetting } from 'app/lib/util';
+import { createUnaAiChatConnection, isUnaAiChatAgentId } from 'app/lib/una-ai-chat';
+
+const UNCONFIGURED_CONNECTION = stream(async function* () {
+    yield {
+        type: 'RUN_ERROR',
+        message: 'Agent chat is not configured.',
+    };
+});
+
+const NEAR_BOTTOM_PX = 96;
+
+function isNearBottom(node, nativeEvent) {
+    if (node && typeof node.scrollTop === 'number' && typeof node.scrollHeight === 'number') {
+        return node.scrollHeight - node.scrollTop - node.clientHeight <= NEAR_BOTTOM_PX;
+    }
+    const size = nativeEvent?.contentSize;
+    const offset = nativeEvent?.contentOffset;
+    const layout = nativeEvent?.layoutMeasurement;
+    if (!size || !offset || !layout) return true;
+    return size.height - offset.y - layout.height <= NEAR_BOTTOM_PX;
+}
+
+function scrollChatToEnd(node) {
+    if (!node) return;
+    if (typeof node.scrollToEnd === 'function') {
+        node.scrollToEnd({ animated: false });
+        return;
+    }
+    const top = node.scrollHeight ?? 0;
+    if (typeof node.scrollTo === 'function') {
+        node.scrollTo({ top, behavior: 'auto' });
+        return;
+    }
+    if (typeof node.scrollTop === 'number') {
+        node.scrollTop = top;
+    }
+}
 
 function messageText(message) {
     if (typeof message?.content === 'string') return message.content;
@@ -66,16 +104,24 @@ function ChatBubble({ message, user, assistant, isStreaming }) {
 function resolveSettings(props) {
     const incoming = { ...(props.params || {}), ...(props.settings || {}) };
     const showClearDefault = appSetting('ai_chat', 'show_clear');
+    const agentIdRaw = String(
+        props.agentId ?? incoming.agentId ?? incoming.agent_id ?? incoming.agent ?? ''
+    ).trim();
+    const agentId = isUnaAiChatAgentId(agentIdRaw) ? agentIdRaw : '';
+    const connection = props.connection ?? incoming.connection;
+    const liveUna = Boolean(agentId && !connection && Platform.OS === 'web');
 
     return {
-        connection: props.connection ?? incoming.connection,
+        connection,
         endpoint: props.endpoint ?? incoming.endpoint,
+        agentId,
+        liveUna,
         assistantName:
             incoming.assistantName ||
             incoming.assistant_name ||
             appSetting('ai_chat', 'assistant_name') ||
             'Assistant',
-        assistantId: incoming.assistantId || incoming.assistant_id || 'una-assistant',
+        assistantId: incoming.assistantId || incoming.assistant_id || agentId || 'una-assistant',
         assistantAvatar:
             incoming.assistantAvatar ||
             incoming.url_avatar ||
@@ -86,8 +132,15 @@ function resolveSettings(props) {
             incoming.placeholder ||
             appSetting('ai_chat', 'placeholder') ||
             'Write a comment',
-        emptyText: incoming.emptyText || incoming.empty_text || '',
-        showClear: incoming.showClear ?? incoming.show_clear ?? showClearDefault !== false,
+        emptyText:
+            incoming.emptyText ||
+            incoming.empty_text ||
+            appSetting('ai_chat', 'empty_text') ||
+            '',
+        showClear:
+            incoming.showClear ??
+            incoming.show_clear ??
+            (liveUna ? false : showClearDefault !== false),
         showHeader: incoming.showHeader ?? incoming.show_header ?? true,
     };
 }
@@ -98,6 +151,7 @@ function resolveSettings(props) {
  * Settings (prop or `params`, UNA-style):
  *   connection      — TanStack AI connection (preferred)
  *   endpoint        — SSE URL; used when `connection` is omitted
+ *   agentId         — UNA agent; web uses same-origin `/sys-ai-chat/{id}`
  *   assistantName   — header + bubble author
  *   assistantAvatar — optional avatar URL
  *   subtitle, badge, placeholder, emptyText
@@ -106,7 +160,9 @@ function resolveSettings(props) {
 export default function AiChat(props) {
     const { currentUser } = useCurrentUser();
     const [input, setInput] = useState('');
+    const [hydrateError, setHydrateError] = useState(null);
     const listRef = useRef(null);
+    const pinnedToBottomRef = useRef(true);
     const cfg = resolveSettings(props);
 
     const assistant = useMemo(
@@ -118,15 +174,28 @@ export default function AiChat(props) {
         [cfg.assistantId, cfg.assistantName, cfg.assistantAvatar]
     );
 
+    useEffect(() => {
+        if (!cfg.liveUna) setHydrateError(null);
+    }, [cfg.liveUna, cfg.agentId]);
+
     const connection = useMemo(() => {
         if (cfg.connection) return cfg.connection;
+        if (cfg.liveUna) {
+            return createUnaAiChatConnection(cfg.agentId, {
+                onHydrateError: setHydrateError,
+            });
+        }
         if (cfg.endpoint) return fetchServerSentEvents(cfg.endpoint);
-        return undefined;
-    }, [cfg.connection, cfg.endpoint]);
+        return UNCONFIGURED_CONNECTION;
+    }, [cfg.connection, cfg.liveUna, cfg.agentId, cfg.endpoint]);
 
-    const { messages, sendMessage, isLoading, error, stop, clear } = useChat({
-        connection,
-    });
+    const { messages, sendMessage, isLoading, error, stop, clear } = useChat(
+        cfg.liveUna
+            ? { connection, persistence: true, threadId: `agent:${cfg.agentId}` }
+            : { connection }
+    );
+
+    const chatError = hydrateError || error;
 
     const last = messages[messages.length - 1];
     const streamingId = isLoading && last?.role === 'assistant' ? last.id : null;
@@ -197,9 +266,9 @@ export default function AiChat(props) {
                 )}
             </ScrollView>
 
-            {error ? (
+            {chatError ? (
                 <View className="px-4 pb-2">
-                    <Text className="text-sm text-destructive">{error.message}</Text>
+                    <Text className="text-sm text-destructive">{chatError.message}</Text>
                 </View>
             ) : null}
 

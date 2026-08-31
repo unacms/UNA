@@ -1,6 +1,7 @@
 /**
- * /pg/ai — dev-only Expo route for the UNA AI chat emulator.
+ * /pg/ai — dev-only Expo route for the UNA AI chat playground.
  *
+ * Native stays on the local AG-UI emulator until sys-ai-chat accepts Bearer.
  * Mirrors `apps/next/app/pg/ai/page.js`.
  */
 

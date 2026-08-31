@@ -24,6 +24,45 @@ async function resolveTenant(hostnameWithPort) {
     return domain;
 }
 
+function cookieHeaderFromRequest(request) {
+    let cookieString = '';
+    request.cookies.getAll().forEach((item) => {
+        cookieString += item.name + '=' + encodeURIComponent(item.value) + '; ';
+    });
+    return cookieString;
+}
+
+function sysAiChatPath(pathname) {
+    const match = String(pathname || '').match(/^\/sys-ai-chat\/([^/]+)\/?$/);
+    if (!match?.[1]) return null;
+    return `/sys-ai-chat/${match[1]}`;
+}
+
+/** Same-origin proxy to UNA (PHP APIs and sys-ai-chat SSE), forwarding session cookies. */
+function rewriteToUna(request, tenant, unaPath) {
+    let unaUrl = UNA_URL;
+    let unaApiKey = UNA_API_KEY;
+    if (MULTITENANT) {
+        if (tenant == null) {
+            return new NextResponse('Tenant not found', { status: 404 });
+        }
+        unaUrl = tenant.unaUrl;
+        unaApiKey = tenant.unaApiKey;
+    }
+
+    const tmpHeaders = new Headers(request.headers);
+    tmpHeaders.set('x-hello-from-middleware1', 'hello');
+    tmpHeaders.set('authorization', `Bearer ${unaApiKey}`);
+    tmpHeaders.set('cookie', cookieHeaderFromRequest(request));
+
+    const unaTarget = joinUnaUrl(unaPath, unaUrl) + new URL(request.url).search;
+    return NextResponse.rewrite(unaTarget, {
+        request: {
+            headers: tmpHeaders,
+        },
+    });
+}
+
 export async function proxy(request) {    
     // Main middleware entry: decide how to rewrite incoming requests.
     const pathname = request.nextUrl.pathname;
@@ -57,6 +96,13 @@ export async function proxy(request) {
 
     const hostname = request.headers.get("host");
     const tenant = MULTITENANT ? await resolveTenant(hostname) : null;
+
+    // Pretty URL for UNA Agents chat (GET hydrate JSON + POST AG-UI SSE).
+    // Not a .php path, so it would otherwise hit the Next catch-all page.
+    const aiChatPath = sysAiChatPath(pathname);
+    if (aiChatPath) {
+        return rewriteToUna(request, tenant, aiChatPath);
+    }
 
     // If the request is NOT targeting a PHP endpoint, handle it as a regular
     // page or an internal asset (icons) served by this Next.js app.
@@ -118,51 +164,12 @@ export async function proxy(request) {
         }
     }
     else {
-
-        // If multi-tenant is enabled and a tenant is resolved, override
-        // the UNA URL and API key for this request.
-        let unaUrl = UNA_URL;
-        let unaApiKey = UNA_API_KEY;
-        if (MULTITENANT) {
-            if (tenant == null) { // if no tenant found, UNA should not be reached
-                return new NextResponse('Tenant not found', { status: 404 });
-            }
-            unaUrl = tenant.unaUrl;
-            unaApiKey = tenant.unaApiKey;  
-        }
-
-        // Path targets a PHP endpoint: proxy the request to the UNA backend.
-        // Collect cookies and forward them along with an Authorization header.
-        let c = request.cookies.getAll();
-        let cookieString = '';
-        c.map(function (item) {
-            cookieString += item.name + '=' + encodeURIComponent(item.value) + '; '
-        });
-
         const url = new URL(request.url);
-
-        // Clone and modify request headers for the upstream call.
-        const tmpHeaders = new Headers(request.headers)
-
-        // Add a debug header, an authorization bearer token, and attach the
-        // cookie string so the UNA API receives the client's cookies.
-        tmpHeaders.set('x-hello-from-middleware1', 'hello')
-        tmpHeaders.set('authorization', `Bearer ${unaApiKey}`)
-        tmpHeaders.set('cookie', cookieString)
-
-        // Preserve the original query string when proxying.
-        let q = url.search;
-       /* if (url.searchParams.get('r') == 'q'){
-            let a = {'accounts_count': {q: 'SELECT Count(*) FROM sys_accounts', t: 'One'}}
-            let b = a[url.searchParams.get('q')];
-            q = '?r=q&q=' + b.q + '&t=' + b.t;
-        }*/
 
         // Join without creating `//api.php` — UNA nginx 308s double-slash URLs,
         // and that relative Location breaks browser fetch through the proxy.
         // Use joinUnaUrl so tenant unaUrl and default UNA_URL share the same rules.
         const unaPath = request.nextUrl.pathname.replace('/api/', '/');
-        const unaTarget = joinUnaUrl(unaPath, unaUrl) + q;
 
         // Stripe Embedded Checkout return_url: browser lands on this API URL and
         // would otherwise see raw JSON. Serve a tiny HTML bridge that re-fetches
@@ -215,11 +222,6 @@ export async function proxy(request) {
 
         // Rewrite the request to the UNA backend URL, replacing a local
         // `/api/` prefix with the UNA path and forwarding the modified headers.
-        return NextResponse.rewrite(unaTarget,
-        {
-            request: {
-                headers: tmpHeaders,
-            },
-        })
+        return rewriteToUna(request, tenant, unaPath);
     }
 }

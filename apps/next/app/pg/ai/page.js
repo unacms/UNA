@@ -1,5 +1,5 @@
 /**
- * /pg/ai — dev-only UNA Ask AI playground (emulator until the real endpoint exists).
+ * /pg/ai — dev-only UNA Ask AI playground (live `/sys-ai-chat/{AgentId}` or emulator).
  */
 
 import { Suspense } from 'react';
@@ -7,7 +7,7 @@ import Root from 'app/root-client';
 
 export const metadata = {
     title: 'AI Chat playground',
-    description: 'Development playground for UNA Agents chat with a local AG-UI emulator.',
+    description: 'Development playground for UNA Agents chat (live sys-ai-chat or local AG-UI emulator).',
 };
 
 const data = {
