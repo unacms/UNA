@@ -2,9 +2,10 @@ import { View, ScrollView, ViewRef, Row } from 'app/design/view'
 import { useState, useEffect, useRef, useCallback } from "react";
 import { Platform } from 'react-native'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
-import FormModal, { handleFormModal } from 'app/ui/molecules/dialogs/form-modal';
+import { useOpenModalByUrl } from 'app/context/jotai/modal';
 import { useIsDesktop } from 'app/context/measure';
 import { useBottomSheetData } from 'app/context/bottomsheet';
+import emitter from 'app/context/emitter';
 import { cn } from 'app/lib/util'
 
 const isWeb = Platform.OS == 'web'
@@ -19,6 +20,7 @@ function getFixedVisibleCount(persistent, allowZeroPersistant, isDesktop) {
 export default function DynamicMenu({ name, isFixedCount, MenuItem, MenuItemEx, ButtonEx, allowZeroPersistant = false, items, menuClasses, menuExClasses, isButtonOutside, offsetWidth = 50, persistent = 0 }) {
     const isDesktop = useIsDesktop();
     const { setBottomSheetData } = useBottomSheetData();
+    const openModalByUrl = useOpenModalByUrl();
     
     const itemRefs = useRef([]);
     const itemRefsMore = useRef();
@@ -35,7 +37,6 @@ export default function DynamicMenu({ name, isFixedCount, MenuItem, MenuItemEx, 
     }, [isFixedCount, persistent, allowZeroPersistant, isDesktop]);
 
     const [width, setWidth] = useState(0);
-    const [pageData, setPageData] = useState(false);
     const isDynamicMenu = true;//windowWidth > LAYOUT_BREAKPOINTS.sm;
 
     useEffect(() => {
@@ -82,6 +83,7 @@ export default function DynamicMenu({ name, isFixedCount, MenuItem, MenuItemEx, 
     // skips the outer handleSelect that normally closes the native bottomsheet.
     // Close it explicitly from the press paths that actually fire.
     const dismissOverflowMenu = useCallback(() => {
+        emitter.emit('dynamic_menu', { action: 'hide' });
         if (!isWeb) {
             setBottomSheetData(false);
         }
@@ -89,10 +91,10 @@ export default function DynamicMenu({ name, isFixedCount, MenuItem, MenuItemEx, 
 
     const ExMenu = (visibleItemsCount < items.length) && (
         <DropdownMenu
-            onSelect={(oItem, event) => {
+            onSelect={(oItem) => {
                 dismissOverflowMenu();
                 if (oItem.noAction) {
-                    handleFormModal(oItem, event, setPageData)
+                    openModalByUrl(oItem.link);
                 }
             }}
             mode={isWeb ? "popup" : ""}
@@ -109,7 +111,7 @@ export default function DynamicMenu({ name, isFixedCount, MenuItem, MenuItemEx, 
                             onPress: (event) => {
                                 dismissOverflowMenu();
                                 if (aItem.noAction) {
-                                    handleFormModal(aItem, event, setPageData);
+                                    openModalByUrl(aItem.link);
                                     return;
                                 }
                                 if (aItem.params?.onclick) {
@@ -132,7 +134,6 @@ export default function DynamicMenu({ name, isFixedCount, MenuItem, MenuItemEx, 
 
     return (
         <>
-            <FormModal pageData={pageData} setPageData={setPageData} />
             <View
                
                 className="flex-row items-center gap-2"
@@ -150,7 +151,7 @@ export default function DynamicMenu({ name, isFixedCount, MenuItem, MenuItemEx, 
                                     aItem?.item?.settings?.class
                                 )}
                                 ref={el => (itemRefs?.current ? (itemRefs.current[iKey] = el) : (el = null))} >
-                                <MenuItem item={{ ...aItem, onPress: (event) => { setPageData('loading'); handleFormModal(aItem, event, setPageData) }}} visibleItemsCount={visibleItemsCount} />
+                                <MenuItem item={{ ...aItem, onPress: () => openModalByUrl(aItem.link) }} visibleItemsCount={visibleItemsCount} />
                             </View>
                         })
                     }

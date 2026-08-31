@@ -118,6 +118,8 @@ export function MenuItemActionButton({
                 borderShape={params?.button_border_shape}
                 width={params?.button_full_width ? 'fill' : 'auto'}
                 contentInsets={contentInsets ?? params?.button_content_insets}
+                className={params?.button_className}
+                classNames={params?.button_classNames}
                 {...pressProps}
             />
         );

@@ -1,134 +1,15 @@
-import React, { useCallback, useState, useLayoutEffect, useMemo, useRef } from "react";
-import Animated, { useSharedValue, useAnimatedStyle, interpolate, Extrapolation, useAnimatedReaction, runOnJS, FadeIn } from 'react-native-reanimated';
+import React, { useCallback, useMemo } from "react";
 import { View, ScrollView, Row } from 'app/design/view';
 import { appSetting, isNativeTabsEnabled } from 'app/lib/util';
 import { hasConductorSubitems, registeredComponent } from './helpers';
 import { LeftColumnMenuDropdown, TabList, ListScene } from './shared-ui';
-import Cover, { CoverSmall, CoverBackButton } from 'app/components/elements/cover';
+import Cover from 'app/components/elements/covers/cover';
+import { CoverBackButton } from 'app/components/elements/covers/cover-elements';
+import CoverMorph from 'app/components/elements/covers/cover-morph';
 import { useStableSafeAreaInsets } from 'app/lib/hooks/router'
 import { useTranslation } from 'react-i18next';
 
 const conductorTheme = appSetting('theme', 'conductor')
-
-// Scroll jitter right at the collapse threshold must not flip-flop the
-// Cover/CoverSmall swap (each flip is a JS remount).
-const COVER_SWAP_HYSTERESIS = 8;
-// Masks the content pop of the hard swap. Entering-only: an exiting
-// animation would keep both covers mounted at once (see Host crash note).
-const COVER_SWAP_FADE_MS = 160;
-
-const COVER_OVERLAY_STYLE = { position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10 }
-
-/**
- * Overlay + translateY like Showtime. Cover and CoverSmall are never
- * mounted together — stacking their Hosts crashes the back button even
- * before any scroll.
- */
-const DynamicCoverHeader = React.memo(function DynamicCoverHeader({
-    pageKey,
-    coverHeader,
-    coverHeaderSmall,
-    sceneHeader,
-    filter,
-    leading,
-    coverScrollY,
-    onOverlayHeight,
-    nativeTabsTopInset = 0,
-}) {
-    const [coverHeight, setCoverHeight] = useState(0);
-    const [showSmall, setShowSmall] = useState(false);
-    const overlayMaxRef = useRef(0);
-    // Fade the full cover back in only after a real swap, never on first mount.
-    const hasSwappedRef = useRef(false);
-    const collapsedSV = useSharedValue(false);
-    const compactHeight = 64 + nativeTabsTopInset;
-    const collapseRange = Math.max(0, coverHeight - compactHeight);
-
-    useLayoutEffect(() => {
-        overlayMaxRef.current = 0;
-        hasSwappedRef.current = false;
-        setCoverHeight(0);
-        setShowSmall(false);
-        collapsedSV.set(false);
-        coverScrollY?.set(0);
-        onOverlayHeight?.(0);
-    }, [pageKey, coverScrollY, onOverlayHeight, collapsedSV]);
-
-    const applyShowSmall = useCallback((next) => {
-        hasSwappedRef.current = true;
-        setShowSmall(next);
-    }, []);
-
-    useAnimatedReaction(
-        () => coverScrollY?.get() ?? 0,
-        (y) => {
-            if (collapseRange <= 0) return;
-            const wasCollapsed = collapsedSV.get();
-            const next = wasCollapsed
-                ? y > collapseRange - COVER_SWAP_HYSTERESIS
-                : y >= collapseRange;
-            if (next !== wasCollapsed) {
-                collapsedSV.set(next);
-                runOnJS(applyShowSmall)(next);
-            }
-        },
-        [collapseRange, applyShowSmall]
-    );
-
-    const onCoverLayout = useCallback((e) => {
-        const height = e.nativeEvent.layout.height;
-        if (height <= 0) return;
-        setCoverHeight((prev) => (height > prev ? height : prev));
-    }, []);
-
-    const onRootLayout = useCallback((e) => {
-        const height = e.nativeEvent.layout.height;
-        if (height > overlayMaxRef.current) {
-            overlayMaxRef.current = height;
-            onOverlayHeight?.(height);
-        }
-    }, [onOverlayHeight]);
-
-    const translateStyle = useAnimatedStyle(() => {
-        if (showSmall) return { transform: [{ translateY: 0 }] };
-        const y = coverScrollY ? Math.max(0, coverScrollY.get()) : 0;
-        return {
-            transform: [{
-                translateY: collapseRange > 0
-                    ? interpolate(y, [0, collapseRange], [0, -collapseRange], Extrapolation.CLAMP)
-                    : 0,
-            }],
-        };
-    }, [collapseRange, coverScrollY, showSmall]);
-
-    return (
-        <View
-            pointerEvents="box-none"
-            onLayout={onRootLayout}
-            style={COVER_OVERLAY_STYLE}
-        >
-            {leading}
-            <Animated.View className="bg-background" style={translateStyle}>
-                {showSmall ? (
-                    <Animated.View key="cover-swap-small" entering={FadeIn.duration(COVER_SWAP_FADE_MS)}>
-                        {coverHeaderSmall}
-                    </Animated.View>
-                ) : (
-                    <Animated.View
-                        key="cover-swap-full"
-                        entering={hasSwappedRef.current ? FadeIn.duration(COVER_SWAP_FADE_MS) : undefined}
-                    >
-                        <View onLayout={onCoverLayout}>
-                            {coverHeader}
-                        </View>
-                    </Animated.View>
-                )}
-                {sceneHeader}
-                {filter}
-            </Animated.View>
-        </View>
-    );
-});
 
 export const TabSceneHeader = React.memo(function TabSceneHeader({
     headerMode,
@@ -140,27 +21,29 @@ export const TabSceneHeader = React.memo(function TabSceneHeader({
     ts,
     coverScrollY,
     onOverlayHeight,
+    onProgress,
 }) {
     const ContextSelector = registeredComponent('molecule', 'context_selector');
     const { top: stableTopInset } = useStableSafeAreaInsets();
-    // One selector for dynamic cover profiles (groups/spaces).
     const useStandaloneContextSelector =
         appSetting('context_selector', 'show_always') &&
         pageContext &&
         headerMode === 'dynamic';
 
-    // Lift the back button out of the cover when it shares a row with the
-    // standalone context selector — otherwise leave it in Cover/CoverSmall.
     const useStandaloneCoverBackButton = !!useStandaloneContextSelector;
 
-    // Remount covers on soft-reload (profile `ts`) so CoverImage local state
-    // cannot stick after setPageData.
     const coverKey = `${ts ?? ''}:${coverBlock?.cover?.src ?? ''}:${coverBlock?.profile?.url_avatar ?? ''}`;
 
     const nativeTabsTopInset = isNativeTabsEnabled() ? (stableTopInset || 0) : 0;
     const selectorPadStyle = useMemo(
         () => (nativeTabsTopInset > 0 ? { paddingTop: nativeTabsTopInset } : undefined),
         [nativeTabsTopInset]
+    );
+
+    const coverMode = appSetting(
+        'cover',
+        'view_by_module',
+        coverBlock?.profile?.module,
     );
 
     const standaloneContextSelector = useMemo(() => {
@@ -188,53 +71,40 @@ export const TabSceneHeader = React.memo(function TabSceneHeader({
         pageUri,
     ]);
 
-    const coverHeader = useMemo(
-        () => (
-            <Cover
-                key={`cover-${coverKey}`}
-                data={coverBlock}
-                showMoreMenu={false}
-                uri={pageUri}
-                context={pageContext}
-                suppressContextSelector={useStandaloneContextSelector}
-                suppressCoverBackButton={useStandaloneCoverBackButton}
-            />
-        ),
-        [coverKey, coverBlock, pageUri, pageContext, useStandaloneContextSelector, useStandaloneCoverBackButton]
-    );
-    const coverHeaderSmall = useMemo(
-        () => (
-            <CoverSmall
-                key={`cover-small-${coverKey}`}
-                showMoreMenu
-                context={pageContext}
-                data={coverBlock}
-                uri={pageUri}
-                suppressContextSelector={useStandaloneContextSelector}
-                suppressCoverBackButton={useStandaloneCoverBackButton}
-            />
-        ),
-        [coverKey, coverBlock, pageContext, pageUri, useStandaloneContextSelector, useStandaloneCoverBackButton]
-    );
     if (headerMode === 'dynamic') {
         return (
-            <DynamicCoverHeader
+            <CoverMorph
+                key={`cover-morph-${coverKey}`}
                 pageKey={coverKey}
-                coverHeader={coverHeader}
-                coverHeaderSmall={coverHeaderSmall}
-                sceneHeader={sceneHeader}
-                filter={filter}
-                leading={standaloneContextSelector}
+                data={coverBlock}
+                mode={coverMode}
+                uri={pageUri}
+                context={pageContext}
+                stickyTop={nativeTabsTopInset}
+                showImage={coverMode !== 'min' && coverMode !== 'none'}
                 coverScrollY={coverScrollY}
                 onOverlayHeight={onOverlayHeight}
-                nativeTabsTopInset={nativeTabsTopInset}
+                onProgress={onProgress}
+                leading={standaloneContextSelector}
+                sceneHeader={sceneHeader}
+                filter={filter}
+                suppressContextSelector={useStandaloneContextSelector}
+                suppressCoverBackButton={useStandaloneCoverBackButton}
             />
         );
     }
     if (headerMode === 'small') {
         return (
             <View className="w-full">
-                {coverHeader}
+                <Cover
+                    key={`cover-${coverKey}`}
+                    data={coverBlock}
+                    showMoreMenu={false}
+                    uri={pageUri}
+                    context={pageContext}
+                    suppressContextSelector={useStandaloneContextSelector}
+                    suppressCoverBackButton={useStandaloneCoverBackButton}
+                />
                 {sceneHeader}
                 {filter}
             </View>

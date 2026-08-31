@@ -1,7 +1,7 @@
 import { View } from 'app/design/view';
 import Image from 'app/ui/atoms/image';
 import { Text } from 'app/design/typography';
-import { CoverMenuMeta, CoverMenu, CoverMenuMore } from 'app/components/nav/menu-cover'
+import { CoverMenuMeta, CoverMenu, CoverMenuMore } from 'app/components/elements/covers/menu-cover'
 import { stripTags } from 'app/lib/util'
 import { BlockWrapper } from 'app/components/block-wrapper'
 

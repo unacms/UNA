@@ -120,6 +120,7 @@ export function CoverMenu(props) {
             {...propsCopy}
             displayType="button"
             autoSize={!isSplitMenu}
+            alignItems="start"
             containerClasses={props.containerClasses}
             params={{
                 showVertical:props?.params?.showVertical ?? false,
@@ -131,7 +132,9 @@ export function CoverMenu(props) {
                 button_primary_style: buttonStyle == 'bordered' ? 'borderedProminent' : 'glassProminent',
                 button_border_shape: 'capsule',
                 button_full_width: props?.params?.button_full_width ?? false,
-                className: 'flex-wrap gap-2 my-auto ',
+                // Prefer items-center over my-auto — on native Yoga, my-auto in a
+                // horizontal Row with items-center collapses the menu to height 0.
+                className: 'flex-wrap gap-2 items-center',
                 isFixedCount: true,
             }}
         />
@@ -195,23 +198,35 @@ export function CoverMenuMore(props) {
     )
 }
 
-export function CoverMenuMeta(props) {
+export function CoverMenuMeta({
+    button_size,
+    list_display_size,
+    list_max_count,
+    list_className,
+    hide_avatars,
+    compact,
+    ...props
+}) {
+    const hideAvatars = hide_avatars === true
     return (
         <Menu
             {...props}
             displayType="mixed"
             params={{
                 button_style: 'plain',
-                button_size: props.button_size || 'regular',
+                button_size: button_size || (compact ? 'mini' : 'regular'),
                 button_border_shape: 'capsule',
                 button_content_insets: { x: 0 },
-                
-                list_display_size: props.list_display_size || 'xs',
-                list_max_count: props.list_max_count || 3,
-                list_className: '',
+                button_className: compact ? 'h-5 min-h-5 min-w-0' : undefined,
+                button_classNames: compact ? { text: 'leading-5' } : undefined,
+                list_display_size: list_display_size || 'xs',
+                list_max_count: hideAvatars ? 0 : (list_max_count ?? 3),
+                list_className: hideAvatars ? 'hidden' : (list_className || ''),
                 menu_item_separator: 'dot',
-                menu_item_separator_class: 'h-1 w-1 rounded-full bg-muted-foreground/60',
-                className: ' gap-3 flex-wrap',
+                menu_item_separator_class: compact
+                    ? 'h-0.5 w-0.5 rounded-full bg-muted-foreground/60'
+                    : 'h-1 w-1 rounded-full bg-muted-foreground/60',
+                className: compact ? ' gap-2 flex-nowrap h-5 items-center' : ' gap-3 flex-wrap',
                 justify_items: 'start'
             }}
         />

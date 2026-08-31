@@ -37,6 +37,11 @@
     lodash "^4.17.21"
     react-dom "^18.2.0"
 
+"@ag-ui/core@0.1.1-canary.beta.0":
+  version "0.1.1-canary.beta.0"
+  resolved "https://registry.yarnpkg.com/@ag-ui/core/-/core-0.1.1-canary.beta.0.tgz#b79accbfaac3bb0ceb1cce3962d9b288b6e5d670"
+  integrity sha512-zcP3RH5p3HJTZ0kyQxNOL1blnVFTDpaShitR7UMS/thwFdl48V6CAG+WQBcYEu/dfa8mKonRez88N0Ok+nEI+w==
+
 "@alloc/quick-lru@^5.2.0":
   version "5.2.0"
   resolved "https://registry.yarnpkg.com/@alloc/quick-lru/-/quick-lru-5.2.0.tgz#7bf68b20c0a350f936915fcae06f58e32007ce30"
@@ -3495,6 +3500,11 @@
   resolved "https://registry.yarnpkg.com/@sinclair/typebox/-/typebox-0.27.10.tgz#beefe675f1853f73676aecc915b2bd2ac98c4fc6"
   integrity sha512-MTBk/3jGLNB2tVxv6uLlFh1iu64iYOQ2PbdOSK3NW8JZsmlaOh2q6sdtKowBhfw8QFLmYNzTW4/oK4uATIi6ZA==
 
+"@standard-schema/spec@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@standard-schema/spec/-/spec-1.1.0.tgz#a79b55dbaf8604812f52d140b2c9ab41bc150bb8"
+  integrity sha512-l2aFy5jALhniG5HgqrD6jXLi/rUWrKvqN/qJx6yoJsgKhblVd+iqqU4RCXavm/jPityDo5TCvKMnpjKnOriy0w==
+
 "@stripe/connect-js@^3.3.25", "@stripe/connect-js@^3.3.31":
   version "3.4.6"
   resolved "https://registry.yarnpkg.com/@stripe/connect-js/-/connect-js-3.4.6.tgz#03bf1fbb812226015f8e2c1f103f6082149dc5a8"
@@ -3834,6 +3844,50 @@
   integrity sha512-hwbzQuNUfcPvbegQFatVPl/MY/tcM9KLl963hQ5laJKPh81TEZ1+dNG9PirGvcaDBkp+BCshExAyKVPW91dozw==
   dependencies:
     postcss-selector-parser "6.0.10"
+
+"@tanstack/ai-client@^0.29.1":
+  version "0.29.1"
+  resolved "https://registry.yarnpkg.com/@tanstack/ai-client/-/ai-client-0.29.1.tgz#fc21ce956406eac14b7825297481e321165550b0"
+  integrity sha512-OTs7FwHI95oT0nuVOkhjU6lNGHNWFI1lokuNHDNYgffqHfdtn40sSScrzg8ADiNTKsi3r0Y0sXMEPeYQehcJfA==
+  dependencies:
+    "@tanstack/ai" "^0.51.0"
+    "@tanstack/ai-event-client" "^0.11.1"
+    "@tanstack/ai-utils" "^0.4.0"
+
+"@tanstack/ai-event-client@^0.11.1":
+  version "0.11.1"
+  resolved "https://registry.yarnpkg.com/@tanstack/ai-event-client/-/ai-event-client-0.11.1.tgz#666c7e4488fab2a0074c49e94a16dd5035dcbcec"
+  integrity sha512-Au8hDtfk73XCtVIw9KSiGuWF5Wxl5+rIISW1NHvGNmdKiR39TeiA+/r+ryoXiJydXrkDECoe2Q3qijjUJR5O3A==
+  dependencies:
+    "@tanstack/devtools-event-client" "^0.4.1"
+
+"@tanstack/ai-react@^0.22.3":
+  version "0.22.3"
+  resolved "https://registry.yarnpkg.com/@tanstack/ai-react/-/ai-react-0.22.3.tgz#ba946eabba73e9018fe046d32cf8d4a2fa6254b1"
+  integrity sha512-sFgxo5KthVMF5NptNRVmuHqAeRAKzBVsX1DR+966kNI+ZSWi4KNneAAEC5M3CMJxKXul2U046FKwJphlpYUR6A==
+  dependencies:
+    "@tanstack/ai-client" "^0.29.1"
+
+"@tanstack/ai-utils@^0.4.0":
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/@tanstack/ai-utils/-/ai-utils-0.4.0.tgz#d4ee407d446471d0ba1c500348e6b5be22e481ad"
+  integrity sha512-xqvAgPJkIuGk1m+jZKyb7vBTQIaBmUD9EVzlPkDWWMp80n69uwL0TnBZCVk+OwL9goTQiFy648dnBfLsiJgl6A==
+
+"@tanstack/ai@^0.51.0":
+  version "0.51.0"
+  resolved "https://registry.yarnpkg.com/@tanstack/ai/-/ai-0.51.0.tgz#a409626fb56997d49636135dbb4bfaff833b25a0"
+  integrity sha512-tEaDXXF8C5daQ8ruu1vep6DktHDF3FFdnX9ivfw4zk1Hh/2L+IhoKVYlGad85Wjy7BSBhb6xzkUWyhX/b+0kyw==
+  dependencies:
+    "@ag-ui/core" "0.1.1-canary.beta.0"
+    "@standard-schema/spec" "^1.1.0"
+    "@tanstack/ai-event-client" "^0.11.1"
+    "@tanstack/ai-utils" "^0.4.0"
+    partial-json "^0.1.7"
+
+"@tanstack/devtools-event-client@^0.4.1":
+  version "0.4.4"
+  resolved "https://registry.yarnpkg.com/@tanstack/devtools-event-client/-/devtools-event-client-0.4.4.tgz#c58185e737bee28b3afce206509412225e9f9031"
+  integrity sha512-6T5Yop/793YI+H+5J8Hsyj4kCih9sl4t3ElLgKioW5hk3ocn+ZdSJ94tT7vL7uabxSugWYBZlOTMPzEw2puvQw==
 
 "@tanstack/query-core@4.44.0":
   version "4.44.0"
@@ -10145,6 +10199,11 @@ parseurl@~1.3.3:
   resolved "https://registry.yarnpkg.com/parseurl/-/parseurl-1.3.3.tgz#9da19e7bee8d12dff0513ed5b76957793bc2e8d4"
   integrity sha512-CiyeOxFT/JZyN5m0z9PfXw4SCBJ6Sygz1Dpl0wqjlhDEGGBP1GnsUVEL0p63hoG1fcj3fHynXi9NYO4nWOL+qQ==
 
+partial-json@^0.1.7:
+  version "0.1.7"
+  resolved "https://registry.yarnpkg.com/partial-json/-/partial-json-0.1.7.tgz#b735a89edb3e25f231a3c4caeaae71dc9f578605"
+  integrity sha512-Njv/59hHaokb/hRUjce3Hdv12wd60MtM9Z5Olmn+nehe0QDAsRtRbJPvJ0Z91TusF0SuZRIvnM+S4l6EIP8leA==
+
 patch-package@^8.0.1:
   version "8.0.1"
   resolved "https://registry.yarnpkg.com/patch-package/-/patch-package-8.0.1.tgz#79d02f953f711e06d1f8949c8a13e5d3d7ba1a60"
@@ -10739,10 +10798,10 @@ react-native-enriched-html@1.2.0-nightly-20260814-63d4eac2c:
     "@tiptap/react" "3.27.1"
     dompurify "3.4.11"
 
-react-native-enriched-markdown@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/react-native-enriched-markdown/-/react-native-enriched-markdown-1.0.1.tgz#e00f1788319352e4c74e118b10e13984072ed0a8"
-  integrity sha512-Wh23zYIjZmrJ5/dbezS1Ldc2k0tp++Y3cZrhJ4aRBfsfQpyxBtRNgvkfkWYFSlCCwX9RlCf/iyCDcG1Okp7F6g==
+react-native-enriched-markdown@1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/react-native-enriched-markdown/-/react-native-enriched-markdown-1.0.2.tgz#01145e8b35a18e5385086841252ea9d85c6b5427"
+  integrity sha512-zvVM4W1VMV/cYAKUTYoVheadOGHLbny2kALFn0vi5av/WFa0JSYboeeq/vPRqS5dc8qvUTjXwVlrkhrcuinNQA==
 
 react-native-gesture-handler@~2.32.0:
   version "2.32.0"

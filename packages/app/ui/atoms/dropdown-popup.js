@@ -366,7 +366,14 @@ export default function DropdownPopup({
                             {hoverMode ? (
                                 Content
                             ) : (
-                                <RemoveScroll>{Content}</RemoveScroll>
+                                // Keep body overflow intact. `removeScrollBar` sets
+                                // `overflow: hidden` on `body`, which unsticks
+                                // `position: sticky` (compact cover) and jumps it to
+                                // its in-flow position above the viewport. Wheel/touch
+                                // locking still runs.
+                                <RemoveScroll removeScrollBar={false}>
+                                    {Content}
+                                </RemoveScroll>
                             )}
                         </View>
                     ) : (

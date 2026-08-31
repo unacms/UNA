@@ -80,6 +80,8 @@ export const settingsProfiles = {
             font: 'text-3xl font-semibold',
             letter_font: 'text-8xl font-semibold',
         },
+        // Applied when Profile `animated` is set so displaySize swaps interpolate.
+        size_transition: 'web:transition-[width,height] web:duration-300 web:ease-out motion-reduce:transition-none',
     },
     profile_colors: [
         'orange',

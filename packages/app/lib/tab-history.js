@@ -4,9 +4,9 @@ import { usePathname } from 'app/lib/hooks/router';
 import emitter from 'app/context/emitter';
 import { appSetting } from 'app/lib/util';
 import { useBottomSheetStore } from 'app/context/bottomsheet';
-import { getTabKeyFromPathname } from 'app/lib/tab-path';
+import { getTabKeyFromPathname, parseTabKey } from 'app/lib/tab-path';
 
-export { getTabKeyFromPathname } from 'app/lib/tab-path';
+export { getTabKeyFromPathname, parseTabKey } from 'app/lib/tab-path';
 
 /** Screen-owned tab key (`/tab0`…) so back never follows the focused tab's pathname. */
 export const TabKeyContext = createContext(null);
@@ -82,21 +82,23 @@ export function isTabHistoryExcluded(url) {
 }
 
 export function ensureTabHistory(tabKey, currentUser, initialUrl) {
-    if (!tabHistoryState.byTab[tabKey]) {
-        const root = getTabRootUrl(tabKey, currentUser);
-        tabHistoryState.byTab[tabKey] = [root];
+    const key = parseTabKey(tabKey);
+    if (!key) return;
+    if (!tabHistoryState.byTab[key]) {
+        const root = getTabRootUrl(key, currentUser);
+        tabHistoryState.byTab[key] = [root];
         if (initialUrl && initialUrl !== root) {
-            tabHistoryState.byTab[tabKey].push(initialUrl);
+            tabHistoryState.byTab[key].push(initialUrl);
         }
     }
 }
 
 export function pushTabHistory(tabKey, url, currentUser) {
-    if (!tabKey || !url) {
-        return;
-    }
-    ensureTabHistory(tabKey, currentUser);
-    const stack = tabHistoryState.byTab[tabKey];
+    if (!url) return;
+    const key = parseTabKey(tabKey);
+    if (!key) return;
+    ensureTabHistory(key, currentUser);
+    const stack = tabHistoryState.byTab[key];
     if (stack[stack.length - 1] !== url) {
         stack.push(url);
     }
@@ -104,11 +106,11 @@ export function pushTabHistory(tabKey, url, currentUser) {
 
 /** Same page, different submenu (conductor tabs) — do not create a back entry. */
 export function replaceTabHistory(tabKey, url, currentUser) {
-    if (!tabKey || !url) {
-        return;
-    }
-    ensureTabHistory(tabKey, currentUser);
-    const stack = tabHistoryState.byTab[tabKey];
+    if (!url) return;
+    const key = parseTabKey(tabKey);
+    if (!key) return;
+    ensureTabHistory(key, currentUser);
+    const stack = tabHistoryState.byTab[key];
     if (!stack.length) {
         stack.push(url);
         return;
@@ -125,7 +127,8 @@ export function applyTabHistory(tabKey, url, currentUser, mode) {
 }
 
 export function canGoBackInTab(tabKey) {
-    const stack = tabHistoryState.byTab[tabKey];
+    const key = parseTabKey(tabKey);
+    const stack = key ? tabHistoryState.byTab[key] : null;
     if (!stack || stack.length <= 1) return false;
     for (let i = stack.length - 2; i >= 0; i--) {
         if (!isTabHistoryExcluded(stack[i])) return true;
@@ -134,8 +137,10 @@ export function canGoBackInTab(tabKey) {
 }
 
 export function popTabHistory(tabKey, currentUser) {
-    ensureTabHistory(tabKey, currentUser);
-    const stack = tabHistoryState.byTab[tabKey];
+    const key = parseTabKey(tabKey);
+    if (!key) return undefined;
+    ensureTabHistory(key, currentUser);
+    const stack = tabHistoryState.byTab[key];
     if (stack.length > 1) {
         stack.pop();
     }
@@ -146,16 +151,18 @@ export function popTabHistory(tabKey, currentUser) {
 }
 
 export function getTabRoot(tabKey, currentUser) {
-    return getTabRootUrl(tabKey, currentUser);
+    const key = parseTabKey(tabKey);
+    if (!key) return '/home';
+    return getTabRootUrl(key, currentUser);
 }
 
 /** Swap in-tab URL to the previous history entry (cached feed, etc.) — no stack pop. */
 export function navigateBackInTab(router, tabKey, currentUser) {
-    if (!router || !tabKey) {
+    const normalizedTabKey = parseTabKey(tabKey);
+    if (!router || !normalizedTabKey) {
         return;
     }
 
-    const normalizedTabKey = getTabKeyFromPathname(tabKey);
     const targetUrl = canGoBackInTab(normalizedTabKey)
         ? popTabHistory(normalizedTabKey, currentUser)
         : getTabRoot(normalizedTabKey, currentUser);
@@ -186,10 +193,11 @@ export function resetAllTabHistory() {
 }
 
 export function resetTabHistory(tabKey, currentUser, initialUrl) {
-    if (!tabKey) return;
-    const rootUrl = getTabRoot(tabKey, currentUser);
-    tabHistoryState.byTab[tabKey] = [rootUrl];
+    const key = parseTabKey(tabKey);
+    if (!key) return;
+    const rootUrl = getTabRootUrl(key, currentUser);
+    tabHistoryState.byTab[key] = [rootUrl];
     if (initialUrl && initialUrl !== rootUrl) {
-        tabHistoryState.byTab[tabKey].push(initialUrl);
+        tabHistoryState.byTab[key].push(initialUrl);
     }
 }

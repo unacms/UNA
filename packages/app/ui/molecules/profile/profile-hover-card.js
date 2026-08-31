@@ -9,7 +9,7 @@ import { getPageData } from 'app/lib/util';
 import {
     CoverMenuMeta,
     CoverMenu,
-} from 'app/components/nav/menu-cover'
+} from 'app/components/elements/covers/menu-cover'
 
 const isWeb = Platform.OS === 'web';
 

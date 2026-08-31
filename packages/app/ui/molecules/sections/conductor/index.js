@@ -34,6 +34,10 @@ import {
 } from 'app/lib/cache/native-conductor-cache'
 import { setListScrollOffset } from 'app/lib/cache/list-scroll-cache'
 import { useTranslation } from 'react-i18next'
+import {
+    pinCollapsedCoverForTabSwitch,
+    releaseCoverTabScrollHold,
+} from 'app/components/elements/covers/cover-tab-scroll'
 
 function parseRevalidatePayload(value) {
     if (typeof value === 'string') {
@@ -97,8 +101,18 @@ export function Conductor({
     const listRef = useRef(null)
     const coverScrollY = useSharedValue(0)
     const [coverOverlayPad, setCoverOverlayPad] = useState(0)
+    // Subtracted from overlay pad after a tab switch while collapsed. Live
+    // collapse keeps the full pad (list is already scrolled by `range`).
+    const [coverPadPin, setCoverPadPin] = useState(0)
     const onOverlayHeight = useCallback((height) => {
+        if (height === 0) setCoverPadPin(0)
         setCoverOverlayPad((prev) => (prev === height ? prev : height))
+    }, [])
+    const onCoverProgress = useCallback((progress) => {
+        if (progress < 1) {
+            setCoverPadPin(0)
+            releaseCoverTabScrollHold()
+        }
     }, [])
     const activeRequestUrlRef = useRef(null)
 
@@ -195,7 +209,7 @@ export function Conductor({
         indexRef,
         activeRoute,
         prevRoute,
-        onSelectTab,
+        onSelectTab: onSelectTabRoute,
     } = useConductorRoutes({
         initedTabs,
         pageUrl: data?.url,
@@ -209,6 +223,15 @@ export function Conductor({
         persistWriteKey: `${layoutName}:${currentUser?.id ?? 'guest'}`,
         adapter: routesAdapter,
     })
+
+    const onSelectTab = useCallback((tab) => {
+        setCoverPadPin(pinCollapsedCoverForTabSwitch())
+        onSelectTabRoute(tab)
+    }, [onSelectTabRoute])
+
+    useEffect(() => {
+        setCoverPadPin(0)
+    }, [data?.url])
 
     const tabRoute = useMemo(
         () => (activeRoute?.inited ? activeRoute : (prevRoute ?? activeRoute)),
@@ -487,9 +510,10 @@ export function Conductor({
                 ts={ts}
                 coverScrollY={coverScrollY}
                 onOverlayHeight={onOverlayHeight}
+                onProgress={onCoverProgress}
             />
         ),
-        [headerMode, coverBlock, pageUri, pageContext, sceneHeader, filter, ts, coverScrollY, onOverlayHeight]
+        [headerMode, coverBlock, pageUri, pageContext, sceneHeader, filter, ts, coverScrollY, onOverlayHeight, onCoverProgress]
     )
 
     const subHeaderRef = useRef(headerComponent)
@@ -574,7 +598,7 @@ export function Conductor({
                     skipHeaderOffset={useLocalHeader}
                     listRef={listRef}
                     leftColumnExcludedFromMainIds={leftColumnExcludedFromMainIds}
-                    coverOverlayPad={headerMode === 'dynamic' ? coverOverlayPad : 0}
+                    coverOverlayPad={headerMode === 'dynamic' ? Math.max(0, coverOverlayPad - coverPadPin) : 0}
                     coverScrollY={headerMode === 'dynamic' ? coverScrollY : undefined}
                     isInited={!!activeRoute?.inited}
                 />

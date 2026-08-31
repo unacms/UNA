@@ -40,8 +40,9 @@ import DynamicMenu from 'app/components/nav/menu-dynamic'
 import { layoutForList } from 'app/customization/functions'
 import FormModal, { handleFormModal } from 'app/ui/molecules/dialogs/form-modal'
 import emitter from 'app/context/emitter'
-import Cover, { CoverSmall } from 'app/components/elements/cover'
-import { CoverMenuMore, CoverMenu } from 'app/components/nav/menu-cover'
+import Cover from 'app/components/elements/covers/cover'
+import CoverMorph from 'app/components/elements/covers/cover-morph'
+import { CoverMenuMore, CoverMenu } from 'app/components/elements/covers/menu-cover'
 import {
     Panel,
     PanelGroup,
@@ -846,53 +847,25 @@ export const HeaderContainer = ({
     showFilters = false,
     onShowFilters,
 }) => {
-    const [hideDefaultHeaderFrom, setHideDefaultHeaderFrom] = useState(100);
-    const [smallCoverHeight, setSmallCoverHeight] = useState(79);
     const isDesktop = useIsDesktop()
     const pageHeaderHeight = useHeaderHeight()
-    const [isScrolled, setIsScrolled] = useState(isCoverDisabled)
-    // Keeps the small cover mounted through its exit animation when scrolling back up.
-    const [isSmallCoverMounted, setIsSmallCoverMounted] = useState(isCoverDisabled)
-    // Measured height of the small cover so it can collapse smoothly on exit (tabs follow).
-    const [smallCoverInnerHeight, setSmallCoverInnerHeight] = useState(0)
     const uri = pageData?.uri
-    const collapseThreshold = hideDefaultHeaderFrom - smallCoverHeight - 10
+    const stickyTop = pageHeaderHeight || 0
+    const coverKey = `${pageData?.ts ?? ''}:${pageData?.cover_block?.cover?.src ?? ''}:${pageData?.cover_block?.profile?.url_avatar ?? ''}`
 
-    useLayoutEffect(() => {
-        coverTabScroll.collapsed = isScrolled
-    }, [isScrolled])
+    const hasCoverData = !!pageData?.cover_block?.profile
+    // Single morphing cover replaces the old full Cover → CoverSmall swap.
+    // It applies whenever there is cover data and the collapse behavior is
+    // wanted: the cover image scrolls away while one identity bar morphs and
+    // pins below the page header (see covers/cover-morph).
+    const useMorph =
+        hasCoverData &&
+        !appSetting('cover', 'fixed') &&
+        ((isCover && !isHideCover) || !isDesktop)
 
-    const handleScroll = useCallback(() => {
-        requestAnimationFrame(() => {
-            const next = window.scrollY > collapseThreshold
-            if (!next && coverTabScroll.collapsed && coverTabScroll.hold) {
-                scrollTabToStart()
-                return
-            }
-            coverTabScroll.collapsed = next
-            setIsScrolled(next)
-        })
-    }, [collapseThreshold])
-
-    useEffect(() => {
-        if (!appSetting('cover', 'fixed') && isCover) {
-            window.addEventListener('scroll', handleScroll)
-        }
-
-        return () => {
-            if (!appSetting('cover', 'fixed') && isCover) {
-                window.removeEventListener('scroll', handleScroll)
-            }
-        }
-    }, [handleScroll, isCover])
-
-    useLayoutEffect(() => {
-        const wrap = document.querySelector('.ns--conductor-wrapper--')
-        if (!wrap) return
-        wrap.style.minHeight = isScrolled
-            ? `calc(100dvh - ${pageHeaderHeight || 0}px + ${hideDefaultHeaderFrom}px)`
-            : `calc(100dvh - ${pageHeaderHeight || 0}px)`
-    }, [isScrolled, hideDefaultHeaderFrom, pageHeaderHeight])
+    const onMorphProgress = useCallback((progress) => {
+        coverTabScroll.collapsed = progress >= 0.999
+    }, [])
 
     useEffect(() => {
         return () => {
@@ -901,101 +874,66 @@ export const HeaderContainer = ({
         }
     }, [])
 
-    useEffect(() => {
-        if (isScrolled) {
-            setIsSmallCoverMounted(true)
-            return
-        }
-        // Delay unmount so the exit animation can play before display:none.
-        const timer = setTimeout(() => setIsSmallCoverMounted(false), 300)
-        return () => clearTimeout(timer)
-    }, [isScrolled])
+    const tabBarContent = (
+        <>
+            <TabBar
+                menu={menu}
+                routes={routes}
+                layoutName={layoutName}
+                index={index}
+                setIndex={setIndex}
+                onChangeRoute={onChangeRoute}
+                pageData={pageData}
+                leftColumnMenus={leftColumnMenus}
+            />
+            <FiltersButton
+                visible={showFilters}
+                onPress={onShowFilters}
+                className="items-start px-3 lg:px-4 py-2"
+            />
+        </>
+    )
 
-    const onCoverLayout1 = useCallback((e) => {
-        setHideDefaultHeaderFrom(e.nativeEvent.layout.height)
-    }, [])
+    if (useMorph) {
+        // Cover + sticky compact bar + tab bar. The conductor wrapper is the
+        // sticky containing block so they pin while tab content scrolls.
+        return (
+            <CoverMorph
+                key={`cover-morph-${coverKey}`}
+                pageKey={coverKey}
+                data={pageData.cover_block}
+                mode={headerSettings.cover}
+                uri={uri}
+                context={pageData.context}
+                stickyTop={stickyTop}
+                showImage={!isCoverDisabled && isCover && !isHideCover}
+                onProgress={onMorphProgress}
+            >
+                {tabBarContent}
+            </CoverMorph>
+        )
+    }
 
-    const onCoverLayout2 = useCallback((e) => {
-        setSmallCoverHeight(e.nativeEvent.layout.height)
-    }, [])
-
-    const onSmallCoverLayout = useCallback((e) => {
-        setSmallCoverInnerHeight(e.nativeEvent.layout.height)
-    }, [])
-    //hideDefaultHeaderFrom
+    // No cover data, or `cover.fixed` set: static full cover + static tab bar.
     return (
         <View className={`ns--cover-wrapper-- z-40 ne--`}>
-            <View className={`w-full cover-1 ${conductorTheme.cover_base}`}
-                style={{
-                    // When scrolled, header-fixed (small cover + tab bar) leaves normal flow,
-                    // so reserve its full height here: tab bar (smallCoverHeight) plus the
-                    // measured small cover (smallCoverInnerHeight) when it's shown. Replaces the
-                    // previous hardcoded 56px approximation of the small cover height.
-                    marginBottom: !isScrolled ? '0px' : `${(smallCoverHeight + ((isCover && !isHideCover) || !isDesktop ? smallCoverInnerHeight : 0))}px`,
-                }}
-            >
-                
-                    
-                        {isCover && !isHideCover && (
-                            <View className={conductorTheme.cover_content}>
-                            <View className={`w-full `} onLayout={onCoverLayout1}>
-                                <Cover
-                                    key={`cover-${pageData?.ts ?? ''}:${pageData?.cover_block?.cover?.src ?? ''}:${pageData?.cover_block?.profile?.url_avatar ?? ''}`}
-                                    data={pageData.cover_block}
-                                    mode={headerSettings.cover}
-                                    uri={uri}
-                                    context={pageData.context}
-                                />
-                            </View>
-                            </View>
-                        )}
-                  
-                
-            </View>
-            <View
-                className={`header-fixed w-full ${conductorTheme.cover_base} ${isScrolled ? 'fixed left-0 right-0 z-40' : ''}`}
-                style={isScrolled ? { top: pageHeaderHeight || 0 } : undefined}
-            >
-                <View className={`${contentWidth} ${conductorTheme.cover_small} ${isScrolled ? 'animate-in fade-in slide-in-from-top-2 duration-300 ease-out' : ''}`}
-                    style={{
-                        display: isSmallCoverMounted ? 'flex' : 'none',
-                   
-                        maxHeight: isScrolled ? smallCoverInnerHeight || undefined : 0,
-                        opacity: isScrolled ? 1 : 0,
-                        transitionProperty: 'max-height, opacity',
-                        transitionDuration: '300ms',
-                        transitionTimingFunction: 'ease-out',
-                    }}
-                >
-                    <View className="w-full" onLayout={onSmallCoverLayout}>
-                        {((isCover && !isHideCover) || !isDesktop) && (
-                            <View className="w-full">
-                                <CoverSmall
-                                    key={`cover-small-${pageData?.ts ?? ''}:${pageData?.cover_block?.cover?.src ?? ''}:${pageData?.cover_block?.profile?.url_avatar ?? ''}`}
-                                    context={pageData.context}
-                                    data={pageData.cover_block}
-                                />
-                            </View>
-                        )}
+            {isCover && !isHideCover && (
+                <View className={`w-full ${conductorTheme.cover_base}`}>
+                    <View className={conductorTheme.cover_content}>
+                        <View className="w-full">
+                            <Cover
+                                key={`cover-${coverKey}`}
+                                data={pageData.cover_block}
+                                mode={headerSettings.cover}
+                                uri={uri}
+                                context={pageData.context}
+                            />
+                        </View>
                     </View>
                 </View>
-                <View onLayout={onCoverLayout2}>
-                    <TabBar
-                        menu={menu}
-                        routes={routes}
-                        layoutName={layoutName}
-                        index={index}
-                        setIndex={setIndex}
-                        onChangeRoute={onChangeRoute}
-                        pageData={pageData}
-                        leftColumnMenus={leftColumnMenus}
-                    />
-                    <FiltersButton
-                        visible={showFilters}
-                        onPress={onShowFilters}
-                        className="items-start px-3 lg:px-4 py-2"
-                    />
-                </View>
+            )}
+            <View className={`header-fixed w-full ${conductorTheme.cover_base}`}>
+                {tabBarContent}
             </View>
         </View>
     )

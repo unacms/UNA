@@ -1,13 +1,13 @@
-import { View, ViewRef, Pressable } from 'app/design/view'
+import { View, Pressable } from 'app/design/view'
 import { appSetting, menuItemsByName } from 'app/lib/util';
 import { getComponent } from 'app/components/registry';
 import { useCurrentUser } from 'app/context/user'
-import { useMemo, useState, memo, useContext } from "react";
+import { useMemo, memo, useContext } from "react";
 import { Button, NeoButton } from 'app/design/controls';
 import DynamicMenu from 'app/components/nav/menu-dynamic';
 import { DropdownMenuOpenContext } from 'app/ui/atoms/dropdown-menu';
 import { Platform } from 'react-native'
-import FormModal, { handleFormModal } from 'app/ui/molecules/dialogs/form-modal';
+import { useOpenModalByUrl } from 'app/context/jotai/modal';
 
 const ButtonEx = memo(({ visibleItemsCount, params }) => {
     const isOpen = useContext(DropdownMenuOpenContext) ?? false;
@@ -68,8 +68,8 @@ const MenuItem = memo(({ object, item, itemRefs, index, visibleItemsCount, param
 
 export default function ElementMenu(oProps) {
     const isWeb = Platform.OS == 'web'
-    const [pageData, setPageData] = useState(false);
-    const { currentUser, setCurrentUser } = useCurrentUser();
+    const { currentUser } = useCurrentUser();
+    const openModalByUrl = useOpenModalByUrl();
     /*
      * Display type specified in menu can be overwritten with display type specified in item.
      * default display types: mixed, link, button, element, etc.
@@ -202,10 +202,7 @@ export default function ElementMenu(oProps) {
             const Wrapper = item.noAction ? Pressable : View;
             const cntProps = {};
             if (item.noAction) {
-                cntProps.onPress = (event) => {
-                    setPageData('loading');
-                    handleFormModal(item, event, setPageData);
-                };
+                cntProps.onPress = () => openModalByUrl(item.link);
             }
 
             const isLast = i === preparedItems.length - 1;
@@ -219,7 +216,12 @@ export default function ElementMenu(oProps) {
             }
 
             return (
-                <View key={`menu${originalIndex}`} className={` ${spacingClass} ${sAlignItems === 'stretch' ? 'flex-auto' : ''}  `}>
+                <View
+                    key={`menu${originalIndex}`}
+                    collapsable={false}
+                    className={` ${spacingClass} ${sAlignItems === 'stretch' ? 'flex-auto' : ''}  `}
+                    style={!isWeb && sAlignItems !== 'stretch' ? { flexGrow: 0, flexShrink: 0 } : undefined}
+                >
                     <Wrapper {...cntProps}>{element}</Wrapper>
                 </View>
             );
@@ -229,10 +231,18 @@ export default function ElementMenu(oProps) {
             return sItems;
 
         if (!bAutoSize) {
-            return <>
-                <FormModal pageData={pageData} setPageData={setPageData} />
-                <View className={`${sClassName}`}>{sItems}</View>
-            </>;
+            // Native Expo UI Host needs a non-collapsible, content-sized row.
+            // A stretched/collapsed wrapper (default Yoga in CoverMorph overlay)
+            // reports 0x0 and the buttons never paint — web CSS does not.
+            return (
+                <View
+                    collapsable={false}
+                    className={sClassName}
+                    style={!isWeb ? { flexGrow: 0, flexShrink: 0, alignSelf: 'flex-start' } : undefined}
+                >
+                    {sItems}
+                </View>
+            )
         }
     }
 

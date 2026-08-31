@@ -52,8 +52,8 @@ import {
 } from 'app/customization/functions'
 import FormModal, { handleFormModal } from 'app/ui/molecules/dialogs/form-modal'
 import emitter from 'app/context/emitter'
-import Cover, { CoverSmall } from 'app/components/elements/cover'
-import { CoverMenuMore, CoverMenu } from 'app/components/nav/menu-cover'
+import Cover, { CoverSmall } from 'app/components/elements/covers/cover'
+import { CoverMenuMore, CoverMenu } from 'app/components/elements/covers/menu-cover'
 import {
     Panel,
     PanelGroup,

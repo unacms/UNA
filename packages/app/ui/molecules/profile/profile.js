@@ -182,8 +182,12 @@ function AtomProfile_(oProps) {
     const iSizeHeight = sizeConfig.height;
     const sSizeFont = sizeConfig.font;
     const sSizeFontLetter = sizeConfig.letter_font;
+    const sizeTransition = oProps.animated
+        ? (appSetting('theme', 'profile_sizes', 'size_transition') || '')
+        : ''
 
     sSize += ' rounded-full '
+    if (sizeTransition) sSize += ` ${sizeTransition} `
 
     let emulate = oProps.emulate !== undefined ? oProps.emulate : (oProps.showLink ? false : true)
 

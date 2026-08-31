@@ -18,7 +18,8 @@ import { fetcher } from 'app/lib/fetcher';
 import Snackbar from 'app/ui/atoms/snackbar';
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import { BlockByName } from 'app/components/block';
-import Cover, { CoverSmall, CoverBackButton } from 'app/components/elements/cover';
+import Cover, { CoverSmall } from 'app/components/elements/covers/cover';
+import { CoverBackButton } from 'app/components/elements/covers/cover-elements';
 import emitter from 'app/context/emitter'
 import { useSetHeader, useGetScrollValue, defaultHeader, useSetHeaderHeight, getHeaderWriteGeneration } from 'app/context/jotai/layout';
 import { isTabScopedChromeKey, useTabChromeKey } from 'app/context/tab-chrome';
