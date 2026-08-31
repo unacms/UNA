@@ -150,7 +150,7 @@ class BxPaymentProviderCredits extends BxBaseModPaymentProvider implements iBxBa
                     'subscription_id' => $aSubscription['subscription_id'],
                     'subscription_customer' => $aSubscription['customer_id'],
                     'subscription_provider' => _t('_bx_payment_txt_name_' . $mixedPending['provider']),
-                    'subscription_date' => bx_time_js($aSubscription['date_add'], BX_FORMAT_DATE, true)
+                    'subscription_date' => date(getParam('sys_format_date'), $aSubscription['date_add']),
                 ], 0, $iClient);
 
                 if($aTemplate !== false)
