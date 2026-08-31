@@ -134,8 +134,8 @@ export function CoverImage({
                         {allowSwitch ? (
                             <NeoButton
                                 image="RefreshCw"
-                                style="bordered"
-                                controlSize="small"
+                                style="glass"
+                                controlSize="regular"
                                 borderShape="circle"
                                 onPress={() => handleSwitch(allowSwitch)}
                             />
