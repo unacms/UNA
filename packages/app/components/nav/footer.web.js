@@ -9,11 +9,16 @@ import { getFriendsCounter } from 'app/customization/functions';
 import { Icon } from 'app/ui/atoms/icon'
 import { useTranslation } from 'react-i18next';
 import { useFooter, useSetFooterHeight } from 'app/context/jotai/layout';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useSound } from 'app/lib/hooks/useSound';
 import { isTabBarLabelsEnabled } from 'app/lib/util';
-import DropdownMenu from 'app/ui/atoms/dropdown-menu';
-import { splitTabBarItems, buildTabBarMoreMenuItems } from 'app/components/nav/tabs/tab-menu';
+import DropdownMenu, { DropdownMenuOpenContext } from 'app/ui/atoms/dropdown-menu';
+import {
+    splitTabBarItems,
+    buildTabBarMoreMenuItems,
+    isTabBarUrlActive,
+    resolveTabUrl,
+} from 'app/components/nav/tabs/tab-menu';
 
 function isInStandaloneMode() {
     if (window.navigator.standalone) {
@@ -165,6 +170,9 @@ function MoreBottomItem({ visibleTabs, overflowTabs, pathname, currentUser }) {
         }),
         [visibleTabs, overflowTabs, currentUser, t, pathname]
     );
+    const isOverflowActive = overflowTabs.some((tab) =>
+        isTabBarUrlActive(pathname, resolveTabUrl(tab, currentUser))
+    );
 
     return (
         <View className="flex-1">
@@ -174,15 +182,39 @@ function MoreBottomItem({ visibleTabs, overflowTabs, pathname, currentUser }) {
                 variant="tabs-overflow"
                 openOnFocus={false}
                 items={items}
-                triggerClassName="flex-1 w-full h-full"
+                triggerClassName="group flex-1 w-full h-full items-center justify-center"
             >
-                <View className="group h-full w-full items-center justify-center rounded-xl p-1.5 text-center gap-1.5 web:hover:bg-muted/50">
-                    <Icon icon="ChevronsUpDown" size={24} className="text-secondary-foreground web:group-hover:text-foreground" />
-                    {isTabBarLabelsEnabled() ? (
-                        <Text className="web:group-hover:text-accent-foreground text-[11px] tracking-tight leading-none font-medium whitespace-nowrap text-secondary-foreground">{t('More')}</Text>
-                    ) : null}
-                </View>
+                <MoreBottomTrigger isOverflowActive={isOverflowActive} />
             </DropdownMenu>
+        </View>
+    );
+}
+
+function MoreBottomTrigger({ isOverflowActive }) {
+    const { t } = useTranslation();
+    const isOpen = useContext(DropdownMenuOpenContext) ?? false;
+    const isActive = isOverflowActive || isOpen;
+
+    return (
+        <View
+            className={`justify-between my-auto items-center rounded-xl p-1.5 text-center gap-1.5 web:hover:bg-muted/50 ${isActive ? 'bg-accent/60' : ''}`}
+        >
+            <View className="items-center justify-center">
+                <Icon
+                    icon="ChevronsUpDown"
+                    size={24}
+                    className={isActive
+                        ? 'text-accent-foreground'
+                        : 'text-secondary-foreground web:group-hover:text-foreground'}
+                />
+            </View>
+            {isTabBarLabelsEnabled() ? (
+                <Text
+                    className={`web:group-hover:text-accent-foreground text-[11px] tracking-tight leading-none font-medium whitespace-nowrap ${isActive ? 'text-accent-foreground' : 'text-secondary-foreground web:group-hover:text-foreground'}`}
+                >
+                    {t('More')}
+                </Text>
+            ) : null}
         </View>
     );
 }

@@ -2,8 +2,8 @@
  * Playground stand-in for UNA Agents AG-UI.
  *
  * Speaks the same StreamChunk types `useChat` expects
- * (RUN_STARTED → TEXT_MESSAGE_* → RUN_FINISHED). Live web chat uses
- * `createUnaAiChatConnection` → `/sys-ai-chat/{AgentId}`.
+ * (RUN_STARTED → TEXT_MESSAGE_* → RUN_FINISHED). Live chat uses
+ * `createUnaAiChatConnection` → `/sys-ai-chat/{AgentId}` (same host as fetcher).
  */
 
 const ASSISTANT_NAME = 'UNA Assistant';

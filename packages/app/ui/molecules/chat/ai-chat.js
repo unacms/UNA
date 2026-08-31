@@ -1,7 +1,6 @@
 'use client';
 
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import { Platform } from 'react-native';
 import { fetchServerSentEvents, stream, useChat } from '@tanstack/ai-react';
 import { View, Row, ScrollView } from 'app/design/view';
 import { Text } from 'app/design/typography';
@@ -80,17 +79,11 @@ function ChatBubble({ message, user, assistant, isStreaming }) {
                     />
                 </View>
             </View>
-            <View className="flex-1 mt-2">
-                <View className="bg-muted/50 rounded-xl py-2.5 px-3 gap-0.5 me-auto max-w-full">
-                    <Row className="items-center gap-2 pr-4">
-                        <Profile
-                            {...author}
-                            displayType="unit_wo_image"
-                            displaySize="sm"
-                            showInfo="false"
-                            showLinks={false}
-                        />
-                    </Row>
+            <View className="flex-1 mt-2 min-w-0">
+                <View className="bg-muted/50 rounded-xl py-2.5 px-3 gap-0.5 self-start max-w-full">
+                    <Text className="text-sm tracking-tight font-semibold text-card-foreground">
+                        {author.display_name}
+                    </Text>
                     <Text className="text-sm text-foreground leading-5">
                         {text}
                         {isStreaming && !text ? '…' : ''}
@@ -118,7 +111,7 @@ function resolveSettings(props) {
     ).trim();
     const agentId = isUnaAiChatAgentId(agentIdRaw) ? agentIdRaw : '';
     const connection = props.connection ?? incoming.connection;
-    const liveUna = Boolean(agentId && !connection && Platform.OS === 'web');
+    const liveUna = Boolean(agentId && !connection);
 
     return {
         connection,
@@ -140,7 +133,7 @@ function resolveSettings(props) {
         placeholder:
             incoming.placeholder ||
             appSetting('ai_chat', 'placeholder') ||
-            'Write a comment',
+            'Leave a comment...',
         emptyText:
             incoming.emptyText ||
             incoming.empty_text ||
@@ -160,7 +153,7 @@ function resolveSettings(props) {
  * Settings (prop or `params`, UNA-style):
  *   connection      — TanStack AI connection (preferred)
  *   endpoint        — SSE URL; used when `connection` is omitted
- *   agentId         — UNA agent; web uses same-origin `/sys-ai-chat/{id}`
+ *   agentId         — UNA agent; GET/POST `/sys-ai-chat/{id}` (same host/auth as fetcher)
  *   assistantName   — header + bubble author
  *   assistantAvatar — optional avatar URL
  *   subtitle, badge, placeholder, emptyText
@@ -296,37 +289,45 @@ export default function AiChat(props) {
             ) : null}
 
             <View className="px-3 pb-3 pt-1">
-                <Row className="items-center gap-2 bg-muted/60 rounded-full px-2 py-1">
-                    <Input
-                        value={input}
-                        onChangeText={setInput}
-                        placeholder={cfg.placeholder}
-                        editable={!isLoading}
-                        rounded="full"
-                        className="flex-1 bg-transparent border-0"
-                        onSubmitEditing={send}
-                        onKeyPress={onComposerKey}
-                        returnKeyType="send"
-                    />
-                    {isLoading ? (
-                        <NeoButton
-                            style="bordered"
-                            borderShape="circle"
-                            image="Square"
-                            accessibilityLabel="Stop"
-                            onPress={() => stop()}
-                        />
-                    ) : (
-                        <NeoButton
-                            style="borderedProminent"
-                            borderShape="circle"
-                            image="ArrowUp"
-                            accessibilityLabel="Send"
-                            disabled={!input.trim()}
-                            onPress={send}
-                        />
-                    )}
-                </Row>
+                <View className="w-full rounded-full bg-card/90 backdrop-blur-lg shadow-input-outline dark:shadow-input-outline-deep">
+                    <View className="items-stretch">
+                        <View className="p-3 min-h-12 flex-auto justify-center me-10">
+                            <Input
+                                value={input}
+                                onChangeText={setInput}
+                                placeholder={cfg.placeholder}
+                                editable={!isLoading}
+                                className="flex-1 bg-transparent border-0 shadow-none outline-none ring-0 rounded-none p-0 min-h-0 web:focus:outline-none web:focus:ring-0 web:focus:border-0 web:focus-visible:outline-none web:focus-visible:ring-0 web:focus-visible:border-0 web:focus-visible:shadow-none web:focus-visible:bg-transparent"
+                                style={{ outline: 'none', boxShadow: 'none' }}
+                                onSubmitEditing={send}
+                                onKeyPress={onComposerKey}
+                                returnKeyType="send"
+                            />
+                        </View>
+                        <View className="flex-row absolute bottom-1.5 right-1.5">
+                            {isLoading ? (
+                                <NeoButton
+                                    style="bordered"
+                                    borderShape="circle"
+                                    controlSize="small"
+                                    image="Square"
+                                    accessibilityLabel="Stop"
+                                    onPress={() => stop()}
+                                />
+                            ) : (
+                                <NeoButton
+                                    style="glassProminent"
+                                    borderShape="circle"
+                                    controlSize="small"
+                                    image="ArrowUp"
+                                    accessibilityLabel="Send"
+                                    disabled={!input.trim()}
+                                    onPress={send}
+                                />
+                            )}
+                        </View>
+                    </View>
+                </View>
                 {cfg.showClear && messages.length > 0 ? (
                     <Row className="justify-end pt-2">
                         <NeoButton

@@ -9,7 +9,7 @@ import { Input, NeoButton } from 'app/design/controls';
 import Link from 'app/ui/atoms/link';
 import AiChat from 'app/ui/molecules/chat/ai-chat';
 import { useCurrentUser } from 'app/context/user';
-import { isUnaAiChatAgentId, unaAiChatPath } from 'app/lib/una-ai-chat';
+import { isUnaAiChatAgentId, unaAiChatRequestUrl } from 'app/lib/una-ai-chat';
 import { emulateUnaChatStream, UNA_CHAT_EMULATOR } from './ai-chat-emulator';
 
 const isWeb = Platform.OS === 'web';
@@ -43,7 +43,7 @@ export default function PlaygroundAiChat() {
         return isUnaAiChatAgentId(initial) ? initial : '';
     });
 
-    const live = isWeb && Boolean(agentId);
+    const live = Boolean(agentId);
     const loggedIn = Boolean(currentUser && currentUser !== false);
 
     const connect = useCallback(() => {
@@ -66,7 +66,7 @@ export default function PlaygroundAiChat() {
                     settings={{
                         agentId,
                         assistantName: UNA_CHAT_EMULATOR.assistantName,
-                        subtitle: `SSE → ${unaAiChatPath(agentId)}`,
+                        subtitle: `SSE → ${unaAiChatRequestUrl(agentId)}`,
                         badge: 'live',
                         placeholder: 'Write a comment',
                         emptyText: loggedIn
@@ -98,9 +98,12 @@ export default function PlaygroundAiChat() {
             <View className="gap-1">
                 <Text className="text-2xl font-semibold text-foreground">AI Chat</Text>
                 <Text className="text-sm text-muted-foreground">
-                    Playground for the UNA Ask AI block. Web can stream a live agent at{' '}
+                    Playground for the UNA Ask AI block. Live chat uses the same host and
+                    session cookies as{' '}
+                    <Text className="font-mono text-xs">fetcher</Text>
+                    {' '}at{' '}
                     <Text className="font-mono text-xs">/sys-ai-chat/{'{AgentId}'}</Text>
-                    . Native stays on the emulator until UNA accepts Bearer on that route.
+                    .
                 </Text>
                 <Row className="gap-3 mt-1">
                     <Link href="/pg">
@@ -112,37 +115,35 @@ export default function PlaygroundAiChat() {
                 </Row>
             </View>
 
-            {isWeb ? (
-                <View className="rounded-2xl border border-border bg-card p-3 gap-2">
-                    <Text className="text-xs text-muted-foreground">
-                        Same-origin live chat uses the session cookie. Invalid AgentId or ACL
-                        comes back as JSON {'{ code, msg }'} on HTTP 200.
-                    </Text>
-                    <Row className="items-center gap-2">
-                        <Input
-                            value={draftAgent}
-                            onChangeText={setDraftAgent}
-                            placeholder="AgentId"
-                            className="flex-1"
-                            onSubmitEditing={connect}
-                            returnKeyType="go"
-                        />
-                        <NeoButton
-                            style="borderedProminent"
-                            controlSize="small"
-                            label="Connect"
-                            disabled={!isUnaAiChatAgentId(draftAgent.trim())}
-                            onPress={connect}
-                        />
-                        <NeoButton
-                            style="bordered"
-                            controlSize="small"
-                            label="Emulator"
-                            onPress={useEmulator}
-                        />
-                    </Row>
-                </View>
-            ) : null}
+            <View className="rounded-2xl border border-border bg-card p-3 gap-2">
+                <Text className="text-xs text-muted-foreground">
+                    Live chat sends the member session the same way native API calls do.
+                    Invalid AgentId or ACL comes back as JSON {'{ code, msg }'} on HTTP 200.
+                </Text>
+                <Row className="items-center gap-2">
+                    <Input
+                        value={draftAgent}
+                        onChangeText={setDraftAgent}
+                        placeholder="AgentId"
+                        className="flex-1"
+                        onSubmitEditing={connect}
+                        returnKeyType="go"
+                    />
+                    <NeoButton
+                        style="borderedProminent"
+                        controlSize="small"
+                        label="Connect"
+                        disabled={!isUnaAiChatAgentId(draftAgent.trim())}
+                        onPress={connect}
+                    />
+                    <NeoButton
+                        style="bordered"
+                        controlSize="small"
+                        label="Emulator"
+                        onPress={useEmulator}
+                    />
+                </Row>
+            </View>
 
             {chat}
         </View>

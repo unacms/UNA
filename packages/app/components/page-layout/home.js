@@ -406,7 +406,7 @@ return <View className='bg-blue-500 w-full h-full pt-24'>
             }}
             className="fixed overflow-scroll p-4 gap-4"
         >
-            <ElementAiChat data={{ agent_id: '1' }} />
+           
             {AsideContent}
         </View>
     )
@@ -498,6 +498,7 @@ return <View className='bg-blue-500 w-full h-full pt-24'>
                 )}
                 <Panel className="w-full min-w-0 native:w-full" {...centerPanelProps}>
                     <View className={`${appSetting('layout', 'feed_container')}`}>
+                        <ElementAiChat data={{ agent_id: '1' }} />
                         {FeedContent}
                     </View>
                 </Panel>

@@ -49,7 +49,7 @@ export const settingsElements = {
     },
     ai_chat: {
         assistant_name: 'Assistant',
-        placeholder: 'Write a comment',
+        placeholder: 'Leave a comment...',
         empty_text: '',
         show_clear: true,
     },
