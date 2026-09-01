@@ -1,5 +1,6 @@
 'use client';
 import { nativeDriver } from 'app/lib/animation';
+import { getAnimatedFillProps } from 'app/ui/atoms/animated-icons/fill-props';
 
 import { forwardRef, useEffect, useRef } from 'react';
 import { Animated, Easing, Platform } from 'react-native';
@@ -149,8 +150,7 @@ export function AnimatedCompass({
                         strokeWidth={sw}
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        fill={c}
-                        fillOpacity={fillOpacityAnim}
+                        {...getAnimatedFillProps(fillOn, c, fillOpacityAnim)}
                     />
                     {/**
                      * Needle (stroke): rotate around (12,12) via T · R · T⁻¹.

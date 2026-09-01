@@ -94,7 +94,7 @@
  */
 @layer base {
     :root {
-        --neo-corner-superellipse-factor: 1.6;
+        --neo-corner-superellipse-factor: 1.5;
         --neo-corner-superellipse-full-factor: 1;
     }
 

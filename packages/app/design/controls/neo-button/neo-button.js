@@ -507,6 +507,7 @@ const NeoButtonStyled = (props) => {
     // `iconOnlyPadded` (capsule) keep the labelled button's padding instead, so
     // they stay visibly wider than a circle.
     const keepsPaddingWhenIconOnly = !isIconOnly || resolved.iconOnlyPadded;
+    const pinIconOnlySquare = isIconOnly && !resolved.iconOnlyPadded;
     const paddingClass = keepsPaddingWhenIconOnly ? (resolved.paddingXCls ?? '') : 'px-0';
     const needsPaddingFallback = keepsPaddingWhenIconOnly && !resolved.paddingXCls;
 
@@ -522,12 +523,16 @@ const NeoButtonStyled = (props) => {
         'flex-row items-center web:transition-[background-color,box-shadow,opacity] web:duration-200 web:ease-out',
         isInteractive && 'web:cursor-pointer',
         resolved.rounded,
-        resolved.aspectSquare ? 'aspect-square' : '',
+        (resolved.aspectSquare || pinIconOnlySquare) ? 'aspect-square' : '',
         sizeClass,
         paddingClass,
         `justify-${resolved.align}`,
         resolved.containerCls(stateKey),
-        resolved.width === 'fill' ? 'w-full' : 'min-w-0 max-w-full',
+        // `min-w-0` is for labelled ellipsis. On icon-only it tw-merges away
+        // `min-w-*` from the size class and the box collapses to the glyph.
+        resolved.width === 'fill'
+            ? 'w-full'
+            : (pinIconOnlySquare ? '' : 'min-w-0 max-w-full'),
         className,
         classNames?.container,
         classNames?.surface,
@@ -679,7 +684,9 @@ const NeoButtonStyled = (props) => {
     );
 
     const wrapperClass = cn(
-        resolved.width === 'fill' ? FILL_WIDTH_CLASS : 'self-start max-w-full min-w-0',
+        resolved.width === 'fill'
+            ? FILL_WIDTH_CLASS
+            : (pinIconOnlySquare ? 'self-start' : 'self-start max-w-full min-w-0'),
         classNames?.root,
     );
 

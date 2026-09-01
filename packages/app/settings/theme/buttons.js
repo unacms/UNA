@@ -413,7 +413,7 @@ export const settingsButtons = {
                     pressed: 'bg-primary',
                     active: 'bg-primary-hover',
                     pressedToggle: 'bg-primary-hover',
-                    disabled: 'bg-primary opacity-60',
+                    disabled: 'bg-primary opacity-50',
                 },
                 text: {
                     base: 'font-medium tracking-tight',
@@ -423,7 +423,7 @@ export const settingsButtons = {
                     pressed: 'text-primary-foreground',
                     active: 'text-primary-foreground',
                     pressedToggle: 'text-primary-foreground',
-                    disabled: 'text-primary-foreground/60',
+                    disabled: 'text-primary-foreground',
                 },
             },
 
@@ -508,7 +508,7 @@ export const settingsButtons = {
                     pressed: 'bg-primary-hover shadow-btn-glass-prominent-pressed dark:shadow-btn-glass-prominent-pressed-deep',
                     active: 'bg-primary-hover',
                     pressedToggle: 'bg-primary-hover shadow-btn-glass-prominent-pressed dark:shadow-btn-glass-prominent-pressed-deep',
-                    disabled: 'bg-primary-hover',
+                    disabled: 'bg-primary opacity-50',
                 },
                 text: {
                     base: 'font-medium tracking-tight',
@@ -518,7 +518,7 @@ export const settingsButtons = {
                     pressed: 'text-primary-foreground',
                     active: 'text-primary-foreground',
                     pressedToggle: 'text-primary-foreground',
-                    disabled: 'text-primary-foreground/60',
+                    disabled: 'text-primary-foreground',
                 },
             },
 

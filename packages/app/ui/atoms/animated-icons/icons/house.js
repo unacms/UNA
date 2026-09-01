@@ -1,5 +1,6 @@
 'use client';
 import { nativeDriver } from 'app/lib/animation';
+import { getAnimatedFillProps } from 'app/ui/atoms/animated-icons/fill-props';
 
 import { forwardRef, useEffect, useRef } from 'react';
 import { Animated, Easing, Platform } from 'react-native';
@@ -132,8 +133,7 @@ export function AnimatedHouse({
                         strokeWidth={sw}
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        fill={c}
-                        fillOpacity={fillOpacityAnim}
+                        {...getAnimatedFillProps(fillOn, c, fillOpacityAnim)}
                     />
                     <AnimatedPath
                         d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"

@@ -54,6 +54,8 @@ export const settingsElements = {
         item_description: 'text-xs font-normal leading-tight text-pretty text-muted-foreground px-2',
         item_icon:
             'flex items-center w-9 h-9 bg-muted/50 web:group-hover:bg-border rounded-full justify-center',
+        item_icon_active:
+            'flex items-center w-9 h-9 bg-accent rounded-full justify-center',
         icon_size: 20, // Default icon size for dropdown menu icons
     },
     modal: {
@@ -90,8 +92,8 @@ export const settingsElements = {
             ' bg-card/60 shadow-block-outline dark:shadow-block-outline-deep ',
         'u-block-pad':
             ' p-4 ',
-        'u-block-rounded': 'rounded-3xl',
-        'u-block-rounded-default': 'sm:rounded-3xl',
+        'u-block-rounded': 'rounded-2xl',
+        'u-block-rounded-default': 'sm:rounded-2xl',
         'u-block-header':
             ' flex-row items-center gap-3 justify-center ',
         'u-block-icon': ' items-center w-8 h-8 justify-center text-card-foreground flex-none',

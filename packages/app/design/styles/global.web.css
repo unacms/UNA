@@ -644,15 +644,15 @@ html[theme="dark"]:root {
 @supports (corner-shape: superellipse(1)) {
     :root.neo-corner-smooth,
     html.neo-corner-smooth {
-        --neo-radius-xs: calc(0.125rem * var(--neo-corner-superellipse-factor, 1.6)) !important;
-        --neo-radius-sm: calc(0.125rem * var(--neo-corner-superellipse-factor, 1.6)) !important;
-        --neo-radius-default: calc(0.25rem * var(--neo-corner-superellipse-factor, 1.6)) !important;
-        --neo-radius-md: calc(0.375rem * var(--neo-corner-superellipse-factor, 1.6)) !important;
-        --neo-radius-lg: calc(0.5rem * var(--neo-corner-superellipse-factor, 1.6)) !important;
-        --neo-radius-xl: calc(0.75rem * var(--neo-corner-superellipse-factor, 1.6)) !important;
-        --neo-radius-2xl: calc(1rem * var(--neo-corner-superellipse-factor, 1.6)) !important;
-        --neo-radius-3xl: calc(1.5rem * var(--neo-corner-superellipse-factor, 1.6)) !important;
-        --neo-radius-4xl: calc(2rem * var(--neo-corner-superellipse-factor, 1.6)) !important;
+        --neo-radius-xs: calc(0.125rem * var(--neo-corner-superellipse-factor, 1.5)) !important;
+        --neo-radius-sm: calc(0.125rem * var(--neo-corner-superellipse-factor, 1.5)) !important;
+        --neo-radius-default: calc(0.25rem * var(--neo-corner-superellipse-factor, 1.5)) !important;
+        --neo-radius-md: calc(0.375rem * var(--neo-corner-superellipse-factor, 1.5)) !important;
+        --neo-radius-lg: calc(0.5rem * var(--neo-corner-superellipse-factor, 1.5)) !important;
+        --neo-radius-xl: calc(0.75rem * var(--neo-corner-superellipse-factor, 1.5)) !important;
+        --neo-radius-2xl: calc(1rem * var(--neo-corner-superellipse-factor, 1.5)) !important;
+        --neo-radius-3xl: calc(1.5rem * var(--neo-corner-superellipse-factor, 1.5)) !important;
+        --neo-radius-4xl: calc(2rem * var(--neo-corner-superellipse-factor, 1.5)) !important;
         --neo-radius-full: calc(9999px * var(--neo-corner-superellipse-full-factor, 1)) !important;
     }
 
