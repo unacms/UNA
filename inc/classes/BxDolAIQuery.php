@@ -986,6 +986,56 @@ class BxDolAIQuery extends BxDolDb
         return $iAffected;
     }
 
+    /**
+     * Rename guest threads (`…:g:{key}` / `…:s:{session}`) onto a profile id.
+     * If the member thread already has messages, drop the guest copy.
+     */
+    public function adoptGuestChatHistory($sGuestSubindex, $iProfileId)
+    {
+        $sGuestSubindex = (string)$sGuestSubindex;
+        $iProfileId = (int)$iProfileId;
+        if ($sGuestSubindex === '' || !$iProfileId)
+            return 0;
+
+        $aRows = $this->getAll("SELECT `thread_id` FROM `sys_agents_chat_history`");
+        if (!$aRows)
+            return 0;
+
+        $sSuffix = ':' . $sGuestSubindex;
+        $iSuffixLen = strlen($sSuffix);
+        $iAffected = 0;
+        foreach ($aRows as $aRow) {
+            $sOld = $aRow['thread_id'] ?? '';
+            if ($sOld === '' || substr($sOld, -$iSuffixLen) !== $sSuffix)
+                continue;
+
+            $sNew = substr($sOld, 0, -$iSuffixLen) . ':' . $iProfileId;
+            if ($sNew === $sOld)
+                continue;
+
+            $sExisting = $this->getOne("SELECT `messages` FROM `sys_agents_chat_history` WHERE `thread_id` = :t", [
+                't' => $sNew,
+            ]);
+            $aExisting = json_decode((string)$sExisting, true);
+            if (is_array($aExisting) && $aExisting !== []) {
+                $iAffected += (int)$this->query("DELETE FROM `sys_agents_chat_history` WHERE `thread_id` = :t", [
+                    't' => $sOld,
+                ]);
+                continue;
+            }
+
+            if ($sExisting !== false && $sExisting !== null)
+                $this->query("DELETE FROM `sys_agents_chat_history` WHERE `thread_id` = :t", ['t' => $sNew]);
+
+            $iAffected += (int)$this->query("UPDATE `sys_agents_chat_history` SET `thread_id` = :n WHERE `thread_id` = :o", [
+                'n' => $sNew,
+                'o' => $sOld,
+            ]);
+        }
+
+        return $iAffected;
+    }
+
     static public function getAlert($s) {
         if (!$s)
             return false;        

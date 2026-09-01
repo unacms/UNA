@@ -488,18 +488,142 @@ class BxDolAI extends BxDolFactory implements iBxDolSingleton
     }
 
     /**
+     * Guest threads: `g:{clientKey}` (NEO header) or `s:{memberSession}` (UNA cookie).
+     * Members: profile id. Guest key is kept in session and adopted on login.
+     */
+    public function resolveChatHistoryParams()
+    {
+        $iProfileId = (int)bx_get_logged_profile_id();
+        $oSession = BxDolSession::getInstance();
+        $sHeaderKey = $this->readAiGuestKeyFromRequest();
+        $sSessionKey = 'ai_chat_guest_subindex';
+
+        if ($iProfileId) {
+            $sGuest = $sHeaderKey ? ('g:' . $sHeaderKey) : '';
+            if ($sGuest === '') {
+                $sStored = $oSession->getValue($sSessionKey);
+                if ($this->isAiGuestSubindex($sStored))
+                    $sGuest = $sStored;
+            }
+            if ($sGuest !== '')
+                $this->_oDb->adoptGuestChatHistory($sGuest, $iProfileId);
+            if ($oSession->isValue($sSessionKey))
+                $oSession->unsetValue($sSessionKey);
+
+            return [
+                'sender_profile_id' => $iProfileId,
+                'chat_history_subindex' => (string)$iProfileId,
+            ];
+        }
+
+        $oSession->start(true);
+        $sSessionId = (string)$oSession->getId();
+        $sSubindex = $sHeaderKey ? ('g:' . $sHeaderKey) : ('s:' . ($sSessionId !== '' ? $sSessionId : '0'));
+        $oSession->setValue($sSessionKey, $sSubindex);
+
+        return [
+            'sender_profile_id' => 0,
+            'chat_history_subindex' => $sSubindex,
+        ];
+    }
+
+    /**
+     * `{trigger}:{agentId}:{contextPid}:{userSubindex}`.
+     * Context is omitted when 0 so existing site-wide threads still load.
+     * User suffix stays last so adoptGuestChatHistory keeps matching.
+     */
+    public static function chatHistoryThreadId($aAgent, $aParams = [])
+    {
+        $s = ($aAgent['trigger'] ?? '') . ':' . ($aAgent['id'] ?? '');
+        $iContextPid = (int)($aParams['chat_history_context_pid'] ?? 0);
+        if ($iContextPid > 0)
+            $s .= ':' . $iContextPid;
+        if (isset($aParams['chat_history_subindex']) && $aParams['chat_history_subindex'] !== '')
+            $s .= ':' . (string)$aParams['chat_history_subindex'];
+        return $s;
+    }
+
+    /**
+     * Context from chat HTTP (`?context=`). Missing/0 = site-wide. Invalid/unviewable = false (403).
+     * @return int|false
+     */
+    public function resolveChatHistoryContextPid()
+    {
+        $mixed = bx_get('context');
+        if ($mixed === false)
+            return 0;
+
+        $iPid = (int)$mixed;
+        if ($iPid <= 0)
+            return 0;
+
+        $oProfile = BxDolProfile::getInstance($iPid);
+        if (!$oProfile || !bx_srv('system', 'is_module_context', [$oProfile->getModule()]))
+            return false;
+
+        if ($oProfile->checkAllowedProfileView() !== CHECK_ACTION_RESULT_ALLOWED)
+            return false;
+
+        return $iPid;
+    }
+
+    /**
+     * Context of the current page (AI agent block JSON).
+     * Prefer `bx_get_page_info()`; API page JSON falls back to $_GET after getPageAPI merges params.
+     */
+    public function resolveChatHistoryContextPidFromPage()
+    {
+        if (function_exists('bx_get_page_info')) {
+            $aInfo = bx_get_page_info();
+            if ($aInfo && !empty($aInfo['context_profile_id']))
+                return $this->filterViewableContextPid((int)$aInfo['context_profile_id']);
+        }
+
+        if (($iPid = (int)bx_process_input(bx_get('profile_id'), BX_DATA_INT)) > 0) {
+            $oProfile = BxDolProfile::getInstance($iPid);
+            if ($oProfile && bx_srv('system', 'is_module_context', [$oProfile->getModule()]))
+                return $this->filterViewableContextPid((int)$oProfile->id());
+        }
+
+        $oPage = BxDolPage::getObjectInstanceByURI();
+        $sModule = $oPage ? (string)$oPage->getModule() : '';
+        $iContentId = (int)bx_process_input(bx_get('id'), BX_DATA_INT);
+        if ($iContentId > 0 && $sModule !== '' && bx_srv('system', 'is_module_context', [$sModule])) {
+            $oProfile = BxDolProfile::getInstanceByContentAndType($iContentId, $sModule);
+            if ($oProfile)
+                return $this->filterViewableContextPid((int)$oProfile->id());
+        }
+
+        return 0;
+    }
+
+    protected function filterViewableContextPid($iPid)
+    {
+        $iPid = (int)$iPid;
+        if ($iPid <= 0)
+            return 0;
+
+        $oProfile = BxDolProfile::getInstance($iPid);
+        if (!$oProfile || $oProfile->checkAllowedProfileView() !== CHECK_ACTION_RESULT_ALLOWED)
+            return 0;
+
+        return $iPid;
+    }
+
+    /**
      * Transcript for TanStack `useChat` hydrate / `initialMessages`.
      * Loads the same NeuronAI chat history the agent uses when streaming.
      */
     public function getChatHistoryUiMessages($iAgentId, $aParams = [])
     {
-        $aParams['chat_history_subindex'] = (int)($aParams['sender_profile_id'] ?? 0);
+        if (!isset($aParams['chat_history_subindex']))
+            $aParams = array_merge($this->resolveChatHistoryParams(), $aParams);
 
         $aAgent = BxDolAiQuery::getAgentObject((int)$iAgentId);
         if (!$aAgent || empty($aAgent['chat_history_context']))
             return [];
 
-        $sThreadId = $aAgent['trigger'] . ':' . $aAgent['id'] . ':' . $aParams['chat_history_subindex'];
+        $sThreadId = self::chatHistoryThreadId($aAgent, $aParams);
         $sJson = $this->_oDb->getOne("SELECT `messages` FROM `sys_agents_chat_history` WHERE `thread_id` = :t", [
             't' => $sThreadId,
         ]);
@@ -567,9 +691,38 @@ class BxDolAI extends BxDolFactory implements iBxDolSingleton
         return $aResult;
     }
 
+    protected function readAiGuestKeyFromRequest()
+    {
+        $s = $_SERVER['HTTP_X_UNA_AI_GUEST_KEY'] ?? '';
+        if ($s === '' && function_exists('apache_request_headers')) {
+            foreach (apache_request_headers() as $sName => $sValue) {
+                if (strtolower((string)$sName) === 'x-una-ai-guest-key') {
+                    $s = $sValue;
+                    break;
+                }
+            }
+        }
+        return $this->sanitizeAiGuestKey($s);
+    }
+
+    protected function sanitizeAiGuestKey($s)
+    {
+        $s = is_string($s) ? $s : '';
+        return preg_match('/^[A-Za-z0-9_-]{16,64}$/', $s) ? $s : '';
+    }
+
+    protected function isAiGuestSubindex($s)
+    {
+        $s = is_string($s) ? $s : '';
+        if ($s === '' || (strncmp($s, 'g:', 2) !== 0 && strncmp($s, 's:', 2) !== 0))
+            return false;
+        return $this->sanitizeAiGuestKey(substr($s, 2)) !== '';
+    }
+
     public function streamAgentChat($iAgentId, $sPrompt, $aParams = [], $sThreadId = null)
     {
-        $aParams['chat_history_subindex'] = (int)($aParams['sender_profile_id'] ?? 0);
+        if (!isset($aParams['chat_history_subindex']))
+            $aParams = array_merge($this->resolveChatHistoryParams(), $aParams);
 
         $oAdapter = new NeuronAI\Chat\Messages\Stream\Adapters\AGUIAdapter($sThreadId);
 

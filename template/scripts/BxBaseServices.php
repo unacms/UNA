@@ -861,7 +861,16 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
         if(!$aAgent || !is_array($aAgent))
             return $bIsApi ? [] : '';
 
-        return $bIsApi ? [bx_api_get_block('ai_agent', ['agent_id' => $iId])] : BxDolTemplate::getInstance()->parseHtmlByName('agent_ai_chat.html', [
+        $iContextPid = 0;
+        $oAi = BxDolAI::getInstance();
+        if ($oAi)
+            $iContextPid = (int)$oAi->resolveChatHistoryContextPidFromPage();
+
+        return $bIsApi ? [bx_api_get_block('ai_agent', [
+            'agent_id' => $iId,
+            'agent_profile' => BxDolProfile::getData($aAgent['profile_id']),
+            'context_profile_id' => $iContextPid,
+        ])] : BxDolTemplate::getInstance()->parseHtmlByName('agent_ai_chat.html', [
             'id' => $iId
         ]);
     }
@@ -1827,9 +1836,11 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
         if (!$sPrompt)
             return echoJson(['code' => 400, 'msg' => _t('_sys_agents_json_field_err')]);
 
-        $oAi->streamAgentChat($aAgent['id'], $sPrompt, [
-            'sender_profile_id' => bx_get_logged_profile_id(),
-        ], $aData['threadId'] ?? null);
+        $aParams = $this->_aiChatHistoryParams();
+        if (!$aParams)
+            return;
+
+        $oAi->streamAgentChat($aAgent['id'], $sPrompt, $aParams, $aData['threadId'] ?? null);
     }
 
     /**
@@ -1846,13 +1857,33 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
             return;
 
         $oAi = BxDolAI::getInstance();
+        $aParams = $this->_aiChatHistoryParams();
+        if (!$aParams)
+            return;
+
         return echoJson([
-            'messages' => $oAi->getChatHistoryUiMessages($aAgent['id'], [
-                'sender_profile_id' => bx_get_logged_profile_id(),
-            ]),
+            'messages' => $oAi->getChatHistoryUiMessages($aAgent['id'], $aParams),
             'activeRun' => null,
             'interrupts' => null,
         ]);
+    }
+
+    /**
+     * Member/guest subindex + optional `?context=` (group/org profile id).
+     * Invalid context is 403 — never fall back to the site-wide thread.
+     */
+    protected function _aiChatHistoryParams()
+    {
+        $oAi = BxDolAI::getInstance();
+        $mixedContext = $oAi->resolveChatHistoryContextPid();
+        if ($mixedContext === false) {
+            echoJson(['code' => 403, 'msg' => _t('_sys_agents_unauthorized')]);
+            return false;
+        }
+
+        $aParams = $oAi->resolveChatHistoryParams();
+        $aParams['chat_history_context_pid'] = (int)$mixedContext;
+        return $aParams;
     }
 
     protected function _aiChatLoadAgent($iAgentId)
