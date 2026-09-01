@@ -123,10 +123,7 @@ class BxDolAiAgent extends RAG
 
     protected function getСhatHistoryThreadId(): string
     {
-        $s = $this->aAgent['trigger'] . ':' . $this->aAgent['id'];
-        if (isset($this->aParams['chat_history_subindex']) && $this->aParams['chat_history_subindex'] !== '')
-            $s .= ':' . (string)$this->aParams['chat_history_subindex'];
-        return $s;
+        return BxDolAI::chatHistoryThreadId($this->aAgent, $this->aParams);
     }
 
     protected function getAlertTriggerModifyableKeys(): string
