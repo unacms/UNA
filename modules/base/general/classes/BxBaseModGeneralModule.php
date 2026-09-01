@@ -3921,10 +3921,15 @@ class BxBaseModGeneralModule extends BxDolModule
     {
         $CNF = &$this->_oConfig->CNF;
 
-        return [
-            'source' => $this->_oConfig->getName() . '_' . (int)$aContentInfo[$CNF['FIELD_ID']],
+        $sModule = $this->_oConfig->getName();
+        $iAuthorId = (int)$aContentInfo[$CNF['FIELD_AUTHOR']];
+        $iContentId = (int)$aContentInfo[$CNF['FIELD_ID']];
 
-            'object_author_id' => (int)$aContentInfo[$CNF['FIELD_AUTHOR']]
+        return [
+            'source' => $sModule . '_' . $iContentId,
+            'source_mac' => $sModule . '_' . $iAuthorId . '_' . $iContentId,
+
+            'object_author_id' => $iAuthorId
         ];
     }
 

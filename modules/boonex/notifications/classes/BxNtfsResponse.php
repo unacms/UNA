@@ -144,6 +144,7 @@ class BxNtfsResponse extends BxBaseModNotificationsResponse
                 'subobject_id' => $iSubobjectId,
                 'content' => $this->_getContent($oAlert->aExtras),
                 'source' => $this->_getSource($oAlert->aExtras),
+                'source_mac' => $this->_getSourceMac($oAlert->aExtras),
                 'allow_view_event_to' => $this->_oModule->_oConfig->getPrivacyViewDefault('event'),
                 'date' => $this->_getDate($oAlert->aExtras),
                 'processed' => 0
@@ -234,6 +235,7 @@ class BxNtfsResponse extends BxBaseModNotificationsResponse
                 'subobject_id' => $oAlert->aExtras['comment_uniq_id'],
                 'content' => $this->_getContent($oAlert->aExtras),
                 'source' => $this->_getSource($oAlert->aExtras),
+                'source_mac' => $this->_getSourceMac($oAlert->aExtras),
                 'allow_view_event_to' => $this->_oModule->_oConfig->getPrivacyViewDefault('event'),
                 'processed' => 0
             ];
@@ -265,6 +267,7 @@ class BxNtfsResponse extends BxBaseModNotificationsResponse
                     'request' => empty($oAlert->aExtras['mutual']) ? 1 : 0
                 )),
                 'source' => $this->_getSource($oAlert->aExtras),
+                'source_mac' => $this->_getSourceMac($oAlert->aExtras),
                 'allow_view_event_to' => $iPrivacyView,
                 'processed' => 0
     	    )
@@ -292,6 +295,7 @@ class BxNtfsResponse extends BxBaseModNotificationsResponse
                 'module' => $oAlert->aExtras['object']
             )),
             'source' => $this->_getSource($oAlert->aExtras),
+            'source_mac' => $this->_getSourceMac($oAlert->aExtras),
             'allow_view_event_to' => $this->_oModule->_oConfig->getPrivacyViewDefault('event'),
             'processed' => 0
         ]];
@@ -336,6 +340,7 @@ class BxNtfsResponse extends BxBaseModNotificationsResponse
                 'subobject_id' => 0,
                 'content' => $this->_getContent($oAlert->aExtras),
                 'source' => $this->_getSource($oAlert->aExtras),
+                'source_mac' => $this->_getSourceMac($oAlert->aExtras),                
                 'allow_view_event_to' => $this->_oModule->_oConfig->getPrivacyViewDefault('event'),
                 'processed' => 0
     	    )
@@ -384,7 +389,12 @@ class BxNtfsResponse extends BxBaseModNotificationsResponse
 
     protected function _getSource($aExtras)
     {
-        return isset($aExtras['source']) ? $aExtras['source'] : '';
+        return $aExtras['source'] ?? '';
+    }
+
+    protected function _getSourceMac($aExtras)
+    {
+        return $aExtras['source_mac'] ?? '';
     }
 
     protected function _getDate($aExtras)
