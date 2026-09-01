@@ -125,7 +125,7 @@ function DropdownMenuPopup({
                     openOnFocus ?? variant === 'tabs-overflow'
                 }
                 contentClassName={cn(
-                    variant === 'tabs-overflow' && 'overflow-visible p-0.5',
+                    variant === 'tabs-overflow' && 'overflow-visible p-1',
                     contentClassNameProp
                 )}
                 open={isOpen}

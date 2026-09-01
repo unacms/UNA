@@ -1,6 +1,7 @@
 'use client'
 
 import { IconFromSet, XmlIcon } from 'app/ui/atoms/iconset';
+import { useIconClassColor } from 'app/ui/atoms/icon-class-color';
 import { useState } from 'react';
 import { Platform } from 'react-native';
 import { findIconFromRemote, appSetting } from 'app/lib/util';
@@ -30,13 +31,14 @@ export function AnimatedIcon({ AnimatedIconComponent, origIcon, className, anima
     const [hoveredLocal, setHoveredLocal] = useState(false);
     const hoveredMerged = hasValue(hovered) ? hovered : hoveredLocal;
     const activeResolved = hasValue(active) ? active : selected;
+    const classColor = useIconClassColor(cleanedClassName);
     const hoverHandlers = animated && scenes.draw && !hasValue(hovered) && Platform.OS === 'web'
         ? { onMouseEnter: () => setHoveredLocal(true), onMouseLeave: () => setHoveredLocal(false) }
         : {};
 
     return (
         <AnimatedIconComponent
-            color={color}
+            color={color || classColor}
             size={size}
             width={width}
             height={height}

@@ -148,6 +148,7 @@ export default function Badge({ data, variant = "default", size = 'sm', rounded 
         const defaultPadNoSize = !size ? 'px-1' : ''
 
         // UNA icon-only badges: show the icon/image alone, no pill background.
+        // Always size the wrapper so icon badges match image badges at the same token.
         if (isIconOnly && (hasIcon || hasImage)) {
             const iconOnlyContent = hasIcon ? (
                 <BadgeIcon icon={data.icon} size={sizeSize} textColorClass={textColorClass} rawColor={data.color} />
@@ -158,21 +159,22 @@ export default function Badge({ data, variant = "default", size = 'sm', rounded 
                     src={data.icon_url}
                 />
             )
-            const href = data.badge_link || data.link
-            if (href) {
-                return (
-                    <Link href={href} className={className}>
-                        {iconOnlyContent}
-                    </Link>
-                )
-            }
-            return (
+            const sized = (
                 <View className={`${containerClasses} ${defaultPadNoSize} ${rounded ? (typeof rounded === 'string' ? rounded : 'rounded-full') : roundedSize} ${className}`}>
-                    <View className={`items-center justify-center ${className}`}>
+                    <View className="items-center justify-center">
                         {iconOnlyContent}
                     </View>
                 </View>
             )
+            const href = data.badge_link || data.link
+            if (href) {
+                return (
+                    <Link href={href}>
+                        {sized}
+                    </Link>
+                )
+            }
+            return sized
         }
 
         // Build base classes; default padding/rounding only if size not provided

@@ -66,14 +66,14 @@ export default function () {
     return (
         <View
             className={
-                `min-h-16 fixed bottom-0 left-0 z-30 border-t border-black/5 dark:border-black/20 w-full lg:hidden bg-card ${isInStandaloneMode() ? "pb-4" : ""}`
+                `min-h-16 fixed bottom-0 left-0 z-30 p-1 w-full lg:hidden  ${isInStandaloneMode() ? "pb-4" : ""}`
             }
             onLayout={(e) => setFooterHeight(e.nativeEvent.layout.height)}
         >
             <View
-                className={`z-50 w-full pb-0 ${isInStandaloneMode() ? "h-12" : "h-16"}`}
+                className={`z-50 bg-card shadow-btn-glass dark:shadow-btn-glass-deep rounded-2xl w-full pb-0 ${isInStandaloneMode() ? "h-12" : "h-14"}`}
             >
-                <Row className="flex-auto items-center flex-row w-full px-2 gap-2">
+                <Row className="flex-auto items-center flex-row w-full p-1 gap-1">
                     {visibleTabs.filter(item => !item.hide).map((tab, index) => {
                         const isActive = appSetting('messenger', 'url') === tab.url ? pathname.includes(tab.url) : pathname === tab.url;
                         return <MenuBottomItem key={`bmi-${index}`} notifCount={notifCount} iFrCounter={iFrCounter} link={tab.url} badge={tab.badge} index={index} icon={tab.icon} title={t(tab.title)} isActive={isActive} animated={tab.animated} addClassName={tab.addClassName} />
@@ -136,7 +136,7 @@ function MenuBottomItem({ link, title, badge, icon, isActive, iFrCounter, notifC
                  onClick={handlePress}
             >
                 <View
-                    className={`justify-between my-auto items-center rounded-xl p-1.5 text-center gap-1.5 web:hover:bg-muted/50 ${isActive && 'bg-accent/60'}`}
+                    className={` my-auto items-center rounded-xl min-h-12 justify-center p-1.5 text-center gap-1.5 web:hover:bg-muted/50 ${isActive && 'bg-accent/60'}`}
                     onMouseEnter={useAnimatedIcon ? () => setGroupHovered(true) : undefined}
                     onMouseLeave={useAnimatedIcon ? () => setGroupHovered(false) : undefined}
                 >
@@ -175,14 +175,14 @@ function MoreBottomItem({ visibleTabs, overflowTabs, pathname, currentUser }) {
     );
 
     return (
-        <View className="flex-1">
+        <View className="flex-1 min-w-0">
             <DropdownMenu
                 mode="popup"
                 showOnTop
                 variant="tabs-overflow"
                 openOnFocus={false}
                 items={items}
-                triggerClassName="group flex-1 w-full h-full items-center justify-center"
+                triggerClassName="group flex-1 w-full h-full min-w-0"
             >
                 <MoreBottomTrigger isOverflowActive={isOverflowActive} />
             </DropdownMenu>
@@ -197,7 +197,7 @@ function MoreBottomTrigger({ isOverflowActive }) {
 
     return (
         <View
-            className={`justify-between my-auto items-center rounded-xl p-1.5 text-center gap-1.5 web:hover:bg-muted/50 ${isActive ? 'bg-accent/60' : ''}`}
+            className={`w-full my-auto items-center rounded-xl min-h-12 justify-center p-1.5 text-center gap-1.5 web:hover:bg-muted/50 ${isActive ? 'bg-accent/60' : ''}`}
         >
             <View className="items-center justify-center">
                 <Icon

@@ -37,7 +37,7 @@ export const settingsElements = {
         morph_avatar_collapsed: 'base',
         morph_title_expanded: 'text-2xl sm:text-3xl lg:text-4xl',
         morph_title_collapsed: 'text-base leading-6 lg:text-lg lg:leading-6',
-        morph_bar: 'py-4',
+        morph_bar: 'py-2.5',
         morph_transition: 'native:duration-300 web:duration-300 web:ease-out motion-reduce:transition-none',
     },
     comments: {

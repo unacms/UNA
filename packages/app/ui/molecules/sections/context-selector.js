@@ -18,7 +18,7 @@ function ListItem({ url, text, icon, isActive }) {
         <Link key={url} href={url}>
             <Row
                 className={`w-full px-2 h-12 gap-2 web:group rounded-xl justify-between items-center ${isActive
-                    ? ' bg-primary/10 text-foreground rounded-xl web:hover:bg-muted/50 web:duration-200 '
+                    ? ' bg-accent/50 text-foreground rounded-xl web:hover:bg-muted/50 web:duration-200 '
                     : ' web:hover:bg-muted/50 web:duration-200 '
                     }`}
             >

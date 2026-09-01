@@ -6,11 +6,10 @@ import { Text } from 'app/design/typography';
 import { Icon } from 'app/ui/atoms/icon';
 import Image from 'app/ui/atoms/image';
 import { isEmoji, appSetting, resolveMenuItemDescription } from 'app/lib/util';
-import { useTheme } from 'app/design/theme';
 import Link from 'app/ui/atoms/link'
 const menuSettings = appSetting('theme', 'dropdown_menu');
 
-const getIcon = (oItem, iconSize = 20, rowHovered, colors) => {
+const getIcon = (oItem, iconSize = 20, rowHovered) => {
     const image = oItem?.image
     if (typeof image === 'string' && image && /^(https?:|file:|content:|data:)/i.test(image)) {
         return (
@@ -25,7 +24,7 @@ const getIcon = (oItem, iconSize = 20, rowHovered, colors) => {
     if (!oItem?.icon) return null;
 
     const selected = !!oItem.selected;
-    const className = [oItem?.class_item_icon, oItem?.addClassName, selected ? 'text-primary' : null]
+    const className = [oItem?.class_item_icon, oItem?.addClassName, selected ? 'text-primary-foreground' : null]
         .filter(Boolean)
         .join(' ');
 
@@ -38,7 +37,6 @@ const getIcon = (oItem, iconSize = 20, rowHovered, colors) => {
                 className={className}
                 icon={oItem.icon}
                 size={oItem?.icon_size || iconSize}
-                color={selected ? colors.primary : undefined}
                 animated={useAnimated}
                 hovered={useAnimated && Platform.OS === 'web' ? rowHovered : undefined}
             />
@@ -48,7 +46,6 @@ const getIcon = (oItem, iconSize = 20, rowHovered, colors) => {
 
 export default function DropdownMenuItem({ item, index, link, handleSelect, classes, className,  counter, handleCounter, mode }) {
     const { t } = useTranslation();
-    const { colors } = useTheme();
     const key = item.id ?? index;
     const iconSize = menuSettings.icon_size || 16;
     const [rowHovered, setRowHovered] = useState(false);
@@ -82,7 +79,7 @@ export default function DropdownMenuItem({ item, index, link, handleSelect, clas
         );
     }
 
-    const icon = getIcon(item, iconSize, rowHovered, colors);
+    const icon = getIcon(item, iconSize, rowHovered);
     const iconWrapClass = item.selected
         ? (menuSettings.item_icon_active ?? menuSettings.item_icon)
         : menuSettings.item_icon;
@@ -106,7 +103,7 @@ export default function DropdownMenuItem({ item, index, link, handleSelect, clas
             : {};
     const Content = (
         <Wrapper
-            className={`web:group ${className} ${menuSettings[classes?.item || 'item_ver']}${item.selected ? ' bg-primary/10 text-foreground' : ''}`}
+            className={`web:group ${className} ${menuSettings[classes?.item || 'item_ver']}${item.selected ? ' bg-accent/50 text-foreground' : ''}`}
             key={key}
             {...pressProps}
             {...rowHoverProps}

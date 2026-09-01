@@ -219,14 +219,14 @@ export default function DropdownPopup({
     if (finalLeft + effectivePopupWidth > windowWidth - 16) {
         finalLeft = windowWidth - effectivePopupWidth - 16;
     }
-    if (finalLeft < 16) finalLeft = 16;
+    if (finalLeft < 16) finalLeft = 32;
 
     // Tweak these two constants if the gap looks off. They are intentionally
     // asymmetric — on native (especially Android) the "below" anchor often
     // needs more breathing room than the "above" one because of trigger
     // pressables / hit-slop / shadow rendering.
     const triggerGapBelow = isWeb || isIos ? 8: 32;
-    const triggerGapAbove = isWeb ? 0: 0;
+    const triggerGapAbove = isWeb ? 8: 0;
     const popupTop = buttonPos.shouldOpenAbove
         ? Math.max(8, buttonPos.triggerY - popupHeight - triggerGapAbove)
         : buttonPos.triggerY + buttonPos.triggerHeight + triggerGapBelow;

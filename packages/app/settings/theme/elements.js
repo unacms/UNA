@@ -55,7 +55,7 @@ export const settingsElements = {
         item_icon:
             'flex items-center w-9 h-9 bg-muted/50 web:group-hover:bg-border rounded-full justify-center',
         item_icon_active:
-            'flex items-center w-9 h-9 bg-accent rounded-full justify-center',
+            'flex items-center w-9 h-9 bg-primary rounded-full justify-center',
         icon_size: 20, // Default icon size for dropdown menu icons
     },
     modal: {

@@ -226,7 +226,7 @@ export function CoverMorphBody({
                         <View
                             aria-hidden={!collapsed}
                             className={cn(
-                                'web:lg:hidden justify-center web:overflow-hidden web:transition-[width,opacity]',
+                                'web:lg:hidden justify-center  web:transition-[width,opacity]',
                                 MORPH_TRANSITION,
                                 collapsed
                                     ? cn(
@@ -313,7 +313,7 @@ export function CoverMorphBody({
                                         {profileTitle}
                                     </Text>
                                     <View className="shrink-0">
-                                        <Badges badges={data.badges} size="xs" />
+                                        <Badges badges={data.badges} size={collapsed ? '3xs' : 'xs'} />
                                     </View>
                                 </Row>
                                 <Row

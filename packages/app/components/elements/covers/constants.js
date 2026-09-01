@@ -1,7 +1,7 @@
 import { appSetting } from 'app/lib/util'
 
-/** Tailwind `py-4` — keep in sync with `cover.morph_bar`. */
-export const BAR_PAD_Y_PX = 16
+/** Tailwind `py-2.5` — keep in sync with `cover.morph_bar`. */
+export const BAR_PAD_Y_PX = 10
 export const MORPH_LEAD = 16
 export const MORPH_RANGE_MIN = 32
 export const MORPH_HYSTERESIS = 8
@@ -18,7 +18,7 @@ export const TITLE_COLLAPSED =
 export const MORPH_TRANSITION =
     appSetting('cover', 'morph_transition') ||
     'native:duration-300 web:duration-300 web:ease-out motion-reduce:transition-none'
-export const MORPH_BAR = appSetting('cover', 'morph_bar') || 'py-4'
+export const MORPH_BAR = appSetting('cover', 'morph_bar') || 'py-2.5'
 
 export const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from')
 
