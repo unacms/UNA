@@ -133,6 +133,23 @@ class BxBaseModProfileDb extends BxBaseModGeneralDb
         if((is_numeric($mixedParams) && ($iLimit = (int)$mixedParams)) || (is_array($mixedParams) && isset($mixedParams['limit']) && ($iLimit = (int)$mixedParams['limit'])))
             $sLimit = $this->prepareAsString(" LIMIT ?", $iLimit);
 
+        if(($iCid = $mixedParams['search_params']['cid'] ?? false) && ($sCmod = $mixedParams['search_params']['cmod'] ?? false)) {
+            $aContent = bx_srv($sCmod, 'get_info', [$iCid, false]);
+
+            $aPreferred = [];
+            if(bx_srv('system', 'is_module_context', [$sCmod])) {
+                $aPreferred = bx_srv($sCmod, 'fans', [$iCid, true]);
+            }
+            else if(($sK = 'allow_view_to') && ($iContext = $aContent[$sK] ?? 0) < 0 && ($oContext = BxDolProfile::getInstance(abs($iContext))) !== false) {
+                $aPreferred = bx_srv($oContext->getModule(), 'fans', [$oContext->getContentId(), true]);
+            }
+
+            if($aPreferred) {
+                $sSelect .= ", IF(`p`.`id` IN (" . $this->implode_escape($aPreferred) . "), 1, 0) AS `profile_weight`";
+                $sOrderBy = " ORDER BY `profile_weight` DESC, `a`.`logged` DESC";
+            }
+        }
+
         /**
          * @hooks
          * @hookdef hook-profile-search_by_term 'profile', 'search_by_term' - hook to modify a list of profiles found by term

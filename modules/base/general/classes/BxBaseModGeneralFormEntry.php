@@ -723,6 +723,7 @@ class BxBaseModGeneralFormEntry extends BxTemplFormView
         $aQueryParams = parent::getHtmlEditorQueryParams($aInput);
         if (isset($this->MODULE)){
             $aQueryParams['m'] = $this->MODULE;
+            $aQueryParams['cmod'] = $this->MODULE;
         }
         if (isset($this->_iContentId) && $this->_iContentId){
             $aQueryParams['cid'] = $this->_iContentId;

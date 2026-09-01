@@ -495,8 +495,12 @@ class BxBaseServiceProfiles extends BxDol
         }
 
         // sort result
-        usort($a, function($r1, $r2) {
-            return strcmp($r1['label'], $r2['label']);
+        $sOrderField = $mixedParams['order_by'] ?? 'label';
+        usort($a, function($r1, $r2) use ($sOrderField) {    
+            if($sOrderField == 'weight')
+                return -((int)$r1[$sOrderField] - (int)$r2[$sOrderField]);
+            else
+                return strcmp($r1[$sOrderField], $r2[$sOrderField]);
         });
 
          /**

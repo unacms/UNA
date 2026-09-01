@@ -45,9 +45,15 @@ class BxBaseCmtsForm extends BxTemplFormView
     function getHtmlEditorQueryParams($aInput)
     {
         $aQueryParams = parent::getHtmlEditorQueryParams($aInput);
-        if (isset($this->aInputs['id'])){
+        if (isset($this->aInputs['id'])) {
             $aQueryParams['cid'] = $this->aInputs['id']['value'];
         }
+
+        $oObject = $this->_getObject(bx_process_input($this->aInputs['sys']['value']), (int)$this->aInputs['id']['value']);
+        if($oObject && ($aCmtInfo = $this->_oObject->getSystemInfo())) {
+            $aQueryParams['cmod'] = $aCmtInfo['module'] ?? '';
+        }
+
         $aQueryParams['m'] = 'sys_cmts';
         $aQueryParams['fi'] = '';
 
