@@ -21,7 +21,7 @@ import CounterIndicator from './misc/counter-indicator';
 import ProfileLink from './profile/profile-link'; 
 import NoContent from './misc/no-content'; 
 import { TaskTimer } from './misc/task-timer';
-import AiAgent from './chat/ai-agent';
+import AiAgent from './ai-agent/agent';
 
 export const componentsMapDefault = {
     likes: memo(Likes),

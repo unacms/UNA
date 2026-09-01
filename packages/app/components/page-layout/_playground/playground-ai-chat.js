@@ -6,7 +6,7 @@ import { View, Row } from 'app/design/view';
 import { Text } from 'app/design/typography';
 import { Input, NeoButton } from 'app/design/controls';
 import Link from 'app/ui/atoms/link';
-import AiAgent from 'app/ui/molecules/chat/ai-agent';
+import AiAgent from 'app/ui/molecules/ai-agent/agent';
 
 const isWeb = Platform.OS === 'web';
 

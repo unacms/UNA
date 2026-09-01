@@ -2,19 +2,17 @@
 
 import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useChat } from '@tanstack/ai-react';
-import { Platform } from 'react-native';
 import { View, Row, ScrollView } from 'app/design/view';
 import { Text } from 'app/design/typography';
 import { InputMulti, NeoButton } from 'app/design/controls';
 import Profile from 'app/ui/molecules/profile/profile';
 import { useCurrentUser } from 'app/context/user';
-import { appSetting, cn } from 'app/lib/util';
-import { createUnaAiChatConnection } from 'app/lib/una-ai-chat';
+import { cn, isWeb } from 'app/lib/util';
+import { createAgentChat } from './helper';
 
-const NEAR_BOTTOM_PX = 96;
+const NEAR_BOTTOM_PX = 48;
 const COMPOSER_LINE_PX = 20;
 const COMPOSER_MAX_PX = 160;
-const isWeb = Platform.OS === 'web';
 
 function isNearBottom(node, nativeEvent) {
     if (node && typeof node.scrollTop === 'number' && typeof node.scrollHeight === 'number') {
@@ -99,13 +97,11 @@ export default function AiAgent({ data }) {
     const inputRef = useRef(null);
     const restComposerHeightRef = useRef(null);
     const pinnedToBottomRef = useRef(true);
+    const scrollRafRef = useRef(0);
     const [composerHeight, setComposerHeight] = useState(COMPOSER_LINE_PX);
 
     const agentId = data.agent_id;
-    const assistantName = appSetting('ai_agent', 'assistant_name') || 'Assistant';
-    const placeholder = appSetting('ai_agent', 'placeholder') || 'Ask anything...';
-    const emptyText = appSetting('ai_agent', 'empty_text') || '';
-    const showClear = appSetting('ai_agent', 'show_clear') !== false;
+    const assistant = data.agent_profile;
 
     const applyComposerHeight = useCallback((height) => {
         const next = Math.min(Math.max(Math.round(height), COMPOSER_LINE_PX), COMPOSER_MAX_PX);
@@ -128,23 +124,15 @@ export default function AiAgent({ data }) {
     const restComposerHeight = restComposerHeightRef.current ?? COMPOSER_LINE_PX;
     const isMultiline = input.length > 0 && (composerHeight > restComposerHeight + 6 || input.includes('\n'));
 
-    const assistant = useMemo(
-        () => ({
-            id: agentId,
-            display_name: assistantName,
-        }),
-        [agentId, assistantName]
-    );
-
     const connection = useMemo(
         () =>
-            createUnaAiChatConnection(agentId, {
+            createAgentChat(agentId, {
                 onHydrateError: setHydrateError,
             }),
         [agentId]
     );
 
-    const { messages, sendMessage, isLoading, error, stop, clear } = useChat({
+    const { messages, sendMessage, isLoading, error, stop } = useChat({
         connection,
         persistence: true,
         threadId: `agent:${agentId}`,
@@ -156,10 +144,24 @@ export default function AiAgent({ data }) {
     const streamingId = isLoading && last?.role === 'assistant' ? last.id : null;
     const lastText = last ? messageText(last) : '';
 
+    const scrollToEndSoon = useCallback(() => {
+        if (scrollRafRef.current) return;
+        scrollRafRef.current = requestAnimationFrame(() => {
+            scrollRafRef.current = 0;
+            scrollChatToEnd(listRef.current);
+        });
+    }, []);
+
+    useLayoutEffect(() => {
+        return () => {
+            if (scrollRafRef.current) cancelAnimationFrame(scrollRafRef.current);
+        };
+    }, []);
+
     useLayoutEffect(() => {
         if (!pinnedToBottomRef.current) return;
-        scrollChatToEnd(listRef.current);
-    }, [messages.length, lastText, isLoading]);
+        scrollToEndSoon();
+    }, [messages.length, lastText, isLoading, composerHeight, scrollToEndSoon]);
 
     const onListScroll = useCallback((event) => {
         pinnedToBottomRef.current = isNearBottom(listRef.current, event?.nativeEvent);
@@ -186,65 +188,28 @@ export default function AiAgent({ data }) {
     );
 
     return (
-        <View className="relative rounded-2xl shadow-card-outline dark:shadow-card-outline-deep bg-card overflow-hidden">
+        <View className="h-[28rem] overflow-hidden">
             <ScrollView
                 ref={listRef}
-                className="max-h-[28rem] px-4"
-                contentContainerClassName={cn(
-                    'gap-1 pt-16',
-                    showClear && messages.length > 0 ? 'pb-28' : 'pb-28'
-                )}
+                className="min-h-0 flex-1"
+                contentContainerClassName="gap-1"
                 onScroll={onListScroll}
-                scrollEventThrottle={16}
+                scrollEventThrottle={100}
             >
-                {messages.length === 0 ? (
-                    <View className="py-10 px-2">
-                        {emptyText ? (
-                            <Text className="text-sm text-muted-foreground text-center">
-                                {emptyText}
-                            </Text>
-                        ) : null}
-                    </View>
-                ) : (
-                    messages.map((message) => (
-                        <ChatBubble
-                            key={message.id}
-                            message={message}
-                            user={currentUser}
-                            assistant={assistant}
-                            isStreaming={message.id === streamingId}
-                        />
-                    ))
-                )}
+                {messages.map((message) => (
+                    <ChatBubble
+                        key={message.id}
+                        message={message}
+                        user={currentUser}
+                        assistant={assistant}
+                        isStreaming={message.id === streamingId}
+                    />
+                ))}
             </ScrollView>
 
-            <Row
-                className="absolute w-full items-center bg-linear-to-b from-card from-20% to-transparent justify-between px-4 h-14"
-                pointerEvents="box-none"
-            >
-                <Row
-                    className="gap-2 items-center rounded-full bg-popover/50 web:backdrop-blur-md shadow-btn-glass dark:shadow-btn-glass-deep p-1"
-                    pointerEvents="auto"
-                >
-                    <Profile
-                        {...assistant}
-                        displayType="unit_wo_info"
-                        displaySize="xs"
-                    />
-                    <View className="gap-0.5 pe-2">
-                        <Text className="text-sm font-semibold text-foreground">
-                            {assistantName}
-                        </Text>
-                    </View>
-                </Row>
-            </Row>
-
-            <View
-                className="absolute bottom-0 w-full px-3 pb-3 pt-14 bg-linear-to-t from-card from-20% to-transparent"
-                pointerEvents="box-none"
-            >
+            <View className="pt-2">
                 {chatError ? (
-                    <View className="px-1 pb-2" pointerEvents="none">
+                    <View className="px-1 pb-2">
                         <Text className="text-sm text-destructive">{chatError.message}</Text>
                     </View>
                 ) : null}
@@ -253,22 +218,15 @@ export default function AiAgent({ data }) {
                         'w-full bg-card/90 backdrop-blur-lg shadow-input-outline dark:shadow-input-outline-deep overflow-hidden',
                         isMultiline ? 'rounded-xl' : 'rounded-full'
                     )}
-                    pointerEvents="auto"
                 >
-                    <View className="items-stretch">
-                        <View
-                            className={cn(
-                                'p-3 min-h-12 flex-auto justify-center',
-                                isMultiline ? 'mb-10' : 'me-10'
-                            )}
-                            style={isWeb ? { transition: 'padding-bottom 0.1s cubic-bezier(0.25, 0.1, 0.25, 1)' } : undefined}
-                        >
+                    <Row className="items-end">
+                        <View className="flex-1 p-3 min-h-12 justify-center">
                             <InputMulti
                                 ref={inputRef}
                                 value={input}
                                 onChangeText={setInput}
                                 onHeight={(height) => applyComposerHeight(input ? height : COMPOSER_LINE_PX)}
-                                placeholder={placeholder}
+                                placeholder="Ask anything..."
                                 editable={!isLoading}
                                 className="w-full bg-transparent border-0 shadow-none outline-none ring-0 rounded-none p-0 min-h-0 leading-5 resize-none web:overflow-y-auto web:focus:outline-none web:focus:ring-0 web:focus:border-0 web:focus-visible:outline-none web:focus-visible:ring-0 web:focus-visible:border-0 web:focus-visible:shadow-none web:focus-visible:bg-transparent"
                                 style={{
@@ -283,7 +241,7 @@ export default function AiAgent({ data }) {
                                 {...(isWeb ? { rows: 1 } : { scrollEnabled: composerHeight >= COMPOSER_MAX_PX })}
                             />
                         </View>
-                        <View className="flex-row absolute bottom-1.5 right-1.5">
+                        <View className="p-1.5">
                             {isLoading ? (
                                 <NeoButton
                                     style="bordered"
@@ -305,18 +263,8 @@ export default function AiAgent({ data }) {
                                 />
                             )}
                         </View>
-                    </View>
-                </View>
-                {showClear && messages.length > 0 ? (
-                    <Row className="justify-end pt-2" pointerEvents="auto">
-                        <NeoButton
-                            style="plain"
-                            controlSize="mini"
-                            label="Clear"
-                            onPress={() => clear()}
-                        />
                     </Row>
-                ) : null}
+                </View>
             </View>
         </View>
     );
