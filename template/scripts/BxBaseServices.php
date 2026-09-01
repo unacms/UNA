@@ -1827,9 +1827,7 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
         if (!$sPrompt)
             return echoJson(['code' => 400, 'msg' => _t('_sys_agents_json_field_err')]);
 
-        $oAi->streamAgentChat($aAgent['id'], $sPrompt, [
-            'sender_profile_id' => bx_get_logged_profile_id(),
-        ], $aData['threadId'] ?? null);
+        $oAi->streamAgentChat($aAgent['id'], $sPrompt, $oAi->resolveChatHistoryParams(), $aData['threadId'] ?? null);
     }
 
     /**
@@ -1847,9 +1845,7 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
 
         $oAi = BxDolAI::getInstance();
         return echoJson([
-            'messages' => $oAi->getChatHistoryUiMessages($aAgent['id'], [
-                'sender_profile_id' => bx_get_logged_profile_id(),
-            ]),
+            'messages' => $oAi->getChatHistoryUiMessages($aAgent['id'], $oAi->resolveChatHistoryParams()),
             'activeRun' => null,
             'interrupts' => null,
         ]);

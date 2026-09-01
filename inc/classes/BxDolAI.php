@@ -488,12 +488,53 @@ class BxDolAI extends BxDolFactory implements iBxDolSingleton
     }
 
     /**
+     * Guest threads: `g:{clientKey}` (NEO header) or `s:{memberSession}` (UNA cookie).
+     * Members: profile id. Guest key is kept in session and adopted on login.
+     */
+    public function resolveChatHistoryParams()
+    {
+        $iProfileId = (int)bx_get_logged_profile_id();
+        $oSession = BxDolSession::getInstance();
+        $sHeaderKey = $this->readAiGuestKeyFromRequest();
+        $sSessionKey = 'ai_chat_guest_subindex';
+
+        if ($iProfileId) {
+            $sGuest = $sHeaderKey ? ('g:' . $sHeaderKey) : '';
+            if ($sGuest === '') {
+                $sStored = $oSession->getValue($sSessionKey);
+                if ($this->isAiGuestSubindex($sStored))
+                    $sGuest = $sStored;
+            }
+            if ($sGuest !== '')
+                $this->_oDb->adoptGuestChatHistory($sGuest, $iProfileId);
+            if ($oSession->isValue($sSessionKey))
+                $oSession->unsetValue($sSessionKey);
+
+            return [
+                'sender_profile_id' => $iProfileId,
+                'chat_history_subindex' => (string)$iProfileId,
+            ];
+        }
+
+        $oSession->start(true);
+        $sSessionId = (string)$oSession->getId();
+        $sSubindex = $sHeaderKey ? ('g:' . $sHeaderKey) : ('s:' . ($sSessionId !== '' ? $sSessionId : '0'));
+        $oSession->setValue($sSessionKey, $sSubindex);
+
+        return [
+            'sender_profile_id' => 0,
+            'chat_history_subindex' => $sSubindex,
+        ];
+    }
+
+    /**
      * Transcript for TanStack `useChat` hydrate / `initialMessages`.
      * Loads the same NeuronAI chat history the agent uses when streaming.
      */
     public function getChatHistoryUiMessages($iAgentId, $aParams = [])
     {
-        $aParams['chat_history_subindex'] = (int)($aParams['sender_profile_id'] ?? 0);
+        if (!isset($aParams['chat_history_subindex']))
+            $aParams = array_merge($this->resolveChatHistoryParams(), $aParams);
 
         $aAgent = BxDolAiQuery::getAgentObject((int)$iAgentId);
         if (!$aAgent || empty($aAgent['chat_history_context']))
@@ -567,9 +608,38 @@ class BxDolAI extends BxDolFactory implements iBxDolSingleton
         return $aResult;
     }
 
+    protected function readAiGuestKeyFromRequest()
+    {
+        $s = $_SERVER['HTTP_X_UNA_AI_GUEST_KEY'] ?? '';
+        if ($s === '' && function_exists('apache_request_headers')) {
+            foreach (apache_request_headers() as $sName => $sValue) {
+                if (strtolower((string)$sName) === 'x-una-ai-guest-key') {
+                    $s = $sValue;
+                    break;
+                }
+            }
+        }
+        return $this->sanitizeAiGuestKey($s);
+    }
+
+    protected function sanitizeAiGuestKey($s)
+    {
+        $s = is_string($s) ? $s : '';
+        return preg_match('/^[A-Za-z0-9_-]{16,64}$/', $s) ? $s : '';
+    }
+
+    protected function isAiGuestSubindex($s)
+    {
+        $s = is_string($s) ? $s : '';
+        if ($s === '' || (strncmp($s, 'g:', 2) !== 0 && strncmp($s, 's:', 2) !== 0))
+            return false;
+        return $this->sanitizeAiGuestKey(substr($s, 2)) !== '';
+    }
+
     public function streamAgentChat($iAgentId, $sPrompt, $aParams = [], $sThreadId = null)
     {
-        $aParams['chat_history_subindex'] = (int)($aParams['sender_profile_id'] ?? 0);
+        if (!isset($aParams['chat_history_subindex']))
+            $aParams = array_merge($this->resolveChatHistoryParams(), $aParams);
 
         $oAdapter = new NeuronAI\Chat\Messages\Stream\Adapters\AGUIAdapter($sThreadId);
 
