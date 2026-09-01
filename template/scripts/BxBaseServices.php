@@ -853,6 +853,19 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
         ]]);
     }
 
+    public function serviceGetBlockAiAgent($iId = 0)
+    {
+        $bIsApi = bx_is_api();
+
+        $aAgent = BxDolAiQuery::getAgentObject($iId);
+        if(!$aAgent || !is_array($aAgent))
+            return $bIsApi ? [] : '';
+
+        return $bIsApi ? [bx_api_get_block('ai_agent', ['agent_id' => $iId])] : BxDolTemplate::getInstance()->parseHtmlByName('agent_ai_chat.html', [
+            'id' => $iId
+        ]);
+    }
+
     public function serviceGetBlockAskAssistant($aParams = [])
     {
         $iAssistant = BxDolAI::getAssistantForAskBlock();
