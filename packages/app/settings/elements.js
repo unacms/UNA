@@ -47,9 +47,9 @@ export const settingsElements = {
         in_reply: true, //OLD appSetting('layout', 'show_in_reply_comments')
         submit_comment_on_enter: true,
     },
-    ai_chat: {
+    ai_agent: {
         assistant_name: 'Assistant',
-        placeholder: 'Leave a comment...',
+        placeholder: 'Ask anything...',
         empty_text: '',
         show_clear: true,
     },

@@ -1,7 +1,7 @@
 'use client';
 
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import { fetchServerSentEvents, stream, useChat } from '@tanstack/ai-react';
+import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { useChat } from '@tanstack/ai-react';
 import { Platform } from 'react-native';
 import { View, Row, ScrollView } from 'app/design/view';
 import { Text } from 'app/design/typography';
@@ -9,14 +9,7 @@ import { InputMulti, NeoButton } from 'app/design/controls';
 import Profile from 'app/ui/molecules/profile/profile';
 import { useCurrentUser } from 'app/context/user';
 import { appSetting, cn } from 'app/lib/util';
-import { createUnaAiChatConnection, isUnaAiChatAgentId } from 'app/lib/una-ai-chat';
-
-const UNCONFIGURED_CONNECTION = stream(async function* () {
-    yield {
-        type: 'RUN_ERROR',
-        message: 'Agent chat is not configured.',
-    };
-});
+import { createUnaAiChatConnection } from 'app/lib/una-ai-chat';
 
 const NEAR_BOTTOM_PX = 96;
 const COMPOSER_LINE_PX = 20;
@@ -98,72 +91,7 @@ function ChatBubble({ message, user, assistant, isStreaming }) {
     );
 }
 
-function resolveSettings(props) {
-    const incoming = {
-        ...(props.data && typeof props.data === 'object' && !Array.isArray(props.data) ? props.data : {}),
-        ...(props.params || {}),
-        ...(props.settings || {}),
-    };
-    const showClearDefault = appSetting('ai_chat', 'show_clear');
-    const agentIdRaw = String(
-        props.agentId ??
-            props.agent_id ??
-            incoming.agentId ??
-            incoming.agent_id ??
-            incoming.agent ??
-            ''
-    ).trim();
-    const agentId = isUnaAiChatAgentId(agentIdRaw) ? agentIdRaw : '';
-    const connection = props.connection ?? incoming.connection;
-    const liveUna = Boolean(agentId && !connection);
-
-    return {
-        connection,
-        endpoint: props.endpoint ?? incoming.endpoint,
-        agentId,
-        liveUna,
-        assistantName:
-            incoming.assistantName ||
-            incoming.assistant_name ||
-            appSetting('ai_chat', 'assistant_name') ||
-            'Assistant',
-        assistantId: incoming.assistantId || incoming.assistant_id || agentId || 'una-assistant',
-        assistantAvatar:
-            incoming.assistantAvatar ||
-            incoming.url_avatar ||
-            incoming.assistant?.url_avatar,
-        subtitle: incoming.subtitle || '',
-        badge: incoming.badge || '',
-        placeholder:
-            incoming.placeholder ||
-            appSetting('ai_chat', 'placeholder') ||
-            'Ask anything...',
-        emptyText:
-            incoming.emptyText ||
-            incoming.empty_text ||
-            appSetting('ai_chat', 'empty_text') ||
-            '',
-        showClear:
-            incoming.showClear ??
-            incoming.show_clear ??
-            (liveUna ? false : showClearDefault !== false),
-        showHeader: incoming.showHeader ?? incoming.show_header ?? true,
-    };
-}
-
-/**
- * Streaming AI chat widget (UNA Ask AI).
- *
- * Settings (prop or `params`, UNA-style):
- *   connection      — TanStack AI connection (preferred)
- *   endpoint        — SSE URL; used when `connection` is omitted
- *   agentId         — UNA agent; GET/POST `/sys-ai-chat/{id}` (same host/auth as fetcher)
- *   assistantName   — header + bubble author
- *   assistantAvatar — optional avatar URL
- *   subtitle, badge, placeholder, emptyText
- *   showClear, showHeader
- */
-export default function AiChat(props) {
+export default function AiAgent({ data }) {
     const { currentUser } = useCurrentUser();
     const [input, setInput] = useState('');
     const [hydrateError, setHydrateError] = useState(null);
@@ -172,7 +100,12 @@ export default function AiChat(props) {
     const restComposerHeightRef = useRef(null);
     const pinnedToBottomRef = useRef(true);
     const [composerHeight, setComposerHeight] = useState(COMPOSER_LINE_PX);
-    const cfg = resolveSettings(props);
+
+    const agentId = data.agent_id;
+    const assistantName = appSetting('ai_agent', 'assistant_name') || 'Assistant';
+    const placeholder = appSetting('ai_agent', 'placeholder') || 'Ask anything...';
+    const emptyText = appSetting('ai_agent', 'empty_text') || '';
+    const showClear = appSetting('ai_agent', 'show_clear') !== false;
 
     const applyComposerHeight = useCallback((height) => {
         const next = Math.min(Math.max(Math.round(height), COMPOSER_LINE_PX), COMPOSER_MAX_PX);
@@ -184,9 +117,10 @@ export default function AiChat(props) {
         const node = inputRef.current;
         if (!node?.style || typeof node.scrollHeight !== 'number') return;
         node.style.height = 'auto';
-        const next = applyComposerHeight(node.scrollHeight);
+        const measured = input ? node.scrollHeight : COMPOSER_LINE_PX;
+        const next = applyComposerHeight(measured);
         node.style.height = `${next}px`;
-        if (!input && restComposerHeightRef.current == null) {
+        if (!input) {
             restComposerHeightRef.current = next;
         }
     }, [input, applyComposerHeight]);
@@ -196,33 +130,25 @@ export default function AiChat(props) {
 
     const assistant = useMemo(
         () => ({
-            id: cfg.assistantId,
-            display_name: cfg.assistantName,
-            url_avatar: cfg.assistantAvatar,
+            id: agentId,
+            display_name: assistantName,
         }),
-        [cfg.assistantId, cfg.assistantName, cfg.assistantAvatar]
+        [agentId, assistantName]
     );
 
-    useEffect(() => {
-        if (!cfg.liveUna) setHydrateError(null);
-    }, [cfg.liveUna, cfg.agentId]);
-
-    const connection = useMemo(() => {
-        if (cfg.connection) return cfg.connection;
-        if (cfg.liveUna) {
-            return createUnaAiChatConnection(cfg.agentId, {
+    const connection = useMemo(
+        () =>
+            createUnaAiChatConnection(agentId, {
                 onHydrateError: setHydrateError,
-            });
-        }
-        if (cfg.endpoint) return fetchServerSentEvents(cfg.endpoint);
-        return UNCONFIGURED_CONNECTION;
-    }, [cfg.connection, cfg.liveUna, cfg.agentId, cfg.endpoint]);
-
-    const { messages, sendMessage, isLoading, error, stop, clear } = useChat(
-        cfg.liveUna
-            ? { connection, persistence: true, threadId: `agent:${cfg.agentId}` }
-            : { connection }
+            }),
+        [agentId]
     );
+
+    const { messages, sendMessage, isLoading, error, stop, clear } = useChat({
+        connection,
+        persistence: true,
+        threadId: `agent:${agentId}`,
+    });
 
     const chatError = hydrateError || error;
 
@@ -264,15 +190,18 @@ export default function AiChat(props) {
             <ScrollView
                 ref={listRef}
                 className="max-h-[28rem] px-4"
-                contentContainerClassName={cfg.showHeader ? 'gap-1 pt-16 pb-24' : 'gap-1 pt-3 pb-24'}
+                contentContainerClassName={cn(
+                    'gap-1 pt-16',
+                    showClear && messages.length > 0 ? 'pb-28' : 'pb-28'
+                )}
                 onScroll={onListScroll}
                 scrollEventThrottle={16}
             >
                 {messages.length === 0 ? (
                     <View className="py-10 px-2">
-                        {cfg.emptyText ? (
+                        {emptyText ? (
                             <Text className="text-sm text-muted-foreground text-center">
-                                {cfg.emptyText}
+                                {emptyText}
                             </Text>
                         ) : null}
                     </View>
@@ -289,44 +218,29 @@ export default function AiChat(props) {
                 )}
             </ScrollView>
 
-            {cfg.showHeader ? (
+            <Row
+                className="absolute w-full items-center bg-linear-to-b from-card from-20% to-transparent justify-between px-4 h-14"
+                pointerEvents="box-none"
+            >
                 <Row
-                    className="absolute w-full items-center bg-linear-to-b from-card from-20% to-transparent justify-between px-4 h-14"
-                    pointerEvents="box-none"
+                    className="gap-2 items-center rounded-full bg-popover/50 web:backdrop-blur-md shadow-btn-glass dark:shadow-btn-glass-deep p-1"
+                    pointerEvents="auto"
                 >
-                    <Row
-                        className="gap-2 items-center rounded-full bg-popover/50 web:backdrop-blur-md shadow-btn-glass dark:shadow-btn-glass-deep p-1"
-                        pointerEvents="auto"
-                    >
-                        <Profile
-                            {...assistant}
-                            displayType="unit_wo_info"
-                            displaySize="xs"
-                        />
-                        <View className="gap-0.5 pe-2">
-                            <Text className="text-sm font-semibold text-foreground">
-                                {cfg.assistantName}
-                            </Text>
-                            {cfg.subtitle ? (
-                                <Text className="text-xs text-muted-foreground">{cfg.subtitle}</Text>
-                            ) : null}
-                        </View>
-                    </Row>
-                    {cfg.badge ? (
-                        <View
-                            className="rounded-full bg-muted/80 web:backdrop-blur-md px-2 py-0.5"
-                            pointerEvents="auto"
-                        >
-                            <Text className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground">
-                                {cfg.badge}
-                            </Text>
-                        </View>
-                    ) : null}
+                    <Profile
+                        {...assistant}
+                        displayType="unit_wo_info"
+                        displaySize="xs"
+                    />
+                    <View className="gap-0.5 pe-2">
+                        <Text className="text-sm font-semibold text-foreground">
+                            {assistantName}
+                        </Text>
+                    </View>
                 </Row>
-            ) : null}
+            </Row>
 
             <View
-                className="absolute bottom-0 w-full px-3 pb-3 pt-10 bg-linear-to-t from-card from-20% to-transparent"
+                className="absolute bottom-0 w-full px-3 pb-3 pt-14 bg-linear-to-t from-card from-20% to-transparent"
                 pointerEvents="box-none"
             >
                 {chatError ? (
@@ -353,8 +267,8 @@ export default function AiChat(props) {
                                 ref={inputRef}
                                 value={input}
                                 onChangeText={setInput}
-                                onHeight={applyComposerHeight}
-                                placeholder={cfg.placeholder}
+                                onHeight={(height) => applyComposerHeight(input ? height : COMPOSER_LINE_PX)}
+                                placeholder={placeholder}
                                 editable={!isLoading}
                                 className="w-full bg-transparent border-0 shadow-none outline-none ring-0 rounded-none p-0 min-h-0 leading-5 resize-none web:overflow-y-auto web:focus:outline-none web:focus:ring-0 web:focus:border-0 web:focus-visible:outline-none web:focus-visible:ring-0 web:focus-visible:border-0 web:focus-visible:shadow-none web:focus-visible:bg-transparent"
                                 style={{
@@ -393,7 +307,7 @@ export default function AiChat(props) {
                         </View>
                     </View>
                 </View>
-                {cfg.showClear && messages.length > 0 ? (
+                {showClear && messages.length > 0 ? (
                     <Row className="justify-end pt-2" pointerEvents="auto">
                         <NeoButton
                             style="plain"

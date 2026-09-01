@@ -21,7 +21,7 @@ import CounterIndicator from './misc/counter-indicator';
 import ProfileLink from './profile/profile-link'; 
 import NoContent from './misc/no-content'; 
 import { TaskTimer } from './misc/task-timer';
-import AiChat from './chat/ai-chat';
+import AiAgent from './chat/ai-agent';
 
 export const componentsMapDefault = {
     likes: memo(Likes),
@@ -46,6 +46,6 @@ export const componentsMapDefault = {
     profile_link: ProfileLink,
     no_content: NoContent,
     task_timer: TaskTimer,
-    ai_chat: AiChat,
+    ai_agent: AiAgent,
 };
 
