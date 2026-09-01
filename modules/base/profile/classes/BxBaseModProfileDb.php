@@ -137,12 +137,14 @@ class BxBaseModProfileDb extends BxBaseModGeneralDb
             $aContent = bx_srv($sCmod, 'get_info', [$iCid, false]);
 
             $aPreferred = [];
-            if(bx_srv('system', 'is_module_context', [$sCmod])) {
+            if(!bx_srv('system', 'is_module_context', [$sCmod])) {
+                if(($sK = 'allow_view_to') && ($iContext = $aContent[$sK] ?? 0) < 0 && ($oContext = BxDolProfile::getInstance(abs($iContext))) !== false)
+                    $aPreferred = bx_srv($oContext->getModule(), 'fans', [$oContext->getContentId(), true]);
+                else
+                    $aPreferred = BxDolConnection::getObjectInstance('sys_profiles_friends')->getConnectedContentByType(bx_get_logged_profile_id(), $aBindings['type'], true);
+            }
+            else 
                 $aPreferred = bx_srv($sCmod, 'fans', [$iCid, true]);
-            }
-            else if(($sK = 'allow_view_to') && ($iContext = $aContent[$sK] ?? 0) < 0 && ($oContext = BxDolProfile::getInstance(abs($iContext))) !== false) {
-                $aPreferred = bx_srv($oContext->getModule(), 'fans', [$oContext->getContentId(), true]);
-            }
 
             if($aPreferred) {
                 $sSelect .= ", IF(`p`.`id` IN (" . $this->implode_escape($aPreferred) . "), 1, 0) AS `profile_weight`";
