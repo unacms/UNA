@@ -101,6 +101,7 @@ export default function AiAgent({ data }) {
     const [composerHeight, setComposerHeight] = useState(COMPOSER_LINE_PX);
 
     const agentId = data.agent_id;
+    const contextProfileId = Number(data.context_profile_id) || 0;
     const assistant = data.agent_profile;
 
     const applyComposerHeight = useCallback((height) => {
@@ -128,14 +129,15 @@ export default function AiAgent({ data }) {
         () =>
             createAgentChat(agentId, {
                 onHydrateError: setHydrateError,
+                contextProfileId,
             }),
-        [agentId]
+        [agentId, contextProfileId]
     );
 
     const { messages, sendMessage, isLoading, error, stop } = useChat({
         connection,
         persistence: true,
-        threadId: `agent:${agentId}`,
+        threadId: contextProfileId > 0 ? `agent:${agentId}:${contextProfileId}` : `agent:${agentId}`,
     });
 
     const chatError = hydrateError || error;

@@ -88,14 +88,16 @@ async function getOrCreateGuestKey() {
     }
 }
 
-function requestUrl(agentId) {
+function requestUrl(agentId, contextProfileId) {
     const path = `/sys-ai-chat/${encodeURIComponent(agentId)}`;
-    if (Platform.OS === 'web' && USE_PROXY_WEB) return path;
+    const pid = Number(contextProfileId) || 0;
+    const query = pid > 0 ? `?context=${encodeURIComponent(String(pid))}` : '';
+    if (Platform.OS === 'web' && USE_PROXY_WEB) return `${path}${query}`;
     if (Platform.OS !== 'web' && USE_PROXY_NATIVE) {
         const appUrl = String(APP_URL || '').replace(/\/+$/, '');
-        return appUrl ? `${appUrl}${path}` : path;
+        return appUrl ? `${appUrl}${path}${query}` : `${path}${query}`;
     }
-    return joinUnaUrl(path, UNA_URL);
+    return `${joinUnaUrl(path, UNA_URL)}${query}`;
 }
 
 function headersToRecord(extra) {
@@ -183,7 +185,7 @@ async function hydrateChat(url, extraHeaders) {
 
 /** Adapter for `useChat`: GET hydrate + POST SSE. Join/resume (`?offset=`) is omitted — UNA returns 405. */
 export function createAgentChat(agentId, options = {}) {
-    const url = requestUrl(agentId);
+    const url = requestUrl(agentId, options.contextProfileId);
     const credentials = options.credentials || 'include';
     const headers = chatHeaders(options.headers);
     const stream = fetchServerSentEvents(url, {
