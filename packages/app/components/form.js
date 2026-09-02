@@ -439,19 +439,21 @@ export default function Form({
                     }
                     emitter.emit(`form_${name}`, { action: 'submited', formInstanceId });
                     onSubmit(data);
+                    if (onFormSubmitInternal) {
+                        emitter.emit(`form_${name}`, { action: 'received', formInstanceId });
+                    }
                 },
                 onError
             ),
-        [methods, name, formInstanceId, onSubmit, onError]
+        [methods, name, formInstanceId, onSubmit, onError, onFormSubmitInternal]
     );
 
     const handleKeyUp = useCallback((event) => {
-        const tag = event.target?.tagName;
-        if (tag === 'DIV' || tag === 'TEXTAREA') return;
-
-        if (event.key === 'Enter' || event.keyCode === 13) {
-            _handleSubmit();
-        }
+        if (event.key !== 'Enter' && event.keyCode !== 13) return;
+        // TipTap is a DIV; after submit it blurs and keyup lands on BODY,
+        // which used to submit the now-empty comment form a second time.
+        if (event.target?.tagName !== 'INPUT') return;
+        _handleSubmit();
     }, [_handleSubmit]);
 
     useEffect(() => {
