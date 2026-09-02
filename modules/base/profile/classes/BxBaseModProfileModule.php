@@ -389,14 +389,15 @@ class BxBaseModProfileModule extends BxBaseModGeneralModule implements iBxDolCon
         foreach ($a as $r) {
             $oProfile = BxDolProfile::getInstance($r['profile_id']);
 
+            $aItem = [];
             if ($this->_bIsApi) {
                 $aData = $oProfile->getUnitAPI(0, ['template' => 'unit_wo_info']);
                 $aData['author_data']['label'] = $this->serviceProfileName($r['content_id']);
 
-                $aRet[] = $aData['author_data'];
+                $aItem = $aData['author_data'];
             }
             else{
-                $aRet[] = [
+                $aItem = [
                     'label' => $this->serviceProfileName($r['content_id']), 
                     'value' => $r['profile_id'], 
                     'url' => $oProfile->getUrl(),
@@ -404,6 +405,10 @@ class BxBaseModProfileModule extends BxBaseModGeneralModule implements iBxDolCon
                     'unit' => $oProfile->getUnit(0, ['template' => ['name' => 'unit_wo_info', 'size' => 'icon']])
                 ];
             }
+
+            $aRet[] = array_merge($aItem, [
+                'weight' => $r['profile_weight'] ?? 0
+            ]);
         }
 
         return $aRet;

@@ -986,6 +986,52 @@ class BxDolAIQuery extends BxDolDb
         return $iAffected;
     }
 
+    /**
+     * Rename this agent's guest threads (`…:{sessionId}`) onto a profile id.
+     * If the member thread already has messages, drop the guest copy.
+     */
+    public function adoptGuestChatHistory($aAgent, $sSessionId, $iProfileId)
+    {
+        $sSessionId = (string)$sSessionId;
+        $iProfileId = (int)$iProfileId;
+        if ($sSessionId === '' || !$iProfileId || empty($aAgent['id']))
+            return 0;
+
+        $sPrefix = $aAgent['trigger'] . ':' . $aAgent['id'] . ':';
+        $sOldSuffix = ':' . $sSessionId;
+        $sNewSuffix = ':' . $iProfileId;
+        $iLen = strlen($sOldSuffix);
+        $aBindings = [
+            'p' => $sPrefix . '%',
+            'o' => $sOldSuffix,
+            'n' => $sNewSuffix,
+        ];
+
+        $this->query("
+            DELETE `g` FROM `sys_agents_chat_history` AS `g`
+            INNER JOIN `sys_agents_chat_history` AS `m`
+                ON `m`.`thread_id` = CONCAT(LEFT(`g`.`thread_id`, CHAR_LENGTH(`g`.`thread_id`) - $iLen), :n)
+            WHERE `g`.`thread_id` LIKE :p AND RIGHT(`g`.`thread_id`, $iLen) = :o
+              AND `m`.`messages` IS NOT NULL AND `m`.`messages` != '' AND `m`.`messages` != '[]'
+        ", $aBindings);
+
+        $this->query("
+            DELETE `m` FROM `sys_agents_chat_history` AS `m`
+            INNER JOIN `sys_agents_chat_history` AS `g`
+                ON `g`.`thread_id` LIKE :p AND RIGHT(`g`.`thread_id`, $iLen) = :o
+               AND `m`.`thread_id` = CONCAT(LEFT(`g`.`thread_id`, CHAR_LENGTH(`g`.`thread_id`) - $iLen), :n)
+            WHERE `m`.`messages` = '' OR `m`.`messages` = '[]' OR `m`.`messages` IS NULL
+        ", $aBindings);
+
+        $iAffected = (int)$this->query("
+            UPDATE `sys_agents_chat_history`
+            SET `thread_id` = CONCAT(LEFT(`thread_id`, CHAR_LENGTH(`thread_id`) - $iLen), :n)
+            WHERE `thread_id` LIKE :p AND RIGHT(`thread_id`, $iLen) = :o
+        ", $aBindings);
+
+        return $iAffected;
+    }
+
     static public function getAlert($s) {
         if (!$s)
             return false;        

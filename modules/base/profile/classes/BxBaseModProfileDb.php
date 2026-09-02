@@ -133,6 +133,28 @@ class BxBaseModProfileDb extends BxBaseModGeneralDb
         if((is_numeric($mixedParams) && ($iLimit = (int)$mixedParams)) || (is_array($mixedParams) && isset($mixedParams['limit']) && ($iLimit = (int)$mixedParams['limit'])))
             $sLimit = $this->prepareAsString(" LIMIT ?", $iLimit);
 
+        $aPreferred = [];
+        if(($iContext = (int)($mixedParams['search_params']['cp'] ?? 0)) < 0 && ($oContext = BxDolProfile::getInstance(abs($iContext))) !== false) {
+            $aPreferred = bx_srv($oContext->getModule(), 'fans', [$oContext->getContentId(), true]);
+        } 
+        else if(($iCntId = $mixedParams['search_params']['ci'] ?? false) && ($aCntModule = $mixedParams['search_params']['cm'] ?? false)) {
+            $aContent = bx_srv($aCntModule, 'get_info', [$iCntId, false]);
+
+            if(!bx_srv('system', 'is_module_context', [$aCntModule])) {
+                if(($sK = 'allow_view_to') && ($iContext = $aContent[$sK] ?? 0) < 0 && ($oContext = BxDolProfile::getInstance(abs($iContext))) !== false)
+                    $aPreferred = bx_srv($oContext->getModule(), 'fans', [$oContext->getContentId(), true]);
+                else
+                    $aPreferred = BxDolConnection::getObjectInstance('sys_profiles_friends')->getConnectedContentByType(bx_get_logged_profile_id(), $aBindings['type'], true);
+            }
+            else 
+                $aPreferred = bx_srv($aCntModule, 'fans', [$iCntId, true]);
+        }
+
+        if($aPreferred) {
+            $sSelect .= ", IF(`p`.`id` IN (" . $this->implode_escape($aPreferred) . "), 1, 0) AS `profile_weight`";
+            $sOrderBy = " ORDER BY `profile_weight` DESC, `a`.`logged` DESC";
+        }
+
         /**
          * @hooks
          * @hookdef hook-profile-search_by_term 'profile', 'search_by_term' - hook to modify a list of profiles found by term

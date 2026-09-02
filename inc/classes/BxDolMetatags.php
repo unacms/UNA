@@ -1186,6 +1186,8 @@ class BxDolMetatags extends BxDolFactory implements iBxDolFactoryObject
         ]);
 
         if ($iRet = $this->_oQuery->$sFuncAdd($iId, $aMetas)) {
+            $iAuthorId = bx_get_logged_profile_id();
+
             foreach ($aMetas as $sMeta) {
                 $iObjectId = 'mention' == $sAlertName ? $sMeta : $iId;
                 
@@ -1209,7 +1211,7 @@ class BxDolMetatags extends BxDolFactory implements iBxDolFactoryObject
                  * except mention value is used in object id param
                  * @hook @ref hook-meta_keyword-before_added
                  */
-                bx_alert('meta_' . $sAlertName, 'before_added', $iObjectId, bx_get_logged_profile_id(), [
+                bx_alert('meta_' . $sAlertName, 'before_added', $iObjectId, $iAuthorId, [
                     'meta' => &$sMeta, 
                     'meta_ref' => &$sMeta, 
                     'content_id' => $iId, 
@@ -1217,6 +1219,8 @@ class BxDolMetatags extends BxDolFactory implements iBxDolFactoryObject
                 ]);
 
                 $sSource = $this->_sObject . '_' . $iId;
+                $sSourceMac = $this->_sObject . '_' . $iAuthorId . '_' . $iId;
+
                 /**
                  * @hooks
                  * @hookdef hook-bx_dol_metatags-keyword_added '{object_name}', 'keyword_added' - hook after meta keyword/mention was processed (added)
@@ -1236,10 +1240,11 @@ class BxDolMetatags extends BxDolFactory implements iBxDolFactoryObject
                  * It's equivalent to @ref hook-bx_dol_metatags-keyword_added
                  * @hook @ref hook-bx_dol_metatags-keyword_added
                  */
-                bx_alert($this->_sObject, $sAlertName . '_added', $iObjectId, bx_get_logged_profile_id(), [
+                bx_alert($this->_sObject, $sAlertName . '_added', $iObjectId, $iAuthorId, [
                     'meta' => $sMeta, 
                     'content_id' => $iId, 
-                    'source' => $sSource
+                    'source' => $sSource,
+                    'source_mac' => $sSourceMac
                 ]);
 
                 /**
@@ -1262,10 +1267,11 @@ class BxDolMetatags extends BxDolFactory implements iBxDolFactoryObject
                  * It's equivalent to @ref hook-meta_keyword-added
                  * @hook @ref hook-meta_keyword-added
                  */
-                bx_alert('meta_' . $sAlertName, 'added', $iObjectId, bx_get_logged_profile_id(), [
+                bx_alert('meta_' . $sAlertName, 'added', $iObjectId, $iAuthorId, [
                     'meta' => $sMeta, 
                     'content_id' => $iId, 
-                    'source' => $sSource, 
+                    'source' => $sSource,
+                    'source_mac' => $sSourceMac, 
                     'object' => $this->_sObject
                 ]);
             }

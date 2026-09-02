@@ -128,7 +128,22 @@ class BxDolSearchExtended extends BxDolFactory implements iBxDolFactoryObject
         $aResult = [];
         switch($sSymbol) {
             case '@':
-                $aResult = BxDolService::call('system', 'profiles_search', array(bx_get('term')), 'TemplServiceProfiles');
+                $aSearchParams = [];
+                if(($iCntId = bx_get('ci')) !== false)
+                    $aSearchParams['ci'] = $iCntId;
+                if(($sCntModule = bx_get('cm')) !== false)
+                    $aSearchParams['cm'] = bx_process_input($sCntModule);
+                if(($sCntPrivacy = bx_get('cp')) !== false)
+                    $aSearchParams['cp'] = bx_process_input($sCntPrivacy);
+
+                $aSrvParams = [];
+                if($aSearchParams)
+                    $aSrvParams = [
+                        'search_params' => $aSearchParams,
+                        'order_by' => 'weight'
+                ];
+
+                $aResult = bx_srv('system', 'profiles_search', [bx_get('term'), $aSrvParams], 'TemplServiceProfiles');
                 foreach ($aResult as &$aItem)
                     $aItem['symbol'] = bx_get('symbol');
                 break;

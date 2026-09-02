@@ -501,9 +501,14 @@ class BxBaseFormView extends BxDolForm
                 $aInput['value'] = $aVars;
             }
 
-            if ($bType && 'textarea' == $aInput['type']){
-                if (isset($aInput['value'], $aInput['html']) && (int)$aInput['html'] == 0)
-                    $aInput['value'] = strip_tags($aInput['value']);
+            if ($bType && 'textarea' == $aInput['type']) {
+                $iTaHtml = (int)($aInput['html'] ?? 0);
+
+                if(($sTaValue = $aInput['value'] ?? false) && $iTaHtml == 0)
+                    $aInput['value'] = strip_tags($sTaValue);
+
+                if($iTaHtml != 0)
+                    $aInput['mentions'] = $this->getMentionsQueryParams($aInput);
             }
 
             if ($bType && 'price' == $aInput['type']) {
@@ -1907,6 +1912,11 @@ BLAH;
         ]);
 
         return $aQueryParams;
+    }
+
+    function getMentionsQueryParams($aInput)
+    {
+        return [];
     }
 
     /**

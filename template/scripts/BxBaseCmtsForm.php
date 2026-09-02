@@ -41,15 +41,12 @@ class BxBaseCmtsForm extends BxTemplFormView
             $this->aInputs['cmt_image']['ghost_template'] = '';
         }
     }
-    
+
     function getHtmlEditorQueryParams($aInput)
     {
-        $aQueryParams = parent::getHtmlEditorQueryParams($aInput);
-        if (isset($this->aInputs['id'])){
-            $aQueryParams['cid'] = $this->aInputs['id']['value'];
-        }
-        $aQueryParams['m'] = 'sys_cmts';
-        $aQueryParams['fi'] = '';
+        $aQueryParams = array_merge(parent::getHtmlEditorQueryParams($aInput), $this->getMentionsQueryParams($aInput), [
+            'fi' => ''
+        ]);
 
         /**
          * @hooks
@@ -70,7 +67,27 @@ class BxBaseCmtsForm extends BxTemplFormView
         
         return $aQueryParams;
     }
-    
+
+    function getMentionsQueryParams($aInput)
+    {
+        $aParams = array_merge(parent::getMentionsQueryParams($aInput), [
+            'ct' => 'comment',
+            'cm' => '',
+            'ci' => 0,
+            'cp' => ''
+        ]);
+
+        if(($sSystem = $this->aInputs['sys']['value'] ?? false) && ($iObjectId = $this->aInputs['id']['value'] ?? false)) {
+            $aParams['ci'] = (int)$iObjectId;
+
+            $oObject = $this->_getObject(bx_process_input($sSystem), (int)$iObjectId);
+            if($oObject && ($aCmtInfo = $this->_oObject->getSystemInfo()))
+                $aParams['cm'] = $aCmtInfo['module'] ?? '';
+        }
+
+        return $aParams;
+    }
+
     public function getAttributeMask($sAttribute)
     {
         $sName = '_sAttributeMask' . bx_gen_method_name($sAttribute);

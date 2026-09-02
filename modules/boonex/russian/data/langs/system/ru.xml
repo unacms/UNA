@@ -3818,6 +3818,8 @@
 	<string name="_sys_page_block_title_author"><![CDATA[Автор]]></string>
         <string name="_sys_page_block_title_sys_ask_aqssistant"><![CDATA[Спросите ИИ]]></string>
         <string name="_sys_page_block_title_ask_aqssistant"><![CDATA[Спросите ИИ]]></string>
+        <string name="_sys_page_block_title_sys_ai_agent"><![CDATA[ИИ агент]]></string>
+        <string name="_sys_page_block_title_ai_agent"><![CDATA[ИИ агент]]></string>
         <string name="_sys_page_block_title_con_friends"><![CDATA[Друзья]]></string>
         <string name="_sys_page_block_title_con_friend_requests"><![CDATA[Хотят дружить]]></string>
         <string name="_sys_page_block_title_con_friend_requested"><![CDATA[Запрошенная дружба]]></string>

@@ -35,6 +35,7 @@ class BxNtfsConfig extends BxBaseModNotificationsConfig
     protected $_iDeliveryTimeout;
 
     protected $_bEventsGrouped;
+    protected $_bEventsGroupedDb;
 
     protected $_bClickedIndicator;
 
@@ -45,7 +46,13 @@ class BxNtfsConfig extends BxBaseModNotificationsConfig
     {
         parent::__construct($aModule);
 
-        $this->CNF = array (
+        $this->CNF = [
+            // database tables
+            'TABLE_ENTRIES' => $aModule['db_prefix'] . 'events',
+
+            // database fields
+            'FIELD_ID' => 'id',
+
             // page URIs
             'URL_HOME' => 'page.php?i=notifications-view',
 
@@ -67,13 +74,13 @@ class BxNtfsConfig extends BxBaseModNotificationsConfig
             'OBJECT_GRID_ETEMPLATES' => 'bx_notifications_etemplates',
 
             // some language keys
-            'T' => array(
+            'T' => [
                 'setting_personal' => '_bx_ntfs_setting_type_personal',
                 'setting_follow_member' => '_bx_ntfs_setting_type_follow_member',
                 'setting_follow_context' => '_bx_ntfs_setting_type_follow_context',
                 'setting_other' => '_bx_ntfs_setting_type_other',
-            )
-        );
+            ]
+        ];
 
         $this->_aPrefixes = array(
             'style' => 'bx-ntfs',
@@ -160,6 +167,7 @@ class BxNtfsConfig extends BxBaseModNotificationsConfig
         $this->_iDeliveryTimeout = (int)getParam($sOptionPrefix . 'delivery_timeout');
 
         $this->_bEventsGrouped = getParam($sOptionPrefix . 'enable_group_events') == 'on';
+        $this->_bEventsGroupedDb = false;
 
         $this->_bClickedIndicator = getParam($sOptionPrefix . 'enable_clicked_indicator') == 'on';
 
@@ -226,6 +234,11 @@ class BxNtfsConfig extends BxBaseModNotificationsConfig
     public function isEventsGrouped()
     {
         return $this->_bEventsGrouped;
+    }
+
+    public function isEventsGroupedDb()
+    {
+        return $this->_bEventsGroupedDb;
     }
 
     public function isClickedIndicator()

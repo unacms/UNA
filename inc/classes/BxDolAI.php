@@ -488,18 +488,165 @@ class BxDolAI extends BxDolFactory implements iBxDolSingleton
     }
 
     /**
+     * Guests: UNA session id. Members: profile id.
+     * Guest chats remember agent ids in session so login can adopt those threads.
+     */
+    public function resolveChatHistoryParams($iAgentId = 0)
+    {
+        $iAgentId = (int)$iAgentId;
+        $iProfileId = (int)bx_get_logged_profile_id();
+        $oSession = BxDolSession::getInstance();
+        $sSessionKey = 'ai_chat_agent_ids';
+
+        if ($iProfileId) {
+            $aIds = $oSession->getValue($sSessionKey);
+            if (is_array($aIds) && $aIds) {
+                $sSessionId = (string)$oSession->getId();
+                if ($iAgentId)
+                    $aIds[] = $iAgentId;
+                foreach (array_unique(array_map('intval', $aIds)) as $iStoredAgentId) {
+                    if (!$iStoredAgentId || $sSessionId === '')
+                        continue;
+                    $aAgent = BxDolAiQuery::getAgentObject($iStoredAgentId);
+                    if ($aAgent)
+                        $this->_oDb->adoptGuestChatHistory($aAgent, $sSessionId, $iProfileId);
+                }
+                $oSession->unsetValue($sSessionKey);
+            }
+
+            return [
+                'sender_profile_id' => $iProfileId,
+                'chat_history_subindex' => (string)$iProfileId,
+            ];
+        }
+
+        if ($iAgentId) {
+            $aIds = $oSession->getValue($sSessionKey);
+            $aIds = array_map('intval', is_array($aIds) ? $aIds : []);
+            if (!in_array($iAgentId, $aIds, true)) {
+                $aIds[] = $iAgentId;
+                $oSession->setValue($sSessionKey, $aIds);
+            }
+        }
+
+        return [
+            'sender_profile_id' => 0,
+            'chat_history_subindex' => (string)$oSession->getId(),
+        ];
+    }
+
+    /**
+     * `{trigger}:{agentId}:{contextPid}:{userSubindex}`.
+     * Context is omitted when 0 so existing site-wide threads still load.
+     * User suffix (session id or profile id) stays last so adopt can replace it.
+     */
+    public static function chatHistoryThreadId($aAgent, $aParams = [])
+    {
+        $s = ($aAgent['trigger'] ?? '') . ':' . ($aAgent['id'] ?? '');
+        $iContextPid = (int)($aParams['chat_history_context_pid'] ?? 0);
+        if ($iContextPid > 0)
+            $s .= ':' . $iContextPid;
+        if (isset($aParams['chat_history_subindex']) && $aParams['chat_history_subindex'] !== '')
+            $s .= ':' . (string)$aParams['chat_history_subindex'];
+        return $s;
+    }
+
+    /**
+     * Context from chat HTTP (`?context=`). Missing/0 = site-wide. Invalid/denied = false (403).
+     * Posting in a group is not the same as viewing it; chat requires post by default.
+     * @return int|false
+     */
+    public function resolveChatHistoryContextPid($bRequirePost = true)
+    {
+        $mixed = bx_get('context');
+        if ($mixed === false)
+            return 0;
+
+        $iPid = (int)$mixed;
+        if ($iPid <= 0)
+            return 0;
+
+        $oProfile = BxDolProfile::getInstance($iPid);
+        if (!$oProfile || !bx_srv('system', 'is_module_context', [$oProfile->getModule()]))
+            return false;
+
+        if (!$this->isAllowedContextChat($oProfile, $bRequirePost))
+            return false;
+
+        return $iPid;
+    }
+
+    /**
+     * Context of the current page (AI agent block).
+     * `bx_get_page_info()` reads the URL; App page JSON merges `i`/`id` into $_GET instead.
+     * @param bool $bRequirePost also require posting into the context (membership / post ACL)
+     */
+    public function resolveChatHistoryContextPidFromPage($bRequirePost = false)
+    {
+        $aInfo = bx_get_page_info();
+        if ($aInfo && !empty($aInfo['context_profile_id']))
+            return $this->filterContextPid((int)$aInfo['context_profile_id'], $bRequirePost);
+
+        $sUri = bx_get('i');
+        $iContentId = (int)bx_process_input(bx_get('id'), BX_DATA_INT);
+        if ($sUri && $iContentId > 0) {
+            $oPage = BxDolPage::getObjectInstanceByURI($sUri);
+            $sModule = $oPage ? (string)$oPage->getModule() : '';
+            if ($sModule !== '' && bx_srv('system', 'is_module_context', [$sModule])) {
+                $oProfile = BxDolProfile::getInstanceByContentAndType($iContentId, $sModule);
+                if ($oProfile && ($iPid = $this->filterContextPid((int)$oProfile->id(), $bRequirePost)))
+                    return $iPid;
+            }
+        }
+
+        $iPid = (int)bx_process_input(bx_get('profile_id'), BX_DATA_INT);
+        if ($iPid > 0 && ($iPid = $this->filterContextPid($iPid, $bRequirePost)))
+            return $iPid;
+
+        return 0;
+    }
+
+    public function filterContextPid($iPid, $bRequirePost = false)
+    {
+        $iPid = (int)$iPid;
+        if ($iPid <= 0)
+            return 0;
+
+        $oProfile = BxDolProfile::getInstance($iPid);
+        if (!$oProfile || !bx_srv('system', 'is_module_context', [$oProfile->getModule()]))
+            return 0;
+
+        if (!$this->isAllowedContextChat($oProfile, $bRequirePost))
+            return 0;
+
+        return $iPid;
+    }
+
+    protected function isAllowedContextChat($oProfile, $bRequirePost = false)
+    {
+        if ($oProfile->checkAllowedProfileView() !== CHECK_ACTION_RESULT_ALLOWED)
+            return false;
+
+        if ($bRequirePost && $oProfile->checkAllowedPostInProfile() !== CHECK_ACTION_RESULT_ALLOWED)
+            return false;
+
+        return true;
+    }
+
+    /**
      * Transcript for TanStack `useChat` hydrate / `initialMessages`.
      * Loads the same NeuronAI chat history the agent uses when streaming.
      */
     public function getChatHistoryUiMessages($iAgentId, $aParams = [])
     {
-        $aParams['chat_history_subindex'] = (int)($aParams['sender_profile_id'] ?? 0);
+        if (!isset($aParams['chat_history_subindex']))
+            $aParams = array_merge($this->resolveChatHistoryParams($iAgentId), $aParams);
 
         $aAgent = BxDolAiQuery::getAgentObject((int)$iAgentId);
         if (!$aAgent || empty($aAgent['chat_history_context']))
             return [];
 
-        $sThreadId = $aAgent['trigger'] . ':' . $aAgent['id'] . ':' . $aParams['chat_history_subindex'];
+        $sThreadId = self::chatHistoryThreadId($aAgent, $aParams);
         $sJson = $this->_oDb->getOne("SELECT `messages` FROM `sys_agents_chat_history` WHERE `thread_id` = :t", [
             't' => $sThreadId,
         ]);
@@ -569,7 +716,8 @@ class BxDolAI extends BxDolFactory implements iBxDolSingleton
 
     public function streamAgentChat($iAgentId, $sPrompt, $aParams = [], $sThreadId = null)
     {
-        $aParams['chat_history_subindex'] = (int)($aParams['sender_profile_id'] ?? 0);
+        if (!isset($aParams['chat_history_subindex']))
+            $aParams = array_merge($this->resolveChatHistoryParams($iAgentId), $aParams);
 
         $oAdapter = new NeuronAI\Chat\Messages\Stream\Adapters\AGUIAdapter($sThreadId);
 

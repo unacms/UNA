@@ -109,6 +109,7 @@ class BxNtfsDb extends BxBaseModNotificationsDb
         if($aParams['browse'] != 'list' || $aParams['type'] != BX_NTFS_TYPE_OBJECT_OWNER_AND_CONNECTIONS)
             return parent::getEvents($aParams);
 
+        $bEventsGroupedDb = $this->_oConfig->isEventsGroupedDb();
         $bClickedIndicator = $this->_oConfig->isClickedIndicator();
         $bCountOnly = !empty($aParams['count_only']);
         $bViewerId = !empty($aParams['viewer_id']);
@@ -116,8 +117,16 @@ class BxNtfsDb extends BxBaseModNotificationsDb
         $sSelectClauseClicked = ", 0 AS `clicked`";
         $sLimitClause = isset($aParams['per_page']) ? "LIMIT 0, " . ($aParams['start'] + $aParams['per_page']) : "";
 
+        $sSelectClauseGrouped = $sGroupByClauseGrouped = "";
+        if($bEventsGroupedDb) {
+            $sSelectClauseGrouped = ", GROUP_CONCAT(`{$this->_sTable}`.`id` SEPARATOR ',') AS `grouped_by_mac`";
+            $sGroupByClauseGrouped = "`{$this->_sTable}`.`source_mac`";
+        }
+
         //--- Get query for 'Object Owner' notifications
         $aParams['type'] = BX_BASE_MOD_NTFS_TYPE_OBJECT_OWNER;
+
+        $sGroupByClausePo = "";
         list($sMethod, $sSelectClause, $sJoinClausePo, $sWhereClausePo, $sOrderClausePo) = $this->_getSqlPartsEvents($aParams);       
 
         if($bClickedIndicator && $bViewerId) {
@@ -125,13 +134,19 @@ class BxNtfsDb extends BxBaseModNotificationsDb
             $sJoinClausePo .= $this->prepareAsString(" LEFT JOIN `{$this->_sTableEvt2Usr}` ON `{$this->_sTable}`.`id`=`{$this->_sTableEvt2Usr}`.`event_id` AND `{$this->_sTableEvt2Usr}`.`user_id`=?", $aParams['viewer_id']);
         }
 
+        $sGroupByClausePo .= $sGroupByClauseGrouped;
+        if($sGroupByClausePo)
+            $sGroupByClausePo = " GROUP BY " . $sGroupByClausePo;
+
         $sQueryOwner = "SELECT {select}
             FROM `{$this->_sTable}`
             LEFT JOIN `{$this->_sTableHandlers}` ON `{$this->_sTable}`.`type`=`{$this->_sTableHandlers}`.`alert_unit` AND `{$this->_sTable}`.`action`=`{$this->_sTableHandlers}`.`alert_action` " . $sJoinClausePo . "
-            WHERE 1 " . $sWhereClausePo . (!$bCountOnly ? " " . $sOrderClausePo . " " . $sLimitClause : "");
+            WHERE 1 " . $sWhereClausePo . $sGroupByClausePo . (!$bCountOnly ? " " . $sOrderClausePo . " " . $sLimitClause : "");
 
         //--- Get query for 'Connections based' notifications
         $aParams['type'] = BX_BASE_MOD_NTFS_TYPE_CONNECTIONS;
+
+        $sGroupByClausePc = "";
         list($sMethod, $sSelectClause, $sJoinClausePc, $sWhereClausePc, $sOrderClausePc) = $this->_getSqlPartsEvents($aParams);
 
         if($bClickedIndicator && $bViewerId) {
@@ -139,12 +154,17 @@ class BxNtfsDb extends BxBaseModNotificationsDb
             $sJoinClausePc .= $this->prepareAsString(" LEFT JOIN `{$this->_sTableEvt2Usr}` ON `{$this->_sTable}`.`id`=`{$this->_sTableEvt2Usr}`.`event_id` AND `{$this->_sTableEvt2Usr}`.`user_id`=?", $aParams['viewer_id']);
         }
 
+        $sGroupByClausePc .= $sGroupByClauseGrouped;
+        if($sGroupByClausePc)
+            $sGroupByClausePc = " GROUP BY " . $sGroupByClausePc;
+
         $sQueryConnections = "SELECT {select}
             FROM `{$this->_sTable}`
             LEFT JOIN `{$this->_sTableHandlers}` ON `{$this->_sTable}`.`type`=`{$this->_sTableHandlers}`.`alert_unit` AND `{$this->_sTable}`.`action`=`{$this->_sTableHandlers}`.`alert_action` " . $sJoinClausePc . "
-            WHERE 1 " . $sWhereClausePc . (!$bCountOnly ? " " . $sOrderClausePc . " " . $sLimitClause : "");
+            WHERE 1 " . $sWhereClausePc . $sGroupByClausePc . (!$bCountOnly ? " " . $sOrderClausePc . " " . $sLimitClause : "");
 
         $sSelectClause .= $sSelectClauseClicked;
+        $sSelectClause .= $sSelectClauseGrouped;
 
         //--- Combine both queries in one
         $bStartFromItem = isset($aParams['start_from_item']) && $aParams['start_from_item'] === true;

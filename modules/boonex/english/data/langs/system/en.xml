@@ -3859,6 +3859,8 @@ If it is not enabled then please consider implementing this optimization, since 
     <string name="_sys_page_block_title_author"><![CDATA[Author]]></string>
     <string name="_sys_page_block_title_sys_ask_aqssistant"><![CDATA[Ask AI]]></string>
     <string name="_sys_page_block_title_ask_aqssistant"><![CDATA[Ask AI]]></string>
+    <string name="_sys_page_block_title_sys_ai_agent"><![CDATA[AI Agent]]></string>
+    <string name="_sys_page_block_title_ai_agent"><![CDATA[AI Agent]]></string>
     <string name="_sys_page_block_title_con_friends"><![CDATA[Friends]]></string>
     <string name="_sys_page_block_title_con_friend_requests"><![CDATA[Friend Requests]]></string>
     <string name="_sys_page_block_title_con_friend_requested"><![CDATA[Sent Friend Requests]]></string>

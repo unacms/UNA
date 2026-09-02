@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS `bx_notifications_events` (
   `subobject_id` int(11) NOT NULL default '0',
   `content` text NOT NULL,
   `source` varchar(32) NOT NULL default '',
+  `source_mac` varchar(32) NOT NULL default '',
   `allow_view_event_to` varchar(32) NOT NULL default '3',
   `date` int(11) NOT NULL default '0',
   `processed` tinyint(4) NOT NULL default '0',
