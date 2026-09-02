@@ -987,51 +987,47 @@ class BxDolAIQuery extends BxDolDb
     }
 
     /**
-     * Rename guest threads (`…:g:{key}` / `…:s:{session}`) onto a profile id.
+     * Rename this agent's guest threads (`…:{sessionId}`) onto a profile id.
      * If the member thread already has messages, drop the guest copy.
      */
-    public function adoptGuestChatHistory($sGuestSubindex, $iProfileId)
+    public function adoptGuestChatHistory($aAgent, $sSessionId, $iProfileId)
     {
-        $sGuestSubindex = (string)$sGuestSubindex;
+        $sSessionId = (string)$sSessionId;
         $iProfileId = (int)$iProfileId;
-        if ($sGuestSubindex === '' || !$iProfileId)
+        if ($sSessionId === '' || !$iProfileId || empty($aAgent['id']))
             return 0;
 
-        $aRows = $this->getAll("SELECT `thread_id` FROM `sys_agents_chat_history`");
-        if (!$aRows)
-            return 0;
+        $sPrefix = $aAgent['trigger'] . ':' . $aAgent['id'] . ':';
+        $sOldSuffix = ':' . $sSessionId;
+        $sNewSuffix = ':' . $iProfileId;
+        $iLen = strlen($sOldSuffix);
+        $aBindings = [
+            'p' => $sPrefix . '%',
+            'o' => $sOldSuffix,
+            'n' => $sNewSuffix,
+        ];
 
-        $sSuffix = ':' . $sGuestSubindex;
-        $iSuffixLen = strlen($sSuffix);
-        $iAffected = 0;
-        foreach ($aRows as $aRow) {
-            $sOld = $aRow['thread_id'] ?? '';
-            if ($sOld === '' || substr($sOld, -$iSuffixLen) !== $sSuffix)
-                continue;
+        $this->query("
+            DELETE `g` FROM `sys_agents_chat_history` AS `g`
+            INNER JOIN `sys_agents_chat_history` AS `m`
+                ON `m`.`thread_id` = CONCAT(LEFT(`g`.`thread_id`, CHAR_LENGTH(`g`.`thread_id`) - $iLen), :n)
+            WHERE `g`.`thread_id` LIKE :p AND RIGHT(`g`.`thread_id`, $iLen) = :o
+              AND `m`.`messages` IS NOT NULL AND `m`.`messages` != '' AND `m`.`messages` != '[]'
+        ", $aBindings);
 
-            $sNew = substr($sOld, 0, -$iSuffixLen) . ':' . $iProfileId;
-            if ($sNew === $sOld)
-                continue;
+        $this->query("
+            DELETE `m` FROM `sys_agents_chat_history` AS `m`
+            INNER JOIN `sys_agents_chat_history` AS `g`
+                ON `g`.`thread_id` LIKE :p AND RIGHT(`g`.`thread_id`, $iLen) = :o
+               AND `m`.`thread_id` = CONCAT(LEFT(`g`.`thread_id`, CHAR_LENGTH(`g`.`thread_id`) - $iLen), :n)
+            WHERE `m`.`messages` = '' OR `m`.`messages` = '[]' OR `m`.`messages` IS NULL
+        ", $aBindings);
 
-            $sExisting = $this->getOne("SELECT `messages` FROM `sys_agents_chat_history` WHERE `thread_id` = :t", [
-                't' => $sNew,
-            ]);
-            $aExisting = json_decode((string)$sExisting, true);
-            if (is_array($aExisting) && $aExisting !== []) {
-                $iAffected += (int)$this->query("DELETE FROM `sys_agents_chat_history` WHERE `thread_id` = :t", [
-                    't' => $sOld,
-                ]);
-                continue;
-            }
-
-            if ($sExisting !== false && $sExisting !== null)
-                $this->query("DELETE FROM `sys_agents_chat_history` WHERE `thread_id` = :t", ['t' => $sNew]);
-
-            $iAffected += (int)$this->query("UPDATE `sys_agents_chat_history` SET `thread_id` = :n WHERE `thread_id` = :o", [
-                'n' => $sNew,
-                'o' => $sOld,
-            ]);
-        }
+        $iAffected = (int)$this->query("
+            UPDATE `sys_agents_chat_history`
+            SET `thread_id` = CONCAT(LEFT(`thread_id`, CHAR_LENGTH(`thread_id`) - $iLen), :n)
+            WHERE `thread_id` LIKE :p AND RIGHT(`thread_id`, $iLen) = :o
+        ", $aBindings);
 
         return $iAffected;
     }
