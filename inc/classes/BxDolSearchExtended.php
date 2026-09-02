@@ -129,10 +129,12 @@ class BxDolSearchExtended extends BxDolFactory implements iBxDolFactoryObject
         switch($sSymbol) {
             case '@':
                 $aSearchParams = [];
-                if(($iCid = bx_get('cid')) !== false)
-                    $aSearchParams['cid'] = $iCid;
-                if(($sCmod = bx_get('cmod')) !== false)
-                    $aSearchParams['cmod'] = bx_process_input($sCmod);
+                if(($iCntId = bx_get('ci')) !== false)
+                    $aSearchParams['ci'] = $iCntId;
+                if(($sCntModule = bx_get('cm')) !== false)
+                    $aSearchParams['cm'] = bx_process_input($sCntModule);
+                if(($sCntPrivacy = bx_get('cp')) !== false)
+                    $aSearchParams['cp'] = bx_process_input($sCntPrivacy);
 
                 $aSrvParams = [];
                 if($aSearchParams)

@@ -720,15 +720,9 @@ class BxBaseModGeneralFormEntry extends BxTemplFormView
 
     function getHtmlEditorQueryParams($aInput)
     {
-        $aQueryParams = parent::getHtmlEditorQueryParams($aInput);
-        if (isset($this->MODULE)){
-            $aQueryParams['m'] = $this->MODULE;
-            $aQueryParams['cmod'] = $this->MODULE;
-        }
-        if (isset($this->_iContentId) && $this->_iContentId){
-            $aQueryParams['cid'] = $this->_iContentId;
-        }
-        $aQueryParams['fi'] = '';
+        $aQueryParams = array_merge(parent::getHtmlEditorQueryParams($aInput), $this->getMentionsQueryParams($aInput), [
+            'fi' => ''
+        ]);
 
         /**
          * @hooks
@@ -748,6 +742,23 @@ class BxBaseModGeneralFormEntry extends BxTemplFormView
         ]);
         
         return $aQueryParams;
+    }
+
+    function getMentionsQueryParams($aInput)
+    {
+        $CNF = &$this->_oModule->_oConfig->CNF;
+
+        $aParams = array_merge(parent::getMentionsQueryParams($aInput), [
+            'ct' => 'content',
+            'cm' => $this->MODULE ?: '',
+            'ci' => $this->_iContentId ?: 0,
+            'cp' => ''
+        ]);
+
+        if(($sF = $CNF['FIELD_ALLOW_VIEW_TO'] ?? false) && ($aF = $this->aInputs[$sF] ?? false) || ($sF = $CNF['FIELD_OBJECT_PRIVACY_VIEW'] ?? false) && ($aF = $this->aInputs[$sF] ?? false))
+            $aParams['cp'] = $aF['value'];
+
+        return $aParams;
     }
 
     protected function _associalFileWithContent($oStorage, $iFileId, $iProfileId, $iContentId, $sPictureField = '')
