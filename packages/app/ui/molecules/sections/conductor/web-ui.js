@@ -932,7 +932,7 @@ export const HeaderContainer = ({
                     </View>
                 </View>
             )}
-            <View className={`header-fixed w-full ${conductorTheme.cover_base}`}>
+            <View className={`header-fixed w-full `}>
                 {tabBarContent}
             </View>
         </View>
