@@ -12,10 +12,35 @@ export const MENTION_TYPE_LABELS = {
     other: 'Other',
 }
 
+function hasMentionContext(mentions) {
+    if (!mentions || typeof mentions !== 'object') return false
+    return !!(
+        mentions.ct ||
+        mentions.cm ||
+        (mentions.ci != null && mentions.ci !== '') ||
+        (mentions.cp != null && mentions.cp !== '')
+    )
+}
+
+function appendMentionParam(url, key, value) {
+    if (value == null || value === '') return url
+    return url + '&' + key + '=' + encodeURIComponent(value)
+}
+
 /** Build the UNA get_mention search URL (same query for both engines). */
-export function buildMentionSearchUrl({ fieldName, objectPrivacyView, objectId }) {
-    const m = fieldName === 'cmt_text' ? 'sys_cmts' : 'bx_timeline'
+export function buildMentionSearchUrl({ fieldName, objectPrivacyView, objectId, mentions }) {
     let url = '/searchExtended.php?api=1&action=get_mention'
+
+    if (hasMentionContext(mentions)) {
+        url = appendMentionParam(url, 'ct', mentions.ct)
+        url = appendMentionParam(url, 'cm', mentions.cm)
+        url = appendMentionParam(url, 'ci', mentions.ci)
+        url = appendMentionParam(url, 'cp', mentions.cp)
+        return url
+    }
+
+    // Backward compatibility: older UNA forms without a mentions payload.
+    const m = fieldName === 'cmt_text' ? 'sys_cmts' : 'bx_timeline'
     if (m) url += '&m=' + m
     if (objectPrivacyView) url += '&object_privacy_view=' + objectPrivacyView
     if (objectId) url += '&cid=' + objectId

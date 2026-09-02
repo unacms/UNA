@@ -102,7 +102,7 @@ export default function RftTextEnriched(props) {
         selectedSuggestion,
         recordMention,
         handlersRef,
-    } = useEditorMentions({ fieldName: name })
+    } = useEditorMentions({ fieldName: name, mentions: props.mentions })
 
     // ---- initial / external value ----
     // EnrichedTextInput's web build puts `defaultValue` in useEditor deps, so a

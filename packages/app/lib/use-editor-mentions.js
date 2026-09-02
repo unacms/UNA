@@ -12,7 +12,7 @@ import { buildMentionSearchUrl } from 'app/lib/editor-mention-shared'
  * own detection paths (iframe postMessage vs TipTap/native callbacks), then
  * share fetch, recents, keyboard selection, and recordMention.
  */
-export function useEditorMentions({ fieldName }) {
+export function useEditorMentions({ fieldName, mentions } = {}) {
     const formContext = useFormContext()
     const { currentUser } = useCurrentUser()
     // [term, indicator] — indicator falsy means inactive
@@ -27,6 +27,7 @@ export function useEditorMentions({ fieldName }) {
         fieldName,
         objectPrivacyView,
         objectId,
+        mentions,
     })
 
     const { suggestions, setSuggestions, recordMention } = useMentionSuggestions({

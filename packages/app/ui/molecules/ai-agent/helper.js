@@ -1,92 +1,19 @@
 /**
- * UNA AI agent chat: guest identity, hydrate, and SSE for `useChat`.
+ * UNA AI agent chat: hydrate and SSE for `useChat`.
  *
+ * Guest/member identity is the UNA session cookie (credentials: include).
  * Same host/auth as `fetcher` (proxy on web, UNA_URL on native, cookies + Origin).
  * Do not use `fetcher` itself — it parses JSON, appends `&lang=`, and times out SSE.
  * Native streaming lives in `fetch.native.js` (RN fetch cannot stream).
  */
 
 import { Platform } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { fetchServerSentEvents } from '@tanstack/ai-client';
 import { APP_ORIGIN, APP_URL, UNA_URL, appSetting, joinUnaUrl } from 'app/config';
 import { unaAiChatStreamingFetch } from './fetch';
 
-const GUEST_HEADER = 'X-Una-Ai-Guest-Key';
-const GUEST_STORAGE_KEY = 'una-ai-guest-key';
-const GUEST_KEY_RE = /^[A-Za-z0-9_-]{16,64}$/;
 const USE_PROXY_WEB = appSetting('config', 'use_proxy_web');
 const USE_PROXY_NATIVE = appSetting('config', 'use_proxy_native');
-
-let guestKey = '';
-let guestKeyPending = null;
-
-function createGuestKey() {
-    if (typeof globalThis.crypto?.randomUUID === 'function') {
-        return globalThis.crypto.randomUUID();
-    }
-    const bytes = new Uint8Array(16);
-    if (typeof globalThis.crypto?.getRandomValues === 'function') {
-        globalThis.crypto.getRandomValues(bytes);
-    } else {
-        for (let i = 0; i < 16; i++) bytes[i] = Math.floor(Math.random() * 256);
-    }
-    bytes[6] = (bytes[6] & 0x0f) | 0x40;
-    bytes[8] = (bytes[8] & 0x3f) | 0x80;
-    const hex = Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('');
-    return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
-}
-
-async function readGuestKey() {
-    if (Platform.OS === 'web') {
-        try {
-            return window.localStorage.getItem(GUEST_STORAGE_KEY);
-        } catch {
-            return null;
-        }
-    }
-    return AsyncStorage.getItem(GUEST_STORAGE_KEY);
-}
-
-async function writeGuestKey(value) {
-    if (Platform.OS === 'web') {
-        window.localStorage.setItem(GUEST_STORAGE_KEY, value);
-        return;
-    }
-    await AsyncStorage.setItem(GUEST_STORAGE_KEY, value);
-}
-
-async function getOrCreateGuestKey() {
-    if (GUEST_KEY_RE.test(guestKey)) return guestKey;
-    if (guestKeyPending) return guestKeyPending;
-
-    guestKeyPending = (async () => {
-        try {
-            const existing = await readGuestKey();
-            if (GUEST_KEY_RE.test(existing || '')) {
-                guestKey = existing;
-                return existing;
-            }
-        } catch {
-            // storage unavailable — keep an in-memory key for this session
-        }
-
-        const created = createGuestKey();
-        guestKey = created;
-        try {
-            await writeGuestKey(created);
-        } catch {
-            // same as above
-        }
-        return created;
-    })();
-
-    try {
-        return await guestKeyPending;
-    } finally {
-        guestKeyPending = null;
-    }
-}
 
 function requestUrl(agentId, contextProfileId) {
     const path = `/sys-ai-chat/${encodeURIComponent(agentId)}`;
@@ -138,15 +65,11 @@ function throwIfUnaError(data) {
 }
 
 async function chatFetch(input, init = {}) {
-    const headers = chatHeaders(init.headers);
-    const key = await getOrCreateGuestKey();
-    if (key) headers[GUEST_HEADER] = key;
-
     const response = await unaAiChatStreamingFetch(input, {
         ...init,
         credentials: init.credentials || 'include',
         cache: init.cache || 'no-store',
-        headers,
+        headers: chatHeaders(init.headers),
     });
     const contentType = response.headers.get('content-type') || '';
     if (contentType.includes('application/json')) {

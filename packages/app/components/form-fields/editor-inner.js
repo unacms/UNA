@@ -72,7 +72,7 @@ export default function RftText(props) {
         selectedSuggestion,
         recordMention,
         queryToken,
-    } = useEditorMentions({ fieldName: name })
+    } = useEditorMentions({ fieldName: name, mentions: props.mentions })
     // Layout coords from iframe mention messages: [left, bottom]
     const [mentionCoords, setMentionCoords] = useState([0, 0])
     const [editorHeight, setEditorHeight] = useState(initialHeight)
