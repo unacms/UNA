@@ -2008,10 +2008,10 @@ grapesjs-style-gradient@^3.0.1:
   dependencies:
     grapick "^0.1.13"
 
-grapesjs@^0.23.5:
-  version "0.23.5"
-  resolved "https://registry.yarnpkg.com/grapesjs/-/grapesjs-0.23.5.tgz#6b5015429af57943e38a603dcca1b5d17d215d61"
-  integrity sha512-66E5x5ZWJUGMQkL/BfFK6oyuFdXAMpsG15+6atiTPbB/Wf4ChZ4I62R+rgUHr1DDAvrM/LxdPwmqOwdDsrplhw==
+grapesjs@^0.23.6:
+  version "0.23.6"
+  resolved "https://registry.yarnpkg.com/grapesjs/-/grapesjs-0.23.6.tgz#29c0deb14faa73366c9f507a1c14edc1a8bf55ec"
+  integrity sha512-I8M/sPWjHm6MLIdUtRFNOKsQ3PtDgIDsc2S8ANkJsfHj3ZoH98oNMMWr64Kx22XgjHCQ4xpUx7nvXyQSKV1mrQ==
   dependencies:
     "@types/backbone" "1.4.15"
     backbone "1.4.1"
