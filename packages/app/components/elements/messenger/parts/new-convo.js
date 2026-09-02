@@ -46,7 +46,7 @@ export default function CreateConvo({ onSave, initedData = [], convoId }) {
     )
 };
 
-export function CreateConvoButton({ onSave, onShow, size = 'small', variant = 'secondary' }) {
+export function CreateConvoButton({ onSave, onShow, size = 'small', variant = 'secondary', style }) {
     const { t } = useTranslation();
     const { setBottomSheetData } = useBottomSheetData();
 
@@ -63,9 +63,10 @@ export function CreateConvoButton({ onSave, onShow, size = 'small', variant = 's
     }
 
     let btn = null
+    const iconStyle = style ?? 'bordered';
 
     if (size == 'small')
-        btn = <View key={`add-1`}><NeoButton style="bordered" controlSize="regular" borderShape="circle" image="Plus" accessibilityLabel={t('messenger_add_users')} onPress={() => newConvo()} /></View>
+        btn = <View key={`add-1`}><NeoButton style={iconStyle} selected={showModal} selectedState="pressedToggle" controlSize="regular" borderShape="circle" image="Plus" accessibilityLabel={t('messenger_add_users')} onPress={() => newConvo()} /></View>
     else {
         btn = <NeoButton style="bordered" controlSize="regular" image="Plus" label={t('messenger_create_first')} onPress={() => { newConvo(); onShow(); }} />
     }

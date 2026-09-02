@@ -1,31 +1,20 @@
 import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
 import { fetcher } from 'app/lib/fetcher';
-import { memo, useState, useEffect, useRef, useCallback, useMemo,  } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { appSetting } from 'app/lib/util'
-import useDebounce from 'app/lib/hooks/debounce'
-import UniList from 'app/ui/atoms/unilist'
-import { Input, NeoButton } from 'app/design/controls'
-import Form from 'app/components/elements/form';
 import { Platform } from 'react-native'
-//import use-SWR from "swr";
 import useFetchForm from 'app/lib/hooks/fetch'
 import { useCurrentUser } from 'app/context/user';
 import { subscribe } from 'app/ui/atoms/socket';
 import { KbStickyView } from 'app/ui/atoms/kb-avoiding-view';
-import ItemConvo from 'app/components/elements/messenger/parts/item-convo';
-import ItemJot from 'app/components/elements/messenger/parts/item-jot';
-import { linkedText } from 'app/lib/text-helpers';
-import CreateConvo, { CreateConvoButton } from 'app/components/elements/messenger/parts/new-convo';
+import CreateConvo from 'app/components/elements/messenger/parts/new-convo';
 import Msg from 'app/ui/molecules/dialogs/msg';
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import Profile from 'app/ui/molecules/profile/profile'
 import ElementMsg from 'app/components/elements/msg';
-import { getBackButtonWeb } from 'app/lib/common-helpers'
-import DropdownMenu from 'app/ui/atoms/dropdown-menu';
-import BackButton from 'app/components/nav/back';
 import emitter from 'app/context/emitter';
-import { useFocusEffect, useIsFocused } from 'app/lib/hooks/router'
+import { useFocusEffect, useIsFocused, useSafeAreaInsets } from 'app/lib/hooks/router'
 import { useTranslation } from 'react-i18next'
 import {
     Panel,
@@ -33,23 +22,36 @@ import {
     PanelHandler,
 } from 'app/ui/molecules/page/resizable-panels'
 import { useIsDesktop } from 'app/context/measure';
-import { useSetHeader, useSetHeaderHeight, defaultHeader } from 'app/context/jotai/layout';
-import { getComponent } from 'app/components/registry';
-import { useSafeAreaInsets } from 'app/lib/hooks/router'
+import { useSetHeader, defaultHeader, useFooterHeight } from 'app/context/jotai/layout';
+import ConvosPanel from 'app/components/elements/messenger/parts/convos-panel';
+import JotsPanel, { ChatEmptyState } from 'app/components/elements/messenger/parts/jots-panel';
+import Composer from 'app/components/elements/messenger/parts/composer';
+import {
+    MobileListHeader,
+    MobileChatHeader,
+    ChatPanelHeader,
+    MESSENGER_OVERLAY_HEADER,
+    MESSENGER_OVERLAY_COMPOSER_FADE,
+} from 'app/components/elements/messenger/parts/headers';
 
-/** Native: `header.content` uses fixed `h-16`; messenger title/actions can paint taller. */
-function messengerHeaderContentClass(isWeb) {
-    const content = appSetting('layout', 'header', 'content');
-    return isWeb ? content : String(content || '').replace(/\bh-16\b/g, 'min-h-16');
-}
+const isWeb = Platform.OS === 'web';
 
 // Keep in sync with tabBarStyle.height in app/components/nav/tabs/native-tabs.js
 const TAB_BAR_HEIGHT = Platform.OS === 'ios' ? 52 : 56
 
-export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, fetchConvos, data, pageData, onSave, addButtons }) {
-    const isWeb = Platform.OS == 'web'
+/** Height of the in-panel desktop header rows (search / chat title), h-16. */
+const PANEL_HEADER_HEIGHT = 64;
+
+/**
+ * Messenger root: owns conversation selection, panel visibility, URL/history
+ * sync and the injected page header. Composes ConvosPanel / JotsPanel /
+ * Composer (small screens: stacked list ↔ chat; web desktop: resizable
+ * two-column split inside the UNA block).
+ */
+export default function Messenger({ defaultConvoId, selectedMenu, convos, layoutHeight, fetchConvos, data, pageData, onSave, addButtons, menuItems, menuIndex, onMenuChange }) {
     const { t } = useTranslation();
     const insets = useSafeAreaInsets();
+    const footerHeight = useFooterHeight();
     // Form sits above the tab bar. On Android the root SafeAreaView also pads
     // insets.bottom (iOS edges omit bottom) — sticky must compensate both or the
     // composer lands too high when the keyboard covers that space.
@@ -59,6 +61,8 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
         : 0;
     const { setBottomSheetData } = useBottomSheetData();
     const [convoId, setConvoId] = useState(defaultConvoId);
+    const convoIdRef = useRef(convoId);
+    convoIdRef.current = convoId;
     const [jots, setJots] = useState(false);
     const [listError, setListError] = useState(false);
     const isDesktop = useIsDesktop();
@@ -66,6 +70,8 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     // stack navigation: list → conversation. Width-based "desktop" would leave
     // both panels "visible" in a phone flex-row (list w-full) so taps never open chat.
     const isSmallScreen = !isWeb || !isDesktop;
+    const isSmallScreenRef = useRef(isSmallScreen);
+    isSmallScreenRef.current = isSmallScreen;
     const isFocused = useIsFocused();
     const isFocusedRef = useRef(isFocused);
     isFocusedRef.current = isFocused;
@@ -75,6 +81,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     const [commentForm, setCommentForm] = useState(false);
     const [jotUpdated, setJotUpdated] = useState(false);
     const [formHeight, setFormHeight] = useState(0);
+    const [splitHeight, setSplitHeight] = useState(0);
     const [showMsg, setShowMsg] = useState(false);
     const refListJots = useRef();
     const isFetchingJots = useRef(false);
@@ -83,28 +90,11 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     const [convosData, setConvosData] = useState(convos?.data || []);
     const selectedConvoIndex = convosData && convoId ? convosData.findIndex(item => item.id === convoId) : -1;
     const selectedConvo = convosData ? convosData[selectedConvoIndex] : false;
-    const { currentUser, setCurrentUser } = useCurrentUser();
+    const { currentUser } = useCurrentUser();
     const [replyItem, setReplyItem] = useState(false);
-  
+    const setHeader = useSetHeader();
 
-
-    const layoutHeightLeft = layoutHeight;
-    let layoutHeightRight = layoutHeight - formHeight;
-    if (listError)
-        layoutHeightRight = layoutHeightRight - 60
-    /* let { data: dynamicData, error } = useSWR(
-         commentForm ? ['/api.php?r=bx_messenger/get_send_form/Services&params=' + JSON.stringify({ id: selectedConvo.id, convo_id: selectedConvo.id, reply_id: replyItem ? replyItem.id : 0 }), '', commentForm] : null,
-         fetcher,
-         !true ? undefined : {
-             revalidateIfStale: false,
-             revalidateOnFocus: false,
-             revalidateOnReconnect: false
-         }
-     );*/
-
-
-
-    const { data: dynamicData, error } = useFetchForm('/api.php?r=bx_messenger/get_send_form/Services&params=' + JSON.stringify({ id: selectedConvo?.id, convo_id: selectedConvo?.id, reply_id: replyItem ? replyItem?.id : 0 }), commentForm);
+    const { data: dynamicData } = useFetchForm('/api.php?r=bx_messenger/get_send_form/Services&params=' + JSON.stringify({ id: selectedConvo?.id, convo_id: selectedConvo?.id, reply_id: replyItem ? replyItem?.id : 0 }), commentForm);
 
     useEffect(() => {
         data.form.data.inputs.message.value = '';
@@ -162,23 +152,87 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
         }
     }, [])
 
+    // ---------------------------------------------------------------------
+    // URL / history sync (web). pushState for user navigation, replaceState
+    // for programmatic selection, popstate to honor the browser back button.
+    // ---------------------------------------------------------------------
+    const messengerUrl = appSetting('messenger', 'url');
 
+    const isOnMessengerPath = useCallback(() => {
+        if (!isWeb || typeof window === 'undefined') return false;
+        const path = window.location.pathname;
+        return path === messengerUrl || path.startsWith(messengerUrl + '/');
+    }, [messengerUrl]);
 
-    const updateState = () => {
-        if (!isWeb)
-            return;
-        if (selectedMenu && selectedConvo) {
-            window.history.pushState(null, null, appSetting('messenger', 'url') + '/' + selectedMenu + '/' + selectedConvo.id + '/');
-        }
-    }
-
-
+    const syncConvoUrl = useCallback((id, { push = false } = {}) => {
+        if (!isWeb || !id || !isOnMessengerPath()) return;
+        const target = `${messengerUrl}/${selectedMenu}/${id}/`;
+        if (window.location.pathname === target) return;
+        if (push)
+            window.history.pushState(null, '', target);
+        else
+            window.history.replaceState(null, '', target);
+    }, [messengerUrl, selectedMenu, isOnMessengerPath]);
 
     useEffect(() => {
+        if (!isWeb) return;
+
+        const onPopState = () => {
+            const path = window.location.pathname;
+            if (path !== messengerUrl && !path.startsWith(messengerUrl + '/')) return;
+            const segments = path.slice(messengerUrl.length).split('/').filter(Boolean);
+            const poppedConvoId = segments[1] || '';
+            if (poppedConvoId) {
+                setConvoId(poppedConvoId);
+                if (isSmallScreenRef.current)
+                    setPanelsVisible({ convos: false, jots: true });
+            }
+            else if (isSmallScreenRef.current) {
+                setPanelsVisible({ convos: true, jots: false });
+            }
+        };
+
+        window.addEventListener('popstate', onPopState);
+        return () => window.removeEventListener('popstate', onPopState);
+    }, [messengerUrl]);
+
+    // ---------------------------------------------------------------------
+    // Selection / panel visibility
+    // ---------------------------------------------------------------------
+
+    // Breakpoint transitions: desktop always shows both panels; small screens
+    // keep the open chat (if any) or fall back to the list.
+    useEffect(() => {
+        if (!isSmallScreen) {
+            setPanelsVisible({ convos: true, jots: true });
+            return;
+        }
+        setPanelsVisible(prev => (prev.jots && convoIdRef.current
+            ? { convos: false, jots: true }
+            : { convos: true, jots: false }));
+    }, [isSmallScreen]);
+
+    // Deep link / newly created conversation / menu switch.
+    useEffect(() => {
         setConvoId(defaultConvoId);
-        if (isSmallScreen)
-            setPanelsVisible({ convos: false, jots: true })
+        if (isSmallScreenRef.current)
+            setPanelsVisible(defaultConvoId ? { convos: false, jots: true } : { convos: true, jots: false });
+        if (defaultConvoId)
+            syncConvoUrl(defaultConvoId, { push: true });
     }, [selectedMenu, defaultConvoId]);
+
+    // Desktop only: keep the right panel filled by selecting the first
+    // conversation. Small screens stay on the list until the user taps.
+    // Skip lists fetched for another menu (stale during an inbox/direct switch).
+    useEffect(() => {
+        if (isSmallScreen) return;
+        if (convos?.menu && convos.menu !== selectedMenu) return;
+        if (convoId == '' && convosData?.length > 0) {
+            const first = convosData[0];
+            setConvoId(first.id);
+            syncConvoUrl(first.id);
+        }
+    }, [convosData, convoId, isSmallScreen, syncConvoUrl, convos?.menu, selectedMenu]);
 
     useEffect(() => {
         if (!selectedConvo) return;
@@ -189,27 +243,12 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
         jotsPaginationRef.current = null;
         setJots(false);
         fetchItems(selectedConvo.id, false);
-        updateState();
 
         return () => {
             sub1();
             sub2();
         };
     }, [convoId]);
-
-
-    useEffect(() => {
-        if (!defaultConvoId)
-            setPanelsVisible({ convos: true, jots: isSmallScreen ? false : true });
-    }, [isSmallScreen]);
-
-
-    useEffect(() => {
-        if (convoId == '' && convosData?.length > 0) {
-            setConvoId(convosData[0]?.id);
-        }
-    }, [convosData]);
-
 
     useEffect(() => {
         setListError(null);
@@ -230,15 +269,10 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
 
     const scrolTo = () => {
         if (refListJots && refListJots?.current) {
-            let offset = 0;
-            if (selectedConvo.unread > 0)
-                offset = selectedConvo.unread - 1;
-            //if (isWeb /*&& selectedConvo.unread > 0*/) {
-                setTimeout(() => {
-                    if (refListJots?.current)
-                        refListJots.current.scrollToIndex({ animated: false, align: "end", behavior: "smooth", index: 9999999999 });
-                }, 100);
-           // }
+            setTimeout(() => {
+                if (refListJots?.current)
+                    refListJots.current.scrollToIndex({ animated: false, align: "end", behavior: "smooth", index: 9999999999 });
+            }, 100);
         }
     }
 
@@ -303,30 +337,27 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
         }
     }, [jotUpdated]);
 
-    useEffect(() => {
-        /*  if (jots?.index == 0) {
-              console.log("aaaa", jots?.index, refListJots?.current)
-              scrolTo();
-          }*/
-    }, [refListJots?.current]);//selectedConvo refListJots?.current, jots?.index*/
-
-
-
     const changeConvo = useCallback((convo) => {
         emitter.emit('editor', { action: 'focus' });
         setConvoId(convo.id);
-        if (isSmallScreen)
+        if (isSmallScreenRef.current)
             setPanelsVisible({ convos: false, jots: true })
-    }, [isSmallScreen, setConvoId, setPanelsVisible]);
+        if (isWeb && typeof window !== 'undefined')
+            window.scrollTo(0, 0);
+        syncConvoUrl(convo.id, { push: true });
+    }, [syncConvoUrl]);
 
     const showConvo = useCallback(() => {
         emitter.emit('editor', { action: 'blur' });
         setPanelsVisible({ convos: true, jots: false })
-        if (!isWeb)
+        if (isWeb && typeof window !== 'undefined')
+            window.scrollTo(0, 0);
+        if (!isWeb || !isOnMessengerPath())
             return;
 
-        window.history.pushState(null, null, appSetting('messenger', 'url'));
-    }, [isWeb]);
+        if (window.location.pathname !== messengerUrl)
+            window.history.pushState(null, '', messengerUrl);
+    }, [messengerUrl, isOnMessengerPath]);
 
     // Bottom-tab reselect: leave open chat and show conversation list.
     useEffect(() => {
@@ -348,8 +379,9 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
         else {
             fetchConvos();
             setConvoId(convos.data[0].id);
+            syncConvoUrl(convos.data[0].id);
         }
-    }, [selectedConvo?.id2, convos.data]);
+    }, [selectedConvo?.id2, convos.data, syncConvoUrl]);
 
     const leaveConvo = useCallback(async () => {
         let request_url = '/api.php?r=bx_messenger/leave_convo/Services&params=' + JSON.stringify({ lot: selectedConvo.id2 });
@@ -360,8 +392,9 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
         else {
             fetchConvos();
             setConvoId(convos.data[0].id);
+            syncConvoUrl(convos.data[0].id);
         }
-    }, [selectedConvo?.id2, convos.data]);
+    }, [selectedConvo?.id2, convos.data, syncConvoUrl]);
 
     const getConvo = useCallback(async () => {
         let request_url = '/api.php?r=bx_messenger/get_convo/Services&params=' + JSON.stringify({ lot: selectedConvo.id2 });
@@ -395,20 +428,22 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
         setBottomSheetData({ title: t('messenger_add_users'), content: <CreateConvo onSave={onSaveHandler} initedData={sResponse.data} convoId={selectedConvo.id2} />, showClose: true, snapPoints: ['85%', '85%'] });
     }, [selectedConvo?.id2, convos.data]);
 
-    const onFormSubmit = useCallback((formData, d) => {
-        //Keyboard.dismiss();
+    const handleConvoAction = useCallback((item) => {
+        if (item.id === 'edit') editConvo();
+        if (item.id === 'leave') leaveConvo();
+        if (item.id === 'info') getConvo();
+        if (item.id === 'delete') deleteConvo();
+    }, [editConvo, leaveConvo, getConvo, deleteConvo]);
+
+    const onFormSubmit = useCallback((formData) => {
         setCommentForm(formData);
     }, []);
-
-    /*const handleLayout = useCallback((event) => {
-        setFormHeight(event.nativeEvent.layout.height + (isSmallScreen ? 0 : 16))
-    }, []);*/
 
     const handleReply = useCallback((item) => {
         setReplyItem(item)
     }, [])
 
-    const handleCancelReply = useCallback((item) => {
+    const handleCancelReply = useCallback(() => {
         setReplyItem(false)
     }, [])
 
@@ -417,391 +452,222 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
             fetchItems(selectedConvo.id, true);
     }, [selectedConvo?.id])
 
-    const convosComponent = useMemo(() => {
-        return <Convos
-            pageData={pageData}
-            isSmallScreen={isSmallScreen}
-            layoutHeightLeft={layoutHeightLeft}
-            data={convosData}
-            selectedConvoIndex={selectedConvoIndex}
-            changeConvo={changeConvo}
-            handleSearch={handleSearch}
-            onSave={onSave}
-            addButtons={addButtons}
-        />
-    }, [
-        panelsVisible.convos,
-        layoutHeightLeft,
-        convosData,
-        selectedConvoIndex,
-        changeConvo,
-        handleSearch,
-        onSave,
-        addButtons,
-    ]);
-    const jotsComponent = useMemo(() => {
-        return (
-            (!!panelsVisible.jots && !!selectedConvo && jots?.data?.jots) && (
-                <>
-                    <Jots
-                        isSmallScreen={isSmallScreen}
-                        title={selectedConvo.title}
-                        layoutHeightRight={layoutHeightRight}
-                        data={jots?.data?.jots}
-                        refListJots={refListJots}
-                        showConvo={showConvo}
-                        deleteConvo={deleteConvo}
-                        leaveConvo={leaveConvo}
-                        getConvo={getConvo}
-                        editConvo={editConvo}
-                        handleReply={handleReply}
-                        startReached={handleStartReached}
-
-                    />
-                    {listError && (
-                        <View className="mx-4">
-                            <ElementMsg data={listError} />
-                        </View>
-                    )}
-                </>
-            )
-        );
-    }, [
-        panelsVisible.jots,
-        selectedConvo,
-        jots?.data?.jots,
-        isSmallScreen,
-        layoutHeightRight,
-        refListJots,
-        showConvo,
-        deleteConvo,
-        leaveConvo,
-        getConvo,
-        editConvo,
-        handleReply,
-        handleStartReached,
-        listError,
-        data.form,
-        replyItem,
-        onFormSubmit,
-        handleCancelReply,
-        layoutHeightRight,
-        layoutHeightLeft,
-
-
-    ]);
-
-    const handleLayout = useCallback((event) => {
+    const handleFormLayout = useCallback((event) => {
         setFormHeight(event.nativeEvent.layout.height)
     }, []);
 
-    const cellsCustomConfig = appSetting('layouts', 'messenger')
+    const handleSplitLayout = useCallback((event) => {
+        const { height } = event.nativeEvent.layout;
+        if (height > 0)
+            setSplitHeight(prev => (prev === height ? prev : height));
+    }, []);
 
-    if (!isWeb || isSmallScreen) {
+    // ---------------------------------------------------------------------
+    // Injected page header — single owner. Small screens swap between the
+    // list header and the chat header; desktop keeps the default site header
+    // (messenger chrome renders in-flow there).
+    // ---------------------------------------------------------------------
+    const injectedHeader = useMemo(() => {
+        if (!isSmallScreen) return null;
+        if (panelsVisible.jots && selectedConvo) {
+            return {
+                header: <MobileChatHeader title={selectedConvo.title} onBack={showConvo} onAction={handleConvoAction} />,
+            };
+        }
+        return {
+            header: (
+                <MobileListHeader
+                    pageData={pageData}
+                    onSearch={handleSearch}
+                    addButtons={addButtons}
+                    menuItems={menuItems}
+                    menuIndex={menuIndex}
+                    onMenuChange={onMenuChange}
+                />
+            ),
+        };
+    }, [isSmallScreen, panelsVisible.jots, selectedConvo?.id, selectedConvo?.title, showConvo, handleConvoAction, pageData, handleSearch, addButtons, menuItems, menuIndex, onMenuChange]);
+
+    useEffect(() => {
+        if (!isWeb) return;
+        setHeader(injectedHeader ?? defaultHeader);
+    }, [injectedHeader, setHeader]);
+
+    useFocusEffect(useCallback(() => {
+        if (isWeb) return;
+        setHeader(injectedHeader ?? defaultHeader);
+        return () => setHeader(defaultHeader);
+    }, [injectedHeader, setHeader]));
+
+    // ---------------------------------------------------------------------
+    // Render
+    // ---------------------------------------------------------------------
+    const cellsCustomConfig = appSetting('layouts', 'messenger')
+    const jotsLoaded = !!(panelsVisible.jots && selectedConvo && jots?.data?.jots);
+    const errorOffset = listError ? 60 : 0;
+
+    if (isSmallScreen) {
+        // Native: absolute page header, so the list is height-bounded and
+        // pads for chrome. Mobile web: window-scroll like conductor lists
+        // (notifications, comments) so rows pass behind the collapsible page
+        // header. Chat composer is viewport-fixed above the tab bar.
+        const nativeHeaderInset = isWeb ? 0 : PANEL_HEADER_HEIGHT;
+        const tabBarInset = isWeb ? footerHeight : 0;
+        const composerInset = formHeight + errorOffset;
+
         return (
-            <View className=' web:h-auto w-full  h-full flex-row  bg-card'>
-                {panelsVisible.convos && <View className=' w-full  overflow-hidden'>
-                    {convosComponent}
+            <View className='web:h-auto w-full h-full flex-row bg-card'>
+                {panelsVisible.convos && <View className='w-full'>
+                    <ConvosPanel
+                        data={convosData}
+                        pageData={pageData}
+                        panelHeight={isWeb ? undefined : layoutHeight}
+                        listHeight={isWeb ? undefined : layoutHeight}
+                        selectedConvoIndex={selectedConvoIndex}
+                        changeConvo={changeConvo}
+                        onSearch={handleSearch}
+                        onSave={onSave}
+                        addButtons={addButtons}
+                        isSmallScreen={true}
+                        footerInset={tabBarInset}
+                    />
                 </View>}
-                {panelsVisible.jots && <View className='flex-1'>
+                {panelsVisible.jots && (
+                    <View
+                        className="relative w-full"
+                        style={!isWeb && layoutHeight > 0 ? { height: layoutHeight } : undefined}
+                    >
                     <Msg onVisible={showMsg} title={showMsg} handleOk={() => { setShowMsg(false) }} />
-                    <View className="w-full flex-1">
-                        {jotsComponent}
-                    </View>
-                    <KbStickyView offset={{ closed: 0, opened: stickyOpened }}>
-                        <View onLayout={handleLayout} className="w-full">
-                            <FormContainer
-                                form={data.form}
-                                replyItem={replyItem}
-                                onFormSubmit={onFormSubmit}
-                                handleCancelReply={handleCancelReply}
-                            />
+                    {jotsLoaded && (
+                        <JotsPanel
+                            data={jots.data.jots}
+                            listHeight={isWeb ? undefined : layoutHeight}
+                            refListJots={refListJots}
+                            startReached={handleStartReached}
+                            handleReply={handleReply}
+                            isSmallScreen={true}
+                            headerInset={nativeHeaderInset}
+                            footerInset={composerInset + tabBarInset}
+                        />
+                    )}
+                    {listError ? (
+                        <View
+                            className={isWeb ? 'fixed left-0 right-0 z-40 mx-4' : 'absolute left-0 right-0 z-10 mx-4'}
+                            style={{ bottom: formHeight + tabBarInset }}
+                        >
+                            <ElementMsg data={listError} />
                         </View>
-                    </KbStickyView>
-                </View>}
+                    ) : null}
+                    {selectedConvo ? (
+                        <KbStickyView
+                            style={isWeb
+                                ? { position: 'fixed', left: 0, right: 0, bottom: tabBarInset, zIndex: 40 }
+                                : { position: 'absolute', left: 0, right: 0, bottom: 0, zIndex: 10 }}
+                            offset={{ closed: 0, opened: stickyOpened }}
+                        >
+                            <View className={MESSENGER_OVERLAY_COMPOSER_FADE} pointerEvents="box-none">
+                                <View onLayout={handleFormLayout} className="w-full" pointerEvents="auto">
+                                    <Composer
+                                        form={data.form}
+                                        replyItem={replyItem}
+                                        onFormSubmit={onFormSubmit}
+                                        handleCancelReply={handleCancelReply}
+                                    />
+                                </View>
+                            </View>
+                        </KbStickyView>
+                    ) : null}
+                    </View>
+                )}
             </View>)
     }
 
-    return (
-        <View style={{height: layoutHeightLeft}}>
-        <PanelGroup
-            key={`cells-messenger-${cellsCustomConfig.sizable ? 'sizable' : 'static'}`}
-            autoSaveId={cellsCustomConfig.sizable ? `cells-messenger` : undefined}
-            direction="horizontal"
-            className={`${appSetting('layout', 'max_width')} mx-auto w-full min-w-0 flex-auto relative flex-row`}
+    const contentHeight = splitHeight;
+    const desktopJotsHeight = Math.max(0, contentHeight);
 
-        >
-            <Panel
-                className={`block min-w-0`}
-                {...cellsCustomConfig.cells?.left}
+    return (
+        <View className="h-full w-full min-h-0" onLayout={handleSplitLayout}>
+            <PanelGroup
+                key={`cells-messenger-${cellsCustomConfig.sizable ? 'sizable' : 'static'}`}
+                autoSaveId={cellsCustomConfig.sizable ? `cells-messenger` : undefined}
+                direction="horizontal"
+                className="w-full min-w-0 relative flex-row"
+                style={{ height: contentHeight || '100%', overflow: 'hidden' }}
             >
-                {panelsVisible.convos && <View className='w-full  overflow-hidden'>
-                    {convosComponent}
-                </View>}
-            </Panel>
-            <PanelHandler
-                gap="hidden lg:block"
-                sizable={cellsCustomConfig.sizable}
-                panelLine={cellsCustomConfig['panel-line']}
-            />
-            <Panel className=" w-full min-w-0" {...cellsCustomConfig.cells?.center}>
-                {panelsVisible.jots && <View className='flex-1  border-border/60 lg:border-l bg-card'>
-                    <Msg onVisible={showMsg} title={showMsg} handleOk={() => { setShowMsg(false) }} />
-                    <View className={`w-full ${!isWeb ? 'flex-1' : ''}`} style={{ height: layoutHeightRight }}>
-                        {jotsComponent}
+                <Panel
+                    className={`block min-w-0`}
+                    {...cellsCustomConfig.cells?.left}
+                >
+                    <ConvosPanel
+                        data={convosData}
+                        pageData={pageData}
+                        panelHeight={contentHeight}
+                        listHeight={contentHeight}
+                        selectedConvoIndex={selectedConvoIndex}
+                        changeConvo={changeConvo}
+                        onSearch={handleSearch}
+                        onSave={onSave}
+                        addButtons={addButtons}
+                        isSmallScreen={false}
+                        menuItems={menuItems}
+                        menuIndex={menuIndex}
+                        onMenuChange={onMenuChange}
+                    />
+                </Panel>
+                <PanelHandler
+                    gap="hidden lg:block"
+                    sizable={cellsCustomConfig.sizable}
+                    panelLine={cellsCustomConfig['panel-line']}
+                />
+                <Panel className="w-full min-w-0" {...cellsCustomConfig.cells?.center}>
+                    <View className='relative h-full min-h-0 overflow-hidden border-border/60 lg:border-l '>
+                        <Msg onVisible={showMsg} title={showMsg} handleOk={() => { setShowMsg(false) }} />
+                        {selectedConvo ? (
+                            <>
+                                {jotsLoaded ? (
+                                    <JotsPanel
+                                        data={jots.data.jots}
+                                        listHeight={desktopJotsHeight}
+                                        refListJots={refListJots}
+                                        startReached={handleStartReached}
+                                        handleReply={handleReply}
+                                        isSmallScreen={false}
+                                        headerInset={PANEL_HEADER_HEIGHT}
+                                        footerInset={formHeight + errorOffset}
+                                    />
+                                ) : null}
+                                <View className={MESSENGER_OVERLAY_HEADER} pointerEvents="box-none">
+                                    <View pointerEvents="auto">
+                                        <ChatPanelHeader title={selectedConvo.title} onAction={handleConvoAction} />
+                                    </View>
+                                </View>
+                                {listError ? (
+                                    <View className="absolute left-0 right-0 z-10 mx-4" style={{ bottom: formHeight }}>
+                                        <ElementMsg data={listError} />
+                                    </View>
+                                ) : null}
+                                <KbStickyView
+                                    style={{ position: 'absolute', left: 0, right: 0, bottom: 0, zIndex: 10 }}
+                                    offset={{ closed: 0, opened: 0 }}
+                                >
+                                    <View className={MESSENGER_OVERLAY_COMPOSER_FADE} pointerEvents="box-none">
+                                        <View onLayout={handleFormLayout} className='w-full' pointerEvents="auto">
+                                            <Composer
+                                                form={data.form}
+                                                replyItem={replyItem}
+                                                onFormSubmit={onFormSubmit}
+                                                handleCancelReply={handleCancelReply}
+                                            />
+                                        </View>
+                                    </View>
+                                </KbStickyView>
+                            </>
+                        ) : (
+                            <ChatEmptyState />
+                        )}
                     </View>
-                    <KbStickyView offset={{ closed: 0, opened: 0 }}>
-                        <View onLayout={handleLayout} className='  w-full ' >
-                            <FormContainer
-                                form={data.form}
-                                replyItem={replyItem}
-                                onFormSubmit={onFormSubmit}
-                                handleCancelReply={handleCancelReply}
-                            />
-                        </View>
-                    </KbStickyView>
-                </View>}
-            </Panel>
-        </PanelGroup>
+                </Panel>
+            </PanelGroup>
         </View>
     )
 }
-
-const SEARCH_DEBOUNCE_MS = 300;
-
-const Convos = memo(({ layoutHeightLeft, data, pageData, selectedConvoIndex, changeConvo, onSave, handleSearch, addButtons, isSmallScreen }) => {
-    const isWeb = Platform.OS == 'web'
-    const { t } = useTranslation();
-    const [showSearch, setShowSearch] = useState(false);
-    const [searchValue, setSearchValue] = useState('');
-    const debouncedSearch = useDebounce(searchValue, SEARCH_DEBOUNCE_MS);
-    const lastEmittedSearch = useRef(null);
-
-    const setHeader = useSetHeader();
-    const setHeaderHeight = useSetHeaderHeight();
-
-    const onMessengerHeaderLayout = useCallback((event) => {
-        if (isWeb) return;
-        const { height } = event.nativeEvent.layout;
-        if (height > 0) {
-            setHeaderHeight(height);
-        }
-    }, [isWeb, setHeaderHeight]);
-
-    // Keep typing local; only notify parent after debounce (skip initial empty — parent loads via menu).
-    useEffect(() => {
-        if (lastEmittedSearch.current === null && debouncedSearch === '') {
-            lastEmittedSearch.current = debouncedSearch;
-            return;
-        }
-        if (lastEmittedSearch.current === debouncedSearch) return;
-        lastEmittedSearch.current = debouncedSearch;
-        handleSearch(debouncedSearch);
-    }, [debouncedSearch, handleSearch]);
-
-    function handleSearch2() {
-        setShowSearch(!showSearch)
-    }
-
-    function onSave2() {
-        setSearchValue('');
-        lastEmittedSearch.current = '';
-        handleSearch('');
-    }
-
-    const onChangeSearch = useCallback((value) => {
-        setSearchValue(value);
-    }, []);
-
-    const srch = <Input className="w-full min-w-0" size="small" rounded="full" name="search" placeholder={t('Search') + '...'} value={searchValue} onChangeText={onChangeSearch} />;
-    const ContextSelector = getComponent('molecule', 'context_selector');
-    const header = useMemo(() => (
-        <View onLayout={onMessengerHeaderLayout} className="w-full">
-            <Row className={`${appSetting('layout', 'page_content_width_default')} ${messengerHeaderContentClass(isWeb)} max-w-full`}>
-                <View className='hidden lg:flex flex-1 min-w-0 w-full pe-2'>
-                    {srch}
-                </View>
-                {!showSearch && (
-                    <Row className='flex-1 min-w-0 items-center gap-2 px-4 overflow-hidden lg:hidden'>
-                        {appSetting('messenger', 'back_button') ? getBackButtonWeb() : null}
-                        {appSetting('context_selector', 'show_always') ? (
-                            <ContextSelector url={pageData?.url} uri={pageData?.uri} data={pageData?.context} />
-                        ) : (
-                            <Text className='font-bold truncate flex-1 min-w-0 text-card-foreground text-2xl tracking-tight font-main' numberOfLines={1}>
-                                {t('Messenger')}
-                            </Text>
-                        )}
-                    </Row>
-                )}
-                {showSearch ? (
-                    <View className='flex-1 min-w-0 px-4 lg:hidden'>
-                        {srch}
-                    </View>
-                ) : null}
-                <Row className='my-auto shrink-0 items-center gap-x-1 pe-4'>
-                    <View className='lg:hidden'>
-                        <NeoButton style="bordered" controlSize="regular" borderShape="circle" image="Search" accessibilityLabel={t('Search')} onPress={() => handleSearch2()} />
-                    </View>
-                    {addButtons}
-                </Row>
-            </Row>
-        </View>
-    ), [showSearch, searchValue, addButtons, pageData, t, isWeb, onMessengerHeaderLayout]);
-
-    useEffect(() => {
-        if (!isWeb) return;
-        setHeader(isSmallScreen ? { header: header } : defaultHeader);
-    }, [isSmallScreen, setHeader, header]);
-
-    // Do not override headerHeightAtom here — PageHeader onLayout owns the
-    // measured offset. Hardcoding 32 left the first conversation under the bar
-    // (especially on iPad / wide native where desktop header was used).
-    useFocusEffect(useCallback(() => {
-        if (isWeb) return;
-
-        setHeader(isSmallScreen ? { header: header } : defaultHeader);
-        return () => setHeader(defaultHeader);
-    }, [isSmallScreen, setHeader, header]));
-    
-    return (
-        <View className='flex-1 bg-card' style={{ minHeight: layoutHeightLeft }}>
-            {(isWeb && !isSmallScreen) && <View className='w-full px-4'>{header}</View>}
-            {data && data.length > 0 ? <View
-                className='w-full overflow-hidden web:flex-1'
-                style={{ height: layoutHeightLeft }}
-            >
-                <UniList
-                    data={data}
-                    mode="simple"
-                    useCustomScrollHandler={isSmallScreen ? true : false}
-                    height={isWeb ? layoutHeightLeft - 64 : layoutHeightLeft}
-                    renderItem={({ item, index }) => <ItemConvo selectedIndex={selectedConvoIndex} item={item} index={index} changeConvo={changeConvo} />}
-                /></View>
-                : <View className='items-center justify-center w-full h-full'><View className="pt-8">
-                    <View className="gap-y-2 items-center opacity-80 justify-center mx-auto my-auto  py-4 px-8  items-center rounded-2xl  bg-muted-foreground/10 ">
-                        <View className="mx-auto text-secondary-foreground  ">
-                            <Text className="text-center text-lg text-secondary-foreground lg:text-xl font-semibold  ">
-                                No conversations found
-                            </Text>
-                        </View>
-                        {addButtons?.length > 0 && <CreateConvoButton variant='secondary' onSave={onSave} onShow={onSave2} />}
-                    </View>
-                </View></View>
-
-            }
-        </View>)
-});
-
-const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots, showConvo, deleteConvo, leaveConvo, getConvo, editConvo, handleReply, startReached }) => {
-    const isWeb = Platform.OS == 'web'
-    const { t } = useTranslation();
-    const setHeader = useSetHeader();
-    const menuItems = [
-        { 'id': 'edit', 'title': 'Edit participants list', 'icon': 'Users' },
-        { 'id': 'info', 'title': 'Info', 'icon': 'Info' },
-        { 'id': 'leave', 'title': 'Leave chat', 'icon': 'LogOut' },
-        { 'id': 'delete', 'title': 'Delete chat', 'icon': 'Trash' }
-    ]
-
-    const handleManage = async (item) => {
-        if (item.id == "edit") {
-            editConvo();
-        }
-        if (item.id == "leave") {
-            leaveConvo();
-        }
-        if (item.id == "info") {
-            getConvo();
-        }
-        if (item.id == "delete") {
-            deleteConvo();
-        }
-    };
-
-
-    const header = useMemo(() => (
-
-            <Row className={`${appSetting('layout', 'page_content_width_default')}  ${messengerHeaderContentClass(isWeb)} max-w-full`}>
-                <Row className="flex-1 min-w-0 items-center gap-2 px-4 overflow-hidden">
-                    {isSmallScreen ? (
-                        <View className="shrink-0">
-                            <BackButton buttonProps={{ variant: "text", startDecorator: 'ArrowLeft', rounded: 'rounded' }} callback={showConvo} />
-                        </View>
-                    ) : null}
-                    <Text numberOfLines={1} className="flex-1 min-w-0 font-bold text-card-foreground text-lg sm:text-xl tracking-tight">{title}</Text>
-                </Row>
-                <View className="shrink-0 items-center justify-center pe-4">
-                    <DropdownMenu onSelect={(oItem) => { handleManage(oItem) }} items={menuItems}>
-                        <NeoButton
-                            style="bordered"
-                            controlSize="regular"
-                            borderShape="circle"
-                            image="Settings"
-                            accessibilityLabel={t('Settings')}
-                        />
-                    </DropdownMenu>
-                </View>
-            </Row>
-        
-    ), [isSmallScreen, title, showConvo, isWeb, t]);
-
-    useEffect(() => {
-        if (!isWeb) return;
-        setHeader(isSmallScreen ? { header: header } : defaultHeader);
-    }, [isSmallScreen, setHeader, header]);
-
-    useFocusEffect(useCallback(() => {
-        if (isWeb) return;
-        setHeader(isSmallScreen ? { header: header } : defaultHeader);
-        return () => setHeader(defaultHeader);
-    }, [isSmallScreen, setHeader, header]));
-
-    return (<>
-        {(isWeb && !isSmallScreen) && <View className='w-full px-4'>{header}</View>}
-        {<View className="flex-1">
-            <UniList
-
-                refer={refListJots}
-                {...(Platform.OS !== 'web' ? { inverted: true } : {})}
-                overscan={900}
-                onStartReached={startReached}
-                scrollToLastItem={true}
-                data={data}
-                height={layoutHeightRight - 64}
-                mode="simple"
-                useCustomScrollHandler={isSmallScreen ? true : false}
-                renderItem={({ item, index }) => <ItemJot handleReply={handleReply} item={item} index={index} />}
-
-            /></View>}
-    </>);
-});
-
-const FormContainer = memo(({ form, replyItem, onFormSubmit, handleCancelReply }) => {
-    const { t } = useTranslation();
-
-    return (
-
-        <View className="p-1.5 sm:p-2.5">
-            <View className=' ' >
-                {
-                    replyItem && (<View className='bg-accent/60 rounded-xl border border-accent px-2.5 py-2 mb-2'>
-                        <Row className='items-start justify-between max-w-full relative'>
-                            <View className=' flex-auto pr-4'>
-                                <Row className='max-w-full '>
-                                    <Text className='text-xs text-popover-foreground '>{t('Reply to:')} </Text>
-                                    <Text className='font-semibold text-xs text-popover-foreground '>{replyItem.author_data.display_name}</Text>
-                                </Row>
-                                <Text className='text-sm overflow-hidden text-popover-foreground ' numberOfLines={3}>{linkedText(replyItem.message, "hover:text-accent-foreground")}</Text>
-                            </View>
-                            <View className=" -right-1 -top-1">
-                                <NeoButton style="bordered" controlSize="mini" borderShape="circle" image="X" accessibilityLabel={t('Close')} align="start" onPress={() => handleCancelReply()} />
-                            </View>
-                        </Row>
-                    </View>)
-                }
-                <Form {...form} name='bx_messenger' resetOnSubmit={true} classContainerName={" flex-row flex-wrap w-full items-start justify-between"} onFormSubmit={onFormSubmit} />
-            </View>
-        </View>
-
-    )
-});

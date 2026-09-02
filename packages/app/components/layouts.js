@@ -2,7 +2,7 @@
 import Layout from 'app/components/layout';
 import { useCurrentUser, isWebAuthReady } from 'app/context/user'
 import { getComponent } from 'app/components/registry';
-import { appSetting, getLayoutName, getPageContentWidth, getPageData, strToObj } from 'app/lib/util'
+import { appSetting, getLayoutName, getPageContentPaddingTiers, getPageContentWidth, getPageData, strToObj } from 'app/lib/util'
 import emitter from 'app/context/emitter';
 import { responsiveClasses } from 'app/lib/responsive-classes'
 import Cell from 'app/components/cell';
@@ -121,7 +121,7 @@ function PageLayoutContent({ layout, data }) {
     const { layoutName, layoutBlocks, isCustomLayout, columnLayout = '' } = layout;
 
     const pageClasses = useMemo(() => ({
-        padding: responsiveClasses('padding', data?.config?.padding),
+        padding: responsiveClasses('padding', data?.config?.padding ?? getPageContentPaddingTiers(layoutName)),
         gap: responsiveClasses('gap', data?.config?.gap),
         width: appSetting('layout', 'max_width'),
         contentWidth: getPageContentWidth(layoutName),

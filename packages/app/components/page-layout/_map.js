@@ -13,12 +13,14 @@ import PageUniversal from 'app/components/page-layout/universal';
 import PagePlayground from 'app/components/page-layout/_playground/playground';
 import PagePlaygroundForm from 'app/components/page-layout/_playground/playground-form-layout';
 import PagePlaygroundAiChat from 'app/components/page-layout/_playground/playground-ai-chat-layout';
+import PageLayoutPlay from './play';
 import PageWiki from 'app/components/page-layout/wiki';
 
 export const componentsMapDefault = {
     'default': PageLayoutDefault,
     'post': PageCustomPost,
     'playground': PagePlayground,
+    'play': PageLayoutPlay,
     'playground-form': PagePlaygroundForm,
     'playground-ai-chat': PagePlaygroundAiChat,
     'discussion': PageCustomPost,

@@ -21,14 +21,22 @@ function createBlockComponent({
         rounded,
         ...props
     }) {
+        // Card chrome (fill, outline shadow, radius) only when UNA background is on.
         const roundedClass =
-            baseClass === 'u-block-base'
+            baseClass === 'u-block-base' && isBg
                 ? responsiveClasses('rounded', rounded)
                 : '';
 
+        // UNA padding: py on the shell, px on header / content / footer.
+        const padY = baseClass === 'u-block-base'
+        const padX = baseClass === 'u-block-header' || baseClass === 'u-block-content' || baseClass === 'u-block-footer'
+        const padClass = isPad
+            ? (padY ? blockTheme['u-block-pad-y'] : padX ? blockTheme['u-block-pad-x'] : '')
+            : ''
+
         return (
             <Component
-                className={`${baseClass} ${isBg && baseClass == 'u-block-base' ? blockTheme['u-block-bg'] : ''} ${isPad ? blockTheme['u-block-pad'] : ''} ${animate ? blockTheme['u-block-animate'] || '' : ''} ${blockTheme[baseClass] || ''} ${roundedClass} ${className}`}
+                className={`${baseClass} ${isBg && baseClass == 'u-block-base' ? blockTheme['u-block-bg'] : ''} ${padClass} ${animate ? blockTheme['u-block-animate'] || '' : ''} ${blockTheme[baseClass] || ''} ${roundedClass} ${className}`}
                 role={role}
                 aria-level={ariaLevel}
                 {...props}

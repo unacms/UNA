@@ -7,6 +7,7 @@ import { fetcher } from 'app/lib/fetcher';
 import { Platform } from 'react-native'
 import { useLayoutSettings } from 'app/context/layout-settings';
 import { useIsDesktop, useWindowHeight } from 'app/context/measure';
+import { useHeaderHeight, useFooterHeight } from 'app/context/jotai/layout';
 import { BlockWrapper } from 'app/components/block-wrapper'
 import { useSafeAreaInsets } from 'app/lib/hooks/router'
 
@@ -28,7 +29,10 @@ export default function MessengerEl(props) {
         return props.data.menu.items.filter(item => ['inbox', 'direct'].includes(item.name));
     }, [props]);
 
-    const [menu, setMenu] = useState({ data: menuDefaultList, index: menuDefaultList.findIndex(item => item.name == defaultMenuName) });
+    const [menu, setMenu] = useState(() => {
+        const index = menuDefaultList.findIndex(item => item.name == defaultMenuName);
+        return { data: menuDefaultList, index: index >= 0 ? index : 0 };
+    });
     const [convos, setConvos] = useState(false);
     const [initedConvoId, setInitedConvoId] = useState(defaultConvoId);
     const menuRef = useRef(menu);
@@ -52,6 +56,9 @@ export default function MessengerEl(props) {
                 data: term
                     ? (sResponse.data?.lots ? sResponse.data.lots : [])
                     : sResponse.data,
+                // Which inbox/direct group this list belongs to — consumers use
+                // it to ignore stale lists right after a menu switch.
+                menu: menuItem,
             });
         } catch {
             if (requestId !== fetchRequestId.current) return;
@@ -70,10 +77,17 @@ export default function MessengerEl(props) {
         setInitedConvoId(data.convo.id)
     }, []);
 
+    // Inbox / direct switch: drop any deep-linked conversation so the new
+    // list drives selection (desktop auto-selects its first conversation).
+    const onMenuChange = useCallback((index) => {
+        setInitedConvoId('');
+        setMenu(prev => (prev.index === index ? prev : { ...prev, index }));
+    }, []);
+
     const addButtons = useMemo(() => {
         if (!props.data?.config?.permissions || props.data?.config?.permissions?.create_talk == 1){
         return [
-            <CreateConvoButton key="a" onSave={onSave} variant='text' />
+            <CreateConvoButton key="a" onSave={onSave} style="glass" />
         ]
         }
         return null
@@ -82,8 +96,14 @@ export default function MessengerEl(props) {
     const messengerContainer = (menu && convos) && <MessengerContainer
         fetchConvos={fetchConvos}
         convos={convos}
-        data={props}
-        selectedMenu={menu?.data[menu?.index].name}
+        blockData={props.data}
+        pageData={props.pageData}
+        block={props.block}
+        alreadyWrapped={Boolean(props.blockWrapperProps)}
+        selectedMenu={menu?.data[menu?.index]?.name}
+        menuItems={menu.data}
+        menuIndex={menu.index}
+        onMenuChange={onMenuChange}
         defaultConvoId={initedConvoId}
         windowWHeight={windowWHeight}
         layout={layout}
@@ -94,37 +114,67 @@ export default function MessengerEl(props) {
     return messengerContainer;
 }
 
-const MessengerContainer = memo(({ convos, selectedMenu, url, data, pageData, windowWHeight, layout, fetchConvos, defaultConvoId, onSave, addButtons }) => {
+const MessengerContainer = memo(({ convos, selectedMenu, blockData, pageData, windowWHeight, layout, fetchConvos, defaultConvoId, onSave, addButtons, menuItems, menuIndex, onMenuChange, block, alreadyWrapped }) => {
     const isWeb = Platform.OS == 'web'
     const isDesktop = useIsDesktop();
-    const layoutHeaderHeight = 64;
     const insets = useSafeAreaInsets();
-    let height = useMemo(() => {
-        let heightInit = windowWHeight;
-        if (layout == 'ver') {
-            heightInit = windowWHeight;
-        }
-        if (layout == 'hor') {
-            heightInit = windowWHeight - layoutHeaderHeight;
-        }
-        if (layout == 'mixed') {
-            heightInit = windowWHeight - layoutHeaderHeight;
-        }
-        if (!isDesktop) {
-            heightInit = windowWHeight - layoutHeaderHeight
-        }
+    // Measured chrome from the layout atoms: the fixed PageHeader (including
+    // any injected messenger header) and the mobile-web bottom tab bar.
+    const headerHeight = useHeaderHeight();
+    const footerHeight = useFooterHeight();
+
+    const height = useMemo(() => {
         if (!isWeb) {
-            heightInit = windowWHeight - insets.bottom - insets.top;
-            if (Platform.OS == 'ios') {
-                heightInit = windowWHeight - insets.bottom - insets.top - 64;
-            }
+            let heightInit = windowWHeight - insets.bottom - insets.top;
+            if (Platform.OS == 'ios')
+                heightInit -= 64;
+            return heightInit;
         }
-        return heightInit;
-    }, [windowWHeight, layout])
+        // 'ver' desktop has no top header bar; every other web layout does.
+        if (layout == 'ver' && isDesktop)
+            return windowWHeight - footerHeight;
+        return windowWHeight - headerHeight - footerHeight;
+    }, [windowWHeight, layout, isDesktop, headerHeight, footerHeight, insets.top, insets.bottom])
+
+    const messenger = (
+        <Messenger
+            pageData={pageData}
+            data={blockData}
+            addButtons={addButtons}
+            onSave={onSave}
+            fetchConvos={fetchConvos}
+            layoutHeight={height}
+            selectedMenu={selectedMenu}
+            menuItems={menuItems}
+            menuIndex={menuIndex}
+            onMenuChange={onMenuChange}
+            convos={convos}
+            defaultConvoId={defaultConvoId}
+        />
+    );
+
+    // Cell already wraps. Native uses the injected page header only.
+    // Web always goes through BlockWrapper so desktop ↔ mobile does not
+    // remount; contentOnly skips UNA chrome on small screens.
+    // Inbox/direct live in the conversation list — drop block.menu so
+    // BlockWrapper does not force a header (or duplicate those tabs)
+    // when UNA has the title designbox off.
+    if (alreadyWrapped || !isWeb) {
+        return messenger;
+    }
+
+    const blockForWrapper = block?.menu ? { ...block, menu: undefined } : block;
 
     return (
-        <BlockWrapper >
-            <Messenger pageData={pageData} addButtons={addButtons} onSave={onSave} fetchConvos={fetchConvos} layoutHeight={height} {...data} url={url} selectedMenu={selectedMenu} convos={convos} defaultConvoId={defaultConvoId} />
+        <BlockWrapper
+            block={blockForWrapper}
+            config={block?.config_api}
+            fullWidth
+            fill={isDesktop}
+            contentOnly={!isDesktop}
+            wrapperClassses={isDesktop ? 'h-full min-h-0' : undefined}
+        >
+            {messenger}
         </BlockWrapper>
     );
 });

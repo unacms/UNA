@@ -24,15 +24,19 @@ function BlockHeaderMenu({ menu, pathname }) {
         <View className="flex-row items-center gap-2">
             {items.map((item) => {
                 const href = item.link || item.url || ''
-                const pressed = Boolean(pathComparable(href) && pathComparable(href) === current)
+                const onPress = typeof item.onPress === 'function' ? item.onPress : undefined
+                const pressed = typeof item.pressed === 'boolean'
+                    ? item.pressed
+                    : Boolean(pathComparable(href) && pathComparable(href) === current)
 
                 return (
                     <MenuItemBlockmenu
                         key={item.id || item.name}
                         title={item.title}
-                        href={href}
+                        href={onPress ? undefined : href}
                         pressed={pressed}
                         disabled={item.disabled}
+                        onPress={onPress}
                     />
                 )
             })}
@@ -40,7 +44,7 @@ function BlockHeaderMenu({ menu, pathname }) {
     )
 }
 
-export function BlockWrapper({ config, block, wrapperClassses, showTitle, showBg, fullWidth, contentOnly, list, showPadding, extraProps, children }) {
+export function BlockWrapper({ config, block, wrapperClassses, showTitle, showBg, fullWidth, contentOnly, list, showPadding, extraProps, fill, children }) {
     const { t } = useTranslation()
     const [showHelp, setShowHelp] = useState(false)
     const pathname = usePathname()
@@ -104,13 +108,14 @@ export function BlockWrapper({ config, block, wrapperClassses, showTitle, showBg
     const isHelpLink = isUrl(pureHelp)
     const isHelp = !!block.help
     const hasHeaderActions = !!(config?.header_more_url || blockMenu)
+    const fillClass = fill ? 'flex h-full min-h-0 flex-1 flex-col' : ''
 
     return (
-        <View className={wrapperClassses || 'w-full'}>
+        <View className={`${wrapperClassses || 'w-full'} ${fillClass}`}>
             {(isHelp && !isHelpLink) && <Modal title="Help" onVisible={!!showHelp} onClose={() => { setShowHelp(false) }} transparent={false}>
                 <Html data={pureHelp} />
             </Modal>}
-            <View className="@container/block w-full">
+            <View className={`@container/block w-full ${fillClass}`}>
                 <PageBlock
                     key={block.id}
                     isBg={bIsShowBg}
@@ -118,13 +123,14 @@ export function BlockWrapper({ config, block, wrapperClassses, showTitle, showBg
                     rounded={config?.rounded}
                     className={[
                         "w-full mx-auto",
+                        fill ? "flex h-full min-h-0 flex-1 flex-col" : "",
                         (!fullWidth && !cssClasses.includes("max-w-") ? appSetting('layout', 'max_width_block') : ""),
                         cssClasses,
                     ].filter(Boolean).join(" ")}
 
                 >
                     {bIsShowTitle && (
-                        <BlockHeader>
+                        <BlockHeader isPad={bIsShowPadding} className={fill ? 'shrink-0' : undefined}>
                              
                             <BlockName>
                                 <View className="flex-row items-center gap-2">
@@ -153,7 +159,10 @@ export function BlockWrapper({ config, block, wrapperClassses, showTitle, showBg
                             {(isHelp && !isHelpLink) && <Button onPress={() => setShowHelp(true)} title="Help" startDecorator='LifeBuoy' variant="text" />}
                         </BlockHeader>
                     )}
-                    <BlockContent>
+                    <BlockContent
+                        isPad={bIsShowPadding}
+                        className={fill ? 'flex min-h-0 flex-1 flex-col overflow-hidden' : undefined}
+                    >
                         {children}
                     </BlockContent>
                 </PageBlock>

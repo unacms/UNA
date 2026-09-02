@@ -111,6 +111,14 @@ export function getPageContentWidth(layoutKey) {
     return pageLayouts[layoutKey] ?? appSetting('layout', 'page_content_width_default');
 }
 
+export function getPageContentPaddingTiers(layoutKey) {
+    if (!layoutKey) return undefined;
+    const pageLayouts = appSetting('layout', 'page_content_padding_layouts') || {};
+    return Object.prototype.hasOwnProperty.call(pageLayouts, layoutKey)
+        ? pageLayouts[layoutKey]
+        : undefined;
+}
+
 export function getLayoutName(data, uri) {
     if (data?.page_status) {
         return { layoutName: 'default', layoutBlocks: '', isCustomLayout: false, columnLayout: '' };

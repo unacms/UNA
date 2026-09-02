@@ -21,9 +21,16 @@ export const settingsLayout = {
         page_content_width:{
             layout_1_column_thin: 'w-full max-w-md',
             layout_1_column_half: 'w-full max-w-2xl',
+            messenger: 'w-full',
         },
         page_content_padding: ' p-4 ',
         page_content_padding_default: ' p-4 ',
+        // Per-layout padding tiers for `responsiveClasses` (same values as UNA page `config.padding`).
+        // Missing key → `page_content_padding_default`. `[]` = off. `true` = all breakpoints.
+        // UNA `config.padding` still wins when the page sends it.
+        page_content_padding_layouts: {
+            messenger: [],
+        },
         page_content_gap: ' gap-4 ',
         page_content_gap_default: ' sm:gap-4 ',
        

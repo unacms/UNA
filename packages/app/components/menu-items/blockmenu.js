@@ -2,14 +2,14 @@ import { NeoButton, NeoButtonLink } from 'app/design/controls'
 import { sanitazeUrl } from 'app/lib/util'
 
 /** Compact title-only control for block header switcher menus. */
-export default function MenuItemBlockmenu({ title, pressed, disabled, addon, onPress, href }) {
+export default function MenuItemBlockmenu({ title, pressed, disabled, addon, onPress, href, borderShape = 'roundedRectangle' }) {
     const commonProps = {
         label: title,
         style: pressed ? 'bordered' : 'borderless',
         selected: pressed,
         selectedState: 'pressed',
         controlSize: 'small',
-        borderShape: 'roundedRectangle',
+        borderShape,
         disabled,
         addon,
         haptics: 'Medium',

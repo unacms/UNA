@@ -10,8 +10,8 @@ export default function ({ item, index, changeConvo, selectedIndex }) {
     const participants = item.participants.filter(p => p.id != currentUser.id);
     const names = participants.map(p => p.display_name).join(', ');
     //memo(
-    const Item = ({ item, index, changeConvo, selectedIndex }) => (<Pressable className="w-full overflow-hidden" onPress={() => changeConvo(item)}>
-        <Row className={(selectedIndex == index ? ' bg-accent ' : '') + '  w-full overflow-hidden gap-3 px-4 py-2'} >
+    const Item = ({ item, index, changeConvo, selectedIndex }) => (<Pressable className="group w-full px-2 py-0.5 web:cursor-pointer" onPress={() => changeConvo(item)}>
+        <Row className={(selectedIndex == index ? ' bg-accent ' : ' web:group-hover:bg-muted/50 active:bg-muted/50 ') + ' relative w-full overflow-hidden gap-3 rounded-xl px-3 py-2 web:duration-200'} >
             
             <View className=" rounded-full flex-none bg-secondary mb-auto">
                 <Profile

@@ -12,7 +12,7 @@ export default function UniList(props) {
     // Strip RN FlatList/ScrollView-only props so they never reach Virtuoso → DOM.
     let { useCustomScrollHandler, preloadComponent, isModal, sortable, data: rawData, renderItem, onEndReached, onStartReached, maxToRenderPerBatch, initialNumToRender, contentContainerStyle, initialScrollIndex, ListHeaderComponent, ListFooterComponent, refer, onScrollToIndex,
         onSort, mode, layout, numColumns, keyboardShouldPersistTaps, keyExtractor, useWindowScroll: useWindowScrollProp, height, listState, endpoint, viewParams, topItemCount, scrollToLastItem, refreshing, onRefresh, isInPanel, paddingTop,
-        extraData, keyboardDismissMode, onScrollBeginDrag, onScrollEndDrag, onMomentumScrollBegin, onMomentumScrollEnd, ...rest } = props
+        extraData, keyboardDismissMode, onScrollBeginDrag, onScrollEndDrag, onMomentumScrollBegin, onMomentumScrollEnd, components: componentsProp, ...rest } = props
 
     const uniRef = useRef();
     const currentBreakpoint = useBreakpoint();
@@ -192,12 +192,13 @@ export default function UniList(props) {
         endReached: onEndReached,
         overscan: props.unit == 'notifications' ? 100 : 900,
         increaseViewportBy: { top: 3000, bottom: 3000 },
-        components: mode != 'simple' ? {
-            List: ListComponent,
-            Item: ItemComponent,
+        components: {
+            ...(mode != 'simple' ? {
+                List: ListComponent,
+                Item: ItemComponent,
+            } : {}),
             Footer: FooterComponent,
-        } : {
-            Footer: FooterComponent,
+            ...componentsProp,
         },
         ...rest,
     };

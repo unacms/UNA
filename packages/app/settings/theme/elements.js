@@ -92,15 +92,19 @@ export const settingsElements = {
             ' bg-card/60 shadow-block-outline dark:shadow-block-outline-deep ',
         'u-block-pad':
             ' p-4 ',
+        'u-block-pad-y':
+            ' py-4 ',
+        'u-block-pad-x':
+            ' px-4 ',
         'u-block-rounded': 'rounded-2xl',
         'u-block-rounded-default': 'sm:rounded-2xl',
         'u-block-header':
             ' flex-row items-center gap-3 justify-center ',
-        'u-block-icon': ' items-center w-8 h-8 justify-center text-card-foreground flex-none',
+        'u-block-icon': ' items-center w-9 h-9 justify-center text-card-foreground flex-none',
         'u-block-icon-size': 24, // Default icon size for block header icons
         'u-block-name': ' flex-auto gap-1 ',
         'u-block-title':
-            'text-card-foreground px-0.5 text-lg lg:text-xl font-bold tracking-tight',
+            'text-card-foreground leading-9 px-0.5 text-lg lg:text-xl font-bold tracking-tight',
         'u-block-description': 'text-muted-foreground text-xs lg:text-sm leading-5 px-px',
         'u-block-content': 'gap-0.5 ',  
         'u-block-footer':

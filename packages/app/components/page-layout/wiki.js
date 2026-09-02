@@ -379,7 +379,7 @@ function PageContentWiki({ data, scrollRef, url }) {
                     <Panel className={`native:w-full   ${currentBreakpointName}:w-full`} {...centerPanelProps}>
                         <View ref={centerContentRef} className="sm:p-4 lg:px-6 lg:py-6 xl:px-8 2xl:px-12 gap-6 lg:gap-8">
                             {(breadcrumbs.length >1 || showTocMenu) ? (
-                                <View className={`gap-3 bg-pink-500 hidden ${leftBreakpoint}:flex`}>
+                                <View className={`gap-3  hidden ${leftBreakpoint}:flex`}>
                                     {/* CSS visibility only — do not gate on useBreakpoint (SSR mismatch).
                                         Breadcrumb from left-nav bp; TOC trigger until right sidebar bp. */}
                                     <View className={`hidden ${leftBreakpoint}:flex flex-row items-center justify-between gap-2 min-w-0`}>
