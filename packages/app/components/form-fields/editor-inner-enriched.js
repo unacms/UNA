@@ -194,13 +194,11 @@ export default function RftTextEnriched(props) {
         setCaretPos(null)
     }, [mentionIndicator, isWeb, recordMention, clearTrigger])
 
-    // Fixed to the viewport so feed/card overflow:hidden cannot clip the list.
-    // Prefer ABOVE the caret; flip below only when the viewport has room under
-    // the caret and not enough above (comment fields sit near the screen bottom).
+    // Web: pin the list to the editor (absolute, left of the field). Vertical
+    // flips above/below the caret the same as before.
     const DROPDOWN_MAX_H = 160
     const DROPDOWN_MIN_H = 72
     const DROPDOWN_GAP = 6
-    const DROPDOWN_MAX_W = 448 // max-w-md
     const computeCaretPosition = useCallback(() => {
         if (!isWeb || typeof window === 'undefined') return
         try {
@@ -220,38 +218,19 @@ export default function RftTextEnriched(props) {
             const needed = DROPDOWN_MAX_H + DROPDOWN_GAP
             const canFitAbove = vpAbove >= needed
             const canFitBelow = vpBelow >= needed
-            // Prefer above. Flip below only when above cannot fit and below can,
-            // or when neither fits but below has clearly more room.
             const placeBelow =
                 (!canFitAbove && canFitBelow) ||
                 (!canFitAbove && !canFitBelow && vpBelow > vpAbove + 24)
 
-            const left = Math.max(8, Math.min(cRect.left, window.innerWidth - DROPDOWN_MAX_W - 8))
-            const width = Math.min(cRect.width || DROPDOWN_MAX_W, DROPDOWN_MAX_W, window.innerWidth - left - 8)
-
-            if (placeBelow) {
-                setCaretPos({
-                    position: 'fixed',
-                    top: rect.bottom + DROPDOWN_GAP,
-                    left,
-                    width,
-                    maxHeight: Math.min(
-                        DROPDOWN_MAX_H,
-                        Math.max(DROPDOWN_MIN_H, vpBelow - DROPDOWN_GAP)
-                    ),
-                })
-            } else {
-                setCaretPos({
-                    position: 'fixed',
-                    bottom: Math.max(0, window.innerHeight - rect.top + DROPDOWN_GAP),
-                    left,
-                    width,
-                    maxHeight: Math.min(
-                        DROPDOWN_MAX_H,
-                        Math.max(DROPDOWN_MIN_H, vpAbove - DROPDOWN_GAP)
-                    ),
-                })
-            }
+            const maxHeight = Math.min(
+                DROPDOWN_MAX_H,
+                Math.max(DROPDOWN_MIN_H, (placeBelow ? vpBelow : vpAbove) - DROPDOWN_GAP)
+            )
+            setCaretPos(
+                placeBelow
+                    ? { top: rect.bottom - cRect.top + DROPDOWN_GAP, maxHeight }
+                    : { bottom: cRect.bottom - rect.top + DROPDOWN_GAP, maxHeight }
+            )
         } catch {
             // Selection not available — keep previous / fall back to bottom-0.
         }
@@ -259,8 +238,9 @@ export default function RftTextEnriched(props) {
 
     // Reposition whenever the suggestion list appears or the query changes.
     useEffect(() => {
-        if (!isWeb || !suggestions.length) {
-            setCaretPos(null)
+        if (!isWeb) return
+        if (!suggestions.length) {
+            if (!mentionIndicator) setCaretPos(null)
             return
         }
         requestAnimationFrame(computeCaretPosition)
@@ -567,13 +547,13 @@ export default function RftTextEnriched(props) {
                 suggestions={suggestions}
                 onSelect={insertMention}
                 dropdownRef={dropdownRef}
-                className={caretPos?.position === 'fixed' ? 'fixed' : caretPos ? '' : 'bottom-0'}
+                className={caretPos ? '' : 'bottom-0'}
                 style={
                     caretPos
                         ? {
-                            position: caretPos.position,
-                            left: caretPos.left,
-                            width: caretPos.width,
+                            position: 'absolute',
+                            left: 0,
+                            alignSelf: 'flex-start',
                             maxHeight: caretPos.maxHeight,
                             ...(caretPos.top != null
                                 ? { top: caretPos.top }

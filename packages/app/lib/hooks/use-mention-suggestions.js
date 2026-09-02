@@ -9,15 +9,11 @@ import { appSetting } from 'app/lib/util'
 // request and prevents the bare "@" (empty term) query from racing with the
 // filtered ones that follow it.
 const DEBOUNCE_MS = 150
-const MAX_SUGGESTIONS = 6
-// Mentionable types, grouped (and ordered) in the dropdown. UNA exposes the type
-// via the module or the profile url pattern (view-persons-profile / view-organization-profile).
-const TYPE_ORDER = { bx_persons: 0, bx_organizations: 1 }
 
-function deriveType(url = '', thumb = '') {
-    const hay = `${url || ''} ${thumb || ''}`
-    if (/organization/i.test(hay)) return 'bx_organizations'
-    if (/person/i.test(hay)) return 'bx_persons'
+function mentionType(item = {}) {
+    const moduleName = item.module || item.type
+    if (moduleName === 'bx_organizations' || moduleName === 'bx_persons') return moduleName
+    if (/organization/i.test(`${item.url || ''} ${item.slug || ''}`)) return 'bx_organizations'
     return 'other'
 }
 // Typeahead should fail fast and never retry — stale retries only pile up and
@@ -92,7 +88,8 @@ function toMentionItem(user) {
         value: user.value,
         url: user.url,
         url_avatar: user.url_avatar ?? user.thumb ?? null,
-        type: user.type || deriveType(user.url, user.thumb),
+        type: user.type || mentionType(user),
+        slug: user.slug || deriveSlug(user.url),
         badges: user.badges ?? null,
         classname: user.classname || '',
     }
@@ -109,11 +106,10 @@ function mapUnitToMention(unit) {
     const label = unit.title ?? unit.display_name ?? unit.fullname
     const url = unit.url
     if (value == null || !label || !url) return null
-    const moduleName = unit.module ?? unit.author_data?.module
-    const type =
-        moduleName === 'bx_organizations' || moduleName === 'bx_persons'
-            ? moduleName
-            : deriveType(url)
+    const type = mentionType({
+        module: unit.module ?? unit.author_data?.module,
+        url,
+    })
     const url_avatar = unit.author_data?.url_avatar ?? unit.image?.src ?? null
     const badges = unit.badges ?? unit.author_badges ?? null
     return { label, value, url, url_avatar, type, badges, classname: '' }
@@ -191,37 +187,26 @@ function runWhenIdle(task) {
     return () => { try { handle?.cancel?.() } catch {} }
 }
 
-// Last path segment of the profile url, used as the secondary handle/slug.
 function deriveSlug(url = '') {
     return (url || '').split(/[?#]/)[0].replace(/\/+$/, '').split('/').pop() || ''
 }
 
-// Ensure every item carries an avatar (`url_avatar`), a `type`, a `slug`, and any
-// `badges`, regardless of the source (get_mention search vs browse vs recents).
+// Keep API order. Type comes from `module` (org fallback: "organization" in url/slug).
 function decorate(item) {
     return {
         ...item,
+        value: item.value ?? item.id,
+        label: item.label ?? item.display_name,
         url_avatar: item.url_avatar ?? item.thumb ?? null,
-        type: item.type || deriveType(item.url, item.thumb),
+        type: mentionType(item),
         slug: item.slug || deriveSlug(item.url),
         badges: item.badges ?? item.author_badges ?? null,
     }
 }
 
 function normalize(list) {
-    const decorated = (Array.isArray(list) ? list : []).map(decorate)
-    // Stable sort by type so groups render contiguously (keyboard nav follows the
-    // same flat order the user sees).
-    const sorted = decorated
-        .map((item, i) => [item, i])
-        .sort((a, b) => {
-            const pa = TYPE_ORDER[a[0].type] ?? 99
-            const pb = TYPE_ORDER[b[0].type] ?? 99
-            return pa - pb || a[1] - b[1]
-        })
-        .map(([item]) => item)
-    return sorted
-        .slice(0, MAX_SUGGESTIONS)
+    return (Array.isArray(list) ? list : [])
+        .map(decorate)
         .map((item, index) => ({ ...item, index, selected: index === 0 }))
 }
 

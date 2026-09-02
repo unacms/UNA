@@ -6,7 +6,8 @@ import Profile from 'app/ui/molecules/profile/profile'
 import Badges from 'app/ui/molecules/profile/badges'
 import { MENTION_TYPE_LABELS } from 'app/lib/editor-mention-shared'
 
-function MentionSuggestionItem({ user, selected, onSelect }) {
+function MentionSuggestionItem({ user, selected, onSelect, typeLabel }) {
+    const meta = [user.slug, typeLabel].filter(Boolean).join(' · ')
     return (
         <Pressable
             onPress={onSelect}
@@ -33,9 +34,9 @@ function MentionSuggestionItem({ user, selected, onSelect }) {
                         </View>
                     )}
                 </View>
-                {!!user.slug && (
+                {!!meta && (
                     <Text numberOfLines={1} className="text-xs text-muted-foreground">
-                        {user.slug}
+                        {meta}
                     </Text>
                 )}
             </View>
@@ -58,41 +59,23 @@ export function MentionSuggestionsDropdown({
     const { t } = useTranslation()
     if (!suggestions?.length) return null
 
-    const showHeaders = new Set(suggestions.map((s) => s.type)).size > 1
-    let lastType = null
-    const isFixed = style?.position === 'fixed' || /(^|\s)fixed(\s|$)/.test(className)
-    const extraClass = className.replace(/(^|\s)fixed(\s|$)/g, ' ').trim()
-
     return (
         <View
             ref={dropdownRef}
-            className={`${isFixed ? 'fixed' : 'absolute'} max-h-40 w-full max-w-md left-0 z-[100] p-1 rounded-xl bg-popover shadow-card-outline dark:shadow-card-outline-deep ${extraClass}`}
+            className={`absolute left-0 w-full max-h-40 max-w-md z-[100] p-1 rounded-xl bg-popover shadow-card-outline dark:shadow-card-outline-deep ${className}`}
             style={style}
         >
             <ScrollView keyboardShouldPersistTaps="always">
                 <View className="gap-0.5">
-                    {suggestions.map((user) => {
-                        const header =
-                            showHeaders && user.type !== lastType ? (
-                                <Text
-                                    key={`h-${user.type}`}
-                                    className="px-2 pt-2 pb-1 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground"
-                                >
-                                    {t(MENTION_TYPE_LABELS[user.type] || MENTION_TYPE_LABELS.other)}
-                                </Text>
-                            ) : null
-                        lastType = user.type
-                        return (
-                            <View key={user.url || String(user.value)}>
-                                {header}
-                                <MentionSuggestionItem
-                                    user={user}
-                                    selected={user.selected}
-                                    onSelect={() => onSelect(user)}
-                                />
-                            </View>
-                        )
-                    })}
+                    {suggestions.map((user) => (
+                        <MentionSuggestionItem
+                            key={user.url || String(user.value)}
+                            user={user}
+                            selected={user.selected}
+                            typeLabel={t(MENTION_TYPE_LABELS[user.type] || MENTION_TYPE_LABELS.other)}
+                            onSelect={() => onSelect(user)}
+                        />
+                    ))}
                 </View>
             </ScrollView>
         </View>
