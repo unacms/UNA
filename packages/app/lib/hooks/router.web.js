@@ -50,6 +50,7 @@ export function goBack(navigation, router, callback){
 }
 
 export function useLocalSearchParams() {
+    if (typeof window === 'undefined') return { url: '' };
     return { url: window.location.href };
 }
 

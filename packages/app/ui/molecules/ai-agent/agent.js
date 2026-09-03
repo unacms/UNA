@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useChat } from '@tanstack/ai-react';
 import { View, Row, ScrollView } from 'app/design/view';
 import { Text } from 'app/design/typography';
@@ -9,6 +9,7 @@ import Profile from 'app/ui/molecules/profile/profile';
 import { useCurrentUser } from 'app/context/user';
 import { cn, isWeb } from 'app/lib/util';
 import { createAgentChat } from './helper';
+import { isHiddenFirstMessageText } from './hidden-first-message';
 
 const NEAR_BOTTOM_PX = 48;
 const COMPOSER_LINE_PX = 20;
@@ -89,10 +90,11 @@ function ChatBubble({ message, user, assistant, isStreaming }) {
     );
 }
 
-export default function AiAgent({ data }) {
+export default function AiAgent({ data, initialMessage = '', hideInitialMessage = false }) {
     const { currentUser } = useCurrentUser();
     const [input, setInput] = useState('');
     const [hydrateError, setHydrateError] = useState(null);
+    const sentHiddenRef = useRef(false);
     const listRef = useRef(null);
     const inputRef = useRef(null);
     const restComposerHeightRef = useRef(null);
@@ -140,6 +142,24 @@ export default function AiAgent({ data }) {
         threadId: contextProfileId > 0 ? `agent:${agentId}:${contextProfileId}` : `agent:${agentId}`,
     });
 
+    const visibleMessages = hideInitialMessage
+        ? messages.filter((message) => !isHiddenFirstMessageText(messageText(message)))
+        : messages;
+
+    useEffect(() => {
+        if (!initialMessage || sentHiddenRef.current) return;
+        if (messages.some((message) => isHiddenFirstMessageText(messageText(message)))) {
+            sentHiddenRef.current = true;
+            return;
+        }
+        if (messages.length > 0) {
+            sentHiddenRef.current = true;
+            return;
+        }
+        sentHiddenRef.current = true;
+        void sendMessage(initialMessage);
+    }, [initialMessage, messages, sendMessage]);
+
     const chatError = hydrateError || error;
 
     const last = messages[messages.length - 1];
@@ -163,7 +183,7 @@ export default function AiAgent({ data }) {
     useLayoutEffect(() => {
         if (!pinnedToBottomRef.current) return;
         scrollToEndSoon();
-    }, [messages.length, lastText, isLoading, composerHeight, scrollToEndSoon]);
+    }, [visibleMessages.length, lastText, isLoading, composerHeight, scrollToEndSoon]);
 
     const onListScroll = useCallback((event) => {
         pinnedToBottomRef.current = isNearBottom(listRef.current, event?.nativeEvent);
@@ -198,7 +218,7 @@ export default function AiAgent({ data }) {
                 onScroll={onListScroll}
                 scrollEventThrottle={100}
             >
-                {messages.map((message) => (
+                {visibleMessages.map((message) => (
                     <ChatBubble
                         key={message.id}
                         message={message}
