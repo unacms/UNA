@@ -546,7 +546,6 @@
     <string name="_bx_tasks_txt_action_completed"><![CDATA[выполнено]]></string>
     <string name="_bx_tasks_txt_action_reopened"><![CDATA[открыто заново]]></string>
     <string name="_bx_tasks_txt_sample_comment_single"><![CDATA[комментарий к заданию]]></string>
-    <string name="_bx_tasks_txt_sample_comment_single_short"><![CDATA[комментарий]]></string>
     <string name="_bx_tasks_txt_sample_vote_single"><![CDATA[голос за задание]]></string>
     <string name="_bx_tasks_txt_sample_reaction_single"><![CDATA[реакция '{0}' к заданию]]></string>
     <string name="_bx_tasks_txt_sample_score_up_single"><![CDATA[голос за задание]]></string>
@@ -603,15 +602,14 @@
     <string name="_bx_tasks_alert_action_expired_personal"><![CDATA[Задание устарело]]></string>
     <string name="_bx_tasks_alert_action_assigned_personal"><![CDATA[Задание назначено]]></string>
 
-    <string name="_bx_tasks_txt_subobject_added_in_context"><![CDATA[<b class="bx-ntfs-content-entry">{entry_caption}</b> в <b class="bx-ntfs-content-profile">{owner_name}</b> - {subentry_sample}]]></string>
-    <string name="_bx_tasks_txt_notification_completed"><![CDATA[<b class="bx-ntfs-content-entry">{entry_caption}</b> {entry_sample} было завершено]]></string>
-    <string name="_bx_tasks_txt_notification_completed_in_context"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b>'s {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b> было завершено]]></string>
-    <string name="_bx_tasks_txt_notification_reopened"><![CDATA[<b class="bx-ntfs-content-entry">{entry_caption}</b> {entry_sample} было открыто заново]]></string>
-    <string name="_bx_tasks_txt_notification_reopened_in_context"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b>'s {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b> было открыто заново]]></string>
+    <string name="_bx_tasks_txt_notification_completed"><![CDATA[{author_name_wrapped} - <b class="bx-ntfs-content-entry">{entry_caption}</b> {entry_sample} было завершено]]></string>
+    <string name="_bx_tasks_txt_notification_completed_in_context"><![CDATA[{author_name_wrapped} - <b class="bx-ntfs-content-entry">{entry_caption}</b> {entry_sample} было завершено в <b class="bx-ntfs-content-profile">{owner_name}</b>]]></string>
+    <string name="_bx_tasks_txt_notification_reopened"><![CDATA[{author_name_wrapped} - <b class="bx-ntfs-content-entry">{entry_caption}</b> {entry_sample} было открыто заново]]></string>
+    <string name="_bx_tasks_txt_notification_reopened_in_context"><![CDATA[{author_name_wrapped} - <b class="bx-ntfs-content-entry">{entry_caption}</b> {entry_sample} было открыто заново в <b class="bx-ntfs-content-profile">{owner_name}</b>]]></string>
     <string name="_bx_tasks_txt_notification_expired"><![CDATA[<b class="bx-ntfs-content-entry">{entry_caption}</b> {entry_sample} устарело]]></string>
-    <string name="_bx_tasks_txt_notification_expired_in_context"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b>'s {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b> устарело]]></string>
-    <string name="_bx_tasks_txt_notification_assigned"><![CDATA[<b class="bx-ntfs-content-entry">{entry_caption}</b> {entry_sample} было назначено на <b class="bx-ntfs-content-profile">{entry_author_name}</b>]]></string>
-    <string name="_bx_tasks_txt_notification_assigned_in_context"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b>'s {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b> было назначено на <b class="bx-ntfs-content-profile">{entry_author_name}</b>]]></string>
+    <string name="_bx_tasks_txt_notification_expired_in_context"><![CDATA[<b class="bx-ntfs-content-entry">{entry_caption}</b> {entry_sample} устарело в <b class="bx-ntfs-content-profile">{owner_name}</b>]]></string>
+    <string name="_bx_tasks_txt_notification_assigned"><![CDATA[{author_name_wrapped} - <b class="bx-ntfs-content-entry">{entry_caption}</b> {entry_sample} было назначено на <b class="bx-ntfs-content-profile">{entry_author_name}</b>]]></string>
+    <string name="_bx_tasks_txt_notification_assigned_in_context"><![CDATA[{author_name_wrapped} - <b class="bx-ntfs-content-entry">{entry_caption}</b> {entry_sample} было назначено на <b class="bx-ntfs-content-profile">{entry_author_name}</b> в <b class="bx-ntfs-content-profile">{owner_name}</b>]]></string>
 
     <!-- Timeline -->
     <string name="_bx_tasks_alert_action_completed"><![CDATA[завершено]]></string>

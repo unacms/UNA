@@ -932,19 +932,6 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
         return $aResult; 
     }
 
-    public function serviceGetNotificationsComment($aEvent)
-    {
-        $aResult = parent::serviceGetNotificationsComment($aEvent);
-
-        if((int)$aEvent['object_privacy_view'] < 0)
-            $aResult = array_merge($aResult, [
-                'subentry_sample' => '_bx_tasks_txt_sample_comment_single_short',
-                'lang_key' => '_bx_tasks_txt_subobject_added_in_context'
-            ]);
-
-        return $aResult;
-    }
-
     public function serviceGetNotificationsCompleted($aEvent)
     {
         return $this->_serviceGetNotificationsByAction($aEvent, 'completed');
@@ -1415,7 +1402,7 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
         if($oConnection) {
             $aProfileIds = $oConnection->getConnectedContent($iContentId);
             if(!empty($aProfileIds) && is_array($aProfileIds))
-                foreach($aProfileIds as $iProfileId){
+                foreach($aProfileIds as $iProfileId) {
                     /**
                      * @hooks
                      * @hookdef hook-bx_tasks-expired 'bx_tasks', 'expired' - hook on task unassigned to profile
@@ -1428,7 +1415,7 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
                      *      - `privacy_view` - [string] privacy view value
                      * @hook @ref hook-bx_tasks-expired
                      */
-                    bx_alert($this->getName(), 'expired', $iContentId, false, array(
+                    bx_alert($this->getName(), 'expired', $iContentId, getParam('sys_profile_bot'), array(
                         'object_author_id' => $iProfileId,
                         'privacy_view' => $aContentInfo[$CNF['FIELD_ALLOW_VIEW_TO']]
                     ));

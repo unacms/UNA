@@ -553,7 +553,6 @@
     <string name="_bx_tasks_txt_action_completed"><![CDATA[completed]]></string>
     <string name="_bx_tasks_txt_action_reopened"><![CDATA[reopened]]></string>
     <string name="_bx_tasks_txt_sample_comment_single"><![CDATA[comment to task]]></string>
-    <string name="_bx_tasks_txt_sample_comment_single_short"><![CDATA[comment]]></string>
     <string name="_bx_tasks_txt_sample_vote_single"><![CDATA[vote to task]]></string>
     <string name="_bx_tasks_txt_sample_reaction_single"><![CDATA['{0}' reaction to task]]></string>
     <string name="_bx_tasks_txt_sample_score_up_single"><![CDATA[score up vote to task]]></string>
@@ -617,15 +616,14 @@
     <string name="_bx_tasks_alert_action_expired_personal"><![CDATA[Expire task]]></string>
     <string name="_bx_tasks_alert_action_assigned_personal"><![CDATA[Assign task]]></string>
 
-    <string name="_bx_tasks_txt_subobject_added_in_context"><![CDATA[<b class="bx-ntfs-content-entry">{entry_caption}</b> in <b class="bx-ntfs-content-profile">{owner_name}</b> has got a {subentry_sample}]]></string>
-    <string name="_bx_tasks_txt_notification_completed"><![CDATA[<b class="bx-ntfs-content-entry">{entry_caption}</b> {entry_sample} was completed]]></string>
-    <string name="_bx_tasks_txt_notification_completed_in_context"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b>'s {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b> was completed]]></string>
-    <string name="_bx_tasks_txt_notification_reopened"><![CDATA[<b class="bx-ntfs-content-entry">{entry_caption}</b> {entry_sample} was reopened]]></string>
-    <string name="_bx_tasks_txt_notification_reopened_in_context"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b>'s {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b> was reopened]]></string>
+    <string name="_bx_tasks_txt_notification_completed"><![CDATA[{author_name_wrapped} completed {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b>]]></string>
+    <string name="_bx_tasks_txt_notification_completed_in_context"><![CDATA[{author_name_wrapped} completed {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b> in <b class="bx-ntfs-content-profile">{owner_name}</b>]]></string>
+    <string name="_bx_tasks_txt_notification_reopened"><![CDATA[{author_name_wrapped} reopened {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b>]]></string>
+    <string name="_bx_tasks_txt_notification_reopened_in_context"><![CDATA[{author_name_wrapped} reopened {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b> in <b class="bx-ntfs-content-profile">{owner_name}</b>]]></string>
     <string name="_bx_tasks_txt_notification_expired"><![CDATA[<b class="bx-ntfs-content-entry">{entry_caption}</b> {entry_sample} expired]]></string>
-    <string name="_bx_tasks_txt_notification_expired_in_context"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b>'s {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b> expired]]></string>
-    <string name="_bx_tasks_txt_notification_assigned"><![CDATA[<b class="bx-ntfs-content-entry">{entry_caption}</b> {entry_sample} was assigned to <b class="bx-ntfs-content-profile">{entry_author_name}</b>]]></string>
-    <string name="_bx_tasks_txt_notification_assigned_in_context"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b>'s {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b> was assigned to <b class="bx-ntfs-content-profile">{entry_author_name}</b>]]></string>
+    <string name="_bx_tasks_txt_notification_expired_in_context"><![CDATA[<b class="bx-ntfs-content-entry">{entry_caption}</b> {entry_sample} expired in <b class="bx-ntfs-content-profile">{owner_name}</b>]]></string>
+    <string name="_bx_tasks_txt_notification_assigned"><![CDATA[{author_name_wrapped} assigned <b class="bx-ntfs-content-entry">{entry_caption}</b> {entry_sample} to <b class="bx-ntfs-content-profile">{entry_author_name}</b>]]></string>
+    <string name="_bx_tasks_txt_notification_assigned_in_context"><![CDATA[{author_name_wrapped} assigned <b class="bx-ntfs-content-entry">{entry_caption}</b> {entry_sample} to <b class="bx-ntfs-content-profile">{entry_author_name}</b> in <b class="bx-ntfs-content-profile">{owner_name}</b>]]></string>
 
     <!-- Timeline -->
     <string name="_bx_tasks_alert_action_completed"><![CDATA[completed]]></string>
