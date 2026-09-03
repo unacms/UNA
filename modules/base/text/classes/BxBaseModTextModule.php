@@ -59,6 +59,11 @@ class BxBaseModTextModule extends BxBaseModGeneralModule implements iBxDolConten
         ));
     }
 
+    public function serviceModuleSample ()
+    {
+        return parent::serviceModuleSample() ?: '_sys_sample_content';
+    }
+
     public function serviceManageTools($sType = 'common')
     {
         $this->_oTemplate->addJs(['modules/base/text/js/|manage_tools.js']);

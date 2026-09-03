@@ -766,6 +766,26 @@ class BxBaseModGeneralModule extends BxDolModule
         return isset($this->_oConfig->CNF['ICON']) ? $this->_oConfig->CNF['ICON'] : '';
     }
 
+    /**
+     * @page service Service Calls
+     * @section bx_base_general Base General
+     * @subsection bx_base_general-other Other
+     * @subsubsection bx_base_general-module_sample module_sample
+     * 
+     * @code bx_srv('bx_posts', 'module_sample', [...]); @endcode
+     * 
+     * Get module sample
+     * 
+     * @see BxBaseModGeneralModule::serviceModuleSample
+     */
+    /** 
+     * @ref bx_base_general-module_sample "module_sample"
+     */
+    public function serviceModuleSample ()
+    {
+        return $this->_oConfig->CNF['T']['txt_sample_single'] ?? '';
+    }
+
     public function serviceGetModerators($iContentId)
     {
         return $this->getModerators($iContentId);

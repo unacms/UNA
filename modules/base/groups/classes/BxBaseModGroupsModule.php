@@ -261,6 +261,11 @@ class BxBaseModGroupsModule extends BxBaseModProfileModule
         return array_merge(parent::serviceGetSafeServices(), $a);
     }
 
+    public function serviceModuleSample ()
+    {
+        return parent::serviceModuleSample() ?: '_sys_sample_context';
+    }
+
     /**
      * Check if this module entry can be used as profile
      */

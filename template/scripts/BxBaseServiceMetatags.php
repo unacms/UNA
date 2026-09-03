@@ -113,18 +113,30 @@ class BxBaseServiceMetatags extends BxDol
         if(!$oProfile)
             return [];
 
+        $sEntrySample = $sEntryCaption = '';
         $sEntryUrl = $sEntryUrlApi = '';
-        if (isset($aEvent['content']['module']) && isset($aEvent['content']['content_id'])) {
-            if ('sys_cmts' == $aEvent['content']['module']) {
-                $oCmts = BxDolCmts::getObjectInstanceByUniqId($aEvent['content']['content_id']);
-                $aCmt = BxDolCmtsQuery::getCommentExtendedByUniqId($aEvent['content']['content_id']);
+        if (($sModule = $aEvent['content']['module'] ?? false) && ($iContentId = $aEvent['content']['content_id'] ?? false)) {
+            if ($sModule == 'sys_cmts') {
+                $oCmts = BxDolCmts::getObjectInstanceByUniqId($iContentId);
+                $aCmt = BxDolCmtsQuery::getCommentExtendedByUniqId($iContentId);
                 if ($oCmts && $aCmt) {
+                    $sEntrySample = '_cmt_txt_sample_comment_single';
+                    $sEntryCaption = $oCmts->getViewSnippet($aCmt);
+
                     $sEntryUrl = $oCmts->getItemUrl($aCmt['cmt_id'], '{bx_url_root}');
                     $sEntryUrlApi = $oCmts->getItemUrlApi($aCmt['cmt_id'], '{bx_url_root}');
                 }
             }
-            elseif (BxDolRequest::serviceExists($aEvent['content']['module'], 'get_link'))
-                $sEntryUrl = str_replace(BX_DOL_URL_ROOT, '{bx_url_root}', bx_srv($aEvent['content']['module'], 'get_link', [$aEvent['content']['content_id']]));
+            else {
+                if (bx_is_srv($sModule, 'module_sample'))
+                    $sEntrySample = bx_srv($sModule, 'module_sample', []);
+
+                if (bx_is_srv($sModule, 'get_title'))
+                    $sEntryCaption = bx_srv($sModule, 'get_title', [$iContentId]);
+
+                if (bx_is_srv($sModule, 'get_link') && ($sLink = bx_srv($sModule, 'get_link', [$iContentId])))
+                    $sEntryUrl = str_replace(BX_DOL_URL_ROOT, '{bx_url_root}', $sLink);
+            }
         }
 
         if(!$sEntryUrl)
@@ -135,6 +147,8 @@ class BxBaseServiceMetatags extends BxDol
             'entry_url' => $sEntryUrl,
             'entry_url_api' => $sEntryUrlApi,
             'entry_caption' => $oProfile->getDisplayName(),
+            'subentry_sample' => $sEntrySample,
+            'subentry_caption' => $sEntryCaption,
             'entry_author' => $iProfile,
             'lang_key' => '_sys_metatags_mention_added',
         ];

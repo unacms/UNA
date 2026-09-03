@@ -3770,7 +3770,7 @@
     <string name="_sys_menu_set_title_ntfs_submenu"><![CDATA[Уведомления]]></string>
     <string name="_sys_menu_item_title_system_ntfs_context_invitations"><![CDATA[Уведомления: Контекстные приглашения]]></string>
     <string name="_sys_menu_item_title_ntfs_context_invitations"><![CDATA[Приглашения]]></string>
-    <string name="_sys_metatags_mention_added"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b> упомянул <b class="bx-ntfs-content-entry">{entry_caption}</b>]]></string>
+    <string name="_sys_metatags_mention_added"><![CDATA[{author_name_wrapped} - упоминание о <b class="bx-ntfs-content-entry">{entry_caption}</b> в {subentry_sample} <b class="bx-ntfs-content-entry">{subentry_caption}</b>]]></string>
     <string name="_sys_mobile_friends"><![CDATA[Друзья]]></string>
     <string name="_sys_mobile_info"><![CDATA[Инфо]]></string>
     <string name="_sys_mobile_mail"><![CDATA[Сообщения]]></string>
@@ -4094,6 +4094,9 @@
     <string name="_sys_request_page_not_found_cnt"><![CDATA[Страница({0}) не найдена в модуле ({1})]]></string>
     <string name="_sys_request_method_not_found_cpt"><![CDATA[Метод не найден]]></string>
     <string name="_sys_request_method_not_found_cnt"><![CDATA[Метод ({0}) не найден в модуле ({1})]]></string>
+    <string name="_sys_sample_content"><![CDATA[контент]]></string>
+    <string name="_sys_sample_context"><![CDATA[контекст]]></string>
+    <string name="_sys_sample_profile"><![CDATA[профиль]]></string>
     <string name="_sys_score_counter"><![CDATA[{0}]]></string>
     <string name="_sys_score_counter_empty"><![CDATA[Проголосовать]]></string>
     <string name="_sys_score_n_score"><![CDATA[{0} очков]]></string>

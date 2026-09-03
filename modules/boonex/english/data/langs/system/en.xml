@@ -3811,7 +3811,7 @@ If it is not enabled then please consider implementing this optimization, since 
     <string name="_sys_menu_set_title_ntfs_submenu"><![CDATA[Notifications]]></string>
     <string name="_sys_menu_item_title_system_ntfs_context_invitations"><![CDATA[Notifications: Context Invitations]]></string>
     <string name="_sys_menu_item_title_ntfs_context_invitations"><![CDATA[Invitations]]></string>
-    <string name="_sys_metatags_mention_added"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b> mentioned <b class="bx-ntfs-content-entry">{entry_caption}</b>]]></string>
+    <string name="_sys_metatags_mention_added"><![CDATA[{author_name_wrapped} mentioned <b class="bx-ntfs-content-entry">{entry_caption}</b> in a {subentry_sample} <b class="bx-ntfs-content-entry">{subentry_caption}</b>]]></string>
     <string name="_sys_mobile_friends"><![CDATA[Friends]]></string>
     <string name="_sys_mobile_info"><![CDATA[Info]]></string>
     <string name="_sys_mobile_mail"><![CDATA[Messages]]></string>
@@ -4162,6 +4162,9 @@ If it is not enabled then please consider implementing this optimization, since 
     <string name="_sys_request_page_not_found_cnt"><![CDATA[Page({0}) was not found in module({1})]]></string>
     <string name="_sys_request_method_not_found_cpt"><![CDATA[Method was not found]]></string>
     <string name="_sys_request_method_not_found_cnt"><![CDATA[Method({0}) was not found in module({1})]]></string>
+    <string name="_sys_sample_content"><![CDATA[content]]></string>
+    <string name="_sys_sample_context"><![CDATA[context]]></string>
+    <string name="_sys_sample_profile"><![CDATA[profile]]></string>
     <string name="_sys_score_counter"><![CDATA[{0}]]></string>
     <string name="_sys_score_counter_empty"><![CDATA[Vote]]></string>
     <string name="_sys_score_n_score"><![CDATA[{0} score]]></string>

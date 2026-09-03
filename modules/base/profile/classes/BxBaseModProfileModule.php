@@ -114,6 +114,11 @@ class BxBaseModProfileModule extends BxBaseModGeneralModule implements iBxDolCon
         ));
     }
 
+    public function serviceModuleSample ()
+    {
+        return parent::serviceModuleSample() ?: '_sys_sample_profile';
+    }
+
     public function serviceGetOptionsRedirectAfterAdd()
     {
         $CNF = &$this->_oConfig->CNF;
