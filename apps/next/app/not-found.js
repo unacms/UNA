@@ -69,11 +69,18 @@ export const getData = cache(async () => {
             }
             return b;
         } catch (error) {
+            const isTimeout = error?.name === 'AbortError' || error?.message === 'Timeout';
             if (attempt < MAX_ATTEMPTS) {
                 await new Promise((resolve) => setTimeout(resolve, BASE_RETRY_DELAY_MS * attempt));
                 continue;
             }
-            console.error('not-found getData fetch failed after retries:', error);
+            // Timeouts are the designed fallback path — do not console.error an
+            // AbortError or Next.js will surface it in the dev overlay.
+            if (isTimeout) {
+                console.warn('not-found getData timed out after retries; using fallback');
+            } else {
+                console.error('not-found getData fetch failed after retries:', error);
+            }
             return buildFallbackData();
         } finally {
             clearTimeout(timeout);

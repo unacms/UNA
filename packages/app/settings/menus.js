@@ -117,50 +117,65 @@ export const settingsMenus = {
                 showTitle: false,
                 chevron: '',
                 animated: true,
-                items:[
+                items: [
                     {
-                        name: 'events-home',
-                        title: 'Events',
-                        description: 'Find what\'s happening.',
-                        link: '/events-home',
-                        icon: 'Calendar',
-                        animated: true,
+                        name: 'connect',
+                        title: 'Connect',
+                        items: [
+                            {
+                                name: 'events-home',
+                                title: 'Events',
+                                description: 'Find what\'s happening.',
+                                link: '/events-home',
+                                icon: 'Calendar',
+                                animated: true,
+                            },
+                            {
+                                name: 'groups-home',
+                                title: 'Groups',
+                                description: 'Get together with others.',
+                                link: '/groups-home',
+                                icon: 'Shapes',
+                                animated: true,
+                            },
+                        ],
                     },
                     {
-                        name: 'groups-home',
-                        title: 'Groups',
-                        description: 'Get together with others.',
-                        link: '/groups-home',
-                        icon: 'Shapes',
-                        animated: true,
+                        name: 'browse',
+                        title: 'Browse',
+                        items: [
+                            {
+                                name: 'videos-home',
+                                title: 'Video',
+                                description: 'Watch and learn.',
+                                link: '/videos-home',
+                                icon: 'TvMinimalPlay',
+                                animated: true,
+                            },
+                        ],
                     },
                     {
-                        name: 'videos-home',
-                        title: 'Video',
-                        description: 'Watch and learn.',
-                        link: '/videos-home',
-                        icon: 'TvMinimalPlay',
-                        animated: true,
+                        name: 'learn',
+                        title: 'Learn',
+                        items: [
+                            {
+                                name: 'wiki',
+                                title: 'Documentation',
+                                description: 'How to use our product.',
+                                link: '/docs',
+                                icon: 'BookOpenText',
+                                animated: true,
+                            },
+                            {
+                                name: 'discussions-home',
+                                title: 'Discussions',
+                                description: 'Talk about your interests.',
+                                link: '/discussions-home',
+                                icon: 'MessagesSquare',
+                                animated: true,
+                            },
+                        ],
                     },
-                    {
-                        name: 'wiki',
-                        title: 'Documentation',
-                        description: 'How to use our product.',
-                        link: '/docs',
-                        icon: 'BookOpenText',
-                        animated: true,
-                    },
-                    {
-                        name: 'discussions-home',
-                        title: 'Discussions',
-                        description: 'Talk about your interests.',
-                        link: '/discussions-home',
-                        icon: 'MessagesSquare',
-                        animated: true,
-                    },
-                   
-                    
-
                 ]
             },
         ],

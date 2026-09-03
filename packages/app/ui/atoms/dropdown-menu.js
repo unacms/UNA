@@ -1,8 +1,8 @@
 import { Pressable, View, Row } from 'app/design/view';
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import { Button, NeoButton } from 'app/design/controls'
-import { memo, useCallback, useEffect, useRef, useState, isValidElement, cloneElement } from 'react'
-import { cn } from 'app/lib/util';
+import { memo, useCallback, useEffect, useMemo, useRef, useState, isValidElement, cloneElement } from 'react'
+import { cn, groupDropdownItems, getDropdownSectionsLayout } from 'app/lib/util';
 import { FeedbackHaptics } from 'app/lib/util';
 import { Keyboard, Alert, Platform } from 'react-native'
 import Redirect from 'app/ui/atoms/redirect';
@@ -13,6 +13,7 @@ import emitter from 'app/context/emitter';
 import { getComponent } from 'app/components/registry'
 import { useOpenModalByUrl, useOpenModalWithContent } from 'app/context/jotai/modal';
 import { sanitazeUrl, openExternalLink, isWeb } from 'app/lib/util';
+import { useWindowSize } from 'app/context/measure';
 
 const menuSettings = appSetting('theme', 'dropdown_menu');
 
@@ -89,6 +90,20 @@ function DropdownMenuPopup({
             ? resolveTabsOverflowClasses(tabsOverflowSize)
             : variantClassMap[variant] ?? variantClassMap.vertical;
 
+    const { width: windowWidth } = useWindowSize();
+    const useSectionsLayout = (items || []).some((item) => item?.type === 'group_header');
+    const sections = useMemo(
+        () => (useSectionsLayout ? groupDropdownItems(items) : null),
+        [items, useSectionsLayout]
+    );
+    const sectionsLayout = useMemo(
+        () => getDropdownSectionsLayout(sections?.length || 0, windowWidth),
+        [sections?.length, windowWidth]
+    );
+    const sectionsMinPopupWidth = sectionsLayout.stacked
+        ? 288
+        : sectionsLayout.contentWidth + 8;
+
     const handleSelect = useCallback(
         (event, item) => {
             setIsOpen(false);
@@ -120,7 +135,12 @@ function DropdownMenuPopup({
                 buttonProps={buttonProps}
                 triggerAccessibilityLabel={triggerAccessibilityLabel}
                 showOnTop={showOnTop}
-                minPopupWidth={256}
+                minPopupWidth={useSectionsLayout ? sectionsMinPopupWidth : 256}
+                maxPopupWidth={
+                    useSectionsLayout && !sectionsLayout.stacked
+                        ? sectionsMinPopupWidth
+                        : undefined
+                }
                 openOnFocus={
                     openOnFocus ?? variant === 'tabs-overflow'
                 }
@@ -138,19 +158,71 @@ function DropdownMenuPopup({
                     )
                 }
             >
-                <View className={menuSettings[classes.container]}>
-                    {items.map((item, index) => {
-                        return (
-                        <DropdownMenuItem
-                            key={item.id ?? index}
-                            index={index}
-                            item={item}
-                            handleSelect={handleSelect}
-                            classes={`${classes}`}
-                            className = {`${item.className}`}
-                        />
-                    )})}
-                </View>
+                {useSectionsLayout ? (
+                    <View
+                        className={
+                            sectionsLayout.stacked
+                                ? menuSettings.content_sections_stacked
+                                : menuSettings.content_sections
+                        }
+                        style={
+                            sectionsLayout.stacked
+                                ? undefined
+                                : { width: sectionsLayout.contentWidth, maxWidth: '100%' }
+                        }
+                    >
+                        {sections.map((section, sectionIndex) => (
+                            <View
+                                key={section.header?.id ?? `section-${sectionIndex}`}
+                                className={menuSettings.section}
+                                style={
+                                    sectionsLayout.stacked
+                                        ? { width: '100%' }
+                                        : {
+                                            width: sectionsLayout.colWidth,
+                                            minWidth: sectionsLayout.minWidth,
+                                            maxWidth: sectionsLayout.maxWidth,
+                                            flexGrow: 1,
+                                            flexShrink: 0,
+                                            flexBasis: sectionsLayout.colWidth,
+                                        }
+                                }
+                            >
+                                {section.header ? (
+                                    <DropdownMenuItem
+                                        index={sectionIndex}
+                                        item={{ ...section.header, first: true }}
+                                        handleSelect={handleSelect}
+                                        classes={classes}
+                                    />
+                                ) : null}
+                                {section.items.map((item, index) => (
+                                    <DropdownMenuItem
+                                        key={item.id ?? `${sectionIndex}-${index}`}
+                                        index={index}
+                                        item={item}
+                                        handleSelect={handleSelect}
+                                        classes={classes}
+                                        className={item.className}
+                                    />
+                                ))}
+                            </View>
+                        ))}
+                    </View>
+                ) : (
+                    <View className={menuSettings[classes.container]}>
+                        {items.map((item, index) => (
+                            <DropdownMenuItem
+                                key={item.id ?? index}
+                                index={index}
+                                item={item}
+                                handleSelect={handleSelect}
+                                classes={classes}
+                                className={item.className}
+                            />
+                        ))}
+                    </View>
+                )}
                 {footer}
             </DropdownPopup>
         </>

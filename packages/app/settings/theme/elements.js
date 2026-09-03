@@ -27,10 +27,10 @@ export const settingsElements = {
     },
     dropdown_menu: {
         content_shadow: ' shadow-lg ',
-        content_ver: '',
+        content_ver: 'gap-1',
         content_hor: 'flex-row  ',
         item_ver:
-            ' web:group px-2 py-1.5 web:group flex min-h-12 flex-row items-center rounded-xl font-medium web:hover:bg-muted/50 text-card-foreground web:hover:text-foreground web:hover:cursor-pointer ',
+            ' web:group px-2 py-1.5 web:group flex w-full min-w-0 min-h-12 flex-row items-start rounded-xl font-medium web:hover:bg-muted/50 text-card-foreground web:hover:text-foreground web:hover:cursor-pointer ',
         item_hor:
             'flex block web:dark:hover:text-white rounded-full web:hover:cursor-pointer text-muted-foreground web:duration-200 outline-none ',
         item_np:
@@ -48,14 +48,23 @@ export const settingsElements = {
             'text-left text-base font-medium text-secondary-foreground web:group-hover:text-foreground whitespace-nowrap',
         item_tabs_overflow_text_lg:
             'text-left text-lg font-medium text-secondary-foreground web:group-hover:text-foreground whitespace-nowrap',
-        item_cnt: 'items-center w-full flex-row',
+        item_cnt: 'items-start w-full min-w-0 flex-row',
+        /** Title + description: center against the icon when shorter; icon stays top-aligned when text is taller. */
+        item_text_cnt: 'min-w-0 flex-1 flex flex-col self-center justify-center overflow-hidden',
         item_cnt_tabs_overflow: 'items-center w-full flex-row justify-start flex-1',
-        item_text: ' text-sm font-semibold text-secondary-foreground web:group-hover:text-foreground px-2',
-        item_description: 'text-xs font-normal leading-tight text-pretty text-muted-foreground px-2',
+        item_text: ' block w-full text-sm font-semibold text-secondary-foreground web:group-hover:text-foreground px-2',
+        item_description: 'block w-full text-xs font-normal leading-tight text-pretty text-muted-foreground px-2 break-words',
+        item_group_header: 'px-2 pt-3 pb-1',
+        item_group_header_first: 'p-2',
+        item_group_header_text: 'text-xs font-semibold uppercase tracking-wide text-muted-foreground',
+        /** Sectioned menus (All Apps): wrap into columns; width is set in dropdown-menu. */
+        content_sections: 'flex-row flex-wrap items-stretch gap-1',
+        content_sections_stacked: 'flex-col gap-1 w-full',
+        section: 'min-w-0',
         item_icon:
-            'flex items-center w-9 h-9 bg-muted/50 web:group-hover:bg-border rounded-full justify-center',
+            'flex shrink-0 items-center w-9 h-9 bg-muted/50 web:group-hover:bg-border rounded-full justify-center',
         item_icon_active:
-            'flex items-center w-9 h-9 bg-primary rounded-full justify-center',
+            'flex shrink-0 items-center w-9 h-9 bg-primary rounded-full justify-center',
         icon_size: 20, // Default icon size for dropdown menu icons
     },
     modal: {
@@ -99,8 +108,8 @@ export const settingsElements = {
         'u-block-rounded': 'rounded-2xl',
         'u-block-rounded-default': 'sm:rounded-2xl',
         'u-block-header':
-            ' flex-row items-center gap-3 justify-center ',
-        'u-block-icon': ' items-center w-9 h-9 justify-center text-card-foreground flex-none',
+            ' flex-row gap-3  ',
+        'u-block-icon': ' items-center w-9 h-9 justify-center bg-muted/50 rounded-lg text-card-foreground flex-none',
         'u-block-icon-size': 24, // Default icon size for block header icons
         'u-block-name': ' flex-auto gap-1 ',
         'u-block-title':

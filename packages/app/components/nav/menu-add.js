@@ -1,5 +1,5 @@
 import { useCurrentUser } from 'app/context/user'
-import { menuItemsByName, appSetting, menuItemsByNameNew, getHeaderToolbarNeoButtonDefaults } from 'app/lib/util'
+import { menuItemsByName, appSetting, menuItemsByNameNew, getHeaderToolbarNeoButtonDefaults, flattenMenuItemsForDropdown } from 'app/lib/util'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import { useState } from 'react';
 import FormModal, { handleFormModal } from 'app/ui/molecules/dialogs/form-modal';
@@ -35,19 +35,23 @@ export default function MenuAdd({ buttonProps, children }) {
             <FormModal pageData={pageData} setPageData={setPageData} url={pageData?.url} />
             <DropdownMenu
                 onSelect={(oItem, event) => { setPageData('loading'); handleFormModal(oItem, event, setPageData) }}
-                items={menu_add_items.map(
-                    (item, index) => {
-                        return (
-                            {
-                                id: 'menu-' + index,
-                                link: item.link,
-                                title: item.title,
-                                icon: item.icon,
-                                description: item.description,
-                            }
-                        )
+                items={flattenMenuItemsForDropdown(menu_add_items).map((item, index) => {
+                    if (item.type === 'group_header') {
+                        return {
+                            id: item.id ?? `header-${index}`,
+                            type: 'group_header',
+                            title: item.title,
+                            first: item.first,
+                        };
                     }
-                )}
+                    return {
+                        id: item.id ?? 'menu-' + index,
+                        link: item.link,
+                        title: item.title,
+                        icon: item.icon,
+                        description: item.description,
+                    };
+                })}
                 buttonProps={children ? undefined : buttonProps}
             >
                 {!!children && children}

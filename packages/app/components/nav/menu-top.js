@@ -1,6 +1,6 @@
 import { View, Row } from 'app/design/view'
 import { useCurrentUser } from 'app/context/user'
-import { menuItemsByName, appSetting } from 'app/lib/util'
+import { menuItemsByName, appSetting, flattenMenuItemsForDropdown } from 'app/lib/util'
 import { useTranslation } from 'react-i18next'
 import { getComponent } from 'app/components/registry';
 import { useEffect, useMemo, useState } from 'react';
@@ -124,7 +124,7 @@ export default function MenuTop({ url, uri }) {
                             isTitle={item.showTitle}
                             title={t(item.title)}
                             isActive={isActive}
-                            items={item.items}
+                            items={flattenMenuItemsForDropdown(item.items)}
                             chevron={item.chevron}
                             animated={item.animated}
                             addClassName={item.addClassName}

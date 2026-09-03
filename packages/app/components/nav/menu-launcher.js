@@ -1,6 +1,12 @@
 import { useCurrentUser } from 'app/context/user'
-import { appSetting, getHeaderToolbarNeoButtonDefaults } from 'app/lib/util'
-import { menuItemsByName, menuItemsByNameNew, getDataForMenu, storageSet, storageGet } from 'app/lib/util'
+import {
+    appSetting,
+    getHeaderToolbarNeoButtonDefaults,
+    menuItemsByName,
+    menuItemsByNameNew,
+    flattenMenuItemsForDropdown,
+    normalizeMenuItemHref,
+} from 'app/lib/util'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import { useTranslation } from 'react-i18next';
 import { useIsDesktop } from 'app/context/measure';
@@ -24,13 +30,23 @@ export default function MenuLauncher({ buttonProps }) {
 
     return (
         <DropdownMenu
-            items={menu_launcher_items.map((item, index) => ({
-                id: `menu-${index}`,
-                link: '/' + item.link,
-                title: t(item.title),
-                icon: item.icon,
-                description: item.description ? t(item.description) : undefined,
-            }))}
+            items={flattenMenuItemsForDropdown(menu_launcher_items).map((item, index) => {
+                if (item.type === 'group_header') {
+                    return {
+                        id: item.id ?? `header-${index}`,
+                        type: 'group_header',
+                        title: t(item.title),
+                        first: item.first,
+                    };
+                }
+                return {
+                    id: item.id ?? `menu-${index}`,
+                    link: normalizeMenuItemHref(item.link),
+                    title: t(item.title),
+                    icon: item.icon,
+                    description: item.description ? t(item.description) : undefined,
+                };
+            })}
             buttonProps={{
                 tooltip: 'All Apps',
                 borderShape: 'circle',

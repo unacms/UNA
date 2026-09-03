@@ -72,9 +72,14 @@ export default function DropdownMenuItem({ item, index, link, handleSelect, clas
     }
 
     if (item.type === 'group_header') {
+        const headerClass = item.first
+            ? (menuSettings.item_group_header_first ?? menuSettings.item_group_header)
+            : menuSettings.item_group_header;
         return (
-            <View key={key} className="px-1 pt-3 pb-1">
-                <Text className="text-base  font-semibold text-foreground">{item.title}</Text>
+            <View key={key} className={headerClass || 'px-2 pt-3 pb-1'}>
+                <Text className={menuSettings.item_group_header_text || 'text-xs font-semibold uppercase tracking-wide text-muted-foreground'}>
+                    {item.title}
+                </Text>
             </View>
         );
     }
@@ -92,7 +97,7 @@ export default function DropdownMenuItem({ item, index, link, handleSelect, clas
     const itemCntKey = classes?.item_cnt_key ?? 'item_cnt';
     const itemCntClass =
         menuSettings[itemCntKey] ?? menuSettings.item_cnt;
-    const rowClassName = classes?.item_row ?? 'justify-between items-center';
+    const rowClassName = classes?.item_row ?? 'justify-between items-start';
     const description = resolveMenuItemDescription(item);
     const descriptionText = description ? t(description) : '';
 
@@ -108,15 +113,15 @@ export default function DropdownMenuItem({ item, index, link, handleSelect, clas
             {...pressProps}
             {...rowHoverProps}
         >
-            <Row className={rowClassName}>
+            <Row className={`${rowClassName} w-full min-w-0`}>
                 <View className={itemCntClass}>
                 {(!!icon && !!menuSettings.item_icon) && <View className={iconWrapClass}>{icon}</View>}
                 {!!item?.title &&
                     (typeof item.title === 'string' ? (
-                        <View className="min-w-0 flex-1 flex flex-col justify-center">
+                        <View className={menuSettings.item_text_cnt ?? 'min-w-0 flex-1 flex flex-col self-center justify-center overflow-hidden'}>
                             <Text numberOfLines={2} className={`${itemTextClass} line-clamp-2`}>{item.title}</Text>
                             {!!descriptionText && (
-                                <Text numberOfLines={2} className={`${itemDescriptionClass} line-clamp-2`}>{descriptionText}</Text>
+                                <Text className={itemDescriptionClass}>{descriptionText}</Text>
                             )}
                         </View>
                     ) : (
