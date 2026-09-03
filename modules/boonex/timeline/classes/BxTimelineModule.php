@@ -5168,6 +5168,7 @@ class BxTimelineModule extends BxBaseModNotificationsModule implements iBxDolCon
          */
         bx_alert($this->_oConfig->getObject('alert'), $sAction, $iContentId, $iSenderId, [
             'source' => $aEvent[$CNF['FIELD_SOURCE']],
+            'source_mac' => $aEvent[$CNF['FIELD_SOURCE']],
             'owner_id' => $aEvent[$CNF['FIELD_OWNER_ID']],
             'object_author_id' => $iObjectAuthorId,
             'privacy_view' => $aEvent[$CNF['FIELD_OBJECT_PRIVACY_VIEW']],
@@ -5240,6 +5241,7 @@ class BxTimelineModule extends BxBaseModNotificationsModule implements iBxDolCon
          */
         bx_alert($this->_oConfig->getObject('alert'), 'fail_' . $sPostType, $iContentId, $iSenderId, [
             'source' => $this->_oConfig->getName() . '_' . $iContentId,
+            'source_mac' => $this->_oConfig->getName() . '_' . $iContentId,
             'owner_id' => $aEvent['owner_id'],
             'object_author_id' => $iObjectAuthorId,
             'privacy_view' => $aEvent['object_privacy_view'],
