@@ -27,7 +27,7 @@ export const settingsElements = {
     },
     dropdown_menu: {
         content_shadow: ' shadow-lg ',
-        content_ver: 'gap-1',
+        content_ver: 'flex-col gap-1',
         content_hor: 'flex-row  ',
         item_ver:
             ' web:group px-2 py-1.5 web:group flex w-full min-w-0 min-h-12 flex-row items-start rounded-xl font-medium web:hover:bg-muted/50 text-card-foreground web:hover:text-foreground web:hover:cursor-pointer ',

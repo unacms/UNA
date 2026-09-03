@@ -196,16 +196,18 @@ function DropdownMenuPopup({
                                         classes={classes}
                                     />
                                 ) : null}
-                                {section.items.map((item, index) => (
-                                    <DropdownMenuItem
-                                        key={item.id ?? `${sectionIndex}-${index}`}
-                                        index={index}
-                                        item={item}
-                                        handleSelect={handleSelect}
-                                        classes={classes}
-                                        className={item.className}
-                                    />
-                                ))}
+                                <View className={menuSettings[classes.container]}>
+                                    {section.items.map((item, index) => (
+                                        <DropdownMenuItem
+                                            key={item.id ?? `${sectionIndex}-${index}`}
+                                            index={index}
+                                            item={item}
+                                            handleSelect={handleSelect}
+                                            classes={classes}
+                                            className={item.className}
+                                        />
+                                    ))}
+                                </View>
                             </View>
                         ))}
                     </View>
