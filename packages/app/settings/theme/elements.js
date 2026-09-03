@@ -55,7 +55,7 @@ export const settingsElements = {
         item_text: ' block w-full text-sm font-semibold text-secondary-foreground web:group-hover:text-foreground px-2',
         item_description: 'block w-full text-xs font-normal leading-tight text-pretty text-muted-foreground px-2 break-words',
         item_group_header: 'px-2 pt-3 pb-1',
-        item_group_header_first: 'p-2',
+        item_group_header_first: 'p-2.5',
         item_group_header_text: 'text-xs font-semibold uppercase tracking-wide text-muted-foreground',
         /** Sectioned menus (All Apps): wrap into columns; width is set in dropdown-menu. */
         content_sections: 'flex-row flex-wrap items-stretch gap-1',
