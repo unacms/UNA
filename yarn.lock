@@ -396,10 +396,10 @@
     node-gyp "^13.0.0"
     proc-log "^7.0.0"
 
-"@rollup/plugin-commonjs@^28.0.6":
-  version "28.0.9"
-  resolved "https://registry.yarnpkg.com/@rollup/plugin-commonjs/-/plugin-commonjs-28.0.9.tgz#b875cd1590617a40c4916d561d75761c6ca3c6d1"
-  integrity sha512-PIR4/OHZ79romx0BVVll/PkwWpJ7e5lsqFa3gFfcrFPWwLXLV39JVUzQV9RKjWerE7B845Hqjj9VYlQeieZ2dA==
+"@rollup/plugin-commonjs@^29.0.3":
+  version "29.0.3"
+  resolved "https://registry.yarnpkg.com/@rollup/plugin-commonjs/-/plugin-commonjs-29.0.3.tgz#e0269126503d218e81e180478355ff740ca9baff"
+  integrity sha512-ZaOxZceP7SOUW7Lqw5IRVweSQYWaeIPnXIGLiB690EBA3FGJTO40EEr2L5yZplJWsgTCogILRSpcAe7+U0Otdg==
   dependencies:
     "@rollup/pluginutils" "^5.0.1"
     commondir "^1.0.1"
@@ -687,6 +687,15 @@
     "@tanstack/ai-event-client" "^0.10.0"
     "@tanstack/ai-utils" "^0.4.0"
 
+"@tanstack/ai-client@^0.29.2":
+  version "0.29.2"
+  resolved "https://registry.yarnpkg.com/@tanstack/ai-client/-/ai-client-0.29.2.tgz#ef5b336d5d8e12a6bb261ae0dda16af8e19ed464"
+  integrity sha512-SciysncXh5R5MHQ1GoF3kHfaygRFljUO1yVRvH97elR5l7Xjx9VYVB0KLnW7g11SIwxUrpODlLynlxEJSL2USg==
+  dependencies:
+    "@tanstack/ai" "^0.52.0"
+    "@tanstack/ai-event-client" "^0.11.2"
+    "@tanstack/ai-utils" "^0.4.0"
+
 "@tanstack/ai-event-client@^0.10.0":
   version "0.10.0"
   resolved "https://registry.yarnpkg.com/@tanstack/ai-event-client/-/ai-event-client-0.10.0.tgz#5133a0156d689dc1e6038b2de3340dbd613f9a43"
@@ -694,10 +703,10 @@
   dependencies:
     "@tanstack/devtools-event-client" "^0.4.1"
 
-"@tanstack/ai-event-client@^0.11.1":
-  version "0.11.1"
-  resolved "https://registry.yarnpkg.com/@tanstack/ai-event-client/-/ai-event-client-0.11.1.tgz#666c7e4488fab2a0074c49e94a16dd5035dcbcec"
-  integrity sha512-Au8hDtfk73XCtVIw9KSiGuWF5Wxl5+rIISW1NHvGNmdKiR39TeiA+/r+ryoXiJydXrkDECoe2Q3qijjUJR5O3A==
+"@tanstack/ai-event-client@^0.11.1", "@tanstack/ai-event-client@^0.11.2":
+  version "0.11.2"
+  resolved "https://registry.yarnpkg.com/@tanstack/ai-event-client/-/ai-event-client-0.11.2.tgz#206babb940213a693e277375cb270a0847746d27"
+  integrity sha512-SlBC0jzlsjcdwYZqbvd7Wjny7GkGJGOZepHyJShDsfaiFNFUzGSP4SjOwV49YPfKwsFmR8hX67jQtBAmsnZWqQ==
   dependencies:
     "@tanstack/devtools-event-client" "^0.4.1"
 
@@ -721,6 +730,17 @@
     "@ag-ui/core" "0.1.1-canary.beta.0"
     "@standard-schema/spec" "^1.1.0"
     "@tanstack/ai-event-client" "^0.10.0"
+    "@tanstack/ai-utils" "^0.4.0"
+    partial-json "^0.1.7"
+
+"@tanstack/ai@^0.52.0":
+  version "0.52.2"
+  resolved "https://registry.yarnpkg.com/@tanstack/ai/-/ai-0.52.2.tgz#0f92a4ea8aa3210eb9b914e02af3f5976517f3eb"
+  integrity sha512-Oewjnt7IAmSFRuvbBwbLFK+zZSKSVaf6HU36SbwTNvVqLOAeRwc1Jdg4mi2iqxxgDQu4yK4REooo8L/uF9VTOA==
+  dependencies:
+    "@ag-ui/core" "0.1.1-canary.beta.0"
+    "@standard-schema/spec" "^1.1.0"
+    "@tanstack/ai-event-client" "^0.11.2"
     "@tanstack/ai-utils" "^0.4.0"
     partial-json "^0.1.7"
 
@@ -1441,10 +1461,10 @@ deep-equal@^1.0.1:
     object-keys "^1.1.1"
     regexp.prototype.flags "^1.5.1"
 
-deepmerge-ts@^7.1.5:
-  version "7.1.5"
-  resolved "https://registry.yarnpkg.com/deepmerge-ts/-/deepmerge-ts-7.1.5.tgz#ff818564007f5c150808d2b7b732cac83aa415ab"
-  integrity sha512-HOJkrhaYsweh+W+e74Yn7YStZOilkoPb6fycpwNLKzSPtruFs48nYis0zy5yJz1+ktUhHxoRDJ27RQAWLIJVJw==
+deepmerge-ts@^8.0.0:
+  version "8.0.2"
+  resolved "https://registry.yarnpkg.com/deepmerge-ts/-/deepmerge-ts-8.0.2.tgz#4f3e5588c3a7c59ea80d54b583948d6f404cf13e"
+  integrity sha512-uqbvqLUMrc6p0MO+WBRtTxY55hmyh94WRwI5a++PZe54X+bfVh59FSN7uWCBCW1CCVjzjnrwzfI8zidE2obMMw==
 
 deepmerge@^4.2.2:
   version "4.3.1"
@@ -2008,10 +2028,10 @@ grapesjs-style-gradient@^3.0.1:
   dependencies:
     grapick "^0.1.13"
 
-grapesjs@^0.23.5:
-  version "0.23.5"
-  resolved "https://registry.yarnpkg.com/grapesjs/-/grapesjs-0.23.5.tgz#6b5015429af57943e38a603dcca1b5d17d215d61"
-  integrity sha512-66E5x5ZWJUGMQkL/BfFK6oyuFdXAMpsG15+6atiTPbB/Wf4ChZ4I62R+rgUHr1DDAvrM/LxdPwmqOwdDsrplhw==
+grapesjs@^0.23.6:
+  version "0.23.6"
+  resolved "https://registry.yarnpkg.com/grapesjs/-/grapesjs-0.23.6.tgz#29c0deb14faa73366c9f507a1c14edc1a8bf55ec"
+  integrity sha512-I8M/sPWjHm6MLIdUtRFNOKsQ3PtDgIDsc2S8ANkJsfHj3ZoH98oNMMWr64Kx22XgjHCQ4xpUx7nvXyQSKV1mrQ==
   dependencies:
     "@types/backbone" "1.4.15"
     backbone "1.4.1"
@@ -2105,8 +2125,8 @@ headroom.js@^0.12.0:
 
 "highlight.js@github:highlightjs/highlight.js":
   version "11.12.0"
-  uid "3fd8e9486b30b3e6c8121d5ea136556838d010d5"
-  resolved "https://codeload.github.com/highlightjs/highlight.js/tar.gz/3fd8e9486b30b3e6c8121d5ea136556838d010d5"
+  uid fc3f06392f189354eed922973635ab9e9268b983
+  resolved "https://codeload.github.com/highlightjs/highlight.js/tar.gz/fc3f06392f189354eed922973635ab9e9268b983"
 
 hls.js@^1.7.1:
   version "1.7.1"
@@ -3807,10 +3827,10 @@ path-type@^3.0.0:
   dependencies:
     pify "^3.0.0"
 
-pdfjs-dist@^6.2.108:
-  version "6.2.108"
-  resolved "https://registry.yarnpkg.com/pdfjs-dist/-/pdfjs-dist-6.2.108.tgz#1e0ce0f4b3a034f953dbbe2334ab01fbddf0eb30"
-  integrity sha512-YxFb+SQcodN2rnX9Tn3dHYlqfb7NjlzzfONPpJd+AKoKtUjEdevTfbC07d5TcczzOK6261auRkP/M8OBHs9vFQ==
+pdfjs-dist@^6.3.289:
+  version "6.3.289"
+  resolved "https://registry.yarnpkg.com/pdfjs-dist/-/pdfjs-dist-6.3.289.tgz#9e46d89489782a479f58d674ae5ddde8481aaa17"
+  integrity sha512-ZHjSVpDa3D6izMq8/04lvkhkATUmL9px6ChPaXc1k6nU2Mrhlg1/7F0bdUqCwUjw3NsPTfPZsMDUU6ZIcRaeQw==
   optionalDependencies:
     "@napi-rs/canvas" "^1.0.0"
 
@@ -3829,15 +3849,10 @@ picomatch@^2.0.4, picomatch@^2.2.1, picomatch@^2.3.1:
   resolved "https://registry.yarnpkg.com/picomatch/-/picomatch-2.3.2.tgz#5a942915e26b372dc0f0e6753149a16e6b1c5601"
   integrity sha512-V7+vQEJ06Z+c5tSye8S+nHUfI51xoXIXjHQ99cQtKUkQqqO1kO/KCJUfZXuB47h/YBlDhah2H3hdUGXn8ie0oA==
 
-picomatch@^4.0.2:
+picomatch@^4.0.2, picomatch@^4.0.4:
   version "4.0.7"
   resolved "https://registry.yarnpkg.com/picomatch/-/picomatch-4.0.7.tgz#6313360034ccb36b3dc61ecbdff78121f90fe21f"
   integrity sha512-qcJu88Q2IWqJsDD529JKMdwGm/dvInW4HvQnRwiH9JtihJvzGOscDtHE3x1pBKeUOTysQ8kVmLnJ2kJu7yhcGA==
-
-picomatch@^4.0.4:
-  version "4.0.5"
-  resolved "https://registry.yarnpkg.com/picomatch/-/picomatch-4.0.5.tgz#51ea57a17d86f605f81039595fbc40ed06a55fab"
-  integrity sha512-RvwwcruNjI1ncT5xRakeyS9Lf8lcItv34KD+aif+VH9kduAyfYBipGh12274xtenIPZ119/R9BdTBa8gAwSh0A==
 
 pidtree@^0.3.0:
   version "0.3.1"
@@ -4386,13 +4401,13 @@ shell-quote@^1.6.1:
   resolved "https://registry.yarnpkg.com/shell-quote/-/shell-quote-1.10.0.tgz#482033e192e4f5c07151521ffa03400ec71b1b0f"
   integrity sha512-w1aiOKwKuRgtwAReIIj89puqg+I7GvX4IbLrvmhXbzQsj1+Zwi4VO3+fa6ZF91TWSjIxoEkKnMeHcLEODK5ZXA==
 
-shepherd.js@^15.2.3:
-  version "15.2.3"
-  resolved "https://registry.yarnpkg.com/shepherd.js/-/shepherd.js-15.2.3.tgz#c3778c4f1d418070b3c80de28006b46ed44e1a18"
-  integrity sha512-FyLH/c25YlTS5d+cL9oLajzfW0TzNl43sysQG6EK4bf60n9les7TsIUekHTTKyMEtcARIVHW2d1N9sqeDkIsbQ==
+shepherd.js@^15.3.0:
+  version "15.3.0"
+  resolved "https://registry.yarnpkg.com/shepherd.js/-/shepherd.js-15.3.0.tgz#1f5d1520ad15274f1b3166145d067bd438c1beb4"
+  integrity sha512-A9plZQ1qGX1aDLTrX0cbVowdnE0mOc1pjRie7O9c2cQHiDHI1zaxH2fVe65WH/2ch5nbK0JPu+vQecD7WYw5zw==
   dependencies:
     "@floating-ui/dom" "^1.8.0"
-    deepmerge-ts "^7.1.5"
+    deepmerge-ts "^8.0.0"
 
 side-channel-list@^1.0.1:
   version "1.0.1"
