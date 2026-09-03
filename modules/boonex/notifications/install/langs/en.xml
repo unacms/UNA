@@ -65,6 +65,7 @@
     <string name="_bx_ntfs_option_events_hide_push"><![CDATA[Push notifications]]></string>
     <string name="_bx_ntfs_option_enable_group_settings"><![CDATA[Group settings by category]]></string>
     <string name="_bx_ntfs_option_enable_group_events"><![CDATA[Group notifications by event]]></string>
+    <string name="_bx_ntfs_option_enable_group_events_db"><![CDATA[Group notifications by event (on DB level, experimental)]]></string>
     <string name="_bx_ntfs_option_enable_clicked_indicator"><![CDATA[Enable 'clicked' indicator]]></string>
     <string name="_bx_ntfs_option_delivery_timeout"><![CDATA[Delay before sending Email and/or Push notifications (in seconds)]]></string>
     <string name="_bx_ntfs_option_delivery_timeout_inf"><![CDATA[Positive value other than '0' means that notifications will be send via Internal queue.]]></string>
@@ -74,6 +75,7 @@
     <string name="_bx_ntfs_option_queue_add_limit_inf"><![CDATA['0' means that all available notifications will be processed at once.]]></string>
     <string name="_bx_ntfs_option_processed_event"><![CDATA[The last processed event upon notifications sending]]></string>
     <string name="_bx_ntfs_option_clear_interval"><![CDATA[Notification lifetime, in days (0 - no limit)]]></string>
+    <string name="_bx_ntfs_option_enable_own_actions"><![CDATA[Notify a user about his own actions]]></string>
     <string name="_bx_ntfs_option_enable_comment_post_ext"><![CDATA[Notify a user about new comments for a content he's previously commented]]></string>
     <string name="_bx_ntfs_option_enable_reply_as_comment"><![CDATA[Treat replies as comments in 'New comments' notification.]]></string>
     <string name="_bx_ntfs_option_summary_chars"><![CDATA[Number of characters in auto-cropped summary (applied before saving a notification)]]></string>
@@ -176,18 +178,22 @@
     <string name="_bx_ntfs_txt_msg_no_results"><![CDATA[Empty]]></string>
     <string name="_bx_ntfs_txt_err_nothing_changed"><![CDATA[Nothing was changed.]]></string>
     <string name="_bx_ntfs_txt_err_cannot_perform"><![CDATA[Cannot perform the action.]]></string>
-    <string name="_bx_ntfs_txt_object_added"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b> added a {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b>]]></string>
-    <string name="_bx_ntfs_txt_object_added_in_context"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b> has got a {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b> added by <b class="bx-ntfs-content-profile">{object_owner_name}</b>]]></string>
-    <string name="_bx_ntfs_txt_object_post_common"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b> added a {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b>]]></string>
-    <string name="_bx_ntfs_txt_object_post_common_in_context"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b> has got a {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b> added by <b class="bx-ntfs-content-profile">{object_owner_name}</b>]]></string>
-    <string name="_bx_ntfs_txt_object_approved"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b> approved {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b>]]></string>
-    <string name="_bx_ntfs_txt_object_approved_in_context"><![CDATA[<b class="bx-ntfs-content-entry">{entry_caption}</b> {entry_sample} was approved in <b class="bx-ntfs-content-profile">{owner_name}</b>]]></string>
+
+    <string name="_bx_ntfs_txt_and"><![CDATA[and]]></string>
+    <string name="_bx_ntfs_txt_author_name_wrapped"><![CDATA[<b class="bx-ntfs-content-profile">{author_name}</b>]]></string>
+    <string name="_bx_ntfs_txt_owner_name_wrapped"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b>]]></string>
+    <string name="_bx_ntfs_txt_object_added"><![CDATA[{author_name_wrapped} added a {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b>]]></string>
+    <string name="_bx_ntfs_txt_object_added_in_context"><![CDATA[{author_name_wrapped} added a {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b> in <b class="bx-ntfs-content-profile">{owner_name}</b>]]></string>
+    <string name="_bx_ntfs_txt_object_post_common"><![CDATA[{author_name_wrapped} added a {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b>]]></string>
+    <string name="_bx_ntfs_txt_object_post_common_in_context"><![CDATA[{author_name_wrapped} added a {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b> in <b class="bx-ntfs-content-profile">{owner_name}</b>]]></string>
+    <string name="_bx_ntfs_txt_object_approved"><![CDATA[{author_name_wrapped} approved {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b>]]></string>
+    <string name="_bx_ntfs_txt_object_approved_in_context"><![CDATA[{author_name_wrapped} approved <b class="bx-ntfs-content-entry">{entry_caption}</b> {entry_sample} in <b class="bx-ntfs-content-profile">{owner_name}</b>]]></string>
     <string name="_bx_ntfs_txt_object_publish_failed"><![CDATA[Failed to publish your {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b>]]></string>
     <string name="_bx_ntfs_txt_object_publish_succeeded"><![CDATA[Your {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b> was published successfully]]></string>
-    <string name="_bx_ntfs_txt_object_pending_approval"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b> added a pending approval {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b>]]></string>
-    <string name="_bx_ntfs_txt_object_reported_content"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b> reported a {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b>]]></string>
-    <string name="_bx_ntfs_txt_subobject_added"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b> added a {subentry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b>]]></string>
-    <string name="_bx_ntfs_txt_subobject_added_in_context"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b> has got a {subentry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b>]]></string>
+    <string name="_bx_ntfs_txt_object_pending_approval"><![CDATA[{author_name_wrapped} added a pending approval {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b>]]></string>
+    <string name="_bx_ntfs_txt_object_reported_content"><![CDATA[{author_name_wrapped} reported a {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b>]]></string>
+    <string name="_bx_ntfs_txt_subobject_added"><![CDATA[{author_name_wrapped} added a {subentry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b>]]></string>
+    <string name="_bx_ntfs_txt_subobject_added_in_context"><![CDATA[{author_name_wrapped} added a {subentry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b> in <b class="bx-ntfs-content-profile">{owner_name}</b>]]></string>
     <string name="_bx_ntfs_txt_new_event_subject"><![CDATA[New on "{0}"]]></string>
     <string name="_bx_ntfs_txt_et_preview_subject"><![CDATA[Subject:]]></string>
     <string name="_bx_ntfs_txt_et_preview_body"><![CDATA[Body:]]></string>

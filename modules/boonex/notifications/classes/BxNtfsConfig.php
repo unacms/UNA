@@ -59,6 +59,7 @@ class BxNtfsConfig extends BxBaseModNotificationsConfig
             // some params
             'PARAM_QUEUE_ADD_THRESHOLD' => 'bx_notifications_queue_add_threshold',
             'PARAM_QUEUE_ADD_LIMIT' => 'bx_notifications_queue_add_limit',
+            'PARAM_OWN_ACTIONS' => 'bx_notifications_enable_own_actions',
             'PARAM_COMMENT_POST_EXT' => 'bx_notifications_enable_comment_post_ext',
             'PARAM_REPLY_AS_COMMENT' => 'bx_notifications_enable_reply_as_comment',
             'PARAM_PROCESSED_EVENT' => 'bx_notifications_processed_event',
@@ -167,7 +168,7 @@ class BxNtfsConfig extends BxBaseModNotificationsConfig
         $this->_iDeliveryTimeout = (int)getParam($sOptionPrefix . 'delivery_timeout');
 
         $this->_bEventsGrouped = getParam($sOptionPrefix . 'enable_group_events') == 'on';
-        $this->_bEventsGroupedDb = false;
+        $this->_bEventsGroupedDb = getParam($sOptionPrefix . 'enable_group_events_db') == 'on';;
 
         $this->_bClickedIndicator = getParam($sOptionPrefix . 'enable_clicked_indicator') == 'on';
 

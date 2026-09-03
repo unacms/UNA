@@ -4,6 +4,7 @@ SET @sName = 'bx_notifications';
 -- TABLES
 CREATE TABLE IF NOT EXISTS `bx_notifications_events` (
   `id` int(11) NOT NULL auto_increment,
+  `author_id` int(11) NOT NULL default '0',
   `owner_id` int(11) NOT NULL default '0',
   `type` varchar(255) NOT NULL,
   `action` varchar(255) NOT NULL,
@@ -80,7 +81,7 @@ INSERT INTO `bx_notifications_handlers`(`group`, `type`, `alert_unit`, `alert_ac
 
 -- Mentions
 INSERT INTO `bx_notifications_handlers`(`group`, `type`, `alert_unit`, `alert_action`, `content`, `privacy`, `priority`) VALUES 
-('mention', 'insert', 'meta_mention', 'added', 'a:3:{s:11:"module_name";s:6:"system";s:13:"module_method";s:30:"get_notifications_post_mention";s:12:"module_class";s:20:"TemplServiceMetatags";}', '', 1);
+('mention', 'insert', 'meta_mention', 'added', 'a:3:{s:11:"module_name";s:6:"system";s:13:"module_method";s:30:"get_notifications_post_mention";s:12:"module_class";s:20:"TemplServiceMetatags";}', '', 0);
 SET @iHandlerId = LAST_INSERT_ID();
 
 INSERT INTO `bx_notifications_settings`(`group`, `handler_id`, `delivery`, `type`, `title`, `order`) VALUES

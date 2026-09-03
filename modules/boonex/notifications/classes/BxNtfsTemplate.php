@@ -94,12 +94,8 @@ class BxNtfsTemplate extends BxBaseModNotificationsTemplate
             if(empty($sEvent))
                 continue;
 
-            if($this->_bIsApi){
-                if(!isset($sEvent['author_data']))
-                    $sEvent['author_data'] = BxDolProfile::getData($sEvent['owner_id']);
-
+            if($this->_bIsApi)
                 $aTmplVarsEvents[] = $sEvent;
-            }
             else
                 $aTmplVarsEvents[] = ['event' => $sEvent];
 
@@ -110,19 +106,19 @@ class BxNtfsTemplate extends BxBaseModNotificationsTemplate
         if($this->_bIsApi)
             return $aTmplVarsEvents;
 
-        $oPaginate = new BxTemplPaginate(array(
+        $oPaginate = new BxTemplPaginate([
             'start' => $aParams['start'],
             'per_page' => $aParams['per_page'],
             'page_url' => $this->_oConfig->getViewUrl(),
             'on_change_page' => $sJsObject . ".changePage(this, {start}, {per_page})"
-        ));
+        ]);
         $oPaginate->setNumFromDataArray($aTmplVarsEvents);
 
-        return $this->parseHtmlByName('events.html', array(
+        return $this->parseHtmlByName('events.html', [
             'style_prefix' => $this->_oConfig->getPrefix('style'),
             'bx_repeat:events' => $aTmplVarsEvents,
             'paginate' => $oPaginate->getSimplePaginate()
-        ));
+        ]);
     }
 
     /**
@@ -166,6 +162,14 @@ class BxNtfsTemplate extends BxBaseModNotificationsTemplate
         }
 
         $bShowRealProfile = !isset($aBrowseParams['show_real_profile']) || $aBrowseParams['show_real_profile'] === true;
+
+        $oAuthor = $oModule->getObjectUser($aEvent['author_id'] ?? 0);
+        if(!$bShowRealProfile && $oAuthor instanceof BxDolProfileAnonymous)
+            $oAuthor->setShowRealProfile($bShowRealProfile);
+
+        $aEvent['content']['author_name'] = strmaxtextlen($oAuthor->getDisplayName(), $this->_oConfig->getOwnerNameMaxLen());
+        $aEvent['content']['author_link'] = $oAuthor->getUrl();
+        $aEvent['content']['author_icon'] = $oAuthor->getThumb();
 
         $oOwner = $oModule->getObjectUser($aEvent['owner_id']);
         if(!$bShowRealProfile && $oOwner instanceof BxDolProfileAnonymous)
@@ -216,11 +220,13 @@ class BxNtfsTemplate extends BxBaseModNotificationsTemplate
             $aEvent['content'][$sKey] = call_user_func_array('_t', $aCallParams);
         }
 
-        $sOwnerUnit = $oOwner->getUnit(0, ['template' => 'unit_wo_info_links']);
+        $sAuthorUnit = '';
+        if(($o = !($oAuthor instanceof BxDolProfileUndefined) ? $oAuthor : $oOwner) !== false)
+            $sAuthorUnit = $o->getUnit(0, ['template' => 'unit_wo_info_links']);
 
         $bEventParsed = false;
         $bEventCanceled = false;
-        
+
         /**
          * @hooks
          * @hookdef hook-bx_notifications-get_notification 'bx_notifications', 'get_notification' - hook to override notification or even cancel it
@@ -243,17 +249,19 @@ class BxNtfsTemplate extends BxBaseModNotificationsTemplate
             'event' => &$aEvent, 
             'event_parsed' => &$bEventParsed, 
             'event_canceled' => &$bEventCanceled,
+            'author' => &$oAuthor, 
             'owner' => &$oOwner, 
-            'owner_unit' => &$sOwnerUnit,
+            'owner_unit' => &$sAuthorUnit,
 
             'event_ref' => &$aEvent, 
             'event_parsed_ref' => &$bEventParsed, 
             'event_canceled_ref' => &$bEventCanceled,
-            'owner_ref' => &$oOwner, 
-            'owner_unit_ref' => &$sOwnerUnit,
+            'author_ref' => &$oAuthor,
+            'owner_ref' => &$oOwner,
+            'owner_unit_ref' => &$sAuthorUnit,
         ]);
-        
-        if ($bEventCanceled)
+
+        if($bEventCanceled)
             return '';
 
         if(($sGroupedByMac = $aEvent['grouped_by_mac'] ?? false)) {
@@ -265,10 +273,15 @@ class BxNtfsTemplate extends BxBaseModNotificationsTemplate
                 if(!$aSubEvent || !is_array($aSubEvent))
                     continue;
 
+                if($sContentParsed && ($sK = 'content') && ($sEc = $aSubEvent[$sK] ?? '') && is_string($sEc)) {
+                    $aSubEvent[$sK] = unserialize($sEc);
+                    $aSubEvent[$sK]['author_name_wrapped'] = _t('_bx_ntfs_txt_and');
+                }
+
                 $this->getPost($aSubEvent);
 
                 if(($sCp = $aSubEvent['content_parsed'] ?? false))
-                    $sContentParsed .= $sCp . '<br />';
+                    $sContentParsed .= ' ' . $sCp;
             }
 
             if($sContentParsed) {
@@ -303,7 +316,10 @@ class BxNtfsTemplate extends BxBaseModNotificationsTemplate
         $sJsObject = $this->_oConfig->getJsObject('view');
 
         if($this->_bIsApi) {
+            $aEvent['author_data'] = BxDolProfile::getData($aEvent['author_id']);
+
             $aLinks = [
+                'author_link' => $aEvent['content']['author_link'],
                 'owner_link' => $aEvent['content']['owner_link'],
                 'object_owner_link' => $aEvent['content']['object_owner_link']
             ];
@@ -339,7 +355,7 @@ class BxNtfsTemplate extends BxBaseModNotificationsTemplate
                 $aEvent[$sKey] = html_entity_decode($aEvent[$sKey]);
 
             return array_intersect_key($aEvent, array_flip([
-                'id', 'owner_id', 'module', 'type', 'content', 'content_parsed', 'date', 'author_data'
+                'id', 'author_id', 'author_data', 'owner_id', 'module', 'type', 'content', 'content_parsed', 'date'
             ]));
         }
 
@@ -349,7 +365,7 @@ class BxNtfsTemplate extends BxBaseModNotificationsTemplate
             'js_object' => $sJsObject,
             'class' => !empty($aBrowseParams['last_read']) && $aEvent['id'] > $aBrowseParams['last_read'] ? ' bx-def-color-bg-box-active' : '', 
             'id' => $aEvent['id'],
-            'author_unit' => $sOwnerUnit,
+            'author_unit' => $sAuthorUnit,
             'link' => $this->_getContentLink($aEvent),
             'content' => is_array($aEvent['content_parsed']) && isset($aEvent['content_parsed']['site']) ? $aEvent['content_parsed']['site'] : $aEvent['content_parsed'],
             'date' => bx_time_js($aEvent['date']),
@@ -621,12 +637,20 @@ class BxNtfsTemplate extends BxBaseModNotificationsTemplate
 
     protected function _parseContentLangKey($sLangKey, &$aEvent)
     {
-        $aExclude = array(
-            'lang_key' => 1,
-            'settings' => 1
-        );
+        $aMarkers = array_diff_key($aEvent['content'], array_flip([
+            'lang_key', 'settings'
+        ]));
 
-        return $this->parseHtmlByContent(_t($sLangKey), array_diff_key($aEvent['content'], $aExclude), array('{', '}'));
+        $aPreparsed = [];
+        if(($sK = 'author_name_wrapped') && !isset($aMarkers[$sK]))
+            $aPreparsed[$sK] = _t('_bx_ntfs_txt_author_name_wrapped');
+        if(($sK = 'owner_name_wrapped') && !isset($aMarkers[$sK]))
+            $aPreparsed[$sK] = _t('_bx_ntfs_txt_owner_name_wrapped');
+
+        if($aPreparsed)
+            $aMarkers = array_merge($aMarkers, bx_replace_markers($aPreparsed, $aMarkers));
+
+        return bx_replace_markers(_t($sLangKey), $aMarkers);
     }
 
     protected function _getContentLink($aEvent, $bForApi = false)

@@ -119,7 +119,7 @@ class BxNtfsDb extends BxBaseModNotificationsDb
 
         $sSelectClauseGrouped = $sGroupByClauseGrouped = "";
         if($bEventsGroupedDb) {
-            $sSelectClauseGrouped = ", GROUP_CONCAT(`{$this->_sTable}`.`id` SEPARATOR ',') AS `grouped_by_mac`";
+            $sSelectClauseGrouped =  ", GROUP_CONCAT(`{$this->_sTable}`.`id` ORDER BY `{$this->_sTableHandlers}`.`priority` DESC SEPARATOR ',') AS `subgrouped_by_mac`";
             $sGroupByClauseGrouped = "`{$this->_sTable}`.`source_mac`";
         }
 
@@ -242,7 +242,10 @@ class BxNtfsDb extends BxBaseModNotificationsDb
             'query_pc_ref' => &$sQueryConnections,
         ]);
 
-        $sQuery = "(" . $sQueryOwner . ") UNION (" . $sQueryConnections . ") {order} {limit}";
+        if($bEventsGroupedDb)
+            $sQuery = "SELECT *, GROUP_CONCAT(`subgrouped_by_mac` ORDER BY `priority` DESC SEPARATOR ',') AS `grouped_by_mac` FROM ((" . $sQueryOwner . ") UNION (" . $sQueryConnections . ")) AS `tu` GROUP BY `source_mac` {order} {limit}";
+        else
+            $sQuery = "(" . $sQueryOwner . ") UNION (" . $sQueryConnections . ") {order} {limit}";
         $sQuery = str_replace(['{select}', '{order}', '{limit}'], [$sSelectClause, $sUnionOrderClause, $sUnionLimitClause], $sQuery);
         $aEntries = $this->$sUnionMethod($sQuery);
 
@@ -296,6 +299,8 @@ class BxNtfsDb extends BxBaseModNotificationsDb
 
     protected function _getSqlPartsEventsList($aParams)
     {
+        $CNF = &$this->_oConfig->CNF;
+
         $sJoinClause = $sWhereClause = "";
 
         //--- Apply 'start from'  filter
@@ -357,8 +362,13 @@ class BxNtfsDb extends BxBaseModNotificationsDb
                     $sJoinClause .= " LEFT JOIN `sys_profiles` AS `tsp` ON `{$this->_sTable}`.`owner_id`=`tsp`.`id` " . $aQueryParts['join'];
 
                     $sWhereClauseType = '';
-                    //--- Don't show notifications about own posts to connected contexts
-                    $sWhereClauseType .= $this->prepareAsString("AND `{$this->_sTable}`.`object_owner_id` <> ? ", $aParams['owner_id']);
+                    if(getParam($CNF['PARAM_OWN_ACTIONS']) != 'on') {
+                        //--- Don't show notifications about own posts to connected contexts
+                        $sWhereClauseType .= $this->prepareAsString("AND `{$this->_sTable}`.`object_owner_id` <> ? ", $aParams['owner_id']);
+
+                        //--- Don't show notifications about the other own actions performed in connected contexts
+                        $sWhereClauseType .= $this->prepareAsString("AND `{$this->_sTable}`.`author_id` <> ? ", $aParams['owner_id']);
+                    }
                     //--- Don't show notifications about posts created before the connection was established
                     if(!empty($aQueryParts['fields']['added']))
                         $sWhereClauseType .= "AND `{$this->_sTable}`.`date` >= " . $aQueryParts['fields']['added'];
@@ -397,8 +407,13 @@ class BxNtfsDb extends BxBaseModNotificationsDb
 
                         //--- Show notifications from connected contexts
                         $sWhereClauseConnections = "NOT ISNULL(`c`.`content`) ";
-                        //--- Don't show notifications about own posts to connected contexts
-                        $sWhereClauseConnections .= $this->prepareAsString("AND `{$this->_sTable}`.`object_owner_id` <> ? ", $aParams['owner_id']);
+                        if(getParam($CNF['PARAM_OWN_ACTIONS']) != 'on') {
+                            //--- Don't show notifications about own posts to connected contexts
+                            $sWhereClauseConnections .= $this->prepareAsString("AND `{$this->_sTable}`.`object_owner_id` <> ? ", $aParams['owner_id']);
+
+                            //--- Don't show notifications about the other own actions performed in connected contexts
+                            $sWhereClauseType .= $this->prepareAsString("AND `{$this->_sTable}`.`author_id` <> ? ", $aParams['owner_id']);
+                        }
                         //--- Don't show notifications about posts created before the connection was established
                         if(!empty($aQueryParts['fields']['added']))
                             $sWhereClauseConnections .= "AND `{$this->_sTable}`.`date` >= `" . $aQueryParts['fields']['added']['table_alias'] . "`.`" . $aQueryParts['fields']['added']['name'] . "` ";

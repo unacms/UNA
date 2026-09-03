@@ -135,6 +135,7 @@ class BxNtfsResponse extends BxBaseModNotificationsResponse
         $aResult = array();
         foreach($mixedSubobjectId as $iSubobjectId)
             $aResult[] = array(
+                'author_id' => $oAlert->iSender,
                 'owner_id' => $iOwnerId,
                 'type' => $oAlert->sUnit,
                 'action' => $oAlert->sAction,
@@ -226,6 +227,7 @@ class BxNtfsResponse extends BxBaseModNotificationsResponse
                 continue;
 
             $aResults[] = [
+                'author_id' => $oAlert->iSender,
                 'owner_id' => $iOwnerId,
                 'type' => $oAlert->sUnit,
                 'action' => $oAlert->sAction,
@@ -254,24 +256,23 @@ class BxNtfsResponse extends BxBaseModNotificationsResponse
         $iObjectPrivacyView = $this->_getObjectPrivacyView($oAlert->aExtras);
         $iPrivacyView = $this->_oModule->_oConfig->getPrivacyViewDefault('event');
 
-    	return array(
-    	    array(
-                'owner_id' => $oAlert->aExtras['initiator'],
-                'type' => $oAlert->sUnit,
-                'action' => $oAlert->sAction,
-                'object_id' => $oAlert->aExtras['content'],
-                'object_owner_id' => $oAlert->aExtras['content'],
-                'object_privacy_view' => $iObjectPrivacyView,
-                'subobject_id' => 0,
-                'content' => $this->_getContent($oAlert->aExtras, array(
-                    'request' => empty($oAlert->aExtras['mutual']) ? 1 : 0
-                )),
-                'source' => $this->_getSource($oAlert->aExtras),
-                'source_mac' => $this->_getSourceMac($oAlert->aExtras),
-                'allow_view_event_to' => $iPrivacyView,
-                'processed' => 0
-    	    )
-        );
+    	return [[
+            'author_id' => $oAlert->iSender,
+            'owner_id' => $oAlert->aExtras['initiator'],
+            'type' => $oAlert->sUnit,
+            'action' => $oAlert->sAction,
+            'object_id' => $oAlert->aExtras['content'],
+            'object_owner_id' => $oAlert->aExtras['content'],
+            'object_privacy_view' => $iObjectPrivacyView,
+            'subobject_id' => 0,
+            'content' => $this->_getContent($oAlert->aExtras, array(
+                'request' => empty($oAlert->aExtras['mutual']) ? 1 : 0
+            )),
+            'source' => $this->_getSource($oAlert->aExtras),
+            'source_mac' => $this->_getSourceMac($oAlert->aExtras),
+            'allow_view_event_to' => $iPrivacyView,
+            'processed' => 0
+        ]];
     }
     
     protected function getInsertDataMetaMentionAdded(&$oAlert, &$aHandler)
@@ -283,6 +284,7 @@ class BxNtfsResponse extends BxBaseModNotificationsResponse
             $iOwnerId = abs($iObjectPrivacyView);
         
          $aResult = [[
+            'author_id' => $oAlert->iSender,
             'owner_id' => $iOwnerId,
             'type' => $oAlert->sUnit,
             'action' => $oAlert->sAction,
@@ -308,20 +310,17 @@ class BxNtfsResponse extends BxBaseModNotificationsResponse
         $aHandlers = $this->_oModule->_oDb->getHandlers(array('type' => 'by_group_key_type', 'group' => $aHandler['group']));
 
         $sAction = $aHandlers[BX_BASE_MOD_NTFS_HANDLER_TYPE_INSERT]['alert_action'];
-    	return array(
-    	    array(
-    	        'owner_id' => $oAlert->aExtras['initiator'],
-            	'type' => $oAlert->sUnit, 
-            	'action' => $sAction, 
-            	'object_id' => $oAlert->aExtras['content']
-            ),
-            array(
-            	'owner_id' => $oAlert->aExtras['content'],
-            	'type' => $oAlert->sUnit, 
-            	'action' => $sAction, 
-            	'object_id' => $oAlert->aExtras['initiator']
-            )
-        );
+    	return [[
+            'owner_id' => $oAlert->aExtras['initiator'],
+            'type' => $oAlert->sUnit, 
+            'action' => $sAction, 
+            'object_id' => $oAlert->aExtras['content']
+        ], [
+            'owner_id' => $oAlert->aExtras['content'],
+            'type' => $oAlert->sUnit, 
+            'action' => $sAction, 
+            'object_id' => $oAlert->aExtras['initiator']
+        ]];
     }
 
     /**
@@ -329,36 +328,33 @@ class BxNtfsResponse extends BxBaseModNotificationsResponse
      */
     protected function getInsertDataSysProfilesSubscriptionsConnectionAdded(&$oAlert, &$aHandler)
     {
-    	return array(
-    	    array(
-                'owner_id' => $oAlert->aExtras['initiator'],
-                'type' => $oAlert->sUnit,
-                'action' => $oAlert->sAction,
-                'object_id' => $oAlert->aExtras['content'],
-                'object_owner_id' => $oAlert->aExtras['content'],
-                'object_privacy_view' => $this->_getObjectPrivacyView($oAlert->aExtras),
-                'subobject_id' => 0,
-                'content' => $this->_getContent($oAlert->aExtras),
-                'source' => $this->_getSource($oAlert->aExtras),
-                'source_mac' => $this->_getSourceMac($oAlert->aExtras),                
-                'allow_view_event_to' => $this->_oModule->_oConfig->getPrivacyViewDefault('event'),
-                'processed' => 0
-    	    )
-        );
+    	return [[
+            'author_id' => $oAlert->iSender,
+            'owner_id' => $oAlert->aExtras['initiator'],
+            'type' => $oAlert->sUnit,
+            'action' => $oAlert->sAction,
+            'object_id' => $oAlert->aExtras['content'],
+            'object_owner_id' => $oAlert->aExtras['content'],
+            'object_privacy_view' => $this->_getObjectPrivacyView($oAlert->aExtras),
+            'subobject_id' => 0,
+            'content' => $this->_getContent($oAlert->aExtras),
+            'source' => $this->_getSource($oAlert->aExtras),
+            'source_mac' => $this->_getSourceMac($oAlert->aExtras),                
+            'allow_view_event_to' => $this->_oModule->_oConfig->getPrivacyViewDefault('event'),
+            'processed' => 0
+        ]];
     }
 
     protected function getDeleteDataSysProfilesSubscriptionsConnectionRemoved(&$oAlert, &$aHandler)
     {
         $aHandlers = $this->_oModule->_oDb->getHandlers(array('type' => 'by_group_key_type', 'group' => $aHandler['group']));
 
-    	return array(
-    	    array(
-    	        'owner_id' => $oAlert->aExtras['initiator'],
-            	'type' => $oAlert->sUnit, 
-            	'action' => $aHandlers[BX_BASE_MOD_NTFS_HANDLER_TYPE_INSERT]['alert_action'], 
-            	'object_id' => $oAlert->aExtras['content']
-            )
-        );
+    	return [[
+            'owner_id' => $oAlert->aExtras['initiator'],
+            'type' => $oAlert->sUnit, 
+            'action' => $aHandlers[BX_BASE_MOD_NTFS_HANDLER_TYPE_INSERT]['alert_action'], 
+            'object_id' => $oAlert->aExtras['content']
+        ]];
     }
 
     protected function _getObjectOwnerId($aExtras)

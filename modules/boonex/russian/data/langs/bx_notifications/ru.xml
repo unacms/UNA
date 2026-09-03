@@ -65,6 +65,7 @@
     <string name="_bx_ntfs_option_events_hide_push"><![CDATA[Push-уведомления]]></string>
     <string name="_bx_ntfs_option_enable_group_settings"><![CDATA[Сгруппировать настройки по категориям]]></string>
     <string name="_bx_ntfs_option_enable_group_events"><![CDATA[Сгруппировать оповещения по принадлежности к событию]]></string>
+    <string name="_bx_ntfs_option_enable_group_events"><![CDATA[Сгруппировать оповещения по принадлежности к событию (на уровне БД, экспериментально)]]></string>
     <string name="_bx_ntfs_option_enable_clicked_indicator"><![CDATA[Включить индикатор перехода по ссылке уведомления]]></string>
     <string name="_bx_ntfs_option_delivery_timeout"><![CDATA[Задержка перед отправкой Email и/или Push уведомлений (в секундах)]]></string>
     <string name="_bx_ntfs_option_delivery_timeout_inf"><![CDATA[Положительное значение, отличное от '0', означает, что уведомления будут отправляться через Внутреннюю очередь.]]></string>
@@ -74,6 +75,7 @@
     <string name="_bx_ntfs_option_queue_add_limit_inf"><![CDATA['0' означает, что все доступные уведомления будут обработаны одновременно.]]></string>
     <string name="_bx_ntfs_option_clear_interval"><![CDATA[Срок жизни уведомления, в днях (0 - без ограничений)]]></string>
     <string name="_bx_ntfs_option_processed_event"><![CDATA[Последнее событие, обработанное в процессе отправки оповещений]]></string>
+    <string name="_bx_ntfs_option_enable_own_actions"><![CDATA[Оповещать пользователя о его собственных действиях]]></string>
     <string name="_bx_ntfs_option_enable_comment_post_ext"><![CDATA[Оповещать пользователя о новых комментариях к контенту, котороый он комментировал ранее]]></string>
     <string name="_bx_ntfs_option_enable_reply_as_comment"><![CDATA[Рассматривать ответы как комментарии в уведомлении 'Новые комментарии'.]]></string>
     <string name="_bx_ntfs_option_summary_chars"><![CDATA[Количество символов в автоматически обрезаемом резюме (применяется перед сохранением уведомления)]]></string>
@@ -176,18 +178,20 @@
     <string name="_bx_ntfs_txt_msg_no_results"><![CDATA[Пусто]]></string>
     <string name="_bx_ntfs_txt_err_nothing_changed"><![CDATA[Ничего не изменилось.]]></string>
     <string name="_bx_ntfs_txt_err_cannot_perform"><![CDATA[Невозможно выполнить действие.]]></string>
-    <string name="_bx_ntfs_txt_object_added"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b> - {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b>]]></string>
-    <string name="_bx_ntfs_txt_object_added_in_context"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b> - {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b> от <b class="bx-ntfs-content-profile">{object_owner_name}</b>]]></string>
-    <string name="_bx_ntfs_txt_object_post_common"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b> - {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b>]]></string>
-    <string name="_bx_ntfs_txt_object_post_common_in_context"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b> - {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b> от <b class="bx-ntfs-content-profile">{object_owner_name}</b>]]></string>
-    <string name="_bx_ntfs_txt_object_approved"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b> - одобрение <b class="bx-ntfs-content-entry">{entry_caption}</b> ({entry_sample})]]></string>
-    <string name="_bx_ntfs_txt_object_approved_in_context"><![CDATA[<b class="bx-ntfs-content-entry">{entry_caption}</b> {entry_sample} - одобрение в <b class="bx-ntfs-content-profile">{owner_name}</b>]]></string>
+
+    <string name="_bx_ntfs_txt_and"><![CDATA[и]]></string>
+    <string name="_bx_ntfs_txt_object_added"><![CDATA[{author_name_wrapped} - {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b>]]></string>
+    <string name="_bx_ntfs_txt_object_added_in_context"><![CDATA[{author_name_wrapped} - {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b> в <b class="bx-ntfs-content-profile">{owner_name}</b>]]></string>
+    <string name="_bx_ntfs_txt_object_post_common"><![CDATA[{author_name_wrapped} - {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b>]]></string>
+    <string name="_bx_ntfs_txt_object_post_common_in_context"><![CDATA[{author_name_wrapped} - {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b> в <b class="bx-ntfs-content-profile">{object_owner_name}</b>]]></string>
+    <string name="_bx_ntfs_txt_object_approved"><![CDATA[{author_name_wrapped} - одобрение <b class="bx-ntfs-content-entry">{entry_caption}</b> ({entry_sample})]]></string>
+    <string name="_bx_ntfs_txt_object_approved_in_context"><![CDATA[{author_name_wrapped} - одобрение <b class="bx-ntfs-content-entry">{entry_caption}</b> ({entry_sample}) в <b class="bx-ntfs-content-profile">{owner_name}</b>]]></string>
     <string name="_bx_ntfs_txt_object_publish_failed"><![CDATA[Ошибка при публикации: {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b>]]></string>
     <string name="_bx_ntfs_txt_object_publish_succeeded"><![CDATA[Успешная публикация: {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b>]]></string>
-    <string name="_bx_ntfs_txt_object_pending_approval"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b> - {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b> ожидает одобрения]]></string>
-    <string name="_bx_ntfs_txt_object_reported_content"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b> - новая жалоба: {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b>]]></string>
-    <string name="_bx_ntfs_txt_subobject_added"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b> - {subentry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b>]]></string>
-    <string name="_bx_ntfs_txt_subobject_added_in_context"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b> - {subentry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b>]]></string>
+    <string name="_bx_ntfs_txt_object_pending_approval"><![CDATA[{author_name_wrapped} - {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b> ожидает одобрения]]></string>
+    <string name="_bx_ntfs_txt_object_reported_content"><![CDATA[{author_name_wrapped} - новая жалоба: {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b>]]></string>
+    <string name="_bx_ntfs_txt_subobject_added"><![CDATA[{author_name_wrapped} - {subentry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b>]]></string>
+    <string name="_bx_ntfs_txt_subobject_added_in_context"><![CDATA[{author_name_wrapped} - {subentry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b> в <b class="bx-ntfs-content-profile">{owner_name}</b>]]></string>
     <string name="_bx_ntfs_txt_new_event_subject"><![CDATA[Новое на сайте "{0}"]]></string>
     <string name="_bx_ntfs_txt_et_preview_subject"><![CDATA[Тема:]]></string>
     <string name="_bx_ntfs_txt_et_preview_body"><![CDATA[Текст:]]></string>
