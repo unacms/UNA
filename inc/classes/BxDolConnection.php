@@ -404,8 +404,15 @@ class BxDolConnection extends BxDolFactory implements iBxDolFactoryObject
         if (null !== $aAlertExtras['override_result'])
             return $aAlertExtras['override_result'];
 
-        if (!$this->_oQuery->addConnection($iInitiator, $iContent, $iMutual))
+        $iId = 0;
+        if(!($iId = $this->_oQuery->addConnection($iInitiator, $iContent, $iMutual)))
             return false;
+
+        $iAlertSender = bx_get_logged_profile_id() ?: $iInitiator;
+        $aAlertExtras = array_merge($aAlertExtras, [
+            'source' => $this->_sObject . '_' . $iId,
+            'source_mac' => $this->_sObject . '_' . $iAlertSender . '_' . $iId
+        ]);
 
         /**
          * @hooks
@@ -413,8 +420,8 @@ class BxDolConnection extends BxDolFactory implements iBxDolFactoryObject
          * It's equivalent to @ref hook-bx_dol_connection-connection_before_add
          * @hook @ref hook-bx_dol_connection-connection_added
          */
-        bx_alert($this->_sObject, 'connection_added', 0, false, $aAlertExtras);
-        bx_alert('system', 'connection_added', 0, false, array_merge($aAlertExtras, ['object_name' => $this->_sObject]));
+        bx_alert($this->_sObject, 'connection_added', 0, $iAlertSender, $aAlertExtras);
+        bx_alert('system', 'connection_added', 0, $iAlertSender, array_merge($aAlertExtras, ['object_name' => $this->_sObject]));
 
         $this->onAdded($iInitiator, $iContent, $iMutual);
 

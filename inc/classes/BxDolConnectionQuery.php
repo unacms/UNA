@@ -352,7 +352,7 @@ class BxDolConnectionQuery extends BxDolDb
         if ($this->getConnection($iInitiator, $iContent)) // connection already exists
             return false;
 
-		$aBindings = array();
+        $aBindings = [];
 
         $iMutual = 0;
         $sMutualField = '';
@@ -368,6 +368,8 @@ class BxDolConnectionQuery extends BxDolDb
         if (!$this->query($sQuery, array_merge($aBindings, array('initiator' => $iInitiator, 'content' => $iContent, 'added' => time()))))
             return false;
 
+        $iId = $this->lastId();
+
         if ($iMutual) // in case of mutual connection update 'mutual' field
             $this->updateConnectionMutual($iContent, $iInitiator, $iMutual);
 
@@ -375,8 +377,7 @@ class BxDolConnectionQuery extends BxDolDb
             $iMutualParam = $iMutual;
 
         $this->cleanMemory('BxDolConnectionQuery::getConnection' . $this->_sTable . $iInitiator . '_' . $iContent);
-            
-        return true;
+        return $iId;
     }
 
     public function updateConnection ($iInitiator, $iContent, $aSet)

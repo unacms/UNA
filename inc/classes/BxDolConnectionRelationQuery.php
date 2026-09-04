@@ -31,11 +31,13 @@ class BxDolConnectionRelationQuery extends BxDolConnectionQuery
             'added' => time()
         ))) return false;
 
+        $iId = $this->lastId();
+
         if($iMutualParam !== null)
             $iMutualParam = $iMutual;
 
         $this->cleanMemory('BxDolConnectionQuery::getConnection' . $this->_sTable . $iInitiator . '_' . $iContent);
-        return true;
+        return $iId;
     }
 
     public function removeConnection ($iInitiator, $iContent)
