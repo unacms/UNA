@@ -4,6 +4,7 @@ import {
     appSetting,
     formatDateInterval,
     cloneObject,
+    useDateLocaleTag,
 } from 'app/lib/util'
 import Profile from 'app/ui/molecules/profile/profile'
 import { NeoButtonLink } from 'app/design/controls/neo-button/neo-button'
@@ -33,6 +34,7 @@ function isCoverActionsMenuInNavbar(module, isDesktop) {
 export function CoverSmall({ data, context, showMoreMenu, uri, mode, suppressContextSelector = false, suppressCoverBackButton = false }) {
     const isDesktop = useIsDesktop()
     const { currentUser } = useCurrentUser()
+    useDateLocaleTag()
     if (!data?.profile?.module) return null
 
     const bPerson =
@@ -210,6 +212,7 @@ export default function Cover({
     const { t } = useTranslation()
     const { currentUser } = useCurrentUser()
     const isDesktop = useIsDesktop()
+    useDateLocaleTag()
     const isWeb = Platform.OS === 'web'
     const profileData = data?.profile
 
