@@ -7,6 +7,7 @@ export default function PageLayout({ children, data, pageClasses }) {
 
     return (
         <Page data={data}>
+            {data?.uri ? appStatic('components_' + data?.uri, data) : null}
             <View className={width}>
                 <View className={`${contentWidth} ${padding} ${gap} mx-auto`}>
                     {children}

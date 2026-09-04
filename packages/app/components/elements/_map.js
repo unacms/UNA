@@ -56,6 +56,7 @@ import WikiHistory from './wiki-history';
 import CreditsCheckout from './credits-checkout';
 import PaymentOrderAdd from './payment-order-add';
 import AiAgent from './ai_agent';
+import Static from './static';
 
 
 export const componentsMapDefault = {
@@ -125,5 +126,6 @@ export const componentsMapDefault = {
     get_create_post_form: MultiPostForm,
     simple_list: SimpleList,
     stripe_connect: StripeConnect,
-    ai_agent: AiAgent
+    ai_agent: AiAgent,
+    static: Static,
 };
