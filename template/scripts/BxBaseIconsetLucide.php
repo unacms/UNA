@@ -13,7 +13,10 @@
  */
 class BxBaseIconsetLucide extends BxBaseIconset
 {
+    const VERSION = '1.41.0'; ///< Lucide version used when the local copy (see `build:lucide` in package.json) isn't available.
+
     protected $_aMap;
+    protected static $_aCacheSvg = [];
 
     public function __construct ($aObject, $oTemplate)
     {
@@ -41,8 +44,8 @@ class BxBaseIconsetLucide extends BxBaseIconset
             'cart-plus' => 'shopping-cart',
             'cc-stripe' => 'credit-card',
             'certificate' => 'award',
-            'chart-pie' => 'pie-chart',
-            'check-circle' => 'check-circle',
+            'chart-pie' => 'chart-pie',
+            'check-circle' => 'circle-check',
             'check-double' => 'check-check',
             'clipboard-check' => 'clipboard-check',
             'cog' => 'settings',
@@ -52,14 +55,14 @@ class BxBaseIconsetLucide extends BxBaseIconset
             'comments' => 'messages-square',
             'desktop' => 'monitor',
             'donate' => 'hand-coins',
-            'ellipsis-h' => 'more-horizontal',
-            'ellipsis-v' => 'more-vertical',
+            'ellipsis-h' => 'ellipsis',
+            'ellipsis-v' => 'ellipsis-vertical',
             'envelope' => 'mail',
             'envelope-open' => 'mail-open',
             'envelope-open-text' => 'mail-open',
             'exchange-alt' => 'repeat',
-            'exclamation-circle' => 'alert-circle',
-            'exclamation-triangle' => 'alert-triangle',
+            'exclamation-circle' => 'circle-alert',
+            'exclamation-triangle' => 'triangle-alert',
             'fa-book' => 'book-text',
             'fa-bookmark' => 'bookmark',
             'fa-certificate' => 'badge',
@@ -79,15 +82,15 @@ class BxBaseIconsetLucide extends BxBaseIconset
             'google' => 'log-in', //TODO: Brand icon. Update later.
             'hand-holding-usd' => 'hand-coins',
             'hashtag' => 'hash',
-            'helpcircle' => 'help-circle',
-            'house' => 'home',
+            'helpcircle' => 'circle-question-mark',
+            'house' => 'house',
             'industry' => 'factory',
             'info-circle' => 'info',
             'keyround' => 'key-round',
             'language' => 'languages',
             'list-alt' => 'list',
             'linkedin-in' => 'log-in', //TODO: Brand icon. Update later.
-            'lockopen' => 'unlock',
+            'lockopen' => 'lock-open',
             'mail-bulk' => 'mails',
             'map-marker' => 'map-pin',
             'map-marker-alt' => 'map-pin',
@@ -96,7 +99,7 @@ class BxBaseIconsetLucide extends BxBaseIconset
             'pencil-alt' => 'pencil-line',
             'pencil-ruler' => 'ruler',
             'photo-video' => 'image-play',
-            'plus-circle' => 'plus-circle',
+            'plus-circle' => 'circle-plus',
             'qrcode' => 'qr-code',
             'question' => 'circle-question-mark',
             'question-circle' => 'circle-question-mark',
@@ -114,15 +117,15 @@ class BxBaseIconsetLucide extends BxBaseIconset
             'sync' => 'refresh-ccw',
             'sync-alt' => 'refresh-ccw',
             'tachometer-alt' => 'gauge',
-            'tasks' => 'check-square',
+            'tasks' => 'square-check',
             'th-large' => 'grid-2x2',
             'thumbtack' => 'pin',
             'times' => 'x',
-            'times-circle' => 'x-circle',
+            'times-circle' => 'circle-x',
             'toolbox' => 'tool-case',
             'trash2' => 'trash-2',
             'twitter' => 'log-in', //TODO: Brand icon. Update later.
-            'unlock-alt' => 'unlock',
+            'unlock-alt' => 'lock-open',
             'user' => 'user-round',
             'user-friends' => 'users',
             'user-plus' => 'user-round-plus',
@@ -142,16 +145,62 @@ class BxBaseIconsetLucide extends BxBaseIconset
 
     public function getPreloaderJs()
     {
-        return 'https://unpkg.com/lucide@latest';
+        if(file_exists(BX_DIRECTORY_PATH_PLUGINS_PUBLIC . 'lucide/lucide.min.js'))
+            return '{dir_plugins_public}lucide/|lucide.min.js';
+
+        return 'https://unpkg.com/lucide@' . self::VERSION;
     }
 
     public function getIcon($sIcon)
+    {
+        return bx_gen_method_name($this->_getIconName($sIcon), ['_', '-']);
+    }
+
+    public function getIconHtml($sIcon, $aAttrs = [])
+    {
+        $sName = $this->_getIconName($sIcon);
+        if(!preg_match('/^[a-z0-9-]+$/', $sName))
+            return false;
+
+        if(!isset(self::$_aCacheSvg[$sName])) {
+            $sPath = BX_DIRECTORY_PATH_PLUGINS_PUBLIC . 'lucide/icons/' . $sName . '.svg';
+
+            $sSvg = file_exists($sPath) ? file_get_contents($sPath) : false;
+            if($sSvg !== false) {
+                $sSvg = preg_replace('/<!--.*?-->/s', '', $sSvg);
+                $sSvg = trim(preg_replace('/\s+/', ' ', $sSvg));
+                $sSvg = str_replace(' />', '/>', $sSvg);
+            }
+
+            self::$_aCacheSvg[$sName] = $sSvg;
+        }
+
+        $sSvg = self::$_aCacheSvg[$sName];
+        if($sSvg === false)
+            return false;
+
+        $sClass = 'sys-icon';
+        if(!empty($aAttrs['class']))
+            $sClass .= ' ' . $aAttrs['class'];
+        unset($aAttrs['class']);
+
+        $sAttrs = '';
+        foreach($aAttrs as $sKey => $sValue)
+            $sAttrs .= ' ' . $sKey . '="' . bx_html_attribute($sValue) . '"';
+
+        return preg_replace('/^<svg class="/', '<svg' . $sAttrs . ' class="' . bx_html_attribute($sClass) . ' ', $sSvg, 1);
+    }
+
+    /**
+     * Get Lucide icon name (kebab-case) by Font Awesome or Lucide icon name.
+     */
+    protected function _getIconName($sIcon)
     {
         $sIcon = trim(preg_replace('/(sys-icon|far|col-\w+)/i', '', $sIcon));
         if(isset($this->_aMap[$sIcon]))
             $sIcon = $this->_aMap[$sIcon];
 
-        return bx_gen_method_name($sIcon, ['_', '-']);
+        return $sIcon;
     }
 
     public function getCode()

@@ -2125,7 +2125,6 @@ headroom.js@^0.12.0:
 
 "highlight.js@github:highlightjs/highlight.js":
   version "11.12.0"
-  uid fc3f06392f189354eed922973635ab9e9268b983
   resolved "https://codeload.github.com/highlightjs/highlight.js/tar.gz/fc3f06392f189354eed922973635ab9e9268b983"
 
 hls.js@^1.7.1:
@@ -2634,7 +2633,6 @@ jstree@^3.3.17:
 
 "jush@https://github.com/vrana/jush":
   version "0.0.0"
-  uid e89a152b995b33b2f308078c3dee7bee506711e3
   resolved "https://github.com/vrana/jush#e89a152b995b33b2f308078c3dee7bee506711e3"
 
 just-diff-apply@^5.2.0:
@@ -2815,6 +2813,16 @@ lru-cache@^11.0.0, lru-cache@^11.1.0, lru-cache@^11.2.1:
   version "11.5.2"
   resolved "https://registry.yarnpkg.com/lru-cache/-/lru-cache-11.5.2.tgz#00e16665c90c620fba14a3c368732a976493f760"
   integrity sha512-4pfM1Ff0x50o0tQwb5ucw/RzNyD0/YJME6IVcStalZuMWxdt3sR3huStTtxz4PUmvZfRguvDejasvQ2kifR11g==
+
+lucide-static@1.41.0:
+  version "1.41.0"
+  resolved "https://registry.yarnpkg.com/lucide-static/-/lucide-static-1.41.0.tgz#56c437537404a446883ff611301ef2442835bece"
+  integrity sha512-39fX7SH+Rwis0oUmLLOipOoFSiJll9yi2DyEGDaE7Sp0qQAEhEfMQ2scQNdWKeGVENGv1uXc5ZeZqBWsuhQSFg==
+
+lucide@1.41.0:
+  version "1.41.0"
+  resolved "https://registry.yarnpkg.com/lucide/-/lucide-1.41.0.tgz#e2336f8764b5b1bbfe62e7f621c7aaa81fc1c3fd"
+  integrity sha512-fIXP7JzC1vehdqOrMhwpbcXzX6CvUMuoDf16HY1FmC4sDBeuwrH2A0c6QmLn3wnSvaMchpEyM+JWijyTvOs3kw==
 
 magic-string@^0.30.3:
   version "0.30.21"
