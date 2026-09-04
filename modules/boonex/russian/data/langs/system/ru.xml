@@ -4194,7 +4194,8 @@
     <string name="_sys_txt_account_suspended"><![CDATA[Ваш аккаунт заблокирован.]]></string>
     <string name="_sys_txt_account_unconfirmed_email"><![CDATA[Ваш email не подтверждён. Пожалуйста, проверьте свой эл. ящик ({1}) на наличие письма подтверждения и перейдите по ссылке в нём или используйте код подтверждения (6 цифр), чтобы <a href="{2}">подтвердить свой адрес эл. почты</a>. <br />Не можете найти письмо? Проверьте папку "спам" или <a href="{0}">снова запросите письмо верификации</a>.]]></string>
     <string name="_sys_txt_account_unconfirmed_phone"><![CDATA[Ваш телефон не подтверждён. Пожалуйста, подтвердите его на  <a href="{0}">странице верификации</a>.]]></string>
-    <string name="_sys_txt_account_profile_system"><![CDATA[Пожалуйста, <a href="{0}">создайте профиль</a>, чтобы начать пользоваться сайтом.]]></string>
+    <string name="_sys_txt_account_profile_system"><![CDATA[У вашего аккаунта ещё нет профиля. Создайте его, чтобы начать пользоваться сайтом.]]></string>
+    <string name="_sys_txt_account_profile_system_action"><![CDATA[Создать профиль]]></string>
     <string name="_sys_txt_account_need_to_change_password"><![CDATA[Ваш пароль устарел. Пожалуйста <a href="{0}">измените Ваш пароль</a>.]]></string>
     <string name="_sys_txt_account_cannot_delete"><![CDATA[Невозможно удалить единственную учетную запись оператора.]]></string>
     <string name="_sys_txt_account_deletion_scheduled"><![CDATA[Удаление аккаунта запланировано и будет выполнено через несколько минут.]]></string>
