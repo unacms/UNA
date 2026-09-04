@@ -20,8 +20,11 @@ function readRawActions(message) {
     return [];
 }
 
-export function messageActions(message) {
-    return readRawActions(message)
+export function messageActions(message, streamedActions) {
+    const raw = Array.isArray(streamedActions) && streamedActions.length
+        ? streamedActions
+        : readRawActions(message);
+    return raw
         .map((action) => {
             if (!action || typeof action !== 'object') return null;
             const label = String(action.label || action.title || action.text || '').trim();

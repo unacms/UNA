@@ -119,7 +119,12 @@ export function createAgentChat(agentId, options = {}) {
 
     return {
         async *connect(messages, data, abortSignal, runContext) {
-            yield* stream.connect(messages, data, abortSignal, runContext);
+            for await (const chunk of stream.connect(messages, data, abortSignal, runContext)) {
+                if (chunk?.type === 'CUSTOM' && chunk.name === 'chat_actions') {
+                    options.onChatActions?.(chunk.messageId, chunk.value);
+                }
+                yield chunk;
+            }
         },
         async hydrate() {
             try {

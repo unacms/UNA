@@ -6,10 +6,12 @@ import { View, Row, ScrollView } from 'app/design/view';
 import { Text } from 'app/design/typography';
 import { InputMulti, NeoButton } from 'app/design/controls';
 import Profile from 'app/ui/molecules/profile/profile';
+import Html from 'app/ui/atoms/html';
 import { useCurrentUser } from 'app/context/user';
-import { cn, isWeb } from 'app/lib/util';
+import { cn, isWeb, openExternalLink } from 'app/lib/util';
 import { createAgentChat } from './helper';
 import { isHiddenFirstMessageText } from './hidden-first-message';
+import { messageActions } from './message-content';
 
 const NEAR_BOTTOM_PX = 48;
 const COMPOSER_LINE_PX = 20;
@@ -53,8 +55,46 @@ function messageText(message) {
 
 function isInteractiveTarget(target) {
     return typeof target?.closest === 'function'
-        ? !!target.closest('a, button, input, textarea, select, [contenteditable="true"]')
+        ? !!target.closest('a, button, input, textarea, select, [contenteditable="true"], [role="button"]')
         : false;
+}
+
+function MessageBody({ text, isStreaming }) {
+    if (!text && !isStreaming) return null;
+    if (!text) {
+        return <Text className="text-sm text-foreground leading-5">…</Text>;
+    }
+    return (
+        <Html
+            data={String(text).replace(/\r\n|\n|\r/g, '<br>')}
+            customClassName="u-vanilla-html-small"
+        />
+    );
+}
+
+function ChatActions({ actions, onReply, repliesEnabled }) {
+    if (!actions.length) return null;
+    return (
+        <View className="flex-row flex-wrap gap-2 mt-2 max-w-full">
+            {actions.map((action, index) => {
+                const isLink = action.type === 'link';
+                return (
+                    <NeoButton
+                        key={`${action.type}:${action.label}:${index}`}
+                        label={action.label}
+                        style={index === 0 ? 'glassProminent' : 'bordered'}
+                        controlSize="small"
+                        borderShape="rounded"
+                        disabled={!isLink && !repliesEnabled}
+                        onPress={() => {
+                            if (isLink) openExternalLink(action.url);
+                            else onReply?.(action.message);
+                        }}
+                    />
+                );
+            })}
+        </View>
+    );
 }
 
 function AgentStatus({ label }) {
@@ -65,9 +105,10 @@ function AgentStatus({ label }) {
     );
 }
 
-function ChatBubble({ message, user, assistant, isStreaming }) {
+function ChatBubble({ message, user, assistant, isStreaming, onReply, repliesEnabled, streamedActions }) {
     const isUser = message.role === 'user';
     const text = messageText(message);
+    const actions = isUser ? [] : messageActions(message, streamedActions);
     const author = isUser
         ? {
               id: user?.id || 0,
@@ -90,20 +131,19 @@ function ChatBubble({ message, user, assistant, isStreaming }) {
                 </View>
             </View>
             <View className="flex-1 mt-2 min-w-0">
-                <View className="bg-muted/50 rounded-xl py-2.5 px-3 gap-0.5 self-start max-w-full">
+                <View className="bg-muted/50 rounded-xl py-2.5 px-3 gap-0.5 w-full min-w-0">
                     <Text className="text-sm tracking-tight font-semibold text-card-foreground">
                         {author?.display_name}
                     </Text>
-                    <Text
-                        className={cn(
-                            'text-sm text-foreground leading-5',
-                            isStreaming && 'web:select-none'
-                        )}
-                    >
-                        {text}
-                        {isStreaming && !text ? '…' : ''}
-                    </Text>
+                    <MessageBody text={text} isStreaming={isStreaming} />
                 </View>
+                {actions.length > 0 ? (
+                    <ChatActions
+                        actions={actions}
+                        onReply={onReply}
+                        repliesEnabled={repliesEnabled}
+                    />
+                ) : null}
             </View>
         </Row>
     );
@@ -173,6 +213,9 @@ function AiAgentChat({
     const scrollRafRef = useRef(0);
     const skipPinFromScrollRef = useRef(false);
     const [composerHeight, setComposerHeight] = useState(COMPOSER_LINE_PX);
+    const [streamActions, setStreamActions] = useState({});
+    const lastAssistantIdRef = useRef(null);
+    const applyChatActionsRef = useRef(null);
 
     const agentId = data.agent_id;
     const contextProfileId = Number(data.context_profile_id) || 0;
@@ -214,13 +257,35 @@ function AiAgentChat({
     const restComposerHeight = restComposerHeightRef.current ?? COMPOSER_LINE_PX;
     const isMultiline = input.length > 0 && (composerHeight > restComposerHeight + 6 || input.includes('\n'));
 
+    const applyChatActions = useCallback((messageId, value) => {
+        if (!Array.isArray(value)) return;
+        const fallbackId = lastAssistantIdRef.current;
+        const id = messageId || fallbackId;
+        if (!id) return;
+        setStreamActions((prev) => {
+            const next = { ...prev, [id]: value };
+            if (fallbackId && fallbackId !== id) next[fallbackId] = value;
+            return next;
+        });
+    }, []);
+    applyChatActionsRef.current = applyChatActions;
+
     const connection = useMemo(
-        () => createAgentChat(agentId, { contextProfileId }),
+        () =>
+            createAgentChat(agentId, {
+                contextProfileId,
+                onChatActions: (messageId, value) => applyChatActionsRef.current?.(messageId, value),
+            }),
         [agentId, contextProfileId]
     );
 
     const threadId =
         contextProfileId > 0 ? `agent:${agentId}:${contextProfileId}` : `agent:${agentId}`;
+
+    const onChatChunk = useCallback((chunk) => {
+        if (chunk?.type !== 'CUSTOM' || chunk.name !== 'chat_actions') return;
+        applyChatActions(chunk.messageId, chunk.value);
+    }, [applyChatActions]);
 
     // Prefetched transcript: do not use persistence hydrate — it races sendMessage
     // ("a send that starts first owns the client"). Contact / no bootstrap keeps
@@ -229,12 +294,21 @@ function AiAgentChat({
         connection,
         initialMessages,
         threadId,
+        onChunk: onChatChunk,
+        onCustomEvent: (name, value, context) => {
+            if (name !== 'chat_actions') return;
+            applyChatActions(context?.messageId, value);
+        },
         ...(sendBootstrap || initialMessage ? {} : { persistence: true }),
     });
 
     const visibleMessages = hideInitialMessage
         ? messages.filter((message) => !isHiddenFirstMessageText(messageText(message)))
         : messages;
+
+    useEffect(() => {
+        setStreamActions({});
+    }, [threadId]);
 
     useEffect(() => {
         if (!sendBootstrap || !initialMessage) return;
@@ -247,9 +321,12 @@ function AiAgentChat({
     const chatError = hydrateError || error;
 
     const last = messages[messages.length - 1];
+    const lastVisible = visibleMessages[visibleMessages.length - 1];
+    const lastVisibleId = lastVisible?.id;
     const streamingId = isLoading && last?.role === 'assistant' ? last.id : null;
     const lastText = last ? messageText(last) : '';
     const waitingForReply = isLoading && (!last || last.role === 'user' || !lastText);
+    lastAssistantIdRef.current = last?.role === 'assistant' ? last.id : null;
 
     const scrollListToEnd = useCallback(() => {
         skipPinFromScrollRef.current = true;
@@ -280,13 +357,6 @@ function AiAgentChat({
         pinnedToBottomRef.current = isNearBottom(listRef.current, event?.nativeEvent);
     }, []);
 
-    const onListMouseDown = useCallback((event) => {
-        if (event.button !== 0 || event.shiftKey || isInteractiveTarget(event.target)) return;
-        if (document.activeElement === inputRef.current) {
-            event.preventDefault();
-        }
-    }, []);
-
     const onListMouseUp = useCallback((event) => {
         if (event.button !== 0 || isInteractiveTarget(event.target)) return;
         const selection = window.getSelection?.();
@@ -305,6 +375,18 @@ function AiAgentChat({
         await pending;
         focusComposer();
     }, [input, isLoading, sendMessage, focusComposer, scrollListToEnd]);
+
+    const sendReply = useCallback(async (text) => {
+        const value = String(text || '').trim();
+        if (!value || isLoading) return;
+        pinnedToBottomRef.current = true;
+        setInput('');
+        const pending = sendMessage(value);
+        scrollListToEnd();
+        focusComposer();
+        await pending;
+        focusComposer();
+    }, [isLoading, sendMessage, focusComposer, scrollListToEnd]);
 
     const onComposerKey = useCallback(
         (event) => {
@@ -326,9 +408,7 @@ function AiAgentChat({
                 onScroll={onListScroll}
                 scrollEventThrottle={100}
                 keyboardShouldPersistTaps="always"
-                {...(isWeb
-                    ? { onMouseDown: onListMouseDown, onMouseUp: onListMouseUp }
-                    : null)}
+                {...(isWeb ? { onMouseUp: onListMouseUp } : null)}
             >
                 {visibleMessages.map((message) => (
                     <ChatBubble
@@ -337,6 +417,9 @@ function AiAgentChat({
                         user={currentUser}
                         assistant={assistant}
                         isStreaming={message.id === streamingId}
+                        onReply={sendReply}
+                        repliesEnabled={!isLoading && message.id === lastVisibleId}
+                        streamedActions={streamActions[message.id]}
                     />
                 ))}
                 {waitingForReply ? <AgentStatus label="Thinking…" /> : null}
