@@ -84,12 +84,17 @@ export function isShowCover(cover, currentUser, url) {
 
 
 /** Header toolbar NeoButton defaults from `header_toolbar.neoButton` settings (desktop/mobile). */
-export function getHeaderToolbarNeoButtonDefaults(isDesktop) {
+export function getHeaderToolbarNeoButtonDefaults(isDesktop, options) {
+    const primary = options?.primary === true;
     const config = appSetting('header_toolbar', 'neoButton') || {};
     const platform = isDesktop ? 'desktop' : 'mobile';
     const platformConfig = config[platform] || {};
+    const fallbackStyle = isDesktop ? 'bordered' : 'borderless';
+    const fallbackPrimaryStyle = isDesktop ? 'borderedProminent' : 'glassProminent';
     return {
-        style: platformConfig.style ?? (isDesktop ? 'bordered' : 'borderless'),
+        style: primary
+            ? (platformConfig.primaryStyle ?? fallbackPrimaryStyle)
+            : (platformConfig.style ?? fallbackStyle),
         controlSize: platformConfig.controlSize ?? 'regular',
     };
 }

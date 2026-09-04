@@ -46,11 +46,11 @@ export default function HeaderElement({ url, uri }) {
                                 return <MenuHeaderNavigation {...(item.props || {})} />
                             case "link":
                                 if (item.props?.neoButton) {
-                                    const { neoButton, ...neoButtonProps } = item.props;
+                                    const { neoButton, primary, ...neoButtonProps } = item.props;
                                     const isMessenger = item.href === '{messenger}';
                                     return (
                                         <NeoButtonLink
-                                            {...toolbarNeoButtonDefaults}
+                                            {...getHeaderToolbarNeoButtonDefaults(isDesktop, { primary })}
                                             borderShape="circle"
                                             {...neoButtonProps}
                                             {...(item.target ? { target: item.target } : {})}

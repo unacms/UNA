@@ -145,8 +145,14 @@ const getData = cache(async (params, search_params) => {
         return await res.json();
     } catch (error) {
         const text = await resClone.text();
-        console.error("!-------------------------! JSON error:", text);
-        return { data: { title: SITE_TITLE, description: SITE_TITLE }, code: 500 };
+        const fatal = text.match(/Fatal error[^<]*/i)?.[0]
+            || text.match(/Uncaught [\w\\]+:[^\n<]+/)?.[0]
+            || text.slice(0, 200);
+        console.error('UNA page JSON parse failed:', fatal);
+        return {
+            data: { title: SITE_TITLE, description: SITE_TITLE, page_status: 503 },
+            code: 500,
+        };
     }
 });
 

@@ -7,7 +7,8 @@ import {
     formatDateInterval,
     cloneObject,
     cn,
-    isWeb
+    isWeb,
+    useDateLocaleTag,
 } from 'app/lib/util'
 import { useTranslation } from 'react-i18next'
 import { useCurrentUser } from 'app/context/user'
@@ -59,6 +60,7 @@ export function CoverMorphBody({
 }) {
     const { t } = useTranslation()
     const { currentUser } = useCurrentUser()
+    useDateLocaleTag()
     const isDesktop = useIsDesktop()
     const breakpointName = useBreakpointName()
     const sizing = getCoverMorphSizing(isDesktop)

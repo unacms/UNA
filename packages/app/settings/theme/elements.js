@@ -96,7 +96,7 @@ export const settingsElements = {
     },
     blocks: {
         'u-block-base':
-            ' text-card-foreground gap-3 ',
+            ' text-card-foreground gap-4 ',
         'u-block-bg':
             ' bg-card/60 shadow-block-outline dark:shadow-block-outline-deep ',
         'u-block-pad':
@@ -110,10 +110,10 @@ export const settingsElements = {
         'u-block-header':
             ' flex-row gap-3  ',
         'u-block-icon': ' items-center w-9 h-9 justify-center bg-muted/50 rounded-lg text-card-foreground flex-none',
-        'u-block-icon-size': 24, // Default icon size for block header icons
+        'u-block-icon-size': 20, // Default icon size for block header icons
         'u-block-name': ' flex-auto gap-1 ',
         'u-block-title':
-            'text-card-foreground leading-9 px-0.5 text-lg lg:text-xl font-bold tracking-tight',
+            'text-card-foreground px-0.5 text-lg font-semibold tracking-tight',
         'u-block-description': 'text-muted-foreground text-xs lg:text-sm leading-5 px-px',
         'u-block-content': 'gap-0.5 ',  
         'u-block-footer':

@@ -1,12 +1,81 @@
-import * as RNLocalize from "react-native-localize";
+import { useEffect, useSyncExternalStore } from 'react';
+import { Platform } from 'react-native';
+import * as RNLocalize from 'react-native-localize';
+
+const isWeb = Platform.OS === 'web';
+// Must match the SSR fallback in apps/next/stubs/react-native-localize.js.
+const SSR_DATE_LOCALE = 'en-US';
 
 const _fmtCache = new Map();
 
 function getDateOrderByLocale(tag) {
     const lang = tag.toLowerCase();
-    if (lang.startsWith("en-us")) return "M D, Y";
-    if (lang.startsWith("zh") || lang.startsWith("ja") || lang.startsWith("ko")) return "Y M D";
-    return "D M Y";
+    if (lang.startsWith('en-us')) return 'M D, Y';
+    if (lang.startsWith('zh') || lang.startsWith('ja') || lang.startsWith('ko')) return 'Y M D';
+    return 'D M Y';
+}
+
+function readDeviceLocaleTag() {
+    if (isWeb) {
+        if (typeof navigator === 'undefined') return SSR_DATE_LOCALE;
+        return navigator.language || navigator.userLanguage || SSR_DATE_LOCALE;
+    }
+    return RNLocalize.getLocales()?.[0]?.languageTag || SSR_DATE_LOCALE;
+}
+
+let currentDateLocaleTag = isWeb ? SSR_DATE_LOCALE : readDeviceLocaleTag();
+const dateLocaleListeners = new Set();
+
+function subscribeDateLocale(cb) {
+    dateLocaleListeners.add(cb);
+    return () => dateLocaleListeners.delete(cb);
+}
+
+function getDateLocaleSnapshot() {
+    return currentDateLocaleTag;
+}
+
+function getDateLocaleServerSnapshot() {
+    return SSR_DATE_LOCALE;
+}
+
+export function hydrateDateLocale() {
+    const next = readDeviceLocaleTag();
+    if (next === currentDateLocaleTag) return;
+    currentDateLocaleTag = next;
+    dateLocaleListeners.forEach((listener) => listener());
+}
+
+/**
+ * SSR-stable device locale. First client render matches the server (`en-US`
+ * on web); after mount it updates to `navigator.language` and re-renders
+ * subscribers so date order (M D, Y vs D M Y) does not hydrate-mismatch.
+ */
+export function useDateLocaleTag() {
+    const tag = useSyncExternalStore(
+        subscribeDateLocale,
+        getDateLocaleSnapshot,
+        getDateLocaleServerSnapshot,
+    );
+    useEffect(() => {
+        hydrateDateLocale();
+    }, []);
+    return tag;
+}
+
+function resolveLocaleTag(explicit) {
+    if (explicit) return explicit;
+    return currentDateLocaleTag;
+}
+
+function isSameCalendarDay(a, b) {
+    return a.getFullYear() === b.getFullYear()
+        && a.getMonth() === b.getMonth()
+        && a.getDate() === b.getDate();
+}
+
+function isSameClockTime(a, b) {
+    return a.getHours() === b.getHours() && a.getMinutes() === b.getMinutes();
 }
 
 export const formatDate = (
@@ -25,7 +94,7 @@ export const formatDate = (
     } = {}
 ) => {
     const date = input instanceof Date ? input : new Date(input);
-    const localeTag = locale || RNLocalize.getLocales()?.[0]?.languageTag || "en-US";
+    const localeTag = resolveLocaleTag(locale);
     if (Number.isNaN(date.getTime())) return '';
     const nowYear = new Date().getFullYear();
 
@@ -54,11 +123,11 @@ export const formatDate = (
         if (Math.abs(hrs) < 24) {
             return `${Math.abs(hrs)}h`;
         }
-        const days = Math.round(sec / (3600*24));
+        const days = Math.round(sec / (3600 * 24));
         if (Math.abs(days) < 31) {
             return `${Math.abs(days)}d`;
         }
-        const weeks = Math.round(sec / (3600*24*7));
+        const weeks = Math.round(sec / (3600 * 24 * 7));
         if (Math.abs(weeks) < 24) {
             return `${Math.abs(weeks)}w`;
         }
@@ -107,7 +176,7 @@ function formatDateUniversal(date, {
         const needYear = (yearPolicy === 'always') || (yearPolicy === 'auto' && date.getFullYear() !== nowYear);
         const yearStr = String(date.getFullYear());
 
-        const tokens = { D: dayStr, M: monthStr, Y: needYear ? yearStr : "" };
+        const tokens = { D: dayStr, M: monthStr, Y: needYear ? yearStr : '' };
 
         // order + punctuation
         const pattern = getDateOrderByLocale(localeTag); // "M D, Y" etc
@@ -116,9 +185,9 @@ function formatDateUniversal(date, {
             .replace(/\bM\b/g, tokens.M)
             .replace(/\bY\b/g, tokens.Y)
             // trim extra punctuation/spaces when year is hidden
-            .replace(/\s+,/g, ",")
-            .replace(/,\s*$/g, "")
-            .replace(/\s+/g, " ")
+            .replace(/\s+,/g, ',')
+            .replace(/,\s*$/g, '')
+            .replace(/\s+/g, ' ')
             .trim();
 
         if (dateText) parts.push(dateText);
@@ -138,22 +207,23 @@ function formatDateUniversal(date, {
         }
     }
 
-    return (rel || "") + parts.join(" ");
+    return (rel || '') + parts.join(' ');
 }
 
 export const formatDateInterval = (dateStart, dateEnd, t) => {
     const start = new Date(dateStart * 1000);
     const end = new Date(dateEnd * 1000);
+    const locale = currentDateLocaleTag;
 
-    const isSingleDate = (start).toLocaleDateString() === (end).toLocaleDateString();
-    const isSingleTime = (start).toLocaleTimeString() === (end).toLocaleTimeString();
+    const isSingleDate = isSameCalendarDay(start, end);
+    const isSingleTime = isSameClockTime(start, end);
 
     if (isSingleDate)
         if (isSingleTime)
-            return formatDate(start, t, { inFuture: true, showTime: true, month: 'numeric' });
+            return formatDate(start, t, { inFuture: true, showTime: true, month: 'numeric', locale });
         else
-            return formatDate(start, t, { inFuture: true, showTime: true, month: 'numeric' }) + ' - ' + formatDate(end, t, { inFuture: true, showTime: true, showDate: false, month: 'numeric' });
+            return formatDate(start, t, { inFuture: true, showTime: true, month: 'numeric', locale }) + ' - ' + formatDate(end, t, { inFuture: true, showTime: true, showDate: false, month: 'numeric', locale });
     else
-        return formatDate(start, t, { inFuture: true, showTime: true, month: 'numeric' }) + ' - ' + formatDate(end, t, { inFuture: true, showTime: true, showDate: true, month: 'numeric' });
+        return formatDate(start, t, { inFuture: true, showTime: true, month: 'numeric', locale }) + ' - ' + formatDate(end, t, { inFuture: true, showTime: true, showDate: true, month: 'numeric', locale });
 
-}
+};

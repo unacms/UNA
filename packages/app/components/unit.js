@@ -1,7 +1,9 @@
 import { getComponent } from 'app/components/registry';
+import { useDateLocaleTag } from 'app/lib/util';
 import { memo } from 'react';
 
 function Unit(props) {
+    useDateLocaleTag();
     if (!props?.unit)
         return null;
     const Component = getComponent('unit', props.unit);
