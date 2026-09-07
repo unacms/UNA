@@ -40,6 +40,17 @@ class BxBaseIconset extends BxDolIconset
         return $sIcon;
     }
 
+    /**
+     * Get icon as ready to use HTML code (e.g. inline SVG) which doesn't depend on the iconset's CSS/JS being loaded on the page.
+     * @param $sIcon - icon name
+     * @param $aAttrs - additional HTML attributes, e.g. `class`
+     * @return string|false - HTML code or false if the iconset doesn't support it and a font icon (`<i class="sys-icon ...">`) should be used instead.
+     */
+    public function getIconHtml($sIcon, $aAttrs = [])
+    {
+        return false;
+    }
+
     public function getCode()
     {
         return false;

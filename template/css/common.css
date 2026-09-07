@@ -8,8 +8,11 @@
 
 a {
     text-decoration:none;
-    outline:none;
     color:#3e8685; /* 26.13.13: prev val #387877; */
+}
+
+a:focus:not(:focus-visible) {
+    outline: none;
 }
 
 a:hover {
@@ -766,9 +769,9 @@ div.bx-popup-chain-item .bx-loading-ajax {
     }
 }
 
-button.bx-btn:focus,
-button.bx-btn:focus .bx-loading-ajax-btn {
-    outline: 0;	
+button.bx-btn:focus:not(:focus-visible),
+button.bx-btn:focus:not(:focus-visible) .bx-loading-ajax-btn {
+    outline: 0;
 }
 
 .bx-form-element-wrapper .bx-loading-ajax {
