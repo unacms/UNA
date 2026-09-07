@@ -5,6 +5,15 @@
  * { type: "reply", label }      → send label as the next user message
  */
 
+export function parseChatActionsPayload(value) {
+    if (Array.isArray(value)) return value;
+    if (value && typeof value === 'object') {
+        if (Array.isArray(value.actions)) return value.actions;
+        if (Array.isArray(value.value)) return value.value;
+    }
+    return [];
+}
+
 function readRawActions(message) {
     if (Array.isArray(message?.actions)) return message.actions;
     if (Array.isArray(message?.data?.actions)) return message.data.actions;

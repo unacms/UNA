@@ -4,14 +4,14 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } fr
 import { useChat } from '@tanstack/ai-react';
 import { View, Row, ScrollView } from 'app/design/view';
 import { Text } from 'app/design/typography';
-import { InputMulti, NeoButton } from 'app/design/controls';
+import { InputMulti, NeoButton, NeoButtonLink } from 'app/design/controls';
 import Profile from 'app/ui/molecules/profile/profile';
 import Html from 'app/ui/atoms/html';
 import { useCurrentUser } from 'app/context/user';
-import { cn, isWeb, openExternalLink } from 'app/lib/util';
+import { cn, isWeb } from 'app/lib/util';
 import { createAgentChat } from './helper';
 import { isHiddenFirstMessageText } from './hidden-first-message';
-import { messageActions } from './message-content';
+import { messageActions, parseChatActionsPayload } from './message-content';
 
 const NEAR_BOTTOM_PX = 48;
 const COMPOSER_LINE_PX = 20;
@@ -53,6 +53,13 @@ function messageText(message) {
         .join('');
 }
 
+function lastAssistantId(messages) {
+    for (let i = (messages?.length || 0) - 1; i >= 0; i--) {
+        if (messages[i]?.role === 'assistant') return messages[i].id;
+    }
+    return null;
+}
+
 function isInteractiveTarget(target) {
     return typeof target?.closest === 'function'
         ? !!target.closest('a, button, input, textarea, select, [contenteditable="true"], [role="button"]')
@@ -78,18 +85,28 @@ function ChatActions({ actions, onReply, repliesEnabled }) {
         <View className="flex-row flex-wrap gap-2 mt-2 max-w-full">
             {actions.map((action, index) => {
                 const isLink = action.type === 'link';
+                const buttonProps = {
+                    label: action.label,
+                    style: 'bordered',
+                    controlSize: 'small',
+                    borderShape: 'rounded',
+                };
+                if (isLink) {
+                    return (
+                        <NeoButtonLink
+                            key={`${action.type}:${action.label}:${index}`}
+                            {...buttonProps}
+                            href={action.url}
+                            target="_blank"
+                        />
+                    );
+                }
                 return (
                     <NeoButton
                         key={`${action.type}:${action.label}:${index}`}
-                        label={action.label}
-                        style={index === 0 ? 'glassProminent' : 'bordered'}
-                        controlSize="small"
-                        borderShape="rounded"
-                        disabled={!isLink && !repliesEnabled}
-                        onPress={() => {
-                            if (isLink) openExternalLink(action.url);
-                            else onReply?.(action.message);
-                        }}
+                        {...buttonProps}
+                        disabled={!repliesEnabled}
+                        onPress={() => onReply?.(action.message)}
                     />
                 );
             })}
@@ -109,6 +126,10 @@ function ChatBubble({ message, user, assistant, isStreaming, onReply, repliesEna
     const isUser = message.role === 'user';
     const text = messageText(message);
     const actions = isUser ? [] : messageActions(message, streamedActions);
+    const hasActions = actions.length > 0;
+    if (!text && !hasActions && !isStreaming) return null;
+
+    const showBubble = !!text || isStreaming;
     const author = isUser
         ? {
               id: user?.id || 0,
@@ -131,13 +152,15 @@ function ChatBubble({ message, user, assistant, isStreaming, onReply, repliesEna
                 </View>
             </View>
             <View className="flex-1 mt-2 min-w-0">
-                <View className="bg-muted/50 rounded-xl py-2.5 px-3 gap-0.5 w-full min-w-0">
-                    <Text className="text-sm tracking-tight font-semibold text-card-foreground">
-                        {author?.display_name}
-                    </Text>
-                    <MessageBody text={text} isStreaming={isStreaming} />
-                </View>
-                {actions.length > 0 ? (
+                {showBubble ? (
+                    <View className="bg-muted/50 rounded-xl py-2.5 px-3 gap-0.5 w-full min-w-0">
+                        <Text className="text-sm tracking-tight font-semibold text-card-foreground">
+                            {author?.display_name}
+                        </Text>
+                        <MessageBody text={text} isStreaming={isStreaming} />
+                    </View>
+                ) : null}
+                {hasActions ? (
                     <ChatActions
                         actions={actions}
                         onReply={onReply}
@@ -215,6 +238,8 @@ function AiAgentChat({
     const [composerHeight, setComposerHeight] = useState(COMPOSER_LINE_PX);
     const [streamActions, setStreamActions] = useState({});
     const lastAssistantIdRef = useRef(null);
+    const messagesRef = useRef([]);
+    const pendingActionsRef = useRef(null);
     const applyChatActionsRef = useRef(null);
 
     const agentId = data.agent_id;
@@ -258,13 +283,25 @@ function AiAgentChat({
     const isMultiline = input.length > 0 && (composerHeight > restComposerHeight + 6 || input.includes('\n'));
 
     const applyChatActions = useCallback((messageId, value) => {
-        if (!Array.isArray(value)) return;
-        const fallbackId = lastAssistantIdRef.current;
-        const id = messageId || fallbackId;
-        if (!id) return;
+        const actions = parseChatActionsPayload(value);
+        if (!actions.length) return;
+
+        const messages = messagesRef.current;
+        const last = messages[messages.length - 1];
+        // CUSTOM often arrives in the same tick as TEXT_MESSAGE_END, before React
+        // commits the new bubble. Do not fall back to the previous assistant.
+        const id = (last?.role === 'assistant' ? last.id : null)
+            || (messageId && messages.some((message) => message.id === messageId) ? messageId : null);
+
+        if (!id) {
+            pendingActionsRef.current = actions;
+            return;
+        }
+
+        pendingActionsRef.current = null;
         setStreamActions((prev) => {
-            const next = { ...prev, [id]: value };
-            if (fallbackId && fallbackId !== id) next[fallbackId] = value;
+            const next = { ...prev, [id]: actions };
+            if (messageId && messageId !== id) next[messageId] = actions;
             return next;
         });
     }, []);
@@ -295,18 +332,33 @@ function AiAgentChat({
         initialMessages,
         threadId,
         onChunk: onChatChunk,
-        onCustomEvent: (name, value, context) => {
+        onCustomEvent: (name, value) => {
             if (name !== 'chat_actions') return;
-            applyChatActions(context?.messageId, value);
+            applyChatActions(null, value);
         },
         ...(sendBootstrap || initialMessage ? {} : { persistence: true }),
     });
 
-    const visibleMessages = hideInitialMessage
-        ? messages.filter((message) => !isHiddenFirstMessageText(messageText(message)))
-        : messages;
+    messagesRef.current = messages;
+    lastAssistantIdRef.current = lastAssistantId(messages);
 
     useEffect(() => {
+        const pending = pendingActionsRef.current;
+        if (!pending) return;
+        const id = lastAssistantId(messages);
+        if (!id) return;
+        pendingActionsRef.current = null;
+        setStreamActions((prev) => ({ ...prev, [id]: pending }));
+    }, [messages]);
+
+    const visibleMessages = messages.filter((message) => {
+        if (hideInitialMessage && isHiddenFirstMessageText(messageText(message))) return false;
+        if (message.role !== 'assistant') return true;
+        return !!messageText(message) || messageActions(message, streamActions[message.id]).length > 0;
+    });
+
+    useEffect(() => {
+        pendingActionsRef.current = null;
         setStreamActions({});
     }, [threadId]);
 
@@ -326,7 +378,6 @@ function AiAgentChat({
     const streamingId = isLoading && last?.role === 'assistant' ? last.id : null;
     const lastText = last ? messageText(last) : '';
     const waitingForReply = isLoading && (!last || last.role === 'user' || !lastText);
-    lastAssistantIdRef.current = last?.role === 'assistant' ? last.id : null;
 
     const scrollListToEnd = useCallback(() => {
         skipPinFromScrollRef.current = true;
