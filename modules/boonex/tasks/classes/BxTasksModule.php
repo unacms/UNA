@@ -1510,6 +1510,11 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
 
         $aContentInfo = $this->_oDb->getContentInfoById($iContentId);
         $iContentAuthor = (int)$aContentInfo[$CNF['FIELD_AUTHOR']];
+
+        $iPerformer = bx_get_logged_profile_id();
+        $sSource = $sModule . '_' . $sAction . '_' . $iContentId;
+        $sSourceMac = $sModule . '_' . $sAction . '_' . $iPerformer . '_' . $iContentId;
+
         /**
          * @hooks
          * @hookdef hook-bx_tasks-completed 'bx_tasks', 'completed' - hook on task unassigned to profile
@@ -1522,10 +1527,13 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
          *      - `privacy_view` - [string] privacy view value
          * @hook @ref hook-bx_tasks-completed
          */
-        bx_alert($sModule, $sAction, $iContentId, false, array(
+        bx_alert($sModule, $sAction, $iContentId, $iPerformer, [
             'object_author_id' => $iContentAuthor,
-            'privacy_view' => $aContentInfo[$CNF['FIELD_ALLOW_VIEW_TO']]
-        ));
+            'privacy_view' => $aContentInfo[$CNF['FIELD_ALLOW_VIEW_TO']],
+
+            'source' => $sSource,
+            'source_mac' => $sSourceMac,
+        ]);
 
         if(($oConnection = BxDolConnection::getObjectInstance($CNF['OBJECT_CONNECTION'])) !== false) {
             $aProfileIds = $oConnection->getConnectedContent($iContentId);
@@ -1534,10 +1542,13 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
                     if($iProfileId == $iContentAuthor)
                         continue;
 
-                    bx_alert($sModule, $sAction, $iContentId, false, array(
+                    bx_alert($sModule, $sAction, $iContentId, $iPerformer, [
                         'object_author_id' => $iProfileId,
-                        'privacy_view' => $aContentInfo[$CNF['FIELD_ALLOW_VIEW_TO']]
-                    ));
+                        'privacy_view' => $aContentInfo[$CNF['FIELD_ALLOW_VIEW_TO']],
+
+                        'source' => $sSource,
+                        'source_mac' => $sSourceMac,
+                    ]);
                 }
         }
 
@@ -1693,6 +1704,9 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
     public function setAssignments($iContentId, $aMembers)
     {
         $CNF = &$this->_oConfig->CNF;
+
+        $sModule = $this->getName();
+        $iPerformer = bx_get_logged_profile_id();
         $oConn = BxDolConnection::getObjectInstance($CNF['OBJECT_CONNECTION']);
 
         if($this->_bIsApi && is_string($aMembers))
@@ -1724,10 +1738,13 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
              *      - `privacy_view` - [string] privacy view value
              * @hook @ref hook-bx_tasks-assigned
              */
-            bx_alert($this->_aModule['name'], 'assigned', $iContentId, false, array(
+            bx_alert($sModule, 'assigned', $iContentId, $iPerformer, [
                 'object_author_id' => $iProfileId,
-                'privacy_view' => $aContentInfo[$CNF['FIELD_ALLOW_VIEW_TO']]
-            ));
+                'privacy_view' => $aContentInfo[$CNF['FIELD_ALLOW_VIEW_TO']],
+
+                'source' => $sModule . '_assigned_' . $iContentId,
+                'source_mac' => $sModule . '_assigned_' . $iPerformer . '_' . $iContentId,
+            ]);
         }
 
         foreach($aMembersToRemove as $iProfileId){
@@ -1745,10 +1762,13 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
              *      - `privacy_view` - [string] privacy view value
              * @hook @ref hook-bx_tasks-unassigned
              */
-            bx_alert($this->_aModule['name'], 'unassigned', $iContentId, false, array(
+            bx_alert($sModule, 'unassigned', $iContentId, $iPerformer, [
                 'object_author_id' => $iProfileId,
-                'privacy_view' => $aContentInfo[$CNF['FIELD_ALLOW_VIEW_TO']]
-            ));
+                'privacy_view' => $aContentInfo[$CNF['FIELD_ALLOW_VIEW_TO']],
+
+                'source' => $sModule . '_unassigned_' . $iContentId,
+                'source_mac' => $sModule . '_unassigned_' . $iPerformer . '_' . $iContentId,
+            ]);
         }
     }
 

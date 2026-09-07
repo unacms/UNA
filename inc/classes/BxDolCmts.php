@@ -2211,7 +2211,7 @@ class BxDolCmts extends BxDolFactory implements iBxDolReplaceable, iBxDolContent
         $iCmtAthrId = (int)$aCmt['cmt_author_id'];
         $iCmtCf = isset($aCmt['cmt_cf']) ? (int)$aCmt['cmt_cf'] : BxDolContentFilter::getInstance()->getDefaultValue();
 
-        return array(
+        return [
             'source' => 'sys_cmts_' . $iCmtUniqId,
             'source_mac' => 'sys_cmts_' . $iCmtAthrId . '_' . $iCmtUniqId,
 
@@ -2227,7 +2227,7 @@ class BxDolCmts extends BxDolFactory implements iBxDolReplaceable, iBxDolContent
 
             'privacy_view' => $iObjAthrPrivacyView,
             'cf' => $iCmtCf
-        );
+        ];
     }
 
     protected function _prepareAlertParamsReply($aCmt, $aCmtPrnt)
@@ -2241,12 +2241,14 @@ class BxDolCmts extends BxDolFactory implements iBxDolReplaceable, iBxDolContent
 
         $iCmtId = (int)$aCmt['cmt_id'];
         $iCmtUniqId = $this->getCommentUniqId($iCmtId);
+        $iCmtAthrId = (int)$aCmt['cmt_author_id'];
 
-        return array(
+        return [
             'source' => 'sys_cmts_' . $iCmtUniqId,
+            'source_mac' => 'sys_cmts_' . $iCmtAthrId . '_' . $iCmtUniqId,
 
-            'object_system' => $this->_sSystem, 
-            'object_id' => $iObjId, 
+            'object_system' => $this->_sSystem,
+            'object_id' => $iObjId,
             'object_author_id' => $iObjAthrId,
 
             'parent_id' => $iCmtPrntId,
@@ -2255,11 +2257,11 @@ class BxDolCmts extends BxDolFactory implements iBxDolReplaceable, iBxDolContent
 
             'comment_id' => $iCmtId,
             'comment_uniq_id' => $iCmtUniqId,
-            'comment_author_id' => $aCmt['cmt_author_id'],  
+            'comment_author_id' => $iCmtAthrId,
             'comment_text' => $aCmt['cmt_text'],
 
             'privacy_view' => $iObjAthrPrivacyView,
-        );
+        ];
     }
 
     protected function _prepareAuditParams($iId, $aData)

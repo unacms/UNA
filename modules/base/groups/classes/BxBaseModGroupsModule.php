@@ -530,6 +530,8 @@ class BxBaseModGroupsModule extends BxBaseModProfileModule
         }
 
         $sModule = $this->getName();
+        $sSource = $CNF['OBJECT_CONNECTIONS'];
+        $iSourceTime = time();
 
         /**
          * @hooks
@@ -555,7 +557,7 @@ class BxBaseModGroupsModule extends BxBaseModProfileModule
             'group_profile' => $iContextPid, 
             'profile' => $iPid, 
             'notification_subobject_id' => $iPid, 
-            'object_author_id' => $iContextPid
+            'object_author_id' => $iContextPid,
         ]);
 
         /**
@@ -578,6 +580,9 @@ class BxBaseModGroupsModule extends BxBaseModProfileModule
         bx_alert($sModule, 'join_invitation_notif', $aContentInfo[$CNF['FIELD_ID']], $iContextPid, [
             'object_author_id' => $iPid, 
             'privacy_view' => isset($aContentInfo[$CNF['FIELD_ALLOW_VIEW_TO']]) ? $aContentInfo[$CNF['FIELD_ALLOW_VIEW_TO']] : 3, 
+
+            'source' => $sSource . '_invitation_' . $iSourceTime,
+            'source_mac' => $sSource . '_invitation_' . $iPerformerPid . '_' . $iSourceTime,
         ]);
 
         return true;
@@ -608,6 +613,8 @@ class BxBaseModGroupsModule extends BxBaseModProfileModule
 
         $sModule = $this->getName();
         $sModuleGroup = $oGroupProfile->getModule();
+        $sSource = $CNF['OBJECT_CONNECTIONS'];
+        $iSourceTime = time();
 
         // send notification to group's admins that new connection is pending confirmation 
         if($oConnection->isConnected((int)$iInitiatorId, $oGroupProfile->id()) && !$oConnection->isConnected($oGroupProfile->id(), (int)$iInitiatorId) && $aContentInfo['join_confirmation'] && $aContentInfo[$CNF['FIELD_AUTHOR']] != $iProfileId) {
@@ -629,15 +636,18 @@ class BxBaseModGroupsModule extends BxBaseModProfileModule
              * @hook @ref hook-bx_base_groups-join_request
              */
             bx_alert($this->getName(), 'join_request', $aContentInfo[$CNF['FIELD_ID']], $iGroupProfileId, [
-            	'object_author_id' => $iGroupProfileId,
-            	'performer_id' => $iProfileId, 
+                'object_author_id' => $iGroupProfileId,
+                'performer_id' => $iProfileId, 
 
-            	'content' => $aContentInfo, 
-            	'entry_title' => $sEntryTitle, 
-            	'entry_url' => $sEntryUrl, 
+                'content' => $aContentInfo, 
+                'entry_title' => $sEntryTitle, 
+                'entry_url' => $sEntryUrl, 
 
-            	'group_profile' => $iGroupProfileId, 
-            	'profile' => $iProfileId
+                'group_profile' => $iGroupProfileId, 
+                'profile' => $iProfileId,
+
+                'source' => $sSource . '_request_' . $iSourceTime,
+                'source_mac' => $sSource . '_request_' . $iPerformerId . '_' . $iSourceTime,
             ]);
         }
         // send notification that join request was accepted 
@@ -649,15 +659,15 @@ class BxBaseModGroupsModule extends BxBaseModProfileModule
              * @hook @ref hook-bx_base_groups-join_request_accepted
              */
             bx_alert($this->getName(), 'join_request_accepted', $aContentInfo[$CNF['FIELD_ID']], $iGroupProfileId, [
-            	'object_author_id' => $iGroupProfileId,
-            	'performer_id' => $iProfileId,
+                'object_author_id' => $iGroupProfileId,
+                'performer_id' => $iProfileId,
 
-            	'content' => $aContentInfo, 
-            	'entry_title' => $sEntryTitle, 
-            	'entry_url' => $sEntryUrl, 
+                'content' => $aContentInfo, 
+                'entry_title' => $sEntryTitle, 
+                'entry_url' => $sEntryUrl, 
 
-            	'group_profile' => $iGroupProfileId, 
-            	'profile' => $iProfileId
+                'group_profile' => $iGroupProfileId, 
+                'profile' => $iProfileId
             ]);
         }
 
@@ -686,6 +696,9 @@ class BxBaseModGroupsModule extends BxBaseModProfileModule
 
                     'group_profile' => $iGroupProfileId, 
                     'profile' => $iProfileId,
+
+                    'source' => $sSource . '_added_' . $iSourceTime,
+                    'source_mac' => $sSource . '_added_' . $iPerformerId . '_' . $iSourceTime,
                 ]);
             }
 
