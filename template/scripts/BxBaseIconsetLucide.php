@@ -13,8 +13,6 @@
  */
 class BxBaseIconsetLucide extends BxBaseIconset
 {
-    const VERSION = '1.41.0'; ///< Lucide version used when the local copy (see `build:lucide` in package.json) isn't available.
-
     protected $_aMap;
     protected static $_aCacheSvg = [];
 
@@ -33,24 +31,21 @@ class BxBaseIconsetLucide extends BxBaseIconset
             'bars' => 'menu',
             'book-reader' => 'book-open-text',
             'buffer' => 'layers',
-            'building' => 'building',
             'bullhorn' => 'megaphone',
             'calendar-alt' => 'calendar-days',
             'calendar-day' => 'calendar-days',
-            'calendar-plus' => 'calendar-plus',
             'camera-retro' => 'camera',
             'caret-right' => 'chevron-right',
             'cart-arrow-down' => 'shopping-cart',
             'cart-plus' => 'shopping-cart',
             'cc-stripe' => 'credit-card',
             'certificate' => 'award',
-            'chart-pie' => 'chart-pie',
             'check-circle' => 'circle-check',
             'check-double' => 'check-check',
-            'clipboard-check' => 'clipboard-check',
             'cog' => 'settings',
             'cogs' => 'settings',
             'comment' => 'message-circle',
+            'comment-alt' => 'message-square',
             'comment-dots' => 'message-square-dashed',
             'comments' => 'messages-square',
             'desktop' => 'monitor',
@@ -83,7 +78,6 @@ class BxBaseIconsetLucide extends BxBaseIconset
             'hand-holding-usd' => 'hand-coins',
             'hashtag' => 'hash',
             'helpcircle' => 'circle-question-mark',
-            'house' => 'house',
             'industry' => 'factory',
             'info-circle' => 'info',
             'keyround' => 'key-round',
@@ -105,7 +99,6 @@ class BxBaseIconsetLucide extends BxBaseIconset
             'question-circle' => 'circle-question-mark',
             'quote-right' => 'quote',
             'remove' => 'x',
-            'reply-all' => 'reply-all',
             'search-location' => 'search-check',
             'share-alt' => 'share-2',
             'shield-alt' => 'shield',
@@ -145,10 +138,7 @@ class BxBaseIconsetLucide extends BxBaseIconset
 
     public function getPreloaderJs()
     {
-        if(file_exists(BX_DIRECTORY_PATH_PLUGINS_PUBLIC . 'lucide/lucide.min.js'))
-            return '{dir_plugins_public}lucide/|lucide.min.js';
-
-        return 'https://unpkg.com/lucide@' . self::VERSION;
+        return '{dir_plugins_public}lucide/|lucide.min.js';
     }
 
     public function getIcon($sIcon)

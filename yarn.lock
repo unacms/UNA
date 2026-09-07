@@ -2814,15 +2814,15 @@ lru-cache@^11.0.0, lru-cache@^11.1.0, lru-cache@^11.2.1:
   resolved "https://registry.yarnpkg.com/lru-cache/-/lru-cache-11.5.2.tgz#00e16665c90c620fba14a3c368732a976493f760"
   integrity sha512-4pfM1Ff0x50o0tQwb5ucw/RzNyD0/YJME6IVcStalZuMWxdt3sR3huStTtxz4PUmvZfRguvDejasvQ2kifR11g==
 
-lucide-static@1.41.0:
-  version "1.41.0"
-  resolved "https://registry.yarnpkg.com/lucide-static/-/lucide-static-1.41.0.tgz#56c437537404a446883ff611301ef2442835bece"
-  integrity sha512-39fX7SH+Rwis0oUmLLOipOoFSiJll9yi2DyEGDaE7Sp0qQAEhEfMQ2scQNdWKeGVENGv1uXc5ZeZqBWsuhQSFg==
+lucide-static@^1.42.0:
+  version "1.42.0"
+  resolved "https://registry.yarnpkg.com/lucide-static/-/lucide-static-1.42.0.tgz#03792d91258f1637b30aa97ef871f10be2a2bd79"
+  integrity sha512-S4jgNBM6Tm8TusfIvj2A9KQotIxT8Hsnby3csAVh1LeD3vHgI0li14oCiQmYj+0Jjo/2l7cVzaqgPdwmce338Q==
 
-lucide@1.41.0:
-  version "1.41.0"
-  resolved "https://registry.yarnpkg.com/lucide/-/lucide-1.41.0.tgz#e2336f8764b5b1bbfe62e7f621c7aaa81fc1c3fd"
-  integrity sha512-fIXP7JzC1vehdqOrMhwpbcXzX6CvUMuoDf16HY1FmC4sDBeuwrH2A0c6QmLn3wnSvaMchpEyM+JWijyTvOs3kw==
+lucide@^1.42.0:
+  version "1.42.0"
+  resolved "https://registry.yarnpkg.com/lucide/-/lucide-1.42.0.tgz#8d09e25b546727c5db9fb8d9ba037f1338ad211e"
+  integrity sha512-KLZ517pIUzuXGSFLlDL+5s6pcp4FI7brn4AXrFmRP7ghtxVVJ7/o4d3VejZeLPU127D/jITLs5WTLnH9Dc7VxA==
 
 magic-string@^0.30.3:
   version "0.30.21"
