@@ -79,15 +79,18 @@ function MessageBody({ text, isStreaming }) {
     );
 }
 
-function ChatActions({ actions, onReply, repliesEnabled }) {
+function ChatActions({ actions, onReply, repliesEnabled, chosenReply = '' }) {
+    const [chosen, setChosen] = useState('');
+    const selectedMessage = chosen || chosenReply;
     if (!actions.length) return null;
     return (
         <View className="flex-row flex-wrap gap-2 mt-2 max-w-full">
             {actions.map((action, index) => {
                 const isLink = action.type === 'link';
+                const isSelected = !isLink && action.message === selectedMessage;
                 const buttonProps = {
                     label: action.label,
-                    style: 'bordered',
+                    style: isSelected ? 'glassProminent' : 'bordered',
                     controlSize: 'small',
                     borderShape: 'rounded',
                 };
@@ -105,8 +108,13 @@ function ChatActions({ actions, onReply, repliesEnabled }) {
                     <NeoButton
                         key={`${action.type}:${action.label}:${index}`}
                         {...buttonProps}
-                        disabled={!repliesEnabled}
-                        onPress={() => onReply?.(action.message)}
+                        selected={isSelected}
+                        disabled={!isSelected && !repliesEnabled}
+                        onPress={() => {
+                            if (!repliesEnabled || isSelected) return;
+                            setChosen(action.message);
+                            onReply?.(action.message);
+                        }}
                     />
                 );
             })}
@@ -122,7 +130,7 @@ function AgentStatus({ label }) {
     );
 }
 
-function ChatBubble({ message, user, assistant, isStreaming, onReply, repliesEnabled, streamedActions }) {
+function ChatBubble({ message, user, assistant, isStreaming, onReply, repliesEnabled, streamedActions, chosenReply }) {
     const isUser = message.role === 'user';
     const text = messageText(message);
     const actions = isUser ? [] : messageActions(message, streamedActions);
@@ -165,6 +173,7 @@ function ChatBubble({ message, user, assistant, isStreaming, onReply, repliesEna
                         actions={actions}
                         onReply={onReply}
                         repliesEnabled={repliesEnabled}
+                        chosenReply={chosenReply}
                     />
                 ) : null}
             </View>
@@ -461,18 +470,23 @@ function AiAgentChat({
                 keyboardShouldPersistTaps="always"
                 {...(isWeb ? { onMouseUp: onListMouseUp } : null)}
             >
-                {visibleMessages.map((message) => (
-                    <ChatBubble
-                        key={message.id}
-                        message={message}
-                        user={currentUser}
-                        assistant={assistant}
-                        isStreaming={message.id === streamingId}
-                        onReply={sendReply}
-                        repliesEnabled={!isLoading && message.id === lastVisibleId}
-                        streamedActions={streamActions[message.id]}
-                    />
-                ))}
+                {visibleMessages.map((message, index) => {
+                    const next = visibleMessages[index + 1];
+                    const chosenReply = next?.role === 'user' ? messageText(next).trim() : '';
+                    return (
+                        <ChatBubble
+                            key={message.id}
+                            message={message}
+                            user={currentUser}
+                            assistant={assistant}
+                            isStreaming={message.id === streamingId}
+                            onReply={sendReply}
+                            repliesEnabled={!isLoading && message.id === lastVisibleId}
+                            streamedActions={streamActions[message.id]}
+                            chosenReply={chosenReply}
+                        />
+                    );
+                })}
                 {waitingForReply ? <AgentStatus label="Thinking…" /> : null}
             </ScrollView>
 
