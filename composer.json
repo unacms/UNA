@@ -123,7 +123,7 @@
         ],
         "relocate-ffmpeg": [
             "test -f ./plugins/ffmpeg/ffmpeg/ffmpeg-linux-x64 && mv ./plugins/ffmpeg/ffmpeg/ffmpeg-linux-x64 ./plugins/ffmpeg/ffmpeg.exe && rm -rf ./plugins/ffmpeg/ffmpeg || true",
-            "patch -p1 < patches/plugins_tpyo_amazon-s3-php-class.txt"
+            "grep -Fq \"this->headers['Content-MD5']\" plugins/tpyo/amazon-s3-php-class/S3.php || patch -p1 --batch < patches/plugins_tpyo_amazon-s3-php-class.txt"
         ],
         "test": "phpunit -c tests/phpunit.xml"
     }

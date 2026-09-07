@@ -46,14 +46,6 @@ jobs:
         node-version: '20'
         cache: yarn
 
-    - name: Cache Composer packages
-      uses: actions/cache@v4
-      with:
-        path: plugins
-        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-php-
-
     - name: Install PHP dependencies
       run: composer install --prefer-dist --no-progress
 
