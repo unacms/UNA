@@ -744,7 +744,7 @@ export const LeftColumnContainer = ({
                 style={stickyColumnStyle}
             >
                 <View className={layoutName == 'profile' ? '' : appSetting('conductor', 'sidebar_inner_container')}>
-                    {(!!title || addMenuItems.length > 0) && (
+                     {((!!title || addMenuItems.length > 0) && layoutName != 'profile') && (
                         <Row className={appSetting('conductor', 'sidebar_title')}>
                             <Row className="items-center mr-auto min-w-0 hidden lg:flex">
                                 {!!icon && (
