@@ -119,6 +119,15 @@ class BxTasksCmts extends BxTemplCmts
         return $aTmplVarsText;
     }
 
+    protected function _callAlert($sUnit, $sAction, $iObjectId, $iSender = false, $aExtras = [])
+    {
+        echo 'Here' . $iSender . ' - ' . $this->_iAuthorAuto;
+        if($iSender && $iSender == $this->_iAuthorAuto)
+            return;
+
+        return bx_alert($sUnit, $sAction, $iObjectId, $iSender, $aExtras);
+    }
+
     protected function _prepareAlertParams($aCmt)
     {
         $aResult = parent::_prepareAlertParams($aCmt);
