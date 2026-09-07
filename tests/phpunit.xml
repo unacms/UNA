@@ -14,18 +14,17 @@
   </testsuites>
   <source>
     <include>
-      <directory suffix=".php">./inc</directory>
-      <directory suffix=".php">./modules</directory>
-      <directory suffix=".php">./periodic</directory>
-      <directory suffix=".php">./studio</directory>
-      <directory suffix=".php">./template</directory>
+      <directory suffix=".php">../inc</directory>
+      <directory suffix=".php">../modules</directory>
+      <directory suffix=".php">../periodic</directory>
+      <directory suffix=".php">../studio</directory>
+      <directory suffix=".php">../template</directory>
     </include>
     <exclude>
-      <directory suffix=".php">updates</directory>
-      <directory suffix=".php">plugins</directory>
+      <directory suffix=".php">../plugins</directory>
     </exclude>
   </source>
   <logging>
-    <junit outputFile="./../logs/junit.xml" />
+    <junit outputFile="../logs/junit.xml" />
   </logging>
 </phpunit>

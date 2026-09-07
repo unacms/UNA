@@ -8,7 +8,6 @@ find .. \
   -type d -name logs -prune -o \
   -type d -name tmp -prune -o \
   -type d -name samples -prune -o \
-  -type d -path './tests/vendor' -prune -o \
   -type d -path './upgrade' -prune -o \
   -type d -path './modules/boonex/membership_pricing' -prune -o \
   -type f -name '*.php' \

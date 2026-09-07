@@ -110,6 +110,10 @@
         "http-interop/http-factory-guzzle": "^1.0",
         "psr/log": "^3.0"
     },
+    "require-dev": {
+        "phpunit/phpunit": "12.*",
+        "phpmd/phpmd": "@stable"
+    },
     "scripts": {
         "post-update-cmd": [
             "@relocate-ffmpeg"
@@ -120,6 +124,7 @@
         "relocate-ffmpeg": [
             "test -f ./plugins/ffmpeg/ffmpeg/ffmpeg-linux-x64 && mv ./plugins/ffmpeg/ffmpeg/ffmpeg-linux-x64 ./plugins/ffmpeg/ffmpeg.exe && rm -rf ./plugins/ffmpeg/ffmpeg || true",
             "patch -p1 < patches/plugins_tpyo_amazon-s3-php-class.txt"
-        ]
+        ],
+        "test": "phpunit -c tests/phpunit.xml"
     }
 }

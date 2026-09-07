@@ -1,7 +1,7 @@
 ABOUT
 =====
 
-Unit test for UNA.
+Unit tests for UNA.
 
 INSTALLATION
 ============
@@ -13,7 +13,7 @@ http://getcomposer.org/doc/00-intro.md#installation-nix
 
 2. Install dependences.
 
-Run the following from `/tests/` folder:
+Run the following from the script root folder (includes test tools from `require-dev`):
 ```
 composer.phar install
 ```
@@ -22,26 +22,30 @@ or:
 composer install
 ```
 
-Alternatively run the following from the script root folder:
+Alternatively:
 ```
-phing install
+phing prepare
+```
+
+Production / package installs should omit test tools:
+```
+composer install --no-dev
 ```
 
 
 USING
 =====
 
-Run the following command from `/tests/` folder after installation:
+Run the following command from the script root folder after installation:
 ```
-./vendor/bin/phpunit 
+./plugins/bin/phpunit -c tests/phpunit.xml
 ```
 or:
 ```
-/path/to/bin/php ./vendor/bin/phpunit
+composer test
 ```
 
-Alternatively run the following from the script root folder:
+Alternatively:
 ```
 phing test
 ```
-

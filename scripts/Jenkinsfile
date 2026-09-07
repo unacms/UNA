@@ -194,7 +194,7 @@ pipeline {
                 script {
                     echo "Running PHP Unit Tests"
                     def status = sh(
-                        script: "${PHP} tests/vendor/bin/phpunit -c tests/phpunit.xml",
+                        script: "${PHP} plugins/bin/phpunit -c tests/phpunit.xml",
                         returnStatus: true
                     )
                     echo "PHPUnit exit code: ${status}"
