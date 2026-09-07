@@ -1,6 +1,6 @@
 
 html.bx-media-phone {
-    font-size:85%;
+    font-size:100%; /* kept as a hook for custom themes that scale phones differently; no scaling by default */
 }
 
 /* never visible - used to check MQ */

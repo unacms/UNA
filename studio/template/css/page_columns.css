@@ -21,7 +21,7 @@ div.bx-std-page-columns-cnt {
 }
 
 /*--- Page Menu ---*/
-div.bx-std-page-column.bx-std-page-menu {
+.bx-std-page-column.bx-std-page-menu {
     position: relative;
     -webkit-flex: 0 0 20rem;
     flex: 0 0 20rem;
@@ -29,37 +29,55 @@ div.bx-std-page-column.bx-std-page-menu {
     width: 20rem;
     height: 100%;
 
-    box-shadow: 1px 0px 0px 0px rgba(0, 0, 0, 0.05);
     backdrop-filter: blur(40px);
 
     overflow-y: auto;
 }
-div.bx-std-page-column.bx-std-page-menu::-webkit-scrollbar {
+.bx-std-page-column.bx-std-page-menu::-webkit-scrollbar {
   display: none;
 }
-div.bx-std-page-column.bx-std-page-menu div.bx-std-page-column-cnt {
+.bx-std-page-column.bx-std-page-menu div.bx-std-page-column-cnt {
     position: -webkit-sticky;
     position: sticky;
     top: 0;
-    padding-top: 0.5rem;
 }
 
 /*--- Page Content ---*/
-div.bx-std-page-column.bx-std-page-content {
+.bx-std-page-column.bx-std-page-content {
     position: relative;
+    display: flex;
+    flex-direction: column;
     -webkit-flex-grow: 2;
     flex-grow: 2;
+    min-width: 0;
 
     height: 100%;
 
     overflow-x: hidden;
     overflow-y: auto;
 }
-div.bx-std-page-column.bx-std-page-content::-webkit-scrollbar {
+.bx-std-page-column.bx-std-page-content::-webkit-scrollbar {
   display: none;
 }
-div.bx-std-page-column.bx-std-page-content div.bx-std-page-column-cnt {
+.bx-std-page-column.bx-std-page-content div.bx-std-page-column-cnt {
+    flex: 1 1 auto;
+    min-height: 0;
     width: 100%;
-    height: max-content;
-    padding-left: 0.5rem;
+    padding: 1px 0 1px 0.5rem; /* room for the blocks' hairline ring inside the scroll box */
+}
+/*
+ * A page with a single block: the block takes the remaining height, its caption and bottom panel stay put
+ * and only its content scrolls. The column itself no longer clips the block's ring and shadow.
+ */
+.bx-std-page-column.bx-std-page-content:has(> .bx-std-page-column-cnt > div.bx-std-block:only-of-type) {
+    overflow: visible;
+}
+.bx-std-page-column.bx-std-page-content div.bx-std-page-column-cnt > div.bx-std-block:only-of-type {
+    flex: 1 1 auto;
+    min-height: 0;
+}
+/* Nothing scrolls around a single block, so it doesn't need the 1px ring room: its top and bottom line up with the sidebar. */
+.bx-std-page-column.bx-std-page-content:has(> .bx-std-page-column-cnt > div.bx-std-block:only-of-type) div.bx-std-page-column-cnt {
+    padding-top: 0;
+    padding-bottom: 0;
 }

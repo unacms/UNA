@@ -5,7 +5,7 @@
 <defs>
 <linearGradient id="paint0_linear_167_58" x1="36" y1="0" x2="36" y2="72" gradientUnits="userSpaceOnUse">
 <stop stop-color="white"/>
-<stop offset="1" stop-color="white" stop-opacity="0.6"/>
+<stop offset="1" stop-color="#E5E7EB"/>
 </linearGradient>
 <linearGradient id="paint1_linear_167_58" x1="36" y1="13.9999" x2="36" y2="57.9999" gradientUnits="userSpaceOnUse">
 <stop stop-color="#0284C7"/>

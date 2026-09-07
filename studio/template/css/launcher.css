@@ -12,12 +12,12 @@ div.bx-std-menu-top-wrp {
 
 /**-- For Dual Columns mode --**/
 .bx-std-page-launcher div.bx-std-page-columns-cnt,
-.bx-std-page-launcher div.bx-std-page-column.bx-std-page-menu,
-.bx-std-page-launcher div.bx-std-page-column.bx-std-page-content {
+.bx-std-page-launcher .bx-std-page-column.bx-std-page-menu,
+.bx-std-page-launcher .bx-std-page-column.bx-std-page-content {
     background-color: transparent;
 }
 
-.bx-std-page-launcher div.bx-std-page-column.bx-std-page-menu {
+.bx-std-page-launcher .bx-std-page-column.bx-std-page-menu {
     border-width: 0;
 }
 
@@ -81,7 +81,7 @@ div.bx-std-widget-cont {
 }
 div.bx-std-widget-empty {
     width: 4.5rem;
-    height: 5.75rem;
+    height: 6.25rem; /* icon 4.5rem + caption gap 0.75rem + caption 1rem */
 }
 
 .bx-std-widget-dragging {
@@ -128,6 +128,7 @@ div.bx-std-widget-empty {
 
     width: 4.5rem;
     height: 4.5rem;
+    border-radius: 1rem; /* matches rounded-2xl on the link, so its ring/shadow hugs the icon without clipping the wrapper */
 
     background-color: transparent;
     background-position: 0px 0px;
@@ -243,9 +244,10 @@ div.bx-std-widget-action i.sys-icon {
 div.bx-std-widget-caption {
     position: relative;
     width: 4.5rem;
-    height: 2rem;
+    height: 1rem;
+    margin-top: 0.75rem;
 
-    line-height: 2rem;
+    line-height: 1rem;
     white-space: nowrap;
     text-align: center; 
     text-overflow: ellipsis;
@@ -259,7 +261,7 @@ div.bx-std-widget-caption-jitter {
     top: 0px;
     left: 0px;
     width: 5rem;
-    height: 2rem;
+    height: 1rem;
 }
 
 

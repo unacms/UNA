@@ -674,6 +674,7 @@
 	<string name="_adm_dbd_txt_su_system_media"><![CDATA[System Media]]></string>
         <string name="_adm_dbd_txt_c_select"><![CDATA[Select...]]></string>
 	<string name="_adm_dbd_txt_c_clear_all"><![CDATA[Clear all caches]]></string>
+	<string name="_adm_dbd_txt_q_clear"><![CDATA[Clear queue]]></string>
 	<string name="_adm_dbd_txt_c_content"><![CDATA[Content]]></string>
 	<string name="_adm_dbd_txt_c_clear_content"><![CDATA[Clear content cache]]></string>
 	<string name="_adm_dbd_txt_c_db"><![CDATA[DB]]></string>
@@ -2026,6 +2027,7 @@
         <string name="_adm_tmi_cpt_assistant"><![CDATA[Assistant]]></string>
 	<string name="_adm_tmi_cpt_site"><![CDATA[Go To Site]]></string>
         <string name="_adm_tmi_cpt_search"><![CDATA[Search...]]></string>
+        <string name="_adm_tmi_cpt_search_apps"><![CDATA[Applications...]]></string>
         <string name="_adm_tmi_cpt_scheme"><![CDATA[Color Scheme]]></string>
 	<string name="_adm_tmi_cpt_tour"><![CDATA[Tour]]></string>
 	<string name="_adm_tmi_cpt_launcher"><![CDATA[Launcher]]></string>
@@ -2092,8 +2094,8 @@
 	<string name="_adm_txt_modules_upload"><![CDATA[Add New Module]]></string>
 	<string name="_adm_txt_modules_writable"><![CDATA[Writable]]></string>
 	<string name="_adm_txt_pca_active"><![CDATA[Active]]></string>
-        <string name="_adm_txt_pca_bookmark"><![CDATA[Bookmark]]></string>
-	<string name="_adm_txt_pca_featured"><![CDATA[Featured]]></string>
+        <string name="_adm_txt_pca_bookmark"><![CDATA[Keep in Dock for me]]></string>
+	<string name="_adm_txt_pca_featured"><![CDATA[Keep in Dock for everyone]]></string>
         <string name="_adm_txt_pca_rearrange"><![CDATA[Move to]]></string>
 	<string name="_adm_txt_remember_me"><![CDATA[Remember me]]></string>
 	<string name="_adm_txt_select_module"><![CDATA[Select Module...]]></string>
@@ -2316,6 +2318,8 @@
     <string name="_sys_agents_agents_txt_trigger"><![CDATA[Trigger]]></string>
     <string name="_sys_agents_agents_txt_profile_id"><![CDATA[Profile]]></string>
     <string name="_sys_agents_agents_popup_add"><![CDATA[Add agent]]></string>
+    <string name="_sys_agents_agents_empty"><![CDATA[No agents yet]]></string>
+    <string name="_sys_agents_agents_empty_info"><![CDATA[Agents run automated tasks on your site. Add one to get started.]]></string>
     <string name="_sys_agents_builder_view_list"><![CDATA[List view]]></string>
     <string name="_sys_agents_builder_view_grid"><![CDATA[Grid view]]></string>
 
@@ -3781,17 +3785,17 @@ If it is not enabled then please consider implementing this optimization, since 
     <string name="_sys_menu_set_title_studio_account_popup"><![CDATA[Account Popup (Studio)]]></string>
     <string name="_sys_menu_item_title_system_sa_account"><![CDATA[Account]]></string>
     <string name="_sys_menu_item_title_sa_account"><![CDATA[{member_display_name}]]></string>
-    <string name="_sys_menu_item_title_system_sa_site"><![CDATA[Go To Site]]></string>
-    <string name="_sys_menu_item_title_sa_site"><![CDATA[Go To Site]]></string>
+    <string name="_sys_menu_item_title_system_sa_site"><![CDATA[Visit Web App]]></string>
+    <string name="_sys_menu_item_title_sa_site"><![CDATA[Visit Web App]]></string>
     <string name="_sys_menu_item_title_system_sa_edit"><![CDATA[Manage Apps]]></string>
     <string name="_sys_menu_item_title_sa_edit"><![CDATA[Manage Apps]]></string>
-    <string name="_sys_menu_item_title_system_sa_scheme"><![CDATA[Color Scheme]]></string>
-    <string name="_sys_menu_item_title_sa_scheme"><![CDATA[Color Scheme]]></string>
+    <string name="_sys_menu_item_title_system_sa_scheme"><![CDATA[Theme]]></string>
+    <string name="_sys_menu_item_title_sa_scheme"><![CDATA[Theme]]></string>
     <string name="_sys_menu_item_title_system_sa_language"><![CDATA[Language]]></string>
     <string name="_sys_menu_item_title_sa_language"><![CDATA[Language]]></string>
     <string name="_sys_menu_item_title_sa_scheme_auto"><![CDATA[System]]></string>
-    <string name="_sys_menu_item_title_sa_scheme_light"><![CDATA[Light Mode]]></string>
-    <string name="_sys_menu_item_title_sa_scheme_dark"><![CDATA[Dark Mode]]></string>
+    <string name="_sys_menu_item_title_sa_scheme_light"><![CDATA[Light]]></string>
+    <string name="_sys_menu_item_title_sa_scheme_dark"><![CDATA[Dark]]></string>
     <string name="_sys_menu_item_title_system_sa_logout"><![CDATA[Sign out]]></string>
     <string name="_sys_menu_item_title_sa_logout"><![CDATA[Sign out]]></string>
     <string name="_sys_menu_item_title_inherited"><![CDATA[Inherited]]></string>
@@ -4243,8 +4247,8 @@ If it is not enabled then please consider implementing this optimization, since 
     <string name="_sys_tour_launcher_polyglot_txt"><![CDATA["If you talk to a man in a language he understands, that goes to his head. If you talk to him in his language, that goes to his heart." Polyglot allows you to set site language and data format, edit site texts in all installed languages and even translate email templates.]]></string>
     <string name="_sys_tour_launcher_reorganize_title"><![CDATA[Move the Apps around]]></string>
     <string name="_sys_tour_launcher_reorganize_txt"><![CDATA[Activate reorganisation mode to rearrange Apps in Launcher or delete inactive ones altogether.]]></string>
-    <string name="_sys_tour_launcher_favourites_title"><![CDATA[Choose wisely]]></string>
-    <string name="_sys_tour_launcher_favourites_txt"><![CDATA[Your Studio may have hundreds of installed Apps. Choose the ones you access most often and use the Star to bring them up.]]></string>
+    <string name="_sys_tour_launcher_favourites_title"><![CDATA[Keep Apps in the Dock]]></string>
+    <string name="_sys_tour_launcher_favourites_txt"><![CDATA[The Dock in the header keeps your recently opened Apps one click away. In reorganisation mode, open an App's settings to keep it in the Dock for you, or for every operator.]]></string>
     <string name="_sys_tour_launcher_add_apps_title"><![CDATA[Now DO add new Apps!]]></string>
     <string name="_sys_tour_launcher_add_apps_txt"><![CDATA[UNA comes with only a handful of core Apps. Choose, download and install Apps to add profiles types, modules, system tools, plugins, languages and design templates. You can activate and deactivate installed Apps. UNA is super-modular and incredibly flexible, letting you choose your own combination of functionality, settings and database structure to make the social site of your dreams real. Even without changing anything you will have the perfectly functioning social site!]]></string>
 

@@ -1027,6 +1027,8 @@ class BxBaseGrid extends BxDolGrid
     {
         if ($a['icon_only'] && empty($a['attr']['title']) && !empty($a['title']))
             $a['attr']['title'] = $a['title'];
+        if ($a['icon_only'] && empty($a['attr']['aria-label']) && !empty($a['title']))
+            $a['attr']['aria-label'] = $a['title'];
 
         if ($this->_bIsApi) {
             $sParams = '';

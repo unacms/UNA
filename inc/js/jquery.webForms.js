@@ -82,6 +82,12 @@
 
             eFormSection.addClass('bx-form-js-processed');
 
+            var eToggle = $('.bx-form-section-title:first a', eFormSection);
+            var fSyncExpanded = function() {
+                eToggle.attr('aria-expanded', eFormSection.hasClass('bx-form-collapsed') ? 'false' : 'true');
+            };
+            fSyncExpanded();
+
             var fCallback = function() {
 
                 if (eFormSection.hasClass('bx-form-collapsed')) {
@@ -119,7 +125,10 @@
 
             };
 
-            $('.bx-form-section-title:first', eFormSection).click(fCallback);
+            $('.bx-form-section-title:first', eFormSection).click(function() {
+                fCallback();
+                fSyncExpanded();
+            });
         });
 
         $("select", this).each(function () {

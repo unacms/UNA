@@ -631,7 +631,7 @@ class BxBaseMenu extends BxDolMenu
             $sAttrs .= ' rel="noreferrer"';
 
         if(($sAreaLabel = $this->_getMenuAreaLabel($aMenuItem) ?: $sTitleAttr))
-            $sAttrs .= ' area-label="' . $sAreaLabel . '"';
+            $sAttrs .= ' aria-label="' . $sAreaLabel . '"';
 
         return $sAttrs;
     }

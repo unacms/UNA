@@ -30,6 +30,16 @@ div.bx-std-blocks-line .bx-std-block-wrp {
 /**
  * Block Styles
  */
+div.bx-std-block {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+div.bx-std-block-caption,
+div.bx-std-block-panel-top,
+div.bx-std-block-panel-bottom {
+    flex: none;
+}
 div.bx-std-block-caption {
     position: relative;
     display: -webkit-flex;
@@ -37,16 +47,23 @@ div.bx-std-block-caption {
     -webkit-align-items: center;
     align-items: center;
 
-    padding: 0.625rem 0.5rem 0.625rem 1.0rem;
+    z-index: 1;
+
+    padding: 0.25rem; /* same 4px inset as the sidebar column, around a 48px row like a sidebar item */
+    box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.1); /* hairline divider drawn outside the box, so it adds no height */
 }
-div.bx-std-bcap-text {
+.dark div.bx-std-block-caption {
+    box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.1);
+}
+.bx-std-bcap-text {
     -webkit-flex: 1 1 auto;
     -ms-flex: 1 1 auto;
     flex: 1 1 auto;
 
-    line-height: 2rem;
+    padding: 0 0.75rem;
+    line-height: 3rem;
     font-weight: 600;
-    font-size: 1.5rem;
+    font-size: 1.25rem;
 }
 div.bx-std-bcap-actions {
     position: relative;
@@ -73,7 +90,18 @@ div.bx-std-block-panel-top .bx-std-pt-cnt {
 }
 
 div.bx-std-block-content {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    border-radius: 0 0 1rem 1rem; /* the scroll box clips to the block's rounded corners instead of squaring them off */
     padding: 0.5rem;
+}
+div.bx-std-block-content:not(:last-child) {
+    border-radius: 0; /* a bottom panel follows and owns the corners */
+}
+div.bx-std-block-content:first-child {
+    border-top-left-radius: 1rem; /* no caption above: the scroll box owns the top corners too */
+    border-top-right-radius: 1rem;
 }
 div.bx-std-block-content div.bx-grid-header {
     margin-top: 0px;
@@ -89,6 +117,6 @@ div.bx-std-block-panel-bottom .bx-std-pt-cnt {
  * Builder based blocks
  */
 .bx-layout-wrapper {
-    padding-top: 1.875rem;
+    padding-top: 0.5rem; /* same gap below the header as the sidebar pages */
     padding-bottom: 0;
 }

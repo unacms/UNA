@@ -64,8 +64,6 @@ class BxBaseStudioFunctions extends BxBaseFunctions implements iBxDolSingleton
     {
         $oTemplate = BxDolStudioTemplate::getInstance();
 
-        $bFeatured = isset($aParams['featured']) && $aParams['featured'] === true;
-
         $aNotices = array();
         if(!empty($aParams['notices']) && is_array($aParams['notices']))
             $aNotices = $aParams['notices'];           
@@ -147,8 +145,6 @@ class BxBaseStudioFunctions extends BxBaseFunctions implements iBxDolSingleton
         $sCaption = _t($mixedWidget['caption']);
 
         $sStyles = 'animation-delay: -.' . rand(1 , 75) . 's; animation-duration: .' . rand(15 , 20) . 's';
-        if($bFeatured && (int)$mixedWidget['featured'] != 1)
-            $sStyles .= ' display:none;';
 
         return $oTemplate->parseHtmlByName('widget.html', array(
             'id' => $mixedWidget['id'],
@@ -195,7 +191,6 @@ class BxBaseStudioFunctions extends BxBaseFunctions implements iBxDolSingleton
             'caption' => $sCaption,
             'caption_attr' => bx_html_attribute($sCaption),
             'widget_disabled_class' => !$bEnabled ? 'bx-std-widget-icon-disabled' : '',
-            'widget_featured_class' => (int)$mixedWidget['featured'] == 1 ? 'bx-std-widget-icon-featured' : '',
             'widget_styles' => $sStyles
         ));
     }
@@ -219,19 +214,6 @@ class BxBaseStudioFunctions extends BxBaseFunctions implements iBxDolSingleton
     protected function getInjFooterPopupMenus() 
     {
         $sResult = '';
-
-        $oMenuScheme = new BxTemplStudioMenu(['template' => 'menu_vertical_lite.html', 'menu_items' => [
-            ['name' => 'scheme-auto', 'class' => 'auto', 'icon' => 'tmi-scheme-auto.svg', 'link' => 'javascript:void(0)', 'onclick' => '{js_object}.setColorScheme(this, 0);', 'title' => _t('_sys_menu_item_title_sa_scheme_auto')],
-            ['name' => 'scheme-light', 'class' => 'light', 'icon' => 'tmi-scheme-light.svg', 'link' => 'javascript:void(0)', 'onclick' => '{js_object}.setColorScheme(this, 1);', 'title' => _t('_sys_menu_item_title_sa_scheme_light')],
-            ['name' => 'scheme-dark', 'class' => 'dark', 'icon' => 'tmi-scheme-dark.svg', 'link' => 'javascript:void(0)', 'onclick' => '{js_object}.setColorScheme(this, 2);', 'title' => _t('_sys_menu_item_title_sa_scheme_dark')]
-        ]]);
-
-        $oMenuScheme->setInlineIcons(true);
-        $oMenuScheme->addMarkers([
-            'js_object' => BxTemplStudioMenuTop::getInstance()->getJsObject()
-        ]);
-
-        $sResult .= $this->transBox('bx-std-pcap-menu-popup-scheme', $oMenuScheme->getCode(), true);
 
         $oAccounMenu = BxDolMenu::getObjectInstance('sys_studio_account_popup');
         if($oAccounMenu)

@@ -106,6 +106,7 @@ class BxDolStudioMenuTop extends BxDol implements iBxDolSingleton
             );
         }
 
+        $bStatic = !empty($aMenuItems);
         $aMenuItems['divider'] = [
             'class' => 'bx-menu-item-divider',
             'name' => 'divider',
@@ -116,6 +117,7 @@ class BxDolStudioMenuTop extends BxDol implements iBxDolSingleton
         ];
         
         //--- Get History
+        $bHistory = false;
         $aHistory = self::historyGetList();
         if(!empty($aHistory) && is_array($aHistory))
             foreach($aHistory as $sPageName => $aMenuItem) {
@@ -124,11 +126,19 @@ class BxDolStudioMenuTop extends BxDol implements iBxDolSingleton
 
                 $aMenuItem['class'] = 'bx-menu-item-dynamic';
                 $aMenuItems[$sPageName] = $aMenuItem;
+                $bHistory = true;
             }
+
+        // The divider only makes sense between two groups: drop it while either side is empty (e.g. right after install).
+        if(!$bStatic || !$bHistory)
+            unset($aMenuItems['divider']);
 
         if(!empty($aMenuItems) && is_array($aMenuItems)) {
             if(count($aMenuItems) > BxTemplStudioMenuTop::$iToolbarLength)
                 $aMenuItems = array_slice($aMenuItems, 0, BxTemplStudioMenuTop::$iToolbarLength);
+
+            if(array_key_last($aMenuItems) == 'divider')
+                unset($aMenuItems['divider']);
 
             if(($sKey = 'launcher') && isset($this->aItems[BX_DOL_STUDIO_MT_CENTER]['menu_items'][$sKey]))
                 $this->aItems[BX_DOL_STUDIO_MT_CENTER]['menu_items'] = bx_array_insert_after($aMenuItems, $this->aItems[BX_DOL_STUDIO_MT_CENTER]['menu_items'], $sKey);

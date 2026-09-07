@@ -19,7 +19,7 @@ class BxBaseStudioStore extends BxDolStudioStore
 
     function getPageCss()
     {
-        return array_merge(parent::getPageCss(), array(BX_DIRECTORY_PATH_PLUGINS_PUBLIC . 'fancybox/|jquery.fancybox.css', 'module.css', 'store.css', 'store-media-tablet.css', 'store-media-desktop.css'));
+        return array_merge(parent::getPageCss(), array(BX_DIRECTORY_PATH_PLUGINS_PUBLIC . 'fancybox/|jquery.fancybox.css', 'module.css', 'store.css'));
     }
 
     function getPageJs()

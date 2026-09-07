@@ -1,12 +1,12 @@
-<div id="bx-std-widget-__id__" class="bx-std-widget __widget_disabled_class__ __widget_featured_class__" style="__widget_styles__" data-name="__name__">
+<div id="bx-std-widget-__id__" class="bx-std-widget __widget_disabled_class__" style="__widget_styles__" data-name="__name__">
     <div class="bx-std-widget-cont">
-        <div class="bx-std-widget-icon bx-std-widget-icon-trans rounded-2xl overflow-hidden hover:ring hover:ring-blue-600 hover:ring-offset-2 hover:ring-offset-gray-200 dark:hover:ring-offset-gray-800 hover:scale-105 active:scale-100 active:opacity-80 duration-300">
-            <a class="bx-std-widget-link block ring-white/5 ring-2 ring-inset rounded-2xl" href="__url__" <bx_if:show_click_icon>onClick="__content__"</bx_if:show_click_icon>>
+        <div class="bx-std-widget-icon bx-std-widget-icon-trans rounded-2xl hover:ring-4 hover:ring-gray-300 dark:hover:ring-gray-700 hover:ring-offset-2 hover:ring-offset-gray-200 dark:hover:ring-offset-black hover:scale-105 active:scale-100 active:opacity-80 duration-300">
+            <a class="bx-std-widget-link block rounded-2xl bx-icon-tile" href="__url__" aria-label="__caption_attr__" <bx_if:show_click_icon>onClick="__content__"</bx_if:show_click_icon>>
                 <bx_if:icon>
-                    <img src="<bx_icon_url:wi-empty.png />" />
+                    <img src="<bx_icon_url:wi-empty.png />" alt="" />
                     <i class="sys-icon __icon__"></i>
                 </bx_if:icon>
-                <bx_if:image><img src="__icon_url__" /></bx_if:image>
+                <bx_if:image><img src="__icon_url__" alt="" /></bx_if:image>
             </a>
         </div>
         <bx_if:show_notice>
@@ -48,7 +48,7 @@
         <div class="bx-std-widget-loading"></div>
 
         <div class="bx-std-widget-caption">
-            <a class="bx-std-widget-link text-black/50 dark:text-white/50" href="__url__" <bx_if:show_click_link>onClick="__content__"</bx_if:show_click_link> title="__caption_attr__">__caption__</a>
+            <a class="bx-std-widget-link text-xs text-black/70 dark:text-white/70" tabindex="-1" href="__url__" <bx_if:show_click_link>onClick="__content__"</bx_if:show_click_link> title="__caption_attr__">__caption__</a>
             <div class="bx-std-widget-caption-jitter" style="display:none"></div>
         </div>
     </div>

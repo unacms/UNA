@@ -1,0 +1,26 @@
+<ul class="bx-menu-verlit bx-menu-account bx-menu-object-__object__ bx-clearfix">
+    <bx_repeat:menu_items>
+        <bx_if:show_label>
+            <li class="bx-mv-static bx-mv-label __class_add__">
+                <div>__icon_html__<span>__title__</span></div>
+            </li>
+        </bx_if:show_label>
+        <bx_if:show_theme>
+            <li class="bx-mv-static bx-mv-theme __class_add__">
+                <div>
+                    <span id="bx-theme-toggle-label">__title__</span>
+                    <div class="bx-theme-toggle" role="radiogroup" aria-labelledby="bx-theme-toggle-label">
+                        <button type="button" class="bx-theme-option" role="radio" aria-checked="false" data-bx-theme="auto" title="__title_auto__" aria-label="__title_auto__" onclick="__js_object__.setTheme(this, 0)"><bx_icon_inline:ami-theme-system.svg /></button>
+                        <button type="button" class="bx-theme-option" role="radio" aria-checked="false" data-bx-theme="sun" title="__title_light__" aria-label="__title_light__" onclick="__js_object__.setTheme(this, 1)"><bx_icon_inline:ami-theme-light.svg /></button>
+                        <button type="button" class="bx-theme-option" role="radio" aria-checked="false" data-bx-theme="dark" title="__title_dark__" aria-label="__title_dark__" onclick="__js_object__.setTheme(this, 2)"><bx_icon_inline:ami-theme-dark.svg /></button>
+                    </div>
+                </div>
+            </li>
+        </bx_if:show_theme>
+        <bx_if:show_link>
+            <li class="__class_add__">
+                <a href="__link__" __onclick_attr__ __attrs__>__icon_html__<span>__title__</span></a>
+            </li>
+        </bx_if:show_link>
+    </bx_repeat:menu_items>
+</ul>
