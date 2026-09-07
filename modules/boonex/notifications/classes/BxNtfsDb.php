@@ -504,8 +504,7 @@ class BxNtfsDb extends BxBaseModNotificationsDb
         if(!empty($aEvents) && is_array($aEvents)) {
             $aEventEnd = end($aEvents);
 
-            //TODO: uncomment!!!
-            //$this->_oConfig->setProcessedEvent($aEventEnd['id']);
+            $this->_oConfig->setProcessedEvent($aEventEnd['id']);
 
             reset($aEvents);
         }

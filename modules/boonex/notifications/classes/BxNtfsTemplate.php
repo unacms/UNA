@@ -278,7 +278,7 @@ class BxNtfsTemplate extends BxBaseModNotificationsTemplate
                     $aSubEvent[$sK]['author_name_wrapped'] = _t('_bx_ntfs_txt_and');
                 }
 
-                $this->getPost($aSubEvent);
+                $this->getPost($aSubEvent, $aBrowseParams);
 
                 if(($sCp = $aSubEvent['content_parsed'] ?? false))
                     $sContentParsed .= ' ' . $sCp;
