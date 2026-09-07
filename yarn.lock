@@ -4720,10 +4720,10 @@ text-table@~0.2.0:
   resolved "https://registry.yarnpkg.com/text-table/-/text-table-0.2.0.tgz#7f5ee823ae805207c00af2df4a84ec3fcfa570b4"
   integrity sha512-N+8UisAXDGk8PFXP4HAzVR9nbfmVJ3zYLAWiTIoqC5v5isinhr+r5uaO8+7r3BMfuNIufIsA7RdpVgacC2cSpw==
 
-theia-sticky-sidebar@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/theia-sticky-sidebar/-/theia-sticky-sidebar-2.0.0.tgz#ebc66c8e4e9690b5c2d87c392b838c912a8e1fb5"
-  integrity sha512-MMjaEb/1LJPpcTbxN3803ZO5jMEAq99miOD+bNRvRi636y2TJxb5UFS21Pzg2qrCls9quuxcLzDlUSBw2qL6xQ==
+theia-sticky-sidebar@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/theia-sticky-sidebar/-/theia-sticky-sidebar-2.0.1.tgz#0564c828e976be379a33e7b4e96f137ad0cd3124"
+  integrity sha512-4JZ+Z7uQe++Pwyhn9mOyylBDOZFjs6PPtr2vy1oSoWnFJwxNsDylQ82xTTSLEf3M6o+EWJ2/e1TgYWsM+E8C6g==
 
 thenify-all@^1.0.0:
   version "1.6.0"
