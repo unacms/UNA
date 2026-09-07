@@ -10,9 +10,24 @@ permissions:
   contents: read
 
 jobs:
-  build:
-
+  test:
     runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mariadb:11
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: una
+          MYSQL_USER: una
+          MYSQL_PASSWORD: una
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
 
     steps:
     - uses: actions/checkout@v4
@@ -21,26 +36,47 @@ jobs:
       uses: shivammathur/setup-php@v2
       with:
         php-version: '8.3'
-        extensions: intl, zip
-        tools: composer, phing:3.1.2
+        extensions: intl, curl, gd, mbstring, zip, exif, pdo_mysql
+        ini-values: short_open_tag=On, memory_limit=256M
+        tools: composer
 
-    - name: Validate composer.json and composer.lock
-      run: composer validate
+    - name: Setup Node
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: yarn
 
     - name: Cache Composer packages
-      id: composer-cache
       uses: actions/cache@v4
       with:
         path: plugins
         key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
         restore-keys: |
           ${{ runner.os }}-php-
-    - name: Install dependencies
-      run: composer install --prefer-dist --no-progress --no-dev
 
-    - name: Package zip
-      run: phing package -Dpackage_file=UNA.zip
+    - name: Install PHP dependencies
+      run: composer install --prefer-dist --no-progress
 
-    # Run tests (needs an installed site / inc/header.inc.php):
-    # - name: Run test suite
-    #   run: composer test
+    - name: Install JS dependencies
+      run: yarn install --frozen-lockfile
+
+    - name: Prepare writable paths
+      run: |
+        mkdir -p cache cache_public logs tmp storage
+        chmod -R a+rwX inc cache cache_public logs tmp storage
+        test -f plugins/ffmpeg/ffmpeg.exe && chmod 0755 plugins/ffmpeg/ffmpeg.exe
+
+    - name: Install UNA
+      working-directory: install
+      run: >
+        php cmd.php
+        -m bx_antispam
+        --db_host=127.0.0.1
+        --db_name=una
+        --db_user=una
+        --db_password=una
+        --server_http_host=localhost
+        --server_php_self=/install/index.php
+
+    - name: Run PHPUnit
+      run: composer test
