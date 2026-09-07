@@ -58,9 +58,10 @@
         <include name="**/*" />
         <exclude name="**/*.swp" />
         <exclude name=".github/**" />
-        <exclude name=".vscode/**" />
+        <exclude name=".vscode/**" />        
         <exclude name="ai/**" />
         <exclude name="inc/header*" />
+        <exclude name="AGENTS.md" />
         <exclude name="build.xml" />
         <exclude name="build.properties" />
         <exclude name="bower.json" />
@@ -74,7 +75,8 @@
         <exclude name="package.json" />
         <exclude name="package-lock.json" />
         <exclude name="yarn.lock" />
-        <exclude name="tailwind.config*" />
+        <exclude name="tailwind.*" />
+        <exclude name="tsconfig.*" />
         <exclude name="patches/**" />
         <exclude name="storage/**/*" />
         <exclude name="samples/**" />
