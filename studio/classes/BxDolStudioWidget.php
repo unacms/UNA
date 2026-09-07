@@ -32,6 +32,15 @@ class BxDolStudioWidget extends BxTemplStudioPage
 
             $sJsObjectLauncher = BxTemplStudioLauncher::getInstance()->getPageJsObject();
 
+            // Personal pin first (available to everyone), the shared pin beneath it (managers only).
+            $this->addAction(array(
+                'type' => 'switcher',
+                'name' => 'bookmark',
+                'caption' => '_adm_txt_pca_bookmark',
+                'checked' => $this->aPage['bookmark'],
+                'onchange' => "javascript:" . $sJsObjectLauncher . ".bookmark('" . $this->aPage['name'] . "', this)"
+            ));
+
             if(BxDolStudioRolesUtils::getInstance()->isActionAllowed(BX_SRA_MANAGE_APPS))
                 $this->addAction(array(
                     'type' => 'switcher',
@@ -40,14 +49,6 @@ class BxDolStudioWidget extends BxTemplStudioPage
                     'checked' => $this->aPage['featured'],
                     'onchange' => "javascript:" . $sJsObjectLauncher . ".featured('" . $this->aPage['name'] . "', this)"
                 ));
-
-            $this->addAction(array(
-                'type' => 'switcher',
-                'name' => 'bookmark',
-                'caption' => '_adm_txt_pca_bookmark',
-                'checked' => $this->aPage['bookmark'],
-                'onchange' => "javascript:" . $sJsObjectLauncher . ".bookmark('" . $this->aPage['name'] . "', this)"
-            ));
 
             $this->addAction(array(
                 'type' => 'select',

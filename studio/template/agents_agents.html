@@ -41,6 +41,13 @@
             </div>
         </div>
     </bx_repeat:agents>
+    <bx_if:show_empty>
+        <div class="bx-agt-agents-empty w-full p-8 text-center">
+            <div class="font-medium text-gray-800 dark:text-gray-100"><bx_text:_sys_agents_agents_empty /></div>
+            <div class="mt-1 text-sm text-gray-500 dark:text-gray-400 text-pretty"><bx_text:_sys_agents_agents_empty_info /></div>
+            <a class="bx-btn bx-btn-primary mt-4" href="javascript:void(0)" onclick="__js_object__.agentAdd()"><bx_text:_sys_agents_agents_popup_add /></a>
+        </div>
+    </bx_if:show_empty>
 </div>
 
 <!--

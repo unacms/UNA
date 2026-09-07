@@ -42,6 +42,10 @@ BxDolStudioLauncher.prototype.init = function() {
                 $this.disableJitter();
         });
 
+        //--- Desktop: put the cursor in the app search so typing filters straight away (no autofocus on touch, it would raise the keyboard).
+        if(bx_is_mouse() && window.matchMedia('(min-width: 768px)').matches)
+            $('li.bx-menu-tab-search:not(.bx-mt-compact) input[name="search"]').trigger('focus');
+
     	//--- Enable Sorting for Page Edit mode ---//
     	$($this.aSortingConf.parent).sortable({
             disabled: true,
@@ -56,17 +60,13 @@ BxDolStudioLauncher.prototype.init = function() {
                 $this.reorder(oUi.item);
             }
     	});
-
-    	//--- Check for Featured mode.
-    	if($this._isFeatured())
-            $('.bx-menu-tab-featured').addClass('bx-menu-tab-active');
     });
 
     window.addEventListener('keydown', (e) => {
         if(e.keyCode === 114 || (e.ctrlKey && e.keyCode === 70) || (e.metaKey && e.keyCode === 70)) {
             e.preventDefault();
 
-            $('.bx-menu-tab-search .bx-form-input-text[name="search"]').focus();
+            oBxDolStudioMenuTop.searchOpen();
         }
     });
 };
@@ -267,9 +267,6 @@ BxDolStudioLauncher.prototype.rearrange = function(iWidgetId, oSelect) {
 };
 
 BxDolStudioLauncher.prototype.enableJitter = function() {
-    this._disableFeatured();
-    $('.bx-menu-tab-featured').removeClass('bx-menu-tab-active');
-
     $(this.aJitterConf.elements).fadeIn('fast');
     $(this.aJitterConf.item).removeClass('bx-std-widget-icon-trans');
     $(this.aSortingConf.parent).addClass('bx-std-jitter').sortable('option', 'disabled', false);
@@ -285,34 +282,4 @@ BxDolStudioLauncher.prototype.disableJitter = function() {
     this.bJitterMode = false;
 };
 
-BxDolStudioLauncher.prototype.enableFeatured = function() {
-    this.disableJitter();
-    $('.bx-menu-tab-edit').removeClass('bx-menu-tab-active');
-
-    $.cookie('bx_studio_featured', '1', {path: '/'});
-
-    this._enableFeatured();
-};
-
-BxDolStudioLauncher.prototype.disableFeatured = function() {
-    $.cookie('bx_studio_featured', '0', {path: '/'});
-
-    this._disableFeatured();
-};
-
-BxDolStudioLauncher.prototype._isFeatured = function() {
-    return parseInt($.cookie('bx_studio_featured')) == 1;
-};
-
-BxDolStudioLauncher.prototype._enableFeatured = function() {
-    var $this = this;
-
-    $('.bx-std-widget:not(.bx-std-widget-icon-featured)').bx_anim('hide', this.sAnimationEffect, this.iAnimationSpeed);
-};
-
-BxDolStudioLauncher.prototype._disableFeatured = function() {
-    var $this = this;
-
-    $('.bx-std-widget:not(.bx-std-widget-icon-featured)').bx_anim('show', this.sAnimationEffect, this.iAnimationSpeed);
-};
 /** @} */

@@ -213,5 +213,6 @@ module.exports = {
     require('@tailwindcss/typography'),
     require('@tailwindcss/aspect-ratio'),
     require('@tailwindcss/container-queries'),
+    require('./tailwind.smooth-shadow.js'),
   ],
 }

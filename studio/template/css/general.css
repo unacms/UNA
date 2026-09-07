@@ -115,15 +115,13 @@ div.bx-std-pcap-mp-right div.bx-std-pcap-action {
  */
 div.bx-std-pmen-item {
     position: relative;
-    height: 3.5rem;
+    height: 3rem; /* 36px icon + 6px padding on each side, so the item background matches the header icons' ring-4 + ring-offset-2 */
     margin-top: 0.125rem;
 
-    border-radius: 0.75rem;
+    border-radius: 0.875rem; /* icon radius (8px) + 6px padding */
 
     font-size: 1.0rem;
     font-weight: 500;
-
-    overflow: hidden;
 }
 div.bx-std-pmen-item:first-child {
     margin-top: 0;
@@ -137,10 +135,7 @@ div.bx-std-pmen-item-cnt {
     -webkit-flex-wrap: nowrap;
     flex-wrap: nowrap;
 
-    padding: 0.5rem;
-
-    text-overflow: ellipsis;
-    overflow: hidden;
+    padding: 0.375rem;
 }
 
 span.bx-std-pmen-item-counter {}
@@ -150,8 +145,8 @@ div.bx-std-pmen-item .bx-std-pmen-ic-icon {
     display: none;
     flex: 0 0 auto;
 
-    width: 2.5rem;
-    height: 2.5rem;
+    width: 2.25rem;
+    height: 2.25rem;
     box-sizing: border-box;
 
     margin-right: 1rem;
@@ -178,6 +173,11 @@ div.bx-std-pmen-item .sys-icon {
     height: 100%;
 
     border-radius: 0.5rem;
+}
+/* Glyphs inside the gray tile buttons are line art, only full-bleed artwork needs the rounding. */
+div.bx-std-pmen-item .bx-std-tile-btn svg,
+div.bx-std-pmen-item .bx-std-tile-btn .sys-icon {
+    border-radius: 0;
 }
 
 div.bx-std-pmen-item a, 

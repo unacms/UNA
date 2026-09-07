@@ -12,6 +12,7 @@
 class BxDolCacheUtilities extends BxDol
 {
     protected $_aCacheTypes = array();
+    protected $_bRevisionBumped = false; ///< 'sys_revision' is bumped at most once per request even when several caches are cleared
 
     public function __construct ()
     {
@@ -99,10 +100,14 @@ class BxDolCacheUtilities extends BxDol
                     $this->clear('less');
 
                 $mixedResult = $this->{$sAction . 'File'}($oTemplate->getCacheFilePrefix($sCache), BX_DIRECTORY_PATH_CACHE_PUBLIC);
+                if($bClear)
+                    $this->_bumpRevision($mixedResult);
                 break;
 
             case 'js':
                 $mixedResult = $this->{$sAction . 'File'}($oTemplate->getCacheFilePrefix($sCache), BX_DIRECTORY_PATH_CACHE_PUBLIC);
+                if($bClear)
+                    $this->_bumpRevision($mixedResult);
                 break;
 
             default:
@@ -115,6 +120,20 @@ class BxDolCacheUtilities extends BxDol
         }
 
         return $mixedResult;
+    }
+
+    /**
+     * Compiled CSS/JS bundles are served with a long max-age under file names derived from bx_site_hash(),
+     * which includes the 'sys_revision' option. Bumping it after a successful clear gives the regenerated
+     * bundles new names, so browsers fetch them instead of reusing stale cached copies.
+     */
+    protected function _bumpRevision($aResult)
+    {
+        if($this->_bRevisionBumped || !isset($aResult['code']) || $aResult['code'] != 0)
+            return;
+
+        setParam('sys_revision', (int)getParam('sys_revision') + 1);
+        $this->_bRevisionBumped = true;
     }
 
     protected function _clearObject($oCache, $sPrefix)

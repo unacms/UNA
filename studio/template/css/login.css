@@ -5,3 +5,8 @@ div.bx-std-login-form {
 div.bx-std-login-form .bx-form-input-password {
     padding: 0px;
 }
+
+/* The login box never needs to scroll, so let its shadow show instead of clipping it at the popup wrapper. */
+body > #bx-std-login-form-box {
+    overflow: visible;
+}

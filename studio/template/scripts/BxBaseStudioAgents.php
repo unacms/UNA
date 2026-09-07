@@ -367,6 +367,12 @@ class BxBaseStudioAgents extends BxDolStudioAgents
         return $oTemplate->parseHtmlByName('agents.html', [
             'content' => $oTemplate->parseHtmlByName('agents_agents.html', [
                 'bx_repeat:agents' => $aTmplVarsAgents,
+                'bx_if:show_empty' => [
+                    'condition' => empty($aTmplVarsAgents),
+                    'content' => [
+                        'js_object' => $sJsObject,
+                    ]
+                ],
             ]) . ($oGrid ? $oGrid->getCodeJs() : ''),
             'js_content' => $this->getPageJsCode()
         ]);

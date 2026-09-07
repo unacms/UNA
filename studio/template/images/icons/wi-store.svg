@@ -1,31 +1,19 @@
 <svg width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
 <rect width="72" height="72" fill="url(#paint0_linear_107_30)"/>
-<path d="M30 18H20C18.8954 18 18 18.8954 18 20V30C18 31.1046 18.8954 32 20 32H30C31.1046 32 32 31.1046 32 30V20C32 18.8954 31.1046 18 30 18Z" stroke="url(#paint1_linear_107_30)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M52 18H42C40.8954 18 40 18.8954 40 20V30C40 31.1046 40.8954 32 42 32H52C53.1046 32 54 31.1046 54 30V20C54 18.8954 53.1046 18 52 18Z" stroke="url(#paint2_linear_107_30)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M52 40H42C40.8954 40 40 40.8954 40 42V52C40 53.1046 40.8954 54 42 54H52C53.1046 54 54 53.1046 54 52V42C54 40.8954 53.1046 40 52 40Z" stroke="url(#paint3_linear_107_30)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M30 40H20C18.8954 40 18 40.8954 18 42V52C18 53.1046 18.8954 54 20 54H30C31.1046 54 32 53.1046 32 52V42C32 40.8954 31.1046 40 30 40Z" stroke="url(#paint4_linear_107_30)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M30 19H20C18.8954 19 18 19.8954 18 21V31C18 32.1046 18.8954 33 20 33H30C31.1046 33 32 32.1046 32 31V21C32 19.8954 31.1046 19 30 19Z" stroke="black" stroke-opacity="0.2" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M52 19H42C40.8954 19 40 19.8954 40 21V31C40 32.1046 40.8954 33 42 33H52C53.1046 33 54 32.1046 54 31V21C54 19.8954 53.1046 19 52 19Z" stroke="black" stroke-opacity="0.2" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M52 41H42C40.8954 41 40 41.8954 40 43V53C40 54.1046 40.8954 55 42 55H52C53.1046 55 54 54.1046 54 53V43C54 41.8954 53.1046 41 52 41Z" stroke="black" stroke-opacity="0.2" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M30 41H20C18.8954 41 18 41.8954 18 43V53C18 54.1046 18.8954 55 20 55H30C31.1046 55 32 54.1046 32 53V43C32 41.8954 31.1046 41 30 41Z" stroke="black" stroke-opacity="0.2" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+<g transform="translate(12 12) scale(2)" fill="none" stroke="url(#paint1_linear_107_30)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+<path d="M10 22V7a1 1 0 0 0-1-1H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5a1 1 0 0 0-1-1H2"/>
+<rect x="14" y="2" width="8" height="8" rx="1"/>
+</g>
+<g transform="translate(12 13) scale(2)" fill="none" stroke="black" stroke-opacity="0.1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+<path d="M10 22V7a1 1 0 0 0-1-1H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5a1 1 0 0 0-1-1H2"/>
+<rect x="14" y="2" width="8" height="8" rx="1"/>
+</g>
 <defs>
 <linearGradient id="paint0_linear_107_30" x1="36" y1="0" x2="36" y2="72" gradientUnits="userSpaceOnUse">
 <stop stop-color="#71717A"/>
 <stop offset="1" stop-color="#3F3F46"/>
 </linearGradient>
-<linearGradient id="paint1_linear_107_30" x1="36" y1="18" x2="36" y2="54" gradientUnits="userSpaceOnUse">
-<stop stop-color="white"/>
-<stop offset="1" stop-color="white" stop-opacity="0.6"/>
-</linearGradient>
-<linearGradient id="paint2_linear_107_30" x1="36" y1="18" x2="36" y2="54" gradientUnits="userSpaceOnUse">
-<stop stop-color="white"/>
-<stop offset="1" stop-color="white" stop-opacity="0.6"/>
-</linearGradient>
-<linearGradient id="paint3_linear_107_30" x1="36" y1="18" x2="36" y2="54" gradientUnits="userSpaceOnUse">
-<stop stop-color="white"/>
-<stop offset="1" stop-color="white" stop-opacity="0.6"/>
-</linearGradient>
-<linearGradient id="paint4_linear_107_30" x1="36" y1="18" x2="36" y2="54" gradientUnits="userSpaceOnUse">
+<linearGradient id="paint1_linear_107_30" x1="12" y1="2" x2="12" y2="22" gradientUnits="userSpaceOnUse">
 <stop stop-color="white"/>
 <stop offset="1" stop-color="white" stop-opacity="0.6"/>
 </linearGradient>

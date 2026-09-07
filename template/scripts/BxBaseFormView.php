@@ -1664,7 +1664,7 @@ BLAH;
             $aAttrs['data-frmt-datetime'] = getParam('sys_format_datetime');
 
         if(($sAreaLabel = $this->_genInputAreaLabel($aInput) ?: bx_html_attribute($this->_genInputCaption($aInput))))
-            $aAttrs['area-label'] = $sAreaLabel;
+            $aAttrs['aria-label'] = $sAreaLabel;
 
         // for inputs with labels generate id
         if (isset($aInput['label']))
@@ -1748,7 +1748,7 @@ BLAH;
             $aAttrs['name'] = $aInput['name'];
 
         if(($sAreaLabel = $this->_genInputAreaLabel($aInput) ?: bx_html_attribute($aInput['value'])))
-            $aAttrs['area-label'] = $sAreaLabel;
+            $aAttrs['aria-label'] = $sAreaLabel;
         
         return $aAttrs;
     }
@@ -1840,7 +1840,7 @@ BLAH;
         $aAttrs['name'] = $aInput['name'];
 
         if(($sAreaLabel = $this->_genInputAreaLabel($aInput) ?: bx_html_attribute($this->_genInputCaption($aInput))))
-            $aAttrs['area-label'] = $sAreaLabel;
+            $aAttrs['aria-label'] = $sAreaLabel;
 
         // for inputs with labels generate id
         if (isset($aInput['label']))
@@ -2425,7 +2425,7 @@ BLAH;
         }
 
         if(($sAreaLabel = $this->_genInputAreaLabel($aInput) ?: bx_html_attribute($this->_genInputCaption($aInput))))
-            $aAttrs['area-label'] = $sAreaLabel;
+            $aAttrs['aria-label'] = $sAreaLabel;
 
         // for inputs with labels generate id
         if (isset($aInput['label']))
@@ -2461,7 +2461,7 @@ BLAH;
         $aAttrs['name']  = $aInput['name'];
 
         if(($sAreaLabel = $this->_genInputAreaLabel($aInput) ?: bx_html_attribute($this->_genInputCaption($aInput))))
-            $aAttrs['area-label'] = $sAreaLabel;
+            $aAttrs['aria-label'] = $sAreaLabel;
 
         // for inputs with labels generate id
         if (isset($aInput['label']))

@@ -1623,7 +1623,7 @@ function bx_set_color_scheme(iCode)
         return;
 
     if(typeof iCode === 'undefined' || !iCode)
-        iCode = this.isColorSchemeDark() ? 2 : 1;
+        iCode = bx_is_color_scheme_dark() ? 2 : 1;
 
     for(var i = 0; i < glOnColorSchemeChange.length; i++)
         if(typeof glOnColorSchemeChange[i] === 'function')

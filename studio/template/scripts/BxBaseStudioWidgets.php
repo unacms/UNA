@@ -50,7 +50,6 @@ class BxBaseStudioWidgets extends BxDolStudioWidgets
             return false;
 
         $aWidgetsParams = array(
-            'featured' => $this->isFeatured(),
             'notices' => $this->aWidgetsNotices
         );
 

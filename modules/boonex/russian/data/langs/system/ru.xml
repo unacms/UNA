@@ -671,6 +671,7 @@
 	<string name="_adm_dbd_txt_su_system_media"><![CDATA[Системные медиа]]></string>
         <string name="_adm_dbd_txt_c_select"><![CDATA[Выбрать...]]></string>
 	<string name="_adm_dbd_txt_c_clear_all"><![CDATA[Очистить весь кэш]]></string>
+	<string name="_adm_dbd_txt_q_clear"><![CDATA[Очистить очередь]]></string>
 	<string name="_adm_dbd_txt_c_content"><![CDATA[Содержимое страниц]]></string>
 	<string name="_adm_dbd_txt_c_clear_content"><![CDATA[Очистить кэш содержимого страниц]]></string>
 	<string name="_adm_dbd_txt_c_db"><![CDATA[БД]]></string>
@@ -2000,6 +2001,7 @@
         <string name="_adm_tmi_cpt_assistant"><![CDATA[Ассистент]]></string>
 	<string name="_adm_tmi_cpt_site"><![CDATA[Перейти на сайт]]></string>
         <string name="_adm_tmi_cpt_search"><![CDATA[Искать...]]></string>
+        <string name="_adm_tmi_cpt_search_apps"><![CDATA[Приложения...]]></string>
         <string name="_adm_tmi_cpt_scheme"><![CDATA[Цветовая схема]]></string>
 	<string name="_adm_tmi_cpt_tour"><![CDATA[Инструкции]]></string>
 	<string name="_adm_tmi_cpt_launcher"><![CDATA[Загрузчик]]></string>
@@ -2066,8 +2068,8 @@
 	<string name="_adm_txt_modules_upload"><![CDATA[Добавить новый Модуль]]></string>
 	<string name="_adm_txt_modules_writable"><![CDATA[Записываемый]]></string>
 	<string name="_adm_txt_pca_active"><![CDATA[Активные]]></string>
-        <string name="_adm_txt_pca_bookmark"><![CDATA[В закладки]]></string>
-	<string name="_adm_txt_pca_featured"><![CDATA[В продвинутые]]></string>
+        <string name="_adm_txt_pca_bookmark"><![CDATA[Держать в доке для меня]]></string>
+	<string name="_adm_txt_pca_featured"><![CDATA[Держать в доке для всех]]></string>
         <string name="_adm_txt_pca_rearrange"><![CDATA[Перенести в]]></string>
 	<string name="_adm_txt_remember_me"><![CDATA[Запомнить меня]]></string>
 	<string name="_adm_txt_select_module"><![CDATA[Выбрать модуль...]]></string>
@@ -2290,6 +2292,8 @@
         <string name="_sys_agents_agents_txt_trigger"><![CDATA[Триггер]]></string>
         <string name="_sys_agents_agents_txt_profile_id"><![CDATA[Профиль]]></string>
         <string name="_sys_agents_agents_popup_add"><![CDATA[Добавить агента]]></string>
+        <string name="_sys_agents_agents_empty"><![CDATA[Пока нет агентов]]></string>
+        <string name="_sys_agents_agents_empty_info"><![CDATA[Агенты выполняют автоматические задачи на сайте. Добавьте первого, чтобы начать.]]></string>
         <string name="_sys_agents_builder_view_list"><![CDATA[Список]]></string>
         <string name="_sys_agents_builder_view_grid"><![CDATA[Таблица]]></string>
 
@@ -3740,17 +3744,17 @@
     <string name="_sys_menu_set_title_studio_account_popup"><![CDATA[Аккаунт - Всплывающее меню (Студия)]]></string>
     <string name="_sys_menu_item_title_system_sa_account"><![CDATA[Аккаунт]]></string>
     <string name="_sys_menu_item_title_sa_account"><![CDATA[{member_display_name}]]></string>
-    <string name="_sys_menu_item_title_system_sa_site"><![CDATA[Перейти на сайт]]></string>
-    <string name="_sys_menu_item_title_sa_site"><![CDATA[Перейти на сайт]]></string>
+    <string name="_sys_menu_item_title_system_sa_site"><![CDATA[Открыть веб-приложение]]></string>
+    <string name="_sys_menu_item_title_sa_site"><![CDATA[Открыть веб-приложение]]></string>
     <string name="_sys_menu_item_title_system_sa_edit"><![CDATA[Управление приложениями]]></string>
     <string name="_sys_menu_item_title_sa_edit"><![CDATA[Управление приложениями]]></string>
-    <string name="_sys_menu_item_title_system_sa_scheme"><![CDATA[Цветовая схема]]></string>
-    <string name="_sys_menu_item_title_sa_scheme"><![CDATA[Цветовая схема]]></string>
+    <string name="_sys_menu_item_title_system_sa_scheme"><![CDATA[Тема]]></string>
+    <string name="_sys_menu_item_title_sa_scheme"><![CDATA[Тема]]></string>
     <string name="_sys_menu_item_title_system_sa_language"><![CDATA[Язык]]></string>
     <string name="_sys_menu_item_title_sa_language"><![CDATA[Язык]]></string>
     <string name="_sys_menu_item_title_sa_scheme_auto"><![CDATA[Системный]]></string>
-    <string name="_sys_menu_item_title_sa_scheme_light"><![CDATA[Светлый режим]]></string>
-    <string name="_sys_menu_item_title_sa_scheme_dark"><![CDATA[Темный режим]]></string>
+    <string name="_sys_menu_item_title_sa_scheme_light"><![CDATA[Светлая]]></string>
+    <string name="_sys_menu_item_title_sa_scheme_dark"><![CDATA[Тёмная]]></string>
     <string name="_sys_menu_item_title_system_sa_logout"><![CDATA[Выйти]]></string>
     <string name="_sys_menu_item_title_sa_logout"><![CDATA[Выйти]]></string>
     <string name="_sys_menu_item_title_inherited"><![CDATA[Унаследованный]]></string>
@@ -4175,8 +4179,8 @@
     <string name="_sys_tour_launcher_polyglot_txt"><![CDATA["Величайшее богатство народа — его язык". Полиглот позволяет поменять язык сайта, формат даты и времени, редактировать слова и фразы для всех языков и даже редактировать шаблоны писем.]]></string>
     <string name="_sys_tour_launcher_reorganize_title"><![CDATA[<i class="sys-icon move"></i> Реорганизуй приложения]]></string>
     <string name="_sys_tour_launcher_reorganize_txt"><![CDATA[Активируй этот режим, чтобы передвигать приложения и удалять неактивные.]]></string>
-    <string name="_sys_tour_launcher_favourites_title"><![CDATA[<i class="sys-icon star"></i> Выбери лучшие]]></string>
-    <string name="_sys_tour_launcher_favourites_txt"><![CDATA[В Студии может быть сотни приложений, выбери те, которыми пользуешся чаще всего. Их можно отфильтровать нажав на иконку звезды.]]></string>
+    <string name="_sys_tour_launcher_favourites_title"><![CDATA[Держи приложения в доке]]></string>
+    <string name="_sys_tour_launcher_favourites_txt"><![CDATA[Док в шапке держит под рукой недавно открытые приложения. В режиме реорганизации откройте настройки приложения, чтобы оставить его в доке для себя или для всех операторов.]]></string>
     <string name="_sys_tour_launcher_add_apps_title"><![CDATA[<i class="sys-icon plus"></i> А сейчас, добавь новые приложения!]]></string>
     <string name="_sys_tour_launcher_add_apps_txt"><![CDATA[В UNA уже входят самые необходимые приложения. Выбери нужные, скачай и затем проинсталлируй приложения, чтобы добавить разные виды профайлов, модулей, системных утилит, языков и дизайнов. Проинсталлированные приложения можно активировать и деактивировать. UNA очень гибкий и имеет модульную архитектуру, тем самым позволяя создать сайт мечты выбрав нужную функциональность, настройки и структуру базы данных. Но даже не меняя ничего вы получите прекрасно фунционирующий сайт!]]></string>
 

@@ -1,31 +1,57 @@
+/* The settings form fills its block: sections scroll, the save row stays as the block footer. */
 .bx-std-block .bx-std-block-content {
+    display: flex;
+    flex-direction: column;
     padding: 0;
+    overflow: hidden;
 }
 
+#adm-settings-form,
 #adm-settings-form-categorized {
     position: relative;
-    padding-bottom: 5.0rem;
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+}
+#adm-settings-form .bx-form-advanced-wrapper,
+#adm-settings-form-categorized .bx-form-advanced-wrapper {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 0.5rem;
 }
 #adm-settings-form-categorized .bx-form-advanced-wrapper {
-    height: calc(100vh - 10.0rem);
-    overflow-y: auto;
+    padding-bottom: 0; /* the sticky Save row is the bottom edge; sticky elements stop at the scroller's padding, not its edge */
 }
-#adm-settings-form .bx-form-advanced-wrapper .bx-form-section-wrapper,
 #adm-settings-form-categorized .bx-form-advanced-wrapper .bx-form-section-wrapper {
     padding: 0 0.5rem 0 0;
 }
-#adm-settings-form-categorized .bx-form-advanced-wrapper .bx-form-section-wrapper:last-child {
-    position: absolute;
+/* Plain (module) settings: the form adds its own 8px on top of the block's 8px, so fields sit 16px from every edge. */
+#adm-settings-form .bx-form-advanced-wrapper .bx-form-section-wrapper {
+    padding: 0.5rem;
+}
+/* Save row as a sticky footer: only when the form has separate sections, a single section keeps its Save inline. */
+#adm-settings-form .bx-form-advanced-wrapper .bx-form-section-wrapper:last-child:not(:first-child),
+#adm-settings-form-categorized .bx-form-advanced-wrapper .bx-form-section-wrapper:last-child:not(:first-child) {
+    position: sticky;
     bottom: 0;
-    width: 100%;
+    z-index: 1;
+    width: auto;
 
-    margin: 0;
-    padding: 1.25rem 1.5rem;
+    margin: 0.5rem -0.5rem 0; /* spans the block edge to edge, over the wrapper's side inset */
+    padding: 1rem 1.5rem;
+    border-radius: 0 0 1rem 1rem;
+
+    background-color: #ffffff;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+.dark #adm-settings-form .bx-form-advanced-wrapper .bx-form-section-wrapper:last-child:not(:first-child),
+.dark #adm-settings-form-categorized .bx-form-advanced-wrapper .bx-form-section-wrapper:last-child:not(:first-child) {
+    background-color: #111827;
+    border-top-color: rgba(255, 255, 255, 0.1);
 }
 
-#adm-settings-form .bx-form-advanced-wrapper .bx-form-section-wrapper:first-child {
-    padding-top: 0.5rem;
-}
 #adm-settings-form-categorized .bx-form-advanced-wrapper .bx-form-section-wrapper:first-child {
     padding-top: 0;
 }

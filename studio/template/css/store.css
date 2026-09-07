@@ -36,47 +36,29 @@ div.bx-std-block-panel-bottom .bx-menu-btns-hor .bx-btn u {
 }
 
 /*--- Product's Snippet style ---*/
+ /* Product lists: a plain grid, 1 / 2 / 3 columns by viewport, spaced by the gap alone (no item margins, no clipping wrappers). */
 .bx-std-products {
-    display: -webkit-box;
-    display: -webkit-flex;
-    display: -ms-flexbox;
-    display: flex;
-
-    /* makes all items on a row equal height */
-    -webkit-box-align: stretch;
-    -webkit-align-items: stretch;
-    -ms-flex-align: stretch;
+    display: grid;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    gap: 1rem;
     align-items: stretch;
-
-    /* wrap onto the next line rather than stretching or shrinking */
-    -webkit-flex-wrap: wrap;
-    -ms-flex-wrap: wrap;
-    flex-wrap: wrap;
-
-    /* tells flexbox to start items from the left */
-    -webkit-box-pack: start;
-    -ms-flex-pack: start;
-    plex-pack: start;
-    -webkit-justify-content: flex-start;
-    justify-content: flex-start;
+}
+/* Inside a block the scroll box already insets 8px; this brings the cards' outer margin to 16px on all sides. */
+div.bx-std-block-content > .bx-std-products {
+    padding: 0.5rem;
+}
+/* No pager rendered: don't let its top margin trail the list. */
+.bx-std-paginate:empty {
+    display: none;
 }
 .bx-std-products .bx-msg-box-container {
-	width: 100%;
-	padding: 0px;
+    grid-column: 1 / -1;
+    width: 100%;
+    padding: 0px;
 }
 .bx-std-products .bx-std-product-gallery {
-    display: -webkit-box;
-    display: -webkit-flex;
-    display: -ms-flexbox;
     display: flex;
-
-    -webkit-box-flex: 0;
-
-    -webkit-flex: 0 0 100%;
-    -ms-flex: 0 0 100%;
-    flex: 0 0 100%;
-
-    overflow:hidden;
+    min-width: 0;
 }
 
 .bx-std-product h2,
@@ -91,8 +73,7 @@ div.bx-std-block-panel-bottom .bx-menu-btns-hor .bx-btn u {
 .bx-std-product-gallery-cnt {
     position: relative;
     width: 100%;
-    min-width: 18rem;
-    overflow: hidden;
+    min-width: 0;
 }
 
 /*--- Title ---*/
@@ -386,18 +367,9 @@ div.bx-std-notification-cnt {
    width: 33%;
 }
 
-:where(.bx-media-phone, .bx-media-tablet) .bx-std-products .bx-std-product-gallery {
-    -webkit-flex: 0 0 100%;
-    -ms-flex: 0 0 100%;
-    flex: 0 0 100%;
+.bx-media-tablet2 .bx-std-products {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
 }
-.bx-media-tablet2 .bx-std-products .bx-std-product-gallery {
-    -webkit-flex: 0 0 49.8%;
-    -ms-flex: 0 0 49.8%;
-    flex: 0 0 49.8%;
-}
-.bx-media-desktop   .bx-std-products .bx-std-product-gallery {
-    -webkit-flex: 0 0 33.25%;
-    -ms-flex: 0 0 33.25%;
-    flex: 0 0 33.25%;
+.bx-media-desktop .bx-std-products {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
 }

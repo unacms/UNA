@@ -66,15 +66,11 @@ class BxTemplFunctions extends BxBaseFunctions
                 $iLogoHeight = (int)$oDesigns->{'getSite' . $aParams['uc'] . 'Height'}();
                 $sLogoHeight = $iLogoHeight > 0 ? 'height:' . round($iLogoHeight/16, 3) . 'rem;' : '';
 
-                if(!empty($aParams['g'])) {
-                    list($iDlWidth, $iDlHeight) = bx_get_svg_image_size($sFileUrl);
-                    $fDlAspectRation = $iDlHeight ? $iDlWidth / $iDlHeight : BxDolDesigns::getAspectRatioDefault($sType);
-
-                    $iLogoWidth = $iLogoHeight * $fDlAspectRation;
-                }
-                else
-                    $iLogoWidth = $oDesigns->{'getSite' . $aParams['uc'] . 'Width'}();
-
+                /**
+                 * Generic (SVG) images get the height only, the browser derives the width from the image's own aspect ratio.
+                 * Uploaded images use the dimensions from Designs settings.
+                 */
+                $iLogoWidth = empty($aParams['g']) ? (int)$oDesigns->{'getSite' . $aParams['uc'] . 'Width'}() : 0;
                 $sLogoWidth = $iLogoWidth > 0 ? 'width:' . round($iLogoWidth/16, 3) . 'rem;' : '';
 
                 $aTmplVarsImages[$sType] = [

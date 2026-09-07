@@ -646,10 +646,10 @@ function bx_get_svg_image_size($sUrl)
     }
 
     if(!$iWidth && isset($aAttributes['WIDTH']))
-        $iWidth = $this->_str2px($aAttributes['WIDTH']);
+        $iWidth = (float)$aAttributes['WIDTH'];
 
     if(!$iHeight && isset($aAttributes['HEIGHT']))
-        $iHeight = $this->_str2px($aAttributes['HEIGHT']);
+        $iHeight = (float)$aAttributes['HEIGHT'];
 
     return [$iWidth, $iHeight];
 }

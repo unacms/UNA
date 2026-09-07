@@ -116,10 +116,11 @@ class BxBaseStudioPage extends BxDolStudioPage
         $aMenuItems = [];
         $aMenuItems['home'] = [
             'name' => 'home',
-            'icon' => 'bc-home.svg',
+            'icon' => 'tmi-launcher.svg',
             'link' => BX_DOL_URL_STUDIO,
             //'onclick' => bx_replace_markers('return {js_object_launcher}.browser(this)', $this->aMarkers),
-            'title' => ''
+            'title' => '',
+            'area_label' => '_adm_page_cpt_home'
         ];
 
         /**
@@ -134,12 +135,19 @@ class BxBaseStudioPage extends BxDolStudioPage
                 'title' => ''
             ];
 
-        $aMenuItems['page'] = [
-            'name' => 'page',
-            'icon' => '', //$this->aPage['icon'],
-            'link' => $this->getPageUrl(),
-            'title' => _t($this->aPage['caption'])
-        ];
+        $bShowSearch = $bPageHome && getParam('sys_std_show_header_left_search') == 'on';
+
+        // On the launcher there is nothing to navigate to: the launcher button is hidden (the menu needs one item to render at all),
+        // there is no title, just the search field (the page heading moves into the search block for assistive tech).
+        if($bShowSearch)
+            $aMenuItems['home']['class_add'] = 'bx-menu-bc-hidden';
+        else
+            $aMenuItems['page'] = [
+                'name' => 'page',
+                'icon' => '', //$this->aPage['icon'],
+                'link' => $this->getPageUrl(),
+                'title' => _t($this->aPage['caption'])
+            ];
 
         $oMenu = new BxTemplStudioMenu([
             'template' => 'page_breadcrumb.html',
@@ -157,12 +165,9 @@ class BxBaseStudioPage extends BxDolStudioPage
                 ]
             ],
             'bx_if:show_search' => [
-                'condition' => $bPageHome && getParam('sys_std_show_header_left_search') == 'on',
+                'condition' => $bShowSearch,
                 'content' => [
-                    'bx_if:show_active' => [
-                        'condition' => false,
-                        'content' => []
-                    ]
+                    'title' => _t($this->aPage['caption'])
                 ]
             ]
         ]); 
@@ -226,7 +231,10 @@ class BxBaseStudioPage extends BxDolStudioPage
             'content' => $sActions
         ]);
 
-        $oTemplate->addInjection('injection_header', 'text', BxTemplStudioFunctions::getInstance()->transBox('bx-std-pmenu-popup-actions', $sActions, true));
+        $oTemplate->addInjection('injection_header', 'text', BxTemplStudioFunctions::getInstance()->transBox('bx-std-pmenu-popup-actions', [
+            'wrapper_class' => 'bx-std-mod-popup-settings-wrapper', // same chrome as the launcher tile settings popup
+            'content' => $sActions
+        ], true));
 
         return BX_DOL_STUDIO_PAGE_JS_OBJECT . ".togglePopup('actions', this)";
     }

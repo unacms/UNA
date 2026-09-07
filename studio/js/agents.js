@@ -74,6 +74,13 @@ BxDolStudioPageAgents.prototype.agentAction = function(sAction, iId, iConfirm, i
     });
 };
 
+BxDolStudioPageAgents.prototype.agentAdd = function() {
+    if (typeof(glGrids) == 'undefined' || !this.sObjNameGrid || !glGrids[this.sObjNameGrid])
+        return;
+
+    glGrids[this.sObjNameGrid].action('add', {}, '', false, 0);
+};
+
 BxDolStudioPageAgents.prototype.agentActivate = function(oSource) {
     var oDate = new Date();
     var oAgent = $(oSource).parents('.bx-agt-agent:first');
