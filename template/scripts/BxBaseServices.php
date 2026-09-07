@@ -825,6 +825,17 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
         return $aResult;
     }
 
+    public function serviceGetBlockStatic($sBlockName)
+    {
+        $bIsApi = bx_is_api();
+        if(!$bIsApi)
+            return '';
+
+        return [bx_api_get_block('static', [
+            'element' => $sBlockName
+        ])];
+    }
+
     public function serviceGetBlockAuthor($sModule, $iContentId = 0)
     {
         if(!$iContentId && bx_get('id') !== false)
