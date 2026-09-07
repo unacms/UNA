@@ -79,6 +79,8 @@ module.exports = {
 
     'bx-informer-msg-info', 'bx-informer-msg-alert', 'bx-informer-msg-error',
 
+    'bx-btn-mini', 'bx-btn-small', 'bx-btn-large', 'bx-btn-xlarge',
+
     'sys-action-counter', 'sys-ac-only', 'sys-ac-link',
 
     'bx-vote-bls-submenu-cnt', 

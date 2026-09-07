@@ -4262,7 +4262,8 @@ If it is not enabled then please consider implementing this optimization, since 
     <string name="_sys_txt_account_suspended"><![CDATA[Your account is suspended.]]></string>
     <string name="_sys_txt_account_unconfirmed_email"><![CDATA[Your email address is unconfirmed. Please, check your email ({1}) for a confirmation letter and click email confirmation link or use confirmation code (6 digit) to <a href="{2}">confirm your email</a>. Can't find the letter? Check your SPAM folder or <a href="{0}">send the verification letter again</a>.]]></string>
     <string name="_sys_txt_account_unconfirmed_phone"><![CDATA[Your phone is unconfirmed. Please, confirm it on <a href="{0}">verification page</a>.]]></string>
-    <string name="_sys_txt_account_profile_system"><![CDATA[Please <a href="{0}">create a profile</a> to start using the site.]]></string>
+    <string name="_sys_txt_account_profile_system"><![CDATA[Your account doesn't have a profile yet. Create one to start using the site.]]></string>
+    <string name="_sys_txt_account_profile_system_action"><![CDATA[Create profile]]></string>
     <string name="_sys_txt_account_need_to_change_password"><![CDATA[Your password has been expired. Please <a href="{0}">change your password</a>.]]></string>
     <string name="_sys_txt_account_cannot_delete"><![CDATA[Cannot delete the only Operator account]]></string>
     <string name="_sys_txt_account_deletion_scheduled"><![CDATA[Account deletion was scheduled and would be done in a few minutes.]]></string>

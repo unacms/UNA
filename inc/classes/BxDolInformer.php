@@ -78,8 +78,12 @@ class BxDolInformer extends BxDolFactory implements iBxDolSingleton
      * @param $sId - message id
      * @param $sMsg - message text
      * @param $iType - message type: BX_INFORMER_ALERT, BX_INFORMER_INFO or BX_INFORMER_ERROR
+     * @param $aParams - optional params:
+     *      - `icon` - [string] font icon name to show instead of the default type icon, e.g. `user-plus`
+     *      - `action_url` - [string] URL of the trailing action button
+     *      - `action_title` - [string] title of the trailing action button, the button is shown only when both URL and title are provided
      */
-    public function add ($sId, $sMsg, $iType = BX_INFORMER_INFO)
+    public function add ($sId, $sMsg, $iType = BX_INFORMER_INFO, $aParams = [])
     {
         if(!$this->_bEnabled)
             return;
@@ -89,6 +93,9 @@ class BxDolInformer extends BxDolFactory implements iBxDolSingleton
             'id' => $sId,
             'msg' => $sMsg,
             'type' => $iType,
+            'icon' => !empty($aParams['icon']) ? $aParams['icon'] : '',
+            'action_url' => !empty($aParams['action_url']) ? $aParams['action_url'] : '',
+            'action_title' => !empty($aParams['action_title']) ? $aParams['action_title'] : '',
         ];
     }
 

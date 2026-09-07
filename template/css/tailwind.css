@@ -697,7 +697,8 @@
         @apply hover:-translate-y-px;
     }
     .bx-btn-focus {
-        @apply focus:border-blue-500 dark:focus:border-blue-500 focus:border-opacity-70 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-20 focus:outline-none;
+        @apply focus:outline-none;
+        @apply focus-visible:border-blue-500 dark:focus-visible:border-blue-500 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-gray-900;
     }
     
     .bx-btn-active {
@@ -707,10 +708,10 @@
         @apply active:translate-y-px;
     }
     .bx-btn {
-        @apply relative inline-flex items-center px-4 py-2;
+        @apply relative inline-flex items-center min-h-11 px-4 py-2 touch-manipulation;
         @apply bx-btn-shadow;
         @apply bx-btn-bg;
-        @apply bx-btn-border;
+        @apply bx-btn-border rounded-[10px];
         @apply bx-btn-text;
         @apply transform-gpu transition-all duration-150;
         @apply cursor-pointer;
@@ -753,8 +754,8 @@
     }
 
     .bx-btn.bx-btn-primary {
-        @apply bg-blue-600 hover:bg-blue-500 active:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600 dark:active:bg-blue-800;
-        @apply border border-blue-600 hover:border-blue-500 active:border-blue-800 dark:border-blue-600 dark:hover:border-blue-500 dark:active:border-blue-700;
+        @apply bg-blue-600 hover:bg-blue-700 active:bg-blue-800 dark:bg-blue-700 dark:hover:bg-blue-600 dark:active:bg-blue-800;
+        @apply border border-blue-600 hover:border-blue-700 active:border-blue-800 dark:border-blue-600 dark:hover:border-blue-500 dark:active:border-blue-700;
         @apply text-white hover:text-white active:text-white dark:text-white dark:hover:text-white dark:active:text-white;
     }
 
@@ -772,10 +773,24 @@
         @apply bg-gray-50 dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-400 hover:text-gray-400 dark:hover:text-gray-400 focus:ring-0 focus:ring-offset-0 shadow-none cursor-default !important;
     }
 
+    /* Button sizes (height / corner radius): mini 28px/6px with the hit area extended to 44px, small 36px/8px, default 44px/10px, large 52px/12px, xlarge 60px/14px. */
+    .bx-btn.bx-btn-mini {
+        @apply min-h-7 px-2.5 py-1 text-xs rounded-md;
+        @apply after:content-[''] after:absolute after:-inset-y-2 after:-inset-x-1;
+    }
     .bx-btn.bx-btn-small {
-        @apply py-1 text-xs;
+        @apply min-h-9 px-3 py-1 text-sm rounded-lg;
+    }
+    .bx-btn.bx-btn-large {
+        @apply min-h-[3.25rem] px-5 text-base rounded-xl;
+    }
+    .bx-btn.bx-btn-xlarge {
+        @apply min-h-[3.75rem] px-6 text-lg rounded-[14px];
     }
 
+    .bx-btn.bx-btn-mini i, 
+    .bx-btn.bx-btn-mini img,
+    .bx-btn.bx-btn-mini svg,
     .bx-btn.bx-btn-small i, 
     .bx-btn.bx-btn-small img,
     .bx-btn.bx-btn-small svg {
@@ -1237,17 +1252,41 @@
 
 
     /* Common elements: Informers */
-    .bx-informer-msg a {
-        @apply text-blue-600 hover:text-blue-700 dark:text-blue-500 dark:hover:text-blue-600;
+    .bx-informer-msg {
+        @apply flex items-center gap-3 py-3 px-4 rounded-xl ring-1 ring-inset text-sm leading-5;
+    }
+    .bx-informer-indicator {
+        @apply flex-none flex items-center justify-center w-9 h-9 rounded-full;
+    }
+    .bx-informer-indicator .sys-icon {
+        @apply w-5 h-5 leading-5 text-xl text-center;
+    }
+    .bx-informer-content {
+        @apply flex-1 min-w-0 font-medium;
+    }
+    .bx-informer-content a:not(.bx-btn) {
+        @apply font-semibold underline underline-offset-2 hover:opacity-80;
+    }
+    .bx-informer-action {
+        @apply flex-none whitespace-nowrap;
     }
     .bx-informer-msg-info {
-        @apply bg-blue-50 text-blue-700;
+        @apply bg-blue-50 text-blue-800 ring-blue-200 dark:bg-blue-500/10 dark:text-blue-200 dark:ring-blue-500/25;
+    }
+    .bx-informer-msg-info .bx-informer-indicator {
+        @apply bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-300;
     }
     .bx-informer-msg-alert {
-        @apply bg-yellow-50 text-yellow-700;
+        @apply bg-yellow-50 text-yellow-800 ring-yellow-200 dark:bg-yellow-500/10 dark:text-yellow-200 dark:ring-yellow-500/25;
+    }
+    .bx-informer-msg-alert .bx-informer-indicator {
+        @apply bg-yellow-100 text-yellow-700 dark:bg-yellow-500/20 dark:text-yellow-300;
     }
     .bx-informer-msg-error {
-        @apply bg-red-50 text-red-700;
+        @apply bg-red-50 text-red-800 ring-red-200 dark:bg-red-500/10 dark:text-red-200 dark:ring-red-500/25;
+    }
+    .bx-informer-msg-error .bx-informer-indicator {
+        @apply bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-300;
     }
 
 
@@ -1450,7 +1489,7 @@
     
     .bx-std .bx-btn {
         @apply inline-flex items-center;
-        @apply h-10;
+        @apply min-h-11;
     }
 
     .bx-std .bx-btn:not(.bx-btn-primary) {

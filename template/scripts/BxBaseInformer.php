@@ -17,11 +17,23 @@ class BxBaseInformer extends BxDolInformer
 
     protected $_oTemplate;
 
-    protected $_aMapType2Class = array(
+    protected $_aMapType2Class = [
         BX_INFORMER_ALERT => 'bx-informer-msg-alert',
         BX_INFORMER_INFO => 'bx-informer-msg-info',
         BX_INFORMER_ERROR => 'bx-informer-msg-error',
-    );
+    ];
+
+    protected $_aMapType2Icon = [
+        BX_INFORMER_ALERT => 'exclamation-triangle',
+        BX_INFORMER_INFO => 'info-circle',
+        BX_INFORMER_ERROR => 'times-circle',
+    ];
+
+    /**
+     * Iconset used to render indicator icons as inline SVG regardless of the site's default iconset.
+     * When it isn't available (or has no such icon) a font icon of the default iconset is used.
+     */
+    protected $_sIconset = 'sys_lucide';
 
     public function __construct ($oTemplate)
     {
@@ -44,20 +56,51 @@ class BxBaseInformer extends BxDolInformer
         if (!$this->_aMessages)
             return '';
 
-        $aTmplVarsMessages = [];
-        foreach ($this->_aMessages as $sId => $a) {
-            $a['class'] = $this->_aMapType2Class[$a['type']];
+        $oIconset = BxDolIconset::getObjectInstance($this->_sIconset, $this->_oTemplate);
 
-            $aTmplVarsMessages[] = $a;
-        }
-        
-        if (bx_is_api()){
-            return $aTmplVarsMessages;
-        }
+        $aMessages = [];
+        foreach ($this->_aMessages as $a)
+            $aMessages[] = array_merge($a, [
+                'class' => $this->_aMapType2Class[$a['type']],
+                'icon' => !empty($a['icon']) ? $a['icon'] : $this->_aMapType2Icon[$a['type']],
+            ]);
+
+        if (bx_is_api())
+            return array_map(function($a) use($oIconset) {
+                // API clients (NEO) render Lucide icons natively, so send the Lucide name.
+                return array_merge($a, [
+                    'icon' => $oIconset ? $oIconset->getIcon($a['icon']) : $a['icon'],
+                ]);
+            }, $aMessages);
 
         $this->_addJsCss();
+
         return $this->_oTemplate->parseHtmlByName('informer.html', [
-            'bx_repeat:messages' => $aTmplVarsMessages
+            'bx_repeat:messages' => array_map(function($a) use($oIconset) {
+                $sIconHtml = $oIconset ? $oIconset->getIconHtml($a['icon']) : false;
+
+                return array_merge($a, [
+                    'bx_if:icon_html' => [
+                        'condition' => $sIconHtml !== false,
+                        'content' => [
+                            'icon_html' => $sIconHtml,
+                        ],
+                    ],
+                    'bx_if:icon_font' => [
+                        'condition' => $sIconHtml === false,
+                        'content' => [
+                            'icon' => $a['icon'],
+                        ],
+                    ],
+                    'bx_if:action' => [
+                        'condition' => !empty($a['action_url']) && !empty($a['action_title']),
+                        'content' => [
+                            'action_url' => bx_html_attribute($a['action_url']),
+                            'action_title' => $a['action_title'],
+                        ],
+                    ],
+                ]);
+            }, $aMessages),
         ]);
     }
 
