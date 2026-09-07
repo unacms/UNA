@@ -19,6 +19,8 @@ class BxNtfsCronNotify extends BxDolCron
     protected $_sModule;
     protected $_oModule;
 
+    protected $_bOwnActions;
+    protected $_bEventsGroupedDb;
     protected $_bDeliveryTimeout;
 
     public function __construct()
@@ -28,6 +30,10 @@ class BxNtfsCronNotify extends BxDolCron
 
         parent::__construct();
 
+        $CNF = &$this->_oModule->_oConfig->CNF;
+
+        $this->_bOwnActions = getParam($CNF['PARAM_OWN_ACTIONS']) == 'on';
+        $this->_bEventsGroupedDb = $this->_oModule->_oConfig->isEventsGroupedDb();
         $this->_bDeliveryTimeout = $this->_oModule->_oConfig->getDeliveryTimeout() > 0;
     }
 
@@ -42,22 +48,47 @@ class BxNtfsCronNotify extends BxDolCron
         }
 
         $aEvents = $this->_oModule->_oDb->getEventsToProcess((int)getParam($CNF['PARAM_QUEUE_ADD_LIMIT']));
-
         foreach($aEvents as $aEvent) {
             if(!empty($aEvent['content']) && is_string($aEvent['content']))
                 $aEvent['content'] = unserialize($aEvent['content']);
 
-            $this->_sendNotifications($aEvent);
+            $this->_processNotifications($aEvent);
         }
+
+        if($this->_bEventsGroupedDb && ($aProfiles = $this->_oModule->_oDb->aggregatorGetProfiles()) && is_array($aProfiles))
+            foreach($aProfiles as $iProfile) {
+                $aEventsIds = [];
+                foreach([BX_BASE_MOD_NTFS_DTYPE_EMAIL, BX_BASE_MOD_NTFS_DTYPE_PUSH] as $sDeliveryType) {
+                    $sMethodGet = 'getNotification' . bx_gen_method_name($sDeliveryType);
+
+                    $aEvents = $this->_oModule->_oDb->aggregatorGetEvents($iProfile, $sDeliveryType);
+                    foreach($aEvents as $aEvent) {
+                        if(($sGroupedByMac = $aEvent['grouped_by_mac'] ?? false))
+                            $aEventsIds = array_merge($aEventsIds,  explode(',', $sGroupedByMac));
+
+                        $sEvent = $this->_oModule->_oTemplate->getPost($aEvent, ['perform_privacy_check_for' => $iProfile, 'show_real_profile' => false]);
+                        if(empty($sEvent) || empty($aEvent['content_parsed']))
+                            continue;
+
+                        $mixedNotification = false;
+                        if(($mixedNotification = $this->_oModule->_oTemplate->$sMethodGet($iProfile, $aEvent)) === false)
+                            continue;
+
+                        $this->_sendNotification($iProfile, $aEvent['id'], $sDeliveryType, $mixedNotification);
+                    }
+                }
+
+                $this->_oModule->_oDb->aggregatorDelete($iProfile, array_unique($aEventsIds));
+            }
     }
 
-    protected function _sendNotifications(&$aEvent)
+    protected function _processNotifications(&$aEvent)
     {
         $aHandler = $this->_oModule->_oConfig->getHandlers($aEvent['type'] . '_' . $aEvent['action']);
         if(empty($aHandler) || !is_array($aHandler))
             return;
 
-        $aDeliveryTypes = array();
+        $aDeliveryTypes = [];
 
         $iId = (int)$aEvent['id'];
         $iSilentMode = $this->_oModule->getSilentMode($aEvent['content']);
@@ -76,32 +107,28 @@ class BxNtfsCronNotify extends BxDolCron
                 break;
 
             default:
-                $aDeliveryTypes = array(BX_BASE_MOD_NTFS_DTYPE_EMAIL, BX_BASE_MOD_NTFS_DTYPE_PUSH);
+                $aDeliveryTypes = [BX_BASE_MOD_NTFS_DTYPE_EMAIL, BX_BASE_MOD_NTFS_DTYPE_PUSH];
         }
 
-        $aSendUsing = array();
+        $aSendUsing = [];
         foreach($aDeliveryTypes as $sDeliveryType) {
             $aHidden = $this->_oModule->_oConfig->getHandlersHidden($sDeliveryType);
             if(in_array($aHandler['id'], $aHidden))
                 continue;
 
-            $sMethodPostfix = bx_gen_method_name($sDeliveryType);
-            $sMethodGet = 'getNotification' . $sMethodPostfix;
-            $sMethodSend = 'sendNotification' . $sMethodPostfix;
-            if(!$this->_oModule->_oTemplate->isMethodExists($sMethodGet) || !method_exists($this->_oModule, $sMethodSend))
+            $sMethod = 'Notification' . bx_gen_method_name($sDeliveryType);
+            $sMethodGet = 'get' . $sMethod;
+            if(!$this->_oModule->_oTemplate->isMethodExists($sMethodGet) || !method_exists($this->_oModule, 'send' . $sMethod))
                 continue;
 
-            $aSendUsing[$sDeliveryType] = array(
-                'method_get' => $sMethodGet,
-            	'method_send' => $sMethodSend,
-            );
+            $aSendUsing[$sDeliveryType] = $sMethodGet;
         }
 
         if(empty($aSendUsing) || !is_array($aSendUsing))
             return;
 
         $iOwner = (int)$aEvent['owner_id'];
-        $aRecipients = array();
+        $aRecipients = [];
 
         //--- Get recipients: Subscribers.
         $oConnection = BxDolConnection::getObjectInstance($this->_oModule->_oConfig->getObject('conn_subscriptions'));
@@ -133,50 +160,85 @@ class BxNtfsCronNotify extends BxDolCron
             if($iIdRead >= $iId)
                 continue;
 
+            if(!$this->_bOwnActions && $aEvent['author_id'] == $iRecipient)
+                continue;
+
             if($oPrivacyExt !== false && !$oPrivacyExt->check($aEvent['id'], $iRecipient)) 
                 continue;
 
             if($oPrivacyInt !== false && !$oPrivacyInt->check($aEvent['id'], $iRecipient))
                 continue;
 
-            foreach($aSendUsing as $sDeliveryType => $aDeliveryType)
+            /**
+             * Check if the Recipient can view the notification.
+             */
+            $sEvent = $this->_oModule->_oTemplate->getPost($aEvent, ['perform_privacy_check_for' => $iRecipient, 'show_real_profile' => false]);
+            if(empty($sEvent) || empty($aEvent['content_parsed']))
+                continue;
+
+            foreach($aSendUsing as $sDeliveryType => $sDeliveryTypeGet) {
+                $mixedNotification = false;
+                if(!$this->_bEventsGroupedDb && ($mixedNotification = $this->_oModule->_oTemplate->$sDeliveryTypeGet($iRecipient, $aEvent)) === false)
+                    continue;
+
                 foreach($aSettingTypes as $sSettingType) {
-                    $aSetting = $this->_oModule->_oDb->getSetting(array('by' => 'tsu_allowed', 'handler_id' => $aHandler['id'], 'delivery' => $sDeliveryType, 'type' => $sSettingType, 'user_id' => $iRecipient));
+                    $aSetting = $this->_oModule->_oDb->getSetting(['by' => 'tsu_allowed', 'handler_id' => $aHandler['id'], 'delivery' => $sDeliveryType, 'type' => $sSettingType, 'user_id' => $iRecipient]);
                     if(empty($aSetting) || !is_array($aSetting))
                         continue;
 
                     if((int)$aSetting['active_adm'] == 0 || (int)$aSetting['active_pnl'] == 0)
                         continue;
 
-                    $mixedNotification = $this->_oModule->_oTemplate->{$aDeliveryType['method_get']}($iRecipient, $aEvent);
-                    if($mixedNotification === false)
-                        continue;
-            
-                    /**
-                     * 'break' is essential in the next two conditions to avoid 
-                     * duplicate sending to the same recipient.
-                     */
-                    if($this->_bDeliveryTimeout && $this->_oModule->_oDb->queueAdd(array(
-                        'profile_id' => $iRecipient, 
-                        'event_id' => $aEvent['id'], 
-                        'delivery' => $sDeliveryType,
-                        'content' => serialize($mixedNotification),
-                        'date' => time()
-                    )) !== false)
+                    if($this->_bEventsGroupedDb) {
+                        $this->_oModule->_oDb->aggregatorAdd([
+                            'profile_id' => $iRecipient, 
+                            'event_id' => $aEvent['id'], 
+                            'delivery' => $sDeliveryType
+                        ]);
                         break;
+                    }
 
-                    if($this->_oModule->{$aDeliveryType['method_send']}($iRecipient, $mixedNotification) !== false)
+                    /**
+                     * (break) is essential to avoid duplicate sending to the same recipient.
+                     */
+                    if($this->_sendNotification($iRecipient, $aEvent['id'], $sDeliveryType, $mixedNotification) !== false)
                         break;
                 }
+            }
         }
     }
 
     protected function _addRecipient($iUser, $sSettingType, &$aRecipients)
     {
         if(!isset($aRecipients[$iUser]))
-            $aRecipients[$iUser] = array();
+            $aRecipients[$iUser] = [];
 
         $aRecipients[$iUser][] = $sSettingType;
+    }
+
+    private function _sendNotification($iRecipient, $iEventId, $sDeliveryType, $aNotification)
+    {
+        /**
+         * 'return true' (break) is essential to avoid duplicate sending to the same recipient.
+         * Don't send directly if message was successfully queued.
+         */
+        if($this->_bDeliveryTimeout && $this->_oModule->_oDb->queueAdd([
+            'profile_id' => $iRecipient, 
+            'event_id' => $iEventId, 
+            'delivery' => $sDeliveryType,
+            'content' => serialize($aNotification),
+            'date' => time()
+        ]) !== false)
+            return true;
+
+        /**
+         * 'return true' (break) is essential to avoid duplicate sending to the same recipient.
+         * If a message was sent as 'personal', don't send it by subscription ('follow_member', 'follow_context').
+         */
+        if($this->_oModule->{'sendNotification' . bx_gen_method_name($sDeliveryType)}($iRecipient, $aNotification) !== false)
+            return true;
+
+        return false;
     }
 }
 
