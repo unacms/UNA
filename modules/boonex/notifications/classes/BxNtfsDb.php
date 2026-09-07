@@ -12,6 +12,7 @@
 class BxNtfsDb extends BxBaseModNotificationsDb
 {
     protected $_sTableEvt2Usr;
+    protected $_sTableAggregator;
     protected $_sTableQueue;
     protected $_sTableRead;
     protected $_sTableEtemplates;
@@ -30,6 +31,7 @@ class BxNtfsDb extends BxBaseModNotificationsDb
         );
 
         $this->_sTableEvt2Usr = $this->_sPrefix . 'events2users';
+        $this->_sTableAggregator = $this->_sPrefix . 'aggregator';
         $this->_sTableQueue = $this->_sPrefix . 'queue';
         $this->_sTableRead = $this->_sPrefix . 'read';
         $this->_sTableEtemplates = $this->_sPrefix . 'etemplates';
@@ -508,6 +510,43 @@ class BxNtfsDb extends BxBaseModNotificationsDb
         }
 
         return $aEvents;
+    }
+
+    public function aggregatorGetProfiles()
+    {
+        return $this->getColumn("SELECT DISTINCT `profile_id` FROM `" . $this->_sTableAggregator . "`");
+    }
+
+    public function aggregatorGetEvents($iProfileId, $sDeliveryType)
+    {
+        $sQuery = "SELECT 
+                `te`.*, GROUP_CONCAT(`te`.`id` ORDER BY `th`.`priority` DESC SEPARATOR ',') AS `grouped_by_mac` 
+            FROM `" . $this->_sTableAggregator . "` AS `ta` 
+            INNER JOIN `" . $this->_sTable . "` AS `te` ON `ta`.`event_id`=`te`.`id` 
+            INNER JOIN `" . $this->_sTableHandlers . "` AS `th` ON `te`.`type`=`th`.`alert_unit` AND `te`.`action`=`th`.`alert_action`
+            WHERE 
+                `ta`.`profile_id`=:profile_id AND `ta`.`delivery`=:delivery 
+            GROUP BY `te`.`source_mac`";
+
+        return $this->getAll($sQuery, [
+            'profile_id' => $iProfileId,
+            'delivery' => $sDeliveryType
+        ]);
+    }
+
+    public function aggregatorAdd($aSet)
+    {
+        if(empty($aSet))
+            return false;
+
+        return $this->query("INSERT IGNORE INTO `" . $this->_sTableAggregator . "` SET " . $this->arrayToSQL($aSet)) !== false;
+    }
+
+    public function aggregatorDelete($iProfileId, $aEventsIds)
+    {
+        return (int)$this->query("DELETE FROM `" . $this->_sTableAggregator . "` WHERE `profile_id`=:profile_id AND `event_id` IN (" . $this->implode_escape($aEventsIds) . ")", [
+            'profile_id' => $iProfileId,
+        ]) > 0;
     }
 
     public function queueGet($aParams)

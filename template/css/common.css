@@ -10,9 +10,8 @@ a {
     text-decoration:none;
     color:#3e8685; /* 26.13.13: prev val #387877; */
 }
-/* No outline after a mouse click, but keyboard focus stays visible. */
 a:focus:not(:focus-visible) {
-    outline:none;
+    outline: none;
 }
 
 a:hover {
@@ -770,8 +769,8 @@ div.bx-popup-chain-item .bx-loading-ajax {
 }
 
 button.bx-btn:focus:not(:focus-visible),
-button.bx-btn:focus .bx-loading-ajax-btn {
-    outline: 0;	
+button.bx-btn:focus:not(:focus-visible) .bx-loading-ajax-btn {
+    outline: 0;
 }
 
 .bx-form-element-wrapper .bx-loading-ajax {

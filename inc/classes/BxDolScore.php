@@ -258,6 +258,11 @@ class BxDolScore extends BxDolObjectVote
         $this->_trigger();
 
         $sTypeUc = ucfirst($sType);
+        $aAlertExtras = [
+            'object_author_id' => $iObjectAuthorId,
+            'source' => 'sys_score_' . $iId,
+            'source_mac' => 'sys_score_' . $iAuthorId . '_' . $iId,
+        ];
         /**
          * @hooks
          * @hookdef hook-bx_dol_score-doVoteUp '{object_name}', 'doVoteUp' - hook after score vote 
@@ -289,11 +294,10 @@ class BxDolScore extends BxDolObjectVote
          * It's equivalent to @ref hook-bx_dol_score-doVoteUp
          * @hook @ref hook-bx_dol_score-undoVoteDown
          */
-        bx_alert($this->_sSystem, ($bPerformUndo ? 'un' : '') . 'doVote' . $sTypeUc, $iObjectId, $iAuthorId, [
+        bx_alert($this->_sSystem, ($bPerformUndo ? 'un' : '') . 'doVote' . $sTypeUc, $iObjectId, $iAuthorId, array_merge([
             'score_id' => $iId, 
-            'score_author_id' => $iAuthorId, 
-            'object_author_id' => $iObjectAuthorId
-        ]);
+            'score_author_id' => $iAuthorId
+        ], $aAlertExtras));
 
         /**
          * @hooks
@@ -326,11 +330,10 @@ class BxDolScore extends BxDolObjectVote
          * It's equivalent to @ref hook-score-doUp
          * @hook @ref hook-score-undoDown
          */
-        bx_alert('score', ($bPerformUndo ? 'un' : '') . 'do' . $sTypeUc, $iId, $iAuthorId, [
+        bx_alert('score', ($bPerformUndo ? 'un' : '') . 'do' . $sTypeUc, $iId, $iAuthorId, array_merge([
             'object_system' => $this->_sSystem, 
-            'object_id' => $iObjectId, 
-            'object_author_id' => $iObjectAuthorId
-        ]);
+            'object_id' => $iObjectId
+        ], $aAlertExtras));
 
         $aRequestParamsData['show_script'] = false;
 

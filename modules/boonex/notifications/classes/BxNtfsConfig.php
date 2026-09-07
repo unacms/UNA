@@ -168,7 +168,7 @@ class BxNtfsConfig extends BxBaseModNotificationsConfig
         $this->_iDeliveryTimeout = (int)getParam($sOptionPrefix . 'delivery_timeout');
 
         $this->_bEventsGrouped = getParam($sOptionPrefix . 'enable_group_events') == 'on';
-        $this->_bEventsGroupedDb = getParam($sOptionPrefix . 'enable_group_events_db') == 'on';;
+        $this->_bEventsGroupedDb = getParam($sOptionPrefix . 'enable_group_events_db') == 'on';
 
         $this->_bClickedIndicator = getParam($sOptionPrefix . 'enable_clicked_indicator') == 'on';
 

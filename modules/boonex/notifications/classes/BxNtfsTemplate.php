@@ -278,7 +278,7 @@ class BxNtfsTemplate extends BxBaseModNotificationsTemplate
                     $aSubEvent[$sK]['author_name_wrapped'] = _t('_bx_ntfs_txt_and');
                 }
 
-                $this->getPost($aSubEvent);
+                $this->getPost($aSubEvent, $aBrowseParams);
 
                 if(($sCp = $aSubEvent['content_parsed'] ?? false))
                     $sContentParsed .= ' ' . $sCp;
@@ -385,13 +385,9 @@ class BxNtfsTemplate extends BxBaseModNotificationsTemplate
 
     public function getNotificationEmail($iRecipient, &$aEvent)
     {
-        $sEvent = $this->getPost($aEvent, ['perform_privacy_check_for' => $iRecipient, 'show_real_profile' => false]);
-        if(empty($sEvent) || empty($aEvent['content_parsed']))
-            return false;
-
         $aContent = &$aEvent['content'];
 
-        $sIconUrl = !empty($aContent['owner_icon']) ? $aContent['owner_icon'] : $this->getIconUrl('std-icon.svg');
+        $sIconUrl = ($_sIconUrl = $aContent['author_icon'] ?? false) || ($_sIconUrl = $aContent['owner_icon'] ?? false) ? $_sIconUrl : $this->getIconUrl('std-icon.svg');
         $sContentUrl = bx_absolute_url($this->_getContentLink($aEvent, getParam('sys_api_url_root_email') != ''));
         $sContent = is_array($aEvent['content_parsed']) && isset($aEvent['content_parsed']['email']) ? $aEvent['content_parsed']['email'] : $aEvent['content_parsed'];
         $sSummary = (($sK = 'subentry_summary') && ($sV = $aContent[$sK] ?? false)) || (($sK = 'entry_summary') && ($sV = $aContent[$sK] ?? false)) ? $sV : '';
@@ -448,10 +444,6 @@ class BxNtfsTemplate extends BxBaseModNotificationsTemplate
 
     public function getNotificationPush($iRecipient, &$aEvent)
     {
-        $sEvent = $this->getPost($aEvent, array('perform_privacy_check_for' => $iRecipient, 'show_real_profile' => false));
-        if(empty($sEvent) || empty($aEvent['content_parsed']))
-            return false;
-
         $sMessage = is_array($aEvent['content_parsed']) && isset($aEvent['content_parsed']['push']) ? $aEvent['content_parsed']['push'] : $aEvent['content_parsed'];
         $sMessage = preg_replace('/<\/?[a-zA-Z0-9=\'":;\(\)\s_-]+>/i', ($sChar = getParam("bx_ntfs_option_tag_to_char_push")) !== false ? $sChar : '"', $sMessage);
         if($sMessage)
@@ -461,14 +453,14 @@ class BxNtfsTemplate extends BxBaseModNotificationsTemplate
             return false;
 
         $aContent = &$aEvent['content'];
-        return array(
-            'content' => array(
+        return [
+            'content' => [
                 'url' => bx_absolute_url($this->_getContentLink($aEvent, getParam('sys_api_url_root_push') != '')),
                 'message' => $sMessage,
                 'icon' => !empty($aContent['owner_icon']) ? $aContent['owner_icon'] : ''
-            ),
-            'settings' => !empty($aContent['settings']['push']) ? $aContent['settings']['push'] : array()
-        );
+            ],
+            'settings' => !empty($aContent['settings']['push']) ? $aContent['settings']['push'] : []
+        ];
     }
 
     public function getEmpty($bVisible = true)

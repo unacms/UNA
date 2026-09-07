@@ -13,8 +13,8 @@ CREATE TABLE IF NOT EXISTS `bx_notifications_events` (
   `object_privacy_view` varchar(32) NOT NULL default '3',
   `subobject_id` int(11) NOT NULL default '0',
   `content` text NOT NULL,
-  `source` varchar(32) NOT NULL default '',
-  `source_mac` varchar(32) NOT NULL default '',
+  `source` varchar(48) NOT NULL default '',
+  `source_mac` varchar(64) NOT NULL default '',
   `allow_view_event_to` varchar(32) NOT NULL default '3',
   `date` int(11) NOT NULL default '0',
   `processed` tinyint(4) NOT NULL default '0',
@@ -212,6 +212,14 @@ INSERT INTO `bx_notifications_settings`(`group`, `handler_id`, `delivery`, `type
 ('action_required', @iHandlerId, 'email', 'personal', '_bx_ntfs_alert_action_reported_content_personal', 8),
 ('action_required', @iHandlerId, 'push', 'personal', '_bx_ntfs_alert_action_reported_content_personal', 8);
 
+CREATE TABLE IF NOT EXISTS `bx_notifications_aggregator` (
+  `id` int(11) NOT NULL auto_increment,
+  `profile_id` int(11) NOT NULL DEFAULT '0',
+  `event_id` int(11) NOT NULL DEFAULT '0',
+  `delivery` varchar(64) NOT NULL default '',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `item` (`profile_id`, `event_id`, `delivery`(16))
+);
 
 CREATE TABLE IF NOT EXISTS `bx_notifications_queue` (
   `id` int(11) NOT NULL auto_increment,

@@ -1580,7 +1580,7 @@ class BxDolCmts extends BxDolFactory implements iBxDolReplaceable, iBxDolContent
          *      - `cf` - [int] comment's audience filter value
          * @hook @ref hook-bx_dol_comment-commentRemoved
          */
-        bx_alert($this->_sSystem, 'commentRemoved', $iObjId, $iPerformerId, $aAlertParams);
+        $this->_callAlert($this->_sSystem, 'commentRemoved', $iObjId, $iPerformerId, $aAlertParams);
         
         /**
          * @hooks
@@ -1589,7 +1589,7 @@ class BxDolCmts extends BxDolFactory implements iBxDolReplaceable, iBxDolContent
          * except 'comment id' is provided in $object_id
          * @hook @ref hook-comment-deleted
          */
-        bx_alert('comment', 'deleted', $iCmtId, $iPerformerId, $aAlertParams);
+        $this->_callAlert('comment', 'deleted', $iCmtId, $iPerformerId, $aAlertParams);
 
         if(!empty($iCmtPrntId)) {
             $aCmtPrnt = $this->_oQuery->getCommentSimple($iObjId, $iCmtPrntId);
@@ -1619,7 +1619,7 @@ class BxDolCmts extends BxDolFactory implements iBxDolReplaceable, iBxDolContent
                  *      - `privacy_view` - [int] or [string] privacy for view comment action, @see BxDolPrivacy
                  * @hook @ref hook-bx_dol_comment-replyRemoved
                  */
-                bx_alert($this->_sSystem, 'replyRemoved', $iCmtPrntId, $iPerformerId, $aAlertParamsReply);
+                $this->_callAlert($this->_sSystem, 'replyRemoved', $iCmtPrntId, $iPerformerId, $aAlertParamsReply);
                 
                 /**
                  * @hooks
@@ -1628,7 +1628,7 @@ class BxDolCmts extends BxDolFactory implements iBxDolReplaceable, iBxDolContent
                  * except 'comment id' is provided in $object_id
                  * @hook @ref hook-reply-deleted
                  */
-                bx_alert('reply', 'deleted', $iCmtId, $iPerformerId, $aAlertParamsReply);
+                $this->_callAlert('reply', 'deleted', $iCmtId, $iPerformerId, $aAlertParamsReply);
             }
         }
 
@@ -1771,7 +1771,7 @@ class BxDolCmts extends BxDolFactory implements iBxDolReplaceable, iBxDolContent
          *      - `cf` - [int] comment's audience filter value
          * @hook @ref hook-bx_dol_comment-commentPost
          */
-        bx_alert($this->_sSystem, 'commentPost', $iObjId, $iPerformerId, $aAlertParams);
+        $this->_callAlert($this->_sSystem, 'commentPost', $iObjId, $iPerformerId, $aAlertParams);
         
         /**
          * @hooks
@@ -1780,7 +1780,7 @@ class BxDolCmts extends BxDolFactory implements iBxDolReplaceable, iBxDolContent
          * except 'comment id' is provided in $object_id
          * @hook @ref hook-comment-added
          */
-        bx_alert('comment', 'added', $iCmtId, $iPerformerId, $aAlertParams);
+        $this->_callAlert('comment', 'added', $iCmtId, $iPerformerId, $aAlertParams);
 
         $aAuditParams = $this->_prepareAuditParams($iCmtId, array('comment_author_id' => $aCmt['cmt_author_id'], 'comment_text' => $aCmt['cmt_text']));
         bx_audit($iObjId, $this->_aSystem['module'], '_sys_audit_action_add_comment', $aAuditParams);
@@ -1813,7 +1813,7 @@ class BxDolCmts extends BxDolFactory implements iBxDolReplaceable, iBxDolContent
                  *      - `privacy_view` - [int] or [string] privacy for view comment action, @see BxDolPrivacy
                  * @hook @ref hook-bx_dol_comment-replyPost
                  */
-                bx_alert($this->_sSystem, 'replyPost', $iCmtPrntId, $iPerformerId, $aAlertParamsReply);
+                $this->_callAlert($this->_sSystem, 'replyPost', $iCmtPrntId, $iPerformerId, $aAlertParamsReply);
                 
                 /**
                  * @hooks
@@ -1822,7 +1822,7 @@ class BxDolCmts extends BxDolFactory implements iBxDolReplaceable, iBxDolContent
                  * except 'comment id' is provided in $object_id
                  * @hook @ref hook-comment-replied
                  */
-                bx_alert('comment', 'replied', $iCmtId, $iPerformerId, $aAlertParamsReply);
+                $this->_callAlert('comment', 'replied', $iCmtId, $iPerformerId, $aAlertParamsReply);
             }
         }
 
@@ -1885,7 +1885,7 @@ class BxDolCmts extends BxDolFactory implements iBxDolReplaceable, iBxDolContent
          *      - `cf` - [int] comment's audience filter value
          * @hook @ref hook-bx_dol_comment-commentUpdated
          */
-        bx_alert($this->_sSystem, 'commentUpdated', $iObjId, $iPerformerId, $aAlertParams);
+        $this->_callAlert($this->_sSystem, 'commentUpdated', $iObjId, $iPerformerId, $aAlertParams);
         
         /**
          * @hooks
@@ -1894,7 +1894,7 @@ class BxDolCmts extends BxDolFactory implements iBxDolReplaceable, iBxDolContent
          * except 'comment id' is provided in $object_id
          * @hook @ref hook-comment-edited
          */
-        bx_alert('comment', 'edited', $iCmtId, $iPerformerId, $aAlertParams);
+        $this->_callAlert('comment', 'edited', $iCmtId, $iPerformerId, $aAlertParams);
 
         $aAuditParams = $this->_prepareAuditParams($iCmtId, ['comment_author_id' => $aCmt['cmt_author_id'], 'comment_text' => $aCmt['cmt_text']]);
         bx_audit($iObjId, $this->_aSystem['module'], '_sys_audit_action_edit_comment', $aAuditParams);
@@ -2200,6 +2200,11 @@ class BxDolCmts extends BxDolFactory implements iBxDolReplaceable, iBxDolContent
         $aDp['show_empty'] = isset($aDp['show_empty']) ? (bool)$aDp['show_empty'] : false;
     }
 
+    protected function _callAlert($sUnit, $sAction, $iObjectId, $iSender = false, $aExtras = [])
+    {
+        return bx_alert($sUnit, $sAction, $iObjectId, $iSender, $aExtras);
+    }
+
     protected function _prepareAlertParams($aCmt)
     {
         $iObjId = (int)$this->getId();
@@ -2211,7 +2216,7 @@ class BxDolCmts extends BxDolFactory implements iBxDolReplaceable, iBxDolContent
         $iCmtAthrId = (int)$aCmt['cmt_author_id'];
         $iCmtCf = isset($aCmt['cmt_cf']) ? (int)$aCmt['cmt_cf'] : BxDolContentFilter::getInstance()->getDefaultValue();
 
-        return array(
+        return [
             'source' => 'sys_cmts_' . $iCmtUniqId,
             'source_mac' => 'sys_cmts_' . $iCmtAthrId . '_' . $iCmtUniqId,
 
@@ -2227,7 +2232,7 @@ class BxDolCmts extends BxDolFactory implements iBxDolReplaceable, iBxDolContent
 
             'privacy_view' => $iObjAthrPrivacyView,
             'cf' => $iCmtCf
-        );
+        ];
     }
 
     protected function _prepareAlertParamsReply($aCmt, $aCmtPrnt)
@@ -2241,12 +2246,14 @@ class BxDolCmts extends BxDolFactory implements iBxDolReplaceable, iBxDolContent
 
         $iCmtId = (int)$aCmt['cmt_id'];
         $iCmtUniqId = $this->getCommentUniqId($iCmtId);
+        $iCmtAthrId = (int)$aCmt['cmt_author_id'];
 
-        return array(
+        return [
             'source' => 'sys_cmts_' . $iCmtUniqId,
+            'source_mac' => 'sys_cmts_' . $iCmtAthrId . '_' . $iCmtUniqId,
 
-            'object_system' => $this->_sSystem, 
-            'object_id' => $iObjId, 
+            'object_system' => $this->_sSystem,
+            'object_id' => $iObjId,
             'object_author_id' => $iObjAthrId,
 
             'parent_id' => $iCmtPrntId,
@@ -2255,11 +2262,11 @@ class BxDolCmts extends BxDolFactory implements iBxDolReplaceable, iBxDolContent
 
             'comment_id' => $iCmtId,
             'comment_uniq_id' => $iCmtUniqId,
-            'comment_author_id' => $aCmt['cmt_author_id'],  
+            'comment_author_id' => $iCmtAthrId,
             'comment_text' => $aCmt['cmt_text'],
 
             'privacy_view' => $iObjAthrPrivacyView,
-        );
+        ];
     }
 
     protected function _prepareAuditParams($iId, $aData)
@@ -2669,7 +2676,7 @@ class BxDolCmts extends BxDolFactory implements iBxDolReplaceable, iBxDolContent
          *      - `data_api` - [array] by ref, comment data prepared for sending in API response, can be overridden in hook processing
          * @hook @ref hook-system-decode_comment_data_api
          */
-        bx_alert('system', 'decode_comment_data_api', 0, 0, $aExtras);
+        $this->_callAlert('system', 'decode_comment_data_api', 0, 0, $aExtras);
         
         /**
          * @hooks
@@ -2677,7 +2684,7 @@ class BxDolCmts extends BxDolFactory implements iBxDolReplaceable, iBxDolContent
          * It's equivalent to @ref hook-system-decode_comment_data_api
          * @hook @ref hook-bx_dol_comment-decode_comment_data_api
          */
-        bx_alert($sModule, 'decode_comment_data_api', 0, 0, $aExtras);
+        $this->_callAlert($sModule, 'decode_comment_data_api', 0, 0, $aExtras);
 
         return $aDataApi;
     }
