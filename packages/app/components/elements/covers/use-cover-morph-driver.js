@@ -23,6 +23,7 @@ export function useCoverMorphDriver({
     scrollCollapseRangeRef,
     hasCoverBlock,
     setCollapsed,
+    skipCollapse = false,
 }) {
     const collapsedRef = useRef(false)
 
@@ -36,6 +37,10 @@ export function useCoverMorphDriver({
 
     const applyScroll = useCallback(
         (y) => {
+            if (skipCollapse) {
+                coverTabScroll.y = y
+                return
+            }
             const measuredRange = scrollCollapseRangeRef?.current ?? 0
             const range =
                 measuredRange > 0
@@ -75,6 +80,7 @@ export function useCoverMorphDriver({
             setCollapsed,
             slotHeightRef,
             scrollCollapseRangeRef,
+            skipCollapse,
         ],
     )
 

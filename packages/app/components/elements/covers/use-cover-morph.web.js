@@ -12,6 +12,8 @@ export function useCoverMorph({
     pageKey,
     stickyTop = 0,
     onProgress,
+    skipIdentityBar = false,
+    skipCollapse = false,
 }) {
     const isDesktop = useIsDesktop()
     const sizing = getCoverMorphSizing(isDesktop)
@@ -31,6 +33,8 @@ export function useCoverMorph({
         onProgress,
         avatarExpandedPx: sizing.avatarExpandedPx,
         setCollapsed,
+        skipIdentityBar,
+        skipCollapse,
     })
 
     const onBarLayout = useCallback((e) => {

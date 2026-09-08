@@ -40,7 +40,6 @@ import DynamicMenu from 'app/components/nav/menu-dynamic'
 import { layoutForList } from 'app/customization/functions'
 import FormModal, { handleFormModal } from 'app/ui/molecules/dialogs/form-modal'
 import emitter from 'app/context/emitter'
-import Cover from 'app/components/elements/covers/cover'
 import CoverMorph from 'app/components/elements/covers/cover-morph'
 import { CoverMenuMore, CoverMenu } from 'app/components/elements/covers/menu-cover'
 import {
@@ -850,18 +849,14 @@ export const HeaderContainer = ({
     const isDesktop = useIsDesktop()
     const pageHeaderHeight = useHeaderHeight()
     const uri = pageData?.uri
-    const stickyTop = pageHeaderHeight || 0
+    // Mobile profile hides the page header (`header: false`); pin morph chrome
+    // at the viewport top, not at the leftover DEFAULT_HEADER_HEIGHT (64).
+    const stickyTop =
+        !isDesktop && layoutName === 'profile' ? 0 : (pageHeaderHeight || 0)
     const coverKey = `${pageData?.ts ?? ''}:${pageData?.cover_block?.cover?.src ?? ''}:${pageData?.cover_block?.profile?.url_avatar ?? ''}`
 
     const hasCoverData = !!pageData?.cover_block?.profile
-    // Single morphing cover replaces the old full Cover → CoverSmall swap.
-    // It applies whenever there is cover data and the collapse behavior is
-    // wanted: the cover image scrolls away while one identity bar morphs and
-    // pins below the page header (see covers/cover-morph).
-    const useMorph =
-        hasCoverData &&
-        !appSetting('cover', 'fixed') &&
-        ((isCover && !isHideCover) || !isDesktop)
+    const useMorph = hasCoverData && (!isHideCover || !isDesktop)
 
     const onMorphProgress = useCallback((progress) => {
         coverTabScroll.collapsed = progress >= 0.999
@@ -895,8 +890,6 @@ export const HeaderContainer = ({
     )
 
     if (useMorph) {
-        // Cover + sticky compact bar + tab bar. The conductor wrapper is the
-        // sticky containing block so they pin while tab content scrolls.
         return (
             <CoverMorph
                 key={`cover-morph-${coverKey}`}
@@ -914,24 +907,8 @@ export const HeaderContainer = ({
         )
     }
 
-    // No cover data, or `cover.fixed` set: static full cover + static tab bar.
     return (
         <View className={`ns--cover-wrapper-- z-40 ne--`}>
-            {isCover && !isHideCover && (
-                <View className={`w-full ${conductorTheme.cover_base}`}>
-                    <View className={conductorTheme.cover_content}>
-                        <View className="w-full">
-                            <Cover
-                                key={`cover-${coverKey}`}
-                                data={pageData.cover_block}
-                                mode={headerSettings.cover}
-                                uri={uri}
-                                context={pageData.context}
-                            />
-                        </View>
-                    </View>
-                </View>
-            )}
             <View className={`header-fixed w-full `}>
                 {tabBarContent}
             </View>
@@ -1016,6 +993,13 @@ export const TabBar = ({
     if (!routes.length) return null
 
     const addButtons = <AddMenu menu={menu} filter="hideInTopBar" />
+    const profileModule =
+        pageData?.cover_block?.profile?.module || pageData?.module
+    const coverMode = appSetting('cover', 'view_by_module', profileModule)
+    const showActionsInTabBar =
+        isDesktop &&
+        (coverMode === 'none' ||
+            !!appSetting('cover', 'more_menu_in_navbar', profileModule))
     const isShowSecondLine = (
         routes.length > 1 ||
         !!pageData.cover_block?.actions_menu ||
@@ -1050,29 +1034,23 @@ export const TabBar = ({
                             ))}
                         </Row>
                     )}
-                    {!!pageData.cover_block?.actions_menu && (
-                        <Row className={conductorTheme.more_menu_container}>
-                            {isDesktop && !!appSetting(
-                                'cover',
-                                'more_menu_in_navbar',
-                                pageData?.module
-                            ) && (
-                                    <Row className="items-center">
-                                        <CoverMenu
-                                            {...pageData.cover_block.actions_menu}
-                                            uri={pageData.uri}
-                                            isSplitMenu={true}
-                                            containerClasses="gap-2 "
-                                        />
-                                        <CoverMenuMore
-                                            {...pageData.cover_block.actions_menu}
-                                            uri={pageData.uri}
-                                            isSplitMenu={true}
-                                        />
-                                    </Row>
-                                )}
+                    {!!pageData.cover_block?.actions_menu && showActionsInTabBar ? (
+                        <Row className={conductorTheme.more_menu_container || 'items-center shrink-0 pl-1'}>
+                            <Row className="items-center">
+                                <CoverMenu
+                                    {...pageData.cover_block.actions_menu}
+                                    uri={pageData.uri}
+                                    isSplitMenu={true}
+                                    containerClasses="gap-2 "
+                                />
+                                <CoverMenuMore
+                                    {...pageData.cover_block.actions_menu}
+                                    uri={pageData.uri}
+                                    isSplitMenu={true}
+                                />
+                            </Row>
                         </Row>
-                    )}
+                    ) : null}
                 </Row>}
             </TopSidebar>
         )

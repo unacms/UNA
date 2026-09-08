@@ -59,7 +59,7 @@ export function Conductor({
     const stickyTop = useStickyHeaderOffset(pageHeaderHeight)
     const stickyColumnStyle = stickySidebarStyle(stickyTop)
 
-    const coverMode = appSetting('cover', 'view_by_module',data.cover_block?.profile?.module)
+    const coverMode = appSetting('cover', 'view_by_module', data.cover_block?.profile?.module)
     const isCover = Boolean(data.cover_block) && coverMode != 'none'
 
     const initedTabs = useMemo(

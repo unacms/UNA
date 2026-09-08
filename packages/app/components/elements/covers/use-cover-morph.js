@@ -19,6 +19,7 @@ export function useCoverMorph({
     onProgress,
     coverScrollY,
     onOverlayHeight,
+    skipCollapse = false,
 }) {
     const isDesktop = useIsDesktop()
     const sizing = getCoverMorphSizing(isDesktop)
@@ -43,6 +44,7 @@ export function useCoverMorph({
         scrollCollapseRangeRef,
         hasCoverBlock,
         setCollapsed,
+        skipCollapse,
     })
 
     useLayoutEffect(() => {

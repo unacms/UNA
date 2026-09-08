@@ -57,6 +57,8 @@ export function CoverMorphBody({
     const isDesktop = useIsDesktop()
     const breakpointName = useBreakpointName()
     const sizing = getCoverMorphSizing(isDesktop)
+    const { avatarExpandedKey, avatarCollapsedWidthClass, avatarHeightClass, stripH } =
+        sizing
     const profileData = data?.profile
     const canShowBack = useShowCoverBackButton()
     const showCoverBack = !suppressCoverBackButton && canShowBack
@@ -84,15 +86,30 @@ export function CoverMorphBody({
 
     const isMin = coverMode === 'min'
     const isNone = coverMode === 'none'
+    const isCoverFixed = !!appSetting('cover', 'fixed')
     const coverAllowed = showImage && !isMin && !isNone
     // Same on web and native: hide the cover image once collapsed.
     // Web keeps an empty flow-sized box so sticky collapse can still expand.
     const hasImageBlock = coverAllowed && !collapsed
     const keepCoverFlow = coverAllowed && collapsed && Platform.OS === 'web'
     const menusInNavbar =
-        isDesktop &&
-        !!appSetting('cover', 'more_menu_in_navbar', profileData?.module)
-    const collapseActionsToMore = collapsed && !isDesktop
+        (isNone && isDesktop) ||
+        (isDesktop &&
+            !!appSetting('cover', 'more_menu_in_navbar', profileData?.module))
+    // `none`: desktop skips the identity strip; narrow keeps a compact bar
+    // (back, avatar, menus). Compact also applies after morph collapse.
+    // `cover.fixed` keeps the expanded identity in flow — tabs still pin.
+    const showIdentityBar = !(isNone && isDesktop)
+    const compactBar = collapsed || isNone
+    const collapseActionsToMore = compactBar && !isDesktop && !isNone
+    const pinNoneChrome = isNone && showIdentityBar
+    const tabStickyOffset = !showIdentityBar
+        ? 0
+        : isCoverFixed && !isNone
+            ? 0
+            : compactBar
+                ? (isNone ? flowH : stripH)
+                : flowH
 
     const profileTitle = profileData.display_name || profileData.title || ''
     const metaMenuItems = (data.meta_menu?.items || []).slice(
@@ -139,9 +156,7 @@ export function CoverMorphBody({
         profileData.module == context.list[0].module
     const showAlwaysSelector =
         !suppressContextSelector && appSetting('context_selector', 'show_always')
-
-    const { avatarExpandedKey, avatarCollapsedWidthClass, avatarHeightClass, stripH } =
-        sizing
+    const showMorphAvatar = !!bPerson && !(isNone && isAddSelector)
 
     return (
         <>
@@ -198,32 +213,49 @@ export function CoverMorphBody({
                 </View>
             ) : null}
             <View
+                className={
+                    pinNoneChrome
+                        ? cn(
+                            'z-50 w-full',
+                            coverBase,
+                            Platform.OS === 'web' && 'header-fixed sticky',
+                        )
+                        : 'web:contents'
+                }
+                style={
+                    pinNoneChrome && Platform.OS === 'web'
+                        ? { top: stickyTop }
+                        : undefined
+                }
+            >
+            {showIdentityBar ? (
+            <View
                 ref={barRef}
                 onLayout={onBarLayout}
                 className={cn(
                     'z-50 w-full overflow-visible',
                     coverBase,
                     MORPH_TRANSITION,
-                    barClassName,
+                    pinNoneChrome ? undefined : (isNone ? 'header-fixed sticky' : barClassName),
                 )}
-                style={barStyle}
+                style={pinNoneChrome ? undefined : (isNone ? { top: stickyTop } : barStyle)}
             >
                 <View
                     className={cn(
                         'relative z-10 gap-3 px-3 lg:px-4 mx-auto w-full overflow-visible',
                         contentWidth,
-                        collapsed
+                        compactBar
                             ? cn('flex-row items-center', MORPH_BAR)
                             : 'flex-col lg:flex-row items-start lg:items-end pt-3 pb-4',
                     )}
                 >
                     {showCoverBack ? (
                         <View
-                            aria-hidden={!collapsed}
+                            aria-hidden={!compactBar}
                             className={cn(
                                 'web:lg:hidden justify-center  web:transition-[width,opacity]',
                                 MORPH_TRANSITION,
-                                collapsed
+                                compactBar
                                     ? cn(
                                         avatarHeightClass,
                                         `${avatarCollapsedWidthClass} opacity-100`,
@@ -234,13 +266,13 @@ export function CoverMorphBody({
                             <CoverBackButton isPerson={bPerson} />
                         </View>
                     ) : null}
-                    {!!bPerson && (
+                    {showMorphAvatar ? (
                         <View
                             onLayout={onSlotLayout}
                             className={cn(
                                 'ns--cover-morph-slot-- relative shrink-0 overflow-visible web:transition-[width,height]',
                                 MORPH_TRANSITION,
-                                collapsed
+                                compactBar
                                     ? cn(
                                         avatarHeightClass,
                                         avatarCollapsedWidthClass,
@@ -253,7 +285,7 @@ export function CoverMorphBody({
                         >
                             <View
                                 className={
-                                    collapsed
+                                    compactBar
                                         ? 'relative'
                                         : 'absolute -bottom-1 left-0 rounded-full p-1 bg-card'
                                 }
@@ -262,112 +294,111 @@ export function CoverMorphBody({
                                     is_person={bPerson}
                                     mode="picture"
                                     profileDisplaySize={
-                                        collapsed
+                                        compactBar
                                             ? AVATAR_COLLAPSED
                                             : avatarExpandedKey
                                     }
                                     coverData={data?.cover}
                                     profileData={profileData}
-                                    allowEdit={bAllowEdit && !collapsed}
+                                    allowEdit={bAllowEdit && !compactBar}
                                     allowSwitch={isAllowSwitch}
                                     animated
                                     priority
                                 />
                             </View>
                         </View>
-                    )}
+                    ) : null}
                     {!isNone ? (
+                    <View
+                        className={cn(
+                            'min-w-0 justify-center overflow-visible',
+                            compactBar ? 'flex-1' : 'w-full lg:flex-1',
+                        )}
+                    >
                         <View
                             className={cn(
-                                'min-w-0 justify-center overflow-visible',
-                                collapsed ? 'flex-1' : 'w-full lg:flex-1',
+                                'self-start max-w-full',
+                                compactBar && 'h-11 justify-center',
                             )}
                         >
-                            <View
+                            <Row
                                 className={cn(
-                                    'self-start max-w-full',
-                                    collapsed && 'h-11 justify-center',
+                                    'items-center gap-1 min-w-0',
+                                    compactBar && 'h-6',
                                 )}
                             >
-                                <Row
+                                <Text
+                                    numberOfLines={1}
                                     className={cn(
-                                        'items-center gap-1 min-w-0',
-                                        collapsed && 'h-6',
+                                        'min-w-0 shrink font-bold text-foreground tracking-tight web:transition-[font-size,line-height]',
+                                        MORPH_TRANSITION,
+                                        compactBar
+                                            ? TITLE_COLLAPSED
+                                            : TITLE_EXPANDED,
                                     )}
                                 >
-                                    <Text
-                                        numberOfLines={1}
-                                        className={cn(
-                                            'min-w-0 shrink font-bold text-foreground tracking-tight web:transition-[font-size,line-height]',
-                                            MORPH_TRANSITION,
-                                            collapsed
-                                                ? TITLE_COLLAPSED
-                                                : TITLE_EXPANDED,
-                                        )}
-                                    >
-                                        {profileTitle}
-                                    </Text>
-                                    <View className="shrink-0">
-                                        <Badges badges={data.badges} size={collapsed ? '3xs' : 'xs'} />
-                                    </View>
-                                </Row>
-                                <Row
-                                    className={cn(
-                                        'items-center gap-1 min-w-0',
-                                        collapsed && 'hidden',
-                                    )}
-                                >
-                                     <CoverMenuMeta {...data.meta_menu} items={metaMenuItems} />
-                                     {metaDate}
-
-                                </Row>
-                                <Row
-                                    className={cn(
-                                        'items-center gap-2 flex-nowrap min-w-0 h-5',
-                                        !collapsed && 'hidden',
-                                    )}
-                                >
-                                    {!!metaMenuCompact && (
-                                        <CoverMenuMeta
-                                            {...metaMenuCompact}
-                                            compact
-                                            hide_avatars
-                                            button_size="mini"
-                                        />
-                                    )}
-                                    {metaDate}
-                                </Row>
-                            </View>
+                                    {profileTitle}
+                                </Text>
+                                <View className="shrink-0">
+                                    <Badges badges={data.badges} size={compactBar ? '3xs' : 'xs'} />
+                                </View>
+                            </Row>
+                            <Row
+                                className={cn(
+                                    'items-center gap-1 min-w-0',
+                                    compactBar && 'hidden',
+                                )}
+                            >
+                                <CoverMenuMeta {...data.meta_menu} items={metaMenuItems} />
+                                {metaDate}
+                            </Row>
+                            <Row
+                                className={cn(
+                                    'items-center gap-2 flex-nowrap min-w-0 h-5',
+                                    !compactBar && 'hidden',
+                                )}
+                            >
+                                {!!metaMenuCompact && (
+                                    <CoverMenuMeta
+                                        {...metaMenuCompact}
+                                        compact
+                                        hide_avatars
+                                        button_size="mini"
+                                    />
+                                )}
+                                {metaDate}
+                            </Row>
                         </View>
-                    ) : (
-                        <View className="flex-1" />
+                    </View>
+                    ) : isAddSelector ? null : (
+                        <View className="flex-1 min-w-0" />
                     )}
-                    {isAddSelector && !isNone ? (
+                    {isAddSelector ? (
                         <View
                             className={cn(
-                                `${TABLET_MODE_FROM}:hidden shrink-0 justify-center web:transition-opacity`,
+                                `web:${TABLET_MODE_FROM}:hidden justify-center web:transition-opacity`,
                                 MORPH_TRANSITION,
                                 avatarHeightClass,
-                                collapsed
+                                compactBar
                                     ? 'opacity-100'
                                     : 'hidden',
+                                isNone ? 'flex-1 min-w-0' : 'shrink-0',
                             )}
                         >
                             <ContextSelector
                                 data={context}
                                 url={uri}
                                 uri={uri}
-                                mode="min"
+                                mode={isNone ? 'full' : 'min'}
                             />
                         </View>
                     ) : null}
-                    {/* Collapsed bar + desktop: actions in the identity row */}
-                    {!menusInNavbar && !!menu && (collapsed || isDesktop) ? (
+                    {!menusInNavbar && !!menu && (compactBar || isDesktop) ? (
                         <Row
                             className={cn(
                                 'items-center gap-1 shrink-0 overflow-visible',
                                 avatarHeightClass,
-                                Platform.OS === 'web' && !collapsed
+                                Platform.OS === 'web' && !compactBar
                                     ? 'absolute right-0 top-3 z-10 pr-4 lg:static lg:right-auto lg:top-auto lg:pr-0'
                                     : 'ml-auto justify-end self-center',
                             )}
@@ -384,9 +415,7 @@ export function CoverMorphBody({
                         </Row>
                     ) : null}
                 </View>
-                {/* Mobile expanded: CoverMenu/CoverMenuMore must be direct Row
-                    children on native — an extra View wrapper hides NeoButtons. */}
-                {!menusInNavbar && !!menu && !collapsed && !isDesktop ? (
+                {!menusInNavbar && !!menu && !compactBar && !isDesktop ? (
                     <Row
                         className={cn(
                             'w-full  mx-auto px-3 mb-2 items-center flex-wrap gap-2 justify-between overflow-visible',
@@ -403,24 +432,29 @@ export function CoverMorphBody({
                     </Row>
                 ) : null}
             </View>
+            ) : null}
             {children ? (
                 <View
                     ref={tabBarRef}
                     className={cn(
-                        'header-fixed sticky z-40 w-full',
+                        'w-full',
                         coverBase,
-                        collapsed && 'border-b border-border/60',
+                        (collapsed || isNone) && 'border-b border-border/60',
                         tabBarClassName,
+                        !pinNoneChrome && 'header-fixed sticky z-40',
                     )}
                     style={
-                        tabBarStyle ?? {
-                            top: stickyTop + (collapsed ? stripH : flowH),
-                        }
+                        pinNoneChrome
+                            ? tabBarStyle
+                            : tabBarStyle ?? {
+                                top: stickyTop + tabStickyOffset,
+                            }
                     }
                 >
                     {children}
                 </View>
             ) : null}
+            </View>
         </>
     )
 }

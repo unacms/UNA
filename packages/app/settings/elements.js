@@ -15,13 +15,15 @@ export const settingsElements = {
         aspect_ratio: 'aspect-video lg:aspect-3/1', 
         allow_edit: true, 
         allow_switch: true, 
+        // Skip CoverMorph collapse (expanded cover stays in flow). Do not
+        // fork back to the old Cover component.
         fixed: false, 
         scroll: false,
         hide_cover_for_context: false,
         back_button_url_for_profile: '/friends',
         view_by_module: {
-            bx_courses: 'min',
-            bx_spaces: 'max',
+            bx_events: 'min',
+            bx_spaces: 'none',
             bx_jobs: 'max',
         },
         show_pic_by_module: {

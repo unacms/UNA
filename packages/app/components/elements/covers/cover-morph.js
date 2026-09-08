@@ -42,6 +42,11 @@ export default function CoverMorph({
     suppressCoverBackButton = false,
 }) {
     const collapsedSV = useSharedValue(0)
+    const coverMode =
+        appSetting('cover', 'view_by_module', data?.profile?.module) || mode
+    const isNone = coverMode === 'none'
+    const skipCollapse =
+        !!appSetting('cover', 'fixed') || isNone
 
     const {
         collapsed,
@@ -58,6 +63,7 @@ export default function CoverMorph({
         onProgress,
         coverScrollY,
         onOverlayHeight,
+        skipCollapse,
     })
 
     useLayoutEffect(() => {
@@ -91,6 +97,38 @@ export default function CoverMorph({
 
     if (!data?.profile?.module) return null
 
+    const coverBaseClass =
+        appSetting('theme', 'conductor').cover_base || 'bg-card'
+
+    // `none`: same as web — chrome stays in flow above the list
+    // (no overlay parallax). Tabs render inside CoverMorphBody.
+    if (isNone) {
+        return (
+            <View
+                onLayout={onRootLayout}
+                className={coverBaseClass}
+                style={stickyTop > 0 ? { paddingTop: stickyTop } : undefined}
+            >
+                {leading}
+                <CoverMorphBody
+                    data={data}
+                    mode={mode}
+                    uri={uri}
+                    context={context}
+                    stickyTop={0}
+                    showImage={false}
+                    collapsed={false}
+                    suppressContextSelector={suppressContextSelector}
+                    suppressCoverBackButton={suppressCoverBackButton}
+                    onSlotLayout={onSlotLayout}
+                >
+                    {sceneHeader}
+                </CoverMorphBody>
+                {filter}
+            </View>
+        )
+    }
+
     return (
         <View
             pointerEvents="box-none"
@@ -99,9 +137,7 @@ export default function CoverMorph({
         >
             {leading}
             <Animated.View
-                className={
-                    appSetting('theme', 'conductor').cover_base || 'bg-card'
-                }
+                className={coverBaseClass}
                 style={translateStyle}
                 onLayout={onInnerLayout}
             >

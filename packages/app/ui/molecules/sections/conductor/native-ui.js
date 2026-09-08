@@ -3,7 +3,6 @@ import { View, ScrollView, Row } from 'app/design/view';
 import { appSetting, isNativeTabsEnabled } from 'app/lib/util';
 import { hasConductorSubitems, registeredComponent } from './helpers';
 import { LeftColumnMenuDropdown, TabList, ListScene } from './shared-ui';
-import Cover from 'app/components/elements/covers/cover';
 import { CoverBackButton } from 'app/components/elements/covers/cover-elements';
 import CoverMorph from 'app/components/elements/covers/cover-morph';
 import { useStableSafeAreaInsets } from 'app/lib/hooks/router'
@@ -71,7 +70,8 @@ export const TabSceneHeader = React.memo(function TabSceneHeader({
         pageUri,
     ]);
 
-    if (headerMode === 'dynamic') {
+    if (headerMode === 'dynamic' || headerMode === 'small') {
+        const isOverlayMorph = headerMode === 'dynamic'
         return (
             <CoverMorph
                 key={`cover-morph-${coverKey}`}
@@ -81,33 +81,16 @@ export const TabSceneHeader = React.memo(function TabSceneHeader({
                 uri={pageUri}
                 context={pageContext}
                 stickyTop={nativeTabsTopInset}
-                showImage={coverMode !== 'min' && coverMode !== 'none'}
-                coverScrollY={coverScrollY}
-                onOverlayHeight={onOverlayHeight}
-                onProgress={onProgress}
+                showImage={isOverlayMorph && coverMode !== 'min' && coverMode !== 'none'}
+                coverScrollY={isOverlayMorph ? coverScrollY : undefined}
+                onOverlayHeight={isOverlayMorph ? onOverlayHeight : undefined}
+                onProgress={isOverlayMorph ? onProgress : undefined}
                 leading={standaloneContextSelector}
                 sceneHeader={sceneHeader}
                 filter={filter}
                 suppressContextSelector={useStandaloneContextSelector}
                 suppressCoverBackButton={useStandaloneCoverBackButton}
             />
-        );
-    }
-    if (headerMode === 'small') {
-        return (
-            <View className="w-full">
-                <Cover
-                    key={`cover-${coverKey}`}
-                    data={coverBlock}
-                    showMoreMenu={false}
-                    uri={pageUri}
-                    context={pageContext}
-                    suppressContextSelector={useStandaloneContextSelector}
-                    suppressCoverBackButton={useStandaloneCoverBackButton}
-                />
-                {sceneHeader}
-                {filter}
-            </View>
         );
     }
     if (headerMode === 'none') {

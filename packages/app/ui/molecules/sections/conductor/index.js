@@ -485,11 +485,9 @@ export function Conductor({
         : hasDynamicCover
             ? 'dynamic'
             : 'small'
-    // Analog of web isUseCurrentHeader: cover lives in the conductor tree,
-    // not as PageHeader subHeader.
-    const useLocalHeader =
-        headerMode === 'dynamic' ||
-        (headerMode === 'small' && !appSetting('native', 'collapsible_header'))
+    // Same as web: profile cover chrome (including `none`) lives in the
+    // conductor tree, not in the collapsing page header.
+    const useLocalHeader = headerMode === 'dynamic' || headerMode === 'small'
 
     const coverBlock = data?.cover_block
     // Cover chrome (context selector, actions menu) belongs to the page that owns

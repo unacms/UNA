@@ -1,6 +1,7 @@
 'use client'
 
-import { cn } from 'app/lib/util'
+import { cn, appSetting } from 'app/lib/util'
+import { useIsDesktop } from 'app/context/measure'
 import { CoverMorphBody } from './cover-morph-body'
 import { useCoverMorph } from './use-cover-morph'
 
@@ -21,6 +22,16 @@ export default function CoverMorph({
     suppressContextSelector = false,
     suppressCoverBackButton = false,
 }) {
+    const isDesktop = useIsDesktop()
+    const coverMode =
+        appSetting('cover', 'view_by_module', data?.profile?.module) || mode
+    const isNone = coverMode === 'none'
+    const isCoverFixed = !!appSetting('cover', 'fixed')
+    // Desktop `none`: tabs only. Narrow `none` / `cover.fixed`: stay in one
+    // layout (compact or expanded) instead of falling back to old Cover.
+    const skipIdentityBar = isNone && isDesktop
+    const skipCollapse = isCoverFixed || (isNone && !isDesktop)
+
     const {
         collapsed,
         flowH,
@@ -32,6 +43,8 @@ export default function CoverMorph({
         pageKey,
         stickyTop,
         onProgress,
+        skipIdentityBar,
+        skipCollapse,
     })
 
     if (!data?.profile?.module) return null

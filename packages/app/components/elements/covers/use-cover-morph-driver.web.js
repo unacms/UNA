@@ -18,6 +18,8 @@ export function useCoverMorphDriver({
     avatarExpandedPx,
     stripH,
     setCollapsed,
+    skipIdentityBar = false,
+    skipCollapse = false,
 }) {
     useLayoutEffect(() => {
         if (typeof window === 'undefined' || typeof document === 'undefined') {
@@ -28,6 +30,36 @@ export function useCoverMorphDriver({
 
         const start = () => {
             if (cleaned) return
+            const content = document.querySelector('.ns--conductor-tab-content--')
+
+            if (skipIdentityBar) {
+                const tabbar = tabBarRef.current
+                if (!tabbar?.classList) {
+                    requestAnimationFrame(start)
+                    return
+                }
+                const measure = () => {
+                    if (!content) return
+                    const reserve =
+                        window.innerHeight -
+                        stickyTop -
+                        (tabbar?.offsetHeight || 0)
+                    content.style.minHeight =
+                        reserve > 0 ? `${Math.ceil(reserve)}px` : ''
+                }
+                measure()
+                setCollapsed(false)
+                onProgress?.(0)
+                window.addEventListener('resize', measure)
+                window.addEventListener('resize_panel', measure)
+                remove = () => {
+                    window.removeEventListener('resize', measure)
+                    window.removeEventListener('resize_panel', measure)
+                    if (content) content.style.minHeight = ''
+                }
+                return
+            }
+
             const bar = barRef.current
             if (!bar?.classList) {
                 requestAnimationFrame(start)
@@ -35,7 +67,31 @@ export function useCoverMorphDriver({
             }
             const cover = coverRef.current
             const tabbar = tabBarRef.current
-            const content = document.querySelector('.ns--conductor-tab-content--')
+
+            if (skipCollapse) {
+                const measure = () => {
+                    if (!content) return
+                    const reserve =
+                        window.innerHeight -
+                        stickyTop -
+                        (bar?.offsetHeight || 0) -
+                        (tabbar?.offsetHeight || 0)
+                    content.style.minHeight =
+                        reserve > 0 ? `${Math.ceil(reserve)}px` : ''
+                }
+                measure()
+                setCollapsed(false)
+                onProgress?.(0)
+                window.addEventListener('resize', measure)
+                window.addEventListener('resize_panel', measure)
+                remove = () => {
+                    window.removeEventListener('resize', measure)
+                    window.removeEventListener('resize_panel', measure)
+                    if (content) content.style.minHeight = ''
+                }
+                return
+            }
+
             let range = 0
             let lastCollapsed = null
 
@@ -116,5 +172,7 @@ export function useCoverMorphDriver({
         avatarExpandedPx,
         stripH,
         setCollapsed,
+        skipIdentityBar,
+        skipCollapse,
     ])
 }
