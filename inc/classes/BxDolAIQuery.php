@@ -986,6 +986,124 @@ class BxDolAIQuery extends BxDolDb
         return $iAffected;
     }
 
+    public function getAgentChatHistoryRows($aAgent)
+    {
+        $sExact = ($aAgent['trigger'] ?? '') . ':' . ($aAgent['id'] ?? '');
+        $sFields = "`id`, `thread_id`, `messages`, `created_at`, `updated_at`";
+        if ($this->isFieldExists('sys_agents_chat_history', 'closed_reason'))
+            $sFields .= ", `closed_reason`";
+        return $this->getAll("
+            SELECT $sFields
+            FROM `sys_agents_chat_history`
+            WHERE `thread_id` = :exact OR `thread_id` LIKE :prefix
+            ORDER BY `updated_at` DESC
+            LIMIT 200
+        ", [
+            'exact' => $sExact,
+            'prefix' => $sExact . ':%',
+        ]);
+    }
+
+    public function getChatArtifactsByHistoryIds($aIds)
+    {
+        $aIds = array_values(array_unique(array_filter(array_map('intval', (array)$aIds))));
+        if (!$aIds)
+            return [];
+
+        $sIn = implode(',', $aIds);
+        $aRows = $this->getAll("
+            SELECT `history_id`, `field_name`, `field_value`
+            FROM `sys_agents_chat_artifacts`
+            WHERE `history_id` IN ($sIn)
+            ORDER BY `id` ASC
+        ");
+        return $this->mapChatArtifactRows($aRows);
+    }
+
+    public function getChatArtifactsByThreadId($sThreadId)
+    {
+        $sThreadId = (string)$sThreadId;
+        if ($sThreadId === '')
+            return [];
+
+        $aRows = $this->getAll("
+            SELECT `a`.`history_id`, `a`.`field_name`, `a`.`field_value`
+            FROM `sys_agents_chat_artifacts` AS `a`
+            INNER JOIN `sys_agents_chat_history` AS `h` ON `h`.`id` = `a`.`history_id`
+            WHERE `h`.`thread_id` = :t
+            ORDER BY `a`.`id` ASC
+        ", [
+            't' => $sThreadId,
+        ]);
+        $aMap = $this->mapChatArtifactRows($aRows);
+        if (!$aMap)
+            return [];
+        return (array)reset($aMap);
+    }
+
+    public function getChatArtifactsForAgent($aAgent)
+    {
+        $sExact = ($aAgent['trigger'] ?? '') . ':' . ($aAgent['id'] ?? '');
+        if ($sExact === ':')
+            return [];
+
+        $aRows = $this->getAll("
+            SELECT `a`.`history_id`, `a`.`field_name`, `a`.`field_value`
+            FROM `sys_agents_chat_artifacts` AS `a`
+            INNER JOIN `sys_agents_chat_history` AS `h` ON `h`.`id` = `a`.`history_id`
+            WHERE `h`.`thread_id` = :exact OR `h`.`thread_id` LIKE :prefix
+            ORDER BY `a`.`id` ASC
+        ", [
+            'exact' => $sExact,
+            'prefix' => $sExact . ':%',
+        ]);
+        return $this->mapChatArtifactRows($aRows);
+    }
+
+    protected function mapChatArtifactRows($aRows)
+    {
+        if (!is_array($aRows) || !$aRows)
+            return [];
+
+        $aOut = [];
+        foreach ($aRows as $aRow) {
+            if (!is_array($aRow))
+                continue;
+            $iHistoryId = (int)($aRow['history_id'] ?? 0);
+            $sName = trim((string)($aRow['field_name'] ?? ''));
+            if ($iHistoryId <= 0 || $sName === '')
+                continue;
+            $aOut[$iHistoryId][] = [
+                'field_name' => $sName,
+                'field_value' => (string)($aRow['field_value'] ?? ''),
+            ];
+        }
+        return $aOut;
+    }
+
+    public function getExpiredAgentChatHistoryIds($aAgent, $iTtlMin)
+    {
+        if (!$this->isFieldExists('sys_agents_chat_history', 'closed_reason'))
+            return [];
+
+        $sExact = ($aAgent['trigger'] ?? '') . ':' . ($aAgent['id'] ?? '');
+        $iTtlMin = (int)$iTtlMin;
+        if ($sExact === ':' || $iTtlMin <= 0)
+            return [];
+
+        return $this->getColumn("
+            SELECT `id` FROM `sys_agents_chat_history`
+            WHERE (`thread_id` = :exact OR `thread_id` LIKE :prefix)
+              AND `messages` IS NOT NULL AND `messages` != '' AND `messages` != '[]'
+              AND (`closed_reason` = '' OR `closed_reason` IS NULL)
+              AND `updated_at` <= DATE_SUB(NOW(), INTERVAL :ttl MINUTE)
+        ", [
+            'exact' => $sExact,
+            'prefix' => $sExact . ':%',
+            'ttl' => $iTtlMin,
+        ]);
+    }
+
     /**
      * Rename this agent's guest threads (`…:{sessionId}`) onto a profile id.
      * If the member thread already has messages, drop the guest copy.

@@ -28,6 +28,8 @@ class BxDolAI extends BxDolFactory implements iBxDolSingleton
 
     protected $_bWriteLog;
 
+    protected $_aChatContext;
+
     protected function __construct()
     {
         if (isset($GLOBALS['bxDolClasses'][get_class($this)]))
@@ -47,6 +49,8 @@ class BxDolAI extends BxDolFactory implements iBxDolSingleton
         $this->_sCmtsAssistantsChats = 'sys_agents_assistants_chats';
 
         $this->_bWriteLog = true;
+
+        $this->_aChatContext = null;
     }
 
     /**
@@ -396,6 +400,24 @@ class BxDolAI extends BxDolFactory implements iBxDolSingleton
             $aParams = ['chat_history_subindex' => (int)($mixedParams['sender_profile_id'] ?? 0)];
         }
 
+        if ('message' == $sType && is_array($mixedParams) && isset($mixedParams['message_text'])) {
+            $mixedParams['message_text'] = $this->applyChatInputLimit((string)$mixedParams['message_text'], $aAgent);
+            $sParams = json_encode($mixedParams);
+        }
+        else if (is_string($mixedParams) && in_array($sType, ['manual', 'message'], true)) {
+            $sParams = $this->applyChatInputLimit($sParams, $aAgent);
+        }
+
+        if (in_array($sType, ['manual', 'message'], true) && $this->isChatTurnLimitReached($aAgent, $this->getChatUserTurnCount($aAgent['id'], $aParams))) {
+            $this->emitConversationClosed('limit', '', $aAgent, $aParams);
+            return $this->getChatLimitMessage($aAgent);
+        }
+
+        if (in_array($sType, ['manual', 'message'], true) && $this->isChatSessionRateLimited($aAgent, $aParams))
+            throw new Exception($this->getChatSessionRateLimitError());
+
+        $this->_aChatContext = ['agent' => $aAgent, 'params' => $aParams];
+
         // call agent
         $mixed = '';
         try {                        
@@ -448,6 +470,160 @@ class BxDolAI extends BxDolFactory implements iBxDolSingleton
             return true;
 
         return in_array($aAgent['trigger'] ?? '', ['manual', 'message'], true);
+    }
+
+    /**
+     * Runner limits from the agent row. 0 = no cap. Never put these in the prompt.
+     */
+    public function applyChatInputLimit($sPrompt, $aAgent)
+    {
+        $sPrompt = (string)$sPrompt;
+        $iMax = (int)($aAgent['max_input_chars'] ?? 0);
+        if ($iMax <= 0)
+            return $sPrompt;
+
+        if (function_exists('mb_strlen') && function_exists('mb_substr')) {
+            if (mb_strlen($sPrompt, 'UTF-8') > $iMax)
+                return mb_substr($sPrompt, 0, $iMax, 'UTF-8');
+            return $sPrompt;
+        }
+
+        return strlen($sPrompt) > $iMax ? substr($sPrompt, 0, $iMax) : $sPrompt;
+    }
+
+    public function getChatLimitMessage($aAgent)
+    {
+        $s = trim((string)($aAgent['limit_message'] ?? ''));
+        return $s !== '' ? $s : 'This chat has reached its limit.';
+    }
+
+    public function getChatSessionRateLimitError()
+    {
+        $s = _t('_sys_agents_err_session_rate_limit');
+        return ($s !== '' && $s !== '_sys_agents_err_session_rate_limit')
+            ? $s
+            : 'Too many chat sessions from this IP. Try again later.';
+    }
+
+    public function countChatUserTurns($aUiMessages)
+    {
+        $i = 0;
+        if (!is_array($aUiMessages))
+            return 0;
+        foreach ($aUiMessages as $aMessage) {
+            if (is_array($aMessage) && ($aMessage['role'] ?? '') === 'user')
+                $i++;
+        }
+        return $i;
+    }
+
+    public function isChatTurnLimitReached($aAgent, $iTurns, $iRequestUserTurns = 0)
+    {
+        $iMax = (int)($aAgent['max_turns'] ?? 0);
+        if ($iMax <= 0)
+            return false;
+        if ((int)$iTurns >= $iMax)
+            return true;
+        // Client transcript includes the message being submitted.
+        return (int)$iRequestUserTurns > $iMax;
+    }
+
+    public function getChatUserTurnCount($iAgentId, $aParams = [])
+    {
+        if (!isset($aParams['chat_history_subindex']))
+            $aParams = array_merge($this->resolveChatHistoryParams($iAgentId), $aParams);
+
+        try {
+            $o = self::getAgentInstance((int)$iAgentId, $aParams);
+        } catch (Throwable $oException) {
+            return 0;
+        }
+
+        $i = 0;
+        foreach ($o->getChatHistory()->getMessages() as $oMessage) {
+            if ($oMessage instanceof NeuronAI\Chat\Messages\ToolCallMessage
+                || $oMessage instanceof NeuronAI\Chat\Messages\ToolResultMessage
+            ) {
+                continue;
+            }
+            if ($oMessage instanceof NeuronAI\Chat\Messages\UserMessage)
+                $i++;
+        }
+        return $i;
+    }
+
+    /**
+     * New chat threads per IP for this agent. 0 on the agent = no cap.
+     * Continuation of an existing thread is not a new session.
+     */
+    public function isChatSessionRateLimited($aAgent, $aParams = [])
+    {
+        $iHour = (int)($aAgent['max_sessions_per_hour'] ?? 0);
+        $iDay = (int)($aAgent['max_sessions_per_day'] ?? 0);
+        if ($iHour <= 0 && $iDay <= 0)
+            return false;
+
+        if (!isset($aParams['chat_history_subindex']))
+            $aParams = array_merge($this->resolveChatHistoryParams((int)($aAgent['id'] ?? 0)), $aParams);
+
+        $sThreadId = self::chatHistoryThreadId($aAgent, $aParams);
+        if (!$this->isNewChatSession($sThreadId))
+            return false;
+
+        $sIp = $this->getVisitorIpHash();
+        if ($sIp === '0' || $sIp === '')
+            return false;
+
+        $sPrefix = ($aAgent['trigger'] ?? '') . ':' . ($aAgent['id'] ?? '');
+        if ($sPrefix === ':')
+            return false;
+
+        if ($iHour > 0 && $this->countChatSessionsByIp($sIp, $sPrefix, 3600) >= $iHour)
+            return true;
+        if ($iDay > 0 && $this->countChatSessionsByIp($sIp, $sPrefix, 86400) >= $iDay)
+            return true;
+
+        return false;
+    }
+
+    protected function getVisitorIpHash()
+    {
+        if (!function_exists('getVisitorIP') || !function_exists('bx_get_ip_hash'))
+            return '0';
+        return (string)bx_get_ip_hash(getVisitorIP());
+    }
+
+    protected function isNewChatSession($sThreadId)
+    {
+        $sThreadId = (string)$sThreadId;
+        if ($sThreadId === '')
+            return true;
+
+        $aRow = $this->_oDb->getRow("SELECT `ip`, `messages` FROM `sys_agents_chat_history` WHERE `thread_id` = :t", [
+            't' => $sThreadId,
+        ]);
+        if (!$aRow)
+            return true;
+
+        $iIp = (int)($aRow['ip'] ?? 0);
+        $sMessages = trim((string)($aRow['messages'] ?? ''));
+        return $iIp <= 0 || $sMessages === '' || $sMessages === '[]';
+    }
+
+    protected function countChatSessionsByIp($sIp, $sPrefix, $iWindowSec)
+    {
+        $sSince = date('Y-m-d H:i:s', time() - (int)$iWindowSec);
+        return (int)$this->_oDb->getOne("
+            SELECT COUNT(*) FROM `sys_agents_chat_history`
+            WHERE `ip` = :ip
+              AND (`thread_id` = :prefix OR `thread_id` LIKE :prefix_like)
+              AND `created_at` >= :since
+        ", [
+            'ip' => $sIp,
+            'prefix' => $sPrefix,
+            'prefix_like' => $sPrefix . ':%',
+            'since' => $sSince,
+        ]);
     }
 
     public function extractChatPromptFromRequest($aData)
@@ -507,7 +683,7 @@ class BxDolAI extends BxDolFactory implements iBxDolSingleton
                 foreach (array_unique(array_map('intval', $aIds)) as $iStoredAgentId) {
                     if (!$iStoredAgentId || $sSessionId === '')
                         continue;
-                    $aAgent = BxDolAiQuery::getAgentObject($iStoredAgentId);
+                    $aAgent = BxDolAIQuery::getAgentObject($iStoredAgentId);
                     if ($aAgent)
                         $this->_oDb->adoptGuestChatHistory($aAgent, $sSessionId, $iProfileId);
                 }
@@ -549,6 +725,293 @@ class BxDolAI extends BxDolFactory implements iBxDolSingleton
         if (isset($aParams['chat_history_subindex']) && $aParams['chat_history_subindex'] !== '')
             $s .= ':' . (string)$aParams['chat_history_subindex'];
         return $s;
+    }
+
+    public function getChatHistoryRowId($aAgent, $aParams = [])
+    {
+        $sThreadId = self::chatHistoryThreadId($aAgent, $aParams);
+        if ($sThreadId === '' || $sThreadId === ':')
+            return 0;
+        return (int)$this->_oDb->getOne("SELECT `id` FROM `sys_agents_chat_history` WHERE `thread_id` = :t", [
+            't' => $sThreadId,
+        ]);
+    }
+
+    public function getCurrentChatHistoryId()
+    {
+        if (!is_array($this->_aChatContext))
+            return 0;
+
+        $aAgent = $this->_aChatContext['agent'] ?? null;
+        $aParams = $this->_aChatContext['params'] ?? [];
+        if (!is_array($aAgent))
+            return 0;
+
+        return $this->getChatHistoryRowId($aAgent, is_array($aParams) ? $aParams : []);
+    }
+
+    public function emitConversationClosed($sReason, $sSummary = '', $aAgent = null, $aParams = null)
+    {
+        if (!is_array($aAgent) && is_array($this->_aChatContext))
+            $aAgent = $this->_aChatContext['agent'] ?? null;
+        if (!is_array($aParams) && is_array($this->_aChatContext))
+            $aParams = $this->_aChatContext['params'] ?? [];
+        if (!is_array($aAgent) || empty($aAgent['id']))
+            return false;
+
+        $iHistoryId = $this->getChatHistoryRowId($aAgent, is_array($aParams) ? $aParams : []);
+        if ($iHistoryId <= 0)
+            return false;
+
+        if ($this->_oDb->isFieldExists('sys_agents_chat_history', 'closed_reason')) {
+            $sClosed = (string)$this->_oDb->getOne(
+                "SELECT `closed_reason` FROM `sys_agents_chat_history` WHERE `id` = :id",
+                ['id' => $iHistoryId]
+            );
+            if ($sClosed !== '')
+                return false;
+        }
+
+        bx_alert('system', 'agent_conversation_closed', $iHistoryId, 0, [
+            'agent_id' => (int)$aAgent['id'],
+            'summary' => (string)$sSummary,
+            'reason' => (string)$sReason,
+        ]);
+        return true;
+    }
+
+    /**
+     * @return array{thread_id:string,chat_history_context_pid:int,chat_history_subindex:string}|false
+     */
+    public static function parseChatHistoryThreadId($aAgent, $sThreadId)
+    {
+        $sThreadId = (string)$sThreadId;
+        $sBase = ($aAgent['trigger'] ?? '') . ':' . ($aAgent['id'] ?? '');
+        if ($sBase === ':' || $sThreadId === '')
+            return false;
+        if ($sThreadId !== $sBase && strpos($sThreadId, $sBase . ':') !== 0)
+            return false;
+
+        $sRest = $sThreadId === $sBase ? '' : substr($sThreadId, strlen($sBase) + 1);
+        $aParts = $sRest === '' ? [] : explode(':', $sRest);
+        $iContext = 0;
+        $sSub = '';
+        if (count($aParts) >= 2) {
+            $iContext = (int)$aParts[0];
+            $sSub = implode(':', array_slice($aParts, 1));
+        } elseif (count($aParts) === 1) {
+            $sSub = $aParts[0];
+        }
+
+        return [
+            'thread_id' => $sThreadId,
+            'chat_history_context_pid' => $iContext,
+            'chat_history_subindex' => $sSub,
+        ];
+    }
+
+    public function isOwnAgentChatThread($aAgent, $sThreadId)
+    {
+        $aParsed = self::parseChatHistoryThreadId($aAgent, $sThreadId);
+        if (!$aParsed)
+            return false;
+
+        $aMine = $this->resolveChatHistoryParams((int)$aAgent['id']);
+        $sMine = (string)($aMine['chat_history_subindex'] ?? '');
+        return $sMine !== '' && $aParsed['chat_history_subindex'] === $sMine;
+    }
+
+    public function storedChatJsonToUiMessages($sJson)
+    {
+        $aStored = json_decode((string)$sJson, true);
+        if (!is_array($aStored) || $aStored === [])
+            return [];
+
+        $aResult = [];
+        $i = 0;
+        foreach ($aStored as $aMessage) {
+            if (!is_array($aMessage))
+                continue;
+
+            $sType = (string)($aMessage['type'] ?? '');
+            if ($sType === 'tool_call' || $sType === 'tool_call_result')
+                continue;
+
+            $sRole = (string)($aMessage['role'] ?? '');
+            if ($sRole === 'model')
+                $sRole = 'assistant';
+            if ($sRole !== 'user' && $sRole !== 'assistant')
+                continue;
+
+            $aParts = [];
+            $mixedContent = $aMessage['content'] ?? '';
+            if (is_string($mixedContent) && $mixedContent !== '') {
+                $aParts[] = ['type' => 'text', 'content' => $mixedContent];
+            } elseif (is_array($mixedContent)) {
+                foreach ($mixedContent as $aBlock) {
+                    if (!is_array($aBlock))
+                        continue;
+                    $sBlockType = (string)($aBlock['type'] ?? '');
+                    $sBlockText = (string)($aBlock['content'] ?? '');
+                    if ($sBlockText === '')
+                        continue;
+                    if ($sBlockType === 'text' || $sBlockType === '')
+                        $aParts[] = ['type' => 'text', 'content' => $sBlockText];
+                }
+            }
+            $sId = '';
+            if (!empty($aMessage['__id']) && is_string($aMessage['__id']))
+                $sId = $aMessage['__id'];
+            elseif (!empty($aMessage['metadata']['__id']) && is_string($aMessage['metadata']['__id']))
+                $sId = $aMessage['metadata']['__id'];
+
+            $mixedActions = $aMessage['actions'] ?? ($aMessage['metadata']['actions'] ?? null);
+            $aUi = $this->finalizeUiChatMessage($sId !== '' ? $sId : ('msg_' . $i), $sRole, $aParts, $mixedActions);
+            if (!$aUi)
+                continue;
+
+            $aResult[] = $aUi;
+            $i++;
+        }
+
+        return $aResult;
+    }
+
+    public function getChatHistoryUiMessagesByThread($aAgent, $sThreadId)
+    {
+        if (!self::parseChatHistoryThreadId($aAgent, $sThreadId))
+            return false;
+
+        $sJson = $this->_oDb->getOne("SELECT `messages` FROM `sys_agents_chat_history` WHERE `thread_id` = :t", [
+            't' => (string)$sThreadId,
+        ]);
+
+        return $this->storedChatJsonToUiMessages($sJson);
+    }
+
+    public function getChatHistoryArtifactsByThread($aAgent, $sThreadId)
+    {
+        if (!self::parseChatHistoryThreadId($aAgent, $sThreadId))
+            return [];
+
+        return $this->_oDb->getChatArtifactsByThreadId((string)$sThreadId);
+    }
+
+    public function listAgentChatThreads($aAgent)
+    {
+        $aMineParams = $this->resolveChatHistoryParams((int)$aAgent['id']);
+        $sMySub = (string)($aMineParams['chat_history_subindex'] ?? '');
+        $sMyDefault = self::chatHistoryThreadId($aAgent, $aMineParams);
+
+        $aOut = [];
+        $bHaveMineDefault = false;
+        $aRows = $this->_oDb->getAgentChatHistoryRows($aAgent);
+        if (!is_array($aRows))
+            $aRows = [];
+
+        $aHistoryIds = [];
+        foreach ($aRows as $aRow)
+            $aHistoryIds[] = (int)($aRow['id'] ?? 0);
+        $aArtifactsMap = $this->_oDb->getChatArtifactsForAgent($aAgent);
+        if (!$aArtifactsMap && $aHistoryIds)
+            $aArtifactsMap = $this->_oDb->getChatArtifactsByHistoryIds($aHistoryIds);
+
+        foreach ($aRows as $aRow) {
+            $sThreadId = (string)($aRow['thread_id'] ?? '');
+            $aParsed = self::parseChatHistoryThreadId($aAgent, $sThreadId);
+            if (!$aParsed)
+                continue;
+
+            $aUi = $this->storedChatJsonToUiMessages($aRow['messages'] ?? '');
+            if (!$aUi && $sThreadId !== $sMyDefault)
+                continue;
+
+            $bMine = ($sMySub !== '' && $aParsed['chat_history_subindex'] === $sMySub);
+            if ($sThreadId === $sMyDefault)
+                $bHaveMineDefault = true;
+
+            $iHistoryId = (int)($aRow['id'] ?? 0);
+            $aArtifacts = ($iHistoryId && !empty($aArtifactsMap[$iHistoryId])) ? $aArtifactsMap[$iHistoryId] : [];
+            $aOut[] = $this->formatAgentChatThread($aParsed, $aRow, $aUi, $bMine, $aArtifacts);
+        }
+
+        if (!$bHaveMineDefault && $sMyDefault !== '') {
+            $aParsedMine = self::parseChatHistoryThreadId($aAgent, $sMyDefault);
+            if ($aParsedMine)
+                $aOut[] = $this->formatAgentChatThread($aParsedMine, [], [], true);
+        }
+
+        usort($aOut, function ($a, $b) {
+            return strcmp((string)$b['updated_sort'], (string)$a['updated_sort']);
+        });
+
+        return $aOut;
+    }
+
+    protected function formatAgentChatThread($aParsed, $aRow, $aUi, $bMine, $aArtifacts = [])
+    {
+        $iContext = (int)$aParsed['chat_history_context_pid'];
+        $sSub = (string)$aParsed['chat_history_subindex'];
+        $sContextName = '';
+        if ($iContext > 0) {
+            $oContext = BxDolProfile::getInstance($iContext);
+            $sContextName = $oContext ? $oContext->getDisplayName() : ('#' . $iContext);
+        }
+
+        $sTitle = _t('_sys_agents_agents_txt_guest_chat');
+        $oProfile = (ctype_digit($sSub) && (int)$sSub > 0) ? BxDolProfile::getInstance((int)$sSub) : false;
+        if ($oProfile)
+            $sTitle = $oProfile->getDisplayName();
+        if ($sContextName !== '')
+            $sTitle .= ' · ' . $sContextName;
+
+        $sReason = trim((string)($aRow['closed_reason'] ?? ''));
+        $sStatus = $sReason !== '' ? 'closed' : 'opened';
+        $sStatusLabel = $sStatus;
+        if ($sStatus === 'closed' && $sReason !== '')
+            $sStatusLabel .= ' (' . $sReason . ')';
+
+        $aArtifacts = is_array($aArtifacts) ? $aArtifacts : [];
+        $sCreated = $this->formatAgentChatThreadTime($aRow['created_at'] ?? '');
+        $sUpdated = $this->formatAgentChatThreadTime($aRow['updated_at'] ?? '');
+        $sUpdatedRaw = (string)($aRow['updated_at'] ?? '');
+
+        $sMeta = 'status: ' . $sStatusLabel;
+        $sDates = '';
+        if ($sCreated !== '' && $sUpdated !== '')
+            $sDates = $sCreated . ' - ' . $sUpdated;
+        else if ($sCreated !== '')
+            $sDates = $sCreated;
+        else if ($sUpdated !== '')
+            $sDates = $sUpdated;
+        if ($sDates !== '')
+            $sMeta .= "\n" . $sDates;
+
+        return [
+            'thread_id' => $aParsed['thread_id'],
+            'writable' => $bMine ? 1 : 0,
+            'context_pid' => $iContext,
+            'title' => $sTitle,
+            'meta' => $sMeta,
+            'status' => $sStatus,
+            'closed_reason' => $sReason,
+            'created_at' => $sCreated,
+            'updated_at' => $sUpdated,
+            'artifacts' => is_array($aArtifacts) ? $aArtifacts : [],
+            'updated_sort' => $sUpdatedRaw,
+            'class_mine' => $bMine ? ' bx-agents-popup-chat-thread-mine' : '',
+        ];
+    }
+
+    protected function formatAgentChatThreadTime($mixed): string
+    {
+        $s = trim((string)$mixed);
+        if ($s === '' || $s === '0')
+            return '';
+        $i = ctype_digit($s) ? (int)$s : (int)strtotime($s);
+        if ($i <= 86400)
+            return '';
+        return date('d.m.Y H:i', $i);
     }
 
     /**
@@ -636,13 +1099,15 @@ class BxDolAI extends BxDolFactory implements iBxDolSingleton
     /**
      * Transcript for TanStack `useChat` hydrate / `initialMessages`.
      * Loads the same NeuronAI chat history the agent uses when streaming.
+     *
+     * @param bool $bAppendLimitMessage when the session is at max_turns, append limit_message for the UI
      */
-    public function getChatHistoryUiMessages($iAgentId, $aParams = [])
+    public function getChatHistoryUiMessages($iAgentId, $aParams = [], $bAppendLimitMessage = true)
     {
         if (!isset($aParams['chat_history_subindex']))
             $aParams = array_merge($this->resolveChatHistoryParams($iAgentId), $aParams);
 
-        $aAgent = BxDolAiQuery::getAgentObject((int)$iAgentId);
+        $aAgent = BxDolAIQuery::getAgentObject((int)$iAgentId);
         if (!$aAgent || empty($aAgent['chat_history_context']))
             return [];
 
@@ -661,7 +1126,16 @@ class BxDolAI extends BxDolFactory implements iBxDolSingleton
             return [];
         }
 
-        return $this->neuronMessagesToUiMessages($o->getChatHistory()->getMessages());
+        $aResult = $this->neuronMessagesToUiMessages($o->getChatHistory()->getMessages());
+        if ($bAppendLimitMessage && $this->isChatTurnLimitReached($aAgent, $this->countChatUserTurns($aResult))) {
+            $aResult[] = [
+                'id' => 'agent_limit_message',
+                'role' => 'assistant',
+                'parts' => [['type' => 'text', 'content' => $this->getChatLimitMessage($aAgent)]],
+            ];
+        }
+
+        return $aResult;
     }
 
     /**
@@ -699,19 +1173,337 @@ class BxDolAI extends BxDolFactory implements iBxDolSingleton
                     $aParts[] = ['type' => 'text', 'content' => $oBlock->content];
             }
 
-            if (!$aParts)
+            $sId = $oMessage->getMetadata('__id');
+            $aUi = $this->finalizeUiChatMessage(
+                is_string($sId) && $sId !== '' ? $sId : ('msg_' . $i),
+                $sRole,
+                $aParts,
+                $sRole === 'assistant' ? $oMessage->getMetadata('actions') : null
+            );
+            if (!$aUi)
                 continue;
 
-            $sId = $oMessage->getMetadata('__id');
-            $aResult[] = [
-                'id' => is_string($sId) && $sId !== '' ? $sId : ('msg_' . $i),
-                'role' => $sRole,
-                'parts' => $aParts,
-            ];
+            $aResult[] = $aUi;
             $i++;
         }
 
         return $aResult;
+    }
+
+    /**
+     * Split assistant JSON {content, actions} into UI text + actions.
+     * User messages pass through unchanged.
+     *
+     * @param array<int, array<string, mixed>> $aParts
+     * @return array<string, mixed>|null
+     */
+    protected function finalizeUiChatMessage($sId, $sRole, $aParts, $mixedActions = null)
+    {
+        $aActions = $sRole === 'assistant' ? $this->sanitizeChatActions($mixedActions) : [];
+        if ($sRole === 'assistant') {
+            $sText = '';
+            foreach ($aParts as $aPart) {
+                if (($aPart['type'] ?? '') === 'text')
+                    $sText .= (string)($aPart['content'] ?? '');
+            }
+            $aParsed = $this->parseAssistantChatPayload($sText);
+            if ($aParsed) {
+                $aKept = [];
+                foreach ($aParts as $aPart) {
+                    if (($aPart['type'] ?? '') === 'text')
+                continue;
+                    $aKept[] = $aPart;
+                }
+                if ($aParsed['content'] !== '')
+                    $aKept[] = ['type' => 'text', 'content' => $aParsed['content']];
+                $aParts = $aKept;
+                if (!$aActions)
+                    $aActions = $aParsed['actions'];
+            }
+        }
+
+        if (!$aParts && !$aActions)
+            return null;
+
+        $aOut = [
+            'id' => $sId,
+                'role' => $sRole,
+                'parts' => $aParts,
+            ];
+        if ($sRole === 'assistant')
+            $aOut['actions'] = $aActions;
+
+        return $aOut;
+    }
+
+    /**
+     * @return array{content: string, actions: array}|null
+     */
+    protected function parseAssistantChatPayload($sText)
+    {
+        $s = trim((string)$sText);
+        if ($s === '')
+            return null;
+
+        if (preg_match('/^```(?:json)?\s*(\{.*\})\s*```$/s', $s, $aM))
+            $s = trim($aM[1]);
+
+        if ($s === '' || $s[0] !== '{') {
+            $iStart = strpos($s, '{');
+            $iEnd = strrpos($s, '}');
+            if ($iStart === false || $iEnd === false || $iEnd <= $iStart)
+                return null;
+            $s = substr($s, $iStart, $iEnd - $iStart + 1);
+        }
+
+        $a = json_decode($s, true);
+        if (!is_array($a) || !array_key_exists('content', $a) || !is_string($a['content']))
+            return null;
+        if (!array_key_exists('actions', $a))
+            return null;
+
+        return [
+            'content' => $a['content'],
+            'actions' => $this->sanitizeChatActions($a['actions']),
+        ];
+    }
+
+    /**
+     * @return array<int, array<string, mixed>>
+     */
+    protected function sanitizeChatActions($mixed)
+    {
+        if (!is_array($mixed))
+            return [];
+
+        $aOut = [];
+        foreach ($mixed as $aItem) {
+            if (!is_array($aItem))
+                continue;
+
+            $sType = strtolower(trim((string)($aItem['type'] ?? '')));
+            $sLabel = trim((string)($aItem['label'] ?? ''));
+            if ($sLabel === '')
+                continue;
+            if (function_exists('mb_substr'))
+                $sLabel = mb_substr($sLabel, 0, 80);
+            else
+                $sLabel = substr($sLabel, 0, 80);
+
+            if ($sType === 'reply') {
+                $aOut[] = ['type' => 'reply', 'label' => $sLabel];
+            } elseif ($sType === 'link') {
+                $sUrl = trim((string)($aItem['url'] ?? ''));
+                if (!$this->isAllowedChatActionUrl($sUrl))
+                    continue;
+                $aOut[] = ['type' => 'link', 'label' => $sLabel, 'url' => $sUrl];
+            }
+
+            if (count($aOut) >= 8)
+                break;
+        }
+
+        return $aOut;
+    }
+
+    protected function isAllowedChatActionUrl($sUrl)
+    {
+        $a = parse_url((string)$sUrl);
+        if (($a['scheme'] ?? '') !== 'https' || empty($a['host']))
+            return false;
+
+        $sHost = strtolower((string)$a['host']);
+        $aAllowed = ['hiweave.com', 'www.hiweave.com'];
+        if (defined('BX_DOL_URL_ROOT')) {
+            $aSite = parse_url(BX_DOL_URL_ROOT);
+            if (!empty($aSite['host']))
+                $aAllowed[] = strtolower((string)$aSite['host']);
+        }
+
+        return in_array($sHost, $aAllowed, true);
+    }
+
+    protected function sseChatEvent($aPayload)
+    {
+        return 'data: ' . json_encode($aPayload, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) . "\n\n";
+    }
+
+    protected function parseSseChatEvent($sEvent)
+    {
+        $s = trim((string)$sEvent);
+        if (!preg_match('/^data:\s*(.+)$/s', $s, $aM))
+            return null;
+
+        $a = json_decode($aM[1], true);
+        return is_array($a) ? $a : null;
+    }
+
+    protected function resetChatActionsSseState()
+    {
+        return [
+            'mode' => 'undecided',
+            'buf' => '',
+            'messageId' => '',
+            'held' => [],
+        ];
+    }
+
+    protected function emitHeldChatActionsSse(&$aState, $fEmit)
+    {
+        foreach ($aState['held'] as $sHeld)
+            $fEmit($sHeld);
+        $aState['held'] = [];
+    }
+
+    protected function emitParsedChatActionsSse(&$aState, $fEmit, $aParsed)
+    {
+        $sId = $aState['messageId'] !== '' ? $aState['messageId'] : ('msg_' . uniqid());
+        $fEmit($this->sseChatEvent([
+            'type' => 'TEXT_MESSAGE_START',
+            'messageId' => $sId,
+            'role' => 'assistant',
+        ]));
+        if ($aParsed['content'] !== '') {
+            $fEmit($this->sseChatEvent([
+                'type' => 'TEXT_MESSAGE_CONTENT',
+                'messageId' => $sId,
+                'delta' => $aParsed['content'],
+            ]));
+        }
+        $fEmit($this->sseChatEvent([
+            'type' => 'TEXT_MESSAGE_END',
+            'messageId' => $sId,
+        ]));
+        if (!empty($aParsed['actions'])) {
+            $fEmit($this->sseChatEvent([
+                'type' => 'CUSTOM',
+                'name' => 'chat_actions',
+                'messageId' => $sId,
+                'value' => $aParsed['actions'],
+            ]));
+        }
+        $aState = $this->resetChatActionsSseState();
+    }
+
+    protected function processChatActionsSseEvent($sEvent, &$aState, $fEmit)
+    {
+        $aPayload = $this->parseSseChatEvent($sEvent);
+        $sType = is_array($aPayload) ? (string)($aPayload['type'] ?? '') : '';
+
+        if ($sType === 'TEXT_MESSAGE_START') {
+            if ($aState['held'] || $aState['buf'] !== '')
+                $this->flushChatActionsSseState($aState, $fEmit);
+            $aState['messageId'] = (string)($aPayload['messageId'] ?? '');
+            $aState['held'][] = $sEvent;
+            return;
+        }
+
+        if ($sType === 'TEXT_MESSAGE_CONTENT') {
+            $sDelta = (string)($aPayload['delta'] ?? '');
+            $aState['buf'] .= $sDelta;
+            if ($aState['mode'] === 'text') {
+                $fEmit($sEvent);
+                return;
+            }
+            if ($aState['mode'] === 'undecided') {
+                $mixed = $this->chatActionsStreamLooksLikeJson($aState['buf']);
+                if ($mixed === false) {
+                    $aState['mode'] = 'text';
+                    $this->emitHeldChatActionsSse($aState, $fEmit);
+                    $fEmit($sEvent);
+                    return;
+                }
+                if ($mixed === true)
+                    $aState['mode'] = 'json';
+            }
+            $aState['held'][] = $sEvent;
+            return;
+        }
+
+        if ($sType === 'TEXT_MESSAGE_END') {
+            $aParsed = $this->parseAssistantChatPayload($aState['buf']);
+            if ($aParsed && ($aState['mode'] === 'json' || $aState['mode'] === 'undecided')) {
+                $this->emitParsedChatActionsSse($aState, $fEmit, $aParsed);
+                return;
+            }
+            $this->emitHeldChatActionsSse($aState, $fEmit);
+            $fEmit($sEvent);
+            $aState = $this->resetChatActionsSseState();
+            return;
+        }
+
+        if ($sType === 'RUN_ERROR' || $sType === 'RUN_FINISHED') {
+            $this->flushChatActionsSseState($aState, $fEmit);
+            $fEmit($sEvent);
+            return;
+        }
+
+        if ($aState['mode'] === 'json' || $aState['held'])
+            $this->flushChatActionsSseState($aState, $fEmit);
+
+        $fEmit($sEvent);
+    }
+
+    protected function chatActionsStreamLooksLikeJson($sBuf)
+    {
+        $s = ltrim((string)$sBuf);
+        if ($s === '')
+            return null;
+        $sFirst = $s[0];
+        if ($sFirst === '{' || $sFirst === '`')
+            return true;
+        return false;
+    }
+
+    protected function flushChatActionsSseState(&$aState, $fEmit)
+    {
+        if ($aState['buf'] === '' && !$aState['held'])
+            return;
+
+        $aParsed = $this->parseAssistantChatPayload($aState['buf']);
+        if ($aParsed && $aState['mode'] !== 'text') {
+            $this->emitParsedChatActionsSse($aState, $fEmit, $aParsed);
+            return;
+        }
+
+        $this->emitHeldChatActionsSse($aState, $fEmit);
+        $aState = $this->resetChatActionsSseState();
+    }
+
+    protected function persistAssistantChatActions($oAgent)
+    {
+        if (!is_object($oAgent) || !method_exists($oAgent, 'getChatHistory'))
+            return;
+
+        $oHistory = $oAgent->getChatHistory();
+        if (!($oHistory instanceof BxDolAiChatHistory) || !method_exists($oHistory, 'persistMessages'))
+            return;
+
+        $aMessages = $oHistory->getMessages();
+        for ($i = count($aMessages) - 1; $i >= 0; $i--) {
+            $oMessage = $aMessages[$i];
+            if (
+                $oMessage instanceof NeuronAI\Chat\Messages\ToolCallMessage
+                || $oMessage instanceof NeuronAI\Chat\Messages\ToolResultMessage
+            ) {
+                continue;
+        }
+
+            $sRole = $oMessage->getRole();
+            if ($sRole === 'model')
+                $sRole = 'assistant';
+            if ($sRole !== 'assistant')
+                return;
+
+            $aParsed = $this->parseAssistantChatPayload((string)$oMessage->getContent());
+            if (!$aParsed)
+                return;
+
+            $oMessage->setContents($aParsed['content']);
+            $oMessage->addMetadata('actions', $aParsed['actions']);
+            $oHistory->persistMessages();
+            return;
+        }
     }
 
     public function streamAgentChat($iAgentId, $sPrompt, $aParams = [], $sThreadId = null)
@@ -719,35 +1511,121 @@ class BxDolAI extends BxDolFactory implements iBxDolSingleton
         if (!isset($aParams['chat_history_subindex']))
             $aParams = array_merge($this->resolveChatHistoryParams($iAgentId), $aParams);
 
+        // Staging header.inc.php dumps HTML on fatals and warns on null error_get_last().
+        // Any HTML after SSE is parsed by TanStack as "unterminated trailing data".
+        @ini_set('display_errors', '0');
+        @ini_set('zlib.output_compression', '0');
+        @ini_set('implicit_flush', '1');
+        if (function_exists('apache_setenv'))
+            @apache_setenv('no-gzip', '1');
+        while (ob_get_level())
+            ob_end_clean();
+
+        // UNA BxDolDb::pdoExceptionHandler dumps HTML 503 on uncaught PDOException.
+        restore_exception_handler();
+
         $oAdapter = new NeuronAI\Chat\Messages\Stream\Adapters\AGUIAdapter($sThreadId);
 
+        http_response_code(200);
         foreach ($oAdapter->getHeaders() as $sName => $sValue)
             header($sName . ': ' . $sValue);
 
-        if (function_exists('apache_setenv'))
-            @apache_setenv('no-gzip', '1');
-        @ini_set('zlib.output_compression', '0');
-        @ini_set('implicit_flush', '1');
-        while (ob_get_level())
-            ob_end_flush();
+        $fEmit = function ($sEvent) {
+            echo $sEvent;
+            if (ob_get_level())
+                ob_flush();
+            flush();
+        };
 
+        $aAgent = BxDolAIQuery::getAgentObject((int)$iAgentId);
+        if ($aAgent)
+            $this->_aChatContext = ['agent' => $aAgent, 'params' => $aParams];
+
+        if ($aAgent && $this->isChatSessionRateLimited($aAgent, $aParams)) {
+            $this->emitChatErrorSse($oAdapter, $fEmit, $this->getChatSessionRateLimitError());
+            error_clear_last();
+            @ini_set('display_errors', '0');
+            exit;
+        }
+
+        $iRequestTurns = (int)($aParams['request_user_turns'] ?? 0);
+        if ($aAgent && $this->isChatTurnLimitReached($aAgent, $this->getChatUserTurnCount((int)$iAgentId, $aParams), $iRequestTurns)) {
+            $this->emitConversationClosed('limit', '', $aAgent, $aParams);
+            $this->emitChatLimitSse($oAdapter, $fEmit, $this->getChatLimitMessage($aAgent));
+            error_clear_last();
+            @ini_set('display_errors', '0');
+            exit;
+        }
+
+        $sPrompt = $this->applyChatInputLimit((string)$sPrompt, $aAgent ?: []);
+
+        $bStarted = false;
+        $aSseState = $this->resetChatActionsSseState();
+        $o = null;
         try {
             $o = self::getAgentInstance((int)$iAgentId, $aParams);
             $oHandler = $o->stream(new NeuronAI\Chat\Messages\UserMessage($sPrompt));
 
             foreach ($oHandler->events($oAdapter) as $sEvent) {
-                echo $sEvent;
-                if (ob_get_level())
-                    ob_flush();
-                flush();
+                $bStarted = true;
+                $this->processChatActionsSseEvent($sEvent, $aSseState, $fEmit);
             }
-        } catch (Exception $oException) {
-            bx_log('sys_agents', "Stream exception for agent {$iAgentId}: " . $oException->getMessage() . " INPUT:" . $sPrompt, BX_LOG_ERR);
-            echo 'data: ' . json_encode(['type' => 'RUN_ERROR', 'message' => _t('_sys_agents_exception')]) . "\n\n";
-            flush();
+
+            $this->flushChatActionsSseState($aSseState, $fEmit);
+            $this->persistAssistantChatActions($o);
+
+            if ($aAgent && $this->isChatTurnLimitReached($aAgent, $this->getChatUserTurnCount((int)$iAgentId, $aParams)))
+                $this->emitConversationClosed('limit', '', $aAgent, $aParams);
+        } catch (Throwable $oException) {
+            bx_log('sys_agents', "Stream exception for agent {$iAgentId}: " . $oException->getMessage() . " INPUT:" . $sPrompt);
+            $this->flushChatActionsSseState($aSseState, $fEmit);
+            if (!$bStarted) {
+                foreach ($oAdapter->start() as $sEvent)
+                    $fEmit($sEvent);
+            }
+            $sMsg = $oException->getMessage();
+            $fEmit('data: ' . json_encode(['type' => 'RUN_ERROR', 'message' => $sMsg !== '' ? $sMsg : _t('_sys_agents_exception')]) . "\n\n");
+            foreach ($oAdapter->end() as $sEvent)
+                $fEmit($sEvent);
         }
 
+        error_clear_last();
+        @ini_set('display_errors', '0');
         exit;
+    }
+
+    /**
+     * SSE assistant reply without calling the model. Used when max_turns is hit.
+     */
+    protected function emitChatLimitSse($oAdapter, $fEmit, $sMessage)
+    {
+        foreach ($oAdapter->start() as $sEvent)
+            $fEmit($sEvent);
+
+        $oChunk = new NeuronAI\Chat\Messages\Stream\Chunks\TextChunk('msg_limit', (string)$sMessage);
+        foreach ($oAdapter->transform($oChunk) as $sEvent)
+            $fEmit($sEvent);
+
+        foreach ($oAdapter->end() as $sEvent)
+            $fEmit($sEvent);
+    }
+
+    /**
+     * SSE error without an assistant bubble. Used when a new session is rate-limited.
+     */
+    protected function emitChatErrorSse($oAdapter, $fEmit, $sMessage)
+    {
+        foreach ($oAdapter->start() as $sEvent)
+            $fEmit($sEvent);
+
+        $sMsg = trim((string)$sMessage);
+        $fEmit('data: ' . json_encode([
+            'type' => 'RUN_ERROR',
+            'message' => $sMsg !== '' ? $sMsg : _t('_sys_agents_exception'),
+        ]) . "\n\n");
+
+        foreach ($oAdapter->end() as $sEvent)
+            $fEmit($sEvent);
     }
 
     public function sendMessengerMessage ($iSender, $iRecipient, $sMsg) 

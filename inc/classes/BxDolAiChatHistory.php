@@ -19,8 +19,41 @@ class BxDolAiChatHistory extends SQLChatHistory
 {
     public function addMessage(Message $message): ChatHistoryInterface
     {
+        $bStampIp = $this->isIncomingFirstUserMessage($message);
         $this->ensureValidTail($message);
-        return parent::addMessage($message);
+        $o = parent::addMessage($message);
+        if ($bStampIp)
+            $this->stampVisitorIp();
+        return $o;
+    }
+
+    protected function isIncomingFirstUserMessage(Message $incoming): bool
+    {
+        if (!($incoming instanceof UserMessage) || $incoming instanceof ToolResultMessage)
+            return false;
+
+        foreach ($this->history as $oMessage) {
+            if ($oMessage instanceof UserMessage && !($oMessage instanceof ToolResultMessage))
+                return false;
+        }
+
+        return true;
+    }
+
+    protected function stampVisitorIp(): void
+    {
+        if (!function_exists('getVisitorIP') || !function_exists('bx_get_ip_hash'))
+            return;
+
+        $iIp = bx_get_ip_hash(getVisitorIP());
+        if ($iIp === '' || $iIp === '0' || $iIp === 0)
+            return;
+
+        $stmt = $this->pdo->prepare("UPDATE {$this->table} SET `ip` = :ip WHERE `thread_id` = :thread_id AND (`ip` = 0 OR `ip` IS NULL)");
+        $stmt->execute([
+            'ip' => $iIp,
+            'thread_id' => $this->thread_id,
+        ]);
     }
 
     protected function ensureValidTail(Message $incoming): void
@@ -53,5 +86,10 @@ class BxDolAiChatHistory extends SQLChatHistory
             $this->history[] = new AssistantMessage('[Previous reply failed]');
             $this->setMessages($this->history);
         }
+    }
+
+    public function persistMessages(): void
+    {
+        $this->setMessages($this->history);
     }
 }

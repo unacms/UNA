@@ -9,18 +9,21 @@
 
 class BxDolAIModelFactory extends BxDolFactory
 {
-    public static function getModelInstance(int $iId): NeuronAI\Providers\AIProviderInterface | NeuronAI\RAG\Embeddings\EmbeddingsProviderInterface
+    public static function getModelInstance(int $iId, array $aOverrides = []): NeuronAI\Providers\AIProviderInterface | NeuronAI\RAG\Embeddings\EmbeddingsProviderInterface
     {
-        if (isset($GLOBALS['bxDolClasses'][__CLASS__ . '_Model_' . $iId]))
-            return $GLOBALS['bxDolClasses'][__CLASS__ . '_Model_' . $iId];
+        $iMaxTokensOverride = (int)($aOverrides['max_tokens'] ?? 0);
+        $sCacheKey = __CLASS__ . '_Model_' . $iId . ($iMaxTokensOverride > 0 ? '_' . $iMaxTokensOverride : '');
+        if (isset($GLOBALS['bxDolClasses'][$sCacheKey]))
+            return $GLOBALS['bxDolClasses'][$sCacheKey];
 
-        $aProvidersWithKey = ['anthropic'];
+        $aProvidersWithKey = ['anthropic', 'openai-embeddings', 'voyageai-embeddings', 'openai-like-embeddings', 'openai-responses', 'openai-like'];
         $a = BxDolAIQuery::getModelObject($iId);
         if (!$a) {
             bx_log('sys_agents', "Agent AI Model with id {$iId} not found", BX_LOG_ERR);
             throw new Exception("Agent AI Model with id {$iId} not found");
         }
-        if (in_array($a['type'], $aProvidersWithKey) && empty($a['key'])) {
+        $a['key'] = (string)$a['key'];
+        if (in_array($a['type'], $aProvidersWithKey, true) && $a['key'] === '') {
             bx_log('sys_agents', "Model with id {$iId} has empty key, can't be used", BX_LOG_ERR);
             throw new Exception("Model with id {$iId} has empty key, can't be used");
         }
@@ -39,6 +42,39 @@ class BxDolAIModelFactory extends BxDolFactory
             'key' => $a['key'],
             'model' => $a['model']
         ]);
+
+        if ($iMaxTokensOverride > 0) {
+            $aParameters['max_tokens'] = $iMaxTokensOverride;
+            if (!isset($aParameters['parameters']) || !is_array($aParameters['parameters']))
+                $aParameters['parameters'] = [];
+
+            switch ($a['type']) {
+                case 'openai-responses':
+                    $aParameters['parameters']['max_output_tokens'] = $iMaxTokensOverride;
+                    break;
+                case 'azure-openai':
+                    $aParameters['parameters']['max_completion_tokens'] = $iMaxTokensOverride;
+                    break;
+                case 'gemini':
+                    if (!isset($aParameters['parameters']['generationConfig']) || !is_array($aParameters['parameters']['generationConfig']))
+                        $aParameters['parameters']['generationConfig'] = [];
+                    $aParameters['parameters']['generationConfig']['maxOutputTokens'] = $iMaxTokensOverride;
+                    break;
+                case 'ollama':
+                    if (!isset($aParameters['parameters']['options']) || !is_array($aParameters['parameters']['options']))
+                        $aParameters['parameters']['options'] = [];
+                    $aParameters['parameters']['options']['num_predict'] = $iMaxTokensOverride;
+                    break;
+                case 'aws-bedrock':
+                    if (!isset($aParameters['inferenceConfig']) || !is_array($aParameters['inferenceConfig']))
+                        $aParameters['inferenceConfig'] = [];
+                    $aParameters['inferenceConfig']['maxTokens'] = $iMaxTokensOverride;
+                    break;
+                default:
+                    $aParameters['parameters']['max_tokens'] = $iMaxTokensOverride;
+                    break;
+            }
+        }
 
         switch($a['type']) {
             // regular AI providers ------------------------
@@ -186,7 +222,7 @@ class BxDolAIModelFactory extends BxDolFactory
                 throw new Exception("Model type {$a['type']} is not supported");
         }
 
-        $GLOBALS['bxDolClasses'][__CLASS__ . '_Model_' . $iId] = $o;
+        $GLOBALS['bxDolClasses'][$sCacheKey] = $o;
 
         return $o;
     }
