@@ -130,7 +130,7 @@ function AgentStatus({ label }) {
     );
 }
 
-function ChatBubble({ message, user, assistant, isStreaming, onReply, repliesEnabled, streamedActions, chosenReply }) {
+function ChatBubble({ message, user, assistant, isStreaming, onReply, repliesEnabled, streamedActions, chosenReply, hideButtons }) {
     const isUser = message.role === 'user';
     const text = messageText(message);
     const actions = isUser ? [] : messageActions(message, streamedActions);
@@ -148,7 +148,7 @@ function ChatBubble({ message, user, assistant, isStreaming, onReply, repliesEna
 
     return (
         <Row className="gap-2">
-            <View className="w-8 min-h-8 mt-2.5">
+            {!hideButtons && <View className="w-8 min-h-8 mt-2.5">
                 <View className="w-8 my-0.5 shadow-xs rounded-full">
                     <Profile
                         {...author}
@@ -158,13 +158,13 @@ function ChatBubble({ message, user, assistant, isStreaming, onReply, repliesEna
                         showLinks={false}
                     />
                 </View>
-            </View>
+            </View>}
             <View className="flex-1 mt-2 min-w-0">
                 {showBubble ? (
                     <View className="bg-muted/50 rounded-xl py-2.5 px-3 gap-0.5 w-full min-w-0">
-                        <Text className="text-sm tracking-tight font-semibold text-card-foreground">
+                        {!hideButtons && <Text className="text-sm tracking-tight font-semibold text-card-foreground">
                             {author?.display_name}
-                        </Text>
+                        </Text>}
                         <MessageBody text={text} isStreaming={isStreaming} />
                     </View>
                 ) : null}
@@ -184,7 +184,7 @@ function ChatBubble({ message, user, assistant, isStreaming, onReply, repliesEna
 const sentBootstrapKeys = new Set();
 
 /** Load UNA transcript before useChat mounts so bootstrap cannot race hydrate. */
-export default function AiAgent({ data, initialMessage = '', hideInitialMessage = false }) {
+export default function AiAgent({ data, initialMessage = '', hideInitialMessage = false, placeholder = 'Ask anything...', hideButtons = false }) {
     const agentId = data.agent_id;
     const contextProfileId = Number(data.context_profile_id) || 0;
     const [seed, setSeed] = useState(() => (initialMessage ? null : []));
@@ -218,6 +218,8 @@ export default function AiAgent({ data, initialMessage = '', hideInitialMessage 
 
     return (
         <AiAgentChat
+            hideButtons={hideButtons}
+            placeholder={placeholder}           
             data={data}
             initialMessage={initialMessage}
             hideInitialMessage={hideInitialMessage}
@@ -235,6 +237,8 @@ function AiAgentChat({
     initialMessages = [],
     sendBootstrap = false,
     hydrateError = null,
+    hideButtons = false,
+    placeholder
 }) {
     const { currentUser } = useCurrentUser();
     const [input, setInput] = useState('');
@@ -484,6 +488,7 @@ function AiAgentChat({
                             repliesEnabled={!isLoading && message.id === lastVisibleId}
                             streamedActions={streamActions[message.id]}
                             chosenReply={chosenReply}
+                            hideButtons={hideButtons}
                         />
                     );
                 })}
@@ -509,7 +514,7 @@ function AiAgentChat({
                                 value={input}
                                 onChangeText={setInput}
                                 onHeight={(height) => applyComposerHeight(input ? height : COMPOSER_LINE_PX)}
-                                placeholder="Ask anything..."
+                                placeholder={placeholder}
                                 className="w-full bg-transparent border-0 shadow-none outline-none ring-0 rounded-none p-0 min-h-0 leading-5 resize-none web:overflow-y-auto web:focus:outline-none web:focus:ring-0 web:focus:border-0 web:focus-visible:outline-none web:focus-visible:ring-0 web:focus-visible:border-0 web:focus-visible:shadow-none web:focus-visible:bg-transparent"
                                 style={{
                                     outline: 'none',
@@ -524,7 +529,7 @@ function AiAgentChat({
                                 {...(isWeb ? { rows: 1 } : { scrollEnabled: composerHeight >= COMPOSER_MAX_PX })}
                             />
                         </View>
-                        <View className="p-1.5">
+                        {!hideButtons && <View className="p-1.5">
                             {isLoading ? (
                                 <NeoButton
                                     style="bordered"
@@ -545,7 +550,7 @@ function AiAgentChat({
                                     onPress={send}
                                 />
                             )}
-                        </View>
+                        </View>}
                     </Row>
                 </View>
             </View>
