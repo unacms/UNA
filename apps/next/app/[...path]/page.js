@@ -4,80 +4,23 @@ import Root from 'app/root-client'
 import { Suspense } from 'react'
 import { notFound } from 'next/navigation'
 import { headers } from "next/headers"
+import { resolveLangCode } from '../../lib/resolve-lang'
 
-const SITE_TITLE = appSetting('config', 'title');;
-// Settings use the historical misspelling; keep this key aligned with settings/layout.js.
-const AVAILABLE_LANGS_SETTING_KEY = 'avaliable_langs';
-
+const SITE_TITLE = appSetting('config', 'title');
 let remote_config = { hash: null, data: null };
-//export const runtime = 'edge'
-let cachedData = {};
 
-const getCookieValue = (cookieString = '', name) => {
-    return cookieString
-        .split(';')
-        .map((part) => part.trim())
-        .find((part) => part.startsWith(name + '='))
-        ?.split('=')
-        .slice(1)
-        .join('=') || '';
-};
-
-const decodeCookieValue = (value = '') => {
-    try {
-        return decodeURIComponent(value);
-    } catch {
-        return '';
-    }
-};
-
-const normalizeLangCode = (value = '') => String(value)
-    .toLowerCase()
-    .split(/[-_]/)[0];
-
-const resolveLangFromAcceptLanguage = (acceptLanguage = '') => {
-    const configuredLangs = appSetting('layout', AVAILABLE_LANGS_SETTING_KEY);
-    const supportedLangs = Array.isArray(configuredLangs)
-        ? configuredLangs.filter((lang) => lang && lang !== 'auto')
-        : ['en'];
-    const requestedLangs = acceptLanguage
-        .split(',')
-        .map((part) => normalizeLangCode(part.split(';')[0]?.trim()))
-        .filter(Boolean);
-
-    return requestedLangs.find((lang) => supportedLangs.includes(lang)) || supportedLangs[0] || 'en';
-};
-
-async function getCachedData(props) {
-     //AFTER REACT 19 UPDATE NEED REMOVE DOUBLE CALLS
-    const [params, search_params] = await Promise.all([
+async function loadPage(props) {
+    const [params, searchParams] = await Promise.all([
         props.params,
         props.searchParams,
-    ])
-
-    // Generate a unique key for each `props` input to store cache separately for each set of `props`
-    const cacheKey = JSON.stringify({ params, search_params });
-    const currentTime = Date.now();
-
-    // Check if data is in cache and if it's still valid (not older than 1 second)
-    if (cachedData[cacheKey] && (currentTime - cachedData[cacheKey].timestamp < 1000)) {
-        return cachedData[cacheKey].data;
-    }
-
-    // If not cached or expired, fetch new data and store it in cache with a timestamp
-    const data = await getData(params, search_params);
-    cachedData[cacheKey] = {
-        data,
-        timestamp: currentTime,
-    };
-
-    return data;
+    ]);
+    return getData(params.path.join('/'), JSON.stringify(searchParams));
 }
 
+// Primitive arguments let metadata and page rendering share this request's fetch.
+const getData = cache(async (path, searchParamsKey) => {
+    const search_params = JSON.parse(searchParamsKey);
 
-const getData = cache(async (params, search_params) => {
-    let path = params.path.join('/');
-    
     // Early check for static files — before any logs or UNA requests
     const staticFileExtensions = ['.map', '.js', '.css', '.json', '.png', '.jpg', '.svg', '.ico', '.woff', '.woff2', '.ttf'];
     const isStaticFile = staticFileExtensions.some(ext => path.endsWith(ext));
@@ -97,15 +40,11 @@ const getData = cache(async (params, search_params) => {
     
     let l = hdrs?.get("x-tenant-una-url") ?? UNA_URL;
     l += '/api.php' + '?r=system/get_page_by_request/TemplServicePages&params[]=' + path;
-    const langMode = decodeCookieValue(getCookieValue(cookieString, 'neo_lang'));
-    const cookieLangCode = decodeCookieValue(getCookieValue(cookieString, 'neo_lang_code'));
-    const langCode = cookieLangCode || (langMode && langMode !== 'auto'
-        ? langMode
-        : resolveLangFromAcceptLanguage(hdrs?.get('accept-language') || ''));
+    const langCode = resolveLangCode(cookieString, hdrs?.get('accept-language') || '');
     if (langCode) {
         l += '&lang=' + encodeURIComponent(langCode);
     }
-    let searchParams = JSON.parse(JSON.stringify(search_params));
+    let searchParams = { ...search_params };
 
     delete searchParams.cookieString;
     delete searchParams.path;
@@ -171,7 +110,7 @@ export const viewport = {
 
 export async function generateMetadata(props) {
     
-    const data = await getCachedData(props);
+    const data = await loadPage(props);
     const description = data?.data?.description || SITE_TITLE;
     const name = data?.data?.title || SITE_TITLE;
     const image = data?.data?.image;
@@ -226,7 +165,7 @@ export default async function Page(props) {
     const path = params?.path?.join('/') || '';
     const isHomePage = path === '' || path === 'home' || path === 'index';
     
-    const data = await getCachedData(props);
+    const data = await loadPage(props);
     
     // Static file 404 — call notFound immediately
     if (data?.code === 404 && !isHomePage) {

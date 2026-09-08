@@ -38,14 +38,7 @@ const resolveLangFromAcceptLanguage = (acceptLanguage = '') => {
     return requestedLangs.find((lang) => supportedLangs.includes(lang)) || supportedLangs[0] || 'en'
 }
 
-/** Server-only: same cookie/header rules as [...path]/page.js UNA fetches. */
-export async function resolveServerLangCode() {
-    const cookieStore = await cookies()
-    const hdrs = await headers()
-    const cookieString = cookieStore.getAll()
-        .map((item) => item.name + '=' + encodeURIComponent(item.value))
-        .join('; ')
-
+export function resolveLangCode(cookieString = '', acceptLanguage = '') {
     const langMode = decodeCookieValue(getCookieValue(cookieString, 'neo_lang'))
     const cookieLangCode = decodeCookieValue(getCookieValue(cookieString, 'neo_lang_code'))
 
@@ -57,5 +50,14 @@ export async function resolveServerLangCode() {
         return langMode
     }
 
-    return resolveLangFromAcceptLanguage(hdrs?.get('accept-language') || '')
+    return resolveLangFromAcceptLanguage(acceptLanguage)
+}
+
+export async function resolveServerLangCode() {
+    const [cookieStore, hdrs] = await Promise.all([cookies(), headers()])
+    const cookieString = cookieStore.getAll()
+        .map((item) => item.name + '=' + encodeURIComponent(item.value))
+        .join('; ')
+
+    return resolveLangCode(cookieString, hdrs.get('accept-language') || '')
 }
