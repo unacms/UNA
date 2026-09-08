@@ -94,7 +94,7 @@ jobs:
     env:
       RAILWAY_API_TOKEN: ${{ secrets.RAILWAY_API_TOKEN }}
       RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
-      RAILWAY_BASE_ENVIRONMENT: ${{ vars.RAILWAY_ENVIRONMENT }}
+      RAILWAY_BASE_ENVIRONMENT: ${{ secrets.RAILWAY_ENVIRONMENT }}
       RAILWAY_PR_ENVIRONMENT: pr-${{ github.event.pull_request.number }}
     steps:
     - uses: actions/checkout@v4
@@ -121,19 +121,20 @@ jobs:
     - name: Provision PR environment
       run: |
         if [ -z "$RAILWAY_API_TOKEN" ] || [ -z "$RAILWAY_PROJECT_ID" ]; then
-          echo "Set secret RAILWAY_API_TOKEN (account token) and variable RAILWAY_PROJECT_ID" >&2
+          echo "Set secrets RAILWAY_API_TOKEN (account token) and RAILWAY_PROJECT_ID" >&2
           exit 1
         fi
         base="${RAILWAY_BASE_ENVIRONMENT:-production}"
         railway link --project "$RAILWAY_PROJECT_ID" --environment "$base" --json
         railway environment new "$RAILWAY_PR_ENVIRONMENT" || true
-        railway add --image mariadb:11 --service mariadb --environment "$RAILWAY_PR_ENVIRONMENT" \
+        railway link --project "$RAILWAY_PROJECT_ID" --environment "$RAILWAY_PR_ENVIRONMENT" --json
+        railway add --image mariadb:11 --service mariadb --json \
           --variables MARIADB_ROOT_PASSWORD=una \
           --variables MARIADB_DATABASE=una \
           --variables MARIADB_USER=una \
           --variables MARIADB_PASSWORD=una \
           || true
-        railway add --service una --environment "$RAILWAY_PR_ENVIRONMENT" || true
+        railway add --service una --json || true
         railway variable set --service una --environment "$RAILWAY_PR_ENVIRONMENT" --skip-deploys \
           MYSQLHOST=mariadb.railway.internal \
           MYSQLPORT=3306 \
@@ -189,8 +190,8 @@ Railway environment: \`${RAILWAY_PR_ENVIRONMENT}\`"
     runs-on: ubuntu-latest
     env:
       RAILWAY_API_TOKEN: ${{ secrets.RAILWAY_API_TOKEN }}
-      RAILWAY_PROJECT_ID: ${{ vars.RAILWAY_PROJECT_ID }}
-      RAILWAY_BASE_ENVIRONMENT: ${{ vars.RAILWAY_ENVIRONMENT }}
+      RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
+      RAILWAY_BASE_ENVIRONMENT: ${{ secrets.RAILWAY_ENVIRONMENT }}
       RAILWAY_PR_ENVIRONMENT: pr-${{ github.event.pull_request.number }}
     steps:
     - name: Install Railway CLI
@@ -201,7 +202,7 @@ Railway environment: \`${RAILWAY_PR_ENVIRONMENT}\`"
     - name: Delete PR environment
       run: |
         if [ -z "$RAILWAY_API_TOKEN" ] || [ -z "$RAILWAY_PROJECT_ID" ]; then
-          echo "Set secret RAILWAY_API_TOKEN (account token) and variable RAILWAY_PROJECT_ID" >&2
+          echo "Set secrets RAILWAY_API_TOKEN (account token) and RAILWAY_PROJECT_ID" >&2
           exit 1
         fi
         base="${RAILWAY_BASE_ENVIRONMENT:-production}"
