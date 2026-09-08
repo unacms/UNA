@@ -204,4 +204,4 @@ jobs:
         fi
         base="${RAILWAY_BASE_ENVIRONMENT:-production}"
         railway link --project "$RAILWAY_PROJECT_ID" --environment "$base" --json
-        railway environment delete "$RAILWAY_PR_ENVIRONMENT" -y || true
+        railway environment delete "$RAILWAY_PR_ENVIRONMENT" -y
