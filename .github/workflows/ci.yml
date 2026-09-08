@@ -52,33 +52,14 @@ jobs:
     - name: Install JS dependencies
       run: yarn install --frozen-lockfile
 
-    - name: Build package
-      run: phing package -Dbuild=${{ github.run_number }}
-
-    - name: Upload package
-      uses: actions/upload-artifact@v4
-      with:
-        name: una-package
-        path: packages/*.zip
-        if-no-files-found: error
-
-    - name: Extract package
-      run: |
-        mkdir -p "$RUNNER_TEMP/una-dist"
-        unzip -q packages/*.zip -d "$RUNNER_TEMP/una-dist"
-        PACKAGE_DIR=$(find "$RUNNER_TEMP/una-dist" -mindepth 1 -maxdepth 1 -type d | head -1)
-        cp -a tests "$PACKAGE_DIR/"
-        echo "PACKAGE_DIR=$PACKAGE_DIR" >> "$GITHUB_ENV"
-
     - name: Prepare writable paths
-      working-directory: ${{ env.PACKAGE_DIR }}
       run: |
         mkdir -p cache cache_public logs tmp storage
         chmod -R a+rwX inc cache cache_public logs tmp storage
         test -f plugins/ffmpeg/ffmpeg.exe && chmod 0755 plugins/ffmpeg/ffmpeg.exe
 
     - name: Install UNA
-      working-directory: ${{ env.PACKAGE_DIR }}/install
+      working-directory: install
       run: >
         php cmd.php
         -m bx_antispam
@@ -90,5 +71,14 @@ jobs:
         --server_php_self=/install/index.php
 
     - name: Run PHPUnit
-      working-directory: ${{ env.PACKAGE_DIR }}
       run: phpunit -c tests/phpunit.xml
+
+    - name: Build package
+      run: phing package -Dbuild=${{ github.run_number }}
+
+    - name: Upload package artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: una-package
+        path: packages/*.zip
+        if-no-files-found: error
