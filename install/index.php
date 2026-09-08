@@ -10,8 +10,6 @@
 define ('BX_DOL_INSTALL',  true);
 define ('BX_SKIP_INSTALL_CHECK', true);
 
-// Sample comment to verify the deployment pipeline (2).
-
 define ('BX_DOL_VER', '15.0.0-RC1');
 
 define ('BX_INSTALL_DEFAULT_LANGUAGE', 'en');
