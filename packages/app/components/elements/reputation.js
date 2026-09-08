@@ -19,7 +19,6 @@ import {
     TableCellText,
 } from 'app/ui/molecules/page/table'
 import Badge from 'app/ui/molecules/profile/badge'
-import { useLayoutSettings } from 'app/context/layout-settings'
 import { Loading } from 'app/customization/loading'
 import { renderForm } from 'app/components/elements/form'
 import { BlockWrapper } from 'app/components/block-wrapper'

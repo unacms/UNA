@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from 'react'
 import { BlockWrapper } from 'app/components/block-wrapper'
-import { View, Row, Pressable } from 'app/design/view'
+import { View, Row } from 'app/design/view';
 import { Text } from 'app/design/typography'
 import Time from 'app/ui/atoms/time'
 import Link from 'app/ui/atoms/link'

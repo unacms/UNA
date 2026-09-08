@@ -1,6 +1,6 @@
 import { Text, H1 } from 'app/design/typography'
 import { useState } from 'react';
-import { View, Pressable } from 'app/design/view';
+import { Pressable } from 'app/design/view';
 
 
 export default function ({ text, className, numberOfLines, tagName }) {

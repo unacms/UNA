@@ -1,4 +1,3 @@
-import { Text } from 'app/design/typography'
 import { useState, useMemo, useRef } from 'react';
 import { View, Pressable } from 'app/design/view';
 import Html from 'app/ui/atoms/html';

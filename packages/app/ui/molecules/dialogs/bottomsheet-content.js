@@ -4,7 +4,7 @@ import { View, ScrollView, Pressable } from 'app/design/view';
 import { Button } from 'app/design/controls';
 import { Text } from 'app/design/typography';
 import { Modal } from 'app/design/controls'
-import { BottomSheetModalProvider, BottomSheetBackdrop, BottomSheetModal, BottomSheetScrollView, BottomSheetFooter, BottomSheetBackdropProps } from '@gorhom/bottom-sheet';
+import { BottomSheetModalProvider, BottomSheetBackdrop, BottomSheetModal, BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import { StyleSheet } from "react-native";
 import { useTheme } from 'app/design/theme';
 import { Platform } from 'react-native'

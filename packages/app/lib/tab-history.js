@@ -1,4 +1,3 @@
-import { createContext, useContext } from 'react';
 import { Platform } from 'react-native';
 import { usePathname } from 'app/lib/hooks/router';
 import emitter from 'app/context/emitter';
@@ -8,13 +7,9 @@ import { getTabKeyFromPathname, parseTabKey } from 'app/lib/tab-path';
 
 export { getTabKeyFromPathname, parseTabKey } from 'app/lib/tab-path';
 
-/** Screen-owned tab key (`/tab0`…) so back never follows the focused tab's pathname. */
-export const TabKeyContext = createContext(null);
-
 export function useTabKey() {
-    const ctx = useContext(TabKeyContext);
     const pathname = usePathname();
-    return ctx || getTabKeyFromPathname(pathname);
+    return getTabKeyFromPathname(pathname);
 }
 
 const OVERLAY_DISMISS_MS = Platform.OS === 'web' ? 0 : 120;

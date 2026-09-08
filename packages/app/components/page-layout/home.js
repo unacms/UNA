@@ -22,12 +22,10 @@ import {
 import { useLayoutSettings } from 'app/context/layout-settings'
 import Badge from 'app/ui/molecules/profile/badge'
 import Badges from 'app/ui/molecules/profile/badges'
-import { useBreakpoint, useWindowSize, useIsDesktop, useWindowHeight, useWindowWidth, useBreakpointName } from 'app/context/measure';
+import { useBreakpoint, useIsDesktop, useBreakpointName } from 'app/context/measure';
 import { useSetHeader, useHeaderHeight, defaultHeader } from 'app/context/jotai/layout';
 import { useFocusEffect }  from 'app/lib/hooks/router'
-import { Button, ButtonLink, NeoButton, NeoButtonLink } from 'app/design/controls'
-import { Icon } from 'app/ui/atoms/icon';
-import Link from 'app/ui/atoms/link'
+import { NeoButtonLink } from 'app/design/controls';
 const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from')
 
 const getTimelineBlock = (name, timelineBlocks) => {

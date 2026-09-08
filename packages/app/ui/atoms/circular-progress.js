@@ -1,8 +1,7 @@
-import React, { useRef, useState, useEffect, useCallback } from 'react';
-import { View, Row, Pressable, ScrollView } from 'app/design/view'
-import { Button, Modal } from 'app/design/controls'
+import React from 'react';
+import { View } from 'app/design/view';
 import Svg, { Circle } from 'react-native-svg';
-import { Text, H1C } from 'app/design/typography'
+import { Text } from 'app/design/typography';
 
 export default function CircularProgress({ percentage, strokeWidth=10, bgColor="#e6e6e6", progressColor="#ff6347", classes="" }) {
     const radius = 50;

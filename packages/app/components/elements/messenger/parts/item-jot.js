@@ -1,7 +1,7 @@
 import { Text } from 'app/design/typography'
-import { View, Row, Pressable } from 'app/design/view'
+import { View, Row } from 'app/design/view';
 import { fetcher } from 'app/lib/fetcher';
-import React, { useState, useMemo, useCallback, memo } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import Profile from 'app/ui/molecules/profile/profile'
 import Time from 'app/ui/atoms/time'
 import { Button } from 'app/design/controls'
@@ -40,7 +40,7 @@ export default function JotItem({ item, index, handleReply }) {
         }
     }, [item]);
 
-    const { data: dynamicData, error } = useFetchForm('/api.php?r=bx_messenger/get_send_form/Services&params[]=', postData);
+    const { data: dynamicData } = useFetchForm('/api.php?r=bx_messenger/get_send_form/Services&params[]=', postData);
 
     let aImg = useMemo(() => item?.files.map((obj) => {
         return {

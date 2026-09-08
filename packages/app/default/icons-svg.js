@@ -1,6 +1,6 @@
 'use client'
 
-import Svg, { Path, Circle, Ellipse, Rect } from 'react-native-svg'
+import Svg, { Path, Circle, Rect } from 'react-native-svg';
 
 export const CustomIcon = ({
     width = '100%',

@@ -3,7 +3,7 @@ import { Picker } from '@react-native-picker/picker';
 import { useState, useRef, useEffect } from 'react'
 import { useTheme } from 'app/design/theme';
 import { Modal } from 'app/design/controls'
-import { View, Pressable } from 'app/design/view'
+import { View } from 'app/design/view';
 import { Platform } from 'react-native'
 import { Button } from 'app/design/controls';
 

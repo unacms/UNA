@@ -103,20 +103,6 @@ export function firstLetterCap(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-function reverseHtml(str) {
-    var ph = String.fromCharCode(206);
-    var result = str.split('').reverse().join('');
-    while (result.indexOf('<') > -1) {
-        result = result.replace('<', ph);
-    }
-    while (result.indexOf('>') > -1) {
-        result = result.replace('>', '<');
-    }
-    while (result.indexOf(ph) > -1) {
-        result = result.replace(ph, '>');
-    }
-    return result;
-}
 
 function getPlural(key, count) {
 

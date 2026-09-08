@@ -6,7 +6,6 @@ import { clearClientSessionState } from 'app/lib/session-cleanup';
 import { useRouter, redirectTo } from 'app/lib/hooks/router'
 import Layouts from 'app/components/layouts';
 import { useSetScrollDirection, useSetScrollValue } from 'app/context/jotai/layout';
-import { Loading } from 'app/customization/loading';
 import emitter from 'app/context/emitter';
 import { Platform } from 'react-native'
 import { useWindowScrollNavigationSync } from 'app/lib/hooks/use-window-scroll-navigation-sync';

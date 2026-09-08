@@ -25,7 +25,6 @@ import {
     ActionMenuLayout,
 } from 'app/lib/object-helpers';
 import { getComponent } from 'app/components/registry';
-import { View } from 'app/design/view';
 
 // ---------------------------------------------------------------------------
 // Timeline repost API (not TemplVoteServices)

@@ -8,7 +8,6 @@ import { NeoButtonLink } from 'app/design/controls'
 import Badge from 'app/ui/molecules/profile/badge'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu'
 import { Icon } from 'app/ui/atoms/icon'
-import { Skeleton } from 'app/ui/atoms/skeleton'
 import Markdown from 'app/ui/atoms/markdown'
 import Menu from 'app/components/menu'
 import { BlockWrapper } from 'app/components/block-wrapper'
@@ -332,7 +331,7 @@ export function WikiArticleBlock({
     const hasDocHeader = Boolean(attributes?.title);
 
     return (
-        <BlockWrapper showTitle={false}  block={block} config={block?.config_api} showTitle={!hasDocHeader}>
+        <BlockWrapper block={block} config={block?.config_api} showTitle={!hasDocHeader}>
             {hasDocHeader ? (
                 <WikiDocumentHeader
                     markdownSource={raw}

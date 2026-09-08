@@ -1,7 +1,6 @@
 import { memo } from 'react';
 import { View } from 'app/design/view'
 import Time from 'app/ui/atoms/time';
-import { CardList } from 'app/ui/molecules/page/card'
 import Profile from 'app/ui/molecules/profile/profile';
 import Html from 'app/ui/atoms/html';
 import { Skeleton } from 'app/ui/atoms/skeleton';

@@ -1,18 +1,18 @@
-import { Pressable, View, Row } from 'app/design/view';
+import { Pressable, View } from 'app/design/view';
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import { Button, NeoButton } from 'app/design/controls'
-import { memo, useCallback, useEffect, useMemo, useRef, useState, isValidElement, cloneElement } from 'react'
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { cn, groupDropdownItems, getDropdownSectionsLayout } from 'app/lib/util';
 import { FeedbackHaptics } from 'app/lib/util';
 import { Keyboard, Alert, Platform } from 'react-native'
 import Redirect from 'app/ui/atoms/redirect';
-import { isEmoji, appSetting } from 'app/lib/util';
+import { appSetting } from 'app/lib/util';
 import { SafeMenuTrigger } from 'app/ui/atoms/safe-menu-trigger';
 import DropdownPopup, { DropdownMenuOpenContext } from 'app/ui/atoms/dropdown-popup'
 import emitter from 'app/context/emitter';
 import { getComponent } from 'app/components/registry'
 import { useOpenModalByUrl, useOpenModalWithContent } from 'app/context/jotai/modal';
-import { sanitazeUrl, openExternalLink, isWeb } from 'app/lib/util';
+import { sanitazeUrl, openExternalLink } from 'app/lib/util';
 import { useWindowSize } from 'app/context/measure';
 
 const menuSettings = appSetting('theme', 'dropdown_menu');

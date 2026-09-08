@@ -1,5 +1,4 @@
-import { View, Row } from 'app/design/view'
-import { memo, useState, useCallback } from "react";
+import { View } from 'app/design/view';
 import YoutubePlayer from "react-native-youtube-iframe";
 
 export default function Youtube({ videoId }) {

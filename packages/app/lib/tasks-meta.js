@@ -41,9 +41,6 @@ export function iconForTaskStatus(state) {
     return STATUS_ICONS[key] || 'CircleDashed';
 }
 
-export function iconForTaskPriority() {
-    return 'Flag';
-}
 
 export function canonicalTaskStatus(state) {
     const key = normalizeTaskLabel(state);

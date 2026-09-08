@@ -5,14 +5,14 @@ import { Pressable, View } from 'app/design/view';
 import React, { memo, useEffect, useMemo, useState, useCallback } from 'react';
 import dynamic from "next/dynamic";
 import { useCurrentUser } from "app/context/user";
-import { FeedbackHaptics, linkify } from "app/lib/util";
+import { linkify } from "app/lib/util";
 import Html from "app/ui/atoms/html";
 import { Button } from "app/design/controls";
 import { HistoryServices as Services } from "app/components/elements/messenger/services";
 import DropdownMenu from "app/ui/atoms/dropdown-menu";
 import { getComponent } from 'app/components/registry';
 import Form from "../elements/form";
-import { useSendData, updateHistoryPageCache } from "../elements/messenger/hooks/useHistory";
+import { useSendData } from "../elements/messenger/hooks/useHistory";
 
 const ListFeed = memo((data) => {
     const { author_data, message, date, title, count, onPress, isActive } = data || {};

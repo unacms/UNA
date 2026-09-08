@@ -2,13 +2,7 @@ import { View, Row, ScrollView } from 'app/design/view'
 import { getFormFieldByData, FileButton } from 'app/lib/form-helpers'
 import { Text } from 'app/design/typography'
 
-function getExtAllow(input) {
-    return input?.ext_allow ?? input?.extAllow ?? ''
-}
 
-function getExtDeny(input) {
-    return input?.ext_deny ?? input?.extDeny ?? ''
-}
 
 export function getMediaKind(fieldName) {
     switch (fieldName) {

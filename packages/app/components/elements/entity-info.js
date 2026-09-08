@@ -4,7 +4,7 @@ import { Text } from 'app/design/typography'
 import Time from 'app/ui/atoms/time'
 import Html from 'app/ui/atoms/html'
 import { Icon } from 'app/ui/atoms/icon'
-import { appSetting, cn } from 'app/lib/util'
+import { appSetting, cn, isUrl } from 'app/lib/util'
 import { useEditableRequest } from 'app/lib/form-helpers'
 import Profile from 'app/ui/molecules/profile/profile'
 import { BlockWrapper } from 'app/components/block-wrapper'
@@ -77,24 +77,6 @@ function ReadonlyValue({ href, label, children }) {
 }
 
 const INFO_ICON_SIZE = 16
-
-function isUrl(str) {
-    if (typeof str !== 'string' || !str.trim()) return false;
-
-    const value = str.trim();
-
-    try {
-        const url = new URL(value);
-        return url.protocol === 'http:' || url.protocol === 'https:';
-    } catch (e) {
-        try {
-            const url = new URL('https://' + value);
-            return url.hostname.includes('.');
-        } catch (e2) {
-            return false;
-        }
-    }
-}
 
 function getHandleForDisplay(input) {
     if (typeof input !== 'string') return input;

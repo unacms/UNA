@@ -1,7 +1,6 @@
 
 import { VirtuosoGrid, Virtuoso } from 'react-virtuoso'
 import { View } from 'app/design/view'
-import { View as ReactNativeView } from 'react-native'
 import { useRef, useEffect, useState } from 'react';
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { useCallback, forwardRef, useMemo } from 'react';

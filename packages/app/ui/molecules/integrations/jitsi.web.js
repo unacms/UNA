@@ -1,6 +1,4 @@
-import { View } from 'app/design/view'
 //import { JitsiMeeting } from '@jitsi/react-sdk';
-import { appSetting } from 'app/lib/util'
 import { useCurrentUser } from 'app/context/user'
 
 export default function (props) {

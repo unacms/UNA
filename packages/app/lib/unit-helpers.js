@@ -2,7 +2,6 @@ import { useMemo, useRef, useState } from 'react';
 import { Platform } from 'react-native';
 import Image from 'app/ui/atoms/image';
 import Letter from 'app/ui/atoms/letter';
-import Link from 'app/ui/atoms/link';
 import { Text } from 'app/design/typography';
 import { View, Row } from 'app/design/view';
 import { Button } from 'app/design/controls';

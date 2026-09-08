@@ -1,7 +1,7 @@
 import StarRating from 'react-native-star-rating-widget';
 import StarRatingDisplay from 'react-native-star-rating-widget';
 import { useTheme } from 'app/design/theme';
-import { View, Row } from 'app/design/view'
+import { Row } from 'app/design/view';
 import { Text } from 'app/design/typography'
 
 export function StarsView(props) {

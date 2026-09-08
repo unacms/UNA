@@ -1,4 +1,4 @@
-import { View, Row } from 'app/design/view'
+import { View } from 'app/design/view';
 
 export default function Youtube({ videoId, size }) {
     return (

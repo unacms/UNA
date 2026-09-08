@@ -1,6 +1,6 @@
 import { appSetting } from 'app/lib/util'
 import { Button } from 'app/design/controls/buttons';
-import { ButtonsGroup, NeoButtonsGroup } from 'app/design/controls/button-groups';
+import { ButtonsGroup } from 'app/design/controls/button-groups';
 
 const LEGACY_BUTTON_SIZES = new Set(['xs', 'sm', 'base', 'lg']);
 const safeLegacySize = (size, fallback = 'sm') => LEGACY_BUTTON_SIZES.has(size) ? size : fallback;

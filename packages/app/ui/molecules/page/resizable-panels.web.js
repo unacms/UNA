@@ -1,9 +1,7 @@
 import { Panel as PanelDef, PanelGroup as PanelGroupDef, PanelResizeHandle } from "react-resizable-panels";
-import { Icon } from 'app/ui/atoms/icon'
 import { forwardRef, memo } from "react";
 import { LAYOUT_BREAKPOINTS } from 'app/lib/util';
 import { View } from 'app/design/view';
-import { useLayoutSettings } from 'app/context/layout-settings';
 import { appSetting} from 'app/lib/util';
 
 const panelTheme = appSetting('theme', 'panels');

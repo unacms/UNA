@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { Pressable } from 'app/design/view'
 import { useRouter } from 'app/lib/hooks/router'
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 import { appSetting, cn, sanitazeUrl, isExternalUrl } from 'app/lib/util'
 import emitter from 'app/context/emitter';
 

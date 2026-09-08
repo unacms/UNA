@@ -1,9 +1,9 @@
-import Field, { getValidationRules } from './_field';
-import { useController, useFormContext } from 'react-hook-form';
+import Field from './_field';
+import { useFormContext } from 'react-hook-form';
 import { Input } from 'app/design/controls'
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button } from 'app/design/controls'
-import { View, Row, Pressable } from 'app/design/view'
+import { View, Row } from 'app/design/view';
 
 export default function FormFieldMultiField(props) {
     const name = props.name;

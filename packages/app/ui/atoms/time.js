@@ -1,9 +1,8 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Text } from 'app/design/typography';
 import { formatDate, useDateLocaleTag } from 'app/lib/util'
 import { Platform } from 'react-native'
-import { View } from 'app/design/view';
 export default function ElementTime(props) {
     const { t } = useTranslation();
     const localeTag = useDateLocaleTag();

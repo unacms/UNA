@@ -1,5 +1,4 @@
 import { View } from 'app/design/view';
-import { Text } from 'app/design/typography';
 import { memo } from 'react';
 import Unit from 'app/components/unit';
 import { BlockByName2 } from 'app/components/block'

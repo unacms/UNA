@@ -2,7 +2,6 @@ import Menu from 'app/components/menu'
 import { useState } from 'react'
 import DropdownPopup from 'app/ui/atoms/dropdown-popup'
 import { useIsDesktop } from 'app/context/measure';
-import { View } from 'app/design/view';
 
 // UNA's persons actions menu can return both the adaptive friends connection
 // (`profile-friends` — renders "Add friend", then "Friends"/"Unfriend" once

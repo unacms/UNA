@@ -1,6 +1,6 @@
 import { View, Row } from 'app/design/view'
 import Dropdown from 'app/ui/atoms/dropdown'
-import { useState, useReducer, useMemo, useCallback, useEffect } from 'react';
+import { useState, useReducer, useMemo, useEffect } from 'react';
 import { Modal } from 'app/design/controls'
 import { Button } from 'app/design/controls';
 import { Text } from 'app/design/typography';

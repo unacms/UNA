@@ -13,7 +13,6 @@ import { scheduleOneSignalSubscription } from 'app/lib/one-signal';
 import { useThemeName, useThemeValue } from 'app/design/theme';
 import { useTranslation } from 'react-i18next'
 import { useLayoutSettings } from 'app/context/layout-settings';
-import { useIsDesktop } from 'app/context/measure';
 import PopupModal from 'app/ui/molecules/dialogs/popup-modal'
 import { PageHeader } from 'app/ui/molecules/header/page-header';
 import { useFooter } from 'app/context/jotai/layout';

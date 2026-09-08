@@ -1,6 +1,6 @@
 import { Conductor } from 'app/ui/molecules/sections/conductor';
-import { useState, useRef } from 'react';
-import { BlockByName, DataByName } from 'app/components/block';
+import { useState } from 'react';
+import { DataByName } from 'app/components/block';
 import { SearchPanel } from 'app/ui/molecules/sections/search';
 import { parseUrl, parseQueryString} from 'app/lib/util';
 import { useCurrentUser } from 'app/context/user'

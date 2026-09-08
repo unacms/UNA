@@ -247,9 +247,6 @@ export function getHiddenFields(inputs, handleSubmit) {
         .filter((element) => element !== null);
 }
 
-export function inputByKey(array, value) {
-    return array.find(obj => obj['key'] === value);
-}
 
 const LEGACY_SIZE_TO_CONTROL = {
     xs: 'mini',

@@ -3,7 +3,7 @@ import { Pressable, View, MotionView } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { Icon } from 'app/ui/atoms/icon'
 import Link from 'app/ui/atoms/link'
-import { appSetting, isEmoji, FeedbackHaptics, cn, sanitazeUrl, isExternalUrl, openExternalLink, roundedClassToRadius } from 'app/lib/util'
+import { appSetting, isEmoji, FeedbackHaptics, cn, sanitazeUrl, isExternalUrl, openExternalLink } from 'app/lib/util';
 import Tooltip from 'app/ui/atoms/tooltip';
 import Loading from 'app/ui/atoms/loading'
 import { useIsDesktop } from 'app/context/measure';

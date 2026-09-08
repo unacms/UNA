@@ -3,7 +3,7 @@ import { nativeDriver } from 'app/lib/animation';
 import { getAnimatedFillProps } from 'app/ui/atoms/animated-icons/fill-props';
 
 import { forwardRef, useEffect, useRef } from 'react';
-import { Animated, Easing, Platform } from 'react-native';
+import { Animated, Platform } from 'react-native';
 import Svg, { G, Path } from 'react-native-svg';
 import { View } from 'app/design/view';
 

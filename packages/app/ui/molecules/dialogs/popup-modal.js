@@ -1,10 +1,8 @@
 import { View, Row } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { Button, ButtonLink } from 'app/design/controls'
-import Link from 'app/ui/atoms/link'
 import React from 'react'
 import BlockByUrl from 'app/ui/molecules/page/block'
-import Card from 'app/ui/molecules/page/card'
 import AuthPanel from 'app/ui/molecules/auth/auth'
 import { useTranslation } from 'react-i18next'
 

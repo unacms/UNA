@@ -10,7 +10,7 @@ import { FormError } from 'app/components/form-fields/_field';
 import Redirect from 'app/ui/atoms/redirect';
 import { storageClear, appSetting } from 'app/lib/util';
 import { Platform } from 'react-native';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from 'app/ui/molecules/page/card'
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from 'app/ui/molecules/page/card';
 import { useRouter, redirectTo } from 'app/lib/hooks/router'
 import { clearAllPageCache } from 'app/lib/cache/clear-page-cache'
 import { resetAllTabHistory } from 'app/lib/tab-history'

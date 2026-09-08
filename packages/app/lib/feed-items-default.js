@@ -4,7 +4,7 @@ import Time from 'app/ui/atoms/time'
 import Embed from 'app/ui/molecules/content/embed'
 import { memo, useEffect, useMemo } from 'react'
 import { Text } from 'app/design/typography'
-import { View, Row, ScrollView } from 'app/design/view'
+import { View, Row } from 'app/design/view';
 import { fetcher } from 'app/lib/fetcher'
 import { Icon } from 'app/ui/atoms/icon'
 import { Pressable } from 'app/design/view'

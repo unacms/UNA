@@ -1,15 +1,8 @@
 'use client'
 
-import { View, Row, ScrollView } from 'app/design/view'
+import { View, Row } from 'app/design/view';
 import { Text } from 'app/design/typography'
-import {
-    appSetting,
-    formatDateInterval,
-    cloneObject,
-    cn,
-    isWeb,
-    useDateLocaleTag,
-} from 'app/lib/util'
+import { appSetting, formatDateInterval, cloneObject, cn, useDateLocaleTag } from 'app/lib/util';
 import { useTranslation } from 'react-i18next'
 import { useCurrentUser } from 'app/context/user'
 import { useIsDesktop, useBreakpointName } from 'app/context/measure'

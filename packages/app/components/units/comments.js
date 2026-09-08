@@ -1,6 +1,6 @@
 import { useMemo, memo, useCallback, useState, useEffect } from 'react'
 import { Platform, Animated } from 'react-native'
-import { menuItemsByName, linkify, FeedbackHaptics, stripTags, appSetting, getDataForMenu, cd } from 'app/lib/util'
+import { menuItemsByName, FeedbackHaptics, appSetting, getDataForMenu } from 'app/lib/util';
 import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
 import { Button, Modal } from 'app/design/controls'
@@ -127,7 +127,7 @@ function UnitCommentsDefault(props) {
         commentId +
         '}'
         : ''
-    const { data: dynamicData, error } = useFetchForm(editFormUrl, postData)
+    const { data: dynamicData } = useFetchForm(editFormUrl, postData)
 
     const onFormSubmit = useCallback((formData) => {
         setViewState({ view: '' })

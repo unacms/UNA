@@ -102,12 +102,6 @@ export function storageRemove(pref, key, isLocal = false) {
     }
 }
 
-function replacer(key, value) {
-    if (value === this) {
-        return undefined;
-    }
-    return value;
-}
 
 function compress(data) {
 

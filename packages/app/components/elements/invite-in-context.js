@@ -1,4 +1,4 @@
-import { View, Row } from 'app/design/view';
+import { View } from 'app/design/view';
 import { ButtonLink, Input } from 'app/design/controls';
 import { fetcher } from 'app/lib/fetcher';
 import { useState, useEffect } from 'react'

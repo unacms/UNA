@@ -1,7 +1,7 @@
-import { memo, useState, useRef, useEffect } from 'react'
+import { memo, useState, useRef } from 'react';
 import Link from 'app/ui/atoms/link'
 import { Text } from 'app/design/typography'
-import { View, Row, Pressable, ScrollView } from 'app/design/view'
+import { View, Row, ScrollView } from 'app/design/view';
 import { useCurrentUser } from 'app/context/user'
 import { appSetting } from 'app/lib/util'
 import { appStatic } from 'app/lib/app-static'
@@ -14,7 +14,6 @@ import BlockByUrl from 'app/ui/molecules/page/block'
 import MenuAccount from 'app/components/nav/menu-account'
 import { getComponent } from 'app/components/registry'
 import { useIsDesktop } from 'app/context/measure';
-import { getComponent } from 'app/components/registry'
 
 const SidebarBottomToolbar = ({ currentUser, menu_add_items, buttonProps }) => {
     const toolbarConfig = appSetting('header_toolbar', 'ver')?.loggedIn?.sidebar;

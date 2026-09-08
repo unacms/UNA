@@ -1,11 +1,5 @@
 import { View } from 'app/design/view';
-import Image from 'app/ui/atoms/image';
-import Html from 'app/ui/atoms/html';
-import { Text, H2 } from 'app/design/typography';
-import { appSetting, clearLinks } from 'app/lib/util'
 import { ContentMore } from 'app/ui/molecules/content/content-more';
-import EntityAttachments from './entity-attachments';
-import TextMore from 'app/ui/molecules/content/text-more';
 import Link from 'app/ui/atoms/link'
 import { Button } from 'app/design/controls';
 import { BlockWrapper } from 'app/components/block-wrapper'

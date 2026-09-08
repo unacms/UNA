@@ -1,4 +1,4 @@
-import React, { useRef, forwardRef } from 'react';
+import React, { useRef } from 'react';
 
 export const SafeMenuTrigger = ({ children, className = '', ...rest }) => {
     const start = useRef({ x: 0, y: 0, time: 0 });

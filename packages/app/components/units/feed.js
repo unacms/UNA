@@ -18,12 +18,7 @@ import {
     FeedEditForm,
 } from 'app/lib/feed-helpers'
 
-import {
-    CardList,
-    CardHeader,
-    CardTitle,
-    CardContent,
-} from 'app/ui/molecules/page/card'
+import { CardList, CardHeader, CardTitle } from 'app/ui/molecules/page/card';
 import AnimatedBlock from 'app/ui/atoms/animated-block'
 import { getComponent } from 'app/components/registry'
 import Scroll from 'app/ui/molecules/page/scroll'

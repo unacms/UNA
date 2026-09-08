@@ -1,4 +1,4 @@
-import { View, ScrollView, ViewRef, Row } from 'app/design/view'
+import { View } from 'app/design/view';
 import { useState, useEffect, useRef, useCallback } from "react";
 import { Platform } from 'react-native'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';

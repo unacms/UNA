@@ -5,7 +5,7 @@ import { appSetting, isExternalUrl, openExternalLink } from 'app/lib/util'
 import { useThemeValue } from 'app/design/theme'
 import { useRouter, useCurrentTabPath } from 'app/lib/hooks/router'
 import { nativeTabHref } from 'app/lib/tab-history'
-import { unaLinksToMentions, normalizeLinkHref } from 'app/components/form-fields/editor-mention-html'
+import { normalizeLinkHref } from 'app/components/form-fields/editor-mention-html';
 import { preprocessHtml } from 'app/lib/html-helper'
 
 // This file is native-only (web content is rendered by html.web.js), so the

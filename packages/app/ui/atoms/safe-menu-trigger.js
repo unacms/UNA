@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React from 'react';
 
 export const SafeMenuTrigger = ({ children, className = '', ...rest }) => {
     return children

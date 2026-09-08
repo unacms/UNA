@@ -1,4 +1,4 @@
-import { View, Row } from 'app/design/view';
+import { View } from 'app/design/view';
 import { BlockWrapper } from 'app/components/block-wrapper';
 import ElementMenu from 'app/components/elements/menu';
 

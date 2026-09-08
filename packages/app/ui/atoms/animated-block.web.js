@@ -1,5 +1,4 @@
 import { View } from 'app/design/view';
-import { appSetting } from 'app/lib/util';
 
 const AnimatedContainer = (props) => {
     return (

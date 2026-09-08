@@ -38,7 +38,7 @@
  */
 
 import React, { createContext, useContext, useMemo } from 'react';
-import { Platform, useColorScheme } from 'react-native';
+import { Platform } from 'react-native';
 import { useWindowWidth, useIsDesktop } from 'app/context/measure';
 import { appSetting, getBreakpoint, isExpoUI } from 'app/lib/util';
 import { ThemeName, useThemeValue } from 'app/design/theme';

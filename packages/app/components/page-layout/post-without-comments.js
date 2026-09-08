@@ -1,7 +1,6 @@
 import { View, Row } from 'app/design/view';
 import {BlockByName, DataByName} from 'app/components/block';
 import { useState, useRef } from 'react';
-import { stripTags } from 'app/lib/util';
 import { Dimensions } from 'react-native';
 import Card from 'app/ui/molecules/page/card'
 import { useIsDesktop } from 'app/context/measure';

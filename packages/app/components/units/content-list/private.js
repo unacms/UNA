@@ -1,13 +1,5 @@
-import { View, Row } from 'app/design/view'
-import { useTranslation } from 'react-i18next'
-import {
-    UnitActions,
-    UnitProfileImage,
-    UnitProfileList,
-    UnitTitle,
-    UnitWrapper,
-    useUnitActions,
-} from 'app/lib/unit-helpers'
+import { View } from 'app/design/view';
+import { UnitProfileImage, UnitTitle, UnitWrapper } from 'app/lib/unit-helpers';
 
 export default function Unit({ data, unitType, module }) {
 

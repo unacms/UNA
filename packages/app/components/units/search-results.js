@@ -1,8 +1,6 @@
-import { useState, useRef } from 'react';
 import { stripTags } from 'app/lib/util';
 import { Text } from 'app/design/typography'
 import { View, Pressable } from 'app/design/view'
-import Redirect from 'app/ui/atoms/redirect';
 import Profile from 'app/ui/molecules/profile/profile';
 import GeneralContentList from './general-content-list';
 export default function UnitSearchResults(props) {

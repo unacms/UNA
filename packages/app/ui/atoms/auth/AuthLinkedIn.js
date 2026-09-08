@@ -1,5 +1,3 @@
-import { View, Pressable } from 'app/design/view';
-import { Text } from 'app/design/typography';
 import { Button } from 'app/design/controls';
 import { useTranslation } from 'react-i18next';
 

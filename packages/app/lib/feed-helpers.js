@@ -1,4 +1,3 @@
-import Image from 'app/ui/atoms/image'
 
 import Link from 'app/ui/atoms/link'
 import Time from 'app/ui/atoms/time'
@@ -32,7 +31,7 @@ import { fetcher } from 'app/lib/fetcher'
 import { getComponent } from 'app/components/registry'
 import Card from 'app/ui/molecules/page/card'
 import AnimatedBlock from 'app/ui/atoms/animated-block'
-import { CommentsBrowse, CommentsBrowseShort /*, CommentsParts*/ } from 'app/lib/comments-helpers'
+import { CommentsBrowseShort } from 'app/lib/comments-helpers';
 import { Pressable } from 'app/design/view'
 import { subscribe } from 'app/ui/atoms/socket'
 import { getDataForMenu } from 'app/lib/util'
@@ -50,7 +49,7 @@ import emitter from 'app/context/emitter';
 export const FeedEditForm = memo(({ setViewState, viewState, id }) => {
     const { t } = useTranslation()
     const [postData, setPostData] = useState(null)
-    const { data: dynamicData, error } = useFetchForm(
+    const { data: dynamicData } = useFetchForm(
         '/api.php?r=bx_timeline/get_edit_form/&params[]=' + id,
         postData
     )

@@ -704,7 +704,7 @@ function CommentsFormInner ({ form: initialForm, requestUrl, module, objectId, i
 
     const url = requestUrl + JSON.stringify({ 'module': module, 'object_id': objectId });
 
-    const { data: dynamicData, error } = useFetchForm(url, commentForm);
+    const { data: dynamicData } = useFetchForm(url, commentForm);
 
 
     useEffect(() => {

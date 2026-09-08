@@ -12,7 +12,6 @@
  * - browse.js — full layouts (showcase, gallery, sidebar, title, cursor paging).
  * - browse-simple.tsx — no fetch; maps already-loaded items to Unit cards.
  */
-import Unit from 'app/components/unit'
 import {
     useCallback,
     useEffect,

@@ -1,14 +1,7 @@
-import { useMemo } from 'react'
 import { View, Row } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { stripTags } from 'app/lib/util';
-import Time from 'app/ui/atoms/time'
-import Link from 'app/ui/atoms/link'
-import { ContentMore } from 'app/ui/molecules/content/content-more'
-import Embed from 'app/ui/molecules/content/embed'
-import Carousel from 'app/ui/molecules/content/carousel'
 import { Icon } from 'app/ui/atoms/icon'
-import Html from 'app/ui/atoms/html';
 
 export default function UnitActivity(props) {
     const data = props.data

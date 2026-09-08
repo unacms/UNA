@@ -1,7 +1,7 @@
 import { View, Row, Pressable } from 'app/design/view';
 import { useState } from 'react';
 import Image from 'app/ui/atoms/image';
-import { Text, H2 } from 'app/design/typography';
+import { Text } from 'app/design/typography';
 import Link from 'app/ui/atoms/link';
 import { Modal } from 'app/design/controls'
 import Video from 'app/ui/atoms/video';

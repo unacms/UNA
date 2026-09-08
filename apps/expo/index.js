@@ -8,7 +8,6 @@ configureReanimatedLogger({ strict: false });
 
 import 'react-native-get-random-values';
 import 'react-native-url-polyfill/auto';
-import { StatusBar, Platform } from 'react-native';
 //import 'expo-router/entry';
 import * as SplashScreen from 'expo-splash-screen';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';

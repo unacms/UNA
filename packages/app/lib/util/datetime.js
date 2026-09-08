@@ -6,7 +6,6 @@ const isWeb = Platform.OS === 'web';
 // Must match the SSR fallback in apps/next/stubs/react-native-localize.js.
 const SSR_DATE_LOCALE = 'en-US';
 
-const _fmtCache = new Map();
 
 function getDateOrderByLocale(tag) {
     const lang = tag.toLowerCase();

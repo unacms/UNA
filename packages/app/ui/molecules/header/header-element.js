@@ -1,4 +1,3 @@
-import Link from 'app/ui/atoms/link'
 import { View, Row } from 'app/design/view'
 import { NeoButton , ButtonLink, NeoButtonLink } from 'app/design/controls'
 import { useCurrentUser } from 'app/context/user'

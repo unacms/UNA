@@ -1,6 +1,6 @@
 import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import Field, { getValidationRules } from './_field';
-import { View, ViewRef, Row, Pressable } from 'app/design/view'
+import { View, Row, Pressable } from 'app/design/view';
 import * as ImagePicker from 'expo-image-picker';
 import { Button, NeoButton } from 'app/design/controls';
 import { Icon } from 'app/ui/atoms/icon';

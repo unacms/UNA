@@ -1,24 +1,13 @@
 import { View, Row } from 'app/design/view'
-import { Text, H2 } from 'app/design/typography'
-import {
-    Card,
-    CardHeader,
-    CardDescription,
-    CardContent,
-    CardFooter,
-    CardTitle,
-    CardIcon,
-} from 'app/ui/molecules/page/card'
+import { Text } from 'app/design/typography';
 import { appSetting } from 'app/lib/util'
 import { appStatic } from 'app/lib/app-static'
 import AuthPanel from 'app/ui/molecules/auth/auth'
-import { BlockByName, DataByName } from 'app/components/block'
+import { BlockByName } from 'app/components/block';
 import MenuFooter from 'app/components/nav/menu-footer'
 import { useTranslation } from 'react-i18next'
 import Link from 'app/ui/atoms/link'
 import Page from 'app/ui/molecules/page/page'
-import { Icon } from 'app/ui/atoms/icon'
-import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view'
 import { BlockDataByName } from 'app/lib/util';
 /**
  * Renders the login splash screen with adaptive layouts for web and mobile platforms.

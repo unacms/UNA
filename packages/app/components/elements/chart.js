@@ -1,8 +1,8 @@
 import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
 import { fetcher } from 'app/lib/fetcher';
-import { useState, useEffect, useMemo } from 'react';
-import { appSetting, setClipboard } from 'app/lib/util'
+import { useState, useEffect } from 'react';
+import { appSetting } from 'app/lib/util';
 import Dropdown from 'app/ui/atoms/dropdown'
 import Calendar from 'app/ui/atoms/calendar'
 import { BlockWrapper } from 'app/components/block-wrapper'
