@@ -1,4 +1,3 @@
-import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view';
 import { fetcher } from 'app/lib/fetcher';
 import React, { useState, useMemo, useCallback } from 'react';
@@ -12,16 +11,14 @@ import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import { getComponent } from 'app/components/registry';
 import { useTranslation } from 'react-i18next';
 import { FeedbackHaptics } from 'app/lib/util';
-import { linkedText } from 'app/lib/text-helpers';
-import { Platform } from 'react-native'
 import Carousel from 'app/ui/molecules/content/carousel'
 import { Modal } from 'app/design/controls'
 import emitter from 'app/context/emitter';
 import { TouchableWithoutFeedback } from 'react-native';
+import { ContentMore } from 'app/ui/molecules/content/content-more'
 
 export default function JotItem({ item, index, handleReply }) {
     const Reactions = getComponent('molecule', 'reactions');
-    const isWeb = Platform.OS == 'web'
     const { t } = useTranslation();
     const [postData, setPostData] = useState(null)
     const [viewState, setViewState] = useState({ view: '' })
@@ -110,10 +107,25 @@ export default function JotItem({ item, index, handleReply }) {
 
 
                     ) : <View className="pb-2">
-                        {item.reply > 0 && <View className='   border border-border/60   rounded-md p-2 my-1  bg-muted-foreground/20'>
-                            <Text className="text-xs text-secondary-foreground  font-default">{linkedText(item?.reply_message, "hover:text-accent-foreground")}</Text>
-                        </View>}
-                        <Text className=" text-sm text-secondary-foreground">{linkedText(item?.message, "hover:text-accent-foreground")}</Text>
+                        {item.reply > 0 ? (
+                            <View className="border border-border/60 rounded-md p-2 my-1 bg-muted-foreground/20">
+                                <ContentMore
+                                    content={item?.reply_message}
+                                    numberOfLines={2}
+                                    numberOfSymbols={200}
+                                    openSmall={false}
+                                    customClassName="u-vanilla-html-small"
+                                />
+                            </View>
+                        ) : null}
+                        <ContentMore
+                            content={item?.message}
+                            numberOfLines={3}
+                            numberOfSymbols={360}
+                            openSmall={false}
+                            showLess={true}
+                            customClassName="u-vanilla-html-small"
+                        />
                         {aImg.length > 0 && <View className="max-w-xs w-full"><Carousel data={aImg} /></View>}
                     </View>}
                 </View>

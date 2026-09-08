@@ -3,7 +3,7 @@ import { Text } from 'app/design/typography';
 import { View, Row } from 'app/design/view';
 import { NeoButton } from 'app/design/controls';
 import Form from 'app/components/elements/form';
-import { linkedText } from 'app/lib/text-helpers';
+import { ContentMore } from 'app/ui/molecules/content/content-more';
 import { useTranslation } from 'react-i18next';
 
 /** Message composer: optional reply-to strip + the UNA send form. */
@@ -21,12 +21,26 @@ const Composer = memo(function Composer({ form, replyItem, onFormSubmit, handleC
                                     <Text className="text-xs text-popover-foreground">{t('Reply to:')} </Text>
                                     <Text className="font-semibold text-xs text-popover-foreground">{replyItem.author_data.display_name}</Text>
                                 </Row>
-                                <Text className="text-sm overflow-hidden text-popover-foreground" numberOfLines={3}>
-                                    {linkedText(replyItem.message, 'hover:text-accent-foreground')}
-                                </Text>
+                                <View className="overflow-hidden">
+                                    <ContentMore
+                                        content={replyItem.message}
+                                        numberOfLines={3}
+                                        numberOfSymbols={360}
+                                        openSmall={false}
+                                        customClassName="u-vanilla-html-small"
+                                    />
+                                </View>
                             </View>
-                            <View className="-right-1 -top-1">
-                                <NeoButton style="bordered" controlSize="mini" borderShape="circle" image="X" accessibilityLabel={t('Close')} align="start" onPress={() => handleCancelReply()} />
+                            <View className="flex-none">
+                                <NeoButton
+                                    style="bordered"
+                                    controlSize="mini"
+                                    borderShape="circle"
+                                    image="X"
+                                    accessibilityLabel={t('Close')}
+                                    classNames={{ root: 'flex-none' }}
+                                    onPress={() => handleCancelReply()}
+                                />
                             </View>
                         </Row>
                     </View>

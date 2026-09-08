@@ -17,7 +17,7 @@ const isWeb = Platform.OS === 'web';
 export const MESSENGER_OVERLAY_HEADER =
     'absolute top-0 inset-x-0 z-10 bg-linear-to-b from-background from-40% to-transparent pb-8';
 export const MESSENGER_OVERLAY_COMPOSER_FADE =
-    'bg-linear-to-t from-background from-40% to-transparent pt-14';
+    'bg-linear-to-t from-background from-40% to-transparent';
 
 export function MessengerListInset({ height = 0 }) {
     return <View style={{ height, width: '100%', flexShrink: 0 }} />;

@@ -3,6 +3,7 @@ import { View, Row, Pressable } from 'app/design/view'
 import Profile from 'app/ui/molecules/profile/profile'
 import Time from 'app/ui/atoms/time'
 import { useCurrentUser } from 'app/context/user';
+import { stripTags } from 'app/lib/util';
 
 
 export default function ({ item, index, changeConvo, selectedIndex }) {
@@ -29,7 +30,7 @@ export default function ({ item, index, changeConvo, selectedIndex }) {
                 </Row>
                 <View className="">
                     <Text className="block text-sm text-secondary-foreground web:group-hover:text-foreground line-clamp-1 truncate overflow-hidden max-w-full" numberOfLines={1}>
-                    {item.message}
+                    {stripTags(item.message)}
                 </Text>
                 </View>
             </View>
