@@ -51,7 +51,7 @@
     "jstree": "^3.3.17",
     "jush": "https://github.com/vrana/jush",
     "leaflet": "^1.9.4",
-    "leaflet-providers": "^3.0.0",
+    "leaflet-providers": "^4.0.0",
     "lottie-web": "^5.12.2",
     "marka": "github:fians/marka",
     "masonry-layout": "^4.2.2",

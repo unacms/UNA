@@ -2646,10 +2646,10 @@ just-diff@^6.0.0:
   resolved "https://registry.yarnpkg.com/just-diff/-/just-diff-6.0.2.tgz#03b65908543ac0521caf6d8eb85035f7d27ea285"
   integrity sha512-S59eriX5u3/QhMNq3v/gm8Kd0w8OS6Tz2FS1NG4blv+z0MuQcBRJyFWjdovM0Rad4/P4aUPFtnkNjMjyMlMSYA==
 
-leaflet-providers@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/leaflet-providers/-/leaflet-providers-3.0.0.tgz#93269327366b1e130e1da6d763674bc2a8aff58c"
-  integrity sha512-PWwsWRpf7xMrCofRUfWR6FBdw2v08j48tXCLQCoS1PinxPpVU70AQTr9N3NcbTIONiF9nS6m45LxBWVYx2i+wg==
+leaflet-providers@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/leaflet-providers/-/leaflet-providers-4.0.0.tgz#a98c5631a671c366739d8658e40be1d02e2c57cb"
+  integrity sha512-4m3Q4t0e+cHVNIPzlkW9HFWEgplImFRv8cnUFJYOfFoS6p2KosAfmh2Do6qk4HMdqutqbHMpv3F7sn/CUSw6oQ==
 
 leaflet@^1.9.4:
   version "1.9.4"
