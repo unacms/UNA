@@ -170,7 +170,7 @@ jobs:
 
         marker="<!-- railway-preview -->"
         body="${marker}
-**Preview:** ${url}
+Preview: ${url}
 
 Railway environment: \`${RAILWAY_PR_ENVIRONMENT}\`"
 
