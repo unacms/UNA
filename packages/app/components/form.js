@@ -11,6 +11,7 @@ import { FormInstanceProvider } from 'app/context/form-instance';
 import useDebounce from 'app/lib/hooks/debounce'
 import { Button } from 'app/design/controls';
 import useFetchForm from 'app/lib/hooks/fetch'
+import { FormError } from 'app/components/form-fields/_field'
 import { useTranslation } from 'react-i18next'
 import { useRouter, usePathname, redirectTo } from 'app/lib/hooks/router'
 import { getTabKeyFromPathname } from 'app/lib/tab-history'
@@ -163,7 +164,13 @@ export default function Form({
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [formBundle.form?.inputs]);
 
-    const { data: dynamicData } = useFetchForm(request?.url, postData);
+    const { data: dynamicData, error: submitError } = useFetchForm(request?.url, postData);
+
+    useEffect(() => {
+        if (submitError) {
+            emitter.emit(`form_${name}`, { action: 'received', formInstanceId });
+        }
+    }, [submitError, name, formInstanceId]);
 
     // update state when form is submitted
     const onFormSubmit = onFormSubmitInternal ?? ((formData, d) => {
@@ -612,11 +619,16 @@ export default function Form({
         );
     }
 
+    const errorMessage = submitError ? (
+        <FormError errorText={t('Something didn’t go as planned. Please try again or reload the page.')} />
+    ) : null;
+
     if ('undefined' !== typeof ElementForm) {
         inputs = <ElementForm name={name} data={{ ...formBundle?.form, inputs: filteredInputs }} response={formBundle.response} handleSubmit={_handleSubmit} exProps={exProps}></ElementForm>
         return (
             <FormProviders instanceId={formInstanceId} methods={methods}>
                 {Element && <Element {...formBundle.extra} />}
+                {errorMessage}
                 {!hideFormOnMsg ? inputs : null}
             </FormProviders>
         )
@@ -626,6 +638,7 @@ export default function Form({
         <FormProviders instanceId={formInstanceId} methods={methods}>
             <View className={`${layout !== 'hor' ? appSetting('forms', 'form_container') : 'w-full'} ${exProps?.classes}`}>
                 {Element && <Element {...formBundle.extra} />}
+                {errorMessage}
                 {!hideFormOnMsg ? (
                     <View className={`${layout === 'hor' ? 'flex-row gap-x-4 items-center w-full' : 'w-full gap-4'}`}>
                         {inputs}
