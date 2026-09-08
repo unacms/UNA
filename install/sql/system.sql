@@ -7425,7 +7425,7 @@ INSERT INTO `sys_agents_tools` (`type`, `title`, `docs`, `params`, `params_user`
 CREATE TABLE IF NOT EXISTS `sys_agents_chat_history` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `thread_id` varchar(255) NOT NULL,
-  `ip` bigint(20) unsigned NOT NULL DEFAULT 0
+  `ip` bigint(20) unsigned NOT NULL DEFAULT 0,
   `messages` longtext NOT NULL,
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
   `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
