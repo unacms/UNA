@@ -5,12 +5,14 @@ on:
     branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
+    types: [opened, synchronize, reopened, closed]
 
 permissions:
   contents: read
 
 jobs:
   test:
+    if: github.event_name == 'push' || github.event.action != 'closed'
     runs-on: ubuntu-latest
 
     services:
@@ -55,7 +57,7 @@ jobs:
     - name: Prepare writable paths
       run: |
         mkdir -p cache cache_public logs tmp storage
-        chmod -R a+rwX inc cache cache_public logs tmp storage
+        chmod a+rwX inc cache cache_public logs tmp storage
         test -f plugins/ffmpeg/ffmpeg.exe && chmod 0755 plugins/ffmpeg/ffmpeg.exe
 
     - name: Install UNA
@@ -82,3 +84,88 @@ jobs:
         name: una-package
         path: packages/*.zip
         if-no-files-found: error
+
+  deploy:
+    name: Deploy PR to Railway
+    needs: test
+    if: github.event_name == 'pull_request' && github.event.action != 'closed'
+    runs-on: ubuntu-latest
+    env:
+      RAILWAY_API_TOKEN: ${{ secrets.RAILWAY_API_TOKEN }}
+      RAILWAY_PROJECT_ID: ${{ vars.RAILWAY_PROJECT_ID }}
+      RAILWAY_BASE_ENVIRONMENT: ${{ vars.RAILWAY_ENVIRONMENT }}
+      RAILWAY_PR_ENVIRONMENT: pr-${{ github.event.pull_request.number }}
+    steps:
+    - uses: actions/checkout@v4
+
+    - uses: actions/download-artifact@v4
+      with:
+        name: una-package
+        path: packages
+
+    - name: Prepare artefact
+      run: |
+        mkdir -p deploy
+        unzip -q packages/*.zip -d /tmp/una-pkg
+        pkg_dir=$(find /tmp/una-pkg -mindepth 1 -maxdepth 1 -type d | head -n 1)
+        cp -a "$pkg_dir"/. deploy/
+        cp scripts/railway/Dockerfile scripts/railway/entrypoint.sh scripts/railway/railway.toml deploy/
+        chmod +x deploy/entrypoint.sh
+
+    - name: Install Railway CLI
+      run: |
+        curl -fsSL https://railway.com/install.sh | sh
+        echo "$HOME/.railway/bin" >> "$GITHUB_PATH"
+
+    - name: Provision PR environment
+      run: |
+        if [ -z "$RAILWAY_API_TOKEN" ] || [ -z "$RAILWAY_PROJECT_ID" ]; then
+          echo "Set secret RAILWAY_API_TOKEN (account token) and variable RAILWAY_PROJECT_ID" >&2
+          exit 1
+        fi
+        base="${RAILWAY_BASE_ENVIRONMENT:-production}"
+        railway link --project "$RAILWAY_PROJECT_ID" --environment "$base" --json
+        railway environment new "$RAILWAY_PR_ENVIRONMENT" || true
+        railway add --image mariadb:11 --service mariadb --environment "$RAILWAY_PR_ENVIRONMENT" \
+          --variables MARIADB_ROOT_PASSWORD=una \
+          --variables MARIADB_DATABASE=una \
+          --variables MARIADB_USER=una \
+          --variables MARIADB_PASSWORD=una \
+          || true
+        railway add --service una --environment "$RAILWAY_PR_ENVIRONMENT" || true
+        railway variable set --service una --environment "$RAILWAY_PR_ENVIRONMENT" --skip-deploys \
+          MYSQLHOST=mariadb.railway.internal \
+          MYSQLPORT=3306 \
+          MYSQLDATABASE=una \
+          MYSQLUSER=una \
+          MYSQLPASSWORD=una \
+          || true
+        railway domain --service una --environment "$RAILWAY_PR_ENVIRONMENT" || true
+
+    - name: Deploy artefact
+      run: railway up ./deploy --path-as-root --no-gitignore --ci --service una --environment "$RAILWAY_PR_ENVIRONMENT" --project "$RAILWAY_PROJECT_ID"
+
+  teardown:
+    name: Remove PR Railway environment
+    if: github.event_name == 'pull_request' && github.event.action == 'closed'
+    runs-on: ubuntu-latest
+    env:
+      RAILWAY_API_TOKEN: ${{ secrets.RAILWAY_API_TOKEN }}
+      RAILWAY_PROJECT_ID: ${{ vars.RAILWAY_PROJECT_ID }}
+      RAILWAY_BASE_ENVIRONMENT: ${{ vars.RAILWAY_ENVIRONMENT }}
+      RAILWAY_PR_ENVIRONMENT: pr-${{ github.event.pull_request.number }}
+    steps:
+    - name: Install Railway CLI
+      run: |
+        curl -fsSL https://railway.com/install.sh | sh
+        echo "$HOME/.railway/bin" >> "$GITHUB_PATH"
+
+    - name: Delete PR environment
+      run: |
+        if [ -z "$RAILWAY_API_TOKEN" ] || [ -z "$RAILWAY_PROJECT_ID" ]; then
+          echo "Set secret RAILWAY_API_TOKEN (account token) and variable RAILWAY_PROJECT_ID" >&2
+          exit 1
+        fi
+        base="${RAILWAY_BASE_ENVIRONMENT:-production}"
+        railway link --project "$RAILWAY_PROJECT_ID" --environment "$base" --json
+        railway environment delete "$RAILWAY_PR_ENVIRONMENT" -y || true
