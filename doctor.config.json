@@ -1,12 +1,10 @@
 {
   "$schema": "https://react.doctor/schema.json",
   "verbose": true,
-  "failOn": "none",
   "ignore": {
     "rules": [
       "react-doctor/effect-needs-cleanup",
       "react-doctor/no-array-index-as-key",
-      "knip/exports",
       "react-doctor/design-no-redundant-size-axes",
       "react-doctor/no-react19-deprecated-apis",
       "react-doctor/rerender-state-only-in-handlers",
@@ -47,7 +45,6 @@
       "react-doctor/rn-prefer-pressable",
       "react-doctor/no-layout-transition-inline",
       "react-doctor/no-many-boolean-props",
-      "knip/duplicates",
       "react-doctor/no-inline-exhaustive-style",
       "react-doctor/js-flatmap-filter",
       "react-doctor/no-side-tab-border",
@@ -70,9 +67,13 @@
       "react-doctor/rn-no-inline-flatlist-renderitem",
       "react-doctor/rn-list-callback-per-row",
       "react-doctor/async-parallel",
-      "react-doctor/no-permanent-will-change",
-      "knip/types",
-      "knip/files"
+      "react-doctor/no-permanent-will-change"
     ]
-  }
+  },
+  "blocking": "none",
+  "projects": [
+    "expo-app",
+    "next-app",
+    "app"
+  ]
 }

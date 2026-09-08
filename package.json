@@ -14,6 +14,7 @@
     "typescript": "^5.7.2"
   },
   "scripts": {
+    "lint": "eslint apps packages scripts crypto-shim",
     "preinstall": "node scripts/merge-package-customization.js",
     "postinstall": "patch-package",
     "native": "cd apps/expo && dotenv -e ../../.env.local -- expo start --clear",
