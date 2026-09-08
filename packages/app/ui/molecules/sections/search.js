@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
-import { Icon } from 'app/ui/atoms/icon'
+import { Platform } from 'react-native'
 import { appSetting, getHeaderToolbarNeoButtonDefaults } from 'app/lib/util'
 import { fetcher } from 'app/lib/fetcher'
 import { Text } from 'app/design/typography'
@@ -18,7 +18,7 @@ import { useBottomSheetData } from 'app/context/bottomsheet'
 import DropdownPopup from 'app/ui/atoms/dropdown-popup'
 import { appStatic } from 'app/lib/app-static'
 import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view'
-import { BottomSheetScrollView } from '@gorhom/bottom-sheet'
+import { BottomSheetScrollView } from 'app/ui/atoms/bottomsheet-scroll-view'
 import { useIsDesktop } from 'app/context/measure';
 
 export default function ElementSearch(oProps) {
@@ -147,39 +147,18 @@ export function ElementSearchData(oProps) {
         '/search-keyword?keyword={keyword}' +
         (!!sSection ? '&section=' + sSection : '')
     const [inputValue, setInputValue] = useState('')
-    const [popupOpenHandle, setPopupOpenHandle] = useState(true)
     const [popupContent, setPopupContent] = useState('')
     const { t } = useTranslation()
-    const sTxtTitle = t('Search')
     const sTxtViewExtended = t('See all results')
-    const sType = oProps?.type ? oProps.type : 'default'
 
     const inputRef = useRef()
 
-    const getSkeleton = () => {
-        return (
-            <View className="w-full px-2">
-                {[...Array(1, 2, 3)].map((i) => (
-                    <View
-                        key={i}
-                        className="flex-col mb-2 p-2 bg-muted  rounded-xl"
-                    >
-                        <View className="animate-pulse flex-row items-center gap-y-1">
-                            <View className="rounded-full bg-secondary-foreground/20 h-10 w-10"></View>
-                            <View className="flex-1 gap-y-1">
-                                <View className="h-4 w-1/2 bg-secondary-foreground/20 rounded-full"></View>
-                                <View className="h-3 w-1/3 bg-secondary-foreground/20 rounded-full"></View>
-                            </View>
-                        </View>
-                    </View>
-                ))}
-            </View>
-        )
-    }
+    const searchRequest = useRef(null)
 
     useEffect(() => {
-        if (!oProps.resInPopup) inputRef.current && inputRef.current.focus()
-    }, [])
+        if (!oProps.resInPopup) inputRef.current?.focus()
+        return () => searchRequest.current?.abort()
+    }, [oProps.resInPopup])
 
     const handleKeyPress = (event) => {
         if (event.key !== 'Enter') return
@@ -200,65 +179,47 @@ export function ElementSearchData(oProps) {
         redirectdRef.current.redirect(url)
     }
 
-    const handleSetPopupContent = (sContent) => {
-        setPopupContent(sContent)
-        if (sType == 'default') {
-            if (!!sContent) {
-                setPopupOpenHandle(false)
+    const handleSearch = async (value) => {
+        setInputValue(value)
+        searchRequest.current?.abort()
+        setPopupContent(null)
+        if (oProps.noPopup || value.length < 3) return
 
-                inputRef.current && inputRef.current.focus()
+        const controller = new AbortController()
+        searchRequest.current = controller
+        const params = {
+            params: { keyword: value, section: sSection.trim(), live: true },
+        }
+
+        try {
+            const response = await fetcher(
+                '/api.php?r=system/get_data_search_api/TemplServices&params=' + JSON.stringify(params),
+                false,
+                { signal: controller.signal },
+            )
+            if (controller.signal.aborted) return
+
+            const block = response?.data?.[0]?.data
+            const results = block?.unit === 'search-results' && Array.isArray(block.data)
+                ? block.data
+                : []
+            setPopupContent(results.length ? (
+                <View className="w-full mt-1">
+                    {results.map((item, index) => (
+                        <SearchResults key={index} data={item} onPress={handleClose} />
+                    ))}
+                </View>
+            ) : appStatic('components_content_empty'))
+            inputRef.current?.focus()
+        } catch {
+            if (!controller.signal.aborted) {
+                setPopupContent(
+                    <Text className="text-destructive p-2">
+                        {t('Something didn’t go as planned. Please try again or reload the page.')}
+                    </Text>,
+                )
             }
         }
-    }
-
-    const handleSearch = async (sValue) => {
-        setInputValue(sValue)
-
-        if (oProps.noPopup || !sValue || sValue.length < 3) return
-
-        const aParams = {
-            params: {
-                keyword: sValue,
-                section: sSection.trim(),
-                live: true,
-            },
-        }
-
-        const sResponse = await fetcher(
-            '/api.php?r=system/get_data_search_api/TemplServices&params=' +
-                JSON.stringify(aParams)
-        )
-        if (!sResponse?.data) {
-            handleSetPopupContent('aa')
-        }
-
-        const oBlock = sResponse.data.shift()
-        if (
-            oBlock.data?.unit != 'search-results' ||
-            !oBlock.data?.data ||
-            !oBlock.data.data.length
-        ) {
-            handleSetPopupContent(appStatic('components_content_empty'))
-        }
-
-        const sContent = (
-            <View className="w-full mt-1">
-                {oBlock.data.data.map((a, index) => (
-                    <SearchResults
-                        key={index}
-                        data={a}
-                        onPress={(url) => handleClose(url)}
-                    />
-                ))}
-            </View>
-        )
-        if (oBlock.data.data.length == 0) {
-            handleSetPopupContent(appStatic('components_content_empty'))
-            return
-        }
-
-        handleSetPopupContent(sContent)
-        inputRef.current && inputRef.current.focus()
     }
 
     const cnt = !!popupContent && popupContent
@@ -281,8 +242,9 @@ export function ElementSearchData(oProps) {
                 {oProps.icon}
                 <DropdownPopup
                     open={!!popupContent}
-                    onOpenChange={async (bOpen) => {
-                        setPopupContent(false)
+                    onOpenChange={() => {
+                        searchRequest.current?.abort()
+                        setPopupContent(null)
                     }}
                     trigger={
                         <Input
@@ -313,7 +275,7 @@ export function ElementSearchData(oProps) {
         )
     }
 
-    if (oProps.isBottomSheet && !isDesktop) {
+    if (Platform.OS !== 'web' && oProps.isBottomSheet && !isDesktop) {
         return (
             <>
                 <View className="w-full mb-2">
