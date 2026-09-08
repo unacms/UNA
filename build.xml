@@ -87,7 +87,6 @@
         <exclude name="plugins/pdepend/**" />
         <exclude name="plugins/sebastian/**" />
         <exclude name="plugins/phar-io/**" />
-        <exclude name="plugins/myclabs/**" />
         <exclude name="plugins/theseer/**" />
         <exclude name="plugins/staabm/**" />
         <exclude name="plugins/bin/phpunit" />
