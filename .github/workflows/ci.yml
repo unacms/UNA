@@ -38,7 +38,7 @@ jobs:
         php-version: '8.3'
         extensions: intl, curl, gd, mbstring, zip, exif, pdo_mysql
         ini-values: short_open_tag=On, memory_limit=256M
-        tools: composer, phing
+        tools: composer, phing, phpunit:12
 
     - name: Setup Node
       uses: actions/setup-node@v4
@@ -47,7 +47,7 @@ jobs:
         cache: yarn
 
     - name: Install PHP dependencies
-      run: composer install --prefer-dist --no-progress
+      run: composer install --prefer-dist --no-progress --no-dev
 
     - name: Install JS dependencies
       run: yarn install --frozen-lockfile
@@ -91,4 +91,4 @@ jobs:
 
     - name: Run PHPUnit
       working-directory: ${{ env.PACKAGE_DIR }}
-      run: plugins/bin/phpunit -c tests/phpunit.xml
+      run: phpunit -c tests/phpunit.xml
