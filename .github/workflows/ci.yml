@@ -169,10 +169,7 @@ jobs:
         echo "Preview URL: $url"
 
         marker="<!-- railway-preview -->"
-        body="${marker}
-Preview: ${url}
-
-Railway environment: \`${RAILWAY_PR_ENVIRONMENT}\`"
+        body=$(printf '%s\n**Preview**: %s\n\nRailway environment: `%s`' "$marker" "$url" "$RAILWAY_PR_ENVIRONMENT")
 
         comment_id=$(gh api "repos/${GITHUB_REPOSITORY}/issues/${PR_NUMBER}/comments" --paginate \
           --jq ".[] | select(.user.login == \"github-actions[bot]\" and (.body | contains(\"${marker}\"))) | .id" \
