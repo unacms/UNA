@@ -9,6 +9,7 @@ on:
 
 permissions:
   contents: read
+  pull-requests: write
 
 jobs:
   test:
@@ -144,6 +145,43 @@ jobs:
 
     - name: Deploy artefact
       run: railway up ./deploy --path-as-root --no-gitignore --ci --service una --environment "$RAILWAY_PR_ENVIRONMENT" --project "$RAILWAY_PROJECT_ID"
+
+    - name: Comment preview URL on PR
+      env:
+        GH_TOKEN: ${{ github.token }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+      run: |
+        json=$(railway domain list --service una --environment "$RAILWAY_PR_ENVIRONMENT" --json)
+        host=$(printf '%s\n' "$json" | jq -r '.domains[] | select(.type == "service") | .domain' | head -n1)
+        if [ -z "$host" ]; then
+          host=$(printf '%s\n' "$json" | jq -r '.domains[0].domain // empty')
+        fi
+        if [ -z "$host" ]; then
+          echo "No Railway domain found for service una" >&2
+          echo "$json" >&2
+          exit 1
+        fi
+        case "$host" in
+          https://*|http://*) url="$host" ;;
+          *) url="https://$host" ;;
+        esac
+        echo "Preview URL: $url"
+
+        marker="<!-- railway-preview -->"
+        body="${marker}
+**Preview:** ${url}
+
+Railway environment: \`${RAILWAY_PR_ENVIRONMENT}\`"
+
+        comment_id=$(gh api "repos/${GITHUB_REPOSITORY}/issues/${PR_NUMBER}/comments" --paginate \
+          --jq ".[] | select(.user.login == \"github-actions[bot]\" and (.body | contains(\"${marker}\"))) | .id" \
+          | head -n1)
+
+        if [ -n "$comment_id" ]; then
+          gh api --method PATCH "repos/${GITHUB_REPOSITORY}/issues/comments/${comment_id}" -f body="$body"
+        else
+          gh pr comment "$PR_NUMBER" --body "$body"
+        fi
 
   teardown:
     name: Remove PR Railway environment
