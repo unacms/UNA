@@ -140,7 +140,7 @@ class BxBaseSearch extends BxDolSearch
             unset($aForm['inputs']['section']);
             unset($aForm['inputs']['search']);
             unset($aForm['inputs']['keyword']['caption']);
-            $aForm['inputs']['keyword']['attrs']['placeholder'] = _t('_sys_search' . (BxDolAI::getAssistantForLiveSearch() ? '_or_ask' : '')  . '_placeholder');
+            $aForm['inputs']['keyword']['attrs']['placeholder'] = _t('_sys_search_placeholder');
             $aForm['inputs']['keyword']['attrs']['onkeydown'] = "return bx_search_on_type(event, $sJsParams);";
             $aForm['inputs']['keyword']['attrs']['onpaste'] = $aForm['inputs']['keyword']['attrs']['onkeydown'];
         }

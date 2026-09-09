@@ -28,10 +28,6 @@ class BxDolStudioPage extends BxDol
     protected $iPageRssHelpLength;
     protected $sPageRssHelpId;
 
-    protected $iPageAssistantId;
-    protected $sPageAssistantChatName;
-    protected $sPageAssistantChatDescription;
-
     protected $_sTypesPreList;
 
     protected $aActions;
@@ -60,10 +56,6 @@ class BxDolStudioPage extends BxDol
         $this->sPageRssHelpUrl = 'http://feed.una.io/?section={page_name}';
         $this->iPageRssHelpLength = 5;
 
-        $this->iPageAssistantId = BxDolAI::getAssistantForStudio();
-        $this->sPageAssistantChatName = 'sys_studio_page_assistant';
-        $this->sPageAssistantChatDescription = '_sys_agents_assistants_chat_dsc_studio';
-
         $this->_sTypesPreList = 'sys_studio_widget_types';
 
         $this->aActions = [];
@@ -78,7 +70,7 @@ class BxDolStudioPage extends BxDol
         $this->_bShowHeaderBreadcrumb = getParam('sys_std_show_header_left') == 'on';
         $this->_bShowHeaderRightSearch = getParam('sys_std_show_header_right_search') == 'on';
         $this->_bShowHeaderRightSite = getParam('sys_std_show_header_right_site') == 'on';
-        $this->_bShowHeaderRightAssistant = $this->iPageAssistantId != 0;
+        $this->_bShowHeaderRightAssistant = false;
 
         if(is_string($mixedPageName)) {
             $this->aPage = $this->oDb->getPages(array('type' => 'by_page_name_full', 'value' => $mixedPageName));

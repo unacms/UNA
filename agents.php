@@ -37,17 +37,4 @@ if(($iProviderId = bx_get('p')) !== false) {
     }
 }
 
-/**
- * Work with Assistants
- */
-if($sTool == 'asst' && ($iId = bx_get('id')) !== false) {
-    $oAssistant = BxDolAIAssistant::getObjectInstance((int)$iId);
-
-    if(($sAction = bx_get('a')) !== false) {
-        $sAction = 'processAction' . bx_gen_method_name(bx_process_input($sAction));
-        if(method_exists($oAssistant, $sAction))
-            $oAssistant->$sAction();
-    }
-}
-
 /** @} */

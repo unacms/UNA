@@ -54,9 +54,6 @@ class BxBaseStudioAgents extends BxDolStudioAgents
             BX_DOL_STUDIO_AGENTS_TYPE_VECTOR_STORE => 'sys_studio_agents_vector_store',
             BX_DOL_STUDIO_AGENTS_TYPE_TOOLS => 'sys_studio_agents_tools',
 
-            BX_DOL_STUDIO_AGENTS_TYPE_ASSISTANTS => 'sys_studio_agents_assistants',
-            BX_DOL_STUDIO_AGENTS_TYPE_ASSISTANTS . '_chats' => 'sys_studio_agents_assistants_chats',
-            BX_DOL_STUDIO_AGENTS_TYPE_ASSISTANTS . '_files' => 'sys_studio_agents_assistants_files',
             BX_DOL_STUDIO_AGENTS_TYPE_AGENTS => 'sys_studio_agents_agents',
 
             /*
@@ -137,97 +134,6 @@ class BxBaseStudioAgents extends BxDolStudioAgents
         $this->aPageJsOptions['sPageUrl'] .= 'vector_store';
 
         return $this->getGrid($this->aGridObjects[BX_DOL_STUDIO_AGENTS_TYPE_VECTOR_STORE]);
-    }
-
-    protected function getAssistants()
-    {
-        $oAi = BxDolAI::getInstance();
-        $oTemplate = BxDolStudioTemplate::getInstance();
-        
-        $this->aPageJsOptions['sPageUrl'] .= 'assistants';
-
-        $sSubPage = '';
-        if(($sSubPage = bx_get('spage')) !== false)
-            $sSubPage = bx_process_input($sSubPage, BX_DATA_TEXT);
-
-        $iAssistantId = 0;
-        if(($iAssistantId = bx_get('aid')) !== false)
-            $iAssistantId = bx_process_input($iAssistantId, BX_DATA_INT);
-
-        $iChatId = 0;
-        if(($iChatId = bx_get('cid')) !== false)
-            $iChatId = bx_process_input($iChatId, BX_DATA_INT);
-
-        if($iAssistantId && $iChatId) {
-            $aResult = [];
-
-            $sAssistantUrl = $this->sSubpageUrl . 'assistants&spage=chats&aid=' . $iAssistantId;
-            $aAssistant = $oAi->getAssistantById($iAssistantId);
-            if(!empty($aAssistant) && is_array($aAssistant)) {
-                $aChat = $oAi->getAssistantChatById($iChatId);
-                if(!empty($aChat) && is_array($aChat))
-                    $aResult[] = $oTemplate->parseHtmlByName('agents_assistant_info.html', [
-                        'assistant_name' => $aAssistant['name'],
-                        'assistant_info' => $aAssistant['description'],
-                        'bx_if:show_chat' => [
-                            'condition' => true,
-                            'content' => [
-                                'chat_name' => $aChat['name'],
-                                'chat_info' => $aChat['description'],
-                            ]
-                        ],
-                        'url_back' => $sAssistantUrl
-                    ]);
-            }
-
-            if(($oCmts = $oAi->getAssistantChatCmtsObject($iChatId, $oTemplate)) !== false) {
-                $this->aPageJsOptions = array_merge($this->aPageJsOptions, [
-                    'sPageUrl' => $sAssistantUrl . '&cid=' . $iChatId,
-                    'sActionUrlCmts' => bx_append_url_params(BX_DOL_URL_ROOT . 'cmts.php', [
-                        'sys' => $oCmts->getSystemName(),
-                        'id' => $iChatId
-                    ])
-                ]);
-
-                $aResult[] = $oCmts->getCommentsBlock();
-            }
-            else
-                $aResult[] = MsgBox(_t('_error occured'));
-
-            return $aResult;
-        }
-        else if($iAssistantId) {
-            $aResult = [];
-
-            $aAssistant = $oAi->getAssistantById($iAssistantId);
-            if(!empty($aAssistant) && is_array($aAssistant))
-                $aResult[] = $oTemplate->parseHtmlByName('agents_assistant_info.html', [
-                    'assistant_name' => $aAssistant['name'],
-                    'assistant_info' => $aAssistant['description'],
-                    'bx_if:show_chat' => [
-                        'condition' => false,
-                        'content' => [
-                            'chat_name' => '',
-                            'chat_info' => '',
-                        ]
-                    ],
-                    'url_back' => $this->aPageJsOptions['sPageUrl']
-                ]);
-            
-            switch($sSubPage) {
-                case 'chats':
-                    $aResult[] = $this->getGrid($this->aGridObjects[BX_DOL_STUDIO_AGENTS_TYPE_ASSISTANTS . '_chats']);
-                    break;
-
-                case 'files':
-                    $aResult[] = $this->getGrid($this->aGridObjects[BX_DOL_STUDIO_AGENTS_TYPE_ASSISTANTS . '_files']);
-                    break;
-            }
-
-            return $aResult;
-        }
-
-        return $this->getGrid($this->aGridObjects[BX_DOL_STUDIO_AGENTS_TYPE_ASSISTANTS]);
     }
 
     protected function _setView($sView)

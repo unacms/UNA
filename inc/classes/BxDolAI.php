@@ -24,7 +24,6 @@ class BxDolAI extends BxDolFactory implements iBxDolSingleton
     protected $_aExcludeAlertUnits;
 
     protected $_sCmtsAutomators;
-    protected $_sCmtsAssistantsChats;
 
     protected $_bWriteLog;
 
@@ -46,7 +45,6 @@ class BxDolAI extends BxDolFactory implements iBxDolSingleton
         ];
 
         $this->_sCmtsAutomators = 'sys_agents_automators';
-        $this->_sCmtsAssistantsChats = 'sys_agents_assistants_chats';
 
         $this->_bWriteLog = true;
 
@@ -135,10 +133,7 @@ class BxDolAI extends BxDolFactory implements iBxDolSingleton
         return $oAIModel->getResponseText($aHelper['prompt'], $sMessage);
     }
 
-    public static function pruning()
-    {
-        BxDolAIAssistant::pruning();
-    }
+    public static function pruning() {}
 
     public static function getDefaultApiKey()
     {
@@ -148,21 +143,6 @@ class BxDolAI extends BxDolFactory implements iBxDolSingleton
     public static function getDefaultModel()
     {
         return (int)getParam('sys_agents_model');
-    }
-
-    public static function getAssistantForStudio()
-    {
-        return ($iId = (int)getParam('sys_agents_studio_assistant')) != 0 ? $iId : 0;
-    }
-
-    public static function getAssistantForLiveSearch()
-    {
-        return ($iId = (int)getParam('sys_agents_live_search_assistant')) != 0 ? $iId : 0;
-    }
-
-    public static function getAssistantForAskBlock()
-    {
-        return ($iId = (int)getParam('sys_agents_ask_block_assistant')) != 0 ? $iId : 0;
     }
 
     public function getProfileId()
@@ -207,56 +187,6 @@ class BxDolAI extends BxDolFactory implements iBxDolSingleton
 
         return BxDolAIProvider::getObjectInstance($iId);
     }   
-
-    public function getAssistants($aParams = [])
-    {
-        $aParamsDb = ['sample' => 'all_pairs'];
-        if(isset($aParams['active']))
-            $aParamsDb['active'] = $aParams['active'] === true ? 1 : 0;
-        if(isset($aParams['hidden']))
-            $aParamsDb['hidden'] = $aParams['hidden'] === true ? 1 : 0;
-
-        return $aModel = $this->_oDb->getAssistantsBy($aParamsDb);
-    }
-
-    public function getAssistantById($iId)
-    {
-        return $this->_oDb->getAssistantsBy(['sample' => 'id', 'id' => $iId]);
-    }
-
-    public function getAssistantByName($sName)
-    {
-        return $this->_oDb->getAssistantsBy(['sample' => 'name', 'name' => $sName]);
-    }
-
-    public function getAssistantChatById($iId)
-    {
-        return $this->_oDb->getChatsBy(['sample' => 'id', 'id' => $iId]);
-    }
-
-    public function getAssistantChatsTransient($iLifetime = 0)
-    {
-        return $this->_oDb->getChatsBy(['sample' => 'type', 'type' => BX_DOL_AI_ASST_TYPE_TRANSIENT, 'lifetime' => $iLifetime]);
-    }
-
-    public function updateAssistantChatById($iId, $aSet)
-    {
-        return $this->_oDb->updateChats($aSet, ['id' => $iId]);
-    }
-
-    public function getAssistantChatCmts()
-    {
-        return $this->_sCmtsAssistantsChats;
-    }
-
-    public function getAssistantChatCmtsObject($iId, $oTemplate = false)
-    {
-        $oCmts = BxDolCmts::getObjectInstance($this->_sCmtsAssistantsChats, (int)$iId, true, $oTemplate);
-        if(!$oCmts || !$oCmts->isEnabled())
-            return false;
-
-        return $oCmts;
-    }
 
     public function getHelperById($iId)
     {

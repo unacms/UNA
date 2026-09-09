@@ -255,17 +255,10 @@ class BxBaseStudioPage extends BxDolStudioPage
         if(!$this->_bShowHeaderRightAssistant)
             return '';
 
-        $oAssistant = BxDolAIAssistant::getObjectInstance($this->iPageAssistantId);
-        if(!$oAssistant)
-            return '';
+        //TODO: Use new Manual agent here.
+        $sContent = '';
 
-        $oTemplate = BxDolStudioTemplate::getInstance();
-
-        $sContent = $oAssistant->getAskChat($this->sPageAssistantChatName, $this->sPageAssistantChatDescription, '', $oTemplate);
-        if(!$sContent)
-            return '';
-
-        return $oTemplate->parseHtmlByName('page_caption_assistant.html', [
+        return BxDolStudioTemplate::getInstance()->parseHtmlByName('page_caption_assistant.html', [
             'content' => $sContent
         ]);
     }

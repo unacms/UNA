@@ -902,15 +902,6 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
         ]);
     }
 
-    public function serviceGetBlockAskAssistant($aParams = [])
-    {
-        $iAssistant = BxDolAI::getAssistantForAskBlock();
-        if(!$iAssistant)
-            return '';
-
-        return BxDolAIAssistant::getObjectInstance($iAssistant)->getAskBlock($aParams);
-    }
-
     public function serviceGetMenu($aParams)
     {
         $bIsApi = bx_is_api();
@@ -1624,21 +1615,6 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
         return $aResult;
     }
 
-    public function serviceGetOptionsStudioAssistant()
-    {
-        return $this->_getOptionsAiAssistants();
-    }
-
-    public function serviceGetOptionsLiveSearchAssistant()
-    {
-        return $this->_getOptionsAiAssistants();
-    }
-
-    public function serviceGetOptionsAskBlockAssistant()
-    {
-        return $this->_getOptionsAiAssistants();
-    }
-
     public function serviceRedirect($sUrl = false)
     {
         if (!getParam('sys_confirmation_before_redirect')) {
@@ -1955,18 +1931,6 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
             return false;
 
         return $aAgent;
-    }
-
-    protected function _getOptionsAiAssistants()
-    {
-        $aResult = ['' => _t('_Select_one')];
-
-        $aAgents = BxDolAI::getInstance()->getAgentsByTriggerType('manual');
-        if($aAgents && is_array($aAgents)) 
-            foreach($aAgents as $aAgent)
-                $aResult[$aAgent['id']] = $aAgent['title'];
-
-        return $aResult;
     }
 }
 
