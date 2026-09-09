@@ -79,13 +79,16 @@
 
 
     /* Color Palette */
-    .bx-std .bx-def-color-bg-hl,
-    .bx-std .bx-def-color-bg-hl-even:nth-child(even),
-    .bx-std .bx-def-color-bg-hl-hover:hover,
     .bx-artificer .bx-def-color-bg-hl,
     .bx-artificer .bx-def-color-bg-hl-even:nth-child(even),
     .bx-artificer .bx-def-color-bg-hl-hover:hover {
         @apply bg-gray-100/50 dark:bg-gray-700/50;
+    }
+    /* Studio: blocks are translucent (white/60 on the gray page, white/6 on black), where a gray-100/50 tint disappears; a black/white tint keeps the alternate grid rows readable. */
+    .bx-std .bx-def-color-bg-hl,
+    .bx-std .bx-def-color-bg-hl-even:nth-child(even),
+    .bx-std .bx-def-color-bg-hl-hover:hover {
+        @apply bg-black/[0.04] dark:bg-white/[0.04];
     }
 
     .bx-artificer .col-red1 {
