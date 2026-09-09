@@ -15,10 +15,18 @@ import { unaAiChatStreamingFetch } from './fetch';
 const USE_PROXY_WEB = appSetting('config', 'use_proxy_web');
 const USE_PROXY_NATIVE = appSetting('config', 'use_proxy_native');
 
-function requestUrl(agentId, contextProfileId) {
+function chatQueryId(chatId) {
+    return String(chatId || '').replace(/[^a-zA-Z0-9_-]/g, '').slice(0, 64);
+}
+
+function requestUrl(agentId, contextProfileId, chatId) {
     const path = `/sys-ai-chat/${encodeURIComponent(agentId)}`;
+    const params = new URLSearchParams();
     const pid = Number(contextProfileId) || 0;
-    const query = pid > 0 ? `?context=${encodeURIComponent(String(pid))}` : '';
+    if (pid > 0) params.set('context', String(pid));
+    const chat = chatQueryId(chatId);
+    if (chat.length >= 8) params.set('chat', chat);
+    const query = params.toString() ? `?${params.toString()}` : '';
     if (Platform.OS === 'web' && USE_PROXY_WEB) return `${path}${query}`;
     if (Platform.OS !== 'web' && USE_PROXY_NATIVE) {
         const appUrl = String(APP_URL || '').replace(/\/+$/, '');
@@ -108,7 +116,7 @@ async function hydrateChat(url, extraHeaders) {
 
 /** Adapter for `useChat`: GET hydrate + POST SSE. Join/resume (`?offset=`) is omitted — UNA returns 405. */
 export function createAgentChat(agentId, options = {}) {
-    const url = requestUrl(agentId, options.contextProfileId);
+    const url = requestUrl(agentId, options.contextProfileId, options.chatId);
     const credentials = options.credentials || 'include';
     const headers = chatHeaders(options.headers);
     const stream = fetchServerSentEvents(url, {

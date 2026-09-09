@@ -4,11 +4,11 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } fr
 import { useChat } from '@tanstack/ai-react';
 import { View, Row, ScrollView } from 'app/design/view';
 import { Text } from 'app/design/typography';
-import { InputMulti, NeoButton, NeoButtonLink } from 'app/design/controls';
+import { NeoButton, NeoButtonLink, TextInputClear } from 'app/design/controls';
 import Profile from 'app/ui/molecules/profile/profile';
 import Html from 'app/ui/atoms/html';
 import { useCurrentUser } from 'app/context/user';
-import { cn, isWeb } from 'app/lib/util';
+import { appSetting, cn, isWeb } from 'app/lib/util';
 import { createAgentChat } from './helper';
 import { isHiddenFirstMessageText } from './hidden-first-message';
 import { messageActions, parseChatActionsPayload } from './message-content';
@@ -16,6 +16,7 @@ import { messageActions, parseChatActionsPayload } from './message-content';
 const NEAR_BOTTOM_PX = 48;
 const COMPOSER_LINE_PX = 20;
 const COMPOSER_MAX_PX = 160;
+const inputSettings = appSetting('theme', 'inputs');
 
 function isNearBottom(node, nativeEvent) {
     if (node && typeof node.scrollTop === 'number' && typeof node.scrollHeight === 'number') {
@@ -130,7 +131,7 @@ function AgentStatus({ label }) {
     );
 }
 
-function ChatBubble({ message, user, assistant, isStreaming, onReply, repliesEnabled, streamedActions, chosenReply, hideButtons }) {
+function ChatBubble({ message, user, assistant, isStreaming, onReply, repliesEnabled, streamedActions, chosenReply, hideIdentity }) {
     const isUser = message.role === 'user';
     const text = messageText(message);
     const actions = isUser ? [] : messageActions(message, streamedActions);
@@ -148,7 +149,7 @@ function ChatBubble({ message, user, assistant, isStreaming, onReply, repliesEna
 
     return (
         <Row className="gap-2">
-            {!hideButtons && <View className="w-8 min-h-8 mt-2.5">
+            {!hideIdentity && <View className="w-8 min-h-8 mt-2.5">
                 <View className="w-8 my-0.5 shadow-xs rounded-full">
                     <Profile
                         {...author}
@@ -162,7 +163,7 @@ function ChatBubble({ message, user, assistant, isStreaming, onReply, repliesEna
             <View className="flex-1 mt-2 min-w-0">
                 {showBubble ? (
                     <View className="bg-muted/50 rounded-xl py-2.5 px-3 gap-0.5 w-full min-w-0">
-                        {!hideButtons && <Text className="text-sm tracking-tight font-semibold text-card-foreground">
+                        {!hideIdentity && <Text className="text-sm tracking-tight font-semibold text-card-foreground">
                             {author?.display_name}
                         </Text>}
                         <MessageBody text={text} isStreaming={isStreaming} />
@@ -183,18 +184,32 @@ function ChatBubble({ message, user, assistant, isStreaming, onReply, repliesEna
 
 const sentBootstrapKeys = new Set();
 
+function guestChatNonce() {
+    try {
+        if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+            return crypto.randomUUID().replace(/-/g, '').slice(0, 32);
+        }
+    } catch {}
+    return `${Date.now().toString(36)}${Math.random().toString(36).slice(2, 10)}`;
+}
+
 /** Load UNA transcript before useChat mounts so bootstrap cannot race hydrate. */
-export default function AiAgent({ data, initialMessage = '', hideInitialMessage = false, placeholder = 'Ask anything...', hideButtons = false }) {
+export default function AiAgent({ data, initialMessage = '', hideInitialMessage = false, placeholder = 'Ask anything...', hideButton = false, hideIdentity = false }) {
+    const { currentUser } = useCurrentUser();
     const agentId = data.agent_id;
     const contextProfileId = Number(data.context_profile_id) || 0;
-    const [seed, setSeed] = useState(() => (initialMessage ? null : []));
+    const guestNewSession = !!Number(data?.guest_new_session_on_reload) && !(Number(currentUser?.id) > 0);
+    const [guestChatId] = useState(() => (Number(data?.guest_new_session_on_reload) ? guestChatNonce() : ''));
+    const chatId = guestNewSession ? guestChatId : '';
+    const [seed, setSeed] = useState(() => (initialMessage && !guestNewSession ? null : []));
     const [seedError, setSeedError] = useState(null);
 
     useEffect(() => {
-        if (!initialMessage) return undefined;
+        if (!initialMessage || guestNewSession) return undefined;
         let cancelled = false;
         const chat = createAgentChat(agentId, {
             contextProfileId,
+            chatId,
             onHydrateError: (error) => {
                 if (!cancelled) setSeedError(error);
             },
@@ -210,7 +225,7 @@ export default function AiAgent({ data, initialMessage = '', hideInitialMessage 
         return () => {
             cancelled = true;
         };
-    }, [agentId, contextProfileId, initialMessage]);
+    }, [agentId, contextProfileId, initialMessage, guestNewSession, chatId]);
 
     if (initialMessage && seed === null) {
         return <View className="h-[28rem] overflow-hidden" />;
@@ -218,9 +233,11 @@ export default function AiAgent({ data, initialMessage = '', hideInitialMessage 
 
     return (
         <AiAgentChat
-            hideButtons={hideButtons}
-            placeholder={placeholder}           
+            hideButton={hideButton}
+            hideIdentity={hideIdentity}
+            placeholder={placeholder}
             data={data}
+            guestChatId={chatId}
             initialMessage={initialMessage}
             hideInitialMessage={hideInitialMessage}
             initialMessages={seed || []}
@@ -232,12 +249,14 @@ export default function AiAgent({ data, initialMessage = '', hideInitialMessage 
 
 function AiAgentChat({
     data,
+    guestChatId = '',
     initialMessage = '',
     hideInitialMessage = false,
     initialMessages = [],
     sendBootstrap = false,
     hydrateError = null,
-    hideButtons = false,
+    hideButton = false,
+    hideIdentity = false,
     placeholder
 }) {
     const { currentUser } = useCurrentUser();
@@ -324,13 +343,15 @@ function AiAgentChat({
         () =>
             createAgentChat(agentId, {
                 contextProfileId,
+                chatId: guestChatId,
                 onChatActions: (messageId, value) => applyChatActionsRef.current?.(messageId, value),
             }),
-        [agentId, contextProfileId]
+        [agentId, contextProfileId, guestChatId]
     );
 
-    const threadId =
-        contextProfileId > 0 ? `agent:${agentId}:${contextProfileId}` : `agent:${agentId}`;
+    const threadId = ['agent', agentId, contextProfileId > 0 ? contextProfileId : null, guestChatId || null]
+        .filter(Boolean)
+        .join(':');
 
     const onChatChunk = useCallback((chunk) => {
         if (chunk?.type !== 'CUSTOM' || chunk.name !== 'chat_actions') return;
@@ -349,7 +370,7 @@ function AiAgentChat({
             if (name !== 'chat_actions') return;
             applyChatActions(null, value);
         },
-        ...(sendBootstrap || initialMessage ? {} : { persistence: true }),
+        ...(sendBootstrap || initialMessage || guestChatId ? {} : { persistence: true }),
     });
 
     messagesRef.current = messages;
@@ -488,7 +509,7 @@ function AiAgentChat({
                             repliesEnabled={!isLoading && message.id === lastVisibleId}
                             streamedActions={streamActions[message.id]}
                             chosenReply={chosenReply}
-                            hideButtons={hideButtons}
+                            hideIdentity={hideIdentity}
                         />
                     );
                 })}
@@ -501,26 +522,34 @@ function AiAgentChat({
                         <Text className="text-sm text-destructive">{chatError.message}</Text>
                     </View>
                 ) : null}
-                <View
-                    className={cn(
-                        'w-full  overflow-hidden',
-                        isMultiline ? '' : ''
-                    )}
-                >
+                <View className="w-full overflow-hidden">
                     <Row className="items-center">
-                        <View className="flex-1 min-h-12 justify-center">
-                            <InputMulti
+                        <View
+                            className={cn(
+                                inputSettings.base,
+                                inputSettings.rounded.default,
+                                'flex-1 min-h-12 justify-center px-3 overflow-hidden web:focus-within:bg-card web:focus-within:border-ring/80 web:focus-within:shadow-none'
+                            )}
+                        >
+                            <TextInputClear
                                 ref={inputRef}
+                                multiline
                                 value={input}
                                 onChangeText={setInput}
-                                onHeight={(height) => applyComposerHeight(input ? height : COMPOSER_LINE_PX)}
+                                onContentSizeChange={(event) => {
+                                    const height = event?.nativeEvent?.contentSize?.height;
+                                    if (height) applyComposerHeight(input ? height : COMPOSER_LINE_PX);
+                                }}
                                 placeholder={placeholder}
-                                className="w-full bg-transparent border-0 shadow-none outline-none ring-0 rounded-none p-0 min-h-0 leading-5 resize-none web:overflow-y-auto web:focus:outline-none web:focus:ring-0 web:focus:border-0 web:focus-visible:outline-none web:focus-visible:ring-0 web:focus-visible:border-0 web:focus-visible:shadow-none web:focus-visible:bg-transparent"
+                                className="w-full bg-transparent border-0 shadow-none outline-none ring-0 rounded-none p-0 min-h-0 leading-5 text-base text-card-foreground placeholder:text-muted-foreground resize-none web:overflow-y-auto web:focus:outline-none web:focus:ring-0 web:focus:border-0 web:focus-visible:outline-none web:focus-visible:ring-0 web:focus-visible:border-0 web:focus-visible:shadow-none web:focus-visible:bg-transparent"
                                 style={{
                                     outline: 'none',
                                     boxShadow: 'none',
                                     height: composerHeight,
                                     maxHeight: COMPOSER_MAX_PX,
+                                    padding: 0,
+                                    margin: 0,
+                                    textAlignVertical: isMultiline ? 'top' : 'center',
                                 }}
                                 onKeyDown={isWeb ? onComposerKey : undefined}
                                 onKeyPress={isWeb ? undefined : onComposerKey}
@@ -529,7 +558,7 @@ function AiAgentChat({
                                 {...(isWeb ? { rows: 1 } : { scrollEnabled: composerHeight >= COMPOSER_MAX_PX })}
                             />
                         </View>
-                        {!hideButtons && <View className="p-1.5">
+                        {!hideButton && <View className="p-1.5">
                             {isLoading ? (
                                 <NeoButton
                                     style="bordered"
