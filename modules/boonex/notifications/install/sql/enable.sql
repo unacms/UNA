@@ -110,7 +110,7 @@ INSERT INTO `sys_options` (`name`, `value`, `category_id`, `caption`, `info`, `t
 ('bx_notifications_summary_chars', '200', @iCategId, '_bx_ntfs_option_summary_chars', '', 'digit', '', '', '', '', 50),
 ('bx_notifications_owner_name_chars', '21', @iCategId, '_bx_ntfs_option_owner_name_chars', '', 'digit', '', '', '', '', 51),
 ('bx_notifications_content_chars', '32', @iCategId, '_bx_ntfs_option_content_chars', '', 'digit', '', '', '', '', 52),
-('bx_notifications_email_subject_chars', '30', @iCategId, '_bx_ntfs_option_email_subject_chars', '', 'digit', '', '', '', '', 53),
+('bx_notifications_email_subject_chars', '90', @iCategId, '_bx_ntfs_option_email_subject_chars', '', 'digit', '', '', '', '', 53),
 ('bx_notifications_push_message_chars', '190', @iCategId, '_bx_ntfs_option_push_message_chars', '', 'digit', '', '', '', '', 54);
 
 
