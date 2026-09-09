@@ -13,7 +13,7 @@ class BxBaseStudioFunctions extends BxBaseFunctions implements iBxDolSingleton
     /**
      * Studio draws a block's title icon as an inline Lucide SVG (like its menus), whatever the site's default iconset is.
      */
-    function designBoxContent ($sTitle, $sContent, $iTemplateNum = BX_DB_DEF, $mixedMenu = false, $mixedButtons = [])
+    public function designBoxContent ($sTitle, $sContent, $iTemplateNum = BX_DB_DEF, $mixedMenu = false, $mixedButtons = [])
     {
         if(is_array($sTitle) && !empty($sTitle[2]) && preg_match('/^[a-z0-9-]+$/', $sTitle[2]) && ($oIconset = BxDolIconset::getObjectInstance('sys_lucide')) && ($sSvg = $oIconset->getIconHtml($sTitle[2])) !== false)
             $sTitle[2] = $sSvg;
@@ -24,7 +24,7 @@ class BxBaseStudioFunctions extends BxBaseFunctions implements iBxDolSingleton
     /**
      * A Studio block may hand the caption ready-made markup (a segmented switcher, say) instead of a menu object.
      */
-    function designBoxMenu ($mixedMenu, $mixedButtons = [])
+    public function designBoxMenu ($mixedMenu, $mixedButtons = [])
     {
         if(is_string($mixedMenu) && strncmp(ltrim($mixedMenu), '<', 1) === 0)
             return $mixedMenu;

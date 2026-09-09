@@ -18,7 +18,7 @@ class BxDolStudioDashboardQuery extends BxDolStudioPageQuery
      * A module's storage use split by where its files live: its objects on the Local engine and those on any remote engine.
      * @return array ['local' => ['size' => bytes, 'objects' => count], 'remote' => ['size' => bytes, 'objects' => count]]
      */
-    function getModuleStorageSizes($sModule)
+    public function getModuleStorageSizes($sModule)
     {
         $aResult = array('local' => array('size' => 0, 'objects' => 0), 'remote' => array('size' => 0, 'objects' => 0));
 
@@ -32,7 +32,7 @@ class BxDolStudioDashboardQuery extends BxDolStudioPageQuery
     /**
      * The storage objects under a name prefix, each with its engine and counters (the dashboard splits the system module's by hand).
      */
-    function getStorageObjects($sPrefix)
+    public function getStorageObjects($sPrefix)
     {
         return $this->getAll("SELECT `object`, `engine`, `current_size`, `current_number` FROM `sys_objects_storage` WHERE `object` LIKE " . $this->escape($sPrefix . '%') . " ORDER BY `object`");
     }
@@ -40,7 +40,7 @@ class BxDolStudioDashboardQuery extends BxDolStudioPageQuery
     /**
      * Users block (BxBaseStudioDashboard::serviceGetBlockUsers): every account.
      */
-    function getAccountsCount()
+    public function getAccountsCount()
     {
         return (int)$this->getOne("SELECT COUNT(*) FROM `sys_accounts`");
     }
@@ -48,7 +48,7 @@ class BxDolStudioDashboardQuery extends BxDolStudioPageQuery
     /**
      * Accounts seen since a moment: their last activity or login is at or after it.
      */
-    function getAccountsActiveCount($iSince)
+    public function getAccountsActiveCount($iSince)
     {
         return (int)$this->getOne("SELECT COUNT(*) FROM `sys_accounts` WHERE `active` >= :since_active OR `logged` >= :since_logged", ['since_active' => (int)$iSince, 'since_logged' => (int)$iSince]);
     }
@@ -56,7 +56,7 @@ class BxDolStudioDashboardQuery extends BxDolStudioPageQuery
     /**
      * Accounts online now: with a session touched within the online window, the way BxDolAccountQuery::isOnline counts one.
      */
-    function getAccountsOnlineCount()
+    public function getAccountsOnlineCount()
     {
         return (int)$this->getOne("SELECT COUNT(DISTINCT `ta`.`id`) FROM `sys_accounts` AS `ta` INNER JOIN `sys_sessions` AS `ts` ON `ta`.`id` = `ts`.`user_id` WHERE `ts`.`date` > (UNIX_TIMESTAMP() - 60 * :minutes)", ['minutes' => (int)getParam('sys_account_online_time')]);
     }
@@ -64,7 +64,7 @@ class BxDolStudioDashboardQuery extends BxDolStudioPageQuery
     /**
      * Profiles of a type whose account is online now, the way getAccountsOnlineCount counts an account.
      */
-    function getProfilesOnlineCount($sType)
+    public function getProfilesOnlineCount($sType)
     {
         return (int)$this->getOne("SELECT COUNT(DISTINCT `tp`.`id`) FROM `sys_profiles` AS `tp` INNER JOIN `sys_sessions` AS `ts` ON `tp`.`account_id` = `ts`.`user_id` WHERE `tp`.`type` = :type AND `ts`.`date` > (UNIX_TIMESTAMP() - 60 * :minutes)", ['type' => $sType, 'minutes' => (int)getParam('sys_account_online_time')]);
     }
@@ -89,7 +89,7 @@ class BxDolStudioDashboardQuery extends BxDolStudioPageQuery
      * profile, or an unconfirmed, pending or suspended one.
      * @return array of ['ID', 'Name' (a language key), 'Icon']
      */
-    function getLevels()
+    public function getLevels()
     {
         bx_import('BxDolAcl');
         $aPseudo = [MEMBERSHIP_ID_NON_MEMBER, MEMBERSHIP_ID_ACCOUNT, MEMBERSHIP_ID_UNCONFIRMED, MEMBERSHIP_ID_PENDING, MEMBERSHIP_ID_SUSPENDED];
@@ -100,7 +100,7 @@ class BxDolStudioDashboardQuery extends BxDolStudioPageQuery
      * Current members per level.
      * @return array level id => count
      */
-    function getLevelsMembersCount()
+    public function getLevelsMembersCount()
     {
         return $this->getPairs("SELECT `level`, COUNT(*) AS `count` FROM (" . $this->getLevelMembersSql() . ") AS `t` GROUP BY `level`", 'level', 'count');
     }
@@ -109,7 +109,7 @@ class BxDolStudioDashboardQuery extends BxDolStudioPageQuery
      * A level's current members by when they joined it, counted per calendar bucket like getAccountsAddedBy.
      * @return array bucket => count
      */
-    function getLevelMembersSinceBy($iLevel, $sFormat, $iSince)
+    public function getLevelMembersSinceBy($iLevel, $sFormat, $iSince)
     {
         return $this->getPairs("SELECT FROM_UNIXTIME(`since`, :format) AS `bucket`, COUNT(*) AS `count` FROM (" . $this->getLevelMembersSql() . ") AS `t` WHERE `level` = :level AND `since` >= :since GROUP BY `bucket` ORDER BY `bucket`", 'bucket', 'count', ['format' => $sFormat, 'level' => (int)$iLevel, 'since' => (int)$iSince]);
     }
@@ -117,7 +117,7 @@ class BxDolStudioDashboardQuery extends BxDolStudioPageQuery
     /**
      * A level's current members whose account is online now, the way getAccountsOnlineCount counts an account.
      */
-    function getLevelOnlineCount($iLevel)
+    public function getLevelOnlineCount($iLevel)
     {
         return (int)$this->getOne("SELECT COUNT(DISTINCT `t`.`id`) FROM (" . $this->getLevelMembersSql() . ") AS `t` INNER JOIN `sys_sessions` AS `ts` ON `ts`.`user_id` = `t`.`account_id` WHERE `t`.`level` = :level AND `ts`.`date` > (UNIX_TIMESTAMP() - 60 * :minutes)", ['level' => (int)$iLevel, 'minutes' => (int)getParam('sys_account_online_time')]);
     }
@@ -125,7 +125,7 @@ class BxDolStudioDashboardQuery extends BxDolStudioPageQuery
     /**
      * When the first account was added; 0 without accounts.
      */
-    function getAccountsFirstAdded()
+    public function getAccountsFirstAdded()
     {
         return (int)$this->getOne("SELECT MIN(`added`) FROM `sys_accounts` WHERE `added` > 0");
     }
@@ -134,7 +134,7 @@ class BxDolStudioDashboardQuery extends BxDolStudioPageQuery
      * Accounts added since a moment, counted per calendar bucket named by a MySQL date format ('%Y-%m-%d' days, '%Y-%m' months, '%Y' years).
      * @return array bucket => count
      */
-    function getAccountsAddedBy($sFormat, $iSince)
+    public function getAccountsAddedBy($sFormat, $iSince)
     {
         return $this->getPairs("SELECT FROM_UNIXTIME(`added`, :format) AS `bucket`, COUNT(*) AS `count` FROM `sys_accounts` WHERE `added` >= :since GROUP BY `bucket` ORDER BY `bucket`", 'bucket', 'count', ['format' => $sFormat, 'since' => (int)$iSince]);
     }
@@ -143,7 +143,7 @@ class BxDolStudioDashboardQuery extends BxDolStudioPageQuery
      * Accounts last seen (their latest activity or login) since a moment, counted per calendar bucket like getAccountsAddedBy.
      * @return array bucket => count
      */
-    function getAccountsSeenBy($sFormat, $iSince)
+    public function getAccountsSeenBy($sFormat, $iSince)
     {
         return $this->getPairs("SELECT FROM_UNIXTIME(GREATEST(`active`, `logged`), :format) AS `bucket`, COUNT(*) AS `count` FROM `sys_accounts` WHERE GREATEST(`active`, `logged`) >= :since GROUP BY `bucket` ORDER BY `bucket`", 'bucket', 'count', ['format' => $sFormat, 'since' => (int)$iSince]);
     }
@@ -152,7 +152,7 @@ class BxDolStudioDashboardQuery extends BxDolStudioPageQuery
      * Rows of a module's content table (a profile type's profiles) added since a moment, counted per calendar bucket like getAccountsAddedBy.
      * @return array bucket => count
      */
-    function getEntriesAddedBy($sTable, $sField, $sFormat, $iSince)
+    public function getEntriesAddedBy($sTable, $sField, $sFormat, $iSince)
     {
         $sTable = preg_replace('/[^a-zA-Z0-9_]/', '', $sTable);
         $sField = preg_replace('/[^a-zA-Z0-9_]/', '', $sField);
@@ -163,7 +163,7 @@ class BxDolStudioDashboardQuery extends BxDolStudioPageQuery
      * Profiles per type (the module that owns them), the system's own left out, with how many of them are active.
      * @return array of ['type', 'total', 'active']
      */
-    function getProfilesByType()
+    public function getProfilesByType()
     {
         return $this->getAll("SELECT `type`, COUNT(*) AS `total`, SUM(`status` = 'active') AS `active` FROM `sys_profiles` WHERE `type` <> 'system' GROUP BY `type` ORDER BY `total` DESC, `type` ASC");
     }
@@ -171,7 +171,7 @@ class BxDolStudioDashboardQuery extends BxDolStudioPageQuery
     /**
      * Whether remote storage is in use: some storage object lives on a remote engine, or new objects would (the default engine option).
      */
-    function isRemoteStorageUsed()
+    public function isRemoteStorageUsed()
     {
         if(getParam('sys_storage_default') != 'Local')
             return true;

@@ -543,8 +543,8 @@ class BxBaseStudioDashboard extends BxDolStudioDashboard
 
         $oTemplate = BxDolStudioTemplate::getInstance();
 
-        // Constructing the audit also answers its own requests (?action=audit_send_test_email / phpinfo) from the links in the report.
-        new BxDolStudioToolsAudit();
+        // the links in the audit report (?action=audit_send_test_email / phpinfo) come back to this page: answered before anything is rendered
+        (new BxDolStudioToolsAudit())->processRequest();
 
         $aTmplVarsGauges = $aTmplVarsItems = [];
         if($bDynamic) {

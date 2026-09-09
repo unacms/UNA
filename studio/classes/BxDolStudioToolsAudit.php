@@ -90,7 +90,14 @@ class BxDolStudioToolsAudit extends BxDol
         $this->aRequiredApacheModules = array (
             'rewrite_module' => 'mod_rewrite',
         );
+    }
 
+    /**
+     * The links in the report (send a test email, phpinfo) come back to the page that shows it with ?action=...: answer
+     * them here and stop, so the page rendering them calls this before it renders anything.
+     */
+    public function processRequest()
+    {
         if (isset($_GET['action'])) {
             $sOutput = null;
             switch ($_GET['action']) {
