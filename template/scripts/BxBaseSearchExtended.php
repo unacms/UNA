@@ -80,7 +80,7 @@ class BxBaseSearchExtended extends BxDolSearchExtended
      * @param $aParams['template'] custom unit templates to use
      * @return HTML string with search results
      */ 
-    public function getResults($aParams = array())
+    public function getResults($aParams = [])
     {
         if(!$this->isEnabled())
             return '';
@@ -141,7 +141,7 @@ class BxBaseSearchExtended extends BxDolSearchExtended
 
             if(!$bCondition) {
                 if(!isset($aParams['cond']))
-                    $aParams['cond'] = array();
+                    $aParams['cond'] = [];
 
                 switch($oForm->aInputs[$aField['name']]['type']) {
                     case 'location':
@@ -216,14 +216,19 @@ class BxBaseSearchExtended extends BxDolSearchExtended
         if($this->_bIsApi)
             return [$this->getResultsAPI($mixedResults, $iStart, $iPerPage, $aParamsSearch)];
 
+        if(!empty($aParams['cond']) && is_array($aParams['cond']))
+            $aParams['cond'] = self::encodeConditions($aParams['cond']);
+
         //-- Paginate
         $bTmplVarsPaginate = false;
         $aTmplVarsPaginate = [];
         if(($bTmplVarsPaginate = $iStart || $iResults > $iPerPage) !== false) {
-            if(!empty($aParams['cond']) && is_array($aParams['cond']))
-                $aParams['cond'] = self::encodeConditions($aParams['cond']);
+            $aPaginate = [
+                'num' => $iResults, 
+                'start' => $iStart, 
+                'per_page' => $iPerPage
+            ];
 
-            $aPaginate = ['num' => $iResults, 'start' => $iStart, 'per_page' => $iPerPage];
             if(($sKt = 'total') && ($mixedTotal = $aParams[$sKt] ?? false)) {
                 if(is_numeric($mixedTotal))
                     $aPaginate[$sKt] = (int)$mixedTotal;
@@ -306,7 +311,7 @@ class BxBaseSearchExtended extends BxDolSearchExtended
 
         $sOnChange = '';
         if(!$bJsMode) {
-            unset($aParams['start'], $aParams['per_page']);
+            unset($aParams['_q'], $aParams['start'], $aParams['per_page']);
             list($sPageLink, $aPageParams) = bx_get_base_url_inline($aParams);
             $sOnChange = "bx_search_extnded_sort(this,'" . BxDolPermalinks::getInstance()->permalink(bx_append_url_params($sPageLink, $aPageParams)) . "')";
         }
