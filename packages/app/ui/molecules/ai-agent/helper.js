@@ -115,6 +115,18 @@ async function hydrateChat(url, extraHeaders) {
     };
 }
 
+/**
+ * Transcript only, without building a stream.
+ *
+ * `createAgentChat` constructs an SSE client eagerly, so calling it just to reach
+ * `hydrate()` sets up a connection that is never used. The prefetch in `AiAgent`
+ * wants exactly this GET and nothing else.
+ */
+export async function hydrateAgentChat(agentId, options = {}) {
+    const url = requestUrl(agentId, options.contextProfileId, options.chatId);
+    return hydrateChat(url, chatHeaders(options.headers));
+}
+
 /** Adapter for `useChat`: GET hydrate + POST SSE. Join/resume (`?offset=`) is omitted — UNA returns 405. */
 export function createAgentChat(agentId, options = {}) {
     const url = requestUrl(agentId, options.contextProfileId, options.chatId);

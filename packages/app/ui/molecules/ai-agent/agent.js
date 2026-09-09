@@ -1,269 +1,157 @@
 'use client';
 
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useChat } from '@tanstack/ai-react';
 import { View, Row, ScrollView } from 'app/design/view';
 import { Text } from 'app/design/typography';
-import { NeoButton, NeoButtonLink, TextInputClear } from 'app/design/controls';
-import Profile from 'app/ui/molecules/profile/profile';
-import Html from 'app/ui/atoms/html';
+import { NeoButton, TextInputClear } from 'app/design/controls';
 import { useCurrentUser } from 'app/context/user';
 import { appSetting, cn, isWeb } from 'app/lib/util';
-import { createAgentChat } from './helper';
+import { createAgentChat, hydrateAgentChat } from './helper';
 import { isHiddenFirstMessageText } from './hidden-first-message';
-import { messageActions, parseChatActionsPayload, parseChatSessionPayload, sessionAllowsRestart } from './message-content';
+import {
+    agentMaxInputChars,
+    clipAgentText,
+    lastAssistantId,
+    messageActions,
+    messageText,
+    parseChatActionsPayload,
+    parseChatSessionPayload,
+    sessionAllowsRestart,
+    sessionFromMessages,
+} from './message-content';
+import { AgentStatus, ChatBubble } from './chat-bubble';
+import { COMPOSER_MAX_PX, useComposerHeight } from './use-composer-height';
+import { useChatAutoscroll } from './use-chat-autoscroll';
 
-const NEAR_BOTTOM_PX = 48;
-const COMPOSER_LINE_PX = 20;
-const COMPOSER_MAX_PX = 160;
-const inputSettings = appSetting('theme', 'inputs');
+/**
+ * @typedef {object} AgentBlockData UNA `sys-ai-chat` block payload.
+ * @property {string} agent_id Agent row id; the only required field.
+ * @property {number|string} [context_profile_id] Profile the conversation is about.
+ * @property {object} [agent_profile] Profile unit used for the assistant's avatar and name.
+ * @property {number|string} [max_input_chars] Per-message cap; 0 or absent means none.
+ * @property {number|string} [guest_new_session_on_reload] 1 = every guest reload starts a fresh chat.
+ * @property {'html'|'text'} [message_format] How to read agent output. Default 'html'.
+ * @property {string} [hidden_first_message] Bootstrap rule, read by the block element — see hidden-first-message.js.
+ */
 
-function isNearBottom(node, nativeEvent) {
-    if (node && typeof node.scrollTop === 'number' && typeof node.scrollHeight === 'number') {
-        return node.scrollHeight - node.scrollTop - node.clientHeight <= NEAR_BOTTOM_PX;
-    }
-    const size = nativeEvent?.contentSize;
-    const offset = nativeEvent?.contentOffset;
-    const layout = nativeEvent?.layoutMeasurement;
-    if (!size || !offset || !layout) return true;
-    return size.height - offset.y - layout.height <= NEAR_BOTTOM_PX;
-}
-
-function scrollChatToEnd(node) {
-    if (!node) return;
-    if (typeof node.scrollToEnd === 'function') {
-        node.scrollToEnd({ animated: false });
-        return;
-    }
-    const top = node.scrollHeight ?? 0;
-    if (typeof node.scrollTo === 'function') {
-        node.scrollTo({ top, behavior: 'auto' });
-        return;
-    }
-    if (typeof node.scrollTop === 'number') {
-        node.scrollTop = top;
-    }
-}
-
-function messageText(message) {
-    if (typeof message?.content === 'string') return message.content;
-    const parts = message?.parts || [];
-    return parts
-        .filter((part) => part?.type === 'text')
-        .map((part) => part.content || '')
-        .join('');
-}
-
-/** Agent row `max_input_chars`. 0 = no cap (same as UNA applyChatInputLimit). */
-function agentMaxInputChars(data) {
-    const n = Number(data?.max_input_chars);
-    return Number.isFinite(n) && n > 0 ? Math.floor(n) : 0;
-}
-
-function clipAgentText(text, maxChars) {
-    const value = String(text ?? '');
-    if (!maxChars) return value;
-    if (value.length <= maxChars) return value;
-    return [...value].slice(0, maxChars).join('');
-}
-
-function lastAssistantId(messages) {
-    for (let i = (messages?.length || 0) - 1; i >= 0; i--) {
-        if (messages[i]?.role === 'assistant') return messages[i].id;
-    }
-    return null;
-}
+/** Elements that own their own click: never steal focus from them. */
+const INTERACTIVE_SELECTOR = 'a, button, input, textarea, select, [contenteditable="true"], [role="button"]';
 
 function isInteractiveTarget(target) {
-    return typeof target?.closest === 'function'
-        ? !!target.closest('a, button, input, textarea, select, [contenteditable="true"], [role="button"]')
-        : false;
+    return typeof target?.closest === 'function' ? !!target.closest(INTERACTIVE_SELECTOR) : false;
 }
 
-function MessageBody({ text, isStreaming }) {
-    if (!text && !isStreaming) return null;
-    if (!text) {
-        return <Text className="text-sm text-foreground leading-5">…</Text>;
-    }
-    return (
-        <Html
-            data={String(text).replace(/\r\n|\n|\r/g, '<br>')}
-            customClassName="u-vanilla-html-small"
-        />
-    );
-}
-
-function ChatActions({ actions, onReply, repliesEnabled, chosenReply = '' }) {
-    const [chosen, setChosen] = useState('');
-    const selectedMessage = chosen || chosenReply;
-    if (!actions.length) return null;
-    return (
-        <View className="flex-row flex-wrap gap-2 mt-2 max-w-full">
-            {actions.map((action, index) => {
-                const isLink = action.type === 'link';
-                const isSelected = !isLink && action.message === selectedMessage;
-                const buttonProps = {
-                    label: action.label,
-                    style: isSelected ? 'glassProminent' : 'bordered',
-                    controlSize: 'small',
-                    borderShape: 'rounded',
-                };
-                if (isLink) {
-                    return (
-                        <NeoButtonLink
-                            key={`${action.type}:${action.label}:${index}`}
-                            {...buttonProps}
-                            href={action.url}
-                            target="_blank"
-                        />
-                    );
-                }
-                return (
-                    <NeoButton
-                        key={`${action.type}:${action.label}:${index}`}
-                        {...buttonProps}
-                        selected={isSelected}
-                        disabled={!isSelected && !repliesEnabled}
-                        onPress={() => {
-                            if (!repliesEnabled || isSelected) return;
-                            setChosen(action.message);
-                            onReply?.(action.message);
-                        }}
-                    />
-                );
-            })}
-        </View>
-    );
-}
-
-function AgentStatus({ label }) {
-    return (
-        <Row className="flex-none gap-2 items-center">
-            <Text className="text-xs text-muted-foreground py-1 animate-pulse">{label}</Text>
-        </Row>
-    );
-}
-
-function ChatBubble({ message, user, assistant, isStreaming, onReply, repliesEnabled, streamedActions, chosenReply, hideIdentity, maxChars = 0 }) {
-    const isUser = message.role === 'user';
-    const raw = messageText(message);
-    const text = isUser ? clipAgentText(raw, maxChars) : raw;
-    const actions = isUser ? [] : messageActions(message, streamedActions);
-    const hasActions = actions.length > 0;
-    if (!text && !hasActions && !isStreaming) return null;
-
-    const showBubble = !!text || isStreaming;
-    const author = isUser
-        ? {
-              id: user?.id || 0,
-              display_name: user?.display_name || 'You',
-              url_avatar: user?.url_avatar,
-          }
-        : assistant;
-
-    return (
-        <Row className="gap-2">
-            {!hideIdentity && <View className="w-8 min-h-8 mt-2.5">
-                <View className="w-8 my-0.5 shadow-xs rounded-full">
-                    <Profile
-                        {...author}
-                        displayType="unit_wo_info"
-                        displaySize="sm"
-                        showInfo="false"
-                        showLinks={false}
-                    />
-                </View>
-            </View>}
-            <View className="flex-1 mt-2 min-w-0">
-                {showBubble ? (
-                    <View className="bg-muted/50 rounded-xl py-2.5 px-3 gap-0.5 w-full min-w-0">
-                        {!hideIdentity && <Text className="text-sm tracking-tight font-semibold text-card-foreground">
-                            {author?.display_name}
-                        </Text>}
-                        <MessageBody text={text} isStreaming={isStreaming} />
-                    </View>
-                ) : null}
-                {hasActions ? (
-                    <ChatActions
-                        actions={actions}
-                        onReply={onReply}
-                        repliesEnabled={repliesEnabled}
-                        chosenReply={chosenReply}
-                    />
-                ) : null}
-            </View>
-        </Row>
-    );
-}
-
-const sentBootstrapKeys = new Set();
-
+/**
+ * Client-side id for a guest chat, so "one browser = one conversation" works without a
+ * member account. Not security-bearing — identity is still the UNA session cookie;
+ * this only partitions transcripts.
+ */
 function guestChatNonce() {
     try {
         if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
             return crypto.randomUUID().replace(/-/g, '').slice(0, 32);
         }
-    } catch {}
+    } catch {
+        // Some locked-down contexts throw on crypto access. The fallback is fine here
+        // because collisions only ever matter within one browser.
+    }
     return `${Date.now().toString(36)}${Math.random().toString(36).slice(2, 10)}`;
 }
 
-/** Load UNA transcript before useChat mounts so bootstrap cannot race hydrate. */
-export default function AiAgent({ data, initialMessage = '', hideInitialMessage = false, placeholder = 'Ask anything...', hideButton = false, hideIdentity = false }) {
+/**
+ * Seed state for the transcript: `null` = "hydrate first, render nothing yet",
+ * `[]` = "nothing to load, start clean".
+ *
+ * Fetching history is only worth a round trip when there is a bootstrap message to
+ * suppress — without one, `useChat`'s own persistence handles hydration — and the chat
+ * could already exist server-side. A guest whose chat id is a fresh nonce (agent
+ * configured for a new session per reload, or they just pressed "Start again")
+ * provably has no transcript, so the fetch is skipped.
+ */
+function initialSeed(initialMessage, chatIsFresh) {
+    return initialMessage && !chatIsFresh ? null : [];
+}
+
+/**
+ * Loads the UNA transcript before `useChat` mounts, so the bootstrap send cannot race
+ * hydration ("a send that starts first owns the client"). The chat itself lives in
+ * `AiAgentChat`, remounted via `key` whenever its identity changes.
+ *
+ * @param {object} props
+ * @param {AgentBlockData} props.data
+ * @param {string} [props.initialMessage] Hidden first user line; empty = no bootstrap.
+ * @param {boolean} [props.hideInitialMessage] Keep the bootstrap line out of the transcript.
+ * @param {string} [props.placeholder] Composer placeholder; defaults to a translated string.
+ * @param {boolean} [props.hideButton] Hide the send/stop button (Enter still sends).
+ * @param {boolean} [props.hideIdentity] Hide avatars and author names.
+ * @param {string} [props.height] Tailwind height class for the whole widget.
+ */
+export default function AiAgent({
+    data,
+    initialMessage = '',
+    hideInitialMessage = false,
+    placeholder,
+    hideButton = false,
+    hideIdentity = false,
+    height = 'h-[28rem]',
+}) {
     const { currentUser } = useCurrentUser();
-    const agentId = data.agent_id;
-    const contextProfileId = Number(data.context_profile_id) || 0;
-    const guestNewSession = !!Number(data?.guest_new_session_on_reload) && !(Number(currentUser?.id) > 0);
-    const [guestChatId, setGuestChatId] = useState(() => (Number(data?.guest_new_session_on_reload) ? guestChatNonce() : ''));
+    const agentId = data?.agent_id;
+    const contextProfileId = Number(data?.context_profile_id) || 0;
     const isGuest = !(Number(currentUser?.id) > 0);
+    const guestSessionPerReload = !!Number(data?.guest_new_session_on_reload);
+
+    const [guestChatId, setGuestChatId] = useState(() => (guestSessionPerReload ? guestChatNonce() : ''));
+    // Members are identified by their session; only guests need the nonce.
     const chatId = isGuest ? guestChatId : '';
-    const [seed, setSeed] = useState(() => (initialMessage && !guestNewSession ? null : []));
-    const [seedError, setSeedError] = useState(null);
+
+    const [seed, setSeed] = useState(() => initialSeed(initialMessage, guestSessionPerReload && isGuest));
     const [seedSession, setSeedSession] = useState(null);
+    const [seedError, setSeedError] = useState(null);
 
     const startAgain = useCallback(() => {
-        setSeed(initialMessage && !isGuest ? null : []);
-        setSeedError(null);
+        // A new nonce means a new conversation, so there is nothing left to hydrate.
+        setSeed(initialSeed(initialMessage, isGuest));
         setSeedSession(null);
+        setSeedError(null);
         setGuestChatId(guestChatNonce());
     }, [initialMessage, isGuest]);
 
     useEffect(() => {
-        if (!initialMessage || guestNewSession) return undefined;
+        // `seed !== null` covers both "already loaded" and "decided not to load", and it
+        // keeps a restart from re-fetching the chat it just replaced.
+        if (!initialMessage || seed !== null) return undefined;
         let cancelled = false;
-        const chat = createAgentChat(agentId, {
-            contextProfileId,
-            chatId,
-            onHydrateError: (error) => {
-                if (!cancelled) setSeedError(error);
-            },
-        });
-        chat
-            .hydrate()
+        hydrateAgentChat(agentId, { contextProfileId, chatId })
             .then((result) => {
                 if (cancelled) return;
                 setSeed(Array.isArray(result?.messages) ? result.messages : []);
                 setSeedSession(parseChatSessionPayload(result?.session) || null);
             })
-            .catch(() => {
+            .catch((error) => {
                 if (cancelled) return;
+                // A failed history load must not block the chat: start clean and show the
+                // error beside the composer.
                 setSeed([]);
                 setSeedSession(null);
+                setSeedError(error);
             });
         return () => {
             cancelled = true;
         };
-    }, [agentId, contextProfileId, initialMessage, guestNewSession, chatId]);
+    }, [agentId, contextProfileId, initialMessage, chatId, seed]);
 
+    // Hold the final height while hydrating so the page does not jump when the
+    // transcript arrives.
     if (initialMessage && seed === null) {
-        return <View className="h-[28rem] overflow-hidden" />;
+        return <View className={cn(height, 'overflow-hidden')} />;
     }
 
     return (
         <AiAgentChat
             key={`${agentId}:${contextProfileId}:${chatId}`}
-            hideButton={hideButton}
-            hideIdentity={hideIdentity}
-            placeholder={placeholder}
             data={data}
             guestChatId={chatId}
             initialMessage={initialMessage}
@@ -272,18 +160,13 @@ export default function AiAgent({ data, initialMessage = '', hideInitialMessage 
             initialSession={seedSession}
             sendBootstrap={!!initialMessage && (seed || []).length === 0}
             hydrateError={seedError}
+            hideButton={hideButton}
+            hideIdentity={hideIdentity}
+            placeholder={placeholder}
+            height={height}
             onStartAgain={isGuest ? startAgain : undefined}
         />
     );
-}
-
-function sessionFromMessages(messages) {
-    for (let i = (messages?.length || 0) - 1; i >= 0; i--) {
-        const message = messages[i];
-        if (message?.role !== 'assistant') continue;
-        return parseChatSessionPayload(message?.session);
-    }
-    return null;
 }
 
 function AiAgentChat({
@@ -298,75 +181,46 @@ function AiAgentChat({
     hideButton = false,
     hideIdentity = false,
     placeholder,
+    height,
     onStartAgain,
 }) {
+    const { t } = useTranslation();
     const { currentUser } = useCurrentUser();
     const [input, setInput] = useState('');
-    const listRef = useRef(null);
     const inputRef = useRef(null);
-    const restComposerHeightRef = useRef(null);
-    const pinnedToBottomRef = useRef(true);
-    const scrollRafRef = useRef(0);
-    const skipPinFromScrollRef = useRef(false);
-    const [composerHeight, setComposerHeight] = useState(COMPOSER_LINE_PX);
-    const [streamActions, setStreamActions] = useState({});
-    const lastAssistantIdRef = useRef(null);
-    const messagesRef = useRef([]);
+    const messagesRef = useRef(initialMessages);
     const pendingActionsRef = useRef(null);
-    const applyChatActionsRef = useRef(null);
-    const applyChatSessionRef = useRef(null);
-    const [session, setSession] = useState(() => parseChatSessionPayload(initialSession) || sessionFromMessages(initialMessages));
+    const bootstrapSentRef = useRef('');
+    const [streamActions, setStreamActions] = useState({});
+    const [streamedSession, setStreamedSession] = useState(null);
 
-    const agentId = data.agent_id;
-    const contextProfileId = Number(data.context_profile_id) || 0;
-    const assistant = data.agent_profile;
+    const agentId = data?.agent_id;
+    const contextProfileId = Number(data?.context_profile_id) || 0;
+    const assistant = data?.agent_profile;
     const maxChars = agentMaxInputChars(data);
+    const messageFormat = data?.message_format === 'text' ? 'text' : 'html';
 
-    const applyComposerHeight = useCallback((height) => {
-        const next = Math.min(Math.max(Math.round(height), COMPOSER_LINE_PX), COMPOSER_MAX_PX);
-        setComposerHeight((prev) => (prev === next ? prev : next));
-        return next;
-    }, []);
+    // Read per render rather than at module scope: theme settings arrive with the
+    // layout, so a snapshot taken at import time can be empty.
+    const inputSettings = appSetting('theme', 'inputs');
 
-    const focusComposer = useCallback(() => {
-        if (session?.ended) return;
-        const node = inputRef.current;
-        if (node && typeof node.focus === 'function') node.focus();
-    }, [session]);
+    const { listRef, onScroll, scrollToEnd, pinToBottom, followIfPinned } = useChatAutoscroll();
+    const composer = useComposerHeight(inputRef, input);
 
-    useLayoutEffect(() => {
-        const node = inputRef.current;
-        if (!node?.style || typeof node.scrollHeight !== 'number') return;
-        const selectionStart = node.selectionStart;
-        const selectionEnd = node.selectionEnd;
-        node.style.height = 'auto';
-        const measured = input ? node.scrollHeight : COMPOSER_LINE_PX;
-        const next = applyComposerHeight(measured);
-        node.style.height = `${next}px`;
-        if (
-            isWeb &&
-            typeof node.setSelectionRange === 'function' &&
-            typeof document !== 'undefined' &&
-            document.activeElement === node
-        ) {
-            node.setSelectionRange(selectionStart, selectionEnd);
-        }
-        if (!input) {
-            restComposerHeightRef.current = next;
-        }
-    }, [input, applyComposerHeight]);
-
-    const restComposerHeight = restComposerHeightRef.current ?? COMPOSER_LINE_PX;
-    const isMultiline = input.length > 0 && (composerHeight > restComposerHeight + 6 || input.includes('\n'));
-
+    /**
+     * Attach streamed quick-reply buttons to the assistant message they belong to.
+     *
+     * The CUSTOM chunk often lands in the same tick as TEXT_MESSAGE_END, before React
+     * has committed the new bubble — so falling back to the *previous* assistant
+     * message would hang the buttons off the wrong turn. With no message to attach to
+     * yet, park the actions and let the effect below place them.
+     */
     const applyChatActions = useCallback((messageId, value) => {
         const actions = parseChatActionsPayload(value);
         if (!actions.length) return;
 
         const messages = messagesRef.current;
         const last = messages[messages.length - 1];
-        // CUSTOM often arrives in the same tick as TEXT_MESSAGE_END, before React
-        // commits the new bubble. Do not fall back to the previous assistant.
         const id = (last?.role === 'assistant' ? last.id : null)
             || (messageId && messages.some((message) => message.id === messageId) ? messageId : null);
 
@@ -378,28 +232,30 @@ function AiAgentChat({
         pendingActionsRef.current = null;
         setStreamActions((prev) => {
             const next = { ...prev, [id]: actions };
+            // Also key by the server's id, so the actions survive reconciliation
+            // renaming the optimistic message.
             if (messageId && messageId !== id) next[messageId] = actions;
             return next;
         });
     }, []);
-    applyChatActionsRef.current = applyChatActions;
 
     const applyChatSession = useCallback((value) => {
         const next = parseChatSessionPayload(value);
-        if (!next) return;
-        setSession(next);
+        if (next) setStreamedSession(next);
     }, []);
-    applyChatSessionRef.current = applyChatSession;
 
+    // Both handlers are dependency-free, so their identity is stable for the life of the
+    // component and `connection` is never rebuilt underneath an open stream. That is why
+    // they can be passed straight in, with no latest-ref indirection.
     const connection = useMemo(
         () =>
             createAgentChat(agentId, {
                 contextProfileId,
                 chatId: guestChatId,
-                onChatActions: (messageId, value) => applyChatActionsRef.current?.(messageId, value),
-                onChatSession: (_messageId, value) => applyChatSessionRef.current?.(value),
+                onChatActions: applyChatActions,
+                onChatSession: (_messageId, value) => applyChatSession(value),
             }),
-        [agentId, contextProfileId, guestChatId]
+        [agentId, contextProfileId, guestChatId, applyChatActions, applyChatSession]
     );
 
     const threadId = ['agent', agentId, contextProfileId > 0 ? contextProfileId : null, guestChatId || null]
@@ -427,9 +283,17 @@ function AiAgentChat({
         ...(sendBootstrap || initialMessage || guestChatId ? {} : { persistence: true }),
     });
 
-    messagesRef.current = messages;
-    lastAssistantIdRef.current = lastAssistantId(messages);
+    /**
+     * Mirrored in a layout effect rather than assigned during render: writing a ref
+     * while rendering is a side effect, and a render React discards would still leave
+     * the ref pointing at messages that were never committed. The chunk handler runs
+     * between commits, so "last committed messages" is exactly what it should see.
+     */
+    useLayoutEffect(() => {
+        messagesRef.current = messages;
+    }, [messages]);
 
+    // Place actions that arrived before their bubble existed.
     useEffect(() => {
         const pending = pendingActionsRef.current;
         if (!pending) return;
@@ -439,74 +303,72 @@ function AiAgentChat({
         setStreamActions((prev) => ({ ...prev, [id]: pending }));
     }, [messages]);
 
-    const visibleMessages = messages.filter((message) => {
-        if (hideInitialMessage && isHiddenFirstMessageText(messageText(message))) return false;
-        if (message.role !== 'assistant') return true;
-        return !!messageText(message) || messageActions(message, streamActions[message.id]).length > 0;
-    });
-
-    useEffect(() => {
-        pendingActionsRef.current = null;
-        setStreamActions({});
-        setSession(parseChatSessionPayload(initialSession) || sessionFromMessages(initialMessages));
-    }, [threadId]);
-
-    useEffect(() => {
-        if (session?.ended) return;
-        const next = sessionFromMessages(messages);
-        if (next) setSession(next);
-    }, [messages, session]);
-
-    useEffect(() => {
-        if (!sendBootstrap || !initialMessage) return;
-        const text = clipAgentText(initialMessage, maxChars);
-        const key = `${threadId}:${text}`;
-        if (sentBootstrapKeys.has(key)) return;
-        sentBootstrapKeys.add(key);
-        void sendMessage(text);
-    }, [sendBootstrap, initialMessage, sendMessage, threadId, maxChars]);
-
+    /**
+     * Session end has three possible sources, newest first: a live `chat_session` chunk,
+     * a payload persisted on an assistant message, and whatever hydrate returned.
+     * Derived instead of stored, so there is no second copy of the truth to keep in sync
+     * with an effect that also writes it.
+     */
+    const session = useMemo(
+        () => streamedSession || sessionFromMessages(messages) || parseChatSessionPayload(initialSession),
+        [streamedSession, messages, initialSession]
+    );
     const sessionEnded = !!session?.ended;
     const canRestart = sessionAllowsRestart(session);
     const chatError = hydrateError || error;
 
+    // Belt and braces: the parent already remounts on every input to threadId via `key`,
+    // so this only matters if that key is ever relaxed.
+    useEffect(() => {
+        pendingActionsRef.current = null;
+        setStreamActions({});
+        setStreamedSession(null);
+    }, [threadId]);
+
+    const visibleMessages = useMemo(
+        () =>
+            messages.filter((message, index) => {
+                // The bootstrap line is machinery, not conversation. Matched on position as
+                // well as text: only the first user message can be it, so someone who later
+                // types "[page opened…" cannot make their own message disappear.
+                if (
+                    hideInitialMessage
+                    && index === 0
+                    && message.role === 'user'
+                    && isHiddenFirstMessageText(messageText(message))
+                ) {
+                    return false;
+                }
+                if (message.role !== 'assistant') return true;
+                // An assistant turn with neither text nor buttons has nothing to show yet.
+                return !!messageText(message) || messageActions(message, streamActions[message.id]).length > 0;
+            }),
+        [messages, hideInitialMessage, streamActions]
+    );
+
     const last = messages[messages.length - 1];
-    const lastVisible = visibleMessages[visibleMessages.length - 1];
-    const lastVisibleId = lastVisible?.id;
+    const lastVisibleId = visibleMessages[visibleMessages.length - 1]?.id;
     const streamingId = isLoading && last?.role === 'assistant' ? last.id : null;
     const lastText = last ? messageText(last) : '';
+    // Loading with no assistant text yet — the gap between "sent" and "first token".
     const waitingForReply = isLoading && (!last || last.role === 'user' || !lastText);
 
-    const scrollListToEnd = useCallback(() => {
-        skipPinFromScrollRef.current = true;
-        scrollChatToEnd(listRef.current);
-        pinnedToBottomRef.current = true;
-        if (scrollRafRef.current) return;
-        scrollRafRef.current = requestAnimationFrame(() => {
-            scrollRafRef.current = 0;
-            skipPinFromScrollRef.current = true;
-            scrollChatToEnd(listRef.current);
-            skipPinFromScrollRef.current = false;
-        });
-    }, []);
+    const focusComposer = useCallback(() => {
+        if (sessionEnded) return;
+        const node = inputRef.current;
+        if (node && typeof node.focus === 'function') node.focus();
+    }, [sessionEnded]);
 
+    // Follow the stream while the user is pinned to the bottom. `lastText` is in the deps
+    // on purpose: it changes on every token, which is what keeps the view glued to a
+    // growing reply.
     useLayoutEffect(() => {
-        return () => {
-            if (scrollRafRef.current) cancelAnimationFrame(scrollRafRef.current);
-        };
-    }, []);
-
-    useLayoutEffect(() => {
-        if (!pinnedToBottomRef.current) return;
-        scrollListToEnd();
-    }, [visibleMessages.length, lastText, isLoading, waitingForReply, composerHeight, scrollListToEnd]);
-
-    const onListScroll = useCallback((event) => {
-        if (skipPinFromScrollRef.current) return;
-        pinnedToBottomRef.current = isNearBottom(listRef.current, event?.nativeEvent);
-    }, []);
+        followIfPinned();
+    }, [followIfPinned, visibleMessages.length, lastText, isLoading, waitingForReply, composer.height]);
 
     const onListMouseUp = useCallback((event) => {
+        // Click anywhere in the transcript to get back to typing — but not when the click
+        // was a link/button press or the end of a text selection.
         if (sessionEnded) return;
         if (event.button !== 0 || isInteractiveTarget(event.target)) return;
         const selection = window.getSelection?.();
@@ -514,58 +376,91 @@ function AiAgentChat({
         focusComposer();
     }, [focusComposer, sessionEnded]);
 
-    const send = useCallback(async () => {
-        const text = clipAgentText(input.trim(), maxChars);
-        if (!text || isLoading || sessionEnded) return;
-        pinnedToBottomRef.current = true;
-        setInput('');
-        const pending = sendMessage(text);
-        scrollListToEnd();
-        focusComposer();
-        await pending;
-        focusComposer();
-    }, [input, maxChars, isLoading, sessionEnded, sendMessage, focusComposer, scrollListToEnd]);
+    /**
+     * The single send path, shared by the composer and the quick-reply buttons. Resolves
+     * to whether the message was accepted, so `ChatActions` knows when to drop its
+     * optimistic highlight.
+     *
+     * Deliberately closed over nothing that changes per keystroke: this is handed to
+     * every bubble as `onReply`, and depending on `input` would change its identity on
+     * every character typed, defeating the memo on ChatBubble. Draft handling therefore
+     * lives in `send` below.
+     */
+    const sendReply = useCallback(async (raw) => {
+        const text = clipAgentText(String(raw ?? '').trim(), maxChars);
+        if (!text || isLoading || sessionEnded) return false;
+        // A send always pulls the view down, even if the user had scrolled up to read.
+        pinToBottom();
+        try {
+            const pending = sendMessage(text);
+            scrollToEnd();
+            // Focus twice: once so typing can continue immediately, once after the round
+            // trip because re-rendering the list can take focus back.
+            focusComposer();
+            await pending;
+            focusComposer();
+            return true;
+        } catch {
+            // Reported through useChat's `error`; the caller decides what to restore.
+            return false;
+        }
+    }, [maxChars, isLoading, sessionEnded, sendMessage, focusComposer, scrollToEnd, pinToBottom]);
 
-    const sendReply = useCallback(async (text) => {
-        const value = clipAgentText(String(text || '').trim(), maxChars);
-        if (!value || isLoading || sessionEnded) return;
-        pinnedToBottomRef.current = true;
+    const send = useCallback(async () => {
+        const draft = input;
+        // Clear first so the composer empties the moment the user hits send...
         setInput('');
-        const pending = sendMessage(value);
-        scrollListToEnd();
-        focusComposer();
-        await pending;
-        focusComposer();
-    }, [maxChars, isLoading, sessionEnded, sendMessage, focusComposer, scrollListToEnd]);
+        const sent = await sendReply(draft);
+        // ...and never swallow their words: put the draft back if it did not go through.
+        if (!sent) setInput(draft);
+        return sent;
+    }, [input, sendReply]);
+
+    useEffect(() => {
+        if (!sendBootstrap || !initialMessage) return;
+        const text = clipAgentText(initialMessage, maxChars);
+        // Guarded per mount. This used to be a module-level Set that was never cleared:
+        // it leaked, and worse it outlived the component — coming back to the same agent
+        // with an empty transcript would skip the bootstrap and leave the chat silent.
+        if (bootstrapSentRef.current === text) return;
+        bootstrapSentRef.current = text;
+        Promise.resolve(sendMessage(text)).catch(() => {
+            // Clear the guard so a later render can try again; the error itself surfaces
+            // through useChat's `error`.
+            bootstrapSentRef.current = '';
+        });
+    }, [sendBootstrap, initialMessage, sendMessage, maxChars]);
 
     const onInputChange = useCallback((value) => {
         setInput(clipAgentText(value, maxChars));
     }, [maxChars]);
 
-    const onComposerKey = useCallback(
-        (event) => {
-            if (event?.isComposing || event?.nativeEvent?.isComposing) return;
-            const key = event?.nativeEvent?.key || event?.key;
-            if (key !== 'Enter' || event?.shiftKey) return;
-            event.preventDefault?.();
-            send();
-        },
-        [send]
-    );
+    const onComposerKey = useCallback((event) => {
+        // Enter sends, Shift+Enter makes a new line. IME composition must be left alone,
+        // or Enter would submit half-typed CJK text.
+        if (event?.isComposing || event?.nativeEvent?.isComposing) return;
+        const key = event?.nativeEvent?.key || event?.key;
+        if (key !== 'Enter' || event?.shiftKey) return;
+        event.preventDefault?.();
+        void send();
+    }, [send]);
 
     return (
-        <View className="h-[28rem] overflow-hidden">
+        <View className={cn(height, 'overflow-hidden')}>
             <ScrollView
                 ref={listRef}
                 className="min-h-0 flex-1"
                 contentContainerClassName="gap-1 grow-0"
-                onScroll={onListScroll}
+                onScroll={onScroll}
                 scrollEventThrottle={100}
                 keyboardShouldPersistTaps="always"
+                accessibilityLabel={t('Conversation')}
                 {...(isWeb ? { onMouseUp: onListMouseUp } : null)}
             >
                 {visibleMessages.map((message, index) => {
                     const next = visibleMessages[index + 1];
+                    // A user message directly after this one is the answer to its buttons —
+                    // that is what marks a quick reply as chosen.
                     const chosenReply = next?.role === 'user'
                         ? clipAgentText(messageText(next).trim(), maxChars)
                         : '';
@@ -577,20 +472,32 @@ function AiAgentChat({
                             assistant={assistant}
                             isStreaming={message.id === streamingId}
                             onReply={sendReply}
+                            // Only the newest bubble can be answered, and only between turns.
                             repliesEnabled={!isLoading && !sessionEnded && message.id === lastVisibleId}
                             streamedActions={streamActions[message.id]}
                             chosenReply={chosenReply}
                             hideIdentity={hideIdentity}
                             maxChars={maxChars}
+                            messageFormat={messageFormat}
                         />
                     );
                 })}
-                {waitingForReply ? <AgentStatus label="Thinking…" /> : null}
+                {/*
+                    Stays at the end of the transcript so it reads as the reply being
+                    composed, and is announced politely — the streamed text itself is
+                    deliberately not a live region, or a screen reader would narrate
+                    every token.
+                */}
+                {waitingForReply ? (
+                    <View accessibilityLiveRegion="polite">
+                        <AgentStatus />
+                    </View>
+                ) : null}
             </ScrollView>
 
             <View className="pt-2">
                 {chatError ? (
-                    <View className="px-1 pb-2">
+                    <View className="px-1 pb-2" accessibilityRole="alert" accessibilityLiveRegion="polite">
                         <Text className="text-sm text-destructive">{chatError.message}</Text>
                     </View>
                 ) : null}
@@ -610,27 +517,25 @@ function AiAgentChat({
                                 value={input}
                                 onChangeText={onInputChange}
                                 editable={!sessionEnded}
-                                {...(maxChars > 0 ? { maxLength: maxChars } : {})}
-                                onContentSizeChange={(event) => {
-                                    const height = event?.nativeEvent?.contentSize?.height;
-                                    if (height) applyComposerHeight(input ? height : COMPOSER_LINE_PX);
-                                }}
-                                placeholder={sessionEnded ? 'This conversation has ended' : placeholder}
+                                accessibilityLabel={t('Message')}
+                                onContentSizeChange={composer.onContentSizeChange}
+                                placeholder={sessionEnded ? t('This conversation has ended') : (placeholder || t('Ask anything...'))}
                                 className="w-full bg-transparent border-0 shadow-none outline-none ring-0 rounded-none p-0 min-h-0 leading-5 text-base text-card-foreground placeholder:text-muted-foreground resize-none web:overflow-y-auto web:focus:outline-none web:focus:ring-0 web:focus:border-0 web:focus-visible:outline-none web:focus-visible:ring-0 web:focus-visible:border-0 web:focus-visible:shadow-none web:focus-visible:bg-transparent"
                                 style={{
                                     outline: 'none',
                                     boxShadow: 'none',
-                                    height: composerHeight,
+                                    height: composer.height,
                                     maxHeight: COMPOSER_MAX_PX,
                                     padding: 0,
                                     margin: 0,
-                                    textAlignVertical: isMultiline ? 'top' : 'center',
+                                    // Centered on one line, top-aligned once it wraps.
+                                    textAlignVertical: composer.isMultiline ? 'top' : 'center',
                                 }}
                                 onKeyDown={isWeb && !sessionEnded ? onComposerKey : undefined}
                                 onKeyPress={isWeb || sessionEnded ? undefined : onComposerKey}
                                 blurOnSubmit={false}
                                 returnKeyType="default"
-                                {...(isWeb ? { rows: 1 } : { scrollEnabled: composerHeight >= COMPOSER_MAX_PX })}
+                                {...(isWeb ? { rows: 1 } : { scrollEnabled: composer.scrollEnabled })}
                             />
                         </View>
                         {!hideButton && !sessionEnded ? (
@@ -641,7 +546,7 @@ function AiAgentChat({
                                         borderShape="circle"
                                         controlSize="small"
                                         image="Square"
-                                        accessibilityLabel="Stop"
+                                        accessibilityLabel={t('Stop')}
                                         onPress={() => stop()}
                                     />
                                 ) : (
@@ -650,7 +555,7 @@ function AiAgentChat({
                                         borderShape="circle"
                                         controlSize="small"
                                         image="ArrowUp"
-                                        accessibilityLabel="Send"
+                                        accessibilityLabel={t('Send')}
                                         disabled={!input.trim()}
                                         onPress={send}
                                     />
@@ -662,7 +567,7 @@ function AiAgentChat({
                 {canRestart && onStartAgain ? (
                     <View className="pt-2 items-start">
                         <NeoButton
-                            label="Start again"
+                            label={t('Start again')}
                             style="bordered"
                             controlSize="small"
                             borderShape="rounded"
