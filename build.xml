@@ -86,6 +86,7 @@
         <exclude name="upgrade/**" />
         <exclude name="node_modules/**" />
         <exclude name="bower_components/**" />
+        <exclude name="modules/boonex/*/updates/**" />
     </fileset>
 
     <fileset dir="${project.basedir}" defaultexcludes="true" id="doc_files">

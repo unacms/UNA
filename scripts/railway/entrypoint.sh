@@ -103,6 +103,7 @@ fi
 if [ "$rc" -eq 2 ]; then
     echo "Installing UNA with cmd.php..."
     php install/cmd.php \
+        -m bx_posts,bx_timeline,bx_contact,bx_developer,bx_antispam,bx_convos,bx_organizations,bx_notifications,bx_ocean,bx_ether,bx_accounts,bx_albums,bx_facebook,bx_tricon,bx_oauth,bx_chat_plus,bx_datafox,bx_payment,bx_market,bx_groups,bx_intercom,bx_googlecon,bx_linkedin,bx_twitter,bx_mailchimp,bx_forum,bx_acl,bx_events,bx_files,bx_glossary,bx_googletagman,bx_photos,bx_polls,bx_profiler,bx_quoteofday,bx_smtp,bx_shopify,bx_snipcart,bx_se_migration,bx_spaces,bx_stripe_connect,bx_unacon,bx_videos,bx_charts,bx_dolcon,bx_fontawesome,bx_channels,bx_attendant,bx_massmailer,bx_directory,bx_plyr,bx_ads,bx_decorous,bx_lucid,bx_credits,bx_wiki,bx_tasks,bx_courses,bx_classes,bx_artificer,bx_donations,bx_feedback,bx_help_tours,bx_stream,bx_attendant,bx_analytics,bx_reputation,bx_ru \
         --db_host="$DB_HOST" \
         --db_port="$DB_PORT" \
         --db_name="$DB_NAME" \

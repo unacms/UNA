@@ -23,7 +23,7 @@ pipeline {
 
     environment {
         // Node.js configuration
-        PATH = "/var/lib/jenkins/.nvm/versions/node/v20.19.3/bin:$PATH"
+        PATH = "/var/lib/jenkins/.nvm/versions/node/v24.16.0/bin:$PATH"
         
         // Binary paths
         PHP = "/usr/bin/php8.3"
@@ -76,7 +76,7 @@ pipeline {
         DEMO_S3_SECRET = "*****"
         DEMO_GOOGLE_MAPS_API_KEY = "*****"
 
-        DEMO_MESSENGER_URL = "https://una.io:5443"
+        DEMO_MESSENGER_URL = "https://ci.una.io"
 
         DEMO_API_OAUTH_ID = "*****"
         DEMO_API_OAUTH_SECRET = "*****"
@@ -128,6 +128,7 @@ pipeline {
         
         stage('Clone additional UNA modules') {
             parallel {
+                /*
                 stage('Clone: Media Manager') {
                     steps {
                         dir('modules/boonex/media') {
@@ -137,12 +138,13 @@ pipeline {
                         }
                     }
                 }
+                */
                 stage('Clone: Messenger') {
                     steps {
                         dir('modules/boonex/messenger') {
                             git branch: 'master',
                                 url: 'git@github.com:unacms/jot-client-una.git',
-                                credentialsId: '0043feeb-9df7-4494-9b2b-d6c8a1b8ca08'
+                                credentialsId: '628aae6d-1c6a-437f-aa13-6f74c0167dfc'
                         }
                     }
                 }
@@ -399,6 +401,21 @@ ${PHP} -d memory_limit=512M /usr/bin/phpcpd.phar --min-lines 18 --log-pmd logs/p
             }
         }
 
+        stage('Install Composer production dependencies') {
+            steps {
+                script {
+                    echo "Installing Composer production dependencies"
+                    sh '''
+                        ${COMPOSER_PHAR} install \
+                            --no-dev \
+                            --no-interaction \
+                            --prefer-dist \
+                            --optimize-autoloader
+                    '''
+                }
+            }
+        }
+
         stage('Package Build') {
             steps {
                 script {
@@ -448,6 +465,12 @@ ${PHP} -d memory_limit=512M /usr/bin/phpcpd.phar --min-lines 18 --log-pmd logs/p
             steps {
                 script {
                     echo "Configuring database for UI tests"
+
+                    // Enable Lucid icons
+                    executeDbQuery(
+                        "UPDATE sys_options SET value = 'sys_lucide' WHERE name = 'sys_iconset_default'",
+                        "Enable Lucid icons"
+                    )
                     
                     // Maps API key
                     executeDbQuery(
@@ -461,9 +484,23 @@ ${PHP} -d memory_limit=512M /usr/bin/phpcpd.phar --min-lines 18 --log-pmd logs/p
                         "Configuring messenger server URL"
                     )
                     
+                    // SMTP mailer
+                    executeDbQuery(
+                        "UPDATE sys_options SET value = 'on' WHERE name = 'bx_smtp_on'",
+                        "Enabling SMTP mailer"
+                    )
+                    executeDbQuery(
+                        "UPDATE sys_options SET value = 'localhost' WHERE name = 'bx_smtp_host'",
+                        "Configuring SMTP mailer host"
+                    )
+                    executeDbQuery(
+                        "UPDATE sys_options SET value = '1025' WHERE name = 'bx_smtp_port'",
+                        "Configuring SMTP mailer port"
+                    )
+                    
                     // Create test users
                     echo "Creating test users"
-                    def users = ['user', 'lily', 'eva', 'linda', 'emma', 'karen', 'ella', 'viky', 'mila', 'eric', 'luck', 'jack', 'rob', 'dave', 'tom', 'andy', 'ivan']
+                    def users = ['agent', 'user', 'lily', 'eva', 'linda', 'emma', 'karen', 'ella', 'viky', 'mila', 'eric', 'luck', 'jack', 'rob', 'dave', 'tom', 'andy', 'ivan']
                     
                     users.each { user ->
                         executeDbMultiQuery("""
@@ -514,6 +551,12 @@ ${PHP} -d memory_limit=512M /usr/bin/phpcpd.phar --min-lines 18 --log-pmd logs/p
                         "UPDATE sys_objects_privacy SET spaces = 'bx_events,bx_spaces,bx_groups' WHERE object = 'bx_groups_allow_view_to'",
                         "Enabling subgroups functionality"
                     )
+                    
+                    // Tmp fix for search via API
+                    executeDbQuery(
+                        "UPDATE sys_objects_search SET GlobalSearch = '0' WHERE ObjectName IN('sys_pages', 'bx_timeline')",
+                        "Tmp fix for search via API"
+                    )
                 }
             }
         }
@@ -551,7 +594,7 @@ ${PHP} -d memory_limit=512M /usr/bin/phpcpd.phar --min-lines 18 --log-pmd logs/p
                                 ('https://hihi.com', 7),
                                 ('https://neo-ci.una.io', 8);
                                 UPDATE sys_options SET value = 'on' WHERE name = 'sys_api_enable';
-                                UPDATE sys_options SET value = 'on' WHERE name = 'sys_api_access_by_origin';
+                                UPDATE sys_options SET value = '' WHERE name = 'sys_api_access_by_origin';
                                 UPDATE sys_options SET value = 'on' WHERE name = 'sys_api_access_by_key';
                                 UPDATE sys_options SET value = 'on' WHERE name = 'sys_session_auth';
                             """, "Setting up new API keys, origins and enabling API features")
@@ -573,6 +616,45 @@ ${PHP} -d memory_limit=512M /usr/bin/phpcpd.phar --min-lines 18 --log-pmd logs/p
                         }
                     }
                 }
+                
+                stage('AI Agents Setup') {
+                    steps {
+                        script {
+                            echo "Creating vector store file"
+                            sh '''
+                                mkdir -p -m 0777 "${DEPLOY_PATH}/storage/vector_stores/1"
+                                cp /var/lib/jenkins/neuron.store ${DEPLOY_PATH}/storage/vector_stores/1/data.store
+                                chmod 0666 "${DEPLOY_PATH}/storage/vector_stores/1/data.store"
+                            '''
+                            
+                            echo "Configuring AI agents"
+                            executeDbMultiQuery("""
+                                                            
+    
+                                UPDATE `sys_agents_models` SET `active` = 1, `changed` = UNIX_TIMESTAMP() WHERE `type` = 'ollama' AND `model` = 'llama3.2:1b';
+                                UPDATE `sys_agents_models` SET `active` = 1, `changed` = UNIX_TIMESTAMP() WHERE `type` = 'ollama-embeddings' AND `model` = 'all-minilm';
+                                
+                                SET @model_embedding = (SELECT `id` FROM `sys_agents_models` WHERE `type` = 'ollama-embeddings' AND `model` = 'all-minilm');
+                                
+                                UPDATE `sys_agents_vector_store` SET `active` = 1, `changed` = UNIX_TIMESTAMP(), `embedding_provider_id` = @model_embedding WHERE `type` = 'file';
+                                
+                                SET @vector_store = (SELECT `id` FROM `sys_agents_vector_store` WHERE `type` = 'file');
+                                
+                                INSERT INTO `sys_agents_vector_store_data` (`id`, `vector_store_id`, `type`, `name`, `size`, `metadata`, `settings`, `content`, `status`, `added`) VALUES
+                                (NULL, @vector_store, 'custom', 'data_for_vector_store.md', 189, '', '{\"chunk_size\":512,\"delimeter\":\".\",\"overlap\":2}', 'Documentation is very important. UNACMS is modular CMS written in PHP and backed by MySQL database. UNA CMS features such modules as Posts, Discussions, Notifications, Timeline and others.\n', 'ready', UNIX_TIMESTAMP());
+
+                                SET @model = (SELECT `id` FROM `sys_agents_models` WHERE `type` = 'ollama' AND `model` = 'llama3.2:1b');
+                                SET @profile = (SELECT `p`.`id` FROM `sys_profiles` AS `p` INNER JOIN `sys_accounts` AS `a` ON(`p`.`account_id` = `a`.id) WHERE `email` = '');
+                                
+                                INSERT INTO `sys_agents_agents` (`id`, `name`, `title`, `description`, `icon`, `model_id`, `profile_id`, `acl_levels`, `prompt_system`, `prompt_steps`, `prompt_output`, `prompt_tools`, `tools`, `tools_max_run`, `limit_message`, `chat_history_context`, `vector_store_id`, `trigger`, `async`, `alert`, `scheduler_cron`, `webhook_key`, `webhook_sample`, `form_object`, `form_input`, `agent_sample`, `message_profile_id`, `added`, `active`) VALUES
+                                (NULL, 'john-agent', 'John Agent', '', '', @model, @profile, 2147483647, 'You are real person. Your name is John. You can talk freely with anyone.', '', '', '', '', 0, '', 50000, @vector_store, 'message', 0, '', '', '', '', '', '', '', 0, UNIX_TIMESTAMP(), 1),
+                                (NULL, 'profile-description-agent', 'Profile Description Agent', '', '', @model, @profile, 2147483646, 'Write a biography from first person. ', '', '', '', '', 0, '', 0, @vector_store, 'form-input', 0, '', '', '', '', 'bx_person', 'description', '', 0, UNIX_TIMESTAMP(), 1);
+
+
+                            """, "Configuring local Ollama AI providers, embedder and agents")
+                        }
+                    }
+                }
             }
         }
         
@@ -591,7 +673,7 @@ ${PHP} -d memory_limit=512M /usr/bin/phpcpd.phar --min-lines 18 --log-pmd logs/p
                             echo "Clone repository with tests"
                             git branch: 'main',
                                 url: 'git@github.com:unacms/una-ui-test3.git',
-                                credentialsId: '0043feeb-9df7-4494-9b2b-d6c8a1b8ca08'
+                                credentialsId: '628aae6d-1c6a-437f-aa13-6f74c0167dfc'
                             
                             // Create environment file
                             sh '''
