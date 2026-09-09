@@ -11,7 +11,7 @@ import { useCurrentUser } from 'app/context/user';
 import { appSetting, cn, isWeb } from 'app/lib/util';
 import { createAgentChat } from './helper';
 import { isHiddenFirstMessageText } from './hidden-first-message';
-import { messageActions, parseChatActionsPayload } from './message-content';
+import { messageActions, parseChatActionsPayload, parseChatSessionPayload, sessionAllowsRestart } from './message-content';
 
 const NEAR_BOTTOM_PX = 48;
 const COMPOSER_LINE_PX = 20;
@@ -52,6 +52,19 @@ function messageText(message) {
         .filter((part) => part?.type === 'text')
         .map((part) => part.content || '')
         .join('');
+}
+
+/** Agent row `max_input_chars`. 0 = no cap (same as UNA applyChatInputLimit). */
+function agentMaxInputChars(data) {
+    const n = Number(data?.max_input_chars);
+    return Number.isFinite(n) && n > 0 ? Math.floor(n) : 0;
+}
+
+function clipAgentText(text, maxChars) {
+    const value = String(text ?? '');
+    if (!maxChars) return value;
+    if (value.length <= maxChars) return value;
+    return [...value].slice(0, maxChars).join('');
 }
 
 function lastAssistantId(messages) {
@@ -131,9 +144,10 @@ function AgentStatus({ label }) {
     );
 }
 
-function ChatBubble({ message, user, assistant, isStreaming, onReply, repliesEnabled, streamedActions, chosenReply, hideIdentity }) {
+function ChatBubble({ message, user, assistant, isStreaming, onReply, repliesEnabled, streamedActions, chosenReply, hideIdentity, maxChars = 0 }) {
     const isUser = message.role === 'user';
-    const text = messageText(message);
+    const raw = messageText(message);
+    const text = isUser ? clipAgentText(raw, maxChars) : raw;
     const actions = isUser ? [] : messageActions(message, streamedActions);
     const hasActions = actions.length > 0;
     if (!text && !hasActions && !isStreaming) return null;
@@ -199,10 +213,19 @@ export default function AiAgent({ data, initialMessage = '', hideInitialMessage 
     const agentId = data.agent_id;
     const contextProfileId = Number(data.context_profile_id) || 0;
     const guestNewSession = !!Number(data?.guest_new_session_on_reload) && !(Number(currentUser?.id) > 0);
-    const [guestChatId] = useState(() => (Number(data?.guest_new_session_on_reload) ? guestChatNonce() : ''));
-    const chatId = guestNewSession ? guestChatId : '';
+    const [guestChatId, setGuestChatId] = useState(() => (Number(data?.guest_new_session_on_reload) ? guestChatNonce() : ''));
+    const isGuest = !(Number(currentUser?.id) > 0);
+    const chatId = isGuest ? guestChatId : '';
     const [seed, setSeed] = useState(() => (initialMessage && !guestNewSession ? null : []));
     const [seedError, setSeedError] = useState(null);
+    const [seedSession, setSeedSession] = useState(null);
+
+    const startAgain = useCallback(() => {
+        setSeed(initialMessage && !isGuest ? null : []);
+        setSeedError(null);
+        setSeedSession(null);
+        setGuestChatId(guestChatNonce());
+    }, [initialMessage, isGuest]);
 
     useEffect(() => {
         if (!initialMessage || guestNewSession) return undefined;
@@ -217,10 +240,14 @@ export default function AiAgent({ data, initialMessage = '', hideInitialMessage 
         chat
             .hydrate()
             .then((result) => {
-                if (!cancelled) setSeed(Array.isArray(result?.messages) ? result.messages : []);
+                if (cancelled) return;
+                setSeed(Array.isArray(result?.messages) ? result.messages : []);
+                setSeedSession(parseChatSessionPayload(result?.session) || null);
             })
             .catch(() => {
-                if (!cancelled) setSeed([]);
+                if (cancelled) return;
+                setSeed([]);
+                setSeedSession(null);
             });
         return () => {
             cancelled = true;
@@ -233,6 +260,7 @@ export default function AiAgent({ data, initialMessage = '', hideInitialMessage 
 
     return (
         <AiAgentChat
+            key={`${agentId}:${contextProfileId}:${chatId}`}
             hideButton={hideButton}
             hideIdentity={hideIdentity}
             placeholder={placeholder}
@@ -241,10 +269,21 @@ export default function AiAgent({ data, initialMessage = '', hideInitialMessage 
             initialMessage={initialMessage}
             hideInitialMessage={hideInitialMessage}
             initialMessages={seed || []}
+            initialSession={seedSession}
             sendBootstrap={!!initialMessage && (seed || []).length === 0}
             hydrateError={seedError}
+            onStartAgain={isGuest ? startAgain : undefined}
         />
     );
+}
+
+function sessionFromMessages(messages) {
+    for (let i = (messages?.length || 0) - 1; i >= 0; i--) {
+        const message = messages[i];
+        if (message?.role !== 'assistant') continue;
+        return parseChatSessionPayload(message?.session);
+    }
+    return null;
 }
 
 function AiAgentChat({
@@ -253,11 +292,13 @@ function AiAgentChat({
     initialMessage = '',
     hideInitialMessage = false,
     initialMessages = [],
+    initialSession = null,
     sendBootstrap = false,
     hydrateError = null,
     hideButton = false,
     hideIdentity = false,
-    placeholder
+    placeholder,
+    onStartAgain,
 }) {
     const { currentUser } = useCurrentUser();
     const [input, setInput] = useState('');
@@ -273,10 +314,13 @@ function AiAgentChat({
     const messagesRef = useRef([]);
     const pendingActionsRef = useRef(null);
     const applyChatActionsRef = useRef(null);
+    const applyChatSessionRef = useRef(null);
+    const [session, setSession] = useState(() => parseChatSessionPayload(initialSession) || sessionFromMessages(initialMessages));
 
     const agentId = data.agent_id;
     const contextProfileId = Number(data.context_profile_id) || 0;
     const assistant = data.agent_profile;
+    const maxChars = agentMaxInputChars(data);
 
     const applyComposerHeight = useCallback((height) => {
         const next = Math.min(Math.max(Math.round(height), COMPOSER_LINE_PX), COMPOSER_MAX_PX);
@@ -285,9 +329,10 @@ function AiAgentChat({
     }, []);
 
     const focusComposer = useCallback(() => {
+        if (session?.ended) return;
         const node = inputRef.current;
         if (node && typeof node.focus === 'function') node.focus();
-    }, []);
+    }, [session]);
 
     useLayoutEffect(() => {
         const node = inputRef.current;
@@ -339,12 +384,20 @@ function AiAgentChat({
     }, []);
     applyChatActionsRef.current = applyChatActions;
 
+    const applyChatSession = useCallback((value) => {
+        const next = parseChatSessionPayload(value);
+        if (!next) return;
+        setSession(next);
+    }, []);
+    applyChatSessionRef.current = applyChatSession;
+
     const connection = useMemo(
         () =>
             createAgentChat(agentId, {
                 contextProfileId,
                 chatId: guestChatId,
                 onChatActions: (messageId, value) => applyChatActionsRef.current?.(messageId, value),
+                onChatSession: (_messageId, value) => applyChatSessionRef.current?.(value),
             }),
         [agentId, contextProfileId, guestChatId]
     );
@@ -354,9 +407,10 @@ function AiAgentChat({
         .join(':');
 
     const onChatChunk = useCallback((chunk) => {
-        if (chunk?.type !== 'CUSTOM' || chunk.name !== 'chat_actions') return;
-        applyChatActions(chunk.messageId, chunk.value);
-    }, [applyChatActions]);
+        if (chunk?.type !== 'CUSTOM') return;
+        if (chunk.name === 'chat_actions') applyChatActions(chunk.messageId, chunk.value);
+        if (chunk.name === 'chat_session') applyChatSession(chunk.value);
+    }, [applyChatActions, applyChatSession]);
 
     // Prefetched transcript: do not use persistence hydrate — it races sendMessage
     // ("a send that starts first owns the client"). Contact / no bootstrap keeps
@@ -367,8 +421,8 @@ function AiAgentChat({
         threadId,
         onChunk: onChatChunk,
         onCustomEvent: (name, value) => {
-            if (name !== 'chat_actions') return;
-            applyChatActions(null, value);
+            if (name === 'chat_actions') applyChatActions(null, value);
+            if (name === 'chat_session') applyChatSession(value);
         },
         ...(sendBootstrap || initialMessage || guestChatId ? {} : { persistence: true }),
     });
@@ -394,16 +448,26 @@ function AiAgentChat({
     useEffect(() => {
         pendingActionsRef.current = null;
         setStreamActions({});
+        setSession(parseChatSessionPayload(initialSession) || sessionFromMessages(initialMessages));
     }, [threadId]);
 
     useEffect(() => {
+        if (session?.ended) return;
+        const next = sessionFromMessages(messages);
+        if (next) setSession(next);
+    }, [messages, session]);
+
+    useEffect(() => {
         if (!sendBootstrap || !initialMessage) return;
-        const key = `${threadId}:${initialMessage}`;
+        const text = clipAgentText(initialMessage, maxChars);
+        const key = `${threadId}:${text}`;
         if (sentBootstrapKeys.has(key)) return;
         sentBootstrapKeys.add(key);
-        void sendMessage(initialMessage);
-    }, [sendBootstrap, initialMessage, sendMessage, threadId]);
+        void sendMessage(text);
+    }, [sendBootstrap, initialMessage, sendMessage, threadId, maxChars]);
 
+    const sessionEnded = !!session?.ended;
+    const canRestart = sessionAllowsRestart(session);
     const chatError = hydrateError || error;
 
     const last = messages[messages.length - 1];
@@ -443,15 +507,16 @@ function AiAgentChat({
     }, []);
 
     const onListMouseUp = useCallback((event) => {
+        if (sessionEnded) return;
         if (event.button !== 0 || isInteractiveTarget(event.target)) return;
         const selection = window.getSelection?.();
         if (selection && !selection.isCollapsed && selection.toString()) return;
         focusComposer();
-    }, [focusComposer]);
+    }, [focusComposer, sessionEnded]);
 
     const send = useCallback(async () => {
-        const text = input.trim();
-        if (!text || isLoading) return;
+        const text = clipAgentText(input.trim(), maxChars);
+        if (!text || isLoading || sessionEnded) return;
         pinnedToBottomRef.current = true;
         setInput('');
         const pending = sendMessage(text);
@@ -459,11 +524,11 @@ function AiAgentChat({
         focusComposer();
         await pending;
         focusComposer();
-    }, [input, isLoading, sendMessage, focusComposer, scrollListToEnd]);
+    }, [input, maxChars, isLoading, sessionEnded, sendMessage, focusComposer, scrollListToEnd]);
 
     const sendReply = useCallback(async (text) => {
-        const value = String(text || '').trim();
-        if (!value || isLoading) return;
+        const value = clipAgentText(String(text || '').trim(), maxChars);
+        if (!value || isLoading || sessionEnded) return;
         pinnedToBottomRef.current = true;
         setInput('');
         const pending = sendMessage(value);
@@ -471,7 +536,11 @@ function AiAgentChat({
         focusComposer();
         await pending;
         focusComposer();
-    }, [isLoading, sendMessage, focusComposer, scrollListToEnd]);
+    }, [maxChars, isLoading, sessionEnded, sendMessage, focusComposer, scrollListToEnd]);
+
+    const onInputChange = useCallback((value) => {
+        setInput(clipAgentText(value, maxChars));
+    }, [maxChars]);
 
     const onComposerKey = useCallback(
         (event) => {
@@ -497,7 +566,9 @@ function AiAgentChat({
             >
                 {visibleMessages.map((message, index) => {
                     const next = visibleMessages[index + 1];
-                    const chosenReply = next?.role === 'user' ? messageText(next).trim() : '';
+                    const chosenReply = next?.role === 'user'
+                        ? clipAgentText(messageText(next).trim(), maxChars)
+                        : '';
                     return (
                         <ChatBubble
                             key={message.id}
@@ -506,10 +577,11 @@ function AiAgentChat({
                             assistant={assistant}
                             isStreaming={message.id === streamingId}
                             onReply={sendReply}
-                            repliesEnabled={!isLoading && message.id === lastVisibleId}
+                            repliesEnabled={!isLoading && !sessionEnded && message.id === lastVisibleId}
                             streamedActions={streamActions[message.id]}
                             chosenReply={chosenReply}
                             hideIdentity={hideIdentity}
+                            maxChars={maxChars}
                         />
                     );
                 })}
@@ -528,19 +600,22 @@ function AiAgentChat({
                             className={cn(
                                 inputSettings.base,
                                 inputSettings.rounded.default,
-                                'flex-1 min-h-12 justify-center px-3 overflow-hidden web:focus-within:bg-card web:focus-within:border-ring/80 web:focus-within:shadow-none'
+                                'flex-1 min-h-12 justify-center px-3 overflow-hidden web:focus-within:bg-card web:focus-within:border-ring/80 web:focus-within:shadow-none',
+                                sessionEnded ? 'opacity-60' : ''
                             )}
                         >
                             <TextInputClear
                                 ref={inputRef}
                                 multiline
                                 value={input}
-                                onChangeText={setInput}
+                                onChangeText={onInputChange}
+                                editable={!sessionEnded}
+                                {...(maxChars > 0 ? { maxLength: maxChars } : {})}
                                 onContentSizeChange={(event) => {
                                     const height = event?.nativeEvent?.contentSize?.height;
                                     if (height) applyComposerHeight(input ? height : COMPOSER_LINE_PX);
                                 }}
-                                placeholder={placeholder}
+                                placeholder={sessionEnded ? 'This conversation has ended' : placeholder}
                                 className="w-full bg-transparent border-0 shadow-none outline-none ring-0 rounded-none p-0 min-h-0 leading-5 text-base text-card-foreground placeholder:text-muted-foreground resize-none web:overflow-y-auto web:focus:outline-none web:focus:ring-0 web:focus:border-0 web:focus-visible:outline-none web:focus-visible:ring-0 web:focus-visible:border-0 web:focus-visible:shadow-none web:focus-visible:bg-transparent"
                                 style={{
                                     outline: 'none',
@@ -551,37 +626,50 @@ function AiAgentChat({
                                     margin: 0,
                                     textAlignVertical: isMultiline ? 'top' : 'center',
                                 }}
-                                onKeyDown={isWeb ? onComposerKey : undefined}
-                                onKeyPress={isWeb ? undefined : onComposerKey}
+                                onKeyDown={isWeb && !sessionEnded ? onComposerKey : undefined}
+                                onKeyPress={isWeb || sessionEnded ? undefined : onComposerKey}
                                 blurOnSubmit={false}
                                 returnKeyType="default"
                                 {...(isWeb ? { rows: 1 } : { scrollEnabled: composerHeight >= COMPOSER_MAX_PX })}
                             />
                         </View>
-                        {!hideButton && <View className="p-1.5">
-                            {isLoading ? (
-                                <NeoButton
-                                    style="bordered"
-                                    borderShape="circle"
-                                    controlSize="small"
-                                    image="Square"
-                                    accessibilityLabel="Stop"
-                                    onPress={() => stop()}
-                                />
-                            ) : (
-                                <NeoButton
-                                    style="glassProminent"
-                                    borderShape="circle"
-                                    controlSize="small"
-                                    image="ArrowUp"
-                                    accessibilityLabel="Send"
-                                    disabled={!input.trim()}
-                                    onPress={send}
-                                />
-                            )}
-                        </View>}
+                        {!hideButton && !sessionEnded ? (
+                            <View className="p-1.5">
+                                {isLoading ? (
+                                    <NeoButton
+                                        style="bordered"
+                                        borderShape="circle"
+                                        controlSize="small"
+                                        image="Square"
+                                        accessibilityLabel="Stop"
+                                        onPress={() => stop()}
+                                    />
+                                ) : (
+                                    <NeoButton
+                                        style="glassProminent"
+                                        borderShape="circle"
+                                        controlSize="small"
+                                        image="ArrowUp"
+                                        accessibilityLabel="Send"
+                                        disabled={!input.trim()}
+                                        onPress={send}
+                                    />
+                                )}
+                            </View>
+                        ) : null}
                     </Row>
                 </View>
+                {canRestart && onStartAgain ? (
+                    <View className="pt-2 items-start">
+                        <NeoButton
+                            label="Start again"
+                            style="bordered"
+                            controlSize="small"
+                            borderShape="rounded"
+                            onPress={onStartAgain}
+                        />
+                    </View>
+                ) : null}
             </View>
         </View>
     );

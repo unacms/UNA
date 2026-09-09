@@ -3,7 +3,20 @@
  *
  * { type: "link", label, url }  → open url in a new window / in-app browser
  * { type: "reply", label }      → send label as the next user message
+ *
+ * Session end 
+ * { ended: true, reason: "non_answer" | "turn_cap" | "hostile" }
  */
+
+export function parseChatSessionPayload(value) {
+    const reason = value?.reason;
+    if (reason !== 'non_answer' && reason !== 'turn_cap' && reason !== 'hostile') return null;
+    return { ended: true, reason };
+}
+
+export function sessionAllowsRestart(session) {
+    return !!session?.ended && session.reason !== 'hostile';
+}
 
 export function parseChatActionsPayload(value) {
     if (Array.isArray(value)) return value;

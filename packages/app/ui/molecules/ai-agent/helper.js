@@ -111,6 +111,7 @@ async function hydrateChat(url, extraHeaders) {
         messages: Array.isArray(data.messages) ? data.messages : [],
         activeRun: null,
         interrupts: null,
+        session: data.session && typeof data.session === 'object' ? data.session : null,
     };
 }
 
@@ -130,6 +131,9 @@ export function createAgentChat(agentId, options = {}) {
             for await (const chunk of stream.connect(messages, data, abortSignal, runContext)) {
                 if (chunk?.type === 'CUSTOM' && chunk.name === 'chat_actions') {
                     options.onChatActions?.(chunk.messageId, chunk.value);
+                }
+                if (chunk?.type === 'CUSTOM' && chunk.name === 'chat_session') {
+                    options.onChatSession?.(chunk.messageId, chunk.value);
                 }
                 yield chunk;
             }
