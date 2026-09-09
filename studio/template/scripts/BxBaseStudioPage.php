@@ -99,6 +99,26 @@ class BxBaseStudioPage extends BxDolStudioPage
         return _t(!$this->bPageMultiple ? $this->aPage['caption'] : $this->aPage[$this->sPageSelected]['caption']);
     }
 
+    /**
+     * The page's meta description: the page's own text (_adm_page_dsc_<name>, {0} = site title) when it has one, the generic
+     * Studio wording with the page caption otherwise (app pages). Read by search engines and offered by screen readers.
+     */
+    public function getPageDescription()
+    {
+        if(empty($this->aPage) || !is_array($this->aPage))
+            return '';
+
+        $aPage = !$this->bPageMultiple ? $this->aPage : $this->aPage[$this->sPageSelected];
+        $sSiteTitle = getParam('site_title');
+
+        $sKey = '_adm_page_dsc_' . $aPage['name'];
+        $sDescription = _t($sKey, $sSiteTitle);
+        if($sDescription == $sKey)
+            $sDescription = _t('_adm_page_dsc_default', _t($aPage['caption']), $sSiteTitle);
+
+        return strip_tags($sDescription);
+    }
+
     /*
      * Left area in in page header. Contains 'home' button, page caption and search.
      */
@@ -137,16 +157,18 @@ class BxBaseStudioPage extends BxDolStudioPage
 
         $bShowSearch = $bPageHome && getParam('sys_std_show_header_left_search') == 'on';
 
-        // On the launcher there is nothing to navigate to: the launcher button is hidden (the menu needs one item to render at all),
-        // there is no title, just the search field (the page heading moves into the search block for assistive tech).
-        if($bShowSearch)
-            $aMenuItems['home']['class_add'] = 'bx-menu-bc-hidden';
-        else
+        // On the launcher the launcher button stays, and the search field takes the page item's place after the separator, its
+        // glyph exactly where an app's icon sits on app pages (the page heading moves into the search block for assistive tech).
+        // The app item is also the trigger of the page's context menu (right-click, Menu key, long press), when it has actions.
+        if(!$bShowSearch)
+            // the app's own launcher icon next to its title, as an image (not inlined: the tile art carries gradients)
             $aMenuItems['page'] = [
                 'name' => 'page',
-                'icon' => '', //$this->aPage['icon'],
+                'icon' => !empty($this->aPage['wid_icon']) ? $this->aPage['wid_icon'] : '',
+                'icon_inline' => false,
                 'link' => $this->getPageUrl(),
-                'title' => _t($this->aPage['caption'])
+                'title' => _t($this->aPage['caption']),
+                'attrs_add' => getParam('sys_std_show_header_left') == 'on' ? $this->getPageCaptionActions() : ''
             ];
 
         $oMenu = new BxTemplStudioMenu([
@@ -155,15 +177,7 @@ class BxBaseStudioPage extends BxDolStudioPage
         ]);
         $sMenu = $oMenu->getCode();
 
-        $sActions = getParam('sys_std_show_header_left') == 'on' ? $this->getPageCaptionActions() : '';
-
         return BxDolStudioTemplate::getInstance()->parseHtmlByContent($sMenu, [
-            'bx_if:show_page_action' => [
-                'condition' => (bool)$sActions,
-                'content' => [
-                    'onclick' => $sActions,
-                ]
-            ],
             'bx_if:show_search' => [
                 'condition' => $bShowSearch,
                 'content' => [
@@ -219,24 +233,29 @@ class BxBaseStudioPage extends BxDolStudioPage
         return $oMenu;
     }
 
+    /**
+     * The page's actions live in a context menu (studio/js/context_menu.js): this puts the menu popup into the header and
+     * returns the attributes that make an element its trigger, or '' when the page has no actions.
+     */
     protected function getPageCaptionActions()
     {
-        $sActions = $this->getPageActions();
-        if(empty($sActions))
+        $sMenu = $this->getPageContextMenu();
+        if(empty($sMenu))
             return '';
 
-        $oTemplate = BxDolStudioTemplate::getInstance(); 
-
-        $sActions = $oTemplate->parseHtmlByName('page_caption_actions.html', [
-            'content' => $sActions
-        ]);
-
-        $oTemplate->addInjection('injection_header', 'text', BxTemplStudioFunctions::getInstance()->transBox('bx-std-pmenu-popup-actions', [
-            'wrapper_class' => 'bx-std-mod-popup-settings-wrapper', // same chrome as the launcher tile settings popup
-            'content' => $sActions
+        $sId = 'bx-std-pmenu-popup-actions';
+        BxDolStudioTemplate::getInstance()->addInjection('injection_header', 'text', BxTemplStudioFunctions::getInstance()->transBox($sId, [
+            'wrapper_class' => 'bx-std-context-wrapper',
+            'wrapper_role' => 'presentation', // the [role="menu"] inside is the thing
+            'content' => $sMenu
         ], true));
 
-        return BX_DOL_STUDIO_PAGE_JS_OBJECT . ".togglePopup('actions', this)";
+        return 'data-bx-context-menu="#' . $sId . '"';
+    }
+
+    protected function getPageContextMenu($iWidgetId = 0)
+    {
+        return '';
     }
 
     protected function getPageCaptionHelp()

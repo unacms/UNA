@@ -515,7 +515,7 @@
 	<string name="_adm_bp_btn_block_cancel"><![CDATA[Cancel]]></string>
 	<string name="_adm_bp_btn_block_delete"><![CDATA[Delete]]></string>
 	<string name="_adm_bp_btn_block_save"><![CDATA[Save]]></string>
-	<string name="_adm_bp_btn_create_new"><![CDATA[Add New Page]]></string>
+	<string name="_adm_bp_btn_create_new"><![CDATA[New Page]]></string>
 	<string name="_adm_bp_btn_delete"><![CDATA[Delete]]></string>
 	<string name="_adm_bp_btn_page_apply"><![CDATA[Apply]]></string>
 	<string name="_adm_bp_btn_page_cancel"><![CDATA[Cancel]]></string>
@@ -665,16 +665,82 @@
         <string name="_adm_btn_settings_mix_publish"><![CDATA[Publish]]></string>
 	<string name="_adm_btn_store_search"><![CDATA[Search]]></string>
 	<string name="_adm_dbd_btn_update"><![CDATA[Update]]></string>
-        <string name="_adm_dbd_txt_available"><![CDATA[Available:]]></string>
-	<string name="_adm_dbd_txt_installed"><![CDATA[Installed:]]></string>
-	<string name="_adm_dbd_txt_updated"><![CDATA[Updated:]]></string>
+	<string name="_adm_dbd_txt_ver_installed"><![CDATA[First Installed]]></string>
+	<string name="_adm_dbd_txt_ver_updated"><![CDATA[Last Updated]]></string>
+	<string name="_adm_dbd_txt_ver_applied"><![CDATA[Installed {0}]]></string>
+	<string name="_adm_dbd_txt_ver_latest_stable"><![CDATA[Latest Stable]]></string>
+	<string name="_adm_dbd_txt_ver_latest_beta"><![CDATA[Latest Beta]]></string>
+	<string name="_adm_dbd_txt_ver_apps_count"><![CDATA[{0} Apps]]></string>
+	<string name="_adm_dbd_txt_ver_apps_updates"><![CDATA[Updates: {0}]]></string>
+	<string name="_adm_dbd_txt_ver_up_to_date"><![CDATA[Up to date]]></string>
+	<string name="_adm_dbd_txt_ver_check"><![CDATA[Check for updates]]></string>
+	<string name="_adm_dbd_txt_ver_checking"><![CDATA[Checking...]]></string>
+	<string name="_adm_dbd_txt_ver_auto"><![CDATA[Automatic Updates]]></string>
+	<string name="_adm_dbd_txt_ver_beta"><![CDATA[Beta Updates]]></string>
+	<string name="_adm_dbd_txt_ver_force"><![CDATA[Force Automatic Updates]]></string>
+	<string name="_adm_dbd_txt_ver_access"><![CDATA[Access to automatic updates]]></string>
+	<string name="_adm_dbd_txt_ver_access_active"><![CDATA[Active]]></string>
+	<string name="_adm_dbd_btn_ver_access_activate"><![CDATA[Activate]]></string>
+	<string name="_adm_dbd_txt_us_period"><![CDATA[Period]]></string>
+	<string name="_adm_dbd_txt_us_series"><![CDATA[Chart data]]></string>
+	<string name="_adm_dbd_txt_us_7d"><![CDATA[7d]]></string>
+	<string name="_adm_dbd_txt_us_7d_label"><![CDATA[Last 7 days]]></string>
+	<string name="_adm_dbd_txt_us_30d"><![CDATA[30d]]></string>
+	<string name="_adm_dbd_txt_us_30d_label"><![CDATA[Last 30 days]]></string>
+	<string name="_adm_dbd_txt_us_1y"><![CDATA[1y]]></string>
+	<string name="_adm_dbd_txt_us_1y_label"><![CDATA[Last 12 months]]></string>
+	<string name="_adm_dbd_txt_us_all"><![CDATA[Total]]></string>
+	<string name="_adm_dbd_txt_us_all_label"><![CDATA[All time]]></string>
+	<string name="_adm_dbd_txt_us_peak"><![CDATA[peak {0}]]></string>
+	<string name="_adm_dbd_txt_us_accounts"><![CDATA[Accounts]]></string>
+	<string name="_adm_dbd_txt_us_active"><![CDATA[Active users]]></string>
+	<string name="_adm_dbd_txt_us_online"><![CDATA[Online now]]></string>
+	<string name="_adm_dbd_txt_us_pending"><![CDATA[{0} pending]]></string>
         <string name="_adm_dbd_msg_upgrade_started"><![CDATA[Site will be upgraded within a minute.<br />Don't forget to <a href="{0}store.php?page=updates">check for modules updates</a> after that.]]></string>
 	<string name="_adm_dbd_txt_su_database"><![CDATA[Database]]></string>
 	<string name="_adm_dbd_txt_su_system"><![CDATA[System]]></string>
 	<string name="_adm_dbd_txt_su_system_media"><![CDATA[System Media]]></string>
-        <string name="_adm_dbd_txt_c_select"><![CDATA[Select...]]></string>
+	<string name="_adm_dbd_txt_su_local"><![CDATA[Local Storage]]></string>
+	<string name="_adm_dbd_txt_su_remote"><![CDATA[Remote Storage]]></string>
+	<string name="_adm_dbd_txt_su_remote_off"><![CDATA[Not connected]]></string>
+	<string name="_adm_dbd_txt_su_files"><![CDATA[Files]]></string>
+	<string name="_adm_dbd_txt_su_images"><![CDATA[Images]]></string>
+	<string name="_adm_dbd_txt_su_files_count"><![CDATA[{0} files]]></string>
+	<string name="_adm_dbd_txt_su_file_count_1"><![CDATA[1 file]]></string>
+	<string name="_adm_dbd_txt_chart_used"><![CDATA[{0} used]]></string>
+	<string name="_adm_dbd_txt_chart_total"><![CDATA[{0} total]]></string>
+	<string name="_adm_dbd_txt_ht_tools"><![CDATA[Server tools]]></string>
+	<string name="_adm_dbd_txt_ht_status"><![CDATA[Status]]></string>
+	<string name="_adm_dbd_txt_ht_audit"><![CDATA[Audit]]></string>
+	<string name="_adm_dbd_txt_ht_permissions"><![CDATA[Permissions]]></string>
+	<string name="_adm_dbd_txt_ht_cpu"><![CDATA[CPU]]></string>
+	<string name="_adm_dbd_txt_ht_memory"><![CDATA[Memory]]></string>
+	<string name="_adm_dbd_txt_ht_disk"><![CDATA[Disk]]></string>
+	<string name="_adm_dbd_txt_ht_network"><![CDATA[Network]]></string>
+	<string name="_adm_dbd_txt_ht_kbps"><![CDATA[kbps]]></string>
+	<string name="_adm_dbd_txt_ht_mbps"><![CDATA[Mbps]]></string>
+	<string name="_adm_dbd_txt_ht_gbps"><![CDATA[Gbps]]></string>
+	<string name="_adm_dbd_txt_ht_na"><![CDATA[n/a]]></string>
+	<string name="_adm_dbd_txt_ht_high"><![CDATA[high]]></string>
+	<string name="_adm_dbd_txt_ht_system"><![CDATA[System]]></string>
+	<string name="_adm_dbd_txt_ht_services"><![CDATA[Services]]></string>
+	<string name="_adm_dbd_txt_ht_caching"><![CDATA[Caching]]></string>
+	<string name="_adm_dbd_txt_ht_security"><![CDATA[Security]]></string>
+	<string name="_adm_dbd_txt_ht_last_audit"><![CDATA[Last Audit]]></string>
+	<string name="_adm_dbd_txt_ht_run_audit"><![CDATA[Run new audit]]></string>
+	<string name="_adm_dbd_txt_ht_passed"><![CDATA[{0} passed]]></string>
+	<string name="_adm_dbd_txt_ht_warning"><![CDATA[1 warning]]></string>
+	<string name="_adm_dbd_txt_ht_warnings"><![CDATA[{0} warnings]]></string>
+	<string name="_adm_dbd_txt_ht_failed"><![CDATA[{0} failed]]></string>
+	<string name="_adm_dbd_txt_ht_unknown"><![CDATA[{0} unknown]]></string>
+	<string name="_adm_dbd_txt_c_all"><![CDATA[All Caches]]></string>
 	<string name="_adm_dbd_txt_c_clear_all"><![CDATA[Clear all caches]]></string>
-	<string name="_adm_dbd_txt_q_clear"><![CDATA[Clear queue]]></string>
+	<string name="_adm_dbd_txt_q_all"><![CDATA[All Queues]]></string>
+	<string name="_adm_dbd_txt_q_clear_all"><![CDATA[Clear all queues]]></string>
+	<string name="_adm_dbd_txt_q_clear_item"><![CDATA[Clear {0} queue]]></string>
+	<string name="_adm_dbd_txt_q_queued"><![CDATA[{0} queued]]></string>
+	<string name="_adm_dbd_txt_q_failed"><![CDATA[{0} failed]]></string>
+	<string name="_adm_dbd_msg_q_clean_success"><![CDATA[Queue was successfully cleared]]></string>
 	<string name="_adm_dbd_txt_c_content"><![CDATA[Content]]></string>
 	<string name="_adm_dbd_txt_c_clear_content"><![CDATA[Clear content cache]]></string>
 	<string name="_adm_dbd_txt_c_db"><![CDATA[DB]]></string>
@@ -686,9 +752,11 @@
         <string name="_adm_dbd_txt_c_less"><![CDATA[LESS]]></string>
         <string name="_adm_dbd_txt_c_clear_less"><![CDATA[Clear LESS cache]]></string>
         <string name="_adm_dbd_txt_c_clear_purifier"><![CDATA[Clear Purifier cache]]></string>
+        <string name="_adm_dbd_txt_c_purifier"><![CDATA[Purifier]]></string>
         <string name="_adm_dbd_txt_c_js"><![CDATA[JavaScript]]></string>
         <string name="_adm_dbd_txt_c_clear_js"><![CDATA[Clear JavaScript cache]]></string>
         <string name="_adm_dbd_txt_c_clear_custom"><![CDATA[Clear Custom cache]]></string>
+        <string name="_adm_dbd_txt_c_custom"><![CDATA[Custom]]></string>
         <string name="_adm_dbd_txt_c_opcache"><![CDATA[Opcache]]></string>
         <string name="_adm_dbd_txt_c_clear_opcache"><![CDATA[Clear Opcache]]></string>
         <string name="_adm_dbd_err_c_clean_failed"><![CDATA[Failed to clear cache]]></string>
@@ -1170,7 +1238,7 @@
     <string name="_adm_lmi_cpt_displays"><![CDATA[Displays]]></string>
     <string name="_adm_lmi_cpt_downloaded"><![CDATA[Downloaded]]></string>
     <string name="_adm_lmi_cpt_etemplates_text"><![CDATA[Email Texts]]></string>
-    <string name="_adm_lmi_cpt_etemplates_html"><![CDATA[Email Template]]></string>
+    <string name="_adm_lmi_cpt_etemplates_html"><![CDATA[Email Templates]]></string>
     <string name="_adm_lmi_cpt_featured"><![CDATA[Featured]]></string>
     <string name="_adm_lmi_cpt_fields"><![CDATA[Fields]]></string>
     <string name="_adm_lmi_cpt_files"><![CDATA[Files]]></string>
@@ -1216,7 +1284,7 @@
 	<string name="_adm_msg_modules_success_enable"><![CDATA[The package was enabled successfully]]></string>
 	<string name="_adm_msg_modules_success_install"><![CDATA[The package was installed successfully]]></string>
 	<string name="_adm_msg_modules_success_uninstall"><![CDATA[The package was uninstalled successfully]]></string>
-	<string name="_adm_msg_oauth_need_authorize"><![CDATA[You need to to login into your <b>UNA</b> account to get data. Click <a href="{0}">here</a> to login.]]></string>
+	<string name="_adm_msg_oauth_need_authorize"><![CDATA[You need to log in to your <b>UNA</b> account to get data: <a href="{0}">log in to UNA</a>.]]></string>
         <string name="_adm_msg_oauth_non_owner_logged"><![CDATA[WARNING: You are logged in to an <a href="{0}">UNA.IO</a> account which is different from the account that generated UNA Key & Secret for your domain.]]></string>
 	<string name="_adm_nav_btn_current_icon_image_delete"><![CDATA[Delete]]></string>
 	<string name="_adm_nav_btn_items_add"><![CDATA[Add]]></string>
@@ -1376,6 +1444,23 @@
 	<string name="_adm_page_cpt_dashboard"><![CDATA[Dashboard]]></string>
 	<string name="_adm_page_cpt_designer"><![CDATA[Designer]]></string>
 	<string name="_adm_page_cpt_home"><![CDATA[Studio]]></string>
+	<string name="_adm_page_dsc_default"><![CDATA[{0} in UNA Studio, the administration area of {1}.]]></string>
+	<string name="_adm_page_dsc_home"><![CDATA[UNA Studio: every administration app of {0} in one place.]]></string>
+	<string name="_adm_page_dsc_dashboard"><![CDATA[Site status at a glance: updates, storage, cache, server health and audit results for {0}.]]></string>
+	<string name="_adm_page_dsc_settings"><![CDATA[Site-wide settings of {0}: general options, security, email, cache and every installed app.]]></string>
+	<string name="_adm_page_dsc_store"><![CDATA[Browse, install, update and manage the apps and templates available to {0}.]]></string>
+	<string name="_adm_page_dsc_polyglot"><![CDATA[Languages and translations of {0}: language packs, keys and email templates.]]></string>
+	<string name="_adm_page_dsc_builder_pages"><![CDATA[Page builder: the blocks and layouts of every page on {0}.]]></string>
+	<string name="_adm_page_dsc_builder_menus"><![CDATA[Navigation builder: menus, sets of menu items and their placement across {0}.]]></string>
+	<string name="_adm_page_dsc_builder_forms"><![CDATA[Form builder: fields, displays and pre-defined lists of every form on {0}.]]></string>
+	<string name="_adm_page_dsc_builder_permissions"><![CDATA[Permissions: what each membership level may do on {0}.]]></string>
+	<string name="_adm_page_dsc_builder_roles"><![CDATA[Studio roles: which operators of {0} may use which administration apps.]]></string>
+	<string name="_adm_page_dsc_designer"><![CDATA[Designer: templates, styles, icons, covers and the look of {0}.]]></string>
+	<string name="_adm_page_dsc_agents"><![CDATA[AI agents: models, automators and assistants configured for {0}.]]></string>
+	<string name="_adm_page_dsc_badges"><![CDATA[Badges: the badges members can earn on {0}.]]></string>
+	<string name="_adm_page_dsc_storages"><![CDATA[Storage: file storage engines, usage and image resizing tools of {0}.]]></string>
+	<string name="_adm_page_dsc_api"><![CDATA[API: keys, clients and access to the {0} API.]]></string>
+	<string name="_adm_page_dsc_audit"><![CDATA[Audit: the server and configuration checks for {0}.]]></string>
 	<string name="_adm_page_cpt_login"><![CDATA[Login]]></string>
 	<string name="_adm_page_cpt_polyglot"><![CDATA[Polyglot]]></string>
 	<string name="_adm_page_cpt_settings"><![CDATA[Settings]]></string>
@@ -1626,9 +1711,9 @@
     <string name="_adm_stg_cpt_option_site_title"><![CDATA[Community name]]></string>
     <string name="_adm_stg_inf_option_site_title"><![CDATA[The default name used to refer to your site in site texts, meta tags, emails and notifications.]]></string>
     <string name="_adm_stg_cpt_option_site_tour_home"><![CDATA[User Tour]]></string>
-    <string name="_adm_stg_inf_option_site_tour_home"><![CDATA[You can edit steps and content of the User Tour <a href="/studio/polyglot.php?page=keys">here</a>.]]></string>
+    <string name="_adm_stg_inf_option_site_tour_home"><![CDATA[You can edit the steps and content of the User Tour in the <a href="/studio/polyglot.php?page=keys">Polyglot language keys</a>.]]></string>
     <string name="_adm_stg_cpt_option_site_tour_studio"><![CDATA[Studio Tour]]></string>
-    <string name="_adm_stg_inf_option_site_tour_studio"><![CDATA[You can edit steps and content of the Studio Tour <a href="/studio/polyglot.php?page=keys">here</a>.]]></string>
+    <string name="_adm_stg_inf_option_site_tour_studio"><![CDATA[You can edit the steps and content of the Studio Tour in the <a href="/studio/polyglot.php?page=keys">Polyglot language keys</a>.]]></string>
     <string name="_adm_stg_cpt_option_smart_app_banner"><![CDATA[Smart App Banner]]></string>
     <string name="_adm_stg_inf_option_smart_app_banner"><![CDATA[]]></string>
     <string name="_adm_stg_cpt_option_smart_app_banner_ios_app_id"><![CDATA[iOS app ID for Smart App Banner]]></string>
@@ -1761,6 +1846,7 @@
     <string name="_adm_stg_cpt_option_sys_push_wonderpush_access_token"><![CDATA[WonderPush: Access Token]]></string>
     <string name="_adm_stg_cpt_option_sys_push_wonderpush_web_key"><![CDATA[WonderPush: Web Key]]></string>
     <string name="_adm_stg_cpt_option_sys_push_queue_time"><![CDATA[Push queue execution flag]]></string>
+    <string name="_adm_stg_cpt_option_sys_audit_report"><![CDATA[Last server audit report]]></string>
     <string name="_adm_stg_cpt_option_sys_push_queue_send_per_start"><![CDATA[Number of messages to send from Push queue per run]]></string>
     <string name="_adm_stg_cpt_option_sys_push_queue_send_per_start_to_recipient"><![CDATA[Number of messages to send from Push queue per run to some recipient]]></string>
     <string name="_adm_stg_cpt_option_sys_alerts_logger"><![CDATA[Alerts/hooks logger]]></string>
@@ -1988,6 +2074,7 @@
 	<string name="_adm_str_txt_pv_discount_off_csign"><![CDATA[{0}% ({1}{2}) off for Premium]]></string>
 	<string name="_adm_str_txt_pv_price"><![CDATA[Price]]></string>
 	<string name="_adm_str_txt_pv_rent"><![CDATA[Rent]]></string>
+	<string name="_adm_str_txt_pv_screenshot"><![CDATA[{0} screenshot]]></string>
 	<string name="_adm_str_txt_pv_stats"><![CDATA[Stats]]></string>
 	<string name="_adm_str_txt_pv_stats_votes"><![CDATA[{0} votes]]></string>
 	<string name="_adm_str_txt_pv_stats_reviews"><![CDATA[{0} reviews]]></string>
@@ -2018,6 +2105,7 @@
 	<string name="_adm_strg_txt_files_add_popup"><![CDATA[Add File]]></string>
 	<string name="_adm_strg_txt_images_add_popup"><![CDATA[Add Image]]></string>
 	<string name="_adm_strg_txt_images_resize_popup"><![CDATA[Resize Image]]></string>
+	<string name="_adm_strg_txt_images_resize_result"><![CDATA[Resized image]]></string>
 	<string name="_adm_strg_txt_size_mime_type"><![CDATA[{0}x{1}, {2}]]></string>
 	<string name="_adm_strg_txt_width"><![CDATA[Width]]></string>
 	<string name="_adm_strg_err_width"><![CDATA[Width is essential. Please, fill in this field.]]></string>
@@ -2028,15 +2116,25 @@
 	<string name="_adm_tmi_cpt_site"><![CDATA[Go To Site]]></string>
         <string name="_adm_tmi_cpt_search"><![CDATA[Search...]]></string>
         <string name="_adm_tmi_cpt_search_apps"><![CDATA[Applications...]]></string>
+        <string name="_adm_tmi_lbl_search_apps"><![CDATA[Search applications]]></string>
+        <string name="_adm_tmi_lbl_search_clear"><![CDATA[Clear search]]></string>
         <string name="_adm_tmi_cpt_scheme"><![CDATA[Color Scheme]]></string>
-	<string name="_adm_tmi_cpt_tour"><![CDATA[Tour]]></string>
 	<string name="_adm_tmi_cpt_launcher"><![CDATA[Launcher]]></string>
         <string name="_adm_txt_active_api"><![CDATA[Available in App]]></string>
         <string name="_adm_txt_assistant_popup_title"><![CDATA[How can I help?]]></string>
 	<string name="_adm_txt_confirm_cancel"><![CDATA[Cancel]]></string>
 	<string name="_adm_txt_confirm_ok"><![CDATA[OK]]></string>
+	<string name="_adm_txt_launcher_apps"><![CDATA[Apps]]></string>
+	<string name="_adm_txt_launcher_search_empty"><![CDATA[No apps match]]></string>
+	<string name="_adm_txt_launcher_search_matches"><![CDATA[{0} apps match]]></string>
+	<string name="_adm_txt_launcher_search_matches_one"><![CDATA[1 app matches]]></string>
+	<string name="_adm_txt_widget_action_label"><![CDATA[{0} for {1}]]></string>
+	<string name="_adm_txt_widget_move_left"><![CDATA[Move {0} left]]></string>
+	<string name="_adm_txt_widget_move_right"><![CDATA[Move {0} right]]></string>
+	<string name="_adm_txt_widget_moved"><![CDATA[{0} moved to position {1} of {2}]]></string>
 	<string name="_adm_txt_forgot_password"><![CDATA[Forgot password?]]></string>
 	<string name="_adm_txt_form_view_missing"><![CDATA[missing]]></string>
+	<string name="_adm_txt_icon_image_current"><![CDATA[Current icon image]]></string>
 	<string name="_adm_txt_login_password"><![CDATA[Password]]></string>
         <string name="_adm_txt_login_password_placeholder"><![CDATA[your password]]></string>
 	<string name="_adm_txt_login_email"><![CDATA[Email address]]></string>
@@ -2623,53 +2721,60 @@
   <string name="_sys_audit_filter_profile_select"><![CDATA[Select Profile]]></string>
   <string name="_sys_audit_filter_action_select"><![CDATA[Select Action]]></string>
 	<string name="_sys_audit_cron_jobs"><![CDATA[Cron jobs]]></string>
-	<string name="_sys_audit_cron_jobs_exec_time"><![CDATA[Last cron jobs execution]]></string>
-	<string name="_sys_audit_header_manual_audit"><![CDATA[Manual Server Audit]]></string>
+	<string name="_sys_audit_header_manual_audit"><![CDATA[Manual audit]]></string>
 	<string name="_sys_audit_header_requirements"><![CDATA[Requirements]]></string>
-	<string name="_sys_audit_header_site_optimization"><![CDATA[Site optimization]]></string>
+	<string name="_sys_audit_header_site_optimization"><![CDATA[Optimization]]></string>
 	<string name="_sys_audit_header_site_setup"><![CDATA[Site setup]]></string>
-	<string name="_sys_audit_mail_sending"><![CDATA[Mail sending]]></string>
-	<string name="_sys_audit_msg_apache_module_fail"><![CDATA[you will need to install {0} for Apache]]></string>
-	<string name="_sys_audit_msg_cron_jobs"><![CDATA[<pre class="code">{0}</pre> if you are unsure if output is correct then <a href="#manual_audit">manual server audit</a> may be required]]></string>
-	<string name="_sys_audit_msg_optimization_fail"><![CDATA[please enable this cache in Studio &gt; Settings &gt; Cache]]></string>
-	<string name="_sys_audit_msg_optimization_warn"><![CDATA[installing PHP accelerator will speed-up file cache]]></string>
-	<string name="_sys_audit_msg_x_based_cache_engine"><![CDATA[ ({0} based cache engine)]]></string>
-	<string name="_sys_audit_msg_ffmpeg"><![CDATA[<pre class="code">{0}</pre>if you don't know if output is correct then <a href="#manual_audit">manual server audit</a> may be required.]]></string>
-	<string name="_sys_audit_msg_hardware_requirements"><![CDATA[Hardware cannot be checked automatically. A <a href="#manual_audit">manual server audit</a> may be needed.]]></string>
-	<string name="_sys_audit_msg_mail_send_failed"><![CDATA[mail send failed]]></string>
-	<string name="_sys_audit_msg_mail_sending"><![CDATA[<span id="bx-sys-adm-audit-test-email"><a href="javascript:void(0);" onclick="bx_sys_adm_audit_test_email()">click here</a> to send test email</span>]]></string>
-	<string name="_sys_audit_msg_mail_sent"><![CDATA[test mail was send, please check {0} mailbox]]></string>
-	<string name="_sys_audit_msg_manual_audit"><![CDATA[<p>
-Some checks have to be done by hand. If you want help, <a target="_blank" href="mailto:team@unacms.com?subject=Server Audit Request">submit a server audit request</a>.
-</p>]]></string>
+	<string name="_sys_audit_mail_sending"><![CDATA[Email delivery]]></string>
+	<string name="_sys_audit_msg_apache_module_fail"><![CDATA[Install {0} for Apache.]]></string>
+	<string name="_sys_audit_msg_cron_jobs"><![CDATA[No run in the last hour: check the crontab entry.]]></string>
+	<string name="_sys_audit_msg_optimization_fail"><![CDATA[Enable it in Settings &gt; Cache.]]></string>
+	<string name="_sys_audit_msg_optimization_warn"><![CDATA[A PHP accelerator would speed up the file cache.]]></string>
+	<string name="_sys_audit_msg_x_based_cache_engine"><![CDATA[ ({0})]]></string>
+	<string name="_sys_audit_msg_ffmpeg"><![CDATA[Not found at {0}: video and audio conversion will not work.]]></string>
+	<string name="_sys_audit_msg_hardware_requirements"><![CDATA[Not checked automatically: see the manual audit.]]></string>
+	<string name="_sys_audit_msg_mail_send_failed"><![CDATA[Sending failed.]]></string>
+	<string name="_sys_audit_msg_mail_sending"><![CDATA[<span id="bx-sys-adm-audit-test-email"><a href="javascript:void(0);" onclick="bx_sys_adm_audit_test_email()">Send a test email</a></span>]]></string>
+	<string name="_sys_audit_msg_mail_sent"><![CDATA[Test email sent to {0}.]]></string>
+	<string name="_sys_audit_msg_manual_audit"><![CDATA[Some checks need a person. <a target="_blank" href="mailto:team@unacms.com?subject=Server Audit Request">Request a server audit</a>.]]></string>
 	<string name="_sys_audit_msg_must_be"><![CDATA[must be {0} {1}]]></string>
-	<string name="_sys_audit_msg_optimization_apache_module"><![CDATA[To apply this optimization you need to have <b>{0}</b> - {1}]]></string>
-	<string name="_sys_audit_msg_permissions"><![CDATA[please <a href="javascript:void(0);" onclick="oBxDolStudioDashboard.permissions()">click here</a> to find out if permissions are correct.]]></string>
-	<string name="_sys_audit_msg_php_accelerator_missing"><![CDATA[The script can be much faster if you install some PHP accelerator]]></string>
-	<string name="_sys_audit_msg_php_setup_inefficient"><![CDATA[your PHP setup maybe very inefficient, <a href="javascript:void(0)" onclick="bx_sys_adm_audit_phpinfo()">please check it for sure</a> and try to switch to mod_php, apache dso module or FastCGI]]></string>
-	<string name="_sys_audit_msg_serverside_compression"><![CDATA[
-can be checked <a href="#manual_audit">manually</a> or in the PageSpeed tool built into the browser.<br />
-If it is not enabled then please consider implementing this optimization, since it improves perceived site speed and saves bandwidth.<br />{0}]]></string>
+	<string name="_sys_audit_msg_permissions"><![CDATA[Details on the <a href="javascript:void(0);" onclick="oBxDolStudioDashboard.permissions()">Permissions</a> tab.]]></string>
+	<string name="_sys_audit_msg_php_accelerator_missing"><![CDATA[Install a PHP accelerator such as OPcache for a large speed-up.]]></string>
+	<string name="_sys_audit_msg_php_setup_inefficient"><![CDATA[CGI is slow: switch to mod_php, DSO or FastCGI. <a href="javascript:void(0)" onclick="bx_sys_adm_audit_phpinfo()">Open phpinfo</a>.]]></string>
 	<string name="_sys_audit_msg_should_be"><![CDATA[should be {0} {1}]]></string>
-	<string name="_sys_audit_msg_userside_caching"><![CDATA[
-<a href="{0}">click here to check it in Google PageSpeed</a><br />
-If it is not enabled then please consider implementing this optimization, since it improves perceived site speed and saves bandwidth.<br />{1}]]></string>
-	<string name="_sys_audit_msg_value_checking_failed"><![CDATA[value checking failed]]></string>
-	<string name="_sys_audit_msg_version_is_incompatible"><![CDATA[your version is incompatible with UNA, must be at least {0}]]></string>
-	<string name="_sys_audit_msg_version_is_outdated"><![CDATA[your version is outdated, upgrade to the latest {0} maybe required]]></string>
-	<string name="_sys_audit_permissions"><![CDATA[Files and folders permissions]]></string>
+	<string name="_sys_audit_msg_userside_caching"><![CDATA[<a href="{0}" target="_blank">Check in PageSpeed</a>]]></string>
+	<string name="_sys_audit_msg_value_checking_failed"><![CDATA[Could not be checked.]]></string>
+	<string name="_sys_audit_msg_version_is_incompatible"><![CDATA[Unsupported: UNA needs {0} or newer.]]></string>
+	<string name="_sys_audit_msg_version_is_outdated"><![CDATA[Outdated: the latest is {0}.]]></string>
+	<string name="_sys_audit_permissions"><![CDATA[File permissions]]></string>
+	<string name="_sys_audit_https"><![CDATA[HTTPS]]></string>
+	<string name="_sys_audit_msg_https"><![CDATA[Served over plain HTTP: switch the site to HTTPS.]]></string>
+	<string name="_sys_audit_install_dir"><![CDATA[Install directory]]></string>
+	<string name="_sys_audit_msg_install_dir"><![CDATA[Still on the server: remove the install directory.]]></string>
+	<string name="_sys_audit_display_errors"><![CDATA[Error display]]></string>
+	<string name="_sys_audit_msg_display_errors"><![CDATA[PHP shows errors to visitors: set display_errors = Off.]]></string>
+	<string name="_sys_audit_expose_php"><![CDATA[PHP version header]]></string>
+	<string name="_sys_audit_msg_expose_php"><![CDATA[The PHP version is sent in response headers: set expose_php = Off.]]></string>
+	<string name="_sys_audit_config_file"><![CDATA[Configuration file]]></string>
+	<string name="_sys_audit_msg_config_file"><![CDATA[inc/header.inc.php is writable by other users: set it to 0644.]]></string>
+	<string name="_sys_audit_present"><![CDATA[Present]]></string>
+	<string name="_sys_audit_removed"><![CDATA[Removed]]></string>
+	<string name="_sys_audit_on"><![CDATA[On]]></string>
+	<string name="_sys_audit_off"><![CDATA[Off]]></string>
 	<string name="_sys_audit_php_accelerator"><![CDATA[PHP accelerator]]></string>
-	<string name="_sys_audit_php_setup"><![CDATA[PHP setup]]></string>
+	<string name="_sys_audit_php_setup"><![CDATA[PHP handler]]></string>
 	<string name="_sys_audit_section_hardware"><![CDATA[Hardware]]></string>
+	<string name="_sys_audit_section_cache_engines"><![CDATA[Cache engines]]></string>
 	<string name="_sys_audit_section_os"><![CDATA[OS]]></string>
-	<string name="_sys_audit_section_webserver"><![CDATA[Web-server]]></string>
-	<string name="_sys_audit_serverside_compression"><![CDATA[Server-side content compression]]></string>
+	<string name="_sys_audit_section_php_extensions"><![CDATA[PHP extensions]]></string>
+	<string name="_sys_audit_section_webserver"><![CDATA[Web server]]></string>
+	<string name="_sys_audit_serverside_compression"><![CDATA[Response compression]]></string>
 	<string name="_sys_audit_title_fail"><![CDATA[Fail]]></string>
 	<string name="_sys_audit_title_ok"><![CDATA[Pass]]></string>
 	<string name="_sys_audit_title_undef"><![CDATA[Unknown]]></string>
 	<string name="_sys_audit_title_warn"><![CDATA[Warning]]></string>
-	<string name="_sys_audit_userside_caching"><![CDATA[User-side caching for static content]]></string>
-	<string name="_sys_audit_version"><![CDATA[version]]></string>
+	<string name="_sys_audit_userside_caching"><![CDATA[Browser caching]]></string>
+	<string name="_sys_audit_version"><![CDATA[Version]]></string>
 	<string name="_sys_audit_version_script"><![CDATA[UNA version]]></string>
 
 	<string name="_sys_agents_agents_popup_edit"><![CDATA[Edit "{0}" agent]]></string>
@@ -3281,6 +3386,13 @@ If it is not enabled then please consider implementing this optimization, since 
 	<string name="_sys_format_size_kb"><![CDATA[{0} KB]]></string>
 	<string name="_sys_format_size_mb"><![CDATA[{0} MB]]></string>
 	<string name="_sys_format_size_tb"><![CDATA[{0} TB]]></string>
+	<string name="_sys_grid_lbl_actions"><![CDATA[Actions]]></string>
+	<string name="_sys_grid_lbl_order"><![CDATA[Order]]></string>
+	<string name="_sys_grid_lbl_select"><![CDATA[Select]]></string>
+	<string name="_sys_grid_lbl_select_all"><![CDATA[Select all]]></string>
+	<string name="_sys_str_limit_show"><![CDATA[Show full text]]></string>
+	<string name="_adm_grid_lbl_search"><![CDATA[Search]]></string>
+	<string name="_adm_grid_lbl_module"><![CDATA[Module]]></string>
 	<string name="_sys_grid_confirmation"><![CDATA[Are you sure?]]></string>
 	<string name="_sys_grid_delete_failed"><![CDATA[Delete failed]]></string>
   <string name="_sys_grid_search"><![CDATA[Search...]]></string>
@@ -3789,6 +3901,8 @@ If it is not enabled then please consider implementing this optimization, since 
     <string name="_sys_menu_item_title_sa_site"><![CDATA[Visit Web App]]></string>
     <string name="_sys_menu_item_title_system_sa_edit"><![CDATA[Manage Apps]]></string>
     <string name="_sys_menu_item_title_sa_edit"><![CDATA[Manage Apps]]></string>
+    <string name="_sys_menu_item_title_system_sa_tour"><![CDATA[Introduction Tour]]></string>
+    <string name="_sys_menu_item_title_sa_tour"><![CDATA[Introduction Tour]]></string>
     <string name="_sys_menu_item_title_system_sa_scheme"><![CDATA[Theme]]></string>
     <string name="_sys_menu_item_title_sa_scheme"><![CDATA[Theme]]></string>
     <string name="_sys_menu_item_title_system_sa_language"><![CDATA[Language]]></string>
@@ -3917,11 +4031,12 @@ If it is not enabled then please consider implementing this optimization, since 
     <string name="_sys_page_block_title_profile_membership"><![CDATA[Membership]]></string>
     <string name="_sys_page_block_title_unsubscribe_news"><![CDATA[Unsubscribe From Site Newsletters]]></string>
     <string name="_sys_page_block_title_unsubscribe_notifications"><![CDATA[Unsubscribe From Site Notifications]]></string>
-    <string name="_sys_page_block_title_std_dash_version"><![CDATA[Version]]></string>
-    <string name="_sys_page_block_title_std_dash_space"><![CDATA[Space Usage]]></string>
-    <string name="_sys_page_block_title_std_dash_host_tools"><![CDATA[Host Tools]]></string>
+    <string name="_sys_page_block_title_std_dash_version"><![CDATA[Updates]]></string>
+    <string name="_sys_page_block_title_std_dash_space"><![CDATA[Space]]></string>
+    <string name="_sys_page_block_title_std_dash_host_tools"><![CDATA[Server]]></string>
     <string name="_sys_page_block_title_std_dash_cache"><![CDATA[Cache]]></string>
     <string name="_sys_page_block_title_std_dash_queues"><![CDATA[Queues]]></string>
+    <string name="_sys_page_block_title_std_dash_users"><![CDATA[Users]]></string>
     <string name="_sys_page_block_title_terms"><![CDATA[Terms of Service]]></string>
     <string name="_sys_page_block_title_sys_std_site_submenu"><![CDATA[Site submenu]]></string>
     <string name="_sys_page_block_title_std_site_submenu"><![CDATA[Site submenu]]></string>
@@ -4558,7 +4673,7 @@ If it is not enabled then please consider implementing this optimization, since 
     <string name="_sys_queue_emails"><![CDATA[Emails]]></string>
     <string name="_sys_queue_push"><![CDATA[PUSH]]></string>
     <string name="_sys_queue_transcoding"><![CDATA[Video transcoding]]></string>
-    <string name="_sys_queue_storage"><![CDATA[Files storage]]></string>    
+    <string name="_sys_queue_storage"><![CDATA[File deletions]]></string>
     <string name="_sys_page_title_redirect"><![CDATA[Redirect Confirmation]]></string>
     <string name="_sys_page_block_title_redirect"><![CDATA[Confirm redirect]]></string>
     <string name="_sys_redirect_confirmation"><![CDATA[<div class="bx-def-font-h2 bx-def-margin-sec-bottom">You're going to a link outside {1}</div><div class="bx-def-font-small">Link: {0}</div><div class="bx-def-margin-sec-top">Are you sure you want to follow this link?</div>]]></string>

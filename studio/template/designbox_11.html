@@ -1,8 +1,14 @@
-<!-- Design Box 11 [start]: Content + title + background + padding -->
-<div class="bx-db-container bx-def-color-bg-block rounded-2xl">
-    <div class="bx-db-header px-3 md:px-4 pt-2 md:pt-3">
-        <h2 class="bx-db-title">__title__</h2>__caption_item__
+<!-- Design Box 11 [start]: Content + title + background + padding. The Studio page block shell (.bx-std-block-caption + .bx-std-block-content, with an optional caption icon and raw caption controls), so builder pages such as Dashboard match the other Studio pages; the box description is not shown here. -->
+<div class="bx-std-block cnt-ttl-bg">
+    <div class="bx-std-block-caption">
+        <bx_if:show_db_icon_html>
+            <div class="bx-std-bcap-icon" aria-hidden="true">__icon_html__</div>
+        </bx_if:show_db_icon_html>
+        <bx_if:show_db_icon>
+            <div class="bx-std-bcap-icon" aria-hidden="true"><i class="sys-icon __icon__"></i></div>
+        </bx_if:show_db_icon>
+        <h2 class="bx-std-bcap-text">__title__</h2>__caption_item__
     </div>
-    <div class="bx-db-content bx-content-padding-block relative">__designbox_content__</div>
+    <div class="bx-std-block-content relative">__designbox_content__</div>
 </div>
 <!-- Design Box 11 [ end ] -->

@@ -74,13 +74,6 @@ class BxBaseStudioWidgets extends BxDolStudioWidgets
         $aItemsRight = array(
             'template' => 'menu_top_toolbar.html',
             'menu_items' => array(
-                'tour' => array(
-                    'name' => 'tour',
-                    'icon' => 'tmi-help.svg',
-                    'link' => 'javascript:void(0);',
-                    'onclick' => 'glTour.start()',
-                    'title' => '_adm_tmi_cpt_tour'
-                ),
                 'assistant' => array(
                     'name' => 'assistant',
                     'icon' => 'tmi-assistant.svg',
@@ -99,13 +92,11 @@ class BxBaseStudioWidgets extends BxDolStudioWidgets
                     'icon' => 'tmi-account.svg',
                     'link' => 'javascript:void(0);',
                     'onclick' => 'bx_menu_popup_inline(\'#bx-std-pcap-menu-popup-account\', this);',
+                    'attrs_add' => 'aria-haspopup="true" aria-expanded="false" aria-controls="bx-std-pcap-menu-popup-account"',
                     'title' => '_adm_tmi_cpt_account'
                 )
             )
         );
-
-        if($this->_sType != BX_DOL_STUDIO_WTYPE_DEFAULT || getParam('site_tour_studio') != 'on')
-            unset($aItemsRight['menu_items']['tour']);
 
         if(!$this->_bShowHeaderRightAssistant)
             unset($aItemsRight['menu_items']['assistant']);
@@ -125,6 +116,7 @@ class BxBaseStudioWidgets extends BxDolStudioWidgets
     {
         return BxDolStudioTemplate::getInstance()->parseHtmlByName('widgets_page.html', array(
             'page' => $sName,
+            'label' => bx_html_attribute(_t('_adm_txt_launcher_apps')),
             'bx_if:page_hidden' => array(
                 'condition' => $bHidden,
                 'content' => array()

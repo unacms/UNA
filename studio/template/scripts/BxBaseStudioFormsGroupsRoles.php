@@ -350,6 +350,7 @@ class BxBaseStudioFormsGroupsRoles extends BxDolStudioFormsGroupsRoles
             'name' => 'module',
             'attrs' => array(
                 'id' => 'bx-grid-module-' . $this->_sObject,
+                'aria-label' => _t('_adm_grid_lbl_module'),
                 'onChange' => 'javascript:' . $this->getJsObject() . '.onChangeModule()'
             ),
             'value' => $this->sModule,

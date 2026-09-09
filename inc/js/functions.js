@@ -524,16 +524,47 @@ function bx_menu_popup_inline (jSel, e, options) {
 
         var bElement = e != undefined && $(e).length != 0;
 
+        var bExpanded = bElement && $(e).is('[aria-expanded]');
+        var fOnShow = options.onShow, fOnHide = options.onHide;
+
         var o = $.extend({}, $.fn.dolPopupDefaultOptions, options, {
             pointer: bElement ? {el:$(e)} : false, 
             cssClass: 'bx-popup-menu',
             onShow: function(oPopup) {
+                if(bExpanded)
+                    $(e).attr('aria-expanded', 'true');
+
+                // remembered on the popup: the hide handler dolPopup keeps is the one from the first show, whichever trigger opened it since
+                oPopup.data('bx-popup-trigger', bExpanded ? $(e) : null);
+
                 oPopup.find('a').each(function () {
                     $(this).off('click.bx-popup-menu');
                     $(this).on('click.bx-popup-menu', function() {
                         $(jSel).dolPopupHide();
                     });
                 });
+
+                // keyboard focus leaving the menu (Shift+Tab from its first item) closes it, as Escape and an outer click do
+                oPopup.off('focusout.bx-popup-menu').on('focusout.bx-popup-menu', function(oEvent) {
+                    var oTarget = oEvent.relatedTarget;
+                    if(!oTarget || oPopup.get(0).contains(oTarget) || (bElement && $(e).get(0).contains && $(e).get(0).contains(oTarget)))
+                        return;
+
+                    $(jSel).dolPopupHide();
+                });
+
+                if(typeof fOnShow == 'function')
+                    fOnShow(oPopup);
+            },
+            onHide: function(oPopup) {
+                oPopup.off('focusout.bx-popup-menu');
+
+                var oTrigger = oPopup.data('bx-popup-trigger');
+                if(oTrigger && oTrigger.length)
+                    oTrigger.attr('aria-expanded', 'false');
+
+                if(typeof fOnHide == 'function')
+                    fOnHide(oPopup);
             },
         });
 

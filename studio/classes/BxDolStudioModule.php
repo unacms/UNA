@@ -92,9 +92,23 @@ class BxDolStudioModule extends BxTemplStudioWidget
                 'type' => 'switcher',
                 'name' => 'activate',
                 'caption' => '_adm_txt_pca_active',
+                'icon' => 'power',
                 'checked' => (int)$this->aModule['enabled'] == 1,
                 'onchange' => "javascript:" . $this->getPageJsObject() . ".activate(this, '" . $this->aPage['name'] . "', {widget_id})"
             ), false);
+
+        // Uninstall, for app managers, in the context menu only (the launcher tile's settings form has no place for it). It goes
+        // with the app's launcher tile id, which is what makes the server ask for confirmation first.
+        if($this->sModule != BX_DOL_STUDIO_MODULE_SYSTEM && !empty($this->aPage['wid_id']) && BxDolStudioRolesUtils::getInstance()->isActionAllowed(BX_SRA_MANAGE_APPS))
+            $this->addAction(array(
+                'type' => 'button',
+                'name' => 'uninstall',
+                'caption' => '_adm_txt_uninstall',
+                'icon' => 'trash-2',
+                'danger' => true,
+                'context_only' => true,
+                'onclick' => "javascript:" . $this->getPageJsObject() . ".uninstall('" . $this->aPage['name'] . "', " . (int)$this->aPage['wid_id'] . ", 0)"
+            ));
     }
 
     public function checkAction()
@@ -138,6 +152,16 @@ class BxDolStudioModule extends BxTemplStudioWidget
 
                 $aResult = $this->uninstall($sValue, $iWidgetId);
                 break;
+
+            case 'context':
+                $sValue = bx_process_input(bx_get($this->sParamPrefix . '_value'));
+                if(empty($sValue))
+                    break;
+
+                $iWidgetId = bx_process_input(bx_get($this->sParamPrefix . '_widget_id'), BX_DATA_INT);
+
+                $aResult = $this->context($sValue, $iWidgetId);
+                break;
         }
 
         return $aResult;
@@ -169,6 +193,21 @@ class BxDolStudioModule extends BxTemplStudioWidget
                 )
             )
         ));
+    }
+
+    /**
+     * The page's context menu for its launcher tile or dock item (studio/js/context_menu.js fetches it on the first right-click).
+     */
+    public function context($sPage, $iWidgetId = 0)
+    {
+        if(empty($iWidgetId) && !empty($this->aPage['wid_id']))
+            $iWidgetId = (int)$this->aPage['wid_id'];
+
+        $sPopup = $this->getPopupContextMenu($sPage, $iWidgetId);
+        if(empty($sPopup))
+            return array('code' => 1, 'message' => _t('_adm_err_operation_failed'));
+
+        return array('code' => 0, 'content' => $sPopup);
     }
 
     public function activate($sPage, $iWidgetId = 0)

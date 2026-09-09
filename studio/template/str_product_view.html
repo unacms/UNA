@@ -7,7 +7,7 @@
                 <div class="bx-std-pvs-cnt" style="width:__width__px">
                     <bx_repeat:screenshots>
                         <div class="bx-std-pvs-item bx-def-margin-left-auto" style="background-image:url('__image_url__');">
-                            <a href="__image_url__" rel="group" tsrget="_blank"><img src="<bx_image_url:spacer.gif />" /></a>
+                            <a href="__image_url__" rel="group" tsrget="_blank"><img src="<bx_image_url:spacer.gif />" alt="__image_alt__" /></a>
                         </div>
                     </bx_repeat:screenshots>
                 </div>
@@ -93,31 +93,31 @@
             <bx_if:show_purchase>
                 <div class="bx-std-pv-action bx-std-pva-price bx-def-margin-right">
                     <bx_if:show_purchase_single>
-                        <a class="bx-btn bx-btn-primary" onclick="javascript:__js_object__.addToCart(__vendor_id__, __id__, this)">__price_single__</a>
+                        <button type="button" class="bx-btn bx-btn-primary" onclick="javascript:__js_object__.addToCart(__vendor_id__, __id__, this)">__price_single__</button>
                     </bx_if:show_purchase_single>
                     <bx_if:show_checkout_single>
-                        <a class="bx-btn bx-btn-primary bx-std-pva-checkout" onclick="javascript:__js_object__.checkoutCart(__vendor_id__, this)" <bx_if:show_as_hidden>style="display:none;"</bx_if:show_as_hidden>>
+                        <button type="button" class="bx-btn bx-btn-primary bx-std-pva-checkout" onclick="javascript:__js_object__.checkoutCart(__vendor_id__, this)" <bx_if:show_as_hidden>style="display:none;"</bx_if:show_as_hidden>>
                             <bx_text:_adm_btn_checkout_submit />
-                        </a>
+                        </button>
                     </bx_if:show_checkout_single>
                     <bx_if:show_purchase_recurring>
                         <span class="bx-std-pva-or bx-def-margin-sec-leftright bx-def-font-grayed"><bx_text:_adm_str_txt_or /></span>
-                        <a class="bx-btn bx-btn-primary" onclick="javascript:__js_object__.subscribe(__vendor_id__, __id__, this)">__price_recurring__</a>
+                        <button type="button" class="bx-btn bx-btn-primary" onclick="javascript:__js_object__.subscribe(__vendor_id__, __id__, this)">__price_recurring__</button>
                     </bx_if:show_purchase_recurring>
                 </div>
             </bx_if:show_purchase>
             <bx_if:show_download>
-                <a class="bx-btn bx-btn-primary bx-def-margin-right" onclick="javascript:__js_object__.getFile(__file_id__, this)">
+                <button type="button" class="bx-btn bx-btn-primary bx-def-margin-right" onclick="javascript:__js_object__.getFile(__file_id__, this)">
                     <bx_text:_adm_btn_download_submit />
-                </a>
+                </button>
             </bx_if:show_download>
             <bx_if:show_download_disabled>
-                <a class="bx-btn bx-btn-disabled bx-def-margin-right" type="button" disabled="disabled">
+                <button type="button" class="bx-btn bx-btn-disabled bx-def-margin-right" type="button" disabled="disabled" disabled>
                     <bx_text:_adm_btn_download_submit />
-                </a>
+                </button>
             </bx_if:show_download_disabled>
-            <a class="bx-btn bx-def-margin-right" onclick="javascript:$('.bx-popup-applied:visible').dolPopupHide();">
+            <button type="button" class="bx-btn bx-def-margin-right" onclick="javascript:$('.bx-popup-applied:visible').dolPopupHide();">
                 <bx_text:_adm_btn_cancel_submit />
-            </a>
+            </button>
 	</div>
 </div>

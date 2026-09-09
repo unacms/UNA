@@ -23,10 +23,10 @@ class BxBaseStudioAPI extends BxDolStudioAPI
         $this->sSubpageUrl = BX_DOL_URL_STUDIO . 'api.php?page=';
 
         $this->aMenuItems = array(
-            BX_DOL_STUDIO_API_TYPE_SETTINGS => array('icon' => 'cogs'),
-            BX_DOL_STUDIO_API_TYPE_CONFIG => array('icon' => 'cogs'),
-            BX_DOL_STUDIO_API_TYPE_ORIGINS => array('icon' => 'globe'),
-            BX_DOL_STUDIO_API_TYPE_KEYS => array('icon' => 'key'),
+            BX_DOL_STUDIO_API_TYPE_SETTINGS => array('icon' => 'mi-cog.svg'),
+            BX_DOL_STUDIO_API_TYPE_CONFIG => array('icon' => 'mi-api-config.svg'),
+            BX_DOL_STUDIO_API_TYPE_ORIGINS => array('icon' => 'mi-api-origins.svg'),
+            BX_DOL_STUDIO_API_TYPE_KEYS => array('icon' => 'mi-api-keys.svg'),
         );
 
         $this->aGridObjects = [
@@ -45,6 +45,7 @@ class BxBaseStudioAPI extends BxDolStudioAPI
             $aMenu[] = array(
                 'name' => $sMenuItem,
                 'icon' => $aItem['icon'],
+                'icon_bg' => true,
                 'link' => $this->sSubpageUrl . $sMenuItem,
                 'title' => _t('_adm_lmi_cpt_' . $sMenuItem),
                 'selected' => $sMenuItem == $this->sPage

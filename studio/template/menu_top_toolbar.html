@@ -2,18 +2,19 @@
     <bx_if:show_search>
         <li class="bx-menu-tab-search<bx_if:show_active> bx-mt-active</bx_if:show_active> flex-auto">
             <div class="bx-menu-tab-item">
-                <a class="flex-none flex items-center justify-center aspect-square h-full text-gray-600 hover:text-gray-700" href="javascript:void(0)" onclick="return oBxDolStudioMenuTop.searchToggle(this)" aria-label="<bx_text_attribute:_adm_tmi_cpt_search />" aria-expanded="false">
+                <button type="button" class="flex-none flex items-center justify-center aspect-square h-full text-gray-600 hover:text-gray-700" onclick="return oBxDolStudioMenuTop.searchToggle(this)" aria-label="<bx_text_attribute:_adm_tmi_cpt_search />" aria-expanded="false">
                     <bx_icon_inline:tmi-search.svg />
-                </a>
+                </button>
                 <div class="bx-form-input-wrapper bx-form-input-wrapper-text">
-                    <input type="text" name="search" value="" placeholder="<bx_text_attribute:_adm_tmi_cpt_search />" aria-label="<bx_text_attribute:_adm_tmi_cpt_search />" class="bx-def-font-inputs bx-form-input-text" onkeydown="return oBxDolStudioMenuTop.searchWidget(event)" />
+                    <input type="search" name="search" value="" autocomplete="off" placeholder="<bx_text_attribute:_adm_tmi_cpt_search />" aria-label="<bx_text_attribute:_adm_tmi_cpt_search />" class="bx-def-font-inputs bx-form-input-text" oninput="return oBxDolStudioMenuTop.searchWidget(event)" onkeydown="return oBxDolStudioMenuTop.searchKey(event)" onblur="oBxDolStudioMenuTop.searchBlur(this)" />
                 </div>
             </div>
         </li>
     </bx_if:show_search>
     <bx_repeat:menu_items>
         <li class="bx-menu-tab-__name__  __class_add__ bx-menu-tab-item">
-            <a href="__link__" onclick="__onclick__" title="__title__"__attrs__><bx_if:icon><i class="sys-icon __icon__ bx-def-round-corners bx-def-font-contrasted"></i></bx_if:icon><bx_if:image><img src="__icon_url__" /></bx_if:image><bx_if:image_inline>__image__</bx_if:image_inline></a>
+            <bx_if:is_link><a href="__link__" onclick="__onclick__" title="__title__"__attrs__>__icon_html__</a></bx_if:is_link>
+            <bx_if:is_button><button type="button" onclick="__onclick__" title="__title__"__attrs__>__icon_html__</button></bx_if:is_button>
         </li>
     </bx_repeat:menu_items>
 </ul>

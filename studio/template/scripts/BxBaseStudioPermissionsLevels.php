@@ -285,7 +285,11 @@ class BxBaseStudioPermissionsLevels extends BxDolStudioPermissionsLevels
     }
     protected function _getCellIcon ($mixedValue, $sKey, $aField, $aRow)
     {
-        $mixedValue = $this->_oTemplate->getImage($mixedValue, array('class' => 'bx-item-icon'));
+        if(($sSvg = $this->_getIconLucide($mixedValue, ['class' => 'bx-item-icon'])) !== false)
+            $mixedValue = '<span class="bx-std-grid-icon">' . $sSvg . '</span>'; // a 24px glyph on a translucent tile (see "Studio: Grids" in tailwind.css)
+        else
+            $mixedValue = $this->_oTemplate->getImage($mixedValue, array('class' => 'bx-item-icon'));
+
         return parent::_getCellDefault($mixedValue, $sKey, $aField, $aRow);
     }
 

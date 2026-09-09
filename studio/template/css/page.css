@@ -31,9 +31,58 @@ div.bx-std-blocks-line .bx-std-block-wrp {
  * Block Styles
  */
 div.bx-std-block {
+    position: relative; /* the overlay scrollbar is drawn over the block */
     display: flex;
     flex-direction: column;
     min-height: 0;
+}
+/*
+ * Overlay scrollbar (bx_std_scrollbar in studio/js/page.js): the scroll box hides its native bar, and an SVG drawn over the block runs a
+ * thumb down the right edge and round the 24px bottom corner (the top one too when nothing sits above the scroll box), like a bar that
+ * follows the panel's shape; the thumb shows while the pointer is over the block or the content scrolls.
+ */
+div.bx-std-block-content {
+    scrollbar-width: none;
+}
+div.bx-std-block-content::-webkit-scrollbar {
+    display: none;
+}
+svg.bx-std-scrollbar {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+div.bx-std-block:hover > svg.bx-std-scrollbar,
+div.bx-std-block.bx-std-scrolling > svg.bx-std-scrollbar {
+    opacity: 1;
+}
+svg.bx-std-scrollbar path {
+    fill: none;
+    stroke-width: 4;
+    stroke-linecap: round;
+}
+svg.bx-std-scrollbar .bx-std-scrollbar-track {
+    stroke: rgba(0, 0, 0, 0.05);
+}
+svg.bx-std-scrollbar .bx-std-scrollbar-thumb {
+    stroke: rgba(0, 0, 0, 0.25);
+}
+.dark svg.bx-std-scrollbar .bx-std-scrollbar-track {
+    stroke: rgba(255, 255, 255, 0.05);
+}
+.dark svg.bx-std-scrollbar .bx-std-scrollbar-thumb {
+    stroke: rgba(255, 255, 255, 0.25);
+}
+@media (prefers-reduced-motion: reduce) {
+    svg.bx-std-scrollbar {
+        transition: none;
+    }
 }
 div.bx-std-block-caption,
 div.bx-std-block-panel-top,
@@ -49,21 +98,70 @@ div.bx-std-block-caption {
 
     z-index: 1;
 
-    padding: 0.25rem; /* same 4px inset as the sidebar column, around a 48px row like a sidebar item */
-    box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.1); /* hairline divider drawn outside the box, so it adds no height */
+    gap: 0.75rem;
+    padding: 1rem; /* 16px around a 32px row, like the header bar: a 64px caption with its icon, buttons and tabs on the block's 16px content line */
+    box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.05); /* hairline divider drawn outside the box, so it adds no height */
 }
 .dark div.bx-std-block-caption {
-    box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.1);
+    box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.025);
+}
+/* Optional title icon: a flat gray 32px square, 8px radius (no plate, ring or shadow: a label, not a button) with a 20px glyph. */
+div.bx-std-block-caption .bx-std-bcap-icon {
+    flex: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 0.5rem;
+    background: rgb(0 0 0 / 0.1); /* the same plate as the dashboard row icons */
+    color: rgb(75 85 99);
+}
+.dark div.bx-std-block-caption .bx-std-bcap-icon {
+    background: rgb(255 255 255 / 0.05);
+    color: rgb(156 163 175);
+}
+div.bx-std-block-caption .bx-std-bcap-icon .sys-icon {
+    color: rgb(0 0 0); /* black at 80% through the element's opacity (white in the dark scheme), not the site-wide accent that .sys-icon carries */
+    opacity: 0.8;
+    font-size: 1.25rem;
+    line-height: 1.25rem;
+}
+.dark div.bx-std-block-caption .bx-std-bcap-icon .sys-icon {
+    color: rgb(255 255 255);
+}
+div.bx-std-block-caption .bx-std-bcap-icon svg {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+/* A segmented switcher in the caption sits on the right; its 32px frame is the row's height. */
+div.bx-std-block-caption > .bx-std-segmented {
+    flex: none;
+}
+/* A button in the caption (the Cache block's "Clear all caches") keeps its width beside the flexible title. */
+div.bx-std-block-caption > .bx-btn {
+    flex: none;
 }
 .bx-std-bcap-text {
     -webkit-flex: 1 1 auto;
     -ms-flex: 1 1 auto;
     flex: 1 1 auto;
 
-    padding: 0 0.75rem;
-    line-height: 3rem;
+    line-height: 2rem; /* the row is 32px with or without an icon, so every caption is the same height */
     font-weight: 600;
     font-size: 1.25rem;
+}
+/* Button loader (dashboard.js loadingButton): the launcher's tile wave (loading-double.svg, 40x10, its own keyframes) stands in for a pressed
+   button's label, at the button's width, until its request ends; the button is disabled meanwhile and takes no clicks (an <a> button has no disabled state). */
+.bx-std-btn-loading {
+    display: inline-block;
+    width: 40px;
+    height: 10px;
+    vertical-align: middle;
+    background: url(../images/loading-double.svg) center / 40px 10px no-repeat;
+}
+.bx-btn.bx-btn-loading {
+    pointer-events: none;
 }
 div.bx-std-bcap-actions {
     position: relative;
@@ -84,32 +182,233 @@ div.bx-std-bcap-action-div:first-child {
     display: none;
 }
 
-div.bx-std-block-panel-top {}
+/* Top panel (the Pages builder's selects): the same toolbar as a grid header, 64px with 16px sides and a hairline below it;
+   under a caption the 16px between them is split 8 / 8 like the grid toolbar. Its fields are spaced by an 8px gap alone. */
+div.bx-std-block-panel-top {
+    padding: 1rem;
+    box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.05);
+}
+.dark div.bx-std-block-panel-top {
+    box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.025);
+}
+div.bx-std-block-caption:has(+ div.bx-std-block-panel-top) {
+    padding-bottom: 0.5rem;
+    box-shadow: none; /* the panel below draws the only separator, as the sticky grid toolbar does by painting over the caption's */
+}
+div.bx-std-block-caption + div.bx-std-block-panel-top {
+    padding-top: 0.5rem;
+}
 div.bx-std-block-panel-top .bx-std-pt-cnt {
-    padding: 1.5rem 1.5rem 0 1.5rem;
+    padding: 0;
+}
+div.bx-std-block-panel-top .bx-std-pt-cnt > .flex {
+    gap: 0.5rem;
+}
+div.bx-std-block-panel-top .bx-std-pt-cnt > .flex > * {
+    margin: 0;
+}
+div.bx-std-block-panel-top .bx-form-element-wrapper {
+    margin: 0;
 }
 
 div.bx-std-block-content {
     flex: 1 1 auto;
     min-height: 0;
     overflow-y: auto;
-    border-radius: 0 0 1rem 1rem; /* the scroll box clips to the block's rounded corners instead of squaring them off */
+    border-radius: 0 0 1.5rem 1.5rem; /* the scroll box clips to the block's 24px corners instead of squaring them off */
     padding: 0.5rem;
 }
 div.bx-std-block-content:not(:last-child) {
     border-radius: 0; /* a bottom panel follows and owns the corners */
 }
 div.bx-std-block-content:first-child {
-    border-top-left-radius: 1rem; /* no caption above: the scroll box owns the top corners too */
-    border-top-right-radius: 1rem;
+    border-top-left-radius: 1.5rem; /* no caption above: the scroll box owns the top corners too */
+    border-top-right-radius: 1.5rem;
+}
+/* A grid wider than its block scrolls sideways inside the block (grid.css hides the overflow, which cuts off the action column on narrower desktops). */
+div.bx-std-block-content .bx-grid-table-wrapper {
+    overflow-x: auto;
 }
 div.bx-std-block-content div.bx-grid-header {
     margin-top: 0px;
 }
+/* Content inset: the block's 8px plus 8px from the content root itself, 16px in all. Forms, the designer's template list and
+   builder cells add theirs here; product lists do the same in store.css, agent cards in agents.css. Options forms and grids are
+   laid out as a header / scroller / footer stack below and own their inset there. */
+div.bx-std-block-content > .bx-form-advanced:not([name="adm-settings-form"]),
+div.bx-std-block-content > .bx-dsg-templates,
+div.bx-std-block-content > .adm-bp-cell,
+div.bx-std-block-content > .bx-layout-wrapper {
+    padding: 0.5rem;
+}
+
+/**
+ * Header / scroller / footer stack.
+ * A block whose content is an options form (BxDolStudioOptions, name="adm-settings-form") or a grid keeps its caption fixed, scrolls
+ * the middle, and pins a 64px footer: 16px around the 32px buttons, like the caption, hairline drawn outside the box.
+ * The form footer is the form's last section (the Save button, BxBaseStudioOptions always puts it in a section of its own); the grid
+ * footer is the grid's own footer (bulk actions, paging). Grid rows run edge to edge with 16px inside the first and last cell.
+ */
+div.bx-std-block-content:has(> form[name="adm-settings-form"]),
+div.bx-std-block-content:has(> [id^="bx-grid-wrap-"]) {
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    overflow: hidden;
+}
+
+/* Options forms */
+div.bx-std-block-content > form[name="adm-settings-form"] {
+    --bx-std-inset: 1rem; /* the scroller's inset: 16px for fields and for the accordion cards alike */
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+    padding: 0;
+}
+form[name="adm-settings-form"] > .bx-form-advanced-wrapper {
+    display: flex; /* a column, so the footer can drop to the bottom (margin-top: auto) when the content does not fill the block */
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    padding: var(--bx-std-inset) var(--bx-std-inset) 0; /* no bottom inset: sticky elements stop at the scroller's padding edge */
+}
+form[name="adm-settings-form"] > .bx-form-advanced-wrapper > .bx-form-section-wrapper {
+    flex: none; /* sections overflow the scroller instead of shrinking into it */
+    margin: 0 0 0.5rem; /* overrides the my-4 emitted by BxBaseFormView::getOpenSection */
+    padding: 0;
+}
+/* Plain form: the fields section is a bare divider section; its scaffolding adds no inset of its own. */
+form#adm-settings-form > .bx-form-advanced-wrapper > .bx-form-section-wrapper:not(:last-child) > .bx-form-section-divider > .bx-form-section-content {
+    padding: 0 0 0.5rem;
+}
+/* Footer: the last section, holding the Save button. */
+form[name="adm-settings-form"] > .bx-form-advanced-wrapper > .bx-form-section-wrapper:last-child:not(:first-child) {
+    position: sticky;
+    bottom: 0;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    width: auto;
+    height: 4rem;
+    margin: auto calc(-1 * var(--bx-std-inset)) 0; /* spans the block edge to edge over the scroller's inset; auto pushes it down */
+    padding: 1rem;
+    border-radius: 0 0 1.5rem 1.5rem;
+    background-color: #f5f5f7; /* gray-200 page + the block's white/60, so the sticky row matches the block around it */
+    box-shadow: 0 -1px 0 0 rgba(0, 0, 0, 0.05);
+}
+form[name="adm-settings-form"] > .bx-form-advanced-wrapper > .bx-form-section-wrapper:last-child:not(:first-child) .bx-form-section-content {
+    padding: 0;
+}
+form[name="adm-settings-form"] > .bx-form-advanced-wrapper > .bx-form-section-wrapper:last-child:not(:first-child) .bx-form-element-wrapper {
+    margin: 0;
+}
+
+/* Grids */
+div.bx-std-block-content > [id^="bx-grid-wrap-"] {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 0;
+}
+div.bx-std-block-content > [id^="bx-grid-wrap-"] > .bx-grid-header {
+    position: sticky; /* the filter / add toolbar stays under the caption, 64px like it */
+    top: 0;
+    z-index: 2;
+    flex: none;
+    margin: 0;
+    padding: 1rem;
+    background-color: #f5f5f7; /* gray-200 page + the block's white/60, so the sticky row matches the block around it */
+    box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.05);
+}
+/* Under a caption the toolbar is the caption's second row: the 16px between them is split 8 / 8 so the half inside the
+   toolbar (which is the top of the scroll box) leaves room for the buttons' hover and focus rings instead of clipping them. */
+div.bx-std-block-caption:has(+ div.bx-std-block-content > [id^="bx-grid-wrap-"] > .bx-grid-header) {
+    padding-bottom: 0.5rem;
+}
+div.bx-std-block-caption + div.bx-std-block-content > [id^="bx-grid-wrap-"] > .bx-grid-header {
+    padding-top: 0.5rem;
+}
+div.bx-std-block-content > [id^="bx-grid-wrap-"] > .bx-grid-header .bx-grid-header-cnt {
+    padding: 0;
+}
+div.bx-std-block-content > [id^="bx-grid-wrap-"] > .bx-grid-header .bx-form-element-wrapper {
+    margin: 0; /* the filter fields are spaced by the toolbar's gap alone */
+}
+div.bx-std-block-content > [id^="bx-grid-wrap-"] > .bx-grid-header .bx-grid-header-controls-filter,
+div.bx-std-block-content > [id^="bx-grid-wrap-"] > .bx-grid-header .bx-grid-header-controls-independent {
+    column-gap: 1rem; /* 16px between toolbar fields and buttons */
+}
+div.bx-std-block-content > [id^="bx-grid-wrap-"] > .bx-grid-table-wrapper2 {
+    flex: none;
+}
+div.bx-std-block-content > [id^="bx-grid-wrap-"] > .bx-grid-footer {
+    position: sticky;
+    bottom: 0;
+    z-index: 2;
+    flex: none;
+    display: flex;
+    align-items: center;
+    height: 4rem;
+    margin: auto 0 0;
+    padding: 1rem;
+    border-radius: 0 0 1.5rem 1.5rem;
+    background-color: #f5f5f7; /* gray-200 page + the block's white/60, so the sticky row matches the block around it */
+    box-shadow: 0 -1px 0 0 rgba(0, 0, 0, 0.05);
+}
+div.bx-std-block-content > [id^="bx-grid-wrap-"] > .bx-grid-footer > hr.bx-def-hr {
+    display: none; /* the hairline above replaces it */
+}
+div.bx-std-block-content > [id^="bx-grid-wrap-"] > .bx-grid-footer > .bx-grid-footer-cnt {
+    flex: 1 1 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0;
+    padding: 0;
+}
+div.bx-std-block-content > [id^="bx-grid-wrap-"] > .bx-grid-footer > .bx-grid-footer-cnt > div {
+    float: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+}
+div.bx-std-block-content > [id^="bx-grid-wrap-"] > .bx-grid-footer > .bx-grid-footer-cnt > div > .bx-btn {
+    margin: 0; /* bulk action buttons carry bx-def-margin-thd; the gap above spaces them, so the first one starts on the 16px line */
+}
+div.bx-std-block-content > [id^="bx-grid-wrap-"] > .bx-grid-footer > .bx-grid-footer-cnt::before,
+div.bx-std-block-content > [id^="bx-grid-wrap-"] > .bx-grid-footer > .bx-grid-footer-cnt::after {
+    display: none; /* the bx-clearfix pseudo-elements would be empty flex items and push the actions and the pager inward */
+}
+div.bx-std-block-content > [id^="bx-grid-wrap-"] .bx-grid-table th:first-child,
+div.bx-std-block-content > [id^="bx-grid-wrap-"] .bx-grid-table td:first-child {
+    padding-left: 1rem;
+}
+div.bx-std-block-content > [id^="bx-grid-wrap-"] .bx-grid-table th:last-child,
+div.bx-std-block-content > [id^="bx-grid-wrap-"] .bx-grid-table td:last-child {
+    padding-right: 1rem;
+}
+.dark form[name="adm-settings-form"] > .bx-form-advanced-wrapper > .bx-form-section-wrapper:last-child:not(:first-child),
+.dark div.bx-std-block-content > [id^="bx-grid-wrap-"] > .bx-grid-header,
+.dark div.bx-std-block-content > [id^="bx-grid-wrap-"] > .bx-grid-footer {
+    background-color: #0f0f0f; /* black page + the block's white/6 */
+}
+.dark form[name="adm-settings-form"] > .bx-form-advanced-wrapper > .bx-form-section-wrapper:last-child:not(:first-child),
+.dark div.bx-std-block-content > [id^="bx-grid-wrap-"] > .bx-grid-footer {
+    box-shadow: 0 -1px 0 0 rgba(255, 255, 255, 0.025);
+}
+.dark div.bx-std-block-content > [id^="bx-grid-wrap-"] > .bx-grid-header {
+    box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.025);
+}
 
 div.bx-std-block-panel-bottom {}
 div.bx-std-block-panel-bottom .bx-std-pt-cnt {
-    padding: 0 1.5rem 1.5rem 1.5rem;
+    padding: 0 1rem 1rem 1rem;
 }
 
 
@@ -117,6 +416,23 @@ div.bx-std-block-panel-bottom .bx-std-pt-cnt {
  * Builder based blocks
  */
 .bx-layout-wrapper {
-    padding-top: 0.5rem; /* same gap below the header as the sidebar pages */
+    padding-top: 0.75rem; /* the same 12px gap below the header as the sidebar pages */
     padding-bottom: 0;
+}
+
+/* Phones: the caption stays one row in a 343px block (icon, title, tabs), so the segmented tabs go compact and the title truncates. */
+@media (max-width: 767px) {
+    div.bx-std-block-caption {
+        gap: 0.5rem;
+    }
+    div.bx-std-block-caption > .bx-std-segmented .bx-std-segment {
+        padding: 0 0.5rem;
+        font-size: 0.75rem;
+    }
+    div.bx-std-block-caption .bx-std-bcap-text {
+        min-width: 0;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
 }

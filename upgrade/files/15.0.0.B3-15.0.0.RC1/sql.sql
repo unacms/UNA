@@ -7,15 +7,45 @@ UPDATE `sys_options` SET `value` = 'on' WHERE `name` = 'sys_std_show_header_left
 
 UPDATE `sys_options` SET `value` = 'splash' WHERE `name` = 'sys_api_root_page_guest' AND `value` = 'home';
 UPDATE `sys_options` SET `value` = 'home' WHERE `name` = 'sys_api_root_page_member' AND `value` = 'splash';
+UPDATE `sys_options` SET `value` = 'width=device-width, initial-scale=1.0, minimum-scale=1.0' WHERE `name` = 'sys_viewport_meta_tag' AND `value` = 'width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0';
+
+SET @iCategoryId = (SELECT `c`.`id` FROM `sys_options_categories` AS `c` INNER JOIN `sys_options_types` AS `t` ON `t`.`id` = `c`.`type_id` WHERE `t`.`name` = 'system' AND `c`.`name` = 'hidden' LIMIT 1);
+INSERT IGNORE INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `extra`, `check`, `check_params`, `check_error`, `order`) VALUES
+(@iCategoryId, 'sys_audit_report', '_adm_stg_cpt_option_sys_audit_report', '', 'text', '', '', '', '', 8);
 
 -- Menu
 
 DELETE FROM `sys_menu_items` WHERE `set_name` = 'sys_studio_account_popup' AND `module` = 'system' AND `name` = 'scheme';
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `editable`, `order`) VALUES
-('sys_studio_account_popup', 'system', 'scheme', '_sys_menu_item_title_system_sa_scheme', '_sys_menu_item_title_sa_scheme', 'javascript:void(0)', 'bx_menu_popup_inline(''#bx-std-pcap-menu-popup-scheme'');', '', 'tmi-scheme-auto.svg', '', 2147483647, 1, 0, 0, 4);
+('sys_studio_account_popup', 'system', 'scheme', '_sys_menu_item_title_system_sa_scheme', '_sys_menu_item_title_sa_scheme', 'javascript:void(0)', '', '', 'ami-theme.svg', '', 2147483647, 1, 0, 0, 7);
 
 UPDATE `sys_menu_items` SET `order` = 5 WHERE `set_name` = 'sys_studio_account_popup' AND `module` = 'system' AND `name` = 'language' AND `order` = 4;
 UPDATE `sys_menu_items` SET `order` = 6 WHERE `set_name` = 'sys_studio_account_popup' AND `module` = 'system' AND `name` = 'logout' AND `ORDER` = 5;
+
+DELETE FROM `sys_menu_items` WHERE `set_name` = 'sys_studio_account_popup' AND `module` = 'system' AND `name` = 'tour';
+INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `editable`, `order`) VALUES
+('sys_studio_account_popup', 'system', 'tour', '_sys_menu_item_title_system_sa_tour', '_sys_menu_item_title_sa_tour', '{url_studio}launcher.php?tour=1', 'if(typeof glTour !== ''undefined'') { glTour.start(); return false; }', '', 'ami-tour.svg', '', 2147483647, 1, 0, 0, 4);
+
+-- Studio: Dashboard blocks live in one cell; the page flows them into as many columns as fit.
+UPDATE `sys_objects_page` SET `layout_id` = 5 WHERE `object` = 'sys_std_dashboard' AND `layout_id` = 4;
+UPDATE `sys_pages_blocks` SET `cell_id` = 1, `order` = 3 WHERE `object` = 'sys_std_dashboard' AND `cell_id` = 2 AND `title` = '_sys_page_block_title_std_dash_host_tools';
+UPDATE `sys_pages_blocks` SET `cell_id` = 1, `order` = 4 WHERE `object` = 'sys_std_dashboard' AND `cell_id` = 2 AND `title` = '_sys_page_block_title_std_dash_cache';
+UPDATE `sys_pages_blocks` SET `cell_id` = 1, `order` = 5 WHERE `object` = 'sys_std_dashboard' AND `cell_id` = 2 AND `title` = '_sys_page_block_title_std_dash_queues';
+UPDATE `sys_pages_blocks` SET `class` = 'bx-dbd-block-medium' WHERE `object` = 'sys_std_dashboard' AND `title` = '_sys_page_block_title_std_dash_version' AND `class` = '';
+UPDATE `sys_pages_blocks` SET `class` = 'bx-dbd-block-medium' WHERE `object` = 'sys_std_dashboard' AND `title` = '_sys_page_block_title_std_dash_space' AND `class` = '';
+UPDATE `sys_pages_blocks` SET `class` = 'bx-dbd-block-medium' WHERE `object` = 'sys_std_dashboard' AND `title` = '_sys_page_block_title_std_dash_host_tools' AND `class` = '';
+UPDATE `sys_pages_blocks` SET `icon` = 'server' WHERE `object` = 'sys_std_dashboard' AND `title` = '_sys_page_block_title_std_dash_host_tools' AND `icon` = '';
+UPDATE `sys_pages_blocks` SET `icon` = 'package' WHERE `object` = 'sys_std_dashboard' AND `title` = '_sys_page_block_title_std_dash_version' AND `icon` = '';
+UPDATE `sys_pages_blocks` SET `icon` = 'layers' WHERE `object` = 'sys_std_dashboard' AND `title` = '_sys_page_block_title_std_dash_space' AND `icon` = '';
+UPDATE `sys_pages_blocks` SET `icon` = 'archive' WHERE `object` = 'sys_std_dashboard' AND `title` = '_sys_page_block_title_std_dash_cache' AND `icon` = '';
+UPDATE `sys_pages_blocks` SET `icon` = 'list-todo' WHERE `object` = 'sys_std_dashboard' AND `title` = '_sys_page_block_title_std_dash_queues' AND `icon` = '';
+UPDATE `sys_pages_blocks` SET `class` = 'bx-dbd-block-medium' WHERE `object` = 'sys_std_dashboard' AND `title` = '_sys_page_block_title_std_dash_cache' AND `class` = '';
+UPDATE `sys_pages_blocks` SET `class` = 'bx-dbd-block-medium' WHERE `object` = 'sys_std_dashboard' AND `title` = '_sys_page_block_title_std_dash_queues' AND `class` = '';
+
+-- Studio: the Queues block is a list drawn by the dashboard itself; its grid is gone.
+DELETE FROM `sys_objects_grid` WHERE `object` = 'sys_queues';
+DELETE FROM `sys_grid_fields` WHERE `object` = 'sys_queues';
+DELETE FROM `sys_grid_actions` WHERE `object` = 'sys_queues';
 
 -- Grid
 
@@ -83,3 +113,22 @@ UPDATE `sys_std_widgets` SET `featured` = 1 WHERE `module` = 'system' AND `url` 
 
 UPDATE `sys_modules` SET `version` = '15.0.0-RC1' WHERE (`version` = '15.0.0.B3' OR `version` = '15.0.0-B3') AND `name` = 'system';
 
+-- Permissions: Lucide default icons for the built-in levels (only where a site still has the old default)
+UPDATE `sys_acl_levels` SET `Icon` = 'user-round-arrow-left' WHERE `ID` = 1 AND `Icon` = 'user';
+UPDATE `sys_acl_levels` SET `Icon` = 'at-sign' WHERE `ID` = 2 AND `Icon` = 'user';
+UPDATE `sys_acl_levels` SET `Icon` = 'user-round' WHERE `ID` = 3 AND `Icon` = 'user';
+UPDATE `sys_acl_levels` SET `Icon` = 'user-round-pen' WHERE `ID` = 5 AND `Icon` = 'user';
+UPDATE `sys_acl_levels` SET `Icon` = 'user-round-x' WHERE `ID` = 6 AND `Icon` = 'user';
+UPDATE `sys_acl_levels` SET `Icon` = 'user-shield' WHERE `ID` = 7 AND `Icon` = 'user-secret';
+UPDATE `sys_acl_levels` SET `Icon` = 'shield-user' WHERE `ID` = 8 AND `Icon` = 'user-secret';
+
+-- Permissions: the Enable switcher sits just before the row actions
+UPDATE `sys_grid_fields` SET `order` = 1 WHERE `object` = 'sys_studio_acl' AND `name` = 'Order';
+UPDATE `sys_grid_fields` SET `order` = 2 WHERE `object` = 'sys_studio_acl' AND `name` = 'Icon';
+UPDATE `sys_grid_fields` SET `order` = 3 WHERE `object` = 'sys_studio_acl' AND `name` = 'Name';
+UPDATE `sys_grid_fields` SET `order` = 4 WHERE `object` = 'sys_studio_acl' AND `name` = 'ActionsList';
+UPDATE `sys_grid_fields` SET `order` = 5 WHERE `object` = 'sys_studio_acl' AND `name` = 'QuotaSize';
+UPDATE `sys_grid_fields` SET `order` = 6 WHERE `object` = 'sys_studio_acl' AND `name` = 'QuotaMaxFileSize';
+UPDATE `sys_grid_fields` SET `order` = 7 WHERE `object` = 'sys_studio_acl' AND `name` = 'QuotaNumber';
+UPDATE `sys_grid_fields` SET `order` = 8 WHERE `object` = 'sys_studio_acl' AND `name` = 'switcher';
+UPDATE `sys_grid_fields` SET `order` = 9 WHERE `object` = 'sys_studio_acl' AND `name` = 'actions';

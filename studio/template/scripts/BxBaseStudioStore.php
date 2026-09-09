@@ -636,7 +636,8 @@ class BxBaseStudioStore extends BxDolStudioStore
             foreach($aProduct['screenshots'] as $aScreenshot)
                 $aScreenshots[] = array(
                     'view_url' => $aProduct['url'],
-                    'image_url' => $aScreenshot['big']
+                    'image_url' => $aScreenshot['big'],
+                    'image_alt' => bx_html_attribute(_t('_adm_str_txt_pv_screenshot', $aProduct['title']))
                 );
         }
 

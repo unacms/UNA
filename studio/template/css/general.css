@@ -51,7 +51,7 @@ div.bx-std-content-wrp {
     height: 100vh;
 }
 div.bx-std-content-wrp.bx-std-one-col {
-    padding-top: 4rem;
+    padding-top: 4.75rem; /* the fixed header's bottom edge: 12px margin plus the 64px bar */
 
     overflow-y: auto;
 }
@@ -115,10 +115,10 @@ div.bx-std-pcap-mp-right div.bx-std-pcap-action {
  */
 div.bx-std-pmen-item {
     position: relative;
-    height: 3rem; /* 36px icon + 6px padding on each side, so the item background matches the header icons' ring-4 + ring-offset-2 */
+    height: 3rem; /* 32px icon + 8px above and below (the icon's 1px white gap on hover and the item background make up the header icons' halo) */
     margin-top: 0.125rem;
 
-    border-radius: 0.875rem; /* icon radius (8px) + 6px padding */
+    border-radius: 1rem; /* icon radius (8px) + 8px padding */
 
     font-size: 1.0rem;
     font-weight: 500;
@@ -135,7 +135,7 @@ div.bx-std-pmen-item-cnt {
     -webkit-flex-wrap: nowrap;
     flex-wrap: nowrap;
 
-    padding: 0.375rem;
+    padding: 0.5rem; /* with the column's 8px inset the icon sits 16px from the column's edge, like the launcher icon in the header bar */
 }
 
 span.bx-std-pmen-item-counter {}
@@ -145,11 +145,11 @@ div.bx-std-pmen-item .bx-std-pmen-ic-icon {
     display: none;
     flex: 0 0 auto;
 
-    width: 2.25rem;
-    height: 2.25rem;
+    width: 2rem;
+    height: 2rem;
     box-sizing: border-box;
 
-    margin-right: 1rem;
+    margin-right: 0.75rem;
     
     border-radius: 0.5rem;
     background-repeat: no-repeat;
@@ -158,12 +158,18 @@ div.bx-std-pmen-item .bx-std-pmen-ic-icon {
     text-align: center;
 }
 .bx-dir-rtl div.bx-std-pmen-item .bx-std-pmen-ic-icon {
-    margin-left: 1rem;
+    margin-left: 0.75rem;
     margin-right: 0;
 }
 
 div.bx-std-pmen-item .bx-std-pmen-ic-icon.block {
     display: block;
+}
+/* The label: one line, cut with an ellipsis, beside the tile; the tablet strip below lets it wrap to two lines instead. */
+div.bx-std-pmen-item .bx-std-pmen-ic-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 div.bx-std-pmen-item img,
@@ -232,4 +238,111 @@ img.bx-std-api {
     display: inline-block;
     width: 1rem;
     height: 1rem;
+}
+
+/*
+ * Page menu on narrow screens (the columns themselves are in page_columns.css).
+ * Tablet: a vertical strip of square tiles (as wide as the strip's items, 88px), the 32px icon and a small label centred in each.
+ * Phone: a horizontal, scrollable row of tabs with 28px tiles and 16px glyphs.
+ */
+@media (max-width: 1023px) {
+    div.bx-std-pmen-item {
+        height: 5.5rem; /* square: the item is 88px wide (page_columns.css) */
+    }
+    div.bx-std-pmen-item > a {
+        display: block;
+        height: 100%;
+    }
+    div.bx-std-pmen-item-cnt {
+        -webkit-flex-direction: column;
+        flex-direction: column;
+        -webkit-justify-content: center;
+        justify-content: center;
+
+        height: 100%;
+        padding: 0.5rem 0.25rem; /* room for a two-line label under the tile */
+    }
+    div.bx-std-pmen-item .bx-std-pmen-ic-icon,
+    .bx-dir-rtl div.bx-std-pmen-item .bx-std-pmen-ic-icon {
+        margin: 0;
+    }
+    div.bx-std-pmen-item .bx-std-pmen-ic-title {
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2; /* wraps to two lines, then cuts with an ellipsis */
+        max-width: 100%;
+        margin-top: 0.25rem;
+
+        font-size: 0.75rem;
+        line-height: 1rem;
+        text-align: center;
+        white-space: normal;
+        overflow-wrap: anywhere;
+    }
+}
+@media (max-width: 767px) {
+    div.bx-std-pcm-menu {
+        display: -webkit-flex;
+        display: flex;
+        -webkit-flex-wrap: nowrap;
+        flex-wrap: nowrap;
+        gap: 0.125rem;
+    }
+    div.bx-std-pcm-menu > .bx-clear {
+        display: none;
+    }
+    div.bx-std-pmen-item {
+        -webkit-flex: 0 0 auto;
+        flex: 0 0 auto;
+
+        height: auto; /* tabs, not squares */
+        min-width: 4rem;
+        margin-top: 0;
+    }
+    div.bx-std-pmen-item-cnt {
+        height: auto;
+        padding: 0.375rem 0.5rem;
+    }
+    div.bx-std-pmen-item .bx-std-pmen-ic-icon {
+        width: 1.75rem;
+        height: 1.75rem;
+        padding: 0.375rem; /* 16px glyph in the 28px tile */
+    }
+    div.bx-std-pmen-item .bx-std-tile-btn > .sys-icon {
+        font-size: 1rem;
+        line-height: 1rem;
+    }
+}
+
+/*
+ * The column's own title (shown when the header breadcrumb is off): small and centred in the strip,
+ * with its actions button under it; a plain row again above the phone tabs.
+ */
+@media (max-width: 1023px) {
+    div.bx-std-pcm-title {
+        font-size: 0.875rem;
+        line-height: 1.25rem;
+    }
+    div.bx-std-pcm-title .bx-std-pcm-title-cnt {
+        -webkit-flex-direction: column;
+        flex-direction: column;
+        -webkit-align-items: center;
+        align-items: center;
+        gap: 0.5rem;
+
+        padding: 0 0.25rem;
+
+        text-align: center;
+        overflow-wrap: anywhere;
+    }
+}
+@media (max-width: 767px) {
+    div.bx-std-pcm-title .bx-std-pcm-title-cnt {
+        -webkit-flex-direction: row;
+        flex-direction: row;
+
+        padding: 0 0.5rem;
+
+        text-align: start;
+    }
 }

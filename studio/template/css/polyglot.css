@@ -4,9 +4,6 @@ div.bx-grid-header div.bx-form-element-wrapper {
     float: left;
     width: 165px;
 }
-div.bx-grid-header div#bx-form-element-module {
-    margin-right: 20px;
-}
 div.bx-grid-header div#bx-form-element-keyword {
 	margin-top: 0px;
 }

@@ -123,6 +123,11 @@ class BxDolStudioTemplate extends BxDolTemplate implements iBxDolSingleton
             case 'page_breadcrumb':
                 $sRet = $this->getPageBreadcrumb();
                 break;
+            case 'page_viewport':
+                $sRet = getParam('sys_viewport_meta_tag');
+                if(empty($sRet))
+                    $sRet = 'width=device-width, initial-scale=1';
+                break;
 			case 'popup_loading':
                 $s = $this->parsePageByName('popup_loading.html', array());
                 $sRet = BxTemplFunctions::getInstance()->transBox('bx-popup-loading', $s, true);
@@ -246,6 +251,7 @@ class BxDolStudioTemplate extends BxDolTemplate implements iBxDolSingleton
 
         $this->setPageNameIndex($oPage->getPageIndex());
         $this->setPageHeader($oPage->getPageHeader());
+        $this->setPageDescription($oPage->getPageDescription());
         $this->setPageContent('page_caption_code', $oPage->getPageCaption());
         $this->setPageContent('page_attributes', $oPage->getPageAttributes());
         $this->setPageContent('page_menu_code', $sPageMenu);

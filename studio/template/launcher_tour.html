@@ -7,7 +7,7 @@
             id: 'tour-apps',
             title: '<bx_text_js:_sys_tour_launcher_apps_title />',
             text: '<bx_text_js:_sys_tour_launcher_apps_txt />',
-            sel: {element:$('.bx-std-widget-cont:has(.bx-std-widget-link[href*=store])').get(0), on:'bottom'}
+            sel: {element:$('.bx-std-widgets').get(0), on:'bottom'}
         },{
             id: 'tour-designer',
             title: '<bx_text_js:_sys_tour_launcher_designer_title />',
@@ -52,7 +52,7 @@
             id: 'tour-reorganize',
             title: '<bx_text_js:_sys_tour_launcher_reorganize_title />',
             text: '<bx_text_js:_sys_tour_launcher_reorganize_txt />',
-            sel: '.bx-menu-tab-edit right'
+            sel: {element:$('.bx-menu-tab-account').get(0), on:'bottom'}
         },{
             id: 'tour-dock',
             title: '<bx_text_js:_sys_tour_launcher_favourites_title />',
@@ -62,7 +62,7 @@
             id: 'tour-add-apps',
             title: '<bx_text_js:_sys_tour_launcher_add_apps_title />',
             text: '<bx_text_js:_sys_tour_launcher_add_apps_txt />',
-            sel: '.bx-menu-tab-extensions right'
+            sel: {element:$('.bx-std-widget-cont:has(.bx-std-widget-link[href*=store])').get(0), on:'bottom'}
         }
     ];
 
@@ -71,11 +71,21 @@
         defaultStepOptions: {
             classes: 'shepherd-active bx-def-z-index-modal',
             showCancelLink: true,
-            scrollTo: { behavior: 'smooth', block: 'center' },
+            scrollTo: { behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'center' },
         }
     });
 
+    //--- The page behind the overlay is inert while a step is open, so Tab and screen readers stay inside the step.
+    var fTourInert = function(bOn) {
+        var oMain = document.querySelector('.bx-main');
+        if(oMain)
+            oMain.inert = bOn;
+    };
+    glTour.on('show', function () { fTourInert(true); });
+    glTour.on('complete', function () { fTourInert(false); });
+
     Shepherd.on('cancel', function () {
+        fTourInert(false);
         $.cookie('launcher-tour-hidden', 1, {expires: 9999});
     });
 
@@ -109,6 +119,10 @@
         glTour.addStep(aOpts);
     }
 
-    if (!$.cookie('launcher-tour-hidden'))
+    var bTourForced = /[?&]tour=1(&|$)/.test(window.location.search);
+    if (bTourForced && window.history.replaceState)
+        window.history.replaceState(null, '', window.location.pathname);
+
+    if (bTourForced || !$.cookie('launcher-tour-hidden'))
         glTour.start();
 </script>

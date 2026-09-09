@@ -1696,8 +1696,28 @@ BLAH;
 
         return $this->oTemplate->parseHtmlByName('form_field_switcher.html', [
             'class' => $sClass,
-            'checkbox' => $sCheckbox
+            'checked' => $sClass == 'on' ? 'true' : 'false', // the button's initial aria-checked; jquery.webForms.js keeps it in step
+            'checkbox' => $sCheckbox,
+            'bx_if:show_label' => $this->genInputSwitcherLabel($aInput)
         ]);
+    }
+
+    /**
+     * The switch's visible control is a button, not the checkbox the field's <label> points at, so it carries its own name:
+     * the aria-label given in attrs, or the field's caption. Returns the bx_if block for form_field_switcher.html.
+     */
+    protected function genInputSwitcherLabel($aInput)
+    {
+        $sLabel = '';
+        if(!empty($aInput['attrs']['aria-label']))
+            $sLabel = $aInput['attrs']['aria-label'];
+        else if(!empty($aInput['caption']))
+            $sLabel = strip_tags(_t($aInput['caption']));
+
+        return [
+            'condition' => $sLabel !== '',
+            'content' => ['label' => bx_html_attribute($sLabel)]
+        ];
     }
     
     function genInputCheckbox(&$aInput, $bWrapped = false)

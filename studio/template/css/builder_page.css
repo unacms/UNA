@@ -5,24 +5,25 @@ div.bx-std-pt-bp-types div.bx-form-element-wrapper {
 div.bx-std-pt-bp-pages div.bx-form-element-wrapper {
     width: 20rem;
 }
-div.bx-std-pt-bp-selects .select2-container .select2-selection--single {
-    height: 2.5rem;
-    border-radius: 0.375rem;
-    opacity: 0.9;
-}
-div.bx-std-pt-bp-selects .select2-container .select2-selection--single .select2-selection__rendered {
-    padding-left: 0;
-    line-height: 2.375rem;
-}
-div.bx-std-pt-bp-selects .select2-container .select2-selection--single .select2-selection__arrow {
-    height: 2.375rem;
-}
+/* The page option in the dropdown: title over its URL, the block count on the right (the field itself is styled with every Studio select2 in tailwind.css). */
 .adm-bp-page {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 0.75rem;
+    min-width: 0;
+}
+.adm-bp-page > div:first-child {
+    min-width: 0;
+}
+.adm-bp-page .adm-bpp-ttl,
+.adm-bp-page .adm-bpp-inf {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 .adm-bp-page .adm-bpp-cnt {
+    flex: none;
     font-weight: 600;
 }
 
@@ -199,11 +200,27 @@ div.bx-popup .bx-uploader-ghost .bx-ug-content input.bx-ug-dimension.bx-form-inp
 	width: 4.0rem;
 }
 
-/*--- Page Settings popups style ---*/
+/*--- Page Settings popups style: the popup content is the form itself, sidebar (8px inset, like the app pages' side menus) beside the
+   settings (16px inset), the footer with the buttons under both (16px inset) behind a hairline; the wrappers the form renderer adds carry no spacing of their own. ---*/
 div#adm-bp-add-popup div.bx-popup-content,
 div#adm-bp-edit-popup div.bx-popup-content {
-    padding-left: 0px;
-    padding-right: 0px; 
+    padding: 0;
+}
+div.adm-bp-add-form-cnt > form > .bx-form-advanced-wrapper > .bx-form-section-wrapper,
+div.adm-bp-edit-form-cnt > form > .bx-form-advanced-wrapper > .bx-form-section-wrapper {
+    margin: 0; /* the outer section only: the settings groups keep their own field spacing */
+}
+div.adm-bp-add-form-cnt > form > .bx-form-advanced-wrapper > .bx-form-section-wrapper > .bx-form-section,
+div.adm-bp-edit-form-cnt > form > .bx-form-advanced-wrapper > .bx-form-section-wrapper > .bx-form-section {
+    border: 0;
+}
+div.adm-bp-add-form-cnt > form > .bx-form-advanced-wrapper > .bx-form-section-wrapper > .bx-form-section > .bx-form-section-content,
+div.adm-bp-edit-form-cnt > form > .bx-form-advanced-wrapper > .bx-form-section-wrapper > .bx-form-section > .bx-form-section-content {
+    padding: 0;
+}
+div.adm-bp-add-form-cnt > form > .bx-form-advanced-wrapper > .bx-form-section-wrapper > .bx-form-section > .bx-form-section-content > .bx-form-element-wrapper,
+div.adm-bp-edit-form-cnt > form > .bx-form-advanced-wrapper > .bx-form-section-wrapper > .bx-form-section > .bx-form-section-content > .bx-form-element-wrapper {
+    margin: 0;
 }
 
 div.adm-bp-add-form {}
@@ -216,51 +233,179 @@ div.adm-bp-add-form fieldset.bx-form-section,
 div.adm-bp-edit-form fieldset.bx-form-section {
     padding-bottom: 0px;
 }
-div.adm-bp-add-form div.bx-std-pmen-item-cnt, 
-div.adm-bp-edit-form div.bx-std-pmen-item-cnt {
-	padding-left: 20px;
-}
 div.adm-bp-add-form div.bx-form-input-wrapper-custom, 
 div.adm-bp-edit-form div.bx-form-input-wrapper-custom {
 	position: relative;
 }
+/* The form fills the popup box: every wrapper down to the settings input is a shrinkable flex column, so the box (capped at the viewport
+   less 2rem by the Studio popup rules) sizes to the content on a tall screen and the panels scroll inside it on a short one. */
+div#adm-bp-add-popup div.bx-popup-content,
+div#adm-bp-edit-popup div.bx-popup-content,
+:is(div#adm-bp-add-popup, div#adm-bp-edit-popup) :is(div.adm-bp-add-form, div.adm-bp-add-form-cnt, div.adm-bp-edit-form, div.adm-bp-edit-form-cnt, form.bx-form-advanced, .bx-form-advanced-wrapper, .bx-form-advanced-wrapper > .bx-form-section-wrapper, .bx-form-advanced-wrapper > .bx-form-section-wrapper > .bx-form-section, .bx-form-advanced-wrapper > .bx-form-section-wrapper > .bx-form-section > .bx-form-section-content, #bx-form-element-settings, #bx-form-element-settings > .bx-form-element, #bx-form-element-settings > .bx-form-element > .bx-form-value) {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+}
+/* Sidebar | settings, the footer under both: a grid whose row is the sidebar's own height (seven 48px rows, six 2px gaps, 8px inset) at
+   most, so the box keeps one height across the tabs, the settings scroll past it, and the row gives way when the viewport is short. */
+:is(div#adm-bp-add-popup, div#adm-bp-edit-popup) div.bx-form-input-wrapper-custom {
+    display: grid;
+    grid-template-columns: 14rem minmax(0, 1fr);
+    grid-template-rows: minmax(0, 22.75rem) auto;
+    flex: 1 1 auto;
+    min-height: 0;
+}
 div.adm-bp-epf-left {
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    width: 14rem;
-    height: 20rem;
-    overflow-y: auto; 
+    grid-column: 1;
+    grid-row: 1;
+    min-height: 0;
+    overflow-y: auto;
+    box-shadow: 1px 0 0 0 rgba(0, 0, 0, 0.05); /* vertical hairline between the sidebar and the settings */
+}
+.dark div.adm-bp-epf-left {
+    box-shadow: 1px 0 0 0 rgba(255, 255, 255, 0.025);
 }
 div.adm-bp-epf-left-cnt {}
-div.adm-bp-epf-left .bx-std-pmen-item {
-    height: 2.5rem;
+/* The modal's sidebar keeps the desktop row layout at every viewport: its column is 14rem wide, unlike the app pages' side menu that
+   turns into a strip of square tiles under 1024px and a row of tabs under 768px (general.css). */
+div.adm-bp-epf-left div.bx-std-pmen-item {
+    flex: none;
+    height: 3rem;
+    min-width: 0;
+    margin-top: 0.125rem;
+}
+div.adm-bp-epf-left div.bx-std-pmen-item:first-child {
+    margin-top: 0;
+}
+div.adm-bp-epf-left div.bx-std-pmen-item > a {
+    display: block;
+    height: auto;
+}
+div.adm-bp-epf-left div.bx-std-pmen-item-cnt {
+    -webkit-flex-direction: row;
+    flex-direction: row;
+    -webkit-justify-content: flex-start;
+    justify-content: flex-start;
+    height: auto;
+    padding: 0.5rem;
+}
+div.adm-bp-epf-left div.bx-std-pmen-item .bx-std-pmen-ic-icon {
+    display: block;
+    width: 2rem;
+    height: 2rem;
+    margin: 0 0.75rem 0 0;
+}
+.bx-dir-rtl div.adm-bp-epf-left div.bx-std-pmen-item .bx-std-pmen-ic-icon {
+    margin: 0 0 0 0.75rem;
+}
+div.adm-bp-epf-left div.bx-std-pmen-item .bx-std-pmen-ic-title {
+    display: block;
+    -webkit-line-clamp: unset;
+    max-width: none;
+    margin-top: 0;
+    font-size: 1rem;
+    line-height: normal;
+    text-align: start;
+    white-space: nowrap;
+    overflow-wrap: normal;
 }
 div.adm-bp-epf-right {
-    position: relative;
-    height: 20rem;
-    margin-left: 14rem;
+    grid-column: 2;
+    grid-row: 1;
+    min-height: 0;
     overflow-y: auto;
 }
 div.adm-bp-epf-right-cnt {}
+div.adm-bp-epf-controls {
+    grid-column: 1 / -1;
+    grid-row: 2;
+}
+div.adm-bp-epf-controls {
+    box-shadow: 0 -1px 0 0 rgba(0, 0, 0, 0.05); /* hairline over the footer, like the settings pages' Save footer */
+}
+.dark div.adm-bp-epf-controls {
+    box-shadow: 0 -1px 0 0 rgba(255, 255, 255, 0.025);
+}
 div.adm-bp-epf-controls .bx-def-margin-sec-left {
     margin-left: 0.5rem;
 }
+/* Layout gallery: a grid that fills the panel (as many 104px-plus columns as fit, stretched to the width), each layout a card on the
+   dashboard hero plate (translucent fill, 2.5% inset hairline, 16px radius) with its name under the picture, like the launcher tiles;
+   the chosen one carries a 2px blue ring and a bold name. */
 div#adm-bp-settings-group-layout {
-    margin: 0px -10px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(6.5rem, 1fr));
+    gap: 0.5rem;
+    margin: 0;
+}
+div#adm-bp-settings-group-layout > .bx-std-cb {
+    display: none; /* the float clearer would be an empty grid cell */
+}
+div#adm-bp-settings-group-layout > form {
+    grid-column: 1 / -1; /* the hidden layout_id field: a zero-height row, not a cell */
 }
 div.adm-bp-layout {
-	position: relative;
-	float: left;
-	width: 66px;
-	height: 66px;
-	margin-left: 0.5rem;
-	margin-right: 0.5rem;
-	border: 2px solid transparent;
+    position: relative;
+    border-radius: 1rem;
+    background: rgba(0, 0, 0, 0.05);
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.025);
+    transition: background-color 0.3s;
 }
-div.adm-bp-layout-active {
-	border-color: #9999cc;
+.dark div.adm-bp-layout {
+    background: rgba(255, 255, 255, 0.025);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.025);
+}
+div.adm-bp-layout:hover {
+    background: rgba(0, 0, 0, 0.1);
+}
+.dark div.adm-bp-layout:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+div.adm-bp-layout-active,
+.dark div.adm-bp-layout-active {
+    box-shadow: inset 0 0 0 2px rgb(59 130 246);
+}
+div.adm-bp-layout:has(a:focus-visible) {
+    box-shadow: inset 0 0 0 2px rgb(59 130 246), 0 0 0 2px rgb(255 255 255), 0 0 0 4px rgb(59 130 246);
 }
 div.adm-bp-layout-cnt {
-	padding: 1px;
+    padding: 0.5rem;
+}
+div.adm-bp-layout-cnt > a {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-direction: column;
+    flex-direction: column;
+    -webkit-align-items: center;
+    align-items: center;
+    gap: 0.5rem;
+    outline: none;
+    text-decoration: none;
+}
+div.adm-bp-layout-cnt img {
+    display: block;
+    width: 66px;
+    height: 66px;
+}
+span.adm-bp-layout-title {
+    display: block;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 0.75rem;
+    line-height: 1rem;
+    text-align: center;
+    color: rgb(75 85 99);
+}
+.dark span.adm-bp-layout-title {
+    color: rgb(156 163 175);
+}
+div.adm-bp-layout-active span.adm-bp-layout-title {
+    font-weight: 600;
+    color: rgb(17 24 39);
+}
+.dark div.adm-bp-layout-active span.adm-bp-layout-title {
+    color: rgb(255 255 255);
 }

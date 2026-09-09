@@ -17,6 +17,6 @@
 }
 .bx-uploader-ghost .bx-btn {
     float: none;
-    display: inline-block;
+    display: inline-flex; /* keeps the 32px Studio button's centred label */
     vertical-align: top; 
 }

@@ -386,6 +386,7 @@ INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `ex
 (@iCategoryId, 'sys_revision', '_adm_stg_cpt_option_sys_revision', '0', 'digit', '', '', '', '', 5),
 (@iCategoryId, 'sys_eq_time', '_adm_stg_cpt_option_sys_eq_time', '0', 'digit', '', '', '', '', 6),
 (@iCategoryId, 'sys_push_queue_time', '_adm_stg_cpt_option_sys_push_queue_time', '0', 'digit', '', '', '', '', 7),
+(@iCategoryId, 'sys_audit_report', '_adm_stg_cpt_option_sys_audit_report', '', 'text', '', '', '', '', 8),
 
 (@iCategoryId, 'sys_ftp_login', '_adm_stg_cpt_option_sys_ftp_login', '', 'digit', '', '', '', '', 10),
 (@iCategoryId, 'sys_ftp_password', '_adm_stg_cpt_option_sys_ftp_password', '', 'secret', '', '', '', '', 11),
@@ -450,7 +451,7 @@ INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `ex
 (@iCategoryId, 'sys_files_ext_imagevideo', '_adm_stg_cpt_option_sys_files_ext_imagevideo', 'jpg,jpeg,jpe,gif,png,svg,webp,avi,flv,mpg,mpeg,wmv,mp4,m4v,mov,qt,divx,xvid,3gp,3g2,webm,mkv,ogv,ogg,rm,rmvb,asf,drc,ts', 'digit', '', '', '', '', 230),
 (@iCategoryId, 'sys_files_ext_dangerous', '_adm_stg_cpt_option_sys_files_ext_dangerous', 'action,apk,app,bat,bin,cmd,com,command,cpl,csh,exe,gadget,inf,ins,inx,ipa,isu,job,jse,ksh,lnk,msc,msi,msp,mst,osx,out,paf,pif,prg,ps1,reg,rgs,run,sct,shb,shs,u3p,vb,vbe,vbs,vbscript,workflow,ws,wsf', 'digit', '', '', '', '', 240),
 
-(@iCategoryId, 'sys_viewport_meta_tag', '_adm_stg_cpt_option_sys_viewport_meta_tag', 'width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0', 'digit', '', '', '', '', 250),
+(@iCategoryId, 'sys_viewport_meta_tag', '_adm_stg_cpt_option_sys_viewport_meta_tag', 'width=device-width, initial-scale=1.0, minimum-scale=1.0', 'digit', '', '', '', '', 250),
 
 (@iCategoryId, 'sys_form_lpc_enable', '_adm_stg_cpt_option_sys_form_lpc_enable', 'on', 'checkbox', '', '', '', '', 260),
 
@@ -1411,14 +1412,14 @@ CREATE TABLE `sys_acl_levels` (
 );
 
 INSERT INTO `sys_acl_levels` (`ID`, `Name`, `Icon`, `Description`, `Active`, `Purchasable`, `Removable`, `QuotaSize`, `QuotaNumber`, `QuotaMaxFileSize`, `Order`) VALUES
-(1, '_adm_prm_txt_level_unauthenticated', 'user', '', 'yes', 'no', 'no', 0, 0, 0, 1),
-(2, '_adm_prm_txt_level_account', 'user', '', 'yes', 'no', 'no', 0, 0, 0, 2),
-(3, '_adm_prm_txt_level_standard', 'user', '', 'yes', 'no', 'no', 0, 0, 0, 3),
+(1, '_adm_prm_txt_level_unauthenticated', 'user-round-arrow-left', '', 'yes', 'no', 'no', 0, 0, 0, 1),
+(2, '_adm_prm_txt_level_account', 'at-sign', '', 'yes', 'no', 'no', 0, 0, 0, 2),
+(3, '_adm_prm_txt_level_standard', 'user-round', '', 'yes', 'no', 'no', 0, 0, 0, 3),
 (4, '_adm_prm_txt_level_unconfirmed', 'user', '', 'yes', 'no', 'no', 0, 0, 0, 4),
-(5, '_adm_prm_txt_level_pending', 'user', '', 'yes', 'no', 'no', 0, 0, 0, 5),
-(6, '_adm_prm_txt_level_suspended', 'user', '', 'yes', 'no', 'no', 0, 0, 0, 6),
-(7, '_adm_prm_txt_level_moderator', 'user-secret', '', 'yes', 'no', 'no', 0, 0, 0, 7),
-(8, '_adm_prm_txt_level_administrator', 'user-secret', '', 'yes', 'no', 'no', 0, 0, 0, 8),
+(5, '_adm_prm_txt_level_pending', 'user-round-pen', '', 'yes', 'no', 'no', 0, 0, 0, 5),
+(6, '_adm_prm_txt_level_suspended', 'user-round-x', '', 'yes', 'no', 'no', 0, 0, 0, 6),
+(7, '_adm_prm_txt_level_moderator', 'user-shield', '', 'yes', 'no', 'no', 0, 0, 0, 7),
+(8, '_adm_prm_txt_level_administrator', 'shield-user', '', 'yes', 'no', 'no', 0, 0, 0, 8),
 (9, '_adm_prm_txt_level_premium', 'user', '', 'yes', 'yes', 'no', 0, 0, 0, 9);
 
 
@@ -5182,6 +5183,7 @@ INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `tit
 ('sys_studio_account_popup', 'system', 'account', '_sys_menu_item_title_system_sa_account', '_sys_menu_item_title_sa_account', '{member_url}', '', '', 'ami-account.svg', '', 2147483647, 1, 0, 0, 1),
 ('sys_studio_account_popup', 'system', 'site', '_sys_menu_item_title_system_sa_site', '_sys_menu_item_title_sa_site', '{url_root}', '', '', 'ami-site.svg', '', 2147483647, 1, 0, 0, 2),
 ('sys_studio_account_popup', 'system', 'edit', '_sys_menu_item_title_system_sa_edit', '_sys_menu_item_title_sa_edit', 'javascript:void(0)', '{js_object}.clickEdit(this);', '', 'ami-edit.svg', '', 2147483647, 1, 0, 0, 3),
+('sys_studio_account_popup', 'system', 'tour', '_sys_menu_item_title_system_sa_tour', '_sys_menu_item_title_sa_tour', '{url_studio}launcher.php?tour=1', 'if(typeof glTour !== ''undefined'') { glTour.start(); return false; }', '', 'ami-tour.svg', '', 2147483647, 1, 0, 0, 4),
 ('sys_studio_account_popup', 'system', 'scheme', '_sys_menu_item_title_system_sa_scheme', '_sys_menu_item_title_sa_scheme', 'javascript:void(0)', '', '', 'ami-theme.svg', '', 2147483647, 1, 0, 0, 7),
 ('sys_studio_account_popup', 'system', 'language', '_sys_menu_item_title_system_sa_language', '_sys_menu_item_title_sa_language', 'javascript:void(0)', 'bx_menu_popup(''sys_switch_language_popup'', window);', '', 'ami-language.svg', '', 2147483647, 1, 0, 0, 5),
 ('sys_studio_account_popup', 'system', 'logout', '_sys_menu_item_title_system_sa_logout', '_sys_menu_item_title_sa_logout', '{url_root}logout.php', '{js_object}.clickLogout(this);', '', 'ami-logout.svg', '', 2147483647, 1, 0, 0, 6);
@@ -5296,13 +5298,13 @@ INSERT INTO `sys_grid_fields` (`object`, `name`, `title`, `width`, `translatable
 ('sys_studio_roles_actions', 'description', '_adm_rl_txt_description', '50%', 1, 48, '', 3),
 
 ('sys_studio_acl', 'Order', '', '1%', 0, '', '', 1),
-('sys_studio_acl', 'switcher', '_adm_prm_txt_enable', '5%', 0, '', '', 2),
-('sys_studio_acl', 'Icon', '_adm_prm_txt_icon', '5%', 0, '', '', 3),
-('sys_studio_acl', 'Name', '_adm_prm_txt_title', '29%', 1, '15', '', 4),
-('sys_studio_acl', 'ActionsList', '_adm_prm_txt_actions', '10%', 0, '', '', 5),
-('sys_studio_acl', 'QuotaSize', '_adm_prm_txt_storage', '10%', 0, '', '', 6),
-('sys_studio_acl', 'QuotaMaxFileSize', '_adm_prm_txt_max_file_size', '10%', 0, '', '', 7),
-('sys_studio_acl', 'QuotaNumber', '_adm_prm_txt_max_files', '10%', 0, '', '', 8),
+('sys_studio_acl', 'switcher', '_adm_prm_txt_enable', '5%', 0, '', '', 8),
+('sys_studio_acl', 'Icon', '_adm_prm_txt_icon', '5%', 0, '', '', 2),
+('sys_studio_acl', 'Name', '_adm_prm_txt_title', '29%', 1, '15', '', 3),
+('sys_studio_acl', 'ActionsList', '_adm_prm_txt_actions', '10%', 0, '', '', 4),
+('sys_studio_acl', 'QuotaSize', '_adm_prm_txt_storage', '10%', 0, '', '', 5),
+('sys_studio_acl', 'QuotaMaxFileSize', '_adm_prm_txt_max_file_size', '10%', 0, '', '', 6),
+('sys_studio_acl', 'QuotaNumber', '_adm_prm_txt_max_files', '10%', 0, '', '', 7),
 ('sys_studio_acl', 'actions', '', '20%', 0, '', '', 9),
 
 ('sys_studio_acl_actions', 'switcher', '_adm_prm_txt_enable', '10%', 0, '', '', 1),
@@ -5648,19 +5650,6 @@ INSERT INTO `sys_grid_actions` (`object`, `type`, `name`, `title`, `icon`, `icon
 ('sys_grid_related_me', 'single', 'decline', '_sys_decline', 'times-circle', 1, 1, 2),
 ('sys_grid_related_me', 'single', 'add', '_sys_add_relation', 'plus-circle', 1, 0, 3),
 ('sys_grid_related_me', 'single', 'delete', '_Delete', 'remove', 1, 1, 4);
-
--- GRID: queues
-INSERT INTO `sys_objects_grid` (`object`, `source_type`, `source`, `table`, `field_id`, `field_order`, `field_active`, `order_get_field`, `order_get_dir`, `paginate_url`, `paginate_per_page`, `paginate_simple`, `paginate_get_start`, `paginate_get_per_page`, `filter_fields`, `filter_fields_translatable`, `filter_mode`, `filter_get`, `sorting_fields`, `sorting_fields_translatable`, `visible_for_levels`, `responsive`, `show_total_count`, `override_class_name`, `override_class_file`) VALUES
-('sys_queues', 'Array', '', '', 'id', '', '', 'order_field', 'order_dir', '', 10, NULL, 'start', '', '', '', 'auto', 'filter', '', '', 128, 0, 0, 'BxDolGridQueues', '');
-
-INSERT INTO `sys_grid_fields` (`object`, `name`, `title`, `width`, `translatable`, `chars_limit`, `params`, `hidden_on`, `order`) VALUES
-('sys_queues', 'name', '_Name', '40%', 1, 0, '', '', 1),
-('sys_queues', 'all', '_all', '20%', 0, 0, '', '', 2),
-('sys_queues', 'failed', '_Failed', '20%', 0, 0, '', '', 3),
-('sys_queues', 'actions', '', '20%', 0, 0, '', '', 4);
-
-INSERT INTO `sys_grid_actions` (`object`, `type`, `name`, `title`, `icon`, `icon_only`, `confirm`, `order`) VALUES
-('sys_queues', 'single', 'clear', '_adm_dbd_txt_q_clear', 'eraser', 1, 1, 1);
 
 -- GRID: API Origins
 
@@ -6233,7 +6222,7 @@ INSERT INTO `sys_objects_page` (`object`, `uri`, `title_system`, `title`, `modul
 ('sys_profile_settings_cfilter', 'profile-settings-cfilter', '_sys_page_title_system_profile_settings_cfilter', '_sys_page_title_profile_settings_cfilter', 'system', 1, 5, '', 2147483647, 1, 'page.php?i=profile-settings-cfilter', '', '', '', 0, 1, 0, '', '', 0),
 ('sys_unsubscribe_notifications', 'unsubscribe-notifications', '_sys_page_title_system_unsubscribe_notifications', '_sys_page_title_unsubscribe_notifications', 'system', 1, 5, '', 2147483647, 1, 'page.php?i=unsubscribe-notifications', '', '', '', 0, 1, 0, '', '', 0),
 ('sys_unsubscribe_news', 'unsubscribe-news', '_sys_page_title_system_unsubscribe_news', '_sys_page_title_unsubscribe_news', 'system', 1, 5, '', 2147483647, 1, 'page.php?i=unsubscribe-news', '', '', '', 0, 1, 0, '', '', 0),
-('sys_std_dashboard', '', '_sys_page_title_system_studio_dashboard', '_sys_page_title_studio_dashboard', 'system', 1, 4, '', 2147483647, 1, '', '', '', '', 0, 1, 0, '', '', 0),
+('sys_std_dashboard', '', '_sys_page_title_system_studio_dashboard', '_sys_page_title_studio_dashboard', 'system', 1, 5, '', 2147483647, 1, '', '', '', '', 0, 1, 0, '', '', 0),
 ('sys_cmts_view' ,'cmts-view', '_sys_page_title_system_cmts_view', '_cmt_page_view_header', 'system', 1, 5, '', 2147483647, 1, 'page.php?i=cmts-view', '', '', '', 0, 1, 0, 'BxTemplCmtsPageView', '', 0),
 ('sys_cmts_administration' ,'cmts-administration', '_sys_page_title_system_cmts_administration', '_sys_page_title_cmts_administration', 'system', 1, 5, '', 192, 1, 'page.php?i=cmts-administration', '', '', '', 0, 1, 0, '', '', 0),
 ('sys_audit' ,'audit-administration', '_sys_page_title_system_audit_administration', '_sys_page_title_audit_administration', 'system', 1, 5, '', 192, 1, 'page.php?i=audit-administration', '', '', '', 0, 1, 0, '', '', 0),
@@ -6551,18 +6540,20 @@ INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title_system`, `
 ('sys_recom_friends', 1, 'system', '', '_sys_page_block_title_recom_friends', 11, 0, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:30:"browse_recommendations_friends";s:6:"params";a:2:{i:0;s:12:"{profile_id}";i:1;a:1:{s:13:"empty_message";b:1;}}s:5:"class";s:20:"TemplServiceProfiles";}', 0, 0, 1, 1),
 ('sys_recom_subscriptions', 1, 'system', '', '_sys_page_block_title_recom_subscriptions', 11, 0, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:36:"browse_recommendations_subscriptions";s:6:"params";a:2:{i:0;s:12:"{profile_id}";i:1;a:1:{s:13:"empty_message";b:1;}}s:5:"class";s:20:"TemplServiceProfiles";}', 0, 0, 1, 1),
 
-('sys_ntfs_context_invitations', 1, 'system', '', '_sys_page_block_title_ntfs_context_invitations', 11, 0, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:18:"browse_invitations";s:6:"params";a:2:{i:0;s:19:"{logged_profile_id}";i:1;a:1:{s:13:"empty_message";b:1;}}s:5:"class";s:20:"TemplServiceProfiles";}', 0, 1, 1, 1),
+('sys_ntfs_context_invitations', 1, 'system', '', '_sys_page_block_title_ntfs_context_invitations', 11, 0, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:18:"browse_invitations";s:6:"params";a:2:{i:0;s:19:"{logged_profile_id}";i:1;a:1:{s:13:"empty_message";b:1;}}s:5:"class";s:20:"TemplServiceProfiles";}', 0, 1, 1, 1);
 
 -- studio dashboard blocks
-('sys_std_dashboard', 1, 'system', '', '_sys_page_block_title_std_dash_version', 11, 0, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:17:"get_block_version";s:6:"params";a:0:{}s:5:"class";s:20:"TemplStudioDashboard";}', 0, 0, 1, 1),
+INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title_system`, `title`, `icon`, `designbox_id`, `class`, `tabs`, `async`, `visible_for_levels`, `type`, `content`, `deletable`, `copyable`, `active`, `order`) VALUES
+('sys_std_dashboard', 1, 'system', '', '_sys_page_block_title_std_dash_version', 'package', 11, 'bx-dbd-block-medium', 0, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:17:"get_block_version";s:6:"params";a:0:{}s:5:"class";s:20:"TemplStudioDashboard";}', 0, 0, 1, 1),
+('sys_std_dashboard', 1, 'system', '', '_sys_page_block_title_std_dash_users', 'users', 11, 'bx-dbd-block-medium', 0, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:15:"get_block_users";s:6:"params";a:0:{}s:5:"class";s:20:"TemplStudioDashboard";}', 0, 0, 1, 2),
 
-('sys_std_dashboard', 1, 'system', '', '_sys_page_block_title_std_dash_space', 11, 0, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:15:"get_block_space";s:6:"params";a:0:{}s:5:"class";s:20:"TemplStudioDashboard";}', 0, 0, 1, 2),
+('sys_std_dashboard', 1, 'system', '', '_sys_page_block_title_std_dash_space', 'layers', 11, 'bx-dbd-block-medium', 0, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:15:"get_block_space";s:6:"params";a:0:{}s:5:"class";s:20:"TemplStudioDashboard";}', 0, 0, 1, 3),
 
-('sys_std_dashboard', 2, 'system', '', '_sys_page_block_title_std_dash_host_tools', 11, 0, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:20:"get_block_host_tools";s:6:"params";a:0:{}s:5:"class";s:20:"TemplStudioDashboard";}', 0, 0, 1, 1),
+('sys_std_dashboard', 1, 'system', '', '_sys_page_block_title_std_dash_host_tools', 'server', 11, 'bx-dbd-block-medium', 0, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:20:"get_block_host_tools";s:6:"params";a:0:{}s:5:"class";s:20:"TemplStudioDashboard";}', 0, 0, 1, 4),
 
-('sys_std_dashboard', 2, 'system', '', '_sys_page_block_title_std_dash_cache', 11, 0, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:15:"get_block_cache";s:6:"params";a:0:{}s:5:"class";s:20:"TemplStudioDashboard";}', 0, 0, 1, 2),
+('sys_std_dashboard', 1, 'system', '', '_sys_page_block_title_std_dash_cache', 'archive', 11, 'bx-dbd-block-medium', 0, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:15:"get_block_cache";s:6:"params";a:0:{}s:5:"class";s:20:"TemplStudioDashboard";}', 0, 0, 1, 5),
 
-('sys_std_dashboard', 2, 'system', '', '_sys_page_block_title_std_dash_queues', 11, 0, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:16:"get_block_queues";s:6:"params";a:0:{}s:5:"class";s:20:"TemplStudioDashboard";}', 0, 0, 1, 3);
+('sys_std_dashboard', 1, 'system', '', '_sys_page_block_title_std_dash_queues', 'list-todo', 11, 'bx-dbd-block-medium', 0, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:16:"get_block_queues";s:6:"params";a:0:{}s:5:"class";s:20:"TemplStudioDashboard";}', 0, 0, 1, 6);
 
 INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title_system`, `title`, `designbox_id`, `tabs`, `async`, `visible_for_levels`, `type`, `content`, `deletable`, `copyable`, `active`, `active_api`, `order`) VALUES
 ('sys_cmts_view', 1, 'system', '_sys_page_block_title_system_cmts_view_content', '_cmt_page_view_title_content', 11, 0, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:17:"get_block_content";s:6:"params";a:3:{i:0;s:8:"{system}";i:1;s:11:"{object_id}";i:2;s:12:"{comment_id}";}s:5:"class";s:17:"TemplCmtsServices";}', 0, 0, 1, 0, 0),

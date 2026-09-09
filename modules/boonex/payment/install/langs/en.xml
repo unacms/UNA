@@ -712,4 +712,5 @@
     <string name="_bx_payment_aina_msg_subscribed"><![CDATA[Thank you! Subscription created. Please, check your email for further instructions.]]></string>
     <string name="_bx_payment_txt_name_apple_in_app"><![CDATA[Apple In-App]]></string>
     <string name="_bx_payment_txt_cart_apple_in_app"><![CDATA[Apple In-App]]></string>
+    <string name="_bx_payment_queue_pending"><![CDATA[Pending payments]]></string>
 </resources>

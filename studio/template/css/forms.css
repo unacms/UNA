@@ -4,6 +4,16 @@
 /**
  * General
  */
+.bx-form-caption a {
+    color: inherit;
+    text-decoration: underline dotted;
+    text-underline-offset: 3px;
+}
+.bx-form-caption a:hover {
+    color: inherit;
+    text-decoration-style: solid;
+}
+
 select.bx-form-field-type option {
     padding-left: 25px;
     background-repeat: no-repeat;

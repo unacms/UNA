@@ -14,10 +14,6 @@ div.bx-nav-add-set {}
 div.bx-nav-add-set-cnt {}
 
 /*--- Items page -> Panel Top style ---*/
-div.bx-grid-header div#bx-form-element-set,
-div.bx-grid-header div#bx-form-element-module {
-    margin-right: 20px;
-}
 div.bx-grid-header div#bx-form-element-module,
 div.bx-grid-header div#bx-form-element-set,
 div.bx-grid-header div#bx-form-element-keyword {

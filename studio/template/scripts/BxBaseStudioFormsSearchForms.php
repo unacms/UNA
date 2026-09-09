@@ -213,6 +213,7 @@ class BxBaseStudioFormsSearchForms extends BxDolStudioFormsSearchForms
             'name' => 'module',
             'attrs' => array(
                 'id' => 'bx-grid-module-' . $this->_sObject,
+                'aria-label' => _t('_adm_grid_lbl_module'),
                 'onChange' => 'javascript:' . $this->getJsObject() . '.onChangeFilter()'
             ),
             'value' => '',
@@ -237,6 +238,7 @@ class BxBaseStudioFormsSearchForms extends BxDolStudioFormsSearchForms
             'name' => 'keyword',
             'attrs' => array(
                 'id' => 'bx-grid-search-' . $this->_sObject,
+                'aria-label' => _t('_adm_grid_lbl_search'),
                 'onKeyup' => 'javascript:$(this).off(\'keyup focusout\'); ' . $sJsObject . '.onChangeFilter()',
             	'onBlur' => 'javascript:' . $sJsObject . '.onChangeFilter()',
             )

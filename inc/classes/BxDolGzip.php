@@ -30,15 +30,18 @@ class BxDolGzip extends BxDol
         $this->_sOutFile = BX_DIRECTORY_PATH_CACHE_PUBLIC . $sFile . '.gz';
 
         $aMatches = array();
-        if(!preg_match("/^([a-z0-9_-]+)\.(js|css)$/", $sFile, $aMatches))
-            die('BxDolGzip: file is not js/css');
+        if(!preg_match("/^([a-z0-9_-]+)\.(js|css|js\.map)$/", $sFile, $aMatches))
+            die('BxDolGzip: file is not js/css/js.map');
 
         switch($aMatches[2]) {
             case 'css':
-                $this->_sType = 'css';
+                $this->_sType = 'text/css';
                 break;
             case 'js':
-                $this->_sType = 'javascript';
+                $this->_sType = 'text/javascript';
+                break;
+            case 'js.map': // source map of a compiled JS bundle
+                $this->_sType = 'application/json';
                 break;
         }
 
@@ -57,7 +60,7 @@ class BxDolGzip extends BxDol
 
     function prepare()
     {
-        header("Content-type: text/" . $this->_sType);
+        header("Content-type: " . $this->_sType);
         header("Vary: Accept-Encoding");
         header("Cache-control: max-age=" . $this->_iExpirationOffset . ", public");
 

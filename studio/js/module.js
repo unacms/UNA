@@ -52,7 +52,8 @@ BxDolStudioModule.prototype.activate = function(oCheckbox, sName, iWidgetId) {
 
             if(iWidgetId != 0 && oData.widget.length > 0) {
                 $('#bx-std-widget-' + iWidgetId).replaceWith(oData.widget);
-                oBxDolStudioLauncher.enableJitter();
+                if(oBxDolStudioLauncher.bJitterMode)
+                    oBxDolStudioLauncher.enableJitter(); // the fresh tile needs its edit-mode controls shown
                 return;
             }
 
@@ -91,6 +92,12 @@ BxDolStudioModule.prototype.uninstall = function(sName, iWidgetId, iConfirm) {
 BxDolStudioModule.prototype.onUninstall = function(oData) {
     if(oData.code != 0 || oData.page.length == 0 || oData.widget_id.length == 0) 
         return;
+
+    // uninstalled from the app's own page: the page is gone, back to the launcher
+    if(window.location.pathname.indexOf('module.php') != -1 && window.location.search.indexOf('name=' + oData.page) != -1) {
+        window.location = sUrlStudio + 'launcher.php';
+        return;
+    }
 
     $('#bx-menu-item-' + oData.page).bx_anim('hide', this.sAnimationEffect, this.iAnimationSpeed, function() {
         $(this).remove();

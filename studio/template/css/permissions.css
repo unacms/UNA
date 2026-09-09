@@ -9,10 +9,6 @@ div.bx-prm-add-level {}
 div.bx-prm-add-level-cnt {}
 
 /*--- Actions page -> Panel Top style ---*/
-div.bx-grid-header div#bx-form-element-level,
-div.bx-grid-header div#bx-form-element-module {
-    margin-right: 20px;
-}
 div.bx-grid-header div#bx-form-element-module,
 div.bx-grid-header div#bx-form-element-keyword {
     margin-top: 0px;

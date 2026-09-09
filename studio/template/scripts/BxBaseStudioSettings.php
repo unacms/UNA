@@ -61,10 +61,17 @@ class BxBaseStudioSettings extends BxDolStudioSettings
         if($sResult === false)
             return false;
 
-        return $sResult . $this->getBlockCode(array(
-            'type' => BX_DB_NO_CAPTION,
-            'content' => $this->oOptions->getCode()
-        ));
+        $aType = [];
+        $this->oDb->getTypes(['type' => 'by_name', 'value' => $this->oOptions->getType()], $aType, false);
+
+        // captioned with the selected side menu item, as on every other settings page
+        $aBlock = ['content' => $this->oOptions->getCode()];
+        if(!empty($aType['caption']))
+            $aBlock['caption'] = _t($aType['caption']);
+        else
+            $aBlock['type'] = BX_DB_NO_CAPTION;
+
+        return $sResult . $this->getBlockCode($aBlock);
     }
 
     protected function getMenuIcon($sGroup, &$aType)

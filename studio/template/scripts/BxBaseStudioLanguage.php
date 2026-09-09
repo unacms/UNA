@@ -11,7 +11,7 @@
 class BxBaseStudioLanguage extends BxDolStudioLanguage
 {
     protected $aMenuItems = array(
-        BX_DOL_STUDIO_LANG_TYPE_SETTINGS => array('name' => BX_DOL_STUDIO_LANG_TYPE_SETTINGS, 'caption' => '_adm_lmi_cpt_settings', 'icon' => 'cogs')
+        BX_DOL_STUDIO_LANG_TYPE_SETTINGS => array('name' => BX_DOL_STUDIO_LANG_TYPE_SETTINGS, 'caption' => '_adm_lmi_cpt_settings', 'icon' => 'mi-cog.svg', 'icon_bg' => true)
     );
 
     public function __construct($sModule, $mixedPageName, $sPage = "")

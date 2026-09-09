@@ -612,6 +612,8 @@ class BxBaseGrid extends BxDolGrid
             ];
 
         $sHeader = bx_process_output($aField['title']);
+        if ($sHeader === '') // a column with no visible title (switcher, actions, order) still needs one for assistive tech
+            $sHeader = '<span class="sr-only">' . bx_process_output($this->_getCellHeaderFallbackTitle($sKey)) . '</span>';
 
         if (($aSortingFields = $this->_getOrderFields()) && in_array($sKey, $aSortingFields)) {
             $sHeader = '<a href="javascript:void(0);" class="bx-grid-sort-handle">' . $sHeader . '</a><span class="bx-grid-sort-indi"></span>';
@@ -636,6 +638,7 @@ class BxBaseGrid extends BxDolGrid
             'type' => 'checkbox',
             'id' => $this->_sObject . '_check_all',
             'name' => $this->_sObject . '_check_all',
+            'aria-label' => _t('_sys_grid_lbl_select_all'),
             'onclick' => "$('input[name=" . $this->_sObject . "_check]:not([disabled])').attr('checked', this.checked)"
     	);
     	if($this->_bSelectAll)
@@ -653,7 +656,19 @@ class BxBaseGrid extends BxDolGrid
 
     protected function _getCellHeaderWrapper ($sKey, $aField, $sHeader, $sAttr)
     {
-        return '<th ' . $sAttr . '>' . $sHeader . '</th>';
+        return '<th scope="col" ' . $sAttr . '>' . $sHeader . '</th>';
+    }
+
+    /**
+     * The title read out for a column whose header is empty: the conventional columns by name, the key as words otherwise.
+     */
+    protected function _getCellHeaderFallbackTitle ($sKey)
+    {
+        $aTitles = array('switcher' => '_sys_active', 'actions' => '_sys_grid_lbl_actions', 'order' => '_sys_grid_lbl_order', 'checkbox' => '_sys_grid_lbl_select');
+        if (isset($aTitles[$sKey]))
+            return _t($aTitles[$sKey]);
+
+        return ucfirst(str_replace('_', ' ', $sKey));
     }
 
     /**
@@ -823,11 +838,21 @@ class BxBaseGrid extends BxDolGrid
 
         $oForm = new BxTemplFormView(array(), $this->_oTemplate);
         $oForm->addCssJs();
+
+        // the switch's name for assistive tech: the column title (Active when the column has none) and the row's title
+        $sLabel = !empty($aField['title']) ? _t($aField['title']) : _t('_sys_active');
+        foreach (array('title', 'name', 'caption') as $sTitleKey)
+            if (!empty($aRow[$sTitleKey]) && is_string($aRow[$sTitleKey])) {
+                $sLabel .= ': ' . strip_tags(_t($aRow[$sTitleKey]));
+                break;
+            }
+
         $aInput = array(
             'type' => 'switcher',
             'name' => $this->_sObject . '_switch_' . $aRow[$this->_aOptions['field_id']],
             'caption' => '',
             'attrs' => array (
+                'aria-label' => $sLabel,
                 'bx_grid_action_single' => 'enable',
                 'bx_grid_action_confirm' => '',
                 'bx_grid_action_data' => $aRow[$this->_aOptions['field_id']],
@@ -850,7 +875,7 @@ class BxBaseGrid extends BxDolGrid
             isset($aField['width']) ? 'width:' . $aField['width'] : false  // add default styles
         );
 
-        return '<td ' . $sAttr . '><div id="' . $this->_sObject . '_cell_' . $aRow[$this->_aOptions['field_id']] . '" class="bx-grid-drag-handle"><i class="sys-icon align-justify"></i></div></td>';
+        return '<td ' . $sAttr . '><div id="' . $this->_sObject . '_cell_' . $aRow[$this->_aOptions['field_id']] . '" class="bx-grid-drag-handle"><i class="sys-icon grip-vertical"></i></div></td>';
     }
 
     protected function _getCellActions ($mixedValue, $sKey, $aField, $aRow)
@@ -1077,7 +1102,8 @@ class BxBaseGrid extends BxDolGrid
             'type' => 'text',
             'name' => 'keyword',
             'attrs' => array(
-                'id' => 'bx-grid-search-' . $this->_sObject
+                'id' => 'bx-grid-search-' . $this->_sObject,
+                'aria-label' => _t('_Search')
             )
         );
 
@@ -1198,6 +1224,7 @@ class BxBaseGrid extends BxDolGrid
             'name' => 'search',
             'attrs' => [
                 'id' => 'bx-grid-search-' . $this->_sObject,
+                'aria-label' => _t('_Search'),
                 'onKeyup' => 'javascript:$(this).off(\'keyup focusout\'); ' . $sOnChange,
                 'onBlur' => 'javascript:' . $sOnChange,
             ]

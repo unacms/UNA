@@ -110,6 +110,23 @@ class BxNtfsModule extends BxBaseModNotificationsModule
      * SERVICE METHODS
      */
 
+    /**
+     * The Studio Dashboard's Queues block: the delivery queue, which can be emptied.
+     */
+    public function serviceGetDashboardQueues()
+    {
+        $sTable = "`" . $this->_oDb->getPrefix() . "queue`";
+
+        return array(
+            'queue' => array(
+                'name' => '_bx_ntfs_queue',
+                'icon' => 'bell-ring',
+                'all' => "SELECT COUNT(*) FROM " . $sTable,
+                'action' => "DELETE FROM " . $sTable
+            )
+        );
+    }
+
     public function serviceGetSafeServices()
     {
         return [

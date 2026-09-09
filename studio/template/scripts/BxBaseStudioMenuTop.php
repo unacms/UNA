@@ -22,7 +22,7 @@ class BxBaseStudioMenuTop extends BxDolStudioMenuTop
 
     function getJs()
     {
-        return array('menu_top.js');
+        return array('menu_top.js', 'context_menu.js'); // the dock's app items are context menu triggers, on every Studio page
     }
 
     function getJsObject()

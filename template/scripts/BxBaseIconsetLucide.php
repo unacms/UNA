@@ -124,7 +124,7 @@ class BxBaseIconsetLucide extends BxBaseIconset
             'user-plus' => 'user-round-plus',
             'user-secret' => 'user-key',
             'user-slash' => 'user-x',
-            'user-shield' => 'user-round-search',
+            'user-shield' => 'user-shield', // Lucide has it now; keep the entry so the name is not remapped by a later rule
             'user-check' => 'user-round-check',
             'user-times' => 'user-x',
             'users' => 'users-round',

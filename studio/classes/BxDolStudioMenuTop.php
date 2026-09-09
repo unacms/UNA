@@ -75,6 +75,11 @@ class BxDolStudioMenuTop extends BxDol implements iBxDolSingleton
         $oRolesUtils = BxDolStudioRolesUtils::getInstance();
         $oWidgetsDb = BxDolStudioWidgetsQuery::getInstance();
 
+        // Every app in the dock carries its context menu trigger (studio/js/context_menu.js loads the menu on first use).
+        $fContextAttrs = function($sPageName, $iWidgetId = 0) {
+            return 'data-bx-context-menu="#bx-std-cmenu-' . $sPageName . '" data-bx-context-menu-load="' . $sPageName . ':' . (int)$iWidgetId . '"';
+        };
+
         $aFeatured = $oWidgetsDb->getWidgets(array('type' => 'all_featured', 'featured' => 1));
         foreach($aFeatured as $aItem)
             if(empty($aItem['type']) || $oRolesUtils->isActionAllowed('use ' . $aItem['type']))
@@ -84,7 +89,8 @@ class BxDolStudioMenuTop extends BxDol implements iBxDolSingleton
                     'icon' => $aItem['icon'],
                     'link' => $aItem['url'],
                     'onclick' => $aItem['click'],
-                    'title' => $aItem['caption']
+                    'title' => $aItem['caption'],
+                    'attrs_add' => $fContextAttrs($aItem['page_name'], $aItem['id'])
                 );
 
         //--- Get Bookmarks
@@ -102,7 +108,8 @@ class BxDolStudioMenuTop extends BxDol implements iBxDolSingleton
                 'icon' => $aBookmark['icon'],
                 'link' => $aBookmark['url'],
                 'onclick' => $aBookmark['click'],
-                'title' => $aBookmark['caption']
+                'title' => $aBookmark['caption'],
+                'attrs_add' => $fContextAttrs($aBookmark['page_name'], $aBookmark['id'])
             );
         }
 
@@ -125,6 +132,7 @@ class BxDolStudioMenuTop extends BxDol implements iBxDolSingleton
                     continue;
 
                 $aMenuItem['class'] = 'bx-menu-item-dynamic';
+                $aMenuItem['attrs_add'] = $fContextAttrs($sPageName);
                 $aMenuItems[$sPageName] = $aMenuItem;
                 $bHistory = true;
             }

@@ -34,6 +34,7 @@ if($sPageCode === false)
 
 $oTemplate->setPageNameIndex($oPage->getPageIndex());
 $oTemplate->setPageHeader($oPage->getPageHeader());
+$oTemplate->setPageDescription($oPage->getPageDescription());
 $oTemplate->setPageContent('page_caption_code', $oPage->getPageCaption());
 $oTemplate->setPageContent('page_attributes', $oPage->getPageAttributes());
 if($oPage->isLeftColumn())

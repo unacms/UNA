@@ -122,11 +122,11 @@ class BxBaseStudioOptions extends BxDolStudioOptions
         }
 
         $aForm['inputs'] = array_merge(
-            $aForm['inputs'], (!$bWrap ? [] : [
-                'header_save' => [
+            $aForm['inputs'], [
+                'header_save' => [ // a section of its own for the Save button: the block footer (page.css) is that last section
                     'type' => 'block_header',
                 ],
-            ]), [
+            ], [
                 'categories' => [
                     'type' => 'hidden',
                     'name' => 'categories',
