@@ -767,7 +767,7 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
                     'name' => 'max_turns',
                     'caption' => _t('_sys_agents_field_manual_max_turns'),
                     'info' => _t('_sys_agents_field_manual_max_turns_info'),
-                    'value' => isset($aAgent['max_turns']) ? $aAgent['max_turns'] : '40',
+                    'value' => $aAgent['max_turns'] ?? 0,
                     'required' => '1',
                     'db' => [
                         'pass' => 'Int',
@@ -778,7 +778,7 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
                     'name' => 'chat_ttl_min',
                     'caption' => _t('_sys_agents_field_manual_chat_ttl_min'),
                     'info' => _t('_sys_agents_field_manual_chat_ttl_min_info'),
-                    'value' => isset($aAgent['chat_ttl_min']) ? $aAgent['chat_ttl_min'] : '0',
+                    'value' => $aAgent['chat_ttl_min'] ?? 0,
                     'required' => '1',
                     'db' => [
                         'pass' => 'Int',
@@ -789,7 +789,7 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
                     'name' => 'limit_message',
                     'caption' => _t('_sys_agents_field_manual_limit_message'),
                     'info' => _t('_sys_agents_field_manual_limit_message_info'),
-                    'value' => isset($aAgent['limit_message']) ? $aAgent['limit_message'] : '',
+                    'value' => $aAgent['limit_message'] ?? '',
                     'db' => [
                         'pass' => 'Xss',
                     ],
@@ -799,7 +799,7 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
                     'name' => 'max_input_chars',
                     'caption' => _t('_sys_agents_field_manual_max_input_chars'),
                     'info' => _t('_sys_agents_field_manual_max_input_chars_info'),
-                    'value' => isset($aAgent['max_input_chars']) ? $aAgent['max_input_chars'] : '2000',
+                    'value' => $aAgent['max_input_chars'] ?? 0,
                     'required' => '1',
                     'db' => [
                         'pass' => 'Int',
@@ -810,7 +810,7 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
                     'name' => 'max_tokens',
                     'caption' => _t('_sys_agents_field_manual_max_tokens'),
                     'info' => _t('_sys_agents_field_manual_max_tokens_info'),
-                    'value' => isset($aAgent['max_tokens']) ? $aAgent['max_tokens'] : '1024',
+                    'value' => $aAgent['max_tokens'] ?? 0,
                     'required' => '1',
                     'db' => [
                         'pass' => 'Int',
@@ -821,7 +821,7 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
                     'name' => 'max_sessions_per_hour',
                     'caption' => _t('_sys_agents_field_manual_max_sessions_per_hour'),
                     'info' => _t('_sys_agents_field_manual_max_sessions_per_hour_info'),
-                    'value' => isset($aAgent['max_sessions_per_hour']) ? $aAgent['max_sessions_per_hour'] : '3',
+                    'value' => $aAgent['max_sessions_per_hour'] ?? 3,
                     'required' => '1',
                     'db' => [
                         'pass' => 'Int',
@@ -832,7 +832,7 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
                     'name' => 'max_sessions_per_day',
                     'caption' => _t('_sys_agents_field_manual_max_sessions_per_day'),
                     'info' => _t('_sys_agents_field_manual_max_sessions_per_day_info'),
-                    'value' => isset($aAgent['max_sessions_per_day']) ? $aAgent['max_sessions_per_day'] : '10',
+                    'value' => $aAgent['max_sessions_per_day'] ?? 10,
                     'required' => '1',
                     'db' => [
                         'pass' => 'Int',
@@ -843,7 +843,7 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
                     'name' => 'hidden_first_message',
                     'caption' => _t('_sys_agents_field_manual_hidden_first_message'),
                     'info' => _t('_sys_agents_field_manual_hidden_first_message_info'),
-                    'value' => isset($aAgent['hidden_first_message']) ? $aAgent['hidden_first_message'] : '',
+                    'value' => $aAgent['hidden_first_message'] ?? '',
                     'attrs' => ['maxlength' => 64],
                     'db' => [
                         'pass' => 'Xss',
