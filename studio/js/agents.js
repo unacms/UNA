@@ -185,11 +185,11 @@ BxDolStudioPageAgents.prototype._openAgentChatThread = function(oBtn) {
 };
 
 BxDolStudioPageAgents.prototype._initWritableAgentChat = function(sSelector, iAgentId, iContext) {
-        if (typeof una === 'undefined' || !una.Chat)
-            return;
+    if (typeof una === 'undefined' || !una.Chat)
+        return;
 
     var sRoot = (typeof sUrlRoot !== 'undefined') ? sUrlRoot : '/';
-    var sEndpoint = sRoot + 'sys-ai-chat.php?id=' + encodeURIComponent(iAgentId);
+    var sEndpoint = sRoot + 'sys-ai-chat/' + encodeURIComponent(iAgentId);
     iContext = parseInt(iContext, 10) || 0;
     if (iContext > 0)
         sEndpoint += '&context=' + encodeURIComponent(iContext);

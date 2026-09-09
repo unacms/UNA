@@ -887,7 +887,7 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
             'hidden_first_message' => (string)($aAgent['hidden_first_message'] ?? ''),
             ])];
 
-        $sEndpoint = BX_DOL_URL_ROOT . 'sys-ai-chat.php?id=' . (int)$iId;
+        $sEndpoint = BX_DOL_URL_ROOT . 'sys-ai-chat/' . (int)$iId;
         if ($iContextPid > 0)
             $sEndpoint .= '&context=' . $iContextPid;
 
