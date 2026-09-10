@@ -45,6 +45,7 @@ ICONS = [
     ('modules/boonex/datafox/template/images/icons/std-icon.svg', 'datafox', 'gray', 'square-dashed', 80),
     ('modules/boonex/dolphin_migration/template/images/icons/std-icon.svg', 'dolphin_migration', 'gray', 'square-dashed', 80),
     ('modules/boonex/froala/template/images/icons/std-icon.svg', 'froala', 'gray', 'square-dashed', 80),
+    ('modules/boonex/dolphin_connect/template/images/icons/std-icon.svg', 'dolcon', 'gray', 'square-dashed', 80),
     ('modules/boonex/jobs/template/images/icons/std-icon.svg', 'jobs', 'green', 'briefcase', 80),
     ('modules/boonex/reminders/template/images/icons/std-icon.svg', 'reminders', 'gray', 'clipboard-clock', 80),
     ('modules/boonex/reputation/template/images/icons/std-icon.svg', 'reputation', 'gray', 'star', 80),
