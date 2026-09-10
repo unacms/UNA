@@ -52,6 +52,7 @@ ICONS = [
     ('modules/boonex/ads/template/images/icons/std-icon.svg', 'ads', 'green', 'scan-square', 80),
     ('modules/boonex/workspaces/template/images/icons/std-icon.svg', 'workspaces', 'red', 'target', 80),
     ('modules/boonex/videos/template/images/icons/std-icon.svg', 'videos', 'green', 'tv-minimal-play', 80),
+    ('modules/boonex/stories/template/images/icons/std-icon.svg', 'stories', 'green', 'image-play', 80),
 ]
 
 # Brand artwork on the white plate: the source SVG's shapes are copied as they are (fills, gradients), scaled to
@@ -70,6 +71,11 @@ ART = [
     # ('modules/boonex/mailchimp/template/images/icons/std-icon.svg', 'mailchimp', '<thesvg.org mailchimp default.svg>', (), ('#FFE01B', '#EAC900'), '#241C15'),
     # ('modules/boonex/stripe_connect/template/images/icons/std-icon.svg', 'stripe_connect', '<thesvg.org stripe default.svg>', (), ('#6F68FF', '#4F48D9'), 'white', 52),
     # ('modules/boonex/snipcart/template/images/icons/std-icon.svg', 'snipcart', '<snipcart.com logo, wordmark path id=wordmark>', ('wordmark',), ('#475569', '#1E293B'), '#FACC15'),
+    # ('modules/boonex/drupal_connect/template/images/icons/std-icon.svg', 'drupal', '<thesvg.org drupal default.svg>', ()),
+    # ('modules/boonex/elasticsearch/template/images/icons/std-icon.svg', 'elasticsearch', '<thesvg.org elasticsearch default.svg>', ()),
+    # ('modules/boonex/facebook_connect/template/images/icons/std-icon.svg', 'facebook', '<thesvg.org facebook default.svg>', ()),
+    # ('modules/boonex/github/template/images/icons/std-icon.svg', 'github', '<thesvg.org github default.svg>', ()),
+    # ('modules/boonex/linkedin_connect/template/images/icons/std-icon.svg', 'linkedin', '<thesvg.org linkedin default.svg>', ()),
 ]
 
 STROKE = 2.0      # Lucide stroke width, in its 24-unit space
@@ -186,6 +192,35 @@ def icon(uid, plate, d, size):
 '''
 
 
+def parse_transform(t):
+    """An SVG transform attribute as a 3x3 affine matrix (row-major, last row 0 0 1)."""
+    m = [1.0, 0.0, 0.0, 0.0, 1.0, 0.0]
+    for name, args in re.findall(r'(matrix|translate|scale|rotate)\s*\(([^)]*)\)', t or ''):
+        v = [float(x) for x in re.findall(r'-?\d*\.?\d+(?:e-?\d+)?', args)]
+        if name == 'matrix':
+            n = [v[0], v[2], v[4], v[1], v[3], v[5]]
+        elif name == 'translate':
+            n = [1, 0, v[0], 0, 1, v[1] if len(v) > 1 else 0]
+        elif name == 'scale':
+            n = [v[0], 0, 0, 0, v[1] if len(v) > 1 else v[0], 0]
+        else:
+            a = math.radians(v[0])
+            n = [math.cos(a), -math.sin(a), 0, math.sin(a), math.cos(a), 0]
+        m = [m[0] * n[0] + m[1] * n[3], m[0] * n[1] + m[1] * n[4], m[0] * n[2] + m[1] * n[5] + m[2],
+             m[3] * n[0] + m[4] * n[3], m[3] * n[1] + m[4] * n[4], m[3] * n[2] + m[4] * n[5] + m[5]]
+    return m
+
+
+def compose(a, b):
+    """a then b applied to a point means point -> a(b(point)): the parent's matrix times the child's."""
+    return [a[0] * b[0] + a[1] * b[3], a[0] * b[1] + a[1] * b[4], a[0] * b[2] + a[1] * b[5] + a[2],
+            a[3] * b[0] + a[4] * b[3], a[3] * b[1] + a[4] * b[4], a[3] * b[2] + a[4] * b[5] + a[5]]
+
+
+def apply_transform(m, pts):
+    return [(m[0] * x + m[1] * y + m[2], m[3] * x + m[4] * y + m[5]) for x, y in pts]
+
+
 def art_icon(uid, src, skip, plate='white', fill=None, width=ART_WIDTH, size=80):
     """The artwork scaled to `width` and centred on the plate, its united outline as the shadow. `fill` recolours every
     shape (a one-colour mark or wordmark on its brand plate); otherwise a fill set on the source's root is passed down."""
@@ -205,12 +240,14 @@ def art_icon(uid, src, skip, plate='white', fill=None, width=ART_WIDTH, size=80)
     root_fill = fill or root.attrib.get('fill')
     xs, ys = [], []
 
-    def walk(el):
+    def walk(el, ctm):
         tag = el.tag.split('}')[-1]
-        if tag in ('style', 'defs'):
+        if tag in ('style', 'defs', 'title', 'desc'):
             return
         if el.attrib.get('class') in skip or el.attrib.get('id') in skip:
             return
+        if el.attrib.get('transform'):
+            ctm = parse_transform(el.attrib['transform']) if ctm is None else compose(ctm, parse_transform(el.attrib['transform']))
         d = element_to_d(el)
         if d:
             for cls in el.attrib.pop('class', '').split():
@@ -221,17 +258,25 @@ def art_icon(uid, src, skip, plate='white', fill=None, width=ART_WIDTH, size=80)
             elif root_fill and 'fill' not in el.attrib:
                 el.set('fill', root_fill)
             for pts in sample(d):
+                if ctm:
+                    pts = apply_transform(ctm, pts)
                 if len(pts) > 2:
                     polys.append(Polygon(pts).buffer(0))
                     xs.extend(x for x, _ in pts)
                     ys.extend(y for _, y in pts)
             inner.append(ET.tostring(el, encoding='unicode'))
             return
+        # a group keeps the attributes that change how its shapes draw (transform, clip, opacity, paint); ids and classes go
+        attrs = {k: v for k, v in el.attrib.items() if k not in ('id', 'class')}
+        if attrs:
+            inner.append('<g ' + ' '.join(f'{k}="{v}"' for k, v in attrs.items()) + '>')
         for c in el:
-            walk(c)
+            walk(c, ctm)
+        if attrs:
+            inner.append('</g>')
 
     for el in list(root):
-        walk(el)
+        walk(el, None)
     x0, x1, y0, y1 = min(xs), max(xs), min(ys), max(ys)
     s = width / (x1 - x0)
     tx, ty = (size - (x1 - x0) * s) / 2 - x0 * s, (size - (y1 - y0) * s) / 2 - y0 * s
