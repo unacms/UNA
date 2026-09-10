@@ -1669,23 +1669,19 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
         $aCheck = checkActionModule($iPerformerId, 'set badge', 'system', false);
         if(!isAdmin() && $aCheck[CHECK_ACTION_RESULT] !== CHECK_ACTION_RESULT_ALLOWED)
             return false;
-        
+
         $oBadges = BxDolBadges::getInstance();
 
-        $aBadges = $oBadges->getData(array('type' => 'by_module&object', 'object_id' => $iContentId, 'module' => $sModule));
+        $oBadges->delete([
+            'type' => 'by_module&object', 
+            'object_id' => $iContentId, 
+            'module' => $sModule
+        ]);
 
-        foreach ($aBadges as $aBadge) {
-            if (isset($aBadge['badge_id'])){
-                $oBadges->delete($aBadge['badge_id']);
-            }
-        }
-        
-        foreach ($aSelectedBadges as $iSelectedBadge) {
+        foreach ($aSelectedBadges as $iSelectedBadge)
            $oBadges->add($iSelectedBadge, $iContentId, $sModule);
-        }
-        
-        checkActionModule($iPerformerId, 'set badge', 'system', true); // perform action
-        
+
+        checkActionModule($iPerformerId, 'set badge', 'system', true);
         return true;
     }
     

@@ -188,14 +188,14 @@ class BxDolBadgesQuery extends BxDolDb
                 );
                 break;
         }
-        
-        $sQuery1 = "DELETE FROM `sys_badges2objects`" . $sQuery;
-        $this->query($sQuery1, $aBindings);
-        
-        if ($aParams['type'] == 'by_module'){
-            $sQuery1 = "DELETE FROM `sys_badges`" . $sQuery;
-            $this->query($sQuery1, $aBindings);
-        }
+
+        if(!$sQuery)
+            return;
+
+        $this->query("DELETE FROM `sys_badges2objects`" . $sQuery, $aBindings);
+
+        if($aParams['type'] == 'by_module')
+            $this->query("DELETE FROM `sys_badges`" . $sQuery, $aBindings);
     }
 }
 
