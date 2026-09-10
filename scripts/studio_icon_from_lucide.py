@@ -56,12 +56,20 @@ ICONS = [
 
 # Brand artwork on the white plate: the source SVG's shapes are copied as they are (fills, gradients), scaled to
 # ART_WIDTH px and centred; the shadow is the united outline of every shape, filled black/10 and shifted 1px down.
-# 'skip' drops shapes by class or id (wordmarks, registered marks). The source files are not part of the repo.
+# 'skip' drops shapes by class or id (wordmarks, registered marks); optional plate (a PLATES key or a (top, bottom)
+# pair), fill override and width follow. The source files are not part of the repo.
 ART_WIDTH = 50
 ART = [
     # ('modules/boonex/azure_b2c_con/template/images/icons/std-icon.svg', 'azrb2c', '<thesvg.org azure-azure-ad-b2c default.svg>', ()),
     # ('modules/boonex/azure_connect/template/images/icons/std-icon.svg', 'azrcon', '<thesvg.org azure-entra-connect default.svg>', ()),
     # ('modules/boonex/cidaas_connect/template/images/icons/std-icon.svg', 'cidaascon', '<cidaas logo-cidaas-vertical-color-print.svg>', ('st5',)),
+    # ('modules/boonex/shopify/template/images/icons/std-icon.svg', 'shopify', '<thesvg.org shopify default.svg>', ()),
+    # ('modules/boonex/xero/template/images/icons/std-icon.svg', 'xero', '<thesvg.org xero default.svg>', ()),
+    # ('modules/boonex/okta_connect/template/images/icons/std-icon.svg', 'oktacon', '<thesvg.org okta default.svg>', ()),
+    # ('modules/boonex/google_tagmanager/template/images/icons/std-icon.svg', 'googletagman', '<thesvg.org google-tag-manager default.svg>', ()),
+    # ('modules/boonex/mailchimp/template/images/icons/std-icon.svg', 'mailchimp', '<thesvg.org mailchimp default.svg>', (), ('#FFE01B', '#EAC900'), '#241C15'),
+    # ('modules/boonex/stripe_connect/template/images/icons/std-icon.svg', 'stripe_connect', '<thesvg.org stripe default.svg>', (), ('#6F68FF', '#4F48D9'), 'white', 52),
+    # ('modules/boonex/snipcart/template/images/icons/std-icon.svg', 'snipcart', '<snipcart.com logo, wordmark path id=wordmark>', ('wordmark',), ('#475569', '#1E293B'), '#FACC15'),
 ]
 
 STROKE = 2.0      # Lucide stroke width, in its 24-unit space
@@ -178,8 +186,9 @@ def icon(uid, plate, d, size):
 '''
 
 
-def art_icon(uid, src, skip, size=80):
-    """White plate, the source artwork scaled to ART_WIDTH and centred, its united outline as the shadow."""
+def art_icon(uid, src, skip, plate='white', fill=None, width=ART_WIDTH, size=80):
+    """The artwork scaled to `width` and centred on the plate, its united outline as the shadow. `fill` recolours every
+    shape (a one-colour mark or wordmark on its brand plate); otherwise a fill set on the source's root is passed down."""
     from shapely.geometry import Polygon
     ns = '{http://www.w3.org/2000/svg}'
     root = ET.parse(src).getroot()
@@ -193,6 +202,7 @@ def art_icon(uid, src, skip, size=80):
         if el.tag in (ns + 'style', ns + 'defs') and el.tag == ns + 'style':
             continue
     defs = ''.join(ET.tostring(el, encoding='unicode') for el in root.iter(ns + 'defs'))
+    root_fill = fill or root.attrib.get('fill')
     xs, ys = [], []
 
     def walk(el):
@@ -206,6 +216,10 @@ def art_icon(uid, src, skip, size=80):
             for cls in el.attrib.pop('class', '').split():
                 for k, v in css.get(cls, {}).items():
                     el.set(k.strip(), v.strip())
+            if fill:
+                el.set('fill', fill)
+            elif root_fill and 'fill' not in el.attrib:
+                el.set('fill', root_fill)
             for pts in sample(d):
                 if len(pts) > 2:
                     polys.append(Polygon(pts).buffer(0))
@@ -219,11 +233,11 @@ def art_icon(uid, src, skip, size=80):
     for el in list(root):
         walk(el)
     x0, x1, y0, y1 = min(xs), max(xs), min(ys), max(ys)
-    s = ART_WIDTH / (x1 - x0)
+    s = width / (x1 - x0)
     tx, ty = (size - (x1 - x0) * s) / 2 - x0 * s, (size - (y1 - y0) * s) / 2 - y0 * s
     shadow = shape_to_d(unary_union(polys).simplify(TOL / s, preserve_topology=True))
     body = ''.join(inner).replace('xmlns:ns0="http://www.w3.org/2000/svg"', '').replace('ns0:', '')
-    c1, c2 = PLATES['white']
+    c1, c2 = PLATES[plate] if plate in PLATES else plate
     return f'''<svg width="{size}" height="{size}" viewBox="0 0 {size} {size}" fill="none" xmlns="http://www.w3.org/2000/svg">
 <rect width="{size}" height="{size}" fill="url(#paint0_linear_{uid})"/>
 <g transform="translate({tx:.3f} {ty:.3f}) scale({s:.5f})">
@@ -251,7 +265,7 @@ for rel, uid, plate, glyph, size in ICONS:
         fh.write(icon(uid, plate, d, size))
     print(f'{rel}: {glyph} -> {n} outline(s), {len(d)} chars')
 
-for rel, uid, src, skip in ART:
+for rel, uid, src, skip, *opts in ART:
     with open(ROOT + '/' + rel, 'w') as fh:
-        fh.write(art_icon(uid, src, skip))
+        fh.write(art_icon(uid, src, skip, *opts))
     print(f'{rel}: art from {src}')
