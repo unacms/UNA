@@ -24,7 +24,7 @@ class BxDolStudioAgents extends BxTemplStudioWidget
     {
         parent::__construct('agents');
 
-        $this->oDbAi = new BxDolAIQuery();
+        $this->oDbAi = new BxDolAiQuery();
 
         $this->sPage = BX_DOL_STUDIO_AGENTS_TYPE_DEFAULT;
         if(is_string($sPage) && !empty($sPage))

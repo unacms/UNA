@@ -125,7 +125,7 @@ class BxBaseStudioAgentsVectorStore extends BxDolStudioAgentsInstruments
         $sDocs = $oParsedown->text($aVectorStore['docs']);
 
         $aEmbeddingProviders = ['' => _t('_sys_please_select')];
-        $a = BxDolAI::getInstance()->getModels(['capabilities' => 'embeddings', 'active' => true]);
+        $a = BxDolAi::getInstance()->getModels(['capabilities' => 'embeddings', 'active' => true]);
         foreach ($a as $k => $v) {
             $aEmbeddingProviders[$k] = $v;
         }

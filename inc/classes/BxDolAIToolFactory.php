@@ -14,7 +14,7 @@ class BxDolAIToolFactory extends BxDolFactory
         if (isset($GLOBALS['bxDolClasses'][__CLASS__ . '_AiAgentTool_' . $iId]))
             return $GLOBALS['bxDolClasses'][__CLASS__ . '_AiAgentTool_' . $iId];
 
-        $a = BxDolAIQuery::getToolObject($iId);
+        $a = BxDolAiQuery::getToolObject($iId);
         if (!$a) {
             bx_log('sys_agents', "Tool with id {$iId} not found", BX_LOG_ERR);
             throw new Exception("Tool with id {$iId} not found");

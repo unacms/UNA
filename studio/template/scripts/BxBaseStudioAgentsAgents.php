@@ -53,7 +53,7 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
     public function performActionManual()
     {
         $iId = $this->_getId();        
-        $aAgent = BxDolAIQuery::getAgentObject($iId);
+        $aAgent = BxDolAiQuery::getAgentObject($iId);
         if (!$aAgent) {
             echoJson(['msg' => _t('_sys_txt_error_occured')]);
             return;
@@ -63,7 +63,7 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
             return;
         }
 
-        $oAi = BxDolAI::getInstance();
+        $oAi = BxDolAi::getInstance();
         try {
             $sResponse = $oAi->callAgent('manual', $aAgent);
         } catch (Throwable $o) {
@@ -85,13 +85,13 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
     public function performActionWipeChatHistory()
     {
         $iId = $this->_getId();        
-        $aAgent = BxDolAIQuery::getAgentObject($iId);
+        $aAgent = BxDolAiQuery::getAgentObject($iId);
         if (!$aAgent) {
             echoJson(['msg' => _t('_sys_txt_error_occured')]);
             return;
         }
 
-        $oDb = new BxDolAIQuery();
+        $oDb = new BxDolAiQuery();
         $oDb->wipeAgentChatHistory($aAgent);
 
         $aRes = ['grid' => $this->getCode(false), 'blink' => $iId];
@@ -103,7 +103,7 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
         $sAction = 'add';
 
         $oTemplate = BxDolStudioTemplate::getInstance();
-        $oAI = BxDolAI::getInstance();
+        $oAI = BxDolAi::getInstance();
 
         $aForm = $this->_getForm($sAction);
         $oForm = new BxTemplFormView($aForm);
@@ -171,10 +171,10 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
         $sAction = 'edit';
 
         $oTemplate = BxDolStudioTemplate::getInstance();
-        $oAI = BxDolAI::getInstance();
+        $oAI = BxDolAi::getInstance();
 
         $iId = $this->_getId();
-        $aAgent = BxDolAIQuery::getAgentObject($iId);
+        $aAgent = BxDolAiQuery::getAgentObject($iId);
 
         $aForm = $this->_getFormEdit($sAction, $aAgent);
         $oForm = new BxTemplFormView($aForm);
@@ -238,7 +238,7 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
     public function performActionLogs()
     {
         $iId = $this->_getId();
-        $aAgent = BxDolAIQuery::getAgentObject($iId);
+        $aAgent = BxDolAiQuery::getAgentObject($iId);
         if (!$aAgent) {
             echoJson(['msg' => _t('_sys_txt_error_occured')]);
             return;
@@ -259,7 +259,7 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
     public function performActionMessage()
     {
         $iId = $this->_getId();
-        $aAgent = BxDolAIQuery::getAgentObject($iId);
+        $aAgent = BxDolAiQuery::getAgentObject($iId);
         if (!$aAgent) {
             echoJson(['msg' => _t('_sys_txt_error_occured')]);
             return;
@@ -272,7 +272,7 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
         $sChatId = 'bx-ai-chat-' . $iId;
         $sName = !empty($aAgent['title']) ? $aAgent['title'] : $aAgent['name'];
         $aThreadsTpl = [];
-        $oAi = BxDolAI::getInstance();
+        $oAi = BxDolAi::getInstance();
         $aThreads = $oAi && method_exists($oAi, 'listAgentChatThreads') ? $oAi->listAgentChatThreads($aAgent) : [];
         foreach ($aThreads as $aThread) {
             $aThreadsTpl[] = [
@@ -314,14 +314,14 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
     public function performActionGetChatThreads()
     {
         $iId = $this->_getId();
-        $aAgent = BxDolAIQuery::getAgentObject($iId);
+        $aAgent = BxDolAiQuery::getAgentObject($iId);
         if (!$aAgent) {
             echoJson(['code' => 404, 'threads' => []]);
             return;
         }
 
         $aThreadsJs = [];
-        $oAi = BxDolAI::getInstance();
+        $oAi = BxDolAi::getInstance();
         $aThreads = $oAi && method_exists($oAi, 'listAgentChatThreads') ? $oAi->listAgentChatThreads($aAgent) : [];
         foreach ($aThreads as $aThread)
             $aThreadsJs[] = $this->_agentChatThreadJs($aThread);
@@ -332,14 +332,14 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
     public function performActionGetChatThread()
     {
         $iId = $this->_getId();
-        $aAgent = BxDolAIQuery::getAgentObject($iId);
+        $aAgent = BxDolAiQuery::getAgentObject($iId);
         if (!$aAgent) {
             echoJson(['code' => 404, 'msg' => _t('_sys_txt_error_occured'), 'messages' => []]);
             return;
         }
 
         $sThreadId = trim((string)bx_get('thread_id'));
-        $oAi = BxDolAI::getInstance();
+        $oAi = BxDolAi::getInstance();
         if (!$oAi || !method_exists($oAi, 'getChatHistoryUiMessagesByThread')) {
             echoJson(['code' => 503, 'msg' => _t('_sys_txt_error_occured'), 'messages' => []]);
             return;
@@ -459,7 +459,7 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
             // $this->_oDb->deleteAutomatorHelpers(['automator_id' => (int)$mixedId]);
             // $this->_oDb->deleteAutomatorAssistants(['automator_id' => (int)$mixedId]);
 
-            // if(($oCmts = BxDolAI::getInstance()->getAutomatorCmtsObject($mixedId)) !== false)
+            // if(($oCmts = BxDolAi::getInstance()->getAutomatorCmtsObject($mixedId)) !== false)
             //    $oCmts->onObjectDelete();
         }
 
@@ -550,7 +550,7 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
                     'name' => 'model_id',
                     'caption' => _t('_sys_agents_field_model_id'),
                     'info' => _t('_sys_agents_field_model_id_info'),
-                    'value' => isset($aAgent['model_id']) ? $aAgent['model_id'] : BxDolAI::getDefaultModel(),
+                    'value' => isset($aAgent['model_id']) ? $aAgent['model_id'] : BxDolAi::getDefaultModel(),
                     'values' => $this->_getModelSelectValues(),
                     'required' => '1',
                     'checker' => [
@@ -1240,7 +1240,7 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
 
     protected function _getAgentWithProfile($iProfileId, $iExcludeAgentId = 0)
     {
-        $aAgents = BxDolAI::getInstance()->getAgentsByProfileId($iProfileId);
+        $aAgents = BxDolAi::getInstance()->getAgentsByProfileId($iProfileId);
         foreach($aAgents as $aAgent) {
             if($aAgent['id'] != $iExcludeAgentId)
                 return $aAgent;

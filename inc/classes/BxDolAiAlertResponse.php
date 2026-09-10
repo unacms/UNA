@@ -25,7 +25,7 @@ class BxDolAiAlertResponse extends BxDolAlertsResponse
             return;
 
         // call agents
-        $oAi = BxDolAI::getInstance();
+        $oAi = BxDolAi::getInstance();
         if($aAgents = $oAi->getAgentsByProfileId($iRecipient)) {
             $GLOBALS['glAgentsCallQueue'] = [];
             foreach($aAgents as $a) {

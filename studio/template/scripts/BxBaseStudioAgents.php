@@ -159,7 +159,7 @@ class BxBaseStudioAgents extends BxDolStudioAgents
         $sJsObject = $this->getPageJsObject();
         $oTemplate = BxDolStudioTemplate::getInstance();
 
-        $oAi = BxDolAI::getInstance();
+        $oAi = BxDolAi::getInstance();
         $aAgents = $oAi->getAgentsBy(['sample' => 'all']);
 
         $oGrid = $this->getGrid($this->aGridObjects[BX_DOL_STUDIO_AGENTS_TYPE_AGENTS], true);

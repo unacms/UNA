@@ -15,7 +15,7 @@ class BxDolStudioAgentsAgents extends BxTemplStudioGridAgents
     {
         parent::__construct ($aOptions, $oTemplate);
 
-        $this->_iProfileIdAi = BxDolAI::getInstance()->getProfileId();
+        $this->_iProfileIdAi = BxDolAi::getInstance()->getProfileId();
     }
 }
 

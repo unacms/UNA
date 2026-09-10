@@ -17,7 +17,7 @@ class BxDolAIModelFactory extends BxDolFactory
             return $GLOBALS['bxDolClasses'][$sCacheKey];
 
         $aProvidersWithKey = ['anthropic', 'openai-embeddings', 'voyageai-embeddings', 'openai-like-embeddings', 'openai-responses', 'openai-like'];
-        $a = BxDolAIQuery::getModelObject($iId);
+        $a = BxDolAiQuery::getModelObject($iId);
         if (!$a) {
             bx_log('sys_agents', "Agent AI Model with id {$iId} not found", BX_LOG_ERR);
             throw new Exception("Agent AI Model with id {$iId} not found");

@@ -153,7 +153,7 @@ class BxDolAlerts extends BxDol
         BxDolAlertsStats::log($this);
 
         // call agents
-        $oAi = BxDolAI::getInstance();
+        $oAi = BxDolAi::getInstance();
         if($aAgents = $oAi->getAgentsByAlertUnitAndAction($this->sUnit, $this->sAction)) {
             foreach($aAgents as $a) {
                 $aParams = [

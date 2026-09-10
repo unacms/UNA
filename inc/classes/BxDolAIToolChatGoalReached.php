@@ -34,7 +34,7 @@ class BxDolAIToolChatGoalReached extends BxDolAITool
 
     public function __invoke(string $sSummary = ''): string
     {
-        $b = BxDolAI::getInstance()->emitConversationClosed('goal', trim((string)$sSummary));
+        $b = BxDolAi::getInstance()->emitConversationClosed('goal', trim((string)$sSummary));
         return $b ? 'ok' : 'already_closed';
     }
 }

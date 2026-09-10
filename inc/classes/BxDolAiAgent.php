@@ -54,7 +54,7 @@ class BxDolAiAgent extends RAG
                 $aPromptTools[] = "Return array only, modified version of 'extra' array. Modifyable keys: " . $this->getAlertTriggerModifyableKeys() . ".";
             }
 
-            $sDesc = trim(BxDolAIQuery::getAlertDesc($this->aAgent['alert']));
+            $sDesc = trim(BxDolAiQuery::getAlertDesc($this->aAgent['alert']));
             if ('.' != mb_substr($sDesc, -1))
                 $sDesc .= '.';
             $aPromptSystem[] = $sDesc;
@@ -129,7 +129,7 @@ class BxDolAiAgent extends RAG
 
     protected function getСhatHistoryThreadId(): string
     {
-        return BxDolAI::chatHistoryThreadId($this->aAgent, $this->aParams);
+        return BxDolAi::chatHistoryThreadId($this->aAgent, $this->aParams);
     }
 
     protected function getAlertTriggerModifyableKeys(): string
@@ -137,7 +137,7 @@ class BxDolAiAgent extends RAG
         if ('alert' != $this->aAgent['trigger'])
             return 'none';
 
-        $aAlert = BxDolAIQuery::getAlert($this->aAgent['alert']);
+        $aAlert = BxDolAiQuery::getAlert($this->aAgent['alert']);
         if (!$aAlert)
             return 'none';
 
