@@ -181,7 +181,7 @@ BxDolStudioStore.prototype._getFile = function(sAction, mixedId, onResult, oButt
 	var oDate = new Date();
 	var $this = this;
 
-	bx_loading_btn(oButton, true);
+	bx_std_loading_btn(oButton, true);
 	$(oButton).addClass('bx-btn-disabled');
 
 	$.get(
@@ -202,7 +202,7 @@ BxDolStudioStore.prototype._getFile = function(sAction, mixedId, onResult, oButt
 };
 
 BxDolStudioStore.prototype._onGetFile = function(oData, oButton) {
-    bx_loading_btn(oButton, false);
+    bx_std_loading_btn(oButton, false);
 
     oButton = $(oButton);
     switch(parseInt(oData.code)) {
@@ -354,7 +354,7 @@ BxDolStudioStore.prototype.perform = function(sType, sValue, onSuccess, oInput) 
 	if(!sValue)
         return false;
 
-	bx_loading_btn(oInput, true);
+	bx_std_loading_btn(oInput, true);
 
     $.post(
     	this.sActionsUrl,
@@ -364,7 +364,7 @@ BxDolStudioStore.prototype.perform = function(sType, sValue, onSuccess, oInput) 
     		_t:oDate.getTime()
     	},
     	function (oData) {
-    		bx_loading_btn(oInput, false);
+    		bx_std_loading_btn(oInput, false);
 
     		if(oData.message.length > 0)
     			$this.showNotification(oData.message);
@@ -418,7 +418,7 @@ BxDolStudioStore.prototype.changePagePaginate = function(oButton, sType, mixedVa
     var oDate = new Date();
     var $this = this;
 
-    bx_loading_btn(oButton, true);
+    bx_std_loading_btn(oButton, true);
 
     $.get(
         this.sActionsUrl,
@@ -431,7 +431,7 @@ BxDolStudioStore.prototype.changePagePaginate = function(oButton, sType, mixedVa
             _t:oDate.getTime()
         },
         function(oData) {
-            bx_loading_btn(oButton, false);
+            bx_std_loading_btn(oButton, false);
 
                 if(oData.code != 0) {
                     $this.showNotification(oData.message);

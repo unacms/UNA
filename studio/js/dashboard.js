@@ -46,34 +46,10 @@ BxDolStudioDashboard.prototype.loading = function(sDivId, bShow, oButton) {
 };
 
 /**
- * Trigger button loader: the button is disabled and its label gives way to the launcher's tile wave (page.css .bx-std-btn-loading) at the
- * button's width, so nothing moves; the label (and the button) comes back when the request ends. The label stays the accessible name meanwhile.
+ * Trigger button loader: the Studio-wide one (page.js bx_std_loading_btn).
  */
 BxDolStudioDashboard.prototype.loadingButton = function(oButton, bShow) {
-    oButton = $(oButton);
-    if(!oButton.length)
-        return;
-
-    if(bShow) {
-        if(oButton.data('bx-loading'))
-            return;
-
-        oButton.data('bx-loading', {html: oButton.html(), label: oButton.attr('aria-label')});
-        if(!oButton.attr('aria-label'))
-            oButton.attr('aria-label', oButton.text().trim());
-
-        oButton.css('min-width', oButton.outerWidth() + 'px').prop('disabled', true).attr('aria-disabled', 'true').addClass('bx-btn-disabled bx-btn-loading');
-        oButton.html('<span class="bx-std-btn-loading" aria-hidden="true"></span>');
-        return;
-    }
-
-    var oSaved = oButton.data('bx-loading');
-    if(!oSaved)
-        return;
-
-    oButton.removeData('bx-loading').css('min-width', '').prop('disabled', false).removeAttr('aria-disabled').removeClass('bx-btn-disabled bx-btn-loading').html(oSaved.html);
-    if(oSaved.label == undefined)
-        oButton.removeAttr('aria-label');
+    bx_std_loading_btn(oButton, bShow);
 };
 
 /**

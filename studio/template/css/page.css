@@ -396,7 +396,7 @@ div.bx-std-block-content > [id^="bx-grid-wrap-"] .bx-grid-table td:last-child {
 .dark form[name="adm-settings-form"] > .bx-form-advanced-wrapper > .bx-form-section-wrapper:last-child:not(:first-child),
 .dark div.bx-std-block-content > [id^="bx-grid-wrap-"] > .bx-grid-header,
 .dark div.bx-std-block-content > [id^="bx-grid-wrap-"] > .bx-grid-footer {
-    background-color: #0f0f0f; /* black page + the block's white/6 */
+    background-color: #1a1a1a; /* black page + the block's white/10, so the sticky row matches the block around it */
 }
 .dark form[name="adm-settings-form"] > .bx-form-advanced-wrapper > .bx-form-section-wrapper:last-child:not(:first-child),
 .dark div.bx-std-block-content > [id^="bx-grid-wrap-"] > .bx-grid-footer {

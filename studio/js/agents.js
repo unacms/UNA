@@ -182,13 +182,13 @@ BxDolStudioPageAgents.prototype.approveCode = function(oSource, iCmtId) {
     oData = jQuery.extend({}, oData, {action: 'approveCode', Cmt: iCmtId});
 
     oSource = $(oSource);
-    bx_loading_btn(oSource, true);
+    bx_std_loading_btn(oSource, true);
 
     jQuery.post (
         this.sActionUrlCmts,
         oData,
         function(oData) {
-            bx_loading_btn(oSource, false);
+            bx_std_loading_btn(oSource, false);
 
             processJsonData(oData);
         },

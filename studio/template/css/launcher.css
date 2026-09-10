@@ -453,9 +453,32 @@ div.bx-std-widget-caption-jitter {
     width: calc(100% - 2.5rem);
     left: 1.25rem;
 }
-#bx-informer .bx-informer-msg{
-    background-color: rgba(255, 234, 193, 0.95);
+/* The informer floats over the tiles, so each message sits on a near-opaque base of the page colour; the type tint (the site's
+   bg-blue/yellow/red-50 and their dark 10% washes) goes on top as a background image, and the text colours stay the site's. */
+#bx-informer .bx-informer-msg {
     display: none;
+    background-color: rgb(255 255 255 / 0.95);
+}
+.dark #bx-informer .bx-informer-msg {
+    background-color: rgb(17 24 39 / 0.95);
+}
+#bx-informer .bx-informer-msg-info {
+    background-image: linear-gradient(rgb(239 246 255), rgb(239 246 255));
+}
+#bx-informer .bx-informer-msg-alert {
+    background-image: linear-gradient(rgb(254 252 232), rgb(254 252 232));
+}
+#bx-informer .bx-informer-msg-error {
+    background-image: linear-gradient(rgb(254 242 242), rgb(254 242 242));
+}
+.dark #bx-informer .bx-informer-msg-info {
+    background-image: linear-gradient(rgb(59 130 246 / 0.1), rgb(59 130 246 / 0.1));
+}
+.dark #bx-informer .bx-informer-msg-alert {
+    background-image: linear-gradient(rgb(234 179 8 / 0.1), rgb(234 179 8 / 0.1));
+}
+.dark #bx-informer .bx-informer-msg-error {
+    background-image: linear-gradient(rgb(239 68 68 / 0.1), rgb(239 68 68 / 0.1));
 }
 #bx-informer #sys-module-discontinued.bx-informer-msg,
 #bx-informer #sys-account-need-to-change-password.bx-informer-msg{

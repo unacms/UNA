@@ -210,4 +210,39 @@ $(document).ready(function() {
     bx_std_scrollbars();
 });
 
+/**
+ * Button loader (the launcher's tile wave, page.css .bx-std-btn-loading) for a button whose request is in flight: the button is disabled
+ * and its label gives way to the wave at the button's width, so nothing moves; the label (and the button) comes back when the request
+ * ends. The label stays the accessible name meanwhile. Replaces the site's bx_loading_btn spinner in Studio.
+ */
+function bx_std_loading_btn(oButton, bShow) {
+    oButton = $(oButton);
+    if(!oButton.length)
+        return;
+
+    if(bShow) {
+        if(oButton.data('bx-loading'))
+            return;
+
+        oButton.data('bx-loading', {html: oButton.html(), label: oButton.attr('aria-label'), disabled: oButton.prop('disabled') || oButton.hasClass('bx-btn-disabled')});
+        if(!oButton.attr('aria-label'))
+            oButton.attr('aria-label', oButton.text().trim());
+
+        oButton.css('min-width', oButton.outerWidth() + 'px').prop('disabled', true).attr('aria-disabled', 'true').addClass('bx-btn-disabled bx-btn-loading');
+        oButton.html('<span class="bx-std-btn-loading" aria-hidden="true"></span>');
+        return;
+    }
+
+    var oSaved = oButton.data('bx-loading');
+    if(!oSaved)
+        return;
+
+    // a button that was disabled before stays so
+    oButton.removeData('bx-loading').css('min-width', '').removeClass('bx-btn-loading').html(oSaved.html);
+    if(!oSaved.disabled)
+        oButton.prop('disabled', false).removeAttr('aria-disabled').removeClass('bx-btn-disabled');
+    if(oSaved.label == undefined)
+        oButton.removeAttr('aria-label');
+}
+
 /** @} */

@@ -1342,7 +1342,7 @@
         @apply flex-1 min-w-0 font-medium;
     }
     .bx-informer-content a:not(.bx-btn) {
-        @apply font-semibold underline underline-offset-2 hover:opacity-80;
+        @apply font-semibold underline underline-offset-2 text-inherit hover:opacity-80; /* the message colour keeps 4.5:1 on the tinted plates; the site link blue does not on yellow */
     }
     .bx-informer-action {
         @apply flex-none whitespace-nowrap;
@@ -1532,7 +1532,7 @@
     /* Studio surfaces: translucent white (60% light, 6% dark) with an inset ring (white 50% light, 2.5% dark) and an outer shadow, no border. */
     .bx-std-block.cnt-ttl-bg,
     .bx-std-block.cnt-bg {
-        @apply bg-white/60 dark:bg-white/[0.06] ring-1 ring-inset ring-white/50 dark:ring-white/[0.025];
+        @apply bg-white/60 dark:bg-white/10 ring-1 ring-inset ring-white/50 dark:ring-white/[0.025];
         @apply rounded-3xl smooth-shadow-sm; /* 24px, the same corner as the header bar and the sidebar column */
     }
 
@@ -1577,7 +1577,7 @@
     }
 
     .bx-std .bx-def-color-bg-block {
-        @apply bg-white/60 dark:bg-white/[0.06] ring-1 ring-inset ring-white/50 dark:ring-white/[0.025] smooth-shadow-sm;
+        @apply bg-white/60 dark:bg-white/10 ring-1 ring-inset ring-white/50 dark:ring-white/[0.025] smooth-shadow-sm;
     }
     .bx-std .bx-popup-color-bg {
         @apply bg-white dark:bg-[#1a1a1a]; /* popups float over content, so the surface is solid: white, and in dark the black page plus white/10 composite (one step above the white/6 blocks) */
