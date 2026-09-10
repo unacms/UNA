@@ -9,17 +9,11 @@
 
 class BxDolStudioAgentsAgents extends BxTemplStudioGridAgents
 {
-    protected $_oDb;
-
     protected $_iProfileIdAi;
 
     public function __construct ($aOptions, $oTemplate = false)
     {
         parent::__construct ($aOptions, $oTemplate);
-
-        $this->_sDefaultSortingOrder = 'DESC';
-
-        $this->_oDb = new BxDolStudioAgentsQuery();
 
         $this->_iProfileIdAi = BxDolAI::getInstance()->getProfileId();
     }

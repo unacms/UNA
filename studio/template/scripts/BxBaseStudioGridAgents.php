@@ -8,7 +8,7 @@
  * @{
  */
 
-class BxBaseStudioGridAgents extends BxTemplStudioGrid
+class BxBaseStudioGridAgents extends BxDolStudioGridAgents
 {
     public function __construct($aOptions, $oTemplate = false)
     {

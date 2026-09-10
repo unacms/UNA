@@ -8,7 +8,7 @@
  * @{
  */
 
-class BxBaseStudioAgentsLogs extends BxDolStudioAgentsGrid
+class BxBaseStudioAgentsLogs extends BxTemplStudioGridAgents
 {
     public function __construct ($aOptions, $oTemplate = false)
     {

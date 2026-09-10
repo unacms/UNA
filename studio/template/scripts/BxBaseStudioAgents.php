@@ -38,32 +38,14 @@ class BxBaseStudioAgents extends BxDolStudioAgents
             BX_DOL_STUDIO_AGENTS_TYPE_AI_PROVIDERS => ['icon' => 'mi-agt-providers.svg'],
             BX_DOL_STUDIO_AGENTS_TYPE_TOOLS => ['icon' => 'mi-agt-tools.svg'],
             BX_DOL_STUDIO_AGENTS_TYPE_VECTOR_STORE => ['icon' => 'mi-agt-vector-store.svg'],
-            BX_DOL_STUDIO_AGENTS_TYPE_SETTINGS => ['icon' => 'mi-agt-settings.svg'],
-
-            /*
-             * Hidden for now. Most probably they will be removed.
-             * 
-            BX_DOL_STUDIO_AGENTS_TYPE_PROVIDERS => ['icon' => 'mi-agt-providers.svg'],
-            BX_DOL_STUDIO_AGENTS_TYPE_HELPERS => ['icon' => 'mi-agt-helpers.svg'],
-            BX_DOL_STUDIO_AGENTS_TYPE_AUTOMATORS => ['icon' => 'mi-agt-automators.svg'],
-             */
+            BX_DOL_STUDIO_AGENTS_TYPE_SETTINGS => ['icon' => 'mi-agt-settings.svg']
         ];
 
         $this->aGridObjects = [
-            BX_DOL_STUDIO_AGENTS_TYPE_AI_PROVIDERS => 'sys_studio_agents_models',
-            BX_DOL_STUDIO_AGENTS_TYPE_VECTOR_STORE => 'sys_studio_agents_vector_store',
-            BX_DOL_STUDIO_AGENTS_TYPE_TOOLS => 'sys_studio_agents_tools',
-
             BX_DOL_STUDIO_AGENTS_TYPE_AGENTS => 'sys_studio_agents_agents',
-
-            /*
-             * Hidden for now. Most probably they will be removed.
-             * 
-            BX_DOL_STUDIO_AGENTS_TYPE_AUTOMATORS => 'sys_studio_agents_automators',
-            BX_DOL_STUDIO_AGENTS_TYPE_PROVIDERS => 'sys_studio_agents_providers',
-            BX_DOL_STUDIO_AGENTS_TYPE_HELPERS => 'sys_studio_agents_helpers',
-             * 
-             */
+            BX_DOL_STUDIO_AGENTS_TYPE_AI_PROVIDERS => 'sys_studio_agents_models',
+            BX_DOL_STUDIO_AGENTS_TYPE_TOOLS => 'sys_studio_agents_tools',
+            BX_DOL_STUDIO_AGENTS_TYPE_VECTOR_STORE => 'sys_studio_agents_vector_store',
         ];
 
         $this->sSessionKeyAgentsView = 'bx_std_agents_view';
@@ -81,8 +63,6 @@ class BxBaseStudioAgents extends BxDolStudioAgents
 
     public function getPageMenu($aMenu = [], $aMarkers = [])
     {
-        $sJsObject = $this->getPageJsObject();
-
         $aMenu = [];
         foreach($this->aMenuItems as $sMenuItem => $aItem)
             $aMenu[] = [
@@ -325,78 +305,6 @@ class BxBaseStudioAgents extends BxDolStudioAgents
         return $this->getGrid($this->aGridObjects[BX_DOL_STUDIO_AGENTS_TYPE_AGENTS]);
     }
 
-    /*
-     * Isn't used for now. Most probably they will be removed.
-     * 
-    protected function getAutomators()
-    {
-        $oTemplate = BxDolStudioTemplate::getInstance();
-
-        $this->aPageJsOptions['sPageUrl'] .= 'automators';
-
-        if(($iId = bx_get('id')) !== false) {
-            if(($oCmts = BxDolAI::getInstance()->getAutomatorCmtsObject($iId, $oTemplate)) !== false) {
-                $this->aPageJsOptions = array_merge($this->aPageJsOptions, [
-                    'sPageUrl' => $this->sSubpageUrl . 'automators&id=' . $iId,
-                    'sActionUrlCmts' => bx_append_url_params(BX_DOL_URL_ROOT . 'cmts.php', [
-                        'sys' => $oCmts->getSystemName(),
-                        'id' => $iId
-                    ])
-                ]);
-
-                return $oCmts->getCommentsBlock();
-            }
-            else
-                return MsgBox(_t('_error occured'));
-        }
-
-        return $this->getGrid($this->aGridObjects[BX_DOL_STUDIO_AGENTS_TYPE_AUTOMATORS]);
-    }
-    
-    protected function getHelpers()
-    {
-        $oTemplate = BxDolStudioTemplate::getInstance();
-        
-        $this->aPageJsOptions['sPageUrl'] .= 'helpers';
-
-        if(($iId = bx_get('id')) !== false) {
-            $this->aPageJsOptions = array_merge($this->aPageJsOptions, [
-                'sPageUrl' => $this->sSubpageUrl . 'helpers&id=' . $iId,
-            ]);
-            
-            $aHelper = BxDolAI::getInstance()->getHelperById($iId);
-
-            $aForm = $this->_getHelpersForm('tune', $aHelper);
-            $oForm = new BxTemplFormView($aForm);
-            $oForm->initChecker();
-
-            if($oForm->isSubmittedAndValid()) {
-                if($oForm->update($iId) !== false) {
-                    $sMessage = $oForm->getCleanValue('message');
-                    $oForm->aInputs['result']['value'] = BxDolAI::callHelper($iId, $sMessage);
-                }
-            }
-
-            return $oForm->getCode();
-        }
-
-        return $this->getGrid($this->aGridObjects[BX_DOL_STUDIO_AGENTS_TYPE_HELPERS]);
-    }
-
-    protected function getProviders()
-    {
-        $this->aPageJsOptions = array_merge($this->aPageJsOptions, [
-            'sPageUrl' => $this->sSubpageUrl . 'providers',
-            'sActionUrlGrid' => bx_append_url_params(BX_DOL_URL_ROOT . 'grid.php', [
-                'o' => 'sys_studio_agents_providers'
-            ])
-        ]);
-
-        return $this->getGrid($this->aGridObjects[BX_DOL_STUDIO_AGENTS_TYPE_PROVIDERS]);
-    }
-     * 
-     */
-
     protected function getGrid($sObjectName, $bObject = false)
     {
         $oGrid = BxDolGrid::getObjectInstance($sObjectName);
@@ -405,69 +313,7 @@ class BxBaseStudioAgents extends BxDolStudioAgents
 
         return $bObject ? $oGrid : $oGrid->getCode();
     }
-    
-    protected function _getHelpersForm($sAction, $aHelper = [])
-    {
-        $aForm = array(
-            'form_attrs' => array(
-                'id' => 'bx_std_agents_helpers_' . $sAction,
-                'action' => $this->aPageJsOptions['sPageUrl'],
-                'method' => 'post',
-            ),
-            'params' => array (
-                'db' => array(
-                    'table' => 'sys_agents_helpers',
-                    'key' => 'id',
-                    'submit_name' => 'do_submit',
-                ),
-            ),
-            'inputs' => [
-                'prompt' => [
-                    'type' => 'textarea',
-                    'name' => 'prompt',
-                    'caption' => _t('_sys_agents_helpers_field_prompt'),
-                    'value' => isset($aHelper['prompt']) ? $aHelper['prompt'] : '',
-                    'required' => '1',
-                    'checker' => [
-                        'func' => 'Avail',
-                        'params' => [],
-                        'error' => _t('_sys_agents_helpers_field_prompt_err'),
-                    ],
-                    'db' => [
-                        'pass' => 'Xss',
-                    ]
-                ],
-                'message' => [
-                    'type' => 'textarea',
-                    'name' => 'message',
-                    'caption' => _t('_sys_agents_helpers_field_message'),
-                    'value' => '',
-                    'required' => '1',
-                    'checker' => [
-                        'func' => 'Avail',
-                        'params' => [],
-                        'error' => _t('_sys_agents_helpers_field_message_err'),
-                    ],
-                ],
-                'result' => [
-                    'type' => 'textarea',
-                    'name' => 'result',
-                    'caption' => _t('_sys_agents_helpers_field_result'),
-                    'value' => '',
-                    'attrs' => [
-                        'disabled' => 'disabled'
-                    ]
-                ],
-                'submit' => [
-                    'type' => 'submit',
-                    'name' => 'do_submit',
-                    'value' => _t('_sys_submit'),
-                ],
-            ],
-        );
 
-        return $aForm;
-    }
 }
 
 /** @} */

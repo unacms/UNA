@@ -187,18 +187,6 @@ class BxDolAlerts extends BxDol
                 }
             }
         }
-
-        // call automators
-        $oAi = BxDolAI::getInstance();
-        if($oAi->hasAutomators(BX_DOL_AI_AUTOMATOR_EVENT, true)) {
-            $aAutomators = $oAi->getAutomatorsEvent($this->sUnit, $this->sAction);
-            foreach($aAutomators as $aAutomator) {
-                $oAi->callAutomator(BX_DOL_AI_AUTOMATOR_EVENT, [
-                    'automator' => $aAutomator,
-                    'alert' => $this
-                ]);
-            }
-        }        
     }
 
     /**

@@ -9,16 +9,13 @@
 
 class BxDolStudioAgentsInstruments extends BxTemplStudioGridAgents
 {
-    protected $_oDb;
     protected $_sFieldName;
 
     public function __construct ($aOptions, $oTemplate = false)
     {
         parent::__construct ($aOptions, $oTemplate);
 
-        $this->_sDefaultSortingOrder = 'DESC';
         $this->_sFieldName = 'name';
-        $this->_oDb = new BxDolStudioAgentsQuery();
     }
 
     public function getPageJsObject()
@@ -83,7 +80,12 @@ class BxDolStudioAgentsInstruments extends BxTemplStudioGridAgents
 
         return $aForm;
     }
-    
+
+    protected function _getForm($sAction = '', $aData = [])
+    {
+        return [];
+    }
+
     protected function _getActionDelete ($sType, $sKey, $a, $isSmall = false, $isDisabled = false, $aRow = array())
     {
         if ($sType == 'single' && $aRow['duplicate'] == 0)

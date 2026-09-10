@@ -4,7 +4,7 @@
 
 -- --------------------------------------------------------
 
-DROP TABLE IF EXISTS `sys_keys`, `sys_objects_editor`, `sys_objects_iconset`, `sys_objects_player`, `sys_objects_push`, `sys_objects_sms`, `sys_objects_embeds`, `sys_objects_file_handlers`, `sys_objects_captcha`, `sys_objects_cmts`, `sys_cmts_images`, `sys_cmts_images_preview`, `sys_cmts_images2entries`, `sys_cmts_ids`, `sys_cmts_meta_keywords`, `sys_cmts_meta_mentions`, `sys_cmts_votes`, `sys_cmts_votes_track`, `sys_cmts_reactions`, `sys_cmts_reactions_track`, `sys_cmts_reports`, `sys_cmts_reports_track`, `sys_cmts_scores`, `sys_cmts_scores_track`, `sys_email_templates`, `sys_queue_push`, `sys_queue_email`, `sys_options`, sys_options_types, `sys_options_categories`, `sys_options_mixes`, `sys_options_mixes2options`,  `sys_localization_categories`, `sys_localization_keys`, `sys_localization_languages`, `sys_localization_strings`, `sys_acl_actions`, `sys_acl_actions_track`, `sys_acl_matrix`, `sys_acl_levels`, `sys_sessions`, `sys_acl_levels_members`, `sys_objects_rss`, `sys_objects_search`, `sys_objects_search_extended`, `sys_search_extended_fields`, `sys_search_extended_sorting_fields`, `sys_statistics`, `sys_audit`, `sys_alerts`, `sys_alerts_cache_triggers`, `sys_alerts_log`, `sys_alerts_desc`, `sys_alerts_handlers`, `sys_injections`, `sys_injections_admin`, `sys_modules`, `sys_modules_file_tracks`, `sys_modules_relations`, `sys_permalinks`, `sys_objects_privacy`, `sys_privacy_defaults`, `sys_privacy_groups`, `sys_privacy_groups_custom`, `sys_privacy_groups_custom_members`, `sys_privacy_groups_custom_memberships`, `sys_objects_recommendation`, `sys_recommendation_criteria`, `sys_recommendation_data`, `sys_objects_auths`, `sys_objects_score`, `sys_objects_vote`, `sys_objects_report`, `sys_objects_view`, `sys_objects_favorite`, `sys_objects_feature`, `sys_objects_chart`, `sys_objects_content_info`, `sys_content_info_grids`, `sys_background_jobs`, `sys_cron_jobs`, `sys_objects_storage`, `sys_objects_uploader`, `sys_storage_user_quotas`, `sys_storage_tokens`, `sys_storage_ghosts`, `sys_storage_deletions`, `sys_storage_mime_types`, `sys_objects_transcoder`, `sys_transcoder_images_files`, `sys_transcoder_videos_files`, `sys_transcoder_audio_files`, `sys_transcoder_filters`, `sys_transcoder_queue`, `sys_transcoder_queue_files`, `sys_accounts`, `sys_accounts_password`, `sys_accounts_pictures`, `sys_accounts_pictures_resized`, `sys_profiles`, `sys_profiles_track`, `sys_objects_form`, `sys_form_displays`, `sys_form_inputs`, `sys_form_inputs_privacy`, `sys_form_display_inputs`, `sys_form_pre_lists`, `sys_form_pre_values`, `sys_menu_templates`, `sys_objects_menu`, `sys_menu_sets`, `sys_menu_items`, `sys_objects_grid`, `sys_grid_fields`, `sys_grid_actions`, `sys_objects_connection`, `sys_profiles_conn_bans`, `sys_profiles_conn_relations`, `sys_profiles_conn_subscriptions`, `sys_profiles_conn_friends`, `sys_objects_page`, `sys_pages_types`, `sys_pages_layouts`, `sys_pages_layout_columns`, `sys_pages_design_boxes`, `sys_pages_content_placeholders`, `sys_pages_blocks`, `sys_pages_blocks_data`, `sys_labels`, `sys_objects_metatags`, `sys_objects_category`, `sys_objects_live_updates`, `sys_objects_payments`, `sys_files`, `sys_images`, `sys_images_custom`, `sys_images_resized`, `sys_images_editor`, `sys_images_editor_resized`, `sys_wiki_files`, `sys_wiki_images_resized`, `sys_rewrite_rules`, `sys_seo_links`, `sys_seo_uri_rewrites`, `sys_api_keys`, `sys_api_origins`, `sys_agents_models`, `sys_agents_automators`, `sys_agents_automators_providers`, `sys_agents_automators_helpers`, `sys_agents_automators_assistants`, `sys_agents_automators_messages`, `sys_agents_provider_types`, `sys_agents_provider_options`, `sys_agents_providers`, `sys_agents_providers_values`, `sys_agents_helpers`, `sys_agents_vector_store`, `sys_agents_vector_store_data`, `sys_agents_agents`, `sys_agents_tools`, `sys_agents_chat_history`, `sys_agents_chat_artifacts`, `sys_preloader`, `sys_std_roles`, `sys_std_roles_actions`, `sys_std_roles_actions2roles`, `sys_std_roles_members`, `sys_std_pages`, `sys_std_widgets`, `sys_std_widgets_bookmarks`, `sys_std_pages_widgets`, `sys_categories`, `sys_categories2objects`, `sys_objects_logs`, `sys_objects_location_field`, `sys_objects_location_map`, `sys_objects_wiki`, `sys_pages_wiki_blocks`, `sys_badges`, `sys_badges2objects`, `sys_form_fields_reaction`, `sys_form_fields_reaction_track`, `sys_form_fields_votes`, `sys_form_fields_votes_track`, `sys_form_fields_ids`, `sys_iframely_data`, `sys_embeded_data`, `sys_logger`;
+DROP TABLE IF EXISTS `sys_keys`, `sys_objects_editor`, `sys_objects_iconset`, `sys_objects_player`, `sys_objects_push`, `sys_objects_sms`, `sys_objects_embeds`, `sys_objects_file_handlers`, `sys_objects_captcha`, `sys_objects_cmts`, `sys_cmts_images`, `sys_cmts_images_preview`, `sys_cmts_images2entries`, `sys_cmts_ids`, `sys_cmts_meta_keywords`, `sys_cmts_meta_mentions`, `sys_cmts_votes`, `sys_cmts_votes_track`, `sys_cmts_reactions`, `sys_cmts_reactions_track`, `sys_cmts_reports`, `sys_cmts_reports_track`, `sys_cmts_scores`, `sys_cmts_scores_track`, `sys_email_templates`, `sys_queue_push`, `sys_queue_email`, `sys_options`, sys_options_types, `sys_options_categories`, `sys_options_mixes`, `sys_options_mixes2options`,  `sys_localization_categories`, `sys_localization_keys`, `sys_localization_languages`, `sys_localization_strings`, `sys_acl_actions`, `sys_acl_actions_track`, `sys_acl_matrix`, `sys_acl_levels`, `sys_sessions`, `sys_acl_levels_members`, `sys_objects_rss`, `sys_objects_search`, `sys_objects_search_extended`, `sys_search_extended_fields`, `sys_search_extended_sorting_fields`, `sys_statistics`, `sys_audit`, `sys_alerts`, `sys_alerts_cache_triggers`, `sys_alerts_log`, `sys_alerts_desc`, `sys_alerts_handlers`, `sys_injections`, `sys_injections_admin`, `sys_modules`, `sys_modules_file_tracks`, `sys_modules_relations`, `sys_permalinks`, `sys_objects_privacy`, `sys_privacy_defaults`, `sys_privacy_groups`, `sys_privacy_groups_custom`, `sys_privacy_groups_custom_members`, `sys_privacy_groups_custom_memberships`, `sys_objects_recommendation`, `sys_recommendation_criteria`, `sys_recommendation_data`, `sys_objects_auths`, `sys_objects_score`, `sys_objects_vote`, `sys_objects_report`, `sys_objects_view`, `sys_objects_favorite`, `sys_objects_feature`, `sys_objects_chart`, `sys_objects_content_info`, `sys_content_info_grids`, `sys_background_jobs`, `sys_cron_jobs`, `sys_objects_storage`, `sys_objects_uploader`, `sys_storage_user_quotas`, `sys_storage_tokens`, `sys_storage_ghosts`, `sys_storage_deletions`, `sys_storage_mime_types`, `sys_objects_transcoder`, `sys_transcoder_images_files`, `sys_transcoder_videos_files`, `sys_transcoder_audio_files`, `sys_transcoder_filters`, `sys_transcoder_queue`, `sys_transcoder_queue_files`, `sys_accounts`, `sys_accounts_password`, `sys_accounts_pictures`, `sys_accounts_pictures_resized`, `sys_profiles`, `sys_profiles_track`, `sys_objects_form`, `sys_form_displays`, `sys_form_inputs`, `sys_form_inputs_privacy`, `sys_form_display_inputs`, `sys_form_pre_lists`, `sys_form_pre_values`, `sys_menu_templates`, `sys_objects_menu`, `sys_menu_sets`, `sys_menu_items`, `sys_objects_grid`, `sys_grid_fields`, `sys_grid_actions`, `sys_objects_connection`, `sys_profiles_conn_bans`, `sys_profiles_conn_relations`, `sys_profiles_conn_subscriptions`, `sys_profiles_conn_friends`, `sys_objects_page`, `sys_pages_types`, `sys_pages_layouts`, `sys_pages_layout_columns`, `sys_pages_design_boxes`, `sys_pages_content_placeholders`, `sys_pages_blocks`, `sys_pages_blocks_data`, `sys_labels`, `sys_objects_metatags`, `sys_objects_category`, `sys_objects_live_updates`, `sys_objects_payments`, `sys_files`, `sys_images`, `sys_images_custom`, `sys_images_resized`, `sys_images_editor`, `sys_images_editor_resized`, `sys_wiki_files`, `sys_wiki_images_resized`, `sys_rewrite_rules`, `sys_seo_links`, `sys_seo_uri_rewrites`, `sys_api_keys`, `sys_api_origins`, `sys_agents_models`, `sys_agents_vector_store`, `sys_agents_vector_store_data`, `sys_agents_agents`, `sys_agents_tools`, `sys_agents_chat_history`, `sys_agents_chat_artifacts`, `sys_preloader`, `sys_std_roles`, `sys_std_roles_actions`, `sys_std_roles_actions2roles`, `sys_std_roles_members`, `sys_std_pages`, `sys_std_widgets`, `sys_std_widgets_bookmarks`, `sys_std_pages_widgets`, `sys_categories`, `sys_categories2objects`, `sys_objects_logs`, `sys_objects_location_field`, `sys_objects_location_map`, `sys_objects_wiki`, `sys_pages_wiki_blocks`, `sys_badges`, `sys_badges2objects`, `sys_form_fields_reaction`, `sys_form_fields_reaction_track`, `sys_form_fields_votes`, `sys_form_fields_votes_track`, `sys_form_fields_ids`, `sys_iframely_data`, `sys_embeded_data`, `sys_logger`;
 
 ALTER DATABASE DEFAULT CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci';
 SET NAMES 'utf8mb4' COLLATE 'utf8mb4_unicode_ci';
@@ -254,9 +254,6 @@ CREATE TABLE `sys_objects_cmts` (
   `ClassFile` varchar(256) NOT NULL,
   PRIMARY KEY  (`ID`)
 );
-
-INSERT INTO `sys_objects_cmts` (`Name`, `Module`, `Table`, `CharsPostMin`, `CharsPostMax`, `CharsDisplayMax`, `Html`, `PerView`, `PerViewReplies`, `BrowseType`, `IsBrowseSwitch`, `PostFormPosition`, `NumberOfLevels`, `IsDisplaySwitch`, `IsRatable`, `ViewingThreshold`, `IsOn`, `RootStylePrefix`, `BaseUrl`, `ObjectVote`, `TriggerTable`, `TriggerFieldId`, `TriggerFieldAuthor`, `TriggerFieldTitle`, `TriggerFieldComments`, `ClassName`, `ClassFile`) VALUES
-('sys_agents_automators', 'system', 'sys_agents_automators_messages', 1, 5000, 1000, 0, 9999, 3, 'tail', 1, 'bottom', 1, 1, 1, -3, 1, 'cmt', 'agents.php?page=automators&id={object_id}', '', 'sys_agents_automators', 'id', '', '', 'messages', 'BxDolStudioAgentsAutomatorsCmts', '');
 
 -- --------------------------------------------------------
 
@@ -3874,7 +3871,6 @@ INSERT INTO `sys_objects_form` (`object`, `module`, `title`, `action`, `form_att
 ('sys_confirm_phone', 'system', '_sys_form_confirm_phone', '', '', 'a:2:{i:0;s:9:"do_submit";i:1;s:10:"do_sendsms";}', '', '', '', '', 'a:1:{s:14:"checker_helper";s:31:"BxFormConfirmPhoneCheckerHelper";}', 0, 1, 'BxTemplFormConfirmPhone', ''),
 ('sys_unsubscribe', 'system', '_sys_form_unsubscribe', '', '', 'do_submit', 'sys_accounts', 'id', '', '', '', 0, 1, 'BxTemplFormAccount', ''),
 ('sys_comment', 'system', '_sys_form_comment', 'cmts.php', 'a:3:{s:2:"id";s:20:"cmt-%s-form-%s-%d-%d";s:4:"name";s:20:"cmt-%s-form-%s-%d-%d";s:5:"class";s:14:"cmt-post-reply";}', 'cmt_submit', '', 'cmt_id', '', '', '', 0, 1, 'BxTemplCmtsForm', ''),
-('sys_agents_comment', 'system', '_sys_form_agents_comment', 'cmts.php', 'a:3:{s:2:"id";s:20:"cmt-%s-form-%s-%d-%d";s:4:"name";s:20:"cmt-%s-form-%s-%d-%d";s:5:"class";s:14:"cmt-post-reply";}', 'cmt_submit', '', 'cmt_id', '', '', '', 0, 1, 'BxTemplCmtsForm', ''),
 ('sys_review', 'system', '_sys_form_review', 'cmts.php', 'a:3:{s:2:"id";s:20:"cmt-%s-form-%s-%d-%d";s:4:"name";s:20:"cmt-%s-form-%s-%d-%d";s:5:"class";s:14:"cmt-post-reply";}', 'cmt_submit', '', 'cmt_id', '', '', '', 0, 1, 'BxTemplCmtsReviewsForm', ''),
 ('sys_report', 'system', '_sys_form_report', 'report.php', 'a:3:{s:2:"id";s:0:"";s:4:"name";s:0:"";s:5:"class";s:17:"bx-report-do-form";}', 'submit', '', 'id', '', '', '', 0, 1, '', ''),
 ('sys_favorite', 'system', '_sys_form_favorite', 'favorite.php', 'a:3:{s:2:"id";s:0:"";s:4:"name";s:0:"";s:5:"class";s:19:"bx-favorite-do-form";}', 'submit', '', 'id', '', '', '', 0, 1, '', ''),
@@ -3915,7 +3911,6 @@ INSERT INTO `sys_form_displays` (`display_name`, `module`, `object`, `title`, `v
 ('sys_unsubscribe_news', 'system', 'sys_unsubscribe', '_sys_form_display_unsubscribe_news', 0),
 ('sys_comment_post', 'system', 'sys_comment', '_sys_form_display_comment_post', 0),
 ('sys_comment_edit', 'system', 'sys_comment', '_sys_form_display_comment_edit', 0),
-('sys_agents_comment_post', 'system', 'sys_agents_comment', '_sys_form_display_agents_comment_post', 0),
 ('sys_review_post', 'system', 'sys_review', '_sys_form_review_display_post', 0),
 ('sys_review_edit', 'system', 'sys_review', '_sys_form_review_display_edit', 0),
 ('sys_report_post', 'system', 'sys_report', '_sys_form_display_report_post', 0),
@@ -4035,14 +4030,6 @@ INSERT INTO `sys_form_inputs` (`object`, `module`, `name`, `value`, `values`, `c
 ('sys_comment', 'system', 'cmt_controls', '', 'cmt_submit,cmt_cancel', 0, 'input_set', '', '', '', 0, 0, 0, '', '', '', '', '', '', '', '', 0, 0),
 ('sys_comment', 'system', 'cmt_cancel', '_sys_form_comment_input_cancel', '', 0, 'button', '_sys_form_comment_input_caption_system_cmt_cancel', '', '', 0, 0, 0, 'a:1:{s:5:"class";s:22:"bx-def-margin-sec-left";}', '', '', '', '', '', '', '', 0, 0),
 ('sys_comment', 'system', 'cmt_submit', '_sys_form_comment_input_submit', '', 0, 'submit', '_sys_form_comment_input_caption_system_cmt_submit', '', '', 0, 0, 0, '', '', '', '', '', '', '', '', 0, 0),
-
-('sys_agents_comment', 'system', 'sys', '', '', 0, 'hidden', '_sys_form_agents_comment_input_caption_system_sys', '', '', 0, 0, 0, '', '', '', '', '', '', '', '', 0, 0),
-('sys_agents_comment', 'system', 'id', '', '', 0, 'hidden', '_sys_form_agents_comment_input_caption_system_id', '', '', 0, 0, 0, '', '', '', '', '', '', '', '', 0, 0),
-('sys_agents_comment', 'system', 'action', '', '', 0, 'hidden', '_sys_form_agents_comment_input_caption_system_action', '', '', 0, 0, 0, '', '', '', '', '', '', '', '', 0, 0),
-('sys_agents_comment', 'system', 'cmt_parent_id', '', '', 0, 'hidden', '_sys_form_agents_comment_input_caption_system_cmt_parent_id', '', '', 0, 0, 0, '', '', '', '', '', '', 'Int', '', 0, 0),
-('sys_agents_comment', 'system', 'cmt_text', '', '', 0, 'textarea', '_sys_form_agents_comment_input_caption_system_cmt_text', '', '', 1, 0, 3, 'a:1:{s:12:"autocomplete";s:3:"off";}', '', '', 'Avail', '', '_sys_form_agents_comment_input_caption_cmt_text_error', 'XssHtml', '', 1, 0),
-('sys_agents_comment', 'system', 'cmt_image', 'a:1:{i:0;s:14:"sys_cmts_html5";}', 'a:1:{s:14:"sys_cmts_html5";s:25:"_sys_uploader_html5_title";}', 0, 'files', '_sys_form_agents_comment_input_caption_system_cmt_image', '', '', 0, 0, 0, '', '', '', '', '', '', '', '', 1, 0),
-('sys_agents_comment', 'system', 'cmt_submit', '_sys_form_agents_comment_input_caption_cmt_submit', '', 0, 'submit', '_sys_form_agents_comment_input_caption_system_cmt_submit', '', '', 0, 0, 0, '', '', '', '', '', '', '', '', 0, 0),
 
 ('sys_review', 'system', 'sys', '', '', 0, 'hidden', '_sys_form_review_input_caption_system_sys', '', '', 0, 0, 0, '', '', '', '', '', '', '', '', 0, 0),
 ('sys_review', 'system', 'id', '', '', 0, 'hidden', '_sys_form_review_input_caption_system_id', '', '', 0, 0, 0, '', '', '', '', '', '', '', '', 0, 0),
@@ -5713,7 +5700,7 @@ INSERT INTO `sys_grid_fields` (`object`, `name`, `title`, `width`, `translatable
 ('sys_studio_agents_models', 'checkbox', '', '2%', 0, 0, '', '', 10),
 ('sys_studio_agents_models', 'switcher', '_sys_agents_models_txt_active', '8%', 0, 0, '', '', 20),
 ('sys_studio_agents_models', 'icon', '_adm_form_txt_field_icon', '5%', 0, 0, '', '', 25),
-('sys_studio_agents_models', 'type', '_sys_agents_automators_txt_type', '10%', 0, 0, '', '', 30),
+('sys_studio_agents_models', 'type', '_sys_agents_models_txt_type', '10%', 0, 0, '', '', 30),
 ('sys_studio_agents_models', 'title', '_sys_agents_models_txt_title', '10%', 0, 0, '', '', 40),
 ('sys_studio_agents_models', 'model', '_sys_agents_models_txt_model', '10%', 0, 0, '', '', 50),
 ('sys_studio_agents_models', 'capabilities', '_sys_agents_models_txt_capabilities', '10%', 0, 0, '', '', 60),
@@ -5724,71 +5711,6 @@ INSERT INTO `sys_grid_actions` (`object`, `type`, `name`, `title`, `icon`, `icon
 ('sys_studio_agents_models', 'single', 'edit', '_Edit', 'pencil-alt', 1, 0, 1, 2),
 ('sys_studio_agents_models', 'single', 'delete', '_Delete', 'remove', 1, 1, 1, 3),
 ('sys_studio_agents_models', 'bulk', 'delete', '_Delete', '', 0, 1, 1, 1);
-
--- GRID: Agents Automators
-INSERT INTO `sys_objects_grid` (`object`, `source_type`, `source`, `table`, `field_id`, `field_order`, `field_active`, `paginate_url`, `paginate_per_page`, `paginate_simple`, `paginate_get_start`, `paginate_get_per_page`, `filter_fields`, `filter_fields_translatable`, `filter_mode`, `sorting_fields`, `sorting_fields_translatable`, `override_class_name`, `override_class_file`) VALUES
-('sys_studio_agents_automators', 'Sql', 'SELECT * FROM `sys_agents_automators` WHERE 1 ', 'sys_agents_automators', 'id', 'added', 'active', '', 20, NULL, 'start', '', '', '', 'like', '', '', 'BxTemplStudioAgentsAutomators', '');
-
-INSERT INTO `sys_grid_fields` (`object`, `name`, `title`, `width`, `translatable`, `chars_limit`, `params`, `hidden_on`, `order`) VALUES
-('sys_studio_agents_automators', 'checkbox', '', '2%', 0, 0, '', '', 1),
-('sys_studio_agents_automators', 'switcher', '_sys_agents_automators_txt_active', '8%', 0, 0, '', '', 2),
-('sys_studio_agents_automators', 'name', '_sys_agents_automators_txt_name', '10%', 0, 0, '', '', 3),
-('sys_studio_agents_automators', 'type', '_sys_agents_automators_txt_type', '8%', 0, 0, '', '', 4),
-('sys_studio_agents_automators', 'model_id', '_sys_agents_automators_txt_model_id', '8%', 0, 0, '', '', 5),
-('sys_studio_agents_automators', 'profile_id', '_sys_agents_automators_txt_profile_id', '10%', 0, 0, '', '', 6),
-('sys_studio_agents_automators', 'message_id', '_sys_agents_automators_txt_message_id', '14%', 0, 32, '', '', 7),
-('sys_studio_agents_automators', 'messages', '_sys_agents_automators_txt_messages', '10%', 0, 0, '', '', 8),
-('sys_studio_agents_automators', 'added', '_sys_agents_automators_txt_added', '5%', 0, 0, '', '', 9),
-('sys_studio_agents_automators', 'status', '_sys_agents_automators_txt_status', '5%', 0, 0, '', '', 10),
-('sys_studio_agents_automators', 'actions', '', '20%', 0, 0, '', '', 11);
-
-INSERT INTO `sys_grid_actions` (`object`, `type`, `name`, `title`, `icon`, `icon_only`, `confirm`, `order`) VALUES
-('sys_studio_agents_automators', 'bulk', 'delete', '_Delete', '', 0, 1, 1),
-('sys_studio_agents_automators', 'single', 'tune', '_sys_agents_automators_btn_tune', '', 0, 0, 1),
-('sys_studio_agents_automators', 'single', 'edit', '_Edit', 'pencil-alt', 1, 0, 2),
-('sys_studio_agents_automators', 'single', 'delete', '_Delete', 'remove', 1, 1, 3),
-('sys_studio_agents_automators', 'independent', 'add', '_sys_agents_automators_btn_add', '', 0, 0, 1);
-
-
--- GRID: Agents Helpers
-INSERT INTO `sys_objects_grid` (`object`, `source_type`, `source`, `table`, `field_id`, `field_order`, `field_active`, `paginate_url`, `paginate_per_page`, `paginate_simple`, `paginate_get_start`, `paginate_get_per_page`, `filter_fields`, `filter_fields_translatable`, `filter_mode`, `sorting_fields`, `sorting_fields_translatable`, `visible_for_levels`, `responsive`, `show_total_count`, `override_class_name`, `override_class_file`) VALUES
-('sys_studio_agents_helpers', 'Sql', 'SELECT * FROM `sys_agents_helpers` WHERE 1 ', 'sys_agents_helpers', 'id', 'added', 'active', '', 20, NULL, 'start', '', '', '', 'like', '', '', 2147483647, 1, 1, 'BxTemplStudioAgentsHelpers', '');
-
-INSERT INTO `sys_grid_fields` (`object`, `name`, `title`, `width`, `translatable`, `chars_limit`, `params`, `hidden_on`, `order`) VALUES
-('sys_studio_agents_helpers', 'checkbox', '', '2%', 0, 0, '', '', 1),
-('sys_studio_agents_helpers', 'switcher', '_sys_agents_helpers_txt_active', '8%', 0, 0, '', '', 2),
-('sys_studio_agents_helpers', 'name', '_sys_agents_helpers_txt_name', '15%', 0, 0, '', '', 3),
-('sys_studio_agents_helpers', 'model_id', '_sys_agents_helpers_txt_model_id', '10%', 0, 0, '', '', 5),
-('sys_studio_agents_helpers', 'profile_id', '_sys_agents_helpers_txt_profile_id', '10%', 0, 0, '', '', 6),
-('sys_studio_agents_helpers', 'prompt', '_sys_agents_helpers_txt_prompt', '25%', 0, 32, '', '', 7),
-('sys_studio_agents_helpers', 'added', '_sys_agents_helpers_txt_added', '10%', 0, 0, '', '', 8),
-('sys_studio_agents_helpers', 'actions', '', '20%', 0, 0, '', '', 9);
-
-INSERT INTO `sys_grid_actions` (`object`, `type`, `name`, `title`, `icon`, `icon_only`, `confirm`, `active`, `order`) VALUES
-('sys_studio_agents_helpers', 'independent', 'add', '_sys_agents_helpers_btn_add', '', 0, 0, 1, 1),
-('sys_studio_agents_helpers', 'single', 'tune', '_sys_agents_helpers_btn_tune', '', 0, 0, 1, 1),
-('sys_studio_agents_helpers', 'single', 'edit', '_Edit', 'pencil-alt', 1, 0, 1, 2),
-('sys_studio_agents_helpers', 'single', 'delete', '_Delete', 'remove', 1, 1, 1, 3),
-('sys_studio_agents_helpers', 'bulk', 'delete', '_Delete', '', 0, 1, 1, 1);
-
--- GRIDS: Agents Providers
-INSERT INTO `sys_objects_grid` (`object`, `source_type`, `source`, `table`, `field_id`, `field_order`, `field_active`, `paginate_url`, `paginate_per_page`, `paginate_simple`, `paginate_get_start`, `paginate_get_per_page`, `filter_fields`, `filter_fields_translatable`, `filter_mode`, `sorting_fields`, `sorting_fields_translatable`, `visible_for_levels`, `override_class_name`, `override_class_file`) VALUES
-('sys_studio_agents_providers', 'Sql', 'SELECT `tp`.*, `tpt`.`title` AS `provider_type` FROM `sys_agents_providers` AS `tp` LEFT JOIN `sys_agents_provider_types` AS `tpt` ON `tp`.`type_id`=`tpt`.`id` WHERE 1 ', 'sys_agents_providers', 'id', 'order', 'active', '', 100, NULL, 'start', '', 'tp`.`title,tpt`.`name,tpt`.`title', '', 'like', '', '', 2147483647, 'BxTemplStudioAgentsProviders', '');
-
-INSERT INTO `sys_grid_fields` (`object`, `name`, `title`, `width`, `translatable`, `chars_limit`, `params`, `order`) VALUES
-('sys_studio_agents_providers', 'checkbox', '_sys_select', '2%', 0, '', '', 1),
-('sys_studio_agents_providers', 'switcher', '_sys_agents_providers_txt_active', '8%', 0, '', '', 2),
-('sys_studio_agents_providers', 'name', '_sys_agents_providers_txt_provider_name', '30%', 0, 32, '', 3),
-('sys_studio_agents_providers', 'provider_type', '_sys_agents_providers_txt_provider_type', '20%', 1, 16, '', 4),
-('sys_studio_agents_providers', 'added', '_sys_agents_providers_txt_added', '20%', 0, '', '', 5),
-('sys_studio_agents_providers', 'actions', '', '20%', 0, '', '', 6);
-
-INSERT INTO `sys_grid_actions` (`object`, `type`, `name`, `title`, `icon`, `icon_only`, `confirm`, `order`) VALUES
-('sys_studio_agents_providers', 'independent', 'add', '_sys_agents_providers_btn_add', '', 0, 0, 1),
-('sys_studio_agents_providers', 'single', 'info', '_sys_agents_providers_btn_info', 'info', 1, 0, 1),
-('sys_studio_agents_providers', 'single', 'edit', '_sys_agents_providers_btn_edit', 'pencil-alt', 1, 0, 2),
-('sys_studio_agents_providers', 'single', 'delete', '_sys_agents_providers_btn_delete', 'remove', 1, 1, 3),
-('sys_studio_agents_providers', 'bulk', 'delete', '_sys_agents_providers_btn_delete', '', 0, 1, 1);
 
 -- GRID: Agents Vector Store
 INSERT INTO `sys_objects_grid` (`object`, `source_type`, `source`, `table`, `field_id`, `field_order`, `field_active`, `paginate_url`, `paginate_per_page`, `paginate_simple`, `paginate_get_start`, `paginate_get_per_page`, `filter_fields`, `filter_fields_translatable`, `filter_mode`, `sorting_fields`, `sorting_fields_translatable`, `visible_for_levels`, `responsive`, `show_total_count`, `override_class_name`, `override_class_file`) VALUES
@@ -6949,138 +6871,6 @@ SET @j = JSON_OBJECT(
 );
 INSERT INTO `sys_agents_models` (`type`, `model`, `title`, `icon`, `docs`, `key`, `params`, `params_user`, `capabilities`, `duplicate`, `active`, `changed`) VALUES
 ('aws-bedrock-embeddings', 'amazon.titan-embed-text-v2:0', 'Aws Bedrock', 'ai-bedrock.svg', 'https://docs.aws.amazon.com/bedrock/latest/userguide/titan-embedding-models.html', '', CAST(@j AS CHAR), NULL, 'embeddings', 0, 0, 0);
-
-
-CREATE TABLE IF NOT EXISTS `sys_agents_automators` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(128) NOT NULL default '',
-  `model_id` int(11) NOT NULL default '0',
-  `profile_id` int(11) NOT NULL default '0',
-  `type` enum('event','scheduler','webhook') NOT NULL DEFAULT 'event',
-  `params` text NOT NULL,
-  `alert_unit` varchar(128) NOT NULL default '',
-  `alert_action` varchar(128) NOT NULL default '',
-  `message_id` int(11) NOT NULL default '0',
-  `code` text NOT NULL,
-  `added` int(11) unsigned NOT NULL DEFAULT '0',
-  `messages` int(11) NOT NULL default '0',
-  `status` enum('auto','manual','ready') NOT NULL DEFAULT 'auto',
-  `active` tinyint(4) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`)
-);
-
-CREATE TABLE IF NOT EXISTS `sys_agents_automators_providers` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `automator_id` int(11) NOT NULL DEFAULT '0',
-  `provider_id` int(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`)
-);
-
-CREATE TABLE IF NOT EXISTS `sys_agents_automators_helpers` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `automator_id` int(11) NOT NULL DEFAULT '0',
-  `helper_id` int(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`)
-);
-
-CREATE TABLE IF NOT EXISTS `sys_agents_automators_assistants` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `automator_id` int(11) NOT NULL DEFAULT '0',
-  `assistant_id` int(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`)
-);
-
-CREATE TABLE IF NOT EXISTS `sys_agents_automators_messages` (
-  `cmt_id` int(11) NOT NULL AUTO_INCREMENT,
-  `cmt_parent_id` int(11) NOT NULL DEFAULT '0',
-  `cmt_vparent_id` int(11) NOT NULL DEFAULT '0',
-  `cmt_object_id` int(11) NOT NULL DEFAULT '0',
-  `cmt_author_id` int(11) NOT NULL DEFAULT '0',
-  `cmt_level` int(11) NOT NULL DEFAULT '0',
-  `cmt_text` text NOT NULL,
-  `cmt_mood` tinyint(4) NOT NULL DEFAULT '0',
-  `cmt_rate` int(11) NOT NULL DEFAULT '0',
-  `cmt_rate_count` int(11) NOT NULL DEFAULT '0',
-  `cmt_time` int(11) unsigned NOT NULL DEFAULT '0',
-  `cmt_replies` int(11) NOT NULL DEFAULT '0',
-  `cmt_pinned` int(11) NOT NULL default '0',
-  `cmt_cf` int(11) NOT NULL default '1',
-  PRIMARY KEY (`cmt_id`),
-  KEY `cmt_object_id` (`cmt_object_id`,`cmt_parent_id`),
-  FULLTEXT KEY `search_fields` (`cmt_text`)
-);
-
-CREATE TABLE IF NOT EXISTS `sys_agents_provider_types` (
-  `id` int(11) NOT NULL auto_increment,
-  `name` varchar(64) NOT NULL default '',
-  `title` varchar(128) NOT NULL default '',
-  `option_prefix` varchar(32) NOT NULL default '',
-  `active` tinyint(4) NOT NULL default '0',
-  `order` tinyint(4) NOT NULL default '0',
-  `class_name` varchar(128) NOT NULL default '',
-  `class_file` varchar(255) NOT NULL  default '',
-  PRIMARY KEY(`id`)
-);
-
-CREATE TABLE IF NOT EXISTS `sys_agents_provider_options` (
-  `id` int(11) NOT NULL auto_increment,
-  `provider_type_id` int(11) NOT NULL default '0',
-  `name` varchar(64) NOT NULL default '',
-  `type` varchar(64) NOT NULL default 'text',
-  `title` varchar(255) NOT NULL default '',
-  `description` text NOT NULL default '',
-  `extra` varchar(255) NOT NULL default '',
-  `check_type` varchar(64) NOT NULL default '',
-  `check_params` varchar(128) NOT NULL default '',
-  `check_error` varchar(128) NOT NULL default '',
-  `order` tinyint(4) NOT NULL default '0',
-  PRIMARY KEY(`id`),
-  UNIQUE KEY `name`(`name`)
-);
-
--- Shopify (Admin API) source
-INSERT INTO `sys_agents_provider_types`(`name`, `title`, `option_prefix`, `active`, `order`, `class_name`, `class_file`) VALUES
-('shopify_admin', '_sys_agents_pvd_cpt_shopify_admin', 'shf_adm_', 1, 1, 'BxDolAIProviderShopifyAdmin', '');
-SET @iProviderId = LAST_INSERT_ID();
-
-INSERT INTO `sys_agents_provider_options`(`provider_type_id`, `name`, `type`, `title`, `description`, `extra`, `check_type`, `check_params`, `check_error`, `order`) VALUES
-(@iProviderId, 'shf_adm_shop_domain', 'text', '_sys_agents_pvd_opt_cpt_shop_domain', '_sys_agents_pvd_opt_dsc_shop_domain', '', '', '', '', 1),
-(@iProviderId, 'shf_adm_access_token', 'text', '_sys_agents_pvd_opt_cpt_access_token', '_sys_agents_pvd_opt_dsc_access_token', '', '', '', '', 2),
-(@iProviderId, 'shf_adm_secret_key', 'text', '_sys_agents_pvd_opt_cpt_secret_key', '_sys_agents_pvd_opt_dsc_secret_key', '', '', '', '', 3),
-(@iProviderId, 'shf_adm_webhook_url', 'value', '_sys_agents_pvd_opt_cpt_webhook_url', '_sys_agents_pvd_opt_dsc_webhook_url', '', '', '', '', 4);
-
-CREATE TABLE IF NOT EXISTS `sys_agents_providers` (
-  `id` int(11) NOT NULL auto_increment,
-  `name` varchar(128) NOT NULL default '',
-  `type_id` int(11) NOT NULL default '0',
-  `profile_id` int(11) NOT NULL default '0',
-  `added` int(11) NOT NULL default '0',
-  `active` tinyint(4) NOT NULL default '1',
-  PRIMARY KEY(`id`),
-  UNIQUE KEY `name`(`name`)
-);
-
-CREATE TABLE IF NOT EXISTS `sys_agents_providers_values` (
-  `id` int(11) NOT NULL auto_increment,
-  `provider_id` int(11) NOT NULL default '0',
-  `option_id` int(11) NOT NULL default '0',  
-  `value` varchar(255) NOT NULL default '',
-  PRIMARY KEY(`id`),
-  UNIQUE KEY `value`(`provider_id`, `option_id`)
-);
-
-CREATE TABLE IF NOT EXISTS `sys_agents_helpers` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(128) DEFAULT NULL,
-  `model_id` int(11) NOT NULL DEFAULT 0,
-  `profile_id` int(11) NOT NULL DEFAULT 0,
-  `description` text NOT NULL,
-  `prompt` text DEFAULT NULL,
-  `added` int(11) NOT NULL DEFAULT 0,
-  `active` tinyint(4) NOT NULL DEFAULT 0,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `name`(`name`)
-);
 
 CREATE TABLE `sys_agents_agents` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
