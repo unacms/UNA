@@ -156,7 +156,7 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
         }
 
         $sFormId = $oForm->getId();
-        $sContent = BxTemplStudioFunctions::getInstance()->popupBox($sFormId . '_popup', _t('_sys_agents_agents_popup_add'), $this->_oTemplate->parseHtmlByName('agents_automator_form.html', [
+        $sContent = BxTemplStudioFunctions::getInstance()->popupBox($sFormId . '_popup', _t('_sys_agents_agents_popup_add'), $this->_oTemplate->parseHtmlByName('agents_agents_form.html', [
             'form_id' => $sFormId,
             'form' => $oForm->getCode(true),
             'object' => $this->_sObject,
@@ -225,7 +225,7 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
         } 
 
         $sFormId = $oForm->getId();
-        $sContent = BxTemplStudioFunctions::getInstance()->popupBox($sFormId . '_popup', _t('_sys_agents_agents_popup_edit', $aAgent['name']), $this->_oTemplate->parseHtmlByName('agents_automator_form.html', [
+        $sContent = BxTemplStudioFunctions::getInstance()->popupBox($sFormId . '_popup', _t('_sys_agents_agents_popup_edit', $aAgent['name']), $this->_oTemplate->parseHtmlByName('agents_agents_form.html', [
             'form_id' => $sFormId,
             'form' => $oForm->getCode(true),
             'object' => $this->_sObject,

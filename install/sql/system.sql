@@ -5774,7 +5774,7 @@ INSERT INTO `sys_objects_grid` (`object`, `source_type`, `source`, `table`, `fie
 
 INSERT INTO `sys_grid_fields` (`object`, `name`, `title`, `width`, `translatable`, `chars_limit`, `params`, `hidden_on`, `order`) VALUES
 ('sys_studio_agents_logs', 'level', '_Level', '5%', 0, 0, '', '', 10),
-('sys_studio_agents_logs', 'message', '_sys_agents_helpers_field_message', '15%', 0, 0, '', '', 20),
+('sys_studio_agents_logs', 'message', '_sys_agents_agents_act_message', '15%', 0, 0, '', '', 20),
 ('sys_studio_agents_logs', 'context', '_Context', '70%', 0, 0, '', '', 30),
 ('sys_studio_agents_logs', 'created_at', '_Date', '10%', 0, 0, '', '', 40);
 

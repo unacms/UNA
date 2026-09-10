@@ -63,7 +63,7 @@ class BxDolStudioAgentsInstruments extends BxTemplStudioGridAgents
 
         $sFormId = $oForm->getId();
         $sForm = $oForm->getCode(true);
-        $sContent = BxTemplStudioFunctions::getInstance()->popupBox($sFormId . '_popup_' . $sAction, _t($sPopupTitleKey), $this->_oTemplate->parseHtmlByName('agents_automator_form.html', [
+        $sContent = BxTemplStudioFunctions::getInstance()->popupBox($sFormId . '_popup_' . $sAction, _t($sPopupTitleKey), $this->_oTemplate->parseHtmlByName('agents_agents_form.html', [
             'form_id' => $sFormId,
             'form' => $sForm,
             'object' => $this->_sObject,

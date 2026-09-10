@@ -77,7 +77,7 @@ class BxBaseStudioAgentsVectorStore extends BxDolStudioAgentsInstruments
 
         $sFormId = $oForm->getId();
         $sForm = $oForm->getCode(true);
-        $sContent = BxTemplStudioFunctions::getInstance()->popupBox($sFormId . '_popup_' . $sAction, _t('_sys_agents_vector_store_popup_add_data'), $this->_oTemplate->parseHtmlByName('agents_automator_form.html', [
+        $sContent = BxTemplStudioFunctions::getInstance()->popupBox($sFormId . '_popup_' . $sAction, _t('_sys_agents_vector_store_popup_add_data'), $this->_oTemplate->parseHtmlByName('agents_agents_form.html', [
             'form_id' => $sFormId,
             'form' => $sForm,
             'object' => $this->_sObject,

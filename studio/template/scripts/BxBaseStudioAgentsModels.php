@@ -67,7 +67,7 @@ class BxBaseStudioAgentsModels extends BxTemplStudioGridAgents
         } 
 
         $sFormId = $oForm->getId();
-        $sContent = BxTemplStudioFunctions::getInstance()->popupBox($sFormId . '_popup', _t('_sys_agents_models_popup_edit'), $this->_oTemplate->parseHtmlByName('agents_automator_form.html', [
+        $sContent = BxTemplStudioFunctions::getInstance()->popupBox($sFormId . '_popup', _t('_sys_agents_models_popup_edit'), $this->_oTemplate->parseHtmlByName('agents_agents_form.html', [
             'form_id' => $sFormId,
             'form' => $oForm->getCode(true),
             'object' => $this->_sObject,
