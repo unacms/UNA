@@ -64,6 +64,7 @@ ICONS = [
     ('modules/boonex/se_migration/template/images/icons/std-icon.svg', 'se_migration', 'gray', 'arrow-right-left', 80),
     ('modules/boonex/nexus/template/images/icons/std-icon.svg', 'nexus', 'gray', 'galaxy', 80),
     ('modules/boonex/stream/template/images/icons/std-icon.svg', 'stream', 'green', 'circle-play', 80),
+    ('modules/boonex/resources/template/images/icons/std-icon.svg', 'resources', 'green', 'rows-3', 80),
 ]
 
 # Brand artwork on the white plate: the source SVG's shapes are copied as they are (fills, gradients), scaled to
