@@ -2700,6 +2700,7 @@
 	<string name="_sys_audit_msg_cron_jobs"><![CDATA[Не запускался последний час: проверьте запись в crontab.]]></string>
 	<string name="_sys_audit_msg_optimization_fail"><![CDATA[Включите в Настройки &gt; Кэш.]]></string>
 	<string name="_sys_audit_msg_optimization_warn"><![CDATA[PHP-акселератор ускорит файловый кэш.]]></string>
+	<string name="_sys_audit_msg_cache_engine_optional"><![CDATA[Необязательный движок в памяти: ускоряет работу, если установлен.]]></string>
 	<string name="_sys_audit_msg_x_based_cache_engine"><![CDATA[ ({0})]]></string>
 	<string name="_sys_audit_msg_ffmpeg"><![CDATA[Не найден по пути {0}: конвертация видео и аудио не будет работать.]]></string>
 	<string name="_sys_audit_msg_hardware_requirements"><![CDATA[Автоматически не проверяется: см. ручной аудит.]]></string>

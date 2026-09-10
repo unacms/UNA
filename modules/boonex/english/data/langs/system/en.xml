@@ -2730,6 +2730,7 @@
 	<string name="_sys_audit_msg_cron_jobs"><![CDATA[No run in the last hour: check the crontab entry.]]></string>
 	<string name="_sys_audit_msg_optimization_fail"><![CDATA[Enable it in Settings &gt; Cache.]]></string>
 	<string name="_sys_audit_msg_optimization_warn"><![CDATA[A PHP accelerator would speed up the file cache.]]></string>
+	<string name="_sys_audit_msg_cache_engine_optional"><![CDATA[Optional in-memory engine: adds speed when installed.]]></string>
 	<string name="_sys_audit_msg_x_based_cache_engine"><![CDATA[ ({0})]]></string>
 	<string name="_sys_audit_msg_ffmpeg"><![CDATA[Not found at {0}: video and audio conversion will not work.]]></string>
 	<string name="_sys_audit_msg_hardware_requirements"><![CDATA[Not checked automatically: see the manual audit.]]></string>

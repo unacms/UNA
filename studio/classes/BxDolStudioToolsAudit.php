@@ -671,6 +671,10 @@ class BxDolStudioToolsAudit extends BxDol
         return $aRows;
     }
 
+    /**
+     * Which cache engines the server offers. File is always there, so the section never fails; an in-memory engine
+     * (APC, Memcache, Memcached, Redis) is a bonus, listed as information when it is missing rather than as a failure.
+     */
     protected function getRowsOptimizationCache()
     {
         $aRows = array();
@@ -678,7 +682,11 @@ class BxDolStudioToolsAudit extends BxDol
             $sClass = 'BxDolCache' . $sName;
             $o = class_exists($sClass) ? new $sClass() : null;
             $bAvailable = $o && $o->isInstalled() && $o->isAvailable();
-            $aRows[] = $this->getRow($sName, $this->format_output($bAvailable, array('type' => 'bool')), $bAvailable ? BX_DOL_AUDIT_OK : BX_DOL_AUDIT_FAIL);
+            $sValue = $this->format_output($bAvailable, array('type' => 'bool'));
+            if ($bAvailable || 'File' == $sName)
+                $aRows[] = $this->getRow($sName, $sValue, BX_DOL_AUDIT_OK);
+            else
+                $aRows[] = $this->getRow($sName, $sValue, BX_DOL_AUDIT_UNDEF, _t('_sys_audit_msg_cache_engine_optional'));
         }
         return $aRows;
     }
