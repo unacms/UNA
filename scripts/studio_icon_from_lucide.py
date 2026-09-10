@@ -62,6 +62,7 @@ ICONS = [
     ('modules/boonex/oauth2/template/images/icons/std-icon.svg', 'oauth2', 'gray', 'key-round', 80),
     ('modules/boonex/reviews/template/images/icons/std-icon.svg', 'reviews', 'green', 'thumbs-up', 80),
     ('modules/boonex/se_migration/template/images/icons/std-icon.svg', 'se_migration', 'gray', 'arrow-right-left', 80),
+    ('modules/boonex/nexus/template/images/icons/std-icon.svg', 'nexus', 'gray', 'galaxy', 80),
 ]
 
 # Brand artwork on the white plate: the source SVG's shapes are copied as they are (fills, gradients), scaled to
