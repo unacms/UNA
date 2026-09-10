@@ -15,7 +15,7 @@ class BxDolAIVectorStoreFactory extends BxDolFactory
         if (isset($GLOBALS['bxDolClasses'][__CLASS__ . '_VectorStore_' . $iId]))
             return $GLOBALS['bxDolClasses'][__CLASS__ . '_VectorStore_' . $iId];
 
-        $a = BxDolAIQuery::getVectorStoreObject($iId);
+        $a = BxDolAiQuery::getVectorStoreObject($iId);
         if (!$a) {
             bx_log('sys_agents', "Vector store with id {$iId} not found", BX_LOG_ERR);
             throw new Exception("Vector store with id {$iId} not found");

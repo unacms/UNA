@@ -17,7 +17,7 @@ bx_import('BxDolLanguages');
 bx_require_authentication(true);
 
 $sPage = bx_get('page');
-$sPage = $sPage !== false ? bx_process_input($sPage) : 'agents';
+$sPage = $sPage !== false ? bx_process_input($sPage) : '';
 
 $oPage = new BxTemplStudioAgents($sPage);
 BxDolStudioTemplate::getInstance()->displayPage($oPage);

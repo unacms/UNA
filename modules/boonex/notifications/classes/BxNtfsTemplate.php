@@ -264,7 +264,7 @@ class BxNtfsTemplate extends BxBaseModNotificationsTemplate
         if($bEventCanceled)
             return '';
 
-        if(($sGroupedByMac = $aEvent['grouped_by_mac'] ?? false)) {
+        if(($sGroupedByMac = $aEvent['grouped_by_mac'] ?? false) && strpos($sGroupedByMac, ',') !== false) {
             $aGroupedByMac = explode(',', $sGroupedByMac);
 
             $sContentParsed = '';

@@ -9,16 +9,13 @@
 
 class BxDolStudioAgentsInstruments extends BxTemplStudioGridAgents
 {
-    protected $_oDb;
     protected $_sFieldName;
 
     public function __construct ($aOptions, $oTemplate = false)
     {
         parent::__construct ($aOptions, $oTemplate);
 
-        $this->_sDefaultSortingOrder = 'DESC';
         $this->_sFieldName = 'name';
-        $this->_oDb = new BxDolStudioAgentsQuery();
     }
 
     public function getPageJsObject()
@@ -66,7 +63,7 @@ class BxDolStudioAgentsInstruments extends BxTemplStudioGridAgents
 
         $sFormId = $oForm->getId();
         $sForm = $oForm->getCode(true);
-        $sContent = BxTemplStudioFunctions::getInstance()->popupBox($sFormId . '_popup_' . $sAction, _t($sPopupTitleKey), $this->_oTemplate->parseHtmlByName('agents_automator_form.html', [
+        $sContent = BxTemplStudioFunctions::getInstance()->popupBox($sFormId . '_popup_' . $sAction, _t($sPopupTitleKey), $this->_oTemplate->parseHtmlByName('agents_agents_form.html', [
             'form_id' => $sFormId,
             'form' => $sForm,
             'object' => $this->_sObject,
@@ -83,7 +80,12 @@ class BxDolStudioAgentsInstruments extends BxTemplStudioGridAgents
 
         return $aForm;
     }
-    
+
+    protected function _getForm($sAction = '', $aData = [])
+    {
+        return [];
+    }
+
     protected function _getActionDelete ($sType, $sKey, $a, $isSmall = false, $isDisabled = false, $aRow = array())
     {
         if ($sType == 'single' && $aRow['duplicate'] == 0)

@@ -2942,7 +2942,7 @@ function bx_ai_process_agents_call_queue($bFinishRequest = true, $bExit = true)
 
     if (!empty($GLOBALS['glAgentsCallQueue']))
     {
-        $oAi = BxDolAI::getInstance();
+        $oAi = BxDolAi::getInstance();
         foreach ($GLOBALS['glAgentsCallQueue'] as $r) 
         {
             $sMessage = $oAi->callAgent($r['type'], $r['agent'], $r['params']);

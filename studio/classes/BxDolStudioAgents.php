@@ -7,22 +7,12 @@
  * @{
  */
 
-define('BX_DOL_STUDIO_AGENTS_TYPE_SETTINGS', 'settings');
-define('BX_DOL_STUDIO_AGENTS_TYPE_ASSISTANTS', 'assistants');
-
+define('BX_DOL_STUDIO_AGENTS_TYPE_AGENTS', 'agents');
 define('BX_DOL_STUDIO_AGENTS_TYPE_AI_PROVIDERS', 'ai_providers');
 define('BX_DOL_STUDIO_AGENTS_TYPE_TOOLS', 'tools');
 define('BX_DOL_STUDIO_AGENTS_TYPE_VECTOR_STORE', 'vector_store');
-define('BX_DOL_STUDIO_AGENTS_TYPE_AGENTS', 'agents');
-
-/*
- * Isn't used for now. Most probably they will be removed.
- */
-define('BX_DOL_STUDIO_AGENTS_TYPE_AUTOMATORS', 'automators');
-define('BX_DOL_STUDIO_AGENTS_TYPE_PROVIDERS', 'providers');
-define('BX_DOL_STUDIO_AGENTS_TYPE_HELPERS', 'helpers');
-
-define('BX_DOL_STUDIO_AGENTS_TYPE_DEFAULT', BX_DOL_STUDIO_AGENTS_TYPE_SETTINGS);
+define('BX_DOL_STUDIO_AGENTS_TYPE_SETTINGS', 'settings');
+define('BX_DOL_STUDIO_AGENTS_TYPE_DEFAULT', BX_DOL_STUDIO_AGENTS_TYPE_AGENTS);
 
 class BxDolStudioAgents extends BxTemplStudioWidget
 {
@@ -34,7 +24,7 @@ class BxDolStudioAgents extends BxTemplStudioWidget
     {
         parent::__construct('agents');
 
-        $this->oDbAi = new BxDolAIQuery();
+        $this->oDbAi = new BxDolAiQuery();
 
         $this->sPage = BX_DOL_STUDIO_AGENTS_TYPE_DEFAULT;
         if(is_string($sPage) && !empty($sPage))

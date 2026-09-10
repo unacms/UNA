@@ -7,7 +7,7 @@
  * @{
  */
 
-class BxDolStudioAgentsQuery extends BxDolAIQuery
+class BxDolStudioAgentsQuery extends BxDolAiQuery
 {
     public function __construct()
     {

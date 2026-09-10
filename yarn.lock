@@ -687,12 +687,12 @@
     "@tanstack/ai-event-client" "^0.10.0"
     "@tanstack/ai-utils" "^0.4.0"
 
-"@tanstack/ai-client@^0.29.2":
-  version "0.29.2"
-  resolved "https://registry.yarnpkg.com/@tanstack/ai-client/-/ai-client-0.29.2.tgz#ef5b336d5d8e12a6bb261ae0dda16af8e19ed464"
-  integrity sha512-SciysncXh5R5MHQ1GoF3kHfaygRFljUO1yVRvH97elR5l7Xjx9VYVB0KLnW7g11SIwxUrpODlLynlxEJSL2USg==
+"@tanstack/ai-client@^0.31.0":
+  version "0.31.0"
+  resolved "https://registry.yarnpkg.com/@tanstack/ai-client/-/ai-client-0.31.0.tgz#d2aa50b7fe7b769e60efe5b4c1cbb62c7bb52480"
+  integrity sha512-K7VlIfyiPXpTkdVkfoGbful++/jr9wJet4ri0uhBvfxgIUi4FNM+50TadfcZ14H+L4mDdnVB4IaRYy+XGxV9aw==
   dependencies:
-    "@tanstack/ai" "^0.52.0"
+    "@tanstack/ai" "^0.53.0"
     "@tanstack/ai-event-client" "^0.11.2"
     "@tanstack/ai-utils" "^0.4.0"
 
@@ -733,10 +733,10 @@
     "@tanstack/ai-utils" "^0.4.0"
     partial-json "^0.1.7"
 
-"@tanstack/ai@^0.52.0":
-  version "0.52.2"
-  resolved "https://registry.yarnpkg.com/@tanstack/ai/-/ai-0.52.2.tgz#0f92a4ea8aa3210eb9b914e02af3f5976517f3eb"
-  integrity sha512-Oewjnt7IAmSFRuvbBwbLFK+zZSKSVaf6HU36SbwTNvVqLOAeRwc1Jdg4mi2iqxxgDQu4yK4REooo8L/uF9VTOA==
+"@tanstack/ai@^0.53.0":
+  version "0.53.0"
+  resolved "https://registry.yarnpkg.com/@tanstack/ai/-/ai-0.53.0.tgz#8790209bc9f0cba4a28ed5414df0bc813ce47062"
+  integrity sha512-a4zDqb7SU0PU+pua69y5IDKLHO9dsD99vMIrzKNfcJyzJ81aASIkbrXXcD4n15YOj+FaWPZmD4Qewmd+5IV4Iw==
   dependencies:
     "@ag-ui/core" "0.1.1-canary.beta.0"
     "@standard-schema/spec" "^1.1.0"
@@ -2633,7 +2633,8 @@ jstree@^3.3.17:
 
 "jush@https://github.com/vrana/jush":
   version "0.0.0"
-  resolved "https://github.com/vrana/jush#e89a152b995b33b2f308078c3dee7bee506711e3"
+  uid d60192b0d676ffc02ad48dc0630ff2769d2d4cd5
+  resolved "https://github.com/vrana/jush#d60192b0d676ffc02ad48dc0630ff2769d2d4cd5"
 
 just-diff-apply@^5.2.0:
   version "5.5.0"
@@ -2645,10 +2646,10 @@ just-diff@^6.0.0:
   resolved "https://registry.yarnpkg.com/just-diff/-/just-diff-6.0.2.tgz#03b65908543ac0521caf6d8eb85035f7d27ea285"
   integrity sha512-S59eriX5u3/QhMNq3v/gm8Kd0w8OS6Tz2FS1NG4blv+z0MuQcBRJyFWjdovM0Rad4/P4aUPFtnkNjMjyMlMSYA==
 
-leaflet-providers@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/leaflet-providers/-/leaflet-providers-3.0.0.tgz#93269327366b1e130e1da6d763674bc2a8aff58c"
-  integrity sha512-PWwsWRpf7xMrCofRUfWR6FBdw2v08j48tXCLQCoS1PinxPpVU70AQTr9N3NcbTIONiF9nS6m45LxBWVYx2i+wg==
+leaflet-providers@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/leaflet-providers/-/leaflet-providers-4.0.0.tgz#a98c5631a671c366739d8658e40be1d02e2c57cb"
+  integrity sha512-4m3Q4t0e+cHVNIPzlkW9HFWEgplImFRv8cnUFJYOfFoS6p2KosAfmh2Do6qk4HMdqutqbHMpv3F7sn/CUSw6oQ==
 
 leaflet@^1.9.4:
   version "1.9.4"

@@ -33,7 +33,11 @@ class BxDolAiAgent extends RAG
 
     protected function provider(): NeuronAI\Providers\AIProviderInterface
     {
-        return BxDolAIModelFactory::getModelInstance($this->aAgent['model_id']);
+        $aOverrides = [];
+        if ((int)($this->aAgent['max_tokens'] ?? 0) > 0)
+            $aOverrides['max_tokens'] = (int)$this->aAgent['max_tokens'];
+
+        return BxDolAIModelFactory::getModelInstance((int)$this->aAgent['model_id'], $aOverrides);
     }
 
     protected function instructions(): string
@@ -73,9 +77,11 @@ class BxDolAiAgent extends RAG
         if ($this->aAgent['tools']) {
             $aTools = explode(',', $this->aAgent['tools']);
             $aToolInstances = [];
-            foreach ($aTools as $iToolId) {
-                $oTool = BxDolAIToolFactory::getToolInstance($iToolId);
-                $aToolInstances[] = $oTool;                
+            foreach ($aTools as $sToolId) {
+                $iToolId = (int)trim($sToolId);
+                if ($iToolId <= 0)
+                    continue;
+                $aToolInstances[] = BxDolAIToolFactory::getToolInstance($iToolId);
             }
             return $aToolInstances;
         }
@@ -123,7 +129,7 @@ class BxDolAiAgent extends RAG
 
     protected function getСhatHistoryThreadId(): string
     {
-        return BxDolAI::chatHistoryThreadId($this->aAgent, $this->aParams);
+        return BxDolAi::chatHistoryThreadId($this->aAgent, $this->aParams);
     }
 
     protected function getAlertTriggerModifyableKeys(): string

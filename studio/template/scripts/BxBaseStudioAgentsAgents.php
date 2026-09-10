@@ -63,8 +63,13 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
             return;
         }
 
-        $oAi = BxDolAI::getInstance();
-        $sResponse = $oAi->callAgent('manual', $aAgent);
+        $oAi = BxDolAi::getInstance();
+        try {
+            $sResponse = $oAi->callAgent('manual', $aAgent);
+        } catch (Throwable $o) {
+            echoJson(['msg' => $o->getMessage()]);
+            return;
+        }
 
         $oParsedown = new Parsedown();
         $oParsedown->setSafeMode(true);
@@ -86,7 +91,7 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
             return;
         }
 
-        $oDb = new BxDolAIQuery();
+        $oDb = new BxDolAiQuery();
         $oDb->wipeAgentChatHistory($aAgent);
 
         $aRes = ['grid' => $this->getCode(false), 'blink' => $iId];
@@ -98,7 +103,7 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
         $sAction = 'add';
 
         $oTemplate = BxDolStudioTemplate::getInstance();
-        $oAI = BxDolAI::getInstance();
+        $oAI = BxDolAi::getInstance();
 
         $aForm = $this->_getForm($sAction);
         $oForm = new BxTemplFormView($aForm);
@@ -151,7 +156,7 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
         }
 
         $sFormId = $oForm->getId();
-        $sContent = BxTemplStudioFunctions::getInstance()->popupBox($sFormId . '_popup', _t('_sys_agents_agents_popup_add'), $this->_oTemplate->parseHtmlByName('agents_automator_form.html', [
+        $sContent = BxTemplStudioFunctions::getInstance()->popupBox($sFormId . '_popup', _t('_sys_agents_agents_popup_add'), $this->_oTemplate->parseHtmlByName('agents_agents_form.html', [
             'form_id' => $sFormId,
             'form' => $oForm->getCode(true),
             'object' => $this->_sObject,
@@ -166,7 +171,7 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
         $sAction = 'edit';
 
         $oTemplate = BxDolStudioTemplate::getInstance();
-        $oAI = BxDolAI::getInstance();
+        $oAI = BxDolAi::getInstance();
 
         $iId = $this->_getId();
         $aAgent = BxDolAiQuery::getAgentObject($iId);
@@ -220,7 +225,7 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
         } 
 
         $sFormId = $oForm->getId();
-        $sContent = BxTemplStudioFunctions::getInstance()->popupBox($sFormId . '_popup', _t('_sys_agents_agents_popup_edit', $aAgent['name']), $this->_oTemplate->parseHtmlByName('agents_automator_form.html', [
+        $sContent = BxTemplStudioFunctions::getInstance()->popupBox($sFormId . '_popup', _t('_sys_agents_agents_popup_edit', $aAgent['name']), $this->_oTemplate->parseHtmlByName('agents_agents_form.html', [
             'form_id' => $sFormId,
             'form' => $oForm->getCode(true),
             'object' => $this->_sObject,
@@ -266,19 +271,119 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
 
         $sChatId = 'bx-ai-chat-' . $iId;
         $sName = !empty($aAgent['title']) ? $aAgent['title'] : $aAgent['name'];
+        $aThreadsTpl = [];
+        $oAi = BxDolAi::getInstance();
+        $aThreads = $oAi && method_exists($oAi, 'listAgentChatThreads') ? $oAi->listAgentChatThreads($aAgent) : [];
+        foreach ($aThreads as $aThread) {
+            $aThreadsTpl[] = [
+                'thread_id' => bx_html_attribute($aThread['thread_id']),
+                'writable' => (int)$aThread['writable'],
+                'context_pid' => (int)$aThread['context_pid'],
+                'title' => bx_process_output($aThread['title']),
+                'meta' => bx_process_output($aThread['meta']),
+                'class_mine' => $aThread['class_mine'],
+            ];
+        }
+
         $sContent = BxTemplStudioFunctions::getInstance()->popupBox('popup_agent_chat_' . $iId, _t('_sys_agents_agents_popup_message', $sName), $this->_oTemplate->parseHtmlByName('agents_popup_chat.html', [
             'chat_id' => $sChatId,
+            'agent_id' => (int)$iId,
+            'txt_readonly' => _t('_sys_agents_agents_txt_readonly'),
+            'txt_chats' => _t('_sys_agents_agents_txt_chats'),
+            'bx_repeat:threads' => $aThreadsTpl,
         ]));
+
+        $aThreadsJs = [];
+        foreach ($aThreads as $aThread)
+            $aThreadsJs[] = $this->_agentChatThreadJs($aThread);
+        $sThreadsJson = json_encode($aThreadsJs, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
+        if ($sThreadsJson === false)
+            $sThreadsJson = '[]';
 
         $sJsObject = $this->getPageJsObject();
         return echoJson(['popup' => [
             'html' => $sContent,
             'options' => [
                 'closeOnOuterClick' => false,
-                'onShow' => $sJsObject . ".initAgentChat('#" . $sChatId . "', " . $iId . ");",
+                'onShow' => $sJsObject . ".initAgentChat('#" . $sChatId . "', " . (int)$iId . ", " . $sThreadsJson . ");",
                 'onHide' => $sJsObject . ".destroyAgentChat();",
             ]
         ]]);
+    }
+
+    public function performActionGetChatThreads()
+    {
+        $iId = $this->_getId();
+        $aAgent = BxDolAiQuery::getAgentObject($iId);
+        if (!$aAgent) {
+            echoJson(['code' => 404, 'threads' => []]);
+            return;
+        }
+
+        $aThreadsJs = [];
+        $oAi = BxDolAi::getInstance();
+        $aThreads = $oAi && method_exists($oAi, 'listAgentChatThreads') ? $oAi->listAgentChatThreads($aAgent) : [];
+        foreach ($aThreads as $aThread)
+            $aThreadsJs[] = $this->_agentChatThreadJs($aThread);
+
+        echoJson(['code' => 200, 'threads' => $aThreadsJs]);
+    }
+
+    public function performActionGetChatThread()
+    {
+        $iId = $this->_getId();
+        $aAgent = BxDolAiQuery::getAgentObject($iId);
+        if (!$aAgent) {
+            echoJson(['code' => 404, 'msg' => _t('_sys_txt_error_occured'), 'messages' => []]);
+            return;
+        }
+
+        $sThreadId = trim((string)bx_get('thread_id'));
+        $oAi = BxDolAi::getInstance();
+        if (!$oAi || !method_exists($oAi, 'getChatHistoryUiMessagesByThread')) {
+            echoJson(['code' => 503, 'msg' => _t('_sys_txt_error_occured'), 'messages' => []]);
+            return;
+        }
+
+        $aMessages = $oAi->getChatHistoryUiMessagesByThread($aAgent, $sThreadId);
+        if ($aMessages === false) {
+            echoJson(['code' => 404, 'msg' => _t('_sys_txt_error_occured'), 'messages' => []]);
+            return;
+        }
+
+        echoJson([
+            'code' => 200,
+            'messages' => $aMessages,
+            'writable' => $oAi->isOwnAgentChatThread($aAgent, $sThreadId) ? 1 : 0,
+            'artifacts' => method_exists($oAi, 'getChatHistoryArtifactsByThread') ? $oAi->getChatHistoryArtifactsByThread($aAgent, $sThreadId) : [],
+        ]);
+    }
+
+    protected function _agentChatThreadJs($aThread)
+    {
+        $aArtifacts = [];
+        if (!empty($aThread['artifacts']) && is_array($aThread['artifacts'])) {
+            foreach ($aThread['artifacts'] as $aItem) {
+                if (!is_array($aItem))
+                    continue;
+                $aArtifacts[] = [
+                    'field_name' => (string)($aItem['field_name'] ?? ''),
+                    'field_value' => (string)($aItem['field_value'] ?? ''),
+                ];
+            }
+        }
+
+        return [
+            'thread_id' => (string)$aThread['thread_id'],
+            'writable' => (int)$aThread['writable'],
+            'context_pid' => (int)$aThread['context_pid'],
+            'title' => (string)$aThread['title'],
+            'meta' => (string)$aThread['meta'],
+            'status' => (string)($aThread['status'] ?? 'opened'),
+            'created_at' => (string)($aThread['created_at'] ?? ''),
+            'updated_at' => (string)($aThread['updated_at'] ?? ''),
+            'artifacts' => $aArtifacts,
+        ];
     }
 
     protected function _getCellSwitcher ($mixedValue, $sKey, $aField, $aRow)
@@ -299,7 +404,7 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
     {
         $sIcon = '';
         if($mixedValue) {
-            list($sIcon, $sIconUrl, $sIconA, $sIconHtml) = $this->_oTemplate->getTemplateFunctions()->getIcon($mixedValue, ['class' => 'sys-colored']);
+            list($sIcon, $sIconUrl, $sIconA, $sIconHtml, $sIconFontWithHtml) = $this->_oTemplate->getTemplateFunctions()->getIcon($mixedValue, ['class' => 'sys-colored']);
 
             if($sIcon)
                 $sIcon = $this->_oTemplate->parseIcon(BxDolIconset::getObjectInstance()->getIcon($sIcon));
@@ -307,6 +412,8 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
                 $sIcon = $sIconHtml;
             else if($sIconUrl)
                 $sIcon = '<img src="' . bx_html_attribute($sIconUrl) . '" />';
+            else if($sIconFontWithHtml)
+                $sIcon = $sIconFontWithHtml;
         }
 
         if (!$sIcon)
@@ -352,7 +459,7 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
             // $this->_oDb->deleteAutomatorHelpers(['automator_id' => (int)$mixedId]);
             // $this->_oDb->deleteAutomatorAssistants(['automator_id' => (int)$mixedId]);
 
-            // if(($oCmts = BxDolAI::getInstance()->getAutomatorCmtsObject($mixedId)) !== false)
+            // if(($oCmts = BxDolAi::getInstance()->getAutomatorCmtsObject($mixedId)) !== false)
             //    $oCmts->onObjectDelete();
         }
 
@@ -443,8 +550,8 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
                     'name' => 'model_id',
                     'caption' => _t('_sys_agents_field_model_id'),
                     'info' => _t('_sys_agents_field_model_id_info'),
-                    'value' => isset($aAgent['model_id']) ? $aAgent['model_id'] : BxDolAI::getDefaultModel(),
-                    'values' => $this->_oDb->getModelsBy(['sample' => 'all_pairs', 'active' => 1, 'capabilities' => ['chatvlm', 'chatllm']]),
+                    'value' => isset($aAgent['model_id']) ? $aAgent['model_id'] : BxDolAi::getDefaultModel(),
+                    'values' => $this->_getModelSelectValues(),
                     'required' => '1',
                     'checker' => [
                         'func' => 'Avail',
@@ -460,7 +567,7 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
                     'caption' => _t('_sys_agents_field_profile_id'),
                     'info' => _t('_sys_agents_field_profile_id_inf'),
                     'value' => isset($aAgent['profile_id']) ? $aAgent['profile_id'] : 0,
-                    'values' => bx_srv('system', 'get_options_agents_profile', [], 'TemplServices'),
+                    'values' => $this->_getProfileSelectValues(),
                     'required' => '1',
                     'required' => '1',
                     'checker' => [
@@ -517,13 +624,12 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
                     ]
                 ],
 
-                'alert_section' => array(
+                'alert_section' => [
                     'type' => 'block_header',
-                    'caption' => 'Trigger - alert',
+                    'caption' => _t('_sys_agents_block_header_alert'),
                     'collapsable' => true,
                     'collapsed' => true,
-                ),
-
+                ],
                 'alert_sample' => [
                     'type' => 'custom',
                     'name' => 'alert_sample',
@@ -537,7 +643,6 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
                         'payload' => !empty($aAgent['alert']) ? json_encode($this->_getAlertPayload($aAgent['alert']), JSON_PRETTY_PRINT) : '',
                     ]),
                 ],
-
                 'alert' => [
                     'type' => 'custom',
                     'name' => 'alert',
@@ -548,14 +653,16 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
                         'pass' => 'Xss',
                     ],
                 ],
+                'alert_section_end' => [
+                    'type' => 'block_end',
+                ],
 
                 'scheduler_section' => [
                     'type' => 'block_header',
-                    'caption' => 'Trigger - scheduler',
+                    'caption' => _t('_sys_agents_block_header_scheduler'),
                     'collapsable' => true,
                     'collapsed' => true,
                 ],
-
                 'scheduler_cron' => [
                     'type' => 'text',
                     'name' => 'scheduler_cron',
@@ -566,14 +673,16 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
                         'pass' => 'Xss',
                     ],
                 ],
+                'scheduler_section_end' => [
+                    'type' => 'block_end',
+                ],
 
-                'webhook_section' => array(
+                'webhook_section' => [
                     'type' => 'block_header',
-                    'caption' => 'Trigger - webhook',
+                    'caption' => _t('_sys_agents_block_header_webhook'),
                     'collapsable' => true,
                     'collapsed' => true,
-                ),
-
+                ],
                 'webhook_sample' => [
                     'type' => 'custom',
                     'name' => 'webhook_sample',
@@ -590,32 +699,37 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
                         'pass' => 'Xss',
                     ],
                 ],
+                'webhook_section_end' => [
+                    'type' => 'block_end',
+                ],
 
-                'message_section' => array(
+                'message_section' => [
                     'type' => 'block_header',
-                    'caption' => 'Trigger - message',
+                    'caption' => _t('_sys_agents_block_header_message'),
                     'collapsable' => true,
                     'collapsed' => true,
-                ),
-
+                ],
                 'message_profile_id' => [
                     'type' => 'select',
                     'name' => 'message_profile_id',
                     'caption' => _t('_sys_agents_field_message_profile'),
                     'info' => _t('_sys_agents_field_message_profile_info'),
                     'value' => isset($aAgent['message_profile_id']) ? $aAgent['message_profile_id'] : '',
-                    'values' => bx_srv('system', 'get_options_agents_profile', [true, '_adm_nav_txt_items_visible_for_all'], 'TemplServices'),
+                    'values' => $this->_getProfileSelectValues(true, '_adm_nav_txt_items_visible_for_all'),
                     'db' => [
                         'pass' => 'Xss',
                     ],
                 ],
+                'message_section_end' => [
+                    'type' => 'block_end',
+                ],
 
-                'form_field_section' => array(
+                'form_field_section' => [
                     'type' => 'block_header',
-                    'caption' => 'Trigger - form field',
+                    'caption' => _t('_sys_agents_block_header_form_input'),
                     'collapsable' => true,
                     'collapsed' => true,
-                ),
+                ],
 
                 'form_object' => [
                     'type' => 'custom',
@@ -638,10 +752,106 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
                         'pass' => 'Xss',
                     ],
                 ],
-
                 'form_field_section_end' => array(
                     'type' => 'block_end',
                 ),
+
+                'manual_section' => [
+                    'type' => 'block_header',
+                    'caption' => _t('_sys_agents_block_header_manual'),
+                    'collapsable' => true,
+                    'collapsed' => true,
+                ],
+                'max_turns' => [
+                    'type' => 'text',
+                    'name' => 'max_turns',
+                    'caption' => _t('_sys_agents_field_manual_max_turns'),
+                    'info' => _t('_sys_agents_field_manual_max_turns_info'),
+                    'value' => $aAgent['max_turns'] ?? 0,
+                    'required' => '1',
+                    'db' => [
+                        'pass' => 'Int',
+                    ],
+                ],
+                'chat_ttl_min' => [
+                    'type' => 'text',
+                    'name' => 'chat_ttl_min',
+                    'caption' => _t('_sys_agents_field_manual_chat_ttl_min'),
+                    'info' => _t('_sys_agents_field_manual_chat_ttl_min_info'),
+                    'value' => $aAgent['chat_ttl_min'] ?? 0,
+                    'required' => '1',
+                    'db' => [
+                        'pass' => 'Int',
+                    ],
+                ],
+                'limit_message' => [
+                    'type' => 'textarea',
+                    'name' => 'limit_message',
+                    'caption' => _t('_sys_agents_field_manual_limit_message'),
+                    'info' => _t('_sys_agents_field_manual_limit_message_info'),
+                    'value' => $aAgent['limit_message'] ?? '',
+                    'db' => [
+                        'pass' => 'Xss',
+                    ],
+                ],
+                'max_input_chars' => [
+                    'type' => 'text',
+                    'name' => 'max_input_chars',
+                    'caption' => _t('_sys_agents_field_manual_max_input_chars'),
+                    'info' => _t('_sys_agents_field_manual_max_input_chars_info'),
+                    'value' => $aAgent['max_input_chars'] ?? 0,
+                    'required' => '1',
+                    'db' => [
+                        'pass' => 'Int',
+                    ],
+                ],
+                'max_tokens' => [
+                    'type' => 'text',
+                    'name' => 'max_tokens',
+                    'caption' => _t('_sys_agents_field_manual_max_tokens'),
+                    'info' => _t('_sys_agents_field_manual_max_tokens_info'),
+                    'value' => $aAgent['max_tokens'] ?? 0,
+                    'required' => '1',
+                    'db' => [
+                        'pass' => 'Int',
+                    ],
+                ],
+                'max_sessions_per_hour' => [
+                    'type' => 'text',
+                    'name' => 'max_sessions_per_hour',
+                    'caption' => _t('_sys_agents_field_manual_max_sessions_per_hour'),
+                    'info' => _t('_sys_agents_field_manual_max_sessions_per_hour_info'),
+                    'value' => $aAgent['max_sessions_per_hour'] ?? 3,
+                    'required' => '1',
+                    'db' => [
+                        'pass' => 'Int',
+                    ],
+                ],
+                'max_sessions_per_day' => [
+                    'type' => 'text',
+                    'name' => 'max_sessions_per_day',
+                    'caption' => _t('_sys_agents_field_manual_max_sessions_per_day'),
+                    'info' => _t('_sys_agents_field_manual_max_sessions_per_day_info'),
+                    'value' => $aAgent['max_sessions_per_day'] ?? 10,
+                    'required' => '1',
+                    'db' => [
+                        'pass' => 'Int',
+                    ],
+                ],
+                'hidden_first_message' => [
+                    'type' => 'text',
+                    'name' => 'hidden_first_message',
+                    'caption' => _t('_sys_agents_field_manual_hidden_first_message'),
+                    'info' => _t('_sys_agents_field_manual_hidden_first_message_info'),
+                    'value' => $aAgent['hidden_first_message'] ?? '',
+                    'attrs' => ['maxlength' => 64],
+                    'db' => [
+                        'pass' => 'Xss',
+                    ],
+                ],
+                'manual_section_end' => [
+                    'type' => 'block_end',
+                ],
 
                 'vector_store_id' => [
                     'type' => 'select',
@@ -1037,6 +1247,27 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
         }
 
         return null;
+    }
+
+    protected function _getModelSelectValues()
+    {
+        $aParams = ['sample' => 'all_pairs', 'active' => 1];
+
+        $aModels = $this->_oDb->getModelsBy(array_merge($aParams, ['capabilities' => ['chatvlm', 'chatllm']]));
+        if(!$aModels || !is_array($aModels))
+            $aModels = $this->_oDb->getModelsBy($aParams);
+
+        return ($aModels && is_array($aModels)) ? $aModels : [];
+    }
+
+    protected function _getProfileSelectValues($bSelectOne = true, $sSelectOneLangKey = '_Select_one')
+    {
+        $aProfiles = bx_srv('system', 'get_options_agents_profile', [$bSelectOne, $sSelectOneLangKey], 'TemplServices');
+        if($aProfiles && is_array($aProfiles))
+            return $aProfiles;
+
+        $aProfiles = bx_srv('system', 'get_options_profile_bot', [], 'TemplServices');
+        return ($aProfiles && is_array($aProfiles)) ? $aProfiles : [];
     }
 
     protected function _addJsCss()

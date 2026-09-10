@@ -3,16 +3,21 @@
  * Copyright (c) UNA, Inc - https://una.io
  * MIT License - https://opensource.org/licenses/MIT
  *
- * @defgroup    UnaStudioView UNA Studio Representation classes
- * @ingroup     UnaStudio
+ * @defgroup    UnaStudio UNA Studio
  * @{
  */
 
-class BxTemplStudioAgentsAsstFiles extends BxBaseStudioAgentsAsstFiles
+class BxDolStudioGridAgents extends BxTemplStudioGrid
 {
+    protected $_oDb;
+
     public function __construct ($aOptions, $oTemplate = false)
     {
         parent::__construct ($aOptions, $oTemplate);
+
+        $this->_sDefaultSortingOrder = 'DESC';
+
+        $this->_oDb = new BxDolStudioAgentsQuery();
     }
 }
 

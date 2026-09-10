@@ -82,21 +82,11 @@
         <exclude name="samples/**" />
         <exclude name="scripts/**" />
         <exclude name="tests/**" />
-        <exclude name="plugins/phpunit/**" />
-        <exclude name="plugins/phpmd/**" />
-        <exclude name="plugins/pdepend/**" />
-        <exclude name="plugins/sebastian/**" />
-        <exclude name="plugins/phar-io/**" />
-        <exclude name="plugins/myclabs/**" />
-        <exclude name="plugins/theseer/**" />
-        <exclude name="plugins/staabm/**" />
-        <exclude name="plugins/bin/phpunit" />
-        <exclude name="plugins/bin/phpmd" />
-        <exclude name="plugins/bin/pdepend" />
         <exclude name="packages/**" />
         <exclude name="upgrade/**" />
         <exclude name="node_modules/**" />
         <exclude name="bower_components/**" />
+        <exclude name="modules/boonex/*/updates/**" />
     </fileset>
 
     <fileset dir="${project.basedir}" defaultexcludes="true" id="doc_files">

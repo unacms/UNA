@@ -1,1 +1,18 @@
-<div id="__chat_id__" class="bx-agents-popup-chat h-[32rem]"></div>
+<div class="bx-agents-popup-chat-wrap" data-agent-id="__agent_id__">
+    <aside class="bx-agents-popup-chat-list">
+        <div class="bx-agents-popup-chat-list-title">__txt_chats__</div>
+        <div class="bx-agents-popup-chat-list-items">
+            <bx_repeat:threads>
+                <button type="button" class="bx-agents-popup-chat-thread__class_mine__" data-thread-id="__thread_id__" data-writable="__writable__" data-context="__context_pid__">
+                    <span class="bx-agents-popup-chat-thread-title">__title__</span>
+                    <span class="bx-agents-popup-chat-thread-meta">__meta__</span>
+                </button>
+            </bx_repeat:threads>
+        </div>
+    </aside>
+    <div class="bx-agents-popup-chat-main">
+        <div class="bx-agents-popup-chat-artifacts" style="display:none;"></div>
+        <div id="__chat_id__" class="bx-agents-popup-chat"></div>
+        <div class="bx-agents-popup-chat-note" style="display:none;">__txt_readonly__</div>
+    </div>
+</div>

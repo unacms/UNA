@@ -186,9 +186,9 @@ class BxDolSearchExtended extends BxDolFactory implements iBxDolFactoryObject
         return urlencode(base64_encode(json_encode($aConditions)));
     }
 
-    static public function decodeConditions($sConditions) 
+    static public function decodeConditions($mixedConditions) 
     {
-        return json_decode(base64_decode(urldecode($sConditions)), true);
+        return is_string($mixedConditions) ? json_decode(base64_decode(urldecode($mixedConditions)), true) : $mixedConditions;
     }
 
     static public function processParams($aParams, $aQueryParts)

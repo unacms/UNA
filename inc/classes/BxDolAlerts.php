@@ -153,7 +153,7 @@ class BxDolAlerts extends BxDol
         BxDolAlertsStats::log($this);
 
         // call agents
-        $oAi = BxDolAI::getInstance();
+        $oAi = BxDolAi::getInstance();
         if($aAgents = $oAi->getAgentsByAlertUnitAndAction($this->sUnit, $this->sAction)) {
             foreach($aAgents as $a) {
                 $aParams = [
@@ -187,18 +187,6 @@ class BxDolAlerts extends BxDol
                 }
             }
         }
-
-        // call automators
-        $oAi = BxDolAI::getInstance();
-        if($oAi->hasAutomators(BX_DOL_AI_AUTOMATOR_EVENT, true)) {
-            $aAutomators = $oAi->getAutomatorsEvent($this->sUnit, $this->sAction);
-            foreach($aAutomators as $aAutomator) {
-                $oAi->callAutomator(BX_DOL_AI_AUTOMATOR_EVENT, [
-                    'automator' => $aAutomator,
-                    'alert' => $this
-                ]);
-            }
-        }        
     }
 
     /**

@@ -38,7 +38,6 @@ define('BX_DOL_SEARCH_KEYWORD_PAGE', 'site-search-page');
 class BxDolSearch extends BxDol
 {
     protected $_bIsApi;
-    protected $_bAssitantForLiveSearch = true;
         
     protected $aClasses = array(); ///< array of all search classes
     protected $aChoice  = array(); ///< array of current search classes which were choosen in search area
@@ -96,12 +95,7 @@ class BxDolSearch extends BxDol
     public function setApiOutput($bIsApi)
     {
         $this->_bIsApi = $bIsApi;
-    }   
-
-    public function setAssistantForLiveSearch($bAssistantForLiveSearch)
-    {
-        $this->_bAssitantForLiveSearch = $bAssistantForLiveSearch;
-    }  
+    }
 
     /**
      * create units for all classes and calling their processing methods
@@ -109,15 +103,6 @@ class BxDolSearch extends BxDol
     public function response ()
     {
         $sCode = $this->_bDataProcessing ? [] : '';
-
-        if($this->_bAssitantForLiveSearch && $this->_bLiveSearch && ($iAssistant = BxDolAI::getAssistantForLiveSearch()) != 0) {
-            $sKeyword = '';
-            if(($sKeyword = bx_get('keyword')) !== false)
-                $sKeyword = bx_process_input($sKeyword);
-
-            if($this->_bIsApi)
-                $sCode .= BxDolAIAssistant::getObjectInstance($iAssistant)->getAskButton($sKeyword);
-        }
 
         $bSingle = count($this->aChoice) == 1;
         foreach($this->aChoice as $sKey => $aValue) {
