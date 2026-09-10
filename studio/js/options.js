@@ -27,8 +27,7 @@ BxDolStudioOptions.prototype.onSubmit = function(oForm) {
 
     var oSubmit = $(oForm).find('input[type="submit"],button[type="submit"]');
 
-    oSubmit.addClass('bx-btn-disabled');
-    bx_std_loading_btn(oSubmit, true);
+    setTimeout(() => bx_std_loading_btn(oSubmit, true), 0);
 
     return (this.bBusy = true);
 };
@@ -39,7 +38,6 @@ BxDolStudioOptions.prototype.onSubmitted = function(sFormId, sTocken, oData) {
 
     oForm.find('input[name="csrf_token"]').val(sTocken);
 
-    oSubmit.removeClass('bx-btn-disabled');
     bx_std_loading_btn(oSubmit, false);
 
     this.bBusy = false;
