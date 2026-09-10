@@ -1,96 +1,27 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg
-   width="606px"
-   height="606px"
-   viewBox="0 0 606 606"
-   version="1.1"
-   id="svg30"
-   sodipodi:docname="std-icon.svg"
-   inkscape:version="1.1.2 (b8e25be833, 2022-02-05)"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:xlink="http://www.w3.org/1999/xlink"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:svg="http://www.w3.org/2000/svg">
-  <sodipodi:namedview
-     id="namedview32"
-     pagecolor="#ffffff"
-     bordercolor="#666666"
-     borderopacity="1.0"
-     inkscape:pageshadow="2"
-     inkscape:pageopacity="0.0"
-     inkscape:pagecheckerboard="0"
-     showgrid="false"
-     inkscape:zoom="0.33415842"
-     inkscape:cx="507.24444"
-     inkscape:cy="677.82221"
-     inkscape:window-width="1920"
-     inkscape:window-height="996"
-     inkscape:window-x="-8"
-     inkscape:window-y="-8"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="g23" />
- 
-  <defs
-     id="defs5">
-    <path
-       d="M552.268958,552.268958 C600,504.537813 600,431.458333 600,300 C600,168.541667 600,95.4621875 552.268958,47.7310417 C504.537813,0 431.458333,0 300,0 C168.541667,0 95.4621875,0 47.7310417,47.7310417 C0,95.4621875 0,168.541667 0,300 C0,431.458333 0,504.537813 47.7310417,552.268958 C95.4621875,600 168.541667,600 300,600 C431.458333,600 504.537813,600 552.268958,552.268958 Z"
-       id="path-2" />
-  </defs>
-  <g
-     id="Page-1"
-     stroke="none"
-     stroke-width="1"
-     fill="none"
-     fill-rule="evenodd">
-    <g
-       id="vk"
-       transform="translate(3.000000, 3.000000)">
-      <g
-         id="Squircle2-Copy-6">
-        <g
-           id="Shape">
-          <use
-             fill="#0098f7"
-             xlink:href="#path-2"
-             id="use7" />
-          <use
-             stroke="#000000"
-             stroke-width="4.04"
-             fill="url(#linearGradient-1)"
-             xlink:href="#path-2"
-             id="use9" />
-        </g>
-      </g>
-      <g
-         id="VK_Logo_White_On_Blue"
-         transform="translate(55.000000, 170.000000) scale(0.6, 0.6)"
-         fill="#FFFFFF" />
-    </g>
-  </g>
-  <g
-     id="g23"
-     transform="matrix(0.51141684,0,0,0.45445804,46.778812,78.252465)">
-    <g
-       transform="matrix(0.1,0,0,-0.1,0,511)"
-       id="g21"
-       style="fill:#ffffff">
-      <path
-         d="m 5891.8,4113.1 c -283.4,-143 -303.8,-500.4 -40.8,-694.4 61.3,-48.5 112.3,-53.6 451.9,-61.3 l 380.4,-7.7 V 107.4 -3132.4 h -367.6 c -337,0 -372.7,-5.1 -449.3,-56.2 -127.6,-86.8 -183.8,-181.3 -196.6,-319.1 -12.8,-165.9 66.4,-306.4 222.1,-382.9 112.3,-58.7 122.5,-58.7 1199.9,-58.7 1077.4,0 1087.6,0 1199.9,58.7 163.4,81.7 217,168.5 217,349.8 0,168.5 -45.9,252.8 -191.5,349.8 -76.6,53.6 -112.3,58.7 -449.3,58.7 H 7500.3 V 110 3352.3 h 367.6 c 337,0 372.7,5.1 449.3,58.7 145.5,97 191.5,181.3 191.5,349.8 0,181.3 -53.6,268.1 -217,352.3 -112.3,56.2 -122.5,56.2 -1199.9,56.2 -1077.5,0 -1087.7,0 -1200,-56.2 z"
-         id="path13"
-         style="fill:#ffffff" />
-      <path
-         d="m 369.6,2318.3 c -130.2,-45.9 -217,-130.2 -250.2,-240 -15.3,-61.3 -23,-748 -17.9,-2024.5 7.7,-1917.3 7.7,-1932.6 61.3,-2004.1 30.6,-38.3 91.9,-94.5 140.4,-122.5 84.2,-51.1 137.8,-51.1 3043.2,-58.7 l 2953.8,-5.1 v 408.5 408.5 H 3606.8 913.4 V 110 1539.7 h 2693.4 2693.4 v 408.5 408.5 H 3384.7 C 979.8,2354.1 448.8,2349 369.6,2318.3 Z"
-         id="path15"
-         style="fill:#ffffff" />
-      <path
-         d="m 7883.1,1948.2 v -408.5 h 600 600 V 110 -1319.7 h -600 -600 v -408.5 -411 l 862.9,7.7 c 845.1,7.7 862.9,7.7 954.8,66.4 53.6,33.2 114.9,102.1 145.5,168.5 53.7,107.2 53.7,137.8 53.7,2006.6 0,1868.8 0,1899.4 -53.6,2006.7 -30.6,66.4 -91.9,135.3 -145.5,168.5 -91.9,58.7 -109.8,58.7 -954.8,66.4 l -862.9,7.7 v -411.1 z"
-         id="path17"
-         style="fill:#ffffff" />
-      <path
-         d="m 2376.3,1156.7 c -68.9,-28.1 -91.9,-74 -541.2,-1067.1 -211.9,-469.8 -360,-829.7 -360,-875.7 0,-112.3 120,-227.2 237.4,-227.2 120,0 206.8,76.6 275.7,242.5 l 58.7,140.4 h 441.7 444.2 l 74,-163.4 c 40.9,-91.9 97,-176.2 125.1,-191.5 63.8,-35.7 196.6,-35.7 260.4,-2.5 56.1,30.6 125.1,153.2 125.1,222.1 0,89.4 -788.9,1830.5 -857.8,1891.8 -66.3,58.7 -181.2,71.5 -283.3,30.6 z M 2634.2,115.1 c 63.8,-158.3 117.4,-293.6 117.4,-298.7 0,-7.7 -114.9,-12.8 -255.3,-12.8 -140.4,0 -255.3,5.1 -255.3,10.2 0,12.8 227.2,551.4 245.1,582.1 20.4,33.2 15.3,43.4 148.1,-280.8 z"
-         id="path19"
-         style="fill:#ffffff" />
-    </g>
-  </g>
+<svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="80" height="80" fill="url(#paint0_linear_editor)"/>
+<g transform="translate(13.6 13.6) scale(2.2)" fill="none" stroke="url(#paint1_linear_editor)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+<path d="M15 5h6"/>
+<path d="M15 12h6"/>
+<path d="M3 19h18"/>
+<path d="m3 12 3.553-7.724a.5.5 0 0 1 .894 0L11 12"/>
+<path d="M3.92 10h6.16"/>
+</g>
+<g transform="translate(13.6 14.6) scale(2.2)" fill="none" stroke="black" stroke-opacity="0.1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+<path d="M15 5h6"/>
+<path d="M15 12h6"/>
+<path d="M3 19h18"/>
+<path d="m3 12 3.553-7.724a.5.5 0 0 1 .894 0L11 12"/>
+<path d="M3.92 10h6.16"/>
+</g>
+<defs>
+<linearGradient id="paint0_linear_editor" x1="40" y1="0" x2="40" y2="80" gradientUnits="userSpaceOnUse">
+<stop stop-color="#71717A"/>
+<stop offset="1" stop-color="#3F3F46"/>
+</linearGradient>
+<linearGradient id="paint1_linear_editor" x1="12" y1="2" x2="12" y2="22" gradientUnits="userSpaceOnUse">
+<stop stop-color="white"/>
+<stop offset="1" stop-color="white" stop-opacity="0.6"/>
+</linearGradient>
+</defs>
 </svg>
