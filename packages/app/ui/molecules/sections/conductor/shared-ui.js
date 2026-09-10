@@ -541,8 +541,9 @@ function ListBody({
 }
 
 /**
- * UniList + form/left column/empty. Native: header in list + preloadComponent.
- * Web: chrome as siblings, window-scroll via uniListProps; optional reveal fade.
+ * UniList + form/left column/empty. Native: header in list; preload keeps
+ * that header mounted (skeletons as ListEmptyComponent). Web: chrome as
+ * siblings, window-scroll via uniListProps; optional reveal fade.
  */
 export function ListScene({
     route,

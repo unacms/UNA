@@ -9,6 +9,36 @@ import { useFocusEffect } from 'app/lib/hooks/router';
 import { paddingForList } from 'app/customization/functions';
 import { getHeaderFadeExtend } from 'app/ui/molecules/header/page-header-parts';
 
+const EMPTY_LIST_DATA = [];
+
+// Stable type so LegendList can reconcile the header when chrome/filters
+// update. A new `useCallback` header remounts the filter form and resets it.
+function UniListChromeHeader({
+    coverOverlayPad,
+    applyHeaderOffset,
+    headerOffset,
+    applyFooterOffset,
+    inverted,
+    header,
+}) {
+    return (
+        <>
+            {coverOverlayPad > 0 ? (
+                <View style={{ height: coverOverlayPad }} />
+            ) : null}
+            {applyHeaderOffset && headerOffset > 0 ? (
+                <View style={{ height: headerOffset }} />
+            ) : null}
+            {header
+                ? (typeof header === 'function' ? header() : header)
+                : null}
+            {applyFooterOffset && headerOffset > 0 && inverted ? (
+                <View style={{ height: headerOffset }} />
+            ) : null}
+        </>
+    );
+}
+
 const ESTIMATED_ITEM_SIZE_BY_UNIT = {
     feed: 140,
     notifications: 64,
@@ -82,7 +112,8 @@ export default function UniList(props) {
         preloadComponent, 
         contentContainerStyle: contentContainerStyleProp, 
         contentContainerClassName: contentContainerClassNameProp,
-        ListHeaderComponent, 
+        ListHeaderComponent,
+        ListEmptyComponent: listEmptyComponentProp,
         scrollProps, 
         isModal, 
         data, 
@@ -194,9 +225,13 @@ export default function UniList(props) {
         return headerHeight + fadeExtra;
     }, [headerHeight, skipHeaderOffset, inverted, isModal]);
 
-    const filteredData = useMemo(() => 
-        data.filter((v, i, a) => a.findIndex(t => t.id === v.id) === i),
-        [data]
+    // Keep LegendList (and its header / filter form) mounted while skeletons
+    // show. Replacing the whole tree on preload remounts native filters and
+    // re-applies their defaults.
+    const sourceData = preloadComponent ? EMPTY_LIST_DATA : data;
+    const filteredData = useMemo(() =>
+        (sourceData ?? EMPTY_LIST_DATA).filter((v, i, a) => a.findIndex(t => t.id === v.id) === i),
+        [sourceData]
     );
 
     const initialScrollOffset = useMemo(
@@ -414,26 +449,16 @@ export default function UniList(props) {
     const shouldApplyHeaderOffset = !inverted && !isModal && !skipHeaderOffset;
     const shouldApplyFooterOffset = inverted && !isModal;
 
-    const enhancedListHeaderComponent = useCallback(() => {
-        return (
-            <>
-                {coverOverlayPad > 0 ? (
-                    <View style={{ height: coverOverlayPad }} />
-                ) : null}
-                {shouldApplyHeaderOffset && listHeaderOffset > 0 && (
-                    <View style={{ height: listHeaderOffset }} />
-                )}
-                {ListHeaderComponent && (
-                    typeof ListHeaderComponent === 'function' 
-                        ? <ListHeaderComponent /> 
-                        : ListHeaderComponent
-                )}
-                {shouldApplyFooterOffset && listHeaderOffset > 0 && inverted && (
-                    <View style={{ height: listHeaderOffset }} />
-                )}
-            </>
-        );
-    }, [coverOverlayPad, shouldApplyHeaderOffset, listHeaderOffset, ListHeaderComponent, shouldApplyFooterOffset, inverted]);
+    const listHeaderElement = (
+        <UniListChromeHeader
+            coverOverlayPad={coverOverlayPad}
+            applyHeaderOffset={shouldApplyHeaderOffset}
+            headerOffset={listHeaderOffset}
+            applyFooterOffset={shouldApplyFooterOffset}
+            inverted={inverted}
+            header={ListHeaderComponent}
+        />
+    );
 
     const shouldApplyCoverCompensation =
         skipHeaderOffset && !inverted && !isModal && coverScrollCompensation > 0;
@@ -456,15 +481,6 @@ export default function UniList(props) {
         );
     }, [shouldApplyFooterOffset, listHeaderOffset, ListFooterComponent, inverted, shouldApplyCoverCompensation, coverScrollCompensation]);
 
-    if (preloadComponent) {
-        return (
-            <View className="w-full">
-                <View className="w-full" style={{ height: coverOverlayPad > 0 ? coverOverlayPad : listHeaderOffset }} />
-                {preloadComponent}
-            </View>
-        );
-    }
-
     return (
         <AnimatedLegendList
             key={url || undefined}
@@ -473,12 +489,13 @@ export default function UniList(props) {
             ref={setListRef}
             onEndReachedThreshold={1}
             data={filteredData}
-            ListHeaderComponent={enhancedListHeaderComponent}
+            ListHeaderComponent={listHeaderElement}
+            ListEmptyComponent={preloadComponent ?? listEmptyComponentProp}
             ListFooterComponent={enhancedListFooterComponent}
             keyExtractor={item => item.id}
             renderItem={layout ? listRenderItem : renderItem}
-            onEndReached={onEndReached}
-            onStartReached={onStartReached}
+            onEndReached={preloadComponent ? undefined : onEndReached}
+            onStartReached={preloadComponent ? undefined : onStartReached}
             onScroll={handleScroll}
             scrollEventThrottle={16}
             keyboardShouldPersistTaps="always"
