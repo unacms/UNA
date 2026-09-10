@@ -212,8 +212,8 @@ class BxDolStudioModule extends BxTemplStudioWidget
 
     public function activate($sPage, $iWidgetId = 0)
     {
-        $aPage = $this->aPage['wid_module'];
-        if(empty($aPage) || !is_array($aPage))           
+        $aPage = $this->aPage;
+        if(empty($aPage) || !is_array($aPage) || $aPage['name'] != $sPage)
             $aPage = $this->oDb->getPages(array('type' => 'by_page_name_full', 'value' => $sPage));
 
         $aModule = BxDolModuleQuery::getInstance()->getModuleByName($aPage['wid_module']);
@@ -226,10 +226,13 @@ class BxDolStudioModule extends BxTemplStudioWidget
 
         $this->aModule = BxDolModuleQuery::getInstance()->getModuleByName($this->sModule);
 
-        $aResult = array('code' => 0, 'message' => _t('_adm_scs_operation_done'));
+        // the acted-on app (not necessarily this page's): its new state, for the dock item and the launcher tile
+        $aModule = BxDolModuleQuery::getInstance()->getModuleByName($aPage['wid_module']);
+        $aResult = array('code' => 0, 'message' => _t('_adm_scs_operation_done'), 'page' => $aPage['name'], 'enabled' => (int)$aModule['enabled']);
         if($iWidgetId == 0) {
+            // the app's own page redraws itself; from the dock on another page there is nothing to redraw
             $aResult['content'] = '';
-            if(!$this->_bShowHeaderBreadcrumb || (int)$aModule['enabled'] == 0)
+            if($this->sModule == $aPage['wid_module'] && (!$this->_bShowHeaderBreadcrumb || (int)$aModule['enabled'] == 0))
                 $aResult['content'] = BxDolStudioTemplate::getInstance()->parseHtmlByName('page_content_2_col.html', [
                     'page_menu_code' => $this->getPageMenu(),
                     'page_main_code' => $this->getPageCode()

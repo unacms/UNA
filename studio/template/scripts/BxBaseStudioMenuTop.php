@@ -22,7 +22,9 @@ class BxBaseStudioMenuTop extends BxDolStudioMenuTop
 
     function getJs()
     {
-        return array('menu_top.js', 'context_menu.js'); // the dock's app items are context menu triggers, on every Studio page
+        // the dock's app items are context menu triggers on every Studio page, and the menu's actions (activate, uninstall)
+        // run through the module JS object, so its script comes with the menu wherever the page itself does not load it
+        return array_merge(BxTemplStudioModules::getInstance()->getJs(), array('menu_top.js', 'context_menu.js'));
     }
 
     function getJsObject()
@@ -77,7 +79,10 @@ class BxBaseStudioMenuTop extends BxDolStudioMenuTop
 
         $oTemplate->addJs($this->getJs());
         $oTemplate->addCss($this->getCss());
-        return $oTemplate->parseHtmlByName('menu_top.html', array('bx_repeat:menus' => $aTmplVars));
+        return $oTemplate->parseHtmlByName('menu_top.html', array(
+            'bx_repeat:menus' => $aTmplVars,
+            'js_code_module' => BxTemplStudioModules::getInstance()->getJsCode(array(), false) // pages with their own instance define it again below
+        ));
     }
 }
 

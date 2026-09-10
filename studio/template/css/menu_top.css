@@ -261,6 +261,9 @@ div.bx-std-menu-top .bx-menu-breadcrumb li.bx-menu-bc-actions svg {
     height: 1.0rem;
 }
 
+div.bx-std-menu-top .bx-menu-top-center li.bx-menu-item-disabled .bx-mi-icon {
+    opacity: 0.4; /* a disabled app, dimmed as its launcher tile is (.bx-std-widget-icon-disabled) */
+}
 div.bx-std-menu-top .bx-menu-top-center li.bx-menu-item-divider {
     width: 2px; /* the breadcrumb's separator bar: 2 x 16px, rounded, no room of its own (-1px margins) */
     height: 1rem;

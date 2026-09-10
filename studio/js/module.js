@@ -50,6 +50,10 @@ BxDolStudioModule.prototype.activate = function(oCheckbox, sName, iWidgetId) {
                 return;
             }
 
+            // the app's dock item dims or brightens with it (the launcher tile is replaced below)
+            if(oData.page)
+                $('#bx-menu-item-' + oData.page).toggleClass('bx-menu-item-disabled', !parseInt(oData.enabled));
+
             if(iWidgetId != 0 && oData.widget.length > 0) {
                 $('#bx-std-widget-' + iWidgetId).replaceWith(oData.widget);
                 if(oBxDolStudioLauncher.bJitterMode)
