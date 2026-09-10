@@ -58,7 +58,7 @@ ICONS = [
     ('modules/boonex/feedback/template/images/icons/std-icon.svg', 'feedback', 'gray', 'message-square-text', 80),
     ('modules/boonex/help_tours/template/images/icons/std-icon.svg', 'help_tours', 'gray', 'route', 80),
     ('modules/boonex/invites/template/images/icons/std-icon.svg', 'invites', 'gray', 'mail-plus', 80),
-    ('modules/boonex/new_comments/template/images/icons/std-icon.svg', 'new_comments', 'gray', 'messages-square', 80),
+    ('modules/boonex/new_comments/template/images/icons/std-icon.svg', 'new_comments', 'gray', 'message-square-dot', 80),
     ('modules/boonex/oauth2/template/images/icons/std-icon.svg', 'oauth2', 'gray', 'key-round', 80),
     ('modules/boonex/reviews/template/images/icons/std-icon.svg', 'reviews', 'green', 'thumbs-up', 80),
     ('modules/boonex/se_migration/template/images/icons/std-icon.svg', 'se_migration', 'gray', 'arrow-right-left', 80),
