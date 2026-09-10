@@ -40,18 +40,48 @@ class BxCidaasConModule extends BxBaseModConnectModule
 	 */
 	public function serviceLogout()
 	{
-		if (!isLogged())
+		if (!isLogged() || bx_is_api() || !$this->_oConfig->sBaseUrl)
 			return;
 
-		$sAccessToken = BxDolSession::getInstance()->getUnsetValue('cidaascon_access_token');
-		if (!$sAccessToken)
+		if (!BxDolSession::getInstance()->getValue('cidaascon_access_token'))
 			return;
 
-		try {
-			$this->_getProvider()->logout($sAccessToken)->wait();
-		} catch (Exception $oException) {
+		$aParams = [];
+		if ($this->_oConfig->sClientID)
+			$aParams['client_id'] = $this->_oConfig->sClientID;
+
+		$sEndSession = $this->_oConfig->sBaseUrl . '/session/end_session';
+		if ($aParams)
+			$sEndSession .= '?' . http_build_query($aParams);
+
+		bx_logout(false);
+
+		require_once(BX_DIRECTORY_PATH_INC . 'design.inc.php');
+
+		$sIframe = '<iframe src="' . bx_html_attribute($sEndSession) . '" width="0" height="0" style="display:none;visibility:hidden"></iframe>';
+		$sJs = '<script>setTimeout(function () { window.location.href = ' . json_encode(BX_DOL_URL_ROOT) . '; }, 3000);</script>';
+
+		$oTemplate = BxDolTemplate::getInstance();
+		$oTemplate->setPageNameIndex(BX_PAGE_TRANSITION);
+		$oTemplate->setPageHeader(_t('_Please Wait'));
+		$oTemplate->setPageContent('page_main_code', MsgBox(_t('_Please Wait')) . $sIframe . $sJs);
+		// Keep the 1s meta-refresh on this page from navigating away before the iframe request is sent.
+		$oTemplate->setPageContent('url_relocate', '#');
+		send_headers_page_changed();
+		$oTemplate->getPageCode();
+		exit;
+
+        /*
+        $sAccessToken = BxDolSession::getInstance()->getUnsetValue('cidaascon_access_token');
+        if (!$sAccessToken)
+            return;
+
+        try {
+            $this->_getProvider()->logout($sAccessToken)->wait();
+        } catch (Exception $oException) {
             bx_log('bx_cidaas', $this->_getExceptionMessage($oException));
         }
+        */
 	}
 
     /**
@@ -142,6 +172,7 @@ class BxCidaasConModule extends BxBaseModConnectModule
 
         try {
             $aAuthData = $oProvider->getAccessToken(GrantType::AuthorizationCode, $sCode, '', $this->_oConfig->bPkce)->wait();
+            // echoDbgLog($aAuthData);
             if (empty($aAuthData['access_token'])) {
                 $sErrorDescription = isset($aAuthData['error_description']) ? $aAuthData['error_description'] : _t('_error occured');
                 $this->_oTemplate->getPage(_t('_Error'), MsgBox($sErrorDescription));
