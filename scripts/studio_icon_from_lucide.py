@@ -53,6 +53,8 @@ ICONS = [
     ('modules/boonex/workspaces/template/images/icons/std-icon.svg', 'workspaces', 'red', 'target', 80),
     ('modules/boonex/videos/template/images/icons/std-icon.svg', 'videos', 'green', 'tv-minimal-play', 80),
     ('modules/boonex/stories/template/images/icons/std-icon.svg', 'stories', 'green', 'image-play', 80),
+    ('modules/boonex/protean/template/images/icons/std-icon.svg', 'protean', 'purple', 'panel-top-dashed', 80),
+    ('modules/boonex/spaces/template/images/icons/std-icon.svg', 'spaces', 'red', 'circle-dot-dashed', 80),
 ]
 
 # Brand artwork on the white plate: the source SVG's shapes are copied as they are (fills, gradients), scaled to
@@ -76,6 +78,7 @@ ART = [
     # ('modules/boonex/facebook_connect/template/images/icons/std-icon.svg', 'facebook', '<thesvg.org facebook default.svg>', ()),
     # ('modules/boonex/github/template/images/icons/std-icon.svg', 'github', '<thesvg.org github default.svg>', ()),
     # ('modules/boonex/linkedin_connect/template/images/icons/std-icon.svg', 'linkedin', '<thesvg.org linkedin default.svg>', ()),
+    # ('modules/boonex/twitter_connect/template/images/icons/std-icon.svg', 'twitter', '<thesvg.org x default.svg>', ()),
 ]
 
 STROKE = 2.0      # Lucide stroke width, in its 24-unit space
