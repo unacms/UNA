@@ -55,6 +55,13 @@ ICONS = [
     ('modules/boonex/stories/template/images/icons/std-icon.svg', 'stories', 'green', 'image-play', 80),
     ('modules/boonex/protean/template/images/icons/std-icon.svg', 'protean', 'purple', 'panel-top-dashed', 80),
     ('modules/boonex/spaces/template/images/icons/std-icon.svg', 'spaces', 'red', 'circle-dot-dashed', 80),
+    ('modules/boonex/feedback/template/images/icons/std-icon.svg', 'feedback', 'gray', 'message-square-text', 80),
+    ('modules/boonex/help_tours/template/images/icons/std-icon.svg', 'help_tours', 'gray', 'route', 80),
+    ('modules/boonex/invites/template/images/icons/std-icon.svg', 'invites', 'gray', 'mail-plus', 80),
+    ('modules/boonex/new_comments/template/images/icons/std-icon.svg', 'new_comments', 'gray', 'messages-square', 80),
+    ('modules/boonex/oauth2/template/images/icons/std-icon.svg', 'oauth2', 'gray', 'key-round', 80),
+    ('modules/boonex/reviews/template/images/icons/std-icon.svg', 'reviews', 'green', 'thumbs-up', 80),
+    ('modules/boonex/se_migration/template/images/icons/std-icon.svg', 'se_migration', 'gray', 'arrow-right-left', 80),
 ]
 
 # Brand artwork on the white plate: the source SVG's shapes are copied as they are (fills, gradients), scaled to
@@ -79,6 +86,13 @@ ART = [
     # ('modules/boonex/github/template/images/icons/std-icon.svg', 'github', '<thesvg.org github default.svg>', ()),
     # ('modules/boonex/linkedin_connect/template/images/icons/std-icon.svg', 'linkedin', '<thesvg.org linkedin default.svg>', ()),
     # ('modules/boonex/twitter_connect/template/images/icons/std-icon.svg', 'twitter', '<thesvg.org x default.svg>', ()),
+    # ('modules/boonex/opencv/template/images/icons/std-icon.svg', 'opencv', '<thesvg.org opencv default.svg>', ()),
+    # ('modules/boonex/fontawesome/template/images/icons/std-icon.svg', 'fontawesome', '<thesvg.org font-awesome default.svg>', ()),
+    # ('modules/boonex/google_connect/template/images/icons/std-icon.svg', 'googlecon', '<thesvg.org google default.svg>', ()),
+    # ('modules/boonex/intercom/template/images/icons/std-icon.svg', 'intercom', '<thesvg.org intercom default.svg>', (), ('#27272A', '#09090B')),
+    # ('modules/boonex/chat_plus/template/images/icons/std-icon.svg', 'chat_plus', '<simpleicons rocketdotchat>', ()),
+    # ('modules/boonex/plyr/template/images/icons/std-icon.svg', 'plyr', '<Plyr wordmark path of the previous tile>', (), ('#475569', '#1E293B'), '#38BDF8', 52),
+    # ('modules/boonex/markerio/template/images/icons/std-icon.svg', 'markerio', '<Marker.io mark path of the previous tile>', (), ('#475569', '#1E293B'), 'white'),
 ]
 
 STROKE = 2.0      # Lucide stroke width, in its 24-unit space
