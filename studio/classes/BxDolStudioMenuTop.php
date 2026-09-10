@@ -75,7 +75,13 @@ class BxDolStudioMenuTop extends BxDol implements iBxDolSingleton
         $oRolesUtils = BxDolStudioRolesUtils::getInstance();
         $oWidgetsDb = BxDolStudioWidgetsQuery::getInstance();
 
+        // Every app in the dock carries its context menu trigger (studio/js/context_menu.js loads the menu on first use).
+        $fContextAttrs = function($sPageName, $iWidgetId = 0) {
+            return 'data-bx-context-menu="#bx-std-cmenu-' . $sPageName . '" data-bx-context-menu-load="' . $sPageName . ':' . (int)$iWidgetId . '"';
+        };
+
         $aFeatured = $oWidgetsDb->getWidgets(array('type' => 'all_featured', 'featured' => 1));
+        $aFeatured = array_column($aFeatured, null, 'page_name');
         foreach($aFeatured as $aItem)
             if(empty($aItem['type']) || $oRolesUtils->isActionAllowed('use ' . $aItem['type']))
                 $aMenuItems[$aItem['page_name']] = array(
@@ -84,7 +90,8 @@ class BxDolStudioMenuTop extends BxDol implements iBxDolSingleton
                     'icon' => $aItem['icon'],
                     'link' => $aItem['url'],
                     'onclick' => $aItem['click'],
-                    'title' => $aItem['caption']
+                    'title' => $aItem['caption'],
+                    'attrs_add' => $fContextAttrs($aItem['page_name'], $aItem['id'])
                 );
 
         //--- Get Bookmarks
@@ -92,6 +99,7 @@ class BxDolStudioMenuTop extends BxDol implements iBxDolSingleton
         foreach($aBookmarks as $aBookmark) {
             if(array_key_exists($aBookmark['page_name'], $aMenuItems))
                 continue;
+            $aFeatured[$aBookmark['page_name']] = $aBookmark; // the module lookup below reads it like a featured row
             
             if(!empty($aBookmark['type']) && !$oRolesUtils->isActionAllowed('use ' . $aBookmark['type']))
                 continue;
@@ -102,7 +110,8 @@ class BxDolStudioMenuTop extends BxDol implements iBxDolSingleton
                 'icon' => $aBookmark['icon'],
                 'link' => $aBookmark['url'],
                 'onclick' => $aBookmark['click'],
-                'title' => $aBookmark['caption']
+                'title' => $aBookmark['caption'],
+                'attrs_add' => $fContextAttrs($aBookmark['page_name'], $aBookmark['id'])
             );
         }
 
@@ -125,9 +134,31 @@ class BxDolStudioMenuTop extends BxDol implements iBxDolSingleton
                     continue;
 
                 $aMenuItem['class'] = 'bx-menu-item-dynamic';
+                $aMenuItem['attrs_add'] = $fContextAttrs($sPageName);
                 $aMenuItems[$sPageName] = $aMenuItem;
                 $bHistory = true;
             }
+
+        // A disabled app is dimmed in the dock as it is in the launcher (the widget rows carry the module; history rows are looked up by page).
+        $oModuleQuery = BxDolModuleQuery::getInstance();
+        $oPageQuery = BxDolStudioPageQuery::getInstance();
+        foreach($aMenuItems as $sPageName => &$aMenuItem) {
+            if(in_array($sPageName, ['divider', 'launcher']))
+                continue;
+
+            $sModule = '';
+            if(isset($aFeatured[$sPageName]['module']))
+                $sModule = $aFeatured[$sPageName]['module'];
+            else if(($aPage = $oPageQuery->getPages(['type' => 'by_page_name_full', 'value' => $sPageName])) && !empty($aPage['wid_module']))
+                $sModule = $aPage['wid_module'];
+            if(!$sModule)
+                continue;
+
+            $aModule = $oModuleQuery->getModuleByName($sModule);
+            if(!empty($aModule) && is_array($aModule) && (int)$aModule['enabled'] == 0)
+                $aMenuItem['class_add'] = 'bx-menu-item-disabled';
+        }
+        unset($aMenuItem);
 
         // The divider only makes sense between two groups: drop it while either side is empty (e.g. right after install).
         if(!$bStatic || !$bHistory)

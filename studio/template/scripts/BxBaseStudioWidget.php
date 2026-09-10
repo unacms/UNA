@@ -105,6 +105,7 @@ class BxBaseStudioWidget extends BxDolStudioWidget
             'icon' => 'tmi-account.svg',
             'link' => 'javascript:void(0);',
             'onclick' => 'bx_menu_popup_inline(\'#bx-std-pcap-menu-popup-account\', this);',
+            'attrs_add' => 'aria-haspopup="true" aria-expanded="false" aria-controls="bx-std-pcap-menu-popup-account"',
             'title' => '_adm_tmi_cpt_account'
         ];
 
@@ -135,7 +136,7 @@ class BxBaseStudioWidget extends BxDolStudioWidget
                     'bx_if:show_actions' => [
                         'condition' => (bool)$sActions,
                         'content' => [
-                            'onclick' => $sActions,
+                            'attrs' => $sActions,
                         ]
                     ],
                 ]
@@ -367,6 +368,9 @@ class BxBaseStudioWidget extends BxDolStudioWidget
             if($aAction['name'] == 'rearrange' && (empty($iWidgetId) || getParam('sys_std_show_launcher_left') != 'on'))
                 continue;
 
+            if(!empty($aAction['context_only'])) // only in the context menu (see getPageContextMenu)
+                continue;
+
             $aInput = array(
                 'type' => $aAction['type'],
                 'name' => $aAction['name'],
@@ -391,6 +395,115 @@ class BxBaseStudioWidget extends BxDolStudioWidget
 
         $oForm = new BxTemplStudioFormView($aForm);
         return $oForm->getCode();
+    }
+
+    /**
+     * The same actions as a context menu (studio/template/menu_context.html, studio/js/context_menu.js): a switch is a
+     * checkbox item with a switch drawn after its label, the "move to" select a group of radio items with a tick, a button
+     * a plain item, each running the JS the form control ran. Destructive items are set off by a separator and drawn in red.
+     */
+    protected function getPageContextMenu($iWidgetId = 0)
+    {
+        if(empty($this->aActions))
+            return '';
+
+        $aMarkers = array(
+            'widget_id' => $iWidgetId,
+        );
+
+        if(!empty($iWidgetId)) {
+            $aWidget = BxDolStudioWidgetsQuery::getInstance()->getWidgets(array('type' => 'by_id', 'value' => $iWidgetId));
+            if(!empty($aWidget) && is_array($aWidget))
+                $aMarkers['widget_type'] = $aWidget['type'];
+        }
+
+        $oIconset = BxDolIconset::getObjectInstance('sys_lucide');
+        $fIcon = function($sIcon) use ($oIconset) {
+            return $oIconset && !empty($sIcon) && ($sSvg = $oIconset->getIconHtml($sIcon)) !== false ? $sSvg : '';
+        };
+        $fJs = function($sJs) use ($aMarkers) {
+            return bx_html_attribute(bx_replace_markers(preg_replace('/^javascript:/', '', $sJs), $aMarkers));
+        };
+
+        $aItems = [];
+        $fItem = function($aItem) use (&$aItems) {
+            $aItems[] = [
+                'bx_if:show_separator' => ['condition' => !empty($aItem['separator']), 'content' => []],
+                'bx_if:show_label' => ['condition' => !empty($aItem['label']), 'content' => ['title' => !empty($aItem['label']) ? $aItem['label'] : '']],
+                'bx_if:show_item' => ['condition' => !empty($aItem['role']), 'content' => [
+                    'role' => !empty($aItem['role']) ? $aItem['role'] : '',
+                    'class' => !empty($aItem['class']) ? $aItem['class'] : '',
+                    'attrs' => !empty($aItem['attrs']) ? $aItem['attrs'] : '',
+                    'onclick' => !empty($aItem['onclick']) ? $aItem['onclick'] : '',
+                    'icon' => !empty($aItem['icon']) ? $aItem['icon'] : '',
+                    'title' => !empty($aItem['title']) ? $aItem['title'] : '',
+                    // a radio item is marked by a tick before it, an on/off item by a switch after it (the same look as the form switch)
+                    'bx_if:show_check' => ['condition' => !empty($aItem['role']) && $aItem['role'] == 'menuitemradio', 'content' => ['check' => !empty($aItem['check']) ? $aItem['check'] : '']],
+                    'bx_if:show_switch' => ['condition' => !empty($aItem['role']) && $aItem['role'] == 'menuitemcheckbox', 'content' => []],
+                ]],
+            ];
+        };
+
+        $sCheck = $fIcon('check');
+        foreach($this->aActions as $aAction) {
+            if($aAction['name'] == 'rearrange' && (empty($iWidgetId) || getParam('sys_std_show_launcher_left') != 'on'))
+                continue;
+
+            $sIcon = $fIcon(!empty($aAction['icon']) ? $aAction['icon'] : '');
+            $sTitle = _t($aAction['caption']);
+            switch($aAction['type']) {
+                case 'switcher':
+                    $fItem([
+                        'role' => 'menuitemcheckbox',
+                        'attrs' => ' aria-checked="' . (!empty($aAction['checked']) ? 'true' : 'false') . '"',
+                        'onclick' => $fJs($aAction['onchange']),
+                        'check' => $sCheck,
+                        'icon' => $sIcon,
+                        'title' => $sTitle,
+                    ]);
+                    break;
+
+                case 'select':
+                    $sValue = bx_replace_markers($aAction['value'], $aMarkers);
+
+                    $fItem(['separator' => true]);
+                    $fItem(['label' => $sTitle]);
+                    foreach($aAction['values'] as $mixedKey => $mixedValue) {
+                        $sKey = is_array($mixedValue) ? $mixedValue['key'] : $mixedKey;
+                        $fItem([
+                            'role' => 'menuitemradio',
+                            'attrs' => ' aria-checked="' . ($sKey == $sValue ? 'true' : 'false') . '" value="' . bx_html_attribute($sKey) . '"',
+                            'onclick' => $fJs($aAction['onchange']), // reads the item's value like the select's
+                            'check' => $sCheck,
+                            'icon' => $sIcon,
+                            'title' => is_array($mixedValue) ? $mixedValue['value'] : $mixedValue,
+                        ]);
+                    }
+                    break;
+
+                case 'button':
+                    if(!empty($aAction['danger']))
+                        $fItem(['separator' => true]);
+
+                    $fItem([
+                        'role' => 'menuitem',
+                        'class' => !empty($aAction['danger']) ? 'bx-std-cm-danger' : '',
+                        'onclick' => $fJs($aAction['onclick']),
+                        'check' => $sCheck,
+                        'icon' => $sIcon,
+                        'title' => $sTitle,
+                    ]);
+                    break;
+            }
+        }
+
+        if(empty($aItems))
+            return '';
+
+        return BxDolStudioTemplate::getInstance()->parseHtmlByName('menu_context.html', [
+            'label' => bx_html_attribute(_t('_adm_txt_show_actions')),
+            'bx_repeat:items' => $aItems,
+        ]);
     }
 
     protected function getPageMenuObject($aMenu = array(), $aMarkers = array())

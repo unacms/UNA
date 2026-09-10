@@ -37,6 +37,7 @@ class BxDolStudioWidget extends BxTemplStudioPage
                 'type' => 'switcher',
                 'name' => 'bookmark',
                 'caption' => '_adm_txt_pca_bookmark',
+                'icon' => 'pin',
                 'checked' => $this->aPage['bookmark'],
                 'onchange' => "javascript:" . $sJsObjectLauncher . ".bookmark('" . $this->aPage['name'] . "', this)"
             ));
@@ -46,6 +47,7 @@ class BxDolStudioWidget extends BxTemplStudioPage
                     'type' => 'switcher',
                     'name' => 'featured',
                     'caption' => '_adm_txt_pca_featured',
+                    'icon' => 'users',
                     'checked' => $this->aPage['featured'],
                     'onchange' => "javascript:" . $sJsObjectLauncher . ".featured('" . $this->aPage['name'] . "', this)"
                 ));
@@ -54,6 +56,7 @@ class BxDolStudioWidget extends BxTemplStudioPage
                 'type' => 'select',
                 'name' => 'rearrange',
                 'caption' => '_adm_txt_pca_rearrange',
+                'icon' => 'folder-input',
                 'value' => '{widget_type}',
                 'values' => BxDolFormQuery::getDataItems($this->_sTypesPreList),
                 'onchange' => "javascript:" . $sJsObjectLauncher . ".rearrange({widget_id}, this)"

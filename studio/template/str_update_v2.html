@@ -1,5 +1,5 @@
 <div class="bx-std-product bx-stdp-update bx-std-product-gallery bx-def-gal-unit-size" id="bx-std-update-__name__">
-    <div class="bx-std-product-cnt bx-std-product-gallery-cnt bx-def-margin-sec rounded-2xl bg-white dark:bg-gray-900 smooth-shadow-ring-sm">
+    <div class="bx-std-product-cnt bx-std-product-gallery-cnt bx-def-margin-sec rounded-2xl bg-white/60 dark:bg-white/10 ring-1 ring-inset ring-white/50 dark:ring-white/[0.025] smooth-shadow-sm">
         <!-- Cover section -->
         <div class="bx-std-product-cover m-1 rounded-xl overflow-hidden">
             <bx_if:no_image>
@@ -17,21 +17,21 @@
         <div class="bx-std-product-title bx-def-padding-sec">
             <div class="bx-std-pt-cnt">
                 <div class="bx-std-pt-icon">
-                    <a href="javascript:void(0)" onclick="javascript:__js_object__.info('__name__', this)">
+                    <button type="button" aria-hidden="true" tabindex="-1" onclick="javascript:__js_object__.info('__name__', this)">
                         <bx_if:no_icon>
                             <div class="bx-std-pt-icon-plate">
                                 <i class="sys-icon __icon__"></i>
                             </div>
                         </bx_if:no_icon>
                         <bx_if:icon>
-                            <img src="__icon_url__" />
+                            <img src="__icon_url__" alt="" />
                         </bx_if:icon>
-                    </a>
+                    </button>
                 </div>
                 <div class="bx-std-pt-content">
                     <div class="bx-std-pt-content-cnt">
                         <div class="bx-std-pt-title">
-                            <a class="bx-def-font-color" href="javascript:void(0)" onclick="javascript:__js_object__.info('__name__', this)">__title__</a>
+                            <button type="button" class="bx-def-font-color text-left" onclick="javascript:__js_object__.info('__name__', this)">__title__</button>
                         </div>
                         <div class="bx-std-pt-info">
                             <span class="bx-std-pt-versions">__versions__</span> 
@@ -47,10 +47,10 @@
         <div class="bx-std-product-actions bx-def-padding-sec-rightbottomleft">
             <div class="bx-std-pa-actions">
                 <bx_if:show_download>
-                    <a class="bx-btn bx-btn-primary bx-std-pc-download" onclick="javascript:__on_click__">__caption__</a>
+                    <button type="button" class="bx-btn bx-btn-primary bx-std-pc-download" onclick="javascript:__on_click__">__caption__</button>
                 </bx_if:show_download>
                 <bx_if:show_queued_disabled>
-                    <a class="bx-btn bx-btn-disabled bx-std-pc-queued"><bx_text:_adm_btn_queued_submit /></a>
+                    <button type="button" class="bx-btn bx-btn-disabled bx-std-pc-queued" disabled><bx_text:_adm_btn_queued_submit /></button>
                 </bx_if:show_queued_disabled>
             </div>
         </div>

@@ -50,13 +50,13 @@ class BxBaseStudioBuilderPage extends BxDolStudioBuilderPage
     );
 
     protected $aPageSettings = array(
-        array('name' => 'options', 'title' => '_adm_bp_mi_page_options', 'active' => 1),
-        array('name' => 'cover', 'title' => '_adm_bp_mi_page_cover', 'active' => 0),
-        array('name' => 'layout', 'title' => '_adm_bp_mi_page_layout', 'active' => 0),
-        array('name' => 'visibility', 'title' => '_adm_bp_mi_page_visibility', 'active' => 0),
-        array('name' => 'cache', 'title' => '_adm_bp_mi_page_cache', 'active' => 0),
-        array('name' => 'seo', 'title' => '_adm_bp_mi_page_seo', 'active' => 0),
-        array('name' => 'injections', 'title' => '_adm_bp_mi_page_injections', 'active' => 0)
+        array('name' => 'options', 'title' => '_adm_bp_mi_page_options', 'icon' => 'mi-bp-options.svg', 'active' => 1),
+        array('name' => 'cover', 'title' => '_adm_bp_mi_page_cover', 'icon' => 'mi-bp-cover.svg', 'active' => 0),
+        array('name' => 'layout', 'title' => '_adm_bp_mi_page_layout', 'icon' => 'mi-bp-layout.svg', 'active' => 0),
+        array('name' => 'visibility', 'title' => '_adm_bp_mi_page_visibility', 'icon' => 'mi-bp-visibility.svg', 'active' => 0),
+        array('name' => 'cache', 'title' => '_adm_bp_mi_page_cache', 'icon' => 'mi-bp-cache.svg', 'active' => 0),
+        array('name' => 'seo', 'title' => '_adm_bp_mi_page_seo', 'icon' => 'mi-bp-seo.svg', 'active' => 0),
+        array('name' => 'injections', 'title' => '_adm_bp_mi_page_injections', 'icon' => 'mi-bp-injections.svg', 'active' => 0)
     );
 
     function __construct($sType = '', $sPage = '')
@@ -2101,7 +2101,8 @@ class BxBaseStudioBuilderPage extends BxDolStudioBuilderPage
             //--- get menu items
             $aTmplParams['menu'][$aSetting['name']] = array(
                 'name' => $aSetting['name'],
-                'icon' => '',
+                'icon' => $aSetting['icon'] ?? '', // a Lucide glyph on the sidebar tile, like the app pages' side menus
+                'icon_bg' => true,
                 'onclick' => $sJsObject . '.onChangeSettingGroup(\'' . $aSetting['name'] . '\', this);',
                 'title' => $aSetting['title'],
                 'selected' => isset($aSetting['active']) && (int)$aSetting['active'] == 1

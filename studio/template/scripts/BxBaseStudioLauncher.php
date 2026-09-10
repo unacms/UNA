@@ -68,7 +68,10 @@ class BxBaseStudioLauncher extends BxDolStudioLauncher
     public function getPageJsCode($aOptions = array(), $bWrap = true)
     {
         return parent::getPageJsCode(array_merge($aOptions, array(
-            'sActionUrl' => $this->sPageUrl
+            'sActionUrl' => $this->sPageUrl,
+            'sTxtMatches' => _t('_adm_txt_launcher_search_matches'),
+            'sTxtMatchesOne' => _t('_adm_txt_launcher_search_matches_one'),
+            'sTxtMoved' => _t('_adm_txt_widget_moved'),
         )), $bWrap);
     }
 
@@ -89,6 +92,9 @@ class BxBaseStudioLauncher extends BxDolStudioLauncher
             'js_code' => $this->getPageJsCode(),
             'includes' => $sIncludes,
             'items' => $sResult,
+            'empty' => _t('_adm_txt_launcher_search_empty'),
+            'edit_title' => _t('_sys_menu_item_title_sa_edit'),
+            'edit_done' => _t('_sys_done'),
         ));
 
         if (getParam('site_tour_studio') == 'on')

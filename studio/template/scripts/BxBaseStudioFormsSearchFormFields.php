@@ -110,6 +110,7 @@ class BxBaseStudioFormsSearchFormFields extends BxDolStudioFormsSearchFields
             'name' => 'keyword',
             'attrs' => array(
                 'id' => 'bx-grid-search-' . $this->_sObject,
+                'aria-label' => _t('_adm_grid_lbl_search'),
             ),
             'tr_attrs' => array(
                 'style' => empty($this->sModule) || empty($this->sForm) ? 'display:none;' : ''

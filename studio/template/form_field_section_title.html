@@ -1,0 +1,18 @@
+<bx_if:show_view>
+    <div class="bx-form-section-title px-6 py-5">__caption__<bx_if:show_view_info><br /><span class="bx-def-font-grayed">__info__</span></bx_if:show_view_info></div>
+</bx_if:show_view>
+<bx_if:show_default>
+    <div class="bx-form-section-title group relative flex justify-between align-center flex-nowrap w-full">
+        <div class="flex-1 max-w-full ltr:pr-12 rtl:pl-12">
+            <button type="button" class="flex flex-col justify-center min-h-12 w-full ltr:pl-4 rtl:pr-4 py-2 text-inherit hover:text-gray-800 dark:hover:text-gray-200 font-semibold tracking-wide text-left">
+                __caption__
+                <bx_if:show_default_info>
+                    <span class="bx-def-font-grayed block w-full truncate">__info__</span>
+                </bx_if:show_default_info>
+            </button>
+        </div>
+        <div class="absolute ltr:right-0 rtl:left-0 inset-y-0 flex items-center ltr:pr-4 rtl:pl-4">
+            <u class="bx-form-section-toggler" aria-hidden="true"><bx_icon_inline:ui-chevron-down.svg /></u>
+        </div>
+    </div>
+</bx_if:show_default>

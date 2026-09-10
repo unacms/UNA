@@ -20,7 +20,7 @@ class BxArtificerStudioPage extends BxTemplStudioDesign
         parent::__construct($sModule, $mixedPageName, $sPage);
 
         $this->aMenuItems = bx_array_insert_after([
-            BX_ARTIFICER_STUDIO_TEMPL_TYPE_STYLES => ['title' => '_bx_artificer_lmi_cpt_styles', 'icon' => 'paint-brush']
+            BX_ARTIFICER_STUDIO_TEMPL_TYPE_STYLES => ['title' => '_bx_artificer_lmi_cpt_styles', 'icon' => 'mi-tpl-styles.svg', 'icon_bg' => true]
         ], $this->aMenuItems, BX_DOL_STUDIO_TEMPL_TYPE_SETTINGS);
     }
 

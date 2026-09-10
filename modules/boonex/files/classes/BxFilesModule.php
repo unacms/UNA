@@ -254,6 +254,22 @@ class BxFilesModule extends BxBaseModFilesModule
         }
     }
 
+    /**
+     * The Studio Dashboard's Queues block: archive download jobs. Clearing removes the jobs older than an hour (finished or
+     * abandoned), the module's own cron prunes them after a day.
+     */
+    public function serviceGetDashboardQueues()
+    {
+        return array(
+            'downloads' => array(
+                'name' => '_bx_files_queue_downloads',
+                'icon' => 'download',
+                'all' => "SELECT COUNT(*) FROM `bx_files_downloading_jobs`",
+                'action' => "DELETE FROM `bx_files_downloading_jobs` WHERE UNIX_TIMESTAMP() - `started` > 3600"
+            )
+        );
+    }
+
     public function servicePruneDownloadingJobs()
     {
         $aFiles = $this->_oDb->deleteOldDownloadingJobs();

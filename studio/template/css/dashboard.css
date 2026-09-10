@@ -10,44 +10,733 @@ div.bx-dbd-block-content {
 	position: relative;
 }
 
-/*--- Versions block ---*/
-div.bx-dbd-version-image img {
+/*--- Block grid: blocks fill as many columns as fit, each at least --bx-dbd-col-min wide (room for a chart and its insets) and never more than --bx-dbd-cols-max of them; the page stops widening once every column reaches --bx-dbd-col-max. Rows are --bx-dbd-row tall and a block spans one, two or three of them (small / medium / large, chosen through the block's class in the Pages builder), so blocks always line up on the same unit grid and never change height while content loads: anything taller scrolls inside the block. ---*/
+.bx-layout-wrapper.bx-layout-1-column {
+    --bx-dbd-col-min: 27rem;
+    --bx-dbd-col-max: 40rem;
+    --bx-dbd-cols-max: 4;
+    --bx-dbd-gap: 0.75rem; /* 12px, like the gutters around the page */
+    --bx-dbd-row: 21rem; /* 336px: the 64px caption plus 272px of content */
+    max-width: calc(var(--bx-dbd-cols-max) * var(--bx-dbd-col-max) + (var(--bx-dbd-cols-max) - 1) * var(--bx-dbd-gap));
+    margin-left: auto;
+    margin-right: auto;
+}
+.bx-layout-wrapper.bx-layout-1-column div.bx-layout-cell {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(max(var(--bx-dbd-col-min), calc((100% - (var(--bx-dbd-cols-max) - 1) * var(--bx-dbd-gap)) / var(--bx-dbd-cols-max))), 100%), 1fr)); /* min(..., 100%): a phone narrower than --bx-dbd-col-min still gets one full-width column instead of a clipped one */
+    grid-auto-rows: var(--bx-dbd-row);
+    grid-auto-flow: row dense; /* a smaller block slots into the earliest gap left by a taller one */
+    gap: var(--bx-dbd-gap);
+}
+.bx-layout-wrapper.bx-layout-1-column .bx-page-block-container > .bx-std-block {
+    height: 100%;
+}
+.bx-page-block-container.bx-dbd-block-small {
+    grid-row: span 1;
+}
+.bx-page-block-container.bx-dbd-block-medium {
+    grid-row: span 2;
+}
+.bx-page-block-container.bx-dbd-block-large {
+    grid-row: span 3;
+}
+/* Builder blocks on this page: the block shell's 8px inset plus 8px here, so content sits 16px from the edges; the bottom inset is 8px, since every block ends with a 48px row whose own 8px of air brings its tile 16px from the edge, mirroring the hero 8px under the caption. */
+.bx-page-block-container div.bx-std-block-content {
+    padding: 1rem 1rem 0.5rem;
+}
+
+/*--- Updates block: the version panel, the update switches, then the status rows; the Update button sits in the block caption. ---*/
+/*--- Hero panels: the muted panel that opens the Updates (icon + version), Space/Cache/Queues (headline + bar), Server (gauges) and Audit (outcomes) blocks; each is as tall as its content, 16px inset, and reaches 8px past the block's 16px content inset (top and sides) to sit 8px from the block edges, flush with the audit accordion's hover plates. ---*/
+.bx-dbd-hero {
+    position: relative; /* the chart's slice tooltip is placed in it */
+    display: flex;
+    flex-direction: column;
+    margin: -0.5rem -0.5rem 0;
+    padding: 1rem;
+    border-radius: 1rem;
+    background: rgba(0, 0, 0, 0.05);
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.025);
+}
+.dark .bx-dbd-hero {
+    background: rgba(255, 255, 255, 0.025);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.025);
+}
+/* Updates: the 64px UNA icon with the version and, under it, when that version was installed beside it, the "Check for updates" button 16px under them. */
+.bx-dbd-version-head {
+    align-items: flex-start;
+    gap: 1rem;
+}
+.bx-dbd-version-id {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+}
+/* The UNA icon is a 64px app icon with 16px corners; the rows below keep 32px tiles. */
+div.bx-std-block-content .bx-dbd-tile.bx-dbd-tile-lg {
     width: 4rem;
     height: 4rem;
-    border-radius: 0.75rem;
+    border-radius: 1rem;
 }
-.bx-dbd-version-info .bx-dbd-vii-row {
-    display: -webkit-flex;
+.bx-dbd-vi-text {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+.bx-dbd-vi-title {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-size: 1.25rem;
+    font-weight: 600;
+    line-height: 1.75rem;
+}
+.bx-dbd-vi-time {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    color: rgb(75 85 99); /* gray-600: gray-500 misses 4.5:1 on white */
+}
+/* The update switches follow the panel after a 10px gap; the status rows continue the same list 2px below them. */
+#bx-dbd-version .bx-dbd-htools-items {
+    margin-top: 0.125rem;
+}
+.bx-dbd-version-toggles {
     display: flex;
-    -webkit-align-items: center;
+    flex-direction: column;
+    gap: 0.125rem;
+    margin-top: 0.625rem; /* hero to list: 10px, as in the chart blocks */
+}
+.bx-dbd-version-toggle {
+    display: flex;
     align-items: center;
-    -webkit-flex-wrap: nowrap;
-    flex-wrap: nowrap;
+    gap: 0.75rem;
+    min-height: 3rem;
+}
+.bx-dbd-version-toggle-name {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+.bx-dbd-htools-value a {
+    color: rgb(59 130 246);
 }
 
-/*--- Chart based blocks ---*/
+/*--- Chart based blocks: a hero panel with the "used" headline over a stacked bar with one slice per item, then a row per item with its icon, colour mark and size (Queues: the headline alone in the panel, rows without marks). ---*/
 div.bx-dbd-chart {
-	width: 400px;
-	height: 200px;
-	margin: 0px auto; 
-}
-
-/*--- Host Tools block ---*/
-div.bx-dbd-htools .bx-btn {
-    display: inline-block;
-    float: none;
-}
-
-div.bx-dbd-htools .bx-dbd-htools-item {
-    display: -webkit-flex;
     display: flex;
-    -webkit-align-items: center;
+    flex-direction: column;
+    gap: 0.625rem; /* hero to list: 10px, so the first tile is 18px under the hero, the same air as between tiles (8 + 2 + 8) */
+}
+/* Charts: the headline over the bar, 24px apart. Labelled charts (Space: local and remote; Cache; the Audit tab's outcomes): 52px rows, 8px apart, a compact label / stat line over each 28px bar; a small gray line 4px under the bar can name the largest items (Cache) or the outcome counts (Audit); a button (Cache's "clear all", "Run new audit") follows in a foot row 8px lower. */
+.bx-dbd-chart-hero {
+    gap: 1.5rem;
+}
+.bx-dbd-chart-hero-rows {
+    gap: 0.5rem;
+}
+.bx-dbd-chart-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+.bx-dbd-chart-summary {
+    font-size: 0.875rem;
+    line-height: 1rem;
+    color: rgb(75 85 99); /* gray-600: gray-500 misses 4.5:1 on white */
+}
+.bx-dbd-chart-foot {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
+}
+.bx-dbd-chart-head-sm {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+}
+.bx-dbd-chart-label {
+    font-weight: 600;
+    color: rgb(55 65 81);
+}
+.dark .bx-dbd-chart-label {
+    color: rgb(209 213 219);
+}
+.bx-dbd-chart-stat {
+    color: rgb(75 85 99); /* gray-600: gray-500 misses 4.5:1 on white */
+}
+/* Slice tooltip: a dark pill above the bar, centred on the hovered slice (dashboard.js). */
+.bx-dbd-chart-tip {
+    position: absolute;
+    z-index: 1;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.375rem;
+    background: rgb(17 24 39);
+    color: #ffffff;
+    font-size: 0.75rem;
+    line-height: 1rem;
+    white-space: nowrap;
+    pointer-events: none;
+    transform: translateX(-50%);
+}
+.bx-dbd-chart-tip[hidden] {
+    display: none;
+}
+.dark .bx-dbd-chart-tip {
+    background: rgba(0, 0, 0, 0.05);
+    color: rgb(17 24 39);
+}
+.bx-dbd-chart-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+}
+.bx-dbd-chart-used {
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+.bx-dbd-chart-total {
+    color: rgb(75 85 99); /* gray-600: gray-500 misses 4.5:1 on white */
+}
+.bx-dbd-chart-bar {
+    display: flex;
+    gap: 2px;
+    height: 1.75rem;
+    overflow: hidden;
+    border-radius: 0.5rem;
+    background: rgb(0 0 0 / 0.05); /* the unused remainder, translucent so it reads on the hero plate */
+    box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.025);
+}
+.dark .bx-dbd-chart-bar {
+    background: rgb(255 255 255 / 0.05);
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.025);
+}
+.bx-dbd-chart-slice {
+    flex: 0 1 auto;
+    min-width: 0.375rem; /* a sliver stays wide enough to hover */
+    cursor: default; /* hover shows the slice's item name */
+}
+/* Rows on the block's rhythm: 48px rows, 2px apart, a 32px icon tile like the sidebar tiles; one group of rows per chart, the groups continuing the same list. */
+.bx-dbd-chart-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+}
+.bx-dbd-chart-group + .bx-dbd-chart-group {
+    margin-top: 0.125rem;
+}
+.bx-dbd-chart-item {
+    display: flex;
     align-items: center;
-    -webkit-flex-wrap: nowrap;
-    flex-wrap: nowrap;
+    gap: 0.75rem;
+    min-height: 3rem;
+}
+/* Colour mark after the value (before a row's clear button): an 8 x 20px pill in the row's slice colour. */
+.bx-dbd-chart-mark {
+    flex: none;
+    width: 0.5rem;
+    height: 1.25rem;
+    border-radius: 9999px;
+}
+/* Icon tiles (chart rows, the Version block): 32px sidebar-style tiles, 8px radius, hairline ring, no button shadow (the selector outweighs the tile button's shadow rule). */
+div.bx-std-block-content .bx-dbd-tile {
+    position: relative;
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 0.5rem;
+    box-shadow: none;
+}
+/* Row icons are not buttons: the block caption icon's flat plate (black/10, white/5 in dark), no gradient, ring or shadow. App art tiles carry their own image. */
+div.bx-std-block-content .bx-dbd-tile:not(.bx-dbd-tile-app) {
+    background: rgb(0 0 0 / 0.1);
+    color: rgb(75 85 99);
+}
+.dark div.bx-std-block-content .bx-dbd-tile:not(.bx-dbd-tile-app) {
+    background: rgb(255 255 255 / 0.05);
+    color: rgb(156 163 175);
+}
+/* The glyph: black (white in the dark scheme) at 80% through the element's opacity, so a glyph's overlapping strokes do not darken where they cross. */
+.bx-dbd-tile .sys-icon {
+    color: rgb(0 0 0);
+    opacity: 0.8;
+}
+.dark .bx-dbd-tile .sys-icon {
+    color: rgb(255 255 255);
+}
+.bx-dbd-tile svg {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+.bx-dbd-tile-app img {
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+    object-fit: cover;
+}
+.bx-dbd-tile-app::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.1); /* the same inset hairline the tile plates draw */
+}
+.dark .bx-dbd-tile-app::after {
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.05);
+}
+.bx-dbd-chart-name {
+    flex: 1 1 auto;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.bx-dbd-chart-size {
+    flex: none;
+    color: rgb(75 85 99); /* gray-600: gray-500 misses 4.5:1 on white */
+}
+/* A row's note (a file count) is quiet; a warning note (failed queue jobs) and the headline's failed total are red. */
+.bx-dbd-chart-note {
+    flex: none;
+    font-size: 0.875rem;
+    color: rgb(107 114 128);
+}
+.bx-dbd-chart-note-alert,
+.bx-dbd-chart-total-fail {
+    flex: none;
+    color: rgb(239 68 68);
+}
+.dark .bx-dbd-chart-note-alert {
+    color: rgb(248 113 113);
+}
+/* Per-row clear button: the icon-only 32px square button (tailwind.css "Studio: Buttons"), kept at its width beside the flexible name. */
+.bx-dbd-chart-item .bx-dbd-chart-action {
+    flex: none;
 }
 
-/*--- Queues block ---*/
-#bx-grid-table-sys_queues {
-    width:100%;
+/*--- Server block: the segmented tabs sit in the block caption; the Overview panel holds gauges and status rows, Audit and Permissions load their reports into their own panels. ---*/
+/* Server: the three gauges side by side in the hero. */
+.bx-dbd-gauges {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+    gap: 1rem;
+}
+.bx-dbd-gauge {
+    display: flex;
+    flex: 0 1 5.5rem; /* four 88px rings when the block is wide enough, shrinking together when it is not */
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    min-width: 0;
+}
+.bx-dbd-gauge-ring {
+    position: relative;
+    width: 100%;
+    max-width: 5.5rem;
+    aspect-ratio: 1 / 1;
+}
+/* Phones: 72px rings (r 30 at the 96 viewBox's r 40) so the four fit a 343px block. */
+@media (max-width: 767px) {
+    .bx-dbd-gauges {
+        gap: 0.5rem;
+    }
+    .bx-dbd-gauge {
+        flex-basis: 4.5rem;
+    }
+    .bx-dbd-gauge-ring {
+        max-width: 4.5rem;
+    }
+    .bx-dbd-gauge-ring .bx-dbd-gauge-value { /* outweighs the base rule below */
+        font-size: 0.875rem;
+    }
+}
+.bx-dbd-gauge-ring svg {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg); /* the arc starts at 12 o'clock */
+}
+.bx-dbd-gauge-track,
+.bx-dbd-gauge-arc {
+    fill: none;
+    stroke-width: 8;
+}
+/* The track is translucent so it reads on the hero plate; the arcs use the 600/700 steps in light mode (the 500s miss 3:1 on the plate) and the 500s in dark mode. */
+.bx-dbd-gauge-track {
+    stroke: rgb(0 0 0 / 0.1);
+}
+.dark .bx-dbd-gauge-track {
+    stroke: rgb(255 255 255 / 0.1);
+}
+.bx-dbd-gauge-cpu .bx-dbd-gauge-arc {
+    stroke: rgb(37 99 235); /* blue-600 */
+}
+.bx-dbd-gauge-memory .bx-dbd-gauge-arc {
+    stroke: rgb(124 58 237); /* violet-600 */
+}
+.bx-dbd-gauge-disk .bx-dbd-gauge-arc {
+    stroke: rgb(13 148 136); /* teal-600 */
+}
+.bx-dbd-gauge-network .bx-dbd-gauge-arc {
+    stroke: rgb(194 65 12); /* orange-700: orange-600 is 2.9:1 */
+}
+.bx-dbd-gauge-high .bx-dbd-gauge-arc {
+    stroke: rgb(220 38 38); /* red-600, 90% and above */
+}
+.dark .bx-dbd-gauge-cpu .bx-dbd-gauge-arc {
+    stroke: rgb(59 130 246);
+}
+.dark .bx-dbd-gauge-memory .bx-dbd-gauge-arc {
+    stroke: rgb(139 92 246);
+}
+.dark .bx-dbd-gauge-disk .bx-dbd-gauge-arc {
+    stroke: rgb(20 184 166);
+}
+.dark .bx-dbd-gauge-network .bx-dbd-gauge-arc {
+    stroke: rgb(249 115 22);
+}
+.dark .bx-dbd-gauge-high .bx-dbd-gauge-arc {
+    stroke: rgb(239 68 68);
+}
+.bx-dbd-gauge-value {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    line-height: 1.25;
+    font-size: 1.125rem;
+    font-weight: 600;
+}
+/* A figure with a unit (the network rate): the unit sits small under the number. */
+.bx-dbd-gauge-unit {
+    font-size: 0.625rem;
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: 0.02em;
+    color: rgb(75 85 99); /* gray-600: gray-500 misses 4.5:1 on white */
+}
+.bx-dbd-gauge-label {
+    font-size: 0.75rem;
+    line-height: 1.25rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: rgb(75 85 99); /* gray-600: gray-500 misses 4.5:1 on white */
+}
+/* Status rows: 48px rows with 2px between them; a row with a note grows to fit it. */
+.bx-dbd-htools-items {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+}
+/* Updates block: a hairline between the switches and the status rows, 8px above and below. */
+.bx-dbd-htools-items-divided {
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid rgb(0 0 0 / 0.1);
+}
+.dark .bx-dbd-htools-items-divided {
+    border-top-color: rgb(255 255 255 / 0.1);
+}
+/* Server Status: the section rows follow the gauges after the usual hero-to-list gap, no divider. */
+#bx-dbd-htools-status > .bx-dbd-htools-items {
+    margin-top: 0.625rem;
+}
+/* Users: the rows follow the chart hero after the same gap; the profile rows continue that one list, no divider. */
+#bx-dbd-users > .bx-dbd-htools-items {
+    margin-top: 0.625rem;
+}
+.bx-dbd-htools-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-height: 3rem;
+    padding: 0.25rem 0;
+}
+/* The status dot sits after the row's value (like the chart rows' colour marks), 10px, in the status colour. */
+.bx-dbd-htools-dot {
+    flex: none;
+    width: 0.625rem;
+    height: 0.625rem;
+    border-radius: 9999px;
+    background: rgb(156 163 175); /* unknown */
+}
+.bx-dbd-htools-item-ok .bx-dbd-htools-dot {
+    background: rgb(34 197 94);
+}
+.bx-dbd-htools-item-warn .bx-dbd-htools-dot {
+    background: rgb(249 115 22);
+}
+.bx-dbd-htools-item-fail .bx-dbd-htools-dot {
+    background: rgb(239 68 68);
+}
+.bx-dbd-htools-name {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-width: 0;
+}
+.bx-dbd-htools-desc {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    color: rgb(75 85 99); /* gray-600: gray-500 misses 4.5:1 on white */
+    overflow-wrap: anywhere; /* notes quote file paths, which have no break points */
+}
+.bx-dbd-htools-desc a {
+    text-decoration: underline;
+}
+.bx-dbd-htools-value {
+    flex: none;
+    margin-left: 1rem;
+    font-weight: 600;
+    text-align: right;
+}
+/* A button in a status row (Updates: Activate) sits where the value does. */
+.bx-dbd-htools-item > .bx-btn {
+    flex: none;
+    margin-left: auto;
+}
+/* Rows that open a page (Space: the Storage app's files and images, each app) are links with the audit accordion's hover plate. */
+.bx-dbd-chart-link {
+    color: inherit;
+    text-decoration: none;
+}
+/* Audit tab: the outcome bar's segments in the status colours; then the sections as an accordion, each header a button on the
+   same 48px row as the Status rows (its hover plate reaching 8px past the content), its rows folded under it, indented past the tile. */
+.bx-dbd-audit-slice-ok {
+    background: rgb(34 197 94);
+}
+.bx-dbd-audit-slice-warn {
+    background: rgb(249 115 22);
+}
+.bx-dbd-audit-slice-fail {
+    background: rgb(239 68 68);
+}
+.bx-dbd-audit-slice-undef {
+    background: rgb(156 163 175);
+}
+
+.bx-dbd-audit {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+    margin-top: 0.625rem; /* hero to list: 10px, as in the chart blocks */
+}
+.bx-dbd-audit-toggle,
+.bx-dbd-chart-link {
+    width: calc(100% + 1rem);
+    margin: 0 -0.5rem;
+    padding: 0.25rem 0.5rem;
+    border: 0;
+    border-radius: 1rem; /* the same plate as the hero panels */
+    background: none;
+    color: inherit;
+    font: inherit;
+    text-align: start;
+    cursor: pointer;
+}
+.bx-dbd-audit-toggle:hover,
+.bx-dbd-chart-link:hover {
+    background: rgba(0, 0, 0, 0.05);
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.025);
+}
+.dark .bx-dbd-audit-toggle:hover,
+.dark .bx-dbd-chart-link:hover {
+    background: rgba(255, 255, 255, 0.025);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.025);
+}
+.bx-dbd-audit-toggle:focus-visible,
+.bx-dbd-chart-link:focus-visible {
+    outline: 2px solid rgb(59 130 246);
+    outline-offset: 2px;
+}
+.bx-dbd-audit-chevron {
+    flex: none;
+    margin-left: 0.5rem;
+    transition: transform 0.2s;
+}
+.bx-dbd-audit-chevron svg.sys-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+    color: inherit; /* the row's text colour, like the Settings section chevrons, not the iconset's blue */
+}
+.bx-dbd-audit-toggle[aria-expanded="true"] .bx-dbd-audit-chevron {
+    transform: rotate(180deg);
+}
+.bx-dbd-audit-rows {
+    padding: 0 0 0.5rem 2.75rem;
+}
+.bx-dbd-audit-rows[hidden] {
+    display: none; /* the list's flex display would otherwise beat the attribute */
+}
+
+
+/* Secondary text in dark mode: gray-400 on the gray-900 blocks (gray-500 gives 3:1 there). */
+.dark .bx-dbd-vi-time,
+.dark .bx-dbd-chart-summary,
+.dark .bx-dbd-chart-stat,
+.dark .bx-dbd-chart-total,
+.dark .bx-dbd-chart-size,
+.dark .bx-dbd-chart-note,
+.dark .bx-dbd-gauge-unit,
+.dark .bx-dbd-gauge-label,
+.dark .bx-dbd-htools-desc,
+.dark .bx-dbd-audit-section-title {
+    color: rgb(156 163 175);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .bx-dbd-audit-chevron,
+    .bx-dbd-tile,
+    .bx-dbd-version-toggle .bx-switcher-cont button,
+    .bx-dbd-version-toggle .bx-switcher-cont button span {
+        transition: none;
+    }
+}
+
+/* A panel whose content is on its way (the Server block's first load, a tab's first opening): the tile wave centred where the content will be (dashboard.js getLoader). */
+.bx-dbd-loading {
+    display: flex;
+    justify-content: center;
+    padding: 1.5rem 0;
+}
+
+/*--- Users block: the chart alone in the hero (dashboard.js usersDraw): the chosen series over the chosen period, a bar per day or month
+   as tall as its share of the period's peak (the newest one darker) or, on the Total tab, the running total as a line; the period tabs sit in
+   the block caption and the rows under the chart pick the series. The bars are teal-700 (4.4:1 on the plate) and teal-900 in the light
+   scheme, teal-500 at 60% and teal-400 in the dark one. ---*/
+.bx-dbd-users-hero {
+    gap: 0.75rem; /* the figure sits 12px above the chart (the other chart heroes keep 24px) */
+}
+.bx-dbd-users-head {
+    align-items: center;
+}
+/* The hero's head: the charted series' figure (the Updates hero's title size) and its title on one baseline; on the right how many of it are
+   online now: the rows' status dot (green when someone is) before the figure, "Online now" as its tooltip and for screen readers only. */
+.bx-dbd-users-figure {
+    display: flex;
+    align-items: baseline;
+    gap: 0.375rem;
+    min-width: 0;
+}
+.bx-dbd-users-online {
+    flex: none;
+    justify-content: flex-end;
+    text-align: end;
+}
+.bx-dbd-users-online-dot {
+    align-self: center;
+    width: 0.625rem;
+    height: 0.625rem;
+    margin-right: 0.125rem;
+    border-radius: 9999px;
+    background: rgb(156 163 175);
+}
+.bx-dbd-users-online-on .bx-dbd-users-online-dot {
+    background: rgb(34 197 94);
+}
+/* The rows are the chart's legend (dashboard.js usersSeries): pressable like the audit rows, the one charted on a plate; the Online now row is plain. */
+.bx-dbd-users-row {
+    width: calc(100% + 1rem);
+    margin: 0 -0.5rem;
+    padding: 0.25rem 0.5rem;
+    border: 0;
+    border-radius: 1rem; /* the same plate as the hero panels */
+    background: none;
+    color: inherit;
+    font: inherit;
+    text-align: start;
+    cursor: pointer;
+}
+.bx-dbd-users-row:hover {
+    background: rgba(0, 0, 0, 0.03);
+}
+.bx-dbd-users-row[aria-pressed="true"],
+.bx-dbd-users-row[aria-pressed="true"]:hover {
+    background: rgba(0, 0, 0, 0.05);
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.025);
+}
+.bx-dbd-users-row:focus-visible {
+    outline: 2px solid rgb(59 130 246);
+    outline-offset: -2px;
+}
+.dark .bx-dbd-users-row:hover {
+    background: rgba(255, 255, 255, 0.025);
+}
+.dark .bx-dbd-users-row[aria-pressed="true"],
+.dark .bx-dbd-users-row[aria-pressed="true"]:hover {
+    background: rgba(255, 255, 255, 0.05);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.025);
+}
+.bx-dbd-users-bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 0.25rem;
+    height: 4.5rem; /* 72px, bars and the Total line alike */
+}
+.bx-dbd-users-bars-dense {
+    gap: 0.125rem; /* 30 bars */
+}
+.bx-dbd-users-bar {
+    flex: 1 1 0;
+    min-width: 0;
+    min-height: 0.25rem; /* an empty bucket still shows as a stub */
+    border-radius: 0.25rem;
+    background: rgb(15 118 110);
+    transition: background-color 0.15s;
+}
+.bx-dbd-users-bar:hover {
+    background: rgb(13 148 136);
+}
+.bx-dbd-users-bar-last {
+    background: rgb(19 78 74);
+}
+.dark .bx-dbd-users-bar {
+    background: rgb(20 184 166 / 0.6);
+}
+.dark .bx-dbd-users-bar:hover {
+    background: rgb(20 184 166 / 0.8);
+}
+.dark .bx-dbd-users-bar-last {
+    background: rgb(45 212 191);
+}
+/* Total: the running total as a line over the whole period (dashboard.js usersPeriod), teal like the bars with the area under it tinted;
+   the transparent columns over it carry the slice tooltip. */
+.bx-dbd-users-line {
+    display: block;
+    position: relative;
+}
+.bx-dbd-users-line-svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+}
+.bx-dbd-users-line-path {
+    fill: none;
+    stroke: rgb(15 118 110);
+    stroke-width: 2;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+}
+.bx-dbd-users-line-area {
+    fill: rgb(15 118 110 / 0.12);
+}
+.bx-dbd-users-hits {
+    position: absolute;
+    inset: 0;
+    display: flex;
+}
+.bx-dbd-users-hit {
+    flex: 1 1 0;
+    min-width: 0;
+}
+.dark .bx-dbd-users-line-path {
+    stroke: rgb(45 212 191);
+}
+.dark .bx-dbd-users-line-area {
+    fill: rgb(20 184 166 / 0.15);
 }

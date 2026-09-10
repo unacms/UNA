@@ -306,4 +306,5 @@
 
     <string name="_bx_files_option_allowed_ext"><![CDATA[Allow only the following extensions (comma separated list)]]></string>
     <string name="_bx_files_option_default_layout_mode"><![CDATA[Files default layout]]></string>
+    <string name="_bx_files_queue_downloads"><![CDATA[Download jobs]]></string>
 </resources>

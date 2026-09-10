@@ -30,6 +30,7 @@ if($sPageCode === false)
 
 $oTemplate->setPageNameIndex($oPage->getPageIndex());
 $oTemplate->setPageHeader($oPage->getPageHeader());
+$oTemplate->setPageDescription($oPage->getPageDescription());
 $oTemplate->setPageContent('page_main_code', $sPageCode);
 $oTemplate->getPageCode();
 /** @} */

@@ -188,6 +188,25 @@ class BxPaymentModule extends BxBaseModPaymentModule
         echoJson(array('code' => 0, 'content' => $sItems));
     }
 
+    /**
+     * The Studio Dashboard's Queues block: orders awaiting a provider's confirmation. Clearing drops only the stale ones
+     * (not authorized, not processed, older than a day) so a checkout in progress is left alone.
+     */
+    public function serviceGetDashboardQueues()
+    {
+        $sTable = "`" . $this->_oDb->getPrefix() . "transactions_pending`";
+
+        return array(
+            'pending' => array(
+                'name' => '_bx_payment_queue_pending',
+                'icon' => 'credit-card',
+                'all' => "SELECT COUNT(*) FROM " . $sTable . " WHERE `processed` = 0",
+                'failed' => "SELECT COUNT(*) FROM " . $sTable . " WHERE `processed` = 0 AND `error_code` <> ''",
+                'action' => "DELETE FROM " . $sTable . " WHERE `processed` = 0 AND `authorized` = 0 AND `date` < UNIX_TIMESTAMP() - 86400"
+            )
+        );
+    }
+
     public function serviceGetSafeServices()
     {
         return array_merge(parent::serviceGetSafeServices(), [

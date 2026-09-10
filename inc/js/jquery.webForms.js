@@ -45,6 +45,12 @@
                 return;
             eSwitcher.addClass('bx-form-switcher-processed');
 
+            // the visible control is a button with role=switch: its aria-checked follows the on/off class
+            var fSyncState = function() {
+                eSwitcher.find('[role="switch"]').attr('aria-checked', eSwitcher.hasClass('on') ? 'true' : 'false');
+            };
+            fSyncState();
+
             eSwitcher.on('click', function() {
                 var $this = $(this);
                 if ($this.hasClass('on')) {
@@ -54,6 +60,7 @@
                     $this.removeClass('off').addClass('on');
                     $this.find('input').prop('checked', true).trigger('change');
                 }
+                fSyncState();
                 return false;
             });
 
@@ -62,6 +69,7 @@
                     $(this).prop('checked', true).trigger('change');
                 if (!eSwitcher.hasClass('on'))
                     eSwitcher.removeClass('off').addClass('on');
+                fSyncState();
             });
 
             eInput.on('disable', function () {
@@ -69,6 +77,7 @@
                     $(this).prop('checked', false).trigger('change');
                 if (!eSwitcher.hasClass('off'))
                     eSwitcher.removeClass('on').addClass('off');
+                fSyncState();
             });
         });
 
@@ -82,7 +91,7 @@
 
             eFormSection.addClass('bx-form-js-processed');
 
-            var eToggle = $('.bx-form-section-title:first a', eFormSection);
+            var eToggle = $('.bx-form-section-title:first', eFormSection).find('a, button').first(); // the caption control, a button now (anchors in older templates)
             var fSyncExpanded = function() {
                 eToggle.attr('aria-expanded', eFormSection.hasClass('bx-form-collapsed') ? 'false' : 'true');
             };

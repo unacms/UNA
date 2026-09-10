@@ -187,7 +187,7 @@ span.bx-std-product-versions {
     flex-wrap: wrap;
 }
 .bx-std-pa-actions .bx-btn {
-	display: inline-block;
+	display: inline-flex; /* keeps the 32px Studio button's centred label */
 	float: none;
 	vertical-align: top;
 }
@@ -261,6 +261,9 @@ div.bx-std-pv-actions .bx-std-pv-action {
 	display: inline-block;
 	float: none;
 	vertical-align: top;
+}
+div.bx-std-pv-actions .bx-btn {
+	display: inline-flex; /* keeps the 32px Studio button's centred label */
 }
 
 div.bx-std-pv-actions .bx-std-pv-action.bx-std-pva-price .bx-std-pva-or {

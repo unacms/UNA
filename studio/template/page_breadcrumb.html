@@ -1,43 +1,41 @@
 <div class="bx-std-pcap-bx-std-pcap">
     <ul class="bx-menu-hor bx-menu-breadcrumb">
         <bx_repeat:menu_items>
-            <li class="bx-menu-bc-div opacity-40">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right-icon lucide-chevron-right"><path d="m9 18 6-6-6-6"/></svg>
+            <li class="bx-menu-bc-div">
+                <span class="bx-menu-bc-sep" aria-hidden="true"></span>
             </li>
             <li class="bx-menu-bc-item bx-menu-bc-__name__  __class_add__">
                 <a href="__link__" onclick="__onclick__" title="__title_attr__"__attrs__>
                     <bx_if:icon>
-                        <div class="bx-mi-icon bx-std-header-btn flex-0 flex items-center justify-center w-9 h-9 rounded-lg">
+                        <div class="bx-mi-icon bx-std-header-btn flex-0 flex items-center justify-center w-8 h-8 rounded-lg">
                             <i class="sys-icon __icon__"></i>
                         </div>
                     </bx_if:icon>
                     <bx_if:image>
-                        <div class="bx-mi-icon bx-std-header-btn flex-0 flex items-center justify-center w-9 h-9 rounded-lg">
-                            <img src="__icon_url__" />
+                        <!-- app art: a tile like the dock icons (inset hairline, no plate gradient), with the dock's hover halo -->
+                        <div class="bx-mi-icon bx-icon-tile flex-0 flex items-center justify-center w-8 h-8 rounded-lg hover:ring-4 hover:ring-black/10 dark:hover:ring-white/10">
+                            <img src="__icon_url__" alt="" />
                         </div>
                     </bx_if:image>
                     <bx_if:image_inline>
-                        <div class="bx-mi-icon bx-std-header-btn flex-0 flex items-center justify-center w-9 h-9 rounded-lg">__image__</div>
+                        <div class="bx-mi-icon bx-std-header-btn flex-0 flex items-center justify-center w-8 h-8 rounded-lg">__image__</div>
                     </bx_if:image_inline>
                     <bx_if:title><h1 class="bx-mi-title flex-1 px-1 text-xl font-semibold">__title__</h1></bx_if:title>
                 </a>
             </li>
         </bx_repeat:menu_items>
-        <bx_if:show_page_action>
-            <li class="bx-menu-bc-actions pl-2">
-                <a class="w-6 h-6 bg-gray-200 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 border border-black/10 dark:border-white/10 rounded-full text-gray-600 dark:text-gray-400" href="javascript:void(0)" onclick="__onclick__" title="<bx_text_attribute:_adm_txt_show_actions />">
-                    <bx_icon_inline:ui-chevron-down.svg />
-                </a>
-            </li>
-        </bx_if:show_page_action>
         <bx_if:show_search>
+            <li class="bx-menu-bc-div">
+                <span class="bx-menu-bc-sep" aria-hidden="true"></span>
+            </li>
             <li class="bx-menu-bc-item bx-menu-tab-search">
                 <h1 class="sr-only">__title__</h1>
-                <a class="bx-std-search-trigger items-center justify-center w-9 h-9 rounded-lg" href="javascript:void(0)" onclick="return oBxDolStudioMenuTop.searchToggle(this)" aria-label="<bx_text_attribute:_adm_tmi_cpt_search />" aria-expanded="false" aria-controls="bx-std-launcher-search"><bx_icon_inline:tmi-search.svg /></a>
-                <label class="bx-std-search-field relative block w-full min-w-48 max-w-80">
-                    <span class="absolute inset-y-0 left-0 flex items-center px-2 text-gray-500 dark:text-gray-400 pointer-events-none"><bx_icon_inline:tmi-search.svg /></span>
-                    <input id="bx-std-launcher-search" type="search" name="search" value="" autocomplete="off" placeholder="<bx_text_attribute:_adm_tmi_cpt_search_apps />" aria-label="<bx_text_attribute:_adm_tmi_cpt_search />" class="block w-full h-9 pl-9 pr-3 rounded-lg border-0 text-sm font-medium bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder:text-gray-500 dark:placeholder:text-gray-400 ring-1 ring-inset ring-black/10 dark:ring-white/15 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500 dark:focus:ring-blue-400 transition-shadow duration-150" oninput="return oBxDolStudioMenuTop.searchWidget(event)" onkeydown="return oBxDolStudioMenuTop.searchKey(event)" onblur="oBxDolStudioMenuTop.searchBlur(this)" />
-                </label>
+                <button type="button" class="bx-std-search-trigger items-center justify-center rounded-lg" onclick="return oBxDolStudioMenuTop.searchToggle(this)" aria-label="<bx_text_attribute:_adm_tmi_lbl_search_apps />" aria-expanded="false" aria-controls="bx-std-launcher-search"><bx_icon_inline:tmi-search.svg /></button>
+                <div class="bx-std-search-field relative block w-full min-w-48 max-w-80">
+                    <span class="absolute inset-y-0 ltr:left-0 rtl:right-0 flex items-center text-gray-500 dark:text-gray-400 pointer-events-none" aria-hidden="true"><bx_icon_inline:tmi-search.svg /></span>
+                    <input id="bx-std-launcher-search" type="search" name="search" value="" autocomplete="off" placeholder="<bx_text_attribute:_adm_tmi_cpt_search_apps />" aria-label="<bx_text_attribute:_adm_tmi_lbl_search_apps />" class="block w-full h-8 rounded-lg border-0 text-sm font-medium text-gray-900 dark:text-gray-100 placeholder:text-gray-600 dark:placeholder:text-gray-400 focus:outline-none" oninput="return oBxDolStudioMenuTop.searchWidget(event)" onkeydown="return oBxDolStudioMenuTop.searchKey(event)" onblur="oBxDolStudioMenuTop.searchBlur(this)" />
+                    <button type="button" class="bx-std-search-clear" hidden aria-label="<bx_text_attribute:_adm_tmi_lbl_search_clear />" onclick="return oBxDolStudioMenuTop.searchClear(this)"><bx_icon_inline:tmi-clear.svg /></button>
+                </div>
             </li>
         </bx_if:show_search>
     </ul>

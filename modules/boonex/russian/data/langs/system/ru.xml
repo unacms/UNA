@@ -662,16 +662,64 @@
         <string name="_adm_btn_settings_mix_publish"><![CDATA[Публиковать]]></string>
 	<string name="_adm_btn_store_search"><![CDATA[Поиск]]></string>
 	<string name="_adm_dbd_btn_update"><![CDATA[Обновить]]></string>
-        <string name="_adm_dbd_txt_available"><![CDATA[Доступна:]]></string>
-	<string name="_adm_dbd_txt_installed"><![CDATA[Установлено:]]></string>
-        <string name="_adm_dbd_txt_updated"><![CDATA[Обновлено:]]></string>
+	<string name="_adm_dbd_txt_ver_installed"><![CDATA[Первая установка]]></string>
+	<string name="_adm_dbd_txt_ver_updated"><![CDATA[Последнее обновление]]></string>
+	<string name="_adm_dbd_txt_ver_applied"><![CDATA[Установлена {0}]]></string>
+	<string name="_adm_dbd_txt_ver_latest_stable"><![CDATA[Последняя стабильная]]></string>
+	<string name="_adm_dbd_txt_ver_latest_beta"><![CDATA[Последняя бета]]></string>
+	<string name="_adm_dbd_txt_ver_apps_count"><![CDATA[Приложения: {0}]]></string>
+	<string name="_adm_dbd_txt_ver_apps_updates"><![CDATA[Обновлений: {0}]]></string>
+	<string name="_adm_dbd_txt_ver_up_to_date"><![CDATA[Актуально]]></string>
+	<string name="_adm_dbd_txt_ver_check"><![CDATA[Проверить обновления]]></string>
+	<string name="_adm_dbd_txt_ver_checking"><![CDATA[Проверка...]]></string>
+	<string name="_adm_dbd_txt_ver_auto"><![CDATA[Автоматические обновления]]></string>
+	<string name="_adm_dbd_txt_ver_beta"><![CDATA[Бета-обновления]]></string>
+	<string name="_adm_dbd_txt_ver_force"><![CDATA[Принудительные автообновления]]></string>
 	<string name="_adm_dbd_msg_upgrade_started"><![CDATA[Сайт будет обновлён через минуту. <br />После этого нужно <a href="{0}store.php?page=updates">проверить обновления для модулей</a>.]]></string>
 	<string name="_adm_dbd_txt_su_database"><![CDATA[База данных]]></string>
 	<string name="_adm_dbd_txt_su_system"><![CDATA[Система]]></string>
 	<string name="_adm_dbd_txt_su_system_media"><![CDATA[Системные медиа]]></string>
-        <string name="_adm_dbd_txt_c_select"><![CDATA[Выбрать...]]></string>
+	<string name="_adm_dbd_txt_su_local"><![CDATA[Локальное хранилище]]></string>
+	<string name="_adm_dbd_txt_su_remote"><![CDATA[Удалённое хранилище]]></string>
+	<string name="_adm_dbd_txt_su_remote_off"><![CDATA[Не подключено]]></string>
+	<string name="_adm_dbd_txt_su_files"><![CDATA[Файлы]]></string>
+	<string name="_adm_dbd_txt_su_images"><![CDATA[Изображения]]></string>
+	<string name="_adm_dbd_txt_su_files_count"><![CDATA[{0} файлов]]></string>
+	<string name="_adm_dbd_txt_su_file_count_1"><![CDATA[1 файл]]></string>
+	<string name="_adm_dbd_txt_chart_used"><![CDATA[{0} занято]]></string>
+	<string name="_adm_dbd_txt_chart_total"><![CDATA[{0} всего]]></string>
+	<string name="_adm_dbd_txt_ht_tools"><![CDATA[Инструменты сервера]]></string>
+	<string name="_adm_dbd_txt_ht_status"><![CDATA[Статус]]></string>
+	<string name="_adm_dbd_txt_ht_audit"><![CDATA[Аудит]]></string>
+	<string name="_adm_dbd_txt_ht_permissions"><![CDATA[Права доступа]]></string>
+	<string name="_adm_dbd_txt_ht_cpu"><![CDATA[CPU]]></string>
+	<string name="_adm_dbd_txt_ht_memory"><![CDATA[Память]]></string>
+	<string name="_adm_dbd_txt_ht_disk"><![CDATA[Диск]]></string>
+	<string name="_adm_dbd_txt_ht_network"><![CDATA[Сеть]]></string>
+	<string name="_adm_dbd_txt_ht_kbps"><![CDATA[кбит/с]]></string>
+	<string name="_adm_dbd_txt_ht_mbps"><![CDATA[Мбит/с]]></string>
+	<string name="_adm_dbd_txt_ht_gbps"><![CDATA[Гбит/с]]></string>
+	<string name="_adm_dbd_txt_ht_na"><![CDATA[н/д]]></string>
+	<string name="_adm_dbd_txt_ht_high"><![CDATA[высокая]]></string>
+	<string name="_adm_dbd_txt_ht_system"><![CDATA[Система]]></string>
+	<string name="_adm_dbd_txt_ht_services"><![CDATA[Сервисы]]></string>
+	<string name="_adm_dbd_txt_ht_caching"><![CDATA[Кеширование]]></string>
+	<string name="_adm_dbd_txt_ht_security"><![CDATA[Безопасность]]></string>
+	<string name="_adm_dbd_txt_ht_last_audit"><![CDATA[Последний аудит]]></string>
+	<string name="_adm_dbd_txt_ht_run_audit"><![CDATA[Запустить новый аудит]]></string>
+	<string name="_adm_dbd_txt_ht_passed"><![CDATA[{0} пройдено]]></string>
+	<string name="_adm_dbd_txt_ht_warning"><![CDATA[1 предупреждение]]></string>
+	<string name="_adm_dbd_txt_ht_warnings"><![CDATA[{0} предупреждений]]></string>
+	<string name="_adm_dbd_txt_ht_failed"><![CDATA[{0} не пройдено]]></string>
+	<string name="_adm_dbd_txt_ht_unknown"><![CDATA[{0} не проверено]]></string>
+	<string name="_adm_dbd_txt_c_all"><![CDATA[Все кеши]]></string>
 	<string name="_adm_dbd_txt_c_clear_all"><![CDATA[Очистить весь кэш]]></string>
-	<string name="_adm_dbd_txt_q_clear"><![CDATA[Очистить очередь]]></string>
+	<string name="_adm_dbd_txt_q_all"><![CDATA[Все очереди]]></string>
+	<string name="_adm_dbd_txt_q_clear_all"><![CDATA[Очистить все очереди]]></string>
+	<string name="_adm_dbd_txt_q_clear_item"><![CDATA[Очистить очередь «{0}»]]></string>
+	<string name="_adm_dbd_txt_q_queued"><![CDATA[{0} в очереди]]></string>
+	<string name="_adm_dbd_txt_q_failed"><![CDATA[{0} с ошибкой]]></string>
+	<string name="_adm_dbd_msg_q_clean_success"><![CDATA[Очередь успешно очищена]]></string>
 	<string name="_adm_dbd_txt_c_content"><![CDATA[Содержимое страниц]]></string>
 	<string name="_adm_dbd_txt_c_clear_content"><![CDATA[Очистить кэш содержимого страниц]]></string>
 	<string name="_adm_dbd_txt_c_db"><![CDATA[БД]]></string>
@@ -683,11 +731,28 @@
         <string name="_adm_dbd_txt_c_less"><![CDATA[LESS]]></string>
         <string name="_adm_dbd_txt_c_clear_less"><![CDATA[Очистить кэш LESS]]></string>
         <string name="_adm_dbd_txt_c_clear_purifier"><![CDATA[Очистить кэш Purifier]]></string>
+        <string name="_adm_dbd_txt_c_purifier"><![CDATA[Purifier]]></string>
         <string name="_adm_dbd_txt_c_js"><![CDATA[JavaScript]]></string>
         <string name="_adm_dbd_txt_c_clear_js"><![CDATA[Очистить кэш JavaScript]]></string>
         <string name="_adm_dbd_txt_c_clear_custom"><![CDATA[Очистить специальный кэш]]></string>
+        <string name="_adm_dbd_txt_c_custom"><![CDATA[Специальный]]></string>
         <string name="_adm_dbd_txt_c_opcache"><![CDATA[Opcache]]></string>
         <string name="_adm_dbd_txt_c_clear_opcache"><![CDATA[Очистить Opcache]]></string>
+        <string name="_adm_dbd_txt_us_period"><![CDATA[Период]]></string>
+        <string name="_adm_dbd_txt_us_series"><![CDATA[Данные графика]]></string>
+        <string name="_adm_dbd_txt_us_7d"><![CDATA[7д]]></string>
+        <string name="_adm_dbd_txt_us_7d_label"><![CDATA[Последние 7 дней]]></string>
+        <string name="_adm_dbd_txt_us_30d"><![CDATA[30д]]></string>
+        <string name="_adm_dbd_txt_us_30d_label"><![CDATA[Последние 30 дней]]></string>
+        <string name="_adm_dbd_txt_us_1y"><![CDATA[1г]]></string>
+        <string name="_adm_dbd_txt_us_1y_label"><![CDATA[Последние 12 месяцев]]></string>
+        <string name="_adm_dbd_txt_us_all"><![CDATA[Всего]]></string>
+        <string name="_adm_dbd_txt_us_all_label"><![CDATA[За всё время]]></string>
+        <string name="_adm_dbd_txt_us_peak"><![CDATA[пик {0}]]></string>
+        <string name="_adm_dbd_txt_us_accounts"><![CDATA[Аккаунты]]></string>
+        <string name="_adm_dbd_txt_us_active"><![CDATA[Активные пользователи]]></string>
+        <string name="_adm_dbd_txt_us_online"><![CDATA[Сейчас онлайн]]></string>
+        <string name="_adm_dbd_txt_us_pending"><![CDATA[{0} в ожидании]]></string>
         <string name="_adm_dbd_err_c_clean_failed"><![CDATA[Очистка кэша не поддерживается]]></string>
         <string name="_adm_dbd_err_c_clean_unsupported"><![CDATA[Clean cache unsupported]]></string>
         <string name="_adm_dbd_msg_c_clean_success"><![CDATA[Кэш был удачно очищен]]></string>
@@ -1153,7 +1218,7 @@
 	<string name="_adm_lmi_cpt_displays"><![CDATA[Дисплеи]]></string>
 	<string name="_adm_lmi_cpt_downloaded"><![CDATA[Скачано]]></string>
 	<string name="_adm_lmi_cpt_etemplates_text"><![CDATA[Тексты email-ов]]></string>
-        <string name="_adm_lmi_cpt_etemplates_html"><![CDATA[Email-шаблон]]></string>
+        <string name="_adm_lmi_cpt_etemplates_html"><![CDATA[Email-шаблоны]]></string>
 	<string name="_adm_lmi_cpt_featured"><![CDATA[Продвинутые]]></string>
 	<string name="_adm_lmi_cpt_fields"><![CDATA[Поля]]></string>
 	<string name="_adm_lmi_cpt_files"><![CDATA[Файлы]]></string>
@@ -1198,7 +1263,7 @@
 	<string name="_adm_msg_modules_success_enable"><![CDATA[Пакет удачно подключён]]></string>
 	<string name="_adm_msg_modules_success_install"><![CDATA[Пакет удачно установлен]]></string>
 	<string name="_adm_msg_modules_success_uninstall"><![CDATA[Пакет удачно отменён]]></string>
-	<string name="_adm_msg_oauth_need_authorize"><![CDATA[Вам нужно зайти в свой <b>UNA</b> аккаунт, чтобы запросить данные. Нажмите <a href="{0}">здесь</a> для входа.]]></string>
+	<string name="_adm_msg_oauth_need_authorize"><![CDATA[Чтобы получить данные, нужно войти в свой аккаунт <b>UNA</b>: <a href="{0}">войти в UNA</a>.]]></string>
         <string name="_adm_msg_oauth_non_owner_logged"><![CDATA[Заметьте. Вы вошли в систему, используя UNA аккаунт, который не является владельцем пары Key&Secret.]]></string>
 	<string name="_adm_nav_btn_current_icon_image_delete"><![CDATA[Удалить]]></string>
 	<string name="_adm_nav_btn_items_add"><![CDATA[Добавить]]></string>
@@ -1357,6 +1422,23 @@
 	<string name="_adm_page_cpt_dashboard"><![CDATA[Панель]]></string>
 	<string name="_adm_page_cpt_designer"><![CDATA[Дизайнер]]></string>
 	<string name="_adm_page_cpt_home"><![CDATA[Студия]]></string>
+	<string name="_adm_page_dsc_default"><![CDATA[{0} в UNA Studio, панели администрирования {1}.]]></string>
+	<string name="_adm_page_dsc_home"><![CDATA[UNA Studio: все приложения администрирования {0} в одном месте.]]></string>
+	<string name="_adm_page_dsc_dashboard"><![CDATA[Состояние сайта {0}: обновления, хранилище, кеш, состояние сервера и результаты аудита.]]></string>
+	<string name="_adm_page_dsc_settings"><![CDATA[Общие настройки {0}: основные параметры, безопасность, почта, кеш и все установленные приложения.]]></string>
+	<string name="_adm_page_dsc_store"><![CDATA[Просмотр, установка, обновление и управление приложениями и шаблонами для {0}.]]></string>
+	<string name="_adm_page_dsc_polyglot"><![CDATA[Языки и переводы {0}: языковые пакеты, ключи и шаблоны писем.]]></string>
+	<string name="_adm_page_dsc_builder_pages"><![CDATA[Конструктор страниц: блоки и макеты всех страниц {0}.]]></string>
+	<string name="_adm_page_dsc_builder_menus"><![CDATA[Конструктор навигации: меню, наборы пунктов и их размещение на {0}.]]></string>
+	<string name="_adm_page_dsc_builder_forms"><![CDATA[Конструктор форм: поля, отображения и предопределённые списки всех форм {0}.]]></string>
+	<string name="_adm_page_dsc_builder_permissions"><![CDATA[Права доступа: что разрешено каждому уровню членства на {0}.]]></string>
+	<string name="_adm_page_dsc_builder_roles"><![CDATA[Роли Studio: каким операторам {0} доступны какие приложения администрирования.]]></string>
+	<string name="_adm_page_dsc_designer"><![CDATA[Дизайнер: шаблоны, стили, иконки, обложки и внешний вид {0}.]]></string>
+	<string name="_adm_page_dsc_agents"><![CDATA[ИИ-агенты: модели, автоматизации и ассистенты, настроенные для {0}.]]></string>
+	<string name="_adm_page_dsc_badges"><![CDATA[Значки: значки, которые участники могут получить на {0}.]]></string>
+	<string name="_adm_page_dsc_storages"><![CDATA[Хранилище: механизмы хранения файлов, использование и инструменты изменения размера изображений {0}.]]></string>
+	<string name="_adm_page_dsc_api"><![CDATA[API: ключи, клиенты и доступ к API {0}.]]></string>
+	<string name="_adm_page_dsc_audit"><![CDATA[Аудит: проверки сервера и конфигурации {0}.]]></string>
 	<string name="_adm_page_cpt_login"><![CDATA[Войти]]></string>
 	<string name="_adm_page_cpt_polyglot"><![CDATA[Полиглот]]></string>
 	<string name="_adm_page_cpt_settings"><![CDATA[Настройки]]></string>
@@ -1601,9 +1683,9 @@
     <string name="_adm_stg_cpt_option_site_title"><![CDATA[Имя сообщества]]></string>
     <string name="_adm_stg_inf_option_site_title"><![CDATA[Имя по умолчанию, используемое для ссылки на ваш сайт в текстах сайта, метатегах, электронных письмах и уведомлениях.]]></string>
     <string name="_adm_stg_cpt_option_site_tour_home"><![CDATA[Пользовательский тур]]></string>
-    <string name="_adm_stg_inf_option_site_tour_home"><![CDATA[<a href="/studio/polyglot.php?page=keys">Здесь</a> вы можете редактировать шаги и содержание пользовательского тура.]]></string>
+    <string name="_adm_stg_inf_option_site_tour_home"><![CDATA[Шаги и содержание пользовательского тура можно редактировать в <a href="/studio/polyglot.php?page=keys">языковых ключах Polyglot</a>.]]></string>
     <string name="_adm_stg_cpt_option_site_tour_studio"><![CDATA[Экскурсия по студии]]></string>
-    <string name="_adm_stg_inf_option_site_tour_studio"><![CDATA[<a href="/studio/polyglot.php?page=keys">Здесь</a> вы можете редактировать этапы и содержание тура по студии.]]></string>
+    <string name="_adm_stg_inf_option_site_tour_studio"><![CDATA[Шаги и содержание тура по Studio можно редактировать в <a href="/studio/polyglot.php?page=keys">языковых ключах Polyglot</a>.]]></string>
     <string name="_adm_stg_cpt_option_smart_app_banner"><![CDATA[Smart App Banner]]></string>
     <string name="_adm_stg_inf_option_smart_app_banner"><![CDATA[]]></string>
     <string name="_adm_stg_cpt_option_smart_app_banner_ios_app_id"><![CDATA[Идентификатор iOS прилижения для Smart App Banner]]></string>
@@ -1735,6 +1817,7 @@
     <string name="_adm_stg_cpt_option_sys_push_wonderpush_access_token"><![CDATA[WonderPush: Токен доступа]]></string>
     <string name="_adm_stg_cpt_option_sys_push_wonderpush_web_key"><![CDATA[WonderPush: Веб-ключ]]></string>
     <string name="_adm_stg_cpt_option_sys_push_queue_time"><![CDATA[Флаг выполнения Push очереди]]></string>
+    <string name="_adm_stg_cpt_option_sys_audit_report"><![CDATA[Отчёт последнего аудита сервера]]></string>
     <string name="_adm_stg_cpt_option_sys_push_queue_send_per_start"><![CDATA[Количество сообщенией, отправляемое из Push очереди при каждом запуске]]></string>
     <string name="_adm_stg_cpt_option_sys_push_queue_send_per_start_to_recipient"><![CDATA[Количество сообщенией, отправляемое из Push очереди одному и тому же получателю при каждом запуске]]></string>
     <string name="_adm_stg_cpt_option_sys_alerts_logger"><![CDATA[Журнал оповещений/хуков]]></string>
@@ -1959,6 +2042,7 @@
 	<string name="_adm_str_txt_pv_discount_off_csign"><![CDATA[{0}% ({1}{2}) скидка для Премиум]]></string>
 	<string name="_adm_str_txt_pv_price"><![CDATA[Цена]]></string>
 	<string name="_adm_str_txt_pv_rent"><![CDATA[Рента]]></string>
+	<string name="_adm_str_txt_pv_screenshot"><![CDATA[Скриншот {0}]]></string>
 	<string name="_adm_str_txt_pv_stats"><![CDATA[Статистика]]></string>
 	<string name="_adm_str_txt_pv_stats_votes"><![CDATA[{0} лайков]]></string>
 	<string name="_adm_str_txt_pv_stats_reviews"><![CDATA[{0} обзоров]]></string>
@@ -1989,6 +2073,7 @@
 	<string name="_adm_strg_txt_files_add_popup"><![CDATA[Добавить файл]]></string>
 	<string name="_adm_strg_txt_images_add_popup"><![CDATA[Добавить изображение]]></string>
 	<string name="_adm_strg_txt_images_resize_popup"><![CDATA[Изменить размер изображения]]></string>
+	<string name="_adm_strg_txt_images_resize_result"><![CDATA[Изображение с изменённым размером]]></string>
 	<string name="_adm_strg_txt_size_mime_type"><![CDATA[{0}x{1}, {2}]]></string>
 	<string name="_adm_strg_txt_width"><![CDATA[Ширина]]></string>
 	<string name="_adm_strg_err_width"><![CDATA[Нужно указать ширину. Пожалуйста, заполните это поле.]]></string>
@@ -1999,15 +2084,25 @@
 	<string name="_adm_tmi_cpt_site"><![CDATA[Перейти на сайт]]></string>
         <string name="_adm_tmi_cpt_search"><![CDATA[Искать...]]></string>
         <string name="_adm_tmi_cpt_search_apps"><![CDATA[Приложения...]]></string>
+        <string name="_adm_tmi_lbl_search_apps"><![CDATA[Поиск приложений]]></string>
+        <string name="_adm_tmi_lbl_search_clear"><![CDATA[Очистить поиск]]></string>
         <string name="_adm_tmi_cpt_scheme"><![CDATA[Цветовая схема]]></string>
-	<string name="_adm_tmi_cpt_tour"><![CDATA[Инструкции]]></string>
 	<string name="_adm_tmi_cpt_launcher"><![CDATA[Загрузчик]]></string>
         <string name="_adm_txt_active_api"><![CDATA[Доступно в приложении]]></string>
         <string name="_adm_txt_assistant_popup_title"><![CDATA[Как я могу помочь?]]></string>
 	<string name="_adm_txt_confirm_cancel"><![CDATA[Отменить]]></string>
 	<string name="_adm_txt_confirm_ok"><![CDATA[OK]]></string>
+	<string name="_adm_txt_launcher_apps"><![CDATA[Приложения]]></string>
+	<string name="_adm_txt_launcher_search_empty"><![CDATA[Ничего не найдено]]></string>
+	<string name="_adm_txt_launcher_search_matches"><![CDATA[Найдено приложений: {0}]]></string>
+	<string name="_adm_txt_launcher_search_matches_one"><![CDATA[Найдено 1 приложение]]></string>
+	<string name="_adm_txt_widget_action_label"><![CDATA[{0}: {1}]]></string>
+	<string name="_adm_txt_widget_move_left"><![CDATA[Переместить {0} влево]]></string>
+	<string name="_adm_txt_widget_move_right"><![CDATA[Переместить {0} вправо]]></string>
+	<string name="_adm_txt_widget_moved"><![CDATA[{0}: позиция {1} из {2}]]></string>
 	<string name="_adm_txt_forgot_password"><![CDATA[Забыли пароль?]]></string>
 	<string name="_adm_txt_form_view_missing"><![CDATA[отсутствует]]></string>
+	<string name="_adm_txt_icon_image_current"><![CDATA[Текущее изображение иконки]]></string>
 	<string name="_adm_txt_login_password"><![CDATA[Пароль]]></string>
         <string name="_adm_txt_login_password_placeholder"><![CDATA[ваш пароль]]></string>
 	<string name="_adm_txt_login_email"><![CDATA[Эл. адрес]]></string>
@@ -2479,53 +2574,61 @@
   <string name="_sys_audit_filter_profile_select"><![CDATA[Выберите профиль]]></string>
   <string name="_sys_audit_filter_action_select"><![CDATA[Выберите действия]]></string>
 	<string name="_sys_audit_cron_jobs"><![CDATA[Планировщик]]></string>
-	<string name="_sys_audit_cron_jobs_exec_time"><![CDATA[Последний запуск планировщика]]></string>
-	<string name="_sys_audit_header_manual_audit"><![CDATA[Ручной аудит сервера]]></string>
+	<string name="_sys_audit_header_manual_audit"><![CDATA[Ручной аудит]]></string>
 	<string name="_sys_audit_header_requirements"><![CDATA[Требования]]></string>
-	<string name="_sys_audit_header_site_optimization"><![CDATA[Оптимизация сайта]]></string>
+	<string name="_sys_audit_header_site_optimization"><![CDATA[Оптимизация]]></string>
 	<string name="_sys_audit_header_site_setup"><![CDATA[Настройка сайта]]></string>
-	<string name="_sys_audit_mail_sending"><![CDATA[Посылка почты]]></string>
-	<string name="_sys_audit_msg_apache_module_fail"><![CDATA[Вам нужно установить {0} для Apache]]></string>
-	<string name="_sys_audit_msg_cron_jobs"><![CDATA[<pre class="code">{0}</pre> если Вы не уверены, корректен ли вывод, может понадобиться <a href="#manual_audit">ручной аудит сервера</a>]]></string>
-	<string name="_sys_audit_msg_optimization_fail"><![CDATA[пожалуйста, задействуйте этот кэш в Студии &gt; Настройки &gt; Кэш]]></string>
-	<string name="_sys_audit_msg_optimization_warn"><![CDATA[установка PHP-акселератора ускорит кэширование файлов]]></string>
-	<string name="_sys_audit_msg_x_based_cache_engine"><![CDATA[ ({0} кэш-движок)]]></string>
-	<string name="_sys_audit_msg_ffmpeg"><![CDATA[<pre class="code">{0}</pre>если Вы не уверены, корректен ли вывод, может понадобиться <a href="#manual_audit">ручной аудит сервера</a>.]]></string>
-	<string name="_sys_audit_msg_hardware_requirements"><![CDATA[Оборудование нельзя проверить автоматически. Может понадобиться <a href="#manual_audit">ручной аудит сервера</a>.]]></string>
-	<string name="_sys_audit_msg_mail_send_failed"><![CDATA[не удалось отослать письмо]]></string>
-	<string name="_sys_audit_msg_mail_sending"><![CDATA[<span id="bx-sys-adm-audit-test-email"><a href="javascript:void(0);" onclick="bx_sys_adm_audit_test_email()">нажмите здесь</a>, чтобы отослать тестовое сообщение</span>]]></string>
-	<string name="_sys_audit_msg_mail_sent"><![CDATA[тестовое сообщение отослано, пожалуйста, проверьте {0} эл. ящик]]></string>
-	<string name="_sys_audit_msg_manual_audit"><![CDATA[<p>
-Некоторые проверки нужно сделать вручную. Если нужна помощь, <a target="_blank" href="mailto:team@unacms.com?subject=Ручной аудит сервера">отправьте запрос на аудит сервера</a>.
-</p>]]></string>
+	<string name="_sys_audit_mail_sending"><![CDATA[Доставка почты]]></string>
+	<string name="_sys_audit_msg_apache_module_fail"><![CDATA[Установите {0} для Apache.]]></string>
+	<string name="_sys_audit_msg_cron_jobs"><![CDATA[Не запускался последний час: проверьте запись в crontab.]]></string>
+	<string name="_sys_audit_msg_optimization_fail"><![CDATA[Включите в Настройки &gt; Кэш.]]></string>
+	<string name="_sys_audit_msg_optimization_warn"><![CDATA[PHP-акселератор ускорит файловый кэш.]]></string>
+	<string name="_sys_audit_msg_cache_engine_optional"><![CDATA[Необязательный движок в памяти: ускоряет работу, если установлен.]]></string>
+	<string name="_sys_audit_msg_x_based_cache_engine"><![CDATA[ ({0})]]></string>
+	<string name="_sys_audit_msg_ffmpeg"><![CDATA[Не найден по пути {0}: конвертация видео и аудио не будет работать.]]></string>
+	<string name="_sys_audit_msg_hardware_requirements"><![CDATA[Автоматически не проверяется: см. ручной аудит.]]></string>
+	<string name="_sys_audit_msg_mail_send_failed"><![CDATA[Отправка не удалась.]]></string>
+	<string name="_sys_audit_msg_mail_sending"><![CDATA[<span id="bx-sys-adm-audit-test-email"><a href="javascript:void(0);" onclick="bx_sys_adm_audit_test_email()">Отправить тестовое письмо</a></span>]]></string>
+	<string name="_sys_audit_msg_mail_sent"><![CDATA[Тестовое письмо отправлено на {0}.]]></string>
+	<string name="_sys_audit_msg_manual_audit"><![CDATA[Часть проверок делается вручную. <a target="_blank" href="mailto:team@unacms.com?subject=Server Audit Request">Запросить аудит сервера</a>.]]></string>
 	<string name="_sys_audit_msg_must_be"><![CDATA[нужно {0} {1}]]></string>
-	<string name="_sys_audit_msg_optimization_apache_module"><![CDATA[Чтобы применить эту оптимизацию, Вам нужно иметь <b>{0}</b> - {1}]]></string>
-	<string name="_sys_audit_msg_permissions"><![CDATA[пожалуйста <a href="javascript:void(0);" onclick="oBxDolStudioDashboard.permissions()">нажмите здесь</a>, чтобы выяснить, корректны ли разрешения.]]></string>
-	<string name="_sys_audit_msg_php_accelerator_missing"><![CDATA[Можно значительно ускорить работу скрипта, если установить PHP-акселератор]]></string>
-	<string name="_sys_audit_msg_php_setup_inefficient"><![CDATA[Ваши PHP-настройки могут быть очень неэффективными, <a href="javascript:void(0)" onclick="bx_sys_adm_audit_phpinfo()">проверьте их</a> и попробуйте переключиться на mod_php, apache dso module или FastCGI]]></string>
-	<string name="_sys_audit_msg_serverside_compression"><![CDATA[
-может быть проверено <a href="#manual_audit">вручную</a> или с помощью инструмента PageSpeed, встроенного в браузер.<br />
-Если он не задействован, тогда попробуйте применить эту оптимизацию, так как она улучшает скорость сайта и экономит трафик.<br />{0}]]></string>
+	<string name="_sys_audit_msg_permissions"><![CDATA[Подробности на вкладке <a href="javascript:void(0);" onclick="oBxDolStudioDashboard.permissions()">Права доступа</a>.]]></string>
+	<string name="_sys_audit_msg_php_accelerator_missing"><![CDATA[Установите PHP-акселератор, например OPcache, для заметного ускорения.]]></string>
+	<string name="_sys_audit_msg_php_setup_inefficient"><![CDATA[CGI работает медленно: перейдите на mod_php, DSO или FastCGI. <a href="javascript:void(0)" onclick="bx_sys_adm_audit_phpinfo()">Открыть phpinfo</a>.]]></string>
 	<string name="_sys_audit_msg_should_be"><![CDATA[хорошо бы {0} {1}]]></string>
-	<string name="_sys_audit_msg_userside_caching"><![CDATA[
-<a href="{0}">нажмите здесь для проверки в Google PageSpeed</a><br />
-Если он не задействован, тогда попробуйте применить эту оптимизацию, так как она улучшает скорость сайта и экономит трафик.<br />{1}]]></string>
-	<string name="_sys_audit_msg_value_checking_failed"><![CDATA[проверка значения не удалась]]></string>
-	<string name="_sys_audit_msg_version_is_incompatible"><![CDATA[Ваша версия несовместима с UNA, нужно как минимум {0}]]></string>
-	<string name="_sys_audit_msg_version_is_outdated"><![CDATA[Ваша версия устарела, может потребоваться обновление до последней версии {0}]]></string>
-	<string name="_sys_audit_permissions"><![CDATA[Разрешения файлов и папок]]></string>
+	<string name="_sys_audit_msg_userside_caching"><![CDATA[<a href="{0}" target="_blank">Проверить в PageSpeed</a>]]></string>
+	<string name="_sys_audit_msg_value_checking_failed"><![CDATA[Не удалось проверить.]]></string>
+	<string name="_sys_audit_msg_version_is_incompatible"><![CDATA[Не поддерживается: UNA требует {0} или новее.]]></string>
+	<string name="_sys_audit_msg_version_is_outdated"><![CDATA[Устарела: последняя версия {0}.]]></string>
+	<string name="_sys_audit_permissions"><![CDATA[Права на файлы]]></string>
+	<string name="_sys_audit_https"><![CDATA[HTTPS]]></string>
+	<string name="_sys_audit_msg_https"><![CDATA[Сайт работает по HTTP: переведите его на HTTPS.]]></string>
+	<string name="_sys_audit_install_dir"><![CDATA[Каталог install]]></string>
+	<string name="_sys_audit_msg_install_dir"><![CDATA[Всё ещё на сервере: удалите каталог install.]]></string>
+	<string name="_sys_audit_display_errors"><![CDATA[Вывод ошибок]]></string>
+	<string name="_sys_audit_msg_display_errors"><![CDATA[PHP показывает ошибки посетителям: установите display_errors = Off.]]></string>
+	<string name="_sys_audit_expose_php"><![CDATA[Заголовок с версией PHP]]></string>
+	<string name="_sys_audit_msg_expose_php"><![CDATA[Версия PHP отправляется в заголовках ответа: установите expose_php = Off.]]></string>
+	<string name="_sys_audit_config_file"><![CDATA[Файл конфигурации]]></string>
+	<string name="_sys_audit_msg_config_file"><![CDATA[inc/header.inc.php доступен для записи другим пользователям: установите права 0644.]]></string>
+	<string name="_sys_audit_present"><![CDATA[Есть]]></string>
+	<string name="_sys_audit_removed"><![CDATA[Удалён]]></string>
+	<string name="_sys_audit_on"><![CDATA[Вкл]]></string>
+	<string name="_sys_audit_off"><![CDATA[Выкл]]></string>
 	<string name="_sys_audit_php_accelerator"><![CDATA[PHP-акселератор]]></string>
-	<string name="_sys_audit_php_setup"><![CDATA[PHP-настройка]]></string>
+	<string name="_sys_audit_php_setup"><![CDATA[Обработчик PHP]]></string>
 	<string name="_sys_audit_section_hardware"><![CDATA[Железо]]></string>
+	<string name="_sys_audit_section_cache_engines"><![CDATA[Движки кэша]]></string>
 	<string name="_sys_audit_section_os"><![CDATA[ОС]]></string>
-	<string name="_sys_audit_section_webserver"><![CDATA[Web-сервер]]></string>
-	<string name="_sys_audit_serverside_compression"><![CDATA[Сжатие содержимого на стороне сервера]]></string>
+	<string name="_sys_audit_section_php_extensions"><![CDATA[Расширения PHP]]></string>
+	<string name="_sys_audit_section_webserver"><![CDATA[Веб-сервер]]></string>
+	<string name="_sys_audit_serverside_compression"><![CDATA[Сжатие ответов]]></string>
 	<string name="_sys_audit_title_fail"><![CDATA[Ошибка]]></string>
 	<string name="_sys_audit_title_ok"><![CDATA[Пройдено]]></string>
 	<string name="_sys_audit_title_undef"><![CDATA[Неизвестно]]></string>
 	<string name="_sys_audit_title_warn"><![CDATA[Предупреждение]]></string>
-	<string name="_sys_audit_userside_caching"><![CDATA[Кэширование статичного содержимого на стороне пользователя]]></string>
-	<string name="_sys_audit_version"><![CDATA[версия]]></string>
+	<string name="_sys_audit_userside_caching"><![CDATA[Кэширование в браузере]]></string>
+	<string name="_sys_audit_version"><![CDATA[Версия]]></string>
 	<string name="_sys_audit_version_script"><![CDATA[Версия UNA]]></string>
 
 	<string name="_sys_agents_agents_popup_edit"><![CDATA[Редактирование агента "{0}"]]></string>
@@ -3126,6 +3229,13 @@
 	<string name="_sys_format_size_kb"><![CDATA[{0} КБ]]></string>
 	<string name="_sys_format_size_mb"><![CDATA[{0} МБ]]></string>
 	<string name="_sys_format_size_tb"><![CDATA[{0} ТБ]]></string>
+	<string name="_sys_grid_lbl_actions"><![CDATA[Действия]]></string>
+	<string name="_sys_grid_lbl_order"><![CDATA[Порядок]]></string>
+	<string name="_sys_grid_lbl_select"><![CDATA[Выбор]]></string>
+	<string name="_sys_grid_lbl_select_all"><![CDATA[Выбрать все]]></string>
+	<string name="_sys_str_limit_show"><![CDATA[Показать полностью]]></string>
+	<string name="_adm_grid_lbl_search"><![CDATA[Поиск]]></string>
+	<string name="_adm_grid_lbl_module"><![CDATA[Модуль]]></string>
 	<string name="_sys_grid_confirmation"><![CDATA[Вы уверены?]]></string>
 	<string name="_sys_grid_delete_failed"><![CDATA[Удалить ошибочные]]></string>
 	<string name="_sys_grid_search"><![CDATA[Поиск...]]></string>
@@ -3620,6 +3730,8 @@
     <string name="_sys_menu_item_title_sa_site"><![CDATA[Открыть веб-приложение]]></string>
     <string name="_sys_menu_item_title_system_sa_edit"><![CDATA[Управление приложениями]]></string>
     <string name="_sys_menu_item_title_sa_edit"><![CDATA[Управление приложениями]]></string>
+    <string name="_sys_menu_item_title_system_sa_tour"><![CDATA[Вводный тур]]></string>
+    <string name="_sys_menu_item_title_sa_tour"><![CDATA[Вводный тур]]></string>
     <string name="_sys_menu_item_title_system_sa_scheme"><![CDATA[Тема]]></string>
     <string name="_sys_menu_item_title_sa_scheme"><![CDATA[Тема]]></string>
     <string name="_sys_menu_item_title_system_sa_language"><![CDATA[Язык]]></string>
@@ -3746,9 +3858,9 @@
 	<string name="_sys_page_block_title_profile_membership"><![CDATA[Членство]]></string>
 	<string name="_sys_page_block_title_unsubscribe_news"><![CDATA[Отписаться от новостей сайта]]></string>
 	<string name="_sys_page_block_title_unsubscribe_notifications"><![CDATA[Отписаться от уведомлений сайта]]></string>
-	<string name="_sys_page_block_title_std_dash_version"><![CDATA[Версия]]></string>
-	<string name="_sys_page_block_title_std_dash_space"><![CDATA[Использование дискового пространства]]></string>
-	<string name="_sys_page_block_title_std_dash_host_tools"><![CDATA[Инструменты хоста]]></string>
+	<string name="_sys_page_block_title_std_dash_version"><![CDATA[Обновления]]></string>
+	<string name="_sys_page_block_title_std_dash_space"><![CDATA[Место]]></string>
+	<string name="_sys_page_block_title_std_dash_host_tools"><![CDATA[Сервер]]></string>
 	<string name="_sys_page_block_title_std_dash_cache"><![CDATA[Кэш]]></string>
         <string name="_sys_page_block_title_std_dash_queues"><![CDATA[Очереди]]></string>
 	<string name="_sys_page_block_title_terms"><![CDATA[Правила пользования]]></string>
@@ -4348,7 +4460,7 @@
   <string name="_sys_queue_emails"><![CDATA[Emails]]></string>
   <string name="_sys_queue_push"><![CDATA[PUSH]]></string>
   <string name="_sys_queue_transcoding"><![CDATA[Транскодирование видео]]></string>
-  <string name="_sys_queue_storage"><![CDATA[Хранилище файлов]]></string>
+  <string name="_sys_queue_storage"><![CDATA[Удаление файлов]]></string>
   <string name="_sys_page_title_redirect"><![CDATA[Подтверждение перехода на другой сайт]]></string>
   <string name="_sys_page_block_title_redirect"><![CDATA[Подтвердите переход на другой сайт]]></string>
   <string name="_sys_redirect_confirmation"><![CDATA[<div class="bx-def-font-h2 bx-def-margin-sec-bottom">Вы переходите по ссылке за пределы сайта "{1}"</div><div class="bx-def-font-small">Ссылка: {0}</div><div class="bx-def-margin-sec-top">Вы действительно хотите перейти по этой ссылке?</div>]]></string>

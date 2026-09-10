@@ -116,9 +116,15 @@ class BxDolUpgrader extends BxDol
         return $a['latest_version'];
     }
 
-    public function getVersionUpdateInfo ()
+    /**
+     * @param string $sChannel 'stable' or 'beta'; empty for the channel set in the sys_upgrade_channel option
+     */
+    public function getVersionUpdateInfo ($sChannel = '')
     {
-        $sUrlVersionCheck = $this->_sUrlVersionCheck . ('beta' == getParam('sys_upgrade_channel') ? 'beta/' : '');
+        if(!$sChannel)
+            $sChannel = getParam('sys_upgrade_channel');
+
+        $sUrlVersionCheck = $this->_sUrlVersionCheck . ('beta' == $sChannel ? 'beta/' : '');
         $s = bx_file_get_contents($sUrlVersionCheck, array ('v' => bx_get_ver()));
         if (!$s)
             return null;

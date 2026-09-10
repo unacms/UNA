@@ -2964,7 +2964,9 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
         //--- Collect all attached CSS/JS in one file ---//
 
         $sResult = "";
+        $iLine = 0;
         $aIncluded = array();
+        $aSections = array();
         foreach($aFiles as $aFile) {
             if($this->{'_b' . $sUpcaseType . 'Less'})
                 $aFile = $this->$sMethodLess($aFile);
@@ -2972,10 +2974,33 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
             if(($sContent = $this->$sMethodCompile($aFile['path'], $aIncluded)) === false)
                 continue;                
 
-            if(!preg_match('/[\.-]min.(js|css)$/i', $aFile['path']) && $this->{'_b' . $sUpcaseType . 'Minify'}) // don't minify minified files
+            $bMinify = !preg_match('/[\.-]min.(js|css)$/i', $aFile['path']) && $this->{'_b' . $sUpcaseType . 'Minify'}; // don't minify minified files
+            if($bMinify)
                 $sContent = $this->$sMethodMinify($sContent);
-            
+
+            $iLines = substr_count($sContent, "\n");
+            if($sType == 'js' && $sContent !== '')
+                $aSections[] = array(
+                    'file' => $aFile,
+                    'line' => $iLine,
+                    'lines' => $iLines,
+                    'exact' => !$bMinify && strncmp($sContent, "\n/*--- BEGIN:", 13) === 0,
+                );
+
             $sResult .= $sContent;
+            $iLine += $iLines;
+        }
+
+        //--- The JS bundle gets a source map next to it (see _getSourceMapJs), served through the same loader ---//
+        if($sType == 'js' && !empty($sResult) && ($sMap = $this->_getSourceMapJs($sName, $aSections)) !== '') {
+            $sMapAbsolutePath = $this->_sCachePublicFolderPath . $sName . '.js.map';
+            if(($rHandler = fopen($sMapAbsolutePath, 'w')) !== false) {
+                fwrite($rHandler, $sMap);
+                fclose($rHandler);
+                @chmod($sMapAbsolutePath, BX_DOL_FILE_RIGHTS);
+
+                $sResult .= "\n//# sourceMappingURL=" . $this->_getLoaderUrl('js.map', $sName) . "\n";
+            }
         }
 
         $mixedWriteResult = false;
@@ -3570,6 +3595,86 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
         }
 
         return false;
+    }
+
+    /**
+     * Source map for a compiled JS bundle, at file level: every line of the bundle points at the file it came from.
+     * A file that went into the bundle as it is (already minified, or minification off) maps line by line; a file
+     * minified here maps to its first line, because the PHP minifier emits no mappings. Sources are embedded, so
+     * DevTools and Lighthouse need nothing but the map.
+     *
+     * @param  string $sName     bundle name without extension.
+     * @param  array  $aSections one entry per bundled file: 'file' (url, path), 'line' (first line in the bundle), 'lines', 'exact'.
+     * @return string JSON source map, or an empty string when there is nothing to map.
+     */
+    protected function _getSourceMapJs($sName, $aSections)
+    {
+        $aSources = $aContents = $aLines = array();
+        foreach($aSections as $aSection) {
+            $sPath = $aSection['file']['path'];
+            $bExternal = strpos($sPath, 'http://') !== false || strpos($sPath, 'https://') !== false;
+            $sContent = $bExternal ? bx_file_get_contents($sPath) : @file_get_contents($sPath);
+
+            $iSource = count($aSources);
+            $aSources[] = $aSection['file']['url'];
+            $aContents[] = is_string($sContent) ? str_replace(array("\r\n", "\r"), "\n", $sContent) : '';
+
+            for($i = 0; $i < $aSection['lines']; $i++) {
+                if(!$aSection['exact'])
+                    $aLines[$aSection['line'] + $i] = array($iSource, 0);
+                else if($i >= 2 && $i < $aSection['lines'] - 1) // the BEGIN and END markers around the file are not in the source
+                    $aLines[$aSection['line'] + $i] = array($iSource, $i - 2);
+            }
+        }
+
+        if(empty($aLines))
+            return '';
+
+        $aMappings = array();
+        $iPrevSource = $iPrevLine = 0;
+        for($i = 0, $iLines = max(array_keys($aLines)) + 1; $i < $iLines; $i++) {
+            if(!isset($aLines[$i])) {
+                $aMappings[] = '';
+                continue;
+            }
+
+            list($iSource, $iLine) = $aLines[$i];
+            $aMappings[] = $this->_encodeVlq(0) . $this->_encodeVlq($iSource - $iPrevSource) . $this->_encodeVlq($iLine - $iPrevLine) . $this->_encodeVlq(0);
+            $iPrevSource = $iSource;
+            $iPrevLine = $iLine;
+        }
+
+        $sMap = json_encode(array(
+            'version' => 3,
+            'file' => $sName . '.js',
+            'sources' => $aSources,
+            'sourcesContent' => $aContents,
+            'names' => array(),
+            'mappings' => implode(';', $aMappings),
+        ), JSON_UNESCAPED_SLASHES | JSON_INVALID_UTF8_SUBSTITUTE);
+
+        return is_string($sMap) ? $sMap : '';
+    }
+
+    /**
+     * Base64 VLQ, the number encoding of source map mappings.
+     */
+    protected function _encodeVlq($iValue)
+    {
+        $sChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+
+        $iVlq = $iValue < 0 ? ((-$iValue) << 1) | 1 : $iValue << 1;
+        $sResult = '';
+        do {
+            $iDigit = $iVlq & 31;
+            $iVlq >>= 5;
+            if($iVlq > 0)
+                $iDigit |= 32;
+
+            $sResult .= $sChars[$iDigit];
+        } while($iVlq > 0);
+
+        return $sResult;
     }
 
     /**

@@ -36,14 +36,15 @@ class BxBaseStudioRoles extends BxDolStudioRoles
 
         $aMenu = array();
         $aMenuItems = array(
-            BX_DOL_STUDIO_RL_TYPE_LEVELS => array('icon' => 'sliders-h'),
-            BX_DOL_STUDIO_RL_TYPE_ACTIONS => array('icon' => 'exchange-alt')
+            BX_DOL_STUDIO_RL_TYPE_LEVELS => array('icon' => 'mi-rls-levels.svg'),
+            BX_DOL_STUDIO_RL_TYPE_ACTIONS => array('icon' => 'mi-rls-actions.svg')
         );
 
         foreach($aMenuItems as $sMenuItem => $aItem)
             $aMenu[] = array(
                 'name' => $sMenuItem,
                 'icon' => $aItem['icon'],
+                'icon_bg' => true,
                 'link' => $this->sSubpageUrl . $sMenuItem,
                 'title' => _t('_adm_lmi_cpt_' . $sMenuItem),
                 'selected' => $sMenuItem == $this->sPage

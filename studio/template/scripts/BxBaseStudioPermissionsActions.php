@@ -300,6 +300,7 @@ class BxBaseStudioPermissionsActions extends BxDolStudioPermissionsActions
             'name' => 'module',
             'attrs' => array(
                 'id' => 'bx-grid-module-' . $this->_sObject,
+                'aria-label' => _t('_adm_grid_lbl_module'),
                 'onChange' => 'javascript:$(this).off(\'keyup focusout\'); ' . $sJsObject . '.onChangeFilter()',
         		'onBlur' => 'javascript:' . $sJsObject . '.onChangeFilter()',
             ),
@@ -322,6 +323,7 @@ class BxBaseStudioPermissionsActions extends BxDolStudioPermissionsActions
             'name' => 'keyword',
             'attrs' => array(
                 'id' => 'bx-grid-search-' . $this->_sObject,
+                'aria-label' => _t('_adm_grid_lbl_search'),
                 'onKeyup' => 'javascript:$(this).off(\'keyup\'); ' . $this->getJsObject() . '.onChangeFilter()'
             )
         );

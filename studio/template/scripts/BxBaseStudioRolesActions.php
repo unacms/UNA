@@ -116,6 +116,7 @@ class BxBaseStudioRolesActions extends BxDolStudioRolesActions
             'name' => 'keyword',
             'attrs' => array(
                 'id' => 'bx-grid-search-' . $this->_sObject,
+                'aria-label' => _t('_adm_grid_lbl_search'),
                 'onKeyup' => 'javascript:$(this).off(\'keyup\'); ' . $this->getJsObject() . '.onChangeFilter()'
             )
         );

@@ -17,9 +17,12 @@ class BxTemplFormView extends BxBaseFormView
     public function genInputSwitcher(&$aInput)
     {
         $aCheckbox = array_merge($aInput, ['type' => 'checkbox']);
+        $bChecked = isset($aInput['checked']) && $aInput['checked'];
         return $this->oTemplate->parseHtmlByName('form_field_switcher.html', [
-            'class' => isset($aInput['checked']) && $aInput['checked'] ? 'on' : 'off',
-            'checkbox' => $this->genInputStandard($aCheckbox)
+            'class' => $bChecked ? 'on' : 'off',
+            'checked' => $bChecked ? 'true' : 'false', // the button's initial aria-checked; jquery.webForms.js keeps it in step
+            'checkbox' => $this->genInputStandard($aCheckbox),
+            'bx_if:show_label' => $this->genInputSwitcherLabel($aInput)
         ]);
     }
 }

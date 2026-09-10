@@ -167,6 +167,9 @@
                 if (o.fog)
                     _dolPopupLockScreen(true);
 
+                // a popup behind a fog is modal for assistive technology as well
+                $el.attr('aria-modal', o.fog ? 'true' : null);
+
                 // remove any transitions before setting popup position
                 $el.removeClass('bx-popup-transitions bx-popup-inactive'); 
 
@@ -370,7 +373,7 @@
             else if(typeof(o.onBeforeHide) == 'string')
             	eval(o.onBeforeHide);
 
-            $el.removeClass('bx-popup-active').addClass('bx-popup-inactive');
+            $el.removeClass('bx-popup-active').addClass('bx-popup-inactive').removeAttr('aria-modal');
 
             var onHide = null;
             if(typeof(o.onHide) == 'function')

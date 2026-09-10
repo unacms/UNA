@@ -427,6 +427,13 @@ body > .bx-popup-wrapper {
     transform: scale(0.75);
 }
 
+@media (prefers-reduced-motion: reduce) {
+    .bx-popup-inactive {
+        -webkit-transform: none;
+        transform: none;
+    }
+}
+
 .bx-popup-active {
     max-height:100%;
     overflow-y:auto;
@@ -799,6 +806,14 @@ svg .inner{
     animation: counter-clockwise 2s infinite linear;
     
 }
+/* The loading spinner stands still for people who asked for less motion; it is still a visible indicator. */
+@media (prefers-reduced-motion: reduce) {
+    svg .outer,
+    svg .inner {
+        -webkit-animation: none;
+        animation: none;
+    }
+}
 svg .colored .inner .p1 {
 	fill:#2AB191;
 }
@@ -851,9 +866,8 @@ svg .gray .outer .p2 {
 	border: none;
 }
 .bx-btn:active,
-.bx-btn:hover {	
-    background-color: #79bd9a;
-    text-decoration:none;
+.bx-btn:hover {
+    text-decoration:none; /* the plate colours come from tailwind.css; the old template's green hover fill is gone */
 }
 .bx-btn img {
     width:1.2rem;
@@ -949,6 +963,12 @@ svg .gray .outer .p2 {
 /* --------------- button at the end of cut string */
 
 .bx-str-limit {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.5rem; /* a 24px target next to the text it belongs to */
+    min-height: 1.5rem;
+    vertical-align: middle;
     cursor: pointer;
 }
 

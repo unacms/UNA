@@ -1,23 +1,38 @@
 <div id="bx-dbd-version">
-    <div class="bx-dbd-block-content bx-def-margin-bottom">
-        <div class="bx-dbd-version-image">
-            <img src="<bx_image_url:dbd_version.svg />" alt="" />
-        </div>
-        <div class="bx-dbd-version-info">
-            <div class="bx-dbd-vi-title bx-def-margin-sec-topbottom text-2xl font-semibold">__domain__ __version__</div>
-            <div class="bx-dbd-vi-info space-y-4">
-                <div class="bx-dbd-vii-row">
-                    <img class="bx-stg-icon-gray-bg ltr:mr-4 rtl:ml-4" src="<bx_image_url:bx-std-spacer.gif />" style="background-image: url('<bx_icon_url:db-vi-installed.svg />')" alt="" /><bx_text:_adm_dbd_txt_installed /><b class="ltr:pl-2 rtl:pr-2">__installed__</b>
-                </div>
-                <bx_if:show_update_info>
-                    <div class="bx-dbd-vii-row"><img class="bx-stg-icon-gray-bg ltr:mr-4 rtl:ml-4" src="<bx_image_url:bx-std-spacer.gif />" style="background-image: url('<bx_icon_url:db-vi-updated.svg />')" alt="" /><bx_text:_adm_dbd_txt_updated /><b class="ltr:pl-2 rtl:pr-2">__updated__</b></div>
-                </bx_if:show_update_info>
-                <div class="bx-dbd-vii-row bx-dbd-version-available" style="display:none"><img class="bx-stg-icon-gray-bg ltr:mr-4 rtl:ml-4" src="<bx_image_url:bx-std-spacer.gif />" style="background-image: url('<bx_icon_url:db-vi-available.svg />')" alt="" /><bx_text:_adm_dbd_txt_available /><b class="ltr:pl-2 rtl:pr-2"></b></div>
+    <div class="bx-dbd-hero bx-dbd-version-head">
+        <div class="bx-dbd-version-id">
+            <span class="bx-dbd-tile bx-dbd-tile-app bx-dbd-tile-lg" aria-hidden="true"><img src="<bx_image_url:dbd_version.svg />" alt=""></span>
+            <div class="bx-dbd-vi-text">
+                <div class="bx-dbd-vi-title">__domain__ __version__</div>
+                <div class="bx-dbd-vi-time">__version_time__</div>
             </div>
         </div>
+        <!-- the check also runs when the page opens (below); this button repeats it on demand -->
+        <button type="button" class="bx-btn bx-dbd-version-check" onclick="__js_object__.checkForUpgrade()"><bx_text:_adm_dbd_txt_ver_check /></button>
     </div>
-    <div class="bx-dbd-block-actions" style="display:none">
-        <a class="bx-btn bx-btn-primary" href="javascript:void(0)" onclick="javascript:__js_object__.performUpgrade()"><bx_text:_adm_dbd_btn_update /></a>
+    <div class="bx-dbd-version-toggles">
+        <bx_repeat:toggles>
+            <div class="bx-dbd-version-toggle">
+                <span class="bx-dbd-tile" aria-hidden="true">__icon__</span>
+                <span id="bx-dbd-vt-__name__" class="bx-dbd-version-toggle-name">__title__</span>
+                <div class="bx-switcher-cont __state__ relative">
+                    <button type="button" class="relative inline-flex flex-shrink-0 h-6 w-11 ring-1 ring-gray-300 dark:ring-gray-700 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" role="switch" aria-checked="__checked__" aria-labelledby="bx-dbd-vt-__name__">
+                        <span aria-hidden="true" class="inline-block h-5 w-5 rounded-full shadow transform ring-0 transition ease-in-out duration-200 pointer-events-none"></span>
+                    </button>
+                    <!-- the site's switch script flips this checkbox and the on/off classes on click; the change saves the option -->
+                    <input type="checkbox" id="bx-dbd-vt-input-__name__" name="__name__" aria-labelledby="bx-dbd-vt-__name__" style="display:none" __checked_attr__ onchange="__js_object__.toggleOption('__name__', this)">
+                </div>
+            </div>
+        </bx_repeat:toggles>
+    </div>
+    <div class="bx-dbd-htools-items">
+        <div class="bx-dbd-htools-item"><span class="bx-dbd-tile" aria-hidden="true">__icon_installed__</span><span class="bx-dbd-htools-name"><bx_text:_adm_dbd_txt_ver_installed /></span><b class="bx-dbd-htools-value">__installed__</b></div>
+        <div class="bx-dbd-htools-item"><span class="bx-dbd-tile" aria-hidden="true">__icon_updated__</span><span class="bx-dbd-htools-name"><bx_text:_adm_dbd_txt_ver_updated /></span><b class="bx-dbd-htools-value">__updated__</b></div>
+        <div id="bx-dbd-version-stable" class="bx-dbd-htools-item bx-dbd-htools-item-undef"><span class="bx-dbd-tile" aria-hidden="true">__icon_stable__</span><span class="bx-dbd-htools-name"><bx_text:_adm_dbd_txt_ver_latest_stable /><span class="bx-dbd-htools-status sr-only"></span></span><b class="bx-dbd-htools-value">__checking__</b><span class="bx-dbd-htools-dot" aria-hidden="true"></span></div>
+        <div id="bx-dbd-version-beta" class="bx-dbd-htools-item bx-dbd-htools-item-undef"><span class="bx-dbd-tile" aria-hidden="true">__icon_beta__</span><span class="bx-dbd-htools-name"><bx_text:_adm_dbd_txt_ver_latest_beta /><span class="bx-dbd-htools-status sr-only"></span></span><b class="bx-dbd-htools-value">__checking__</b><span class="bx-dbd-htools-dot" aria-hidden="true"></span></div>
+        <div id="bx-dbd-version-apps" class="bx-dbd-htools-item bx-dbd-htools-item-undef"><span class="bx-dbd-tile" aria-hidden="true">__icon_apps__</span><span class="bx-dbd-htools-name">__apps__<span class="bx-dbd-htools-status sr-only"></span></span><b class="bx-dbd-htools-value">__checking__</b><span class="bx-dbd-htools-dot" aria-hidden="true"></span></div>
+        <!-- Access to automatic updates: a status row when the site has it, otherwise the plan page as a primary button -->
+        <div class="bx-dbd-htools-item__access_class__"><span class="bx-dbd-tile" aria-hidden="true">__icon_access__</span><span class="bx-dbd-htools-name"><bx_text:_adm_dbd_txt_ver_access /></span><bx_if:access_active><b class="bx-dbd-htools-value"><bx_text:_adm_dbd_txt_ver_access_active /></b><span class="bx-dbd-htools-dot" aria-hidden="true"></span></bx_if:access_active><bx_if:access_inactive><a class="bx-btn bx-btn-primary bx-dbd-version-activate" href="__access_url__" target="_blank" rel="noopener"><bx_text:_adm_dbd_btn_ver_access_activate /></a></bx_if:access_inactive></div>
     </div>
     <script language="javascript">
         $(document).ready(function() {

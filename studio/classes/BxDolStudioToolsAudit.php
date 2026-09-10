@@ -18,6 +18,7 @@ class BxDolStudioToolsAudit extends BxDol
     protected $aType2Title;
 
     protected $sMinPhpVer;
+    protected $sLatestPhpVersion = null;
     protected $aPhpSettings;
     protected $iPhpErrorReporting;
 
@@ -89,7 +90,14 @@ class BxDolStudioToolsAudit extends BxDol
         $this->aRequiredApacheModules = array (
             'rewrite_module' => 'mod_rewrite',
         );
+    }
 
+    /**
+     * The links in the report (send a test email, phpinfo) come back to the page that shows it with ?action=...: answer
+     * them here and stop, so the page rendering them calls this before it renders anything.
+     */
+    public function processRequest()
+    {
         if (isset($_GET['action'])) {
             $sOutput = null;
             switch ($_GET['action']) {
@@ -247,9 +255,13 @@ class BxDolStudioToolsAudit extends BxDol
 
     protected function requirementsPHP($bEcho = true, &$aOutputMessages = null)
     {
-        $sHttpCode = null; 
-        $s = bx_file_get_contents('http://php.net/releases/index.php?serialize=1', array(), 'get', array(), $sHttpCode, array(), 20, array(CURLOPT_IPRESOLVE => CURL_IPRESOLVE_V4));
-        $sLatestPhpVersion = $s && ($a = unserialize($s)) ? $a[5]['version'] : '';
+        // php.net is asked once per audit, however many sections need the latest version
+        if($this->sLatestPhpVersion === null) {
+            $sHttpCode = null;
+            $s = bx_file_get_contents('http://php.net/releases/index.php?serialize=1', array(), 'get', array(), $sHttpCode, array(), 20, array(CURLOPT_IPRESOLVE => CURL_IPRESOLVE_V4));
+            $this->sLatestPhpVersion = $s && ($a = unserialize($s)) ? $a[5]['version'] : '';
+        }
+        $sLatestPhpVersion = $this->sLatestPhpVersion;
 
         if (version_compare(phpversion(), "5.4", ">=") == 1)
             unset($this->aPhpSettings['short_open_tag']);
@@ -299,11 +311,11 @@ class BxDolStudioToolsAudit extends BxDol
         if (preg_match ('/^(\d+)\.(\d+)\.(\d+)/', $sMysqlVer, $m)) {
             $sMysqlVer = "{$m[1]}.{$m[2]}.{$m[3]}";
             if (version_compare($sMysqlVer, $this->sMinMysqlVer, '<'))
-                $aMessage = array('type' => BX_DOL_AUDIT_FAIL, 'msg' => _t('_sys_audit_msg_version_is_incompatible', $this->sMinMysqlVer));
+                $aMessage = array('type' => BX_DOL_AUDIT_FAIL, 'msg' => _t('_sys_audit_msg_version_is_incompatible', $this->sMinMysqlVer), 'params' => array('real_val' => $sMysqlVer));
             else
-                $aMessage = array('type' => BX_DOL_AUDIT_OK);
+                $aMessage = array('type' => BX_DOL_AUDIT_OK, 'params' => array('real_val' => $sMysqlVer));
         } else {
-            $aMessage = array('type' => BX_DOL_AUDIT_UNDEF, 'msg' => _t('_sys_audit_msg_value_checking_failed'));
+            $aMessage = array('type' => BX_DOL_AUDIT_UNDEF, 'msg' => _t('_sys_audit_msg_value_checking_failed'), 'params' => array('real_val' => $sMysqlVer));
         }
 
         if (null !== $aOutputMessages)
@@ -335,163 +347,35 @@ class BxDolStudioToolsAudit extends BxDol
 
     protected function requirementsOS()
     {
-        $s = $this->getBlock(php_uname());
-        echo $this->getSection(_t('_sys_audit_section_os'), '', $s);
+        echo $this->getSection(_t('_sys_audit_section_os'), '', $this->rowsToBlocks($this->getRowsOs()));
     }
 
     protected function requirementsHardware()
     {
-        $s = $this->getBlock(_t('_sys_audit_msg_hardware_requirements'));
-        echo $this->getSection(_t('_sys_audit_section_hardware'), '', $s);
+        echo $this->getSection(_t('_sys_audit_section_hardware'), '', $this->rowsToBlocks($this->getRowsHardware()));
     }
 
     protected function siteSetup()
     {
-        $sFfmpegPath = defined('BX_SYSTEM_FFMPEG') ? BX_SYSTEM_FFMPEG : BX_DIRECTORY_PATH_PLUGINS . 'ffmpeg/ffmpeg.exe';
-
-        $sEmailToCkeckMailSending = class_exists('BxDolDb') && BxDolDb::getInstance() ? BxDolDb::getInstance()->getParam('site_email') : '';
-
-        $oUpgrader = new BxDolUpgrader();
-        if (!($sLatestVer = $oUpgrader->getLatestVersionNumber()))
-            $sLatestVer = 'undefined';
-
-        $sVer = bx_get_ver();
-        $aMessage = array('type' => BX_DOL_AUDIT_OK);
-        if (!version_compare($sVer, $sLatestVer, '>='))
-            $aMessage = array('type' => BX_DOL_AUDIT_WARN, 'msg' => _t('_sys_audit_msg_version_is_outdated', $sLatestVer));
-
-        $s = $this->getBlock(_t('_sys_audit_version_script'), $sVer, $this->getMsgHTML(_t('_sys_audit_version_script'), $aMessage));
-
-        $s .= $this->getBlock(_t('_sys_audit_permissions'), '', _t('_sys_audit_msg_permissions'));
-
-        $s .= $this->getBlock('ffmpeg', '', _t('_sys_audit_msg_ffmpeg', shell_exec("{$sFfmpegPath} 2>&1")));
-
-        $s .= $this->getBlock(_t('_sys_audit_mail_sending'), '', _t('_sys_audit_msg_mail_sending'));
-
-        $s .= $this->getBlock(_t('_sys_audit_cron_jobs'), '', _t('_sys_audit_msg_cron_jobs', shell_exec("crontab -l 2>&1")));
-
-        $iCronTime = getParam('sys_cron_time');
-        $s .= $this->getBlock(_t('_sys_audit_cron_jobs_exec_time'), '', !empty($iCronTime) ? bx_time_js($iCronTime, BX_FORMAT_DATE_TIME, true) : _t('_None'));
-
         echo '<h1>' . _t('_sys_audit_header_site_setup') . '</h1>';
-        echo "<ul>$s</ul>";
+        echo '<ul>' . $this->rowsToBlocks($this->getRowsSiteSetup()) . '</ul>';
     }
 
     protected function optimization()
     {
         echo '<h1>' . _t('_sys_audit_header_site_optimization') . '</h1>';
 
-        $this->optimizationPhp();
+        echo $this->getSection('PHP', '', $this->rowsToBlocks($this->getRowsOptimizationPhp()));
 
         if (!defined('BX_DOL_INSTALL'))
-            $this->optimizationMySQL();
+            echo $this->getSection('MySQL', '', $this->rowsToBlocks($this->getRowsOptimizationMysql()));
 
-        $this->optimizationWebServer();
+        echo $this->getSection(_t('_sys_audit_section_webserver'), '', $this->rowsToBlocks($this->getRowsOptimizationWebServer()));
 
-        if (!defined('BX_DOL_INSTALL'))
-            $this->optimizationScript();
-
-        if (!defined('BX_DOL_INSTALL'))
-            $this->optimizationCache();
-    }
-
-    protected function optimizationPhp()
-    {
-        $s = '';
-        $aMessage = array();
-
-        $sAccel = $this->getPhpAccelerator();
-        if (!$sAccel)
-            $aMessage = array('type' => BX_DOL_AUDIT_WARN, 'msg' => _t('_sys_audit_msg_php_accelerator_missing'));
-        else
-            $aMessage = array('type' => BX_DOL_AUDIT_OK);
-        $s .= $this->getBlock(_t('_sys_audit_php_accelerator'), $sAccel, $this->getMsgHTML(_t('_sys_audit_php_accelerator'), $aMessage));
-
-        $sSapi = php_sapi_name();
-        if (0 === strcasecmp('cgi', $sSapi))
-            $aMessage = array('type' => BX_DOL_AUDIT_WARN, 'msg' => _t('_sys_audit_msg_php_setup_inefficient'));
-        else
-            $aMessage = array('type' => BX_DOL_AUDIT_OK);
-        $s .= $this->getBlock(_t('_sys_audit_php_setup'), $sSapi, $this->getMsgHTML(_t('_sys_audit_php_setup'), $aMessage));
-
-        echo $this->getSection('PHP', '', $s);
-    }
-
-    protected function optimizationMySQL()
-    {
-        $s = '';
-        $oDb = BxDolDb::getInstance();
-
-        foreach ($this->aMysqlOptimizationSettings as $sName => $r) {
-            $a = $this->checkMysqlSetting($sName, $r, $oDb);
-            $aMessage = array('type' => BX_DOL_AUDIT_OK);
-            if (!$a['res'])
-                $aMessage = array('type' => BX_DOL_AUDIT_FAIL, 'msg' => _t('_sys_audit_msg_must_be', $r['op'], $this->format_output($r['val'], $r)));
-            $s .= $this->getBlock($sName, $this->format_output($a['real_val'], $r), $this->getMsgHTML($sName, $aMessage));
+        if (!defined('BX_DOL_INSTALL')) {
+            echo $this->getSection('UNA', '', $this->rowsToBlocks($this->getRowsOptimizationScript()));
+            echo $this->getSection(_t('_sys_audit_section_cache_engines'), '', $this->rowsToBlocks($this->getRowsOptimizationCache()));
         }
-
-        echo $this->getSection('MySQL', '', $s);
-    }
-
-    protected function optimizationWebServer()
-    {
-        $s = '';
-
-        $sName = 'expires_module';
-        $sApacheModuleChack = _t('_sys_audit_msg_optimization_apache_module', $sName, $this->getMsgHTML($sName, $this->checkApacheModule($sName)));
-        $s .= $this->getBlock(_t('_sys_audit_userside_caching'), '', _t('_sys_audit_msg_userside_caching', $this->getUrlForGooglePageSpeed('LeverageBrowserCaching'), $sApacheModuleChack));
-
-        $sName = 'deflate_module';
-        $sApacheModuleChack = _t('_sys_audit_msg_optimization_apache_module', $sName, $this->getMsgHTML($sName, $this->checkApacheModule($sName)));
-        $s .= $this->getBlock(_t('_sys_audit_serverside_compression'), '', _t('_sys_audit_msg_serverside_compression', $sApacheModuleChack));
-
-        echo $this->getSection(_t('_sys_audit_section_webserver'), '', $s);
-    }
-
-    protected function optimizationScript()
-    {
-        $s = '';
-        foreach ($this->aOptimizationSettings as $sName => $a) {
-
-            $sVal = ('always_on' == $a['enabled'] || getParam($a['enabled'])) ? 'On' : 'Off';
-            if ($a['cache_engine'])
-                $sVal .= _t('_sys_audit_msg_x_based_cache_engine', getParam($a['cache_engine']));
-
-            if ('always_on' != $a['enabled'] && !getParam($a['enabled']))
-                $aMessage = array('type' => BX_DOL_AUDIT_FAIL, 'msg' => _t('_sys_audit_msg_optimization_fail'));
-            elseif ($a['check_accel'] && !$this->getPhpAccelerator() && 'File' == getParam($a['cache_engine']))
-                $aMessage = array('type' => BX_DOL_AUDIT_WARN, 'msg' => _t('_sys_audit_msg_optimization_warn'));
-            else
-                $aMessage = array('type' => BX_DOL_AUDIT_OK);
-
-            $s .= $this->getBlock($sName, $sVal, $this->getMsgHTML($sName, $aMessage));
-        }
-
-        echo $this->getSection('UNA', '', $s);
-    }
-
-    protected function optimizationCache()
-    {
-        $a = explode(',', 'File,APC,Memcache,Memcached,Redis');
-        $s = '';
-        foreach ($a as $sName) {
-
-            $sClass = 'BxDolCache' . $sName;
-            if (class_exists($sClass))
-                $o = new $sClass();
-
-            if ($o && $o->isInstalled() && $o->isAvailable()) {
-                $val = true;
-                $aMessage = array('type' => BX_DOL_AUDIT_OK);
-            } else {
-                $val = false;
-                $aMessage = array('type' => BX_DOL_AUDIT_FAIL);
-            }
-
-            $s .= $this->getBlock($sName, $this->format_output($val, ['type' => 'bool' ]), $this->getMsgHTML($sName, $aMessage));
-        }
-
-        echo $this->getSection('Cache engines', '', $s);
     }
 
     protected function manualCheck()
@@ -499,6 +383,312 @@ class BxDolStudioToolsAudit extends BxDol
         echo '<a name="manual_audit"></a>';
         echo '<h1>' . _t('_sys_audit_header_manual_audit') . '</h1>';
         echo _t('_sys_audit_msg_manual_audit');
+    }
+
+    /**
+     * The whole audit as data, for the Studio Dashboard (which stores it as the last audit): when it ran and eight sections,
+     * each with a name, title, Lucide icon, headline value (a version; '' when the section is a plain check-list) and rows.
+     * A row is name, value, type (BX_DOL_AUDIT_*) and msg, a short note that may carry HTML.
+     */
+    public function getReport()
+    {
+        $this->setErrorReporting();
+
+        $aRowsMysql = $this->getRowsMysql();
+        $aRowCron = $this->getRowCron();
+
+        $aSections = array(
+            array('name' => 'php', 'title' => 'PHP', 'icon' => 'code', 'value' => PHP_VERSION, 'rows' => array_merge($this->getRowsPhp(), $this->getRowsPhpExtensions(), $this->getRowsOptimizationPhp())),
+            array('name' => 'database', 'title' => _t('_adm_dbd_txt_su_database'), 'icon' => 'database', 'value' => $aRowsMysql[0]['value'], 'rows' => array_merge($aRowsMysql, $this->getRowsOptimizationMysql())),
+            array('name' => 'webserver', 'title' => _t('_sys_audit_section_webserver'), 'icon' => 'globe', 'value' => isset($_SERVER['SERVER_SOFTWARE']) ? $_SERVER['SERVER_SOFTWARE'] : '', 'rows' => array_merge($this->getRowsWebServer(), $this->getRowsOptimizationWebServer())),
+            array('name' => 'system', 'title' => _t('_adm_dbd_txt_ht_system'), 'icon' => 'cpu', 'value' => php_uname('s'), 'rows' => array_merge($this->getRowsOs(), $this->getRowsHardware())),
+            array('name' => 'permissions', 'title' => _t('_adm_dbd_txt_ht_permissions'), 'icon' => 'folder-lock', 'value' => '', 'rows' => $this->getRowsPermissions()),
+            array('name' => 'security', 'title' => _t('_adm_dbd_txt_ht_security'), 'icon' => 'shield-check', 'value' => '', 'rows' => $this->getRowsSecurity()),
+            array('name' => 'cron', 'title' => _t('_sys_audit_cron_jobs'), 'icon' => 'clock', 'value' => $aRowCron['value'], 'rows' => array($aRowCron)),
+            array('name' => 'services', 'title' => _t('_adm_dbd_txt_ht_services'), 'icon' => 'plug', 'value' => '', 'rows' => array($this->getRowFfmpeg(), $this->getRowMail())),
+            array('name' => 'caching', 'title' => _t('_adm_dbd_txt_ht_caching'), 'icon' => 'layers', 'value' => '', 'rows' => array_merge($this->getRowsOptimizationScript(), $this->getRowsOptimizationCache())),
+        );
+
+        $this->restoreErrorReporting();
+
+        return array('time' => time(), 'sections' => $aSections);
+    }
+
+    protected function getRow($sName, $sValue, $sType, $sMsg = '')
+    {
+        return array('name' => $sName, 'value' => (string)$sValue, 'type' => $sType, 'msg' => (string)$sMsg);
+    }
+
+    protected function rowsToBlocks($aRows)
+    {
+        $s = '';
+        foreach ($aRows as $aRow)
+            $s .= $this->getBlock($aRow['name'], $aRow['value'], $this->getMsgHTML($aRow['name'], $aRow));
+        return $s;
+    }
+
+    /**
+     * PHP version and ini settings (extensions are listed separately).
+     */
+    protected function getRowsPhp()
+    {
+        return $this->getRowsFromPhpMessages(false);
+    }
+
+    protected function getRowsPhpExtensions()
+    {
+        return $this->getRowsFromPhpMessages(true);
+    }
+
+    protected function getRowsFromPhpMessages($bExtensions)
+    {
+        $aMessages = array();
+        $this->requirementsPHP(false, $aMessages);
+
+        $aRows = array();
+        foreach ($aMessages as $sName => $r) {
+            $aSetting = isset($this->aPhpSettings[$sName]) ? $this->aPhpSettings[$sName] : array();
+            $bExtension = !empty($aSetting['op']) && $aSetting['op'] === 'module';
+            if ($bExtension != $bExtensions)
+                continue;
+
+            $aRows[] = $this->getRow(
+                $bExtension ? $aSetting['val'] : $sName,
+                $bExtension ? '' : $this->format_output($r['params']['real_val'], $aSetting),
+                $r['type'],
+                isset($r['msg']) ? $r['msg'] : ''
+            );
+        }
+        return $aRows;
+    }
+
+    protected function getRowsMysql()
+    {
+        $aMessages = array();
+        $this->requirementsMySQL(false, $aMessages);
+        $r = $aMessages['mysql'][0];
+
+        return array($this->getRow(_t('_sys_audit_version'), $r['params']['real_val'], $r['type'], isset($r['msg']) ? $r['msg'] : ''));
+    }
+
+    protected function getRowsWebServer()
+    {
+        $aMessages = array();
+        $this->requirementsWebServer(false, $aMessages);
+
+        $aRows = array();
+        foreach ($aMessages as $sName => $r)
+            $aRows[] = $this->getRow($sName, '', $r['type'], isset($r['msg']) ? $r['msg'] : '');
+        return $aRows;
+    }
+
+    protected function getRowsOs()
+    {
+        return array($this->getRow(php_uname('s'), trim(php_uname('r') . ' ' . php_uname('m')), BX_DOL_AUDIT_OK));
+    }
+
+    protected function getRowsHardware()
+    {
+        return array($this->getRow(_t('_sys_audit_section_hardware'), '', BX_DOL_AUDIT_UNDEF, _t('_sys_audit_msg_hardware_requirements')));
+    }
+
+    protected function getRowsSiteSetup()
+    {
+        $aRows = array();
+
+        $oUpgrader = new BxDolUpgrader();
+        if (!($sLatestVer = $oUpgrader->getLatestVersionNumber()))
+            $sLatestVer = 'undefined';
+        $sVer = bx_get_ver();
+        if (version_compare($sVer, $sLatestVer, '>='))
+            $aRows[] = $this->getRow(_t('_sys_audit_version_script'), $sVer, BX_DOL_AUDIT_OK);
+        else
+            $aRows[] = $this->getRow(_t('_sys_audit_version_script'), $sVer, BX_DOL_AUDIT_WARN, _t('_sys_audit_msg_version_is_outdated', $sLatestVer));
+
+        $aRows[] = $this->getRowPermissions();
+        $aRows[] = $this->getRowFfmpeg();
+        $aRows[] = $this->getRowMail();
+        $aRows[] = $this->getRowCron();
+
+        return $aRows;
+    }
+
+    /**
+     * Security: the hardening a live site should have. Every miss is a warning, since the site works without it.
+     */
+    protected function getRowsSecurity()
+    {
+        $aRows = array();
+
+        $bHttps = strncasecmp(BX_DOL_URL_ROOT, 'https://', 8) === 0;
+        $aRows[] = $this->getRow(_t('_sys_audit_https'), $bHttps ? 'https' : 'http', $bHttps ? BX_DOL_AUDIT_OK : BX_DOL_AUDIT_WARN, $bHttps ? '' : _t('_sys_audit_msg_https'));
+
+        $bInstallDir = file_exists(BX_DIRECTORY_PATH_ROOT . 'install');
+        $aRows[] = $this->getRow(_t('_sys_audit_install_dir'), _t($bInstallDir ? '_sys_audit_present' : '_sys_audit_removed'), $bInstallDir ? BX_DOL_AUDIT_WARN : BX_DOL_AUDIT_OK, $bInstallDir ? _t('_sys_audit_msg_install_dir') : '');
+
+        // display_errors also accepts stdout/stderr, which filter_var would read as off
+        foreach (array('display_errors' => '_sys_audit_display_errors', 'expose_php' => '_sys_audit_expose_php') as $sSetting => $sTitle) {
+            $sValue = strtolower(trim((string)ini_get($sSetting)));
+            $bOn = filter_var($sValue, FILTER_VALIDATE_BOOLEAN) || in_array($sValue, array('stdout', 'stderr'));
+            $aRows[] = $this->getRow(_t($sTitle), _t($bOn ? '_sys_audit_on' : '_sys_audit_off'), $bOn ? BX_DOL_AUDIT_WARN : BX_DOL_AUDIT_OK, $bOn ? _t('_sys_audit_msg_' . $sSetting) : '');
+        }
+
+        // the configuration file holds the database password: nobody but the owner should be able to write it
+        $iMode = @fileperms(BX_DIRECTORY_PATH_ROOT . 'inc/header.inc.php');
+        if ($iMode === false)
+            $aRows[] = $this->getRow(_t('_sys_audit_config_file'), '', BX_DOL_AUDIT_UNDEF, _t('_sys_audit_msg_value_checking_failed'));
+        else {
+            $bOwnerOnly = ($iMode & 0022) == 0;
+            $aRows[] = $this->getRow(_t('_sys_audit_config_file'), sprintf('%04o', $iMode & 0777), $bOwnerOnly ? BX_DOL_AUDIT_OK : BX_DOL_AUDIT_WARN, $bOwnerOnly ? '' : _t('_sys_audit_msg_config_file'));
+        }
+
+        return $aRows;
+    }
+
+    /**
+     * Single checks that the Studio Dashboard's Status tab shows on their own as well.
+     */
+    public function getRowPermissions()
+    {
+        $sType = BX_DOL_AUDIT_UNDEF;
+        if (class_exists('BxDolStudioTools')) {
+            $oTools = new BxDolStudioTools();
+            $sType = $oTools->checkPermissions(false, false) ? BX_DOL_AUDIT_OK : BX_DOL_AUDIT_FAIL;
+        }
+        return $this->getRow(_t('_sys_audit_permissions'), '', $sType, $sType == BX_DOL_AUDIT_OK ? '' : _t('_sys_audit_msg_permissions'));
+    }
+
+    public function getRowFfmpeg()
+    {
+        $sFfmpegPath = defined('BX_SYSTEM_FFMPEG') ? BX_SYSTEM_FFMPEG : BX_DIRECTORY_PATH_PLUGINS . 'ffmpeg/ffmpeg.exe';
+        $sFfmpegOut = (string)@shell_exec(escapeshellarg($sFfmpegPath) . ' -version 2>&1');
+        if (preg_match('/ffmpeg version (\S+)/', $sFfmpegOut, $m))
+            return $this->getRow('ffmpeg', $m[1], BX_DOL_AUDIT_OK);
+
+        return $this->getRow('ffmpeg', '', BX_DOL_AUDIT_WARN, _t('_sys_audit_msg_ffmpeg', $sFfmpegPath));
+    }
+
+    public function getRowCron()
+    {
+        $iCronTime = (int)getParam('sys_cron_time');
+        if ($iCronTime && time() - $iCronTime < 3600)
+            return $this->getRow(_t('_sys_audit_cron_jobs'), bx_time_js($iCronTime, BX_FORMAT_DATE_TIME), BX_DOL_AUDIT_OK);
+
+        return $this->getRow(_t('_sys_audit_cron_jobs'), $iCronTime ? bx_time_js($iCronTime, BX_FORMAT_DATE_TIME) : _t('_None'), BX_DOL_AUDIT_WARN, _t('_sys_audit_msg_cron_jobs'));
+    }
+
+    /**
+     * Email delivery cannot be checked automatically: the row carries the "send a test email" link.
+     */
+    public function getRowMail()
+    {
+        return $this->getRow(_t('_sys_audit_mail_sending'), '', BX_DOL_AUDIT_UNDEF, _t('_sys_audit_msg_mail_sending'));
+    }
+
+    /**
+     * A row per checked path (BxDolStudioTools): its current state as the value, the desired one as the note when it fails.
+     */
+    protected function getRowsPermissions()
+    {
+        if (!class_exists('BxDolStudioTools'))
+            return array($this->getRowPermissions());
+
+        $oTools = new BxDolStudioTools();
+
+        $aRows = array();
+        foreach ($oTools->getPermissionsReport() as $aPerm)
+            $aRows[] = $this->getRow($aPerm['path'], $aPerm['current'], $aPerm['ok'] ? BX_DOL_AUDIT_OK : BX_DOL_AUDIT_FAIL, $aPerm['ok'] ? '' : _t('_adm_admtools_Desired_level') . ': ' . $aPerm['desired']);
+        return $aRows;
+    }
+
+    public function getRowPhpAccelerator()
+    {
+        $sAccel = $this->getPhpAccelerator();
+        if ($sAccel)
+            return $this->getRow(_t('_sys_audit_php_accelerator'), $sAccel, BX_DOL_AUDIT_OK);
+
+        return $this->getRow(_t('_sys_audit_php_accelerator'), '', BX_DOL_AUDIT_WARN, _t('_sys_audit_msg_php_accelerator_missing'));
+    }
+
+    protected function getRowsOptimizationPhp()
+    {
+        $aRows = array();
+
+        $aRows[] = $this->getRowPhpAccelerator();
+
+        $sSapi = php_sapi_name();
+        if (0 === strcasecmp('cgi', $sSapi))
+            $aRows[] = $this->getRow(_t('_sys_audit_php_setup'), $sSapi, BX_DOL_AUDIT_WARN, _t('_sys_audit_msg_php_setup_inefficient'));
+        else
+            $aRows[] = $this->getRow(_t('_sys_audit_php_setup'), $sSapi, BX_DOL_AUDIT_OK);
+
+        return $aRows;
+    }
+
+    protected function getRowsOptimizationMysql()
+    {
+        $aRows = array();
+        $oDb = BxDolDb::getInstance();
+        foreach ($this->aMysqlOptimizationSettings as $sName => $r) {
+            $a = $this->checkMysqlSetting($sName, $r, $oDb);
+            if ($a['res'])
+                $aRows[] = $this->getRow($sName, $this->format_output($a['real_val'], $r), BX_DOL_AUDIT_OK);
+            else
+                $aRows[] = $this->getRow($sName, $this->format_output($a['real_val'], $r), BX_DOL_AUDIT_FAIL, _t('_sys_audit_msg_must_be', $r['op'], $this->format_output($r['val'], $r)));
+        }
+        return $aRows;
+    }
+
+    /**
+     * Browser caching and response compression: the Apache module check gives the status; on other servers it stays unknown.
+     */
+    protected function getRowsOptimizationWebServer()
+    {
+        $aExpires = $this->checkApacheModule('expires_module');
+        $aDeflate = $this->checkApacheModule('deflate_module');
+
+        return array(
+            $this->getRow(_t('_sys_audit_userside_caching'), 'mod_expires', $aExpires['type'], _t('_sys_audit_msg_userside_caching', $this->getUrlForGooglePageSpeed('LeverageBrowserCaching'))),
+            $this->getRow(_t('_sys_audit_serverside_compression'), 'mod_deflate', $aDeflate['type']),
+        );
+    }
+
+    protected function getRowsOptimizationScript()
+    {
+        $aRows = array();
+        foreach ($this->aOptimizationSettings as $sName => $a) {
+            $sVal = ('always_on' == $a['enabled'] || getParam($a['enabled'])) ? 'On' : 'Off';
+            if ($a['cache_engine'])
+                $sVal .= _t('_sys_audit_msg_x_based_cache_engine', getParam($a['cache_engine']));
+
+            if ('always_on' != $a['enabled'] && !getParam($a['enabled']))
+                $aRows[] = $this->getRow($sName, $sVal, BX_DOL_AUDIT_FAIL, _t('_sys_audit_msg_optimization_fail'));
+            elseif ($a['check_accel'] && !$this->getPhpAccelerator() && 'File' == getParam($a['cache_engine']))
+                $aRows[] = $this->getRow($sName, $sVal, BX_DOL_AUDIT_WARN, _t('_sys_audit_msg_optimization_warn'));
+            else
+                $aRows[] = $this->getRow($sName, $sVal, BX_DOL_AUDIT_OK);
+        }
+        return $aRows;
+    }
+
+    /**
+     * Which cache engines the server offers. File is always there, so the section never fails; an in-memory engine
+     * (APC, Memcache, Memcached, Redis) is a bonus, listed as information when it is missing rather than as a failure.
+     */
+    protected function getRowsOptimizationCache()
+    {
+        $aRows = array();
+        foreach (explode(',', 'File,APC,Memcache,Memcached,Redis') as $sName) {
+            $sClass = 'BxDolCache' . $sName;
+            $o = class_exists($sClass) ? new $sClass() : null;
+            $bAvailable = $o && $o->isInstalled() && $o->isAvailable();
+            $sValue = $this->format_output($bAvailable, array('type' => 'bool'));
+            if ($bAvailable || 'File' == $sName)
+                $aRows[] = $this->getRow($sName, $sValue, BX_DOL_AUDIT_OK);
+            else
+                $aRows[] = $this->getRow($sName, $sValue, BX_DOL_AUDIT_UNDEF, _t('_sys_audit_msg_cache_engine_optional'));
+        }
+        return $aRows;
     }
 
     protected function checkPhpSetting($sName, $a)
@@ -707,7 +897,7 @@ class BxDolStudioToolsAudit extends BxDol
     {
         $s = '';
         $s .= '<b class="' . $this->aType2ClassCSS[$a['type']]. '">' . $this->aType2Title[$a['type']]. '</b> ';
-        if (isset($a['msg']))
+        if (!empty($a['msg']))
             $s .= '(' . $a['msg'] . ')';
         return $s;
     }

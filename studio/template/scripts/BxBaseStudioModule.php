@@ -13,7 +13,7 @@ class BxBaseStudioModule extends BxDolStudioModule
     protected $oHelper;
 
     protected $aMenuItems = array(
-        BX_DOL_STUDIO_MOD_TYPE_SETTINGS => array('name' => BX_DOL_STUDIO_MOD_TYPE_SETTINGS, 'icon' => 'cogs', 'title' => '_adm_lmi_cpt_settings')
+        BX_DOL_STUDIO_MOD_TYPE_SETTINGS => array('name' => BX_DOL_STUDIO_MOD_TYPE_SETTINGS, 'icon' => 'mi-cog.svg', 'icon_bg' => true, 'title' => '_adm_lmi_cpt_settings')
     );
 
     protected $sTmplNamePopupSettings;
@@ -123,6 +123,23 @@ class BxBaseStudioModule extends BxDolStudioModule
             'wrapper_class' => $sPrefix . '-wrapper',
             'content' => $sContent
         ));
+    }
+
+    /**
+     * The page's context menu (see BxBaseStudioWidget::getPageContextMenu) in the popup wrapper the context menu script expects,
+     * named after the page so a tile and a dock item of the same app share it.
+     */
+    protected function getPopupContextMenu($sPage, $iWidgetId)
+    {
+        $sMenu = $this->getPageContextMenu($iWidgetId);
+        if(empty($sMenu))
+            return '';
+
+        return BxTemplStudioFunctions::getInstance()->transBox('bx-std-cmenu-' . $sPage, array(
+            'wrapper_class' => 'bx-std-context-wrapper',
+            'wrapper_role' => 'presentation',
+            'content' => $sMenu
+        ), true);
     }
 
     protected function getPopupConfirmUninstall($iWidgetId, &$aModule)

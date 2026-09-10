@@ -10,6 +10,28 @@
 
 class BxBaseStudioFunctions extends BxBaseFunctions implements iBxDolSingleton
 {
+    /**
+     * Studio draws a block's title icon as an inline Lucide SVG (like its menus), whatever the site's default iconset is.
+     */
+    public function designBoxContent ($sTitle, $sContent, $iTemplateNum = BX_DB_DEF, $mixedMenu = false, $mixedButtons = [])
+    {
+        if(is_array($sTitle) && !empty($sTitle[2]) && preg_match('/^[a-z0-9-]+$/', $sTitle[2]) && ($oIconset = BxDolIconset::getObjectInstance('sys_lucide')) && ($sSvg = $oIconset->getIconHtml($sTitle[2])) !== false)
+            $sTitle[2] = $sSvg;
+
+        return parent::designBoxContent($sTitle, $sContent, $iTemplateNum, $mixedMenu, $mixedButtons);
+    }
+
+    /**
+     * A Studio block may hand the caption ready-made markup (a segmented switcher, say) instead of a menu object.
+     */
+    public function designBoxMenu ($mixedMenu, $mixedButtons = [])
+    {
+        if(is_string($mixedMenu) && strncmp(ltrim($mixedMenu), '<', 1) === 0)
+            return $mixedMenu;
+
+        return parent::designBoxMenu($mixedMenu, $mixedButtons);
+    }
+
     function __construct($oTemplate = false)
     {
         if (isset($GLOBALS['bxDolClasses'][get_class($this)]))
@@ -80,12 +102,13 @@ class BxBaseStudioFunctions extends BxBaseFunctions implements iBxDolSingleton
         if(!empty($mixedWidget['type']) && !BxDolStudioRolesUtils::getInstance()->isActionAllowed('use ' . $mixedWidget['type']))
             return '';
 
-        $aTmplVarsActions = array();
+        $sCaption = _t($mixedWidget['caption']);
+
+        $aTmplVarsActionsLeft = $aTmplVarsActionsRight = [];
         if(!empty($mixedWidget['cnt_actions'])) {
             $aService = unserialize($mixedWidget['cnt_actions']);
             $aActions = bx_srv_ii($aService['module'], $aService['method'], array_merge(array($mixedWidget), $aService['params']), $aService['class']);
 
-            $aTmplVarsActionsLeft = $aTmplVarsActionsRight = [];
             foreach($aActions as $iIndex => $aAction) {
                 if(!empty($aAction['check_func'])) {
                     $sCheckFunc = bx_gen_method_name($aAction['check_func']);
@@ -102,29 +125,34 @@ class BxBaseStudioFunctions extends BxBaseFunctions implements iBxDolSingleton
                     $bActionIconInline = false;
                 }
 
-                $sCaption = _t($aAction['caption']);
+                if($bActionIcon)
+                    $sActionIconHtml = '<i class="sys-icon ' . $sActionIcon . '" aria-hidden="true"></i>';
+                else if($bActionIconInline)
+                    $sActionIconHtml = $sActionIcon;
+                else
+                    $sActionIconHtml = '<img src="' . $sActionIcon . '" alt="" />';
+
+                /*
+                 * A control with a URL is a link, one that only runs a script is a button. Every widget has a control with the
+                 * same caption (Settings), so the accessible name adds the app it belongs to.
+                 */
+                $sActionCaption = _t($aAction['caption']);
+                $bActionLink = !empty($aAction['url']);
+
+                $aTmplVarsControl = [
+                    'name' => !empty($aAction['name']) ? $aAction['name'] : $mixedWidget['id'] . '-' . $iIndex,
+                    'url' => $bActionLink ? bx_replace_markers($aAction['url'], $aMarkers) : '',
+                    'onclick' => !empty($aAction['click']) ? 'onclick="' . bx_html_attribute($aAction['click']) . '"' : '',
+                    'caption' => bx_html_attribute($sActionCaption),
+                    'label' => bx_html_attribute(_t('_adm_txt_widget_action_label', $sActionCaption, $sCaption)),
+                    'icon' => $sActionIconHtml,
+                ];
+
                 $aTmplVarsAction = [
-                    'name' => !empty($aAction['name']) ? $aAction['name'] : $sPage . '-' . $iIndex,
-                    'caption' => $sCaption,
-                    'url' => !empty($aAction['url']) ? bx_replace_markers($aAction['url'], $aMarkers) : 'javascript:void(0)',
-                    'bx_if:show_click' => [
-                        'condition' => !empty($aAction['click']),
-                        'content' => [
-                            'content' => 'javascript:' . $aAction['click'],
-                        ]
-                    ],
-                    'bx_if:action_icon' => [
-                        'condition' => $bActionIcon,
-                        'content' => ['name' => $sActionIcon, 'caption' => $sCaption],
-                    ],
-                    'bx_if:action_image' => [
-                        'condition' => !$bActionIcon && !$bActionIconInline,
-                        'content' => ['url' => $sActionIcon, 'caption' => $sCaption],
-                    ],
-                    'bx_if:action_image_inline' => [
-                        'condition' => !$bActionIcon && $bActionIconInline,
-                        'content' => ['content' => $sActionIcon],
-                    ],
+                    'action' => $oTemplate->parseHtmlByName('widget_action.html', [
+                        'bx_if:show_link' => ['condition' => $bActionLink, 'content' => $aTmplVarsControl],
+                        'bx_if:show_button' => ['condition' => !$bActionLink, 'content' => $aTmplVarsControl],
+                    ]),
                 ];
 
                 if(in_array($aAction['name'], ['settings']))
@@ -142,8 +170,6 @@ class BxBaseStudioFunctions extends BxBaseFunctions implements iBxDolSingleton
         $aModule = BxDolModuleQuery::getInstance()->getModuleByName($mixedWidget['module']);
         $bEnabled = empty($aModule) || !is_array($aModule) || (int)$aModule['enabled'] == 1;
 
-        $sCaption = _t($mixedWidget['caption']);
-
         $sStyles = 'animation-delay: -.' . rand(1 , 75) . 's; animation-duration: .' . rand(15 , 20) . 's';
 
         return $oTemplate->parseHtmlByName('widget.html', array(
@@ -156,10 +182,12 @@ class BxBaseStudioFunctions extends BxBaseFunctions implements iBxDolSingleton
                     'content' => 'javascript:' . $mixedWidget['click'],
                 )
             ),
-            'bx_if:show_click_link' => array(
-                'condition' => !empty($mixedWidget['click']),
+            // right-click (or a long press) on the tile opens the app's context menu, fetched from its page on first use
+            'bx_if:show_context_menu' => array(
+                'condition' => !empty($mixedWidget['page_name']),
                 'content' => array(
-                    'content' => 'javascript:' . $mixedWidget['click'],
+                    'page' => !empty($mixedWidget['page_name']) ? $mixedWidget['page_name'] : '',
+                    'id' => (int)$mixedWidget['id'],
                 )
             ),
             'bx_if:show_notice' => array(
@@ -174,12 +202,9 @@ class BxBaseStudioFunctions extends BxBaseFunctions implements iBxDolSingleton
                     'bx_repeat:actions' => $aTmplVarsActionsLeft,
                 )
             ),
-            'bx_if:show_actions_right' => array(
-                'condition' => !empty($aTmplVarsActionsRight),
-                'content' => array(
-                    'bx_repeat:actions' => $aTmplVarsActionsRight,
-                )
-            ),
+            'bx_repeat:actions_right' => $aTmplVarsActionsRight,
+            'move_left' => bx_html_attribute(_t('_adm_txt_widget_move_left', $sCaption)),
+            'move_right' => bx_html_attribute(_t('_adm_txt_widget_move_right', $sCaption)),
             'bx_if:icon' => array (
                 'condition' => $bIcon,
                 'content' => array('icon' => $sIcon),
@@ -217,7 +242,7 @@ class BxBaseStudioFunctions extends BxBaseFunctions implements iBxDolSingleton
 
         $oAccounMenu = BxDolMenu::getObjectInstance('sys_studio_account_popup');
         if($oAccounMenu)
-            $sResult .= $this->transBox('bx-std-pcap-menu-popup-account', $oAccounMenu->getCode(), true);
+            $sResult .= $this->transBox('bx-std-pcap-menu-popup-account', ['content' => $oAccounMenu->getCode(), 'wrapper_attrs' => 'aria-label="' . bx_html_attribute(_t('_adm_tmi_cpt_account')) . '"'], true);
 
         return $sResult;
     }

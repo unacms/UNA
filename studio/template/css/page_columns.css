@@ -17,7 +17,7 @@ div.bx-std-page-columns-cnt {
     display: flex;
     align-items: stretch;
 
-    padding: 4.5rem 0.5rem 0.5rem 0.5rem;
+    padding: 5.5rem 0.75rem 0.75rem 0.75rem; /* top: the header wrapper's height, so the content starts 12px under the bar; 12px sides and bottom, like the header's margins */
 }
 
 /*--- Page Menu ---*/
@@ -25,6 +25,7 @@ div.bx-std-page-columns-cnt {
     position: relative;
     -webkit-flex: 0 0 20rem;
     flex: 0 0 20rem;
+    border-radius: 1.5rem; /* 24px, like the blocks and the header bar */
 
     width: 20rem;
     height: 100%;
@@ -63,7 +64,7 @@ div.bx-std-page-columns-cnt {
     flex: 1 1 auto;
     min-height: 0;
     width: 100%;
-    padding: 1px 0 1px 0.5rem; /* room for the blocks' hairline ring inside the scroll box */
+    padding: 1px 0 1px 0.75rem; /* 12px from the sidebar column; 1px of room for the blocks' hairline ring inside the scroll box */
 }
 /*
  * A page with a single block: the block takes the remaining height, its caption and bottom panel stay put
@@ -80,4 +81,49 @@ div.bx-std-page-columns-cnt {
 .bx-std-page-column.bx-std-page-content:has(> .bx-std-page-column-cnt > div.bx-std-block:only-of-type) div.bx-std-page-column-cnt {
     padding-top: 0;
     padding-bottom: 0;
+}
+
+/*
+ * Narrow screens. Below 1024px the sidebar collapses to a strip of icon tiles with small labels under them;
+ * below 768px it becomes a horizontal row of tabs above the content. Item styles are in general.css.
+ */
+@media (max-width: 1023px) {
+    .bx-std-page-column.bx-std-page-menu {
+        -webkit-flex: 0 0 6.5rem;
+        flex: 0 0 6.5rem;
+
+        width: 6.5rem; /* 88px items (80px of label room, enough for a semibold "Notifications") + the column's 8px inset */
+    }
+}
+@media (max-width: 767px) {
+    div.bx-std-page-columns-cnt {
+        -webkit-flex-direction: column;
+        flex-direction: column;
+    }
+    .bx-std-page-column.bx-std-page-menu {
+        -webkit-flex: 0 0 auto;
+        flex: 0 0 auto;
+
+        width: auto;
+        height: auto;
+        margin-bottom: 0.75rem; /* the same 12px gap as between the columns on wider screens */
+
+        overflow-x: auto;
+        overflow-y: hidden;
+        -webkit-overflow-scrolling: touch;
+    }
+    .bx-std-page-column.bx-std-page-menu div.bx-std-page-column-cnt {
+        position: static;
+    }
+    .bx-std-page-column.bx-std-page-content {
+        -webkit-flex: 1 1 auto;
+        flex: 1 1 auto;
+        min-height: 0;
+
+        height: auto;
+    }
+    .bx-std-page-column.bx-std-page-content div.bx-std-page-column-cnt {
+        padding-left: 0;
+        padding-right: 0;
+    }
 }

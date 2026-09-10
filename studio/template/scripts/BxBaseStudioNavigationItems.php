@@ -446,6 +446,7 @@ class BxBaseStudioNavigationItems extends BxDolStudioNavigationItems
         if((int)$aRow['active_api'] != 0)
             $mixedValue .= ' ' . $this->_oTemplate->parseImage($this->_oTemplate->getIconUrl('api.svg'), [
                 'class' => 'bx-std-api',
+                'alt' => bx_html_attribute(_t('_adm_txt_active_api')),
                 'title' => bx_html_attribute(_t('_adm_txt_active_api'))
             ]);
 
@@ -576,6 +577,7 @@ class BxBaseStudioNavigationItems extends BxDolStudioNavigationItems
             'name' => 'keyword',
             'attrs' => array(
                 'id' => 'bx-grid-search-' . $this->_sObject,
+                'aria-label' => _t('_adm_grid_lbl_search'),
             ),
             'tr_attrs' => array(
                 'style' => 'display:none;'

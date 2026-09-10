@@ -8,11 +8,11 @@
     <div class="bx-std-pt-bp-buttons flex flex-wrap -m-1">
         <button class="bx-btn bx-btn-primary m-1" onclick="javascript:__js_object__.performAction('__action_page_create__');"><bx_text:_adm_bp_btn_create_new /></button>
         <bx_if:show_actions>
-            <bx_if:can_view>
-                <button class="bx-btn m-1" onclick="javascript:window.open('__url_view__','_blank');"><bx_text:_adm_bp_btn_view_page /></button>
-            </bx_if:can_view>
-            <button class="bx-btn m-1" onclick="javascript:__js_object__.performAction('__action_page_edit__')"><bx_text:_adm_bp_btn_settings /></button>
             <button class="bx-btn m-1" onclick="javascript:__js_object__.performAction('__action_block_create__')"><bx_text:_adm_bp_btn_add_block /></button>
+            <bx_if:can_view>
+                <button class="bx-btn bx-btn-icon m-1" onclick="javascript:window.open('__url_view__','_blank');" title="<bx_text_attribute:_adm_bp_btn_view_page />" aria-label="<bx_text_attribute:_adm_bp_btn_view_page />"><bx_icon_inline:bp-view.svg /></button>
+            </bx_if:can_view>
+            <button class="bx-btn bx-btn-icon m-1" onclick="javascript:__js_object__.performAction('__action_page_edit__')" title="<bx_text_attribute:_adm_bp_btn_settings />" aria-label="<bx_text_attribute:_adm_bp_btn_settings />"><bx_icon_inline:bp-settings.svg /></button>
             <bx_if:can_delete>
                 <button class="bx-btn m-1" onclick="javascript:__js_object__.deletePage();"><bx_text:_adm_bp_btn_delete /></button>
             </bx_if:can_delete>

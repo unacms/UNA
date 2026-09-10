@@ -15,6 +15,51 @@ class BxBaseStudioGrid extends BxDolStudioGrid
         parent::__construct($aOptions, $oTemplate);
     }
 
+    /**
+     * Studio grid action glyphs are Lucide: a font-icon name from the action's data is drawn by the Lucide iconset (through its
+     * Font Awesome map, Studio's own picks first); an icon Lucide lacks keeps the font glyph.
+     */
+    protected $_aActionIcons = ['pencil-alt' => 'square-pen'];
+
+    protected function _getActionDefault ($sType, $sKey, $a, $isSmall = false, $isDisabled = false, $aRow = array())
+    {
+        if(!$this->_bIsApi && !empty($a['icon']) && preg_match('/^[a-z0-9-]+$/i', $a['icon'])) {
+            $sName = isset($this->_aActionIcons[$a['icon']]) ? $this->_aActionIcons[$a['icon']] : $a['icon'];
+            if(($sSvg = $this->_getIconLucide($sName)) !== false)
+                $a['icon'] = $sSvg;
+        }
+
+        return parent::_getActionDefault($sType, $sKey, $a, $isSmall, $isDisabled, $aRow);
+    }
+
+    /**
+     * The row drag handle is a Lucide grip in every Studio grid.
+     */
+    protected function _getCellOrder ($mixedValue, $sKey, $aField, $aRow)
+    {
+        if($this->_bIsApi || ($sSvg = $this->_getIconLucide('grip-vertical')) === false)
+            return parent::_getCellOrder($mixedValue, $sKey, $aField, $aRow);
+
+        $sAttr = $this->_convertAttrs(
+            $aField, 'attr_cell',
+            'bx-def-padding-sec-bottom bx-def-padding-sec-top',
+            isset($aField['width']) ? 'width:' . $aField['width'] : false
+        );
+
+        return '<td ' . $sAttr . '><div id="' . $this->_sObject . '_cell_' . $aRow[$this->_aOptions['field_id']] . '" class="bx-grid-drag-handle">' . $sSvg . '</div></td>';
+    }
+
+    /**
+     * Inline Lucide SVG for a Lucide or Font Awesome icon name, or false when Lucide has no such icon.
+     */
+    protected function _getIconLucide($sName, $aAttrs = [])
+    {
+        if(empty($sName) || !preg_match('/^[a-z0-9-]+$/i', $sName) || !($oIconset = BxDolIconset::getObjectInstance('sys_lucide')))
+            return false;
+
+        return $oIconset->getIconHtml($sName, $aAttrs);
+    }
+
     function getJsObject()
     {
         return '';
@@ -30,6 +75,7 @@ class BxBaseStudioGrid extends BxDolStudioGrid
             'name' => 'module',
             'attrs' => array(
                 'id' => 'bx-grid-module-' . $this->_sObject,
+                'aria-label' => _t('_adm_grid_lbl_module'),
                 'onChange' => 'javascript:' . $this->getJsObject() . '.onChangeModule()'
             ),
             'value' => $this->sModule,

@@ -340,6 +340,7 @@ class BxBaseStudioFormsPreLists extends BxDolStudioFormsPreLists
             'name' => 'module',
             'attrs' => array(
                 'id' => 'bx-grid-module-' . $this->_sObject,
+                'aria-label' => _t('_adm_grid_lbl_module'),
                 'onChange' => 'javascript:$(this).off(\'keyup focusout\'); ' . $sJsObject . '.onChangeFilter()',
         		'onBlur' => 'javascript:' . $sJsObject . '.onChangeFilter()',
             ),

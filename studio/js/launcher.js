@@ -12,6 +12,11 @@ function BxDolStudioLauncher(oOptions) {
     this.iAnimationSpeed = oOptions.iAnimationSpeed == undefined ? 'fast' : oOptions.iAnimationSpeed;
     this.bInit = oOptions.bInit == undefined ? true : oOptions.bInit;
 
+    //--- Live region texts (BxBaseStudioLauncher::getPageJsCode): search results and moves in edit mode.
+    this.sTxtMatches = oOptions.sTxtMatches == undefined ? '{0}' : oOptions.sTxtMatches;
+    this.sTxtMatchesOne = oOptions.sTxtMatchesOne == undefined ? '{0}' : oOptions.sTxtMatchesOne;
+    this.sTxtMoved = oOptions.sTxtMoved == undefined ? '{0}: {1}/{2}' : oOptions.sTxtMoved;
+
     //--- Jitter Settings ---//
     this.bJitterMode = false;
     this.aJitterConf = {
@@ -36,14 +41,17 @@ BxDolStudioLauncher.prototype.init = function() {
         var hammertime = new Hammer($('.bx-std-widgets').get(0));
         hammertime.get('press').set({time: 1000});
         hammertime.on('press', function(oEvent) {
+            if(typeof oBxDolStudioContextMenu !== 'undefined' && oBxDolStudioContextMenu.justOpened())
+                return; // the press opened a tile's context menu
+
             if(!$this.bJitterMode)
                 $this.enableJitter();
             else
                 $this.disableJitter();
         });
 
-        //--- Desktop: put the cursor in the app search so typing filters straight away (no autofocus on touch, it would raise the keyboard).
-        if(bx_is_mouse() && window.matchMedia('(min-width: 768px)').matches)
+        //--- Desktop: put the cursor in the app search so typing filters straight away (no autofocus on touch, it would raise the keyboard; not while the intro tour holds focus).
+        if(bx_is_mouse() && window.matchMedia('(min-width: 768px)').matches && !(typeof glTour !== 'undefined' && glTour.isActive()))
             $('li.bx-menu-tab-search:not(.bx-mt-compact) input[name="search"]').trigger('focus');
 
     	//--- Enable Sorting for Page Edit mode ---//
@@ -62,12 +70,12 @@ BxDolStudioLauncher.prototype.init = function() {
     	});
     });
 
-    window.addEventListener('keydown', (e) => {
-        if(e.keyCode === 114 || (e.ctrlKey && e.keyCode === 70) || (e.metaKey && e.keyCode === 70)) {
-            e.preventDefault();
+    //--- Escape leaves edit mode; the search field and popups handle their own Escape first.
+    window.addEventListener('keydown', function(oEvent) {
+        if(oEvent.key !== 'Escape' || !$this.bJitterMode || $(oEvent.target).is('input, textarea, select') || $('.bx-popup-applied:visible').length)
+            return;
 
-            oBxDolStudioMenuTop.searchOpen();
-        }
+        $this.disableJitter();
     });
 };
 
@@ -197,7 +205,7 @@ BxDolStudioLauncher.prototype.featured = function(sPageName, oLink) {
             
             var sClassStatic = 'bx-menu-item-static';
             var sClassDivider = 'bx-menu-item-divider';
-            var oItem = $('ul.bx-menu-top-center li.bx-menu-tab-active').toggleClass(sClassStatic + ' bx-menu-item-dynamic');
+            var oItem = $('#bx-menu-item-' + sPageName).toggleClass(sClassStatic + ' bx-menu-item-dynamic'); // the acted-on app's dock item, not necessarily this page's
             if(oItem.hasClass(sClassStatic))
                 $(oItem).insertBefore(oItem.siblings('.' + sClassDivider));
             else
@@ -228,7 +236,7 @@ BxDolStudioLauncher.prototype.bookmark = function(sPageName, oLink) {
             
             var sClassStatic = 'bx-menu-item-static';
             var sClassDivider = 'bx-menu-item-divider';
-            var oItem = $('ul.bx-menu-top-center li.bx-menu-tab-active').toggleClass(sClassStatic + ' bx-menu-item-dynamic');
+            var oItem = $('#bx-menu-item-' + sPageName).toggleClass(sClassStatic + ' bx-menu-item-dynamic'); // the acted-on app's dock item, not necessarily this page's
             if(oItem.hasClass(sClassStatic))
                 $(oItem).insertBefore(oItem.siblings('.' + sClassDivider));
             else
@@ -272,14 +280,85 @@ BxDolStudioLauncher.prototype.enableJitter = function() {
     $(this.aSortingConf.parent).addClass('bx-std-jitter').sortable('option', 'disabled', false);
 
     this.bJitterMode = true;
+    this.markJitter();
 };
 
 BxDolStudioLauncher.prototype.disableJitter = function() {
+    var oActive = $(document.activeElement);
+    var oWidget = oActive.closest(this.aSortingConf.item);
+
     $(this.aJitterConf.elements).fadeOut('fast');	
     $(this.aJitterConf.item).addClass('bx-std-widget-icon-trans');
     $(this.aSortingConf.parent).removeClass('bx-std-jitter').sortable('option', 'disabled', true);
 
     this.bJitterMode = false;
+    this.markJitter();
+
+    //--- Keyboard focus was on a control that just went away: keep it on the same tile, or on the first one.
+    if(oWidget.length && oActive.closest('.bx-std-widget-actions').length)
+        oWidget.find('.bx-std-widget-icon .bx-std-widget-link').trigger('focus');
+    else if(oActive.closest('#bx-std-launcher-edit').length)
+        $(this.aSortingConf.parent + ' > ' + this.aSortingConf.item).filter(':visible').first().find('.bx-std-widget-icon .bx-std-widget-link').trigger('focus');
+};
+
+/**
+ * Reflect edit mode on the Done bar and on the Manage Apps toggle in the account menu.
+ */
+BxDolStudioLauncher.prototype.markJitter = function() {
+    var bOn = this.bJitterMode;
+
+    $('#bx-std-launcher-edit').prop('hidden', !bOn);
+    $('.bx-menu-account li.edit').toggleClass('bx-menu-tab-active', bOn).find('[aria-pressed]').attr('aria-pressed', bOn ? 'true' : 'false');
+};
+
+/**
+ * Non-drag reordering for edit mode: shift one app past its visible neighbour, save, and announce the new position.
+ */
+BxDolStudioLauncher.prototype.move = function(oButton, iDirection) {
+    var sItem = this.aSortingConf.item + ':visible';
+    var oWidget = $(oButton).closest(this.aSortingConf.item);
+    var oSibling = iDirection < 0 ? oWidget.prevAll(sItem).first() : oWidget.nextAll(sItem).first();
+    if(!oSibling.length)
+        return false;
+
+    if(iDirection < 0)
+        oWidget.insertBefore(oSibling);
+    else
+        oWidget.insertAfter(oSibling);
+
+    $(oButton).trigger('focus');
+
+    var oWidgets = oWidget.parent().children(sItem);
+    this.announce(this.sTxtMoved.replace('{0}', oWidget.find('.bx-std-widget-caption').text().trim()).replace('{1}', oWidgets.index(oWidget) + 1).replace('{2}', oWidgets.length));
+
+    return this.reorder(oWidget);
+};
+
+/**
+ * Search feedback: the empty message when nothing matches, and the match count for screen readers.
+ */
+BxDolStudioLauncher.prototype.searchResult = function(sSearch, iCount) {
+    $('#bx-std-launcher-empty').prop('hidden', !sSearch.length || iCount > 0);
+
+    if(!sSearch.length)
+        $('#bx-std-launcher-status').text('');
+    else
+        this.announce((iCount == 1 ? this.sTxtMatchesOne : this.sTxtMatches).replace('{0}', iCount));
+};
+
+/**
+ * Polite live region of the launcher; cleared first so the same text is announced again.
+ */
+BxDolStudioLauncher.prototype.announce = function(sText) {
+    var oStatus = $('#bx-std-launcher-status');
+    if(!oStatus.length)
+        return;
+
+    oStatus.text('');
+    clearTimeout(this.iAnnounceTimer);
+    this.iAnnounceTimer = setTimeout(function() {
+        oStatus.text(sText);
+    }, 50);
 };
 
 /** @} */

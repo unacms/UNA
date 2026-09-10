@@ -11,8 +11,8 @@
 class BxBaseStudioDesign extends BxDolStudioDesign
 {
     protected $aMenuItems = array(
-        BX_DOL_STUDIO_TEMPL_TYPE_SETTINGS => array('title' => '_adm_lmi_cpt_settings', 'icon' => 'cogs'),
-        BX_DOL_STUDIO_TEMPL_TYPE_LOGO => array('title' => '_adm_lmi_cpt_logo', 'icon' => 'pencil-alt')
+        BX_DOL_STUDIO_TEMPL_TYPE_SETTINGS => array('title' => '_adm_lmi_cpt_settings', 'icon' => 'mi-cog.svg', 'icon_bg' => true),
+        BX_DOL_STUDIO_TEMPL_TYPE_LOGO => array('title' => '_adm_lmi_cpt_logo', 'icon' => 'mi-tpl-logo.svg', 'icon_bg' => true)
     );
 
     public function __construct($sModule, $mixedPageName, $sPage = "")

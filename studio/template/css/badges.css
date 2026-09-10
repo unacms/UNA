@@ -6,9 +6,6 @@ div.bx-grid-header div.bx-form-element-wrapper {
 }
 
 /*--- Displays page -> Panel Top style ---*/
-div.bx-grid-header div#bx-form-element-module{
-    margin-right: 20px;
-}
 div.bx-grid-header div#bx-form-element-module,
 div.bx-grid-header div#bx-form-element-keyword {
     margin-top: 0px;
@@ -18,9 +15,6 @@ div.bx-grid-header div#bx-form-element-keyword {
 div.bx-grid-header div.bx-form-element-wrapper {
     position: relative;
     float: left;
-}
-div.bx-grid-header div#bx-form-element-display {
-    margin-right: 20px;
 }
 
 /*--- Fields page -> Add/Edit Field block style ---*/

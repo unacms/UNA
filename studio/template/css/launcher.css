@@ -117,8 +117,6 @@ div.bx-std-widget-empty {
 .bx-std-widget-icon-disabled {
     -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=40)";
     filter: alpha(opacity=40);
-    -moz-opacity: 0.4;
-    -khtml-opacity: 0.4;
     opacity: 0.4;    
 }
 
@@ -202,7 +200,8 @@ div.bx-std-widget-action:first-child {
     margin-top: 0;
 }
 div.bx-std-widget-action,
-div.bx-std-widget-action > a {
+div.bx-std-widget-action > a,
+div.bx-std-widget-action > button {
     position: relative;
     display: block;
     float: none;
@@ -210,14 +209,16 @@ div.bx-std-widget-action > a {
     width: 2rem;
     height: 2rem;
 }
-div.bx-std-widget-action > a {
+div.bx-std-widget-action > a,
+div.bx-std-widget-action > button {
     display: flex;
     -webkit-justify-content: center;
     justify-content: center;
     -webkit-align-items: center;
     align-items: center;
 }
-div.bx-std-widget-action > a img {
+div.bx-std-widget-action > a img,
+div.bx-std-widget-action > button img {
     width: 1.5rem;
     height: 1.5rem;
 }
@@ -229,17 +230,17 @@ div.bx-std-widget-action i.sys-icon {
 .bx-std-widget-loading {
     display: none;
     position: absolute;
-    bottom: -2.0rem;
+    top: 100%;
+    left: 0;
     width: 4.5rem;
-    height: 2.0rem;
+    height: 1rem; /* the caption's row: same 0.75rem gap under the tile and the same 1rem line */
+    margin-top: 0.75rem;
 
-    background-image: url(../images/loading.gif);
+    /* a two-row animated tile wave (the SVG carries its own keyframes, so it animates as a background image); loading.svg is the single-row sibling for other loaders */
+    background-image: url(../images/loading-double.svg);
     background-repeat: no-repeat;
     background-position: center center;
-
-    -moz-opacity: 0.5;
-    -khtml-opacity: 0.5;
-    opacity: 0.5;
+    background-size: 40px 10px;
 }
 div.bx-std-widget-caption {
     position: relative;
@@ -255,6 +256,9 @@ div.bx-std-widget-caption {
 
     font-weight: 400;
     font-size: 0.875rem;
+}
+div.bx-std-widget-caption > .bx-std-widget-link {
+    cursor: pointer;
 }
 div.bx-std-widget-caption-jitter {
     position: absolute;
@@ -302,6 +306,13 @@ div.bx-std-widget-caption-jitter {
     50% {
         transform: rotate(-1.5deg);
         animation-timing-function: ease-out;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .bx-std-widgets.bx-std-jitter .bx-std-widget:not(.bx-std-widget-dragging):nth-child(2n),
+    .bx-std-widgets.bx-std-jitter .bx-std-widget:not(.bx-std-widget-dragging):nth-child(2n-1) {
+        animation: none;
     }
 }
 
@@ -442,11 +453,44 @@ div.bx-std-widget-caption-jitter {
     width: calc(100% - 2.5rem);
     left: 1.25rem;
 }
-#bx-informer .bx-informer-msg{
-    background-color: rgba(255, 234, 193, 0.95);
+/* The informer floats over the tiles, so each message sits on a near-opaque base of the page colour; the type tint (the site's
+   bg-blue/yellow/red-50 and their dark 10% washes) goes on top as a background image, and the text colours stay the site's. */
+#bx-informer .bx-informer-msg {
     display: none;
+    background-color: rgb(255 255 255 / 0.95);
+}
+.dark #bx-informer .bx-informer-msg {
+    background-color: rgb(17 24 39 / 0.95);
+}
+#bx-informer .bx-informer-msg-info {
+    background-image: linear-gradient(rgb(239 246 255), rgb(239 246 255));
+}
+#bx-informer .bx-informer-msg-alert {
+    background-image: linear-gradient(rgb(254 252 232), rgb(254 252 232));
+}
+#bx-informer .bx-informer-msg-error {
+    background-image: linear-gradient(rgb(254 242 242), rgb(254 242 242));
+}
+.dark #bx-informer .bx-informer-msg-info {
+    background-image: linear-gradient(rgb(59 130 246 / 0.1), rgb(59 130 246 / 0.1));
+}
+.dark #bx-informer .bx-informer-msg-alert {
+    background-image: linear-gradient(rgb(234 179 8 / 0.1), rgb(234 179 8 / 0.1));
+}
+.dark #bx-informer .bx-informer-msg-error {
+    background-image: linear-gradient(rgb(239 68 68 / 0.1), rgb(239 68 68 / 0.1));
 }
 #bx-informer #sys-module-discontinued.bx-informer-msg,
 #bx-informer #sys-account-need-to-change-password.bx-informer-msg{
     display: flex;
+}
+
+/* Introduction tour (Shepherd): its stylesheet paints the primary button white at 75% on #3288e6 (3.6:1); blue-600 with white text gives 5.2:1. */
+.shepherd-button:not(.shepherd-button-secondary) {
+    background: rgb(37 99 235);
+    color: #fff;
+}
+.shepherd-button:not(.shepherd-button-secondary):not(:disabled):hover {
+    background: rgb(29 78 216);
+    color: #fff;
 }

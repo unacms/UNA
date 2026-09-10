@@ -294,3 +294,9 @@
     font-size:12px;
     height:fit-content;
 }
+
+/* Agent cards on the block's 16px content line: the list's -4px pull plus this 4px puts a card's 4px margin at 8px + 8px. */
+div.bx-std-block-content > .bx-agt-agents {
+    width: calc(100% - 0.5rem); /* the template's w-full assumed the old negative margins */
+    margin: 0.25rem;
+}

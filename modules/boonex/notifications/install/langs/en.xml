@@ -226,4 +226,5 @@
     <string name="_bx_ntfs_grid_popup_title_ett_add"><![CDATA[Add Email Template]]></string>
     <string name="_bx_ntfs_grid_popup_title_ett_edit"><![CDATA[Edit Email Template]]></string>
     <string name="_bx_ntfs_grid_popup_title_ett_preview"><![CDATA[Preview Email Template]]></string>
+    <string name="_bx_ntfs_queue"><![CDATA[Notifications]]></string>
 </resources>

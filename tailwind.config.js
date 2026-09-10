@@ -5,6 +5,9 @@
  */
 
 module.exports = {
+  future: {
+    hoverOnlyWhenSupported: true, // hover: utilities only on devices with a hover pointer, so a tap never leaves a stuck hover state
+  },
   content: [
     './inc/js/*.js',
     './inc/js/classes/*.js',

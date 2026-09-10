@@ -18,6 +18,17 @@ function BxDolStudioMenuTop(oOptions) {
         $this.markTheme();
         $this.searchInit();
     });
+
+    //--- Theme radios: arrows move between the options and apply them, as in a native radio group.
+    $(document).on('keydown', '.bx-theme-toggle [role="radio"]', function(oEvent) {
+        var aKeys = {ArrowLeft: -1, ArrowUp: -1, ArrowRight: 1, ArrowDown: 1};
+        if(!(oEvent.key in aKeys))
+            return true;
+
+        var oOptions = $(this).closest('.bx-theme-toggle').find('[role="radio"]');
+        oOptions.eq((oOptions.index(this) + aKeys[oEvent.key] + oOptions.length) % oOptions.length).trigger('focus').trigger('click');
+        return false;
+    });
 }
 
 /**
@@ -31,7 +42,7 @@ BxDolStudioMenuTop.prototype.searchInit = function() {
     if(!oItem || typeof ResizeObserver === 'undefined')
         return;
 
-    var iMinField = 192 + 4; // min-w-48 plus the item's left padding
+    var iMinField = 192; // min-w-48
 
     this.fSearchMeasure = function() {
         if(oItem.classList.contains('bx-mt-active'))
@@ -50,14 +61,6 @@ BxDolStudioMenuTop.prototype.searchInit = function() {
 
     new ResizeObserver(this.fSearchMeasure).observe(oLeft);
     this.fSearchMeasure();
-};
-
-BxDolStudioMenuTop.prototype.searchOpen = function() {
-    var oItem = $('li.bx-menu-tab-search');
-    if(oItem.hasClass('bx-mt-compact') && !oItem.hasClass('bx-mt-active'))
-        this.searchToggle(oItem.find('.bx-std-search-trigger'));
-    else
-        oItem.find('input[name="search"]').trigger('focus');
 };
 
 BxDolStudioMenuTop.prototype.searchClose = function(oItem) {
@@ -121,22 +124,18 @@ BxDolStudioMenuTop.prototype.markTheme = function() {
     var sTheme = bx_get_color_scheme();
 
     $('.bx-theme-option').each(function() {
-        $(this).attr('aria-checked', $(this).data('bx-theme') == sTheme ? 'true' : 'false');
+        var bChecked = $(this).data('bx-theme') == sTheme;
+        $(this).attr('aria-checked', bChecked ? 'true' : 'false').attr('tabindex', bChecked ? '0' : '-1');
     });
 };
 
 BxDolStudioMenuTop.prototype.clickEdit = function(oItem) {
     $('.bx-popup-applied:visible').dolPopupHide();
 
-    var oParent = $(oItem).parent();
-    if(oParent.hasClass('bx-menu-tab-active')) {
-        oParent.removeClass('bx-menu-tab-active');
+    if(oBxDolStudioLauncher.bJitterMode)
         oBxDolStudioLauncher.disableJitter();
-    }
-    else {
-        oParent.addClass('bx-menu-tab-active');
+    else
         oBxDolStudioLauncher.enableJitter();
-    }
 };
 
 BxDolStudioMenuTop.prototype.clickLogout = function(oItem) {
@@ -157,19 +156,49 @@ BxDolStudioMenuTop.prototype.searchToggle = function(oLink) {
 };
 
 BxDolStudioMenuTop.prototype.searchWidget = function(oEvent) {
+    this.searchFilter($(oEvent.target));
+};
+
+/**
+ * Show the apps whose name starts with the field's text (every app for an empty field), pick the first one for Enter
+ * and report the count; one pass per pause in typing.
+ */
+BxDolStudioMenuTop.prototype.searchFilter = function(oInput) {
     var $this = this;
 
-    setTimeout(function () {
-        var sSearch = $(oEvent.target).val().toLowerCase(); 
-        if(!!sSearch.length) {
-            $('.bx-std-widgets > .bx-std-widget:not([data-name^="' + sSearch + '"])').hide();
-            $('.bx-std-widgets > .bx-std-widget[data-name^="' + sSearch + '"]:hidden').show();
-        }
-        else
-            $('.bx-std-widgets > .bx-std-widget:hidden').show();
+    // the clear button shows only while there is something to clear
+    oInput.siblings('.bx-std-search-clear').prop('hidden', !oInput.val().length);
 
-        $this.searchPick(sSearch.length ? $('.bx-std-widgets > .bx-std-widget:visible:first') : null);
+    clearTimeout(this.iSearchTimer);
+    this.iSearchTimer = setTimeout(function () {
+        var sSearch = oInput.val().toLowerCase();
+        var oWidgets = $('.bx-std-widgets > .bx-std-widget');
+
+        oWidgets.each(function() {
+            $(this).toggle(!sSearch.length || String($(this).data('name')).toLowerCase().indexOf(sSearch) === 0);
+        });
+
+        var oVisible = oWidgets.filter(':visible');
+        $this.searchPick(sSearch.length ? oVisible.first() : null);
+
+        if(typeof oBxDolStudioLauncher !== 'undefined')
+            oBxDolStudioLauncher.searchResult(sSearch, oVisible.length);
     }, 100);
+};
+
+/**
+ * The field's clear button: empty the field, show every app again and hand focus back to the field.
+ */
+BxDolStudioMenuTop.prototype.searchClear = function(oButton) {
+    var oInput = $(oButton).siblings('input');
+    if(!oInput.length)
+        return false;
+
+    oInput.val('');
+    this.searchFilter(oInput);
+    oInput.trigger('focus');
+
+    return false;
 };
 
 /**
