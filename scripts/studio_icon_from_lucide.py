@@ -24,6 +24,12 @@ PLATES = {
     'green':  ('#059669', '#065F46'),
     'orange': ('#D97706', '#92400E'),
     'purple': ('#7C3AED', '#5B21B6'),
+    'red':    ('#F43F5E', '#BE123C'),
+    'white':  ('#F3F4F6', '#E5E7EB'),
+}
+# glyph gradient (top, bottom): white fading out on a coloured plate, zinc on the white plate
+GLYPH = {
+    'white': ('#71717A', '#3F3F46'),
 }
 
 ICONS = [
@@ -34,6 +40,17 @@ ICONS = [
     ('modules/boonex/lucid/template/images/icons/std-icon.svg', 'lucid', 'purple', 'layout-panel-top', 80),
     ('modules/boonex/mapshow/template/images/icons/std-icon.svg', 'mapshow', 'green', 'map', 80),
     ('studio/template/images/modules/bx_polls.svg', 'polls', 'green', 'vote', 72),
+    ('modules/boonex/cas_connect/template/images/icons/std-icon.svg', 'cas', 'white', 'fingerprint-pattern', 80),
+]
+
+# Brand artwork on the white plate: the source SVG's shapes are copied as they are (fills, gradients), scaled to
+# ART_WIDTH px and centred; the shadow is the united outline of every shape, filled black/10 and shifted 1px down.
+# 'skip' drops shapes by class or id (wordmarks, registered marks). The source files are not part of the repo.
+ART_WIDTH = 50
+ART = [
+    # ('modules/boonex/azure_b2c_con/template/images/icons/std-icon.svg', 'azrb2c', '<thesvg.org azure-azure-ad-b2c default.svg>', ()),
+    # ('modules/boonex/azure_connect/template/images/icons/std-icon.svg', 'azrcon', '<thesvg.org azure-entra-connect default.svg>', ()),
+    # ('modules/boonex/cidaas_connect/template/images/icons/std-icon.svg', 'cidaascon', '<cidaas logo-cidaas-vertical-color-print.svg>', ('st5',)),
 ]
 
 STROKE = 2.0      # Lucide stroke width, in its 24-unit space
@@ -122,6 +139,8 @@ def shape_to_d(shape):
 
 def icon(uid, plate, d, size):
     c1, c2 = PLATES[plate]
+    g1, g2 = GLYPH.get(plate, ('white', 'white'))
+    g2_opacity = '' if plate in GLYPH else ' stop-opacity="0.6"'
     if size == 80:
         t, ts, s = '13.6 13.6', '13.6 14.6', '2.2'
     else:
@@ -140,9 +159,74 @@ def icon(uid, plate, d, size):
 <stop offset="1" stop-color="{c2}"/>
 </linearGradient>
 <linearGradient id="paint1_linear_{uid}" x1="12" y1="2" x2="12" y2="22" gradientUnits="userSpaceOnUse">
-<stop stop-color="white"/>
-<stop offset="1" stop-color="white" stop-opacity="0.6"/>
+<stop stop-color="{g1}"/>
+<stop offset="1" stop-color="{g2}"{g2_opacity}/>
 </linearGradient>
+</defs>
+</svg>
+'''
+
+
+def art_icon(uid, src, skip, size=80):
+    """White plate, the source artwork scaled to ART_WIDTH and centred, its united outline as the shadow."""
+    from shapely.geometry import Polygon
+    ns = '{http://www.w3.org/2000/svg}'
+    root = ET.parse(src).getroot()
+    # class fills from a <style> block become attributes, so the art survives being inlined next to other icons
+    css = {}
+    for st in root.iter(ns + 'style'):
+        for cls, body in re.findall(r'\.([\w-]+)\s*\{([^}]*)\}', st.text or ''):
+            css[cls] = dict(kv.split(':', 1) for kv in body.split(';') if ':' in kv)
+    inner, polys = [], []
+    for el in list(root):
+        if el.tag in (ns + 'style', ns + 'defs') and el.tag == ns + 'style':
+            continue
+    defs = ''.join(ET.tostring(el, encoding='unicode') for el in root.iter(ns + 'defs'))
+    xs, ys = [], []
+
+    def walk(el):
+        tag = el.tag.split('}')[-1]
+        if tag in ('style', 'defs'):
+            return
+        if el.attrib.get('class') in skip or el.attrib.get('id') in skip:
+            return
+        d = element_to_d(el)
+        if d:
+            for cls in el.attrib.pop('class', '').split():
+                for k, v in css.get(cls, {}).items():
+                    el.set(k.strip(), v.strip())
+            for pts in sample(d):
+                if len(pts) > 2:
+                    polys.append(Polygon(pts).buffer(0))
+                    xs.extend(x for x, _ in pts)
+                    ys.extend(y for _, y in pts)
+            inner.append(ET.tostring(el, encoding='unicode'))
+            return
+        for c in el:
+            walk(c)
+
+    for el in list(root):
+        walk(el)
+    x0, x1, y0, y1 = min(xs), max(xs), min(ys), max(ys)
+    s = ART_WIDTH / (x1 - x0)
+    tx, ty = (size - (x1 - x0) * s) / 2 - x0 * s, (size - (y1 - y0) * s) / 2 - y0 * s
+    shadow = shape_to_d(unary_union(polys).simplify(TOL / s, preserve_topology=True))
+    body = ''.join(inner).replace('xmlns:ns0="http://www.w3.org/2000/svg"', '').replace('ns0:', '')
+    c1, c2 = PLATES['white']
+    return f'''<svg width="{size}" height="{size}" viewBox="0 0 {size} {size}" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="{size}" height="{size}" fill="url(#paint0_linear_{uid})"/>
+<g transform="translate({tx:.3f} {ty:.3f}) scale({s:.5f})">
+{body}
+</g>
+<g transform="translate({tx:.3f} {ty + 1:.3f}) scale({s:.5f})">
+<path fill-rule="evenodd" fill="black" fill-opacity="0.1" d="{shadow}"/>
+</g>
+<defs>
+<linearGradient id="paint0_linear_{uid}" x1="{size / 2:g}" y1="0" x2="{size / 2:g}" y2="{size}" gradientUnits="userSpaceOnUse">
+<stop stop-color="{c1}"/>
+<stop offset="1" stop-color="{c2}"/>
+</linearGradient>
+{defs}
 </defs>
 </svg>
 '''
@@ -155,3 +239,8 @@ for rel, uid, plate, glyph, size in ICONS:
     with open(ROOT + '/' + rel, 'w') as fh:
         fh.write(icon(uid, plate, d, size))
     print(f'{rel}: {glyph} -> {n} outline(s), {len(d)} chars')
+
+for rel, uid, src, skip in ART:
+    with open(ROOT + '/' + rel, 'w') as fh:
+        fh.write(art_icon(uid, src, skip))
+    print(f'{rel}: art from {src}')
