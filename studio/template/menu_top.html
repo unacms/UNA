@@ -3,9 +3,8 @@
 var oBxDolStudioMenuTop = new BxDolStudioMenuTop({
     sActionUrl: '<bx_url_studio />ajax.php'
 });
-if(typeof oBxDolStudioModule == 'undefined') {
-    __js_code_module__
-}
+if(typeof oBxDolStudioModule == 'undefined')
+    var oBxDolStudioModule = new BxDolStudioModule(__js_options_module__);
 -->
 </script>
 <div class="bx-std-menu-top-wrp">

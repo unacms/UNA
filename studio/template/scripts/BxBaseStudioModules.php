@@ -35,15 +35,20 @@ class BxBaseStudioModules extends BxDolStudioModules
         return $this->sJsObject;
     }
 
+    public function getJsParams($aParams = array())
+    {
+        return array_merge(array(
+            'sActionUrl' => BX_DOL_URL_STUDIO . $this->sActionUri,
+            'sActionsPrefix' => $this->sParamPrefix,
+        ), $aParams);
+    }
+
     public function getJsCode($aParams = array(), $mixedWrap = true)
     {
         $sJsObject = $this->getJsObject();
         $sJsClass = $this->getJsClass();
 
-        $aParams = array_merge(array(
-            'sActionUrl' => BX_DOL_URL_STUDIO . $this->sActionUri,
-            'sActionsPrefix' => $this->sParamPrefix,
-        ), $aParams);
+        $aParams = $this->getJsParams($aParams);
 
         $sContent = bx_replace_markers("var {object} = new {class}({params});", array(
             'object' => $sJsObject, 

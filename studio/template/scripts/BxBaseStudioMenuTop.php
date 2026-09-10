@@ -81,7 +81,7 @@ class BxBaseStudioMenuTop extends BxDolStudioMenuTop
         $oTemplate->addCss($this->getCss());
         return $oTemplate->parseHtmlByName('menu_top.html', array(
             'bx_repeat:menus' => $aTmplVars,
-            'js_code_module' => BxTemplStudioModules::getInstance()->getJsCode(array(), false) // pages with their own instance define it again below
+            'js_options_module' => json_encode(BxTemplStudioModules::getInstance()->getJsParams()) // pages with their own instance define it again below
         ));
     }
 }
