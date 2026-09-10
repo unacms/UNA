@@ -41,6 +41,10 @@ ICONS = [
     ('modules/boonex/mapshow/template/images/icons/std-icon.svg', 'mapshow', 'green', 'map', 80),
     ('studio/template/images/modules/bx_polls.svg', 'polls', 'green', 'vote', 72),
     ('modules/boonex/cas_connect/template/images/icons/std-icon.svg', 'cas', 'white', 'fingerprint-pattern', 80),
+    # discontinued apps and integrations whose service is gone: a dashed placeholder on the gray plate
+    ('modules/boonex/datafox/template/images/icons/std-icon.svg', 'datafox', 'gray', 'square-dashed', 80),
+    ('modules/boonex/dolphin_migration/template/images/icons/std-icon.svg', 'dolphin_migration', 'gray', 'square-dashed', 80),
+    ('modules/boonex/froala/template/images/icons/std-icon.svg', 'froala', 'gray', 'square-dashed', 80),
 ]
 
 # Brand artwork on the white plate: the source SVG's shapes are copied as they are (fills, gradients), scaled to
