@@ -66,7 +66,7 @@ class BxCidaasConModule extends BxBaseModConnectModule
 		$oTemplate->setPageHeader(_t('_Please Wait'));
 		$oTemplate->setPageContent('page_main_code', MsgBox(_t('_Please Wait')) . $sIframe . $sJs);
 		// Keep the 1s meta-refresh on this page from navigating away before the iframe request is sent.
-		$oTemplate->setPageContent('url_relocate', '#');
+		$oTemplate->setPageContent('url_relocate', '');
 		send_headers_page_changed();
 		$oTemplate->getPageCode();
 		exit;
