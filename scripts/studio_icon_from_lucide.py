@@ -54,7 +54,7 @@ ICONS = [
     ('modules/boonex/videos/template/images/icons/std-icon.svg', 'videos', 'green', 'tv-minimal-play', 80),
     ('modules/boonex/stories/template/images/icons/std-icon.svg', 'stories', 'green', 'image-play', 80),
     ('modules/boonex/protean/template/images/icons/std-icon.svg', 'protean', 'purple', 'panel-top-dashed', 80),
-    ('modules/boonex/spaces/template/images/icons/std-icon.svg', 'spaces', 'red', 'circle-dot-dashed', 80),
+    ('modules/boonex/spaces/template/images/icons/std-icon.svg', 'spaces', 'red', 'hexagons-3', 80),
     ('modules/boonex/feedback/template/images/icons/std-icon.svg', 'feedback', 'gray', 'message-square-text', 80),
     ('modules/boonex/help_tours/template/images/icons/std-icon.svg', 'help_tours', 'gray', 'route', 80),
     ('modules/boonex/invites/template/images/icons/std-icon.svg', 'invites', 'gray', 'mail-plus', 80),
@@ -148,8 +148,26 @@ def sample(d):
     return runs
 
 
+LUCIDE_LAB = 'https://raw.githubusercontent.com/lucide-icons/lucide-lab/main/icons/'
+
+
+def glyph_source(name):
+    """The vendored Lucide file, or the Lucide Lab icon of that name fetched from its repository."""
+    import os
+    path = LUCIDE + name + '.svg'
+    if os.path.exists(path):
+        return path
+    from urllib.request import urlopen
+    with urlopen(LUCIDE_LAB + name + '.svg') as r:
+        data = r.read()
+    if b'<svg' not in data:
+        raise FileNotFoundError(name + ': not in the vendored set nor in Lucide Lab')
+    return data
+
+
 def glyph_outline(name):
-    root = ET.parse(LUCIDE + name + '.svg').getroot()
+    src = glyph_source(name)
+    root = ET.fromstring(src) if isinstance(src, bytes) else ET.parse(src).getroot()
     shapes = []
     for el in root.iter():
         d = element_to_d(el)
