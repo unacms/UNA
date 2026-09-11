@@ -282,6 +282,70 @@ class BxDolAiQuery extends BxDolDb
         ]);
     }
 
+    public function getChatHistoryIdByThreadId($sThreadId)
+    {
+        $sThreadId = (string)$sThreadId;
+        if ($sThreadId === '' || $sThreadId === ':')
+            return 0;
+        return (int)$this->getOne("SELECT `id` FROM `sys_agents_chat_history` WHERE `thread_id` = :t", [
+            't' => $sThreadId,
+        ]);
+    }
+
+    public function getChatHistoryMessagesByThreadId($sThreadId)
+    {
+        $sThreadId = (string)$sThreadId;
+        if ($sThreadId === '')
+            return '';
+        return $this->getOne("SELECT `messages` FROM `sys_agents_chat_history` WHERE `thread_id` = :t", [
+            't' => $sThreadId,
+        ]);
+    }
+
+    public function getChatHistoryClosedReasonById($iHistoryId)
+    {
+        $iHistoryId = (int)$iHistoryId;
+        if ($iHistoryId <= 0 || !$this->isFieldExists('sys_agents_chat_history', 'closed_reason'))
+            return '';
+        return (string)$this->getOne(
+            "SELECT `closed_reason` FROM `sys_agents_chat_history` WHERE `id` = :id",
+            ['id' => $iHistoryId]
+        );
+    }
+
+    public function isNewChatSession($sThreadId)
+    {
+        $sThreadId = (string)$sThreadId;
+        if ($sThreadId === '')
+            return true;
+
+        $aRow = $this->getRow("SELECT `ip`, `messages` FROM `sys_agents_chat_history` WHERE `thread_id` = :t", [
+            't' => $sThreadId,
+        ]);
+        if (!$aRow)
+            return true;
+
+        $iIp = (int)($aRow['ip'] ?? 0);
+        $sMessages = trim((string)($aRow['messages'] ?? ''));
+        return $iIp <= 0 || $sMessages === '' || $sMessages === '[]';
+    }
+
+    public function countChatSessionsByIp($sIp, $sPrefix, $iWindowSec)
+    {
+        $sSince = date('Y-m-d H:i:s', time() - (int)$iWindowSec);
+        return (int)$this->getOne("
+            SELECT COUNT(*) FROM `sys_agents_chat_history`
+            WHERE `ip` = :ip
+              AND (`thread_id` = :prefix OR `thread_id` LIKE :prefix_like)
+              AND `created_at` >= :since
+        ", [
+            'ip' => $sIp,
+            'prefix' => $sPrefix,
+            'prefix_like' => $sPrefix . ':%',
+            'since' => $sSince,
+        ]);
+    }
+
     public function getChatArtifactsByHistoryIds($aIds)
     {
         $aIds = array_values(array_unique(array_filter(array_map('intval', (array)$aIds))));
