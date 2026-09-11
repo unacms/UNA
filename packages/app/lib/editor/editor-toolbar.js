@@ -10,6 +10,7 @@ import { View } from 'app/design/view'
 import { Button } from 'app/design/controls'
 import { cn } from 'app/lib/util'
 import { getTiptapEditorFromContainer } from 'app/lib/editor/comment-editor-keyboard'
+import { useTranslation } from 'react-i18next'
 
 export const EDITOR_TOOLBAR_COMMAND_IDS = [
     'bold',
@@ -107,6 +108,7 @@ function ToolbarButton({ label, active, disabled, onPress }) {
 }
 
 function LinkBar({ initialUrl = '', onSubmit, onCancel, className }) {
+    const { t } = useTranslation()
     const [url, setUrl] = useState(initialUrl || '')
 
     return (
@@ -125,14 +127,14 @@ function LinkBar({ initialUrl = '', onSubmit, onCancel, className }) {
             <Button
                 variant="text"
                 size="xs"
-                title="Insert"
+                title={t('Insert')}
                 onPress={() => onSubmit?.(url.trim())}
                 hitarea={false}
             />
             <Button
                 variant="text"
                 size="xs"
-                title="Cancel"
+                title={t('Cancel')}
                 onPress={onCancel}
                 hitarea={false}
             />

@@ -9,6 +9,7 @@ import emitter from 'app/context/emitter';
 import { useFormInstanceId } from 'app/context/form-instance';
 import { useFormUploading } from 'app/lib/form/form-helpers';
 import { useFormField } from 'app/lib/form/use-form-field';
+import { useTranslation } from 'react-i18next';
 
 const isNative = Platform.OS !== 'web';
 
@@ -31,6 +32,7 @@ const VARIANT_TO_STYLE = {
 };
 
 export default function FormFieldSubmit(props) {
+    const { t } = useTranslation();
     const {
         value,
         form_name,
@@ -175,7 +177,7 @@ export default function FormFieldSubmit(props) {
                 </View>
                 {saveOnChanges && (
                     <NeoButton
-                        label="Reset"
+                        label={t('Reset')}
                         style="bordered"
                         controlSize={controlSize}
                         borderShape={borderShape}
@@ -188,7 +190,7 @@ export default function FormFieldSubmit(props) {
             {hiddenField}
             {showErrors && (
                 <View className="mt-2">
-                    <FormError errorText="Errors:" />
+                    <FormError errorText={t('Errors:')} />
                     <View className="ml-4">
                         {errorKeys.map((fieldName) => (
                             <FormError

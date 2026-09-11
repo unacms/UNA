@@ -1,6 +1,7 @@
 import { View, Row, ScrollView } from 'app/design/view'
 import { getFormFieldByData, FileButton } from 'app/lib/form/form-helpers'
 import { Text } from 'app/design/typography'
+import { useTranslation } from 'react-i18next'
 
 
 
@@ -66,6 +67,7 @@ export default function MediaAttachments({
     // If omitted: first `image` kind field, otherwise the first media field.
     asDefaultStorageKey,
 }) {
+    const { t } = useTranslation()
     const mediaFields = getMediaFields(inputs)
     if (!mediaFields.length) return null
 
@@ -78,7 +80,7 @@ export default function MediaAttachments({
         <>
             <View className='w-full flex-wrap my-1 flex-row border rounded-xl border-border   py-1 px-2 items-center'>
                 <Text className="font-semibold px-3 py-1 justify-center my-auto text-sm flex-auto text-secondary-foreground ">
-                    {label}
+                    {t(label)}
                 </Text>
                 <Row className=" justify-center items-center flex-row flex-wrap px-2">
                     {mediaFields.map(({ key, kind }) => (
@@ -88,7 +90,7 @@ export default function MediaAttachments({
                                 variant='text'
                                 icon={getIconForKind(kind)}
                                 rounded={false}
-                                tooltip={'Add '+ key}
+                                tooltip={t('Add') + ' ' + key}
                             />
                         </View>
                     ))}

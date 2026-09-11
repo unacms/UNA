@@ -10,6 +10,7 @@ import Time from 'app/ui/atoms/time';
 import { Text } from 'app/design/typography'
 import Redirect from 'app/ui/atoms/redirect';
 import { useBottomSheetData } from 'app/context/bottomsheet';
+import i18n from 'i18next';
 
 const getGeo = async () => {
     let { status } = await Location.requestForegroundPermissionsAsync();
@@ -101,8 +102,8 @@ export default function WorkerEventChecker(oProps) {
                             </View>}
                         </Row>
                         <Row className='justify-between pt-4'>
-                            <Button onPress={() => checkInEvent(item.id, item.url)} title='Check In' size="base" variant="primary" />
-                            <Button title='Ignore' size="base" onPress={() => forgotEvent(item.id)} />
+                            <Button onPress={() => checkInEvent(item.id, item.url)} title={i18n.t('Check In')} size="base" variant="primary" />
+                            <Button title={i18n.t('Ignore')} size="base" onPress={() => forgotEvent(item.id)} />
                         </Row>
 
                 </View>

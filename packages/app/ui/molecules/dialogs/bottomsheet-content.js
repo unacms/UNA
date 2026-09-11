@@ -9,8 +9,10 @@ import { StyleSheet } from "react-native";
 import { useTheme } from 'app/design/theme';
 import { Platform } from 'react-native'
 import { useWindowHeight } from 'app/context/measure';
+import { useTranslation } from 'react-i18next';
 
 export default function ElementBottomSheetContent(props) {
+    const { t } = useTranslation();
     const { bottomSheetData, setBottomSheetData } = useBottomSheetData();
     const [keepMounted, setKeepMounted] = useState(false);
     const isOpen = Boolean(bottomSheetData);
@@ -52,12 +54,12 @@ export default function ElementBottomSheetContent(props) {
             )}
             {showClose && (
                 <View className='absolute right-2 z-50 top-0 '>
-                    <Button startDecorator="X" tooltip='Close' variant='text' size='sm' onPress={onClose} />
+                    <Button startDecorator="X" tooltip={t('Close')} variant='text' size='sm' onPress={onClose} />
                 </View>
             )}
             {header}
         </>
-    ), [title, showClose, header, onClose]);
+    ), [title, showClose, header, onClose, t]);
 
     const contentView = useMemo(() => (
         <View className="mx-auto w-full flex-1 px-4">

@@ -73,7 +73,7 @@ export default function GridModals() {
                 </Modal>
             ) : null}
             {stripeCheckout ? (
-                <Modal scrollable title="Checkout" onVisible={!!stripeCheckout} onClose={() => closeStripe()}>
+                <Modal scrollable title={t('Checkout')} onVisible={!!stripeCheckout} onClose={() => closeStripe()}>
                     <View className='px-4'>
                         <Stripe
                             payment_type={stripeCheckout.payment_type}

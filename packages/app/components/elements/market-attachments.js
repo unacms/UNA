@@ -3,6 +3,7 @@ import Link from 'app/ui/atoms/link'
 import { Text } from 'app/design/typography'
 import { Icon } from 'app/ui/atoms/icon'
 import { BlockWrapper } from 'app/components/block-wrapper'
+import { useTranslation } from 'react-i18next'
 
 const VERSION_RE = /[-_]v\.?(\d+(?:\.\d+)*)/i
 const UPDATE_RE = /_update_(\d+(?:\.\d+)*)_(\d+(?:\.\d+)*)/i
@@ -104,6 +105,7 @@ function Section({ title, children }) {
 }
 
 export default function ElementMarketAttachments({ data, blockWrapperProps }) {
+    const { t } = useTranslation()
     const { latest, older, updates } = classifyAttachments(data)
 
     if (!latest && older.length === 0 && updates.length === 0) {
@@ -114,7 +116,7 @@ export default function ElementMarketAttachments({ data, blockWrapperProps }) {
         <BlockWrapper {...blockWrapperProps}>
             <View className="w-full mx-auto  gap-8 lg:p-4 p-2">
                 {latest ? (
-                    <Section title="Latest version">
+                    <Section title={t('Latest version')}>
                         <Row className="flex-wrap">
                             <View className="p-1 w-full sm:w-1/2 lg:w-1/3">
                                 <DownloadCard
@@ -129,7 +131,7 @@ export default function ElementMarketAttachments({ data, blockWrapperProps }) {
                 ) : null}
 
                 {older.length > 0 ? (
-                    <Section title="Older versions">
+                    <Section title={t('Older versions')}>
                         <View className="flex-wrap -m-1">
                             {older.map((item, index) => (
                                
@@ -145,7 +147,7 @@ export default function ElementMarketAttachments({ data, blockWrapperProps }) {
                 ) : null}
 
                 {updates.length > 0 ? (
-                    <Section title="Updates">
+                    <Section title={t('Updates')}>
                         <View className="flex-wrap -m-1">
                             {updates.map((item, index) => (
                                

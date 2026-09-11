@@ -3,6 +3,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { Platform } from 'react-native';
 import { getComponent } from 'app/components/registry';
 import { NeoButton } from "app/design/controls/neo-button/neo-button";
+import { useTranslation } from 'react-i18next';
 import emitter from 'app/context/emitter';
 import { appSetting } from 'app/lib/util';
 import { useFormInstanceId } from 'app/context/form-instance';
@@ -291,6 +292,7 @@ export function PollButton({
     rounded = true,
     ...rest
 }) {
+    const { t } = useTranslation();
     const resolved = resolveLegacyNeoButton({
         size, variant, style: neoStyle, controlSize, borderShape, rounded,
         fallbackStyle: 'bordered',
@@ -302,7 +304,7 @@ export function PollButton({
             style={resolved.style}
             controlSize={resolved.controlSize}
             borderShape={resolved.borderShape}
-            tooltip="Add Polls"
+            tooltip={t('Add Polls')}
             onPress={() => emitter.emit(`fld_polls_${field_name}`, { action: 'add' })}
             {...rest}
         />
@@ -321,6 +323,7 @@ export function LabelButton({
     rounded = true,
     ...rest
 }) {
+    const { t } = useTranslation();
     const resolved = resolveLegacyNeoButton({
         size, variant, style: neoStyle, controlSize, borderShape, rounded,
         fallbackStyle: 'bordered',
@@ -333,7 +336,7 @@ export function LabelButton({
             style={resolved.style}
             controlSize={resolved.controlSize}
             borderShape={resolved.borderShape}
-            tooltip="Add Labels"
+            tooltip={t('Add Labels')}
             onPress={() => emitter.emit(`fld_labels_${field_name}`, { action: 'add' })}
             {...rest}
         />
@@ -349,10 +352,11 @@ export function FileButton({
     borderShape,
     icon = "Image",
     rounded = true,
-    tooltip = "Add Files",
+    tooltip,
     source = 'library',
     ...rest
 }) {
+    const { t } = useTranslation();
     const resolved = resolveLegacyNeoButton({
         size, variant, style: neoStyle, controlSize, borderShape, rounded,
         fallbackStyle: 'borderless',
@@ -364,7 +368,7 @@ export function FileButton({
             style={resolved.style}
             controlSize={resolved.controlSize}
             borderShape={resolved.borderShape}
-            tooltip={tooltip}
+            tooltip={tooltip ?? t('Add Files')}
             onPress={() => emitter.emit(`fld_files_${field_name}`, { action: 'add', source: source })}
             {...rest}
         />

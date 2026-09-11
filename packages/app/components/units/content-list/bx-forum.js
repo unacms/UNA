@@ -12,6 +12,7 @@ import {
     getPostedTs,
     resolveUnitVariant,
 } from 'app/components/units/helpers'
+import { useTranslation } from 'react-i18next'
 
 const Units = {};
 
@@ -82,6 +83,7 @@ Units.Small = function Small({ data }) {
 }
 
 Units.Base = function Base({ data }) {
+    const { t } = useTranslation()
     const isSkeleton = data?.skeleton
     const categoryName = data.category?.name
     const categoryIcon = data.category?.icon
@@ -118,7 +120,7 @@ Units.Base = function Base({ data }) {
                                 {categoryName ? (
                                     <>
                                         {postedTs ? <Text className="text-xs text-muted-foreground">·</Text> : null}
-                                        <Text className="text-xs text-muted-foreground">in</Text>
+                                        <Text className="text-xs text-muted-foreground">{t('in')}</Text>
                                         <Text numberOfLines={1} className="text-xs font-semibold text-foreground">
                                             {categoryName}
                                         </Text>

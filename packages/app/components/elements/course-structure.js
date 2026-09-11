@@ -12,8 +12,10 @@ import { fetcher } from 'app/lib/fetcher'
 import { BlockByDataInt as BlockByData } from 'app/components/block';
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import { DragContext, DragItem, DragControl } from 'app/ui/molecules/form-controls/droppable'
+import { useTranslation } from 'react-i18next'
 
 function CourseStructure({ data }) {
+    const { t } = useTranslation();
     const { setBottomSheetData } = useBottomSheetData();
     const isEditable = data.isEditable;
     const courseId = data.entry_id;
@@ -103,8 +105,8 @@ function CourseStructure({ data }) {
             }
 
             const manageMenu = [
-                { title: "Edit module", action: "edit" },
-                { title: "Delete module", action: "delete" },
+                { title: t('Edit module'), action: "edit" },
+                { title: t('Delete module'), action: "delete" },
             ];
 
             return (
@@ -115,7 +117,7 @@ function CourseStructure({ data }) {
                                 {!isEditable && <Progress value={item.percent} />}
 
                                 <Row className='justify-between'>
-                                    <View className='my-2 text-xs '><Text className="text-white">Module {item.index}</Text></View>
+                                    <View className='my-2 text-xs '><Text className="text-white">{t('Module {{index}}', { index: item.index })}</Text></View>
                                     {isEditable && <Row className='items-center justify-center gap-x-2'><DropdownMenu items={manageMenu} onSelect={(oItem) => { handleManage(oItem, item.id) }}><Button rounded startDecorator="Cog" size='sm' /></DropdownMenu><DragControl dragHandleProps={dragHandleProps}><Button rounded startDecorator="ArrowLeftRight" size='sm' /></DragControl></Row>}
                                 </Row>
                                 <View className='h-12'>
@@ -151,7 +153,7 @@ function CourseStructure({ data }) {
                     {isEditable && (<View className='m-2 w-72'>
                         <Card rounded=' rounded-none sm:rounded-2xl  ' >
                             <View className='h-40 items-center justify-center'>
-                                <Button rounded startDecorator="Plus" title="Add new" onPress={(event) => { handleAddModule(event, courseId) }} size='sm' />
+                                <Button rounded startDecorator="Plus" title={t('Add new')} onPress={(event) => { handleAddModule(event, courseId) }} size='sm' />
                             </View>
                         </Card>
                     </View>)

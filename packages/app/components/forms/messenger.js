@@ -10,8 +10,10 @@ import { FileButton } from 'app/lib/form/form-helpers'
 import { useWindowHeight, useIsDesktop } from 'app/context/measure'
 import { useSound } from 'app/lib/hooks/use-sound'
 import emitter from 'app/context/emitter'
+import { useTranslation } from 'react-i18next'
 
 export default function FormMessenger(props) {
+    const { t } = useTranslation()
     const isWeb = Platform.OS == 'web'
     const screenHeight = useWindowHeight()
     const isDesktop = useIsDesktop()
@@ -102,7 +104,7 @@ export default function FormMessenger(props) {
                                     classes: 'text-card-foreground tiptap-comments',
                                     autofocus: false,
                                     bg: 'transparent',
-                                    placeholder: 'Message...',
+                                    placeholder: t('Message...'),
                                     noPadding: true,
                                     initialHeight: minHeightEditor,
                                     maxHeight: maxHeightEditor,
@@ -142,12 +144,12 @@ export default function FormMessenger(props) {
                                                 noPadding: true,
                                                 icon_only: true,
                                                 icon: 'ArrowUp',
-                                                title: 'Send',
+                                                title: t('Send'),
                                                 size: 'sm',
                                                 style: 'glassProminent',
                                                 rounded: true,
-                                                alt: 'Send',
-                                                tooltip: 'Send',
+                                                alt: t('Send'),
+                                                tooltip: t('Send'),
                                             }
                                         )}
                                     </View>

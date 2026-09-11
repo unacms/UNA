@@ -25,6 +25,7 @@ const Logo = ({ mode = 'adaptive' }) => {
     // View's text color, so on first render `currentColor` falls back to the
     // theme primary (blue) until the subtree re-renders.
     const { colors } = useTheme()
+    const { t } = useTranslation()
     const logoColor = colors.default
 
     const textStyles = {
@@ -41,7 +42,7 @@ const Logo = ({ mode = 'adaptive' }) => {
         <Row className="items-center gap-3 text-foreground web:hover:animate-pulse">
             <View className={`${markStyles[mode]}`}>
                 <Svg
-                    aria-label="Logo Mark"
+                    aria-label={t('Logo Mark')}
                     width={32}
                     height={32}
                     color={logoColor}
@@ -76,7 +77,7 @@ const Logo = ({ mode = 'adaptive' }) => {
             </View>
             <View className={`${textStyles[mode]}`}>
                 <Svg
-                    aria-label="Logo Text"
+                    aria-label={t('Logo Text')}
                     width={68}
                     height={32}
                     viewBox="0 0 68 32"

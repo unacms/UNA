@@ -898,7 +898,7 @@ function ActionButton({ imagesList, props, selectImage, handleDelete, bMultiple,
                                 controlSize="mini"
                                 borderShape="circle"
                                 image="X"
-                                accessibilityLabel="Close"
+                                accessibilityLabel={t('Close')}
                                 onPress={() => handleDelete(img)}
                             />
                         </View>
@@ -958,7 +958,7 @@ function GhostsList(imagesList, bMultiple, handleDelete, props) {
                         controlSize="mini"
                         borderShape="circle"
                         image="X"
-                        accessibilityLabel="Close"
+                        accessibilityLabel={i18n.t('Close')}
                         onPress={() => handleDelete(img)}
                     />
                 </View>

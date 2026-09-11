@@ -5,6 +5,7 @@ import Link from 'app/ui/atoms/link'
 import { getRandomColor, appSetting } from 'app/lib/util';
 import { memo } from 'react';
 import { getComponent } from 'app/components/registry';
+import { useTranslation } from 'react-i18next';
 /**
  * displayType: 
  *    1. unit, 
@@ -165,6 +166,7 @@ function UnitTextLink({ oProps, sSizeFont, emulate }) {
 
 
 function AtomProfile_(oProps) {
+    const { t } = useTranslation();
     //--- display type
     const sDisplayType = oProps.displayType
         ? oProps.displayType
@@ -250,7 +252,7 @@ function AtomProfile_(oProps) {
             return (
                 <View className="relative flex-row">
                     <View className={sSize}>
-                        <Text>Undefined</Text>
+                        <Text>{t('Undefined')}</Text>
                     </View>
                 </View>
             )

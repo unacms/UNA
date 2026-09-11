@@ -113,7 +113,7 @@ export function SearchPanel(props) {
                         placeholder={t('Search') + '...'}
                         defaultValue={inputValue}
                         role="textbox"
-                        aria-label="Search"
+                        aria-label={t('Search')}
                         onChangeText={(value) => {
                             setInputValue(value)
                         }}

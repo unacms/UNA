@@ -78,7 +78,7 @@ export default function ({
                         variant="primary"
                         size="base"
                         disabled={value2.length === 0}
-                        title="Apply"
+                        title={t('Apply')}
                         onPress={() => setValue(value2)}
                     />
                 </View>

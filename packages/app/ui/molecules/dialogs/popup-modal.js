@@ -23,7 +23,7 @@ export default function () {
             <BlockByUrl url="/api.php?r=system/login_form/TemplServiceLogin" formProps={{ auto_focus: true, hide_errors: true, button_full_width: true }} />
             <View className="flex-row items-center justify-center w-full">
                 <View className="flex-1 h-px w-full bg-secondary dark:bg-muted-foreground" />
-                <Text className="mx-4 text-xs text-muted-foreground  font-normal">OR</Text>
+                <Text className="mx-4 text-xs text-muted-foreground  font-normal">{t('OR')}</Text>
                 <View className="flex-1 h-px w-full bg-secondary dark:bg-muted-foreground" />
             </View>
             <View className="gap-y-2 w-full">

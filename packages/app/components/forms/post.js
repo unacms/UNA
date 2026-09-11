@@ -6,8 +6,10 @@ import Profile from 'app/ui/molecules/profile/profile';
 import { useCurrentUser } from 'app/context/user';
 import { Text } from 'app/design/typography'
 import MediaAttachments from 'app/components/form-fields/media-attachments'
+import { useTranslation } from 'react-i18next'
 
 export default function FormPost(props) {
+    const { t } = useTranslation()
     const { data, handleSubmit } = props;
     const inputs = data.inputs;
 
@@ -97,11 +99,11 @@ export default function FormPost(props) {
                     inputs={inputs}
                     handleSubmit={handleSubmit}
                     formName={props.name}
-                    label="Add to post"
+                    label={t('Add to post')}
                 />
 
                 <View className='w-full my-1 flex-row border rounded-xl border-border  py-1 px-2'>
-                    <Text className="font-semibold px-3 py-1 justify-center my-auto text-sm  text-secondary-foreground ">Labels</Text>
+                    <Text className="font-semibold px-3 py-1 justify-center my-auto text-sm  text-secondary-foreground ">{t('Labels')}</Text>
                     <Row className=" justify-end items-center flex-auto px-2 ">
                         {getFormFieldByData(
                             inputs['labels'],
@@ -113,7 +115,7 @@ export default function FormPost(props) {
                 </View>
 
                 <View className='w-full my-1 flex-row border rounded-xl border-border  py-1 px-2'>
-                    <Text className="font-semibold px-3 py-1 my-auto text-sm  text-secondary-foreground ">Category</Text>
+                    <Text className="font-semibold px-3 py-1 my-auto text-sm  text-secondary-foreground ">{t('Category')}</Text>
                     <Row className=" justify-end items-center flex-auto px-2 ">
                         {getFormFieldByData(
                             inputs['cat'],
@@ -125,7 +127,7 @@ export default function FormPost(props) {
                 </View>
 
                 <View className='w-full flex-row my-1  border rounded-xl border-border  py-1 px-2 mb-2'>
-                    <Text className="font-semibold px-3 py-1  my-auto text-sm flex-auto text-secondary-foreground ">Allow Comments</Text>
+                    <Text className="font-semibold px-3 py-1  my-auto text-sm flex-auto text-secondary-foreground ">{t('Allow Comments')}</Text>
                     <View className=" gap-x-2 px-2 py-0.5 justify-start items-center  ">
                         {getFormFieldByData(
                             inputs['allow_comments'],

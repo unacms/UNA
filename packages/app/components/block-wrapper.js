@@ -112,7 +112,7 @@ export function BlockWrapper({ config, block, wrapperClassses, showTitle, showBg
 
     return (
         <View className={`${wrapperClassses || 'w-full'} ${fillClass}`}>
-            {(isHelp && !isHelpLink) && <Modal title="Help" onVisible={!!showHelp} onClose={() => { setShowHelp(false) }} transparent={false}>
+            {(isHelp && !isHelpLink) && <Modal title={t('Help')} onVisible={!!showHelp} onClose={() => { setShowHelp(false) }} transparent={false}>
                 <Html data={pureHelp} />
             </Modal>}
             <View className={`@container/block w-full ${fillClass}`}>
@@ -155,8 +155,8 @@ export function BlockWrapper({ config, block, wrapperClassses, showTitle, showBg
                                     />
                                 ) : null}
                             </BlockActions>)}
-                            {(isHelp && isHelpLink) && <ButtonLink href={pureHelp} target="_blank" title="Help" startDecorator='LifeBuoy' variant="text" />}
-                            {(isHelp && !isHelpLink) && <Button onPress={() => setShowHelp(true)} title="Help" startDecorator='LifeBuoy' variant="text" />}
+                            {(isHelp && isHelpLink) && <ButtonLink href={pureHelp} target="_blank" title={t('Help')} startDecorator='LifeBuoy' variant="text" />}
+                            {(isHelp && !isHelpLink) && <Button onPress={() => setShowHelp(true)} title={t('Help')} startDecorator='LifeBuoy' variant="text" />}
                         </BlockHeader>
                     )}
                     <BlockContent

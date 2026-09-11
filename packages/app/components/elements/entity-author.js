@@ -15,8 +15,10 @@ import FormModal, { handleFormModal } from 'app/ui/molecules/dialogs/form-modal'
 import { useIsDesktop } from 'app/context/measure';
 import { BlockWrapper } from 'app/components/block-wrapper'
 import { runMenuItemCallback } from 'app/lib/util'
+import { useTranslation } from 'react-i18next'
 
 export default function ElementEntityAuthor({ data, blockWrapperProps }) {
+    const { t } = useTranslation();
     const { currentUser } = useCurrentUser();
     const [viewState, setViewState] = useState({ view: '' })
     const [postData, setPostData] = useState(null)
@@ -42,7 +44,7 @@ export default function ElementEntityAuthor({ data, blockWrapperProps }) {
                 !!context?.id && (
 
                     <Row className='items-center gap-x-1 justify-start'>
-                        <Text className=" text-center font-medium leading-5 text-xs text-secondary-foreground">in</Text>
+                        <Text className=" text-center font-medium leading-5 text-xs text-secondary-foreground">{t('in')}</Text>
                         {isContextLinkable ? (
                             <Link href={contextUrl} size="xs" variant="secondary">
                                 {contextIdentity}

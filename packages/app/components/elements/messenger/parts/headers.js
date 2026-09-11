@@ -88,7 +88,7 @@ const CONVO_MENU_ITEMS = [
 export function ConvoActionsMenu({ onAction, style = 'glass' }) {
     const { t } = useTranslation();
     return (
-        <DropdownMenu onSelect={onAction} items={CONVO_MENU_ITEMS}>
+        <DropdownMenu onSelect={onAction} items={CONVO_MENU_ITEMS.map((item) => ({ ...item, title: t(item.title) }))}>
             <NeoButton
                 style={style}
                 controlSize="regular"
@@ -102,13 +102,14 @@ export function ConvoActionsMenu({ onAction, style = 'glass' }) {
 
 /** Inbox / direct tabs — conductor native-glass pills (idle glass, selected tinted). */
 export function MenuSwitcher({ items, index, onChange }) {
+    const { t } = useTranslation();
     if (!items || items.length < 2) return null;
     return (
         <Row className="items-center gap-2">
             {items.map((item, i) => (
                 <NeoButton
                     key={item.name}
-                    label={item.title}
+                    label={t(item.title)}
                     style="glass"
                     selected={i === index}
                     selectedState="pressedToggle"

@@ -22,6 +22,7 @@ import Badge from 'app/ui/molecules/profile/badge'
 import { Loading } from 'app/customization/loading'
 import { renderForm } from 'app/components/elements/form'
 import { BlockWrapper } from 'app/components/block-wrapper'
+import { useTranslation } from 'react-i18next'
 
 export function ReputationActions({ data, blockWrapperProps }) {
     return (
@@ -145,13 +146,14 @@ export function ReputationWidget({ data }) {
 }
 
 function ReputationSummarySimple({ data }) {
+    const { t } = useTranslation()
     const [isModal, setIsModal] = useState(false)
     const [isModal2, setIsModal2] = useState(false)
     return (
         <View className="w-full">
             <Modal
                 scrollable
-                title="Score rules"
+                title={t('Score rules')}
                 onVisible={isModal}
                 onClose={() => setIsModal(false)}
             >
@@ -161,7 +163,7 @@ function ReputationSummarySimple({ data }) {
             </Modal>
             <Modal
                 scrollable
-                title="Levels"
+                title={t('Levels')}
                 onVisible={isModal2}
                 onClose={() => setIsModal2(false)}
             >
@@ -281,6 +283,7 @@ const StarIcon = ({ color, size = 28 }) => (
 )
 
 export function ReputationLeaderboard({ data }) {
+    const { t } = useTranslation()
     const formProps = data?.filter_form
         ? { ...data?.filter_form, layout: 'hor', name: 'reputaion_filter_form' }
         : null
@@ -289,7 +292,7 @@ export function ReputationLeaderboard({ data }) {
         formProps.data.inputs.days.caption = ''
     }
     if (formProps?.data?.inputs?.username) {
-        formProps.data.inputs.username.placeholder = 'Search by name'
+        formProps.data.inputs.username.placeholder = t('Search by name')
         formProps.data.inputs.username.caption = ''
     }
 

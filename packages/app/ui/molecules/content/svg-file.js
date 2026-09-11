@@ -4,10 +4,12 @@ import { Text } from 'app/design/typography'
 import { appSetting } from 'app/lib/util';
 import { useTheme, useThemeValue } from 'app/design/theme';
 import { useResolveClassNames } from 'uniwind';
+import { useTranslation } from 'react-i18next';
 
 export default function ({ src_dark, src_default, width, height, colorize = false, className = '', color, alt = '', accessibilityLabel, style, ...props }) {
     const [xml, setXml] = useState(null);
     const [error, setError] = useState(null);
+    const { t } = useTranslation();
     const { colors } = useTheme();
     const resolvedClassStyle = useResolveClassNames(className || '');
     const resolvedColor = color || resolvedClassStyle?.color || colors.default;
@@ -62,7 +64,7 @@ export default function ({ src_dark, src_default, width, height, colorize = fals
     }, [src]);
 
     if (error) {
-        return <Text className="text-red-500 text-xs">SVG Error: {error}</Text>;
+        return <Text className="text-red-500 text-xs">{t('SVG Error:')} {error}</Text>;
     }
 
     return renderedXml ? (
@@ -78,6 +80,6 @@ export default function ({ src_dark, src_default, width, height, colorize = fals
             {...props}
         />
     ) : (
-        <Text className="text-gray-500 text-xs">Loading SVG...</Text>
+        <Text className="text-gray-500 text-xs">{t('Loading SVG...')}</Text>
     );
 };

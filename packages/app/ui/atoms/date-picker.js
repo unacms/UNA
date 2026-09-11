@@ -306,7 +306,7 @@ export default function ({ name, value = '', type, onChange, children, buttonPro
    
     return (
         <>
-            <Modal onVisible={!!showModal} title={'Select date'} onClose={() => { setShowModal(false) }} transparent={false}>
+            <Modal onVisible={!!showModal} title={t('Select date')} onClose={() => { setShowModal(false) }} transparent={false}>
                 <View className='   w-full mx-auto'>
                     <View className='  w-full '>
                         <CalendarHeader value={cValue} addMonth={addMonth} setDatePart={setDatePart} />
@@ -324,7 +324,7 @@ export default function ({ name, value = '', type, onChange, children, buttonPro
                     align="start"
                     {...buttonProps}
                     onPress={() => setShowModal(true)}
-                    accessibilityLabel={dValue ? formatDate(dValue, t, dateDisplayOpts) : 'Select date'}
+                    accessibilityLabel={dValue ? formatDate(dValue, t, dateDisplayOpts) : t('Select date')}
                 >
                     {children}
                 </NeoButton>
@@ -334,11 +334,11 @@ export default function ({ name, value = '', type, onChange, children, buttonPro
                     className="min-w-0 flex-1"
                     onPress={() => setShowModal(true)}
                     accessibilityRole="button"
-                    accessibilityLabel={dValue ? formatDate(dValue, t, dateDisplayOpts) : 'Select date'}
+                    accessibilityLabel={dValue ? formatDate(dValue, t, dateDisplayOpts) : t('Select date')}
                 >
                     <InputWithIcons
                         value={dValue ? formatDate(dValue, t, dateDisplayOpts) : ''}
-                        placeholder="Select date"
+                        placeholder={t('Select date')}
                         rounded="default"
                         readOnly
                         editable={Platform.OS === 'web' ? undefined : false}
@@ -355,7 +355,7 @@ export default function ({ name, value = '', type, onChange, children, buttonPro
                                 value={tValue[0]}
                                 options={hours}
                                 onChange={val => applyTimeValues(val, tValue[1], false)}
-                                label="hours"
+                                label={t('hours')}
                             />
                             <View className="h-9 w-2 shrink-0 items-center justify-center">
                                 <Text className="text-sm font-medium tracking-tight text-secondary-foreground">:</Text>
@@ -364,7 +364,7 @@ export default function ({ name, value = '', type, onChange, children, buttonPro
                                 value={tValue[1]}
                                 options={minutes}
                                 onChange={val => applyTimeValues(tValue[0], val, false)}
-                                label="minutes"
+                                label={t('minutes')}
                             />
                         </Row>
                     ) : (
@@ -374,7 +374,7 @@ export default function ({ name, value = '', type, onChange, children, buttonPro
                                 onChangeText={text => handleChangeTime(text, 23, 'h')}
                                 onBlur={handleChangeTime2}
                                 onStep={delta => adjustTime('h', delta)}
-                                label="hours"
+                                label={t('hours')}
                             />
                             <View className="h-9 w-2 shrink-0 items-center justify-center">
                                 <Text className="text-sm font-medium tracking-tight text-secondary-foreground">:</Text>
@@ -384,7 +384,7 @@ export default function ({ name, value = '', type, onChange, children, buttonPro
                                 onChangeText={text => handleChangeTime(text, 59, 'm')}
                                 onBlur={handleChangeTime2}
                                 onStep={delta => adjustTime('m', delta)}
-                                label="minutes"
+                                label={t('minutes')}
                             />
                         </Row>
                     )

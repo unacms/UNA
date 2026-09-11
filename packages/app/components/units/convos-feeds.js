@@ -13,6 +13,7 @@ import DropdownMenu from "app/ui/atoms/dropdown-menu";
 import { getComponent } from 'app/components/registry';
 import Form from "../elements/form";
 import { useSendData } from "../elements/messenger/hooks/useHistory";
+import { useTranslation } from 'react-i18next';
 
 const ListFeed = memo((data) => {
     const { author_data, message, date, title, count, onPress, isActive } = data || {};
@@ -77,6 +78,7 @@ const ImagesComponent = ({ files }) => {
 }
 
 const MsgFeed = memo(({ item, handlerMenuSelect }) => {
+    const { t } = useTranslation();
     const Reactions = getComponent('molecule', 'reactions');
     const { currentUser } = useCurrentUser(),
         { author_data, created, count, files, message, menu, id, reactions } = item,
@@ -112,7 +114,7 @@ const MsgFeed = memo(({ item, handlerMenuSelect }) => {
                             {
                                 mode === 'edit' && <View className="absolute right-0">
                                     <Button
-                                        title="Cancel"
+                                        title={t('Cancel')}
                                         size="xs"
                                         startDecorator="X"
                                         variant="outline"

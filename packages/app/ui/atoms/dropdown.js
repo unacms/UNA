@@ -6,6 +6,7 @@ import { Modal } from 'app/design/controls'
 import { View } from 'app/design/view';
 import { Platform } from 'react-native'
 import { Button } from 'app/design/controls';
+import { useTranslation } from 'react-i18next';
 
 const toScalar = (val) => {
     if (val === null || val === undefined) return '';
@@ -14,6 +15,7 @@ const toScalar = (val) => {
 };
 
 export default function Dropdown(props) {
+    const { t } = useTranslation();
     const pickerRef = useRef();
 
     const [selectedVal, setSelectedVal] = useState(toScalar(props.value));
@@ -66,7 +68,7 @@ export default function Dropdown(props) {
     else{
         return ( <View>
             <Button title={selectedText} onPress={() => setShowImage(true)} />
-            <Modal title="Title" id={'dropdown'} onVisible={showImage} onClose={() => setShowImage(false)}>
+            <Modal title={t('Title')} id={'dropdown'} onVisible={showImage} onClose={() => setShowImage(false)}>
                 <PickerStyledIos itemStyle={{fontSize:16, color:colors.default }}
                     size={props.size}
                     selectedValue={selectedVal}

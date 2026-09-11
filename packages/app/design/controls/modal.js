@@ -12,6 +12,7 @@ import emitter from 'app/context/emitter';
 import { confirmDiscardUnsavedFormChanges } from 'app/lib/form/form-helpers';
 import { ModalKbAwareScroll } from 'app/ui/atoms/kb-avoiding-view';
 import { pushFormEnsureVisibleHandler, scrollContainerByDelta } from 'app/lib/form/form-ensure-visible';
+import { useTranslation } from 'react-i18next';
 
 function NativeModalSafePad({ autoHeight, sClassPosition, children }) {
     const insets = useStableSafeAreaInsets();
@@ -37,6 +38,7 @@ const isIPadWeb =
 const modalSettings = appSetting('theme', 'modal');
 
 function ModalHeader({ title, headerBorder, onClose }) {
+    const { t } = useTranslation();
     const align = !title && onClose ? 'end' : 'center';
     if (!title) return null;
     const type = typeof title;
@@ -53,7 +55,7 @@ function ModalHeader({ title, headerBorder, onClose }) {
             {(title && type !== 'string') && (title)}
             {(onClose && type === 'string') && (
                 <View className='absolute right-3 top-0 bottom-0 justify-center items-center'>
-                    <NeoButton style="glass" controlSize="regular" borderShape="circle" image="X" accessibilityLabel="Close" onPress={onClose} />
+                    <NeoButton style="glass" controlSize="regular" borderShape="circle" image="X" accessibilityLabel={t('Close')} onPress={onClose} />
                 </View>
             )}
         </Row>

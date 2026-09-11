@@ -105,7 +105,7 @@ export default function ProfileSwitcher({ className, rounded = 'rounded-lg', chi
                                         <View className="flex-none ">{profile}</View>
                                         <Text className='text-sm my-auto flex-auto font-semibold truncate text-popover-foreground '>{item.display_name}</Text>
                                         <View className="text-sm bont-semibold flex-none my-auto">
-                                            <Button id="menu" startDecorator="RefreshCw" title="Switch" variant='outline' size='sm' onPress={() => handleSwitch(item.id)} />
+                                            <Button id="menu" startDecorator="RefreshCw" title={t('Switch')} variant='outline' size='sm' onPress={() => handleSwitch(item.id)} />
                                         </View>
                                     </View>
                                 </Link>

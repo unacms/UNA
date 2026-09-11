@@ -3,6 +3,7 @@ import { updateRouteDataForConnection, appSetting } from 'app/lib/util'
 import { getComponent } from 'app/components/registry';
 import { View } from 'app/design/view'
 import { settingsLayout } from 'app/settings/layout'
+import i18n from 'i18next'
 
 export function ProfileDisplayName(title) {
     return title;
@@ -235,7 +236,7 @@ export function getUnitMenuItems(unitType, data, handleClick, t, moduleName) {
 
         if (!primaryMenuItem) {
             primaryMenuItem = {
-                title: "View",
+                title: i18n.t('View'),
                 onPress: (event) => handleClick(event, data.url),
             };
         }

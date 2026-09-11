@@ -9,6 +9,7 @@ import { useTheme, useThemeValue } from 'app/design/theme'
 import { useCSSVariable } from 'uniwind'
 import { appSetting, cn } from 'app/lib/util'
 import emitter from 'app/context/emitter'
+import { useTranslation } from 'react-i18next'
 
 const inputSettings = appSetting('theme', 'inputs')
 
@@ -17,6 +18,7 @@ const inputSettings = appSetting('theme', 'inputs')
  * Web resolves `editor-markdown.web.js` (@mdxeditor/editor).
  */
 export default function FormFieldMarkdownEditor(props) {
+    const { t } = useTranslation()
     const formContext = useFormContext()
     const placeholder = props.use_caption_as_placeholder
         ? props.caption
@@ -180,7 +182,7 @@ export function MarkdownTextInput({
                         onPress={() => editorRef.current?.toggleStrikethrough()}
                     />
                     <ToolbarButton
-                        label="Link"
+                        label={t('Link')}
                         active={styleState.link?.isActive}
                         onPress={() => {
                             if (styleState.link?.isActive) {

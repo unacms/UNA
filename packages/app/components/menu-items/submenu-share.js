@@ -6,8 +6,10 @@ import { setClipboard, appSetting } from 'app/lib/util';
 import Msg from 'app/ui/molecules/dialogs/msg';
 import { useState } from 'react';
 import MenuItemActionBase from 'app/lib/menu-item-helpers';
+import { useTranslation } from 'react-i18next';
 
 export default function MenuItemSubmenuShare(oProps) {
+    const { t } = useTranslation();
     const [showMsg, setShowMsg] = useState(false);
     const isWeb = Platform.OS === 'web';
     const oIconAliases = appSetting('menu_items', 'iconset');
@@ -17,7 +19,7 @@ export default function MenuItemSubmenuShare(oProps) {
             case 'item-repost':
                 const sResponse = await fetcher('/api.php?r=bx_timeline/repost/&params=' + JSON.stringify(Object.values(oItem.data)));
                 if (sResponse?.data) {
-                    const sMsg = sResponse.data?.message ? sResponse.data?.message : 'Post shared successfully.';
+                    const sMsg = sResponse.data?.message ? sResponse.data?.message : t('Post shared successfully.');
                     setShowMsg(sMsg);
                 }
                 break;

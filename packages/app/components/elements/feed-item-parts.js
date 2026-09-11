@@ -245,7 +245,7 @@ export const ItemInfo = memo(({ data, t }) => {
                         }}
                         transparent={true}
                         headerBorder={true}
-                        title="Posted to"
+                        title={t('Posted to')}
                     >
                         <View className="gap-x-2 mb-2">
                             {owners.map((item, index) => (
@@ -321,6 +321,7 @@ export const ItemInfo = memo(({ data, t }) => {
 })
 
 export const MenuManage = ({ id, menu, setViewState, data }) => {
+    const { t } = useTranslation()
     const [menuData, setMenuData] = useState(false)
     const fetchedRef = useRef(false)
     const dataRef = useRef(data)
@@ -434,7 +435,7 @@ const MenuManage_ = memo(({ id, menu, setViewState, defaultOpen }) => {
     return (
         aMenuManageItems?.length > 0 && (
             <>
-                <View className="flex-none" aria-label="Manage menu">
+                <View className="flex-none" aria-label={t('Manage menu')}>
                     <DropdownMenu
                         mode="popup"
                         items={aMenuManageItems}

@@ -2,8 +2,10 @@ import { View } from 'app/design/view'
 import { getFormFieldByData, getHiddenFields } from 'app/lib/form/form-helpers'
 import { appSetting } from 'app/lib/util'
 import MediaAttachments, { getMediaFields } from 'app/components/form-fields/media-attachments'
+import { useTranslation } from 'react-i18next'
 
 export default function FormAds(props) {
+    const { t } = useTranslation()
     const { data, handleSubmit, name } = props
     const inputs = data.inputs
 
@@ -30,7 +32,7 @@ export default function FormAds(props) {
                                 inputs={inputs}
                                 handleSubmit={handleSubmit}
                                 formName={name}
-                                label="Attachments"
+                                label={t('Attachments')}
                             />
                         )
                     }

@@ -16,6 +16,7 @@ import { Platform } from 'react-native'
 import { getWindowSafeAreaInsets, useRouter } from 'app/lib/hooks/router'
 import { navigateBackInTab } from 'app/lib/navigation/tab-history'
 import { useCoverBackTabKey, useShowCoverBackButton } from 'app/components/elements/use-cover-back'
+import { useTranslation } from 'react-i18next'
 
 // Matches `top-3` overlay spacing on the full cover.
 const COVER_CONTROL_TOP = 10
@@ -30,6 +31,7 @@ export function nativeTabsTopPadStyle() {
 }
 
 function BackButton() {
+    const { t } = useTranslation()
     const router = useRouter()
     const { currentUser } = useCurrentUser()
     const currentTab = useCoverBackTabKey()
@@ -59,7 +61,7 @@ function BackButton() {
                 style="glass"
                 controlSize="regular"
                 borderShape="circle"
-                accessibilityLabel="Back"
+                accessibilityLabel={t('Back')}
                 onPress={handleBackPress}
             />
         </View>

@@ -4,8 +4,10 @@ import { View } from "app/design/view";
 import { CardList } from 'app/ui/molecules/page/card'
 import { getComponent } from 'app/components/registry';
 import { UnitText, UnitTitle } from 'app/components/units/helpers'
+import { useTranslation } from 'react-i18next'
 
 export default function Unit({ data }) {
+    const { t } = useTranslation();
     const Stars = getComponent('molecule', 'stars');
     let sRate = undefined;
     if (data.meta?.items)
@@ -34,10 +36,10 @@ export default function Unit({ data }) {
                         />
                     </Link>
                     <View className="mt-auto flex-row gap-x-1.5">
-                        <Text className="font-medium text-secondary-foreground  text-sm border border-border/60 rounded-full px-2 py-1">Author</Text>
+                        <Text className="font-medium text-secondary-foreground  text-sm border border-border/60 rounded-full px-2 py-1">{t('Author')}</Text>
 
-                        {data.pay_hourly > 0 && <Text className="font-medium text-secondary-foreground  text-sm bg-green-200 dark:bg-green-800 rounded-full px-2 py-1">Hourly: {data.pay_hourly}$</Text>}
-                        {data.pay_total > 0 && <Text className="font-medium text-secondary-foreground  text-sm bg-blue-200 dark:bg-blue-800 rounded-full px-2 py-1">Total: {data.pay_total}$</Text>}
+                        {data.pay_hourly > 0 && <Text className="font-medium text-secondary-foreground  text-sm bg-green-200 dark:bg-green-800 rounded-full px-2 py-1">{t('Hourly:')} {data.pay_hourly}$</Text>}
+                        {data.pay_total > 0 && <Text className="font-medium text-secondary-foreground  text-sm bg-blue-200 dark:bg-blue-800 rounded-full px-2 py-1">{t('Total:')} {data.pay_total}$</Text>}
 
                     </View>
                     <View className="mt-4 flex-row flex-wrap gap-x-2 gap-y-1">

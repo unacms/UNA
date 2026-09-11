@@ -13,6 +13,7 @@ import Link from 'app/ui/atoms/link';
 import { looksLikeHtml } from 'app/lib/util';
 import { isFormResponseComplete } from 'app/lib/form/form-helpers';
 import { useFocusEffect } from 'app/lib/hooks/router';
+import { useTranslation } from 'react-i18next';
 
 function getFormNamesFromBlock(block) {
     const content = Array.isArray(block?.content) ? block.content : [];
@@ -73,6 +74,7 @@ function isDestructiveButton(item) {
 }
 
 export default function ElementDeploy({ data, blockWrapperProps, url }) {
+    const { t } = useTranslation();
     const [blockData, setBlockData] = useState(null);
     const [formBlock, setFormBlock] = useState(null);
     const [showConfirm, setShowConfirm] = useState(false);
@@ -103,7 +105,7 @@ export default function ElementDeploy({ data, blockWrapperProps, url }) {
     const handleOpenDeployForm = async (item) => {
         if (item.form_url) {
             const sResponse = await fetcher(`/api.php?r=${item.form_url}`);
-            setFormBlock({ content: sResponse.data, designbox_id: 0, title: 'Deployment settings' });
+            setFormBlock({ content: sResponse.data, designbox_id: 0, title: t('Deployment settings') });
         }
 
         if (item.request_url) {
@@ -177,7 +179,7 @@ export default function ElementDeploy({ data, blockWrapperProps, url }) {
                     {(!!statusBadge && !looksLikeHtml(statusBadge.text)) && (
 
                         <Row className="gap-2 items-center">
-                            <Text>Status:</Text><Badge
+                            <Text>{t('Status:')}</Text><Badge
                                 size="sm"
                                 rounded
                                 data={statusBadge}
@@ -251,11 +253,11 @@ export default function ElementDeploy({ data, blockWrapperProps, url }) {
                 </View>
             )}
             {!!formBlock && (
-                <Modal scrollable={true} title={formBlock.title || 'Deployment settings'} onVisible={!!formBlock} onClose={handleCloseDeployForm}>
+                <Modal scrollable={true} title={formBlock.title || t('Deployment settings')} onVisible={!!formBlock} onClose={handleCloseDeployForm}>
                     <BlockByData block={formBlock} onFormEmpty={handleCloseDeployForm} />
                 </Modal>
             )}
-            <Confirm onVisible={showConfirm} title="Server will be removed with all data! Are you sure to proceed ?" handleCancel={() => setShowConfirm(false)} handleOk={async () => { await fetcher(showConfirm); setShowConfirm(false); handleCloseDeployForm() }} />
+            <Confirm onVisible={showConfirm} title={t('Server will be removed with all data! Are you sure to proceed ?')} handleCancel={() => setShowConfirm(false)} handleOk={async () => { await fetcher(showConfirm); setShowConfirm(false); handleCloseDeployForm() }} />
         </BlockWrapper>
     );
 }

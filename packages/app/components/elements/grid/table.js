@@ -1,4 +1,5 @@
 import { useShallow } from 'zustand/react/shallow';
+import { useTranslation } from 'react-i18next';
 import { Text } from 'app/design/typography';
 import { View, Row, ScrollView } from 'app/design/view';
 import UniList from 'app/ui/atoms/unilist';
@@ -11,6 +12,7 @@ import { useGrid } from './context';
  * UNA grids scroll instead of squashing text columns.
  */
 export default function GridTable({ rows, query }) {
+    const { t } = useTranslation();
     const { status, hasNextPage, isFetchingNextPage, isRefetching, handleEndReached, reloadGrid } = query;
     const { columns, tableMinWidth, isSortable, sortRows } = useGrid(
         useShallow((state) => ({
@@ -50,7 +52,7 @@ export default function GridTable({ rows, query }) {
                 </Row>
                 {(!rows || rows.length === 0) && status === 'success' && !hasNextPage && (
                     <View className="items-center px-2 pt-4 pb-4">
-                        <Text className="text-secondary-foreground text-center">Nothing to show</Text>
+                        <Text className="text-secondary-foreground text-center">{t('Nothing to show')}</Text>
                     </View>
                 )}
 

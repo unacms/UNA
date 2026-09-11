@@ -5,6 +5,7 @@ import { useThemeName } from 'app/design/theme';
 import { View, Row } from 'app/design/view'
 import { appSetting } from 'app/lib/util';
 import { useFormField } from 'app/lib/form/use-form-field';
+import { useTranslation } from 'react-i18next';
 
 const themeSettings = appSetting('theme', 'doublerange');
 
@@ -17,6 +18,7 @@ function toRange(value, min, max) {
 }
 
 export default function FormFieldDoubleRange(props) {
+    const { t } = useTranslation();
     const themeName = useThemeName();
     const min = props.attrs.min;
     const max = props.attrs.max;
@@ -53,11 +55,11 @@ export default function FormFieldDoubleRange(props) {
             </View>
             <Row className={themeSettings.container}>
                 <Row className={themeSettings.value_container}>
-                    <Text className={themeSettings.text_info}>From</Text>
+                    <Text className={themeSettings.text_info}>{t('From')}</Text>
                     <Text className={themeSettings.text_value}>{range[0]}</Text>
                 </Row>
                 <Row className={themeSettings.value_container}>
-                    <Text className={themeSettings.text_info}>To</Text>
+                    <Text className={themeSettings.text_info}>{t('To')}</Text>
                     <Text className={themeSettings.text_value}>{range[1]} </Text>
                 </Row>
             </Row>

@@ -11,8 +11,10 @@ import MenuHeaderNavigation from 'app/components/nav/menu-header-navigation'
 import { useIsDesktop } from 'app/context/measure';
 import { Platform } from 'react-native'
 import { useRouter } from 'app/lib/hooks/router'
+import { useTranslation } from 'react-i18next'
 
 export default function HeaderElement({ url, uri }) {
+    const { t } = useTranslation();
     const { currentUser } = useCurrentUser();
     const router = useRouter();
     const bSearch = appSetting('layout', 'search') == true;
@@ -47,11 +49,19 @@ export default function HeaderElement({ url, uri }) {
                                 if (item.props?.neoButton) {
                                     const { neoButton, primary, ...neoButtonProps } = item.props;
                                     const isMessenger = item.href === '{messenger}';
+                                    const translatedTitle = neoButtonProps.title
+                                        ? t(neoButtonProps.title)
+                                        : (item.title ? t(item.title) : undefined);
+                                    const translatedA11y = neoButtonProps.accessibilityLabel
+                                        ? t(neoButtonProps.accessibilityLabel)
+                                        : translatedTitle;
                                     return (
                                         <NeoButtonLink
                                             {...getHeaderToolbarNeoButtonDefaults(isDesktop, { primary })}
                                             borderShape="circle"
                                             {...neoButtonProps}
+                                            {...(translatedTitle ? { title: translatedTitle, label: translatedTitle } : {})}
+                                            {...(translatedA11y ? { accessibilityLabel: translatedA11y } : {})}
                                             {...(item.target ? { target: item.target } : {})}
                                             href={isMessenger ? appSetting('messenger', 'url') : item.href}
                                             {...(isMessenger
@@ -71,6 +81,7 @@ export default function HeaderElement({ url, uri }) {
 
                                 if (item.href === '{messenger}') {
                                     const messengerHref = appSetting('messenger', 'url');
+                                    const messengerLabel = item.alt || item.title || item.props?.title;
                                     return (
                                         <NeoButton
                                             {...toolbarNeoButtonDefaults}
@@ -83,7 +94,8 @@ export default function HeaderElement({ url, uri }) {
                                             image="MessageSquare"
                                             selected={appSetting('messenger', 'url') === '/' + uri}
                                             role="link"
-                                            alt={item.alt || item.title || (item.props?.title)}
+                                            alt={messengerLabel ? t(messengerLabel) : undefined}
+                                            accessibilityLabel={messengerLabel ? t(messengerLabel) : undefined}
                                             onPress={(event) => {
                                                 item.props?.onPress?.(event);
                                                 if (messengerHref) router?.push?.(messengerHref);
@@ -91,10 +103,12 @@ export default function HeaderElement({ url, uri }) {
                                         />
                                     )
                                 }
+                                const linkTitle = item.props?.title || item.title;
                                 return (
                                         <ButtonLink {...(item.props || {})}
                                         {...(item.target ? { target: item.target } : {})} 
                                         href={item.href == '{messenger}' ? appSetting('messenger', 'url') : item.href}
+                                        {...(linkTitle ? { title: t(linkTitle) } : {})}
                                             {...(item.href === '{messenger}'
                                                 ? {
                                                     addon: {

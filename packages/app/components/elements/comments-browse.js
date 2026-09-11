@@ -845,7 +845,7 @@ function CommentsFormInner ({ form: initialForm, requestUrl, module, objectId, i
                     <Row className='items-start justify-between max-w-full relative'>
                         <View className=' flex-auto pr-4'>
                             <Row className='max-w-full '>
-                                <Text className='text-xs text-popover-foreground '>Reply to: </Text>
+                                <Text className='text-xs text-popover-foreground '>{t('Reply to:')} </Text>
                                 <Text className='font-semibold text-xs text-popover-foreground '>{ProfileDisplayName(formData.author.display_name)}</Text>
                             </Row>
                             <Text className=' text-sm overflow-hidden text-popover-foreground ' numberOfLines={3}>{formData.parent_id > 0 ? formData.text : ''}</Text>

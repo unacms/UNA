@@ -10,6 +10,7 @@ import { appSetting } from 'app/lib/util';
 import { useIsDesktop, useWindowSize } from 'app/context/measure';
 import emitter from 'app/context/emitter';
 import { ButtonRef, NeoButtonRef } from 'app/design/controls'
+import { useTranslation } from 'react-i18next'
 
 const dropdownTheme = appSetting('theme', 'dropdown');
 
@@ -43,6 +44,7 @@ export default function DropdownPopup({
     /** RN layout style for the trigger Pressable (e.g. tab-bar button `style`). */
     triggerStyle,
 }) {
+    const { t } = useTranslation();
     const buttonRef = useRef(null);
     const isDesktop = useIsDesktop();
     const contentRef = useRef(null);
@@ -351,7 +353,7 @@ export default function DropdownPopup({
                         >
                             <Pressable
                                 accessibilityRole="button"
-                                accessibilityLabel="Dismiss menu"
+                                accessibilityLabel={t('Dismiss menu')}
                                 className="web:absolute web:inset-0 web:z-0"
                                 style={{
                                     position: 'absolute',

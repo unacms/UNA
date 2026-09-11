@@ -6,6 +6,8 @@ import { Button } from 'app/design/controls';
 import { Text } from 'app/design/typography';
 import { Icon } from 'app/ui/atoms/icon';
 import { useTheme } from 'app/design/theme';
+import i18n from 'i18next';
+import { useTranslation } from 'react-i18next';
 
 const formatValueDate = (v) => {
     if (v.dt){
@@ -26,7 +28,7 @@ const formatValue = (v, bIsTime) => {
             return v3;
     }
     else {
-        return bIsTime ? 'Select date/time' : 'Select date';
+        return bIsTime ? i18n.t('Select date/time') : i18n.t('Select date');
     }
 }
 
@@ -44,7 +46,7 @@ const CalendarHeader = (dValue, addMonth) => {
     <Row className='w-full justify-between mb-4 items-center mt-2'>
         <Button size="sm" rounded startDecorator="ChevronsLeft" onPress={() => addMonth('y', -1)} />
         <Button size="sm" rounded startDecorator="ChevronLeft" onPress={() => addMonth('m', -1)} />
-        <Text className=" font-medium text-muted-foreground text-lg">{dValue.dt ? formatValueDate(dValue) : 'Select date'}</Text>
+        <Text className=" font-medium text-muted-foreground text-lg">{dValue.dt ? formatValueDate(dValue) : i18n.t('Select date')}</Text>
         <Button size="sm" rounded startDecorator="ChevronRight" onPress={() => addMonth('m', 1)} />
         <Button size="sm" rounded startDecorator="ChevronsRight" onPress={() => addMonth('y', 1)} />
     </Row>
@@ -53,6 +55,7 @@ const CalendarHeader = (dValue, addMonth) => {
 const generateValues = range => Array.from({ length: range }, (_, i) => ({ label: i.toString().padStart(2, '0'), value: i.toString().padStart(2, '0') }));
 
 export default function ({ name, value = '', type, onChange }) {
+    const { t } = useTranslation();
     const { colors } = useTheme();
     const bIsTime = type === 'datetime';
     const [showModal, setShowModal] = useState(false);
@@ -122,7 +125,7 @@ export default function ({ name, value = '', type, onChange }) {
                         />}
                         {
                         bIsTime && (<View className='w-full justify-center items-center gap-y-4'><Row className='justify-center items-center w-64 mt-2'>
-                            <Text className=" text-base justify-center items-center text-popover-foreground "> Time </Text>
+                            <Text className=" text-base justify-center items-center text-popover-foreground "> {t('Time')} </Text>
                             <View>
                                 <Dropdown
                                     labelField="label"
@@ -143,7 +146,7 @@ export default function ({ name, value = '', type, onChange }) {
                                 />
                             </View>
                         </Row>
-                            <Button title="Apply" variant="secondary" onPress={() => { setFieldValue(dValue) }} />
+                            <Button title={t('Apply')} variant="secondary" onPress={() => { setFieldValue(dValue) }} />
                         </View>
                         )
                     }

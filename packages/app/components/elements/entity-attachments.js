@@ -7,6 +7,7 @@ import { Modal } from 'app/design/controls'
 import Video from 'app/ui/atoms/video';
 import { FeedbackHaptics } from 'app/lib/util';
 import { BlockWrapper } from 'app/components/block-wrapper'
+import { useTranslation } from 'react-i18next'
 
 const AttachmentContainer = ({ children }) => (
     <View className='p-1 w-1/4'>
@@ -41,7 +42,7 @@ const VideoItem = ({ data, handleShowImage }) => (
 );
 
 export default function ElementEntityAttachments({ data, blockWrapperProps }) {
-
+    const { t } = useTranslation();
     const [showImage, setShowImage] = useState(false);
 
     const handleShowImage = (img) => {
@@ -66,7 +67,7 @@ export default function ElementEntityAttachments({ data, blockWrapperProps }) {
     
     return (
         <BlockWrapper {...blockWrapperProps}>
-            <Modal id={'file-preview'} title="Preview title" onVisible={!!showImage} onClose={() => {setShowImage(null)}}>
+            <Modal id={'file-preview'} title={t('Preview title')} onVisible={!!showImage} onClose={() => {setShowImage(null)}}>
                 <View className="w-full h-64 lg:h-96" >
                     {showImage && showImage[1] == 'image' && <Image className="w-full h-full" src={showImage[0]} alt='' view="cover" />}
                     {showImage && showImage[1] == 'video' && <Video className="w-full h-full" src={showImage[0]}  ></Video>}

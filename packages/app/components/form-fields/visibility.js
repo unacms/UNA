@@ -11,6 +11,7 @@ import { Text } from 'app/design/typography'
 import { Icon } from 'app/ui/atoms/icon'
 import Profile from 'app/ui/molecules/profile/profile';
 import { useTranslation } from 'react-i18next'
+import i18n from 'i18next'
 import { useFormField } from 'app/lib/form/use-form-field';
 
 const inputSettings = appSetting('theme', 'inputs');
@@ -20,7 +21,7 @@ const sameId = (a, b) => String(a) === String(b);
 
 function formatOverflow(labels, max = 3) {
     if (labels.length <= max) return labels.join(', ');
-    return `${labels.slice(0, max).join(', ')} + ${labels.length - max} more`;
+    return `${labels.slice(0, max).join(', ')} ${i18n.t('+ {{count}} more', { count: labels.length - max })}`;
 }
 
 function OwnerAvatar({ owner, displaySize = '3xs', displayType = 'unit_wo_info', ...rest }) {
@@ -146,7 +147,7 @@ export default function FormFieldVisibility(props) {
             <RbList values={filteredValues} setValue={handleValueChange} selectedValue={field.value} />
             <View className="flex-row justify-end pt-3 mt-3 border-t border-border/60 ">
                 <Button
-                    title="Done"
+                    title={t('Done')}
                     size="base"
                     variant="primary"
                     disabled={needsSub(field.value) && selectedSubLabels.length == 0}

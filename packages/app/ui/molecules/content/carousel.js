@@ -8,6 +8,7 @@ import { appSetting, LAYOUT_BREAKPOINTS } from 'app/lib/util'
 import Video from 'app/ui/atoms/video';
 import { ReactNativeZoomableView } from '@openspacelabs/react-native-zoomable-view';
 import { useWindowSize } from 'app/context/measure';
+import { useTranslation } from 'react-i18next';
 
 const Image2 = memo((item) => {
 
@@ -115,6 +116,7 @@ const Gallery = React.memo(({ data, handleShowImage, windowWidthOr, containerWid
 });
 
 function CarouselContent({ data }) {
+    const { t } = useTranslation();
     const [currentImageIndex, setCurrentImageIndex] = useState(false);
     const [imageSize2, setImageSize2] = useState([0, 0]);
     const [viewerSize, setViewerSize] = useState({ width: 0, height: 0 });
@@ -196,7 +198,7 @@ function CarouselContent({ data }) {
                             controlSize="regular"
                             borderShape="circle"
                             image="X"
-                            accessibilityLabel="Close"
+                            accessibilityLabel={t('Close')}
                             onPress={() => setCurrentImageIndex(false)}
                         />
                     </View>

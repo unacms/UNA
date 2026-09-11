@@ -13,6 +13,7 @@ import Menu from 'app/components/menu'
 import { BlockWrapper } from 'app/components/block-wrapper'
 import Time from 'app/ui/atoms/time'
 import { getWikiBlockPayload } from './helpers'
+import { useTranslation } from 'react-i18next'
 
 const unaStoragePathPattern = /^\/?sys_[^/]+_files\//
 const markdownSourceStoragePrefix = 'wiki-markdown-source:v1:'
@@ -135,6 +136,7 @@ function WikiDocumentIcon({ alt, size, src }) {
 }
 
 export function WikiDocumentHeader({ markdownSource = '', metadata, pageUrl = '' }) {
+    const { t } = useTranslation()
     const {
         description,
         iconUrl,
@@ -273,7 +275,7 @@ export function WikiDocumentHeader({ markdownSource = '', metadata, pageUrl = ''
                     {packageName ? (
                         <Row className="flex-wrap items-center gap-1">
                             <Icon icon="Package" size={16} className="text-secondary-foreground" />
-                            <Text className="text-sm leading-7 text-secondary-foreground">Version:</Text>
+                            <Text className="text-sm leading-7 text-secondary-foreground">{t('Version:')}</Text>
                             <Badge
                                 data={{
                                     color: 'neutral',
@@ -295,7 +297,7 @@ export function WikiDocumentHeader({ markdownSource = '', metadata, pageUrl = ''
                                 controlSize="mini"
                                 href={sourceCodeUrl}
                                 image="Github"
-                                label="Source"
+                                label={t('Source')}
                                 style="borderless"
                                 target="_blank"
                             />

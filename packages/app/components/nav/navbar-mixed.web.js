@@ -15,6 +15,7 @@ import ProfileSwitcher from 'app/components/elements/profile-switcher';
 import { useBreakpoint, useIsDesktop } from 'app/context/measure';
 
 const HeaderLine = memo(({ headerSettings, currentUser, uri, title, menuPopup, setMenuPopup, showMenu }) => {
+    const { t } = useTranslation();
     const currentBreakpoint = useBreakpoint();
     const isDesktop = useIsDesktop();
     if (currentBreakpoint >= LAYOUT_BREAKPOINTS.xl && menuPopup)
@@ -34,15 +35,15 @@ const HeaderLine = memo(({ headerSettings, currentUser, uri, title, menuPopup, s
                             startDecorator="List"
                             rounded
                             align="start"
-                            aria-label="Menu"
-                            alt="Menu"
+                            aria-label={t('Menu')}
+                            alt={t('Menu')}
                         />
                     </Pressable>
 
                 </View>
             )}
             {(uri === 'home' || isDesktop) && (
-                <Link className=" flex flex-row web:group gap-x-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-0 focus:outline-primary/50 rounded-lg " href="/home" aria-label="Logo">
+                <Link className=" flex flex-row web:group gap-x-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-0 focus:outline-primary/50 rounded-lg " href="/home" aria-label={t('Logo')}>
 
 
                     {appStatic('logo')}

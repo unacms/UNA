@@ -15,8 +15,10 @@ import { useBottomSheetData } from 'app/context/bottomsheet';
 import { BlockByDataInt as BlockByData } from 'app/components/block';
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import { DragContext, DragItem, DragControl } from 'app/ui/molecules/form-controls/droppable'
+import { useTranslation } from 'react-i18next'
 
 export default function ModuleStructure({ data }) {
+    const { t } = useTranslation();
     const { setBottomSheetData } = useBottomSheetData();
     const isEditable = data.isEditable;
     const courseId = data.entry_id;
@@ -206,7 +208,7 @@ export default function ModuleStructure({ data }) {
                         <Button variant="default" title={item.pass_progress} size="xs" rounded />
                     </View>}
                     <View className='flex-1'>
-                        <View className='my-2 text-xs'><Text>Lesson {index+1}</Text></View>
+                        <View className='my-2 text-xs'><Text>{t('Lesson {{index}}', { index: index + 1 })}</Text></View>
                         <View className='h-12'>
                             <Text className="text-lg leading-tight tracking-tight font-bold text-secondary-foreground " numberOfLines={2}>{item.title}</Text>
                         </View>
@@ -255,7 +257,7 @@ export default function ModuleStructure({ data }) {
                     {isEditable && (<Card rounded=' rounded-none sm:rounded-2xl  ' margin='mx-2  w-full p-3 sm:p-4 mb-1 sm:mb-4 '>
 
                         <Row className='w-full'>
-                            <Button rounded startDecorator="Plus" title="Add new" onPress={(event) => { handleAddLesson(event, courseId) }} size='sm' />
+                            <Button rounded startDecorator="Plus" title={t('Add new')} onPress={(event) => { handleAddLesson(event, courseId) }} size='sm' />
                         </Row>
                     </Card>
                     )
@@ -280,6 +282,7 @@ const getColorByTypeLesson = (item, index, passing, byIndex = false) => {
 };
 
 function EditLesson({ formData, handleUpdate, lessonData: initedLessonData, courseId, lessonId, moduleId, gridData, dispatch }) {
+    const { t } = useTranslation();
     const [viewType, setViewType] = useState(0);
     const [lessonData, setLessonData] = useState(initedLessonData);
     const content = { content: formData, designbox_id: 0 };
@@ -287,7 +290,7 @@ function EditLesson({ formData, handleUpdate, lessonData: initedLessonData, cour
     const buttonConfigs = [
         { title: 'Main info', viewType: 0 },
         { title: 'Steps', viewType: 1 },
-        { title: 'Attachments', viewType: 2 },
+        { title: t('Attachments'), viewType: 2 },
     ];
 
     const reloadData = async () => {
@@ -319,6 +322,7 @@ function EditLesson({ formData, handleUpdate, lessonData: initedLessonData, cour
 }
 
 function LessonStructure({ lessonData, startLessonPart }) {
+    const { t } = useTranslation();
     const [viewType, setViewType] = useState(0)
 
     return (
@@ -328,8 +332,8 @@ function LessonStructure({ lessonData, startLessonPart }) {
                     <ContentMore numberOfSymbols={360} showLess={true} content={lessonData?.text} numberOfLines={3} openSmall={false} customClassName="u-vanilla-html" />
                 </View>
                 <Row className='gap-x-4 mb-4'>
-                    <Button variant="default" textColor={`text-white`} bgColor={`${viewType === 0 ? 'bg-red-400' : 'bg-gray-400'}`} title='Lesson' size="sm" onPress={() => { setViewType(0) }} />
-                    <Button variant="default" textColor={`text-white`} bgColor={`${viewType === 1 ? 'bg-red-400' : 'bg-gray-400'}`} title='Attachments' size="sm" onPress={() => { setViewType(1) }} />
+                    <Button variant="default" textColor={`text-white`} bgColor={`${viewType === 0 ? 'bg-red-400' : 'bg-gray-400'}`} title={t('Lesson')} size="sm" onPress={() => { setViewType(0) }} />
+                    <Button variant="default" textColor={`text-white`} bgColor={`${viewType === 1 ? 'bg-red-400' : 'bg-gray-400'}`} title={t('Attachments')} size="sm" onPress={() => { setViewType(1) }} />
                 </Row>
                 {viewType === 0 && <LessonSteps lessonData={lessonData} startLessonPart={startLessonPart} />}
                 {viewType === 1 && <LessonAttach lessonData={lessonData} />}
@@ -339,6 +343,7 @@ function LessonStructure({ lessonData, startLessonPart }) {
 }
 
 function LessonAttach({ lessonData, isEditable, reloadData, courseId, lessonId, addParams }) {
+    const { t } = useTranslation();
     const attachments = lessonData.attachments;
     const [formData, setFormData] = useState(null)
 
@@ -386,7 +391,7 @@ function LessonAttach({ lessonData, isEditable, reloadData, courseId, lessonId, 
             </View>
             <Row className="justify-center items-start gap-x-2">
                 <Link href={item.download_link}>
-                    <Button startDecorator="Download" variant="outline" title="Download" size="sm" />
+                    <Button startDecorator="Download" variant="outline" title={t('Download')} size="sm" />
                 </Link>
                 {isEditable && (
                     <>
@@ -535,6 +540,7 @@ function LessonSteps({ lessonData, startLessonPart, isEditable, reloadData, cour
 }
 
 function LessonItem({ lessonItemData, lessonIndex, lessonData, startLessonPart }) {
+    const { t } = useTranslation();
     const steps = lessonData.steps;
     return (
         <>
@@ -563,7 +569,7 @@ function LessonItem({ lessonItemData, lessonIndex, lessonData, startLessonPart }
                     return (
                         <View key={"index" + index} className={`flex-auto items-center justify-end`}>
                             <View className=' items-center justify-end  w-full absolute'>
-                                <Text className={`text-xs ${index == lessonIndex ? '' : ''}`}  >Step {index + 1}</Text>
+                                <Text className={`text-xs ${index == lessonIndex ? '' : ''}`}  >{t('Step {{index}}', { index: index + 1 })}</Text>
                                 <Text className={`text-xs ${index == lessonIndex ? 'text-red-400' : ''} font-medium`} >{item.type}</Text>
                             </View>
                         </View>)

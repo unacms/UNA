@@ -91,7 +91,7 @@ function UniPriceCard({ data, onBuy }) {
                     ? (!!firstNonEmpty && (
                         <Button variant="primary" title={firstNonEmpty.title} onPress={() => { onBuy(firstNonEmpty) }} />
                     ))
-                    : <ButtonLink href="/create-account" variant="primary" title='Create  account' />}
+                    : <ButtonLink href="/create-account" variant="primary" title={t('Create  account')} />}
             </CardFooter>
         </Card>
     )

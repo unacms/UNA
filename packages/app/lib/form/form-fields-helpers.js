@@ -184,9 +184,10 @@ export function TranslatableFieldLayout({
 }
 
 export function LocationSuggest({ searchError, selectionMade, locationResults, onSelect }) {
+    const { t } = useTranslation();
     return (
         <>
-            {searchError ? <Text>Error</Text> : null}
+            {searchError ? <Text>{t('Error')}</Text> : null}
             {!selectionMade && locationResults.length > 0 ? (
                 <View className="absolute z-50 w-full max-w-md top-14 rounded-xl border-border border bg-card backdrop-blur-xl p-1">
                     {locationResults.slice(0, 5).map((item) => (

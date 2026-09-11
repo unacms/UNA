@@ -8,10 +8,12 @@ import emitter from 'app/context/emitter';
 import { LabelButton } from 'app/lib/form/form-helpers'
 import { useFormField } from 'app/lib/form/use-form-field';
 import { appSetting } from 'app/lib/util'
+import { useTranslation } from 'react-i18next'
 
 const inputSettings = appSetting('theme', 'inputs');
 
 export default function FormFieldLabels(props) {
+    const { t } = useTranslation();
     const { name, field } = useFormField(props);
     const isEmbedded = !!props.noPadding;
     const variant = props.variant || (isEmbedded ? 'text' : 'default');
@@ -94,7 +96,7 @@ export default function FormFieldLabels(props) {
                         {(!props.hide_button && props.align != 'right') && <LabelButton
                             variant={variant}
                             size={size}
-                            title='Tags'
+                            title={t('Tags')}
                             rounded={false}
                             icon="Plus"
                             field_name={name}
@@ -116,7 +118,7 @@ export default function FormFieldLabels(props) {
                             size={size}
                             rounded={false}
                             icon="Plus"
-                            title='Tags'
+                            title={t('Tags')}
                             field_name={name}
                         />}
                 </View>

@@ -16,6 +16,7 @@ import emitter from 'app/context/emitter';
 import { Icon } from 'app/ui/atoms/icon'
 import { Text } from 'app/design/typography';
 import { useSound } from 'app/lib/hooks/use-sound';
+import { useTranslation } from 'react-i18next';
 
 const dropdownTheme = appSetting('theme', 'dropdown');
 const menuSettings = appSetting('theme', 'dropdown_menu');
@@ -72,6 +73,7 @@ function getAttachmentMenuItems(inputs) {
 }
 
 function AttachmentMenuList({ items, onSelect }) {
+    const { t } = useTranslation();
     return (
         <View className={`mb-2 ${dropdownTheme.cnt}`}>
             {items.map((item) => (
@@ -86,7 +88,7 @@ function AttachmentMenuList({ items, onSelect }) {
                                 <Icon icon={item.icon} size={menuSettings.icon_size || 20} />
                             </View>
                         ) : null}
-                        <Text className={menuSettings.item_text}>{item.title}</Text>
+                        <Text className={menuSettings.item_text}>{t(item.title)}</Text>
                     </Row>
                 </Pressable>
             ))}
@@ -113,6 +115,7 @@ function ComposerDock({ children }) {
 }
 
 function ComposerToolbar({ data, handleSubmit, isWeb, children }) {
+    const { t } = useTranslation();
     const isDesktop = useIsDesktop();
     const [menuOpen, setMenuOpen] = useState(false);
     const menuItems = useMemo(
@@ -130,10 +133,10 @@ function ComposerToolbar({ data, handleSubmit, isWeb, children }) {
         <RNView style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
             {obfuscate}
             {data.inputs['photo'] ? (
-                <FileButton field_name="photo" icon="Image" tooltip="Add Photos" {...ATTACHMENT_BUTTON} />
+                <FileButton field_name="photo" icon="Image" tooltip={t('Add Photos')} {...ATTACHMENT_BUTTON} />
             ) : null}
             {data.inputs['video'] ? (
-                <FileButton field_name="video" icon="Image" tooltip="Add Photos or Videos" {...ATTACHMENT_BUTTON} />
+                <FileButton field_name="video" icon="Image" tooltip={t('Add Photos or Videos')} {...ATTACHMENT_BUTTON} />
             ) : null}
             {data.inputs['video'] && !isWeb ? (
                 <FileButton field_name="video" icon="Image" {...ATTACHMENT_BUTTON} />
@@ -156,7 +159,7 @@ function ComposerToolbar({ data, handleSubmit, isWeb, children }) {
                     {...ATTACHMENT_BUTTON}
                     image="Plus"
                     style={menuOpen ? 'borderedProminent' : ATTACHMENT_BUTTON.style}
-                    accessibilityLabel="Add attachment"
+                    accessibilityLabel={t('Add attachment')}
                     onPress={() => setMenuOpen((was) => !was)}
                 />
             ) : null}
@@ -238,6 +241,7 @@ function AuthorAudienceButton({ profileData, displayName, destination, destinati
 }
 
 export default function FormFeed({ data, handleSubmit, exProps, name, response }) {
+    const { t } = useTranslation();
     const formContext = useFormContext()
     const isFormOnly = exProps?.formOnly === true || name === 'feed_edit';
 
@@ -349,7 +353,7 @@ export default function FormFeed({ data, handleSubmit, exProps, name, response }
                             controlSize="small"
                             borderShape="circle"
                             image="X"
-                            accessibilityLabel="Close"
+                            accessibilityLabel={t('Close')}
                             onPress={onClose}
                             classNames={{ root: 'flex-none' }}
                         />
@@ -378,7 +382,7 @@ export default function FormFeed({ data, handleSubmit, exProps, name, response }
                                         focus: true,
                                         noPadding: true,
                                         bg: 'transparent',
-                                        placeholder: 'Write here...',
+                                        placeholder: t('Write here...'),
                                         linkify: true,
                                         autofocus: true,
                                         classes: 'flex-auto',

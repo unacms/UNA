@@ -14,6 +14,7 @@ import { getComponent } from 'app/components/registry'
 import { useOpenModalByUrl, useOpenModalWithContent } from 'app/context/jotai/modal';
 import { sanitazeUrl, openExternalLink } from 'app/lib/util';
 import { useWindowSize } from 'app/context/measure';
+import { useTranslation } from 'react-i18next';
 
 const menuSettings = appSetting('theme', 'dropdown_menu');
 
@@ -302,6 +303,7 @@ function DropdownMenuNative({
     triggerAccessibilityLabel,
 }) {
     const { setBottomSheetData } = useBottomSheetData();
+    const { t } = useTranslation();
 
     const handlePress = useCallback(() => {
         if (mode != "alert") {
@@ -318,7 +320,7 @@ function DropdownMenuNative({
             }));
             if (cancelable) {
                 alertOptions.push({
-                    text: "Cancel",
+                    text: t('Cancel'),
                     style: "cancel"
                 });
             }
@@ -329,7 +331,7 @@ function DropdownMenuNative({
                 { cancelable: cancelable }
             );
         }
-    }, [cancelable, items, mode, onSelect, resolveContent, setBottomSheetData, title]);
+    }, [cancelable, items, mode, onSelect, resolveContent, setBottomSheetData, t, title]);
 
     useEffect(() => {
         if (defaultOpen)

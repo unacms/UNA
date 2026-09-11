@@ -12,6 +12,7 @@ import { useIsDesktop } from 'app/context/measure';
 import { NeoButton, NeoButtonLink } from 'app/design/controls';
 import Link from 'app/ui/atoms/link';
 import { canGoBackInTab, getTabKeyFromPathname, navigateBackInTab } from 'app/lib/navigation/tab-history';
+import { useTranslation } from 'react-i18next';
 import {
     defaultHeader,
     useHeader,
@@ -186,10 +187,11 @@ export const TextHeader = memo(({ text }) => {
 });
 
 export const PageHeaderSmall = ({ pageData }) => {
+    const { t } = useTranslation();
     const HeaderElement = getComponent('molecule', 'header_element');
     return (
         <Row className="w-full justify-between gap-2">
-            <Link href="/home" alt="Home" className="items-center">
+            <Link href="/home" alt={t('Home')} className="items-center">
                 {appStatic('logo')}
             </Link>
             <HeaderElement url={pageData?.url} uri={pageData?.uri} />
@@ -347,6 +349,7 @@ export const PageHeaderBody = memo(({
     pageTitle,
     router,
 }) => {
+    const { t } = useTranslation();
     const ContextSelector = getComponent('molecule', 'context_selector');
     const HeaderElement = getComponent('molecule', 'header_element');
     const pathname = usePathname();
@@ -374,7 +377,7 @@ export const PageHeaderBody = memo(({
                 image="ArrowLeft"
                 style="glass"
                 controlSize="regular"
-                accessibilityLabel="Back"
+                accessibilityLabel={t('Back')}
                 onPress={onBackPress}
             />
         </View>
@@ -387,12 +390,12 @@ export const PageHeaderBody = memo(({
                     regular control height; wider marks degrade to a padded pill. */}
                 <NeoButtonLink
                     href="/home"
-                    alt="Home"
+                    alt={t('Home')}
                     style="glass"
                     controlSize="regular"
                     borderShape="capsule"
                     contentInsets={{ x: 6 }}
-                    accessibilityLabel="Home"
+                    accessibilityLabel={t('Home')}
                 >
                     {appStatic('logo')}
                 </NeoButtonLink>
@@ -400,12 +403,12 @@ export const PageHeaderBody = memo(({
             <View className="hidden sm:flex lg:hidden">
                 <NeoButtonLink
                     href="/home"
-                    alt="Home"
+                    alt={t('Home')}
                     style="glass"
                     controlSize="regular"
                     borderShape="capsule"
                     contentInsets={{ x: 12}}
-                    accessibilityLabel="Home"
+                    accessibilityLabel={t('Home')}
                 >
                     {appStatic('logo')}
                 </NeoButtonLink>
@@ -413,11 +416,11 @@ export const PageHeaderBody = memo(({
             <View className="hidden lg:flex -ms-2">
                 <NeoButtonLink
                     href="/home"
-                    alt="Home"
+                    alt={t('Home')}
                     style="borderless"
                     controlSize="regular"
                     contentInsets={{ x: 8 }}
-                    accessibilityLabel="Home"
+                    accessibilityLabel={t('Home')}
                 >
                     {appStatic('logo')}
                 </NeoButtonLink>

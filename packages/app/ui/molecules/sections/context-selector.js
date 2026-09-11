@@ -206,7 +206,7 @@ export default function ContextSelector({ data: initialData, url, uri, mode }) {
                             {(() => {
                                 const isActiveAppRoot = uri === rootUrl
                                 return (
-                                    <Link href={`/${rootUrl}`} variant="ghost" size="lg" title="Home">
+                                    <Link href={`/${rootUrl}`} variant="ghost" size="lg" title={t('Home')}>
                                         <Row
                                             className={`shrink-0 rounded-xl ${isActiveAppRoot
                                                 ? ' bg-accent/60 text-accent-foreground web:hover:bg-accent'

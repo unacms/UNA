@@ -6,10 +6,12 @@ import Card from 'app/ui/molecules/page/card'
 import Progress from 'app/ui/atoms/progress'
 import Scroll from 'app/ui/molecules/page/scroll'
 import { memo } from 'react'
+import { useTranslation } from 'react-i18next'
 
 
 
 function CourseStructure(props) {
+    const { t } = useTranslation();
 
     return <Scroll horizontal={true} step={250} className='w-full'>
         {
@@ -37,7 +39,7 @@ function CourseStructure(props) {
                             <Link href={item.link}>
                                 <View className={`mb-2 bg-${color}`}>
                                     <Progress value={item.percent} />
-                                    <View className='my-2 text-xs '><Text className="text-white">Module {item.index}</Text></View>
+                                    <View className='my-2 text-xs '><Text className="text-white">{t('Module {{index}}', { index: item.index })}</Text></View>
                                     <View className='h-12'>
                                         <Text className="text-white text-lg leading-tight tracking-tight font-bold text-secondary-foreground " numberOfLines={2}>{item.title}</Text>
                                     </View>
@@ -56,7 +58,7 @@ function CourseStructure(props) {
                 )
             })
         }
-        <Button  title="Add module" onPress={addModule}/>
+        <Button  title={t('Add module')} onPress={addModule}/>
     </Scroll>
 }
 

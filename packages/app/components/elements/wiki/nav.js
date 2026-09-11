@@ -14,15 +14,17 @@ import {
   hasItemPath,
   normalizePathComparable,
 } from './helpers'
+import { useTranslation } from 'react-i18next'
 
 export function WikiBreadcrumb({ items, onNavigate, compact = false }) {
+    const { t } = useTranslation()
     if (!items?.length) return null
 
     return (
         <Row
             className={`items-center flex-wrap min-w-0 ${compact ? 'gap-1 flex-1' : 'gap-1.5'}`}
             accessibilityRole="navigation"
-            accessibilityLabel="Breadcrumb"
+            accessibilityLabel={t('Breadcrumb')}
         >
             {items.map((item, index) => (
                 <Row key={item.key} className="items-center gap-1 min-w-0 max-w-full">

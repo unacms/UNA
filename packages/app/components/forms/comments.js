@@ -10,8 +10,10 @@ import { FileButton } from 'app/lib/form/form-helpers'
 import { useWindowHeight, useIsDesktop } from 'app/context/measure';
 import emitter from 'app/context/emitter';
 import { useSound } from 'app/lib/hooks/use-sound';
+import { useTranslation } from 'react-i18next'
 
 export default function FormComments(props) {
+    const { t } = useTranslation()
     const isWeb = Platform.OS == 'web'
     const screenHeight = useWindowHeight();
     const isDesktop = useIsDesktop();
@@ -139,7 +141,7 @@ export default function FormComments(props) {
                                     classes: 'text-card-foreground tiptap-comments',
                                     autofocus: isAutoFocus,
                                     bg: 'transparent',
-                                    placeholder: 'Leave a comment...',
+                                    placeholder: t('Leave a comment...'),
                                     noPadding: true,
                                     initialHeight: minHeightEditor,
                                     maxHeight: maxHeightEditor,
@@ -184,12 +186,12 @@ export default function FormComments(props) {
                                             noPadding: true,
                                             icon_only: true,
                                             icon: 'ArrowUp',
-                                            title: 'Send',
+                                            title: t('Send'),
                                             size: 'sm',
                                             style: 'glassProminent',
                                             rounded: true,
-                                            alt: 'Post',
-                                            tooltip: 'Post',
+                                            alt: t('Post'),
+                                            tooltip: t('Post'),
                                         }
                                     )}
                                 </View>

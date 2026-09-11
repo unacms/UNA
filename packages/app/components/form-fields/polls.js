@@ -7,8 +7,10 @@ import useFetchForm from 'app/lib/hooks/use-fetch-form'
 import emitter from 'app/context/emitter';
 import { PollItem } from 'app/components/elements/entity-poll';
 import { useFormField } from 'app/lib/form/use-form-field';
+import { useTranslation } from 'react-i18next';
 
 export default function FormFieldPolls(props) {
+    const { t } = useTranslation();
     const name = props.name;
     const [isModal, setIsModal] = useState(false);
     const [pollSource, setPollSource] = useState(props.values || []);
@@ -68,7 +70,7 @@ export default function FormFieldPolls(props) {
     return (
         <Field {...props}>
             <Modal
-                title={'Create a poll'}
+                title={t('Create a poll')}
                 onVisible={!!isModal}
                 transparent={true}
                 headerBorder={true}
@@ -82,7 +84,7 @@ export default function FormFieldPolls(props) {
             })}
              {!props.hide_button && <Button
                 className="mt-4"
-                title="Add Poll"
+                title={t('Add Poll')}
                 onPress={() => {
                     emitter.emit(`fld_polls_${name}`, { action: 'add' });
                 }}
