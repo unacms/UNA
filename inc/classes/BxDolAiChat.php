@@ -10,15 +10,21 @@
 class BxDolAiChat
 {
     protected $_oDb;
-    protected $_oAi;
     protected $_oUi;
     protected $_aChatContext;
 
-    public function __construct(BxDolAiQuery $oDb, BxDolAi $oAi, BxDolAiChatUi $oUi)
+    public static function getInstance()
     {
-        $this->_oDb = $oDb;
-        $this->_oAi = $oAi;
-        $this->_oUi = $oUi;
+        if (!isset($GLOBALS['bxDolClasses'][__CLASS__]))
+            $GLOBALS['bxDolClasses'][__CLASS__] = new self();
+
+        return $GLOBALS['bxDolClasses'][__CLASS__];
+    }
+
+    public function __construct()
+    {
+        $this->_oDb = new BxDolAiQuery();
+        $this->_oUi = BxDolAiChatUi::getInstance();
         $this->_aChatContext = null;
     }
 
@@ -344,11 +350,12 @@ class BxDolAiChat
         }
 
         $aResult = $this->_oUi->neuronMessagesToUiMessages($o->getChatHistory()->getMessages());
-        if ($bAppendLimitMessage && $this->_oAi->isChatTurnLimitReached($aAgent, $this->_oAi->countChatUserTurns($aResult))) {
+        $oLimits = BxDolAiChatLimits::getInstance();
+        if ($bAppendLimitMessage && $oLimits->isChatTurnLimitReached($aAgent, $oLimits->countChatUserTurns($aResult))) {
             $aResult[] = [
                 'id' => 'agent_limit_message',
                 'role' => 'assistant',
-                'parts' => [['type' => 'text', 'content' => $this->_oAi->getChatLimitMessage($aAgent)]],
+                'parts' => [['type' => 'text', 'content' => $oLimits->getChatLimitMessage($aAgent)]],
             ];
         }
 

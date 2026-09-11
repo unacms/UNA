@@ -53,7 +53,7 @@ class BxDolAiTriggerChat extends BxDolAiTrigger
         if (!$aParams)
             return echoJson(['code' => 403, 'msg' => _t('_sys_agents_unauthorized')]);
 
-        $aParams['request_user_turns'] = $oAi->countChatUserTurns($aData['messages'] ?? []);
+        $aParams['request_user_turns'] = BxDolAiChatLimits::getInstance()->countChatUserTurns($aData['messages'] ?? []);
 
         $sThreadId = !empty($aData['threadId']) ? $aData['threadId'] : null;
 
@@ -109,9 +109,10 @@ class BxDolAiTriggerChat extends BxDolAiTrigger
 
     public function stream($iAgentId, $sPrompt, $aParams = [], $sThreadId = null)
     {
-        $oAi = $this->getAi();
-        if ($oAi && !isset($aParams['chat_history_subindex']))
-            $aParams = array_merge($oAi->resolveChatHistoryParams($iAgentId), $aParams);
+        $oChat = BxDolAiChat::getInstance();
+        $oLimits = BxDolAiChatLimits::getInstance();
+        if (!isset($aParams['chat_history_subindex']))
+            $aParams = array_merge($oChat->resolveChatHistoryParams($iAgentId), $aParams);
 
         // Staging header.inc.php dumps HTML on fatals and warns on null error_get_last().
         // Any HTML after SSE is parsed by TanStack as "unterminated trailing data".
@@ -140,26 +141,26 @@ class BxDolAiTriggerChat extends BxDolAiTrigger
         };
 
         $aAgent = BxDolAiQuery::getAgentObject((int)$iAgentId);
-        if ($aAgent && $oAi)
-            $oAi->setChatContext($aAgent, $aParams);
+        if ($aAgent)
+            $oChat->setChatContext($aAgent, $aParams);
 
-        if ($aAgent && $oAi && $oAi->isChatSessionRateLimited($aAgent, $aParams)) {
-            $this->emitErrorSse($oAdapter, $fEmit, $oAi->getChatSessionRateLimitError());
+        if ($aAgent && $oLimits->isChatSessionRateLimited($aAgent, $aParams)) {
+            $this->emitErrorSse($oAdapter, $fEmit, $oLimits->getChatSessionRateLimitError());
             error_clear_last();
             @ini_set('display_errors', '0');
             exit;
         }
 
         $iRequestTurns = (int)($aParams['request_user_turns'] ?? 0);
-        if ($aAgent && $oAi && $oAi->isChatTurnLimitReached($aAgent, $oAi->getChatUserTurnCount((int)$iAgentId, $aParams), $iRequestTurns)) {
-            $oAi->emitConversationClosed('limit', '', $aAgent, $aParams);
-            $this->emitLimitSse($oAdapter, $fEmit, $oAi->getChatLimitMessage($aAgent));
+        if ($aAgent && $oLimits->isChatTurnLimitReached($aAgent, $oLimits->getChatUserTurnCount((int)$iAgentId, $aParams), $iRequestTurns)) {
+            $oChat->emitConversationClosed('limit', '', $aAgent, $aParams);
+            $this->emitLimitSse($oAdapter, $fEmit, $oLimits->getChatLimitMessage($aAgent));
             error_clear_last();
             @ini_set('display_errors', '0');
             exit;
         }
 
-        $sPrompt = $oAi ? $oAi->applyChatInputLimit((string)$sPrompt, $aAgent ?: []) : (string)$sPrompt;
+        $sPrompt = $oLimits->applyChatInputLimit((string)$sPrompt, $aAgent ?: []);
 
         $bStarted = false;
         $aSseState = $this->resetActionsSseState();
@@ -176,8 +177,8 @@ class BxDolAiTriggerChat extends BxDolAiTrigger
             $this->flushActionsSseState($aSseState, $fEmit);
             $this->persistAssistantActions($o);
 
-            if ($aAgent && $oAi && $oAi->isChatTurnLimitReached($aAgent, $oAi->getChatUserTurnCount((int)$iAgentId, $aParams)))
-                $oAi->emitConversationClosed('limit', '', $aAgent, $aParams);
+            if ($aAgent && $oLimits->isChatTurnLimitReached($aAgent, $oLimits->getChatUserTurnCount((int)$iAgentId, $aParams)))
+                $oChat->emitConversationClosed('limit', '', $aAgent, $aParams);
         } catch (Throwable $oException) {
             bx_log('sys_agents', "Stream exception for agent {$iAgentId}: " . $oException->getMessage() . " INPUT:" . $sPrompt);
             $this->flushActionsSseState($aSseState, $fEmit);
@@ -217,7 +218,7 @@ class BxDolAiTriggerChat extends BxDolAiTrigger
             return echoJson(['code' => 403, 'msg' => _t('_sys_agents_unauthorized'), 'messages' => [], 'activeRun' => null, 'interrupts' => null]);
 
         try {
-            $aMessages = $oAi->getChatHistoryUiMessages($aAgent['id'], $aParams);
+            $aMessages = BxDolAiChat::getInstance()->getChatHistoryUiMessages($aAgent['id'], $aParams);
         } catch (Throwable $o) {
             $aMessages = [];
         }
@@ -238,12 +239,12 @@ class BxDolAiTriggerChat extends BxDolAiTrigger
      */
     protected function historyParams($aAgent)
     {
-        $oAi = $this->getAi();
-        $mixedContext = $oAi->resolveChatHistoryContextPid();
+        $oChat = BxDolAiChat::getInstance();
+        $mixedContext = $oChat->resolveChatHistoryContextPid();
         if ($mixedContext === false)
             return false;
 
-        $aParams = $oAi->resolveChatHistoryParams((int)$aAgent['id']);
+        $aParams = $oChat->resolveChatHistoryParams((int)$aAgent['id']);
         $aParams['chat_history_context_pid'] = (int)$mixedContext;
         return $aParams;
     }
@@ -325,7 +326,7 @@ class BxDolAiTriggerChat extends BxDolAiTrigger
 
     protected function processActionsSseEvent($sEvent, &$aState, $fEmit)
     {
-        $oAi = $this->getAi();
+        $oUi = BxDolAiChatUi::getInstance();
         $aPayload = $this->parseSseEvent($sEvent);
         $sType = is_array($aPayload) ? (string)($aPayload['type'] ?? '') : '';
 
@@ -360,7 +361,7 @@ class BxDolAiTriggerChat extends BxDolAiTrigger
         }
 
         if ($sType === 'TEXT_MESSAGE_END') {
-            $aParsed = $oAi->parseAssistantChatPayload($aState['buf']);
+            $aParsed = $oUi->parseAssistantChatPayload($aState['buf']);
             if ($aParsed && ($aState['mode'] === 'json' || $aState['mode'] === 'undecided')) {
                 $this->emitParsedActionsSse($aState, $fEmit, $aParsed);
                 return;
@@ -396,11 +397,11 @@ class BxDolAiTriggerChat extends BxDolAiTrigger
 
     protected function flushActionsSseState(&$aState, $fEmit)
     {
-        $oAi = $this->getAi();
+        $oUi = BxDolAiChatUi::getInstance();
         if ($aState['buf'] === '' && !$aState['held'])
             return;
 
-        $aParsed = $oAi->parseAssistantChatPayload($aState['buf']);
+        $aParsed = $oUi->parseAssistantChatPayload($aState['buf']);
         if ($aParsed && $aState['mode'] !== 'text') {
             $this->emitParsedActionsSse($aState, $fEmit, $aParsed);
             return;
@@ -412,7 +413,7 @@ class BxDolAiTriggerChat extends BxDolAiTrigger
 
     protected function persistAssistantActions($oAgent)
     {
-        $oAi = $this->getAi();
+        $oUi = BxDolAiChatUi::getInstance();
         if (!is_object($oAgent) || !method_exists($oAgent, 'getChatHistory'))
             return;
 
@@ -436,7 +437,7 @@ class BxDolAiTriggerChat extends BxDolAiTrigger
             if ($sRole !== 'assistant')
                 return;
 
-            $aParsed = $oAi->parseAssistantChatPayload((string)$oMessage->getContent());
+            $aParsed = $oUi->parseAssistantChatPayload((string)$oMessage->getContent());
             if (!$aParsed)
                 return;
 

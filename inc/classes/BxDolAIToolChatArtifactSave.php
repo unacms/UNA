@@ -46,7 +46,7 @@ class BxDolAIToolChatArtifactSave extends BxDolAITool
         if ($sName === '' || $sValue === '')
             return 'ignored';
 
-        $iHistoryId = (int)BxDolAi::getInstance()->getCurrentChatHistoryId();
+        $iHistoryId = (int)BxDolAiChat::getInstance()->getCurrentChatHistoryId();
         if ($iHistoryId <= 0)
             return 'no_history';
 

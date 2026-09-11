@@ -12,10 +12,6 @@ class BxDolAi extends BxDolFactory implements iBxDolSingleton
     protected $_oDb;
     protected $_iProfileId;
 
-    protected $_oChat;
-    protected $_oChatUi;
-    protected $_oLimits;
-
     protected function __construct()
     {
         if (isset($GLOBALS['bxDolClasses'][get_class($this)]))
@@ -26,10 +22,6 @@ class BxDolAi extends BxDolFactory implements iBxDolSingleton
         $this->_oDb = new BxDolAiQuery();
 
         $this->_iProfileId = (int)getParam('sys_profile_bot');
-
-        $this->_oChatUi = new BxDolAiChatUi();
-        $this->_oChat = new BxDolAiChat($this->_oDb, $this, $this->_oChatUi);
-        $this->_oLimits = new BxDolAiChatLimits($this->_oDb, $this);
     }
 
     /**
@@ -129,11 +121,6 @@ class BxDolAi extends BxDolFactory implements iBxDolSingleton
         return BxDolAiTrigger::getInstance($sType)->call($aAgent, $mixedParams);
     }
 
-    public function setChatContext($aAgent, $aParams)
-    {
-        $this->_oChat->setChatContext($aAgent, $aParams);
-    }
-
     /**
      * Whether the current (or given) member may interact with the agent
      * via chat, messenger, or form-input. Empty acl_levels means Nobody.
@@ -169,162 +156,9 @@ class BxDolAi extends BxDolFactory implements iBxDolSingleton
         return in_array($aAgent['trigger'] ?? '', ['manual', 'message'], true);
     }
 
-    /**
-     * Runner limits from the agent row. 0 = no cap. Never put these in the prompt.
-     */
-    public function applyChatInputLimit($sPrompt, $aAgent)
-    {
-        return $this->_oLimits->applyChatInputLimit($sPrompt, $aAgent);
-    }
-
-    public function getChatLimitMessage($aAgent)
-    {
-        return $this->_oLimits->getChatLimitMessage($aAgent);
-    }
-
-    public function getChatSessionRateLimitError()
-    {
-        return $this->_oLimits->getChatSessionRateLimitError();
-    }
-
-    public function countChatUserTurns($aUiMessages)
-    {
-        return $this->_oLimits->countChatUserTurns($aUiMessages);
-    }
-
-    public function isChatTurnLimitReached($aAgent, $iTurns, $iRequestUserTurns = 0)
-    {
-        return $this->_oLimits->isChatTurnLimitReached($aAgent, $iTurns, $iRequestUserTurns);
-    }
-
-    public function getChatUserTurnCount($iAgentId, $aParams = [])
-    {
-        return $this->_oLimits->getChatUserTurnCount($iAgentId, $aParams);
-    }
-
-    /**
-     * New chat threads per IP for this agent. 0 on the agent = no cap.
-     * Continuation of an existing thread is not a new session.
-     */
-    public function isChatSessionRateLimited($aAgent, $aParams = [])
-    {
-        return $this->_oLimits->isChatSessionRateLimited($aAgent, $aParams);
-    }
-
     public function extractChatPromptFromRequest($aData)
     {
         return BxDolAiTrigger::getInstance('chat')->extractPromptFromRequest($aData);
-    }
-
-    /**
-     * Guests: UNA session id. Members: profile id.
-     * Guest chats remember agent ids in session so login can adopt those threads.
-     */
-    public function resolveChatHistoryParams($iAgentId = 0)
-    {
-        return $this->_oChat->resolveChatHistoryParams($iAgentId);
-    }
-
-    /**
-     * `{trigger}:{agentId}:{contextPid}:{userSubindex}`.
-     * Context is omitted when 0 so existing site-wide threads still load.
-     * User suffix (session id or profile id) stays last so adopt can replace it.
-     */
-    public static function chatHistoryThreadId($aAgent, $aParams = [])
-    {
-        return BxDolAiChat::threadId($aAgent, $aParams);
-    }
-
-    public function getChatHistoryRowId($aAgent, $aParams = [])
-    {
-        return $this->_oChat->getChatHistoryRowId($aAgent, $aParams);
-    }
-
-    public function getCurrentChatHistoryId()
-    {
-        return $this->_oChat->getCurrentChatHistoryId();
-    }
-
-    public function emitConversationClosed($sReason, $sSummary = '', $aAgent = null, $aParams = null)
-    {
-        return $this->_oChat->emitConversationClosed($sReason, $sSummary, $aAgent, $aParams);
-    }
-
-    /**
-     * @return array{thread_id:string,chat_history_context_pid:int,chat_history_subindex:string}|false
-     */
-    public static function parseChatHistoryThreadId($aAgent, $sThreadId)
-    {
-        return BxDolAiChat::parseThreadId($aAgent, $sThreadId);
-    }
-
-    public function isOwnAgentChatThread($aAgent, $sThreadId)
-    {
-        return $this->_oChat->isOwnAgentChatThread($aAgent, $sThreadId);
-    }
-
-    public function storedChatJsonToUiMessages($sJson)
-    {
-        return $this->_oChatUi->storedChatJsonToUiMessages($sJson);
-    }
-
-    public function getChatHistoryUiMessagesByThread($aAgent, $sThreadId)
-    {
-        return $this->_oChat->getChatHistoryUiMessagesByThread($aAgent, $sThreadId);
-    }
-
-    public function getChatHistoryArtifactsByThread($aAgent, $sThreadId)
-    {
-        return $this->_oChat->getChatHistoryArtifactsByThread($aAgent, $sThreadId);
-    }
-
-    public function listAgentChatThreads($aAgent)
-    {
-        return $this->_oChat->listAgentChatThreads($aAgent);
-    }
-
-    /**
-     * Context from chat HTTP (`?context=`). Missing/0 = site-wide. Invalid/denied = false (403).
-     * Posting in a group is not the same as viewing it; chat requires post by default.
-     * @return int|false
-     */
-    public function resolveChatHistoryContextPid($bRequirePost = true)
-    {
-        return $this->_oChat->resolveChatHistoryContextPid($bRequirePost);
-    }
-
-    /**
-     * Context of the current page (AI agent block).
-     * `bx_get_page_info()` reads the URL; App page JSON merges `i`/`id` into $_GET instead.
-     * @param bool $bRequirePost also require posting into the context (membership / post ACL)
-     */
-    public function resolveChatHistoryContextPidFromPage($bRequirePost = false)
-    {
-        return $this->_oChat->resolveChatHistoryContextPidFromPage($bRequirePost);
-    }
-
-    public function filterContextPid($iPid, $bRequirePost = false)
-    {
-        return $this->_oChat->filterContextPid($iPid, $bRequirePost);
-    }
-
-    /**
-     * Transcript for TanStack `useChat` hydrate / `initialMessages`.
-     * Loads the same NeuronAI chat history the agent uses when streaming.
-     *
-     * @param bool $bAppendLimitMessage when the session is at max_turns, append limit_message for the UI
-     */
-    public function getChatHistoryUiMessages($iAgentId, $aParams = [], $bAppendLimitMessage = true)
-    {
-        return $this->_oChat->getChatHistoryUiMessages($iAgentId, $aParams, $bAppendLimitMessage);
-    }
-
-    /**
-     * @return array{content: string, actions: array}|null
-     */
-    public function parseAssistantChatPayload($sText)
-    {
-        return $this->_oChatUi->parseAssistantChatPayload($sText);
     }
 
     public function streamAgentChat($iAgentId, $sPrompt, $aParams = [], $sThreadId = null)

@@ -873,11 +873,12 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
             return $bIsApi ? [] : '';
 
         $oAi = BxDolAi::getInstance();
+        $oChat = BxDolAiChat::getInstance();
         $bRequirePost = (bool)$bRequirePost;
         if ($mixedContextPid === false || $mixedContextPid === null || $mixedContextPid === '')
-            $iContextPid = $oAi ? (int)$oAi->resolveChatHistoryContextPidFromPage($bRequirePost) : 0;
+            $iContextPid = $oAi ? (int)$oChat->resolveChatHistoryContextPidFromPage($bRequirePost) : 0;
         else
-            $iContextPid = $oAi ? $oAi->filterContextPid((int)$mixedContextPid, $bRequirePost) : 0;
+            $iContextPid = $oAi ? $oChat->filterContextPid((int)$mixedContextPid, $bRequirePost) : 0;
 
         if ($bIsApi)
             return [bx_api_get_block('ai_agent', [

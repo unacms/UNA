@@ -272,8 +272,8 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
         $sChatId = 'bx-ai-chat-' . $iId;
         $sName = !empty($aAgent['title']) ? $aAgent['title'] : $aAgent['name'];
         $aThreadsTpl = [];
-        $oAi = BxDolAi::getInstance();
-        $aThreads = $oAi ? $oAi->listAgentChatThreads($aAgent) : [];
+        $oChat = BxDolAiChat::getInstance();
+        $aThreads = $oChat->listAgentChatThreads($aAgent);
         foreach ($aThreads as $aThread) {
             $aThreadsTpl[] = [
                 'thread_id' => bx_html_attribute($aThread['thread_id']),
@@ -321,8 +321,7 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
         }
 
         $aThreadsJs = [];
-        $oAi = BxDolAi::getInstance();
-        $aThreads = $oAi ? $oAi->listAgentChatThreads($aAgent) : [];
+        $aThreads = BxDolAiChat::getInstance()->listAgentChatThreads($aAgent);
         foreach ($aThreads as $aThread)
             $aThreadsJs[] = $this->_agentChatThreadJs($aThread);
 
@@ -339,13 +338,9 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
         }
 
         $sThreadId = trim((string)bx_get('thread_id'));
-        $oAi = BxDolAi::getInstance();
-        if (!$oAi) {
-            echoJson(['code' => 503, 'msg' => _t('_sys_txt_error_occured'), 'messages' => []]);
-            return;
-        }
+        $oChat = BxDolAiChat::getInstance();
 
-        $aMessages = $oAi->getChatHistoryUiMessagesByThread($aAgent, $sThreadId);
+        $aMessages = $oChat->getChatHistoryUiMessagesByThread($aAgent, $sThreadId);
         if ($aMessages === false) {
             echoJson(['code' => 404, 'msg' => _t('_sys_txt_error_occured'), 'messages' => []]);
             return;
@@ -354,8 +349,8 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
         echoJson([
             'code' => 200,
             'messages' => $aMessages,
-            'writable' => $oAi->isOwnAgentChatThread($aAgent, $sThreadId) ? 1 : 0,
-            'artifacts' => $oAi->getChatHistoryArtifactsByThread($aAgent, $sThreadId),
+            'writable' => $oChat->isOwnAgentChatThread($aAgent, $sThreadId) ? 1 : 0,
+            'artifacts' => $oChat->getChatHistoryArtifactsByThread($aAgent, $sThreadId),
         ]);
     }
 

@@ -83,17 +83,19 @@ class BxDolAiTrigger extends BxDol implements iBxDolAiTrigger
         $aParams = $this->getCallChatHistoryParams($aAgent, $mixedParams);
         $sParams = $this->limitCallInput($aAgent, $mixedParams, $sParams);
 
+        $oLimits = BxDolAiChatLimits::getInstance();
+        $oChat = BxDolAiChat::getInstance();
         if ($this->appliesChatLimits()) {
-            if ($oAi->isChatTurnLimitReached($aAgent, $oAi->getChatUserTurnCount($aAgent['id'], $aParams))) {
-                $oAi->emitConversationClosed('limit', '', $aAgent, $aParams);
-                return $oAi->getChatLimitMessage($aAgent);
+            if ($oLimits->isChatTurnLimitReached($aAgent, $oLimits->getChatUserTurnCount($aAgent['id'], $aParams))) {
+                $oChat->emitConversationClosed('limit', '', $aAgent, $aParams);
+                return $oLimits->getChatLimitMessage($aAgent);
             }
 
-            if ($oAi->isChatSessionRateLimited($aAgent, $aParams))
-                throw new Exception($oAi->getChatSessionRateLimitError());
+            if ($oLimits->isChatSessionRateLimited($aAgent, $aParams))
+                throw new Exception($oLimits->getChatSessionRateLimitError());
         }
 
-        $oAi->setChatContext($aAgent, $aParams);
+        $oChat->setChatContext($aAgent, $aParams);
 
         $mixed = '';
         try {
@@ -144,14 +146,14 @@ class BxDolAiTrigger extends BxDol implements iBxDolAiTrigger
         if (!$this->appliesChatLimits())
             return $sParams;
 
-        $oAi = $this->getAi();
+        $oLimits = BxDolAiChatLimits::getInstance();
         if (is_array($mixedParams) && isset($mixedParams['message_text'])) {
-            $mixedParams['message_text'] = $oAi->applyChatInputLimit((string)$mixedParams['message_text'], $aAgent);
+            $mixedParams['message_text'] = $oLimits->applyChatInputLimit((string)$mixedParams['message_text'], $aAgent);
             return json_encode($mixedParams);
         }
 
         if (is_string($mixedParams))
-            return $oAi->applyChatInputLimit($sParams, $aAgent);
+            return $oLimits->applyChatInputLimit($sParams, $aAgent);
 
         return $sParams;
     }

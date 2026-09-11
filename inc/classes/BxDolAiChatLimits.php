@@ -10,12 +10,18 @@
 class BxDolAiChatLimits
 {
     protected $_oDb;
-    protected $_oAi;
 
-    public function __construct(BxDolAiQuery $oDb, BxDolAi $oAi)
+    public static function getInstance()
     {
-        $this->_oDb = $oDb;
-        $this->_oAi = $oAi;
+        if (!isset($GLOBALS['bxDolClasses'][__CLASS__]))
+            $GLOBALS['bxDolClasses'][__CLASS__] = new self();
+
+        return $GLOBALS['bxDolClasses'][__CLASS__];
+    }
+
+    public function __construct()
+    {
+        $this->_oDb = new BxDolAiQuery();
     }
 
     /**
@@ -77,7 +83,7 @@ class BxDolAiChatLimits
     public function getChatUserTurnCount($iAgentId, $aParams = [])
     {
         if (!isset($aParams['chat_history_subindex']))
-            $aParams = array_merge($this->_oAi->resolveChatHistoryParams($iAgentId), $aParams);
+            $aParams = array_merge(BxDolAiChat::getInstance()->resolveChatHistoryParams($iAgentId), $aParams);
 
         try {
             $o = BxDolAi::getAgentInstance((int)$iAgentId, $aParams);
@@ -110,9 +116,9 @@ class BxDolAiChatLimits
             return false;
 
         if (!isset($aParams['chat_history_subindex']))
-            $aParams = array_merge($this->_oAi->resolveChatHistoryParams((int)($aAgent['id'] ?? 0)), $aParams);
+            $aParams = array_merge(BxDolAiChat::getInstance()->resolveChatHistoryParams((int)($aAgent['id'] ?? 0)), $aParams);
 
-        $sThreadId = BxDolAi::chatHistoryThreadId($aAgent, $aParams);
+        $sThreadId = BxDolAiChat::threadId($aAgent, $aParams);
         if (!$this->_oDb->isNewChatSession($sThreadId))
             return false;
 

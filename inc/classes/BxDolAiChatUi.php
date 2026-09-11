@@ -9,6 +9,14 @@
 
 class BxDolAiChatUi
 {
+    public static function getInstance()
+    {
+        if (!isset($GLOBALS['bxDolClasses'][__CLASS__]))
+            $GLOBALS['bxDolClasses'][__CLASS__] = new self();
+
+        return $GLOBALS['bxDolClasses'][__CLASS__];
+    }
+
     public function storedChatJsonToUiMessages($sJson)
     {
         $aStored = json_decode((string)$sJson, true);
