@@ -1588,7 +1588,7 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
 
     public function serviceGetOptionsAgentsModel()
     {
-        return ['' => _t('_Select_one')] + BxDolAI::getInstance()->getModels(['active' => true, 'hidden' => false]);
+        return ['' => _t('_Select_one')] + BxDolAI::getInstance()->getModels(['active' => true]);
     }
 
     public function serviceGetOptionsAgentsProfile($bSelectOne = true, $sSelectOneLangKey = '_Select_one')
@@ -1849,7 +1849,7 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
 
         $sThreadId = !empty($aData['threadId']) ? $aData['threadId'] : null;
 
-        if(method_exists($oAi, 'streamAgentChat') && class_exists('NeuronAI\Chat\Messages\Stream\Adapters\AGUIAdapter')) {
+        if(class_exists('NeuronAI\Chat\Messages\Stream\Adapters\AGUIAdapter')) {
             $oAi->streamAgentChat($aAgent['id'], $sPrompt, $aParams, $sThreadId);
             return;
         }
@@ -1883,9 +1883,7 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
             return echoJson(['code' => 403, 'msg' => _t('_sys_agents_unauthorized'), 'messages' => [], 'activeRun' => null, 'interrupts' => null]);
 
         try {
-            $aMessages = method_exists($oAi, 'getChatHistoryUiMessages')
-                ? $oAi->getChatHistoryUiMessages($aAgent['id'], $aParams)
-                : [];
+            $aMessages = $oAi->getChatHistoryUiMessages($aAgent['id'], $aParams);
         } catch (Throwable $o) {
             $aMessages = [];
         }
