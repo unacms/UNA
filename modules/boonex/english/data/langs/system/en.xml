@@ -3869,8 +3869,7 @@
     <string name="_sys_page_block_title_sys_create_post_public"><![CDATA[Create Post (Public)]]></string>
     <string name="_sys_page_block_title_create_post_public"><![CDATA[Add new...]]></string>
     <string name="_sys_page_block_title_dashboard"><![CDATA[Dashboard]]></string>
-    <string name="_sys_page_block_title_dashboard_api"><![CDATA[Dashboard (for App only)]]></string>
-    <string name="_sys_page_block_title_dash_stats"><![CDATA[Profile Stats]]></string>
+    <string name="_sys_page_block_title_dash_stats"><![CDATA[Dashboard Stats (for App only)]]></string>
     <string name="_sys_page_block_title_homepage_menu"><![CDATA[Content modules menu]]></string>
     <string name="_sys_page_block_title_homepage_splash"><![CDATA[Splash]]></string>
     <string name="_sys_page_block_title_forgot_password"><![CDATA[Forgot Password]]></string>
