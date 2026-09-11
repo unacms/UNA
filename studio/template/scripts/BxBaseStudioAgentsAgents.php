@@ -946,7 +946,8 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
 
         $this->_getMultiField('tools', $aAgent, 'getTools', 'toolAdd', 'agents_agents_form_tools.html', $aForm);
 
-        BxDolStudioUtils::getVisibilityValues((int)($aAgent['acl_levels'] ?? 0), $aForm['inputs']['acl_levels']['values'], $aForm['inputs']['acl_levels']['value']);
+        BxDolStudioUtils::getVisibilityValues(0, $aForm['inputs']['acl_levels']['values'], $aForm['inputs']['acl_levels']['value']);
+        $aForm['inputs']['acl_levels']['value'] = (int)($aAgent['acl_levels'] ?? 0);
 
         return $aForm;
     }
