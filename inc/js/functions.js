@@ -501,15 +501,17 @@ function bx_menu_popup (o, e, options, vars) {
     if ('undefined' == typeof(e))
         e = window;
 
-    var bExpanded = e !== window && $(e).length != 0 && $(e).is('[aria-expanded]');
+    //--- Only a trigger that names no target of its own is this popup's disclosure. A trigger carrying
+    //--- aria-controls belongs to whatever it names - a sidebar, the search box - and that owner keeps
+    //--- its state; writing to it from here would leave it describing the wrong thing.
+    var bExpanded = e !== window && $(e).length != 0 && $(e).is('[aria-expanded]') && !$(e).is('[aria-controls]');
     var fOnShow = options.onShow, fOnHide = options.onHide;
 
-    var o = $.extend({}, $.fn.dolPopupDefaultOptions, {
-        id: o, 
-        url: bx_append_url_params('menu.php', $.extend({o:o}, vars)), 
-        cssClass: 'bx-popup-menu'
-    }, options, {
-        onShow: function(oPopup) {
+    // a string onShow is handed back to dolPopup, which evaluates it; a string onHide has never been
+    // supported on this path, since dolPopupAjax replaces onHide before dolPopup sees it
+    var aExpanded = {};
+    if(typeof fOnShow != 'string')
+        aExpanded.onShow = function(oPopup) {
             if(bExpanded)
                 $(e).attr('aria-expanded', 'true');
 
@@ -518,20 +520,23 @@ function bx_menu_popup (o, e, options, vars) {
 
             if(typeof fOnShow == 'function')
                 fOnShow(oPopup);
-            else if(typeof fOnShow == 'string')
-                eval(fOnShow);
-        },
-        onHide: function(oPopup) {
+        };
+
+    if(typeof fOnHide != 'string')
+        aExpanded.onHide = function(oPopup) {
             var oTrigger = oPopup.data('bx-popup-trigger');
-            if(oTrigger && oTrigger.length)
+            if(oTrigger)
                 oTrigger.attr('aria-expanded', 'false');
 
             if(typeof fOnHide == 'function')
                 fOnHide(oPopup);
-            else if(typeof fOnHide == 'string')
-                eval(fOnHide);
-        }
-    });
+        };
+
+    var o = $.extend({}, $.fn.dolPopupDefaultOptions, {
+        id: o,
+        url: bx_append_url_params('menu.php', $.extend({o:o}, vars)),
+        cssClass: 'bx-popup-menu'
+    }, options, aExpanded);
 
     $(e).dolPopupAjax(o);
 }

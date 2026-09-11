@@ -89,7 +89,7 @@
         }
         else {
             var oReturnTo = bx_clicked_stack_pop();
-            $(oReturnTo ? oReturnTo : oTrigger.filter(':visible').get(0)).focus();
+            $(oReturnTo || oTrigger.filter(':visible').get(0)).focus();
         }
     }
 

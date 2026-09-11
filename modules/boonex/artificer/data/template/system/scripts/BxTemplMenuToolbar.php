@@ -80,8 +80,10 @@ class BxTemplMenuToolbar extends BxBaseMenuToolbar
                 if(isset($a['bx_if:onclick']['content']['onclick']))
                     $a['bx_if:onclick']['content']['onclick'] = str_replace(["bx_menu_slide", "'site', "], ['bx_menu_popup'], $a['bx_if:onclick']['content']['onclick']);
 
-                //--- No aria-controls: bx_menu_popup() creates the popup lazily, so the id does not exist yet.
-                $sAttrsAdd = 'aria-haspopup="dialog" aria-expanded="false"';
+                //--- No aria-controls, because bx_menu_popup() creates the popup lazily and the id does not
+                //--- exist yet, and no aria-expanded, because the popup is anchored on the ancestor <ul>
+                //--- rather than on this link, so nothing is in a position to keep the state honest.
+                $sAttrsAdd = 'aria-haspopup="dialog"';
                 break;
         }
 
