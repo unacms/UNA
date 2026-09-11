@@ -121,7 +121,6 @@ class BxTasksCmts extends BxTemplCmts
 
     protected function _callAlert($sUnit, $sAction, $iObjectId, $iSender = false, $aExtras = [])
     {
-        echo 'Here' . $iSender . ' - ' . $this->_iAuthorAuto;
         if($iSender && $iSender == $this->_iAuthorAuto)
             return;
 
