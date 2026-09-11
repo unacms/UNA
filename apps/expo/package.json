@@ -36,6 +36,7 @@
     "@types/react": "~19.2.10",
     "app": "*",
     "babel-plugin-transform-inline-environment-variables": "^0.4.4",
+    "blueimp-md5": "^2.19.0",
     "country-codes-flags-phone-codes": "^1.1.1",
     "date-fns": "^2.30.0",
     "eslint": "^9.17.0",

@@ -29,6 +29,7 @@
     "@vercel/speed-insights": "^1.2.0",
     "@vis.gl/react-google-maps": "^1.7.1",
     "app": "*",
+    "blueimp-md5": "^2.19.0",
     "eslint-config-next": "16.3.4",
     "jotai": "^2.16.0",
     "lucide-react": "1.16.0",

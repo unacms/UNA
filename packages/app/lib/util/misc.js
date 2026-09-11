@@ -1,7 +1,6 @@
 import { Platform } from 'react-native'
 import { fetcher } from 'app/lib/fetcher';
-import * as Crypto from 'expo-crypto';
-import { md5Sync } from 'app/lib/md5-string';
+import md5Hex from 'blueimp-md5';
 import Clipboard from '@react-native-clipboard/clipboard';
 import { isWeb } from './layout';
 import { appSetting } from './settings';
@@ -74,14 +73,12 @@ export function clearNotif() {
 
 }
 
+/**
+ * Sync MD5 hex of a string (UTF-8). Used as a stable key for resumable
+ * uploads — not for anything security-related.
+ */
 export function md5(str) {
-    return md5Sync(String(str ?? ''));
-}
-export async function md52(str) {
-    return await Crypto.digestStringAsync(
-        Crypto.CryptoDigestAlgorithm.SHA256,
-        str
-    );
+    return md5Hex(String(str ?? ''));
 }
 
 export function getRandomColor(str) {
