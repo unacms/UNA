@@ -37,7 +37,9 @@ export default function Layouts({ path, data }) {
     const uri = data?.uri
     const url = data?.url
     const urlRef = useRef(url);
-    urlRef.current = url;
+    useEffect(() => {
+        urlRef.current = url;
+    }, [url]);
     const isWeb = Platform.OS === 'web';
     if (isWeb)
         registerAll();
@@ -120,29 +122,29 @@ function PageLayoutContent({ layout, data }) {
     const { currentUser } = useCurrentUser();
     const { layoutName, layoutBlocks, isCustomLayout, columnLayout = '' } = layout;
 
-    const pageClasses = useMemo(() => ({
-        padding: responsiveClasses('padding', data?.config?.padding ?? getPageContentPaddingTiers(layoutName)),
-        gap: responsiveClasses('gap', data?.config?.gap),
+    // Derived values; React Compiler memoizes them on their real inputs.
+    const pageConfig = data?.config;
+    const pageClasses = {
+        padding: responsiveClasses('padding', pageConfig?.padding ?? getPageContentPaddingTiers(layoutName)),
+        gap: responsiveClasses('gap', pageConfig?.gap),
         width: appSetting('layout', 'max_width'),
         contentWidth: getPageContentWidth(layoutName),
-    }), [data?.config, columnLayout, data?.layout, layoutName]);
+    };
 
     const hasProfileInformer = currentUser?.informer?.some(
         item => item.id === "sys-account-profile-system"
     );
 
-    const Component = useMemo(() => {
-        return getComponent('layout', layoutName);
-    }, [layoutName]);
+    const Component = getComponent('layout', layoutName);
 
-    const componentKey = useMemo(() => {
-        // Keep the wiki shell mounted across doc routes (registry key is layout_1_column_wiki).
-        if (layoutName === 'layout_1_column_wiki' || layoutName === 'wiki') {
-            return `layout-${layoutName}`;
-        }
-
-        return `layout-${layoutName}-${data.uri || data.url || ''}-${data?.timestamp || ''}`;
-    }, [layoutName, data.uri, data.url, data?.timestamp]);
+    // Keep the wiki shell mounted across doc routes (registry key is layout_1_column_wiki).
+    const isWikiLayout = layoutName === 'layout_1_column_wiki' || layoutName === 'wiki';
+    const pageUri = data?.uri;
+    const pageUrl = data?.url;
+    const pageTimestamp = data?.timestamp;
+    const componentKey = isWikiLayout
+        ? `layout-${layoutName}`
+        : `layout-${layoutName}-${pageUri || pageUrl || ''}-${pageTimestamp || ''}`;
 
     if (data?.page_status === 404 || data?.page_status === 403) {
         return <ErrorPage type={data?.page_status} />;

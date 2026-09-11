@@ -1,7 +1,7 @@
 import Field from './_field';
 import { Text } from 'app/design/typography'
 import { View, Row, Pressable, ScrollView } from 'app/design/view'
-import { useState, useEffect, useCallback, useReducer } from 'react';
+import { useState, useEffect, useReducer } from 'react';
 import { fetcher } from 'app/lib/fetcher';
 import Profile from 'app/ui/molecules/profile/profile'
 import { Button, NeoButton, Input, Modal } from 'app/design/controls'
@@ -88,29 +88,32 @@ export function SelectUsers({ onSave, initedData = [], requestUrl, isSingle = fa
         }
     }
 
-    const onChangeText = useCallback(async (sValue) => {
+    // Plain handlers: React Compiler memoizes them with the real dependencies
+    // (the manual useCallback deps here were incomplete, e.g. requestUrl /
+    // state.selectedUsers were read but not listed).
+    const onChangeText = async (sValue) => {
         dispatch({ type: 'setLoading' })
         const sResponse = await fetcher(requestUrl + JSON.stringify({ term: sValue }));
         const suggestions = Array.isArray(sResponse.data) ? sResponse.data : []
         dispatch({ type: 'searchFinished', suggestedUsers: suggestions, searchText: sValue })
-    }, []);
+    };
 
-    const onSelectUser = useCallback((oData) => {
+    const onSelectUser = (oData) => {
         dispatch({ type: 'userSelected', selectedUsers: [...state.selectedUsers, oData], suggestedUsers: state.suggestedUsers.filter((user) => user.id !== oData.id) })
-    }, [state.suggestedUsers]);
+    };
 
     useEffect(() => {
         if (isSingle && state.selectedUsers.length > 0)
             onSave(state.selectedUsers);
     }, [state.selectedUsers]);
 
-    const onRemove = useCallback((oData) => {
+    const onRemove = (oData) => {
         dispatch({ type: 'userSelected', selectedUsers: state.selectedUsers.filter((user) => user.id !== oData.id), suggestedUsers: [...state.suggestedUsers, oData] })
-    }, [state.suggestedUsers, state.selectedUsers]);
+    };
 
-    const onSaveInt = useCallback(async () => {
+    const onSaveInt = async () => {
         onSave(state.selectedUsers, !isSingle);
-    }, [state.selectedUsers, isSingle]);
+    };
 
     return <View className="px-1">
         <ScrollView keyboardDismissMode="none" keyboardShouldPersistTaps="handled" className="w-full overflow-visible min-h-64" >
@@ -155,11 +158,11 @@ export default function FormFieldInitialMembers(props) {
         setIsModal(true);
     }
 
-    const onRemove = useCallback((valueToRemove) => {
+    const onRemove = (valueToRemove) => {
         if (!isSingle) {
             onSave(selected.filter(item => item.id !== valueToRemove.id))
         }
-    }, [selected]);
+    };
 
     return (
         <Field {...props}>

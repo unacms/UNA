@@ -7,6 +7,7 @@
   ],
   "devDependencies": {
     "@types/react": "~19.2.10",
+    "babel-plugin-react-compiler": "^1.0.0",
     "eslint": "^9.17.0",
     "lerna-update-wizard": "^1.1.2",
     "patch-package": "^8.0.1",
@@ -31,8 +32,8 @@
     "clean": "rm -rf ./node_modules ./apps/expo/node_modules ./apps/next/node_modules ./packages/app/node_modules"
   },
   "engines": {
-  "node": "24.x"
-},
+    "node": "24.x"
+  },
   "nohoist": [
     "**/expo-router",
     "**/expo-router/**"

@@ -153,6 +153,11 @@ const nextConfig = {
     typescript: {
         ignoreBuildErrors: true,
     },
+    // React Compiler (client bundle only). Components that violate the Rules of
+    // React are skipped, not broken — `yarn lint` (react-hooks/*) lists them.
+    // Opt a file/component out with the 'use no memo' directive. Forks can
+    // disable it via customization/config/next.config.js (`reactCompiler: false`).
+    reactCompiler: true,
     // Bridge non-public GOOGLE_WEB_CLIENT_ID into the client bundle so SSR and
     // hydration agree on whether Google auth (and the OR separator) render.
     // Prefer NEXT_PUBLIC_* when set; fall back to the server-only name used in .env.

@@ -33,7 +33,12 @@ const expoConfig = {
         "enableFullScreenImage_legacy": true,
     },
     "experiments": {
-        "autolinkingModuleResolution": true
+        "autolinkingModuleResolution": true,
+        // React Compiler via babel-preset-expo (app code only, not node_modules).
+        // Same rules as web: components violating the Rules of React are skipped;
+        // opt a file out with 'use no memo'. Forks: override in
+        // customization/config/app.config.js (`experiments.reactCompiler: false`).
+        "reactCompiler": true
     },
     "platforms": [
         "ios",

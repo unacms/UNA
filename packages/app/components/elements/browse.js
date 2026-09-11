@@ -60,28 +60,30 @@ export default function Browse(props) {
     const uniRef = useRef()
     const isFocused = useIsFocused();
     const isFocusedRef = useRef(isFocused);
-    isFocusedRef.current = isFocused;
+    useEffect(() => {
+        isFocusedRef.current = isFocused;
+    }, [isFocused]);
     const getScrollValue = useGetScrollValue();
     //updateMode can be action, auto, none
     const updateMode = (props.updateMode || props.data.unit == 'feed') ? 'action' : 'none';
-    const data = props.data
+    // Props are read-only: derive a copy instead of rewriting `props.data.unit`.
+    const data = useMemo(
+        () => (props.data?.unit == 'mixed' ? { ...props.data, unit: 'general-profile-list' } : props.data),
+        [props.data]
+    );
     const isOneLine = data?.params?.view == 'showcase'
     const isOnePage = props.only_one_page || isOneLine;
     const isShowTitleInside = props?.showTitleInside || props?.extraProps?.showTitleInside || isOneLine;
-
-    if (data.unit == 'mixed') {
-        data.unit = 'general-profile-list'
-    }
 
     const [defParams, setDefParams] = useState({
         ...(data.params ?? {}),
         ...(props?.params ?? {}),
         moduleName: data.module ?? '',
     });
-    let formProps = data?.filter_form;
+    const filterForm = data?.filter_form;
 
     const [showFilters, setShowFilters] = useState(false);
-    const [filterValues, setFilterValues] = useState({ modules: formProps?.data?.inputs?.modules?.value, media: formProps?.data?.inputs?.media?.value });
+    const [filterValues, setFilterValues] = useState({ modules: filterForm?.data?.inputs?.modules?.value, media: filterForm?.data?.inputs?.media?.value });
 
     /* unit mode & change unit mode */
     const unitMode = props.unitMode
@@ -120,14 +122,16 @@ export default function Browse(props) {
         }
     });
 
-    if (filterValues && formProps) {
-        if (formProps.data.inputs.modules)
-            formProps.data.inputs.modules.value = filterValues.modules;
-        if (formProps.data.inputs.media)
-            formProps.data.inputs.media.value = filterValues.media;
-        if (formProps.data.inputs.by_context)
-            formProps.data.inputs.by_context.value = filterValues.by_context;
-    }
+    // Current filter values go into a derived copy of the form config (the
+    // page data object itself is never mutated).
+    const formProps = useMemo(() => {
+        if (!filterForm || !filterValues || !filterForm.data?.inputs) return filterForm;
+        const inputs = { ...filterForm.data.inputs };
+        for (const key of ['modules', 'media', 'by_context']) {
+            if (inputs[key]) inputs[key] = { ...inputs[key], value: filterValues[key] };
+        }
+        return { ...filterForm, data: { ...filterForm.data, inputs } };
+    }, [filterForm, filterValues]);
 
     const hOffset = isWeb ? 64 : 56
 
@@ -144,15 +148,13 @@ export default function Browse(props) {
         return JSON.stringify(rest)
     }, [defParams])
 
+    const qKeyUri = props.uri || ''
+    const qKeyRequestUrl = data.request_url || ''
+    const qKeyUserId = currentUser?.id
+    const qKeyCachePrefix = props?.cachePrefix || ''
     const qKey = useMemo(
-        () => [
-            props.uri || '',
-            data.request_url || '',
-            currentUser?.id,
-            props?.cachePrefix || '',
-            paramsKey,
-        ],
-        [props.uri, data.request_url, currentUser?.id, props?.cachePrefix, paramsKey]
+        () => [qKeyUri, qKeyRequestUrl, qKeyUserId, qKeyCachePrefix, paramsKey],
+        [qKeyUri, qKeyRequestUrl, qKeyUserId, qKeyCachePrefix, paramsKey]
     )
 
     const {

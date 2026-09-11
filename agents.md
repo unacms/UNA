@@ -23,7 +23,7 @@
 
 ## NEO project summary
 
-NEO is a **Yarn workspaces monorepo** with **Turborepo** ([`turbo.json`](turbo.json)): shared application code lives in [`packages/app`](packages/app), the web app in [`apps/next`](apps/next) (Next.js 16, App Router), and the native app in [`apps/expo`](apps/expo) (Expo 54, React Native). Styling uses **Uniwind** (Tailwind CSS v4 syntax for React Native) on native and **Tailwind CSS 4** (via `@tailwindcss/postcss`) on web, with semantic design tokens from settings—see [README.md](README.md) for versions, scripts (`yarn web`, `yarn native`), and setup, and [uniwind.md](uniwind.md) for the NativeWind→Uniwind migration notes.
+NEO is a **Yarn workspaces monorepo** with **Turborepo** ([`turbo.json`](turbo.json)): shared application code lives in [`packages/app`](packages/app), the web app in [`apps/next`](apps/next) (Next.js 16, App Router), and the native app in [`apps/expo`](apps/expo) (Expo 57, React Native). Styling uses **Uniwind** (Tailwind CSS v4 syntax for React Native) on native and **Tailwind CSS 4** (via `@tailwindcss/postcss`) on web, with semantic design tokens from settings—see [README.md](README.md) for versions, scripts (`yarn web`, `yarn native`), and setup, and [uniwind.md](uniwind.md) for the NativeWind→Uniwind migration notes.
 
 **Product integration** (see also [.cursorrules](.cursorrules)): the frontend targets **UNA CMS** APIs (not a generic REST backend). Use [`app/lib/fetcher`](packages/app/lib/fetcher.js) for requests, follow `/api.php?r=module/action/Template` patterns, respect proxy/env configuration for web vs native, and use **Pusher** where real-time updates are required. Authentication and menus follow existing `currentUser` and [`app/lib/util`](packages/app/lib/util.js) patterns. **Routing**: Expo Router under `apps/expo/app/`, Next.js App Router under `apps/next/app/`.
 
@@ -127,9 +127,9 @@ cat apps/expo/package.json | grep -E '"expo"|"react-native"'
 | Framework | Version | Key Changes |
 |-----------|---------|-------------|
 | **Next.js** | 16.3.x | React Compiler support (stable), new caching patterns, `use cache` directive |
-| **React** | 19.1.x | Actions, `use()` hook, improved Suspense |
-| **Expo** | 54.x | New Architecture enabled by default, expo-router 6 |
-| **React Native** | 0.81.x | Bridgeless mode, concurrent features |
+| **React** | 19.2.x | Actions, `use()` hook, improved Suspense |
+| **Expo** | 57.x | New Architecture enabled by default, expo-router 57 |
+| **React Native** | 0.86.x | Bridgeless mode, concurrent features |
 | **Tailwind CSS** | 4.2.x | Web via `@tailwindcss/postcss` |
 | **Uniwind** | 1.6.x | Native Tailwind v4 (`apps/expo/global.combined.css`) |
 
@@ -138,16 +138,18 @@ cat apps/expo/package.json | grep -E '"expo"|"react-native"'
 If you're unsure about best practices for the installed version:
 
 1. **Next.js 16:** Check https://nextjs.org/docs for latest patterns
-2. **Expo 54:** Check https://docs.expo.dev for latest APIs
+2. **Expo 57:** Check https://docs.expo.dev for latest APIs
 3. **React 19:** Check https://react.dev for new patterns
 
 ### React Compiler
 
-Next.js 16 has **stable React Compiler support**. This means:
+The React Compiler is **enabled** in both apps: `reactCompiler: true` in [`apps/next/next.config.js`](apps/next/next.config.js) (client bundle only) and `experiments.reactCompiler: true` in [`apps/expo/app.config.js`](apps/expo/app.config.js) (via `babel-preset-expo`, app code only). Shared code in `packages/app` is compiled by both.
 
-- Manual `useMemo`, `useCallback`, and `React.memo` are often unnecessary
-- The compiler auto-memoizes components and values
-- Remove redundant memoization when it doesn't serve a specific purpose
+- The compiler **skips** any component or hook that breaks the Rules of React and leaves it as written — nothing breaks, it just stays unoptimized. `yarn lint` reports these as `react-hooks/*` errors (`refs`, `immutability`, `static-components`, `preserve-manual-memoization`, …); fixing them is how a component *gets* compiled.
+- Do **not** mass-remove `useMemo` / `useCallback` / `memo`. In a skipped component they still do their job. Drop manual memoization only in files that lint clean, and only when it serves no other purpose (e.g. a stable callback for a subscription).
+- Escape hatch: the `'use no memo'` directive at the top of a file or component body opts it out. Forks can turn the compiler off entirely via `customization/config/next.config.js` (`reactCompiler: false`) and `customization/config/app.config.js` (`experiments: { reactCompiler: false }`).
+- Watch for "stale UI" after enabling: code that mutates an object from props/state in place (handlers, `emitter` callbacks) and expects children to re-render will not — memoized children see the same reference. Create new objects instead.
+- Do not dispatch no-op state updates from effects (`setState(prev => prev)` "just in case"). Compare first and return. While a fiber still holds a low-priority update (e.g. idle hydration of the page `<Suspense>`) React cannot bail out eagerly, and a no-op dispatch keeps a sync render loop alive — see `MenuTop` in [`components/nav/menu-top.js`](packages/app/components/nav/menu-top.js).
 
 ---
 

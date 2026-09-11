@@ -1,4 +1,4 @@
-import { forwardRef, useCallback, useEffect, useRef } from 'react'
+import { forwardRef, useCallback, useEffect, useLayoutEffect, useRef } from 'react'
 import { cn } from 'app/lib/util'
 
 const assignRef = (ref, value) => {
@@ -28,6 +28,17 @@ const createLayoutEvent = (node) => {
 const useWebLayout = (forwardedRef, onLayout) => {
     const nodeRef = useRef(null)
     const lastLayoutRef = useRef(null)
+    const emitLayoutRef = useRef(null)
+    // Latest callback lives in a ref so the subscription below is created once per
+    // mount instead of on every render (call sites pass inline arrows). Re-running
+    // it per render is wasted work, and on a fiber that still holds a low-priority
+    // update (idle hydration of the page Suspense boundary) the re-emitted
+    // setState cannot bail out and keeps the render loop alive.
+    const onLayoutRef = useRef(onLayout)
+    useLayoutEffect(() => {
+        onLayoutRef.current = onLayout
+    })
+    const hasOnLayout = typeof onLayout === 'function'
 
     const setRef = useCallback((node) => {
         nodeRef.current = node
@@ -36,7 +47,7 @@ const useWebLayout = (forwardedRef, onLayout) => {
 
     useEffect(() => {
         const node = nodeRef.current
-        if (!node || !onLayout) return
+        if (!node || !hasOnLayout) return
 
         const emitLayout = () => {
             const event = createLayoutEvent(node)
@@ -54,9 +65,10 @@ const useWebLayout = (forwardedRef, onLayout) => {
             }
 
             lastLayoutRef.current = nextLayout
-            onLayout(event)
+            onLayoutRef.current?.(event)
         }
 
+        emitLayoutRef.current = emitLayout
         emitLayout()
 
         const observer = typeof ResizeObserver !== 'undefined'
@@ -67,10 +79,18 @@ const useWebLayout = (forwardedRef, onLayout) => {
         window.addEventListener('resize', emitLayout)
 
         return () => {
+            emitLayoutRef.current = null
             observer?.disconnect()
             window.removeEventListener('resize', emitLayout)
         }
-    }, [onLayout])
+    }, [hasOnLayout])
+
+    // ResizeObserver misses pure position changes (x/y). Re-measure after every
+    // render, as the old per-render resubscribe did; emitLayout only calls
+    // onLayout when the rect actually changed.
+    useEffect(() => {
+        emitLayoutRef.current?.()
+    })
 
     return setRef
 }

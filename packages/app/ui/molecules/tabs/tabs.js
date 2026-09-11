@@ -22,6 +22,9 @@ import {
 import { tabsDebug } from 'app/ui/molecules/tabs/tabs-debug';
 
 /** Native: avoid synchronous layout+setState during the same commit as Fabric layout (use `useEffect` + rAF batching). Web: keep `useLayoutEffect` to avoid pill flicker. */
+/** Stable fallback so size config is never a fresh (mutable) object per render. */
+const EMPTY_SIZE_CFG = Object.freeze({});
+
 const useIsomorphicLayoutEffect =
     Platform.OS === 'web' ? useLayoutEffect : useEffect;
 
@@ -126,14 +129,21 @@ export default function Tabs({
         () => activeTab ?? tabs?.[0]?.key
     );
     /** Parent often passes a new `tabs` array each render; never key `useCallback`/`useLayoutEffect` off that reference. */
+    // "Latest value" refs are written in a layout effect (not during render — React
+    // Compiler rule) so they are current before any layout effect / callback below.
     const tabsRef = useRef(tabs);
-    tabsRef.current = tabs;
+    useIsomorphicLayoutEffect(() => {
+        tabsRef.current = tabs;
+    });
 
     const onTabChangeRef = useRef(onTabChange);
-    onTabChangeRef.current = onTabChange;
+    useIsomorphicLayoutEffect(() => {
+        onTabChangeRef.current = onTabChange;
+    });
 
     const renderDiagRef = useRef(0);
-    if (__DEV__ && globalThis.__NEO_TABS_DEBUG__) {
+    useIsomorphicLayoutEffect(() => {
+        if (!__DEV__ || !globalThis.__NEO_TABS_DEBUG__) return;
         renderDiagRef.current += 1;
         tabsDebug('render', {
             n: renderDiagRef.current,
@@ -142,7 +152,7 @@ export default function Tabs({
             disableScrollIntoView,
             nativeScrollSkipIndicator,
         });
-    }
+    });
 
     /** Layout of `TabsPrimitive.List` relative to the header row (same coords as the selection layer). */
     const listLayoutRef = useRef({ x: 0, y: 0, width: 0, height: 0 });
@@ -151,7 +161,9 @@ export default function Tabs({
     /** "More" row view — `onLayout` is not relative to the tab list (Dropdown wraps the trigger). */
     const moreViewRef = useRef(null);
     const currentTabRef = useRef(currentTab);
-    currentTabRef.current = currentTab;
+    useIsomorphicLayoutEffect(() => {
+        currentTabRef.current = currentTab;
+    });
 
     const headerRowLayoutRef = useRef(null);
     const scrollViewRef = useRef(null);
@@ -166,11 +178,13 @@ export default function Tabs({
         height: 0,
     });
     const currentSizeKey = size || tabsSizes?.default_size || 'md';
-    const sizeCfg = tabsSizes?.[currentSizeKey] || tabsSizes?.md || {};
+    const sizeCfg = tabsSizes?.[currentSizeKey] || tabsSizes?.md || EMPTY_SIZE_CFG;
     const variantCfg =
         tabsVariants[variant] || tabsVariants.default || tabsVariants.secondary;
     const variantCfgRef = useRef(variantCfg);
-    variantCfgRef.current = variantCfg;
+    useIsomorphicLayoutEffect(() => {
+        variantCfgRef.current = variantCfg;
+    });
 
     /** Secondary uses a bottom line, not a pill — rounding on outer track/row clips the indicator. */
     const radiusTrack =
@@ -307,7 +321,9 @@ export default function Tabs({
     ]);
 
     const syncIndicatorLayoutRef = useRef(syncIndicatorLayout);
-    syncIndicatorLayoutRef.current = syncIndicatorLayout;
+    useIsomorphicLayoutEffect(() => {
+        syncIndicatorLayoutRef.current = syncIndicatorLayout;
+    });
 
     /** Coalesce native indicator sync to one rAF — avoids layout↔setState reentrancy on Fabric when many triggers fire onLayout after a selection change. */
     const indicatorRafRef = useRef(null);
@@ -364,16 +380,13 @@ export default function Tabs({
         [scheduleIndicatorSync, nativeScrollSkipIndicator]
     );
 
+    const onMoreLayout = collapseLayout.onMoreLayout;
     const onMoreLayoutForTabs = useCallback(
         (e) => {
-            collapseLayout.onMoreLayout(e);
+            onMoreLayout(e);
             if (!nativeScrollSkipIndicator) scheduleIndicatorSync('more');
         },
-        [
-            collapseLayout.onMoreLayout,
-            scheduleIndicatorSync,
-            nativeScrollSkipIndicator,
-        ]
+        [onMoreLayout, scheduleIndicatorSync, nativeScrollSkipIndicator]
     );
 
     /**
@@ -386,6 +399,7 @@ export default function Tabs({
         syncIndicatorLayoutRef.current();
     }, [currentTab, nativeScrollSkipIndicator]);
 
+    const scrollInset = sizeCfg.scroll_inset ?? TABS_SCROLL_INTO_VIEW_PADDING_PX;
     const scrollActiveTabIntoView = useCallback(() => {
         if (overflow === 'collapse') return;
         const triggerL = triggerLayoutsRef.current[currentTab];
@@ -393,8 +407,7 @@ export default function Tabs({
         const scrollView = scrollViewRef.current;
         if (!triggerL || !list || !scrollView) return;
 
-        const padding =
-            sizeCfg.scroll_inset ?? TABS_SCROLL_INTO_VIEW_PADDING_PX;
+        const padding = scrollInset;
         const vw = scrollViewWidthRef.current;
         if (!vw) return;
         const scrollX = scrollXRef.current;
@@ -415,7 +428,7 @@ export default function Tabs({
                 animated: Platform.OS === 'web',
             });
         }
-    }, [currentTab, sizeCfg.scroll_inset, overflow]);
+    }, [currentTab, scrollInset, overflow]);
 
     useEffect(() => {
         if (overflow === 'collapse') return;

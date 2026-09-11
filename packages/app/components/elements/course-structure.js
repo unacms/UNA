@@ -7,7 +7,7 @@ import Card from 'app/ui/molecules/page/card'
 import Progress from 'app/ui/atoms/progress'
 import Scroll from 'app/ui/molecules/page/scroll'
 import { memo } from 'react'
-import { useReducer, useCallback } from 'react'
+import { useReducer } from 'react'
 import { fetcher } from 'app/lib/fetcher'
 import { BlockByDataInt as BlockByData } from 'app/components/block';
 import { useBottomSheetData } from 'app/context/bottomsheet';
@@ -43,24 +43,26 @@ function CourseStructure({ data }) {
         }
     }
 
-    const handleAddModule = useCallback(async (event) => {
-        event.preventDefault();
-        const fetchedData = await fetcher(`/api.php?r=system/perfom_action_api/TemplServiceGrid/&params[]=&o=bx_courses_cnt_structure_manage&a=add&parent_id=0&entry_id=${courseId}`);
-        const content = { content: fetchedData.data, designbox_id: 0 };
-        setBottomSheetData({ title: content.content[0]?.title || " ", content: <View className='px-1'><BlockByData onFormEmpty={handleUpdate} block={content} /></View> });
-    }, [courseId, setBottomSheetData]);
-
-    const resetData = useCallback(async () => {
+    // Plain functions: only used from handlers/JSX, so identity does not matter
+    // (React Compiler memoizes them). Declared in dependency order.
+    const resetData = async () => {
         const response = await fetcher(`/api.php?r=bx_courses/entity_structure_l1_block/&params[]=${courseId}`);
         dispatch({ type: 'SET_DATA', data: response.data[0].data });
-    }, [courseId]);
+    };
 
-    const handleUpdate = useCallback(() => {
+    const handleUpdate = () => {
         setTimeout(() => {
             setBottomSheetData(false);
             resetData();
         }, 100);
-    }, [setBottomSheetData, resetData]);
+    };
+
+    const handleAddModule = async (event) => {
+        event.preventDefault();
+        const fetchedData = await fetcher(`/api.php?r=system/perfom_action_api/TemplServiceGrid/&params[]=&o=bx_courses_cnt_structure_manage&a=add&parent_id=0&entry_id=${courseId}`);
+        const content = { content: fetchedData.data, designbox_id: 0 };
+        setBottomSheetData({ title: content.content[0]?.title || " ", content: <View className='px-1'><BlockByData onFormEmpty={handleUpdate} block={content} /></View> });
+    };
 
     const handleManage = async (item, id) => {
         if (item.action == "edit") {

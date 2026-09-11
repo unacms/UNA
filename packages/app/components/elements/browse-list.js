@@ -52,15 +52,17 @@ export default function Browse(props) {
     const uniRef = useRef()
     const isFocused = useIsFocused();
     const isFocusedRef = useRef(isFocused);
-    isFocusedRef.current = isFocused;
+    useEffect(() => {
+        isFocusedRef.current = isFocused;
+    }, [isFocused]);
     const getScrollValue = useGetScrollValue();
     //updateMode can be action, auto, none
     const updateMode = (props.updateMode || props.data.unit == 'feed') ? 'action' : 'none';
-    const data = props.data
-
-    if (data.unit == 'mixed') {
-        data.unit = 'general-profile-list'
-    }
+    // Props are read-only: derive a copy instead of rewriting `props.data.unit`.
+    const data = useMemo(
+        () => (props.data?.unit == 'mixed' ? { ...props.data, unit: 'general-profile-list' } : props.data),
+        [props.data]
+    );
 
     const [defParams, setDefParams] = useState({
         ...(data.params ?? {}),
@@ -112,15 +114,13 @@ export default function Browse(props) {
         return JSON.stringify(rest)
     }, [defParams])
 
+    const qKeyUri = props.uri || ''
+    const qKeyRequestUrl = data.request_url || ''
+    const qKeyUserId = currentUser?.id
+    const qKeyCachePrefix = props?.cachePrefix || ''
     const qKey = useMemo(
-        () => [
-            props.uri || '',
-            data.request_url || '',
-            currentUser?.id,
-            props?.cachePrefix || '',
-            paramsKey,
-        ],
-        [props.uri, data.request_url, currentUser?.id, props?.cachePrefix, paramsKey]
+        () => [qKeyUri, qKeyRequestUrl, qKeyUserId, qKeyCachePrefix, paramsKey],
+        [qKeyUri, qKeyRequestUrl, qKeyUserId, qKeyCachePrefix, paramsKey]
     )
 
     const {

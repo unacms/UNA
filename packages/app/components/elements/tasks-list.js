@@ -988,19 +988,20 @@ function TasksFilterSelector({
     const [activeFilters, setActiveFilters] = useState([]);
     const syncTimerRef = useRef(null);
     const activeFiltersRef = useRef(activeFilters);
-    activeFiltersRef.current = activeFilters;
+    useEffect(() => {
+        activeFiltersRef.current = activeFilters;
+    }, [activeFilters]);
 
     const isSavedFilterSelected = savedFilterId != null
         && savedFilterId !== ''
         && savedFilterId !== 0
         && savedFilterId !== '0';
 
-    const fields = useMemo(() => {
-        if (formMeta?.form?.inputs) {
-            return buildFilterableFields(formMeta.form.inputs);
-        }
-        return fieldsCache;
-    }, [formMeta?.form?.inputs, fieldsCache]);
+    const formInputs = formMeta?.form?.inputs;
+    const fields = useMemo(
+        () => (formInputs ? buildFilterableFields(formInputs) : fieldsCache),
+        [formInputs, fieldsCache]
+    );
 
     const activeField = fields.find((field) => field.id === activeFieldId);
 
@@ -1052,32 +1053,32 @@ function TasksFilterSelector({
         if (!requestUrlAdd) return null;
         setLoading(true);
         setError(null);
+        // Keep the try block minimal (no finally, no `?.`/ternaries inside):
+        // React Compiler 1.x cannot lower those and would skip the component.
+        const url = requestUrlAdd.startsWith('/api.php')
+            ? requestUrlAdd
+            : '/api.php?r=' + requestUrlAdd;
+        let response = null;
         try {
-            const url = requestUrlAdd.startsWith('/api.php')
-                ? requestUrlAdd
-                : '/api.php?r=' + requestUrlAdd;
-            const response = await fetcher(url);
-            const extracted = extractFormFromResponse(response);
-            if (!extracted?.form) {
-                setError(t('Unable to load filter fields'));
-                setFormMeta(null);
-                return null;
-            }
-            const nextFields = buildFilterableFields(extracted.form.inputs);
-            setFieldsCache(nextFields);
-            const meta = {
-                form: extracted.form,
+            response = await fetcher(url);
+        } catch {
+            response = null;
+        }
+        const extracted = response ? extractFormFromResponse(response) : null;
+        const form = extracted?.form;
+        let meta = null;
+        if (form) {
+            setFieldsCache(buildFilterableFields(form.inputs));
+            meta = {
+                form,
                 submitUrl: resolveSubmitUrl(extracted.requestUrl),
             };
-            setFormMeta(meta);
-            return meta;
-        } catch {
+        } else {
             setError(t('Unable to load filter fields'));
-            setFormMeta(null);
-            return null;
-        } finally {
-            setLoading(false);
         }
+        setFormMeta(meta);
+        setLoading(false);
+        return meta;
     }, [requestUrlAdd, resolveSubmitUrl, t]);
 
     useEffect(() => {
@@ -1715,18 +1716,20 @@ export default function ElementTasksList({ data, blockWrapperProps }) {
         || selectableFilterItems.find((item) => item.id === 0)
         || selectableFilterItems[0];
 
+    const filterApplyUrl = filters?.request_url_apply;
+    const filterSaveUrl = filters?.request_url_save;
     const applyFilter = useCallback(async (item) => {
-        if (!filters?.request_url_apply) return;
-        await fetcher('/api.php?r=' + filters.request_url_apply + item.id);
+        if (!filterApplyUrl) return;
+        await fetcher('/api.php?r=' + filterApplyUrl + item.id);
         setFilterSelectionNonce((nonce) => nonce + 1);
         await refreshLists();
-    }, [filters?.request_url_apply, refreshLists]);
+    }, [filterApplyUrl, refreshLists]);
 
     const openSaveFilter = useCallback(async () => {
-        if (!filters?.request_url_save) return;
-        const url = filters.request_url_save.startsWith('/api.php')
-            ? filters.request_url_save
-            : '/api.php?r=' + filters.request_url_save;
+        if (!filterSaveUrl) return;
+        const url = filterSaveUrl.startsWith('/api.php')
+            ? filterSaveUrl
+            : '/api.php?r=' + filterSaveUrl;
         const fetchedData = await fetcher(url);
         setFormBlock({
             content: fetchedData.data,
@@ -1734,7 +1737,7 @@ export default function ElementTasksList({ data, blockWrapperProps }) {
             title: t('Save'),
             _isSaveFilter: true,
         });
-    }, [filters?.request_url_save, t]);
+    }, [filterSaveUrl, t]);
 
     const modalActions = topActions.filter((action) => action.type === 'modal');
     const menuActions = topActions.filter((action) => action.type === 'menu');

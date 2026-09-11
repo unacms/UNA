@@ -26,12 +26,6 @@ export default function MenuTop({ url, uri }) {
     // Track measured layouts for each tab item
     const [itemLayouts, setItemLayouts] = useState({});
     const [containerLayout, setContainerLayout] = useState({ x: 0, measured: false });
-    const [indicatorStyle, setIndicatorStyle] = useState({ 
-        translateX: __menuTopIndicatorPersist.translateX, 
-        width: __menuTopIndicatorPersist.width, 
-        visible: false
-    });
-
     const handleContainerLayout = (layout) => {
         const x = layout?.x || 0;
         setContainerLayout((prev) => {
@@ -49,39 +43,44 @@ export default function MenuTop({ url, uri }) {
         });
     };
 
+    // The indicator is a pure function of the measured layouts. Deriving it in
+    // render (instead of mirroring it into state from an effect) avoids a
+    // setState-in-effect cascade: while this fiber still holds a low-priority
+    // update (e.g. the onLayout updates queued during idle hydration of the page
+    // Suspense boundary) React cannot bail out of a no-op dispatch eagerly, and a
+    // sync render that replays those queued updaters gives itemLayouts a new
+    // identity every time — an effect keyed on it would loop forever.
+    const target = activeIndex >= 0 ? itemLayouts[activeIndex] : null;
+    const isMeasured = !!target
+        && typeof target.x === 'number' && typeof target.width === 'number'
+        && (Platform.OS !== 'web' || containerLayout.measured);
+    let indicatorStyle;
+    if (activeIndex === -1) {
+        indicatorStyle = { translateX: 0, width: 0, visible: false };
+    } else if (!isMeasured) {
+        // Keep the last known dimensions but hide the indicator until the active tab is measured.
+        indicatorStyle = {
+            translateX: __menuTopIndicatorPersist.translateX,
+            width: __menuTopIndicatorPersist.width,
+            visible: false,
+        };
+    } else {
+        indicatorStyle = {
+            translateX: Platform.OS === 'web' ? target.x - containerLayout.x : target.x,
+            width: target.width,
+            visible: true,
+        };
+    }
+
+    // Persist for future remounts
     useEffect(() => {
-        if (activeIndex == null) {
-            return;
-        }
-        if (activeIndex === -1) {
-            setIndicatorStyle({ translateX: 0, width: 0, visible: false });
-            return;
-        }
-       const target = itemLayouts[activeIndex];
-        if (!(target && typeof target.x === 'number' && typeof target.width === 'number')) {
-            // Keep the previous dimensions but hide the indicator until active tab layout is measured.
-            setIndicatorStyle((prev) => prev.visible ? { ...prev, visible: false } : prev);
-            return;
-        }
-        if (Platform.OS === 'web' && !containerLayout.measured) {
-            setIndicatorStyle((prev) => prev.visible ? { ...prev, visible: false } : prev);
-            return;
-        }
-
-        const translateX = Platform.OS === 'web'
-            ? target.x - containerLayout.x
-            : target.x;
-
-        setIndicatorStyle((prev) => {
-            if (prev.translateX === translateX && prev.width === target.width && prev.visible === true) {
-                return prev;
-            }
-            return { translateX, width: target.width, visible: true };
-        });
-        // Persist for future remounts
-        __menuTopIndicatorPersist = { initialized: true, translateX, width: target.width };
-        
-    }, [activeIndex, itemLayouts, containerLayout]);
+        if (!indicatorStyle.visible) return;
+        __menuTopIndicatorPersist = {
+            initialized: true,
+            translateX: indicatorStyle.translateX,
+            width: indicatorStyle.width,
+        };
+    }, [indicatorStyle.visible, indicatorStyle.translateX, indicatorStyle.width]);
 
     const MenuTopItem = getComponent('menu-item', 'topmenu');
 

@@ -231,7 +231,6 @@ export default function ExpoUITabNavigator({
     const pathnameRef = useRef(pathname);
     const lastNonMoreTabRef = useRef('/tab0');
     const skipMoreBounceRef = useRef(false);
-    pathnameRef.current = pathname;
 
     const { visible, overflow, moreTabIndex } = useMemo(
         () => splitTabBarItems(TabList),
@@ -244,12 +243,15 @@ export default function ExpoUITabNavigator({
     const tabBarHeight = TAB_BAR_HEIGHT + (isAndroid ? insets.bottom : 0);
 
     useEffect(() => {
+        pathnameRef.current = pathname;
         if (pathname && !isMoreTabPath(pathname, moreTabIndex)) {
             lastNonMoreTabRef.current = pathname;
         }
     }, [pathname, moreTabIndex]);
 
-    const openMoreMenu = useCallback((stayOnPath) => {
+    // Handlers as plain functions — React Compiler memoizes them (manual
+    // useCallback here could not be preserved by the compiler).
+    const openMoreMenu = (stayOnPath) => {
         const stayOn = stayOnPath ?? (
             isMoreTabPath(pathnameRef.current, moreTabIndex)
                 ? lastNonMoreTabRef.current
@@ -260,7 +262,7 @@ export default function ExpoUITabNavigator({
             skipMoreBounceRef.current = true;
             scheduleStayOnTab(router, stayOn);
         }
-    }, [moreTabIndex, router]);
+    };
 
     useEffect(() => {
         const subscription = emitter.addListener('tabs-more', (data) => {
@@ -336,7 +338,7 @@ export default function ExpoUITabNavigator({
         [visible, overflow, moreTabIndex, currentUser, t, pathname, activeOverflowUrl]
     );
 
-    const handleOverflowSelect = useCallback(async (item) => {
+    const handleOverflowSelect = async (item) => {
         if (item?.type === 'separator' || !item?.tab) return;
 
         const tab = item.tab;
@@ -367,7 +369,7 @@ export default function ExpoUITabNavigator({
         setMoreMenuOpen(false);
         setActiveOverflowUrl(item.isOverflow ? tabUrl : null);
         router.push(nativeTabHref(tabUrl, `/tab${routeIndex}`));
-    }, [currentUser, moreTabIndex, router, setBottomSheetData, setCurrentUser]);
+    };
 
     const moreIcons = resolveTabIcons(MORE_TAB_ICON);
     const overflowBadge = getOverflowBadgeLabel(currentUser, overflow);

@@ -1,4 +1,4 @@
-import { memo, useState, useCallback } from 'react';
+import { memo, useState } from 'react';
 import { Platform } from 'react-native';
 import { View, Row } from 'app/design/view';
 import { Text } from 'app/design/typography';
@@ -83,14 +83,17 @@ function ProfileHoverCard_({ profileData, children, disabled = false }) {
 
 function ProfileHoverCardContent({ profileData, children }) {
     const [pageData, setPageData] = useState(false);
+    const url = profileData?.url;
+    const isLoaded = !!pageData?.data;
 
-    const handleOpenChange = useCallback((open) => {
-        if (open && !pageData.data) {
-            getPageData(profileData.url.slice(1), false).then((sResponse) => {
-                setPageData({ data: sResponse.data });
-            });
-        }
-    }, [profileData?.url, pageData.data]);
+    // Fetch lazily on first open; HoverCard only reads onOpenChange in a
+    // callback, so identity is not important (React Compiler memoizes it anyway).
+    const handleOpenChange = (open) => {
+        if (!open || isLoaded || !url) return;
+        getPageData(url.slice(1), false).then((sResponse) => {
+            setPageData({ data: sResponse.data });
+        });
+    };
 
     return (
         <HoverCard onOpenChange={handleOpenChange} maxPopupWidth={384}>
