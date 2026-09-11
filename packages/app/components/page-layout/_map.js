@@ -1,7 +1,6 @@
 import PageLayoutDefault from 'app/components/page-layout/default';
 import PageCustomPost from 'app/components/page-layout/post';
 import PageCustomPostWithoutComments from 'app/components/page-layout/post-without-comments';
-import PageCustomMessenger from 'app/components/page-layout/messenger';
 import PageCustomNavigator from 'app/components/page-layout/navigator';
 import PageCustomNavigatorSearch from 'app/components/page-layout/navigator-search';
 import PageCustomProfile from 'app/components/page-layout/profile';
@@ -10,11 +9,18 @@ import PageCustomNotif from 'app/components/page-layout/notif';
 import PageCustomCreateAccount from 'app/components/page-layout/create-account';
 import PageCustomLogin from 'app/components/page-layout/login';
 import PageUniversal from 'app/components/page-layout/universal';
-import PagePlayground from 'app/components/page-layout/_playground/playground';
-import PagePlaygroundForm from 'app/components/page-layout/_playground/playground-form-layout';
-import PagePlaygroundAiChat from 'app/components/page-layout/_playground/playground-ai-chat-layout';
 import PageLayoutPlay from './play';
-import PageWiki from 'app/components/page-layout/wiki';
+import { lazyComponent } from 'app/lib/lazy-component';
+
+// Messenger (chat stack) and wiki (yaml frontmatter, TOC, side panels) are
+// whole-page layouts used on a few routes only — code-split them.
+const PageCustomMessenger = lazyComponent(() => import('app/components/page-layout/messenger'), { name: 'PageCustomMessenger' });
+const PageWiki = lazyComponent(() => import('app/components/page-layout/wiki'), { name: 'PageWiki' });
+// Dev-only playgrounds — keep them (and the AI chat stack they import) out of
+// the main chunk.
+const PagePlayground = lazyComponent(() => import('app/components/page-layout/_playground/playground'), { name: 'PagePlayground' });
+const PagePlaygroundForm = lazyComponent(() => import('app/components/page-layout/_playground/playground-form-layout'), { name: 'PagePlaygroundForm' });
+const PagePlaygroundAiChat = lazyComponent(() => import('app/components/page-layout/_playground/playground-ai-chat-layout'), { name: 'PagePlaygroundAiChat' });
 
 export const componentsMapDefault = {
     'default': PageLayoutDefault,

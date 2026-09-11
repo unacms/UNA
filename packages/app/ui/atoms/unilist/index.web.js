@@ -10,7 +10,10 @@ import {
     IGNORED_PROPS,
     REVEAL_DELAY_MS,
 } from './shared'
-import SortableList from './sortable-list'
+import { lazyComponent } from 'app/lib/lazy-component'
+
+// Drag-and-drop (@hello-pangea/dnd) only when a list is actually sortable.
+const SortableList = lazyComponent(() => import('./sortable-list'), { name: 'SortableList' })
 
 /*
  * ============================================================================

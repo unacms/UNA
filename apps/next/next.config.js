@@ -214,7 +214,6 @@ const nextConfig = {
         '@10play/tentap-editor',
         '@10play/react-native-web-webview',
         '@appandflow/react-native-google-autocomplete',
-        'semver',
         'react-native-webview',
         'expo',
         'expo-audio',

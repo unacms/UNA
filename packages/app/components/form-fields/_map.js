@@ -10,7 +10,7 @@ import Phone from './phone';
 import TextTranslatable from './text-translatable';
 import MarkdownTranslatable from './markdown-translatable';
 import Editor from './editor';
-import EditorMarkdown from './editor-markdown';
+import { lazyComponent } from 'app/lib/lazy-component';
 import Select from './select';
 import Files from './files';
 import Location from './location';
@@ -33,6 +33,10 @@ import Polls from './polls';
 import StripeConnect from './stripe-connect';
 import List from './list';
 import Price from './price';
+
+// Markdown editor pulls @mdxeditor/editor (+lexical, mdast, micromark) on web;
+// load it only when a markdown field is actually rendered.
+const EditorMarkdown = lazyComponent(() => import('./editor-markdown'), { name: 'EditorMarkdown' });
 
 export const componentsMapDefault = {
     input_set: InputSet,

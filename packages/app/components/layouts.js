@@ -17,7 +17,7 @@ import { Text } from 'app/design/typography'
 import { ButtonLink } from 'app/design/controls'
 import { useWindowDimensions, Platform } from 'react-native';
 import { useSetWindowSize } from 'app/context/measure';
-import semver from 'semver';
+import { coerceVersion, isBelowRange, isAboveRange } from 'app/lib/server-version';
 import { Card } from 'app/ui/molecules/page/card'
 import { FormModalHost } from 'app/ui/molecules/dialogs/form-modal';
 import { UnsavedFormConfirmHost } from 'app/ui/molecules/dialogs/unsaved-form-confirm-host';
@@ -33,8 +33,6 @@ function WindowSizeSync() {
 }
 
 export default function Layouts({ path, data }) {
-    const { t } = useTranslation();
-    const uri = data?.uri
     const url = data?.url
     const urlRef = useRef(url);
     useEffect(() => {
@@ -76,15 +74,15 @@ export default function Layouts({ path, data }) {
     }, [pageData]);
 
 
-    const v = semver.coerce(data.version)?.version || false;
+    const v = coerceVersion(data.version);
     const minVersion = appSetting('config', 'min_server_version');
     const maxVersion = appSetting('config', 'stable_server_version');
 
-    if (data.version && semver.ltr(v, minVersion, { includePrerelease: true })) {
+    if (data.version && isBelowRange(data.version, minVersion)) {
         return <VersionIncompatible serverVersion={data.version} />;
     }
 
-    const isVersionInfo = v && semver.gtr(v, maxVersion, { includePrerelease: true }) && currentUser?.operator;
+    const isVersionInfo = !!v && isAboveRange(data.version, maxVersion) && currentUser?.operator;
 
     return (
         <Layout layout={layout} data={pageData}>
@@ -119,6 +117,7 @@ function ErrorPage({ type }) {
 }
 
 function PageLayoutContent({ layout, data }) {
+    const { t } = useTranslation();
     const { currentUser } = useCurrentUser();
     const { layoutName, layoutBlocks, isCustomLayout, columnLayout = '' } = layout;
 

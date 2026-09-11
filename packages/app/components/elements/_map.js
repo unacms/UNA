@@ -17,47 +17,59 @@ import ProfileMenu from './profile-menu';
 import CategoriesList from './categories-list';
 import FeedItem from './feed-item';
 import ProfileSwitcher from './profile-switcher';
-import DashboardStat from './dashboard-stat';
-import SmartGrid from './smart-grid';
 import ProfileContacts from './contacts';
 import SimpleList from './simple-list';
-import Membership from './membership';
 import Lang from './lang';
-import Invite from './invite';
-import Map from './map';
 import Menu from './menu';
-import Deploy from './deploy';
-import Calendar from './calendar';
 import Grid from './grid';
 import DataTable from './table';
-import Pricing from './pricing';
-import Chart from './chart';
 import MultiPostForm from './multi-post-form';
-import InviteInContext from './invite-in-context';
 import Comments from './comments';
 import CommentContent from './comment-content';
-import NotificationsSettings from './notifications-settings';
-import CourseStructure from './course-structure';
-import ModuleStructure from './module-structure';
-import EditCourseContent from './edit-course-content';
-import Messenger from './messenger';
 import ProfileList from './profiles-list';
-import { ReputationSummary, ReputationWidget, ReputationLeaderboard, ReputationLevels, ReputationHistory, ReputationActions } from './reputation';
-import SearchSections from './search-sections';
-import StripeConnect from './stripe-connect';
-import Bundles from './bundles';
 import Logout from './logout';
-import TasksMenu from './tasks-menu';
-import TasksTimers from './tasks-timers';
-import TasksList from './tasks-list';
-import TaskTimer from './task-timer';
-import WikiBlocks from './wiki-blocks';
-import WikiHistory from './wiki-history';
-import CreditsCheckout from './credits-checkout';
-import PaymentOrderAdd from './payment-order-add';
 import AiAgent from './ai_agent';
 import Static from './static';
 
+import { lazyComponent } from 'app/lib/lazy-component';
+
+// Code-split: rarely rendered or heavy blocks (third-party editors, maps, grids,
+// payments, wiki, tasks, courses) load on first render instead of on every page.
+// The registry contract is unchanged — these are ordinary components. Elements
+// with a static `checkEmpty` (entity_text, static, table) must stay eager.
+const Messenger = lazyComponent(() => import('./messenger'), { name: 'Messenger' });
+const TasksMenu = lazyComponent(() => import('./tasks-menu'), { name: 'TasksMenu' });
+const TasksTimers = lazyComponent(() => import('./tasks-timers'), { name: 'TasksTimers' });
+const TasksList = lazyComponent(() => import('./tasks-list'), { name: 'TasksList' });
+const TaskTimer = lazyComponent(() => import('./task-timer'), { name: 'TaskTimer' });
+const WikiBlocks = lazyComponent(() => import('./wiki-blocks'), { name: 'WikiBlocks' });
+const WikiHistory = lazyComponent(() => import('./wiki-history'), { name: 'WikiHistory' });
+const Chart = lazyComponent(() => import('./chart'), { name: 'Chart' });
+const Calendar = lazyComponent(() => import('./calendar'), { name: 'Calendar' });
+const Map = lazyComponent(() => import('./map'), { name: 'Map' });
+const SmartGrid = lazyComponent(() => import('./smart-grid'), { name: 'SmartGrid' });
+const Deploy = lazyComponent(() => import('./deploy'), { name: 'Deploy' });
+const StripeConnect = lazyComponent(() => import('./stripe-connect'), { name: 'StripeConnect' });
+const CreditsCheckout = lazyComponent(() => import('./credits-checkout'), { name: 'CreditsCheckout' });
+const PaymentOrderAdd = lazyComponent(() => import('./payment-order-add'), { name: 'PaymentOrderAdd' });
+const Bundles = lazyComponent(() => import('./bundles'), { name: 'Bundles' });
+const Membership = lazyComponent(() => import('./membership'), { name: 'Membership' });
+const Pricing = lazyComponent(() => import('./pricing'), { name: 'Pricing' });
+const CourseStructure = lazyComponent(() => import('./course-structure'), { name: 'CourseStructure' });
+const EditCourseContent = lazyComponent(() => import('./edit-course-content'), { name: 'EditCourseContent' });
+const ModuleStructure = lazyComponent(() => import('./module-structure'), { name: 'ModuleStructure' });
+const DashboardStat = lazyComponent(() => import('./dashboard-stat'), { name: 'DashboardStat' });
+const Invite = lazyComponent(() => import('./invite'), { name: 'Invite' });
+const InviteInContext = lazyComponent(() => import('./invite-in-context'), { name: 'InviteInContext' });
+const NotificationsSettings = lazyComponent(() => import('./notifications-settings'), { name: 'NotificationsSettings' });
+const SearchSections = lazyComponent(() => import('./search-sections'), { name: 'SearchSections' });
+const lazyReputation = (name) => lazyComponent(() => import('./reputation').then((m) => ({ default: m[name] })), { name });
+const ReputationSummary = lazyReputation('ReputationSummary');
+const ReputationWidget = lazyReputation('ReputationWidget');
+const ReputationLeaderboard = lazyReputation('ReputationLeaderboard');
+const ReputationLevels = lazyReputation('ReputationLevels');
+const ReputationHistory = lazyReputation('ReputationHistory');
+const ReputationActions = lazyReputation('ReputationActions');
 
 export const componentsMapDefault = {
     messenger_main_page: Messenger,

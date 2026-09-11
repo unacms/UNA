@@ -1,6 +1,12 @@
 import Field, { getValidationRules } from './_field';
 import { View } from 'app/design/view';
-import { MarkdownTextInput } from './editor-markdown';
+import { lazyComponent } from 'app/lib/lazy-component';
+
+// Same heavy editor as the `markdown` field — code-split (see form-fields/_map.js).
+const MarkdownTextInput = lazyComponent(
+    () => import('./editor-markdown').then((m) => ({ default: m.MarkdownTextInput })),
+    { name: 'MarkdownTextInput' }
+);
 import {
     useTranslatableField,
     TranslatableFieldLayout,

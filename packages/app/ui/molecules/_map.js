@@ -21,7 +21,10 @@ import CounterIndicator from './misc/counter-indicator';
 import ProfileLink from './profile/profile-link'; 
 import NoContent from './misc/no-content'; 
 import { TaskTimer } from './misc/task-timer';
-import AiAgent from './ai-agent/agent';
+import { lazyComponent } from 'app/lib/lazy-component';
+
+// AI chat pulls @tanstack/ai* on every page otherwise; load on first render.
+const AiAgent = lazyComponent(() => import('./ai-agent/agent'), { name: 'AiAgent' });
 
 export const componentsMapDefault = {
     likes: memo(Likes),
