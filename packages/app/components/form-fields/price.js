@@ -4,7 +4,7 @@ import { InputWithIcons } from 'app/design/controls';
 import { useEffect } from 'react';
 import { Text } from 'app/design/typography';
 import { useTranslation } from 'react-i18next';
-import { useFormField } from 'app/lib/hooks/use-form-field';
+import { useFormField } from 'app/lib/form/use-form-field';
 
 /** UNA may send `null`, a scalar, or `{ value, currency }`. Form submits a scalar string. */
 function normalizePriceValue(value) {

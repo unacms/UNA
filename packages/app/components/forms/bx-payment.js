@@ -3,7 +3,7 @@
 import { useEffect } from 'react'
 import { useFormContext, useWatch } from 'react-hook-form'
 import { View } from 'app/design/view'
-import { getFormFieldByData, getHiddenFields } from 'app/lib/form-helpers'
+import { getFormFieldByData, getHiddenFields } from 'app/lib/form/form-helpers'
 import { appSetting } from 'app/lib/util'
 import PaymentItems from 'app/components/form-fields/payment-items'
 

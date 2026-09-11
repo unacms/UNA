@@ -1,14 +1,14 @@
 import { View, Row, ScrollView } from 'app/design/view'
 import { useEffect, useMemo } from 'react'
-import { getFormFieldByData } from 'app/lib/form-helpers'
+import { getFormFieldByData } from 'app/lib/form/form-helpers'
 import { Keyboard, Platform } from 'react-native'
 import { useFormContext } from 'react-hook-form'
 import { editorHtmlHasContent, removeEmptyTags } from 'app/lib/util'
 import { useCurrentUser } from 'app/context/user'
 import Profile from 'app/ui/molecules/profile/profile'
-import { FileButton } from 'app/lib/form-helpers'
+import { FileButton } from 'app/lib/form/form-helpers'
 import { useWindowHeight, useIsDesktop } from 'app/context/measure'
-import { useSound } from 'app/lib/hooks/useSound'
+import { useSound } from 'app/lib/hooks/use-sound'
 import emitter from 'app/context/emitter'
 
 export default function FormMessenger(props) {

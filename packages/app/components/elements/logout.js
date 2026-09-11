@@ -4,7 +4,7 @@ import { Text } from 'app/design/typography'
 import { View } from 'app/design/view'
 import { useTranslation } from 'react-i18next'
 import { useCurrentUser } from 'app/context/user'
-import { clearClientSessionState, resetNavigationAfterSignOut } from 'app/lib/session-cleanup'
+import { clearClientSessionState, resetNavigationAfterSignOut } from 'app/lib/platform/session-cleanup'
 
 export default function ElementLogout({ data }) {
     const { t } = useTranslation();

@@ -13,20 +13,20 @@ import {
     DropCursorBridge,
     PlaceholderBridge,
 } from '@10play/tentap-editor'
-import { EditorToolbar } from 'app/lib/editor-toolbar'
-import { useTentapToolbar } from 'app/lib/editor-toolbar-tentap'
+import { EditorToolbar } from 'app/lib/editor/editor-toolbar'
+import { useTentapToolbar } from 'app/lib/editor/editor-toolbar-tentap'
 import { Platform } from 'react-native'
 import { useThemeName, useThemeValue } from 'app/design/theme'
 import { stripTags, appSetting, cn } from 'app/lib/util'
-import { commitEditorHtml, normalizeEditorHtml } from 'app/lib/editor-form'
-import { useEditorFormField } from 'app/lib/hooks/use-form-field'
+import { commitEditorHtml, normalizeEditorHtml } from 'app/lib/editor/editor-form'
+import { useEditorFormField } from 'app/lib/form/use-form-field'
 import emitter from 'app/context/emitter'
 import { TextInput } from 'react-native'
-import { useEditorMentions } from 'app/lib/use-editor-mentions'
-import { MentionSuggestionsDropdown } from 'app/lib/mention-suggestions-dropdown'
-import { buildUnaMentionHtml } from 'app/lib/editor-mention-shared'
+import { useEditorMentions } from 'app/lib/editor/use-editor-mentions'
+import { MentionSuggestionsDropdown } from 'app/lib/editor/mention-suggestions-dropdown'
+import { buildUnaMentionHtml } from 'app/lib/editor/editor-mention-shared'
 import { useIsDesktop } from 'app/context/measure'
-import { getEditorPasteImagesMode } from 'app/lib/editor-paste-images'
+import { getEditorPasteImagesMode } from 'app/lib/editor/editor-paste-images'
 
 
 const inputSettings = appSetting('theme', 'inputs');

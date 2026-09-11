@@ -16,7 +16,7 @@ import {
     prepareData,
     MainContent,
     FeedEditForm,
-} from 'app/lib/feed-helpers'
+} from 'app/components/elements/feed-item-parts'
 
 import { CardList, CardHeader, CardTitle } from 'app/ui/molecules/page/card';
 import AnimatedBlock from 'app/ui/atoms/animated-block'

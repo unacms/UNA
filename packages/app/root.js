@@ -2,13 +2,13 @@
 import { useEffect, useLayoutEffect, useRef } from 'react';
 import { useCurrentUser, seedCurrentUserFromPageData, isWebAuthReady } from 'app/context/user';
 import { storageClear } from 'app/lib/util';
-import { clearClientSessionState } from 'app/lib/session-cleanup';
+import { clearClientSessionState } from 'app/lib/platform/session-cleanup';
 import { useRouter, redirectTo } from 'app/lib/hooks/router'
 import Layouts from 'app/components/layouts';
 import { useSetScrollDirection, useSetScrollValue } from 'app/context/jotai/layout';
 import emitter from 'app/context/emitter';
 import { Platform } from 'react-native'
-import { useWindowScrollNavigationSync } from 'app/lib/hooks/use-window-scroll-navigation-sync';
+import { useWindowScrollNavigationSync } from 'app/lib/navigation/use-window-scroll-navigation-sync';
 
 export function Root(props) {
     const { currentUser, setCurrentUser } = useCurrentUser();

@@ -5,7 +5,7 @@ import Embed from 'app/ui/molecules/content/embed'
 import { storageSet, getDataFromCache, cloneObject, appSetting } from 'app/lib/util';
 import { Platform } from 'react-native'
 import { subscribe } from 'app/ui/atoms/socket';
-import { ActionMenu, CounterMenu } from 'app/lib/feed-helpers'
+import { ActionMenu, CounterMenu } from 'app/components/elements/feed-item-parts'
 import { UnitImages } from 'app/lib/feed-items'
 import { PollItem } from 'app/components/elements/entity-poll';
 import { BlockWrapper } from 'app/components/block-wrapper'

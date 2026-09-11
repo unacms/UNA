@@ -22,8 +22,8 @@ import emitter from 'app/context/emitter';
 import { CaptionForFileInput } from 'app/customization/functions';
 import i18n from 'i18next';
 import { useFormInstanceId } from 'app/context/form-instance';
-import { trackFormUploadStart, trackFormUploadEnd } from 'app/lib/form-helpers';
-import { isInlineImagePaste, revokePastedBlobUri } from 'app/lib/editor-paste-images';
+import { trackFormUploadStart, trackFormUploadEnd } from 'app/lib/form/form-helpers';
+import { isInlineImagePaste, revokePastedBlobUri } from 'app/lib/editor/editor-paste-images';
 
 function showPermissionAlert(type, canAskAgain) {
     const isCamera = type === 'camera';

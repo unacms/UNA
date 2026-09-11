@@ -6,7 +6,7 @@ import Time from 'app/ui/atoms/time'
 import { Button } from 'app/design/controls'
 import Form from 'app/components/elements/form';
 //import use-SWR from "swr";
-import useFetchForm from 'app/lib/hooks/fetch'
+import useFetchForm from 'app/lib/hooks/use-fetch-form'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import { getComponent } from 'app/components/registry';
 import { useTranslation } from 'react-i18next';

@@ -4,7 +4,7 @@ import { MarkdownTextInput } from './editor-markdown';
 import {
     useTranslatableField,
     TranslatableFieldLayout,
-} from 'app/lib/form-fields-helpers';
+} from 'app/lib/form/form-fields-helpers';
 
 function LangMarkdownInput({
     fieldName,

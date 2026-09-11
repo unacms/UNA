@@ -3,7 +3,7 @@ import { Text } from "app/design/typography";
 import { View } from "app/design/view";
 import { CardList } from 'app/ui/molecules/page/card'
 import { getComponent } from 'app/components/registry';
-import { UnitText, UnitTitle } from 'app/lib/unit-helpers'
+import { UnitText, UnitTitle } from 'app/components/units/helpers'
 
 export default function Unit({ data }) {
     const Stars = getComponent('molecule', 'stars');

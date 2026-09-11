@@ -1,6 +1,6 @@
 import { useEffect, useRef, forwardRef, useCallback } from 'react';
 import { useRouter, useCurrentTabPath } from 'app/lib/hooks/router'
-import { nativeTabHref } from 'app/lib/tab-history'
+import { nativeTabHref } from 'app/lib/navigation/tab-history'
 import { Platform } from 'react-native'
 
 const ElementRedirect = (props, ref) => {

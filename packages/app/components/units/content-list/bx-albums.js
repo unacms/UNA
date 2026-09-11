@@ -1,7 +1,7 @@
 import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
 import Time from 'app/ui/atoms/time'
-import { getMetaItem, getPostedTs, UnitAuthor, UnitImage, UnitTitle, UnitWrapper } from 'app/lib/unit-helpers'
+import { getMetaItem, getPostedTs, UnitAuthor, UnitImage, UnitTitle, UnitWrapper } from 'app/components/units/helpers'
 
 export default function defaultUnit({ data }) {
 

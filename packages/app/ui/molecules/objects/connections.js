@@ -20,7 +20,7 @@ import {
     buildButtonProps,
     pickActionButton,
     resolveActionButtonFlags,
-} from 'app/lib/object-helpers';
+} from 'app/ui/molecules/objects/helpers';
 import { useRouter, redirectTo } from 'app/lib/hooks/router';
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import { getComponent } from 'app/components/registry';

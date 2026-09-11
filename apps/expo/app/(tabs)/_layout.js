@@ -6,7 +6,7 @@ import { isAndroid, isNativeTabsEnabled } from 'app/lib/util';
 import { useEffect } from 'react'
 import { PortalHost } from '@rn-primitives/portal';
 import { QueryClientProvider } from '@tanstack/react-query'
-import { queryClient } from 'app/lib/query-client'
+import { queryClient } from 'app/lib/platform/query-client'
 import { Provider as JotaiProvider } from 'jotai'
 import { NetworkStatus } from 'app/ui/molecules/system/net-info';
 

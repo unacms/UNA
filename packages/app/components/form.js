@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo, useCallback, useId, useRef } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
-import { getFormFieldByData, isFormResponseComplete, normalizeFormResponseData, updateFormDirtyState, isFormUnsavedCloseGuardSkipped, formHasPendingUploads, clearFormPendingUploads } from 'app/lib/form-helpers'
+import { getFormFieldByData, isFormResponseComplete, normalizeFormResponseData, updateFormDirtyState, isFormUnsavedCloseGuardSkipped, formHasPendingUploads, clearFormPendingUploads } from 'app/lib/form/form-helpers'
 import { getDefaultPasteStorageKey } from 'app/components/form-fields/media-attachments'
 import { View, Row } from 'app/design/view'
 import { getComponent } from 'app/components/registry';
@@ -8,13 +8,13 @@ import { FeedbackHaptics, storageSet, appSetting, isNumeric, storageGet, isObjec
 import { Platform } from 'react-native';
 import emitter from 'app/context/emitter';
 import { FormInstanceProvider } from 'app/context/form-instance';
-import useDebounce from 'app/lib/hooks/debounce'
+import useDebounce from 'app/lib/hooks/use-debounce'
 import { Button } from 'app/design/controls';
-import useFetchForm from 'app/lib/hooks/fetch'
+import useFetchForm from 'app/lib/hooks/use-fetch-form'
 import { FormError } from 'app/components/form-fields/_field'
 import { useTranslation } from 'react-i18next'
 import { useRouter, usePathname, redirectTo } from 'app/lib/hooks/router'
-import { getTabKeyFromPathname } from 'app/lib/tab-history'
+import { getTabKeyFromPathname } from 'app/lib/navigation/tab-history'
 
 const isWeb = Platform.OS === 'web';
 const EMPTY_WATCH = {};

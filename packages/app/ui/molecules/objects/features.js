@@ -20,7 +20,7 @@ import {
     pickActionButton,
     resolveActionButtonFlags,
     ActionMenuLayout,
-} from 'app/lib/object-helpers';
+} from 'app/ui/molecules/objects/helpers';
 import { getComponent } from 'app/components/registry';
 import { NeoButton } from 'app/design/controls';
 

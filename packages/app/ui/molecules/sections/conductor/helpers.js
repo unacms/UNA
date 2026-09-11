@@ -11,12 +11,37 @@ import {
     getBlocksFromData,
     getPageSettings,
     getUnitModeBySource,
+    deepEqual,
 } from 'app/lib/util'
 import { fetcher } from 'app/lib/fetcher'
 import { getSkeletonByEndPoint } from 'app/customization/functions'
 import { getComponent } from 'app/components/registry'
 
 const conductorTheme = appSetting('theme', 'conductor')
+
+/*
+ * ============================================================================
+ * Pure helpers for the Conductor. No React here (except through the
+ * component registry) — everything is a function of its arguments, which is
+ * what makes this file the right place for unit tests.
+ *
+ * Sections, in order:
+ *   - route matching        URL ⇄ tab index
+ *   - nested tabs           compact nav, sidebar tree, ancestors
+ *   - route objects         fillTabs / merge / hydrate one tab
+ *   - list rows & query     what goes into UniList and its query key
+ *   - page JSON parsing     UNA page → content / endpoint / sidebar / leftbar
+ *   - list presentation     unit type, skeleton key
+ *   - left column           menus vs filters, exclusions
+ *   - filters               form values → endpoint params
+ *
+ * Vocabulary:
+ *   route     one tab, built from a menu item (see createConductorRoute)
+ *   inited    the route has its page JSON (endpoint, blocks, sidebar…)
+ *   endpoint  the browse block's request — what the list actually fetches
+ *   leftbar / sidebar   UNA's left / right column blocks for that tab
+ * ============================================================================
+ */
 
 const registeredComponents = Object.create(null)
 /** Cache getComponent; skip undefined so a late registry fill still works. */
@@ -29,27 +54,9 @@ export function registeredComponent(type, name) {
     return component
 }
 
-/** Split page blocks into main list vs leftbar. */
-export function processBlocks(blocks) {
-    let leftBlocks = []
-
-    if (blocks) {
-        leftBlocks = Object.entries(blocks)
-            .filter(([key, value]) => value.leftbar)
-            .map(([key, value]) => ({
-                key,
-                ...value,
-            }))
-        blocks = Object.entries(blocks)
-            .filter(([key, value]) => !value.leftbar)
-            .map(([key, value]) => ({
-                key,
-                ...value,
-            }))
-    }
-
-    return { mainBlocks: blocks, leftBlocks: leftBlocks }
-}
+// ---------------------------------------------------------------------------
+// Route matching: URL ⇄ tab index
+// ---------------------------------------------------------------------------
 
 /** Strip page/ prefix and leading slashes from a conductor link. */
 export function normalizeConductorLink(link) {
@@ -78,6 +85,7 @@ export function findConductorRouteIndex(tabRoutes, url, useSectionAsMenu) {
     const pageLink = normalizeConductorLink(url)
     if (!pageLink) return -1
 
+    // Pass 1: exact match, query string included.
     for (let i = 0; i < tabRoutes.length; i++) {
         const item = tabRoutes[i]
         if (item?.canNavigate === false) continue
@@ -85,8 +93,12 @@ export function findConductorRouteIndex(tabRoutes, url, useSectionAsMenu) {
         if (itemLink && pageLink === itemLink) return i
     }
 
+    // A URL with a query that matched nothing exactly is a different page
+    // (e.g. a filtered view) — do not fuzzy-match it onto a tab.
     if (pageLink.includes('?')) return -1
 
+    // Pass 2: nested path — `groups/123/members` belongs to tab `groups/123`.
+    // Longest matching tab wins so a parent never shadows a more specific child.
     const cleanUrl = pageLink.split('?')[0]
     let bestIndex = -1
     let bestLen = -1
@@ -115,13 +127,17 @@ export function findConductorRouteIndexOrZero(tabRoutes, url, useSectionAsMenu) 
     return index !== -1 ? index : 0
 }
 
+// ---------------------------------------------------------------------------
+// Nested tabs: compact nav, sidebar tree, ancestors
+// ---------------------------------------------------------------------------
+
 /** Whether any route has nested children (compact/sidebar tree). */
 export function hasConductorSubitems(routes = []) {
     return routes.some((route) => route?.hasChildren)
 }
 
 /** Root-level pill/dropdown entries for the compact top nav. */
-export function buildCompactNavEntries(routes = [], selectedIndex = 0) {
+export function buildCompactNavEntries(routes = []) {
     const entries = []
     routes.forEach((route) => {
         if (route.depth !== 0) return
@@ -216,6 +232,10 @@ export function getConductorSidebarRootRoutes(routes = []) {
         (route) => route.depth === 0 && !(route.hideInTop && !route.hasChildren)
     )
 }
+
+// ---------------------------------------------------------------------------
+// Route objects: build from menu, hydrate, merge
+// ---------------------------------------------------------------------------
 
 /** Build get_page_by_request link (path + optional query as params). */
 function resolvePageRequestLink(link) {
@@ -421,6 +441,10 @@ export function fillTabs(
     return routes
 }
 
+// ---------------------------------------------------------------------------
+// List rows & query key
+// ---------------------------------------------------------------------------
+
 /**
  * TanStack query key for a conductor list.
  * `tabId` is tab index on native and `pageRoute.link` on web.
@@ -479,7 +503,35 @@ export function conductorListHasEntries(items) {
     return (items ?? []).some((item) => item.type != 'block')
 }
 
-/** Load page JSON for an uninited navigable tab and merge into routes. */
+// ---------------------------------------------------------------------------
+// Lazy tab init: fetch page JSON for a tab the first time it is opened
+// ---------------------------------------------------------------------------
+
+/** In-flight page requests, keyed by link → the pending fetch promise. */
+const routeInitInFlight = new Map()
+
+/** Fetch page JSON once per link; concurrent callers share the same promise. */
+function fetchRoutePage(link) {
+    const pending = routeInitInFlight.get(link)
+    if (pending) return pending
+    const request = fetcher(
+        '/api.php?r=system/get_page_by_request/TemplServicePages&params[]=' + link
+    ).finally(() => {
+        routeInitInFlight.delete(link)
+    })
+    routeInitInFlight.set(link, request)
+    return request
+}
+
+/**
+ * Load page JSON for an uninited navigable tab and merge into routes.
+ *
+ * Guarded against fast tab switching: concurrent calls for the same link
+ * share one request (two mounted conductors with the same tab both still get
+ * their route hydrated), and a response is dropped if the tab got hydrated
+ * meanwhile — addMoreData writes by index, so a late response would clobber
+ * fresh state.
+ */
 export async function ensureRouteInited(routes, index, setRoutes) {
     const currentRoute = routes.find((item) => item.index === index)
     if (!currentRoute || currentRoute.inited || currentRoute.canNavigate === false) {
@@ -490,10 +542,16 @@ export async function ensureRouteInited(routes, index, setRoutes) {
         return
     }
 
-    const sResponse = await fetcher(
-        '/api.php?r=system/get_page_by_request/TemplServicePages&params[]=' +
-        link
-    )
+    let sResponse
+    try {
+        sResponse = await fetchRoutePage(link)
+    } catch {
+        return
+    }
+
+    if (!sResponse?.data) {
+        return
+    }
 
     const settings = getPageSettings(sResponse.data?.config, getURI(currentRoute.link));
 
@@ -509,7 +567,8 @@ export async function ensureRouteInited(routes, index, setRoutes) {
         blocks,
         contentAndEndpoint.sidebar,
         contentAndEndpoint.leftbar,
-        sResponse.data
+        sResponse.data,
+        link
     )
 }
 
@@ -522,7 +581,8 @@ export function addMoreData(
     blocks,
     sidebar = false,
     leftbar = false,
-    pageData = null
+    pageData = null,
+    expectedLink = null
 ) {
     setRoutes((prevRoutes) => {
         let hasChanged = false
@@ -530,6 +590,13 @@ export function addMoreData(
         const updatedRoutes = prevRoutes.map((route) => {
             if (route.index !== index) {
                 return route
+            }
+
+            // Late response for a tab that has since been hydrated, or whose
+            // slot now holds a different page (routes rebuilt) — drop it.
+            if (expectedLink !== null) {
+                if (route.inited) return route
+                if (resolvePageRequestLink(route.link) !== expectedLink) return route
             }
 
             hasChanged = true
@@ -562,17 +629,16 @@ export function addMoreData(
                 updatedRoute.leftbar = leftbar
             }
 
-            /*storageSet('ul:data', updatedRoute.storageKeyValue, {
-                data: updatedRoute.data,
-                endpoint: updatedRoute.endpoint,
-            })*/
-
             return updatedRoute
         })
 
         return hasChanged ? updatedRoutes : prevRoutes
     })
 }
+
+// ---------------------------------------------------------------------------
+// Page JSON parsing: UNA page → content / endpoint / sidebar / leftbar
+// ---------------------------------------------------------------------------
 
 /** Resolve block content from page elements (browse vs generic block). */
 export function getContent(data, block) {
@@ -656,7 +722,7 @@ function mapLayoutBlocks(items = []) {
 }
 
 /** Build content/endpoint/sidebar/leftbar from layout_parsed page data. */
-function processParsedUrl(data, blocks) {
+function processParsedUrl(data) {
     const elements = data?.elements || {}
     const cellCenter = mapLayoutBlocks(elements.cell_center)
     const cellRight = mapLayoutBlocks(elements.cell_right)
@@ -670,14 +736,24 @@ function processParsedUrl(data, blocks) {
     }
 }
 
-/** Derive list content, browse endpoint, sidebar and leftbar from page JSON. */
+/**
+ * Derive list content, browse endpoint, sidebar and leftbar from page JSON.
+ *
+ * Two page formats come from UNA:
+ * - `layout_parsed` — cells already split into left / center / right; each
+ *   cell is a list of blocks. Handled by `processParsedUrl`.
+ * - classic — a flat `elements` map plus a `blocks` config that says which
+ *   block is sidebar / leftbar / hidden. Walked here.
+ *
+ * In both, the first `browse` block in the center becomes the `endpoint`;
+ * every other block becomes a `{ type: 'block' }` row for its column.
+ */
 export function processUrl(data, blocks) {
-    if (data.layout_parsed){
-        const a = processParsedUrl(data, blocks);
-        return a;
+    if (data.layout_parsed) {
+        return processParsedUrl(data)
     }
     if (!blocks) blocks = getBlocksFromData(data)
-  
+
     const contentAndEndpoint = Object.values(blocks).reduce(
         (acc, block) => {
             const b = getContent(data, block)
@@ -709,6 +785,10 @@ export function processUrl(data, blocks) {
     )
     return contentAndEndpoint
 }
+
+// ---------------------------------------------------------------------------
+// List presentation: counters, unit type, skeleton key
+// ---------------------------------------------------------------------------
 
 /** Nav counter payload from addon count + conductor show_nav_counters setting. */
 export function getAddon(addon) {
@@ -746,6 +826,10 @@ export function resolveConductorSkeletonKey(route, skeletonProp, unitType) {
     const map = appSetting('browse', 'skeletons') || {}
     return map[unitType] ? [baseSkeleton, unitType] : baseSkeleton
 }
+
+// ---------------------------------------------------------------------------
+// Left column: menus vs filters, exclusions, form restore
+// ---------------------------------------------------------------------------
 
 /** Re-apply stored filter form values into pageData form inputs. */
 export function pageDataWithRestoredFormValues(pageData, formValues) {
@@ -875,6 +959,10 @@ export function getLeftColumnExcludedFromMainIds({
     )
 }
 
+// ---------------------------------------------------------------------------
+// Filters: form values → endpoint params
+// ---------------------------------------------------------------------------
+
 /** Form object → [{ name, value }] for conductor filter params. */
 export function formValuesToFilterEntries(values = {}) {
     const filterValues = []
@@ -906,12 +994,13 @@ export function patchConductorRouteFilters(
         filters[v.name] = v.value
     })
 
+    // Structural compare, not JSON.stringify: the form and UNA may emit the
+    // same filters with keys in a different order, and that must not refetch.
     const currentFilters = routes[routeIndex]?.endpoint?.params?.filters || {}
     if (
-        JSON.stringify(currentFilters) === JSON.stringify(filters) &&
+        deepEqual(currentFilters, filters) &&
         (rawFormValues == null ||
-            JSON.stringify(routes[routeIndex]?.endpoint?.filterFormValues) ===
-                JSON.stringify(rawFormValues))
+            deepEqual(routes[routeIndex]?.endpoint?.filterFormValues, rawFormValues))
     ) {
         return routes
     }

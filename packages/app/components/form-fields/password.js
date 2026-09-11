@@ -3,7 +3,7 @@ import { Input, NeoButton } from 'app/design/controls'
 import { View } from 'app/design/view'
 import { useState } from 'react';
 import { appSetting } from 'app/lib/util';
-import { useFormField } from 'app/lib/hooks/use-form-field';
+import { useFormField } from 'app/lib/form/use-form-field';
 
 export default function FormFieldPassword(props) {
     const [isVisible, setIsVisible] = useState(true)

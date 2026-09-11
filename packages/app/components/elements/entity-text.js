@@ -7,7 +7,7 @@ import Html from 'app/ui/atoms/html';
 import { Text, H1C } from 'app/design/typography';
 import { Input } from 'app/design/controls';
 import { appSetting, clearLinks, getYouTubeVideoId, cn } from 'app/lib/util'
-import { useEditableRequest } from 'app/lib/form-helpers'
+import { useEditableRequest } from 'app/lib/form/form-helpers'
 import { ContentMore } from 'app/ui/molecules/content/content-more';
 import EntityAttachments from './entity-attachments';
 import TextMore from 'app/ui/molecules/content/text-more';

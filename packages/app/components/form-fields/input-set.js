@@ -1,7 +1,7 @@
 import Field from './_field';
 import { useFormContext } from 'react-hook-form';
 import { View, Row } from 'app/design/view';
-import { getFormFieldByData } from 'app/lib/form-helpers';
+import { getFormFieldByData } from 'app/lib/form/form-helpers';
 import Submit from './submit';
 
 function getInputSetChildren(props) {

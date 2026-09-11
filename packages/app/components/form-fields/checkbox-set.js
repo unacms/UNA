@@ -2,7 +2,7 @@ import Field from './_field';
 import CheckBox from 'app/ui/atoms/checkbox';
 import { View, Row } from 'app/design/view'
 import { appSetting } from 'app/lib/util';
-import { useFormField } from 'app/lib/hooks/use-form-field';
+import { useFormField } from 'app/lib/form/use-form-field';
 
 const themeSettings = appSetting('theme', 'checkbox_set');
 

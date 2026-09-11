@@ -6,7 +6,7 @@ import {
     UnitText,
     UnitTitle,
     UnitWrapper,
-} from 'app/lib/unit-helpers'
+} from 'app/components/units/helpers'
 
 export default function Unit({ data }) {
     return (

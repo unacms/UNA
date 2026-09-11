@@ -1,7 +1,7 @@
 import {
     useTabKey,
     getTabKeyFromPathname,
-} from 'app/lib/tab-history'
+} from 'app/lib/navigation/tab-history'
 import { useTabChromeKey, isTabScopedChromeKey } from 'app/context/tab-chrome'
 
 /** Prefer screen-owned tab chrome key — pathname can point at another focused tab. */

@@ -4,7 +4,7 @@ import { Text } from 'app/design/typography'
 import { useTranslation } from 'react-i18next'
 import Profile from 'app/ui/molecules/profile/profile'
 import Badges from 'app/ui/molecules/profile/badges'
-import { MENTION_TYPE_LABELS } from 'app/lib/editor-mention-shared'
+import { MENTION_TYPE_LABELS } from 'app/lib/editor/editor-mention-shared'
 
 function MentionSuggestionItem({ user, selected, onSelect, typeLabel }) {
     const meta = [user.slug, typeLabel].filter(Boolean).join(' · ')

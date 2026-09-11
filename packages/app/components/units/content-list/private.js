@@ -1,5 +1,5 @@
 import { View } from 'app/design/view';
-import { UnitProfileImage, UnitTitle, UnitWrapper } from 'app/lib/unit-helpers';
+import { UnitProfileImage, UnitTitle, UnitWrapper } from 'app/components/units/helpers';
 
 export default function Unit({ data, unitType, module }) {
 

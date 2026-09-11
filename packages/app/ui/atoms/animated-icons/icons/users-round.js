@@ -1,5 +1,5 @@
 'use client';
-import { nativeDriver } from 'app/lib/animation';
+import { nativeDriver } from 'app/lib/platform/animation';
 import { getAnimatedFillProps } from 'app/ui/atoms/animated-icons/fill-props';
 
 import { forwardRef, useEffect, useRef } from 'react';

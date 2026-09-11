@@ -1,6 +1,6 @@
 import { View, Row } from 'app/design/view'
 import { useState } from 'react'
-import { getFormFieldByData, getHiddenFields } from 'app/lib/form-helpers'
+import { getFormFieldByData, getHiddenFields } from 'app/lib/form/form-helpers'
 import Profile from 'app/ui/molecules/profile/profile';
 
 import { useCurrentUser } from 'app/context/user';

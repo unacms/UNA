@@ -11,7 +11,7 @@ import { fetcher } from 'app/lib/fetcher';
 import { cn } from 'app/lib/util';
 import emitter from 'app/context/emitter';
 import { iconForTaskStatus } from 'app/lib/tasks-meta';
-import { UnitTitle } from 'app/lib/unit-helpers';
+import { UnitTitle } from 'app/components/units/helpers';
 
 const TASKS_LIST_EVENT = 'tasks_list';
 

@@ -4,9 +4,9 @@ import { View } from 'app/design/view'
 import { appSetting, isExternalUrl, openExternalLink } from 'app/lib/util'
 import { useThemeValue } from 'app/design/theme'
 import { useRouter, useCurrentTabPath } from 'app/lib/hooks/router'
-import { nativeTabHref } from 'app/lib/tab-history'
+import { nativeTabHref } from 'app/lib/navigation/tab-history'
 import { normalizeLinkHref } from 'app/components/form-fields/editor-mention-html';
-import { preprocessHtml } from 'app/lib/html-helper'
+import { preprocessHtml } from 'app/lib/html-helpers'
 
 // This file is native-only (web content is rendered by html.web.js), so the
 // Tiptap-based web build is never loaded here — a static import is safe.

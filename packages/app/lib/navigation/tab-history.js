@@ -3,9 +3,9 @@ import { usePathname } from 'app/lib/hooks/router';
 import emitter from 'app/context/emitter';
 import { appSetting } from 'app/lib/util';
 import { useBottomSheetStore } from 'app/context/bottomsheet';
-import { getTabKeyFromPathname, parseTabKey } from 'app/lib/tab-path';
+import { getTabKeyFromPathname, parseTabKey } from 'app/lib/navigation/tab-path';
 
-export { getTabKeyFromPathname, parseTabKey } from 'app/lib/tab-path';
+export { getTabKeyFromPathname, parseTabKey } from 'app/lib/navigation/tab-path';
 
 export function useTabKey() {
     const pathname = usePathname();

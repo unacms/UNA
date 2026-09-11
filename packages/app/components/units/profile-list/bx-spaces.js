@@ -2,7 +2,7 @@ import {
     UnitInvitationActions,
     UnitProfileRow,
     useInvitationAction,
-} from 'app/lib/unit-helpers'
+} from 'app/components/units/helpers'
 
 export default function Unit({ data }) {
     const { dismissed, processInvitation } = useInvitationAction()

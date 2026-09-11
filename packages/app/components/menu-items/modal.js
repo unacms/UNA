@@ -4,7 +4,7 @@ import { View } from 'app/design/view';
 import { fetcher } from 'app/lib/fetcher';
 import { BlockByDataInt as BlockByData } from 'app/components/block';
 import emitter from 'app/context/emitter';
-import MenuItemActionBase from 'app/lib/menu-item-helper';
+import MenuItemActionBase from 'app/lib/menu-item-helpers';
 
 async function openModalFromRequest(oProps, setFormBlock) {
     const requestUrl = oProps?.data?.request_url;

@@ -13,8 +13,8 @@ import { Platform } from 'react-native';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from 'app/ui/molecules/page/card';
 import { useRouter, redirectTo } from 'app/lib/hooks/router'
 import { clearAllPageCache } from 'app/lib/cache/clear-page-cache'
-import { resetAllTabHistory } from 'app/lib/tab-history'
-import { resolvePostConfirmUrl } from 'app/lib/session-cleanup'
+import { resetAllTabHistory } from 'app/lib/navigation/tab-history'
+import { resolvePostConfirmUrl } from 'app/lib/platform/session-cleanup'
 
 export default function ElementConfirmEmail(props) {
     const isWeb = Platform.OS == 'web'

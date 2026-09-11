@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useMemo, useRef, useState, memo } from 'react'
+import { useCallback, useContext, useMemo, memo } from 'react'
 import { View, Row, Pressable } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { Icon } from 'app/ui/atoms/icon'
@@ -27,12 +27,26 @@ import {
     registeredComponent,
 } from './helpers'
 
+/*
+ * ============================================================================
+ * Cross-platform presentation for the Conductor: everything that looks the
+ * same on web and native. Platform files (`web-ui.js`, `native-ui.js`) wrap
+ * these; nothing here touches routes, the query or the URL.
+ *
+ *   LeftColumnContent / ListForm / FiltersButton   left-column & filter blocks
+ *   MenuTrigger / LeftColumnMenuDropdown           dropdown pills
+ *   TabItem / TabList / CompactNav                 the tabs themselves
+ *   useListScene / ListScene                       rows + skeletons + UniList
+ * ============================================================================
+ */
+
 /** Block name for BlockByName: string entry or object from UNA leftbar JSON. */
 function resolveLeftColumnBlockName(block) {
     if (typeof block === 'string') return block
     return block?.block ?? block?.data?.source ?? null
 }
 
+/** Stable React key for a left-column block; falls back to position. */
 function leftColumnBlockKey(block, index) {
     if (typeof block === 'string') return block
     return block?.id ?? block?.data?.id ?? block?.block ?? index
@@ -138,6 +152,18 @@ export function FiltersButton({
     )
 }
 
+/*
+ * ============================================================================
+ * Dropdown triggers — the pill with a chevron that opens a DropdownMenu.
+ * Used both for left-column menus and for tabs that have sub-items.
+ * ============================================================================
+ */
+
+/**
+ * Pill-shaped dropdown trigger. Highlights while the menu is open (via
+ * DropdownMenuOpenContext) or when `isActive` says the selection is inside.
+ * `compact` truncates the title and drops the placeholder 'Circle' icon.
+ */
 function MenuTrigger({ title, icon, isActive = false, compact = false }) {
     const isOpen = useContext(DropdownMenuOpenContext) ?? false
     const showIcon = Boolean(icon) && (!compact || icon !== 'Circle')
@@ -168,6 +194,11 @@ function MenuTrigger({ title, icon, isActive = false, compact = false }) {
     )
 }
 
+/**
+ * A left-column block flagged `use_as_menu` (categories, sub-navigation),
+ * rendered as a dropdown next to the tabs instead of as a block in the column.
+ * Items are plain links — selecting one navigates.
+ */
 export function LeftColumnMenuDropdown({ blockItem, t }) {
     const items = useMemo(
         () => getDropdownItemsFromLeftColumnBlock(blockItem),
@@ -189,6 +220,13 @@ export function LeftColumnMenuDropdown({ blockItem, t }) {
     )
 }
 
+/*
+ * ============================================================================
+ * Tabs: single pills, the flat list, and the compact (nested) variant.
+ * ============================================================================
+ */
+
+/** Counter badge on a tab ("3 new"). Red when the addon is flagged primary. */
 export function Addon({ item }) {
     const addon = getAddon(item?.addon)
     if (!addon) return null
@@ -202,6 +240,10 @@ export function Addon({ item }) {
     )
 }
 
+/**
+ * A parent tab with children, shown as a dropdown of its child tabs.
+ * Selecting a child switches the tab (via `onSelect`), same as a pill press.
+ */
 function SubitemsDropdown({ route, routes, selectedIndex, onSelect, t }) {
     const items = buildSubitemsDropdownItems(route, routes, selectedIndex)
     const isActive = isSubitemsDropdownActive(route, routes, selectedIndex)
@@ -277,6 +319,7 @@ export function TabItem({ item, selectedIndex, onPress }) {
     )
 }
 
+/** `TabItem` in a wrapper View; the wrapper class differs per platform. */
 function TabPill({ item, selectedIndex, onPress, className }) {
     return (
         <View className={className || undefined}>
@@ -326,11 +369,16 @@ export function TabList({
     ))
 }
 
+/**
+ * Tab row for nested menus: root tabs without children are pills, root tabs
+ * with children become `SubitemsDropdown`s. Children never appear at the top
+ * level — they are reachable only through their parent's dropdown.
+ */
 export function CompactNav({ routes, index, onSelect }) {
     const { t } = useTranslation()
     if (!hasConductorSubitems(routes)) return null
 
-    const entries = buildCompactNavEntries(routes, index)
+    const entries = buildCompactNavEntries(routes)
     if (!entries.length) return null
 
     return (
@@ -362,11 +410,46 @@ export function CompactNav({ routes, index, onSelect }) {
     )
 }
 
+/*
+ * ============================================================================
+ * The list scene: rows, skeletons, empty state and the chrome around UniList.
+ * Both platforms feed their own list state in and get a configured UniList out.
+ * ============================================================================
+ */
+
+/** Stable default so a missing `listItems` does not re-run every memo. */
 const EMPTY_LIST_ITEMS = []
 
 /**
  * Shared conductor center-list chrome (native + small web).
  * Query / snackbar / page header stay in the platform shells.
+ *
+ * Turns a route + list state into everything `ListBody` needs to render:
+ * - `rows`      page blocks + list items (+ sidebar blocks on phone), in order
+ * - `renderItem` ItemRenderer bound to this route's unit / module
+ * - `Preload`   skeleton matching the resolved unit type
+ * - `chrome`    the filter form and mobile left-column blocks above the rows
+ * - `showPreload` / `showNoContent`  the two non-list states
+ *
+ * @param {object}  opts
+ * @param {object}  opts.route          Route whose list this is.
+ * @param {string}  [opts.skeleton]     Skeleton override.
+ * @param {string}  [opts.unitMode]     Forwarded to ItemRenderer.
+ * @param {number}  [opts.skeletonCount=1]
+ * @param {array}   [opts.listItems]    Rows from the query.
+ * @param {boolean} [opts.includeSidebar=false]  Append sidebar blocks (phone).
+ * @param {boolean} [opts.showMobileLeftColumn]  Render left-column blocks above.
+ * @param {Set}     [opts.leftColumnExcludedFromMainIds]  Blocks shown elsewhere.
+ * @param {Function} [opts.onFormChangedValues]
+ * @param {string}  [opts.leftColumnClassName]
+ * @param {boolean} [opts.isInited=true]   Route has its page JSON.
+ * @param {boolean} [opts.listReady=true]  Query settled at least once.
+ * @param {boolean} [opts.refreshing=false]
+ * @param {boolean} [opts.hasNextPage]
+ * @param {boolean} [opts.isPending=false]
+ * @param {boolean} [opts.isFetching=false]
+ * @param {boolean} [opts.preloadWhenEmpty=false]  Native: keep skeletons until
+ *        the first rows land, even when `listReady` is already true.
  */
 export function useListScene({
     route,
@@ -465,11 +548,17 @@ export function useListScene({
         leftColumnClassName,
     ])
 
+    // "Empty" means no feed/profile rows — page blocks alone do not count.
     const isEmpty = !conductorListHasEntries(rows)
     const requestUrl = route?.endpoint?.request_url
+    // Skeletons: always while the route has no page JSON; otherwise until the
+    // query settles (and, with preloadWhenEmpty, until it actually has rows —
+    // but never during a pull-to-refresh, that has its own spinner).
     const showPreload = preloadWhenEmpty
         ? (!isInited || !!(requestUrl && !listReady && !refreshing && isEmpty))
         : !!(requestUrl && !listReady) || !isInited
+    // "No content": the query is fully done, there is no next page, and it
+    // still produced nothing. Every condition guards a false positive.
     const showNoContent = !!(
         requestUrl &&
         listReady &&
@@ -495,6 +584,12 @@ export function useListScene({
     }
 }
 
+/**
+ * UniList plus the chrome and the empty state, placed according to
+ * `headerInList`: native puts chrome in ListHeaderComponent and NoContent in
+ * the footer (so they scroll with the rows); web renders them as siblings
+ * because the list uses window scroll.
+ */
 function ListBody({
     route,
     scene,
@@ -543,13 +638,30 @@ function ListBody({
 /**
  * UniList + form/left column/empty. Native: header in list; preload keeps
  * that header mounted (skeletons as ListEmptyComponent). Web: chrome as
- * siblings, window-scroll via uniListProps; optional reveal fade.
+ * siblings, window-scroll via uniListProps.
+ *
+ * Skeleton → list fade lives inside UniList on both platforms (it is the one
+ * who knows when the virtualizer has laid the rows out); pass
+ * `showListPreload` to hand it the skeleton.
+ *
+ * @param {object}   props
+ * @param {object}   props.route
+ * @param {boolean}  [props.headerInList=false]     See ListBody.
+ * @param {boolean}  [props.showListPreload=false]  Hand skeletons to UniList's
+ *        preloadComponent while the list is not ready.
+ * @param {object}   [props.listRef]
+ * @param {Function} [props.handleEndReached]
+ * @param {Function} [props.onRefresh]
+ * @param {boolean}  [props.refreshing]
+ * @param {object}   [props.uniListProps]  Platform UniList settings, spread in.
+ * @param {node|Function} [props.afterList] Rendered after the list; a function
+ *        receives the `useListScene` result.
+ * @param {...*}     sceneProps            Forwarded to `useListScene`.
  */
 export function ListScene({
     route,
     headerInList = false,
     showListPreload = false,
-    enableRevealFade = false,
     listRef,
     handleEndReached,
     onRefresh,
@@ -564,29 +676,7 @@ export function ListScene({
         ...sceneProps,
     })
 
-    const [showContent, setShowContent] = useState(!scene.showPreload)
-    const revealTimerRef = useRef(null)
-
-    useEffect(() => {
-        if (!enableRevealFade) return undefined
-        if (revealTimerRef.current) {
-            clearTimeout(revealTimerRef.current)
-        }
-        if (scene.showPreload) {
-            setShowContent(false)
-            return undefined
-        }
-        revealTimerRef.current = setTimeout(() => {
-            setShowContent(true)
-        }, 140)
-        return () => {
-            if (revealTimerRef.current) {
-                clearTimeout(revealTimerRef.current)
-            }
-        }
-    }, [enableRevealFade, scene.showPreload, route?.key])
-
-    const body = (
+    return (
         <>
             <ListBody
                 route={route}
@@ -601,24 +691,5 @@ export function ListScene({
             />
             {typeof afterList === 'function' ? afterList(scene) : afterList}
         </>
-    )
-
-    if (!enableRevealFade) {
-        return body
-    }
-
-    return (
-        <View className="relative">
-            <View
-                className={`transition-opacity duration-500 ease-out ${showContent ? 'opacity-100' : 'opacity-0 pointer-events-none'} ${!showContent ? 'absolute inset-x-0 top-0 h-0 overflow-hidden' : ''}`}
-            >
-                {body}
-            </View>
-            {!showContent ? (
-                <View className="pointer-events-none transition-opacity duration-500 ease-out opacity-100">
-                    {scene.Preload}
-                </View>
-            ) : null}
-        </View>
     )
 }

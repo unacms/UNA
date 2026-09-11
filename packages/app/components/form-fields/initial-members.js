@@ -8,7 +8,7 @@ import { Button, NeoButton, Input, Modal } from 'app/design/controls'
 import Loading from 'app/ui/atoms/loading'
 import { Icon } from 'app/ui/atoms/icon'
 import { useTranslation } from 'react-i18next';
-import { useFormField } from 'app/lib/hooks/use-form-field';
+import { useFormField } from 'app/lib/form/use-form-field';
 
 function suggestionId(item, index) {
     const id = item?.id ?? item?.value ?? item?.profile_id

@@ -4,7 +4,7 @@ import { RangeSlider } from '@react-native-assets/slider'
 import { useThemeName } from 'app/design/theme';
 import { View, Row } from 'app/design/view'
 import { appSetting } from 'app/lib/util';
-import { useFormField } from 'app/lib/hooks/use-form-field';
+import { useFormField } from 'app/lib/form/use-form-field';
 
 const themeSettings = appSetting('theme', 'doublerange');
 

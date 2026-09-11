@@ -1,7 +1,7 @@
 import { View, Row, Pressable } from 'app/design/view'
 import { NeoButton } from 'app/design/controls'
 import { useState, useRef, useMemo, useEffect } from 'react'
-import { getFormFieldByData } from 'app/lib/form-helpers'
+import { getFormFieldByData } from 'app/lib/form/form-helpers'
 import KbAvoidingView, { useStickyComposerListInset } from 'app/ui/atoms/kb-avoiding-view'
 import { Platform, View as RNView } from 'react-native'
 import { useStableSafeAreaInsets } from 'app/lib/hooks/router'
@@ -10,12 +10,12 @@ import Profile from 'app/ui/molecules/profile/profile'
 import { appSetting, stripTags } from 'app/lib/util'
 import { Keyboard } from 'react-native'
 import { useFormContext } from 'react-hook-form'
-import { PollButton, LabelButton, FileButton } from 'app/lib/form-helpers'
+import { PollButton, LabelButton, FileButton } from 'app/lib/form/form-helpers'
 import { useIsDesktop, useWindowHeight } from 'app/context/measure';
 import emitter from 'app/context/emitter';
 import { Icon } from 'app/ui/atoms/icon'
 import { Text } from 'app/design/typography';
-import { useSound } from 'app/lib/hooks/useSound';
+import { useSound } from 'app/lib/hooks/use-sound';
 
 const dropdownTheme = appSetting('theme', 'dropdown');
 const menuSettings = appSetting('theme', 'dropdown_menu');

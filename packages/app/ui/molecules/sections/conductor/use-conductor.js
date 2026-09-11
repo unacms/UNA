@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react'
+import { deepEqual } from 'app/lib/util'
 import {
     partitionLeftColumn,
     getLeftColumnExcludedFromMainIds,
@@ -112,7 +113,8 @@ export function useConductorFilters({
                 filterEntries.forEach((f) => {
                     nextFilters[f.name] = f.value
                 })
-                if (JSON.stringify(currentFilters) === JSON.stringify(nextFilters)) {
+                // Structural compare: key order from the form may differ from UNA's.
+                if (deepEqual(currentFilters, nextFilters)) {
                     return
                 }
             }

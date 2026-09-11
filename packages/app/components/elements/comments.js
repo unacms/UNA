@@ -1,6 +1,6 @@
 import { View } from 'app/design/view';
 import { useState } from 'react';
-import { CommentsBrowse, CommentsForm } from 'app/lib/comments-helpers'
+import { CommentsBrowse, CommentsForm } from 'app/components/elements/comments-browse'
 import { BlockWrapper } from 'app/components/block-wrapper'
 
 export default function ({browse, form, url, blockWrapperProps}) {

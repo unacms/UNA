@@ -5,7 +5,7 @@ import { Button, Modal } from "app/design/controls";
 import ChkList from 'app/ui/molecules/form-controls/checkbox-list';
 import { Text } from 'app/design/typography';
 import { appSetting } from 'app/lib/util'
-import { useFormField } from 'app/lib/hooks/use-form-field';
+import { useFormField } from 'app/lib/form/use-form-field';
 
 const inputSettings = appSetting('theme', 'inputs');
 

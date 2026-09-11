@@ -3,7 +3,7 @@ import { Input, Button } from 'app/design/controls'
 import { useEffect, useState } from 'react';
 import { View, Row } from 'app/design/view'
 import { strToObj } from 'app/lib/util';
-import { useFormField } from 'app/lib/hooks/use-form-field';
+import { useFormField } from 'app/lib/form/use-form-field';
 
 export default function FormFieldList(props) {
     const params = strToObj(props.params) || {};

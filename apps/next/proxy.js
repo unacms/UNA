@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { UNA_URL, UNA_API_KEY, MULTITENANT, joinUnaUrl } from 'app/config';
-import { getDomainByHostname } from 'app/lib/domains/domains';
+import { getDomainByHostname } from './lib/domains/domains';
 
 export const config = {
     // Skip /.well-known/* so Digital Asset Links / AASA hit App Router routes

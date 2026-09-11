@@ -29,7 +29,7 @@ import {
     votedChannel,
     useVotedSubscription,
     PerformedByModal,
-} from 'app/lib/object-helpers';
+} from 'app/ui/molecules/objects/helpers';
 import { useCurrentUser } from 'app/context/user';
 import { View } from 'app/design/view';
 

@@ -1,6 +1,6 @@
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Animated, Platform } from 'react-native';
-import { nativeDriver } from 'app/lib/animation';
+import { nativeDriver } from 'app/lib/platform/animation';
 import { View, Row } from 'app/design/view';
 import { Text } from 'app/design/typography';
 import { FeedbackHaptics, appSetting, getMenuSettings } from 'app/lib/util';
@@ -11,7 +11,7 @@ import { getComponent } from 'app/components/registry';
 import { useIsDesktop } from 'app/context/measure';
 import { NeoButton, NeoButtonLink } from 'app/design/controls';
 import Link from 'app/ui/atoms/link';
-import { canGoBackInTab, getTabKeyFromPathname, navigateBackInTab } from 'app/lib/tab-history';
+import { canGoBackInTab, getTabKeyFromPathname, navigateBackInTab } from 'app/lib/navigation/tab-history';
 import {
     defaultHeader,
     useHeader,

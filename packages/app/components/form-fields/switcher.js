@@ -3,7 +3,7 @@ import Switch, { resolveControlSize } from 'app/ui/atoms/switcher'
 import { View } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { appSetting } from 'app/lib/util'
-import { useFormField } from 'app/lib/hooks/use-form-field';
+import { useFormField } from 'app/lib/form/use-form-field';
 
 const switcherTheme = appSetting('theme', 'switcher');
 

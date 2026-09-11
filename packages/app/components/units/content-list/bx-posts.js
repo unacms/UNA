@@ -6,7 +6,7 @@ import {
     UnitTitle,
     UnitWrapper,
     resolveUnitVariant,
-} from 'app/lib/unit-helpers';
+} from 'app/components/units/helpers';
 const Units = {};
 
 Units.Base = function Base({ data, listIndex }) {

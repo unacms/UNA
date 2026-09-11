@@ -1,5 +1,5 @@
 import { useRouter, usePathname, redirectTo } from 'app/lib/hooks/router'
-import { getTabKeyFromPathname } from 'app/lib/tab-history'
+import { getTabKeyFromPathname } from 'app/lib/navigation/tab-history'
 import { useEffect } from 'react';
 
 export default function ElementRedirect({data, blockWrapperProps}) {

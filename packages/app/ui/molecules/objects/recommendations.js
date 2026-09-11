@@ -18,7 +18,7 @@ import {
     buildButtonProps,
     pickActionButton,
     resolveActionButtonFlags,
-} from 'app/lib/object-helpers';
+} from 'app/ui/molecules/objects/helpers';
 import { useRouter, redirectTo } from 'app/lib/hooks/router';
 import { NeoButton } from 'app/design/controls';
 

@@ -7,8 +7,8 @@ import { View, Row } from 'app/design/view';
 import { appSetting, cn } from 'app/lib/util';
 import emitter from 'app/context/emitter';
 import { useFormInstanceId } from 'app/context/form-instance';
-import { useFormUploading } from 'app/lib/form-helpers';
-import { useFormField } from 'app/lib/hooks/use-form-field';
+import { useFormUploading } from 'app/lib/form/form-helpers';
+import { useFormField } from 'app/lib/form/use-form-field';
 
 const isNative = Platform.OS !== 'web';
 

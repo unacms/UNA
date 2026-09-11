@@ -1,8 +1,8 @@
 import Field from './_field';
 import { Input } from 'app/design/controls'
 import { View } from 'app/design/view'
-import { useLocationField } from 'app/lib/hooks/use-form-field';
-import { LocationSuggest } from 'app/lib/form-fields-helpers';
+import { useLocationField } from 'app/lib/form/use-form-field';
+import { LocationSuggest } from 'app/lib/form/form-fields-helpers';
 
 export default function FormFieldLocationRadius({ name, value, onChange, ...props }) {
     const loc = useLocationField({

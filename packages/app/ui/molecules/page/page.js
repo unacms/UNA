@@ -1,12 +1,12 @@
 import { View, ScrollView } from 'app/design/view';
 import { getPageWidth } from 'app/lib/util'
 import { Platform } from 'react-native'
-import { useScroll } from 'app/lib/hooks/useScroll';
+import { useScroll } from 'app/lib/hooks/use-scroll';
 import { useHeaderHeight, useFooterHeight, useSetHeader, useGetScrollValue, defaultHeader } from 'app/context/jotai/layout';
 import { KbAvoidingViewScroll } from 'app/ui/atoms/kb-avoiding-view';
 import { useCallback, useEffect, useRef } from 'react';
 import { useFocusEffect }  from 'app/lib/hooks/router'
-import { pushFormEnsureVisibleHandler, scrollContainerByDelta } from 'app/lib/form-ensure-visible'
+import { pushFormEnsureVisibleHandler, scrollContainerByDelta } from 'app/lib/form/form-ensure-visible'
 
 const isWeb = Platform.OS === 'web';
 

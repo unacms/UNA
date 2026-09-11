@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { Animated, View } from 'react-native';
-import { nativeDriver } from 'app/lib/animation';
+import { nativeDriver } from 'app/lib/platform/animation';
 import { appSetting } from 'app/lib/util';
 import { isNativeTabsEnabled } from 'app/lib/util';
 import { useIsScrolled } from 'app/context/jotai/layout';

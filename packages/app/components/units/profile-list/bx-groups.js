@@ -4,7 +4,7 @@ import {
     UnitProfileRow,
     UnitRecommendation,
     useInvitationAction,
-} from 'app/lib/unit-helpers'
+} from 'app/components/units/helpers'
 
 export default function Unit({ data }) {
     const { cardData } = useCardData()

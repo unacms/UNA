@@ -1,4 +1,4 @@
-import { env } from 'app/lib/env'
+import { env } from 'app/lib/platform/env'
 import { settingsLayout } from 'app/settings/layout';
 import { settingsForms } from 'app/settings/forms';
 import { settingsFeed } from 'app/settings/feed';

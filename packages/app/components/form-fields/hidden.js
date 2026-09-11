@@ -1,5 +1,5 @@
 import { Hidden } from 'app/design/controls'
-import { useFormField } from 'app/lib/hooks/use-form-field';
+import { useFormField } from 'app/lib/form/use-form-field';
 
 export default function FormFieldHidden(props) {
     const { name, field } = useFormField(props);

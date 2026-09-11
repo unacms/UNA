@@ -1,6 +1,6 @@
 import Field from './_field';
 import Html from 'app/ui/atoms/html';
-import { useFormField } from 'app/lib/hooks/use-form-field';
+import { useFormField } from 'app/lib/form/use-form-field';
 import { looksLikeHtml, stripTags } from 'app/lib/util';
 
 function normalize(s) {

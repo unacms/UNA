@@ -4,29 +4,29 @@ import { useState, useRef, useEffect, useMemo, useCallback, Component } from 're
 import { Platform } from 'react-native'
 import { EnrichedTextInput } from 'react-native-enriched-html'
 import { View } from 'app/design/view'
-import { EditorToolbar, useEnrichedToolbar } from 'app/lib/editor-toolbar'
+import { EditorToolbar, useEnrichedToolbar } from 'app/lib/editor/editor-toolbar'
 import { useThemeValue } from 'app/design/theme'
 import { appSetting, cn } from 'app/lib/util'
-import { commitEditorHtml, normalizeEditorHtml } from 'app/lib/editor-form'
-import { useEditorFormField } from 'app/lib/hooks/use-form-field'
+import { commitEditorHtml, normalizeEditorHtml } from 'app/lib/editor/editor-form'
+import { useEditorFormField } from 'app/lib/form/use-form-field'
 import emitter from 'app/context/emitter'
 import { mentionsToUnaLinks, unaLinksToMentions, linkifyHtml } from './editor-mention-html'
-import { useEditorMentions } from 'app/lib/use-editor-mentions'
-import { MentionSuggestionsDropdown } from 'app/lib/mention-suggestions-dropdown'
+import { useEditorMentions } from 'app/lib/editor/use-editor-mentions'
+import { MentionSuggestionsDropdown } from 'app/lib/editor/mention-suggestions-dropdown'
 import {
     MENTION_INDICATORS,
     getTextBeforeCursorFromTiptap,
     insertMentionInTiptap,
     mentionAttributesForUser,
     parseMentionTrigger,
-} from 'app/lib/editor-mention-shared'
+} from 'app/lib/editor/editor-mention-shared'
 import {
     getTiptapEditorFromContainer,
     isCommentEditorEnterKey,
     isCommentEditorNewlineEnter,
-} from 'app/lib/comment-editor-keyboard'
+} from 'app/lib/editor/comment-editor-keyboard'
 import { useIsDesktop } from 'app/context/measure'
-import { fitInlineImageSize, getEditorPasteImagesMode } from 'app/lib/editor-paste-images'
+import { fitInlineImageSize, getEditorPasteImagesMode } from 'app/lib/editor/editor-paste-images'
 
 const inputSettings = appSetting('theme', 'inputs')
 

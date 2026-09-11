@@ -6,7 +6,7 @@ import { fetcher } from 'app/lib/fetcher';
 import { appSetting } from 'app/lib/util';
 import { View } from 'app/design/view'
 import Embed from 'app/ui/molecules/content/embed'
-import { useFormField } from 'app/lib/hooks/use-form-field';
+import { useFormField } from 'app/lib/form/use-form-field';
 
 function InnerEmbed({ url }) {
     const [state, setState] = useState({

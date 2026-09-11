@@ -1,6 +1,6 @@
 import Field from './_field';
 import { Input } from 'app/design/controls'
-import { useFormField } from 'app/lib/hooks/use-form-field';
+import { useFormField } from 'app/lib/form/use-form-field';
 
 export default function FormFieldText(props) {
     

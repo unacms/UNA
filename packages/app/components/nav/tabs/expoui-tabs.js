@@ -29,7 +29,7 @@ import {
 } from './tab-menu';
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import { useRouter, usePathname, useSafeAreaInsets } from 'app/lib/hooks/router';
-import { nativeTabHref } from 'app/lib/tab-history';
+import { nativeTabHref } from 'app/lib/navigation/tab-history';
 import emitter from 'app/context/emitter';
 import * as WebBrowser from 'expo-web-browser';
 import { useBottomSheetData } from 'app/context/bottomsheet';

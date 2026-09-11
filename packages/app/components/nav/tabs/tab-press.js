@@ -2,7 +2,7 @@ import * as WebBrowser from 'expo-web-browser';
 import { appSetting, FeedbackHaptics, clearNotif } from 'app/lib/util';
 import { playTabFeedback } from 'app/components/nav/tab-feedback';
 import { isExternalTabUrl, resolveTabUrl } from './tab-menu';
-import { canGoBackInTab, navigateBackInTab } from 'app/lib/tab-history';
+import { canGoBackInTab, navigateBackInTab } from 'app/lib/navigation/tab-history';
 import emitter from 'app/context/emitter';
 
 function scheduleTabFeedback(defer) {

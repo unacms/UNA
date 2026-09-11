@@ -4,7 +4,7 @@ import { fetcher } from 'app/lib/fetcher';
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { appSetting } from 'app/lib/util'
 import { Platform } from 'react-native'
-import useFetchForm from 'app/lib/hooks/fetch'
+import useFetchForm from 'app/lib/hooks/use-fetch-form'
 import { useCurrentUser } from 'app/context/user';
 import { subscribe } from 'app/ui/atoms/socket';
 import { KbStickyView } from 'app/ui/atoms/kb-avoiding-view';

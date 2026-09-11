@@ -10,7 +10,28 @@ import {
     prependItemToUniListQueryCache,
     removeItemFromUniListQueryCache,
     cursorNextPageParam,
-} from 'app/lib/unilist-helpers'
+} from './helpers'
+
+/*
+ * ============================================================================
+ * Data layer behind UniList: a TanStack infinite query over a UNA browse
+ * endpoint. `helpers.js` holds the pure parts (fetch, pagination cursors,
+ * cache edits); this file is the hook. Import everything from
+ * `app/lib/browse-query`.
+ * ============================================================================
+ */
+
+export {
+    fetchUniListData,
+    refetchUniListReducer,
+    flattenPagesForUniList,
+    cursorNextPageParam,
+    startPerPageNextPageParam,
+    prependItemToUniListQueryCache,
+    removeItemFromUniListQueryCache,
+    matchesFeedOwnerFilter,
+    isSameItemsForUniList,
+} from './helpers'
 
 /**
  * Shared UniList infinite query: TanStack is the store.

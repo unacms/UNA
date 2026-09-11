@@ -11,7 +11,7 @@ import {
     UnitWrapper,
     getPostedTs,
     resolveUnitVariant,
-} from 'app/lib/unit-helpers'
+} from 'app/components/units/helpers'
 
 const Units = {};
 

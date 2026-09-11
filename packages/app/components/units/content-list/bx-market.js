@@ -9,7 +9,7 @@ import {
     UnitTitle,
     UnitWrapper,
     getStarsRatingData,
-} from 'app/lib/unit-helpers';
+} from 'app/components/units/helpers';
 
 export default function Unit({ data }) {
     const Stars = getComponent('molecule', 'stars');

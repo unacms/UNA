@@ -30,7 +30,7 @@ import {
     votedChannel,
     useVotedSubscription,
     PerformedByModal,
-} from 'app/lib/object-helpers';
+} from 'app/ui/molecules/objects/helpers';
 import { useCurrentUser } from 'app/context/user';
 import DropdownPopup from 'app/ui/atoms/dropdown-popup';
 import { StarsAction } from 'app/ui/atoms/stars';

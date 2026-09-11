@@ -1,12 +1,12 @@
 import Field, { getValidationRules } from './_field';
 import { Input } from 'app/design/controls';
 import { View } from 'app/design/view';
-import { useFormField } from 'app/lib/hooks/use-form-field';
+import { useFormField } from 'app/lib/form/use-form-field';
 import {
     getMaxLength,
     useTranslatableField,
     TranslatableFieldLayout,
-} from 'app/lib/form-fields-helpers';
+} from 'app/lib/form/form-fields-helpers';
 
 function LangInput({
     fieldName,

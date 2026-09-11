@@ -4,7 +4,7 @@ import { Text } from 'app/design/typography';
 import { View, Row } from 'app/design/view';
 import { Input, NeoButton } from 'app/design/controls';
 import { appSetting } from 'app/lib/util';
-import useDebounce from 'app/lib/hooks/debounce';
+import useDebounce from 'app/lib/hooks/use-debounce';
 import { getBackButtonWeb } from 'app/lib/common-helpers';
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import { getComponent } from 'app/components/registry';

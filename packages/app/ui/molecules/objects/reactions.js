@@ -34,10 +34,10 @@ import {
     profileUsersList,
     PerformedByModal,
     ActionMenuLayout,
-} from 'app/lib/object-helpers';
+} from 'app/ui/molecules/objects/helpers';
 import { useCurrentUser } from 'app/context/user';
 import { useWindowSize } from 'app/context/measure';
-import { useSound } from 'app/lib/hooks/useSound';
+import { useSound } from 'app/lib/hooks/use-sound';
 import { Icon } from 'app/ui/atoms/icon';
 import Tooltip from 'app/ui/molecules/dialogs/tooltip';
 import { Text } from 'app/design/typography';

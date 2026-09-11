@@ -1,5 +1,5 @@
 import { stripTags, stripTagsWithLinks } from 'app/lib/util'
-import { stripInlinePresentation } from 'app/lib/html-helper'
+import { stripInlinePresentation } from 'app/lib/html-helpers'
 
 const PLAIN_TEXT_TAGS = ['a', 'p', 'br', 'span']
 

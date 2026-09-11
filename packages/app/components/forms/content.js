@@ -1,5 +1,5 @@
 import { View } from 'app/design/view'
-import { getFormFieldByData, getHiddenFields } from 'app/lib/form-helpers'
+import { getFormFieldByData, getHiddenFields } from 'app/lib/form/form-helpers'
 import { appSetting } from 'app/lib/util'
 import MediaAttachments, { getMediaFields } from 'app/components/form-fields/media-attachments'
 

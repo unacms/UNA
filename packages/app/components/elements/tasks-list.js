@@ -19,7 +19,7 @@ import { useTranslation } from 'react-i18next';
 import emitter from 'app/context/emitter';
 import { useIsDesktop } from 'app/context/measure';
 import Confirm from 'app/ui/molecules/dialogs/confirm';
-import { isFormResponseComplete } from 'app/lib/form-helpers';
+import { isFormResponseComplete } from 'app/lib/form/form-helpers';
 import { Loading } from 'app/customization/loading';
 
 

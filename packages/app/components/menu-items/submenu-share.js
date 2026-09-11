@@ -5,7 +5,7 @@ import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import { setClipboard, appSetting } from 'app/lib/util';
 import Msg from 'app/ui/molecules/dialogs/msg';
 import { useState } from 'react';
-import MenuItemActionBase from 'app/lib/menu-item-helper';
+import MenuItemActionBase from 'app/lib/menu-item-helpers';
 
 export default function MenuItemSubmenuShare(oProps) {
     const [showMsg, setShowMsg] = useState(false);

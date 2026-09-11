@@ -5,8 +5,8 @@ import { useState, useEffect , useCallback } from 'react';
 import { Button, Modal } from "app/design/controls";
 import ChkList from 'app/ui/molecules/form-controls/checkbox-list';
 import emitter from 'app/context/emitter';
-import { LabelButton } from 'app/lib/form-helpers'
-import { useFormField } from 'app/lib/hooks/use-form-field';
+import { LabelButton } from 'app/lib/form/form-helpers'
+import { useFormField } from 'app/lib/form/use-form-field';
 import { appSetting } from 'app/lib/util'
 
 const inputSettings = appSetting('theme', 'inputs');

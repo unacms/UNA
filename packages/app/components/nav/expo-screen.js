@@ -5,7 +5,7 @@ import { appSetting, parseUrl, parseQueryString, isNativeTabsEnabled } from 'app
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import { fetcher } from 'app/lib/fetcher';
 import { useLocalSearchParams, useIsFocused } from 'app/lib/hooks/router'
-import { ensureTabHistory, applyTabHistory } from 'app/lib/tab-history';
+import { ensureTabHistory, applyTabHistory } from 'app/lib/navigation/tab-history';
 import { getCachedPageData, setCachedPageData } from 'app/lib/cache/native-tab-page-cache';
 import { clearAllPageCache } from 'app/lib/cache/clear-page-cache';
 import emitter from 'app/context/emitter'

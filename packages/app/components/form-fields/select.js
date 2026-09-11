@@ -2,7 +2,7 @@ import Field, { getValidationRules } from './_field';
 import Dropdown from 'app/ui/atoms/dropdown'
 import { Row } from 'app/design/view'
 import { Button } from 'app/design/controls'
-import { useFormField } from 'app/lib/hooks/use-form-field';
+import { useFormField } from 'app/lib/form/use-form-field';
 
 export default function FormFieldSelect(props) {
     const { field, readOnly } = useFormField(props, {

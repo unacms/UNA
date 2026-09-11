@@ -6,8 +6,8 @@ import Link from 'app/ui/atoms/link'
 import { appSetting, cn, stripTags } from 'app/lib/util'
 import { Icon } from 'app/ui/atoms/icon'
 import { Button } from 'app/design/controls'
-import { queueFormEnsureVisible } from 'app/lib/form-ensure-visible'
-import { nativeDriver } from 'app/lib/animation'
+import { queueFormEnsureVisible } from 'app/lib/form/form-ensure-visible'
+import { nativeDriver } from 'app/lib/platform/animation'
 
 const isWeb = Platform.OS === 'web'
 const inputSettings = appSetting('theme', 'inputs')

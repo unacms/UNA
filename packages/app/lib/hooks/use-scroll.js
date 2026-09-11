@@ -1,7 +1,7 @@
 import { useRef, useCallback } from 'react';
 import { Platform } from 'react-native';
 import { useSetScrollDirection, useSetScrollValue } from 'app/context/jotai/layout';
-import { nextScrollDirectionFromDelta } from 'app/lib/scroll-navigation-state';
+import { nextScrollDirectionFromDelta } from 'app/lib/navigation/scroll-navigation-state';
 
 export function useScroll() {
     const scrollY = useRef(0);

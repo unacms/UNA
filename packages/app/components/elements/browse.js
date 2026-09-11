@@ -42,7 +42,7 @@ import { BlockWrapper } from 'app/components/block-wrapper'
 import { useIsFocused } from 'app/lib/hooks/router'
 import { useGetScrollValue } from 'app/context/jotai/layout'
 import { setListScrollOffset } from 'app/lib/cache/list-scroll-cache'
-import { useUniListQuery } from 'app/lib/use-unilist-query'
+import { useUniListQuery } from 'app/lib/browse-query'
 import { getComponent } from 'app/components/registry';
 import { BrowseItem } from 'app/lib/common-helpers'
 import { useIsDesktop } from 'app/context/measure';

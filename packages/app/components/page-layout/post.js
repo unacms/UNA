@@ -2,7 +2,7 @@ import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import { View } from 'app/design/view';
 import { BlockByName, DataByName } from 'app/components/block';
 import { LAYOUT_BREAKPOINTS, isNativeTabsEnabled } from 'app/lib/util';
-import { CommentsBrowse, CommentsForm } from 'app/lib/comments-helpers'
+import { CommentsBrowse, CommentsForm } from 'app/components/elements/comments-browse'
 import KbAvoidingView, { KbStickyView, useStickyComposerListInset } from 'app/ui/atoms/kb-avoiding-view';
 import { Platform } from 'react-native'
 import { useLocalSearchParams } from 'app/lib/hooks/router'

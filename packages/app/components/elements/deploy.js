@@ -11,7 +11,7 @@ import Badge from 'app/ui/molecules/profile/badge';
 import emitter from 'app/context/emitter';
 import Link from 'app/ui/atoms/link';
 import { looksLikeHtml } from 'app/lib/util';
-import { isFormResponseComplete } from 'app/lib/form-helpers';
+import { isFormResponseComplete } from 'app/lib/form/form-helpers';
 import { useFocusEffect } from 'app/lib/hooks/router';
 
 function getFormNamesFromBlock(block) {

@@ -2,7 +2,7 @@ import { useRef, useState, useEffect } from 'react';
 import { Animated, PanResponder, Dimensions } from 'react-native';
 import { View } from 'app/design/view';
 import { Button } from "app/design/controls";
-import { nativeDriver } from 'app/lib/animation';
+import { nativeDriver } from 'app/lib/platform/animation';
 
 const screenWidth = Dimensions.get('window').width;
 

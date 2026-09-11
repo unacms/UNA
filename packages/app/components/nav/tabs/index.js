@@ -5,7 +5,7 @@ import { appSetting, getPageData, parseUrl, isAndroid, isIos, isNativeTabsEnable
 import { Appearance, BackHandler, Text } from 'react-native';
 import { getWindowSafeAreaInsets } from 'app/lib/hooks/router';
 import { useEffect, useMemo, useState } from 'react';
-import { scheduleOneSignalSubscription } from 'app/lib/one-signal';
+import { scheduleOneSignalSubscription } from 'app/lib/platform/one-signal';
 import * as Linking from 'expo-linking';
 import Suggestions from 'app/ui/molecules/misc/suggestions';
 import AsyncWorker from 'app/ui/molecules/system/async-worker';
@@ -24,7 +24,7 @@ import {
     getTabKeyFromPathname,
     navigateBackInTab,
     resetAllTabHistory,
-} from 'app/lib/tab-history';
+} from 'app/lib/navigation/tab-history';
 import { clearAllPageCache } from 'app/lib/cache/clear-page-cache';
 import BottomSheet from 'app/ui/molecules/dialogs/bottomsheet-content';
 import { buildTabUrlIndex, getTabList, getTabRouteRootUrl, getTabsSessionKey } from './tab-menu';

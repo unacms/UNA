@@ -10,7 +10,7 @@ import {
     UnitVisibility,
     UnitWrapper,
     useUnitActions,
-} from 'app/lib/unit-helpers';
+} from 'app/components/units/helpers';
 import Link from 'app/ui/atoms/link'
 
 export default function Unit({ data, unitType, module }) {

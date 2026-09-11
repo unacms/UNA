@@ -12,7 +12,7 @@ import { useRouter } from 'app/lib/hooks/router'
 import { sanitazeUrl, isExternalUrl } from 'app/lib/util'
 import { normalizeLinkHref } from 'app/components/form-fields/editor-mention-html'
 import emitter from 'app/context/emitter'
-import { preprocessHtml, sanitizeHtml, flattenNestedAnchors } from 'app/lib/html-helper'
+import { preprocessHtml, sanitizeHtml, flattenNestedAnchors } from 'app/lib/html-helpers'
 
 export default function ElementHtml({ customClassName, data, className = '', innerRef }) {
     const router = useRouter()

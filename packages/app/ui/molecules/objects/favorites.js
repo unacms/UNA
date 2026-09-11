@@ -28,7 +28,7 @@ import {
     resolveActionButtonFlags,
     resolveCounterAsButton,
     PerformedByModal,
-} from 'app/lib/object-helpers';
+} from 'app/ui/molecules/objects/helpers';
 import { View } from 'app/design/view';
 
 export default function ElementFavorites(props) {

@@ -10,7 +10,7 @@ import { Icon } from 'app/ui/atoms/icon'
 import { useTranslation } from 'react-i18next';
 import { useFooter, useSetFooterHeight } from 'app/context/jotai/layout';
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { useSound } from 'app/lib/hooks/useSound';
+import { useSound } from 'app/lib/hooks/use-sound';
 import { isTabBarLabelsEnabled } from 'app/lib/util';
 import DropdownMenu, { DropdownMenuOpenContext } from 'app/ui/atoms/dropdown-menu';
 import {

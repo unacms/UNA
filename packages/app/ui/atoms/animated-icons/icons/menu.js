@@ -1,5 +1,5 @@
 'use client';
-import { nativeDriver } from 'app/lib/animation';
+import { nativeDriver } from 'app/lib/platform/animation';
 
 import { forwardRef, useEffect, useRef } from 'react';
 import { Animated, Easing, Platform } from 'react-native';

@@ -3,7 +3,7 @@
 import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import { QueryClientProvider } from '@tanstack/react-query'
-import { queryClient } from 'app/lib/query-client'
+import { queryClient } from 'app/lib/platform/query-client'
 import { Provider as JotaiProvider } from 'jotai'
 import i18n from 'i18next'
 import { initReactI18next } from 'react-i18next'

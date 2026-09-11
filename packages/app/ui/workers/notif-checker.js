@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useCurrentUser } from 'app/context/user';
-import useDaemon from 'app/lib/hooks/daemon'
-import { useAppState } from 'app/lib/hooks/useAppState';
+import useDaemon from 'app/lib/hooks/use-daemon'
+import { useAppState } from 'app/lib/hooks/use-app-state';
 
 export default function (oProps) {
     const { currentUser, setCurrentUser } = useCurrentUser();

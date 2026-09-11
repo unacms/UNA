@@ -1,8 +1,8 @@
 import { useEffect, useRef } from 'react';
 import { useCurrentUser } from 'app/context/user';
-import useDaemon from 'app/lib/hooks/daemon';
-import { useSound } from 'app/lib/hooks/useSound';
-import { useAppState } from 'app/lib/hooks/useAppState';
+import useDaemon from 'app/lib/hooks/use-daemon';
+import { useSound } from 'app/lib/hooks/use-sound';
+import { useAppState } from 'app/lib/hooks/use-app-state';
 import { fetcher } from 'app/lib/fetcher';
 import { appSetting } from 'app/lib/util';
 import { clearCachedConductorState, markNotificationsConductorStale } from 'app/lib/cache/native-conductor-cache';

@@ -3,7 +3,7 @@ import { useFormContext } from 'react-hook-form';
 import { InputMulti } from 'app/design/controls'
 import { useState } from 'react';
 import RftText from './editor-rft-text';
-import { useFormField } from 'app/lib/hooks/use-form-field';
+import { useFormField } from 'app/lib/form/use-form-field';
 
 export default function FormFieldText(props) {
     const formContext = useFormContext();      

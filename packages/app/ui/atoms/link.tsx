@@ -1,7 +1,7 @@
 import { Pressable } from 'app/design/view';
 import { useCurrentTabPath, Link } from 'app/lib/hooks/router'
 import { FeedbackHaptics, isExternalUrl, openExternalLink } from 'app/lib/util';
-import { nativeTabHref } from 'app/lib/tab-history';
+import { nativeTabHref } from 'app/lib/navigation/tab-history';
 import { buildTabUrlIndex } from 'app/components/nav/tabs/tab-menu';
 import { useCurrentUser } from 'app/context/user';
 import { appSetting, sanitazeUrl, cn } from 'app/lib/util';

@@ -3,10 +3,10 @@ import { fetcher } from 'app/lib/fetcher';
 import { Button, Modal } from "app/design/controls";
 import { useState, useEffect, useCallback } from 'react';
 import Form from 'app/components/elements/form';
-import useFetchForm from 'app/lib/hooks/fetch'
+import useFetchForm from 'app/lib/hooks/use-fetch-form'
 import emitter from 'app/context/emitter';
 import { PollItem } from 'app/components/elements/entity-poll';
-import { useFormField } from 'app/lib/hooks/use-form-field';
+import { useFormField } from 'app/lib/form/use-form-field';
 
 export default function FormFieldPolls(props) {
     const name = props.name;

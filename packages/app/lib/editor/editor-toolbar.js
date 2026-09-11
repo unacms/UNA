@@ -9,7 +9,7 @@ import { Platform, TextInput } from 'react-native'
 import { View } from 'app/design/view'
 import { Button } from 'app/design/controls'
 import { cn } from 'app/lib/util'
-import { getTiptapEditorFromContainer } from 'app/lib/comment-editor-keyboard'
+import { getTiptapEditorFromContainer } from 'app/lib/editor/comment-editor-keyboard'
 
 export const EDITOR_TOOLBAR_COMMAND_IDS = [
     'bold',

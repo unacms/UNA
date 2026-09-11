@@ -14,7 +14,7 @@ import { useCurrentUser } from 'app/context/user'
 import Loading from 'app/ui/atoms/loading'
 import { Platform } from 'react-native'
 import { getWindowSafeAreaInsets, useRouter } from 'app/lib/hooks/router'
-import { navigateBackInTab } from 'app/lib/tab-history'
+import { navigateBackInTab } from 'app/lib/navigation/tab-history'
 import { useCoverBackTabKey, useShowCoverBackButton } from 'app/components/elements/use-cover-back'
 
 // Matches `top-3` overlay spacing on the full cover.

@@ -8,7 +8,7 @@ import MenuItemActionBase, {
     getMenuItemFlags,
     resolveMenuItemIcon,
     MenuItemSubmenuSwitch,
-} from 'app/lib/menu-item-helper';
+} from 'app/lib/menu-item-helpers';
 
 const SUBMENU_MAP = {
     'bx_timeline_menu_item_share': SubmenuShare,

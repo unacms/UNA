@@ -18,7 +18,7 @@ import { useTranslation } from 'react-i18next';
 import { appSetting } from 'app/lib/util';
 import {
     objectRequest,
-} from 'app/lib/object-helpers';
+} from 'app/ui/molecules/objects/helpers';
 import emitter from 'app/context/emitter';
 import Form from 'app/components/form';
 import { getComponent } from 'app/components/registry';

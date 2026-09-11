@@ -1,5 +1,5 @@
 import { useCardData } from 'app/context/card'
-import { UnitProfileRow, UnitRecommendation } from 'app/lib/unit-helpers'
+import { UnitProfileRow, UnitRecommendation } from 'app/components/units/helpers'
 
 export default function Unit({ data }) {
     const { cardData } = useCardData()

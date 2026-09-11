@@ -1,5 +1,5 @@
 import { FeedbackHaptics } from 'app/lib/util';
-import { playSound } from 'app/lib/hooks/useSound';
+import { playSound } from 'app/lib/hooks/use-sound';
 
 let lastAt = 0;
 

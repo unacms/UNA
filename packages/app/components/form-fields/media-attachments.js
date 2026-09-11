@@ -1,5 +1,5 @@
 import { View, Row, ScrollView } from 'app/design/view'
-import { getFormFieldByData, FileButton } from 'app/lib/form-helpers'
+import { getFormFieldByData, FileButton } from 'app/lib/form/form-helpers'
 import { Text } from 'app/design/typography'
 
 

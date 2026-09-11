@@ -7,7 +7,7 @@ import {
     UnitTitle,
     UnitWrapper,
     useUnitActions,
-} from 'app/lib/unit-helpers';
+} from 'app/components/units/helpers';
 
 export default function Unit({ data, unitType, module }) {
     const { t } = useTranslation();

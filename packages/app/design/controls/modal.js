@@ -9,9 +9,9 @@ import { useStableSafeAreaInsets } from 'app/lib/hooks/router'
 import { useIsDesktop, useActualWindowHeight } from 'app/context/measure';
 import { NeoButton } from 'app/design/controls/neo-button/neo-button';
 import emitter from 'app/context/emitter';
-import { confirmDiscardUnsavedFormChanges } from 'app/lib/form-helpers';
+import { confirmDiscardUnsavedFormChanges } from 'app/lib/form/form-helpers';
 import { ModalKbAwareScroll } from 'app/ui/atoms/kb-avoiding-view';
-import { pushFormEnsureVisibleHandler, scrollContainerByDelta } from 'app/lib/form-ensure-visible';
+import { pushFormEnsureVisibleHandler, scrollContainerByDelta } from 'app/lib/form/form-ensure-visible';
 
 function NativeModalSafePad({ autoHeight, sClassPosition, children }) {
     const insets = useStableSafeAreaInsets();

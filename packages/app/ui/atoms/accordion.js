@@ -7,7 +7,7 @@ import { cn } from 'app/lib/util';
 import { Icon } from 'app/ui/atoms/icon';
 import { Text } from 'app/design/typography';
 import { appSetting, FeedbackHaptics } from 'app/lib/util';
-import { useSound } from 'app/lib/hooks/useSound';
+import { useSound } from 'app/lib/hooks/use-sound';
 
 const accordionTheme = appSetting('theme', 'accordion') ?? {};
 

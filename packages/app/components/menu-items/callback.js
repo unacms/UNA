@@ -18,7 +18,7 @@ import MenuItemActionBase, {
     getMenuItemFlags,
     resolveMenuItemIcon,
     MenuItemSubmenuSwitch,
-} from 'app/lib/menu-item-helper';
+} from 'app/lib/menu-item-helpers';
 
 const ICON_ALIASES = {
     'item-comment': 'MessageCircleMore',

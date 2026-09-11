@@ -8,7 +8,7 @@ import { Text } from 'app/design/typography';
 import { Button } from 'app/design/controls';
 import emitter from 'app/context/emitter';
 import { appSetting } from 'app/lib/util';
-import { UNSAVED_FORM_CONFIRM_REQUEST } from 'app/lib/form-helpers';
+import { UNSAVED_FORM_CONFIRM_REQUEST } from 'app/lib/form/form-helpers';
 
 const modalSettings = appSetting('theme', 'modal');
 

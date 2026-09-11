@@ -11,7 +11,7 @@ import {
     pickActionButton,
     resolveActionButtonFlags,
     ActionMenuLayout,
-} from 'app/lib/object-helpers';
+} from 'app/ui/molecules/objects/helpers';
 
 const handleDo = (redirectRef, link, callback, event) => {
     event.preventDefault();

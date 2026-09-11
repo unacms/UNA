@@ -10,6 +10,42 @@ import { useTranslation } from 'react-i18next';
 
 const conductorTheme = appSetting('theme', 'conductor')
 
+/*
+ * ============================================================================
+ * Native presentation layer for the Conductor. Wired from `index.js`; the
+ * shell owns routes, list query and header ownership — these only render.
+ *
+ *   TabSceneHeader   cover (CoverMorph) or plain chrome, holds the TabBar
+ *     └ TabBar       horizontal pill strip + left-column dropdowns
+ *   TabScene         the list (UniList via shared ListScene)
+ * ============================================================================
+ */
+
+/**
+ * Conductor chrome for one of three header modes (decided in `index.js`):
+ *
+ * - `'dynamic'` — profile with a cover image: `CoverMorph` collapses on
+ *   scroll, driven by `coverScrollY`, and reports its overlay height so the
+ *   list can pad for it.
+ * - `'small'`   — profile without a cover image: same `CoverMorph` but static.
+ * - `'none'`    — any other page: just the tab bar and the Filters button.
+ *
+ * With `context_selector.show_always` on, the context selector (and the back
+ * button) are lifted out of the cover into a standalone row above it, so they
+ * stay put while the cover collapses.
+ *
+ * @param {object}   props
+ * @param {'dynamic'|'small'|'none'} props.headerMode
+ * @param {object}   [props.coverBlock]   UNA `cover_block` of the page.
+ * @param {string}   [props.pageUri]      Page uri for the selector / actions.
+ * @param {object}   [props.pageContext]  Page context (owner, current, …).
+ * @param {node}     props.sceneHeader    The `<TabBar>` element.
+ * @param {node}     props.filter         The `<FiltersButton>` element.
+ * @param {*}        [props.ts]           Soft-refresh token; part of the cover key.
+ * @param {object}   [props.coverScrollY] Reanimated shared value (dynamic only).
+ * @param {Function} [props.onOverlayHeight]
+ * @param {Function} [props.onProgress]
+ */
 export const TabSceneHeader = React.memo(function TabSceneHeader({
     headerMode,
     coverBlock,
@@ -31,8 +67,12 @@ export const TabSceneHeader = React.memo(function TabSceneHeader({
 
     const useStandaloneCoverBackButton = !!useStandaloneContextSelector;
 
+    // Remounts the morph when the cover image or avatar changes; a plain data
+    // refresh with the same images keeps the collapse state.
     const coverKey = `${ts ?? ''}:${coverBlock?.cover?.src ?? ''}:${coverBlock?.profile?.url_avatar ?? ''}`;
 
+    // With native tabs there is no navigation header, so the chrome is the
+    // topmost thing on screen and has to clear the status bar itself.
     const nativeTabsTopInset = isNativeTabsEnabled() ? (stableTopInset || 0) : 0;
     const selectorPadStyle = useMemo(
         () => (nativeTabsTopInset > 0 ? { paddingTop: nativeTabsTopInset } : undefined),
@@ -104,7 +144,24 @@ export const TabSceneHeader = React.memo(function TabSceneHeader({
     return null;
 });
 
-export const TabBar = React.memo(({
+/**
+ * Horizontal strip of tab pills (`TabList` from shared-ui) followed by the
+ * left-column dropdown menus. Returns null when there is a single tab and no
+ * dropdowns — nothing to choose from.
+ *
+ * Prefer `onSelectTab` (the shell wraps it with cover pinning); the
+ * `setIndex` + `onChangeRoute` pair is the fallback for callers without it.
+ *
+ * @param {object}   props
+ * @param {array}    props.routes
+ * @param {number}   props.index
+ * @param {Function} props.setIndex
+ * @param {Function} [props.onChangeRoute]
+ * @param {object}   [props.routesRef]
+ * @param {Function} [props.onSelectTab]
+ * @param {array}    [props.leftColumnMenus] Left-column blocks flagged `use_as_menu`.
+ */
+export const TabBar = React.memo(function TabBar({
     routes,
     index,
     setIndex,
@@ -112,7 +169,7 @@ export const TabBar = React.memo(({
     routesRef,
     onSelectTab,
     leftColumnMenus = [],
-}) => {
+}) {
     const { t } = useTranslation();
     const visibleRoutes = routes.filter((aItem) => aItem.hideInTop != true);
     const useCompactNav = hasConductorSubitems(routes)
@@ -159,8 +216,21 @@ export const TabBar = React.memo(({
 });
 
 
+/**
+ * Scroll offset (px) under which the list counts as "at the top". Used by the
+ * `conductor/reset_to_first` command: above it → scroll up, below it → refresh.
+ */
 export const AT_TOP_SCROLL_THRESHOLD = 50;
 
+/**
+ * The list. A thin adapter from the shell's list state onto the shared
+ * `ListScene`, with the native UniList settings: header (form + left column
+ * blocks) rendered *inside* the list so it scrolls away, small render batches,
+ * and the cover overlay pad / scroll driver when the header is dynamic.
+ *
+ * Everything about *what* is in the list comes in as props; this component
+ * decides only *how* UniList is configured.
+ */
 export const TabScene = React.memo(function TabScene({
     route,
     hasNextPage,
@@ -183,7 +253,7 @@ export const TabScene = React.memo(function TabScene({
     onFormChangedValues,
 }) {
     const uniListProps = useMemo(() => ({
-        index: route.index,
+        index: route?.index,
         maxToRenderPerBatch: 5,
         initialNumToRender: 5,
         numColumns,
@@ -193,7 +263,7 @@ export const TabScene = React.memo(function TabScene({
         coverOverlayPad,
         coverScrollY,
     }), [
-        route.index,
+        route?.index,
         route?.endpoint?.request_url,
         numColumns,
         skipHeaderOffset,

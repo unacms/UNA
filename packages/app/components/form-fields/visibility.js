@@ -11,7 +11,7 @@ import { Text } from 'app/design/typography'
 import { Icon } from 'app/ui/atoms/icon'
 import Profile from 'app/ui/molecules/profile/profile';
 import { useTranslation } from 'react-i18next'
-import { useFormField } from 'app/lib/hooks/use-form-field';
+import { useFormField } from 'app/lib/form/use-form-field';
 
 const inputSettings = appSetting('theme', 'inputs');
 const SUB_TYPES = new Set([6, 8, 9]);

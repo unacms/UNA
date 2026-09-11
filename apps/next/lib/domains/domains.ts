@@ -1,4 +1,4 @@
-import { redis } from "app/lib/domains/redis";
+import { redis } from "./redis";
 import { randomUUID } from "crypto";
 
 export async function updateDomain(

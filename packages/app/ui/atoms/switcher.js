@@ -4,8 +4,8 @@ import { useCallback, useEffect, useRef } from 'react'
 import { Animated, Platform } from 'react-native'
 import { appSetting, FeedbackHaptics } from 'app/lib/util'
 import { Pressable, View } from 'app/design/view'
-import { nativeDriver } from 'app/lib/animation'
-import { useSound } from 'app/lib/hooks/useSound'
+import { nativeDriver } from 'app/lib/platform/animation'
+import { useSound } from 'app/lib/hooks/use-sound'
 
 const switcherTheme = appSetting('theme', 'switcher');
 

@@ -4,7 +4,7 @@ import { useLayoutEffect, useRef, useState } from 'react';
 import { Animated, Easing, Platform, StyleSheet, View, useWindowDimensions } from 'react-native';
 import { useIsFocused, getWindowSafeAreaInsets } from 'app/lib/hooks/router';
 import { isNativeTabsEnabled } from 'app/lib/util';
-import { nativeDriver } from 'app/lib/animation';
+import { nativeDriver } from 'app/lib/platform/animation';
 import { TabChromeProvider } from 'app/context/tab-chrome';
 import { TabRouteOverrideContext } from 'app/context/tab-route-override';
 import { usePathname } from 'expo-router';

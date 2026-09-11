@@ -31,7 +31,7 @@ import {
     useVotedSubscription,
     PerformedBySkeleton,
     PerformedByModal,
-} from 'app/lib/object-helpers';
+} from 'app/ui/molecules/objects/helpers';
 import { useCurrentUser } from 'app/context/user';
 import { Icon } from 'app/ui/atoms/icon';
 import Profile from 'app/ui/molecules/profile/profile';

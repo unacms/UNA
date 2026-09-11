@@ -9,7 +9,7 @@ import { useCurrentUser } from 'app/context/user'
 import BottomSheet from 'app/ui/molecules/dialogs/bottomsheet-content';
 import { appSetting, storageClear, storageGet, decodeText } from 'app/lib/util'
 import { appStatic } from 'app/lib/app-static'
-import { scheduleOneSignalSubscription } from 'app/lib/one-signal';
+import { scheduleOneSignalSubscription } from 'app/lib/platform/one-signal';
 import { useThemeName, useThemeValue } from 'app/design/theme';
 import { useTranslation } from 'react-i18next'
 import { useLayoutSettings } from 'app/context/layout-settings';

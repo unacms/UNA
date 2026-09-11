@@ -1,6 +1,6 @@
 
 
-import { env } from 'app/lib/env'
+import { env } from 'app/lib/platform/env'
 
 export const settingsElements = {
     context_selector: {

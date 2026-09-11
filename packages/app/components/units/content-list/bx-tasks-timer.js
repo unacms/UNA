@@ -4,7 +4,7 @@ import Link from 'app/ui/atoms/link';
 import Profile from 'app/ui/molecules/profile/profile';
 import { Card } from 'app/ui/molecules/page/card';
 import { getComponent } from 'app/components/registry';
-import { UnitTitle } from 'app/lib/unit-helpers';
+import { UnitTitle } from 'app/components/units/helpers';
 
 export default function Unit({ data: timerData }) {
 

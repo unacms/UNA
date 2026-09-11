@@ -19,7 +19,7 @@ import { useIsFocused as useIsFocusedImpl } from 'expo-router/react-navigation';
 import { useSafeAreaInsets as useSafeAreaInsetsImpl, initialWindowMetrics } from 'react-native-safe-area-context';
 import { TabRouteOverrideContext } from 'app/context/tab-route-override';
 import { isTabScopedChromeKey, useTabChromeKey } from 'app/context/tab-chrome';
-import { getTabKeyFromPathname } from 'app/lib/tab-path';
+import { getTabKeyFromPathname } from 'app/lib/navigation/tab-path';
 
 export function usePathname() {
     const override = useContext(TabRouteOverrideContext);

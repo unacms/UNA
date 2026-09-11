@@ -5,7 +5,7 @@ import { useFormContext } from 'react-hook-form';
 import { Input, Hidden } from 'app/design/controls'
 import Dropdown from 'app/ui/atoms/dropdown'
 import { fetcher } from 'app/lib/fetcher';
-import { useFormField } from 'app/lib/hooks/use-form-field';
+import { useFormField } from 'app/lib/form/use-form-field';
 
 export default function FormFieldSuggestion(props) {
     const { setValue } = useFormContext();

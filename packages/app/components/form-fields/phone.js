@@ -6,7 +6,7 @@ import { Row, View } from 'app/design/view';
 import { Button, Input, Modal } from 'app/design/controls';
 import RbList from 'app/ui/molecules/form-controls/radio-list';
 import Field from './_field';
-import { useFormField } from 'app/lib/hooks/use-form-field';
+import { useFormField } from 'app/lib/form/use-form-field';
 
 const DEFAULT_COUNTRY = 'us';
 const DEFAULT_PLACEHOLDER = '(123) 456-7890';

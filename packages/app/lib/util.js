@@ -11,5 +11,5 @@ export * from './util/misc';
 export * from './util/upload';
 export * from './util/debug';
 
-export { FeedbackHaptics } from 'app/lib/feedback-haptics';
+export { FeedbackHaptics } from 'app/lib/platform/feedback-haptics';
 

@@ -14,7 +14,7 @@ import { fetcher } from 'app/lib/fetcher';
 import { appSetting, cn, tp } from 'app/lib/util';
 import { getUnitMenuItems } from 'app/customization/functions';
 import { useRouter, useCurrentTabPath } from 'app/lib/hooks/router';
-import { nativeTabHref } from 'app/lib/tab-history';
+import { nativeTabHref } from 'app/lib/navigation/tab-history';
 import { useTranslation } from 'react-i18next';
 import { Card, CardList } from 'app/ui/molecules/page/card';
 import LinkOrModal from 'app/ui/molecules/dialogs/link-or-modal';

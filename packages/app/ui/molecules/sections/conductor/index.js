@@ -1,7 +1,6 @@
-import { useCallback, useState, useEffect, useMemo, useRef } from 'react'
-import { useSharedValue } from 'react-native-reanimated'
+import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { View } from 'app/design/view'
-import { appSetting, deepEqual } from 'app/lib/util'
+import { deepEqual } from 'app/lib/util'
 import {
     fillTabs,
     mergeConductorRoutes,
@@ -14,42 +13,58 @@ import {
     FiltersButton,
     openFiltersSheet,
 } from './shared-ui'
-import { TabSceneHeader, TabBar, TabScene, AT_TOP_SCROLL_THRESHOLD } from './native-ui'
+import { TabSceneHeader, TabBar, TabScene } from './native-ui'
 import { useLeftColumn, useConductorFilters } from './use-conductor'
 import { useConductorRoutes } from './use-conductor-routes'
 import { useConductorList } from './use-conductor-list'
+import { useConductorCover, resolveConductorHeaderMode } from './use-conductor-cover'
+import { useConductorRevalidate } from './use-conductor-revalidate'
+import { useConductorCommands } from './use-conductor-commands'
+import { useConductorHeader } from './use-conductor-header'
 import { useCurrentUser } from 'app/context/user'
-import { subscribe } from 'app/ui/atoms/socket'
-import { fetcher } from 'app/lib/fetcher'
 import Snackbar from 'app/ui/atoms/snackbar'
 import { useBottomSheetData } from 'app/context/bottomsheet'
 import emitter from 'app/context/emitter'
-import { useSetHeader, useGetScrollValue, defaultHeader, useSetHeaderHeight, getHeaderWriteGeneration } from 'app/context/jotai/layout'
-import { isTabScopedChromeKey, useTabChromeKey } from 'app/context/tab-chrome'
-import { useFocusEffect, useIsFocused } from 'app/lib/hooks/router'
+import { useIsFocused } from 'app/lib/hooks/router'
 import {
     getCachedConductorState,
     setCachedConductorState,
-    consumeNotificationsConductorStale,
 } from 'app/lib/cache/native-conductor-cache'
-import { setListScrollOffset } from 'app/lib/cache/list-scroll-cache'
 import { useTranslation } from 'react-i18next'
-import {
-    pinCollapsedCoverForTabSwitch,
-    releaseCoverTabScrollHold,
-} from 'app/components/elements/covers/cover-tab-scroll'
 
-function parseRevalidatePayload(value) {
-    if (typeof value === 'string') {
-        try {
-            return JSON.parse(value)
-        } catch {
-            return value
-        }
-    }
-    return value
-}
-
+/**
+ * Conductor — native shell (web lives in `index.web.js`).
+ *
+ * One UNA page = one menu turned into tabs (`routes`) + one list for the active
+ * tab. This component composes five loosely coupled concerns, each in its own
+ * hook, in the order the effects must run:
+ *
+ *  1. Routes / tabs   — `useConductorRoutes` + a native `adapter` built here
+ *                       (cache bootstrap, focus-gated links, no URL change).
+ *  2. List            — `useConductorList`; kept here, not in TabScene, so
+ *                       pull-to-refresh, sockets and emitter commands share
+ *                       one refetch.
+ *  3. Revalidation    — `useConductorRevalidate`: timeline socket → snackbar.
+ *  4. Global commands — `useConductorCommands`: emitter + pull-to-refresh.
+ *  5. Chrome          — `useConductorCover` (morph state), filters sheet, tab
+ *                       bar, and `useConductorHeader` (shared header atom).
+ *
+ * Hook order in sections 1–2 is load-bearing: see the note above `qKey`.
+ *
+ * @param {object}   props
+ * @param {boolean}  props.isCoverDisabled   Page asked for no cover image.
+ * @param {array}    [props.leftSideBarBlocks] Extra blocks for the Filters sheet.
+ * @param {object}   props.menu              UNA menu JSON the tabs are built from.
+ * @param {string}   props.layoutName        'profile' | 'navigator' | …; drives chrome.
+ * @param {object}   props.data              UNA page JSON for the current URL.
+ * @param {object}   props.blocks            Page block map (already resolved).
+ * @param {boolean}  [props.useSectionAsMenu=false] Match tabs by `?section=`, not by path.
+ * @param {string}   [props.unitMode='']     Forwarded to ItemRenderer.
+ * @param {string}   [props.skeleton='']     Skeleton override for the list.
+ * @param {Function} [props.onChangeRoute]   Called with the route after a tab switch.
+ * @param {string}   [props.keyword]         Search term; part of the list query key.
+ * @param {*}        [props.ts]              Soft-refresh token from the page.
+ */
 export function Conductor({
     isCoverDisabled,
     leftSideBarBlocks,
@@ -67,10 +82,6 @@ export function Conductor({
     const { t } = useTranslation()
     const { currentUser } = useCurrentUser()
     const { setBottomSheetData } = useBottomSheetData()
-    const setHeader = useSetHeader()
-    const setHeaderHeight = useSetHeaderHeight()
-    const getScrollValue = useGetScrollValue()
-    const tabScopedHeader = isTabScopedChromeKey(useTabChromeKey())
     // Tab screens stay mounted when blurred (see tabs.js) — every write to the
     // shared header atom and every global emitter command must be gated on
     // focus, otherwise a background conductor clobbers the visible submenu.
@@ -78,11 +89,17 @@ export function Conductor({
     const isFocusedRef = useRef(isFocused)
     isFocusedRef.current = isFocused
 
+    // ==================================================================
+    // 1. Routes / tabs
+    // ==================================================================
+
+    /** Menu JSON → tab routes, with the current URL's tab already hydrated. */
     const initedTabs = useMemo(
         () => fillTabs(menu, data, blocks, currentUser, useSectionAsMenu),
         [menu, data, blocks, currentUser, useSectionAsMenu]
     )
 
+    /** Identity of the cached entry: layout + page + user. */
     const conductorCacheKey = `${layoutName}:${data?.url ?? ''}:${currentUser?.id ?? 'guest'}`
     // Read cache once for bootstrap; later URL changes go through applyUrlChange.
     const cachedConductorRef = useRef(null)
@@ -94,27 +111,16 @@ export function Conductor({
         )
     }
 
-    const [isRefreshing, setIsRefreshing] = useState(false)
-    const [isRevalidate, setIsRevalidate] = useState(false)
-    const [snackbarVisible, setSnackbarVisible] = useState(false)
-
     const listRef = useRef(null)
-    const coverScrollY = useSharedValue(0)
-    const [coverOverlayPad, setCoverOverlayPad] = useState(0)
-    // Subtracted from overlay pad after a tab switch while collapsed. Live
-    // collapse keeps the full pad (list is already scrolled by `range`).
-    const [coverPadPin, setCoverPadPin] = useState(0)
-    const onOverlayHeight = useCallback((height) => {
-        if (height === 0) setCoverPadPin(0)
-        setCoverOverlayPad((prev) => (prev === height ? prev : height))
-    }, [])
-    const onCoverProgress = useCallback((progress) => {
-        if (progress < 1) {
-            setCoverPadPin(0)
-            releaseCoverTabScrollHold()
-        }
-    }, [])
-    const activeRequestUrlRef = useRef(null)
+
+    const {
+        coverScrollY,
+        coverOverlayPad,
+        coverPadPin,
+        onOverlayHeight,
+        onCoverProgress,
+        pinCoverForTabSwitch,
+    } = useConductorCover({ pageUrl: data?.url })
 
     // Snapshot for persist.write / unmount. Unmount cleanup captures url at
     // subscribe time so a URL change still writes the previous page (same as
@@ -130,12 +136,20 @@ export function Conductor({
         userId: currentUser?.id,
     }
 
-    // Native: cache, focus-gated links, no URL change on tab. Web adapter lives
-    // in index.web.js (history + click sound).
+    /**
+     * Native half of the `useConductorRoutes` contract (see the JSDoc there).
+     * Native: cache, focus-gated links, no URL change on tab. Web adapter lives
+     * in index.web.js (history + click sound).
+     *
+     * `deps: []` is deliberate — every value it closes over is a ref that is
+     * refreshed on each render above, so the adapter never needs to be rebuilt.
+     */
     const routesAdapter = useMemo(
         () => ({
             skipFirstPageRev: true,
+            // Prefer the cached routes so a re-entered page paints instantly.
             getInitialRoutes: (tabs) => cachedConductorRef.current?.routes ?? tabs,
+            // Hard nav: swap in fresh tabs and follow the URL to its tab.
             applyUrlChange: ({
                 setRoutes,
                 setIndex,
@@ -150,6 +164,8 @@ export function Conductor({
                     setIndex(foundIndex)
                 }
             },
+            // Soft refresh: merge, never replace — replacing would drop the
+            // already-loaded data of the other tabs and flash skeletons.
             applySoftRefresh: ({ setRoutes, initedTabs: tabs }) => {
                 setRoutes((current) => mergeConductorRoutes(tabs, current))
             },
@@ -158,10 +174,12 @@ export function Conductor({
                 setIndex(tab.index)
                 notify?.(routesRef.current?.[tab.index] ?? tab)
             },
+            // Menu can be re-sent identical on every page poll; merge only on a real change.
             onMenuChange: ({ menu: nextMenu, prevMenu, initedTabs: tabs, setRoutes }) => {
                 if (deepEqual(nextMenu, prevMenu)) return
                 setRoutes((prev) => mergeConductorRoutes(tabs, prev))
             },
+            // In-app links (`emitter`) may target another tab of this same page.
             subscribeExternalHref: (onHref) => {
                 const sub = emitter.addListener('link', (payload) => {
                     if (!isFocusedRef.current) return
@@ -171,7 +189,10 @@ export function Conductor({
                 })
                 return () => sub.remove()
             },
+            // Native cache. Both writers refuse to store a state where no tab
+            // was ever hydrated — that would cache an empty page.
             persist: {
+                /** Write-through on every routes/index change. */
                 write(nextRoutes, nextIndex) {
                     const { layoutName: layout, url, userId } = persistCtxRef.current
                     if (!layout || !url || !nextRoutes?.some((route) => route.inited)) {
@@ -182,6 +203,10 @@ export function Conductor({
                         index: nextIndex,
                     }, userId)
                 },
+                /**
+                 * Final write on unmount. `url` is captured here, at subscribe
+                 * time, so a URL change still saves under the *previous* page.
+                 */
                 subscribeUnmount(getSnapshot) {
                     const { layoutName: layout, url, userId } = persistCtxRef.current
                     return () => {
@@ -224,33 +249,42 @@ export function Conductor({
         adapter: routesAdapter,
     })
 
+    /** Tab press: pin the cover first, then switch. */
     const onSelectTab = useCallback((tab) => {
-        setCoverPadPin(pinCollapsedCoverForTabSwitch())
+        pinCoverForTabSwitch()
         onSelectTabRoute(tab)
-    }, [onSelectTabRoute])
+    }, [pinCoverForTabSwitch, onSelectTabRoute])
 
-    useEffect(() => {
-        setCoverPadPin(0)
-    }, [data?.url])
-
+    /**
+     * Route the *chrome* renders from. While a newly selected tab is still
+     * loading, keep showing the previous one instead of flashing empty chrome.
+     * The list itself always follows `activeRoute`.
+     */
     const tabRoute = useMemo(
         () => (activeRoute?.inited ? activeRoute : (prevRoute ?? activeRoute)),
         [activeRoute, prevRoute]
     )
-    activeRequestUrlRef.current = activeRoute?.endpoint?.request_url ?? null
+    const activeRequestUrl = activeRoute?.endpoint?.request_url
+
+    // ==================================================================
+    // 2. List
+    // ==================================================================
 
     // List lives here (web: inside TabScene) so pull-to-refresh, sockets, and
     // emitter commands can share one refetch. Keep this immediately after
     // tabRoute — moving it below ensureRouteInited collapsed the profile cover.
+    //
+    // An uninited tab contributes `null` to the key so it cannot be confused
+    // with the previous tab's cache entry.
     const qKey = useMemo(
         () => conductorListQueryKey({
-            requestUrl: activeRoute?.inited ? activeRoute?.endpoint?.request_url : null,
+            requestUrl: activeRoute?.inited ? activeRequestUrl : null,
             tabId: index,
             keyword,
             params: activeRoute?.inited ? (activeRoute?.endpoint?.params ?? null) : null,
             ts,
         }),
-        [activeRoute?.inited, activeRoute?.endpoint?.request_url, activeRoute?.endpoint?.params, index, keyword, ts]
+        [activeRoute?.inited, activeRequestUrl, activeRoute?.endpoint?.params, index, keyword, ts]
     )
 
     const {
@@ -270,134 +304,44 @@ export function Conductor({
         listenPageReload: false,
     })
 
-    useEffect(() => {
-        if (tabRoute.cached) {
-            revalidateData()
-        }
-    }, [])
+    // ==================================================================
+    // 3. Revalidation: timeline socket → "Show New Posts" snackbar
+    // ==================================================================
 
-    useEffect(() => {
-        if (tabRoute?.endpoint?.unit !== 'feed')
-            return
+    const { snackbarVisible, hideSnackbar, showNewContent } = useConductorRevalidate({
+        tabRoute,
+        index,
+        cacheItems,
+        refetchList,
+        currentUserId: currentUser?.id,
+        bootstrappedFromCache: Boolean(cachedConductorRef.current?.routes),
+    })
 
-        const sub1 = subscribe('bx_timeline_0', 'added', setIsRevalidate)
-        const sub2 = subscribe('bx_timeline_0', 'deleted', setIsRevalidate)
+    // ==================================================================
+    // 4. Global commands (emitter) + pull-to-refresh
+    // ==================================================================
 
-        return () => {
-            sub1()
-            sub2()
-        }
-    }, [])
-
-    useEffect(() => {
-        if (isRevalidate)
-            revalidateData()
-    }, [isRevalidate])
-
-    useEffect(() => {
-        setSnackbarVisible(false)
-    }, [index])
-
-    const showNewContent = async () => {
-        setSnackbarVisible(false)
-        await refetchList()
-    }
-
-    const revalidateData = useCallback(async () => {
-        const hasEndpoint = Boolean(tabRoute?.endpoint)
-        let endpointUpdateContent = ''
-        let bUpdateContent = false
-        const revalidatedData = parseRevalidatePayload(isRevalidate)
-        if (hasEndpoint) {
-            const a = [...new Set(cacheItems
-                .map(item => item.id)
-            )].slice(0, 10).join(',')
-
-            if (revalidatedData?.author_id != currentUser?.id && !tabRoute.endpoint.request_url?.includes("system/get_results/TemplSearchExtendedServices")) {
-                endpointUpdateContent = tabRoute.endpoint.request_url + JSON.stringify({
-                    'params': { ...tabRoute.endpoint.params, validate: a }
-                })
-                bUpdateContent = true
-            }
-        }
-        if (bUpdateContent) {
-            const validatedData = (await fetcher(endpointUpdateContent)).data?.[0]?.data?.data
-
-            if (validatedData && (validatedData == 'valid' || validatedData == 'invalid')) {
-                setSnackbarVisible(validatedData !== 'valid')
-            }
-        }
-    }, [tabRoute, isRevalidate, currentUser?.id, cacheItems])
-
+    // Only the URL tab is hydrated up front; the rest load their page JSON the
+    // first time they are selected.
     useEffect(() => {
         ensureRouteInited(routes, index, setRoutes)
     }, [index])
 
-    const onStartRefresh = useCallback(() => {
-        const requestUrl = activeRoute?.endpoint?.request_url
-        if (requestUrl) {
-            setListScrollOffset(requestUrl, 0)
-        }
-        setIsRefreshing(true)
-        Promise.resolve(refetchList()).finally(() => setIsRefreshing(false))
-    }, [activeRoute?.endpoint?.request_url, refetchList])
+    const { isRefreshing, onStartRefresh } = useConductorCommands({
+        isFocusedRef,
+        routesRef,
+        indexRef,
+        setIndex,
+        listRef,
+        activeRequestUrl,
+        refetchList,
+    })
 
-    // CounterChecker emits when unread grows; only act if notifications list is focused.
-    // Keep the badge until the user leaves the tab (tabs/navigator still clear on enter).
-    useEffect(() => {
-        const notifications = emitter.addListener('notifications', (payload) => {
-            if (payload?.action !== 'arrived') return
-            if (!isFocusedRef.current) return
-            const unit = routesRef.current?.[indexRef.current]?.endpoint?.unit
-            if (unit !== 'notifications') return
+    // ==================================================================
+    // 5. Chrome: filters sheet, left column, tab bar, cover, shared header
+    // ==================================================================
 
-            consumeNotificationsConductorStale()
-            onStartRefresh()
-        })
-        const list = emitter.addListener('list', (payload) => {
-            if (!isFocusedRef.current) return
-            if (payload?.action === 'refresh') {
-                onStartRefresh()
-            }
-        })
-        const page = emitter.addListener('page', (payload) => {
-            if (!isFocusedRef.current) return
-            if (payload?.action === 'reload') {
-                onStartRefresh()
-            }
-        })
-        const conductor = emitter.addListener('conductor', (payload) => {
-            if (!isFocusedRef.current) return
-            if (payload?.action !== 'reset_to_first') return
-
-            if (indexRef.current !== 0) {
-                setIndex(0)
-                return
-            }
-
-            const requestUrl = activeRequestUrlRef.current
-            if (getScrollValue() > AT_TOP_SCROLL_THRESHOLD) {
-                if (requestUrl) {
-                    setListScrollOffset(requestUrl, 0)
-                }
-                if (listRef.current?.scrollToOffset) {
-                    listRef.current.scrollToOffset({ offset: 0, animated: true })
-                } else {
-                    listRef.current?.scrollToIndex?.({ index: 0, animated: true })
-                }
-                return
-            }
-
-            onStartRefresh()
-        })
-        return () => {
-            notifications.remove()
-            list.remove()
-            page.remove()
-            conductor.remove()
-        }
-    }, [onStartRefresh, setIndex, getScrollValue])
-
+    // Filter form values → route.endpoint.params.filters → new list query key.
     const { setFilterValue, onFormChangedValues, formValuesToFilterEntries } =
         useConductorFilters({
             index,
@@ -406,6 +350,8 @@ export function Conductor({
             skipFirstChange: true,
         })
 
+    // UNA's left column carries two different things: dropdown menus (shown next
+    // to the tabs) and filter blocks (shown in the bottom sheet).
     const leftColumnContent = tabRoute?.leftbar?.content ?? []
     const {
         leftColumnMenuBlocks,
@@ -420,11 +366,16 @@ export function Conductor({
         leftColumnFilterBlocks.length > 0 ||
         (Array.isArray(leftSideBarBlocks) && leftSideBarBlocks.length > 0)
 
+    /** Filters sheet submit: apply the values to the route, then close the sheet. */
     const onFormSubmit = useCallback((formData, d) => {
         setFilterValue(formValuesToFilterEntries(d), d)
         setBottomSheetData(false)
     }, [setFilterValue, formValuesToFilterEntries, setBottomSheetData])
 
+    /**
+     * Open the Filters sheet. Content is the page's own filter blocks, or the
+     * blocks the page passed in when it has none of its own.
+     */
     const showFilters = useCallback(() => {
         openFiltersSheet(setBottomSheetData, {
             t,
@@ -447,6 +398,7 @@ export function Conductor({
         })
     }, [leftColumnFilterBlocks, leftSideBarBlocks, tabRoute, onFormSubmit, onFormChangedValues, t, setBottomSheetData])
 
+    /** "Filters" trigger, rendered by the cover/header, not by the list. */
     const filter = useMemo(
         () => (
             <FiltersButton
@@ -458,6 +410,7 @@ export function Conductor({
         [showFiltersBtn, showFilters]
     )
 
+    /** The tab strip itself; the cover embeds it and collapses around it. */
     const sceneHeader = useMemo(
         () => (
             <TabBar
@@ -473,21 +426,12 @@ export function Conductor({
         [routes, index, setIndex, onChangeRoute, onSelectTab, leftColumnMenuBlocks]
     )
 
-    const coverMode = appSetting(
-        'cover',
-        'view_by_module',
-        data?.cover_block?.profile?.module ?? tabRoute?.pageData?.cover_block?.profile?.module
-    )
-    const isProfileLayout = layoutName === 'profile'
-    const hasDynamicCover = isProfileLayout && !isCoverDisabled && coverMode !== 'none'
-    const headerMode = !isProfileLayout
-        ? 'none'
-        : hasDynamicCover
-            ? 'dynamic'
-            : 'small'
-    // Same as web: profile cover chrome (including `none`) lives in the
-    // conductor tree, not in the collapsing page header.
-    const useLocalHeader = headerMode === 'dynamic' || headerMode === 'small'
+    const { headerMode, useLocalHeader } = resolveConductorHeaderMode({
+        layoutName,
+        isCoverDisabled,
+        data,
+        tabRoute,
+    })
 
     const coverBlock = data?.cover_block
     // Cover chrome (context selector, actions menu) belongs to the page that owns
@@ -496,6 +440,11 @@ export function Conductor({
     const pageUri = data?.uri ?? tabRoute?.pageData?.uri
     const pageContext = data?.context
 
+    /**
+     * The whole conductor chrome as one element. Rendered inline for profile
+     * layouts, or pushed into the shared header atom for the rest — see
+     * `useConductorHeader`.
+     */
     const headerComponent = useMemo(
         () => (
             <TabSceneHeader
@@ -514,59 +463,23 @@ export function Conductor({
         [headerMode, coverBlock, pageUri, pageContext, sceneHeader, filter, ts, coverScrollY, onOverlayHeight, onCoverProgress]
     )
 
-    const subHeaderRef = useRef(headerComponent)
-    subHeaderRef.current = headerComponent
-    const headerWriteRef = useRef(0)
-    const setOwnedHeader = useCallback((value) => {
-        setHeader(value)
-        headerWriteRef.current = getHeaderWriteGeneration()
-    }, [setHeader])
+    useConductorHeader({
+        headerComponent,
+        useLocalHeader,
+        isFocused,
+        routesRef,
+        indexRef,
+        onStartRefresh,
+    })
 
-    useFocusEffect(
-        useCallback(() => {
-            if (useLocalHeader) {
-                setOwnedHeader({ header: false })
-                setHeaderHeight(0)
-            } else {
-                setOwnedHeader({ subHeader: subHeaderRef.current })
-            }
-            const unit =
-                routesRef.current?.[indexRef.current]?.endpoint?.unit
-            if (unit === 'notifications' && consumeNotificationsConductorStale()) {
-                onStartRefresh()
-            }
-        }, [useLocalHeader, setOwnedHeader, setHeaderHeight, onStartRefresh])
-    )
-
-    // Reset chrome only on a real blur. Subtab switches remount this conductor
-    // while the screen stays focused — a focus-effect cleanup would clear
-    // subHeader, zero the list offset, and PageHeader would not re-measure.
-    // Skip if another screen already wrote the shared header in this commit
-    // (sibling useEffects run in tree order; useFocusEffect can run first).
-    const wasFocusedRef = useRef(isFocused)
-    useEffect(() => {
-        const wasFocused = wasFocusedRef.current
-        wasFocusedRef.current = isFocused
-        if (
-            wasFocused
-            && !isFocused
-            && !tabScopedHeader
-            && headerWriteRef.current === getHeaderWriteGeneration()
-        ) {
-            setHeader(defaultHeader)
-        }
-    }, [isFocused, setHeader, tabScopedHeader])
-
-    const lastPushedSubHeaderRef = useRef(null)
-    useEffect(() => {
-        // Only the focused screen may update the shared subHeader; on refocus
-        // the useFocusEffect above restores it from subHeaderRef.
-        if (!useLocalHeader && isFocused) {
-            if (lastPushedSubHeaderRef.current === headerComponent) return
-            lastPushedSubHeaderRef.current = headerComponent
-            setOwnedHeader({ subHeader: headerComponent })
-        }
-    }, [useLocalHeader, isFocused, headerComponent, setOwnedHeader])
+    // ==================================================================
+    // Render
+    // ==================================================================
+    //
+    // The chrome is rendered *after* the list when it is a dynamic cover: the
+    // morph overlays the list and must paint on top of it. In 'small' mode it
+    // is a normal block above the list, and in 'none' mode it is not here at
+    // all — it went into the shared header atom.
 
     return (
         <View className="w-full h-full ">
@@ -574,7 +487,7 @@ export function Conductor({
                 <Snackbar
                     visible={snackbarVisible}
                     onPress={showNewContent}
-                    onDismiss={() => setSnackbarVisible(false)}
+                    onDismiss={hideSnackbar}
                     variant="primary"
                     title={t('Show New Posts')}
                     size="sm"

@@ -5,7 +5,7 @@ import { Text } from 'app/design/typography'
 import { useState, useReducer, useRef, useEffect, useCallback } from 'react';
 import { getComponent } from 'app/components/registry';;
 import { Button } from 'app/design/controls'
-import useFetchForm from 'app/lib/hooks/fetch'
+import useFetchForm from 'app/lib/hooks/use-fetch-form'
 import { fetcher } from 'app/lib/fetcher';
 import Loading from 'app/ui/atoms/loading'
 import Form from 'app/components/elements/form';
@@ -17,7 +17,7 @@ import { useInfiniteQuery } from '@tanstack/react-query'
 import {
     refetchUniListReducer,
     isSameItemsForUniList
-} from 'app/lib/unilist-helpers'
+} from 'app/lib/browse-query'
 import Snackbar from 'app/ui/atoms/snackbar'
 import emitter from 'app/context/emitter'
 import { appStatic } from 'app/lib/app-static';
