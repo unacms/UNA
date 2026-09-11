@@ -590,6 +590,7 @@ class BxBaseModProfileTemplate extends BxBaseModGeneralTemplate
 
             $aTmplVarsShowAvatar = array(
                 'add_class' => $sAddClassPicture,
+                'title_attr' => bx_html_attribute($sTitle),
                 'letter' => mb_strtoupper(mb_substr($sTitle, 0, 1)),
                 'img_class' => $sAddClassPicture != '' ? 'bx-media-editable-src' : '',
                 'ava_url' => $sUrlAvatar,
@@ -624,6 +625,7 @@ class BxBaseModProfileTemplate extends BxBaseModGeneralTemplate
             if($bProfileViewAllowed && $CNF['FIELD_PICTURE'] && $aData[$CNF['FIELD_PICTURE']]) {
                 $sPicturePopup = BxTemplFunctions::getInstance()->transBox($sPicturePopupId, $this->parseHtmlByName('image_popup.html', [
                     'image_url' => $sUrlPicture,
+                    'title_attr' => bx_html_attribute($sTitle),
                 ]), true, true);
             }
         }

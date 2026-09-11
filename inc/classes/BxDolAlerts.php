@@ -153,40 +153,8 @@ class BxDolAlerts extends BxDol
         BxDolAlertsStats::log($this);
 
         // call agents
-        $oAi = BxDolAi::getInstance();
-        if($aAgents = $oAi->getAgentsByAlertUnitAndAction($this->sUnit, $this->sAction)) {
-            foreach($aAgents as $a) {
-                $aParams = [
-                    'trigger' => 'alert',
-                    'object_id' => $this->iObject,
-                    'sender_profile_id' => $this->iSender,
-                    'unit' => $this->sUnit, 
-                    'action' => $this->sAction,
-                    'extra' => $this->aExtras,
-                ];
-                if ($a['async']) {
-                    BxDolBackgroundJobs::getInstance()->add(bin2hex(random_bytes(16)), [
-                        'system', 'call_agent', 
-                        ['alert', $a, $aParams], 
-                        'TemplServices'
-                    ]);
-                }
-                else {
-                    $sExtraJSON = $oAi->callAgent('alert', $a, $aParams);
-
-                    $aExtra = [];
-                    if ($sExtraJSON && 0 === bx_mb_strpos($sExtraJSON, '{'))
-                        $aExtra = json_decode($sExtraJSON, true);
-                    
-                    if ($aExtra && is_array($aExtra)) {
-                        foreach ($aExtra as $k => $v) {
-                            if (isset($this->aExtras[$k]))
-                                $this->aExtras[$k] = $v;
-                        }
-                    }
-                }
-            }
-        }
+        if (BxDolAi::getInstance())
+            BxDolAiTrigger::getInstance('alert')->handle($this);
     }
 
     /**

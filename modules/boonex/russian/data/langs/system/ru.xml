@@ -3825,8 +3825,7 @@
 	<string name="_sys_page_block_title_sys_create_post_public"><![CDATA[Создать публикацию (публично)]]></string>
 	<string name="_sys_page_block_title_create_post_public"><![CDATA[Добавить...]]></string>
 	<string name="_sys_page_block_title_dashboard"><![CDATA[Панель]]></string>
-        <string name="_sys_page_block_title_dashboard_api"><![CDATA[Панель (только для App-а)]]></string>
-        <string name="_sys_page_block_title_dash_stats"><![CDATA[Статистика профиля]]></string>
+        <string name="_sys_page_block_title_dash_stats"><![CDATA[Статистика на панели управления (только для App-а)]]></string>
         <string name="_sys_page_block_title_homepage_menu"><![CDATA[Меню модулей с содержимым]]></string>
         <string name="_sys_page_block_title_homepage_splash"><![CDATA[Заставка]]></string>
 	<string name="_sys_page_block_title_forgot_password"><![CDATA[Забыли пароль]]></string>
@@ -3845,7 +3844,7 @@
         <string name="_sys_page_block_title_system_cmts_view_content"><![CDATA[Прокомментированный контент]]></string>
 	<string name="_sys_page_block_title_system_cmts_administration"><![CDATA[Управление комментариями]]></string>
         <string name="_sys_page_block_title_system_audit_administration"><![CDATA[Аудит]]></string>
-    <string name="_sys_page_block_title_logout"><![CDATA[Выход]]></string>
+        <string name="_sys_page_block_title_logout"><![CDATA[Выход]]></string>
 	<string name="_sys_page_block_title_login"><![CDATA[Вход]]></string>
 	<string name="_sys_page_block_title_login_step2"><![CDATA[Вход - шаг 2]]></string>
 	<string name="_sys_page_block_title_login_step3"><![CDATA[Вход - шаг 3]]></string>

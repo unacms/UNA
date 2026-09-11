@@ -13,7 +13,6 @@ function BxDolStudioPageAgents(oOptions)
     this.sActionUrl = oOptions.sActionUrl;
     this.sObjName = oOptions.sObjName == undefined ? 'oBxDolStudioPageAgents' : oOptions.sObjName;
 
-    this.sActionUrlCmts = oOptions.sActionUrlCmts == undefined ? this.sActionUrl : oOptions.sActionUrlCmts;
     this.sActionUrlGrid = oOptions.sActionUrlGrid == undefined ? this.sActionUrl : oOptions.sActionUrlGrid;
     this.sObjNameGrid = oOptions.sObjNameGrid == undefined ? '' : oOptions.sObjNameGrid;
 
@@ -295,6 +294,7 @@ BxDolStudioPageAgents.prototype._renderReadonlyAgentChat = function(el, aMessage
         html += '<div class="bx-ai-chat-message" style="display:flex;justify-content:' + (isUser ? 'flex-end' : 'flex-start') + ';margin:6px 0;">' +
             '<div class="bx-ai-chat-message-inner bx-def-padding-sec bx-def-round-corners" style="max-width:85%;background:' + (isUser ? '#2563eb' : '#fff') + ';color:' + (isUser ? '#fff' : 'inherit') + ';">' +
             this._escAgentChat(text).replace(/\n/g, '<br />') +
+            this._renderReadonlyAgentChatActions(m.actions || (m.metadata && m.metadata.actions) || []) +
             '</div></div>';
     }
     html += '</div></div>';
@@ -302,6 +302,27 @@ BxDolStudioPageAgents.prototype._renderReadonlyAgentChat = function(el, aMessage
     var list = el.querySelector('.bx-ai-chat-messages');
     if (list)
         list.scrollTop = list.scrollHeight;
+};
+
+BxDolStudioPageAgents.prototype._renderReadonlyAgentChatActions = function(aActions) {
+    if (!aActions || !aActions.length)
+        return '';
+
+    var html = '<div class="bx-ai-chat-actions" style="display:flex;flex-wrap:wrap;gap:0.35rem;margin-top:0.5rem;">';
+    for (var i = 0; i < aActions.length; i++) {
+        var a = aActions[i] || {};
+        var sLabel = this._escAgentChat(a.label || '');
+        if (!sLabel)
+            continue;
+        if (a.type === 'link' && a.url) {
+            html += '<a class="bx-btn bx-btn-small underline" href="' + this._escAgentChat(a.url) + '" target="_blank" rel="noopener noreferrer">' + sLabel + '</a>';
+        }
+        else {
+            html += '<span class="bx-btn bx-btn-small bx-btn-disabled">' + sLabel + '</span>';
+        }
+    }
+    html += '</div>';
+    return html;
 };
 
 BxDolStudioPageAgents.prototype._escAgentChat = function(s) {
@@ -426,101 +447,6 @@ BxDolStudioPageAgents.prototype.agentCheckName = function(oSource, sTitleId, sNa
     );
 };
 
-BxDolStudioPageAgents.prototype.onChangeAutomatorType = function(oSelect) {
-    var aHide = [];
-    var aShow = [];
-    switch($(oSelect).val()) {
-        case 'event':
-            aHide = []; //['scheduler_time'];
-            aShow = []; //['alert_unit', 'alert_action'];
-            break;
-
-        case 'scheduler':
-            aHide = []; //['alert_unit', 'alert_action'];
-            aShow = []; //['scheduler_time'];
-            break;
-            
-        default:
-            aHide = []; //['alert_unit', 'alert_action', 'scheduler_time'];
-            aShow = [];
-    }
-
-    var sHide = '';
-    aHide.forEach((sItem) => {
-        sHide += ".bx-form-advanced #bx-form-element-" + sItem + ",";
-    });
-
-    var sShow = '';
-    aShow.forEach((sItem) => {
-        sShow += ".bx-form-advanced #bx-form-element-" + sItem + ",";
-    });
-
-    $(sHide.substring(0, sHide.length - 1)).bx_anim('hide', this.sAnimationEffect, 0);
-    $(sShow.substring(0, sShow.length - 1)).bx_anim('show', this.sAnimationEffect, 0);
-};
-
-BxDolStudioPageAgents.prototype.approveCode = function(oSource, iCmtId) {
-    var $this = this;
-    var oData = this._getDefaultData();
-    oData = jQuery.extend({}, oData, {action: 'approveCode', Cmt: iCmtId});
-
-    oSource = $(oSource);
-    bx_std_loading_btn(oSource, true);
-
-    jQuery.post (
-        this.sActionUrlCmts,
-        oData,
-        function(oData) {
-            bx_std_loading_btn(oSource, false);
-
-            processJsonData(oData);
-        },
-        'json'
-    );
-};
-
-BxDolStudioPageAgents.prototype.providerAdd = function(oButton, sName) {
-    var oButton = $(oButton);
-
-    var oSubentry = oButton.parents('#bx-form-element-' + sName).find('.bx-form-input-provider:first').clone();
-    oSubentry.find("select").val('');
-    oSubentry.find("input[type = 'hidden']").remove();
-
-    oButton.parents('.bx-form-input-provider-add:first').before(oSubentry);
-};
-
-BxDolStudioPageAgents.prototype.providerDelete = function(oButton) {
-    $(oButton).parents('.bx-form-input-provider:first').remove();
-};
-
-BxDolStudioPageAgents.prototype.helperAdd = function(oButton, sName) {
-    var oButton = $(oButton);
-
-    var oSubentry = oButton.parents('#bx-form-element-' + sName).find('.bx-form-input-helper:first').clone();
-    oSubentry.find("select").val('');
-    oSubentry.find("input[type = 'hidden']").remove();
-
-    oButton.parents('.bx-form-input-helper-add:first').before(oSubentry);
-};
-
-BxDolStudioPageAgents.prototype.helperDelete = function(oButton) {
-    $(oButton).parents('.bx-form-input-helper:first').remove();
-};
-
-BxDolStudioPageAgents.prototype.assistantAdd = function(oButton, sName) {
-    var oButton = $(oButton);
-
-    var oSubentry = oButton.parents('#bx-form-element-' + sName).find('.bx-form-input-assistant:first').clone();
-    oSubentry.find("select").val('');
-    oSubentry.find("input[type = 'hidden']").remove();
-
-    oButton.parents('.bx-form-input-assistant-add:first').before(oSubentry);
-};
-
-BxDolStudioPageAgents.prototype.assistantDelete = function(oButton) {
-    $(oButton).parents('.bx-form-input-assistant:first').remove();
-};
-
 BxDolStudioPageAgents.prototype.toolAdd = function(oButton, sName) {
     var oButton = $(oButton);
 
@@ -533,11 +459,6 @@ BxDolStudioPageAgents.prototype.toolAdd = function(oButton, sName) {
 
 BxDolStudioPageAgents.prototype.toolDelete = function(oButton) {
     $(oButton).parents('.bx-form-input-tools:first').remove();
-};
-
-BxDolStudioPageAgents.prototype._getDefaultData = function() {
-    var oDate = new Date();
-    return jQuery.extend({}, this._oRequestParams, {_t:oDate.getTime()});
 };
 
 /** @} */

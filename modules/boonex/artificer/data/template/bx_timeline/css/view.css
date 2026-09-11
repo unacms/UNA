@@ -82,8 +82,14 @@ div.bx-tl-item-content form {
     padding: 1rem 1rem 0 1rem;
 }
 div.bx-tl-item-content div.bx-tl-title {
-    text-overflow: ellipsis;
-    overflow: hidden;
+    /* This box used to be `overflow: hidden`, which clipped the focus ring of the title link sitting
+       flush inside it. The clipping was really there to stop a long unbroken title from widening the
+       page, and wrapping does that without hiding anything; `text-overflow` never applied here anyway,
+       the box is a flex container. */
+    overflow-wrap: anywhere;
+}
+div.bx-tl-item-content div.bx-tl-title div.bx-tl-title-cnt {
+    min-width: 0;
 }
 div.bx-tl-item-text div.bx-tl-content {
     position: relative;
@@ -134,6 +140,25 @@ div.bx-tl-item div.bx-tl-item-activity.bx-tl-ia-counters .bx-menu-custom.bx-menu
 .bx-tl-owner-avatar .bx-def-thumb-size{
     width: 2.5rem;
     height: 2.5rem;
+}
+
+/*--- Item Owner: Name ---*/
+/* The owner-info wrapper is `overflow-hidden` (Tailwind), which would clip the
+   extra hit area added below; the name itself still truncates via `.truncate`. */
+div.bx-tl-item div.bx-tl-owner-info {
+    overflow: visible;
+}
+
+/* WCAG 2.5.8 (AA): the author link must be at least 24x24 CSS px. The extra
+   height is added as padding-top cancelled by an equal negative margin-top, so
+   the link's box grows UPWARD into the gap that already sits above the header
+   row. The text position, the row height, the meta row below and the card
+   height are all unchanged, and the box never reaches the date link beneath. */
+div.bx-tl-item div.bx-tl-owner-name > a.bx-tl-owner-name {
+    min-height: 1.5rem;
+
+    padding-top: 0.375rem;
+    margin-top: -0.375rem;
 }
 
 /*--- Menu: Item Manage ---*/

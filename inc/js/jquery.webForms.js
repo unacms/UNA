@@ -167,15 +167,15 @@
                 $(this).parents(".bx-form-input-wrapper-password:first").removeClass(sClassFocus);
             });
 
-            $(this).find("a").on("click", function () {
+            $(this).find(".password-show, .password-hide").on("click", function () {
                 var oLink = $(this);
                 var oFld = oLink.parents(".bx-form-input-wrapper-password:first").find("input");
                 if (oLink.hasClass('password-show')) {
-                    oLink.attr('title', _t('_sys_form_input_password_hide'));
+                    oLink.attr('title', _t('_sys_form_input_password_hide')).attr('aria-label', _t('_sys_form_input_password_hide'));
                     oFld.attr("type", "text");
                 }
                 else {
-                    oLink.attr('title', _t('_sys_form_input_password_show'));
+                    oLink.attr('title', _t('_sys_form_input_password_show')).attr('aria-label', _t('_sys_form_input_password_show'));
                     oFld.attr("type", "password");
                 }
                 oLink.toggleClass('password-show password-hide');
@@ -394,6 +394,19 @@
                 }
                 
                 if(bDatePicker) {
+                    // flatpickr's altInput is the field the user actually sees and focuses, but it is a bare clone:
+                    // it copies class/placeholder/disabled/required/tabindex and no accessible name, so carry the
+                    // labelling of the original (now hidden) input over to it.
+                    var oAltInput = this._flatpickr ? this._flatpickr.altInput : null;
+                    if (oAltInput) {
+                        var aLabelAttrs = ['aria-label', 'aria-labelledby', 'aria-describedby', 'title'];
+                        for (var iLabelAttr = 0; iLabelAttr < aLabelAttrs.length; iLabelAttr++) {
+                            var sLabelValue = this.getAttribute(aLabelAttrs[iLabelAttr]);
+                            if (sLabelValue)
+                                oAltInput.setAttribute(aLabelAttrs[iLabelAttr], sLabelValue);
+                        }
+                    }
+
                     if (typeof window.glOnColorSchemeChange === 'undefined')
                         window.glOnColorSchemeChange = [];    
 

@@ -133,6 +133,21 @@ class BxBaseMenuMoreAuto extends BxTemplMenu
         return parent::_getMenuItem($aItem);
     }
 
+    /**
+     * The 'more' trigger opens a popup that is rendered next to it (the __popup__ marker), so it is a disclosure
+     * for a dialog, not a plain link. Its accessible name comes from the generic title/title_system handling in
+     * BxBaseMenu::_getMenuTitle().
+     */
+    protected function _getMenuAttrs ($aMenuItem)
+    {
+        $sAttrs = parent::_getMenuAttrs($aMenuItem);
+
+        if(!empty($aMenuItem['name']) && $aMenuItem['name'] == BX_DEF_MENU_ITEM_MORE_AUTO)
+            $sAttrs .= ' aria-haspopup="dialog" aria-expanded="false" aria-controls="' . bx_html_attribute($this->_aHtmlIds['more_auto_popup']) . '"';
+
+        return $sAttrs;
+    }
+
     protected function _getHtmlIds()
     {
         return $this->_aHtmlIds;

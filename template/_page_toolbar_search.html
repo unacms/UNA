@@ -1,12 +1,13 @@
-<div class="bx-ti-search-box flex-auto flex items-start md:min-w-88 ltr:ml-2 rtl:mr-2 bg-white/95 dark:bg-gray-800/95 rounded-md shadow-md hidden">
+<div id="bx-ti-search-box" class="bx-ti-search-box flex-auto flex items-start md:min-w-88 ltr:ml-2 rtl:mr-2 bg-white/95 dark:bg-gray-800/95 rounded-md shadow-md hidden">
     <div class="relative w-full">__sys_site_search__</div>
 </div>
 <div class="bx-ti-search-button group relative inline-flex items-center ltr:ml-2 rtl:mr-2 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 text-base font-medium leading-6 border border-transparent hover:border-gray-200/50 active:border-gray-300 dark:hover:border-gray-700/50 dark:active:border-gray-700 bg-gray-100 dark:bg-gray-700/50 active:bg-gray-300 dark:active:bg-black/50 hover:bg-gray-200/50 dark:hover:bg-gray-700/50 rounded-full">
-    <a href="javascript:void(0)" onclick="javascript:bx_site_search_show(this)">
+    <button type="button" class="inline-block rounded-full" onclick="javascript:bx_site_search_show(this)" aria-expanded="false" aria-controls="bx-ti-search-box">
         <span class="relative flex items-center justify-center h-10 w-10">
             <div class="bx-icon">
                 <bx_image_auto:search />
             </div>
         </span>
-    </a>
+        <span class="sr-only"><bx_text:_sys_menu_item_title_system_search /></span>
+    </button>
 </div>

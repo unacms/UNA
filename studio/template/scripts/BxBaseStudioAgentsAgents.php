@@ -272,8 +272,8 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
         $sChatId = 'bx-ai-chat-' . $iId;
         $sName = !empty($aAgent['title']) ? $aAgent['title'] : $aAgent['name'];
         $aThreadsTpl = [];
-        $oAi = BxDolAi::getInstance();
-        $aThreads = $oAi && method_exists($oAi, 'listAgentChatThreads') ? $oAi->listAgentChatThreads($aAgent) : [];
+        $oChat = BxDolAiChat::getInstance();
+        $aThreads = $oChat->listAgentChatThreads($aAgent);
         foreach ($aThreads as $aThread) {
             $aThreadsTpl[] = [
                 'thread_id' => bx_html_attribute($aThread['thread_id']),
@@ -321,8 +321,7 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
         }
 
         $aThreadsJs = [];
-        $oAi = BxDolAi::getInstance();
-        $aThreads = $oAi && method_exists($oAi, 'listAgentChatThreads') ? $oAi->listAgentChatThreads($aAgent) : [];
+        $aThreads = BxDolAiChat::getInstance()->listAgentChatThreads($aAgent);
         foreach ($aThreads as $aThread)
             $aThreadsJs[] = $this->_agentChatThreadJs($aThread);
 
@@ -339,13 +338,9 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
         }
 
         $sThreadId = trim((string)bx_get('thread_id'));
-        $oAi = BxDolAi::getInstance();
-        if (!$oAi || !method_exists($oAi, 'getChatHistoryUiMessagesByThread')) {
-            echoJson(['code' => 503, 'msg' => _t('_sys_txt_error_occured'), 'messages' => []]);
-            return;
-        }
+        $oChat = BxDolAiChat::getInstance();
 
-        $aMessages = $oAi->getChatHistoryUiMessagesByThread($aAgent, $sThreadId);
+        $aMessages = $oChat->getChatHistoryUiMessagesByThread($aAgent, $sThreadId);
         if ($aMessages === false) {
             echoJson(['code' => 404, 'msg' => _t('_sys_txt_error_occured'), 'messages' => []]);
             return;
@@ -354,8 +349,8 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
         echoJson([
             'code' => 200,
             'messages' => $aMessages,
-            'writable' => $oAi->isOwnAgentChatThread($aAgent, $sThreadId) ? 1 : 0,
-            'artifacts' => method_exists($oAi, 'getChatHistoryArtifactsByThread') ? $oAi->getChatHistoryArtifactsByThread($aAgent, $sThreadId) : [],
+            'writable' => $oChat->isOwnAgentChatThread($aAgent, $sThreadId) ? 1 : 0,
+            'artifacts' => $oChat->getChatHistoryArtifactsByThread($aAgent, $sThreadId),
         ]);
     }
 
@@ -384,14 +379,6 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
             'updated_at' => (string)($aThread['updated_at'] ?? ''),
             'artifacts' => $aArtifacts,
         ];
-    }
-
-    protected function _getCellSwitcher ($mixedValue, $sKey, $aField, $aRow)
-    {
-        // if(empty($aRow['code']) || $aRow['status'] != BX_DOL_AI_AUTOMATOR_STATUS_READY)
-        //    return parent::_getCellDefault('', $sKey, $aField, $aRow);
-
-        return parent::_getCellSwitcher ($mixedValue, $sKey, $aField, $aRow);
     }
 
     protected function _getCellProfileId($mixedValue, $sKey, $aField, $aRow)
@@ -454,14 +441,6 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
     {
         $mixedResult = parent::_delete($mixedId);
         $this->_oDb->cleanCache('sys_agents_with_alert');
-        if($mixedResult) {
-            // $this->_oDb->deleteAutomatorProviders(['automator_id' => (int)$mixedId]);
-            // $this->_oDb->deleteAutomatorHelpers(['automator_id' => (int)$mixedId]);
-            // $this->_oDb->deleteAutomatorAssistants(['automator_id' => (int)$mixedId]);
-
-            // if(($oCmts = BxDolAi::getInstance()->getAutomatorCmtsObject($mixedId)) !== false)
-            //    $oCmts->onObjectDelete();
-        }
 
         return $mixedResult;
     }
@@ -967,7 +946,8 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
 
         $this->_getMultiField('tools', $aAgent, 'getTools', 'toolAdd', 'agents_agents_form_tools.html', $aForm);
 
-        BxDolStudioUtils::getVisibilityValues((int)($aAgent['acl_levels'] ?? 0), $aForm['inputs']['acl_levels']['values'], $aForm['inputs']['acl_levels']['value']);
+        BxDolStudioUtils::getVisibilityValues(0, $aForm['inputs']['acl_levels']['values'], $aForm['inputs']['acl_levels']['value']);
+        $aForm['inputs']['acl_levels']['value'] = (int)($aAgent['acl_levels'] ?? 0);
 
         return $aForm;
     }
@@ -1156,7 +1136,7 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
 
     protected function _getUniqName($sName)
     {
-        return uriGenerate($sName, 'sys_agents_automators', 'name', ['lowercase' => false]);
+        return uriGenerate($sName, 'sys_agents_agents', 'name', ['lowercase' => false]);
     }
 
     protected function _getMultiField($sField, $aAgent, $sGetValuesMethod, $sJsAddMethod, $sTemplateName, &$aForm)

@@ -128,7 +128,8 @@ import url(../../../../../../../template/css/forms.css);
 
 
 /*-- Form field: Password --*/
-.bx-artificer .bx-form-input-wrapper-password > a {
+.bx-artificer .bx-form-input-wrapper-password > .password-show,
+.bx-artificer .bx-form-input-wrapper-password > .password-hide {
     position: absolute;
     z-index: 1000;
     
@@ -143,9 +144,15 @@ import url(../../../../../../../template/css/forms.css);
     right: 0;    
     height: 100%;
 
-    margin: 0 0.5rem;
+    /* WCAG 2.5.8 (AA): at least 24px wide. 1.75rem is the project's "mini"
+       button size. The side margin is reduced by exactly half the added
+       width, (28px - 18px) / 2 = 5px, so the eye glyph does not move. */
+    min-width: 1.75rem;
+
+    margin: 0 0.1875rem;
 }
-.bx-dir-rtl.bx-artificer .bx-form-input-wrapper-password > a {
+.bx-dir-rtl.bx-artificer .bx-form-input-wrapper-password > .password-show,
+.bx-dir-rtl.bx-artificer .bx-form-input-wrapper-password > .password-hide {
     left: 0;
     right: auto;
 }

@@ -164,6 +164,7 @@ class BxMassMailerTemplate extends BxBaseModGeneralTemplate
     public function entryBreadcrumb($aContentInfo, $aTmplVarsItems = array())
     {
         $CNF = &$this->getModule()->_oConfig->CNF;
+        $sTitleHome = $this->getModule()->_aModule['title'];
         $aTmplVarsItems = array(array(
             'url' => $aContentInfo['url'],
             'title' => bx_process_output($aContentInfo[$CNF['FIELD_TITLE']])
@@ -172,6 +173,7 @@ class BxMassMailerTemplate extends BxBaseModGeneralTemplate
         return $this->parseHtmlByName('breadcrumb.html', array(
             'url_home' => bx_absolute_url(BxDolPermalinks::getInstance()->permalink($CNF['URL_MANAGE_CAMPAIGNS'])),
             'icon_home' => $CNF['ICON'],
+            'title_home' => bx_html_attribute(strip_tags(_t($sTitleHome ? $sTitleHome : '_sys_menu_item_title_system_home')), BX_ESCAPE_STR_QUOTE),
             'bx_repeat:items' => $aTmplVarsItems
         ));
     }

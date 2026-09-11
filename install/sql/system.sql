@@ -2337,7 +2337,7 @@ INSERT INTO `sys_alerts` (`unit`, `action`, `handler_id`) VALUES
 
 
 INSERT INTO `sys_alerts_handlers` (`name`, `class`, `file`) VALUES
-('sys_agents', 'BxDolAiAlertResponse', 'inc/classes/BxDolAiAlertResponse.php');
+('sys_agents', 'BxDolAiTriggerMessage', 'inc/classes/BxDolAiTriggerMessage.php');
 SET @iIdHandler = LAST_INSERT_ID();
 
 INSERT INTO `sys_alerts` (`unit`, `action`, `handler_id`) VALUES
@@ -6343,7 +6343,7 @@ INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title_system`, `
 ('sys_home', 4, 'system', '_sys_page_block_title_sys_invitations', '_sys_page_block_title_invitations', '', '', 11, '', '', 1, 0, 2147483644, '0', 'service', 'a:4:{s:6:\"module\";s:6:\"system\";s:6:\"method\";s:18:\"browse_invitations\";s:6:\"params\";a:0:{}s:5:\"class\";s:20:\"TemplServiceProfiles\";}', '', '', 0, '', 0, '', 1, 0, 0, 0, 0);
 
 INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title_system`, `title`, `designbox_id`, `class`, `submenu`, `tabs`, `async`, `visible_for_levels`, `hidden_on`, `type`, `content`, `content_empty`, `text`, `text_updated`, `help`, `cache_lifetime`, `config_api`, `deletable`, `copyable`, `active`, `active_api`, `order`) VALUES
-('sys_dashboard', 1, 'system', '_sys_page_block_title_dash_stats', '', 13, '', '', 0, 0, 2147483647, '0', 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:14:"get_stat_block";s:6:"params";a:0:{}s:5:"class";s:22:"TemplDashboardServices";}', '', '', 0, '', 0, '', 1, 0, 0, 0, 0);
+('sys_dashboard', 2, 'system', '_sys_page_block_title_dash_stats', '', 13, '', '', 0, 0, 2147483647, '0', 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:14:"get_stat_block";s:6:"params";a:0:{}s:5:"class";s:22:"TemplDashboardServices";}', '', '', 0, '', 0, '', 1, 0, 0, 0, 0);
 
 -- content blocks
 INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title_system`, `title`, `designbox_id`, `tabs`, `async`, `visible_for_levels`, `type`, `content`, `config_api`, `deletable`, `copyable`, `active`, `order`) VALUES
@@ -7087,8 +7087,8 @@ INSERT INTO `sys_agents_tools` (`type`, `title`, `docs`, `params`, `params_user`
 
 ('comment_get', 'Comment get', 'This tool allows agents to get single comment by global comment id.', '{}', NULL, 0, 0, 1, 'BxDolAIToolCmtsGetSingle', ''),
 
-('chat_artifact_save', 'Chat artifact save', 'Save one field from the conversation into sys_agents_chat_artifacts.', '{}', NULL, 0, 0, 1, 'BxDolAIToolChatArtifactSave', ''),
-('chat_goal_reached', 'Chat goal reached', 'Call once when the conversation goal is done. Fires agent_conversation_closed with reason=goal.', '{}', NULL, 0, 0, 1, 'BxDolAIToolChatGoalReached', '');
+('chat_artifact_save', 'Chat artifact save', 'Save one field from the conversation into sys_agents_chat_artifacts.', '{}', NULL, 0, 0, 0, 'BxDolAIToolChatArtifactSave', ''),
+('chat_goal_reached', 'Chat goal reached', 'Call once when the conversation goal is done. Fires agent_conversation_closed with reason=goal.', '{}', NULL, 0, 0, 0, 'BxDolAIToolChatGoalReached', '');
 
 CREATE TABLE IF NOT EXISTS `sys_agents_chat_history` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,

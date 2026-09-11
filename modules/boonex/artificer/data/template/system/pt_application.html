@@ -64,7 +64,7 @@
 
         <!-- BEG: Main Content -->
         <div id="main-content" class="bx-main-column wide relative w-full h-full overflow-y-auto xl:ml-64">
-            <main>
+            <div>
                 <bx_injection:injection_between_cover_logo />
                 __cover__
                 <bx_injection:injection_between_cover_top_menu />
@@ -91,7 +91,7 @@
                     __informer__
                     <div class="bx-page-wrapper mx-auto px-3 md:px-4 lg:px-6 box-border">
                         <div id="bx-content-container" class="bx-content-container">
-                            <main role="main"  id="bx-content-main" class="bx-content-main my-2 lg:my-3">
+                            <main role="main"  id="bx-content-main" class="bx-content-main my-2 lg:my-3" tabindex="-1">
                                 <bx_injection:injection_content_before />
                                 __page_main_code__
                                 <bx_injection:injection_content_after />
@@ -101,7 +101,7 @@
                         </div> <!-- #bx-content-container -->
                     </div> <!-- .bx-page-wrapper -->
                 </div> <!-- #bx-content-wrapper -->
-            </main>
+            </div>
             <footer class="p-4 m-4 bg-white rounded-lg shadow md:flex md:items-center md:justify-between md:p-6 xl:p-8 dark:bg-gray-800">
                 <bx_injection:injection_footer_before />
                 <div id="bx-menu-bottom">

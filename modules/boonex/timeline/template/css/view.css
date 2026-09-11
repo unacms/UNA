@@ -449,8 +449,14 @@ div.bx-tl-item-content form {
     padding: 1rem 1rem 0 1rem;
 }
 div.bx-tl-item-content div.bx-tl-title {
-    text-overflow: ellipsis;
-    overflow: hidden;
+    /* This box used to be `overflow: hidden`, which clipped the focus ring of the title link sitting
+       flush inside it. The clipping was really there to stop a long unbroken title from widening the
+       page, and wrapping does that without hiding anything; `text-overflow` never applied here anyway,
+       the box is a flex container. */
+    overflow-wrap: anywhere;
+}
+div.bx-tl-item-content div.bx-tl-title div.bx-tl-title-cnt {
+    min-width: 0;
 }
 div.bx-tl-item-content div.bx-tl-content iframe[src*='video'] {
     width: 100%;

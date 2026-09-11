@@ -4,7 +4,7 @@
             <div class="bx-base-pofile-cover-image-wrp relative xl:px-4 overflow-hidden">
                 <div class="bx-base-pofile-cover-image bx-def-page-width relative mx-auto opacity-100 xl:rounded-b-lg <bx_if:show_cover_placeholder>bx-bpci-holder h-32 lg:h-32 bg-gradient-to-b from-blue-400 to-blue-500</bx_if:show_cover_placeholder><bx_if:show_cover>h-64 lg:h-80</bx_if:show_cover> __add_class__">
                     <p class="bx-base-pofile-cover-image box-border absolute h-full w-full">
-                        <img class="bx-base-pofile-cover-image w-full object-cover bg-cover xl:rounded-b-lg h-full relative __img_class__ bx-image-edit-source-__unique_id__" style="background-image:url(__cover_url__); __cover_settins__" src="<bx_icon_url:spacer.gif />" />
+                        <img alt="" class="bx-base-pofile-cover-image w-full object-cover bg-cover xl:rounded-b-lg h-full relative __img_class__ bx-image-edit-source-__unique_id__" style="background-image:url(__cover_url__); __cover_settins__" src="<bx_icon_url:spacer.gif />" />
                     </p>
                     __cover_tweak__
                 </div>
@@ -14,7 +14,7 @@
                     <bx_if:show_avatar>
                         <div class="bx-base-pofile-cover-thumb bx-def-ava-big-size relative lg:absolute flex self-center lg:flex-none z-10 __add_class__">
                             <a class="bx-base-pofile-cover-thumb hover:no-underline" href="javascript:" <bx_if:is_avatar>onclick="$('#__picture_popup_id__').dolPopupImage('__picture_url__', $(this).parent()); event.stopPropagation();"</bx_if:is_avatar>>
-                                <img class="bx-base-pofile-unit-thumb bx-def-ava-big bx-def-ava-big-size rounded-full ring-4 mx-auto ring-white dark:ring-gray-900 h-48 w-48 __img_class__ bx-image-edit-source-__unique_id__" src="__ava_url__"  <bx_if:show_ava_letter> style="display:none" </bx_if:show_ava_letter> />
+                                <img alt="__title_attr__" class="bx-base-pofile-unit-thumb bx-def-ava-big bx-def-ava-big-size rounded-full ring-4 mx-auto ring-white dark:ring-gray-900 h-48 w-48 __img_class__ bx-image-edit-source-__unique_id__" src="__ava_url__"  <bx_if:show_ava_letter> style="display:none" </bx_if:show_ava_letter> />
                                 <p class="bx-base-pofile-unit-thumb bx-def-ava-big bx-def-ava-big-size flex items-center justify-center box-border m-0 rounded-full ring-4 mx-auto ring-white dark:ring-gray-900 h-48 w-48 text-white font-bold text-5xl __img_class__-placeholder" style="background-color:rgba(__color__);<bx_if:show_ava_image>display:none</bx_if:show_ava_image>" >__letter__</p>
                             </a>
                             <bx_if:show_online>

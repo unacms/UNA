@@ -423,12 +423,23 @@ function bx_editor_init(oParams) {
     $(oParams.selector).next().find('button.ql-link').attr('title', _t('_sys_txt_quill_tooltip_link'));
     $(oParams.selector).next().find('button.ql-image').attr('title', _t('_sys_txt_quill_tooltip_image'));
     $(oParams.selector).next().find('button.ql-code-block').attr('title', _t('_sys_txt_quill_tooltip_code_block'));
-    $(oParams.selector).next().find('span.ql-color').attr('title', _t('_sys_txt_quill_tooltip_color'));
-    $(oParams.selector).next().find('span.ql-background').attr('title', _t('_sys_txt_quill_tooltip_background'));
-    $(oParams.selector).next().find('span.ql-align').attr('title', _t('_sys_txt_quill_tooltip_align'));
-    $(oParams.selector).next().find('span.ql-header').attr('title', _t('_sys_txt_quill_tooltip_header'));
+    $(oParams.selector).next().find('button.ql-embed').attr('title', _t('_sys_txt_quill_tooltip_embed'));
+    $(oParams.selector).next().find('button.ql-emoji').attr('title', _t('_sys_txt_quill_tooltip_emoji'));
+    $(oParams.selector).next().find('button.ql-show-html').attr('title', _t('_sys_txt_quill_tooltip_show_html'));
+    $(oParams.selector).next().find('span.ql-color .ql-picker-label').attr({'title': _t('_sys_txt_quill_tooltip_color'), 'aria-label': _t('_sys_txt_quill_tooltip_color')});
+    $(oParams.selector).next().find('span.ql-background .ql-picker-label').attr({'title': _t('_sys_txt_quill_tooltip_background'), 'aria-label': _t('_sys_txt_quill_tooltip_background')});
+    $(oParams.selector).next().find('span.ql-align .ql-picker-label').attr({'title': _t('_sys_txt_quill_tooltip_align'), 'aria-label': _t('_sys_txt_quill_tooltip_align')});
+    //--- a mini toolbar renders alignment as four separate buttons rather than one picker
+    $(oParams.selector).next().find('button.ql-align[value=""]').attr('title', _t('_sys_txt_quill_tooltip_align_left'));
+    $(oParams.selector).next().find('button.ql-align[value="center"]').attr('title', _t('_sys_txt_quill_tooltip_align_center'));
+    $(oParams.selector).next().find('button.ql-align[value="right"]').attr('title', _t('_sys_txt_quill_tooltip_align_right'));
+    $(oParams.selector).next().find('button.ql-align[value="justify"]').attr('title', _t('_sys_txt_quill_tooltip_align_justify'));
+    $(oParams.selector).next().find('span.ql-header .ql-picker-label').attr({'title': _t('_sys_txt_quill_tooltip_header'), 'aria-label': _t('_sys_txt_quill_tooltip_header')});
 
-    $('#' + oParams.name).find('.ql-editor').addClass('bx-def-vanilla-html');
+    //--- quill-mention points aria-owns at its list, but only inserts that list into the document when
+    //--- the list opens, so the reference dangles and every page with an editor reports an invalid
+    //--- ARIA value. The editor is not a combobox, so the attribute has nothing to say here.
+    $('#' + oParams.name).find('.ql-editor').addClass('bx-def-vanilla-html').removeAttr('aria-owns');
 
     if (bEmptyToolbar)
         $(oParams.selector).next().hide();
