@@ -15,7 +15,10 @@ import { Image as ImageNative, Alert, Linking, Platform } from 'react-native';
 import { Image as ImageRN } from 'react-native';
 import Video from 'app/ui/atoms/video';
 import Msg from 'app/ui/molecules/dialogs/msg';
-import ImageCropModal from 'app/lib/image/crop-modal';
+import { lazyComponent } from 'app/lib/lazy-component';
+
+// Crop UI (zoomable view + crop math) loads on first crop, not with every form.
+const ImageCropModal = lazyComponent(() => import('app/lib/image/crop-modal'), { name: 'ImageCropModal' });
 import { getImageCropKind, isSvgAsset, getAssetImageSize } from 'app/lib/image/crop';
 import { useTranslation } from 'react-i18next'
 import emitter from 'app/context/emitter';
@@ -748,7 +751,8 @@ export default function (props) {
     if (video_source == 'embed')
         return null;
 
-    const cropModal = (
+    // Mounted only while a crop session is open so the lazy chunk is not fetched upfront.
+    const cropModal = cropSession ? (
         <ImageCropModal
             visible={!!cropSession}
             uri={cropSession?.uri}
@@ -759,7 +763,7 @@ export default function (props) {
             onCancel={handleCropCancel}
             onConfirm={handleCropConfirm}
         />
-    );
+    ) : null;
 
     if (props.view == 'button') {
         return <>

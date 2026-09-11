@@ -6,9 +6,15 @@ import { Text } from 'app/design/typography';
 import { Image as ImageOr, Platform } from 'react-native';
 import { appSetting, LAYOUT_BREAKPOINTS } from 'app/lib/util'
 import Video from 'app/ui/atoms/video';
-import { ReactNativeZoomableView } from '@openspacelabs/react-native-zoomable-view';
+import { lazyComponent } from 'app/lib/lazy-component';
 import { useWindowSize } from 'app/context/measure';
 import { useTranslation } from 'react-i18next';
+
+// Pinch/zoom is only needed inside the lightbox — load it when one opens.
+const ReactNativeZoomableView = lazyComponent(
+    () => import('@openspacelabs/react-native-zoomable-view').then((m) => ({ default: m.ReactNativeZoomableView })),
+    { name: 'ZoomableView' }
+);
 
 const Image2 = memo((item) => {
 

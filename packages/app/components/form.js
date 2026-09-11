@@ -4,7 +4,8 @@ import { getFormFieldByData, isFormResponseComplete, normalizeFormResponseData, 
 import { getDefaultPasteStorageKey } from 'app/components/form-fields/media-attachments'
 import { View, Row } from 'app/design/view'
 import { getComponent } from 'app/components/registry';
-import { FeedbackHaptics, storageSet, appSetting, isNumeric, storageGet, isObjectsEqual } from 'app/lib/util';
+import { FeedbackHaptics, appSetting, isNumeric, isObjectsEqual } from 'app/lib/util';
+import { sessionCacheGet, sessionCacheSet } from 'app/lib/util/storage';
 import { Platform } from 'react-native';
 import emitter from 'app/context/emitter';
 import { FormInstanceProvider } from 'app/context/form-instance';
@@ -497,7 +498,7 @@ export default function Form({
 
     useEffect(() => {
         if (isAutoChange && onChange && Object.keys(debouncedFields).length > 0) {
-            storageSet('form', cacheKey, debouncedFields, false);
+            sessionCacheSet('form:' + cacheKey, debouncedFields);
             onChange(debouncedFields);
         }
     }, [debouncedFields, isAutoChange, onChange, cacheKey]);
@@ -507,7 +508,7 @@ export default function Form({
     useEffect(() => {
         if (isAutoChange && onChange) {
             if (!processedInputs) return
-            const raw = cacheKey ? storageGet('form', cacheKey, false) : false
+            const raw = cacheKey ? sessionCacheGet('form:' + cacheKey) : null
             if (raw) {
                 const draft = typeof raw === 'string' ? JSON.parse(raw) : raw
                 const current = methods.getValues();

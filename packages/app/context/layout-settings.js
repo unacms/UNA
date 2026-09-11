@@ -1,7 +1,7 @@
 'use client';
 import { create } from 'zustand';
 import { useCallback, useEffect } from 'react';
-import { asyncStorageGet, asyncStorageSet } from 'app/lib/util';
+import { persistedGet, persistedSet } from 'app/lib/util/storage';
 import { appSetting } from 'app/lib/util'
 import { Appearance, Platform } from 'react-native'
 import * as RNLocalize from "react-native-localize";
@@ -101,21 +101,21 @@ export const useLayoutSettingsStore = create((set, get) => ({
     hydrated: false,
 
     setLayoutSettings: async (value) => {
-        await asyncStorageSet(STORAGE_KEY, JSON.stringify(value));
+        await persistedSet(STORAGE_KEY, value);
         set({ layoutSettings: value });
     },
 
     updateLayoutSettings: async (partial) => {
         const current = get().layoutSettings || {};
         const updated = { ...current, ...partial };
-        await asyncStorageSet(STORAGE_KEY, JSON.stringify(updated));
+        await persistedSet(STORAGE_KEY, updated);
         set({ layoutSettings: updated });
     },
 
     hydrate: async () => {
         try {
-            const raw = await asyncStorageGet(STORAGE_KEY);
-            const parsed = raw ? JSON.parse(raw) : DEFAULT_LAYOUT_SETTINGS;
+            const stored = await persistedGet(STORAGE_KEY);
+            const parsed = stored && typeof stored === 'object' ? stored : DEFAULT_LAYOUT_SETTINGS;
             const resolvedLangCode = resolveLangCode(parsed?.lang);
             await i18n.changeLanguage(resolvedLangCode);
             set({ layoutSettings: parsed, hydrated: true });

@@ -14,8 +14,6 @@ import {
 import { useCurrentUser } from 'app/context/user'
 import {
     appSetting,
-    getDataFromCache,
-    storageSet,
     isObjectsEqual,
     menuItemsByName,
     visibilityById,
@@ -668,14 +666,7 @@ export const UnitFeed = ({ data, mode, DefaultUnit, SmallUnit, feed_type }) => {
         return { ...data, mainImage, comments, showMore: true };
     }, [data?.id]);
 
-    const sKey = `feed_${data.id}_${data.feed_type}`
-
-    const dataCache = getDataFromCache('li:data', sKey)
-    const [datas, setDatas] = useState(dataCache ? dataCache.data : enrichedData)
-
-    useEffect(() => {
-        storageSet('li:data', sKey, { data: datas, ts: Date.now() })
-    }, [datas])
+    const [datas, setDatas] = useState(enrichedData)
 
     const onItemEdited = useCallback(
         async (strData) => {

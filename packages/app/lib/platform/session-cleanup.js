@@ -2,7 +2,8 @@ import { Platform } from 'react-native'
 import { clearAllPageCache } from 'app/lib/cache/clear-page-cache'
 import { dismissNavigationOverlays, resetAllTabHistory } from 'app/lib/navigation/tab-history'
 import { queryClient } from 'app/lib/platform/query-client'
-import { appSetting, clearNativeMemoryCache, storageClear } from 'app/lib/util'
+import { appSetting, storageClear } from 'app/lib/util'
+import { usePrefsStore } from 'app/context/prefs'
 import { useBottomSheetStore } from 'app/context/bottomsheet'
 import emitter from 'app/context/emitter'
 import { logoutOneSignal } from 'app/lib/platform/one-signal'
@@ -15,8 +16,8 @@ import { logoutOneSignal } from 'app/lib/platform/one-signal'
 export function clearClientSessionState() {
     clearAllPageCache()
     resetAllTabHistory()
-    clearNativeMemoryCache()
     storageClear()
+    usePrefsStore.getState().resetSession()
 
     try {
         queryClient.clear()

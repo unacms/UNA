@@ -13,9 +13,7 @@ import { Modal } from 'app/design/controls'
 import { appSetting } from 'app/lib/util'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import i18n from 'i18next';
-import { Appearance } from 'react-native';
-import { Platform } from 'react-native'
-import { storageSet, storageClear, storageGet } from 'app/lib/util'
+import { useLayoutSettings } from 'app/context/layout-settings';
 import { fetcher } from 'app/lib/fetcher';
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import { useTheme } from 'app/design/theme';
@@ -62,59 +60,14 @@ export default function PageLayout(props) {
     if (!currentUser) 
         return <></>
 
-    const handleLang = async (item) => {
-        if(item === 'system') {
-            storageClear('layout:lang');
-            const systemLang = detectSystemLanguage();
-            i18n.changeLanguage(systemLang);
-            return;
-        }
-        i18n.changeLanguage(item);
-        if(Platform.OS == 'web'){
-            storageClear();
-            storageSet('layout:lang', '', item, true);
-            window.location.href = window.location.href
-        }
-        const sResponse = await fetcher('/api.php?r=system/get_page_by_request/TemplServicePages&params[]=home&lang=' + item );
-    }
+    // Same preference store as the remote dashboard (theme / language / layout).
+    const { themeName, setThemeName, layoutName, setLayoutName, setLang } = useLayoutSettings();
+    const handleLang = (item) => setLang(item);
+    const handleTheme = (item) => setThemeName(item);
+    const handleFormat = (item) => setLayoutName(item);
 
-    const scheme = '';//useColorScheme();
-
-   
-
-    const handleTheme =  async (item) => { 
-        if(Platform.OS == 'web'){
-            const root = window.document.documentElement;
-            if (item == 'auto')
-                item = '';
-            if (item == '')
-                root.setAttribute('theme', scheme);
-            else
-                root.setAttribute('theme', item);
-            
-            storageSet('layout:theme', '', item, true);
-            //location.reload();
-           // setCurrentUser(Object.assign({}, currentUser));
-        }
-        else{
-            if (item == 'auto')
-                item=null;
-            Appearance.setColorScheme(item);
-        }
-    }
-    const handleFormat =  async (item) => { 
-        storageSet('layout:format', '', item, true);
-        window.location.href = window.location.href
-    }
-    
-
-    let currentTheme =  storageGet('layout:theme','', true);
-    if (!currentTheme)
-        currentTheme = 'auto';
-
-    let currentFormat =  storageGet('layout:format','', true);
-    if (!currentFormat)
-        currentFormat = appSetting('layout', 'default_layout');
+    const currentTheme = themeName || 'auto';
+    const currentFormat = layoutName || appSetting('layout', 'default_layout');
 
     const langItems = [
         { id: 'auto', key: 'auto', name: 'auto', title: t('lang_auto') },

@@ -1,12 +1,8 @@
 import { View, Row, ScrollView } from 'app/design/view'
 import { BlockByName } from 'app/components/block'
 import React, { useState, useMemo, useRef, useEffect, useCallback } from 'react'
-import {
-    appSetting,
-    storageSet,
-    storageGet,
-    asyncStorageSet,
-} from 'app/lib/util'
+import { appSetting } from 'app/lib/util'
+import { usePref, setPref } from 'app/context/prefs'
 import { useCurrentUser } from 'app/context/user'
 import { useTranslation } from 'react-i18next'
 import Profile from 'app/ui/molecules/profile/profile'
@@ -169,17 +165,13 @@ return <View className='bg-blue-500 w-full h-full pt-24'>
     const { t } = useTranslation()
     const { currentUser } = useCurrentUser()
 
-    const feedTypeD = storageGet('feed:type', '', true)
-
-    const [feedType, setFeedType] = useState(
-        feedTypeD ? feedTypeD : appSetting('feed', 'default_feed')
-    )
+    // Stored preference is applied after hydration; SSR and first paint use the default.
+    const feedType = usePref('feedType') ?? appSetting('feed', 'default_feed')
 
     const feedList = appSetting('feed', 'list')
 
     function setFeedTypeEx(mode) {
-        storageSet('feed:type', '', mode, true)
-        setFeedType(mode)
+        setPref('feedType', mode)
     }
 
     const handleSideBarLayout = useCallback(({ nativeEvent: { layout } }) => {
@@ -195,7 +187,6 @@ return <View className='bg-blue-500 w-full h-full pt-24'>
     const { sideBarBlocks, navBarBlocks, topBlocks, centerBlocks, timelineBlocks } = defineCells(blocks, data);
 
 
-    asyncStorageSet('layout:visited', 'true')
     let dUser = Object.assign({}, currentUser)
     dUser.url_avatar = dUser.avatar
     dUser.url = appSetting('dashboard', 'url')

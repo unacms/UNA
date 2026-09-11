@@ -2,12 +2,10 @@
 
 import React, { useEffect, useCallback } from 'react';
 import { useCurrentUser } from 'app/context/user';
-import { storageClear, getDataFromCache, storageSet } from 'app/lib/util';
+import { storageClear } from 'app/lib/util';
 import { remoteSettings } from 'app/settings/remote';
 import { subscribe } from 'app/ui/atoms/socket';
 import { getRemoteSettings } from 'app/config';
-import { fetcher } from 'app/lib/fetcher';
-import { appSetting } from 'app/lib/util'
 import emitter from 'app/context/emitter'
 import { checkActionsOnConnectionsChanged } from 'app/customization/functions';
 
@@ -27,12 +25,10 @@ export default function Subscriber() {
         if (!currentUser?.id) return 
 
         const sub1 = subscribe('sys_connections_' + currentUser?.id, 'changed', onUpdateConnections);
-        const sub2 = subscribe('bx_timeline_0', 'edited', onItemEdited);
         const sub3 = subscribe('profile_' + currentUser?.id, 'changed', onUpdateProfile);
 
         return () => {
             sub1();
-            sub2();
             sub3();
             clearTimeout(connectionsReloadTimer);
         };
@@ -72,22 +68,6 @@ export default function Subscriber() {
             });
             connectionsReloadTimer = null;
         }, 400);
-    }, []);
-
-    const onItemEdited = useCallback(async (strData) => {
-        const data = JSON.parse(strData);
-        const dataId = data?.id;
-        if (dataId){
-            const sKey = 'feed_' + dataId;
-            const dataCache = getDataFromCache('li:data', sKey)
-            if (dataCache) {
-                const result = await fetcher(
-                    '/api.php?r=' + appSetting("urls", "feed_item") + '{"params":{"browse":"id","value":' + dataId + '}}'
-                )
-                if (result.data)
-                    storageSet('li:data', sKey, { data: result.data, ts: Date.now() });
-            }
-        }
     }, []);
 
     return <></>

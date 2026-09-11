@@ -5,7 +5,6 @@ import {
     getURI,
     parseUrl,
     parseQueryString,
-    storageKey,
     strToObj,
     decodeText,
     getBlocksFromData,
@@ -286,7 +285,7 @@ function createConductorRoute(item, index, depth, parentIndex, link, canNavigate
         menu_settings: appSetting('layout', 'user_remote_config') && item.config
             ? strToObj(item.config)
             : item.settings,
-        storageKeyValue: storageKey(routeLink, false),
+        storageKeyValue: routeLink,
         sidebar: {},
         leftbar: {},
         inited: false,

@@ -1,8 +1,11 @@
 'use client'
 
 import { useCallback, useEffect, useState } from 'react'
-import ImageCropModal from './crop-modal'
+import { lazyComponent } from 'app/lib/lazy-component'
 import { pickImageForCrop } from './crop'
+
+// Crop UI (zoomable view + crop math) loads on first crop only.
+const ImageCropModal = lazyComponent(() => import('./crop-modal'), { name: 'ImageCropModal' })
 import { uploadImage, md5, genRnd } from 'app/lib/util'
 import { fetcher } from 'app/lib/fetcher'
 
@@ -72,7 +75,8 @@ export function useProfileImageUpload({
         )
     }, [cropSession, kind, moduleName, storage, profileId, handleInsertImageFinish])
 
-    const modal = (
+    // Mounted only while a crop session is open so the lazy chunk is not fetched upfront.
+    const modal = cropSession ? (
         <ImageCropModal
             visible={!!cropSession}
             uri={cropSession?.uri}
@@ -83,7 +87,7 @@ export function useProfileImageUpload({
             onCancel={() => setCropSession(null)}
             onConfirm={handleCropConfirm}
         />
-    )
+    ) : null
 
     return { imageUrl, isUploading, pick, modal }
 }

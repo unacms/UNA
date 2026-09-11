@@ -2,7 +2,7 @@ import { useState, useMemo, useRef } from 'react';
 import { View, Pressable } from 'app/design/view';
 import Html from 'app/ui/atoms/html';
 import { truncateHTML } from 'app/lib/util';
-import { storageSet, storageGet } from 'app/lib/util'
+import { useSessionPref, setSessionPref } from 'app/context/prefs'
 import { Platform } from 'react-native'
 
 const isWeb = Platform.OS === 'web'
@@ -35,15 +35,13 @@ export function ContentMore({
     showLess = false, 
     id = false 
 }) {
-    let initedValue = openSmall;
-    if (id) {
-        let a = storageGet('layout:shmo', '');
-        if (a && a.includes(id)) {
-            initedValue = true;
-        }
-    }
-    
-    const [showFull, setShowFull] = useState(initedValue);
+    // Blocks the user already expanded this session arrive after hydration, so
+    // SSR and the first client render agree. A local toggle (once the user
+    // pressed the link) wins over the stored value.
+    const expandedItems = useSessionPref('expandedItems');
+    const wasExpanded = !!id && expandedItems.includes(id);
+    const [toggled, setToggled] = useState(null);
+    const showFull = toggled ?? (openSmall || wasExpanded);
     const contentRef = useRef(null);
 
     let linkContent = '';
@@ -63,15 +61,12 @@ export function ContentMore({
 
     const handleToggle = () => {
         if (id) {
-            let sm = storageGet('layout:shmo', '') || [];
-            if (!showFull) {
-                sm.push(id);
-            } else {
-                sm = sm.filter(item => item !== id);
-            }
-            storageSet('layout:shmo', '', sm)
+            setSessionPref(
+                'expandedItems',
+                showFull ? expandedItems.filter((item) => item !== id) : [...expandedItems, id]
+            );
         }
-        setShowFull(prev => !prev);
+        setToggled(!showFull);
     };
 
     // Prepare toggle text

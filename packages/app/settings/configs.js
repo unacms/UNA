@@ -34,9 +34,7 @@ export const settingsConfigs = {
         feed_item: 'bx_timeline/get/&params[]=',
     },
     cache: {
-        list: true,
-        compress: true,
-        // In-memory page / conductor / wiki caches (not web storage `list`).
+        // In-memory page / conductor / wiki caches.
         // Forks without the key keep caching on (`!== false`).
         enable_web: true,
         enable_native: true,

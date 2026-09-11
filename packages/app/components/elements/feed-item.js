@@ -2,8 +2,7 @@ import { View } from 'app/design/view';
 import Html from 'app/ui/atoms/html';
 import { useState, useEffect } from 'react'
 import Embed from 'app/ui/molecules/content/embed'
-import { storageSet, getDataFromCache, cloneObject, appSetting } from 'app/lib/util';
-import { Platform } from 'react-native'
+import { cloneObject, appSetting } from 'app/lib/util';
 import { subscribe } from 'app/ui/atoms/socket';
 import { ActionMenu, CounterMenu } from 'app/components/elements/feed-item-parts'
 import { UnitImages } from 'app/lib/feed-items'
@@ -14,7 +13,6 @@ import { fetcher } from 'app/lib/fetcher'
 export default function ElementFeedItem({ data, isModal, blockWrapperProps }) {
     const eventId = data?.event?.id
     const [content, setContent] = useState(data.event.content)
-    const isWeb = Platform.OS == 'web'
 
     // Same as UnitFeed card: refetch on timeline "edited" socket
     useEffect(() => {
@@ -42,15 +40,6 @@ export default function ElementFeedItem({ data, isModal, blockWrapperProps }) {
         const unsub = subscribe('bx_timeline_0', 'edited', onItemEdited)
         return () => unsub()
     }, [eventId])
-
-    if (isWeb && eventId != null) {
-        const sKey = 'feed_' + eventId
-        const dataCache = getDataFromCache('li:data', sKey)
-        if (dataCache) {
-            dataCache.ts = -1
-        }
-        storageSet('li:data', sKey, dataCache)
-    }
 
     const tlContent = content?.text
 

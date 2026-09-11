@@ -7,7 +7,7 @@ import AsyncWorker from 'app/ui/molecules/system/async-worker';
 import { View } from 'app/design/view';
 import { useCurrentUser } from 'app/context/user'
 import BottomSheet from 'app/ui/molecules/dialogs/bottomsheet-content';
-import { appSetting, storageClear, storageGet, decodeText } from 'app/lib/util'
+import { appSetting, storageClear, decodeText } from 'app/lib/util'
 import { appStatic } from 'app/lib/app-static'
 import { scheduleOneSignalSubscription } from 'app/lib/platform/one-signal';
 import { useThemeName, useThemeValue } from 'app/design/theme';
@@ -22,7 +22,7 @@ const MemoizedContent = React.memo(({ currentUser, pageLayoutName, layoutName, d
     const [isModal, setIsModal] = useState(false);
     const { t } = useTranslation()
     useEffect(() => {
-        if (currentUser === false && !storageGet('layout:modal', '', true) && appSetting('layout', 'show_login_modal') > 0 && !['create-account', 'login','home',  'forgot-password', 'confirm-email'].includes(data.uri)) {
+        if (currentUser === false && appSetting('layout', 'show_login_modal') > 0 && !['create-account', 'login','home',  'forgot-password', 'confirm-email'].includes(data.uri)) {
             const timeoutId = setTimeout(() => {
                 setIsModal(true)
             }, appSetting('layout', 'show_login_modal'));
@@ -31,7 +31,6 @@ const MemoizedContent = React.memo(({ currentUser, pageLayoutName, layoutName, d
     }, [currentUser]);
 
     const handleCloseModal = () => {
-        //storageSet('layout:modal', '', true, true);
         setIsModal(false)
     }
 

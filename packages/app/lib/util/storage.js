@@ -1,131 +1,82 @@
-import pako from 'pako';
-import { parse as flatted_parse, stringify as flatted_stringify } from 'flatted';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { isWeb } from './layout';
-import { appSetting } from './settings';
 
-const nativeCache = [];
+/**
+ * Two storage primitives, both JSON, both namespaced so a schema change can
+ * bump the version instead of silently misreading old values:
+ *
+ * - persisted*: survives restarts. Web localStorage, native AsyncStorage (async).
+ * - sessionCache*: this tab / this app run. Web sessionStorage, native memory (sync).
+ *
+ * Components never touch these directly — read preferences through the stores
+ * in app/context (layout-settings, prefs) so server and first client render
+ * always agree (hydration happens after mount).
+ */
 
-/** Clear in-memory native sessionStorage stand-in used by storageSet/Get. */
-export function clearNativeMemoryCache() {
-    for (const key of Object.keys(nativeCache)) {
-        delete nativeCache[key]
-    }
-}
+const PERSISTED_PREFIX = 'neo:v1:';
+const SESSION_PREFIX = 'neo:session:v1:';
 
-export const getDataFromCache = (pref, storageKeyValue) => {
-    if (appSetting('cache', 'list') && isWeb) {
-        return storageGet(pref, storageKeyValue);
-    }
-    return false;
-}
-
-export async function asyncStorageSet(key, data) {
-    if (isWeb) {
-        storageSet(key, '', data, true);
-    }
-    else {
-        AsyncStorage.setItem(key, data);
-    }
-}
-
-export async function asyncStorageGet(key) {
-    if (isWeb) {
-        return storageGet(key, '', true);
-    }
-    else {
-        return await AsyncStorage.getItem(key)
-    }
-}
-
-export function storageSet(pref, key, data, isLocal = false) {
-
-    if (!isWeb) {
-        if (!isLocal && pref == 'layout:shmo') {
-            nativeCache[pref + '-' + key] = data;
-        }
-    }
-    else {
-        if (typeof localStorage !== 'undefined') {
-            const serializedData = appSetting('cache', 'compress') ? compress(data) : JSON.stringify(data);
-            const storage = isLocal ? localStorage : sessionStorage;
-            storage.setItem(`${pref}-${key}`, serializedData);
-        }
-    }
-}
-
-export function storageGet(pref, key, isLocal = false) {
-    if (!isWeb) {
-        if (!isLocal && pref == 'layout:shmo') {
-            if (nativeCache[pref + '-' + key])
-                return nativeCache[pref + '-' + key]
-        }
-        // return await AsyncStorage.getItem(`${pref}-${key}`);
-    }
-    else {
-        if (typeof localStorage !== 'undefined') {
-            const storage = isLocal ? localStorage : sessionStorage;
-            const storedData = storage.getItem(`${pref}-${key}`);
-            if (!storedData) return null;
-            return appSetting('cache', 'compress') ? decompress(storedData) : JSON.parse(storedData);
-        }
-    }
-}
-
-export function storageKey(url, useUrl = true) {
-    if (!isWeb)
-        return;
-
-    let s = url;
-    if (!useUrl)
-        s = url;
-    return (s);
-}
-
-export function storageClear(pref, key) {
-    if (!isWeb)
-        return;
-
-    if (pref && key)
-        localStorage.removeItem(`${pref}-${key}`);
-    else
-        sessionStorage.clear();
-}
-
-export function storageRemove(pref, key, isLocal = false) {
-    if (!isWeb) {
-
-    }
-    else {
-        const storage = isLocal ? localStorage : sessionStorage;
-        storage.removeItem(`${pref}-${key}`);
-    }
-}
-
-
-function compress(data) {
-
+const parse = (raw) => {
+    if (raw == null) return null;
     try {
-        let a = flatted_stringify(data);
-        // Use browser-compatible approach instead of Buffer
-        const compressed = pako.deflate(a);
-        const binaryString = Array.from(compressed, byte => String.fromCharCode(byte)).join('');
-        return btoa(binaryString);
-    } catch (error) {
+        return JSON.parse(raw);
+    } catch {
         return null;
     }
+};
+
+const hasWebStorage = (name) => isWeb && typeof window !== 'undefined' && !!window[name];
+
+export async function persistedGet(key) {
+    const fullKey = PERSISTED_PREFIX + key;
+    if (isWeb) {
+        return hasWebStorage('localStorage') ? parse(window.localStorage.getItem(fullKey)) : null;
+    }
+    return parse(await AsyncStorage.getItem(fullKey));
 }
 
-function decompress(data) {
+export async function persistedSet(key, value) {
+    const fullKey = PERSISTED_PREFIX + key;
+    const raw = JSON.stringify(value);
     try {
-        // Use browser-compatible approach instead of Buffer
-        const binaryString = atob(data);
-        const bytes = new Uint8Array(binaryString.length);
-        for (let i = 0; i < binaryString.length; i++) {
-            bytes[i] = binaryString.charCodeAt(i);
+        if (isWeb) {
+            if (hasWebStorage('localStorage')) window.localStorage.setItem(fullKey, raw);
+        } else {
+            await AsyncStorage.setItem(fullKey, raw);
         }
-        return flatted_parse(pako.inflate(bytes, { to: 'string' }));
-    } catch (error) {
-        return null;
+    } catch {
+        // Quota exceeded / storage disabled: the preference simply does not persist.
+    }
+}
+
+const sessionMemory = new Map();
+
+export function sessionCacheGet(key) {
+    const fullKey = SESSION_PREFIX + key;
+    if (hasWebStorage('sessionStorage')) return parse(window.sessionStorage.getItem(fullKey));
+    return sessionMemory.has(fullKey) ? sessionMemory.get(fullKey) : null;
+}
+
+export function sessionCacheSet(key, value) {
+    const fullKey = SESSION_PREFIX + key;
+    if (hasWebStorage('sessionStorage')) {
+        try {
+            window.sessionStorage.setItem(fullKey, JSON.stringify(value));
+        } catch {
+            // Quota exceeded: a cache miss later is fine.
+        }
+        return;
+    }
+    sessionMemory.set(fullKey, value);
+}
+
+/** Drop everything session-scoped (ours only — never `sessionStorage.clear()`). */
+export function storageClear() {
+    sessionMemory.clear();
+    if (!hasWebStorage('sessionStorage')) return;
+    const storage = window.sessionStorage;
+    for (let i = storage.length - 1; i >= 0; i--) {
+        const k = storage.key(i);
+        if (k && k.startsWith(SESSION_PREFIX)) storage.removeItem(k);
     }
 }

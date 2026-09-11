@@ -6,9 +6,8 @@ import {
     appSetting,
     getMenuSettings,
     menuItemsFilter,
-    storageSet,
-    storageGet,
 } from 'app/lib/util'
+import { usePref, setPref, usePrefsStore } from 'app/context/prefs'
 import {
     getAddon,
     hasConductorSubitems,
@@ -388,23 +387,27 @@ export const TabSceneColumns = ({
      * User dragged a handle: remember the sizes (per breakpoint) unless they
      * are just the defaults, and let width-aware children re-measure.
      */
+    const panelSizes = usePref('panelSizes')
+    const panelSizesKey = asId + '-' + currentBreakpointName
     const onLayout = useCallback((sizes) => {
         if (
             JSON.stringify(sizes) != JSON.stringify(defaultLayouts) &&
             asId &&
             defaultLayouts
         ) {
-            storageSet('rrp', asId + '-' + currentBreakpointName, sizes, true)
+            // Read the latest map from the store (not the render closure) to avoid clobbering other keys.
+            setPref('panelSizes', { ...usePrefsStore.getState().persisted.panelSizes, [panelSizesKey]: sizes })
         }
         setTimeout(() => window.dispatchEvent(new Event('resize_panel')), 100)
-    }, [asId, currentBreakpointName, defaultLayouts])
+    }, [asId, panelSizesKey, defaultLayouts])
 
-    // Apply stored sizes (or the defaults) whenever the arrangement changes.
+    // Apply stored sizes (or the defaults) whenever the arrangement changes or
+    // the stored preference hydrates.
+    const storedSizes = panelSizes[panelSizesKey]
     useEffect(() => {
-        const stored = storageGet('rrp', asId + '-' + currentBreakpointName, true)
-        const next = stored || defaultLayouts
+        const next = storedSizes || defaultLayouts
         if (next) groupRef.current?.setLayout(next)
-    }, [asId, currentBreakpointName, defaultLayouts, pageRoute])
+    }, [storedSizes, defaultLayouts, pageRoute])
 
     // Scroll the new tab into view. Runs twice — synchronously and on the next
     // frame — because the list height is not final until it has painted.
