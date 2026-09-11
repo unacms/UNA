@@ -68,6 +68,13 @@ class BxBaseCover extends BxDolCover
             $aParams = array_merge($this->_aOptiondDefault, $mixedOptions);
         }
 
+        //--- The cover title is the page's <h1>. Content view pages deliberately leave it empty and
+        //--- headline the content instead, so the heading element is only emitted when there is a title.
+        $aParams['bx_if:title'] = array (
+            'condition' => !empty($aParams['title']),
+            'content' => array('title' => isset($aParams['title']) ? $aParams['title'] : ''),
+        );
+
         /**
          * @hooks
          * @hookdef hook-system-display_cover 'system', 'display_cover' - hook to override page cover code to be output
@@ -102,7 +109,14 @@ class BxBaseCover extends BxDolCover
      */
     public function displayEmpty ()
     {
-    	return $this->_oTemplate->parseHtmlByName($this->_sTemplateNameEmpty, array());
+        $sTitle = $this->_oTemplate->getPageHeader();
+
+        return $this->_oTemplate->parseHtmlByName($this->_sTemplateNameEmpty, array(
+            'bx_if:title' => array(
+                'condition' => !empty($sTitle),
+                'content' => array('title' => bx_process_output(strip_tags($sTitle))),
+            ),
+        ));
     }
 
     /**

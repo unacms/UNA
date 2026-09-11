@@ -4536,8 +4536,14 @@
     <string name="_sys_txt_quill_tooltip_color"><![CDATA[Select a text color]]></string>
     <string name="_sys_txt_quill_tooltip_background"><![CDATA[Select a background color]]></string>
     <string name="_sys_txt_quill_tooltip_align"><![CDATA[Text alignment]]></string>
+    <string name="_sys_txt_quill_tooltip_align_center"><![CDATA[Align center]]></string>
+    <string name="_sys_txt_quill_tooltip_align_justify"><![CDATA[Justify]]></string>
+    <string name="_sys_txt_quill_tooltip_align_left"><![CDATA[Align left]]></string>
+    <string name="_sys_txt_quill_tooltip_align_right"><![CDATA[Align right]]></string>
     <string name="_sys_txt_quill_tooltip_header"><![CDATA[Select the text style]]></string>
     <string name="_sys_txt_quill_tooltip_embed"><![CDATA[Insert an embed]]></string>
+    <string name="_sys_txt_quill_tooltip_emoji"><![CDATA[Insert an emoji]]></string>
+    <string name="_sys_txt_quill_tooltip_show_html"><![CDATA[Edit HTML source]]></string>
     <string name="_sys_txt_quill_tooltip_embed_popup_header"><![CDATA[Paste an URL for embed]]></string>
     <string name="_sys_txt_quill_tooltip_link_popup_header"><![CDATA[Paste an URL]]></string>
     <string name="_sys_queue_emails"><![CDATA[Emails]]></string>

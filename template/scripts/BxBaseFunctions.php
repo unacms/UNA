@@ -553,6 +553,18 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
                 if(!empty($aButton['class']))
                     $aAttrs['class'] .= ' ' . trim($aButton['class']);
 
+                // an icon-only button renders no text, so it needs an accessible name of its own
+                if(empty($aButton['title'])) {
+                    $sButtonLabel = _t(!empty($aButton['area_label']) ? $aButton['area_label'] : '_sys_menu_item_title_system_more');
+                    $aAttrs['aria-label'] = $sButtonLabel;
+                }
+
+                // the popup opened by bx_menu_popup* is role="dialog", bx_menu_popup_inline keeps aria-expanded in sync
+                if(!empty($aAttrs['onclick']) && strpos($aAttrs['onclick'], 'bx_menu_popup') !== false) {
+                    $aAttrs['aria-haspopup'] = 'dialog';
+                    $aAttrs['aria-expanded'] = 'false';
+                }
+
                 $bTmplVarsButtonIcon = !empty($aButton['icon']);
                 $aTmplVarsButtonIcon = !$bTmplVarsButtonIcon ? array() : array(
                     'icon' => $aButton['icon']

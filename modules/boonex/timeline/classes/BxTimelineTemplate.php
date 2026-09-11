@@ -1311,6 +1311,7 @@ class BxTimelineTemplate extends BxBaseModNotificationsTemplate
         $aTmplVars = array(
             'style_prefix' => $sStylePrefix,
             'visible' => ($aParams['view'] == BX_TIMELINE_VIEW_TIMELINE && $bVisible) || ($aParams['view'] == BX_TIMELINE_VIEW_OUTLINE && $bEnabled && $bVisible) ? 'block' : 'none',
+            'disabled' => !$bEnabled ? ' disabled="disabled"' : '',
             'bx_if:is_disabled' => array(
                 'condition' => !$bEnabled,
                 'content' => array()

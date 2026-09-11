@@ -3,3 +3,38 @@
     flex-direction: column;
     grid-row-gap: 5px;
 }
+
+/* WCAG 2.1 AA (1.4.3 Contrast Minimum).
+   FullCalendar dims the adjacent-month days to 30% opacity and tints the current
+   day's cell, which pushes both day numbers under 4.5:1 in the light and the dark
+   scheme alike. The month hierarchy is kept, but with explicit colours instead of
+   transparency. FullCalendar injects its own stylesheet from JS after this file,
+   so the opacity reset has to be flagged important. */
+.fc .fc-daygrid-day-number {
+    color: #374151;
+}
+
+.fc .fc-daygrid-day.fc-day-other .fc-daygrid-day-top {
+    opacity: 1 !important;
+}
+
+.fc .fc-daygrid-day.fc-day-other .fc-daygrid-day-number {
+    color: #6b7280;
+}
+
+.fc .fc-daygrid-day.fc-day-today .fc-daygrid-day-number {
+    color: #111827;
+    font-weight: 600;
+}
+
+.dark .fc .fc-daygrid-day-number {
+    color: #e5e7eb;
+}
+
+.dark .fc .fc-daygrid-day.fc-day-other .fc-daygrid-day-number {
+    color: #9ca3af;
+}
+
+.dark .fc .fc-daygrid-day.fc-day-today .fc-daygrid-day-number {
+    color: #f3f4f6;
+}
