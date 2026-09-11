@@ -1782,7 +1782,7 @@
     /* Studio: modal boxes (studio/template/popup_box.html): the block caption as the header (64px row, 16px inset, 20px semibold title, hairline under
        it), a 32px close button with the Lucide x in the top-right corner, and the wrapper no longer clips the shadow: the box caps its own height
        to the viewport and scrolls its content instead of the wrapper scrolling the box (the site rule on body > .bx-popup-wrapper). */
-    .bx-std > .bx-popup-box-wrapper:not(.bx-popup-full-screen),
+    .bx-std > .bx-popup-wrapper:not(.bx-popup-full-screen),
     .bx-std > .bx-popup-applied:has(> .bx-popup-box-wrapper:not(.bx-popup-full-screen)) { /* grid action popups: dolPopup runs on their own wrapper around the box, and .bx-popup-active scrolls it */
         @apply max-h-none overflow-visible;
     }
