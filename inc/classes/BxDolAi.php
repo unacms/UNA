@@ -7,23 +7,10 @@
  * @{
  */
 
-define('BX_DOL_AI_ASSISTANT', 'assistant');
-define('BX_DOL_AI_AUTOMATOR_EVENT', 'event');
-define('BX_DOL_AI_AUTOMATOR_SCHEDULER', 'scheduler');
-define('BX_DOL_AI_AUTOMATOR_WEBHOOK', 'webhook');
-
-define('BX_DOL_AI_AUTOMATOR_STATUS_AUTO', 'auto');
-define('BX_DOL_AI_AUTOMATOR_STATUS_MANUAL', 'manual');
-define('BX_DOL_AI_AUTOMATOR_STATUS_READY', 'ready');
-
 class BxDolAi extends BxDolFactory implements iBxDolSingleton
 {
     protected $_oDb;
     protected $_iProfileId;
-    
-    protected $_aExcludeAlertUnits;
-
-    protected $_bWriteLog;
 
     protected $_aChatContext;
 
@@ -37,12 +24,6 @@ class BxDolAi extends BxDolFactory implements iBxDolSingleton
         $this->_oDb = new BxDolAiQuery();
 
         $this->_iProfileId = (int)getParam('sys_profile_bot'); 
-
-        $this->_aExcludeAlertUnits = [
-            'system', 'module_template_method_call'
-        ];
-
-        $this->_bWriteLog = true;
 
         $this->_aChatContext = null;
     }
@@ -111,18 +92,11 @@ class BxDolAi extends BxDolFactory implements iBxDolSingleton
     public static function getAiProviderInstance(int $iId):NeuronAI\Providers\AIProviderInterface
     {
         return BxDolAIModelFactory::getModelInstance($iId);
-    }   
+    }
 
     public static function getAiEmbeddingsProviderInstance(int $iId):NeuronAI\RAG\Embeddings\EmbeddingsProviderInterface
     {
         return BxDolAIModelFactory::getModelInstance($iId);
-    }
-
-    public static function pruning() {}
-
-    public static function getDefaultApiKey()
-    {
-        return getParam('sys_agents_api_key');
     }
 
     public static function getDefaultModel()
@@ -144,15 +118,6 @@ class BxDolAi extends BxDolFactory implements iBxDolSingleton
             $aParamsDb['capabilities'] = $aParams['capabilities'];
 
         return $this->_oDb->getModelsBy($aParamsDb);
-    }
-
-    public function getModel($iId)
-    {
-        $aModel = $this->_oDb->getModelsBy(['sample' => 'id', 'id' => $iId]);
-        if(!empty($aModel['params']))
-            $aModel['params'] = json_decode($aModel['params'], true);
-
-        return $aModel;
     }
 
     public function callAgent($sType, $aAgent, $mixedParams = [])
@@ -1250,7 +1215,7 @@ class BxDolAi extends BxDolFactory implements iBxDolSingleton
             return;
 
         $oHistory = $oAgent->getChatHistory();
-        if (!($oHistory instanceof BxDolAiChatHistory) || !method_exists($oHistory, 'persistMessages'))
+        if (!($oHistory instanceof BxDolAiChatHistory))
             return;
 
         $aMessages = $oHistory->getMessages();
@@ -1451,83 +1416,8 @@ class BxDolAi extends BxDolFactory implements iBxDolSingleton
         return $this->_oDb->getAgentsByTriggerType($sTrigger);
     }
 
-    public function getAgentById($iId)
-    {
-        return $this->_oDb->getAgentById($iId);
-    }
-
     public function getAgentByTriggerWebhookKey($sKey)
     {
         return $this->_oDb->getAgentByTriggerWebhookKey($sKey);
-    }
-
-    public function evalCode($aAutomator, $aParams = [])
-    {
-        try {
-            $this->_evalCode($aAutomator, $aParams);
-        }
-        catch (Exception $oException) {
-            $this->log($oException->getFile() . ':' . $oException->getLine() . ' ' . $oException->getMessage());
-        }
-        catch (Error $oError) {
-            $this->log($oError->getFile() . ':' . $oError->getLine() . ' ' . $oError->getMessage());
-        }
-    }
-
-    public function emulCode($aAutomator, $aParams = [])
-    {
-        ob_start();
-
-        try {
-            $this->_evalCode($aAutomator, $aParams);
-        }
-        catch (Exception $oException) {
-            return $oException->getMessage();
-        }
-        catch (Error $oError) {
-            return $oError->getMessage();
-        }
-        finally {
-            $sOutput = ob_get_clean();
-
-            if(!empty($sOutput))
-                return $sOutput;
-        }
-    }
-
-    public function log($mixedContents, $sSection = '')
-    {
-        if(!$this->_bWriteLog)
-            return;
-
-        if(is_array($mixedContents))
-            $mixedContents = var_export($mixedContents, true);	
-        else if(is_object($mixedContents))
-            $mixedContents = json_encode($mixedContents);
-
-        if(empty($sSection))
-            $sSection = "Core";
-
-        bx_log('sys_agents', ":\n[" . $sSection . "] " . $mixedContents, BX_LOG_ERR);
-    }
-
-    protected function _evalCode($aAutomator, $aParams = [])
-    {
-        $sCode = '';
-        switch($aAutomator['type']) {
-            case BX_DOL_AI_AUTOMATOR_EVENT:
-                $sCode = $aAutomator['code']. '; onAlert($aParams["alert"]->iObject , $aParams["alert"]->iSender , $aParams["alert"]->aExtras);';
-                break;
-
-            case BX_DOL_AI_AUTOMATOR_SCHEDULER:
-                $sCode = $aAutomator['code'] . '; onCron();';
-                break;
-
-            case BX_DOL_AI_AUTOMATOR_WEBHOOK:
-                $sCode = $aAutomator['code'] . '; onHook();';
-                break;
-        }
-
-        eval($sCode);
     }
 }

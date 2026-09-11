@@ -45,17 +45,6 @@ class BxDolAiQuery extends BxDolDb
         return self::_getObject($iId, 'sys_agents_tools');
     }
 
-    static public function getAssistantObject($iId)
-    {
-        $oDb = BxDolDb::getInstance();
-
-        $aAssistant = $oDb->getRow("SELECT * FROM `sys_agents_assistants` WHERE `id` = :id", ['id' => $iId]);
-        if(!$aAssistant || !is_array($aAssistant))
-            return false;
-
-        return $aAssistant;
-    }
-
     public function insertModel($aModel)
     {
         if(empty($aModel))
@@ -513,7 +502,7 @@ class BxDolAiQuery extends BxDolDb
             'action' => $sAction,
         ]);
         if (!$sDesc) {
-            $oDb->getOne("SELECT `description` FROM `sys_alerts_desc` WHERE `unit` LIKE '{%}' AND `action` = :action LIMIT 1", [
+            $sDesc = $oDb->getOne("SELECT `description` FROM `sys_alerts_desc` WHERE `unit` LIKE '{%}' AND `action` = :action LIMIT 1", [
                 'action' => $sAction,
             ]);
         }

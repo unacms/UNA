@@ -166,13 +166,4 @@ foreach($aAgents as $aAgent) {
     if(checkCronJob($aAgent['scheduler_cron'], $aDate))
         $oAi->callAgent('scheduler', $aAgent);
 }
-
-// run automators (schedulers)
-$aAutomators = $oAi->getAutomatorsScheduler();
-foreach($aAutomators as $aAutomator) {
-    if(checkCronJob($aAutomator['params']['scheduler_time'], $aDate))
-        $oAi->callAutomator(BX_DOL_AI_AUTOMATOR_SCHEDULER, [
-            'automator' => $aAutomator
-        ]);
-}
 /** @} */
