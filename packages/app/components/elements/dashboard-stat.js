@@ -7,7 +7,6 @@ import {
     BlockFooter,
     BlockTitle,
     BlockDescription,
-    BlockIcon,
     BlockName,
     BlockActions,
 } from 'app/ui/molecules/page/page-block'
@@ -117,15 +116,15 @@ function DashboardStatRemote(props) {
         <BlockWrapper {...props.blockWrapperProps}>
             <ScrollView>
                 <Block className="u-max-width-block">
-                    <BlockHeader>
-                        <BlockIcon className="!h-auto !w-auto">
+                    <BlockHeader className="items-center">
+                        <View className="flex-none">
                             <Profile
                                 {...currentUser}
                                 url_avatar={currentUser.avatar}
                                 displayType="unit_wo_info"
                                 displaySize="xl"
                             />
-                        </BlockIcon>
+                        </View>
                         <BlockName className="gap-1">
                             <BlockTitle>
                                 <Text className="text-card-foreground text-xl font-semibold">{currentUser.display_name}</Text>
@@ -156,12 +155,12 @@ function DashboardStatRemote(props) {
 
                         </BlockActions>
                     </BlockHeader>
-                    <BlockContent className="pt-3">
+                    <BlockContent className="!gap-3">
                         <ElementDashboardStat {...props} />
                         {showSecondaryActions ? (
-                        <View className="grid w-full grid-cols-1 gap-x-2 gap-y-1.5 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 ">
+                        <View className="grid w-full grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
                             {showWiki ? (
-                                <View className="w-full max-w-sm flex-1 min-w-[160px]">
+                                <View className="w-full min-w-0">
                                     <NeoButtonLink
                                         href="/wiki/overview"
                                         label="Documentation"
@@ -174,8 +173,9 @@ function DashboardStatRemote(props) {
                                 </View>
                             ) : null}
                             {showLangs ? (
-                                <View className="w-full max-w-sm flex-1 min-w-[160px]">
+                                <View className="w-full min-w-0">
                                     <DropdownMenu
+                                        triggerClassName="w-full"
                                         items={langs.map((lang) => ({
                                             id: lang,
                                             key: lang,
@@ -199,8 +199,9 @@ function DashboardStatRemote(props) {
                                 </View>
                             ) : null}
                             {showTheme ? (
-                                <View className="w-full max-w-sm flex-1 min-w-[160px]">
+                                <View className="w-full min-w-0">
                                     <DropdownMenu
+                                        triggerClassName="w-full"
                                         items={['dark', 'light', 'auto'].map(
                                             (theme) => ({
                                                 key: theme,
@@ -228,8 +229,9 @@ function DashboardStatRemote(props) {
 
 
                             {showLayouts ? (
-                                    <View className="w-full max-w-sm flex-1 min-w-[160px]">
+                                    <View className="w-full min-w-0">
                                         <DropdownMenu
+                                            triggerClassName="w-full"
                                             items={appSetting(
                                                 'layout',
                                                 'avaliable_layouts'
@@ -257,8 +259,9 @@ function DashboardStatRemote(props) {
                                 ) : null}
 
                             {showFeedUnits ? (
-                                <View className="w-full max-w-sm flex-1 min-w-[160px]">
+                                <View className="w-full min-w-0">
                                     <DropdownMenu
+                                        triggerClassName="w-full"
                                         items={appSetting(
                                             'layout',
                                             'avaliable_feed_units'
@@ -287,7 +290,7 @@ function DashboardStatRemote(props) {
                         </View>
                         ) : null}
                     </BlockContent>
-                    <BlockFooter className="">
+                    <BlockFooter>
                         <NeoButtonLink
                             href="/logout"
                             label={t('Sign out')}
@@ -430,11 +433,11 @@ function ElementDashboardStat(props) {
             </Row>
             {data.manage.items.length > 0 && (
 
-                <View className=" grid w-full grid-cols-1 gap-x-2 gap-y-1.5 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
+                <View className="grid w-full grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
                     {data.manage.items.map((item2, index) => {
                         return (
                             <View
-                                className=" w-full min-w-[160px]  "
+                                className="w-full min-w-0"
                                 key={index}
                             >
                                 <NeoButtonLink

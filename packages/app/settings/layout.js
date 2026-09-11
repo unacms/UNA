@@ -9,7 +9,7 @@ export const settingsLayout = {
         },
         avaliable_layouts: ['hor', 'ver', 'mixed'],
         avaliable_feed_units: ['Full feed', 'Compact feed'],
-        avaliable_langs: ['auto', 'en', 'ru'],
+        avaliable_langs: ['auto', 'en', 'ru', 'es', 'de', 'fr'],
         screen: ' w-full  ',
 
 
