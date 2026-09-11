@@ -36,7 +36,7 @@ export default function PageLayout({ data, pageClasses }) {
         }
 
         return (
-            <Page data={data} processKeyboard={false} resetHeaderOnFocus={false}>
+            <Page data={data} processKeyboard={false}>
                 <View className={`${width} w-full min-h-0`} style={isDesktop ? { height: pageHeight } : undefined}>
                     <View className={`${contentWidth} ${isDesktop ? padding : ''} ${gap} mx-auto w-full ${isDesktop ? 'h-full min-h-0' : ''}`}>
                         {messenger}

@@ -16,7 +16,8 @@ import {
     PanelHandler,
     resolvePanelProps,
 } from 'app/ui/molecules/page/resizable-panels'
-import { useSetHeader, defaultHeader, useSetFooter, useHeaderHeight } from 'app/context/jotai/layout';
+import { useSetFooter, useHeaderHeight } from 'app/context/jotai/layout';
+import { PageHeaderOptions } from 'app/ui/molecules/header/options';
 import { useSafeAreaInsets, getWindowSafeAreaInsets } from 'app/lib/hooks/router'
 import { useStickyHeaderOffset, stickySidebarStyle } from 'app/lib/hooks/use-sticky-header-offset'
 import { Loading } from 'app/customization/loading'
@@ -112,7 +113,6 @@ export default function PageLayout({ data, blocks, isModal = false, url, pageCla
     const isLgUp = currentBreakpoint >= LAYOUT_BREAKPOINTS.lg;
     const isFormFixed = isWeb && !isLgUp;
     const groupRef = useRef(null)
-    const setHeader = useSetHeader();
     const setFooter = useSetFooter();
     const searchParams = useLocalSearchParams();
     const pageHeaderHeight = useHeaderHeight();
@@ -282,22 +282,6 @@ export default function PageLayout({ data, blocks, isModal = false, url, pageCla
 
     const isMultiColumn = leftBarBlocks.length > 0 || sideBarBlocks.length > 0;
 
-    //console.log("headerItems[0].data", aItems[0])
-    useEffect(() => {
-        if (!isModal) {
-            if (!isDesktop) {
-                // Author block stays in-flow in the list (like desktop/modal) —
-                // no subHeader lift into the pinned header chrome.
-                setHeader({ backButton: true, title: data.module == 'bx_timeline' ? 'Update' : 'Post' });
-            }
-            else {
-                setHeader(defaultHeader);
-            }
-
-        }
-
-    }, [isDesktop, isWeb, isMultiColumn, setHeader]);
-
     useEffect(() => {
         setFooter(false);
         return () => {
@@ -315,6 +299,13 @@ export default function PageLayout({ data, blocks, isModal = false, url, pageCla
                 offset2 = insets.bottom + insets.top + 80;
             }
         }
+    // Small screens (native + mobile web): title + back go into the pinned
+    // header chrome; the author block stays in-flow in the list (like desktop
+    // and the modal, which owns its own chrome).
+    const headerOptions = isModal ? null : (
+        <PageHeaderOptions backButton title={data.module == 'bx_timeline' ? 'Update' : 'Post'} mobileOnly />
+    );
+
     if (isModal) {
         return (
             <View className="w-full flex-1 relative">
@@ -404,6 +395,7 @@ export default function PageLayout({ data, blocks, isModal = false, url, pageCla
         if (!isWeb) {
             return (
                 <View {...viewProps} className="w-full h-full">
+                    {headerOptions}
                     <View className="max-w-5xl w-full flex-1 bg-card text-card-foreground relative mx-auto">
                         <View className="flex-1 w-full min-h-0">
                             <CommentsBrowse
@@ -438,6 +430,7 @@ export default function PageLayout({ data, blocks, isModal = false, url, pageCla
 
         return (
             <View {...viewProps} className="w-full">
+                {headerOptions}
                 <View className={`max-w-5xl w-full flex-1 bg-card text-card-foreground lg:rounded-2xl lg:my-4 mx-auto `}>
                     <View
                         onLayout={handleListLayout}

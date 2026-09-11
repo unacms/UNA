@@ -1,7 +1,6 @@
 import { View } from 'app/design/view'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { appSetting, LAYOUT_BREAKPOINTS, stripTags } from 'app/lib/util'
-import { useFocusEffect } from 'app/lib/hooks/router'
 import Page from 'app/ui/molecules/page/page'
 import MenuFooter from 'app/components/nav/menu-footer'
 import { useTranslation } from 'react-i18next'
@@ -15,7 +14,8 @@ import { useBreakpoint, useBreakpointName, useIsDesktop } from 'app/context/meas
 import { BlockWrapper } from 'app/components/block-wrapper'
 import { BlockByData } from 'app/components/block'
 import DropdownPopup from 'app/ui/atoms/dropdown-popup'
-import { defaultHeader, useHeaderHeight, useSetHeader, DEFAULT_HEADER_HEIGHT } from 'app/context/jotai/layout'
+import { useHeaderHeight, DEFAULT_HEADER_HEIGHT } from 'app/context/jotai/layout'
+import { PageHeaderOptions } from 'app/ui/molecules/header/options'
 import emitter from 'app/context/emitter'
 import { parseWikiFrontMatter } from 'app/lib/markdown/frontmatter'
 import { wikiCacheKey } from 'app/lib/cache/wiki-page-cache'
@@ -49,7 +49,6 @@ import { useWikiNavigation } from 'app/components/elements/wiki/use-navigation'
 function PageContentWiki({ data, scrollRef, url }) {
     const { t } = useTranslation()
     const isDesktop = useIsDesktop()
-    const setHeader = useSetHeader()
     const centerContentRef = useRef(null)
     const {
         pageData,
@@ -317,20 +316,6 @@ function PageContentWiki({ data, scrollRef, url }) {
         tocMenuLabel,
     ])
 
-    useEffect(() => {
-        if (isWeb) {
-            setHeader(isDesktop ? defaultHeader : { subHeader: mobileHeaderControls });
-        }
-    }, [isDesktop, isWeb, mobileHeaderControls, setHeader]);
-
-    useFocusEffect(
-        useCallback(() => {
-            if (!isWeb) {
-                setHeader(isDesktop ? defaultHeader : { subHeader: mobileHeaderControls });
-            }
-        }, [isWeb, isDesktop, mobileHeaderControls, setHeader])
-    )
-
     // Sticky pin stays at top:0; header clearance lives in scroll content padding so tall
     // sidebars can still scroll behind translucent/floating headers. Negative margin cancels
     // the page header spacer so sidebars align with center content before stick engages.
@@ -341,6 +326,7 @@ function PageContentWiki({ data, scrollRef, url }) {
 
     return (
         <View className={`${appSetting('layout', 'max_width')}`}>
+            <PageHeaderOptions sub={mobileHeaderControls} mobileOnly />
                 <PanelGroup
                     ref={groupRef}
                     key={`cells-wiki${cellsCustomConfig.sizable ? 'sizable' : 'static'}`}
@@ -464,7 +450,7 @@ export default function PageLayoutWiki({ data }) {
     const scrollRef = useRef(null)
 
     return (
-        <Page data={data} processKeyboard={false} scrollRef={scrollRef} resetHeaderOnFocus={false}>
+        <Page data={data} processKeyboard={false} scrollRef={scrollRef}>
             <PageContentWiki data={data} scrollRef={scrollRef} />
             <View className="flex-1" />
             <MenuFooter />

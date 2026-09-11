@@ -19,8 +19,8 @@ import { useLayoutSettings } from 'app/context/layout-settings'
 import Badge from 'app/ui/molecules/profile/badge'
 import Badges from 'app/ui/molecules/profile/badges'
 import { useBreakpoint, useIsDesktop, useBreakpointName } from 'app/context/measure';
-import { useSetHeader, useHeaderHeight, defaultHeader } from 'app/context/jotai/layout';
-import { useFocusEffect }  from 'app/lib/hooks/router'
+import { useHeaderHeight } from 'app/context/jotai/layout';
+import { PageHeaderOptions } from 'app/ui/molecules/header/options';
 import { NeoButtonLink } from 'app/design/controls';
 const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from')
 
@@ -157,7 +157,6 @@ return <View className='bg-blue-500 w-full h-full pt-24'>
     const isDesktop = useIsDesktop();
     const { layoutName, layoutSettings } = useLayoutSettings();
 
-    const setHeader = useSetHeader();
     const headerHeight = useHeaderHeight();
     const [sideBarWidth, setSideBarWidth] = useState(undefined);
     const [asideWidth, setAsideWidth] = useState(undefined);
@@ -444,23 +443,10 @@ return <View className='bg-blue-500 w-full h-full pt-24'>
         }
     }, [currentBreakpointName]);
 
-   
-    useEffect(() => {
-        if (isWeb) 
-            setHeader(isDesktop ? defaultHeader : { subHeader: subHeader });
-    }, [isDesktop, subHeader, setHeader]);
-
-
-
-    useFocusEffect(
-        useCallback(() => {
-            if (!isWeb) 
-                setHeader(isDesktop ? defaultHeader : { subHeader: subHeader });
-        }, [isWeb, isDesktop, defaultHeader, subHeader, setHeader])
-    );
-
     return (
-        <>{BlocksCenter}
+        <>
+            <PageHeaderOptions sub={subHeader} mobileOnly />
+            {BlocksCenter}
         
             <PanelGroup
                 ref={groupRef}

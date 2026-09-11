@@ -20,7 +20,8 @@ import { useConductorList } from './use-conductor-list'
 import { useConductorCover, resolveConductorHeaderMode } from './use-conductor-cover'
 import { useConductorRevalidate } from './use-conductor-revalidate'
 import { useConductorCommands } from './use-conductor-commands'
-import { useConductorHeader } from './use-conductor-header'
+import { useConductorFocusRefresh } from './use-conductor-focus-refresh'
+import { PageHeaderOptions } from 'app/ui/molecules/header/options'
 import { useCurrentUser } from 'app/context/user'
 import Snackbar from 'app/ui/atoms/snackbar'
 import { useBottomSheetData } from 'app/context/bottomsheet'
@@ -47,7 +48,7 @@ import { useTranslation } from 'react-i18next'
  *  3. Revalidation    — `useConductorRevalidate`: timeline socket → snackbar.
  *  4. Global commands — `useConductorCommands`: emitter + pull-to-refresh.
  *  5. Chrome          — `useConductorCover` (morph state), filters sheet, tab
- *                       bar, and `useConductorHeader` (shared header atom).
+ *                       bar, and `PageHeaderOptions` (page header slots).
  *
  * Hook order in sections 1–2 is load-bearing: see the note above `qKey`.
  *
@@ -442,8 +443,8 @@ export function Conductor({
 
     /**
      * The whole conductor chrome as one element. Rendered inline for profile
-     * layouts, or pushed into the shared header atom for the rest — see
-     * `useConductorHeader`.
+     * layouts (the page header is hidden), or handed to the page header as
+     * its `sub` row for the rest.
      */
     const headerComponent = useMemo(
         () => (
@@ -463,14 +464,7 @@ export function Conductor({
         [headerMode, coverBlock, pageUri, pageContext, sceneHeader, filter, ts, coverScrollY, onOverlayHeight, onCoverProgress]
     )
 
-    useConductorHeader({
-        headerComponent,
-        useLocalHeader,
-        isFocused,
-        routesRef,
-        indexRef,
-        onStartRefresh,
-    })
+    useConductorFocusRefresh({ routesRef, indexRef, onStartRefresh })
 
     // ==================================================================
     // Render
@@ -479,10 +473,13 @@ export function Conductor({
     // The chrome is rendered *after* the list when it is a dynamic cover: the
     // morph overlays the list and must paint on top of it. In 'small' mode it
     // is a normal block above the list, and in 'none' mode it is not here at
-    // all — it went into the shared header atom.
+    // all — it is the page header's `sub` row.
 
     return (
         <View className="w-full h-full ">
+            {useLocalHeader
+                ? <PageHeaderOptions hidden />
+                : <PageHeaderOptions sub={headerComponent} />}
             <View className="w-full flex-1 " style={headerMode === 'dynamic' ? { overflow: 'hidden' } : undefined}>
                 <Snackbar
                     visible={snackbarVisible}

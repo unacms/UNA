@@ -14,14 +14,12 @@ import Link from 'app/ui/atoms/link';
 import { canGoBackInTab, getTabKeyFromPathname, navigateBackInTab } from 'app/lib/navigation/tab-history';
 import { useTranslation } from 'react-i18next';
 import {
-    defaultHeader,
-    useHeader,
     useHeaderHeight,
     useScrollDirection,
-    useSetHeader,
     useSetHeaderHeight,
     useSetScrollDirection,
 } from 'app/context/jotai/layout';
+import { useHeaderOptions } from 'app/ui/molecules/header/options';
 import MenuTop from 'app/components/nav/menu-top';
 
 const DEFAULT_CONTENT_PINNED_FIXED =
@@ -30,22 +28,15 @@ const DEFAULT_CONTENT_PINNED_FIXED =
 const SUBTAB_SLOT_MIN = 56;
 const SUBTAB_REVEAL_DELAY_MS = 160;
 const SUBTAB_REVEAL_FADE_MS = 220;
-const HIDDEN_SUBHEADER_STYLE = { height: 0, overflow: 'hidden' };
 
 /**
  * First visit: reserve the subtab row and fade Hosts in after they layout so
- * the ~0.5s glass width-grow is not visible. Keep the last tree mounted when
- * subHeader briefly clears (Page focus reset) so Hosts stay warm.
+ * the ~0.5s glass width-grow is not visible. A subtab switch swaps the owning
+ * `PageHeaderOptions` in one commit, so `subHeader` never blinks to null.
  */
 function RevealingSubHeader({ subHeader, onLayout }) {
-    const lastNodeRef = useRef(subHeader);
     const [revealed, setRevealed] = useState(false);
     const opacity = useRef(new Animated.Value(0)).current;
-
-    if (subHeader) {
-        lastNodeRef.current = subHeader;
-    }
-    const node = subHeader || lastNodeRef.current;
 
     const hasSubHeader = !!subHeader;
     useEffect(() => {
@@ -61,20 +52,16 @@ function RevealingSubHeader({ subHeader, onLayout }) {
         return () => clearTimeout(timer);
     }, [hasSubHeader, opacity, revealed]);
 
-    if (!node) return null;
+    if (!hasSubHeader) return null;
 
-    const visible = !!subHeader;
     return (
         <View
             onLayout={onLayout}
             collapsable={false}
-            pointerEvents={visible ? 'auto' : 'none'}
-            style={visible
-                ? (revealed ? undefined : { minHeight: SUBTAB_SLOT_MIN })
-                : HIDDEN_SUBHEADER_STYLE}
+            style={revealed ? undefined : { minHeight: SUBTAB_SLOT_MIN }}
         >
             <Animated.View style={{ opacity }} collapsable={false}>
-                {node}
+                {subHeader}
             </Animated.View>
         </View>
     );
@@ -199,11 +186,19 @@ export const PageHeaderSmall = ({ pageData }) => {
     );
 };
 
-export function usePageHeaderBase(pageData, { resetHeaderOnRoute = false } = {}) {
+export function usePageHeaderBase(pageData) {
     const { currentUser } = useCurrentUser();
     const router = useRouter();
-    const header = useHeader();
-    const setHeader = useSetHeader();
+    const options = useHeaderOptions();
+    // Same shape the body always consumed: `header` is the full-bar override
+    // (`false` = no bar at all), `subHeader` the row under it.
+    const header = useMemo(() => ({
+        header: options.hidden ? false : options.main,
+        subHeader: options.sub,
+        headerActions: options.actions,
+        backButton: options.backButton,
+        title: options.title,
+    }), [options]);
     const scrollDirection = useScrollDirection();
     const setScrollDirection = useSetScrollDirection();
     const setHeaderHeightAtom = useSetHeaderHeight();
@@ -227,18 +222,18 @@ export function usePageHeaderBase(pageData, { resetHeaderOnRoute = false } = {})
 
     useEffect(() => {
         setScrollDirection(0);
-        if (resetHeaderOnRoute && isWeb) {
-            setHeader(defaultHeader);
-        }
-    }, [
-        isDesktop,
-        isWeb,
-        pageData?.uri,
-        pageData?.url,
-        resetHeaderOnRoute,
-        setHeader,
-        setScrollDirection,
-    ]);
+    }, [isDesktop, pageData?.uri, pageData?.url, setScrollDirection]);
+
+    // Native: when the full bar is swapped (messenger list ↔ chat header) drop
+    // the stale height until the new bar measures. subHeader toggles must not
+    // zero it (Settings tabs clipped); the container onLayout corrects the total.
+    const prevMainRef = useRef(header.header);
+    useEffect(() => {
+        const prevMain = prevMainRef.current;
+        prevMainRef.current = header.header;
+        if (isWeb || prevMain === header.header) return;
+        setHeaderHeightAtom(0);
+    }, [header.header, isWeb, setHeaderHeightAtom]);
 
     const pageTitle = useMemo(() => {
         let nextTitle = pageData?.name;

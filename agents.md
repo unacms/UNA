@@ -332,6 +332,25 @@ export function Component({ ...props }) {
 }
 ```
 
+### Page header (title, back, sub row, custom bar)
+
+The page header is mounted once per `Layout` ([`ui/molecules/header/page-header.js`](packages/app/ui/molecules/header/page-header.js) / `.web.js`). A page never writes header state from an effect — it **declares** what it needs in its own render tree with [`PageHeaderOptions`](packages/app/ui/molecules/header/options.js):
+
+```jsx
+import { PageHeaderOptions } from 'app/ui/molecules/header/options';
+
+// mobile-only sub row (feed switcher, conductor tab bar, wiki controls)
+{isDesktop ? null : <PageHeaderOptions sub={subHeader} />}
+// item page: title + back button
+<PageHeaderOptions backButton title="Post" />
+// replace the whole bar (messenger chat header)
+<PageHeaderOptions main={<MobileChatHeader … />} />
+// no page header at all (profile cover owns the top)
+<PageHeaderOptions hidden />
+```
+
+Rules: only passed props take part in the merge; mount registers, unmount removes, prop change updates — so gate with JSX (`isDesktop ? null : …`), not with `useEffect`/`useFocusEffect`. Later-mounted instances win per key and fall back on unmount (modal over a page). Memo `sub`/`main` elements. Hidden native tabs have their own `Layout`, so no focus/blur bookkeeping is needed. Only the measured height flows back through `useHeaderHeight()` ([`context/jotai/layout.js`](packages/app/context/jotai/layout.js)).
+
 ---
 
 ## Styling Guidelines

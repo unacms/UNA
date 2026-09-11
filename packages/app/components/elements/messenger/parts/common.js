@@ -14,7 +14,7 @@ import { useBottomSheetData } from 'app/context/bottomsheet';
 import Profile from 'app/ui/molecules/profile/profile'
 import ElementMsg from 'app/components/elements/msg';
 import emitter from 'app/context/emitter';
-import { useFocusEffect, useIsFocused, useSafeAreaInsets } from 'app/lib/hooks/router'
+import { useIsFocused, useSafeAreaInsets } from 'app/lib/hooks/router'
 import { useTranslation } from 'react-i18next'
 import {
     Panel,
@@ -22,7 +22,8 @@ import {
     PanelHandler,
 } from 'app/ui/molecules/page/resizable-panels'
 import { useIsDesktop } from 'app/context/measure';
-import { useSetHeader, defaultHeader, useFooterHeight } from 'app/context/jotai/layout';
+import { useFooterHeight } from 'app/context/jotai/layout';
+import { PageHeaderOptions } from 'app/ui/molecules/header/options';
 import ConvosPanel from 'app/components/elements/messenger/parts/convos-panel';
 import JotsPanel, { ChatEmptyState } from 'app/components/elements/messenger/parts/jots-panel';
 import Composer from 'app/components/elements/messenger/parts/composer';
@@ -92,7 +93,6 @@ export default function Messenger({ defaultConvoId, selectedMenu, convos, layout
     const selectedConvo = convosData ? convosData[selectedConvoIndex] : false;
     const { currentUser } = useCurrentUser();
     const [replyItem, setReplyItem] = useState(false);
-    const setHeader = useSetHeader();
 
     const { data: dynamicData } = useFetchForm('/api.php?r=bx_messenger/get_send_form/Services&params=' + JSON.stringify({ id: selectedConvo?.id, convo_id: selectedConvo?.id, reply_id: replyItem ? replyItem?.id : 0 }), commentForm);
 
@@ -463,41 +463,26 @@ export default function Messenger({ defaultConvoId, selectedMenu, convos, layout
     }, []);
 
     // ---------------------------------------------------------------------
-    // Injected page header — single owner. Small screens swap between the
-    // list header and the chat header; desktop keeps the default site header
+    // Injected page header. Small screens replace the whole bar with the
+    // list header or the chat header; desktop keeps the default site header
     // (messenger chrome renders in-flow there).
     // ---------------------------------------------------------------------
     const injectedHeader = useMemo(() => {
         if (!isSmallScreen) return null;
         if (panelsVisible.jots && selectedConvo) {
-            return {
-                header: <MobileChatHeader title={selectedConvo.title} onBack={showConvo} onAction={handleConvoAction} />,
-            };
+            return <MobileChatHeader title={selectedConvo.title} onBack={showConvo} onAction={handleConvoAction} />;
         }
-        return {
-            header: (
-                <MobileListHeader
-                    pageData={pageData}
-                    onSearch={handleSearch}
-                    addButtons={addButtons}
-                    menuItems={menuItems}
-                    menuIndex={menuIndex}
-                    onMenuChange={onMenuChange}
-                />
-            ),
-        };
+        return (
+            <MobileListHeader
+                pageData={pageData}
+                onSearch={handleSearch}
+                addButtons={addButtons}
+                menuItems={menuItems}
+                menuIndex={menuIndex}
+                onMenuChange={onMenuChange}
+            />
+        );
     }, [isSmallScreen, panelsVisible.jots, selectedConvo?.id, selectedConvo?.title, showConvo, handleConvoAction, pageData, handleSearch, addButtons, menuItems, menuIndex, onMenuChange]);
-
-    useEffect(() => {
-        if (!isWeb) return;
-        setHeader(injectedHeader ?? defaultHeader);
-    }, [injectedHeader, setHeader]);
-
-    useFocusEffect(useCallback(() => {
-        if (isWeb) return;
-        setHeader(injectedHeader ?? defaultHeader);
-        return () => setHeader(defaultHeader);
-    }, [injectedHeader, setHeader]));
 
     // ---------------------------------------------------------------------
     // Render
@@ -517,6 +502,7 @@ export default function Messenger({ defaultConvoId, selectedMenu, convos, layout
 
         return (
             <View className='web:h-auto w-full h-full flex-row bg-card'>
+                <PageHeaderOptions main={injectedHeader} />
                 {panelsVisible.convos && <View className='w-full'>
                     <ConvosPanel
                         data={convosData}

@@ -56,7 +56,7 @@ function HeaderFade({ headerHeight, isScrolled }) {
 }
 
 export const PageHeader = ({ pageData }) => {
-    const headerState = usePageHeaderBase(pageData, { resetHeaderOnRoute: true });
+    const headerState = usePageHeaderBase(pageData);
     const {
         header,
         headerHeight,

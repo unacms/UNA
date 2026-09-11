@@ -2,31 +2,21 @@ import { View, ScrollView } from 'app/design/view';
 import { getPageWidth } from 'app/lib/util'
 import { Platform } from 'react-native'
 import { useScroll } from 'app/lib/hooks/use-scroll';
-import { useHeaderHeight, useFooterHeight, useSetHeader, useGetScrollValue, defaultHeader } from 'app/context/jotai/layout';
+import { useHeaderHeight, useFooterHeight, useGetScrollValue } from 'app/context/jotai/layout';
 import { KbAvoidingViewScroll } from 'app/ui/atoms/kb-avoiding-view';
-import { useCallback, useEffect, useRef } from 'react';
-import { useFocusEffect }  from 'app/lib/hooks/router'
+import { useEffect, useRef } from 'react';
 import { pushFormEnsureVisibleHandler, scrollContainerByDelta } from 'app/lib/form/form-ensure-visible'
 
 const isWeb = Platform.OS === 'web';
 
-export default function Page({ children, data, page_width, processKeyboard=true, scrollRef: scrollRefProp, resetHeaderOnFocus = true }) {
+export default function Page({ children, data, page_width, processKeyboard=true, scrollRef: scrollRefProp }) {
     const headerHeightFromAtom = useHeaderHeight();
     const footerHeightFromAtom = useFooterHeight();
     const Wrapper = isWeb ? View : processKeyboard? KbAvoidingViewScroll : ScrollView;
     const { onScroll } = useScroll();
-    const setHeader = useSetHeader();
     const getScrollValue = useGetScrollValue();
     const internalScrollRef = useRef(null);
     const scrollRef = scrollRefProp ?? internalScrollRef;
-
-    useFocusEffect(
-        useCallback(() => {
-            if (resetHeaderOnFocus) {
-                setHeader(defaultHeader);
-            }
-        }, [resetHeaderOnFocus, setHeader])
-    );
 
     useEffect(() => {
         return pushFormEnsureVisibleHandler(({ windowY }) => {

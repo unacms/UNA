@@ -15,6 +15,7 @@ import { useTranslation } from 'react-i18next'
 import { useLayoutSettings } from 'app/context/layout-settings';
 import PopupModal from 'app/ui/molecules/dialogs/popup-modal'
 import { PageHeader } from 'app/ui/molecules/header/page-header';
+import { HeaderOptionsProvider } from 'app/ui/molecules/header/options';
 import { useFooter } from 'app/context/jotai/layout';
 import Script from 'next/script';
 
@@ -45,8 +46,10 @@ const MemoizedContent = React.memo(({ currentUser, pageLayoutName, layoutName, d
         <View className="w-full flex-1 bg-background">
             <Suggestions />
             <AsyncWorker />
-            <PageHeader layoutName={layoutName} pageLayoutName={pageLayoutName} pageData={data} />
-            <Content layoutName={layoutName} children={children} currentUser={currentUser} url={data?.url} />
+            <HeaderOptionsProvider>
+                <PageHeader layoutName={layoutName} pageLayoutName={pageLayoutName} pageData={data} />
+                <Content layoutName={layoutName} children={children} currentUser={currentUser} url={data?.url} />
+            </HeaderOptionsProvider>
             <Footer />
             <BottomSheet />
             {isModal && (

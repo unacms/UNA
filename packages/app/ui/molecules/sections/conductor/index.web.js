@@ -30,7 +30,8 @@ import { useCurrentUser } from 'app/context/user'
 import { useBottomSheetData } from 'app/context/bottomsheet'
 import { useLayoutSettings } from 'app/context/layout-settings'
 import { useIsDesktop } from 'app/context/measure'
-import { useSetHeader, defaultHeader, useHeaderHeight } from 'app/context/jotai/layout'
+import { useHeaderHeight } from 'app/context/jotai/layout'
+import { PageHeaderOptions } from 'app/ui/molecules/header/options'
 import { useSound } from 'app/lib/hooks/use-sound'
 import { useStickyHeaderOffset, stickySidebarStyle } from 'app/lib/hooks/use-sticky-header-offset'
 
@@ -83,7 +84,6 @@ export function Conductor({
     const { setBottomSheetData } = useBottomSheetData()
     const { layoutName: tmplLayout } = useLayoutSettings()
     const isDesktop = useIsDesktop()
-    const setHeader = useSetHeader()
     const pageHeaderHeight = useHeaderHeight()
     // Clear page header + cover/tab `header-fixed` stack (profile menus). Wiki's top:0
     // padding trick overlaps Conductor's opaque fixed cover bar when scrolled.
@@ -348,25 +348,6 @@ export function Conductor({
         ]
     )
 
-    // Desktop keeps the normal page header; mobile profile hides it entirely,
-    // because the cover already occupies the top of the screen.
-    useEffect(() => {
-        if (isDesktop) {
-            setHeader(defaultHeader)
-            return
-        }
-        if (isUseCurrentHeader) {
-            setHeader({ header: false })
-        }
-    }, [isDesktop, isUseCurrentHeader, setHeader])
-
-    // Everything else (mobile, non-profile): the tab bar rides along in the
-    // page header so it stays visible while the content scrolls.
-    useEffect(() => {
-        if (isDesktop || isUseCurrentHeader) return
-        setHeader({ subHeader: headerComponent })
-    }, [isDesktop, isUseCurrentHeader, headerComponent, setHeader])
-
     // ==================================================================
     // Render
     // ==================================================================
@@ -398,6 +379,13 @@ export function Conductor({
             className="ns--conductor-wrapper-- w-full h-full ne--"
             style={{ minHeight: `calc(100dvh - ${pageHeaderHeight}px)` }}
         >
+            {/* Desktop keeps the normal page header. Mobile profile hides it
+                (the cover owns the top of the screen); everything else on
+                mobile rides the tab bar in the page header so it stays
+                visible while the content scrolls. */}
+            {isUseCurrentHeader
+                ? <PageHeaderOptions hidden mobileOnly />
+                : <PageHeaderOptions sub={headerComponent} mobileOnly />}
             {(isUseCurrentHeader || isDesktop) && headerComponent}
             <View
                 className={`ns--conductor-tab-content-- ${contentWidth} mx-auto ${tmplLayout == 'mixed' ? 'mt-12' : ''}`}
