@@ -54,7 +54,7 @@ class BxDolAi extends BxDolFactory implements iBxDolSingleton
         if (isset($GLOBALS['bxDolClasses'][__CLASS__ . '_Agent_' . $iId]))
             return $GLOBALS['bxDolClasses'][__CLASS__ . '_Agent_' . $iId];
 
-        $a = BxDolAIQuery::getAgentObject($iId);
+        $a = BxDolAiQuery::getAgentObject($iId);
         if (!$a) {
             $s = "Agent with id {$iId} not found";
             bx_log('sys_agents', $s, BX_LOG_ERR);
@@ -77,7 +77,7 @@ class BxDolAi extends BxDolFactory implements iBxDolSingleton
             $o->toolMaxRuns($a['tools_max_run']);
 
         if ($a['vector_store_id']) {
-            $aVectorStore = BxDolAIQuery::getVectorStoreObject($a['vector_store_id']);
+            $aVectorStore = BxDolAiQuery::getVectorStoreObject($a['vector_store_id']);
             if ($aVectorStore && $aVectorStore['embedding_provider_id']) {
                 $oEmbedder = self::getAiEmbeddingsProviderInstance($aVectorStore['embedding_provider_id']);
                 $o->setEmbeddingsProvider($oEmbedder);
@@ -122,58 +122,12 @@ class BxDolAi extends BxDolFactory implements iBxDolSingleton
 
     public function callAgent($sType, $aAgent, $mixedParams = [])
     {
-        if ($mixedParams)
-            $sParams = is_string($mixedParams) ? $mixedParams : json_encode($mixedParams);
-        else
-            $sParams = 'START';
+        return BxDolAiTrigger::getInstance($sType)->call($aAgent, $mixedParams);
+    }
 
-        // update sample data
-        $a = ['webhook' => 'webhook_sample'];
-        if (isset($a[$sType]) && empty($aAgent[$a[$sType]])) {
-            $this->_oDb->updateAgentField($aAgent['id'], $a[$sType], $sParams);
-        }
-
-        // set additional params
-        $aParams = [];
-        if ('message' == $sType || 'form-input' == $sType || 'alert' == $sType) {
-            $aParams = ['chat_history_subindex' => (int)($mixedParams['sender_profile_id'] ?? 0)];
-        }
-
-        if ('message' == $sType && is_array($mixedParams) && isset($mixedParams['message_text'])) {
-            $mixedParams['message_text'] = $this->applyChatInputLimit((string)$mixedParams['message_text'], $aAgent);
-            $sParams = json_encode($mixedParams);
-        }
-        else if (is_string($mixedParams) && in_array($sType, ['manual', 'message'], true)) {
-            $sParams = $this->applyChatInputLimit($sParams, $aAgent);
-        }
-
-        if (in_array($sType, ['manual', 'message'], true) && $this->isChatTurnLimitReached($aAgent, $this->getChatUserTurnCount($aAgent['id'], $aParams))) {
-            $this->emitConversationClosed('limit', '', $aAgent, $aParams);
-            return $this->getChatLimitMessage($aAgent);
-        }
-
-        if (in_array($sType, ['manual', 'message'], true) && $this->isChatSessionRateLimited($aAgent, $aParams))
-            throw new Exception($this->getChatSessionRateLimitError());
-
+    public function setChatContext($aAgent, $aParams)
+    {
         $this->_aChatContext = ['agent' => $aAgent, 'params' => $aParams];
-
-        // call agent
-        $mixed = '';
-        try {                        
-            $o = self::getAgentInstance($aAgent['id'], $aParams);
-            if (!$o)
-                return false;
-
-            $oMessage = $o->chat(new NeuronAI\Chat\Messages\UserMessage($sParams))->getMessage();
-
-            $mixed = $oMessage->getContent();
-
-        } catch (Exception $exception) {            
-            bx_log('sys_agents', "Exception in '{$aAgent['name']}' agent: " . $exception->getMessage() . " INPUT:" . $sParams, BX_LOG_ERR);
-            $mixed = _t('_sys_agents_exception');
-        }
-
-        return $mixed;
     }
 
     /**
@@ -367,39 +321,7 @@ class BxDolAi extends BxDolFactory implements iBxDolSingleton
 
     public function extractChatPromptFromRequest($aData)
     {
-        if (!is_array($aData))
-            return '';
-
-        if (!empty($aData['prompt']) && is_string($aData['prompt']))
-            return trim($aData['prompt']);
-
-        if (empty($aData['messages']) || !is_array($aData['messages']))
-            return '';
-
-        for ($i = count($aData['messages']) - 1; $i >= 0; $i--) {
-            $aMessage = $aData['messages'][$i];
-            if (!is_array($aMessage))
-                continue;
-
-            if (($aMessage['role'] ?? '') !== 'user')
-                continue;
-
-            if (isset($aMessage['content']) && is_string($aMessage['content']))
-                return trim($aMessage['content']);
-
-            if (!empty($aMessage['parts']) && is_array($aMessage['parts'])) {
-                $aText = [];
-                foreach ($aMessage['parts'] as $aPart) {
-                    if (is_array($aPart) && ($aPart['type'] ?? '') === 'text' && isset($aPart['content']))
-                        $aText[] = $aPart['content'];
-                }
-                $s = trim(implode("\n", $aText));
-                if ($s !== '')
-                    return $s;
-            }
-        }
-
-        return '';
+        return BxDolAiTrigger::getInstance('chat')->extractPromptFromRequest($aData);
     }
 
     /**
@@ -422,7 +344,7 @@ class BxDolAi extends BxDolFactory implements iBxDolSingleton
                 foreach (array_unique(array_map('intval', $aIds)) as $iStoredAgentId) {
                     if (!$iStoredAgentId || $sSessionId === '')
                         continue;
-                    $aAgent = BxDolAIQuery::getAgentObject($iStoredAgentId);
+                    $aAgent = BxDolAiQuery::getAgentObject($iStoredAgentId);
                     if ($aAgent)
                         $this->_oDb->adoptGuestChatHistory($aAgent, $sSessionId, $iProfileId);
                 }
@@ -846,7 +768,7 @@ class BxDolAi extends BxDolFactory implements iBxDolSingleton
         if (!isset($aParams['chat_history_subindex']))
             $aParams = array_merge($this->resolveChatHistoryParams($iAgentId), $aParams);
 
-        $aAgent = BxDolAIQuery::getAgentObject((int)$iAgentId);
+        $aAgent = BxDolAiQuery::getAgentObject((int)$iAgentId);
         if (!$aAgent || empty($aAgent['chat_history_context']))
             return [];
 
@@ -978,7 +900,7 @@ class BxDolAi extends BxDolFactory implements iBxDolSingleton
     /**
      * @return array{content: string, actions: array}|null
      */
-    protected function parseAssistantChatPayload($sText)
+    public function parseAssistantChatPayload($sText)
     {
         $s = trim((string)$sText);
         if ($s === '')
@@ -1062,338 +984,19 @@ class BxDolAi extends BxDolFactory implements iBxDolSingleton
         return in_array($sHost, $aAllowed, true);
     }
 
-    protected function sseChatEvent($aPayload)
-    {
-        return 'data: ' . json_encode($aPayload, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) . "\n\n";
-    }
-
-    protected function parseSseChatEvent($sEvent)
-    {
-        $s = trim((string)$sEvent);
-        if (!preg_match('/^data:\s*(.+)$/s', $s, $aM))
-            return null;
-
-        $a = json_decode($aM[1], true);
-        return is_array($a) ? $a : null;
-    }
-
-    protected function resetChatActionsSseState()
-    {
-        return [
-            'mode' => 'undecided',
-            'buf' => '',
-            'messageId' => '',
-            'held' => [],
-        ];
-    }
-
-    protected function emitHeldChatActionsSse(&$aState, $fEmit)
-    {
-        foreach ($aState['held'] as $sHeld)
-            $fEmit($sHeld);
-        $aState['held'] = [];
-    }
-
-    protected function emitParsedChatActionsSse(&$aState, $fEmit, $aParsed)
-    {
-        $sId = $aState['messageId'] !== '' ? $aState['messageId'] : ('msg_' . uniqid());
-        $fEmit($this->sseChatEvent([
-            'type' => 'TEXT_MESSAGE_START',
-            'messageId' => $sId,
-            'role' => 'assistant',
-        ]));
-        if ($aParsed['content'] !== '') {
-            $fEmit($this->sseChatEvent([
-                'type' => 'TEXT_MESSAGE_CONTENT',
-                'messageId' => $sId,
-                'delta' => $aParsed['content'],
-            ]));
-        }
-        $fEmit($this->sseChatEvent([
-            'type' => 'TEXT_MESSAGE_END',
-            'messageId' => $sId,
-        ]));
-        if (!empty($aParsed['actions'])) {
-            $fEmit($this->sseChatEvent([
-                'type' => 'CUSTOM',
-                'name' => 'chat_actions',
-                'messageId' => $sId,
-                'value' => $aParsed['actions'],
-            ]));
-        }
-        $aState = $this->resetChatActionsSseState();
-    }
-
-    protected function processChatActionsSseEvent($sEvent, &$aState, $fEmit)
-    {
-        $aPayload = $this->parseSseChatEvent($sEvent);
-        $sType = is_array($aPayload) ? (string)($aPayload['type'] ?? '') : '';
-
-        if ($sType === 'TEXT_MESSAGE_START') {
-            if ($aState['held'] || $aState['buf'] !== '')
-                $this->flushChatActionsSseState($aState, $fEmit);
-            $aState['messageId'] = (string)($aPayload['messageId'] ?? '');
-            $aState['held'][] = $sEvent;
-            return;
-        }
-
-        if ($sType === 'TEXT_MESSAGE_CONTENT') {
-            $sDelta = (string)($aPayload['delta'] ?? '');
-            $aState['buf'] .= $sDelta;
-            if ($aState['mode'] === 'text') {
-                $fEmit($sEvent);
-                return;
-            }
-            if ($aState['mode'] === 'undecided') {
-                $mixed = $this->chatActionsStreamLooksLikeJson($aState['buf']);
-                if ($mixed === false) {
-                    $aState['mode'] = 'text';
-                    $this->emitHeldChatActionsSse($aState, $fEmit);
-                    $fEmit($sEvent);
-                    return;
-                }
-                if ($mixed === true)
-                    $aState['mode'] = 'json';
-            }
-            $aState['held'][] = $sEvent;
-            return;
-        }
-
-        if ($sType === 'TEXT_MESSAGE_END') {
-            $aParsed = $this->parseAssistantChatPayload($aState['buf']);
-            if ($aParsed && ($aState['mode'] === 'json' || $aState['mode'] === 'undecided')) {
-                $this->emitParsedChatActionsSse($aState, $fEmit, $aParsed);
-                return;
-            }
-            $this->emitHeldChatActionsSse($aState, $fEmit);
-            $fEmit($sEvent);
-            $aState = $this->resetChatActionsSseState();
-            return;
-        }
-
-        if ($sType === 'RUN_ERROR' || $sType === 'RUN_FINISHED') {
-            $this->flushChatActionsSseState($aState, $fEmit);
-            $fEmit($sEvent);
-            return;
-        }
-
-        if ($aState['mode'] === 'json' || $aState['held'])
-            $this->flushChatActionsSseState($aState, $fEmit);
-
-        $fEmit($sEvent);
-    }
-
-    protected function chatActionsStreamLooksLikeJson($sBuf)
-    {
-        $s = ltrim((string)$sBuf);
-        if ($s === '')
-            return null;
-        $sFirst = $s[0];
-        if ($sFirst === '{' || $sFirst === '`')
-            return true;
-        return false;
-    }
-
-    protected function flushChatActionsSseState(&$aState, $fEmit)
-    {
-        if ($aState['buf'] === '' && !$aState['held'])
-            return;
-
-        $aParsed = $this->parseAssistantChatPayload($aState['buf']);
-        if ($aParsed && $aState['mode'] !== 'text') {
-            $this->emitParsedChatActionsSse($aState, $fEmit, $aParsed);
-            return;
-        }
-
-        $this->emitHeldChatActionsSse($aState, $fEmit);
-        $aState = $this->resetChatActionsSseState();
-    }
-
-    protected function persistAssistantChatActions($oAgent)
-    {
-        if (!is_object($oAgent) || !method_exists($oAgent, 'getChatHistory'))
-            return;
-
-        $oHistory = $oAgent->getChatHistory();
-        if (!($oHistory instanceof BxDolAiChatHistory))
-            return;
-
-        $aMessages = $oHistory->getMessages();
-        for ($i = count($aMessages) - 1; $i >= 0; $i--) {
-            $oMessage = $aMessages[$i];
-            if (
-                $oMessage instanceof NeuronAI\Chat\Messages\ToolCallMessage
-                || $oMessage instanceof NeuronAI\Chat\Messages\ToolResultMessage
-            ) {
-                continue;
-        }
-
-            $sRole = $oMessage->getRole();
-            if ($sRole === 'model')
-                $sRole = 'assistant';
-            if ($sRole !== 'assistant')
-                return;
-
-            $aParsed = $this->parseAssistantChatPayload((string)$oMessage->getContent());
-            if (!$aParsed)
-                return;
-
-            $oMessage->setContents($aParsed['content']);
-            $oMessage->addMetadata('actions', $aParsed['actions']);
-            $oHistory->persistMessages();
-            return;
-        }
-    }
-
     public function streamAgentChat($iAgentId, $sPrompt, $aParams = [], $sThreadId = null)
     {
-        if (!isset($aParams['chat_history_subindex']))
-            $aParams = array_merge($this->resolveChatHistoryParams($iAgentId), $aParams);
-
-        // Staging header.inc.php dumps HTML on fatals and warns on null error_get_last().
-        // Any HTML after SSE is parsed by TanStack as "unterminated trailing data".
-        @ini_set('display_errors', '0');
-        @ini_set('zlib.output_compression', '0');
-        @ini_set('implicit_flush', '1');
-        if (function_exists('apache_setenv'))
-            @apache_setenv('no-gzip', '1');
-        while (ob_get_level())
-            ob_end_clean();
-
-        // UNA BxDolDb::pdoExceptionHandler dumps HTML 503 on uncaught PDOException.
-        restore_exception_handler();
-
-        $oAdapter = new NeuronAI\Chat\Messages\Stream\Adapters\AGUIAdapter($sThreadId);
-
-        http_response_code(200);
-        foreach ($oAdapter->getHeaders() as $sName => $sValue)
-            header($sName . ': ' . $sValue);
-
-        $fEmit = function ($sEvent) {
-            echo $sEvent;
-            if (ob_get_level())
-                ob_flush();
-            flush();
-        };
-
-        $aAgent = BxDolAIQuery::getAgentObject((int)$iAgentId);
-        if ($aAgent)
-            $this->_aChatContext = ['agent' => $aAgent, 'params' => $aParams];
-
-        if ($aAgent && $this->isChatSessionRateLimited($aAgent, $aParams)) {
-            $this->emitChatErrorSse($oAdapter, $fEmit, $this->getChatSessionRateLimitError());
-            error_clear_last();
-            @ini_set('display_errors', '0');
-            exit;
-        }
-
-        $iRequestTurns = (int)($aParams['request_user_turns'] ?? 0);
-        if ($aAgent && $this->isChatTurnLimitReached($aAgent, $this->getChatUserTurnCount((int)$iAgentId, $aParams), $iRequestTurns)) {
-            $this->emitConversationClosed('limit', '', $aAgent, $aParams);
-            $this->emitChatLimitSse($oAdapter, $fEmit, $this->getChatLimitMessage($aAgent));
-            error_clear_last();
-            @ini_set('display_errors', '0');
-            exit;
-        }
-
-        $sPrompt = $this->applyChatInputLimit((string)$sPrompt, $aAgent ?: []);
-
-        $bStarted = false;
-        $aSseState = $this->resetChatActionsSseState();
-        $o = null;
-        try {
-            $o = self::getAgentInstance((int)$iAgentId, $aParams);
-            $oHandler = $o->stream(new NeuronAI\Chat\Messages\UserMessage($sPrompt));
-
-            foreach ($oHandler->events($oAdapter) as $sEvent) {
-                $bStarted = true;
-                $this->processChatActionsSseEvent($sEvent, $aSseState, $fEmit);
-            }
-
-            $this->flushChatActionsSseState($aSseState, $fEmit);
-            $this->persistAssistantChatActions($o);
-
-            if ($aAgent && $this->isChatTurnLimitReached($aAgent, $this->getChatUserTurnCount((int)$iAgentId, $aParams)))
-                $this->emitConversationClosed('limit', '', $aAgent, $aParams);
-        } catch (Throwable $oException) {
-            bx_log('sys_agents', "Stream exception for agent {$iAgentId}: " . $oException->getMessage() . " INPUT:" . $sPrompt);
-            $this->flushChatActionsSseState($aSseState, $fEmit);
-            if (!$bStarted) {
-                foreach ($oAdapter->start() as $sEvent)
-                    $fEmit($sEvent);
-            }
-            $sMsg = $oException->getMessage();
-            $fEmit('data: ' . json_encode(['type' => 'RUN_ERROR', 'message' => $sMsg !== '' ? $sMsg : _t('_sys_agents_exception')]) . "\n\n");
-            foreach ($oAdapter->end() as $sEvent)
-                $fEmit($sEvent);
-        }
-
-        error_clear_last();
-        @ini_set('display_errors', '0');
-        exit;
+        return BxDolAiTrigger::getInstance('chat')->stream($iAgentId, $sPrompt, $aParams, $sThreadId);
     }
 
-    /**
-     * SSE assistant reply without calling the model. Used when max_turns is hit.
-     */
-    protected function emitChatLimitSse($oAdapter, $fEmit, $sMessage)
+    public function sendMessengerMessage($iSender, $iRecipient, $sMsg)
     {
-        foreach ($oAdapter->start() as $sEvent)
-            $fEmit($sEvent);
-
-        $oChunk = new NeuronAI\Chat\Messages\Stream\Chunks\TextChunk('msg_limit', (string)$sMessage);
-        foreach ($oAdapter->transform($oChunk) as $sEvent)
-            $fEmit($sEvent);
-
-        foreach ($oAdapter->end() as $sEvent)
-            $fEmit($sEvent);
-    }
-
-    /**
-     * SSE error without an assistant bubble. Used when a new session is rate-limited.
-     */
-    protected function emitChatErrorSse($oAdapter, $fEmit, $sMessage)
-    {
-        foreach ($oAdapter->start() as $sEvent)
-            $fEmit($sEvent);
-
-        $sMsg = trim((string)$sMessage);
-        $fEmit('data: ' . json_encode([
-            'type' => 'RUN_ERROR',
-            'message' => $sMsg !== '' ? $sMsg : _t('_sys_agents_exception'),
-        ]) . "\n\n");
-
-        foreach ($oAdapter->end() as $sEvent)
-            $fEmit($sEvent);
-    }
-
-    public function sendMessengerMessage ($iSender, $iRecipient, $sMsg) 
-    {        
-        $oMessengerModule = BxDolModule::getInstance('bx_messenger');
-
-        $aAutoReplyData = [
-            'message' => $sMsg,
-            'participants' => [$iSender, $iRecipient],
-        ];
-
-        $iSaveProfileId = $oMessengerModule->setProfileId($iSender);
-        $a = $oMessengerModule->sendMessage($aAutoReplyData, $iRecipient, $iSender);
-        $oMessengerModule->setProfileId($iSaveProfileId);
-
-        return $a;
+        return BxDolAiTrigger::getInstance('message')->sendMessengerMessage($iSender, $iRecipient, $sMsg);
     }
 
     public function getAgentsByAlertUnitAndAction($sUnit, $sAction)
     {
-        $aAgents = [];
-        $a = $this->_oDb->getAgentsWithAlert();
-        foreach ($a as $r) {
-            $aAlert = explode(':', $r['alert']); // TODO: remake to concantenate $sUnit and $sAction and then compare
-            if (count($aAlert) == 2 && $aAlert[0] == $sUnit && $aAlert[1] == $sAction)
-                $aAgents[] = $r;
-        }
-
-        return $aAgents;
+        return BxDolAiTrigger::getInstance('alert')->getAgentsByUnitAndAction($sUnit, $sAction);
     }
 
     public function getAgentsBy($aParams)
@@ -1403,9 +1006,9 @@ class BxDolAi extends BxDolFactory implements iBxDolSingleton
 
     public function getAgentsByProfileId($iProfileId)
     {
-        return $this->_oDb->getAgentsByProfileId($iProfileId);
+        return BxDolAiTrigger::getInstance('message')->getAgentsByProfileId($iProfileId);
     }
-    
+
     public function getAgentsByFormObject($sFormObject)
     {
         return $this->_oDb->getAgentsByFormObject($sFormObject);
@@ -1418,6 +1021,8 @@ class BxDolAi extends BxDolFactory implements iBxDolSingleton
 
     public function getAgentByTriggerWebhookKey($sKey)
     {
-        return $this->_oDb->getAgentByTriggerWebhookKey($sKey);
+        return BxDolAiTrigger::getInstance('webhook')->getAgentByKey($sKey);
     }
 }
+
+/** @} */

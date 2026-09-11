@@ -2304,7 +2304,7 @@ INSERT INTO `sys_alerts` (`unit`, `action`, `handler_id`) VALUES
 
 
 INSERT INTO `sys_alerts_handlers` (`name`, `class`, `file`) VALUES
-('sys_agents', 'BxDolAiAlertResponse', 'inc/classes/BxDolAiAlertResponse.php');
+('sys_agents', 'BxDolAiTriggerMessage', 'inc/classes/BxDolAiTriggerMessage.php');
 SET @iIdHandler = LAST_INSERT_ID();
 
 INSERT INTO `sys_alerts` (`unit`, `action`, `handler_id`) VALUES

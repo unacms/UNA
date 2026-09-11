@@ -154,13 +154,9 @@ class BxBaseFormView extends BxDolForm
         );
 
         $this->_sAgentFormObject = $aInfo['params']['object'] ?? $this->id;
-        $oAi = BxDolAI::getInstance();
-        $this->_aAgentsFormObject = $oAi ? $oAi->getAgentsByFormObject($this->_sAgentFormObject) : [];
-        if ($this->_aAgentsFormObject && is_array($this->_aAgentsFormObject)) {
-            $this->_aAgentsFormObject = array_filter($this->_aAgentsFormObject, function ($a) use ($oAi) {
-                return $oAi->canInteract($a);
-            });
-        }
+        $this->_aAgentsFormObject = BxDolAi::getInstance()
+            ? BxDolAiTrigger::getInstance('form-input')->getAgentsForForm($this->_sAgentFormObject)
+            : [];
     }
 
     public function performActionGetHelp()

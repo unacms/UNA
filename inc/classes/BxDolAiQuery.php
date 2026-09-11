@@ -222,7 +222,7 @@ class BxDolAiQuery extends BxDolDb
 
     public function getAgentByTriggerWebhookKey($sKey, $bActiveOnly = true)
     {
-        return $this->getRow("SELECT * FROM `sys_agents_agents` WHERE `trigger` = 'scheduler' AND `webhook_key` = :key AND `active` = :active", ['key' => $sKey, 'active' => $bActiveOnly ? 1 : 0]);
+        return $this->getRow("SELECT * FROM `sys_agents_agents` WHERE `trigger` = 'webhook' AND `webhook_key` = :key AND `active` = :active", ['key' => $sKey, 'active' => $bActiveOnly ? 1 : 0]);
     }
     
     public function getAgentsByTriggerType($sTrigger, $bActiveOnly = true)

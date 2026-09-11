@@ -2931,35 +2931,9 @@ function bx_get_search_class_name(): string
 
 function bx_ai_process_agents_call_queue($bFinishRequest = true, $bExit = true)
 {
-    if ($bFinishRequest) {
-        if (function_exists('fastcgi_finish_request')) {
-            fastcgi_finish_request();
-        } else {
-            @ob_end_flush();
-            @flush();
-        }
-    }
-
-    if (!empty($GLOBALS['glAgentsCallQueue']))
-    {
-        $oAi = BxDolAi::getInstance();
-        foreach ($GLOBALS['glAgentsCallQueue'] as $r) 
-        {
-            $sMessage = $oAi->callAgent($r['type'], $r['agent'], $r['params']);
-            if (null == $sMessage) {
-                // TODO: maybe reply with some empty message
-                continue;
-            }
-            $oParsedown = new Parsedown();
-            $oParsedown->setSafeMode(true);
-            $sMessageHtml = $oParsedown->text($sMessage);
-            $oAi->sendMessengerMessage($r['agent']['profile_id'], $r['params']['sender_profile_id'], str_replace('\n', '', $sMessageHtml));
-        }
-    }
-    
-    if ($bExit) {
-        exit(0);
-    }
+    $oTrigger = BxDolAiTrigger::getInstance('message');
+    if ($oTrigger)
+        $oTrigger->processCallQueue($bFinishRequest, $bExit);
 }
 
 /** @} */
