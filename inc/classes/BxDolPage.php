@@ -739,15 +739,12 @@ class BxDolPage extends BxDolFactory implements iBxDolFactoryObject, iBxDolRepla
 
                 // when the card describes the author it is taken as it stands, empty author included:
                 // an entry posted anonymously has an author in the database and none on the card
-                if($bPrivate) {
-                    // no author at all
-                }
-                else if(isset($aCard['extra']) && is_array($aCard['extra']) && array_key_exists('author', $aCard['extra'])) {
+                if(!$bPrivate && isset($aCard['extra']) && is_array($aCard['extra']) && array_key_exists('author', $aCard['extra'])) {
                     $aAuthor = is_array($aCard['extra']['author']) ? $aCard['extra']['author'] : [];
                     $sAuthorName = isset($aAuthor['name']) && is_string($aAuthor['name']) ? $aAuthor['name'] : '';
                     $sAuthorUrl = isset($aAuthor['url']) && is_string($aAuthor['url']) ? $aAuthor['url'] : '';
                 }
-                else {
+                else if(!$bPrivate) {
                     $iAuthor = $oContentInfo->getContentAuthor($aParams['id']);
                     if(($oAuthor = BxDolProfile::getInstance($iAuthor)) !== false) {
                         $sAuthorName = $oAuthor->getDisplayName();

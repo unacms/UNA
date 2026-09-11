@@ -1493,6 +1493,10 @@ class BxBasePage extends BxDolPage
         return $this->_getPageShareCard();
     }
 
+    /**
+     * Produce the share card spec of this page: its title, its cover, its own canonical description.
+     * The single producer - share_card.php reaches the very same method through getShareCardSpec().
+     */
     protected function _getPageShareCard()
     {
         $sTitle = '';
@@ -1512,12 +1516,20 @@ class BxBasePage extends BxDolPage
         if(empty($sTitle) && empty($aBackground))
             return array();
 
+        //--- the Studio meta description is produced HERE, not at the endpoint. Filling it on only one
+        //--- of the two paths gave any page with one a hash the render could not advertise, and its
+        //--- card silently fell off the immutable cache onto max-age=3600
+        $sDescription = '';
+        if(!empty($this->_aObject['meta_description']))
+            $sDescription = BxDolShareCard::cleanText(_t($this->_aObject['meta_description']), 300);
+
         return array(
             'module' => 'system',
             'id' => 0,
             'page' => $this->_sObject,
             'type' => $this->_getPageMetaType(),
             'title' => $sTitle,
+            'description' => $sDescription,
             'bg' => !empty($aBackground) ? $aBackground : null,
             'layout' => 'default'
         );

@@ -160,7 +160,12 @@ class BxBaseModGeneralPageEntry extends BxTemplPage
     }
 
     /**
-     * The og:type of an entry page: content is an article unless the module says otherwise.
+     * The Open Graph type of this entry page.
+     *
+     * BxBasePage::_getPageShareCard() is the only caller of this method, and this class overrides
+     * that wholesale to delegate to the module - so on the entry-page path nothing reaches here
+     * today. It is kept, and kept in step with what getShareCard() puts in the spec, so the two can
+     * never answer differently if a subclass ever does call up to the base producer.
      */
     protected function _getPageMetaType()
     {

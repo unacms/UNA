@@ -2464,7 +2464,10 @@ class BxBaseModProfileModule extends BxBaseModGeneralModule implements iBxDolCon
             $aCard['type'] = 'profile';
 
         if(!empty($CNF['FIELD_NAME']) && isset($aContentInfo[$CNF['FIELD_NAME']])) {
-            $sName = BxDolShareCard::cleanText($this->getProfileName($aContentInfo), 200);
+            //--- the STORED field, not getProfileName(): that returns bx_process_output(), which both
+            //--- HTML-escapes and expands {{~macros~}} - neither belongs in a value that is drawn as
+            //--- glyphs, and the contract names bx_process_output() as forbidden in a card producer
+            $sName = BxDolShareCard::cleanText((string)$aContentInfo[$CNF['FIELD_NAME']], 200);
             if($sName !== '')
                 $aCard['title'] = $sName;
         }
@@ -2482,6 +2485,16 @@ class BxBaseModProfileModule extends BxBaseModGeneralModule implements iBxDolCon
         $mixedCover = $this->getEntryImageData($aContentInfo, 'FIELD_COVER', ['OBJECT_IMAGES_TRANSCODER_COVER']);
         if($mixedCover !== false)
             $aCard['bg'] = $mixedCover;
+
+        //--- what the profile says about itself. Without it the profile layout draws a bare name over
+        //--- a background, while og:description for the same page does carry the text - the tag and
+        //--- the picture would disagree about the same profile. Read straight from the row: an output
+        //--- processor would escape it and expand macros, and cleanText() runs exactly once, here
+        if(!empty($CNF['FIELD_TEXT']) && !empty($aContentInfo[$CNF['FIELD_TEXT']])) {
+            $sText = BxDolShareCard::cleanText((string)$aContentInfo[$CNF['FIELD_TEXT']], 300);
+            if($sText !== '')
+                $aCard['description'] = $sText;
+        }
 
         return $aCard;
     }

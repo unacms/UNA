@@ -1056,7 +1056,11 @@ class BxBaseModGeneralModule extends BxDolModule
      */
     protected function _isShareCardProfileGuestVisible ($oProfile)
     {
-        if(!$oProfile || $oProfile->getStatus() != BX_PROFILE_STATUS_ACTIVE)
+        //--- isActive(), not getStatus(): it makes the same stored-value tests AND honours
+        //--- sys_account_hide_unconfirmed_accounts, which is on out of the box. A profile the site
+        //--- hides for being unconfirmed must not have its name and face drawn onto every entry it
+        //--- authored - and this is the same test the profile module applies to a profile's own card
+        if(!$oProfile || !$oProfile->isActive())
             return false;
 
         $sModule = $oProfile->getModule();

@@ -21,8 +21,7 @@
  * Nothing on the page render path generates an image or writes anything: a page render only ever
  * computes a spec and a hash. The picture itself is drawn on demand by `share_card.php`, using
  * BxDolShareCardLayout for the block list and BxDolShareCardRenderer for the pixels. The renderer
- * resolves its own inputs to local files; getImageSpecPath() here is the equivalent for any caller
- * outside the renderer, and is the one method in this class which touches the disk.
+ * resolves its own inputs to local files.
  *
  * @section example Example of usage
  *
@@ -40,7 +39,7 @@ class BxDolShareCard extends BxDolFactory implements iBxDolSingleton
      * the site at once - do it whenever the layouts or the renderer start drawing something else.
      */
     const VERSION = 1;
-    
+
     const PRUNE_ENTITY_LIFETIME = 7776000; ///< 90 days: how old a card must be before its entity is probed, @see BxDolShareCard::pruning
     const PRUNE_ENTITIES_PER_RUN = 500; ///< how many entities one pruning run probes
 
@@ -105,8 +104,8 @@ class BxDolShareCard extends BxDolFactory implements iBxDolSingleton
             'id' => 0,
             'type' => 'website',
             'url' => BX_DOL_URL_ROOT,
-            'title' => (string)getParam('site_title'),
-            'subtitle' => (string)getParam('sys_site_description'),
+            'title' => self::cleanText((string)getParam('site_title'), 200),
+            'subtitle' => self::cleanText((string)getParam('sys_site_description'), 200),
             'layout' => 'default',
             'bg' => $this->_getSiteBackground(),
         ];
@@ -139,10 +138,10 @@ class BxDolShareCard extends BxDolFactory implements iBxDolSingleton
             'private' => !empty($aSpec['private']),
             'type' => $this->_normalizeType($aSpec['type'] ?? ''),
             'url' => !empty($aSpec['url']) && is_string($aSpec['url']) ? bx_absolute_url($aSpec['url']) : '',
-            'title' => self::cleanText($aSpec['title'] ?? '', 200),
-            'description' => self::cleanText($aSpec['description'] ?? '', 300),
-            'subtitle' => self::cleanText($aSpec['subtitle'] ?? '', 200),
-            'layout' => $this->_normalizeName($aSpec['layout'] ?? '') ?: 'default',
+            'title' => self::normalizeText($aSpec['title'] ?? '', 200),
+            'description' => self::normalizeText($aSpec['description'] ?? '', 300),
+            'subtitle' => self::normalizeText($aSpec['subtitle'] ?? '', 200),
+            'layout' => $this->_normalizeLayout($aSpec),
             'image' => $this->_normalizeImage($aSpec['image'] ?? null),
             'bg' => $this->_normalizeImage($aSpec['bg'] ?? null),
             'extra' => $this->_normalizeExtra($aSpec['extra'] ?? []),
@@ -352,6 +351,26 @@ class BxDolShareCard extends BxDolFactory implements iBxDolSingleton
     }
 
     /**
+     * The layout to draw with, which is 'text_free' whenever the words cannot be drawn at all.
+     *
+     * hasTextSupport() existed but nothing ever called it, so a Japanese or Arabic title went to the
+     * normal layout and the renderer drew one "NO GLYPH" box per character - a card that passes every
+     * mechanical check (1200x630, small, fast) and is unreadable to a human. The decision belongs in
+     * the spec, so that it is part of the hash and both producers reach it alike.
+     */
+    protected function _normalizeLayout($aSpec)
+    {
+        $sLayout = $this->_normalizeName($aSpec['layout'] ?? '') ?: 'default';
+        if ($sLayout === 'text_free')
+            return $sLayout;
+
+        // the title carries the card; when it cannot be drawn there is nothing worth drawing
+        $sTitle = (string)($aSpec['title'] ?? '');
+
+        return $sTitle !== '' && !self::hasTextSupport($sTitle) ? 'text_free' : $sLayout;
+    }
+
+    /**
      * Normalise arbitrary stored text into one plain, single line string.
      * bx_process_output(), bx_html_attribute() and BxDolMetatags::metaParse() are deliberately not
      * used: they produce markup and entities, and a card draws glyphs, not HTML.
@@ -371,6 +390,33 @@ class BxDolShareCard extends BxDolFactory implements iBxDolSingleton
         $sText = preg_replace('#<(?:br\s*/?|/p|/li)>#i', ' ', $sText);
         $sText = strip_tags($sText);
         $sText = html_entity_decode($sText, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+
+        return self::normalizeText($sText, $iMaxLen);
+    }
+
+    /**
+     * Shape a string which is ALREADY plain text: drop what cannot be drawn or measured, collapse
+     * runs of space, and truncate on a word boundary.
+     *
+     * Separate from cleanText(), and the ONLY one of the two that normalizeSpec() applies, because
+     * cleanText() is not a fixed point and a spec is normalised more than once on its way to a hash.
+     * cleanText() strips tags and only then decodes entities, so text an author wrote as
+     * `&lt;div class=&quot;wrap&quot;&gt;` survives the first pass as a literal `<div class="wrap">`
+     * - and a second pass would strip that as if it were markup, silently deleting the author's own
+     * words from the picture and from og:description. Turning stored markup into plain text is the
+     * producer's job and happens exactly once; from then on only this runs, and running it any
+     * number of times changes nothing.
+     *
+     * @param $sText - text which has already been through cleanText()
+     * @param $iMaxLen - truncate on a word boundary at this many characters, 0 for no truncation
+     */
+    public static function normalizeText($sText, $iMaxLen = 0)
+    {
+        if (!is_string($sText) || $sText === '')
+            return '';
+
+        if (!preg_match('//u', $sText))
+            $sText = mb_convert_encoding($sText, 'UTF-8', 'UTF-8');
 
         // control characters and zero width marks survive the steps above and break text measuring
         $sText = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/u', ' ', $sText);
@@ -529,14 +575,24 @@ class BxDolShareCard extends BxDolFactory implements iBxDolSingleton
                 'limit' => self::PRUNE_ENTITIES_PER_RUN,
             ]);
 
+            $iNow = time();
             foreach ($aRows as $aRow) {
-                if (self::isEntityAlive($aRow['entity']))
+                if (self::isEntityAlive($aRow['entity'])) {
+                    // stamp it so it leaves the oldest-N window. `added` is otherwise only written
+                    // when a card is re-stored, so a live entity's row would sit in that window for
+                    // ever - and once PRUNE_ENTITIES_PER_RUN live rows are older than the lifetime,
+                    // which every site reaches eventually, the sweep would never see a dead one again
+                    $oDb->query("UPDATE `sys_share_cards_map` SET `added` = :now WHERE `id` = :id LIMIT 1", ['now' => $iNow, 'id' => (int)$aRow['id']]);
                     continue;
+                }
 
                 if ((int)$aRow['file_id'] > 0)
                     $iDeleted += $oStorage->deleteFile((int)$aRow['file_id']) ? 1 : 0;
 
-                $oDb->query("DELETE FROM `sys_share_cards_map` WHERE `id` = :id LIMIT 1", ['id' => (int)$aRow['id']]);
+                // a row whose file_id is 0 was claimed by a render which then failed; deleting it
+                // reclaims something too, and the cron report should not read 0 for a run that worked
+                if ($oDb->query("DELETE FROM `sys_share_cards_map` WHERE `id` = :id LIMIT 1", ['id' => (int)$aRow['id']]) && (int)$aRow['file_id'] <= 0)
+                    $iDeleted++;
             }
         }
         catch (Throwable $oThrowable) {
@@ -612,12 +668,6 @@ class BxDolShareCard extends BxDolFactory implements iBxDolSingleton
     }
 
     /**
-     * Resolve an image spec array to an absolute URL, '' when there is none.
-     * The branch order is the one BxDolMetatags::addPageMetaInfo() uses, so an image which resolves
-     * for a meta tag today resolves the same way here.
-     * @param $mixedImage - array('id', 'object'), array('id', 'transcoder'), array('url') or null
-     */
-    /**
      * isFileReady() dispatches to `isFileReady_` . the transcoder's source type, and BxDolTranscoderProxy
      * defines no isFileReady_Proxy(), so asking a Proxy transcoder raises an Error rather than answering.
      * Proxy transcoders are the ordinary image handle for albums, timeline and stories, so every caller
@@ -633,6 +683,12 @@ class BxDolShareCard extends BxDolFactory implements iBxDolSingleton
         }
     }
 
+    /**
+     * Resolve an image spec array to an absolute URL, '' when there is none.
+     * The branch order is the one BxDolMetatags::addPageMetaInfo() uses, so an image which resolves
+     * for a meta tag today resolves the same way here.
+     * @param $mixedImage - array('id', 'object'), array('id', 'transcoder'), array('url') or null
+     */
     public function getImageSpecUrl($mixedImage)
     {
         $mixedImage = $this->_normalizeImage($mixedImage);
@@ -661,58 +717,6 @@ class BxDolShareCard extends BxDolFactory implements iBxDolSingleton
         $sUrl = $o->getFileUrlById($mixedImage['id']);
 
         return $sUrl ? $sUrl : '';
-    }
-
-    /**
-     * Resolve an image spec array to a readable local path, '' when the file does not live on this
-     * filesystem. Never call this from a page render - it hits the disk, it transcodes a derivative which
-     * does not exist yet, and it is never used on a page render.
-     * @param $mixedImage - array('id', 'object'), array('id', 'transcoder'), array('url') or null
-     */
-    public function getImageSpecPath($mixedImage)
-    {
-        $mixedImage = $this->_normalizeImage($mixedImage);
-        if (!$mixedImage || empty($mixedImage['id']))
-            return '';
-
-        $oStorage = false;
-        $iFileId = (int)$mixedImage['id'];
-
-        if (!empty($mixedImage['object']))
-            $oStorage = BxDolStorage::getObjectInstance($mixedImage['object']);
-        else if (!empty($mixedImage['transcoder']) && ($oTranscoder = BxDolTranscoder::getObjectInstance($mixedImage['transcoder']))) {
-            // getFileUrl() does not transcode anything: for a derivative which is not ready it only
-            // adds the handler to the queue and answers with an image_transcoder.php URL, so the
-            // file has to be produced right here before there is anything to find on disk
-            $mixedHandler = $mixedImage['id'];
-            if (!self::isTranscodedFileReady($oTranscoder, $mixedHandler)) {
-                try {
-                    if (!$oTranscoder->transcode($mixedHandler))
-                        return '';
-                }
-                catch (Exception|Error $oError) {
-                    return '';
-                }
-            }
-
-            $oStorage = $oTranscoder->getStorage();
-
-            // the derivative is filed under the very handler isFileReady() looked it up by, which
-            // carries the retina suffix whenever the transcoder decided the device wants one
-            $iFileId = (int)$oTranscoder->getDb()->getFileIdByHandler($mixedHandler . $oTranscoder->getDevicePixelRatioHandlerSuffix());
-        }
-
-        // only a Local engine keeps the file on this filesystem; a remote one has to be downloaded
-        // by the caller, which is why this returns '' rather than a path it cannot back up
-        if (!($oStorage instanceof BxDolStorageLocal) || $iFileId <= 0)
-            return '';
-
-        if (!($aFile = $oStorage->getFile($iFileId)) || empty($aFile['path']))
-            return '';
-
-        $sPath = BX_DIRECTORY_STORAGE . $oStorage->getObject() . '/' . $aFile['path'];
-
-        return is_file($sPath) && is_readable($sPath) ? $sPath : '';
     }
 
     /**
@@ -748,9 +752,16 @@ class BxDolShareCard extends BxDolFactory implements iBxDolSingleton
             $sDescription = (string)getParam('sys_site_description');
         $sDescription = self::cleanText($sDescription, 300);
 
-        $sUrl = $aSpec['url'];
-        if ($sUrl === '' && !empty($aPage['url']) && is_string($aPage['url']))
+        // the canonical this page already computed wins. It has to: og:url and <link rel="canonical">
+        // disagreeing is worse than either being wrong, and getDefaultSpec() fills `url` with
+        // BX_DOL_URL_ROOT, so taking the spec first made every non-content page claim to BE the home
+        // page. Deriving it from the page's own uri is not the answer either - sys_home's uri is
+        // 'home', and /home is a 301 to /.
+        $sUrl = '';
+        if (!empty($aPage['url']) && is_string($aPage['url']))
             $sUrl = bx_absolute_url($aPage['url']);
+        if ($sUrl === '')
+            $sUrl = $aSpec['url'];
         if ($sUrl === '')
             $sUrl = BX_DOL_URL_ROOT;
 
@@ -872,11 +883,11 @@ class BxDolShareCard extends BxDolFactory implements iBxDolSingleton
 
         $aOverride['page'] = $sObject;
 
+        // the page class sets `description` itself. This fills only `url`, and only for a third
+        // party page class returning a partial spec - `description` is deliberately NOT filled here
+        // because it is part of the hash, and filling it on one path only is what broke the caching
         if (empty($aOverride['url']) && !empty($aObject['uri']))
             $aOverride['url'] = bx_absolute_url(BxDolPermalinks::getInstance()->permalink('page.php?i=' . $aObject['uri']));
-
-        if (empty($aOverride['description']) && !empty($aObject['meta_description']))
-            $aOverride['description'] = _t($aObject['meta_description']);
 
         return $this->getDefaultSpec($aOverride);
     }
@@ -973,7 +984,7 @@ class BxDolShareCard extends BxDolFactory implements iBxDolSingleton
             'author' => $this->_normalizePerson($aExtra['author'] ?? null, true),
             'published' => max(0, (int)($aExtra['published'] ?? 0)),
             'updated' => max(0, (int)($aExtra['updated'] ?? 0)),
-            'category' => self::cleanText($aExtra['category'] ?? '', 64),
+            'category' => self::normalizeText($aExtra['category'] ?? '', 64),
             'counters' => [
                 'replies' => max(0, (int)($aCounters['replies'] ?? 0)),
                 'views' => max(0, (int)($aCounters['views'] ?? 0)),
@@ -995,7 +1006,7 @@ class BxDolShareCard extends BxDolFactory implements iBxDolSingleton
         if ($bWithLink)
             $aResult['id'] = max(0, (int)($aPerson['id'] ?? 0));
 
-        $aResult['name'] = self::cleanText($aPerson['name'] ?? '', 64);
+        $aResult['name'] = self::normalizeText($aPerson['name'] ?? '', 64);
         $aResult['avatar'] = $this->_normalizeImage($aPerson['avatar'] ?? null);
 
         if ($bWithLink)
@@ -1019,7 +1030,7 @@ class BxDolShareCard extends BxDolFactory implements iBxDolSingleton
 
             $aName = [
                 'id' => max(0, (int)($aOne['id'] ?? 0)),
-                'name' => self::cleanText($aOne['name'] ?? '', 64),
+                'name' => self::normalizeText($aOne['name'] ?? '', 64),
                 'avatar' => $this->_normalizeImage($aOne['avatar'] ?? null),
             ];
 
@@ -1043,7 +1054,7 @@ class BxDolShareCard extends BxDolFactory implements iBxDolSingleton
 
         $aResult = [];
         foreach ($aBadges as $sBadge) {
-            if (!is_string($sBadge) || ($sBadge = self::cleanText($sBadge, 32)) === '')
+            if (!is_string($sBadge) || ($sBadge = self::normalizeText($sBadge, 32)) === '')
                 continue;
 
             $aResult[] = $sBadge;
@@ -1067,7 +1078,7 @@ class BxDolShareCard extends BxDolFactory implements iBxDolSingleton
             if (is_array($sValue) || is_object($sValue))
                 continue;
 
-            $aResult[$sKey] = self::cleanText((string)$sValue, 300);
+            $aResult[$sKey] = self::normalizeText((string)$sValue, 300);
 
             if (count($aResult) >= 16)
                 break;

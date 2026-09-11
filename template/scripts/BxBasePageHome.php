@@ -98,6 +98,29 @@ class BxBasePageHome extends BxTemplPage
         }
     }
 
+    /**
+     * The legacy og:image of the home page: the app icon, exactly as on master.
+     *
+     * It is only read by the OLD meta block, the one that runs when sys_share_cards_enable is off -
+     * the share card path never looks at aPage['image']. Keeping it is what makes turning the
+     * feature off restore the previous tag set byte for byte, which is the whole point of the flag.
+     */
+    protected function _getPageMetaImage()
+    {
+        $iImage = 0;
+        foreach(['icon_apple', 'icon_android', 'icon_android_splash'] as $sIcon)
+            if(($iImage = (int)getParam('sys_site_' . $sIcon)) != 0)
+                break;
+
+        if(empty($iImage))
+            return '';
+
+        $oStorage = BxDolStorage::getObjectInstance(BX_DOL_STORAGE_OBJ_IMAGES);
+        if(!$oStorage)
+            return '';
+
+        return $oStorage->getFileUrlById($iImage);
+    }
 }
 
 /** @} */

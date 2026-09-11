@@ -7,6 +7,7 @@
  * @{
  */
 
+$GLOBALS['bx_profiler_disable'] = true; // long runs otherwise trip BxProfiler's CLI-unsafe page logger
 $aPathInfo = pathinfo(__FILE__);
 require_once ($aPathInfo['dirname'] . '/../inc/header.inc.php');
 require_once(BX_DIRECTORY_PATH_INC . 'design.inc.php');
@@ -43,6 +44,7 @@ class BxDolShareCardCheckCmd
     protected $sOutDir = '';
     protected $bQuiet = false;
     protected $aEntities = array();
+    protected $sEngineRestore = null;
     protected $iPassed = 0;
     protected $iFailed = 0;
     protected $iStale = 0;
@@ -57,7 +59,7 @@ class BxDolShareCardCheckCmd
             elseif (0 === strpos($sArg, '--entity='))
                 $this->aEntities[] = substr($sArg, 9);
             elseif (0 === strpos($sArg, '--gd='))
-                setParam('enable_gd', substr($sArg, 5) == 'off' ? '' : 'on');
+                $this->setEngine(substr($sArg, 5) == 'off' ? '' : 'on');
             elseif ($sArg == '--quiet')
                 $this->bQuiet = true;
             elseif ($sArg == '--help' || $sArg == '-h') {
@@ -65,6 +67,27 @@ class BxDolShareCardCheckCmd
                 exit(0);
             }
         }
+    }
+
+    /**
+     * Switch the drawing engine for THIS RUN only.
+     *
+     * enable_gd is a site wide option, so a checker which simply setParam()s it leaves every later
+     * page render - and every card hash, since the engine is one of the cache key inputs - on
+     * whatever the last run happened to pass. The original is put back on shutdown, including when
+     * the run dies.
+     */
+    protected function setEngine($sValue)
+    {
+        if ($this->sEngineRestore === null) {
+            $this->sEngineRestore = (string)getParam('enable_gd');
+            $sRestore = $this->sEngineRestore;
+            register_shutdown_function(function () use ($sRestore) {
+                setParam('enable_gd', $sRestore);
+            });
+        }
+
+        setParam('enable_gd', $sValue);
     }
 
     public function usage()
@@ -86,9 +109,9 @@ class BxDolShareCardCheckCmd
         foreach ($this->getCases() as $sName => $aSpec)
             $this->check($sName, $aSpec);
 
-        $this->out('');
-        $this->out($this->iPassed . ' passed, ' . $this->iFailed . ' failed'
-            . ($this->iStale ? ', ' . $this->iStale . ' stale map rows' : ''));
+        echo "\n";
+        echo ($this->iPassed . ' passed, ' . $this->iFailed . ' failed'
+            . ($this->iStale ? ', ' . $this->iStale . ' stale map rows' : '')) . "\n";
 
         return $this->iFailed ? 1 : 0;
     }
