@@ -165,8 +165,11 @@ class BxDolAiChatUi
             'role' => $sRole,
             'parts' => $aParts,
         ];
-        if ($sRole === 'assistant')
+        if ($sRole === 'assistant') {
             $aOut['actions'] = $aActions;
+            if ($aActions)
+                $aOut['metadata'] = ['actions' => $aActions];
+        }
 
         return $aOut;
     }
@@ -246,16 +249,16 @@ class BxDolAiChatUi
         $a = parse_url((string)$sUrl);
         if (($a['scheme'] ?? '') !== 'https' || empty($a['host']))
             return false;
+        if (isset($a['user']) || isset($a['pass']))
+            return false;
 
         $sHost = strtolower((string)$a['host']);
-        $aAllowed = ['hiweave.com', 'www.hiweave.com'];
-        if (defined('BX_DOL_URL_ROOT')) {
-            $aSite = parse_url(BX_DOL_URL_ROOT);
-            if (!empty($aSite['host']))
-                $aAllowed[] = strtolower((string)$aSite['host']);
-        }
+        if ($sHost === 'localhost' || str_ends_with($sHost, '.localhost'))
+            return false;
+        if (filter_var($sHost, FILTER_VALIDATE_IP))
+            return (bool)filter_var($sHost, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE);
 
-        return in_array($sHost, $aAllowed, true);
+        return true;
     }
 }
 

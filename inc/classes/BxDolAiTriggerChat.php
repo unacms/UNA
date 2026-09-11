@@ -317,8 +317,10 @@ class BxDolAiTriggerChat extends BxDolAiTrigger
             $fEmit($this->sseEvent([
                 'type' => 'CUSTOM',
                 'name' => 'chat_actions',
-                'messageId' => $sId,
-                'value' => $aParsed['actions'],
+                'value' => [
+                    'messageId' => $sId,
+                    'actions' => $aParsed['actions'],
+                ],
             ]));
         }
         $aState = $this->resetActionsSseState();

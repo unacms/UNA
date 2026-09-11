@@ -294,6 +294,7 @@ BxDolStudioPageAgents.prototype._renderReadonlyAgentChat = function(el, aMessage
         html += '<div class="bx-ai-chat-message" style="display:flex;justify-content:' + (isUser ? 'flex-end' : 'flex-start') + ';margin:6px 0;">' +
             '<div class="bx-ai-chat-message-inner bx-def-padding-sec bx-def-round-corners" style="max-width:85%;background:' + (isUser ? '#2563eb' : '#fff') + ';color:' + (isUser ? '#fff' : 'inherit') + ';">' +
             this._escAgentChat(text).replace(/\n/g, '<br />') +
+            this._renderReadonlyAgentChatActions(m.actions || (m.metadata && m.metadata.actions) || []) +
             '</div></div>';
     }
     html += '</div></div>';
@@ -301,6 +302,27 @@ BxDolStudioPageAgents.prototype._renderReadonlyAgentChat = function(el, aMessage
     var list = el.querySelector('.bx-ai-chat-messages');
     if (list)
         list.scrollTop = list.scrollHeight;
+};
+
+BxDolStudioPageAgents.prototype._renderReadonlyAgentChatActions = function(aActions) {
+    if (!aActions || !aActions.length)
+        return '';
+
+    var html = '<div class="bx-ai-chat-actions" style="display:flex;flex-wrap:wrap;gap:0.35rem;margin-top:0.5rem;">';
+    for (var i = 0; i < aActions.length; i++) {
+        var a = aActions[i] || {};
+        var sLabel = this._escAgentChat(a.label || '');
+        if (!sLabel)
+            continue;
+        if (a.type === 'link' && a.url) {
+            html += '<a class="bx-btn bx-btn-small underline" href="' + this._escAgentChat(a.url) + '" target="_blank" rel="noopener noreferrer">' + sLabel + '</a>';
+        }
+        else {
+            html += '<span class="bx-btn bx-btn-small bx-btn-disabled">' + sLabel + '</span>';
+        }
+    }
+    html += '</div>';
+    return html;
 };
 
 BxDolStudioPageAgents.prototype._escAgentChat = function(s) {
