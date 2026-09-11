@@ -45,6 +45,20 @@
                     $(aFocusable[0]).focus();
             });
         }
+
+        //--- Escape closes whichever sidebar is open; bx_sidebar_toggle returns focus to its trigger.
+        $(document).on('keydown.bx-sidebar', function(event) {
+            if(event.which != 27 && event.key != 'Escape')
+                return;
+
+            for(var j in aSidebars) {
+                if(typeof(aSidebars[j]) != 'string' || !bx_sidebar_active(aSidebars[j]))
+                    continue;
+
+                event.preventDefault();
+                bx_sidebar_toggle(aSidebars[j]);
+            }
+        });
     });
 
     function bx_sidebar_get(sType) {
@@ -65,24 +79,31 @@
 
         oSidebar.toggleClass('bx-sidebar-active', !bSidebarActive);
 
+        var oTrigger = $('.bx-sidebar-' + sType + '-trigger');
+        oTrigger.attr('aria-expanded', !bSidebarActive ? 'true' : 'false');
+
         if(!bSidebarActive) {
             var aFocusable = bx_get_focusable(oSidebar.get(0));
             if(aFocusable && aFocusable.length > 0)
                 $(aFocusable[0]).focus();
         }
-        else 
-            $(bx_clicked_stack_pop()).focus();
+        else {
+            var oReturnTo = bx_clicked_stack_pop();
+            $(oReturnTo ? oReturnTo : oTrigger.filter(':visible').get(0)).focus();
+        }
     }
 
     function bx_sidebar_dropdown_toggle(oLink) {
-        $(oLink).parents('.bx-sidebar-item:first').toggleClass('bx-si-dropdown-open').find('.bx-si-dropdown-icon').toggleClass('rotate-0 rotate-90');
+        var oItem = $(oLink).parents('.bx-sidebar-item:first');
+        oItem.toggleClass('bx-si-dropdown-open').find('.bx-si-dropdown-icon').toggleClass('rotate-0 rotate-90');
+        $(oLink).attr('aria-expanded', oItem.hasClass('bx-si-dropdown-open') ? 'true' : 'false');
 
         return false;
     }
 
     function bx_site_search_show(oButtom) {
         var oButton = $(oButtom).parents('.bx-ti-search-button');
-        oButton.addClass('bx-tis-button-hidden');
+        oButton.addClass('bx-tis-button-hidden').find('button,a').attr('aria-expanded', 'true');
 
         var oBox = oButton.parents('.bx-ti-search').find('.bx-ti-search-box');
         oBox.addClass('bx-tis-box-shown');
@@ -96,7 +117,7 @@
                 else {
                     bx_site_search_close_all_opened();
                     oBox.removeClass('bx-tis-box-shown');
-                    oButton.removeClass('bx-tis-button-hidden').find('a').focus();
+                    oButton.removeClass('bx-tis-button-hidden').find('button,a').attr('aria-expanded', 'false').focus();
                 }
             });
         }, 10);
@@ -142,7 +163,7 @@
         if(oBox.hasClass(sClassBox) && oButton.hasClass(sClassButton)) {
             bx_site_search_close_all_opened();
             oBox.removeClass(sClassBox);
-            oButton.removeClass(sClassButton).find('a').focus();
+            oButton.removeClass(sClassButton).find('button,a').attr('aria-expanded', 'false').focus();
         }
     }
 

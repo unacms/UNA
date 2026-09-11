@@ -501,11 +501,37 @@ function bx_menu_popup (o, e, options, vars) {
     if ('undefined' == typeof(e))
         e = window;
 
+    var bExpanded = e !== window && $(e).length != 0 && $(e).is('[aria-expanded]');
+    var fOnShow = options.onShow, fOnHide = options.onHide;
+
     var o = $.extend({}, $.fn.dolPopupDefaultOptions, {
         id: o, 
         url: bx_append_url_params('menu.php', $.extend({o:o}, vars)), 
         cssClass: 'bx-popup-menu'
-    }, options);
+    }, options, {
+        onShow: function(oPopup) {
+            if(bExpanded)
+                $(e).attr('aria-expanded', 'true');
+
+            // remembered on the popup: the hide handler dolPopup keeps is the one from the first show, whichever trigger opened it since
+            oPopup.data('bx-popup-trigger', bExpanded ? $(e) : null);
+
+            if(typeof fOnShow == 'function')
+                fOnShow(oPopup);
+            else if(typeof fOnShow == 'string')
+                eval(fOnShow);
+        },
+        onHide: function(oPopup) {
+            var oTrigger = oPopup.data('bx-popup-trigger');
+            if(oTrigger && oTrigger.length)
+                oTrigger.attr('aria-expanded', 'false');
+
+            if(typeof fOnHide == 'function')
+                fOnHide(oPopup);
+            else if(typeof fOnHide == 'string')
+                eval(fOnHide);
+        }
+    });
 
     $(e).dolPopupAjax(o);
 }

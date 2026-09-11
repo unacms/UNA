@@ -102,7 +102,13 @@ BxDolMenuMoreAuto.prototype.more = function(oElement)
             el: oElement
         }, 
         moveToDocRoot: false,
-        cssClass: 'bx-popup-menu'
+        cssClass: 'bx-popup-menu',
+        onShow: function() {
+            oElement.attr('aria-expanded', 'true');
+        },
+        onHide: function() {
+            oElement.attr('aria-expanded', 'false');
+        }
     });
 }
 

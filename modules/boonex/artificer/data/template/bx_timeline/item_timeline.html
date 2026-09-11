@@ -36,7 +36,7 @@
                             <bx_if:show_timeline_owner>
                                 <span class="mr-1"><bx_text:_bx_timeline_txt_to /></span> 
                                 <span class="__style_prefix__-timeline-owner-name mr-1">
-                                    <bx_repeat:owners><span class="__style_prefix__-ton-div">, </span><a href="__owner_url__" class="__style_prefix__-ton-item text-blue-600 dark:text-blue-500 font-semibold hover:underline">__owner_username__</a></bx_repeat:owners>
+                                    <bx_repeat:owners><span class="__style_prefix__-ton-div">, </span><a href="__owner_url__" class="__style_prefix__-ton-item text-blue-600 dark:text-blue-400 font-semibold hover:underline">__owner_username__</a></bx_repeat:owners>
                                 </span> 
                             </bx_if:show_timeline_owner>
                         </div>
@@ -80,7 +80,7 @@
             </bx_if:show_menu_item_actions>
             <bx_if:show_manage>
                 <div class="__style_prefix__-item-manage">
-                    <a class="group bx-lnk-cnt bx-stl-mil-sm" href="javascript:void(0)" onclick="__onclick__">
+                    <a class="group bx-lnk-cnt bx-stl-mil-sm" href="javascript:void(0)" onclick="__onclick__" title="<bx_text_attribute:_bx_timeline_menu_title_item_manage />" aria-label="<bx_text_attribute:_bx_timeline_menu_title_item_manage />" aria-haspopup="dialog" aria-expanded="false">
                         <span class="bx-menu-item-icon bx-def-align-center leading-5"><i class="sys-icon ellipsis-h"></i></span>
                     </a>
                 </div>

@@ -16,9 +16,11 @@
                             <img class="bx-def-border bx-def-round-corners" style="background-image:url(__icon_url__)" src="<bx_icon_url:spacer.gif />" />
                         </div>
                     </bx_if:image>
-                    <div class="bx-cover-title bx-def-margin-sec-topbottom bx-def-font-h1" style="z-index:2;">
+                    <bx_if:title>
+                    <h1 class="bx-cover-title bx-def-margin-sec-topbottom bx-def-font-h1" style="z-index:2;">
                         <span class="bx-def-font-contrasted">__title__</span>
-                    </div>
+                    </h1>
+                    </bx_if:title>
                     <div class="bx-cover-actions">__actions__</div>
                 </div>
             </div>

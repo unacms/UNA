@@ -49,17 +49,22 @@ class BxTemplMenuToolbar extends BxBaseMenuToolbar
             return $a;
 
         $a['class_add_a'] = '';
+
+        //--- Each of these items is a disclosure: it opens a sidebar or a popup instead of following a link.
+        $sAttrsAdd = '';
         switch ($a['name']) {
             case 'main-menu':
                 $a['class_add_a'] = ' bx-sidebar-site-trigger';
                 $a['link'] = 'javascript:void(0)';
                 $a['onclick'] = '';
+                $sAttrsAdd = 'aria-haspopup="dialog" aria-expanded="false" aria-controls="bx-sidebar-site"';
                 break;
 
             case 'account':
                 $a['class_add_a'] = ' bx-sidebar-account-trigger';
                 $a['link'] = 'javascript:void(0)';
                 $a['onclick'] = '';
+                $sAttrsAdd = 'aria-haspopup="dialog" aria-expanded="false" aria-controls="bx-sidebar-account"';
                 break;
 
             case 'add-content':
@@ -67,13 +72,21 @@ class BxTemplMenuToolbar extends BxBaseMenuToolbar
 
                 if(isset($a['bx_if:onclick']['content']['onclick']))
                     $a['bx_if:onclick']['content']['onclick'] = str_replace('bx_menu_slide_inline', 'bx_menu_popup_inline', $a['bx_if:onclick']['content']['onclick']);
+
+                $sAttrsAdd = 'aria-haspopup="true" aria-expanded="false" aria-controls="bx-sliding-menu-sys_add_content"';
                 break;
 
             case 'notifications-preview':
                 if(isset($a['bx_if:onclick']['content']['onclick']))
                     $a['bx_if:onclick']['content']['onclick'] = str_replace(["bx_menu_slide", "'site', "], ['bx_menu_popup'], $a['bx_if:onclick']['content']['onclick']);
+
+                //--- No aria-controls: bx_menu_popup() creates the popup lazily, so the id does not exist yet.
+                $sAttrsAdd = 'aria-haspopup="dialog" aria-expanded="false"';
                 break;
         }
+
+        if($sAttrsAdd && isset($a['attrs']))
+            $a['attrs'] .= ' ' . $sAttrsAdd;
 
         return $a;
     }

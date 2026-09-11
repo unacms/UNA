@@ -140,6 +140,7 @@ class BxBaseSearch extends BxDolSearch
             unset($aForm['inputs']['section']);
             unset($aForm['inputs']['search']);
             unset($aForm['inputs']['keyword']['caption']);
+            $aForm['inputs']['keyword']['area_label'] = '_Search'; // the caption is dropped for the live variant, so name the field explicitly
             $aForm['inputs']['keyword']['attrs']['placeholder'] = _t('_sys_search_placeholder');
             $aForm['inputs']['keyword']['attrs']['onkeydown'] = "return bx_search_on_type(event, $sJsParams);";
             $aForm['inputs']['keyword']['attrs']['onpaste'] = $aForm['inputs']['keyword']['attrs']['onkeydown'];

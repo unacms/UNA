@@ -46,9 +46,6 @@ class BxBaseStudioMenu extends BxDolStudioMenu
             $aItem['class_add'] = '';
         $aItem['class_add'] .= ' ' . str_replace('_', '-', $aItem['name']);
 
-        if(!empty($aItem['attrs_add']))
-            $aItem['attrs'] .= ' ' . $aItem['attrs_add'];
-
         // an item may keep its icon as an <img> (icon_inline => false): app tile artwork stays out of the document and its gradient ids never collide
         if($this->_bInlineIcons && ($aItem['icon_inline'] ?? true) && $aItem['bx_if:image']['condition'] && ($sImage = $this->_oTemplate->getIconContent($aItem['icon'])) !== false)
             $aItem = array_merge($aItem, [
