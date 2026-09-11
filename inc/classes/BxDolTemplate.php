@@ -1299,7 +1299,7 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
      *
      * @param array $aCard share card spec, or the part of one this caller knows about
      */
-    function setPageShareCard(array $aCard)
+    public function setPageShareCard(array $aCard)
     {
         if(empty($aCard))
             return;
@@ -1311,7 +1311,7 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
      *
      * @return array share card spec, an empty array when nothing was contributed
      */
-    function getPageShareCard()
+    public function getPageShareCard()
     {
         return !empty($this->aPage['share_card']) && is_array($this->aPage['share_card']) ? $this->aPage['share_card'] : array();
     }

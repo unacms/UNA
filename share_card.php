@@ -324,7 +324,9 @@ function bx_share_card_local_copy($oStorage, $iFileId)
     if (!$sData)
         return '';
 
-    $sFile = bx_share_card_tmp_file(md5($sUrl));
+    // sha256 rather than md5: this only names a scratch file, but a weak digest anywhere in a new
+    // file is a finding, and the stronger one costs nothing here
+    $sFile = bx_share_card_tmp_file(hash('sha256', $sUrl));
     return false !== file_put_contents($sFile, $sData) ? $sFile : '';
 }
 

@@ -1470,7 +1470,9 @@ class BxDolShareCardRenderer extends BxDolFactory
         if (!$aObject || empty($aObject['source_params']))
             return '';
 
-        $aParams = @unserialize($aObject['source_params']);
+        // allowed_classes => false: source_params is a plain array, and refusing to instantiate objects
+        // costs nothing while taking object injection off the table entirely
+        $aParams = unserialize($aObject['source_params'], ['allowed_classes' => false]);
         if (!is_array($aParams) || empty($aParams['object']))
             return '';
 

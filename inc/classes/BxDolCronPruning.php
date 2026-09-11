@@ -76,7 +76,7 @@ class BxDolCronPruning extends BxDolCron
         $iDeletedKeys = $oKey ? $oKey->prune() : 0;
 
         // clean ai related data
-        $iDeletedItems = BxDolAi::pruning();
+        BxDolAi::pruning(); // returns nothing, so there is no result to keep
 
         // clean background jobs
         $iDeletedJobs = BxDolBackgroundJobs::pruning();
