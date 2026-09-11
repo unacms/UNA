@@ -13,6 +13,17 @@ class BxDolStudioTemplate extends BxDolTemplate implements iBxDolSingleton
 {
     protected $_sFolderModuleIcons;
 
+    /**
+     * Studio is an authenticated back end: no scraper ever reaches it, so its pages neither
+     * advertise a share card nor generate one.
+     *
+     * @return bool
+     */
+    protected function _isShareCardApplicable()
+    {
+        return false;
+    }
+
     protected function __construct()
     {
         if (isset($GLOBALS['bxDolClasses'][get_class($this)]))

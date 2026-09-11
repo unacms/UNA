@@ -98,22 +98,6 @@ class BxBasePageHome extends BxTemplPage
         }
     }
 
-    protected function _getPageMetaImage()
-    {
-        $iImage = 0;
-        foreach(['icon_apple', 'icon_android', 'icon_android_splash'] as $sIcon)
-            if(($iImage = (int)getParam('sys_site_' . $sIcon)) != 0)
-                break;
-
-        if(empty($iImage))
-            return '';
-
-        $oStorage = BxDolStorage::getObjectInstance(BX_DOL_STORAGE_OBJ_IMAGES);
-        if(!$oStorage)
-            return '';
-
-        return $oStorage->getFileUrlById($iImage);
-    }
 }
 
 /** @} */

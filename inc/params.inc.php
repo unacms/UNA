@@ -47,6 +47,10 @@ define('BX_DOL_TRANSCODER_OBJ_ICON_FAVICON', 'sys_icon_favicon');
 define('BX_DOL_TRANSCODER_OBJ_COVER', 'sys_cover');
 define('BX_DOL_TRANSCODER_OBJ_COVER_UNIT_PROFILE', 'sys_cover_unit_profile');
 
+define('BX_DOL_STORAGE_OBJ_SHARE_CARDS', 'sys_share_cards');
+define('BX_DOL_SHARE_CARD_W', 1200);
+define('BX_DOL_SHARE_CARD_H', 630);
+
 //--- Module types ---//
 if (!defined('BX_DOL_MODULE_TYPE_MODULE')) {
     define('BX_DOL_MODULE_TYPE_MODULE', 'module');

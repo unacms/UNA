@@ -26,6 +26,13 @@ $aResult = [
         
 if ($aEmbedData['thumbnail_url']){
     $aResult['thumbnail_url'] = $aEmbedData['thumbnail_url'];
+
+    // oEmbed requires the dimensions to be present whenever the thumbnail is, and they are known
+    // for a share card - it is always the same size, whatever the entry it describes
+    if (!empty($aEmbedData['thumbnail_width']) && !empty($aEmbedData['thumbnail_height'])) {
+        $aResult['thumbnail_width'] = (int)$aEmbedData['thumbnail_width'];
+        $aResult['thumbnail_height'] = (int)$aEmbedData['thumbnail_height'];
+    }
 }
 if ($aEmbedData['author_name']){
     $aResult['author_name'] =  $aEmbedData['author_name'];

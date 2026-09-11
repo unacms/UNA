@@ -4,7 +4,7 @@
 
 -- --------------------------------------------------------
 
-DROP TABLE IF EXISTS `sys_keys`, `sys_objects_editor`, `sys_objects_iconset`, `sys_objects_player`, `sys_objects_push`, `sys_objects_sms`, `sys_objects_embeds`, `sys_objects_file_handlers`, `sys_objects_captcha`, `sys_objects_cmts`, `sys_cmts_images`, `sys_cmts_images_preview`, `sys_cmts_images2entries`, `sys_cmts_ids`, `sys_cmts_meta_keywords`, `sys_cmts_meta_mentions`, `sys_cmts_votes`, `sys_cmts_votes_track`, `sys_cmts_reactions`, `sys_cmts_reactions_track`, `sys_cmts_reports`, `sys_cmts_reports_track`, `sys_cmts_scores`, `sys_cmts_scores_track`, `sys_email_templates`, `sys_queue_push`, `sys_queue_email`, `sys_options`, sys_options_types, `sys_options_categories`, `sys_options_mixes`, `sys_options_mixes2options`,  `sys_localization_categories`, `sys_localization_keys`, `sys_localization_languages`, `sys_localization_strings`, `sys_acl_actions`, `sys_acl_actions_track`, `sys_acl_matrix`, `sys_acl_levels`, `sys_sessions`, `sys_acl_levels_members`, `sys_objects_rss`, `sys_objects_search`, `sys_objects_search_extended`, `sys_search_extended_fields`, `sys_search_extended_sorting_fields`, `sys_statistics`, `sys_audit`, `sys_alerts`, `sys_alerts_cache_triggers`, `sys_alerts_log`, `sys_alerts_desc`, `sys_alerts_handlers`, `sys_injections`, `sys_injections_admin`, `sys_modules`, `sys_modules_file_tracks`, `sys_modules_relations`, `sys_permalinks`, `sys_objects_privacy`, `sys_privacy_defaults`, `sys_privacy_groups`, `sys_privacy_groups_custom`, `sys_privacy_groups_custom_members`, `sys_privacy_groups_custom_memberships`, `sys_objects_recommendation`, `sys_recommendation_criteria`, `sys_recommendation_data`, `sys_objects_auths`, `sys_objects_score`, `sys_objects_vote`, `sys_objects_report`, `sys_objects_view`, `sys_objects_favorite`, `sys_objects_feature`, `sys_objects_chart`, `sys_objects_content_info`, `sys_content_info_grids`, `sys_background_jobs`, `sys_cron_jobs`, `sys_objects_storage`, `sys_objects_uploader`, `sys_storage_user_quotas`, `sys_storage_tokens`, `sys_storage_ghosts`, `sys_storage_deletions`, `sys_storage_mime_types`, `sys_objects_transcoder`, `sys_transcoder_images_files`, `sys_transcoder_videos_files`, `sys_transcoder_audio_files`, `sys_transcoder_filters`, `sys_transcoder_queue`, `sys_transcoder_queue_files`, `sys_accounts`, `sys_accounts_password`, `sys_accounts_pictures`, `sys_accounts_pictures_resized`, `sys_profiles`, `sys_profiles_track`, `sys_objects_form`, `sys_form_displays`, `sys_form_inputs`, `sys_form_inputs_privacy`, `sys_form_display_inputs`, `sys_form_pre_lists`, `sys_form_pre_values`, `sys_menu_templates`, `sys_objects_menu`, `sys_menu_sets`, `sys_menu_items`, `sys_objects_grid`, `sys_grid_fields`, `sys_grid_actions`, `sys_objects_connection`, `sys_profiles_conn_bans`, `sys_profiles_conn_relations`, `sys_profiles_conn_subscriptions`, `sys_profiles_conn_friends`, `sys_objects_page`, `sys_pages_types`, `sys_pages_layouts`, `sys_pages_layout_columns`, `sys_pages_design_boxes`, `sys_pages_content_placeholders`, `sys_pages_blocks`, `sys_pages_blocks_data`, `sys_labels`, `sys_objects_metatags`, `sys_objects_category`, `sys_objects_live_updates`, `sys_objects_payments`, `sys_files`, `sys_images`, `sys_images_custom`, `sys_images_resized`, `sys_images_editor`, `sys_images_editor_resized`, `sys_wiki_files`, `sys_wiki_images_resized`, `sys_rewrite_rules`, `sys_seo_links`, `sys_seo_uri_rewrites`, `sys_api_keys`, `sys_api_origins`, `sys_agents_models`, `sys_agents_vector_store`, `sys_agents_vector_store_data`, `sys_agents_agents`, `sys_agents_tools`, `sys_agents_chat_history`, `sys_agents_chat_artifacts`, `sys_preloader`, `sys_std_roles`, `sys_std_roles_actions`, `sys_std_roles_actions2roles`, `sys_std_roles_members`, `sys_std_pages`, `sys_std_widgets`, `sys_std_widgets_bookmarks`, `sys_std_pages_widgets`, `sys_categories`, `sys_categories2objects`, `sys_objects_logs`, `sys_objects_location_field`, `sys_objects_location_map`, `sys_objects_wiki`, `sys_pages_wiki_blocks`, `sys_badges`, `sys_badges2objects`, `sys_form_fields_reaction`, `sys_form_fields_reaction_track`, `sys_form_fields_votes`, `sys_form_fields_votes_track`, `sys_form_fields_ids`, `sys_iframely_data`, `sys_embeded_data`, `sys_logger`;
+DROP TABLE IF EXISTS `sys_keys`, `sys_objects_editor`, `sys_objects_iconset`, `sys_objects_player`, `sys_objects_push`, `sys_objects_sms`, `sys_objects_embeds`, `sys_objects_file_handlers`, `sys_objects_captcha`, `sys_objects_cmts`, `sys_cmts_images`, `sys_cmts_images_preview`, `sys_cmts_images2entries`, `sys_cmts_ids`, `sys_cmts_meta_keywords`, `sys_cmts_meta_mentions`, `sys_cmts_votes`, `sys_cmts_votes_track`, `sys_cmts_reactions`, `sys_cmts_reactions_track`, `sys_cmts_reports`, `sys_cmts_reports_track`, `sys_cmts_scores`, `sys_cmts_scores_track`, `sys_email_templates`, `sys_queue_push`, `sys_queue_email`, `sys_options`, sys_options_types, `sys_options_categories`, `sys_options_mixes`, `sys_options_mixes2options`,  `sys_localization_categories`, `sys_localization_keys`, `sys_localization_languages`, `sys_localization_strings`, `sys_acl_actions`, `sys_acl_actions_track`, `sys_acl_matrix`, `sys_acl_levels`, `sys_sessions`, `sys_acl_levels_members`, `sys_objects_rss`, `sys_objects_search`, `sys_objects_search_extended`, `sys_search_extended_fields`, `sys_search_extended_sorting_fields`, `sys_statistics`, `sys_audit`, `sys_alerts`, `sys_alerts_cache_triggers`, `sys_alerts_log`, `sys_alerts_desc`, `sys_alerts_handlers`, `sys_injections`, `sys_injections_admin`, `sys_modules`, `sys_modules_file_tracks`, `sys_modules_relations`, `sys_permalinks`, `sys_objects_privacy`, `sys_privacy_defaults`, `sys_privacy_groups`, `sys_privacy_groups_custom`, `sys_privacy_groups_custom_members`, `sys_privacy_groups_custom_memberships`, `sys_objects_recommendation`, `sys_recommendation_criteria`, `sys_recommendation_data`, `sys_objects_auths`, `sys_objects_score`, `sys_objects_vote`, `sys_objects_report`, `sys_objects_view`, `sys_objects_favorite`, `sys_objects_feature`, `sys_objects_chart`, `sys_objects_content_info`, `sys_content_info_grids`, `sys_background_jobs`, `sys_cron_jobs`, `sys_objects_storage`, `sys_objects_uploader`, `sys_storage_user_quotas`, `sys_storage_tokens`, `sys_storage_ghosts`, `sys_storage_deletions`, `sys_storage_mime_types`, `sys_objects_transcoder`, `sys_transcoder_images_files`, `sys_transcoder_videos_files`, `sys_transcoder_audio_files`, `sys_transcoder_filters`, `sys_transcoder_queue`, `sys_transcoder_queue_files`, `sys_accounts`, `sys_accounts_password`, `sys_accounts_pictures`, `sys_accounts_pictures_resized`, `sys_profiles`, `sys_profiles_track`, `sys_objects_form`, `sys_form_displays`, `sys_form_inputs`, `sys_form_inputs_privacy`, `sys_form_display_inputs`, `sys_form_pre_lists`, `sys_form_pre_values`, `sys_menu_templates`, `sys_objects_menu`, `sys_menu_sets`, `sys_menu_items`, `sys_objects_grid`, `sys_grid_fields`, `sys_grid_actions`, `sys_objects_connection`, `sys_profiles_conn_bans`, `sys_profiles_conn_relations`, `sys_profiles_conn_subscriptions`, `sys_profiles_conn_friends`, `sys_objects_page`, `sys_pages_types`, `sys_pages_layouts`, `sys_pages_layout_columns`, `sys_pages_design_boxes`, `sys_pages_content_placeholders`, `sys_pages_blocks`, `sys_pages_blocks_data`, `sys_labels`, `sys_objects_metatags`, `sys_objects_category`, `sys_objects_live_updates`, `sys_objects_payments`, `sys_files`, `sys_images`, `sys_images_custom`, `sys_images_resized`, `sys_images_editor`, `sys_images_editor_resized`, `sys_wiki_files`, `sys_wiki_images_resized`, `sys_share_cards`, `sys_share_cards_map`, `sys_rewrite_rules`, `sys_seo_links`, `sys_seo_uri_rewrites`, `sys_api_keys`, `sys_api_origins`, `sys_agents_models`, `sys_agents_vector_store`, `sys_agents_vector_store_data`, `sys_agents_agents`, `sys_agents_tools`, `sys_agents_chat_history`, `sys_agents_chat_artifacts`, `sys_preloader`, `sys_std_roles`, `sys_std_roles_actions`, `sys_std_roles_actions2roles`, `sys_std_roles_members`, `sys_std_pages`, `sys_std_widgets`, `sys_std_widgets_bookmarks`, `sys_std_pages_widgets`, `sys_categories`, `sys_categories2objects`, `sys_objects_logs`, `sys_objects_location_field`, `sys_objects_location_map`, `sys_objects_wiki`, `sys_pages_wiki_blocks`, `sys_badges`, `sys_badges2objects`, `sys_form_fields_reaction`, `sys_form_fields_reaction_track`, `sys_form_fields_votes`, `sys_form_fields_votes_track`, `sys_form_fields_ids`, `sys_iframely_data`, `sys_embeded_data`, `sys_logger`;
 
 ALTER DATABASE DEFAULT CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci';
 SET NAMES 'utf8mb4' COLLATE 'utf8mb4_unicode_ci';
@@ -383,6 +383,7 @@ INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `ex
 (@iCategoryId, 'sys_eq_time', '_adm_stg_cpt_option_sys_eq_time', '0', 'digit', '', '', '', '', 6),
 (@iCategoryId, 'sys_push_queue_time', '_adm_stg_cpt_option_sys_push_queue_time', '0', 'digit', '', '', '', '', 7),
 (@iCategoryId, 'sys_audit_report', '_adm_stg_cpt_option_sys_audit_report', '', 'text', '', '', '', '', 8),
+(@iCategoryId, 'sys_share_card_ts', '', '0', 'digit', '', '', '', '', 9),
 
 (@iCategoryId, 'sys_ftp_login', '_adm_stg_cpt_option_sys_ftp_login', '', 'digit', '', '', '', '', 10),
 (@iCategoryId, 'sys_ftp_password', '_adm_stg_cpt_option_sys_ftp_password', '', 'secret', '', '', '', '', 11),
@@ -498,7 +499,8 @@ INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `ex
 
 (@iCategoryId, 'sys_site_cover_common', '', '0', 'digit', '', '', '', 27),
 (@iCategoryId, 'sys_unit_cover_profile', '', '0', 'digit', '', '', '', 28),
-(@iCategoryId, 'sys_site_cover_disabled', '', '', 'checkbox', '', '', '', 29);
+(@iCategoryId, 'sys_site_cover_disabled', '', '', 'checkbox', '', '', '', 29),
+(@iCategoryId, 'sys_site_share_image', '', '0', 'digit', '', '', '', 30);
 
 
 --
@@ -538,6 +540,7 @@ SET @iCategoryId = LAST_INSERT_ID();
 
 INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `info`, `value`, `type`, `extra`, `check`, `check_error`, `order`) VALUES
 (@iCategoryId, 'site_title', '_adm_stg_cpt_option_site_title', '_adm_stg_inf_option_site_title', 'Community', 'digit', '', '', '', 1),
+(@iCategoryId, 'sys_site_description', '_adm_stg_cpt_option_sys_site_description', '_adm_stg_inf_option_sys_site_description', '', 'text', '', '', '', 2),
 (@iCategoryId, 'site_email', '_adm_stg_cpt_option_site_email', '_adm_stg_inf_option_site_email', 'admin@example.com', 'digit', '', '', '', 3),
 (@iCategoryId, 'site_email_notify', '_adm_stg_cpt_option_site_email_notify', '_adm_stg_inf_option_site_email_notify', 'admin@example.com', 'digit', '', '', '', 4),
 (@iCategoryId, 'site_tour_home', '_adm_stg_cpt_option_site_tour_home', '_adm_stg_inf_option_site_tour_home', 'on', 'checkbox', '', '', '', 6),
@@ -548,6 +551,9 @@ INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `info`, `value`, `ty
 
 (@iCategoryId, 'smart_app_banner', '_adm_stg_cpt_option_smart_app_banner', '_adm_stg_inf_option_smart_app_banner', '', 'checkbox', '', '', '', 14),
 (@iCategoryId, 'smart_app_banner_ios_app_id', '_adm_stg_cpt_option_smart_app_banner_ios_app_id', '_adm_stg_inf_option_smart_app_banner_ios_app_id', '', 'digit', '', '', '', 15),
+
+(@iCategoryId, 'sys_share_cards_enable', '_adm_stg_cpt_option_sys_share_cards_enable', '_adm_stg_inf_option_sys_share_cards_enable', 'on', 'checkbox', '', '', '', 16),
+(@iCategoryId, 'sys_share_card_font', '_adm_stg_cpt_option_sys_share_card_font', '_adm_stg_inf_option_sys_share_card_font', '', 'digit', '', '', '', 17),
 
 (@iCategoryId, 'sys_per_page_search_keyword_single', '_adm_stg_cpt_option_sys_per_page_search_keyword_single', '_adm_stg_inf_option_sys_per_page_search_keyword_single', '24', 'digit', '', '', '', 20),
 (@iCategoryId, 'sys_per_page_search_keyword_plural', '_adm_stg_cpt_option_sys_per_page_search_keyword_plural', '_adm_stg_inf_option_sys_per_page_search_keyword_plural', '3', 'digit', '', '', '', 21),
@@ -1929,6 +1935,33 @@ CREATE TABLE IF NOT EXISTS `sys_wiki_images_resized` (
   UNIQUE KEY `remote_id` (`remote_id`)
 );
 
+CREATE TABLE `sys_share_cards` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `profile_id` int(10) unsigned NOT NULL,
+  `remote_id` varchar(128) NOT NULL,
+  `path` varchar(255) NOT NULL,
+  `file_name` varchar(255) NOT NULL,
+  `mime_type` varchar(128) NOT NULL,
+  `ext` varchar(32) NOT NULL,
+  `size` bigint(20) NOT NULL,
+  `added` int(11) NOT NULL,
+  `modified` int(11) NOT NULL,
+  `private` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `remote_id` (`remote_id`)
+);
+
+CREATE TABLE `sys_share_cards_map` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `entity` varchar(128) NOT NULL,
+  `hash` varchar(64) NOT NULL,
+  `file_id` int(11) NOT NULL,
+  `added` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `entity` (`entity`),
+  KEY `added` (`added`)
+);
+
 -- --------------------------------------------------------
 
 
@@ -2730,7 +2763,8 @@ INSERT INTO `sys_objects_storage` (`object`, `engine`, `params`, `token_life`, `
 ('sys_wiki_files', 'Local', '', 360, 2592000, 3, 'sys_wiki_files', 'allow-deny', '{image}', '', 0, 0, 0, 0, 0, 0),
 ('sys_wiki_images_resized', 'Local', '', 360, 2592000, 3, 'sys_wiki_images_resized', 'allow-deny', '{image}', '', 0, 0, 0, 0, 0, 0),
 ('sys_accounts_pictures', 'Local', '', 360, 2592000, 3, 'sys_accounts_pictures', 'allow-deny', '{image}', '', 0, 0, 0, 0, 0, 0),
-('sys_accounts_pictures_resized', 'Local', '', 360, 2592000, 3, 'sys_accounts_pictures_resized', 'allow-deny', '{image}', '', 0, 0, 0, 0, 0, 0);
+('sys_accounts_pictures_resized', 'Local', '', 360, 2592000, 3, 'sys_accounts_pictures_resized', 'allow-deny', '{image}', '', 0, 0, 0, 0, 0, 0),
+('sys_share_cards', 'Local', '', 0, 31536000, 0, 'sys_share_cards', 'allow-deny', '{image}', '', 0, 0, 0, 0, 0, 0);
 
 CREATE TABLE IF NOT EXISTS `sys_storage_user_quotas` (
   `profile_id` int(11) NOT NULL,
@@ -5884,6 +5918,7 @@ INSERT INTO `sys_objects_transcoder` (`object`, `storage_object`, `source_type`,
 ('sys_cover', 'sys_images_resized', 'Storage', 'a:1:{s:6:"object";s:10:"sys_images";}', 'no', '0', '0', '0', '', ''),
 ('sys_cover_unit_profile', 'sys_images_resized', 'Storage', 'a:1:{s:6:"object";s:10:"sys_images";}', 'no', '0', '0', '0', '', ''),
 ('sys_cover_preview', 'sys_images_resized', 'Storage', 'a:1:{s:6:"object";s:10:"sys_images";}', 'no', '1', '2592000', '0', '', ''),
+('sys_share_image', 'sys_images_resized', 'Storage', 'a:2:{s:6:"object";s:10:"sys_images";s:14:"disable_retina";b:1;}', 'no', '0', '0', '0', '', ''),
 ('sys_builder_page_preview', 'sys_images_resized', 'Storage', 'a:1:{s:6:"object";s:10:"sys_images";}', 'no', '1', '2592000', '0', '', ''),
 ('sys_builder_page_embed', 'sys_images_resized', 'Storage', 'a:1:{s:6:"object";s:10:"sys_images";}', 'no', '1', '2592000', '0', '', ''),
 ('sys_cmts_images_preview', 'sys_cmts_images_preview', 'Storage', 'a:1:{s:6:"object";s:15:"sys_cmts_images";}', 'no', '1', '2592000', '0', '', ''),
@@ -5957,6 +5992,7 @@ INSERT INTO `sys_transcoder_filters` (`transcoder_object`, `filter`, `filter_par
 ('sys_cover', 'Resize', 'a:3:{s:1:"w";s:4:"1920";s:1:"h";s:3:"720";s:10:"force_type";s:3:"png";}', '0'),
 ('sys_cover_unit_profile', 'Resize', 'a:3:{s:1:"w";s:3:"640";s:1:"h";s:3:"240";s:10:"force_type";s:3:"png";}', '0'),
 ('sys_cover_preview', 'Resize', 'a:3:{s:1:"w";s:3:"120";s:1:"h";s:2:"45";s:10:"force_type";s:3:"jpg";}', '0'),
+('sys_share_image', 'Resize', 'a:3:{s:1:"w";s:4:"1200";s:1:"h";s:3:"630";s:10:"force_type";s:3:"jpg";}', '0'),
 ('sys_builder_page_preview', 'Resize', 'a:4:{s:1:"w";s:3:"128";s:1:"h";s:3:"128";s:13:"square_resize";s:1:"1";s:10:"force_type";s:3:"jpg";}', '0'),
 ('sys_builder_page_embed', 'ResizeVar', '', '0'),
 ('sys_cmts_images_preview', 'Resize', 'a:4:{s:1:"w";s:3:"100";s:1:"h";s:3:"100";s:13:"square_resize";s:1:"1";s:10:"force_type";s:3:"jpg";}', '0'),

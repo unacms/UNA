@@ -396,6 +396,12 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
 
         $oDbSettings = new BxDolStudioSettingsQuery();
 
+        // the card of the site itself. Its URL is content addressed and the picture behind it is drawn upon
+        // the first request for it, so showing the preview here is also what generates it - the most common
+        // share of all, a link to the home page, then never pays for the generation.
+        $oShareCard = BxDolShareCard::getInstance();
+        $sShareCardUrl = bx_html_attribute($oShareCard->getImageUrl($oShareCard->getDefaultSpec()));
+
         $aFormInputs = array();
         $aTmplVarsCovers = array();
         foreach($this->aCovers as $sCover => $aCover) {
@@ -435,15 +441,38 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
                     'type' => $sCover,
                     'caption' => _t($aCover['title']),
                     'image_id' => $iImageId,
+                    'share_card_url' => $sShareCardUrl,
                         'bx_if:show_bg' => array(
                             'condition' => !empty($sImageUrl),
                             'content' => array(
                                 'image_url' => $sImageUrl
                             )
                     ),
+                    'bx_if:show_delete' => array(
+                        'condition' => true,
+                        'content' => array(
+                            'js_object' => $sJsObject,
+                            'type' => $sCover,
+                            'image_id' => $iImageId
+                        )
+                    ),
                 ))
             );
         }
+
+        // no dedicated background is set, so the loop above has produced no preview of the share card, while
+        // the card itself is still drawn - from the site cover, the logo and the site title
+        if((int)getParam($this->aCovers['cover_share']['setting']) == 0)
+            $aTmplVarsCovers[] = array(
+                'image_id' => 'share',
+                'content' => $oTemplate->parseHtmlByName($this->aCovers['cover_share']['template'], array(
+                    'share_card_url' => $sShareCardUrl,
+                    'bx_if:show_delete' => array(
+                        'condition' => false,
+                        'content' => array()
+                    )
+                ))
+            );
 
         $aForm = array(
             'form_attrs' => array(

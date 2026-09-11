@@ -61,6 +61,9 @@ class BxVideosConfig extends BxBaseModTextConfig
             'FIELDS_WITH_KEYWORDS' => 'auto', // can be 'auto', array of fields or comma separated string of field names, works only when OBJECT_METATAGS is specified
             'FIELDS_DELAYED_PROCESSING' => 'videos', // can be array of fields or comma separated string of field names
 
+            // og:type of an entry page
+            'OG_TYPE' => 'video.other',
+
             // page URIs
             'URI_VIEW_ENTRY' => 'view-video',
             'URI_AUTHOR_ENTRIES' => 'videos-author',

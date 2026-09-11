@@ -781,6 +781,7 @@
 	<string name="_adm_dsg_txt_alt_text"><![CDATA[Logo Text]]></string>
 	<string name="_adm_dsg_txt_cover_common"><![CDATA[Default pages cover]]></string>
 	<string name="_adm_dsg_txt_cover_unit_profile"><![CDATA[Default profile unit cover]]></string>
+	<string name="_adm_dsg_txt_cover_share"><![CDATA[Default share card image]]></string>
 	<string name="_adm_dsg_txt_cover_disabled"><![CDATA[Disable pages covers]]></string>
 	<string name="_adm_dsg_txt_splash_enabled"><![CDATA[Enable splash page]]></string>
 	<string name="_adm_dsg_txt_default"><![CDATA[default]]></string>
@@ -791,6 +792,7 @@
         <string name="_adm_dsg_txt_icon_android_splash"><![CDATA[Android devices splash (512×512)]]></string>
 	<string name="_adm_dsg_txt_upload_cover_common"><![CDATA[Upload new common pages cover]]></string>
 	<string name="_adm_dsg_txt_upload_cover_unit_profile"><![CDATA[Upload new profile unit cover]]></string>
+	<string name="_adm_dsg_txt_upload_cover_share"><![CDATA[Upload new share card image]]></string>
 	<string name="_adm_dsg_txt_upload_icon"><![CDATA[favicon.ico]]></string>
         <string name="_adm_dsg_txt_upload_icon_inf"><![CDATA[single 32×32 ico image file is recommended]]></string>
         <string name="_adm_dsg_txt_upload_icon_svg"><![CDATA[SVG icon]]></string>
@@ -1871,6 +1873,12 @@
     <string name="_adm_stg_cpt_option_sys_security_impact_threshold_block"><![CDATA[Total security impact threshold to send report and block aggressor]]></string>
     <string name="_adm_stg_cpt_option_sys_security_impact_threshold_log"><![CDATA[Total security impact threshold to send report]]></string>
     <string name="_adm_stg_cpt_option_sys_security_block_content_after_n_reports"><![CDATA[Block content after N reports (0 - do not block)]]></string>
+    <string name="_adm_stg_cpt_option_sys_share_card_font"><![CDATA[Share card font]]></string>
+    <string name="_adm_stg_inf_option_sys_share_card_font"><![CDATA[Full path to a TrueType or OpenType font file used to draw share cards. Leave empty to use the font bundled with UNA.]]></string>
+    <string name="_adm_stg_cpt_option_sys_share_cards_enable"><![CDATA[Generate share cards]]></string>
+    <string name="_adm_stg_inf_option_sys_share_cards_enable"><![CDATA[Draw a preview image for links to this site shared on social networks and messengers.]]></string>
+    <string name="_adm_stg_cpt_option_sys_site_description"><![CDATA[Community tagline]]></string>
+    <string name="_adm_stg_inf_option_sys_site_description"><![CDATA[One line about your site. Used as the default page description in search results and as the subtitle on share cards.]]></string>
     <string name="_adm_stg_cpt_option_sys_site_logo_aspect_ratio"><![CDATA[Logo aspect ratio]]></string>
     <string name="_adm_stg_cpt_option_sys_storage_default"><![CDATA[Default storage engine (other than Local may require custom/additional setup)]]></string>
     <string name="_adm_stg_cpt_option_sys_storage_s3_access_key"><![CDATA[AWS access key]]></string>
@@ -4117,6 +4125,7 @@
             <li><b>{8}</b> deleted score tracks</li>
             <li><b>{9}</b> deleted favorite tracks</li>
             <li><b>{10}</b> deleted report tracks</li>
+            <li><b>{11}</b> deleted share cards</li>
         </ul>]]></string>
     <string name="_sys_pruning_files"><![CDATA[<h3>Files pruning:</h3>
         <ul>
@@ -4167,6 +4176,10 @@
     <string name="_sys_select"><![CDATA[Select]]></string>
     <string name="_sys_send"><![CDATA[Send]]></string>
     <string name="_sys_search_placeholder"><![CDATA[Search...]]></string>
+    <string name="_sys_share_card_in_category"><![CDATA[in {0}]]></string>
+    <string name="_sys_share_card_n_members"><![CDATA[{0} members]]></string>
+    <string name="_sys_share_card_n_replies"><![CDATA[{0} replies]]></string>
+    <string name="_sys_share_card_n_views"><![CDATA[{0} views]]></string>
     <string name="_sys_show_less"><![CDATA[Show less]]></string>    
     <string name="_sys_show_more"><![CDATA[Show more]]></string>
     <string name="_sys_skip_to_main_content"><![CDATA[Skip to main content]]></string>

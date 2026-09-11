@@ -906,6 +906,222 @@ class BxBaseModGeneralModule extends BxDolModule
         return $mixedResult !== false ? $mixedResult : '';
     }
 
+    /**
+     * @page service Service Calls
+     * @section bx_base_general Base General
+     * @subsection bx_base_general-other Other
+     * @subsubsection bx_base_general-get_share_card get_share_card
+     *
+     * @code bx_srv('bx_posts', 'get_share_card', [...]); @endcode
+     *
+     * Get the share card spec for the specified content, @see BxDolShareCard.
+     * @param $iContentId content id
+     * @param $aParams render time context, never a source of spec values
+     *
+     * @see BxBaseModGeneralModule::serviceGetShareCard
+     */
+    /**
+     * @ref bx_base_general-get_share_card "get_share_card"
+     */
+    public function serviceGetShareCard ($iContentId, $aParams = [])
+    {
+        //--- guarded the way every other getContentInfoById() call in this class is: a module whose
+        //--- Db class does not define it would otherwise raise an Error on every scrape of its entities
+        if(!method_exists($this->_oDb, 'getContentInfoById'))
+            return false;
+
+        $aContentInfo = $this->_oDb->getContentInfoById((int)$iContentId);
+        if(empty($aContentInfo) || !is_array($aContentInfo))
+            return false;
+
+        return $this->getShareCard($aContentInfo, is_array($aParams) ? $aParams : []);
+    }
+
+    /**
+     * The share card spec of one content entry - and the single producer of it.
+     *
+     * Two callers must agree on it down to the byte: the entry page render, through
+     * @see BxBaseModGeneralPageEntry::_getPageShareCard, and share_card.php later and out of band,
+     * rebuilding the card from the entity key alone through @see BxDolContentInfo::getContentShareCard.
+     * The card URL is the hash of the spec, so anything which can make those two calls differ - a
+     * value read from the current viewer, from time(), from $aParams, or a key a caller adds after
+     * this method returned - costs every card of this module its immutable cache.
+     *
+     * Override it to say more about a module's content, and keep to the same rules. The spec is
+     * built through getDefaultSpec() on purpose: it fills in every site wide key, and the endpoint
+     * normalises what comes back without those defaults around it, so a key which only one of the
+     * two paths fills in is exactly what a hash mismatch is made of.
+     *
+     * @param $aContentInfo the stored entry row
+     * @param $aParams render time context, never a source of spec values
+     * @return array with the spec; a private one carries nothing but the module, the id and the flag
+     */
+    public function getShareCard ($aContentInfo, $aParams = [])
+    {
+        //--- by value, not by reference: producing a card walks through other modules' code - the
+        //--- author's profile module, for one - and a snapshot can't be reached into and changed
+        //--- from there between the gate below and the spec built out of the same values
+        $CNF = $this->_oConfig->CNF;
+
+        $sModule = $this->getName();
+        $iContentId = !empty($CNF['FIELD_ID']) ? (int)($aContentInfo[$CNF['FIELD_ID']] ?? 0) : 0;
+
+        //--- a card is a public picture at a public URL, so it describes what an anonymous visitor
+        //--- may see and nothing else; everything past this gate is answered with the generic site
+        //--- card instead of a spec of its own
+        if(!BxDolShareCard::isGuestVisible($sModule, $aContentInfo, $CNF))
+            return ['module' => $sModule, 'id' => $iContentId, 'private' => true];
+
+        $sTitle = '';
+        if(!empty($CNF['FIELD_TITLE']))
+            $sTitle = BxDolShareCard::cleanText($this->_oTemplate->getTitle($aContentInfo, false), 200);
+
+        return BxDolShareCard::getInstance()->getDefaultSpec([
+            'module' => $sModule,
+            'id' => $iContentId,
+            'type' => !empty($CNF['OG_TYPE']) ? $CNF['OG_TYPE'] : 'article',
+            'url' => $this->serviceGetLink($iContentId),
+            'title' => $sTitle,
+            //--- the site tagline is the subtitle of the site card, not of an entry: a module which
+            //--- has something to say about this entry says it by overriding this method
+            'subtitle' => '',
+            'layout' => 'entry',
+            'image' => $this->getEntryImageData($aContentInfo) ?: null,
+            'extra' => [
+                'author' => $this->_getShareCardAuthor($aContentInfo),
+                'published' => !empty($CNF['FIELD_ADDED']) ? (int)($aContentInfo[$CNF['FIELD_ADDED']] ?? 0) : 0,
+                'updated' => !empty($CNF['FIELD_CHANGED']) ? (int)($aContentInfo[$CNF['FIELD_CHANGED']] ?? 0) : 0,
+                'category' => $this->_getShareCardCategory($aContentInfo),
+            ],
+        ]);
+    }
+
+    /**
+     * The author of a share card: the name and the face which are about to be drawn into a public
+     * picture. A negative author id is one of the magic anonymous profiles, and a profile an
+     * anonymous visitor isn't allowed to open mustn't be named on a card either - both give up the
+     * author entirely rather than half of one.
+     * @param $aContentInfo the stored entry row
+     * @return array as @see BxDolShareCard::normalizeSpec describes it, or null
+     */
+    protected function _getShareCardAuthor ($aContentInfo)
+    {
+        $CNF = $this->_oConfig->CNF;
+
+        if(empty($CNF['FIELD_AUTHOR']) || empty($aContentInfo[$CNF['FIELD_AUTHOR']]))
+            return null;
+
+        $iAuthor = (int)$aContentInfo[$CNF['FIELD_AUTHOR']];
+        if($iAuthor <= 0)
+            return null;
+
+        //--- getInstanceMagic() answers an anonymous or an unknown author with a stand-in object
+        //--- whose name and face come from the viewer's own permissions, so only a real profile is
+        //--- allowed past here
+        $oProfile = BxDolProfile::getInstanceMagic($iAuthor);
+        if(!($oProfile instanceof BxDolProfile) || $oProfile->getStatus() != BX_PROFILE_STATUS_ACTIVE)
+            return null;
+
+        $sProfileModule = $oProfile->getModule();
+        $oProfileModule = BxDolModule::getInstance($sProfileModule);
+        if(!$oProfileModule || empty($oProfileModule->_oConfig->CNF) || !method_exists($oProfileModule->_oDb, 'getContentInfoById'))
+            return null;
+
+        //--- the very gate the entries themselves go through, applied to the author's own row:
+        //--- BxDolPrivacy::check() and isEntryActive() answer for the current viewer and would wave
+        //--- through a profile only a logged in member is allowed to see.
+        //--- the author module's config gets a name of its own and never $CNF: the house idiom for
+        //--- that name is a reference to this module's own config, and assigning to it would write
+        //--- another module's settings straight into this one
+        $aProfileCnf = $oProfileModule->_oConfig->CNF;
+        $aProfileInfo = $oProfileModule->_oDb->getContentInfoById((int)$oProfile->getContentId());
+        if(!BxDolShareCard::isGuestVisible($sProfileModule, $aProfileInfo, $aProfileCnf))
+            return null;
+
+        return [
+            'id' => $iAuthor,
+            'name' => BxDolShareCard::cleanText($oProfile->getDisplayName(), 64),
+            'avatar' => $this->_getShareCardAvatar($aProfileInfo, $aProfileCnf),
+            'url' => (string)$oProfile->getUrl(),
+        ];
+    }
+
+    /**
+     * May a profile be named on a public picture? The gate the entries themselves go through,
+     * applied to the profile's own content row - BxDolPrivacy::check() and isEntryActive() answer
+     * for the current viewer and would wave through a profile only a logged in member may see.
+     * The same answer @see _getShareCardAuthor arrives at, for a caller holding nothing but the
+     * profile object.
+     * @param $oProfile BxDolProfile instance
+     */
+    protected function _isShareCardProfileGuestVisible ($oProfile)
+    {
+        if(!$oProfile || $oProfile->getStatus() != BX_PROFILE_STATUS_ACTIVE)
+            return false;
+
+        $sModule = $oProfile->getModule();
+        $oModule = BxDolModule::getInstance($sModule);
+        if(!$oModule || empty($oModule->_oConfig->CNF) || !method_exists($oModule->_oDb, 'getContentInfoById'))
+            return false;
+
+        return BxDolShareCard::isGuestVisible($sModule, $oModule->_oDb->getContentInfoById((int)$oProfile->getContentId()), $oModule->_oConfig->CNF);
+    }
+
+    /**
+     * The face of a profile, as the stored file plus the transcoder which shapes it.
+     *
+     * Not as the URL the profile object hands out: a derivative which hasn't been produced yet is
+     * answered with an image_transcoder.php URL carrying t=time(), and a card URL is the hash of
+     * the spec, so that URL would be a different card on every single render. A ready made URL also
+     * carries whatever the transcoder decided about the device pixel ratio of the request which
+     * asked for it. A file id and a transcoder name say the same thing to everybody, and the
+     * renderer resolves them itself.
+     * @param $mixedProfile the profile's own content row, or the BxDolProfile object to read it
+     *        from - a caller which has already read the row shouldn't have to read it twice
+     * @param $CNF the CNF of the module that row belongs to, looked up when a profile was passed
+     */
+    protected function _getShareCardAvatar ($mixedProfile, $CNF = null)
+    {
+        $aProfileInfo = $mixedProfile;
+        if(!is_array($aProfileInfo)) {
+            if(!$mixedProfile || !($oModule = BxDolModule::getInstance($mixedProfile->getModule())) || empty($oModule->_oConfig->CNF) || !method_exists($oModule->_oDb, 'getContentInfoById'))
+                return null;
+
+            $CNF = $oModule->_oConfig->CNF;
+            $aProfileInfo = $oModule->_oDb->getContentInfoById((int)$mixedProfile->getContentId());
+        }
+
+        if(!is_array($CNF) || empty($CNF['FIELD_PICTURE']) || empty($aProfileInfo[$CNF['FIELD_PICTURE']]))
+            return null;
+
+        //--- the avatar derivatives in falling order of size: the renderer masks the picture into a
+        //--- circle a few dozen pixels across, so the smallest one which is still big enough is both
+        //--- the cheapest to read and the one most likely to have been produced already
+        foreach(['OBJECT_IMAGES_TRANSCODER_AVATAR', 'OBJECT_IMAGES_TRANSCODER_AVATAR_BIG', 'OBJECT_IMAGES_TRANSCODER_ICON'] as $sKey)
+            if(!empty($CNF[$sKey]))
+                return ['id' => (int)$aProfileInfo[$CNF['FIELD_PICTURE']], 'transcoder' => $CNF[$sKey]];
+
+        return null;
+    }
+
+    /**
+     * The category an entry is filed under, as plain text, or an empty string.
+     * @param $aContentInfo the stored entry row
+     */
+    protected function _getShareCardCategory ($aContentInfo)
+    {
+        $CNF = $this->_oConfig->CNF;
+
+        if(empty($CNF['OBJECT_CATEGORY']) || empty($CNF['FIELD_CATEGORY']) || empty($aContentInfo[$CNF['FIELD_CATEGORY']]))
+            return '';
+
+        $oCategory = BxDolCategory::getObjectInstance($CNF['OBJECT_CATEGORY']);
+        if(!$oCategory)
+            return '';
+
+        return BxDolShareCard::cleanText($oCategory->getCategoryTitle($aContentInfo[$CNF['FIELD_CATEGORY']]), 64);
+    }
+
     public function serviceGetText ($iContentId)
     {
         $mixedResult = $this->_getFieldValue('FIELD_TEXT', $iContentId);

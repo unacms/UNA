@@ -1131,6 +1131,10 @@ class BxBasePage extends BxDolPage
         $sMetaKeywords = $this->_getPageMetaKeywords();
         if ($sMetaKeywords)
             $oTemplate->addPageKeywords ($sMetaKeywords);
+
+        $aShareCard = $this->_getPageShareCard();
+        if ($aShareCard)
+            $oTemplate->setPageShareCard ($aShareCard);
     }
 
     /**
@@ -1438,6 +1442,15 @@ class BxBasePage extends BxDolPage
     }
     
     /**
+     * Get page meta type, it's used as og:type of the page.
+     * @return string
+     */
+    protected function _getPageMetaType()
+    {
+        return 'website';
+    }
+
+    /**
      * Get page meta image.
      * @return string
      */
@@ -1462,6 +1475,52 @@ class BxBasePage extends BxDolPage
     protected function _getPageMetaRobots()
     {
         return _t($this->_aObject['meta_robots']);
+    }
+
+    /**
+     * Get page share card spec, @see BxDolShareCard.
+     * Every value is plain text and must not depend on the current viewer: one card is drawn for
+     * everybody and it's cached by the hash of this spec.
+     * @return array, empty array when there is nothing worth drawing
+     */
+    /**
+     * The share card spec for this page. Public because share_card.php has to rebuild the very same
+     * spec out of band, from the page object name alone: one producer, so the hash a page advertises
+     * and the hash the endpoint recomputes cannot drift apart.
+     */
+    public function getShareCardSpec()
+    {
+        return $this->_getPageShareCard();
+    }
+
+    protected function _getPageShareCard()
+    {
+        $sTitle = '';
+        if(!empty($this->_aObject['cover_title'])) {
+            $sCoverTitle = _t($this->_aObject['cover_title']);
+            if($sCoverTitle && strcmp($sCoverTitle, $this->_aObject['cover_title']) != 0)
+                $sTitle = $sCoverTitle;
+        }
+
+        if(empty($sTitle))
+            $sTitle = $this->_getPageTitle();
+
+        //--- with covers switched off site wide the page cover isn't shown anywhere, so the card
+        //--- falls back to the site background chain rather than to an image nobody ever sees.
+        $aBackground = BxDolCover::getInstance()->isEnabled() ? $this->getPageCoverImage(false) : array();
+
+        if(empty($sTitle) && empty($aBackground))
+            return array();
+
+        return array(
+            'module' => 'system',
+            'id' => 0,
+            'page' => $this->_sObject,
+            'type' => $this->_getPageMetaType(),
+            'title' => $sTitle,
+            'bg' => !empty($aBackground) ? $aBackground : null,
+            'layout' => 'default'
+        );
     }
 
     /**

@@ -710,16 +710,65 @@ class BxDolPage extends BxDolFactory implements iBxDolFactoryObject, iBxDolRepla
         $aParams = $aUrl[1];
 
         $sTitle = $sAuthorName = $sAuthorUrl = $sThumb = $sHtml = '';
+        $iThumbWidth = $iThumbHeight = 0;
         if (isset($aParams['id'])) {
             $sContentInfo = BxDolPageQuery::getContentInfoObjectNameByURI($sUri);
             if(($oContentInfo = BxDolContentInfo::getObjectInstance($sContentInfo))) {
-                $sTitle = $oContentInfo->getContentTitle($aParams['id']);
-                $iAuthor = $oContentInfo->getContentAuthor($aParams['id']);
-                if(($oAuthor = BxDolProfile::getInstance($iAuthor)) !== false) {
-                    $sAuthorName = $oAuthor->getDisplayName();
-                    $sAuthorUrl = $oAuthor->getUrl();
+                // an oEmbed consumer and a social scraper must be told the same story about an entry,
+                // so the share card - the single producer of that story - is asked first and the older
+                // accessors only fill in what the card does not carry
+                $aCard = [];
+                if(method_exists($oContentInfo, 'getContentShareCard')) {
+                    $aShareCard = $oContentInfo->getContentShareCard((int)$aParams['id']);
+                    if(is_array($aShareCard) && $aShareCard)
+                        $aCard = $aShareCard;
                 }
-                $sThumb = $oContentInfo->getContentThumb($aParams['id']);
+
+                // a card marked private means the module has decided an anonymous visitor may not be
+                // told about this entry. em.php is this method's only caller and it is a PUBLIC
+                // endpoint, linked from every page as <link rel="alternate" type="application/json+oembed">,
+                // so the generic story is the whole story here too: not the image only. Falling through
+                // to getContentTitle()/getContentAuthor() would publish the title of a members-only
+                // entry and the name and profile URL of whoever wrote it.
+                $bPrivate = !empty($aCard['private']);
+
+                if($bPrivate)
+                    $sTitle = (string)getParam('site_title');
+                else
+                    $sTitle = !empty($aCard['title']) && is_string($aCard['title']) ? $aCard['title'] : $oContentInfo->getContentTitle($aParams['id']);
+
+                // when the card describes the author it is taken as it stands, empty author included:
+                // an entry posted anonymously has an author in the database and none on the card
+                if($bPrivate) {
+                    // no author at all
+                }
+                else if(isset($aCard['extra']) && is_array($aCard['extra']) && array_key_exists('author', $aCard['extra'])) {
+                    $aAuthor = is_array($aCard['extra']['author']) ? $aCard['extra']['author'] : [];
+                    $sAuthorName = isset($aAuthor['name']) && is_string($aAuthor['name']) ? $aAuthor['name'] : '';
+                    $sAuthorUrl = isset($aAuthor['url']) && is_string($aAuthor['url']) ? $aAuthor['url'] : '';
+                }
+                else {
+                    $iAuthor = $oContentInfo->getContentAuthor($aParams['id']);
+                    if(($oAuthor = BxDolProfile::getInstance($iAuthor)) !== false) {
+                        $sAuthorName = $oAuthor->getDisplayName();
+                        $sAuthorUrl = $oAuthor->getUrl();
+                    }
+                }
+
+                // the picture is asked for through the very method BxDolTemplate uses for og:image,
+                // never by hashing the spec here: resolve() is the only producer of a card URL, so an
+                // oEmbed thumbnail and a scraped card are the same content addressed URL, a private
+                // entry resolves to the generic site card on both, and a disabled feature or an
+                // install which cannot draw anything falls back to the thumbnail of old
+                $aResolved = $aCard ? BxDolShareCard::getInstance()->resolve(['share_card' => $aCard, 'header' => $sTitle]) : [];
+                if(!empty($aResolved['image']['url'])) {
+                    $sThumb = $aResolved['image']['url'];
+                    $iThumbWidth = (int)$aResolved['image']['width'];
+                    $iThumbHeight = (int)$aResolved['image']['height'];
+                }
+                else if(!$bPrivate)
+                    $sThumb = $oContentInfo->getContentThumb($aParams['id']);
+
                 $sHtml = $oContentInfo->getContentEmbed($aParams['id']);
             }
         }
@@ -732,7 +781,7 @@ class BxDolPage extends BxDolFactory implements iBxDolFactoryObject, iBxDolRepla
                 'url' => BX_DOL_URL_ROOT . 'page.php?a=embed&o=' . $oPage->getName()
             ]);
         }
-        return ['url' => $sUrl, 'title' => $sTitle, 'author_name' => $sAuthorName, 'author_url' => $sAuthorUrl, 'thumbnail_url' => $sThumb, 'html' => $sHtml];
+        return ['url' => $sUrl, 'title' => $sTitle, 'author_name' => $sAuthorName, 'author_url' => $sAuthorUrl, 'thumbnail_url' => $sThumb, 'thumbnail_width' => $iThumbWidth, 'thumbnail_height' => $iThumbHeight, 'html' => $sHtml];
     }
 
     static public function getPageBlockData($iBlockId, $iContentId = 0, $sContentModule = '')

@@ -61,6 +61,9 @@ class BxPhotosConfig extends BxBaseModTextConfig
             // some params
             'PARAM_PER_PAGE_FOR_FAVORITES_LISTS' => 'bx_photos_per_page_for_favorites_lists',
             
+            // og:type of an entry page - og:type has no 'image' value, the picture travels in og:image
+            'OG_TYPE' => 'article',
+
             // page URIs
             'URI_VIEW_ENTRY' => 'view-photo',
             'URI_AUTHOR_ENTRIES' => 'photos-author',

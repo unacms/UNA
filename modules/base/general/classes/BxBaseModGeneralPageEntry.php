@@ -159,6 +159,37 @@ class BxBaseModGeneralPageEntry extends BxTemplPage
         return $sResult;
     }
 
+    /**
+     * The og:type of an entry page: content is an article unless the module says otherwise.
+     */
+    protected function _getPageMetaType()
+    {
+        $CNF = &$this->_oModule->_oConfig->CNF;
+
+        return !empty($CNF['OG_TYPE']) ? $CNF['OG_TYPE'] : 'article';
+    }
+
+    /**
+     * The share card spec of this page - produced by the module and handed on untouched.
+     *
+     * share_card.php rebuilds the very same spec out of band from the entity key alone, through
+     * BxDolContentInfo::getContentShareCard() and into this same BxBaseModGeneralModule::getShareCard()
+     * call. The card URL is the hash of the spec, so adding or changing one key here would put
+     * every card of every content module on the stale hash path and cost it its immutable cache.
+     * A page has nothing to contribute to a card about content: contribute from the module.
+     */
+    protected function _getPageShareCard()
+    {
+        if(!$this->_aContentInfo)
+            return array();
+
+        //--- no $aParams: the out of band producer, BxDolContentInfo::getContentShareCard($iId), has
+        //--- none to pass, so handing the page object in here would call the one producer with two
+        //--- different arguments. Nothing reads it today; the day an override did, every card of that
+        //--- module would quietly move to the stale hash path and no single page test would show it
+        return $this->_oModule->getShareCard($this->_aContentInfo);
+    }
+
     protected function _getThumbForMetaObject ()
     {
         return $this->_oModule->getEntryImageData($this->_aContentInfo);

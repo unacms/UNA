@@ -198,6 +198,19 @@ class BxBaseModProfilePageEntry extends BxBaseModGeneralPageEntry
         
         return true;
     }
+
+    /**
+     * A profile page describes somebody, not a document. The very same value is produced by
+     * BxBaseModProfileModule::getShareCard(), which share_card.php reaches without a page around it -
+     * the two producers have to agree or the card is served off a hash nobody advertised, so the
+     * CNF override is read here exactly as it is read there.
+     */
+    protected function _getPageMetaType()
+    {
+        $CNF = &$this->_oModule->_oConfig->CNF;
+
+        return !empty($CNF['OG_TYPE']) ? $CNF['OG_TYPE'] : 'profile';
+    }
 }
 
 /** @} */

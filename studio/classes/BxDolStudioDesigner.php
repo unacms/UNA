@@ -120,6 +120,12 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
                 'transcoder' => BX_DOL_TRANSCODER_OBJ_COVER_UNIT_PROFILE, 
                 'title' => '_adm_dsg_txt_cover_unit_profile', 
                 'template' => 'dsr_cover_preview_unit_profile.html'
+            ),
+            'cover_share' => array(
+                'setting' => 'sys_site_share_image',
+                'transcoder' => 'sys_share_image',
+                'title' => '_adm_dsg_txt_cover_share',
+                'template' => 'dsr_cover_preview_share.html'
             )
         );
     }
@@ -261,6 +267,8 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
         }
 
         setParam($this->sParamLogoAlt, $oForm->getCleanValue('alt'));
+        $this->touchShareCards();
+
         return $this->getJsResult('_adm_dsg_scs_save', true, true, bx_append_url_params($this->sManageUrl, array('page' => BX_DOL_STUDIO_DSG_TYPE_LOGO)));
     }
 
@@ -276,6 +284,7 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
             return false;
 
         setParam($this->$sParamByType, 0);
+        $this->touchShareCards();
 
         bx_alert('system', 'change_' . $sLogo, 0, 0, [
             'option' => $this->$sParamByType, 
@@ -353,6 +362,7 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
         }
 
         setParam('sys_site_cover_disabled', $oForm->getCleanValue('disabled') == 'on' ? 'on' : '');
+        $this->touchShareCards();
 
         return $this->getJsResult('_adm_dsg_scs_save', true, true, BX_DOL_URL_STUDIO . 'designer.php?page=' . BX_DOL_STUDIO_DSG_TYPE_COVER);
     }
@@ -367,7 +377,19 @@ class BxDolStudioDesigner extends BxTemplStudioWidget
             return false;
 
         setParam($this->aCovers[$sCover]['setting'], 0);
+        $this->touchShareCards();
+
         return true;
+    }
+
+    /**
+     * Every share card is drawn from the site logo, the site cover and the share card background, and every
+     * generated card is cached by a hash which includes this timestamp. Without bumping it a re-uploaded
+     * picture would leave every already generated card in place and the site would keep sharing the old one.
+     */
+    protected function touchShareCards()
+    {
+        setParam('sys_share_card_ts', time());
     }
 
     function submitSplash(&$oForm)

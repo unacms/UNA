@@ -126,6 +126,9 @@ class BxAdsConfig extends BxBaseModTextConfig
             'FIELD_OFR_TOTAL' => 'total', // form field only
             'FIELD_OFR_STATUS' => 'status',
 
+            // og:type of an entry page
+            'OG_TYPE' => 'product',
+
             // page URIs
             'URI_VIEW_ENTRY' => 'view-ad',
             'URI_VIEW_ENTRY_OFFERS' => 'view-ad-offers',

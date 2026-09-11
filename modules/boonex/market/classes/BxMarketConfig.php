@@ -84,6 +84,9 @@ class BxMarketConfig extends BxBaseModTextConfig
             'FIELDS_QUICK_SEARCH' => array('title'),
             'FIELDS_WITH_KEYWORDS' => 'auto', // can be 'auto', array of fields or comma separated string of field names, works only when OBJECT_METATAGS is specified
             
+            // og:type of an entry page
+            'OG_TYPE' => 'product',
+
             // page URIs
             'URI_VIEW_ENTRY' => 'view-product',
             'URI_AUTHOR_ENTRIES' => 'products-author',
