@@ -89,6 +89,10 @@ class BxForumGrid extends BxBaseModGeneralGrid
             $this->_aQueryAppend['filter3'] = $this->_sFilter1Value;
         }
 
+        $this->_aFilterAreaLabels = [
+            $this->_sFilter3Name => '_sys_grid_lbl_order', // "Order": filter3 has no placeholder option to borrow a name from
+        ];
+
         $this->_sDefaultSortingOrder = 'DESC';
         $this->_sDefaultSource = $this->_aOptions['source'];
     }

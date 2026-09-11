@@ -43,6 +43,7 @@ class BxTemplMenuSidebarSite extends BxTemplMenu
                     'onclick' => "javascript:return bx_sidebar_dropdown_toggle(this)"
             ]];
             $aResult['class_add'] .= ' bx-si-dropdown-has';
+            $aResult['attrs'] .= ' aria-expanded="false"';
 
             $aSubmenuItems = $oSubmenu->getMenuItemsRaw();
             if($oSubmenu->isHtmx() && !$this->_isSelected($a) && !array_key_exists($this->_sPageUri, $aSubmenuItems))

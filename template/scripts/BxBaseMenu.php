@@ -357,6 +357,12 @@ class BxBaseMenu extends BxDolMenu
 
         $a['link'] = isset($a['link']) ? $this->_oPermalinks->permalink($a['link']) : 'javascript:void(0);';
 
+        $aTmplVarsAddon = $this->_bDisplayAddons ? $this->_getTmplVarsAddon($mixedAddon, $a) : array('addon' => '', 'addonf' => '');
+        $a['bx_if:addon'] = array (
+            'condition' => $this->_bDisplayAddons && !empty($aTmplVarsAddon['addon']),
+            'content' => $aTmplVarsAddon
+        );
+
         $a['attrs'] = $this->_getMenuAttrs($a);
         $a['attrs_wrp'] = '';
 
@@ -419,12 +425,6 @@ class BxBaseMenu extends BxDolMenu
             'condition' => $bOnClick,
             'content' => $aOnClick
         ];
-
-        $aTmplVarsAddon = $this->_bDisplayAddons ? $this->_getTmplVarsAddon($mixedAddon, $a) : array('addon' => '', 'addonf' => '');
-        $a['bx_if:addon'] = array (
-            'condition' => $this->_bDisplayAddons && !empty($aTmplVarsAddon['addon']),
-            'content' => $aTmplVarsAddon
-        );
 
         $aTmplVarsSubitems = array('subitems' => '');
         $bTmplVarsSubitems = $this->isMultilevel() && !empty($a['subitems']);
@@ -536,20 +536,45 @@ class BxBaseMenu extends BxDolMenu
     {
         $sAttrs = '';
 
-        if($sType == 'image' && ($sTitleAttr = $this->_getMenuTitle($a)))
-            $sAttrs .= ' alt="' . $sTitleAttr . '"';
+        if($sType == 'image')
+            $sAttrs .= ' alt="' . $this->_getMenuTitle($a) . '"';
 
         return $sAttrs;
     }
 
     protected function _getMenuTitle($a)
     {
-        return bx_html_attribute(strip_tags(($sTitleAttr = $a['title_attr'] ?? '') && ($sTitleAttr = _t($sTitleAttr)) ? $sTitleAttr : $a['title']));
+        $sTitle = ($sTitleAttr = $a['title_attr'] ?? '') && ($sTitleAttr = _t($sTitleAttr)) ? $sTitleAttr : ($a['title'] ?? '');
+
+        /**
+         * An icon only menu item (the toolbar hamburger, [+ Add], [Notifications], the 'more' triggers, ...) has an
+         * empty `title` in `sys_menu_items`, so it used to get no accessible name at all. Every menu item does have
+         * `title_system` - the label the Studio menu builder shows - so it is used as the fallback name. No new
+         * language keys are needed and every icon only menu item benefits, not just the toolbar.
+         */
+        if(trim(strip_tags($sTitle)) === '' && ($sTitleSystem = $a['title_system'] ?? ''))
+            $sTitle = _t($sTitleSystem);
+
+        return bx_html_attribute(strip_tags($sTitle));
     }
 
     protected function _getMenuAreaLabel($a)
     {
         return ($sAreaLabel = $a['area_label'] ?? '') && ($sAreaLabel = strip_tags(_t($sAreaLabel))) ? bx_html_attribute($sAreaLabel) : '';
+    }
+
+    /**
+     * True when the visible content of the menu item link already carries its accessible name AND that content is
+     * richer than the title alone (an addon counter is rendered next to it). In that case an aria-label repeating
+     * only the title would hide the counter from the accessible name and break WCAG 2.5.3 Label in Name, so it is
+     * omitted and the link is named by its own text. Icon only items - and items whose template never prints the
+     * title - keep their aria-label.
+     */
+    protected function _isMenuLabelInContent($a)
+    {
+        $bTitle = !empty($a['title']) && (!isset($a['icon_only']) || (int)$a['icon_only'] == 0);
+
+        return $bTitle && !empty($a['bx_if:addon']['condition']);
     }
 
     protected function _getMenuCallbackDataAPI($a)
@@ -565,7 +590,7 @@ class BxBaseMenu extends BxDolMenu
             'condition' => (bool)$sIconUrl,
             'content' => [
                 'icon_url' => $sIconUrl,
-                'attrs' => ''
+                'attrs' => 'alt=""'
             ],
         ];
         $a['bx_if:icon'] = array (
@@ -630,7 +655,24 @@ class BxBaseMenu extends BxDolMenu
         if($this->_bAddNoFollow && !empty($aMenuItem['link']) && preg_match('@^https?://@', $aMenuItem['link']) && strncmp($aMenuItem['link'], BX_DOL_URL_ROOT, strlen(BX_DOL_URL_ROOT)) !== 0)
             $sAttrs .= ' rel="noreferrer"';
 
-        if(($sAreaLabel = $this->_getMenuAreaLabel($aMenuItem) ?: $sTitleAttr))
+        /**
+         * `attrs_add` lets a menu item declare extra attributes of its own - the same convention as `class_add` -
+         * so that a PHP built item (a disclosure trigger, for example) can add aria-haspopup/aria-expanded without
+         * a mechanism of its own.
+         */
+        if(!empty($aMenuItem['attrs_add']))
+            $sAttrs .= ' ' . $aMenuItem['attrs_add'];
+
+        /**
+         * An explicit `area_label` always wins. Otherwise the item title is used as the accessible name, but only
+         * when the visible content of the link does not already provide one - an aria-label that repeats the title
+         * while the link also renders an addon (a counter) hides that counter from the accessible name and breaks
+         * WCAG 2.5.3 Label in Name.
+         */
+        if(!($sAreaLabel = $this->_getMenuAreaLabel($aMenuItem)) && !$this->_isMenuLabelInContent($aMenuItem))
+            $sAreaLabel = $sTitleAttr;
+
+        if($sAreaLabel)
             $sAttrs .= ' aria-label="' . $sAreaLabel . '"';
 
         return $sAttrs;

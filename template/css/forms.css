@@ -201,7 +201,8 @@
 .bx-form-input-wrapper-password {
     padding: 0;
 }
-.bx-form-input-wrapper-password > a {
+.bx-form-input-wrapper-password > .password-show,
+.bx-form-input-wrapper-password > .password-hide {
     position: absolute;
     z-index: 1000;
     

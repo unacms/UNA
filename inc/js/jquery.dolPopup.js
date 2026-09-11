@@ -514,7 +514,7 @@
                 if (!$.isWindow(e[0]))
                     bx_menu_on(e, true);
 
-                $('<div id="' + sPopupId + '" style="display:none;">' + $('#bx-popup-loading').html() + '</div>').appendTo(options.parent).find(options.container).hide();
+                $('<div id="' + sPopupId + '" role="dialog" style="display:none;">' + $('#bx-popup-loading').html() + '</div>').appendTo(options.parent).find(options.container).hide();
 
                 $('#' + sPopupId).addClass($('#bx-popup-loading').attr('class'));
                 

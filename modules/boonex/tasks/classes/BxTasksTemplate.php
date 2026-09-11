@@ -648,6 +648,7 @@ class BxTasksTemplate extends BxBaseModTextTemplate
         $aInput = [
             'type' => 'select', 
             'name' => 'filters',
+            'area_label' => '_bx_tasks_filter_title_select',
             'value' => $aParams['filter_selected'] ?? 0,
             'values' => [
                 ['key' => 0, 'value' => _t('_bx_tasks_filter_title_select')]

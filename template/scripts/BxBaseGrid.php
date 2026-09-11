@@ -23,6 +23,7 @@ class BxBaseGrid extends BxDolGrid
     protected $_aConfirmMessages = false;
     protected $_bSelectAll = false;
     protected $_isDisplayPopupOnTextOverflow = true;
+    protected $_aFilterAreaLabels = []; // filter name => accessible name (lang key or plain text); filter controls are rendered without a visible caption
 
     public function __construct ($aOptions, $oTemplate)
     {
@@ -1124,6 +1125,22 @@ class BxBaseGrid extends BxDolGrid
         return '';
     }
 
+    /**
+     * Grid filter controls are rendered without a visible caption, so each one needs its own accessible name:
+     * the name the grid declares in $_aFilterAreaLabels, else the "unfiltered" option the filter starts with
+     * ("All", "Any status", "Select one..."), else the generic "Filters".
+     */
+    protected function _getFilterAreaLabel($sFilterName, $aInputValues = [])
+    {
+        if(!empty($this->_aFilterAreaLabels[$sFilterName]))
+            return $this->_aFilterAreaLabels[$sFilterName];
+
+        if(!empty($aInputValues['']) && is_string($aInputValues['']))
+            return $aInputValues[''];
+
+        return '_Filters';
+    }
+
     protected function _getFilterSelectOne($sFilterName, $sFilterValue, $aFilterValues, $mixedAddSelectOne = true, $bAsArray = false)
     {
         if(empty($sFilterName))
@@ -1146,6 +1163,7 @@ class BxBaseGrid extends BxDolGrid
                 'id' => 'bx-grid-' . $sFilterName . '-' . $this->_sObject,
                 'onChange' => ($sOnChange = $this->_getFilterOnChange()) ? 'javascript:' . $sOnChange : '',
             ],
+            'area_label' => $this->_getFilterAreaLabel($sFilterName, $aInputValues),
             'value' => $sFilterValue,
             'values' => $aInputValues
         ];
@@ -1169,6 +1187,7 @@ class BxBaseGrid extends BxDolGrid
                 'id' => 'bx-grid-' . $sFilterName . '-' . $this->_sObject,
                 'onChange' => ($sOnChange = $this->_getFilterOnChange()) ? 'javascript:' . $sOnChange : '',
             ],
+            'area_label' => $this->_getFilterAreaLabel($sFilterName),
             'value' => $sFilterValue,
         ];
 

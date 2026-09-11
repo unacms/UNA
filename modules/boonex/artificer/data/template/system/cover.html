@@ -16,10 +16,12 @@
                     </div>
                 </bx_if:image>
                 <div class="bx-cover-title flex justify-center items-center">
-                    <div class="text-4xl font-bold tracking-tight text-gray-900 dark:text-gray-50">
+                    <bx_if:title>
+                    <h1 class="text-4xl font-bold tracking-tight text-gray-900 dark:text-gray-50">
                         <span class="block pb-1 relative">__title__</span>
                         <span class="block pb-1 bg-clip-text text-transparent bg-gradient-to-r from-green-500 to-blue-500"></span>
-                    </div>
+                    </h1>
+                    </bx_if:title>
                 </div>
                 <div class="bx-cover-actions">__actions__</div>
             </div>
