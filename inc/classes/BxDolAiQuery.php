@@ -7,7 +7,7 @@
  * @{
  */
 
-class BxDolAIQuery extends BxDolDb
+class BxDolAiQuery extends BxDolDb
 {
     public function __construct()
     {
