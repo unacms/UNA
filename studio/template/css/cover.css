@@ -46,3 +46,27 @@
     text-overflow: ellipsis;
     overflow: hidden;
 }
+
+/**
+ * Covers page: one group per picture
+ *
+ * Each picture here is a group - what it is, what is set now, how to change it - and a group only
+ * reads as one when the space around it is clearly bigger than the space inside it. The form rows are
+ * evenly spaced by default, which ran all three pictures together into a single list. Space does the
+ * separating rather than a rule: each group already opens with its own caption.
+ */
+.bx-dsg-cover {
+    max-width: 40rem;
+    margin-top: 1.5rem;
+}
+
+.bx-dsg-cover .bx-cover-wrapper {
+    /* a 1920x720 strip at full form width pushed everything else below the fold */
+    max-height: 15rem;
+    overflow: hidden;
+    border-radius: .5rem;
+}
+
+.bx-dsg-cover .bx-dsg-cover-actions {
+    margin-top: .75rem;
+}

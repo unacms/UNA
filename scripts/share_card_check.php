@@ -106,7 +106,7 @@ class BxDolShareCardCheckCmd
             . ', font: ' . (BxDolShareCard::getInstance()->getFontPath() ?: 'NONE')
             . ', out: ' . $this->sOutDir);
 
-        $this->checkBackground();
+        $this->checkBackgrounds();
 
         foreach ($this->getCases() as $sName => $aSpec)
             $this->check($sName, $aSpec);
@@ -127,31 +127,83 @@ class BxDolShareCardCheckCmd
      * transcoder, and a fixture created with a direct INSERT has private = 0, so the local suite
      * exercised a path no real upload takes. This asserts the configured picture resolves to a file.
      */
-    protected function checkBackground()
+    /**
+     * Does every picture the site was configured with actually reach the canvas?
+     *
+     * Every other check here passes whether or not a background was drawn - a plain card is still
+     * 1200x630, still small, still fast. That is how an uploaded cover the renderer silently refused
+     * went unnoticed twice: UNA stores site and page covers privately and publishes them through a
+     * transcoder, and a fixture created with a direct INSERT has private = 0, so the local suite
+     * exercised a path no real upload takes. So this asserts, for the site background AND for every
+     * page which carries a cover of its own, that the configured picture resolves to a file.
+     */
+    protected function checkBackgrounds()
     {
         $oCard = BxDolShareCard::getInstance();
-        $aBg = $oCard->getDefaultSpec()['bg'];
+
+        $this->checkBackground('site background', $oCard->getDefaultSpec()['bg']);
+
+        // a page whose cover an administrator set in the Pages builder. Those are the ones worth
+        // naming individually: a page with no cover of its own falls back to the site background,
+        // which the line above has already covered.
+        try {
+            $aRows = BxDolDb::getInstance()->getAll("SELECT `object`, `uri`, `cover_image` FROM `sys_objects_page` WHERE `cover_image` > 0 ORDER BY `object`");
+        }
+        catch (Throwable $oThrowable) {
+            $this->out('  --   page covers                      could not be listed: ' . $oThrowable->getMessage());
+            return;
+        }
+
+        if (!$aRows) {
+            $this->out('  --   page covers                      no page carries a cover of its own');
+            return;
+        }
+
+        foreach ($aRows as $aRow) {
+            $aSpec = $oCard->getSpecForEntity('page:' . $aRow['object']);
+            if (!$aSpec) {
+                // not a defect: a page an anonymous visitor cannot open has no card by design
+                $this->out('  --   cover of ' . $aRow['object'] . ' - the page has no public card');
+                continue;
+            }
+
+            $this->checkBackground('cover of ' . $aRow['uri'], $aSpec['bg'], (int)$aRow['cover_image']);
+        }
+    }
+
+    /**
+     * One configured picture, resolved exactly the way the renderer resolves it.
+     * @param $sWhat - what to call it in the report
+     * @param $aBg - the spec's bg, or null when nothing is configured
+     * @param $iExpectFile - a file id the caller knows is set, so "configured but resolved to null"
+     *                       is reported as the defect it is rather than as "nothing configured"
+     */
+    protected function checkBackground($sWhat, $aBg, $iExpectFile = 0)
+    {
+        $oCard = BxDolShareCard::getInstance();
 
         if ($aBg === null) {
-            $this->out('  --   site background                 none configured, cards use the plain background');
+            if ($iExpectFile > 0)
+                return $this->fail($sWhat, 'file ' . $iExpectFile . ' is configured, but the card spec carries no background at all');
+
+            $this->out(sprintf('  --   %-34s none configured, the plain background is used', $sWhat));
             return true;
         }
 
-        $sUrl = $oCard->getImageSpecUrl($aBg);
-        $sFile = '';
         $oRenderer = BxDolShareCardRenderer::getInstance();
         $fResolve = Closure::bind(function ($aImage) {
             return $this->_resolveImage($aImage);
         }, $oRenderer, get_class($oRenderer));
-        if ($fResolve)
-            $sFile = (string)$fResolve($aBg);
 
-        if ($sFile === '')
-            return $this->fail('site background', 'configured as ' . json_encode($aBg) . ' but the renderer resolves it to nothing'
-                . ($sUrl !== '' ? ' (the site serves it at ' . $sUrl . ')' : '') . ' - every card will use the plain background');
+        $sFile = $fResolve ? (string)$fResolve($aBg) : '';
+        if ($sFile === '') {
+            $sUrl = $oCard->getImageSpecUrl($aBg);
+            return $this->fail($sWhat, 'configured as ' . json_encode($aBg) . ' but the renderer resolves it to nothing'
+                . ($sUrl !== '' ? ' (the site serves it at ' . $sUrl . ')' : '') . ' - the card will use the plain background');
+        }
 
         $this->iPassed++;
-        $this->out(sprintf('  ok   %-34s %s', 'site background', basename($sFile)));
+        $this->out(sprintf('  ok   %-34s %s', $sWhat, basename($sFile)));
 
         return true;
     }

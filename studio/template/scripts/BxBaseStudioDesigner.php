@@ -402,77 +402,96 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
         $oShareCard = BxDolShareCard::getInstance();
         $sShareCardUrl = bx_html_attribute($oShareCard->getImageUrl($oShareCard->getDefaultSpec()));
 
+        // Each picture is its own group: what it is, where it shows up, what is set right now, and the
+        // control to change it - in that order. They used to be two lists, every preview stacked in one
+        // block and every uploader in another, so no preview sat anywhere near the thing it previewed.
         $aFormInputs = array();
-        $aTmplVarsCovers = array();
         foreach($this->aCovers as $sCover => $aCover) {
             $aSetting = array();
             $oDbSettings->getOptions(array('type' => 'by_name', 'value' => $aCover['setting']), $aSetting, false);
             if(empty($aSetting) || !is_array($aSetting))
                 continue;
 
+            $iImageId = (int)getParam($aCover['setting']);
+
+            $sImageUrl = '';
+            if($iImageId != 0) {
+                $oTranscoder = BxDolTranscoderImage::getObjectInstance($aCover['transcoder']);
+                $sImageUrl = $oTranscoder ? $oTranscoder->getFileUrl($iImageId) : false;
+
+                // the picture a setting points at is gone, so the setting is stale rather than set
+                if($sImageUrl === false) {
+                    setParam($aCover['setting'], 0);
+                    $iImageId = 0;
+                    $sImageUrl = '';
+                }
+            }
+
+            // the share card is drawn whether or not it has a background of its own - from the page
+            // cover, the logo and the site title - so its preview is always worth showing
+            $bPreview = $iImageId != 0 || $sCover == 'cover_share';
+            if($bPreview)
+                $aFormInputs[$sCover . '_preview'] = array(
+                    'type' => 'custom',
+                    'name' => $sCover . '_preview',
+                    'caption' => _t($aCover['title']),
+                    'content' => $oTemplate->parseHtmlByName('dsr_cover_preview.html', array(
+                        'type' => $sCover,
+                        'content' => $oTemplate->parseHtmlByName($aCover['template'], array(
+                            'js_object' => $sJsObject,
+                            'type' => $sCover,
+                            'caption' => _t($aCover['title']),
+                            'image_id' => $iImageId,
+                            'share_card_url' => $sShareCardUrl,
+                            'bx_if:show_bg' => array(
+                                'condition' => !empty($sImageUrl),
+                                'content' => array(
+                                    'image_url' => $sImageUrl
+                                )
+                            ),
+                            'bx_if:show_delete' => array(
+                                'condition' => $iImageId != 0,
+                                'content' => array(
+                                    'js_object' => $sJsObject,
+                                    'type' => $sCover,
+                                    'image_id' => $iImageId
+                                )
+                            ),
+                        ))
+                    ))
+                );
+
             $aFormInputs[$sCover] = array(
                 'type' => 'files',
-                    'name' => $sCover,
-                    'storage_object' => $this->sCoverStorage,
-                    'images_transcoder' => $this->sCoverTranscoder,
-                    'uploaders' => array('sys_std_crop_cover'),
-                    'multiple' => false,
-                    'content_id' => $aSetting['id'],
-                    'ghost_template' => BxTemplStudioFunctions::getInstance()->getDefaultGhostTemplate($sCover),
-                    'caption' => _t('_adm_dsg_txt_upload_' . $sCover),
-                    'db' => array (
+                'name' => $sCover,
+                'storage_object' => $this->sCoverStorage,
+                'images_transcoder' => $this->sCoverTranscoder,
+                'uploaders' => array('sys_std_crop_cover'),
+                'multiple' => false,
+                'content_id' => $aSetting['id'],
+                'ghost_template' => BxTemplStudioFunctions::getInstance()->getDefaultGhostTemplate($sCover),
+                'caption' => _t('_adm_dsg_txt_upload_' . $sCover),
+                'info' => _t('_adm_dsg_txt_upload_' . $sCover . '_inf'),
+                'db' => array (
                     'pass' => 'Int',
                 )
             );
 
-            if(($iImageId = (int)getParam($aCover['setting'])) == 0)
-                continue;
-
-            $sImageUrl = BxDolTranscoderImage::getObjectInstance($aCover['transcoder'])->getFileUrl($iImageId);
-            if($sImageUrl === false) {
-            	setParam($aCover['setting'], 0);
-                continue;
-            }
-
-            $aTmplVarsCovers[] = array(
-                'image_id' => $iImageId,
-                'content' => $oTemplate->parseHtmlByName($aCover['template'], array(
-                    'js_object' => $sJsObject,
-                    'type' => $sCover,
-                    'caption' => _t($aCover['title']),
-                    'image_id' => $iImageId,
-                    'share_card_url' => $sShareCardUrl,
-                        'bx_if:show_bg' => array(
-                            'condition' => !empty($sImageUrl),
-                            'content' => array(
-                                'image_url' => $sImageUrl
-                            )
+            // the switch belongs to the picture it switches off, not to the top of the page where it
+            // was asking to be understood before the reader had met a single cover
+            if($sCover == 'cover_common')
+                $aFormInputs['disabled'] = array(
+                    'type' => 'checkbox',
+                    'name' => 'disabled',
+                    'caption' => _t('_adm_dsg_txt_cover_disabled'),
+                    'info' => _t('_adm_dsg_txt_cover_disabled_inf'),
+                    'value' => 'on',
+                    'checked' => getParam('sys_site_cover_disabled') == 'on',
+                    'db' => array (
+                        'pass' => 'Xss',
                     ),
-                    'bx_if:show_delete' => array(
-                        'condition' => true,
-                        'content' => array(
-                            'js_object' => $sJsObject,
-                            'type' => $sCover,
-                            'image_id' => $iImageId
-                        )
-                    ),
-                ))
-            );
+                );
         }
-
-        // no dedicated background is set, so the loop above has produced no preview of the share card, while
-        // the card itself is still drawn - from the site cover, the logo and the site title
-        if((int)getParam($this->aCovers['cover_share']['setting']) == 0)
-            $aTmplVarsCovers[] = array(
-                'image_id' => 'share',
-                'content' => $oTemplate->parseHtmlByName($this->aCovers['cover_share']['template'], array(
-                    'share_card_url' => $sShareCardUrl,
-                    'bx_if:show_delete' => array(
-                        'condition' => false,
-                        'content' => array()
-                    )
-                ))
-            );
 
         $aForm = array(
             'form_attrs' => array(
@@ -492,39 +511,20 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
                     'submit_name' => 'save'
                 ),
             ),
-            'inputs' => array(
+            'inputs' => array_merge(array(
                 'page' => array(
                     'type' => 'hidden',
                     'name' => 'page',
                     'value' => $this->sPage
                 ),
-                'disabled' => array(
-                    'type' => 'checkbox',
-                    'name' => 'disabled',
-                    'caption' => _t('_adm_dsg_txt_cover_disabled'),
-                    'value' => 'on',
-                    'checked' => getParam('sys_site_cover_disabled') == 'on',
-                    'db' => array (
-                        'pass' => 'Xss',
-                    ),
-                ),
-                'preview' => array(
-                    'type' => 'custom',
-                    'name' => 'preview',
-                    'content' => $oTemplate->parseHtmlByName('dsr_cover_preview.html', array(
-                        'bx_repeat:covers' => $aTmplVarsCovers
-                    ))
-                ),
-
+            ), $aFormInputs, array(
                 'save' => array(
                     'type' => 'submit',
                     'name' => 'save',
                     'value' => _t('_adm_btn_designer_submit'),
                 )
-            )
+            ))
         );
-
-        $aForm['inputs'] = bx_array_insert_after($aFormInputs, $aForm['inputs'], 'preview');
 
         $oForm = new BxTemplStudioFormView($aForm);
         $oForm->initChecker();
