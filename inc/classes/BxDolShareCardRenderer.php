@@ -1415,6 +1415,25 @@ class BxDolShareCardRenderer extends BxDolFactory
     }
 
     /**
+     * A site branding file read straight out of its storage, private flag and all.
+     * Only for pictures an administrator chose in Studio - the logo, the mark - which UNA keeps in
+     * private storage and publishes through a transcoder anyway.
+     */
+    protected function _resolveStoredBranding($sObject, $iFileId)
+    {
+        if ($iFileId < 1)
+            return '';
+
+        $oStorage = BxDolStorage::getObjectInstance($sObject);
+        if (!$oStorage)
+            return '';
+
+        $sFile = $this->_resolveStorageFile($oStorage, $iFileId, true);
+
+        return $sFile && $this->_isDrawableFile($sFile) ? $sFile : '';
+    }
+
+    /**
      * A ready derivative is preferred, because it is small and already the right shape. When there is
      * none, the ORIGINAL is read from the transcoder's source storage instead of transcoding on demand:
      * BxDolTranscoder::transcode() pulls the original through bx_file_get_contents(BX_DOL_URL_ROOT . ...)
@@ -1478,18 +1497,26 @@ class BxDolShareCardRenderer extends BxDolFactory
 
         $oSource = BxDolStorage::getObjectInstance($aParams['object']);
 
-        return $oSource ? $this->_resolveStorageFile($oSource, $iFileId) : '';
+        // true: what this substitutes for is the transcoder's own output, which the site already
+        // serves publicly, so the private flag on the source says nothing about the derivative
+        return $oSource ? $this->_resolveStorageFile($oSource, $iFileId, true) : '';
     }
 
-    protected function _resolveStorageFile($oStorage, $iFileId)
+    protected function _resolveStorageFile($oStorage, $iFileId, $bAllowPrivate = false)
     {
         $aFile = $oStorage->getFile($iFileId);
         if (!$aFile || empty($aFile['path']))
             return '';
 
         // belt and braces: the privacy gate lives in BxDolShareCard, but a private file must never
-        // end up baked into a picture served to anonymous scrapers
-        if (!empty($aFile['private']))
+        // end up baked into a picture served to anonymous scrapers.
+        //
+        // $bAllowPrivate is for ONE case: standing in for a transcoder whose derivative is not built
+        // yet. UNA stores the site's own branding - the cover, the share image, the logo - in
+        // `sys_images` / `sys_images_custom` with private = 1 and serves it through a transcoder,
+        // whose output is public. Refusing the original there hid the picture an admin had just
+        // uploaded in Studio and left every card on the fallback background.
+        if (!$bAllowPrivate && !empty($aFile['private']))
             return '';
 
         $aObject = $oStorage->getObjectData();
@@ -1596,7 +1623,7 @@ class BxDolShareCardRenderer extends BxDolFactory
 
             $sFile = $this->_resolveImage(array('id' => $iFileId, 'transcoder' => 'sys_custom_images'));
             if (!$sFile)
-                $sFile = $this->_resolveImage(array('id' => $iFileId, 'object' => 'sys_images_custom'));
+                $sFile = $this->_resolveStoredBranding('sys_images_custom', $iFileId);
 
             if ($sFile)
                 break;

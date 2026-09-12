@@ -843,8 +843,12 @@ class BxDolShareCard extends BxDolFactory implements iBxDolSingleton
      */
     protected function _getSiteBackground()
     {
+        // through the transcoder the Designer's own `cover_share` slot declares, not the raw
+        // storage object: Studio stores site images in sys_images with private = 1 and publishes
+        // them as a derivative, so the raw reference resolved to nothing and every card fell back
+        // to the plain background
         if (($iImage = (int)getParam('sys_site_share_image')) != 0)
-            return ['id' => $iImage, 'object' => BX_DOL_STORAGE_OBJ_IMAGES];
+            return ['id' => $iImage, 'transcoder' => BX_DOL_TRANSCODER_OBJ_SHARE_IMAGE];
 
         if (getParam('sys_site_cover_disabled') != 'on' && ($iCover = (int)getParam('sys_site_cover_common')) != 0)
             return ['id' => $iCover, 'transcoder' => BX_DOL_TRANSCODER_OBJ_COVER];

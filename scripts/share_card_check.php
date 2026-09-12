@@ -106,6 +106,8 @@ class BxDolShareCardCheckCmd
             . ', font: ' . (BxDolShareCard::getInstance()->getFontPath() ?: 'NONE')
             . ', out: ' . $this->sOutDir);
 
+        $this->checkBackground();
+
         foreach ($this->getCases() as $sName => $aSpec)
             $this->check($sName, $aSpec);
 
@@ -114,6 +116,44 @@ class BxDolShareCardCheckCmd
             . ($this->iStale ? ', ' . $this->iStale . ' stale map rows' : '')) . "\n";
 
         return $this->iFailed ? 1 : 0;
+    }
+
+    /**
+     * Does the picture the site was configured with actually reach the canvas?
+     *
+     * Every other check here passes whether or not a background was drawn - a plain card is still
+     * 1200x630, still small, still fast. That is how an uploaded share image which the renderer
+     * silently refused went unnoticed: UNA stores site branding privately and publishes it through a
+     * transcoder, and a fixture created with a direct INSERT has private = 0, so the local suite
+     * exercised a path no real upload takes. This asserts the configured picture resolves to a file.
+     */
+    protected function checkBackground()
+    {
+        $oCard = BxDolShareCard::getInstance();
+        $aBg = $oCard->getDefaultSpec()['bg'];
+
+        if ($aBg === null) {
+            $this->out('  --   site background                 none configured, cards use the plain background');
+            return true;
+        }
+
+        $sUrl = $oCard->getImageSpecUrl($aBg);
+        $sFile = '';
+        $oRenderer = BxDolShareCardRenderer::getInstance();
+        $fResolve = Closure::bind(function ($aImage) {
+            return $this->_resolveImage($aImage);
+        }, $oRenderer, get_class($oRenderer));
+        if ($fResolve)
+            $sFile = (string)$fResolve($aBg);
+
+        if ($sFile === '')
+            return $this->fail('site background', 'configured as ' . json_encode($aBg) . ' but the renderer resolves it to nothing'
+                . ($sUrl !== '' ? ' (the site serves it at ' . $sUrl . ')' : '') . ' - every card will use the plain background');
+
+        $this->iPassed++;
+        $this->out(sprintf('  ok   %-34s %s', 'site background', basename($sFile)));
+
+        return true;
     }
 
     /**
