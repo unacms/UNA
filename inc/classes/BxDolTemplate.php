@@ -1293,6 +1293,29 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
         $this->aPage['image'] = $sImageUrl;
     }
     /**
+     * Set page share card spec. Several producers contribute to one card - the page, the module, a
+     * block - so the given keys are merged into whatever was set before instead of replacing it.
+     * @see BxDolShareCard for the spec format
+     *
+     * @param array $aCard share card spec, or the part of one this caller knows about
+     */
+    public function setPageShareCard(array $aCard)
+    {
+        if(empty($aCard))
+            return;
+
+        $this->aPage['share_card'] = !empty($this->aPage['share_card']) && is_array($this->aPage['share_card']) ? array_merge($this->aPage['share_card'], $aCard) : $aCard;
+    }
+    /**
+     * Get page share card spec.
+     *
+     * @return array share card spec, an empty array when nothing was contributed
+     */
+    public function getPageShareCard()
+    {
+        return !empty($this->aPage['share_card']) && is_array($this->aPage['share_card']) ? $this->aPage['share_card'] : array();
+    }
+    /**
      * Set page rss link.
      *
      * @param $sTitle - rss feed title
@@ -1326,6 +1349,13 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
             list(, $aPageParams) = bx_get_base_url($this->aPage[$sKu]);
             $sUri = $aPageParams['i'] ?? '';
         }
+
+        // the share card owns og:* and twitter:* whenever the feature is on; when it is off it
+        // returns array('disabled' => true) and every tag below is produced exactly the way it
+        // always was. the canonical URL computed above is handed over so that og:url and
+        // <link rel="canonical"> can never disagree
+        $aCard = $this->_isShareCardApplicable() ? BxDolShareCard::getInstance()->resolve($sUrl ? array_merge($this->aPage, array('url' => $sUrl)) : $this->aPage, $bPage ? $oPage : null) : array('disabled' => true);
+        $bCard = empty($aCard['disabled']);
             
         
         // Process header
@@ -1348,36 +1378,45 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
         $sHeaderAttr = $bHeader ? bx_html_attribute($sHeader) : '';
 
         // Process description
-        $sDescription = '';
-        if(($sKd = 'description') && !empty($this->aPage[$sKd]) && is_string($this->aPage[$sKd]))
-            $sDescription = $this->aPage[$sKd];
-        if(!$sDescription && $bPage)
-            $sDescription = $oPage->getMetaDescription();
-        $bDescription = !empty($sDescription);
-
-        if($bDescription) {
-            // Convert HTML breaks/lists to spaces before stripping tags
-            $sDescription = preg_replace('#<(?:br\s*/?|/p|/li)>#i', ' ', $sDescription);
-            $sDescription = strip_tags($sDescription);
-
-            // Normalize whitespace
-            $sDescription = preg_replace('/\s+/u', ' ', $sDescription);
-
-            // Ensure space after punctuation if missing (".This" → ". This")
-            $sDescription = preg_replace('/([.,;:])([^\s])/u', '$1 $2', $sDescription);
-            $sDescription = trim($sDescription);
-
-            if(($iDescriptionMaxLen = 300) && mb_strlen($sDescription) > $iDescriptionMaxLen) {
-                $sDescription = mb_substr($sDescription, 0, $iDescriptionMaxLen);
-
-                // Trim partial word and remove dangling punctuation
-                $sDescription = preg_replace('/\s+\S*$/u', '', $sDescription);
-                $sDescription = rtrim($sDescription, " ,;:-");
-
-                $sDescription .= '...';
-            }
-            
+        if($bCard) {
+            // the card resolver walks the very same ladder through its own normaliser, so that
+            // <meta name="description"> and og:description always say the same thing and the
+            // text is cleaned exactly once
+            $sDescription = $aCard['description'];
             $bDescription = !empty($sDescription);
+        }
+        else {
+            $sDescription = '';
+            if(($sKd = 'description') && !empty($this->aPage[$sKd]) && is_string($this->aPage[$sKd]))
+                $sDescription = $this->aPage[$sKd];
+            if(!$sDescription && $bPage)
+                $sDescription = $oPage->getMetaDescription();
+            $bDescription = !empty($sDescription);
+
+            if($bDescription) {
+                // Convert HTML breaks/lists to spaces before stripping tags
+                $sDescription = preg_replace('#<(?:br\s*/?|/p|/li)>#i', ' ', $sDescription);
+                $sDescription = strip_tags($sDescription);
+
+                // Normalize whitespace
+                $sDescription = preg_replace('/\s+/u', ' ', $sDescription);
+
+                // Ensure space after punctuation if missing (".This" → ". This")
+                $sDescription = preg_replace('/([.,;:])([^\s])/u', '$1 $2', $sDescription);
+                $sDescription = trim($sDescription);
+
+                if(($iDescriptionMaxLen = 300) && mb_strlen($sDescription) > $iDescriptionMaxLen) {
+                    $sDescription = mb_substr($sDescription, 0, $iDescriptionMaxLen);
+
+                    // Trim partial word and remove dangling punctuation
+                    $sDescription = preg_replace('/\s+\S*$/u', '', $sDescription);
+                    $sDescription = rtrim($sDescription, " ,;:-");
+
+                    $sDescription .= '...';
+                }
+            
+                $bDescription = !empty($sDescription);
+            }
         }
 
         $sDescriptionAttr = '';
@@ -1391,46 +1430,50 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
                 <meta name="geo.position" content="' . $this->aPage['location']['lat'] . ';' . $this->aPage['location']['lng'] . '" />
                 <meta name="geo.region" content="' . bx_html_attribute($this->aPage['location']['country']) . '" />';
 
-        //set meta[image] value
-        if(empty($this->aPage['image'])) {
-            // use cover image if exists
-            if($bPage && ($aCover = $oPage->getPageCoverImage()))
-                $this->aPage['image'] = BxDolCover::getInstance($this)->getCoverImageUrl($aCover);
-
-            // use system Apple/Android icons if exists
+        if($bCard)
+            $sRet .= $this->_getMetaInfoShareCard($aCard);
+        else {
+            //set meta[image] value
             if(empty($this->aPage['image'])) {
-                $oImgStorage = BxDolStorage::getObjectInstance(BX_DOL_STORAGE_OBJ_IMAGES);
-                foreach(['icon_android_splash', 'icon_android', 'icon_apple'] as $sIcon)
-                    if(($iIcon = (int)getParam('sys_site_' . $sIcon)) != 0 && ($sImageUrl = $oImgStorage->getFileUrlById($iIcon))) {
-                        $this->aPage['image'] = $sImageUrl;
-                        break;
-                    }
+                // use cover image if exists
+                if($bPage && ($aCover = $oPage->getPageCoverImage()))
+                    $this->aPage['image'] = BxDolCover::getInstance($this)->getCoverImageUrl($aCover);
+
+                // use system Apple/Android icons if exists
+                if(empty($this->aPage['image'])) {
+                    $oImgStorage = BxDolStorage::getObjectInstance(BX_DOL_STORAGE_OBJ_IMAGES);
+                    foreach(['icon_android_splash', 'icon_android', 'icon_apple'] as $sIcon)
+                        if(($iIcon = (int)getParam('sys_site_' . $sIcon)) != 0 && ($sImageUrl = $oImgStorage->getFileUrlById($iIcon))) {
+                            $this->aPage['image'] = $sImageUrl;
+                            break;
+                        }
+                }
             }
+
+            // facebook / twitter
+            $bPageImage = !empty($this->aPage['image']);
+            $sRet .= '<meta name="twitter:card" content="' . ($bPageImage ? 'summary_large_image' : 'summary') . '" />';
+
+            $sOgType = 'website';
+            if(preg_match("/(discussion|glossary|item|post)/", $sUri))
+                $sOgType = 'article';
+            else if(preg_match("/(ad|product|shopify\-entry|snipcart\-entry)/", $sUri))
+                $sOgType = 'product';
+            else if(preg_match("/(album|album\-media)/", $sUri))
+                $sOgType = 'article'; // 'album' is not an Open Graph type; scrapers fall back to 'website'
+            else if(strpos($sUri, 'profile') !== false)
+                $sOgType = 'profile';
+            else if(strpos($sUri, 'photo') !== false)
+                $sOgType = 'article'; // 'image' is not an Open Graph type either
+            else if(strpos($sUri, 'video') !== false)
+                $sOgType = 'video.other';
+
+            $sRet .= '<meta property="og:type" content="' . $sOgType . '" />';
+            $sRet .= '<meta property="og:title" content="' . $sHeaderAttr . '" />';
+            $sRet .= '<meta property="og:description" content="' . $sDescriptionAttr . '" />';
+            if($bPageImage)
+                $sRet .= '<meta property="og:image" content="' . $this->aPage['image'] . '" />';
         }
-
-        // facebook / twitter
-        $bPageImage = !empty($this->aPage['image']);
-        $sRet .= '<meta name="twitter:card" content="' . ($bPageImage ? 'summary_large_image' : 'summary') . '" />';
-
-        $sOgType = 'website';
-        if(preg_match("/(discussion|glossary|item|post)/", $sUri))
-            $sOgType = 'article';
-        else if(preg_match("/(ad|product|shopify\-entry|snipcart\-entry)/", $sUri))
-            $sOgType = 'product';
-        else if(preg_match("/(album|album\-media)/", $sUri))
-            $sOgType = 'album';
-        else if(strpos($sUri, 'profile') !== false)
-            $sOgType = 'profile';
-        else if(strpos($sUri, 'photo') !== false)
-            $sOgType = 'image';
-        else if(strpos($sUri, 'video') !== false)
-            $sOgType = 'video.other';
-
-        $sRet .= '<meta property="og:type" content="' . $sOgType . '" />';
-        $sRet .= '<meta property="og:title" content="' . $sHeaderAttr . '" />';
-        $sRet .= '<meta property="og:description" content="' . $sDescriptionAttr . '" />';
-        if($bPageImage)
-            $sRet .= '<meta property="og:image" content="' . $this->aPage['image'] . '" />';
 
         // Smart App Banner
         if(getParam('smart_app_banner') && false === strpos($_SERVER['HTTP_USER_AGENT'], 'UNAMobileApp')) {
@@ -1449,6 +1492,100 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
 
         if($sUrl)
             $sRet .= '<link rel="canonical" href="' . $sUrl . '" />';
+
+        return $sRet;
+    }
+    /**
+     * Whether the pages this template renders are shareable at all.
+     *
+     * Studio is an authenticated back end whose pages are never scraped, so it overrides this to
+     * false: without it every Studio screen resolves the generic site card, which both advertises
+     * og:* tags nobody reads and makes opening Designer generate the site card as a side effect.
+     *
+     * @return bool
+     */
+    protected function _isShareCardApplicable()
+    {
+        return true;
+    }
+    /**
+     * Emit the Open Graph and Twitter tag set of a resolved share card.
+     *
+     * Everything BxDolShareCard::resolve() hands over is UNESCAPED plain text - cleanText() decodes
+     * entities after it strips tags, so a title stored as &lt;b&gt; comes back as live markup - and
+     * nothing is written into an attribute here without going through bx_html_attribute() first.
+     *
+     * @param  array $aCard resolved card, @see BxDolShareCard::resolve
+     * @return string meta tags
+     */
+    protected function _getMetaInfoShareCard($aCard)
+    {
+        $sRet = '';
+
+        $aImage = !empty($aCard['image']) && is_array($aCard['image']) && !empty($aCard['image']['url']) ? $aCard['image'] : false;
+
+        $sRet .= '<meta property="og:type" content="' . bx_html_attribute($aCard['type']) . '" />';
+
+        if(!empty($aCard['title']))
+            $sRet .= '<meta property="og:title" content="' . bx_html_attribute($aCard['title']) . '" />';
+
+        if(!empty($aCard['description']))
+            $sRet .= '<meta property="og:description" content="' . bx_html_attribute($aCard['description']) . '" />';
+
+        if(!empty($aCard['url']))
+            $sRet .= '<meta property="og:url" content="' . bx_html_attribute($aCard['url']) . '" />';
+
+        if(!empty($aCard['site_name']))
+            $sRet .= '<meta property="og:site_name" content="' . bx_html_attribute($aCard['site_name']) . '" />';
+
+        // og:locale wants language_COUNTRY, and the resolver returns nothing at all when the country
+        // of the site language is unknown - a bare language code is worse than no tag
+        if(!empty($aCard['locale']))
+            $sRet .= '<meta property="og:locale" content="' . bx_html_attribute($aCard['locale']) . '" />';
+
+        if($aImage) {
+            $sImage = bx_html_attribute($aImage['url']);
+
+            $sRet .= '<meta property="og:image" content="' . $sImage . '" />';
+
+            if(0 === strncasecmp($aImage['url'], 'https://', 8))
+                $sRet .= '<meta property="og:image:secure_url" content="' . $sImage . '" />';
+
+            // when the card cannot be drawn the resolver points at a picture which already exists,
+            // of unknown type and size; a scraper trusts these three tags blindly, so they are only
+            // emitted when they are actually known
+            if(!empty($aImage['type']))
+                $sRet .= '<meta property="og:image:type" content="' . bx_html_attribute($aImage['type']) . '" />';
+
+            if(!empty($aImage['width']))
+                $sRet .= '<meta property="og:image:width" content="' . (int)$aImage['width'] . '" />';
+
+            if(!empty($aImage['height']))
+                $sRet .= '<meta property="og:image:height" content="' . (int)$aImage['height'] . '" />';
+
+            if(!empty($aImage['alt']))
+                $sRet .= '<meta property="og:image:alt" content="' . bx_html_attribute($aImage['alt']) . '" />';
+        }
+
+        $sRet .= '<meta name="twitter:card" content="' . bx_html_attribute($aCard['twitter_card']) . '" />';
+
+        if(!empty($aCard['title']))
+            $sRet .= '<meta name="twitter:title" content="' . bx_html_attribute($aCard['title']) . '" />';
+
+        if(!empty($aCard['description']))
+            $sRet .= '<meta name="twitter:description" content="' . bx_html_attribute($aCard['description']) . '" />';
+
+        if($aImage) {
+            $sRet .= '<meta name="twitter:image" content="' . bx_html_attribute($aImage['url']) . '" />';
+
+            if(!empty($aImage['alt']))
+                $sRet .= '<meta name="twitter:image:alt" content="' . bx_html_attribute($aImage['alt']) . '" />';
+        }
+
+        // whatever the card producer asked for, verbatim
+        if(!empty($aCard['meta']) && is_array($aCard['meta']))
+            foreach($aCard['meta'] as $sProperty => $sContent)
+                $sRet .= '<meta property="' . bx_html_attribute($sProperty) . '" content="' . bx_html_attribute($sContent) . '" />';
 
         return $sRet;
     }

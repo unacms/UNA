@@ -198,6 +198,39 @@ class BxBaseModProfilePageEntry extends BxBaseModGeneralPageEntry
         
         return true;
     }
+
+    /**
+     * A profile page describes somebody, not a document. The very same value is produced by
+     * BxBaseModProfileModule::getShareCard(), which share_card.php reaches without a page around it -
+     * the two producers have to agree or the card is served off a hash nobody advertised, so the
+     * CNF override is read here exactly as it is read there.
+     */
+    protected function _getPageMetaType()
+    {
+        $CNF = &$this->_oModule->_oConfig->CNF;
+
+        return !empty($CNF['OG_TYPE']) ? $CNF['OG_TYPE'] : 'profile';
+    }
+    /**
+     * The legacy og:image of a profile page: its cover, the picture prepareCover() used to write
+     * through addPageMetaImage().
+     *
+     * That write lived in block rendering, which a page-cache hit skips, so it was unreliable and the
+     * share card replaced it. This override only feeds the OLD meta block - the one that runs when
+     * sys_share_cards_enable is off - and it runs during the page render, so unlike the write it
+     * replaces it is there on a cache hit too.
+     */
+    protected function _getPageMetaImage()
+    {
+        if(empty($this->_aContentInfo))
+            return parent::_getPageMetaImage();
+
+        $mixedCover = $this->_oModule->getEntryImageData($this->_aContentInfo, 'FIELD_COVER', ['OBJECT_IMAGES_TRANSCODER_COVER']);
+        $sUrl = $mixedCover !== false ? BxDolShareCard::getInstance()->getImageSpecUrl($mixedCover) : '';
+
+        return $sUrl !== '' ? $sUrl : parent::_getPageMetaImage();
+    }
+
 }
 
 /** @} */

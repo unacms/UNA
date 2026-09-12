@@ -453,12 +453,11 @@ class BxBaseModProfileTemplate extends BxBaseModGeneralTemplate
                     $sUrlCover = BxDolCover::getCoverImageUrl($aCover);
             }
 
-            if(!empty($sUrlCover)) {
-                if(!$bUseAsAuthor)
-                    BxDolTemplate::getInstance()->addPageMetaImage($sUrlCover);
-
+            //--- no meta image is written from here: this runs while a block is rendered, which a
+            //--- cached page skips altogether, so the tag was there or missing depending on nothing
+            //--- but cache state. The profile card comes from BxBaseModProfileModule::getShareCard().
+            if(!empty($sUrlCover))
                 $bUrlCover = true;
-            }
             else
                 $sUrlCover = $this->getImageUrl('cover.svg');
 

@@ -1131,6 +1131,10 @@ class BxBasePage extends BxDolPage
         $sMetaKeywords = $this->_getPageMetaKeywords();
         if ($sMetaKeywords)
             $oTemplate->addPageKeywords ($sMetaKeywords);
+
+        $aShareCard = $this->_getPageShareCard();
+        if ($aShareCard)
+            $oTemplate->setPageShareCard ($aShareCard);
     }
 
     /**
@@ -1438,6 +1442,15 @@ class BxBasePage extends BxDolPage
     }
     
     /**
+     * Get page meta type, it's used as og:type of the page.
+     * @return string
+     */
+    protected function _getPageMetaType()
+    {
+        return 'website';
+    }
+
+    /**
      * Get page meta image.
      * @return string
      */
@@ -1462,6 +1475,68 @@ class BxBasePage extends BxDolPage
     protected function _getPageMetaRobots()
     {
         return _t($this->_aObject['meta_robots']);
+    }
+
+    /**
+     * Get page share card spec, @see BxDolShareCard.
+     * Every value is plain text and must not depend on the current viewer: one card is drawn for
+     * everybody and it's cached by the hash of this spec.
+     * @return array, empty array when there is nothing worth drawing
+     */
+    /**
+     * The share card spec for this page. Public because share_card.php has to rebuild the very same
+     * spec out of band, from the page object name alone: one producer, so the hash a page advertises
+     * and the hash the endpoint recomputes cannot drift apart.
+     */
+    public function getShareCardSpec()
+    {
+        return $this->_getPageShareCard();
+    }
+
+    /**
+     * Produce the share card spec of this page: its title, its cover, its own canonical description.
+     * The single producer - share_card.php reaches the very same method through getShareCardSpec().
+     */
+    protected function _getPageShareCard()
+    {
+        $sTitle = '';
+        if(!empty($this->_aObject['cover_title'])) {
+            $sCoverTitle = _t($this->_aObject['cover_title']);
+            if($sCoverTitle && strcmp($sCoverTitle, $this->_aObject['cover_title']) != 0)
+                $sTitle = $sCoverTitle;
+        }
+
+        if(empty($sTitle))
+            $sTitle = $this->_getPageTitle();
+
+        //--- with covers switched off site wide the page cover isn't shown anywhere, so the card
+        //--- falls back to the site background chain rather than to an image nobody ever sees.
+        //--- getPageCoverImage(TRUE), i.e. through BX_DOL_TRANSCODER_OBJ_COVER. With false it hands
+        //--- back the raw storage original, and Studio stores every cover an admin uploads in
+        //--- sys_images with private = 1 - which the renderer refuses, so a cover set in the Pages
+        //--- builder or in Designer was silently dropped and the card fell back to the plain colour
+        $aBackground = BxDolCover::getInstance()->isEnabled() ? $this->getPageCoverImage(true) : array();
+
+        if(empty($sTitle) && empty($aBackground))
+            return array();
+
+        //--- the Studio meta description is produced HERE, not at the endpoint. Filling it on only one
+        //--- of the two paths gave any page with one a hash the render could not advertise, and its
+        //--- card silently fell off the immutable cache onto max-age=3600
+        $sDescription = '';
+        if(!empty($this->_aObject['meta_description']))
+            $sDescription = BxDolShareCard::cleanText(_t($this->_aObject['meta_description']), 300);
+
+        return array(
+            'module' => 'system',
+            'id' => 0,
+            'page' => $this->_sObject,
+            'type' => $this->_getPageMetaType(),
+            'title' => $sTitle,
+            'description' => $sDescription,
+            'bg' => !empty($aBackground) ? $aBackground : null,
+            'layout' => 'default'
+        );
     }
 
     /**

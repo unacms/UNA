@@ -58,6 +58,207 @@ class BxForumModule extends BxBaseModTextModule
     }
 
     /**
+     * The share card of a discussion, @see BxDolShareCard.
+     *
+     * A discussion shares as the conversation itself: who opened it and where, what it is called,
+     * how it begins, the faces taking part in it and how busy it is. Every value is read out of the
+     * stored row, so the spec share_card.php rebuilds later, with no page render around it and
+     * nobody logged in, is the same array and hashes to the same picture.
+     *
+     * @param $aContentInfo - stored discussion row
+     * @param $aParams - producer parameters, passed straight through to the parent
+     * @return card spec array, or a `private` spec when an anonymous visitor may not see the entry
+     */
+    public function getShareCard($aContentInfo, $aParams = [])
+    {
+        //--- one snapshot of this module's own configuration, taken by value and taken first. A card
+        //--- is a public picture behind a privacy gate, and the gate below has to be decided by the
+        //--- forum's configuration and nothing else - producing it walks through other modules'
+        //--- code (the author's profile module, for one), and none of that may be able to reach in
+        //--- and change what is read here.
+        $CNF = $this->_oConfig->CNF;
+
+        $aCard = parent::getShareCard($aContentInfo, $aParams);
+
+        //--- a private entry is answered with the generic site card, so nothing may be added to it:
+        //--- every key filled in below would end up drawn into a picture with a public URL
+        if(!is_array($aCard) || !empty($aCard['private']))
+            return $aCard;
+
+        if(!$this->_isDiscussionCardCategoryVisible($aContentInfo, $CNF))
+            return ['private' => true, 'module' => $this->getName(), 'id' => (int)($aContentInfo[$CNF['FIELD_ID']] ?? 0)];
+
+        $aCard['layout'] = 'discussion';
+
+        //--- the opening post of a discussion is the row's own text column; everything said after it
+        //--- lives in bx_forum_cmts and none of it belongs on the card, which shows how a
+        //--- conversation begins rather than the last thing somebody happened to say in it. A
+        //--- discussion gets more of that opening post than the plain summary an article is cut to.
+        $aCard['description'] = BxDolShareCard::cleanText($this->_oTemplate->getText($aContentInfo, false), 280);
+
+        //--- extra.category is left exactly as the parent resolved it, through BxDolCategory and the
+        //--- very call decodeDataApi() makes: one producer, so it is not resolved a second time here
+        $aExtra = !empty($aCard['extra']) && is_array($aCard['extra']) ? $aCard['extra'] : [];
+
+        $aExtra['badges'] = $this->_getDiscussionCardBadges($aContentInfo, $CNF);
+
+        //--- a trigger maintained column of the row itself, so the card costs no counting query.
+        //--- FIELD_VIEWS is deliberately NOT on the card: the whole spec is hashed, so a view count
+        //--- would retire a URL advertised as immutable for a year every single time somebody opened
+        //--- the discussion, and re-render, re-store and supersede-delete the picture on the next
+        //--- scrape. Replies say more and move far less often.
+        $aCounters = !empty($aExtra['counters']) && is_array($aExtra['counters']) ? $aExtra['counters'] : [];
+        $aExtra['counters'] = array_merge($aCounters, [
+            'replies' => (int)($aContentInfo[$CNF['FIELD_COMMENTS']] ?? 0),
+        ]);
+
+        $aExtra = array_merge($aExtra, $this->_getDiscussionCardParticipants($aContentInfo, $CNF));
+
+        //--- a reply moves a discussion on without touching `changed`
+        $aExtra['updated'] = max((int)($aContentInfo[$CNF['FIELD_CHANGED']] ?? 0), (int)($aContentInfo[$CNF['FIELD_LR_ADDED']] ?? 0));
+
+        $aCard['extra'] = $aExtra;
+
+        return $aCard;
+    }
+
+    /**
+     * Is the discussion's category open to a visitor who is not logged in?
+     *
+     * This is the check BxForumPageEntry::getCode() makes before it renders the entry page, made
+     * without a viewer: the membership level is named as a value, because
+     * BxDolAcl::isMemberLevelInSet() reads its second argument as a profile id and answers for the
+     * logged in profile when it is 0 - which would let whoever rendered the page first decide what
+     * an anonymous visitor gets to see. The entry page is not the only way in: share_card.php asks
+     * the module for this card with no page around it at all, so the gate has to live here.
+     * @param $aContentInfo - stored discussion row
+     * @param $CNF - this module's configuration, as read by the caller
+     */
+    protected function _isDiscussionCardCategoryVisible($aContentInfo, $CNF)
+    {
+        if(empty($CNF['FIELD_CATEGORY']) || !isset($aContentInfo[$CNF['FIELD_CATEGORY']]))
+            return true;
+
+        $aCategory = $this->_oDb->getCategories(['type' => 'by_category', 'category' => $aContentInfo[$CNF['FIELD_CATEGORY']]]);
+        if(empty($aCategory['visible_for_levels']))
+            return true;
+
+        return BxDolShareCard::isLevelInSet($aCategory['visible_for_levels'], MEMBERSHIP_ID_NON_MEMBER);
+    }
+
+    /**
+     * The states of a discussion worth putting on a card. Only the states which say something are
+     * drawn: a card is an invitation, and "Unresolved" is not one.
+     * @param $aContentInfo - stored discussion row
+     * @param $CNF - this module's configuration, as read by the caller
+     */
+    protected function _getDiscussionCardBadges($aContentInfo, $CNF)
+    {
+        $aKeys = [];
+
+        //--- every read goes through $sField(), because a CNF key a future forum build stops
+        //--- declaring must cost a badge, not raise a warning on every scrape of every discussion
+        $sField = function($sKey) use ($aContentInfo, $CNF) {
+            return !empty($CNF[$sKey]) && isset($aContentInfo[$CNF[$sKey]]) ? $aContentInfo[$CNF[$sKey]] : null;
+        };
+
+        if(!empty($sField('FIELD_RESOLVABLE')) && !empty($sField('FIELD_RESOLVE')))
+            $aKeys[] = '_bx_forum_grid_filter_resolved_resolved';
+
+        if(!empty($sField('FIELD_STICK')))
+            $aKeys[] = '_bx_forum_menu_item_title_sm_sticked';
+
+        if(!empty($sField('FIELD_LOCK')))
+            $aKeys[] = '_bx_forum_menu_item_title_sm_locked';
+
+        $aResult = [];
+        foreach($aKeys as $sKey) {
+            //--- _t() echoes an untranslated key back, and a raw language key drawn on a picture
+            //--- which is cached for a year looks like a bug to everybody who is shown it
+            $s = _t($sKey);
+            if($s != '' && $s != $sKey)
+                $aResult[] = $s;
+        }
+
+        return $aResult;
+    }
+
+    /**
+     * The people taking part in a discussion: the author plus everybody who replied, in the order
+     * the discussion itself shows them, with the faces which may not be shown reduced to initials.
+     * @param $aContentInfo - stored discussion row
+     * @param $CNF - this module's configuration, as read by the caller
+     */
+    protected function _getDiscussionCardParticipants($aContentInfo, $CNF)
+    {
+        $iId = (int)($aContentInfo[$CNF['FIELD_ID']] ?? 0);
+        $iAuthor = (int)($aContentInfo[$CNF['FIELD_AUTHOR']] ?? 0);
+
+        $aParticipants = $this->_oDb->getComments(['type' => 'author_comments', 'object_id' => $iId]);
+        if(!is_array($aParticipants))
+            $aParticipants = [];
+
+        $aParticipants[$iAuthor] = !empty($aParticipants[$iAuthor]) ? $aParticipants[$iAuthor] + 1 : 1;
+
+        //--- the query behind those counts groups without ordering, so the order it hands them back
+        //--- in is the server's business; sorting by profile id first makes the ties sortParticipants()
+        //--- leaves alone come out the same way on every run, and this order is part of the hash
+        ksort($aParticipants, SORT_NUMERIC);
+
+        //--- the author stands in for the current profile on purpose: sortParticipants() falls back
+        //--- to the logged in one, and faces ordered by who is looking would give one discussion a
+        //--- different card for every visitor
+        //--- ?: -1 matters: sortParticipants() treats a FALSY 4th argument as "use the logged in
+        //--- profile", and an imported or anonymous discussion has author 0. -1 is truthy, so the
+        //--- fallback never runs, and it can never match a real participant id either
+        $aParticipants = $this->sortParticipants($aParticipants, (int)($aContentInfo[$CNF['FIELD_LR_AUTHOR']] ?? 0), $iAuthor, $iAuthor ?: -1);
+
+        $aResult = [];
+        $iTotal = 0;
+        foreach($aParticipants as $iProfileId => $iComments) {
+            //--- an anonymous or a deleted poster is stored as a zero or a negative id and has no face
+            if(($iProfileId = (int)$iProfileId) <= 0)
+                continue;
+
+            $iTotal++;
+
+            //--- four faces is what the card has room for; the rest are counted into the "+N"
+            if(count($aResult) < 4)
+                $aResult[] = $this->_getDiscussionCardParticipant($iProfileId);
+        }
+
+        return ['participants' => $aResult, 'participants_total' => $iTotal];
+    }
+
+    /**
+     * One participant, described for an anonymous audience.
+     *
+     * Taking part in a public discussion is public, but a profile is not: a profile an anonymous
+     * visitor cannot open contributes neither its name nor its picture, and is drawn as a plain
+     * lettered circle instead - present in the conversation, unnamed on the card.
+     */
+    protected function _getDiscussionCardParticipant($iProfileId)
+    {
+        $aResult = ['id' => $iProfileId, 'name' => _t('_uknown'), 'avatar' => null];
+
+        //--- getInstance(), not getInstanceMagic(): the stand-in objects the magic one hands back for
+        //--- an anonymous or a deleted profile describe themselves out of the current viewer's
+        //--- permissions, which is exactly what may not decide what a public picture says
+        $oProfile = BxDolProfile::getInstance($iProfileId);
+
+        //--- the gate and the face of the author, @see BxBaseModGeneralModule::_getShareCardAuthor,
+        //--- applied to everybody else in the conversation: one rule decides who may be named on a
+        //--- card, and every face on it is resolved by one helper
+        if(!$oProfile || !$this->_isShareCardProfileGuestVisible($oProfile))
+            return $aResult;
+
+        $aResult['name'] = BxDolShareCard::cleanText($oProfile->getDisplayName(), 64);
+        $aResult['avatar'] = $this->_getShareCardAvatar($oProfile);
+
+        return $aResult;
+    }
+
+    /**
      * Action methods
      */
     public function actionUpdateStatus($sAction = '', $iContentId = 0)

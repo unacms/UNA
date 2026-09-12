@@ -287,6 +287,24 @@ class BxDolContentInfo extends BxDolFactory implements iBxDolFactoryObject
         return $this->_call('get_embed', $iContentId);
     }
 
+    /**
+     * Get the share card spec of a content entry, @see BxDolShareCard.
+     *
+     * This is the out of band entry point: share_card.php is handed nothing but an entity key, so
+     * it rebuilds the very same spec the page render advertised through this call. The module is
+     * the single producer of that spec - nothing here, and nothing in the page class, may add or
+     * change a key afterwards, or the hash the page advertised stops matching the hash the
+     * endpoint recomputes.
+     *
+     * @param $iContentId content id
+     * @param $aParams optional context for the producer, never part of the spec
+     * @return array with the spec, or false when the module doesn't implement the service
+     */
+    public function getContentShareCard ($iContentId, $aParams = [])
+    {
+        return $this->_call('get_share_card', $iContentId, $aParams);
+    }
+
     public function getContentInfo ($iContentId, $bSearchableFieldsOnly = true)
     {
         return $this->_call('get_info', $iContentId, $bSearchableFieldsOnly);

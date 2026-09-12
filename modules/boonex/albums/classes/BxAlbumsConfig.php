@@ -58,6 +58,9 @@ class BxAlbumsConfig extends BxBaseModTextConfig
             'FIELDS_WITH_KEYWORDS' => 'auto', // can be 'auto', array of fields or comma separated string of field names, works only when OBJECT_METATAGS is specified
             'FIELDS_DELAYED_PROCESSING' => 'pictures', // can be array of fields or comma separated string of field names
 
+            // og:type of an entry page - og:type has no 'album' value, an album reads as an article
+            'OG_TYPE' => 'article',
+
             // page URIs
             'URI_VIEW_ENTRY' => 'view-album',
             'URI_VIEW_MEDIA' => 'view-album-media',

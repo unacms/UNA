@@ -80,3 +80,23 @@ div.bx-form-input-language-current {
     top: auto;
     bottom: -1.75rem;
 }
+
+/**
+ * Form help text has to be readable
+ *
+ * template/css/default.less sets .bx-def-font-grayed to @bx-font-color-grayed (#999) and loads after
+ * Tailwind's accessible value, so the info line under every Studio form field rendered at 2.85:1 on
+ * white - well under the 4.5:1 WCAG AA asks for at this size. Scoped to form info, so the token keeps
+ * whatever it means everywhere else.
+ */
+.bx-std .bx-form-info,
+.bx-std .bx-form-section-title .bx-def-font-grayed {
+    color: #4b5563; /* gray-600: 7.5:1 on white, 6.9:1 on the section panel */
+}
+
+.dark .bx-std .bx-form-info,
+.bx-std .dark .bx-form-info,
+.dark .bx-std .bx-form-section-title .bx-def-font-grayed,
+.bx-std .dark .bx-form-section-title .bx-def-font-grayed {
+    color: #9ca3af; /* gray-400 on the dark panel */
+}

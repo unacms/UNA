@@ -624,6 +624,44 @@ class BxBaseModTextModule extends BxBaseModGeneralModule implements iBxDolConten
         ];
     }
 
+    /**
+     * The share card of a text entry: an article, described by its own text.
+     *
+     * Everything here is read from the stored row and nothing depends on the viewer: the very same
+     * spec is produced again out of band by share_card.php, and the two have to hash identically.
+     * @see BxBaseModGeneralModule::getShareCard
+     */
+    public function getShareCard($aContentInfo, $aParams = [])
+    {
+        $aCard = parent::getShareCard($aContentInfo, $aParams);
+
+        //--- a private entry is answered with the generic site card, so not a single value of it may
+        //--- be filled in below: every key beyond `private` would end up drawn into a public picture
+        if(!is_array($aCard) || !empty($aCard['private']))
+            return $aCard;
+
+        $CNF = &$this->_oConfig->CNF;
+
+        //--- the family's own contract rather than something inherited by accident; CNF still has the
+        //--- last word, so a module which is something more specific says so there
+        if(empty($CNF['OG_TYPE']))
+            $aCard['type'] = 'article';
+
+        $iChars = 0;
+        if(!empty($CNF['PARAM_CHARS_SUMMARY_PLAIN']))
+            $iChars = (int)getParam($CNF['PARAM_CHARS_SUMMARY_PLAIN']);
+        if($iChars <= 0)
+            $iChars = 200;
+
+        //--- getText() with output processing switched off hands back the stored field untouched;
+        //--- BxDolShareCard::cleanText() is the only permitted way to turn it into card text
+        $sText = BxDolShareCard::cleanText($this->_oTemplate->getText($aContentInfo, false), $iChars);
+        if($sText !== '')
+            $aCard['description'] = $sText;
+
+        return $aCard;
+    }
+
     public function getEntryImageData($aContentInfo, $sField = 'FIELD_THUMB', $aTranscoders = array())
     {
         $CNF = &$this->_oConfig->CNF;

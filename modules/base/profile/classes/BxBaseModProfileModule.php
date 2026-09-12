@@ -2432,6 +2432,92 @@ class BxBaseModProfileModule extends BxBaseModGeneralModule implements iBxDolCon
         return false;
     }
     
+    /**
+     * The share card of a profile: the profile picture drawn over the profile cover.
+     *
+     * Everything here is read from the stored row and nothing depends on the viewer: the very same
+     * spec is produced again out of band by share_card.php, and the two have to hash identically.
+     * @see BxBaseModGeneralModule::getShareCard
+     */
+    public function getShareCard($aContentInfo, $aParams = [])
+    {
+        $aCard = parent::getShareCard($aContentInfo, $aParams);
+
+        //--- a private profile is answered with the generic site card, so not a single value of it may
+        //--- be filled in below: every key beyond `private` would end up drawn into a public picture
+        if(!is_array($aCard) || !empty($aCard['private']))
+            return $aCard;
+
+        $CNF = &$this->_oConfig->CNF;
+        $iContentId = (int)($aContentInfo[$CNF['FIELD_ID']] ?? 0);
+
+        //--- BxDolShareCard::isGuestVisible() can only see the content row, and a profile keeps the
+        //--- half of its state which decides whether its page opens at all somewhere else entirely
+        if(!$this->_isShareCardProfileActive($iContentId))
+            return ['private' => true, 'module' => $this->getName(), 'id' => $iContentId];
+
+        $aCard['layout'] = 'profile';
+
+        //--- a profile page describes somebody, not a document; CNF still has the last word, the
+        //--- same way the general contract gives it the last word over `article`
+        if(empty($CNF['OG_TYPE']))
+            $aCard['type'] = 'profile';
+
+        if(!empty($CNF['FIELD_NAME']) && isset($aContentInfo[$CNF['FIELD_NAME']])) {
+            //--- the STORED field, not getProfileName(): that returns bx_process_output(), which both
+            //--- HTML-escapes and expands {{~macros~}} - neither belongs in a value that is drawn as
+            //--- glyphs, and the contract names bx_process_output() as forbidden in a card producer
+            $sName = BxDolShareCard::cleanText((string)$aContentInfo[$CNF['FIELD_NAME']], 200);
+            if($sName !== '')
+                $aCard['title'] = $sName;
+        }
+
+        //--- the same URL serviceProfileUrl() builds, without the second read of a row already in hand
+        if(!empty($CNF['URI_VIEW_ENTRY']))
+            $aCard['url'] = bx_absolute_url(BxDolPermalinks::getInstance()->permalink('page.php?i=' . $CNF['URI_VIEW_ENTRY'] . '&id=' . $iContentId));
+
+        //--- both pictures are taken as the derivative a profile page shows, never as the original
+        //--- upload; the profile layout masks the picture into a circle the way an avatar is drawn
+        $mixedPicture = $this->getEntryImageData($aContentInfo, 'FIELD_PICTURE', ['OBJECT_IMAGES_TRANSCODER_AVATAR_BIG']);
+        $aCard['image'] = $mixedPicture !== false ? $mixedPicture : null;
+
+        //--- a profile without a cover keeps the site background the default spec already put there
+        $mixedCover = $this->getEntryImageData($aContentInfo, 'FIELD_COVER', ['OBJECT_IMAGES_TRANSCODER_COVER']);
+        if($mixedCover !== false)
+            $aCard['bg'] = $mixedCover;
+
+        //--- what the profile says about itself. Without it the profile layout draws a bare name over
+        //--- a background, while og:description for the same page does carry the text - the tag and
+        //--- the picture would disagree about the same profile. Read straight from the row: an output
+        //--- processor would escape it and expand macros, and cleanText() runs exactly once, here
+        if(!empty($CNF['FIELD_TEXT']) && !empty($aContentInfo[$CNF['FIELD_TEXT']])) {
+            $sText = BxDolShareCard::cleanText((string)$aContentInfo[$CNF['FIELD_TEXT']], 300);
+            if($sText !== '')
+                $aCard['description'] = $sText;
+        }
+
+        return $aCard;
+    }
+
+    /**
+     * Is the profile behind this content id active? @see self::getShareCard.
+     *
+     * Every test isActive() makes is a stored value test - the profile status in `sys_profiles`, the
+     * account's confirmation, and the site option which hides unconfirmed accounts, which is on out
+     * of the box. It answers the same for everybody, which BxDolPrivacy::check() and the module's own
+     * checkAllowed* methods do not, and it is the very test _isAvailablePage() makes before deciding
+     * an entry page exists: a profile whose page answers "not found" mustn't have a public picture.
+     */
+    protected function _isShareCardProfileActive($iContentId)
+    {
+        if($iContentId <= 0)
+            return false;
+
+        $oProfile = BxDolProfile::getInstanceByContentAndType($iContentId, $this->getName());
+
+        return $oProfile instanceof BxDolProfile && $oProfile->isActive();
+    }
+
     public function getEntryImageData($aContentInfo, $sField = 'FIELD_PICTURE', $aTranscoders = array())
     {
         return parent::getEntryImageData($aContentInfo, $sField, $aTranscoders);

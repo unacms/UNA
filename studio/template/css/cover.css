@@ -46,3 +46,44 @@
     text-overflow: ellipsis;
     overflow: hidden;
 }
+
+/**
+ * Covers page: one group per picture
+ *
+ * Each picture here is a group - what it is, what is set now, how to change it - and a group only
+ * reads as one when the space around it is clearly bigger than the space inside it. The form rows are
+ * evenly spaced by default, which ran all three pictures together into a single list. Space does the
+ * separating rather than a rule: each group already opens with its own caption.
+ */
+.bx-dsg-cover {
+    max-width: 40rem;
+    margin-top: 1.5rem;
+}
+
+.bx-dsg-cover .bx-cover-wrapper {
+    /* a 1920x720 strip at full form width pushed everything else below the fold */
+    max-height: 15rem;
+    overflow: hidden;
+    border-radius: .5rem;
+}
+
+.bx-dsg-cover .bx-dsg-cover-actions {
+    margin-top: .75rem;
+    /* the uploader underneath sits in a -m-2 wrapper whose button carries a .5rem margin, so it
+       starts .5rem in from the column edge. Matching that keeps the two buttons of one group -
+       change this picture, remove this picture - on the same vertical line. */
+    padding-left: .5rem;
+}
+
+/**
+ * A section subtitle must not be clipped
+ *
+ * form_field_section_title.html puts `truncate` on the info line, so a sentence longer than the
+ * header - or the same sentence in a language that needs more words - silently ends in an ellipsis.
+ * These say where each picture is used, which is the one thing the page exists to explain.
+ */
+.bx-std .adm-dsg-cover-form_wrapper .bx-form-section-title .bx-def-font-grayed {
+    overflow: visible;
+    text-overflow: clip;
+    white-space: normal;
+}

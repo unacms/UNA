@@ -50,6 +50,9 @@ class BxDolCronPruning extends BxDolCron
         // clean outdated transcoded images
         $iDeletedTranscodedImages = BxDolTranscoderImage::pruning();
 
+        // clean share cards nothing points at any more
+        $iDeletedShareCards = BxDolShareCard::pruning();
+
         // clean view tracks
         $iViewTracks = BxDolView::pruning();
         
@@ -83,7 +86,8 @@ class BxDolCronPruning extends BxDolCron
             $iSessions, $iDeletedKeys, 
             $iDeletedExpiredTokens, $iDeletedTranscodedImages, 
             $iDeletedAccounts,
-            $iViewTracks, $iVoteTracks, $iScoreTracks, $iFavoriteTracks, $iReportTracks
+            $iViewTracks, $iVoteTracks, $iScoreTracks, $iFavoriteTracks, $iReportTracks,
+            $iDeletedShareCards
         ]);
     }
 
