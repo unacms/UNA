@@ -833,6 +833,26 @@ class BxDolTranscoder extends BxDolFactory implements iBxDolFactoryObject
         return $sTmpFile;
     }
 
+    /**
+     * Where a source file sits on this filesystem, or '' when it is not on this filesystem at all.
+     * Only the Local storage engine keeps files here; S3 and the rest must still be fetched.
+     * @param $oStorage - the source storage object
+     * @param $aFile - its file row, as returned by getFile()
+     */
+    protected function getLocalSourcePath ($oStorage, $aFile)
+    {
+        if (empty($aFile['path']))
+            return '';
+
+        $aObject = $oStorage->getObjectData();
+        if (empty($aObject['engine']) || 'Local' != $aObject['engine'])
+            return '';
+
+        $sPath = BX_DIRECTORY_STORAGE . $aObject['object'] . '/' . $aFile['path'];
+
+        return is_readable($sPath) ? $sPath : '';
+    }
+
     protected function storeFileLocally_Storage ($mixedHandler)
     {
         $oStorageOriginal = BxDolStorage::getObjectInstance($this->_aObject['source_params']['object']);
@@ -845,6 +865,21 @@ class BxDolTranscoder extends BxDolFactory implements iBxDolFactoryObject
         if (!$aFile) {
             bx_log('sys_transcoder', "[{$this->_aObject['object']}] ERROR: storeFileLocally_Storage failed, file({$mixedHandler}) wasn't found in source storage ({$this->_aObject['source_params']['object']})", BX_LOG_ERR);
             return false;
+        }
+
+        // A file kept on this very filesystem is copied from it, not fetched back over HTTP from the
+        // site's own address. That round trip needs the web server to be reachable from whatever is
+        // running PHP, which is not a given: inside a container BX_DOL_URL_ROOT is usually the host's
+        // published port and answers nothing, so every transcode of a local file failed and the
+        // Studio cover previews came back 404. It is also simply faster, and it skips the private
+        // file token dance for a file we are allowed to read anyway.
+        $sLocalPath = $this->getLocalSourcePath($oStorageOriginal, $aFile);
+        if ($sLocalPath) {
+            $sTmpFileLocal = $this->getTmpFilename($aFile['file_name']);
+            if (@copy($sLocalPath, $sTmpFileLocal))
+                return $sTmpFileLocal;
+
+            bx_log('sys_transcoder', "[{$this->_aObject['object']}] WARNING: storeFileLocally_Storage could not copy local file ({$sLocalPath}), falling back to the URL", BX_LOG_ERR);
         }
 
         $sUrl = $oStorageOriginal->getFileUrlById($mixedHandler);

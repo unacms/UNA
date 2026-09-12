@@ -69,6 +69,10 @@
 
 .bx-dsg-cover .bx-dsg-cover-actions {
     margin-top: .75rem;
+    /* the uploader underneath sits in a -m-2 wrapper whose button carries a .5rem margin, so it
+       starts .5rem in from the column edge. Matching that keeps the two buttons of one group -
+       change this picture, remove this picture - on the same vertical line. */
+    padding-left: .5rem;
 }
 
 /**
