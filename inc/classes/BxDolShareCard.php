@@ -38,7 +38,7 @@ class BxDolShareCard extends BxDolFactory implements iBxDolSingleton
      * Card format version. It is part of every cache key, so bumping it invalidates every card on
      * the site at once - do it whenever the layouts or the renderer start drawing something else.
      */
-    const VERSION = 1;
+    const VERSION = 2;
 
     const PRUNE_ENTITY_LIFETIME = 7776000; ///< 90 days: how old a card must be before its entity is probed, @see BxDolShareCard::pruning
     const PRUNE_ENTITIES_PER_RUN = 500; ///< how many entities one pruning run probes
@@ -668,14 +668,73 @@ class BxDolShareCard extends BxDolFactory implements iBxDolSingleton
             'share_image' => (int)getParam('sys_site_share_image'),
             'cover_common' => (int)getParam('sys_site_cover_common'),
             'cover_disabled' => (string)getParam('sys_site_cover_disabled'),
-            'logo' => (int)getParam('sys_site_logo'),
-            'logo_dark' => (int)getParam('sys_site_logo_dark'),
-            'mark' => (int)getParam('sys_site_mark'),
-            'mark_dark' => (int)getParam('sys_site_mark_dark'),
+            'branding' => self::getBrandingIds(),
             'theme_color' => (string)getParam('sys_pwa_manifest_theme_color'),
             'font' => (string)getParam('sys_share_card_font'),
             'gd' => (string)getParam('enable_gd'),
         ];
+    }
+
+    /**
+     * The site's own pictures - the wordmark, the square mark, the home screen icons - as file ids.
+     *
+     * The design module in front of the site may keep logo settings of its own (Artificer stores
+     * them as bx_artificer_site_mark and friends) and only falls back to the sys_site_* options, so
+     * reading those options directly would leave a site which uploaded its logo through the design
+     * with no branding on its cards at all. This is @see BxDolDesigns::getSiteLogoParam's resolution
+     * without BxDolDesigns itself: constructing it reads every logo's dimensions over HTTP through
+     * getimagesize(), which the process drawing a card has no reason to pay for and, off a web
+     * server, no way to complete.
+     *
+     * The renderer draws from this and @see getSiteInputs hashes it, so what a card is keyed on is
+     * exactly what was drawn onto it - replacing a logo retires every cached card, as it must.
+     *
+     * @return array of name => file id, always with the same keys in the same order
+     */
+    public static function getBrandingIds()
+    {
+        $aParams = self::getBrandingParams();
+
+        $aIds = ['logo' => 0, 'logo_dark' => 0, 'mark' => 0, 'mark_dark' => 0];
+        foreach (array_keys($aIds) as $sName) {
+            $iId = empty($aParams[$sName]) ? 0 : (int)getParam($aParams[$sName]);
+            if ($iId < 1)
+                $iId = (int)getParam('sys_site_' . $sName);
+
+            $aIds[$sName] = max(0, $iId);
+        }
+
+        // the pictures a site uploads for its home screen icon are the next best mark: square
+        // rasters of a known shape, and far more sites have one than have uploaded a mark
+        $aIds['icon_apple'] = max(0, (int)getParam('sys_site_icon_apple'));
+        $aIds['icon_android'] = max(0, (int)getParam('sys_site_icon_android'));
+
+        return $aIds;
+    }
+
+    /**
+     * Option names the active design keeps its own logo settings under, empty when it keeps none.
+     */
+    protected static function getBrandingParams()
+    {
+        try {
+            $aDesign = BxDolModuleQuery::getInstance()->getModuleByUri(BxDolTemplate::getInstance()->getCode());
+            if (empty($aDesign['name']))
+                return [];
+
+            // no isset() on _oConfig: BxDolModule creates it on demand in __get() and declares no
+            // __isset(), so isset() answers false for a config which is perfectly reachable
+            $oDesign = BxDolModule::getInstance($aDesign['name']);
+            if (!$oDesign || !method_exists($oDesign->_oConfig, 'getLogoParams'))
+                return [];
+
+            $aParams = $oDesign->_oConfig->getLogoParams();
+        }
+        catch (Exception|Error $oError) {
+            return [];
+        }
+
+        return is_array($aParams) ? $aParams : [];
     }
 
     /**

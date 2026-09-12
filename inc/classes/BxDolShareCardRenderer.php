@@ -59,6 +59,10 @@ class BxDolShareCardRenderer extends BxDolFactory
     const TOP_IMAGE_H = 260;
     const LOGO_H = 44;
     const LOGO_MAX_W = 320;
+    const BRAND_ICON_D = 38;   ///< the square site icon drawn beside the site name, @see _drawBrand
+    const BRAND_ICON_GAP = 16;
+    const BRAND_ICON_RADIUS = 9;
+    const BRAND_SIZE = 26;     ///< the site name beside it
     const AVATAR_D = 72; ///< 'header' block avatar
     const AVATARS_D = 64; ///< 'avatars' block items
     const AVATARS_STEP = 48; ///< overlapping row
@@ -80,7 +84,7 @@ class BxDolShareCardRenderer extends BxDolFactory
     protected $_oManager; ///< Intervention\Image\ImageManager, GD or Imagick per getParam('enable_gd')
     protected $_bGd;
     protected $_aFonts = array(); ///< weight => absolute font file, resolved once per instance
-    protected $_aLogos = array(); ///< dark flag => absolute logo file, resolved once per instance
+    protected $_aBranding = array(); ///< slot + dark flag => absolute branding file, resolved once per instance
     protected $_aTmp = array(); ///< files materialised for the current render, removed when it ends
     protected $_bDark = true;
     protected $_bHasBgImage = false; ///< light text on a dark card, recalculated for every render
@@ -142,7 +146,7 @@ class BxDolShareCardRenderer extends BxDolFactory
 
         // a logo which came from a remote storage engine lives in the tmp folder, and _cleanup()
         // deletes it when the render ends - the memo must not outlive the files it points at
-        $this->_aLogos = array();
+        $this->_aBranding = array();
 
         if (!is_array($aCard))
             return $this->_error('card spec is not an array');
@@ -273,7 +277,7 @@ class BxDolShareCardRenderer extends BxDolFactory
         if ($aBox['h'] > 0 && $aBox['w'] > 0)
             $this->_flow($oCanvas, $aBlocks, $aBox);
 
-        $this->_drawBrand($oCanvas, $aBox['x'], $iH - self::PAD_BOTTOM, $aBox['w']);
+        $this->_drawBrand($oCanvas, $aBox['x'], $iH - self::PAD_BOTTOM, $aBox['w'], $this->_str($aCard, 'title'));
 
         if ($oCanvas->width() != $iW || $oCanvas->height() != $iH)
             $oCanvas = $this->_prepare($oCanvas->fit($iW, $iH));
@@ -730,7 +734,11 @@ class BxDolShareCardRenderer extends BxDolFactory
             case 'header':
                 $iTextX = $iX;
                 if ($aItem['avatar']) {
-                    $this->_drawAvatar($oCanvas, $aItem['avatar'], $iX, $iY, self::AVATAR_D);
+                    // the same light ring the row of participants gets: an author's face is often a
+                    // flat colour, and against the text plate it would otherwise read as a blob
+                    $iRing = 3;
+                    $this->_drawRounded($oCanvas, $iX, $iY, self::AVATAR_D, self::AVATAR_D, self::AVATAR_D / 2, 'rgba(255, 255, 255, 0.90)');
+                    $this->_drawAvatar($oCanvas, $aItem['avatar'], $iX + $iRing, $iY + $iRing, self::AVATAR_D - 2 * $iRing);
                     $iTextX = $iX + self::AVATAR_D + 22;
                 }
 
@@ -942,17 +950,55 @@ class BxDolShareCardRenderer extends BxDolFactory
     }
 
     /**
-     * The brand line the renderer always appends, whatever the layout composed.
+     * The brand line the renderer always appends, whatever the layout composed: the site's square
+     * icon and then its name. A card is read at thumbnail size in a feed, where the icon is the part
+     * a reader recognises before any of the words - so it is on every card, in the same corner, at
+     * the same size, whether the card is about a page, a post or a person.
      */
-    protected function _drawBrand($oCanvas, $iX, $iBaseline, $iMaxW)
+    protected function _drawBrand($oCanvas, $iX, $iBaseline, $iMaxW, $sCardTitle = '')
     {
+        $iIcon = $this->_drawBrandIcon($oCanvas, $iX, $iBaseline);
+        if ($iIcon > 0) {
+            $iX += $iIcon + self::BRAND_ICON_GAP;
+            $iMaxW -= $iIcon + self::BRAND_ICON_GAP;
+        }
+
         $sTitle = $this->_clean((string)getParam('site_title'));
-        if (!$sTitle)
+        if (!$sTitle || $iMaxW < self::BRAND_SIZE)
             return;
 
-        $aLines = $this->_wrap($sTitle, 26, 'bold', $iMaxW, 1);
+        // the site card's own title IS the site name, and printing it again under it reads as a
+        // mistake - the icon alone says the same thing, so long as there is an icon to say it with
+        if ($iIcon > 0 && 0 === strcasecmp($sTitle, $this->_clean($sCardTitle)))
+            return;
+
+        $aLines = $this->_wrap($sTitle, self::BRAND_SIZE, 'bold', $iMaxW, 1);
         if ($aLines)
-            $this->_text($oCanvas, $aLines[0], $iX, $iBaseline, 26, $this->_aColors['muted'], true);
+            $this->_text($oCanvas, $aLines[0], $iX, $iBaseline, self::BRAND_SIZE, $this->_aColors['muted'], true);
+    }
+
+    /**
+     * @return the width the icon took, 0 when the site has no square picture to draw
+     */
+    protected function _drawBrandIcon($oCanvas, $iX, $iBaseline)
+    {
+        $sFile = $this->_getMarkFile($this->_bDark);
+        if (!$sFile)
+            return 0;
+
+        $iD = self::BRAND_ICON_D;
+
+        // centred on the middle of the capitals beside it, not on the baseline: the baseline is the
+        // bottom of the letters and lining the icon up with it would hang it below the whole line
+        $iY = $iBaseline - (int)round(self::BRAND_SIZE * 0.72 / 2) - (int)round($iD / 2);
+
+        $oIcon = $this->_masked($sFile, $iD, self::BRAND_ICON_RADIUS);
+        if (!$oIcon)
+            return 0;
+
+        $oCanvas->insert($oIcon, 'top-left', $iX, $iY);
+
+        return $iD;
     }
 
     // colours ---------------------------------------------------
@@ -1405,9 +1451,21 @@ class BxDolShareCardRenderer extends BxDolFactory
      */
     protected function _circle($sFile, $iD)
     {
+        return $this->_masked($sFile, $iD, (int)round($iD / 2));
+    }
+
+    /**
+     * A square crop of $sFile with its corners rounded off by $iR - a circle when $iR is half the
+     * side, which is how every avatar on a card is drawn.
+     * @return Intervention image, or null when the file cannot be opened
+     */
+    protected function _masked($sFile, $iD, $iR)
+    {
+        $iR = (int)max(0, min($iR, floor($iD / 2)));
+
         try {
             $oImg = $this->_oManager->make($sFile);
-            return $this->_bGd ? $this->_circleGd($oImg, $iD) : $this->_circleImagick($oImg->fit($iD, $iD), $iD);
+            return $this->_bGd ? $this->_maskedGd($oImg, $iD, $iR) : $this->_maskedImagick($oImg->fit($iD, $iD), $iD, $iR);
         }
         catch (Throwable $oException) {
             return null;
@@ -1416,28 +1474,39 @@ class BxDolShareCardRenderer extends BxDolFactory
 
     /**
      * GD has no clipping region and Intervention's mask() walks the image pixel by pixel through the
-     * command dispatcher, which is far too slow here. Copy the disc row by row at 4x and scale the
+     * command dispatcher, which is far too slow here. Copy the figure row by row at 4x and scale the
      * result down instead - that is one imagecopy() per row and the downscale gives the antialiasing.
      */
-    protected function _circleGd($oImg, $iD)
+    protected function _maskedGd($oImg, $iD, $iR)
     {
         $iScale = 4;
         $iBig = $iD * $iScale;
+        $iBr = $iR * $iScale;
 
         $oImg->fit($iBig, $iBig);
         $rSrc = $oImg->getCore();
         $rBig = $this->_layer($iBig, $iBig);
 
-        $fR = $iBig / 2;
         for ($iY = 0; $iY < $iBig; $iY++) {
-            $fDy = $iY + 0.5 - $fR;
-            $fDx = $fR * $fR - $fDy * $fDy;
-            if ($fDx <= 0)
-                continue;
+            // how far this row is into one of the rounded bands, measured from the centre of the
+            // corner arc; rows between the two bands are square and copied whole
+            $fDy = 0;
+            if ($iY < $iBr)
+                $fDy = $iBr - 0.5 - $iY;
+            elseif ($iY > $iBig - 1 - $iBr)
+                $fDy = $iY - ($iBig - $iBr) + 0.5;
 
-            $fDx = sqrt($fDx);
-            $iX1 = (int)max(0, ceil($fR - $fDx));
-            $iX2 = (int)min($iBig - 1, floor($fR + $fDx));
+            $iInset = 0;
+            if ($fDy > 0) {
+                $fDx = $iBr * $iBr - $fDy * $fDy;
+                if ($fDx <= 0)
+                    continue;
+
+                $iInset = (int)ceil($iBr - sqrt($fDx));
+            }
+
+            $iX1 = $iInset;
+            $iX2 = $iBig - 1 - $iInset;
             if ($iX2 >= $iX1)
                 imagecopy($rBig, $rSrc, $iX1, $iY, $iX1, $iY, $iX2 - $iX1 + 1, 1);
         }
@@ -1451,11 +1520,11 @@ class BxDolShareCardRenderer extends BxDolFactory
     }
 
     /**
-     * The mask carries the disc in its alpha channel and DSTIN keeps the source only where the mask
+     * The mask carries the figure in its alpha channel and DSTIN keeps the source only where the mask
      * is opaque. COPYOPACITY would look like the obvious call, but ImageMagick 7 aliases it to
      * COPYALPHA, which copies the mask alpha rather than its luminance and so cuts nothing.
      */
-    protected function _circleImagick($oImg, $iD)
+    protected function _maskedImagick($oImg, $iD, $iR)
     {
         $oMask = new Imagick();
         $oMask->newImage($iD, $iD, new ImagickPixel('transparent'));
@@ -1463,7 +1532,10 @@ class BxDolShareCardRenderer extends BxDolFactory
 
         $oDraw = new ImagickDraw();
         $oDraw->setFillColor(new ImagickPixel('white'));
-        $oDraw->circle($iD / 2, $iD / 2, $iD / 2, 0);
+        if ($iR * 2 >= $iD)
+            $oDraw->circle($iD / 2, $iD / 2, $iD / 2, 0);
+        else
+            $oDraw->roundRectangle(0, 0, $iD - 1, $iD - 1, $iR, $iR);
         $oMask->drawImage($oDraw);
 
         $oCore = $oImg->getCore();
@@ -1692,37 +1764,81 @@ class BxDolShareCardRenderer extends BxDolFactory
     }
 
     /**
-     * The best raster logo the site has. The dark variants are the ones drawn for dark surfaces, so
-     * they come first on a dark card.
+     * Where each branding picture is kept. Both halves are tried, in this order: a ready derivative
+     * is small and already the right shape, and the original is the fallback when there is none.
+     */
+    protected static function _brandingSources()
+    {
+        $aCustom = array('transcoder' => 'sys_custom_images', 'storage' => 'sys_images_custom');
+
+        return array(
+            'logo' => $aCustom,
+            'logo_dark' => $aCustom,
+            'mark' => $aCustom,
+            'mark_dark' => $aCustom,
+            'icon_apple' => array('transcoder' => BX_DOL_TRANSCODER_OBJ_ICON_APPLE, 'storage' => BX_DOL_STORAGE_OBJ_IMAGES),
+            'icon_android' => array('transcoder' => BX_DOL_TRANSCODER_OBJ_ICON_ANDROID, 'storage' => BX_DOL_STORAGE_OBJ_IMAGES),
+        );
+    }
+
+    /**
+     * The wide site logo, for the layouts which show one at the top of the card. The dark variants
+     * are the ones drawn for dark surfaces, so they come first on a dark card.
+     *
+     * Deliberately the wordmark alone: the square mark now has a place of its own beside the site
+     * name at the foot of every card, and drawing it here as well would put the same picture on one
+     * card twice.
      */
     protected function _getLogoFile($bDark)
     {
-        $sKey = $bDark ? 'dark' : 'light';
+        return $this->_getBrandingFile('logo', $bDark ? array('logo_dark', 'logo') : array('logo', 'logo_dark'));
+    }
 
+    /**
+     * The square site icon drawn beside the site name. The mark is what a site uploads for exactly
+     * this - a logo which still reads at 38 pixels - and the home screen icons are the same shape,
+     * so a site which only ever set an app icon still gets its face onto its cards.
+     */
+    protected function _getMarkFile($bDark)
+    {
+        $aOrder = $bDark
+            ? array('mark_dark', 'mark', 'icon_apple', 'icon_android')
+            : array('mark', 'mark_dark', 'icon_apple', 'icon_android');
+
+        return $this->_getBrandingFile('mark' . ($bDark ? '_d' : ''), $aOrder);
+    }
+
+    /**
+     * First of $aOrder which resolves to a picture this renderer can open.
+     * @param $sKey memo key, distinct per slot and per surface
+     * @param $aOrder branding names, most wanted first
+     * @return absolute path, '' when the site configured none of them
+     */
+    protected function _getBrandingFile($sKey, $aOrder)
+    {
         // a memo hit is only good while the file behind it is still there - on a remote storage
         // engine it points into the tmp folder, which _cleanup() empties at the end of a render
-        if (isset($this->_aLogos[$sKey]) && ('' === $this->_aLogos[$sKey] || is_readable($this->_aLogos[$sKey])))
-            return $this->_aLogos[$sKey];
+        if (isset($this->_aBranding[$sKey]) && ('' === $this->_aBranding[$sKey] || is_readable($this->_aBranding[$sKey])))
+            return $this->_aBranding[$sKey];
 
-        $aParams = $bDark
-            ? array('sys_site_logo_dark', 'sys_site_logo', 'sys_site_mark_dark', 'sys_site_mark')
-            : array('sys_site_logo', 'sys_site_logo_dark', 'sys_site_mark', 'sys_site_mark_dark');
+        $aIds = BxDolShareCard::getBrandingIds();
+        $aSources = self::_brandingSources();
 
         $sFile = '';
-        foreach ($aParams as $sParam) {
-            $iFileId = (int)getParam($sParam);
-            if ($iFileId < 1)
+        foreach ($aOrder as $sName) {
+            $iFileId = (int)($aIds[$sName] ?? 0);
+            if ($iFileId < 1 || empty($aSources[$sName]))
                 continue;
 
-            $sFile = $this->_resolveImage(array('id' => $iFileId, 'transcoder' => 'sys_custom_images'));
+            $sFile = $this->_resolveImage(array('id' => $iFileId, 'transcoder' => $aSources[$sName]['transcoder']));
             if (!$sFile)
-                $sFile = $this->_resolveStoredBranding('sys_images_custom', $iFileId);
+                $sFile = $this->_resolveStoredBranding($aSources[$sName]['storage'], $iFileId);
 
             if ($sFile)
                 break;
         }
 
-        return ($this->_aLogos[$sKey] = $sFile);
+        return ($this->_aBranding[$sKey] = $sFile);
     }
 
     // spec helpers ----------------------------------------------
