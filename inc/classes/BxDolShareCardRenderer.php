@@ -49,6 +49,12 @@ class BxDolShareCardRenderer extends BxDolFactory
     const BRAND_H = 46; ///< band at the bottom reserved for the brand line the renderer always draws
     const GAP = 26;
 
+    const PLATE_PAD_X = 34;      ///< how far the text plate reaches past the text, @see _drawTextPlate
+    const PLATE_PAD_Y = 28;
+    const PLATE_RADIUS = 18;
+    const ROUNDED_MAX_PIXELS = 4000000; ///< ceiling for the supersampled layer in _drawRounded
+    const PLATE_ALPHA = 0.72;    ///< over a busy photo 0.55 still let the pattern fight the words
+
     const SIDE_IMAGE_W = 440; ///< full height bleed on the right for an 'image' block with slot 'right'
     const TOP_IMAGE_H = 260;
     const LOGO_H = 44;
@@ -76,7 +82,8 @@ class BxDolShareCardRenderer extends BxDolFactory
     protected $_aFonts = array(); ///< weight => absolute font file, resolved once per instance
     protected $_aLogos = array(); ///< dark flag => absolute logo file, resolved once per instance
     protected $_aTmp = array(); ///< files materialised for the current render, removed when it ends
-    protected $_bDark = true; ///< light text on a dark card, recalculated for every render
+    protected $_bDark = true;
+    protected $_bHasBgImage = false; ///< light text on a dark card, recalculated for every render
     protected $_aColors = array();
 
     /**
@@ -220,6 +227,7 @@ class BxDolShareCardRenderer extends BxDolFactory
             $sBgFile = $this->_resolveImage($this->_arr($aByType['image'], 'image'));
 
         $sBase = $this->_baseColor();
+        $this->_bHasBgImage = (bool)$sBgFile;
         $this->_bDark = $sBgFile ? true : $this->_isDarkColor($sBase);
         $this->_setColors();
 
@@ -397,6 +405,12 @@ class BxDolShareCardRenderer extends BxDolFactory
 
         $iY = $aBox['y'] + (int)max(0, floor(($aBox['h'] - $this->_stackHeight($aItems)) / 2));
 
+        // Over a photograph, a scrim alone is not enough. It darkens the whole picture evenly, so a
+        // busy or bright patch under one line of text still swallows it, and pushing the scrim up far
+        // enough to be safe everywhere flattens the picture into mud. A plate behind the words costs
+        // the picture nothing anywhere else and makes the text land on a known surface.
+        $this->_drawTextPlate($oCanvas, $aItems, $aBox, $iY);
+
         $bFirst = true;
         foreach ($aItems as $aItem) {
             if (!$bFirst)
@@ -406,6 +420,79 @@ class BxDolShareCardRenderer extends BxDolFactory
             $this->_drawBlock($oCanvas, $aItem, $aBox['x'], $iY);
             $iY += $aItem['h'];
         }
+    }
+
+    /**
+     * A dark panel behind the flowed stack, drawn only when there is a picture to protect the text
+     * from. It is sized to the stack it will sit behind, padded, and given the same corner radius as
+     * the rest of the card's furniture.
+     */
+    protected function _drawTextPlate($oCanvas, $aItems, $aBox, $iTop)
+    {
+        if (!$this->_bDark || !$this->_bHasBgImage)
+            return;
+
+        // only text needs the protection; a row of avatars reads fine on its own. These are the
+        // names _prepareBlock() gives its OUTPUT - 'lines' covers title, text and footer - not the
+        // names the layout used on the way in.
+        $bText = false;
+        foreach ($aItems as $aItem)
+            if (in_array($aItem['type'], array('lines', 'header', 'pills'))) {
+                $bText = true;
+                break;
+            }
+
+        if (!$bText)
+            return;
+
+        $iHeight = $this->_stackHeight($aItems);
+        if ($iHeight < 1)
+            return;
+
+        // to the width of the words, not of the column. Sized to the column it reached almost the
+        // full 1200 and read as a band laid over the picture, with a hard edge top and bottom;
+        // hugging the text makes it a caption plate, which is what it is.
+        $iContent = $this->_stackWidth($aItems);
+        if ($iContent < 1)
+            return;
+
+        $iPadX = (int)round(self::PLATE_PAD_X);
+        $iPadY = (int)round(self::PLATE_PAD_Y);
+
+        $iX = max(0, $aBox['x'] - $iPadX);
+        $iY = max(0, $iTop - $iPadY);
+        $iW = min($this->_w() - $iX, min($iContent, $aBox['w']) + $iPadX * 2);
+        $iH = min($this->_h() - $iY, $iHeight + $iPadY * 2);
+
+        $this->_drawRounded($oCanvas, $iX, $iY, $iW, $iH, self::PLATE_RADIUS, 'rgba(0, 0, 0, ' . self::PLATE_ALPHA . ')');
+    }
+
+    /**
+     * How wide the flowed stack actually draws - the widest line of any of its items, measured with
+     * the same engine that will draw it, not the width of the column it is allowed to use.
+     */
+    protected function _stackWidth($aItems)
+    {
+        $iRet = 0;
+
+        foreach ($aItems as $aItem) {
+            if ($aItem['type'] == 'lines' && !empty($aItem['lines'])) {
+                foreach ($aItem['lines'] as $sLine) {
+                    $aBox = $this->_measure($sLine, $aItem['size'], $aItem['weight']);
+                    $iRet = max($iRet, (int)$aBox['w']);
+                }
+            }
+            else if (!empty($aItem['items']) && is_array($aItem['items'])) {
+                // pills and avatars already know where each of their pieces ends
+                foreach ($aItem['items'] as $aOne)
+                    if (isset($aOne['x']))
+                        $iRet = max($iRet, (int)$aOne['x'] + (int)($aOne['w'] ?? 0));
+            }
+            else if (!empty($aItem['w']))
+                $iRet = max($iRet, (int)$aItem['w']);
+        }
+
+        return $iRet;
     }
 
     protected function _stackHeight($aItems)
@@ -725,10 +812,16 @@ class BxDolShareCardRenderer extends BxDolFactory
             return;
         }
 
-        // GD antialiases nothing it fills, so draw the whole figure once on its own layer at 4x with
-        // blending off - overlapping parts then overwrite instead of stacking their alpha - and let
-        // the downscale produce the smooth edge
-        $iScale = 4;
+        // GD antialiases nothing it fills, so draw the whole figure once on its own layer at a
+        // multiple of its size with blending off - overlapping parts then overwrite instead of
+        // stacking their alpha - and let the downscale produce the smooth edge.
+        //
+        // The multiple is capped by AREA, not fixed: 4x suits the pills and badges this started out
+        // drawing, but the same 4x on a full width text plate asks GD for a 4496x1200 layer, about
+        // 21MB, and the peak sails past what a card render is allowed. Corners are what the
+        // supersampling is for, and they are the same size whatever the rectangle is.
+        $iScale = (int)floor(sqrt(self::ROUNDED_MAX_PIXELS / max(1, $iW * $iH)));
+        $iScale = max(1, min(4, $iScale));
         $iBw = $iW * $iScale;
         $iBh = $iH * $iScale;
         $iBr = $iR * $iScale;

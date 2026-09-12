@@ -51,7 +51,7 @@ class BxDolShareCard extends BxDolFactory implements iBxDolSingleton
      */
     protected $_aVolatileKeys = ['private', 'type', 'url', 'meta'];
 
-    protected $_sFontPath = null;
+    protected $_aFontPaths = [];
 
     protected function __construct()
     {
@@ -476,18 +476,29 @@ class BxDolShareCard extends BxDolFactory implements iBxDolSingleton
      */
     public function getFontPath($sWeight = 'regular')
     {
-        if ($this->_sFontPath !== null)
-            return $this->_sFontPath;
+        $sWeight = $sWeight == 'bold' ? 'bold' : 'regular';
+        if (isset($this->_aFontPaths[$sWeight]))
+            return $this->_aFontPaths[$sWeight];
 
-        $this->_sFontPath = '';
+        $sPath = '';
 
+        // a site which supplies its own font supplies one face, and it is used at every weight:
+        // guessing a sibling file from its name would be guessing at somebody else's filesystem
         $sCustom = trim((string)getParam('sys_share_card_font'));
         if ($sCustom !== '' && $this->_isFontReadable($sCustom))
-            $this->_sFontPath = $sCustom;
-        else if ($this->_isFontReadable($sBundled = BX_DIRECTORY_PATH_BASE . 'fonts/inter/Inter-Variable.ttf'))
-            $this->_sFontPath = $sBundled;
+            $sPath = $sCustom;
+        else {
+            // a real SemiBold face rather than the same outlines drawn twice a pixel apart, which
+            // thickens a glyph on one axis only and reads as smeared rather than bold. It is an
+            // instance of the variable font beside it - same family, same licence.
+            $sBundled = BX_DIRECTORY_PATH_BASE . 'fonts/inter/' . ($sWeight == 'bold' ? 'Inter-SemiBold.ttf' : 'Inter-Variable.ttf');
+            if ($this->_isFontReadable($sBundled))
+                $sPath = $sBundled;
+            else if ($this->_isFontReadable($sFallback = BX_DIRECTORY_PATH_BASE . 'fonts/inter/Inter-Variable.ttf'))
+                $sPath = $sFallback;
+        }
 
-        return $this->_sFontPath;
+        return ($this->_aFontPaths[$sWeight] = $sPath);
     }
 
     /**
