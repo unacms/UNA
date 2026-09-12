@@ -389,6 +389,21 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
         ]);
     }
 
+    /**
+     * A language string, or nothing at all when it has not been imported yet.
+     *
+     * _t() echoes the key back when it is missing from the database, and language strings live in the
+     * database rather than in the file - so a site which takes this code without running the upgrade
+     * would print `_adm_dsg_txt_upload_cover_common_inf` at an administrator as if it were help.
+     * Silence is the better failure here: the field keeps its caption and simply has no hint.
+     */
+    protected function getTranslated($sKey)
+    {
+        $s = _t($sKey);
+
+        return $s !== $sKey ? $s : '';
+    }
+
     protected function getCover()
     {
     	$sJsObject = $this->getPageJsObject();
@@ -417,15 +432,25 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
             $sImageUrl = '';
             if($iImageId != 0) {
                 $oTranscoder = BxDolTranscoderImage::getObjectInstance($aCover['transcoder']);
-                $sImageUrl = $oTranscoder ? $oTranscoder->getFileUrl($iImageId) : false;
+                $sImageUrl = $oTranscoder ? (string)$oTranscoder->getFileUrl($iImageId) : '';
 
-                // the picture a setting points at is gone, so the setting is stale rather than set
-                if($sImageUrl === false) {
-                    setParam($aCover['setting'], 0);
-                    $iImageId = 0;
-                    $sImageUrl = '';
-                }
+                // NO setParam(.., 0) here. This used to erase the setting whenever the transcoder
+                // could not hand back a URL, so merely OPENING this page threw away a picture an
+                // administrator had uploaded - and getFileUrl() returns false for reasons that have
+                // nothing to do with the file being gone, such as a transcode that cannot run yet.
+                // It cost the covers on the PR preview. A preview we cannot draw is a preview we
+                // leave out; the setting is not ours to discard.
             }
+
+            // one collapsible section per picture, the same chrome the Settings page uses - but open,
+            // because the preview inside it is the most useful thing on the page
+            $aFormInputs[$sCover . '_section'] = array(
+                'type' => 'block_header',
+                'name' => $sCover . '_section',
+                'caption' => _t($aCover['title']),
+                'info' => $this->getTranslated('_adm_dsg_txt_upload_' . $sCover . '_inf'),
+                'collapsed' => false,
+            );
 
             // the share card is drawn whether or not it has a background of its own - from the page
             // cover, the logo and the site title - so its preview is always worth showing
@@ -434,7 +459,6 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
                 $aFormInputs[$sCover . '_preview'] = array(
                     'type' => 'custom',
                     'name' => $sCover . '_preview',
-                    'caption' => _t($aCover['title']),
                     'content' => $oTemplate->parseHtmlByName('dsr_cover_preview.html', array(
                         'type' => $sCover,
                         'content' => $oTemplate->parseHtmlByName($aCover['template'], array(
@@ -471,7 +495,6 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
                 'content_id' => $aSetting['id'],
                 'ghost_template' => BxTemplStudioFunctions::getInstance()->getDefaultGhostTemplate($sCover),
                 'caption' => _t('_adm_dsg_txt_upload_' . $sCover),
-                'info' => _t('_adm_dsg_txt_upload_' . $sCover . '_inf'),
                 'db' => array (
                     'pass' => 'Int',
                 )
@@ -484,7 +507,7 @@ class BxBaseStudioDesigner extends BxDolStudioDesigner
                     'type' => 'checkbox',
                     'name' => 'disabled',
                     'caption' => _t('_adm_dsg_txt_cover_disabled'),
-                    'info' => _t('_adm_dsg_txt_cover_disabled_inf'),
+                    'info' => $this->getTranslated('_adm_dsg_txt_cover_disabled_inf'),
                     'value' => 'on',
                     'checked' => getParam('sys_site_cover_disabled') == 'on',
                     'db' => array (

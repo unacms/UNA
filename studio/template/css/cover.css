@@ -70,3 +70,16 @@
 .bx-dsg-cover .bx-dsg-cover-actions {
     margin-top: .75rem;
 }
+
+/**
+ * A section subtitle must not be clipped
+ *
+ * form_field_section_title.html puts `truncate` on the info line, so a sentence longer than the
+ * header - or the same sentence in a language that needs more words - silently ends in an ellipsis.
+ * These say where each picture is used, which is the one thing the page exists to explain.
+ */
+.bx-std .adm-dsg-cover-form_wrapper .bx-form-section-title .bx-def-font-grayed {
+    overflow: visible;
+    text-overflow: clip;
+    white-space: normal;
+}
