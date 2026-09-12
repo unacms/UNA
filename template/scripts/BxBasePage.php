@@ -1511,7 +1511,11 @@ class BxBasePage extends BxDolPage
 
         //--- with covers switched off site wide the page cover isn't shown anywhere, so the card
         //--- falls back to the site background chain rather than to an image nobody ever sees.
-        $aBackground = BxDolCover::getInstance()->isEnabled() ? $this->getPageCoverImage(false) : array();
+        //--- getPageCoverImage(TRUE), i.e. through BX_DOL_TRANSCODER_OBJ_COVER. With false it hands
+        //--- back the raw storage original, and Studio stores every cover an admin uploads in
+        //--- sys_images with private = 1 - which the renderer refuses, so a cover set in the Pages
+        //--- builder or in Designer was silently dropped and the card fell back to the plain colour
+        $aBackground = BxDolCover::getInstance()->isEnabled() ? $this->getPageCoverImage(true) : array();
 
         if(empty($sTitle) && empty($aBackground))
             return array();
