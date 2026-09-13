@@ -87,6 +87,8 @@ export default function MenuTop({ url, uri }) {
     return (
         <Row
             className={`${appSetting('layout', 'header', 'content_center')} relative`}
+            role="navigation"
+            aria-label="Primary"
             onLayout={(e) => handleContainerLayout(e?.nativeEvent?.layout)}
         >
             <View

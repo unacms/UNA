@@ -23,8 +23,12 @@ function sanitizeWebTextProps(props) {
         onPress,
         onLongPress,
         onTextLayout,
+        nativeID,
         ...domProps
     } = props;
+    if (accessibilityRole && !domProps.role) domProps.role = accessibilityRole;
+    if (accessibilityLabel && !domProps['aria-label']) domProps['aria-label'] = accessibilityLabel;
+    if (nativeID && !domProps.id) domProps.id = nativeID;
     if (onPress && !domProps.onClick) domProps.onClick = onPress;
     return domProps;
 }

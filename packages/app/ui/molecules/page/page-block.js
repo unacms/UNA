@@ -58,7 +58,7 @@ const BlockTitle = createBlockComponent({
     baseClass: 'u-block-title',
     Component: Text,
     role: 'heading',
-    ariaLevel: 3,
+    ariaLevel: 2,
 })
 
 const BlockDescription = createBlockComponent({

@@ -56,9 +56,9 @@ const resolveFooterLang = (langs, lang, langCode) => {
 
 const menuFooterSkeletonWidths = ['w-12', 'w-12', 'w-12', 'w-12', 'w-12'];
 
-function MenuFooterSkeleton({ cntClasses, children }) {
+function MenuFooterSkeleton({ cntClasses, children, role }) {
     return (
-        <View className={cntClasses}>
+        <View className={cntClasses} role={role}>
             {menuFooterSkeletonWidths.map((width, index) => (
                 <View
                     key={`menu-footer-skeleton-${index}`}
@@ -185,7 +185,7 @@ function MenuFooterComponent({
 
     if (usesRemoteFooter && (!hydrated || isLoading || !isFetched)) {
         return (
-            <MenuFooterSkeleton cntClasses={cntClasses}>
+            <MenuFooterSkeleton cntClasses={cntClasses} role="contentinfo">
                 {showLanguageSwitcher ? <FooterLanguageSwitcher visualProps={visualProps} /> : null}
                 {showThemeSwitcher ? <FooterThemeSwitcher visualProps={visualProps} /> : null}
             </MenuFooterSkeleton>
@@ -196,7 +196,7 @@ function MenuFooterComponent({
         return null;
 
     return (
-        <View className={cntClasses}>
+        <View className={cntClasses} role="contentinfo">
             {menu_launcher_items.map((item, index) => (
                 <NeoButtonLink
                     href={normalizeFooterHref(item.link)}

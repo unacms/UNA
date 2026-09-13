@@ -43,7 +43,7 @@ const HeaderLine = memo(({ headerSettings, currentUser, uri, title, menuPopup, s
                 </View>
             )}
             {(uri === 'home' || isDesktop) && (
-                <Link className=" flex flex-row web:group gap-x-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-0 focus:outline-primary/50 rounded-lg " href="/home" aria-label={t('Logo')}>
+                <Link className=" flex flex-row web:group gap-x-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-0 focus:outline-primary/50 rounded-lg " href="/home" alt={t('Home')} aria-label={t('Home')}>
 
 
                     {appStatic('logo')}
@@ -120,7 +120,7 @@ export default function (props) {
                     </View>
                 </Row>
             </View>
-            {!bIsHideHeader && <View className={(props.layoutName == 'profile' || props.layoutName == 'messenger' || props.layoutName == 'post' ? 'hidden lg:flex ' : '') + " fixed w-full"}>
+            {!bIsHideHeader && <View role="banner" className={(props.layoutName == 'profile' || props.layoutName == 'messenger' || props.layoutName == 'post' ? 'hidden lg:flex ' : '') + " fixed w-full"}>
                 <View className=" h-16  items-center w-full border-b border-border/60 bg-card  ">
                     <View className={appSetting('layout', 'max_width') + "  w-full flex-row flex-auto  items-center "}>
                         <HeaderLine headerSettings={headerSettings} currentUser={currentUser} uri={props.uri} title={sTitle} showMenu={showMenu} menuPopup={menuPopup} setMenuPopup={setMenuPopup} />

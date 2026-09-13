@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useController, useFormContext } from 'react-hook-form';
 import { useGoogleAutocomplete } from '@appandflow/react-native-google-autocomplete';
-import { getValidationRules } from 'app/components/form-fields/_field';
+import { getValidationRules, getFormFieldDomId, getFormFieldErrorDomId } from 'app/components/form-fields/_field';
 import { fetcher } from 'app/lib/fetcher';
 import { appSetting } from 'app/lib/util';
 import { useNativeReturnKeyNav } from 'app/context/form-focus-chain';
@@ -74,6 +74,9 @@ export function useFormField(props, options = {}) {
         props.handleSubmit
     );
 
+    const fieldErrorText = Array.isArray(props.error) ? props.error[0] : props.error;
+    const invalid = !!fieldErrorText;
+
     return {
         name,
         field,
@@ -86,6 +89,9 @@ export function useFormField(props, options = {}) {
         onBlur,
         inputRef,
         returnKeyProps,
+        inputId: getFormFieldDomId(name),
+        errorId: invalid ? getFormFieldErrorDomId(name) : undefined,
+        invalid,
     };
 }
 
