@@ -91,6 +91,7 @@ export const PageHeader = ({ pageData }) => {
     return (
         <HeaderContainer
             className={stripHeaderSurfaceClasses(resolveHeaderContainerClassName(isScrolled))}
+            role="banner"
             style={[
                 headerContainerStyle,
                 showFade ? { minHeight: fadeHeight, overflow: 'visible' } : null,

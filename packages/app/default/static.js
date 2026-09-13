@@ -39,10 +39,10 @@ const Logo = ({ mode = 'adaptive' }) => {
     }
 
     return (
-        <Row className="items-center gap-3 text-foreground web:hover:animate-pulse">
+        <Row className="items-center gap-3 text-foreground web:motion-safe:hover:animate-pulse">
             <View className={`${markStyles[mode]}`}>
                 <Svg
-                    aria-label={t('Logo Mark')}
+                    aria-hidden={true}
                     width={32}
                     height={32}
                     color={logoColor}
@@ -77,7 +77,7 @@ const Logo = ({ mode = 'adaptive' }) => {
             </View>
             <View className={`${textStyles[mode]}`}>
                 <Svg
-                    aria-label={t('Logo Text')}
+                    aria-hidden={true}
                     width={68}
                     height={32}
                     viewBox="0 0 68 32"

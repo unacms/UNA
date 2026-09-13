@@ -91,9 +91,11 @@ const sanitizeInputProps = ({
     accessibilityLabel,
     accessibilityRole,
     accessibilityHint,
+    nativeID,
     ...props
 }: CustomInputProps) => {
     const domProps = { ...props };
+    if (nativeID && !domProps.id) domProps.id = nativeID;
     if (accessibilityLabel && !domProps['aria-label']) domProps['aria-label'] = accessibilityLabel;
     if (accessibilityRole && !domProps.role) domProps.role = accessibilityRole;
     if (accessibilityHint && !domProps['aria-description']) domProps['aria-description'] = accessibilityHint;

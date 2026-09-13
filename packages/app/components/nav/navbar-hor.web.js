@@ -63,7 +63,7 @@ const HeaderLine = memo(
                     (!currentUser?.confirmed &&
                         appSetting('layout', 'lock_unconfirmed'))) &&
                     (uri == 'home' || isDesktop) && (
-                        <Link href="/home" size="base" className=' px-2' >
+                        <Link href="/home" size="base" className=' px-2' alt="Home">
                             {appStatic('logo')}
                         </Link>
                     )}
@@ -135,7 +135,9 @@ export default function (props) {
             </View>
 
             {!bIsHideHeader && (
-                <View className={headerTheme.container + (headerTheme.special[props.layoutName] || headerTheme.special.default)
+                <View
+                    role="banner"
+                    className={headerTheme.container + (headerTheme.special[props.layoutName] || headerTheme.special.default)
                 }  >
                     <View className={(isScrolled ? headerTheme.scrolled : headerTheme.initial)}>
                         <View className={` w-full flex-row flex-auto items-center ${headerTheme.content}`}>

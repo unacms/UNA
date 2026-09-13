@@ -748,9 +748,13 @@ export const NeoButtonLink = ({
             : 'inline-flex items-center max-w-full min-w-0 shrink',
     );
     const neoProps = { ...props, buttonStyle: style, hitarea: false, interactive: true };
+    const linkAccessibleName =
+        props.accessibilityLabel ||
+        props.alt ||
+        (typeof props.label === 'string' && props.label !== '' ? props.label : undefined);
 
     return (
-        <Link href={href} target={target} asExternal={asExternal} emulate={emulate} mode="plain" className={linkClassName}>
+        <Link href={href} target={target} asExternal={asExternal} emulate={emulate} mode="plain" className={linkClassName} alt={linkAccessibleName}>
             <NeoButton {...neoProps} />
         </Link>
     );

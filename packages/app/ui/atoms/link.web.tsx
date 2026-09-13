@@ -100,6 +100,8 @@ export default function ElementLink({
                 className={className}
                 prefetch={isPrefetch}
                 onClick={handleLinkClick}
+                aria-label={accessibleLabel}
+                aria-current={rest['aria-current']}
             >
                 {children}
             </Link>

@@ -77,7 +77,11 @@ export default function DropdownMenuItem({ item, index, link, handleSelect, clas
             : menuSettings.item_group_header;
         return (
             <View key={key} className={headerClass || 'px-2 pt-3 pb-1'}>
-                <Text className={menuSettings.item_group_header_text || 'text-xs font-semibold uppercase tracking-wide text-muted-foreground'}>
+                <Text
+                    role="heading"
+                    aria-level={2}
+                    className={menuSettings.item_group_header_text || 'text-xs font-semibold uppercase tracking-wide text-muted-foreground'}
+                >
                     {item.title}
                 </Text>
             </View>
@@ -102,9 +106,21 @@ export default function DropdownMenuItem({ item, index, link, handleSelect, clas
     const descriptionText = description ? t(description) : '';
 
     const Wrapper = handleSelect ? Pressable : View;
+    const isSelectableAction =
+        typeof handleSelect === 'function' &&
+        (item.selected === true || item.selected === false);
     const pressProps =
         typeof handleSelect === 'function'
-            ? { onPress: (event) => handleSelect(event, item) }
+            ? {
+                  onPress: (event) => handleSelect(event, item),
+                  ...(isSelectableAction
+                      ? {
+                            accessibilityRole: 'radio',
+                            accessibilityState: { selected: !!item.selected, checked: !!item.selected },
+                            'aria-checked': !!item.selected,
+                        }
+                      : {}),
+              }
             : {};
     const Content = (
         <Wrapper
@@ -141,7 +157,14 @@ export default function DropdownMenuItem({ item, index, link, handleSelect, clas
     return (
 
         link ? (
-            <Link href={link}>
+            <Link
+                href={link}
+                mode="plain"
+                className="block"
+                target={item.target === 'blank' ? '_blank' : item.target}
+                asExternal={item.target === '_blank' || item.target === 'blank'}
+                aria-current={item.selected ? 'page' : undefined}
+            >
                 {Content}
             </Link>
         ) : (

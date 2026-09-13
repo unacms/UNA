@@ -10,9 +10,35 @@ import { appSetting } from 'app/lib/util';
 import { useIsDesktop, useWindowSize } from 'app/context/measure';
 import emitter from 'app/context/emitter';
 import { ButtonRef, NeoButtonRef } from 'app/design/controls'
-import { useTranslation } from 'react-i18next'
 
 const dropdownTheme = appSetting('theme', 'dropdown');
+
+const WEB_FOCUSABLE_SELECTOR = [
+    'a[href]',
+    'button:not([disabled])',
+    'input:not([disabled])',
+    'select:not([disabled])',
+    'textarea:not([disabled])',
+    '[tabindex]:not([tabindex="-1"])',
+].join(',');
+
+function getWebFocusableElements(root) {
+    if (!root || typeof root.querySelectorAll !== 'function') return [];
+    return Array.from(root.querySelectorAll(WEB_FOCUSABLE_SELECTOR)).filter((el) => {
+        if (el.getAttribute('aria-hidden') === 'true') return false;
+        if (typeof window === 'undefined') return true;
+        const style = window.getComputedStyle(el);
+        return style.display !== 'none' && style.visibility !== 'hidden';
+    });
+}
+
+function getBodyChild(node) {
+    let el = node;
+    while (el && el.parentElement && el.parentElement !== document.body) {
+        el = el.parentElement;
+    }
+    return el && el.parentElement === document.body ? el : null;
+}
 
 /** Open state for menu triggers (NeoButton `selected` / topmenu chevron). */
 export const DropdownMenuOpenContext = createContext(false);
@@ -44,10 +70,10 @@ export default function DropdownPopup({
     /** RN layout style for the trigger Pressable (e.g. tab-bar button `style`). */
     triggerStyle,
 }) {
-    const { t } = useTranslation();
     const buttonRef = useRef(null);
     const isDesktop = useIsDesktop();
     const contentRef = useRef(null);
+    const restoreFocusRef = useRef(null);
     const [buttonPos, setButtonPos] = useState({ triggerY: 0, triggerHeight: 0, x: 0, width: 0, height: 0, maxHeight: 0, shouldOpenAbove: false });
     const [popupHeight, setPopupHeight] = useState(0);
     const [popupRenderedWidth, setPopupRenderedWidth] = useState(0);
@@ -146,13 +172,16 @@ export default function DropdownPopup({
 
     const handleToggle = useCallback(
         (bOpen) => {
+            if (bOpen && isWeb) {
+                restoreFocusRef.current = buttonRef.current;
+            }
             if (isControlledOutside) {
                 onOpenChange(bOpen);
             } else {
                 setIsOpen(bOpen);
             }
         },
-        [isControlledOutside, onOpenChange]
+        [isControlledOutside, isWeb, onOpenChange]
     );
 
     useEffect(() => {
@@ -192,6 +221,26 @@ export default function DropdownPopup({
         return () => window.removeEventListener('keydown', onKeyDown);
     }, [isWeb, isRealOpen, handleToggle]);
 
+    useEffect(() => {
+        if (!isWeb) return;
+        if (isRealOpen) return;
+        const node = restoreFocusRef.current;
+        restoreFocusRef.current = null;
+        if (!node) return;
+        const focusTrigger = () => {
+            if (typeof node.focus === 'function') {
+                node.focus();
+                if (document.activeElement === node || node.contains?.(document.activeElement)) {
+                    return;
+                }
+            }
+            const inner = node.querySelector?.('[tabindex="0"], [role="button"], button, a');
+            inner?.focus?.();
+        };
+        const id = requestAnimationFrame(focusTrigger);
+        return () => cancelAnimationFrame(id);
+    }, [isWeb, isRealOpen]);
+
     const handleBackdropPress = (event) => {
         event.stopPropagation();
         handleToggle(false);
@@ -207,6 +256,64 @@ export default function DropdownPopup({
     // we don't need it at all (popup is anchored at `triggerBottom + gap`).
     const popupMeasured = (!buttonPos.shouldOpenAbove || popupHeight > 0) && popupRenderedWidth > 0;
     const hasMeasured = triggerMeasured && popupMeasured;
+
+    useEffect(() => {
+        if (!isWeb || !isRealOpen || !hasMeasured) return;
+        const id = requestAnimationFrame(() => {
+            const first = getWebFocusableElements(contentRef.current)[0];
+            first?.focus?.();
+        });
+        return () => cancelAnimationFrame(id);
+    }, [isWeb, isRealOpen, hasMeasured]);
+
+    useEffect(() => {
+        if (!isWeb || !isRealOpen || !hasMeasured) return;
+        const onKeyDown = (event) => {
+            if (event.key !== 'Tab') return;
+            const root = contentRef.current;
+            const focusables = getWebFocusableElements(root);
+            if (focusables.length === 0) {
+                event.preventDefault();
+                return;
+            }
+            const first = focusables[0];
+            const last = focusables[focusables.length - 1];
+            const active = document.activeElement;
+            const inside = root?.contains?.(active);
+            if (event.shiftKey && (active === first || !inside)) {
+                event.preventDefault();
+                last.focus();
+            } else if (!event.shiftKey && (active === last || !inside)) {
+                event.preventDefault();
+                first.focus();
+            }
+        };
+        window.addEventListener('keydown', onKeyDown, true);
+        return () => window.removeEventListener('keydown', onKeyDown, true);
+    }, [isWeb, isRealOpen, hasMeasured]);
+
+    useEffect(() => {
+        if (!isWeb || !isModalVisible || !hasMeasured) return;
+        const portalRoot = getBodyChild(contentRef.current);
+        if (!portalRoot) return;
+        const siblings = Array.from(document.body.children).filter((el) => el !== portalRoot);
+        const previous = siblings.map((el) => ({
+            el,
+            inert: el.hasAttribute('inert'),
+            hidden: el.getAttribute('aria-hidden'),
+        }));
+        siblings.forEach((el) => {
+            el.setAttribute('inert', '');
+            el.setAttribute('aria-hidden', 'true');
+        });
+        return () => {
+            previous.forEach(({ el, inert, hidden }) => {
+                if (!inert) el.removeAttribute('inert');
+                if (hidden == null) el.removeAttribute('aria-hidden');
+                else el.setAttribute('aria-hidden', hidden);
+            });
+        };
+    }, [isWeb, isModalVisible, hasMeasured]);
 
     const cappedPopupWidth = maxPopupWidth
         ? Math.min(maxPopupWidth, windowWidth - 32)
@@ -279,6 +386,15 @@ export default function DropdownPopup({
         onFocus: openOnFocus && !isWeb ? openTrigger : undefined,
         onFocusCapture: openOnFocus && isWeb ? openTrigger : undefined,
     };
+    const triggerMenuProps = {
+        'aria-haspopup': 'true',
+        'aria-expanded': isRealOpen,
+    };
+    const dialogLabel =
+        triggerAccessibilityLabel ||
+        buttonProps?.accessibilityLabel ||
+        (typeof buttonProps?.label === 'string' ? buttonProps.label : undefined) ||
+        'Menu';
 
     const legacyButton = buttonProps && isLegacyButtonProps(buttonProps);
     const { legacyButton: _legacy, neoButton: _neo, ...neoButtonProps } = buttonProps || {};
@@ -292,6 +408,7 @@ export default function DropdownPopup({
                         collapsable={false}
                         ref={buttonRef}
                         onPress={openTrigger}
+                        {...triggerMenuProps}
                         {...triggerFocusProps}
                     />
                 ) : (
@@ -301,6 +418,7 @@ export default function DropdownPopup({
                         ref={buttonRef}
                         onPress={openTrigger}
                         selected={isRealOpen}
+                        {...triggerMenuProps}
                         {...triggerFocusProps}
                     />
                 )
@@ -313,7 +431,7 @@ export default function DropdownPopup({
                         {...triggerFocusProps}
                         accessibilityRole="button"
                         accessibilityLabel={triggerAccessibilityLabel}
-                        aria-haspopup="menu"
+                        aria-haspopup="true"
                         aria-expanded={isRealOpen}
                         style={triggerStyle}
                         className={cn('web:active:scale-95 web:duration-100', triggerClassName)}
@@ -340,6 +458,9 @@ export default function DropdownPopup({
                     {isWeb ? (
                         <View
                             className="web:fixed web:inset-0 web:z-[9999]"
+                            role="dialog"
+                            aria-modal="true"
+                            aria-label={dialogLabel}
                             style={{
                                 position: 'fixed',
                                 left: 0,
@@ -352,8 +473,9 @@ export default function DropdownPopup({
                             }}
                         >
                             <Pressable
-                                accessibilityRole="button"
-                                accessibilityLabel={t('Dismiss menu')}
+                                role="presentation"
+                                aria-hidden={true}
+                                tabIndex={-1}
                                 className="web:absolute web:inset-0 web:z-0"
                                 style={{
                                     position: 'absolute',
