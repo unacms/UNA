@@ -773,6 +773,19 @@ abstract class BxDolStorage extends BxDolFactory implements iBxDolFactoryObject
     public function getFileUrlById($iFileId) { }
 
     /**
+     * Where a stored file sits on this server's own filesystem.
+     * Reading a file there is what to prefer over fetching its URL: the URL is the site's public
+     * address, which the server itself can't always reach - from inside a container, behind a load
+     * balancer or a firewall. Only an engine which keeps files on this server has an answer.
+     * @param $mixedFile file id, or the file info array as getFile() returns it
+     * @return absolute path of a readable file, or an empty string
+     */
+    public function getFileLocalPath($mixedFile)
+    {
+        return '';
+    }
+
+    /**
      * Get file info array by file id.
      * @param $iFileId file id
      * @return array

@@ -175,11 +175,19 @@ class BxBaseModTemplateConfig extends BxBaseModGeneralConfig
         if(!$sUrl)
             return $this->{'_f' . $sTypeUc . 'AspectRatioDefault'};
 
+        /*
+         * Measure the stored file itself when it is on this server. The URL is the site's own
+         * public address, which the server can't always reach from where it runs - inside a
+         * container, behind a load balancer or a firewall - and a measurement which fails isn't
+         * saved, so it would be retried, warning, on every page.
+         */
+        $sSource = !empty($aInfo['local_path']) ? $aInfo['local_path'] : $sUrl;
+
         $iWidth = $iHeight = 0;
         if(strpos($sUrl, '.svg') !== false)
-            list($iWidth, $iHeight) = bx_get_svg_image_size($sUrl);
+            list($iWidth, $iHeight) = bx_get_svg_image_size($sSource);
         else if(isset($aInfo['mime_type']) && strncmp($aInfo['mime_type'], 'image/', 6) === 0)
-            list($iWidth, $iHeight) = getimagesize($sUrl);
+            list($iWidth, $iHeight) = getimagesize($sSource);
 
         if(!$iHeight) 
             return $this->{'_f' . $sTypeUc . 'AspectRatioDefault'};

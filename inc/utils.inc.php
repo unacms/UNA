@@ -632,7 +632,9 @@ function bx_get_svg_image_size($sUrl)
 {
     $iWidth = $iHeight = 0;
 
-    $sContent = bx_file_get_contents($sUrl);
+    // a path on this server is read as it is: bx_file_get_contents() goes through curl, which
+    // opens URLs only (is_file() answers false for a URL, without a warning)
+    $sContent = is_file($sUrl) ? file_get_contents($sUrl) : bx_file_get_contents($sUrl);
     if(empty($sContent))
         return [$iWidth, $iHeight];
 

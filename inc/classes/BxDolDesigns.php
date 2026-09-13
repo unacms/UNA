@@ -153,7 +153,13 @@ class BxDolDesigns extends BxDolFactory implements iBxDolSingleton
         if(!$iFileId && !($iFileId = (int)$this->getSiteLogo())) 
             return false;
 
-        return BxDolStorage::getObjectInstance($this->sLogoStorage)->getFile($iFileId);
+        $oStorage = BxDolStorage::getObjectInstance($this->sLogoStorage);
+
+        $aInfo = $oStorage->getFile($iFileId);
+        if(!empty($aInfo) && is_array($aInfo))
+            $aInfo['local_path'] = $oStorage->getFileLocalPath($aInfo);
+
+        return $aInfo;
     }
 
     public function getSiteLogoDarkInfo($iFileId = 0)

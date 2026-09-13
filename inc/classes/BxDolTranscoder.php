@@ -833,26 +833,6 @@ class BxDolTranscoder extends BxDolFactory implements iBxDolFactoryObject
         return $sTmpFile;
     }
 
-    /**
-     * Where a source file sits on this filesystem, or '' when it is not on this filesystem at all.
-     * Only the Local storage engine keeps files here; S3 and the rest must still be fetched.
-     * @param $oStorage - the source storage object
-     * @param $aFile - its file row, as returned by getFile()
-     */
-    protected function getLocalSourcePath ($oStorage, $aFile)
-    {
-        if (empty($aFile['path']))
-            return '';
-
-        $aObject = $oStorage->getObjectData();
-        if (empty($aObject['engine']) || 'Local' != $aObject['engine'])
-            return '';
-
-        $sPath = BX_DIRECTORY_STORAGE . $aObject['object'] . '/' . $aFile['path'];
-
-        return is_readable($sPath) ? $sPath : '';
-    }
-
     protected function storeFileLocally_Storage ($mixedHandler)
     {
         $oStorageOriginal = BxDolStorage::getObjectInstance($this->_aObject['source_params']['object']);
@@ -873,7 +853,7 @@ class BxDolTranscoder extends BxDolFactory implements iBxDolFactoryObject
         // published port and answers nothing, so every transcode of a local file failed and the
         // Studio cover previews came back 404. It is also simply faster, and it skips the private
         // file token dance for a file we are allowed to read anyway.
-        $sLocalPath = $this->getLocalSourcePath($oStorageOriginal, $aFile);
+        $sLocalPath = $oStorageOriginal->getFileLocalPath($aFile);
         if ($sLocalPath) {
             $sTmpFileLocal = $this->getTmpFilename($aFile['file_name']);
             if (@copy($sLocalPath, $sTmpFileLocal))

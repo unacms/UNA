@@ -44,6 +44,20 @@ class BxDolStorageLocal extends BxDolStorage
     }
 
     /**
+     * @see BxDolStorage::getFileLocalPath
+     */
+    public function getFileLocalPath($mixedFile)
+    {
+        $aFile = is_array($mixedFile) ? $mixedFile : $this->_oDb->getFileById((int)$mixedFile);
+        if (empty($aFile['path']))
+            return '';
+
+        $sPath = $this->getObjectBaseDir(!empty($aFile['private'])) . $aFile['path'];
+
+        return is_readable($sPath) ? $sPath : '';
+    }
+
+    /**
      * Start file downloading by remote id. If file is private then token is checked.
      */
     public function download ($sRemoteId, $sToken = false, $mixedForceDownloadDialog = 'auto')
