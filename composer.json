@@ -108,7 +108,8 @@
         "knplabs/github-api": "^3.0",
         "guzzlehttp/guzzle": "^7.0.1",
         "http-interop/http-factory-guzzle": "^1.0",
-        "psr/log": "^3.0"
+        "psr/log": "^3.0",
+        "firebase/php-jwt": "^7.1"
     },
     "require-dev": {
         "phpunit/phpunit": "12.*",

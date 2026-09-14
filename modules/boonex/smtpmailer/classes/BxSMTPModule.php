@@ -66,7 +66,6 @@ class BxSMTPModule extends BxDolModule
                 // from settings, username and passord of smtp server
                 if (getParam('bx_smtp_oauth_on')) {
                     $mail->AuthType = 'XOAUTH2';
-                    require_once(BX_DIRECTORY_PATH_MODULES . 'boonex/smtpmailer/vendor/autoload.php');
                     bx_import('MailAuthorization', $this->_aModule);
                     bx_import('MailAuthorizationPHPMailer', $this->_aModule);
                     $mail->setOAuth(BxSMTPMailAuthorizationPHPMailer::getInstance([
