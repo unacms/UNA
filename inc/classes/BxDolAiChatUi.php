@@ -249,8 +249,6 @@ class BxDolAiChatUi
         $a = parse_url((string)$sUrl);
         if (($a['scheme'] ?? '') !== 'https' || empty($a['host']))
             return false;
-        if (isset($a['user']) || isset($a['pass']))
-            return false;
 
         $sHost = strtolower((string)$a['host']);
         if ($sHost === 'localhost' || str_ends_with($sHost, '.localhost'))
