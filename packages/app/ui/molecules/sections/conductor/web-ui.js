@@ -718,13 +718,15 @@ const TabMenu = function TabMenu({
     return (
         <TabMenuContext.Provider value={menuContext}>
             {!conductorTheme.menu_is_dynamic ? (
-                <View className={menuClasses}>
-                    <TabList
-                        routes={routes}
-                        index={selectedIndex}
-                        onSelect={onSelect}
-                        itemWrapperClassName=""
-                    />
+                <View className="w-full min-w-0 overflow-x-auto web:scrollbar-none">
+                    <View className={menuClasses}>
+                        <TabList
+                            routes={routes}
+                            index={selectedIndex}
+                            onSelect={onSelect}
+                            itemWrapperClassName=""
+                        />
+                    </View>
                 </View>
             ) : (
                 <DynamicMenu
@@ -1170,7 +1172,7 @@ export function TopSidebar({
                 }`}
         >
             <View
-                className={`${isHideOnDesktop ? '' : 'mx-auto'} ${appSetting('layout', 'page_content_width_default')} px-3 lg:px-4 mx-auto`}
+                className={`${isHideOnDesktop ? '' : 'mx-auto'} ${appSetting('layout', 'page_content_width_default')} mx-auto`}
             >
                     {/*
                       * Section title on the tab subbar, for the middle viewport range.
@@ -1183,7 +1185,7 @@ export function TopSidebar({
                       */}
                     <Row className="w-full items-center gap-4 min-w-0">
                         {(!!title && conductorTheme.show_title !== false && isHideOnDesktop) && (
-                            <Row className="hidden lg:flex items-center gap-2 shrink-0 min-w-0">
+                            <Row className="hidden lg:flex items-center gap-2 shrink-0 min-w-0 pl-3 lg:pl-4">
                                 {!!icon && (
                                     <Icon
                                         icon={icon}
@@ -1199,7 +1201,7 @@ export function TopSidebar({
                         <View className="flex-1 min-w-0">{children}</View>
                     </Row>
                     {(layout != 'mixed' && layoutName !== 'profile') && (
-                        <Row className={`hidden ${conductorTheme.hide_top_menu_from}:flex cond-buttons-add`}>
+                        <Row className={`hidden ${conductorTheme.hide_top_menu_from}:flex cond-buttons-add px-3 lg:px-4`}>
                             {addButtons}
                         </Row>
                     )}
@@ -1268,7 +1270,7 @@ export const TabBar = ({
                     />}
                 </View>
                     {hasLeftColumnMenus && (
-                        <Row className="items-center gap-1 shrink-0 pl-1">
+                        <Row className={`items-center gap-1 shrink-0 pl-1${showActionsInTabBar ? '' : ' pr-3 lg:pr-4'}`}>
                             {leftColumnMenus.map((blockItem) => (
                                 <LeftColumnMenuDropdown
                                     key={blockItem.id ?? blockItem.block?.name}
@@ -1279,7 +1281,7 @@ export const TabBar = ({
                         </Row>
                     )}
                     {!!pageData.cover_block?.actions_menu && showActionsInTabBar ? (
-                        <Row className={conductorTheme.more_menu_container || 'items-center shrink-0 pl-1'}>
+                        <Row className={`${conductorTheme.more_menu_container || 'items-center shrink-0 pl-1'} pr-3 lg:pr-4`}>
                             <Row className="items-center">
                                 <CoverMenu
                                     {...pageData.cover_block.actions_menu}

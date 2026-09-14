@@ -14,7 +14,8 @@ import { AT_TOP_SCROLL_THRESHOLD } from './native-ui'
  *
  *   notifications/arrived     → refresh, but only on the notifications tab
  *   list/refresh, page/reload → plain refresh
- *   conductor/reset_to_first  → tap on the active bottom tab: first go to
+ *   conductor/reset_to_first  → consecutive tap on the active bottom tab
+ *                               while already at that tab's root: first go to
  *                               tab 0, then scroll to top, and only then refresh
  *
  * @param {object}   opts

@@ -173,8 +173,10 @@ const nextConfig = {
       ppr: true,
     },*/
     experimental: {
+        // Short client RSC cache so pointer-down prefetch of dynamic pages
+        // (profiles) is reused on click. 0 made every tap wait on UNA again.
         staleTimes: {
-            dynamic: 0,
+            dynamic: 20,
             static: 180,
         },
     },

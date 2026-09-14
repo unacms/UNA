@@ -21,8 +21,10 @@ import * as SplashScreen from 'expo-splash-screen';
 import {
     canGoBackInTab,
     dismissNavigationOverlays,
+    getSelectedTab,
     getTabKeyFromPathname,
     navigateBackInTab,
+    rememberSelectedTab,
     resetAllTabHistory,
 } from 'app/lib/navigation/tab-history';
 import { clearAllPageCache } from 'app/lib/cache/clear-page-cache';
@@ -85,12 +87,14 @@ function processUrl(url, router, currentUser, TabList) {
 
 
         if (index > -1) {
+            rememberSelectedTab(`/tab${index}`);
             const route = {
                 pathname: `/tab${index}`,
                 ...(isRoot ? {} : { params: { url: _path } })
             };
             router.push(route);
         } else {
+            rememberSelectedTab('/tab0');
             router.push({
                 pathname: '/tab0',
                 params: { url: _path }
@@ -159,10 +163,11 @@ export default function Tabs() {
     useEffect(() => {
         resetAllTabHistory();
         clearAllPageCache();
+        rememberSelectedTab(getTabKeyFromPathname(pathname));
     }, [currentUser?.id, currentUser?.confirmed]);
     // DEEP LINKING
 
-    // Android system Back → in-tab history (same as header back / re-tap tab), not RN global history.
+    // Android system Back → one in-tab history pop (same as header back), not RN global history.
     useEffect(() => {
         if (!isAndroid) return;
 
@@ -263,6 +268,10 @@ export default function Tabs() {
 
     if (!fontsReady || currentUser === null) {
         return null;
+    }
+
+    if (!getSelectedTab()) {
+        rememberSelectedTab(getTabKeyFromPathname(pathname));
     }
     
     const nativeTabs = isNativeTabsEnabled();

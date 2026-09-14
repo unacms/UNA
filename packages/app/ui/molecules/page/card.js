@@ -12,18 +12,25 @@ function CardSection({
     Component = View,
     className = '',
     padding = '',
+    flushOnMobile = false,
     ...props
 }) {
+    const listFlush = flushOnMobile && baseClass === 'u-card-list';
     let defPadding = '';
     if (baseClass === 'u-card-base') {
         defPadding = cardTheme['u-card-padding'];
     }
     if (baseClass === 'u-card-list') {
-        defPadding = cardTheme['u-card-list-padding'];
+        defPadding = listFlush
+            ? (cardTheme['u-card-list-flush-padding'] || cardTheme['u-card-list-padding'])
+            : cardTheme['u-card-list-padding'];
     }
 
+    const themeClass = listFlush
+        ? (cardTheme['u-card-list-flush'] || '')
+        : (cardTheme[baseClass] || '');
     const paddingClasses = padding || defPadding;
-    const classes = `${cardTheme[baseClass] || ''} ${paddingClasses} ${className}`.trim();
+    const classes = `${themeClass} ${paddingClasses} ${className}`.trim();
 
     return <Component className={classes} {...props} />;
 }

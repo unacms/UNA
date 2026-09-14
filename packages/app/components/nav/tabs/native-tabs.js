@@ -9,7 +9,7 @@ import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as WebBrowser from 'expo-web-browser';
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
-import { nativeTabHref } from 'app/lib/navigation/tab-history';
+import { nativeTabHref, rememberSelectedTab } from 'app/lib/navigation/tab-history';
 import { playTabFeedback } from 'app/components/nav/tab-feedback';
 import { Text } from 'app/design/typography';
 import { getBadgeForTab, getBadgeLabel } from './badges';
@@ -235,6 +235,7 @@ export default function NativeTabNavigator({
 
         playTabFeedback();
         setActiveOverflowUrl(item.isOverflow ? tabUrl : null);
+        rememberSelectedTab(`/tab${routeIndex}`);
         router.push(nativeTabHref(tabUrl, `/tab${routeIndex}`));
     }, [currentUser, moreTabIndex, router, setBottomSheetData, setCurrentUser]);
 

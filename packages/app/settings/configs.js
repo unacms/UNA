@@ -38,6 +38,11 @@ export const settingsConfigs = {
         // Forks without the key keep caching on (`!== false`).
         enable_web: true,
         enable_native: true,
+        // Next server cache for UNA get_page_by_request (seconds). 0 disables.
+        // Viewer-keyed; person/org profiles keep a slightly longer window so
+        // list → profile prefetch is reused on click.
+        una_page_ttl: 20,
+        una_page_profile_ttl: 30,
     },
     dashboard: {
         url: '/dashboard', 

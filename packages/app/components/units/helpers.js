@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react';
+import { useMemo, useRef, useState, useCallback, createContext, use } from 'react';
 import { Platform } from 'react-native';
 import Image from 'app/ui/atoms/image';
 import Letter from 'app/ui/atoms/letter';
@@ -11,9 +11,9 @@ import Badge from 'app/ui/molecules/profile/badge';
 import { Skeleton } from 'app/ui/atoms/skeleton';
 import { getComponent } from 'app/components/registry';
 import { fetcher } from 'app/lib/fetcher';
-import { appSetting, cn, tp } from 'app/lib/util';
+import { appSetting, cn, tp, sanitazeUrl } from 'app/lib/util';
 import { getUnitMenuItems } from 'app/customization/functions';
-import { useRouter, useCurrentTabPath } from 'app/lib/hooks/router';
+import { useRouter, useCurrentTabPath, useFocusEffect } from 'app/lib/hooks/router';
 import { nativeTabHref } from 'app/lib/navigation/tab-history';
 import { useTranslation } from 'react-i18next';
 import { Card, CardList } from 'app/ui/molecules/page/card';
@@ -22,8 +22,119 @@ import { NeoButtonLink } from 'app/design/controls'
 
 const UNIT_SURFACES = { card: Card, list: CardList };
 
+// Profile listings (people + orgs): CardList chrome belongs to the sm+ grid.
+const FLUSH_LIST_MODULES = new Set(['bx_persons', 'bx_organizations', 'system']);
+const FLUSH_LIST_PADDING = 'px-3 py-2 sm:p-2';
+const FLUSH_ACTION_PRIMARY = 'w-1/2 sm:w-full pr-2 sm:pr-0';
+
+const UnitSurfaceContext = createContext(false);
+
+function shouldFlushListSurface(as, module, data) {
+    if (as !== 'list') return false;
+    return (
+        FLUSH_LIST_MODULES.has(module)
+        || FLUSH_LIST_MODULES.has(data?.module)
+    );
+}
+
 export function getShowInModal(module) {
     return appSetting('browse', 'show_in_modal', module);
+}
+
+function shouldIgnoreFlushNavStart(event) {
+    if (!event) return false;
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return true;
+    if (typeof event.button === 'number' && event.button !== 0) return true;
+    const target = event.target;
+    if (target && typeof target.closest === 'function') {
+        const nested = target.closest('button, [role="button"]');
+        if (nested && nested !== event.currentTarget) return true;
+    }
+    return false;
+}
+
+function UnitSurface({
+    data,
+    module,
+    as = 'card',
+    padding,
+    className,
+    children,
+    flushOnMobile = false,
+    navPending = false,
+    flushNavProps,
+}) {
+    const Surface = UNIT_SURFACES[as] || Card;
+    return (
+        <UnitSurfaceContext.Provider value={flushOnMobile}>
+            <LinkOrModal
+                href={data.url}
+                showInModal={getShowInModal(module ?? data.module)}
+                className={flushOnMobile ? 'group' : undefined}
+                {...flushNavProps}
+            >
+                <Surface
+                    padding={flushOnMobile ? FLUSH_LIST_PADDING : padding}
+                    className={className}
+                    flushOnMobile={flushOnMobile}
+                    data-nav={flushOnMobile && navPending ? 'pending' : undefined}
+                    aria-busy={flushOnMobile && navPending ? true : undefined}
+                >
+                    {flushOnMobile && Platform.OS !== 'web' && navPending ? (
+                        <View
+                            pointerEvents="none"
+                            className="absolute inset-0 bg-muted/60 animate-pulse"
+                        />
+                    ) : null}
+                    {children}
+                </Surface>
+            </LinkOrModal>
+        </UnitSurfaceContext.Provider>
+    );
+}
+
+function FlushNavigatingUnit({ data, module, as, padding, className, children }) {
+    const router = useRouter();
+    const [navPending, setNavPending] = useState(false);
+
+    const onFlushNavStart = useCallback((event) => {
+        if (shouldIgnoreFlushNavStart(event)) return;
+        if (Platform.OS === 'web') {
+            event?.currentTarget?.querySelector?.('.u-card-list')?.setAttribute('data-nav', 'pending');
+        }
+        setNavPending(true);
+        const href = sanitazeUrl(data?.url);
+        if (href && typeof router.prefetch === 'function') {
+            try {
+                router.prefetch(href);
+            } catch {
+                // Prefetch is best-effort; click still navigates.
+            }
+        }
+    }, [data?.url, router]);
+
+    useFocusEffect(useCallback(() => {
+        setNavPending(false);
+    }, []));
+
+    const flushNavProps = Platform.OS === 'web'
+        ? { onPointerDown: onFlushNavStart }
+        : { onPressIn: onFlushNavStart };
+
+    return (
+        <UnitSurface
+            data={data}
+            module={module}
+            as={as}
+            padding={padding}
+            className={className}
+            flushOnMobile
+            navPending={navPending}
+            flushNavProps={flushNavProps}
+        >
+            {children}
+        </UnitSurface>
+    );
 }
 
 export function UnitWrapper({
@@ -34,13 +145,30 @@ export function UnitWrapper({
     className,
     children,
 }) {
-    const Surface = UNIT_SURFACES[as] || Card;
-    return (
-        <LinkOrModal href={data.url} showInModal={getShowInModal(module ?? data.module)}>
-            <Surface padding={padding} className={className}>
+    const flushOnMobile = shouldFlushListSurface(as, module, data);
+    if (flushOnMobile) {
+        return (
+            <FlushNavigatingUnit
+                data={data}
+                module={module}
+                as={as}
+                padding={padding}
+                className={className}
+            >
                 {children}
-            </Surface>
-        </LinkOrModal>
+            </FlushNavigatingUnit>
+        );
+    }
+    return (
+        <UnitSurface
+            data={data}
+            module={module}
+            as={as}
+            padding={padding}
+            className={className}
+        >
+            {children}
+        </UnitSurface>
     );
 }
 
@@ -134,21 +262,26 @@ export function useUnitActions({ unitType, data, module, t = null }) {
 export function UnitProfileImage({
     data,
     skeleton,
-    skeletonClassName = 'h-28 sm:h-auto aspect-square sm:w-full',
-    rounded = 'rounded-lg',
+    skeletonClassName = 'h-24 w-24 sm:h-auto sm:w-full aspect-square',
+    rounded = 'rounded-full sm:rounded-lg',
 }) {
     return (
         <Skeleton className={skeletonClassName} rounded={rounded} visible={skeleton}>
-            <View className="h-28 sm:h-auto aspect-square sm:w-full rounded-lg overflow-hidden items-center bg-muted justify-center">
+            <View className="h-24 w-24 sm:h-auto sm:w-full aspect-square rounded-full sm:rounded-lg overflow-hidden items-center bg-muted justify-center">
                 <Image
                     src={data?.image?.src}
                     alt={data.title}
                     view="cover"
-                    className="absolute u-cover rounded-lg"
+                    className="absolute u-cover rounded-full sm:rounded-lg"
                     sizes="auto"
                 />
                 {data?.image?.src ? null : (
-                    <Letter title={data?.fullname} id={data?.author_data?.id} />
+                    <Letter
+                        title={data?.fullname || data?.title}
+                        id={data?.author_data?.id}
+                        className="w-full h-full rounded-full sm:rounded-lg"
+                        textClassName="text-4xl sm:text-6xl xl:text-7xl"
+                    />
                 )}
             </View>
         </Skeleton>
@@ -308,10 +441,14 @@ export function UnitActions({
     secondaryMenuItem,
     skeleton,
     className = 'flex-row sm:flex-col gap-2',
-    primaryClassName = 'w-full',
+    primaryClassName,
     secondaryClassName = 'w-full',
     inlineSecondary = false,
 }) {
+    const flushOnMobile = use(UnitSurfaceContext);
+    const resolvedPrimaryClassName = primaryClassName ?? (
+        flushOnMobile ? FLUSH_ACTION_PRIMARY : 'w-full'
+    );
     const secondary = secondaryMenuItem ? (
         <View
             className={
@@ -326,7 +463,7 @@ export function UnitActions({
 
     return (
         <View className={className}>
-            <View className={primaryClassName}>
+            <View className={resolvedPrimaryClassName}>
                 <Skeleton className="h-9 w-full" rounded="rounded-lg" visible={skeleton}>
                     {primaryMenuItem}
                     {inlineSecondary ? secondary : null}
