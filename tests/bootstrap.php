@@ -78,6 +78,51 @@ class BxDolTestCase extends \PHPUnit\Framework\TestCase
         return $oModule;
     }
 
+    protected function bxRequirePosts()
+    {
+        bx_import('BxDolModule');
+        $oModule = BxDolModule::getInstance('bx_posts');
+        if (!$oModule)
+            $this->markTestSkipped('bx_posts module is not installed.');
+
+        if (!BxDolDb::getInstance()->isTableExists('bx_posts_posts'))
+            $this->markTestSkipped('bx_posts module is not installed (table bx_posts_posts is missing).');
+
+        return $oModule;
+    }
+
+    protected function bxCallProtected($o, $sMethod, ...$aArgs)
+    {
+        $oMethod = new ReflectionMethod($o, $sMethod);
+        $oMethod->setAccessible(true);
+        return $oMethod->invokeArgs($o, $aArgs);
+    }
+
+    protected function bxCallProtectedArgs($o, $sMethod, array $aArgs)
+    {
+        $oMethod = new ReflectionMethod($o, $sMethod);
+        $oMethod->setAccessible(true);
+        return $oMethod->invokeArgs($o, $aArgs);
+    }
+
+    protected function bxSetProtected($o, $sProperty, $mixedValue, $sClass = null)
+    {
+        $oProperty = new ReflectionProperty($sClass ?: $o, $sProperty);
+        $oProperty->setAccessible(true);
+        $oProperty->setValue($o, $mixedValue);
+    }
+
+    protected function bxModuleInstances(BxDolModule $oModule, ?array $aReplace = null): array
+    {
+        $oProperty = new ReflectionProperty(BxDolModule::class, '_aInstancesStorage');
+        $oProperty->setAccessible(true);
+        $aCurrent = $oProperty->getValue($oModule) ?: [];
+        if ($aReplace !== null)
+            $oProperty->setValue($oModule, $aReplace);
+
+        return $aCurrent;
+    }
+
     function bxMockGet ($sClass, $aModule = array(), $bDisableContructor = false)
     {
         if ($aModule)
@@ -109,3 +154,5 @@ class BxDolTestCase extends \PHPUnit\Framework\TestCase
     }
 
 }
+
+require_once dirname(__FILE__) . '/units/modules/boonex/posts/BxPostsTestCase.php';

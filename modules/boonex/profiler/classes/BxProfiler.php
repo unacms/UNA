@@ -181,11 +181,16 @@ class BxProfiler extends BxDol
     function logPageOpen ($iTime)
     {
         $s  = $this->_logBegin ('LONG PAGE OPEN: ' . $this->_formatTime($iTime));
-        $s .= "Request method: " . $_SERVER['REQUEST_METHOD'] . "\n";
-        $s .= "Query string: " . $_SERVER['QUERY_STRING'] . "\n";
-        $s .= "Request URI: " . $_SERVER['REQUEST_URI'] . "\n";
-        $s .= "Script name: " . $_SERVER['SCRIPT_NAME'] . "\n";
-        $s .= "PHP self: " . $_SERVER['PHP_SELF'] . "\n";
+        if (isset($_SERVER['REQUEST_METHOD']))
+            $s .= "Request method: " . $_SERVER['REQUEST_METHOD'] . "\n";
+        if (isset($_SERVER['QUERY_STRING']))
+            $s .= "Query string: " . $_SERVER['QUERY_STRING'] . "\n";
+        if (isset($_SERVER['REQUEST_URI']))
+            $s .= "Request URI: " . $_SERVER['REQUEST_URI'] . "\n";
+        if (isset($_SERVER['SCRIPT_NAME']))
+            $s .= "Script name: " . $_SERVER['SCRIPT_NAME'] . "\n";
+        if (isset($_SERVER['PHP_SELF']))
+            $s .= "PHP self: " . $_SERVER['PHP_SELF'] . "\n";
         if (getParam('bx_profiler_long_page_debug'))
             $s .= "All server vars: \n" . print_r ($_SERVER, true);
         $s .= $this->_logEnd();
