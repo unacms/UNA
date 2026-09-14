@@ -3,7 +3,7 @@
 use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- * Content-module DB helpers via Posts (SQL construction, no row writes).
+ * Content-module DB helpers via Posts (no row writes).
  */
 class BxPostsDbTest extends BxPostsTestCase
 {

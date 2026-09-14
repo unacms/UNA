@@ -91,6 +91,19 @@ class BxDolTestCase extends \PHPUnit\Framework\TestCase
         return $oModule;
     }
 
+    protected function bxRequirePersons()
+    {
+        bx_import('BxDolModule');
+        $oModule = BxDolModule::getInstance('bx_persons');
+        if (!$oModule)
+            $this->markTestSkipped('bx_persons module is not installed.');
+
+        if (!BxDolDb::getInstance()->isTableExists('bx_persons_data'))
+            $this->markTestSkipped('bx_persons module is not installed (table bx_persons_data is missing).');
+
+        return $oModule;
+    }
+
     protected function bxCallProtected($o, $sMethod, ...$aArgs)
     {
         $oMethod = new ReflectionMethod($o, $sMethod);
@@ -156,3 +169,4 @@ class BxDolTestCase extends \PHPUnit\Framework\TestCase
 }
 
 require_once dirname(__FILE__) . '/units/modules/boonex/posts/BxPostsTestCase.php';
+require_once dirname(__FILE__) . '/units/modules/boonex/persons/BxPersonsTestCase.php';

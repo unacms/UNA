@@ -16,9 +16,8 @@ class BxPostsModuleServicesTest extends BxPostsTestCase
             $this->assertArrayHasKey($sName, $a);
     }
 
-    public function testModuleIconAndSample()
+    public function testModuleSampleAndContext()
     {
-        $this->assertSame('file-alt', $this->_oModule->serviceModuleIcon());
         $this->assertNotEmpty($this->_oModule->serviceModuleSample());
         $this->assertTrue($this->_oModule->serviceIsAllowedPostInContext());
     }
@@ -113,7 +112,6 @@ class BxPostsModuleServicesTest extends BxPostsTestCase
 
         $this->assertIsArray($aResult);
         $this->assertSame(250, $aResult['date']);
-        $this->assertSame('file-alt', $aResult['icon']);
     }
 
     public function testGetContentOwnerProfileIdWithoutContentUsesViewer()

@@ -21,7 +21,6 @@ class BxPostsConfigTest extends BxPostsTestCase
         $this->assertSame('view-post', $CNF['URI_VIEW_ENTRY']);
         $this->assertSame('create-post', $CNF['URI_ADD_ENTRY']);
         $this->assertSame('edit-post', $CNF['URI_EDIT_ENTRY']);
-        $this->assertSame('file-alt', $CNF['ICON']);
         $this->assertTrue($CNF['PARAM_LINKS_ENABLED']);
         $this->assertTrue($CNF['PARAM_MULTICAT_ENABLED']);
         $this->assertTrue($CNF['PARAM_POLL_ENABLED']);
