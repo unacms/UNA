@@ -61,7 +61,7 @@ const defineCells = (blocks, data) => {
     }
 
     const mapFromBlocks = (predicate) =>
-        Object.entries(blocks)
+        Object.entries(blocks || {})
             .filter(([, value]) => predicate(value))
             .map(([key, value]) => ({ name: key, block: value }));
 

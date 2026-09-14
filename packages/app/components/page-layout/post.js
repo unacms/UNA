@@ -59,6 +59,18 @@ const defineCells = (blocks, data) => {
         return { sideBarBlocks, topBlocks, centerBlocks, leftBarBlocks };
     }
 
+    // No layout config for this page (e.g. a plain UNA page such as
+    // `resources-manage/<space>` opened in the post modal): render every
+    // cell's blocks in the center column instead of crashing on
+    // `Object.entries(undefined)`.
+    if (!blocks || typeof blocks !== 'object') {
+        const cells = data?.elements && typeof data.elements === 'object' ? Object.values(data.elements) : [];
+        const centerBlocks = mapLayoutBlocks(
+            cells.flatMap(cell => (Array.isArray(cell) ? cell : Object.values(cell || {})))
+        );
+        return { sideBarBlocks: [], topBlocks: [], centerBlocks, leftBarBlocks: [] };
+    }
+
     const mapFromBlocks = (predicate) =>
         Object.entries(blocks)
             .filter(([, value]) => predicate(value))

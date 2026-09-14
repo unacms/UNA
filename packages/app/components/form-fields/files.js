@@ -20,6 +20,7 @@ import { lazyComponent } from 'app/lib/lazy-component';
 // Crop UI (zoomable view + crop math) loads on first crop, not with every form.
 const ImageCropModal = lazyComponent(() => import('app/lib/image/crop-modal'), { name: 'ImageCropModal' });
 import { getImageCropKind, isSvgAsset, getAssetImageSize } from 'app/lib/image/crop';
+import { getCoverAspectClass, getImageUploadLimits, shouldSkipImageCrop } from 'app/lib/image/upload-settings';
 import { useTranslation } from 'react-i18next'
 import emitter from 'app/context/emitter';
 import { CaptionForFileInput } from 'app/customization/functions';
@@ -414,15 +415,18 @@ export default function (props) {
                                     }
                                     let preparedUri = uri;
                                     try {
-                                        preparedUri = await prepareImageForUpload({
-                                            uri,
-                                            width,
-                                            height,
-                                            fileSizeBytes: i?.fileSize || i?.size,
-                                            maxWidth: 2000,
-                                            maxHeight: 2000,
-                                            webpOverMb: 4,
-                                        });
+                                        const limits = getImageUploadLimits(formName);
+                                        if (!limits.skip) {
+                                            preparedUri = await prepareImageForUpload({
+                                                uri,
+                                                width,
+                                                height,
+                                                fileSizeBytes: i?.fileSize || i?.size,
+                                                maxWidth: limits.maxWidth,
+                                                maxHeight: limits.maxHeight,
+                                                webpOverMb: limits.webpOverMb,
+                                            });
+                                        }
                                     } catch (prepareErr) {
                                         console.warn('[files] image prepare failed, uploading original:', prepareErr);
                                     }
@@ -505,7 +509,7 @@ export default function (props) {
         const kind = getImageCropKind(name);
         const asset = assets[0];
 
-        if (kind && asset && !asset.cropped && !isSvgAsset(asset)) {
+        if (kind && !shouldSkipImageCrop(formName) && asset && !asset.cropped && !isSvgAsset(asset)) {
             const size = await getAssetImageSize(asset);
             if (size) {
                 setCropSession({
@@ -522,7 +526,7 @@ export default function (props) {
 
         const k = await uploadImages(assets);
         setImageSourceN(k, bMultiple);
-    }, [name, bMultiple]);
+    }, [name, bMultiple, formName]);
 
     const handleCropCancel = useCallback(() => {
         setCropSession(null);
@@ -759,6 +763,7 @@ export default function (props) {
             sourceWidth={cropSession?.width}
             sourceHeight={cropSession?.height}
             kind={cropSession?.kind || 'picture'}
+            module={formName}
             fileSizeBytes={cropSession?.asset?.fileSize || cropSession?.asset?.size}
             onCancel={handleCropCancel}
             onConfirm={handleCropConfirm}
@@ -859,7 +864,7 @@ function ActionButton({ imagesList, props, selectImage, handleDelete, bMultiple,
         if (!img && props.useUrl) {
             img = { file_url: props.value, file_type: "image/jpeg" };
         }
-        let w = 'web:w-full ' + appSetting('cover', 'aspect_ratio');
+        let w = 'web:w-full ' + getCoverAspectClass(props.form_name);
 
         const isPictureField = props.name == 'picture' || props.name == 'avatar' || props.name == 'badge';
         if (props.name == 'picture' || props.name == 'avatar')

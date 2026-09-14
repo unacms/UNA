@@ -62,5 +62,17 @@ export const settingsForms = {
             hide_errors: true,
             button_full_width: true,
         },
+         /**
+         * Client-side image prepare before UNA upload.
+         * `skip_resize[module]` uploads the original. `by_module[module]`
+         * overrides max box (image is scaled to fit, not cropped).
+         */
+        image_upload: {
+            max_width: 2000,
+            max_height: 2000,
+            webp_over_mb: 4,
+            skip_resize: {},
+            by_module: {},
+        },
     }
 }

@@ -83,6 +83,7 @@ export function useProfileImageUpload({
             sourceWidth={cropSession?.width}
             sourceHeight={cropSession?.height}
             kind={cropSession?.kind || kind}
+            module={moduleName}
             fileSizeBytes={cropSession?.fileSizeBytes}
             onCancel={() => setCropSession(null)}
             onConfirm={handleCropConfirm}

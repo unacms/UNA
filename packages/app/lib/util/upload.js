@@ -135,18 +135,15 @@ export const prepareImageForUpload = async ({
         typeof height === 'number' &&
         typeof maxWidth === 'number' &&
         typeof maxHeight === 'number' &&
+        maxWidth > 0 &&
+        maxHeight > 0 &&
         (width > maxWidth || height > maxHeight)
     ) {
-        let resizeWidth = maxWidth;
-        let resizeHeight = maxHeight;
-
-        if (width > height) {
-            resizeHeight = Math.round((height * resizeWidth) / width);
-        } else {
-            resizeWidth = Math.round((width * resizeHeight) / height);
-        }
-
-        context.resize({ width: resizeWidth, height: resizeHeight });
+        const scale = Math.min(maxWidth / width, maxHeight / height, 1);
+        context.resize({
+            width: Math.max(1, Math.round(width * scale)),
+            height: Math.max(1, Math.round(height * scale)),
+        });
         hasActions = true;
     }
 

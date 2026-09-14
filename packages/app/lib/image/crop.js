@@ -1,8 +1,14 @@
 import { Image } from 'react-native'
 import * as ImagePicker from 'expo-image-picker'
 import { ImageManipulator, SaveFormat } from './manipulator'
-import { appSetting } from 'app/lib/util/settings'
 import { getUploadSizeMb } from 'app/lib/util/upload'
+import {
+    getCoverAspectClass,
+    getCoverCropMaxWidth,
+    getPictureCropOutput,
+    getUploadWebpOverMb,
+    parseAspectRatioClass,
+} from './upload-settings'
 
 export const PICTURE_CROP_OUTPUT = 400
 export const COVER_CROP_MAX_WIDTH = 2000
@@ -17,16 +23,12 @@ export function getImageCropKind(fieldName) {
     return null
 }
 
-export function getCoverCropAspect() {
-    const cls = appSetting('cover', 'aspect_ratio') || 'aspect-3/1'
-    const match = String(cls).match(/aspect-(\d+(?:\.\d+)?)\/(\d+(?:\.\d+)?)/)
-    if (match) return Number(match[1]) / Number(match[2])
-    if (String(cls).includes('aspect-square')) return 1
-    return 3
+export function getCoverCropAspect(module) {
+    return parseAspectRatioClass(getCoverAspectClass(module)) || 3
 }
 
-export function getCropAspect(kind) {
-    return kind === 'cover' ? getCoverCropAspect() : 1
+export function getCropAspect(kind, module) {
+    return kind === 'cover' ? getCoverCropAspect(module) : 1
 }
 
 export function isSvgAsset(asset) {
@@ -147,13 +149,13 @@ export function getCropRectFromTransform({
     )
 }
 
-export function getCropOutputSize(kind, crop, aspect) {
+export function getCropOutputSize(kind, crop, aspect, module) {
     if (kind === 'picture') {
-        const side = Math.max(1, Math.min(PICTURE_CROP_OUTPUT, crop.width, crop.height))
+        const side = Math.max(1, Math.min(getPictureCropOutput(), crop.width, crop.height))
         return { width: Math.round(side), height: Math.round(side) }
     }
-    const ratio = aspect || getCoverCropAspect()
-    const width = Math.max(1, Math.min(COVER_CROP_MAX_WIDTH, crop.width))
+    const ratio = aspect || getCoverCropAspect(module)
+    const width = Math.max(1, Math.min(getCoverCropMaxWidth(), crop.width))
     return { width: Math.round(width), height: Math.max(1, Math.round(width / ratio)) }
 }
 
@@ -163,10 +165,11 @@ export async function cropAndPrepareImage({
     outputWidth,
     outputHeight,
     fileSizeBytes,
-    webpOverMb = 4,
+    webpOverMb,
 }) {
+    const webpLimit = typeof webpOverMb === 'number' ? webpOverMb : getUploadWebpOverMb()
     const originalSizeMb = await getUploadSizeMb({ uri, fileSizeBytes })
-    const shouldConvertToWebp = originalSizeMb > webpOverMb
+    const shouldConvertToWebp = originalSizeMb > webpLimit
     const context = ImageManipulator.manipulate(uri)
     let hasActions = false
 

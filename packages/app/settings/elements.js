@@ -32,6 +32,10 @@ export const settingsElements = {
         more_menu_in_navbar: {
             bx_groups: true,
         },
+        picture_size: 400,
+        crop_max_width: 2000,
+        aspect_ratio_by_module: {},
+        skip_crop: {},
         // CoverMorph: Profile `unit_wo_info` sizes and title tokens to
         // interpolate between. Add variants here rather than one-off CSS.
         morph_avatar_expanded: '3xl',

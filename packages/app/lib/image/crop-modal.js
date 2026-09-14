@@ -89,6 +89,7 @@ export default function ImageCropModal({
     sourceWidth,
     sourceHeight,
     kind = 'picture',
+    module,
     fileSizeBytes,
     onCancel,
     onConfirm,
@@ -98,7 +99,7 @@ export default function ImageCropModal({
     const transformRef = useRef(null)
     const [viewport, setViewport] = useState(null)
     const [applying, setApplying] = useState(false)
-    const aspect = getCropAspect(kind)
+    const aspect = getCropAspect(kind, module)
     const isCircle = kind === 'picture'
 
     useEffect(() => {
@@ -140,7 +141,7 @@ export default function ImageCropModal({
             offsetY: event.offsetY || 0,
             zoomLevel: event.zoomLevel || 1,
         })
-        const output = getCropOutputSize(kind, crop, aspect)
+        const output = getCropOutputSize(kind, crop, aspect, module)
 
         setApplying(true)
         try {
@@ -156,7 +157,7 @@ export default function ImageCropModal({
             console.warn('[image-crop] apply failed:', err)
             setApplying(false)
         }
-    }, [uri, viewport, applying, sourceWidth, sourceHeight, kind, aspect, fileSizeBytes, onConfirm])
+    }, [uri, viewport, applying, sourceWidth, sourceHeight, kind, module, aspect, fileSizeBytes, onConfirm])
 
     const title = kind === 'cover' ? t('Adjust cover') : t('Adjust photo')
 
