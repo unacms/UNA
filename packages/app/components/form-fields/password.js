@@ -18,6 +18,9 @@ export default function FormFieldPassword(props) {
         inputRef,
         returnKeyProps,
         isAdaptiveLabel,
+        inputId,
+        errorId,
+        invalid,
     } = useFormField(props);
 
     const eyeIcons = appSetting('forms', 'password_eye_button')?.image;
@@ -28,6 +31,8 @@ export default function FormFieldPassword(props) {
             <View className="relative w-full">
                 <Input
                     ref={inputRef}
+                    id={inputId}
+                    nativeID={inputId}
                     textContentType="password"
                     autoComplete="current-password"
                     placeholderTextColor={placeholderTextColor}
@@ -39,6 +44,8 @@ export default function FormFieldPassword(props) {
                     onBlur={onBlur}
                     value={field.value}
                     aria-label={props.caption}
+                    aria-invalid={invalid || undefined}
+                    aria-describedby={errorId}
                     {...returnKeyProps}
                 />
                 {eyeIcon ? (
@@ -47,6 +54,7 @@ export default function FormFieldPassword(props) {
                             image={eyeIcon}
                             style="borderless"
                             controlSize="small"
+                            hitSlop={{ top: 8, right: 8, bottom: 8, left: 8 }}
                             accessibilityLabel={isVisible ? 'Show password' : 'Hide password'}
                             onPress={() => { setIsVisible(!isVisible) }}
                         />

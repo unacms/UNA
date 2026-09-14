@@ -176,6 +176,7 @@ export const PageHeader = ({ pageData }) => {
             )}
             <View
                 className={flowHeaderContainerClassName}
+                role={usesFixedOverlayHeader && shouldRenderFixedLayer ? undefined : 'banner'}
                 aria-hidden={usesFixedOverlayHeader && shouldRenderFixedLayer ? 'true' : undefined}
                 style={flowHeaderStyle}
                 onLayout={onHeaderLayout}
@@ -192,6 +193,7 @@ export const PageHeader = ({ pageData }) => {
             {usesFixedOverlayHeader && shouldRenderFixedLayer && (
                 <View
                     className={fixedHeaderContainerClassName}
+                    role="banner"
                     pointerEvents={headerPointerEvents}
                 >
                     <HeaderFade headerHeight={headerHeight} isScrolled={isScrolled} />

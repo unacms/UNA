@@ -15,7 +15,29 @@ const restingOffset = inputSettings.adaptive_label_resting_offset ?? 0
 const floatedOffset = inputSettings.adaptive_label_floated_offset ?? -2
 const duration = inputSettings.adaptive_label_duration ?? 200
 
-function AdaptiveLabel({ caption, value, focused, children }) {
+export function getFormFieldDomId(name) {
+    if (name == null || name === '') return undefined
+    return `form-field-${String(name).replace(/[^A-Za-z0-9_-]/g, '-')}`
+}
+
+export function getFormFieldErrorDomId(name) {
+    const id = getFormFieldDomId(name)
+    return id ? `${id}-error` : undefined
+}
+
+function FieldCaption({ htmlFor, className, children }) {
+    const label = <Text className={className}>{children}</Text>
+    if (isWeb && htmlFor) {
+        return (
+            <label htmlFor={htmlFor} className="block">
+                {label}
+            </label>
+        )
+    }
+    return label
+}
+
+function AdaptiveLabel({ caption, value, focused, htmlFor, children }) {
     const hasValue = value != null && String(value).length > 0
     const floated = !!focused || hasValue
 
@@ -79,7 +101,8 @@ function AdaptiveLabel({ caption, value, focused, children }) {
                         floated ? inputSettings.adaptive_label_floated : null
                     )}
                 >
-                    <Text
+                    <FieldCaption
+                        htmlFor={htmlFor}
                         className={
                             floated
                                 ? inputSettings.adaptive_label_text_floated
@@ -87,7 +110,7 @@ function AdaptiveLabel({ caption, value, focused, children }) {
                         }
                     >
                         {caption}
-                    </Text>
+                    </FieldCaption>
                 </View>
             </Animated.View>
             {children}
@@ -117,8 +140,9 @@ export default function _Field({
 }) {
     const caption = format === 'notitle' ? '' : captionProp
     const wrapRef = useRef(null)
-
+    const inputId = getFormFieldDomId(name)
     const errorText = Array.isArray(error) ? error[0] : error
+    const errorId = errorText ? getFormFieldErrorDomId(name) : undefined
 
     useEffect(() => {
         if (!errorText) return
@@ -142,6 +166,14 @@ export default function _Field({
                 )
                 if (el?.getBoundingClientRect) {
                     reportY(el.getBoundingClientRect().top)
+                    const control = el.querySelector?.('input, textarea, select')
+                    if (control) {
+                        const scope = control.closest('form') || document
+                        const firstInvalid = scope.querySelector('[aria-invalid="true"]')
+                        if (!firstInvalid || firstInvalid === control) {
+                            control.focus()
+                        }
+                    }
                     return
                 }
             }
@@ -174,9 +206,12 @@ export default function _Field({
         <View className=" gap-y-1 z-10">
             <Text className=" text-secondary-foreground block px-0.5 w-full ">
                 <Row className="items-center gap-0.5">
-                    <Text className={appSetting('forms', 'caption_classes')}>
+                    <FieldCaption
+                        htmlFor={inputId}
+                        className={appSetting('forms', 'caption_classes')}
+                    >
                         {caption}
-                    </Text>
+                    </FieldCaption>
                     {checker || required ? (
                         <></>
                     ) : (
@@ -217,6 +252,7 @@ export default function _Field({
                     caption={caption}
                     value={value}
                     focused={focused}
+                    htmlFor={inputId}
                 >
                     {children}
                 </AdaptiveLabel>
@@ -227,10 +263,11 @@ export default function _Field({
                 <FormError
                     errorText={error[0]}
                     errorLink={error[1]}
+                    errorId={errorId}
                 />
             )}
             {!!error && !Array.isArray(error) && (
-                <FormError errorText={error} />
+                <FormError errorText={error} errorId={errorId} />
             )}
             {!!info && (
                 <View className="label">
@@ -243,20 +280,25 @@ export default function _Field({
     )
 }
 
-export function FormError({ errorText, errorLink }) {
+export function FormError({ errorText, errorLink, errorId }) {
     if (!errorText.trim())
         return 
     const errorMessage = (
         <View className="items-start mr-auto mt-0.5">
             <View
-                className="ml-3 w-0 h-0 border-l-transparent border-r-transparent border-b-destructive/20"
+                className="ml-3 w-0 h-0 border-l-transparent border-r-transparent border-b-destructive/20 dark:border-b-destructive"
                 style={{
                     borderLeftWidth: 6,
                     borderRightWidth: 6,
                     borderBottomWidth: 6,
                 }}
             />
-            <Text className="text-destructive text-xs bg-destructive/20 p-2 rounded-xl">
+            <Text
+                nativeID={errorId}
+                id={errorId}
+                role="alert"
+                className="text-destructive text-xs bg-destructive/20 p-2 rounded-xl dark:bg-destructive dark:text-destructive-foreground"
+            >
                 {errorText}
             </Text>
         </View>

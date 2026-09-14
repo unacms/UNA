@@ -26,6 +26,14 @@ export { DropdownMenuOpenContext };
 const isLegacyButtonProps = (props) =>
     props?.legacyButton === true || props?.variant != null;
 
+function isNavigableDropdownItem(item, onSelect) {
+    if (typeof onSelect === 'function') return false;
+    if (!item || typeof item.link !== 'string' || !item.link) return false;
+    if (item.target === 'modal') return false;
+    if (item.type === 'group_header' || item.type === 'separator') return false;
+    return true;
+}
+
 const variantClassMap = {
     vertical: { item: 'item_ver', container: 'content_ver' },
     horizontal: { item: 'item_hor', container: 'content_hor' },
@@ -198,32 +206,40 @@ function DropdownMenuPopup({
                                     />
                                 ) : null}
                                 <View className={menuSettings[classes.container]}>
-                                    {section.items.map((item, index) => (
-                                        <DropdownMenuItem
-                                            key={item.id ?? `${sectionIndex}-${index}`}
-                                            index={index}
-                                            item={item}
-                                            handleSelect={handleSelect}
-                                            classes={classes}
-                                            className={item.className}
-                                        />
-                                    ))}
+                                    {section.items.map((item, index) => {
+                                        const navigable = isNavigableDropdownItem(item, onSelect);
+                                        return (
+                                            <DropdownMenuItem
+                                                key={item.id ?? `${sectionIndex}-${index}`}
+                                                index={index}
+                                                item={item}
+                                                handleSelect={navigable ? undefined : handleSelect}
+                                                link={navigable ? item.link : undefined}
+                                                classes={classes}
+                                                className={item.className}
+                                            />
+                                        );
+                                    })}
                                 </View>
                             </View>
                         ))}
                     </View>
                 ) : (
                     <View className={menuSettings[classes.container]}>
-                        {items.map((item, index) => (
-                            <DropdownMenuItem
-                                key={item.id ?? index}
-                                index={index}
-                                item={item}
-                                handleSelect={handleSelect}
-                                classes={classes}
-                                className={item.className}
-                            />
-                        ))}
+                        {items.map((item, index) => {
+                            const navigable = isNavigableDropdownItem(item, onSelect);
+                            return (
+                                <DropdownMenuItem
+                                    key={item.id ?? index}
+                                    index={index}
+                                    item={item}
+                                    handleSelect={navigable ? undefined : handleSelect}
+                                    link={navigable ? item.link : undefined}
+                                    classes={classes}
+                                    className={item.className}
+                                />
+                            );
+                        })}
                     </View>
                 )}
                 {footer}

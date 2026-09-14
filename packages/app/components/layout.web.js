@@ -44,6 +44,12 @@ const MemoizedContent = React.memo(({ currentUser, pageLayoutName, layoutName, d
 
     return (
         <View className="w-full flex-1 bg-background">
+            <a
+                href="#main-content"
+                className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[10000] focus:h-auto focus:w-auto focus:overflow-visible focus:whitespace-normal focus:rounded-lg focus:border focus:border-border focus:bg-card focus:px-4 focus:py-2.5 focus:text-sm focus:font-medium focus:text-card-foreground focus:shadow-md focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-ring"
+            >
+                Skip to content
+            </a>
             <Suggestions />
             <AsyncWorker />
             <HeaderOptionsProvider>
@@ -236,7 +242,7 @@ const Content = React.memo(({ children, currentUser, layoutName, url }) => {
 
     return (
         <View className="ns--main-wrapper-- w-full mx-auto items-stretch cnt-root ne--" key={contentKey}>
-            <main id="main-content" className={mainClassName}>
+            <main id="main-content" tabIndex={-1} className={`${mainClassName} outline-none scroll-mt-24`}>
                 <Informer />
                 {children}
             </main>

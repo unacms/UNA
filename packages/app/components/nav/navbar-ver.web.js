@@ -81,6 +81,7 @@ const SideBar = memo(({ headerSettings, currentUser, uri, url, bSearch, menuPopu
                         <Link
                             className="flex items-center rounded-xl flex-row active:scale-95 active:opacity-50 text-secondary-foreground  web:hover:text-foreground web:duration-300 "
                             href="/home"
+                            alt="Home"
                         >
                             {appStatic('logo')}
                         </Link>
@@ -138,6 +139,7 @@ export default function (props) {
                 <View className='w-80'>
                     <Redirect ref={redirectdRef} />
                     <ScrollView contentContainerStyle={{ width: '100%' }}
+                        role="banner"
                         className={"border-border bg-card border-b  lg:bg-transparent lg:border-none lg:shadow-none fixed w-full lg:w-80 top-0 items-start lg:h-screen" + (!headerSettings.header ? ' hidden lg:flex' : '')}>
                         <View className=' flex-row lg:flex-col  h-16 lg:h-auto items-center lg:items-start' >
                             <View className=' justify-between  lg:h-screen flex-auto '>
