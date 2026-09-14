@@ -2304,7 +2304,7 @@ INSERT INTO `sys_alerts` (`unit`, `action`, `handler_id`) VALUES
 
 
 INSERT INTO `sys_alerts_handlers` (`name`, `class`, `file`) VALUES
-('sys_agents', 'BxDolAiAlertResponse', 'inc/classes/BxDolAiAlertResponse.php');
+('sys_agents', 'BxDolAiTriggerMessage', 'inc/classes/BxDolAiTriggerMessage.php');
 SET @iIdHandler = LAST_INSERT_ID();
 
 INSERT INTO `sys_alerts` (`unit`, `action`, `handler_id`) VALUES
@@ -7051,8 +7051,8 @@ INSERT INTO `sys_agents_tools` (`type`, `title`, `docs`, `params`, `params_user`
 
 ('comment_get', 'Comment get', 'This tool allows agents to get single comment by global comment id.', '{}', NULL, 0, 0, 1, 'BxDolAIToolCmtsGetSingle', ''),
 
-('chat_artifact_save', 'Chat artifact save', 'Save one field from the conversation into sys_agents_chat_artifacts.', '{}', NULL, 0, 0, 1, 'BxDolAIToolChatArtifactSave', ''),
-('chat_goal_reached', 'Chat goal reached', 'Call once when the conversation goal is done. Fires agent_conversation_closed with reason=goal.', '{}', NULL, 0, 0, 1, 'BxDolAIToolChatGoalReached', '');
+('chat_artifact_save', 'Chat artifact save', 'Save one field from the conversation into sys_agents_chat_artifacts.', '{}', NULL, 0, 0, 0, 'BxDolAIToolChatArtifactSave', ''),
+('chat_goal_reached', 'Chat goal reached', 'Call once when the conversation goal is done. Fires agent_conversation_closed with reason=goal.', '{}', NULL, 0, 0, 0, 'BxDolAIToolChatGoalReached', '');
 
 CREATE TABLE IF NOT EXISTS `sys_agents_chat_history` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,

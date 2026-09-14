@@ -129,7 +129,7 @@ class BxDolAiAgent extends RAG
 
     protected function getСhatHistoryThreadId(): string
     {
-        return BxDolAi::chatHistoryThreadId($this->aAgent, $this->aParams);
+        return BxDolAiChat::threadId($this->aAgent, $this->aParams);
     }
 
     protected function getAlertTriggerModifyableKeys(): string
