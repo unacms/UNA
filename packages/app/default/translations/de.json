@@ -400,7 +400,11 @@
     "Conversation": "Unterhaltung",
     "Thinking…": "Denke nach…",
     "This conversation has ended": "Diese Unterhaltung ist beendet",
-    "Start again": "Neu starten",
+    "Start new": "Neues Gespräch",
+    "Attach image": "Bild anhängen",
+    "Attached image": "Angehängtes Bild",
+    "Image is too large": "Das Bild ist zu groß",
+    "Upload failed": "Upload fehlgeschlagen",
     "Stop": "Stopp",
     "You": "Du",
     "Adjust photo": "Foto anpassen",
@@ -443,5 +447,8 @@
     "item_bx_polls": "Umfrage",
     "Today ": "Heute ",
     "Tomorrow ": "Morgen ",
-    "Create new ": "Erstellen "
+    "Create new ": "Erstellen ",
+    "operator_agent_title": "KI fragen",
+    "operator_agent_open": "KI-Assistent öffnen",
+    "operator_agent_close": "KI-Assistent schließen"
 }

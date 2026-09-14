@@ -6,8 +6,9 @@ import { View, Row } from 'app/design/view';
 import { Text } from 'app/design/typography';
 import Profile from 'app/ui/molecules/profile/profile';
 import Html from 'app/ui/atoms/html';
-import { agentTextToHtml, messageActions, messageText, clipAgentText } from './message-content';
+import { agentTextToHtml, messageActions, messageImages, messageText, clipAgentText } from './message-content';
 import { ChatActions } from './chat-actions';
+import Image from 'app/ui/atoms/image';
 
 /**
  * Message body. Agent output is HTML (see agentTextToHtml for how plain prose is
@@ -51,12 +52,14 @@ function ChatBubbleImpl({
     // The user's own text is clipped on display too: a transcript hydrated from an
     // older session may predate the agent's current max_input_chars.
     const text = isUser ? clipAgentText(raw, maxChars) : raw;
+    const images = messageImages(message);
     const actions = isUser ? [] : messageActions(message, streamedActions);
     const hasActions = actions.length > 0;
+    const hasImages = images.length > 0;
 
-    if (!text && !hasActions && !isStreaming) return null;
+    if (!text && !hasActions && !hasImages && !isStreaming) return null;
 
-    const showBubble = !!text || isStreaming;
+    const showBubble = !!text || hasImages || isStreaming;
     const author = isUser
         ? {
               id: user?.id || 0,
@@ -89,6 +92,19 @@ function ChatBubbleImpl({
                             </Text>
                         ) : null}
                         <MessageBody text={text} isStreaming={isStreaming} format={messageFormat} />
+                        {hasImages ? (
+                            <View className="flex-row flex-wrap gap-2 mt-2">
+                                {images.map((src) => (
+                                    <Image
+                                        key={src}
+                                        src={src}
+                                        alt={t('Attached image')}
+                                        view="cover"
+                                        className="h-28 w-28 rounded-lg"
+                                    />
+                                ))}
+                            </View>
+                        ) : null}
                     </View>
                 ) : null}
                 {hasActions ? (

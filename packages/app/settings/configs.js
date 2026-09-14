@@ -65,6 +65,10 @@ export const settingsConfigs = {
         url: '/messenger', 
         back_button: false, 
     },
+    // Floating Ask AI for UNA operators (`user.operator`). Empty id disables the widget.
+    ai: {
+        operator_agent_id: 6,
+    },
     // Web smart app banner (iOS Safari meta + Android custom bar). Empty apple_app_id = no iOS meta.
     smart_app_banner: {
         apple_app_id: '',

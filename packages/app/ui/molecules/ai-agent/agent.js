@@ -4,8 +4,7 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } fr
 import { useTranslation } from 'react-i18next';
 import { useChat } from '@tanstack/ai-react';
 import { View, Row, ScrollView } from 'app/design/view';
-import { Text } from 'app/design/typography';
-import { NeoButton, TextInputClear } from 'app/design/controls';
+import { TextInputClear } from 'app/design/controls';
 import { useCurrentUser } from 'app/context/user';
 import { appSetting, cn, isWeb } from 'app/lib/util';
 import { createAgentChat, hydrateAgentChat } from './helper';
@@ -13,23 +12,34 @@ import { isHiddenFirstMessageText } from './hidden-first-message';
 import {
     agentMaxInputChars,
     clipAgentText,
+    foldConsecutiveAssistants,
     lastAssistantId,
     messageActions,
+    messageIds,
+    messageImages,
     messageText,
     parseChatActionsPayload,
     parseChatSessionPayload,
     sessionAllowsRestart,
     sessionFromMessages,
+    streamActionsForMessage,
 } from './message-content';
 import { AgentStatus, ChatBubble } from './chat-bubble';
+import { CHAT_IMAGES_MAX_DEFAULT, chatImageParts, revokePickedPreview, uploadAgentChatImage } from './chat-images';
+import { pickAgentChatImage } from './pick-image';
+import { AttachButton, ComposerAttachments, ComposerButtons, ComposerNotice } from './composer-controls';
 import { COMPOSER_MAX_PX, useComposerHeight } from './use-composer-height';
 import { useChatAutoscroll } from './use-chat-autoscroll';
+import { useStoredChatId } from './use-stored-chat-id';
 
 /**
  * @typedef {object} AgentBlockData UNA `sys-ai-chat` block payload.
  * @property {string} agent_id Agent row id; the only required field.
  * @property {number|string} [context_profile_id] Profile the conversation is about.
  * @property {object} [agent_profile] Profile unit used for the assistant's avatar and name.
+ * @property {number|string} [allow_images] 1 = composer can attach images for vision.
+ * @property {number|string} [allow_new] 1 = show "Start new" and partition extra threads (`?chat=`).
+ * @property {number|string} [max_images] Images per turn; default CHAT_IMAGES_MAX_DEFAULT.
  * @property {number|string} [max_input_chars] Per-message cap; 0 or absent means none.
  * @property {number|string} [guest_new_session_on_reload] 1 = every guest reload starts a fresh chat.
  * @property {'html'|'text'} [message_format] How to read agent output. Default 'html'.
@@ -43,41 +53,19 @@ function isInteractiveTarget(target) {
     return typeof target?.closest === 'function' ? !!target.closest(INTERACTIVE_SELECTOR) : false;
 }
 
-/**
- * Client-side id for a guest chat, so "one browser = one conversation" works without a
- * member account. Not security-bearing — identity is still the UNA session cookie;
- * this only partitions transcripts.
- */
-function guestChatNonce() {
-    try {
-        if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
-            return crypto.randomUUID().replace(/-/g, '').slice(0, 32);
-        }
-    } catch {
-        // Some locked-down contexts throw on crypto access. The fallback is fine here
-        // because collisions only ever matter within one browser.
-    }
-    return `${Date.now().toString(36)}${Math.random().toString(36).slice(2, 10)}`;
-}
-
-/**
- * Seed state for the transcript: `null` = "hydrate first, render nothing yet",
- * `[]` = "nothing to load, start clean".
- *
- * Fetching history is only worth a round trip when there is a bootstrap message to
- * suppress — without one, `useChat`'s own persistence handles hydration — and the chat
- * could already exist server-side. A guest whose chat id is a fresh nonce (agent
- * configured for a new session per reload, or they just pressed "Start again")
- * provably has no transcript, so the fetch is skipped.
- */
-function initialSeed(initialMessage, chatIsFresh) {
-    return initialMessage && !chatIsFresh ? null : [];
-}
+/** Stable "no messages" so `useChat` does not see a new array on every render. */
+const NO_MESSAGES = [];
 
 /**
  * Loads the UNA transcript before `useChat` mounts, so the bootstrap send cannot race
  * hydration ("a send that starts first owns the client"). The chat itself lives in
  * `AiAgentChat`, remounted via `key` whenever its identity changes.
+ *
+ * Fetching history is only worth a round trip when there is a bootstrap message to
+ * suppress — without one, `useChat`'s own persistence handles hydration — and the chat
+ * could already exist server-side. A chat whose id was just minted here (guest with
+ * "new session per reload", or "Start new") provably has no transcript, so the fetch
+ * is skipped.
  *
  * @param {object} props
  * @param {AgentBlockData} props.data
@@ -100,78 +88,92 @@ export default function AiAgent({
     const { currentUser } = useCurrentUser();
     const agentId = data?.agent_id;
     const contextProfileId = Number(data?.context_profile_id) || 0;
-    const isGuest = !(Number(currentUser?.id) > 0);
-    const guestSessionPerReload = !!Number(data?.guest_new_session_on_reload);
+    const userId = Number(currentUser?.id) || 0;
+    const isGuest = userId <= 0;
+    const allowNew = !!Number(data?.allow_new);
+    const freshPerReload = isGuest && !!Number(data?.guest_new_session_on_reload);
 
-    const [guestChatId, setGuestChatId] = useState(() => (guestSessionPerReload ? guestChatNonce() : ''));
-    // Members are identified by their session; only guests need the nonce.
-    const chatId = isGuest ? guestChatId : '';
+    const { chatId, fresh, ready, startNew } = useStoredChatId({
+        agentId,
+        contextProfileId,
+        userId,
+        mode: freshPerReload ? 'fresh' : allowNew ? 'stored' : 'single',
+    });
 
-    const [seed, setSeed] = useState(() => initialSeed(initialMessage, guestSessionPerReload && isGuest));
-    const [seedSession, setSeedSession] = useState(null);
-    const [seedError, setSeedError] = useState(null);
-
-    const startAgain = useCallback(() => {
-        // A new nonce means a new conversation, so there is nothing left to hydrate.
-        setSeed(initialSeed(initialMessage, isGuest));
-        setSeedSession(null);
-        setSeedError(null);
-        setGuestChatId(guestChatNonce());
-    }, [initialMessage, isGuest]);
+    /**
+     * Prefetched transcript, tagged with the chat it belongs to. Switching chats (a
+     * "Start new", a stored id arriving) makes it stale by itself — no reset needed.
+     * @type {[{chatId: string, messages: object[], session: object|null, error: Error|null}|null, Function]}
+     */
+    const [prefetch, setPrefetch] = useState(null);
+    const seed = prefetch?.chatId === chatId ? prefetch : null;
+    const needsPrefetch = ready && !!initialMessage && !fresh && !seed;
 
     useEffect(() => {
-        // `seed !== null` covers both "already loaded" and "decided not to load", and it
-        // keeps a restart from re-fetching the chat it just replaced.
-        if (!initialMessage || seed !== null) return undefined;
+        if (!needsPrefetch) return undefined;
         let cancelled = false;
         hydrateAgentChat(agentId, { contextProfileId, chatId })
             .then((result) => {
                 if (cancelled) return;
-                setSeed(Array.isArray(result?.messages) ? result.messages : []);
-                setSeedSession(parseChatSessionPayload(result?.session) || null);
+                setPrefetch({
+                    chatId,
+                    messages: Array.isArray(result?.messages) ? result.messages : NO_MESSAGES,
+                    session: parseChatSessionPayload(result?.session) || null,
+                    error: null,
+                });
             })
             .catch((error) => {
                 if (cancelled) return;
                 // A failed history load must not block the chat: start clean and show the
                 // error beside the composer.
-                setSeed([]);
-                setSeedSession(null);
-                setSeedError(error);
+                setPrefetch({ chatId, messages: NO_MESSAGES, session: null, error });
             });
         return () => {
             cancelled = true;
         };
-    }, [agentId, contextProfileId, initialMessage, chatId, seed]);
+    }, [needsPrefetch, agentId, contextProfileId, chatId]);
+
+    const startAgain = useCallback(() => {
+        const next = startNew();
+        // Fire-and-forget GET on the new thread. Assumed to let UNA register the id
+        // straight away, before the first message; the response is not needed. Drop
+        // this if the server turns out to create the thread on first POST anyway.
+        void hydrateAgentChat(agentId, { contextProfileId, chatId: next }).catch(() => {});
+    }, [startNew, agentId, contextProfileId]);
 
     // Hold the final height while hydrating so the page does not jump when the
     // transcript arrives.
-    if (initialMessage && seed === null) {
+    if (!ready || needsPrefetch) {
         return <View className={cn(height, 'overflow-hidden')} />;
     }
+
+    const seedMessages = seed?.messages || NO_MESSAGES;
 
     return (
         <AiAgentChat
             key={`${agentId}:${contextProfileId}:${chatId}`}
             data={data}
-            guestChatId={chatId}
+            chatId={chatId}
+            chatIsFresh={fresh}
             initialMessage={initialMessage}
             hideInitialMessage={hideInitialMessage}
-            initialMessages={seed || []}
-            initialSession={seedSession}
-            sendBootstrap={!!initialMessage && (seed || []).length === 0}
-            hydrateError={seedError}
+            initialMessages={seedMessages}
+            initialSession={seed?.session || null}
+            sendBootstrap={!!initialMessage && seedMessages.length === 0}
+            hydrateError={seed?.error || null}
             hideButton={hideButton}
             hideIdentity={hideIdentity}
             placeholder={placeholder}
             height={height}
-            onStartAgain={isGuest ? startAgain : undefined}
+            onStartAgain={allowNew ? startAgain : undefined}
         />
     );
 }
 
 function AiAgentChat({
     data,
-    guestChatId = '',
+    chatId = '',
+    chatIsFresh = false,
     initialMessage = '',
     hideInitialMessage = false,
     initialMessages = [],
@@ -187,8 +189,19 @@ function AiAgentChat({
     const { t } = useTranslation();
     const { currentUser } = useCurrentUser();
     const [input, setInput] = useState('');
+    /** @type {[import('./chat-images').PickedImage[], Function]} */
+    const [pendingImages, setPendingImages] = useState([]);
+    const [attachError, setAttachError] = useState(null);
+    const [uploading, setUploading] = useState(false);
     const inputRef = useRef(null);
     const messagesRef = useRef(initialMessages);
+    const pendingImagesRef = useRef(pendingImages);
+    /**
+     * Quick-reply buttons that arrived before the bubble they belong to was committed.
+     * @type {import('react').MutableRefObject<{id: string|null, actions: object[], afterId: string|null}|null>}
+     *   `id` is the server's message id when the chunk carried one; `afterId` is the
+     *   newest assistant message at the time — the buttons must land on a *newer* one.
+     */
     const pendingActionsRef = useRef(null);
     const bootstrapSentRef = useRef('');
     const [streamActions, setStreamActions] = useState({});
@@ -199,6 +212,8 @@ function AiAgentChat({
     const assistant = data?.agent_profile;
     const maxChars = agentMaxInputChars(data);
     const messageFormat = data?.message_format === 'text' ? 'text' : 'html';
+    const allowImages = !!Number(data?.allow_images);
+    const maxImages = Math.max(1, Number(data?.max_images) || CHAT_IMAGES_MAX_DEFAULT);
 
     // Read per render rather than at module scope: theme settings arrive with the
     // layout, so a snapshot taken at import time can be empty.
@@ -220,23 +235,20 @@ function AiAgentChat({
         if (!actions.length) return;
 
         const messages = messagesRef.current;
-        const last = messages[messages.length - 1];
-        const id = (last?.role === 'assistant' ? last.id : null)
-            || (messageId && messages.some((message) => message.id === messageId) ? messageId : null);
-
-        if (!id) {
-            pendingActionsRef.current = actions;
+        const serverId = messageId || '';
+        if (serverId && messages.some((message) => message.id === serverId)) {
+            pendingActionsRef.current = null;
+            setStreamActions((prev) => ({ ...prev, [serverId]: actions }));
             return;
         }
 
-        pendingActionsRef.current = null;
-        setStreamActions((prev) => {
-            const next = { ...prev, [id]: actions };
-            // Also key by the server's id, so the actions survive reconciliation
-            // renaming the optimistic message.
-            if (messageId && messageId !== id) next[messageId] = actions;
-            return next;
-        });
+        // Never fall back to an older assistant bubble while the new one is still
+        // uncommitted — that is how one turn ended up with two Yes/No rows.
+        pendingActionsRef.current = {
+            id: serverId || null,
+            actions,
+            afterId: lastAssistantId(messages),
+        };
     }, []);
 
     const applyChatSession = useCallback((value) => {
@@ -251,14 +263,14 @@ function AiAgentChat({
         () =>
             createAgentChat(agentId, {
                 contextProfileId,
-                chatId: guestChatId,
+                chatId,
                 onChatActions: applyChatActions,
                 onChatSession: (_messageId, value) => applyChatSession(value),
             }),
-        [agentId, contextProfileId, guestChatId, applyChatActions, applyChatSession]
+        [agentId, contextProfileId, chatId, applyChatActions, applyChatSession]
     );
 
-    const threadId = ['agent', agentId, contextProfileId > 0 ? contextProfileId : null, guestChatId || null]
+    const threadId = ['agent', agentId, contextProfileId > 0 ? contextProfileId : null, chatId || null]
         .filter(Boolean)
         .join(':');
 
@@ -269,18 +281,18 @@ function AiAgentChat({
     }, [applyChatActions, applyChatSession]);
 
     // Prefetched transcript: do not use persistence hydrate — it races sendMessage
-    // ("a send that starts first owns the client"). Contact / no bootstrap keeps
-    // server hydrate like neo.
+    // ("a send that starts first owns the client"). Without a bootstrap, useChat's own
+    // hydrate loads history — unless the chat id was just minted and there is none.
     const { messages, sendMessage, isLoading, error, stop } = useChat({
         connection,
         initialMessages,
         threadId,
         onChunk: onChatChunk,
         onCustomEvent: (name, value) => {
-            if (name === 'chat_actions') applyChatActions(null, value);
+            // `chat_actions` is handled in onChunk, where the messageId is available.
             if (name === 'chat_session') applyChatSession(value);
         },
-        ...(sendBootstrap || initialMessage || guestChatId ? {} : { persistence: true }),
+        ...(sendBootstrap || initialMessage || chatIsFresh ? {} : { persistence: true }),
     });
 
     /**
@@ -297,10 +309,23 @@ function AiAgentChat({
     useEffect(() => {
         const pending = pendingActionsRef.current;
         if (!pending) return;
+        const { id: wantId, actions, afterId } = pending;
+
+        if (wantId && messages.some((message) => message.id === wantId)) {
+            pendingActionsRef.current = null;
+            setStreamActions((prev) => ({ ...prev, [wantId]: actions }));
+            return;
+        }
+
         const id = lastAssistantId(messages);
-        if (!id) return;
+        if (!id || id === afterId) return;
+
         pendingActionsRef.current = null;
-        setStreamActions((prev) => ({ ...prev, [id]: pending }));
+        setStreamActions((prev) => {
+            const next = { ...prev, [id]: actions };
+            if (wantId && wantId !== id) next[wantId] = actions;
+            return next;
+        });
     }, [messages]);
 
     /**
@@ -315,6 +340,7 @@ function AiAgentChat({
     );
     const sessionEnded = !!session?.ended;
     const canRestart = sessionAllowsRestart(session);
+    const showSend = !hideButton && !sessionEnded;
     const chatError = hydrateError || error;
 
     // Belt and braces: the parent already remounts on every input to threadId via `key`,
@@ -327,24 +353,29 @@ function AiAgentChat({
 
     const visibleMessages = useMemo(
         () =>
-            messages.filter((message, index) => {
-                // The bootstrap line is machinery, not conversation. Matched on position as
-                // well as text: only the first user message can be it, so someone who later
-                // types "[page opened…" cannot make their own message disappear.
-                if (
-                    hideInitialMessage
-                    && index === 0
-                    && message.role === 'user'
-                    && isHiddenFirstMessageText(messageText(message))
-                ) {
-                    return false;
-                }
-                if (message.role !== 'assistant') return true;
-                // An assistant turn with neither text nor buttons has nothing to show yet.
-                return !!messageText(message) || messageActions(message, streamActions[message.id]).length > 0;
-            }),
+            foldConsecutiveAssistants(
+                messages.filter((message, index) => {
+                    // The bootstrap line is machinery, not conversation. Matched on position as
+                    // well as text: only the first user message can be it, so someone who later
+                    // types "[page opened…" cannot make their own message disappear.
+                    if (
+                        hideInitialMessage
+                        && index === 0
+                        && message.role === 'user'
+                        && isHiddenFirstMessageText(messageText(message))
+                    ) {
+                        return false;
+                    }
+                    if (message.role !== 'assistant') return true;
+                    // An assistant turn with neither text nor buttons has nothing to show yet.
+                    return !!messageText(message)
+                        || messageImages(message).length > 0
+                        || messageActions(message, streamActions[message.id]).length > 0;
+                })
+            ),
         [messages, hideInitialMessage, streamActions]
     );
+    const showStartNew = !!onStartAgain && (canRestart || (!sessionEnded && visibleMessages.length > 0));
 
     const last = messages[messages.length - 1];
     const lastVisibleId = visibleMessages[visibleMessages.length - 1]?.id;
@@ -377,9 +408,33 @@ function AiAgentChat({
     }, [focusComposer, sessionEnded]);
 
     /**
-     * The single send path, shared by the composer and the quick-reply buttons. Resolves
-     * to whether the message was accepted, so `ChatActions` knows when to drop its
-     * optimistic highlight.
+     * The one place that calls `sendMessage`. Pins the view to the bottom, keeps focus
+     * in the composer across the round trip, and resolves to whether the message was
+     * accepted — errors surface through useChat's `error`, callers only decide what to
+     * restore.
+     *
+     * @param {string|{content: object[]}} payload Plain text, or a multimodal message.
+     */
+    const dispatch = useCallback(async (payload) => {
+        // A send always pulls the view down, even if the user had scrolled up to read.
+        pinToBottom();
+        try {
+            const pending = sendMessage(payload);
+            scrollToEnd();
+            // Focus twice: once so typing can continue immediately, once after the round
+            // trip because re-rendering the list can take focus back.
+            focusComposer();
+            await pending;
+            focusComposer();
+            return true;
+        } catch {
+            return false;
+        }
+    }, [sendMessage, focusComposer, scrollToEnd, pinToBottom]);
+
+    /**
+     * Text-only send, shared by the quick-reply buttons. Resolves to whether the message
+     * was accepted, so `ChatActions` knows when to drop its optimistic highlight.
      *
      * Deliberately closed over nothing that changes per keystroke: this is handed to
      * every bubble as `onReply`, and depending on `input` would change its identity on
@@ -389,32 +444,90 @@ function AiAgentChat({
     const sendReply = useCallback(async (raw) => {
         const text = clipAgentText(String(raw ?? '').trim(), maxChars);
         if (!text || isLoading || sessionEnded) return false;
-        // A send always pulls the view down, even if the user had scrolled up to read.
-        pinToBottom();
-        try {
-            const pending = sendMessage(text);
-            scrollToEnd();
-            // Focus twice: once so typing can continue immediately, once after the round
-            // trip because re-rendering the list can take focus back.
-            focusComposer();
-            await pending;
-            focusComposer();
-            return true;
-        } catch {
-            // Reported through useChat's `error`; the caller decides what to restore.
-            return false;
-        }
-    }, [maxChars, isLoading, sessionEnded, sendMessage, focusComposer, scrollToEnd, pinToBottom]);
+        return dispatch(text);
+    }, [maxChars, isLoading, sessionEnded, dispatch]);
 
+    /** Composer send: the draft plus any attached images. */
     const send = useCallback(async () => {
         const draft = input;
+        const images = pendingImages;
+        const text = clipAgentText(draft.trim(), maxChars);
+        if (isLoading || sessionEnded || uploading) return false;
+        if (!text && !images.length) return false;
+
         // Clear first so the composer empties the moment the user hits send...
         setInput('');
-        const sent = await sendReply(draft);
-        // ...and never swallow their words: put the draft back if it did not go through.
-        if (!sent) setInput(draft);
+        setPendingImages([]);
+        setAttachError(null);
+
+        // ...and never swallow their words: put everything back if it did not go through.
+        // Images that did upload keep their result, so a retry only re-sends the rest.
+        const restore = (uploaded) => {
+            setInput(draft);
+            setPendingImages(images.map((picked, i) => (uploaded[i] ? { ...picked, uploaded: uploaded[i] } : picked)));
+        };
+
+        if (!images.length) {
+            const sent = await dispatch(text);
+            if (!sent) setInput(draft);
+            return sent;
+        }
+
+        const uploaded = [];
+        setUploading(true);
+        try {
+            for (const picked of images) {
+                uploaded.push(await uploadAgentChatImage(agentId, picked));
+            }
+        } catch (error) {
+            restore(uploaded);
+            setAttachError(error?.message || t('Upload failed'));
+            return false;
+        } finally {
+            setUploading(false);
+        }
+
+        const sent = await dispatch({ content: chatImageParts(text, uploaded) });
+        if (sent) images.forEach(revokePickedPreview);
+        else restore(uploaded);
         return sent;
-    }, [input, sendReply]);
+    }, [input, pendingImages, maxChars, isLoading, sessionEnded, uploading, dispatch, agentId, t]);
+
+    const canAttach = allowImages && !sessionEnded && !isLoading && !uploading && pendingImages.length < maxImages;
+
+    const attachImage = useCallback(async () => {
+        if (!canAttach) return;
+        try {
+            const picked = await pickAgentChatImage();
+            if (!picked) return;
+            setPendingImages((prev) => {
+                // The cap is re-checked here: two dialogs could have been open at once.
+                if (prev.length >= maxImages) {
+                    revokePickedPreview(picked);
+                    return prev;
+                }
+                return [...prev, picked];
+            });
+            setAttachError(null);
+        } catch (error) {
+            setAttachError(error?.code === 'too_large' ? t('Image is too large') : (error?.message || t('Upload failed')));
+        }
+    }, [canAttach, maxImages, t]);
+
+    const removePendingImage = useCallback((index) => {
+        setPendingImages((prev) => {
+            const picked = prev[index];
+            if (picked) revokePickedPreview(picked);
+            return prev.filter((_, i) => i !== index);
+        });
+    }, []);
+
+    // Previews that are still pending when the chat goes away ("Start new" remounts
+    // this component, or the page navigates) would otherwise leak their blob URLs.
+    useLayoutEffect(() => {
+        pendingImagesRef.current = pendingImages;
+    }, [pendingImages]);
+    useEffect(() => () => pendingImagesRef.current.forEach(revokePickedPreview), []);
 
     useEffect(() => {
         if (!sendBootstrap || !initialMessage) return;
@@ -470,11 +583,11 @@ function AiAgentChat({
                             message={message}
                             user={currentUser}
                             assistant={assistant}
-                            isStreaming={message.id === streamingId}
+                            isStreaming={!!streamingId && messageIds(message).includes(streamingId)}
                             onReply={sendReply}
                             // Only the newest bubble can be answered, and only between turns.
                             repliesEnabled={!isLoading && !sessionEnded && message.id === lastVisibleId}
-                            streamedActions={streamActions[message.id]}
+                            streamedActions={streamActionsForMessage(message, streamActions)}
                             chosenReply={chosenReply}
                             hideIdentity={hideIdentity}
                             maxChars={maxChars}
@@ -496,13 +609,18 @@ function AiAgentChat({
             </ScrollView>
 
             <View className="pt-2">
-                {chatError ? (
-                    <View className="px-1 pb-2" accessibilityRole="alert" accessibilityLiveRegion="polite">
-                        <Text className="text-sm text-destructive">{chatError.message}</Text>
-                    </View>
-                ) : null}
-                <View className="w-full overflow-hidden">
+                <ComposerNotice message={chatError?.message} />
+                <ComposerNotice message={attachError} />
+                <ComposerAttachments
+                    images={pendingImages}
+                    disabled={isLoading || uploading}
+                    onRemove={removePendingImage}
+                />
+                <View className="w-full">
                     <Row className="items-center">
+                        {allowImages && !sessionEnded ? (
+                            <AttachButton disabled={!canAttach} onPress={attachImage} />
+                        ) : null}
                         <View
                             className={cn(
                                 inputSettings.base,
@@ -538,43 +656,17 @@ function AiAgentChat({
                                 {...(isWeb ? { rows: 1 } : { scrollEnabled: composer.scrollEnabled })}
                             />
                         </View>
-                        {!hideButton && !sessionEnded ? (
-                            <View className="p-1.5">
-                                {isLoading ? (
-                                    <NeoButton
-                                        style="bordered"
-                                        borderShape="circle"
-                                        controlSize="small"
-                                        image="Square"
-                                        accessibilityLabel={t('Stop')}
-                                        onPress={() => stop()}
-                                    />
-                                ) : (
-                                    <NeoButton
-                                        style="glassProminent"
-                                        borderShape="circle"
-                                        controlSize="small"
-                                        image="ArrowUp"
-                                        accessibilityLabel={t('Send')}
-                                        disabled={!input.trim()}
-                                        onPress={send}
-                                    />
-                                )}
-                            </View>
-                        ) : null}
+                        <ComposerButtons
+                            showSend={showSend}
+                            showStartNew={showStartNew}
+                            isLoading={isLoading}
+                            canSend={!uploading && (!!input.trim() || pendingImages.length > 0)}
+                            onSend={send}
+                            onStop={() => stop()}
+                            onStartNew={onStartAgain}
+                        />
                     </Row>
                 </View>
-                {canRestart && onStartAgain ? (
-                    <View className="pt-2 items-start">
-                        <NeoButton
-                            label={t('Start again')}
-                            style="bordered"
-                            controlSize="small"
-                            borderShape="rounded"
-                            onPress={onStartAgain}
-                        />
-                    </View>
-                ) : null}
             </View>
         </View>
     );

@@ -400,7 +400,11 @@
     "Conversation": "Conversation",
     "Thinking…": "Réflexion…",
     "This conversation has ended": "Cette conversation est terminée",
-    "Start again": "Recommencer",
+    "Start new": "Nouvelle conversation",
+    "Attach image": "Joindre une image",
+    "Attached image": "Image jointe",
+    "Image is too large": "L’image est trop volumineuse",
+    "Upload failed": "Échec du téléversement",
     "Stop": "Arrêter",
     "You": "Vous",
     "Adjust photo": "Ajuster la photo",
@@ -443,5 +447,8 @@
     "item_bx_polls": "un sondage",
     "Today ": "Aujourd’hui ",
     "Tomorrow ": "Demain ",
-    "Create new ": "Créer "
+    "Create new ": "Créer ",
+    "operator_agent_title": "Demander à l’IA",
+    "operator_agent_open": "Ouvrir l’assistant IA",
+    "operator_agent_close": "Fermer l’assistant IA"
 }

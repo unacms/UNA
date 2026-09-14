@@ -10,13 +10,23 @@
 import { Platform } from 'react-native';
 import { fetchServerSentEvents } from '@tanstack/ai-client';
 import { APP_ORIGIN, APP_URL, UNA_URL, appSetting, joinUnaUrl } from 'app/config';
+import { fetcher } from 'app/lib/fetcher';
 import { unaAiChatStreamingFetch } from './fetch';
 
 const USE_PROXY_WEB = appSetting('config', 'use_proxy_web');
 const USE_PROXY_NATIVE = appSetting('config', 'use_proxy_native');
 
-function chatQueryId(chatId) {
+/** Shorter values are treated as "no chat id": too easy to guess or to collide. */
+const CHAT_ID_MIN_LENGTH = 8;
+
+/** Sanitize a chat id for the `?chat=` query: `[a-zA-Z0-9_-]`, at most 64 chars. */
+export function chatQueryId(chatId) {
     return String(chatId || '').replace(/[^a-zA-Z0-9_-]/g, '').slice(0, 64);
+}
+
+/** True when `chatId` survives sanitizing and is long enough to use. */
+export function isChatId(chatId) {
+    return chatQueryId(chatId).length >= CHAT_ID_MIN_LENGTH;
 }
 
 function requestUrl(agentId, contextProfileId, chatId) {
@@ -24,8 +34,7 @@ function requestUrl(agentId, contextProfileId, chatId) {
     const params = new URLSearchParams();
     const pid = Number(contextProfileId) || 0;
     if (pid > 0) params.set('context', String(pid));
-    const chat = chatQueryId(chatId);
-    if (chat.length >= 8) params.set('chat', chat);
+    if (isChatId(chatId)) params.set('chat', chatQueryId(chatId));
     const query = params.toString() ? `?${params.toString()}` : '';
     if (Platform.OS === 'web' && USE_PROXY_WEB) return `${path}${query}`;
     if (Platform.OS !== 'web' && USE_PROXY_NATIVE) {
@@ -113,6 +122,57 @@ async function hydrateChat(url, extraHeaders) {
         interrupts: null,
         session: data.session && typeof data.session === 'object' ? data.session : null,
     };
+}
+
+/** Studio extras for `get_block_ai_agent` (`params[1]`). */
+const DEFAULT_BLOCK_PARAMS = {
+    context: false,
+    require_post: false,
+    allow_images: true,
+    allow_new: true,
+};
+
+function asAgentBlockData(item, agentId) {
+    if (!item || typeof item !== 'object') return null;
+    if (item.agent_id || item.agent_profile || Object.prototype.hasOwnProperty.call(item, 'hidden_first_message')) {
+        return { ...item, agent_id: item.agent_id || agentId };
+    }
+    const nested = item.data;
+    if (
+        nested
+        && typeof nested === 'object'
+        && (item.type === 'ai_agent' || item.content_type === 'ai_agent' || nested.agent_id || nested.agent_profile)
+    ) {
+        return { ...nested, agent_id: nested.agent_id || agentId };
+    }
+    return null;
+}
+
+/**
+ * UNA `system/get_block_ai_agent/TemplServices` — same payload the page block gets
+ * (`agent_profile`, `hidden_first_message`, flags).
+ */
+export async function fetchAgentBlock(agentId, params = {}) {
+    const extras = { ...DEFAULT_BLOCK_PARAMS, ...params };
+    const response = await fetcher(
+        `/api.php?r=system/get_block_ai_agent/TemplServices&params[]=${encodeURIComponent(agentId)}&params[]=${encodeURIComponent(JSON.stringify(extras))}`
+    );
+    const payload = response?.data;
+    if (Array.isArray(payload)) {
+        for (const item of payload) {
+            const data = asAgentBlockData(item, agentId);
+            if (data) return data;
+        }
+    }
+    const direct = asAgentBlockData(payload, agentId);
+    if (direct) return direct;
+    if (Array.isArray(payload?.content)) {
+        for (const item of payload.content) {
+            const data = asAgentBlockData(item, agentId);
+            if (data) return data;
+        }
+    }
+    return { agent_id: agentId };
 }
 
 /**

@@ -1,0 +1,115 @@
+'use client';
+
+import { useTranslation } from 'react-i18next';
+import { View } from 'app/design/view';
+import { Text } from 'app/design/typography';
+import { NeoButton } from 'app/design/controls';
+import Image from 'app/ui/atoms/image';
+
+/** Error line above the composer, announced politely to screen readers. */
+export function ComposerNotice({ message }) {
+    if (!message) return null;
+    return (
+        <View className="px-1 pb-2" accessibilityRole="alert" accessibilityLiveRegion="polite">
+            <Text className="text-sm text-destructive">{message}</Text>
+        </View>
+    );
+}
+
+/**
+ * Thumbnails of images picked but not yet sent, each with a remove button.
+ * @param {{ images: import('./chat-images').PickedImage[], disabled: boolean, onRemove: (index: number) => void }} props
+ */
+export function ComposerAttachments({ images, disabled, onRemove }) {
+    const { t } = useTranslation();
+    if (!images.length) return null;
+    return (
+        <View className="flex-row flex-wrap gap-2 px-1 pb-2">
+            {images.map((picked, index) => (
+                <View key={picked.preview || `${picked.name}-${index}`} className="relative">
+                    <Image
+                        src={picked.preview}
+                        alt={t('Attached image')}
+                        view="cover"
+                        className="h-16 w-16 rounded-lg"
+                    />
+                    <View className="absolute -top-1 -right-1">
+                        <NeoButton
+                            style="glass"
+                            borderShape="circle"
+                            controlSize="mini"
+                            image="X"
+                            accessibilityLabel={t('Remove')}
+                            disabled={disabled}
+                            onPress={() => onRemove(index)}
+                        />
+                    </View>
+                </View>
+            ))}
+        </View>
+    );
+}
+
+/** Paperclip to the left of the input. */
+export function AttachButton({ disabled, onPress }) {
+    const { t } = useTranslation();
+    return (
+        <View className="pr-1.5">
+            <NeoButton
+                style="bordered"
+                borderShape="circle"
+                controlSize="small"
+                image="Paperclip"
+                accessibilityLabel={t('Attach image')}
+                disabled={disabled}
+                onPress={onPress}
+            />
+        </View>
+    );
+}
+
+/**
+ * Send / Stop and "Start new" to the right of the input. Renders nothing when
+ * neither is wanted, so the input can stretch to the edge.
+ */
+export function ComposerButtons({ showSend, showStartNew, isLoading, canSend, onSend, onStop, onStartNew }) {
+    const { t } = useTranslation();
+    if (!showSend && !showStartNew) return null;
+    return (
+        <View className="p-1.5 flex-row items-center gap-1">
+            {showSend && isLoading ? (
+                <NeoButton
+                    style="bordered"
+                    borderShape="circle"
+                    controlSize="small"
+                    image="Square"
+                    accessibilityLabel={t('Stop')}
+                    onPress={onStop}
+                />
+            ) : null}
+            {showSend && !isLoading ? (
+                <NeoButton
+                    style="glassProminent"
+                    borderShape="circle"
+                    controlSize="small"
+                    image="ArrowUp"
+                    accessibilityLabel={t('Send')}
+                    disabled={!canSend}
+                    onPress={onSend}
+                />
+            ) : null}
+            {showStartNew ? (
+                <NeoButton
+                    style="bordered"
+                    borderShape="circle"
+                    controlSize="small"
+                    image="RefreshCw"
+                    tooltip={t('Start new')}
+                    tooltipSide="top"
+                    accessibilityLabel={t('Start new')}
+                    onPress={onStartNew}
+                />
+            ) : null}
+        </View>
+    );
+}

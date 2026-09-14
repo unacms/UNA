@@ -43,7 +43,9 @@ export default function PlaygroundAiChat() {
         writeAgentToLocation('');
     }, []);
 
-    const chat = agentId ? <AiAgent key={agentId} data={{ agent_id: agentId }} /> : null;
+    const chat = agentId ? (
+        <AiAgent key={agentId} data={{ agent_id: agentId, allow_images: 1, allow_new: 1, max_images: 4 }} />
+    ) : null;
 
     return (
         <View className="w-full max-w-2xl mx-auto gap-4">

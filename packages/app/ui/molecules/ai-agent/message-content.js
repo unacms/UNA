@@ -46,11 +46,108 @@ export function messageText(message) {
         .join('');
 }
 
+/**
+ * Everything on a message that is not text: image parts and the like. Read from
+ * both places they can live — a multimodal `content` array (what `sendMessage`
+ * was given) and `parts` (what the client normalizes to).
+ */
+export function messageMediaParts(message) {
+    const content = Array.isArray(message?.content) ? message.content : [];
+    const parts = Array.isArray(message?.parts) ? message.parts : [];
+    return [...content, ...parts].filter((part) => part && typeof part === 'object' && part.type !== 'text');
+}
+
+function imageSrcFromPart(part) {
+    if (part.type !== 'image' && part.type !== 'image_url') return '';
+    const source = part.source;
+    if (source && typeof source === 'object') {
+        if (source.type === 'url' && source.value) return String(source.value);
+        if (source.type === 'data' && source.value) {
+            const mime = source.mimeType || 'image/jpeg';
+            return `data:${mime};base64,${source.value}`;
+        }
+    }
+    return String(part.url || part.src || part.image_url?.url || '');
+}
+
+/** Distinct image URLs (or data URLs) on a user/assistant message. */
+export function messageImages(message) {
+    const seen = new Set();
+    for (const part of messageMediaParts(message)) {
+        const src = imageSrcFromPart(part);
+        if (src) seen.add(src);
+    }
+    return [...seen];
+}
+
+/** Ids a bubble answers to: its own, plus those of any messages folded into it. */
+export function messageIds(message) {
+    return message?.foldedIds?.length ? message.foldedIds : [message?.id];
+}
+
 export function lastAssistantId(messages) {
     for (let i = (messages?.length || 0) - 1; i >= 0; i--) {
         if (messages[i]?.role === 'assistant') return messages[i].id;
     }
     return null;
+}
+
+function uniqueActionItems(items) {
+    const seen = new Set();
+    const out = [];
+    for (const item of items || []) {
+        if (!item || typeof item !== 'object') continue;
+        const key = `${item.type || ''}|${item.label || ''}|${item.url || ''}`;
+        if (seen.has(key)) continue;
+        seen.add(key);
+        out.push(item);
+    }
+    return out;
+}
+
+/**
+ * One model turn can emit two assistant bubbles (text, then a tool, then
+ * "buttons are below"). Show them as a single reply with one button row.
+ *
+ * The folded bubble keeps the *first* message's id, so its React key is stable
+ * when the second message arrives; `foldedIds` lists every id it stands for
+ * (see `messageIds`). Text is joined, media parts and actions are concatenated.
+ */
+export function foldConsecutiveAssistants(messages) {
+    const out = [];
+    for (const message of messages || []) {
+        const prev = out[out.length - 1];
+        if (message?.role !== 'assistant' || prev?.role !== 'assistant') {
+            out.push(message);
+            continue;
+        }
+        const text = [messageText(prev), messageText(message)].filter(Boolean).join('\n\n');
+        out[out.length - 1] = {
+            ...prev,
+            foldedIds: [...messageIds(prev), message.id],
+            content: text,
+            parts: [
+                ...(text ? [{ type: 'text', content: text }] : []),
+                ...messageMediaParts(prev),
+                ...messageMediaParts(message),
+            ],
+            actions: uniqueActionItems([
+                ...(Array.isArray(prev.actions) ? prev.actions : []),
+                ...(Array.isArray(message.actions) ? message.actions : []),
+            ]),
+        };
+    }
+    return out;
+}
+
+/** Streamed buttons may be keyed by any id of a folded bubble; newest wins. */
+export function streamActionsForMessage(message, streamActions) {
+    const ids = messageIds(message);
+    for (let i = ids.length - 1; i >= 0; i--) {
+        const actions = streamActions?.[ids[i]];
+        if (Array.isArray(actions) && actions.length) return actions;
+    }
+    return undefined;
 }
 
 /** Agent row `max_input_chars`. 0 = no cap (same as UNA applyChatInputLimit). */

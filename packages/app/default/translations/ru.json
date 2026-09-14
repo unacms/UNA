@@ -400,7 +400,11 @@
     "Conversation": "Беседа",
     "Thinking…": "Думаю…",
     "This conversation has ended": "Эта беседа завершена",
-    "Start again": "Начать заново",
+    "Start new": "Новый разговор",
+    "Attach image": "Прикрепить изображение",
+    "Attached image": "Прикреплённое изображение",
+    "Image is too large": "Изображение слишком большое",
+    "Upload failed": "Не удалось загрузить",
     "Stop": "Остановить",
     "You": "Вы",
     "Adjust photo": "Настроить фото",
@@ -443,5 +447,8 @@
     "item_bx_polls": "опрос",
     "Today ": "Сегодня ",
     "Tomorrow ": "Завтра ",
-    "Create new ": "Создать "
+    "Create new ": "Создать ",
+    "operator_agent_title": "Спросить ИИ",
+    "operator_agent_open": "Открыть ИИ-ассистента",
+    "operator_agent_close": "Закрыть ИИ-ассистента"
 }
