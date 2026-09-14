@@ -529,7 +529,7 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
                     'name' => 'model_id',
                     'caption' => _t('_sys_agents_field_model_id'),
                     'info' => _t('_sys_agents_field_model_id_info'),
-                    'value' => isset($aAgent['model_id']) ? $aAgent['model_id'] : BxDolAi::getDefaultModel(),
+                    'value' => isset($aAgent['model_id']) ? $aAgent['model_id'] : 0,
                     'values' => $this->_getModelSelectValues(),
                     'required' => '1',
                     'checker' => [

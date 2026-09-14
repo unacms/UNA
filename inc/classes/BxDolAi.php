@@ -95,11 +95,6 @@ class BxDolAi extends BxDolFactory implements iBxDolSingleton
         return BxDolAIModelFactory::getModelInstance($iId);
     }
 
-    public static function getDefaultModel()
-    {
-        return (int)getParam('sys_agents_model');
-    }
-
     public function getProfileId()
     {
         return $this->_iProfileId;
