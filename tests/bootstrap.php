@@ -107,28 +107,28 @@ class BxDolTestCase extends \PHPUnit\Framework\TestCase
     protected function bxCallProtected($o, $sMethod, ...$aArgs)
     {
         $oMethod = new ReflectionMethod($o, $sMethod);
-        $oMethod->setAccessible(true);
         return $oMethod->invokeArgs($o, $aArgs);
     }
 
     protected function bxCallProtectedArgs($o, $sMethod, array $aArgs)
     {
         $oMethod = new ReflectionMethod($o, $sMethod);
-        $oMethod->setAccessible(true);
         return $oMethod->invokeArgs($o, $aArgs);
+    }
+
+    protected function bxGetProtected($o, $sProperty, $sClass = null)
+    {
+        return (new ReflectionProperty($sClass ?: $o, $sProperty))->getValue($o);
     }
 
     protected function bxSetProtected($o, $sProperty, $mixedValue, $sClass = null)
     {
-        $oProperty = new ReflectionProperty($sClass ?: $o, $sProperty);
-        $oProperty->setAccessible(true);
-        $oProperty->setValue($o, $mixedValue);
+        (new ReflectionProperty($sClass ?: $o, $sProperty))->setValue($o, $mixedValue);
     }
 
     protected function bxModuleInstances(BxDolModule $oModule, ?array $aReplace = null): array
     {
         $oProperty = new ReflectionProperty(BxDolModule::class, '_aInstancesStorage');
-        $oProperty->setAccessible(true);
         $aCurrent = $oProperty->getValue($oModule) ?: [];
         if ($aReplace !== null)
             $oProperty->setValue($oModule, $aReplace);

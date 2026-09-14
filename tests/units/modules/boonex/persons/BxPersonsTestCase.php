@@ -19,23 +19,15 @@ abstract class BxPersonsTestCase extends BxDolTestCase
         foreach (['SearchResult', 'FormEntry', 'FormsEntryHelper'] as $sClass)
             bx_import($sClass, $this->_oModule->_aModule);
 
-        $oProfileId = new ReflectionProperty(BxBaseModGeneralModule::class, '_iProfileId');
-        $oProfileId->setAccessible(true);
-        $this->_iProfileIdBackup = $oProfileId->getValue($this->_oModule);
-
-        $oAccountId = new ReflectionProperty(BxBaseModProfileModule::class, '_iAccountId');
-        $oAccountId->setAccessible(true);
-        $this->_iAccountIdBackup = $oAccountId->getValue($this->_oModule);
+        $this->_iProfileIdBackup = $this->bxGetProtected($this->_oModule, '_iProfileId', BxBaseModGeneralModule::class);
+        $this->_iAccountIdBackup = $this->bxGetProtected($this->_oModule, '_iAccountId', BxBaseModProfileModule::class);
     }
 
     protected function bxTemplate()
     {
         $oTemplate = $this->_oModule->_oTemplate;
-        if ($oTemplate instanceof BxDolModuleProxy) {
-            $oProperty = new ReflectionProperty(BxDolModuleProxy::class, '_oProxifiedObject');
-            $oProperty->setAccessible(true);
-            $oTemplate = $oProperty->getValue($oTemplate);
-        }
+        if ($oTemplate instanceof BxDolModuleProxy)
+            $oTemplate = $this->bxGetProtected($oTemplate, '_oProxifiedObject', BxDolModuleProxy::class);
 
         return $oTemplate;
     }
