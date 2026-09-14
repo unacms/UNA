@@ -1,5 +1,8 @@
 <?php
 
+use PHPUnit\Framework\Attributes\After;
+use PHPUnit\Framework\Attributes\Before;
+
 define('BX_SKIP_INSTALL_CHECK', 1);
 
 $aPathInfo = pathinfo(__FILE__);
@@ -11,6 +14,56 @@ require_once($sHeaderPath);
 
 class BxDolTestCase extends \PHPUnit\Framework\TestCase
 {
+    /**
+     * @var list<callable>|null
+     */
+    private $_aExceptionHandlersBackup;
+
+    #[Before]
+    protected function bxSnapshotExceptionHandlers(): void
+    {
+        $this->_aExceptionHandlersBackup = $this->bxActiveExceptionHandlers();
+    }
+
+    #[After]
+    protected function bxRestoreExceptionHandlers(): void
+    {
+        if ($this->_aExceptionHandlersBackup === null)
+            return;
+
+        foreach ($this->bxActiveExceptionHandlers() as $mixedIgnored)
+            restore_exception_handler();
+
+        foreach ($this->_aExceptionHandlersBackup as $mixedHandler)
+            set_exception_handler($mixedHandler);
+
+        $this->_aExceptionHandlersBackup = null;
+    }
+
+    /**
+     * @return list<callable>
+     */
+    private function bxActiveExceptionHandlers(): array
+    {
+        $aHandlers = [];
+
+        while (true) {
+            $mixedHandler = set_exception_handler(static function (): void {});
+            restore_exception_handler();
+
+            if ($mixedHandler === null)
+                break;
+
+            $aHandlers[] = $mixedHandler;
+            restore_exception_handler();
+        }
+
+        $aHandlers = array_reverse($aHandlers);
+        foreach ($aHandlers as $mixedHandler)
+            set_exception_handler($mixedHandler);
+
+        return $aHandlers;
+    }
 
     protected function bxRequireAntispam()
     {

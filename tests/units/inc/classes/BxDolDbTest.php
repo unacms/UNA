@@ -28,6 +28,29 @@ class BxDolDbTest extends BxDolTestCase
             array('1234a', true),
             array('12345', false),
             array('💡', false),
+            array('id;', true),
+            array('`id`', false),
         );
+    }
+
+    #[DataProvider('providerForIsValidOperator')]
+    public function testIsValidOperator($s, $bRes)
+    {
+        $this->assertSame($bRes, BxDolDb::getInstance()->isValidOperator($s));
+    }
+
+    static public function providerForIsValidOperator()
+    {
+        return [
+            ['=', true],
+            ['like', true],
+            ['LIKE', true],
+            ['  in  ', true],
+            ['NOT IN', true],
+            ['OR 1=1', false],
+            [';DROP', false],
+            ['', false],
+            ['UNION', false],
+        ];
     }
 }
