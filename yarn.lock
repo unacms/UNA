@@ -44,41 +44,22 @@
   resolved "https://registry.yarnpkg.com/@floating-ui/utils/-/utils-0.2.12.tgz#afefe785949f16ac4cdd1e695935a321572dd56a"
   integrity sha512-HpCo8tmWzLVad5s2d19EhAz5zqrrQ6s69qd6moPMQvkOuSwDT1YgRfWSVuc4ennqrgv3OHppiOGMQ7oC13yIww==
 
-"@fullcalendar/core@^6.1.20", "@fullcalendar/core@~6.1.21":
+"@full-ui/headless-calendar@7.1.0":
+  version "7.1.0"
+  resolved "https://registry.yarnpkg.com/@full-ui/headless-calendar/-/headless-calendar-7.1.0.tgz#8efd95c2f2650d5444c7d203e8fc3c3b8dd50e3e"
+  integrity sha512-T54tSUik/ia9Jj4xduFHv1p98eVBgLnE33Q6qhpg+WWkqKCLBCbtVyMcTPPIOP5jjTV2MbtjrRvRt1RLSryGHA==
+
+"@fullcalendar/core@7.1.0":
+  version "7.1.0"
+  resolved "https://registry.yarnpkg.com/@fullcalendar/core/-/core-7.1.0.tgz#72af83347d9191997248e72e8b5569f39b4984ab"
+  integrity sha512-a+ABP7zQpPWpwPT8EsOdShpeOVrJyx/XYStqERd8ibld/FLi/dzpd95r7w3RIdFqFm9iUv0gdGvBshSlI/dbPw==
+
+"@fullcalendar/core@^6.1.20":
   version "6.1.21"
   resolved "https://registry.yarnpkg.com/@fullcalendar/core/-/core-6.1.21.tgz#e8b0ed592a60aba44499802fefdbb1fcc91b0a07"
   integrity sha512-t3u/+sqh3Iq7TWtUnVLcGDUE6OWZh0UD3c04bI/l7lSLAgAKr3kngBmhHiQD1QXpwC8ZN5iNqG7a7gOVixhSKQ==
   dependencies:
     preact "~10.12.1"
-
-"@fullcalendar/daygrid@~6.1.21":
-  version "6.1.21"
-  resolved "https://registry.yarnpkg.com/@fullcalendar/daygrid/-/daygrid-6.1.21.tgz#70eef7af5951b35a5f0380b15e32e5389ae029bc"
-  integrity sha512-QYb1y40RGYLlOxKpYWg8O+7njEnKnFG8Tt7qjnubJGR35s1phQg67E+81y2TyAbbm59p2JFOCXGDk9t6KDujIA==
-
-"@fullcalendar/interaction@~6.1.21":
-  version "6.1.21"
-  resolved "https://registry.yarnpkg.com/@fullcalendar/interaction/-/interaction-6.1.21.tgz#e7fd36d7d328a02e1d7a1dcc174db7650a6edf31"
-  integrity sha512-WPYpqtljDWmU0Xm2cOtFrLlocgxv7cgkOppj34Q6OUUat8a6Cnd6kYo2JR+irP223PE5lBYHFNp1qh7SIpJc0w==
-
-"@fullcalendar/list@~6.1.21":
-  version "6.1.21"
-  resolved "https://registry.yarnpkg.com/@fullcalendar/list/-/list-6.1.21.tgz#98bbbb6399730182eb1047c48682c8530a925159"
-  integrity sha512-2rpIhs5pJmV7jyk4oX4bckNqurt6iHcsweE3FDYDdNpmRukPrARnyQYcaVFNVw2bnBFeR/jQW/St2MlauxF3GQ==
-
-"@fullcalendar/multimonth@~6.1.21":
-  version "6.1.21"
-  resolved "https://registry.yarnpkg.com/@fullcalendar/multimonth/-/multimonth-6.1.21.tgz#8affe310ff767d92d99d4285414261852710fc61"
-  integrity sha512-/5IZDDcdRzgO/h7V3RBEhzhrza5TIQ2T025IjA2Dfq3xbvxSnMAl2CMcy7VrSHsKaY1eWvxQXg/NZZm7hLmDYA==
-  dependencies:
-    "@fullcalendar/daygrid" "~6.1.21"
-
-"@fullcalendar/timegrid@~6.1.21":
-  version "6.1.21"
-  resolved "https://registry.yarnpkg.com/@fullcalendar/timegrid/-/timegrid-6.1.21.tgz#62e8462f2c5f9bf1c8c4f4e1d9880f09cd8b4524"
-  integrity sha512-2DnShx/jallGmb8QCkr6pAOu/zuPhJrP7+uTrAtSnbqsX7GF3lTxqSeNGkTQwsgF5g/ia8udhQ+JNYaE+TN1cQ==
-  dependencies:
-    "@fullcalendar/daygrid" "~6.1.21"
 
 "@gar/promise-retry@^1.0.0", "@gar/promise-retry@^1.0.2", "@gar/promise-retry@^1.0.3":
   version "1.0.3"
@@ -1856,17 +1837,14 @@ fsevents@~2.3.2:
   resolved "https://registry.yarnpkg.com/fsevents/-/fsevents-2.3.3.tgz#cac6407785d03675a2a5e1a5305c697b347d90d6"
   integrity sha512-5xoDfX+fL7faATnagmWPpbFtwh/R77WmMMqqHGS65C3vvB0YHrgF+B1YmZ3441tMj5n63k0212XNoJwzlhffQw==
 
-fullcalendar@^6.1.21:
-  version "6.1.21"
-  resolved "https://registry.yarnpkg.com/fullcalendar/-/fullcalendar-6.1.21.tgz#21df830070db2f64c76daa4ba3c2d34f873e376f"
-  integrity sha512-yGZhflQmfCJKmmOlwJcQ0MPNAYABieaiJp9AaRgHBMRIUxNA+VFa6mkIbVNpjdSZIy9AY2HwteTt58tJ+3ktuQ==
+fullcalendar@^7.1.0:
+  version "7.1.0"
+  resolved "https://registry.yarnpkg.com/fullcalendar/-/fullcalendar-7.1.0.tgz#f8b37d697e7c2b2de725e24fd8f3abef0e31fb47"
+  integrity sha512-Pvr/fLrwuwfIjRygNKHJdHFJ8QGWjkAf6FFaMAi7Iv/fFftZQXV49smJE8KTgSVW/GxrqjN5t5Zw2OBTRKcnzA==
   dependencies:
-    "@fullcalendar/core" "~6.1.21"
-    "@fullcalendar/daygrid" "~6.1.21"
-    "@fullcalendar/interaction" "~6.1.21"
-    "@fullcalendar/list" "~6.1.21"
-    "@fullcalendar/multimonth" "~6.1.21"
-    "@fullcalendar/timegrid" "~6.1.21"
+    "@full-ui/headless-calendar" "7.1.0"
+    "@fullcalendar/core" "7.1.0"
+    preact "^10.29.8"
 
 function-bind@^1.1.2:
   version "1.1.2"
@@ -3961,6 +3939,11 @@ postcss@^8.4.47:
     nanoid "^3.3.16"
     picocolors "^1.1.1"
     source-map-js "^1.2.1"
+
+preact@^10.29.8:
+  version "10.29.8"
+  resolved "https://registry.yarnpkg.com/preact/-/preact-10.29.8.tgz#fc85b82dc2474e245b1430b51781d417361f5fc3"
+  integrity sha512-ej2aVZ+vZ8WO7tvlQWRM9N63A0KzF9q4mWJfDUHgYaIofWY9hu74QdnQrjoPMmZi2/nZ5gN0bJCQF49xQqx09Q==
 
 preact@~10.12.1:
   version "10.12.1"
