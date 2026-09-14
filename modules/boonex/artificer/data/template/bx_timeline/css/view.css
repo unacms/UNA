@@ -243,7 +243,6 @@ div.bx-tl-view div.bx-tl-item-attachments div.bx-tl-item-attachment {
     height:auto;
 }
 div.bx-tl-view div.bx-tl-item-attachments div.bx-tl-item-attachment img {
-    height: auto;
     max-height:25.5rem;
     max-width:100%;
     margin-left:auto;
@@ -302,6 +301,7 @@ div.bx-tl-view div.bx-tl-item-attachments.bx-tl-ia-showcase {
     justify-content: space-between;
 }
 div.bx-tl-view div.bx-tl-item-attachments.bx-tl-ia-showcase div.bx-tl-item-attachment {
+    position: relative;
     box-sizing: border-box;
     width: 33.2%;
     height: 8.5rem;

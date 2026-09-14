@@ -766,8 +766,8 @@ div.bx-tl-view div.bx-tl-item-attachments {
 div.bx-tl-view div.bx-tl-item-attachments div.bx-tl-item-attachment {
     display: inline-block;
 }
-div.bx-tl-view div.bx-tl-item-attachments div.bx-tl-item-attachment,
-div.bx-tl-view div.bx-tl-item-attachments div.bx-tl-item-attachment img {
+div.bx-tl-view div.bx-tl-item-attachments:not(.bx-tl-ia-showcase) div.bx-tl-item-attachment,
+div.bx-tl-view div.bx-tl-item-attachments:not(.bx-tl-ia-showcase) div.bx-tl-item-attachment img {
     height: 11.25rem;
 }
 div.bx-tl-view-outline div.bx-tl-item-attachment img {
@@ -798,6 +798,7 @@ div.bx-tl-view div.bx-tl-item-attachments.bx-tl-ia-showcase {
     justify-content: space-between;
 }
 div.bx-tl-view div.bx-tl-item-attachments.bx-tl-ia-showcase div.bx-tl-item-attachment {
+    position: relative;
     box-sizing: border-box;
     width: 33.2%;
     height: 8.5rem;
