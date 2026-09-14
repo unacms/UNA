@@ -43,7 +43,9 @@ class BxCidaasConModule extends BxBaseModConnectModule
 		if (!isLogged() || bx_is_api() || !$this->_oConfig->sBaseUrl)
 			return;
 
-		if (!BxDolSession::getInstance()->getValue('cidaascon_access_token'))
+        $sAccessToken = BxDolSession::getInstance()->getValue('cidaascon_access_token');
+        $sIdToken = BxDolSession::getInstance()->getValue('cidaascon_id_token');
+		if (!$sAccessToken && !$sIdToken)
 			return;
 
 		$aParams = [];
@@ -73,6 +75,7 @@ class BxCidaasConModule extends BxBaseModConnectModule
 
         /*
         $sAccessToken = BxDolSession::getInstance()->getUnsetValue('cidaascon_access_token');
+        $sIdToken = BxDolSession::getInstance()->getUnsetValue('cidaascon_id_token');
         if (!$sAccessToken)
             return;
 
@@ -180,6 +183,7 @@ class BxCidaasConModule extends BxBaseModConnectModule
             }
 
             BxDolSession::getInstance()->setValue('cidaascon_access_token', $aAuthData['access_token']);
+            BxDolSession::getInstance()->setValue('cidaascon_id_token', $aAuthData['id_token']);
 
             $aRemoteProfileInfo = $oProvider->getUserProfile($aAuthData['access_token'])->wait();
 
