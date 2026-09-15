@@ -8,7 +8,7 @@ $aConfig = array(
     /**
      * Main Section.
      */
-    'title' => 'SMTP Mailer',
+    'title' => 'Google connect',
     'version_from' => '15.0.0',
     'version_to' => '15.0.1',
     'vendor' => 'UNA INC',
@@ -20,14 +20,14 @@ $aConfig = array(
     /**
      * 'home_dir' and 'home_uri' - should be unique. Don't use spaces in 'home_uri' and the other special chars.
      */
-    'home_dir' => 'boonex/smtpmailer/updates/update_15.0.0_15.0.1/',
-    'home_uri' => 'smtpmailer_update_1500_1501',
+    'home_dir' => 'boonex/google_connect/updates/update_15.0.0_15.0.1/',
+    'home_uri' => 'googlecon_update_1500_1501',
 
-    'module_dir' => 'boonex/smtpmailer/',
-    'module_uri' => 'smtpmailer',
+    'module_dir' => 'boonex/google_connect/',
+    'module_uri' => 'googlecon',
 
-    'db_prefix' => 'bx_smtp_',
-    'class_prefix' => 'BxSMTP',
+    'db_prefix' => 'bx_googlecon_',
+    'class_prefix' => 'BxGoogleCon',
 
     /**
      * Installation/Uninstallation Section.
@@ -35,21 +35,17 @@ $aConfig = array(
     'install' => array(
         'execute_sql' => 1,
         'update_files' => 1,
-        'update_languages' => 1,
+        'update_languages' => 0,
         'clear_db_cache' => 1,
     ),
 
     /**
      * Category for language keys.
      */
-    'language_category' => 'SMTP Mailer',
+    'language_category' => 'Google Connect',
 
     /**
      * Files Section
      */
-    'delete_files' => array(
-        'composer.json',
-        'composer.lock',
-        'vendor',
-    ),
+    'delete_files' => array(),
 );

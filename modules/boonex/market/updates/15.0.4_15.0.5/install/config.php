@@ -8,9 +8,9 @@ $aConfig = array(
     /**
      * Main Section.
      */
-    'title' => 'SMTP Mailer',
-    'version_from' => '15.0.0',
-    'version_to' => '15.0.1',
+    'title' => 'Market',
+    'version_from' => '15.0.4',
+    'version_to' => '15.0.5',
     'vendor' => 'UNA INC',
 
     'compatible_with' => array(
@@ -20,14 +20,14 @@ $aConfig = array(
     /**
      * 'home_dir' and 'home_uri' - should be unique. Don't use spaces in 'home_uri' and the other special chars.
      */
-    'home_dir' => 'boonex/smtpmailer/updates/update_15.0.0_15.0.1/',
-    'home_uri' => 'smtpmailer_update_1500_1501',
+    'home_dir' => 'boonex/market/updates/update_15.0.4_15.0.5/',
+    'home_uri' => 'market_update_1504_1505',
 
-    'module_dir' => 'boonex/smtpmailer/',
-    'module_uri' => 'smtpmailer',
+    'module_dir' => 'boonex/market/',
+    'module_uri' => 'market',
 
-    'db_prefix' => 'bx_smtp_',
-    'class_prefix' => 'BxSMTP',
+    'db_prefix' => 'bx_market_',
+    'class_prefix' => 'BxMarket',
 
     /**
      * Installation/Uninstallation Section.
@@ -42,14 +42,10 @@ $aConfig = array(
     /**
      * Category for language keys.
      */
-    'language_category' => 'SMTP Mailer',
+    'language_category' => 'Market',
 
     /**
      * Files Section
      */
-    'delete_files' => array(
-        'composer.json',
-        'composer.lock',
-        'vendor',
-    ),
+    'delete_files' => array(),
 );

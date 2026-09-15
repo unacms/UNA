@@ -3,7 +3,7 @@
  * Copyright (c) UNA, Inc - https://una.io
  * MIT License - https://opensource.org/licenses/MIT
  *
- * @defgroup    SMTPMailer SMTP Mailer
+ * @defgroup    Antispam Antispam
  * @ingroup     UnaModules
  *
  * @{
@@ -14,9 +14,9 @@ $aConfig = array(
      * Main Section.
      */
     'type' => BX_DOL_MODULE_TYPE_MODULE,
-    'name' => 'bx_smtp',
-    'title' => 'SMTP Mailer',
-    'note' => 'Use remote SMTP server for sending mails.',
+    'name' => 'bx_antispam',
+    'title' => 'Antispam',
+    'note' => 'Antispam tools',
     'version' => '15.0.1',
     'vendor' => 'UNA INC',
     'help_url' => 'http://feed.una.io/?section={module_name}',
@@ -28,16 +28,16 @@ $aConfig = array(
     /**
      * 'home_dir' and 'home_uri' - should be unique. Don't use spaces in 'home_uri' and the other special chars.
      */
-    'home_dir' => 'boonex/smtpmailer/',
-    'home_uri' => 'smtpmailer',
+    'home_dir' => 'boonex/antispam/',
+    'home_uri' => 'antispam',
 
-    'db_prefix' => 'bx_smtp_',
-    'class_prefix' => 'BxSMTP',
+    'db_prefix' => 'bx_antispam_',
+    'class_prefix' => 'BxAntispam',
 
     /**
      * Category for language keys.
      */
-    'language_category' => 'SMTP Mailer',
+    'language_category' => 'Antispam',
 
     /**
      * Installation/Uninstallation Section.

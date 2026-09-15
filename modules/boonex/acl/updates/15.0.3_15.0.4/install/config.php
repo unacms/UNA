@@ -8,9 +8,9 @@ $aConfig = array(
     /**
      * Main Section.
      */
-    'title' => 'SMTP Mailer',
-    'version_from' => '15.0.0',
-    'version_to' => '15.0.1',
+    'title' => 'Paid Levels',
+    'version_from' => '15.0.3',
+    'version_to' => '15.0.4',
     'vendor' => 'UNA INC',
 
     'compatible_with' => array(
@@ -20,14 +20,14 @@ $aConfig = array(
     /**
      * 'home_dir' and 'home_uri' - should be unique. Don't use spaces in 'home_uri' and the other special chars.
      */
-    'home_dir' => 'boonex/smtpmailer/updates/update_15.0.0_15.0.1/',
-    'home_uri' => 'smtpmailer_update_1500_1501',
+    'home_dir' => 'boonex/acl/updates/update_15.0.3_15.0.4/',
+    'home_uri' => 'acl_update_1503_1504',
 
-    'module_dir' => 'boonex/smtpmailer/',
-    'module_uri' => 'smtpmailer',
+    'module_dir' => 'boonex/acl/',
+    'module_uri' => 'acl',
 
-    'db_prefix' => 'bx_smtp_',
-    'class_prefix' => 'BxSMTP',
+    'db_prefix' => 'bx_acl_',
+    'class_prefix' => 'BxAcl',
 
     /**
      * Installation/Uninstallation Section.
@@ -35,21 +35,17 @@ $aConfig = array(
     'install' => array(
         'execute_sql' => 1,
         'update_files' => 1,
-        'update_languages' => 1,
+        'update_languages' => 0,
         'clear_db_cache' => 1,
     ),
 
     /**
      * Category for language keys.
      */
-    'language_category' => 'SMTP Mailer',
+    'language_category' => 'Paid Levels',
 
     /**
      * Files Section
      */
-    'delete_files' => array(
-        'composer.json',
-        'composer.lock',
-        'vendor',
-    ),
+    'delete_files' => array(),
 );

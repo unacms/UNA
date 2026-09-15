@@ -8,9 +8,9 @@ $aConfig = array(
     /**
      * Main Section.
      */
-    'title' => 'SMTP Mailer',
-    'version_from' => '15.0.0',
-    'version_to' => '15.0.1',
+    'title' => 'Accounts Manager',
+    'version_from' => '15.0.1',
+    'version_to' => '15.0.2',
     'vendor' => 'UNA INC',
 
     'compatible_with' => array(
@@ -20,36 +20,32 @@ $aConfig = array(
     /**
      * 'home_dir' and 'home_uri' - should be unique. Don't use spaces in 'home_uri' and the other special chars.
      */
-    'home_dir' => 'boonex/smtpmailer/updates/update_15.0.0_15.0.1/',
-    'home_uri' => 'smtpmailer_update_1500_1501',
+    'home_dir' => 'boonex/accounts/updates/update_15.0.1_15.0.2/',
+    'home_uri' => 'accounts_update_1501_1502',
 
-    'module_dir' => 'boonex/smtpmailer/',
-    'module_uri' => 'smtpmailer',
+    'module_dir' => 'boonex/accounts/',
+    'module_uri' => 'accounts',
 
-    'db_prefix' => 'bx_smtp_',
-    'class_prefix' => 'BxSMTP',
+    'db_prefix' => 'bx_accnt_',
+    'class_prefix' => 'BxAccnt',
 
     /**
      * Installation/Uninstallation Section.
      */
     'install' => array(
-        'execute_sql' => 1,
+        'execute_sql' => 0,
         'update_files' => 1,
-        'update_languages' => 1,
-        'clear_db_cache' => 1,
+        'update_languages' => 0,
+        'clear_db_cache' => 0,
     ),
 
     /**
      * Category for language keys.
      */
-    'language_category' => 'SMTP Mailer',
+    'language_category' => 'Accounts',
 
     /**
      * Files Section
      */
-    'delete_files' => array(
-        'composer.json',
-        'composer.lock',
-        'vendor',
-    ),
+    'delete_files' => array(),
 );
