@@ -49,3 +49,13 @@ Alternatively:
 ```
 phing test
 ```
+Unit tests only:
+```
+phing test-units
+```
+Integration tests only:
+```
+phing test-integration
+```
+
+Integration tests read `tests/.env` when present (`cp tests/.env.example tests/.env`). Without that file they use installer defaults. Tests skip an account that is not installed.

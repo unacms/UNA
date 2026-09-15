@@ -33,6 +33,7 @@ build.properties
 composer.phar
 tests/vendor
 tests/composer.phar
+tests/.env
 tests/.phpunit.cache
 tests/.phpunit.result.cache
 samples/img/*
