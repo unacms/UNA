@@ -5,7 +5,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 /**
  * Test util functions
  */
-class UtilTest extends \PHPUnit\Framework\TestCase
+class UtilTest extends BxDolTestCase
 {
     /**
      * @see clear_xss
