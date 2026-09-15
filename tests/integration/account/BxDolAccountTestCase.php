@@ -84,6 +84,7 @@ abstract class BxDolAccountTestCase extends BxDolIntegrationTestCase
         $this->assertNotFalse($iAccountId);
         $this->_iCreatedAccountId = (int)$iAccountId;
 
+        BxDolProfileQuery::getInstance()->getInfoById((int)$iAccountId, true);
         $iProfileId = (new BxTemplAccountForms())->onAccountCreated($iAccountId, $oForm->isSetPendingApproval());
         $this->assertGreaterThan(0, (int)$iProfileId);
 

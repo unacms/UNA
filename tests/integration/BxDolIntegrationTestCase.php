@@ -12,6 +12,8 @@ abstract class BxDolIntegrationTestCase extends BxDolTestCase
 
     protected function setUp(): void
     {
+        BxDolDb::getInstance()->cleanMemoryAll();
+
         $this->_aAccountAuthBackups = [];
         foreach (['admin', 'user'] as $sKind) {
             $oAccount = BxDolAccount::getInstance($this->bxTestEmail($sKind));
