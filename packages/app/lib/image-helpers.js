@@ -29,10 +29,58 @@ export function isSvgImageSrc(value) {
     return /\.svg(?:$|[?#])/i.test(String(value || ''));
 }
 
-/** `src`, or RN `source.uri` / string `source`. Empty string if none. */
+/**
+ * UNA already-transcoded display fields. Never `src_orig` (the original upload).
+ * `src` is the canonical variant; size keys are fallbacks when `src` is absent.
+ */
+const UNA_DISPLAY_SRC_KEYS = ['src', 'medium', 'small', 'thumb', 'file'];
+
+function warnSkippedOriginal(srcOrig) {
+    if (process.env.NODE_ENV === 'production') return;
+    console.warn('[image] skipped src_orig; no UNA display src', srcOrig);
+}
+
+/**
+ * Display URL from a UNA image object or a bare string.
+ * Original uploads (`src_orig`) are never returned — web and native both send
+ * this URL into next/image (web loader / native `getNativeOptimizedImageUrl`).
+ */
+export function pickUnaDisplaySrc(image) {
+    if (image == null) return '';
+    if (typeof image === 'string') return image;
+
+    for (const key of UNA_DISPLAY_SRC_KEYS) {
+        const value = image[key];
+        if (typeof value === 'string' && value) return value;
+    }
+
+    if (typeof image.src_orig === 'string' && image.src_orig) {
+        warnSkippedOriginal(image.src_orig);
+    }
+    return '';
+}
+
+/** Carousel / attach row from a UNA image object. Null when there is no display src. */
+export function toUnaDisplayImageItem(image) {
+    const src = pickUnaDisplaySrc(image);
+    if (!src) return null;
+    return {
+        src,
+        width: image.width,
+        height: image.height,
+        type: 'image',
+    };
+}
+
+/** Display src, or RN `source.uri` / string `source`. Empty string if none. Never `src_orig`. */
 export function getImageSrc(props) {
-    if (props?.src) return props.src;
-    const source = props?.source;
+    if (props == null) return '';
+    if (typeof props === 'string') return props;
+
+    const display = pickUnaDisplaySrc(props);
+    if (display) return display;
+
+    const source = props.source;
     if (typeof source === 'string') return source;
     if (source?.uri) return source.uri;
     return '';
@@ -136,7 +184,8 @@ export function canOptimizeSrc(src, { forceUnoptimized = false } = {}) {
 }
 
 /**
- * If the optimizer URL fails, retry the original src once, then forward `onError`.
+ * If the optimizer URL fails, retry the UNA display src once, then forward `onError`.
+ * That fallback is still `pickUnaDisplaySrc` — never `src_orig`.
  * `retryKey` resets the retry when the image identity changes.
  */
 export function useImageOptimizerRetry({ retryKey, canRetry, onError }) {

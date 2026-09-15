@@ -11,6 +11,7 @@ import { Button } from "app/design/controls";
 import { HistoryServices as Services } from "app/components/elements/messenger/services";
 import DropdownMenu from "app/ui/atoms/dropdown-menu";
 import { getComponent } from 'app/components/registry';
+import { toUnaDisplayImageItem } from 'app/lib/image-helpers';
 import Form from "../elements/form";
 import { useSendData } from "../elements/messenger/hooks/useHistory";
 import { useTranslation } from 'react-i18next';
@@ -70,7 +71,7 @@ const ImagesComponent = ({ files }) => {
     if (!files || !files.length)
         return;
 
-    const aImg = files?.map(({ src }) => ({ src, type: 'image' }));
+    const aImg = files?.map((file) => toUnaDisplayImageItem(file)).filter(Boolean);
 
     return <View className='w-full aspect-auto pb-6 pt-4'>
         <CarouselMemo aImg={aImg} b={files} />

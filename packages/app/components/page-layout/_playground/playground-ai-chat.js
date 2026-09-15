@@ -52,7 +52,7 @@ export default function PlaygroundAiChat() {
             <View className="gap-1">
                 <Text className="text-2xl font-semibold text-foreground">AI Chat</Text>
                 <Text className="text-sm text-muted-foreground">
-                    Playground for the UNA Ask AI block. Live chat uses the same host and
+                    Playground for the UNA Agent block. Live chat uses the same host and
                     session cookies as{' '}
                     <Text className="font-mono text-xs">fetcher</Text>
                     {' '}at{' '}

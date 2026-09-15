@@ -1,7 +1,7 @@
 /**
  * Dev playground page-layout (`/pg/ai`).
  *
- * UNA-style AI chat (Ask AI). Web can stream `/sys-ai-chat/{AgentId}`;
+ * UNA-style AI chat (Agent). Web can stream `/sys-ai-chat/{AgentId}`;
  * the local AG-UI emulator remains the fallback (and the native path).
  */
 

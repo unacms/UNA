@@ -1,5 +1,5 @@
 /**
- * /pg/ai — dev-only UNA Ask AI playground (live `/sys-ai-chat/{AgentId}` or emulator).
+ * /pg/ai — dev-only UNA Agent playground (live `/sys-ai-chat/{AgentId}` or emulator).
  */
 
 import { Suspense } from 'react';

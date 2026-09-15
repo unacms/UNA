@@ -70,7 +70,7 @@ export const settingsConfigs = {
         url: '/messenger', 
         back_button: false, 
     },
-    // Floating Ask AI for UNA operators (`user.operator`). Empty id disables the widget.
+    // Floating Agent for UNA operators (`user.operator`). Empty id disables the widget.
     ai: {
         operator_agent_id: 6,
     },

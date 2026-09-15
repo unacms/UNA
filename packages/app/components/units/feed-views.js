@@ -9,6 +9,7 @@ import { fetcher } from 'app/lib/fetcher'
 import { Icon } from 'app/ui/atoms/icon'
 import { Pressable } from 'app/design/view'
 import { ContentMore } from 'app/ui/molecules/content/content-more'
+import { toUnaDisplayImageItem } from 'app/lib/image-helpers'
 import { LAYOUT_BREAKPOINTS, stripTags } from 'app/lib/util'
 import Carousel from 'app/ui/molecules/content/carousel'
 import { PollItem } from 'app/components/elements/entity-poll'
@@ -38,13 +39,8 @@ export const UnitImages = memo(({ images }) => {
         if (!images?.length) return []
 
         const photo = images
-            .filter((item) => item.src)
-            .map((obj) => ({
-                src: obj.src_orig || obj.src,
-                width: obj.width,
-                height: obj.height,
-                type: 'image',
-            }))
+            .map((obj) => toUnaDisplayImageItem(obj))
+            .filter(Boolean)
 
         const video = images
             .filter((item) => item.src_poster)

@@ -20,7 +20,7 @@ const isWeb = Platform.OS === 'web';
 const NATIVE_TAB_BAR = Platform.OS === 'ios' ? 52 : 56;
 
 /**
- * Floating Ask AI for site operators. Shown on every page when
+ * Floating Agent for site operators. Shown on every page when
  * `user.operator` is true and `ai.operator_agent_id` is set.
  */
 export function OperatorAgentFloat() {
@@ -79,7 +79,7 @@ export function OperatorAgentFloat() {
                 <View
                     pointerEvents={open ? 'auto' : 'none'}
                     className={cn(
-                        'mb-3 overflow-hidden rounded-2xl bg-card/80 border border-border/60 shadow-card-outline dark:shadow-card-outline-deep',
+                        'mb-3 overflow-hidden rounded-2xl bg-card/80 backdrop-blur-xl border border-border/60 shadow-card-outline dark:shadow-card-outline-deep',
                         open ? '' : 'hidden'
                     )}
                     style={{ width: panelWidth, height: panelHeight }}

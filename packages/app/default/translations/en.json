@@ -108,7 +108,7 @@
     "version_warning_text1": "This app (v. {{version}}) is newer than the connected server (v. {{server_version}}).",
     "version_warning_text2": "The UNA server was tested up to v. {{version}}; compatibility beyond this is not guaranteed.",
     "version_warning_text3": "You can continue, but stability and some features may be affected.",
-    "operator_agent_title": "Ask AI",
+    "operator_agent_title": "Agent",
     "operator_agent_open": "Open AI assistant",
     "operator_agent_close": "Close AI assistant",
     "about_page_title": "About",

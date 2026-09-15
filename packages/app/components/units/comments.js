@@ -16,6 +16,7 @@ import Form from 'app/components/elements/form'
 import useFetchForm from 'app/lib/hooks/use-fetch-form'
 import { useTranslation } from 'react-i18next'
 import Link from 'app/ui/atoms/link'
+import { toUnaDisplayImageItem } from 'app/lib/image-helpers'
 import Carousel from 'app/ui/molecules/content/carousel'
 import { getComponent } from 'app/components/registry'
 import { StarsView } from 'app/ui/atoms/stars'
@@ -168,13 +169,7 @@ function UnitCommentsDefault(props) {
     }, [level, maxLevel, lvls])
 
     const imageList = useMemo(
-        () =>
-            files?.map((obj) => ({
-                src: obj.file,
-                width: obj.width,
-                height: obj.height,
-                type: 'image',
-            })),
+        () => files?.map(toUnaDisplayImageItem).filter(Boolean),
         [files]
     )
 

@@ -62,6 +62,7 @@ See the `una-api` skill (`.agents/skills/una-api/SKILL.md`) for backend contract
 - Hardcoded UNA_URL instead of using proxy/env configuration
 - Direct Tailwind usage where design system components exist
 - Missing responsive breakpoints for mobile/desktop differences
+- `src_orig` (or other original-upload URLs) passed into `Image` / next/image — use UNA `src` via `pickUnaDisplaySrc`
 
 ## Before Making Changes
 
