@@ -38,6 +38,11 @@ export const settingsConfigs = {
         // Forks without the key keep caching on (`!== false`).
         enable_web: true,
         enable_native: true,
+        // Next server cache for UNA get_page_by_request (seconds). 0 disables.
+        // Viewer-keyed; person/org profiles keep a slightly longer window so
+        // list → profile prefetch is reused on click.
+        una_page_ttl: 20,
+        una_page_profile_ttl: 30,
     },
     dashboard: {
         url: '/dashboard', 
@@ -65,7 +70,7 @@ export const settingsConfigs = {
         url: '/messenger', 
         back_button: false, 
     },
-    // Floating Ask AI for UNA operators (`user.operator`). The agent and its block
+    // Floating Agent for UNA operators (`user.operator`). The agent and its block
     // settings come from the server (`get_block_ai_agent_operator`, Studio > Settings >
     // Agents > Operator agent); nothing to configure here. Set `enabled: false` to hide.
     ai: {

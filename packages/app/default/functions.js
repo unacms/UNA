@@ -53,7 +53,7 @@ export function layoutForList(endpoint, unitMode = '') {
         return ' w-full px-3 pt-3  @list-sm/list:w-1/2 @list-md/list:w-1/3 @list-lg/list:w-1/4  @list-xl/list:w-1/5 @list-sm/list:p-2 @list-sm/list:m-0 ';
 
     if (moduleName == 'bx_persons')
-        return 'w-full @list-sm/list:w-1/2 @list-md/list:w-1/3 @list-lg/list:w-1/4  @list-xl/list:w-1/5 @list-sm/list:p-2 @list-md/list:p-2 mt-px @list-sm/list:m-0 ';
+        return 'w-full @list-sm/list:w-1/2 @list-md/list:w-1/3 @list-lg/list:w-1/4  @list-xl/list:w-1/5 @list-sm/list:p-2 @list-md/list:p-2 @list-sm/list:m-0 ';
 
    
     return 'w-full @list-sm/list:w-1/2 @list-md/list:w-1/3 @list-lg/list:w-1/4 @list-xl/list:w-1/4 @list-sm/list:p-2 @list-md/list:p-2 ';

@@ -1,9 +1,10 @@
 import { useEffect } from 'react';
 import { useCurrentUser } from 'app/context/user';
 import { useBottomSheetData } from 'app/context/bottomsheet';
-import { useNavigation, usePathname, useRouter } from 'app/lib/hooks/router';
+import { useIsFocused, useNavigation, usePathname, useRouter } from 'app/lib/hooks/router';
 import { getTabList, splitTabBarItems } from 'app/components/nav/tabs/tab-menu';
 import { handleTabPress } from 'app/components/nav/tabs/tab-press';
+import { getSelectedTab, rememberSelectedTab } from 'app/lib/navigation/tab-history';
 import emitter from 'app/context/emitter';
 
 /**
@@ -14,8 +15,15 @@ export default function NativeTabPressSync({ tabKey }) {
     const navigation = useNavigation();
     const pathname = usePathname();
     const router = useRouter();
+    const isFocused = useIsFocused();
     const { currentUser, setCurrentUser } = useCurrentUser();
     const { setBottomSheetData } = useBottomSheetData();
+
+    useEffect(() => {
+        if (isFocused && !getSelectedTab()) {
+            rememberSelectedTab(tabKey);
+        }
+    }, [isFocused, tabKey]);
 
     useEffect(() => {
         if (!navigation?.addListener) return undefined;

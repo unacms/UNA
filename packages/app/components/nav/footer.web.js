@@ -9,16 +9,26 @@ import { getFriendsCounter } from 'app/customization/functions';
 import { Icon } from 'app/ui/atoms/icon'
 import { useTranslation } from 'react-i18next';
 import { useFooter, useSetFooterHeight } from 'app/context/jotai/layout';
-import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useSound } from 'app/lib/hooks/use-sound';
 import { isTabBarLabelsEnabled } from 'app/lib/util';
 import DropdownMenu, { DropdownMenuOpenContext } from 'app/ui/atoms/dropdown-menu';
 import {
     splitTabBarItems,
     buildTabBarMoreMenuItems,
+    inferTabIndexFromUrl,
     isTabBarUrlActive,
     resolveTabUrl,
 } from 'app/components/nav/tabs/tab-menu';
+import {
+    consumeSkipTabInfer,
+    getSelectedTab,
+    peekTabLastUrl,
+    rememberSelectedTab,
+    rememberTabLastUrl,
+    resetAllTabHistory,
+    shouldSkipTabInfer,
+} from 'app/lib/navigation/tab-history';
 
 function isInStandaloneMode() {
     if (window.navigator.standalone) {
@@ -27,6 +37,41 @@ function isInStandaloneMode() {
         return true;
     }
     return false;
+}
+
+function tabIndexFromKey(tabKey) {
+    return tabKey ? Number(String(tabKey).replace('/tab', '')) : -1;
+}
+
+/** Pure: selected tab for this pathname. Does not write tab history. */
+function deriveSelectedTabKey(pathname, currentUser, tabList, sessionChanged) {
+    const skipInfer = !sessionChanged && shouldSkipTabInfer(pathname);
+    const inferredIndex = inferTabIndexFromUrl(pathname, tabList, currentUser);
+    const stored = sessionChanged ? null : getSelectedTab();
+    if (!skipInfer && inferredIndex >= 0) {
+        return `/tab${inferredIndex}`;
+    }
+    return stored;
+}
+
+function tabBarHref(tabKey, rootUrl, selectedKey, sessionChanged) {
+    const root = rootUrl || '/home';
+    if (selectedKey === tabKey) return root;
+    if (sessionChanged) return root;
+    return peekTabLastUrl(tabKey) || root;
+}
+
+function persistWebTabLocation(pathname, currentUser, tabList) {
+    const skipInfer = consumeSkipTabInfer(pathname);
+    const inferredIndex = inferTabIndexFromUrl(pathname, tabList, currentUser);
+    if (!skipInfer && inferredIndex >= 0) {
+        rememberSelectedTab(`/tab${inferredIndex}`);
+    }
+    const selected = getSelectedTab();
+    const stillOnOtherTabRoot = skipInfer && inferredIndex >= 0 && inferredIndex !== tabIndexFromKey(selected);
+    if (selected && pathname && !stillOnOtherTabRoot) {
+        rememberTabLastUrl(selected, pathname);
+    }
 }
 
 export default function () {
@@ -39,7 +84,7 @@ export default function () {
     const { t } = useTranslation();
     const notifCount = currentUser ? currentUser.notifications : 0;
     const iFrCounter = getFriendsCounter(currentUser);
-    let pathname = usePathname()
+    const pathname = usePathname();
     const footer = useFooter();
     const setFooterHeight = useSetFooterHeight();
 
@@ -47,7 +92,22 @@ export default function () {
     const isFooterEnabled = Boolean(footer);
     const lockUnconfirmed = appSetting('layout', 'lock_unconfirmed') && !currentUser?.confirmed;
     const shouldHide = lockUnconfirmed || hideForGuest || !isFooterEnabled;
-    
+    const sessionKey = currentUser?.id ? `${currentUser.id}-${currentUser.confirmed}` : 'guest';
+    const sessionRef = useRef(sessionKey);
+    const sessionChanged = sessionRef.current !== sessionKey;
+    const locationPath = pathname === '/' ? '/home' : pathname;
+    const selectedTabKey = deriveSelectedTabKey(locationPath, currentUser, TabList, sessionChanged);
+
+    const viewerUrl = currentUser?.url;
+    useLayoutEffect(() => {
+        if (sessionRef.current !== sessionKey) {
+            resetAllTabHistory();
+            sessionRef.current = sessionKey;
+        }
+        if (shouldHide) return;
+        persistWebTabLocation(locationPath, { url: viewerUrl }, TabList);
+    }, [shouldHide, sessionKey, locationPath, viewerUrl, TabList]);
+
     useEffect(() => {
         // When the tab bar is not rendering (early return), immediately clear the
         // stored height so Page.minHeight is not incorrectly reduced.
@@ -59,10 +119,6 @@ export default function () {
     if (shouldHide)
         return null
 
-    if (pathname == '/')
-        pathname = '/home';
-
-   
     return (
         <View
             className={
@@ -71,18 +127,36 @@ export default function () {
             onLayout={(e) => setFooterHeight(e.nativeEvent.layout.height)}
         >
             <View
-                className={`z-50 bg-card shadow-btn-glass dark:shadow-btn-glass-deep rounded-2xl w-full pb-0 ${isInStandaloneMode() ? "h-12" : "h-14"}`}
+                className={`z-50 bg-card shadow-btn-glass dark:shadow-btn-glass-deep rounded-2xl w-full pb-0 ${isInStandaloneMode() ? "h-12" : ""}`}
             >
-                <Row className="flex-auto items-center flex-row w-full p-1 gap-1">
+                <Row className="flex-auto items-center flex-row w-full p-1.5 gap-1">
                     {visibleTabs.filter(item => !item.hide).map((tab, index) => {
-                        const isActive = appSetting('messenger', 'url') === tab.url ? pathname.includes(tab.url) : pathname === tab.url;
-                        return <MenuBottomItem key={`bmi-${index}`} notifCount={notifCount} iFrCounter={iFrCounter} link={tab.url} badge={tab.badge} index={index} icon={tab.icon} title={t(tab.title)} isActive={isActive} animated={tab.animated} addClassName={tab.addClassName} />
+                        const tabKey = `/tab${index}`;
+                        const root = resolveTabUrl(tab, currentUser);
+                        const isActive = selectedTabKey === tabKey || isTabBarUrlActive(locationPath, root);
+                        const href = tabBarHref(tabKey, root, selectedTabKey, sessionChanged);
+                        return (
+                            <MenuBottomItem
+                                key={`bmi-${index}`}
+                                notifCount={notifCount}
+                                iFrCounter={iFrCounter}
+                                link={href}
+                                tabKey={tabKey}
+                                badge={tab.badge}
+                                icon={tab.icon}
+                                title={t(tab.title)}
+                                isActive={isActive}
+                                animated={tab.animated}
+                                addClassName={tab.addClassName}
+                                rootUrl={root}
+                            />
+                        );
                     })}
                     {overflowTabs.length > 0 ? (
                         <MoreBottomItem
                             visibleTabs={visibleTabs}
                             overflowTabs={overflowTabs}
-                            pathname={pathname}
+                            pathname={locationPath}
                             currentUser={currentUser}
                         />
                     ) : null}
@@ -92,22 +166,22 @@ export default function () {
     );
 }
 
-function MenuBottomItem({ link, title, badge, icon, isActive, iFrCounter, notifCount, animated, addClassName }) {
+function MenuBottomItem({ link, tabKey, rootUrl, title, badge, icon, isActive, iFrCounter, notifCount, animated, addClassName }) {
     const { currentUser } = useCurrentUser();
     const playSound = useSound('click');
     const useAnimatedIcon = animated === true;
     const [groupHovered, setGroupHovered] = useState(false);
     const badgeObj = [
         {
-            condition: (link === appSetting('notifications', 'url') || badge == 'notifications') && notifCount > 0, //to remove in 11.25 link === appSetting('notifications', 'url')
+            condition: (rootUrl === appSetting('notifications', 'url') || badge == 'notifications') && notifCount > 0, //to remove in 11.25 link === appSetting('notifications', 'url')
             value: { variant: 'primary', text: notifCount }
         },
         {
-            condition: (link === appSetting('messenger', 'url') || badge == 'messenger') && currentUser?.counters?.bx_messenger_new_messages > 0,
+            condition: (rootUrl === appSetting('messenger', 'url') || badge == 'messenger') && currentUser?.counters?.bx_messenger_new_messages > 0,
             value: { variant: 'primary', text: currentUser?.counters?.bx_messenger_new_messages }
         },
         {
-            condition: (link === '/friends' || badge == 'friends') && iFrCounter > 0,
+            condition: (rootUrl === '/friends' || badge == 'friends') && iFrCounter > 0,
             value: { variant: 'primary', text: iFrCounter }
         },
         {
@@ -117,20 +191,18 @@ function MenuBottomItem({ link, title, badge, icon, isActive, iFrCounter, notifC
     ].find(item => item.condition)?.value || null;
 
     const handlePress = useCallback(() => {
-           playSound();
-    }, []);
+        playSound();
+        rememberSelectedTab(tabKey, { fromPress: true });
+    }, [playSound, tabKey]);
     const baseIconClassName = isActive
         ? 'text-accent-foreground'
         : 'text-secondary-foreground web:group-hover:text-foreground';
     const iconClassName = addClassName ? `${baseIconClassName} ${addClassName}` : baseIconClassName;
 
-    const link1 =  link === '{profile}' ? currentUser?.url : link
-
-
     return (
             <Link
-                href={link1}
-                noprefetch={link1 === appSetting('notifications', 'url') ? "false" : "true"}
+                href={link}
+                noprefetch={rootUrl === appSetting('notifications', 'url') ? "false" : "true"}
                 className="group flex-1"
                 alt={title}
                  onClick={handlePress}
@@ -142,8 +214,8 @@ function MenuBottomItem({ link, title, badge, icon, isActive, iFrCounter, notifC
                 >
                     <View className="items-center justify-center">
                         {
-                            link === appSetting('dashboard', 'url') || icon=='dashboard' 
-                            ? <View className="w-6 h-6"><Profile  {...currentUser} url_avatar = {currentUser.avatar} url={link1} displayType="unit_wo_info" displaySize="xs" /></View> : 
+                            rootUrl === appSetting('dashboard', 'url') || icon=='dashboard' 
+                            ? <View className="w-6 h-6"><Profile  {...currentUser} url_avatar = {currentUser.avatar} url={rootUrl} displayType="unit_wo_info" displaySize="xs" /></View> : 
                             <Icon icon={icon} size={24} animated={useAnimatedIcon} active={useAnimatedIcon ? isActive : undefined} hovered={useAnimatedIcon ? groupHovered : undefined} className={iconClassName} />
                         }
                     </View>

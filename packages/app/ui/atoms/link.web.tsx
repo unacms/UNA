@@ -24,6 +24,8 @@ export default function ElementLink({
     noprefetch,
     onClick,
     onPress,
+    onPressIn,
+    onPointerDown,
     alt,
     ...rest
 }) {
@@ -82,6 +84,8 @@ export default function ElementLink({
                 {...rest}
                 className={mode === 'plain' ? className : composedClassName}
                 onPress={handlePress}
+                onPressIn={onPressIn}
+                onPointerDown={onPointerDown}
                 aria-label={accessibleLabel}
                 accessibilityLabel={accessibleLabel}
             >
@@ -100,6 +104,7 @@ export default function ElementLink({
                 className={className}
                 prefetch={isPrefetch}
                 onClick={handleLinkClick}
+                onPointerDown={onPointerDown}
                 aria-label={accessibleLabel}
                 aria-current={rest['aria-current']}
             >
@@ -116,6 +121,7 @@ export default function ElementLink({
             className={composedClassName}
             prefetch={isPrefetch}
             onClick={handleLinkClick}
+            onPointerDown={onPointerDown}
             aria-label={accessibleLabel}
         >
             {children}

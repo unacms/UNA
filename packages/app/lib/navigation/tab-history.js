@@ -38,6 +38,12 @@ export function nativeTabHref(url, tabPath = '/tab0', extraParams) {
 
 const tabHistoryState = {
     byTab: {},
+    lastSelectedKey: null,
+    lastUrlByTab: {},
+    skipTabInfer: false,
+    // Path the latest tab press already applied skip for. Survives Strict
+    // remount after consume(), so we do not re-infer that navigation.
+    skipTabInferPath: null,
 };
 
 function getTabIndex(tabKey = '/tab0') {
@@ -82,8 +88,10 @@ export function ensureTabHistory(tabKey, currentUser, initialUrl) {
     if (!tabHistoryState.byTab[key]) {
         const root = getTabRootUrl(key, currentUser);
         tabHistoryState.byTab[key] = [root];
+        tabHistoryState.lastUrlByTab[key] = root;
         if (initialUrl && initialUrl !== root) {
             tabHistoryState.byTab[key].push(initialUrl);
+            tabHistoryState.lastUrlByTab[key] = initialUrl;
         }
     }
 }
@@ -97,6 +105,7 @@ export function pushTabHistory(tabKey, url, currentUser) {
     if (stack[stack.length - 1] !== url) {
         stack.push(url);
     }
+    tabHistoryState.lastUrlByTab[key] = stack[stack.length - 1];
 }
 
 /** Same page, different submenu (conductor tabs) — do not create a back entry. */
@@ -108,17 +117,100 @@ export function replaceTabHistory(tabKey, url, currentUser) {
     const stack = tabHistoryState.byTab[key];
     if (!stack.length) {
         stack.push(url);
+        tabHistoryState.lastUrlByTab[key] = url;
         return;
     }
     stack[stack.length - 1] = url;
+    tabHistoryState.lastUrlByTab[key] = url;
 }
 
 export function applyTabHistory(tabKey, url, currentUser, mode) {
+    if (mode === 'reset') {
+        resetTabHistory(tabKey, currentUser);
+        return;
+    }
     if (mode === 'replace') {
         replaceTabHistory(tabKey, url, currentUser);
         return;
     }
     pushTabHistory(tabKey, url, currentUser);
+}
+
+export function rememberSelectedTab(tabKey, options) {
+    const key = parseTabKey(tabKey);
+    if (key) {
+        tabHistoryState.lastSelectedKey = key;
+        if (options?.fromPress) {
+            tabHistoryState.skipTabInfer = true;
+            tabHistoryState.skipTabInferPath = null;
+        }
+    }
+}
+
+/** Read-only. Safe during render. */
+export function shouldSkipTabInfer(pathname) {
+    if (tabHistoryState.skipTabInfer) return true;
+    if (!pathname) return false;
+    return tabHistoryState.skipTabInferPath === pathname;
+}
+
+/**
+ * Honor a tab-press skip for this pathname. Mutates — call from an effect.
+ * The same path keeps returning true after consume so Strict remount
+ * does not infer a different tab for that navigation.
+ */
+export function consumeSkipTabInfer(pathname) {
+    if (pathname && tabHistoryState.skipTabInferPath === pathname) {
+        return true;
+    }
+    const skip = tabHistoryState.skipTabInfer;
+    tabHistoryState.skipTabInfer = false;
+    if (skip && pathname) {
+        tabHistoryState.skipTabInferPath = pathname;
+    }
+    return skip;
+}
+
+export function getSelectedTab() {
+    return tabHistoryState.lastSelectedKey;
+}
+
+export function isSelectedTab(tabKey) {
+    const key = parseTabKey(tabKey);
+    return !!key && tabHistoryState.lastSelectedKey === key;
+}
+
+/** Last in-tab page for restore. Does not change the native back stack. */
+export function rememberTabLastUrl(tabKey, url) {
+    if (!url || isTabHistoryExcluded(url)) return;
+    const key = parseTabKey(tabKey);
+    if (!key) return;
+    tabHistoryState.lastUrlByTab[key] = url;
+}
+
+export function peekTabLastUrl(tabKey) {
+    const key = parseTabKey(tabKey);
+    if (!key) return undefined;
+    if (tabHistoryState.lastUrlByTab[key]) {
+        return tabHistoryState.lastUrlByTab[key];
+    }
+    const stack = tabHistoryState.byTab[key];
+    return stack?.[stack.length - 1];
+}
+
+export function isAtTabRoot(tabKey, currentUser) {
+    const key = parseTabKey(tabKey);
+    if (!key) return true;
+    const root = tabHistoryPath(getTabRootUrl(key, currentUser));
+    const last = tabHistoryPath(peekTabLastUrl(key));
+    return !last || last === root;
+}
+
+/** Inactive tab → last page in that tab; active tab → its root. */
+export function resolveTabBarHref(tabKey, rootUrl) {
+    const root = rootUrl || '/home';
+    if (isSelectedTab(tabKey)) return root;
+    return peekTabLastUrl(tabKey) || root;
 }
 
 export function canGoBackInTab(tabKey) {
@@ -142,6 +234,7 @@ export function popTabHistory(tabKey, currentUser) {
     while (stack.length > 1 && isTabHistoryExcluded(stack[stack.length - 1])) {
         stack.pop();
     }
+    tabHistoryState.lastUrlByTab[key] = stack[stack.length - 1];
     return stack[stack.length - 1];
 }
 
@@ -151,7 +244,25 @@ export function getTabRoot(tabKey, currentUser) {
     return getTabRootUrl(key, currentUser);
 }
 
-/** Swap in-tab URL to the previous history entry (cached feed, etc.) — no stack pop. */
+function replaceInTab(router, tabKey, targetUrl, tabHist) {
+    const hadOverlay = dismissNavigationOverlays();
+    const tabIndex = getTabIndex(tabKey);
+
+    const navigate = () => {
+        router.replace({
+            pathname: tabKey,
+            params: { url: targetUrl, name: `tab${tabIndex}`, tabHist },
+        });
+    };
+
+    if (hadOverlay && OVERLAY_DISMISS_MS > 0) {
+        setTimeout(navigate, OVERLAY_DISMISS_MS);
+    } else {
+        navigate();
+    }
+}
+
+/** Swap in-tab URL to the previous history entry (cached feed, etc.) — one stack pop. */
 export function navigateBackInTab(router, tabKey, currentUser) {
     const normalizedTabKey = parseTabKey(tabKey);
     if (!router || !normalizedTabKey) {
@@ -166,25 +277,32 @@ export function navigateBackInTab(router, tabKey, currentUser) {
         return;
     }
 
-    const hadOverlay = dismissNavigationOverlays();
-    const tabIndex = getTabIndex(normalizedTabKey);
+    rememberTabLastUrl(normalizedTabKey, targetUrl);
+    replaceInTab(router, normalizedTabKey, targetUrl, 'push');
+}
 
-    const navigate = () => {
-        router.replace({
-            pathname: normalizedTabKey,
-            params: { url: targetUrl, name: `tab${tabIndex}`, tabHist: 'push' },
-        });
-    };
-
-    if (hadOverlay && OVERLAY_DISMISS_MS > 0) {
-        setTimeout(navigate, OVERLAY_DISMISS_MS);
-    } else {
-        navigate();
+/** Consecutive tap of the active tab: jump to that tab's root, not one page back. */
+export function navigateToTabRoot(router, tabKey, currentUser) {
+    const normalizedTabKey = parseTabKey(tabKey);
+    if (!router || !normalizedTabKey) {
+        return;
     }
+
+    const targetUrl = getTabRoot(normalizedTabKey, currentUser);
+    if (!targetUrl) {
+        return;
+    }
+
+    resetTabHistory(normalizedTabKey, currentUser);
+    replaceInTab(router, normalizedTabKey, targetUrl, 'reset');
 }
 
 export function resetAllTabHistory() {
     tabHistoryState.byTab = {};
+    tabHistoryState.lastSelectedKey = null;
+    tabHistoryState.lastUrlByTab = {};
+    tabHistoryState.skipTabInfer = false;
+    tabHistoryState.skipTabInferPath = null;
 }
 
 export function resetTabHistory(tabKey, currentUser, initialUrl) {
@@ -192,7 +310,9 @@ export function resetTabHistory(tabKey, currentUser, initialUrl) {
     if (!key) return;
     const rootUrl = getTabRootUrl(key, currentUser);
     tabHistoryState.byTab[key] = [rootUrl];
+    tabHistoryState.lastUrlByTab[key] = rootUrl;
     if (initialUrl && initialUrl !== rootUrl) {
         tabHistoryState.byTab[key].push(initialUrl);
+        tabHistoryState.lastUrlByTab[key] = initialUrl;
     }
 }

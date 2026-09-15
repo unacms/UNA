@@ -11,6 +11,7 @@ import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import { getComponent } from 'app/components/registry';
 import { useTranslation } from 'react-i18next';
 import { FeedbackHaptics } from 'app/lib/util';
+import { toUnaDisplayImageItem } from 'app/lib/image-helpers'
 import Carousel from 'app/ui/molecules/content/carousel'
 import { Modal } from 'app/design/controls'
 import emitter from 'app/context/emitter';
@@ -39,14 +40,10 @@ export default function JotItem({ item, index, handleReply }) {
 
     const { data: dynamicData } = useFetchForm('/api.php?r=bx_messenger/get_send_form/Services&params[]=', postData);
 
-    let aImg = useMemo(() => item?.files.map((obj) => {
-        return {
-            src: obj.src,
-            width: obj.width,
-            height: obj.height,
-            type: 'image',
-        }
-    }), [item]);
+    let aImg = useMemo(
+        () => (item?.files || []).map(toUnaDisplayImageItem).filter(Boolean),
+        [item]
+    );
 
     const onFormSubmit = useCallback((formData, d) => {
         formData.set("id", item.lot_id);

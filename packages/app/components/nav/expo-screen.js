@@ -185,7 +185,12 @@ const Content = memo(({ pagePath, currentUser, tabKey, refreshToken, historyMode
 
     useEffect(() => {
         if (!tabKey || !pagePath) return;
-        applyTabHistory(tabKey, pagePath, currentUser, historyMode === 'replace' ? 'replace' : 'push');
+        applyTabHistory(
+            tabKey,
+            pagePath,
+            currentUser,
+            historyMode === 'replace' || historyMode === 'reset' ? historyMode : 'push',
+        );
     }, [tabKey, pagePath, currentUser?.id, currentUser?.url, historyMode]);
 
     // Stale-while-revalidate: show cache immediately, always refetch from server.

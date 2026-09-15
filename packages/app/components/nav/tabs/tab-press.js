@@ -2,7 +2,12 @@ import * as WebBrowser from 'expo-web-browser';
 import { appSetting, FeedbackHaptics, clearNotif } from 'app/lib/util';
 import { playTabFeedback } from 'app/components/nav/tab-feedback';
 import { isExternalTabUrl, resolveTabUrl } from './tab-menu';
-import { canGoBackInTab, navigateBackInTab } from 'app/lib/navigation/tab-history';
+import {
+    isAtTabRoot,
+    isSelectedTab,
+    navigateToTabRoot,
+    rememberSelectedTab,
+} from 'app/lib/navigation/tab-history';
 import emitter from 'app/context/emitter';
 
 function scheduleTabFeedback(defer) {
@@ -16,7 +21,9 @@ function scheduleTabFeedback(defer) {
 }
 
 /**
- * Shared tab-press: external URL, notif clear, re-tap back/reset, haptic.
+ * Shared tab-press: external URL, notif clear, re-tap root/reset, haptic.
+ * First tap of a tab restores its last page (navigator switch). A consecutive
+ * tap of the already-selected tab jumps to that tab's root.
  * `variant: 'js'` = RouterTabs Screen listener. `'expo'` = NativeTabs navigation listener.
  */
 export async function handleTabPress({
@@ -26,7 +33,6 @@ export async function handleTabPress({
     currentUser,
     setCurrentUser,
     setBottomSheetData,
-    pathname,
     router,
     variant,
 }) {
@@ -61,21 +67,25 @@ export async function handleTabPress({
         });
     }
 
-    if (pathname?.startsWith(tabKey)) {
+    // Use last-selected tab, not pathname. NativeTabs may focus the target
+    // tab before this listener runs; pathname would then look like a re-tap.
+    if (isSelectedTab(tabKey)) {
         e.preventDefault?.();
         if (isJs) {
             e.stopPropagation?.();
         }
 
-        if (canGoBackInTab(tabKey)) {
-            navigateBackInTab(router, tabKey, currentUser);
+        if (!isAtTabRoot(tabKey, currentUser)) {
+            navigateToTabRoot(router, tabKey, currentUser);
         } else {
             emitter.emit('conductor', { action: 'reset_to_first' });
         }
 
+        rememberSelectedTab(tabKey);
         scheduleTabFeedback(isJs);
         return;
     }
 
+    rememberSelectedTab(tabKey);
     scheduleTabFeedback(isJs);
 }

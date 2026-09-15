@@ -5,6 +5,7 @@ import { Suspense } from 'react'
 import { notFound } from 'next/navigation'
 import { headers } from "next/headers"
 import { resolveLangCode } from '../../lib/resolve-lang'
+import { cachedUnaPageJson, unaPageCacheKey } from '../../lib/una-page-cache'
 
 const SITE_TITLE = appSetting('config', 'title');
 let remote_config = { hash: null, data: null };
@@ -48,6 +49,7 @@ const getData = cache(async (path, searchParamsKey) => {
 
     delete searchParams.cookieString;
     delete searchParams.path;
+    delete searchParams._rsc;
     let sBlocks = '';
     if (searchParams.blocks) {
         sBlocks = searchParams.blocks;
@@ -62,37 +64,49 @@ const getData = cache(async (path, searchParamsKey) => {
         l = l + '&params[]=' + sBlocks + '&params[]=' + JSON.stringify(searchParams);
     }
 
-    let res;
-    try {
-        res = await fetch(l, {
-            headers: fetchHeaders,
-            cache: 'no-store',
-        })
-    } catch (error) {
-        console.error('Server fetch failed (network/connection):', error);
-        return { data: { title: SITE_TITLE, description: SITE_TITLE }, code: 503 };
-    }
+    const loadUnaPage = async () => {
+        let res;
+        try {
+            res = await fetch(l, {
+                headers: fetchHeaders,
+                cache: 'no-store',
+            })
+        } catch (error) {
+            console.error('Server fetch failed (network/connection):', error);
+            return { data: { title: SITE_TITLE, description: SITE_TITLE }, code: 503 };
+        }
 
-   /* if (!res.ok) {
-        const body = await res.text().catch(() => '');
-        console.error('Server fetch failed (http):', res.status, body);
-        return { data: { title: SITE_TITLE, description: SITE_TITLE }, code: res.status };
-    }*/
+       /* if (!res.ok) {
+            const body = await res.text().catch(() => '');
+            console.error('Server fetch failed (http):', res.status, body);
+            return { data: { title: SITE_TITLE, description: SITE_TITLE }, code: res.status };
+        }*/
 
-    const resClone = res.clone();
-    try {
-        return await res.json();
-    } catch (error) {
-        const text = await resClone.text();
-        const fatal = text.match(/Fatal error[^<]*/i)?.[0]
-            || text.match(/Uncaught [\w\\]+:[^\n<]+/)?.[0]
-            || text.slice(0, 200);
-        console.error('UNA page JSON parse failed:', fatal);
-        return {
-            data: { title: SITE_TITLE, description: SITE_TITLE, page_status: 503 },
-            code: 500,
-        };
-    }
+        const resClone = res.clone();
+        try {
+            return await res.json();
+        } catch (error) {
+            const text = await resClone.text();
+            const fatal = text.match(/Fatal error[^<]*/i)?.[0]
+                || text.match(/Uncaught [\w\\]+:[^\n<]+/)?.[0]
+                || text.slice(0, 200);
+            console.error('UNA page JSON parse failed:', fatal);
+            return {
+                data: { title: SITE_TITLE, description: SITE_TITLE, page_status: 503 },
+                code: 500,
+            };
+        }
+    };
+
+    return cachedUnaPageJson({
+        path,
+        key: unaPageCacheKey({
+            url: l,
+            tenant: hdrs?.get('x-tenant-una-url') ?? '',
+            cookieString: cookieString || '',
+        }),
+        load: loadUnaPage,
+    });
 });
 
 

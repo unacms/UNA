@@ -96,6 +96,21 @@ export function isTabBarUrlActive(pathname, url) {
     return appSetting('messenger', 'url') === url ? pathname.includes(url) : pathname === url;
 }
 
+/** Exact tab-root / transpile_urls match → tab index, else -1. Nested pages do not infer. */
+export function inferTabIndexFromUrl(pathname, tabList = [], currentUser) {
+    const path = String(pathname || '').split('?')[0];
+    const normalized = (path === '/' || path === '') ? '/home' : path;
+    const links = buildTabUrlIndex(tabList);
+    for (const item of links) {
+        const url = item.url === '{profile}' ? currentUser?.url : item.url;
+        if (!url) continue;
+        if (normalized === String(url).split('?')[0]) {
+            return item.index;
+        }
+    }
+    return -1;
+}
+
 export function tabBarMoreSeparator() {
     return {
         id: 'tabbar-more-separator',

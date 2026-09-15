@@ -718,6 +718,33 @@ html[theme="dark"]:root {
     }
 }
 
+/*
+ * Flush list row: pulse the pending fill only (photo/text stay solid) while
+ * the profile RSC payload is in flight. `data-nav` is set on pointerdown.
+ */
+@keyframes u-flush-nav-pulse {
+    0%, 100% { opacity: 0.38; }
+    50% { opacity: 0.82; }
+}
+
+.u-flush-nav[data-nav="pending"]::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    border-radius: inherit;
+    background-color: rgb(var(--muted) / 0.6);
+    animation: u-flush-nav-pulse 1.6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .u-flush-nav[data-nav="pending"]::before {
+        animation: none;
+        opacity: 0.65;
+    }
+}
+
 /* Allow scroll events to pass through WebView/iframe to parent ScrollView */
 iframe[title*="TenTap"],
 iframe[title*="editor"],
