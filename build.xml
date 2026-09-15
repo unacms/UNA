@@ -156,6 +156,26 @@
     </target>
 
     <!-- ============================================  -->
+    <!-- Target: test-units                            -->
+    <!-- ============================================  -->
+    <target name="test-units">
+        <echo msg="Testing units..." />
+        <exec executable="${php}" dir="${project.basedir}" checkreturn="true">
+            <arg line="plugins/bin/phpunit -c tests/phpunit.xml --testsuite Units" />
+        </exec>
+    </target>
+
+    <!-- ============================================  -->
+    <!-- Target: test-integration                      -->
+    <!-- ============================================  -->
+    <target name="test-integration">
+        <echo msg="Testing integration..." />
+        <exec executable="${php}" dir="${project.basedir}" checkreturn="true">
+            <arg line="plugins/bin/phpunit -c tests/phpunit.xml --testsuite Integration --log-junit logs/junit-integration.xml" />
+        </exec>
+    </target>
+
+    <!-- ============================================  -->
     <!-- Target: package                               -->
     <!-- ============================================  -->
     <target name="package" depends="clean">
@@ -421,6 +441,8 @@
                 <exclude name="phpcdp.xml" />
                 <exclude name="phpcpd.xml" />
                 <exclude name="junit.xml" />
+                <exclude name="junit-units.xml" />
+                <exclude name="junit-integration.xml" />
             </fileset>
         </delete>
         <delete includeemptydirs="true">

@@ -6,6 +6,13 @@ use PHPUnit\Framework\Attributes\Before;
 define('BX_SKIP_INSTALL_CHECK', 1);
 
 $aPathInfo = pathinfo(__FILE__);
+$sAutoloadPath = $aPathInfo['dirname'] . '/../plugins/autoload.php';
+if (is_readable($sAutoloadPath)) {
+    require_once($sAutoloadPath);
+    if (class_exists(Dotenv\Dotenv::class))
+        Dotenv\Dotenv::createImmutable($aPathInfo['dirname'])->safeLoad();
+}
+
 $sHeaderPath = $aPathInfo['dirname'] . '/../inc/header.inc.php';
 if (!file_exists($sHeaderPath))
     die("Script is not installed\n");
@@ -170,3 +177,5 @@ class BxDolTestCase extends \PHPUnit\Framework\TestCase
 
 require_once dirname(__FILE__) . '/units/modules/boonex/posts/BxPostsTestCase.php';
 require_once dirname(__FILE__) . '/units/modules/boonex/persons/BxPersonsTestCase.php';
+require_once dirname(__FILE__) . '/integration/BxDolIntegrationTestCase.php';
+require_once dirname(__FILE__) . '/integration/account/BxDolAccountTestCase.php';
