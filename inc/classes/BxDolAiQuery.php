@@ -267,11 +267,8 @@ class BxDolAiQuery extends BxDolDb
     public function getAgentChatHistoryRows($aAgent)
     {
         $sExact = ($aAgent['trigger'] ?? '') . ':' . ($aAgent['id'] ?? '');
-        $sFields = "`id`, `thread_id`, `messages`, `created_at`, `updated_at`";
-        if ($this->isFieldExists('sys_agents_chat_history', 'closed_reason'))
-            $sFields .= ", `closed_reason`";
         return $this->getAll("
-            SELECT $sFields
+            SELECT " . $this->getChatHistoryRowFields() . "
             FROM `sys_agents_chat_history`
             WHERE `thread_id` = :exact OR `thread_id` LIKE :prefix
             ORDER BY `updated_at` DESC
@@ -280,6 +277,125 @@ class BxDolAiQuery extends BxDolDb
             'exact' => $sExact,
             'prefix' => $sExact . ':%',
         ]);
+    }
+
+    /**
+     * Every thread one owner (profile id, or guest session id) has with this agent:
+     * site-wide and in any context, base and `?chat=` partitions. Newest first.
+     * Owner is matched by LIKE on the thread id, so callers still re-check it via
+     * BxDolAiChat::parseThreadId.
+     */
+    public function getOwnerAgentChatHistoryRows($aAgent, $sOwner, $iLimit = 100)
+    {
+        $sPrefix = ($aAgent['trigger'] ?? '') . ':' . ($aAgent['id'] ?? '');
+        $sOwner = (string)$sOwner;
+        if ($sPrefix === ':' || $sOwner === '')
+            return [];
+
+        $sOwnerLike = str_replace(['\\', '%', '_'], ['\\\\', '\\%', '\\_'], $sOwner);
+        return $this->getAll("
+            SELECT " . $this->getChatHistoryRowFields() . "
+            FROM `sys_agents_chat_history`
+            WHERE `thread_id` = :site
+               OR `thread_id` LIKE :site_chat
+               OR `thread_id` LIKE :ctx
+               OR `thread_id` LIKE :ctx_chat
+            ORDER BY `updated_at` DESC, `id` DESC
+            LIMIT " . (int)$iLimit, [
+            'site' => $sPrefix . ':' . $sOwner,
+            'site_chat' => $sPrefix . ':' . $sOwnerLike . '.%',
+            'ctx' => $sPrefix . ':%:' . $sOwnerLike,
+            'ctx_chat' => $sPrefix . ':%:' . $sOwnerLike . '.%',
+        ]);
+    }
+
+    /**
+     * The owner's current thread for this agent+context: the newest one that is not
+     * closed — a `?chat=` partition or the base thread. '' when there is none.
+     */
+    public function getCurrentOpenChatThreadId($aAgent, $sOwner, $iContext)
+    {
+        if (!$this->isFieldExists('sys_agents_chat_history', 'closed_reason'))
+            return '';
+
+        $sPrefix = ($aAgent['trigger'] ?? '') . ':' . ($aAgent['id'] ?? '');
+        $sOwner = (string)$sOwner;
+        if ($sPrefix === ':' || $sOwner === '')
+            return '';
+
+        $sBase = ((int)$iContext > 0)
+            ? ($sPrefix . ':' . (int)$iContext . ':' . $sOwner)
+            : ($sPrefix . ':' . $sOwner);
+
+        return (string)$this->getOne("
+            SELECT `thread_id`
+            FROM `sys_agents_chat_history`
+            WHERE (`thread_id` = :exact OR `thread_id` LIKE :dot)
+              AND (`closed_reason` = '' OR `closed_reason` IS NULL)
+            ORDER BY `updated_at` DESC, `id` DESC
+            LIMIT 1
+        ", [
+            'exact' => $sBase,
+            'dot' => $sBase . '.%',
+        ]);
+    }
+
+    /**
+     * Stored thread title; '' when unset, or when the column is not there yet —
+     * callers fall back to deriving one from the messages.
+     */
+    public function getChatHistoryTitle($sThreadId)
+    {
+        if (!$this->isFieldExists('sys_agents_chat_history', 'title'))
+            return '';
+
+        return (string)$this->getOne("SELECT `title` FROM `sys_agents_chat_history` WHERE `thread_id` = :t", [
+            't' => (string)$sThreadId,
+        ]);
+    }
+
+    public function setChatHistoryTitle($sThreadId, $sTitle)
+    {
+        if (!$this->isFieldExists('sys_agents_chat_history', 'title'))
+            return false;
+
+        return (bool)$this->query("UPDATE `sys_agents_chat_history` SET `title` = :s WHERE `thread_id` = :t", [
+            's' => get_mb_substr((string)$sTitle, 0, 255),
+            't' => (string)$sThreadId,
+        ]);
+    }
+
+    /**
+     * History row for a thread, created empty when missing.
+     *
+     * @return int row id, 0 for an invalid thread id
+     */
+    public function ensureChatHistoryRow($sThreadId)
+    {
+        $sThreadId = (string)$sThreadId;
+        if ($sThreadId === '' || $sThreadId === ':')
+            return 0;
+
+        $iId = $this->getChatHistoryIdByThreadId($sThreadId);
+        if ($iId)
+            return $iId;
+
+        $this->query("INSERT IGNORE INTO `sys_agents_chat_history` (`thread_id`, `messages`) VALUES (:t, :m)", [
+            't' => $sThreadId,
+            'm' => '[]',
+        ]);
+
+        return $this->getChatHistoryIdByThreadId($sThreadId);
+    }
+
+    protected function getChatHistoryRowFields()
+    {
+        $sFields = "`id`, `thread_id`, `messages`, `created_at`, `updated_at`";
+        if ($this->isFieldExists('sys_agents_chat_history', 'closed_reason'))
+            $sFields .= ", `closed_reason`";
+        if ($this->isFieldExists('sys_agents_chat_history', 'title'))
+            $sFields .= ", `title`";
+        return $sFields;
     }
 
     public function getChatHistoryIdByThreadId($sThreadId)
@@ -447,7 +563,7 @@ class BxDolAiQuery extends BxDolDb
     }
 
     /**
-     * Rename this agent's guest threads (`…:{sessionId}`) onto a profile id.
+     * Rename this agent's guest threads (`…:{sessionId}` or `…:{sessionId}.{chat}`) onto a profile id.
      * If the member thread already has messages, drop the guest copy.
      */
     public function adoptGuestChatHistory($aAgent, $sSessionId, $iProfileId)
@@ -458,36 +574,54 @@ class BxDolAiQuery extends BxDolDb
             return 0;
 
         $sPrefix = $aAgent['trigger'] . ':' . $aAgent['id'] . ':';
-        $sOldSuffix = ':' . $sSessionId;
-        $sNewSuffix = ':' . $iProfileId;
-        $iLen = strlen($sOldSuffix);
-        $aBindings = [
+        $aRows = $this->getAll("SELECT `id`, `thread_id`, `messages` FROM `sys_agents_chat_history` WHERE `thread_id` LIKE :p", [
             'p' => $sPrefix . '%',
-            'o' => $sOldSuffix,
-            'n' => $sNewSuffix,
-        ];
+        ]);
+        if (!is_array($aRows) || !$aRows)
+            return 0;
 
-        $this->query("
-            DELETE `g` FROM `sys_agents_chat_history` AS `g`
-            INNER JOIN `sys_agents_chat_history` AS `m`
-                ON `m`.`thread_id` = CONCAT(LEFT(`g`.`thread_id`, CHAR_LENGTH(`g`.`thread_id`) - $iLen), :n)
-            WHERE `g`.`thread_id` LIKE :p AND RIGHT(`g`.`thread_id`, $iLen) = :o
-              AND `m`.`messages` IS NOT NULL AND `m`.`messages` != '' AND `m`.`messages` != '[]'
-        ", $aBindings);
+        $iAffected = 0;
+        foreach ($aRows as $aRow) {
+            $sThreadId = (string)($aRow['thread_id'] ?? '');
+            $aParsed = BxDolAiChat::parseThreadId($aAgent, $sThreadId);
+            if (!$aParsed)
+                continue;
 
-        $this->query("
-            DELETE `m` FROM `sys_agents_chat_history` AS `m`
-            INNER JOIN `sys_agents_chat_history` AS `g`
-                ON `g`.`thread_id` LIKE :p AND RIGHT(`g`.`thread_id`, $iLen) = :o
-               AND `m`.`thread_id` = CONCAT(LEFT(`g`.`thread_id`, CHAR_LENGTH(`g`.`thread_id`) - $iLen), :n)
-            WHERE `m`.`messages` = '' OR `m`.`messages` = '[]' OR `m`.`messages` IS NULL
-        ", $aBindings);
+            $sSub = (string)$aParsed['chat_history_subindex'];
+            $sOwner = BxDolAiChat::chatHistoryOwnerFromSubindex($sSub);
+            if ($sOwner !== $sSessionId)
+                continue;
 
-        $iAffected = (int)$this->query("
-            UPDATE `sys_agents_chat_history`
-            SET `thread_id` = CONCAT(LEFT(`thread_id`, CHAR_LENGTH(`thread_id`) - $iLen), :n)
-            WHERE `thread_id` LIKE :p AND RIGHT(`thread_id`, $iLen) = :o
-        ", $aBindings);
+            $sConv = strlen($sSub) > strlen($sOwner) ? substr($sSub, strlen($sOwner)) : '';
+            $sNewThread = BxDolAiChat::threadId($aAgent, [
+                'chat_history_context_pid' => (int)$aParsed['chat_history_context_pid'],
+                'chat_history_subindex' => $iProfileId . $sConv,
+            ]);
+            if ($sNewThread === '' || $sNewThread === $sThreadId)
+                continue;
+
+            $aMember = $this->getRow("SELECT `id`, `messages` FROM `sys_agents_chat_history` WHERE `thread_id` = :t", [
+                't' => $sNewThread,
+            ]);
+            $sGuestMsg = trim((string)($aRow['messages'] ?? ''));
+            $bGuestHas = $sGuestMsg !== '' && $sGuestMsg !== '[]';
+            $sMemberMsg = is_array($aMember) ? trim((string)($aMember['messages'] ?? '')) : '';
+            $bMemberHas = $sMemberMsg !== '' && $sMemberMsg !== '[]';
+
+            if ($bMemberHas) {
+                $this->query("DELETE FROM `sys_agents_chat_history` WHERE `id` = :id", ['id' => (int)$aRow['id']]);
+                continue;
+            }
+            if (is_array($aMember) && (int)($aMember['id'] ?? 0) > 0)
+                $this->query("DELETE FROM `sys_agents_chat_history` WHERE `id` = :id", ['id' => (int)$aMember['id']]);
+            if (!$bGuestHas && is_array($aMember))
+                continue;
+
+            $iAffected += (int)$this->query("UPDATE `sys_agents_chat_history` SET `thread_id` = :n WHERE `id` = :id", [
+                'n' => $sNewThread,
+                'id' => (int)$aRow['id'],
+            ]);
+        }
 
         return $iAffected;
     }

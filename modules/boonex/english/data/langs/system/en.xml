@@ -1978,6 +1978,8 @@
     <string name="_adm_stg_cpt_option_sys_api_url_root_push"><![CDATA[Site main URL in push notifications]]></string>
     <string name="_adm_stg_cpt_option_sys_agents_inspector_key"><![CDATA[Inspector key]]></string>
     <string name="_adm_stg_cpt_option_sys_agents_inspector_key_info"><![CDATA[Get key at https://app.inspector.dev/]]></string>
+    <string name="_adm_stg_cpt_option_sys_agents_operator_agent"><![CDATA[Operator agent]]></string>
+    <string name="_adm_stg_cpt_option_sys_agents_operator_agent_info"><![CDATA[Agent shown to site operators: the Dashboard block and the App floating chat bubble. Block settings are fixed in get_block_ai_agent_operator.]]></string>
     <string name="_adm_stg_cpt_option_sys_agents_asst_chats_trans_del"><![CDATA[Auto delete transient chats everyday]]></string>
     <string name="_adm_stg_cpt_option_sys_viewport_meta_tag"><![CDATA[Viewport meta tag]]></string>
 
@@ -2403,6 +2405,8 @@
     <string name="_sys_agents_agents_txt_my_chat"><![CDATA[My chat]]></string>
     <string name="_sys_agents_agents_txt_guest_chat"><![CDATA[Guest]]></string>
     <string name="_sys_agents_agents_txt_readonly"><![CDATA[View only]]></string>
+    <string name="_sys_agents_agents_txt_search"><![CDATA[Search chats...]]></string>
+    <string name="_sys_agents_agents_txt_search_empty"><![CDATA[No chats found]]></string>
     <string name="_sys_agents_agents_popup_add"><![CDATA[Add agent]]></string>
     <string name="_sys_agents_agents_empty"><![CDATA[No agents yet]]></string>
     <string name="_sys_agents_agents_empty_info"><![CDATA[Agents run automated tasks on your site. Add one to get started.]]></string>

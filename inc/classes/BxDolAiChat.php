@@ -13,6 +13,12 @@ class BxDolAiChat
     protected $_oUi;
     protected $_aChatContext;
 
+    /**
+     * Buttons queued by the `chat_buttons` tool during the current turn; the chat
+     * trigger emits them after the assistant text and pins them to the stored message.
+     */
+    protected $_aPendingChatActions = [];
+
     public static function getInstance()
     {
         if (!isset($GLOBALS['bxDolClasses'][__CLASS__]))
@@ -26,6 +32,7 @@ class BxDolAiChat
         $this->_oDb = new BxDolAiQuery();
         $this->_oUi = BxDolAiChatUi::getInstance();
         $this->_aChatContext = null;
+        $this->_aPendingChatActions = [];
     }
 
     public function setChatContext($aAgent, $aParams)
@@ -34,8 +41,33 @@ class BxDolAiChat
     }
 
     /**
+     * Optional `?chat=` partition. Not identity — owner stays profile id / session id.
+     * `{owner}.{chat}` so parseThreadId does not treat the nonce as a context pid.
+     */
+    public static function sanitizeChatQueryId($s)
+    {
+        $s = is_string($s) ? $s : '';
+        $s = preg_replace('/[^A-Za-z0-9_-]/', '', $s);
+        $s = substr($s, 0, 64);
+        return strlen($s) >= 8 ? $s : '';
+    }
+
+    /**
+     * Owner (profile id or guest session id) of a `{owner}` / `{owner}.{chat}` subindex.
+     */
+    public static function chatHistoryOwnerFromSubindex($sSub)
+    {
+        $sSub = (string)$sSub;
+        if ($sSub === '')
+            return '';
+        $i = strpos($sSub, '.');
+        return $i === false ? $sSub : substr($sSub, 0, $i);
+    }
+
+    /**
      * Guests: UNA session id. Members: profile id.
      * Guest chats remember agent ids in session so login can adopt those threads.
+     * `?chat=` appends a conversation id without changing the owner.
      */
     public function resolveChatHistoryParams($iAgentId = 0)
     {
@@ -43,6 +75,7 @@ class BxDolAiChat
         $iProfileId = (int)bx_get_logged_profile_id();
         $oSession = BxDolSession::getInstance();
         $sSessionKey = 'ai_chat_agent_ids';
+        $sChat = self::sanitizeChatQueryId(bx_get('chat'));
 
         if ($iProfileId) {
             $aIds = $oSession->getValue($sSessionKey);
@@ -60,9 +93,10 @@ class BxDolAiChat
                 $oSession->unsetValue($sSessionKey);
             }
 
+            $sOwner = (string)$iProfileId;
             return [
                 'sender_profile_id' => $iProfileId,
-                'chat_history_subindex' => (string)$iProfileId,
+                'chat_history_subindex' => $sChat !== '' ? ($sOwner . '.' . $sChat) : $sOwner,
             ];
         }
 
@@ -75,16 +109,17 @@ class BxDolAiChat
             }
         }
 
+        $sOwner = (string)$oSession->getId();
         return [
             'sender_profile_id' => 0,
-            'chat_history_subindex' => (string)$oSession->getId(),
+            'chat_history_subindex' => $sChat !== '' ? ($sOwner . '.' . $sChat) : $sOwner,
         ];
     }
 
     /**
      * `{trigger}:{agentId}:{contextPid}:{userSubindex}`.
      * Context is omitted when 0 so existing site-wide threads still load.
-     * User suffix (session id or profile id) stays last so adopt can replace it.
+     * User suffix (session id or profile id, optionally `.{chat}`) stays last so adopt can replace it.
      */
     public static function threadId($aAgent, $aParams = [])
     {
@@ -145,6 +180,101 @@ class BxDolAiChat
         return $this->getChatHistoryRowId($aAgent, is_array($aParams) ? $aParams : []);
     }
 
+    /**
+     * No `?chat=` in the request means "the conversation I am in", not "the base
+     * thread": the newest open thread for this owner+context (a `?chat=` partition
+     * or the base thread). Otherwise a block without `allow_new` would keep talking
+     * to a base thread the agent closed days ago, while Studio shows a newer chat.
+     *
+     * Explicit `?chat=` (subindex with a dot) is left alone. Falls back to the base
+     * thread when nothing is open.
+     */
+    public function resolveCurrentChatThread($aAgent, $aParams)
+    {
+        $sSub = (string)($aParams['chat_history_subindex'] ?? '');
+        if ($sSub === '' || strpos($sSub, '.') !== false)
+            return $aParams;
+
+        $sCurrent = $this->_oDb->getCurrentOpenChatThreadId($aAgent, $sSub, (int)($aParams['chat_history_context_pid'] ?? 0));
+        if ($sCurrent === '')
+            return $aParams;
+
+        $aParsed = self::parseThreadId($aAgent, $sCurrent);
+        if (!$aParsed || (string)$aParsed['chat_history_subindex'] === '')
+            return $aParams;
+
+        $aParams['chat_history_subindex'] = (string)$aParsed['chat_history_subindex'];
+        return $aParams;
+    }
+
+    /**
+     * Create the `?chat=` history row immediately, so the thread exists (and lists)
+     * before its first message. The owner's other threads are left as they are: a
+     * "New chat" is one more conversation, not the end of the previous one — people
+     * switch back to an earlier open thread from the history panel and go on.
+     * Threads close only when the agent or the turn limit closes them.
+     *
+     * @return int history row id, 0 when this is not a `?chat=` thread
+     */
+    public function openPartitionedChatThread($aAgent, $aParams)
+    {
+        $sSub = (string)($aParams['chat_history_subindex'] ?? '');
+        if (strpos($sSub, '.') === false)
+            return 0;
+
+        $sThreadId = self::threadId($aAgent, $aParams);
+        if ($sThreadId === '')
+            return 0;
+
+        return (int)$this->_oDb->ensureChatHistoryRow($sThreadId);
+    }
+
+    /**
+     * `chat_buttons` tool: queue buttons for the reply being generated.
+     *
+     * @return int number of accepted buttons
+     */
+    public function setPendingChatActions($mixed)
+    {
+        $a = $this->_oUi->sanitizeChatActions($this->normalizeChatButtonsInput($mixed));
+        if (!$a)
+            return 0;
+
+        $this->_aPendingChatActions = $this->_oUi->mergeChatActions($this->_aPendingChatActions, $a);
+        return count($a);
+    }
+
+    public function getPendingChatActions()
+    {
+        return $this->_oUi->sanitizeChatActions($this->_aPendingChatActions);
+    }
+
+    public function takePendingChatActions()
+    {
+        $a = $this->getPendingChatActions();
+        $this->_aPendingChatActions = [];
+        return $a;
+    }
+
+    public function resetPendingChatActions()
+    {
+        $this->_aPendingChatActions = [];
+    }
+
+    protected function normalizeChatButtonsInput($mixed)
+    {
+        if (!is_array($mixed))
+            return [];
+
+        if (isset($mixed['buttons']) && is_array($mixed['buttons']))
+            $mixed = $mixed['buttons'];
+
+        if (isset($mixed['type']) && (isset($mixed['label']) || isset($mixed['url'])))
+            return [$mixed];
+
+        return $mixed;
+    }
+
     public function emitConversationClosed($sReason, $sSummary = '', $aAgent = null, $aParams = null)
     {
         if (!is_array($aAgent) && is_array($this->_aChatContext))
@@ -170,6 +300,9 @@ class BxDolAiChat
         return true;
     }
 
+    /**
+     * Thread belongs to the current profile / guest session (any `?chat=` partition of theirs).
+     */
     public function isOwnAgentChatThread($aAgent, $sThreadId)
     {
         $aParsed = self::parseThreadId($aAgent, $sThreadId);
@@ -177,8 +310,9 @@ class BxDolAiChat
             return false;
 
         $aMine = $this->resolveChatHistoryParams((int)$aAgent['id']);
-        $sMine = (string)($aMine['chat_history_subindex'] ?? '');
-        return $sMine !== '' && $aParsed['chat_history_subindex'] === $sMine;
+        $sMineOwner = self::chatHistoryOwnerFromSubindex($aMine['chat_history_subindex'] ?? '');
+        $sRowOwner = self::chatHistoryOwnerFromSubindex($aParsed['chat_history_subindex']);
+        return $sMineOwner !== '' && $sMineOwner === $sRowOwner;
     }
 
     public function getChatHistoryUiMessagesByThread($aAgent, $sThreadId)
@@ -199,10 +333,22 @@ class BxDolAiChat
         return $this->_oDb->getChatArtifactsByThreadId((string)$sThreadId);
     }
 
+    public function getChatHistoryClosedReasonByThread($aAgent, $sThreadId)
+    {
+        if (!self::parseThreadId($aAgent, $sThreadId))
+            return '';
+
+        return $this->_oDb->getChatHistoryClosedReasonById($this->_oDb->getChatHistoryIdByThreadId((string)$sThreadId));
+    }
+
+    /**
+     * Every thread of this agent (Studio chat popup): all owners, all contexts.
+     */
     public function listAgentChatThreads($aAgent)
     {
         $aMineParams = $this->resolveChatHistoryParams((int)$aAgent['id']);
         $sMySub = (string)($aMineParams['chat_history_subindex'] ?? '');
+        $sMyOwner = self::chatHistoryOwnerFromSubindex($sMySub);
         $sMyDefault = self::threadId($aAgent, $aMineParams);
 
         $aOut = [];
@@ -225,10 +371,12 @@ class BxDolAiChat
                 continue;
 
             $aUi = $this->_oUi->storedChatJsonToUiMessages($aRow['messages'] ?? '');
-            if (!$aUi && $sThreadId !== $sMyDefault)
+            // A `?chat=` thread is listed even before its first message (it was opened on purpose).
+            $bPartition = strpos((string)$aParsed['chat_history_subindex'], '.') !== false;
+            if (!$aUi && $sThreadId !== $sMyDefault && !$bPartition)
                 continue;
 
-            $bMine = ($sMySub !== '' && $aParsed['chat_history_subindex'] === $sMySub);
+            $bMine = ($sMyOwner !== '' && $sMyOwner === self::chatHistoryOwnerFromSubindex($aParsed['chat_history_subindex']));
             if ($sThreadId === $sMyDefault)
                 $bHaveMineDefault = true;
 
@@ -248,6 +396,78 @@ class BxDolAiChat
         });
 
         return $aOut;
+    }
+
+    /**
+     * The caller's own conversations with this agent, for the chat widget's history
+     * panel (`system/get_ai_chat_threads`). Unlike listAgentChatThreads (Studio, every
+     * owner) this only reads the current profile's / guest session's rows: any
+     * context, base thread and `?chat=` partitions, newest first. Closed threads
+     * with nothing in them are skipped; the open one is listed even when empty so
+     * the panel can mark it as current.
+     *
+     * @return array<int, array<string, mixed>> see formatOwnAgentChatThread
+     */
+    public function listOwnAgentChatThreads($aAgent)
+    {
+        $aMine = $this->resolveChatHistoryParams((int)$aAgent['id']);
+        $sOwner = self::chatHistoryOwnerFromSubindex($aMine['chat_history_subindex'] ?? '');
+        if ($sOwner === '')
+            return [];
+
+        $aRows = $this->_oDb->getOwnerAgentChatHistoryRows($aAgent, $sOwner);
+        if (!is_array($aRows))
+            return [];
+
+        $aOut = [];
+        foreach ($aRows as $aRow) {
+            $aParsed = self::parseThreadId($aAgent, (string)($aRow['thread_id'] ?? ''));
+            // LIKE matched the owner loosely; the parsed id is the authority.
+            if (!$aParsed || self::chatHistoryOwnerFromSubindex($aParsed['chat_history_subindex']) !== $sOwner)
+                continue;
+
+            $aUi = $this->_oUi->storedChatJsonToUiMessages($aRow['messages'] ?? '');
+            $sReason = trim((string)($aRow['closed_reason'] ?? ''));
+            if (!$aUi && $sReason !== '')
+                continue;
+
+            $aOut[] = $this->formatOwnAgentChatThread($aParsed, $aRow, $aUi);
+        }
+
+        return $aOut;
+    }
+
+    /**
+     * `chat_title` tool: store the title the agent chose for the conversation it is
+     * in right now (`_aChatContext`, set by the chat trigger). Set once —
+     * a thread that already has a title keeps it.
+     *
+     * @return int 1 saved, 0 already titled, -1 no current thread or no `title` column yet
+     */
+    public function setCurrentChatThreadTitle($sTitle)
+    {
+        $sTitle = trim((string)$sTitle);
+        if ($sTitle === '' || !is_array($this->_aChatContext))
+            return -1;
+        if (!$this->_oDb->isFieldExists('sys_agents_chat_history', 'title'))
+            return -1;
+
+        $aAgent = $this->_aChatContext['agent'] ?? null;
+        $aParams = $this->_aChatContext['params'] ?? [];
+        if (!is_array($aAgent))
+            return -1;
+
+        $sThreadId = self::threadId($aAgent, is_array($aParams) ? $aParams : []);
+        if ($sThreadId === '' || $sThreadId === ':')
+            return -1;
+
+        // The row may not be there yet on the very first turn: the history is
+        // persisted after the tools ran. Create it, so the title has somewhere to go.
+        $this->_oDb->ensureChatHistoryRow($sThreadId);
+        if ($this->_oDb->getChatHistoryTitle($sThreadId) !== '')
+            return 0;
+
+        return $this->_oDb->setChatHistoryTitle($sThreadId, $sTitle) ? 1 : -1;
     }
 
     /**
@@ -373,11 +593,15 @@ class BxDolAiChat
         }
 
         $sTitle = _t('_sys_agents_agents_txt_guest_chat');
-        $oProfile = (ctype_digit($sSub) && (int)$sSub > 0) ? BxDolProfile::getInstance((int)$sSub) : false;
+        $sOwner = self::chatHistoryOwnerFromSubindex($sSub);
+        $oProfile = (ctype_digit($sOwner) && (int)$sOwner > 0) ? BxDolProfile::getInstance((int)$sOwner) : false;
         if ($oProfile)
             $sTitle = $oProfile->getDisplayName();
         if ($sContextName !== '')
             $sTitle .= ' · ' . $sContextName;
+        $sThreadTitle = trim((string)($aRow['title'] ?? ''));
+        if ($sThreadTitle !== '')
+            $sTitle .= ' · ' . $sThreadTitle;
 
         $sReason = trim((string)($aRow['closed_reason'] ?? ''));
         $sStatus = $sReason !== '' ? 'closed' : 'opened';
@@ -412,9 +636,76 @@ class BxDolAiChat
             'created_at' => $sCreated,
             'updated_at' => $sUpdated,
             'artifacts' => is_array($aArtifacts) ? $aArtifacts : [],
+            'messages' => is_array($aUi) ? $aUi : [],
             'updated_sort' => $sUpdatedRaw,
             'class_mine' => $bMine ? ' bx-agents-popup-chat-thread-mine' : '',
         ];
+    }
+
+    /**
+     * One history-panel item. `chat` is the `?chat=` nonce ('' for the base thread),
+     * so the client can tell which row its live widget is talking to. `title` is the
+     * one the agent gave (`chat_title` tool) or the first thing the person typed (the
+     * hidden "[page opened…" bootstrap is skipped), `preview` the last line said; both plain text.
+     */
+    protected function formatOwnAgentChatThread($aParsed, $aRow, $aUi)
+    {
+        $iContext = (int)$aParsed['chat_history_context_pid'];
+        $sContextName = '';
+        if ($iContext > 0) {
+            $oContext = BxDolProfile::getInstance($iContext);
+            $sContextName = $oContext ? $oContext->getDisplayName() : ('#' . $iContext);
+        }
+
+        $sSub = (string)$aParsed['chat_history_subindex'];
+        $iDot = strpos($sSub, '.');
+        $sChat = $iDot === false ? '' : substr($sSub, $iDot + 1);
+
+        $sTitle = trim((string)($aRow['title'] ?? ''));
+        $sPreview = '';
+        foreach ($aUi as $aMessage) {
+            $sText = $this->_oUi->uiChatMessagePlainText($aMessage);
+            if ($sText === '')
+                continue;
+            if ($sTitle === '' && ($aMessage['role'] ?? '') === 'user' && strpos($sText, '[page opened') !== 0)
+                $sTitle = $this->clipChatThreadText($sText, 80);
+            $sPreview = $sText;
+        }
+        if ($sPreview !== '' && strpos($sPreview, '[page opened') === 0)
+            $sPreview = '';
+
+        $sReason = trim((string)($aRow['closed_reason'] ?? ''));
+        return [
+            'thread_id' => (string)$aParsed['thread_id'],
+            'chat' => $sChat,
+            'context_pid' => $iContext,
+            'context_name' => $sContextName,
+            'status' => $sReason !== '' ? 'closed' : 'opened',
+            'closed_reason' => $sReason,
+            'title' => $sTitle,
+            'preview' => $this->clipChatThreadText($sPreview, 120),
+            'messages_count' => count($aUi),
+            'created_ts' => $this->chatThreadTimestamp($aRow['created_at'] ?? ''),
+            'updated_ts' => $this->chatThreadTimestamp($aRow['updated_at'] ?? ''),
+        ];
+    }
+
+    protected function clipChatThreadText($s, $iMax)
+    {
+        $s = (string)$s;
+        if (get_mb_len($s) <= $iMax)
+            return $s;
+        return rtrim(get_mb_substr($s, 0, $iMax - 1)) . '…';
+    }
+
+    /** Unix timestamp for a `created_at` / `updated_at` cell, 0 when unset. */
+    protected function chatThreadTimestamp($mixed)
+    {
+        $s = trim((string)$mixed);
+        if ($s === '' || $s === '0')
+            return 0;
+        $i = ctype_digit($s) ? (int)$s : (int)strtotime($s);
+        return $i > 86400 ? $i : 0;
     }
 
     protected function formatAgentChatThreadTime($mixed): string
