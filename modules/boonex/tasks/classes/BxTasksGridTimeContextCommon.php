@@ -50,10 +50,11 @@ class BxTasksGridTimeContextCommon extends BxTasksGridTimeContextAdministration
         $oForm->initChecker();
         if($oForm->isSubmittedAndValid()) {
             $iNow = time();
+            $iValue = $this->_oModule->_oConfig->timeA2I([(int)$oForm->getCleanValue('value_h'), (int)$oForm->getCleanValue('value_m')]);
             $aValsToAdd = [
                 'author_id' => $this->_iLogged,
                 'author_nip' => bx_get_ip_hash(getVisitorIP()),
-                'value' => $this->_oModule->_oConfig->timeA2I([(int)$oForm->getCleanValue('value_h'), (int)$oForm->getCleanValue('value_m')]),
+                'value' => $iValue,
                 'value_date' => $oForm->getCleanValue('value_date') ?: $iNow,
                 'date' => $iNow
             ];
@@ -66,6 +67,8 @@ class BxTasksGridTimeContextCommon extends BxTasksGridTimeContextAdministration
             $iObjectId = $oForm->getCleanValue('object_id');
             if(($oTime = BxDolReport::getObjectInstance($sSystem, $iObjectId)) && $oTime->isEnabled())
                 $oTime->putReport($iObjectId, $this->_iLogged, $iTrackId);
+
+            $this->_oModule->updateBudgetByContentId($iObjectId, $iValue);
 
             return $this->_bIsApi ? [] : echoJson(['grid' => $this->getCode(false), 'blink' => $iTrackId]);    
         }
@@ -114,6 +117,8 @@ class BxTasksGridTimeContextCommon extends BxTasksGridTimeContextAdministration
                 $oTime->putReport($iObjectId, $iAuthorId, $aTrack, true); //--- Revoke old value
                 $oTime->putReport($iObjectId, $iAuthorId, $iTrackId); //--- Process new value
             }
+
+            $this->_oModule->updateBudgetByContentId($iObjectId, $aValsToAdd['value'] - $aTrack['value']);
 
             return $this->_bIsApi ? [] : echoJson(['grid' => $this->getCode(false), 'blink' => $iTrackId]);    
         }

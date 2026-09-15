@@ -219,6 +219,17 @@ class BxTasksDb extends BxBaseModTextDb
         return count($aResult) == (int)$this->query("UPDATE `" . $CNF['TABLE_ENTRIES'] . "` SET `" . $CNF['FIELD_EXPIRED'] . "` = '1' WHERE `id` IN (" . $this->implode_escape($aResult) . ")") ? $aResult : false;
     }
 
+    public function getContextId($iContentId)
+    {
+        $CNF = $this->_oConfig->CNF;
+
+        $aData = $this->getContentInfoById($iContentId);
+        if($aData && is_array($aData) && ($iValue = (int)($aData[$CNF['FIELD_ALLOW_VIEW_TO']] ?? 0)) < 0)
+            return abs($iValue);
+
+        return 0;
+    }
+
     public function getContextsIdsByType($sType, $iProfileId)
     {
         $CNF = $this->_oConfig->CNF;
@@ -498,6 +509,107 @@ class BxTasksDb extends BxBaseModTextDb
             return false;
 
         return $this->query("DELETE FROM `" . $CNF['TABLE_TIMERS'] . "` WHERE " . $this->arrayToSQL($aParamsWhere, " AND "));
+    }
+
+    public function getBudgetTracks($aParams = []) 
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        $aMethod = ['name' => 'getAll', 'params' => [0 => 'query']];
+        $sSelectClause = '`tbt`.*';
+        $sJoinClause = $sWhereClause = $sOrderClause = '';
+
+        if(!empty($aParams))
+            switch($aParams['sample']) {
+                case 'id':
+                    $aMethod['name'] = 'getRow';
+                    $aMethod['params'][1] = [
+                        'id' => $aParams['id']
+                    ];
+
+                    $sWhereClause = "AND `tbt`.`id` = :id";
+                    break;
+            }
+
+        if(!empty($sOrderClause))
+            $sOrderClause = "ORDER BY " . $sOrderClause;
+
+        $aMethod['params'][0] = "SELECT 
+                " . $sSelectClause . " 
+            FROM `" . $CNF['TABLE_BUDGET_TRACK'] . "` AS `tbt` " . $sJoinClause . " 
+            WHERE 1 " . $sWhereClause . " " . $sOrderClause;
+
+        return call_user_func_array([$this, $aMethod['name']], $aMethod['params']);
+    }
+
+    public function getBudget($aParams = []) 
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        $aMethod = ['name' => 'getAll', 'params' => [0 => 'query']];
+        $sSelectClause = '`tb`.*';
+        $sJoinClause = $sWhereClause = $sOrderClause = '';
+
+        if(!empty($aParams))
+            switch($aParams['sample']) {
+                case 'id':
+                    $aMethod['name'] = 'getRow';
+                    $aMethod['params'][1] = [
+                        'id' => $aParams['id']
+                    ];
+
+                    $sWhereClause = "AND `tb`.`id` = :id";
+                    break;
+
+                case 'context_id':
+                    $aMethod['name'] = 'getRow';
+                    $aMethod['params'][1] = [
+                        'context_id' => $aParams['context_id']
+                    ];
+
+                    $sWhereClause = "AND `tb`.`context_id` = :context_id";
+                    break;
+            }
+
+        if(!empty($sOrderClause))
+            $sOrderClause = "ORDER BY " . $sOrderClause;
+
+        $aMethod['params'][0] = "SELECT 
+                " . $sSelectClause . " 
+            FROM `" . $CNF['TABLE_BUDGET'] . "` AS `tb` " . $sJoinClause . " 
+            WHERE 1 " . $sWhereClause . " " . $sOrderClause;
+
+        return call_user_func_array([$this, $aMethod['name']], $aMethod['params']);
+    }
+
+    public function insertBudget($iContextId, $iValue)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        return $this->query("INSERT INTO `" . $CNF['TABLE_BUDGET'] . "` (`context_id`, `value_total`) VALUES (:context_id, :value_total) ON DUPLICATE KEY UPDATE `value_total`=`value_total`+:value_total", [
+            'context_id' => $iContextId,
+            'value_total' => $iValue
+        ]) ? $this->lastId() : false;
+    }
+
+    public function updateBudgetTotal($iContextId, $iValue)
+    {
+        return $this->updateBudgetValue('total', $iContextId, $iValue);
+    }
+
+    public function updateBudgetSpent($iContextId, $iValue)
+    {
+        return $this->updateBudgetValue('spent', $iContextId, $iValue);
+    }
+
+    public function updateBudgetValue($sField, $iContextId, $iValue)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        return $this->query("UPDATE `" . $CNF['TABLE_BUDGET'] . "` SET `value_" . $sField . "` = `value_" . $sField . "` + :value WHERE `context_id` = :context_id", [
+            'context_id' => $iContextId,
+            'value' => $iValue,
+        ]) !== false;
     }
 
     public function getPreLists($aParams = []) 

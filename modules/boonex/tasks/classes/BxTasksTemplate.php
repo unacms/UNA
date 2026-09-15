@@ -91,7 +91,20 @@ class BxTasksTemplate extends BxBaseModTextTemplate
             ]
         ]);
     }
-    
+
+    public function getBlockBudget($aBudget)
+    {
+        $iTotal = (int)$aBudget['value_total'];
+        $iSpent = (int)$aBudget['value_spent'];
+        $iRemains = $iTotal - $iSpent;
+
+        return $this->parseHtmlByName('block_budget.html', [
+            'total' => $this->_oConfig->timeI2S($iTotal),
+            'spent' => $this->_oConfig->timeI2S($iSpent),
+            'remains' => _t('_bx_tasks_txt_budget_remains_value', $this->_oConfig->timeI2S($iRemains), round(100 * $iRemains / $iTotal))
+        ]);
+    }
+
     /**
      * Use Gallery image for both because currently there is no Unit types with small thumbnails.
      */

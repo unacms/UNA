@@ -1,6 +1,6 @@
 
 -- TABLES
-DROP TABLE IF EXISTS `bx_tasks_tasks`, `bx_tasks_lists`, `bx_tasks_contexts`, `bx_tasks_assignments`, `bx_tasks_pre_lists`, `bx_tasks_pre_values`, `bx_tasks_filters`, `bx_tasks_covers`, `bx_tasks_files`, `bx_tasks_photos`, `bx_tasks_photos_resized`, `bx_tasks_videos`, `bx_tasks_videos_resized`, `bx_tasks_cmts`, `bx_tasks_cmts_notes`, `bx_tasks_votes`, `bx_tasks_votes_track`, `bx_tasks_reactions`, `bx_tasks_reactions_track`, `bx_tasks_views_track`, `bx_tasks_meta_keywords`, `bx_tasks_meta_locations`, `bx_tasks_meta_mentions`, `bx_tasks_reports`, `bx_tasks_reports_track`, `bx_tasks_time`, `bx_tasks_time_track`, `bx_tasks_timers`, `bx_tasks_favorites_track`, `bx_tasks_scores`, `bx_tasks_scores_track`;
+DROP TABLE IF EXISTS `bx_tasks_tasks`, `bx_tasks_lists`, `bx_tasks_contexts`, `bx_tasks_assignments`, `bx_tasks_pre_lists`, `bx_tasks_pre_values`, `bx_tasks_filters`, `bx_tasks_covers`, `bx_tasks_files`, `bx_tasks_photos`, `bx_tasks_photos_resized`, `bx_tasks_videos`, `bx_tasks_videos_resized`, `bx_tasks_cmts`, `bx_tasks_cmts_notes`, `bx_tasks_votes`, `bx_tasks_votes_track`, `bx_tasks_reactions`, `bx_tasks_reactions_track`, `bx_tasks_views_track`, `bx_tasks_meta_keywords`, `bx_tasks_meta_locations`, `bx_tasks_meta_mentions`, `bx_tasks_reports`, `bx_tasks_reports_track`, `bx_tasks_time`, `bx_tasks_time_track`, `bx_tasks_timers`, `bx_tasks_budget`, `bx_tasks_budget_track`, `bx_tasks_favorites_track`, `bx_tasks_scores`, `bx_tasks_scores_track`;
 
 -- STORAGES & TRANSCODERS
 DELETE FROM `sys_objects_storage` WHERE `object` LIKE 'bx_tasks_%';

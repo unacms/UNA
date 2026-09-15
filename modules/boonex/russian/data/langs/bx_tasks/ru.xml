@@ -148,6 +148,21 @@
     <string name="_bx_tasks_popup_title_time_add"><![CDATA[Добавить время]]></string>
     <string name="_bx_tasks_popup_title_time_edit"><![CDATA[Редактировать время]]></string>
 
+    <string name="_bx_tasks_form_budget"><![CDATA[Бюджет]]></string>
+    <string name="_bx_tasks_form_display_budget_add"><![CDATA[Добавить бюджет]]></string>
+    <string name="_bx_tasks_form_display_budget_edit"><![CDATA[Редактировать бюджет]]></string>
+    <string name="_bx_tasks_form_budget_input_sys_submit"><![CDATA[Выполнить]]></string>
+    <string name="_bx_tasks_form_budget_input_submit"><![CDATA[Выполнить]]></string>
+    <string name="_bx_tasks_form_budget_input_sys_cancel"><![CDATA[Отменить]]></string>
+    <string name="_bx_tasks_form_budget_input_cancel"><![CDATA[Отменить]]></string>
+    <string name="_bx_tasks_form_budget_input_sys_controls"><![CDATA[Управление]]></string>
+    <string name="_bx_tasks_form_budget_input_sys_value"><![CDATA[Бюджет]]></string>
+    <string name="_bx_tasks_form_budget_input_value"><![CDATA[Бюджет]]></string>
+    <string name="_bx_tasks_form_budget_input_value_info"><![CDATA[Укажите значение бюджета в часах.]]></string>
+    <string name="_bx_tasks_form_budget_input_value_err"><![CDATA[Если вы хотите добавить бюджет, заполните это поле.]]></string>
+    <string name="_bx_tasks_form_budget_input_sys_text"><![CDATA[Примечание]]></string>
+    <string name="_bx_tasks_form_budget_input_text"><![CDATA[Примечание]]></string>
+
     <string name="_bx_tasks_form_pv_input_title"><![CDATA[Заголовок]]></string>
     <string name="_bx_tasks_form_pv_input_color"><![CDATA[Цвет]]></string>
     <string name="_bx_tasks_form_pv_input_submit"><![CDATA[Выполнить]]></string>
@@ -302,6 +317,12 @@
     <string name="_bx_tasks_page_block_title_entries_time_in_context"><![CDATA[Мое время в <a href="{profile_link}">{display_name}</a>]]></string>
     <string name="_bx_tasks_page_block_title_sys_entries_time_in_context_administration"><![CDATA[Всё время в контексте]]></string>
     <string name="_bx_tasks_page_block_title_entries_time_in_context_administration"><![CDATA[Всё время в <a href="{profile_link}">{display_name}</a>]]></string>
+    <string name="_bx_tasks_page_title_sys_entries_budget_in_context_administration"><![CDATA[Контекст: Бюджет]]></string>
+    <string name="_bx_tasks_page_title_entries_budget_in_context_administration"><![CDATA[Бюджет в {display_name}]]></string>
+    <string name="_bx_tasks_page_block_title_sys_entries_budget_in_context_summary"><![CDATA[Сводка бюджета в контексте]]></string>
+    <string name="_bx_tasks_page_block_title_entries_budget_in_context_summary"><![CDATA[Сводка бюджета]]></string>
+    <string name="_bx_tasks_page_block_title_sys_entries_budget_in_context_administration"><![CDATA[Бюджет в контексте]]></string>
+    <string name="_bx_tasks_page_block_title_entries_budget_in_context_administration"><![CDATA[Бюджет в <a href="{profile_link}">{display_name}</a>]]></string>
     <string name="_bx_tasks_page_title_sys_context_pre_values"><![CDATA[Контекст: Свойства]]></string>
     <string name="_bx_tasks_page_title_context_pre_values"><![CDATA[Свойства]]></string>
     <string name="_bx_tasks_page_block_title_system_context_pre_values"><![CDATA[Свойства]]></string>
@@ -392,6 +413,8 @@
     <string name="_bx_tasks_menu_item_title_view_context_time"><![CDATA[Моё время]]></string>
     <string name="_bx_tasks_menu_item_title_system_view_context_time_administration"><![CDATA[Всё время]]></string>
     <string name="_bx_tasks_menu_item_title_view_context_time_administration"><![CDATA[Всё время]]></string>
+    <string name="_bx_tasks_menu_item_title_system_view_context_budget_administration"><![CDATA[Бюджет]]></string>
+    <string name="_bx_tasks_menu_item_title_view_context_budget_administration"><![CDATA[Бюджет]]></string>
     <string name="_bx_tasks_menu_item_title_system_manage_context_pre_values"><![CDATA[Свойства]]></string>
     <string name="_bx_tasks_menu_item_title_manage_context_pre_values"><![CDATA[Свойства]]></string>
     <string name="_bx_tasks_menu_item_title_system_manage_context_settings"><![CDATA[Настройки]]></string>
@@ -445,6 +468,17 @@
     <string name="_bx_tasks_grid_filter_item_title_tm_select_one_author_id"><![CDATA[Любой исполнитель]]></string>
     <string name="_bx_tasks_grid_filter_item_title_tm_select_one_context_module"><![CDATA[Любой модуль]]></string>
     <string name="_bx_tasks_grid_filter_item_title_tm_select_one_object_id"><![CDATA[Любая задача]]></string>
+
+    <string name="_bx_tasks_grid_column_title_bdt_profile_id"><![CDATA[Профиль]]></string>
+    <string name="_bx_tasks_grid_column_title_bdt_text"><![CDATA[Примечание]]></string>
+    <string name="_bx_tasks_grid_column_title_bdt_value"><![CDATA[Значение]]></string>
+    <string name="_bx_tasks_grid_column_title_bdt_date"><![CDATA[Добавлено]]></string>
+    <string name="_bx_tasks_grid_action_title_bdt_add"><![CDATA[Добавить]]></string>
+    <string name="_bx_tasks_grid_action_title_bdt_edit"><![CDATA[Редактировать]]></string>
+    <string name="_bx_tasks_grid_action_title_bdt_delete"><![CDATA[Удалить]]></string>
+    <string name="_bx_tasks_grid_action_title_bdt_calculate"><![CDATA[Рассчитать]]></string>
+    <string name="_bx_tasks_grid_popup_title_bdt_add"><![CDATA[Добавить бюджет]]></string>
+    <string name="_bx_tasks_grid_popup_title_bdt_edit"><![CDATA[Редактировать бюджет]]></string>
 
     <string name="_bx_tasks_grid_column_title_pv_active"><![CDATA[Активные]]></string>
     <string name="_bx_tasks_grid_column_title_pv_title"><![CDATA[Заголовок]]></string>
@@ -571,6 +605,11 @@
     <string name="_bx_tasks_txt_timer_resume"><![CDATA[Возобновить]]></string>
     <string name="_bx_tasks_txt_timer_clear"><![CDATA[Очистить]]></string>
     <string name="_bx_tasks_txt_timer_log"><![CDATA[Внести]]></string>
+
+    <string name="_bx_tasks_txt_budget_total"><![CDATA[Бюджет:]]></string>
+    <string name="_bx_tasks_txt_budget_spent"><![CDATA[Использовано:]]></string>
+    <string name="_bx_tasks_txt_budget_remains"><![CDATA[Осталось:]]></string>
+    <string name="_bx_tasks_txt_budget_remains_value"><![CDATA[{0} ({1}%)]]></string>
 
     <string name="_bx_tasks_txt_err_cannot_perform_action"><![CDATA[Невозможно выполнить действие. Пожалуйста, оповестите нас об этой проблеме.]]></string>
     <string name="_bx_tasks_txt_err_empty_pre_list"><![CDATA[Пожалуйста, выберите список, в который хотите добавить элементы.]]></string>
