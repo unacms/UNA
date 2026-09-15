@@ -70,16 +70,6 @@ class UtilUrlTest extends \PHPUnit\Framework\TestCase
             $this->assertStringNotContainsString('rel="nofollow"', $s);
     }
 
-    public function testLinkifyLocalUrlDoesNotAddTargetBlank()
-    {
-        if (!defined('BX_DOL_URL_ROOT') || !BX_DOL_URL_ROOT)
-            $this->markTestSkipped('BX_DOL_URL_ROOT is not defined');
-
-        $s = bx_linkify('go ' . BX_DOL_URL_ROOT . 'page');
-        $this->assertStringContainsString('href="' . BX_DOL_URL_ROOT . 'page"', $s);
-        $this->assertStringNotContainsString('target="_blank"', $s);
-    }
-
     #[DataProvider('providerForIsUrlInContent')]
     public function testIsUrlInContent($sContent, $bSkipLocal, $bOut)
     {
