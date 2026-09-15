@@ -450,5 +450,11 @@
     "Create new ": "Erstellen ",
     "operator_agent_title": "KI fragen",
     "operator_agent_open": "KI-Assistent öffnen",
-    "operator_agent_close": "KI-Assistent schließen"
+    "operator_agent_close": "KI-Assistent schließen",
+    "agent_chats": "Chats",
+    "agent_chats_empty": "Noch keine Chats",
+    "agent_chat_untitled": "Chat",
+    "agent_chat_open": "Offen",
+    "agent_chat_closed": "Geschlossen",
+    "agent_chat_new": "Neuer Chat"
 }

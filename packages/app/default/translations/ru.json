@@ -450,5 +450,11 @@
     "Create new ": "Создать ",
     "operator_agent_title": "Спросить ИИ",
     "operator_agent_open": "Открыть ИИ-ассистента",
-    "operator_agent_close": "Закрыть ИИ-ассистента"
+    "operator_agent_close": "Закрыть ИИ-ассистента",
+    "agent_chats": "Чаты",
+    "agent_chats_empty": "Чатов пока нет",
+    "agent_chat_untitled": "Чат",
+    "agent_chat_open": "Открыт",
+    "agent_chat_closed": "Закрыт",
+    "agent_chat_new": "Новый чат"
 }

@@ -450,5 +450,11 @@
     "Create new ": "Crear ",
     "operator_agent_title": "Preguntar a la IA",
     "operator_agent_open": "Abrir asistente de IA",
-    "operator_agent_close": "Cerrar asistente de IA"
+    "operator_agent_close": "Cerrar asistente de IA",
+    "agent_chats": "Chats",
+    "agent_chats_empty": "Aún no hay chats",
+    "agent_chat_untitled": "Chat",
+    "agent_chat_open": "Abierto",
+    "agent_chat_closed": "Cerrado",
+    "agent_chat_new": "Nuevo chat"
 }

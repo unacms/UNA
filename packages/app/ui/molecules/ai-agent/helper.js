@@ -124,18 +124,10 @@ async function hydrateChat(url, extraHeaders) {
     };
 }
 
-/** Studio extras for `get_block_ai_agent` (`params[1]`). */
-const DEFAULT_BLOCK_PARAMS = {
-    context: false,
-    require_post: false,
-    allow_images: true,
-    allow_new: true,
-};
-
-function asAgentBlockData(item, agentId) {
+function asAgentBlockData(item) {
     if (!item || typeof item !== 'object') return null;
     if (item.agent_id || item.agent_profile || Object.prototype.hasOwnProperty.call(item, 'hidden_first_message')) {
-        return { ...item, agent_id: item.agent_id || agentId };
+        return item;
     }
     const nested = item.data;
     if (
@@ -143,36 +135,98 @@ function asAgentBlockData(item, agentId) {
         && typeof nested === 'object'
         && (item.type === 'ai_agent' || item.content_type === 'ai_agent' || nested.agent_id || nested.agent_profile)
     ) {
-        return { ...nested, agent_id: nested.agent_id || agentId };
+        return nested;
     }
     return null;
 }
 
 /**
- * UNA `system/get_block_ai_agent/TemplServices` — same payload the page block gets
- * (`agent_profile`, `hidden_first_message`, flags).
+ * UNA `system/get_block_ai_agent_operator/TemplServices` — the operator agent block,
+ * exactly what the Dashboard page block renders (`agent_id`, `agent_profile`,
+ * `hidden_first_message`, flags). Which agent, and with which settings, is decided
+ * on the server only — so this widget and the page block cannot disagree.
+ *
+ * Resolves to null when there is no operator agent or the viewer may not chat with it.
  */
-export async function fetchAgentBlock(agentId, params = {}) {
-    const extras = { ...DEFAULT_BLOCK_PARAMS, ...params };
-    const response = await fetcher(
-        `/api.php?r=system/get_block_ai_agent/TemplServices&params[]=${encodeURIComponent(agentId)}&params[]=${encodeURIComponent(JSON.stringify(extras))}`
-    );
+export async function fetchOperatorAgentBlock() {
+    const response = await fetcher('/api.php?r=system/get_block_ai_agent_operator/TemplServices');
     const payload = response?.data;
     if (Array.isArray(payload)) {
         for (const item of payload) {
-            const data = asAgentBlockData(item, agentId);
-            if (data) return data;
+            const data = asAgentBlockData(item);
+            if (data?.agent_id) return data;
         }
     }
-    const direct = asAgentBlockData(payload, agentId);
-    if (direct) return direct;
+    const direct = asAgentBlockData(payload);
+    if (direct?.agent_id) return direct;
     if (Array.isArray(payload?.content)) {
         for (const item of payload.content) {
-            const data = asAgentBlockData(item, agentId);
-            if (data) return data;
+            const data = asAgentBlockData(item);
+            if (data?.agent_id) return data;
         }
     }
-    return { agent_id: agentId };
+    return null;
+}
+
+/**
+ * @typedef {object} AgentChatThread One row of the viewer's history with an agent.
+ * @property {string} thread_id Server thread key; opaque, passed back to fetchAgentChatThread.
+ * @property {string} chat The `?chat=` nonce this thread lives under, '' for the base thread.
+ * @property {number} context_pid Profile the conversation was about, 0 = site-wide.
+ * @property {string} context_name Display name of that profile, '' when site-wide.
+ * @property {'opened'|'closed'} status
+ * @property {string} closed_reason
+ * @property {string} title First thing the person typed; '' for an empty thread.
+ * @property {string} preview Last line said, plain text.
+ * @property {number} messages_count
+ * @property {number} created_ts Unix seconds, 0 when unknown.
+ * @property {number} updated_ts Unix seconds, 0 when unknown.
+ */
+
+function apiErrorMessage(response, fallback) {
+    if (!response || typeof response !== 'object') return fallback;
+    const code = Number(response.status);
+    if (response.error || (Number.isFinite(code) && code >= 400)) {
+        return String(response.error || response.msg || fallback);
+    }
+    return null;
+}
+
+/**
+ * UNA `system/get_ai_chat_threads/TemplServices` — the viewer's own conversations
+ * with this agent, newest first. Only their threads: the server keys by profile id
+ * (guests: session id), so nothing of anyone else's can come back.
+ *
+ * @returns {Promise<AgentChatThread[]>}
+ */
+export async function fetchAgentChatThreads(agentId) {
+    const response = await fetcher(
+        `/api.php?r=system/get_ai_chat_threads/TemplServices&params[]=${encodeURIComponent(agentId)}`
+    );
+    const message = apiErrorMessage(response, 'AI chat history failed.');
+    if (message) throw new Error(message);
+    const threads = response?.data?.threads;
+    return Array.isArray(threads) ? threads : [];
+}
+
+/**
+ * UNA `system/get_ai_chat_thread/TemplServices` — one earlier conversation, read-only,
+ * in the same message shape hydrate returns. Does not touch which thread is current.
+ *
+ * @returns {Promise<{messages: object[], status: 'opened'|'closed', closedReason: string}>}
+ */
+export async function fetchAgentChatThread(agentId, threadId) {
+    const response = await fetcher(
+        `/api.php?r=system/get_ai_chat_thread/TemplServices&params[]=${encodeURIComponent(agentId)}&params[]=${encodeURIComponent(threadId)}`
+    );
+    const message = apiErrorMessage(response, 'AI chat history failed.');
+    if (message) throw new Error(message);
+    const data = response?.data;
+    return {
+        messages: Array.isArray(data?.messages) ? data.messages : [],
+        status: data?.status === 'closed' ? 'closed' : 'opened',
+        closedReason: String(data?.closed_reason || ''),
+    };
 }
 
 /**

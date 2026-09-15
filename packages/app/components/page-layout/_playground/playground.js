@@ -236,7 +236,7 @@ export default function PageLayoutPlayground({ data, children }) {
                         Playground
                     </Text>
                     <Text className="text-sm text-muted-foreground">
-                        Open at /pg. Form kitchen sink is at /pg/form. UNA AI chat is at /pg/ai.
+                        Open at /pg. Form kitchen sink is at /pg/form.
                     </Text>
                 </View>
 

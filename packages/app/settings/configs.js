@@ -65,9 +65,11 @@ export const settingsConfigs = {
         url: '/messenger', 
         back_button: false, 
     },
-    // Floating Ask AI for UNA operators (`user.operator`). Empty id disables the widget.
+    // Floating Ask AI for UNA operators (`user.operator`). The agent and its block
+    // settings come from the server (`get_block_ai_agent_operator`, Studio > Settings >
+    // Agents > Operator agent); nothing to configure here. Set `enabled: false` to hide.
     ai: {
-        operator_agent_id: 6,
+        operator_agent: { enabled: true },
     },
     // Web smart app banner (iOS Safari meta + Android custom bar). Empty apple_app_id = no iOS meta.
     smart_app_banner: {

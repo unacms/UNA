@@ -450,5 +450,11 @@
     "Create new ": "Créer ",
     "operator_agent_title": "Demander à l’IA",
     "operator_agent_open": "Ouvrir l’assistant IA",
-    "operator_agent_close": "Fermer l’assistant IA"
+    "operator_agent_close": "Fermer l’assistant IA",
+    "agent_chats": "Discussions",
+    "agent_chats_empty": "Aucune discussion pour le moment",
+    "agent_chat_untitled": "Discussion",
+    "agent_chat_open": "Ouverte",
+    "agent_chat_closed": "Fermée",
+    "agent_chat_new": "Nouvelle discussion"
 }

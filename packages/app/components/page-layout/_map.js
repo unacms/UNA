@@ -16,11 +16,10 @@ import { lazyComponent } from 'app/lib/lazy-component';
 // whole-page layouts used on a few routes only — code-split them.
 const PageCustomMessenger = lazyComponent(() => import('app/components/page-layout/messenger'), { name: 'PageCustomMessenger' });
 const PageWiki = lazyComponent(() => import('app/components/page-layout/wiki'), { name: 'PageWiki' });
-// Dev-only playgrounds — keep them (and the AI chat stack they import) out of
+// Dev-only playgrounds — keep them out of
 // the main chunk.
 const PagePlayground = lazyComponent(() => import('app/components/page-layout/_playground/playground'), { name: 'PagePlayground' });
 const PagePlaygroundForm = lazyComponent(() => import('app/components/page-layout/_playground/playground-form-layout'), { name: 'PagePlaygroundForm' });
-const PagePlaygroundAiChat = lazyComponent(() => import('app/components/page-layout/_playground/playground-ai-chat-layout'), { name: 'PagePlaygroundAiChat' });
 
 export const componentsMapDefault = {
     'default': PageLayoutDefault,
@@ -28,7 +27,6 @@ export const componentsMapDefault = {
     'playground': PagePlayground,
     'play': PageLayoutPlay,
     'playground-form': PagePlaygroundForm,
-    'playground-ai-chat': PagePlaygroundAiChat,
     'discussion': PageCustomPost,
     'post-without-comments': PageCustomPostWithoutComments,
     'navigator': PageCustomNavigator,

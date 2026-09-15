@@ -58,6 +58,7 @@ function initialState(mode, key) {
  *   fresh: boolean,   // the id was minted client-side, so there is provably no transcript
  *   ready: boolean,   // false while the stored id is still being read
  *   startNew: () => string, // mint, persist, and switch to a new id; returns it
+ *   select: (chatId: string) => void, // switch to an existing id (history panel); persisted in `stored` mode
  * }}
  */
 export function useStoredChatId({ agentId, contextProfileId, userId, mode }) {
@@ -91,5 +92,14 @@ export function useStoredChatId({ agentId, contextProfileId, userId, mode }) {
         return next;
     }, [key, mode]);
 
-    return { chatId: state.chatId, fresh: state.fresh, ready: state.ready, startNew };
+    // An id that came from the server's history list, so there is a transcript to
+    // load — hence `fresh: false`.
+    const select = useCallback((next) => {
+        const id = chatQueryId(next);
+        if (!isChatId(id)) return;
+        setState({ key, mode, chatId: id, fresh: false, ready: true });
+        if (mode === 'stored') void persistedSet(key, id);
+    }, [key, mode]);
+
+    return { chatId: state.chatId, fresh: state.fresh, ready: state.ready, startNew, select };
 }

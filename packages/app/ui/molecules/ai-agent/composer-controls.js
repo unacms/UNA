@@ -69,6 +69,27 @@ export function AttachButton({ disabled, onPress }) {
 }
 
 /**
+ * Opens the "Chats" list where there is no room for it beside the transcript
+ * (see AiAgent: the column is persistent from `md:` up, an overlay below —
+ * or always an overlay, in which case the button always shows).
+ */
+export function HistoryButton({ onPress, alwaysVisible = false }) {
+    const { t } = useTranslation();
+    return (
+        <View className={alwaysVisible ? 'pr-1.5' : 'pr-1.5 md:hidden'}>
+            <NeoButton
+                style="bordered"
+                borderShape="circle"
+                controlSize="small"
+                image="History"
+                accessibilityLabel={t('agent_chats')}
+                onPress={onPress}
+            />
+        </View>
+    );
+}
+
+/**
  * Send / Stop and "Start new" to the right of the input. Renders nothing when
  * neither is wanted, so the input can stretch to the edge.
  */

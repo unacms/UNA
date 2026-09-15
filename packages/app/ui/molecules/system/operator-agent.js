@@ -11,7 +11,7 @@ import { appSetting, cn } from 'app/lib/util';
 import { useLocalSearchParams, useSafeAreaInsets } from 'app/lib/hooks/router';
 import { useFooterHeight } from 'app/context/jotai/layout';
 import { lazyComponent } from 'app/lib/lazy-component';
-import { fetchAgentBlock } from 'app/ui/molecules/ai-agent/helper';
+import { fetchOperatorAgentBlock } from 'app/ui/molecules/ai-agent/helper';
 import { hiddenFirstMessageFromData } from 'app/ui/molecules/ai-agent/hidden-first-message';
 
 const AiAgent = lazyComponent(() => import('app/ui/molecules/ai-agent/agent'), { name: 'AiAgent' });
@@ -20,8 +20,10 @@ const isWeb = Platform.OS === 'web';
 const NATIVE_TAB_BAR = Platform.OS === 'ios' ? 52 : 56;
 
 /**
- * Floating Ask AI for site operators. Shown on every page when
- * `user.operator` is true and `ai.operator_agent_id` is set.
+ * Floating Ask AI for site operators. Shown on every page when `user.operator` is
+ * true and the server has an operator agent (Studio > Settings > Agents). The block
+ * payload is the same one the Dashboard page block renders — same agent, same
+ * settings, same thread — see `fetchOperatorAgentBlock`.
  */
 export function OperatorAgentFloat() {
     const { t } = useTranslation();
@@ -34,8 +36,8 @@ export function OperatorAgentFloat() {
     const [data, setData] = useState(null);
 
     const params = useLocalSearchParams();
-    const agentId = String(appSetting('ai', 'operator_agent_id') || '').trim();
-    const isOperator = !!currentUser?.operator && !!agentId;
+    const enabled = appSetting('ai', 'operator_agent')?.enabled !== false;
+    const isOperator = enabled && !!currentUser?.operator;
 
     const toggle = useCallback(() => {
         setOpen((prev) => !prev);
@@ -47,21 +49,23 @@ export function OperatorAgentFloat() {
     useEffect(() => {
         if (!isOperator) return undefined;
         let cancelled = false;
-        fetchAgentBlock(agentId)
+        fetchOperatorAgentBlock()
             .then((next) => {
                 if (!cancelled) setData(next);
             })
             .catch(() => {
-                if (!cancelled) setData({ agent_id: agentId });
+                if (!cancelled) setData(null);
             });
         return () => {
             cancelled = true;
         };
-    }, [isOperator, agentId]);
+    }, [isOperator]);
 
     const initialMessage = hiddenFirstMessageFromData(data, params);
+    const agentId = data?.agent_id ?? '';
     const contextProfileId = Number(data?.context_profile_id) || 0;
-    if (!isOperator) return null;
+    // No agent configured, or not allowed to chat with it: nothing to float.
+    if (!isOperator || !data) return null;
 
     const bottomOffset = 16
         + (Number(footerHeight) || (isWeb ? 0 : NATIVE_TAB_BAR))
@@ -106,6 +110,9 @@ export function OperatorAgentFloat() {
                                 initialMessage={initialMessage}
                                 hideInitialMessage={!!initialMessage}
                                 height="h-full"
+                                // The panel is ~384px wide whatever the viewport is, so
+                                // the "Chats" list can only ever overlay the transcript.
+                                historyLayout="overlay"
                             />
                         ) : null}
                     </View>

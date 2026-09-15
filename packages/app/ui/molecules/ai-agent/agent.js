@@ -7,7 +7,7 @@ import { View, Row, ScrollView } from 'app/design/view';
 import { TextInputClear } from 'app/design/controls';
 import { useCurrentUser } from 'app/context/user';
 import { appSetting, cn, isWeb } from 'app/lib/util';
-import { createAgentChat, hydrateAgentChat } from './helper';
+import { createAgentChat, fetchAgentChatThread, hydrateAgentChat } from './helper';
 import { isHiddenFirstMessageText } from './hidden-first-message';
 import {
     agentMaxInputChars,
@@ -27,10 +27,11 @@ import {
 import { AgentStatus, ChatBubble } from './chat-bubble';
 import { CHAT_IMAGES_MAX_DEFAULT, chatImageParts, revokePickedPreview, uploadAgentChatImage } from './chat-images';
 import { pickAgentChatImage } from './pick-image';
-import { AttachButton, ComposerAttachments, ComposerButtons, ComposerNotice } from './composer-controls';
+import { AttachButton, ComposerAttachments, ComposerButtons, ComposerNotice, HistoryButton } from './composer-controls';
 import { COMPOSER_MAX_PX, useComposerHeight } from './use-composer-height';
 import { useChatAutoscroll } from './use-chat-autoscroll';
 import { useStoredChatId } from './use-stored-chat-id';
+import { ChatThreads, liveThreadId, useAgentChatThreads } from './chat-threads';
 
 /**
  * @typedef {object} AgentBlockData UNA `sys-ai-chat` block payload.
@@ -42,6 +43,7 @@ import { useStoredChatId } from './use-stored-chat-id';
  * @property {number|string} [max_images] Images per turn; default CHAT_IMAGES_MAX_DEFAULT.
  * @property {number|string} [max_input_chars] Per-message cap; 0 or absent means none.
  * @property {number|string} [guest_new_session_on_reload] 1 = every guest reload starts a fresh chat.
+ * @property {number|string} [show_history] 1 = "Chats" panel with the viewer's earlier threads.
  * @property {'html'|'text'} [message_format] How to read agent output. Default 'html'.
  * @property {string} [hidden_first_message] Bootstrap rule, read by the block element — see hidden-first-message.js.
  */
@@ -75,6 +77,10 @@ const NO_MESSAGES = [];
  * @param {boolean} [props.hideButton] Hide the send/stop button (Enter still sends).
  * @param {boolean} [props.hideIdentity] Hide avatars and author names.
  * @param {string} [props.height] Tailwind height class for the whole widget.
+ * @param {'auto'|'overlay'} [props.historyLayout] Where the "Chats" panel goes when
+ *   `data.show_history` is on. `auto`: a column beside the transcript from the `md:`
+ *   viewport breakpoint up, an overlay below it. `overlay`: always the overlay, for
+ *   hosts that are narrow regardless of the viewport (the operator float).
  */
 export default function AiAgent({
     data,
@@ -84,6 +90,7 @@ export default function AiAgent({
     hideButton = false,
     hideIdentity = false,
     height = 'h-[28rem]',
+    historyLayout = 'auto',
 }) {
     const { currentUser } = useCurrentUser();
     const agentId = data?.agent_id;
@@ -92,8 +99,9 @@ export default function AiAgent({
     const isGuest = userId <= 0;
     const allowNew = !!Number(data?.allow_new);
     const freshPerReload = isGuest && !!Number(data?.guest_new_session_on_reload);
+    const showHistory = !!Number(data?.show_history);
 
-    const { chatId, fresh, ready, startNew } = useStoredChatId({
+    const { chatId, fresh, ready, startNew, select } = useStoredChatId({
         agentId,
         contextProfileId,
         userId,
@@ -133,40 +141,162 @@ export default function AiAgent({
         };
     }, [needsPrefetch, agentId, contextProfileId, chatId]);
 
+    /**
+     * History panel. `threadsVersion` bumps after every completed turn and every
+     * "Start new", so the list's previews and dates keep up with the live chat.
+     */
+    const [threadsVersion, setThreadsVersion] = useState(0);
+    const refreshThreads = useCallback(() => setThreadsVersion((v) => v + 1), []);
+    const { threads, loading: threadsLoading } = useAgentChatThreads(agentId, showHistory, threadsVersion);
+    const liveId = liveThreadId(threads, contextProfileId, chatId);
+
+    // Which closed thread is being read; '' = the live chat. Selecting the live row
+    // is the same as "back to current", so the two states cannot disagree.
+    const [selectedThreadId, setSelectedThreadId] = useState('');
+    const viewingThreadId = selectedThreadId && selectedThreadId !== liveId ? selectedThreadId : '';
+    // Narrow layouts: the list overlays the transcript until a row is picked.
+    const [historyOpen, setHistoryOpen] = useState(false);
+    const toggleHistory = useCallback(() => setHistoryOpen((prev) => !prev), []);
+    const closeHistory = useCallback(() => setHistoryOpen(false), []);
+    /**
+     * A row that is still open, and addressable (`?chat=` id, same context, extra
+     * threads allowed) becomes the live chat: the conversation just continues there.
+     * Anything else — closed, the base thread, another context — is read only.
+     */
+    const selectThread = useCallback((thread) => {
+        setHistoryOpen(false);
+        const id = String(thread?.thread_id || '');
+        if (!id || id === liveId) {
+            setSelectedThreadId('');
+            return;
+        }
+        const switchable = allowNew
+            && thread.status !== 'closed'
+            && !!thread.chat
+            && (Number(thread.context_pid) || 0) === contextProfileId;
+        if (switchable) {
+            select(thread.chat);
+            setSelectedThreadId('');
+            return;
+        }
+        setSelectedThreadId(id);
+    }, [liveId, allowNew, contextProfileId, select]);
+
+    /**
+     * Read-only transcript of the selected earlier thread, tagged with its id — like
+     * `prefetch` above, a change of selection makes it stale by itself.
+     * @type {[{threadId: string, messages: object[], error: Error|null}|null, Function]}
+     */
+    const [archived, setArchived] = useState(null);
+    const archivedForView = archived?.threadId === viewingThreadId ? archived : null;
+    const needsArchived = !!viewingThreadId && !archivedForView;
+
+    useEffect(() => {
+        if (!needsArchived) return undefined;
+        let cancelled = false;
+        fetchAgentChatThread(agentId, viewingThreadId)
+            .then((result) => {
+                if (!cancelled) setArchived({ threadId: viewingThreadId, messages: result.messages, error: null });
+            })
+            .catch((error) => {
+                if (!cancelled) setArchived({ threadId: viewingThreadId, messages: NO_MESSAGES, error });
+            });
+        return () => {
+            cancelled = true;
+        };
+    }, [needsArchived, agentId, viewingThreadId]);
+
     const startAgain = useCallback(() => {
         const next = startNew();
+        setSelectedThreadId('');
         // Fire-and-forget GET on the new thread. Assumed to let UNA register the id
         // straight away, before the first message; the response is not needed. Drop
         // this if the server turns out to create the thread on first POST anyway.
-        void hydrateAgentChat(agentId, { contextProfileId, chatId: next }).catch(() => {});
-    }, [startNew, agentId, contextProfileId]);
+        // The history list is refreshed once it lands, so the new row shows up as live.
+        void hydrateAgentChat(agentId, { contextProfileId, chatId: next }).then(refreshThreads, refreshThreads);
+    }, [startNew, agentId, contextProfileId, refreshThreads]);
 
-    // Hold the final height while hydrating so the page does not jump when the
-    // transcript arrives.
-    if (!ready || needsPrefetch) {
-        return <View className={cn(height, 'overflow-hidden')} />;
+    // The panel earns its space only when there is something besides the live chat
+    // to look at: one row that is the live chat itself is nothing to browse.
+    const historyVisible = showHistory
+        && (threads.length > 1 || (threads.length === 1 && threads[0].thread_id !== liveId));
+    const historyOverlayOnly = historyLayout === 'overlay';
+    const onToggleHistory = historyVisible ? toggleHistory : undefined;
+
+    let chat = null;
+    if (viewingThreadId) {
+        // Earlier thread: the same transcript UI, with the composer locked. Its own
+        // key, so scroll position and stream state never leak across threads.
+        chat = archivedForView ? (
+            <AiAgentChat
+                key={`archived:${viewingThreadId}`}
+                data={data}
+                readOnly
+                initialMessage={initialMessage}
+                hideInitialMessage={hideInitialMessage}
+                initialMessages={archivedForView.messages}
+                hydrateError={archivedForView.error}
+                hideButton={hideButton}
+                hideIdentity={hideIdentity}
+                placeholder={placeholder}
+                height="h-full"
+                onToggleHistory={onToggleHistory}
+                historyOverlayOnly={historyOverlayOnly}
+            />
+        ) : null;
+    } else if (ready && !needsPrefetch) {
+        const seedMessages = seed?.messages || NO_MESSAGES;
+        chat = (
+            <AiAgentChat
+                key={`${agentId}:${contextProfileId}:${chatId}`}
+                data={data}
+                chatId={chatId}
+                chatIsFresh={fresh}
+                initialMessage={initialMessage}
+                hideInitialMessage={hideInitialMessage}
+                initialMessages={seedMessages}
+                initialSession={seed?.session || null}
+                sendBootstrap={!!initialMessage && seedMessages.length === 0}
+                hydrateError={seed?.error || null}
+                hideButton={hideButton}
+                hideIdentity={hideIdentity}
+                placeholder={placeholder}
+                height="h-full"
+                onStartAgain={allowNew ? startAgain : undefined}
+                onTurnEnd={showHistory ? refreshThreads : undefined}
+                onToggleHistory={onToggleHistory}
+                historyOverlayOnly={historyOverlayOnly}
+            />
+        );
     }
 
-    const seedMessages = seed?.messages || NO_MESSAGES;
-
+    // The frame keeps its final height while hydrating so the page does not jump
+    // when the transcript arrives; `chat` is simply empty until then.
     return (
-        <AiAgentChat
-            key={`${agentId}:${contextProfileId}:${chatId}`}
-            data={data}
-            chatId={chatId}
-            chatIsFresh={fresh}
-            initialMessage={initialMessage}
-            hideInitialMessage={hideInitialMessage}
-            initialMessages={seedMessages}
-            initialSession={seed?.session || null}
-            sendBootstrap={!!initialMessage && seedMessages.length === 0}
-            hydrateError={seed?.error || null}
-            hideButton={hideButton}
-            hideIdentity={hideIdentity}
-            placeholder={placeholder}
-            height={height}
-            onStartAgain={allowNew ? startAgain : undefined}
-        />
+        <Row className={cn(height, 'overflow-hidden relative')}>
+            {historyVisible ? (
+                <View
+                    className={cn(
+                        historyOverlayOnly
+                            ? ''
+                            : 'md:flex md:relative md:inset-auto md:z-auto md:w-56 md:shrink-0 md:bg-transparent md:border-r md:border-border/60 md:mr-3',
+                        historyOpen ? 'flex absolute inset-0 z-10 bg-card' : 'hidden'
+                    )}
+                >
+                    <ChatThreads
+                        threads={threads}
+                        activeThreadId={viewingThreadId}
+                        liveThreadId={liveId}
+                        loading={threadsLoading}
+                        onSelect={selectThread}
+                        onClose={closeHistory}
+                        overlayOnly={historyOverlayOnly}
+                        onStartNew={allowNew ? startAgain : undefined}
+                    />
+                </View>
+            ) : null}
+            <View className="flex-1 min-w-0 min-h-0">{chat}</View>
+        </Row>
     );
 }
 
@@ -185,6 +315,10 @@ function AiAgentChat({
     placeholder,
     height,
     onStartAgain,
+    readOnly = false,
+    onTurnEnd,
+    onToggleHistory,
+    historyOverlayOnly = false,
 }) {
     const { t } = useTranslation();
     const { currentUser } = useCurrentUser();
@@ -292,7 +426,9 @@ function AiAgentChat({
             // `chat_actions` is handled in onChunk, where the messageId is available.
             if (name === 'chat_session') applyChatSession(value);
         },
-        ...(sendBootstrap || initialMessage || chatIsFresh ? {} : { persistence: true }),
+        // A read-only earlier thread has its whole transcript already; hydrating would
+        // fetch the *live* thread over it.
+        ...(readOnly || sendBootstrap || initialMessage || chatIsFresh ? {} : { persistence: true }),
     });
 
     /**
@@ -338,10 +474,17 @@ function AiAgentChat({
         () => streamedSession || sessionFromMessages(messages) || parseChatSessionPayload(initialSession),
         [streamedSession, messages, initialSession]
     );
-    const sessionEnded = !!session?.ended;
-    const canRestart = sessionAllowsRestart(session);
+    const sessionEnded = readOnly || !!session?.ended;
+    const canRestart = !readOnly && sessionAllowsRestart(session);
     const showSend = !hideButton && !sessionEnded;
     const chatError = hydrateError || error;
+
+    // "Turn over" for the parent: loading went true → false, whatever the outcome.
+    const wasLoadingRef = useRef(false);
+    useEffect(() => {
+        if (wasLoadingRef.current && !isLoading) onTurnEnd?.();
+        wasLoadingRef.current = isLoading;
+    }, [isLoading, onTurnEnd]);
 
     // Belt and braces: the parent already remounts on every input to threadId via `key`,
     // so this only matters if that key is ever relaxed.
@@ -530,7 +673,7 @@ function AiAgentChat({
     useEffect(() => () => pendingImagesRef.current.forEach(revokePickedPreview), []);
 
     useEffect(() => {
-        if (!sendBootstrap || !initialMessage) return;
+        if (readOnly || !sendBootstrap || !initialMessage) return;
         const text = clipAgentText(initialMessage, maxChars);
         // Guarded per mount. This used to be a module-level Set that was never cleared:
         // it leaked, and worse it outlived the component — coming back to the same agent
@@ -542,7 +685,7 @@ function AiAgentChat({
             // through useChat's `error`.
             bootstrapSentRef.current = '';
         });
-    }, [sendBootstrap, initialMessage, sendMessage, maxChars]);
+    }, [readOnly, sendBootstrap, initialMessage, sendMessage, maxChars]);
 
     const onInputChange = useCallback((value) => {
         setInput(clipAgentText(value, maxChars));
@@ -608,6 +751,14 @@ function AiAgentChat({
                 ) : null}
             </ScrollView>
 
+            {/* A closed thread is only read; the way back is the history list itself. */}
+            {readOnly ? (
+                onToggleHistory ? (
+                    <Row className="pt-2">
+                        <HistoryButton onPress={onToggleHistory} alwaysVisible={historyOverlayOnly} />
+                    </Row>
+                ) : null
+            ) : (
             <View className="pt-2">
                 <ComposerNotice message={chatError?.message} />
                 <ComposerNotice message={attachError} />
@@ -618,6 +769,7 @@ function AiAgentChat({
                 />
                 <View className="w-full">
                     <Row className="items-center">
+                        {onToggleHistory ? <HistoryButton onPress={onToggleHistory} alwaysVisible={historyOverlayOnly} /> : null}
                         {allowImages && !sessionEnded ? (
                             <AttachButton disabled={!canAttach} onPress={attachImage} />
                         ) : null}
@@ -668,6 +820,7 @@ function AiAgentChat({
                     </Row>
                 </View>
             </View>
+            )}
         </View>
     );
 }
