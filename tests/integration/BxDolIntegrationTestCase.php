@@ -42,6 +42,13 @@ abstract class BxDolIntegrationTestCase extends BxDolTestCase
         $_COOKIE = $this->_aCookieBackup ?? [];
 
         BxDolForm::unSetObjectInstance('sys_login', 'sys_login');
+        foreach ([
+            'sys_account_create',
+            'sys_account_settings_email',
+            'sys_account_settings_info',
+            'sys_account_settings_del_account',
+        ] as $sDisplay)
+            BxDolForm::unSetObjectInstance('sys_account', $sDisplay);
 
         $GLOBALS['logged']['member'] = $this->_aLoggedBackup['member'] ?? false;
         $GLOBALS['logged']['admin'] = $this->_aLoggedBackup['admin'] ?? false;

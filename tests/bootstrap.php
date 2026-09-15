@@ -178,3 +178,4 @@ class BxDolTestCase extends \PHPUnit\Framework\TestCase
 require_once dirname(__FILE__) . '/units/modules/boonex/posts/BxPostsTestCase.php';
 require_once dirname(__FILE__) . '/units/modules/boonex/persons/BxPersonsTestCase.php';
 require_once dirname(__FILE__) . '/integration/BxDolIntegrationTestCase.php';
+require_once dirname(__FILE__) . '/integration/account/BxDolAccountTestCase.php';
