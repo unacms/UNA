@@ -1,10 +1,10 @@
 'use client';
 
-import { memo, useCallback, useEffect, useState } from 'react';
+import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, Row, ScrollView, Pressable } from 'app/design/view';
 import { Text } from 'app/design/typography';
-import { NeoButton } from 'app/design/controls';
+import { Input, NeoButton } from 'app/design/controls';
 import { cn } from 'app/lib/util';
 import { formatDate } from 'app/lib/util/datetime';
 import { fetchAgentChatThreads } from './helper';
@@ -119,23 +119,47 @@ export function ChatThreads({ threads, activeThreadId, liveThreadId: liveId, onS
     const { t } = useTranslation();
     const select = useCallback((thread) => onSelect(thread), [onSelect]);
 
+    // Client-side filter: the list is the viewer's own threads, at most 100 rows.
+    const [query, setQuery] = useState('');
+    const needle = query.trim().toLowerCase();
+    const visible = useMemo(() => {
+        if (!needle) return threads;
+        return threads.filter((thread) =>
+            [thread.title, thread.preview, thread.context_name].some((text) => String(text || '').toLowerCase().includes(needle))
+        );
+    }, [threads, needle]);
+
     return (
         <View className="flex-1 min-h-0 pt-2">
-            {onClose ? (
-                // Only the overlay needs closing; the persistent column (md and up) does not.
-                <Row className={cn('justify-end pr-1 pb-1', overlayOnly ? '' : 'md:hidden')}>
-                    <NeoButton
-                        style="borderless"
-                        borderShape="circle"
-                        controlSize="mini"
-                        image="X"
-                        accessibilityLabel={t('Close')}
-                        onPress={onClose}
+            <Row className="items-center gap-1 pb-2 pr-2">
+                <View className="flex-1 min-w-0">
+                    <Input
+                        name="search"
+                        size="small"
+                        value={query}
+                        onChangeText={setQuery}
+                        placeholder={t('Search...')}
+                        accessibilityLabel={t('Search')}
+                        autoCorrect={false}
+                        autoCapitalize="none"
                     />
-                </Row>
-            ) : null}
+                </View>
+                {onClose ? (
+                    // Only the overlay needs closing; the persistent column (md and up) does not.
+                    <View className={overlayOnly ? '' : 'md:hidden'}>
+                        <NeoButton
+                            style="borderless"
+                            borderShape="circle"
+                            controlSize="mini"
+                            image="X"
+                            accessibilityLabel={t('Close')}
+                            onPress={onClose}
+                        />
+                    </View>
+                ) : null}
+            </Row>
             <ScrollView className="min-h-0 flex-1" contentContainerClassName="gap-0.5 pb-2 pr-2">
-                {threads.map((thread) => (
+                {visible.map((thread) => (
                     <ThreadRow
                         key={thread.thread_id}
                         thread={thread}
@@ -144,8 +168,10 @@ export function ChatThreads({ threads, activeThreadId, liveThreadId: liveId, onS
                         t={t}
                     />
                 ))}
-                {!threads.length && !loading ? (
-                    <Text className="text-xs text-muted-foreground px-2.5 py-2">{t('agent_chats_empty')}</Text>
+                {!visible.length && !loading ? (
+                    <Text className="text-xs text-muted-foreground px-2.5 py-2">
+                        {needle ? t('agent_chats_search_empty') : t('agent_chats_empty')}
+                    </Text>
                 ) : null}
             </ScrollView>
             {onStartNew ? (

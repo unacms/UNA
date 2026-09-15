@@ -453,6 +453,7 @@
     "operator_agent_close": "Cerrar asistente de IA",
     "agent_chats": "Chats",
     "agent_chats_empty": "Aún no hay chats",
+    "agent_chats_search_empty": "No se encontraron chats",
     "agent_chat_untitled": "Chat",
     "agent_chat_open": "Abierto",
     "agent_chat_closed": "Cerrado",

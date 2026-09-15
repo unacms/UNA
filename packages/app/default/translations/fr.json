@@ -453,6 +453,7 @@
     "operator_agent_close": "Fermer l’assistant IA",
     "agent_chats": "Discussions",
     "agent_chats_empty": "Aucune discussion pour le moment",
+    "agent_chats_search_empty": "Aucune discussion trouvée",
     "agent_chat_untitled": "Discussion",
     "agent_chat_open": "Ouverte",
     "agent_chat_closed": "Fermée",

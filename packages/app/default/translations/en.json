@@ -113,6 +113,7 @@
     "operator_agent_close": "Close AI assistant",
     "agent_chats": "Chats",
     "agent_chats_empty": "No chats yet",
+    "agent_chats_search_empty": "No chats found",
     "agent_chat_untitled": "Chat",
     "agent_chat_open": "Open",
     "agent_chat_closed": "Closed",

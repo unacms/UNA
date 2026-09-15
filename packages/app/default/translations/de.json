@@ -453,6 +453,7 @@
     "operator_agent_close": "KI-Assistent schließen",
     "agent_chats": "Chats",
     "agent_chats_empty": "Noch keine Chats",
+    "agent_chats_search_empty": "Keine Chats gefunden",
     "agent_chat_untitled": "Chat",
     "agent_chat_open": "Offen",
     "agent_chat_closed": "Geschlossen",

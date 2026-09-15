@@ -273,7 +273,7 @@ export default function AiAgent({
     // The frame keeps its final height while hydrating so the page does not jump
     // when the transcript arrives; `chat` is simply empty until then.
     return (
-        <Row className={cn(height, 'overflow-hidden relative')}>
+        <Row className={cn(height, 'relative')}>
             {historyVisible ? (
                 <View
                     className={cn(

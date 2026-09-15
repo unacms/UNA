@@ -20,7 +20,8 @@ function MessageBody({ text, isStreaming, format }) {
     // Streaming with nothing rendered yet: an ellipsis keeps the bubble from
     // popping into existence at full height a moment later.
     if (!text) return <Text className="text-sm text-foreground leading-5">…</Text>;
-    return <Html data={html} customClassName="u-vanilla-html-small" />;
+    // Links in an answer are places to go and come back from: never navigate the chat away.
+    return <Html data={html} customClassName="u-vanilla-html-small" linksInNewTab />;
 }
 
 /** "Thinking…" line. Announced to screen readers via the list's live region. */

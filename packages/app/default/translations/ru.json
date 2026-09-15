@@ -453,6 +453,7 @@
     "operator_agent_close": "Закрыть ИИ-ассистента",
     "agent_chats": "Чаты",
     "agent_chats_empty": "Чатов пока нет",
+    "agent_chats_search_empty": "Ничего не найдено",
     "agent_chat_untitled": "Чат",
     "agent_chat_open": "Открыт",
     "agent_chat_closed": "Закрыт",

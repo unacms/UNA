@@ -14,13 +14,27 @@ import { normalizeLinkHref } from 'app/components/form-fields/editor-mention-htm
 import emitter from 'app/context/emitter'
 import { preprocessHtml, sanitizeHtml, flattenNestedAnchors } from 'app/lib/html-helpers'
 
-export default function ElementHtml({ customClassName, data, className = '', innerRef }) {
+/**
+ * `target="_blank" rel="noopener noreferrer"` on every anchor that does not set a
+ * target of its own. Runs after sanitizing (which keeps `target`), so the delegated
+ * click handler below sees `_blank` and lets the browser open the tab.
+ */
+function openAnchorsInNewTab(html) {
+    return html.replace(/<a\b(?![^>]*\btarget\s*=)([^>]*)>/gi, '<a target="_blank" rel="noopener noreferrer"$1>')
+}
+
+/**
+ * @param {boolean} [linksInNewTab] Every link opens in a new tab — for content whose
+ *   links are destinations (an agent's answer), where leaving the page loses the thread.
+ */
+export default function ElementHtml({ customClassName, data, className = '', innerRef, linksInNewTab = false }) {
     const router = useRouter()
 
     const html = useMemo(() => {
         if (!data) return ''
-        return sanitizeHtml(flattenNestedAnchors(preprocessHtml(data)))
-    }, [data])
+        const clean = sanitizeHtml(flattenNestedAnchors(preprocessHtml(data)))
+        return linksInNewTab ? openAnchorsInNewTab(clean) : clean
+    }, [data, linksInNewTab])
 
     const handleClick = useCallback((event) => {
         const anchor = event.target?.closest?.('a')
