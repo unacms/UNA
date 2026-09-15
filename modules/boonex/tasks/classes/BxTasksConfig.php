@@ -42,6 +42,8 @@ class BxTasksConfig extends BxBaseModTextConfig
             'TABLE_TIME' => $aModule['db_prefix'] . 'time',
             'TABLE_TIME_TRACK' => $aModule['db_prefix'] . 'time_track',
             'TABLE_TIMERS' => $aModule['db_prefix'] . 'timers',
+            'TABLE_BUDGET' => $aModule['db_prefix'] . 'budget',
+            'TABLE_BUDGET_TRACK' => $aModule['db_prefix'] . 'budget_track',
             'TABLE_PRE_LISTS' => $aModule['db_prefix'] . 'pre_lists',
             'TABLE_PRE_VALUES' => $aModule['db_prefix'] . 'pre_values',
             'TABLE_POLLS' => '',
@@ -174,6 +176,9 @@ class BxTasksConfig extends BxBaseModTextConfig
             'OBJECT_FORM_TIME' => 'bx_tasks_time',
             'OBJECT_FORM_TIME_DISPLAY_ADD' => 'bx_tasks_time_add',
             'OBJECT_FORM_TIME_DISPLAY_EDIT' => 'bx_tasks_time_edit',
+            'OBJECT_FORM_BUDGET' => 'bx_tasks_budget',
+            'OBJECT_FORM_BUDGET_DISPLAY_ADD' => 'bx_tasks_budget_add',
+            'OBJECT_FORM_BUDGET_DISPLAY_EDIT' => 'bx_tasks_budget_edit',
             'OBJECT_MENU_ENTRY_ATTACHMENTS' => 'bx_tasks_entry_attachments', // attachments menu in create/edit forms
             'OBJECT_MENU_ACTIONS_VIEW_ENTRY' => 'bx_tasks_view', // actions menu on view entry page
             'OBJECT_MENU_ACTIONS_VIEW_ENTRY_ALL' => 'bx_tasks_view_actions', // all actions menu on view entry page
@@ -182,11 +187,10 @@ class BxTasksConfig extends BxBaseModTextConfig
             'OBJECT_MENU_SUBMENU_VIEW_ENTRY' => 'bx_tasks_view_submenu', // view entry submenu
             'OBJECT_MENU_SUBMENU_VIEW_ENTRY_MAIN_SELECTION' => 'tasks-home', // first item in view entry submenu from main module submenu
             'OBJECT_MENU_SNIPPET_META' => 'bx_tasks_snippet_meta', // menu for snippet meta info
-            'OBJECT_MENU_MANAGE_TOOLS' => 'bx_tasks_menu_manage_tools', //manage menu in content administration tools
             'OBJECT_MENU_SUBMENU_VIEW_CONTEXT' => 'bx_tasks_view_context_submenu',
             'OBJECT_MENU_USE_TOOLS_SUBMENU' => 'bx_tasks_use_tools_submenu',
             'OBJECT_MENU_MANAGE_TOOLS_SUBMENU' => 'bx_tasks_manage_tools_submenu',
-            'OBJECT_MENU_MANAGE_TOOLS' => 'bx_tasks_menu_manage_tools', //manage item menu in content administration tools
+            'OBJECT_MENU_MANAGE_TOOLS' => 'bx_tasks_menu_manage_tools', //manage menu in content administration tools
             'OBJECT_MENU_BROWSE' => 'bx_tasks_browse',
             'OBJECT_GRID_ADMINISTRATION' => 'bx_tasks_administration',
             'OBJECT_GRID_COMMON' => 'bx_tasks_common',
@@ -194,6 +198,7 @@ class BxTasksConfig extends BxBaseModTextConfig
             'OBJECT_GRID_TIME_COMMON' => 'bx_tasks_time_common',
             'OBJECT_GRID_TIME_CONTEXT_ADMINISTRATION' => 'bx_tasks_time_context_administration',
             'OBJECT_GRID_TIME_CONTEXT_COMMON' => 'bx_tasks_time_context_common',
+            'OBJECT_GRID_BUDGET_CONTEXT_ADMINISTRATION' => 'bx_tasks_budget_context_administration',
             'OBJECT_GRID_PRE_VALUES' => 'bx_tasks_pre_values',
             'OBJECT_UPLOADERS' => array('bx_tasks_simple', 'bx_tasks_html5'),
             'OBJECT_CONTENT_INFO' => 'bx_tasks',
@@ -302,6 +307,7 @@ class BxTasksConfig extends BxBaseModTextConfig
             'tasks' => $sPrefix . '-tasks',
             'time_popup' => $sPrefix . '-time-popup',
             'total_popup' => $sPrefix . '-total-popup',
+            'budget_popup' => $sPrefix . '-budget-popup',
             'filter_popup' => $sPrefix . '-filter-popup',
             'timer' => $sPrefix . '-timer-',
             'timer_actions' => $sPrefix . '-timer-actions',

@@ -148,6 +148,21 @@
     <string name="_bx_tasks_form_time_input_sys_text"><![CDATA[Note]]></string>
     <string name="_bx_tasks_form_time_input_text"><![CDATA[Note]]></string>
 
+    <string name="_bx_tasks_form_budget"><![CDATA[Budget]]></string>
+    <string name="_bx_tasks_form_display_budget_add"><![CDATA[Add Budget]]></string>
+    <string name="_bx_tasks_form_display_budget_edit"><![CDATA[Edit Budget]]></string>
+    <string name="_bx_tasks_form_budget_input_sys_submit"><![CDATA[Submit]]></string>
+    <string name="_bx_tasks_form_budget_input_submit"><![CDATA[Submit]]></string>
+    <string name="_bx_tasks_form_budget_input_sys_cancel"><![CDATA[Cancel]]></string>
+    <string name="_bx_tasks_form_budget_input_cancel"><![CDATA[Cancel]]></string>
+    <string name="_bx_tasks_form_budget_input_sys_controls"><![CDATA[Controls]]></string>
+    <string name="_bx_tasks_form_budget_input_sys_value"><![CDATA[Budget]]></string>
+    <string name="_bx_tasks_form_budget_input_value"><![CDATA[Budget]]></string>
+    <string name="_bx_tasks_form_budget_input_value_info"><![CDATA[Specify budget value in hours.]]></string>
+    <string name="_bx_tasks_form_budget_input_value_err"><![CDATA[If you want to add budget fill this field in.]]></string>
+    <string name="_bx_tasks_form_budget_input_sys_text"><![CDATA[Note]]></string>
+    <string name="_bx_tasks_form_budget_input_text"><![CDATA[Note]]></string>
+
     <string name="_bx_tasks_form_pv_input_title"><![CDATA[Title]]></string>
     <string name="_bx_tasks_form_pv_input_color"><![CDATA[Color]]></string>
     <string name="_bx_tasks_form_pv_input_submit"><![CDATA[Submit]]></string>
@@ -302,6 +317,12 @@
     <string name="_bx_tasks_page_block_title_entries_time_in_context"><![CDATA[My Time in <a href="{profile_link}">{display_name}</a>]]></string>
     <string name="_bx_tasks_page_block_title_sys_entries_time_in_context_administration"><![CDATA[All time in context]]></string>
     <string name="_bx_tasks_page_block_title_entries_time_in_context_administration"><![CDATA[All Time in <a href="{profile_link}">{display_name}</a>]]></string>
+    <string name="_bx_tasks_page_title_sys_entries_budget_in_context_administration"><![CDATA[Context: Budget]]></string>
+    <string name="_bx_tasks_page_title_entries_budget_in_context_administration"><![CDATA[Budget in {display_name}]]></string>
+    <string name="_bx_tasks_page_block_title_sys_entries_budget_in_context_summary"><![CDATA[Budget summary in context]]></string>
+    <string name="_bx_tasks_page_block_title_entries_budget_in_context_summary"><![CDATA[Budget summary]]></string>
+    <string name="_bx_tasks_page_block_title_sys_entries_budget_in_context_administration"><![CDATA[Budget in context]]></string>
+    <string name="_bx_tasks_page_block_title_entries_budget_in_context_administration"><![CDATA[Budget in <a href="{profile_link}">{display_name}</a>]]></string>
     <string name="_bx_tasks_page_title_sys_context_pre_values"><![CDATA[Context: Properties]]></string>
     <string name="_bx_tasks_page_title_context_pre_values"><![CDATA[Properties]]></string>
     <string name="_bx_tasks_page_block_title_system_context_pre_values"><![CDATA[Properties]]></string>
@@ -394,6 +415,8 @@
     <string name="_bx_tasks_menu_item_title_view_context_time"><![CDATA[My Time]]></string>
     <string name="_bx_tasks_menu_item_title_system_view_context_time_administration"><![CDATA[All Time]]></string>
     <string name="_bx_tasks_menu_item_title_view_context_time_administration"><![CDATA[All Time]]></string>
+    <string name="_bx_tasks_menu_item_title_system_view_context_budget_administration"><![CDATA[Budget]]></string>
+    <string name="_bx_tasks_menu_item_title_view_context_budget_administration"><![CDATA[Budget]]></string>
     <string name="_bx_tasks_menu_item_title_system_manage_context_pre_values"><![CDATA[Properties]]></string>
     <string name="_bx_tasks_menu_item_title_manage_context_pre_values"><![CDATA[Properties]]></string>
     <string name="_bx_tasks_menu_item_title_system_manage_context_settings"><![CDATA[Settings]]></string>
@@ -451,6 +474,17 @@
     <string name="_bx_tasks_grid_popup_title_tm_add"><![CDATA[Add Time]]></string>
     <string name="_bx_tasks_grid_popup_title_tm_edit"><![CDATA[Edit Time]]></string>
     <string name="_bx_tasks_grid_popup_title_tm_calculate"><![CDATA[Total Spent Time]]></string>
+
+    <string name="_bx_tasks_grid_column_title_bdt_profile_id"><![CDATA[Profile]]></string>
+    <string name="_bx_tasks_grid_column_title_bdt_text"><![CDATA[Note]]></string>
+    <string name="_bx_tasks_grid_column_title_bdt_value"><![CDATA[Value]]></string>
+    <string name="_bx_tasks_grid_column_title_bdt_date"><![CDATA[Added]]></string>
+    <string name="_bx_tasks_grid_action_title_bdt_add"><![CDATA[Add]]></string>
+    <string name="_bx_tasks_grid_action_title_bdt_edit"><![CDATA[Edit]]></string>
+    <string name="_bx_tasks_grid_action_title_bdt_delete"><![CDATA[Delete]]></string>
+    <string name="_bx_tasks_grid_action_title_bdt_calculate"><![CDATA[Calculate]]></string>
+    <string name="_bx_tasks_grid_popup_title_bdt_add"><![CDATA[Add Budget]]></string>
+    <string name="_bx_tasks_grid_popup_title_bdt_edit"><![CDATA[Edit Budget]]></string>
 
     <string name="_bx_tasks_grid_column_title_pv_active"><![CDATA[Active]]></string>
     <string name="_bx_tasks_grid_column_title_pv_title"><![CDATA[Title]]></string>
@@ -583,6 +617,11 @@
     <string name="_bx_tasks_txt_timer_edit_and_log"><![CDATA[Edit & Log]]></string>
     <string name="_bx_tasks_txt_timers_clear"><![CDATA[Clear All]]></string>
     <string name="_bx_tasks_txt_timers_log"><![CDATA[Log All]]></string>
+
+    <string name="_bx_tasks_txt_budget_total"><![CDATA[Budget:]]></string>
+    <string name="_bx_tasks_txt_budget_spent"><![CDATA[Spent:]]></string>
+    <string name="_bx_tasks_txt_budget_remains"><![CDATA[Remains:]]></string>
+    <string name="_bx_tasks_txt_budget_remains_value"><![CDATA[{0} ({1}%)]]></string>
 
     <string name="_bx_tasks_txt_err_cannot_perform_action"><![CDATA[Cannot perform action. Please report.]]></string>
     <string name="_bx_tasks_txt_err_empty_pre_list"><![CDATA[Please select a list to add items to.]]></string>

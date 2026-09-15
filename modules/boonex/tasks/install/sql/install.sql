@@ -388,6 +388,26 @@ CREATE TABLE IF NOT EXISTS `bx_tasks_timers` (
   UNIQUE KEY `timer` (`content_id`, `profile_id`)
 );
 
+-- TABLE: budget
+CREATE TABLE IF NOT EXISTS `bx_tasks_budget` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `context_id` int(11) NOT NULL default '0',
+  `value_total` int(11) NOT NULL default '0',
+  `value_spent` int(11) NOT NULL default '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `context_id` (`context_id`)
+);
+
+CREATE TABLE IF NOT EXISTS `bx_tasks_budget_track` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `context_id` int(11) NOT NULL default '0',
+  `profile_id` int(11) NOT NULL default '0',
+  `value` int(11) NOT NULL default '0',
+  `text` text NOT NULL default '',
+  `date` int(11) NOT NULL default '0',
+  PRIMARY KEY (`id`)
+);
+
 -- TABLE: favorites
 CREATE TABLE `bx_tasks_favorites_track` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -695,6 +715,34 @@ INSERT INTO `sys_form_display_inputs` (`display_name`, `input_name`, `visible_fo
 ('bx_tasks_time_edit', 'controls', 2147483647, 1, 7),
 ('bx_tasks_time_edit', 'submit', 2147483647, 1, 8),
 ('bx_tasks_time_edit', 'cancel', 2147483647, 1, 9);
+
+-- FORMS: budget
+INSERT INTO `sys_objects_form` (`object`, `module`, `title`, `action`, `form_attrs`, `submit_name`, `table`, `key`, `uri`, `uri_title`, `params`, `deletable`, `active`, `override_class_name`, `override_class_file`) VALUES
+('bx_tasks_budget', 'bx_tasks', '_bx_tasks_form_budget', '', '', 'submit', 'bx_tasks_budget_track', 'id', '', '', '', 0, 1, 'BxTasksFormBudget', 'modules/boonex/tasks/classes/BxTasksFormBudget.php');
+
+INSERT INTO `sys_form_displays` (`display_name`, `module`, `object`, `title`, `view_mode`) VALUES
+('bx_tasks_budget_add', 'bx_tasks', 'bx_tasks_budget', '_bx_tasks_form_display_budget_add', 0),
+('bx_tasks_budget_edit', 'bx_tasks', 'bx_tasks_budget', '_bx_tasks_form_display_budget_edit', 0);
+
+INSERT INTO `sys_form_inputs` (`object`, `module`, `name`, `value`, `values`, `checked`, `type`, `caption_system`, `caption`, `info`, `required`, `collapsed`, `html`, `attrs`, `attrs_tr`, `attrs_wrapper`, `checker_func`, `checker_params`, `checker_error`, `db_pass`, `db_params`, `editable`, `deletable`) VALUES
+('bx_tasks_budget', 'bx_tasks', 'value', '', '', 0, 'text', '_bx_tasks_form_budget_input_sys_value', '_bx_tasks_form_budget_input_value', '_bx_tasks_form_budget_input_value_info', 1, 0, 0, '', '', '', 'avail', '', '_bx_tasks_form_budget_input_value_err', 'Int', '', 1, 0),
+('bx_tasks_budget', 'bx_tasks', 'text', '', '', 0, 'textarea', '_bx_tasks_form_budget_input_sys_text', '_bx_tasks_form_budget_input_text', '', 0, 0, 0, '', '', '', '', '', '', 'Xss', '', 1, 0),
+('bx_tasks_budget', 'bx_tasks', 'submit', '_bx_tasks_form_budget_input_submit', '', 0, 'submit', '_bx_tasks_form_budget_input_sys_submit', '', '', 0, 0, 0, '', '', '', '', '', '', '', '', 0, 0),
+('bx_tasks_budget', 'bx_tasks', 'cancel', '_bx_tasks_form_budget_input_cancel', '', 0, 'button', '_bx_tasks_form_budget_input_sys_cancel', '', '', 0, 0, 0, 'a:2:{s:7:"onclick";s:45:"$(''.bx-popup-applied:visible'').dolPopupHide()";s:5:"class";s:22:"bx-def-margin-sec-left";}', '', '', '', '', '', '', '', 1, 0),
+('bx_tasks_budget', 'bx_tasks', 'controls', '', 'submit,cancel', 0, 'input_set', '_bx_tasks_form_budget_input_sys_controls', '', '', 0, 0, 0, '', '', '', '', '', '', '', '', 1, 0);
+
+INSERT INTO `sys_form_display_inputs` (`display_name`, `input_name`, `visible_for_levels`, `active`, `order`) VALUES
+('bx_tasks_budget_add', 'value', 2147483647, 1, 1),
+('bx_tasks_budget_add', 'text', 2147483647, 1, 2),
+('bx_tasks_budget_add', 'controls', 2147483647, 1, 3),
+('bx_tasks_budget_add', 'submit', 2147483647, 1, 4),
+('bx_tasks_budget_add', 'cancel', 2147483647, 1, 5),
+
+('bx_tasks_budget_edit', 'value', 2147483647, 1, 1),
+('bx_tasks_budget_edit', 'text', 2147483647, 1, 2),
+('bx_tasks_budget_edit', 'controls', 2147483647, 1, 3),
+('bx_tasks_budget_edit', 'submit', 2147483647, 1, 4),
+('bx_tasks_budget_edit', 'cancel', 2147483647, 1, 5);
 
 -- PRE-VALUES
 INSERT INTO `sys_form_pre_lists`(`key`, `title`, `module`, `use_for_sets`) VALUES

@@ -585,13 +585,14 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
                     break;
 
                 list($iH, $iM) = $this->_oConfig->timeI2A($aTimer['duration'], true);
+                $iSpent = $this->_oConfig->timeA2I([(int)$iH, (int)$iM + 1]);
 
                 $iNow = time();
                 $iTrackId = $this->_oDb->insertTimeTrack([
                     'object_id' => $iContentId,
                     'author_id' => $iProfileId,
                     'author_nip' => $iProfileId == $this->_iProfileId ? bx_get_ip_hash(getVisitorIP()) : 0,
-                    'value' => $this->_oConfig->timeA2I([(int)$iH, (int)$iM + 1]),
+                    'value' => $iSpent,
                     'value_date' => $iNow,
                     'date' => $iNow
                 ]);
@@ -609,6 +610,8 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
                     'content_id' => $iContentId, 
                     'profile_id' => $iProfileId
                 ]);
+
+                $this->spendBudgetByContentId($iContentId, $iSpent);
 
                 $aResult = $this->_bIsApi ? $this->_oTemplate->getTimer($iContentId, $iProfileId) : ['code' => 0];
                 break;
@@ -818,6 +821,57 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
 
         return $this->_bIsApi ? [
             bx_api_get_block('tasks_timers', $mixedResult)
+        ] : $mixedResult;
+    }
+
+    public function serviceGetBlockManageBudget($sType = 'administration', $iContextPid = 0)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        $bContextPid = !empty($iContextPid);
+        if(!$bContextPid)
+            return $this->_bIsApi ? [] : '';
+
+        $sGrid = $CNF['OBJECT_GRID_BUDGET_' . ($bContextPid ? 'CONTEXT_' : '') . strtoupper($sType)];
+        $oGrid = BxDolGrid::getObjectInstance($sGrid);
+        if(!$oGrid)
+            return $this->_bIsApi ? [] : '';
+
+        if($bContextPid)
+            $oGrid->setContextPid($iContextPid);
+
+        if($this->_bIsApi)
+            return [
+                bx_api_get_block('grid', $oGrid->getCodeAPI())
+            ];
+
+        list($aCssCalendar, $aJsCalendar) = BxBaseFormView::getCssJsCalendar();
+
+        $this->_oTemplate->addCss(array_merge($aCssCalendar, ['manage_tools.css', 'budget.css']));
+        $this->_oTemplate->addJs(array_merge($aJsCalendar, ['modules/base/text/js/|manage_tools.js', 'budget.js']));
+        $this->_oTemplate->addJsTranslation(['_sys_grid_search']);
+        $aResult = [
+            'content' => $this->_oTemplate->getJsCode('budget', [
+                'sObjNameGrid' => $sGrid
+            ]) . $oGrid->getCode()
+        ];
+
+        if(!$bContextPid)
+            $aResult['menu'] = BxDolMenu::getObjectInstance($CNF['OBJECT_MENU_MANAGE_TOOLS_SUBMENU']);
+
+        return $aResult;
+    }
+
+    public function serviceGetBlockBudget($iContextPid = 0)
+    {
+        $aBudget = $this->_oDb->getBudget(['sample'=> 'context_id', 'context_id' => $iContextPid]);
+        if(!$aBudget || !is_array($aBudget))
+            return $this->_bIsApi ? [] : MsgBox(_t('_Empty'));
+
+        $mixedResult = $this->_oTemplate->getBlockBudget($aBudget);
+
+        return $this->_bIsApi ? [
+            bx_api_get_block('tasks_budget', $mixedResult)
         ] : $mixedResult;
     }
 
@@ -1329,6 +1383,22 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
     public function updateTimerById($iId, $aSet)
     {
         return $this->_oDb->updateTimer($aSet, ['id' => (int)$iId]) !== false;
+    }
+
+    public function spendBudgetByContentId($iContentId, $iValue)
+    {
+        $bResult = false;
+
+        $iContextId = $this->_oDb->getContextId($iContentId);
+        if(!$iContextId)
+            return $bResult;
+
+        if(!$this->_oDb->isBudgetByContext($iContextId))
+            $bResult = $this->_oDb->insertBudget($iContextId, 0, $iValue);
+        else
+            $bResult = $this->_oDb->updateBudgetSpent($iContextId, $iValue);
+
+        return $bResult;
     }
 
     public function onPublished($iContentId)
