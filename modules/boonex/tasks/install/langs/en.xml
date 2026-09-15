@@ -482,7 +482,6 @@
     <string name="_bx_tasks_grid_action_title_bdt_add"><![CDATA[Add]]></string>
     <string name="_bx_tasks_grid_action_title_bdt_edit"><![CDATA[Edit]]></string>
     <string name="_bx_tasks_grid_action_title_bdt_delete"><![CDATA[Delete]]></string>
-    <string name="_bx_tasks_grid_action_title_bdt_calculate"><![CDATA[Calculate]]></string>
     <string name="_bx_tasks_grid_popup_title_bdt_add"><![CDATA[Add Budget]]></string>
     <string name="_bx_tasks_grid_popup_title_bdt_edit"><![CDATA[Edit Budget]]></string>
 

@@ -847,8 +847,8 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
 
         list($aCssCalendar, $aJsCalendar) = BxBaseFormView::getCssJsCalendar();
 
-        $this->_oTemplate->addCss(array_merge($aCssCalendar, ['manage_tools.css', 'budget.css']));
-        $this->_oTemplate->addJs(array_merge($aJsCalendar, ['modules/base/text/js/|manage_tools.js', 'budget.js']));
+        $this->_oTemplate->addCss($aCssCalendar);
+        $this->_oTemplate->addJs($aJsCalendar);
         $this->_oTemplate->addJsTranslation(['_sys_grid_search']);
         $aResult = [
             'content' => $this->_oTemplate->getJsCode('budget', [

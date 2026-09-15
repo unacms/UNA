@@ -544,7 +544,6 @@ INSERT INTO `sys_grid_fields` (`object`, `name`, `title`, `width`, `translatable
 
 INSERT INTO `sys_grid_actions` (`object`, `type`, `name`, `title`, `icon`, `icon_only`, `confirm`, `order`) VALUES
 ('bx_tasks_budget_context_administration', 'independent', 'add', '_bx_tasks_grid_action_title_bdt_add', '', 0, 0, 1),
-('bx_tasks_budget_context_administration', 'bulk', 'calculate', '_bx_tasks_grid_action_title_bdt_calculate', '', 0, 0, 1),
 ('bx_tasks_budget_context_administration', 'single', 'edit', '_bx_tasks_grid_action_title_bdt_edit', 'pencil-alt', 1, 0, 1),
 ('bx_tasks_budget_context_administration', 'single', 'delete', '_bx_tasks_grid_action_title_bdt_delete', 'remove', 1, 1, 2);
 
