@@ -68,7 +68,7 @@ class BxTasksGridTimeContextCommon extends BxTasksGridTimeContextAdministration
             if(($oTime = BxDolReport::getObjectInstance($sSystem, $iObjectId)) && $oTime->isEnabled())
                 $oTime->putReport($iObjectId, $this->_iLogged, $iTrackId);
 
-            $this->_oModule->updateBudgetByContentId($iObjectId, $iValue);
+            $this->_oModule->spendBudgetByContentId($iObjectId, $iValue);
 
             return $this->_bIsApi ? [] : echoJson(['grid' => $this->getCode(false), 'blink' => $iTrackId]);    
         }
@@ -118,7 +118,7 @@ class BxTasksGridTimeContextCommon extends BxTasksGridTimeContextAdministration
                 $oTime->putReport($iObjectId, $iAuthorId, $iTrackId); //--- Process new value
             }
 
-            $this->_oModule->updateBudgetByContentId($iObjectId, $aValsToAdd['value'] - $aTrack['value']);
+            $this->_oModule->spendBudgetByContentId($iObjectId, $aValsToAdd['value'] - $aTrack['value']);
 
             return $this->_bIsApi ? [] : echoJson(['grid' => $this->getCode(false), 'blink' => $iTrackId]);    
         }

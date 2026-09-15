@@ -611,7 +611,7 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
                     'profile_id' => $iProfileId
                 ]);
 
-                $this->updateBudgetByContentId($iContentId, $iSpent);
+                $this->spendBudgetByContentId($iContentId, $iSpent);
 
                 $aResult = $this->_bIsApi ? $this->_oTemplate->getTimer($iContentId, $iProfileId) : ['code' => 0];
                 break;
@@ -868,12 +868,11 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
         if(!$aBudget || !is_array($aBudget))
             return $this->_bIsApi ? [] : MsgBox(_t('_Empty'));
 
-        if($this->_bIsApi)
-            return [
-                bx_api_get_block('tasks_budget', $aBudget)
-            ];
+        $mixedResult = $this->_oTemplate->getBlockBudget($aBudget);
 
-        return $this->_oTemplate->getBlockBudget($aBudget);
+        return $this->_bIsApi ? [
+            bx_api_get_block('tasks_budget', $mixedResult)
+        ] : $mixedResult;
     }
 
     /**
@@ -1386,14 +1385,21 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
         return $this->_oDb->updateTimer($aSet, ['id' => (int)$iId]) !== false;
     }
 
-    public function updateBudgetByContentId($iContentId, $iValue)
+    public function spendBudgetByContentId($iContentId, $iValue)
     {
         $bResult = false;
-        if(($iContextId = $this->_oDb->getContextId($iContentId)))
+
+        $iContextId = $this->_oDb->getContextId($iContentId);
+        if(!$iContextId)
+            return $bResult;
+
+        if(!$this->_oDb->isBudgetByContext($iContextId))
+            $bResult = $this->_oDb->insertBudget($iContextId, 0, $iValue);
+        else
             $bResult = $this->_oDb->updateBudgetSpent($iContextId, $iValue);
 
         return $bResult;
-    }   
+    }
 
     public function onPublished($iContentId)
     {

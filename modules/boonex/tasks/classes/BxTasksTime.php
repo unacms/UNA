@@ -240,7 +240,7 @@ class BxTasksTime extends BxTemplReport
                 }
             }
 
-            $this->_oModule->updateBudgetByContentId($iContentId, $iValue);
+            $this->_oModule->spendBudgetByContentId($iObjectId, $iValue);
 
             return $aResult;
         }

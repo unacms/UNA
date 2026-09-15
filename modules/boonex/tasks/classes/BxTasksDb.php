@@ -582,14 +582,25 @@ class BxTasksDb extends BxBaseModTextDb
         return call_user_func_array([$this, $aMethod['name']], $aMethod['params']);
     }
 
-    public function insertBudget($iContextId, $iValue)
+    public function isBudgetByContext($iContextId)
+    {
+        $aBudget = $this->getBudget([
+            'sample' => 'context_id', 
+            'context_id' => $iContextId
+        ]);
+
+        return $aBudget && is_array($aBudget);
+    }
+
+    public function insertBudget($iContextId, $iValueTotal = 0, $iValueSpent = 0)
     {
         $CNF = &$this->_oConfig->CNF;
 
-        return $this->query("INSERT INTO `" . $CNF['TABLE_BUDGET'] . "` (`context_id`, `value_total`) VALUES (:context_id, :value_total) ON DUPLICATE KEY UPDATE `value_total`=`value_total`+:value_total", [
+        return $this->query("INSERT INTO `" . $CNF['TABLE_BUDGET'] . "` (`context_id`, `value_total`, `value_spent`) VALUES (:context_id, :value_total, :value_spent) ON DUPLICATE KEY UPDATE `value_total`=`value_total`+:value_total, `value_spent`=`value_spent`+:value_spent", [
             'context_id' => $iContextId,
-            'value_total' => $iValue
-        ]) ? $this->lastId() : false;
+            'value_total' => $iValueTotal,
+            'value_spent' => $iValueSpent
+        ]) !== false;
     }
 
     public function updateBudgetTotal($iContextId, $iValue)

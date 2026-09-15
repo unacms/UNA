@@ -104,7 +104,7 @@ class BxTasksGridTime extends BxBaseModGeneralGrid
         if($bResult && ($oTime = BxDolReport::getObjectInstance($CNF['OBJECT_REPORTS_TIME'], $iObjectId)) && $oTime->isEnabled())
             $oTime->putReport($iObjectId, $iAuthorId, $aTrack, true);
 
-        $this->_oModule->updateBudgetByContentId($iObjectId, -$aTrack['value']);
+        $this->_oModule->spendBudgetByContentId($iObjectId, -$aTrack['value']);
 
         return $bResult;
     }

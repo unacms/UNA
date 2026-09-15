@@ -2,6 +2,8 @@
     <div class="bx-tasks-budget-cnt">
         <div class="bx-tasks-bc-total"><bx_text:_bx_tasks_txt_budget_total /><span class="pl-2">__total__</span></div>
         <div class="bx-tasks-bc-spent"><bx_text:_bx_tasks_txt_budget_spent /><span class="pl-2">__spent__</span></div>
-        <div class="bx-tasks-bc-remains"><bx_text:_bx_tasks_txt_budget_remains /><span class="pl-2">__remains__</span></div>
+        <bx_if:show_remains>
+            <div class="bx-tasks-bc-remains"><bx_text:_bx_tasks_txt_budget_remains /><span class="pl-2">__remains__</span></div>
+        </bx_if:show_remains>
     </div>
 </div>
