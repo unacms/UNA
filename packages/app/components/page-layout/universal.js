@@ -9,6 +9,35 @@ import Page from 'app/ui/molecules/page/page'
 const isRowLayout = (cell, currentBreakpoint) => !cell.defaultSize || (cell.breakpoint && currentBreakpoint <= LAYOUT_BREAKPOINTS[cell.breakpoint]);
 const hasData = (cellData) => Array.isArray(cellData) && cellData.length > 0;
 
+const row = (index, area) => ({ key: `cell_${index + 1}`, index, area });
+const col = (index, defaultSize, breakpoint) => ({
+    key: `cell_${index + 1}`,
+    index,
+    area: 'mid',
+    defaultSize,
+    minSize: 10,
+    ...(breakpoint ? { breakpoint } : {}),
+});
+
+const LAYOUT_CONFIGS = {
+    default: [row(0, 'top'), col(1, 33.33), col(2, 33.33, 'md'), col(3, 33.33, 'lg'), row(4, 'bottom')],
+    layout_bar_left: [col(0, 33.33), col(1, 66.66, 'md')],
+    layout_bar_right: [col(0, 66.66), col(1, 33.33, 'md')],
+    layout_2_columns: [col(0, 50), col(1, 50, 'md')],
+    layout_3_columns: [col(0, 33.33), col(1, 33.33, 'md'), col(2, 33.33, 'lg')],
+    layout_bar_content_bar: [col(0, 25), col(1, 50, 'md'), col(2, 25, 'lg')],
+    layout_top_area_bar_left: [row(0, 'top'), col(1, 33.33), col(2, 66.66, 'md')],
+    layout_top_area_bar_right: [row(0, 'top'), col(1, 66.66), col(2, 33.33, 'md')],
+    layout_top_area_2_columns: [row(0, 'top'), col(1, 50), col(2, 50, 'md')],
+    layout_top_area_3_columns: [row(0, 'top'), col(1, 33.33), col(2, 33.33, 'md'), col(3, 33.33, 'lg')],
+    layout_top_area_bar_content_bar: [row(0, 'top'), col(1, 25), col(2, 50, 'md'), col(3, 25, 'lg')],
+    layout_topbottom_area_2_columns: [row(0, 'top'), col(1, 50), col(2, 50, 'md'), row(3, 'bottom')],
+    layout_topbottom_area_bar_right: [row(0, 'top'), col(1, 66.66), col(2, 33.33, 'md'), row(3, 'bottom')],
+    layout_topbottom_area_bar_left: [row(0, 'top'), col(1, 33.33), col(2, 66.66, 'md'), row(3, 'bottom')],
+    layout_topbottom_area_col1_col3_col2: [row(0, 'top'), col(1, 16.67), col(2, 50, 'md'), col(3, 33.33, 'lg'), row(4, 'bottom')],
+    layout_topbottom_area_col2_col5_col3: [row(0, 'top'), col(1, 20), col(2, 50, 'md'), col(3, 30, 'lg'), row(4, 'bottom')],
+};
+
 function PageContentUniversal({ children, data, layoutName, pageClasses }) {
     const currentBreakpoint = useBreakpoint();
     const uri = data.uri;
@@ -17,45 +46,7 @@ function PageContentUniversal({ children, data, layoutName, pageClasses }) {
 
     const sizable = cellsCustomConfig.sizable === undefined ? true : cellsCustomConfig.sizable;
 
-    const layoutConfigs = {
-        default: [
-            { key: 'cell_1', index: 0, area: 'top' },
-            { key: 'cell_2', index: 1, area: 'mid', defaultSize: 33.33, minSize: 10 },
-            { key: 'cell_3', index: 2, area: 'mid', defaultSize: 33.33, minSize: 10, breakpoint: 'md' },
-            { key: 'cell_4', index: 3, area: 'mid', defaultSize: 33.33, minSize: 10, breakpoint: 'lg' },
-            { key: 'cell_5', index: 4, area: 'bottom' },
-        ],
-        layout_top_area_bar_right: [
-            { key: 'cell_1', index: 0, area: 'top' },
-            { key: 'cell_2', index: 1, area: 'mid', defaultSize: 66.33, minSize: 10 },
-            { key: 'cell_3', index: 2, area: 'mid', defaultSize: 33.33, minSize: 10, breakpoint: 'md' },
-        ],
-        layout_top_area_2_columns: [
-            { key: 'cell_1', index: 0, area: 'top' },
-            { key: 'cell_2', index: 1, area: 'mid', defaultSize: 50, minSize: 10 },
-            { key: 'cell_3', index: 2, area: 'mid', defaultSize: 50, minSize: 10, breakpoint: 'md' },
-        ],
-        layout_topbottom_area_2_columns: [
-            { key: 'cell_1', index: 0, area: 'top' },
-            { key: 'cell_2', index: 1, area: 'mid', defaultSize: 50, minSize: 10 },
-            { key: 'cell_3', index: 2, area: 'mid', defaultSize: 50, minSize: 10, breakpoint: 'md' },
-            { key: 'cell_4', index: 3, area: 'bottom' },
-        ],
-        layout_topbottom_area_bar_right: [
-            { key: 'cell_1', index: 0, area: 'top' },
-            { key: 'cell_2', index: 1, area: 'mid', defaultSize: 66.66, minSize: 10 },
-            { key: 'cell_3', index: 2, area: 'mid', defaultSize: 33.33, minSize: 10, breakpoint: 'md' },
-            { key: 'cell_4', index: 3, area: 'bottom' },
-        ],
-        layout_topbottom_area_bar_left: [
-            { key: 'cell_1', index: 0, area: 'top' },
-            { key: 'cell_2', index: 1, area: 'mid', defaultSize: 33.33, minSize: 10 },
-            { key: 'cell_3', index: 2, area: 'mid', defaultSize: 66.66, minSize: 10, breakpoint: 'md' },
-            { key: 'cell_4', index: 3, area: 'bottom' },
-        ],
-    };
-
-    const cellsDefaultConfig = layoutConfigs[layoutName] ?? layoutConfigs.default;
+    const cellsDefaultConfig = LAYOUT_CONFIGS[layoutName] ?? LAYOUT_CONFIGS.default;
 
     const cellsConfig = cellsDefaultConfig.map((defaultCell) => {
         const override = cellsCustomConfig.cells?.find((c) => c.key === defaultCell.key);
