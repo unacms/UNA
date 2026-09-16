@@ -1,0 +1,30 @@
+<bx_if:logged_in>
+<style>
+    .bx-hide-when-logged-in {
+        display:none !important;
+    }
+</style>
+</bx_if:logged_in>
+<div class="bx-menu-toolbar-padding pt-16">
+    <div class="bx-cover-gap overflow-hidden">
+        <div class="bx-cover-wrapper<bx_if:empty_cover_class> bx-cover-empty</bx_if:empty_cover_class> relative" <bx_if:bg>style="background-image:url(__image_url__)"</bx_if:bg>>
+            <div class="bx-cover-gradient bx-def-page-width relative mx-auto"></div>
+            <div class="relative mx-auto py-16 text-center">
+                <bx_if:image>
+                    <div class="bx-cover-image">
+                        <img class="border rounded-md" style="background-image:url(__icon_url__)" src="<bx_icon_url:spacer.gif />" />
+                    </div>
+                </bx_if:image>
+                <div class="bx-cover-title flex justify-center items-center">
+                    <bx_if:title>
+                    <h1 class="text-4xl font-bold tracking-tight text-gray-900 dark:text-gray-50">
+                        <span class="block pb-1 relative">__title__</span>
+                        <span class="block pb-1 bg-clip-text text-transparent bg-gradient-to-r from-green-500 to-blue-500"></span>
+                    </h1>
+                    </bx_if:title>
+                </div>
+                <div class="bx-cover-actions">__actions__</div>
+            </div>
+        </div>
+    </div>
+</div>

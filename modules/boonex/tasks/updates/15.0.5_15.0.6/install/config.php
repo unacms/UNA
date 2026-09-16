@@ -8,9 +8,9 @@ $aConfig = array(
     /**
      * Main Section.
      */
-    'title' => 'SMTP Mailer',
-    'version_from' => '15.0.0',
-    'version_to' => '15.0.1',
+    'title' => 'Tasks',
+    'version_from' => '15.0.5',
+    'version_to' => '15.0.6',
     'vendor' => 'UNA INC',
 
     'compatible_with' => array(
@@ -20,14 +20,14 @@ $aConfig = array(
     /**
      * 'home_dir' and 'home_uri' - should be unique. Don't use spaces in 'home_uri' and the other special chars.
      */
-    'home_dir' => 'boonex/smtpmailer/updates/update_15.0.0_15.0.1/',
-    'home_uri' => 'smtpmailer_update_1500_1501',
+    'home_dir' => 'boonex/tasks/updates/update_15.0.5_15.0.6/',
+    'home_uri' => 'tasks_update_1505_1506',
 
-    'module_dir' => 'boonex/smtpmailer/',
-    'module_uri' => 'smtpmailer',
+    'module_dir' => 'boonex/tasks/',
+    'module_uri' => 'tasks',
 
-    'db_prefix' => 'bx_smtp_',
-    'class_prefix' => 'BxSMTP',
+    'db_prefix' => 'bx_tasks_',
+    'class_prefix' => 'BxTasks',
 
     /**
      * Installation/Uninstallation Section.
@@ -42,7 +42,7 @@ $aConfig = array(
     /**
      * Category for language keys.
      */
-    'language_category' => 'SMTP Mailer',
+    'language_category' => 'Tasks',
 
     /**
      * Files Section
