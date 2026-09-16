@@ -131,6 +131,22 @@ class BxDolStorageLocal extends BxDolStorage
         return true;
     }
 
+    /**
+     * Get the absolute local filesystem path of a stored file, or false when it is
+     * not available on disk.
+     * @param $mixedHandler file id or remote id
+     * @return string absolute path on success, false otherwise
+     */
+    public function getFileLocalPath ($mixedHandler)
+    {
+        $aFile = $this->getFile($mixedHandler);
+        if (!$aFile || empty($aFile['path']))
+            return false;
+
+        $sPath = $this->getObjectBaseDir($aFile['private']) . $aFile['path'];
+        return file_exists($sPath) ? $sPath : false;
+    }
+
     protected function getObjectBaseDir ($isPrivate = false)
     {
         return BX_DIRECTORY_STORAGE . $this->_aObject['object'] . '/';

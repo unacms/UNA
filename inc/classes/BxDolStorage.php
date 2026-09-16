@@ -773,6 +773,15 @@ abstract class BxDolStorage extends BxDolFactory implements iBxDolFactoryObject
     public function getFileUrlById($iFileId) { }
 
     /**
+     * Get the absolute local filesystem path of a stored file. Only local storage
+     * engines can answer this; other engines return false and callers fall back to
+     * the file URL.
+     * @param $mixedHandler file id or remote id
+     * @return string absolute path on success, false otherwise
+     */
+    public function getFileLocalPath($mixedHandler) { return false; }
+
+    /**
      * Get file info array by file id.
      * @param $iFileId file id
      * @return array
