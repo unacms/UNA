@@ -8,9 +8,9 @@ $aConfig = array(
     /**
      * Main Section.
      */
-    'title' => 'SMTP Mailer',
-    'version_from' => '15.0.0',
-    'version_to' => '15.0.1',
+    'title' => 'Artificer',
+    'version_from' => '15.0.5',
+    'version_to' => '15.0.6',
     'vendor' => 'UNA INC',
 
     'compatible_with' => array(
@@ -20,14 +20,14 @@ $aConfig = array(
     /**
      * 'home_dir' and 'home_uri' - should be unique. Don't use spaces in 'home_uri' and the other special chars.
      */
-    'home_dir' => 'boonex/smtpmailer/updates/update_15.0.0_15.0.1/',
-    'home_uri' => 'smtpmailer_update_1500_1501',
+    'home_dir' => 'boonex/artificer/updates/update_15.0.5_15.0.6/',
+    'home_uri' => 'artificer_update_1505_1506',
 
-    'module_dir' => 'boonex/smtpmailer/',
-    'module_uri' => 'smtpmailer',
+    'module_dir' => 'boonex/artificer/',
+    'module_uri' => 'artificer',
 
-    'db_prefix' => 'bx_smtp_',
-    'class_prefix' => 'BxSMTP',
+    'db_prefix' => 'bx_artificer_',
+    'class_prefix' => 'BxArtificer',
 
     /**
      * Installation/Uninstallation Section.
@@ -35,14 +35,14 @@ $aConfig = array(
     'install' => array(
         'execute_sql' => 1,
         'update_files' => 1,
-        'update_languages' => 1,
+        'update_languages' => 0,
         'clear_db_cache' => 1,
     ),
 
     /**
      * Category for language keys.
      */
-    'language_category' => 'SMTP Mailer',
+    'language_category' => 'Boonex Artificer Template',
 
     /**
      * Files Section

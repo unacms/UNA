@@ -8,7 +8,7 @@ $aConfig = array(
     /**
      * Main Section.
      */
-    'title' => 'SMTP Mailer',
+    'title' => 'OAuth2 Server',
     'version_from' => '15.0.0',
     'version_to' => '15.0.1',
     'vendor' => 'UNA INC',
@@ -20,29 +20,29 @@ $aConfig = array(
     /**
      * 'home_dir' and 'home_uri' - should be unique. Don't use spaces in 'home_uri' and the other special chars.
      */
-    'home_dir' => 'boonex/smtpmailer/updates/update_15.0.0_15.0.1/',
-    'home_uri' => 'smtpmailer_update_1500_1501',
+    'home_dir' => 'boonex/oauth2/updates/update_15.0.0_15.0.1/',
+    'home_uri' => 'oauth2_update_1500_1501',
 
-    'module_dir' => 'boonex/smtpmailer/',
-    'module_uri' => 'smtpmailer',
+    'module_dir' => 'boonex/oauth2/',
+    'module_uri' => 'oauth2',
 
-    'db_prefix' => 'bx_smtp_',
-    'class_prefix' => 'BxSMTP',
+    'db_prefix' => 'bx_oauth_',
+    'class_prefix' => 'BxOAuth',
 
     /**
      * Installation/Uninstallation Section.
      */
     'install' => array(
-        'execute_sql' => 1,
+        'execute_sql' => 0,
         'update_files' => 1,
-        'update_languages' => 1,
-        'clear_db_cache' => 1,
+        'update_languages' => 0,
+        'clear_db_cache' => 0,
     ),
 
     /**
      * Category for language keys.
      */
-    'language_category' => 'SMTP Mailer',
+    'language_category' => 'OAuth2 Server',
 
     /**
      * Files Section

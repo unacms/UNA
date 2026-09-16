@@ -1,0 +1,400 @@
+/*--
+import url(../../../../../timeline/template/css/view.css);
+--*/
+
+/*--- Dynamic Browsing: Menu ---*/
+.bx-tl-menu-feeds.bx-menu-ver li img, 
+.bx-tl-menu-feeds.bx-menu-ver li .sys-icon {
+    display: inline-block;
+    vertical-align: top;
+    width: 1.5rem;
+    height: 1.5rem;
+
+    background-size: 1.25rem 1.25rem;
+    background-position: center center;
+
+    line-height: 1.5rem;
+    font-size: 1.0rem;
+}
+.bx-tl-menu-feeds.bx-menu-ver li .bx-menu-show {
+    display: none;
+}
+.bx-tl-menu-feeds.bx-menu-ver li .bx-menu-hide {
+    display: inline;
+}
+.bx-tl-menu-feeds.bx-menu-ver li.bx-mi-collapsed .bx-menu-show {
+    display: inline;
+}
+.bx-tl-menu-feeds.bx-menu-ver li.bx-mi-collapsed .bx-menu-hide {
+    display: none;
+}
+.bx-tl-menu-feeds.bx-menu-ver li.bx-mi-collapsed .bx-menu-item-subitems {
+    display: none;
+}
+
+/*--- View Block Style ---*/
+.bx-tl-grid-sizer {
+    width: 100%;
+}
+.bx-tl-grid-item-sizer {
+    width: 100%;
+}
+.bx-tl-view-sizer {
+    width: 100%;
+}
+.bx-tl-view-sizer div.bx-tl-item-ind {
+    padding: 0px;
+}
+
+/*--- Filters Style ---*/
+div.bx-tl-view-filters {
+    min-width: 14rem;
+    max-width: 20rem;
+}
+div.bx-tl-view-filters div.bx-form-section-wrapper:first-child {
+    margin-top: 0;
+}
+div.bx-tl-view-filters div.bx-form-section-content {
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+/*--- Load More Style ---*/
+div.bx-tl-view-timeline div.bx-tl-load-more {
+    padding-top: 0px;
+}
+
+/*--- Item Style: Timeline ---*/
+div.bx-tl-view-timeline div.bx-tl-items,
+div.bx-tl-view-search div.bx-tl-items,
+div.bx-tl-view-item div.bx-tl-items {
+    margin-left: 0px;
+    margin-right: 0px;
+}
+
+/*--- Item Meta Info Style ---*/
+.bx-tl-item-meta ul.bx-menu-custom li:first-child .bx-tl-item-meta-div {
+    display: none;
+}
+
+/*--- Item Content Style ---*/
+div.bx-tl-item-content form {
+    padding: 1rem 1rem 0 1rem;
+}
+div.bx-tl-item-content div.bx-tl-title {
+    /* This box used to be `overflow: hidden`, which clipped the focus ring of the title link sitting
+       flush inside it. The clipping was really there to stop a long unbroken title from widening the
+       page, and wrapping does that without hiding anything; `text-overflow` never applied here anyway,
+       the box is a flex container. */
+    overflow-wrap: anywhere;
+}
+div.bx-tl-item-content div.bx-tl-title div.bx-tl-title-cnt {
+    min-width: 0;
+}
+div.bx-tl-item-text div.bx-tl-content {
+    position: relative;
+    max-height: 16rem;
+}
+div.bx-tl-item-text div.bx-tl-content.bx-tl-overflow {
+    margin-bottom: 0;
+}
+div.bx-tl-item-text div.bx-tl-content .bx-tl-content-overflow {
+    display: none;
+}
+div.bx-tl-item-text div.bx-tl-content.bx-tl-overflow .bx-tl-content-overflow {
+    display: block;
+}
+
+/*--- Item Activity (Actions and Manage are different menus) ---*/
+div.bx-tl-item div.bx-tl-item-activity .bx-menu-custom.bx-menu-custom-hor {
+    flex-wrap: wrap;
+}
+div.bx-tl-item div.bx-tl-item-activity.bx-tl-ia-counters .bx-menu-custom.bx-menu-custom-hor li > a,
+div.bx-tl-item div.bx-tl-item-activity.bx-tl-ia-counters .bx-menu-custom.bx-menu-custom-hor li > span {
+    display: block;
+}
+div.bx-tl-item div.bx-tl-item-activity.bx-tl-ia-counters .bx-menu-custom.bx-menu-custom-hor li > a,
+div.bx-tl-item div.bx-tl-item-activity.bx-tl-ia-counters .bx-menu-custom.bx-menu-custom-hor li > div,
+div.bx-tl-item div.bx-tl-item-activity.bx-tl-ia-counters .bx-menu-custom.bx-menu-custom-hor li > span {
+    margin-top: 0.5rem;
+}
+
+.bx-menu-object-bx_timeline_menu_item_manage .menu-custom-item-ver a,
+.bx-menu-object-bx_timeline_menu_item_manage .bx-report-element-holder a {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+}
+.bx-menu-object-bx_timeline_menu_item_manage .bx-report-element-holder {
+    -webkit-flex: 1 0 auto;
+    flex: 1 0 auto;
+
+    padding: 0px !important;
+}
+.bx-menu-object-bx_timeline_menu_item_manage .bx-report-counter-holder {
+    -webkit-flex: 0 1 auto;
+    flex: 0 1 auto;
+
+    padding-right: 1rem;
+}
+.bx-tl-owner-avatar .bx-def-thumb-size{
+    width: 2.5rem;
+    height: 2.5rem;
+}
+
+/*--- Item Owner: Name ---*/
+/* The owner-info wrapper is `overflow-hidden` (Tailwind), which would clip the
+   extra hit area added below; the name itself still truncates via `.truncate`. */
+div.bx-tl-item div.bx-tl-owner-info {
+    overflow: visible;
+}
+
+/* WCAG 2.5.8 (AA): the author link must be at least 24x24 CSS px. The extra
+   height is added as padding-top cancelled by an equal negative margin-top, so
+   the link's box grows UPWARD into the gap that already sits above the header
+   row. The text position, the row height, the meta row below and the card
+   height are all unchanged, and the box never reaches the date link beneath. */
+div.bx-tl-item div.bx-tl-owner-name > a.bx-tl-owner-name {
+    min-height: 1.5rem;
+
+    padding-top: 0.375rem;
+    margin-top: -0.375rem;
+}
+
+/*--- Menu: Item Manage ---*/
+.bx-menu-object-bx_timeline_menu_item_manage .sys-action-do-text {
+    margin-left: 0rem;
+}
+
+/*--- Item Action Style ---*/
+div.bx-tl-item div.bx-tl-item-action .bx-tl-timeline-owner-name .bx-tl-ton-div:first-child {
+    display: none;
+}
+
+/*+++ Item Text +++*/
+div.bx-tl-view-outline div.bx-tl-item-text div.bx-tl-title {
+    font-weight: bold;
+}
+div.bx-tl-view-outline div.bx-tl-content-show-more a {
+    font-weight: bold;
+}
+
+/*+++ Item Image +++*/
+div.bx-tl-view-search div.bx-tl-item-images {
+    margin-left: 0px;
+    margin-right: 0px;
+}
+div.bx-tl-view-search div.bx-tl-item-image {
+    margin-right: 2px;
+    margin-right: 0.125rem;
+}
+div.bx-tl-view-timeline div.bx-tl-item-image,
+div.bx-tl-view-outline div.bx-tl-item-image,
+div.bx-tl-view-item div.bx-tl-item-image {
+    width: 100%;
+    text-align: center;
+    overflow: hidden;
+}
+div.bx-tl-view-search div.bx-tl-item-image img {
+    height: 12.5rem;
+}
+div.bx-tl-view-timeline div.bx-tl-item-images.bx-tl-ii-gallery div.bx-tl-item-image img,
+div.bx-tl-view-item div.bx-tl-item-images.bx-tl-ii-gallery div.bx-tl-item-image img,
+div.bx-tl-view-timeline div.bx-tl-item-images.bx-tl-ii-single div.bx-tl-item-image img,
+div.bx-tl-view-item  div.bx-tl-item-images.bx-tl-ii-single div.bx-tl-item-image img {
+    position: relative;
+    display: block;
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+}
+div.bx-tl-view-outline div.bx-tl-item-image img {
+    max-width: 100%;
+    object-fit: cover;
+    object-position: center center;
+}
+
+/*+++ Item Video +++*/
+div.bx-tl-view-timeline div.bx-tl-item-video,
+div.bx-tl-view-outline div.bx-tl-item-video,
+div.bx-tl-view-item div.bx-tl-item-video {
+    width: 100%;
+}
+.bx-tl-video-iframe {
+    width: 100%;
+    border: none;
+}
+div.bx-tl-view div.bx-tl-item-videos.bx-tl-iv-gallery div.bx-tl-item-video video,
+div.bx-tl-view div.bx-tl-item-videos.bx-tl-iv-single div.bx-tl-item-video video {
+    display: block;
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/*+++ Item Attachment +++*/
+div.bx-tl-view div.bx-tl-item-attachments {
+    position: relative;
+    white-space: nowrap;
+    overflow-x: auto;
+}
+
+div.bx-tl-view div.bx-tl-item-attachments div.bx-tl-item-attachment {
+    height:auto;
+}
+div.bx-tl-view div.bx-tl-item-attachments div.bx-tl-item-attachment img {
+    max-height:25.5rem;
+    max-width:100%;
+    margin-left:auto;
+    margin-right:auto;
+}
+.bx-tl-item-attachments.bx-tl-ia-gallery {
+    text-align:center;
+}
+
+div.bx-tl-view div.bx-tl-item-attachments .flickity-slider div.bx-tl-item-attachment {
+    width: 100%;
+    height: 25.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    vertical-align: middle;
+}
+.flickity-slider .bx-tl-item-attachment img {
+    display: block;
+    max-height: 100%;
+}
+
+div.bx-tl-view-outline div.bx-tl-item-attachment img {
+    max-width: 100%;
+    object-fit: cover;
+    object-position: center center;
+}
+
+/*+++ Video +++*/
+div.bx-tl-view-timeline div.bx-tl-item-attachment video,
+div.bx-tl-view-outline div.bx-tl-item-attachment video,
+div.bx-tl-view-item div.bx-tl-item-attachment video {
+    display: block;
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+}
+div.bx-tl-item-attachment .bx-tl-item-video {
+    position: relative;
+}
+div.bx-tl-item-attachment .bx-tl-iv-duration {
+    position: absolute;
+    right: 0.25rem;
+    bottom: 0.25rem;
+    background-color: rgba(255, 255, 255, 0.8);
+}
+
+
+/*+++ Showcase Layout +++*/
+div.bx-tl-view div.bx-tl-item-attachments.bx-tl-ia-showcase {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-wrap: wrap;
+    flex-wrap: wrap;
+    -webkit-justify-content: space-between;
+    justify-content: space-between;
+}
+div.bx-tl-view div.bx-tl-item-attachments.bx-tl-ia-showcase div.bx-tl-item-attachment {
+    position: relative;
+    box-sizing: border-box;
+    width: 33.2%;
+    height: 8.5rem;
+    border: 1px solid transparent;
+}
+div.bx-tl-view div.bx-tl-item-attachments.bx-tl-ia-showcase div.bx-tl-item-attachment.bx-tl-ia-first,
+div.bx-tl-view div.bx-tl-item-attachments.bx-tl-ia-showcase.bx-tl-ia-i2 div.bx-tl-item-attachment {
+    width: 100%;
+    height: auto;
+}
+div.bx-tl-view div.bx-tl-item-attachments.bx-tl-ia-showcase.bx-tl-ia-i3 div.bx-tl-item-attachment:not(.bx-tl-ia-first) {
+    width: 50%;
+}
+div.bx-tl-item-attachments.bx-tl-ia-showcase a,
+div.bx-tl-item-attachments.bx-tl-ia-showcase img {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+div.bx-tl-item-attachments.bx-tl-ia-showcase img {
+    object-fit: cover;
+}
+div.bx-tl-item-attachments.bx-tl-ia-showcase .bx-tl-item-more {
+    position: absolute;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
+    -webkit-justify-content: center;
+    justify-content: center;
+
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+
+    font-size: 2.5rem;
+}
+div.bx-tl-item-attachments.bx-tl-ia-showcase .bx-tl-item-more,
+div.bx-tl-item-attachments.bx-tl-ia-showcase .bx-tl-item-more a {
+    color: #ffffff;
+}
+
+/*+++ Item Link +++*/
+div.bx-tl-view-outline div.bx-tl-item-link {
+    text-align: center;
+}
+div.bx-tl-view-outline div.bx-tl-il-thumbnail img {
+    width: 100%;
+    max-width: 100px;
+    height: 100%;
+    max-height: 100px;
+}
+div.bx-tl-view-outline div.bx-tl-il-embed iframe,
+div.bx-tl-view-timeline div.bx-tl-il-embed iframe {
+    width: 100%;
+}
+
+/*--- Item Brief Style ---*/
+div.bx-tl-bview-images {
+    position: relative;
+}
+div.bx-tl-bview-image.bx-tl-bvi-single,
+div.bx-tl-bview-images div.bx-tl-bview-image {
+    width: 100%;
+    height: calc(100vh - 7rem);
+    text-align: center;
+}
+div.bx-tl-bview-image.bx-tl-bvi-single img,
+div.bx-tl-bview-images div.bx-tl-bview-image:not(.bx-tl-bvi-single) img {
+    position: relative;
+    max-width: 100% !important;
+    max-height: 100% !important;
+    margin-left: auto;
+    margin-right: auto;
+}
+div.bx-tl-bview-image.bx-tl-bvi-single {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
+    -webkit-justify-content: center;
+    justify-content: center;
+}
+
+/*--- Comments Styles ---*/
+.bx-tl-view-item-comments .bx-tl-item-comments {
+    border-width: 0;
+    padding: 0;
+}
+
+.bx-tl-view-item-comments .cmt-reply.cmt-reply-min {
+    margin-bottom: 0;
+}

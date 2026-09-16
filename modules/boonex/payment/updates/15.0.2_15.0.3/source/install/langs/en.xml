@@ -1,0 +1,716 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="en" flag="gb" title="English">
+    <string name="_bx_payment"><![CDATA[Payments]]></string>
+
+    <!-- OPTIONS -->
+    <string name="_bx_payment_options_category_general"><![CDATA[General]]></string>
+    <string name="_bx_payment_options_category_currency"><![CDATA[Сurrency]]></string>
+    <string name="_bx_payment_options_category_commissions"><![CDATA[Commissions]]></string>
+    <string name="_bx_payment_option_default_currency_code"><![CDATA[Currency]]></string>
+    <string name="_bx_payment_option_err_default_currency_code"><![CDATA[Currency code cannot be empty.]]></string>
+    <string name="_bx_payment_option_currency_exchange_api"><![CDATA[Exchange currency API key (by exchangeratesapi.io)]]></string>
+    <string name="_bx_payment_option_site_admin"><![CDATA[Main seller (To sell on behalf of the site)]]></string>
+    <string name="_bx_payment_option_extended_mode"><![CDATA[Extended mode (Allows sellers to use Test mode, etc).]]></string>
+    <string name="_bx_payment_option_credits_only"><![CDATA[Pay with Credits only mode ('Credits' app should be installed).]]></string>
+    <string name="_bx_payment_option_single_seller"><![CDATA[Single seller mode (To sell everything on behalf of the 'Main seller').]]></string>
+    <string name="_bx_payment_option_sbs_cancel_survey"><![CDATA[Enable 'Your reason to cancel subscription' survey.]]></string>
+    <string name="_bx_payment_option_commissions"><![CDATA[Enable commissions calculation]]></string>
+    <string name="_bx_payment_option_inv_issue_day"><![CDATA[Day of month when invoices are automatically generated (1, 2, 3, etc)]]></string>
+    <string name="_bx_payment_option_inv_lifetime"><![CDATA[Due date - days after invoice date]]></string>
+    <string name="_bx_payment_option_inv_expiraction_notify"><![CDATA[Number of days before invoice expiration to notify payer]]></string>
+
+    <!-- PAGES and BLOCKS -->
+    <string name="_bx_payment_page_title_sys_carts"><![CDATA[Shopping Cart]]></string>
+    <string name="_bx_payment_page_title_carts"><![CDATA[Shopping Cart]]></string>
+    <string name="_bx_payment_page_title_sys_cart"><![CDATA[Shopping Cart]]></string>
+    <string name="_bx_payment_page_title_cart"><![CDATA[Shopping Cart]]></string>
+    <string name="_bx_payment_page_title_sys_cart_thank_you"><![CDATA[Thank you!]]></string>
+    <string name="_bx_payment_page_title_cart_thank_you"><![CDATA[Thank you!]]></string>
+    <string name="_bx_payment_page_block_title_carts"><![CDATA[Shopping Cart]]></string>
+    <string name="_bx_payment_page_block_title_cart"><![CDATA[{0}'s Shopping Cart]]></string>
+    <string name="_bx_payment_page_block_title_cart_thank_you"><![CDATA[Thank you!]]></string>
+    <string name="_bx_payment_page_block_content_cart_thank_you"><![CDATA[Thank you! Payment was successfully performed. The data will be processed shortly. Please wait.]]></string>
+
+    <string name="_bx_payment_page_title_sys_sbs_list_my"><![CDATA[My Subscriptions]]></string>
+    <string name="_bx_payment_page_title_sbs_list_my"><![CDATA[My Subscriptions]]></string>
+    <string name="_bx_payment_page_block_title_sbs_list_my"><![CDATA[My Subscriptions]]></string>
+
+    <string name="_bx_payment_page_title_sys_sbs_list_all"><![CDATA[All Subscriptions]]></string>
+    <string name="_bx_payment_page_title_sbs_list_all"><![CDATA[All Subscriptions]]></string>
+    <string name="_bx_payment_page_block_title_sbs_list_all"><![CDATA[All Subscriptions]]></string>
+
+    <string name="_bx_payment_page_title_sys_sbs_history"><![CDATA[My Payments]]></string>
+    <string name="_bx_payment_page_title_sbs_history"><![CDATA[My Payments]]></string>
+    <string name="_bx_payment_page_block_title_sbs_history"><![CDATA[My Payments]]></string>
+
+    <string name="_bx_payment_page_title_sys_history"><![CDATA[Shopping History]]></string>
+    <string name="_bx_payment_page_title_history"><![CDATA[Shopping History]]></string>
+    <string name="_bx_payment_page_block_title_history"><![CDATA[Shopping History]]></string>
+
+    <string name="_bx_payment_page_title_sys_orders"><![CDATA[Orders]]></string>
+    <string name="_bx_payment_page_title_orders"><![CDATA[Orders]]></string>
+    <string name="_bx_payment_page_block_title_orders"><![CDATA[Orders]]></string>
+
+    <string name="_bx_payment_page_title_sys_details"><![CDATA[Payments Details]]></string>
+    <string name="_bx_payment_page_title_details"><![CDATA[Payments Details]]></string>
+    <string name="_bx_payment_page_block_title_details"><![CDATA[Payments Details]]></string>
+
+    <string name="_bx_payment_page_block_title_orders_processed"><![CDATA[Processed Orders]]></string>
+    <string name="_bx_payment_page_block_title_orders_pending"><![CDATA[Pending Orders]]></string>
+
+    <string name="_bx_payment_page_title_response"><![CDATA[Payment Response]]></string>
+    <string name="_bx_payment_page_title_error"><![CDATA[Payment Error]]></string>
+
+    <string name="_bx_payment_page_title_sys_join"><![CDATA[Join]]></string>
+    <string name="_bx_payment_page_title_join"><![CDATA[Join]]></string>
+    <string name="_bx_payment_page_block_title_join"><![CDATA[Join]]></string>
+
+    <string name="_bx_payment_page_title_sys_invoices"><![CDATA[Invoices]]></string>
+    <string name="_bx_payment_page_title_invoices"><![CDATA[Invoices]]></string>
+    <string name="_bx_payment_page_block_title_invoices"><![CDATA[Invoices]]></string>
+    
+    <string name="_bx_payment_page_title_sys_checkout_offline"><![CDATA[Offline Checkout]]></string>
+    <string name="_bx_payment_page_title_checkout_offline"><![CDATA[Offline Checkout]]></string>
+    <string name="_bx_payment_page_block_title_sys_checkout_offline"><![CDATA[Offline Checkout]]></string>
+    <string name="_bx_payment_page_block_title_checkout_offline"><![CDATA[]]></string>
+
+    <!-- MENUS -->
+    <string name="_bx_payment_lmi_cpt_providers"><![CDATA[Providers]]></string>
+    <string name="_bx_payment_lmi_cpt_commissions"><![CDATA[Commissions]]></string>
+
+    <string name="_bx_payment_menu_title_orders_submenu"><![CDATA[Orders Submenu]]></string>
+    <string name="_bx_payment_menu_set_title_orders_submenu"><![CDATA[Orders Submenu]]></string>
+    <string name="_bx_payment_menu_item_title_system_orders_processed"><![CDATA[Processed Orders]]></string>
+    <string name="_bx_payment_menu_item_title_orders_processed"><![CDATA[Processed]]></string>
+    <string name="_bx_payment_menu_item_title_system_orders_pending"><![CDATA[Pending Orders]]></string>
+    <string name="_bx_payment_menu_item_title_orders_pending"><![CDATA[Pending]]></string>
+    <string name="_bx_payment_menu_item_title_system_details"><![CDATA[Payments Details]]></string>
+    <string name="_bx_payment_menu_item_title_details"><![CDATA[Payments]]></string>
+    <string name="_bx_payment_menu_item_title_system_admt_invoices"><![CDATA[Invoices]]></string>
+    <string name="_bx_payment_menu_item_title_admt_invoices"><![CDATA[Invoices]]></string>
+    <string name="_bx_payment_menu_item_title_admt_addon_counter1_caption"><![CDATA[paid]]></string>
+    <string name="_bx_payment_menu_item_title_admt_addon_counter2_caption"><![CDATA[overdue]]></string>
+
+    <string name="_bx_payment_menu_title_cart_submenu"><![CDATA[Cart Submenu]]></string>
+    <string name="_bx_payment_menu_title_public_cart_submenu"><![CDATA[Carts]]></string>
+    <string name="_bx_payment_menu_set_title_cart_submenu"><![CDATA[Cart Submenu]]></string>
+    <string name="_bx_payment_menu_item_title_system_cart"><![CDATA[Checkout]]></string>
+    <string name="_bx_payment_menu_item_title_cart"><![CDATA[Checkout]]></string>
+    <string name="_bx_payment_menu_item_title_system_cart_history"><![CDATA[Payment History]]></string>
+    <string name="_bx_payment_menu_item_title_cart_history"><![CDATA[Payment History]]></string>
+
+    <string name="_bx_payment_menu_title_sbs_submenu"><![CDATA[Subscriptions Submenu]]></string>
+    <string name="_bx_payment_menu_set_title_sbs_submenu"><![CDATA[Subscriptions Submenu]]></string>
+    <string name="_bx_payment_menu_item_title_system_sbs_list_my"><![CDATA[My Subscriptions List]]></string>
+    <string name="_bx_payment_menu_item_title_sbs_list_my"><![CDATA[My Subscriptions]]></string>
+    <string name="_bx_payment_menu_item_title_system_sbs_list_all"><![CDATA[All Subscriptions List]]></string>
+    <string name="_bx_payment_menu_item_title_sbs_list_all"><![CDATA[All Subscriptions]]></string>
+    <string name="_bx_payment_menu_item_title_system_sbs_history"><![CDATA[My Payments History]]></string>
+    <string name="_bx_payment_menu_item_title_sbs_history"><![CDATA[My Payments]]></string>
+
+    <string name="_bx_payment_menu_title_sbs_actions"><![CDATA[Subscription Actions]]></string>
+    <string name="_bx_payment_menu_set_title_sbs_actions"><![CDATA[Subscription Actions]]></string>
+    <string name="_bx_payment_menu_item_title_system_sbs_request_cancelation"><![CDATA[Request Cancellation]]></string>
+    <string name="_bx_payment_menu_item_title_sbs_request_cancelation"><![CDATA[Request Cancellation]]></string>
+    <string name="_bx_payment_menu_item_title_system_sbs_cancel"><![CDATA[Cancel Subscription]]></string>
+    <string name="_bx_payment_menu_item_title_sbs_cancel"><![CDATA[Cancel Subscription]]></string>
+
+    <!-- GRIDS -->
+    <string name="_bx_payment_grid_column_title_pdrs_caption"><![CDATA[Caption]]></string>
+    <string name="_bx_payment_grid_column_title_pdrs_description"><![CDATA[Description]]></string>
+    <string name="_bx_payment_grid_column_title_pdrs_for_visitor"><![CDATA[For visitors]]></string>
+    <string name="_bx_payment_grid_column_title_pdrs_for_single"><![CDATA[One Time]]></string>
+    <string name="_bx_payment_grid_column_title_pdrs_for_recurring"><![CDATA[Recurring]]></string>
+    <string name="_bx_payment_grid_column_title_pdrs_single_seller"><![CDATA[Single Seller]]></string>
+    <string name="_bx_payment_grid_column_title_pdrs_time_tracker"><![CDATA[Time Tracker]]></string>
+    <string name="_bx_payment_grid_column_title_ods_client_id"><![CDATA[Client]]></string>
+    <string name="_bx_payment_grid_column_title_ods_seller_id"><![CDATA[Seller]]></string>
+    <string name="_bx_payment_grid_column_title_ods_author_id"><![CDATA[Author]]></string>
+    <string name="_bx_payment_grid_column_title_ods_transaction"><![CDATA[Transaction]]></string>
+    <string name="_bx_payment_grid_column_title_ods_license"><![CDATA[License]]></string>
+    <string name="_bx_payment_grid_column_title_ods_item"><![CDATA[Product]]></string>
+    <string name="_bx_payment_grid_column_title_ods_amount"><![CDATA[Amount]]></string>
+    <string name="_bx_payment_grid_column_title_ods_date"><![CDATA[Date]]></string>
+    <string name="_bx_payment_grid_column_title_sbs_seller_id"><![CDATA[Seller]]></string>
+    <string name="_bx_payment_grid_column_title_sbs_client_id"><![CDATA[Client]]></string>
+    <string name="_bx_payment_grid_column_title_sbs_client_email"><![CDATA[Email]]></string>
+    <string name="_bx_payment_grid_column_title_sbs_items"><![CDATA[Products]]></string>
+    <string name="_bx_payment_grid_column_title_sbs_item_id"><![CDATA[Product]]></string>
+    <string name="_bx_payment_grid_column_title_sbs_amount"><![CDATA[Amount]]></string>
+    <string name="_bx_payment_grid_column_title_sbs_status"><![CDATA[Status]]></string>
+    <string name="_bx_payment_grid_column_title_sbs_date"><![CDATA[Date]]></string>
+    <string name="_bx_payment_grid_column_title_sbs_date_add"><![CDATA[Created]]></string>
+    <string name="_bx_payment_grid_column_title_sbs_date_next"><![CDATA[Next Payment]]></string>
+    <string name="_bx_payment_grid_column_title_crts_vendor_id"><![CDATA[Vendor]]></string>
+    <string name="_bx_payment_grid_column_title_crts_items_count"><![CDATA[Count]]></string>
+    <string name="_bx_payment_grid_column_title_crts_items_price"><![CDATA[Price]]></string>
+    <string name="_bx_payment_grid_column_title_crt_title"><![CDATA[Product]]></string>
+    <string name="_bx_payment_grid_column_title_crt_description"><![CDATA[Description]]></string>
+    <string name="_bx_payment_grid_column_title_crt_quantity"><![CDATA[Quantity]]></string>
+    <string name="_bx_payment_grid_column_title_crt_price"><![CDATA[Price]]></string>
+    <string name="_bx_payment_grid_column_title_cms_caption"><![CDATA[Caption]]></string>
+    <string name="_bx_payment_grid_column_title_cms_description"><![CDATA[Description]]></string>
+    <string name="_bx_payment_grid_column_title_cms_acl_id"><![CDATA[Membership]]></string>
+    <string name="_bx_payment_grid_column_title_cms_percentage"><![CDATA[Percentage]]></string>
+    <string name="_bx_payment_grid_column_title_cms_installment"><![CDATA[Fixed fee]]></string>
+    <string name="_bx_payment_grid_column_title_inv_commissionaire_id"><![CDATA[Payee]]></string>
+    <string name="_bx_payment_grid_column_title_inv_committent_id"><![CDATA[Payer]]></string>
+    <string name="_bx_payment_grid_column_title_inv_name"><![CDATA[Name]]></string>
+    <string name="_bx_payment_grid_column_title_inv_period_start"><![CDATA[Period start]]></string>
+    <string name="_bx_payment_grid_column_title_inv_period_end"><![CDATA[Period end]]></string>
+    <string name="_bx_payment_grid_column_title_inv_amount"><![CDATA[Amount]]></string>
+    <string name="_bx_payment_grid_column_title_inv_date_issue"><![CDATA[Issue date]]></string>
+    <string name="_bx_payment_grid_column_title_inv_date_due"><![CDATA[Due date]]></string>
+    <string name="_bx_payment_grid_column_title_inv_status"><![CDATA[Status]]></string>
+
+    <string name="_bx_payment_grid_action_title_ods_add"><![CDATA[Manual Order]]></string>
+    <string name="_bx_payment_grid_action_title_ods_cancel"><![CDATA[Cancel]]></string>
+    <string name="_bx_payment_grid_action_title_ods_process"><![CDATA[Process]]></string>
+    <string name="_bx_payment_grid_action_title_ods_view_order"><![CDATA[View]]></string>
+    <string name="_bx_payment_grid_action_title_sbs_actions"><![CDATA[Actions]]></string>
+    <string name="_bx_payment_grid_action_title_sbs_view_order"><![CDATA[View]]></string>
+    <string name="_bx_payment_grid_action_title_sbs_cancel"><![CDATA[Cancel]]></string>
+    <string name="_bx_payment_grid_action_title_sbs_delete"><![CDATA[Remove]]></string>
+    <string name="_bx_payment_grid_action_title_crts_delete"><![CDATA[Delete]]></string>
+    <string name="_bx_payment_grid_action_title_crts_continue"><![CDATA[Continue to checkout]]></string>
+    <string name="_bx_payment_grid_action_title_crt_checkout"><![CDATA[Checkout with {0}]]></string>
+    <string name="_bx_payment_grid_action_title_crt_delete"><![CDATA[Delete]]></string>
+    <string name="_bx_payment_grid_action_title_crt_quantity_sub"><![CDATA[Decrease quantity]]></string>
+    <string name="_bx_payment_grid_action_title_crt_quantity_add"><![CDATA[Increase quantity]]></string>
+    <string name="_bx_payment_grid_action_title_cms_add"><![CDATA[Add]]></string>
+    <string name="_bx_payment_grid_action_title_cms_edit"><![CDATA[Edit]]></string>
+    <string name="_bx_payment_grid_action_title_cms_delete"><![CDATA[Delete]]></string>
+    <string name="_bx_payment_grid_action_title_inv_edit"><![CDATA[Edit]]></string>
+    <string name="_bx_payment_grid_action_title_inv_delete"><![CDATA[Delete]]></string>
+    <string name="_bx_payment_grid_action_title_inv_pay"><![CDATA[Pay]]></string>
+
+    <string name="_bx_payment_popup_title_ods_order_subscription_view"><![CDATA[Subscription]]></string>
+    <string name="_bx_payment_popup_title_ods_order_subscription_get_details"><![CDATA[Subscription Details]]></string>
+    <string name="_bx_payment_popup_title_ods_order_subscription_change_details"><![CDATA[Change Subscription Details]]></string>
+    <string name="_bx_payment_popup_title_ods_order_subscription_get_billing"><![CDATA[Billing Information]]></string>
+    <string name="_bx_payment_popup_title_ods_order_subscription_change_billing"><![CDATA[Change Billing Information]]></string>
+    <string name="_bx_payment_popup_title_ods_order_history_view"><![CDATA[Order]]></string>
+    <string name="_bx_payment_popup_title_ods_order_pending_view"><![CDATA[Pending Order]]></string>
+    <string name="_bx_payment_popup_title_ods_order_pending_process"><![CDATA[Process Pending Order]]></string>
+    <string name="_bx_payment_popup_title_ods_order_processed_view"><![CDATA[Processed Order]]></string>
+    <string name="_bx_payment_popup_title_ods_order_processed_add"><![CDATA[Manual Order]]></string>
+    <string name="_bx_payment_popup_title_crd_providers_select"><![CDATA[Select Payment Method]]></string>
+    <string name="_bx_payment_popup_title_cms_add"><![CDATA[Add Monthly Commission]]></string>
+    <string name="_bx_payment_popup_title_cms_edit"><![CDATA[Edit Monthly Commission]]></string>
+    <string name="_bx_payment_popup_title_inv_edit"><![CDATA[Edit Invoice]]></string>
+
+    <!-- FORMS -->
+    <string name="_bx_payment_form_cart_input_do_delete"><![CDATA[Delete]]></string>
+    <string name="_bx_payment_form_cart_input_do_checkout"><![CDATA[Checkout]]></string>
+    <string name="_bx_payment_form_details_input_do_submit"><![CDATA[Save]]></string>
+
+    <string name="_bx_payment_form_details_form"><![CDATA[Details Form]]></string>
+    <string name="_bx_payment_form_details_display_edit"><![CDATA[Edit Details Display]]></string>
+
+    <string name="_bx_payment_form_pendings_form"><![CDATA[Pendings Form]]></string>
+    <string name="_bx_payment_form_processed_form"><![CDATA[Processed Form]]></string>
+    <string name="_bx_payment_form_pendings_display_process"><![CDATA[Process Pending Display]]></string>
+    <string name="_bx_payment_form_processed_display_add"><![CDATA[Add Processed Display]]></string>
+    <string name="_bx_payment_form_pendings_input_id_sys"><![CDATA[ID]]></string>
+    <string name="_bx_payment_form_pendings_input_seller_id_sys"><![CDATA[Seller ID]]></string>
+    <string name="_bx_payment_form_pendings_input_order_sys"><![CDATA[Order]]></string>
+    <string name="_bx_payment_form_pendings_input_order"><![CDATA[Order]]></string>
+    <string name="_bx_payment_form_pendings_input_order_err"><![CDATA[You need to fill in order number here.]]></string>
+    <string name="_bx_payment_form_pendings_input_process_sys"><![CDATA[Process]]></string>
+    <string name="_bx_payment_form_pendings_input_process"><![CDATA[Process]]></string>
+    <string name="_bx_payment_form_pendings_input_cancel_sys"><![CDATA[Cancel]]></string>
+    <string name="_bx_payment_form_pendings_input_cancel"><![CDATA[Cancel]]></string>
+    <string name="_bx_payment_form_processed_input_seller_id_sys"><![CDATA[Seller ID]]></string>
+    <string name="_bx_payment_form_processed_input_client_id_sys"><![CDATA[Client ID]]></string>
+    <string name="_bx_payment_form_processed_input_client_sys"><![CDATA[Client]]></string>
+    <string name="_bx_payment_form_processed_input_client"><![CDATA[Client]]></string>
+    <string name="_bx_payment_form_processed_input_client_err"><![CDATA[You need to enter a name of an existed member here.]]></string>
+    <string name="_bx_payment_form_processed_input_order_sys"><![CDATA[Order]]></string>
+    <string name="_bx_payment_form_processed_input_order"><![CDATA[Order]]></string>
+    <string name="_bx_payment_form_processed_input_order_err"><![CDATA[You need to fill in order number here.]]></string>
+    <string name="_bx_payment_form_processed_input_module_id_sys"><![CDATA[Module]]></string>
+    <string name="_bx_payment_form_processed_input_module_id"><![CDATA[Module]]></string>
+    <string name="_bx_payment_form_processed_input_module_id_err"><![CDATA[You need to select a module here.]]></string>
+    <string name="_bx_payment_form_processed_input_items_sys"><![CDATA[Items]]></string>
+    <string name="_bx_payment_form_processed_input_items"><![CDATA[]]></string>
+    <string name="_bx_payment_form_processed_input_items_err"><![CDATA[You need to select at least one item from the list here.]]></string>
+    <string name="_bx_payment_form_processed_input_add"><![CDATA[Add]]></string>
+    <string name="_bx_payment_form_processed_input_add_sys"><![CDATA[Add]]></string>
+    <string name="_bx_payment_form_processed_input_cancel"><![CDATA[Cancel]]></string>
+    <string name="_bx_payment_form_processed_input_cancel_sys"><![CDATA[Cancel]]></string>
+    
+    <string name="_bx_payment_form_commissions_form"><![CDATA[Commissions Form]]></string>
+    <string name="_bx_payment_form_commissions_display_add"><![CDATA[Add Commission Display]]></string>
+    <string name="_bx_payment_form_commissions_display_edit"><![CDATA[Edit Commission Display]]></string>
+    <string name="_bx_payment_form_commissions_input_caption_sys"><![CDATA[Caption]]></string>
+    <string name="_bx_payment_form_commissions_input_caption"><![CDATA[Caption]]></string>
+    <string name="_bx_payment_form_commissions_input_caption_err"><![CDATA[This field is essential. Please, fill it in.]]></string>
+    <string name="_bx_payment_form_commissions_input_description_sys"><![CDATA[Description]]></string>
+    <string name="_bx_payment_form_commissions_input_description"><![CDATA[Description]]></string>
+    <string name="_bx_payment_form_commissions_input_acl_id_sys"><![CDATA[Membership Level]]></string>
+    <string name="_bx_payment_form_commissions_input_acl_id"><![CDATA[Membership Level]]></string>
+    <string name="_bx_payment_form_commissions_input_percentage_sys"><![CDATA[Percentage]]></string>
+    <string name="_bx_payment_form_commissions_input_percentage"><![CDATA[Percentage]]></string>
+    <string name="_bx_payment_form_commissions_input_installment_sys"><![CDATA[Fixed fee]]></string>
+    <string name="_bx_payment_form_commissions_input_installment"><![CDATA[Fixed fee]]></string>
+    <string name="_bx_payment_form_commissions_input_submit_sys"><![CDATA[Submit]]></string>
+    <string name="_bx_payment_form_commissions_input_submit"><![CDATA[Submit]]></string>
+    <string name="_bx_payment_form_commissions_input_cancel_sys"><![CDATA[Cancel]]></string>
+    <string name="_bx_payment_form_commissions_input_cancel"><![CDATA[Cancel]]></string>
+    
+    <string name="_bx_payment_form_invoices_form"><![CDATA[Invoices Form]]></string>
+    <string name="_bx_payment_form_invoices_display_edit"><![CDATA[Edit Invoice Display]]></string>
+    <string name="_bx_payment_form_invoices_input_amount_sys"><![CDATA[Amount]]></string>
+    <string name="_bx_payment_form_invoices_input_amount"><![CDATA[Amount]]></string>
+    <string name="_bx_payment_form_invoices_input_amount_err"><![CDATA[This field is essential. Please, fill it in.]]></string>
+    <string name="_bx_payment_form_invoices_input_date_due_sys"><![CDATA[Due date]]></string>
+    <string name="_bx_payment_form_invoices_input_date_due"><![CDATA[Due date]]></string>
+    <string name="_bx_payment_form_invoices_input_date_due_err"><![CDATA[This field is essential. Please, fill it in.]]></string>
+    <string name="_bx_payment_form_invoices_input_status_sys"><![CDATA[Status]]></string>
+    <string name="_bx_payment_form_invoices_input_status"><![CDATA[Status]]></string>
+    <string name="_bx_payment_form_invoices_input_submit_sys"><![CDATA[Submit]]></string>
+    <string name="_bx_payment_form_invoices_input_submit"><![CDATA[Submit]]></string>
+    <string name="_bx_payment_form_invoices_input_cancel_sys"><![CDATA[Cancel]]></string>
+    <string name="_bx_payment_form_invoices_input_cancel"><![CDATA[Cancel]]></string>
+    
+    <string name="_bx_payment_form_cs_input_items"><![CDATA[Why do you want to cancel?]]></string>
+    <string name="_bx_payment_form_cs_input_other"><![CDATA[Your variant]]></string>
+    <string name="_bx_payment_form_cs_input_submit"><![CDATA[Submit]]></string>
+    <string name="_bx_payment_form_cs_input_cancel"><![CDATA[Cancel]]></string>
+
+    <string name="_bx_payment_form_input_err"><![CDATA[This field is essential. Please, fill it in.]]></string>
+    <string name="_bx_payment_form_input_email_err_cor_or_emp"><![CDATA[Use correct email address or leave empty.]]></string>
+
+    <!-- Predefined Values -->
+    <string name="_bx_payment_pre_lists_currencies"><![CDATA[Currencies]]></string>
+    
+    <string name="_bx_payment_pre_lists_reasons_cancel"><![CDATA[Reasons to cancel subscription]]></string>
+    <string name="_bx_payment_pre_values_rc_0"><![CDATA[Other]]></string>
+    <string name="_bx_payment_pre_values_rc_1"><![CDATA[Cost & Budgeting]]></string>
+    <string name="_bx_payment_pre_values_rc_2"><![CDATA[Hidden Fees & Billing Issues]]></string>
+    <string name="_bx_payment_pre_values_rc_3"><![CDATA[Low Usage]]></string>
+    <string name="_bx_payment_pre_values_rc_4"><![CDATA[Loss of Interest]]></string>
+    <string name="_bx_payment_pre_values_rc_5"><![CDATA[Poor User Experience]]></string>
+    <string name="_bx_payment_pre_values_rc_6"><![CDATA[Better Alternatives]]></string>
+
+    <!-- ACL -->
+    <string name="_bx_payment_acl_action_purchase"><![CDATA[Purchase]]></string>
+    <string name="_bx_payment_acl_action_sell"><![CDATA[Sell]]></string>
+    <string name="_bx_payment_acl_action_manage_any_purchase"><![CDATA[Manage Any Purchase]]></string>
+
+    <!-- EMAIL TEMPLATES -->
+    <string name="_bx_payment_et_txt_name_paid_need_join"><![CDATA[Paid and need to join.]]></string>
+    <string name="_bx_payment_et_txt_subject_paid_need_join"><![CDATA[Payment was processed.]]></string>
+    <string name="_bx_payment_et_txt_body_paid_need_join"><![CDATA[{email_header}
+<p>Hello, {RealName}.</p>
+<p>Your payment was processed. If you did not fill in the join form yet, then you may do it using the following link.</p>
+<p><a href="{JoinLink}">Join Now</a></p>
+{email_footer}]]></string>
+
+    <string name="_bx_payment_et_txt_name_cancelation_request"><![CDATA[Subscription cancellation request.]]></string>
+    <string name="_bx_payment_et_txt_subject_cancelation_request"><![CDATA[Subscription cancellation request.]]></string>
+    <string name="_bx_payment_et_txt_body_cancelation_request"><![CDATA[{email_header}
+<p>Hello,</p>
+<p>A user with {profile_name} profile name requested cancellation for a subscription.</p>
+<p>Subscription info:<br />ID: {subscription_id}<br />Customer: {subscription_customer}<br />Date: {subscription_date}</p>
+{email_footer}]]></string>
+
+    <string name="_bx_payment_et_txt_name_expiration_notification_seller"><![CDATA[Subscription expiration notification (for seller).]]></string>
+    <string name="_bx_payment_et_txt_subject_expiration_notification_seller"><![CDATA[Subscription expiration notification.]]></string>
+    <string name="_bx_payment_et_txt_body_expiration_notification_seller"><![CDATA[{email_header}
+<p>Hello,</p>
+<p>A subscription purchased by '{profile_name}' expired.</p>
+<p>Subscription info:<br />ID: {subscription_id}<br />Customer: {subscription_customer}<br />Date: {subscription_date}</p>
+<p><b>Note</b>. An associated data will be removed shortly.</p>
+{email_footer}]]></string>
+
+    <string name="_bx_payment_et_txt_name_expiration_notification_client"><![CDATA[Subscription expiration notification (for client).]]></string>
+    <string name="_bx_payment_et_txt_subject_expiration_notification_client"><![CDATA[Subscription expiration notification.]]></string>
+    <string name="_bx_payment_et_txt_body_expiration_notification_client"><![CDATA[{email_header}
+<p>Hello,</p>
+<p>Your subscription purchased from '{profile_name}' expired.</p>
+<p>Subscription info:<br />ID: {subscription_id}<br />Customer: {subscription_customer}<br />Date: {subscription_date}</p>
+<p><b>Note</b>. An associated data will be removed shortly.</p>
+{email_footer}]]></string>
+
+    <string name="_bx_payment_et_txt_name_expiring_notification_committent"><![CDATA[Invoice expiring notification.]]></string>
+    <string name="_bx_payment_et_txt_subject_expiring_notification_committent"><![CDATA[Invoice expiring notification.]]></string>
+    <string name="_bx_payment_et_txt_body_expiring_notification_committent"><![CDATA[{email_header}
+<p>Hello,</p>
+<p>Your invoice '{invoice}' is expiring in '{days}' day(s).</p>
+<p>Invoice info:<br />Period start: {period_start}<br />Period end: {period_end}<br />Issue date: {date_issue}<br />Due date: {date_due}</p>
+{email_footer}]]></string>
+
+    <string name="_bx_payment_et_txt_name_overdue_notification_committent"><![CDATA[Overdue invoice notification.]]></string>
+    <string name="_bx_payment_et_txt_subject_overdue_notification_committent"><![CDATA[Overdue invoice notification.]]></string>
+    <string name="_bx_payment_et_txt_body_overdue_notification_committent"><![CDATA[{email_header}
+<p>Hello,</p>
+<p>Your invoice '{invoice}' is overdue '{date_due}'.</p>
+<p>Invoice info:<br />Period start: {period_start}<br />Period end: {period_end}<br />Issue date: {date_issue}<br />Due date: {date_due}</p>
+{email_footer}]]></string>
+
+    <string name="_bx_payment_et_txt_name_checkout_offline"><![CDATA[Offline checkout attempt.]]></string>
+    <string name="_bx_payment_et_txt_subject_checkout_offline"><![CDATA[An attempt to pay with cash.]]></string>
+    <string name="_bx_payment_et_txt_body_checkout_offline"><![CDATA[{email_header}
+<p>Hello,</p>
+<p>A site member <a href="{profile_link}">{profile_name}</a> wanted to pay you with cash for:</p>
+<p>{items}</p>
+<p>Amount: {amount}<br />Date: {date}</p>
+<p>Go to the <a href="{pending_orders_link}">pending orders page</a> to process the order once the payment is received.</p>
+{email_footer}]]></string>
+
+    <string name="_bx_payment_et_txt_name_wrong_balance"><![CDATA[Insufficient funds to write off.]]></string>
+    <string name="_bx_payment_et_txt_subject_wrong_balance"><![CDATA[Insufficient funds to write off.]]></string>
+    <string name="_bx_payment_et_txt_body_wrong_balance"><![CDATA[{email_header}
+<p>Hello,</p>
+<p>You have insufficient funds to write off for paying a subscription.</p>
+<p>Subscription info:<br />ID: {subscription_id}<br />Customer: {subscription_customer}<br />Payment provider: {subscription_provider}<br />Date: {subscription_date}</p>
+{email_footer}]]></string>
+
+    <!-- MESSAGES, WARNINGS and ERRORS -->
+    <string name="_bx_payment_msg_no_results"><![CDATA[Empty]]></string>
+    <string name="_bx_payment_msg_redirecting"><![CDATA[Redirecting... Please wait.]]></string>
+    <string name="_bx_payment_msg_item_added"><![CDATA[The item was successfully added to your shopping cart.]]></string>
+    <string name="_bx_payment_msg_item_deleted"><![CDATA[The item was successfully deleted from your shopping cart.]]></string>
+    <string name="_bx_payment_msg_successfully_performed"><![CDATA[The action was successfully performed.]]></string>
+    <string name="_bx_payment_msg_successfully_processed_free"><![CDATA[Free item was successfully processed]]></string>
+    <string name="_bx_payment_msg_cancelation_request_sent"><![CDATA[Cancellation request was sent. Please wait.]]></string>
+    <string name="_bx_payment_msg_confirm_cancelation"><![CDATA[Are you sure you want to cancel your subscription?]]></string>
+    <string name="_bx_payment_msg_single_seller"><![CDATA[Single seller mode is enabled. <a href="{0}">Got to</a> single shopping cart.]]></string>
+    <string name="_bx_payment_err_access_db"><![CDATA[Database access error.]]></string>
+    <string name="_bx_payment_err_cannot_validate"><![CDATA[Can't connect to remote host for validation.]]></string>
+    <string name="_bx_payment_err_empty_items"><![CDATA[There are no items selected.]]></string>
+    <string name="_bx_payment_err_empty_order"><![CDATA[The order is empty.]]></string>
+    <string name="_bx_payment_err_inactive_vendor"><![CDATA[The vendor status is not active.]]></string>
+    <string name="_bx_payment_err_incorrect_provider"><![CDATA[Incorrect or unavailable payment provider.]]></string>
+    <string name="_bx_payment_err_not_accept_payments"><![CDATA[The vendor does not accept payments.]]></string>
+    <string name="_bx_payment_err_nothing_selected"><![CDATA[You need to select at least one item.]]></string>
+    <string name="_bx_payment_err_self_purchase"><![CDATA[Buying from your own store is not permitted.]]></string>
+    <string name="_bx_payment_err_required_login"><![CDATA[You need to login.]]></string>
+    <string name="_bx_payment_err_unknown_vendor"><![CDATA[Unknown vendor.]]></string>
+    <string name="_bx_payment_err_wrong_vendor"><![CDATA[Incorrect vendor.]]></string>
+    <string name="_bx_payment_err_wrong_data"><![CDATA[Incorrect input data.]]></string>
+    <string name="_bx_payment_err_not_found_pending"><![CDATA[Pending order was not found.]]></string>
+    <string name="_bx_payment_err_cannot_perform"><![CDATA[Cannot perform the action. Please report.]]></string>
+    <string name="_bx_payment_err_wrong_quantity"><![CDATA[Incorrect quantity specified.]]></string>
+    <string name="_bx_payment_err_already_processed"><![CDATA[This payment has already processed.]]></string>
+    <string name="_bx_payment_err_already_registered"><![CDATA[Subscription with the same data was already registered.]]></string>
+    <string name="_bx_payment_err_not_supported"><![CDATA[Operation isn't supported.]]></string>
+
+    <!-- Other -->
+    <string name="_bx_payment_txt_add_to_cart"><![CDATA[Add to Cart]]></string>
+    <string name="_bx_payment_txt_subscribe"><![CDATA[Subscribe]]></string>
+    <string name="_bx_payment_txt_payment_to"><![CDATA[Payment to {0}]]></string>
+    <string name="_bx_payment_txt_payment_to_for"><![CDATA[Payment to {0} for:]]></string>
+    <string name="_bx_payment_txt_checkout_to"><![CDATA[Continue checkouting to {0}]]></string>
+    <string name="_bx_payment_txt_checkout_with"><![CDATA[Checkout with {0}]]></string>
+    <string name="_bx_payment_txt_checkout_with_cash"><![CDATA[Checkout with cash]]></string>
+    <string name="_bx_payment_txt_checkout_for"><![CDATA[A message was sent to the seller ({0}), that you want to pay with cash for the following items. He should contact you shortly.]]></string>
+    <string name="_bx_payment_txt_checkout_qt"><![CDATA[qt.]]></string>
+    <string name="_bx_payment_txt_checkout_item"><![CDATA[{0} ({1}qt.)<br />]]></string>
+    <string name="_bx_payment_txt_client"><![CDATA[Client]]></string>
+    <string name="_bx_payment_txt_license"><![CDATA[License]]></string>
+    <string name="_bx_payment_txt_seller"><![CDATA[Seller]]></string>
+    <string name="_bx_payment_txt_author"><![CDATA[Author]]></string>
+    <string name="_bx_payment_txt_item"><![CDATA[Product]]></string>
+    <string name="_bx_payment_txt_quantity"><![CDATA[Qt.]]></string>
+    <string name="_bx_payment_txt_order"><![CDATA[Order ID]]></string>
+    <string name="_bx_payment_txt_customer_id"><![CDATA[Customer ID]]></string>
+    <string name="_bx_payment_txt_subscription"><![CDATA[Subscription]]></string>
+    <string name="_bx_payment_txt_price"><![CDATA[Price]]></string>
+    <string name="_bx_payment_txt_price_sold"><![CDATA[Sold Price]]></string>
+    <string name="_bx_payment_txt_processed_with"><![CDATA[Processed with]]></string>
+    <string name="_bx_payment_txt_message"><![CDATA[Result]]></string>
+    <string name="_bx_payment_txt_date"><![CDATA[Date]]></string>
+    <string name="_bx_payment_txt_deleted"><![CDATA[Date cancel]]></string>
+    <string name="_bx_payment_txt_deleted_reason"><![CDATA[Reason to cancel]]></string>
+    <string name="_bx_payment_txt_products"><![CDATA[Products]]></string>
+    <string name="_bx_payment_txt_buyer_name_mask"><![CDATA[{0} {1}]]></string>
+    <string name="_bx_payment_txt_none"><![CDATA[none]]></string>
+    <string name="_bx_payment_txt_name_manual"><![CDATA[Manually]]></string>
+    <string name="_bx_payment_txt_yes"><![CDATA[Yes]]></string>
+    <string name="_bx_payment_txt_no"><![CDATA[No]]></string>
+    <string name="_bx_payment_txt_unsubscribe_yes"><![CDATA[Cancel automatically]]></string>
+    <string name="_bx_payment_txt_unsubscribe_no"><![CDATA[Do not cancel]]></string>
+    <string name="_bx_payment_txt_all_authors"><![CDATA[All Authors]]></string>
+    <string name="_bx_payment_txt_all_clients"><![CDATA[All Clients]]></string>
+    <string name="_bx_payment_txt_all_modules"><![CDATA[All Modules]]></string>
+    <string name="_bx_payment_txt_all_items"><![CDATA[All Items]]></string>
+    <string name="_bx_payment_txt_status_scheduled"><![CDATA[Scheduled]]></string>
+    <string name="_bx_payment_txt_status_trial"><![CDATA[Trial]]></string>
+    <string name="_bx_payment_txt_status_active"><![CDATA[Active]]></string>
+    <string name="_bx_payment_txt_status_paid"><![CDATA[Paid]]></string>
+    <string name="_bx_payment_txt_status_unpaid"><![CDATA[Unpaid]]></string>
+    <string name="_bx_payment_txt_status_overdue"><![CDATA[Overdue]]></string>
+    <string name="_bx_payment_txt_status_paused"><![CDATA[Paused]]></string>
+    <string name="_bx_payment_txt_status_cancel"><![CDATA[Canceled]]></string>
+    <string name="_bx_payment_txt_status_canceled"><![CDATA[Canceled]]></string>
+    <string name="_bx_payment_txt_status_unknown"><![CDATA[Unknown]]></string>
+    <string name="_bx_payment_txt_invoice_title"><![CDATA[Invoice {0} from {1}]]></string>
+    <string name="_bx_payment_txt_invoice_description"><![CDATA[For a period between {0} and {1}]]></string>
+    <string name="_bx_payment_txt_payment_description"><![CDATA[Payment on {0} site.]]></string>
+
+    <!-- Generic payment provider -->
+    <string name="_bx_payment_gc_cpt"><![CDATA[Generic]]></string>
+    <string name="_bx_payment_gc_dsc"><![CDATA[Isn't used to process payments directly. Is needed to store personal settings for usage in the other providers.]]></string>
+    <string name="_bx_payment_gc_currency_code_cpt"><![CDATA[Currency]]></string>
+    <string name="_bx_payment_gc_currency_code_dsc"><![CDATA[Select your own currency instead the default one]]></string>
+    <string name="_bx_payment_gc_currency_code_default"><![CDATA[Default]]></string>
+    <string name="_bx_payment_gc_err_not_available"><![CDATA[Generic payment provider isn't available for payments.]]></string>
+
+    <!-- Offline payment provider -->
+    <string name="_bx_payment_off_cpt"><![CDATA[Offline]]></string>
+    <string name="_bx_payment_off_dsc"><![CDATA[For offline payments like cash, etransfer, etc.]]></string>
+    <string name="_bx_payment_off_active_cpt"><![CDATA[Active]]></string>
+    <string name="_bx_payment_off_active_dsc"><![CDATA[Activate(Deactivate) provider]]></string>
+    <string name="_bx_payment_off_checkout_email_cpt"><![CDATA[Email]]></string>
+    <string name="_bx_payment_off_checkout_email_dsc"><![CDATA[Email to send notifications about checkout attempts to. Leave empty to receive notifications on your profile email.]]></string>
+    <string name="_bx_payment_off_err_not_available"><![CDATA[Offline payment provider isn't available for online payments.]]></string>
+    <string name="_bx_payment_txt_name_offline"><![CDATA[Cash]]></string>
+    <string name="_bx_payment_txt_cart_offline"><![CDATA[Cash]]></string>
+
+    <!-- Credits payment provider -->
+    <string name="_bx_payment_cdt_cpt"><![CDATA[Credits]]></string>
+    <string name="_bx_payment_cdt_dsc"><![CDATA[Credits payment provider]]></string>
+    <string name="_bx_payment_cdt_active_cpt"><![CDATA[Active]]></string>
+    <string name="_bx_payment_cdt_active_dsc"><![CDATA[Activate(Deactivate) provider]]></string>
+    <string name="_bx_payment_cdt_msg_charged"><![CDATA[Payment was successfully processed.]]></string>
+    <string name="_bx_payment_cdt_msg_subscribed"><![CDATA[Thank you! Subscription created. Please, check your email for further instructions.]]></string>
+    <string name="_bx_payment_cdt_err_not_available"><![CDATA[Checkout with Credits isn't available now.]]></string>
+    <string name="_bx_payment_cdt_err_wrong_balance"><![CDATA[Insufficient funds to write off.]]></string>
+    <string name="_bx_payment_cdt_err_wrong_transaction"><![CDATA[Transaction verification failed.]]></string>
+    <string name="_bx_payment_txt_name_credits"><![CDATA[Credits]]></string>
+    <string name="_bx_payment_txt_cart_credits"><![CDATA[Credits]]></string>
+
+    <!-- PayPal payment provider -->
+    <string name="_bx_payment_pp_cpt"><![CDATA[PayPal]]></string>
+    <string name="_bx_payment_pp_dsc"><![CDATA[PayPal payment provider]]></string>
+    <string name="_bx_payment_pp_active_cpt"><![CDATA[Active]]></string>
+    <string name="_bx_payment_pp_active_dsc"><![CDATA[Activate(Deactivate) provider]]></string>
+    <string name="_bx_payment_pp_mode_cpt"><![CDATA[Mode]]></string>
+    <string name="_bx_payment_pp_mode_dsc"><![CDATA[Mode to process payments]]></string>
+    <string name="_bx_payment_pp_mode_live"><![CDATA[live]]></string>
+    <string name="_bx_payment_pp_mode_test"><![CDATA[test]]></string>
+    <string name="_bx_payment_pp_business_cpt"><![CDATA[Business]]></string>
+    <string name="_bx_payment_pp_business_dsc"><![CDATA[Business email address]]></string>
+    <string name="_bx_payment_pp_prc_type_cpt"><![CDATA[Process type]]></string>
+    <string name="_bx_payment_pp_prc_type_dsc"><![CDATA[The type in which data is to be processed]]></string>
+    <string name="_bx_payment_pp_prc_type_direct"><![CDATA[direct]]></string>
+    <string name="_bx_payment_pp_prc_type_pdt"><![CDATA[PDT]]></string>
+    <string name="_bx_payment_pp_prc_type_ipn"><![CDATA[IPN]]></string>
+    <string name="_bx_payment_pp_token_cpt"><![CDATA[Identity token]]></string>
+    <string name="_bx_payment_pp_token_dsc"><![CDATA[Identity token]]></string>
+    <string name="_bx_payment_pp_sandbox_cpt"><![CDATA[Sandbox]]></string>
+    <string name="_bx_payment_pp_sandbox_dsc"><![CDATA[Sandbox email address]]></string>
+    <string name="_bx_payment_pp_return_data_url_cpt"><![CDATA[Data return URL]]></string>
+    <string name="_bx_payment_pp_err_no_data_given"><![CDATA[No data given.]]></string>
+    <string name="_bx_payment_pp_err_not_completed"><![CDATA[Payment is not completed.]]></string>
+    <string name="_bx_payment_pp_err_wrong_vendor"><![CDATA[Wrong vendor.]]></string>
+    <string name="_bx_payment_pp_err_wrong_business"><![CDATA[Wrong receiver email.]]></string>
+    <string name="_bx_payment_pp_err_wrong_transaction"><![CDATA[Transaction verification failed.]]></string>
+    <string name="_bx_payment_pp_err_wrong_verification_status"><![CDATA[No verification status received.]]></string>
+    <string name="_bx_payment_pp_err_wrong_amount"><![CDATA[Wrong amount.]]></string>
+    <string name="_bx_payment_pp_err_wrong_custom_data"><![CDATA[Incorrect custom data.]]></string>
+    <string name="_bx_payment_pp_msg_verified"><![CDATA[Payment was successfully processed.]]></string>
+    <string name="_bx_payment_txt_name_paypal"><![CDATA[PayPal]]></string>
+    <string name="_bx_payment_txt_cart_paypal"><![CDATA[PayPal]]></string>
+
+    <!-- PayPal API payment provider -->
+    <string name="_bx_payment_pp_api_cpt"><![CDATA[PayPal API]]></string>
+    <string name="_bx_payment_pp_api_dsc"><![CDATA[PayPal payment provider (API based integration)]]></string>
+    <string name="_bx_payment_pp_api_active_cpt"><![CDATA[Active]]></string>
+    <string name="_bx_payment_pp_api_active_dsc"><![CDATA[Activate(Deactivate) provider]]></string>
+    <string name="_bx_payment_pp_api_hidden_cpt"><![CDATA[Hidden]]></string>
+    <string name="_bx_payment_pp_api_hidden_dsc"><![CDATA[Hide provider if you don't want to accept new payments but already have active subscriptions.]]></string>
+    <string name="_bx_payment_pp_api_mode_cpt"><![CDATA[Mode]]></string>
+    <string name="_bx_payment_pp_api_mode_dsc"><![CDATA[Mode to process payments]]></string>
+    <string name="_bx_payment_pp_api_mode_live"><![CDATA[live]]></string>
+    <string name="_bx_payment_pp_api_mode_test"><![CDATA[test]]></string>
+    <string name="_bx_payment_pp_api_live_account_cpt"><![CDATA[Account (live)]]></string>
+    <string name="_bx_payment_pp_api_live_account_dsc"><![CDATA[Email address which is used to access your PayPal account.]]></string>
+    <string name="_bx_payment_pp_api_live_client_id_cpt"><![CDATA[Client ID (live)]]></string>
+    <string name="_bx_payment_pp_api_live_client_id_dsc"><![CDATA[A part of application's credentials.]]></string>
+    <string name="_bx_payment_pp_api_live_secret_cpt"><![CDATA[Secret (live)]]></string>
+    <string name="_bx_payment_pp_api_live_secret_dsc"><![CDATA[A part of application's credentials.]]></string>
+    <string name="_bx_payment_pp_api_test_account_cpt"><![CDATA[Account (test)]]></string>
+    <string name="_bx_payment_pp_api_test_account_dsc"><![CDATA[Email address which is used to access your PayPal account.]]></string>
+    <string name="_bx_payment_pp_api_test_client_id_cpt"><![CDATA[Client ID (test)]]></string>
+    <string name="_bx_payment_pp_api_test_client_id_dsc"><![CDATA[A part of application's credentials.]]></string>
+    <string name="_bx_payment_pp_api_test_secret_cpt"><![CDATA[Secret (test)]]></string>
+    <string name="_bx_payment_pp_api_test_secret_dsc"><![CDATA[A part of application's credentials.]]></string>
+    <string name="_bx_payment_pp_api_return_data_url_cpt"><![CDATA[Data return URL]]></string>
+    <string name="_bx_payment_pp_api_notify_url_cpt"><![CDATA[Webhooks URL]]></string>
+    <string name="_bx_payment_pp_api_err_cannot_authorize"><![CDATA[Can't authorize the approved order.]]></string>
+    <string name="_bx_payment_pp_api_err_cannot_capture"><![CDATA[Can't finalize checkout.]]></string>
+    <string name="_bx_payment_pp_api_err_no_item"><![CDATA[There is nothing to subscribe.]]></string>
+    <string name="_bx_payment_pp_api_err_wrong_item"><![CDATA[The product you want to subscribe to has incorrect data on PayPal end. Please report.]]></string>
+    <string name="_bx_payment_pp_api_err_no_subscription"><![CDATA[The subscription data isn't available or incorrect.]]></string>
+    <string name="_bx_payment_pp_api_err_subscription_not_confirmed"><![CDATA[Subscription wasn't confirmed.]]></string>
+    <string name="_bx_payment_pp_api_msg_authorized"><![CDATA[The order was successfully authorized.]]></string>
+    <string name="_bx_payment_pp_api_msg_captured"><![CDATA[Payment was successfully processed.]]></string>
+    <string name="_bx_payment_pp_api_msg_subscribed"><![CDATA[Thank you! Subscription created. Please, check your email for further instructions.]]></string>
+    <string name="_bx_payment_txt_name_paypal_api"><![CDATA[PayPal]]></string>
+    <string name="_bx_payment_txt_cart_paypal_api"><![CDATA[PayPal]]></string>
+    <string name="_bx_payment_txt_subscribe_paypal_api"><![CDATA[PayPal]]></string>
+
+    <!-- Chargebee payment provider -->
+    <string name="_bx_payment_cbee_cpt"><![CDATA[Chargebee]]></string>
+    <string name="_bx_payment_cbee_dsc"><![CDATA[If enabled, users can checkout using Chargebee's hosted pages.]]></string>
+    <string name="_bx_payment_cbee_v3_cpt"><![CDATA[Chargebee]]></string>
+    <string name="_bx_payment_cbee_v3_dsc"><![CDATA[If enabled, users can checkout using Chargebee's drop-in script.]]></string>
+    <string name="_bx_payment_cbee_active_cpt"><![CDATA[Active]]></string>
+    <string name="_bx_payment_cbee_active_dsc"><![CDATA[Activate(Deactivate) provider. Note. It's recommended to use SSL for better payment processing.]]></string>
+    <string name="_bx_payment_cbee_hidden_cpt"><![CDATA[Hidden]]></string>
+    <string name="_bx_payment_cbee_hidden_dsc"><![CDATA[Hide provider if you don't want to accept new payments but already have active subscriptions.]]></string>
+    <string name="_bx_payment_cbee_mode_cpt"><![CDATA[Mode]]></string>
+    <string name="_bx_payment_cbee_mode_dsc"><![CDATA[Mode to process payments]]></string>
+    <string name="_bx_payment_cbee_mode_live"><![CDATA[live]]></string>
+    <string name="_bx_payment_cbee_mode_test"><![CDATA[test]]></string>
+    <string name="_bx_payment_cbee_live_site_cpt"><![CDATA[Site (live)]]></string>
+    <string name="_bx_payment_cbee_live_site_dsc"><![CDATA[Your site name registered in Chargebee for 'live' mode]]></string>
+    <string name="_bx_payment_cbee_live_api_key_cpt"><![CDATA[API Key (live)]]></string>
+    <string name="_bx_payment_cbee_live_api_key_dsc"><![CDATA[Your Chargebee API Access key for 'live' mode]]></string>
+    <string name="_bx_payment_cbee_test_site_cpt"><![CDATA[Site (test)]]></string>
+    <string name="_bx_payment_cbee_test_site_dsc"><![CDATA[Your site name registered in Chargebee for 'test' mode]]></string>
+    <string name="_bx_payment_cbee_test_api_key_cpt"><![CDATA[API Key (test)]]></string>
+    <string name="_bx_payment_cbee_test_api_key_dsc"><![CDATA[Your Chargebee API Access key for 'test' mode]]></string>
+    <string name="_bx_payment_cbee_check_amount_cpt"><![CDATA[Enable amount checking]]></string>
+    <string name="_bx_payment_cbee_check_amount_dsc"><![CDATA[Enable amount checking for Chargebee Webhooks (recomended). However checking should be disabled when discounts and coupons are used.]]></string>
+    <string name="_bx_payment_cbee_ssl_cpt"><![CDATA[Enable SSL]]></string>
+    <string name="_bx_payment_cbee_ssl_dsc"><![CDATA[Enable SSL connection to communicate with Chargebee. Note. URLs below will be updated after saving.]]></string>
+    <string name="_bx_payment_cbee_cancellation_email_cpt"><![CDATA[Cancellation Email]]></string>
+    <string name="_bx_payment_cbee_expiration_email_cpt"><![CDATA[Expiration Email]]></string>
+    <string name="_bx_payment_cbee_return_data_url_cpt"><![CDATA[Data return URL]]></string>
+    <string name="_bx_payment_cbee_notify_url_cpt"><![CDATA[Webhooks URL]]></string>
+    <string name="_bx_payment_cbee_msg_charged"><![CDATA[Payment was successfully processed.]]></string>
+    <string name="_bx_payment_cbee_msg_subscribed"><![CDATA[Thank you! Subscription created. Please, check your email for further instructions.]]></string>
+    <string name="_bx_payment_cbee_txt_checkout_with_single"><![CDATA[Checkout with {0}]]></string>
+    <string name="_bx_payment_cbee_txt_checkout_with_recurring"><![CDATA[Checkout with {0}]]></string>
+    <string name="_bx_payment_cbee_menu_item_title_manager"><![CDATA[Self-serve Portal]]></string>
+    <string name="_bx_payment_txt_name_chargebee"><![CDATA[Chargebee]]></string>
+    <string name="_bx_payment_txt_name_chargebee_v3"><![CDATA[Chargebee]]></string>
+    <string name="_bx_payment_txt_cart_chargebee"><![CDATA[Chargebee]]></string>
+    <string name="_bx_payment_txt_cart_chargebee_v3"><![CDATA[Chargebee]]></string>
+
+    <!-- Stripe payment provider -->
+    <string name="_bx_payment_strp_cpt"><![CDATA[Stripe]]></string>
+    <string name="_bx_payment_strp_dsc"><![CDATA[Stripe payment provider]]></string>
+    <string name="_bx_payment_strp_v3_cpt"><![CDATA[Stripe]]></string>
+    <string name="_bx_payment_strp_v3_dsc"><![CDATA[Stripe payment provider with 3D Secure authentication for Strong Customer Authentication (SCA) support. Note, it doesn't allow to use recurring payments with trial period.]]></string>
+    <string name="_bx_payment_strp_active_cpt"><![CDATA[Active]]></string>
+    <string name="_bx_payment_strp_active_dsc"><![CDATA[Activate(Deactivate) provider. Note. It's recommended to use SSL for better payment processing.]]></string>
+    <string name="_bx_payment_strp_hidden_cpt"><![CDATA[Hidden]]></string>
+    <string name="_bx_payment_strp_hidden_dsc"><![CDATA[Hide provider if you don't want to accept new payments but already have active subscriptions.]]></string>
+    <string name="_bx_payment_strp_mode_cpt"><![CDATA[Mode]]></string>
+    <string name="_bx_payment_strp_mode_dsc"><![CDATA[Mode to process payments]]></string>
+    <string name="_bx_payment_strp_mode_live"><![CDATA[live]]></string>
+    <string name="_bx_payment_strp_mode_test"><![CDATA[test]]></string>
+    <string name="_bx_payment_strp_live_pub_key_cpt"><![CDATA[Public Key (live)]]></string>
+    <string name="_bx_payment_strp_live_pub_key_dsc"><![CDATA[Your Public Key generated in Stripe for 'live' mode]]></string>
+    <string name="_bx_payment_strp_live_sec_key_cpt"><![CDATA[Secret Key (live)]]></string>
+    <string name="_bx_payment_strp_live_sec_key_dsc"><![CDATA[Your Stripe Secret Key for 'live' mode]]></string>
+    <string name="_bx_payment_strp_test_pub_key_cpt"><![CDATA[Public Key (test)]]></string>
+    <string name="_bx_payment_strp_test_pub_key_dsc"><![CDATA[Your Public Key generated in Stripe for 'test' mode]]></string>
+    <string name="_bx_payment_strp_test_sec_key_cpt"><![CDATA[Secret Key (test)]]></string>
+    <string name="_bx_payment_strp_test_sec_key_dsc"><![CDATA[Your Stripe Secret Key for 'test' mode]]></string>
+    <string name="_bx_payment_strp_check_amount_cpt"><![CDATA[Enable amount checking]]></string>
+    <string name="_bx_payment_strp_check_amount_dsc"><![CDATA[Enable amount checking for Stripe Webhooks (recomended). However checking should be disabled when discounts and coupons are used.]]></string>
+    <string name="_bx_payment_strp_ssl_cpt"><![CDATA[Enable SSL]]></string>
+    <string name="_bx_payment_strp_ssl_dsc"><![CDATA[Enable SSL connection to communicate with Stripe. Note. URLs below will be updated after saving.]]></string>
+    <string name="_bx_payment_strp_notify_url_cpt"><![CDATA[Webhooks URL]]></string>
+    <string name="_bx_payment_strp_cancellation_email_cpt"><![CDATA[Cancellation Email]]></string>
+    <string name="_bx_payment_strp_expiration_email_cpt"><![CDATA[Expiration Email]]></string>
+    <string name="_bx_payment_strp_msg_authorized"><![CDATA[The order was successfully authorized.]]></string>
+    <string name="_bx_payment_strp_msg_charged"><![CDATA[Payment was successfully processed.]]></string>
+    <string name="_bx_payment_strp_msg_subscribed"><![CDATA[Thank you! Subscription created. Please, check your email for further instructions.]]></string>
+    <string name="_bx_payment_strp_msg_details_changed"><![CDATA[Subscription details were changed.]]></string>
+    <string name="_bx_payment_strp_err_details_changed"><![CDATA[Cannot change subscription details. Recheck provided data and try again.]]></string>
+    <string name="_bx_payment_strp_msg_billing_changed"><![CDATA[Billing information was changed.]]></string>
+    <string name="_bx_payment_strp_err_billing_changed"><![CDATA[Cannot change billing information. Recheck provided data and try again.]]></string>
+    <string name="_bx_payment_strp_txt_checkout_with_single"><![CDATA[Checkout with {0}]]></string>
+    <string name="_bx_payment_strp_txt_checkout_with_recurring"><![CDATA[Checkout with {0}]]></string>
+    <string name="_bx_payment_strp_menu_item_title_details"><![CDATA[Details]]></string>
+    <string name="_bx_payment_strp_menu_item_title_details_change"><![CDATA[Change Details]]></string>
+    <string name="_bx_payment_strp_menu_item_title_billing"><![CDATA[Billing Info]]></string>
+    <string name="_bx_payment_strp_menu_item_title_billing_change"><![CDATA[Change Billing Info]]></string>
+    <string name="_bx_payment_strp_txt_plan"><![CDATA[Plan]]></string>
+    <string name="_bx_payment_strp_txt_cost"><![CDATA[Cost]]></string>
+    <string name="_bx_payment_strp_txt_cost_mask"><![CDATA[{0} {1} / {2}]]></string>
+    <string name="_bx_payment_strp_txt_status"><![CDATA[Status]]></string>
+    <string name="_bx_payment_strp_txt_created"><![CDATA[Created]]></string>
+    <string name="_bx_payment_strp_txt_started"><![CDATA[Started]]></string>
+    <string name="_bx_payment_strp_txt_trial_start"><![CDATA[Trial start]]></string>
+    <string name="_bx_payment_strp_txt_trial_end"><![CDATA[Trial end]]></string>
+    <string name="_bx_payment_strp_txt_cperiod_start"><![CDATA[Current period start]]></string>
+    <string name="_bx_payment_strp_txt_cperiod_end"><![CDATA[Current period end]]></string>
+    <string name="_bx_payment_strp_txt_card_brand"><![CDATA[Brand]]></string>
+    <string name="_bx_payment_strp_txt_card_origin"><![CDATA[Origin]]></string>
+    <string name="_bx_payment_strp_txt_card_type"><![CDATA[Type]]></string>
+    <string name="_bx_payment_strp_txt_card_number"><![CDATA[Number]]></string>
+    <string name="_bx_payment_strp_txt_card_number_mask"><![CDATA[....{0}]]></string>
+    <string name="_bx_payment_strp_txt_card_expires"><![CDATA[Expires]]></string>
+    <string name="_bx_payment_strp_txt_card_expires_mask"><![CDATA[{0} / {1}]]></string>
+    <string name="_bx_payment_strp_txt_card_cvc"><![CDATA[CVC check]]></string>
+    <string name="_bx_payment_strp_txt_card_cvc_passed"><![CDATA[passed]]></string>
+
+    <string name="_bx_payment_form_strp_details"><![CDATA[Stripe: Details Form]]></string>
+    <string name="_bx_payment_form_strp_details_display_edit"><![CDATA[Stripe: Edit Details Display]]></string>
+    <string name="_bx_payment_form_strp_details_input_item_id_sys"><![CDATA[Plan]]></string>
+    <string name="_bx_payment_form_strp_details_input_item_id"><![CDATA[Plan]]></string>
+    <string name="_bx_payment_form_strp_details_input_item_id_err"><![CDATA[You need to select some plan here]]></string>
+    <string name="_bx_payment_form_strp_details_input_submit_sys"><![CDATA[Submit]]></string>
+    <string name="_bx_payment_form_strp_details_input_submit"><![CDATA[Submit]]></string>
+    <string name="_bx_payment_form_strp_details_input_cancel_sys"><![CDATA[Cancel]]></string>
+    <string name="_bx_payment_form_strp_details_input_cancel"><![CDATA[Cancel]]></string>
+
+    <string name="_bx_payment_form_strp_card"><![CDATA[Stripe: Card Form]]></string>
+    <string name="_bx_payment_form_strp_card_display_add"><![CDATA[Stripe: Add Card Display]]></string>
+    <string name="_bx_payment_form_strp_card_input_card_number_sys"><![CDATA[Card Number]]></string>
+    <string name="_bx_payment_form_strp_card_input_card_number"><![CDATA[Card Number]]></string>
+    <string name="_bx_payment_form_strp_card_input_card_number_inf"><![CDATA[16 digits without spaces describing your card number]]></string>
+    <string name="_bx_payment_form_strp_card_input_card_number_err"><![CDATA[You need to enter card number here]]></string>
+    <string name="_bx_payment_form_strp_card_input_card_expire_sys"><![CDATA[Expiry Date]]></string>
+    <string name="_bx_payment_form_strp_card_input_card_expire"><![CDATA[Expiry Date]]></string>
+    <string name="_bx_payment_form_strp_card_input_card_expire_month"><![CDATA[Month]]></string>
+    <string name="_bx_payment_form_strp_card_input_card_expire_year"><![CDATA[Year]]></string>
+    <string name="_bx_payment_form_strp_card_input_card_expire_inf"><![CDATA[Use 'mm yyyy' format]]></string>
+    <string name="_bx_payment_form_strp_card_input_card_expire_err"><![CDATA[You need to enter expiry date in specified format here]]></string>
+    <string name="_bx_payment_form_strp_card_input_card_cvv_sys"><![CDATA[CVV]]></string>
+    <string name="_bx_payment_form_strp_card_input_card_cvv"><![CDATA[CVV]]></string>
+    <string name="_bx_payment_form_strp_card_input_card_cvv_inf"><![CDATA[Three digits from the back side of your card.]]></string>
+    <string name="_bx_payment_form_strp_card_input_card_cvv_err"><![CDATA[You need to enter card CVV here]]></string>
+    <string name="_bx_payment_form_strp_card_input_submit_sys"><![CDATA[Submit]]></string>
+    <string name="_bx_payment_form_strp_card_input_submit"><![CDATA[Submit]]></string>
+    <string name="_bx_payment_form_strp_card_input_cancel_sys"><![CDATA[Cancel]]></string>
+    <string name="_bx_payment_form_strp_card_input_cancel"><![CDATA[Cancel]]></string>
+
+    <string name="_bx_payment_txt_name_stripe"><![CDATA[Stripe]]></string>
+    <string name="_bx_payment_txt_cart_stripe"><![CDATA[Stripe]]></string>
+    <string name="_bx_payment_txt_name_stripe_v3"><![CDATA[Stripe]]></string>
+    <string name="_bx_payment_txt_cart_stripe_v3"><![CDATA[Stripe]]></string>
+
+    <!-- Stripe Connect payment provider -->
+    <string name="_bx_payment_strp_cnnt_cpt"><![CDATA[Stripe Connect]]></string>
+    <string name="_bx_payment_strp_cnnt_dsc"><![CDATA[Payment provider which is working in pairs with Stripe Connect app.]]></string>
+    <string name="_bx_payment_strp_cnnt_active_dsc"><![CDATA[Activate(Deactivate) provider.]]></string>
+    <string name="_bx_payment_strp_cnnt_connect_cpt"><![CDATA[Connected account]]></string>
+    <string name="_bx_payment_strp_cnnt_live_account_id_cpt"><![CDATA[Account ID (live)]]></string>
+    <string name="_bx_payment_strp_cnnt_test_account_id_cpt"><![CDATA[Account ID (test)]]></string>   
+
+    <!-- _bx_payment_aina_mode_live payment provider -->
+    <string name="_bx_payment_aina_cpt"><![CDATA[Apple In-App]]></string>
+    <string name="_bx_payment_aina_dsc"><![CDATA[Apple In-App payment provider]]></string>
+    <string name="_bx_payment_aina_active_cpt"><![CDATA[Active]]></string>
+    <string name="_bx_payment_aina_active_dsc"><![CDATA[Activate(Deactivate) provider.]]></string>
+    <string name="_bx_payment_aina_hidden_cpt"><![CDATA[Hidden]]></string>
+    <string name="_bx_payment_aina_hidden_dsc"><![CDATA[Recommended. The provider should be hidden in WEB because it can be used in mobile app only.]]></string>
+    <string name="_bx_payment_aina_secret_cpt"><![CDATA[Shared Secret]]></string>
+    <string name="_bx_payment_aina_secret_dsc"><![CDATA[It's the app-specific unique code to receive receipts for auto-renewable subscriptions.]]></string>
+    <string name="_bx_payment_aina_notify_url_cpt"><![CDATA[URL for App Store Server Notifications]]></string>
+    <string name="_bx_payment_aina_menu_item_title_cancel"><![CDATA[Cancel]]></string>
+    <string name="_bx_payment_aina_msg_charged"><![CDATA[Payment was successfully processed.]]></string>
+    <string name="_bx_payment_aina_msg_subscribed"><![CDATA[Thank you! Subscription created. Please, check your email for further instructions.]]></string>
+    <string name="_bx_payment_txt_name_apple_in_app"><![CDATA[Apple In-App]]></string>
+    <string name="_bx_payment_txt_cart_apple_in_app"><![CDATA[Apple In-App]]></string>
+    <string name="_bx_payment_queue_pending"><![CDATA[Pending payments]]></string>
+</resources>
