@@ -38,6 +38,7 @@ class BxTasksMenuViewContext extends BxBaseModTextMenuView
         $bResult = true;
         switch ($a['name']) {
             case 'tasks-context-time-administration':
+            case 'tasks-context-budget-administration':
             case 'tasks-context-values':
                 $bResult = $this->_oModule->isAllowManageByContext($this->_iContextId);
                 break;

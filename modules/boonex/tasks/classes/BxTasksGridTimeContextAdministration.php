@@ -41,7 +41,33 @@ class BxTasksGridTimeContextAdministration extends BxTasksGridTime
 
     public function getFormCallBackUrlAPI($sAction, $iId = 0)
     {
-         return '/api.php?r=system/perfom_action_api/TemplServiceGrid/&params[]=&o=' . $this->_sObject . '&a=' . $sAction . '&context_pid=' . $this->_iContextPid . '&id=' . $iId;
+        return '/api.php?r=system/perfom_action_api/TemplServiceGrid/&params[]=&o=' . $this->_sObject . '&a=' . $sAction . '&context_pid=' . $this->_iContextPid . '&id=' . $iId;
+    }
+
+    public function performActionCalculate()
+    {
+        if($this->_isAdministration() && !$this->_isAllowedByConext())
+            return $this->_getActionResult([]);
+
+        return parent::performActionCalculate();
+    }
+
+    public function getCode ($isDisplayHeader = true)
+    {
+        if($this->_isAdministration() && !$this->_isAllowedByConext())
+            return $this->_getActionResult([]);
+
+        return parent::getCode($isDisplayHeader);
+    }
+
+    protected function _isAllowedByConext($iContextPid = 0)
+    {
+        if(!$iContextPid)
+            $iContextPid = $this->_iContextPid;
+        if(!$iContextPid)
+            return false;
+
+        return $this->_oModule->isAllowManageByContext($this->_iContextPid);
     }
 
     protected function _getFilterControls()
