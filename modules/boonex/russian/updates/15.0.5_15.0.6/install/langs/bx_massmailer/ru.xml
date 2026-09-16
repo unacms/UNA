@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="ru" flag="ru" title="Russian">
+	<string_add name="_bx_massmailer_form_campaign_input_campaign_info"><![CDATA[Информация]]></string_add>
+	<string_upd name="_bx_massmailer_grid_action_title_adm_view"><![CDATA[Смотреть]]></string_upd>
+</resources>
