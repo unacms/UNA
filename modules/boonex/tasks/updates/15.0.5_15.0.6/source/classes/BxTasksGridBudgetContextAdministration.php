@@ -60,6 +60,9 @@ class BxTasksGridBudgetContextAdministration extends BxBaseModGeneralGrid
     
     public function performActionAdd()
     {
+        if(!$this->_isAllowedByConext())
+            return $this->_getActionResult([]);
+
         $sAction = 'add';
 
         $oForm = $this->_getFormObject($sAction);
@@ -96,6 +99,9 @@ class BxTasksGridBudgetContextAdministration extends BxBaseModGeneralGrid
 
     public function performActionEdit()
     {
+        if(!$this->_isAllowedByConext())
+            return $this->_getActionResult([]);
+
         $sAction = 'edit';
 
         $iTrackId = $this->_getId();
@@ -125,6 +131,32 @@ class BxTasksGridBudgetContextAdministration extends BxBaseModGeneralGrid
         ]));
 
         return echoJson(['popup' => ['html' => $sContent, 'options' => ['closeOnOuterClick' => false]]]);
+    }
+
+    public function performActionDelete()
+    {
+        if(!$this->_isAllowedByConext())
+            return $this->_getActionResult([]);
+
+        return parent::performActionDelete();
+    }
+
+    public function getCode ($isDisplayHeader = true)
+    {
+        if(!$this->_isAllowedByConext())
+            return $this->_getActionResult([]);
+
+        return parent::getCode($isDisplayHeader);
+    }
+
+    protected function _isAllowedByConext($iContextPid = 0)
+    {
+        if(!$iContextPid)
+            $iContextPid = $this->_iContextPid;
+        if(!$iContextPid)
+            return false;
+
+        return $this->_oModule->isAllowManageByContext($this->_iContextPid);
     }
 
     protected function _delete ($mixedId)

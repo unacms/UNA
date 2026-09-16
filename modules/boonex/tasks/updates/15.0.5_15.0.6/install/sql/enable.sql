@@ -47,6 +47,8 @@ UPDATE `sys_objects_privacy` SET `default_group`='', `override_class_name`='BxTa
 
 
 -- GRIDS
+UPDATE `sys_objects_grid` SET `visible_for_levels`='2147483647' WHERE `object`='bx_tasks_time_context_administration';
+
 DELETE FROM `sys_objects_grid` WHERE `object`='bx_tasks_budget_context_administration';
 INSERT INTO `sys_objects_grid` (`object`, `source_type`, `source`, `table`, `field_id`, `field_order`, `field_active`, `paginate_url`, `paginate_per_page`, `paginate_simple`, `paginate_get_start`, `paginate_get_per_page`, `filter_fields`, `filter_fields_translatable`, `filter_mode`, `sorting_fields`, `sorting_fields_translatable`, `visible_for_levels`, `override_class_name`, `override_class_file`) VALUES
 ('bx_tasks_budget_context_administration', 'Sql', 'SELECT * FROM `bx_tasks_budget_track` WHERE 1 ', 'bx_tasks_budget_track', 'id', '', '', '', 50, NULL, 'start', '', 'tbt`.`text,tt`.`title,tt`.`text', '', 'like', 'date', '', 2147483647, 'BxTasksGridBudgetContextAdministration', 'modules/boonex/tasks/classes/BxTasksGridBudgetContextAdministration.php');

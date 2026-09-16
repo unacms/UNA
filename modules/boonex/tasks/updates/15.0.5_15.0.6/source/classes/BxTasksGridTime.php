@@ -157,7 +157,7 @@ class BxTasksGridTime extends BxBaseModGeneralGrid
     protected function _getActionDelete($sType, $sKey, $a, $isSmall = false, $isDisabled = false, $aRow = [])
     {
         if($this->_isAdministration())
-            $isDisabled = true;
+            return '';
 
         return parent::_getActionDelete($sType, $sKey, $a, $isSmall, $isDisabled, $aRow);
     }

@@ -785,6 +785,9 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
 
         $bContextPid = !empty($iContextPid);
 
+        if($sType == 'administration' && (($bContextPid && !$this->isAllowManageByContext($iContextPid)) || (!$bContextPid && !($this->_isModerator() || $this->_isAdministrator()))))
+            return ($sMsg = _t('_sys_txt_access_denied')) && $this->_bIsApi ? [bx_api_get_msg($sMsg)] : MsgBox($sMsg);
+
         $sGrid = $CNF['OBJECT_GRID_TIME_' . ($bContextPid ? 'CONTEXT_' : '') . strtoupper($sType)];
         $oGrid = BxDolGrid::getObjectInstance($sGrid);
         if(!$oGrid)
@@ -832,6 +835,9 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
         if(!$bContextPid)
             return $this->_bIsApi ? [] : '';
 
+        if($sType == 'administration' && (($bContextPid && !$this->isAllowManageByContext($iContextPid)) || (!$bContextPid && !($this->_isModerator() || $this->_isAdministrator()))))
+            return ($sMsg = _t('_sys_txt_access_denied')) && $this->_bIsApi ? [bx_api_get_msg($sMsg)] : MsgBox($sMsg);
+
         $sGrid = $CNF['OBJECT_GRID_BUDGET_' . ($bContextPid ? 'CONTEXT_' : '') . strtoupper($sType)];
         $oGrid = BxDolGrid::getObjectInstance($sGrid);
         if(!$oGrid)
@@ -864,6 +870,9 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
 
     public function serviceGetBlockBudget($iContextPid = 0)
     {
+        if(!$iContextPid || !$this->isAllowManageByContext($iContextPid))
+            return $this->_bIsApi ? [] : '';
+
         $aBudget = $this->_oDb->getBudget(['sample'=> 'context_id', 'context_id' => $iContextPid]);
         if(!$aBudget || !is_array($aBudget))
             return $this->_bIsApi ? [] : MsgBox(_t('_Empty'));
