@@ -137,6 +137,7 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
             'GetBlockAiAgentOperator' => 'BxBaseServices',
             'GetAiChatThreads' => 'BxBaseServices',
             'GetAiChatThread' => 'BxBaseServices',
+            'GetMockupBlock' => 'BxBaseServices',
         );
     }
 
@@ -1985,6 +1986,34 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
     public function serviceGetAiChatThread($iAgentId, $sThreadId = '')
     {
         return BxDolAiTrigger::getInstance('chat')->getThread($iAgentId, $sThreadId);
+    }
+
+    /**
+     * Agent-written NEO mockup block (Studio: system / get_mockup_block / TemplServices).
+     * The tree is written by the `mockup_upsert` tool into sys_pages_blocks_data for this block;
+     * BxBasePage::_getBlockService passes the block id as the only param.
+     * @param int $iBlockId sys_pages_blocks.id
+     * @return array API block of type `mockup`
+     */
+    public function serviceGetMockupBlock($iBlockId = 0)
+    {
+        $aTree = BxDolAIToolMockup::getTree((int)$iBlockId);
+
+        if (!$aTree) {
+            $aTree = [
+                'type' => 'view',
+                'className' => 'gap-4 w-full',
+                'children' => [
+                    [
+                        'type' => 'text',
+                        'className' => 'text-muted-foreground',
+                        'text' => 'No mockup yet. Ask the mockup agent to generate one for this page.',
+                    ],
+                ],
+            ];
+        }
+
+        return [bx_api_get_block('mockup', $aTree)];
     }
 }
 
