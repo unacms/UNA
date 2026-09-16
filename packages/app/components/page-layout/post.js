@@ -47,6 +47,41 @@ const getCommentsData = (data, blocks) => {
     return DataByName(data, blocks?.comments);
 };
 
+/**
+ * The post layout already mounts CommentsBrowse + CommentsForm from
+ * `getCommentsData`. Jobs (and similar) still put that same reviews/comments
+ * block in `cell_center`, so it would also land in `aItems` and remount a
+ * second composer. Drop only that owned block — leave center-only comments
+ * alone when the page has no comments data of its own.
+ */
+function blockSource(item) {
+    return item?.name || item?.block?.name;
+}
+
+function findBlockBySource(data, source) {
+    if (!source || !data?.elements) return null;
+    for (const cell of Object.values(data.elements)) {
+        const entries = Array.isArray(cell) ? cell : Object.values(cell || {});
+        for (const el of entries) {
+            if (el?.source === source) return el;
+        }
+    }
+    return null;
+}
+
+function blockHasContentType(item, data, type) {
+    const el = findBlockBySource(data, blockSource(item));
+    return Array.isArray(el?.content) && el.content.some((c) => c?.type === type);
+}
+
+function isOwnedCommentsThreadItem(item, data, commentsData, commentsName) {
+    const source = blockSource(item);
+    if (!source) return false;
+    if (commentsData?.source && source === commentsData.source) return true;
+    if (commentsName && source === commentsName) return true;
+    return blockHasContentType(item, data, 'comments');
+}
+
 const defineCells = (blocks, data) => {
     if (data?.layout_parsed) {
         const elements = data.elements || {};
@@ -186,12 +221,53 @@ export default function PageLayout({ data, blocks, isModal = false, url, pageCla
 
     const { leftBarBlocks, sideBarBlocks, centerBlocks } = defineCells(blocks, data);
 
-    const mainBlocks = isDesktop && !isModal ? centerBlocks : [...centerBlocks, ...sideBarBlocks, ...leftBarBlocks]
+    // Desktop page keeps INFO in the right column. When that column folds
+    // (mobile, or the post modal) those blocks used to append after the body.
+    // Lift `entity_info` into the text block, between title and description.
+    const foldSidebars = !(isDesktop && !isModal);
+    const foldedSideBlocks = foldSidebars ? [...sideBarBlocks, ...leftBarBlocks] : [];
+    const infoBlocks = foldedSideBlocks.filter((item) => blockHasContentType(item, data, 'entity_info'));
+    const otherFoldedBlocks = foldedSideBlocks.filter((item) => !blockHasContentType(item, data, 'entity_info'));
+    const hasTextBlock = centerBlocks.some((item) => blockHasContentType(item, data, 'entity_text'));
+    const afterTitle = foldSidebars && hasTextBlock && infoBlocks.length > 0
+        ? (
+            <View className="py-3">
+                {infoBlocks.map((value) => (
+                    <BlockByName
+                        key={value.name}
+                        isModal={isModal}
+                        data={data}
+                        name={value}
+                        contentOnly
+                    />
+                ))}
+            </View>
+        )
+        : null;
 
-    const aItems = useMemo(() => mainBlocks.map((value, index) => ({
+    const mainBlocks = foldSidebars
+        ? [...centerBlocks, ...(hasTextBlock ? [] : infoBlocks), ...otherFoldedBlocks]
+        : centerBlocks;
+    const ownsPageComments = !!(commentsBrowse || commentsForm);
+    const commentsBlockName = blocks?.comments?.name;
+    const threadBlocks = ownsPageComments
+        ? mainBlocks.filter((item) => !isOwnedCommentsThreadItem(item, data, commentsData, commentsBlockName))
+        : mainBlocks;
+
+    const aItems = useMemo(() => threadBlocks.map((value, index) => ({
         id: `block_${value.name}`,
-        data: <View className={'px-4 py-2.5 ' + (index != 0 ? 'pt-0' : 'sm:pb-3 sm:pt-4') }><BlockByName isModal={isModal} data={data} name={value} contentOnly={true} /></View>
-    })), [blocks, data, isDesktop]);
+        data: (
+            <View className={'px-4 py-2.5 ' + (index != 0 ? 'pt-0' : 'sm:pb-3 sm:pt-4')}>
+                <BlockByName
+                    isModal={isModal}
+                    data={data}
+                    name={value}
+                    contentOnly={true}
+                    afterTitle={blockHasContentType(value, data, 'entity_text') ? afterTitle : undefined}
+                />
+            </View>
+        )
+    })), [threadBlocks, data, isModal, afterTitle]);
 
     const isRightCol = sideBarBlocks.length > 0 && isDesktop
     const isLeftCol = leftBarBlocks.length > 0 && isDesktop

@@ -39,8 +39,8 @@ export function OperatorAgentFloat() {
     const enabled = appSetting('ai', 'operator_agent')?.enabled !== false;
     const isOperator = enabled && !!currentUser?.operator;
 
-    const toggle = useCallback(() => {
-        setOpen((prev) => !prev);
+    const openChat = useCallback(() => {
+        setOpen(true);
         setMounted(true);
     }, []);
 
@@ -83,26 +83,13 @@ export function OperatorAgentFloat() {
                 <View
                     pointerEvents={open ? 'auto' : 'none'}
                     className={cn(
-                        'mb-3 overflow-hidden rounded-2xl bg-card/80 backdrop-blur-xl border border-border/60 shadow-card-outline dark:shadow-card-outline-deep',
+                        'overflow-hidden rounded-2xl bg-card/80 backdrop-blur-xl shadow-card-outline dark:shadow-card-outline-deep',
                         open ? '' : 'hidden'
                     )}
                     style={{ width: panelWidth, height: panelHeight }}
                     accessibilityViewIsModal={open}
                 >
-                    <Row className="items-center justify-between px-3 py-2 border-b border-border/60">
-                        <Text className="text-sm font-semibold text-card-foreground">
-                            {t('operator_agent_title')}
-                        </Text>
-                        <NeoButton
-                            style="borderless"
-                            borderShape="circle"
-                            controlSize="mini"
-                            image="X"
-                            accessibilityLabel={t('operator_agent_close')}
-                            onPress={close}
-                        />
-                    </Row>
-                    <View className="flex-1 min-h-0 px-3 pb-3">
+                    <View className="flex-1 min-h-0">
                         {data ? (
                             <AiAgent
                                 key={`${agentId}:${contextProfileId}`}
@@ -113,19 +100,61 @@ export function OperatorAgentFloat() {
                                 // The panel is ~384px wide whatever the viewport is, so
                                 // the "Chats" list can only ever overlay the transcript.
                                 historyLayout="overlay"
+                                fadeSurface="card"
+                                header={({ onToggleHistory, onStartAgain }) => (
+                                    <Row className="items-center justify-between px-3 py-2 border-b border-border/60">
+                                        <Text className="text-sm font-semibold text-card-foreground">
+                                            {t('operator_agent_title')}
+                                        </Text>
+                                        <Row className="items-center">
+                                            {onToggleHistory ? (
+                                                <NeoButton
+                                                    style="borderless"
+                                                    borderShape="circle"
+                                                    controlSize="small"
+                                                    image="History"
+                                                    accessibilityLabel={t('agent_chats')}
+                                                    onPress={onToggleHistory}
+                                                />
+                                            ) : null}
+                                            {onStartAgain ? (
+                                                <NeoButton
+                                                    style="borderless"
+                                                    borderShape="circle"
+                                                    controlSize="small"
+                                                    image="RefreshCw"
+                                                    tooltip={t('Start new')}
+                                                    tooltipSide="bottom"
+                                                    accessibilityLabel={t('Start new')}
+                                                    onPress={onStartAgain}
+                                                />
+                                            ) : null}
+                                            <NeoButton
+                                                style="borderless"
+                                                borderShape="circle"
+                                                controlSize="small"
+                                                image="X"
+                                                accessibilityLabel={t('operator_agent_close')}
+                                                onPress={close}
+                                            />
+                                        </Row>
+                                    </Row>
+                                )}
                             />
                         ) : null}
                     </View>
                 </View>
             ) : null}
-            <NeoButton
-                style="glassProminent"
-                borderShape="circle"
-                controlSize="large"
-                image={open ? 'X' : 'Sparkles'}
-                accessibilityLabel={open ? t('operator_agent_close') : t('operator_agent_open')}
-                onPress={toggle}
-            />
+            {open ? null : (
+                <NeoButton
+                    style="glassProminent"
+                    borderShape="circle"
+                    controlSize="large"
+                    image="Sparkles"
+                    accessibilityLabel={t('operator_agent_open')}
+                    onPress={openChat}
+                />
+            )}
         </View>
     );
 }

@@ -24,6 +24,28 @@ const EDITABLE_VALUE_BUTTON = {
 
 const TASKS_HOME_PATH = '/tasks-home'
 
+/** UNA price fields arrive as `{ value, currency }` (see form-fields/price.js). */
+function isPriceObject(value) {
+    return (
+        value != null &&
+        typeof value === 'object' &&
+        !Array.isArray(value) &&
+        'value' in value &&
+        'currency' in value
+    )
+}
+
+function formatPriceLabel(value, valueCurrency) {
+    if (isPriceObject(value)) {
+        const amount = value.value
+        const currency = value.currency || valueCurrency || ''
+        if (amount == null || amount === '') return ''
+        return currency ? `${amount} ${currency}` : String(amount)
+    }
+    if (value == null || value === '') return ''
+    return valueCurrency ? `${value} ${valueCurrency}` : String(value)
+}
+
 function tasksHomeHref(contextPid, listId) {
     if (contextPid == null || contextPid === '') return null
     const list = listId == null || listId === '' ? 0 : listId
@@ -575,6 +597,11 @@ export default function ElementEntityInfo({ data, blockWrapperProps }) {
             case 'switcher':
                 return <ReadonlyValue label={a.value == 1 ? 'Yes' : 'No'} />
 
+            case 'price': {
+                const label = formatPriceLabel(a.value, a.value_currency)
+                return label ? <ReadonlyValue label={label} /> : false
+            }
+
             default:
                 if (a.name == "profile_last_active") {
                     if (isNaN(a.value)) {
@@ -596,6 +623,11 @@ export default function ElementEntityInfo({ data, blockWrapperProps }) {
                             </Text>
                         </ReadonlyValue>
                     )
+                }
+
+                if (isPriceObject(a.value)) {
+                    const label = formatPriceLabel(a.value, a.value_currency)
+                    return label ? <ReadonlyValue label={label} /> : false
                 }
 
                 return <ReadonlyValue label={a.value} />

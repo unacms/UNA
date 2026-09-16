@@ -10,9 +10,11 @@ import { BlockWrapper } from 'app/components/block-wrapper'
 import { useTranslation } from 'react-i18next'
 
 const AttachmentContainer = ({ children }) => (
-    <View className='p-1 w-1/4'>
-        <View className="aspect-video rounded-lg overflow-hidden border border-border/60  items-center justify-center">
-            {children}
+    <View className="p-1 w-1/4">
+        <View className="aspect-video rounded-lg shadow-btn-outline dark:shadow-btn-outline-deep items-center justify-center">
+            <View className="h-full w-full overflow-hidden rounded-lg">
+                {children}
+            </View>
         </View>
     </View>
 );
@@ -73,7 +75,7 @@ export default function ElementEntityAttachments({ data, blockWrapperProps }) {
                     {showImage && showImage[1] == 'video' && <Video className="w-full h-full" src={showImage[0]}  ></Video>}
                 </View>
             </Modal>
-            <Row className="relative flex-wrap lg:p-4 p-2 sm:my-0 bg-card  w-full mx-auto max-w-4xl">
+            <Row className="relative flex-wrap w-full mx-auto max-w-4xl">
                 {aImages}
             </Row>
         </BlockWrapper>
