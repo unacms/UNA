@@ -53,12 +53,15 @@ export const settingsInputs = {
         select: ' pr-10 bg-input/50 shadow-input-outline dark:shadow-input-outline-deep web:focus:bg-card flex-auto text-base leading-6 overflow-hidden placeholder:text-muted-foreground text-card-foreground web:duration-300 ',
 
         // Adaptive / floating eyebrow labels (`forms.adaptive_labels`)
-        // Vertical position is Animated (center → top edge) — see AdaptiveLabel in _field.js.
-        // Tune horizontal inset / chip / type here; use *_offset (px) for vertical nudge.
-        adaptive_label: 'ml-3 self-start',
-        adaptive_label_floated: 'bg-accent px-1.5 border border-ring/20 rounded-md',
-        adaptive_label_text_resting: 'text-base text-muted-foreground',
-        adaptive_label_text_floated: 'text-xs leading-4 text-accent-foreground',
+        // Chip owns height; web `[&_label]` kills the inherited line-height strut
+        // on FieldCaption's <label class="block"> so the span can flex-center.
+        // Do not put h-* on the text — web Text is a <span>, height is ignored.
+        adaptive_label:
+            'ml-3 self-start web:[&_label]:flex web:[&_label]:items-center web:[&_label]:leading-none',
+        adaptive_label_floated:
+            'bg-accent px-1.5 h-5 rounded-md justify-center web:[&_label]:h-full',
+        adaptive_label_text_resting: 'text-base leading-none text-muted-foreground',
+        adaptive_label_text_floated: 'text-xs leading-none text-accent-foreground',
         adaptive_label_resting_offset: 0,
         adaptive_label_floated_offset: -1.5,
         adaptive_label_duration: 100,

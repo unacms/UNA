@@ -6,7 +6,7 @@ import { useMemo } from 'react';
 import { useResolveClassNames } from 'uniwind';
 import { SvgXml } from 'react-native-svg';
 
-export function IconFromSet({ icon, width, height, size, _strokeWidth, color, cleanedClassName, rest }) {
+export function IconFromSet({ icon, width, height, size, _strokeWidth, color, cleanedClassName, rest, fill }) {
     const { colors } = useTheme();
     const resolvedClassStyle = useResolveClassNames(cleanedClassName || '');
     const { color: classColor, width: classWidth, height: classHeight, ...styleFromClassName } = resolvedClassStyle || {};
@@ -30,6 +30,7 @@ export function IconFromSet({ icon, width, height, size, _strokeWidth, color, cl
             height={resolvedHeight || classHeight}
             size={resolvedSize}
             strokeWidth={_strokeWidth}
+            fill={fill}
             style={[styleFromClassName, restStyle].filter(Boolean)}
             {...restWithoutStyle}
         />

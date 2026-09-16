@@ -179,18 +179,18 @@ function EditableTextField({
     )
 }
 
-export default function EntityTextBlock ({blockWrapperProps, data, block, showPad, sidebar, editable}) {
+export default function EntityTextBlock ({blockWrapperProps, data, block, showPad, sidebar, editable, afterTitle}) {
     const isEditable = !!(editable || data?.editable)
     const view = appSetting('entry', 'default_view');
     switch (view) {
         case 'small':
-            return <Small blockWrapperProps={blockWrapperProps} data={data} showPad={showPad} editable={isEditable} />;
+            return <Small blockWrapperProps={blockWrapperProps} data={data} showPad={showPad} editable={isEditable} afterTitle={afterTitle} />;
         default:
-            return <Default blockWrapperProps={blockWrapperProps} block={block} data={data} showPad={showPad} sidebar={sidebar} editable={isEditable} />;
+            return <Default blockWrapperProps={blockWrapperProps} block={block} data={data} showPad={showPad} sidebar={sidebar} editable={isEditable} afterTitle={afterTitle} />;
     }
 }
 
-function Small({ data, editable }) {
+function Small({ data, editable, afterTitle }) {
     const requestUrl = data?.params?.request_url
     const text = clearLinks(data.entry_text);
 
@@ -207,6 +207,7 @@ function Small({ data, editable }) {
                         <Text className="font-bold text-popover-foreground  text-base sm:text-xl ">{title}</Text>
                     )}
                 </EditableTitleField>
+                {afterTitle}
                 <EditableTextField
                     editable={editable}
                     requestUrl={requestUrl}
@@ -236,7 +237,7 @@ const getImagesData = (data) => {
     return att;
 };
 
-function Default({ data, showPad, sidebar, block, blockWrapperProps, editable }) {
+function Default({ data, showPad, sidebar, block, blockWrapperProps, editable, afterTitle }) {
     const att = getImagesData(data);
     const isSmall = block?.module == "bx_market";
     const checked = _checkEmpty(data);
@@ -281,6 +282,7 @@ function Default({ data, showPad, sidebar, block, blockWrapperProps, editable })
                                 : <H1C>{title}</H1C>
                         )}
                     </EditableTitleField>
+                    {afterTitle}
                     <EditableTextField
                         editable={editable}
                         requestUrl={requestUrl}

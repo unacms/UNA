@@ -24,7 +24,7 @@ export function ComposerAttachments({ images, disabled, onRemove }) {
     const { t } = useTranslation();
     if (!images.length) return null;
     return (
-        <View className="flex-row flex-wrap gap-2 px-1 pb-2">
+        <View className="flex-row flex-wrap gap-2 px-1.5 pb-1.5">
             {images.map((picked, index) => (
                 <View key={picked.preview || `${picked.name}-${index}`} className="relative">
                     <Image
@@ -50,21 +50,19 @@ export function ComposerAttachments({ images, disabled, onRemove }) {
     );
 }
 
-/** Paperclip to the left of the input. */
+/** Paperclip inside the composer pill — same chrome as comments FileButton. */
 export function AttachButton({ disabled, onPress }) {
     const { t } = useTranslation();
     return (
-        <View className="pr-1.5">
-            <NeoButton
-                style="bordered"
-                borderShape="circle"
-                controlSize="small"
-                image="Paperclip"
-                accessibilityLabel={t('Attach image')}
-                disabled={disabled}
-                onPress={onPress}
-            />
-        </View>
+        <NeoButton
+            style="borderless"
+            borderShape="circle"
+            controlSize="small"
+            image="Paperclip"
+            accessibilityLabel={t('Attach image')}
+            disabled={disabled}
+            onPress={onPress}
+        />
     );
 }
 
@@ -97,7 +95,7 @@ export function ComposerButtons({ showSend, showStartNew, isLoading, canSend, on
     const { t } = useTranslation();
     if (!showSend && !showStartNew) return null;
     return (
-        <View className="p-1.5 flex-row items-center gap-1">
+        <View className="flex-row items-center gap-1.5">
             {showSend && isLoading ? (
                 <NeoButton
                     style="bordered"
@@ -121,7 +119,7 @@ export function ComposerButtons({ showSend, showStartNew, isLoading, canSend, on
             ) : null}
             {showStartNew ? (
                 <NeoButton
-                    style="bordered"
+                    style="borderless"
                     borderShape="circle"
                     controlSize="small"
                     image="RefreshCw"
