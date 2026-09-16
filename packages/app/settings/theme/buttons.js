@@ -21,7 +21,7 @@ export const settingsButtons = {
             hitSlop: 6,
         },
         base: {
-            rounded: 'rounded-xl',
+            rounded: 'rounded-lg',
             container: 'px-3 gap-2 min-h-11 min-w-11',
             container_icon_only: 'min-h-11 min-w-11',
             title_container: ' leading-11 text-base',

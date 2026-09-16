@@ -936,16 +936,16 @@ export const LeftColumnContainer = ({
                 <View className={layoutName == 'profile' ? '' : appSetting('conductor', 'sidebar_inner_container')}>
                      {((!!title || addMenuItems.length > 0) && layoutName != 'profile') && (
                         <Row className={appSetting('conductor', 'sidebar_title')}>
-                            <Row className="items-center mr-auto min-w-0 hidden lg:flex">
+                            <Row className="items-center mr-auto min-w-0 hidden lg:flex gap-2">
                                 {!!icon && (
-                                    <View className="h-9 w-9 mx-1 items-center justify-center flex">
+                                    <View className="h-8 w-8 items-center justify-center flex">
                                     <Icon
                                         icon={icon}
-                                        size={28}
+                                        size={29}
                                         className="text-card-foreground shrink-0"
                                     /></View>
                                 )}
-                                <Text className="text-2xl px-0.5 tracking-tight truncate font-bold leading-9 text-card-foreground">
+                                <Text className="text-xl  tracking-tight truncate font-bold leading-9 text-card-foreground">
                                     {t(title)}
                                 </Text>
                             </Row>
@@ -954,7 +954,7 @@ export const LeftColumnContainer = ({
                     )}
                     <View className="flex-1 gap-4">
                         {layoutName == 'navigator' && routes.length > 1 && (
-                            <View className=' gap-0.5 '>
+                            <View className=' gap-0.5 -mx-1 -mb-1'>
                                 {hasConductorSubitems(routes) ? (
                                     <SidebarNav
                                         routes={routes}

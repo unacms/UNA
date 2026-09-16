@@ -63,7 +63,7 @@ export const settingsElements = {
         hide_browse_filter: true, // OLD appSetting('layout', 'hide_browse_filter')
         sidebar_container: ' ns--sidebar-container-- h-full ne--  ',
         sidebar_inner_container: ' xl:mx-4 p-3 gap-3 overflow-y-auto flex flex-col bg-card/80 shadow-card-outline dark:shadow-card-outline-deep rounded-2xl mt-4',
-        sidebar_title: 'sticky justify-between items-center z-10 gap-2 p-1',
+        sidebar_title: 'sticky justify-between items-center z-10 gap-2 h-11 px-1 ',
         sidebar_position: ' z-50  ',
         bgrDecorator: true, // Enable/disable decorator background globally for conductor buttons
         add_menu_native:false,

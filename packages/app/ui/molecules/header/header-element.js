@@ -49,12 +49,15 @@ export default function HeaderElement({ url, uri }) {
                                 if (item.props?.neoButton) {
                                     const { neoButton, primary, ...neoButtonProps } = item.props;
                                     const isMessenger = item.href === '{messenger}';
+                                    // Visual label only from props.title. Item title is a11y
+                                    // metadata — using it as label turns icon-only circles
+                                    // (mobile Log In) into padded labelled buttons.
                                     const translatedTitle = neoButtonProps.title
                                         ? t(neoButtonProps.title)
-                                        : (item.title ? t(item.title) : undefined);
+                                        : undefined;
                                     const translatedA11y = neoButtonProps.accessibilityLabel
                                         ? t(neoButtonProps.accessibilityLabel)
-                                        : translatedTitle;
+                                        : (item.title ? t(item.title) : undefined);
                                     return (
                                         <NeoButtonLink
                                             {...getHeaderToolbarNeoButtonDefaults(isDesktop, { primary })}

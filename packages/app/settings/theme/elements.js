@@ -6,7 +6,7 @@ export const settingsElements = {
         menu_is_dynamic: false,
         // Padding lives on the scroll *content* (w-max), not the overflow parent —
         // otherwise tabs clip at the inset instead of scrolling edge-to-edge.
-        menu_cnt: ' flex-row flex-none w-max gap-2 min-h-12 lg:min-h-14 items-center px-3 lg:px-4 ',
+        menu_cnt: ' flex-row flex-none w-max gap-2 min-h-12 lg:min-h-14 items-center px-4 ',
         menu_categ_indent: ' pl-8 ',
         topmenu_cnt:
             'w-full px-8 pt-6 items-stretch justify-stretch sticky z-50 t-8 gap-x-8 hidden lg:flex p',
@@ -32,7 +32,7 @@ export const settingsElements = {
         content_ver: 'flex-col gap-1',
         content_hor: 'flex-row  ',
         item_ver:
-            ' web:group px-2 py-1.5 web:group flex w-full min-w-0 min-h-12 flex-row items-start rounded-xl font-medium web:hover:bg-muted/50 text-card-foreground web:hover:text-foreground web:hover:cursor-pointer ',
+            ' web:group px-2  web:group flex w-full min-w-0 min-h-11 flex-row items-center rounded-xl font-medium web:hover:bg-muted/50 text-card-foreground web:hover:text-foreground web:hover:cursor-pointer ',
         item_hor:
             'flex block web:dark:hover:text-white rounded-full web:hover:cursor-pointer text-muted-foreground web:duration-200 outline-none ',
         item_np:
@@ -50,8 +50,7 @@ export const settingsElements = {
             'text-left text-base font-medium text-secondary-foreground web:group-hover:text-foreground whitespace-nowrap',
         item_tabs_overflow_text_lg:
             'text-left text-lg font-medium text-secondary-foreground web:group-hover:text-foreground whitespace-nowrap',
-        item_cnt: 'items-start w-full min-w-0 flex-row',
-        /** Title + description: center against the icon when shorter; icon stays top-aligned when text is taller. */
+        item_cnt: 'items-center w-full min-w-0 flex-row',
         item_text_cnt: 'min-w-0 flex-1 flex flex-col self-center justify-center overflow-hidden',
         item_cnt_tabs_overflow: 'items-center w-full flex-row justify-start flex-1',
         item_text: ' block w-full text-sm font-semibold text-secondary-foreground web:group-hover:text-foreground px-2',
