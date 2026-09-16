@@ -11,6 +11,7 @@ class BxDolAi extends BxDolFactory implements iBxDolSingleton
 {
     protected $_oDb;
     protected $_iProfileId;
+    protected $_aAgentProfiles = [];
 
     protected function __construct()
     {
@@ -194,6 +195,21 @@ class BxDolAi extends BxDolFactory implements iBxDolSingleton
     public function getAgentByTriggerWebhookKey($sKey)
     {
         return BxDolAiTrigger::getInstance('webhook')->getAgentByKey($sKey);
+    }
+
+    /**
+     * Profile is used by an active agent (any trigger). Cached per request.
+     */
+    public function isAgentProfile($iProfileId)
+    {
+        $iProfileId = (int)$iProfileId;
+        if ($iProfileId <= 0)
+            return false;
+
+        if (!array_key_exists($iProfileId, $this->_aAgentProfiles))
+            $this->_aAgentProfiles[$iProfileId] = $this->_oDb->isAgentProfile($iProfileId);
+
+        return $this->_aAgentProfiles[$iProfileId];
     }
 }
 

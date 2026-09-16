@@ -1938,7 +1938,13 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
     public function serviceCallAgent($sType, $aAgent, $aParams)
     {
         $oAi = BxDolAi::getInstance();
-        return $oAi->callAgent($sType, $aAgent, $aParams);
+        $mixedReply = $oAi->callAgent($sType, $aAgent, $aParams);
+
+        // Async messenger agents run here from a background job: post the reply, nobody else will.
+        if ('message' === $sType && is_string($mixedReply) && $mixedReply !== '')
+            BxDolAiTrigger::getInstance('message')->replyToMessage($aAgent, is_array($aParams) ? $aParams : [], $mixedReply);
+
+        return $mixedReply;
     }
 
     public function serviceCallAgentForFormInput($iAgentId)

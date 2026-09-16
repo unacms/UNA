@@ -230,6 +230,11 @@ class BxDolAiQuery extends BxDolDb
         return $this->getAll("SELECT * FROM `sys_agents_agents` WHERE `trigger` = :trigger AND `active` = :active", ['trigger' => $sTrigger, 'active' => $bActiveOnly ? 1 : 0]);
     }
 
+    public function isAgentProfile($iProfileId)
+    {
+        return (int)$this->getOne("SELECT `id` FROM `sys_agents_agents` WHERE `profile_id` = :profile_id AND `active` = 1 LIMIT 1", ['profile_id' => (int)$iProfileId]) > 0;
+    }
+
     public function updateAgentField($iId, $sField, $sValue)
     {
         return $this->query("UPDATE `sys_agents_agents` SET `$sField` = :value WHERE `id` = :id", ['value' => $sValue, 'id' => $iId]);
