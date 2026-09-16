@@ -34,6 +34,77 @@ export function imageTooLargeError() {
     return error;
 }
 
+const CHAT_IMAGE_TYPE_SET = new Set(CHAT_IMAGE_TYPES);
+const CHAT_IMAGE_EXT = /\.(jpe?g|png|gif|webp)$/i;
+
+function mimeFromName(name) {
+    const ext = String(name || '').split('.').pop()?.toLowerCase();
+    if (ext === 'jpg' || ext === 'jpeg') return 'image/jpeg';
+    if (ext === 'png') return 'image/png';
+    if (ext === 'gif') return 'image/gif';
+    if (ext === 'webp') return 'image/webp';
+    return '';
+}
+
+/** True when a paste/picker File is a type the agent composer accepts. */
+export function isChatImageFile(file) {
+    if (!file) return false;
+    const mime = String(file.type || '').toLowerCase();
+    if (CHAT_IMAGE_TYPE_SET.has(mime) || mime === 'image/jpg' || mime === 'image/pjpeg') return true;
+    if (mime.startsWith('image/') && !mime.includes('svg')) return true;
+    return !mime && CHAT_IMAGE_EXT.test(file.name || '');
+}
+
+/**
+ * Turn a web `File` into a pending composer attachment. `null` when it is not an
+ * image we accept. Throws `too_large` past CHAT_IMAGE_MAX_BYTES.
+ *
+ * @param {File|{uri: string, name: string, type: string}} file
+ * @returns {PickedImage|null}
+ */
+export function pickedFromFile(file) {
+    if (!file || !isChatImageFile(file)) return null;
+    const size = Number(file.size) || 0;
+    if (size > CHAT_IMAGE_MAX_BYTES) throw imageTooLargeError();
+    const mime = file.type || mimeFromName(file.name) || 'image/png';
+    const name = file.name || `pasted.${mime.split('/')[1] || 'png'}`;
+    let preview = '';
+    try {
+        if (typeof URL !== 'undefined' && typeof URL.createObjectURL === 'function') {
+            preview = URL.createObjectURL(file);
+        }
+    } catch {
+        preview = '';
+    }
+    return { file, preview, name, mime };
+}
+
+/**
+ * Image files from a paste or drop. Prefers `items` (clipboard) and falls back
+ * to `files` (drag-and-drop). Same source the post editor reads in editor-inner.
+ *
+ * @param {DataTransfer|null|undefined} data
+ * @returns {File[]}
+ */
+export function imageFilesFromDataTransfer(data) {
+    if (!data) return [];
+    const out = [];
+    const add = (file) => {
+        if (file && isChatImageFile(file) && !out.includes(file)) out.push(file);
+    };
+    const items = data.items;
+    if (items?.length) {
+        for (let i = 0; i < items.length; i++) {
+            const item = items[i];
+            if (item?.kind === 'file') add(item.getAsFile());
+        }
+    }
+    if (!out.length && data.files?.length) {
+        for (let i = 0; i < data.files.length; i++) add(data.files[i]);
+    }
+    return out;
+}
+
 /** Free a web `blob:` preview once it is no longer shown. No-op elsewhere. */
 export function revokePickedPreview(picked) {
     const preview = picked?.preview;

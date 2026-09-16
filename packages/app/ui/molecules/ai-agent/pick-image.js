@@ -1,6 +1,6 @@
 /** Web: a hidden `<input type=file>`. Native counterpart in pick-image.native.js. */
 
-import { CHAT_IMAGE_MAX_BYTES, CHAT_IMAGE_TYPES, imageTooLargeError } from './chat-images';
+import { CHAT_IMAGE_TYPES, pickedFromFile } from './chat-images';
 
 function openFileDialog() {
     return new Promise((resolve) => {
@@ -27,12 +27,5 @@ function openFileDialog() {
  */
 export async function pickAgentChatImage() {
     const file = await openFileDialog();
-    if (!file || !String(file.type || '').startsWith('image/')) return null;
-    if (file.size > CHAT_IMAGE_MAX_BYTES) throw imageTooLargeError();
-    return {
-        file,
-        preview: URL.createObjectURL(file),
-        name: file.name,
-        mime: file.type || 'image/jpeg',
-    };
+    return pickedFromFile(file);
 }

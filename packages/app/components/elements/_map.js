@@ -30,6 +30,7 @@ import ProfileList from './profiles-list';
 import Logout from './logout';
 import AiAgent from './ai_agent';
 import Static from './static';
+import Mockup from './mockup';
 
 import { lazyComponent } from 'app/lib/lazy-component';
 
@@ -140,4 +141,5 @@ export const componentsMapDefault = {
     stripe_connect: StripeConnect,
     ai_agent: AiAgent,
     static: Static,
+    mockup: Mockup,
 };

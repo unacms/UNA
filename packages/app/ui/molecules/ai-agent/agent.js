@@ -25,7 +25,7 @@ import {
     streamActionsForMessage,
 } from './message-content';
 import { AgentStatus, ChatBubble } from './chat-bubble';
-import { CHAT_IMAGES_MAX_DEFAULT, chatImageParts, revokePickedPreview, uploadAgentChatImage } from './chat-images';
+import { CHAT_IMAGES_MAX_DEFAULT, chatImageParts, imageFilesFromDataTransfer, pickedFromFile, revokePickedPreview, uploadAgentChatImage } from './chat-images';
 import { pickAgentChatImage } from './pick-image';
 import { AttachButton, ComposerAttachments, ComposerButtons, ComposerNotice, HistoryButton } from './composer-controls';
 import { COMPOSER_MAX_PX, useComposerHeight } from './use-composer-height';
@@ -638,24 +638,82 @@ function AiAgentChat({
 
     const canAttach = allowImages && !sessionEnded && !isLoading && !uploading && pendingImages.length < maxImages;
 
+    /**
+     * Queue picked images (paperclip, paste, drop). Overflow past `maxImages` is
+     * dropped and its blob URLs released; a too-large file is reported, not queued.
+     */
+    const enqueuePicked = useCallback((pickedList, { tooLarge = false } = {}) => {
+        const incoming = (pickedList || []).filter(Boolean);
+        if (!incoming.length) {
+            if (tooLarge) setAttachError(t('Image is too large'));
+            return;
+        }
+        setPendingImages((prev) => {
+            const room = maxImages - prev.length;
+            if (room <= 0) {
+                incoming.forEach(revokePickedPreview);
+                return prev;
+            }
+            const taken = incoming.slice(0, room);
+            incoming.slice(room).forEach(revokePickedPreview);
+            return [...prev, ...taken];
+        });
+        setAttachError(tooLarge ? t('Image is too large') : null);
+    }, [maxImages, t]);
+
+    const attachFromDataTransfer = useCallback((data) => {
+        const files = imageFilesFromDataTransfer(data);
+        if (!files.length) return false;
+        let tooLarge = false;
+        const picked = [];
+        for (const file of files) {
+            try {
+                const next = pickedFromFile(file);
+                if (next) picked.push(next);
+            } catch (error) {
+                if (error?.code === 'too_large') tooLarge = true;
+            }
+        }
+        if (!picked.length && !tooLarge) return false;
+        enqueuePicked(picked, { tooLarge });
+        return true;
+    }, [enqueuePicked]);
+
     const attachImage = useCallback(async () => {
         if (!canAttach) return;
         try {
             const picked = await pickAgentChatImage();
             if (!picked) return;
-            setPendingImages((prev) => {
-                // The cap is re-checked here: two dialogs could have been open at once.
-                if (prev.length >= maxImages) {
-                    revokePickedPreview(picked);
-                    return prev;
-                }
-                return [...prev, picked];
-            });
-            setAttachError(null);
+            enqueuePicked([picked]);
         } catch (error) {
             setAttachError(error?.code === 'too_large' ? t('Image is too large') : (error?.message || t('Upload failed')));
         }
-    }, [canAttach, maxImages, t]);
+    }, [canAttach, enqueuePicked, t]);
+
+    const onComposerPaste = useCallback((event) => {
+        // Same as the post editor: clipboard file items become attachments, not text.
+        if (!isWeb || !allowImages || sessionEnded || isLoading || uploading) return;
+        const data = event?.clipboardData || event?.nativeEvent?.clipboardData;
+        if (!attachFromDataTransfer(data)) return;
+        event.preventDefault?.();
+        event.stopPropagation?.();
+    }, [allowImages, sessionEnded, isLoading, uploading, attachFromDataTransfer]);
+
+    const onComposerDragOver = useCallback((event) => {
+        if (!isWeb || !allowImages || sessionEnded) return;
+        const types = event?.dataTransfer?.types;
+        if (!types || !Array.from(types).includes('Files')) return;
+        event.preventDefault?.();
+        if (event.dataTransfer) event.dataTransfer.dropEffect = 'copy';
+    }, [allowImages, sessionEnded]);
+
+    const onComposerDrop = useCallback((event) => {
+        if (!isWeb || !allowImages || sessionEnded || isLoading || uploading) return;
+        const data = event?.dataTransfer || event?.nativeEvent?.dataTransfer;
+        if (!attachFromDataTransfer(data)) return;
+        event.preventDefault?.();
+        event.stopPropagation?.();
+    }, [allowImages, sessionEnded, isLoading, uploading, attachFromDataTransfer]);
 
     const removePendingImage = useCallback((index) => {
         setPendingImages((prev) => {
@@ -759,7 +817,12 @@ function AiAgentChat({
                     </Row>
                 ) : null
             ) : (
-            <View className="pt-2">
+            <View
+                className="pt-2"
+                {...(isWeb && allowImages && !sessionEnded
+                    ? { onPaste: onComposerPaste, onDragOver: onComposerDragOver, onDrop: onComposerDrop }
+                    : null)}
+            >
                 <ComposerNotice message={chatError?.message} />
                 <ComposerNotice message={attachError} />
                 <ComposerAttachments
@@ -803,6 +866,7 @@ function AiAgentChat({
                                 }}
                                 onKeyDown={isWeb && !sessionEnded ? onComposerKey : undefined}
                                 onKeyPress={isWeb || sessionEnded ? undefined : onComposerKey}
+                                onPaste={isWeb && allowImages && !sessionEnded ? onComposerPaste : undefined}
                                 blurOnSubmit={false}
                                 returnKeyType="default"
                                 {...(isWeb ? { rows: 1 } : { scrollEnabled: composer.scrollEnabled })}
