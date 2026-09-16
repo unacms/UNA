@@ -668,13 +668,13 @@
     "@tanstack/ai-event-client" "^0.10.0"
     "@tanstack/ai-utils" "^0.4.0"
 
-"@tanstack/ai-client@^0.31.0":
-  version "0.31.0"
-  resolved "https://registry.yarnpkg.com/@tanstack/ai-client/-/ai-client-0.31.0.tgz#d2aa50b7fe7b769e60efe5b4c1cbb62c7bb52480"
-  integrity sha512-K7VlIfyiPXpTkdVkfoGbful++/jr9wJet4ri0uhBvfxgIUi4FNM+50TadfcZ14H+L4mDdnVB4IaRYy+XGxV9aw==
+"@tanstack/ai-client@^0.31.1":
+  version "0.31.1"
+  resolved "https://registry.yarnpkg.com/@tanstack/ai-client/-/ai-client-0.31.1.tgz#722bba10f387c7eaded9fa9a073fafd969e66c70"
+  integrity sha512-45JeYoVb53q4nD9Bk00mdQUGyYKiP9CrvKRRmXN460I1YHdxiSQRbiL5n4POLXUQUcCYFDL2bxSq5I84Eu6/cw==
   dependencies:
-    "@tanstack/ai" "^0.53.0"
-    "@tanstack/ai-event-client" "^0.11.2"
+    "@tanstack/ai" "^0.54.0"
+    "@tanstack/ai-event-client" "^0.11.3"
     "@tanstack/ai-utils" "^0.4.0"
 
 "@tanstack/ai-event-client@^0.10.0":
@@ -684,7 +684,7 @@
   dependencies:
     "@tanstack/devtools-event-client" "^0.4.1"
 
-"@tanstack/ai-event-client@^0.11.2", "@tanstack/ai-event-client@^0.11.3":
+"@tanstack/ai-event-client@^0.11.3":
   version "0.11.3"
   resolved "https://registry.yarnpkg.com/@tanstack/ai-event-client/-/ai-event-client-0.11.3.tgz#0e3927b54171d13b061bba8ac4a0283eaedd0a4d"
   integrity sha512-K5Nw05TG2NPJNunV7LI/5m7S97XHHdxN7vwTYcbKbmA5txlToaiF4wCfYBT406m7BOeGlLHZJpr3m1M6Vaai4g==
@@ -714,14 +714,14 @@
     "@tanstack/ai-utils" "^0.4.0"
     partial-json "^0.1.7"
 
-"@tanstack/ai@^0.53.0":
-  version "0.53.0"
-  resolved "https://registry.yarnpkg.com/@tanstack/ai/-/ai-0.53.0.tgz#8790209bc9f0cba4a28ed5414df0bc813ce47062"
-  integrity sha512-a4zDqb7SU0PU+pua69y5IDKLHO9dsD99vMIrzKNfcJyzJ81aASIkbrXXcD4n15YOj+FaWPZmD4Qewmd+5IV4Iw==
+"@tanstack/ai@^0.54.0":
+  version "0.54.0"
+  resolved "https://registry.yarnpkg.com/@tanstack/ai/-/ai-0.54.0.tgz#9ba2bb5c0d8c550fe1f229c0e06b4b1f70d0a537"
+  integrity sha512-Hc7Yc7L+2n/dr11GwAT/QSbGwIxy5bhRe99yu1jAhGaBx28Ul3AaTLcGTyEj2aNeih00AUtF0KG+IOqJBSsj8A==
   dependencies:
     "@ag-ui/core" "0.1.1-canary.beta.0"
     "@standard-schema/spec" "^1.1.0"
-    "@tanstack/ai-event-client" "^0.11.2"
+    "@tanstack/ai-event-client" "^0.11.3"
     "@tanstack/ai-utils" "^0.4.0"
     partial-json "^0.1.7"
 
