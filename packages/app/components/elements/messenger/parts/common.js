@@ -277,63 +277,77 @@ export default function Messenger({ defaultConvoId, selectedMenu, convos, layout
     }
 
     useEffect(() => {
-        if (jotUpdated) {
+        if (!jotUpdated) return;
 
-            if (jotUpdated.action == 'added') {
-                if (jotUpdated.data.jots) {
-                    const latestJot = jotUpdated.data.jots[jotUpdated.data.jots.length - 1];
-                    if (latestJot) {
-                        setConvosData(prevConvos => {
-                            const nextConvos = [...prevConvos];
-                            const targetIndex = nextConvos.findIndex(convo => convo.id == convoId);
-                            if (targetIndex === -1) return prevConvos;
+        const incoming = Array.isArray(jotUpdated.data?.jots) ? jotUpdated.data.jots : [];
 
-                            const targetConvo = nextConvos[targetIndex];
-                            nextConvos[targetIndex] = {
-                                ...targetConvo,
-                                message: latestJot.message ?? targetConvo.message,
-                                date: latestJot.created ?? targetConvo.date,
-                            };
-                            return nextConvos;
-                        });
+        if (jotUpdated.action == 'added') {
+            if (incoming.length) {
+                const latestJot = incoming[incoming.length - 1];
+                if (latestJot) {
+                    setConvosData(prevConvos => {
+                        const nextConvos = [...(prevConvos || [])];
+                        const targetIndex = nextConvos.findIndex(convo => convo.id == convoId);
+                        if (targetIndex === -1) return prevConvos;
+
+                        const targetConvo = nextConvos[targetIndex];
+                        nextConvos[targetIndex] = {
+                            ...targetConvo,
+                            message: latestJot.message ?? targetConvo.message,
+                            date: latestJot.created ?? targetConvo.date,
+                        };
+                        return nextConvos;
+                    });
+                }
+                setJots(prevJots => {
+                    const prevList = Array.isArray(prevJots?.data?.jots) ? prevJots.data.jots : [];
+                    const seen = new Set(prevList.map(item => item?.id));
+                    const merged = [...prevList];
+                    for (const jot of incoming) {
+                        if (jot?.id == null || seen.has(jot.id)) continue;
+                        seen.add(jot.id);
+                        merged.push(jot);
                     }
-                    setJots(prevJots => ({
-                        ...prevJots,
+                    return {
+                        ...(prevJots && typeof prevJots === 'object' ? prevJots : {}),
                         data: {
-                            ...prevJots.data,
-                            jots: [...prevJots.data.jots, ...jotUpdated.data.jots]
-                        }
-                    }));
-                    scrolTo();
-                }
-                if (jotUpdated.data.msg) {
-                    setListError(jotUpdated.data.msg);
-                }
+                            ...(prevJots?.data || {}),
+                            jots: merged,
+                        },
+                    };
+                });
+                scrolTo();
             }
-            if (jotUpdated.action == 'edited') {
-                const newJots = jots.data.jots.map(item => item.id === jotUpdated.data.jots[0].id ? jotUpdated.data.jots[0] : item);
-                setJots(prevJots => ({
-                    ...prevJots,
-                    data: {
-                        ...prevJots.data,
-                        jots: newJots
-                    }
-                }));
+            if (jotUpdated.data?.msg) {
+                setListError(jotUpdated.data.msg);
             }
-            if (jotUpdated.action == 'deleted') {
-                let idToRemove = jotUpdated.data; // The id of the item you want to remove
-
-                let newJots = jots.data.jots.filter(item => item.id !== idToRemove);
-                setJots(prevJots => ({
-                    ...prevJots,
+        }
+        if (jotUpdated.action == 'edited' && incoming[0]) {
+            const edited = incoming[0];
+            setJots(prevJots => {
+                const prevList = Array.isArray(prevJots?.data?.jots) ? prevJots.data.jots : [];
+                return {
+                    ...(prevJots && typeof prevJots === 'object' ? prevJots : {}),
                     data: {
-                        ...prevJots.data,
-                        jots: newJots
+                        ...(prevJots?.data || {}),
+                        jots: prevList.map(item => item.id === edited.id ? edited : item),
                     },
-                    index: 0
-                }));
-            }
-
+                };
+            });
+        }
+        if (jotUpdated.action == 'deleted') {
+            const idToRemove = jotUpdated.data;
+            setJots(prevJots => {
+                const prevList = Array.isArray(prevJots?.data?.jots) ? prevJots.data.jots : [];
+                return {
+                    ...(prevJots && typeof prevJots === 'object' ? prevJots : {}),
+                    data: {
+                        ...(prevJots?.data || {}),
+                        jots: prevList.filter(item => item.id !== idToRemove),
+                    },
+                    index: 0,
+                };
+            });
         }
     }, [jotUpdated]);
 

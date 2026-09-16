@@ -132,5 +132,6 @@
     "media_permission_required": "Permission is required to continue.",
     "messenger_create_first": "Create your first conversation",
     "messenger_add_users": "Add users to start messaging",
-    "messenger_creating": "Creating new conversation, please wait..."
+    "messenger_creating": "Creating new conversation, please wait...",
+    "messenger_agents": "Agents"
 }

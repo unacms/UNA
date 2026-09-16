@@ -1,7 +1,7 @@
 import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
 import { fetcher } from 'app/lib/fetcher';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Modal, NeoButton } from 'app/design/controls'
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import { SelectUsers } from 'app/components/form-fields/initial-members';
@@ -9,10 +9,19 @@ import Loading from 'app/ui/atoms/loading'
 import { FormError } from 'app/components/form-fields/_field';
 import { useTranslation } from 'react-i18next'
 
+const AGENTS_FETCH_OPTIONS = { silent: true, maxAttempts: 1 };
+
+function parseAgentsList(payload) {
+    if (Array.isArray(payload?.data)) return payload.data;
+    if (Array.isArray(payload)) return payload;
+    return [];
+}
+
 export default function CreateConvo({ onSave, initedData = [], convoId }) {
     const { t } = useTranslation();
     const [message, setMessage] = useState('');
     const [loading, setLoading] = useState(false);
+    const [agents, setAgents] = useState([]);
     const handleSave = async (data) => {
         setLoading(true);
         const params = {
@@ -30,12 +39,29 @@ export default function CreateConvo({ onSave, initedData = [], convoId }) {
         }
     };
 
+    useEffect(() => {
+        let cancelled = false;
+        (async () => {
+            try {
+                const payload = await fetcher(
+                    '/api.php?r=bx_messenger/get_agents/Services&params=' + JSON.stringify({}),
+                    false,
+                    AGENTS_FETCH_OPTIONS
+                );
+                if (!cancelled) setAgents(parseAgentsList(payload));
+            } catch {
+                if (!cancelled) setAgents([]);
+            }
+        })();
+        return () => { cancelled = true; };
+    }, []);
+
     return (
         <>
             <Row>
                 <FormError errorText={message} />
             </Row>
-            {!loading && <SelectUsers onlyOnce={false} onSave={handleSave} requestUrl={'/api.php?r=bx_messenger/search_users/Services&params='} initedData={initedData} />}
+            {!loading && <SelectUsers onlyOnce={false} onSave={handleSave} requestUrl={'/api.php?r=bx_messenger/search_users/Services&params='} initedData={initedData} extraSuggestions={agents} />}
             {loading && <View className='w-full pt-8 items-center'>
                 <Loading />
                 <Text className="pt-8 text-base text-muted-foreground  animate-pulse  font-medium">{t('messenger_creating')}</Text>

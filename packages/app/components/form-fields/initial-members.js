@@ -53,11 +53,14 @@ export const User = ({ data, onSelect, type }) => {
 };
 
 
-export function SelectUsers({ onSave, initedData = [], requestUrl, isSingle = false }) {
+const EMPTY_SUGGESTIONS = [];
+
+export function SelectUsers({ onSave, initedData = [], requestUrl, isSingle = false, extraSuggestions = EMPTY_SUGGESTIONS }) {
 
     const { t } = useTranslation();
+    const extraList = Array.isArray(extraSuggestions) ? extraSuggestions : EMPTY_SUGGESTIONS;
     const initialState = {
-        suggestedUsers: [],
+        suggestedUsers: extraList,
         selectedUsers: Array.isArray(initedData) ? initedData : [],
         showLoading: false,
         searchText: ''
@@ -91,11 +94,27 @@ export function SelectUsers({ onSave, initedData = [], requestUrl, isSingle = fa
     // Plain handlers: React Compiler memoizes them with the real dependencies
     // (the manual useCallback deps here were incomplete, e.g. requestUrl /
     // state.selectedUsers were read but not listed).
+    const matchExtra = (term) => {
+        const q = String(term || '').trim().toLowerCase();
+        if (!q) return extraList;
+        return extraList.filter((item) => String(item?.display_name || item?.title || '').toLowerCase().includes(q));
+    };
+
+    useEffect(() => {
+        if (state.searchText) return;
+        dispatch({ type: 'searchFinished', suggestedUsers: extraList, searchText: '' });
+    }, [extraList]);
+
     const onChangeText = async (sValue) => {
         dispatch({ type: 'setLoading' })
-        const sResponse = await fetcher(requestUrl + JSON.stringify({ term: sValue }));
-        const suggestions = Array.isArray(sResponse.data) ? sResponse.data : []
-        dispatch({ type: 'searchFinished', suggestedUsers: suggestions, searchText: sValue })
+        let suggestions = []
+        try {
+            const sResponse = await fetcher(requestUrl + JSON.stringify({ term: sValue }));
+            suggestions = Array.isArray(sResponse.data) ? sResponse.data : []
+        } catch {
+            suggestions = []
+        }
+        dispatch({ type: 'searchFinished', suggestedUsers: [...matchExtra(sValue), ...suggestions], searchText: sValue })
     };
 
     const onSelectUser = (oData) => {
@@ -130,6 +149,9 @@ export function SelectUsers({ onSave, initedData = [], requestUrl, isSingle = fa
                 <Button variant="primary" size="lg" disabled={state.selectedUsers.length == 0} startDecorator="Check" onPress={() => onSaveInt()} />
             </Row>
             <Row className="text-center w-full flex-wrap gap-1 ">
+                {!state.searchText && extraList.length > 0 && state.suggestedUsers.length > 0 && !state.showLoading ? (
+                    <Text className="text-sm text-muted-foreground w-full px-1 pb-1">{t('messenger_agents')}</Text>
+                ) : null}
                 {state.suggestedUsers && !state.showLoading && state.suggestedUsers.map((item, index) => <User key={suggestionId(item, index)} data={item} onSelect={onSelectUser} />)}
                 {state.showLoading && <View className=' w-full items-center justify-center py-2'><Loading /></View>}
                 {state.suggestedUsers.length == 0 && state.searchText != '' && !state.showLoading && <Text className="text-sm py-2">{t('Nothing found')}</Text>}
