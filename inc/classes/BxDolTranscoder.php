@@ -720,7 +720,20 @@ class BxDolTranscoder extends BxDolFactory implements iBxDolFactoryObject
         else
             $o->setSquareResize (false);
 
-        if (IMAGE_ERROR_SUCCESS == $o->resize($sFile))
+        // Optional per-transcoder JPEG quality. BxDolImageResize is a singleton reused for every
+        // image in the request, so the previous quality is restored afterwards.
+        $iQualityPrev = null;
+        if (isset($aParams['quality']) && (int)$aParams['quality'] > 0) {
+            $iQualityPrev = $o->getJpegQuality();
+            $o->setJpegQuality((int)$aParams['quality']);
+        }
+
+        $iResult = $o->resize($sFile);
+
+        if ($iQualityPrev !== null)
+            $o->setJpegQuality($iQualityPrev);
+
+        if (IMAGE_ERROR_SUCCESS == $iResult)
             return true;
 
         bx_log('sys_transcoder', "[{$this->_aObject['object']}] ERROR: applyFilter_Resize failed for file ({$sFile}): " . $o->getError(), BX_LOG_ERR);

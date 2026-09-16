@@ -138,6 +138,11 @@ class BxDolImageResize extends BxDolFactory implements iBxDolSingleton
         $this->_iJpegQuality = $i;
     }
 
+    function getJpegQuality ()
+    {
+        return $this->_iJpegQuality;
+    }
+
     function setSquareResize ($b)
     {
         $this->_isSquareResize = ($b ? true : false);
