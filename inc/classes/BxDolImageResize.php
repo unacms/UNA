@@ -138,7 +138,7 @@ class BxDolImageResize extends BxDolFactory implements iBxDolSingleton
         $this->_iJpegQuality = $i;
     }
 
-    function getJpegQuality ()
+    public function getJpegQuality ()
     {
         return $this->_iJpegQuality;
     }
