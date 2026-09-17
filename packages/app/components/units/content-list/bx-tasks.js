@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { View, Row, Pressable } from 'app/design/view';
 import { Text } from 'app/design/typography';
-import ProfilesList from 'app/ui/molecules/profile/profile-list';
 import { Modal } from 'app/design/controls';
 import { Icon } from 'app/ui/atoms/icon';
 import Menu from 'app/components/menu';
@@ -12,6 +11,7 @@ import { UnitTitle } from 'app/components/units/helpers';
 import { runTaskAction } from 'app/components/elements/tasks/actions';
 import { emitTasksListOpen, emitTasksListRefresh } from 'app/components/elements/tasks/helpers';
 import { TaskPropertySelect } from 'app/components/elements/tasks/property-select';
+import { TaskAssigneeSelect } from 'app/components/elements/tasks/assignee-select';
 import { Timer } from 'app/ui/atoms/timer';
 
 const META_FIELDS = [
@@ -213,16 +213,13 @@ export default function Unit({ data, module }) {
                 </Row>
 
                 <TaskRowControl>
-                    {data?.members?.length ? (
-                        <ProfilesList data={data.members} maxCount={3} displaySize="xs" />
-                    ) : (
-                        <View
-                            className="h-6 w-6 items-center justify-center rounded-full"
-                            accessibilityLabel="Unassigned"
-                        >
-                            <Icon icon="CircleUserRound" size={24} className="text-muted" />
-                        </View>
-                    )}
+                    <TaskAssigneeSelect
+                        taskId={data.id}
+                        module={tasksModule}
+                        members={data.members}
+                        contextId={data.context_id}
+                        taskUrl={data.url}
+                    />
                 </TaskRowControl>
 
                 {menuItems.length ? (

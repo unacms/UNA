@@ -9,7 +9,7 @@ function fillArrayToLength(arr, maxCount, defaultValue) {
     return arr;
 }
 
-export default function ProfilesList ({maxCount, showEmpty, data, displaySize="base"}) {
+export default function ProfilesList ({maxCount, showEmpty, data, displaySize="base", showLinks = true}) {
     const sizeConfig = appSetting('theme', 'profile_sizes', displaySize);
     const sSize = sizeConfig.container;
 
@@ -32,6 +32,7 @@ export default function ProfilesList ({maxCount, showEmpty, data, displaySize="b
                             {...pr}
                             displayType="unit_wo_info"
                             displaySize={displaySize}
+                            showLinks={showLinks}
                             className={offsetClass}
                             avatarClassName="shadow-avatar-stack"
                         />

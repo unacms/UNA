@@ -339,7 +339,12 @@ export function groupTasksByStatus(lists = []) {
         for (const task of (Array.isArray(list?.tasks) ? list.tasks : [])) {
             const title = canonicalTaskStatus(task?.state || task?.status);
             if (!groups.has(title)) groups.set(title, []);
-            groups.get(title).push(task);
+            const contextId = task?.context_id ?? list?.context_id;
+            groups.get(title).push(
+                contextId != null && task?.context_id == null
+                    ? { ...task, context_id: contextId }
+                    : task
+            );
         }
     }
 
