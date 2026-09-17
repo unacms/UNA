@@ -458,5 +458,8 @@
     "agent_chat_untitled": "Discussion",
     "agent_chat_open": "Ouverte",
     "agent_chat_closed": "Fermée",
-    "agent_chat_new": "Nouvelle discussion"
+    "agent_chat_new": "Nouvelle discussion",
+    "tasks_budget_total": "Total",
+    "tasks_budget_spent": "Dépensé",
+    "tasks_budget_remaining": "Restant"
 }

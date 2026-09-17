@@ -133,5 +133,8 @@
     "messenger_create_first": "Create your first conversation",
     "messenger_add_users": "Add users to start messaging",
     "messenger_creating": "Creating new conversation, please wait...",
-    "messenger_agents": "Agents"
+    "messenger_agents": "Agents",
+    "tasks_budget_total": "Total",
+    "tasks_budget_spent": "Spent",
+    "tasks_budget_remaining": "Remaining"
 }
