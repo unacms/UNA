@@ -67,8 +67,6 @@ const tenPlayWebviewShimPath = require('fs').existsSync(tenPlayWebviewLocalPath)
     ? path.resolve(tenPlayWebviewLocalPath, 'lib/module/shim.js')
     : path.resolve(tenPlayWebviewRootPath, 'lib/module/shim.js');
 
-const reanimatedPath = path.resolve(__dirname, 'node_modules/react-native-reanimated');
-
 const workspaceResolvePaths = [
     __dirname,
     workspaceRoot,
@@ -255,7 +253,6 @@ const nextConfig = {
             'react-native-svg': path.resolve(__dirname, 'node_modules/react-native-svg'),
             'react-native/Libraries/Utilities/codegenNativeComponent': tenPlayWebviewShimPath,
             'react-native/Libraries/Utilities/codegenNativeComponent$': tenPlayWebviewShimPath,
-            'react-native-reanimated': reanimatedPath,  // <-- Pin version 3.10.1
             'react-native-localize': path.resolve(__dirname, 'stubs/react-native-localize.js'),
             // Native-only. NeoButton web uses neo-button-expoui.web.js; this is a
             // backstop if webpack ever follows .ios.js / .android.js.
@@ -279,14 +276,15 @@ const nextConfig = {
             'react-native/Libraries/Utilities/codegenNativeComponent': tenPlayWebviewShimPath,
         };
 
-        // Put local node_modules FIRST in resolve.modules
+        // Local node_modules first so packages installed under apps/next
+        // (e.g. react-native-svg) win over root-hoisted copies.
         config.resolve.modules = [
-            path.resolve(__dirname, 'node_modules'),  // <-- FIRST: local 3.10.1
+            path.resolve(__dirname, 'node_modules'),
             ...(config.resolve.modules || []).filter(m =>
                 m !== path.resolve(__dirname, 'node_modules') &&
                 m !== path.resolve(workspaceRoot, 'node_modules')
             ),
-            path.resolve(workspaceRoot, 'node_modules'),  // <-- Then root (may contain 4.1.3)
+            path.resolve(workspaceRoot, 'node_modules'),
         ];
 
         // Force module replacement via NormalModuleReplacementPlugin
@@ -300,13 +298,6 @@ const nextConfig = {
                 (resource) => {
                     // Replace with web build for all imports (especially from @10play/tentap-editor)
                     resource.request = tenPlayWebviewPath;
-                }
-            ),
-            // Force react-native-reanimated to version 3.10.1
-            new webpack.NormalModuleReplacementPlugin(
-                /^react-native-reanimated$/,
-                (resource) => {
-                    resource.request = reanimatedPath;
                 }
             ),
             // Fix Emscripten CJS default export for react-native-enriched-markdown WASM parser.
