@@ -124,6 +124,7 @@
     --shadow-border-b-deep: 0 1px 0 0 rgb(255 255 255 / 0.05), 0 1px 4px -1px rgb(0 0 0 / 0.5);
     --shadow-avatar: inset 0 0 0 1px rgb(0 0 0 / 0.05);
     --shadow-avatar-deep: inset 0 0 0 1px rgb(255 255 255 / 0.05);
+    --shadow-avatar-stack: 0 0 0 1px rgb(var(--card));
     --shadow-card-outline: var(--neo-shadow-card-outline);
     --shadow-card-outline-deep: var(--neo-shadow-card-outline-deep);
     --shadow-block-outline: var(--neo-shadow-block-outline);

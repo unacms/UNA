@@ -15,7 +15,7 @@ import { Icon } from 'app/ui/atoms/icon';
 import { fetcher } from 'app/lib/fetcher';
 import { cn } from 'app/lib/util';
 import { isFormResponseComplete } from 'app/lib/form/form-helpers';
-import { iconForTaskStatus } from 'app/lib/tasks-meta';
+import { iconForTaskStatus, iconForTaskPriority } from 'app/lib/tasks-meta';
 import { apiUrl } from './helpers';
 
 const SYNC_DEBOUNCE_MS = 250;
@@ -239,14 +239,20 @@ function ActiveFilterChip({ filter, onEdit, onToggleOperator, onRemove }) {
 
 function FieldOptions({ field, activeFilter, onToggle }) {
     const checkedValues = filterValues(activeFilter);
-    const isStateField = STATE_FIELDS.test(`${field.id} ${field.caption}`);
+    const fieldLabel = `${field.id} ${field.caption}`;
+    const isStateField = STATE_FIELDS.test(fieldLabel);
+    const isPriorityField = /priority/i.test(fieldLabel);
 
     return field.options.map((option) => {
         const checked = checkedValues.includes(option.value);
+        const optionLabel = option.label || option.value;
+        const icon = isStateField
+            ? iconForTaskStatus(optionLabel)
+            : (isPriorityField ? iconForTaskPriority(optionLabel) : null);
         return (
             <FilterRow
                 key={option.value}
-                icon={isStateField ? iconForTaskStatus(option.label || option.value) : null}
+                icon={icon}
                 label={option.label}
                 selected={checked}
                 onPress={() => onToggle(field, option.value)}

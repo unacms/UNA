@@ -50,11 +50,13 @@ import {
     listIdOrNull,
     normalizeBrowserPath,
     normalizeTasksListPayload,
+    patchTaskInLists,
     pickBrowseContext,
     tasksHomeQueryFromBrowser,
     unwrapTasksListPayload,
     usableContextId,
 } from './tasks/helpers';
+import { loadTaskTimerSessions } from 'app/lib/task-timer-sync';
 
 const isWeb = Platform.OS === 'web';
 
@@ -406,8 +408,19 @@ export default function ElementTasksList({ data, blockWrapperProps }) {
     }, [requestUrl, selectedTasklistId]);
 
     useEffect(() => {
+        loadTaskTimerSessions();
+    }, []);
+
+    useEffect(() => {
         const subscription = emitter.addListener(TASKS_LIST_EVENT, (event) => {
             if (event.action === 'reload') refreshLists();
+            if (event.action === 'patch') {
+                setListsData((prev) => {
+                    if (!prev?.lists) return prev;
+                    const lists = patchTaskInLists(prev.lists, event);
+                    return lists === prev.lists ? prev : { ...prev, lists };
+                });
+            }
             if (event.action === 'open' && event.url) openTask({ url: event.url, title: event.title });
             if (event.action === 'close') closeTask();
         });
