@@ -117,6 +117,13 @@ DELETE FROM `sys_objects_grid` WHERE `object` IN ('sys_queues','sys_studio_agent
 DELETE FROM `sys_objects_transcoder` WHERE `object` = 'sys_agents_assistants_chats_files_preview';
 DELETE FROM `sys_transcoder_filters` WHERE `transcoder_object` = 'sys_agents_assistants_chats_files_preview';
 
+-- sys_transcoder_filters: site and profile covers re-encode as JPEG (quality 82) instead of a renamed PNG.
+-- force_type only renamed the file after the resize, so a JPEG source was served as an oversized image/png.
+UPDATE `sys_transcoder_filters` SET `filter_params` = 'a:3:{s:1:"w";s:4:"1920";s:1:"h";s:3:"720";s:7:"quality";s:2:"82";}' WHERE `transcoder_object` = 'sys_cover' AND `filter` = 'Resize';
+UPDATE `sys_transcoder_filters` SET `filter_params` = 'a:3:{s:1:"w";s:3:"640";s:1:"h";s:3:"240";s:7:"quality";s:2:"82";}' WHERE `transcoder_object` = 'sys_cover_unit_profile' AND `filter` = 'Resize';
+-- bump ts so every cached cover is regenerated once with the new settings
+UPDATE `sys_objects_transcoder` SET `ts` = UNIX_TIMESTAMP() WHERE `object` IN ('sys_cover', 'sys_cover_unit_profile');
+
 -- sys_objects_grid: API Configs
 INSERT IGNORE INTO `sys_objects_grid` (`object`,`source_type`,`source`,`TABLE`,`field_id`,`field_order`,`field_active`,`paginate_url`,`paginate_per_page`,`paginate_simple`,`paginate_get_start`,`paginate_get_per_page`,`filter_fields`,`filter_fields_translatable`,`filter_mode`,`sorting_fields`,`sorting_fields_translatable`,`override_class_name`,`override_class_file`) VALUES ('sys_studio_api_configs','Sql','SELECT * FROM `sys_modules` WHERE 1 ','sys_modules','id','name','','',100,NULL,'start','','name,title,vendor','','like','','','BxTemplStudioApiConfigs','');
 
