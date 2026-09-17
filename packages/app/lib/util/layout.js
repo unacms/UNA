@@ -108,12 +108,26 @@ export function getPageWidth(uri, config) {
     return appSetting('layout', 'max_width');
 }
 
-export function getPageContentWidth(layoutKey) {
-    if (!layoutKey) {
-        return appSetting('layout', 'page_content_width_default');
-    }
+function normalizeContentWidthKey(value) {
+    if (typeof value !== 'string' || !value) return '';
+    return value.split('?')[0].replace(/^\/+|\/+$/g, '');
+}
+
+/** Layout name or page URI from `layout.page_content_width`. URI wins so a page can opt out of its layout cap. */
+export function getPageContentWidth(layoutKey, uri) {
     const pageLayouts = appSetting('layout', 'page_content_width') || {};
-    return pageLayouts[layoutKey] ?? appSetting('layout', 'page_content_width_default');
+    const uriKey = normalizeContentWidthKey(uri);
+    if (uriKey && Object.prototype.hasOwnProperty.call(pageLayouts, uriKey)) {
+        return pageLayouts[uriKey];
+    }
+    const uriWithSlash = uriKey ? `/${uriKey}` : '';
+    if (uriWithSlash && Object.prototype.hasOwnProperty.call(pageLayouts, uriWithSlash)) {
+        return pageLayouts[uriWithSlash];
+    }
+    if (layoutKey && Object.prototype.hasOwnProperty.call(pageLayouts, layoutKey)) {
+        return pageLayouts[layoutKey];
+    }
+    return appSetting('layout', 'page_content_width_default');
 }
 
 export function getPageContentPaddingTiers(layoutKey) {

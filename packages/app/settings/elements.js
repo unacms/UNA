@@ -73,6 +73,12 @@ export const settingsElements = {
         default_view: '',
         default_info_icon: 'Info', //appSetting('layout', 'entity_info_icon')
     },
+    tasks: {
+        // Per-task row chrome. Forks override in customization/settings.js.
+        item_wrapper: 'py-2 px-3 bg-transparent hover:bg-muted/60 transition-colors duration-200 rounded-2xl',
+        // Status group header (Todo / In Progress / …).
+        section_title: 'items-center justify-between gap-2 px-3 py-2 bg-muted/60 rounded-2xl',
+    },
     jitsi: {
         prefix: 'prefix_',
         domain: 'https://meet.jit.si/',

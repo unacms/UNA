@@ -191,7 +191,7 @@ export function Conductor({
     // ==================================================================
 
     const cellsCustomConfig = appSetting('layouts', 'navigator') || appSetting('layouts', `cols-l-c`)
-    const contentWidth = getPageContentWidth(layoutName)
+    const contentWidth = getPageContentWidth(layoutName, data?.uri)
     // Per-tab header config from UNA. An adjustable columns layout manages its
     // own top offset, so the header must not add one on top.
     const headerSettings = useMemo(() => {

@@ -151,7 +151,7 @@ function StatusSection({ list }) {
     const tasks = list.tasks || [];
     return (
         <View className="gap-2">
-            <Row className="items-center gap-2 min-w-0 px-2">
+            <Row className={appSetting('tasks', 'section_title')}>
                 <Icon icon={iconForTaskStatus(list.list_title)} size={16} className="text-foreground shrink-0" />
                 <Text className="text-base font-semibold tracking-tight text-foreground">
                     {list.list_title}

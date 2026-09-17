@@ -22,6 +22,8 @@ export const settingsLayout = {
             layout_1_column_thin: 'w-full max-w-md',
             layout_1_column_half: 'w-full max-w-4xl',
             messenger: 'w-full',
+            // Page URI or layout name. Forks override in customization/settings.js.
+            'tasks-home': 'w-full',
         },
         page_content_padding: ' p-4 ',
         page_content_padding_default: ' p-4 ',
