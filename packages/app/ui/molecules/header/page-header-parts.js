@@ -7,7 +7,7 @@ import { FeedbackHaptics, appSetting, getMenuSettings } from 'app/lib/util';
 import { useCurrentUser } from 'app/context/user';
 import { appStatic } from 'app/lib/app-static';
 import { usePathname, useRouter } from 'app/lib/hooks/router';
-import { getComponent } from 'app/components/registry';
+import { components } from 'app/components/registry';
 import { useIsDesktop } from 'app/context/measure';
 import { NeoButton, NeoButtonLink } from 'app/design/controls';
 import Link from 'app/ui/atoms/link';
@@ -175,7 +175,7 @@ export const TextHeader = memo(({ text }) => {
 
 export const PageHeaderSmall = ({ pageData }) => {
     const { t } = useTranslation();
-    const HeaderElement = getComponent('molecule', 'header_element');
+    const HeaderElement = components['molecule']['header_element'];
     return (
         <Row className="w-full justify-between gap-2">
             <Link href="/home" alt={t('Home')} className="items-center">
@@ -345,8 +345,8 @@ export const PageHeaderBody = memo(({
     router,
 }) => {
     const { t } = useTranslation();
-    const ContextSelector = getComponent('molecule', 'context_selector');
-    const HeaderElement = getComponent('molecule', 'header_element');
+    const ContextSelector = components['molecule']['context_selector'];
+    const HeaderElement = components['molecule']['header_element'];
     const pathname = usePathname();
     const currentTab = getTabKeyFromPathname(pathname);
     const canShowBackButton = isWeb

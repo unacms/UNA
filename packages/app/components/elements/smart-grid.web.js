@@ -9,7 +9,7 @@ import { fetcher } from 'app/lib/fetcher';
 import Form from 'app/components/elements/form';
 import { appSetting } from 'app/lib/util'
 import { WidthProvider, Responsive } from "react-grid-layout";
-import { getComponent } from 'app/components/registry';
+import { components } from 'app/components/registry';
 import { BlockWrapper } from 'app/components/block-wrapper'
 import { useTranslation } from 'react-i18next'
 
@@ -37,7 +37,7 @@ const ResponsiveReactGridLayoutM = memo(({ data, bAllowEdit, rowHeight, breakpoi
 ));
 
 export default function ({ is_allowed_edit, block_id, content_id, content_module, data: inited_data, blockWrapperProps }) {
-    const Map = getComponent('element', 'map');
+    const Map = components['element']['map'];
     const { t } = useTranslation()
     const bAllowEdit = is_allowed_edit;
     const blockId = block_id;

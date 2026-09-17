@@ -3,12 +3,12 @@ import { Button, ButtonMenuActionDefault } from 'app/design/controls'
 import { appSetting } from 'app/lib/util';
 import { useState } from 'react';
 import { fetcher } from 'app/lib/fetcher';
-import { getComponent } from 'app/components/registry'
+import { components } from 'app/components/registry'
 import { useBottomSheetData } from 'app/context/bottomsheet'
 import { Platform } from 'react-native'
 
 export default function ElementConnections(props) {
-     const DropdownMenuItem = getComponent('menu-item', 'dropdown');
+     const DropdownMenuItem = components['menu-item']['dropdown'];
     const [elementData, setElementData] = useState(props);
     const { setBottomSheetData } = useBottomSheetData();
     const settings = appSetting('social_actions', 'connection');

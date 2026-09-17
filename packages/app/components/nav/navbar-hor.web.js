@@ -11,7 +11,7 @@ import { menuItemsByName } from 'app/lib/util'
 import { useTranslation } from 'react-i18next'
 import MenuDrawer from 'app/components/nav/menu-drawer'
 import MenuTop from 'app/components/nav/menu-top'
-import { getComponent } from 'app/components/registry'
+import { components } from 'app/components/registry'
 import { useBreakpoint, useIsDesktop } from 'app/context/measure';
 
 const headerTheme = appSetting('layout', 'header');
@@ -33,7 +33,7 @@ const HeaderLine = memo(
         const isDesktop = useIsDesktop();
         if (currentBreakpoint >= LAYOUT_BREAKPOINTS.xl && menuPopup) setMenuPopup(false)
 
-        const ContextSelector = getComponent('molecule', 'context_selector')
+        const ContextSelector = components['molecule']['context_selector']
 
         const isDrawer =
             menuItemsByName(
@@ -126,7 +126,7 @@ export default function (props) {
         }
     }, [])
 
-    const HeaderElement = getComponent('molecule', 'header_element')  
+    const HeaderElement = components['molecule']['header_element']  
     
     return (
         <>

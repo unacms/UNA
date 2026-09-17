@@ -1,7 +1,7 @@
 "use client"
 import Layout from 'app/components/layout';
 import { useCurrentUser, isWebAuthReady } from 'app/context/user'
-import { getComponent } from 'app/components/registry';
+import { components } from 'app/components/registry';
 import { appSetting, getLayoutName, getPageContentPaddingTiers, getPageContentWidth, getPageData, strToObj } from 'app/lib/util'
 import emitter from 'app/context/emitter';
 import { responsiveClasses } from 'app/lib/responsive-classes'
@@ -136,7 +136,7 @@ function PageLayoutContent({ layout, data }) {
         item => item.id === "sys-account-profile-system"
     );
 
-    const Component = getComponent('layout', layoutName);
+    const Component = components['layout'][layoutName];
 
     // Keep the wiki shell mounted across doc routes (registry key is layout_1_column_wiki).
     const isWikiLayout = layoutName === 'layout_1_column_wiki' || layoutName === 'wiki';
@@ -178,7 +178,7 @@ function PageLayoutContent({ layout, data }) {
         return null;
     }
 
-    const Splash = getComponent('molecule', 'splash')
+    const Splash = components['molecule']['splash']
     if (!currentUser && layoutName == 'home' && (data.layout == 'splash' || appSetting('layout', 'use_splash_page')))
         return <Splash data={data} />
 

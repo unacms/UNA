@@ -1,6 +1,6 @@
 import { View, Pressable } from 'app/design/view'
 import { appSetting, menuItemsByName } from 'app/lib/util';
-import { getComponent } from 'app/components/registry';
+import { components } from 'app/components/registry';
 import { useCurrentUser } from 'app/context/user'
 import { useMemo, memo, useContext } from "react";
 import { Button, NeoButton } from 'app/design/controls';
@@ -37,7 +37,7 @@ const ButtonEx = memo(({ visibleItemsCount, params }) => {
 });
 
 const MenuItemEx = memo(({ object,item, index, sDisplayType, params }) => {
-    const ItemType =  getComponent('menu-item', String(item.display_type ? item.display_type : sDisplayType));
+    const ItemType =  components['menu-item'][String(item.display_type ? item.display_type : sDisplayType)];
     const newButtonVariant = params?.button_variant === 'none' ? '' : params?.button_variant;
     return (
         <ItemType object={object} mode="dropdown-menu" key={item.id ? item.id : item.name} {...item} params={{ ...params, button_variant: newButtonVariant, button_size: 'sm' }} />
@@ -46,7 +46,7 @@ const MenuItemEx = memo(({ object,item, index, sDisplayType, params }) => {
 
 
 const MenuItem = memo(({ object, item, itemRefs, index, visibleItemsCount, params, bShowVertical, sAlignItems, isUseStaticWidth, isWeb, sDisplayType }) => {
-    const ItemType = getComponent('menu-item', String(item.display_type ? item.display_type : sDisplayType));
+    const ItemType = components['menu-item'][String(item.display_type ? item.display_type : sDisplayType)];
 
     const isLastVisible = typeof visibleItemsCount === 'number' ? index >= (visibleItemsCount - 1) : false;
     let spacingClass = '';
@@ -150,7 +150,7 @@ export default function ElementMenu(oProps) {
                 aItem.display_type='button';
             }
 
-            if (!getComponent('menu-item', sDisplayTypeItem)) {
+            if (!components['menu-item'][sDisplayTypeItem]) {
                 return false;
             }
 
@@ -158,7 +158,7 @@ export default function ElementMenu(oProps) {
             // skip so wrappers don't leave an empty flex slot (cover actions gap).
             if (sDisplayTypeItem === 'element') {
                 const moleculeType = aItem?.data?.type;
-                if (!moleculeType || !getComponent('molecule', String(moleculeType))) {
+                if (!moleculeType || !components['molecule'][String(moleculeType)]) {
                     return false;
                 }
             }
@@ -192,7 +192,7 @@ export default function ElementMenu(oProps) {
         // Prepare only actually rendered items to correctly identify the last visible one
         const preparedItems = filteredItems
             .map((item, originalIndex) => {
-                const ItemType = getComponent('menu-item', item.display_type || sDisplayType);
+                const ItemType = components['menu-item'][item.display_type || sDisplayType];
                 const element = <ItemType object={oProps.object} key={item.id ? item.id : item.name} {...item} params={oProps.params} />
                 return { item, element, originalIndex };
             })

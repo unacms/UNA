@@ -2,7 +2,7 @@ import React from 'react';
 import Link from 'app/ui/atoms/link';
 import { ButtonMenuActionDefault, ButtonMenuActionText, NeoButton } from 'app/design/controls';
 import { View, Row } from 'app/design/view';
-import { getComponent } from 'app/components/registry';
+import { components } from 'app/components/registry';
 import { getIconByNameFromIconset } from 'app/lib/util';
 
 export function formatMenuHref(link) {
@@ -180,7 +180,7 @@ export default function MenuItemActionBase({
     }
 
     if (item?.mode === 'dropdown-menu') {
-        const DropdownMenuItem = getComponent('menu-item', 'dropdown');
+        const DropdownMenuItem = components['menu-item']['dropdown'];
         return (
             <>
                 {extra}

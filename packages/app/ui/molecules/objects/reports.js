@@ -21,7 +21,7 @@ import {
 } from 'app/ui/molecules/objects/helpers';
 import emitter from 'app/context/emitter';
 import Form from 'app/components/form';
-import { getComponent } from 'app/components/registry';
+import { components } from 'app/components/registry';
 import Profile from 'app/ui/molecules/profile/profile';
 import { Text } from 'app/design/typography';
 import { View } from 'app/design/view';
@@ -141,7 +141,7 @@ function resolveActionPayload(response) {
 
 export default function ElementReports(props) {
     const { t } = useTranslation();
-    const DropdownMenuItem = getComponent('menu-item', 'dropdown');
+    const DropdownMenuItem = components['menu-item']['dropdown'];
 
     const initialAction = props?.action ?? {};
     const initialCounter = props?.counter ?? {};

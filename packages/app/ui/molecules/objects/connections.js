@@ -23,7 +23,7 @@ import {
 } from 'app/ui/molecules/objects/helpers';
 import { useRouter, redirectTo } from 'app/lib/hooks/router';
 import { useBottomSheetData } from 'app/context/bottomsheet';
-import { getComponent } from 'app/components/registry';
+import { components } from 'app/components/registry';
 import { BlockByDataInt as BlockByData } from 'app/components/block';
 import { View } from 'app/design/view';
 import { Modal, NeoButton } from 'app/design/controls';
@@ -49,7 +49,7 @@ async function connectionRequest(o, iid, cid, action, params) {
 export default function ElementConnections(props) {
     const { t } = useTranslation();
     const router = useRouter();
-    const DropdownMenuItem = getComponent('menu-item', 'dropdown');
+    const DropdownMenuItem = components['menu-item']['dropdown'];
     const { setBottomSheetData } = useBottomSheetData();
 
     const settings = appSetting('social_actions', 'connection');

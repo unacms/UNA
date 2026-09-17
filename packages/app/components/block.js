@@ -3,7 +3,7 @@ import { appStatic } from 'app/lib/app-static';
 import { BlockWrapper } from 'app/components/block-wrapper'
 import { Text } from 'app/design/typography'
 import { useMemo } from "react";
-import { getComponent } from 'app/components/registry';
+import { components } from 'app/components/registry';
 import { View } from 'app/design/view'
 
 export function BlockByName2({ b, name, contentOnly, wrapperClassses = "" }) {
@@ -200,7 +200,7 @@ export function BlockContent(props) {
     const items = Array.isArray(props.data) ? props.data : [props.data];
 
     const itemsToRender = items.filter(item => {
-        const ElementType = getComponent('element', item.content_type || item.type);
+        const ElementType = components['element'][item.content_type || item.type];
 
         if (ElementType && typeof ElementType.checkEmpty === 'function') {
             const shouldRender = ElementType.checkEmpty(item);
@@ -237,7 +237,7 @@ const FallbackComponent = (props) => (
 
 function Element(a) {
     const ElementType = useMemo(
-        () => getComponent('element', a.content_type || a.type) || FallbackComponent,
+        () => components['element'][a.content_type || a.type] || FallbackComponent,
         [a.type, a.content_type]
     );
 

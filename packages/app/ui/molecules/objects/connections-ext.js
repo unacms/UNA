@@ -5,7 +5,7 @@ import { View } from 'app/design/view'
 import { ButtonMenuActionDefault, ButtonMenuActionText, NeoButton, Modal } from 'app/design/controls';
 import { BlockByDataInt as BlockByData } from 'app/components/block';
 import { useTranslation } from 'react-i18next';
-import { getComponent } from 'app/components/registry'
+import { components } from 'app/components/registry'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu'
 import { useBottomSheetData } from 'app/context/bottomsheet'
 import { Platform } from 'react-native';
@@ -27,7 +27,7 @@ export default function ElementConnections({
     title = '',
 }) {
 
-    const DropdownMenuItem = getComponent('menu-item', 'dropdown');
+    const DropdownMenuItem = components['menu-item']['dropdown'];
     const [elementData, setElementData] = useState({ name, actions, title });
     const [modalContent, setModalContent] = useState(false);
     const { t } = useTranslation();

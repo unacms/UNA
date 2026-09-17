@@ -3,7 +3,7 @@ import Tabs from 'app/ui/molecules/tabs/tabs'
 import { Modal } from 'app/design/controls';
 import Stripe from 'app/ui/molecules/integrations/stripe';
 import { useState, useRef } from 'react';
-import { getComponent } from 'app/components/registry';
+import { components } from 'app/components/registry';
 import { appStatic } from 'app/lib/app-static'
 import { useTranslation } from 'react-i18next'
 import { fetcher } from 'app/lib/fetcher';
@@ -84,7 +84,7 @@ function ElementPricingPeriod({ data, period, unit, settings }) {
         <View className={`${unit !== 'productlist' ? 'flex-row py-3 ' : ''} flex-wrap `}>
             <Redirect ref={redirectRef} />
             {filtered.map((item, index) => {
-                const Price = getComponent('unit', 'price');
+                const Price = components['unit']['price'];
                 const cls = filtered.length > 1 ? 'w-full lg:w-1/' + Math.min(filtered.length, 3) : 'w-full'
                 return (
                     <View key={item.id || item.name || item.title || `price-${index}`} className={`${cls} p-2`}><Price data={item} unit={unit} onBuy={getAction} /></View>

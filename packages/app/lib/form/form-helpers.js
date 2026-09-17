@@ -1,7 +1,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Platform } from 'react-native';
-import { getComponent } from 'app/components/registry';
+import { components } from 'app/components/registry';
 import { NeoButton } from "app/design/controls/neo-button/neo-button";
 import { useTranslation } from 'react-i18next';
 import emitter from 'app/context/emitter';
@@ -229,7 +229,7 @@ export function getFormFieldByData(inputData, handleSubmit, format, externalProp
     // that would otherwise overwrite the stable list key and warn in FormAds / maps.
     const type = resolveFormFieldType(inputData);
     const fallbackKey = uniqueKey || inputData.key || inputData.name || `${type}_${inputData.caption || 'field'}`;
-    const InputType = getComponent('form-field', type);
+    const InputType = components['form-field'][type];
     if (!InputType){
         return <UnsupportedFormField key={fallbackKey} />;
     }

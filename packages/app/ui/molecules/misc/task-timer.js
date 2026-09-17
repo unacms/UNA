@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Platform } from 'react-native';
 import { View, Row } from 'app/design/view';
 import { Text } from 'app/design/typography';
@@ -8,48 +8,52 @@ import { fetcher } from 'app/lib/fetcher';
 import { cn } from 'app/lib/util';
 import emitter from 'app/context/emitter';
 
+const TIMER_EVENT = 'task_timer';
+const ZERO_TIME = { hours: 0, minutes: 0, seconds: 0 };
+
+const MENU_PARAMS = {
+    className: 'gap-x-1',
+    button_style: 'bordered',
+    button_size: 'mini',
+    button_border_shape: 'capsule',
+    button_full_width: false,
+    show_action: true,
+    show_counter: true,
+    show_combined: true,
+    isFixedCount: true,
+};
+
+/** Timer whose "Log" was clicked last — the report form may answer with a task id or no id at all. */
+let pendingLogTimerId = null;
+
 function pad2(value) {
     return String(value).padStart(2, '0');
 }
 
-function formatTimerParts(hours, minutes, seconds) {
-    return `${pad2(hours)}:${pad2(minutes)}:${pad2(seconds)}`;
-}
-
-function toTotalSeconds({ hours = 0, minutes = 0, seconds = 0 }) {
+function toTotalSeconds({ hours = 0, minutes = 0, seconds = 0 } = {}) {
     return hours * 3600 + minutes * 60 + seconds;
 }
 
-function fromTotalSeconds(total) {
+function formatTotalSeconds(total) {
     const safe = Math.max(0, total);
     const hours = Math.floor(safe / 3600);
     const minutes = Math.floor((safe % 3600) / 60);
-    const seconds = safe % 60;
-    return { hours, minutes, seconds };
+    return `${pad2(hours)}:${pad2(minutes)}:${pad2(safe % 60)}`;
 }
-
-const ZERO_TIME = { hours: 0, minutes: 0, seconds: 0 };
-
-let pendingLogTimerId = null;
 
 function isLogAction(item) {
     const name = String(item?.name || item?.action || '').toLowerCase();
-    const title = String(item?.title || '').toLowerCase();
-    return (
-        name === 'log' ||
-        name === 'report_time' ||
-        name === 'report-time' ||
-        title === 'log'
-    );
+    return name === 'log'
+        || name === 'report_time'
+        || name === 'report-time'
+        || String(item?.title || '').toLowerCase() === 'log';
 }
 
 function isTimerPayload(data) {
-    return Boolean(
-        data &&
-        typeof data === 'object' &&
-        !Array.isArray(data) &&
-        (data.state != null || data.time != null || data.actions != null)
-    );
+    return !!data
+        && typeof data === 'object'
+        && !Array.isArray(data)
+        && (data.state != null || data.time != null || data.actions != null);
 }
 
 function idsMatch(left, right) {
@@ -58,166 +62,111 @@ function idsMatch(left, right) {
 }
 
 function isThisTimer(eventId, timerData) {
-    const thisId = timerData?.id;
-    if (idsMatch(eventId, thisId) || idsMatch(eventId, timerData?.timer_id)) {
-        return true;
-    }
-    // Report form may send task id / empty id — fall back to the timer that was clicked.
-    return idsMatch(pendingLogTimerId, thisId);
+    return idsMatch(eventId, timerData?.id)
+        || idsMatch(eventId, timerData?.timer_id)
+        || idsMatch(pendingLogTimerId, timerData?.id);
 }
 
+/** Ticks every second while `state === 'started'`; resets when server time or `resetNonce` changes. */
 function TimerDisplay({ data, resetNonce = 0 }) {
     const isRunning = data?.state === 'started';
+    const baseSeconds = toTotalSeconds(data?.time || data);
+    const resetKey = `${baseSeconds}|${resetNonce}`;
 
-    const [totalSeconds, setTotalSeconds] = useState(() =>
-        toTotalSeconds(data?.time || data || {})
-    );
-
-    useEffect(() => {
-        setTotalSeconds(toTotalSeconds(data?.time || {}));
-    }, [data?.time?.hours, data?.time?.minutes, data?.time?.seconds, resetNonce]);
+    const [totalSeconds, setTotalSeconds] = useState(baseSeconds);
+    const [seenResetKey, setSeenResetKey] = useState(resetKey);
+    if (seenResetKey !== resetKey) {
+        setSeenResetKey(resetKey);
+        setTotalSeconds(baseSeconds);
+    }
 
     useEffect(() => {
         if (!isRunning) return undefined;
-
-        const interval = setInterval(() => {
-            setTotalSeconds((prev) => prev + 1);
-        }, 1000);
-
+        const interval = setInterval(() => setTotalSeconds((prev) => prev + 1), 1000);
         return () => clearInterval(interval);
     }, [isRunning]);
-
-    const parts = fromTotalSeconds(totalSeconds);
 
     return (
         <Row className="items-center gap-2 flex-none">
             <View className="w-5 h-5 items-center justify-center">
-            <Icon icon="Clock" size={16} className="text-muted-foreground" />
+                <Icon icon="Clock" size={16} className="text-muted-foreground" />
             </View>
             <Text className="font-mono text-base font-semibold tabular-nums text-foreground">
-                {formatTimerParts(parts.hours, parts.minutes, parts.seconds)}
+                {formatTotalSeconds(totalSeconds)}
             </Text>
         </Row>
     );
 }
 
-
 export function TaskTimer({ data, className }) {
     const [timerData, setTimerData] = useState(data);
     const [resetNonce, setResetNonce] = useState(0);
-    const timerDataRef = useRef(timerData);
-    timerDataRef.current = timerData;
+    const timerId = timerData?.id;
+    const requestUrl = timerData?.request_url;
+    const isRunning = timerData?.state === 'started';
 
+    /** `zeroTime` restarts the display from 00:00:00 (after logging time). */
     const applyTimerData = useCallback((next, { zeroTime = false } = {}) => {
-        if (!next && !zeroTime) return;
-
-        if (zeroTime) {
-            setResetNonce((n) => n + 1);
-            setTimerData((prev) => ({
-                ...(next || prev),
-                time: { ...ZERO_TIME },
-            }));
+        if (!zeroTime) {
+            if (next) setTimerData(next);
             return;
         }
-
-        setTimerData(next);
+        setResetNonce((n) => n + 1);
+        setTimerData((prev) => ({ ...(next || prev), time: { ...ZERO_TIME } }));
     }, []);
 
     const refreshTimer = useCallback(async ({ zeroTime = false } = {}) => {
-        const requestUrl = timerDataRef.current?.request_url;
-        if (!requestUrl) {
-            if (zeroTime) applyTimerData(null, { zeroTime: true });
-            return;
-        }
-
-        const response = await fetcher('/api.php?r=' + requestUrl);
-        if (isTimerPayload(response?.data)) {
-            applyTimerData(response.data, { zeroTime });
-            return;
-        }
-
-        if (zeroTime) applyTimerData(null, { zeroTime: true });
-    }, [applyTimerData]);
-
-    const runCallback = useCallback(async (item, timerId) => {
-        const requestUrl = item?.data?.request_url;
-        const logAction = isLogAction(item);
-
-        if (logAction) {
-            pendingLogTimerId = timerId ?? timerDataRef.current?.id ?? null;
-        }
-
-        if (!requestUrl) {
-            if (logAction) {
-                emitter.emit('task_timer', { id: timerId, action: 'log' });
-            }
-            return;
-        }
-
-        const response = await fetcher('/api.php?r=' + requestUrl);
-
-        if (logAction) {
-            applyTimerData(
-                isTimerPayload(response?.data) ? response.data : null,
-                { zeroTime: true }
-            );
-            emitter.emit('task_timer', { id: timerId, action: 'log' });
-            return;
-        }
-
-        if (response?.data) {
-            setTimerData(response.data);
-        }
-
-        emitter.emit('task_timer', { id: timerId, action: item.name });
-    }, [applyTimerData]);
+        const response = requestUrl ? await fetcher('/api.php?r=' + requestUrl) : null;
+        const next = isTimerPayload(response?.data) ? response.data : null;
+        if (next || zeroTime) applyTimerData(next, { zeroTime });
+    }, [requestUrl, applyTimerData]);
 
     useEffect(() => {
-        const subscription = emitter.addListener('task_timer', (event) => {
-            if (event.action == 'log' && isThisTimer(event.id, timerDataRef.current)) {
+        const subscription = emitter.addListener(TIMER_EVENT, (event) => {
+            if (event.action === 'log' && isThisTimer(event.id, timerData)) {
                 pendingLogTimerId = null;
-                void refreshTimer({ zeroTime: true });
+                refreshTimer({ zeroTime: true });
                 return;
             }
-
-            if ((event.action == 'start' || event.action == 'resume' || event.action == 'log') && timerDataRef.current?.state === 'started') {
-                void refreshTimer();
+            // Only one timer can run per profile — starting another one stops this one.
+            if (isRunning && ['start', 'resume', 'log'].includes(event.action)) {
+                refreshTimer();
             }
         });
+        return () => subscription.remove();
+    }, [timerData, isRunning, refreshTimer]);
 
-        return () => {
-            subscription.remove();
-        };
-    }, [refreshTimer]);
+    const runAction = async (item) => {
+        const actionUrl = item?.data?.request_url;
+        const logAction = isLogAction(item);
+        if (logAction) pendingLogTimerId = timerId ?? null;
 
-    const markPendingLog = useCallback(() => {
-        pendingLogTimerId = timerDataRef.current?.id ?? null;
-    }, []);
+        if (!actionUrl) {
+            if (logAction) emitter.emit(TIMER_EVENT, { id: timerId, action: 'log' });
+            return;
+        }
 
-    const menuParams = useMemo(() => ({
-        className: 'gap-x-1',
-        button_style: 'bordered',
-        button_size: 'mini',
-        button_border_shape: 'capsule',
-        button_full_width: false,
-        show_action: true,
-        show_counter: true,
-        show_combined: true,
-        isFixedCount: true,
-        timer_id: timerData?.id,
-        onclick: (event, item) => runCallback(item, timerDataRef.current?.id),
-    }), [runCallback, timerData?.id]);
+        const response = await fetcher('/api.php?r=' + actionUrl);
+        if (logAction) {
+            applyTimerData(isTimerPayload(response?.data) ? response.data : null, { zeroTime: true });
+            emitter.emit(TIMER_EVENT, { id: timerId, action: 'log' });
+            return;
+        }
+        if (response?.data) setTimerData(response.data);
+        emitter.emit(TIMER_EVENT, { id: timerId, action: item.name });
+    };
 
-
-    const callbackCount = timerData?.actions?.items.filter((item) => item.display_type === 'callback').length;
-    const actionItems = (timerData?.actions?.items || []).map((item) =>
-        item.display_type === 'callback'
-            ? { ...item, display_type: 'button' }
-            : item
-    );
-
+    const markPendingLog = () => {
+        pendingLogTimerId = timerId ?? null;
+    };
 
     if (!timerData) return null;
+
+    const actionItems = (timerData.actions?.items || []).map((item) => (
+        item.display_type === 'callback' ? { ...item, display_type: 'button' } : item
+    ));
+    const callbackCount = (timerData.actions?.items || [])
+        .filter((item) => item.display_type === 'callback').length;
 
     return (
         <Row
@@ -228,15 +177,15 @@ export function TaskTimer({ data, className }) {
             <TimerDisplay data={timerData} resetNonce={resetNonce} />
             <View className="flex-auto min-w-0">
                 <Row className="flex-wrap items-center justify-end gap-2">
-                        <Menu
-                            {...timerData.actions}
-                            persistent={callbackCount}
-                            items={actionItems}
-                            alignItems="start"
-                            autoSize
-                            autoFilter={false}
-                            params={menuParams}
-                        />
+                    <Menu
+                        {...timerData.actions}
+                        persistent={callbackCount}
+                        items={actionItems}
+                        alignItems="start"
+                        autoSize
+                        autoFilter={false}
+                        params={{ ...MENU_PARAMS, timer_id: timerId, onclick: (event, item) => runAction(item) }}
+                    />
                 </Row>
             </View>
         </Row>

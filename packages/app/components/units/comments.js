@@ -18,7 +18,7 @@ import { useTranslation } from 'react-i18next'
 import Link from 'app/ui/atoms/link'
 import { toUnaDisplayImageItem } from 'app/lib/image-helpers'
 import Carousel from 'app/ui/molecules/content/carousel'
-import { getComponent } from 'app/components/registry'
+import { components } from 'app/components/registry'
 import { StarsView } from 'app/ui/atoms/stars'
 import Loading from 'app/ui/atoms/loading'
 import { Icon } from 'app/ui/atoms/icon'
@@ -35,7 +35,7 @@ function isSystemRootComment(item) {
 export default function UnitComments(props) {
     const UnitView = props.mode == 'search'
         ? UnitCommentsSearch
-        : (isSystemRootComment(props) && getComponent('unit', 'activity')) || UnitCommentsDefault
+        : (isSystemRootComment(props) && components['unit']['activity']) || UnitCommentsDefault
     return <UnitView {...props} />
 }
 
@@ -199,7 +199,7 @@ function UnitCommentsDefault(props) {
         )
 
 
-    const Badges = getComponent('molecule', 'badges');
+    const Badges = components['molecule']['badges'];
 
 
     const isShowReply = data?.menu_actions?.items?.find(
@@ -501,10 +501,7 @@ const MenuManage_ = memo(
             ).map((aItem) => {
                 let sTitle = aItem.title
                 if (!!aItem.display_type && aItem.display_type == 'element') {
-                    const Element = getComponent(
-                        'molecule',
-                        String(aItem.data.type)
-                    )
+                    const Element = components['molecule'][String(aItem.data.type)]
                     if (!!Element) {
                         sTitle = (
                             <Element

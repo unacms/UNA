@@ -3,7 +3,7 @@ import { getPageData, getLayoutName, BlockDataByType } from 'app/lib/util';
 import { BlockByDataInt as BlockByData } from 'app/components/block';
 import { View } from 'app/design/view';
 import { Keyboard } from 'react-native'
-import { getComponent } from 'app/components/registry';
+import { components } from 'app/components/registry';
 import { Platform } from 'react-native'
 import { useEffect, useCallback, useRef } from 'react'
 import { Loading } from 'app/customization/loading'
@@ -66,7 +66,7 @@ export default function FormModal({ pageData, setPageData, modalView, url }) {
 
     if (modalView == 'content_page') {
         const authorData = BlockDataByType(pageData, 'entity_author');
-        const Component = getComponent('layout', 'post');
+        const Component = components['layout']['post'];
         const layout = getLayoutName(pageData, 'item');
         const { layoutBlocks } = layout;
 

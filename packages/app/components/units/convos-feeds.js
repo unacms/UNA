@@ -10,7 +10,7 @@ import Html from "app/ui/atoms/html";
 import { Button } from "app/design/controls";
 import { HistoryServices as Services } from "app/components/elements/messenger/services";
 import DropdownMenu from "app/ui/atoms/dropdown-menu";
-import { getComponent } from 'app/components/registry';
+import { components } from 'app/components/registry';
 import { toUnaDisplayImageItem } from 'app/lib/image-helpers';
 import Form from "../elements/form";
 import { useSendData } from "../elements/messenger/hooks/useHistory";
@@ -80,7 +80,7 @@ const ImagesComponent = ({ files }) => {
 
 const MsgFeed = memo(({ item, handlerMenuSelect }) => {
     const { t } = useTranslation();
-    const Reactions = getComponent('molecule', 'reactions');
+    const Reactions = components['molecule']['reactions'];
     const { currentUser } = useCurrentUser(),
         { author_data, created, count, files, message, menu, id, reactions } = item,
         sCommentClass = "bg-muted-foreground/10 rounded-tl-none rounded-2xl px-4 u-vanilla-html-small",

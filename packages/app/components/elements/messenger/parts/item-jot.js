@@ -8,7 +8,7 @@ import Form from 'app/components/elements/form';
 //import use-SWR from "swr";
 import useFetchForm from 'app/lib/hooks/use-fetch-form'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
-import { getComponent } from 'app/components/registry';
+import { components } from 'app/components/registry';
 import { useTranslation } from 'react-i18next';
 import { FeedbackHaptics } from 'app/lib/util';
 import { toUnaDisplayImageItem } from 'app/lib/image-helpers'
@@ -19,7 +19,7 @@ import { TouchableWithoutFeedback } from 'react-native';
 import { ContentMore } from 'app/ui/molecules/content/content-more'
 
 export default function JotItem({ item, index, handleReply }) {
-    const Reactions = getComponent('molecule', 'reactions');
+    const Reactions = components['molecule']['reactions'];
     const { t } = useTranslation();
     const [postData, setPostData] = useState(null)
     const [viewState, setViewState] = useState({ view: '' })

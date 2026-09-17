@@ -6,7 +6,7 @@ import { Block as PageBlock, BlockContent, BlockName, BlockActions, BlockHeader,
 import { useTranslation } from 'react-i18next'
 import { Button, ButtonLink, Modal, NeoButtonLink } from 'app/design/controls'
 import { Icon } from 'app/ui/atoms/icon'
-import { getComponent } from 'app/components/registry'
+import { components } from 'app/components/registry'
 import { usePathname } from 'app/lib/hooks/router'
 
 function pathComparable(path) {
@@ -14,7 +14,7 @@ function pathComparable(path) {
 }
 
 function BlockHeaderMenu({ menu, pathname }) {
-    const MenuItemBlockmenu = getComponent('menu-item', 'blockmenu')
+    const MenuItemBlockmenu = components['menu-item']['blockmenu']
     const current = pathComparable(pathname)
     const items = menu?.items
 

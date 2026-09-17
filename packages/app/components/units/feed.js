@@ -20,14 +20,14 @@ import {
 
 import { CardList, CardHeader, CardTitle } from 'app/ui/molecules/page/card';
 import AnimatedBlock from 'app/ui/atoms/animated-block'
-import { getComponent } from 'app/components/registry'
+import { components } from 'app/components/registry'
 import Scroll from 'app/ui/molecules/page/scroll'
 import { useOpenModalByUrl } from 'app/context/jotai/modal';
 import { Skeleton } from 'app/ui/atoms/skeleton';
 
 function TimelineRecommendations({ data }) {
     const { t } = useTranslation()
-    const Unit = getComponent('content-list', data.module)
+    const Unit = components['content-list'][data.module]
 
     return (
         <AnimatedBlock>

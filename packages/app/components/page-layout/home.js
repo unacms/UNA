@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next'
 import Profile from 'app/ui/molecules/profile/profile'
 import { Text } from 'app/design/typography'
 import { Platform } from 'react-native'
-import { getComponent } from 'app/components/registry'
+import { components } from 'app/components/registry'
 import {
     Panel,
     PanelGroup,
@@ -152,7 +152,7 @@ return <View className='bg-blue-500 w-full h-full pt-24'>
      <Button startDecorator="Plus" variant="badge" title="fdfdsf"></Button>
 </>
     )*/
-    const MenuItemSidebarWithWrapper = getComponent('menu-item', 'sidebar_with_wrapper');
+    const MenuItemSidebarWithWrapper = components['menu-item']['sidebar_with_wrapper'];
     const isWeb = Platform.OS == 'web'
     const isDesktop = useIsDesktop();
     const { layoutName, layoutSettings } = useLayoutSettings();
@@ -215,7 +215,7 @@ return <View className='bg-blue-500 w-full h-full pt-24'>
             )
         })}</View>
 
-    const MenuItemSubmenu = getComponent('menu-item', 'submenu');
+    const MenuItemSubmenu = components['menu-item']['submenu'];
 
     const subHeader = useMemo(() =>
         feedList.length > 1 ? (

@@ -4,7 +4,7 @@ import Image from 'app/ui/atoms/image'
 import Link from 'app/ui/atoms/link'
 import { getRandomColor, appSetting } from 'app/lib/util';
 import { memo } from 'react';
-import { getComponent } from 'app/components/registry';
+import { components } from 'app/components/registry';
 import { useTranslation } from 'react-i18next';
 /**
  * displayType: 
@@ -37,7 +37,7 @@ export function DisplayNameLink({
     link_haptics,
     link_href,
 }) {
-    const ProfileLink = getComponent('molecule', 'profile_link')
+    const ProfileLink = components['molecule']['profile_link']
     const result = ProfileLink({ title, url, href, fontSize, actions, options: { inheritColor, inheritTextSize, textClassName } })
     const link_content = Array.isArray(result) ? result[0] : result;
     const add_content = Array.isArray(result) ? result[1] : null;

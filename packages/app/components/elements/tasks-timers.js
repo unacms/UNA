@@ -4,64 +4,62 @@ import { Text } from 'app/design/typography';
 import { BlockWrapper } from 'app/components/block-wrapper';
 import BrowseSimple from 'app/components/elements/browse-simple';
 import { Button } from 'app/design/controls';
-import { getComponent } from 'app/components/registry';
+import { components } from 'app/components/registry';
 import { fetcher } from 'app/lib/fetcher';
 import emitter from 'app/context/emitter';
 
+/** Payload is either `{ sections: [...] }` or a bare sections array. */
 function getSections(data) {
     if (Array.isArray(data?.sections)) return data.sections;
     if (Array.isArray(data)) return data;
     return [];
 }
 
-function removeTimerById(prev, timerId) {
+function removeTimer(prev, timerId) {
     const sections = getSections(prev)
         .map((section) => ({
             ...section,
-            timers: (section.timers || []).filter(
-                (item) => item?.timer?.id !== timerId
-            ),
+            timers: (section.timers || []).filter((item) => item?.timer?.id !== timerId),
         }))
-        .filter((section) => section.timers?.length > 0);
-
+        .filter((section) => section.timers.length > 0);
     return { ...prev, sections };
 }
 
 export default function ElementTasksTimers({ data, blockWrapperProps }) {
+    const NoContent = components['molecule']['no_content'];
     const [timersData, setTimersData] = useState(data);
 
-    const NoContent = getComponent('molecule', 'no_content');
-
-    const sections = getSections(timersData);
-    const globalActions = timersData?.actions?.items || [];
-    const hasTimers = sections.some((section) => section?.timers?.length > 0);
-
-    useEffect(() => {
+    // Fresh block data (page reload) replaces the locally pruned copy.
+    const [seenData, setSeenData] = useState(data);
+    if (seenData !== data) {
+        setSeenData(data);
         setTimersData(data);
-    }, [data]);
+    }
 
     useEffect(() => {
+        // A logged / cleared timer disappears from the list without a refetch.
         const subscription = emitter.addListener('task_timer', (event) => {
             if (event.action === 'log' || event.action === 'clear') {
-                setTimersData((prev) => removeTimerById(prev, event.id));
+                setTimersData((prev) => removeTimer(prev, event.id));
             }
         });
-
         return () => subscription.remove();
     }, []);
 
-    async function runGlobalAction(item) {
+    const sections = getSections(timersData).filter((section) => section?.timers?.length > 0);
+    const globalActions = timersData?.actions?.items || [];
+
+    const runGlobalAction = async (item) => {
         const requestUrl = item?.data?.request_url;
         if (!requestUrl) return;
-
         await fetcher('/api.php?r=' + requestUrl);
         setTimersData((prev) => ({ ...prev, sections: [] }));
-    }
+    };
 
     return (
         <BlockWrapper {...blockWrapperProps}>
             <View className="w-full gap-6">
-                {(globalActions.length > 0 && hasTimers) ? (
+                {globalActions.length > 0 && sections.length > 0 ? (
                     <Row className="flex-wrap items-center justify-end gap-2 px-2">
                         {globalActions.map((item) => (
                             <Button
@@ -75,35 +73,26 @@ export default function ElementTasksTimers({ data, blockWrapperProps }) {
                     </Row>
                 ) : null}
 
-                {!hasTimers ? (
+                {sections.length === 0 ? (
                     <NoContent endpoint={{ request_url: data?.request_url, params: {} }} />
                 ) : (
-                    sections.map((section, sectionIndex) => {
-                        const timers = section?.timers || [];
-                        if (!timers.length) return null;
-
-                        return (
-                            <View
-                                key={section.section_title || `section-${sectionIndex}`}
-                                className="gap-2"
-                            >
-                                {section.section_title ? (
-                                    <Text className="px-2 text-base font-semibold tracking-tight text-muted-foreground">
-                                        {section.section_title}
-                                    </Text>
-                                ) : null}
-
-                                <BrowseSimple
-                                    data={{
-                                        data: timers,
-                                        unit: 'general-content-list',
-                                        module: 'bx_tasks_timer',
-                                    }}
-                                    blockWrapperProps={{ block: { designbox_id: null } }}
-                                />
-                            </View>
-                        );
-                    })
+                    sections.map((section, index) => (
+                        <View key={section.section_title || `section-${index}`} className="gap-2">
+                            {section.section_title ? (
+                                <Text className="px-2 text-base font-semibold tracking-tight text-muted-foreground">
+                                    {section.section_title}
+                                </Text>
+                            ) : null}
+                            <BrowseSimple
+                                data={{
+                                    data: section.timers,
+                                    unit: 'general-content-list',
+                                    module: 'bx_tasks_timer',
+                                }}
+                                blockWrapperProps={{ block: { designbox_id: null } }}
+                            />
+                        </View>
+                    ))
                 )}
             </View>
         </BlockWrapper>

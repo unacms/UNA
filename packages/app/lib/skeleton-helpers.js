@@ -1,5 +1,5 @@
 import { View } from 'app/design/view'
-import { getComponent } from 'app/components/registry';
+import { components } from 'app/components/registry';
 import { appSetting } from 'app/lib/util';
 
 const LIST_CLASS = 'u-max-width-block w-full mx-auto flex flex-wrap flex-row animate-pulse'
@@ -51,7 +51,7 @@ export function getSkeletonForList(name, num = 5, isFirst = true, layout, render
         )
     }
 
-    const Item = getComponent('skeleton', getlegacySkeletonName(name)) || getComponent('skeleton', 'default');
+    const Item = components['skeleton'][getlegacySkeletonName(name)] || components['skeleton']['default'];
     return (
         <View className='@container/list'>
             <View className={LIST_CLASS}>
