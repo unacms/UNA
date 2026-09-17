@@ -1,0 +1,547 @@
+div.bx-std-menu-top-wrp {
+    position: relative;
+    display: flex;    
+    align-items: flex-start;
+    flex-wrap: nowrap;
+
+    width: 100%;
+    height: 5.5rem; /* the 64px bar (32px icons in 16px padding) with 12px above and below */
+}
+/* The bar: 16px padding around the 32px icons (64px tall) and 12px of margin above and at the sides. */
+div.bx-std-menu-top-gap {
+    margin: 0.75rem 0.75rem 0;
+    padding: 1rem;
+    border-radius: 1.5rem; /* 24px, like the blocks */
+    backdrop-filter: blur(16px);
+}
+div.bx-std-menu-top-wrp .bx-std-menu-top.bx-std-menu-top-center:first-child {
+    padding-left: 0.75rem;
+}
+
+/*
+ * Header sections in one flex row: the left part (breadcrumb, launcher search) takes whatever is left,
+ * the dock and the tools keep their natural width and sit on the right.
+ */
+div.bx-std-menu-top.bx-std-menu-top-left {
+    position: relative;
+    z-index: 2;
+    flex: 1 1 auto;
+    min-width: 0;
+}
+div.bx-std-menu-top.bx-std-menu-top-center,
+div.bx-std-menu-top.bx-std-menu-top-right {
+    position: relative;
+    flex: 0 0 auto;
+}
+div.bx-std-menu-top.bx-std-menu-top-center {
+    display: flex;
+    z-index: 1;
+    height: 2rem;
+}
+div.bx-std-menu-top.bx-std-menu-top-right {
+    z-index: 2;
+}
+/* Hairline between the dock and the tool buttons, only while the dock has visible items (md and up). */
+@media (min-width: 768px) {
+    div.bx-std-menu-top.bx-std-menu-top-center:has(.bx-menu-top-center li) {
+        margin-right: 0.75rem;
+        padding-right: 0.75rem;
+    }
+    /* The breadcrumb's separator bar (2 x 16px, rounded), centred on the block's edge between the 12px + 12px. */
+    div.bx-std-menu-top.bx-std-menu-top-center:has(.bx-menu-top-center li)::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        right: -1px;
+        width: 2px;
+        height: 1rem;
+        border-radius: 1px;
+        transform: translateY(-50%);
+        background-color: rgba(0, 0, 0, 0.1);
+    }
+    .dark div.bx-std-menu-top.bx-std-menu-top-center:has(.bx-menu-top-center li)::after {
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+}
+div.bx-std-menu-top-center ul {
+    position: relative;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: stretch;
+    align-items: stretch;
+    -webkit-flex-wrap: nowrap;
+    flex-wrap: nowrap;
+    
+}
+div.bx-std-menu-top-left {
+    padding-right: 0.75rem; /* same 12px step as between the dock icons, so the search field never touches the dock */
+    line-height: 2rem;
+    text-align: left;
+    font-size: 1.5rem;
+}
+div.bx-std-menu-top-right {
+    text-align: right; /* the bar's own 16px padding keeps the icons off its edge */
+}
+
+/*--- Breadcrumb (Left) ---*/
+div.bx-std-menu-top .bx-menu-breadcrumb {
+    position: relative;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-wrap: nowrap;
+    flex-wrap: nowrap;
+    -webkit-align-items: center;
+    align-items: center;
+}
+
+/*--- Widgets (Center) ---*/
+div.bx-std-menu-top .bx-menu-top-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.75rem; /* one 12px step between icons, around the divider and before the hairline, same as the toolbar */
+
+    padding: 0;
+    margin: 0;
+
+    list-style: none;
+}
+
+div.bx-std-menu-top .bx-menu-breadcrumb li.bx-menu-bc-item,
+div.bx-std-menu-top .bx-menu-top-center li {
+    position: relative;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-justify-content: center;
+    justify-content: center;
+    -webkit-align-items: center;
+    align-items: center;
+
+    width: 2rem; /* icon width only: spacing comes from the dock's list gap and the breadcrumb separator's padding */
+    height: 2rem;
+}
+/* Breadcrumb separator: a 2 x 16px bar that takes no room of its own (-1px margins) between 12px of padding either side, so the launcher icon and the app icon sit exactly 24px apart with the bar centred between them. */
+div.bx-std-menu-top .bx-menu-breadcrumb li.bx-menu-bc-div {
+    padding: 0 0.75rem;
+}
+div.bx-std-menu-top .bx-menu-breadcrumb .bx-menu-bc-sep {
+    display: block;
+    width: 2px;
+    height: 1rem;
+    margin: 0 -1px;
+    border-radius: 1px;
+    background-color: rgba(0, 0, 0, 0.1);
+}
+.dark div.bx-std-menu-top .bx-menu-breadcrumb .bx-menu-bc-sep {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+/* Page item: the app's launcher icon fills its 32px tile (8px corners, the tile's hairline ring over the art), the title 12px after it. */
+div.bx-std-menu-top .bx-menu-breadcrumb li.bx-menu-bc-item.bx-menu-bc-page .bx-mi-icon.bx-icon-tile img {
+    display: block;
+    width: 100%; /* the whole tile, not the 20px glyph size the header-button rule below gives images */
+    height: 100%;
+    border-radius: inherit;
+    object-fit: cover;
+}
+div.bx-std-menu-top .bx-menu-breadcrumb li.bx-menu-bc-page .bx-mi-icon + .bx-mi-title {
+    margin-left: 0.5rem; /* with the title's own 4px padding: 12px from the tile */
+}
+
+/* Page title never pushes the dock: it truncates instead. */
+div.bx-std-menu-top .bx-menu-breadcrumb li.bx-menu-bc-item.bx-menu-bc-page {
+    width: auto;
+    min-width: 0;
+    padding-left: 0;
+    padding-right: 0;
+}
+div.bx-std-menu-top .bx-menu-breadcrumb li.bx-menu-bc-item .bx-mi-title {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+/*
+ * Launcher search: the field fills the space left of the dock, clamped between 12rem and 20rem.
+ * Below 12rem (menu_top.js measures this) the item collapses to a button; opening it then hands
+ * the whole header to the field until it is closed again.
+ */
+div.bx-std-menu-top .bx-menu-breadcrumb li.bx-menu-bc-item.bx-menu-tab-search {
+    justify-content: flex-start;
+    flex: 1 1 auto;
+    min-width: 0;
+    width: auto;
+    padding: 0; /* the separator before it provides the spacing, so its glyph box lands where an app icon sits on app pages */
+}
+/* On the launcher the field is bare: no fill, ring or focus ring (the caret marks focus; a ring would come back the moment the user types); the search glyph is centred in a transparent 32px box at the field's left edge and the text starts 4px after that box. */
+div.bx-std-menu-top .bx-menu-breadcrumb li.bx-menu-tab-search .bx-std-search-field > span {
+    justify-content: center;
+    width: 2rem;
+    padding-left: 0;
+    padding-right: 0;
+}
+div.bx-std-menu-top .bx-menu-breadcrumb li.bx-menu-tab-search .bx-std-search-field > input {
+    padding: 0 2.25rem; /* the glyph box on one side, the clear button on the other, whichever way the text runs */
+    background-color: transparent;
+    box-shadow: none;
+}
+/* The browser's own clear control is replaced by a Lucide x: a 16px glyph in a 32px hover target at the field's right edge, shown while there is text (menu_top.js). */
+div.bx-std-menu-top .bx-menu-breadcrumb li.bx-menu-tab-search .bx-std-search-field > input::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+    appearance: none;
+    display: none;
+}
+div.bx-std-menu-top .bx-menu-breadcrumb li.bx-menu-tab-search .bx-std-search-clear {
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 0.5rem;
+    color: rgb(107 114 128);
+    cursor: pointer;
+    transition: background-color 150ms ease-in-out, color 150ms ease-in-out;
+}
+div.bx-std-menu-top .bx-menu-breadcrumb li.bx-menu-tab-search .bx-std-search-clear[hidden] {
+    display: none;
+}
+.bx-dir-rtl div.bx-std-menu-top .bx-menu-breadcrumb li.bx-menu-tab-search .bx-std-search-clear {
+    right: auto;
+    left: 0;
+}
+div.bx-std-menu-top .bx-menu-breadcrumb li.bx-menu-tab-search .bx-std-search-clear:hover {
+    background-color: rgb(229 231 235);
+    color: rgb(55 65 81);
+}
+div.bx-std-menu-top .bx-menu-breadcrumb li.bx-menu-tab-search .bx-std-search-clear:focus-visible {
+    outline: none;
+    box-shadow: inset 0 0 0 2px rgb(59 130 246);
+}
+div.bx-std-menu-top .bx-menu-breadcrumb li.bx-menu-tab-search .bx-std-search-clear svg {
+    width: 1rem;
+    height: 1rem;
+}
+.dark div.bx-std-menu-top .bx-menu-breadcrumb li.bx-menu-tab-search .bx-std-search-clear {
+    color: rgb(156 163 175);
+}
+.dark div.bx-std-menu-top .bx-menu-breadcrumb li.bx-menu-tab-search .bx-std-search-clear:hover {
+    background-color: rgb(31 41 55);
+    color: rgb(209 213 219);
+}
+div.bx-std-menu-top .bx-menu-breadcrumb li.bx-menu-tab-search > .bx-std-search-trigger {
+    display: none;
+}
+div.bx-std-menu-top .bx-menu-breadcrumb li.bx-menu-tab-search.bx-mt-compact > .bx-std-search-trigger {
+    display: flex;
+    flex: 0 0 auto;
+    box-sizing: border-box;
+    width: 2rem;
+    height: 2rem;
+}
+div.bx-std-menu-top .bx-menu-breadcrumb li.bx-menu-tab-search.bx-mt-compact:not(.bx-mt-active) > .bx-std-search-field {
+    display: none;
+}
+div.bx-std-menu-top .bx-menu-breadcrumb li.bx-menu-tab-search.bx-mt-compact.bx-mt-active > .bx-std-search-field {
+    margin-left: 0.5rem;
+    max-width: none;
+}
+div.bx-std-menu-top-gap:has(li.bx-menu-tab-search.bx-mt-compact.bx-mt-active) .bx-std-menu-top-center,
+div.bx-std-menu-top-gap:has(li.bx-menu-tab-search.bx-mt-compact.bx-mt-active) .bx-std-menu-top-right {
+    display: none;
+}
+div.bx-std-menu-top .bx-menu-breadcrumb li.bx-menu-bc-actions a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+div.bx-std-menu-top .bx-menu-breadcrumb li.bx-menu-bc-actions img,
+div.bx-std-menu-top .bx-menu-breadcrumb li.bx-menu-bc-actions svg {
+    width: 1.0rem;
+    height: 1.0rem;
+}
+
+div.bx-std-menu-top .bx-menu-top-center li.bx-menu-item-disabled .bx-mi-icon {
+    opacity: 0.4; /* a disabled app, dimmed as its launcher tile is (.bx-std-widget-icon-disabled) */
+}
+div.bx-std-menu-top .bx-menu-top-center li.bx-menu-item-divider {
+    width: 2px; /* the breadcrumb's separator bar: 2 x 16px, rounded, no room of its own (-1px margins) */
+    height: 1rem;
+    margin: 0 -1px;
+    border: 0;
+    border-radius: 1px;
+    background-color: rgba(0, 0, 0, 0.1);
+}
+.dark div.bx-std-menu-top .bx-menu-top-center li.bx-menu-item-divider {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+div.bx-std-menu-top .bx-menu-top-center li.bx-menu-item-divider a {
+    display: none;
+}
+
+.bx-menu-breadcrumb li.bx-menu-bc-item > a,
+div.bx-std-menu-top .bx-menu-top-center li a {
+    display: block;
+    z-index: 2;
+    box-sizing: content-box;
+
+    width: 2rem;
+    height: 2rem;
+}
+.bx-menu-breadcrumb li.bx-menu-bc-item > a {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
+
+    width: auto;
+}
+div.bx-std-menu-top .bx-menu-top-center li.bx-menu-tab-active a {
+    border-color: rgba(59, 130, 246, 0.5);
+}
+div.bx-std-menu-top .bx-menu-top-center li.bx-menu-tab-active .bx-mi-bg {
+    display: block;
+}
+div.bx-std-menu-top .bx-menu-breadcrumb li.bx-menu-bc-item .bx-mi-title {    
+    text-align: center;
+    letter-spacing: -0.02em;
+}
+/* Launcher button: a 20px glyph in a 32px button, like the toolbar. */
+div.bx-std-menu-top .bx-menu-breadcrumb li.bx-menu-bc-item .bx-mi-icon.bx-std-header-btn svg,
+div.bx-std-menu-top .bx-menu-breadcrumb li.bx-menu-bc-item .bx-mi-icon.bx-std-header-btn img {
+    display: block;
+    width: 1.25rem;
+    height: 1.25rem;
+}
+div.bx-std-menu-top .bx-menu-breadcrumb li.bx-menu-bc-item img,
+div.bx-std-menu-top .bx-menu-breadcrumb li.bx-menu-bc-item:not(.bx-menu-tab-search) svg,
+div.bx-std-menu-top .bx-menu-breadcrumb li.bx-menu-bc-item .sys-icon,
+div.bx-std-menu-top .bx-menu-top-center li img,
+div.bx-std-menu-top .bx-menu-top-center li .sys-icon {
+    display: block;
+    box-sizing: content-box;
+
+    width: 2rem;
+    height: 2rem;
+
+    margin: 0;
+    border-radius: 0.5rem; /* matches rounded-lg on the icon wrapper, whose ring/shadow must not be clipped */
+}
+
+div.bx-std-menu-top .bx-menu-top-center li img {
+    position: relative;
+    z-index: -1;
+}
+
+div.bx-std-menu-top .bx-menu-top-center li .sys-icon {
+    font-size: 1.5rem;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+div.bx-std-menu-top .bx-menu-top-center li .bx-mi-title {
+    margin-top: 0.25rem;
+
+    font-size: 0.75rem;
+    font-weight: normal;
+    color: rgba(255, 255, 255, 0.7);
+    
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+div.bx-std-menu-top .bx-menu-top-center li.bx-menu-tab-divider {
+    width: 0.25rem;
+    height: 1.75rem;
+}
+
+/*--- Search box (Top Left\Center\Right) ---*/
+div.bx-std-menu-top ul li.bx-menu-tab-search > div.bx-menu-tab-item {
+    position: absolute;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
+    -webkit-flex-wrap: nowrap;
+    flex-wrap: nowrap;
+
+    width: 2rem;
+    height: 2rem;
+    right: 0;
+
+    border-radius: 0.5rem;
+}
+.bx-dir-rtl div.bx-std-menu-top ul li.bx-menu-tab-search > div.bx-menu-tab-item {
+    left: 0;
+    right: auto;
+}
+div.bx-std-menu-top ul li.bx-menu-tab-search.bx-mt-active > div.bx-menu-tab-item {
+    width: 13.75rem;
+}
+div.bx-std-menu-top ul li.bx-menu-tab-search > div.bx-menu-tab-item > a,
+div.bx-std-menu-top ul li.bx-menu-tab-search > div.bx-menu-tab-item > button {
+    height: 100%; /* overrides the 3rem toolbar link height from template/css/menu.css */
+}
+div.bx-std-menu-top ul li.bx-menu-tab-search .bx-form-input-text {
+    height: 2rem;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+
+    border-width: 0;
+    background-color: transparent;
+
+    font-style: normal;
+    font-weight: 500;
+}
+
+div.bx-std-menu-top ul li.bx-menu-tab-search .bx-form-input-text:focus {
+    border-color: transparent;
+    background-color: transparent;
+    box-shadow: none;
+    filter: none;
+    transition: all 0s ease 0s;
+}
+
+
+/*--- Toolbar (Right) ---*/
+div.bx-std-menu-top .bx-menu-toolbar {
+    position: relative;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-wrap: nowrap;
+    flex-wrap: nowrap;
+    -webkit-justify-content: flex-end;
+    justify-content: flex-end;
+}
+
+div.bx-std-menu-top .bx-menu-toolbar li {
+    position: relative;
+    float: none;
+    display: block;
+
+    height: 2rem;
+    min-width: 2rem;
+    
+    border-radius: 0.5rem;
+
+    line-height: 2rem;
+}
+div.bx-std-menu-top .bx-menu-toolbar li:not(.bx-menu-tab-search) a,
+div.bx-std-menu-top .bx-menu-toolbar li:not(.bx-menu-tab-search) button {
+    position: relative;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-justify-content: center;
+    justify-content: center;
+    -webkit-align-items: center;
+    align-items: center;
+
+    width: 100%;
+    height: 100%;
+
+    border-radius: 0.5rem;
+}
+
+div.bx-std-menu-top .bx-menu-toolbar li a:hover,
+div.bx-std-menu-top .bx-menu-toolbar li button:hover {
+    color: rgb(55, 65, 81);
+}
+
+div.bx-std-menu-top i.sys-icon {
+    -webkit-transition: all 0.2s ease-in-out;
+    transition: all 0.2s ease-in-out;
+}
+
+div.bx-std-menu-top-right li.bx-menu-tab-active i.sys-icon {
+    color: #ffe900;
+    text-shadow: 0 0 4px #ffe900;
+}
+
+/*--- Account, Actions, Help and Settings popups ---*/
+body > .bx-popup-wrapper.bx-std-mod-popup-settings-wrapper,
+#bx-std-pcap-menu-popup-help,
+#bx-std-pcap-menu-popup-assistant,
+#bx-std-pcap-menu-popup-actions,
+#bx-std-pcap-menu-popup-account,
+#bx-std-pmenu-popup-actions {
+    overflow: visible;
+}
+.bx-std-mod-popup-settings-wrapper .bx-popup-gap,
+#bx-std-pcap-menu-popup-help .bx-popup-gap,
+#bx-std-pcap-menu-popup-assistant .bx-popup-gap,
+#bx-std-pcap-menu-popup-actions .bx-popup-gap,
+#bx-std-pcap-menu-popup-account .bx-popup-gap,
+#bx-std-pmenu-popup-actions .bx-popup-gap {
+    margin: 8px 0 0; /* with the script's 8px this puts the box 16px under the 32px trigger: flush with the header bar's bottom edge */
+}
+#bx-std-pcap-menu-popup-help .bx-popup,
+#bx-std-pcap-menu-popup-actions .bx-popup,
+.bx-std-mod-popup-settings-wrapper.bx-popup-applied:not(.bx-popup-chain) .bx-popup {
+    margin: 0;
+    border-width: 0;
+    border-radius: 0.75rem; /* same as the dropdown menus */
+}
+#bx-std-pcap-menu-popup-actions .bx-popup-content {
+    padding: 1.0rem;
+}
+
+.bx-std-mod-popup-settings-wrapper,
+#bx-std-pcap-menu-popup-help .bx-popup,
+#bx-std-pcap-menu-popup-help .bx-popup a,
+#bx-std-pcap-menu-popup-help .bx-popup .sys-icon,
+#bx-std-pcap-menu-popup-actions .bx-popup {
+    color: rgba(0, 0, 0, 0.7);
+}
+#bx-std-pcap-menu-popup-account .bx-popup li > a > svg,
+#bx-std-pcap-menu-popup-account .bx-popup li > div > svg {
+    opacity: 0.7;
+}
+#bx-std-pcap-menu-popup-help .bx-popup a:hover {
+    color: rgba(0, 0, 0, 0.85);
+}
+#bx-std-pcap-menu-popup-account .bx-popup li:hover > a > svg,
+#bx-std-pcap-menu-popup-account .bx-popup li:hover > div > svg,
+#bx-std-pcap-menu-popup-account .bx-popup li.bx-menu-tab-active > a > svg {
+    opacity: 0.85;
+}
+
+.bx-std-mod-popup-settings-wrapper .bx-form-input-select {
+    border-color: rgb(55, 65, 81, 1.0);
+    background-color: rgb(17, 24, 39, 1.0);
+}
+
+/*--- Assistant ---*/
+#bx-std-pcap-menu-popup-assistant .bx-popup .bx-popup-content {
+    padding-top: 0;
+}
+.bx-std-pcap-assistant div.cmts {
+    max-height: calc(0.5 * 100vh);
+    overflow-y: auto;
+}
+.bx-std-pcap-assistant div.cmts > ul.cmts {
+    margin-top: 1rem;
+}
+.bx-std-pcap-assistant .cmt > .cmts {
+    display: none;
+}
+.bx-std-pcap-assistant .cmt .cmt-head .cmt-meta {
+    margin-right: 0;
+    color: rgb(156 163 175);
+}
+.cmt.cmt-agents .cmt-head ul li:first-child .bx-base-general-unit-meta-div {
+  display: none;
+}
+.cmt.cmt-agents .cmt-body .cmt-agents-loading .bx-loading-ajax {
+    position: relative;
+    display: inline-block;
+    vertical-align: middle;
+    width: 2.0rem;
+    height: 2.0rem;
+    left: 0 !important;
+    top: 0 !important;
+    margin-left: 0.5rem;
+}
+.cmt-body.cmt-body-agents .bx-form-value .bx-form-input-files-uploaders .bx-btn {
+    margin: 0 0.5rem 0 0;
+}
+.cmt-body.cmt-body-agents .bx-form-value .bx-form-input-textarea {
+    height: 4.0rem;
+}

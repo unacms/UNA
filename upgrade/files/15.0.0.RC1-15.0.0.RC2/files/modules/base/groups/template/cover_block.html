@@ -1,0 +1,57 @@
+<div class="bx-base-profile-cover-block-wrapper">
+    <div class="bx-base-pofile-cover-wrapper __class__ relative bg-gradient-to-b from-gray-100 to-white dark:from-black dark:to-gray-900 rounded-md">
+        <div class="bx-base-pofile-cover">
+            <bx_if:show_cover>
+                <div class="bx-base-pofile-cover-image-wrp relative overflow-hidden">
+                    <div class="absolute w-full h-2/3">
+                        <div class="absolute top-6 -left-1/4 w-2/3 h-2/3 bg-blue-700 filter blur-3xl z-0 opacity-50 animate-goo"></div>
+                        <div class="absolute top-6 -right-1/4 w-2/3 h-2/3 bg-green-700 filter blur-3xl z-0 opacity-50 animate-goo"></div>
+                    </div>
+                    <div class="bx-base-pofile-cover-image relative h-64 lg:h-40 max-w-7xl mx-auto opacity-100 __add_class__">
+                        <p class="bx-base-pofile-cover-image box-border absolute h-full w-full" >
+                            <img alt="" class="bx-base-pofile-cover-image h-64 mx-auto w-full object-cover bg-cover lg:h-40 rounded-t z-10 __img_class__ bx-image-edit-source-__unique_id__" style="background-image:url(__cover_url__);__cover_settins__" src="<bx_icon_url:spacer.gif />" />
+                        </p>
+                    </div>
+                </div>
+            </bx_if:show_cover>
+            <div class="bx-base-pofile-cover-info relative mx-auto px-6 ">
+                <div class="bx-base-pofile-ci-cnt bx-def-padding-leftright">
+                    <bx_if:show_avatar>
+                        <div class="bx-base-pofile-cover-thumb __add_class__">
+                            <a class="bx-base-pofile-cover-thumb" href="javascript:" <bx_if:is_avatar>onclick="$('#__picture_popup_id__').dolPopupImage('__picture_url__', $(this).parent()); event.stopPropagation();"</bx_if:is_avatar>>
+                                <img alt="__title_attr__" class="bx-base-pofile-unit-thumb bx-def-ava-big bx-def-ava-big-size rounded-full ring-4 mx-auto ring-white dark:ring-gray-900 __img_class__ bx-image-edit-source-__unique_id__" src="__ava_url__" <bx_if:show_ava_letter> style="display:none" </bx_if:show_ava_letter> />
+                                <p class="bx-base-pofile-unit-thumb bx-def-ava-big bx-def-ava-big-size flex items-center justify-center box-border m-0 rounded-full ring-4 mx-auto ring-white dark:ring-gray-900 text-white font-bold text-5xl __img_class__-placeholder" style="background-color:rgba(__color__);<bx_if:show_ava_image>display:none</bx_if:show_ava_image>" >__letter__</p>
+                            </a>
+                            <bx_if:show_online>
+                                <div class="bx-base-pofile-unit-online"></div>
+                            </bx_if:show_online>
+                            __picture_tweak__
+                        </div>
+                    </bx_if:show_avatar>
+                </div>
+                <div class="bx-base-pofile-cover-user relative flex flex-col flex-colmt-6 pt-6 sm:pb-1">
+                    <div class="bx-base-profile-cover-title-bages min-w-0 flex-1 mb-4">
+                        <bx_if:show_title_as_tag>
+                            <h1 class="bx-def-unit-info text-2xl font-bold text-gray-900 dark:text-gray-50 text-center sm:truncate">__title__</h1>
+                        </bx_if:show_title_as_tag>
+                        <bx_if:show_title_as_text>
+                            <div class="bx-def-unit-info text-2xl font-bold text-gray-900 dark:text-gray-50 text-center sm:truncate">__title__</div>
+                        </bx_if:show_title_as_text>
+                        <div class="bx-base-profile-cover-meta-holder">
+                            <div class="bx-base-profile-cover-meta flex flex-row flex-wrap justify-center mt-6 md:mt-2 -ml-1  text-base font-medium">__meta__</div>
+                        </div>
+                    </div>
+                    <div class="bx-base-pofile-cover-actions relative flex lg:flex-1 h-14 md:h-10 mb-4" onclick="event.stopPropagation();">__action_menu__</div>
+                    <bx_if:show_text>
+                        <div class="flex justify-between mb-4">
+                            <div class="font-normal text-sm lg:text-base text-gray-500 group-hover:text-gray-600 dark:text-gray-400 dark:group-hover:text-gray-300">__text__</div>
+                        </div>
+                    </bx_if:show_text>
+                </div>
+                __show_data__
+            </div>
+            __cover_tweak__
+        </div>
+    </div>
+</div>
+__additional_code__

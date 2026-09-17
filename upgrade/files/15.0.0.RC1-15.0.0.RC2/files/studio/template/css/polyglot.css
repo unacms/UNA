@@ -1,0 +1,17 @@
+/*--- Keys page -> Panel Top style ---*/
+div.bx-grid-header div.bx-form-element-wrapper {
+    position: relative;
+    float: left;
+    width: 165px;
+}
+div.bx-grid-header div#bx-form-element-keyword {
+	margin-top: 0px;
+}
+
+/*--- Keys page -> Add Key block ---*/
+div.bx-pgt-new-key {}
+div.bx-pgt-new-key-cnt {}
+
+/*--- Keys page -> Edit Email Template block ---*/
+div.bx-pgt-new-etemplate {}
+div.bx-pgt-new-etemplate-cnt {}

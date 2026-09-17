@@ -1,0 +1,32 @@
+/*--- General ---*/
+div.bx-grid-header div.bx-form-element-wrapper {
+    position: relative;
+    float: left;
+    width: 165px;
+}
+
+/*--- Menus page -> Add Menu block ---*/
+div.bx-nav-add-menu {}
+div.bx-nav-add-menu-cnt {}
+
+/*--- Sets page -> Add Set block ---*/
+div.bx-nav-add-set {}
+div.bx-nav-add-set-cnt {}
+
+/*--- Items page -> Panel Top style ---*/
+div.bx-grid-header div#bx-form-element-module,
+div.bx-grid-header div#bx-form-element-set,
+div.bx-grid-header div#bx-form-element-keyword {
+    margin-top: 0px;
+}
+
+/*--- Items page -> Add Item block ---*/
+div.bx-nav-add-item {}
+div.bx-nav-add-item-cnt {}
+
+/*--- Items page -> Import Items block ---*/
+div#grid-popup-sys_studio_nav_items-import div.bx-popup-width{
+	width: 800px;
+}
+div.bx-nav-import-item {}
+div.bx-nav-import-item-cnt {}

@@ -1,0 +1,363 @@
+html,
+body {
+    min-height: 100%;
+    min-height: 100vh;
+}
+iframe.bx-std-hidden {
+    display: none;
+}
+div.bx-std-cb {
+    clear: both;
+    font-size: 1px;
+}
+
+/**
+ * Page Content
+ */
+div.bx-std-page-bg {
+    position:fixed; 
+    width:100%; 
+    height:100%; 
+
+    background:url(../images/bx-std-spacer.gif) center center no-repeat;
+    /* background:url(../images/bx-std-bg-main-image.jpg) center center no-repeat; */
+}
+div.bx-std-page {
+    position: relative;
+    position: relative;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-direction: column;
+    flex-direction: column;
+    width: 100%;
+    min-height: 100vh;
+}
+div.bx-std-menu-top-wrp {
+    -webkit-flex-grow: 0;
+    flex-grow: 0;
+    -webkit-flex-shrink: 0;
+    flex-shrink: 0;
+}
+div.bx-std-content {
+    position: relative;
+    -webkit-flex-grow: 2;
+    flex-grow: 2;
+
+    width: 100%;
+}
+div.bx-std-content-wrp {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+}
+div.bx-std-content-wrp.bx-std-one-col {
+    padding-top: 4.75rem; /* the fixed header's bottom edge: 12px margin plus the 64px bar */
+
+    overflow-y: auto;
+}
+div.bx-std-page-columns,
+div.bx-std-page-columns-cnt {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+/**
+ * Dual Column page
+ */
+div.bx-std-page-caption {
+    position: relative;
+    height: 70px;
+
+    background-color: #334455;
+}
+div.bx-std-pcap-icon {}
+div.bx-std-pcap-text {
+	position: relative;
+	line-height: 70px;
+	text-align: center;
+	font-size: 2rem;
+}
+div.bx-std-pcap-menu-popup {
+	position: absolute;
+	z-index: 1;
+}
+div.bx-std-pcap-mp-right {
+	right: 10px;
+}
+
+div.bx-std-pcap-help .sys-rss-feed-wrapper {
+	padding-top: 0px;
+}
+div.bx-std-pcap-help .bx-loading-ajax {
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+
+div.bx-std-pcap-action {
+	position: relative;
+	float: left;
+	width: 36px;
+	height: 36px;
+}
+div.bx-std-pcap-action:first-child {
+	margin-left: 0px;
+}
+div#bx-std-pca-activate {
+	width: 82px;
+}
+div.bx-std-pcap-mp-right div.bx-std-pcap-action {
+    float: right;
+}
+
+/**
+ * Page Menu (Left Side)
+ */
+div.bx-std-pmen-item {
+    position: relative;
+    height: 3rem; /* 32px icon + 8px above and below (the icon's 1px white gap on hover and the item background make up the header icons' halo) */
+    margin-top: 0.125rem;
+
+    border-radius: 1rem; /* icon radius (8px) + 8px padding */
+
+    font-size: 1.0rem;
+    font-weight: 500;
+}
+div.bx-std-pmen-item:first-child {
+    margin-top: 0;
+}
+
+div.bx-std-pmen-item-cnt {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
+    -webkit-flex-wrap: nowrap;
+    flex-wrap: nowrap;
+
+    padding: 0.5rem; /* with the column's 8px inset the icon sits 16px from the column's edge, like the launcher icon in the header bar */
+}
+
+span.bx-std-pmen-item-counter {}
+span.bx-std-pmen-ic-num {}
+
+div.bx-std-pmen-item .bx-std-pmen-ic-icon {
+    display: none;
+    flex: 0 0 auto;
+
+    width: 2rem;
+    height: 2rem;
+    box-sizing: border-box;
+
+    margin-right: 0.75rem;
+    
+    border-radius: 0.5rem;
+    background-repeat: no-repeat;
+    background-position: center center;
+
+    text-align: center;
+}
+.bx-dir-rtl div.bx-std-pmen-item .bx-std-pmen-ic-icon {
+    margin-left: 0.75rem;
+    margin-right: 0;
+}
+
+div.bx-std-pmen-item .bx-std-pmen-ic-icon.block {
+    display: block;
+}
+/* The label: one line, cut with an ellipsis, beside the tile; the tablet strip below lets it wrap to two lines instead. */
+div.bx-std-pmen-item .bx-std-pmen-ic-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+div.bx-std-pmen-item img,
+div.bx-std-pmen-item svg,
+div.bx-std-pmen-item .sys-icon {
+    width: 100%;
+    height: 100%;
+
+    border-radius: 0.5rem;
+}
+/* Glyphs inside the gray tile buttons are line art, only full-bleed artwork needs the rounding. */
+div.bx-std-pmen-item .bx-std-tile-btn svg,
+div.bx-std-pmen-item .bx-std-tile-btn .sys-icon {
+    border-radius: 0;
+}
+
+div.bx-std-pmen-item a, 
+div.bx-std-pmen-item .sys-icon {
+    color: #595959;
+}
+div.bx-std-pmen-item a {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 100%;
+
+    text-decoration: none;
+    color: rgba(55, 65, 81, 1);
+}
+div.bx-std-pmen-item .sys-icon {
+    font-size: 1.0rem;
+    color: #ffffff;
+}
+
+/*--- Icons ---*/
+img.bx-item-icon,
+svg.bx-item-icon{
+    width: 32px;
+    height: 32px;
+}
+div.bx-item-icon-preview {}
+div.bx-item-icon-preview img,
+div.bx-item-icon-preview svg{
+	max-width:128px; 
+    max-height:128px;
+}
+div.adm-item-icon-preview-empty {}
+
+/**
+ * Footer
+ */
+div.bx-std-bx-footer {
+	margin-top: 60px;
+	border: 0px;
+	background-color: transparent;
+    -moz-shadow: none;
+    -webkit-shadow: none;
+	box-shadow: none;
+}
+
+
+/**
+ * API
+ */
+img.bx-std-api {
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+}
+
+/*
+ * Page menu on narrow screens (the columns themselves are in page_columns.css).
+ * Tablet: a vertical strip of square tiles (as wide as the strip's items, 88px), the 32px icon and a small label centred in each.
+ * Phone: a horizontal, scrollable row of 48px tabs, each its 32px tile alone (the link's aria-label names it); the active tab shows its
+ * label beside the tile, so the row stays one even line whatever the labels' length.
+ */
+@media (max-width: 1023px) {
+    div.bx-std-pmen-item {
+        height: 5.5rem; /* square: the item is 88px wide (page_columns.css) */
+    }
+    div.bx-std-pmen-item > a {
+        display: block;
+        height: 100%;
+    }
+    div.bx-std-pmen-item-cnt {
+        -webkit-flex-direction: column;
+        flex-direction: column;
+        -webkit-justify-content: center;
+        justify-content: center;
+
+        height: 100%;
+        padding: 0.5rem; /* the 8px inset all round, as beside the tile on wide screens; the label wraps to two lines under the tile */
+    }
+    div.bx-std-pmen-item .bx-std-pmen-ic-icon,
+    .bx-dir-rtl div.bx-std-pmen-item .bx-std-pmen-ic-icon {
+        margin: 0;
+    }
+    div.bx-std-pmen-item .bx-std-pmen-ic-title {
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2; /* wraps to two lines, then cuts with an ellipsis */
+        max-width: 100%;
+        margin-top: 0.25rem;
+
+        font-size: 0.75rem;
+        line-height: 1rem;
+        text-align: center;
+        white-space: normal;
+        overflow-wrap: anywhere;
+    }
+}
+@media (max-width: 767px) {
+    div.bx-std-pcm-menu {
+        display: -webkit-flex;
+        display: flex;
+        -webkit-flex-wrap: nowrap;
+        flex-wrap: nowrap;
+        gap: 0.125rem;
+    }
+    div.bx-std-pcm-menu > .bx-clear {
+        display: none;
+    }
+    div.bx-std-pcm-menu::after {
+        content: '';
+        -webkit-flex: 0 0 0.375rem;
+        flex: 0 0 0.375rem; /* with the 2px gap, 8px after the last tab: the column's inset is not part of the row's scroll range */
+    }
+    div.bx-std-pmen-item {
+        -webkit-flex: 0 0 auto;
+        flex: 0 0 auto;
+
+        height: 3rem; /* the 32px tile with 8px around it, like the wide-screen list */
+        margin-top: 0;
+    }
+    div.bx-std-pmen-item-cnt {
+        -webkit-flex-direction: row;
+        flex-direction: row;
+        -webkit-justify-content: flex-start;
+        justify-content: flex-start;
+    }
+    div.bx-std-pmen-item .bx-std-pmen-ic-title {
+        display: none; /* icon only */
+    }
+    div.bx-std-pmen-item.bx-menu-tab-active .bx-std-pmen-ic-title {
+        display: block;
+        -webkit-line-clamp: unset;
+        max-width: none;
+        margin: 0 0.25rem 0 0.75rem; /* beside the tile, like the wide-screen list, with 4px of air before the tab's end */
+
+        font-size: 1rem;
+        line-height: 1.5rem;
+        text-align: start;
+        white-space: nowrap;
+    }
+    .bx-dir-rtl div.bx-std-pmen-item.bx-menu-tab-active .bx-std-pmen-ic-title {
+        margin: 0 0.75rem 0 0.25rem;
+    }
+}
+
+/*
+ * The column's own title (shown when the header breadcrumb is off): small and centred in the strip,
+ * with its actions button under it; a plain row again above the phone tabs.
+ */
+@media (max-width: 1023px) {
+    div.bx-std-pcm-title {
+        font-size: 0.875rem;
+        line-height: 1.25rem;
+    }
+    div.bx-std-pcm-title .bx-std-pcm-title-cnt {
+        -webkit-flex-direction: column;
+        flex-direction: column;
+        -webkit-align-items: center;
+        align-items: center;
+        gap: 0.5rem;
+
+        padding: 0 0.25rem;
+
+        text-align: center;
+        overflow-wrap: anywhere;
+    }
+}
+@media (max-width: 767px) {
+    div.bx-std-pcm-title .bx-std-pcm-title-cnt {
+        -webkit-flex-direction: row;
+        flex-direction: row;
+
+        padding: 0 0.5rem;
+
+        text-align: start;
+    }
+}

@@ -1,0 +1,2 @@
+/* The settings form layout (fixed caption, scrolling sections, pinned Save footer) lives in page.css, so it applies wherever
+   an options form is embedded (settings.php, module and language pages, app settings pages). Nothing settings-specific is left here. */

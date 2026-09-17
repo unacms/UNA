@@ -1,0 +1,7 @@
+<div class="bx-std-context-menu" role="menu" aria-label="__label__">
+    <bx_repeat:items>
+        <bx_if:show_separator><div class="bx-std-cm-separator" role="separator"></div></bx_if:show_separator>
+        <bx_if:show_label><div class="bx-std-cm-label" role="presentation">__title__</div></bx_if:show_label>
+        <bx_if:show_item><button type="button" class="bx-std-cm-item __class__" role="__role__"__attrs__ onclick="__onclick__"><bx_if:show_check><span class="bx-std-cm-check" aria-hidden="true">__check__</span></bx_if:show_check>__icon__<span class="bx-std-cm-title">__title__</span><bx_if:show_switch><span class="bx-std-cm-switch" aria-hidden="true"><span class="bx-std-cm-switch-knob"></span></span></bx_if:show_switch></button></bx_if:show_item>
+    </bx_repeat:items>
+</div>

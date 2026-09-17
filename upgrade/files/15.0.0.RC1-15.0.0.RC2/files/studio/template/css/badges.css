@@ -1,0 +1,28 @@
+/*--- General ---*/
+div.bx-grid-header div.bx-form-element-wrapper {
+    position: relative;
+    float: left;
+    width: 165px;
+}
+
+/*--- Displays page -> Panel Top style ---*/
+div.bx-grid-header div#bx-form-element-module,
+div.bx-grid-header div#bx-form-element-keyword {
+    margin-top: 0px;
+}
+
+/*--- Fields page -> Panel Top style ---*/
+div.bx-grid-header div.bx-form-element-wrapper {
+    position: relative;
+    float: left;
+}
+
+/*--- Fields page -> Add/Edit Field block style ---*/
+div#bx-form-element-type .bx-menu-ver li {
+	position: relative;
+	float: left;
+	width: 50%;
+}
+div#bx-form-element-type .bx-menu-ver .bx-def-hr {
+	display: none;
+}

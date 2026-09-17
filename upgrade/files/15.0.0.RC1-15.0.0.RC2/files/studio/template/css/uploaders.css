@@ -1,0 +1,22 @@
+@import url(../../../template/css/uploaders.css);
+
+
+/*--- Cover crop style ---*/
+.bx-popup-content-wrapped .bx-croppie-element.bx-croppie-element-cover {
+    min-height: 190px;
+}
+
+
+/*--- Uploader form ghost template ---*/
+.bx-uploader-ghost .bx-ug-icon {
+    float: left;
+}
+
+.bx-uploader-ghost .bx-ug-icon img {
+    max-height: 8rem;
+}
+.bx-uploader-ghost .bx-btn {
+    float: none;
+    display: inline-flex; /* keeps the 32px Studio button's centred label */
+    vertical-align: top; 
+}

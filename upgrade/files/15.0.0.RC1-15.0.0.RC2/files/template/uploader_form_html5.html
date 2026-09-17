@@ -1,0 +1,22 @@
+<div id="__form_container_id__" class="bx-uploader-form-cont bx-popup-width">
+    <div id="__div_id__" class="filepond bx-uploader-html5-drop-area border-2 border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-900/50 border-dashed rounded-lg"></div>
+    <input type="text" id="__focus_div_id__" class="bx-uploader-html5-paste-catcher" tabindex="-1" aria-label="<bx_text_attribute:_sys_uploader_simple_submit_button />" />
+    <div class="bx-def-padding-sec-bottom bx-def-font-small">__restrictions_text__</div>
+    <div id="__errors_container_id__" class="bx-uploader-html5-errors-area bx-def-font-small"></div>
+    <div class="bx-uploader-html5 bx-def-margin-top bx-clearfix">
+        <div class="bx-btn" onclick="__uploader_instance_name__.onClickCancel()"><bx_text:_sys_uploader_close /></div>
+    </div>
+</div>
+<script>
+    __uploader_instance_name__.initUploader({
+        'maxFilesize': __max_file_size__/1024.0/1024.0,
+        'acceptedFiles': __accepted_files__,
+        'resizeWidth': __resize_width__,
+        'resizeHeight': __resize_height__,
+        'resizeMethod': __resize_method__,
+        'dictDefaultMessage': '<bx_text_js:_sys_uploader_html5_default_message />',
+        'dictFileTooBig': '<bx_text_js:_sys_uploader_html5_file_is_too_big />',
+        'dictMaxFilesExceeded': '<bx_text_js:_sys_uploader_html5_number_of_files_exceeded />',
+        'dictInvalidFileType': '<bx_text_js:_sys_uploader_html5_invalid_file_type />',
+    });
+</script>
