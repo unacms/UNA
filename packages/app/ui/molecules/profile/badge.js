@@ -35,7 +35,9 @@ const colorMapping = {
      lime: { bg: 'bg-lime-600/20', text: ' text-lime-700 dark:text-lime-300' },
      cyan: { bg: 'bg-cyan-600/20', text: ' text-cyan-700 dark:text-cyan-300' },
      violet: { bg: 'bg-violet-600/20', text: ' text-violet-700 dark:text-violet-300' },
-     fuchsia: { bg: 'bg-fuchsia-600/20', text: ' text-fuchsia-700 dark:text-fuchsia-300' },};
+     fuchsia: { bg: 'bg-fuchsia-600/20', text: ' text-fuchsia-700 dark:text-fuchsia-300' },
+     warning: { bg: 'bg-alert-warning/20', text: ' text-alert-warning' },
+};
 
 const isTruthyFlag = (value) => value === true || value === 1 || value === '1'
 

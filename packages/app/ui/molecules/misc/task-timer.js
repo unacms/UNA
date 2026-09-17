@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Platform } from 'react-native';
 import { View, Row } from 'app/design/view';
-import { Text } from 'app/design/typography';
 import Menu from 'app/components/menu';
-import { Icon } from 'app/ui/atoms/icon';
 import { fetcher } from 'app/lib/fetcher';
 import { cn } from 'app/lib/util';
 import emitter from 'app/context/emitter';
+import { Timer } from 'app/ui/atoms/timer';
+import { publishTimerSession } from 'app/lib/task-timer-sync';
 
 const TIMER_EVENT = 'task_timer';
 const ZERO_TIME = { hours: 0, minutes: 0, seconds: 0 };
@@ -26,20 +26,6 @@ const MENU_PARAMS = {
 /** Timer whose "Log" was clicked last — the report form may answer with a task id or no id at all. */
 let pendingLogTimerId = null;
 
-function pad2(value) {
-    return String(value).padStart(2, '0');
-}
-
-function toTotalSeconds({ hours = 0, minutes = 0, seconds = 0 } = {}) {
-    return hours * 3600 + minutes * 60 + seconds;
-}
-
-function formatTotalSeconds(total) {
-    const safe = Math.max(0, total);
-    const hours = Math.floor(safe / 3600);
-    const minutes = Math.floor((safe % 3600) / 60);
-    return `${pad2(hours)}:${pad2(minutes)}:${pad2(safe % 60)}`;
-}
 
 function isLogAction(item) {
     const name = String(item?.name || item?.action || '').toLowerCase();
@@ -67,34 +53,16 @@ function isThisTimer(eventId, timerData) {
         || idsMatch(pendingLogTimerId, timerData?.id);
 }
 
-/** Ticks every second while `state === 'started'`; resets when server time or `resetNonce` changes. */
+/** Capsule clock; ticks while `state === 'started'`. `resetNonce` remounts after a log. */
 function TimerDisplay({ data, resetNonce = 0 }) {
-    const isRunning = data?.state === 'started';
-    const baseSeconds = toTotalSeconds(data?.time || data);
-    const resetKey = `${baseSeconds}|${resetNonce}`;
-
-    const [totalSeconds, setTotalSeconds] = useState(baseSeconds);
-    const [seenResetKey, setSeenResetKey] = useState(resetKey);
-    if (seenResetKey !== resetKey) {
-        setSeenResetKey(resetKey);
-        setTotalSeconds(baseSeconds);
-    }
-
-    useEffect(() => {
-        if (!isRunning) return undefined;
-        const interval = setInterval(() => setTotalSeconds((prev) => prev + 1), 1000);
-        return () => clearInterval(interval);
-    }, [isRunning]);
-
     return (
-        <Row className="items-center gap-2 flex-none">
-            <View className="w-5 h-5 items-center justify-center">
-                <Icon icon="Clock" size={16} className="text-muted-foreground" />
-            </View>
-            <Text className="font-mono text-base font-semibold tabular-nums text-foreground">
-                {formatTotalSeconds(totalSeconds)}
-            </Text>
-        </Row>
+        <Timer
+            key={resetNonce}
+            time={data?.time}
+            running={data?.state === 'started'}
+            controlSize="mini"
+            showSeconds
+        />
     );
 }
 
@@ -104,6 +72,15 @@ export function TaskTimer({ data, className }) {
     const timerId = timerData?.id;
     const requestUrl = timerData?.request_url;
     const isRunning = timerData?.state === 'started';
+
+    useEffect(() => {
+        publishTimerSession({
+            requestUrl: timerData?.request_url,
+            timerId: timerData?.id,
+            state: timerData?.state,
+            time: timerData?.time,
+        });
+    }, [timerData]);
 
     /** `zeroTime` restarts the display from 00:00:00 (after logging time). */
     const applyTimerData = useCallback((next, { zeroTime = false } = {}) => {
@@ -143,6 +120,12 @@ export function TaskTimer({ data, className }) {
 
         if (!actionUrl) {
             if (logAction) emitter.emit(TIMER_EVENT, { id: timerId, action: 'log' });
+            publishTimerSession({
+                requestUrl,
+                timerId,
+                action: 'log',
+                time: ZERO_TIME,
+            });
             return;
         }
 
@@ -150,10 +133,24 @@ export function TaskTimer({ data, className }) {
         if (logAction) {
             applyTimerData(isTimerPayload(response?.data) ? response.data : null, { zeroTime: true });
             emitter.emit(TIMER_EVENT, { id: timerId, action: 'log' });
+            publishTimerSession({
+                requestUrl: response?.data?.request_url || actionUrl || requestUrl,
+                timerId,
+                action: 'log',
+                state: response?.data?.state,
+                time: ZERO_TIME,
+            });
             return;
         }
         if (response?.data) setTimerData(response.data);
         emitter.emit(TIMER_EVENT, { id: timerId, action: item.name });
+        publishTimerSession({
+            requestUrl: response?.data?.request_url || actionUrl || requestUrl,
+            timerId: response?.data?.id ?? timerId,
+            action: item.name,
+            state: response?.data?.state,
+            time: response?.data?.time,
+        });
     };
 
     const markPendingLog = () => {

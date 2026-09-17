@@ -31,6 +31,11 @@ export function emitTasksListRefresh() {
     emitter.emit(TASKS_LIST_EVENT, { action: 'reload' });
 }
 
+export function emitTasksListPatch({ id, field, value }) {
+    if (id == null || !field) return;
+    emitter.emit(TASKS_LIST_EVENT, { action: 'patch', id, field, value });
+}
+
 export function emitTasksListOpen(task) {
     if (!task?.url) return;
     emitter.emit(TASKS_LIST_EVENT, { action: 'open', url: task.url, title: task.title });
@@ -268,6 +273,50 @@ export function findTasklist(items, id) {
     return null;
 }
 
+const NESTED_LIST_KEYS = ['lists', 'tasklists', 'task_lists', 'children'];
+
+/** Apply a field change to one task wherever it sits in the browse tree. */
+export function patchTaskInLists(lists, { id, field, value }) {
+    if (!Array.isArray(lists) || id == null || !field) return lists;
+
+    const patchTasks = (tasks) => {
+        if (!Array.isArray(tasks)) return tasks;
+        let changed = false;
+        const next = tasks.map((task) => {
+            if (task?.id == null || String(task.id) !== String(id)) return task;
+            if (task[field] === value) return task;
+            changed = true;
+            return { ...task, [field]: value };
+        });
+        return changed ? next : tasks;
+    };
+
+    const walk = (nodes) => {
+        if (!Array.isArray(nodes)) return nodes;
+        let changed = false;
+        const next = nodes.map((item) => {
+            if (!item || typeof item !== 'object') return item;
+            let nextItem = item;
+            const tasks = patchTasks(item.tasks);
+            if (tasks !== item.tasks) {
+                nextItem = { ...nextItem, tasks };
+                changed = true;
+            }
+            for (const key of NESTED_LIST_KEYS) {
+                if (!Array.isArray(item[key])) continue;
+                const nested = walk(item[key]);
+                if (nested === item[key]) continue;
+                nextItem = nextItem === item ? { ...item, [key]: nested } : { ...nextItem, [key]: nested };
+                changed = true;
+            }
+            return nextItem;
+        });
+        return changed ? next : nodes;
+    };
+
+    return walk(lists);
+}
+
 /** Lists that carry tasks, from any nesting depth. */
 export function flattenListsWithTasks(lists = []) {
     const out = [];
@@ -290,7 +339,12 @@ export function groupTasksByStatus(lists = []) {
         for (const task of (Array.isArray(list?.tasks) ? list.tasks : [])) {
             const title = canonicalTaskStatus(task?.state || task?.status);
             if (!groups.has(title)) groups.set(title, []);
-            groups.get(title).push(task);
+            const contextId = task?.context_id ?? list?.context_id;
+            groups.get(title).push(
+                contextId != null && task?.context_id == null
+                    ? { ...task, context_id: contextId }
+                    : task
+            );
         }
     }
 

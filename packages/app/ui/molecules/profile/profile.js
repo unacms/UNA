@@ -2,7 +2,7 @@ import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
 import Image from 'app/ui/atoms/image'
 import Link from 'app/ui/atoms/link'
-import { getRandomColor, appSetting } from 'app/lib/util';
+import { getRandomColor, appSetting, cn } from 'app/lib/util';
 import { memo } from 'react';
 import { components } from 'app/components/registry';
 import { useTranslation } from 'react-i18next';
@@ -68,8 +68,9 @@ function DisplayInfo(oProps) {
 
 function UnitWoInfo({ oProps, sSize, sSizeFontLetter, iSizeWidth, bShowLinks, emulate, hoverCardWrapper }) {
     let name = oProps.display_name ? oProps.display_name.substr(0, 1) : ''
+    const isLinked = !!(oProps.url && bShowLinks && !hoverCardWrapper)
     const avatarContent =
-        <View className={`${sSize} relative overflow-hidden bg-muted rounded-full `}>
+        <View className={cn(`${sSize} relative overflow-hidden bg-muted rounded-full`, oProps.avatarClassName, !isLinked && oProps.className)}>
             {!oProps.url_avatar && <View className={'h-full items-center justify-center bg-' + (oProps.id? getRandomColor(oProps.id)+'-500': 'primary/50')}>
                 <Text className={`${sSizeFontLetter} text-card uppercase`}>{name}</Text>
             </View>}
@@ -91,8 +92,8 @@ function UnitWoInfo({ oProps, sSize, sSizeFontLetter, iSizeWidth, bShowLinks, em
         ;
 
     // Build the linked avatar
-    const linkedAvatar = oProps.url && bShowLinks && !hoverCardWrapper
-        ? <Link emulate={emulate} href={oProps.url}>{avatarContent}</Link>
+    const linkedAvatar = isLinked
+        ? <Link emulate={emulate} href={oProps.url} className={oProps.className}>{avatarContent}</Link>
         : avatarContent;
 
     // Wrap with hover card if provided
