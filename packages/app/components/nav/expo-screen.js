@@ -84,7 +84,7 @@ function useLazyTabActivation() {
     return activated;
 }
 
-function _Screen(params) {
+function ScreenInner(params) {
     const local = useLocalSearchParams();
     const pathname = params.tabname;
     const { currentUser } = useCurrentUser();
@@ -134,7 +134,7 @@ function _Screen(params) {
 
 // The tab navigator re-renders every mounted route on each navigation state
 // change, and freeze is off for NativeTabs — so unfocused tabs must bail out here.
-export const Screen = memo(_Screen);
+export const Screen = memo(ScreenInner);
 
 /** Second barrier: expo-router route contexts can force Screen/Content to render. */
 const PageBody = memo(function PageBody({ path, data }) {

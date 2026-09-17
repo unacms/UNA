@@ -49,6 +49,9 @@ export default function PageLayout(props) {
     let { currentUser, setCurrentUser } = useCurrentUser()
     
     const [showImage2, setShowImage2] = useState(false);
+    // Same preference store as the remote dashboard (theme / language / layout).
+    // Called before the guest early-return below — hook order must be stable.
+    const { themeName, setThemeName, layoutName, setLayoutName, setLang } = useLayoutSettings();
 
 
     let profile = null
@@ -60,8 +63,6 @@ export default function PageLayout(props) {
     if (!currentUser) 
         return <></>
 
-    // Same preference store as the remote dashboard (theme / language / layout).
-    const { themeName, setThemeName, layoutName, setLayoutName, setLang } = useLayoutSettings();
     const handleLang = (item) => setLang(item);
     const handleTheme = (item) => setThemeName(item);
     const handleFormat = (item) => setLayoutName(item);

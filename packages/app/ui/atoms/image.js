@@ -18,7 +18,7 @@ export {
 
 const fillStyle = { width: '100%', height: '100%' };
 
-function _ElementImage(props) {
+function ElementImageInner(props) {
     const {
         width,
         height,
@@ -93,5 +93,5 @@ function _ElementImage(props) {
 export default function ElementImage(props) {
     const imageProps = getImageProps(props);
     if (!imageProps.src) return null;
-    return <_ElementImage {...props} {...imageProps} />;
+    return <ElementImageInner {...props} {...imageProps} />;
 }

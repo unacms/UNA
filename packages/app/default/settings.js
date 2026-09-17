@@ -34,7 +34,6 @@ export const settingsDefault = {
         },
         api_keys: {
             google_maps: env('GOOGLE_MAPS_API_KEY'),
-            open_ai: env('GOOGLE_MAPS_API_KEY'),
             onesignal: env('ONE_SIGNAL_API_KEY'),
             mapbox: env('RNMAPBOX_MAPS_DOWNLOAD_TOKEN'),
         },

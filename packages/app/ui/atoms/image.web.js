@@ -16,7 +16,7 @@ export {
     POST_ENTRY_COVER_WIDTH_CAP,
 } from 'app/lib/image-helpers';
 
-function _ElementImage(props) {
+function ElementImageInner(props) {
     const {
         width,
         height,
@@ -90,5 +90,5 @@ function _ElementImage(props) {
 export default function ElementImage(props) {
     const imageProps = getImageProps(props);
     if (!imageProps.src) return null;
-    return <_ElementImage {...props} {...imageProps} />;
+    return <ElementImageInner {...props} {...imageProps} />;
 }

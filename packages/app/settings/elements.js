@@ -79,10 +79,6 @@ export const settingsElements = {
         // Status group header (Todo / In Progress / …).
         section_title: 'items-center justify-between gap-2 px-3 py-2 bg-muted/60 rounded-2xl',
     },
-    jitsi: {
-        prefix: 'prefix_',
-        domain: 'https://meet.jit.si/',
-    },
     async_workers: {
         list: ['CounterChecker'], 
         interval: 10,

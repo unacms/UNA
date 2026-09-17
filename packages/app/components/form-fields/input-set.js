@@ -13,6 +13,9 @@ function getInputSetChildren(props) {
 }
 
 export default function FormFieldControls(props) {
+    // Unconditional: hooks must not follow the early returns below.
+    const formContext = useFormContext();
+
     if (props[0].type == 'submit')
         return <Submit {...props[0]} handleSubmit={props.handleSubmit}/>
 
@@ -25,7 +28,6 @@ export default function FormFieldControls(props) {
     const children = getInputSetChildren(props);
     if (!children.length) return null;
 
-    const formContext = useFormContext();
     const childProps = {
         use_caption_as_placeholder: props.use_caption_as_placeholder,
         form_layout: props.form_layout,

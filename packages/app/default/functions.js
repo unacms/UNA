@@ -1,7 +1,6 @@
 import { fetcher } from 'app/lib/fetcher'
 import { updateRouteDataForConnection, appSetting } from 'app/lib/util'
 import { components } from 'app/components/registry';
-import { View } from 'app/design/view'
 import { settingsLayout } from 'app/settings/layout'
 import i18n from 'i18next'
 
@@ -276,23 +275,3 @@ export function getUnitMenuItems(unitType, data, handleClick, t, moduleName) {
     };
 }
 
-export function getBackgrounds() {
-    return {
-        splash: {
-            light: <SvgBackgroundSplash />,
-            dark: <SvgBackgroundSplashDark />,
-        },
-        'create-account': {
-            light: <SvgBackgroundCreateAccount />,
-            dark: <SvgBackgroundCreateAccountDark />,
-        },
-        login: {
-            light: <SvgBackgroundLogin />,
-            dark: <SvgBackgroundLoginDark />,
-        },
-        default: {
-            light: <View className="w-full h-full bg-background" />,
-            dark: <View className="w-full h-full bg-background" />,
-        }
-    }
-}

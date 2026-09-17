@@ -43,7 +43,7 @@ function AdaptiveLabel({ caption, value, focused, htmlFor, children }) {
 
     const [boxH, setBoxH] = useState(0)
     const [labelH, setLabelH] = useState(0)
-    const translateY = useRef(new Animated.Value(0)).current
+    const [translateY] = useState(() => new Animated.Value(0))
     const readyRef = useRef(false)
 
     const restingY =
@@ -118,7 +118,7 @@ function AdaptiveLabel({ caption, value, focused, htmlFor, children }) {
     )
 }
 
-export default function _Field({
+export default function Field({
     format,
     caption: captionProp,
     error,

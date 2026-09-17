@@ -46,14 +46,8 @@ export function getBaseUrl() {
         return appUrl;
     }
 
-    try {
-        const h = headers();
-        const host = h.get("host") || "localhost:3000";
-        const proto = h.get("x-forwarded-proto") || "http";
-        return `${proto}://${host}`;
-    } catch {
-        return "http://localhost:3000"; // fallback for SSR
-    }
+    // No request context in the shared bundle (next/headers is app-only).
+    return 'http://localhost:3000';
 }
 
 export async function getRemoteSettings(isServer = false) {
