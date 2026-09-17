@@ -54,7 +54,7 @@ UPDATE `sys_modules` SET `vendor` = 'UNA INC', `version` = '', `path` = 'system/
 UPDATE `sys_alerts_handlers` SET `class` = 'BxDolAiTriggerMessage', `file` = 'inc/classes/BxDolAiTriggerMessage.php' WHERE `name` = 'sys_agents';
 
 -- sys_objects_storage
--- TODO: delete actual files from the storage engine, then later delete storage
+-- Files and the storage object are removed in script.php after SQL, so the files table must still exist here.
 -- DELETE FROM `sys_objects_storage` WHERE `object` = 'sys_agents_assistants_chats_files';
 
 /* Removed sys_agents_comment form inputs */
@@ -211,7 +211,8 @@ INSERT INTO `sys_preloader` (`module`, `type`, `content`, `active`, `ORDER`) VAL
 -- Data: sys_std_pages
 UPDATE `sys_std_pages` SET `icon` = 'tmi-launcher.svg' WHERE `name` = 'home' AND `icon` = 'bc-home.svg';
 
-DROP TABLE IF EXISTS `sys_agents_automators`;
+-- DROP TABLE IF EXISTS `sys_agents_automators`;
+
 DROP TABLE IF EXISTS `sys_agents_automators_providers`;
 DROP TABLE IF EXISTS `sys_agents_automators_helpers`;
 DROP TABLE IF EXISTS `sys_agents_automators_assistants`;
@@ -225,7 +226,7 @@ DROP TABLE IF EXISTS `sys_agents_assistants`;
 DROP TABLE IF EXISTS `sys_agents_assistants_files`;
 DROP TABLE IF EXISTS `sys_agents_assistants_chats`;
 DROP TABLE IF EXISTS `sys_agents_assistants_chats_messages`;
-DROP TABLE IF EXISTS `sys_agents_assistants_chats_files`;
+-- DROP TABLE IF EXISTS `sys_agents_assistants_chats_files`;
 
 -- APP: pages
 
