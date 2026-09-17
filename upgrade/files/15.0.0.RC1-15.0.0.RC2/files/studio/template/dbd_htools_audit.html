@@ -1,0 +1,28 @@
+<div class="bx-dbd-hero bx-dbd-chart-hero bx-dbd-chart-hero-rows">
+    <div class="bx-dbd-chart-row">
+        <div class="bx-dbd-chart-head bx-dbd-chart-head-sm"><span class="bx-dbd-chart-label"><bx_text:_adm_dbd_txt_ht_last_audit /></span><span class="bx-dbd-chart-stat">__time__</span></div>
+        <div class="bx-dbd-chart-bar" role="img" aria-label="__bar_label__"><bx_repeat:segments><span class="bx-dbd-chart-slice bx-dbd-audit-slice-__type__" style="width:__share__%" data-label="__label__"></span></bx_repeat:segments></div>
+        <div class="bx-dbd-chart-summary">__summary__</div>
+    </div>
+    <div class="bx-dbd-chart-foot">
+        <button type="button" class="bx-btn bx-dbd-audit-run" onclick="__js_object__.runAudit(this)"><bx_text:_adm_dbd_txt_ht_run_audit /></button>
+    </div>
+</div>
+<div class="bx-dbd-audit">
+    <bx_repeat:sections>
+        <div class="bx-dbd-audit-section">
+            <button type="button" class="bx-dbd-htools-item bx-dbd-htools-item-__status__ bx-dbd-audit-toggle" aria-expanded="false" aria-controls="bx-dbd-audit-__name__" onclick="__js_object__.auditToggle(this)">
+                <span class="bx-dbd-tile" aria-hidden="true">__icon__</span>
+                <span class="bx-dbd-htools-name">__title__</span>
+                <b class="bx-dbd-htools-value">__value__</b>
+                <span class="bx-dbd-htools-dot" aria-hidden="true"></span>
+                <span class="bx-dbd-audit-chevron" aria-hidden="true">__icon_chevron__</span>
+            </button>
+            <div id="bx-dbd-audit-__name__" class="bx-dbd-htools-items bx-dbd-audit-rows" hidden>
+                <bx_repeat:rows>
+                    <div class="bx-dbd-htools-item bx-dbd-htools-item-__status__"><span class="bx-dbd-htools-name">__title__<bx_if:show_desc><span class="bx-dbd-htools-desc">__desc__</span></bx_if:show_desc></span><b class="bx-dbd-htools-value">__value__</b><span class="bx-dbd-htools-dot" aria-hidden="true"></span></div>
+                </bx_repeat:rows>
+            </div>
+        </div>
+    </bx_repeat:sections>
+</div>

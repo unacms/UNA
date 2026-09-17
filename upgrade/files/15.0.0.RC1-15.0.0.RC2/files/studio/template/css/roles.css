@@ -1,0 +1,15 @@
+/*--- General ---*/
+div.bx-grid-header div.bx-form-element-wrapper {
+    position: relative;
+    float: left;
+    width: 165px;
+}
+
+/*--- Levels page -> Add/Edit Level block ---*/
+div.bx-rl-role {}
+div.bx-rl-role-cnt {}
+
+/*--- Actions page -> Panel Top style ---*/
+div.bx-grid-header div#bx-form-element-keyword {
+    margin-top: 0px;
+}

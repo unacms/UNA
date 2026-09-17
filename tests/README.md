@@ -49,3 +49,26 @@ Alternatively:
 ```
 phing test
 ```
+JUnit report: `logs/junit.xml`.
+
+Unit tests only:
+```
+phing test-units
+```
+or:
+```
+composer test-units
+```
+JUnit report: `logs/junit-units.xml`.
+
+Integration tests only:
+```
+phing test-integration
+```
+or:
+```
+composer test-integration
+```
+JUnit report: `logs/junit-integration.xml`.
+
+Integration tests read `tests/.env` when present (`cp tests/.env.example tests/.env`). Without that file they use installer defaults. Tests skip an account that is not installed.

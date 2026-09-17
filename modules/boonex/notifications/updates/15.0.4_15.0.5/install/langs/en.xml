@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="en" flag="gb" title="English">
+	<string_add name="_bx_ntfs_option_enable_group_events_db"><![CDATA[Group notifications by event (on DB level, experimental)]]></string_add>
+	<string_add name="_bx_ntfs_option_enable_own_actions"><![CDATA[Notify a user about his own actions]]></string_add>
+	<string_add name="_bx_ntfs_queue"><![CDATA[Notifications]]></string_add>
+	<string_add name="_bx_ntfs_txt_and"><![CDATA[and]]></string_add>
+	<string_add name="_bx_ntfs_txt_author_name_wrapped"><![CDATA[<b class="bx-ntfs-content-profile">{author_name}</b>]]></string_add>
+	<string_add name="_bx_ntfs_txt_owner_name_wrapped"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b>]]></string_add>
+
+	<string_upd name="_bx_ntfs_txt_object_added"><![CDATA[{author_name_wrapped} added a {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b>]]></string_upd>
+	<string_upd name="_bx_ntfs_txt_object_added_in_context"><![CDATA[{author_name_wrapped} added a {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b> in <b class="bx-ntfs-content-profile">{owner_name}</b>]]></string_upd>
+	<string_upd name="_bx_ntfs_txt_object_post_common"><![CDATA[{author_name_wrapped} added a {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b>]]></string_upd>
+	<string_upd name="_bx_ntfs_txt_object_post_common_in_context"><![CDATA[{author_name_wrapped} added a {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b> in <b class="bx-ntfs-content-profile">{owner_name}</b>]]></string_upd>
+	<string_upd name="_bx_ntfs_txt_object_approved"><![CDATA[{author_name_wrapped} approved {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b>]]></string_upd>
+	<string_upd name="_bx_ntfs_txt_object_approved_in_context"><![CDATA[{author_name_wrapped} approved <b class="bx-ntfs-content-entry">{entry_caption}</b> {entry_sample} in <b class="bx-ntfs-content-profile">{owner_name}</b>]]></string_upd>
+	<string_upd name="_bx_ntfs_txt_object_pending_approval"><![CDATA[{author_name_wrapped} added a pending approval {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b>]]></string_upd>
+	<string_upd name="_bx_ntfs_txt_object_reported_content"><![CDATA[{author_name_wrapped} reported a {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b>]]></string_upd>
+	<string_upd name="_bx_ntfs_txt_subobject_added"><![CDATA[{author_name_wrapped} added a {subentry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b>]]></string_upd>
+	<string_upd name="_bx_ntfs_txt_subobject_added_in_context"><![CDATA[{author_name_wrapped} added a {subentry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b> in <b class="bx-ntfs-content-profile">{owner_name}</b>]]></string_upd>
+</resources>

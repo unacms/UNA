@@ -18,7 +18,7 @@ $aConfig = array(
     'title' => 'Stripe Connect',
     'note' => 'Organize eCommerce platform using Stripe Connect.',
     'version' => '15.0.3.DEV',
-    'vendor' => 'BoonEx',
+    'vendor' => 'UNA INC',
     'help_url' => 'http://feed.una.io/?section={module_name}',
 
     'compatible_with' => array(

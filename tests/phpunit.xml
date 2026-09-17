@@ -8,8 +8,11 @@
          failOnWarning="false"
          failOnDeprecation="false">
   <testsuites>
-    <testsuite name="AllTests">
+    <testsuite name="Units">
       <directory>./units</directory>
+    </testsuite>
+    <testsuite name="Integration">
+      <directory>./integration</directory>
     </testsuite>
   </testsuites>
   <source>

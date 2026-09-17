@@ -1,0 +1,16 @@
+<div class="bx-def-page-width mx-auto px-4 pt-4 box-border">
+    <div id="bx-informer" class="space-y-3">
+        <bx_repeat:messages>
+            <div id="__id__" class="bx-informer-msg __class__">
+                <div class="bx-informer-indicator" aria-hidden="true">
+                    <bx_if:icon_html>__icon_html__</bx_if:icon_html>
+                    <bx_if:icon_font><i class="sys-icon __icon__"></i></bx_if:icon_font>
+                </div>
+                <div class="bx-informer-content">__msg__</div>
+                <bx_if:action>
+                    <a class="bx-informer-action bx-btn bx-btn-small bx-btn-primary" href="__action_url__">__action_title__</a>
+                </bx_if:action>
+            </div>
+        </bx_repeat:messages>
+    </div>
+</div>

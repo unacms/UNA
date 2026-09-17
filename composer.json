@@ -108,11 +108,13 @@
         "knplabs/github-api": "^3.0",
         "guzzlehttp/guzzle": "^7.0.1",
         "http-interop/http-factory-guzzle": "^1.0",
-        "psr/log": "^3.0"
+        "psr/log": "^3.0",
+        "firebase/php-jwt": "^7.1"
     },
     "require-dev": {
         "phpunit/phpunit": "12.*",
-        "phpmd/phpmd": "@stable"
+        "phpmd/phpmd": "@stable",
+        "vlucas/phpdotenv": "^5.6"
     },
     "scripts": {
         "post-update-cmd": [
@@ -125,6 +127,8 @@
             "test -f ./plugins/ffmpeg/ffmpeg/ffmpeg-linux-x64 && mv ./plugins/ffmpeg/ffmpeg/ffmpeg-linux-x64 ./plugins/ffmpeg/ffmpeg.exe && rm -rf ./plugins/ffmpeg/ffmpeg || true",
             "grep -Fq \"this->headers['Content-MD5']\" plugins/tpyo/amazon-s3-php-class/S3.php || patch -p1 --batch < patches/plugins_tpyo_amazon-s3-php-class.txt"
         ],
-        "test": "phpunit -c tests/phpunit.xml"
+        "test": "phpunit -c tests/phpunit.xml",
+        "test-units": "phpunit -c tests/phpunit.xml --testsuite Units --log-junit logs/junit-units.xml",
+        "test-integration": "phpunit -c tests/phpunit.xml --testsuite Integration --log-junit logs/junit-integration.xml"
     }
 }
