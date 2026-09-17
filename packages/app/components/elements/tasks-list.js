@@ -1769,7 +1769,7 @@ export default function ElementTasksList({ data, blockWrapperProps }) {
 
                     return (
                         <View key={list.list_id || list.list_title} className="gap-2">
-                            <Row className="items-center justify-between gap-2 px-2">
+                            <Row className={appSetting('tasks', 'section_title')}>
                                 {list.list_title ? (
                                     <Row className="items-center gap-2 min-w-0">
                                         <Icon

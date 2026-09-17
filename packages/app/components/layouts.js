@@ -129,7 +129,7 @@ function PageLayoutContent({ layout, data }) {
         padding: responsiveClasses('padding', pageConfig?.padding ?? getPageContentPaddingTiers(layoutName)),
         gap: responsiveClasses('gap', pageConfig?.gap),
         width: appSetting('layout', 'max_width'),
-        contentWidth: getPageContentWidth(layoutName),
+        contentWidth: getPageContentWidth(layoutName, data?.uri),
     };
 
     const hasProfileInformer = currentUser?.informer?.some(

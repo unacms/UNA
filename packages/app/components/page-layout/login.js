@@ -37,7 +37,7 @@ function PageContent({ children }) {
 
 export default function PageLayout({ data, children, pageClasses }) {
     const { padding, gap } = pageClasses ?? {};
-    const contentWidth = getPageContentWidth(data?.layout)
+    const contentWidth = getPageContentWidth(data?.layout, data?.uri)
     const isWeb = Platform.OS === 'web'
     const showLoginAside = data?.layout === 'layout_1_column_half'
 

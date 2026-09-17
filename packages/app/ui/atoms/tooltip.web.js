@@ -1,34 +1,26 @@
 'use client';
 import { useState, useRef, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { Text } from 'app/design/typography';
 import { View } from 'app/design/view';
 import { appSetting } from 'app/lib/util';
 
 const CLIP_PAD = 8;
+const GAP = 10;
 
-function getClipRect(el) {
-    let left = 0;
-    let right = typeof window !== 'undefined' ? window.innerWidth : 0;
-    let node = el?.parentElement;
-    while (node && node !== document.body) {
-        const style = window.getComputedStyle(node);
-        const overflowX = style.overflowX || style.overflow;
-        if (overflowX === 'hidden' || overflowX === 'auto' || overflowX === 'scroll' || overflowX === 'clip') {
-            const rect = node.getBoundingClientRect();
-            left = Math.max(left, rect.left);
-            right = Math.min(right, rect.right);
-        }
-        node = node.parentElement;
-    }
-    return { left, right };
-}
+const HIDDEN_STYLE = {
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    visibility: 'hidden',
+};
 
 export default function Tooltip({ children, content, enabled = true, side = 'bottom' }) {
     const tooltipsEnabled = appSetting('layout', 'tooltips');
     const shouldRenderTooltip = !!enabled && !!tooltipsEnabled;
 
     const [visible, setVisible] = useState(false);
-    const [tooltipStyle, setTooltipStyle] = useState({});
+    const [tooltipStyle, setTooltipStyle] = useState(HIDDEN_STYLE);
     const tooltipRef = useRef(null);
     const wrapperRef = useRef(null);
     const timeoutRef = useRef(null);
@@ -56,37 +48,58 @@ export default function Tooltip({ children, content, enabled = true, side = 'bot
     }, []);
 
     useEffect(() => {
-        if (!shouldRenderTooltip) {
-            setVisible(false);
+        if (!shouldRenderTooltip || !visible) {
+            setTooltipStyle(HIDDEN_STYLE);
             return;
         }
 
-        if (!visible) {
-            setTooltipStyle({});
-            return;
-        }
-
-        if (tooltipRef.current && wrapperRef.current) {
+        const updatePosition = () => {
+            if (!tooltipRef.current || !wrapperRef.current) return;
             const tooltipRect = tooltipRef.current.getBoundingClientRect();
             const wrapperRect = wrapperRef.current.getBoundingClientRect();
-            const clip = getClipRect(wrapperRef.current);
+            const vw = window.innerWidth;
+            const vh = window.innerHeight;
 
-            const minLeft = (clip.left + CLIP_PAD) - wrapperRect.left;
-            const maxLeft = (clip.right - CLIP_PAD) - tooltipRect.width - wrapperRect.left;
-            let left = (wrapperRect.width - tooltipRect.width) / 2;
-            if (maxLeft >= minLeft) {
-                left = Math.min(Math.max(left, minLeft), maxLeft);
-            } else {
-                left = minLeft;
+            let top = side === 'top'
+                ? wrapperRect.top - tooltipRect.height - GAP
+                : wrapperRect.bottom + GAP;
+            if (top < CLIP_PAD) top = CLIP_PAD;
+            if (top + tooltipRect.height > vh - CLIP_PAD) {
+                top = Math.max(CLIP_PAD, vh - tooltipRect.height - CLIP_PAD);
             }
 
-            setTooltipStyle({ left });
-        }
-    }, [visible, shouldRenderTooltip]);
+            let left = wrapperRect.left + (wrapperRect.width - tooltipRect.width) / 2;
+            left = Math.min(Math.max(left, CLIP_PAD), vw - tooltipRect.width - CLIP_PAD);
+
+            setTooltipStyle({ position: 'fixed', top, left });
+        };
+
+        updatePosition();
+        window.addEventListener('scroll', updatePosition, true);
+        window.addEventListener('resize', updatePosition);
+        return () => {
+            window.removeEventListener('scroll', updatePosition, true);
+            window.removeEventListener('resize', updatePosition);
+        };
+    }, [visible, shouldRenderTooltip, side, content]);
 
     if (!shouldRenderTooltip) {
         return children;
     }
+
+    const tooltip = visible && typeof document !== 'undefined'
+        ? createPortal(
+            <View
+                ref={tooltipRef}
+                pointerEvents="none"
+                className="z-50 shadow-lg w-auto backdrop-blur bg-popover/90 rounded-full py-1.5 px-3"
+                style={tooltipStyle}
+            >
+                <Text className="text-card-foreground whitespace-nowrap text-sm">{content}</Text>
+            </View>,
+            document.body
+        )
+        : null;
 
     return (
         <View
@@ -95,15 +108,7 @@ export default function Tooltip({ children, content, enabled = true, side = 'bot
             ref={wrapperRef}
         >
             {children}
-            {visible && (
-                <View
-                    ref={tooltipRef}
-                    className={`absolute z-50 shadow-lg w-auto backdrop-blur bg-popover/90 rounded-full py-1.5 px-3 ${side === 'top' ? 'bottom-full mb-2.5' : 'top-full mt-2.5'}`}
-                    style={tooltipStyle}
-                >
-                    <Text className="text-card-foreground whitespace-nowrap text-sm">{content}</Text>
-                </View>
-            )}
+            {tooltip}
         </View>
     );
 }

@@ -1110,6 +1110,7 @@ export const HeaderContainer = ({
                 onChangeRoute={onChangeRoute}
                 pageData={pageData}
                 leftColumnMenus={leftColumnMenus}
+                contentWidth={contentWidth}
             />
             <FiltersButton
                 visible={showFilters}
@@ -1163,8 +1164,10 @@ export function TopSidebar({
     layout,
     layoutName,
     omitDefaultBackground = false,
+    contentWidth,
 }) {
     const isHideOnDesktop = layoutName !== 'profile'
+    const widthClass = contentWidth || appSetting('layout', 'page_content_width_default')
     return (
         <View
             style={styles}
@@ -1172,7 +1175,7 @@ export function TopSidebar({
                 }`}
         >
             <View
-                className={`${isHideOnDesktop ? '' : 'mx-auto'} ${appSetting('layout', 'page_content_width_default')} mx-auto`}
+                className={`${isHideOnDesktop ? '' : 'mx-auto'} ${widthClass} mx-auto`}
             >
                     {/*
                       * Section title on the tab subbar, for the middle viewport range.
@@ -1227,6 +1230,7 @@ export const TabBar = ({
     onChangeRoute,
     omitDefaultBackground = false,
     leftColumnMenus = [],
+    contentWidth,
 }) => {
     const { t } = useTranslation()
     const { layoutName: layout } = useLayoutSettings()
@@ -1259,6 +1263,7 @@ export const TabBar = ({
             layout={layout}
             title={t(menuSettings?.name)}
             icon={menuSettings?.icon || menu?.icon}
+            contentWidth={contentWidth}
         >
              {isShowSecondLine && <Row className="px-0 w-full items-center">
                 <View className="flex-1 min-h-12 lg:min-h-14 min-w-0">
