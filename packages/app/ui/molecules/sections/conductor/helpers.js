@@ -14,7 +14,7 @@ import {
 } from 'app/lib/util'
 import { fetcher } from 'app/lib/fetcher'
 import { getSkeletonByEndPoint } from 'app/customization/functions'
-import { getComponent } from 'app/components/registry'
+import { components } from 'app/components/registry'
 
 const conductorTheme = appSetting('theme', 'conductor')
 
@@ -43,12 +43,12 @@ const conductorTheme = appSetting('theme', 'conductor')
  */
 
 const registeredComponents = Object.create(null)
-/** Cache getComponent; skip undefined so a late registry fill still works. */
+/** Cache registry lookups; skip undefined so a late registry fill still works. */
 export function registeredComponent(type, name) {
     const key = `${type}:${name}`
     const cached = registeredComponents[key]
     if (cached) return cached
-    const component = getComponent(type, name)
+    const component = components[type][name]
     if (component) registeredComponents[key] = component
     return component
 }

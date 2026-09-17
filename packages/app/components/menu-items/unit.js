@@ -1,11 +1,11 @@
 import { Button } from 'app/design/controls'
-import { getComponent } from 'app/components/registry';
+import { components } from 'app/components/registry';
 
 
 export default function MenuItemSubmenu({ menuItem, isPrimary }) {
     if (!menuItem) return null;
     if (menuItem.data?.type) {
-        const Element = getComponent('molecule', String(menuItem.data.type))
+        const Element = components['molecule'][String(menuItem.data.type)]
         if (Element) {
             const oElementParams = {
                 ...menuItem.data,

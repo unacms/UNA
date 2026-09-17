@@ -4,7 +4,7 @@ import { useCurrentUser } from 'app/context/user'
 import { useMemo } from 'react'
 import { Button } from 'app/design/controls'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu'
-import { getComponent } from 'app/components/registry';
+import { components } from 'app/components/registry';
 
 export default function ({ data, oMenuItemsMore, popupVisible, setPopupVisible, defaultButtonProps }) {
     let { currentUser, setCurrentUser } = useCurrentUser()
@@ -26,7 +26,7 @@ export default function ({ data, oMenuItemsMore, popupVisible, setPopupVisible, 
         (aItem) => {
             let sTitle = aItem.title;
             const ItemType = useMemo(() => {
-                return getComponent('menu-item', aItem.display_type || sDisplayType);
+                return components['menu-item'][aItem.display_type || sDisplayType];
             }, [aItem.display_type, sDisplayType]);
 
         

@@ -26,7 +26,7 @@ import { Button, Modal } from 'app/design/controls'
 import Menu from 'app/components/menu'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu'
 import { fetcher } from 'app/lib/fetcher'
-import { getComponent } from 'app/components/registry'
+import { components } from 'app/components/registry'
 import Card from 'app/ui/molecules/page/card'
 import AnimatedBlock from 'app/ui/atoms/animated-block'
 import { CommentsBrowseShort } from 'app/components/elements/comments-browse';
@@ -398,10 +398,7 @@ const MenuManage_ = memo(({ id, menu, setViewState, defaultOpen }) => {
             (aItem) => {
                 let sTitle = aItem.title
                 if (!!aItem.display_type && aItem.display_type == 'element') {
-                    const Element = getComponent(
-                        'molecule',
-                        String(aItem.data.type)
-                    )
+                    const Element = components['molecule'][String(aItem.data.type)]
                     if (!!Element) {
                         sTitle = (
                             <Element
@@ -518,7 +515,7 @@ export const AuthorActions = memo(({ data }) => {
     if (!data.author_actions?.length) return null
 
     return data.author_actions.map((item) => {
-        const Element = getComponent('molecule', String(item.type))
+        const Element = components['molecule'][String(item.type)]
         if (!Element)
             return null
         return (
@@ -538,7 +535,7 @@ export const AuthorActions = memo(({ data }) => {
 })
 
 export const Author = memo(({ data, url, t }) => {
-    const Badges = getComponent('molecule', 'badges')
+    const Badges = components['molecule']['badges']
 
     const dataIcon =
         data.object_privacy_view < 0 && data.feed_type != 'owner'

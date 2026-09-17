@@ -2,7 +2,7 @@ import { View, Row } from 'app/design/view'
 import { useCurrentUser } from 'app/context/user'
 import { menuItemsByName, appSetting, flattenMenuItemsForDropdown } from 'app/lib/util'
 import { useTranslation } from 'react-i18next'
-import { getComponent } from 'app/components/registry';
+import { components } from 'app/components/registry';
 import { useEffect, useMemo, useState } from 'react';
 import { Platform } from 'react-native';
 
@@ -82,7 +82,7 @@ export default function MenuTop({ url, uri }) {
         };
     }, [indicatorStyle.visible, indicatorStyle.translateX, indicatorStyle.width]);
 
-    const MenuTopItem = getComponent('menu-item', 'topmenu');
+    const MenuTopItem = components['menu-item']['topmenu'];
 
     return (
         <Row

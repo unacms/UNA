@@ -13,6 +13,7 @@ import { useTranslation } from 'react-i18next';
 import MenuDrawer from 'app/components/nav/menu-drawer'
 import ProfileSwitcher from 'app/components/elements/profile-switcher';
 import { useBreakpoint, useIsDesktop } from 'app/context/measure';
+import { components } from 'app/components/registry';
 
 const HeaderLine = memo(({ headerSettings, currentUser, uri, title, menuPopup, setMenuPopup, showMenu }) => {
     const { t } = useTranslation();
@@ -82,7 +83,7 @@ export default function (props) {
         setMenuPopup(!menuPopup)
     }
 
-    const HeaderElement = getComponent('molecule', 'header_element')  
+    const HeaderElement = components['molecule']['header_element']
 
     return (
         <>

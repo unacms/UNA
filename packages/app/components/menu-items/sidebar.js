@@ -3,14 +3,14 @@ import { Text } from 'app/design/typography'
 import { Icon } from 'app/ui/atoms/icon'
 import Image from 'app/ui/atoms/image'
 import { isEmoji } from 'app/lib/util';
-import { getComponent } from 'app/components/registry';
+import { components } from 'app/components/registry';
 
 function isImageSource(value) {
     return typeof value === 'string' && /^(https?:|file:|content:|data:)/i.test(value)
 }
 
 export default function MenuItemSidebar({ title, icon, isActive, addon, iconEnd }) {
-    const CounterIndicator = getComponent('molecule', 'counter_indicator')
+    const CounterIndicator = components['molecule']['counter_indicator']
     const iconClassName = isActive
         ? 'text-primary-foreground'
         : 'text-secondary-foreground web:group-hover:text-foreground'

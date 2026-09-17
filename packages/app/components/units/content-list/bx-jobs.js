@@ -2,13 +2,13 @@ import Link from "app/ui/atoms/link";
 import { Text } from "app/design/typography";
 import { View } from "app/design/view";
 import { CardList } from 'app/ui/molecules/page/card'
-import { getComponent } from 'app/components/registry';
+import { components } from 'app/components/registry';
 import { UnitText, UnitTitle } from 'app/components/units/helpers'
 import { useTranslation } from 'react-i18next'
 
 export default function Unit({ data }) {
     const { t } = useTranslation();
-    const Stars = getComponent('molecule', 'stars');
+    const Stars = components['molecule']['stars'];
     let sRate = undefined;
     if (data.meta?.items)
         data.meta.items.forEach((aItem) => {

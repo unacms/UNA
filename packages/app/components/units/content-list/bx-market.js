@@ -1,7 +1,7 @@
 import Image from "app/ui/atoms/image";
 import { Text } from "app/design/typography";
 import { View, Row } from "app/design/view";
-import { getComponent } from 'app/components/registry';
+import { components } from 'app/components/registry';
 import { Skeleton } from 'app/ui/atoms/skeleton';
 import {
     UnitAuthor,
@@ -12,7 +12,7 @@ import {
 } from 'app/components/units/helpers';
 
 export default function Unit({ data }) {
-    const Stars = getComponent('molecule', 'stars');
+    const Stars = components['molecule']['stars'];
 
     let cover_raw = data.cover_raw?.replace(
         /\\u([\d\w]{4})/gi,

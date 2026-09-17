@@ -9,7 +9,7 @@ import Profile from 'app/ui/molecules/profile/profile';
 import ProfilesList from 'app/ui/molecules/profile/profile-list';
 import Badge from 'app/ui/molecules/profile/badge';
 import { Skeleton } from 'app/ui/atoms/skeleton';
-import { getComponent } from 'app/components/registry';
+import { components } from 'app/components/registry';
 import { fetcher } from 'app/lib/fetcher';
 import { appSetting, cn, tp, sanitazeUrl } from 'app/lib/util';
 import { getUnitMenuItems } from 'app/customization/functions';
@@ -527,7 +527,7 @@ export function UnitRecommendation({ data, params, primary = false }) {
     if (!itemData) return null;
 
     const isIgnore = itemData.a === 'ignore';
-    const Recommendation = getComponent('molecule', 'recommendation');
+    const Recommendation = components['molecule']['recommendation'];
     return (
         <Recommendation
             {...itemData}

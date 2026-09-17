@@ -458,5 +458,8 @@
     "agent_chat_untitled": "Чат",
     "agent_chat_open": "Открыт",
     "agent_chat_closed": "Закрыт",
-    "agent_chat_new": "Новый чат"
+    "agent_chat_new": "Новый чат",
+    "tasks_budget_total": "Всего",
+    "tasks_budget_spent": "Потрачено",
+    "tasks_budget_remaining": "Осталось"
 }

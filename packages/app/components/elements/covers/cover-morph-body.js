@@ -6,7 +6,7 @@ import { appSetting, formatDateInterval, cloneObject, cn, useDateLocaleTag } fro
 import { useTranslation } from 'react-i18next'
 import { useCurrentUser } from 'app/context/user'
 import { useIsDesktop, useBreakpointName } from 'app/context/measure'
-import { getComponent } from 'app/components/registry'
+import { components } from 'app/components/registry'
 import {
     CoverMenuMeta,
     CoverMenu,
@@ -146,8 +146,8 @@ export function CoverMorphBody({
         menu.persistent = 1
     }
 
-    const ContextSelector = getComponent('molecule', 'context_selector')
-    const Badges = getComponent('molecule', 'badges')
+    const ContextSelector = components['molecule']['context_selector']
+    const Badges = components['molecule']['badges']
 
     const isAddSelector =
         !suppressContextSelector &&

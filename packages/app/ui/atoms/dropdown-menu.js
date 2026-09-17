@@ -10,7 +10,7 @@ import { appSetting } from 'app/lib/util';
 import { SafeMenuTrigger } from 'app/ui/atoms/safe-menu-trigger';
 import DropdownPopup, { DropdownMenuOpenContext } from 'app/ui/atoms/dropdown-popup'
 import emitter from 'app/context/emitter';
-import { getComponent } from 'app/components/registry'
+import { components } from 'app/components/registry'
 import { useOpenModalByUrl, useOpenModalWithContent } from 'app/context/jotai/modal';
 import { sanitazeUrl, openExternalLink } from 'app/lib/util';
 import { useWindowSize } from 'app/context/measure';
@@ -76,7 +76,7 @@ function DropdownMenuPopup({
     triggerClassName,
     triggerStyle,
 }) {
-    const DropdownMenuItem = getComponent('menu-item', 'dropdown');
+    const DropdownMenuItem = components['menu-item']['dropdown'];
     const redirectdRef = useRef();
     const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen);
     const isControlled = openProp !== undefined;
@@ -251,7 +251,7 @@ function DropdownMenuPopup({
 const MenuBottomSheet = memo(({ items, onSelect, setBottomSheetData, resolveContent }) => {
     const openModalByUrl = useOpenModalByUrl();
     const openModalWithContent = useOpenModalWithContent();
-    const DropdownMenuItem = getComponent('menu-item', 'dropdown');
+    const DropdownMenuItem = components['menu-item']['dropdown'];
     const redirectdRef = useRef();
     const handlePressMenu = useCallback(
         (item) => (event) => {

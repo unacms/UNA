@@ -34,7 +34,7 @@ import { useIsFocused } from 'app/lib/hooks/router'
 import { useGetScrollValue } from 'app/context/jotai/layout'
 import { setListScrollOffset } from 'app/lib/cache/list-scroll-cache'
 import { startPerPageNextPageParam, useUniListQuery } from 'app/lib/browse-query'
-import { getComponent } from 'app/components/registry';
+import { components } from 'app/components/registry';
 import { BrowseItem } from 'app/lib/common-helpers'
 import { BlockWrapper } from 'app/components/block-wrapper'
 import { layoutForList } from 'app/customization/functions'
@@ -47,7 +47,7 @@ export default function Browse(props) {
     const { t } = useTranslation()
     const { currentUser } = useCurrentUser();
 
-    const Form = getComponent('element', 'form');
+    const Form = components['element']['form'];
 
     const uniRef = useRef()
     const isFocused = useIsFocused();
@@ -242,7 +242,7 @@ export default function Browse(props) {
         )
     }
 
-    const NoContent = getComponent('molecule', 'no_content')
+    const NoContent = components['molecule']['no_content']
 
     const PreloadComponent = !data?.hide_empty_msg && dataItems.length === 0
         ? (listReady && hasNextPage === false

@@ -1,13 +1,13 @@
 import { BlockWrapper } from 'app/components/block-wrapper'
 import { View } from 'app/design/view'
-import { getComponent } from 'app/components/registry';
+import { components } from 'app/components/registry';
 import { appSetting } from 'app/lib/util';
 import { useState } from 'react';
 
 const conductorTheme = appSetting('theme', 'conductor');
 
 export default function ElementMenu({ data, blockWrapperProps, url }) {
-    const MenuItemSidebarWithWrapper = getComponent('menu-item', 'sidebar_with_wrapper');
+    const MenuItemSidebarWithWrapper = components['menu-item']['sidebar_with_wrapper'];
     const currentPath = String(url || '');
     const currentPathComparable = currentPath.replace(/^\/+/, '');
     const depthClassNameMap = {

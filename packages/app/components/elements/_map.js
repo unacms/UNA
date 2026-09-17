@@ -42,6 +42,7 @@ const Messenger = lazyComponent(() => import('./messenger'), { name: 'Messenger'
 const TasksMenu = lazyComponent(() => import('./tasks-menu'), { name: 'TasksMenu' });
 const TasksTimers = lazyComponent(() => import('./tasks-timers'), { name: 'TasksTimers' });
 const TasksList = lazyComponent(() => import('./tasks-list'), { name: 'TasksList' });
+const TasksBudget = lazyComponent(() => import('./tasks-budget'), { name: 'TasksBudget' });
 const TaskTimer = lazyComponent(() => import('./task-timer'), { name: 'TaskTimer' });
 const WikiBlocks = lazyComponent(() => import('./wiki-blocks'), { name: 'WikiBlocks' });
 const WikiHistory = lazyComponent(() => import('./wiki-history'), { name: 'WikiHistory' });
@@ -85,6 +86,7 @@ export const componentsMapDefault = {
     tasks_menu: TasksMenu,
     tasks_timers: TasksTimers,
     tasks_list: TasksList,
+    tasks_budget: TasksBudget,
     task_timer: TaskTimer,
     wiki_add_block: WikiBlocks,
     wiki_add_page: WikiBlocks,

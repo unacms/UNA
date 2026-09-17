@@ -1,12 +1,12 @@
 import CardDataContext from 'app/context/card'
 import { useMemo } from 'react';
- import { getComponent } from 'app/components/registry';
+ import { components } from 'app/components/registry';
  
 export default function Unit(props) {
     const data = props.data;
     const module = !!data?.module ? data.module : props.module
 
-    const Component = useMemo(() =>  getComponent('profile-list', module) || getComponent('profile-list', 'default'), [module]);
+    const Component = useMemo(() =>  components['profile-list'][module] || components['profile-list']['default'], [module]);
     const Result = <Component {...props} /> 
 
     /*

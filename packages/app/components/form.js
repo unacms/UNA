@@ -3,7 +3,7 @@ import { useForm, FormProvider } from 'react-hook-form';
 import { getFormFieldByData, isFormResponseComplete, normalizeFormResponseData, updateFormDirtyState, isFormUnsavedCloseGuardSkipped, formHasPendingUploads, clearFormPendingUploads } from 'app/lib/form/form-helpers'
 import { getDefaultPasteStorageKey } from 'app/components/form-fields/media-attachments'
 import { View, Row } from 'app/design/view'
-import { getComponent } from 'app/components/registry';
+import { components } from 'app/components/registry';
 import { FeedbackHaptics, appSetting, isNumeric, isObjectsEqual } from 'app/lib/util';
 import { sessionCacheGet, sessionCacheSet } from 'app/lib/util/storage';
 import { Platform } from 'react-native';
@@ -38,7 +38,7 @@ function FormProviders({ instanceId, methods, children }) {
 }
 
 function getFormType(name) {
-    return getComponent('form', String(name))
+    return components['form'][String(name)]
 }
 
 function getFormFieldList(name, inputs, handleSubmit, isInitial = false, lastChangedField, saveOnChanges, formProps) {
@@ -610,7 +610,7 @@ export default function Form({
     }, {}) : [];
 
 
-    const Element = formBundle.extra ? getComponent('element', String(formBundle.extra.type)) : null;
+    const Element = formBundle.extra ? components['element'][String(formBundle.extra.type)] : null;
     const formSettings = appSetting('forms', name) || {};
     const hideFormOnMsg = formSettings.hide_on_msg && formBundle.extra?.type === 'msg';
 

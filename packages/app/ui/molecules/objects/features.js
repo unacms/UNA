@@ -21,7 +21,7 @@ import {
     resolveActionButtonFlags,
     ActionMenuLayout,
 } from 'app/ui/molecules/objects/helpers';
-import { getComponent } from 'app/components/registry';
+import { components } from 'app/components/registry';
 import { NeoButton } from 'app/design/controls';
 
 export default function ElementFeatures(props) {
@@ -29,7 +29,7 @@ export default function ElementFeatures(props) {
     const params = { ...settings, ...props.params };
     const action = props.action;
 
-    const DropdownMenuItem = getComponent('menu-item', 'dropdown');
+    const DropdownMenuItem = components['menu-item']['dropdown'];
 
     const icons =
         props?.o && settings[props.o]?.icons != undefined

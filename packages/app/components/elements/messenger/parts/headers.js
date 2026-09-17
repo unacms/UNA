@@ -7,7 +7,7 @@ import { appSetting } from 'app/lib/util';
 import useDebounce from 'app/lib/hooks/use-debounce';
 import { getBackButtonWeb } from 'app/lib/common-helpers';
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
-import { getComponent } from 'app/components/registry';
+import { components } from 'app/components/registry';
 import { useSetHeaderHeight } from 'app/context/jotai/layout';
 import { useTranslation } from 'react-i18next';
 
@@ -135,7 +135,7 @@ export function MobileListHeader({ pageData, onSearch, addButtons, menuItems, me
     const [showSearch, setShowSearch] = useState(false);
     const search = useDebouncedSearch(onSearch);
     const setHeaderHeight = useSetHeaderHeight();
-    const ContextSelector = getComponent('molecule', 'context_selector');
+    const ContextSelector = components['molecule']['context_selector'];
     const listTitle = t('Messages');
 
     // Native: the injected header can paint taller than the fixed h-16 chrome.

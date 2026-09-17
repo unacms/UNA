@@ -3,7 +3,7 @@ import { Pressable, View, Row } from 'app/design/view';
 import UniList from 'app/ui/atoms/unilist'
 import { Text } from 'app/design/typography'
 import { useState, useReducer, useRef, useEffect, useCallback } from 'react';
-import { getComponent } from 'app/components/registry';;
+import { components } from 'app/components/registry';;
 import { Button } from 'app/design/controls'
 import useFetchForm from 'app/lib/hooks/use-fetch-form'
 import { fetcher } from 'app/lib/fetcher';
@@ -71,7 +71,7 @@ export function CommentsBrowse({
     marginBottom = 0,
     useCustomScrollHandler,
 }) {
-    const UnitComments = getComponent('unit', 'comments');
+    const UnitComments = components['unit']['comments'];
     const { t } = useTranslation();
     const flashListRef = useRef(null);
     /** Ignore item taps that start as a scroll (chat UX: keep keyboard while scrolling). */
@@ -602,7 +602,7 @@ export function CommentsBrowseShort({
     module,
     handleReply
 }) {
-    const UnitComments = getComponent('unit', 'comments');
+    const UnitComments = components['unit']['comments'];
     const viewMode = browseData?.view;
     const items = browseData?.data ? buildFlatListFromTree(browseData.data, viewMode) : [];
     const maxCount= appSetting('comments', 'count_in_feed');

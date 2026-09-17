@@ -1,4 +1,4 @@
-import { useMemo, useState, useCallback } from 'react';
+import { useState } from 'react';
 import { View, Row, Pressable } from 'app/design/view';
 import { Text } from 'app/design/typography';
 import ProfilesList from 'app/ui/molecules/profile/profile-list';
@@ -6,14 +6,12 @@ import { Modal } from 'app/design/controls';
 import { Icon } from 'app/ui/atoms/icon';
 import Menu from 'app/components/menu';
 import { BlockByDataInt as BlockByData } from 'app/components/block';
-import { fetcher } from 'app/lib/fetcher';
 import { appSetting, cn } from 'app/lib/util';
-import emitter from 'app/context/emitter';
 import { iconForTaskStatus } from 'app/lib/tasks-meta';
 import { UnitTitle } from 'app/components/units/helpers';
 import Tooltip from 'app/ui/atoms/tooltip';
-
-const TASKS_LIST_EVENT = 'tasks_list';
+import { runTaskAction } from 'app/components/elements/tasks/actions';
+import { emitTasksListOpen, emitTasksListRefresh } from 'app/components/elements/tasks/helpers';
 
 const META_FIELDS = [
     { key: 'type', icon: 'Tag' },
@@ -21,18 +19,15 @@ const META_FIELDS = [
     { key: 'time', icon: 'Clock', altKeys: ['estimate'] },
 ];
 
-function emitTasksListRefresh() {
-    emitter.emit(TASKS_LIST_EVENT, { action: 'reload' });
-}
+const COMPLETED_STATES = /^(done|cancelled|duplicate)$/i;
 
-function emitTasksListOpen(task) {
-    if (!task?.url) return;
-    emitter.emit(TASKS_LIST_EVENT, {
-        action: 'open',
-        url: task.url,
-        title: task.title,
-    });
-}
+const MENU_PARAMS = {
+    className: 'gap-x-1',
+    button_style: 'bordered',
+    button_size: 'mini',
+    button_border_shape: 'capsule',
+    button_full_width: false,
+};
 
 function actionsToMenuItems(actions = []) {
     return actions.map((action) => ({
@@ -43,25 +38,6 @@ function actionsToMenuItems(actions = []) {
         display_type: 'button',
         action,
     }));
-}
-
-async function runTaskAction(action, setFormBlock) {
-    if (!action) return;
-
-    if (action.type === 'modal') {
-        const fetchedData = await fetcher('/api.php?r=' + action.callback);
-        setFormBlock({
-            content: fetchedData.data,
-            designbox_id: 0,
-            title: action.title,
-        });
-        return;
-    }
-
-    if (action.type === 'callback') {
-        await fetcher('/api.php?r=' + action.callback);
-        emitTasksListRefresh();
-    }
 }
 
 function shouldIgnoreTaskRowPress(event) {
@@ -129,27 +105,18 @@ function TaskMeta({ data }) {
 
 export default function Unit({ data }) {
     const [formBlock, setFormBlock] = useState(null);
-    const isCompleted = data?.class === 'completed'
-        || /^(done|cancelled|duplicate)$/i.test(String(data?.state || ''));
+    const isCompleted = data?.class === 'completed' || COMPLETED_STATES.test(String(data?.state || ''));
+    const menuItems = actionsToMenuItems(data?.actions);
 
-    const handleFormClose = useCallback(() => {
+    const handleFormClose = () => {
         setFormBlock(null);
         emitTasksListRefresh();
-    }, []);
+    };
 
-    const menuItems = useMemo(
-        () => actionsToMenuItems(data?.actions),
-        [data?.actions]
-    );
-
-    const menuParams = useMemo(() => ({
-        className: 'gap-x-1',
-        button_style: 'bordered',
-        button_size: 'mini',
-        button_border_shape: 'capsule',
-        button_full_width: false,
-        onclick: (event, item) => runTaskAction(item.action, setFormBlock),
-    }), []);
+    const menuParams = {
+        ...MENU_PARAMS,
+        onclick: (event, item) => runTaskAction(item.action, { setFormBlock }),
+    };
 
     const titleClassName = cn(
         'min-w-0 truncate text-sm font-semibold leading-tight web:group-hover:text-foreground',
@@ -158,10 +125,10 @@ export default function Unit({ data }) {
             : 'text-card-foreground'
     );
 
-    const openTask = useCallback((event) => {
+    const openTask = (event) => {
         if (shouldIgnoreTaskRowPress(event)) return;
         emitTasksListOpen(data);
-    }, [data]);
+    };
 
     return (
         <Pressable

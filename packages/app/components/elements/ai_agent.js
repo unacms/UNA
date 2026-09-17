@@ -1,12 +1,12 @@
 'use client';
 
 import { BlockWrapper } from 'app/components/block-wrapper';
-import { getComponent } from 'app/components/registry';
+import { components } from 'app/components/registry';
 import { useLocalSearchParams } from 'app/lib/hooks/router';
 import { hiddenFirstMessageFromData } from 'app/ui/molecules/ai-agent/hidden-first-message';
 
 export default function ElementAiAgent({ data, blockWrapperProps }) {
-    const AiAgent = getComponent('molecule', 'ai_agent');
+    const AiAgent = components['molecule']['ai_agent'];
     const params = useLocalSearchParams();
     const initialMessage = hiddenFirstMessageFromData(data, params);
     const agentId = data?.agent_id ?? '';

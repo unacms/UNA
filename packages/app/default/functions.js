@@ -1,6 +1,6 @@
 import { fetcher } from 'app/lib/fetcher'
 import { updateRouteDataForConnection, appSetting } from 'app/lib/util'
-import { getComponent } from 'app/components/registry';
+import { components } from 'app/components/registry';
 import { View } from 'app/design/view'
 import { settingsLayout } from 'app/settings/layout'
 import i18n from 'i18next'
@@ -158,7 +158,7 @@ export function getUnitMenuItems(unitType, data, handleClick, t, moduleName) {
     let secondaryMenuItem = null;
     let deleteMenuItem = null;
 
-    const MenuItem = getComponent('menu-item', 'unit')
+    const MenuItem = components['menu-item']['unit']
 
     if (data?.meta) {
         let sPrimary = "";

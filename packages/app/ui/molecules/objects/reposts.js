@@ -24,7 +24,7 @@ import {
     resolveActionButtonFlags,
     ActionMenuLayout,
 } from 'app/ui/molecules/objects/helpers';
-import { getComponent } from 'app/components/registry';
+import { components } from 'app/components/registry';
 
 // ---------------------------------------------------------------------------
 // Timeline repost API (not TemplVoteServices)
@@ -45,7 +45,7 @@ async function repostRequest(action, params, onLoad) {
 // ---------------------------------------------------------------------------
 
 export default function ElementReposts(props) {
-    const DropdownMenuItem = getComponent('menu-item', 'dropdown');
+    const DropdownMenuItem = components['menu-item']['dropdown'];
 
     const settings = appSetting('social_actions', 'repost');
     const params = { ...settings, ...props.params };

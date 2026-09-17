@@ -12,7 +12,7 @@ import { useTranslation } from 'react-i18next';
 import MenuAdd from 'app/components/nav/menu-add'
 import BlockByUrl from 'app/ui/molecules/page/block'
 import MenuAccount from 'app/components/nav/menu-account'
-import { getComponent } from 'app/components/registry'
+import { components } from 'app/components/registry'
 import { useIsDesktop } from 'app/context/measure';
 
 const SidebarBottomToolbar = ({ currentUser, menu_add_items, buttonProps }) => {
@@ -61,13 +61,13 @@ const SidebarBottomToolbar = ({ currentUser, menu_add_items, buttonProps }) => {
 };
 
 const SideBar = memo(({ headerSettings, currentUser, uri, url, bSearch, menuPopup, setMenuPopup, showMenu, context }) => {
-    const MenuItemSidebarWithWrapper = getComponent('menu-item', 'sidebar_with_wrapper');
+    const MenuItemSidebarWithWrapper = components['menu-item']['sidebar_with_wrapper'];
     const { t } = useTranslation();
     const isDesktop = useIsDesktop();
     if (isDesktop && menuPopup)
         setMenuPopup(false)
 
-    const ContextSelector = getComponent('molecule', 'context_selector')
+    const ContextSelector = components['molecule']['context_selector']
     const menu_sidebar_items = menuItemsByName('main_menu', appSetting('menu_items', 'menu_sidebar'), currentUser);
   const blocks = appSetting('layout', 'vertical', 'blocks')
 

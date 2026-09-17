@@ -1,4 +1,4 @@
-import { getComponent } from 'app/components/registry'
+import { components } from 'app/components/registry'
 import { NeoButton, NeoButtonLink } from 'app/design/controls'
 
 export default function MenuItemSidebarWithWrapper({
@@ -12,7 +12,7 @@ export default function MenuItemSidebarWithWrapper({
     addon,
     className = '',
 }) {
-    const MenuItemSidebar = getComponent('menu-item', 'sidebar')
+    const MenuItemSidebar = components['menu-item']['sidebar']
     const finalLink = link?.includes('{profile}')
         ? link.replace('{profile}', userUrl || '')
         : link
