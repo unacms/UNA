@@ -80,6 +80,9 @@ const NO_MESSAGES = [];
  * @param {string} [props.height] Tailwind height class for the whole widget.
  * @param {boolean} [props.showHistory] Override `data.show_history`. The operator
  *   float passes this from `appSetting('ai', 'operator_agent').show_history`.
+ * @param {boolean} [props.historyAlways] Keep the "Chats" panel even when the only
+ *   row is the live chat (by default it earns its space only with something else to
+ *   browse). The operators' Agents block wants the list in sight at all times.
  * @param {'auto'|'overlay'} [props.historyLayout] Where the "Chats" panel goes when
  *   history is on. `auto`: a column beside the transcript from the `md:` viewport
  *   breakpoint up, an overlay below it. `overlay`: always the overlay, for hosts
@@ -100,6 +103,7 @@ export default function AiAgent({
     height = 'h-[28rem]',
     showHistory: showHistoryProp,
     historyLayout = 'auto',
+    historyAlways = false,
     channel,
 }) {
     const { currentUser } = useCurrentUser();
@@ -232,7 +236,7 @@ export default function AiAgent({
     // The panel earns its space only when there is something besides the live chat
     // to look at: one row that is the live chat itself is nothing to browse.
     const historyVisible = showHistory
-        && (threads.length > 1 || (threads.length === 1 && threads[0].thread_id !== liveId));
+        && (historyAlways || threads.length > 1 || (threads.length === 1 && threads[0].thread_id !== liveId));
     const historyOverlayOnly = historyLayout === 'overlay';
     const onToggleHistory = historyVisible ? toggleHistory : undefined;
     const onStartAgain = allowNew ? startAgain : undefined;

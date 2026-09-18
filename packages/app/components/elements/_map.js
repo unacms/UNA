@@ -29,6 +29,7 @@ import CommentContent from './comment-content';
 import ProfileList from './profiles-list';
 import Logout from './logout';
 import AiAgent from './ai_agent';
+import AiAgentsAdmin from './ai_agents_admin';
 import Static from './static';
 import Mockup from './mockup';
 
@@ -142,6 +143,7 @@ export const componentsMapDefault = {
     simple_list: SimpleList,
     stripe_connect: StripeConnect,
     ai_agent: AiAgent,
+    ai_agents_admin: AiAgentsAdmin,
     static: Static,
     mockup: Mockup,
 };
