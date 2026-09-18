@@ -29,7 +29,8 @@ class BxDolAIToolMysqlWrite extends BxDolAITool
     {
         parent::__construct(
             'mysql_write',
-            'INSERT or UPDATE one row. DELETE/DROP/TRUNCATE/ALTER are forbidden. UPDATE WHERE must identify exactly one row (prefer primary key: WHERE id = N). Snapshots are stored automatically. Prefer mysql_schema and mysql_select first.',
+            'INSERT or UPDATE one row. DELETE/DROP/TRUNCATE/ALTER are forbidden. UPDATE WHERE must identify exactly one row (prefer primary key: WHERE id = N). Snapshots are stored automatically. Prefer mysql_schema and mysql_select first. '
+            . 'Call with dry_run=true first: it returns a plain-language summary (table, row, field: old → new) — show that to the person, never the SQL.',
         );
     }
 
@@ -42,14 +43,21 @@ class BxDolAIToolMysqlWrite extends BxDolAITool
                 description: 'Single INSERT or UPDATE. UPDATE needs WHERE that matches one row, e.g. WHERE `id` = 12. Table.column and extra AND conditions are ok. No DELETE. No multiple statements.',
                 required: true
             ),
+            new ToolProperty(
+                name: 'dry_run',
+                type: PropertyType::BOOLEAN,
+                description: 'true = validate and return summary / changes (field: old → new) without writing. Use it before asking the person to confirm.',
+                required: false
+            ),
         ];
     }
 
-    public function __invoke(string $query): array
+    public function __invoke(string $query, $dry_run = false): array
     {
         $oDb = BxDolDb::getInstance();
         $sSql = $this->_normalize($query);
         $sBare = $this->_stripLiterals($sSql);
+        $bDry = $dry_run === true || $dry_run === 1 || $dry_run === '1' || $dry_run === 'true';
 
         $this->_assertSafe($sBare);
 
@@ -75,6 +83,21 @@ class BxDolAIToolMysqlWrite extends BxDolAITool
             $sBefore = json_encode($aBefore, JSON_UNESCAPED_UNICODE);
         }
 
+        if ($bDry) {
+            $aAssign = $this->_parseAssignments($sSql, $sOp);
+            $aChanges = $this->_changes($sOp === 'update' ? ($aBefore ?? []) : null, $aAssign, $sOp === 'update');
+            return [
+                'ok' => 1,
+                'dry_run' => 1,
+                'op' => $sOp,
+                'table' => $sTable,
+                'pk' => $sPk,
+                'pk_value' => $sPkValue,
+                'changes' => $aChanges,
+                'summary' => $this->_summary($sOp, $sTable, $sPkValue, $aChanges),
+            ];
+        }
+
         $mixedRes = $oDb->query($sSql);
         if ($mixedRes === false)
             throw new Exception('Query failed.');
@@ -90,6 +113,11 @@ class BxDolAIToolMysqlWrite extends BxDolAITool
         $aAfter = $this->_fetchRow($oDb, $sTable, $sPk, $sPkValue);
         $iLogId = $this->_log($sOp, $sTable, $sPk, $sPkValue, $sSql, $sBefore, $aAfter ? json_encode($aAfter, JSON_UNESCAPED_UNICODE) : null);
 
+        // exact diff from the snapshots (the dry run only had the parsed SET clause)
+        $aChanges = $sOp === 'update'
+            ? $this->_changes($aBefore ?? [], $aAfter ?: [], true)
+            : $this->_changes(null, $this->_parseAssignments($sSql, $sOp), false);
+
         return [
             'ok' => 1,
             'op' => $sOp,
@@ -98,7 +126,137 @@ class BxDolAIToolMysqlWrite extends BxDolAITool
             'pk_value' => $sPkValue,
             'log_id' => $iLogId,
             'affected' => is_numeric($mixedRes) ? (int)$mixedRes : 1,
+            'changes' => $aChanges,
+            'summary' => $this->_summary($sOp, $sTable, $sPkValue, $aChanges),
         ];
+    }
+
+    /**
+     * column => literal from the SET clause (UPDATE / INSERT ... SET) or the
+     * (columns) VALUES (...) pair. Expressions that are not plain literals
+     * (NOW(), col + 1) are kept as their SQL text.
+     */
+    protected function _parseAssignments(string $sSql, string $sOp): array
+    {
+        $aOut = [];
+        if (preg_match('/\bset\b(.+?)(?:\bwhere\b.*)?$/is', $sSql, $aM)) {
+            foreach ($this->_splitTopLevel($aM[1]) as $sPair) {
+                if (preg_match('/^\s*(?:`?[a-zA-Z0-9_]+`?\s*\.\s*)?`?([a-zA-Z0-9_]+)`?\s*=\s*(.+)$/s', trim($sPair), $aP))
+                    $aOut[$aP[1]] = $this->_literal(trim($aP[2]));
+            }
+            return $aOut;
+        }
+        if ($sOp === 'insert' && preg_match('/^insert\s+into\s+`?[a-zA-Z0-9_]+`?\s*\((.+?)\)\s*values\s*\((.+)\)\s*$/is', $sSql, $aM)) {
+            $aCols = array_map(fn($c) => trim($c, " `\t\n\r"), $this->_splitTopLevel($aM[1]));
+            $aVals = $this->_splitTopLevel($aM[2]);
+            foreach ($aCols as $i => $sCol) {
+                if ($sCol !== '' && array_key_exists($i, $aVals))
+                    $aOut[$sCol] = $this->_literal(trim($aVals[$i]));
+            }
+        }
+        return $aOut;
+    }
+
+    /** Split on commas that are outside quotes and parentheses. */
+    protected function _splitTopLevel(string $s): array
+    {
+        $aOut = [];
+        $sCur = '';
+        $iDepth = 0;
+        $sQuote = '';
+        $iLen = strlen($s);
+        for ($i = 0; $i < $iLen; $i++) {
+            $c = $s[$i];
+            if ($sQuote !== '') {
+                $sCur .= $c;
+                if ($c === '\\' && $i + 1 < $iLen) {
+                    $sCur .= $s[++$i];
+                } elseif ($c === $sQuote) {
+                    if ($i + 1 < $iLen && $s[$i + 1] === $sQuote)
+                        $sCur .= $s[++$i];
+                    else
+                        $sQuote = '';
+                }
+                continue;
+            }
+            if ($c === "'" || $c === '"') {
+                $sQuote = $c;
+                $sCur .= $c;
+            } elseif ($c === '(') {
+                $iDepth++;
+                $sCur .= $c;
+            } elseif ($c === ')') {
+                $iDepth--;
+                $sCur .= $c;
+            } elseif ($c === ',' && $iDepth === 0) {
+                $aOut[] = $sCur;
+                $sCur = '';
+            } else {
+                $sCur .= $c;
+            }
+        }
+        if (trim($sCur) !== '')
+            $aOut[] = $sCur;
+        return $aOut;
+    }
+
+    /** SQL literal → PHP value; anything else stays as the expression text. */
+    protected function _literal(string $s)
+    {
+        if (preg_match('/^null$/i', $s))
+            return null;
+        if (preg_match('/^-?\d+(\.\d+)?$/', $s))
+            return $s + 0;
+        $iLen = strlen($s);
+        if ($iLen >= 2 && ($s[0] === "'" || $s[0] === '"') && $s[$iLen - 1] === $s[0]) {
+            $q = $s[0];
+            $sInner = substr($s, 1, -1);
+            $sInner = str_replace($q . $q, $q, $sInner);
+            return stripcslashes($sInner);
+        }
+        return $s;
+    }
+
+    /**
+     * [{field, before, after}] — for an update only the fields whose value
+     * actually changes; for an insert every given field (before = null).
+     */
+    protected function _changes(?array $aBefore, array $aAfter, bool $bDiff): array
+    {
+        $aOut = [];
+        foreach ($aAfter as $sField => $mixedAfter) {
+            $mixedBefore = $aBefore[$sField] ?? null;
+            if ($bDiff && (string)$mixedBefore === (string)$mixedAfter)
+                continue;
+            $aOut[] = [
+                'field' => $sField,
+                'before' => $bDiff ? $this->_short($mixedBefore) : null,
+                'after' => $this->_short($mixedAfter),
+            ];
+        }
+        return $aOut;
+    }
+
+    protected function _short($mixed): ?string
+    {
+        if ($mixed === null)
+            return null;
+        $s = trim(strip_tags((string)$mixed));
+        $s = preg_replace('/\s+/u', ' ', $s);
+        return mb_strlen($s) > 120 ? mb_substr($s, 0, 119) . '…' : $s;
+    }
+
+    /** "sys_menu_items #12: active: 0 → 1; title: «Old» → «New»" */
+    protected function _summary(string $sOp, string $sTable, string $sPkValue, array $aChanges): string
+    {
+        $fQ = fn($v) => $v === null || $v === '' ? '—' : (is_numeric($v) ? (string)$v : '«' . $v . '»');
+        $aParts = [];
+        foreach ($aChanges as $aC)
+            $aParts[] = $aC['field'] . ': ' . ($sOp === 'update' ? $fQ($aC['before']) . ' → ' : '') . $fQ($aC['after']);
+        $sHead = $sTable . ($sPkValue !== '' ? ' #' . $sPkValue : '');
+        if (!$aParts)
+            return $sHead . ($sOp === 'update' ? ': no changes' : ': new row');
+        return ($sOp === 'insert' ? 'new row in ' : '') . $sHead . ': ' . implode('; ', $aParts);
     }
 
     protected function _normalize(string $s): string

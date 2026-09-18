@@ -2542,6 +2542,23 @@
     
     <string name="_sys_agents_agents_act_wipe_chat_history"><![CDATA[Wipe chat history]]></string>
     <string name="_sys_agents_agents_act_message"><![CDATA[Message]]></string>
+    <string name="_sys_agents_agents_act_activity"><![CDATA[Activity]]></string>
+    <string name="_sys_agents_agents_popup_activity"><![CDATA[Activity of "{0}"]]></string>
+    <string name="_sys_agents_agents_txt_activity_empty"><![CDATA[Nothing yet]]></string>
+    <string name="_sys_agents_activity_failed"><![CDATA[failed]]></string>
+    <string name="_sys_agents_activity_comment_add"><![CDATA[Posted a comment on {target}]]></string>
+    <string name="_sys_agents_activity_comment_update"><![CDATA[Edited a comment on {target}]]></string>
+    <string name="_sys_agents_activity_comment_delete"><![CDATA[Deleted a comment on {target}]]></string>
+    <string name="_sys_agents_activity_content_add"><![CDATA[Created {target}]]></string>
+    <string name="_sys_agents_activity_content_update"><![CDATA[Updated {target}]]></string>
+    <string name="_sys_agents_activity_content_delete"><![CDATA[Deleted {target}]]></string>
+    <string name="_sys_agents_activity_db_write"><![CDATA[Changed {target}]]></string>
+    <string name="_sys_agents_activity_db_undo"><![CDATA[Rolled back changes]]></string>
+    <string name="_sys_agents_activity_email"><![CDATA[Sent an email to {unit}]]></string>
+    <string name="_sys_agents_activity_lang"><![CDATA[Changed language key {unit}]]></string>
+    <string name="_sys_agents_activity_agent"><![CDATA[Agent {unit}: #{object}]]></string>
+    <string name="_sys_agents_activity_mockup"><![CDATA[Updated page block #{object}]]></string>
+    <string name="_sys_page_block_title_ai_agents_admin"><![CDATA[Agents]]></string>
     <string name="_sys_agents_assistants_chats_msg_loading"><![CDATA[I'm thinking. Please wait.]]></string>
     <string name="_sys_agents_assistants_field_kwg_type"><![CDATA[Type]]></string>
     <string name="_sys_agents_assistants_field_kwg_type_text"><![CDATA[Text]]></string>

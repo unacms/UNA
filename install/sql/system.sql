@@ -5753,10 +5753,11 @@ INSERT INTO `sys_grid_actions` (`object`, `type`, `name`, `title`, `icon`, `icon
 ('sys_studio_agents_agents', 'bulk', 'delete', '_Delete', '', 0, 1, 1),
 ('sys_studio_agents_agents', 'single', 'manual', '_Run', 'play', 1, 0, 1),
 ('sys_studio_agents_agents', 'single', 'message', '_sys_agents_agents_act_message', 'comment', 1, 0, 2),
-('sys_studio_agents_agents', 'single', 'logs', '_Logs', 'file-alt', 1, 0, 3),
-('sys_studio_agents_agents', 'single', 'edit', '_Edit', 'pencil-alt', 1, 0, 4),
-('sys_studio_agents_agents', 'single', 'wipe_chat_history', '_sys_agents_agents_act_wipe_chat_history', 'eraser', 1, 1, 5),
-('sys_studio_agents_agents', 'single', 'delete', '_Delete', 'remove', 1, 1, 6),
+('sys_studio_agents_agents', 'single', 'activity', '_sys_agents_agents_act_activity', 'history', 1, 0, 3),
+('sys_studio_agents_agents', 'single', 'logs', '_Logs', 'file-alt', 1, 0, 4),
+('sys_studio_agents_agents', 'single', 'edit', '_Edit', 'pencil-alt', 1, 0, 5),
+('sys_studio_agents_agents', 'single', 'wipe_chat_history', '_sys_agents_agents_act_wipe_chat_history', 'eraser', 1, 1, 6),
+('sys_studio_agents_agents', 'single', 'delete', '_Delete', 'remove', 1, 1, 7),
 ('sys_studio_agents_agents', 'independent', 'add', '_adm_form_btn_field_add', '', 0, 0, 1);
 
 -- GRID: Agents Logs
@@ -7061,7 +7062,8 @@ INSERT INTO `sys_agents_tools` (`type`, `title`, `docs`, `params`, `params_user`
 ('mysql_write_safe', 'MySQL Write (safe)', 'INSERT or UPDATE one row by primary key. DELETE/DROP/TRUNCATE/ALTER are blocked. Each change is snapshotted into sys_agents_sql_log (before/after JSON). Roll back with mysql_undo. Use together with MySQL Schema and MySQL Select. Do not enable the stock MySQL Write tool on the same agent.', '{}', NULL, 0, 0, 1, 'BxDolAIToolMysqlWrite', ''),
 ('mysql_undo', 'MySQL Undo', 'Roll back the last mysql_write snapshot (scope=last) or all snapshots in this chat (scope=session), newest first. UPDATE restores before_json. INSERT deletes that primary key internally. Already-undone rows are skipped. Attach to the same agent as MySQL Write (safe).', '{}', NULL, 0, 0, 1, 'BxDolAIToolMysqlUndo', ''),
 
-('prompt_feedback', 'Prompt feedback', 'Call when the user says the previous reply was wrong, corrects you, or you notice you broke a rule. Writes one paste-ready markdown case into sys_agents_prompt_feedback.markdown: question, wrong answer, correction, why, expected behavior, suggested prompt rule, excerpt, and the prompt that was active. Do not mention the log to the visitor.', '{}', NULL, 0, 0, 1, 'BxDolAIToolPromptFeedback', '');
+('prompt_feedback', 'Prompt feedback', 'Call when the user says the previous reply was wrong, corrects you, or you notice you broke a rule. Writes one paste-ready markdown case into sys_agents_prompt_feedback.markdown: question, wrong answer, correction, why, expected behavior, suggested prompt rule, excerpt, and the prompt that was active. Do not mention the log to the visitor.', '{}', NULL, 0, 0, 1, 'BxDolAIToolPromptFeedback', ''),
+('agent_create', 'Agent create', 'Create or update a Studio agent (sys_agents_agents). Do not use mysql_write on that table. action=catalog|create|update. Never ask for numeric profile_id — catalog.profile_buttons as chat_buttons, then profile=Name or profile_new=Name; create without a profile is refused. preset=comment_reply for comment-reply alert agents.', '{}', NULL, 0, 0, 1, 'BxDolAIToolAgentCreate', '');
 
 CREATE TABLE IF NOT EXISTS `sys_agents_chat_history` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
@@ -7123,6 +7125,27 @@ CREATE TABLE IF NOT EXISTS `sys_agents_sql_log` (
   KEY `thread_id` (`thread_id`(191)),
   KEY `agent_id` (`agent_id`),
   KEY `table_pk` (`table_name`, `pk_name`, `pk_value`)
+);
+
+CREATE TABLE IF NOT EXISTS `sys_agents_activity` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `agent_id` int(11) unsigned NOT NULL DEFAULT 0,
+  `profile_id` int(11) unsigned NOT NULL DEFAULT 0,
+  `trigger` varchar(32) NOT NULL DEFAULT '',
+  `thread_id` varchar(255) NOT NULL DEFAULT '',
+  `tool` varchar(64) NOT NULL DEFAULT '',
+  `action` varchar(32) NOT NULL DEFAULT '',
+  `unit` varchar(128) NOT NULL DEFAULT '',
+  `object_id` int(11) unsigned NOT NULL DEFAULT 0,
+  `object_url` varchar(1024) NOT NULL DEFAULT '',
+  `object_title` varchar(255) NOT NULL DEFAULT '',
+  `summary` text,
+  `details` mediumtext,
+  `ok` tinyint(1) NOT NULL DEFAULT 1,
+  `added` int(11) unsigned NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  KEY `agent_added` (`agent_id`, `added`),
+  KEY `thread_id` (`thread_id`(191))
 );
 
 CREATE TABLE IF NOT EXISTS `sys_agents_prompt_feedback` (
