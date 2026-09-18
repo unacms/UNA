@@ -137,6 +137,12 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
             'GetBlockAiAgentOperator' => 'BxBaseServices',
             'GetAiChatThreads' => 'BxBaseServices',
             'GetAiChatThread' => 'BxBaseServices',
+            'GetAiAgents' => 'BxBaseServices', // !#### agents admin (App)
+            'GetBlockAiAgentsAdmin' => 'BxBaseServices',
+            'SetAiAgentActive' => 'BxBaseServices',
+            'GetAiAgentActivity' => 'BxBaseServices',
+            'GetAiAgentChatThreads' => 'BxBaseServices',
+            'GetAiAgentChatThread' => 'BxBaseServices',
         );
     }
 
@@ -1986,6 +1992,237 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
     {
         return BxDolAiTrigger::getInstance('chat')->getThread($iAgentId, $sThreadId);
     }
+
+    /**
+     * !#### agents admin (App) — a cut-down Studio > Agents for operators:
+     * the list with on/off, chat history for manual/message agents and the
+     * activity history (what the agent did) for event-driven ones.
+     *
+     * API: `api.php?r=system/get_ai_agents/TemplServices`
+     * → `{agents: [{id, name, title, description, trigger, trigger_title, alert, active, async,
+     *    has_chat, model, profile: {id, name, url, thumb}, activity_count, activity_last, added}], studio_url}`
+     */
+    public function serviceGetAiAgents()
+    {
+        if (!isAdmin())
+            return ['error' => _t('_sys_agents_unauthorized'), 'code' => 403];
+
+        $oDb = BxDolDb::getInstance();
+        $aRows = $oDb->getAll("SELECT `a`.*, `m`.`title` AS `model_title` FROM `sys_agents_agents` AS `a` LEFT JOIN `sys_agents_models` AS `m` ON `m`.`id` = `a`.`model_id` ORDER BY `a`.`added` DESC, `a`.`id` DESC");
+        $aStats = class_exists('BxDolAiActivity') ? BxDolAiActivity::statsByAgent() : [];
+
+        $aAgents = [];
+        foreach ($aRows as $aRow) {
+            $iId = (int)$aRow['id'];
+            $aAgents[] = [
+                'id' => $iId,
+                'name' => (string)$aRow['name'],
+                'title' => (string)(!empty($aRow['title']) ? $aRow['title'] : $aRow['name']),
+                'description' => (string)($aRow['description'] ?? ''),
+                'trigger' => (string)$aRow['trigger'],
+                'trigger_title' => $this->_aiAgentTriggerTitle((string)$aRow['trigger']),
+                'alert' => (string)($aRow['alert'] ?? ''),
+                'active' => (int)$aRow['active'],
+                'async' => (int)($aRow['async'] ?? 0),
+                'has_chat' => in_array($aRow['trigger'], ['manual', 'message'], true) ? 1 : 0,
+                'model' => (string)($aRow['model_title'] ?? ''),
+                'profile' => $this->_aiAgentProfileInfo((int)$aRow['profile_id']),
+                'activity_count' => (int)($aStats[$iId]['count'] ?? 0),
+                'activity_last' => (int)($aStats[$iId]['last'] ?? 0),
+                'added' => (int)($aRow['added'] ?? 0),
+            ];
+        }
+
+        return [
+            'agents' => $aAgents,
+            'studio_url' => bx_absolute_url('studio/agents.php?page=agents'),
+        ];
+    }
+
+    /**
+     * Page block with the same list, for operators only (everyone else gets an
+     * empty block). Put it on the Dashboard or any page in Studio > Pages:
+     * `{"module":"system","method":"get_block_ai_agents_admin","class":"TemplServices"}`.
+     * The App renders it as the `ai_agents_admin` element; there is no HTML version.
+     */
+    public function serviceGetBlockAiAgentsAdmin()
+    {
+        if (!bx_is_api())
+            return '';
+        if (!isAdmin())
+            return [];
+
+        $aList = $this->serviceGetAiAgents();
+        if (!is_array($aList) || isset($aList['error']))
+            return [];
+
+        // the operator chat (Studio > Settings > Agents) rides along as the first tab of
+        // the same block, so the Dashboard needs one block, not two
+        $aList['chat'] = null;
+        $aList['chat_title'] = '';
+        $iOperator = (int)getParam('sys_agents_operator_agent');
+        if ($iOperator > 0) {
+            $aOperatorBlock = $this->serviceGetBlockAiAgentOperator();
+            if (is_array($aOperatorBlock) && !empty($aOperatorBlock[0]['data']) && is_array($aOperatorBlock[0]['data'])) {
+                $aList['chat'] = $aOperatorBlock[0]['data'];
+                $aOperator = BxDolAiQuery::getAgentObject($iOperator);
+                $aList['chat_title'] = (string)(!empty($aOperator['title']) ? $aOperator['title'] : ($aOperator['name'] ?? ''));
+            }
+        }
+
+        return [bx_api_get_block('ai_agents_admin', $aList)];
+    }
+
+    /**
+     * API: `api.php?r=system/set_ai_agent_active/TemplServices&params[]=<agent id>&params[]=<0|1>`
+     */
+    public function serviceSetAiAgentActive($iAgentId, $iActive = 1)
+    {
+        if (!isAdmin())
+            return ['error' => _t('_sys_agents_unauthorized'), 'code' => 403];
+
+        $iAgentId = (int)$iAgentId;
+        $aAgent = $iAgentId ? BxDolAiQuery::getAgentObject($iAgentId) : false;
+        if (!$aAgent)
+            return ['error' => _t('_sys_agents_agent_not_found'), 'code' => 404];
+
+        $iActive = (int)$iActive ? 1 : 0;
+        $oDb = BxDolDb::getInstance();
+        $oDb->query("UPDATE `sys_agents_agents` SET `active` = :active WHERE `id` = :id", ['active' => $iActive, 'id' => $iAgentId]);
+        $oDb->cleanCache('sys_agents_with_alert');
+        $oDb->cleanMemory('sys_agents_with_form_' . (string)($aAgent['form_object'] ?? ''));
+
+        return ['id' => $iAgentId, 'active' => $iActive];
+    }
+
+    /**
+     * API: `api.php?r=system/get_ai_agent_activity/TemplServices&params[]=<agent id>&params[]=<start>&params[]=<limit>`
+     * → `{items: [{id, action, tool, ok, text, summary, unit, object_id, url, added, added_formatted}], has_more}`
+     */
+    public function serviceGetAiAgentActivity($iAgentId, $iStart = 0, $iLimit = 50)
+    {
+        if (!isAdmin())
+            return ['error' => _t('_sys_agents_unauthorized'), 'code' => 403];
+
+        $iAgentId = (int)$iAgentId;
+        if (!$iAgentId || !BxDolAiQuery::getAgentObject($iAgentId))
+            return ['error' => _t('_sys_agents_agent_not_found'), 'code' => 404];
+
+        $iLimit = max(1, min(200, (int)$iLimit));
+        $aItems = class_exists('BxDolAiActivity') ? BxDolAiActivity::listForAgent($iAgentId, (int)$iStart, $iLimit + 1) : [];
+        $bMore = count($aItems) > $iLimit;
+        if ($bMore)
+            array_pop($aItems);
+
+        return ['items' => $aItems, 'has_more' => $bMore ? 1 : 0];
+    }
+
+    /**
+     * Every conversation of an agent (all people, guests, contexts) — operators
+     * only; the App counterpart of the Studio chat popup. Transcripts are not
+     * included, see serviceGetAiAgentChatThread.
+     *
+     * API: `api.php?r=system/get_ai_agent_chat_threads/TemplServices&params[]=<agent id>`
+     * → `{threads: [{thread_id, title, status, closed_reason, created_at, updated_at, messages_count, preview}]}`
+     */
+    public function serviceGetAiAgentChatThreads($iAgentId)
+    {
+        if (!isAdmin())
+            return ['error' => _t('_sys_agents_unauthorized'), 'code' => 403];
+
+        $iAgentId = (int)$iAgentId;
+        $aAgent = $iAgentId ? BxDolAiQuery::getAgentObject($iAgentId) : false;
+        if (!$aAgent)
+            return ['error' => _t('_sys_agents_agent_not_found'), 'code' => 404];
+
+        $aThreads = BxDolAiChat::getInstance()->listAgentChatThreads($aAgent);
+
+        $aOut = [];
+        foreach ($aThreads as $aThread) {
+            $aMessages = is_array($aThread['messages'] ?? null) ? $aThread['messages'] : [];
+            if (!$aMessages)
+                continue;
+            $sPreview = '';
+            foreach (array_reverse($aMessages) as $aMessage) {
+                foreach ((array)($aMessage['parts'] ?? []) as $aPart) {
+                    if (($aPart['type'] ?? '') === 'text' && trim((string)($aPart['content'] ?? '')) !== '') {
+                        $sPreview = trim(strip_tags((string)$aPart['content']));
+                        break 2;
+                    }
+                }
+            }
+            if (mb_strlen($sPreview) > 160)
+                $sPreview = mb_substr($sPreview, 0, 159) . '…';
+
+            $aOut[] = [
+                'thread_id' => (string)$aThread['thread_id'],
+                'title' => (string)$aThread['title'],
+                'status' => (string)($aThread['status'] ?? 'opened'),
+                'closed_reason' => (string)($aThread['closed_reason'] ?? ''),
+                'created_at' => (string)($aThread['created_at'] ?? ''),
+                'updated_at' => (string)($aThread['updated_at'] ?? ''),
+                'messages_count' => count($aMessages),
+                'preview' => $sPreview,
+            ];
+        }
+
+        return ['threads' => $aOut];
+    }
+
+    /**
+     * API: `api.php?r=system/get_ai_agent_chat_thread/TemplServices&params[]=<agent id>&params[]=<thread id>`
+     * → `{messages, status, closed_reason, artifacts}` — same message shape as get_ai_chat_thread.
+     */
+    public function serviceGetAiAgentChatThread($iAgentId, $sThreadId = '')
+    {
+        if (!isAdmin())
+            return ['error' => _t('_sys_agents_unauthorized'), 'code' => 403];
+
+        $iAgentId = (int)$iAgentId;
+        $aAgent = $iAgentId ? BxDolAiQuery::getAgentObject($iAgentId) : false;
+        if (!$aAgent)
+            return ['error' => _t('_sys_agents_agent_not_found'), 'code' => 404];
+
+        $oChat = BxDolAiChat::getInstance();
+        $sThreadId = trim((string)$sThreadId);
+        if ($sThreadId === '')
+            return ['error' => _t('_sys_agents_agent_not_found'), 'code' => 404];
+
+        $aMessages = $oChat->getChatHistoryUiMessagesByThread($aAgent, $sThreadId);
+        if ($aMessages === false)
+            return ['error' => _t('_sys_agents_agent_not_found'), 'code' => 404];
+
+        $sReason = '';
+        $oDb = BxDolDb::getInstance();
+        if ($oDb->isFieldExists('sys_agents_chat_history', 'closed_reason'))
+            $sReason = trim((string)$oDb->getOne("SELECT `closed_reason` FROM `sys_agents_chat_history` WHERE `thread_id` = :t", ['t' => $sThreadId]));
+
+        return [
+            'messages' => is_array($aMessages) ? $aMessages : [],
+            'status' => $sReason !== '' ? 'closed' : 'opened',
+            'closed_reason' => $sReason,
+            'artifacts' => $oChat->getChatHistoryArtifactsByThread($aAgent, $sThreadId),
+        ];
+    }
+
+    protected function _aiAgentTriggerTitle($sTrigger)
+    {
+        $sKey = '_sys_agents_field_trigger_' . str_replace('-', '_', (string)$sTrigger);
+        $s = _t($sKey);
+        return $s !== $sKey ? $s : (string)$sTrigger;
+    }
+
+    protected function _aiAgentProfileInfo($iProfileId)
+    {
+        $iProfileId = (int)$iProfileId;
+        $oProfile = $iProfileId ? BxDolProfile::getInstance($iProfileId) : false;
+        if (!$oProfile)
+            return ['id' => $iProfileId, 'display_name' => $iProfileId ? '#' . $iProfileId : '', 'url' => false, 'url_avatar' => '', 'module' => ''];
+
+        // same shape as the ai_agent block's agent_profile, so the App's Profile molecule can render it
+        return BxDolProfile::getData($oProfile);
+    }
+
 }
 
 /** @} */

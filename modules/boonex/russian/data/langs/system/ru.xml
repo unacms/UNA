@@ -2512,6 +2512,23 @@
 
         <string name="_sys_agents_agents_act_wipe_chat_history"><![CDATA[Очистить историю чата]]></string>
         <string name="_sys_agents_agents_act_message"><![CDATA[Сообщение]]></string>
+        <string name="_sys_agents_agents_act_activity"><![CDATA[Действия]]></string>
+        <string name="_sys_agents_agents_popup_activity"><![CDATA[Действия агента «{0}»]]></string>
+        <string name="_sys_agents_agents_txt_activity_empty"><![CDATA[Пока ничего]]></string>
+        <string name="_sys_agents_activity_failed"><![CDATA[ошибка]]></string>
+        <string name="_sys_agents_activity_comment_add"><![CDATA[Оставил комментарий: {target}]]></string>
+        <string name="_sys_agents_activity_comment_update"><![CDATA[Изменил комментарий: {target}]]></string>
+        <string name="_sys_agents_activity_comment_delete"><![CDATA[Удалил комментарий: {target}]]></string>
+        <string name="_sys_agents_activity_content_add"><![CDATA[Создал {target}]]></string>
+        <string name="_sys_agents_activity_content_update"><![CDATA[Изменил {target}]]></string>
+        <string name="_sys_agents_activity_content_delete"><![CDATA[Удалил {target}]]></string>
+        <string name="_sys_agents_activity_db_write"><![CDATA[Изменил {target}]]></string>
+        <string name="_sys_agents_activity_db_undo"><![CDATA[Откатил изменения]]></string>
+        <string name="_sys_agents_activity_email"><![CDATA[Отправил письмо на {unit}]]></string>
+        <string name="_sys_agents_activity_lang"><![CDATA[Изменил языковой ключ {unit}]]></string>
+        <string name="_sys_agents_activity_agent"><![CDATA[Агент ({unit}): #{object}]]></string>
+        <string name="_sys_agents_activity_mockup"><![CDATA[Изменил блок страницы #{object}]]></string>
+        <string name="_sys_page_block_title_ai_agents_admin"><![CDATA[Агенты]]></string>
         <string name="_sys_agents_assistants_chats_msg_loading"><![CDATA[Я думаю. Пожалуйста, подождите.]]></string>
         <string name="_sys_agents_assistants_field_kwg_type"><![CDATA[Тип]]></string>
         <string name="_sys_agents_assistants_field_kwg_type_text"><![CDATA[Текст]]></string>

@@ -76,6 +76,16 @@ class BxDolAiChatUi
                         $aParts[] = $aPart;
                 }
             }
+            // trigger payloads (message / alert / form-input / webhook) are stored as raw JSON
+            // in the user turn — show the human text instead of the escaped blob
+            if ($sRole === 'user') {
+                foreach ($aParts as &$aPart) {
+                    if (($aPart['type'] ?? '') === 'text')
+                        $aPart['content'] = $this->humanizeTriggerPayload((string)$aPart['content']);
+                }
+                unset($aPart);
+            }
+
             $sId = '';
             if (!empty($aMessage['__id']) && is_string($aMessage['__id']))
                 $sId = $aMessage['__id'];
@@ -347,6 +357,83 @@ class BxDolAiChatUi
         }
         $s = strip_tags(html_entity_decode(implode(' ', $aTexts), ENT_QUOTES | ENT_HTML5, 'UTF-8'));
         return trim(preg_replace('/\s+/u', ' ', $s));
+    }
+
+    /**
+     * A user turn produced by a trigger is the JSON that callAgent() built
+     * (BxDolAlerts, BxDolAiAlertResponse, webhook, form-input). Return the text
+     * a person would want to read; anything that is not such a payload is returned as is.
+     */
+    public function humanizeTriggerPayload($sText)
+    {
+        $s = trim((string)$sText);
+        if ($s === '' || $s[0] !== '{')
+            return $sText;
+
+        $a = json_decode($s, true);
+        if (!is_array($a))
+            return $sText;
+        $sTrigger = is_string($a['trigger'] ?? null) ? $a['trigger'] : '';
+        if ($sTrigger === '' && (isset($a['form_values']) || isset($a['user_prompt'])))
+            $sTrigger = 'form-input';
+        if ($sTrigger === '')
+            return $sText;
+
+        $fText = function ($m) {
+            $s = trim((string)$m);
+            return $s !== '' ? trim(strip_tags(html_entity_decode($s, ENT_QUOTES, 'UTF-8'))) : '';
+        };
+
+        switch ($sTrigger) {
+            case 'message':
+                $sMsg = $fText($a['message_text'] ?? ($a['message_info']['message'] ?? ''));
+                return $sMsg !== '' ? $sMsg : $sText;
+
+            case 'alert':
+                $sUnit = (string)($a['unit'] ?? '');
+                $sAction = (string)($a['action'] ?? '');
+                $sHead = trim($sUnit . ':' . $sAction, ':');
+                if (!empty($a['object_id']))
+                    $sHead .= ' #' . (int)$a['object_id'];
+                $sBody = '';
+                $aExtra = is_array($a['extra'] ?? null) ? $a['extra'] : [];
+                foreach (['comment_text', 'cmt_text', 'text', 'message', 'title', 'content'] as $sKey) {
+                    if (!empty($aExtra[$sKey]) && is_string($aExtra[$sKey])) {
+                        $sBody = $fText($aExtra[$sKey]);
+                        break;
+                    }
+                }
+                if ($sBody === '' && !empty($aExtra['comment_id']))
+                    $sBody = 'comment #' . (int)$aExtra['comment_id'];
+                return $sHead . ($sBody !== '' ? "\n" . $sBody : '');
+
+            case 'form-input':
+                $aOut = [];
+                $sPrompt = $fText($a['user_prompt'] ?? '');
+                if ($sPrompt !== '')
+                    $aOut[] = $sPrompt;
+                $aValues = is_array($a['form_values'] ?? null) ? $a['form_values'] : [];
+                foreach ($aValues as $sKey => $mixedVal) {
+                    if (is_scalar($mixedVal) && (string)$mixedVal !== '')
+                        $aOut[] = $sKey . ': ' . $fText($mixedVal);
+                }
+                $sHead = trim((string)($a['form_field_name'] ?? ''));
+                return trim($sHead . ($aOut ? "\n" . implode("\n", $aOut) : ''));
+
+            case 'webhook':
+                $aOut = [];
+                foreach ($a as $sKey => $mixedVal) {
+                    if ($sKey === 'trigger')
+                        continue;
+                    if (is_scalar($mixedVal) && (string)$mixedVal !== '')
+                        $aOut[] = $sKey . ': ' . $fText($mixedVal);
+                    elseif (is_array($mixedVal))
+                        $aOut[] = $sKey . ': ' . json_encode($mixedVal, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+                }
+                return 'webhook' . ($aOut ? "\n" . implode("\n", $aOut) : '');
+        }
+
+        return $sText;
     }
 
     /**
