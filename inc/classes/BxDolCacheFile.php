@@ -78,7 +78,7 @@ class BxDolCacheFile extends BxDolCache
     function delData($sKey)
     {
         $sFile = $this->sPath . $sKey;
-        return !file_exists($sFile) || @unlink($sFile);
+        return !file_exists($sFile) || $this->_unlinkFile($sFile);
     }
 
     /**
@@ -93,7 +93,7 @@ class BxDolCacheFile extends BxDolCache
         $l = strlen($s);
         while (($sFile = readdir($rHandler)) !== false)
             if (0 === strncmp($sFile, $s, $l))
-                @unlink ($this->sPath . $sFile);
+                $this->_unlinkFile($this->sPath . $sFile);
 
         closedir($rHandler);
 
@@ -129,11 +129,32 @@ class BxDolCacheFile extends BxDolCache
     {
         $iTimeDiff = time() - filectime($sFile);
         if ($iTimeDiff > $iTTL) {
-            @unlink ($sFile);
+            $this->_unlinkFile($sFile);
             return true;
         } else {
             return false;
         }
+    }
+
+    /**
+     * Remove a cache file together with its opcache entry.
+     *
+     * Cache files are PHP scripts read with include(), so opcache keeps a compiled copy of each of them.
+     * It never evicts entries on its own, and once a file is gone opcache_invalidate() can no longer resolve
+     * its path, so a file removed with a plain unlink() leaves a dead entry behind for good. With hash-named
+     * cache files being regenerated all the time such entries pile up until the cache is full and every
+     * script that no longer fits is recompiled on every request. Invalidating before the unlink turns the
+     * entry into wasted memory instead, which opcache reclaims with its next restart.
+     *
+     * @param  string $sFile - full path to the file
+     * @return true if the file is deleted, false otherwise
+     */
+    protected function _unlinkFile ($sFile)
+    {
+        if (function_exists('opcache_invalidate'))
+            opcache_invalidate($sFile, true);
+
+        return @unlink($sFile);
     }
 }
 

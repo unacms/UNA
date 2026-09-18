@@ -9,6 +9,15 @@
 	# Enable compression (optional)
 	encode zstd br gzip
 
+	# Long-lived caching for real static assets. Storage (/s/*) serves files
+	# through storage.php, which sets its own headers (private files included),
+	# so it is excluded here.
+	@static {
+		path *.woff2 *.woff *.ttf *.otf *.eot *.svg *.png *.jpg *.jpeg *.gif *.webp *.avif *.ico *.css *.js *.mjs *.map
+		not path /s/*
+	}
+	header @static Cache-Control "public, max-age=2592000"
+
 	# Add trailing slash for directory requests
 	@canonicalPath {
 		file {path}/index.php
