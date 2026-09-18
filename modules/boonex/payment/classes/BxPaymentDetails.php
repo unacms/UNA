@@ -105,7 +105,7 @@ class BxPaymentDetails extends BxBaseModPaymentDetails
             if($oForm->isValid()) {
                 $aOptions = $this->_oModule->_oDb->getOptionsByProvider($sPaymentProvider);
                 foreach($aOptions as $aOption) {
-                    $sValue = bx_get($aOption['name']) !== false ? bx_get($aOption['name']) : '';
+                    $sValue = ($_sValue = $oForm->getCleanValue($aOption['name'])) !== false ? $_sValue : '';
                     $this->_oModule->_oDb->updateOption($iProfileId, $aOption['id'], bx_process_input($sValue));
                 }
 

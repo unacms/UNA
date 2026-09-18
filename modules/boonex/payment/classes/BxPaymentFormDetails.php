@@ -123,6 +123,9 @@ class BxPaymentFormDetails extends BxTemplFormView
                         'func' => $aInput['check_type'],
                         'params' => $aInput['check_params'],
                         'error' => _t($aInput['check_error']),
+                    ],
+                    'db' => [
+                        'pass' => 'Xss',
                     ]
                 ];
 
