@@ -81,7 +81,8 @@ export default function RftTextEnriched(props) {
     const isWeb = Platform.OS === 'web'
     const isDesktop = useIsDesktop()
     const isToolBar = html == 2 || html == 1
-    const isPlainText = html == 3
+    // UNA html=3: rich editor, no toolbar. Images paste into attachments, not <img>.
+    const isLimitedHtml = html == 3
     const isCommentsEditor = container_class === 'comments'
     const themeKey = useThemeValue('light', 'dark')
     const mentionColorFallback = useThemeValue(mentionColors.light, mentionColors.dark)
@@ -156,13 +157,13 @@ export default function RftTextEnriched(props) {
             }
             if (data.action === 'insert_inline_image') {
                 if (data.form_name && form_name && data.form_name !== form_name) return
-                if (!data.src || isPlainText) return
+                if (!data.src || isLimitedHtml) return
                 const size = fitInlineImageSize(data.width, data.height)
                 callEditor('setImage', data.src, size.width, size.height)
             }
         })
         return () => sub.remove()
-    }, [form_name, isPlainText])
+    }, [form_name, isLimitedHtml])
 
     useEffect(() => {
         if (formState.isSubmitted && kb_stay_open != true) {
@@ -325,7 +326,7 @@ export default function RftTextEnriched(props) {
         // saved content has real <a> links on every platform.
         const html = linkifyHtml(mentionsToUnaLinks(raw))
         if (onFocus && html) onFocus()
-        const next = normalizeEditorHtml(html, { isPlainText })
+        const next = normalizeEditorHtml(html, { isLimitedHtml })
         commitEditorHtml({
             next,
             field,
@@ -334,12 +335,12 @@ export default function RftTextEnriched(props) {
             isInitialRef: isInitialHtmlEmission,
         })
         lastSetValue.current = next
-    }, [field, isPlainText, name, onFocus, resetField])
+    }, [field, isLimitedHtml, name, onFocus, resetField])
 
     // ---- image paste (library onPasteImages: blob: on web, file:// on native) ----
     const onPasteImages = useCallback((e) => {
         const imgs = e?.nativeEvent?.images || []
-        if (!imgs.length || !form_name || isPlainText) return
+        if (!imgs.length || !form_name) return
         if (getEditorPasteImagesMode(form_name) === 'off') return
         const images = imgs.map((img, index) => {
             const mimeType = img.type || 'image/png'
@@ -352,8 +353,13 @@ export default function RftTextEnriched(props) {
                 height: img.height,
             }
         })
-        emitter.emit(`form_${form_name}`, { action: 'pasted_images', images })
-    }, [form_name, isPlainText])
+        // html=3 cannot keep <img> in the body; still upload to the files field.
+        emitter.emit(`form_${form_name}`, {
+            action: 'pasted_images',
+            images,
+            ...(isLimitedHtml ? { inlinePaste: false } : null),
+        })
+    }, [form_name, isLimitedHtml])
 
     // ---- submit on enter (desktop only; mobile Enter inserts newline) ----
     const submitOnEnter = isDesktop && (

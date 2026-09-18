@@ -7,6 +7,7 @@ import { View, Row } from 'app/design/view';
 import { Text } from 'app/design/typography';
 import { NeoButton } from 'app/design/controls';
 import { useCurrentUser } from 'app/context/user';
+import emitter from 'app/context/emitter';
 import { appSetting, cn } from 'app/lib/util';
 import { useLocalSearchParams, useSafeAreaInsets } from 'app/lib/hooks/router';
 import { useFooterHeight } from 'app/context/jotai/layout';
@@ -18,6 +19,8 @@ const AiAgent = lazyComponent(() => import('app/ui/molecules/ai-agent/agent'), {
 
 const isWeb = Platform.OS === 'web';
 const NATIVE_TAB_BAR = Platform.OS === 'ios' ? 52 : 56;
+// Emitter channel between the title bar here and the `AiAgent` inside; see its `channel` prop.
+const CHANNEL = 'operator_agent';
 
 /**
  * Floating Agent for site operators. Shown on every page when `user.operator` is
@@ -34,9 +37,14 @@ export function OperatorAgentFloat() {
     const [open, setOpen] = useState(false);
     const [mounted, setMounted] = useState(false);
     const [data, setData] = useState(null);
+    // Which title-bar controls the widget can act on right now; it reports them on
+    // the channel once threads / restart permission are known.
+    const [controls, setControls] = useState({ history: false, restart: false });
 
     const params = useLocalSearchParams();
-    const enabled = appSetting('ai', 'operator_agent')?.enabled !== false;
+    const operatorAgent = appSetting('ai', 'operator_agent') || {};
+    const enabled = operatorAgent.enabled !== false;
+    const showHistory = operatorAgent.show_history === true;
     const isOperator = enabled && !!currentUser?.operator;
 
     const openChat = useCallback(() => {
@@ -45,6 +53,15 @@ export function OperatorAgentFloat() {
     }, []);
 
     const close = useCallback(() => setOpen(false), []);
+    const toggleHistory = useCallback(() => emitter.emit(CHANNEL, { action: 'toggle_history' }), []);
+    const startNew = useCallback(() => emitter.emit(CHANNEL, { action: 'start_new' }), []);
+
+    useEffect(() => {
+        const subscription = emitter.addListener(CHANNEL, (event) => {
+            if (event?.action === 'state') setControls({ history: !!event.history, restart: !!event.restart });
+        });
+        return () => subscription.remove();
+    }, []);
 
     useEffect(() => {
         if (!isOperator) return undefined;
@@ -89,7 +106,44 @@ export function OperatorAgentFloat() {
                     style={{ width: panelWidth, height: panelHeight }}
                     accessibilityViewIsModal={open}
                 >
-                    <View className="flex-1 min-h-0">
+                    <Row className="items-center justify-between px-3 py-2 border-b border-border/60">
+                        <Text className="text-sm font-semibold text-card-foreground">
+                            {t('operator_agent_title')}
+                        </Text>
+                        <Row className="items-center">
+                            {controls.history ? (
+                                <NeoButton
+                                    style="borderless"
+                                    borderShape="circle"
+                                    controlSize="small"
+                                    image="History"
+                                    accessibilityLabel={t('agent_chats')}
+                                    onPress={toggleHistory}
+                                />
+                            ) : null}
+                            {controls.restart ? (
+                                <NeoButton
+                                    style="borderless"
+                                    borderShape="circle"
+                                    controlSize="small"
+                                    image="RefreshCw"
+                                    tooltip={t('Start new')}
+                                    tooltipSide="bottom"
+                                    accessibilityLabel={t('Start new')}
+                                    onPress={startNew}
+                                />
+                            ) : null}
+                            <NeoButton
+                                style="borderless"
+                                borderShape="circle"
+                                controlSize="small"
+                                image="X"
+                                accessibilityLabel={t('operator_agent_close')}
+                                onPress={close}
+                            />
+                        </Row>
+                    </Row>
+                    <View className="flex-1 min-h-0 p-3">
                         {data ? (
                             <AiAgent
                                 key={`${agentId}:${contextProfileId}`}
@@ -97,49 +151,12 @@ export function OperatorAgentFloat() {
                                 initialMessage={initialMessage}
                                 hideInitialMessage={!!initialMessage}
                                 height="h-full"
+                                showHistory={showHistory}
                                 // The panel is ~384px wide whatever the viewport is, so
                                 // the "Chats" list can only ever overlay the transcript.
                                 historyLayout="overlay"
                                 fadeSurface="card"
-                                header={({ onToggleHistory, onStartAgain }) => (
-                                    <Row className="items-center justify-between px-3 py-2 border-b border-border/60">
-                                        <Text className="text-sm font-semibold text-card-foreground">
-                                            {t('operator_agent_title')}
-                                        </Text>
-                                        <Row className="items-center">
-                                            {onToggleHistory ? (
-                                                <NeoButton
-                                                    style="borderless"
-                                                    borderShape="circle"
-                                                    controlSize="small"
-                                                    image="History"
-                                                    accessibilityLabel={t('agent_chats')}
-                                                    onPress={onToggleHistory}
-                                                />
-                                            ) : null}
-                                            {onStartAgain ? (
-                                                <NeoButton
-                                                    style="borderless"
-                                                    borderShape="circle"
-                                                    controlSize="small"
-                                                    image="RefreshCw"
-                                                    tooltip={t('Start new')}
-                                                    tooltipSide="bottom"
-                                                    accessibilityLabel={t('Start new')}
-                                                    onPress={onStartAgain}
-                                                />
-                                            ) : null}
-                                            <NeoButton
-                                                style="borderless"
-                                                borderShape="circle"
-                                                controlSize="small"
-                                                image="X"
-                                                accessibilityLabel={t('operator_agent_close')}
-                                                onPress={close}
-                                            />
-                                        </Row>
-                                    </Row>
-                                )}
+                                channel={CHANNEL}
                             />
                         ) : null}
                     </View>

@@ -10,18 +10,22 @@
     border-color: var(--color-border);
 }
 
-@source inline("line-clamp-3 line-clamp-4 line-clamp-5 line-clamp-6");
-@source inline("xl:block native:hidden web:hidden md:hidden lg:hidden xl:hidden md:block lg:block sm:block");
-@source inline("bg-emerald-600 bg-fuchsia-600 bg-orange-500 bg-teal-500 bg-rose-500");
-@source inline("bg-green-200 bg-green-500 bg-red-200 bg-red-400 bg-red-500");
-@source inline("bg-gray-300 bg-gray-400 bg-gray-600 bg-yellow-500 bg-yellow-600");
-@source inline("bg-sky-400 bg-sky-500 bg-indigo-400 bg-indigo-500 bg-purple-500 bg-pink-500");
-@source inline("dark:bg-green-950 dark:bg-red-950");
-@source inline("text-green-800 text-green-600 text-green-200 text-red-800 text-red-600 text-red-200 text-red-400");
-@source inline("text-gray-800 text-gray-600 text-gray-200");
-@source inline("dark:text-green-200 dark:text-green-400 dark:text-red-200 dark:text-red-400 dark:text-gray-200 dark:text-gray-400");
-@source inline("rounded-2xl rounded-xl rounded-none sm:rounded-2xl sm:rounded-xl sm:rounded-none lg:rounded-2xl lg:rounded-xl lg:rounded-none");
-@source inline("p-4 p-0 gap-4 gap-0 gap-y-4 gap-y-0 sm:p-4 sm:p-0 sm:gap-4 sm:gap-0 sm:gap-y-4 sm:gap-y-0 lg:p-4 lg:p-0 lg:gap-4 lg:gap-0 lg:gap-y-4 lg:gap-y-0");
+@source inline("line-clamp-{3..6}");
+@source inline("bg-{orange,yellow,green,teal,sky,indigo,purple,pink,rose,red}-500");
+@source inline("bg-{green,red,gray,emerald,rose}-200 dark:bg-{green,red,gray,emerald,rose}-950");
+@source inline("text-{green,red,gray,emerald,rose}-{800,600} dark:text-{green,red,gray,emerald,rose}-{200,400}");
+@source inline("{sm:,md:,lg:,}rounded-{2xl,xl,none}");
+@source inline("{sm:,md:,lg:,}{p,gap}-{0..4}");
+@source inline("{sm:,md:,lg:,xl:,2xl:,}w-{full,auto,0,1/2,1/3,2/3,1/4,3/4,1/5,2/5,3/5,4/5,1/6,5/6}");
+@source inline("{sm:,md:,lg:,}max-w-{full,none,1/2,1/3,1/4}");
+@source inline("{sm:,md:,lg:,}min-w-{0,full}");
+@source inline("{sm:,md:,lg:,}h-{full,auto,screen,0,1/2,1/3,2/3,1/4,3/4}");
+@source inline("{sm:,md:,lg:,}max-h-{full,screen,none,0,1/2}");
+@source inline("{sm:,md:,lg:,}min-h-{0,full,screen}");
+@source inline("{sm:,md:,lg:,xl:,2xl:,native:,web:,}{flex,hidden,block}");
+@source inline("{sm:,md:,lg:,}flex-{row,col,wrap,1}");
+@source inline("{sm:,md:,lg:,}{items,justify}-{start,end,center,between,stretch}");
+@source inline("{sm:,md:,lg:,}text-{xs,sm,base,lg,xl,2xl,3xl}");
 
 /*
  * `.u-vanilla-html` / `.u-vanilla-html-small` — wrappers for UNA-rendered HTML

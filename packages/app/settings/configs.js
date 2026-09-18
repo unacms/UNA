@@ -70,11 +70,13 @@ export const settingsConfigs = {
         url: '/messenger', 
         back_button: false, 
     },
-    // Floating Agent for UNA operators (`user.operator`). The agent and its block
-    // settings come from the server (`get_block_ai_agent_operator`, Studio > Settings >
-    // Agents > Operator agent); nothing to configure here. Set `enabled: false` to hide.
+    // Floating Agent for UNA operators (`user.operator`). Which agent, and the rest of
+    // the block flags, come from the server (`get_block_ai_agent_operator`). These
+    // keys are the float's own chrome: `enabled: false` hides it; `show_history`
+    // is off because the panel is too narrow for a "Chats" list (the page block
+    // still follows the server's `show_history`).
     ai: {
-        operator_agent: { enabled: true },
+        operator_agent: { enabled: true, show_history: true },
     },
     // Web smart app banner (iOS Safari meta + Android custom bar). Empty apple_app_id = no iOS meta.
     smart_app_banner: {
