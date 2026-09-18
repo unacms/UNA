@@ -95,6 +95,7 @@ jobs:
       RAILWAY_API_TOKEN: ${{ secrets.RAILWAY_API_TOKEN }}
       RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
       RAILWAY_BASE_ENVIRONMENT: ${{ secrets.RAILWAY_ENVIRONMENT }}
+      RAILWAY_TEMPLATE_ENVIRONMENT: pr-template
       RAILWAY_PR_ENVIRONMENT: pr-${{ github.event.pull_request.number }}
     steps:
     - uses: actions/checkout@v4
@@ -125,23 +126,34 @@ jobs:
           exit 1
         fi
         base="${RAILWAY_BASE_ENVIRONMENT:-production}"
+        template="${RAILWAY_TEMPLATE_ENVIRONMENT:-pr-template}"
         railway link --project "$RAILWAY_PROJECT_ID" --environment "$base" --json
-        railway environment new "$RAILWAY_PR_ENVIRONMENT" || true
+
+        # Railway services are project-scoped: mariadb and una already exist, so `railway add`
+        # cannot create them again and a plain new environment holds no instances of them
+        # (every preview after the first failed this way). A PR environment therefore gets
+        # its instances by duplicating the template environment. An environment left over
+        # from a failed run has no una instance; recreate it.
+        if ! railway service status --service una --environment "$RAILWAY_PR_ENVIRONMENT" >/dev/null 2>&1; then
+          railway environment delete "$RAILWAY_PR_ENVIRONMENT" -y >/dev/null 2>&1 || true
+          railway environment new "$RAILWAY_PR_ENVIRONMENT" --duplicate "$template" --json
+          # a duplicate may carry the template's una deployment; the artefact below replaces it
+          railway down --service una --environment "$RAILWAY_PR_ENVIRONMENT" -y >/dev/null 2>&1 || true
+        fi
         railway link --project "$RAILWAY_PROJECT_ID" --environment "$RAILWAY_PR_ENVIRONMENT" --json
-        railway add --image mariadb:11 --service mariadb --json \
-          --variables MARIADB_ROOT_PASSWORD=una \
-          --variables MARIADB_DATABASE=una \
-          --variables MARIADB_USER=una \
-          --variables MARIADB_PASSWORD=una \
-          || true
-        railway add --service una --json || true
-        railway variable set --service una --environment "$RAILWAY_PR_ENVIRONMENT" --skip-deploys \
-          MYSQLHOST=mariadb.railway.internal \
-          MYSQLPORT=3306 \
-          MYSQLDATABASE=una \
-          MYSQLUSER=una \
-          MYSQLPASSWORD=una \
-          || true
+
+        # The duplicated una instance is what `railway up` deploys into. Setting its variables
+        # doubles as the readiness check: it fails with "ServiceInstance not found" until it exists.
+        for i in $(seq 1 12); do
+          railway variable set --service una --environment "$RAILWAY_PR_ENVIRONMENT" --skip-deploys \
+            MYSQLHOST=mariadb.railway.internal \
+            MYSQLPORT=3306 \
+            MYSQLDATABASE=una \
+            MYSQLUSER=una \
+            MYSQLPASSWORD=una \
+            && break
+          sleep 5
+        done
         railway domain --service una --environment "$RAILWAY_PR_ENVIRONMENT" || true
 
     - name: Deploy artefact
