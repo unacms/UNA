@@ -1,0 +1,31 @@
+div.bx-stg-cells {
+    position: relative;
+    display: flex;
+}
+div.bx-stg-cells div.bx-sc-cell {
+    position: relative;
+    flex: 1 1 auto;
+}
+div.bx-stg-cells div.bx-sc-cell .bx-btn {
+    display: inline-flex; /* keeps the 32px Studio button's centred label */
+    float: none;
+    vertical-align: middle;
+}
+
+/*-- Manage --*/
+div.bx-stg-manage div.bx-sc-cell.bx-sc-right {
+    text-align: right;
+}
+
+/*-- Mixes --*/
+div.bx-stg-mixes div.bx-sc-cell.bx-sc-select {
+    width: 50%;
+}
+div.bx-stg-mixes div.bx-sc-cell.bx-sc-new {
+    width: 50%;
+
+    text-align: right;
+}
+div.bx-stg-mixes div.bx-sc-cell select {
+    width: auto;
+}

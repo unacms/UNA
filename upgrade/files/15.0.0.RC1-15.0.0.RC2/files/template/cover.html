@@ -1,0 +1,29 @@
+<bx_if:logged_in>
+<style>
+    .bx-hide-when-logged-in {
+        display:none !important;
+    }
+</style>
+</bx_if:logged_in>
+<div class="bx-menu-toolbar-padding pt-16">
+    <div class="bx-cover-gap bx-def-centered bx-def-padding-leftright bx-def-page-width bx-def-box-sizing">
+        <div class="bx-cover-wrapper __class__ bx-def-cover-color-bg" <bx_if:bg>style="background-image:url(__image_url__)"</bx_if:bg>>
+            <div class="bx-cover-gradient"></div>
+            <div class="bx-cover bx-def-padding bx-def-box-sizing">
+                <div class="bx-cover-cnt">
+                    <bx_if:image>
+                        <div class="bx-cover-image">
+                            <img class="bx-def-border bx-def-round-corners" style="background-image:url(__icon_url__)" src="<bx_icon_url:spacer.gif />" />
+                        </div>
+                    </bx_if:image>
+                    <bx_if:title>
+                    <h1 class="bx-cover-title bx-def-margin-sec-topbottom bx-def-font-h1" style="z-index:2;">
+                        <span class="bx-def-font-contrasted">__title__</span>
+                    </h1>
+                    </bx_if:title>
+                    <div class="bx-cover-actions">__actions__</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

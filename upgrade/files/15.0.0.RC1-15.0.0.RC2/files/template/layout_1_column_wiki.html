@@ -1,0 +1,22 @@
+<!-- layout 1 column with menu on left and contents on right [ start ] -->
+<div id="__page_id__" class="bx-layout-wrapper bx-layout-bcb">
+    <div class="bx-layout-row">
+        <div class="bx-layout-col bx-layout-bcb-bar1 bx-layout-column-thin md:w-1/4">
+            <div class="bx-layout-cell" id="bx-layout-cell-1">
+                <bx_page:wiki-pages-list />
+            </div>
+        </div>
+        <div class="bx-layout-col bx-layout-bcb-content bx-layout-column-half md:w-1/2 max-md:order-2 md:order-1">
+            <div class="bx-layout-cell" id="bx-layout-cell-2">
+                __cell_1__
+            </div>
+        </div>
+        <div class="bx-layout-col bx-layout-bcb-bar2 bx-layout-column-thin md:w-1/4 max-md:order-1 md:order-2">
+            <div class="bx-layout-cell" id="bx-layout-cell-3">
+                <bx_page:wiki-page-contents />
+            </div>
+        </div>
+    </div>
+    <bx_include_auto:_row_1_column_dump.html />
+</div>
+<!-- layout 1 column with menu on left and contents on right [  end  ] -->
