@@ -23,7 +23,7 @@ export function WikiBreadcrumb({ items, onNavigate, compact = false }) {
     return (
         <Row
             className={`items-center flex-wrap min-w-0 ${compact ? 'gap-1 flex-1' : 'gap-1.5'}`}
-            accessibilityRole="navigation"
+            role="navigation"
             accessibilityLabel={t('Breadcrumb')}
         >
             {items.map((item, index) => (

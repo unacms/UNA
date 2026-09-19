@@ -42,10 +42,28 @@ function shouldPlayWebHapticsSynthAudio() {
  * `onMouseDown`, which is *after* `pointerdown`, so we kick off `ensureAudio()` on
  * capture-phase `pointerdown` (still a user gesture) so resume + playback line up.
  * Keyboard tab activation uses keydown (Enter/Space) without a preceding pointerdown.
+ *
+ * Clicks/keys also stamp a recent-gesture flag. Tab auto-select and other mount
+ * effects must not play audio — only a real pointer/key activation should.
  */
 let webHapticsAudioPrimed = false;
+let lastUserGestureAt = 0;
+const USER_GESTURE_AUDIO_MS = 1000;
+
+function markUserGesture() {
+    lastUserGestureAt = Date.now();
+}
+
+export function hasRecentUserGesture(maxAgeMs = USER_GESTURE_AUDIO_MS) {
+    if (lastUserGestureAt <= 0) return false;
+    if (typeof navigator !== 'undefined' && navigator.userActivation?.isActive) {
+        return true;
+    }
+    return Date.now() - lastUserGestureAt < maxAgeMs;
+}
 
 function primeWebHapticsAudioFromUserGesture() {
+    markUserGesture();
     if (webHapticsAudioPrimed) return;
     if (!shouldPlayWebHapticsSynthAudio()) {
         webHapticsAudioPrimed = true;
@@ -80,6 +98,7 @@ installWebHapticsAudioPriming();
 
 export function FeedbackHaptics(type) {
     if (typeof type !== 'string') return;
+    if (!hasRecentUserGesture()) return;
     const h = getHaptics();
     if (!h) return;
     const preset = PRESET_BY_TYPE[type];

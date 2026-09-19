@@ -75,9 +75,9 @@ export const settingsElements = {
     },
     tasks: {
         // Per-task row chrome. Forks override in customization/settings.js.
-        item_wrapper: 'py-2 px-3 bg-transparent hover:bg-muted/60 transition-colors duration-200 rounded-2xl',
+        item_wrapper: 'h-11 justify-center px-3 bg-transparent hover:bg-muted/40 transition-colors duration-200 rounded-lg',
         // Status group header (Todo / In Progress / …).
-        section_title: 'items-center justify-start gap-2 px-3 py-2 bg-muted/60 rounded-2xl',
+        section_title: 'items-center justify-start gap-2 px-3 h-11 bg-muted/60 rounded-lg',
         // Keys are normalizeTaskLabel() of the UNA priority caption.
         priority_icons: {
             urgent: 'Signal',

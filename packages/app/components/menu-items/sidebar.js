@@ -30,7 +30,7 @@ export default function MenuItemSidebar({ title, icon, isActive, addon, iconEnd 
                 )}
             </View>
 
-            <Text numberOfLines={2} className={`flex-1 px-2 text-sm leading-tighter font-semibold line-clamp-2 ${isActive ? 'text-foreground' : 'text-secondary-foreground web:group-hover:text-foreground'}`}>{title}</Text>
+            <Text numberOfLines={2} className={`flex-1 px-2 text-sm leading-4 font-semibold line-clamp-2 ${isActive ? 'text-foreground' : 'text-secondary-foreground web:group-hover:text-foreground'}`}>{title}</Text>
             {!!iconEnd && <View className={`ml-auto h-8 w-8 items-center justify-center flex rounded-full ${isActive
                     ? ' text-primary-foreground'
                     : 'text-secondary-foreground '

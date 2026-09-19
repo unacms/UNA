@@ -1,4 +1,4 @@
-import { useCallback, useState, useEffect, useRef, useMemo } from 'react'
+import { useCallback, useState, useEffect, useMemo } from 'react'
 import { View } from 'app/design/view'
 import {
     appSetting,
@@ -29,11 +29,14 @@ import { useTranslation } from 'react-i18next'
 import { useCurrentUser } from 'app/context/user'
 import { useBottomSheetData } from 'app/context/bottomsheet'
 import { useLayoutSettings } from 'app/context/layout-settings'
-import { useIsDesktop } from 'app/context/measure'
-import { useHeaderHeight } from 'app/context/jotai/layout'
+import { useIsDesktop, useWindowHeight } from 'app/context/measure'
+import { useHeaderHeight, useFooterHeight } from 'app/context/jotai/layout'
+import { isTasksHomeUri } from 'app/components/elements/tasks/helpers'
 import { PageHeaderOptions } from 'app/ui/molecules/header/options'
-import { useSound } from 'app/lib/hooks/use-sound'
 import { useStickyHeaderOffset, stickySidebarStyle } from 'app/lib/hooks/use-sticky-header-offset'
+
+/** `html` class that makes the page block, not the document, the scroller (global.web.css). */
+const VIEWPORT_LOCK_CLASS = 'ns-viewport-lock'
 
 /**
  * Conductor — web shell (native lives in `index.js`).
@@ -85,6 +88,8 @@ export function Conductor({
     const { layoutName: tmplLayout } = useLayoutSettings()
     const isDesktop = useIsDesktop()
     const pageHeaderHeight = useHeaderHeight()
+    const footerHeight = useFooterHeight()
+    const windowHeight = useWindowHeight()
     // Clear page header + cover/tab `header-fixed` stack (profile menus). Wiki's top:0
     // padding trick overlaps Conductor's opaque fixed cover bar when scrolled.
     const stickyTop = useStickyHeaderOffset(pageHeaderHeight)
@@ -103,16 +108,13 @@ export function Conductor({
         [menu, data, blocks, currentUser, useSectionAsMenu]
     )
 
-    const playClick = useSound('click')
-    const playClickRef = useRef(playClick)
-    playClickRef.current = playClick
-
     /**
      * Web half of the `useConductorRoutes` contract (see the JSDoc there).
-     * Web: history + click sound. Tab menu items still pushState themselves;
-     * adapter covers soft/hard page sync + popstate + setIndex side effects.
+     * Web: history. Tab menu items still pushState themselves; adapter covers
+     * soft/hard page sync + popstate. Do not play click here — `setIndex` also
+     * runs on load / URL sync, and menu items already fire haptics on press.
      *
-     * `deps: []` is safe — the only captured value is a ref.
+     * `deps: []` is safe — the adapter closes over no render values.
      */
     const routesAdapter = useMemo(() => {
         /**
@@ -144,12 +146,6 @@ export function Conductor({
             skipFirstPageRev: true,
             // No cache on web: the server already sent this page's tabs.
             getInitialRoutes: (tabs) => tabs,
-            // Every index change is a user-visible tab switch here, so it clicks.
-            beforeSetIndex: (newIndex, { indexRef, setPrevIndex, _setIndex }) => {
-                playClickRef.current?.()
-                setPrevIndex(indexRef.current)
-                _setIndex(newIndex)
-            },
             applyUrlChange: syncTabsToUrl,
             applySoftRefresh: syncTabsToUrl,
             // Browser Back/Forward: tab switches only pushState, they do not
@@ -251,6 +247,12 @@ export function Conductor({
     // Navigator always keeps its left column: it holds the section nav itself.
     const hasLeftColumn = tabRoute?.leftbar?.content?.length > 0 || layoutName === 'navigator'
     const hasRightColumn = (tabRoute?.sidebar?.content?.length > 0) || !!tabRoute?.blocks?.browse_sidebar
+    // /tasks-home only: pin the shell to the leftover viewport and scroll the
+    // list inside it so the site header + task toolbar stay put.
+    const isTasksHome = isTasksHomeUri(activeRoute?.pageData?.uri) || isTasksHomeUri(activeRoute?.key)
+    const pageHeight = windowHeight > 0
+        ? Math.max(0, windowHeight - pageHeaderHeight - (isDesktop ? 0 : footerHeight))
+        : 0
 
     // Viewing your own profile on desktop: the cover would just repeat what the
     // page context bar already shows.
@@ -292,6 +294,16 @@ export function Conductor({
         )
         return () => clearTimeout(timer)
     }, [])
+
+    // Class toggle (see global.web.css) rather than inline overflow: dropdowns
+    // and dialogs save/restore body's inline style, and an inline lock here
+    // could be restored onto the next page by their cleanup.
+    useEffect(() => {
+        if (!isTasksHome || typeof document === 'undefined') return undefined
+        const html = document.documentElement
+        html.classList.add(VIEWPORT_LOCK_CLASS)
+        return () => html.classList.remove(VIEWPORT_LOCK_CLASS)
+    }, [isTasksHome])
 
     // ==================================================================
     // 4. Chrome: cover + tab bar, and who renders it
@@ -376,8 +388,11 @@ export function Conductor({
 
     return (
         <View
-            className="ns--conductor-wrapper-- w-full h-full ne--"
-            style={{ minHeight: `calc(100dvh - ${pageHeaderHeight}px)` }}
+            className={`ns--conductor-wrapper-- w-full h-full ne--${isTasksHome ? ' min-h-0 overflow-hidden' : ''}`}
+            style={{
+                minHeight: `calc(100dvh - ${pageHeaderHeight}px)`,
+                ...(isTasksHome && pageHeight > 0 ? { height: pageHeight } : {}),
+            }}
         >
             {/* Desktop keeps the normal page header. Mobile profile hides it
                 (the cover owns the top of the screen); everything else on
@@ -388,7 +403,7 @@ export function Conductor({
                 : <PageHeaderOptions sub={headerComponent} mobileOnly />}
             {(isUseCurrentHeader || isDesktop) && headerComponent}
             <View
-                className={`ns--conductor-tab-content-- ${contentWidth} mx-auto ${tmplLayout == 'mixed' ? 'mt-12' : ''}`}
+                className={`ns--conductor-tab-content-- ${contentWidth} mx-auto ${tmplLayout == 'mixed' ? 'mt-12' : ''}${isTasksHome ? ' min-h-0 flex-1 h-full overflow-hidden' : ''}`}
             >
                 <TabSceneHeader
                     route={activeRoute}
@@ -400,6 +415,7 @@ export function Conductor({
                     pageRoute={tabRoute}
                     leftColumn={leftColumn}
                     rightColumn={rightColumn}
+                    fillViewport={isTasksHome}
                 >
                     <TabScene
                         pageRoute={activeRoute}
@@ -410,6 +426,7 @@ export function Conductor({
                         timestamp={timestamp}
                         skeleton={skeleton}
                         leftColumnExcludedFromMainIds={leftColumnExcludedFromMainIds}
+                        fillViewport={isTasksHome}
                     />
                 </TabSceneColumns>
             </View>

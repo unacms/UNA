@@ -138,6 +138,28 @@ export function getPageContentPaddingTiers(layoutKey) {
         : undefined;
 }
 
+function normalizeLayoutPath(uri) {
+    return String(uri || '').split(/[?#]/)[0].replace(/^\/+|\/+$/g, '');
+}
+
+function isTasksModule(data) {
+    const module = String(data?.module || '');
+    return module === 'bx_tasks' || module.startsWith('bx_tasks');
+}
+
+function isTaskViewPath(path) {
+    return path === 'view-task' || path.startsWith('view-task/');
+}
+
+/** Item view for a task (`/view-task/...` or the list-open `item` fetch). Not tasks-home. */
+export function isTaskItemPage(data, uri) {
+    const path = normalizeLayoutPath(uri);
+    const dataPath = normalizeLayoutPath(data?.uri);
+    if (path === 'tasks-home' || dataPath === 'tasks-home') return false;
+    if (isTaskViewPath(path) || isTaskViewPath(dataPath)) return true;
+    return path === 'item' && isTasksModule(data);
+}
+
 export function getLayoutName(data, uri) {
     if (data?.page_status) {
         return { layoutName: 'default', layoutBlocks: '', isCustomLayout: false, columnLayout: '' };
@@ -152,6 +174,13 @@ export function getLayoutName(data, uri) {
         {
             cond: uri === 'login',
             name: 'login',
+            blocks: customBlocks,
+            custom: true,
+        },
+        {
+            // Before UNA `config.layout: 'post'` so list-open and direct URLs share `task`.
+            cond: isTaskItemPage(data, uri),
+            name: 'task',
             blocks: customBlocks,
             custom: true,
         },

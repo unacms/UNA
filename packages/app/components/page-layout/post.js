@@ -120,7 +120,7 @@ const defineCells = (blocks, data) => {
     return { sideBarBlocks: sideBarBlocks, topBlocks: topBlocks, centerBlocks: centerBlocks, leftBarBlocks: leftBarBlocks };
 };
 
-export default function PageLayout({ data, blocks, isModal = false, url, pageClasses }) {
+export default function PageLayout({ data, blocks, isModal = false, url, pageClasses, embedded = false, headerTitle }) {
     const { contentWidth, padding, gap } = pageClasses ?? {};
     const isWeb = Platform.OS == 'web';
     const windowHeight = useWindowHeight();
@@ -272,7 +272,7 @@ export default function PageLayout({ data, blocks, isModal = false, url, pageCla
     const isRightCol = sideBarBlocks.length > 0 && isDesktop
     const isLeftCol = leftBarBlocks.length > 0 && isDesktop
 
-    const viewProps = isWeb ? {
+    const viewProps = isWeb && !embedded ? {
         style: { minHeight: !isDesktop ? windowHeight : windowHeight - 64 },
     } : {};
 
@@ -371,11 +371,12 @@ export default function PageLayout({ data, blocks, isModal = false, url, pageCla
     const isMultiColumn = leftBarBlocks.length > 0 || sideBarBlocks.length > 0;
 
     useEffect(() => {
+        if (embedded) return;
         setFooter(false);
         return () => {
             setFooter(true);
         };
-    }, []);
+    }, [embedded]);
 
     let offset2 = 56;
     if (isDesktop)
@@ -390,8 +391,12 @@ export default function PageLayout({ data, blocks, isModal = false, url, pageCla
     // Small screens (native + mobile web): title + back go into the pinned
     // header chrome; the author block stays in-flow in the list (like desktop
     // and the modal, which owns its own chrome).
-    const headerOptions = isModal ? null : (
-        <PageHeaderOptions backButton title={data.module == 'bx_timeline' ? 'Update' : 'Post'} mobileOnly />
+    const headerOptions = (isModal || embedded) ? null : (
+        <PageHeaderOptions
+            backButton
+            title={headerTitle || (data.module == 'bx_timeline' ? 'Update' : 'Post')}
+            mobileOnly
+        />
     );
 
     if (isModal) {
@@ -519,13 +524,17 @@ export default function PageLayout({ data, blocks, isModal = false, url, pageCla
         return (
             <View {...viewProps} className="w-full">
                 {headerOptions}
-                <View className={`max-w-5xl w-full flex-1 bg-card text-card-foreground lg:rounded-2xl lg:my-4 mx-auto `}>
+                <View className={embedded
+                    ? 'w-full flex-1'
+                    : 'max-w-5xl w-full flex-1 bg-card text-card-foreground lg:rounded-2xl lg:my-4 mx-auto '
+                }>
                     <View
                         onLayout={handleListLayout}
                         style={{ pointerEvents: 'box-none', ...(isFormFixed ? { marginBottom: formHeight } : null) }}
                         className="w-full flex-1 "
                     >
                         <CommentsBrowse
+                            embedded={embedded}
                             scrollToIndex={scrollToEnd}
                             addItems={aItems}
                             browse={commentsBrowse}
@@ -567,10 +576,15 @@ export default function PageLayout({ data, blocks, isModal = false, url, pageCla
             }
             direction="horizontal"
             {...viewProps}
-            className={`${contentWidth} ${isMultiColumn ? 'mx-auto' : ' mx-auto flex-1 h-full sm:min-h-[calc(100vh-16rem)]'} `}
+            className={`${contentWidth} ${isMultiColumn ? 'mx-auto' : ` mx-auto flex-1${embedded ? '' : ' h-full sm:min-h-[calc(100vh-16rem)]'}`} `}
             // Default panel-group overflow:hidden creates a scrollport and breaks
             // window-scroll sticky. clip still contains resize overflow without that.
-            style={{ ...(viewProps.style || {}), overflow: 'clip' }}
+            // Embedded list-open: grow with the blocks so the browse card scrolls.
+            style={{
+                ...(viewProps.style || {}),
+                overflow: embedded ? 'visible' : 'clip',
+                ...(embedded ? { height: 'auto', minHeight: '100%' } : {}),
+            }}
             onLayout={onLayout}
         >
             {isLeftCol && (
@@ -581,8 +595,10 @@ export default function PageLayout({ data, blocks, isModal = false, url, pageCla
                     >
                         <View className="h-full w-full">
                             <View
-                                className="web:sticky w-full hidden sm:flex gap-y-3 web:overflow-y-auto"
-                                style={stickySidebarScrollStyle}
+                                className={embedded
+                                    ? 'web:sticky top-0 w-full hidden sm:flex gap-y-3'
+                                    : 'web:sticky w-full hidden sm:flex gap-y-3 web:overflow-y-auto'}
+                                style={embedded ? { top: 0 } : stickySidebarScrollStyle}
                             >
                                 {
                                     leftBarBlocks.map(([key, value]) => {
@@ -601,7 +617,25 @@ export default function PageLayout({ data, blocks, isModal = false, url, pageCla
                 </>
             )}
             <Panel {...centerPanelProps} className="mt-0.5 sm:m-0 sm:p-3 lg:p-4 ">
-                
+                {embedded ? (
+                    <View className="w-full mx-auto">
+                        <CommentsBrowse
+                            embedded
+                            scrollToIndex={scrollToEnd}
+                            addItems={aItems}
+                            browse={commentsBrowse}
+                            module={commentsModule}
+                            requestUrl={commentsRequestUrl}
+                            replyId={replyId}
+                        />
+                        <CommentsForm
+                            objectId={commentsObjectId}
+                            module={commentsModule}
+                            form={commentsForm}
+                            requestUrl={commentsRequestUrl}
+                        />
+                    </View>
+                ) : (
                 <Block isBg className={`w-full mx-auto `}>
                     <View
                         onLayout={handleListLayout}
@@ -635,6 +669,7 @@ export default function PageLayout({ data, blocks, isModal = false, url, pageCla
                         </View>
                     </KbAvoidingView>
                 </Block>
+                )}
             </Panel>
             {isRightCol && (
                 <>
@@ -649,8 +684,10 @@ export default function PageLayout({ data, blocks, isModal = false, url, pageCla
                     >
                         <View className="h-full w-full">
                             <View
-                                className="web:sticky w-full hidden sm:flex gap-3 lg:gap-4 mt-0.5 sm:m-0 sm:p-3 lg:p-4 web:overflow-y-auto"
-                                style={stickySidebarScrollStyle}
+                                className={embedded
+                                    ? 'web:sticky top-0 w-full hidden sm:flex gap-3 lg:gap-4 mt-0.5 sm:m-0 sm:p-3 lg:p-4'
+                                    : 'web:sticky w-full hidden sm:flex gap-3 lg:gap-4 mt-0.5 sm:m-0 sm:p-3 lg:p-4 web:overflow-y-auto'}
+                                style={embedded ? { top: 0 } : stickySidebarScrollStyle}
                             >
                                 {
                                     sideBarBlocks.map((value) => {

@@ -1,12 +1,66 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import Svg, { Circle } from 'react-native-svg';
 import { View, Row, Pressable } from 'app/design/view';
 import { Text } from 'app/design/typography';
 import { Card } from 'app/ui/molecules/page/card';
 import { Icon } from 'app/ui/atoms/icon';
+import { useIconClassColor } from 'app/ui/atoms/icon-class-color';
 import { cn } from 'app/lib/util';
 import { TaskActionsDropdown } from './actions';
-import { isSameListId, isTasklistGroup, listIdOrNull } from './helpers';
+import { isSameListId, isTasklistGroup, listIdOrNull, tasklistProgress } from './helpers';
+
+const PROGRESS_SIZE = 14;
+const PROGRESS_VIEW = 16;
+const PROGRESS_STROKE = 2.2;
+const PROGRESS_CX = PROGRESS_VIEW / 2;
+const PROGRESS_RADIUS = (PROGRESS_VIEW - PROGRESS_STROKE) / 2;
+const PROGRESS_CIRCUMFERENCE = 2 * Math.PI * PROGRESS_RADIUS;
+
+function ProgressArc({ className, dasharray, cap = false, opacity = 1 }) {
+    const color = useIconClassColor(className) || 'currentColor';
+    return (
+        <View className={cn('absolute inset-0 items-center justify-center', className)}>
+            <Svg width={PROGRESS_SIZE} height={PROGRESS_SIZE} viewBox={`0 0 ${PROGRESS_VIEW} ${PROGRESS_VIEW}`}>
+                <Circle
+                    cx={PROGRESS_CX}
+                    cy={PROGRESS_CX}
+                    r={PROGRESS_RADIUS}
+                    stroke={color}
+                    strokeWidth={PROGRESS_STROKE}
+                    strokeOpacity={opacity}
+                    fill="none"
+                    strokeLinecap={cap ? 'round' : 'butt'}
+                    strokeDasharray={dasharray}
+                    strokeDashoffset={dasharray ? PROGRESS_CIRCUMFERENCE * 0.25 : undefined}
+                />
+            </Svg>
+        </View>
+    );
+}
+
+function TasklistProgress({ percent = 0 }) {
+    const clamped = Math.min(100, Math.max(0, Number(percent) || 0));
+    const dash = (clamped / 100) * PROGRESS_CIRCUMFERENCE;
+
+    return (
+        <View
+            className="relative shrink-0"
+            style={{ width: PROGRESS_SIZE, height: PROGRESS_SIZE }}
+            accessibilityRole="progressbar"
+            accessibilityValue={{ min: 0, max: 100, now: Math.round(clamped) }}
+        >
+            <ProgressArc className="text-muted-foreground" opacity={0.35} />
+            {clamped > 0 ? (
+                <ProgressArc
+                    className="text-primary"
+                    dasharray={clamped >= 100 ? undefined : `${dash} ${PROGRESS_CIRCUMFERENCE}`}
+                    cap={clamped < 100}
+                />
+            ) : null}
+        </View>
+    );
+}
 
 function isRowSelected(item, selectedId, selectedContextId) {
     if (!isSameListId(selectedId, item?.id)) return false;
@@ -29,22 +83,20 @@ function Chevron({ expanded, size = 16 }) {
     );
 }
 
-function TasklistRow({ item, selected, indented, onSelect, actionHandlers }) {
+function TasklistRow({ item, selected, onSelect, actionHandlers }) {
+    const { percent, total } = tasklistProgress(item);
     return (
         <Row className={cn('items-center gap-1 rounded-lg pr-1', selected && 'bg-muted/50')}>
             <Pressable
                 onPress={() => onSelect(item)}
                 className={cn(
-                    'min-w-0 flex-1 flex-row items-center gap-2 px-2 py-2 web:hover:bg-muted/50 rounded-lg',
-                    indented && 'pl-7'
+                    'min-w-0 flex-1 flex-row items-center gap-2 px-2 py-2 web:hover:bg-muted/50 rounded-lg'
                 )}
+                accessibilityLabel={total
+                    ? `${item.title}, ${Math.round(percent)}% of ${total}`
+                    : item.title}
             >
-                <Icon
-                    icon="Circle"
-                    size={10}
-                    className={cn('shrink-0', selected ? 'text-primary' : 'text-muted-foreground')}
-                    fill={selected ? 'currentColor' : 'none'}
-                />
+                <TasklistProgress percent={percent} />
                 <Text className="min-w-0 flex-1 text-sm font-medium text-card-foreground" numberOfLines={1}>
                     {item.title}
                 </Text>
@@ -66,23 +118,28 @@ function TasklistGroup({ group, selectedId, selectedContextId, onSelect, actionH
 
     return (
         <View className="gap-0.5">
-            <Row className={cn('items-center gap-0.5 rounded-lg pr-1', groupSelected && 'bg-muted/50')}>
-                <Pressable
-                    onPress={() => setExpanded((prev) => !prev)}
-                    className="items-center justify-center p-1.5 rounded-md web:hover:bg-muted/50"
-                    accessibilityRole="button"
-                    accessibilityLabel={expanded ? 'Collapse' : 'Expand'}
-                >
-                    <Chevron expanded={expanded} size={14} />
-                </Pressable>
+            <Row className={cn(
+                'items-center rounded-lg',
+                groupSelected && 'bg-muted/50',
+            )}>
                 <Pressable
                     onPress={() => onSelect(group)}
-                    className="min-w-0 flex-1 flex-row items-center gap-2 py-2 pr-2 web:hover:bg-muted/50 rounded-lg"
+                    className="min-w-0 flex-1 flex-row items-center gap-2 py-2 px-2 web:hover:bg-muted/50 rounded-lg"
+                    accessibilityRole="button"
+                    accessibilityLabel={group.title}
                 >
                     <Text className="min-w-0 flex-1 text-sm font-semibold text-foreground" numberOfLines={1}>
                         {group.title}
                     </Text>
                     <Count value={group.count} />
+                </Pressable>
+                <Pressable
+                    onPress={() => setExpanded((prev) => !prev)}
+                    className="shrink-0 p-2 web:hover:bg-muted/50 rounded-lg"
+                    accessibilityRole="button"
+                    accessibilityLabel={expanded ? 'Collapse' : 'Expand'}
+                >
+                    <Chevron expanded={expanded} size={14} />
                 </Pressable>
             </Row>
             {expanded ? (group.children || []).map((item) => (
@@ -90,7 +147,6 @@ function TasklistGroup({ group, selectedId, selectedContextId, onSelect, actionH
                     key={item.id}
                     item={item}
                     selected={isRowSelected(item, selectedId, selectedContextId)}
-                    indented
                     onSelect={onSelect}
                     actionHandlers={actionHandlers}
                 />
@@ -110,6 +166,7 @@ export default function TasklistsPanel({
     onSelect,
     actionHandlers,
     defaultCollapsed = false,
+    fill = false,
 }) {
     const { t } = useTranslation();
     const [expanded, setExpanded] = useState(!defaultCollapsed);
@@ -119,10 +176,16 @@ export default function TasklistsPanel({
     const itemProps = { selectedId, selectedContextId, onSelect, actionHandlers };
 
     return (
-        <Card className="w-full lg:w-72 shrink-0 gap-2 p-4">
+        <Card
+            padding="p-0"
+            className={cn(
+                'w-full lg:w-72 shrink-0 rounded-xl overflow-visible',
+                fill && 'lg:h-full lg:max-h-full lg:min-h-0',
+            )}
+        >
             <Pressable
                 onPress={() => setExpanded((prev) => !prev)}
-                className="flex-row items-center justify-between gap-2 px-2 py-0.5 rounded-lg web:hover:bg-muted/50"
+                className="flex-row items-center justify-start gap-2 mx-4 my-2.5 shrink-0 self-start"
                 accessibilityRole="button"
                 accessibilityLabel={expanded ? t('Collapse tasklists') : t('Expand tasklists')}
             >
@@ -130,19 +193,26 @@ export default function TasklistsPanel({
                 <Chevron expanded={expanded} />
             </Pressable>
 
-            {expanded ? tasklists.map((item) => (
-                isTasklistGroup(item) ? (
-                    <TasklistGroup key={item.id} group={item} {...itemProps} />
-                ) : (
-                    <TasklistRow
-                        key={item.id}
-                        item={item}
-                        selected={isRowSelected(item, selectedId, selectedContextId)}
-                        onSelect={onSelect}
-                        actionHandlers={actionHandlers}
-                    />
-                )
-            )) : null}
+            {expanded ? (
+                <View className={cn(
+                    'p-2 gap-0.5',
+                    fill && 'lg:min-h-0 lg:flex-1 lg:overflow-y-auto',
+                )}>
+                    {tasklists.map((item) => (
+                        isTasklistGroup(item) ? (
+                            <TasklistGroup key={item.id} group={item} {...itemProps} />
+                        ) : (
+                            <TasklistRow
+                                key={item.id}
+                                item={item}
+                                selected={isRowSelected(item, selectedId, selectedContextId)}
+                                onSelect={onSelect}
+                                actionHandlers={actionHandlers}
+                            />
+                        )
+                    ))}
+                </View>
+            ) : null}
         </Card>
     );
 }
