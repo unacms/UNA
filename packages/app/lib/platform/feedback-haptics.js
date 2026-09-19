@@ -3,6 +3,10 @@ import * as Haptics from 'expo-haptics';
 /**
  * Native haptics (expo-haptics). Web uses `feedback-haptics.web.js` ([web-haptics](https://github.com/lochie/web-haptics)).
  */
+export function hasRecentUserGesture() {
+    return true;
+}
+
 export function FeedbackHaptics(type) {
     if (typeof type !== 'string') return;
     switch (type) {

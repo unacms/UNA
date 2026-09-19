@@ -391,6 +391,13 @@ html {
     padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
 }
 
+/* Viewport-locked pages (tasks-home): the page block is the scroller, not the document.
+   A class, not inline style, so it never fights Radix/remove-scroll's inline body lock. */
+html.ns-viewport-lock,
+html.ns-viewport-lock body {
+    overflow: hidden;
+}
+
 /* Classic scrollbars on html — fills stable gutter; thumb spans track when page does not scroll */
 html::-webkit-scrollbar {
     width: 0.75rem;

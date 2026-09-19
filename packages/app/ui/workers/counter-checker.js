@@ -36,7 +36,7 @@ export default function CounterChecker({ }) {
     const { currentUser, setCurrentUser } = useCurrentUser();
     const isAppActive = useAppState();
     const isActive = (!!currentUser && currentUser?.membership != 2) && isAppActive;
-    const prevNotRef = useRef(currentUser?.notifications ?? 0);
+    const prevNotRef = useRef(null);
     const playSound = useSound('notif');
     const { daemonData } = useDaemon(PROFILE_URL, true, isActive, 60000);
 
@@ -47,8 +47,12 @@ export default function CounterChecker({ }) {
     }, [daemonData, currentUser?.id]);
 
     useEffect(() => {
-        const prevNot = prevNotRef.current;
         const currentNot = currentUser?.notifications ?? 0;
+        if (prevNotRef.current == null) {
+            prevNotRef.current = currentNot;
+            return;
+        }
+        const prevNot = prevNotRef.current;
 
         if (currentNot > prevNot) {
             playSound();
@@ -61,7 +65,7 @@ export default function CounterChecker({ }) {
 
 export function CounterCheckerSingle() {
     const { currentUser, setCurrentUser } = useCurrentUser();
-    const prevNotRef = useRef(currentUser?.notifications ?? 0);
+    const prevNotRef = useRef(null);
     const playSound = useSound('notif');
 
     useEffect(() => {
@@ -75,8 +79,12 @@ export function CounterCheckerSingle() {
     }, [currentUser?.id, currentUser?.membership, setCurrentUser]);
 
     useEffect(() => {
-        const prevNot = prevNotRef.current;
         const currentNot = currentUser?.notifications ?? 0;
+        if (prevNotRef.current == null) {
+            prevNotRef.current = currentNot;
+            return;
+        }
+        const prevNot = prevNotRef.current;
 
         if (currentNot > prevNot) {
             playSound();

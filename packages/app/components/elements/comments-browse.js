@@ -70,6 +70,7 @@ export function CommentsBrowse({
     isModal = false,
     marginBottom = 0,
     useCustomScrollHandler,
+    embedded = false,
 }) {
     const UnitComments = components['unit']['comments'];
     const { t } = useTranslation();
@@ -479,18 +480,21 @@ export function CommentsBrowse({
 
     return (
         <>
-            <View className="flex-1 w-full min-h-0" style={height > 0 ? { height } : undefined}>
+            <View className={embedded ? 'w-full' : 'flex-1 w-full min-h-0'} style={height > 0 ? { height } : undefined}>
             <UniList
                 mode='simple'
                 isModal={isModal}
                 useCustomScrollHandler={useCustomScrollHandler}
-                useWindowScroll={!isModal}
+                useWindowScroll={!isModal && !embedded}
+                no_scroll={embedded}
+                flowLayout={embedded}
                 // UniList forces window scroll whenever it cannot resolve a height,
                 // which silently overrides `useWindowScroll: false`. In a modal the
                 // window cannot scroll, so without a real px height here the list is
-                // unscrollable and its overflow is clipped.
-                height={height > 0 ? height : undefined}
-                style={{ flex: 1 }}
+                // unscrollable and its overflow is clipped. Embedded (list-open
+                // task) lays out in flow so the browse card can scroll.
+                height={embedded ? undefined : (height > 0 ? height : undefined)}
+                style={embedded ? undefined : { flex: 1 }}
                 data={dataOut}
                 extraData={marginBottom}
                 refer={flashListRef}

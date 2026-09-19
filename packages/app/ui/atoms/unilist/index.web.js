@@ -80,6 +80,7 @@ export default function UniList(props) {
         paddingTop,
         components: componentsProp,
         no_scroll,
+        flowLayout,
         // consumed only to keep them out of `rest`: url is native's remount
         // key, pull-to-refresh is native only
         url,
@@ -173,8 +174,15 @@ export default function UniList(props) {
 
     if (no_scroll) {
         return (
-            <View>
-                {rows.map((item, index) => renderItem({ item, index }))}
+            <View className={flowLayout ? 'w-full' : 'h-full min-h-0'}>
+                {rows.map((item, index) => (
+                    <View
+                        key={item?.id ?? item?.key ?? `row-${index}`}
+                        className={flowLayout || rows.length !== 1 ? 'min-h-px' : 'h-full min-h-0'}
+                    >
+                        {renderItem({ item, index })}
+                    </View>
+                ))}
             </View>
         )
     }

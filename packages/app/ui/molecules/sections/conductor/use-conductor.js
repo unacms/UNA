@@ -58,8 +58,7 @@ export function useLeftColumn({
  * Filter form → route.endpoint.params.filters.
  *
  * Always reads the latest tab index via ref so callers can keep a stable
- * onFormChangedValues without going through platform setIndex wrappers
- * (web’s setIndex also plays click / updates prevIndex).
+ * onFormChangedValues without going through platform setIndex wrappers.
  *
  * @param {object} opts
  * @param {number} opts.index — active tab

@@ -2,6 +2,7 @@ import { View } from 'app/design/view';
 import { memo } from 'react';
 import Unit from 'app/components/unit';
 import { BlockByName2 } from 'app/components/block'
+import { isTasksHomeUri } from 'app/components/elements/tasks/helpers'
 
 function isTasksListBlock(item) {
     const content = item?.data?.content;
@@ -26,12 +27,21 @@ function ItemRenderer_({ route, item, unit, module, unitMode, unitType, sidebar 
 }
 
 export function BlockItemRenderer({ route, item, sidebar }) {
-    const maxWidthClass = isTasksListBlock(item) ? '' : 'u-max-width-block';
+    const isTasksList = isTasksListBlock(item);
+    const fillViewport = isTasksList && (
+        isTasksHomeUri(route?.pageData?.uri) || isTasksHomeUri(route?.key) || isTasksHomeUri(route?.link)
+    );
+    const maxWidthClass = isTasksList ? '' : 'u-max-width-block';
     const block = BlockByName2({ 
         b: item.data, 
         name: item.block, 
         contentOnly:item?.data?.source == "system:get_create_post_form",
-        wrapperClassses: `${item?.block?.classes || ''} mb-0.5 sm:mb-3 lg:mb-4 w-full mx-auto ${maxWidthClass}`.trim()
+        fill: fillViewport,
+        extraProps: {
+            pageTitle: route?.title,
+            pageContext: route?.pageData?.context,
+        },
+        wrapperClassses: `${item?.block?.classes || ''} ${fillViewport ? 'h-full min-h-0 mb-0' : 'mb-0.5 sm:mb-3 lg:mb-4'} w-full mx-auto ${maxWidthClass}`.trim()
     }
     );
     if (!block) {

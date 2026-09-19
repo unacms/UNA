@@ -140,7 +140,7 @@ export function Conductor({
     /**
      * Native half of the `useConductorRoutes` contract (see the JSDoc there).
      * Native: cache, focus-gated links, no URL change on tab. Web adapter lives
-     * in index.web.js (history + click sound).
+     * in index.web.js (history).
      *
      * `deps: []` is deliberate — every value it closes over is a ref that is
      * refreshed on each render above, so the adapter never needs to be rebuilt.

@@ -127,6 +127,8 @@ function scrollTabToStart() {
  * @param {Function} [props.onFormChangedValues] Filter form change handler.
  * @param {Set|null} [props.leftColumnExcludedFromMainIds] Blocks already shown
  *        in the left column, so the list must not repeat them.
+ * @param {boolean}  [props.fillViewport=false]  Pin the scene to the parent
+ *        height and skip window-scroll UniList (tasks-home).
  */
 export const TabScene = ({
     pageRoute,
@@ -137,6 +139,7 @@ export const TabScene = ({
     timestamp,
     onFormChangedValues,
     leftColumnExcludedFromMainIds = null,
+    fillViewport = false,
 }) => {
     const isDesktop = useIsDesktop()
     const uniRef = useRef()
@@ -230,10 +233,13 @@ export const TabScene = ({
         listState: pageRoute?.state,
         mode: layout == 'w-full' ? 'simple' : '',
         storagekey: pageRoute?.storageKeyValue,
-        useWindowScroll: true,
-    }), [pageRoute?.state, layout, pageRoute?.storageKeyValue])
+        // Viewport-locked pages (tasks-home) own their own scroller; skip
+        // Virtuoso so the single page block can fill and scroll internally.
+        useWindowScroll: !fillViewport,
+        no_scroll: fillViewport,
+    }), [pageRoute?.state, layout, pageRoute?.storageKeyValue, fillViewport])
 
-    return (
+    const scene = (
         <ListScene
             route={pageRoute}
             skeleton={skeleton}
@@ -257,6 +263,9 @@ export const TabScene = ({
             uniListProps={uniListProps}
         />
     )
+
+    if (!fillViewport) return scene
+    return <View className="h-full min-h-0">{scene}</View>
 };
 
 /**
@@ -276,6 +285,8 @@ export const TabScene = ({
  * @param {node}     [props.leftColumn]
  * @param {node}     [props.rightColumn]
  * @param {node}     props.children    The center column (TabScene).
+ * @param {boolean}  [props.fillViewport=false]  Stretch columns to the parent
+ *        height so the center list can scroll internally (tasks-home).
  */
 export const TabSceneColumns = ({
     pageRoute,
@@ -284,6 +295,7 @@ export const TabSceneColumns = ({
     leftColumn,
     rightColumn,
     children,
+    fillViewport = false,
 }) => {
     const pageData = pageRoute?.pageData
 
@@ -432,10 +444,12 @@ export const TabSceneColumns = ({
                 }`}
 
             direction="horizontal"
-            className='h-full'
+            className={fillViewport ? 'h-full min-h-0' : 'h-full'}
             // Default panel-group overflow:hidden creates a scrollport and breaks
             // window-scroll sticky. clip still contains resize overflow without that.
-            style={{ overflow: 'clip' }}
+            // Viewport-locked pages need a real hidden overflow so the list, not
+            // the document, is the scroller.
+            style={{ overflow: fillViewport ? 'hidden' : 'clip' }}
             onLayout={onLayout}
         >
             {isLeftColumn && (
@@ -453,13 +467,13 @@ export const TabSceneColumns = ({
                     />
                 </>
             )}
-            <Panel {...centerPanelProps}>
+            <Panel {...centerPanelProps} className={fillViewport ? 'h-full min-h-0' : undefined}>
                 <View
                     className={`${isRightColumn ? 'flex-auto' : 'w-full mx-auto'
                         } ${layoutName !== 'navigator'
                             ? 'mt-0.5 sm:m-0 sm:p-3 lg:p-4'
                             : (!pageRoute?.endpoint?.request_url ? 'sm:p-4 ' : '')
-                        }`}
+                        }${fillViewport ? ' h-full min-h-0 overflow-hidden' : ''}`}
                 >
                     {children}
                 </View>
@@ -842,6 +856,7 @@ function NavigatorMenuLink({ item, index, setIndex }) {
     const MenuItemSidebar = registeredComponent('menu-item', 'sidebar')
     const isActive = item.index === index
     const isStar = item?.icon == '*'
+    const href = isStar ? item.link : conductorHref(item.key || item.link)
     const btn = (
         <MenuItemSidebar
             addon={getAddon(item.addon)}
@@ -853,7 +868,7 @@ function NavigatorMenuLink({ item, index, setIndex }) {
 
     return (
         <NeoButtonLink
-            href={isStar ? item.link : item.key}
+            href={href || item.key}
             alt={item.title}
             style="borderless"
             controlSize="regular"
@@ -872,7 +887,7 @@ function NavigatorMenuLink({ item, index, setIndex }) {
                     ? undefined
                     : (event) => {
                         setIndex(item.index)
-                        window.history.pushState({}, '', item.key)
+                        if (href) window.history.pushState({}, '', href)
                         event.preventDefault()
                     }
             }

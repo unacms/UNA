@@ -6,13 +6,13 @@ import { useMemo } from "react";
 import { components } from 'app/components/registry';
 import { View } from 'app/design/view'
 
-export function BlockByName2({ b, name, contentOnly, wrapperClassses = "" }) {
+export function BlockByName2({ b, name, contentOnly, wrapperClassses = "", fill, extraProps }) {
     const blockNameString = (typeof name === 'string') ? name : name?.name;
     
     if (!blockNameString)
         return 
 
-    const c = Block({ uri: '', wrapperClassses, block: b, contentOnly: contentOnly, showTitle: name?.showTitle, showPad: name?.showPad, showBg: name?.showBg, extraProps: { ...name, source: blockNameString }, sidebar: name?.sidebar, showTitleInside: name?.showTitleInside })
+    const c = Block({ uri: '', wrapperClassses, fill, block: b, contentOnly: contentOnly, showTitle: name?.showTitle, showPad: name?.showPad, showBg: name?.showBg, extraProps: { ...name, source: blockNameString, ...extraProps }, sidebar: name?.sidebar, showTitleInside: name?.showTitleInside })
     return c;
 }
 
@@ -180,6 +180,7 @@ export default function Block(props) {
         list: props.list,
         showPadding: props.showPadding,
         wrapperClassses: props.wrapperClassses,
+        fill: props.fill,
     };
     const blockContent = BlockContent({
         blockWrapperProps,

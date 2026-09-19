@@ -1,5 +1,6 @@
 import PageLayoutDefault from 'app/components/page-layout/default';
 import PageCustomPost from 'app/components/page-layout/post';
+import PageCustomTask from 'app/components/page-layout/task';
 import PageCustomPostWithoutComments from 'app/components/page-layout/post-without-comments';
 import PageCustomNavigator from 'app/components/page-layout/navigator';
 import PageCustomNavigatorSearch from 'app/components/page-layout/navigator-search';
@@ -24,6 +25,7 @@ const PagePlaygroundForm = lazyComponent(() => import('app/components/page-layou
 export const componentsMapDefault = {
     'default': PageLayoutDefault,
     'post': PageCustomPost,
+    'task': PageCustomTask,
     'playground': PagePlayground,
     'play': PageLayoutPlay,
     'playground-form': PagePlaygroundForm,

@@ -469,14 +469,13 @@ export default function TasksFilterSelector({
                 open={open}
                 onOpenChange={handleOpenChange}
                 contentClassName="p-0 overflow-hidden"
-                trigger={
-                    <Button
-                        size="sm"
-                        rounded={false}
-                        startDecorator={activeFilters.length ? 'Plus' : 'ListFilterPlus'}
-                        title={activeFilters.length ? undefined : ''}
-                    />
-                }
+                buttonProps={{
+                    style: 'glass',
+                    controlSize: 'small',
+                    borderShape: 'circle',
+                    image: activeFilters.length ? 'Plus' : 'ListFilterPlus',
+                    accessibilityLabel: activeFilters.length ? t('Add filter') : t('Filter'),
+                }}
             >
                 <View>
                     {activeField ? (

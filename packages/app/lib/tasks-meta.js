@@ -49,6 +49,17 @@ export function iconForTaskPriority(priority) {
     return mapped || appSetting('tasks', 'priority_icon_fallback') || 'Flag';
 }
 
+/** UNA browse marks completion with `completed` / `class`; status can stay stale. */
+export function isTaskCompleted(task) {
+    if (!task || typeof task !== 'object') return false;
+    if (task.completed === 1 || task.completed === true) return true;
+    const className = String(task.class || '').toLowerCase();
+    if (className === 'completed') return true;
+    const status = normalizeTaskLabel(task.state || task.status);
+    if (status === 'done' || status === 'completed') return true;
+    return false;
+}
+
 
 export function canonicalTaskStatus(state) {
     const key = normalizeTaskLabel(state);

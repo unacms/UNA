@@ -5,8 +5,10 @@
 import { Platform } from 'react-native';
 import { fetcher } from 'app/lib/fetcher';
 import emitter from 'app/context/emitter';
+import { decodeText } from 'app/lib/util/html-text';
 import {
     canonicalTaskStatus,
+    isTaskCompleted,
     normalizeTaskLabel,
     prioritySortIndex,
     statusSortIndex,
@@ -17,6 +19,8 @@ export const TASKS_HOME_PATH = '/tasks-home';
 
 const isWeb = Platform.OS === 'web';
 const hasWindow = () => isWeb && typeof window !== 'undefined';
+/** Next SSR pass — module state is shared across requests there. */
+const isServerRender = () => isWeb && typeof window === 'undefined';
 
 /* ------------------------------------------------------------------ */
 /* API                                                                 */
@@ -127,9 +131,9 @@ export function listIdOrNull(listId) {
     return listId == null || String(listId) === '' ? null : listId;
 }
 
-/** `list=0` means "inbox" (no tasklist filter). */
+/** Concrete tasklist id, including Inbox (`0`). Missing id = all lists in the context. */
 export function hasListId(listId) {
-    return listIdOrNull(listId) != null && String(listId) !== '0';
+    return listIdOrNull(listId) != null;
 }
 
 export function isSameListId(a, b) {
@@ -179,8 +183,96 @@ function isCompleteProgress(progress) {
 }
 
 function toCount(value) {
-    if (value == null || value === '' || Number.isNaN(Number(value))) return null;
+    if (value == null || value === '' || typeof value === 'boolean' || Number.isNaN(Number(value))) return null;
     return Number(value);
+}
+
+function clampPercent(value) {
+    const percent = Number(value);
+    if (!Number.isFinite(percent)) return 0;
+    return Math.min(100, Math.max(0, percent));
+}
+
+function parseProgressText(progress) {
+    if (typeof progress !== 'string') return null;
+    const match = progress.trim().match(/^(\d+(?:\.\d+)?)\s*%(?:\s+of\s+(\d+))?/i);
+    if (!match) return null;
+    const percent = clampPercent(match[1]);
+    const total = match[2] != null ? toCount(match[2]) : null;
+    return {
+        percent,
+        total,
+        done: total != null ? Math.round((percent / 100) * total) : null,
+    };
+}
+
+export function countTaskProgress(tasks) {
+    if (!Array.isArray(tasks)) return { total: 0, done: 0, percent: 0 };
+    const total = tasks.length;
+    const done = tasks.filter(isTaskCompleted).length;
+    return { total, done, percent: total ? Math.round((done / total) * 100) : 0 };
+}
+
+export function tasklistProgress(item) {
+    const total = toCount(item?.count ?? item?.total) ?? 0;
+    const done = toCount(item?.done) ?? 0;
+    const percent = item?.percent != null
+        ? clampPercent(item.percent)
+        : (total > 0 ? Math.round((done / total) * 100) : 0);
+    return { total, done, percent };
+}
+
+function tasklistProgressKey(item) {
+    const id = item?.list_id ?? item?.id;
+    if (id == null) return null;
+    const contextId = item?.context_id ?? item?.context?.id ?? '';
+    return `${contextId}:${id}`;
+}
+
+/** Copy completed/total from browse lists (which carry `tasks`) onto sidebar rows. */
+export function applyTasklistProgress(tasklists, lists) {
+    if (!Array.isArray(tasklists) || !tasklists.length || !Array.isArray(lists)) return tasklists;
+
+    const byKey = new Map();
+    const walk = (nodes) => {
+        if (!Array.isArray(nodes)) return;
+        for (const node of nodes) {
+            if (!node || typeof node !== 'object') continue;
+            if (Array.isArray(node.tasks)) {
+                const key = tasklistProgressKey(node);
+                if (key) byKey.set(key, countTaskProgress(node.tasks));
+            }
+            for (const nested of NESTED_LIST_KEYS) walk(node[nested]);
+        }
+    };
+    walk(lists);
+    if (!byKey.size) return tasklists;
+
+    let changed = false;
+    const mapItems = (items) => {
+        if (!Array.isArray(items)) return items;
+        let itemsChanged = false;
+        const next = items.map((item) => {
+            if (isTasklistGroup(item)) {
+                const children = mapItems(item.children);
+                if (children === item.children) return item;
+                itemsChanged = true;
+                return { ...item, children };
+            }
+            const progress = byKey.get(tasklistProgressKey(item));
+            if (!progress) return item;
+            if (item.count === progress.total && item.done === progress.done && item.percent === progress.percent) {
+                return item;
+            }
+            itemsChanged = true;
+            return { ...item, count: progress.total, done: progress.done, percent: progress.percent };
+        });
+        if (itemsChanged) changed = true;
+        return itemsChanged ? next : items;
+    };
+
+    const next = mapItems(tasklists);
+    return changed ? next : tasklists;
 }
 
 function normalizeTasklistItems(raw) {
@@ -192,24 +284,37 @@ function normalizeTasklistItems(raw) {
             if (id == null) return null;
 
             const title = item.title ?? item.list_title ?? item.name ?? item.value;
+            const fromTasks = Array.isArray(item.tasks) ? countTaskProgress(item.tasks) : null;
+            const parsed = parseProgressText(item.progress ?? item.progress_text);
             const total = toCount(
                 item.total ?? item.count ?? item.num ?? item.tasks_count ?? item.items_count
-                ?? (Array.isArray(item.tasks) ? item.tasks.length : null)
+                ?? fromTasks?.total ?? parsed?.total
             );
-            const done = item.done ?? item.completed_count ?? item.closed;
+            const done = toCount(
+                item.done ?? item.completed_count ?? item.completed_tasks
+                ?? fromTasks?.done ?? parsed?.done
+            );
+            const percent = item.percent ?? item.percentage ?? (
+                total > 0 && done != null
+                    ? Math.round((Number(done) / total) * 100)
+                    : (fromTasks?.percent ?? parsed?.percent ?? 0)
+            );
 
             let progress = item.progress ?? item.progress_text;
             if (!progress && total > 0 && done != null) {
-                const pct = item.percent ?? item.percentage ?? Math.round((Number(done) / total) * 100);
-                progress = `${pct}% of ${total}`;
+                progress = `${Math.round(percent)}% of ${total}`;
             }
 
             return {
                 id,
                 title: String(title ?? id),
                 count: total,
+                done,
+                percent: clampPercent(percent),
                 progress: progress != null ? String(progress) : null,
-                completed: !!(item.completed || item.is_completed || item.closed || isCompleteProgress(progress)),
+                completed: !!(item.completed || item.is_completed || item.closed
+                    || isCompleteProgress(progress)
+                    || (total > 0 && done === total)),
                 actions: item.actions,
                 context_id: item.context_id ?? item.context?.id ?? null,
             };
@@ -223,17 +328,104 @@ function nestedListNodes(item) {
         .filter((value) => Array.isArray(value) && value.length);
 }
 
+function isGenericTasksTitle(title) {
+    const normalized = String(title || '').trim().toLowerCase();
+    return !normalized
+        || normalized === 'my tasks'
+        || normalized === 'tasks'
+        || normalized === 'task'
+        || normalized === 'inbox';
+}
+
+function contextIdsOf(item) {
+    if (!item || typeof item !== 'object') return [];
+    return [
+        item.id,
+        item.context_id,
+        item.context?.id,
+        item.profile_id,
+        item.context_pid,
+        item.author_id,
+        item.author?.id,
+    ].filter((value) => value != null).map(String);
+}
+
+/** Profile-home rows are titled "Academy (Groups)" — crumb uses the name only. */
+function cleanContextModuleSuffix(title) {
+    return String(title || '').replace(/\s+\((Groups|Spaces|Events|Projects|Organizations)\)\s*$/i, '').trim();
+}
+
+function firstContextTitle(...values) {
+    for (const value of values) {
+        if (value == null || value === '') continue;
+        const title = cleanContextModuleSuffix(decodeText(String(value)));
+        if (title && !isGenericTasksTitle(title)) return title;
+    }
+    return null;
+}
+
+/** Profile-home `lists` item that represents a context, not a tasklist. */
+function isProfileContextRow(item) {
+    const contextId = usableContextId(item?.context_id ?? item?.context?.id);
+    if (contextId == null || item?.list_id == null) return false;
+    return String(item.list_id) === String(contextId);
+}
+
+const contextTitlesById = new Map();
+
+/**
+ * Remember context names from profile-home lists so a later context browse can use them.
+ * Browser-only: on the Next server this module is shared across requests, so a
+ * cache filled during SSR would leak one user's group names into another's render.
+ */
+export function rememberContextTitlesFromLists(lists) {
+    if (isServerRender() || !Array.isArray(lists)) return;
+    for (const item of lists) {
+        if (!item || typeof item !== 'object') continue;
+        const contextId = usableContextId(item.context_id ?? item.context?.id ?? item.id);
+        if (contextId != null && (isProfileContextRow(item) || isTasklistGroup(item) || nestedListNodes(item).length)) {
+            const title = firstContextTitle(
+                item.title,
+                item.list_title,
+                item.name,
+                item.display_name,
+                item.context?.title,
+                item.context?.display_name,
+                item.context?.name,
+            );
+            if (title) contextTitlesById.set(String(contextId), title);
+        }
+        rememberContextTitlesFromLists(item.lists || item.tasklists || item.task_lists || item.children);
+    }
+}
+
+export function cachedContextTitle(contextId) {
+    if (contextId == null) return null;
+    return contextTitlesById.get(String(contextId)) || null;
+}
+
 function buildTasklistGroup(ctx, children) {
-    const contextId = ctx?.context_id ?? ctx?.id;
+    const contextId = usableContextId(ctx?.context_id)
+        ?? usableContextId(ctx?.context?.id)
+        ?? ctx?.id;
     if (contextId == null) return null;
     return {
         id: contextId,
-        title: String(ctx.title ?? ctx.list_title ?? ctx.name ?? contextId),
+        title: String(firstContextTitle(
+            ctx.title,
+            ctx.list_title,
+            ctx.name,
+            ctx.display_name,
+            ctx.context?.title,
+            ctx.context?.display_name,
+            ctx.context?.name,
+        ) ?? contextId),
         count: ctx.count ?? (children.length || null),
         context_id: contextId,
+        profile_id: ctx.profile_id ?? ctx.context?.profile_id ?? ctx.context_pid ?? null,
         children: normalizeTasklistItems(children.map((child) => ({
             ...child,
-            context_id: child.context_id ?? contextId,
+            context_id: child.context_id ?? child.context?.id ?? contextId,
         }))),
     };
 }
@@ -242,6 +434,7 @@ function buildTasklistGroup(ctx, children) {
 export function extractTasklists(payload) {
     if (!payload || typeof payload !== 'object') return [];
     const lists = payload.lists || [];
+    if (isProfileTasksBrowse(payload)) rememberContextTitlesFromLists(lists);
     if (!isProfileTasksBrowse(payload)) return normalizeTasklistItems(lists);
     return lists
         .map((ctx) => buildTasklistGroup(ctx, nestedListNodes(ctx).flat()))
@@ -271,6 +464,135 @@ export function findTasklist(items, id) {
         if (nested) return nested;
     }
     return null;
+}
+
+export function findTasklistGroup(items, contextId) {
+    if (contextId == null || !Array.isArray(items)) return null;
+    const wanted = String(contextId);
+    for (const item of items) {
+        if (isTasklistGroup(item) && contextIdsOf(item).includes(wanted)) return item;
+        const nested = findTasklistGroup(item.children, contextId);
+        if (nested) return nested;
+    }
+    return null;
+}
+
+/** Group that contains this tasklist, used when the URL only has a list id. */
+export function findParentTasklistGroup(items, childId) {
+    if (childId == null || !Array.isArray(items)) return null;
+    const wanted = String(childId);
+    for (const item of items) {
+        if (!isTasklistGroup(item)) continue;
+        if ((item.children || []).some((child) => String(child.id) === wanted)) return item;
+        const nested = findParentTasklistGroup(item.children, childId);
+        if (nested) return nested;
+    }
+    return null;
+}
+
+/** Profile `lists` nodes that are contexts, not leaf tasklists like Inbox. */
+export function findContextTitleInRawLists(lists, contextId) {
+    if (!Array.isArray(lists) || contextId == null) return null;
+    const wanted = String(contextId);
+    for (const item of lists) {
+        if (!item || typeof item !== 'object') continue;
+        const isGroup = isTasklistGroup(item)
+            || nestedListNodes(item).length > 0
+            || isProfileContextRow(item);
+        if (isGroup && contextIdsOf(item).includes(wanted)) {
+            const title = firstContextTitle(
+                item.title,
+                item.list_title,
+                item.name,
+                item.display_name,
+                item.context?.title,
+                item.context?.display_name,
+                item.context?.name,
+            );
+            if (title) return title;
+        }
+        const nested = findContextTitleInRawLists(
+            item.lists || item.tasklists || item.task_lists || item.children,
+            contextId
+        );
+        if (nested) return nested;
+    }
+    return null;
+}
+
+/** Group whose tasklists overlap the currently loaded browse lists. */
+export function findTasklistGroupByLists(tasklists, lists) {
+    if (!Array.isArray(tasklists) || !Array.isArray(lists) || !lists.length) return null;
+    const wanted = new Set(
+        lists.map((item) => String(item?.id ?? item?.list_id ?? '')).filter(Boolean)
+    );
+    if (!wanted.size) return null;
+    let best = null;
+    let bestScore = 0;
+    const visit = (items) => {
+        if (!Array.isArray(items)) return;
+        for (const item of items) {
+            if (!isTasklistGroup(item)) continue;
+            const score = (item.children || []).filter((child) => wanted.has(String(child.id))).length;
+            if (score > bestScore) {
+                bestScore = score;
+                best = item;
+            }
+            visit(item.children);
+        }
+    };
+    visit(tasklists);
+    return bestScore > 0 ? best : null;
+}
+
+/** Context / group name from a browse payload — never a tasklist or the open task. */
+export function contextTitleFromPayload(...sources) {
+    for (const source of sources) {
+        if (!source || typeof source !== 'object') continue;
+        const title = firstContextTitle(
+            source.context_title,
+            source.context_name,
+            source.context?.title,
+            source.context?.name,
+            source.context?.display_name,
+            source.context?.current?.title,
+            source.context?.current?.name,
+            source.context?.current?.display_name,
+        );
+        if (title) return title;
+    }
+    return null;
+}
+
+/**
+ * First crumb is the list you opened from:
+ * no context pid → My Tasks; context pid → that group's name.
+ * Do not use the task's own context (that inverts My Tasks vs group).
+ */
+export function resolveTasksOriginTitle({
+    tasklists = [],
+    rawLists,
+    browseLists,
+    contextPid,
+    listId,
+    contextTitle,
+    pageTitle,
+    pageContext,
+    fallback,
+}) {
+    const contextId = usableContextId(contextPid);
+    if (contextId == null) return fallback;
+    const fromGroup = findTasklistGroup(tasklists, contextId)
+        || findParentTasklistGroup(tasklists, listId)
+        || findTasklistGroupByLists(tasklists, browseLists);
+    return firstContextTitle(
+        fromGroup?.title,
+        contextTitle,
+        pageTitle,
+        cachedContextTitle(contextId),
+        findContextTitleInRawLists(rawLists, contextId),
+        contextTitleFromPayload(pageContext, { context: pageContext }),
+    ) || fallback;
 }
 
 const NESTED_LIST_KEYS = ['lists', 'tasklists', 'task_lists', 'children'];
@@ -402,14 +724,21 @@ export function buildContextBrowseUrl(payload, contextPid, listId) {
 /* /tasks-home query + browser location                                */
 /* ------------------------------------------------------------------ */
 
-export function buildTasksHomeUrl(contextPid, listId = 0) {
+export function buildTasksHomeUrl(contextPid, listId = null) {
     if (contextPid == null || contextPid === '') return null;
-    const list = hasListId(listId) ? listId : 0;
-    return `${TASKS_HOME_PATH}?context_pid=${encodeURIComponent(contextPid)}&list=${encodeURIComponent(list)}`;
+    const params = new URLSearchParams({ context_pid: String(contextPid) });
+    if (hasListId(listId)) params.set('list', String(listId));
+    return `${TASKS_HOME_PATH}?${params.toString()}`;
+}
+
+export function isTasksHomeUri(uri) {
+    if (!uri) return false;
+    const path = String(uri).split('?')[0].replace(/\/+$/, '');
+    return path === TASKS_HOME_PATH || path === TASKS_HOME_PATH.slice(1);
 }
 
 export function isTasksHomePath() {
-    return hasWindow() && window.location.pathname.replace(/\/+$/, '') === TASKS_HOME_PATH;
+    return hasWindow() && isTasksHomeUri(window.location.pathname);
 }
 
 export function tasksHomeQueryFromBrowser() {
@@ -426,4 +755,73 @@ export function normalizeBrowserPath(url) {
     if (!url) return '';
     const path = String(url).split('?')[0].split('#')[0];
     return '/' + path.replace(/^\/+/, '');
+}
+
+export function isTaskViewPath(url) {
+    const path = normalizeBrowserPath(url);
+    return path === '/view-task' || path.startsWith('/view-task/');
+}
+
+/** Address-bar href for a task (`/view-task/...`) so the open task is shareable. */
+export function taskViewHref(url) {
+    if (!url) return null;
+    const raw = String(url).trim();
+    if (!raw) return null;
+    let path = raw;
+    if (/^https?:\/\//i.test(raw)) {
+        try {
+            const parsed = new URL(raw);
+            path = parsed.pathname + parsed.search;
+        } catch {
+            // fall through and treat it as a path
+        }
+    }
+    // UNA links may carry the `page/` router prefix; the Next route does not.
+    path = path.replace(/^\/?page\//, '');
+    if (!path || path === '/') return null;
+    return path.startsWith('/') ? path : `/${path}`;
+}
+
+const BROWSER_LOCATION_EVENT = 'tasks_browser_location';
+let historyPatched = false;
+
+function patchHistoryLocationEvents() {
+    if (!hasWindow() || historyPatched) return;
+    historyPatched = true;
+    for (const method of ['pushState', 'replaceState']) {
+        const orig = window.history[method];
+        window.history[method] = function patchedHistory(...args) {
+            const result = orig.apply(this, args);
+            emitter.emit(BROWSER_LOCATION_EVENT, {
+                method,
+                url: getBrowserLocation(),
+                state: window.history.state,
+            });
+            return result;
+        };
+    }
+}
+
+/** pushState / replaceState / popstate — conductor tab clicks never fire popstate. */
+export function subscribeBrowserLocation(handler) {
+    if (!hasWindow()) return () => {};
+    patchHistoryLocationEvents();
+    const onPop = () => handler({
+        method: 'popstate',
+        url: getBrowserLocation(),
+        state: window.history.state,
+    });
+    const sub = emitter.addListener(BROWSER_LOCATION_EVENT, handler);
+    window.addEventListener('popstate', onPop);
+    return () => {
+        sub.remove();
+        window.removeEventListener('popstate', onPop);
+    };
+}
+
+export function tasksListTaskFromHistoryState(state) {
+    const task = state?.tasksListTask;
+    if (!task) return null;
+    if (typeof task === 'object' && task.url) return task;
+    return null;
 }

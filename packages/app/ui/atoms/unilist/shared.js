@@ -79,7 +79,7 @@ export const REVEAL_DELAY_MS = 140
 /** Handled only by index.web.js; must never reach LegendList. */
 export const WEB_ONLY_PROPS = [
     'mode', 'height', 'useWindowScroll', 'sortable', 'onSort',
-    'scrollToLastItem', 'paddingTop', 'components', 'no_scroll',
+    'scrollToLastItem', 'paddingTop', 'components', 'no_scroll', 'flowLayout',
 ]
 
 /**

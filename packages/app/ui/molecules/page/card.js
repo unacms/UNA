@@ -1,7 +1,7 @@
 import { createContext, useContext, useMemo, useId } from 'react';
 import { View } from 'app/design/view';
 import { Text } from 'app/design/typography';
-import { appSetting } from 'app/lib/util';
+import { appSetting, cn } from 'app/lib/util';
 
 const cardTheme = appSetting('theme', 'cards');
 const CardContext = createContext(null);
@@ -30,7 +30,7 @@ function CardSection({
         ? (cardTheme['u-card-list-flush'] || '')
         : (cardTheme[baseClass] || '');
     const paddingClasses = padding || defPadding;
-    const classes = `${themeClass} ${paddingClasses} ${className}`.trim();
+    const classes = cn(themeClass, paddingClasses, className);
 
     return <Component className={classes} {...props} />;
 }

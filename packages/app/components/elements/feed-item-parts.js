@@ -319,7 +319,6 @@ export const ItemInfo = memo(({ data, t }) => {
 })
 
 export const MenuManage = ({ id, menu, setViewState, data }) => {
-    const { t } = useTranslation()
     const [menuData, setMenuData] = useState(false)
     const fetchedRef = useRef(false)
     const dataRef = useRef(data)
@@ -368,6 +367,7 @@ export const MenuManage = ({ id, menu, setViewState, data }) => {
 }
 
 const MenuManage_ = memo(({ id, menu, setViewState, defaultOpen }) => {
+    const { t } = useTranslation()
     const { currentUser } = useCurrentUser()
     const handleMenuManageSelect = async (oItem, event) => {
         switch (oItem.name) {

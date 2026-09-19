@@ -24,6 +24,8 @@ export const settingsLayout = {
             messenger: 'w-full',
             // Page URI or layout name. Forks override in customization/settings.js.
             'tasks-home': 'w-full',
+            task: 'w-full',
+            'view-task': 'w-full',
         },
         page_content_padding: ' p-4 ',
         page_content_padding_default: ' p-4 ',

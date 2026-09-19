@@ -235,7 +235,7 @@ const Content = React.memo(({ children, currentUser, layoutName, url }) => {
     // The tab bar renders for logged-in users (or when show_tabbar_on_mobile_non_logged is set)
     // and only when the footer atom is truthy. Avoids phantom scroll on auth/guest pages.
     const showBottomTabBar = footer && (currentUser || appSetting('layout', 'show_tabbar_on_mobile_non_logged'));
-    const mainClassName = `${(layoutName != 'messenger' && layoutName != 'post' && !isHideHeader && showBottomTabBar) ? ' pb-16 web:lg:pb-0 lg:pb-0 ' : ''} ns--main-content-- w-full mx-auto ne--`;
+    const mainClassName = `${(layoutName != 'messenger' && layoutName != 'post' && layoutName != 'task' && !isHideHeader && showBottomTabBar) ? ' pb-16 web:lg:pb-0 lg:pb-0 ' : ''} ns--main-content-- w-full mx-auto ne--`;
     const contentKey = (layoutName === 'layout_1_column_wiki' || layoutName === 'wiki')
         ? 'wiki'
         : url;

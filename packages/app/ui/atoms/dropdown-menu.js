@@ -75,6 +75,7 @@ function DropdownMenuPopup({
     triggerAccessibilityLabel,
     triggerClassName,
     triggerStyle,
+    stacked = false,
 }) {
     const DropdownMenuItem = components['menu-item']['dropdown'];
     const redirectdRef = useRef();
@@ -106,8 +107,10 @@ function DropdownMenuPopup({
         [items, useSectionsLayout]
     );
     const sectionsLayout = useMemo(
-        () => getDropdownSectionsLayout(sections?.length || 0, windowWidth),
-        [sections?.length, windowWidth]
+        () => stacked
+            ? { stacked: true, cols: 1, colWidth: null, contentWidth: null }
+            : getDropdownSectionsLayout(sections?.length || 0, windowWidth),
+        [sections?.length, stacked, windowWidth]
     );
     const sectionsMinPopupWidth = sectionsLayout.stacked
         ? 288
@@ -395,6 +398,7 @@ export default function DropdownMenu({
     triggerAccessibilityLabel,
     triggerClassName,
     triggerStyle,
+    stacked = false,
 }) {
     const isWeb = Platform.OS === 'web';
 
@@ -418,6 +422,7 @@ export default function DropdownMenu({
                 triggerAccessibilityLabel={triggerAccessibilityLabel}
                 triggerClassName={triggerClassName}
                 triggerStyle={triggerStyle}
+                stacked={stacked}
             />
         );
     }

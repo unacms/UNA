@@ -44,7 +44,7 @@ function BlockHeaderMenu({ menu, pathname }) {
     )
 }
 
-export function BlockWrapper({ config, block, wrapperClassses, showTitle, showBg, fullWidth, contentOnly, list, showPadding, extraProps, fill, children }) {
+export function BlockWrapper({ config, block, wrapperClassses, showTitle, showBg, fullWidth, contentOnly, list, showPadding, extraProps, fill, clip = true, children }) {
     const { t } = useTranslation()
     const [showHelp, setShowHelp] = useState(false)
     const pathname = usePathname()
@@ -130,7 +130,13 @@ export function BlockWrapper({ config, block, wrapperClassses, showTitle, showBg
 
                 >
                     {bIsShowTitle && (
-                        <BlockHeader isPad={bIsShowPadding} className={fill ? 'shrink-0' : undefined}>
+                        <BlockHeader
+                            isPad={bIsShowPadding}
+                            className={[
+                                fill ? 'shrink-0' : '',
+                                fill && !bIsShowPadding ? 'px-4 pt-4' : '',
+                            ].filter(Boolean).join(' ') || undefined}
+                        >
                              
                             <BlockName>
                                 <View className="flex-row items-center gap-2">
@@ -161,7 +167,11 @@ export function BlockWrapper({ config, block, wrapperClassses, showTitle, showBg
                     )}
                     <BlockContent
                         isPad={bIsShowPadding}
-                        className={fill ? 'flex min-h-0 flex-1 flex-col overflow-hidden' : undefined}
+                        className={
+                            fill
+                                ? `flex min-h-0 flex-1 flex-col ${clip ? 'overflow-hidden' : 'overflow-visible'}`
+                                : undefined
+                        }
                     >
                         {children}
                     </BlockContent>
