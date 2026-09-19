@@ -6,6 +6,7 @@ import { useChat } from '@tanstack/ai-react';
 import { View, Row, ScrollView } from 'app/design/view';
 import { TextInputClear } from 'app/design/controls';
 import { useCurrentUser } from 'app/context/user';
+import emitter from 'app/context/emitter';
 import { appSetting, cn, isWeb } from 'app/lib/util';
 import { createAgentChat, fetchAgentChatThread, hydrateAgentChat } from './helper';
 import { isHiddenFirstMessageText } from './hidden-first-message';
@@ -77,10 +78,20 @@ const NO_MESSAGES = [];
  * @param {boolean} [props.hideButton] Hide the send/stop button (Enter still sends).
  * @param {boolean} [props.hideIdentity] Hide avatars and author names.
  * @param {string} [props.height] Tailwind height class for the whole widget.
+ * @param {boolean} [props.showHistory] Override `data.show_history`. The operator
+ *   float passes this from `appSetting('ai', 'operator_agent').show_history`.
+ * @param {boolean} [props.historyAlways] Keep the "Chats" panel even when the only
+ *   row is the live chat (by default it earns its space only with something else to
+ *   browse). The operators' Agents block wants the list in sight at all times.
  * @param {'auto'|'overlay'} [props.historyLayout] Where the "Chats" panel goes when
- *   `data.show_history` is on. `auto`: a column beside the transcript from the `md:`
- *   viewport breakpoint up, an overlay below it. `overlay`: always the overlay, for
- *   hosts that are narrow regardless of the viewport (the operator float).
+ *   history is on. `auto`: a column beside the transcript from the `md:` viewport
+ *   breakpoint up, an overlay below it. `overlay`: always the overlay, for hosts
+ *   that are narrow regardless of the viewport (the operator float).
+ * @param {string} [props.channel] `app/context/emitter` event name the host drives
+ *   the widget through. The widget listens for `{ action: 'toggle_history' }` and
+ *   `{ action: 'start_new' }` and reports `{ action: 'state', history, restart }`
+ *   whenever those controls become available; History / Start new then stay out
+ *   of the composer — the host draws them (the operator float's title bar).
  */
 export default function AiAgent({
     data,
@@ -90,7 +101,10 @@ export default function AiAgent({
     hideButton = false,
     hideIdentity = false,
     height = 'h-[28rem]',
+    showHistory: showHistoryProp,
     historyLayout = 'auto',
+    historyAlways = false,
+    channel,
 }) {
     const { currentUser } = useCurrentUser();
     const agentId = data?.agent_id;
@@ -99,7 +113,10 @@ export default function AiAgent({
     const isGuest = userId <= 0;
     const allowNew = !!Number(data?.allow_new);
     const freshPerReload = isGuest && !!Number(data?.guest_new_session_on_reload);
-    const showHistory = !!Number(data?.show_history);
+    const showHistory = showHistoryProp !== undefined
+        ? !!showHistoryProp
+        : !!Number(data?.show_history);
+    const hostOwnsChrome = !!channel;
 
     const { chatId, fresh, ready, startNew, select } = useStoredChatId({
         agentId,
@@ -219,9 +236,28 @@ export default function AiAgent({
     // The panel earns its space only when there is something besides the live chat
     // to look at: one row that is the live chat itself is nothing to browse.
     const historyVisible = showHistory
-        && (threads.length > 1 || (threads.length === 1 && threads[0].thread_id !== liveId));
+        && (historyAlways || threads.length > 1 || (threads.length === 1 && threads[0].thread_id !== liveId));
     const historyOverlayOnly = historyLayout === 'overlay';
     const onToggleHistory = historyVisible ? toggleHistory : undefined;
+    const onStartAgain = allowNew ? startAgain : undefined;
+    // On a channel the host draws History / Start new itself (the float's title
+    // bar); the page-block composer keeps them otherwise.
+    const composerToggleHistory = hostOwnsChrome ? undefined : onToggleHistory;
+    const composerStartAgain = hostOwnsChrome ? undefined : onStartAgain;
+
+    useEffect(() => {
+        if (!channel) return undefined;
+        const subscription = emitter.addListener(channel, (event) => {
+            if (event?.action === 'toggle_history') onToggleHistory?.();
+            else if (event?.action === 'start_new') onStartAgain?.();
+        });
+        return () => subscription.remove();
+    }, [channel, onToggleHistory, onStartAgain]);
+
+    useEffect(() => {
+        if (!channel) return;
+        emitter.emit(channel, { action: 'state', history: !!onToggleHistory, restart: !!onStartAgain });
+    }, [channel, onToggleHistory, onStartAgain]);
 
     let chat = null;
     if (viewingThreadId) {
@@ -240,7 +276,7 @@ export default function AiAgent({
                 hideIdentity={hideIdentity}
                 placeholder={placeholder}
                 height="h-full"
-                onToggleHistory={onToggleHistory}
+                onToggleHistory={composerToggleHistory}
                 historyOverlayOnly={historyOverlayOnly}
             />
         ) : null;
@@ -262,9 +298,9 @@ export default function AiAgent({
                 hideIdentity={hideIdentity}
                 placeholder={placeholder}
                 height="h-full"
-                onStartAgain={allowNew ? startAgain : undefined}
+                onStartAgain={composerStartAgain}
                 onTurnEnd={showHistory ? refreshThreads : undefined}
-                onToggleHistory={onToggleHistory}
+                onToggleHistory={composerToggleHistory}
                 historyOverlayOnly={historyOverlayOnly}
             />
         );
@@ -291,7 +327,7 @@ export default function AiAgent({
                         onSelect={selectThread}
                         onClose={closeHistory}
                         overlayOnly={historyOverlayOnly}
-                        onStartNew={allowNew ? startAgain : undefined}
+                        onStartNew={onStartAgain}
                     />
                 </View>
             ) : null}
@@ -831,10 +867,10 @@ function AiAgentChat({
                     onRemove={removePendingImage}
                 />
                 <View className="w-full">
-                    <Row className="items-center">
+                    <Row className="items-center justify-center gap-2">
                         {onToggleHistory ? <HistoryButton onPress={onToggleHistory} alwaysVisible={historyOverlayOnly} /> : null}
                         {allowImages && !sessionEnded ? (
-                            <AttachButton disabled={!canAttach} onPress={attachImage} />
+                            <View><AttachButton disabled={!canAttach} onPress={attachImage} /></View>
                         ) : null}
                         <View
                             className={cn(
@@ -875,6 +911,7 @@ function AiAgentChat({
                         <ComposerButtons
                             showSend={showSend}
                             showStartNew={showStartNew}
+                            startNewInHistory={!!onToggleHistory && !historyOverlayOnly}
                             isLoading={isLoading}
                             canSend={!uploading && (!!input.trim() || pendingImages.length > 0)}
                             onSend={send}

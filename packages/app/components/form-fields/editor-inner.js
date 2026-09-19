@@ -59,7 +59,8 @@ export default function RftText(props) {
     const unicFormName = `${form_name}` // for catch images in editor
 
     const isToolBar = html == 2 || html == 1
-    const isPlainText = html == 3
+    // UNA html=3: rich editor, no toolbar. Images paste into attachments, not <img>.
+    const isLimitedHtml = html == 3
     const suggestionsHeight = 130
     const [inputKey, setInputKey] = useState(0);
 
@@ -286,7 +287,7 @@ export default function RftText(props) {
     const editorSettings = appSetting('editor', 'toolbar')
 
     let customCodeBlockCSS = buildEditorCSS(themeName)
-    if (isPlainText) {
+    if (isLimitedHtml) {
         customCodeBlockCSS += `
         b, strong, font, u, s, i, em, span, code, h1, h2, h3, h4, h5, h6{
             font-weight: normal !important;
@@ -522,7 +523,7 @@ export default function RftText(props) {
             }
             if (data.action == 'insert_inline_image') {
                 if (data.form_name && form_name && data.form_name !== form_name) return
-                if (!data.src || isPlainText) return
+                if (!data.src || isLimitedHtml) return
                 editor.setImage(data.src)
             }
         })
@@ -548,7 +549,7 @@ export default function RftText(props) {
             if (onFocus) onFocus()
         }
         commitEditorHtml({
-            next: normalizeEditorHtml(htmlContent, { isPlainText }),
+            next: normalizeEditorHtml(htmlContent, { isLimitedHtml }),
             field,
             name,
             resetField,
@@ -571,7 +572,11 @@ export default function RftText(props) {
         })
 
         if (images.length > 0) {
-            emitter.emit(`form_${formName}`, { action: 'pasted_images', images })
+            emitter.emit(`form_${formName}`, {
+                action: 'pasted_images',
+                images,
+                ...(isLimitedHtml ? { inlinePaste: false } : null),
+            })
         }
     }
 
@@ -598,7 +603,6 @@ export default function RftText(props) {
             const message = JSON.parse(event.nativeEvent.data)
 
             if (message?.type == 'paste') {
-                if (isPlainText) return
                 if (getEditorPasteImagesMode(unicFormName) === 'off') return
                 processImages(message.payload, message.form_name)
             }

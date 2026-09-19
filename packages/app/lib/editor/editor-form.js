@@ -1,16 +1,17 @@
 import { stripTags, stripTagsWithLinks } from 'app/lib/util'
 import { stripInlinePresentation } from 'app/lib/html-helpers'
 
-const PLAIN_TEXT_TAGS = ['a', 'p', 'br', 'span']
+const LIMITED_HTML_TAGS = ['a', 'p', 'br', 'span']
 
 /**
  * Normalize editor HTML before writing it to RHF.
- * `html == 3` keeps a small tag allowlist; both modes strip paste presentation.
+ * `html == 3` is a rich field without a toolbar: keep a small tag allowlist
+ * (no inline `<img>`). Both modes strip paste presentation.
  */
-export function normalizeEditorHtml(html, { isPlainText } = {}) {
+export function normalizeEditorHtml(html, { isLimitedHtml } = {}) {
     const source = html ?? ''
     return stripInlinePresentation(
-        isPlainText ? stripTagsWithLinks(source, PLAIN_TEXT_TAGS) : source
+        isLimitedHtml ? stripTagsWithLinks(source, LIMITED_HTML_TAGS) : source
     )
 }
 

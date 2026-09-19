@@ -89,9 +89,11 @@ export function HistoryButton({ onPress, alwaysVisible = false }) {
 
 /**
  * Send / Stop and "Start new" to the right of the input. Renders nothing when
- * neither is wanted, so the input can stretch to the edge.
+ * neither is wanted, so the input can stretch to the edge. `startNewInHistory`:
+ * the "Chats" column beside the transcript has its own "New chat" from `md:` up,
+ * so "Start new" only shows below that, where the column is a closed overlay.
  */
-export function ComposerButtons({ showSend, showStartNew, isLoading, canSend, onSend, onStop, onStartNew }) {
+export function ComposerButtons({ showSend, showStartNew, startNewInHistory = false, isLoading, canSend, onSend, onStop, onStartNew }) {
     const { t } = useTranslation();
     if (!showSend && !showStartNew) return null;
     return (
@@ -118,16 +120,18 @@ export function ComposerButtons({ showSend, showStartNew, isLoading, canSend, on
                 />
             ) : null}
             {showStartNew ? (
-                <NeoButton
-                    style="borderless"
-                    borderShape="circle"
-                    controlSize="small"
-                    image="RefreshCw"
-                    tooltip={t('Start new')}
-                    tooltipSide="top"
-                    accessibilityLabel={t('Start new')}
-                    onPress={onStartNew}
-                />
+                <View className={startNewInHistory ? 'md:hidden' : undefined}>
+                    <NeoButton
+                        style="borderless"
+                        borderShape="circle"
+                        controlSize="small"
+                        image="RefreshCw"
+                        tooltip={t('Start new')}
+                        tooltipSide="top"
+                        accessibilityLabel={t('Start new')}
+                        onPress={onStartNew}
+                    />
+                </View>
             ) : null}
         </View>
     );
