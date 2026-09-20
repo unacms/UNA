@@ -412,6 +412,15 @@ class BxDolStudioStore extends BxTemplStudioWidget
         ));
     }
 
+    protected function loadLocalProduct($sModuleName)
+    {
+        $aModules = BxDolStudioInstallerUtils::getInstance()->getModules(false);
+
+        return isset($aModules[$sModuleName]) && is_array($aModules[$sModuleName])
+            ? $aModules[$sModuleName]
+            : array();
+    }
+
     /*
      * Load package (module, update) using OAuth authorization.
      */
