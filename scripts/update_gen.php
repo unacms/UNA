@@ -344,6 +344,7 @@ Criteria:
 11. assume data exists in the db, don't create data that already exists (like pages, blocks, settins, menus, storages, transcoders, etc).
 12. don't split SQL querys into multiple lines.
 13. for icon field in menu add checking for exact old value before updating it.
+14. never update `version` or `date` fields of `sys_modules` table, especially for the row where `name` = 'system'. In install.sql these are placeholders which are filled in during installation, and the version bump is appended to the update script separately as the very last statement. Other fields of the system row (like `vendor` or `path`) can be updated.
 
 List of uniq table fields, as table => uniq (or set of fields with plus sign) field pairs:
 sys_acl_actions => ID+Module
@@ -435,7 +436,47 @@ PROMPT;
             ]);
         }
         
-        return $this->parseJsonResponse($response, 'sql');
+        return $this->stripModuleVersionUpdates($this->parseJsonResponse($response, 'sql'));
+    }
+
+    /**
+     * Remove `version` and `date` assignments from generated UPDATE statements on `sys_modules`.
+     *
+     * In install.sql the `version` value of the system module is an empty placeholder (it is set by
+     * install/sql/addon.sql during installation), so any change to that row makes the model emit
+     * `version` = '' which blanks the DB version and prevents the trailing version bump
+     * (UPDATE `sys_modules` SET `version` = 'X' WHERE `version` = 'Y' AND `name` = 'system') from matching.
+     * The version bump must remain the only write to `version` in the update script.
+     */
+    private function stripModuleVersionUpdates($results) {
+        if (!isset($results['sql']) || !is_string($results['sql']))
+            return $results;
+
+        $iStripped = 0;
+        $results['sql'] = preg_replace_callback(
+            '/UPDATE\s+`?sys_modules`?\s+SET\s+(.+?)\s+(WHERE\s+[^;]*;)/is',
+            function ($m) use (&$iStripped) {
+                // split assignments on commas which are followed by another `field` = assignment
+                $aSet = preg_split('/\s*,\s*(?=`?\w+`?\s*=)/', trim($m[1]));
+                $aKeep = array_filter($aSet, function ($s) {
+                    return !preg_match('/^`?(version|date)`?\s*=/i', trim($s));
+                });
+                if (count($aKeep) == count($aSet))
+                    return $m[0];
+
+                $iStripped++;
+                if (empty($aKeep))
+                    return '-- removed by update_gen.php (version/date must not be updated here): ' . $m[0];
+
+                return 'UPDATE `sys_modules` SET ' . implode(', ', $aKeep) . ' ' . $m[2];
+            },
+            $results['sql']
+        );
+
+        if ($iStripped)
+            $results['sys_modules_version_stripped'] = ['count' => $iStripped, 'details' => 'Removed `version`/`date` assignments from ' . $iStripped . ' UPDATE `sys_modules` statement(s); the version bump must be the last statement of sql.sql'];
+
+        return $results;
     }
     
     private function parseJsonResponse($response, $filename) {
