@@ -699,7 +699,7 @@ export function CommentsForm({ form: initialForm, requestUrl, module, objectId, 
 }
 
 function CommentsFormInner ({ form: initialForm, requestUrl, module, objectId, isModal = false, fadeSurface }) {
-
+    const { t } = useTranslation();
     const [formData, setFormData] = useState({});
 
     const [form, setForm] = useState(initialForm);

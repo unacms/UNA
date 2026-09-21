@@ -5,7 +5,37 @@
 // the same output so native and web stay in sync. `sanitizeHtml` is web-only
 // defense (script/handler stripping) used before `dangerouslySetInnerHTML`.
 import { decodeText } from 'app/lib/util'
-import { linkifyHtml } from 'app/components/form-fields/editor-mention-html'
+import { linkifyHtml, normalizeLinkHref } from 'app/components/form-fields/editor-mention-html'
+
+// UNA messenger auto-linker (`bx-link`) stores bare hrefs: emails without
+// `mailto:` and domains without `https://`. `linkifyHtml` skips existing <a>
+// tags, so renderers must rewrite those hrefs or the browser treats them as
+// in-app relative paths (`/garysicard@hotmail.com`, `/molosserdogs.com/cpanel`).
+const BARE_EMAIL_RE = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,24}$/
+const ANCHOR_OPEN_RE = /<a\b([^>]*?)>/gi
+const HREF_ATTR_RE = /\bhref\s*=\s*("([^"]*)"|'([^']*)'|([^\s>]+))/i
+
+export function normalizeRenderedHref(href) {
+    if (!href || typeof href !== 'string') return href
+    const trimmed = href.trim()
+    if (!trimmed) return href
+    if (BARE_EMAIL_RE.test(trimmed)) return `mailto:${trimmed}`
+    return normalizeLinkHref(trimmed)
+}
+
+export function normalizeAnchorHrefs(html) {
+    if (!html || typeof html !== 'string') return html
+    ANCHOR_OPEN_RE.lastIndex = 0
+    return html.replace(ANCHOR_OPEN_RE, (full, attrs) => {
+        const m = attrs.match(HREF_ATTR_RE)
+        if (!m) return full
+        const raw = m[2] ?? m[3] ?? m[4] ?? ''
+        const next = normalizeRenderedHref(raw)
+        if (!next || next === raw) return full
+        const quote = m[1][0] === '"' || m[1][0] === "'" ? m[1][0] : '"'
+        return `<a${attrs.replace(m[0], `href=${quote}${next}${quote}`)}>`
+    })
+}
 
 export const hasBlockHtml = (html) => (
     /<(p|div|ul|ol|li|h[1-6]|pre|blockquote|table|thead|tbody|tr)\b/i.test(html)
@@ -21,6 +51,7 @@ export function preprocessHtml(data) {
     // Make plain-text URLs/emails clickable (covers legacy content and platforms
     // where the editor didn't auto-link). Skips text already inside anchors/mentions/code.
     html = linkifyHtml(html)
+    html = normalizeAnchorHrefs(html)
     if (html.trim() !== '' && !hasBlockHtml(html)) html = `<p>${html}</p>`
 
     return html

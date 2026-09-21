@@ -148,6 +148,7 @@ function LinkBar({ initialUrl = '', onSubmit, onCancel, className }) {
 export function useEnrichedToolbar({
     editorRef,
     containerRef,
+    tipTap: tipTapProp = null,
     styleState,
     selection,
     enabled = true,
@@ -155,12 +156,14 @@ export function useEnrichedToolbar({
     const [linkOpen, setLinkOpen] = useState(false)
     const isWeb = Platform.OS === 'web'
 
+    // Prefer the instance resolved by `useTiptapEditor`; fall back to a DOM
+    // lookup per styleState change for callers that only pass a container.
     const tipTap = useMemo(() => {
         if (!isWeb || !enabled) return null
+        if (tipTapProp) return tipTapProp
         return getTiptapEditorFromContainer(containerRef?.current)
-        // Re-resolve when styleState updates (selection/content changed)
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isWeb, enabled, styleState, containerRef])
+    }, [isWeb, enabled, tipTapProp, styleState, containerRef])
 
     const closeLink = useCallback(() => setLinkOpen(false), [])
 

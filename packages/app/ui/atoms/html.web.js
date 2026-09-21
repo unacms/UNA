@@ -10,9 +10,8 @@
 import { useCallback, useMemo } from 'react'
 import { useRouter } from 'app/lib/hooks/router'
 import { sanitazeUrl, isExternalUrl } from 'app/lib/util'
-import { normalizeLinkHref } from 'app/components/form-fields/editor-mention-html'
 import emitter from 'app/context/emitter'
-import { preprocessHtml, sanitizeHtml, flattenNestedAnchors } from 'app/lib/html-helpers'
+import { preprocessHtml, sanitizeHtml, flattenNestedAnchors, normalizeRenderedHref } from 'app/lib/html-helpers'
 
 /**
  * `target="_blank" rel="noopener noreferrer"` on every anchor that does not set a
@@ -45,11 +44,23 @@ export default function ElementHtml({ customClassName, data, className = '', inn
 
         emitter.emit('link', { action: 'pressed' })
 
+        const href = normalizeRenderedHref(rawHref)
+        // Bare UNA hrefs (email / domain without a scheme) must not be left to
+        // the browser — it would resolve them as in-app relative paths.
+        if (href !== rawHref) {
+            event.preventDefault()
+            if (/^(mailto:|tel:|#)/i.test(href) || isExternalUrl(href) || /^(https?:)/i.test(href)) {
+                window.location.assign(href)
+                return
+            }
+            const rewritten = sanitazeUrl(href)
+            if (rewritten) router.push(rewritten)
+            return
+        }
+
         // Let the browser handle mail/phone, new-tab, and external links.
         if (/^(mailto:|tel:|#)/i.test(rawHref)) return
         if (anchor.target === '_blank') return
-
-        const href = normalizeLinkHref(rawHref)
         if (isExternalUrl(href)) return
 
         // Internal link → SPA navigation.

@@ -15,24 +15,32 @@ import { useEditorMentions } from 'app/lib/editor/use-editor-mentions'
 import { MentionSuggestionsDropdown } from 'app/lib/editor/mention-suggestions-dropdown'
 import {
     MENTION_INDICATORS,
-    getTextBeforeCursorFromTiptap,
     insertMentionInTiptap,
     mentionAttributesForUser,
-    parseMentionTrigger,
 } from 'app/lib/editor/editor-mention-shared'
-import {
-    getTiptapEditorFromContainer,
-    isCommentEditorEnterKey,
-    isCommentEditorNewlineEnter,
-} from 'app/lib/editor/comment-editor-keyboard'
+import { useTiptapEditor } from 'app/lib/editor/use-tiptap-editor'
+import { useEnrichedMentionDropdown } from 'app/lib/editor/use-enriched-mention-dropdown'
+import { useEnrichedKeyboard } from 'app/lib/editor/use-enriched-keyboard'
 import { useIsDesktop } from 'app/context/measure'
 import { fitInlineImageSize, getEditorPasteImagesMode } from 'app/lib/editor/editor-paste-images'
 
+const isWeb = Platform.OS === 'web'
 const inputSettings = appSetting('theme', 'inputs')
 
 const mentionColors = {
     light: 'rgba(37, 99, 235, 1)',
     dark: 'rgba(59, 130, 246, 1)',
+}
+
+const EMPTY_SELECTION = { start: 0, end: 0, text: '' }
+
+/** Call an imperative method on the library handle, tolerating a not-ready editor. */
+function callEditor(editorRef, method, ...args) {
+    try {
+        editorRef.current?.[method]?.(...args)
+    } catch {
+        // Web TipTap handle exists before editor.commands is ready.
+    }
 }
 
 class EnrichedEditorBoundary extends Component {
@@ -67,7 +75,6 @@ export default function RftTextEnriched(props) {
         kb_stay_open,
         onEnterSubmit,
         disabled,
-        classes,
         autofocus,
     } = props
 
@@ -78,7 +85,6 @@ export default function RftTextEnriched(props) {
     const editorRef = useRef(null)
     const containerRef = useRef(null)
     const dropdownRef = useRef(null)
-    const isWeb = Platform.OS === 'web'
     const isDesktop = useIsDesktop()
     const isToolBar = html == 2 || html == 1
     // UNA html=3: rich editor, no toolbar. Images paste into attachments, not <img>.
@@ -86,12 +92,16 @@ export default function RftTextEnriched(props) {
     const isCommentsEditor = container_class === 'comments'
     const themeKey = useThemeValue('light', 'dark')
     const mentionColorFallback = useThemeValue(mentionColors.light, mentionColors.dark)
+    const editorTextColor = useThemeValue('rgba(30,40,55,1)', 'rgba(225,230,240,1)')
 
+    // Web only; null on native and until the library has mounted TipTap.
+    const tipTap = useTiptapEditor(containerRef)
+
+    // Toolbar inputs — only tracked when there is a toolbar to feed.
     const [styleState, setStyleState] = useState(null)
-    const [selection, setSelection] = useState({ start: 0, end: 0, text: '' })
-    // Web: viewport-fixed dropdown placement { top } or { bottom } — prefer above
-    // the typed line so the list never covers the @query / gets clipped below.
-    const [caretPos, setCaretPos] = useState(null)
+    const [selection, setSelection] = useState(EMPTY_SELECTION)
+    const onChangeState = useCallback((e) => setStyleState(e.nativeEvent), [])
+    const onChangeSelection = useCallback((e) => setSelection(e.nativeEvent || EMPTY_SELECTION), [])
 
     // Shared mention pipeline (same fetch/recents/nav as tentap).
     const {
@@ -99,8 +109,6 @@ export default function RftTextEnriched(props) {
         suggestions,
         setTrigger,
         clearTrigger,
-        moveSelected,
-        selectedSuggestion,
         recordMention,
         handlersRef,
     } = useEditorMentions({ fieldName: name, mentions: props.mentions })
@@ -109,57 +117,55 @@ export default function RftTextEnriched(props) {
     // EnrichedTextInput's web build puts `defaultValue` in useEditor deps, so a
     // changing defaultValue destroys/recreates TipTap. After destroy, schema is
     // null and getHTML() throws ("Cannot read properties of null (reading 'cached')").
-    // Keep defaultValue stable for the component lifetime; push later updates via setValue.
-    const initialDefaultValue = useRef(unaLinksToMentions(value || ''))
+    // Keep defaultValue fixed for the component lifetime; push later updates via setValue.
+    const [initialDefaultValue] = useState(() => unaLinksToMentions(value || ''))
     const lastSetValue = useRef(value)
-    const callEditor = (method, ...args) => {
-        try {
-            editorRef.current?.[method]?.(...args)
-        } catch {
-            // Web TipTap handle exists before editor.commands is ready.
-        }
-    }
     useEffect(() => {
         if (editorRef.current && value !== lastSetValue.current) {
             lastSetValue.current = value
-            callEditor('setValue', unaLinksToMentions(value || ''))
+            callEditor(editorRef, 'setValue', unaLinksToMentions(value || ''))
         }
     }, [value])
+
     useEffect(() => {
         if (!autofocus || !isWeb) return undefined
-        const timer = setTimeout(() => callEditor('focus'), 80)
+        const timer = setTimeout(() => callEditor(editorRef, 'focus'), 80)
         return () => clearTimeout(timer)
-    }, [!!autofocus, isWeb])
+    }, [autofocus])
 
-    // ---- emitter (focus/blur/set_content), same as tentap version ----
+    // ---- emitter (focus/blur/set_content/insert_inline_image), same as tentap ----
     useEffect(() => {
         const sub = emitter.addListener('editor', (data) => {
             if (!editorRef.current) return
-            if (data.action === 'blur') {
-                data.timeout
-                    ? setTimeout(() => callEditor('blur'), data.timeout)
-                    : callEditor('blur')
-            }
-            if (data.action === 'focus') {
-                if (isWeb) {
-                    callEditor('focus')
-                } else {
-                    // iOS: after the keyboard is dismissed the native input can keep a
-                    // stale first-responder state, so a plain focus() no-ops. Blur first
-                    // to clear it, then focus to reliably re-summon the keyboard.
-                    callEditor('blur')
-                    setTimeout(() => callEditor('focus'), 50)
+            switch (data.action) {
+                case 'blur':
+                    if (data.timeout) setTimeout(() => callEditor(editorRef, 'blur'), data.timeout)
+                    else callEditor(editorRef, 'blur')
+                    break
+                case 'focus':
+                    if (isWeb) {
+                        callEditor(editorRef, 'focus')
+                    } else {
+                        // iOS: after the keyboard is dismissed the native input can keep a
+                        // stale first-responder state, so a plain focus() no-ops. Blur first
+                        // to clear it, then focus to reliably re-summon the keyboard.
+                        callEditor(editorRef, 'blur')
+                        setTimeout(() => callEditor(editorRef, 'focus'), 50)
+                    }
+                    break
+                case 'set_content':
+                    lastSetValue.current = data.value
+                    callEditor(editorRef, 'setValue', unaLinksToMentions(data.value || ''))
+                    break
+                case 'insert_inline_image': {
+                    if (data.form_name && form_name && data.form_name !== form_name) return
+                    if (!data.src || isLimitedHtml) return
+                    const size = fitInlineImageSize(data.width, data.height)
+                    callEditor(editorRef, 'setImage', data.src, size.width, size.height)
+                    break
                 }
-            }
-            if (data.action === 'set_content') {
-                lastSetValue.current = data.value
-                callEditor('setValue', unaLinksToMentions(data.value || ''))
-            }
-            if (data.action === 'insert_inline_image') {
-                if (data.form_name && form_name && data.form_name !== form_name) return
-                if (!data.src || isLimitedHtml) return
-                const size = fitInlineImageSize(data.width, data.height)
-                callEditor('setImage', data.src, size.width, size.height)
+                default:
+                    break
             }
         })
         return () => sub.remove()
@@ -167,21 +173,16 @@ export default function RftTextEnriched(props) {
 
     useEffect(() => {
         if (formState.isSubmitted && kb_stay_open != true) {
-            editorRef.current?.blur?.()
+            callEditor(editorRef, 'blur')
         }
-    }, [formState.isSubmitted])
+    }, [formState.isSubmitted, kb_stay_open])
 
+    // ---- mentions ----
     const insertMention = useCallback((user) => {
         const indicator = mentionIndicator || '@'
-        let inserted = false
-
-        if (isWeb) {
-            // Prefer direct TipTap insert (same @-token parse as tentap). Library
-            // setMention no-ops when blur ended the MentionPlugin trigger.
-            const tipTap = getTiptapEditorFromContainer(containerRef.current)
-            if (tipTap) inserted = insertMentionInTiptap(tipTap, user, indicator)
-        }
-
+        // Web: direct TipTap insert (same @-token parse as tentap). Library
+        // setMention no-ops when blur ended the MentionPlugin trigger.
+        const inserted = tipTap ? insertMentionInTiptap(tipTap, user, indicator) : false
         if (!inserted) {
             editorRef.current?.setMention?.(
                 indicator,
@@ -189,130 +190,28 @@ export default function RftTextEnriched(props) {
                 mentionAttributesForUser(user)
             )
         }
-
         recordMention(user)
         clearTrigger()
-        setCaretPos(null)
-    }, [mentionIndicator, isWeb, recordMention, clearTrigger])
+    }, [mentionIndicator, tipTap, recordMention, clearTrigger])
 
-    // Web: pin the list to the editor (absolute, left of the field). Vertical
-    // flips above/below the caret the same as before.
-    const DROPDOWN_MAX_H = 160
-    const DROPDOWN_MIN_H = 72
-    const DROPDOWN_GAP = 6
-    const computeCaretPosition = useCallback(() => {
-        if (!isWeb || typeof window === 'undefined') return
-        try {
-            const sel = window.getSelection?.()
-            const container = containerRef.current
-            if (!sel || sel.rangeCount === 0 || !container?.getBoundingClientRect) return
-            const range = sel.getRangeAt(0)
-            let rect = range.getBoundingClientRect()
-            if (!rect || (rect.top === 0 && rect.left === 0 && rect.width === 0 && rect.height === 0)) {
-                const rects = range.getClientRects()
-                if (rects?.length) rect = rects[rects.length - 1]
-            }
-            if (!rect) return
-            const cRect = container.getBoundingClientRect()
-            const vpAbove = Math.max(0, rect.top)
-            const vpBelow = Math.max(0, window.innerHeight - rect.bottom)
-            const needed = DROPDOWN_MAX_H + DROPDOWN_GAP
-            const canFitAbove = vpAbove >= needed
-            const canFitBelow = vpBelow >= needed
-            const placeBelow =
-                (!canFitAbove && canFitBelow) ||
-                (!canFitAbove && !canFitBelow && vpBelow > vpAbove + 24)
+    const dropdownPos = useEnrichedMentionDropdown({
+        tipTap,
+        containerRef,
+        dropdownRef,
+        hasSuggestions: suggestions.length > 0,
+        setTrigger,
+    })
 
-            const maxHeight = Math.min(
-                DROPDOWN_MAX_H,
-                Math.max(DROPDOWN_MIN_H, (placeBelow ? vpBelow : vpAbove) - DROPDOWN_GAP)
-            )
-            setCaretPos(
-                placeBelow
-                    ? { top: rect.bottom - cRect.top + DROPDOWN_GAP, maxHeight }
-                    : { bottom: cRect.bottom - rect.top + DROPDOWN_GAP, maxHeight }
-            )
-        } catch {
-            // Selection not available — keep previous / fall back to bottom-0.
-        }
-    }, [isWeb])
-
-    // Reposition whenever the suggestion list appears or the query changes.
-    useEffect(() => {
-        if (!isWeb) return
-        if (!suggestions.length) {
-            if (!mentionIndicator) setCaretPos(null)
-            return
-        }
-        requestAnimationFrame(computeCaretPosition)
-        const onReposition = () => requestAnimationFrame(computeCaretPosition)
-        window.addEventListener('resize', onReposition)
-        // Capture scroll from nested feed/modals so fixed coords stay on the caret.
-        window.addEventListener('scroll', onReposition, true)
-        return () => {
-            window.removeEventListener('resize', onReposition)
-            window.removeEventListener('scroll', onReposition, true)
-        }
-    }, [isWeb, suggestions.length, mentionIndicator, computeCaretPosition])
-
-    // Web: drive mention trigger from TipTap with the same text-before-cursor
-    // rule as tentap, so suggestions work even when library mention events miss.
-    useEffect(() => {
-        if (!isWeb) return
-
-        let editor = null
-        let cancelled = false
-        let intervalId = null
-
-        const syncTrigger = () => {
-            if (!editor || editor.isDestroyed) return
-            const parsed = parseMentionTrigger(getTextBeforeCursorFromTiptap(editor))
-            if (parsed) {
-                setTrigger(parsed.term, parsed.indicator)
-                requestAnimationFrame(computeCaretPosition)
-            } else {
-                setTrigger('', '')
-                setCaretPos(null)
-            }
-        }
-
-        const attach = () => {
-            editor = getTiptapEditorFromContainer(containerRef.current)
-            if (!editor || editor.isDestroyed) return false
-            editor.on('transaction', syncTrigger)
-            editor.on('selectionUpdate', syncTrigger)
-            return true
-        }
-
-        if (!attach()) {
-            intervalId = setInterval(() => {
-                if (cancelled) return
-                if (attach()) clearInterval(intervalId)
-            }, 50)
-        }
-
-        return () => {
-            cancelled = true
-            if (intervalId) clearInterval(intervalId)
-            if (editor && !editor.isDestroyed) {
-                editor.off('transaction', syncTrigger)
-                editor.off('selectionUpdate', syncTrigger)
-            }
-        }
-    }, [isWeb, setTrigger, computeCaretPosition])
-
-    // ---- web: keep the editor focused while interacting with the dropdown ----
-    // Clicking a suggestion would otherwise blur the editor, which ends the mention
-    // trigger (setMention then no-ops) and clears the list before the click lands.
-    // Preventing mousedown's default keeps focus + the active trigger so onPress fires.
-    useEffect(() => {
-        if (!isWeb) return
-        const node = dropdownRef.current
-        if (!node?.addEventListener) return
-        const onMouseDown = (e) => e.preventDefault()
-        node.addEventListener('mousedown', onMouseDown)
-        return () => node.removeEventListener('mousedown', onMouseDown)
-    }, [isWeb, suggestions.length > 0])
+    // Native library callbacks (web derives the trigger from TipTap above).
+    const onStartMention = useCallback((indicator) => {
+        if (!isWeb) setTrigger('', indicator)
+    }, [setTrigger])
+    const onChangeMention = useCallback((e) => {
+        if (!isWeb) setTrigger(e.text, e.indicator)
+    }, [setTrigger])
+    const onEndMention = useCallback(() => {
+        if (!isWeb) clearTrigger()
+    }, [clearTrigger])
 
     // ---- HTML -> react-hook-form ----
     const isInitialHtmlEmission = useRef(true)
@@ -361,134 +260,28 @@ export default function RftTextEnriched(props) {
         })
     }, [form_name, isLimitedHtml])
 
-    // ---- submit on enter (desktop only; mobile Enter inserts newline) ----
+    // ---- Enter routing (desktop only; mobile Enter inserts newline) ----
     const submitOnEnter = isDesktop && (
         isCommentsEditor
             ? (enableSubmitOnEnter || appSetting('comments', 'submit_comment_on_enter'))
             : enableSubmitOnEnter
     )
+    // Comment composers stay in newline mode and route Enter in useEnrichedKeyboard.
+    const submitBehavior = submitOnEnter && !isCommentsEditor ? 'submit' : 'newline'
 
     const onSubmitEditing = useCallback(() => {
-        // Comment composers use newline mode + explicit Enter routing.
         if (isCommentsEditor && submitOnEnter) return
         if (onEnterSubmit) onEnterSubmit()
     }, [isCommentsEditor, submitOnEnter, onEnterSubmit])
 
-    const onEnterSubmitRef = useRef(onEnterSubmit)
-    useEffect(() => {
-        onEnterSubmitRef.current = onEnterSubmit
-    }, [onEnterSubmit])
-
-    // ---- mention navigation in dropdown ----
-    const onKeyPress = useCallback((e) => {
-        const nativeEvent = e?.nativeEvent
-        const key = nativeEvent?.key
-
-        // Native comment editor: newline mode inserts breaks; route submit vs newline.
-        if (!isWeb && submitOnEnter && isCommentsEditor && isCommentEditorEnterKey(nativeEvent)) {
-            if (isCommentEditorNewlineEnter(nativeEvent)) return
-            if (suggestions.length) {
-                if (selectedSuggestion) insertMention(selectedSuggestion)
-                return
-            }
-            onEnterSubmitRef.current?.()
-            return
-        }
-
-        // Web: mention + Enter routing handled on the TipTap surface (see effect below).
-        if (isWeb) return
-        if (!suggestions.length) return
-        if (key === 'ArrowDown') moveSelected('down')
-        else if (key === 'ArrowUp') moveSelected('up')
-        else if (key === 'Enter') {
-            if (selectedSuggestion) insertMention(selectedSuggestion)
-        }
-    }, [isWeb, submitOnEnter, isCommentsEditor, suggestions, selectedSuggestion, insertMention, moveSelected])
-
-    // Web: capture Enter on TipTap (splitBlock for Shift/Option; submit otherwise).
-    useEffect(() => {
-        if (!isWeb) return
-
-        let dom = null
-        let onKeyDownCapture = null
-        let cancelled = false
-        let intervalId = null
-
-        const stopKey = (event) => {
-            event.preventDefault()
-            event.stopImmediatePropagation()
-        }
-
-        const detach = () => {
-            if (dom && onKeyDownCapture) {
-                dom.removeEventListener('keydown', onKeyDownCapture, true)
-            }
-            dom = null
-            onKeyDownCapture = null
-        }
-
-        const attach = () => {
-            const editor = getTiptapEditorFromContainer(containerRef.current)
-            if (!editor?.view?.dom || editor.isDestroyed) return false
-
-            detach()
-            dom = editor.view.dom
-
-            onKeyDownCapture = (event) => {
-                const h = handlersRef.current
-
-                if (h?.suggestions?.length) {
-                    switch (event.key) {
-                        case 'Enter':
-                            if (isCommentEditorNewlineEnter(event)) break
-                            stopKey(event)
-                            const sel = h.selectedSuggestion || h.suggestions[0]
-                            if (sel) insertMention(sel)
-                            return
-                        case 'ArrowDown':
-                            stopKey(event)
-                            h.moveSelected('down')
-                            return
-                        case 'ArrowUp':
-                            stopKey(event)
-                            h.moveSelected('up')
-                            return
-                        case 'Escape':
-                            stopKey(event)
-                            h.clearTrigger()
-                            return
-                        default:
-                            break
-                    }
-                }
-
-                if (!submitOnEnter || !isCommentsEditor || !isCommentEditorEnterKey(event)) return
-
-                stopKey(event)
-                if (isCommentEditorNewlineEnter(event)) {
-                    editor.chain().focus().splitBlock().run()
-                } else {
-                    onEnterSubmitRef.current?.()
-                }
-            }
-
-            dom.addEventListener('keydown', onKeyDownCapture, true)
-            return true
-        }
-
-        if (!attach()) {
-            intervalId = setInterval(() => {
-                if (cancelled) return
-                if (attach()) clearInterval(intervalId)
-            }, 50)
-        }
-
-        return () => {
-            cancelled = true
-            if (intervalId) clearInterval(intervalId)
-            detach()
-        }
-    }, [isWeb, submitOnEnter, isCommentsEditor, handlersRef, insertMention])
+    const onKeyPress = useEnrichedKeyboard({
+        tipTap,
+        isCommentsEditor,
+        submitOnEnter,
+        handlersRef,
+        insertMention,
+        onEnterSubmit,
+    })
 
     // ---- styles (htmlStyle) from theme ----
     const htmlStyle = useMemo(() => {
@@ -503,42 +296,40 @@ export default function RftTextEnriched(props) {
         }
     }, [themeKey, mentionColorFallback])
 
-    const editorTextColor = useThemeValue('rgba(30,40,55,1)', 'rgba(225,230,240,1)')
+    const editorStyle = useMemo(() => ({
+        minHeight: initialHeight,
+        maxHeight,
+        color: editorTextColor,
+        fontSize: 16,
+        backgroundColor: 'transparent',
+    }), [initialHeight, maxHeight, editorTextColor])
+
+    const handleFocus = useCallback(() => {
+        if (onFocus) onFocus()
+    }, [onFocus])
 
     // Web: clicks on padding / empty chrome around ProseMirror (toolbar field
     // padding, areas outside the stretched contenteditable) should still focus.
     const onContainerMouseDown = useCallback((e) => {
-        if (!isWeb || isDisabled) return
+        if (isDisabled) return
         const target = e?.target
         if (!target?.closest) return
         if (target.closest('.ProseMirror')) return
         if (target.closest('a, button, [role="button"]')) return
         if (dropdownRef.current?.contains?.(target)) return
         e.preventDefault?.()
-        callEditor('focus')
-    }, [isWeb, isDisabled])
-
-    // Native library callbacks (web uses TipTap sync above; keep these as a
-    // fallback and for platforms where the native enriched input fires them).
-    const onStartMention = useCallback((indicator) => {
-        if (!isWeb) setTrigger('', indicator)
-    }, [isWeb, setTrigger])
-    const onChangeMention = useCallback((e) => {
-        if (!isWeb) setTrigger(e.text, e.indicator)
-    }, [isWeb, setTrigger])
-    const onEndMention = useCallback(() => {
-        if (!isWeb) clearTrigger()
-    }, [isWeb, clearTrigger])
+        callEditor(editorRef, 'focus')
+    }, [isDisabled])
 
     const { items: toolbarItems, linkBar } = useEnrichedToolbar({
         editorRef,
         containerRef,
+        tipTap,
         styleState,
         selection,
         enabled: isToolBar,
     })
 
-    const shellClass = 'relative flex-auto web:cursor-text overflow-visible'
     const surfaceClass = isToolBar
         ? ' px-3 py-2 bg-input/60 shadow-input-outline dark:shadow-input-outline-deep rounded-xl flex-auto overflow-hidden text-card-foreground '
         : (bg == 'transparent' ? '' : cn(inputSettings.base, inputSettings.size.regular))
@@ -547,23 +338,23 @@ export default function RftTextEnriched(props) {
         <View
             ref={containerRef}
             onMouseDown={isWeb ? onContainerMouseDown : undefined}
-            className={shellClass}
+            className="relative flex-auto web:cursor-text overflow-visible"
         >
             <MentionSuggestionsDropdown
                 suggestions={suggestions}
                 onSelect={insertMention}
                 dropdownRef={dropdownRef}
-                className={caretPos ? '' : 'bottom-0'}
+                className={dropdownPos ? '' : 'bottom-0'}
                 style={
-                    caretPos
+                    dropdownPos
                         ? {
                             position: 'absolute',
                             left: 0,
                             alignSelf: 'flex-start',
-                            maxHeight: caretPos.maxHeight,
-                            ...(caretPos.top != null
-                                ? { top: caretPos.top }
-                                : { bottom: caretPos.bottom }),
+                            maxHeight: dropdownPos.maxHeight,
+                            ...(dropdownPos.top != null
+                                ? { top: dropdownPos.top }
+                                : { bottom: dropdownPos.bottom }),
                         }
                         : undefined
                 }
@@ -571,41 +362,29 @@ export default function RftTextEnriched(props) {
 
             <View className={surfaceClass}>
                 <EnrichedEditorBoundary>
-                <EnrichedTextInput
-                    ref={editorRef}
-                    defaultValue={initialDefaultValue.current}
-                    placeholder={placeholder}
-                    placeholderTextColor="rgba(120,130,145,1)"
-                    editable={!isDisabled}
-                    autoFocus={isWeb ? false : !!autofocus}
-                    autoCapitalize="none"
-                    mentionIndicators={MENTION_INDICATORS}
-                    htmlStyle={htmlStyle}
-                    submitBehavior={
-                        submitOnEnter && isCommentsEditor
-                            ? 'newline'
-                            : submitOnEnter
-                                ? 'submit'
-                                : 'newline'
-                    }
-                    style={{
-                        minHeight: initialHeight,
-                        maxHeight,
-                        color: editorTextColor,
-                        fontSize: 16,
-                        backgroundColor: 'transparent',
-                    }}
-                    onChangeHtml={onChangeHtml}
-                    onChangeState={(e) => setStyleState(e.nativeEvent)}
-                    onChangeSelection={(e) => setSelection(e.nativeEvent || { start: 0, end: 0, text: '' })}
-                    onStartMention={onStartMention}
-                    onChangeMention={onChangeMention}
-                    onEndMention={onEndMention}
-                    onPasteImages={onPasteImages}
-                    onSubmitEditing={onSubmitEditing}
-                    onKeyPress={onKeyPress}
-                    onFocus={() => { if (onFocus) onFocus() }}
-                />
+                    <EnrichedTextInput
+                        ref={editorRef}
+                        defaultValue={initialDefaultValue}
+                        placeholder={placeholder}
+                        placeholderTextColor="rgba(120,130,145,1)"
+                        editable={!isDisabled}
+                        autoFocus={isWeb ? false : !!autofocus}
+                        autoCapitalize="none"
+                        mentionIndicators={MENTION_INDICATORS}
+                        htmlStyle={htmlStyle}
+                        submitBehavior={submitBehavior}
+                        style={editorStyle}
+                        onChangeHtml={onChangeHtml}
+                        onChangeState={isToolBar ? onChangeState : undefined}
+                        onChangeSelection={isToolBar ? onChangeSelection : undefined}
+                        onStartMention={onStartMention}
+                        onChangeMention={onChangeMention}
+                        onEndMention={onEndMention}
+                        onPasteImages={onPasteImages}
+                        onSubmitEditing={onSubmitEditing}
+                        onKeyPress={onKeyPress}
+                        onFocus={handleFocus}
+                    />
                 </EnrichedEditorBoundary>
 
                 {isToolBar ? (
