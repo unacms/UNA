@@ -246,15 +246,18 @@ const Content = React.memo(({ children, currentUser, layoutName, url }) => {
                 <Informer />
                 {children}
             </main>
-            {externalScripts.map((script, index) => (
-                script?.src && (
-                    <Script 
-                        key={index}
-                        src={script.src}
-                        strategy={script.strategy || "afterInteractive"}
+            {externalScripts.map((script) => {
+                if (!script?.src) return null;
+                const { src, strategy, ...attrs } = script;
+                return (
+                    <Script
+                        key={src}
+                        src={src}
+                        strategy={strategy || "afterInteractive"}
+                        {...attrs}
                     />
-                )
-            ))}
+                );
+            })}
         </View>
     );
 });
