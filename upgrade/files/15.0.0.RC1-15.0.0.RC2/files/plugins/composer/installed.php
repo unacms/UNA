@@ -3,7 +3,7 @@
         'name' => 'unacms/una',
         'pretty_version' => 'dev-master',
         'version' => 'dev-master',
-        'reference' => '344379798e52171230e8354e1bb9117350360360',
+        'reference' => '5722572d16e72855291dc1865e969d7fba11c3d7',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -705,7 +705,7 @@
         'unacms/una' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
-            'reference' => '344379798e52171230e8354e1bb9117350360360',
+            'reference' => '5722572d16e72855291dc1865e969d7fba11c3d7',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

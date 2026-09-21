@@ -1031,10 +1031,16 @@ class BxDolForm extends BxDol implements iBxDolReplaceable
         $a = isset($this->aInputs[$sName]) ? $this->aInputs[$sName] : false;
         $oRv = null;
 
-        if ($a && isset($a['db']['pass']))
-            $oRv = $oChecker->get ($sName, $a['db']['pass'], isset($a['db']['params']) && $a['db']['params'] ? $a['db']['params'] : array());
+        if(($a['secret'] ?? false) && ($sValueInit = $a['value_init'] ?? false))
+            $a['db'] = array_merge($a['db'], [
+                'pass' => 'secret',
+                'params' => [$sValueInit]
+            ]);
+
+        if($a && isset($a['db']['pass']))
+            $oRv = $oChecker->get($sName, $a['db']['pass'], isset($a['db']['params']) && $a['db']['params'] ? $a['db']['params'] : array());
         else
-            $oRv =  $oChecker->get ($sName);
+            $oRv =  $oChecker->get($sName);
 
         // process comma separated string for api values
         if ($this->_bIsApi && isset($this->aInputs[$sName]['type']) && !empty($oRv) && is_string($oRv) && (in_array($this->aInputs[$sName]['type'], ['checkbox_set', 'files', 'select_multiple']) || in_array($sName, ['labels'])))
@@ -1583,9 +1589,17 @@ class BxDolFormChecker
 
         // get values from form description array
         foreach ($aInputs as $k => $a) {
-            if (!isset ($a['db']) || !BxDolForm::isVisible($a)) continue;
+            if (!isset ($a['db']) || !BxDolForm::isVisible($a)) 
+                continue;
+
+            if(($a['secret'] ?? false) && ($sValueInit = $a['value_init'] ?? false))
+                $a['db'] = array_merge($a['db'], [
+                    'pass' => 'secret',
+                    'params' => [$sValueInit]
+                ]);
+
             $sKey = str_replace('[]', '', $a['name']);
-            $valClean = $this->get ($sKey, $a['db']['pass'], !empty($a['db']['params']) ? $a['db']['params'] : array());
+            $valClean = $this->get($sKey, $a['db']['pass'], !empty($a['db']['params']) ? $a['db']['params'] : []);
             $aValsToUpdate[$sKey] = $valClean;
             $aInputs[$k]['db']['value'] = $valClean;
 
@@ -1666,6 +1680,9 @@ class BxDolFormChecker
                     $aInputs[$k]['value'] = call_user_func_array (array($this->_oChecker, $sMethod), !empty($a['db']['params']) ? array_merge(array($aValues[$k]), $a['db']['params']) : array ($aValues[$k]));
                 else
                     $aInputs[$k]['value'] = $aValues[$k];
+
+                if(($a['secret'] ?? false) && ($sValueInit = $aValues[$k] ?? false))
+                    $aInputs[$k]['value_init'] = $sValueInit;
             }
         }
     }
@@ -1937,7 +1954,16 @@ class BxDolFormCheckerHelper
         if (false === $iRet)
             return 0;
         return $iRet;
-    }    
+    }
+
+    static public function passSecret ($sValue, $sValueInit = false)
+    {
+        if($sValue !== false && $sValueInit !== false && strcmp(bx_gen_secret($sValueInit), $sValue) == 0)
+            $sValue = $sValueInit;
+
+        return $sValue;
+    }
+
     static public function passXss ($s)
     {
         if (is_array($s)) {
