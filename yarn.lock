@@ -668,6 +668,15 @@
     "@tanstack/ai-event-client" "^0.11.3"
     "@tanstack/ai-utils" "^0.4.0"
 
+"@tanstack/ai-client@^0.32.1":
+  version "0.32.1"
+  resolved "https://registry.yarnpkg.com/@tanstack/ai-client/-/ai-client-0.32.1.tgz#4c889f3041c5c64e0d46a8ff4bd034e097364a28"
+  integrity sha512-YqFyCEAxTfotXsRDjiSR8a6v2E3ABUhCJj2qyD0LduhLdsWOY2wzmNo6eMA/n8e1EFi/bhhMWwg55zDkjtV/sA==
+  dependencies:
+    "@tanstack/ai" "^0.55.0"
+    "@tanstack/ai-event-client" "^0.11.3"
+    "@tanstack/ai-utils" "^0.4.0"
+
 "@tanstack/ai-event-client@^0.11.3":
   version "0.11.3"
   resolved "https://registry.yarnpkg.com/@tanstack/ai-event-client/-/ai-event-client-0.11.3.tgz#0e3927b54171d13b061bba8ac4a0283eaedd0a4d"
@@ -696,6 +705,17 @@
   version "0.54.0"
   resolved "https://registry.yarnpkg.com/@tanstack/ai/-/ai-0.54.0.tgz#9ba2bb5c0d8c550fe1f229c0e06b4b1f70d0a537"
   integrity sha512-Hc7Yc7L+2n/dr11GwAT/QSbGwIxy5bhRe99yu1jAhGaBx28Ul3AaTLcGTyEj2aNeih00AUtF0KG+IOqJBSsj8A==
+  dependencies:
+    "@ag-ui/core" "0.1.1-canary.beta.0"
+    "@standard-schema/spec" "^1.1.0"
+    "@tanstack/ai-event-client" "^0.11.3"
+    "@tanstack/ai-utils" "^0.4.0"
+    partial-json "^0.1.7"
+
+"@tanstack/ai@^0.55.0":
+  version "0.55.0"
+  resolved "https://registry.yarnpkg.com/@tanstack/ai/-/ai-0.55.0.tgz#5605996e9f578c0bbf738f4510be2935aa899215"
+  integrity sha512-VkevqxTDQWeVjWIAR2SQzR6Hi8t6dNdZHfh4jQZEumanwyzsUbBvuPpzf6RldnMY7Z4eX0MHfV9esxAiOukc+A==
   dependencies:
     "@ag-ui/core" "0.1.1-canary.beta.0"
     "@standard-schema/spec" "^1.1.0"
@@ -2895,10 +2915,10 @@ lucide-static@^1.45.0:
   resolved "https://registry.yarnpkg.com/lucide-static/-/lucide-static-1.46.0.tgz#20c9fb8b47a900adb699a4675198c8762fb13092"
   integrity sha512-kq1lP/78BxG28VG3Ut2FxMeQElereTrrRwTBeXH7+olxATGcDbsuKRB/v/VKLhPrEu8BvNi6Uh2GvbH3pQcYhg==
 
-lucide@^1.45.0:
-  version "1.46.0"
-  resolved "https://registry.yarnpkg.com/lucide/-/lucide-1.46.0.tgz#00435b5bb6c1621d4b4a3359c8d02742bab5d6e5"
-  integrity sha512-JAkmhp9rxxIAeyKZJPUdiDDz8szXEISxdd4elBp7nu75MWQIYQQ8p1u+conDwu7RG2TrESj3wo5G0dKNs/5ryA==
+lucide@^1.47.0:
+  version "1.47.0"
+  resolved "https://registry.yarnpkg.com/lucide/-/lucide-1.47.0.tgz#231c0d46df4dad5a16da6ab76a0aedfa26ae2719"
+  integrity sha512-gJoVJM5fvpBDGZTvhpJS9IEurz85HbD+wgOlCkXCIw35tHrqTxSdIYUN9sXvs7Aw3NCl67A+nlotNyoU4u7zOQ==
 
 magic-string@^0.30.3:
   version "0.30.21"
