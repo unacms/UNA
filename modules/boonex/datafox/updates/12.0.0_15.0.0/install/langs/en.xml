@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="en" flag="gb" title="English">
+	<string_add name="_bx_datafox_wgt_cpt"><![CDATA[Data Fox (discontinued)]]></string_add>
+</resources>

@@ -35,7 +35,7 @@ $aConfig = array(
     'install' => array(
         'execute_sql' => 1,
         'update_files' => 1,
-        'update_languages' => 0,
+        'update_languages' => 1,
         'clear_db_cache' => 1,
     ),
 

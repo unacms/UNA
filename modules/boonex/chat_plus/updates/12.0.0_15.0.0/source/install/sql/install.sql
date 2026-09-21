@@ -1,4 +1,3 @@
-
 -- Studio page and widget
 
 INSERT INTO `sys_std_pages`(`index`, `name`, `header`, `caption`, `icon`) VALUES
