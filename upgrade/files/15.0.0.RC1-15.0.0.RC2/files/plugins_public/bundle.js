@@ -24517,6 +24517,7 @@
 		if (!hasConnect) throw new Error("Connection adapter must provide either connect or both subscribe and send");
 		let activeBuffer = [];
 		let activeWaiters = [];
+		let activeSubscriber;
 		function push(chunk, runId) {
 			if (runId) chunkRunIds.set(chunk, runId);
 			const waiter = activeWaiters.shift();
@@ -24524,17 +24525,14 @@
 			else activeBuffer.push(chunk);
 		}
 		async function waitUntilSubscriberIdle(abortSignal) {
-			const idle = () => activeBuffer.length === 0 && (activeWaiters.length > 0 || abortSignal?.aborted);
+			const idle = () => activeSubscriber !== activeWaiters || activeBuffer.length === 0 && (activeWaiters.length > 0 || abortSignal?.aborted);
 			for (let i = 0; i < 16 && !abortSignal?.aborted; i++) {
 				if (idle()) return;
 				await Promise.resolve();
 			}
-			let macrotaskWaits = 0;
 			while (!abortSignal?.aborted) {
 				if (idle()) return;
 				await new Promise((resolve) => setTimeout(resolve, 0));
-				macrotaskWaits++;
-				if (activeWaiters.length === 0 && macrotaskWaits >= 32) return;
 			}
 		}
 		return {
@@ -24544,19 +24542,24 @@
 				activeBuffer = myBuffer;
 				activeWaiters = myWaiters;
 				return (async function* () {
-					while (!abortSignal?.aborted) {
-						let chunk;
-						const buffered = myBuffer.shift();
-						if (buffered !== void 0) chunk = buffered;
-						else chunk = await new Promise((resolve) => {
-							const onAbort = () => resolve(null);
-							myWaiters.push((c) => {
-								abortSignal?.removeEventListener("abort", onAbort);
-								resolve(c);
+					activeSubscriber = myWaiters;
+					try {
+						while (!abortSignal?.aborted) {
+							let chunk;
+							const buffered = myBuffer.shift();
+							if (buffered !== void 0) chunk = buffered;
+							else chunk = await new Promise((resolve) => {
+								const onAbort = () => resolve(null);
+								myWaiters.push((c) => {
+									abortSignal?.removeEventListener("abort", onAbort);
+									resolve(c);
+								});
+								abortSignal?.addEventListener("abort", onAbort, { once: true });
 							});
-							abortSignal?.addEventListener("abort", onAbort, { once: true });
-						});
-						if (chunk !== null) yield chunk;
+							if (chunk !== null) yield chunk;
+						}
+					} finally {
+						if (activeSubscriber === myWaiters) activeSubscriber = void 0;
 					}
 				})();
 			},
@@ -27648,7 +27651,7 @@
 		async sendMessage(content, body, sendOptions) {
 			this.mountDevtools();
 			if (typeof content === "string" && !content.trim()) return;
-			if (this.hasBlockingInterrupts()) throw new Error("ChatClient: cannot send normal input while pending interrupts exist. Use resumeInterrupts() instead.");
+			if (this.hasPendingInterrupts()) throw new Error("ChatClient: cannot send normal input while pending interrupts exist. Use resumeInterrupts() instead.");
 			const resolvedBody = {
 				...body,
 				...sendOptions?.body
@@ -27674,10 +27677,6 @@
 		/** True while interrupt descriptors still own continuation. */
 		hasPendingInterrupts() {
 			return this.interruptManager.getDescriptors().length > 0;
-		}
-		/** True while an interrupt batch owns the next user turn. */
-		hasBlockingInterrupts() {
-			return this.activeInterruptSubmission !== void 0 || this.hasPendingInterrupts();
 		}
 		/** True while a stream is active, a send is claiming the client, or the queue is draining. */
 		isSendBusy() {
@@ -27770,7 +27769,7 @@
 		*/
 		async append(message) {
 			this.mountDevtools();
-			if (this.hasBlockingInterrupts()) throw new Error("ChatClient: cannot append normal input while pending interrupts exist. Use resumeInterrupts() instead.");
+			if (this.hasPendingInterrupts()) throw new Error("ChatClient: cannot append normal input while pending interrupts exist. Use resumeInterrupts() instead.");
 			const normalizedMessage = normalizeToUIMessage(message, generateMessageId);
 			if (normalizedMessage.role === "system") return;
 			const uiMessage = normalizedMessage;
