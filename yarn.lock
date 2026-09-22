@@ -7,6 +7,11 @@
   resolved "https://registry.yarnpkg.com/@ag-ui/core/-/core-0.1.1-canary.beta.0.tgz#b79accbfaac3bb0ceb1cce3962d9b288b6e5d670"
   integrity sha512-zcP3RH5p3HJTZ0kyQxNOL1blnVFTDpaShitR7UMS/thwFdl48V6CAG+WQBcYEu/dfa8mKonRez88N0Ok+nEI+w==
 
+"@ag-ui/core@1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@ag-ui/core/-/core-1.0.0.tgz#b2840ab883713e01ef7f0803f0cab06c2256a0ec"
+  integrity sha512-yCRhsQvb4+lmGMrDsi4TOJxqKpm/kb3H64wwL+Z90jNVrkhy17RErfzsNgybfbjNKLM0nenEDYDVJsZHJJSigQ==
+
 "@alloc/quick-lru@^5.2.0":
   version "5.3.0"
   resolved "https://registry.yarnpkg.com/@alloc/quick-lru/-/quick-lru-5.3.0.tgz#9073d52ad3cebbedd0d8c9f3e65aa5527fabd1e0"
