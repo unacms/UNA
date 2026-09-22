@@ -66,6 +66,7 @@ const Invite = lazyComponent(() => import('./invite'), { name: 'Invite' });
 const InviteInContext = lazyComponent(() => import('./invite-in-context'), { name: 'InviteInContext' });
 const NotificationsSettings = lazyComponent(() => import('./notifications-settings'), { name: 'NotificationsSettings' });
 const SearchSections = lazyComponent(() => import('./search-sections'), { name: 'SearchSections' });
+const SearchAi = lazyComponent(() => import('./search-ai'), { name: 'SearchAi' });
 const lazyReputation = (name) => lazyComponent(() => import('./reputation').then((m) => ({ default: m[name] })), { name });
 const ReputationSummary = lazyReputation('ReputationSummary');
 const ReputationWidget = lazyReputation('ReputationWidget');
@@ -78,6 +79,7 @@ export const componentsMapDefault = {
     messenger_main_page: Messenger,
     invite_in_context: InviteInContext,
     search_sections: SearchSections,
+    search_ai: SearchAi,
     reputation_summary: ReputationSummary,
     reputation_leaderboard: ReputationLeaderboard,
     reputation_levels: ReputationLevels,

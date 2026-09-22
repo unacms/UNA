@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react'
+import emitter from 'app/context/emitter'
 import { deepEqual } from 'app/lib/util'
 import {
     partitionLeftColumn,
@@ -60,17 +61,36 @@ export function useLeftColumn({
  * Always reads the latest tab index via ref so callers can keep a stable
  * onFormChangedValues without going through platform setIndex wrappers.
  *
+ * Blocks that are not the filter form (e.g. the AI search block) set the same
+ * filters through the emitter:
+ *
+ *   emitter.emit('conductor', { action: 'filters', values: { cat: [2], price: ['', '50'] } })
+ *
+ * `values` is a plain { input name: value } map, exactly what the search form
+ * would submit; `merge: true` keeps the filters already applied.
+ *
+ * A block can also take over the list itself, when its own endpoint returns results the page's
+ * block cannot produce (semantically ranked search, for one):
+ *
+ *   emitter.emit('conductor', { action: 'endpoint', request_url, params, unit, module })
+ *   emitter.emit('conductor', { action: 'endpoint', restore: true })
+ *
+ * The page's own endpoint is kept and restored on `restore`, so clearing the query brings the
+ * original list back.
+ *
  * @param {object} opts
  * @param {number} opts.index — active tab
  * @param {Function} opts.setRoutes
  * @param {object} [opts.routesRef] — optional; skip no-op filter updates early
  * @param {boolean} [opts.skipFirstChange=false] — native ignores first onChange (form init)
+ * @param {object} [opts.isFocusedRef] — native: only the focused screen reacts to emitter filters
  */
 export function useConductorFilters({
     index,
     setRoutes,
     routesRef,
     skipFirstChange = false,
+    isFocusedRef,
 }) {
     // Native forms fire onChange once on mount with defaults — ignore that.
     const readyRef = useRef(!skipFirstChange)
@@ -123,8 +143,77 @@ export function useConductorFilters({
         [routesRef, setFilterValue, skipFirstChange]
     )
 
+    // The endpoint a block took over from, per route index.
+    const originalEndpointRef = useRef({})
+
+    /** Replace the active route's list source, or put the page's own back. */
+    const setEndpoint = useCallback((endpoint) => {
+        setRoutes((prevRoutes) => {
+            const routeIndex = indexRef.current
+            const route = prevRoutes?.[routeIndex]
+            if (!route?.endpoint) return prevRoutes
+
+            const saved = originalEndpointRef.current[routeIndex]
+
+            if (!endpoint) {
+                if (!saved) return prevRoutes
+                delete originalEndpointRef.current[routeIndex]
+                const restored = [...prevRoutes]
+                restored[routeIndex] = { ...route, data: [], endpoint: { ...saved, finished: false } }
+                return restored
+            }
+
+            if (!saved) originalEndpointRef.current[routeIndex] = route.endpoint
+
+            const next = [...prevRoutes]
+            next[routeIndex] = {
+                ...route,
+                data: [],
+                endpoint: {
+                    ...route.endpoint,
+                    ...endpoint,
+                    finished: false,
+                },
+            }
+            return next
+        })
+    }, [setRoutes])
+
+    // Filters and list source coming from a block instead of the filter form.
+    useEffect(() => {
+        const sub = emitter.addListener('conductor', (payload) => {
+            if (isFocusedRef && !isFocusedRef.current) return
+
+            if (payload?.action === 'endpoint') {
+                setEndpoint(payload.restore ? null : {
+                    request_url: payload.request_url,
+                    params: payload.params,
+                    ...(payload.unit ? { unit: payload.unit } : {}),
+                    ...(payload.module ? { module: payload.module } : {}),
+                })
+                return
+            }
+
+            if (payload?.action !== 'filters') return
+
+            const values = payload.values && typeof payload.values === 'object' ? payload.values : {}
+            const routeIndex = indexRef.current
+            const current = payload.merge
+                ? routesRef?.current?.[routeIndex]?.endpoint?.params?.filters || {}
+                : {}
+            const next = { ...current, ...values }
+
+            setFilterValue(
+                Object.keys(next).map((name) => ({ name, value: next[name] })),
+                null
+            )
+        })
+        return () => sub.remove()
+    }, [routesRef, setFilterValue, setEndpoint, isFocusedRef])
+
     return {
         setFilterValue,
+        setEndpoint,
         onFormChangedValues,
         formValuesToFilterEntries,
     }

@@ -349,6 +349,7 @@ export function Conductor({
             setRoutes,
             routesRef,
             skipFirstChange: true,
+            isFocusedRef,
         })
 
     // UNA's left column carries two different things: dropdown menus (shown next
