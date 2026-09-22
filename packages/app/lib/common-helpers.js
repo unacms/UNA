@@ -33,7 +33,11 @@ export const BrowseItem = memo(({ item, index, numColumns, data, unitMode, props
         className={
             numColumns > 1
                 ? 'w-full pb-2 '
-                : ' ' + (data.unit != 'feed' ? 'w-full mb-0.5  ' : '  ') + '  '
+                : data.unit === 'notifications'
+                    ? 'w-full mb-1'
+                    : data.unit != 'feed'
+                        ? 'w-full mb-0.5'
+                        : ''
         }
     >
         <Unit

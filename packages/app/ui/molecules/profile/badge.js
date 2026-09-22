@@ -129,7 +129,13 @@ export default function Badge({ data, variant = "default", size = 'sm', rounded 
         const hasImage = !!data.icon_url
         const hasText = data.text && !isIconOnly
         const hasBoth = hasIcon && hasText || hasImage && hasText
-        const sizeSize = size && badgeSizes[size]?.icon_size || 14
+        const badgeSize = size ? badgeSizes[size] : undefined
+        const fillIconSize = badgeSize?.icon_size || 14
+        // `0` is a valid inline size. Fall back to the fill size only when this
+        // size token has no `inline_icon_size`, or when the badge is icon-only.
+        const sizeSize = hasText
+            ? (badgeSize?.inline_icon_size ?? fillIconSize)
+            : fillIconSize
 
         // Apply theme or data.color for text/icon color
         const mappedColor = data.color && colorMapping[data?.color?.toLowerCase().split("-")[0]]

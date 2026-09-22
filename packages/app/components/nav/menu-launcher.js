@@ -30,22 +30,18 @@ export default function MenuLauncher({ buttonProps }) {
 
     return (
         <DropdownMenu
-            items={flattenMenuItemsForDropdown(menu_launcher_items).map((item, index) => {
-                if (item.type === 'group_header') {
-                    return {
-                        id: item.id ?? `header-${index}`,
-                        type: 'group_header',
-                        title: t(item.title),
-                        first: item.first,
-                    };
-                }
-                return {
+            variant="grid"
+            items={flattenMenuItemsForDropdown(menu_launcher_items).flatMap((item, index) => {
+                if (item.type === 'group_header' || item.type === 'separator') return [];
+                return [{
                     id: item.id ?? `menu-${index}`,
                     link: normalizeMenuItemHref(item.link),
                     title: t(item.title),
                     icon: item.icon,
-                    description: item.description ? t(item.description) : undefined,
-                };
+                    image: item.image,
+                    animated: item.animated,
+                    target: item.target,
+                }];
             })}
             buttonProps={{
                 tooltip: 'All Apps',

@@ -15,7 +15,9 @@ export const settingsHeaderToolbar = {
         hor: {
             loggedIn: [
                 { component: 'search', className: '' },
-                { component: 'launcher', className: 'hidden sm:block' },
+                // Heading tabs + More (`header.content_center`) start at `lg`. Apps is the
+                // same inventory, so hide the launcher there; keep it on native / below `lg`.
+                { component: 'launcher', className: 'hidden sm:block web:lg:hidden' },
                 { component: 'add', className: '' },
                 { component: 'notifications', className: 'hidden sm:block' },
                 { component: 'link', href: "{messenger}", className: 'hidden sm:block', title: 'Messages', props: { variant: "secondary", rounded: true, size: "base", startDecorator: "MessageSquare" } },

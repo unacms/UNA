@@ -23,6 +23,8 @@ export const settingsBadges = {
             container: ' min-w-4 h-4 overflow-hidden justify-center items-center  ',
             image_container: ' items-center justify-center rounded overflow-hidden ',
             icon_size: 16,
+            // Labeled chips: sit with 10px type, not the full 16px fill size.
+            inline_icon_size: 10,
             text: ' text-[10px] leading-4 px-0.5  ',
             rounded: ' rounded ',
         },
@@ -33,6 +35,7 @@ export const settingsBadges = {
             container: ' min-w-5 h-5 gap-0.5 overflow-hidden justify-center items-center  ',
             image_container: ' items-center justify-center rounded overflow-hidden ',
             icon_size: 20,
+            inline_icon_size: 12,
             text: ' text-xs leading-4 px-0.5  ',
             rounded: ' rounded ',
         },
@@ -40,9 +43,10 @@ export const settingsBadges = {
             // Matches profile_sizes['xs']: h-6 (24px)
             padding: ' ',
             wide_padding: ' px-1.5 ',
-            container: ' min-w-6 h-6 gap-1 overflow-hidden justify-center items-center ',
+            container: ' min-w-6 h-6 gap-0.5 overflow-hidden justify-center items-center ',
             image_container: ' items-center justify-center rounded overflow-hidden ',
             icon_size: 24,
+            inline_icon_size: 12,
             text: ' text-xs leading-6 px-0.5  ',
             rounded: ' rounded ',
         },

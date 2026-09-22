@@ -1,8 +1,9 @@
 import { View, Row } from 'app/design/view'
 import { useCurrentUser } from 'app/context/user'
-import { menuItemsByName, appSetting, flattenMenuItemsForDropdown } from 'app/lib/util'
+import { menuItemsByName, menuItemsByNameNew, appSetting, flattenMenuItemsForDropdown, mergeNavbarMoreWithLauncher } from 'app/lib/util'
 import { useTranslation } from 'react-i18next'
 import { components } from 'app/components/registry';
+import { useMenuData } from 'app/context/menu-data';
 import { useEffect, useMemo, useState } from 'react';
 import { Platform } from 'react-native';
 
@@ -12,11 +13,28 @@ let __menuTopIndicatorPersist = { initialized: false, translateX: 0, width: 0 };
 export default function MenuTop({ url, uri }) {
     const { currentUser } = useCurrentUser();
     const { t } = useTranslation()
-    const menu_navbar_items = menuItemsByName(
-        'main_menu',
-        appSetting('menu_items', 'menu_navbar'),
-        currentUser
-    )
+    const useRemoteApps = !!appSetting('layout', 'user_remote_config') && !!appSetting('layout', 'apps');
+    const { menuData: launcherMenuData } = useMenuData(
+        useRemoteApps ? appSetting('menu_items', 'objects', 'launcher') : null
+    );
+    const launcherItems = useMemo(
+        () => (useRemoteApps ? menuItemsByNameNew('menu_post', launcherMenuData, currentUser) : []),
+        [useRemoteApps, launcherMenuData, currentUser]
+    );
+    const menu_navbar_items = useMemo(() => {
+        const items = menuItemsByName(
+            'main_menu',
+            appSetting('menu_items', 'menu_navbar'),
+            currentUser
+        );
+        return items.map((item) => {
+            if (!item?.items?.length) return item;
+            return {
+                ...item,
+                items: mergeNavbarMoreWithLauncher(item.items, launcherItems),
+            };
+        });
+    }, [currentUser, launcherItems]);
 
     // Compute active index based on current route
     const activeIndex = useMemo(() => {

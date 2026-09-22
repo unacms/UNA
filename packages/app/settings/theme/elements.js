@@ -58,15 +58,24 @@ export const settingsElements = {
         item_group_header: 'px-2 pt-3 pb-1',
         item_group_header_first: 'p-2.5',
         item_group_header_text: 'text-xs font-semibold uppercase tracking-wide text-muted-foreground',
-        /** Sectioned menus (All Apps): wrap into columns; width is set in dropdown-menu. */
-        content_sections: 'flex-row flex-wrap items-stretch gap-1',
+        /** Sectioned menus (More): column tracks are set in dropdown-menu. */
+        content_sections: 'items-stretch gap-1',
         content_sections_stacked: 'flex-col gap-1 w-full',
         section: 'min-w-0',
+        /** Apps launcher waffle — icon above label, no description. */
+        content_grid: 'w-full',
+        item_grid:
+            'web:group flex w-full min-w-0 min-h-24 flex-col items-center justify-start gap-1.5 rounded-xl px-1 py-2.5 text-secondary-foreground web:hover:bg-muted/50 web:hover:text-foreground web:hover:cursor-pointer web:focus-visible:outline-2 web:duration-200',
+        item_icon_grid:
+            'flex shrink-0 items-center w-12 h-12 bg-muted/50 web:group-hover:bg-border rounded-full justify-center',
+        item_text_grid:
+            'w-full text-center text-xs font-medium leading-tight text-secondary-foreground web:group-hover:text-foreground px-0.5',
         item_icon:
             'flex shrink-0 items-center w-9 h-9 bg-muted/50 web:group-hover:bg-border rounded-full justify-center',
         item_icon_active:
             'flex shrink-0 items-center w-9 h-9 bg-primary rounded-full justify-center',
         icon_size: 20, // Default icon size for dropdown menu icons
+        icon_size_grid: 24,
     },
     modal: {
         fog: ' bg-background/95 ',

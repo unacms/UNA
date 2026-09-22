@@ -2,7 +2,8 @@ import { Pressable, View } from 'app/design/view';
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import { Button, NeoButton } from 'app/design/controls'
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { cn, groupDropdownItems, getDropdownSectionsLayout } from 'app/lib/util';
+import { cn, groupDropdownItems, getDropdownSectionsLayout, dropdownLeafItems, getDropdownGridLayout } from 'app/lib/util';
+import DropdownGridItem from 'app/ui/atoms/dropdown-grid-item';
 import { FeedbackHaptics } from 'app/lib/util';
 import { Keyboard, Alert, Platform } from 'react-native'
 import Redirect from 'app/ui/atoms/redirect';
@@ -38,6 +39,7 @@ const variantClassMap = {
     vertical: { item: 'item_ver', container: 'content_ver' },
     horizontal: { item: 'item_hor', container: 'content_hor' },
     nopad: { item: 'item_np', container: 'content_ver' },
+    grid: { item: 'item_grid', container: 'content_grid' },
     'tabs-overflow': { container: 'content_ver' },
 };
 
@@ -84,6 +86,7 @@ function DropdownMenuPopup({
     const isOpen = isControlled ? openProp : uncontrolledOpen;
     const openModalByUrl = useOpenModalByUrl();
     const openModalWithContent = useOpenModalWithContent();
+    const isGridLayout = variant === 'grid';
 
     const setIsOpen = useCallback(
         (next) => {
@@ -101,20 +104,73 @@ function DropdownMenuPopup({
             : variantClassMap[variant] ?? variantClassMap.vertical;
 
     const { width: windowWidth } = useWindowSize();
-    const useSectionsLayout = (items || []).some((item) => item?.type === 'group_header');
+    const gridItems = useMemo(
+        () => (isGridLayout ? dropdownLeafItems(items) : null),
+        [isGridLayout, items]
+    );
+    const gridLayout = useMemo(
+        () => (isGridLayout ? getDropdownGridLayout() : null),
+        [isGridLayout]
+    );
+    const useSectionsLayout = !isGridLayout && (items || []).some((item) => item?.type === 'group_header');
     const sections = useMemo(
         () => (useSectionsLayout ? groupDropdownItems(items) : null),
         [items, useSectionsLayout]
     );
     const sectionsLayout = useMemo(
         () => stacked
-            ? { stacked: true, cols: 1, colWidth: null, contentWidth: null }
+            ? { stacked: true, cols: 1, colWidth: null, contentWidth: null, popupWidth: null }
             : getDropdownSectionsLayout(sections?.length || 0, windowWidth),
         [sections?.length, stacked, windowWidth]
     );
     const sectionsMinPopupWidth = sectionsLayout.stacked
         ? 288
-        : sectionsLayout.contentWidth + 8;
+        : sectionsLayout.popupWidth;
+    const sectionCount = sections?.length || 0;
+    const sectionsWrap = sectionCount > (sectionsLayout.cols || 1);
+    const sectionsRowStyle = sectionsLayout.stacked
+        ? undefined
+        : Platform.OS === 'web'
+            ? {
+                display: 'grid',
+                gridTemplateColumns: `repeat(${sectionsLayout.cols}, ${sectionsLayout.colWidth}px)`,
+                width: sectionsLayout.contentWidth,
+                minWidth: sectionsLayout.contentWidth,
+            }
+            : {
+                flexDirection: 'row',
+                flexWrap: sectionsWrap ? 'wrap' : 'nowrap',
+                width: sectionsLayout.contentWidth,
+            };
+    const sectionColStyle = sectionsLayout.stacked
+        ? { width: '100%' }
+        : {
+            width: sectionsLayout.colWidth,
+            minWidth: sectionsLayout.minWidth,
+            maxWidth: sectionsLayout.maxWidth,
+            flexGrow: 0,
+            flexShrink: 0,
+            flexBasis: sectionsLayout.colWidth,
+        };
+    const gridRowStyle = !isGridLayout
+        ? undefined
+        : Platform.OS === 'web'
+            ? {
+                display: 'grid',
+                gridTemplateColumns: `repeat(${gridLayout.cols}, minmax(0, 1fr))`,
+                width: gridLayout.contentWidth,
+                minWidth: gridLayout.contentWidth,
+                gap: gridLayout.gap,
+            }
+            : {
+                flexDirection: 'row',
+                flexWrap: 'wrap',
+                width: '100%',
+            };
+    const gridCellStyle =
+        isGridLayout && Platform.OS !== 'web'
+            ? { width: `${100 / (gridLayout?.cols || 3)}%` }
+            : undefined;
 
     const handleSelect = useCallback(
         (event, item) => {
@@ -147,11 +203,19 @@ function DropdownMenuPopup({
                 buttonProps={buttonProps}
                 triggerAccessibilityLabel={triggerAccessibilityLabel}
                 showOnTop={showOnTop}
-                minPopupWidth={useSectionsLayout ? sectionsMinPopupWidth : 256}
+                minPopupWidth={
+                    isGridLayout
+                        ? gridLayout.popupWidth
+                        : useSectionsLayout
+                            ? sectionsMinPopupWidth
+                            : 256
+                }
                 maxPopupWidth={
-                    useSectionsLayout && !sectionsLayout.stacked
-                        ? sectionsMinPopupWidth
-                        : undefined
+                    isGridLayout
+                        ? gridLayout.popupWidth
+                        : useSectionsLayout && !sectionsLayout.stacked
+                            ? sectionsMinPopupWidth
+                            : undefined
                 }
                 openOnFocus={
                     openOnFocus ?? variant === 'tabs-overflow'
@@ -170,35 +234,37 @@ function DropdownMenuPopup({
                     )
                 }
             >
-                {useSectionsLayout ? (
+                {isGridLayout ? (
+                    <View className={menuSettings.content_grid} style={gridRowStyle}>
+                        {gridItems.map((item, index) => {
+                            const navigable = isNavigableDropdownItem(item, onSelect);
+                            return (
+                                <View key={item.id ?? index} style={gridCellStyle}>
+                                    <DropdownGridItem
+                                        index={index}
+                                        item={item}
+                                        handleSelect={navigable ? undefined : handleSelect}
+                                        link={navigable ? item.link : undefined}
+                                        className={item.className}
+                                    />
+                                </View>
+                            );
+                        })}
+                    </View>
+                ) : useSectionsLayout ? (
                     <View
                         className={
                             sectionsLayout.stacked
                                 ? menuSettings.content_sections_stacked
                                 : menuSettings.content_sections
                         }
-                        style={
-                            sectionsLayout.stacked
-                                ? undefined
-                                : { width: sectionsLayout.contentWidth, maxWidth: '100%' }
-                        }
+                        style={sectionsRowStyle}
                     >
                         {sections.map((section, sectionIndex) => (
                             <View
                                 key={section.header?.id ?? `section-${sectionIndex}`}
                                 className={menuSettings.section}
-                                style={
-                                    sectionsLayout.stacked
-                                        ? { width: '100%' }
-                                        : {
-                                            width: sectionsLayout.colWidth,
-                                            minWidth: sectionsLayout.minWidth,
-                                            maxWidth: sectionsLayout.maxWidth,
-                                            flexGrow: 1,
-                                            flexShrink: 0,
-                                            flexBasis: sectionsLayout.colWidth,
-                                        }
-                                }
+                                style={sectionColStyle}
                             >
                                 {section.header ? (
                                     <DropdownMenuItem
@@ -251,11 +317,12 @@ function DropdownMenuPopup({
     );
 }
 
-const MenuBottomSheet = memo(({ items, onSelect, setBottomSheetData, resolveContent }) => {
+const MenuBottomSheet = memo(({ items, onSelect, setBottomSheetData, resolveContent, variant }) => {
     const openModalByUrl = useOpenModalByUrl();
     const openModalWithContent = useOpenModalWithContent();
     const DropdownMenuItem = components['menu-item']['dropdown'];
     const redirectdRef = useRef();
+    const isGridLayout = variant === 'grid';
     const handlePressMenu = useCallback(
         (item) => (event) => {
             FeedbackHaptics('Medium');
@@ -287,13 +354,34 @@ const MenuBottomSheet = memo(({ items, onSelect, setBottomSheetData, resolveCont
         [onSelect, setBottomSheetData, openModalByUrl, openModalWithContent]
     );
 
-    const classes = variantClassMap.vertical;
+    const classes = isGridLayout ? variantClassMap.grid : variantClassMap.vertical;
+    const sheetItems = isGridLayout ? dropdownLeafItems(items) : items;
+
+    if (isGridLayout) {
+        return (
+            <View className="w-full mt-0 mb-2">
+                <Redirect ref={redirectdRef} />
+                <View className={`${menuSettings.content_grid} flex-row flex-wrap`}>
+                    {sheetItems.map((item, index) => (
+                        <View key={item.id ?? index} style={{ width: '33.333%' }}>
+                            <DropdownGridItem
+                                index={index}
+                                item={item}
+                                handleSelect={handlePressMenu(item)}
+                                className={item.className}
+                            />
+                        </View>
+                    ))}
+                </View>
+            </View>
+        );
+    }
 
     return (
         <View className='w-full mt-0 mb-2'>
             <Redirect ref={redirectdRef} />
-            {items.map((item, index) => (
-                <View key={item.id} className={item.className +' '+ (index != items.length - 1 ? 'py-2 border-b border-border/60  ' : 'py-2 ')}>
+            {sheetItems.map((item, index) => (
+                <View key={item.id ?? index} className={`${item.className || ''} ${index !== sheetItems.length - 1 ? 'py-2 border-b border-border/60' : 'py-2'}`}>
                     <DropdownMenuItem
                         mode="bottomsheet"
                         key={item.id ?? index}
@@ -320,6 +408,7 @@ function DropdownMenuNative({
     resolveContent,
     buttonProps,
     triggerAccessibilityLabel,
+    variant,
 }) {
     const { setBottomSheetData } = useBottomSheetData();
     const { t } = useTranslation();
@@ -327,7 +416,19 @@ function DropdownMenuNative({
     const handlePress = useCallback(() => {
         if (mode != "alert") {
             FeedbackHaptics('Medium')
-            setBottomSheetData({ showClose: false, snapPoints: ['10%', '50%'], content: <MenuBottomSheet resolveContent={resolveContent} items={items} onSelect={onSelect} setBottomSheetData={setBottomSheetData} /> });
+            setBottomSheetData({
+                showClose: false,
+                snapPoints: variant === 'grid' ? ['25%', '70%'] : ['10%', '50%'],
+                content: (
+                    <MenuBottomSheet
+                        variant={variant}
+                        resolveContent={resolveContent}
+                        items={items}
+                        onSelect={onSelect}
+                        setBottomSheetData={setBottomSheetData}
+                    />
+                ),
+            });
             Keyboard.dismiss();
         }
         else {
@@ -350,7 +451,7 @@ function DropdownMenuNative({
                 { cancelable: cancelable }
             );
         }
-    }, [cancelable, items, mode, onSelect, resolveContent, setBottomSheetData, t, title]);
+    }, [cancelable, items, mode, onSelect, resolveContent, setBottomSheetData, t, title, variant]);
 
     useEffect(() => {
         if (defaultOpen)
@@ -439,6 +540,7 @@ export default function DropdownMenu({
             resolveContent={resolveContent}
             buttonProps={buttonProps}
             triggerAccessibilityLabel={triggerAccessibilityLabel}
+            variant={variant}
         />
     );
 }

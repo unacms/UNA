@@ -76,8 +76,8 @@ export default function ({ buttonProps, children, tooltip, fullWidth, uri }) {
         >
             {ntfsOpen && (
                 <View key="ddp-content" className="gap-1">
-                    <View className="flex-row items-center ">
-                        <Text className="text-secondary-foreground px-1 text-lg flex-auto font-bold ml-0.5">
+                    <View className="flex-row items-center px-2">
+                        <Text className="text-secondary-foreground text-lg flex-auto font-bold">
                             {t('Notifications')}
                         </Text>
                         <Link href={appSetting('notifications', 'url')}>

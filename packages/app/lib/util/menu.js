@@ -150,12 +150,107 @@ export function groupDropdownItems(items) {
     return sections.filter((section) => section.header || section.items.length);
 }
 
+function menuLeafKeys(item) {
+    if (!item || item.type === 'group_header' || item.type === 'separator') return [];
+    const keys = [];
+    if (item.name) keys.push(`name:${item.name}`);
+    const uri = getURI(normalizeMenuItemHref(item.link || '')) || '';
+    if (uri) keys.push(`uri:${uri}`);
+    return keys;
+}
+
+function menuSectionKey(header) {
+    const raw = String(header?.name || header?.title || '').toLowerCase().trim();
+    return raw.replace(/-\d+$/, '');
+}
+
+function withNormalizedLink(item) {
+    if (!item?.link || item.type === 'group_header' || item.type === 'separator') return item;
+    const link = normalizeMenuItemHref(item.link);
+    return link && link !== item.link ? { ...item, link } : item;
+}
+
+function overlayMenuLeaf(base, overlay) {
+    if (!overlay) return withNormalizedLink(base);
+    const description = resolveMenuItemDescription(overlay) || resolveMenuItemDescription(base);
+    return withNormalizedLink({
+        ...base,
+        icon: overlay.icon || base.icon,
+        animated: overlay.animated ?? base.animated,
+        ...(description ? { description } : {}),
+    });
+}
+
+/**
+ * Navbar More is a static tree; Apps (`sys_homepage`) is API-driven.
+ * Prefer the launcher order/inventory, overlay local copy/icons, and append
+ * local-only rows (Documentation, Groups, …) into the matching section.
+ */
+export function mergeNavbarMoreWithLauncher(localItems, launcherItems) {
+    const localFlat = flattenMenuItemsForDropdown(localItems);
+    const remoteFlat = flattenMenuItemsForDropdown(launcherItems);
+    if (!remoteFlat.length) return localFlat;
+    if (!localFlat.length) return remoteFlat;
+
+    const overlayByKey = new Map();
+    localFlat.forEach((item) => {
+        menuLeafKeys(item).forEach((key) => overlayByKey.set(key, item));
+    });
+
+    const used = new Set();
+    const markUsed = (item) => {
+        menuLeafKeys(item).forEach((key) => used.add(key));
+    };
+    const isUsed = (item) => menuLeafKeys(item).some((key) => used.has(key));
+
+    const overlaySections = groupDropdownItems(localFlat);
+    const primarySections = groupDropdownItems(remoteFlat);
+    const out = [];
+
+    primarySections.forEach((section) => {
+        if (section.header) {
+            out.push({ ...section.header, first: out.length === 0 });
+        }
+        section.items.forEach((item) => {
+            const overlay = menuLeafKeys(item).map((key) => overlayByKey.get(key)).find(Boolean);
+            markUsed(overlay || item);
+            out.push(overlayMenuLeaf(item, overlay));
+        });
+        const sectionKey = menuSectionKey(section.header);
+        if (!sectionKey) return;
+        overlaySections.forEach((overlaySection) => {
+            if (menuSectionKey(overlaySection.header) !== sectionKey) return;
+            overlaySection.items.forEach((item) => {
+                if (isUsed(item)) return;
+                markUsed(item);
+                out.push(withNormalizedLink(item));
+            });
+        });
+    });
+
+    overlaySections.forEach((section) => {
+        const remaining = section.items.filter((item) => !isUsed(item));
+        if (!remaining.length) return;
+        if (section.header) {
+            out.push({ ...section.header, first: out.length === 0 });
+        }
+        remaining.forEach((item) => {
+            markUsed(item);
+            out.push(withNormalizedLink(item));
+        });
+    });
+
+    return out;
+}
+
 const DROPDOWN_SECTION_MIN = 240; // w-60
 const DROPDOWN_SECTION_MAX = 320; // w-80
 const DROPDOWN_SECTION_GAP = 4; // gap-1
 const DROPDOWN_SECTION_STACK_BELOW = 640; // sm
 const DROPDOWN_POPUP_GUTTER = 32;
-const DROPDOWN_POPUP_PAD = 8; // p-1 on the shell
+// Theme shell uses `p-1.5` (6px × 2). Must match `theme.dropdown.cnt` — too
+// small and the last column wraps while the popup still reserves its width.
+const DROPDOWN_POPUP_PAD = 12;
 
 /**
  * How many section columns fit, and how wide they should be.
@@ -167,6 +262,7 @@ export function getDropdownSectionsLayout(sectionCount, windowWidth, options = {
     const maxWidth = options.maxWidth ?? DROPDOWN_SECTION_MAX;
     const gap = options.gap ?? DROPDOWN_SECTION_GAP;
     const stackBelow = options.stackBelow ?? DROPDOWN_SECTION_STACK_BELOW;
+    const pad = options.pad ?? DROPDOWN_POPUP_PAD;
     const count = Math.max(1, sectionCount || 1);
 
     if (!windowWidth || windowWidth < stackBelow) {
@@ -175,14 +271,16 @@ export function getDropdownSectionsLayout(sectionCount, windowWidth, options = {
             cols: 1,
             colWidth: null,
             contentWidth: null,
+            popupWidth: null,
             minWidth,
             maxWidth,
+            gap,
         };
     }
 
     const available = Math.max(
         minWidth,
-        windowWidth - DROPDOWN_POPUP_GUTTER - DROPDOWN_POPUP_PAD
+        windowWidth - DROPDOWN_POPUP_GUTTER - pad
     );
     const maxCols = Math.max(1, Math.floor((available + gap) / (minWidth + gap)));
     const cols = Math.min(count, maxCols);
@@ -197,8 +295,37 @@ export function getDropdownSectionsLayout(sectionCount, windowWidth, options = {
         cols,
         colWidth,
         contentWidth,
+        popupWidth: contentWidth + pad,
         minWidth,
         maxWidth,
+        gap,
+    };
+}
+
+const DROPDOWN_GRID_COLS = 3;
+const DROPDOWN_GRID_CELL = 108;
+const DROPDOWN_GRID_GAP = 4;
+
+/** Drop section headers/separators so a dropdown can render as a tile grid. */
+export function dropdownLeafItems(items) {
+    return asMenuItemList(items).filter(
+        (item) => item && item.type !== 'group_header' && item.type !== 'separator'
+    );
+}
+
+/** Compact waffle (Apps launcher): 3 equal tiles, shell hugs the grid. */
+export function getDropdownGridLayout(options = {}) {
+    const cols = options.cols ?? DROPDOWN_GRID_COLS;
+    const cellWidth = options.cellWidth ?? DROPDOWN_GRID_CELL;
+    const gap = options.gap ?? DROPDOWN_GRID_GAP;
+    const pad = options.pad ?? DROPDOWN_POPUP_PAD;
+    const contentWidth = cols * cellWidth + Math.max(0, cols - 1) * gap;
+    return {
+        cols,
+        cellWidth,
+        gap,
+        contentWidth,
+        popupWidth: contentWidth + pad,
     };
 }
 
