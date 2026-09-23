@@ -63,13 +63,7 @@ class BxDolAIToolMysqlWrite extends BxDolAITool
 
         $this->_assertSafe($sMask);
 
-        if (preg_match('/^insert\b/i', $sMask))
-            $sOp = 'insert';
-        else if (preg_match('/^update\b/i', $sMask))
-            $sOp = 'update';
-        else
-            throw new Exception('Only INSERT or UPDATE is allowed.');
-
+        $sOp = $this->_operation($sMask);
         $sTable = $this->_tableName($sMask, $sOp);
         $this->_assertTable($sTable);
 
@@ -77,32 +71,21 @@ class BxDolAIToolMysqlWrite extends BxDolAITool
 
         $sBefore = null;
         $sPkValue = '';
-        if ($sOp === 'update') {
-            // The statement that runs is rebuilt from the parsed parts: one table, and
-            // a WHERE on the primary key alone, so it can never touch another row.
-            list($sSet, $sPkValue) = $this->_parseUpdate($sSql, $sMask, $sTable, $sPk);
-            $aBefore = $this->_fetchRow($oDb, $sTable, $sPk, $sPkValue);
-            if (!$aBefore)
-                throw new Exception("Row not found: {$sTable}.{$sPk} = {$sPkValue}");
-            $sBefore = json_encode($aBefore, JSON_UNESCAPED_UNICODE);
-
-            $sPkSql = preg_match('/^\d+$/', $sPkValue) ? (string)(int)$sPkValue : $oDb->escape($sPkValue);
-            $sSql = "UPDATE `{$sTable}` SET {$sSet} WHERE `{$sPk}` = {$sPkSql} LIMIT 1";
-        }
-        else {
+        if ($sOp === 'update')
+            list($sSql, $sPkValue, $sBefore) = $this->_prepareUpdate($oDb, $sSql, $sMask, $sTable, $sPk);
+        else
             $this->_assertSingleRowInsert($sMask, $sTable);
-        }
 
         $mixedRes = $oDb->query($sSql);
         if ($mixedRes === false)
-            throw new Exception('Query failed.');
+            throw new BxDolAIToolException('Query failed.');
 
         if ($sOp === 'insert') {
             $sPkValue = (string)$oDb->lastId();
             if ($sPkValue === '' || $sPkValue === '0')
                 $sPkValue = $this->_insertedPkFromSql($sSql, $sPk);
             if ($sPkValue === '')
-                throw new Exception('INSERT succeeded but primary key is unknown.');
+                throw new BxDolAIToolException('INSERT succeeded but primary key is unknown.');
         }
 
         $aAfter = $this->_fetchRow($oDb, $sTable, $sPk, $sPkValue);
@@ -119,6 +102,36 @@ class BxDolAIToolMysqlWrite extends BxDolAITool
         ];
     }
 
+    protected function _operation(string $sMask): string
+    {
+        if (preg_match('/^insert\b/i', $sMask))
+            return 'insert';
+        if (preg_match('/^update\b/i', $sMask))
+            return 'update';
+        throw new BxDolAIToolException('Only INSERT or UPDATE is allowed.');
+    }
+
+    /**
+     * The UPDATE that runs is rebuilt from the parsed parts: one table, and a WHERE
+     * on the primary key alone, so it can never touch another row.
+     *
+     * @return array{0:string,1:string,2:string} SQL to run, primary key value, JSON of the row before
+     */
+    protected function _prepareUpdate(BxDolDb $oDb, string $sSql, string $sMask, string $sTable, string $sPk): array
+    {
+        list($sSet, $sPkValue) = $this->_parseUpdate($sSql, $sMask, $sTable, $sPk);
+        $aBefore = $this->_fetchRow($oDb, $sTable, $sPk, $sPkValue);
+        if (!$aBefore)
+            throw new BxDolAIToolException("Row not found: {$sTable}.{$sPk} = {$sPkValue}");
+
+        $sPkSql = preg_match('/^\d+$/', $sPkValue) ? (string)(int)$sPkValue : $oDb->escape($sPkValue);
+        return [
+            "UPDATE `{$sTable}` SET {$sSet} WHERE `{$sPk}` = {$sPkSql} LIMIT 1",
+            $sPkValue,
+            json_encode($aBefore, JSON_UNESCAPED_UNICODE),
+        ];
+    }
+
     /**
      * Trim and drop a trailing `;`. Nothing inside the query is removed: string
      * literals may contain `#`, `--` or `/*`.
@@ -127,7 +140,7 @@ class BxDolAIToolMysqlWrite extends BxDolAITool
     {
         $s = rtrim(trim($s), "; \t\n\r");
         if ($s === '')
-            throw new Exception('Empty query.');
+            throw new BxDolAIToolException('Empty query.');
         return $s;
     }
 
@@ -145,22 +158,23 @@ class BxDolAIToolMysqlWrite extends BxDolAITool
     protected function _assertSafe(string $sMask): void
     {
         if (strpos($sMask, ';') !== false)
-            throw new Exception('Multiple statements are not allowed.');
+            throw new BxDolAIToolException('Multiple statements are not allowed.');
         if (preg_match('~#|--|/\*~', $sMask))
-            throw new Exception('SQL comments are not allowed.');
-        if (preg_match('/\b(delete|drop|truncate|alter|replace|create|grant|revoke|call|handler|load|outfile|dumpfile|lock\s+tables|unlock\s+tables|select|sleep|benchmark)\b/i', $sMask))
-            throw new Exception('Forbidden SQL keyword.');
+            throw new BxDolAIToolException('SQL comments are not allowed.');
+        if (preg_match('/\b(delete|drop|truncate|alter|replace|create|grant|revoke|call|handler|load)\b/i', $sMask)
+            || preg_match('/\b(outfile|dumpfile|lock\s+tables|unlock\s+tables|select|sleep|benchmark)\b/i', $sMask))
+            throw new BxDolAIToolException('Forbidden SQL keyword.');
         if (preg_match('/\bon\s+duplicate\s+key\b/i', $sMask))
-            throw new Exception('ON DUPLICATE KEY is not allowed.');
+            throw new BxDolAIToolException('ON DUPLICATE KEY is not allowed.');
     }
 
     protected function _tableName(string $sMask, string $sOp): string
     {
-        if ($sOp === 'insert' && preg_match('/^insert\s+(?:(?:low_priority|high_priority|delayed|ignore)\s+)*into\s+(`?)([a-zA-Z0-9_]+)\1(?=[\s(]|$)/i', $sMask, $aM))
+        if ($sOp === 'insert' && preg_match('/^insert\s+(?:(?:low_priority|high_priority|delayed|ignore)\s+)*into\s+(`?)(\w+)\1(?=[\s(]|$)/i', $sMask, $aM))
             return $aM[2];
-        if ($sOp === 'update' && preg_match('/^update\s+(?:(?:low_priority|ignore)\s+)*(`?)([a-zA-Z0-9_]+)\1\s+set\s/i', $sMask, $aM))
+        if ($sOp === 'update' && preg_match('/^update\s+(?:(?:low_priority|ignore)\s+)*(`?)(\w+)\1\s+set\s/i', $sMask, $aM))
             return $aM[2];
-        throw new Exception($sOp === 'update'
+        throw new BxDolAIToolException($sOp === 'update'
             ? 'UPDATE must name exactly one table: UPDATE `table` SET ... WHERE `pk` = value.'
             : 'Cannot parse table name: INSERT INTO `table` ...');
     }
@@ -172,7 +186,7 @@ class BxDolAIToolMysqlWrite extends BxDolAITool
             $bPrefix = substr($sDeny, -1) === '*';
             $sDeny = rtrim($sDeny, '*');
             if ($bPrefix ? strncmp($sTable, $sDeny, strlen($sDeny)) === 0 : $sTable === $sDeny)
-                throw new Exception("Table {$sTable} is not writable by this tool.");
+                throw new BxDolAIToolException("Table {$sTable} is not writable by this tool.");
         }
     }
 
@@ -184,30 +198,30 @@ class BxDolAIToolMysqlWrite extends BxDolAITool
      */
     protected function _parseUpdate(string $sSql, string $sMask, string $sTable, string $sPk): array
     {
-        if (!preg_match('/^update\s+(?:(?:low_priority|ignore)\s+)*`?[a-zA-Z0-9_]+`?\s+set\s/i', $sMask, $aM))
-            throw new Exception('UPDATE must name exactly one table: UPDATE `table` SET ... WHERE `pk` = value.');
+        if (!preg_match('/^update\s+(?:(?:low_priority|ignore)\s+)*`?\w+`?\s+set\s/i', $sMask, $aM))
+            throw new BxDolAIToolException('UPDATE must name exactly one table: UPDATE `table` SET ... WHERE `pk` = value.');
 
         $iSet = strlen($aM[0]);
         $iWhere = $this->_findTopLevelWhere($sMask, $iSet);
         if ($iWhere < 0)
-            throw new Exception("UPDATE requires WHERE `{$sPk}` = value.");
+            throw new BxDolAIToolException("UPDATE requires WHERE `{$sPk}` = value.");
 
         $sSet = trim(substr($sSql, $iSet, $iWhere - $iSet));
         if ($sSet === '')
-            throw new Exception('UPDATE has nothing to SET.');
+            throw new BxDolAIToolException('UPDATE has nothing to SET.');
 
         $iAfter = $iWhere + 5;
         $sTableRe = preg_quote($sTable, '/');
         $sPkRe = preg_quote($sPk, '/');
         $sRe = '/^\s*\(?\s*(?:`?' . $sTableRe . '`?\s*\.\s*)?`?' . $sPkRe . '`?\s*=\s*(\d+|\'[^\'\\\\]*\'|"[^"\\\\]*")\s*\)?\s*(?:limit\s+1\s*)?$/i';
         if (!preg_match($sRe, substr($sMask, $iAfter), $aV, PREG_OFFSET_CAPTURE))
-            throw new Exception("UPDATE WHERE must be exactly `{$sPk}` = value (the primary key, nothing else).");
+            throw new BxDolAIToolException("UPDATE WHERE must be exactly `{$sPk}` = value (the primary key, nothing else).");
 
         $sValue = substr($sSql, $iAfter + $aV[1][1], strlen($aV[1][0]));
         if ($sValue[0] === '\'' || $sValue[0] === '"')
             $sValue = substr($sValue, 1, -1);
         if (strpbrk($sValue, '\'"\\') !== false)
-            throw new Exception('Unsupported primary key value.');
+            throw new BxDolAIToolException('Unsupported primary key value.');
 
         return [$sSet, $sValue];
     }
@@ -222,9 +236,9 @@ class BxDolAIToolMysqlWrite extends BxDolAITool
             $c = $sMask[$i];
             if ($c === '(')
                 $iDepth++;
-            else if ($c === ')')
+            elseif ($c === ')')
                 $iDepth--;
-            else if ($iDepth === 0 && ($c === 'w' || $c === 'W') && preg_match('/\s/', $sMask[$i - 1] ?? '') && preg_match('/\Gwhere\b/i', $sMask, $aM, 0, $i))
+            elseif ($iDepth === 0 && ($c === 'w' || $c === 'W') && preg_match('/\s/', $sMask[$i - 1] ?? '') && preg_match('/\Gwhere\b/i', $sMask, $aM, 0, $i))
                 return $i;
         }
         return -1;
@@ -241,29 +255,29 @@ class BxDolAIToolMysqlWrite extends BxDolAITool
             return;
 
         if (!preg_match($sHead . '(?:\([^()]*\)\s*)?values?\s*/i', $sMask, $aM))
-            throw new Exception('INSERT must be INSERT INTO `table` (...) VALUES (...) or INSERT INTO `table` SET ...');
+            throw new BxDolAIToolException('INSERT must be INSERT INTO `table` (...) VALUES (...) or INSERT INTO `table` SET ...');
 
         $sRest = rtrim(substr($sMask, strlen($aM[0])));
         $iDepth = 0;
         for ($i = 0, $iLen = strlen($sRest); $i < $iLen; $i++) {
             if ($sRest[$i] === '(')
                 $iDepth++;
-            else if ($sRest[$i] === ')')
+            elseif ($sRest[$i] === ')')
                 $iDepth--;
             if ($iDepth === 0 && $i < $iLen - 1)
-                throw new Exception('INSERT one row at a time: a single VALUES (...) group.');
+                throw new BxDolAIToolException('INSERT one row at a time: a single VALUES (...) group.');
         }
         if ($iDepth !== 0 || $sRest === '' || $sRest[0] !== '(')
-            throw new Exception('INSERT one row at a time: a single VALUES (...) group.');
+            throw new BxDolAIToolException('INSERT one row at a time: a single VALUES (...) group.');
     }
 
     protected function _primaryKey(BxDolDb $oDb, string $sTable): string
     {
         $aKeys = $oDb->getAll("SHOW KEYS FROM `" . str_replace('`', '', $sTable) . "` WHERE `Key_name` = 'PRIMARY'");
         if (!$aKeys)
-            throw new Exception("Table {$sTable} has no PRIMARY KEY.");
+            throw new BxDolAIToolException("Table {$sTable} has no PRIMARY KEY.");
         if (count($aKeys) > 1)
-            throw new Exception("Composite primary keys are not supported.");
+            throw new BxDolAIToolException("Composite primary keys are not supported.");
         return $aKeys[0]['Column_name'];
     }
 

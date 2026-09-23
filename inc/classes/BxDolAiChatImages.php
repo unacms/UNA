@@ -16,6 +16,7 @@ class BxDolAiChatImages
     const STORAGE = 'sys_agents_chat_images';
     const MAX_BYTES = 8388608;
     const MAX_PER_TURN = 4;
+    const MIME_DEFAULT = 'image/jpeg';
     /** Session key listing the file ids this visitor uploaded (guests have no profile id to own a file by). */
     const SESSION_KEY = 'sys_agents_chat_images_own';
     const SESSION_MAX = 50;
@@ -50,7 +51,7 @@ class BxDolAiChatImages
         $sMime = strtolower((string)($aFile['type'] ?? ''));
         $sExt = strtolower(pathinfo($sName, PATHINFO_EXTENSION));
         $aMime = [
-            'jpg' => 'image/jpeg', 'jpeg' => 'image/jpeg', 'png' => 'image/png',
+            'jpg' => self::MIME_DEFAULT, 'jpeg' => self::MIME_DEFAULT, 'png' => 'image/png',
             'gif' => 'image/gif', 'webp' => 'image/webp',
         ];
         if (!isset($aMime[$sExt]))
@@ -92,7 +93,7 @@ class BxDolAiChatImages
 
         $sType = strtolower((string)($aPart['type'] ?? ''));
         $sUrl = '';
-        $sMime = 'image/jpeg';
+        $sMime = self::MIME_DEFAULT;
         $aSource = is_array($aPart['source'] ?? null) ? $aPart['source'] : [];
         $iFileId = (int)($aPart['file_id'] ?? $aSource['file_id'] ?? 0);
 
@@ -174,7 +175,7 @@ class BxDolAiChatImages
     public function sanitizeMime($sMime)
     {
         $sMime = strtolower(trim((string)$sMime));
-        return preg_match('#^image/(jpeg|png|gif|webp)$#', $sMime) ? $sMime : 'image/jpeg';
+        return preg_match('#^image/(jpeg|png|gif|webp)$#', $sMime) ? $sMime : self::MIME_DEFAULT;
     }
 
     /**
@@ -224,36 +225,58 @@ class BxDolAiChatImages
         if ($sText !== '')
             $aBlocks[] = new NeuronAI\Chat\Messages\ContentBlocks\TextContent($sText);
 
-        foreach ((array)$aImages as $aImage) {
-            $iFileId = (int)($aImage['file_id'] ?? 0);
-            $sMime = trim((string)($aImage['mime'] ?? 'image/jpeg'));
-            $oImage = $iFileId > 0 ? $this->makeNeuronImageContent($iFileId, $sMime) : null;
-            if ($oImage)
-                $aBlocks[] = $oImage;
-        }
-
+        $aBlocks = array_merge($aBlocks, $this->imageBlocks($aImages));
         if (!$aBlocks)
             return null;
 
         try {
             return new NeuronAI\Chat\Messages\UserMessage($aBlocks);
         } catch (Throwable $oException) {
-            $oMessage = new NeuronAI\Chat\Messages\UserMessage($sText !== '' ? $sText : ' ');
-            foreach ($aBlocks as $oBlock) {
-                if ($oBlock instanceof NeuronAI\Chat\Messages\ContentBlocks\TextContent)
-                    continue;
-                if (method_exists($oMessage, 'addContent'))
-                    $oMessage->addContent($oBlock);
-            }
-            return $oMessage;
+            return $this->userMessageAddingBlocks($sText, $aBlocks);
         }
+    }
+
+    /**
+     * One NeuronAI image block per stored image that can be read.
+     *
+     * @param array<int, array{file_id:int,mime?:string}> $aImages
+     * @return array<int, NeuronAI\Chat\Messages\ContentBlocks\ImageContent>
+     */
+    protected function imageBlocks($aImages)
+    {
+        $aBlocks = [];
+        foreach ((array)$aImages as $aImage) {
+            $iFileId = (int)($aImage['file_id'] ?? 0);
+            $sMime = trim((string)($aImage['mime'] ?? self::MIME_DEFAULT));
+            $oImage = $iFileId > 0 ? $this->makeNeuronImageContent($iFileId, $sMime) : null;
+            if ($oImage)
+                $aBlocks[] = $oImage;
+        }
+        return $aBlocks;
+    }
+
+    /**
+     * Fallback for NeuronAI versions whose UserMessage does not take a block list:
+     * a text message with the image blocks added one by one.
+     */
+    protected function userMessageAddingBlocks($sText, $aBlocks)
+    {
+        $oMessage = new NeuronAI\Chat\Messages\UserMessage($sText !== '' ? $sText : ' ');
+        if (!method_exists($oMessage, 'addContent'))
+            return $oMessage;
+
+        foreach ($aBlocks as $oBlock) {
+            if (!($oBlock instanceof NeuronAI\Chat\Messages\ContentBlocks\TextContent))
+                $oMessage->addContent($oBlock);
+        }
+        return $oMessage;
     }
 
     /**
      * Image block for a file in the chat images storage. Prefer base64 (the model
      * does not have to fetch our URL); fall back to a URL block with the storage URL.
      */
-    public function makeNeuronImageContent($iFileId, $sMime = 'image/jpeg')
+    public function makeNeuronImageContent($iFileId, $sMime = self::MIME_DEFAULT)
     {
         $oStorage = BxDolStorage::getObjectInstance(self::STORAGE);
         $sUrl = $oStorage ? (string)$oStorage->getFileUrlById((int)$iFileId) : '';
@@ -301,7 +324,7 @@ class BxDolAiChatImages
         if ($sContent === '')
             return null;
 
-        $sMime = (string)($oBlock->mediaType ?? 'image/jpeg');
+        $sMime = (string)($oBlock->mediaType ?? self::MIME_DEFAULT);
         $sSource = '';
         if (isset($oBlock->sourceType)) {
             $sSource = $oBlock->sourceType instanceof \BackedEnum
