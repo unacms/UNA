@@ -1,16 +1,25 @@
-import { forwardRef, useCallback, useEffect, useLayoutEffect, useRef } from 'react'
+import { forwardRef, useCallback, useEffect, useLayoutEffect, useRef, type ComponentType, type CSSProperties, type ForwardRefRenderFunction, type MouseEvent as ReactMouseEvent, type Ref } from 'react'
 import { cn } from 'app/lib/util'
+import type {
+    DesignMotionViewProps,
+    DesignPressableProps,
+    DesignScrollViewProps,
+    DesignViewProps,
+} from './view.types'
 
-const assignRef = (ref, value) => {
+type Layout = { x: number; y: number; width: number; height: number }
+type LayoutEvent = { nativeEvent: { layout: Layout } }
+
+const assignRef = (ref: Ref<any> | undefined, value: any) => {
     if (typeof ref === 'function') {
         ref(value)
         return
     }
 
-    if (ref) ref.current = value
+    if (ref) (ref as { current: any }).current = value
 }
 
-const createLayoutEvent = (node) => {
+const createLayoutEvent = (node: Element): LayoutEvent => {
     const rect = node.getBoundingClientRect()
 
     return {
@@ -25,10 +34,10 @@ const createLayoutEvent = (node) => {
     }
 }
 
-const useWebLayout = (forwardedRef, onLayout) => {
-    const nodeRef = useRef(null)
-    const lastLayoutRef = useRef(null)
-    const emitLayoutRef = useRef(null)
+const useWebLayout = (forwardedRef: Ref<any> | undefined, onLayout?: (event: LayoutEvent) => void) => {
+    const nodeRef = useRef<Element | null>(null)
+    const lastLayoutRef = useRef<Layout | null>(null)
+    const emitLayoutRef = useRef<(() => void) | null>(null)
     // Latest callback lives in a ref so the subscription below is created once per
     // mount instead of on every render (call sites pass inline arrows). Re-running
     // it per render is wasted work, and on a fiber that still holds a low-priority
@@ -40,7 +49,7 @@ const useWebLayout = (forwardedRef, onLayout) => {
     })
     const hasOnLayout = typeof onLayout === 'function'
 
-    const setRef = useCallback((node) => {
+    const setRef = useCallback((node: Element | null) => {
         nodeRef.current = node
         assignRef(forwardedRef, node)
     }, [forwardedRef])
@@ -95,19 +104,19 @@ const useWebLayout = (forwardedRef, onLayout) => {
     return setRef
 }
 
-const normalizeWebStyle = (style) => {
+const normalizeWebStyle = (style: any): CSSProperties | undefined => {
     if (!Array.isArray(style)) return style || undefined
     return Object.assign({}, ...style.filter(Boolean))
 }
 
-const isEditableKeyTarget = (target) => {
+const isEditableKeyTarget = (target: any) => {
     if (!target || typeof target.closest !== 'function') return false
     return !!target.closest(
         'input, textarea, select, [contenteditable="true"], [contenteditable=""]'
     )
 }
 
-const sanitizeWebProps = (props) => {
+const sanitizeWebProps = (props: Record<string, any>): Record<string, any> => {
     const {
         accessibilityRole,
         accessibilityLabel,
@@ -187,7 +196,7 @@ const sanitizeWebProps = (props) => {
         if (!domProps.role) domProps.role = 'button'
         if (domProps.tabIndex == null) domProps.tabIndex = disabled ? -1 : 0
         if (disabled && domProps['aria-disabled'] == null) domProps['aria-disabled'] = true
-        domProps.onKeyDown = (event) => {
+        domProps.onKeyDown = (event: any) => {
             onKeyDown?.(event)
             if (disabled || event.defaultPrevented) return
             if (isEditableKeyTarget(event.target)) return
@@ -226,9 +235,9 @@ const MOTION_PROP_KEYS = new Set([
     'onAnimationComplete',
 ])
 
-const splitMotionProps = (props) => {
-    const motion = {}
-    const rest = {}
+const splitMotionProps = (props: Record<string, any>): [Record<string, any>, Record<string, any>] => {
+    const motion: Record<string, any> = {}
+    const rest: Record<string, any> = {}
     for (const key of Object.keys(props)) {
         if (MOTION_PROP_KEYS.has(key)) motion[key] = props[key]
         else rest[key] = props[key]
@@ -236,16 +245,16 @@ const splitMotionProps = (props) => {
     return [motion, rest]
 }
 
-const toCssDuration = (transition) => {
+const toCssDuration = (transition: any) => {
     const duration = transition?.duration ?? transition?.default?.duration
     if (typeof duration !== 'number') return '120ms'
     return `${duration > 10 ? duration : duration * 1000}ms`
 }
 
-const getAnimatedWebStyle = (motionProps) => {
+const getAnimatedWebStyle = (motionProps: any): CSSProperties => {
     const animate = motionProps?.animate || {}
-    const transform = []
-    const style = {
+    const transform: string[] = []
+    const style: CSSProperties = {
         transitionProperty: 'transform, opacity',
         transitionDuration: toCssDuration(motionProps?.transition),
         transitionTimingFunction: 'cubic-bezier(0.2, 0, 0, 1)',
@@ -274,9 +283,8 @@ const getAnimatedWebStyle = (motionProps) => {
     return style
 }
 
-export const interopComponent = (Component, displayName, baseClassName = 'neo-v') => {
-    /** @type {any} */
-    const Base = forwardRef(({ className, onLayout, ...props }, ref) => {
+export const interopComponent = (Component: any, displayName: string, baseClassName = 'neo-v'): any => {
+    const Base: any = forwardRef(({ className, onLayout, ...props }: any, ref) => {
         const layoutRef = useWebLayout(ref, onLayout)
 
         return (
@@ -287,23 +295,22 @@ export const interopComponent = (Component, displayName, baseClassName = 'neo-v'
     return Base
 }
 
-export const interopRender = (displayName, render) => {
-    /** @type {any} */
-    const Base = forwardRef(render)
+export const interopRender = (displayName: string, render: ForwardRefRenderFunction<any, any>): any => {
+    const Base: any = forwardRef(render)
     Base.displayName = displayName
     return Base
 }
 
-export const View = interopComponent('div', 'View')
+export const View: ComponentType<DesignViewProps> = interopComponent('div', 'View')
 
 /** Plain left-click only — let cmd/ctrl/shift/middle clicks reach the browser. */
-const isPlainLeftClick = (event) =>
+const isPlainLeftClick = (event: MouseEvent | ReactMouseEvent) =>
     event.button === 0 &&
     !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey
 
-export const Pressable = interopRender(
+export const Pressable: ComponentType<DesignPressableProps> = interopRender(
     'Pressable',
-    ({ className, onLayout, onPress, href, target, rel, ...props }, ref) => {
+    ({ className, onLayout, onPress, href, target, rel, ...props }: any, ref: any) => {
         const layoutRef = useWebLayout(ref, onLayout)
         const hasCursorClass =
             typeof className === 'string' && /(?:^|\s)(?:web:)?cursor-/.test(className)
@@ -312,7 +319,7 @@ export const Pressable = interopRender(
         // and SEO semantics. onPress still handles plain left-clicks (SPA nav).
         if (href) {
             const domProps = sanitizeWebProps(props)
-            const handleClick = (event) => {
+            const handleClick = (event: ReactMouseEvent) => {
                 if (!onPress || event.defaultPrevented || !isPlainLeftClick(event)) return
                 event.preventDefault()
                 onPress(event)
@@ -340,7 +347,7 @@ export const Pressable = interopRender(
         )
     }
 )
-export const ScrollView = interopRender(
+export const ScrollView: ComponentType<DesignScrollViewProps> = interopRender(
     'ScrollView',
     (
         {
@@ -353,8 +360,8 @@ export const ScrollView = interopRender(
             scrollEnabled = true,
             onScroll,
             ...rest
-        },
-        ref
+        }: any,
+        ref: any
     ) => {
         const layoutRef = useWebLayout(ref, onLayout)
         const domProps = sanitizeWebProps(rest)
@@ -381,9 +388,9 @@ export const ScrollView = interopRender(
         )
     }
 )
-export const MotionView = interopRender(
+export const MotionView: ComponentType<DesignMotionViewProps> = interopRender(
     'MotionView',
-    ({ className, onLayout, style, children, ...props }, ref) => {
+    ({ className, onLayout, style, children, ...props }: any, ref: any) => {
         const layoutRef = useWebLayout(ref, onLayout)
         const [motionProps, restProps] = splitMotionProps(props)
         const domProps = sanitizeWebProps(restProps)
@@ -406,9 +413,9 @@ export const MotionView = interopRender(
     }
 )
 
-export const Row = interopRender(
+export const Row: ComponentType<DesignViewProps> = interopRender(
     'Row',
-    ({ children, className, onLayout, ...props }, ref) => {
+    ({ children, className, onLayout, ...props }: any, ref: any) => {
         const layoutRef = useWebLayout(ref, onLayout)
 
         return (

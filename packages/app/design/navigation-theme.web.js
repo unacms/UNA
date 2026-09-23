@@ -1,5 +1,5 @@
 // Web copy of react-navigation's DefaultTheme / DarkTheme (expo-router 57,
-// build/react-navigation/native/theming). `useTheme()` in design/theme.js only
+// build/react-navigation/native/theming). `useTheme()` in design/theme.ts only
 // spreads these as a base under the app's own colors; importing them from
 // 'expo-router/react-navigation' pulled the entire navigation core into the web
 // bundle. Keep in sync with the native module if react-navigation changes shape.

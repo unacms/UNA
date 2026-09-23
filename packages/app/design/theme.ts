@@ -4,9 +4,16 @@ import { Platform, useColorScheme } from 'react-native';
 import { appSetting } from 'app/lib/util'
 import { useLayoutSettings } from 'app/context/layout-settings';
 
+export type ThemeName = 'light' | 'dark';
+
+/** react-navigation theme with the app palette (`theme.light` / `theme.dark` settings) merged into `colors`. */
+export type AppTheme = Omit<typeof DefaultTheme, 'colors'> & {
+    colors: typeof DefaultTheme.colors & Record<string, string>;
+};
+
 const COLOR_SCHEME_QUERY = '(prefers-color-scheme: dark)';
 
-function getWebSystemThemeName() {
+function getWebSystemThemeName(): ThemeName {
     if (typeof window === 'undefined' || !window.matchMedia) {
         return 'light';
     }
@@ -14,7 +21,7 @@ function getWebSystemThemeName() {
     return window.matchMedia(COLOR_SCHEME_QUERY).matches ? 'dark' : 'light';
 }
 
-function subscribeToWebSystemTheme(onStoreChange) {
+function subscribeToWebSystemTheme(onStoreChange: () => void) {
     if (typeof window === 'undefined' || !window.matchMedia) {
         return () => {};
     }
@@ -30,10 +37,10 @@ function subscribeToWebSystemTheme(onStoreChange) {
     return () => mediaQuery.removeListener(onStoreChange);
 }
 
-export function useTheme() {
+export function useTheme(): AppTheme {
 
     const lightTheme = appSetting('theme', 'light');
-    const CustomLightTheme = {
+    const CustomLightTheme: AppTheme = {
         ...DefaultTheme,
         colors: {
             ...DefaultTheme.colors,
@@ -42,7 +49,7 @@ export function useTheme() {
     };
 
     const darkTheme = appSetting('theme', 'dark');
-    const CustomDarkTheme = {
+    const CustomDarkTheme: AppTheme = {
         ...DarkTheme,
         colors: {
             ...DarkTheme.colors,
@@ -53,25 +60,28 @@ export function useTheme() {
     return useThemeValue(CustomLightTheme, CustomDarkTheme);
 }
 
-export function useResolvedThemeName() {
+/** User choice from layout settings, or the system scheme when set to `auto`. */
+export function useResolvedThemeName(): ThemeName {
     const { themeName } = useLayoutSettings();
     const nativeSystemThemeName = useColorScheme();
     const webSystemThemeName = useSyncExternalStore(
         subscribeToWebSystemTheme,
         getWebSystemThemeName,
-        () => 'light'
+        (): ThemeName => 'light'
     );
     const systemThemeName = Platform.OS === 'web' ? webSystemThemeName : nativeSystemThemeName;
 
-    return (themeName && themeName !== 'auto') ? themeName : (systemThemeName || 'light');
+    if (themeName && themeName !== 'auto') return themeName;
+    // Native can report 'unspecified' (no system preference); treat anything but dark as light.
+    return systemThemeName === 'dark' ? 'dark' : 'light';
 }
 
-export function useThemeName() {
+export function useThemeName(): ThemeName {
     return useResolvedThemeName();
 }
 
 /** Pick light vs dark value from the resolved theme name. */
-export function useThemeValue(light, dark) {
+export function useThemeValue<T>(light: T, dark?: T): T {
     return useThemeName() === 'dark' ? dark ?? light : light;
 }
 

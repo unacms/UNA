@@ -8,8 +8,8 @@ This document is the reference checklist for the NativeWind to Uniwind transitio
 - Removed the NativeWind Babel preset and `withNativeWind` Metro wrapper.
 - Added `withUniwindConfig` in `apps/expo/metro.config.js` with `cssEntryFile: './global.combined.css'` and `polyfills: { rem: 16 }`.
 - Moved native styling tokens into `apps/expo/global.combined.css` using Tailwind CSS 4 `@theme` variables and `@source` entries for `apps/expo/app` and `packages/app`.
-- Kept the web app on its own Tailwind CSS pipeline (now Tailwind CSS 4 via `@tailwindcss/postcss`) and replaced key React Native Web styling paths with lean DOM primitives in `packages/app/design/view.js`, `view.web.js`, and `typography.js`.
-- Added web-compatible `onLayout` support via `packages/app/design/view.web.js`, using `ResizeObserver` only when a component passes `onLayout`.
+- Kept the web app on its own Tailwind CSS pipeline (now Tailwind CSS 4 via `@tailwindcss/postcss`) and replaced key React Native Web styling paths with lean DOM primitives in `packages/app/design/view.tsx`, `view.web.tsx`, and `typography.tsx`.
+- Added web-compatible `onLayout` support via `packages/app/design/view.web.tsx`, using `ResizeObserver` only when a component passes `onLayout`.
 - Added web-specific form controls in `packages/app/design/controls/inputs.web.tsx` so common RN input props are translated to DOM props instead of depending on native styling interop.
 - Removed migration-only Playwright logs/snapshots and the dashboard theme test component.
 
@@ -86,7 +86,7 @@ Uniwind.setTheme(themeName !== 'auto' ? themeName : 'system')
 Use CSS layout first. Measure only when behavior depends on rendered dimensions.
 
 - Native: use React Native `onLayout`.
-- Web: use the shared `useWebLayout` wrapper behavior from `packages/app/design/view.web.js`.
+- Web: use the shared `useWebLayout` wrapper behavior from `packages/app/design/view.web.tsx`.
 - Do not add per-feature `ResizeObserver` code unless the feature cannot be expressed through primitive `onLayout`.
 - Do not measure all components. The observer only exists for components that pass `onLayout`.
 - Deduplicate layout updates by comparing the last layout before calling `onLayout`.

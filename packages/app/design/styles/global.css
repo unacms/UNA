@@ -99,7 +99,7 @@
     }
 
     /*
-     * Web `View` interop (`view.web.js` → `neo-v`): RN-style flex column reset.
+     * Web `View` interop (`view.web.tsx` → `neo-v`): RN-style flex column reset.
      * Lives in `base` so Tailwind utilities on the same node win over flex/display/position.
      * `:where()` keeps specificity at 0 so authored utilities still override when needed.
      */
@@ -153,14 +153,14 @@
         overflow-x: hidden;
         overflow-y: auto;
     }
-     /* Web `ScrollView` inner content — horizontal (view.web.js). */
+     /* Web `ScrollView` inner content — horizontal (view.web.tsx). */
     .neo-sh-c {
         display: flex;
         min-height: 0;
         flex-direction: row;
         flex-wrap: nowrap;
     }
-    /* Web `ScrollView` inner content — vertical (view.web.js). */
+    /* Web `ScrollView` inner content — vertical (view.web.tsx). */
     .neo-sv-c {
         display: flex;
         min-width: 0;

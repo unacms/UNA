@@ -1,13 +1,35 @@
-import { Text as NativeText, Platform } from 'react-native'
+import { Text as NativeText, Platform, type TextProps as RNTextProps } from 'react-native'
+import type { ReactNode } from 'react'
 import { decodeText } from 'app/lib/util'
 import { appSetting } from 'app/lib/util'
 const isWeb = Platform.OS === 'web'
 // Use DOM element on web so Tailwind classes apply without NativeWind babel
-const Text_ = isWeb ? 'span' : NativeText
+const Text_: any = isWeb ? 'span' : NativeText
 
 const noScale = isWeb  || appSetting('native', 'allow_font_scaling')? {} : { allowFontScaling: false }
 
-function sanitizeWebTextProps(props) {
+/** Web-only DOM props callers pass through Text/headings (ignored on native). */
+type WebTextExtras = {
+    onClick?: (event: any) => void
+    title?: string
+    htmlFor?: string
+    tabIndex?: number
+}
+
+export type TextProps = RNTextProps & WebTextExtras & {
+    className?: string
+    /** Font utility class; defaults to `font-main` (`font-title` for headings). */
+    fontFamily?: string
+}
+
+export type HeadingProps = TextProps & {
+    /** Drop the top/bottom spacing when the heading is the first/last block (`'true'` from UNA). */
+    isfirst?: boolean | 'true' | 'false'
+    islast?: boolean | 'true' | 'false'
+    children?: ReactNode
+}
+
+function sanitizeWebTextProps(props: Record<string, any>) {
     if (!props || !isWeb) return props;
     const {
         accessible,
@@ -33,7 +55,7 @@ function sanitizeWebTextProps(props) {
     return domProps;
 }
 
-const getSpacing = (top, bottom, isfirst, islast) => {
+const getSpacing = (top: string, bottom: string, isfirst: HeadingProps['isfirst'], islast: HeadingProps['islast']) => {
     if (isfirst === undefined && islast === undefined) {
         return `${top} ${bottom}`
     }
@@ -46,20 +68,13 @@ const getSpacing = (top, bottom, isfirst, islast) => {
 }
 
 
-/**
- * @param {import('react-native').TextProps & {
- *   className?: string,
- *   fontFamily?: string,
- *   [key: string]: any,
- * }} props
- */
 export const Text = ({
     children,
     className,
     fontFamily = '',
     numberOfLines = undefined,
     ...rest
-}) => {
+}: TextProps) => {
     const baseClassName = className || '  '
     let finalClassName = `${baseClassName} ${fontFamily || 'font-main'}`.trim()
     const spreadProps = isWeb ? sanitizeWebTextProps(rest) : rest
@@ -78,8 +93,8 @@ export const Text = ({
 /**
  * Components can have defaultProps and styles
  */
-export const H1 = ({ children, className, fontFamily = '', isfirst, islast, ...rest }) => {
-    const HeadingComponent = isWeb ? 'h1' : NativeText
+export const H1 = ({ children, className, fontFamily = '', isfirst, islast, ...rest }: HeadingProps) => {
+    const HeadingComponent: any = isWeb ? 'h1' : NativeText
     const spacing = getSpacing('mt-2', 'mb-6', isfirst, islast)
 
     return (
@@ -89,8 +104,8 @@ export const H1 = ({ children, className, fontFamily = '', isfirst, islast, ...r
     )
 }
 
-export const H1C = ({ children, className, fontFamily = '', isfirst, islast, ...rest }) => {
-    const HeadingComponent = isWeb ? 'h1' : NativeText
+export const H1C = ({ children, className, fontFamily = '', isfirst, islast, ...rest }: HeadingProps) => {
+    const HeadingComponent: any = isWeb ? 'h1' : NativeText
     const spacing = getSpacing('pt-0', 'pb-4', isfirst, islast)
 
     return (
@@ -100,8 +115,8 @@ export const H1C = ({ children, className, fontFamily = '', isfirst, islast, ...
     )
 }
 
-export const H2 = ({ children, className, fontFamily = '', isfirst, islast, ...rest }) => {
-    const HeadingComponent = isWeb ? 'h2' : NativeText
+export const H2 = ({ children, className, fontFamily = '', isfirst, islast, ...rest }: HeadingProps) => {
+    const HeadingComponent: any = isWeb ? 'h2' : NativeText
     const spacing = getSpacing('pt-6', 'pb-4', isfirst, islast)
 
     return (
@@ -111,8 +126,8 @@ export const H2 = ({ children, className, fontFamily = '', isfirst, islast, ...r
     )
 }
 
-export const H3 = ({ children, className, fontFamily = '', isfirst, islast, ...rest }) => {
-    const HeadingComponent = isWeb ? 'h3' : NativeText
+export const H3 = ({ children, className, fontFamily = '', isfirst, islast, ...rest }: HeadingProps) => {
+    const HeadingComponent: any = isWeb ? 'h3' : NativeText
     const spacing = getSpacing('pt-4', 'pb-2', isfirst, islast)
 
     return (
@@ -122,8 +137,8 @@ export const H3 = ({ children, className, fontFamily = '', isfirst, islast, ...r
     )
 }
 
-export const H4 = ({ children, className, fontFamily = '', isfirst, islast, ...rest }) => {
-    const HeadingComponent = isWeb ? 'h4' : NativeText
+export const H4 = ({ children, className, fontFamily = '', isfirst, islast, ...rest }: HeadingProps) => {
+    const HeadingComponent: any = isWeb ? 'h4' : NativeText
     const spacing = isfirst !== undefined ? getSpacing('pt-2', 'pb-1', isfirst, islast) : ''
 
     return (
@@ -133,8 +148,8 @@ export const H4 = ({ children, className, fontFamily = '', isfirst, islast, ...r
     )
 }
 
-export const H5 = ({ children, className, fontFamily = '', isfirst, islast, ...rest }) => {
-    const HeadingComponent = isWeb ? 'h5' : NativeText
+export const H5 = ({ children, className, fontFamily = '', isfirst, islast, ...rest }: HeadingProps) => {
+    const HeadingComponent: any = isWeb ? 'h5' : NativeText
     const spacing = isfirst !== undefined ? getSpacing('pt-2', 'pb-1', isfirst, islast) : ''
 
     return (
@@ -144,8 +159,8 @@ export const H5 = ({ children, className, fontFamily = '', isfirst, islast, ...r
     )
 }
 
-export const H6 = ({ children, className, fontFamily = '', isfirst, islast, ...rest }) => {
-    const HeadingComponent = isWeb ? 'h6' : NativeText
+export const H6 = ({ children, className, fontFamily = '', isfirst, islast, ...rest }: HeadingProps) => {
+    const HeadingComponent: any = isWeb ? 'h6' : NativeText
     const spacing = isfirst !== undefined ? getSpacing('pt-2', 'pb-1', isfirst, islast) : ''
 
     return (

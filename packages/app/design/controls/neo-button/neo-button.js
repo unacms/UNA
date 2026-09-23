@@ -574,7 +574,7 @@ const NeoButtonStyled = (props) => {
 
     /* ----------------------------- surface ------------------------------ */
 
-    // Web Pressable does not surface onPressIn/Out to the DOM (see view.web.js).
+    // Web Pressable does not surface onPressIn/Out to the DOM (see view.web.tsx).
     // Use View + pointer handlers for press visuals; onPress maps to onClick there.
     // Native keeps RN Pressable for press-in/out, hitSlop, and long-press.
     const useNativePressable = isPressable && !isWeb;
