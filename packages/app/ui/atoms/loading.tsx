@@ -2,7 +2,12 @@ import { ActivityIndicator } from 'react-native';
 import { useTheme } from 'app/design/theme';
 import { useTranslation } from 'react-i18next';
 
-export default function ElementLoading({size, color}) {
+type LoadingProps = {
+    size?: 'small' | 'large' | number;
+    color?: string;
+};
+
+export default function ElementLoading({size, color}: LoadingProps) {
     const { t } = useTranslation();
     const { colors } = useTheme();
     return (

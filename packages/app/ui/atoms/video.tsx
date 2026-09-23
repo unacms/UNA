@@ -13,7 +13,22 @@ const styles = StyleSheet.create({
     },
 });
 
-function ElementVideoPlayer({ src, controls, cover, fill, autoplay, muted }) {
+export type VideoProps = {
+    src?: string | null;
+    controls?: boolean;
+    cover?: boolean;
+    /** Stretch to parent (lightbox) instead of the default aspect-video box. */
+    fill?: boolean;
+    /** Callers pass `true` or the legacy `"autoplay"` string. */
+    autoplay?: boolean | string;
+    /** Callers pass `true` or the legacy `"muted"` string. */
+    muted?: boolean | string;
+    poster?: string;
+    video_embed?: unknown;
+    className?: string;
+};
+
+function ElementVideoPlayer({ src, controls, cover, fill, autoplay, muted }: VideoProps & { src: string }) {
     const player = useVideoPlayer(src, player => {
         player.muted = muted ? true : false;
         player.loop = autoplay ? true : false;
@@ -48,8 +63,8 @@ function ElementVideoPlayer({ src, controls, cover, fill, autoplay, muted }) {
     )
 }
 
-export default function ElementVideo(props) {
+export default function ElementVideo(props: VideoProps) {
     if (!props.src) return null;
 
-    return <ElementVideoPlayer {...props} />;
+    return <ElementVideoPlayer {...props} src={props.src} />;
 }

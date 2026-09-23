@@ -1,12 +1,14 @@
 import React, { useRef } from 'react';
 
-export const SafeMenuTrigger = ({ children, className = '', ...rest }) => {
+type SafeMenuTriggerProps = React.HTMLAttributes<HTMLDivElement>;
+
+export const SafeMenuTrigger = ({ children, className = '', ...rest }: SafeMenuTriggerProps) => {
     const start = useRef({ x: 0, y: 0, time: 0 });
 
     const MAX_MOVEMENT = 1;
     const MAX_DURATION = 300;
 
-    const handlePointerDownCapture = (e) => {
+    const handlePointerDownCapture = (e: React.PointerEvent<HTMLDivElement>) => {
         start.current = {
             x: e.pageX,
             y: e.pageY,
@@ -14,7 +16,7 @@ export const SafeMenuTrigger = ({ children, className = '', ...rest }) => {
         };
     };
 
-    const handlePointerDown = (e) => {
+    const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
         const dx = Math.abs(e.pageX - start.current.x);
         const dy = Math.abs(e.pageY - start.current.y);
         const dt = Date.now() - start.current.time;

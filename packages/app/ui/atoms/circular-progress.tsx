@@ -3,7 +3,15 @@ import { View } from 'app/design/view';
 import Svg, { Circle } from 'react-native-svg';
 import { Text } from 'app/design/typography';
 
-export default function CircularProgress({ percentage, strokeWidth=10, bgColor="#e6e6e6", progressColor="#ff6347", classes="" }) {
+type CircularProgressProps = {
+    percentage: number;
+    strokeWidth?: number;
+    bgColor?: string;
+    progressColor?: string;
+    classes?: string;
+};
+
+export default function CircularProgress({ percentage, strokeWidth=10, bgColor="#e6e6e6", progressColor="#ff6347", classes="" }: CircularProgressProps) {
     const radius = 50;
     const circumference = 2 * Math.PI * radius; 
     const progress = (percentage / 100) * circumference; 
@@ -37,4 +45,3 @@ export default function CircularProgress({ percentage, strokeWidth=10, bgColor="
         </View>
     );
 };
-

@@ -1,29 +1,47 @@
 'use client';
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import { Text } from 'app/design/typography';
 import { View } from 'app/design/view';
 import { appSetting } from 'app/lib/util';
+import type { View as RNView, ViewStyle } from 'react-native';
+
+// react-native-web renders View as a DOM node, so the ref is both.
+type WebViewRef = RNView & HTMLDivElement;
 
 const CLIP_PAD = 8;
 const GAP = 10;
 
-const HIDDEN_STYLE = {
+type TooltipStyle = {
+    position: 'fixed';
+    top: number;
+    left: number;
+    visibility?: 'hidden';
+};
+
+type TooltipProps = {
+    children?: ReactNode;
+    content?: ReactNode;
+    enabled?: boolean;
+    side?: 'top' | 'bottom';
+};
+
+const HIDDEN_STYLE: TooltipStyle = {
     position: 'fixed',
     top: 0,
     left: 0,
     visibility: 'hidden',
 };
 
-export default function Tooltip({ children, content, enabled = true, side = 'bottom' }) {
+export default function Tooltip({ children, content, enabled = true, side = 'bottom' }: TooltipProps) {
     const tooltipsEnabled = appSetting('layout', 'tooltips');
     const shouldRenderTooltip = !!enabled && !!tooltipsEnabled;
 
     const [visible, setVisible] = useState(false);
-    const [tooltipStyle, setTooltipStyle] = useState(HIDDEN_STYLE);
-    const tooltipRef = useRef(null);
-    const wrapperRef = useRef(null);
-    const timeoutRef = useRef(null);
+    const [tooltipStyle, setTooltipStyle] = useState<TooltipStyle>(HIDDEN_STYLE);
+    const tooltipRef = useRef<WebViewRef>(null);
+    const wrapperRef = useRef<WebViewRef>(null);
+    const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     const eventHandlers = {
         onMouseEnter: () => {
@@ -93,7 +111,8 @@ export default function Tooltip({ children, content, enabled = true, side = 'bot
                 ref={tooltipRef}
                 pointerEvents="none"
                 className="z-50 shadow-lg w-auto backdrop-blur bg-popover/90 rounded-full py-1.5 px-3"
-                style={tooltipStyle}
+                // RN types lack `position: 'fixed'`; react-native-web supports it.
+                style={tooltipStyle as unknown as ViewStyle}
             >
                 <Text className="text-card-foreground whitespace-nowrap text-sm">{content}</Text>
             </View>,

@@ -2,12 +2,26 @@
 import { Text } from 'app/design/typography'
 import { View, Pressable } from 'app/design/view'
 import * as CheckboxPrimitive from '@rn-primitives/checkbox';
-import { isValidElement } from 'react';
+import React, { isValidElement } from 'react';
 import { appSetting } from 'app/lib/util';
 import { Icon } from 'app/ui/atoms/icon';
 const checkboxTheme = appSetting('theme', 'checkbox');
 
-export default function ({ title, info, onPress, status, value, disabled, icon, rb_obly }) {
+type RadioButtonProps = {
+    title?: React.ReactNode;
+    info?: React.ReactNode;
+    /** Receives the press event (row) or the next checked state (indicator). */
+    onPress?: (arg?: unknown) => void;
+    status?: 'checked' | 'unchecked' | string;
+    value?: unknown;
+    disabled?: boolean;
+    /** Icon name for `<Icon>` or a ready element. */
+    icon?: string | React.ReactNode;
+    /** Render only the round indicator, without label and pressable row. */
+    rb_obly?: boolean;
+};
+
+export default function RadioButton({ title, info, onPress, status, value, disabled, icon, rb_obly }: RadioButtonProps) {
 
     const selected = status == 'checked';
     const resolvedIcon = typeof icon === 'string'
@@ -28,7 +42,7 @@ export default function ({ title, info, onPress, status, value, disabled, icon, 
             </View>
             <CheckboxPrimitive.Root
                 checked={selected}
-                onCheckedChange={onPress}
+                onCheckedChange={(checked) => onPress?.(checked)}
                 className={checkboxTheme['u-controls-radiobutton-indicator']}
             >
                 <CheckboxPrimitive.Indicator>
