@@ -1282,7 +1282,7 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
             '<div class="bx-agents-popup-activity" style="max-height:70vh;overflow:auto;min-width:40rem;">' . $sRows . '</div>'
         );
 
-        return echoJson(['popup' => ['html' => $sContent, 'options' => ['closeOnOuterClick' => false]]]);
+        echoJson(['popup' => ['html' => $sContent, 'options' => ['closeOnOuterClick' => false]]]);
     }
 
     protected function _getAgentWithProfile($iProfileId, $iExcludeAgentId = 0)
