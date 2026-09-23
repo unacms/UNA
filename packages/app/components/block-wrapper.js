@@ -44,7 +44,9 @@ function BlockHeaderMenu({ menu, pathname }) {
     )
 }
 
-export function BlockWrapper({ config, block, wrapperClassses, showTitle, showBg, fullWidth, contentOnly, list, showPadding, extraProps, fill, clip = true, children }) {
+// `clip` is opt-in: tile/card shadows paint outside the content box, so blocks
+// never hide overflow by default. Inner scrollers own their own overflow.
+export function BlockWrapper({ config, block, wrapperClassses, showTitle, showBg, fullWidth, contentOnly, list, showPadding, extraProps, fill, clip = false, children }) {
     const { t } = useTranslation()
     const [showHelp, setShowHelp] = useState(false)
     const pathname = usePathname()
@@ -169,7 +171,7 @@ export function BlockWrapper({ config, block, wrapperClassses, showTitle, showBg
                         isPad={bIsShowPadding}
                         className={
                             fill
-                                ? `flex min-h-0 flex-1 flex-col ${clip ? 'overflow-hidden' : 'overflow-visible'}`
+                                ? `flex min-h-0 flex-1 flex-col ${clip ? 'overflow-hidden' : ''}`
                                 : undefined
                         }
                     >

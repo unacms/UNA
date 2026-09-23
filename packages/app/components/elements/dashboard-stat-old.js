@@ -2,7 +2,7 @@ import { Icon } from 'app/ui/atoms/icon'
 import Card from 'app/ui/molecules/page/card'
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { View, Row, Pressable, ScrollView } from 'app/design/view'
+import { View, Row, Pressable } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { Button } from 'app/design/controls'
 import Link from 'app/ui/atoms/link'
@@ -81,7 +81,7 @@ export default function PageLayout(props) {
     ];
 
     return (
-        <ScrollView className=''>
+        <View className='w-full'>
            { /*<Button title="Test bottomsheet"
              onPress={() => {setBottomSheetData({ title: 'Choose labels', showClose: true, content: <View className='h-24 w-full'><Text>TextTextTextText</Text></View> })}}
              
@@ -247,7 +247,7 @@ export default function PageLayout(props) {
                 </View>
                 
             </View>
-        </ScrollView>
+        </View>
     )
 }
 

@@ -1,4 +1,4 @@
-import { View, Pressable, Row, ScrollView } from 'app/design/view'
+import { View, Pressable, Row } from 'app/design/view'
 import Link from 'app/ui/atoms/link'
 import { useState, useRef, useEffect } from 'react'
 import { Button } from 'app/design/controls'
@@ -82,61 +82,59 @@ export default function ProfileSwitcher({ className, rounded = 'rounded-lg', chi
                     </Row>
                 </Link>
             }
-            {(show && data) && <Modal id='file-preview' title={t("Your Profiles")} onVisible={show} onClose={() => { setShow(false) }}>
+            {(show && data) && <Modal id='file-preview' title={t("Your Profiles")} onVisible={show} onClose={() => { setShow(false) }} scrollable>
                 <Redirect ref={redirectdRef} />
-                <ScrollView>
-                    <View className="   flex-col">
-                        {!hideTitle && <View className="flex-row items-center  justify-between">
-                            <Text className="text-lg px-1.5 py-2 font-bold text-secondary-foreground  ">
-                                Your Profiles
-                            </Text>
-                        </View>
-                        }
-                        {profileList && profileList.map((item, index) => {
-                            let dUser = { ...item }
-                            dUser.url_avatar = dUser.avatar
-                            let profile = <Profile {...dUser} displayType="unit_wo_info" displaySize="base" />
-                            return (
-                                <Link href={dUser.url} emulate={true} key={index}>
-                                    <View key={'index' + index} className=" p-2 flex-row  
-                                web:group web:duration-200 rounded-lg  
-                                
-                                max-w-5xl self-center w-full gap-x-3">
-                                        <View className="flex-none ">{profile}</View>
-                                        <Text className='text-sm my-auto flex-auto font-semibold truncate text-popover-foreground '>{item.display_name}</Text>
-                                        <View className="text-sm bont-semibold flex-none my-auto">
-                                            <Button id="menu" startDecorator="RefreshCw" title={t('Switch')} variant='outline' size='sm' onPress={() => handleSwitch(item.id)} />
-                                        </View>
+                <View className="   flex-col">
+                    {!hideTitle && <View className="flex-row items-center  justify-between">
+                        <Text className="text-lg px-1.5 py-2 font-bold text-secondary-foreground  ">
+                            Your Profiles
+                        </Text>
+                    </View>
+                    }
+                    {profileList && profileList.map((item, index) => {
+                        let dUser = { ...item }
+                        dUser.url_avatar = dUser.avatar
+                        let profile = <Profile {...dUser} displayType="unit_wo_info" displaySize="base" />
+                        return (
+                            <Link href={dUser.url} emulate={true} key={index}>
+                                <View key={'index' + index} className=" p-2 flex-row  
+                            web:group web:duration-200 rounded-lg  
+                            
+                            max-w-5xl self-center w-full gap-x-3">
+                                    <View className="flex-none ">{profile}</View>
+                                    <Text className='text-sm my-auto flex-auto font-semibold truncate text-popover-foreground '>{item.display_name}</Text>
+                                    <View className="text-sm bont-semibold flex-none my-auto">
+                                        <Button id="menu" startDecorator="RefreshCw" title={t('Switch')} variant='outline' size='sm' onPress={() => handleSwitch(item.id)} />
                                     </View>
-                                </Link>
-                            )
-                        })}
-                        {!listOnly && <View className='sm:flex-row justity-between mt-4 w-full sm:mx-0'>
-                            {!!currentUser?.menu?.items && currentUser.menu.items.map((item, index) => (
-                                <View key={index} className={'mb-2 sm:mb-0 w-full sm:w-1/' + (currentUser.menu.items.length + 1) + ' pr-2 '}>
-                                    <Link href={`/${item.name}`}>
-                                        <Button
-                                            variant="outline"
-                                            title={t("New " + item.title)}
-                                            startDecorator="UserCircle"
-                                            fullWidth
-                                        />
-                                    </Link>
                                 </View>
-                            ))}
-                            {!!currentUser?.menu?.items && <View className={'w-full sm:w-1/' + (currentUser.menu.items.length + 1) + ''}>
-                                <Link href="/logout">
+                            </Link>
+                        )
+                    })}
+                    {!listOnly && <View className='sm:flex-row justity-between mt-4 w-full sm:mx-0'>
+                        {!!currentUser?.menu?.items && currentUser.menu.items.map((item, index) => (
+                            <View key={index} className={'mb-2 sm:mb-0 w-full sm:w-1/' + (currentUser.menu.items.length + 1) + ' pr-2 '}>
+                                <Link href={`/${item.name}`}>
                                     <Button
                                         variant="outline"
-                                        title={t("Sign out")}
-                                        startDecorator="LogOut"
+                                        title={t("New " + item.title)}
+                                        startDecorator="UserCircle"
                                         fullWidth
                                     />
                                 </Link>
-                            </View>}
+                            </View>
+                        ))}
+                        {!!currentUser?.menu?.items && <View className={'w-full sm:w-1/' + (currentUser.menu.items.length + 1) + ''}>
+                            <Link href="/logout">
+                                <Button
+                                    variant="outline"
+                                    title={t("Sign out")}
+                                    startDecorator="LogOut"
+                                    fullWidth
+                                />
+                            </Link>
                         </View>}
-                    </View>
-                </ScrollView>
+                    </View>}
+                </View>
             </Modal>}
         </BlockWrapper>
     )

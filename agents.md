@@ -461,6 +461,27 @@ feed: {
 
 **Note:** Semantic tokens work perfectly in Uniwind - ensure they're applied to the correct element type.
 
+### Overflow and Clipping in Blocks
+
+Cards, tiles, and bordered buttons draw their outline with `shadow-*`, which paints **outside** the element box. Any clipping ancestor cuts it off, most visibly on the first and last grid columns.
+
+- **Blocks never clip.** `BlockWrapper` / `Block` / `BlockContent` don't set `overflow-hidden`. `BlockWrapper`'s `clip` prop is opt-in (only honored with `fill`) — don't turn it on to hide a layout bug.
+- **Every web `ScrollView` clips both axes.** `.neo-sv` is `overflow-y: auto; overflow-x: hidden`, and CSS can't scroll one axis while leaving the other visible. Don't wrap block content in a `ScrollView` "just in case": page blocks already live inside the page scroller.
+- **The scroller owns overflow.** Put `overflow-*` / `ScrollView` on the one element that actually needs to scroll or clip (a message list, a table, a fixed-height pane), not on a shared wrapper. For modals, use `<Modal scrollable>` rather than nesting a `ScrollView`.
+- **Give shadows room inside a scroller.** When a scroller holds shadowed cards, pad the content and cancel the padding outside so alignment doesn't shift:
+
+```javascript
+// ✅ Shadows fit inside the clipped box, edges still line up with siblings
+<ScrollView horizontal className="-mx-1" contentContainerClassName="px-1 py-1 gap-3">
+  {cards}
+</ScrollView>
+
+// ❌ Cards touch the scroller edge; outline shadow is clipped
+<ScrollView horizontal contentContainerClassName="gap-3">{cards}</ScrollView>
+```
+
+Leaf-level clipping is fine and expected: rounded media (`rounded-xl overflow-hidden` around an image or video), avatars, progress bars, and `truncate` text.
+
 ---
 
 ## Animated icons (NEO)

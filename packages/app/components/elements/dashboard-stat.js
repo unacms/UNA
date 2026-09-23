@@ -12,7 +12,7 @@ import {
 } from 'app/ui/molecules/page/page-block'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { View, Row, ScrollView } from 'app/design/view'
+import { View, Row } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { NeoButton, NeoButtonLink } from 'app/design/controls'
 import { useCurrentUser } from 'app/context/user'
@@ -148,173 +148,142 @@ function DashboardStatRemote(props) {
 
     return (
         <BlockWrapper {...props.blockWrapperProps}>
-            <ScrollView>
-                <Block className="u-max-width-block">
-                    <BlockHeader className="items-center">
-                        <View className="flex-none">
-                            <Profile
-                                {...currentUser}
-                                url_avatar={currentUser.avatar}
-                                displayType="unit_wo_info"
-                                displaySize="xl"
+            <Block className="u-max-width-block">
+                <BlockHeader className="items-center">
+                    <View className="flex-none">
+                        <Profile
+                            {...currentUser}
+                            url_avatar={currentUser.avatar}
+                            displayType="unit_wo_info"
+                            displaySize="xl"
+                        />
+                    </View>
+                    <BlockName className="gap-1">
+                        <BlockTitle>
+                            <Text className="text-card-foreground text-xl font-semibold">{currentUser.display_name}</Text>
+                        </BlockTitle>
+                        <BlockDescription>
+
+                            <Badge
+                                variant="secondary"
+                                size="xs"
+                                data={{
+                                    text: currentUser.membership_name,
+                                    icon: currentUser.membership_icon,
+                                    icon_url: currentUser.membership_icon_url
+                                }}
                             />
-                        </View>
-                        <BlockName className="gap-1">
-                            <BlockTitle>
-                                <Text className="text-card-foreground text-xl font-semibold">{currentUser.display_name}</Text>
-                            </BlockTitle>
-                            <BlockDescription>
 
-                                <Badge
-                                    variant="secondary"
-                                    size="xs"
-                                    data={{
-                                        text: currentUser.membership_name,
-                                        icon: currentUser.membership_icon,
-                                        icon_url: currentUser.membership_icon_url
-                                    }}
-                                />
+                        </BlockDescription>
+                    </BlockName>
+                    <BlockActions>
 
-                            </BlockDescription>
-                        </BlockName>
-                        <BlockActions>
+                        <ProfileSwitcher hideTitle={true}>
+                            <NeoButton
+                                style="bordered"
+                                borderShape="circle"
+                                image="RefreshCw"
+                                accessibilityLabel={t('Switch profile')}
+                            />
+                        </ProfileSwitcher>
 
-                            <ProfileSwitcher hideTitle={true}>
-                                <NeoButton
+                    </BlockActions>
+                </BlockHeader>
+                <BlockContent className="!gap-3">
+                    <ElementDashboardStat {...props} />
+                    {showSecondaryActions ? (
+                    <View className={DASHBOARD_GRID}>
+                        {showWiki ? (
+                            <View className="w-full min-w-0">
+                                <NeoButtonLink
+                                    href="/wiki/overview"
+                                    label="Documentation"
                                     style="bordered"
-                                    borderShape="circle"
-                                    image="RefreshCw"
-                                    accessibilityLabel={t('Switch profile')}
+                                    controlSize="large"
+                                    image="BookOpenText"
+                                    width="fill"
+                                    align="start"
                                 />
-                            </ProfileSwitcher>
-
-                        </BlockActions>
-                    </BlockHeader>
-                    <BlockContent className="!gap-3">
-                        <ElementDashboardStat {...props} />
-                        {showSecondaryActions ? (
-                        <View className={DASHBOARD_GRID}>
-                            {showWiki ? (
-                                <View className="w-full min-w-0">
-                                    <NeoButtonLink
-                                        href="/wiki/overview"
-                                        label="Documentation"
+                            </View>
+                        ) : null}
+                        {showLangs ? (
+                            <View className="w-full min-w-0">
+                                <DropdownMenu
+                                    triggerClassName="w-full"
+                                    items={langs.map((lang) => ({
+                                        id: lang,
+                                        key: lang,
+                                        name: lang,
+                                        title: t('lang_' + lang),
+                                    }))}
+                                    onSelect={(oItem) => {
+                                        setLang(oItem.id)
+                                    }}
+                                >
+                                    <NeoButton
+                                        label={t('lang_' + lang)}
                                         style="bordered"
                                         controlSize="large"
-                                        image="BookOpenText"
+                                        image="Languages"
                                         width="fill"
                                         align="start"
+                                        interactive
                                     />
-                                </View>
-                            ) : null}
-                            {showLangs ? (
-                                <View className="w-full min-w-0">
-                                    <DropdownMenu
-                                        triggerClassName="w-full"
-                                        items={langs.map((lang) => ({
-                                            id: lang,
-                                            key: lang,
-                                            name: lang,
-                                            title: t('lang_' + lang),
-                                        }))}
-                                        onSelect={(oItem) => {
-                                            setLang(oItem.id)
-                                        }}
-                                    >
-                                        <NeoButton
-                                            label={t('lang_' + lang)}
-                                            style="bordered"
-                                            controlSize="large"
-                                            image="Languages"
-                                            width="fill"
-                                            align="start"
-                                            interactive
-                                        />
-                                    </DropdownMenu>
-                                </View>
-                            ) : null}
-                            {showTheme ? (
-                                <View className="w-full min-w-0">
-                                    <DropdownMenu
-                                        triggerClassName="w-full"
-                                        items={['dark', 'light', 'auto'].map(
-                                            (theme) => ({
-                                                key: theme,
-                                                id: theme,
-                                                name: theme,
-                                                title: t('theme_' + theme),
-                                            })
-                                        )}
-                                        onSelect={(oItem) => {
-                                            setThemeName(oItem.id)
-                                        }}
-                                    >
-                                        <NeoButton
-                                            label={t('theme_' + themeName)}
-                                            style="bordered"
-                                            controlSize="large"
-                                            image="Moon"
-                                            width="fill"
-                                            align="start"
-                                            interactive
-                                        />
-                                    </DropdownMenu>
-                                </View>
-                            ) : null}
+                                </DropdownMenu>
+                            </View>
+                        ) : null}
+                        {showTheme ? (
+                            <View className="w-full min-w-0">
+                                <DropdownMenu
+                                    triggerClassName="w-full"
+                                    items={['dark', 'light', 'auto'].map(
+                                        (theme) => ({
+                                            key: theme,
+                                            id: theme,
+                                            name: theme,
+                                            title: t('theme_' + theme),
+                                        })
+                                    )}
+                                    onSelect={(oItem) => {
+                                        setThemeName(oItem.id)
+                                    }}
+                                >
+                                    <NeoButton
+                                        label={t('theme_' + themeName)}
+                                        style="bordered"
+                                        controlSize="large"
+                                        image="Moon"
+                                        width="fill"
+                                        align="start"
+                                        interactive
+                                    />
+                                </DropdownMenu>
+                            </View>
+                        ) : null}
 
 
-                            {showLayouts ? (
-                                    <View className="w-full min-w-0">
-                                        <DropdownMenu
-                                            triggerClassName="w-full"
-                                            items={appSetting(
-                                                'layout',
-                                                'avaliable_layouts'
-                                            ).map((lang) => ({
-                                                id: lang,
-                                                key: lang,
-                                                name: lang,
-                                                title: t('format_' + lang),
-                                            }))}
-                                            onSelect={(oItem) => {
-                                                setLayoutName(oItem.id)
-                                            }}
-                                        >
-                                            <NeoButton
-                                                label={t('format_' + layoutName)}
-                                                style="bordered"
-                                                controlSize="large"
-                                                image="Layout"
-                                                width="fill"
-                                                align="start"
-                                                interactive
-                                            />
-                                        </DropdownMenu>
-                                    </View>
-                                ) : null}
-
-                            {showFeedUnits ? (
+                        {showLayouts ? (
                                 <View className="w-full min-w-0">
                                     <DropdownMenu
                                         triggerClassName="w-full"
                                         items={appSetting(
                                             'layout',
-                                            'avaliable_feed_units'
-                                        ).map((feed_unit) => ({
-                                            id: feed_unit,
-                                            key: feed_unit,
-                                            name: feed_unit,
-                                            title: t(feed_unit),
+                                            'avaliable_layouts'
+                                        ).map((lang) => ({
+                                            id: lang,
+                                            key: lang,
+                                            name: lang,
+                                            title: t('format_' + lang),
                                         }))}
                                         onSelect={(oItem) => {
-                                            updateLayoutSettings({ feed_unit: oItem.id })
+                                            setLayoutName(oItem.id)
                                         }}
                                     >
                                         <NeoButton
-                                            label={t(layoutSettings.feed_unit)}
+                                            label={t('format_' + layoutName)}
                                             style="bordered"
                                             controlSize="large"
-                                            image="Rows2"
+                                            image="Layout"
                                             width="fill"
                                             align="start"
                                             interactive
@@ -322,21 +291,50 @@ function DashboardStatRemote(props) {
                                     </DropdownMenu>
                                 </View>
                             ) : null}
-                        </View>
+
+                        {showFeedUnits ? (
+                            <View className="w-full min-w-0">
+                                <DropdownMenu
+                                    triggerClassName="w-full"
+                                    items={appSetting(
+                                        'layout',
+                                        'avaliable_feed_units'
+                                    ).map((feed_unit) => ({
+                                        id: feed_unit,
+                                        key: feed_unit,
+                                        name: feed_unit,
+                                        title: t(feed_unit),
+                                    }))}
+                                    onSelect={(oItem) => {
+                                        updateLayoutSettings({ feed_unit: oItem.id })
+                                    }}
+                                >
+                                    <NeoButton
+                                        label={t(layoutSettings.feed_unit)}
+                                        style="bordered"
+                                        controlSize="large"
+                                        image="Rows2"
+                                        width="fill"
+                                        align="start"
+                                        interactive
+                                    />
+                                </DropdownMenu>
+                            </View>
                         ) : null}
-                    </BlockContent>
-                    <BlockFooter>
-                        <NeoButtonLink
-                            href="/logout"
-                            label={t('Sign out')}
-                            style="bordered"
-                            controlSize="large"
-                            image="LogOut"
-                            width="fill"
-                        />
-                    </BlockFooter>
-                </Block>
-            </ScrollView>
+                    </View>
+                    ) : null}
+                </BlockContent>
+                <BlockFooter>
+                    <NeoButtonLink
+                        href="/logout"
+                        label={t('Sign out')}
+                        style="bordered"
+                        controlSize="large"
+                        image="LogOut"
+                        width="fill"
+                    />
+                </BlockFooter>
+            </Block>
         </BlockWrapper>
     )
 }
