@@ -6,14 +6,23 @@ function BxArtificerUtils(oOptions)
     this._aHtmlIds = undefined == oOptions.aHtmlIds ? {} : oOptions.aHtmlIds;  
     this._sColorScheme = undefined == oOptions.sColorScheme ? 'auto' : oOptions.sColorScheme;
 
-    if(htmx != undefined)
-        htmx.on('htmx:afterSwap', function(evt) {
-            var oTarget = $(evt.target);
-            if(oTarget.attr('id') == 'bx-content-preload')
-                return;
+    if(htmx != undefined) {
+        // 4xx and 5xx responses stay out of the page, same as htmx 2.
+        htmx.config.noSwap = [204, 304, '4xx', '5xx'];
+        htmx.on('htmx:before:settle', function(evt) {
+            // outerHTML settle fires on the first inserted node. A leading
+            // newline makes that a text node, which has no querySelectorAll.
+            var aNodes = evt.target && evt.target.nodeType === 1 ? [evt.target] : ((evt.detail && evt.detail.newContent) || []);
 
-            oTarget.bxProcessHtml();
+            for(var i = 0; i < aNodes.length; i++) {
+                var oNode = aNodes[i];
+                if(!oNode || oNode.nodeType !== 1 || oNode.id == 'bx-content-preload')
+                    continue;
+
+                $(oNode).bxProcessHtml();
+            }
         });
+    }
 
     this.init();
 }

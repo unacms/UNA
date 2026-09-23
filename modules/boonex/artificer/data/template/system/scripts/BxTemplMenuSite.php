@@ -38,7 +38,6 @@ class BxTemplMenuSite extends BxTemplMenuMoreAuto
 
         if($this->_bSiteMenu) {
             $this->_bHx = getParam('bx_artificer_use_htmx') == 'on';
-            $this->_bHxHead = $this->_bHx && true;
             $this->_mHxPreload = $this->_bHx && true;
             $this->_aHx = [
                 'get' => '',
@@ -46,7 +45,7 @@ class BxTemplMenuSite extends BxTemplMenuMoreAuto
                 'target' => '#bx-content-with-cover-wrapper',
                 'swap' => 'outerHTML settle:400ms',
                 'push-url' => 'true',
-                'on::after-on-load' => 'oBxArtificerUtils.mmenuClickAl(this)'
+                'on::after:swap' => 'oBxArtificerUtils.mmenuClickAl(this)'
             ];
         }
     }
