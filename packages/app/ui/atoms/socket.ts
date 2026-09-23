@@ -10,9 +10,10 @@ const pusherInstance = new Pusher(conf.key, {
     cluster: '',
 });
 
-const bindingCounts = new Map();
+const bindingCounts = new Map<string, number>();
 
-export function subscribe(channel_name, event_name, cb) {
+/** Bind `cb` to `event_name` on `channel_name`; returns the unsubscribe function. */
+export function subscribe(channel_name: string, event_name: string, cb: (data: any) => void): () => void {
     if (!pusherInstance) return () => { };
 
     let channel = pusherInstance.channel(channel_name);

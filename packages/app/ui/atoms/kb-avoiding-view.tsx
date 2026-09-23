@@ -1,4 +1,4 @@
-import { forwardRef, use, useEffect, useState } from 'react';
+import { use, useEffect, useState, type ComponentProps, type ReactNode, type Ref } from 'react';
 import { HeaderHeightContext } from "expo-router/react-navigation";
 import { Keyboard, Platform } from 'react-native'
 import { KeyboardAwareScrollView, KeyboardAvoidingView, KeyboardProvider, KeyboardStickyView, useKeyboardState } from "react-native-keyboard-controller";
@@ -6,13 +6,49 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useStableSafeAreaInsets } from "app/lib/hooks/router";
 import Animated from "react-native-reanimated";
 
+// Reanimated 4 types its ScrollView as a plain function with a `ref` prop, while
+// keyboard-controller's types expect a forwardRef component. Works at runtime.
+const AnimatedScrollView = Animated.ScrollView as unknown as NonNullable<
+    ComponentProps<typeof KeyboardAwareScrollView>['ScrollViewComponent']
+>;
+
+export type StickyComposerListInset = {
+    marginBottom: number;
+    keyboardLift: number;
+};
+
+export type KbAvoidingViewProps = {
+    children?: ReactNode;
+    className?: string;
+    /** Native: keyboard offset override. */
+    modalOffset?: number;
+    [key: string]: unknown;
+};
+
+export type KbStickyViewProps = Partial<ComponentProps<typeof KeyboardStickyView>> & {
+    children?: ReactNode;
+    className?: string;
+};
+
+type KbAwareScrollProps = Partial<Omit<ComponentProps<typeof KeyboardAwareScrollView>, 'ref'>> & {
+    children?: ReactNode;
+    className?: string;
+    ref?: Ref<any>;
+};
+
+export type ModalKbAwareScrollProps = KbAwareScrollProps;
+
+export type KbAvoidingViewScrollProps = KbAwareScrollProps & {
+    paddingTop?: number;
+};
+
 /**
  * Padding for a list under a KbStickyView composer.
  * KeyboardProvider uses edge-to-edge: Android does NOT resize the window
  * (behaves like adjustNothing), so the list must pad by form + keyboard lift
  * on both platforms. Sticky offset.opened is typically insets.bottom.
  */
-export function useStickyComposerListInset(formHeight = 0) {
+export function useStickyComposerListInset(formHeight = 0): StickyComposerListInset {
     const insets = useSafeAreaInsets();
     const controllerHeight = useKeyboardState((s) => (s.isVisible ? s.height : 0));
     // Fallback: inside RN Modal some Android devices report 0 via the controller.
@@ -39,37 +75,12 @@ export function useStickyComposerListInset(formHeight = 0) {
     };
 }
 
-/*export default function KbAvoidingView(props) {
-    const { children, offset, ...rest } = props;
-    const { top } = useSafeAreaInsets();
-    let keyboardVerticalOffsetValue;
-
-    if (typeof offset === 'number') {
-        // If an explicit offset is provided, use it directly with the top safe area inset.
-        keyboardVerticalOffsetValue = offset + top;
-    } else {
-        // Only call useHeaderHeight if no explicit offset is provided.
-        // This is typically for screens within a navigator that has a header.
-        const headerHeight = useHeaderHeight();
-        keyboardVerticalOffsetValue = (Platform.OS === 'ios' ? 58 : 44) + headerHeight;
-        // Note: The original logic for the non-offset case did not add 'top' safe area inset explicitly here,
-        // relying on headerHeight presumably including it or being relative to the area below it.
-        // We maintain that behavior for the headerHeight case.
-    }
-
+export default function KbAvoidingView({children, className, modalOffset}: KbAvoidingViewProps) {
     return (
-        <KeyboardAvoidingView {...rest} keyboardVerticalOffset={keyboardVerticalOffsetValue} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-            {children}
-        </KeyboardAvoidingView>
-    );
-}*/
-
-export default function KbAvoidingView({children, className, modalOffset}) {
-    return (
-        <KeyboardAvoidingView 
+        <KeyboardAvoidingView
             className={className}
             behavior={"padding"}
-            keyboardVerticalOffset={(modalOffset +( (Platform.OS === "ios" ? 0 : 0))) || (Platform.OS === "ios" ? 60 : 30)}
+            keyboardVerticalOffset={modalOffset || (Platform.OS === "ios" ? 60 : 30)}
         >
             {children}
         </KeyboardAvoidingView>
@@ -80,7 +91,7 @@ export default function KbAvoidingView({children, className, modalOffset}) {
  * Footer/form that translates with the keyboard (does not resize the layout).
  * Prefer over KbAvoidingView for absolute bottom composers.
  */
-export function KbStickyView({ children, style, offset, enabled = true, ...rest }) {
+export function KbStickyView({ children, style, offset, enabled = true, ...rest }: KbStickyViewProps) {
     return (
         <KeyboardStickyView
             style={style}
@@ -93,30 +104,26 @@ export function KbStickyView({ children, style, offset, enabled = true, ...rest 
     )
 }
 
-export function ModalKeyboardProvider({ children }) {
+export function ModalKeyboardProvider({ children }: { children?: ReactNode }) {
     return <KeyboardProvider>{children}</KeyboardProvider>;
 }
 
-export const ModalKbAwareScroll = forwardRef(function ModalKbAwareScroll(
-    {
-        children,
-        style,
-        className,
-        bottomOffset = 24,
-        keyboardShouldPersistTaps = "handled",
-        onScroll,
-        ...rest
-    },
-    ref
-) {
+export function ModalKbAwareScroll({
+    children,
+    style,
+    className,
+    bottomOffset = 24,
+    keyboardShouldPersistTaps = "handled",
+    onScroll,
+    ...rest
+}: ModalKbAwareScrollProps) {
     // ScrollView className padding does not reliably pad the end of scroll content.
     // Outer modal already applies insets.bottom; keep a fixed breathing room under Save etc.
     const contentPaddingBottom = 24;
 
     return (
         <KeyboardAwareScrollView
-            ref={ref}
-            ScrollViewComponent={Animated.ScrollView}
+            ScrollViewComponent={AnimatedScrollView}
             className={className}
             style={style}
             onScroll={onScroll}
@@ -132,28 +139,24 @@ export const ModalKbAwareScroll = forwardRef(function ModalKbAwareScroll(
             {children}
         </KeyboardAwareScrollView>
     );
-});
+}
 
-export const KbAvoidingViewScroll = forwardRef(function KbAvoidingViewScroll(
-    {
-        children,
-        onScroll,
-        paddingTop = 0,
-        className,
-        style,
-        keyboardShouldPersistTaps = "always",
-        ...rest
-    },
-    ref
-) {
+export function KbAvoidingViewScroll({
+    children,
+    onScroll,
+    paddingTop = 0,
+    className,
+    style,
+    keyboardShouldPersistTaps = "always",
+    ...rest
+}: KbAvoidingViewScrollProps) {
     const { top } = useStableSafeAreaInsets();
     // NativeTabs has no stack header; useHeaderHeight() throws without this fallback.
     const headerHeight = use(HeaderHeightContext) ?? 0;
     const keyboardOffset = top + headerHeight + (Platform.OS === "ios" ? 58 : 44);
     return (
         <KeyboardAwareScrollView
-            ref={ref}
-            ScrollViewComponent={Animated.ScrollView}
+            ScrollViewComponent={AnimatedScrollView}
             className={className ?? "flex-1"}
             style={style}
             onScroll={onScroll}
@@ -169,4 +172,4 @@ export const KbAvoidingViewScroll = forwardRef(function KbAvoidingViewScroll(
             {children}
         </KeyboardAwareScrollView>
     );
-});
+}

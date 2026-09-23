@@ -46,6 +46,11 @@ export const DropdownMenuOpenContext = createContext(false);
 const isLegacyButtonProps = (props) =>
     props?.legacyButton === true || props?.variant != null;
 
+/**
+ * Loose props type so TS callers aren't forced to pass every destructured prop.
+ * TODO: replace with real prop types when this atom moves to TypeScript.
+ * @param {{ [key: string]: any }} props
+ */
 export default function DropdownPopup({
     buttonProps,
     children,

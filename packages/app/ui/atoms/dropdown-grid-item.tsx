@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import type { GestureResponderEvent } from 'react-native';
 import { Platform } from 'react-native';
 import { Pressable, View } from 'app/design/view';
 import { Text } from 'app/design/typography';
@@ -9,7 +10,23 @@ import Link from 'app/ui/atoms/link';
 
 const menuSettings = appSetting('theme', 'dropdown_menu');
 
-function GridIcon({ item, hovered }) {
+/** UNA menu item as used by the dropdown grid. */
+export type DropdownGridMenuItem = {
+    id?: string | number;
+    title?: unknown;
+    /** Icon name, emoji, or raw SVG. */
+    icon?: string;
+    /** Image URL; wins over `icon`. */
+    image?: string;
+    icon_size?: number;
+    class_item_icon?: string;
+    addClassName?: string;
+    animated?: boolean;
+    target?: string;
+    [key: string]: unknown;
+};
+
+function GridIcon({ item, hovered }: { item: DropdownGridMenuItem; hovered: boolean }) {
     const image = item?.image;
     if (typeof image === 'string' && image && /^(https?:|file:|content:|data:)/i.test(image)) {
         return (
@@ -40,7 +57,16 @@ function GridIcon({ item, hovered }) {
     );
 }
 
-export default function DropdownGridItem({ item, index, link, handleSelect, className }) {
+type DropdownGridItemProps = {
+    item: DropdownGridMenuItem;
+    index: number;
+    /** When set, the tile is wrapped in a Link. */
+    link?: string;
+    handleSelect?: (event: GestureResponderEvent, item: DropdownGridMenuItem) => void;
+    className?: string;
+};
+
+export default function DropdownGridItem({ item, index, link, handleSelect, className }: DropdownGridItemProps) {
     const key = item.id ?? index;
     const title = typeof item.title === 'string' ? item.title : '';
     const [rowHovered, setRowHovered] = useState(false);
@@ -56,7 +82,7 @@ export default function DropdownGridItem({ item, index, link, handleSelect, clas
     const Wrapper = handleSelect ? Pressable : View;
     const pressProps =
         typeof handleSelect === 'function'
-            ? { onPress: (event) => handleSelect(event, item) }
+            ? { onPress: (event: GestureResponderEvent) => handleSelect(event, item) }
             : {};
 
     const Content = (

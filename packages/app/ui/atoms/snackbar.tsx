@@ -57,22 +57,33 @@ const SPRING_CONFIG = {
     stiffness: 300,
 };
 
-/**
- * Snackbar Component
- * 
- * @param {boolean} visible - Whether snackbar is visible
- * @param {string} title - Main text to display
- * @param {string} [description] - Optional secondary text
- * @param {string} [icon] - Optional icon name (from your icon set)
- * @param {'top'|'bottom'} [position='bottom'] - Position on screen
- * @param {string} [variant='primary'] - Button/style variant
- * @param {string} [size='sm'] - Size variant
- * @param {Function} onPress - Called when snackbar/button is pressed
- * @param {Function} [onDismiss] - Called when snackbar is dismissed (swipe)
- * @param {boolean} [dismissible=true] - Allow swipe to dismiss
- * @param {string} [buttonTitle] - Custom button title (defaults to title)
- * @param {boolean} [showButton=true] - Show action button vs plain text
- */
+export type SnackbarProps = {
+    /** Whether the snackbar is shown (animates in/out). */
+    visible?: boolean;
+    /** Main text. */
+    title?: string;
+    /** Secondary text (plain variant only). */
+    description?: string;
+    /** Icon name from the icon set. */
+    icon?: string;
+    position?: 'top' | 'bottom';
+    /** Button variant. */
+    variant?: string;
+    /** Button size. */
+    size?: string;
+    /** Called when the snackbar/button is pressed. */
+    onPress?: () => void;
+    /** Called on dismiss: swipe on native, Escape on web. */
+    onDismiss?: () => void;
+    dismissible?: boolean;
+    /** Button title; defaults to `title`. */
+    buttonTitle?: string;
+    /** Action button (default) vs plain pressable text. */
+    showButton?: boolean;
+    style?: any;
+    className?: string;
+};
+
 export default function Snackbar({
     visible = false,
     title,
@@ -88,7 +99,7 @@ export default function Snackbar({
     showButton = true,
     style,
     className,
-}) {
+}: SnackbarProps) {
     // Animation values
     const translateY = useSharedValue(position === 'bottom' ? 100 : -100);
     const opacity = useSharedValue(0);
@@ -180,7 +191,7 @@ export default function Snackbar({
             onPress={onPress}
             className={wrapperClasses}
         >
-            {icon && <Icon name={icon} size={16} className="text-primary-foreground" />}
+            {icon && <Icon icon={icon} size={16} className="text-primary-foreground" />}
             <Text className="text-primary-foreground font-medium">{title}</Text>
             {description && (
                 <Text className="text-primary-foreground/80 text-sm">{description}</Text>

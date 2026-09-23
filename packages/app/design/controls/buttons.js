@@ -237,6 +237,11 @@ const ButtonContent = React.memo(({
 });
 
 
+/**
+ * Loose props type so TS callers aren't forced to pass every destructured prop.
+ * TODO: replace with real prop types when design/controls moves to TypeScript.
+ * @param {{ [key: string]: any }} props
+ */
 export const Button = ({
     variant = BtnClsSize.default_variant,
     size = BtnClsSize.default_size,

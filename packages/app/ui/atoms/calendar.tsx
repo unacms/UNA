@@ -1,6 +1,6 @@
 import { View, Row } from 'app/design/view'
 import Dropdown from 'app/ui/atoms/dropdown'
-import { useState, useReducer, useMemo, useEffect } from 'react';
+import { useState, useReducer, useMemo, useEffect, type ComponentType } from 'react';
 import { Modal } from 'app/design/controls'
 import { Button } from 'app/design/controls';
 import { Text } from 'app/design/typography';
@@ -9,7 +9,10 @@ import { useTheme } from 'app/design/theme';
 import i18n from 'i18next';
 import { useTranslation } from 'react-i18next';
 
-const formatValueDate = (v) => {
+/** Date part (YYYY-MM-DD) plus hour and minute, all as strings. */
+type DateTimeValue = { dt: string; h: string; m: string };
+
+const formatValueDate = (v: DateTimeValue) => {
     if (v.dt){
         const date = new Date(v.dt);
 
@@ -19,7 +22,7 @@ const formatValueDate = (v) => {
     return ''
 }
 
-const formatValue = (v, bIsTime) => {
+const formatValue = (v: DateTimeValue, bIsTime: boolean) => {
     if (v.dt != '') {
         let v3 = formatValueDate(v);
         if (bIsTime)
@@ -32,16 +35,16 @@ const formatValue = (v, bIsTime) => {
     }
 }
 
-const setdValue_ = (state, action) => {
+const setdValue_ = (state: DateTimeValue, action: { type: keyof DateTimeValue; value: string }) => {
     return { ...state, [action.type]: action.value };
 }
 
-const loadCalendar = async (setDynamicCalendar) => {
+const loadCalendar = async (setDynamicCalendar: (factory: () => ComponentType<any>) => void) => {
     const Calendars = await import('react-native-calendars');
     setDynamicCalendar(() => Calendars.Calendar);
 };
 
-const CalendarHeader = (dValue, addMonth) => {
+const CalendarHeader = (dValue: DateTimeValue, addMonth: (type: 'y' | 'm', val: number) => void) => {
     return (
     <Row className='w-full justify-between mb-4 items-center mt-2'>
         <Button size="sm" rounded startDecorator="ChevronsLeft" onPress={() => addMonth('y', -1)} />
@@ -52,16 +55,25 @@ const CalendarHeader = (dValue, addMonth) => {
     </Row>
 )};
 
-const generateValues = range => Array.from({ length: range }, (_, i) => ({ label: i.toString().padStart(2, '0'), value: i.toString().padStart(2, '0') }));
+const generateValues = (range: number) => Array.from({ length: range }, (_, i) => ({ label: i.toString().padStart(2, '0'), value: i.toString().padStart(2, '0') }));
 
-export default function ({ name, value = '', type, onChange }) {
+type CalendarFieldProps = {
+    name?: string;
+    /** "YYYY-MM-DD" or "YYYY-MM-DD HH:MM". */
+    value?: string;
+    type?: 'date' | 'datetime';
+    /** Unix timestamp, seconds. */
+    onChange: (timestamp: number) => void;
+};
+
+export default function CalendarField({ name, value = '', type, onChange }: CalendarFieldProps) {
     const { t } = useTranslation();
     const { colors } = useTheme();
     const bIsTime = type === 'datetime';
     const [showModal, setShowModal] = useState(false);
-    const [DynamicCalendar, setDynamicCalendar] = useState(null);
+    const [DynamicCalendar, setDynamicCalendar] = useState<ComponentType<any> | null>(null);
     
-    const [date, hour = '00', minute = '00'] = value.split(/[: ]/);
+    const [date = '', hour = '00', minute = '00'] = value.split(/[: ]/);
     const [dValue, setdValue] = useReducer(setdValue_, { dt: date, h: hour, m: minute });
     const [cValue, setcValue] = useState({ dt: date, h: hour, m: minute });
 
@@ -73,21 +85,21 @@ export default function ({ name, value = '', type, onChange }) {
         return () => { isMounted = false; };
     }, []);
 
-    const setFieldValue = (val, hide = true) => {
+    const setFieldValue = (val: DateTimeValue, hide = true) => {
         setcValue(val)
         onChange((new Date(`${val.dt} ${val.h}:${val.m}`).getTime()) / 1000)
         if (hide)
             setShowModal(false);
     }
 
-    const setValueDay = (day, hide = true) => {
+    const setValueDay = (day: { dateString: string }, hide = true) => {
         setdValue({ type: 'dt', value: day.dateString })
         if (!bIsTime) {
             setFieldValue({ dt: day.dateString, h: dValue.h, m: dValue.m }, hide);
         }
     };
 
-    const addMonth = (type, val) => {
+    const addMonth = (type: 'y' | 'm', val: number) => {
         let newDate = new Date(dValue.dt);
         if (type === 'y')
             newDate.setFullYear(newDate.getFullYear() + val);
@@ -113,10 +125,10 @@ export default function ({ name, value = '', type, onChange }) {
                                 textDisabledColor: colors.text,
                                 monthTextColor: colors.text,
                             }}
-                            renderArrow={direction => { return <View className="text-secondary-foreground "><Icon icon={direction == 'left' ? 'ArrowLeft' : 'ArrowRight'} width={24} height={24} /></View> }}
+                            renderArrow={(direction: 'left' | 'right') => { return <View className="text-secondary-foreground "><Icon icon={direction == 'left' ? 'ArrowLeft' : 'ArrowRight'} width={24} height={24} /></View> }}
                             initialDate={dValue.dt}
                             customHeader={() => CalendarHeader(dValue, addMonth)}
-                            onDayPress={day => {
+                            onDayPress={(day: { dateString: string }) => {
                                 setValueDay(day)
                             }}
                             markedDates={{
@@ -130,7 +142,7 @@ export default function ({ name, value = '', type, onChange }) {
                                 <Dropdown
                                     labelField="label"
                                     valueField="value"
-                                    onChange={(v) => setdValue({ type: 'h', value: v })}
+                                    onChange={(v) => setdValue({ type: 'h', value: String(v) })}
                                     value={dValue.h}
                                     data={hours}
                                 />
@@ -140,7 +152,7 @@ export default function ({ name, value = '', type, onChange }) {
                                 <Dropdown
                                     labelField="label"
                                     valueField="value"
-                                    onChange={(v) => setdValue({ type: 'm', value: v })}
+                                    onChange={(v) => setdValue({ type: 'm', value: String(v) })}
                                     value={dValue.m}
                                     data={minutes}
                                 />

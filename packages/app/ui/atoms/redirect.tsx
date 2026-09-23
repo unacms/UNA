@@ -1,9 +1,12 @@
-import { useEffect, useRef, forwardRef, useCallback } from 'react';
+import { useEffect, useRef, useCallback, type Ref } from 'react';
 import { useRouter, useCurrentTabPath } from 'app/lib/hooks/router'
 import { nativeTabHref } from 'app/lib/navigation/tab-history'
 import { Platform } from 'react-native'
 
-const ElementRedirect = (props, ref) => {
+/** Imperative handle: `<Redirect ref={r} />`, then `r.current?.redirect(url)`. */
+export type RedirectHandle = { redirect: (url: string) => void };
+
+export default function ElementRedirect({ ref }: { ref?: Ref<RedirectHandle | null> }) {
     const router = useRouter();
     const tabPath = useCurrentTabPath();
     const routerRef = useRef(router);
@@ -23,7 +26,7 @@ const ElementRedirect = (props, ref) => {
     }, []);
 
     // Stable redirect function
-    const redirectFn = useCallback((sUrl) => {
+    const redirectFn = useCallback((sUrl: string) => {
         // Check mount state
         if (!isMountedRef.current) {
             return;
@@ -69,6 +72,5 @@ const ElementRedirect = (props, ref) => {
     }, [ref, redirectFn]);
 
     return null;
-};
+}
 
-export default forwardRef(ElementRedirect);

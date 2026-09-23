@@ -30,26 +30,11 @@ import { Text } from 'app/design/typography';
 import { Button } from 'app/design/controls';
 import { Icon } from 'app/ui/atoms/icon';
 import { appSetting } from 'app/lib/util';
+import type { SnackbarProps } from './snackbar';
 
 // Theme settings
 const snackbarTheme = appSetting('theme', 'snackbar') || {};
 
-/**
- * Snackbar Component
- * 
- * @param {boolean} visible - Whether snackbar is visible
- * @param {string} title - Main text to display
- * @param {string} [description] - Optional secondary text
- * @param {string} [icon] - Optional icon name (from your icon set)
- * @param {'top'|'bottom'} [position='bottom'] - Position on screen
- * @param {string} [variant='primary'] - Button/style variant
- * @param {string} [size='sm'] - Size variant
- * @param {Function} onPress - Called when snackbar/button is pressed
- * @param {Function} [onDismiss] - Called when snackbar is dismissed
- * @param {boolean} [dismissible=true] - Allow dismiss (click outside or escape)
- * @param {string} [buttonTitle] - Custom button title (defaults to title)
- * @param {boolean} [showButton=true] - Show action button vs plain text
- */
 export default function Snackbar({
     visible = false,
     title,
@@ -65,7 +50,7 @@ export default function Snackbar({
     showButton = true,
     style,
     className,
-}) {
+}: SnackbarProps) {
     const [shouldRender, setShouldRender] = useState(visible);
     const [isAnimating, setIsAnimating] = useState(false);
     const snackbarRef = useRef(null);
@@ -94,7 +79,7 @@ export default function Snackbar({
     useEffect(() => {
         if (!visible || !dismissible || !onDismiss) return;
 
-        const handleKeyDown = (e) => {
+        const handleKeyDown = (e: KeyboardEvent) => {
             if (e.key === 'Escape') {
                 onDismiss();
             }
@@ -146,7 +131,7 @@ export default function Snackbar({
             onPress={handlePress}
             className={wrapperClasses}
         >
-            {icon && <Icon name={icon} size={16} className="text-primary-foreground" />}
+            {icon && <Icon icon={icon} size={16} className="text-primary-foreground" />}
             <Text className="text-primary-foreground font-medium">{title}</Text>
             {description && (
                 <Text className="text-primary-foreground/80 text-sm ml-1">{description}</Text>

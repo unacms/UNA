@@ -10,8 +10,8 @@ import { clockToSeconds, estimateToSeconds, formatTaskClock, parseTaskTime } fro
 import { useTaskTimerSession } from 'app/lib/task-timer-sync';
 
 /** Advance from a snapshot using wall-clock so background tabs catch up. */
-export function useLiveSeconds(baseSeconds, isRunning) {
-    const originRef = useRef(null);
+export function useLiveSeconds(baseSeconds: number | string | null | undefined, isRunning: boolean): number {
+    const originRef = useRef<{ at: number; base: number } | null>(null);
     const [now, setNow] = useState(() => Date.now());
     const safeBase = Math.max(0, Number(baseSeconds) || 0);
 
@@ -31,13 +31,27 @@ export function useLiveSeconds(baseSeconds, isRunning) {
     return originRef.current.base + Math.max(0, Math.floor((now - originRef.current.at) / 1000));
 }
 
-function isStarted(value) {
+function isStarted(value: unknown): boolean {
     const key = String(value || '').trim().toLowerCase();
     return value === true || value === 1 || value === '1'
         || key === 'started' || key === 'running' || key === 'start';
 }
 
-function resolveTimerValue({ time, logged, estimate, running, state, timer, session }) {
+type TimerSession = { seconds?: number | null; state?: string } | null | undefined;
+
+type TimerSource = {
+    /** UNA `time` field: "logged / estimate" or a clock string. */
+    time?: string | number | null;
+    logged?: string | number | null;
+    estimate?: string | number | null;
+    /** Explicit running flag; otherwise derived from `state` / `timer.state` / session. */
+    running?: boolean;
+    state?: string | number | boolean;
+    /** Server timer snapshot: `{ time, state }`. */
+    timer?: { time?: string | number; state?: string } | null;
+};
+
+function resolveTimerValue({ time, logged, estimate, running, state, timer, session }: TimerSource & { session: TimerSession }) {
     const timerObj = timer && typeof timer === 'object' && !Array.isArray(timer) ? timer : null;
     const parsed = parseTaskTime(time);
     const loggedSeconds = clockToSeconds(logged) ?? parsed.loggedSeconds ?? 0;
@@ -63,6 +77,14 @@ function resolveTimerValue({ time, logged, estimate, running, state, timer, sess
     };
 }
 
+type TimerProps = TimerSource & {
+    taskId?: string | number;
+    controlSize?: string;
+    /** Force seconds on/off; by default shown only while running. */
+    showSeconds?: boolean;
+    className?: string;
+};
+
 export function Timer({
     time,
     logged,
@@ -74,7 +96,7 @@ export function Timer({
     controlSize = 'mini',
     showSeconds,
     className,
-}) {
+}: TimerProps) {
     const resolved = useResolvedNeoButton({
         controlSize,
         borderShape: 'capsule',
@@ -86,17 +108,18 @@ export function Timer({
 
     if (!value.hasLogged && !value.hasEstimate && !value.isRunning) return null;
 
-    const over = value.hasEstimate && liveSeconds > value.estimateSeconds;
+    const estimateSeconds = value.estimateSeconds ?? 0;
+    const over = value.hasEstimate && liveSeconds > estimateSeconds;
     const fillPercent = !value.hasEstimate
         ? 0
-        : (over ? 100 : Math.round((liveSeconds / value.estimateSeconds) * 1000) / 10);
+        : (over ? 100 : Math.round((liveSeconds / estimateSeconds) * 1000) / 10);
     const showFill = value.hasEstimate && fillPercent > 0;
     const secondsVisible = showSeconds === true || (showSeconds !== false && value.isRunning);
     const loggedLabel = !value.hasLogged && liveSeconds === 0
         ? '0'
         : formatTaskClock(liveSeconds, { showSeconds: secondsVisible });
     const estimateLabel = value.hasEstimate
-        ? formatTaskClock(value.estimateSeconds, { showSeconds: secondsVisible })
+        ? formatTaskClock(estimateSeconds, { showSeconds: secondsVisible })
         : null;
     const label = estimateLabel ? `${loggedLabel} / ${estimateLabel}` : loggedLabel;
     const padStyle = resolved.paddingXCls

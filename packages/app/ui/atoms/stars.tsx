@@ -1,6 +1,8 @@
 'use client'
 
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useRef, useState, type Ref } from 'react'
+import type { TFunction } from 'i18next'
+import type { ViewStyle } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import { Pressable, Row, View } from 'app/design/view'
 import { Text } from 'app/design/typography'
@@ -11,17 +13,17 @@ const DEFAULT_MAX = 5
 const DEFAULT_STAR_SIZE = 22
 const DEFAULT_HIT = 40
 
-function clampRating(value, maxStars) {
+function clampRating(value: unknown, maxStars: number): number {
     const n = Number(value)
     if (!Number.isFinite(n) || n <= 0) return 0
     return Math.min(maxStars, Math.round(n))
 }
 
-function starCountLabel(t, count) {
+function starCountLabel(t: TFunction, count: number): string {
     return count === 1 ? t('1 star') : t('{{count}} stars', { count })
 }
 
-function StarGlyph({ filled, size }) {
+function StarGlyph({ filled, size }: { filled: boolean; size: number }) {
     return (
         <View className="relative items-center justify-center" style={{ width: size, height: size }}>
             <Icon
@@ -64,6 +66,20 @@ function StarButton({
     onHover,
     onKeyDown,
     buttonRef,
+}: {
+    value: number
+    filled: boolean
+    checked: boolean
+    disabled?: boolean
+    starSize: number
+    hitSize: number
+    starStyle?: ViewStyle
+    label: string
+    tabIndex: 0 | -1
+    onSelect: (value: number) => void
+    onHover?: (value: number) => void
+    onKeyDown?: (event: { key?: string; preventDefault?: () => void }) => void
+    buttonRef?: Ref<any>
 }) {
     return (
         <Pressable
@@ -94,7 +110,7 @@ function StarButton({
                         minHeight: hitSize,
                         ...starStyle,
                     }
-                    : ({ pressed }) => [
+                    : ({ pressed }: { pressed: boolean }) => [
                         {
                             width: hitSize,
                             height: hitSize,
@@ -111,7 +127,14 @@ function StarButton({
     )
 }
 
-export function StarsView({ rating, starSize = 20, className, starStyle: _starStyle }) {
+type StarsViewProps = {
+    rating?: number | string | null
+    starSize?: number
+    className?: string
+    starStyle?: ViewStyle
+}
+
+export function StarsView({ rating, starSize = 20, className, starStyle: _starStyle }: StarsViewProps) {
     const { t } = useTranslation()
     const label = rating == null || rating === '' ? '' : String(rating)
     if (!label) return null
@@ -128,6 +151,22 @@ export function StarsView({ rating, starSize = 20, className, starStyle: _starSt
     )
 }
 
+type StarsActionProps = {
+    rating?: number | string
+    /** Omit (or disable) for a read-only row. Pressing the current value clears to 0. */
+    onChange?: (rating: number) => void
+    maxStars?: number
+    starSize?: number
+    /** Touch target; defaults to starSize + 16 (min 40). */
+    hitSize?: number
+    starStyle?: ViewStyle
+    disabled?: boolean
+    /** Legacy, ignored. */
+    color?: string
+    /** Legacy, ignored. */
+    enableHalfStar?: boolean
+}
+
 export function StarsAction({
     rating = 0,
     onChange,
@@ -138,29 +177,29 @@ export function StarsAction({
     disabled,
     color: _color,
     enableHalfStar: _enableHalfStar,
-}) {
+}: StarsActionProps) {
     const { t } = useTranslation()
     const count = Math.max(1, Number(maxStars) || DEFAULT_MAX)
     const value = clampRating(rating, count)
     const [hoverValue, setHoverValue] = useState(0)
-    const buttonRefs = useRef([])
+    const buttonRefs = useRef<({ focus?: () => void } | null)[]>([])
     const targetSize = hitSize ?? Math.max(DEFAULT_HIT, (Number(starSize) || DEFAULT_STAR_SIZE) + 16)
     const preview = hoverValue > 0 ? hoverValue : value
     const readOnly = disabled || typeof onChange !== 'function'
 
-    const commit = useCallback((next) => {
+    const commit = useCallback((next: number) => {
         if (readOnly) return
         const resolved = next === value ? 0 : next
         FeedbackHaptics('Select')
         onChange(resolved)
     }, [onChange, readOnly, value])
 
-    const focusStar = useCallback((index) => {
+    const focusStar = useCallback((index: number) => {
         const node = buttonRefs.current[index]
         node?.focus?.()
     }, [])
 
-    const onGroupKeyDown = useCallback((event) => {
+    const onGroupKeyDown = useCallback((event: { key?: string; preventDefault?: () => void }) => {
         if (readOnly || !isWeb) return
         const key = event?.key
         let next = value

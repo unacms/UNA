@@ -1,37 +1,60 @@
 import * as React from 'react';
-import { View, Pressable, Platform } from 'react-native';
+import { View, Pressable, Platform, type ViewProps } from 'react-native';
 import DropdownPopup from 'app/ui/atoms/dropdown-popup';
 
 const isWeb = Platform.OS === 'web';
 
 // Placeholder components for JSX composition
-function HoverCardTrigger({ children }) {
+function HoverCardTrigger({ children }: { children?: React.ReactNode }) {
     return children;
 }
 HoverCardTrigger.displayName = 'HoverCardTrigger';
 
-function HoverCardContent({ children, className, ...props }) {
+function HoverCardContent({ children, className, ...props }: ViewProps & { className?: string }) {
     return <View className={className} {...props}>{children}</View>;
 }
 HoverCardContent.displayName = 'HoverCardContent';
 
 // Helper to parse children once
-function parseHoverCardChildren(children) {
-    let triggerContent = null;
-    let contentChild = null;
+type ContentElement = React.ReactElement<{ className?: string; children?: React.ReactNode }>;
+
+function parseHoverCardChildren(children: React.ReactNode): { triggerContent: React.ReactNode; contentChild: ContentElement | null } {
+    let triggerContent: React.ReactNode = null;
+    let contentChild: ContentElement | null = null;
 
     React.Children.forEach(children, (child) => {
         if (!React.isValidElement(child)) return;
-        const displayName = child.type?.displayName || child.type?.name;
+        const type = child.type as { displayName?: string; name?: string } | string;
+        const displayName = typeof type === 'string' ? undefined : (type.displayName || type.name);
         if (displayName === 'HoverCardTrigger') {
-            triggerContent = child.props.children;
+            triggerContent = (child as ContentElement).props.children;
         } else if (displayName === 'HoverCardContent') {
-            contentChild = child;
+            contentChild = child as ContentElement;
         }
     });
 
     return { triggerContent, contentChild };
 }
+
+/** Default (undefined): hover on web, click on native. */
+type TriggerMode = 'hover' | 'click' | 'both';
+
+type HoverHandlers = {
+    onMouseEnter?: () => void;
+    onMouseLeave?: () => void;
+};
+
+type HoverCardProps = {
+    /** `<HoverCardTrigger>` + `<HoverCardContent>` (matched by displayName). */
+    children?: React.ReactNode;
+    open?: boolean;
+    defaultOpen?: boolean;
+    onOpenChange?: (open: boolean) => void;
+    /** ms before opening on hover; guards against accidental triggers. */
+    openDelay?: number;
+    triggerMode?: TriggerMode;
+    maxPopupWidth?: number;
+};
 
 // Separated trigger wrapper to avoid re-renders
 const TriggerWrapper = React.memo(function TriggerWrapper({
@@ -40,7 +63,7 @@ const TriggerWrapper = React.memo(function TriggerWrapper({
     onMouseLeave,
     onPress,
     triggerMode,
-}) {
+}: HoverHandlers & { children?: React.ReactNode; onPress?: () => void; triggerMode?: TriggerMode }) {
     // Choose which handlers to use
     // Default (undefined): hover on web, click on native
     const useHover = triggerMode === 'hover' || triggerMode === 'both' || (triggerMode === undefined && isWeb);
@@ -81,7 +104,7 @@ const ContentWrapper = React.memo(function ContentWrapper({
     className,
     onMouseEnter,
     onMouseLeave,
-}) {
+}: HoverHandlers & { children?: React.ReactNode; className?: string }) {
     return (
         <View
             className={className}
@@ -98,13 +121,13 @@ const HoverCard = React.memo(function HoverCard({
     open: controlledOpen,
     defaultOpen = false,
     onOpenChange,
-    openDelay = 1000, // 1 second delay to avoid accidental triggers
-    triggerMode, // 'hover' | 'click' | 'both' | undefined (default — current behavior)
+    openDelay = 1000,
+    triggerMode,
     maxPopupWidth,
-}) {
+}: HoverCardProps) {
     const [internalOpen, setInternalOpen] = React.useState(defaultOpen);
-    const openTimerRef = React.useRef(null);
-    const closeTimerRef = React.useRef(null);
+    const openTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+    const closeTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
     const isHoveringContent = React.useRef(false);
     const isHoveringTrigger = React.useRef(false);
     const protectionEndTime = React.useRef(0);
@@ -123,7 +146,7 @@ const HoverCard = React.memo(function HoverCard({
         }
     }, []);
 
-    const setOpen = React.useCallback((newOpen) => {
+    const setOpen = React.useCallback((newOpen: boolean) => {
         if (newOpen) {
             // Set protection end time - ignore close events for 100ms after opening
             // Reduced from 300ms for faster dismissal while still preventing flickering
@@ -207,7 +230,7 @@ const HoverCard = React.memo(function HoverCard({
     }, [scheduleClose]);
 
     // Close when backdrop is clicked
-    const handleDropdownOpenChange = React.useCallback((newOpen) => {
+    const handleDropdownOpenChange = React.useCallback((newOpen: boolean) => {
         if (!newOpen && !isProtected()) {
             isHoveringContent.current = false;
             isHoveringTrigger.current = false;

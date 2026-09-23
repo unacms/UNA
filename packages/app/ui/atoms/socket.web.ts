@@ -1,10 +1,10 @@
 import Pusher from 'pusher-js';
 import { appSetting } from 'app/lib/util'
 
-let pusherInstance = null;
-const bindingCounts = new Map();
+let pusherInstance: Pusher | null = null;
+const bindingCounts = new Map<string, number>();
 
-function getPusher() {
+function getPusher(): Pusher | null {
     if (pusherInstance) return pusherInstance;
 
     const conf = appSetting('config', 'sockets');
@@ -23,7 +23,8 @@ function getPusher() {
     return pusherInstance;
 }
 
-export function subscribe(channel_name, event_name, cb) {
+/** Bind `cb` to `event_name` on `channel_name`; returns the unsubscribe function. */
+export function subscribe(channel_name: string, event_name: string, cb: (data: any) => void): () => void {
     const pusher = getPusher();
     if (!pusher) return () => { };
 

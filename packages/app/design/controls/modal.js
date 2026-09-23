@@ -62,6 +62,11 @@ function ModalHeader({ title, headerBorder, onClose }) {
     );
 }
 
+/**
+ * Loose props type so TS callers aren't forced to pass every destructured prop.
+ * TODO: replace with real prop types when design/controls moves to TypeScript.
+ * @param {{ [key: string]: any }} props
+ */
 export function Modal({
     animation,
     position = 'center',

@@ -131,6 +131,8 @@ interface PickerStyledRefProps extends PickerProps {
     classes?: string;
     className?: string;
     size?: keyof typeof InputSize;
+    /** Mapped to the native Picker's `enabled`. */
+    disabled?: boolean;
 }
 
 const getPickerSurfaceClass = (size?: keyof typeof InputSize) => {
@@ -155,13 +157,14 @@ export const PickerStyled = ({ className, style, size = InputSize.regular, ...pr
 PickerStyled.displayName = 'PickerStyled';
 
 export const PickerStyledRef = forwardRef<any, PickerStyledRefProps>(
-    ({ classes, className, style, size = InputSize.regular, ...props }, ref) => (
+    ({ classes, className, style, size = InputSize.regular, disabled, ...props }, ref) => (
         <View className={`relative ${isWeb ? 'flex-auto items-center flex-row' : ''}`}>
-            <Picker 
-                ref={ref} 
+            <Picker
+                ref={ref}
                 className={`${classes ? classes : getPickerSurfaceClass(size)} ${className || ''} w-full`}
                 {...getPickerStyleProps(style)}
                 {...props}
+                {...(disabled !== undefined ? { enabled: !disabled } : {})}
             />
             {isWeb && (
                 <View className="absolute right-3 pointer-events-none">
