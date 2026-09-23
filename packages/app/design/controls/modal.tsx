@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useRef } from 'react';
+import { useEffect, useCallback, useRef, type ComponentType, type ReactNode } from 'react';
 import { Modal as ModalDef, Platform } from 'react-native'
 import { SafeAreaProvider, initialWindowMetrics } from 'react-native-safe-area-context';
 import { Pressable, View, ScrollView, Row } from 'app/design/view'
@@ -14,7 +14,7 @@ import { ModalKbAwareScroll } from 'app/ui/atoms/kb-avoiding-view';
 import { pushFormEnsureVisibleHandler, scrollContainerByDelta } from 'app/lib/form/form-ensure-visible';
 import { useTranslation } from 'react-i18next';
 
-function NativeModalSafePad({ autoHeight, sClassPosition, children }) {
+function NativeModalSafePad({ autoHeight, sClassPosition, children }: { autoHeight: boolean; sClassPosition: string; children?: ReactNode }) {
     const insets = useStableSafeAreaInsets();
     return (
         <View
@@ -37,7 +37,7 @@ const isIPadWeb =
     );
 const modalSettings = appSetting('theme', 'modal');
 
-function ModalHeader({ title, headerBorder, onClose }) {
+function ModalHeader({ title, headerBorder, onClose }: { title?: ReactNode; headerBorder: boolean; onClose?: () => void }) {
     const { t } = useTranslation();
     const align = !title && onClose ? 'end' : 'center';
     if (!title) return null;
@@ -62,11 +62,31 @@ function ModalHeader({ title, headerBorder, onClose }) {
     );
 }
 
-/**
- * Loose props type so TS callers aren't forced to pass every destructured prop.
- * TODO: replace with real prop types when design/controls moves to TypeScript.
- * @param {{ [key: string]: any }} props
- */
+export type ModalProps = {
+    /** Show the modal (legacy name). */
+    onVisible?: boolean;
+    onClose?: () => void;
+    /** Android back / Escape; defaults to onClose. */
+    onRequestClose?: () => void;
+    /** Close on backdrop click (web). */
+    outerClickClose?: boolean;
+    /** String title renders the header with a close button; an element renders as-is. */
+    title?: ReactNode;
+    headerBorder?: boolean;
+    /** RN Modal animation; defaults to fade on desktop, slide elsewhere. */
+    animation?: 'none' | 'slide' | 'fade';
+    position?: 'top' | 'bottom' | 'center';
+    /** Tailwind max-width class. */
+    maxWidth?: string;
+    /** Tailwind padding class for the body. */
+    padding?: string;
+    autoHeight?: boolean;
+    scrollable?: boolean;
+    /** Skip the "discard unsaved form changes?" confirm on close. */
+    skipUnsavedGuard?: boolean;
+    children?: ReactNode;
+};
+
 export function Modal({
     animation,
     position = 'center',
@@ -82,18 +102,18 @@ export function Modal({
     autoHeight = false,
     scrollable = false,
     skipUnsavedGuard = false,
-}) {
+}: ModalProps) {
     const isIos = Platform.OS === 'ios';
     const isDesktop = useIsDesktop();
     const { height: heightActual1, isKeyboardOpen } = useActualWindowHeight();
 
     const heightActual = isKeyboardOpen ? heightActual1 + 96 : heightActual1;
     const insets = useStableSafeAreaInsets();
-    const fogRef = useRef(null);
-    const scrollRef = useRef(null);
+    const fogRef = useRef<any>(null);
+    const scrollRef = useRef<any>(null);
     const scrollYRef = useRef(0);
 
-    const handleScroll = useCallback((event) => {
+    const handleScroll = useCallback((event: any) => {
         const y = event?.nativeEvent?.contentOffset?.y;
         if (typeof y === 'number') scrollYRef.current = y;
     }, []);
@@ -101,7 +121,7 @@ export function Modal({
     useEffect(() => {
         if (!scrollable || !onVisible) return undefined;
 
-        return pushFormEnsureVisibleHandler(({ windowY }) => {
+        return pushFormEnsureVisibleHandler(({ windowY }: { windowY: number }) => {
             const scrollView = scrollRef.current;
             if (!scrollView) return;
 
@@ -125,7 +145,8 @@ export function Modal({
         if (!isIosWeb || !window.visualViewport) return;
         const update = () => {
             if (!fogRef.current) return;
-            const vv = window.visualViewport;
+            // Only subscribed when visualViewport exists (checked above).
+            const vv = window.visualViewport!;
             const offsetTop = vv?.offsetTop ?? 0;
             if (isIPadWeb) {
                 fogRef.current.style.marginTop = `${offsetTop}px`;
@@ -135,11 +156,11 @@ export function Modal({
                 fogRef.current.style.height = '';
             }
         };
-        window.visualViewport.addEventListener('resize', update);
-        window.visualViewport.addEventListener('scroll', update);
+        window.visualViewport!.addEventListener('resize', update);
+        window.visualViewport!.addEventListener('scroll', update);
         return () => {
-            window.visualViewport.removeEventListener('resize', update);
-            window.visualViewport.removeEventListener('scroll', update);
+            window.visualViewport!.removeEventListener('resize', update);
+            window.visualViewport!.removeEventListener('scroll', update);
             if (fogRef.current) {
                 fogRef.current.style.marginTop = '';
                 fogRef.current.style.height = '';
@@ -167,7 +188,7 @@ export function Modal({
     }, [onRequestClose, onClose, skipUnsavedGuard]);
 
     useEffect(() => {
-        const subscription = emitter.addListener('link', (data) => {
+        const subscription = emitter.addListener('link', (data: { action?: string }) => {
             if (data.action == 'pressed') {
                 tryClose();
             }
@@ -207,26 +228,19 @@ export function Modal({
         'bottom': 'items-end py-8 px-4',
         'center': 'sm:items-center items-start ',
     };
-    const sClassPosition = positionClasses[position] || positionClasses['center'];
-    const Cnt = scrollable ? (isWeb ? ScrollView : ModalKbAwareScroll) : View
+    const sClassPosition = positionClasses[position] || positionClasses.center;
+    const Cnt: ComponentType<any> = scrollable ? (isWeb ? ScrollView : ModalKbAwareScroll) : View
     const modalBottomOffset = 24 + (insets?.bottom ?? 0)
 
 
-    const handleWebOuterPress = useCallback((event) => {
+    const handleWebOuterPress = useCallback((event: any) => {
         if (isOuterClose) {
             tryClose();
         }
         event.stopPropagation();
     }, [isOuterClose, tryClose]);
 
-    const handleNativeOuterPress = useCallback(() => {
-        emitter.emit('editor', { action: 'blur' });
-        /*  if (isOuterClose) {
-                            onClose()
-                        }*/
-    }, [isOuterClose, onClose]);
-
-    const handleContentPress = useCallback((event) => {
+    const handleContentPress = useCallback((event: any) => {
         event.stopPropagation();
     }, []);
 
@@ -237,19 +251,19 @@ export function Modal({
     useEffect(() => {
         if (!isWeb || !scrollable || !onVisible) return;
 
-        const normalizeWheelDelta = (deltaY, deltaMode = 0) => {
+        const normalizeWheelDelta = (deltaY: number, deltaMode = 0) => {
             if (deltaMode === 1) return deltaY * 16;
             if (deltaMode === 2) return deltaY * (window.innerHeight || 0);
             return deltaY;
         };
 
-        const scrollModalBy = (deltaY, deltaMode = 0) => {
+        const scrollModalBy = (deltaY: number, deltaMode = 0) => {
             const scrollEl = scrollRef.current;
             if (!scrollEl || scrollEl.scrollHeight <= scrollEl.clientHeight) return;
             scrollEl.scrollTop += normalizeWheelDelta(deltaY, deltaMode);
         };
 
-        const isEditorIframeMessage = (event) => {
+        const isEditorIframeMessage = (event: MessageEvent) => {
             const source = event.source;
             if (!source || source === window) return false;
             return Array.from(document.querySelectorAll('iframe')).some(
@@ -257,7 +271,7 @@ export function Modal({
             );
         };
 
-        const onWheel = (event) => {
+        const onWheel = (event: WheelEvent) => {
             const scrollEl = scrollRef.current;
             if (!scrollEl || scrollEl.scrollHeight <= scrollEl.clientHeight) return;
 
@@ -273,7 +287,7 @@ export function Modal({
 
             if (target instanceof Node && scrollEl.contains(target)) return;
 
-            let el = target instanceof Node ? target : null;
+            let el: Element | null = target instanceof Element ? target : null;
             while (el && el !== fog) {
                 if (el !== scrollEl) {
                     const { overflowY } = window.getComputedStyle(el);
@@ -291,7 +305,7 @@ export function Modal({
             scrollModalBy(event.deltaY, event.deltaMode);
         };
 
-        const onMessage = (event) => {
+        const onMessage = (event: MessageEvent) => {
             if (!isEditorIframeMessage(event)) return;
 
             let data = event.data;
@@ -361,7 +375,6 @@ export function Modal({
                 <SafeAreaProvider initialMetrics={initialWindowMetrics}>
                     <View
                         className={`pointerEvents cursor-default flex justify-end w-full h-full ${modalSettings.fog}`}
-                        onPress={handleNativeOuterPress}
                     >
                         <NativeModalSafePad autoHeight={autoHeight} sClassPosition={sClassPosition}>
                             <View className={`w-full  ${maxWidth}  ${modalSettings.container}  ${autoHeight ? 'rounded-2xl ' : ''}`}>

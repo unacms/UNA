@@ -114,7 +114,7 @@ export default function CalendarField({ name, value = '', type, onChange }: Cale
 
     return (
         <>
-            <Modal onVisible={!!showModal} onClose={() => { setShowModal(false) }} transparent={false}>
+            <Modal onVisible={!!showModal} onClose={() => { setShowModal(false) }}>
                 <View className='  max-w-sm w-full mx-auto'>
                     <View className='  max-w-sm w-full mx-auto aspect-square mb-4'>
                         {DynamicCalendar && <DynamicCalendar

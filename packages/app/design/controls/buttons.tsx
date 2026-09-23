@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, { memo, type ComponentType, type ReactElement, type ReactNode, type Ref } from 'react';
 import { Pressable, View, MotionView } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { Icon } from 'app/ui/atoms/icon'
@@ -7,7 +7,7 @@ import { appSetting, isEmoji, FeedbackHaptics, cn, sanitazeUrl, isExternalUrl, o
 import Tooltip from 'app/ui/atoms/tooltip';
 import Loading from 'app/ui/atoms/loading'
 import { useIsDesktop } from 'app/context/measure';
-import { Platform } from 'react-native';
+import { Platform, type Insets } from 'react-native';
 import { useThemeName } from 'app/design/theme';
 
 
@@ -18,7 +18,57 @@ const isWeb = Platform.OS === 'web';
 
 const springTransition = BtnCls.motion.springTransition;
 
-const ICON_ACCESSIBLE_MAP = {
+/** Icon name, emoji, `'_loading'` (spinner), a ready element, or a list of those. */
+export type ButtonDecorator = string | ReactElement | (string | ReactElement)[];
+
+/** Badge on the button: plain text, or text with options. */
+export type ButtonAddon = string | number | {
+    text?: string | number;
+    /** `primary` uses the destructive colors. */
+    variant?: string;
+    position?: 'top' | 'bottom';
+    /** Hide the badge when the text is `'0'`. */
+    hideZero?: boolean;
+};
+
+export type ButtonProps = {
+    /** Theme `button_styles` key. */
+    variant?: string;
+    /** Theme `button_sizes` key. */
+    size?: string;
+    disabled?: boolean;
+    forwardedRef?: Ref<any>;
+    /** Desktop tooltip text; also used as the accessible name. */
+    tooltip?: string | false;
+    onPress?: (event?: any) => void;
+    onTouchStart?: (event?: any) => void;
+    /** Inside a ButtonsGroup: no own rounding. */
+    grouped?: boolean;
+    title?: ReactNode;
+    /** Haptic preset fired on press. */
+    haptics?: string;
+    className?: string;
+    classTextName?: string;
+    /** Breakpoint from which the title shows next to icons (`''` = always). */
+    showTitleFromSize?: string;
+    pressed?: boolean;
+    startDecorator?: ButtonDecorator;
+    endDecorator?: ButtonDecorator;
+    /** Flex justify value: `center`, `start`, `end`, `between`… */
+    align?: string;
+    fullWidth?: boolean;
+    addon?: ButtonAddon;
+    rounded?: boolean;
+    /** Extra touch/click area around the button. */
+    hitarea?: boolean;
+    hitSlop?: number | Insets;
+    /** Accessible name; wins over tooltip/title/icon name. */
+    alt?: string;
+    role?: string;
+    children?: ReactNode;
+};
+
+const ICON_ACCESSIBLE_MAP: Record<string, string> = {
     'X': 'Close',
     'ChevronLeft': 'Previous',
     'ChevronRight': 'Next',
@@ -51,7 +101,7 @@ const ICON_ACCESSIBLE_MAP = {
     'LogOut': 'Logout',
 };
 
-const getAddon = (addon, isTitle) => {
+const getAddon = (addon: ButtonAddon | undefined, isTitle: boolean) => {
     if (!addon) return null;
 
     const isObj = typeof addon === 'object' && addon !== null;
@@ -81,10 +131,10 @@ const getAddon = (addon, isTitle) => {
     );
 };
 
-const ButtonIcon = memo(({ icon, className, size }) => {
+const ButtonIcon = memo(({ icon, className, size }: { icon?: ButtonDecorator; className?: string; size?: number }) => {
     if (!icon) return null;
 
-    const renderOne = (one, key) => {
+    const renderOne = (one: string | ReactElement, key: string | number) => {
         if (!one) return null;
         if (one === "_loading") return <Loading key={key} size="small" />;
 
@@ -110,7 +160,13 @@ const ButtonIcon = memo(({ icon, className, size }) => {
     return icon.map((one, idx) => renderOne(one, idx));
 });
 
-const getAccessibleName = (alt, tooltip, title, startDecorator, endDecorator) => {
+const getAccessibleName = (
+    alt: string | undefined,
+    tooltip: ButtonProps['tooltip'],
+    title: ReactNode,
+    startDecorator: ButtonDecorator | undefined,
+    endDecorator: ButtonDecorator | undefined,
+) => {
     // Priority order: explicit alt > tooltip > title > icon name
     if (alt) return alt;
     if (tooltip && typeof tooltip === 'string') return tooltip;
@@ -118,7 +174,8 @@ const getAccessibleName = (alt, tooltip, title, startDecorator, endDecorator) =>
 
     // For icon-only buttons, derive name from icon
     const iconName = startDecorator || endDecorator;
-    if (iconName && !title) {
+    // Only a plain icon name can be turned into text (elements/arrays have no name).
+    if (typeof iconName === 'string' && iconName && !title) {
         if (ICON_ACCESSIBLE_MAP[iconName]) return ICON_ACCESSIBLE_MAP[iconName];
         // Fallback: convert CamelCase to readable text
         return iconName.replace(/([A-Z])/g, ' $1').trim();
@@ -127,7 +184,15 @@ const getAccessibleName = (alt, tooltip, title, startDecorator, endDecorator) =>
     return undefined;
 };
 
-const getStateClasses = (active, pressed, hovered, focused, disabled, variant, type = 'container') => {
+const getStateClasses = (
+    active: boolean,
+    pressed: boolean,
+    hovered: boolean,
+    focused: boolean,
+    disabled: boolean | undefined,
+    variant: string,
+    type: 'container' | 'text' = 'container',
+) => {
     const classes = BtnCls[variant]?.[type];
     if (disabled) return classes?.disabled || '';
     if (pressed) return classes?.pressed || '';
@@ -135,6 +200,31 @@ const getStateClasses = (active, pressed, hovered, focused, disabled, variant, t
     if (hovered) return classes?.hovered || '';
     if (focused) return classes?.focused || '';
     return classes?.default || '';
+};
+
+type ButtonContentProps = {
+    as?: ComponentType<any>;
+    cntProps?: Record<string, any>;
+    pressed?: boolean;
+    hovered?: boolean;
+    focused?: boolean;
+    active?: boolean;
+    fullWidth?: boolean;
+    className?: string;
+    classTextName?: string;
+    variant: string;
+    align: string;
+    size: string;
+    isIconOnly: boolean;
+    disabled?: boolean;
+    startDecorator?: ButtonDecorator;
+    endDecorator?: ButtonDecorator;
+    isTitle: boolean;
+    title?: ReactNode;
+    addon?: ButtonAddon;
+    showTitleFromSize: string;
+    roundingClass: string;
+    children?: ReactNode;
 };
 
 const ButtonContent = React.memo(({
@@ -160,7 +250,7 @@ const ButtonContent = React.memo(({
     showTitleFromSize,
     roundingClass,
     children
-}) => {
+}: ButtonContentProps) => {
     const { className: cntClassName, ...restCntProps } = cntProps;
     const themeName = useThemeName();
     const hasNoIcons = !startDecorator && !endDecorator;
@@ -200,7 +290,7 @@ const ButtonContent = React.memo(({
             {...restCntProps}
 
         >
-            <ButtonIcon size={BtnClsSize[size]?.icon_size} icon={startDecorator} className={textClasses.replace("overflow-hidden")} />
+            <ButtonIcon size={BtnClsSize[size]?.icon_size} icon={startDecorator} className={textClasses.replace("overflow-hidden", "")} />
 
             {isTitle && (
                 <Text className={`${textClasses} ${titleVisibility}`} numberOfLines={1}>
@@ -237,11 +327,6 @@ const ButtonContent = React.memo(({
 });
 
 
-/**
- * Loose props type so TS callers aren't forced to pass every destructured prop.
- * TODO: replace with real prop types when design/controls moves to TypeScript.
- * @param {{ [key: string]: any }} props
- */
 export const Button = ({
     variant = BtnClsSize.default_variant,
     size = BtnClsSize.default_size,
@@ -268,7 +353,7 @@ export const Button = ({
     alt,
     role = 'button',
     children,
-}) => {
+}: ButtonProps) => {
     const isTitle = !!title;
     const isIcon = !!(startDecorator || endDecorator);
     const isIconOnly = isIcon && !isTitle;
@@ -282,7 +367,7 @@ export const Button = ({
             isIconOnly ? "flex-none " :
                 isTitle ? "flex-none w-fit" : "w-fit";
 
-    const handlePress = (event) => {
+    const handlePress = (event?: any) => {
         if (haptics && onPress) FeedbackHaptics(haptics);
         if (isWeb) {
             event?.currentTarget?.blur?.();
@@ -290,7 +375,7 @@ export const Button = ({
         onPress?.(event);
     };
 
-    const handleTouchStart = (event) => {
+    const handleTouchStart = (event?: any) => {
         if (onTouchStart) FeedbackHaptics(haptics);
         onTouchStart?.(event);
     };
@@ -318,7 +403,7 @@ export const Button = ({
             BtnClsSize[size]?.rounded ?? '';
 
     const isPressable = !!(onPress || onTouchStart);
-    const Cnt = isPressable ? Pressable : View;
+    const Cnt: ComponentType<any> = isPressable ? Pressable : View;
 
     const [isPressed, setIsPressed] = React.useState(false);
     const [isFocused, setIsFocused] = React.useState(false);
@@ -349,7 +434,7 @@ export const Button = ({
                 onMouseLeave: () => setIsHovered(false),
             } : {}),
             ...(!disabled && isWeb ? {
-                onPointerDown: (e) => {
+                onPointerDown: (e: any) => {
                     if (e.pointerType === 'mouse' && e.button !== 0) return;
                     setWebPointerPressed(true);
                 },
@@ -398,7 +483,7 @@ export const Button = ({
     );
 }
 
-export const ButtonRef = React.forwardRef((props, forwardedRef) => {
+export const ButtonRef = React.forwardRef<any, ButtonProps>((props, forwardedRef) => {
     return (
         <Button {...props} forwardedRef={forwardedRef} />
     );
@@ -410,7 +495,7 @@ export const ButtonLink = ({
     asExternal = false,
     size = BtnClsSize.default_size,
     ...props
-}) => {
+}: ButtonProps & { href?: string; target?: string; asExternal?: boolean }) => {
     const finalHref = sanitazeUrl(href);
     const isExternal = isExternalUrl(finalHref) || asExternal === true;
 

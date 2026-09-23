@@ -28,8 +28,6 @@ export const interopRender = (displayName: string, render: ForwardRefRenderFunct
 }
 
 export const View: ComponentType<DesignViewProps> = createBackdropBlurView(RNView)
-/** On iOS, shadow shell avoids continuous corners; elsewhere same as View. */
-export const ShadowShell = View
 // Strip web-only anchor props (see view.web.tsx: href renders a real <a>).
 export const Pressable: ComponentType<DesignPressableProps> = interopRender(
     'Pressable',

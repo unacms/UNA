@@ -89,7 +89,7 @@ export default function Dropdown(props: DropdownProps) {
     else{
         return ( <View>
             <Button title={selectedText} disabled={props.disabled} onPress={() => setShowImage(true)} />
-            <Modal title={t('Title')} id={'dropdown'} onVisible={showImage} onClose={() => setShowImage(false)}>
+            <Modal title={t('Title')} onVisible={showImage} onClose={() => setShowImage(false)}>
                 <PickerStyledIos itemStyle={{fontSize:16, color:colors.default }}
                     size={props.size}
                     selectedValue={selectedVal}

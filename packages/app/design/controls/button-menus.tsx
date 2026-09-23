@@ -1,11 +1,12 @@
+import type { ReactNode } from 'react'
 import { appSetting } from 'app/lib/util'
-import { Button } from 'app/design/controls/buttons';
+import { Button, type ButtonProps } from 'app/design/controls/buttons';
 import { ButtonsGroup } from 'app/design/controls/button-groups';
 
 const LEGACY_BUTTON_SIZES = new Set(['xs', 'sm', 'base', 'lg']);
-const safeLegacySize = (size, fallback = 'sm') => LEGACY_BUTTON_SIZES.has(size) ? size : fallback;
+const safeLegacySize = (size: string | undefined, fallback = 'sm') => size && LEGACY_BUTTON_SIZES.has(size) ? size : fallback;
 
-export function ButtonMenuGroupItem({ variant, size, ...rest }) {
+export function ButtonMenuGroupItem({ variant, size, ...rest }: ButtonProps) {
     return (
         <Button
             grouped={true}
@@ -16,7 +17,7 @@ export function ButtonMenuGroupItem({ variant, size, ...rest }) {
     );
 }
 
-export function ButtonsGroupMenu(props) {
+export function ButtonsGroupMenu(props: ButtonProps & { children?: ReactNode[] }) {
     const {
         variant,
         size = 'xs',
@@ -46,7 +47,7 @@ function ButtonMenuAction({
     disabled = false,
     fullWidth = false,
     ...rest
-}) {
+}: ButtonProps) {
     return (
         <Button
             variant={variant ?? appSetting('layout', 'button_style_for_actions')}
@@ -60,7 +61,7 @@ function ButtonMenuAction({
     );
 }
 
-function ButtonMenuCounter(props) {
+function ButtonMenuCounter(props: ButtonProps) {
     const {
         variant,
         size = 'sm',
