@@ -259,13 +259,13 @@ packages/app/
 ├── ui/
 │   ├── primitives/     # Basic building blocks (View, Text wrappers)
 │   ├── atoms/          # Simple, single-purpose components
-│   │   ├── button.js
-│   │   ├── input.js
-│   │   └── badge.js
+│   │   ├── button.tsx
+│   │   ├── input.tsx
+│   │   └── badge.tsx
 │   └── molecules/      # Composite components
-│       ├── card.js
-│       ├── dropdown-menu.js
-│       └── profile-hover-card.js
+│       ├── card.tsx
+│       ├── dropdown-menu.tsx
+│       └── profile-hover-card.tsx
 ├── components/
 │   ├── elements/       # Page section components
 │   ├── units/          # List item renderers
@@ -274,6 +274,8 @@ packages/app/
 ```
 
 ### Component Creation Rules
+
+0. **Write new files in TypeScript.** New files in `packages/app` are `.ts` / `.tsx` with typed props; when you substantially rework a `.js` file, convert it (`git mv` first so history follows). A `.web` / `.native` pair shares its props through a `*.types.ts` file (see [TypeScript Safety](#typescript-safety-critical-for-production-builds)). Run `yarn typecheck` before finishing.
 
 1. **Never add external components directly to pages/features**
    

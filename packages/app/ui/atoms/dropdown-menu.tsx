@@ -1,15 +1,15 @@
 import { Pressable, View } from 'app/design/view';
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import { Button, NeoButton } from 'app/design/controls'
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { memo, useCallback, useEffect, useMemo, useRef, useState, type ComponentType, type ReactNode } from 'react';
 import { cn, groupDropdownItems, getDropdownSectionsLayout, dropdownLeafItems, getDropdownGridLayout } from 'app/lib/util';
-import DropdownGridItem from 'app/ui/atoms/dropdown-grid-item';
+import DropdownGridItem, { type DropdownGridMenuItem } from 'app/ui/atoms/dropdown-grid-item';
 import { FeedbackHaptics } from 'app/lib/util';
-import { Keyboard, Alert, Platform } from 'react-native'
-import Redirect from 'app/ui/atoms/redirect';
+import { Keyboard, Alert, Platform, type AlertButton, type StyleProp, type ViewStyle } from 'react-native'
+import Redirect, { type RedirectHandle } from 'app/ui/atoms/redirect';
 import { appSetting } from 'app/lib/util';
 import { SafeMenuTrigger } from 'app/ui/atoms/safe-menu-trigger';
-import DropdownPopup, { DropdownMenuOpenContext } from 'app/ui/atoms/dropdown-popup'
+import DropdownPopup, { DropdownMenuOpenContext, type DropdownButtonProps } from 'app/ui/atoms/dropdown-popup'
 import emitter from 'app/context/emitter';
 import { components } from 'app/components/registry'
 import { useOpenModalByUrl, useOpenModalWithContent } from 'app/context/jotai/modal';
@@ -19,15 +19,87 @@ import { useTranslation } from 'react-i18next';
 
 const menuSettings = appSetting('theme', 'dropdown_menu');
 
+/** UNA menu item. `group_header` / `separator` types structure sectioned menus. */
+export type DropdownMenuItemData = DropdownGridMenuItem & {
+    link?: string;
+    /** `modal` opens `content` (or the link) in a modal; `_blank` / `blank` opens externally. */
+    target?: string;
+    type?: 'group_header' | 'separator' | string;
+    /** Modal body for `target: 'modal'` (see `resolveContent`). */
+    content?: unknown;
+    className?: string;
+};
+
+export type DropdownMenuVariant = 'vertical' | 'horizontal' | 'nopad' | 'grid' | 'tabs-overflow';
+
+export type DropdownMenuProps = {
+    items: DropdownMenuItemData[];
+    /** Handle selection yourself; otherwise items navigate / open modals. */
+    onSelect?: (item: DropdownMenuItemData, event?: unknown) => void;
+    /** Trigger content when `buttonProps` is omitted. */
+    children?: ReactNode;
+    defaultOpen?: boolean;
+    /** Native: `popup` (anchored), `alert` (system alert), otherwise a bottom sheet. */
+    mode?: 'popup' | 'alert' | string;
+    /** Native alert title. */
+    title?: string;
+    variant?: DropdownMenuVariant;
+    showOnTop?: boolean;
+    /** Rendered under the items (popup only). */
+    footer?: ReactNode;
+    /** Native alert: add a Cancel option. */
+    cancelable?: boolean;
+    tabsOverflowSize?: 'sm' | 'md' | 'lg';
+    openOnFocus?: boolean;
+    /** Controlled open state (popup only). */
+    open?: boolean;
+    onOpenChange?: (open: boolean) => void;
+    buttonProps?: DropdownButtonProps;
+    contentClassName?: string;
+    /** Turn an item's `content` into modal content. */
+    resolveContent?: (content: unknown, item: DropdownMenuItemData) => ReactNode;
+    triggerAccessibilityLabel?: string;
+    triggerClassName?: string;
+    triggerStyle?: StyleProp<ViewStyle>;
+    /** Sectioned menus: one column instead of side-by-side sections. */
+    stacked?: boolean;
+};
+
+type DropdownMenuPopupProps = Omit<DropdownMenuProps, 'mode' | 'title' | 'cancelable'>;
+
+type DropdownMenuNativeProps = Pick<DropdownMenuProps,
+    'items' | 'onSelect' | 'children' | 'defaultOpen' | 'mode' | 'title' | 'cancelable'
+    | 'resolveContent' | 'buttonProps' | 'triggerAccessibilityLabel' | 'variant'>;
+
+type MenuBottomSheetProps = Pick<DropdownMenuProps, 'items' | 'onSelect' | 'resolveContent' | 'variant'> & {
+    setBottomSheetData: (data: any) => void;
+};
+
+type DropdownMenuSection = { header?: DropdownMenuItemData; items: DropdownMenuItemData[] };
+
+/** Result of getDropdownSectionsLayout (lib/util/menu.js), or the stacked single column. */
+type SectionsLayout = {
+    stacked: boolean;
+    cols: number;
+    colWidth: number | null;
+    contentWidth: number | null;
+    popupWidth: number | null;
+    minWidth?: number;
+    maxWidth?: number;
+};
+
+/** Menu item renderer from the component registry (JS, so typed loosely here). */
+const getDropdownMenuItem = (): ComponentType<any> => (components as any)['menu-item']['dropdown'];
+
 export { DropdownMenuOpenContext };
 
-// Mirrors the web trigger logic in dropdown-popup.js: legacy buttonProps drive
+// Mirrors the web trigger logic in dropdown-popup.tsx: legacy buttonProps drive
 // the classic `Button` (variant-based), otherwise we render `NeoButton`
 // (style/borderShape/image-based) so triggers look identical on both platforms.
-const isLegacyButtonProps = (props) =>
+const isLegacyButtonProps = (props: DropdownButtonProps | undefined) =>
     props?.legacyButton === true || props?.variant != null;
 
-function isNavigableDropdownItem(item, onSelect) {
+function isNavigableDropdownItem(item: DropdownMenuItemData | undefined, onSelect: DropdownMenuProps['onSelect']) {
     if (typeof onSelect === 'function') return false;
     if (!item || typeof item.link !== 'string' || !item.link) return false;
     if (item.target === 'modal') return false;
@@ -35,7 +107,7 @@ function isNavigableDropdownItem(item, onSelect) {
     return true;
 }
 
-const variantClassMap = {
+const variantClassMap: Record<string, Record<string, string>> = {
     vertical: { item: 'item_ver', container: 'content_ver' },
     horizontal: { item: 'item_hor', container: 'content_hor' },
     nopad: { item: 'item_np', container: 'content_ver' },
@@ -43,7 +115,7 @@ const variantClassMap = {
     'tabs-overflow': { container: 'content_ver' },
 };
 
-function resolveTabsOverflowClasses(tabsOverflowSize) {
+function resolveTabsOverflowClasses(tabsOverflowSize?: string) {
     const size =
         tabsOverflowSize === 'sm'
             ? 'sm'
@@ -78,9 +150,9 @@ function DropdownMenuPopup({
     triggerClassName,
     triggerStyle,
     stacked = false,
-}) {
-    const DropdownMenuItem = components['menu-item']['dropdown'];
-    const redirectdRef = useRef();
+}: DropdownMenuPopupProps) {
+    const DropdownMenuItem = getDropdownMenuItem();
+    const redirectdRef = useRef<RedirectHandle | null>(null);
     const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen);
     const isControlled = openProp !== undefined;
     const isOpen = isControlled ? openProp : uncontrolledOpen;
@@ -89,7 +161,7 @@ function DropdownMenuPopup({
     const isGridLayout = variant === 'grid';
 
     const setIsOpen = useCallback(
-        (next) => {
+        (next: boolean) => {
             if (!isControlled) {
                 setUncontrolledOpen(next);
             }
@@ -101,7 +173,7 @@ function DropdownMenuPopup({
     const classes =
         variant === 'tabs-overflow'
             ? resolveTabsOverflowClasses(tabsOverflowSize)
-            : variantClassMap[variant] ?? variantClassMap.vertical;
+            : (variant && variantClassMap[variant]) ?? variantClassMap.vertical!;
 
     const { width: windowWidth } = useWindowSize();
     const gridItems = useMemo(
@@ -117,7 +189,7 @@ function DropdownMenuPopup({
         () => (useSectionsLayout ? groupDropdownItems(items) : null),
         [items, useSectionsLayout]
     );
-    const sectionsLayout = useMemo(
+    const sectionsLayout = useMemo<SectionsLayout>(
         () => stacked
             ? { stacked: true, cols: 1, colWidth: null, contentWidth: null, popupWidth: null }
             : getDropdownSectionsLayout(sections?.length || 0, windowWidth),
@@ -128,7 +200,8 @@ function DropdownMenuPopup({
         : sectionsLayout.popupWidth;
     const sectionCount = sections?.length || 0;
     const sectionsWrap = sectionCount > (sectionsLayout.cols || 1);
-    const sectionsRowStyle = sectionsLayout.stacked
+    // Web uses CSS grid props (`display: 'grid'`) that RN style types don't know.
+    const sectionsRowStyle: any = sectionsLayout.stacked
         ? undefined
         : Platform.OS === 'web'
             ? {
@@ -142,7 +215,7 @@ function DropdownMenuPopup({
                 flexWrap: sectionsWrap ? 'wrap' : 'nowrap',
                 width: sectionsLayout.contentWidth,
             };
-    const sectionColStyle = sectionsLayout.stacked
+    const sectionColStyle: any = sectionsLayout.stacked
         ? { width: '100%' }
         : {
             width: sectionsLayout.colWidth,
@@ -152,41 +225,41 @@ function DropdownMenuPopup({
             flexShrink: 0,
             flexBasis: sectionsLayout.colWidth,
         };
-    const gridRowStyle = !isGridLayout
+    const gridRowStyle: any = !isGridLayout
         ? undefined
         : Platform.OS === 'web'
             ? {
                 display: 'grid',
-                gridTemplateColumns: `repeat(${gridLayout.cols}, minmax(0, 1fr))`,
-                width: gridLayout.contentWidth,
-                minWidth: gridLayout.contentWidth,
-                gap: gridLayout.gap,
+                gridTemplateColumns: `repeat(${gridLayout!.cols}, minmax(0, 1fr))`,
+                width: gridLayout!.contentWidth,
+                minWidth: gridLayout!.contentWidth,
+                gap: gridLayout!.gap,
             }
             : {
                 flexDirection: 'row',
                 flexWrap: 'wrap',
                 width: '100%',
             };
-    const gridCellStyle =
+    const gridCellStyle: any =
         isGridLayout && Platform.OS !== 'web'
             ? { width: `${100 / (gridLayout?.cols || 3)}%` }
             : undefined;
 
     const handleSelect = useCallback(
-        (event, item) => {
+        (event: unknown, item: DropdownMenuItemData) => {
             setIsOpen(false);
             onSelect
                 ? onSelect(item)
                 : item.target == 'modal' ? (item.content ? openModalWithContent({
                     title: item.title,
                     content: resolveContent ? resolveContent(item.content, item) : item.content,
-                }) : openModalByUrl(item.link)) : redirectdRef.current.redirect('' + item.link);
+                }) : openModalByUrl(item.link)) : redirectdRef.current?.redirect('' + item.link);
         },
         [onSelect, setIsOpen, resolveContent]
     );
 
     useEffect(() => {
-        const subscription = emitter.addListener('dynamic_menu', (data) => {
+        const subscription = emitter.addListener('dynamic_menu', (data: { action?: string }) => {
             if (data.action == 'hide') {
                 setIsOpen(false);
             }
@@ -205,14 +278,14 @@ function DropdownMenuPopup({
                 showOnTop={showOnTop}
                 minPopupWidth={
                     isGridLayout
-                        ? gridLayout.popupWidth
+                        ? gridLayout!.popupWidth
                         : useSectionsLayout
                             ? sectionsMinPopupWidth
                             : 256
                 }
                 maxPopupWidth={
                     isGridLayout
-                        ? gridLayout.popupWidth
+                        ? gridLayout!.popupWidth
                         : useSectionsLayout && !sectionsLayout.stacked
                             ? sectionsMinPopupWidth
                             : undefined
@@ -236,7 +309,7 @@ function DropdownMenuPopup({
             >
                 {isGridLayout ? (
                     <View className={menuSettings.content_grid} style={gridRowStyle}>
-                        {gridItems.map((item, index) => {
+                        {gridItems!.map((item: DropdownMenuItemData, index: number) => {
                             const navigable = isNavigableDropdownItem(item, onSelect);
                             return (
                                 <View key={item.id ?? index} style={gridCellStyle}>
@@ -260,7 +333,7 @@ function DropdownMenuPopup({
                         }
                         style={sectionsRowStyle}
                     >
-                        {sections.map((section, sectionIndex) => (
+                        {sections!.map((section: DropdownMenuSection, sectionIndex: number) => (
                             <View
                                 key={section.header?.id ?? `section-${sectionIndex}`}
                                 className={menuSettings.section}
@@ -275,7 +348,7 @@ function DropdownMenuPopup({
                                     />
                                 ) : null}
                                 <View className={menuSettings[classes.container]}>
-                                    {section.items.map((item, index) => {
+                                    {section.items.map((item: DropdownMenuItemData, index: number) => {
                                         const navigable = isNavigableDropdownItem(item, onSelect);
                                         return (
                                             <DropdownMenuItem
@@ -317,14 +390,14 @@ function DropdownMenuPopup({
     );
 }
 
-const MenuBottomSheet = memo(({ items, onSelect, setBottomSheetData, resolveContent, variant }) => {
+const MenuBottomSheet = memo(({ items, onSelect, setBottomSheetData, resolveContent, variant }: MenuBottomSheetProps) => {
     const openModalByUrl = useOpenModalByUrl();
     const openModalWithContent = useOpenModalWithContent();
-    const DropdownMenuItem = components['menu-item']['dropdown'];
-    const redirectdRef = useRef();
+    const DropdownMenuItem = getDropdownMenuItem();
+    const redirectdRef = useRef<RedirectHandle | null>(null);
     const isGridLayout = variant === 'grid';
     const handlePressMenu = useCallback(
-        (item) => (event) => {
+        (item: DropdownMenuItemData) => (event?: unknown) => {
             FeedbackHaptics('Medium');
             setBottomSheetData(false);
             if (onSelect) {
@@ -349,7 +422,7 @@ const MenuBottomSheet = memo(({ items, onSelect, setBottomSheetData, resolveCont
                 openExternalLink(url);
                 return;
             }
-            redirectdRef.current.redirect('' + item.link);
+            redirectdRef.current?.redirect('' + item.link);
         },
         [onSelect, setBottomSheetData, openModalByUrl, openModalWithContent]
     );
@@ -409,7 +482,7 @@ function DropdownMenuNative({
     buttonProps,
     triggerAccessibilityLabel,
     variant,
-}) {
+}: DropdownMenuNativeProps) {
     const { setBottomSheetData } = useBottomSheetData();
     const { t } = useTranslation();
 
@@ -432,10 +505,10 @@ function DropdownMenuNative({
             Keyboard.dismiss();
         }
         else {
-            const alertOptions = items.map(item => ({
-                text: item.title,
+            const alertOptions: AlertButton[] = items.map(item => ({
+                text: item.title as string,
                 onPress: () => {
-                    onSelect(item);
+                    onSelect?.(item);
                 }
             }));
             if (cancelable) {
@@ -445,8 +518,8 @@ function DropdownMenuNative({
                 });
             }
             Alert.alert(
-                title,
-                null,
+                title ?? '',
+                undefined,
                 alertOptions,
                 { cancelable: cancelable }
             );
@@ -500,7 +573,7 @@ export default function DropdownMenu({
     triggerClassName,
     triggerStyle,
     stacked = false,
-}) {
+}: DropdownMenuProps) {
     const isWeb = Platform.OS === 'web';
 
     if (isWeb || mode == 'popup') {

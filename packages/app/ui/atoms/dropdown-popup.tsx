@@ -1,8 +1,10 @@
-import { useState, useRef, useEffect, useMemo, useCallback, createContext } from 'react';
+import { useState, useRef, useEffect, useMemo, useCallback, createContext, type ReactNode } from 'react';
 import { cn } from 'app/lib/util';
 import {
     Modal as ModalBase,
-    Platform
+    Platform,
+    type StyleProp,
+    type ViewStyle,
 } from 'react-native';
 import { Pressable, ScrollView, View } from 'app/design/view'
 import { RemoveScroll } from 'react-remove-scroll';
@@ -10,6 +12,13 @@ import { appSetting } from 'app/lib/util';
 import { useIsDesktop, useWindowSize } from 'app/context/measure';
 import emitter from 'app/context/emitter';
 import { ButtonRef, NeoButtonRef } from 'app/design/controls'
+import type { ComponentType } from 'react';
+
+// Trigger components, loosely typed: NeoButtonRef is still JS, and the legacy
+// ButtonRef has a fixed prop list — it silently drops collapsable / aria-* / onFocus
+// passed below (TODO: forward them, or stop passing them).
+const LegacyTriggerButton: ComponentType<any> = ButtonRef;
+const NeoTriggerButton: ComponentType<any> = NeoButtonRef;
 
 const dropdownTheme = appSetting('theme', 'dropdown');
 
@@ -22,9 +31,9 @@ const WEB_FOCUSABLE_SELECTOR = [
     '[tabindex]:not([tabindex="-1"])',
 ].join(',');
 
-function getWebFocusableElements(root) {
+function getWebFocusableElements(root: any): HTMLElement[] {
     if (!root || typeof root.querySelectorAll !== 'function') return [];
-    return Array.from(root.querySelectorAll(WEB_FOCUSABLE_SELECTOR)).filter((el) => {
+    return Array.from(root.querySelectorAll(WEB_FOCUSABLE_SELECTOR) as NodeListOf<HTMLElement>).filter((el) => {
         if (el.getAttribute('aria-hidden') === 'true') return false;
         if (typeof window === 'undefined') return true;
         const style = window.getComputedStyle(el);
@@ -32,7 +41,7 @@ function getWebFocusableElements(root) {
     });
 }
 
-function getBodyChild(node) {
+function getBodyChild(node: any): Element | null {
     let el = node;
     while (el && el.parentElement && el.parentElement !== document.body) {
         el = el.parentElement;
@@ -43,14 +52,46 @@ function getBodyChild(node) {
 /** Open state for menu triggers (NeoButton `selected` / topmenu chevron). */
 export const DropdownMenuOpenContext = createContext(false);
 
-const isLegacyButtonProps = (props) =>
+const isLegacyButtonProps = (props: DropdownButtonProps | undefined) =>
     props?.legacyButton === true || props?.variant != null;
 
 /**
- * Loose props type so TS callers aren't forced to pass every destructured prop.
- * TODO: replace with real prop types when this atom moves to TypeScript.
- * @param {{ [key: string]: any }} props
+ * Trigger button props: NeoButton props by default; `legacyButton: true` or a
+ * `variant` switches to the classic Button.
  */
+export type DropdownButtonProps = Record<string, any>;
+
+export type DropdownPopupProps = {
+    /** Render a (Neo)Button trigger from these props instead of `trigger`. */
+    buttonProps?: DropdownButtonProps;
+    children?: ReactNode;
+    /** Controlled open state (needs `onOpenChange` too). */
+    open?: boolean;
+    onOpenChange?: (open: boolean) => void;
+    /** Custom trigger content, used when `buttonProps` is omitted. */
+    trigger?: ReactNode;
+    minPopupWidth?: number;
+    /** Caps popup width (px). Inline style wins over Tailwind max-w-* on the popup shell. */
+    maxPopupWidth?: number;
+    defaultOpen?: boolean;
+    /** Prefer opening above the trigger. */
+    showOnTop?: boolean;
+    /** Popup shell classes; defaults to theme `dropdown.cnt`. */
+    contentClasses?: string;
+    /** When true, allows page scroll while popup is open. */
+    hoverMode?: boolean;
+    /** When true (e.g. tabs "More"), open the menu when the trigger subtree receives focus (Tab or roving arrows). */
+    openOnFocus?: boolean;
+    /** Merged after `contentClasses` (e.g. `overflow-visible` so focus rings are not clipped). */
+    contentClassName?: string;
+    /** Accessible name for custom trigger wrappers (when `buttonProps` is omitted). */
+    triggerAccessibilityLabel?: string;
+    /** Extra classes on the trigger Pressable (e.g. `flex-1` for tab-bar More). */
+    triggerClassName?: string;
+    /** RN layout style for the trigger Pressable (e.g. tab-bar button `style`). */
+    triggerStyle?: StyleProp<ViewStyle>;
+};
+
 export default function DropdownPopup({
     buttonProps,
     children,
@@ -58,27 +99,21 @@ export default function DropdownPopup({
     onOpenChange,
     trigger,
     minPopupWidth = 256,
-    /** Caps popup width (px). Inline style wins over Tailwind max-w-* on the popup shell. */
     maxPopupWidth,
     defaultOpen = false,
     showOnTop = false,
     contentClasses = dropdownTheme?.cnt,
-    hoverMode = false, // When true, allows page scroll while popup is open
-    /** When true (e.g. tabs "More"), open the menu when the trigger subtree receives focus (Tab or roving arrows). */
+    hoverMode = false,
     openOnFocus = false,
-    /** Merged after `contentClasses` (e.g. `overflow-visible` so focus rings are not clipped). */
     contentClassName = '',
-    /** Accessible name for custom trigger wrappers (when `buttonProps` is omitted). */
     triggerAccessibilityLabel,
-    /** Extra classes on the trigger Pressable (e.g. `flex-1` for tab-bar More). */
     triggerClassName = '',
-    /** RN layout style for the trigger Pressable (e.g. tab-bar button `style`). */
     triggerStyle,
-}) {
-    const buttonRef = useRef(null);
+}: DropdownPopupProps) {
+    const buttonRef = useRef<any>(null);
     const isDesktop = useIsDesktop();
-    const contentRef = useRef(null);
-    const restoreFocusRef = useRef(null);
+    const contentRef = useRef<any>(null);
+    const restoreFocusRef = useRef<any>(null);
     const [buttonPos, setButtonPos] = useState({ triggerY: 0, triggerHeight: 0, x: 0, width: 0, height: 0, maxHeight: 0, shouldOpenAbove: false });
     const [popupHeight, setPopupHeight] = useState(0);
     const [popupRenderedWidth, setPopupRenderedWidth] = useState(0);
@@ -98,11 +133,11 @@ export default function DropdownPopup({
     const isRealOpen = isControlledOutside ? open : isOpen;
 
     useEffect(() => {
-        const subscription = emitter.addListener('link', (data) => {
+        const subscription = emitter.addListener('link', (data: { action?: string }) => {
             if (data.action == 'pressed') {
                 // Close both controlled and uncontrolled popups (e.g. wiki mobile nav).
                 if (isControlledOutside) {
-                    onOpenChange(false);
+                    onOpenChange!(false);
                 } else {
                     setIsOpen(false);
                 }
@@ -127,7 +162,7 @@ export default function DropdownPopup({
         }
     }, [isRealOpen, isModalVisible]);
 
-    const measureElement = useCallback((node, callback) => {
+    const measureElement = useCallback((node: any, callback: (x: number, y: number, width: number, height: number) => void) => {
         if (!node) return false;
 
         if (node.measureInWindow) {
@@ -145,7 +180,7 @@ export default function DropdownPopup({
     }, [isWeb]);
 
     const measureRetryRef = useRef(0);
-    const updateButtonPosition = useCallback(() => {
+    const updateButtonPosition = useCallback((): void => {
         if (!measureElement(buttonRef.current, (x, y, width, height) => {
             // measureInWindow on iOS can return zeros for a few frames while the
             // trigger is still being laid out (e.g. inside a ScrollView, right
@@ -176,12 +211,12 @@ export default function DropdownPopup({
     }, [measureElement, minPopupWidth, showOnTop, windowHeight, windowWidth]);
 
     const handleToggle = useCallback(
-        (bOpen) => {
+        (bOpen: boolean) => {
             if (bOpen && isWeb) {
                 restoreFocusRef.current = buttonRef.current;
             }
             if (isControlledOutside) {
-                onOpenChange(bOpen);
+                onOpenChange!(bOpen);
             } else {
                 setIsOpen(bOpen);
             }
@@ -216,7 +251,7 @@ export default function DropdownPopup({
     // Escape closes (web)
     useEffect(() => {
         if (!isWeb || !isRealOpen) return;
-        const onKeyDown = (e) => {
+        const onKeyDown = (e: KeyboardEvent) => {
             if (e.key === 'Escape') {
                 e.preventDefault();
                 handleToggle(false);
@@ -246,7 +281,7 @@ export default function DropdownPopup({
         return () => cancelAnimationFrame(id);
     }, [isWeb, isRealOpen]);
 
-    const handleBackdropPress = (event) => {
+    const handleBackdropPress = (event: any) => {
         event.stopPropagation();
         handleToggle(false);
     };
@@ -273,7 +308,7 @@ export default function DropdownPopup({
 
     useEffect(() => {
         if (!isWeb || !isRealOpen || !hasMeasured) return;
-        const onKeyDown = (event) => {
+        const onKeyDown = (event: KeyboardEvent) => {
             if (event.key !== 'Tab') return;
             const root = contentRef.current;
             const focusables = getWebFocusableElements(root);
@@ -281,8 +316,8 @@ export default function DropdownPopup({
                 event.preventDefault();
                 return;
             }
-            const first = focusables[0];
-            const last = focusables[focusables.length - 1];
+            const first = focusables[0]!;
+            const last = focusables[focusables.length - 1]!;
             const active = document.activeElement;
             const inside = root?.contains?.(active);
             if (event.shiftKey && (active === first || !inside)) {
@@ -345,7 +380,7 @@ export default function DropdownPopup({
         ? Math.max(8, buttonPos.triggerY - popupHeight - triggerGapAbove)
         : buttonPos.triggerY + buttonPos.triggerHeight + triggerGapBelow;
 
-    const handleContentLayout = (e) => {
+    const handleContentLayout = (e: { nativeEvent: { layout: { width: number; height: number } } }) => {
         const h = Math.round(e.nativeEvent.layout.height);
         const w = Math.round(e.nativeEvent.layout.width);
         if (h && h !== popupHeight) {
@@ -373,7 +408,7 @@ export default function DropdownPopup({
                 ...(maxPopupWidth ? { width: cappedPopupWidth } : {}),
                 maxHeight: buttonPos.maxHeight,
                 zIndex: 1000,
-            }}
+            } as ViewStyle /* web-only `visibility` */}
             className={cn(contentClasses, contentClassName)}
         >
             <ScrollView
@@ -408,7 +443,7 @@ export default function DropdownPopup({
         <>
             {buttonProps ? (
                 legacyButton ? (
-                    <ButtonRef
+                    <LegacyTriggerButton
                         {...buttonProps}
                         collapsable={false}
                         ref={buttonRef}
@@ -417,7 +452,7 @@ export default function DropdownPopup({
                         {...triggerFocusProps}
                     />
                 ) : (
-                    <NeoButtonRef
+                    <NeoTriggerButton
                         {...neoButtonProps}
                         collapsable={false}
                         ref={buttonRef}
@@ -464,7 +499,7 @@ export default function DropdownPopup({
                         <View
                             className="web:fixed web:inset-0 web:z-[9999]"
                             role="dialog"
-                            aria-modal="true"
+                            aria-modal={true}
                             aria-label={dialogLabel}
                             style={{
                                 position: 'fixed',
@@ -475,7 +510,7 @@ export default function DropdownPopup({
                                 width: '100%',
                                 height: '100%',
                                 zIndex: 9999,
-                            }}
+                            } as unknown as ViewStyle /* web-only `position: fixed` */}
                         >
                             <Pressable
                                 role="presentation"
@@ -490,7 +525,7 @@ export default function DropdownPopup({
                                     bottom: 0,
                                     zIndex: 0,
                                 }}
-                                onPress={(event) => handleBackdropPress(event)}
+                                onPress={(event: any) => handleBackdropPress(event)}
                             />
                             {hoverMode ? (
                                 Content
@@ -509,7 +544,7 @@ export default function DropdownPopup({
                         <Pressable
                             className="flex-1"
                             style={[{ backgroundColor: 'rgba(0,0,0,0.3)' }, {}]}
-                            onPress={(event) => handleBackdropPress(event)}
+                            onPress={(event: any) => handleBackdropPress(event)}
                         >
                             {Content}
                         </Pressable>
