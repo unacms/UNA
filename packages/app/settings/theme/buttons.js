@@ -284,6 +284,16 @@ export const settingsButtons = {
             // Same `FeedbackHaptics` types as tabs (`Select` / `Medium` / …).
             // `haptics={false}` on a button opts out.
             haptics: 'Medium',
+            // How `glass` / `glassProminent` render on web:
+            //   'standard'  — flat surface: theme fill + `shadow-btn-glass*` tokens.
+            //   'realistic' — layered glass: conic rim, light sweep, blurred
+            //                 ground shadow, tilt on press (`.neo-glass*` in
+            //                 `design/styles/global.css`). Fills come from
+            //                 `styles.<glass>.realistic`, merged over the style.
+            // Web only: Expo UI draws real liquid glass on iOS, and the native
+            // JS fallback has no mask / backdrop-filter to build it with.
+            // Per button: `<NeoButton glassEffect="standard" />`.
+            glassEffect: { default: 'standard', web: 'standard' },
             // Behavioral flags. The resolver gates event handlers on these so
             // web-only hover code does not run on native, etc.
             behaviors: {
@@ -496,6 +506,21 @@ export const settingsButtons = {
                     pressedToggle: 'text-accent-foreground',
                     disabled: 'text-muted-foreground',
                 },
+                // `defaults.glassEffect: 'realistic'` — the CSS layers own
+                // shadow, blur and highlights, so only a thin fill is left here.
+                // Dark needs more fill: popover is close to the page there.
+                realistic: {
+                    container: {
+                        base: '',
+                        default: 'bg-popover/20 dark:bg-popover/50',
+                        hovered: 'bg-popover/30 dark:bg-popover/60',
+                        focused: 'bg-popover/20 dark:bg-popover/50',
+                        pressed: 'bg-popover/40 dark:bg-popover/70',
+                        active: 'bg-popover/30 dark:bg-popover/60',
+                        pressedToggle: 'bg-accent/70',
+                        disabled: 'bg-muted/30',
+                    },
+                },
             },
 
             // SwiftUI .glassProminent — primary action colour with glass lift.
@@ -519,6 +544,19 @@ export const settingsButtons = {
                     active: 'text-primary-foreground',
                     pressedToggle: 'text-primary-foreground',
                     disabled: 'text-primary-foreground',
+                },
+                // Opaque: any see-through lets the page wash the tint out.
+                realistic: {
+                    container: {
+                        base: '',
+                        default: 'bg-primary',
+                        hovered: 'bg-primary-hover',
+                        focused: 'bg-primary',
+                        pressed: 'bg-primary-hover',
+                        active: 'bg-primary-hover',
+                        pressedToggle: 'bg-primary-hover',
+                        disabled: 'bg-primary opacity-50',
+                    },
                 },
             },
 
