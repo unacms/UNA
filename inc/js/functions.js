@@ -1202,7 +1202,7 @@ function bx_time(sLang, isAutoupdate, sRootSel) {
         	bx_activate_anim_icons();
 
             // process syntax hightlighing
-            if ('undefined' !== typeof(Prism) && eElement.size())
+            if ('undefined' !== typeof(Prism) && eElement[0] && eElement[0].querySelectorAll)
                 Prism.highlightAllUnder(eElement[0]);
 
             // process links

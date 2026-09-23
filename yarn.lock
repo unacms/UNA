@@ -2250,25 +2250,6 @@ html-void-elements@^3.0.0:
   resolved "https://registry.yarnpkg.com/html-void-elements/-/html-void-elements-3.0.0.tgz#fc9dbd84af9e747249034d4d62602def6517f1d7"
   integrity sha512-bEqo66MRXsUGxWHV5IP0PUiAWwoEjba4VCzg0LjFJBpchPaTfyfCKTG6bc5F8ucKec3q5y6qOdGyYTSBEvhCrg==
 
-htmx-ext-head-support@^2.0.5:
-  version "2.0.5"
-  resolved "https://registry.yarnpkg.com/htmx-ext-head-support/-/htmx-ext-head-support-2.0.5.tgz#c318dd1da22b64f2bc13778333bb6935e3dc96d7"
-  integrity sha512-fTzqnCw7OnMijiS48CCBFBHTuOMvycbX0nEFRL0lkRxyu5DFWX90IV1SwXpQ92fJf02IzkXcRNyjXn3j0QtYxA==
-  dependencies:
-    htmx.org "^2.0.2"
-
-htmx-ext-preload@^2.1.2:
-  version "2.1.2"
-  resolved "https://registry.yarnpkg.com/htmx-ext-preload/-/htmx-ext-preload-2.1.2.tgz#a994576136ab779cb4bb8d6839553e23e452cb37"
-  integrity sha512-foD06XAITUUQApCUQnPexyJ6B7+4vFGMQ+t42unTVTGRu/CYHdAAt6oHg7eekPHT7NRnbM5hjnGVKtClryPabg==
-  dependencies:
-    htmx.org "^2.0.3"
-
-htmx.org@^2.0.2, htmx.org@^2.0.3:
-  version "2.0.10"
-  resolved "https://registry.yarnpkg.com/htmx.org/-/htmx.org-2.0.10.tgz#62442b0e2952a885ae2e50a7654b8b20d0981134"
-  integrity sha512-kdeJe7ZVwaS6QMz/ebBIVtZdpwen6L0OQ5GOhPV9MKBb196TCZeZu4yA7ZIQsaLKv7EpXz+So7KSXNuHXhj7Cw==
-
 htmx.org@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/htmx.org/-/htmx.org-4.0.0.tgz#72323bd24261364fe3111803c46b80da1fb33445"
@@ -2729,7 +2710,6 @@ jstree@^3.3.17:
 
 "jush@https://github.com/vrana/jush":
   version "0.0.0"
-  uid "2de48f298628de73aea71f1af12a63f2ad03878f"
   resolved "https://github.com/vrana/jush#2de48f298628de73aea71f1af12a63f2ad03878f"
 
 just-diff-apply@^5.2.0:

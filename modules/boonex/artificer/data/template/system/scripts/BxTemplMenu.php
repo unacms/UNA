@@ -20,7 +20,6 @@ class BxTemplMenu extends BxBaseMenu
             //--- For page submenus ---//
             if(strpos($aObject['object'], '_submenu') !== false) {
                 $this->_bHx = getParam('bx_artificer_use_htmx') == 'on';
-                $this->_bHxHead = $this->_bHx && true;
                 $this->_mHxPreload = $this->_bHx && true;
                 $this->_aHx = [
                     'get' => '',
@@ -28,19 +27,9 @@ class BxTemplMenu extends BxBaseMenu
                     'target' => '#bx-content-wrapper',
                     'swap' => 'outerHTML swap:400ms settle:400ms',
                     'push-url' => 'true',
-                    'on::before-on-load' => 'oBxArtificerUtils.submenuClickBl(this)',
-                    'on::after-on-load' => 'oBxArtificerUtils.submenuClickAl(this)'
+                    'on::before:swap' => 'oBxArtificerUtils.submenuClickBl(this)',
+                    'on::after:swap' => 'oBxArtificerUtils.submenuClickAl(this)'
                 ];
-
-                $sExtensions = '';
-                if($this->_bHxHead)
-                    $sExtensions .= ' head-support';
-                if($this->_mHxPreload)
-                    $sExtensions .= ' preload';
-
-                $sInjection = '';
-                if(($sExtensions = trim($sExtensions)) != '')
-                    $this->_oTemplate->addInjection('injection_body', 'text', 'hx-ext="' . $sExtensions . '"');
             }
         }
 
