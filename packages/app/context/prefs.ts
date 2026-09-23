@@ -15,19 +15,38 @@ import { persistedGet, persistedSet, sessionCacheGet, sessionCacheSet } from 'ap
 const PERSISTED_KEY = 'prefs';
 const SESSION_KEY = 'prefs';
 
-const PERSISTED_DEFAULTS = {
+export type PersistedPrefs = {
+    feedType: string | null;
+    panelSizes: Record<string, number[]>;
+};
+
+export type SessionPrefs = {
+    expandedItems: (string | number)[];
+};
+
+type PrefsStore = {
+    persisted: PersistedPrefs;
+    session: SessionPrefs;
+    hydrated: boolean;
+    hydrate: () => Promise<void>;
+    setPersisted: (partial: Partial<PersistedPrefs>) => void;
+    resetSession: () => void;
+    setSession: (partial: Partial<SessionPrefs>) => void;
+};
+
+const PERSISTED_DEFAULTS: PersistedPrefs = {
     /** Home feed mode; `null` → appSetting('feed', 'default_feed'). */
     feedType: null,
     /** Resizable panel sizes: { [`${panelGroupId}-${breakpoint}`]: sizes[] }. */
     panelSizes: {},
 };
 
-const SESSION_DEFAULTS = {
+const SESSION_DEFAULTS: SessionPrefs = {
     /** Ids of "show more" blocks the user expanded. */
     expandedItems: [],
 };
 
-export const usePrefsStore = create((set, get) => ({
+export const usePrefsStore = create<PrefsStore>()((set, get) => ({
     persisted: PERSISTED_DEFAULTS,
     session: SESSION_DEFAULTS,
     hydrated: false,
@@ -66,16 +85,16 @@ const useHydratePrefs = () => {
 };
 
 /** Persisted preference by key (see PERSISTED_DEFAULTS). */
-export function usePref(key) {
+export function usePref<K extends keyof PersistedPrefs>(key: K): PersistedPrefs[K] {
     useHydratePrefs();
     return usePrefsStore((s) => s.persisted[key]);
 }
 
 /** Session-scoped preference by key (see SESSION_DEFAULTS). */
-export function useSessionPref(key) {
+export function useSessionPref<K extends keyof SessionPrefs>(key: K): SessionPrefs[K] {
     useHydratePrefs();
     return usePrefsStore((s) => s.session[key]);
 }
 
-export const setPref = (key, value) => usePrefsStore.getState().setPersisted({ [key]: value });
-export const setSessionPref = (key, value) => usePrefsStore.getState().setSession({ [key]: value });
+export const setPref = <K extends keyof PersistedPrefs>(key: K, value: PersistedPrefs[K]) => usePrefsStore.getState().setPersisted({ [key]: value });
+export const setSessionPref = <K extends keyof SessionPrefs>(key: K, value: SessionPrefs[K]) => usePrefsStore.getState().setSession({ [key]: value });

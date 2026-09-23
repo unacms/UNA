@@ -251,8 +251,8 @@ function DropdownMenuPopup({
             onSelect
                 ? onSelect(item)
                 : item.target == 'modal' ? (item.content ? openModalWithContent({
-                    title: item.title,
-                    content: resolveContent ? resolveContent(item.content, item) : item.content,
+                    title: item.title as ReactNode,
+                    content: resolveContent ? resolveContent(item.content, item) : item.content as ReactNode,
                 }) : openModalByUrl(item.link)) : redirectdRef.current?.redirect('' + item.link);
         },
         [onSelect, setIsOpen, resolveContent]
@@ -407,8 +407,8 @@ const MenuBottomSheet = memo(({ items, onSelect, setBottomSheetData, resolveCont
             if (item?.target === 'modal') {
                 if (item?.content) {
                     openModalWithContent({
-                        title: item.title,
-                        content: resolveContent ? resolveContent(item.content, item) : item.content
+                        title: item.title as ReactNode,
+                        content: resolveContent ? resolveContent(item.content, item) : item.content as ReactNode
 
                     });
                 } else {

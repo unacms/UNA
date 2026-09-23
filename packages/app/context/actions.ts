@@ -1,6 +1,11 @@
 import { create } from 'zustand';
 
-export const useActionsDataStore = create((set) => ({
+type ActionsDataStore = {
+    actionsData: any;
+    setActionsData: (data: any) => void;
+};
+
+export const useActionsDataStore = create<ActionsDataStore>()((set) => ({
     actionsData: null, // Initial state
     setActionsData: (data) => set({ actionsData: data }),
 }));

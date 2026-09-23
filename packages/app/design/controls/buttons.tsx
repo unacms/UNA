@@ -477,7 +477,7 @@ export const Button = ({
     );
 
     return (
-        <Tooltip content={tooltip} enabled={isTooltip}>
+        <Tooltip content={tooltip} enabled={!!isTooltip}>
             {content}
         </Tooltip>
     );

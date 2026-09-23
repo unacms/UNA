@@ -3,7 +3,25 @@ import { create } from 'zustand';
 import { getDataForMenu } from 'app/lib/util';
 import { useEffect, useCallback } from 'react';
 
-export const useMenuDataStore = create((set, get) => ({
+/** Menu object id (string) or a UNA menu request object. */
+export type MenuObject = string | Record<string, unknown>;
+
+type MenuEntry = {
+    /** Menu payload, or `false` while missing / after a failed first load. */
+    data: any;
+    fetched: boolean;
+    loading: boolean;
+    promise: Promise<any> | null;
+    error?: unknown;
+};
+
+type MenuDataStore = {
+    menus: Record<string, MenuEntry>;
+    /** Load (or reuse) a menu; `force` refetches. Resolves to the data or `false`. */
+    fetchMenu: (object: MenuObject, force?: boolean) => Promise<any>;
+};
+
+export const useMenuDataStore = create<MenuDataStore>()((set, get) => ({
     menus: {},
 
     fetchMenu: async (object, force = false) => {
@@ -12,8 +30,8 @@ export const useMenuDataStore = create((set, get) => ({
         if (existing?.data && !force) return existing.data;
         if (existing?.promise && !force) return existing.promise;
 
-        const promise = getDataForMenu({ object, params: null }, (data) => data)
-            .then((data) => {
+        const promise: Promise<any> = getDataForMenu({ object, params: null }, (data: any) => data)
+            .then((data: any) => {
                 set((state) => ({
                     menus: {
                         ...state.menus,
@@ -22,7 +40,7 @@ export const useMenuDataStore = create((set, get) => ({
                 }));
                 return data;
             })
-            .catch((error) => {
+            .catch((error: unknown) => {
                 set((state) => ({
                     menus: {
                         ...state.menus,
@@ -55,7 +73,7 @@ export const useMenuDataStore = create((set, get) => ({
     },
 }));
 
-export const useMenuData = (object) => {
+export const useMenuData = (object: MenuObject | null | undefined) => {
     const key = typeof object === 'string' ? object : JSON.stringify(object);
     const data = useMenuDataStore((state) => state.menus[key]?.data ?? false);
     const isLoading = useMenuDataStore((state) => state.menus[key]?.loading ?? false);

@@ -4,17 +4,26 @@ import { Keyboard, Platform } from 'react-native';
 import { useFormInstanceId } from 'app/context/form-instance';
 
 const isNative = Platform.OS !== 'web';
-const EMPTY_ORDER = [];
+const EMPTY_ORDER: string[] = [];
 
 /** Focus callbacks kept outside store state (not serializable / no re-render needed). */
-const focusFns = new Map();
+const focusFns = new Map<string, () => void>();
 
-function fieldKey(instanceId, name) {
+function fieldKey(instanceId: string | null | undefined, name: string) {
     return `${instanceId ?? ''}:${name}`;
 }
 
-export const useFormFocusChainStore = create((set, get) => ({
-    /** @type {Record<string, string[]>} */
+type FormFocusChainStore = {
+    /** Field order per form instance. */
+    orders: Record<string, string[]>;
+    register: (instanceId: string | null, name: string, focus: () => void) => void;
+    unregister: (instanceId: string | null, name: string) => void;
+    /** Focus the next registered field; false when there is none. */
+    focusNext: (instanceId: string, name: string) => boolean;
+    clear: (instanceId: string | null) => void;
+};
+
+export const useFormFocusChainStore = create<FormFocusChainStore>()((set, get) => ({
     orders: {},
 
     register: (instanceId, name, focus) => {
@@ -47,7 +56,7 @@ export const useFormFocusChainStore = create((set, get) => ({
         const index = order.indexOf(name);
         if (index < 0) return false;
         for (let i = index + 1; i < order.length; i++) {
-            const focus = focusFns.get(fieldKey(instanceId, order[i]));
+            const focus = focusFns.get(fieldKey(instanceId, order[i]!));
             if (focus) {
                 focus();
                 return true;
@@ -69,8 +78,8 @@ export const useFormFocusChainStore = create((set, get) => ({
 }));
 
 /** Next focuses next field, Done submits. No-op on web. */
-export function useNativeReturnKeyNav(name, handleSubmit) {
-    const inputRef = useRef(null);
+export function useNativeReturnKeyNav(name: string | undefined, handleSubmit?: () => void) {
+    const inputRef = useRef<{ focus?: () => void } | null>(null);
     const instanceId = useFormInstanceId();
     const order = useFormFocusChainStore((s) =>
         instanceId ? (s.orders[instanceId] ?? EMPTY_ORDER) : EMPTY_ORDER
@@ -81,7 +90,7 @@ export function useNativeReturnKeyNav(name, handleSubmit) {
 
     useEffect(() => {
         if (!isNative || !instanceId || !name) return;
-        register(instanceId, name, () => inputRef.current?.focus());
+        register(instanceId, name, () => inputRef.current?.focus?.());
         return () => unregister(instanceId, name);
     }, [instanceId, name, register, unregister]);
 

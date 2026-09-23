@@ -71,7 +71,7 @@ export function useResolvedThemeName(): ThemeName {
     );
     const systemThemeName = Platform.OS === 'web' ? webSystemThemeName : nativeSystemThemeName;
 
-    if (themeName && themeName !== 'auto') return themeName;
+    if (themeName && themeName !== 'auto') return themeName as ThemeName;
     // Native can report 'unspecified' (no system preference); treat anything but dark as light.
     return systemThemeName === 'dark' ? 'dark' : 'light';
 }

@@ -4,13 +4,13 @@ import { appSetting, getBreakpoint, LAYOUT_BREAKPOINTS } from 'app/lib/util';
 import { useState, useEffect, useLayoutEffect } from 'react';
 import { Platform } from 'react-native'
 const DESKTOP_KEY = appSetting('layout', 'tablet_mode_from') || 'lg';
-const DESKTOP_FROM = LAYOUT_BREAKPOINTS[DESKTOP_KEY] ?? LAYOUT_BREAKPOINTS.lg;
+const DESKTOP_FROM = LAYOUT_BREAKPOINTS[DESKTOP_KEY as keyof typeof LAYOUT_BREAKPOINTS] ?? LAYOUT_BREAKPOINTS.lg;
 // SSR has no viewport; assume 2xl so responsive panel configs (e.g. wiki side columns
 // with defaultSize: 0 until xl) resolve to desktop sizes on the first render.
 const SSR_LAYOUT_BREAKPOINT = LAYOUT_BREAKPOINTS['2xl'] ?? DESKTOP_FROM;
-const BP_VALUES_DESC = Object.values(LAYOUT_BREAKPOINTS).sort((a, b) => b - a);
+const BP_VALUES_DESC = (Object.values(LAYOUT_BREAKPOINTS) as number[]).sort((a, b) => b - a);
 
-const getBP = (w) => {
+const getBP = (w: number): number => {
     for (const value of BP_VALUES_DESC) {
         if (w >= value) return value;
     }
@@ -21,7 +21,16 @@ const initW = Math.round(Dimensions.get('window').width);
 const initH = Math.round(Dimensions.get('window').height);
 const isSSR = typeof window === 'undefined';
 
-export const useMeasureStore = create((set, get) => ({
+type MeasureStore = {
+    /** Largest LAYOUT_BREAKPOINTS width (px) that fits the window; 0 below the smallest. */
+    currentBreakpoint: number;
+    windowWidth: number;
+    windowHeight: number;
+    isDesktop: boolean;
+    setWindowSize: (w: number, h: number) => void;
+};
+
+export const useMeasureStore = create<MeasureStore>()((set, get) => ({
     currentBreakpoint: getBP(initW),
     windowWidth: initW,
     windowHeight: initH,
@@ -34,7 +43,7 @@ export const useMeasureStore = create((set, get) => ({
         const nextBP = getBP(w);
         const nextIsDesktop = w >= DESKTOP_FROM;
 
-        const update = { windowWidth: w, windowHeight: h };
+        const update: Partial<MeasureStore> = { windowWidth: w, windowHeight: h };
         if (nextBP !== currentBreakpoint) update.currentBreakpoint = nextBP;
         if (nextIsDesktop !== isDesktop) update.isDesktop = nextIsDesktop;
 
@@ -54,14 +63,15 @@ export const useActualWindowHeight = () => {
             return;
         }
         const update = () => {
-            const vpHeight = Math.round(window.visualViewport.height);
+            // Only subscribed when visualViewport exists (checked above).
+            const vpHeight = Math.round(window.visualViewport!.height);
             const kbOpen = window.innerHeight - vpHeight > 150;
             setActualHeight(vpHeight);
             setIsKeyboardOpen(kbOpen);
         };
         update();
         window.visualViewport.addEventListener('resize', update);
-        return () => window.visualViewport.removeEventListener('resize', update);
+        return () => window.visualViewport!.removeEventListener('resize', update);
     }, [isWeb, fallbackHeight]);
     return { height: actualHeight, isKeyboardOpen };
 };
@@ -96,6 +106,8 @@ export const useIsDesktop = () => {
     const hydrated = useHydrated();
     return hydrated ? isDesktop : true;
 };
+// New object per call: consumers re-render on any store change (fine on zustand v4;
+// needs useShallow on v5, which would otherwise loop).
 export const useWindowSize = () => useMeasureStore((s) => ({ width: s.windowWidth, height: s.windowHeight }));
 export const useWindowHeight = () => useMeasureStore((s) => (s.windowHeight));
 export const useWindowWidth = () => useMeasureStore((s) => (s.windowWidth));

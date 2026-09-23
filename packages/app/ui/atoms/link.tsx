@@ -43,11 +43,12 @@ export default function ElementLink({
         onPress?.(e); 
     }, [haptics, finalHref, onPress]);
 
+    const isLoggedIn = !!currentUser;
     const TabList = useMemo(() => {
-        return currentUser
+        return isLoggedIn
             ? appSetting('menu_items', 'menu_tabbar_logged')
             : appSetting('menu_items', 'menu_tabbar_non_logged');
-    }, [currentUser?.id]);
+    }, [isLoggedIn]);
 
    
     // Match against tab urls + transpile_urls so in-app links route to the same

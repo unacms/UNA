@@ -1,7 +1,22 @@
 import { atom, useSetAtom, useAtomValue } from 'jotai';
 import { getPageData } from 'app/lib/util';
 
-export const defaultModalState = {
+import type { ReactNode } from 'react';
+
+export type ModalState = {
+    visible: boolean;
+    loading: boolean;
+    /** Page URL for `mode: 'url'`. */
+    url: string;
+    /** Loaded page data; `'loading'` while fetching, `false` when none. */
+    pageData: any;
+    mode: 'url' | 'content';
+    /** Rendered body for `mode: 'content'`. */
+    content: ReactNode;
+    title: ReactNode;
+};
+
+export const defaultModalState: ModalState = {
     visible: false,
     loading: false,
     url: '',
@@ -11,12 +26,12 @@ export const defaultModalState = {
     title: null,
 };
 
-export const modalAtom = atom(defaultModalState);
+export const modalAtom = atom<ModalState>(defaultModalState);
 
 
 export const openModalByUrlAtom = atom(
     null,
-    async (_get, set, url) => {
+    async (_get, set, url: string | undefined) => {
         if (!url) return;
 
         set(modalAtom, {
@@ -48,7 +63,7 @@ export const openModalByUrlAtom = atom(
 
 export const openModalWithContentAtom = atom(
     null,
-    (_get, set, payload) => {
+    (_get, set, payload: { content: ReactNode; title?: ReactNode }) => {
         if (!payload?.content) return;
         set(modalAtom, {
             ...defaultModalState,
