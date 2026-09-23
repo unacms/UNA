@@ -4,6 +4,7 @@ import { useRouter } from 'app/lib/hooks/router'
 import { useCallback } from 'react';
 import { appSetting, cn, sanitazeUrl, isExternalUrl } from 'app/lib/util'
 import emitter from 'app/context/emitter';
+import type { LinkProps } from './link.types';
 
 // Variants and sizes from theme
 const ThemeLinkSizes = appSetting('theme', 'link_sizes');
@@ -28,7 +29,7 @@ export default function ElementLink({
     onPointerDown,
     alt,
     ...rest
-}) {
+}: LinkProps) {
 
     const router = useRouter();
     const href = sanitazeUrl(hrefProp);
@@ -39,7 +40,7 @@ export default function ElementLink({
     // Convert alt to aria-label (alt is not valid for <a> elements)
     const accessibleLabel = alt || (typeof children === 'string' ? children : undefined);
 
-    const handlePress = useCallback((event) => {
+    const handlePress = useCallback((event?: { preventDefault?: () => void }) => {
         emitter.emit('link', { action: 'pressed', href });
         if (onPress) onPress(event);
         if (href) {
@@ -57,7 +58,7 @@ export default function ElementLink({
         }
     }, [href, router, onPress]);
 
-    const handleLinkClick = useCallback((event) => {  
+    const handleLinkClick = useCallback(() => {
         emitter.emit('link', { action: 'pressed', href });
         if (onClick) onClick();
     }, [onClick, target, href]);

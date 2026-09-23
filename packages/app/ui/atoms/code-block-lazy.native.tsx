@@ -2,7 +2,7 @@ import { lazy, Suspense } from 'react'
 import { ScrollView, View } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { resolveLanguage } from 'app/lib/syntax-highlighter/languages'
-import type { CodeBlockProps } from './code-block'
+import type { CodeBlockProps } from './code-block.types'
 
 const CodeBlock = lazy(() => import('./code-block'))
 

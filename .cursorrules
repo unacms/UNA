@@ -69,6 +69,6 @@ See the `una-api` skill (`.agents/skills/una-api/SKILL.md`) for backend contract
 2. **Test on both platforms** if making shared changes
 3. **Follow existing conventions** in the same directory/module
 4. **Use semantic design tokens**, not hardcoded values
-5. **Run `npx tsc --noEmit`** in the affected app before finishing
+5. **Run `yarn typecheck`** from the repo root before finishing (web + native)
 
 For everything else (component hierarchy, Server vs Client Components, React Compiler notes, animated icons, NeoButton, skill precedence), defer to [AGENTS.md](AGENTS.md).

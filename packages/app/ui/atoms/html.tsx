@@ -1,4 +1,5 @@
-import { useCallback, type Ref } from 'react'
+import { useCallback } from 'react'
+import type { HtmlProps } from './html.types'
 import { EnrichedText } from 'react-native-enriched-html'
 import { Linking } from 'react-native'
 import { View } from 'app/design/view'
@@ -13,20 +14,6 @@ import { preprocessHtml, normalizeRenderedHref } from 'app/lib/html-helpers'
 
 // Native renderer using the enriched-html library's display component. Renders the
 // HTML output of the editor 1:1 (formatting, links, native mention pills).
-export type HtmlProps = {
-    /** UNA HTML string. */
-    data?: string | null
-    /** Replaces the default `u-vanilla-html` class (web); `u-vanilla-html-small` shrinks text (native). */
-    customClassName?: string
-    className?: string
-    innerRef?: Ref<any>
-    /**
-     * Web only: every link opens in a new tab — for content whose links are
-     * destinations (an agent's answer), where leaving the page loses the thread.
-     */
-    linksInNewTab?: boolean
-}
-
 export default function ElementHtml({ customClassName, data, innerRef }: HtmlProps) {
     const themeKey = useThemeValue('light', 'dark')
     const mentionColorFallback = useThemeValue('rgba(37, 99, 235, 1)', 'rgba(59, 130, 246, 1)')

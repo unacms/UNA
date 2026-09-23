@@ -30,7 +30,7 @@ import { Text } from 'app/design/typography';
 import { Button } from 'app/design/controls';
 import { Icon } from 'app/ui/atoms/icon';
 import { appSetting } from 'app/lib/util';
-import type { SnackbarProps } from './snackbar';
+import type { SnackbarProps } from './snackbar.types';
 
 // Theme settings
 const snackbarTheme = appSetting('theme', 'snackbar') || {};

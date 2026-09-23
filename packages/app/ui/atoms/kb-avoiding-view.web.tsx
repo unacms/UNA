@@ -7,7 +7,7 @@ import type {
     KbStickyViewProps,
     ModalKbAwareScrollProps,
     StickyComposerListInset,
-} from './kb-avoiding-view';
+} from './kb-avoiding-view.types';
 
 // Props follow the native (keyboard-controller) contract; web forwards the rest
 // to plain RN components as before, hence the `rest as object` spreads below.

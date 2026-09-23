@@ -43,7 +43,8 @@ export default function ElementRedirect({ ref }: { ref?: Ref<RedirectHandle | nu
                 ? sUrl
                 : nativeTabHref(sUrl, tabPathRef.current);
 
-            currentRouter.push(target);
+            // Web router takes strings only; the object form is native-only (Platform check above).
+            currentRouter.push(target as string);
         } catch (error) {
             // Ignore navigation errors on unmount
             if (isMountedRef.current) {

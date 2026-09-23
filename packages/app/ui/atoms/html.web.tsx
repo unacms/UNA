@@ -2,13 +2,13 @@
 // Web renderer for the `Html` atom.
 //
 // On web we let the browser render UNA HTML directly via `dangerouslySetInnerHTML`
-// instead of re-implementing an HTML parser in JS (that path lives in html.js for
+// instead of re-implementing an HTML parser in JS (that path lives in html.tsx for
 // native, where innerHTML isn't available). Typography/link/mention styling comes
 // from the `.u-vanilla-html` CSS in design/styles. Links are handled with a single
 // delegated click handler so internal routes use the SPA router while external
 // links, mailto/tel and `target="_blank"` fall through to native browser behavior.
 import { useCallback, useMemo, type MouseEvent } from 'react'
-import type { HtmlProps } from './html'
+import type { HtmlProps } from './html.types'
 import { useRouter } from 'app/lib/hooks/router'
 import { sanitazeUrl, isExternalUrl } from 'app/lib/util'
 import emitter from 'app/context/emitter'

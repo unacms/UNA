@@ -1,6 +1,7 @@
 import { useVideoPlayer, VideoView } from 'expo-video';
 import { StyleSheet } from 'react-native';
 import { View } from 'app/design/view'
+import type { VideoProps } from './video.types'
 
 const styles = StyleSheet.create({
     video: {
@@ -12,21 +13,6 @@ const styles = StyleSheet.create({
         height: '100%',
     },
 });
-
-export type VideoProps = {
-    src?: string | null;
-    controls?: boolean;
-    cover?: boolean;
-    /** Stretch to parent (lightbox) instead of the default aspect-video box. */
-    fill?: boolean;
-    /** Callers pass `true` or the legacy `"autoplay"` string. */
-    autoplay?: boolean | string;
-    /** Callers pass `true` or the legacy `"muted"` string. */
-    muted?: boolean | string;
-    poster?: string;
-    video_embed?: unknown;
-    className?: string;
-};
 
 function ElementVideoPlayer({ src, controls, cover, fill, autoplay, muted }: VideoProps & { src: string }) {
     const player = useVideoPlayer(src, player => {

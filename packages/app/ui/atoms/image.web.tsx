@@ -2,7 +2,7 @@
 
 import type { CSSProperties } from 'react';
 import NextImage from 'next/image';
-import type { ImageInnerProps, ImageProps } from './image';
+import type { ImageInnerProps, ImageProps } from './image.types';
 import { cn } from 'app/lib/util';
 import {
     canOptimizeSrc,

@@ -1,5 +1,4 @@
-// Shared contract for code-block.native.tsx / code-block.web.tsx (there is no
-// base file, so TypeScript resolves `./code-block` to this declaration).
+// Props shared by code-block.native.tsx / code-block.web.tsx and the lazy wrappers.
 
 export type CodeBlockProps = {
     code: string
@@ -12,5 +11,3 @@ export type HighlightToken = {
     color?: string
     fontStyle?: number
 }
-
-export default function CodeBlock(props: CodeBlockProps): React.JSX.Element

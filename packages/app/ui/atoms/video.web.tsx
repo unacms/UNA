@@ -1,4 +1,4 @@
-import type { VideoProps } from './video';
+import type { VideoProps } from './video.types';
 
 export default function ElementVideo({ src, controls, cover, autoplay, muted, poster }: VideoProps) {
     if (!src) return null;

@@ -8,6 +8,7 @@ import { appSetting, sanitazeUrl, cn } from 'app/lib/util';
 import { useMemo, useCallback } from 'react';
 import { Text } from 'app/design/typography'
 import emitter from 'app/context/emitter';
+import type { LinkProps } from './link.types';
 const ThemeLinkSizes = appSetting('theme', 'link_sizes');
 const ThemeLinkStyles = appSetting('theme', 'link_styles');
 
@@ -29,7 +30,7 @@ export default function ElementLink({
     alt,
     emulate: _emulate,
     ...rest 
-}: any) {
+}: LinkProps) {
 
     const currentTabPath = useCurrentTabPath();
     const { currentUser } = useCurrentUser();
@@ -82,11 +83,12 @@ export default function ElementLink({
         return cn(hitareaClass, textSizeClass, variantSizeClass);
     })();
 
+    const sizeHitSlop = size ? ThemeLinkSizes[size]?.hitSlop : undefined;
     // Fallback hitSlop from theme by size (native only); explicit prop wins; allow disabling with hitarea={false}
     const resolvedHitSlop =
         hitSlop !== undefined ? hitSlop :
             hitarea === false ? undefined :
-                { top: ThemeLinkSizes[size]?.hitSlop, right: ThemeLinkSizes[size]?.hitSlop, bottom: ThemeLinkSizes[size]?.hitSlop, left: ThemeLinkSizes[size]?.hitSlop };
+                { top: sizeHitSlop, right: sizeHitSlop, bottom: sizeHitSlop, left: sizeHitSlop };
 
 
     const composedClassName = cn(ThemeLinkStyles[variant], sizeClass, className);

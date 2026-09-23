@@ -3,7 +3,7 @@ import { Text } from 'app/design/typography'
 import type { TextStyle } from 'react-native'
 import { useThemeValue } from 'app/design/theme'
 import { useHighlightedCode } from 'app/lib/syntax-highlighter/use-highlighted-code'
-import type { CodeBlockProps, HighlightToken } from './code-block'
+import type { CodeBlockProps, HighlightToken } from './code-block.types'
 
 function tokenStyle(token: HighlightToken): TextStyle {
     const flags = token.fontStyle ?? 0

@@ -607,7 +607,7 @@ channel.bind('event-name', (data) => {
 Before submitting changes, verify:
 
 ### TypeScript Verification
-- [ ] Run `npx tsc --noEmit` in the relevant app directory
+- [ ] Run `yarn typecheck` from the repo root (web + native)
 - [ ] No "Object is possibly 'undefined'" errors
 - [ ] Array access uses optional chaining (`array[0]?.prop`)
 - [ ] Object property access handles null/undefined cases
@@ -655,10 +655,13 @@ Before submitting changes, verify:
 **Always run TypeScript check before committing:**
 
 ```bash
-# Check specific app
-cd apps/next && npx tsc --noEmit
-cd apps/expo && npx tsc --noEmit
+yarn typecheck          # web + native
+yarn typecheck web      # one platform
 ```
+
+[`scripts/typecheck.js`](scripts/typecheck.js) checks every `.ts`/`.tsx` in `packages/app` (plus the apps' own TS) once per platform, resolving `.web` / `.native` variants like webpack and Metro, and skipping a base file where a platform variant replaces it. Plain `tsc` in `apps/next` or `apps/expo` does **not** do this: it never checks `.web.tsx` / `.native.tsx` files. The Next build ignores type errors (`ignoreBuildErrors`), so this script is the only gate.
+
+**Platform pairs share types through a `*.types.ts` file** (e.g. `video.types.ts` for `video.tsx` + `video.web.tsx`). Don't import shared types from the base file: with platform resolution, `./video` inside `video.web.tsx` resolves to `video.web.tsx` itself.
 
 **Common patterns that cause production TypeScript errors:**
 
@@ -707,7 +710,7 @@ cd apps/expo && npx tsc --noEmit
    }
    ```
 
-**Note:** Development builds may not catch all TypeScript errors that strict production builds will catch. Always verify with `tsc --noEmit` before pushing.
+**Note:** Neither dev nor production builds fail on type errors. Always run `yarn typecheck` before pushing.
 
 ---
 

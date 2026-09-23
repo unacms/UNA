@@ -7,15 +7,17 @@
   ],
   "devDependencies": {
     "@types/react": "~19.2.10",
+    "@types/react-dom": "~19.2.3",
     "babel-plugin-react-compiler": "^1.0.0",
     "eslint": "^9.17.0",
     "lerna-update-wizard": "^1.1.2",
     "patch-package": "^8.0.1",
     "turbo": "^2.5.8",
-    "typescript": "^5.7.2"
+    "typescript": "~6.0.3"
   },
   "scripts": {
     "lint": "eslint apps packages scripts crypto-shim",
+    "typecheck": "node scripts/typecheck.js",
     "preinstall": "node scripts/merge-package-customization.js",
     "postinstall": "patch-package",
     "native": "cd apps/expo && dotenv -e ../../.env.local -- expo start --clear",

@@ -1,46 +1,23 @@
-import { use, useEffect, useState, type ComponentProps, type ReactNode, type Ref } from 'react';
+import { use, useEffect, useState, type ComponentProps, type ReactNode } from 'react';
 import { HeaderHeightContext } from "expo-router/react-navigation";
 import { Keyboard, Platform } from 'react-native'
 import { KeyboardAwareScrollView, KeyboardAvoidingView, KeyboardProvider, KeyboardStickyView, useKeyboardState } from "react-native-keyboard-controller";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useStableSafeAreaInsets } from "app/lib/hooks/router";
 import Animated from "react-native-reanimated";
+import type {
+    KbAvoidingViewProps,
+    KbAvoidingViewScrollProps,
+    KbStickyViewProps,
+    ModalKbAwareScrollProps,
+    StickyComposerListInset,
+} from './kb-avoiding-view.types';
 
 // Reanimated 4 types its ScrollView as a plain function with a `ref` prop, while
 // keyboard-controller's types expect a forwardRef component. Works at runtime.
 const AnimatedScrollView = Animated.ScrollView as unknown as NonNullable<
     ComponentProps<typeof KeyboardAwareScrollView>['ScrollViewComponent']
 >;
-
-export type StickyComposerListInset = {
-    marginBottom: number;
-    keyboardLift: number;
-};
-
-export type KbAvoidingViewProps = {
-    children?: ReactNode;
-    className?: string;
-    /** Native: keyboard offset override. */
-    modalOffset?: number;
-    [key: string]: unknown;
-};
-
-export type KbStickyViewProps = Partial<ComponentProps<typeof KeyboardStickyView>> & {
-    children?: ReactNode;
-    className?: string;
-};
-
-type KbAwareScrollProps = Partial<Omit<ComponentProps<typeof KeyboardAwareScrollView>, 'ref'>> & {
-    children?: ReactNode;
-    className?: string;
-    ref?: Ref<any>;
-};
-
-export type ModalKbAwareScrollProps = KbAwareScrollProps;
-
-export type KbAvoidingViewScrollProps = KbAwareScrollProps & {
-    paddingTop?: number;
-};
 
 /**
  * Padding for a list under a KbStickyView composer.

@@ -42,7 +42,7 @@ export default function Dropdown(props: DropdownProps) {
     const { colors } = useTheme();
     const isShow = Platform.OS == 'ios'
 
-    function handleChange(itemValue: DropdownValue, itemIndex: number) {
+    function handleChange(itemValue: DropdownValue, itemIndex?: number) {
         setSelectedVal(toScalar(itemValue))
         props.onChange(itemValue);
         if (isShow)
@@ -77,7 +77,7 @@ export default function Dropdown(props: DropdownProps) {
             size={props.size}
            
                 selectedValue={selectedVal}
-                onValueChange={(itemValue, itemIndex) =>
+                onValueChange={(itemValue: DropdownValue, itemIndex?: number) =>
                 handleChange(itemValue, itemIndex)
             }>
                 {props.data.map((item, index) => (
@@ -93,7 +93,7 @@ export default function Dropdown(props: DropdownProps) {
                 <PickerStyledIos itemStyle={{fontSize:16, color:colors.default }}
                     size={props.size}
                     selectedValue={selectedVal}
-                    onValueChange={(itemValue, itemIndex) =>
+                    onValueChange={(itemValue: DropdownValue, itemIndex?: number) =>
                     handleChange(itemValue, itemIndex)
                 }>
                     {props.data.map((item, index) => (

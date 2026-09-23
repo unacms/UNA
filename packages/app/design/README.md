@@ -138,8 +138,7 @@ Run these after migrating:
 
 ```bash
 yarn list --pattern "nativewind|react-native-css-interop|uniwind" --depth=2
-cd apps/next && npx tsc --noEmit
-cd apps/expo && npx tsc --noEmit
+yarn typecheck
 yarn build
 ```
 
