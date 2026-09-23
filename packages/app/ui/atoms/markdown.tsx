@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState, type Ref } from 'react'
 import { EnrichedMarkdownText } from 'react-native-enriched-markdown'
 import { Image as ReactNativeImage, Platform } from 'react-native'
 import { useCSSVariable, useResolveClassNames } from 'uniwind'
@@ -15,6 +15,24 @@ import Image from 'app/ui/atoms/image'
 import { splitMarkdownSegments } from 'app/lib/markdown/segments'
 import { splitSizedMarkdownImages } from 'app/lib/markdown/images'
 import { APP_URL, UNA_URL } from 'app/config'
+
+type AlertType = 'NOTE' | 'TIP' | 'IMPORTANT' | 'WARNING' | 'CAUTION'
+
+/** Blocks produced by lib/markdown (segments.js + images.js). */
+type MarkdownSegment =
+    | { kind: 'markdown'; markdown: string }
+    | { kind: 'lead'; markdown: string }
+    | { kind: 'code'; code: string; language?: string | null }
+    | { kind: 'alert'; alertType: AlertType; markdown: string }
+    | { kind: 'image'; src: string; alt?: string; width?: number; height?: number }
+
+/** Style object for react-native-enriched-markdown (one entry per element type). */
+type MarkdownStyle = Record<string, Record<string, any>>
+
+type ImagePart = Extract<MarkdownSegment, { kind: 'image' }> | { kind: 'markdown'; markdown: string }
+
+// GFM on native; the web build has no `flavor` prop and would put it on the <div>.
+const nativeFlavor = Platform.OS === 'web' ? {} : { flavor: 'github' as const }
 
 const headingScale = {
     regular: {
@@ -35,7 +53,7 @@ const headingScale = {
     },
 }
 
-const alertConfig = {
+const alertConfig: Record<AlertType, { label: string; icon: string; surfaceClassName: string; toneClassName: string }> = {
     NOTE: {
         label: 'Note',
         icon: 'Info',
@@ -72,7 +90,7 @@ const markdownImageDestinationPattern = /(!\[[^\]]*\]\(\s*<?)([^)\s>]+)(>?)/g
 const unaStoragePathPattern = /^\/?sys_[^/]+_files\//
 const markdownImageWidth = 1920
 
-function normalizeMarkdownImageSources(markdown) {
+function normalizeMarkdownImageSources(markdown: string) {
     const unaBaseUrl = String(UNA_URL || '').replace(/\/$/, '')
     const optimizerBaseUrl = Platform.OS === 'web'
         ? ''
@@ -80,7 +98,7 @@ function normalizeMarkdownImageSources(markdown) {
 
     return String(markdown || '').replace(
         markdownImageDestinationPattern,
-        (match, prefix, destination, suffix) => {
+        (match: string, prefix: string, destination: string, suffix: string) => {
             if (
                 destination.startsWith('/_next/image?')
                 || /^(?:data:image|blob:)/i.test(destination)
@@ -114,7 +132,7 @@ function normalizeMarkdownImageSources(markdown) {
     )
 }
 
-function resolveMarkdownImageSource(destination) {
+function resolveMarkdownImageSource(destination: string) {
     const unaBaseUrl = String(UNA_URL || '').replace(/\/$/, '')
     let source = String(destination || '')
 
@@ -133,11 +151,11 @@ function resolveMarkdownImageSource(destination) {
     return `${unaBaseUrl}/${source.replace(/^\/+/, '')}`
 }
 
-function normalizeSegmentImages(segments) {
+function normalizeSegmentImages(segments: MarkdownSegment[]): MarkdownSegment[] {
     return segments.flatMap((segment) => {
-        if (segment.kind === 'code' || segment.kind === 'alert') return segment
+        if (segment.kind === 'code' || segment.kind === 'alert' || segment.kind === 'image') return segment
 
-        return splitSizedMarkdownImages(segment.markdown).map((part) => (
+        return (splitSizedMarkdownImages(segment.markdown) as ImagePart[]).map((part): MarkdownSegment => (
             part.kind === 'image'
                 ? { ...part, src: resolveMarkdownImageSource(part.src) }
                 : {
@@ -148,8 +166,8 @@ function normalizeSegmentImages(segments) {
     })
 }
 
-function SizedMarkdownImage({ alt, height, src, width }) {
-    const [intrinsicRatio, setIntrinsicRatio] = useState(null)
+function SizedMarkdownImage({ alt, height, src, width }: { alt?: string; height?: number; src: string; width?: number }) {
+    const [intrinsicRatio, setIntrinsicRatio] = useState<number | null>(null)
 
     useEffect(() => {
         if (width && height) return
@@ -166,8 +184,9 @@ function SizedMarkdownImage({ alt, height, src, width }) {
     }, [height, src, width])
 
     const fallbackSize = width || height || 200
-    const resolvedWidth = width || (intrinsicRatio ? height * intrinsicRatio : fallbackSize)
-    const resolvedHeight = height || (intrinsicRatio ? width / intrinsicRatio : fallbackSize)
+    // parseHtmlImage guarantees at least one dimension, so the other side is set here.
+    const resolvedWidth = width || (intrinsicRatio ? height! * intrinsicRatio : fallbackSize)
+    const resolvedHeight = height || (intrinsicRatio ? width! / intrinsicRatio : fallbackSize)
 
     return (
         <Image
@@ -189,6 +208,15 @@ function SizedMarkdownImage({ alt, height, src, width }) {
     )
 }
 
+type MarkdownSegmentsProps = {
+    alertMarkdownStyle: MarkdownStyle
+    handleLinkPress: (event: { url?: string }) => void
+    leadMarkdownStyle: MarkdownStyle
+    markdownStyle: MarkdownStyle
+    segments: MarkdownSegment[]
+    selectionColor?: string
+}
+
 function MarkdownSegments({
     alertMarkdownStyle,
     handleLinkPress,
@@ -196,7 +224,7 @@ function MarkdownSegments({
     markdownStyle,
     segments,
     selectionColor,
-}) {
+}: MarkdownSegmentsProps) {
     return segments.map((segment, index) => {
         if (segment.kind === 'image') {
             return (
@@ -229,7 +257,7 @@ function MarkdownSegments({
                     <EnrichedMarkdownText
                         selectable
                         selectionColor={selectionColor}
-                        flavor="github"
+                        {...nativeFlavor}
                         markdown={segment.markdown}
                         markdownStyle={markdownStyle}
                         onLinkPress={handleLinkPress}
@@ -247,7 +275,7 @@ function MarkdownSegments({
                     <EnrichedMarkdownText
                         selectable
                         selectionColor={selectionColor}
-                        flavor="github"
+                        {...nativeFlavor}
                         markdown={segment.markdown}
                         markdownStyle={leadMarkdownStyle}
                         onLinkPress={handleLinkPress}
@@ -257,7 +285,7 @@ function MarkdownSegments({
         }
 
         const config = alertConfig[segment.alertType]
-        const alertSegments = normalizeSegmentImages(splitMarkdownSegments(segment.markdown))
+        const alertSegments = normalizeSegmentImages(splitMarkdownSegments(segment.markdown) as MarkdownSegment[])
         return (
             <View
                 key={`alert-${segment.alertType}-${index}`}
@@ -278,7 +306,8 @@ function MarkdownSegments({
                             alertMarkdownStyle={alertMarkdownStyle}
                             handleLinkPress={handleLinkPress}
                             leadMarkdownStyle={leadMarkdownStyle}
-                            markdownStyle={markdownStyle}
+                            // Alert bodies use the tighter paragraph/list margins.
+                            markdownStyle={alertMarkdownStyle}
                             segments={alertSegments}
                             selectionColor={selectionColor}
                         />
@@ -293,7 +322,16 @@ function MarkdownSegments({
 // (native text on iOS/Android, md4c/WASM on web — no WebView). Content is
 // expected to arrive as Markdown; link presses route internally via the app
 // router and fall back to the system browser for external URLs.
-export default function ElementMarkdown({ data, customClassName, className = '', innerRef }) {
+type MarkdownProps = {
+    /** Markdown source. */
+    data?: string | null
+    /** `u-vanilla-html-small` shrinks the text. */
+    customClassName?: string
+    className?: string
+    innerRef?: Ref<any>
+}
+
+export default function ElementMarkdown({ data, customClassName, className = '', innerRef }: MarkdownProps) {
     const { colors } = useTheme()
     const mutedBg = useThemeValue('rgba(3,7,18,0.05)', 'rgba(255,255,255,0.06)')
     const borderColorFallback = useThemeValue('rgba(3,7,18,0.12)', 'rgba(255,255,255,0.12)')
@@ -329,7 +367,7 @@ export default function ElementMarkdown({ data, customClassName, className = '',
     const fontSize = isSmall ? 14 : 16
     const lineHeight = isSmall ? 18 : 22
 
-    const navigate = useCallback((rawUrl) => {
+    const navigate = useCallback((rawUrl?: string) => {
         if (!rawUrl) return
         const url = normalizeLinkHref(rawUrl)
         if (isExternalUrl(url)) {
@@ -342,10 +380,11 @@ export default function ElementMarkdown({ data, customClassName, className = '',
             router.push(relative)
             return
         }
-        router.push(nativeTabHref(relative, tabPath))
+        // Object href is native-only; the web router is typed for strings.
+        router.push(nativeTabHref(relative, tabPath) as any)
     }, [router, tabPath])
 
-    const markdownStyle = useMemo(() => {
+    const markdownStyle = useMemo((): MarkdownStyle => {
         const borderColor = Platform.OS === 'web'
             ? 'var(--color-border)'
             : (borderToken || borderColorFallback)
@@ -439,11 +478,11 @@ export default function ElementMarkdown({ data, customClassName, className = '',
     }), [leadTextColor, leadTextStyle.fontSize, leadTextStyle.lineHeight, markdownStyle])
 
     const segments = useMemo(
-        () => normalizeSegmentImages(splitMarkdownSegments(data)),
+        () => normalizeSegmentImages(splitMarkdownSegments(data) as MarkdownSegment[]),
         [data],
     )
-    const selectionColor = colors.outline || colors.primary
-    const handleLinkPress = useCallback((event) => navigate(event?.url), [navigate])
+    const selectionColor = (colors.outline || colors.primary) as string
+    const handleLinkPress = useCallback((event: { url?: string }) => navigate(event?.url), [navigate])
 
     if (!data) return null
 

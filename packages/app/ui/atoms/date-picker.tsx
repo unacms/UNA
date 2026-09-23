@@ -1,7 +1,7 @@
 import { View, Row, Pressable } from 'app/design/view'
-import Dropdown from 'app/ui/atoms/dropdown'
+import Dropdown, { type DropdownValue } from 'app/ui/atoms/dropdown'
 import { Icon } from 'app/ui/atoms/icon'
-import { useState, useMemo } from 'react';
+import { useState, useMemo, type ReactNode } from 'react';
 import { Modal, Button, InputWithIcons, TextInputClear, NeoButton } from 'app/design/controls'
 import { Text } from 'app/design/typography';
 import { Platform } from 'react-native'
@@ -9,7 +9,9 @@ import { formatDate, appSetting } from 'app/lib/util'
 import { useTranslation } from 'react-i18next';
 import * as RNLocalize from 'react-native-localize';
 
-const timeInputKeyboard = Platform.OS === 'web'
+type Option = { value: string | number; label?: string };
+
+const timeInputKeyboard: Record<string, string> = Platform.OS === 'web'
     ? { type: 'text', inputMode: 'numeric' }
     : { keyboardType: 'numeric' };
 
@@ -23,7 +25,7 @@ const minutes = Array.from({ length: 60 }, (_, i) => {
     return { value: label, label };
 });
 
-function TimeSelectField({ value, options, onChange, label }) {
+function TimeSelectField({ value, options, onChange, label }: { value: string; options: Option[]; onChange: (value: DropdownValue) => void; label: string }) {
     return (
         <View className="min-h-9 w-20 shrink-0">
             <Dropdown
@@ -39,7 +41,13 @@ function TimeSelectField({ value, options, onChange, label }) {
     );
 }
 
-function TimeSpinField({ value, onChangeText, onBlur, onStep, label }) {
+function TimeSpinField({ value, onChangeText, onBlur, onStep, label }: {
+    value: string;
+    onChangeText: (text: string) => void;
+    onBlur: () => void;
+    onStep: (delta: number) => void;
+    label: string;
+}) {
     return (
         <View className="h-9 shrink-0 flex-row items-stretch rounded-md">
             <TextInputClear
@@ -75,7 +83,7 @@ function TimeSpinField({ value, onChangeText, onBlur, onStep, label }) {
     );
 }
 
-const years = [];
+const years: Option[] = [];
 for (let y = 1900; y <= 2100; y++) {
     years.push({ value: y });
 }
@@ -84,14 +92,11 @@ const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep
 
 const months = monthNames.map((label, value) => ({ value, label }));
 
-export function MonthCalendar({ date = new Date(), onSelect, selectedDate }) {
+export function MonthCalendar({ date = new Date(), onSelect, selectedDate }: { date?: Date; onSelect: (date: Date) => void; selectedDate?: Date | null }) {
     // Year and month to display
 
     const displayYear = date.getFullYear();
     const displayMonth = date.getMonth() + 1;
-
-    // Today's date for highlighting
-    const today = new Date();
 
     // First day of the month and total days
     const firstOfMonth = new Date(displayYear, displayMonth - 1, 1);
@@ -104,7 +109,7 @@ export function MonthCalendar({ date = new Date(), onSelect, selectedDate }) {
         return day > 0 && day <= daysInMonth ? day : null;
     });
 
-    const weeks = [];
+    const weeks: (number | null)[][] = [];
     for (let i = 0; i < 6; i++) {
         weeks.push(cells.slice(i * 7, i * 7 + 7));
     }
@@ -114,7 +119,7 @@ export function MonthCalendar({ date = new Date(), onSelect, selectedDate }) {
             {weeks.map((week, wIdx) => (
                 <View key={wIdx} className="flex-row ">
                     {week.map((day, dIdx) => {
-                        const isToday = selectedDate ? (new Date(displayYear, displayMonth - 1, day)).toDateString() == selectedDate.toDateString() : null;
+                        const isToday = selectedDate ? (new Date(displayYear, displayMonth - 1, day ?? 0)).toDateString() == selectedDate.toDateString() : null;
 
                         return (
                             <View
@@ -145,14 +150,18 @@ export function MonthCalendar({ date = new Date(), onSelect, selectedDate }) {
     );
 }
 
-export function CalendarHeader({ value, addMonth, setDatePart }) {
+export function CalendarHeader({ value, addMonth, setDatePart }: {
+    value: Date | null;
+    addMonth: (type: 'm', val: number) => void;
+    setDatePart: (type: 'y' | 'm', val: number) => void;
+}) {
 
-    const setY = (val) => {
-        setDatePart('y', val);
+    const setY = (val: DropdownValue) => {
+        setDatePart('y', Number(val));
     }
 
-    const setM = (val) => {
-        setDatePart('m', val);
+    const setM = (val: DropdownValue) => {
+        setDatePart('m', Number(val));
     }
     return (
         <Row className='items-center gap-x-2 justify-center'>
@@ -183,56 +192,57 @@ export function CalendarHeader({ value, addMonth, setDatePart }) {
     )
 }
 
-const formatDateTime = (dateString) => {
-    const [datePart, timePart] = dateString.replace('Z', '').split(' ');
+/** "YYYY-MM-DD[ HH:MM[:SS]]" in local time. */
+const formatDateTime = (dateString: string) => {
+    const [datePart = '', timePart] = dateString.replace('Z', '').split(' ');
 
     // Split date and time components
-    const [year, month, day] = datePart.split('-').map(Number);
-    const [hours, minutes, seconds] = timePart ? timePart.split(':').map(Number) : [0, 0, 0];
+    // Malformed input yields NaN parts and an Invalid Date, as before.
+    const [year, month, day] = datePart.split('-').map(Number) as [number, number, number];
+    const [hours, minutes, seconds] = (timePart ? timePart.split(':').map(Number) : [0, 0, 0]) as [number, number, number];
 
     // Create Date object (JavaScript months are 0-based)
     return new Date(year, month - 1, day, hours, minutes, seconds);
 }
 
-function getDatePart(date, part) {
-    if (!(date instanceof Date))
-        return '';
-    const parts = {
-        year: date.getFullYear(),
-        month: date.getMonth() + 1,
-        day: date.getDate(),
-        hour: date.getHours(),
-        minute: date.getMinutes(),
-        second: date.getSeconds(),
-    };
+type DatePickerProps = {
+    name?: string;
+    /** "YYYY-MM-DD" or "YYYY-MM-DD HH:MM[:SS]". */
+    value?: string;
+    /** `datetime` adds hour/minute fields (spinners or selects, per `forms.time` setting). */
+    type?: 'date' | 'datetime';
+    /** Unix timestamp, seconds. */
+    onChange?: (timestamp: number) => void;
+    /** Custom trigger content; renders a NeoButton instead of the date input. */
+    children?: ReactNode;
+    /** Extra NeoButton props for the custom trigger. */
+    buttonProps?: Record<string, any>;
+};
 
-    return parts[part]
-}
-
-export default function ({ name, value = '', type, onChange, children, buttonProps }) {
+export default function DatePicker({ name, value = '', type, onChange, children, buttonProps }: DatePickerProps) {
     const bIsTime = type === 'datetime';
     const timeMode = appSetting('forms', 'time');
     const { t } = useTranslation();
     const dateDisplayOpts = useMemo(() => {
         const tag = RNLocalize.getLocales()?.[0]?.languageTag || 'en-US';
         return tag.toLowerCase().startsWith('en-us')
-            ? { yearPolicy: 'always', month: 'short' }
-            : { yearPolicy: 'always', month: 'numeric' };
+            ? { yearPolicy: 'always' as const, month: 'short' as const }
+            : { yearPolicy: 'always' as const, month: 'numeric' as const };
     }, []);
     const [showModal, setShowModal] = useState(false);
     const initValue = formatDateTime(value);
-    const [dValue, setdValue] = useState(value ? initValue : null);
+    const [dValue, setdValue] = useState<Date | null>(value ? initValue : null);
     const [cValue, setcValue] = useState(value ? initValue : new Date());
-    const [tValue, settValue] = useState(value ? [String(initValue.getHours()).padStart(2, '0'), String(initValue.getMinutes()).padStart(2, '0')] : ['00', '00']);
+    const [tValue, settValue] = useState<[string, string]>(value ? [String(initValue.getHours()).padStart(2, '0'), String(initValue.getMinutes()).padStart(2, '0')] : ['00', '00']);
 
-    const emitChange = (date) => {
+    const emitChange = (date: Date | null) => {
         if (!date || Number.isNaN(date.getTime()) || typeof onChange !== 'function') return;
         onChange(date.getTime() / 1000);
     };
 
 
 
-    const addMonth = (type, val) => {
+    const addMonth = (type: 'm', val: number) => {
         setcValue(prev => {
             const next = new Date(prev.getTime());
             next.setMonth(next.getMonth() + val);
@@ -240,7 +250,7 @@ export default function ({ name, value = '', type, onChange, children, buttonPro
         });
     };
 
-    const setDatePart = (type, val) => {
+    const setDatePart = (type: 'y' | 'm', val: number) => {
         setcValue(prev => {
             const d = new Date(prev.getTime());
             if (type === 'm') d.setMonth(val);
@@ -249,7 +259,7 @@ export default function ({ name, value = '', type, onChange, children, buttonPro
         });
     };
 
-    const handleChangeTime = (text, maxValue, type) => {
+    const handleChangeTime = (text: string, maxValue: number, type: 'h' | 'm') => {
         let filtered = text.replace(/[^0-9]/g, '');
         if (filtered !== '') {
             const num = parseInt(filtered, 10);
@@ -259,7 +269,7 @@ export default function ({ name, value = '', type, onChange, children, buttonPro
         }
 
         settValue(prev => {
-            const j = [...prev];
+            const j: [string, string] = [...prev];
             if (type === 'm') j[1] = filtered;
             if (type === 'h') j[0] = filtered;
 
@@ -270,7 +280,7 @@ export default function ({ name, value = '', type, onChange, children, buttonPro
 
     };
 
-    const applyTimeValues = (hours, minutes, pad = false) => {
+    const applyTimeValues = (hours: DropdownValue, minutes: DropdownValue, pad = false) => {
         const nextHours = pad ? String(hours).padStart(2, '0') : String(hours);
         const nextMinutes = pad ? String(minutes).padStart(2, '0') : String(minutes);
         settValue([nextHours, nextMinutes]);
@@ -283,7 +293,7 @@ export default function ({ name, value = '', type, onChange, children, buttonPro
         }
     };
 
-    const adjustTime = (part, delta) => {
+    const adjustTime = (part: 'h' | 'm', delta: number) => {
         const index = part === 'h' ? 0 : 1;
         const max = part === 'h' ? 23 : 59;
         let num = parseInt(tValue[index] || '0', 10);
@@ -297,7 +307,7 @@ export default function ({ name, value = '', type, onChange, children, buttonPro
         if (dValue) applyTimeValues(tValue[0], tValue[1], true);
     };
 
-    const onSelectDate = (next) => {
+    const onSelectDate = (next: Date) => {
         setShowModal(false)
         setdValue(next);
         emitChange(next);
@@ -306,7 +316,7 @@ export default function ({ name, value = '', type, onChange, children, buttonPro
    
     return (
         <>
-            <Modal onVisible={!!showModal} title={t('Select date')} onClose={() => { setShowModal(false) }} transparent={false}>
+            <Modal onVisible={!!showModal} title={t('Select date')} onClose={() => { setShowModal(false) }}>
                 <View className='   w-full mx-auto'>
                     <View className='  w-full '>
                         <CalendarHeader value={cValue} addMonth={addMonth} setDatePart={setDatePart} />

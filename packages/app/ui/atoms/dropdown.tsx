@@ -8,7 +8,7 @@ import { Platform } from 'react-native'
 import { Button } from 'app/design/controls';
 import { useTranslation } from 'react-i18next';
 
-type DropdownValue = NonNullable<PickerItemProps['value']>;
+export type DropdownValue = NonNullable<PickerItemProps['value']>;
 
 /** Option objects are read through `labelField` / `valueField`. */
 type DropdownItem = Record<string, any>;
@@ -23,6 +23,8 @@ type DropdownProps = {
     open?: boolean;
     disabled?: boolean;
     size?: 'small' | 'regular' | 'large';
+    /** Accessible name (`aria-label` on the web <select>, accessibilityLabel / button name on native). */
+    accessibilityLabel?: string;
 };
 
 const toScalar = (val: unknown): DropdownValue => {
@@ -74,6 +76,9 @@ export default function Dropdown(props: DropdownProps) {
             ref={pickerRef}
             style={Platform.OS === 'web' ? undefined : { color: colors.default }}
             disabled={props?.disabled}
+            {...(props.accessibilityLabel
+                ? (Platform.OS === 'web' ? { 'aria-label': props.accessibilityLabel } : { accessibilityLabel: props.accessibilityLabel })
+                : {})}
             size={props.size}
            
                 selectedValue={selectedVal}
@@ -88,7 +93,7 @@ export default function Dropdown(props: DropdownProps) {
     }
     else{
         return ( <View>
-            <Button title={selectedText} disabled={props.disabled} onPress={() => setShowImage(true)} />
+            <Button title={selectedText} alt={props.accessibilityLabel} disabled={props.disabled} onPress={() => setShowImage(true)} />
             <Modal title={t('Title')} onVisible={showImage} onClose={() => setShowImage(false)}>
                 <PickerStyledIos itemStyle={{fontSize:16, color:colors.default }}
                     size={props.size}
