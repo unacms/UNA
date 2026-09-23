@@ -80,7 +80,7 @@ class BxDolLogs extends BxDolFactory implements iBxDolFactoryObject
             $aObject = array(
                 'object' => $sObject,
                 'module' => 'system',
-                'logs_storage' => getParam('sys_logs_storage_default'),
+                'logs_storage' => getParam('sys_logs_storage_default') ?: 'Folder',
             );
         }
 
@@ -93,7 +93,7 @@ class BxDolLogs extends BxDolFactory implements iBxDolFactoryObject
 
         $sLogsStorage = (empty($aObject['logs_storage']) ? 'Auto' : $aObject['logs_storage']);
         if ('Auto' == $sLogsStorage)
-            $sLogsStorage = getParam('sys_logs_storage_default');
+            $sLogsStorage = getParam('sys_logs_storage_default') ?: 'Folder';
         $sClassLogsStorage = 'BxDolLogsStorage' . $sLogsStorage;
         $oLogsStorage = $sClassLogsStorage::getInstance();
 
