@@ -2,7 +2,7 @@ import * as WebBrowser from 'expo-web-browser';
 import { isWeb } from './layout';
 import { appSetting } from './settings';
 
-export function addParameterToUrl(url, paramName, paramValue) {
+export function addParameterToUrl(url: string, paramName: string, paramValue: string | number): string {
 
     if (url.includes('?')) {
         return url + '&' + paramName + '=' + paramValue;
@@ -11,14 +11,14 @@ export function addParameterToUrl(url, paramName, paramValue) {
     }
 }
 
-export function getDomainFromUrl(url) {
-    let protocol;
-    let domain;
+export function getDomainFromUrl(url: string): string | undefined {
+    let protocol: string;
+    let domain: string | undefined;
 
     // Check if the URL contains a protocol
     if (url.indexOf("://") > -1) {
         protocol = url.split("://")[0] + "://";
-        domain = url.split("://")[1].split('/')[0];
+        domain = url.split("://")[1]!.split("/")[0];
     } else {
         // Default to http if no protocol is found
         protocol = "http://";
@@ -29,15 +29,15 @@ export function getDomainFromUrl(url) {
 
 }
 
-function normalizeHostname(hostname) {
+function normalizeHostname(hostname: string | undefined): string {
     if (!hostname) return '';
     return hostname.toLowerCase().replace(/^www\./, '');
 }
 
-function looksLikeAbsoluteUrl(url) {
+function looksLikeAbsoluteUrl(url: string): boolean {
     if (/^https?:\/\//i.test(url) || url.startsWith('//')) return true;
 
-    const hostPart = url.split('/')[0].split('?')[0].split('#')[0];
+    const hostPart = url.split('/')[0]!.split('?')[0]!.split('#')[0];
     if (!hostPart) return false;
     if (/^localhost(?::\d+)?$/i.test(hostPart)) return true;
     if (/^\d{1,3}(?:\.\d{1,3}){3}(?::\d+)?$/.test(hostPart)) return true;
@@ -45,7 +45,7 @@ function looksLikeAbsoluteUrl(url) {
     return hostPart.includes('.');
 }
 
-export function getHostnameFromUrl(url) {
+export function getHostnameFromUrl(url: unknown): string {
     if (!url || typeof url !== 'string') return '';
 
     if (url.startsWith('/') && !url.startsWith('//')) return '';
@@ -66,11 +66,11 @@ export function getHostnameFromUrl(url) {
     }
 }
 
-export function absoluteApiUrl(url_name) {
+export function absoluteApiUrl(url_name: string): string {
     return appSetting("config", "una_url") + appSetting("urls", url_name);
 }
 
-export function isUrl(str) {
+export function isUrl(str: unknown): boolean {
     if (typeof str !== 'string' || !str.trim()) return false;
 
     const value = str.trim();
@@ -90,63 +90,66 @@ export function isUrl(str) {
     }
 }
 
-export function parseUrl(url) {
+export function parseUrl(url: string): { path: string; queryString: string | undefined } {
     let withoutProtocol = url;
     let parts = withoutProtocol.split('/');
 
     if (url.includes('//')) {
-        withoutProtocol = url.split('//')[1];
+        withoutProtocol = url.split('//')[1]!;
         parts = withoutProtocol.split('/');
         parts.shift(); // remove the domain
     }
 
     const pathParts = parts.join('/').split('?');
     return {
-        path: pathParts[0],
+        path: pathParts[0]!,
         queryString: pathParts[1],
     };
 }
 
-export function parseQueryString(queryString) {
+export function parseQueryString(queryString: string | undefined): Record<string, string | undefined> {
 
     const pairs = queryString?.split('&');
-    const obj = {};
+    const obj: Record<string, string | undefined> = {};
 
-    pairs.forEach(pair => {
+    // Empty query string: return {} (the old `pairs.forEach` threw here).
+    pairs?.forEach(pair => {
         const [key, value] = pair.split('=');
-        obj[key] = value;
+        obj[key!] = value;
     });
 
     return obj;
 }
 
-export function getURI(url) {
-    if (!url || !url.length || typeof (url) !== 'string')
+export function getURI(url: unknown): string | false | undefined {
+    if (typeof url !== 'string' || !url.length)
         return false;
+    let path: string = url;
 
-    let questionMarkIndex = url.indexOf("?");
+    let questionMarkIndex = path.indexOf("?");
 
     if (questionMarkIndex !== -1) {
-        url = url.substring(0, questionMarkIndex);
+        path = path.substring(0, questionMarkIndex);
     }
 
-    let u = url.replace('page', '').split('/');
+    let u = path.replace('page', '').split('/');
     u = u.filter(Boolean);
     return u[0]
 }
 
-export function getYouTubeVideoId(url) {
+export function getYouTubeVideoId(url: string): string | null {
     const regex =
         /^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:(?:watch\?v=|v\/|embed\/|shorts\/|live\/)|.*[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
     const match = url.match(regex);
-    return match ? match[1] : null;
+    return match?.[1] ?? null;
 }
 
-export const openExternalLink = async (finalHref) => {
+export const openExternalLink = async (finalHref: string): Promise<void> => {
     await WebBrowser.openBrowserAsync(finalHref);
 };
 
-export function sanitazeUrl(url) {
+/** Normalize an in-app href: strips own host, rejects `javascript:`, keeps external URLs. `''` when unusable. */
+export function sanitazeUrl(url: unknown): string {
     if (typeof url !== 'string') {
         return '';
     }
@@ -190,7 +193,7 @@ export function sanitazeUrl(url) {
     return finalHref.startsWith('/') ? finalHref : `/${finalHref}`;
 }
 
-export function isExternalUrl(url) {
+export function isExternalUrl(url: unknown): boolean {
     const host = getHostnameFromUrl(url);
     if (!host) return false;
 

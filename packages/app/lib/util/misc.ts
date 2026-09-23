@@ -4,8 +4,9 @@ import md5Hex from 'blueimp-md5';
 import Clipboard from '@react-native-clipboard/clipboard';
 import { isWeb } from './layout';
 import { appSetting } from './settings';
+import type { TFunction } from 'i18next';
 
-export async function subscribeOneSignal(currentUser, askPermission = false) {
+export async function subscribeOneSignal(currentUser: { id: number | string; hash?: string }, askPermission = false): Promise<void> {
     if (isWeb) return;
     const { LogLevel, OneSignal } = await import('react-native-onesignal');
     OneSignal.Debug.setLogLevel(LogLevel.None);
@@ -44,7 +45,7 @@ export async function subscribeOneSignal(currentUser, askPermission = false) {
     });*/
 }
 
-export async function getClipboard() {
+export async function getClipboard(): Promise<string> {
     if (isWeb) {
         return await navigator.clipboard.readText();
 
@@ -54,7 +55,7 @@ export async function getClipboard() {
     }
 }
 
-export async function setClipboard(str) {
+export async function setClipboard(str: string): Promise<void> {
     if (!isWeb) {
         Clipboard.setString(str);
     }
@@ -77,26 +78,33 @@ export function clearNotif() {
  * Sync MD5 hex of a string (UTF-8). Used as a stable key for resumable
  * uploads — not for anything security-related.
  */
-export function md5(str) {
+export function md5(str: unknown): string {
     return md5Hex(String(str ?? ''));
 }
 
-export function getRandomColor(str) {
-    if (!str)
-        str = 'a';
+/**
+ * Stable palette color name (`theme.profile_colors`) for an id or title — same input,
+ * same color on every platform. Used as `bg-${color}-500` for avatar placeholders.
+ * Keep the palette in sync with the `@source inline("bg-{…}-500")` list in
+ * design/styles/utilities.css, or web won't generate the classes.
+ */
+export function getRandomColor(str?: string | number | null): string {
+    const s = str ? String(str) : 'a';
     let hash = 0;
-    for (let i = 0; i < str.length; i++) {
-        const char = str.charCodeAt(i);
+    for (let i = 0; i < s.length; i++) {
+        const char = s.charCodeAt(i);
         hash = ((hash << 5) - hash) + char;
         hash |= 0; // Convert to 32bit integer
     }
-    var arr = appSetting('theme', 'profile_colors')
-    return arr[Math.abs(hash % 10)];
+    const palette: string[] = appSetting('theme', 'profile_colors') || [];
+    // Fallback must be in the utilities.css safelist too (callers append `-500`).
+    if (!palette.length) return 'orange';
+    return palette[Math.abs(hash % palette.length)]!;
 }
 
-export function visibilityById(visibility, t) {
+export function visibilityById(visibility: string | number, t: TFunction): { icon: string; text: string } | null {
 
-    const visibilityOptions = {
+    const visibilityOptions: Record<string | number, { icon: string; text: string }> = {
         2: { icon: 'Lock', text: t('Me only') },
         3: { icon: 'Globe', text: t('Public') },
         5: { icon: 'UsersRound', text: t('Friends') },
@@ -111,7 +119,7 @@ export function visibilityById(visibility, t) {
     return visibilityOptions[visibility] || null;
 }
 
-export function genRnd(length) {
+export function genRnd(length: number): string {
     let result = '';
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     const charactersLength = characters.length;
@@ -123,11 +131,11 @@ export function genRnd(length) {
     return result;
 }
 
-export function isNumeric(str) {
+export function isNumeric(str: any): boolean {
     return !isNaN(str) && !isNaN(parseFloat(str));
 }
 
-export function getIconByNameFromIconset(iconset, name) {
+export function getIconByNameFromIconset<T>(iconset: Record<string, T>, name: string): T | undefined {
     let icon = iconset[name];
     if (!icon) {
         Object.keys(iconset).find((item) => {

@@ -3938,6 +3938,11 @@
   dependencies:
     tslib "^2.4.0"
 
+"@types/blueimp-md5@~2.18.2":
+  version "2.18.2"
+  resolved "https://registry.yarnpkg.com/@types/blueimp-md5/-/blueimp-md5-2.18.2.tgz#4fd6fb720990b22229c30b3e06f61e6ec2ef92b8"
+  integrity sha512-dJ9yRry9Olt5GAWlgCtE5dK9d/Dfhn/V7hna86eEO2Pn76+E8Y0S0n61iEUEGhWXXgtKtHxtZLVNwL8X+vLHzg==
+
 "@types/d3-array@^3.0.3":
   version "3.2.2"
   resolved "https://registry.yarnpkg.com/@types/d3-array/-/d3-array-3.2.2.tgz#e02151464d02d4a1b44646d0fcdb93faf88fde8c"
@@ -4012,6 +4017,11 @@
   version "1.0.9"
   resolved "https://registry.yarnpkg.com/@types/estree/-/estree-1.0.9.tgz#cf3f0e876d7bee15a93ab925b82bf570a3904a24"
   integrity sha512-GhdPgy1el4/ImP05X05Uw4cw2/M93BCUmnEvWZNStlCzEKME4Fkk+YpoA5OiHNQmoS7Cafb8Xa3Pya8m1Qrzeg==
+
+"@types/fbemitter@~2.0.35":
+  version "2.0.35"
+  resolved "https://registry.yarnpkg.com/@types/fbemitter/-/fbemitter-2.0.35.tgz#3c1d960419c7aa560b3548449555fee6033988cc"
+  integrity sha512-Xem6d7qUfmouCHntCrRYgDBwbf+WWRd6G+7WEFlEZFZ67LZXiYRvT2LV8wcZa6mIaAil95+ABQdKgB6hPIsnng==
 
 "@types/google.maps@^3.53.1", "@types/google.maps@^3.65.5":
   version "3.66.3"

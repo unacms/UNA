@@ -3,9 +3,7 @@
 import React, { useEffect, useCallback } from 'react';
 import { useCurrentUser } from 'app/context/user';
 import { storageClear } from 'app/lib/util';
-import { remoteSettings } from 'app/settings/remote';
 import { subscribe } from 'app/ui/atoms/socket';
-import { getRemoteSettings } from 'app/config';
 import emitter from 'app/context/emitter'
 import { checkActionsOnConnectionsChanged } from 'app/customization/functions';
 
@@ -14,13 +12,6 @@ let connectionsReloadTimer = null;
 
 export default function Subscriber() {
     const { currentUser, setCurrentUser } = useCurrentUser();
-    useEffect(() => {
-        const sub1 = subscribe('sys_api_0', 'config_changed', onUpdateSettings);
-        return () => {
-            sub1();
-        };
-    }, [])
-
     useEffect(() => {
         if (!currentUser?.id) return 
 
@@ -39,10 +30,6 @@ export default function Subscriber() {
         setCurrentUser({
             confirmed: true,
         });
-    }, []);
-
-    const onUpdateSettings = useCallback(async () => {
-        remoteSettings.data = await getRemoteSettings();
     }, []);
 
     const onUpdateProfile = useCallback(async (data) => {

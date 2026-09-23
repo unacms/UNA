@@ -195,8 +195,6 @@ export default function Layout(props) {
 
         }
         metaAdder('property="og:title"', decodeText(data?.title))
-        if (props.settings)
-            remoteSettings.data = props.settings;
 
     }, [currentUser?.notifications]);
 

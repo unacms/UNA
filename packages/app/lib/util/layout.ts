@@ -34,14 +34,17 @@ export const LAYOUT_BREAKPOINTS = {
 
 const LAYOUT_BREAKPOINTS_DESC = Object.entries(LAYOUT_BREAKPOINTS).sort((a, b) => b[1] - a[1]);
 
-export function getBreakpoint(width) {
+/** Largest breakpoint label (`2xl`…`sm`) whose min width fits; `''` below all. */
+export function getBreakpoint(width: number): string {
     for (const [label, min] of LAYOUT_BREAKPOINTS_DESC) {
         if (width >= min) return label;
     }
     return '';
 }
 
-export function normalizeClasses(a) {
+export function normalizeClasses(a: string): string;
+export function normalizeClasses(a: string | null | undefined): string | null | undefined;
+export function normalizeClasses(a: string | null | undefined): string | null | undefined {
     if (!a) return a
     // Notes:
     // - `group` is a special Tailwind marker (not a style utility).
@@ -69,7 +72,8 @@ export const roundedClassToRadius = (roundedClass = '') => {
 };
 
 
-export function isShowCover(cover, currentUser, url) {
+/** Cover visibility setting: 1 all, 2 visitors only, 3 members only (default 1; always on home). */
+export function isShowCover(cover: number | null | undefined, currentUser: unknown, url: string): boolean {
     if (cover === null || cover === undefined || url == 'home')
         cover = 1;
     if (cover === 1) // for all
@@ -84,7 +88,7 @@ export function isShowCover(cover, currentUser, url) {
 
 
 /** Header toolbar NeoButton defaults from `header_toolbar.neoButton` settings (desktop/mobile). */
-export function getHeaderToolbarNeoButtonDefaults(isDesktop, options) {
+export function getHeaderToolbarNeoButtonDefaults(isDesktop: boolean, options?: { primary?: boolean }): { style: string; controlSize: string } {
     const primary = options?.primary === true;
     const config = appSetting('header_toolbar', 'neoButton') || {};
     const platform = isDesktop ? 'desktop' : 'mobile';
@@ -99,7 +103,7 @@ export function getHeaderToolbarNeoButtonDefaults(isDesktop, options) {
     };
 }
 
-export function getPageWidth(uri, config) {
+export function getPageWidth(uri: string, config?: unknown): any {
     //let settings = appSetting('l-ayouts', uri)
     const settings = getPageSettings(config, uri);
     if (settings?.max_width)
@@ -108,13 +112,13 @@ export function getPageWidth(uri, config) {
     return appSetting('layout', 'max_width');
 }
 
-function normalizeContentWidthKey(value) {
+function normalizeContentWidthKey(value: unknown): string {
     if (typeof value !== 'string' || !value) return '';
-    return value.split('?')[0].replace(/^\/+|\/+$/g, '');
+    return value.split('?')[0]!.replace(/^\/+|\/+$/g, '');
 }
 
 /** Layout name or page URI from `layout.page_content_width`. URI wins so a page can opt out of its layout cap. */
-export function getPageContentWidth(layoutKey, uri) {
+export function getPageContentWidth(layoutKey: string, uri?: string): any {
     const pageLayouts = appSetting('layout', 'page_content_width') || {};
     const uriKey = normalizeContentWidthKey(uri);
     if (uriKey && Object.prototype.hasOwnProperty.call(pageLayouts, uriKey)) {
@@ -130,7 +134,7 @@ export function getPageContentWidth(layoutKey, uri) {
     return appSetting('layout', 'page_content_width_default');
 }
 
-export function getPageContentPaddingTiers(layoutKey) {
+export function getPageContentPaddingTiers(layoutKey: string): any {
     if (!layoutKey) return undefined;
     const pageLayouts = appSetting('layout', 'page_content_padding_layouts') || {};
     return Object.prototype.hasOwnProperty.call(pageLayouts, layoutKey)
@@ -138,21 +142,21 @@ export function getPageContentPaddingTiers(layoutKey) {
         : undefined;
 }
 
-function normalizeLayoutPath(uri) {
-    return String(uri || '').split(/[?#]/)[0].replace(/^\/+|\/+$/g, '');
+function normalizeLayoutPath(uri: unknown): string {
+    return String(uri || '').split(/[?#]/)[0]!.replace(/^\/+|\/+$/g, '');
 }
 
-function isTasksModule(data) {
+function isTasksModule(data: { module?: string } | null | undefined): boolean {
     const module = String(data?.module || '');
     return module === 'bx_tasks' || module.startsWith('bx_tasks');
 }
 
-function isTaskViewPath(path) {
+function isTaskViewPath(path: string): boolean {
     return path === 'view-task' || path.startsWith('view-task/');
 }
 
 /** Item view for a task (`/view-task/...` or the list-open `item` fetch). Not tasks-home. */
-export function isTaskItemPage(data, uri) {
+export function isTaskItemPage(data: any, uri: string): boolean {
     const path = normalizeLayoutPath(uri);
     const dataPath = normalizeLayoutPath(data?.uri);
     if (path === 'tasks-home' || dataPath === 'tasks-home') return false;
@@ -160,7 +164,9 @@ export function isTaskItemPage(data, uri) {
     return path === 'item' && isTasksModule(data);
 }
 
-export function getLayoutName(data, uri) {
+export type LayoutNameResult = { layoutName: string; layoutBlocks: any; isCustomLayout: boolean; columnLayout: string };
+
+export function getLayoutName(data: any, uri: string): LayoutNameResult {
     if (data?.page_status) {
         return { layoutName: 'default', layoutBlocks: '', isCustomLayout: false, columnLayout: '' };
     }
@@ -170,7 +176,7 @@ export function getLayoutName(data, uri) {
     const customBlocks = pageSettings.blocks || '';
     const isCustom = Boolean(customLayout);
 
-    const checks = [
+    const checks: Array<{ cond: boolean; name: string; blocks?: any; custom?: boolean; columnLayout?: string }> = [
         {
             cond: uri === 'login',
             name: 'login',
@@ -224,7 +230,7 @@ export function getLayoutName(data, uri) {
     return { layoutName: 'default', layoutBlocks: customBlocks, isCustomLayout: isCustom, columnLayout: '' };
 }
 
-export function getHeaderSettings(uri, isDesktop, layout, config) {
+export function getHeaderSettings(uri: string, isDesktop: boolean, layout: string, config?: unknown): any {
     let settings = getPageSettings(config, uri);
     if (!settings?.headerSettings) {
         if (layout == 'navigator') {
@@ -276,12 +282,13 @@ export function getHeaderSettings(uri, isDesktop, layout, config) {
     }
 }
 
-export function getPageSettings(config, uri) {
+/** Per-page layout settings: remote `config` when enabled, else `layouts[uri]` from settings. */
+export function getPageSettings(config: unknown, uri: string): any {
     if (!appSetting('layout', 'user_remote_config')) {
         return appSetting('layouts', uri);
     }
     if (!config) return appSetting('layouts', uri);
     if (typeof config === 'object') return config;
-    return strToObj(config) ?? appSetting('layouts', uri);
+    return strToObj(config as string) ?? appSetting('layouts', uri);
 }
 

@@ -1,14 +1,15 @@
 import { parse as flatted_parse, stringify as flatted_stringify } from 'flatted';
 
-export function isObjectsEqual(obj, obj2) {
+/** Structural equality via flatted serialization (handles cycles; key order matters). */
+export function isObjectsEqual(obj: unknown, obj2: unknown): boolean {
     return flatted_stringify(obj) == flatted_stringify(obj2)
 }
 
-export function cloneObject(obj) {
+export function cloneObject<T>(obj: T): T {
     return flatted_parse(flatted_stringify(obj))
 }
 
-export function deepEqual(obj1, obj2) {
+export function deepEqual(obj1: any, obj2: any): boolean {
     if (obj1 === obj2) {
         return true;
     }
@@ -34,7 +35,7 @@ export function deepEqual(obj1, obj2) {
     return true;
 }
 
-export function mergeDeep(target, ...sources) {
+export function mergeDeep(target: any, ...sources: any[]): any {
     if (!sources.length) return target;
     const source = sources.shift();
 
@@ -52,11 +53,12 @@ export function mergeDeep(target, ...sources) {
     return mergeDeep(target, ...sources);
 }
 
-function isObject(item) {
-    return (item && typeof item === 'object' && !Array.isArray(item));
+function isObject(item: unknown): item is Record<string, any> {
+    return !!(item && typeof item === 'object' && !Array.isArray(item));
 }
 
-export function strToObj(s) {
+/** Parse a loose JS-style object literal (unquoted keys, single quotes); null on failure. */
+export function strToObj(s: string): any {
     try {
         const jsonReadyString = s
             .replace(/\s*([{}[\],:])\s*/g, '$1') // Remove spaces around {}, [], :, ,
@@ -72,10 +74,10 @@ export function strToObj(s) {
     }
 }
 
-export function filterContent(dataOrig, needed) {
+export function filterContent(dataOrig: any, needed: string[]): any {
     let data = cloneObject(dataOrig);
     for (let cell in data.elements) {
-        data.elements[cell] = data.elements[cell].filter(obj => needed.includes(obj.source));
+        data.elements[cell] = data.elements[cell].filter((obj: any) => needed.includes(obj.source));
     }
     return data;
 }

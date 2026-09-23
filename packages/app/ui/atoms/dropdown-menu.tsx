@@ -2,7 +2,7 @@ import { Pressable, View } from 'app/design/view';
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import { Button, NeoButton } from 'app/design/controls'
 import { memo, useCallback, useEffect, useMemo, useRef, useState, type ComponentType, type ReactNode } from 'react';
-import { cn, groupDropdownItems, getDropdownSectionsLayout, dropdownLeafItems, getDropdownGridLayout } from 'app/lib/util';
+import { cn, groupDropdownItems, getDropdownSectionsLayout, dropdownLeafItems, getDropdownGridLayout, type DropdownSection, type DropdownSectionsLayout } from 'app/lib/util';
 import DropdownGridItem, { type DropdownGridMenuItem } from 'app/ui/atoms/dropdown-grid-item';
 import { FeedbackHaptics } from 'app/lib/util';
 import { Keyboard, Alert, Platform, type AlertButton, type StyleProp, type ViewStyle } from 'react-native'
@@ -75,21 +75,12 @@ type MenuBottomSheetProps = Pick<DropdownMenuProps, 'items' | 'onSelect' | 'reso
     setBottomSheetData: (data: any) => void;
 };
 
-type DropdownMenuSection = { header?: DropdownMenuItemData; items: DropdownMenuItemData[] };
-
-/** Result of getDropdownSectionsLayout (lib/util/menu.js), or the stacked single column. */
-type SectionsLayout = {
-    stacked: boolean;
-    cols: number;
-    colWidth: number | null;
-    contentWidth: number | null;
-    popupWidth: number | null;
-    minWidth?: number;
-    maxWidth?: number;
-};
-
 /** Menu item renderer from the component registry (JS, so typed loosely here). */
 const getDropdownMenuItem = (): ComponentType<any> => (components as any)['menu-item']['dropdown'];
+
+/** getDropdownSectionsLayout result, or the hand-built stacked column (no width limits). */
+type SectionsLayout = Omit<DropdownSectionsLayout, 'minWidth' | 'maxWidth' | 'gap'>
+    & Partial<Pick<DropdownSectionsLayout, 'minWidth' | 'maxWidth' | 'gap'>>;
 
 export { DropdownMenuOpenContext };
 
@@ -197,7 +188,7 @@ function DropdownMenuPopup({
     );
     const sectionsMinPopupWidth = sectionsLayout.stacked
         ? 288
-        : sectionsLayout.popupWidth;
+        : sectionsLayout.popupWidth ?? undefined;
     const sectionCount = sections?.length || 0;
     const sectionsWrap = sectionCount > (sectionsLayout.cols || 1);
     // Web uses CSS grid props (`display: 'grid'`) that RN style types don't know.
@@ -333,7 +324,7 @@ function DropdownMenuPopup({
                         }
                         style={sectionsRowStyle}
                     >
-                        {sections!.map((section: DropdownMenuSection, sectionIndex: number) => (
+                        {sections!.map((section: DropdownSection, sectionIndex: number) => (
                             <View
                                 key={section.header?.id ?? `section-${sectionIndex}`}
                                 className={menuSettings.section}

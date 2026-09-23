@@ -11,7 +11,7 @@ import { appSetting } from 'app/config';
 import { resolveServerLangCode } from '../lib/resolve-lang'
 
 const SITE_TITLE = appSetting('config', 'title');;
-// Mirror the resilience tuning used by getRemoteSettings() in packages/app/config.js
+// Resilience tuning for the backend fetch below
 // so a slow/stalled backend degrades gracefully instead of hard-crashing the 404 page.
 const FETCH_TIMEOUT_MS = 3500;
 const MAX_ATTEMPTS = 3;

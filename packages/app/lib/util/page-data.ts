@@ -2,23 +2,30 @@ import { fetcher } from 'app/lib/fetcher';
 import { appSetting } from './settings';
 import { parseUrl } from './url';
 
-export function getBlocksFromData(data) {
-    let blocks = {};
+/** UNA page data: `elements` is { cell: { key: block } }, each block has `id`, `source`, `content`. */
+export type PageData = { elements?: Record<string, Record<string, any>>; [key: string]: any };
+
+type BlockLayout = { name: string; showPad: boolean; perLine?: number };
+
+export function getBlocksFromData(data: PageData | null | undefined): Record<string, BlockLayout> {
+    let blocks: Record<string, BlockLayout> = {};
     if (!data || !data.elements || typeof data.elements !== 'object') {
         return blocks;
     }
-    Object.keys(data.elements).forEach(key => {
-        Object.keys(data.elements[key]).forEach(key2 => {
-            blocks['block' + data.elements[key][key2].id] = { name: data.elements[key][key2].source, showPad: true }
-            if (data.elements[key][key2] && Array.isArray(data.elements[key][key2].content) && data.elements[key][key2].content[0] && data.elements[key][key2].content[0].type != 'browse') {
-                blocks['block' + data.elements[key][key2].id].perLine = 1
+    const elements: Record<string, Record<string, any>> = data.elements;
+    Object.values(elements).forEach((cell) => {
+        Object.values(cell).forEach((block) => {
+            const blockKey = 'block' + block.id;
+            blocks[blockKey] = { name: block.source, showPad: true }
+            if (block && Array.isArray(block.content) && block.content[0] && block.content[0].type != 'browse') {
+                blocks[blockKey].perLine = 1
             }
         })
     })
     return blocks;
 }
 
-export function getUnitModeBySource(endpoint) {
+export function getUnitModeBySource(endpoint: { request_url?: string; params?: { type?: string } } | null | undefined): string {
 
     const source = endpoint?.request_url
     if (!source)
@@ -42,23 +49,34 @@ export function getUnitModeBySource(endpoint) {
     return 'default';
 }
 
-export const updateRouteDataForConnection = (endpoint, actions, object, currentRoute, layoutData, routes, index, setRoutes) => {
+export const updateRouteDataForConnection = (
+    endpoint: string,
+    actions: string[],
+    object: string,
+    currentRoute: any,
+    layoutData: any,
+    routes: any[],
+    index: number,
+    setRoutes: (routes: any[]) => void,
+) => {
     if (currentRoute.endpoint?.request_url.includes(endpoint) && layoutData && layoutData.data && (layoutData?.type === 'connections:action' && actions.includes(layoutData?.data?.action?.a) && layoutData?.data?.action?.o === object)) {
         let clonedData = currentRoute.data;
         let cid = Array.isArray(layoutData?.data?.action?.cid) ? layoutData?.data?.action?.cid[0] : layoutData?.data?.action?.cid
-        const data = clonedData.filter(item => item.id !== cid);
+        const data = clonedData.filter((item: any) => item.id !== cid);
         const newRoutes = [...routes];
         newRoutes[index].data = data;
         setRoutes(newRoutes);
     }
 };
 
-export async function getPageData(url, codeOnly = false, fetchOptions = {}) {
+/** Fetch a UNA page (layout + data) by URL; `codeOnly` fetches page content only. */
+export async function getPageData(url: string, codeOnly = false, fetchOptions: Record<string, any> = {}): Promise<any> {
     const pagePath = parseUrl(url);
     let sAdd = "";
 
     if (pagePath.queryString) {
-        const params = Object.fromEntries(
+        // `let`: the nested params[] branch below reassigns it (was `const` and threw).
+        let params: Record<string, any> = Object.fromEntries(
             pagePath.queryString.split('&').map(param => param.split('='))
         );
 
@@ -89,24 +107,24 @@ export async function getPageData(url, codeOnly = false, fetchOptions = {}) {
     );
 }
 
-export function BlockDataByName(data, name) {
+export function BlockDataByName(data: PageData | null | undefined, name: string | number | null | undefined): any {
 
     if (!name) return null;
 
     return Object.values(data?.elements ?? {})
         .flatMap(level1 =>
-            Object.values(level1).filter(item => item?.source === name.toString())
+            Object.values(level1).filter((item: any) => item?.source === name.toString())
         )
         .find(Boolean) || null;
 }
 
-export function BlockDataByType(data, type) {
+export function BlockDataByType(data: PageData | null | undefined, type: string | null | undefined): any {
     if (!type) return null;
 
     return Object.values(data?.elements ?? {})
-        .flatMap(level => Array.isArray(level) ? level : Object.values(level ?? {}))
-        .find(block =>
+        .flatMap((level: any) => Array.isArray(level) ? level : Object.values(level ?? {}))
+        .find((block: any) =>
             Array.isArray(block?.content) &&
-            block.content.some(el => el?.type === type)
+            block.content.some((el: any) => el?.type === type)
         ) || null;
 }

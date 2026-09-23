@@ -28,8 +28,6 @@ if (!i18n.isInitialized) {
         }
     });
 }
-import { remoteSettings } from 'app/settings/remote';
-import { getRemoteSettings } from 'app/config';
 import { StatusBar } from 'react-native';
 import { useLayoutSettings } from 'app/context/layout-settings';
 import { Uniwind } from 'uniwind';
@@ -44,12 +42,6 @@ const AppLayout = React.memo(() => {
     }*/
 
     const { langCode, themeName } = useLayoutSettings();
-
-    useEffect(() => {
-        (async () => {
-            remoteSettings.data = await getRemoteSettings();
-        })();
-    }, []);
 
 
     useEffect(() => {

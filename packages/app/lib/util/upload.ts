@@ -5,9 +5,18 @@ import { appSetting } from 'app/config';
 import { isWeb } from './layout';
 import { genRnd } from './misc';
 
-const UPLOAD_TIMEOUT_MS = appSetting('config', 'upload_timeout_ms') || 300000;
+const UPLOAD_TIMEOUT_MS: number = (appSetting as (...args: any[]) => any)('config', 'upload_timeout_ms') || 300000;
 
-function guessMimeFromExt(ext) {
+/** Picker metadata passed along with an upload (mime/name hints). */
+export type UploadExtra = {
+    mimeType?: string;
+    fileType?: string;
+    fileName?: string;
+    name?: string;
+    [key: string]: unknown;
+} | null | undefined;
+
+function guessMimeFromExt(ext: string | undefined): string {
     const e = String(ext || '').toLowerCase();
     if (!e) return 'application/octet-stream';
     if (e === 'jpg' || e === 'jpeg' || e === 'jpe') return 'image/jpeg';
@@ -19,7 +28,7 @@ function guessMimeFromExt(ext) {
     return `application/${e}`;
 }
 
-function extFromMime(mime) {
+function extFromMime(mime: string | undefined): string {
     const type = String(mime || '').toLowerCase();
     if (type === 'image/jpeg' || type === 'image/jpg') return 'jpg';
     if (type === 'image/svg+xml') return 'svg';
@@ -28,8 +37,8 @@ function extFromMime(mime) {
     return sub && sub !== 'octet-stream' ? sub : '';
 }
 
-function resolveNativeUploadMeta(uri, extraVar) {
-    const uriPath = String(uri || '').split('?')[0];
+function resolveNativeUploadMeta(uri: string, extraVar: UploadExtra): { name: string; type: string } {
+    const uriPath = String(uri || '').split('?')[0]!;
     const uriName = decodeURIComponent(uriPath.split('/').pop() || '');
     const uriExt = uriName.match(/\.([a-z0-9]+)$/i)?.[1];
     const type = extraVar?.mimeType || extraVar?.fileType || guessMimeFromExt(uriExt);
@@ -41,7 +50,7 @@ function resolveNativeUploadMeta(uri, extraVar) {
     return { name: name || 'upload', type: type || 'application/octet-stream' };
 }
 
-function urltoFile(url, defaultFilename = 'file', defaultMimeType = 'application/octet-stream') {
+function urltoFile(url: string, defaultFilename = 'file', defaultMimeType = 'application/octet-stream'): Promise<File> {
     return fetch(url)
         .then(function (response) {
             return response.blob().then(function (blob) {
@@ -56,7 +65,7 @@ function urltoFile(url, defaultFilename = 'file', defaultMimeType = 'application
                     }
                 } else {
                     const urlParts = url.split('/');
-                    const rawFilename = urlParts[urlParts.length - 1];
+                    const rawFilename = urlParts[urlParts.length - 1]!;
 
                     if (rawFilename.includes('.') && rawFilename.split('.').length > 1) {
                         filename = rawFilename;
@@ -79,7 +88,7 @@ function urltoFile(url, defaultFilename = 'file', defaultMimeType = 'application
         });
 }
 
-export const uploadImageFile = async (file, fetchUrl, calback, extraVar) => {
+export const uploadImageFile = async (file: Blob, fetchUrl: string, calback: (result: any, extraVar: UploadExtra) => void, extraVar?: UploadExtra) => {
     const formData = new FormData();
 
     formData.append("file", file);
@@ -92,7 +101,7 @@ export const uploadImageFile = async (file, fetchUrl, calback, extraVar) => {
     }
 }
 
-export const getUploadSizeMb = async ({ file, uri, fileSizeBytes }) => {
+export const getUploadSizeMb = async ({ file, uri, fileSizeBytes }: { file?: { size?: number } | null; uri?: string; fileSizeBytes?: number }): Promise<number> => {
     if (typeof fileSizeBytes === 'number' && fileSizeBytes > 0) {
         return fileSizeBytes / (1024 * 1024);
     }
@@ -124,10 +133,23 @@ export const prepareImageForUpload = async ({
     cropToSquare = false,
     squareSize,
     webpOverMb = 4,
-}) => {
+}: {
+    uri: string;
+    width?: number;
+    height?: number;
+    fileSizeBytes?: number;
+    maxWidth?: number;
+    maxHeight?: number;
+    cropToSquare?: boolean;
+    squareSize?: number;
+    /** Re-encode as WebP when the original exceeds this size (MB). */
+    webpOverMb?: number;
+}): Promise<string> => {
     const originalSizeMb = await getUploadSizeMb({ uri, fileSizeBytes });
     const shouldConvertToWebp = originalSizeMb > webpOverMb;
-    const context = ImageManipulator.manipulate(uri);
+    // expo-image-manipulator's web .d.ts types the export as the class, but at runtime it is
+    // the module instance (as on native) — use the native instance typing.
+    const context = (ImageManipulator as unknown as { manipulate: (uri: string) => any }).manipulate(uri);
     let hasActions = false;
 
     if (
@@ -178,15 +200,22 @@ export const prepareImageForUpload = async ({
     return processedImage.uri;
 }
 
-export const uploadImage = async (uri, fetchUrl, calback, extraVar, options = {}) => {
+/** Upload a local/data/blob image URI; `calback` gets `{ result, extraVar }` with the full API payload. */
+export const uploadImage = async (
+    uri: string,
+    fetchUrl: string,
+    calback: (payload: { result: any; extraVar: UploadExtra }) => void,
+    extraVar?: UploadExtra,
+    options: { signal?: AbortSignal } = {},
+) => {
     const { signal } = options;
     if (isWeb) {
         let fileType = '';
         let fileExt = '';
         if (uri.startsWith('data:')) {
             // For data URI
-            fileType = uri.split(';')[0].split(':')[1]; // MIME type
-            fileExt = fileType.split('/')[1]; // extension
+            fileType = uri.split(';')[0]!.split(':')[1] as string; // MIME type
+            fileExt = fileType.split('/')[1] as string; // extension
             if (fileExt == 'svg+xml') {
                 fileExt = 'svg';
             }
@@ -197,14 +226,14 @@ export const uploadImage = async (uri, fetchUrl, calback, extraVar, options = {}
             fileExt = extFromMime(fileType) || 'png';
             if (fileExt === 'svg+xml') fileExt = 'svg';
         } else {
-            const fileName = uri.split('/').pop(); // file name
-            fileExt = fileName.split('.').pop(); // extension
+            const fileName = uri.split('/').pop()!; // file name
+            fileExt = fileName.split('.').pop()!; // extension
             fileType = `image/${fileExt}`; // MIME type
         }
         const formData = new FormData();
         const file = await urltoFile(uri, genRnd(8) + '.' + fileExt, fileType);
         if (signal?.aborted) {
-            const err = new Error('Aborted');
+            const err: Error & { aborted?: boolean } = new Error('Aborted');
             err.name = 'AbortError';
             err.aborted = true;
             throw err;
@@ -222,11 +251,12 @@ export const uploadImage = async (uri, fetchUrl, calback, extraVar, options = {}
 
     const formData = new FormData();
     const { name, type } = resolveNativeUploadMeta(uri, extraVar);
+    // RN FormData takes a { uri, name, type } descriptor instead of a Blob.
     formData.append("file", {
         uri,
         name,
         type,
-    });
+    } as unknown as Blob);
 
     const result = await fetcher([fetchUrl, null, formData], false, {
         timeoutMs: UPLOAD_TIMEOUT_MS,

@@ -16,7 +16,7 @@ import { isWeb } from './layout';
 const PERSISTED_PREFIX = 'neo:v1:';
 const SESSION_PREFIX = 'neo:session:v1:';
 
-const parse = (raw) => {
+const parse = (raw: string | null | undefined): any => {
     if (raw == null) return null;
     try {
         return JSON.parse(raw);
@@ -25,9 +25,9 @@ const parse = (raw) => {
     }
 };
 
-const hasWebStorage = (name) => isWeb && typeof window !== 'undefined' && !!window[name];
+const hasWebStorage = (name: 'localStorage' | 'sessionStorage') => isWeb && typeof window !== 'undefined' && !!window[name];
 
-export async function persistedGet(key) {
+export async function persistedGet(key: string): Promise<any> {
     const fullKey = PERSISTED_PREFIX + key;
     if (isWeb) {
         return hasWebStorage('localStorage') ? parse(window.localStorage.getItem(fullKey)) : null;
@@ -35,7 +35,7 @@ export async function persistedGet(key) {
     return parse(await AsyncStorage.getItem(fullKey));
 }
 
-export async function persistedSet(key, value) {
+export async function persistedSet(key: string, value: unknown): Promise<void> {
     const fullKey = PERSISTED_PREFIX + key;
     const raw = JSON.stringify(value);
     try {
@@ -49,15 +49,15 @@ export async function persistedSet(key, value) {
     }
 }
 
-const sessionMemory = new Map();
+const sessionMemory = new Map<string, unknown>();
 
-export function sessionCacheGet(key) {
+export function sessionCacheGet(key: string): any {
     const fullKey = SESSION_PREFIX + key;
     if (hasWebStorage('sessionStorage')) return parse(window.sessionStorage.getItem(fullKey));
     return sessionMemory.has(fullKey) ? sessionMemory.get(fullKey) : null;
 }
 
-export function sessionCacheSet(key, value) {
+export function sessionCacheSet(key: string, value: unknown): void {
     const fullKey = SESSION_PREFIX + key;
     if (hasWebStorage('sessionStorage')) {
         try {

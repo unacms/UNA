@@ -4,12 +4,12 @@ This document describes how **Lucide-based animated icons** are wired in the mon
 
 ## When to use this
 
-Use animated icons for nav items, tabs, or buttons where `Icon` is called with `animated={true}` and optional **scene** classes. Static icons keep using [`packages/app/ui/atoms/icon.js`](packages/app/ui/atoms/icon.js) / [`icon.web.js`](packages/app/ui/atoms/icon.web.js) as usual.
+Use animated icons for nav items, tabs, or buttons where `Icon` is called with `animated={true}` and optional **scene** classes. Static icons keep using [`packages/app/ui/atoms/icon.tsx`](packages/app/ui/atoms/icon.tsx) (with [`iconset.tsx`](packages/app/ui/atoms/iconset.tsx) / [`iconset.web.tsx`](packages/app/ui/atoms/iconset.web.tsx)) as usual.
 
 ## End-to-end flow
 
 1. **`Icon`** receives `animated`, `className`, and interaction props (`active`, `selected`, `hovered`, `pressed`). When `animated` is true and the icon resolves to a **string** Lucide name, it looks up a component from the registry (see below).
-2. **Scene classes** in `className` are parsed by `parseIconSceneClasses` in [`packages/app/ui/atoms/icon.js`](packages/app/ui/atoms/icon.js). Tokens like `icon-scene-fill` and `icon-scene-draw` are turned into a `scenes` object and **stripped** from the class string passed to the animated component.
+2. **Scene classes** in `className` are parsed by `parseIconSceneClasses` in [`packages/app/ui/atoms/icon.tsx`](packages/app/ui/atoms/icon.tsx). Tokens like `icon-scene-fill` and `icon-scene-draw` are turned into a `scenes` object and **stripped** from the class string passed to the animated component.
 3. **Web-only hover for draw:** If `scenes.draw` is set and `hovered` is not controlled from the parent, `Icon` attaches `onMouseEnter` / `onMouseLeave` on web so hover-driven animations run without a parent tracking hover.
 4. The animated component receives `scenes`, `active` (often from route/selection), and merged `hovered`.
 
@@ -37,7 +37,7 @@ If a name is missing from the registry, `Icon` falls back to the normal (non-ani
 - Set **`animated: true`** on the item (e.g. in [`packages/app/settings/menus.js`](packages/app/settings/menus.js) or tab config) where the row passes props into `Icon`. That enables **fill** (active/selected duotone) and **draw** (hover path / motion on web) by default.
 - Override scenes only when needed via `className` / `addClassName` tokens such as `icon-scene-draw` (draw only) or `icon-scene-fill`. Any explicit `icon-scene-*` token replaces the default set. Do not prefix these with `web:` / `group-hover:` — they are not CSS utilities; hover is driven by the `hovered` prop / mouse handlers in `Icon`.
 
-Scene names supported by the parser: `fill`, `draw`, `morph`, `smoke`, `custom1`–`custom6` (see `parseIconSceneClasses` in `packages/app/ui/atoms/icon.js`).
+Scene names supported by the parser: `fill`, `draw`, `morph`, `smoke`, `custom1`–`custom6` (see `parseIconSceneClasses` in `packages/app/ui/atoms/icon.tsx`).
 
 ## Implementing a new `Animated*` component
 

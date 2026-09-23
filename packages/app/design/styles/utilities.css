@@ -11,6 +11,7 @@
 }
 
 @source inline("line-clamp-{3..6}");
+/* Avatar placeholder colors — keep in sync with theme.profile_colors (settings/theme/profiles.js). */
 @source inline("bg-{orange,yellow,green,teal,sky,indigo,purple,pink,rose,red}-500");
 @source inline("bg-{green,red,gray,emerald,rose}-200 dark:bg-{green,red,gray,emerald,rose}-950");
 @source inline("text-{green,red,gray,emerald,rose}-{800,600} dark:text-{green,red,gray,emerald,rose}-{200,400}");

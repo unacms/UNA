@@ -6,6 +6,7 @@
     "packages/*"
   ],
   "devDependencies": {
+    "@types/blueimp-md5": "~2.18.2",
     "@types/fbemitter": "~2.0.35",
     "@types/react": "~19.2.10",
     "@types/react-dom": "~19.2.3",

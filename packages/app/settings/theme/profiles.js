@@ -83,6 +83,8 @@ export const settingsProfiles = {
         // Applied when Profile `animated` is set so displaySize swaps interpolate.
         size_transition: 'web:transition-[width,height] web:duration-300 web:ease-out motion-reduce:transition-none',
     },
+    // Avatar placeholder colors (bg-{color}-500, see getRandomColor). When changing this list,
+    // update the matching @source inline("bg-{…}-500") line in design/styles/utilities.css.
     profile_colors: [
         'orange',
         'yellow',

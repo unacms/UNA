@@ -1,4 +1,4 @@
-import { UNA_URL, UNA_API_KEY, getRemoteSettings, appSetting } from 'app/config';
+import { UNA_URL, UNA_API_KEY, appSetting } from 'app/config';
 import { cache } from 'react'
 import Root from 'app/root-client'
 import { Suspense } from 'react'
@@ -8,7 +8,6 @@ import { resolveLangCode } from '../../lib/resolve-lang'
 import { cachedUnaPageJson, unaPageCacheKey } from '../../lib/una-page-cache'
 
 const SITE_TITLE = appSetting('config', 'title');
-let remote_config = { hash: null, data: null };
 
 async function loadPage(props) {
     const [params, searchParams] = await Promise.all([
@@ -206,35 +205,20 @@ export default async function Page(props) {
             blocks: {}
         };
         
-        if (!remote_config.data) {
-            try {
-                remote_config = await getRemoteSettings(true);
-            } catch (e) {
-                console.error('Remote settings fetch failed:', e);
-            }
-        }
-        
         return (
             <Suspense fallback={null}>
-                <Root settings={remote_config.data} path={'home'} data={fallbackData} uri={'/'} url={'/'} code={200} />
+                <Root path={'home'} data={fallbackData} uri={'/'} url={'/'} code={200} />
             </Suspense>
         );
     }
     
-    if (!remote_config.data || data?.hash != remote_config.hash) {
-        try {
-            remote_config = await getRemoteSettings(true);
-        } catch (e) {
-            console.error('Remote settings fetch failed:', e);
-        }
-    }
     if (data?.data?.page_status == 404) {
         notFound(props)
     }
 
     return (
         <Suspense fallback={null}>
-            <Root settings={remote_config.data} path={'home'} data={data?.data} uri={data?.data?.uri} url={data?.data?.url} code={data?.code}></Root>
+            <Root path={'home'} data={data?.data} uri={data?.data?.uri} url={data?.data?.url} code={data?.code}></Root>
         </Suspense>
     )
 }

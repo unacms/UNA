@@ -39,7 +39,7 @@ See the `una-api` skill (`.agents/skills/una-api/SKILL.md`) for backend contract
 
 ### 4. Authentication
 - Use existing `currentUser` patterns for authentication checks
-- Menu filtering follows established patterns in `packages/app/lib/util.js`
+- Menu filtering follows established patterns in `packages/app/lib/util.ts` (see `util/menu.ts`)
 - Check both logged/non-logged state handling for consistency
 
 ### 5. Customization Layer

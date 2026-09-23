@@ -1,33 +1,34 @@
 import { useEffect, useSyncExternalStore } from 'react';
 import { Platform } from 'react-native';
 import * as RNLocalize from 'react-native-localize';
+import type { TFunction } from 'i18next';
 
 const isWeb = Platform.OS === 'web';
 // Must match the SSR fallback in apps/next/stubs/react-native-localize.js.
 const SSR_DATE_LOCALE = 'en-US';
 
 
-function getDateOrderByLocale(tag) {
+function getDateOrderByLocale(tag: string): string {
     const lang = tag.toLowerCase();
     if (lang.startsWith('en-us')) return 'M D, Y';
     if (lang.startsWith('zh') || lang.startsWith('ja') || lang.startsWith('ko')) return 'Y M D';
     return 'D M Y';
 }
 
-function readDeviceLocaleTag() {
+function readDeviceLocaleTag(): string {
     if (isWeb) {
         if (typeof navigator === 'undefined') return SSR_DATE_LOCALE;
-        return navigator.language || navigator.userLanguage || SSR_DATE_LOCALE;
+        return navigator.language || (navigator as { userLanguage?: string }).userLanguage || SSR_DATE_LOCALE;
     }
     return RNLocalize.getLocales()?.[0]?.languageTag || SSR_DATE_LOCALE;
 }
 
 let currentDateLocaleTag = isWeb ? SSR_DATE_LOCALE : readDeviceLocaleTag();
-const dateLocaleListeners = new Set();
+const dateLocaleListeners = new Set<() => void>();
 
-function subscribeDateLocale(cb) {
+function subscribeDateLocale(cb: () => void) {
     dateLocaleListeners.add(cb);
-    return () => dateLocaleListeners.delete(cb);
+    return () => { dateLocaleListeners.delete(cb); };
 }
 
 function getDateLocaleSnapshot() {
@@ -50,7 +51,7 @@ export function hydrateDateLocale() {
  * on web); after mount it updates to `navigator.language` and re-renders
  * subscribers so date order (M D, Y vs D M Y) does not hydrate-mismatch.
  */
-export function useDateLocaleTag() {
+export function useDateLocaleTag(): string {
     const tag = useSyncExternalStore(
         subscribeDateLocale,
         getDateLocaleSnapshot,
@@ -62,40 +63,41 @@ export function useDateLocaleTag() {
     return tag;
 }
 
-function resolveLocaleTag(explicit) {
+function resolveLocaleTag(explicit?: string): string {
     if (explicit) return explicit;
     return currentDateLocaleTag;
 }
 
-function isSameCalendarDay(a, b) {
+function isSameCalendarDay(a: Date, b: Date): boolean {
     return a.getFullYear() === b.getFullYear()
         && a.getMonth() === b.getMonth()
         && a.getDate() === b.getDate();
 }
 
-function isSameClockTime(a, b) {
+function isSameClockTime(a: Date, b: Date): boolean {
     return a.getHours() === b.getHours() && a.getMinutes() === b.getMinutes();
 }
 
-/**
- * @param {Date | string | number} input
- * @param {import('i18next').TFunction} t
- * @param {{
- *   inFuture?: boolean,
- *   inPast?: boolean,
- *   locale?: string,
- *   month?: 'numeric' | '2-digit' | 'short' | 'long',
- *   showTime?: boolean,
- *   showDate?: boolean,
- *   hour12?: boolean,
- *   timeZone?: string,
- *   yearPolicy?: 'auto' | 'always' | 'never',
- * }} [options]
- * @returns {string}
- */
+export type FormatDateOptions = {
+    /** Prefix "Today" / "Tomorrow" for near future dates. */
+    inFuture?: boolean;
+    /** Relative "Now" / "5m" / "3h" / "2d" / "4w" for recent dates. */
+    inPast?: boolean;
+    /** BCP 47 tag for date order; defaults to the device locale. */
+    locale?: string;
+    month?: 'numeric' | '2-digit' | 'short' | 'long';
+    showTime?: boolean;
+    showDate?: boolean;
+    /** 12-hour clock with AM/PM. */
+    hour12?: boolean;
+    /** Accepted for API compatibility; not used. */
+    timeZone?: string;
+    yearPolicy?: 'auto' | 'always' | 'never';
+};
+
 export const formatDate = (
-    input,
-    t,
+    input: Date | string | number,
+    t: TFunction,
     {
         inFuture = false,
         inPast = false,
@@ -106,8 +108,8 @@ export const formatDate = (
         hour12,                     // true/false | undefined (keeps locale default behavior)
         timeZone,                   // e.g. 'UTC' (not used for universality)
         yearPolicy = 'auto',        // 'auto' | 'always' | 'never'
-    } = {}
-) => {
+    } = {} as FormatDateOptions
+): string => {
     const date = input instanceof Date ? input : new Date(input);
     const localeTag = resolveLocaleTag(locale);
     if (Number.isNaN(date.getTime())) return '';
@@ -123,7 +125,7 @@ export const formatDate = (
 
     if (inPast) {
         const now = new Date();
-        const diffMs = date - now;
+        const diffMs = date.getTime() - now.getTime();
         const sec = Math.round(diffMs / 1000);
         const absSec = Math.abs(sec);
         if (absSec < 60)
@@ -161,7 +163,7 @@ export const formatDate = (
 };
 
 // Universal date formatting function (same result everywhere)
-function formatDateUniversal(date, {
+function formatDateUniversal(date: Date, {
     showDate,
     showTime,
     month,
@@ -169,9 +171,18 @@ function formatDateUniversal(date, {
     nowYear,
     hour12,
     rel,
-    localeTag, // added
+    localeTag,
+}: {
+    showDate: boolean;
+    showTime: boolean;
+    month: FormatDateOptions['month'];
+    yearPolicy: FormatDateOptions['yearPolicy'];
+    nowYear: number;
+    hour12?: boolean;
+    rel: string;
+    localeTag: string;
 }) {
-    const parts = [];
+    const parts: string[] = [];
 
     // --- DATE ---
     if (showDate && !rel) {
@@ -181,12 +192,13 @@ function formatDateUniversal(date, {
         const dayStr = String(date.getDate()); // can use padStart(2,'0') for 2-digit
         const monthIndex = date.getMonth();
 
-        let monthStr;
-        if (month === 'short') monthStr = monthNames[monthIndex];
-        else if (month === 'long') monthStr = monthLongNames[monthIndex];
+        // getMonth() is 0-11, so the name lookups always hit.
+        let monthStr: string;
+        if (month === 'short') monthStr = monthNames[monthIndex]!;
+        else if (month === 'long') monthStr = monthLongNames[monthIndex]!;
         else if (month === 'numeric') monthStr = String(monthIndex + 1);
         else if (month === '2-digit') monthStr = String(monthIndex + 1).padStart(2, '0');
-        else monthStr = monthNames[monthIndex];
+        else monthStr = monthNames[monthIndex]!;
 
         const needYear = (yearPolicy === 'always') || (yearPolicy === 'auto' && date.getFullYear() !== nowYear);
         const yearStr = String(date.getFullYear());
@@ -225,7 +237,8 @@ function formatDateUniversal(date, {
     return (rel || '') + parts.join(' ');
 }
 
-export const formatDateInterval = (dateStart, dateEnd, t) => {
+/** "start - end" for two Unix timestamps (seconds), collapsing a shared day or time. */
+export const formatDateInterval = (dateStart: number, dateEnd: number, t: TFunction): string => {
     const start = new Date(dateStart * 1000);
     const end = new Date(dateEnd * 1000);
     const locale = currentDateLocaleTag;

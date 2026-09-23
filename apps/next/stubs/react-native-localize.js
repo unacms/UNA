@@ -1,6 +1,6 @@
 // Smart stub for react-native-localize that uses browser locale on web.
 // Date *order* must not read `navigator` during SSR/first paint — that is
-// handled by `useDateLocaleTag` in packages/app/lib/util/datetime.js.
+// handled by `useDateLocaleTag` in packages/app/lib/util/datetime.ts.
 const getBrowserLocale = () => {
     if (typeof navigator === 'undefined') {
         // Server-side fallback
