@@ -14,7 +14,7 @@ class BxDolAiChat
     protected $_aChatContext;
 
     /**
-     * Buttons queued by the `chat_buttons` tool during the current turn; the chat
+     * Buttons queued by the `chat_buttons` tool during the current turn. The chat
      * trigger emits them after the assistant text and pins them to the stored message.
      */
     protected $_aPendingChatActions = [];
