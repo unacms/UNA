@@ -46,6 +46,13 @@ const getSpacing = (top, bottom, isfirst, islast) => {
 }
 
 
+/**
+ * @param {import('react-native').TextProps & {
+ *   className?: string,
+ *   fontFamily?: string,
+ *   [key: string]: any,
+ * }} props
+ */
 export const Text = ({
     children,
     className,

@@ -5,8 +5,12 @@ import { useTheme } from 'app/design/theme';
 import { useMemo } from 'react';
 import { useResolveClassNames } from 'uniwind';
 import { SvgXml } from 'react-native-svg';
+import type { ComponentType } from 'react';
+import type { IconCoreProps } from 'app/ui/atoms/icon';
 
-export function IconFromSet({ icon, width, height, size, _strokeWidth, color, cleanedClassName, rest, fill }) {
+const iconMap = IconMap as unknown as Record<string, ComponentType<any> | undefined>;
+
+export function IconFromSet({ icon, width, height, size, _strokeWidth, color, cleanedClassName, rest, fill }: IconCoreProps) {
     const { colors } = useTheme();
     const resolvedClassStyle = useResolveClassNames(cleanedClassName || '');
     const { color: classColor, width: classWidth, height: classHeight, ...styleFromClassName } = resolvedClassStyle || {};
@@ -16,7 +20,7 @@ export function IconFromSet({ icon, width, height, size, _strokeWidth, color, cl
     const resolvedSize = size || (resolvedWidth && resolvedWidth === resolvedHeight ? resolvedWidth : undefined);
 
     const IconComponent = useMemo(() => {
-        return IconMap[icon] || null;
+        return (icon && iconMap[icon]) || null;
     }, [icon]);
 
     if (!IconComponent) {
@@ -37,6 +41,6 @@ export function IconFromSet({ icon, width, height, size, _strokeWidth, color, cl
     );
 }
 
-export function XmlIcon({ origIcon, width, height, size, color, cleanedClassName, rest }) {
-    return <SvgXml xml={origIcon} width={width || size} height={height || size} color={color} />;
+export function XmlIcon({ origIcon, width, height, size, color }: IconCoreProps) {
+    return <SvgXml xml={origIcon ?? null} width={width || size} height={height || size} color={color} />;
 }

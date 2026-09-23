@@ -1,8 +1,34 @@
 import * as React from 'react';
+import type { GestureResponderEvent, PressableProps, ViewProps } from 'react-native';
 import { View, Pressable } from 'app/design/view'
 
-const AccordionContext = React.createContext({});
-const AccordionItemContext = React.createContext({});
+/** `single`: one open item (string); `multiple`: any number (string[]). */
+export type AccordionValue = string | string[];
+
+type AccordionContextValue = {
+  value?: AccordionValue;
+  onValueChange?: (itemValue: string) => void;
+  disabled?: boolean;
+  type?: 'single' | 'multiple';
+};
+
+type AccordionItemContextValue = {
+  value?: string;
+  disabled?: boolean;
+};
+
+const AccordionContext = React.createContext<AccordionContextValue>({});
+const AccordionItemContext = React.createContext<AccordionItemContextValue>({});
+
+type AccordionRootProps = ViewProps & {
+  value?: AccordionValue;
+  defaultValue?: AccordionValue;
+  onValueChange?: (value: AccordionValue) => void;
+  type?: 'single' | 'multiple';
+  /** `single` only: pressing the open item closes it. */
+  collapsible?: boolean;
+  disabled?: boolean;
+};
 
 function AccordionRoot({
   value,
@@ -13,13 +39,13 @@ function AccordionRoot({
   disabled,
   children,
   ...props
-}) {
+}: AccordionRootProps) {
   const [stateValue, setStateValue] = React.useState(
     value !== undefined ? value : defaultValue
   );
 
-  const handleValueChange = (itemValue) => {
-    let newValue;
+  const handleValueChange = (itemValue: string) => {
+    let newValue: AccordionValue;
     if (type === 'multiple') {
       const current = Array.isArray(stateValue) ? stateValue : [];
       const isSelected = current.includes(itemValue);
@@ -60,7 +86,12 @@ function AccordionRoot({
   );
 }
 
-function AccordionItem({ value, disabled, children, ...props }) {
+type AccordionItemProps = ViewProps & {
+  value: string;
+  disabled?: boolean;
+};
+
+function AccordionItem({ value, disabled, children, ...props }: AccordionItemProps) {
   const context = React.useContext(AccordionContext);
   const itemContextValue = React.useMemo(
     () => ({ value, disabled: disabled || context.disabled }),
@@ -74,23 +105,31 @@ function AccordionItem({ value, disabled, children, ...props }) {
   );
 }
 
-function AccordionHeader({ children, ...props }) {
+function AccordionHeader({ children, ...props }: ViewProps) {
   return <View {...props}>{children}</View>;
 }
 
-function AccordionTrigger({ children, onPress: onPressFromProps, ...props }) {
+function useIsExpanded() {
   const context = React.useContext(AccordionContext);
   const itemContext = React.useContext(AccordionItemContext);
-  
   const isExpanded =
     context.type === 'multiple'
-      ? (Array.isArray(context.value) ? context.value : []).includes(itemContext.value)
+      ? (Array.isArray(context.value) ? context.value as (string | undefined)[] : []).includes(itemContext.value)
       : context.value === itemContext.value;
+  return { context, itemContext, isExpanded };
+}
 
-  const handlePress = (event) => {
+type AccordionTriggerProps = Omit<PressableProps, 'children'> & {
+  children?: React.ReactNode | ((state: { isExpanded: boolean }) => React.ReactNode);
+};
+
+function AccordionTrigger({ children, onPress: onPressFromProps, ...props }: AccordionTriggerProps) {
+  const { context, itemContext, isExpanded } = useIsExpanded();
+
+  const handlePress = (event: GestureResponderEvent) => {
     onPressFromProps?.(event);
     if (!itemContext.disabled) {
-      context.onValueChange(itemContext.value);
+      context.onValueChange?.(itemContext.value as string);
     }
   };
 
@@ -109,14 +148,8 @@ function AccordionTrigger({ children, onPress: onPressFromProps, ...props }) {
   );
 }
 
-function AccordionContent({ children, ...props }) {
-  const context = React.useContext(AccordionContext);
-  const itemContext = React.useContext(AccordionItemContext);
-  
-  const isExpanded =
-    context.type === 'multiple'
-      ? (Array.isArray(context.value) ? context.value : []).includes(itemContext.value)
-      : context.value === itemContext.value;
+function AccordionContent({ children, ...props }: ViewProps) {
+  const { isExpanded } = useIsExpanded();
 
   if (!isExpanded) {
     return null;
@@ -125,7 +158,7 @@ function AccordionContent({ children, ...props }) {
   return <View {...props}>{children}</View>;
 }
 
-function AccordionContentInner({ children, ...props }) {
+function AccordionContentInner({ children, ...props }: ViewProps) {
     return <View {...props}>{children}</View>;
 }
 
@@ -135,4 +168,3 @@ export const Header = AccordionHeader;
 export const Trigger = AccordionTrigger;
 export const Content = AccordionContent;
 export const ContentInner = AccordionContentInner;
-

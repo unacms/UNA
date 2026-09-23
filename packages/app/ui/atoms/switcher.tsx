@@ -9,8 +9,11 @@ import { useSound } from 'app/lib/hooks/use-sound'
 
 const switcherTheme = appSetting('theme', 'switcher');
 
+export type ControlSize = 'small' | 'regular' | 'large';
+type LegacyControlSize = 'sm' | 'base' | 'lg' | 'default';
+
 /** Legacy aliases → small | regular | large */
-const SWITCH_SIZE_ALIASES = {
+const SWITCH_SIZE_ALIASES: Record<LegacyControlSize, ControlSize> = {
     sm: 'small',
     base: 'regular',
     lg: 'large',
@@ -18,31 +21,39 @@ const SWITCH_SIZE_ALIASES = {
 };
 
 /** Thumb travel (px) — matches track/thumb sizes + padding at rem=16 */
-const DEFAULT_THUMB_TRAVEL = {
+const DEFAULT_THUMB_TRAVEL: Record<ControlSize, number> = {
     small: 12,
     regular: 20,
     large: 24,
 };
 
-export function resolveControlSize(size) {
+export function resolveControlSize(size?: ControlSize | LegacyControlSize | string | null): string {
     if (!size) return 'regular';
-    return SWITCH_SIZE_ALIASES[size] ?? size;
+    return SWITCH_SIZE_ALIASES[size as LegacyControlSize] ?? size;
 }
 
-function resolveThumbTravel(resolvedSize) {
+function resolveThumbTravel(resolvedSize: string): number {
     const fromTheme = switcherTheme?.thumb_travel?.[resolvedSize];
     if (typeof fromTheme === 'number') return fromTheme;
-    return DEFAULT_THUMB_TRAVEL[resolvedSize] ?? DEFAULT_THUMB_TRAVEL.regular;
+    return DEFAULT_THUMB_TRAVEL[resolvedSize as ControlSize] ?? DEFAULT_THUMB_TRAVEL.regular;
 }
+
+type SwitchProps = {
+    value?: boolean;
+    disabled?: boolean;
+    onValueChange?: (value: boolean) => void;
+    size?: ControlSize | LegacyControlSize;
+    /** When false, skips haptics + native click sound. */
+    feedback?: boolean;
+};
 
 export default function Switch({
     value,
     disabled,
     onValueChange,
     size = 'regular',
-    /** When false, skips haptics + native click sound. */
     feedback = true,
-}) {
+}: SwitchProps) {
     const resolvedSize = resolveControlSize(size);
     const trackSize =
         switcherTheme[`u-controls-switcher-track-${resolvedSize}`]

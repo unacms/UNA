@@ -87,7 +87,7 @@ export const settingsInputs = {
         'u-controls-switcher-track-large': 'h-8 w-16 px-1',
         'u-controls-switcher-track-disabled': 'opacity-50',
 
-        // Thumb (position/scale animated in `ui/atoms/switcher.js` — no CSS transform transition)
+        // Thumb (position/scale animated in `ui/atoms/switcher.tsx` — no CSS transform transition)
         'u-controls-switcher-thumb':
             'rounded-full bg-white/90 shadow-sm',
         'u-controls-switcher-thumb-regular': 'h-5 w-7 ',

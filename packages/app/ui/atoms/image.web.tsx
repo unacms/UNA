@@ -1,6 +1,8 @@
 'use client';
 
+import type { CSSProperties } from 'react';
 import NextImage from 'next/image';
+import type { ImageInnerProps, ImageProps } from './image';
 import { cn } from 'app/lib/util';
 import {
     canOptimizeSrc,
@@ -16,12 +18,12 @@ export {
     POST_ENTRY_COVER_WIDTH_CAP,
 } from 'app/lib/image-helpers';
 
-function ElementImageInner(props) {
+function ElementImageInner(props: ImageInnerProps) {
     const {
         width,
         height,
         alt = '',
-        style,
+        style: styleProp,
         sizes,
         optimizedWidthCap,
         unoptimized: forceUnoptimized = false,
@@ -35,6 +37,8 @@ function ElementImageInner(props) {
         isCover,
     } = props;
 
+    // Web only ever gets CSS styles here (ViewStyle is the native half of ImageProps).
+    const style = styleProp as CSSProperties | undefined;
     const sizesAttr = getSizesAttr(sizes);
     const canOptimize = canOptimizeSrc(normalizedSrc, { forceUnoptimized });
 
@@ -87,7 +91,7 @@ function ElementImageInner(props) {
     );
 }
 
-export default function ElementImage(props) {
+export default function ElementImage(props: ImageProps) {
     const imageProps = getImageProps(props);
     if (!imageProps.src) return null;
     return <ElementImageInner {...props} {...imageProps} />;

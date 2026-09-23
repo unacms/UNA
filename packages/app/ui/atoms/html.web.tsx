@@ -7,7 +7,8 @@
 // from the `.u-vanilla-html` CSS in design/styles. Links are handled with a single
 // delegated click handler so internal routes use the SPA router while external
 // links, mailto/tel and `target="_blank"` fall through to native browser behavior.
-import { useCallback, useMemo } from 'react'
+import { useCallback, useMemo, type MouseEvent } from 'react'
+import type { HtmlProps } from './html'
 import { useRouter } from 'app/lib/hooks/router'
 import { sanitazeUrl, isExternalUrl } from 'app/lib/util'
 import emitter from 'app/context/emitter'
@@ -18,15 +19,11 @@ import { preprocessHtml, sanitizeHtml, flattenNestedAnchors, normalizeRenderedHr
  * target of its own. Runs after sanitizing (which keeps `target`), so the delegated
  * click handler below sees `_blank` and lets the browser open the tab.
  */
-function openAnchorsInNewTab(html) {
+function openAnchorsInNewTab(html: string) {
     return html.replace(/<a\b(?![^>]*\btarget\s*=)([^>]*)>/gi, '<a target="_blank" rel="noopener noreferrer"$1>')
 }
 
-/**
- * @param {boolean} [linksInNewTab] Every link opens in a new tab — for content whose
- *   links are destinations (an agent's answer), where leaving the page loses the thread.
- */
-export default function ElementHtml({ customClassName, data, className = '', innerRef, linksInNewTab = false }) {
+export default function ElementHtml({ customClassName, data, className = '', innerRef, linksInNewTab = false }: HtmlProps) {
     const router = useRouter()
 
     const html = useMemo(() => {
@@ -35,8 +32,8 @@ export default function ElementHtml({ customClassName, data, className = '', inn
         return linksInNewTab ? openAnchorsInNewTab(clean) : clean
     }, [data, linksInNewTab])
 
-    const handleClick = useCallback((event) => {
-        const anchor = event.target?.closest?.('a')
+    const handleClick = useCallback((event: MouseEvent<HTMLDivElement>) => {
+        const anchor = (event.target as Element | null)?.closest?.('a')
         if (!anchor) return
 
         const rawHref = anchor.getAttribute('href')

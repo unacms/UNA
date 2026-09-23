@@ -77,6 +77,22 @@ function isSameClockTime(a, b) {
     return a.getHours() === b.getHours() && a.getMinutes() === b.getMinutes();
 }
 
+/**
+ * @param {Date | string | number} input
+ * @param {import('i18next').TFunction} t
+ * @param {{
+ *   inFuture?: boolean,
+ *   inPast?: boolean,
+ *   locale?: string,
+ *   month?: 'numeric' | '2-digit' | 'short' | 'long',
+ *   showTime?: boolean,
+ *   showDate?: boolean,
+ *   hour12?: boolean,
+ *   timeZone?: string,
+ *   yearPolicy?: 'auto' | 'always' | 'never',
+ * }} [options]
+ * @returns {string}
+ */
 export const formatDate = (
     input,
     t,

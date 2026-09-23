@@ -1,5 +1,5 @@
 /**
- * Accordion appearance — consumed by `app/ui/atoms/accordion.js` via `appSetting('theme', 'accordion')`.
+ * Accordion appearance — consumed by `app/ui/atoms/accordion.tsx` via `appSetting('theme', 'accordion')`.
  * Override per instance with `className`, `titleClassName`, `innerClassName`, `chevronClassName`, etc.
  */
 export const settingsAccordion = {

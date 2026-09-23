@@ -1,17 +1,32 @@
 import { Text } from 'app/design/typography'
 import { View, Pressable } from 'app/design/view'
 import * as CheckboxPrimitive from '@rn-primitives/checkbox'
-import { isValidElement } from 'react'
+import { isValidElement, type ReactNode } from 'react'
 import { appSetting, cn } from 'app/lib/util'
 import { Icon } from 'app/ui/atoms/icon'
 
 const checkboxTheme = appSetting('theme', 'checkbox')
 
-function CheckboxMark({ selected, indicatorClass }) {
+type CheckboxProps = {
+    title?: ReactNode
+    onPress?: () => void
+    status?: 'checked' | 'unchecked' | string
+    value?: unknown
+    /** Icon name for `<Icon>` or a ready element. */
+    icon?: string | ReactNode
+    margin?: string
+    isBackground?: boolean
+    /** Compact control for dense UI (grids) — no full-width row chrome. */
+    compact?: boolean
+}
+
+function CheckboxMark({ selected, indicatorClass }: { selected: boolean; indicatorClass: string }) {
     return (
         <View className={cn(indicatorClass, 'overflow-hidden')} pointerEvents="none">
             <CheckboxPrimitive.Root
                 checked={selected}
+                // Display only: presses go to the parent Pressable (pointerEvents="none" above).
+                onCheckedChange={() => {}}
                 className="h-full w-full items-center justify-center"
             >
                 <CheckboxPrimitive.Indicator className="items-center justify-center">
@@ -22,7 +37,7 @@ function CheckboxMark({ selected, indicatorClass }) {
     )
 }
 
-export default function CheckBox2({
+export default function Checkbox({
     title,
     onPress,
     status,
@@ -30,9 +45,8 @@ export default function CheckBox2({
     icon,
     margin = ' my-0 ',
     isBackground = true,
-    /** Compact control for dense UI (grids) — no full-width row chrome. */
     compact = false,
-}) {
+}: CheckboxProps) {
     const selected = status === 'checked'
     const resolvedIcon = typeof icon === 'string'
         ? <Icon icon={icon} width={24} height={24} />

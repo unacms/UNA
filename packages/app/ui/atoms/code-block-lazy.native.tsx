@@ -2,10 +2,11 @@ import { lazy, Suspense } from 'react'
 import { ScrollView, View } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { resolveLanguage } from 'app/lib/syntax-highlighter/languages'
+import type { CodeBlockProps } from './code-block'
 
 const CodeBlock = lazy(() => import('./code-block'))
 
-function CodeBlockFallback({ code, language }) {
+function CodeBlockFallback({ code, language }: CodeBlockProps) {
     return (
         <View
             accessible
@@ -27,7 +28,7 @@ function CodeBlockFallback({ code, language }) {
     )
 }
 
-export default function LazyCodeBlock(props) {
+export default function LazyCodeBlock(props: CodeBlockProps) {
     const language = resolveLanguage(props.language, props.code)
     if (!language) {
         return <CodeBlockFallback {...props} />

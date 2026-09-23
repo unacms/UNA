@@ -34,7 +34,7 @@
  * Cross-platform notes:
  * - On web the rules cascade to descendants (paragraphs, headings, links, ...).
  * - On native React Native does NOT cascade text styles from View to Text. The
- *   matching `<StyledP>` / `<StyledLi>` / `<H1>` components in app/ui/atoms/html.js
+ *   matching `<StyledP>` / `<StyledLi>` / `<H1>` components in app/ui/atoms/html.tsx
  *   re-apply colors/sizes per element. The class on a `<View>` therefore
  *   mostly contributes container constraints (`max-width`, `min-width`) on RN,
  *   which is still useful and matches the inline `min-w-0 max-w-full` already

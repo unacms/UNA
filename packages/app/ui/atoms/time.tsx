@@ -3,7 +3,21 @@ import { useTranslation } from 'react-i18next';
 import { Text } from 'app/design/typography';
 import { formatDate, useDateLocaleTag } from 'app/lib/util'
 import { Platform } from 'react-native'
-export default function ElementTime(props) {
+
+type TimeProps = {
+    /** Unix timestamp, seconds. */
+    ts: number
+    format?: 'datetime' | string
+    /** Replaces the default classes entirely. */
+    stylesName?: string
+    addClassName?: string
+    title?: string
+    accessibilityLabel?: string
+    variant?: 'default' | 'link'
+    [key: string]: unknown
+}
+
+export default function ElementTime(props: TimeProps) {
     const { t } = useTranslation();
     const localeTag = useDateLocaleTag();
     const [date, setDate] = useState(new Date());

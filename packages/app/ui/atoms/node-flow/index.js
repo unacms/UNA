@@ -13,7 +13,7 @@ import { NodeFlowDefault } from './variants/default';
  *   `app/customization/node-flow-variants.js` — never edit the upstream
  *   registry from a fork.
  * - Unknown `variant` falls back to `default` with a dev-only warn (same
- *   shape as `Icon`'s missing-animated-icon fallback in `app/ui/atoms/icon.js`).
+ *   shape as `Icon`'s missing-animated-icon fallback in `app/ui/atoms/icon.tsx`).
  *
  * Web bundle hygiene: import via `next/dynamic` at the call site so the
  * `react-native-svg` machinery stays out of routes that don't render a flow:

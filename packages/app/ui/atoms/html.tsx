@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, type Ref } from 'react'
 import { EnrichedText } from 'react-native-enriched-html'
 import { Linking } from 'react-native'
 import { View } from 'app/design/view'
@@ -13,7 +13,21 @@ import { preprocessHtml, normalizeRenderedHref } from 'app/lib/html-helpers'
 
 // Native renderer using the enriched-html library's display component. Renders the
 // HTML output of the editor 1:1 (formatting, links, native mention pills).
-export default function ElementHtml({ customClassName, data, innerRef }) {
+export type HtmlProps = {
+    /** UNA HTML string. */
+    data?: string | null
+    /** Replaces the default `u-vanilla-html` class (web); `u-vanilla-html-small` shrinks text (native). */
+    customClassName?: string
+    className?: string
+    innerRef?: Ref<any>
+    /**
+     * Web only: every link opens in a new tab — for content whose links are
+     * destinations (an agent's answer), where leaving the page loses the thread.
+     */
+    linksInNewTab?: boolean
+}
+
+export default function ElementHtml({ customClassName, data, innerRef }: HtmlProps) {
     const themeKey = useThemeValue('light', 'dark')
     const mentionColorFallback = useThemeValue('rgba(37, 99, 235, 1)', 'rgba(59, 130, 246, 1)')
     const textColor = useThemeValue('rgba(30, 40, 55, 1)', 'rgba(225, 230, 240, 1)')
@@ -25,7 +39,7 @@ export default function ElementHtml({ customClassName, data, innerRef }) {
     const mentionBackground = mentionCfg.editor_background?.[themeKey] || 'transparent'
     const isSmall = customClassName === 'u-vanilla-html-small'
 
-    const navigate = useCallback((rawUrl) => {
+    const navigate = useCallback((rawUrl?: string) => {
         if (!rawUrl) return
         // Native / UNA auto-links store bare hrefs (e.g. "example.com",
         // "user@host.com"); add a scheme so they open externally.
@@ -47,9 +61,9 @@ export default function ElementHtml({ customClassName, data, innerRef }) {
     // The library resolves mention styles by indicator ('@'/'#') or 'all'; a flat
     // object gets stored under an internal '_default' key that native never matches,
     // so it falls back to blue-on-yellow. Key it per indicator to apply our colors.
-    const mentionStyle = { color: mentionColor, backgroundColor: mentionBackground, textDecorationLine: 'none' }
+    const mentionStyle = { color: mentionColor, backgroundColor: mentionBackground, textDecorationLine: 'none' as const }
     const htmlStyle = {
-        a: { color: mentionColor, textDecorationLine: 'none' },
+        a: { color: mentionColor, textDecorationLine: 'none' as const },
         mention: { '@': mentionStyle, '#': mentionStyle },
     }
 

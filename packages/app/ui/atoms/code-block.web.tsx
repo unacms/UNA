@@ -2,23 +2,25 @@
 
 import { useThemeValue } from 'app/design/theme'
 import { useHighlightedCode } from 'app/lib/syntax-highlighter/use-highlighted-code'
+import type { CodeBlockProps, HighlightToken } from './code-block'
 
-function tokenStyle(token) {
-    const decoration = []
-    if (token.fontStyle & 4) decoration.push('underline')
-    if (token.fontStyle & 8) decoration.push('line-through')
+function tokenStyle(token: HighlightToken) {
+    const flags = token.fontStyle ?? 0
+    const decoration: string[] = []
+    if (flags & 4) decoration.push('underline')
+    if (flags & 8) decoration.push('line-through')
 
     return {
         color: token.color,
-        fontStyle: token.fontStyle & 1 ? 'italic' : undefined,
-        fontWeight: token.fontStyle & 2 ? 700 : undefined,
+        fontStyle: flags & 1 ? 'italic' : undefined,
+        fontWeight: flags & 2 ? 700 : undefined,
         textDecoration: decoration.length ? decoration.join(' ') : undefined,
     }
 }
 
-export default function CodeBlock({ code, language }) {
+export default function CodeBlock({ code, language }: CodeBlockProps) {
     const themeName = useThemeValue('light', 'dark')
-    const tokens = useHighlightedCode(code, language, themeName)
+    const tokens = useHighlightedCode(code, language, themeName) as HighlightToken[][] | null
 
     return (
         <pre

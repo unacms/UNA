@@ -174,7 +174,7 @@
  * `shared-utilities.css` (cross-platform). The descendant-selector rules below
  * target real DOM elements (`p`, `ul`, `li`, `h1-h5`, `A`, `:first/:last-child`)
  * and have no React Native equivalent — the corresponding components in
- * app/ui/atoms/html.js style each tag explicitly per-platform.
+ * app/ui/atoms/html.tsx style each tag explicitly per-platform.
  */
 
 

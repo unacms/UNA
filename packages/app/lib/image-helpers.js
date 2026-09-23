@@ -210,6 +210,10 @@ export function useImageOptimizerRetry({ retryKey, canRetry, onError }) {
  * next/image loader that hits `/_next/image`.
  * `maxWidth` caps `w=` so grid cards do not request 1920w+ variants.
  */
+/**
+ * @param {number} [maxWidth]
+ * @returns {import('next/image').ImageLoader}
+ */
 export function createOptimizedLoader(maxWidth) {
     return ({ src, width, quality }) => {
         const w = maxWidth ? Math.min(width, maxWidth) : width;
@@ -316,6 +320,10 @@ function getImageSizes() {
 /**
  * next/image `sizes` string.
  * Accepts `'auto'`, a LAYOUT_BREAKPOINTS value, or a raw sizes attribute.
+ */
+/**
+ * @param {number | string} [sizes] Breakpoint width, `'auto'`, or a ready `sizes` attribute.
+ * @returns {string}
  */
 export function getSizesAttr(sizes = LAYOUT_BREAKPOINTS.lg) {
     const sizesValue = sizes === 'auto' ? getImageSizes() : sizes;

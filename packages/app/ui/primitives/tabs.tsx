@@ -1,26 +1,41 @@
 import * as React from 'react';
-import { View, Pressable, Platform } from 'react-native';
+import { View, Pressable, Platform, type PressableProps, type ViewProps } from 'react-native';
 
-const TabsContext = React.createContext({});
+type TabsContextValue = {
+  value?: string;
+  onValueChange?: (value: string) => void;
+  orientation?: 'horizontal' | 'vertical';
+  activationMode?: 'automatic' | 'manual';
+  disabled?: boolean;
+};
 
-const TabsRoot = React.forwardRef(function TabsRoot(
-  {
-    value,
-    defaultValue,
-    onValueChange,
-    orientation = 'horizontal',
-    activationMode = 'automatic',
-    disabled,
-    children,
-    ...props
-  },
-  ref
-) {
+const TabsContext = React.createContext<TabsContextValue>({});
+
+type TabsRootProps = ViewProps & {
+  value?: string;
+  defaultValue?: string;
+  onValueChange?: (value: string) => void;
+  orientation?: 'horizontal' | 'vertical';
+  activationMode?: 'automatic' | 'manual';
+  disabled?: boolean;
+  ref?: React.Ref<View>;
+};
+
+function TabsRoot({
+  value,
+  defaultValue,
+  onValueChange,
+  orientation = 'horizontal',
+  activationMode = 'automatic',
+  disabled,
+  children,
+  ...props
+}: TabsRootProps) {
   const [stateValue, setStateValue] = React.useState(
     value !== undefined ? value : defaultValue
   );
 
-  const handleValueChange = React.useCallback((tabValue) => {
+  const handleValueChange = React.useCallback((tabValue: string) => {
     if (value === undefined) {
       setStateValue(tabValue);
     }
@@ -40,20 +55,20 @@ const TabsRoot = React.forwardRef(function TabsRoot(
 
   return (
     <TabsContext.Provider value={contextValue}>
-      <View ref={ref} {...props}>
+      <View {...props}>
         {children}
       </View>
     </TabsContext.Provider>
   );
-});
-TabsRoot.displayName = 'TabsRoot';
+}
 
-const TabsList = React.forwardRef(function TabsList({ children, ...props }, ref) {
+type TabsListProps = ViewProps & { ref?: React.Ref<View> };
+
+function TabsList({ children, ...props }: TabsListProps) {
   const context = React.useContext(TabsContext);
 
   return (
     <View
-      ref={ref}
       accessibilityRole="tablist"
       aria-orientation={context.orientation}
       {...props}
@@ -61,28 +76,32 @@ const TabsList = React.forwardRef(function TabsList({ children, ...props }, ref)
       {children}
     </View>
   );
-});
-TabsList.displayName = 'TabsList';
+}
 
-/** Ref on Pressable is required for `measureLayout` + scroll-into-view in `molecules/tabs`. */
-const TabsTrigger = React.forwardRef(function TabsTrigger(
-  { value, disabled, children, ...props },
-  ref
-) {
+type TabsTriggerState = { isSelected: boolean; isDisabled: boolean };
+
+type TabsTriggerProps = Omit<PressableProps, 'children'> & {
+  value: string;
+  disabled?: boolean;
+  children?: React.ReactNode | ((state: TabsTriggerState) => React.ReactNode);
+  /** Required for `measureLayout` + scroll-into-view in `molecules/tabs`. */
+  ref?: React.Ref<View>;
+};
+
+function TabsTrigger({ value, disabled, children, ...props }: TabsTriggerProps) {
   const context = React.useContext(TabsContext);
 
   const isSelected = context.value === value;
-  const isDisabled = disabled || context.disabled;
+  const isDisabled = !!(disabled || context.disabled);
 
   const handlePress = () => {
     if (!isDisabled) {
-      context.onValueChange(value);
+      context.onValueChange?.(value);
     }
   };
 
   return (
     <Pressable
-      ref={ref}
       collapsable={Platform.OS === 'android' ? false : undefined}
       onPress={handlePress}
       disabled={isDisabled}
@@ -98,12 +117,17 @@ const TabsTrigger = React.forwardRef(function TabsTrigger(
         : children}
     </Pressable>
   );
-});
-TabsTrigger.displayName = 'TabsTrigger';
+}
 
-function TabsContent({ value, forceMount, children, ...props }) {
+type TabsContentProps = ViewProps & {
+  value: string;
+  /** Keep mounted while inactive. */
+  forceMount?: boolean;
+};
+
+function TabsContent({ value, forceMount, children, ...props }: TabsContentProps) {
   const context = React.useContext(TabsContext);
-  
+
   const isSelected = context.value === value;
 
   if (!forceMount && !isSelected) {
@@ -111,8 +135,9 @@ function TabsContent({ value, forceMount, children, ...props }) {
   }
 
   return (
-    <View 
-      accessibilityRole="tabpanel"
+    <View
+      // "tabpanel" is a react-native-web role; RN types don't list it.
+      accessibilityRole={'tabpanel' as ViewProps['accessibilityRole']}
       aria-hidden={!isSelected}
       data-state={isSelected ? 'active' : 'inactive'}
       {...props}
@@ -124,11 +149,7 @@ function TabsContent({ value, forceMount, children, ...props }) {
 
 // Hook to access tabs context from custom components
 function useTabsContext() {
-  const context = React.useContext(TabsContext);
-  if (!context) {
-    throw new Error('useTabsContext must be used within a TabsRoot');
-  }
-  return context;
+  return React.useContext(TabsContext);
 }
 
 export const Root = TabsRoot;
@@ -136,4 +157,3 @@ export const List = TabsList;
 export const Trigger = TabsTrigger;
 export const Content = TabsContent;
 export { useTabsContext };
-

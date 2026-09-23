@@ -1,12 +1,11 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useMemo, type CSSProperties } from 'react';
+import type { IconCoreProps } from 'app/ui/atoms/icon';
 
-export function IconFromSet({ icon, isXmlSvg, InlineIcon, AnimatedIconComponent, width, height, size, _strokeWidth, color, cleanedClassName, rest, fill }) {
-
-
+export function IconFromSet({ icon, InlineIcon, AnimatedIconComponent, width, height, size, _strokeWidth, color, cleanedClassName, rest, fill }: IconCoreProps) {
     const maskUrl = useMemo(() => {
-        if (!icon || isXmlSvg || InlineIcon || AnimatedIconComponent) return null;
+        if (!icon || InlineIcon || AnimatedIconComponent) return null;
         let url = `/api/api.icon?icon=${icon}`;
         if (width) url += `&width=${width}`;
         if (height) url += `&height=${height}`;
@@ -14,13 +13,13 @@ export function IconFromSet({ icon, isXmlSvg, InlineIcon, AnimatedIconComponent,
         if (_strokeWidth) url += `&strokeWidth=${_strokeWidth}`;
         if (fill) url += `&fill=${fill}`;
         return url;
-    }, [icon, isXmlSvg, InlineIcon, AnimatedIconComponent, width, height, size, _strokeWidth, fill]);
+    }, [icon, InlineIcon, AnimatedIconComponent, width, height, size, _strokeWidth, fill]);
 
     if (!maskUrl) return null;
 
     const resolvedWidth = width || size || 24;
     const resolvedHeight = height || size || 24;
-    const { style: restStyle, ...restWithoutStyle } = rest;
+    const { style: restStyle, ...restWithoutStyle } = rest as { style?: CSSProperties; [key: string]: unknown };
     const hasTextColorClass = /\b(?:dark:)?text-/.test(cleanedClassName || '');
     // Inherit fill from CSS `color` when text-* utilities are set. Resolving theme
     // tokens to inline backgroundColor in JS can differ between SSR and hydration
@@ -46,7 +45,6 @@ export function IconFromSet({ icon, isXmlSvg, InlineIcon, AnimatedIconComponent,
                 WebkitMaskSize: 'contain',
                 WebkitMaskRepeat: 'no-repeat',
                 WebkitMaskPosition: 'center',
-                WebkitMaskMode: 'alpha',
                 flexShrink: 0,
             }}
             className={cleanedClassName}
@@ -55,9 +53,9 @@ export function IconFromSet({ icon, isXmlSvg, InlineIcon, AnimatedIconComponent,
     );
 }
 
-export function XmlIcon({ origIcon, width, height, size, color, cleanedClassName, rest }) {
+export function XmlIcon({ origIcon, width, height, size, color, cleanedClassName, rest }: IconCoreProps) {
 
-    const result = origIcon
+    const result = (origIcon ?? '')
         .replace(/\swidth="[^"]*"/i, '')
         .replace(/\sheight="[^"]*"/i, '')
         .replace(/<svg(\s[^>]*)?>/i, `<svg$1 width="${width || size}" height="${height || size}">`);

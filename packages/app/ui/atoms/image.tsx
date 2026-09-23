@@ -1,5 +1,7 @@
 'use client';
 
+import type { CSSProperties } from 'react';
+import type { ViewStyle } from 'react-native';
 import { Image as ExpoImage } from 'expo-image';
 import { View } from 'app/design/view';
 import { appSetting, cn } from 'app/lib/util';
@@ -16,9 +18,41 @@ export {
     POST_ENTRY_COVER_WIDTH_CAP,
 } from 'app/lib/image-helpers';
 
-const fillStyle = { width: '100%', height: '100%' };
+export type ImageProps = {
+    /** URL; UNA display fields and `source` are also accepted (see getImageSrc). */
+    src?: string | null;
+    source?: string | { uri?: string };
+    /** `cover` (or `fill`) stretches the image over its parent. */
+    view?: 'cover' | string;
+    fill?: boolean | 'fill';
+    width?: number;
+    height?: number;
+    alt?: string;
+    /** CSS on web, a View style on native. */
+    style?: CSSProperties | ViewStyle;
+    className?: string;
+    contentFit?: 'cover' | 'contain' | 'fill' | 'none' | 'scale-down';
+    priority?: boolean | 'low' | 'normal' | 'high';
+    onError?: (...args: any[]) => void;
+    onLoad?: (...args: any[]) => void;
+    /** Native: no placeholder background. */
+    nobg?: boolean;
+    /** Web: breakpoint width, `'auto'`, or a ready `sizes` attribute. */
+    sizes?: number | string;
+    /** Web: max width requested from the optimizer. */
+    optimizedWidthCap?: number;
+    /** Web: skip the optimizer. */
+    unoptimized?: boolean;
+    /** Web: native lazy-loading hint. */
+    loading?: 'eager' | 'lazy';
+    [key: string]: unknown;
+};
 
-function ElementImageInner(props) {
+export type ImageInnerProps = ImageProps & { normalizedSrc: string; isCover: boolean };
+
+const fillStyle = { width: '100%', height: '100%' } as const;
+
+function ElementImageInner(props: ImageInnerProps) {
     const {
         width,
         height,
@@ -57,8 +91,8 @@ function ElementImageInner(props) {
     const isAbsolutelyPositioned = typeof className === 'string'
         && /(^|\s)absolute(\s|$)/.test(className);
 
-    const wrapperStyle = {
-        ...style,
+    const wrapperStyle: ViewStyle = {
+        ...(style as ViewStyle),
         ...(backgroundColor ? { backgroundColor } : null),
         ...(!isCover && typeof width === 'number' ? { width } : null),
         ...(!isCover && typeof height === 'number' ? { height } : null),
@@ -90,7 +124,7 @@ function ElementImageInner(props) {
     );
 }
 
-export default function ElementImage(props) {
+export default function ElementImage(props: ImageProps) {
     const imageProps = getImageProps(props);
     if (!imageProps.src) return null;
     return <ElementImageInner {...props} {...imageProps} />;
