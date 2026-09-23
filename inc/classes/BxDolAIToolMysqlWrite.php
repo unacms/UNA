@@ -12,24 +12,34 @@ use NeuronAI\Tools\ToolProperty;
 
 class BxDolAIToolMysqlWrite extends BxDolAITool
 {
+    /**
+     * Tables the tool never writes: identity and sign-in, permissions, secrets, code
+     * that runs on its own (cron, alert handlers, injections), and the agents' own
+     * configuration and logs. An entry ending in `*` is a prefix.
+     *
+     * This is a guardrail against a model's mistakes, not a security boundary: attach
+     * the tool only to agents that operators talk to.
+     */
     protected $_aDenyTables = [
-        'sys_accounts',
+        'sys_accounts*',
         'sys_profiles',
         'sys_sessions',
+        'sys_keys',
+        'sys_acl_*',
+        'sys_std_roles*',
+        'sys_api_*',
+        'sys_agents_*',
+        'sys_modules*',
         'sys_cron_jobs',
-        'sys_modules',
-        'sys_agents_sql_log',
-        'sys_agents_chat_history',
-        'sys_agents_tools',
-        'sys_agents_agents',
-        'sys_agents_prompt_feedback',
+        'sys_alerts_handlers',
+        'sys_injections*',
     ];
 
     public function __construct()
     {
         parent::__construct(
             'mysql_write',
-            'INSERT or UPDATE one row. DELETE/DROP/TRUNCATE/ALTER are forbidden. UPDATE WHERE must identify exactly one row (prefer primary key: WHERE id = N). Snapshots are stored automatically. Prefer mysql_schema and mysql_select first.',
+            'INSERT one row, or UPDATE one row by its primary key. DELETE/DROP/TRUNCATE/ALTER and subqueries are forbidden. UPDATE must be `UPDATE table SET ... WHERE pk = value`: one table, and nothing but the primary key in WHERE. Snapshots are stored automatically. Use mysql_schema and mysql_select first to find the primary key.',
         );
     }
 
@@ -39,7 +49,7 @@ class BxDolAIToolMysqlWrite extends BxDolAITool
             new ToolProperty(
                 name: 'query',
                 type: PropertyType::STRING,
-                description: 'Single INSERT or UPDATE. UPDATE needs WHERE that matches one row, e.g. WHERE `id` = 12. Table.column and extra AND conditions are ok. No DELETE. No multiple statements.',
+                description: 'Single INSERT (one row: VALUES (...) or SET ...) or UPDATE `table` SET ... WHERE `pk` = value. No SQL comments, no subqueries, no multiple statements.',
                 required: true
             ),
         ];
@@ -49,18 +59,18 @@ class BxDolAIToolMysqlWrite extends BxDolAITool
     {
         $oDb = BxDolDb::getInstance();
         $sSql = $this->_normalize($query);
-        $sBare = $this->_stripLiterals($sSql);
+        $sMask = $this->_maskLiterals($sSql);
 
-        $this->_assertSafe($sBare);
+        $this->_assertSafe($sMask);
 
-        if (preg_match('/^insert\b/i', $sSql))
+        if (preg_match('/^insert\b/i', $sMask))
             $sOp = 'insert';
-        else if (preg_match('/^update\b/i', $sSql))
+        else if (preg_match('/^update\b/i', $sMask))
             $sOp = 'update';
         else
             throw new Exception('Only INSERT or UPDATE is allowed.');
 
-        $sTable = $this->_tableName($sSql, $sOp);
+        $sTable = $this->_tableName($sMask, $sOp);
         $this->_assertTable($sTable);
 
         $sPk = $this->_primaryKey($oDb, $sTable);
@@ -68,11 +78,19 @@ class BxDolAIToolMysqlWrite extends BxDolAITool
         $sBefore = null;
         $sPkValue = '';
         if ($sOp === 'update') {
-            $sPkValue = $this->_wherePkValue($sSql, $sPk, $oDb, $sTable);
+            // The statement that runs is rebuilt from the parsed parts: one table, and
+            // a WHERE on the primary key alone, so it can never touch another row.
+            list($sSet, $sPkValue) = $this->_parseUpdate($sSql, $sMask, $sTable, $sPk);
             $aBefore = $this->_fetchRow($oDb, $sTable, $sPk, $sPkValue);
             if (!$aBefore)
                 throw new Exception("Row not found: {$sTable}.{$sPk} = {$sPkValue}");
             $sBefore = json_encode($aBefore, JSON_UNESCAPED_UNICODE);
+
+            $sPkSql = preg_match('/^\d+$/', $sPkValue) ? (string)(int)$sPkValue : $oDb->escape($sPkValue);
+            $sSql = "UPDATE `{$sTable}` SET {$sSet} WHERE `{$sPk}` = {$sPkSql} LIMIT 1";
+        }
+        else {
+            $this->_assertSingleRowInsert($sMask, $sTable);
         }
 
         $mixedRes = $oDb->query($sSql);
@@ -101,53 +119,142 @@ class BxDolAIToolMysqlWrite extends BxDolAITool
         ];
     }
 
+    /**
+     * Trim and drop a trailing `;`. Nothing inside the query is removed: string
+     * literals may contain `#`, `--` or `/*`.
+     */
     protected function _normalize(string $s): string
     {
-        $s = preg_replace('~/\*.*?\*/~s', ' ', $s);
-        $s = preg_replace('/--[^\n]*/', ' ', $s);
-        $s = preg_replace('/#[^\n]*/', ' ', $s);
-        $s = trim($s);
-        $s = rtrim($s, "; \t\n\r");
+        $s = rtrim(trim($s), "; \t\n\r");
         if ($s === '')
             throw new Exception('Empty query.');
-        if (strpos($s, ';') !== false)
+        return $s;
+    }
+
+    /**
+     * The query with the contents of every string literal replaced by `x`, same
+     * length, so offsets found in the mask are valid in the original query.
+     */
+    protected function _maskLiterals(string $s): string
+    {
+        return preg_replace_callback('/\'(?:[^\'\\\\]|\\\\.)*\'|"(?:[^"\\\\]|\\\\.)*"/s', function ($a) {
+            return $a[0][0] . str_repeat('x', strlen($a[0]) - 2) . substr($a[0], -1);
+        }, $s);
+    }
+
+    protected function _assertSafe(string $sMask): void
+    {
+        if (strpos($sMask, ';') !== false)
             throw new Exception('Multiple statements are not allowed.');
-        return $s;
-    }
-
-    protected function _stripLiterals(string $s): string
-    {
-        $s = preg_replace("/'([^'\\\\]|\\\\.)*'/s", "''", $s);
-        $s = preg_replace('/"([^"\\\\]|\\\\.)*"/s', '""', $s);
-        return $s;
-    }
-
-    protected function _assertSafe(string $sBare): void
-    {
-        if (preg_match('/\b(delete|drop|truncate|alter|replace|create|grant|revoke|call|handler|load|outfile|dumpfile|into\s+outfile|lock\s+tables|unlock\s+tables)\b/i', $sBare))
+        if (preg_match('~#|--|/\*~', $sMask))
+            throw new Exception('SQL comments are not allowed.');
+        if (preg_match('/\b(delete|drop|truncate|alter|replace|create|grant|revoke|call|handler|load|outfile|dumpfile|lock\s+tables|unlock\s+tables|select|sleep|benchmark)\b/i', $sMask))
             throw new Exception('Forbidden SQL keyword.');
-        if (preg_match('/\bon\s+duplicate\s+key\b/i', $sBare))
+        if (preg_match('/\bon\s+duplicate\s+key\b/i', $sMask))
             throw new Exception('ON DUPLICATE KEY is not allowed.');
-        if (preg_match('/^insert\b/i', $sBare) && preg_match('/\bselect\b/i', $sBare))
-            throw new Exception('INSERT ... SELECT is not allowed.');
     }
 
-    protected function _tableName(string $sSql, string $sOp): string
+    protected function _tableName(string $sMask, string $sOp): string
     {
-        if ($sOp === 'insert' && preg_match('/^insert\s+into\s+`?([a-zA-Z0-9_]+)`?/i', $sSql, $aM))
-            return $aM[1];
-        if ($sOp === 'update' && preg_match('/^update\s+(?:low_priority\s+|ignore\s+)*`?([a-zA-Z0-9_]+)`?/i', $sSql, $aM))
-            return $aM[1];
-        throw new Exception('Cannot parse table name.');
+        if ($sOp === 'insert' && preg_match('/^insert\s+(?:(?:low_priority|high_priority|delayed|ignore)\s+)*into\s+(`?)([a-zA-Z0-9_]+)\1(?=[\s(]|$)/i', $sMask, $aM))
+            return $aM[2];
+        if ($sOp === 'update' && preg_match('/^update\s+(?:(?:low_priority|ignore)\s+)*(`?)([a-zA-Z0-9_]+)\1\s+set\s/i', $sMask, $aM))
+            return $aM[2];
+        throw new Exception($sOp === 'update'
+            ? 'UPDATE must name exactly one table: UPDATE `table` SET ... WHERE `pk` = value.'
+            : 'Cannot parse table name: INSERT INTO `table` ...');
     }
 
     protected function _assertTable(string $sTable): void
     {
         $sTable = strtolower($sTable);
-        if (in_array($sTable, $this->_aDenyTables, true))
-            throw new Exception("Table {$sTable} is not writable by this tool.");
-        if (preg_match('/^(mysql|information_schema|performance_schema|sys)\./', $sTable))
-            throw new Exception("Table {$sTable} is not writable by this tool.");
+        foreach ($this->_aDenyTables as $sDeny) {
+            $bPrefix = substr($sDeny, -1) === '*';
+            $sDeny = rtrim($sDeny, '*');
+            if ($bPrefix ? strncmp($sTable, $sDeny, strlen($sDeny)) === 0 : $sTable === $sDeny)
+                throw new Exception("Table {$sTable} is not writable by this tool.");
+        }
+    }
+
+    /**
+     * `UPDATE t SET <set> WHERE <pk> = <value> [LIMIT 1]`: returns the SET clause as
+     * written and the primary key value. Anything else in WHERE is refused.
+     *
+     * @return array{0:string,1:string}
+     */
+    protected function _parseUpdate(string $sSql, string $sMask, string $sTable, string $sPk): array
+    {
+        if (!preg_match('/^update\s+(?:(?:low_priority|ignore)\s+)*`?[a-zA-Z0-9_]+`?\s+set\s/i', $sMask, $aM))
+            throw new Exception('UPDATE must name exactly one table: UPDATE `table` SET ... WHERE `pk` = value.');
+
+        $iSet = strlen($aM[0]);
+        $iWhere = $this->_findTopLevelWhere($sMask, $iSet);
+        if ($iWhere < 0)
+            throw new Exception("UPDATE requires WHERE `{$sPk}` = value.");
+
+        $sSet = trim(substr($sSql, $iSet, $iWhere - $iSet));
+        if ($sSet === '')
+            throw new Exception('UPDATE has nothing to SET.');
+
+        $iAfter = $iWhere + 5;
+        $sTableRe = preg_quote($sTable, '/');
+        $sPkRe = preg_quote($sPk, '/');
+        $sRe = '/^\s*\(?\s*(?:`?' . $sTableRe . '`?\s*\.\s*)?`?' . $sPkRe . '`?\s*=\s*(\d+|\'[^\'\\\\]*\'|"[^"\\\\]*")\s*\)?\s*(?:limit\s+1\s*)?$/i';
+        if (!preg_match($sRe, substr($sMask, $iAfter), $aV, PREG_OFFSET_CAPTURE))
+            throw new Exception("UPDATE WHERE must be exactly `{$sPk}` = value (the primary key, nothing else).");
+
+        $sValue = substr($sSql, $iAfter + $aV[1][1], strlen($aV[1][0]));
+        if ($sValue[0] === '\'' || $sValue[0] === '"')
+            $sValue = substr($sValue, 1, -1);
+        if (strpbrk($sValue, '\'"\\') !== false)
+            throw new Exception('Unsupported primary key value.');
+
+        return [$sSet, $sValue];
+    }
+
+    /**
+     * Offset of the `WHERE` keyword outside parentheses (literals are masked), -1 when none.
+     */
+    protected function _findTopLevelWhere(string $sMask, int $iFrom): int
+    {
+        $iDepth = 0;
+        for ($i = $iFrom, $iLen = strlen($sMask); $i < $iLen; $i++) {
+            $c = $sMask[$i];
+            if ($c === '(')
+                $iDepth++;
+            else if ($c === ')')
+                $iDepth--;
+            else if ($iDepth === 0 && ($c === 'w' || $c === 'W') && preg_match('/\s/', $sMask[$i - 1] ?? '') && preg_match('/\Gwhere\b/i', $sMask, $aM, 0, $i))
+                return $i;
+        }
+        return -1;
+    }
+
+    /**
+     * One row only: `INSERT INTO t SET ...`, or `INSERT INTO t [(cols)] VALUES (...)`
+     * with a single values group.
+     */
+    protected function _assertSingleRowInsert(string $sMask, string $sTable): void
+    {
+        $sHead = '/^insert\s+(?:(?:low_priority|high_priority|delayed|ignore)\s+)*into\s+`?' . preg_quote($sTable, '/') . '`?\s*';
+        if (preg_match($sHead . 'set\s/i', $sMask))
+            return;
+
+        if (!preg_match($sHead . '(?:\([^()]*\)\s*)?values?\s*/i', $sMask, $aM))
+            throw new Exception('INSERT must be INSERT INTO `table` (...) VALUES (...) or INSERT INTO `table` SET ...');
+
+        $sRest = rtrim(substr($sMask, strlen($aM[0])));
+        $iDepth = 0;
+        for ($i = 0, $iLen = strlen($sRest); $i < $iLen; $i++) {
+            if ($sRest[$i] === '(')
+                $iDepth++;
+            else if ($sRest[$i] === ')')
+                $iDepth--;
+            if ($iDepth === 0 && $i < $iLen - 1)
+                throw new Exception('INSERT one row at a time: a single VALUES (...) group.');
+        }
+        if ($iDepth !== 0 || $sRest === '' || $sRest[0] !== '(')
+            throw new Exception('INSERT one row at a time: a single VALUES (...) group.');
     }
 
     protected function _primaryKey(BxDolDb $oDb, string $sTable): string
@@ -158,38 +265,6 @@ class BxDolAIToolMysqlWrite extends BxDolAITool
         if (count($aKeys) > 1)
             throw new Exception("Composite primary keys are not supported.");
         return $aKeys[0]['Column_name'];
-    }
-
-    protected function _wherePkValue(string $sSql, string $sPk, BxDolDb $oDb, string $sTable): string
-    {
-        if (!preg_match('/\bwhere\b(.+)$/is', $sSql, $aM))
-            throw new Exception('UPDATE requires WHERE primary_key = value.');
-
-        $sWhere = trim($aM[1]);
-        $sWhere = preg_replace('/\s+(limit|order\s+by|offset)\b.*$/is', '', $sWhere);
-        $sWhere = trim($sWhere, " \t\n\r;");
-        if ($sWhere === '')
-            throw new Exception('UPDATE requires WHERE primary_key = value.');
-
-        $sWhereBare = $this->_stripLiterals($sWhere);
-        if (preg_match('/\b(or|in\s*\(|between|like|exists|select)\b/i', $sWhereBare))
-            throw new Exception('UPDATE WHERE must be a simple equality (no OR / IN / LIKE).');
-
-        $sPkRe = preg_quote($sPk, '/');
-        $sTableRe = preg_quote($sTable, '/');
-        $sIdent = '(?:`?' . $sTableRe . '`?\s*\.\s*)?`?' . $sPkRe . '`?';
-        if (preg_match('/(?:^|\band\s+)\s*\(?\s*' . $sIdent . '\s*=\s*(\d+|\'[^\']*\'|"[^"]*")/i', $sWhere, $aV))
-            return trim($aV[1], "\"'");
-
-        $sTableSafe = str_replace('`', '', $sTable);
-        $sPkSafe = str_replace('`', '', $sPk);
-        $aRows = $oDb->getAll("SELECT `{$sPkSafe}` FROM `{$sTableSafe}` WHERE {$sWhere} LIMIT 2");
-        if (!$aRows)
-            throw new Exception("No rows match UPDATE WHERE. Use `{$sPk}` = value.");
-        if (count($aRows) > 1)
-            throw new Exception("UPDATE WHERE matched more than one row. Use `{$sPk}` = value.");
-
-        return (string)$aRows[0][$sPkSafe];
     }
 
     protected function _insertedPkFromSql(string $sSql, string $sPk): string

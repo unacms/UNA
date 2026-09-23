@@ -49,7 +49,10 @@ class BxDolAIToolMysqlUndo extends BxDolAITool
 
         $iLogId = (int)$log_id;
         $aCtx = BxDolAIToolMysqlWrite::currentLogContext();
-        $sThread = $aCtx['thread_id'];
+        $sThread = (string)$aCtx['thread_id'];
+        // Only this chat's own changes: without a chat there is nothing that is ours to undo.
+        if ($sThread === '')
+            throw new Exception('Undo works inside a chat only: there is no current chat to undo changes of.');
 
         $aRows = $this->_pickRows($oDb, $sScope, $iLogId, $sThread);
         if (!$aRows)
@@ -71,7 +74,7 @@ class BxDolAIToolMysqlUndo extends BxDolAITool
     protected function _ensureUndoneColumn(BxDolDb $oDb): void
     {
         if (!$oDb->isTableExists('sys_agents_sql_log'))
-            throw new Exception('sys_agents_sql_log is missing. Run inc/sql_agents_mysql_write.sql first.');
+            throw new Exception('sys_agents_sql_log is missing: apply the agents upgrade SQL first.');
         if (!$oDb->isFieldExists('sys_agents_sql_log', 'undone'))
             $oDb->query("ALTER TABLE `sys_agents_sql_log` ADD `undone` int(11) NOT NULL DEFAULT 0");
     }
@@ -84,19 +87,13 @@ class BxDolAIToolMysqlUndo extends BxDolAITool
                 throw new Exception("log_id {$iLogId} not found.");
             if ((int)$aRow['undone'] > 0)
                 throw new Exception("log_id {$iLogId} is already undone.");
-            if ($sThread !== '' && (string)$aRow['thread_id'] !== $sThread)
+            if ((string)$aRow['thread_id'] !== $sThread)
                 throw new Exception("log_id {$iLogId} belongs to another chat.");
             return [$aRow];
         }
 
-        if ($sThread !== '') {
-            $sSql = "SELECT * FROM `sys_agents_sql_log` WHERE `thread_id` = :t AND `undone` = 0 ORDER BY `id` DESC";
-            $aBind = ['t' => $sThread];
-        }
-        else {
-            $sSql = "SELECT * FROM `sys_agents_sql_log` WHERE `undone` = 0 AND `added` > :since ORDER BY `id` DESC";
-            $aBind = ['since' => time() - 7200];
-        }
+        $sSql = "SELECT * FROM `sys_agents_sql_log` WHERE `thread_id` = :t AND `undone` = 0 ORDER BY `id` DESC";
+        $aBind = ['t' => $sThread];
 
         if ($sScope === 'last')
             $sSql .= " LIMIT 1";
