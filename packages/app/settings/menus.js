@@ -56,6 +56,11 @@ export const settingsMenus = {
             'item-share': 'Share2',
             'item-copy': 'Clipboard',
             'item-repost': 'RotateCw',
+            'video-camera': 'Video',
+            'address-card': 'Contact',
+            'file-word': 'FileText',
+            'ellipsis-v': 'EllipsisVertical',
+            'ellipsis-h': 'Ellipsis',
         },
         menu_navbar: [
             {
@@ -323,7 +328,7 @@ export const settingsMenus = {
                 key: '/tab4',
                 title: 'Dashboard',
                 url: '/dashboard',
-                icon: 'Award',
+                icon: 'CircleGauge',
             },
             { key: '/tab5', title: 'Groups', url: '/groups-home', icon: 'UsersRound' },
             { key: '/tab6', title: 'Events', url: '/events-home', icon: 'CalendarCheck' },

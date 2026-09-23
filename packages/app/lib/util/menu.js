@@ -329,15 +329,27 @@ export function getDropdownGridLayout(options = {}) {
     };
 }
 
+const KEBAB_ICON_NAME = /^[a-z][a-z0-9]*(-[a-z0-9]+)*$/;
+// Font Awesome style prefixes UNA puts before the name (`far file-word`).
+const FA_STYLE_TOKENS = new Set(['fa', 'fas', 'far', 'fab', 'fal', 'fad', 'fat']);
+
 export function findIconFromRemote(s) {
     if (!s || /^[A-Z][^\s]*$/.test(s))
         return s;
     const data = appSetting('menu_items', 'iconset');
-    for (let word of s.replace(/\bcol-\S*\b/g, '').trim().split(/\s+/)) {
-
-        if (data[word]) {
-            return data[word];
+    const words = s.replace(/\bcol-\S*\b/g, '').trim().split(/\s+/)
+        .filter((word) => !FA_STYLE_TOKENS.has(word));
+    for (let word of words) {
+        const name = data[word] || data[word.replace(/^fa-/, '')];
+        if (name) {
+            return name;
         }
+    }
+
+    // UNA also sends Lucide names in kebab case (`log-in`); icon sets are keyed by PascalCase.
+    const kebab = words.map((word) => word.replace(/^fa-/, '')).find((word) => KEBAB_ICON_NAME.test(word));
+    if (kebab) {
+        return kebab.replace(/(^|-)([a-z0-9])/g, (_, _dash, ch) => ch.toUpperCase());
     }
 
     return s;

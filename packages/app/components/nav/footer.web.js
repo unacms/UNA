@@ -251,7 +251,6 @@ function MoreBottomItem({ visibleTabs, overflowTabs, pathname, currentUser }) {
             <DropdownMenu
                 mode="popup"
                 showOnTop
-                variant="tabs-overflow"
                 openOnFocus={false}
                 items={items}
                 triggerClassName="group flex-1 w-full h-full min-w-0"

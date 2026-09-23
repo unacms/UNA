@@ -193,7 +193,6 @@ function NativeTabsMoreOverlay({
                     <DropdownMenu
                         mode="popup"
                         showOnTop
-                        variant="tabs-overflow"
                         openOnFocus={false}
                         open={moreMenuOpen}
                         onOpenChange={onMoreMenuOpenChange}

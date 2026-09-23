@@ -84,7 +84,6 @@ function MoreTabBarButton({ children, style, overflowItems, onSelectOverflow, ac
         <DropdownMenu
             mode="popup"
             showOnTop
-            variant="tabs-overflow"
             items={overflowItems}
             onSelect={onSelectOverflow}
             triggerAccessibilityLabel={accessibilityLabel}

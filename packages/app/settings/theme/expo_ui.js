@@ -171,6 +171,7 @@ export const settingsExpoUi = {
                 MessageCircleMore: { sf: { default: 'message', selected: 'message.fill' }, md: 'chat' },
                 Bell: { sf: { default: 'bell', selected: 'bell.fill' }, md: 'notifications' },
                 Award: { sf: { default: 'rosette', selected: 'rosette.fill' }, md: 'military_tech' },
+                CircleGauge: { sf: { default: 'gauge.with.dots.needle.50percent', selected: 'gauge.with.dots.needle.50percent' }, md: 'speed' },
                 Compass: { sf: { default: 'safari', selected: 'safari.fill' }, md: 'explore' },
                 Info: { sf: { default: 'info.circle', selected: 'info.circle.fill' }, md: 'info' },
                 Contact: { sf: { default: 'person.crop.circle', selected: 'person.crop.circle.fill' }, md: 'contacts' },

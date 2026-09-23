@@ -95,16 +95,6 @@ function PageContentWiki({ data, scrollRef, url }) {
     const [pendingScrollId, setPendingScrollId] = useState(null)
     const [focusedTocId, setFocusedTocId] = useState(null)
 
-    useEffect(() => {
-        if (isWeb) {
-            groupRef.current?.setLayout([
-                leftPanelProps.defaultSize,
-                centerPanelProps.defaultSize,
-                rightPanelProps.defaultSize
-            ])
-        }
-    }, [currentBreakpointName, isWeb, leftPanelProps.defaultSize, centerPanelProps.defaultSize, rightPanelProps.defaultSize])
-
     const centerCell = pageData?.data?.elements?.cell_center
     const wikiCenterBlocks = useMemo(
         () => getWikiCenterBlocks(centerCell),
@@ -247,6 +237,27 @@ function PageContentWiki({ data, scrollRef, url }) {
     }, [headerOffset, isWeb, tocItems])
 
     const mountRightSidebar = showTocMenu
+    // Without the TOC panel the group has two panels; center absorbs the right share.
+    const centerPanelLayoutProps = mountRightSidebar
+        ? centerPanelProps
+        : {
+            ...centerPanelProps,
+            defaultSize: 100 - (leftPanelProps.defaultSize ?? 0),
+            maxSize: 100,
+        }
+    const leftDefaultSize = leftPanelProps.defaultSize
+    const centerDefaultSize = centerPanelLayoutProps.defaultSize
+    const rightDefaultSize = rightPanelProps.defaultSize
+
+    useEffect(() => {
+        if (!isWeb) return
+        groupRef.current?.setLayout(
+            mountRightSidebar
+                ? [leftDefaultSize, centerDefaultSize, rightDefaultSize]
+                : [leftDefaultSize, centerDefaultSize]
+        )
+    }, [currentBreakpointName, mountRightSidebar, leftDefaultSize, centerDefaultSize, rightDefaultSize])
+
     const tocMenuLabel = stripTags(rightBlock?.title) || t('On this page')
 
     // Below left-nav breakpoint only. From lg–xl the TOC trigger sits on the
@@ -336,7 +347,7 @@ function PageContentWiki({ data, scrollRef, url }) {
                     // window-scroll sticky. clip still contains resize overflow without that.
                     style={isWeb ? { overflow: 'clip' } : undefined}
                 >
-                    <Panel className={`hidden ${leftBreakpoint}:block ${currentBreakpointName}:w-full`} {...leftPanelProps}>
+                    <Panel id="wiki-left" order={1} className={`hidden ${leftBreakpoint}:block ${currentBreakpointName}:w-full`} {...leftPanelProps}>
                         {/* Stretch with the panel group (driven by center column). Sticky stays at
                             top:0 so overflow scroll can pass behind translucent / floating headers.
                             Header clearance is padding inside the scrollport (not sticky top);
@@ -362,7 +373,7 @@ function PageContentWiki({ data, scrollRef, url }) {
                         </View>
                     </Panel>
                     <PanelHandler gap={`hidden ${leftBreakpoint}:block`} sizable={cellsCustomConfig.sizable} panelLine={cellsCustomConfig['panel-line']} />
-                    <Panel className={`native:w-full   ${currentBreakpointName}:w-full`} {...centerPanelProps}>
+                    <Panel id="wiki-center" order={2} className={`native:w-full   ${currentBreakpointName}:w-full`} {...centerPanelLayoutProps}>
                         <View ref={centerContentRef} className="sm:p-4 lg:px-6 lg:py-6 xl:px-8 2xl:px-12 gap-6 lg:gap-8">
                             {(breadcrumbs.length >1 || showTocMenu) ? (
                                 <View className={`gap-3  hidden ${leftBreakpoint}:flex`}>
@@ -415,7 +426,7 @@ function PageContentWiki({ data, scrollRef, url }) {
                     <PanelHandler gap={`hidden ${rightBreakpoint}:block`} sizable={cellsCustomConfig.sizable} panelLine={cellsCustomConfig['panel-line']} />
                     ) : null}
                     {mountRightSidebar ? (
-                    <Panel className={`${showTocMenu ? `hidden ${rightBreakpoint}:block` : 'hidden'} ${currentBreakpointName}:w-full`} {...rightPanelProps}>
+                    <Panel id="wiki-right" order={3} className={`${showTocMenu ? `hidden ${rightBreakpoint}:block` : 'hidden'} ${currentBreakpointName}:w-full`} {...rightPanelProps}>
                         <View className="h-full">
                             <View
                                 className={`web:sticky web:top-0 web:max-h-screen web:overflow-y-auto gap-3 ${appSetting('conductor', 'sidebar_container')}`}
