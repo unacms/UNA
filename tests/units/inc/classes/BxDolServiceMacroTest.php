@@ -10,6 +10,7 @@ class BxDolServiceMacroTest extends \PHPUnit\Framework\TestCase
     #[DataProvider('providerForMalformedMacro')]
     public function testCallMacroMalformed($s)
     {
+        bx_import('BxDolLanguages');
         $this->assertSame(_t('_sys_macros_malformed'), BxDolService::callMacro($s));
     }
 
