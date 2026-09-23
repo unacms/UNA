@@ -3,7 +3,7 @@ import { Button } from 'app/design/controls';
 import { useTranslation } from 'react-i18next';
 
 
-export default function AuthX({ button }) {
+export default function AuthX() {
     const { t } = useTranslation();
     // Placeholder logic
     const handleXLogin = () => {

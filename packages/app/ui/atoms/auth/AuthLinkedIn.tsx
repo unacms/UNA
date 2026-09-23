@@ -1,7 +1,7 @@
 import { Button } from 'app/design/controls';
 import { useTranslation } from 'react-i18next';
 
-export default function AuthLinkedIn({ button }) {
+export default function AuthLinkedIn() {
     const { t } = useTranslation();
     const handleLinkedInLogin = () => {
         // Actual LinkedIn login logic will go here

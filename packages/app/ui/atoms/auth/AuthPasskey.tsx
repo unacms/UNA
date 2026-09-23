@@ -2,7 +2,7 @@ import { View } from 'app/design/view';
 import { Button } from 'app/design/controls';
 import { useTranslation } from 'react-i18next';
 
-export default function AuthPasskey({ button }) {
+export default function AuthPasskey() {
     const { t } = useTranslation();
     const handlePasskeyLogin = () => {
         // Actual Passkey login logic will go here

@@ -9,7 +9,7 @@ import { appSetting, storageClear, getPageData } from 'app/lib/util'
 import { useCurrentUser } from 'app/context/user'
 import { useTranslation } from 'react-i18next'
 import { fetcher } from 'app/lib/fetcher';
-import Redirect from 'app/ui/atoms/redirect'
+import Redirect, { type RedirectHandle } from 'app/ui/atoms/redirect'
 import { FormError } from 'app/components/form-fields/_field';
 import { View } from 'app/design/view'
 import { Text } from 'app/design/typography'
@@ -18,7 +18,7 @@ import { useRouter, redirectTo } from 'app/lib/hooks/router'
 WebBrowser.maybeCompleteAuthSession();
 
 /** Google Web OAuth only allows localhost/127.0.0.1 or public TLDs — not *.localhost (Portless). */
-function isGoogleOAuthWebOriginAllowed() {
+function isGoogleOAuthWebOriginAllowed(): boolean {
     if (typeof window === 'undefined') return true
     const host = window.location.hostname
     if (host === 'localhost' || host === '127.0.0.1') return true
@@ -26,8 +26,21 @@ function isGoogleOAuthWebOriginAllowed() {
     return true
 }
 
-export default function AuthGoogle({ }) {
-    const googleSettings = appSetting('auth', 'google') || {}
+/** Client ids per platform from the `auth.google` setting. */
+type GoogleSettings = {
+    web_client_id?: string
+    ios_client_id?: string
+    android_client_id?: string
+}
+
+/** OpenID Connect userinfo, forwarded to UNA's bx_googlecon handler. */
+type GoogleUser = Record<string, unknown>
+
+/** UNA API reply: a list of blocks, e.g. { type: 'redirect', data: { uri } } or { type: 'msg', data }. */
+type UnaApiResult = { data?: Array<{ type?: string; data?: any }> | any }
+
+export default function AuthGoogle() {
+    const googleSettings: GoogleSettings = appSetting('auth', 'google') || {}
 
     // The platform-specific client id must be configured (e.g. via the
     // GOOGLE_WEB_CLIENT_ID env var on web), otherwise expo-auth-session's
@@ -46,21 +59,21 @@ export default function AuthGoogle({ }) {
     return <AuthGoogleButton googleSettings={googleSettings} />;
 }
 
-function redirectUriFromApiResult(result) {
+function redirectUriFromApiResult(result: UnaApiResult | undefined): string | undefined {
     const items = Array.isArray(result?.data) ? result.data : [];
-    const redirectItem = items.find((item) => item?.type === 'redirect');
+    const redirectItem = items.find((item: any) => item?.type === 'redirect');
     return redirectItem?.data?.uri ?? result?.data?.[0]?.data?.uri;
 }
 
-function errorMessageFromApiResult(result) {
+function errorMessageFromApiResult(result: UnaApiResult | undefined): unknown {
     const items = Array.isArray(result?.data) ? result.data : [];
-    const msgItem = items.find((item) => item?.type === 'msg');
+    const msgItem = items.find((item: any) => item?.type === 'msg');
     return msgItem?.data;
 }
 
-function AuthGoogleButton({ googleSettings }) {
+function AuthGoogleButton({ googleSettings }: { googleSettings: GoogleSettings }) {
     const { t } = useTranslation()
-    const redirectRef = useRef();
+    const redirectRef = useRef<RedirectHandle | null>(null);
     const [error, setError] = useState('');
     const router = useRouter();
     const { setCurrentUser } = useCurrentUser();
@@ -74,7 +87,7 @@ function AuthGoogleButton({ googleSettings }) {
         }
     }, [isWeb]);
 
-    async function fetchUserInfo(accessToken) {
+    async function fetchUserInfo(accessToken: string): Promise<GoogleUser | undefined> {
         try {
             const res = await fetch('https://openidconnect.googleapis.com/v1/userinfo', {
                 headers: { Authorization: `Bearer ${accessToken}` }
@@ -103,8 +116,8 @@ function AuthGoogleButton({ googleSettings }) {
     });
 
     useEffect(() => {
-        const completeSignIn = async (user) => {
-            const result = await fetcher('/api.php?r=bx_googlecon/handle/&params[]=' + JSON.stringify(user));
+        const completeSignIn = async (user: GoogleUser) => {
+            const result: UnaApiResult = await fetcher('/api.php?r=bx_googlecon/handle/&params[]=' + JSON.stringify(user));
             const uri = redirectUriFromApiResult(result);
             const errorMsg = errorMessageFromApiResult(result);
 

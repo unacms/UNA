@@ -280,6 +280,13 @@ export default function Field({
     )
 }
 
+/**
+ * @param {{
+ *   errorText: string,
+ *   errorLink?: string,
+ *   errorId?: string,
+ * }} props
+ */
 export function FormError({ errorText, errorLink, errorId }) {
     if (!errorText.trim())
         return 
