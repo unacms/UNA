@@ -380,6 +380,7 @@ const NeoButtonStyled = (props) => {
         // Animation override
         transition,
         pressAnimation,
+        glassEffect,
 
         // Style escape hatches
         className = '', textClassName = '', classNames = {},
@@ -398,7 +399,7 @@ const NeoButtonStyled = (props) => {
 
     const resolved = useResolvedNeoButton({
         role, style, buttonStyle, controlSize, borderShape, tint, transition,
-        focusRing, pressAnimation,
+        focusRing, pressAnimation, glassEffect,
         image: image ?? systemImage,
         systemImage,
         imagePlacement, align, width, disabled, haptics,
@@ -604,6 +605,7 @@ const NeoButtonStyled = (props) => {
         ...rest,
         className: cn(
             `neo-btn neo-btn-${resolved.style} neo-btn-${resolved.controlSize}`,
+            resolved.glassFx && cn('neo-glass', resolved.style === 'glassProminent' && 'neo-glass-prominent'),
             hitAreaClass,
             ringClass,
             classNames?.ring,
@@ -665,15 +667,20 @@ const NeoButtonStyled = (props) => {
         });
     const addonContent = getAddon(addon, isTitle);
 
+    const glassFx = resolved.glassFx;
+
     const buttonElement = (
         <Cnt {...cntProps} className={cn(cntProps.className, containerCls)}>
+            {glassFx ? <View className="neo-glass-rim" aria-hidden /> : null}
             {labelContent}
             {addonContent && (
                 isTitle ? <View className="z-10 ml-1">{addonContent}</View> : <View className="absolute top-0 right-0 w-full h-full z-20 pointer-events-none">{addonContent}</View>
             )}
             {/* press highlight overlay (visual feedback, runs in addition to
-                the per-style transition) */}
-            {(resolved.style !== 'plain' && resolved.style !== 'link') ? (
+                the per-style transition). Glass effect draws its own. */}
+            {glassFx ? (
+                <View className="neo-glass-shine" aria-hidden />
+            ) : (resolved.style !== 'plain' && resolved.style !== 'link') ? (
                 <PressHighlight
                     active={isPressed}
                     rounded={resolved.rounded}
@@ -690,7 +697,22 @@ const NeoButtonStyled = (props) => {
         classNames?.root,
     );
 
-    const wrapped = (
+    // Glass effect: press/hover motion is CSS keyed off `data-neo-glass`,
+    // so the JS PressTransition scale is skipped.
+    const wrapped = glassFx ? (
+        <View
+            className={cn(
+                'neo-glass-wrap',
+                `neo-glass-${resolved.controlSize}`,
+                !resolved.behaviors.pressAnimation && 'neo-glass-still',
+                wrapperClass,
+            )}
+            data-neo-glass={stateKey}
+        >
+            <View className={cn('neo-glass-shadow', resolved.rounded)} aria-hidden />
+            {buttonElement}
+        </View>
+    ) : (
         <PressTransition
             active={isPressed}
             transition={resolved.behaviors.pressAnimation ? resolved.transition : false}

@@ -323,6 +323,8 @@ const FALLBACK_STYLE = 'bordered';
 // uses theme `container.hovered` on web; do not list it here.
 const STYLES_WITHOUT_HOVER = new Set(['plain']);
 
+const GLASS_STYLES = new Set(['glass', 'glassProminent']);
+
 const SWIFTUI_CONTROL_SIZE = {
     mini: 'mini',
     small: 'small',
@@ -497,7 +499,13 @@ export function useResolvedNeoButton(props = {}) {
         // 5) Resolve style slot maps. State is computed by the renderer; we
         //    return resolver functions so the renderer can call them per
         //    state without re-resolving the whole tree.
-        const styleDef = stylesTree[style] || {};
+        //    `glassFx` swaps in the style's `realistic` slots (web only — see
+        //    `defaults.glassEffect` in the theme).
+        const glassEffect = props.glassEffect ?? resolveScoped(defaults.glassEffect, ctx);
+        const glassFx = isWeb && GLASS_STYLES.has(style) && glassEffect === 'realistic';
+        const styleDef = glassFx
+            ? mergeOrReplace(stylesTree[style], stylesTree[style]?.realistic)
+            : (stylesTree[style] || {});
         const containerSlot = styleDef.container || {};
         const textSlot = styleDef.text || {};
         const containerCls = (state) => resolveSlot(containerSlot, state, ctx);
@@ -570,7 +578,7 @@ export function useResolvedNeoButton(props = {}) {
             // Slot resolvers (call with current state)
             containerCls, textCls,
             // Behaviour
-            transition, behaviors, haptics,
+            transition, behaviors, haptics, glassFx,
             // Visuals
             tint, defaultImage,
             // Env (for debugging / ad-hoc consumers)
@@ -586,6 +594,6 @@ export function useResolvedNeoButton(props = {}) {
         props.role, props.style, props.buttonStyle, props.controlSize, props.borderShape,
         props.imagePlacement, props.align, props.width,
         props.tint, props.transition, props.focusRing, props.pressAnimation,
-        props.disabled, props.image, props.systemImage, props.haptics,
+        props.disabled, props.image, props.systemImage, props.haptics, props.glassEffect,
     ]);
 }
