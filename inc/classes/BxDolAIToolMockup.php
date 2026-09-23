@@ -21,6 +21,8 @@ class BxDolAIToolMockup extends BxDolAITool
 {
     const MAX_DEPTH = 24;
     const MAX_JSON = 200000;
+    /** sys_pages_blocks_data.data is TEXT: a longer tree is cut off and no longer parses. */
+    const MAX_STORED = 65535;
 
     public function __construct()
     {
@@ -95,7 +97,8 @@ class BxDolAIToolMockup extends BxDolAITool
         $sContent = BxDolDb::getInstance()->getOne("SELECT `content` FROM `sys_pages_blocks` WHERE `id` = :id AND `type` = 'service' LIMIT 1", [
             'id' => $iBlockId,
         ]);
-        return is_string($sContent) && strpos($sContent, 'get_mockup_block') !== false;
+        $aCall = BxDolService::decodeServiceCall($sContent);
+        return is_array($aCall) && ($aCall['module'] ?? '') === 'system' && ($aCall['method'] ?? '') === 'get_mockup_block';
     }
 
     public static function getTree($iBlockId = 0)
@@ -124,9 +127,16 @@ class BxDolAIToolMockup extends BxDolAITool
         if ($iBlockId <= 0)
             return 'error: block_id missing';
 
+        // Unescaped: a non-Latin character costs 2-4 bytes here instead of 6 as \uXXXX.
+        $sData = json_encode($aTree, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        if (!is_string($sData))
+            return 'error: the tree cannot be encoded as JSON';
+        if (strlen($sData) > self::MAX_STORED)
+            return 'error: the tree is too large to save (' . strlen($sData) . ' bytes, the limit is ' . self::MAX_STORED . '). Simplify it: fewer nodes, shorter texts and class names.';
+
         $oDb = new BxDolPageQuery([]);
-        $b = $oDb->setPageBlockData($iBlockId, 0, '', $aTree);
-        if (!$b)
+        $b = $oDb->setPageBlockData($iBlockId, 0, '', $sData);
+        if ($b === false)
             return 'error: failed to write sys_pages_blocks_data';
 
         return '';
