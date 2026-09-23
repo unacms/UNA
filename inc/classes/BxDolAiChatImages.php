@@ -14,7 +14,6 @@
 class BxDolAiChatImages
 {
     const STORAGE = 'sys_agents_chat_images';
-    const MAX_BYTES = 8388608;
     const MAX_PER_TURN = 4;
 
     public static function getInstance()
@@ -41,7 +40,8 @@ class BxDolAiChatImages
         $iSize = (int)($aFile['size'] ?? 0);
         if ($sTmp === '' || !is_uploaded_file($sTmp))
             return ['error' => 'No file'];
-        if ($iSize <= 0 || $iSize > self::MAX_BYTES)
+        $iMax = $this->maxBytes();
+        if ($iSize <= 0 || ($iMax > 0 && $iSize > $iMax))
             return ['error' => 'File is too large'];
 
         $sMime = strtolower((string)($aFile['type'] ?? ''));
@@ -303,10 +303,23 @@ class BxDolAiChatImages
             $sCode = null;
             $sBin = bx_file_get_contents($sUrl, [], 'get', [], $sCode, [], 10, [CURLOPT_FOLLOWLOCATION => false]);
         }
-        if (!is_string($sBin) || $sBin === '' || strlen($sBin) > self::MAX_BYTES)
+        $iMax = $this->maxBytes();
+        if (!is_string($sBin) || $sBin === '' || ($iMax > 0 && strlen($sBin) > $iMax))
             return '';
 
         return base64_encode($sBin);
+    }
+
+    /**
+     * `max_file_size` of the chat images storage, in bytes. 0 means that object sets no limit.
+     */
+    public function maxBytes()
+    {
+        $oStorage = BxDolStorage::getObjectInstance(self::STORAGE);
+        if (!$oStorage)
+            return 0;
+
+        return (int)($oStorage->getObjectData()['max_file_size'] ?? 0);
     }
 
     /**

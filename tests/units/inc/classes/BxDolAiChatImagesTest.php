@@ -34,6 +34,16 @@ class BxDolAiChatImagesTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('', $o->sanitizeUrl('http://' . $sHost . '@169.254.169.254/storage.php'));
     }
 
+    public function testMaxBytesFollowsStorage()
+    {
+        $oStorage = BxDolStorage::getObjectInstance('sys_agents_chat_images');
+        if (!$oStorage)
+            $this->markTestSkipped('Chat images storage is not installed.');
+
+        $iMax = (int)($oStorage->getObjectData()['max_file_size'] ?? 0);
+        $this->assertSame($iMax, (new BxDolAiChatImages())->maxBytes());
+    }
+
     public function testAllowsStorageDomain()
     {
         $sDomain = trim((string)getParam('sys_storage_s3_domain'));
