@@ -1,4 +1,4 @@
-<div id="bx-std-widget-__id__" class="bx-std-widget __widget_disabled_class__" style="__widget_styles__" data-name="__name__" role="listitem">
+<div id="bx-std-widget-__id__" class="bx-std-widget __widget_disabled_class__ __widget_animated_class__" style="__widget_styles__" data-name="__name__" data-page="__page__" role="listitem">
     <div class="bx-std-widget-cont">
         <div class="bx-std-widget-icon bx-std-widget-icon-trans rounded-2xl hover:ring hover:ring-gray-300 dark:hover:ring-gray-700 hover:ring-offset-1 hover:ring-offset-gray-200 dark:hover:ring-offset-black hover:scale-105 active:scale-100 active:opacity-80 duration-300">
             <a class="bx-std-widget-link block rounded-2xl bx-icon-tile" href="__url__" aria-label="__caption_attr__" <bx_if:show_context_menu>data-bx-context-menu="#bx-std-cmenu-__page__" data-bx-context-menu-load="__page__:__id__"</bx_if:show_context_menu> <bx_if:show_click_icon>onClick="__content__"</bx_if:show_click_icon>>
@@ -7,6 +7,7 @@
                     <i class="sys-icon __icon__"></i>
                 </bx_if:icon>
                 <bx_if:image><img src="__icon_url__" alt="" /></bx_if:image>
+                <bx_if:image_animated>__icon_svg__</bx_if:image_animated>
             </a>
         </div>
         <bx_if:show_notice>

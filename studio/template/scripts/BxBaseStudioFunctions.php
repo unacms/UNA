@@ -165,6 +165,9 @@ class BxBaseStudioFunctions extends BxBaseFunctions implements iBxDolSingleton
         $sIcon = BxDolStudioUtils::getWidgetIcon($mixedWidget);
         $bIcon = strpos($sIcon, '.') === false && strcmp(substr($sIcon, 0, 10), 'data:image') != 0;
 
+        // art with an animated sibling goes in inline, so hovering or focusing the tile can play it
+        $sIconAnimated = !$bIcon ? BxDolStudioUtils::getWidgetIconAnimated($mixedWidget) : false;
+
         $sNotices = !empty($aNotices[$mixedWidget['id']]) ? $aNotices[$mixedWidget['id']] : '';
 
         $aModule = BxDolModuleQuery::getInstance()->getModuleByName($mixedWidget['module']);
@@ -175,6 +178,7 @@ class BxBaseStudioFunctions extends BxBaseFunctions implements iBxDolSingleton
         return $oTemplate->parseHtmlByName('widget.html', array(
             'id' => $mixedWidget['id'],
             'name' => strtolower($sCaption),
+            'page' => !empty($mixedWidget['page_name']) ? $mixedWidget['page_name'] : '', // the app's stable name, for per-app styles (launcher.css)
             'url' => !empty($mixedWidget['url']) ? bx_replace_markers($mixedWidget['url'], $aMarkers) : 'javascript:void(0)',
             'bx_if:show_click_icon' => array(
                 'condition' => !empty($mixedWidget['click']),
@@ -210,12 +214,17 @@ class BxBaseStudioFunctions extends BxBaseFunctions implements iBxDolSingleton
                 'content' => array('icon' => $sIcon),
             ),
             'bx_if:image' => array (
-                'condition' => !$bIcon,
+                'condition' => !$bIcon && $sIconAnimated === false,
                 'content' => array('icon_url' => $sIcon),
+            ),
+            'bx_if:image_animated' => array (
+                'condition' => $sIconAnimated !== false,
+                'content' => array('icon_svg' => $sIconAnimated),
             ),
             'caption' => $sCaption,
             'caption_attr' => bx_html_attribute($sCaption),
             'widget_disabled_class' => !$bEnabled ? 'bx-std-widget-icon-disabled' : '',
+            'widget_animated_class' => $sIconAnimated !== false ? 'bx-std-widget-animated' : '',
             'widget_styles' => $sStyles
         ));
     }

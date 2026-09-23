@@ -120,7 +120,8 @@ div.bx-std-widget-empty {
     opacity: 0.4;    
 }
 
-.bx-std-widget-link > img {
+.bx-std-widget-link > img,
+.bx-std-widget-link > svg { /* animated art is inlined (BxDolStudioUtils::getWidgetIconAnimated) and takes the image's place */
     position: relative;
     z-index: -1;
 
@@ -131,6 +132,27 @@ div.bx-std-widget-empty {
     background-color: transparent;
     background-position: 0px 0px;
     background-repeat: no-repeat;
+}
+
+/*
+ * Per-app tile edge. Every tile gets the same inset hairline (tailwind.css, .bx-icon-tile: black/10, white/15 in the dark scheme);
+ * an app whose art wants another one sets --bx-icon-tile-edge here, keyed by its page name, and it holds in both schemes.
+ */
+.bx-std-widget[data-page="dashboard"] {
+    --bx-icon-tile-edge: rgb(255 255 255 / 0.2);
+}
+
+/*
+ * Animated art keeps its size on hover. While the art inside animates, Chrome paints a transform-scaled tile from a bitmap
+ * at its unscaled size, so the Dashboard gauge went soft for the whole hover; will-change, starting the art after the scale,
+ * an instant scale and growing the tile by layout all stayed soft. These tiles get the ring alone, beside the art's own motion,
+ * and on a press shrink from their own size by as much as the other tiles do from their hover size (105% to 100%).
+ */
+.bx-std-widget-animated .bx-std-widget-icon:hover {
+    transform: none;
+}
+.bx-std-widget-animated .bx-std-widget-icon:active {
+    transform: scale(0.95);
 }
 
 div.bx-std-widget-icon-jitter {
@@ -416,6 +438,7 @@ div.bx-std-widget-caption-jitter {
     line-height: 4rem;
 }
 .bx-std-launcher-browser .bx-std-widget-link > img,
+.bx-std-launcher-browser .bx-std-widget-link > svg,
 .bx-std-launcher-browser div.bx-std-widget-icon-jitter {
     width: 4rem;
     height: 4rem;

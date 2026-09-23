@@ -72,6 +72,40 @@ class BxDolStudioUtils extends BxDol
         return $sUrl;
     }
 
+    /*
+     * Tile art may have an animated sibling (wi-dashboard-animated.svg next to wi-dashboard.svg) that rests on the same frame as the
+     * static art and plays while its tile is hovered or focused. Hover and focus only reach an SVG that is part of the page, so the
+     * markup is returned for inlining, with every id suffixed to keep it apart from any other copy in the page. False when there is
+     * no animated sibling.
+     */
+    public static function getWidgetIconAnimated($mixedWidget)
+    {
+        if(!is_array($mixedWidget))
+            $mixedWidget = BxDolStudioWidgetsQuery::getInstance()->getWidgets(array('type' => 'by_id', 'value' => (int)$mixedWidget));
+
+        if(substr($mixedWidget['icon'], -4) != '.svg')
+            return false;
+
+        $oTemplate = BxDolStudioTemplate::getInstance();
+
+        $sPath = $oTemplate->getIconPath(substr($mixedWidget['icon'], 0, -4) . '-animated.svg');
+
+        // getWidgetIcon shows a module's own art instead of the widget's icon when there is one, and that art has no animated sibling
+        if(empty($sPath) || $oTemplate->getModuleIconUrl($mixedWidget['module'] . '.svg') || ($sSvg = file_get_contents($sPath)) === false)
+            return false;
+
+        $sSuffix = '-' . mt_rand();
+        return preg_replace([
+            '/(\sid="[^"]+)"/',
+            '/(url\(#[^)]+)\)/',
+            '/(href="#[^"]+)"/'
+        ], [
+            '$1' . $sSuffix . '"',
+            '$1' . $sSuffix . ')',
+            '$1' . $sSuffix . '"'
+        ], $sSvg);
+    }
+
     public static function getModuleIcon($mixedModule, $sType = 'menu', $bReturnAsUrl = true)
     {
         $aType2Prefix = array('menu' => 'mi', 'page' => 'pi', 'store' => 'si');

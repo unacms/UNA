@@ -13,3 +13,13 @@ Placement: keep the outline in Lucide's 24-unit space and wrap each copy in `<g 
 Plate colours follow the app category: gray `#71717A → #3F3F46` system, green `#059669 → #065F46` content, orange `#D97706 → #92400E` profiles, purple `#7C3AED → #5B21B6` templates, red `#F43F5E → #BE123C` contexts (groups, spaces, events, courses), white `#F3F4F6 → #E5E7EB` languages; integrations sit on white or their brand colour.
 
 Pick glyphs from https://lucide.dev; the vendored copies live in `plugins_public/lucide/icons/`. `modules/boonex/mapshow/template/images/icons/std-icon.svg` (flattened, 80px) and `studio/template/images/modules/bx_polls.svg` (flattened, 72px) are reference implementations.
+
+### Tile edge
+
+Launcher tiles share one inset hairline (`.bx-icon-tile` in `template/css/tailwind.css`: black/10, white/15 in the dark scheme). Art that wants another edge gets it per app in `studio/template/css/launcher.css`: set `--bx-icon-tile-edge` on `.bx-std-widget[data-page="<page name>"]` and the colour holds in both schemes, with no Tailwind rebuild. The Dashboard's dark plate takes `rgb(255 255 255 / 0.2)`.
+
+### Animated tile art
+
+A tile may also have an animated sibling, `<icon>-animated.svg` next to `<icon>.svg`. The launcher inlines it in place of the `<img>` (`BxDolStudioUtils::getWidgetIconAnimated`), so its own `<style>` can play while the tile is hovered (`.bx-icon-tile:hover`) or keyboard-focused (`a:focus-visible`); the header dock and the page breadcrumb keep showing the static file, so the resting frame should be drawn from the same art. Such a tile doesn't grow on hover and only shrinks to 95% while pressed (`bx-std-widget-animated` in `launcher.css`): while the art animates, Chrome paints a transform-scaled tile from a bitmap at its unscaled size and the art goes soft, which a press is too short to show. Inlined, that `<style>` applies to the whole page: prefix every class and keyframe name with the icon's name, style by class rather than id (ids get a suffix per render), and switch the animation off under `prefers-reduced-motion`.
+
+`wi-dashboard.svg` / `wi-dashboard-animated.svg` (a gauge whose needle sweeps a full turn while the arc draws in behind it and 15.0 is keyed into its LCD, calculator-style) are the only pair so far. The static file is the designer's Figma export as supplied, and the animated one rests on exactly its frame, LCD reading 15.0 included; the generator's readout must stay the digits the static file spells. They are a bespoke illustration outside the three-layer spec above: keep their stroked paths, since the arc's draw-in animates `stroke-dasharray`.

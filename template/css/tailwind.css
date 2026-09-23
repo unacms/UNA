@@ -1627,8 +1627,9 @@
         @apply relative smooth-shadow-md;
         @apply after:absolute after:inset-0 after:rounded-[inherit] after:pointer-events-none;
     }
+    /* An app whose art wants another hairline sets --bx-icon-tile-edge on its launcher tile (studio/template/css/launcher.css); it holds in both schemes. */
     .bx-std .bx-icon-tile:not(.bx-std-pmen-ic-icon):not(.bx-std-menu-top .bx-icon-tile) {
-        @apply after:ring-1 after:ring-inset after:ring-black/10 dark:after:ring-white/15;
+        @apply after:ring-1 after:ring-inset after:ring-[color:var(--bx-icon-tile-edge,rgb(0_0_0/0.1))] dark:after:ring-[color:var(--bx-icon-tile-edge,rgb(255_255_255/0.15))];
     }
     /* 32px art tiles in the header (dock, current app) and the sidebar: the header buttons' plate under the artwork (isolate keeps the z-index:-1 image above it). In the light scheme the artwork keeps a single dark inset hairline (black/10), which crisps white-chrome tiles and vanishes on coloured plates, where the buttons' white inset plus black outer pair would read as two fuzzy gray edges around mid-tone art; the dark scheme uses the buttons' hairlines. */
     .bx-std .bx-std-menu-top .bx-icon-tile,
