@@ -289,7 +289,7 @@ class BxDolAIToolPromptFeedback extends BxDolAITool
             'thread_id' => $sThread,
             'history_id' => $iHistory,
             'prompt_system' => self::clip($sSystem, self::CLIP_FIELD),
-            'prompt_hash' => sha1($sSystem . "\n" . $sSteps . "\n" . $sOutput . "\n" . $sTools),
+            'prompt_hash' => hash('sha256', $sSystem . "\n" . $sSteps . "\n" . $sOutput . "\n" . $sTools),
             'prompt_steps' => self::clip($sSteps, self::CLIP_FIELD),
             'prompt_output' => self::clip($sOutput, self::CLIP_FIELD),
             'prompt_tools' => self::clip($sTools, self::CLIP_FIELD),
