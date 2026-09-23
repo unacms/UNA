@@ -87,7 +87,7 @@ class BxDevPolyglotManage extends BxTemplStudioGrid
                 $oLanguages->compileLanguage($iLanguage, true);
             }
 
-            return echoJson(array('msg' => _t('_bx_dev_pgt_msg_keys_added', $iKeys)));
+            return echoJson(['toast' => _t('_bx_dev_pgt_msg_keys_added', $iKeys)]);
         }
 
         $sContent = BxTemplStudioFunctions::getInstance()->popupBox('bx-dev-pgt-keys-add-popup', _t('_bx_dev_pgt_txt_keys_add_popup'), $this->oModule->_oTemplate->parseHtmlByName('pgt_add_keys.html', array(
