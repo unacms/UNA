@@ -62,10 +62,6 @@ define('BX_DOL_PAGINATE_PER_PAGE_DEFAULT', 10);
  */
 abstract class BxDolPaginate extends BxDol
 {
-    protected static $_isCssAdded = false;
-
-    protected $_oTemplate;
-
     protected $_aParams; ///< an array with initially provided params
 
     protected $_iStart; ///< start display items from this number
@@ -82,20 +78,12 @@ abstract class BxDolPaginate extends BxDol
     protected $_sViewAllUrl; ///< view "all results" url, for "simple" paginate
     protected $_sViewAllCaption; ///< 'view all' link caption
 
-    protected $_sButtonsClass; ///< add this class to buttons class attribute
-    protected $_sPaginateClass; ///< add this class to whole paginate container div
-
     /**
      * Constructor
      */
-    public function __construct($aParams, $oTemplate = null)
+    public function __construct($aParams)
     {
         parent::__construct();
-
-        if ($oTemplate)
-            $this->_oTemplate = $oTemplate;
-        else
-            $this->_oTemplate = BxDolTemplate::getInstance();
 
         if (isset($aParams['count']))
            trigger_error ('Paginate "count" is deprecated - use "num" instead: ' . get_class($this), E_USER_ERROR);
@@ -111,11 +99,9 @@ abstract class BxDolPaginate extends BxDol
         $this->_bTotal = $this->_iTotal > 0;
 
         $this->_bInfo = isset($aParams['info']) ? (bool)$aParams['info'] : true;
-        $this->_sButtonsClass = isset($aParams['buttons_class']) ? $aParams['buttons_class'] : '';
+        
         $this->_sViewAllUrl = isset($aParams['view_all_url']) ? $aParams['view_all_url'] : false;
-        $this->_sViewAllCaption = isset($aParams['view_all_caption']) ? $aParams['view_all_caption'] : _t('_sys_paginate_view_all');
-
-        $this->_sPaginateClass = isset($aParams['paginate_class']) ? $aParams['paginate_class'] : '';
+        $this->_sViewAllCaption = isset($aParams['view_all_caption']) ? $aParams['view_all_caption'] : _t('_sys_paginate_view_all');       
 
         // page url
         $this->_sPageUrl = isset($aParams['page_url']) ? $aParams['page_url'] : BX_DOL_URL_ROOT;
@@ -242,151 +228,46 @@ abstract class BxDolPaginate extends BxDol
         return $this->_iNum > $this->_iPerPage ? true : false;
     }
 
-    /**
-     * Get default paginate, it is better to use it on the whole page.
-     * @param $iStart - @see setStart.
-     * @param $iNum - @see setNum and @see setNumFromDataArray.
-     * @param $iPerPage - @see setPerPage.
-     * @return HTML string.
-     */
-    public function getPaginate($iStart = -1, $iNum = -1, $iPerPage = -1)
+    public function isLoadMoreAvail ()
     {
-        $this->setNum($iNum);
-        if (!$this->_iNum)
-            return '';
-
-        $this->setStart($iStart);
-        $this->setPerPage($iPerPage);
-
-        if (0 == $this->getStart() && !$this->isNextAvail ())
-            return '';
-
-        $aReplacement = $this->_getReplacement();
-
-        //--- Previous Page button ---//
-        $sPrevLnkUrl = 'javascript:void(0);';
-        $sPrevLnkClick = '';
-        $sPrevClassAdd = ' bx-btn-disabled';
-        if ($this->isPrevAvail()) {
-            $iStartPrev = $this->_iStart - $this->_iPerPage > 0 ? $this->_iStart - $this->_iPerPage : 0;
-            $aReplacementLink = array_merge($aReplacement, array('start' => $iStartPrev));
-            $sPrevLnkUrl = $this->_getPageChangeUrl($aReplacementLink);
-            $sPrevLnkClick = $this->_getPageChangeOnClick($aReplacementLink);
-            $sPrevClassAdd = '';
-        }
-
-        //--- Next Page button ---//
-        $sNextLnkUrl = 'javascript:void(0);';
-        $sNextLnkClick = '';
-        $sNextClassAdd = ' bx-btn-disabled';
-        if ($this->isNextAvail()) {
-            $aReplacementLink = array_merge($aReplacement, array('start' => $this->_iStart + $this->_iPerPage));
-            $sNextLnkUrl = $this->_getPageChangeUrl($aReplacementLink);
-            $sNextLnkClick = $this->_getPageChangeOnClick($aReplacementLink);
-            $sNextClassAdd = '';
-        }
-
-        $sClassAdd = ($this->_sButtonsClass ? ' ' . $this->_sButtonsClass : '');
-
-        $aVariables = [
-            'bx_if:info' => [
-                'condition' => $this->_bInfo && !$this->_bTotal,
-                'content' => [
-                    'text' => _t('_sys_paginate_info', $this->_iStart + 1, $this->_iStart + ($this->isNextAvail () ? $this->_iPerPage : $this->_iNum)),
-                ],
-            ],
-            'bx_if:total' => [
-                'condition' => $this->_bTotal,
-                'content' => [
-                    'text' => _t('_sys_paginate_total', $this->_iStart + 1, $this->_iStart + ($this->isNextAvail() ? $this->_iPerPage : $this->_iNum), $this->_iTotal),
-                ],
-            ],
-            'bx_if:view_all' => [
-                'condition' => (bool)$this->_sViewAllUrl,
-                'content' => [
-                    'lnk_url' => $this->_sViewAllUrl,
-                    'lnk_title' => $this->_sViewAllCaption,
-                    'lnk_content' => $this->_sViewAllCaption,
-                ],
-            ],
-            'btn_prev' => $this->_getButton('prev', [
-                'class' => $sClassAdd . $sPrevClassAdd,
-                'href' => $sPrevLnkUrl,
-                'onclick' => $sPrevLnkClick,
-            ]),
-            'btn_next' => $this->_getButton('next', [
-                'class' => $sClassAdd . $sNextClassAdd,
-                'href' => $sNextLnkUrl,
-                'onclick' => $sNextLnkClick,
-            ]),
-            'paginate_class' => $this->_sPaginateClass,
-            'bx_repeat:attrs' => [
-                ['key' => 'bx-data-start', 'value' => $this->_iStart],
-                ['key' => 'bx-data-perpage', 'value' => $this->_iPerPage]
-            ]
-        ];
-
-        $this->addCssJs();
-        return $this->_oTemplate->parseHtmlByName('paginate.html', $aVariables);
-    }
-
-    /**
-     * Get limited paginate, it is better to use in some boxes, where availabel space is limited or for ajax paginate.
-     * @param $sViewAllUrl - url to page for 'view all' link.
-     * @param $iStart - @see setStart.
-     * @param $iNum - @see setNum and @see setNumFromDataArray.
-     * @param $iPerPage - @see setPerPage.
-     * @return HTML string.
-     */
-    public function getSimplePaginate($sViewAllUrl = '', $iStart = -1, $iNum = -1, $iPerPage = -1)
-    {
-        if($sViewAllUrl)
-            $this->_sViewAllUrl = $sViewAllUrl;
-
-        if(!isset($this->_aParams['info']))
-            $this->_bInfo = false;
-
-        $this->_sButtonsClass .= ($this->_sButtonsClass ? ' ' : '') . 'bx-btn-small bx-btn-symbol-small';
-        $this->_sPaginateClass = 'bx-paginate-simple';
-
-        return $this->getPaginate($iStart, $iNum, $iPerPage);
-    }
-
-    public function addCssJs ()
-    {
-        if (self::$_isCssAdded)
-            return false;
-        $this->_oTemplate->addCss('paginate.css');
-        self::$_isCssAdded = true;
-        return true;
+        return $this->isNextAvail();
     }
 
     protected function _getReplacement()
     {
-        return array(
+        return [
             'start' => $this->_iStart,
             'per_page' => $this->_iPerPage,
-        );
+        ];
     }
 
-    protected function _getPageChangeUrl($aReplacement)
+    protected function _getReplacementPrev()
     {
-        return $this->_oTemplate->parseHtmlByContent($this->_sPageUrl, $aReplacement, array('{', '}'));
+        return array_merge($this->_getReplacement(), [
+            'start' => ($iStart = $this->_iStart - $this->_iPerPage) > 0 ? $iStart : 0
+        ]);
     }
 
-    protected function _getPageChangeOnClick($aReplacement)
+    protected function _getReplacementNext()
     {
-        return !empty($this->_sOnChangePage) ? 'onclick="javascript:' . $this->_oTemplate->parseHtmlByContent($this->_sOnChangePage, $aReplacement, array('{', '}')) . '; return false;"' : '';
+        return array_merge($this->_getReplacement(), [
+            'start' => $this->_iStart + $this->_iPerPage
+        ]);
     }
 
-    protected function _getButtonIconPrev()
+    protected function _getReplacementLoadMore()
     {
-        return 'angle-double-left';
+        return $this->_getReplacementNext();
     }
 
-    protected function _getButtonIconNext()
+    protected function _getPageChangeUrl($aMarkers)
     {
-        return 'angle-double-right';
+        return bx_replace_markers($this->_sPageUrl, $aMarkers);
+    }
+
+    protected function _getPageChangeOnClick($aMarkers)
+    {
+        return !empty($this->_sOnChangePage) ? 'onclick="javascript:' . bx_replace_markers($this->_sOnChangePage, $aMarkers) . '; return false;"' : '';
     }
 }
 
