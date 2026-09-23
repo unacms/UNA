@@ -961,8 +961,10 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
     {
         $bIsApi = bx_is_api();
 
+        // Operators only (the same isAdmin() test BxDolAi uses for operators): the
+        // operator agent is the one that carries the write tools.
         $iId = (int)getParam('sys_agents_operator_agent');
-        if ($iId <= 0)
+        if (!isAdmin() || $iId <= 0)
             return $bIsApi ? [] : '';
 
         $aAgent = BxDolAiQuery::getAgentObject($iId);

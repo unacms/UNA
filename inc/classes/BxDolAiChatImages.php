@@ -16,6 +16,10 @@ class BxDolAiChatImages
     const STORAGE = 'sys_agents_chat_images';
     const MAX_BYTES = 8388608;
     const MAX_PER_TURN = 4;
+    const MIME_DEFAULT = 'image/jpeg';
+    /** Session key listing the file ids this visitor uploaded (guests have no profile id to own a file by). */
+    const SESSION_KEY = 'sys_agents_chat_images_own';
+    const SESSION_MAX = 50;
 
     public static function getInstance()
     {
@@ -47,7 +51,7 @@ class BxDolAiChatImages
         $sMime = strtolower((string)($aFile['type'] ?? ''));
         $sExt = strtolower(pathinfo($sName, PATHINFO_EXTENSION));
         $aMime = [
-            'jpg' => 'image/jpeg', 'jpeg' => 'image/jpeg', 'png' => 'image/png',
+            'jpg' => self::MIME_DEFAULT, 'jpeg' => self::MIME_DEFAULT, 'png' => 'image/png',
             'gif' => 'image/gif', 'webp' => 'image/webp',
         ];
         if (!isset($aMime[$sExt]))
@@ -65,6 +69,8 @@ class BxDolAiChatImages
         $sUrl = $oStorage->getFileUrlById($iId);
         if (!$sUrl)
             return ['error' => 'Upload failed'];
+
+        $this->rememberOwnFile($iId);
 
         $aInfo = $oStorage->getFile($iId) ?: [];
         return [
@@ -87,48 +93,94 @@ class BxDolAiChatImages
 
         $sType = strtolower((string)($aPart['type'] ?? ''));
         $sUrl = '';
-        $sMime = 'image/jpeg';
+        $sMime = self::MIME_DEFAULT;
         $aSource = is_array($aPart['source'] ?? null) ? $aPart['source'] : [];
         $iFileId = (int)($aPart['file_id'] ?? $aSource['file_id'] ?? 0);
 
+        // A URL our own storage produced is trusted as it is (it may live on an S3 host).
         if ($iFileId > 0) {
             $oStorage = BxDolStorage::getObjectInstance(self::STORAGE);
             $sStored = $oStorage ? (string)$oStorage->getFileUrlById($iFileId) : '';
-            if ($sStored !== '')
-                $sUrl = $sStored;
-        }
-
-        if ($sType === 'image' || $sType === 'image_url' || $sUrl !== '') {
-            if ($sUrl === '' && ($aSource['type'] ?? '') === 'url')
-                $sUrl = (string)($aSource['value'] ?? '');
-            elseif ($sUrl === '' && !empty($aPart['url']))
-                $sUrl = (string)$aPart['url'];
-            elseif ($sUrl === '' && !empty($aPart['image_url']['url']))
-                $sUrl = (string)$aPart['image_url']['url'];
-            elseif ($sUrl === '' && ($sType === 'image' || $sType === 'image_url')) {
-                $sContent = (string)($aPart['content'] ?? '');
-                if ($sContent !== '' && (strpos($sContent, 'http://') === 0 || strpos($sContent, 'https://') === 0 || (strpos($sContent, '/') === 0 && strpos($sContent, '//') !== 0)))
-                    $sUrl = $sContent;
+            if ($sStored !== '') {
+                $aFile = $this->getStoredFile($iFileId);
+                return ['url' => $sStored, 'mime' => $this->sanitizeMime($aFile['mime_type'] ?? ''), 'file_id' => $iFileId];
             }
-            $sMime = (string)($aSource['mimeType'] ?? $aPart['media_type'] ?? $aPart['mediaType'] ?? $aPart['mime'] ?? $aPart['mimeType'] ?? $sMime);
         }
 
-        $sUrl = $this->sanitizeUrl($sUrl);
+        if ($sType !== 'image' && $sType !== 'image_url')
+            return null;
+
+        $sUrl = $this->sanitizeUrl($this->partUrl($aPart));
         if ($sUrl === '')
             return null;
 
-        return ['url' => $sUrl, 'mime' => $this->sanitizeMime($sMime), 'file_id' => $iFileId];
+        $sMime = (string)($aSource['mimeType'] ?? $aPart['media_type'] ?? $aPart['mediaType'] ?? $aPart['mime'] ?? $aPart['mimeType'] ?? $sMime);
+        return ['url' => $sUrl, 'mime' => $this->sanitizeMime($sMime), 'file_id' => 0];
+    }
+
+    /**
+     * Image part of the chat request the visitor is sending. Accepted only when it
+     * points at a file in the chat images storage that this visitor uploaded, by
+     * `file_id` or by the exact URL storeUpload returned. The server never fetches a
+     * URL the client sent: the image bytes are read from that stored file.
+     *
+     * @return array{url:string,mime:string,file_id:int}|null
+     */
+    public function parseRequestPart($aPart)
+    {
+        if (!is_array($aPart))
+            return null;
+
+        $sType = strtolower((string)($aPart['type'] ?? ''));
+        $aSource = is_array($aPart['source'] ?? null) ? $aPart['source'] : [];
+        $iFileId = (int)($aPart['file_id'] ?? $aSource['file_id'] ?? 0);
+        if ($iFileId <= 0) {
+            if ($sType !== 'image' && $sType !== 'image_url')
+                return null;
+            $iFileId = $this->fileIdFromUrl($this->partUrl($aPart));
+        }
+
+        if ($iFileId <= 0 || !$this->isOwnFile($iFileId))
+            return null;
+
+        $aFile = $this->getStoredFile($iFileId);
+        $oStorage = BxDolStorage::getObjectInstance(self::STORAGE);
+        $sUrl = $oStorage ? (string)$oStorage->getFileUrlById($iFileId) : '';
+        if (!$aFile || $sUrl === '')
+            return null;
+
+        return ['url' => $sUrl, 'mime' => $this->sanitizeMime($aFile['mime_type'] ?? ''), 'file_id' => $iFileId];
+    }
+
+    /**
+     * The URL an image part carries: `source.value`, `url`, `image_url.url`, or `content`.
+     */
+    protected function partUrl($aPart)
+    {
+        $aSource = is_array($aPart['source'] ?? null) ? $aPart['source'] : [];
+        if (($aSource['type'] ?? '') === 'url' && !empty($aSource['value']))
+            return (string)$aSource['value'];
+        if (!empty($aPart['url']) && is_string($aPart['url']))
+            return $aPart['url'];
+        if (!empty($aPart['image_url']['url']) && is_string($aPart['image_url']['url']))
+            return $aPart['image_url']['url'];
+
+        $sContent = (string)($aPart['content'] ?? '');
+        if ($sContent !== '' && (strpos($sContent, 'http://') === 0 || strpos($sContent, 'https://') === 0 || (strpos($sContent, '/') === 0 && strpos($sContent, '//') !== 0)))
+            return $sContent;
+
+        return '';
     }
 
     public function sanitizeMime($sMime)
     {
         $sMime = strtolower(trim((string)$sMime));
-        return preg_match('#^image/(jpeg|png|gif|webp)$#', $sMime) ? $sMime : 'image/jpeg';
+        return preg_match('#^image/(jpeg|png|gif|webp)$#', $sMime) ? $sMime : self::MIME_DEFAULT;
     }
 
     /**
-     * Only http(s) URLs on this site (or its chat images storage). Site-relative
-     * paths are made absolute.
+     * Only http(s) URLs on this site's own host. Site-relative paths are made
+     * absolute. Used to display stored images; nothing here is fetched server-side.
      */
     public function sanitizeUrl($sUrl)
     {
@@ -148,13 +200,12 @@ class BxDolAiChatImages
 
         $sHost = strtolower(preg_replace('/^www\./i', '', (string)$aUrl['host']));
         $sRootHost = strtolower(preg_replace('/^www\./i', '', (string)($aRoot['host'] ?? '')));
-        $sPath = (string)($aUrl['path'] ?? '');
-        $sQuery = (string)($aUrl['query'] ?? '');
-        $bStorage = stripos($sPath, self::STORAGE) !== false
-            || stripos($sQuery, self::STORAGE) !== false
-            || stripos($sPath, '/storage.php') !== false;
-
-        if ($sRootHost !== '' && strcasecmp($sHost, $sRootHost) !== 0 && !$bStorage)
+        if ($sRootHost === '' || strcasecmp($sHost, $sRootHost) !== 0)
+            return '';
+        $fPort = function ($a) {
+            return (int)($a['port'] ?? (strtolower((string)($a['scheme'] ?? '')) === 'https' ? 443 : 80));
+        };
+        if ($fPort($aUrl) !== $fPort($aRoot))
             return '';
 
         return $sUrl;
@@ -164,7 +215,7 @@ class BxDolAiChatImages
      * NeuronAI user message: text block plus one image block per image.
      * Images that cannot be turned into a block are passed as their URL in text.
      *
-     * @param array<int, array{url:string,mime?:string}> $aImages
+     * @param array<int, array{file_id:int,mime?:string}> $aImages from parseRequestPart
      * @return NeuronAI\Chat\Messages\UserMessage|null null when there is nothing to send
      */
     public function makeUserMessage($sText, $aImages = [])
@@ -174,47 +225,70 @@ class BxDolAiChatImages
         if ($sText !== '')
             $aBlocks[] = new NeuronAI\Chat\Messages\ContentBlocks\TextContent($sText);
 
-        foreach ((array)$aImages as $aImage) {
-            $sUrl = trim((string)($aImage['url'] ?? ''));
-            $sMime = trim((string)($aImage['mime'] ?? 'image/jpeg'));
-            $oImage = $this->makeNeuronImageContent($sUrl, $sMime);
-            if ($oImage)
-                $aBlocks[] = $oImage;
-            elseif ($sUrl !== '')
-                $aBlocks[] = new NeuronAI\Chat\Messages\ContentBlocks\TextContent($sUrl);
-        }
-
+        $aBlocks = array_merge($aBlocks, $this->imageBlocks($aImages));
         if (!$aBlocks)
             return null;
 
         try {
             return new NeuronAI\Chat\Messages\UserMessage($aBlocks);
         } catch (Throwable $oException) {
-            $oMessage = new NeuronAI\Chat\Messages\UserMessage($sText !== '' ? $sText : ' ');
-            foreach ($aBlocks as $oBlock) {
-                if ($oBlock instanceof NeuronAI\Chat\Messages\ContentBlocks\TextContent)
-                    continue;
-                if (method_exists($oMessage, 'addContent'))
-                    $oMessage->addContent($oBlock);
-            }
-            return $oMessage;
+            return $this->userMessageAddingBlocks($sText, $aBlocks);
         }
     }
 
     /**
-     * Prefer base64 (the model does not have to fetch our URL); fall back to a URL block.
+     * One NeuronAI image block per stored image that can be read.
+     *
+     * @param array<int, array{file_id:int,mime?:string}> $aImages
+     * @return array<int, NeuronAI\Chat\Messages\ContentBlocks\ImageContent>
      */
-    public function makeNeuronImageContent($sUrl, $sMime = 'image/jpeg')
+    protected function imageBlocks($aImages)
     {
-        $sUrl = $this->sanitizeUrl($sUrl);
+        $aBlocks = [];
+        foreach ((array)$aImages as $aImage) {
+            $iFileId = (int)($aImage['file_id'] ?? 0);
+            $sMime = trim((string)($aImage['mime'] ?? self::MIME_DEFAULT));
+            $oImage = $iFileId > 0 ? $this->makeNeuronImageContent($iFileId, $sMime) : null;
+            if ($oImage)
+                $aBlocks[] = $oImage;
+        }
+        return $aBlocks;
+    }
+
+    /**
+     * Fallback for NeuronAI versions whose UserMessage does not take a block list:
+     * a text message with the image blocks added one by one.
+     */
+    protected function userMessageAddingBlocks($sText, $aBlocks)
+    {
+        $oMessage = new NeuronAI\Chat\Messages\UserMessage($sText !== '' ? $sText : ' ');
+        if (!method_exists($oMessage, 'addContent'))
+            return $oMessage;
+
+        foreach ($aBlocks as $oBlock) {
+            if (!($oBlock instanceof NeuronAI\Chat\Messages\ContentBlocks\TextContent))
+                $oMessage->addContent($oBlock);
+        }
+        return $oMessage;
+    }
+
+    /**
+     * Image block for a file in the chat images storage. Prefer base64 (the model
+     * does not have to fetch our URL); fall back to a URL block with the storage URL.
+     */
+    public function makeNeuronImageContent($iFileId, $sMime = self::MIME_DEFAULT)
+    {
+        $oStorage = BxDolStorage::getObjectInstance(self::STORAGE);
+        $sUrl = $oStorage ? (string)$oStorage->getFileUrlById((int)$iFileId) : '';
         if ($sUrl === '')
             return null;
 
+        $sMime = $this->sanitizeMime($sMime);
         $sClass = 'NeuronAI\\Chat\\Messages\\ContentBlocks\\ImageContent';
         if (!class_exists($sClass))
             return null;
 
-        $sData = $this->urlToBase64($sUrl);
+        $sData = $this->storedFileBase64((int)$iFileId, $sUrl);
         if ($sData !== '') {
             if (method_exists($sClass, 'fromBase64'))
                 return $sClass::fromBase64($sData, $sMime);
@@ -250,7 +324,7 @@ class BxDolAiChatImages
         if ($sContent === '')
             return null;
 
-        $sMime = (string)($oBlock->mediaType ?? 'image/jpeg');
+        $sMime = (string)($oBlock->mediaType ?? self::MIME_DEFAULT);
         $sSource = '';
         if (isset($oBlock->sourceType)) {
             $sSource = $oBlock->sourceType instanceof \BackedEnum
@@ -267,44 +341,116 @@ class BxDolAiChatImages
         return ['type' => 'image', 'source' => ['type' => 'url', 'value' => $sUrl, 'mimeType' => $sMime]];
     }
 
-    protected function urlToBase64($sUrl)
+    /**
+     * Base64 of a stored chat image: read from disk for the Local engine, otherwise
+     * downloaded from the URL our storage produced. '' when it cannot be read.
+     */
+    protected function storedFileBase64($iFileId, $sStorageUrl)
     {
-        $sLocal = $this->urlToLocalPath($sUrl);
-        $sBin = ($sLocal !== '' && is_readable($sLocal)) ? @file_get_contents($sLocal) : false;
+        $sBin = false;
+        $sLocal = $this->storedFileLocalPath($iFileId);
+        if ($sLocal !== '')
+            $sBin = @file_get_contents($sLocal);
         if (!is_string($sBin) || $sBin === '')
-            $sBin = @file_get_contents($sUrl);
-        if (!is_string($sBin) || $sBin === '')
-            return '';
-        if (strlen($sBin) > self::MAX_BYTES)
+            $sBin = bx_file_get_contents($sStorageUrl);
+        if (!is_string($sBin) || $sBin === '' || strlen($sBin) > self::MAX_BYTES)
             return '';
         return base64_encode($sBin);
     }
 
     /**
-     * Local path of a file in the chat images storage, '' when the URL is not ours.
+     * Disk path of a Local-engine chat image (`{storage}/{object}/a/ab/abc/{remote_id}`), '' otherwise.
      */
-    protected function urlToLocalPath($sUrl)
+    protected function storedFileLocalPath($iFileId)
     {
         if (!defined('BX_DIRECTORY_STORAGE'))
             return '';
 
-        $aUrl = parse_url((string)$sUrl);
-        $sPath = urldecode((string)($aUrl['path'] ?? ''));
+        $oStorage = BxDolStorage::getObjectInstance(self::STORAGE);
+        $aObject = $oStorage ? $oStorage->getObjectData() : [];
+        $aFile = $this->getStoredFile($iFileId);
+        if (!$aFile || ($aObject['engine'] ?? '') !== 'Local')
+            return '';
+
+        $sRemoteId = (string)($aFile['remote_id'] ?? '');
+        if (!preg_match('/^[A-Za-z0-9]+$/', $sRemoteId))
+            return '';
+
+        $sPath = '';
+        for ($i = 1, $iLevels = (int)($aObject['levels'] ?? 0); $i <= $iLevels; $i++)
+            $sPath .= substr($sRemoteId, 0, $i) . '/';
+
+        $sLocal = BX_DIRECTORY_STORAGE . self::STORAGE . '/' . $sPath . $sRemoteId;
+        return is_file($sLocal) ? $sLocal : '';
+    }
+
+    /**
+     * Row of the chat images storage table, false when there is none.
+     */
+    protected function getStoredFile($iFileId)
+    {
+        if ((int)$iFileId <= 0)
+            return false;
+        return BxDolDb::getInstance()->getRow("SELECT * FROM `" . self::STORAGE . "` WHERE `id` = :id", ['id' => (int)$iFileId]);
+    }
+
+    /**
+     * File id behind a URL storeUpload returned: the URL must be exactly that file's
+     * storage URL. 0 for anything else.
+     */
+    protected function fileIdFromUrl($sUrl)
+    {
+        $sUrl = trim((string)$sUrl);
+        if ($sUrl === '')
+            return 0;
+        if (strpos($sUrl, '/') === 0 && strpos($sUrl, '//') !== 0)
+            $sUrl = rtrim(BX_DOL_URL_ROOT, '/') . $sUrl;
+
+        $aUrl = parse_url($sUrl);
+        if (!is_array($aUrl))
+            return 0;
+
         $aQuery = [];
         if (!empty($aUrl['query']))
             parse_str((string)$aUrl['query'], $aQuery);
+        $sName = !empty($aQuery['f']) && is_string($aQuery['f']) ? $aQuery['f'] : (string)($aUrl['path'] ?? '');
+        $sRemoteId = pathinfo(basename($sName), PATHINFO_FILENAME);
+        if (!preg_match('/^[A-Za-z0-9]+$/', $sRemoteId))
+            return 0;
 
-        $sFile = '';
-        if (!empty($aQuery['f']))
-            $sFile = basename((string)$aQuery['f']);
-        elseif (preg_match('#/' . preg_quote(self::STORAGE, '#') . '/([^/?]+)$#', $sPath, $aMatch))
-            $sFile = basename((string)$aMatch[1]);
+        $iFileId = (int)BxDolDb::getInstance()->getOne("SELECT `id` FROM `" . self::STORAGE . "` WHERE `remote_id` = :r", ['r' => $sRemoteId]);
+        $oStorage = BxDolStorage::getObjectInstance(self::STORAGE);
+        if ($iFileId <= 0 || !$oStorage)
+            return 0;
 
-        if ($sFile === '' || strpos($sFile, '..') !== false)
-            return '';
+        return (string)$oStorage->getFileUrlById($iFileId) === $sUrl ? $iFileId : 0;
+    }
 
-        $sLocal = BX_DIRECTORY_STORAGE . self::STORAGE . '/' . $sFile;
-        return is_file($sLocal) ? $sLocal : '';
+    /**
+     * The file was uploaded by this visitor: the logged-in profile owns it, or this
+     * session uploaded it (guests store files as profile 0).
+     */
+    public function isOwnFile($iFileId)
+    {
+        $aFile = $this->getStoredFile($iFileId);
+        if (!$aFile)
+            return false;
+
+        $iProfileId = (int)bx_get_logged_profile_id();
+        if ($iProfileId > 0 && (int)$aFile['profile_id'] === $iProfileId)
+            return true;
+
+        $aOwn = BxDolSession::getInstance()->getValue(self::SESSION_KEY);
+        return is_array($aOwn) && in_array((int)$iFileId, array_map('intval', $aOwn), true);
+    }
+
+    protected function rememberOwnFile($iFileId)
+    {
+        $oSession = BxDolSession::getInstance();
+        $aOwn = $oSession->getValue(self::SESSION_KEY);
+        $aOwn = is_array($aOwn) ? array_map('intval', $aOwn) : [];
+        $aOwn[] = (int)$iFileId;
+        $oSession->setValue(self::SESSION_KEY, array_slice(array_values(array_unique($aOwn)), -self::SESSION_MAX));
     }
 }
 
