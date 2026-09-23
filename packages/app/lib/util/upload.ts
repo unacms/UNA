@@ -50,6 +50,17 @@ function resolveNativeUploadMeta(uri: string, extraVar: UploadExtra): { name: st
     return { name: name || 'upload', type: type || 'application/octet-stream' };
 }
 
+/** Original picked name, with the extension swapped when an image was re-encoded (crop/webp). */
+function pickedFileName(name: string | undefined, blobType: string): string {
+    const clean = String(name || '').split(/[\\/]/).pop() || '';
+    if (!clean.includes('.')) return '';
+    if (!blobType.startsWith('image/')) return clean;
+    const mimeExt = extFromMime(blobType);
+    const ext = clean.split('.').pop()!.toLowerCase();
+    const same = ext === mimeExt || (mimeExt === 'jpg' && ext === 'jpeg');
+    return same || !mimeExt ? clean : clean.replace(/\.[^.]+$/, '.' + mimeExt);
+}
+
 function urltoFile(url: string, defaultFilename = 'file', defaultMimeType = 'application/octet-stream'): Promise<File> {
     return fetch(url)
         .then(function (response) {
@@ -101,20 +112,32 @@ export const uploadImageFile = async (file: Blob, fetchUrl: string, calback: (re
     }
 }
 
+const BYTES_IN_KB = 1024;
+const BYTES_IN_MB = BYTES_IN_KB * 1024;
+
+/** Human-readable size for UI: "512 B", "3 KB", "1.4 MB". Empty string for missing/zero. */
+export const formatFileSize = (bytes: number | string | null | undefined): string => {
+    const n = Number(bytes);
+    if (!n || n < 0) return '';
+    if (n < BYTES_IN_KB) return `${n} B`;
+    if (n < BYTES_IN_MB) return `${Math.round(n / BYTES_IN_KB)} KB`;
+    return `${(n / BYTES_IN_MB).toFixed(1)} MB`;
+};
+
 export const getUploadSizeMb = async ({ file, uri, fileSizeBytes }: { file?: { size?: number } | null; uri?: string; fileSizeBytes?: number }): Promise<number> => {
     if (typeof fileSizeBytes === 'number' && fileSizeBytes > 0) {
-        return fileSizeBytes / (1024 * 1024);
+        return fileSizeBytes / BYTES_IN_MB;
     }
 
     if (file && typeof file.size === 'number') {
-        return file.size / (1024 * 1024);
+        return file.size / BYTES_IN_MB;
     }
 
     if (uri && Platform.OS === 'web') {
         try {
             const response = await fetch(uri);
             const blob = await response.blob();
-            return (blob?.size || 0) / (1024 * 1024);
+            return (blob?.size || 0) / BYTES_IN_MB;
         } catch {
             return 0;
         }
@@ -231,7 +254,10 @@ export const uploadImage = async (
             fileType = `image/${fileExt}`; // MIME type
         }
         const formData = new FormData();
-        const file = await urltoFile(uri, genRnd(8) + '.' + fileExt, fileType);
+        const picked = await urltoFile(uri, genRnd(8) + '.' + fileExt, fileType);
+        // blob: URLs carry a random UUID, not the picked name — keep the user's original file name.
+        const originalName = pickedFileName(extraVar?.fileName || extraVar?.name, picked.type);
+        const file = originalName ? new File([picked], originalName, { type: picked.type }) : picked;
         if (signal?.aborted) {
             const err: Error & { aborted?: boolean } = new Error('Aborted');
             err.name = 'AbortError';

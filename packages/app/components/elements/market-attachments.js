@@ -3,6 +3,7 @@ import Link from 'app/ui/atoms/link'
 import { Text } from 'app/design/typography'
 import { Icon } from 'app/ui/atoms/icon'
 import { BlockWrapper } from 'app/components/block-wrapper'
+import { formatFileSize } from 'app/lib/util'
 import { useTranslation } from 'react-i18next'
 
 const VERSION_RE = /[-_]v\.?(\d+(?:\.\d+)*)/i
@@ -67,13 +68,8 @@ function classifyAttachments(data) {
     }
 }
 
-function formatKb(bytes) {
-    if (!bytes || bytes <= 0) return null
-    return `${Math.round(bytes / 1024)} Kb`
-}
-
 function DownloadCard({ title, size, href, featured = false }) {
-    const sizeLabel = formatKb(size)
+    const sizeLabel = formatFileSize(size) || null
     return (
         <Link href={href}>
             <Row className=" gap-x-3 my-1 items-center justify-start">
