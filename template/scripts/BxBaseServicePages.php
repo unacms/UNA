@@ -134,6 +134,21 @@ class BxBaseServicePages extends BxDol
 
     public function serviceSetPageBlockData($iBlockId, $iContentId = 0, $sContentModule = '')
     {
+        $iBlockId = (int)$iBlockId;
+        $iContentId = (int)$iContentId;
+        $sContentModule = (string)$sContentModule;
+
+        $aBlock = (new BxDolPageQuery([]))->getPageBlockById($iBlockId);
+        if(empty($aBlock) || $aBlock['type'] != 'bento_grid' || !($aObject = BxDolPageQuery::getPageObject($aBlock['object'])))
+            return ['code' => 404, 'error' => _t('_sys_txt_not_found')];
+
+        /**
+         * The same check BxBasePage::_getBlockBentoGrid shows the editor with. The data has to go under
+         * the content module the block's page reads it with, or it could be shown on another page.
+         */
+        if($sContentModule !== BxDolPage::getPageBlockDataModule($aObject) || !BxDolPage::isAllowedEditPageBlockData($iContentId, $sContentModule))
+            return ['code' => 403, 'error' => _t('_Access denied')];
+
         $sData = @file_get_contents("php://input");
         $aData = json_decode($sData, true);
         if($aData === null)
