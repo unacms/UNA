@@ -352,6 +352,10 @@ BxDolGrid.prototype.processJson = function (oData, sAction, isDisableLoading) {
         	fContinue();
         });
     }
+    else if (oData && undefined != oData.toast) {
+        bx_toast(oData.toast);
+        fContinue();
+    }
     else
     	fContinue();
 };

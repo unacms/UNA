@@ -57,6 +57,10 @@ function processJsonData(oData) {
 		bx_alert(oData.msg, function() {
 			fContinue(oData);
 		});
+    else if(oData && oData.toast != undefined && oData.toast.length != 0) {
+        bx_toast(oData.toast);
+        fContinue(oData);
+    }
 	else
 		fContinue(oData);
 };
@@ -1650,6 +1654,30 @@ function bx_prompt(sMessage, sValue, fOnClickOk, fOnClickCancel, oParams)
         params: oParams
     });
 }
+
+function bx_toast(sMessage, oParams)
+{
+    var oDate = new Date();
+    var sId = 'bx-popup-toast';
+    var sIdClone = sId + '-' + oDate.getTime();
+
+    var oHolder = $('#' + sId + '-holder');
+    var oAlert = oHolder.find('#' + sId).clone();
+    oAlert.attr('id', sIdClone).find('.bx-pt-text').html(sMessage);
+    oHolder.append(oAlert.bx_anim('show', 'fade', 'slow', function() {
+        if(oParams && typeof(oParams.onShow) == 'function')
+            oParams.onShow();
+    }));
+
+    setTimeout(function() {
+        $('#' + sIdClone).bx_anim('hide', 'fade', 'slow', function() {
+            $(this).remove();
+
+            if(oParams && typeof(oParams.onHide) == 'function')
+                oParams.onHide();
+        })
+    }, 1000 * (oParams && oParams.autoHide !== undefined ? parseInt(oParams.autoHide) : 3));
+};
 
 function bx_is_color_scheme_dark()
 {

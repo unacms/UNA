@@ -832,6 +832,15 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
         )), true);
     }
 
+    public function getPopupToast()
+    {
+        $sHtmlId = 'bx-popup-toast';
+        return $this->_oTemplate->parseHtmlByName('popup_trans_toast_holder.html', [
+            'html_id' => $sHtmlId . '-holder',
+            'sample' => $this->transBox($sHtmlId, $this->_oTemplate->parseHtmlByName('popup_trans_toast_cnt.html', []), true)
+        ]);
+    }
+
     /**
      * Output time wrapped in <time> tag in HTML.
      * Then time is autoformatted using JS upon page load, this is aumatically converted to user's timezone and
@@ -980,11 +989,10 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
     protected function getInjFooterPopups() 
     {
         $sContent = '';
-
         $sContent .= $this->getPopupAlert();
         $sContent .= $this->getPopupConfirm();
         $sContent .= $this->getPopupPrompt();
-
+        $sContent .= $this->getPopupToast();
         return $sContent;
     }
 
