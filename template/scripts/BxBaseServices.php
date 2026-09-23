@@ -47,6 +47,9 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
             'GetProductsNames' => 'BxBaseServices',
             'KeywordSearch' => 'BxBaseServices',
             'GetDataSearchApi' => 'BxBaseServices',
+            'SearchParse' => 'BxBaseServices',
+            'GetBlockSearchAi' => 'BxBaseServices',
+            'SearchAiResults' => 'BxBaseServices',
             'Cmts' => 'BxBaseServices',
             'GetFooter' => 'BxBaseServices',
             'SetBadges' => 'BxBaseServices',
@@ -1297,7 +1300,9 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
                 'type' => $sType,
                 'keyword' => $sKeyword,
                 'section' => bx_process_input(bx_get('section')),
-                'cat' => bx_process_input(bx_get('cat'))
+                'cat' => bx_process_input(bx_get('cat')),
+                'filter' => $this->_getSearchApiFilterFromRequest(),
+                'list' => bx_get('list') ? 1 : 0
             ]]);
 
         $sCode = '';
@@ -1419,12 +1424,35 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
             $oSearch->setLiveSearch(true);
             $oSearch->setDataProcessing(true);
             $oSearch->setCustomSearchCondition(['keyword' => $aParamsBrowse['keyword']]);
-            $oSearch->setCustomCurrentCondition([
+
+            $aCurrentCondition = [
                 'paginate' => [
                     'forceStart' => $aParamsBrowse['start'],
                     'perPage' => $aParamsBrowse['per_page'],
                 ]
-            ]);
+            ];
+
+            // date filter (from search_parse): single section only
+            $aFilter = !empty($aParamsBrowse['filter']) && is_array($aParamsBrowse['filter']) ? $aParamsBrowse['filter'] : [];
+            if ($aFilter && count($aParamsBrowse['section']) == 1 && ($oSearchResult = $oSearch->getSearchResultObject($aParamsBrowse['section'][0]))) {
+                $aRestriction = $this->_getSearchApiFilterRestriction($oSearchResult, $aFilter);
+                if ($aRestriction) {
+                    $aCurrentCondition['restriction'] = $aRestriction;
+                    // live search returns nothing without a keyword, a date filter alone is enough here
+                    if (empty($aParamsBrowse['keyword']))
+                        $oSearch->setLiveSearch(false);
+                }
+                else
+                    unset($aParamsBrowse['filter']);
+            }
+            else
+                unset($aParamsBrowse['filter']);
+
+            // "all events": section without keyword and date - list the section instead of an empty live search
+            if (!empty($aParamsBrowse['list']) && empty($aParamsBrowse['keyword']) && count($aParamsBrowse['section']) == 1)
+                $oSearch->setLiveSearch(false);
+
+            $oSearch->setCustomCurrentCondition($aCurrentCondition);
 
             $aData = $oSearch->response();
             if(count($aData) > $aParamsBrowse['per_page'])
@@ -1439,6 +1467,344 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
                 ])
             ];
         }
+    }
+
+    /**
+     * Natural language search query -> structured filter (section, keyword, date) via a judge AI model.
+     * Guest safe. Without an active judge model the query is returned as a plain keyword.
+     *
+     * @code /api.php?r=system/search_parse/TemplServices&params={"params":{"query":"events on 23/09","timezone":"Europe/Berlin"}} @endcode
+     */
+    public function serviceSearchParse ($aParams)
+    {
+        if(!bx_is_api())
+            return false;
+
+        if(is_string($aParams))
+            $aParams = bx_api_get_browse_params($aParams);
+        $aParams = !empty($aParams['params']) && is_array($aParams['params']) ? $aParams['params'] : [];
+
+        $sQuery = isset($aParams['query']) ? bx_process_input(trim((string)$aParams['query'])) : '';
+        $sTimezone = isset($aParams['timezone']) ? bx_process_input((string)$aParams['timezone']) : '';
+        $bDebug = !empty($aParams['debug']) && isAdmin();
+
+        // extended search object (sys_objects_search_extended): fields of that object -> search_params
+        $sObject = isset($aParams['object']) ? bx_process_input((string)$aParams['object'], BX_DATA_TEXT) : '';
+        if($sObject !== '' && $this->_getSearchExtendedObject($sObject)) {
+            $oParser = BxDolAiSearchExtParser::getInstance();
+            $aResult = $oParser->parseObject($sObject, $sQuery, [
+                'timezone' => $sTimezone,
+                'debug' => $bDebug,
+            ]);
+            $aResult['available'] = $oParser->isAvailable();
+            $aResult['mode'] = 'extended';
+
+            return [bx_api_get_block('search_parse', $aResult)];
+        }
+
+        $aSections = $this->_getSearchApiSections();
+
+        $oParser = BxDolAiSearchParser::getInstance();
+        $aResult = $oParser->parse($sQuery, [
+            'sections' => $aSections,
+            'timezone' => $sTimezone,
+            'debug' => $bDebug,
+        ]);
+
+        $aResult['available'] = $oParser->isAvailable();
+        $aResult['mode'] = 'sections';
+        $aResult['sections'] = [];
+        foreach($aSections as $sSectionName => $sSectionTitle)
+            $aResult['sections'][] = ['name' => $sSectionName, 'title' => $sSectionTitle];
+
+        // filter for get_data_search_api / search-keyword page
+        $aResult['filter'] = $aResult['date'] ? [
+            'date_field' => $aResult['date']['field'],
+            'date_from' => $aResult['date']['from'],
+            'date_to' => $aResult['date']['to'],
+            'timezone' => $sTimezone,
+        ] : null;
+
+        return [bx_api_get_block('search_parse', $aResult)];
+    }
+
+    /**
+     * Page block "AI search" (NEO element `search_ai`): one input, the query is parsed by `search_parse`
+     * into section / keyword / date chips, results come from `get_data_search_api`. API only.
+     *
+     * @param $mixedParams optional; a search section (e.g. bx_events) or an extended search object
+     *        (e.g. bx_market) to lock the block to, or an array:
+     *        ['object' => 'bx_market', 'use_page_results' => true] - the block only produces filters
+     *        and the page's own get_results block (TemplSearchExtendedServices) renders the results,
+     *        exactly as the search form does it.
+     *        ['object' => 'bx_market', 'rerank' => true] - the block renders the results itself and
+     *        orders them by meaning (BxDolAiSearchRerank), not by the SQL order.
+     */
+    public function serviceGetBlockSearchAi ($mixedParams = '')
+    {
+        if(!bx_is_api())
+            return '';
+
+        $bUsePageResults = false;
+        $bRerank = false;
+        if(is_array($mixedParams)) {
+            $bUsePageResults = !empty($mixedParams['use_page_results']);
+            $bRerank = !empty($mixedParams['rerank']);
+            $sSection = isset($mixedParams['object']) ? (string)$mixedParams['object'] : (isset($mixedParams['section']) ? (string)$mixedParams['section'] : '');
+        }
+        else
+            $sSection = (string)$mixedParams;
+
+        // extended search object (e.g. bx_market): chips are the object's search fields, results via search_ai_results
+        if($sSection !== '' && $this->_getSearchExtendedObject($sSection)) {
+            $oParser = BxDolAiSearchExtParser::getInstance();
+            $aFields = [];
+            foreach($oParser->getFields($sSection) as $sName => $aField)
+                $aFields[] = ['name' => $sName, 'caption' => $aField['caption'], 'kind' => $aField['kind']];
+
+            return [bx_api_get_block('search_ai', [
+                'mode' => 'extended',
+                'available' => $oParser->isAvailable(),
+                'object' => $sSection,
+                'fields' => $aFields,
+                'parse_url' => '/api.php?r=system/search_parse/TemplServices&params=',
+                // true: the parsed values are pushed into the page's own get_results block as `filters`
+                // (same contract as the search form); false: the block fetches and renders results itself
+                'use_page_results' => $bUsePageResults ? 1 : 0,
+                // semantic ordering by the judge model: with use_page_results the block swaps the page's
+                // list source to search_ai_results, ranked results cannot be expressed as form filters
+                'rerank' => $bRerank && BxDolAiSearchRerank::getInstance()->isAvailable() ? 1 : 0,
+                'results_url' => '/api.php?r=system/search_ai_results/TemplServices&params=',
+            ])];
+        }
+
+        $aSections = $this->_getSearchApiSections();
+        $sSection = $sSection && isset($aSections[$sSection]) ? $sSection : '';
+
+        $aSectionsList = [];
+        foreach($aSections as $sSectionName => $sSectionTitle)
+            $aSectionsList[] = ['name' => $sSectionName, 'title' => $sSectionTitle];
+
+        return [bx_api_get_block('search_ai', [
+            'mode' => 'sections',
+            'available' => BxDolAiSearchParser::getInstance()->isAvailable(),
+            'section' => $sSection,
+            'sections' => $aSectionsList,
+            'parse_url' => '/api.php?r=system/search_parse/TemplServices&params=',
+            'search_url' => '/api.php?r=system/get_data_search_api/TemplServices&params=',
+            'results_url' => '/search-keyword',
+        ])];
+    }
+
+    /**
+     * Results of an extended search object for search_params produced by search_parse (or edited via chips).
+     * Only field names of the object are accepted; type and operator are taken from the object's field
+     * definitions, never from the client. Guest safe (the module's own privacy conditions apply).
+     *
+     * @code /api.php?r=system/search_ai_results/TemplServices&params={"params":{"object":"bx_market","search_params":{"cat":{"value":[3]}},"start":0,"per_page":12}} @endcode
+     */
+    public function serviceSearchAiResults ($aParams)
+    {
+        if(!bx_is_api())
+            return false;
+
+        if(is_string($aParams))
+            $aParams = bx_api_get_browse_params($aParams);
+        $aParams = !empty($aParams['params']) && is_array($aParams['params']) ? $aParams['params'] : [];
+
+        $sObject = isset($aParams['object']) ? bx_process_input((string)$aParams['object'], BX_DATA_TEXT) : '';
+        $iStart = isset($aParams['start']) ? (int)$aParams['start'] : 0;
+        $iPerPage = isset($aParams['per_page']) ? (int)$aParams['per_page'] : 12;
+        if($iPerPage < 1 || $iPerPage > 50)
+            $iPerPage = 12;
+
+        $aObject = $sObject !== '' ? $this->_getSearchExtendedObject($sObject) : false;
+        $oSearch = $aObject ? BxDolSearchExtended::getObjectInstance($sObject) : false;
+        if(!$oSearch || !$oSearch->isEnabled())
+            return [bx_api_get_msg(_t('Not Found'), ['ext' => ['msg_type' => 'result']])];
+
+        $aFields = [];
+        foreach($aObject['fields'] as $aField)
+            if(!empty($aField['active']))
+                $aFields[$aField['name']] = $aField;
+
+        $aSearchParams = [];
+        $aClient = !empty($aParams['search_params']) && is_array($aParams['search_params']) ? $aParams['search_params'] : [];
+        foreach($aClient as $sName => $aParam) {
+            if(!isset($aFields[$sName]) || !is_array($aParam) || !isset($aParam['value']))
+                continue;
+
+            $mixedValue = $aParam['value'];
+            if(is_array($mixedValue)) {
+                array_walk_recursive($mixedValue, function(&$mixed) {
+                    $mixed = is_string($mixed) ? bx_process_input($mixed) : (is_numeric($mixed) ? $mixed + 0 : '');
+                });
+            }
+            else
+                $mixedValue = is_numeric($mixedValue) ? $mixedValue + 0 : bx_process_input((string)$mixedValue);
+
+            if($mixedValue === '' || $mixedValue === [] || (is_array($mixedValue) && bx_is_empty_array($mixedValue)))
+                continue;
+
+            $aSearchParams[$sName] = [
+                'type' => $aFields[$sName]['search_type'],
+                'value' => $mixedValue,
+                'operator' => $aFields[$sName]['search_operator'],
+            ];
+        }
+
+        $sQuery = isset($aParams['query']) ? bx_process_input(trim((string)$aParams['query'])) : '';
+        $bRerank = !empty($aParams['rerank']) && $sQuery !== '';
+
+        // semantic ordering: the SQL picks candidates (with and without the keyword), the judge model
+        // decides which of them answer the query and in which order
+        if($bRerank) {
+            $aRank = BxDolAiSearchRerank::getInstance()->rank($sObject, $sQuery, $aSearchParams, [
+                'keyword_field' => isset($aParams['keyword_field']) ? bx_process_input((string)$aParams['keyword_field'], BX_DATA_TEXT) : '',
+                'debug' => !empty($aParams['debug']) && isAdmin(),
+            ]);
+
+            if(!empty($aRank['ids'])) {
+                $aIds = array_slice($aRank['ids'], $iStart, $iPerPage + 1);
+                $bHasMore = count($aIds) > $iPerPage;
+                if($bHasMore)
+                    array_pop($aIds);
+
+                $oContentInfo = BxDolContentInfo::getObjectInstance($aObject['object_content_info']);
+                $aData = [];
+                foreach($aIds as $iId)
+                    if(($mixedUnit = $oContentInfo->getContentSearchResultUnit($iId)))
+                        $aData[] = $mixedUnit;
+
+                $aBlockParams = ['per_page' => $iPerPage, 'start' => $iStart, 'object' => $sObject, 'search_params' => $aSearchParams, 'query' => $sQuery, 'rerank' => 1];
+                if(!empty($aRank['scores']))
+                    $aBlockParams['scores'] = $aRank['scores'];
+
+                return [bx_api_get_block('browse', [
+                    'nocache' => true,
+                    'module' => $aObject['module'],
+                    'unit' => 'general-content-list',
+                    'request_url' => '/api.php?r=system/search_ai_results/TemplServices&params=',
+                    'params' => $aBlockParams,
+                    'data' => $aData,
+                ], ['ext' => ['rerank' => ['judged' => $aRank['judged'], 'cached' => $aRank['cached'], 'ms' => $aRank['ms'], 'total' => count($aRank['ids'])]]])];
+            }
+        }
+
+        if(!$aSearchParams)
+            return [bx_api_get_msg(_t('Nothing found'), ['ext' => ['msg_type' => 'result']])];
+
+        $aResults = $oSearch->getResults([
+            'search_params' => $aSearchParams,
+            'start' => $iStart,
+            'per_page' => $iPerPage,
+            'js_mode' => true,
+        ]);
+        if(!is_array($aResults))
+            return [bx_api_get_msg(_t('Nothing found'), ['ext' => ['msg_type' => 'result']])];
+
+        // pagination goes through this service again
+        foreach($aResults as $iIndex => $aBlock)
+            if(isset($aBlock['data']['request_url'])) {
+                $aResults[$iIndex]['data']['request_url'] = '/api.php?r=system/search_ai_results/TemplServices&params=';
+                $aResults[$iIndex]['data']['params'] = ['object' => $sObject, 'search_params' => $aSearchParams, 'per_page' => $iPerPage, 'start' => $iStart];
+            }
+
+        return $aResults;
+    }
+
+    /**
+     * Extended search object with its fields; BxDolForm must be loaded first, its file defines
+     * BX_DATA_LISTS_KEY_PREFIX which the fields' pre-values are read with.
+     */
+    protected function _getSearchExtendedObject($sObject)
+    {
+        bx_import('BxDolForm');
+        return BxDolSearchExtendedQuery::getSearchObject($sObject);
+    }
+
+    /**
+     * Global search sections enabled for the API: [name => translated title]
+     */
+    protected function _getSearchApiSections()
+    {
+        $aSectionsAvail = explode(',', getParam('sys_api_search_sections'));
+        $aSectionsAll = BxDolDb::getInstance()->fromCache(
+            'sys_global_search_pairs',
+            'getPairs',
+            'SELECT `ObjectName` AS `name`, `Title` AS `title` FROM `sys_objects_search` WHERE `GlobalSearch`=\'1\' ORDER BY `Order` ASC',
+            'name', 'title'
+        );
+
+        $aSections = [];
+        foreach($aSectionsAll as $sSectionName => $sSectionTitle)
+            if(in_array($sSectionName, $aSectionsAvail))
+                $aSections[$sSectionName] = _t($sSectionTitle);
+
+        return $aSections;
+    }
+
+    /**
+     * Date filter passed as plain GET params of the search-keyword page
+     */
+    protected function _getSearchApiFilterFromRequest()
+    {
+        $sFrom = bx_process_input(bx_get('date_from'));
+        if(!$sFrom)
+            return null;
+
+        return [
+            'date_field' => bx_process_input(bx_get('date_field')),
+            'date_from' => $sFrom,
+            'date_to' => bx_process_input(bx_get('date_to')),
+            'timezone' => bx_process_input(bx_get('timezone')),
+        ];
+    }
+
+    /**
+     * Convert a date filter [date_field => starts|ends|created, date_from => Y-m-d, date_to => Y-m-d, timezone]
+     * into search restrictions for the given search result object; [] when it can't be applied.
+     */
+    protected function _getSearchApiFilterRestriction($oSearchResult, $aFilter)
+    {
+        $sFrom = isset($aFilter['date_from']) ? (string)$aFilter['date_from'] : '';
+        $sTo = isset($aFilter['date_to']) && $aFilter['date_to'] ? (string)$aFilter['date_to'] : $sFrom;
+        if(!preg_match('/^\d{4}-\d{2}-\d{2}$/', $sFrom) || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $sTo))
+            return [];
+
+        $sTimezone = isset($aFilter['timezone']) && in_array($aFilter['timezone'], timezone_identifiers_list()) ? $aFilter['timezone'] : date_default_timezone_get();
+        $oTimezone = new DateTimeZone($sTimezone ?: 'UTC');
+        try {
+            $iFrom = (new DateTime($sFrom . ' 00:00:00', $oTimezone))->getTimestamp();
+            $iTo = (new DateTime($sTo . ' 23:59:59', $oTimezone))->getTimestamp();
+        }
+        catch (Exception $e) {
+            return [];
+        }
+        if($iTo < $iFrom)
+            return [];
+
+        $sDateField = isset($aFilter['date_field']) ? (string)$aFilter['date_field'] : 'created';
+        $aCurrent = $oSearchResult->aCurrent;
+        $sModule = isset($aCurrent['module_name']) ? $aCurrent['module_name'] : '';
+
+        if($sModule == 'bx_events') {
+            $sTable = 'bx_events_data';
+            $aFields = ['starts' => 'date_start', 'ends' => 'date_end', 'created' => 'added'];
+            $sField = isset($aFields[$sDateField]) ? $aFields[$sDateField] : 'date_start';
+        }
+        else {
+            $sTable = !empty($aCurrent['tableSearch']) ? $aCurrent['tableSearch'] : (isset($aCurrent['table']) ? $aCurrent['table'] : '');
+            $sField = !empty($aCurrent['added']) ? $aCurrent['added'] : 'added';
+        }
+
+        if(!$sTable || !BxDolDb::getInstance()->isFieldExists($sTable, $sField))
+            return [];
+
+        return [
+            'api_filter_date_from' => ['value' => $iFrom, 'field' => $sField, 'operator' => '>=', 'table' => $sTable],
+            'api_filter_date_to' => ['value' => $iTo, 'field' => $sField, 'operator' => '<=', 'table' => $sTable],
+        ];
     }
 
     /**
