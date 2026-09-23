@@ -7122,7 +7122,7 @@ CREATE TABLE IF NOT EXISTS `sys_agents_sql_log` (
   PRIMARY KEY (`id`),
   KEY `thread_id` (`thread_id`(191)),
   KEY `agent_id` (`agent_id`),
-  KEY `table_pk` (`table_name`, `pk_name`, `pk_value`)
+  KEY `table_pk` (`table_name`(64), `pk_name`(64), `pk_value`(63))
 );
 
 CREATE TABLE IF NOT EXISTS `sys_agents_prompt_feedback` (
