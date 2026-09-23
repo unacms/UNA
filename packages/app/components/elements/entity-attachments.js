@@ -1,11 +1,10 @@
 import { View, Row, Pressable } from 'app/design/view';
 import { useState } from 'react';
 import Image from 'app/ui/atoms/image';
-import { Text } from 'app/design/typography';
-import Link from 'app/ui/atoms/link';
 import { Modal } from 'app/design/controls'
 import Video from 'app/ui/atoms/video';
-import { FeedbackHaptics, formatFileSize } from 'app/lib/util';
+import FileCard from 'app/ui/molecules/content/file-card';
+import { FeedbackHaptics } from 'app/lib/util';
 import { BlockWrapper } from 'app/components/block-wrapper'
 import { Icon } from 'app/ui/atoms/icon';
 import { useTranslation } from 'react-i18next'
@@ -20,33 +19,12 @@ const AttachmentContainer = ({ children }) => (
     </View>
 );
 
-// Extension from the stored name first: API `ext` can be a mime subtype (e.g. "x-zip-compressed").
-const fileExt = (data) => {
-    const fromName = String(data.file_name || '').match(/\.([a-z0-9]{1,8})$/i)?.[1];
-    return (fromName || data.ext || '').toLowerCase();
-};
-
-const FileItem = ({ data }) => {
-    const ext = fileExt(data);
-    const meta = [ext.toUpperCase(), formatFileSize(data.size)].filter(Boolean).join(' · ');
-
-    return (
-        <View className="p-1 w-full">
-            <Link href={data.url} mode="plain" className="block">
-                <Row className="items-center gap-3 rounded-lg p-2 shadow-btn-outline dark:shadow-btn-outline-deep">
-                    <View className="h-10 w-10 shrink-0 items-center justify-center rounded-md bg-muted">
-                        <Icon icon="File" size={20} className="text-muted-foreground" />
-                    </View>
-                    <View className="min-w-0 flex-1">
-                        <Text numberOfLines={1} className="text-sm text-foreground">{data.file_name}</Text>
-                        {meta ? <Text numberOfLines={1} className="text-xs text-muted-foreground">{meta}</Text> : null}
-                    </View>
-                    <Icon icon="Download" size={16} className="text-muted-foreground" />
-                </Row>
-            </Link>
-        </View>
-    );
-};
+// API `ext` can be a mime subtype (e.g. "x-zip-compressed"), so FileCard prefers the name's extension.
+const FileItem = ({ data }) => (
+    <View className="p-1 w-full">
+        <FileCard href={data.url} name={data.file_name} size={data.size} ext={data.ext} />
+    </View>
+);
 
 const ImageItem = ({ data, handleShowImage }) => (
     <AttachmentContainer>

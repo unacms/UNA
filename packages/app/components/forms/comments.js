@@ -3,7 +3,7 @@ import { useEffect, useMemo } from 'react'
 import { getFormFieldByData } from 'app/lib/form/form-helpers'
 import { Keyboard, Platform } from 'react-native'
 import { useFormContext } from 'react-hook-form'
-import { editorHtmlHasContent, removeEmptyTags } from 'app/lib/util'
+import { editorHtmlHasContent, removeEmptyTags, getStoragePickerKind } from 'app/lib/util'
 import { useCurrentUser } from 'app/context/user'
 import Profile from 'app/ui/molecules/profile/profile'
 import { FileButton } from 'app/lib/form/form-helpers'
@@ -93,6 +93,8 @@ export default function FormComments(props) {
     props.data.inputs['cmt_submit'].icon_only = true
     props.data.inputs['cmt_image'].rounded = 'true'
     props.data.inputs['cmt_image'].variant = 'default'
+    // Comment storage decides: images-only modules keep the photo icon, others get a generic attachment.
+    const attachIcon = getStoragePickerKind(props.data.inputs['cmt_image'].ext_allow) === 'any' ? 'Paperclip' : 'Image'
 
     const hasContent = !!hasText || !!imagesValue || props.data.inputs['cmt_text'].html == 2 || props.data.inputs['cmt_text'].html == 1
     // Jobs reviews send `cmt_mood` (star rating). Keep it on the composer
@@ -177,7 +179,7 @@ export default function FormComments(props) {
                                             hitSize={isDesktop ? 40 : 36}
                                         />
                                     ) : null}
-                                    <FileButton style="borderless" field_name="cmt_image" size="sm" icon="Image" source="library" />
+                                    <FileButton style="borderless" field_name="cmt_image" size="sm" icon={attachIcon} source="library" />
                                     {!isWeb ? (
                                         <FileButton field_name="cmt_image" style="borderless" size="sm" icon="Camera" source="camera" />
                                     ) : null}

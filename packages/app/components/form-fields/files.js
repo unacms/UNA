@@ -8,7 +8,7 @@ import { genRnd, appSetting, prepareImageForUpload } from 'app/lib/util';
 import * as DocumentPicker from 'expo-document-picker';
 import { fetcher } from 'app/lib/fetcher';
 import { useFormContext, useController } from 'react-hook-form';
-import { uploadImage, md5 } from 'app/lib/util';
+import { uploadImage, md5, getStoragePickerKind, isExtAllowed, splitExtList } from 'app/lib/util';
 import Loading from 'app/ui/atoms/loading'
 import { Text } from 'app/design/typography'
 import { Image as ImageNative, Alert, Linking, Platform } from 'react-native';
@@ -58,6 +58,8 @@ function resolvePickerSource(source, fallback = 'library') {
 const IMAGE_FIELD_NAMES = new Set(['photo', 'cmt_image', 'pictures', 'picture', 'covers', 'avatar', 'badge']);
 const VIDEO_FIELD_NAMES = new Set(['video', 'videos']);
 const FILE_FIELD_NAMES = new Set(['file', 'files']);
+// One field for every module's comments: the storage's ext rules decide images-only vs any file.
+const STORAGE_DRIVEN_FIELD_NAMES = new Set(['cmt_image']);
 const IMAGE_EXTS = ['jpg', 'jpeg', 'jpe', 'gif', 'png', 'svg', 'webp', 'heic', 'heif'];
 const VIDEO_EXTS = ['mp4', 'mov', 'm4v', 'avi', 'webm', '3gp'];
 
@@ -612,26 +614,42 @@ export default function (props) {
             }
         } else {
             try {
+                // Web `accept` understands extensions; native pickers only take MIME types.
+                const allowList = splitExtList(extAllow);
                 const result = await DocumentPicker.getDocumentAsync({
-                    type: '*/*',
+                    type: Platform.OS === 'web' && allowList.length ? allowList.map((e) => '.' + e) : '*/*',
                     multiple: true
                 });
 
                 if (!result.canceled && result.assets?.length) {
-                    await finishPickedAssets(result.assets);
+                    const allowed = result.assets.filter(
+                        (asset) => isExtAllowed(asset.name || asset.fileName, extAllow, props.ext_deny)
+                    );
+                    if (allowed.length !== result.assets.length) {
+                        setMessage('Some files are not supported.');
+                    }
+                    if (allowed.length) {
+                        await finishPickedAssets(allowed);
+                    }
                 }
             } catch (err) {
                 console.error('Error picking document:', err);
             }
         }
-    }, [name, props.ext_allow, bMultiple, hasPermissionCamera, hasPermissionLibrary, requestPermissionCamera, requestPermissionLibrary, finishPickedAssets]);
+    }, [name, props.ext_allow, props.ext_deny, bMultiple, hasPermissionCamera, hasPermissionLibrary, requestPermissionCamera, requestPermissionLibrary, finishPickedAssets]);
 
     const selectImage = useCallback(async (source, mediaTypesOverride) => {
         try {
             const extAllow = props.ext_allow ?? '';
             const extDeny = props.ext_deny ?? '';
             const type = resolvePickerSource(source, props.source ?? 'library');
-            const bIsMedia = shouldUseMediaPicker(name, extDeny, extAllow);
+            let bIsMedia = shouldUseMediaPicker(name, extDeny, extAllow);
+            // Camera always shoots photos; the library button follows the storage rules.
+            if (STORAGE_DRIVEN_FIELD_NAMES.has(name) && type !== 'camera' && !mediaTypesOverride?.length) {
+                const kind = getStoragePickerKind(extAllow);
+                bIsMedia = kind !== 'any';
+                if (kind === 'media') mediaTypesOverride = ['images', 'videos'];
+            }
 
             if (Platform.OS === 'web' || !bIsMedia) {
                 await selectImage1(type, bIsMedia, mediaTypesOverride);

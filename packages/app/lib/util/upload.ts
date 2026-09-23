@@ -112,6 +112,47 @@ export const uploadImageFile = async (file: Blob, fetchUrl: string, calback: (re
     }
 }
 
+const PICKER_IMAGE_EXTS = new Set(['jpg', 'jpeg', 'jpe', 'jfif', 'gif', 'png', 'svg', 'webp', 'heic', 'heif', 'bmp', 'tif', 'tiff', 'ico', 'avif']);
+const PICKER_VIDEO_EXTS = new Set(['mp4', 'mov', 'm4v', 'avi', 'webm', '3gp', 'mkv', 'mpg', 'mpeg', 'wmv', 'flv', 'ogv']);
+
+/** Storage ext list ("jpg,png" / ".jpg, .png") → normalized extensions. */
+export const splitExtList = (list: string | null | undefined): string[] =>
+    String(list || '').toLowerCase().split(',').map((s) => s.trim().replace(/^\./, '')).filter(Boolean);
+
+/** Lowercased extension of a file name, '' when there is none. */
+export const fileNameExt = (name: string | null | undefined): string =>
+    String(name || '').match(/\.([a-z0-9]{1,10})$/i)?.[1]?.toLowerCase() || '';
+
+/** Attachment kind from a file name: 'image' | 'video' | 'file'. */
+export const attachmentKindByName = (name: string | null | undefined): 'image' | 'video' | 'file' => {
+    const ext = fileNameExt(name);
+    if (PICKER_IMAGE_EXTS.has(ext)) return 'image';
+    if (PICKER_VIDEO_EXTS.has(ext)) return 'video';
+    return 'file';
+};
+
+/**
+ * What a storage's `ext_allow` (UNA markers already expanded) lets the user pick; `ext_deny` is checked per file:
+ * 'images' (photo picker), 'media' (photos + videos) or 'any' (document picker).
+ */
+export const getStoragePickerKind = (extAllow?: string | null): 'images' | 'media' | 'any' => {
+    const allow = splitExtList(extAllow);
+    // deny-mode storage (empty allow list) accepts everything except the deny list.
+    if (!allow.length) return 'any';
+    if (allow.every((e) => PICKER_IMAGE_EXTS.has(e))) return 'images';
+    if (allow.every((e) => PICKER_IMAGE_EXTS.has(e) || PICKER_VIDEO_EXTS.has(e))) return 'media';
+    return 'any';
+};
+
+/** Client-side mirror of the storage ext check. Names without an extension are left to the server. */
+export const isExtAllowed = (name: string | null | undefined, extAllow?: string | null, extDeny?: string | null): boolean => {
+    const ext = fileNameExt(name);
+    if (!ext) return true;
+    const allow = splitExtList(extAllow);
+    if (allow.length && !allow.includes(ext)) return false;
+    return !splitExtList(extDeny).includes(ext);
+};
+
 const BYTES_IN_KB = 1024;
 const BYTES_IN_MB = BYTES_IN_KB * 1024;
 

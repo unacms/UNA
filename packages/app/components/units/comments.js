@@ -1,6 +1,6 @@
 import { useMemo, memo, useCallback, useState, useEffect } from 'react'
 import { Platform, Animated } from 'react-native'
-import { menuItemsByName, FeedbackHaptics, appSetting, getDataForMenu } from 'app/lib/util';
+import { menuItemsByName, FeedbackHaptics, appSetting, getDataForMenu, attachmentKindByName } from 'app/lib/util';
 import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
 import { Button, Modal } from 'app/design/controls'
@@ -18,6 +18,7 @@ import { useTranslation } from 'react-i18next'
 import Link from 'app/ui/atoms/link'
 import { toUnaDisplayImageItem } from 'app/lib/image-helpers'
 import Carousel from 'app/ui/molecules/content/carousel'
+import FileCard from 'app/ui/molecules/content/file-card'
 import { components } from 'app/components/registry'
 import { StarsView } from 'app/ui/atoms/stars'
 import Loading from 'app/ui/atoms/loading'
@@ -168,10 +169,23 @@ function UnitCommentsDefault(props) {
         return cellsArray
     }, [level, maxLevel, lvls])
 
-    const imageList = useMemo(
-        () => files?.map(toUnaDisplayImageItem).filter(Boolean),
-        [files]
-    )
+    // UNA sends every comment file here: images and videos go to the carousel, the rest to a file list.
+    const { imageList, fileList } = useMemo(() => {
+        const media = []
+        const other = []
+        for (const file of files || []) {
+            const kind = file?.is_image ? 'image' : attachmentKindByName(file?.file_name)
+            if (kind === 'image') {
+                const item = toUnaDisplayImageItem(file)
+                if (item) media.push(item)
+            } else if (kind === 'video' && file?.file) {
+                media.push({ src: file.file, type: 'video' })
+            } else if (file?.file) {
+                other.push(file)
+            }
+        }
+        return { imageList: media, fileList: other }
+    }, [files])
 
     if (!hasData) return null
 
@@ -314,6 +328,13 @@ function UnitCommentsDefault(props) {
                         {viewState.view != 'edited' && imageList?.length > 0 && (
                             <View className="max-w-xs w-full">
                                 <Carousel data={imageList} />
+                            </View>
+                        )}
+                        {viewState.view != 'edited' && fileList.length > 0 && (
+                            <View className="max-w-xs w-full gap-1">
+                                {fileList.map((file) => (
+                                    <FileCard key={file.file_id} href={file.file} name={file.file_name} size={file.file_size} compact />
+                                ))}
                             </View>
                         )}
                     </View>
