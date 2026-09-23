@@ -275,13 +275,13 @@ BxDolGrid.prototype.processJson = function (oData, sAction, isDisableLoading) {
                 $('#' + $this._sIdWrapper).find('.bx-grid-header-controls-counter-value').html(oData.total_count_f);
 
                 switch(sAction) {
-                    case 'display':
-                        $('#' + $this._sIdContainer).html($(oData.grid).find('#' + $this._sIdContainer).html());
-                        break;
-
                     case 'load_more':
                         var sClassData = 'bx-grid-table-data';
                         $('#' + $this._sIdContainer).find('.' + sClassData).append($(oData.grid).find('#' + $this._sIdContainer + ' .' + sClassData).html());
+                        break;
+
+                    default:
+                        $('#' + $this._sIdContainer).html($(oData.grid).find('#' + $this._sIdContainer).html());
                         break;
                 }
 
