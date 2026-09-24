@@ -1,6 +1,10 @@
 <div class="bx-agents-popup-chat-wrap" data-agent-id="__agent_id__">
     <aside class="bx-agents-popup-chat-list">
         <div class="bx-agents-popup-chat-list-title">__txt_chats__</div>
+        <div class="bx-agents-popup-chat-list-search">
+            <input type="search" id="__chat_id__-search" class="bx-agents-popup-chat-list-search-input" placeholder="__txt_search__" aria-label="__txt_search__" autocomplete="off" />
+        </div>
+        <div class="bx-agents-popup-chat-list-empty" style="display:none;">__txt_search_empty__</div>
         <div class="bx-agents-popup-chat-list-items">
             <bx_repeat:threads>
                 <button type="button" class="bx-agents-popup-chat-thread__class_mine__" data-thread-id="__thread_id__" data-writable="__writable__" data-context="__context_pid__">

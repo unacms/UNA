@@ -66,8 +66,8 @@ class BxDolAIToolFactory extends BxDolFactory
 
             default:
                 if (!empty($a['class_name'])) {
-                    if (!empty($aObject['class_file']))
-                        require_once(BX_DIRECTORY_PATH_ROOT . $aObject['class_file']);
+                    if (!empty($a['class_file']))
+                        require_once(BX_DIRECTORY_PATH_ROOT . $a['class_file']);
                     $o = $a['class_name']::make();
                 }
                 else {

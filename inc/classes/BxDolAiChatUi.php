@@ -9,6 +9,8 @@
 
 class BxDolAiChatUi
 {
+    protected $_oImages;
+
     public static function getInstance()
     {
         if (!isset($GLOBALS['bxDolClasses'][__CLASS__]))
@@ -17,11 +19,22 @@ class BxDolAiChatUi
         return $GLOBALS['bxDolClasses'][__CLASS__];
     }
 
+    public function __construct()
+    {
+        $this->_oImages = BxDolAiChatImages::getInstance();
+    }
+
     public function storedChatJsonToUiMessages($sJson)
     {
         $aStored = json_decode((string)$sJson, true);
+        if (is_string($aStored))
+            $aStored = json_decode($aStored, true);
         if (!is_array($aStored) || $aStored === [])
             return [];
+        if (isset($aStored['messages']) && is_array($aStored['messages']))
+            $aStored = $aStored['messages'];
+        if (!isset($aStored[0]) && isset($aStored['role']))
+            $aStored = [$aStored];
 
         $aResult = [];
         $i = 0;
@@ -29,30 +42,38 @@ class BxDolAiChatUi
             if (!is_array($aMessage))
                 continue;
 
-            $sType = (string)($aMessage['type'] ?? '');
-            if ($sType === 'tool_call' || $sType === 'tool_call_result')
+            // A tool call turn keeps the assistant text said before the call
+            // (then chat_buttons, etc.): show it, only the tool result is internal.
+            $sType = $this->storedEnumString($aMessage['type'] ?? '');
+            if ($sType === 'tool_call_result')
                 continue;
 
-            $sRole = (string)($aMessage['role'] ?? '');
-            if ($sRole === 'model')
+            $sRole = $this->storedEnumString($aMessage['role'] ?? $aMessage['author'] ?? '');
+            if ($sRole === 'model' || $sType === 'tool_call')
                 $sRole = 'assistant';
+            if ($sRole === 'human')
+                $sRole = 'user';
             if ($sRole !== 'user' && $sRole !== 'assistant')
                 continue;
 
             $aParts = [];
-            $mixedContent = $aMessage['content'] ?? '';
+            if (!empty($aMessage['parts']) && is_array($aMessage['parts'])) {
+                foreach ($aMessage['parts'] as $aBlock) {
+                    $aPart = $this->storedContentBlockToUiPart($aBlock);
+                    if ($aPart)
+                        $aParts[] = $aPart;
+                }
+            }
+            $mixedContent = $aMessage['content'] ?? $aMessage['contents'] ?? '';
             if (is_string($mixedContent) && $mixedContent !== '') {
                 $aParts[] = ['type' => 'text', 'content' => $mixedContent];
             } elseif (is_array($mixedContent)) {
+                if (isset($mixedContent['type']) && !isset($mixedContent[0]))
+                    $mixedContent = [$mixedContent];
                 foreach ($mixedContent as $aBlock) {
-                    if (!is_array($aBlock))
-                        continue;
-                    $sBlockType = (string)($aBlock['type'] ?? '');
-                    $sBlockText = (string)($aBlock['content'] ?? '');
-                    if ($sBlockText === '')
-                        continue;
-                    if ($sBlockType === 'text' || $sBlockType === '')
-                        $aParts[] = ['type' => 'text', 'content' => $sBlockText];
+                    $aPart = $this->storedContentBlockToUiPart($aBlock);
+                    if ($aPart)
+                        $aParts[] = $aPart;
                 }
             }
             $sId = '';
@@ -70,7 +91,7 @@ class BxDolAiChatUi
             $i++;
         }
 
-        return $aResult;
+        return $this->foldUiChatMessages($aResult);
     }
 
     /**
@@ -83,15 +104,13 @@ class BxDolAiChatUi
         $i = 0;
 
         foreach ($aMessages as $oMessage) {
-            if (
-                $oMessage instanceof NeuronAI\Chat\Messages\ToolCallMessage
-                || $oMessage instanceof NeuronAI\Chat\Messages\ToolResultMessage
-            ) {
+            // ToolCallMessage is an assistant message holding the text said before
+            // the call; only the tool result is skipped (see storedChatJsonToUiMessages).
+            if ($oMessage instanceof NeuronAI\Chat\Messages\ToolResultMessage)
                 continue;
-            }
 
             $sRole = $oMessage->getRole();
-            if ($sRole === 'model')
+            if ($sRole === 'model' || $oMessage instanceof NeuronAI\Chat\Messages\ToolCallMessage)
                 $sRole = 'assistant';
             if ($sRole !== 'user' && $sRole !== 'assistant')
                 continue;
@@ -106,6 +125,10 @@ class BxDolAiChatUi
 
                 if ($oBlock instanceof NeuronAI\Chat\Messages\ContentBlocks\TextContent && $oBlock->content !== '')
                     $aParts[] = ['type' => 'text', 'content' => $oBlock->content];
+
+                $aImage = $this->_oImages->neuronBlockToUiPart($oBlock);
+                if ($aImage)
+                    $aParts[] = $aImage;
             }
 
             $sId = $oMessage->getMetadata('__id');
@@ -122,7 +145,7 @@ class BxDolAiChatUi
             $i++;
         }
 
-        return $aResult;
+        return $this->foldUiChatMessages($aResult);
     }
 
     /**
@@ -152,8 +175,7 @@ class BxDolAiChatUi
                 if ($aParsed['content'] !== '')
                     $aKept[] = ['type' => 'text', 'content' => $aParsed['content']];
                 $aParts = $aKept;
-                if (!$aActions)
-                    $aActions = $aParsed['actions'];
+                $aActions = $this->mergeChatActions($aActions, $aParsed['actions']);
             }
         }
 
@@ -169,6 +191,54 @@ class BxDolAiChatUi
             $aOut['actions'] = $aActions;
             if ($aActions)
                 $aOut['metadata'] = ['actions' => $aActions];
+        }
+
+        return $aOut;
+    }
+
+    /**
+     * One model turn can be stored as several assistant messages: the text before a
+     * tool call (ToolCallMessage), then the reply after the tool result — often empty
+     * and carrying only `actions`. Show them as one bubble, like the live stream does.
+     * The first message's id is kept; text is joined, actions are merged.
+     *
+     * @param array<int, array<string, mixed>> $aMessages
+     * @return array<int, array<string, mixed>>
+     */
+    public function foldUiChatMessages($aMessages)
+    {
+        $aOut = [];
+        foreach ($aMessages as $aMessage) {
+            $iLast = count($aOut) - 1;
+            $aPrev = $iLast >= 0 ? $aOut[$iLast] : null;
+            if (($aMessage['role'] ?? '') !== 'assistant' || ($aPrev['role'] ?? '') !== 'assistant') {
+                $aOut[] = $aMessage;
+                continue;
+            }
+
+            $sText = '';
+            $aMedia = [];
+            foreach (array_merge($aPrev['parts'] ?? [], $aMessage['parts'] ?? []) as $aPart) {
+                if (($aPart['type'] ?? '') === 'text') {
+                    $sChunk = (string)($aPart['content'] ?? '');
+                    if ($sChunk !== '')
+                        $sText .= ($sText !== '' ? "\n\n" : '') . $sChunk;
+                    continue;
+                }
+                $aMedia[] = $aPart;
+            }
+
+            $aParts = $sText !== '' ? [['type' => 'text', 'content' => $sText]] : [];
+            $aActions = $this->mergeChatActions($aPrev['actions'] ?? [], $aMessage['actions'] ?? []);
+            $aMerged = array_merge($aPrev, [
+                'parts' => array_merge($aParts, $aMedia),
+                'actions' => $aActions,
+            ]);
+            if ($aActions)
+                $aMerged['metadata'] = ['actions' => $aActions];
+            else
+                unset($aMerged['metadata']);
+            $aOut[$iLast] = $aMerged;
         }
 
         return $aOut;
@@ -207,9 +277,32 @@ class BxDolAiChatUi
     }
 
     /**
+     * Union of two action lists, duplicates (same type + label + url) dropped, at most 8.
+     *
      * @return array<int, array<string, mixed>>
      */
-    protected function sanitizeChatActions($mixed)
+    public function mergeChatActions($a, $b)
+    {
+        $aAll = array_merge($this->sanitizeChatActions($a), $this->sanitizeChatActions($b));
+        $aOut = [];
+        $aSeen = [];
+        foreach ($aAll as $aItem) {
+            $sKey = ($aItem['type'] ?? '') . '|' . ($aItem['label'] ?? '') . '|' . ($aItem['url'] ?? '');
+            if (isset($aSeen[$sKey]))
+                continue;
+            $aSeen[$sKey] = true;
+            $aOut[] = $aItem;
+            if (count($aOut) >= 8)
+                break;
+        }
+
+        return $aOut;
+    }
+
+    /**
+     * @return array<int, array<string, mixed>>
+     */
+    public function sanitizeChatActions($mixed)
     {
         if (!is_array($mixed))
             return [];
@@ -242,6 +335,84 @@ class BxDolAiChatUi
         }
 
         return $aOut;
+    }
+
+    /** Text parts of a UI message joined, tags stripped, whitespace collapsed. */
+    public function uiChatMessagePlainText($aMessage)
+    {
+        $aTexts = [];
+        foreach ((array)($aMessage['parts'] ?? []) as $aPart) {
+            if (is_array($aPart) && ($aPart['type'] ?? '') === 'text' && is_string($aPart['content'] ?? null))
+                $aTexts[] = $aPart['content'];
+        }
+        $s = strip_tags(html_entity_decode(implode(' ', $aTexts), ENT_QUOTES | ENT_HTML5, 'UTF-8'));
+        return trim(preg_replace('/\s+/u', ' ', $s));
+    }
+
+    /**
+     * Neuron / UI content block from stored chat JSON → UI part.
+     *
+     * @param mixed $mixedBlock
+     * @return array<string, mixed>|null
+     */
+    protected function storedContentBlockToUiPart($mixedBlock)
+    {
+        if (is_string($mixedBlock) && $mixedBlock !== '')
+            return ['type' => 'text', 'content' => $mixedBlock];
+        if (!is_array($mixedBlock))
+            return null;
+
+        $sType = $this->storedEnumString($mixedBlock['type'] ?? '');
+        if (strpos($sType, 'textcontent') !== false)
+            $sType = 'text';
+        if (strpos($sType, 'imagecontent') !== false)
+            $sType = 'image';
+        $sText = (string)($mixedBlock['content'] ?? $mixedBlock['text'] ?? '');
+        if ($sType === 'text' || $sType === '' || $sType === 'array')
+            return $sText !== '' ? ['type' => 'text', 'content' => $sText] : null;
+        if ($sType === 'reasoning' || $sType === 'thinking')
+            return $sText !== '' ? ['type' => 'thinking', 'content' => $sText] : null;
+
+        $aImage = $this->storedImageBlockToUiPart($mixedBlock);
+        return $aImage ?: null;
+    }
+
+    /**
+     * @param array<string, mixed> $aBlock
+     * @return array<string, mixed>|null
+     */
+    protected function storedImageBlockToUiPart($aBlock)
+    {
+        $aSource = is_array($aBlock['source'] ?? null) ? $aBlock['source'] : [];
+        $sSourceKind = strtolower((string)($aSource['type'] ?? ''));
+        $sNeuronSource = $this->storedEnumString($aBlock['source_type'] ?? $aBlock['sourceType'] ?? '');
+        $sMime = $this->_oImages->sanitizeMime($aSource['mimeType'] ?? $aBlock['media_type'] ?? $aBlock['mediaType'] ?? $aBlock['mime'] ?? $aBlock['mimeType'] ?? 'image/jpeg');
+
+        if ($sSourceKind === 'data' && (string)($aSource['value'] ?? '') !== '')
+            return ['type' => 'image', 'source' => ['type' => 'data', 'value' => (string)$aSource['value'], 'mimeType' => $sMime]];
+
+        if (($sNeuronSource === 'base64' || $sNeuronSource === 'data') && (string)($aBlock['content'] ?? '') !== '')
+            return ['type' => 'image', 'source' => ['type' => 'data', 'value' => (string)$aBlock['content'], 'mimeType' => $sMime]];
+
+        $aParsed = $this->_oImages->parsePart($aBlock);
+        if ($aParsed)
+            return ['type' => 'image', 'source' => ['type' => 'url', 'value' => $aParsed['url'], 'mimeType' => $aParsed['mime']]];
+
+        return null;
+    }
+
+    /**
+     * Enum (object, `{value}` array or string) from stored JSON → lower-case string.
+     *
+     * @param mixed $mixed
+     */
+    protected function storedEnumString($mixed)
+    {
+        if (is_object($mixed) && $mixed instanceof \BackedEnum)
+            return strtolower((string)$mixed->value);
+        if (is_array($mixed))
+            return strtolower((string)($mixed['value'] ?? $mixed['name'] ?? ''));
+        return strtolower((string)$mixed);
     }
 
     protected function isAllowedChatActionUrl($sUrl)
