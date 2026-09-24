@@ -41,7 +41,6 @@ class BxDolAIToolMysqlUndo extends BxDolAITool
     public function __invoke(string $scope = 'last', $log_id = 0): array
     {
         $oDb = BxDolDb::getInstance();
-        $this->_ensureUndoneColumn($oDb);
 
         $sScope = strtolower(trim($scope));
         if (!in_array($sScope, ['last', 'session'], true))
@@ -67,14 +66,6 @@ class BxDolAIToolMysqlUndo extends BxDolAITool
             'undone' => count($aDone),
             'items' => $aDone,
         ];
-    }
-
-    protected function _ensureUndoneColumn(BxDolDb $oDb): void
-    {
-        if (!$oDb->isTableExists('sys_agents_sql_log'))
-            throw new Exception('sys_agents_sql_log is missing. Run inc/sql_agents_mysql_write.sql first.');
-        if (!$oDb->isFieldExists('sys_agents_sql_log', 'undone'))
-            $oDb->query("ALTER TABLE `sys_agents_sql_log` ADD `undone` int(11) NOT NULL DEFAULT 0");
     }
 
     protected function _pickRows(BxDolDb $oDb, string $sScope, int $iLogId, string $sThread, int $iProfile): array
