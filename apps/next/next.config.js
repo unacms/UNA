@@ -177,6 +177,9 @@ const nextConfig = {
             dynamic: 20,
             static: 180,
         },
+        // Uploads go through proxy.js → UNA; the default 10MB cap silently
+        // truncates the request body, so bigger files (videos) fail on UNA.
+        proxyClientMaxBodySize: '200mb',
     },
     // reanimated (and thus, Moti) doesn't work with strict mode currently...
     // https://github.com/nandorojo/moti/issues/224

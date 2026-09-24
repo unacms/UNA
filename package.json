@@ -48,6 +48,9 @@
     "web-haptics": "^0.0.6"
   },
   "resolutions": {
+    "tailwindcss": "4.3.2",
+    "@tailwindcss/postcss": "4.3.2",
+    "uniwind": "1.10.0",
     "@radix-ui/primitive": "1.1.7",
     "@radix-ui/react-use-controllable-state": "1.2.3"
   },

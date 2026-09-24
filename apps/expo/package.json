@@ -106,9 +106,9 @@
     "react-native-youtube-iframe": "^2.3.0",
     "react-remove-scroll": "^2.6.0",
     "set-cookie-parser": "^2.6.0",
-    "tailwindcss": "^4.2.4",
+    "tailwindcss": "4.3.2",
     "typescript": "~6.0.3",
-    "uniwind": "^1.6.3",
+    "uniwind": "1.10.0",
     "victory-native": "^36.7.0",
     "zustand": "^4.5.5"
   },

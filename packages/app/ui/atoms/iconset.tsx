@@ -34,7 +34,9 @@ export function IconFromSet({ icon, width, height, size, _strokeWidth, color, cl
             height={resolvedHeight || classHeight}
             size={resolvedSize}
             strokeWidth={_strokeWidth}
-            fill={fill}
+            // lucide spreads props over its `fill="none"` default; an explicit
+            // undefined wipes it and react-native-svg then fills black.
+            {...(fill != null ? { fill } : null)}
             style={[styleFromClassName, restStyle].filter(Boolean)}
             {...restWithoutStyle}
         />
