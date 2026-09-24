@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import emitter from 'app/context/emitter'
 import { View, Row } from 'app/design/view'
 import { Text } from 'app/design/typography'
-import { Input, Button } from 'app/design/controls'
+import { InputWithIcons, Button } from 'app/design/controls'
 import { BlockWrapper } from 'app/components/block-wrapper'
 import { Icon } from 'app/ui/atoms/icon'
 import Link from 'app/ui/atoms/link'
@@ -206,7 +206,7 @@ function SearchAiExtended({ blockWrapperProps, block }) {
     return (
         <BlockWrapper {...blockWrapperProps}>
             <View className="w-full gap-y-2 p-1">
-                <Input
+                <InputWithIcons
                     className="w-full"
                     rounded="full"
                     size="large"
@@ -358,7 +358,7 @@ function SearchAiSections({ blockWrapperProps, block }) {
         <BlockWrapper {...blockWrapperProps}>
             <View className="w-full gap-y-2 p-1">
                 <Redirect ref={redirectRef} />
-                <Input
+                <InputWithIcons
                     className="w-full"
                     rounded="full"
                     size="large"

@@ -98,11 +98,6 @@ export default function Layout(props) {
     }, []);
 
     useEffect(() => {
-
-        if (navigator.serviceWorker) {
-            navigator.serviceWorker.register('/sw.js');
-        }
-
         window.addEventListener('beforeunload', handlePageShow);
         return () => {
             window.removeEventListener('beforeunload', handlePageShow);
@@ -135,11 +130,6 @@ export default function Layout(props) {
         });
     }, [currentUser?.id]);
 
-    useEffect(() => {
-        if (navigator.serviceWorker) {
-            navigator.serviceWorker.register('/sw.js');
-        }
-    }, [data?.url]);
 
     function getFullOffsetTop(element) {
         let offsetTop = 0;
