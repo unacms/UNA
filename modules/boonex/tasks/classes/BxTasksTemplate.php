@@ -297,7 +297,7 @@ class BxTasksTemplate extends BxBaseModTextTemplate
                 $sState = 'paused';
 
             return [
-                'id' => $aTimer['id'],
+                'id' => $bTimer ? $aTimer['id'] : 0,
                 'time' => [
                     'hours' => $iHours,
                     'minutes' => $iMinutes,
