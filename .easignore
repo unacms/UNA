@@ -1,0 +1,121 @@
+# .easignore — что НЕ уезжает в архив сборки EAS.
+#
+# Зачем отдельный файл: EAS копирует рабочую папку с фильтром по .gitignore,
+# поэтому yarn.lock, лежащий в .gitignore, не доезжал до билдера и там
+# заново резолвились все версии (так в проект приехал tailwind 4.3.3
+# со сломанными брейкпоинтами, см. uni-stack/uniwind#668).
+#
+# Правила ниже — копия .gitignore БЕЗ yarn.lock, плюс то, что покрывали
+# вложенные .gitignore. Если добавляешь правило в .gitignore и оно должно
+# действовать и на сборку — добавь его и сюда.
+#
+# ВАЖНО: пока этот файл существует, EAS полностью игнорирует все .gitignore.
+# .git и node_modules исключаются всегда, их перечислять не нужно.
+
+.env.local
+
+# OSX
+#
+.DS_Store
+
+# Xcode
+#
+build/
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+xcuserdata
+*.xccheckout
+*.moved-aside
+DerivedData
+*.hmap
+*.ipa
+*.xcuserstate
+project.xcworkspace
+
+# Android/IntelliJ
+#
+build/
+.idea
+.gradle
+local.properties
+*.iml
+
+# node.js
+#
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# BUCK
+buck-out/
+\.buckd/
+*.keystore
+
+# fastlane
+#
+# It is recommended to not store the screenshots in the git repo. Instead, use fastlane to re-generate the
+# screenshots whenever they are needed.
+# For more information about the recommended setup visit:
+# https://docs.fastlane.tools/best-practices/source-control/
+
+*/fastlane/report.xml
+*/fastlane/Preview.html
+*/fastlane/screenshots
+
+# Bundle artifacts
+*.jsbundle
+
+# CocoaPods
+/ios/Pods/
+
+# Expo
+.expo/*
+web-build/
+
+**/*/.expo
+
+**/*/.next
+
+**/*/ios
+**/*/android
+
+.turbo
+build/**
+
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+package-lock.json
+
+# Vercel skills CLI may emit IDE-specific symlinks; not used in this repo
+.trae/
+.windsurf/
+
+# Local junk / accidental copies (do not commit)
+*.bak
+*копия*
+*.stackdump
+*crash.log
+*crash*.log
+
+# --- из вложенных .gitignore (apps/next, apps/expo) ---
+# apps/expo/android и apps/expo/ios уже покрыты правилами **/*/android и **/*/ios выше.
+out/
+coverage/
+dist/
+.vercel
+*.tsbuildinfo
+*.pem
+.cxx/
+.metro-health-check*
+/apps/next/public/static/

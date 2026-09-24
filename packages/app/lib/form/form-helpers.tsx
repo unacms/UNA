@@ -217,6 +217,20 @@ export function isFormResponseComplete(responseData: any) {
     return true;
 }
 
+/** True when UNA re-renders the form with field validation errors (submit rejected). */
+export function formResponseHasFieldErrors(responseData: any): boolean {
+    const formItem = normalizeFormResponseData(responseData).find((item) => item?.type === 'form');
+    return Object.values(formItem?.data?.inputs || {}).some((input: any) => {
+        const err = input?.error;
+        if (!err) return false;
+        if (Array.isArray(err)) return !!String(err[0] || '').trim();
+        return !!String(err).trim();
+    });
+}
+
+/** Hidden inputs the files field mirrors its ids into (`covers` → `thumb`, `videos` → `video`). */
+export const FILES_FIELD_MIRRORS: Record<string, string> = { covers: 'thumb', videos: 'video' };
+
 /** UNA often sends phones as `type: "text"` with a name containing "phone". */
 function resolveFormFieldType(inputData: any) {
     const type = String(inputData.type ?? '');

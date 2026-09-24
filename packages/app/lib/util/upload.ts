@@ -1,4 +1,5 @@
 import { Platform } from 'react-native'
+import i18n from 'i18next';
 import { fetcher } from 'app/lib/fetcher';
 import { ImageManipulator, SaveFormat } from 'app/lib/image/manipulator';
 import { appSetting } from 'app/config';
@@ -6,6 +7,7 @@ import { isWeb } from './layout';
 import { genRnd } from './misc';
 
 const UPLOAD_TIMEOUT_MS: number = (appSetting as (...args: any[]) => any)('config', 'upload_timeout_ms') || 300000;
+const DIRECT_UPLOAD_OVER_MB: number | undefined = (appSetting as (...args: any[]) => any)('config', 'direct_upload_over_mb');
 
 /** Picker metadata passed along with an upload (mime/name hints). */
 export type UploadExtra = {
@@ -264,6 +266,45 @@ export const prepareImageForUpload = async ({
     return processedImage.uri;
 }
 
+const shouldUploadDirect = (size: number): boolean =>
+    typeof DIRECT_UPLOAD_OVER_MB === 'number' && DIRECT_UPLOAD_OVER_MB >= 0 && size > DIRECT_UPLOAD_OVER_MB * BYTES_IN_MB;
+
+/**
+ * Web: POST the file straight to UNA with a one-time token (`get_upload_token`, fetched through
+ * the proxy as the logged in user), so big files skip the Next proxy body limit.
+ * Resolves `null` when UNA can't issue a token (older server) — the caller falls back to the proxy.
+ * UNA must allow the app origin (Studio → API → origins) for the cross-origin response to be readable.
+ */
+async function uploadDirectToUna(fetchUrl: string, formData: FormData, signal?: AbortSignal): Promise<any | null> {
+    const query = fetchUrl.split('?')[1] || '';
+    const params = new URLSearchParams(query);
+    const tokenPath = '/api.php?r=system/get_upload_token/TemplUploaderServices'
+        + '&uo=' + encodeURIComponent(params.get('uo') || '')
+        + '&so=' + encodeURIComponent(params.get('so') || '');
+    const tokenRes = await fetcher(tokenPath, false, { signal, maxAttempts: 1, silent: true });
+    const token: string | undefined = tokenRes?.data?.token;
+    const url: string | undefined = tokenRes?.data?.url;
+    if (!token || !url) return null;
+
+    const controller = new AbortController();
+    const onAbort = () => controller.abort();
+    signal?.addEventListener('abort', onAbort);
+    const timer = setTimeout(() => controller.abort(), UPLOAD_TIMEOUT_MS);
+    try {
+        // No custom headers: a "simple" CORS request, so the browser skips the preflight.
+        const r = await fetch(`${url}?${query}&ut=${encodeURIComponent(token)}&lang=${i18n.language}`, {
+            method: 'POST',
+            body: formData,
+            credentials: 'omit',
+            signal: controller.signal,
+        });
+        return await r.json().catch(() => ({}));
+    } finally {
+        clearTimeout(timer);
+        signal?.removeEventListener('abort', onAbort);
+    }
+}
+
 /** Upload a local/data/blob image URI; `calback` gets `{ result, extraVar }` with the full API payload. */
 export const uploadImage = async (
     uri: string,
@@ -306,10 +347,21 @@ export const uploadImage = async (
             throw err;
         }
         formData.append("file", file);
-        const result = await fetcher([fetchUrl, null, formData], false, {
-            timeoutMs: UPLOAD_TIMEOUT_MS,
-            signal,
-        });
+        let result: any = null;
+        if (shouldUploadDirect(file.size)) {
+            try {
+                result = await uploadDirectToUna(fetchUrl, formData, signal);
+            } catch (err: any) {
+                if (signal?.aborted || err?.name === 'AbortError') throw err;
+                console.warn('[upload] direct upload to UNA failed, retrying through the proxy:', err);
+            }
+        }
+        if (!result) {
+            result = await fetcher([fetchUrl, null, formData], false, {
+                timeoutMs: UPLOAD_TIMEOUT_MS,
+                signal,
+            });
+        }
         // Always pass the full API payload so callers can read data.ghost
         // (passing only data.link dropped ghosts and left preload spinners).
         calback({ result, extraVar });

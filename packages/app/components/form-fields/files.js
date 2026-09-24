@@ -26,7 +26,7 @@ import emitter from 'app/context/emitter';
 import { CaptionForFileInput } from 'app/customization/functions';
 import i18n from 'i18next';
 import { useFormInstanceId } from 'app/context/form-instance';
-import { trackFormUploadStart, trackFormUploadEnd } from 'app/lib/form/form-helpers';
+import { trackFormUploadStart, trackFormUploadEnd, formResponseHasFieldErrors, FILES_FIELD_MIRRORS } from 'app/lib/form/form-helpers';
 import { isInlineImagePaste, revokePastedBlobUri } from 'app/lib/editor/editor-paste-images';
 
 function showPermissionAlert(type, canAskAgain) {
@@ -342,11 +342,8 @@ export default function (props) {
                 .filter(item => item.file_id !== undefined) // Keep only items with file_id
                 .map(item => item.file_id) // Extract file_id
                 .join(',');
-            if (name == 'covers') {
-                formContext.setValue('thumb', fileIds)
-            }
-            if (name == 'videos') {
-                formContext.setValue('video', fileIds)
+            if (FILES_FIELD_MIRRORS[name]) {
+                formContext.setValue(FILES_FIELD_MIRRORS[name], fileIds)
             }
             syncFieldValue(fileIds);
         }
@@ -703,15 +700,26 @@ export default function (props) {
         };
     }, [name, selectImage]);
 
+    const awaitingSubmitRef = useRef(false);
     useEffect(() => {
         if (!formName) return undefined;
         const acceptsPastedImages = !!(
             props.asDefaultStorage || IMAGE_FIELD_NAMES.has(name)
         );
+        const resetImages = () => {
+            clearFieldImages(`${formName}:`);
+            setImages(props?.values_src);
+        };
         const subscription = emitter.addListener(`form_${formName}`, (data) => {
             if (data.action == 'submited') {
-                clearFieldImages(`${formName}:`);
-                setImages(props?.values_src);
+                // Wait for UNA's reply: on validation errors the uploaded files must stay.
+                if (data.awaitsResponse) awaitingSubmitRef.current = true;
+                else resetImages();
+            }
+            if (data.action == 'received' && awaitingSubmitRef.current) {
+                awaitingSubmitRef.current = false;
+                // No data = request failed; keep the files so the user can retry.
+                if (data.data !== undefined && !formResponseHasFieldErrors(data.data)) resetImages();
             }
             if (data.action == 'pasted_images' && acceptsPastedImages && data.images?.length) {
                 const inlinePaste = data.inlinePaste === false ? false : isInlineImagePaste(formName)
@@ -918,7 +926,7 @@ function ActionButton({ imagesList, props, selectImage, handleDelete, bMultiple,
                             view="cover"
                             alt=""
                         />}
-                        {isPreload && <View className={`w-full h-full absolute top-8`}><Loading className="absolute" /></View>}
+                        {isPreload && <View className="absolute inset-0 items-center justify-center"><Loading /></View>}
                         <View className='absolute top-1 right-1'>
                             <NeoButton
                                 style="glass"
@@ -977,7 +985,7 @@ function GhostsList(imagesList, bMultiple, handleDelete, props) {
 
                 )}
 
-                {isPreload && <View className={`w-full h-full absolute top-8`}><Loading className="absolute" /></View>}
+                {isPreload && <View className="absolute inset-0 items-center justify-center"><Loading /></View>}
 
                 <View className="absolute top-1 right-1">
                     <NeoButton

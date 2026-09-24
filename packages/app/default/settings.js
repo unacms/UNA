@@ -27,6 +27,9 @@ export const settingsDefault = {
         fetch_timeout_ms: 10000,
          // Uploads (especially video) need a longer window than regular API calls.
         upload_timeout_ms: 300000,
+        // Web: files over this size (MB) go straight to UNA with a one-time token instead of
+        // through the Next proxy (Vercel caps request bodies at 4.5MB). 0 = always direct.
+        direct_upload_over_mb: 4,
         sockets: {
             host: 'ci.una.io',
             port: '443',

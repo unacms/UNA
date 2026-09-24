@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo, useCallback, useId, useRef } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
-import { getFormFieldByData, isFormResponseComplete, normalizeFormResponseData, updateFormDirtyState, isFormUnsavedCloseGuardSkipped, formHasPendingUploads, clearFormPendingUploads } from 'app/lib/form/form-helpers'
+import { getFormFieldByData, isFormResponseComplete, normalizeFormResponseData, updateFormDirtyState, isFormUnsavedCloseGuardSkipped, formHasPendingUploads, clearFormPendingUploads, formResponseHasFieldErrors, FILES_FIELD_MIRRORS } from 'app/lib/form/form-helpers'
 import { getDefaultPasteStorageKey } from 'app/components/form-fields/media-attachments'
 import { View, Row } from 'app/design/view'
 import { components } from 'app/components/registry';
@@ -288,15 +288,7 @@ export default function Form({
             nextDisplay !== currentDisplay;
         if (isNextStepForm) return;
 
-        const hasFieldErrors = formItem
-            ? Object.values(formItem.data?.inputs || {}).some((input) => {
-                  const err = input?.error;
-                  if (!err) return false;
-                  if (Array.isArray(err)) return !!String(err[0] || '').trim();
-                  return !!String(err).trim();
-              })
-            : false;
-        if (hasFieldErrors) return;
+        if (formResponseHasFieldErrors(dynamicData.data)) return;
 
         const done = items.some(
             (item) =>
@@ -402,6 +394,17 @@ export default function Form({
             return result;
         }, {});
 
+        // Validation errors: UNA re-renders the form without the files uploaded for this
+        // submit, so keep what the files fields (and the ids they mirror) hold now.
+        if (formResponseHasFieldErrors(dynamicData?.data)) {
+            for (const [key, input] of Object.entries(processedInputs)) {
+                if (input?.type !== 'files') continue;
+                for (const k of [key, FILES_FIELD_MIRRORS[key]]) {
+                    if (k) values[k] = methods.getValues(k) ?? '';
+                }
+            }
+        }
+
         // No keepDefaultValues: the server-provided values become the new baseline,
         // so a just-updated (untouched) form is not treated as dirty by the
         // unsaved-changes close guard.
@@ -445,7 +448,8 @@ export default function Form({
                     if (formHasPendingUploads(name, formInstanceId)) {
                         return;
                     }
-                    emitter.emit(`form_${name}`, { action: 'submited', formInstanceId });
+                    // awaitsResponse: the form posts to UNA itself and emits 'received' with the reply.
+                    emitter.emit(`form_${name}`, { action: 'submited', formInstanceId, awaitsResponse: !onFormSubmitInternal });
                     onSubmit(data);
                     if (onFormSubmitInternal) {
                         emitter.emit(`form_${name}`, { action: 'received', formInstanceId });
