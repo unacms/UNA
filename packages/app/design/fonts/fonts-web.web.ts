@@ -1,4 +1,4 @@
-import { Inter } from 'next/font/google';
+import { Inter } from 'next/font/google'
 
 // Optimized Google Font loading for web (next/font)
 // - Latin subset, display swap, no preload (avoids unused preload warnings; fonts still load)
@@ -9,7 +9,7 @@ export const mainFont = Inter({
     variable: '--font-main',
     display: 'swap',
     preload: false,
-});
+})
 
 export const titleFont = Inter({
     subsets: ['latin'],
@@ -17,4 +17,4 @@ export const titleFont = Inter({
     variable: '--font-title',
     display: 'swap',
     preload: false,
-});
+})

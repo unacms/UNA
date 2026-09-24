@@ -1,3 +1,5 @@
+import type { CSSProperties } from 'react'
+import type { ViewStyle } from 'react-native'
 import { appSetting } from 'app/config'
 
 /** Class on `<html>` when web superellipse corners are enabled. */
@@ -6,8 +8,24 @@ export const CORNER_SMOOTH_CLASS = 'neo-corner-smooth'
 const DEFAULT_FACTOR = 1.5
 const DEFAULT_FULL_FACTOR = 1
 
+type CornerSmoothingConfig = {
+    enabled?: boolean
+    factor?: number
+    full_factor?: number
+}
+
+type CornerSmoothingHtmlStyle = CSSProperties & {
+    '--neo-corner-superellipse-factor': string
+    '--neo-corner-superellipse-full-factor': string
+}
+
+export type CornerSmoothingHtmlProps = {
+    className: string | undefined
+    style: CornerSmoothingHtmlStyle | undefined
+}
+
 function readConfig() {
-    const cfg = appSetting('theme', 'corner_smoothing')
+    const cfg = appSetting('theme', 'corner_smoothing') as CornerSmoothingConfig | null | undefined
     if (!cfg || typeof cfg !== 'object') {
         return {
             enabled: true,
@@ -36,7 +54,7 @@ export const cornerSmoothingFullFactor = config.full_factor
  * Props for Next root `<html>`: toggles smooth corners and injects CSS vars
  * consumed by `global.web.css` (`--neo-corner-superellipse-*`).
  */
-export function getCornerSmoothingHtmlProps() {
+export function getCornerSmoothingHtmlProps(): CornerSmoothingHtmlProps {
     if (!cornerSmoothingEnabled) {
         return { className: undefined, style: undefined }
     }
@@ -51,6 +69,6 @@ export function getCornerSmoothingHtmlProps() {
 }
 
 /** iOS `borderCurve: 'continuous'` — same on/off as web superellipse. */
-export const iosContinuousCurveStyle = cornerSmoothingEnabled
+export const iosContinuousCurveStyle: ViewStyle | null = cornerSmoothingEnabled
     ? { borderCurve: 'continuous' }
     : null

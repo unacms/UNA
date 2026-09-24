@@ -12,7 +12,13 @@
  *
  * Tailwind reference px: xs 4, sm 8, md 12, lg 16, xl 24, 2xl 40, 3xl 64.
  */
-const BACKDROP_BLUR_CALIBRATION = [
+
+type BackdropBlurCalibration = {
+    webPx: number
+    nativeIntensity: number
+}
+
+const BACKDROP_BLUR_CALIBRATION: readonly (readonly [string, BackdropBlurCalibration])[] = [
     ['backdrop-blur-3xl', { webPx: 24, nativeIntensity: 85 }],
     ['backdrop-blur-2xl', { webPx: 16, nativeIntensity: 65 }],
     ['backdrop-blur-xl', { webPx: 10, nativeIntensity: 45 }],
@@ -25,19 +31,19 @@ const BACKDROP_BLUR_CALIBRATION = [
 
 const BACKDROP_BLUR_TOKEN = 'backdrop-blur'
 
-function splitClassTokens(className = '') {
+function splitClassTokens(className = ''): string[] {
     return className.trim().split(/\s+/).filter(Boolean)
 }
 
 /** True when the utility has no Tailwind variant prefix (only optional `!`). */
-function isBareBackdropBlurToken(token = '') {
+function isBareBackdropBlurToken(token = ''): boolean {
     const withoutImportant = token.replace(/^!+/, '')
     const blurIdx = withoutImportant.indexOf(BACKDROP_BLUR_TOKEN)
     if (blurIdx === -1) return false
     return withoutImportant.slice(0, blurIdx).length === 0
 }
 
-function getBareBackdropBlurToken(className = '') {
+function getBareBackdropBlurToken(className = ''): string | null {
     for (const token of splitClassTokens(className)) {
         if (!isBareBackdropBlurToken(token)) continue
         const withoutImportant = token.replace(/^!+/, '')
@@ -48,24 +54,24 @@ function getBareBackdropBlurToken(className = '') {
     return null
 }
 
-function resolveBackdropBlur(className = '') {
+function resolveBackdropBlur(className = ''): BackdropBlurCalibration | null {
     const bareToken = getBareBackdropBlurToken(className)
     if (!bareToken) return null
     return BACKDROP_BLUR_CALIBRATION.find(([token]) => token === bareToken)?.[1] ?? null
 }
 
-export function getBackdropBlurIntensity(className = '') {
+export function getBackdropBlurIntensity(className = ''): number {
     const calibration = resolveBackdropBlur(className)
     return calibration?.nativeIntensity ?? 0
 }
 
-export function getBackdropBlurWebPx(className = '') {
+export function getBackdropBlurWebPx(className = ''): number {
     const calibration = resolveBackdropBlur(className)
     return calibration?.webPx ?? 0
 }
 
 /** Remove only bare backdrop-blur utilities; keep variant-prefixed classes. */
-export function stripBackdropBlurClasses(className = '') {
+export function stripBackdropBlurClasses(className = ''): string {
     return splitClassTokens(className)
         .filter((token) => !isBareBackdropBlurToken(token))
         .join(' ')

@@ -490,10 +490,6 @@ Leaf-level clipping is fine and expected: rounded media (`rounded-xl overflow-hi
 
 NEO supports optional **animated** Lucide icons (filled/active states, web hover “draw” scenes, etc.) via a small registry and scene classes on `Icon`. **Do not** guess the wiring: read **[animated-icons.md](animated-icons.md)** for registry keys, `icon-scene-*` classes, fork customization, and implementation pitfalls (especially **web + react-native-svg**).
 
-## NodeFlow graphic (animated icon-flow visuals)
-
-For "icons connected by a wavy line" graphics (onboarding, pipelines, integration explainers — horizontal or vertical), use the cross-platform [`NodeFlow`](packages/app/ui/atoms/node-flow/README.md) atom. Built on the same `react-native-svg` + RN `Animated` stack as the animated icons (no Skia/Lottie). Variants follow the same registry pattern as animated icons: defaults in [`packages/app/default/node-flow-variants.js`](packages/app/default/node-flow-variants.js), branch overrides in [`packages/app/customization/node-flow-variants.js`](packages/app/customization/node-flow-variants.js). On web, prefer `next/dynamic(() => import('app/ui/atoms/node-flow'), { ssr: false })` at call sites to keep route bundles lean.
-
 ## NeoButton (design-system button)
 
 `NeoButton` is the SwiftUI-faithful button in [`packages/app/design/controls/`](packages/app/design/controls/) (`role`, `style`, `controlSize`, `borderShape`, `tint` axes, providers, transitions, shadow-based surfaces). Full API reference, resolver/scope precedence, SwiftUI/Expo UI mapping, and migration table live in **[`packages/app/design/controls/README.md`](packages/app/design/controls/README.md)**. A live playground for every axis is at the dev-only `/pg` route ([`apps/next/app/pg/page.js`](apps/next/app/pg/page.js)).
