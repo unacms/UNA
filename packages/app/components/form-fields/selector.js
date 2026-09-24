@@ -1,15 +1,16 @@
 import Field from './_field';
 import { View, Row } from 'app/design/view'
 import { useState, useMemo, useCallback } from 'react';
-import { Button, Modal } from "app/design/controls";
+import { Button, Modal, NeoButton } from "app/design/controls";
 import ChkList from 'app/ui/molecules/form-controls/checkbox-list';
 import { Text } from 'app/design/typography';
-import { appSetting } from 'app/lib/util'
+import { useTranslation } from 'react-i18next';
 import { useFormField } from 'app/lib/form/use-form-field';
-
-const inputSettings = appSetting('theme', 'inputs');
+import { wellButtonProps } from 'app/lib/form/form-helpers';
+import FieldWell from './_well';
 
 export default function FormFieldSelector(props) {
+    const { t } = useTranslation();
 
     const [isModal, setIsModal] = useState(false);
     const isMultiple = props.origtype == 'select' || props.is_single === true ? false : true;
@@ -104,38 +105,34 @@ export default function FormFieldSelector(props) {
         </View>
     </Modal>
 
+    const buttonProps = wellButtonProps({ variant, size });
+    const trigger = (
+        <NeoButton
+            {...buttonProps}
+            image={isMultiple ? 'Plus' : undefined}
+            label={isMultiple ? t('Add') : selectedItems.length > 0 ? t('Change') : t('Select')}
+            onPress={showSelect}
+        />
+    );
+
     return (
         <>
             {ModalCnt}
             <Field {...props}>
-
-                <View className={`${props.align === 'right' ? 'justify-end' : 'justify-start'} bg-input/60 shadow-input-outline dark:shadow-input-outline-deep rounded-lg w-full items-center flex-row flex-wrap p-2 gap-1 ${inputSettings.surface_size?.regular ?? 'min-h-10'}`}>
-                    {props.align == 'right' && <Button
-                        startDecorator={isMultiple ? "Plus" : ""}
-                        variant={variant}
-                        title={isMultiple ? "" : selectedItems.length > 0 ? "Change" : "Select"}
-                        size={size}
-                        onPress={showSelect}
-                    />}
+                <FieldWell className={props.align === 'right' ? 'justify-end' : 'justify-start'}>
+                    {props.align == 'right' && trigger}
                     {selectedItems.map((item) => (
-                        <Button
+                        <NeoButton
                             key={item.key}
-                            endDecorator="X"
-                            variant={variant}
-                            size={size}
-                            title={item.value}
+                            {...buttonProps}
+                            label={item.value}
+                            image="X"
+                            imagePlacement="trailing"
                             onPress={removeValue(item.key)}
                         />
                     ))}
-                    {props.align != 'right' && <Button
-                        startDecorator={isMultiple ? "Plus" : ""}
-                        variant={variant}
-                        size={size}
-                        title={isMultiple ? "Add" : "Select"}
-                        onPress={showSelect}
-                    />}
-                </View>
-
+                    {props.align != 'right' && trigger}
+                </FieldWell>
             </Field></>
     );
 }

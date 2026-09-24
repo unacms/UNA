@@ -2,15 +2,13 @@ import Field from './_field';
 import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
 import { useState, useEffect , useCallback } from 'react';
-import { Button, Modal } from "app/design/controls";
+import { Button, Modal, NeoButton } from "app/design/controls";
 import ChkList from 'app/ui/molecules/form-controls/checkbox-list';
 import emitter from 'app/context/emitter';
-import { LabelButton } from 'app/lib/form/form-helpers'
+import { LabelButton, wellButtonProps } from 'app/lib/form/form-helpers'
+import FieldWell from './_well'
 import { useFormField } from 'app/lib/form/use-form-field';
-import { appSetting } from 'app/lib/util'
 import { useTranslation } from 'react-i18next'
-
-const inputSettings = appSetting('theme', 'inputs');
 
 export default function FormFieldLabels(props) {
     const { t } = useTranslation();
@@ -62,9 +60,26 @@ export default function FormFieldLabels(props) {
     );
 
     const styles = props.align === 'right' ? 'justify-end' : 'justify-start';
-    const surfaceClass = isEmbedded
-        ? `${styles} w-full flex-auto items-center flex-row flex-wrap`
-        : `${styles} bg-input/60 shadow-input-outline dark:shadow-input-outline-deep rounded-lg w-full items-center flex-row flex-wrap p-2 gap-1 ${inputSettings.surface_size?.regular ?? 'min-h-10'}`;
+    const buttonProps = wellButtonProps({ variant, size });
+    const addButton = !props.hide_button && (
+        <LabelButton {...buttonProps} title={t('Tags')} icon="Plus" field_name={name} />
+    );
+    const content = (
+        <>
+            {props.align != 'right' && addButton}
+            {!!field.value && field.value.map((item, index) => (
+                <NeoButton
+                    key={`lbl-${index}`}
+                    {...buttonProps}
+                    label={item}
+                    image="X"
+                    imagePlacement="trailing"
+                    onPress={removeValue(item)}
+                />
+            ))}
+            {props.align == 'right' && addButton}
+        </>
+    );
 
     const header = <Row className=' w-full justify-between items-center'>
         <View><Button onPress={() => { setIsModal(null) }} variant='secondary' rounded startDecorator="ArrowLeft" /></View>
@@ -92,36 +107,9 @@ export default function FormFieldLabels(props) {
                 <ChkList values={dataFlat} selectedValue={value2} setValue={setValue2} showApply={false} />
             </Modal>
             <Field {...props}>
-                <View className={surfaceClass}>
-                        {(!props.hide_button && props.align != 'right') && <LabelButton
-                            variant={variant}
-                            size={size}
-                            title={t('Tags')}
-                            rounded={false}
-                            icon="Plus"
-                            field_name={name}
-                        />}
-                        {!!field.value && field.value.map((item, index) => (
-                            <View className='pr-2 justify-center items-center' key={`lbl-${index}`}>
-                                <Button
-                                    endDecorator="X"
-                                    variant={variant}
-                                    size={size}
-                                    title={item}
-                                    onPress={removeValue(item)}
-                                />
-                            </View>
-                        )
-                        )}
-                        {(!props.hide_button && props.align == 'right') && <LabelButton
-                            variant={variant}
-                            size={size}
-                            rounded={false}
-                            icon="Plus"
-                            title={t('Tags')}
-                            field_name={name}
-                        />}
-                </View>
+                {isEmbedded
+                    ? <View className={`${styles} w-full flex-auto items-center flex-row flex-wrap gap-1`}>{content}</View>
+                    : <FieldWell className={styles}>{content}</FieldWell>}
             </Field>
         </>
     );

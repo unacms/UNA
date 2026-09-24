@@ -187,8 +187,8 @@ export default function Field({
     }, [errorText, name])
 
     const sClassName =
-        '  form-control form-control-' +
-        name +
+        '  form-control' +
+        (name ? ' form-control-' + name : '') +
         (form_layout !== 'hor' ? ' w-full ' : '') +
         (noPadding === true ? '  ' : ' ' + appSetting('forms', 'field_padding') + ' ') +
         (classes ? ' ' + classes : '')
