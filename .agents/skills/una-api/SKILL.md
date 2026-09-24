@@ -12,7 +12,7 @@ This skill describes how **UNA CMS** backends must behave so the **NEO** fronten
 
 ## NEO frontend expectations
 
-- **All UNA API calls from app code** go through [`packages/app/lib/fetcher.js`](../../../packages/app/lib/fetcher.js) (`import { fetcher } from 'app/lib/fetcher'`). It normalizes hosts for web vs native (`use_proxy_web`, `use_proxy_native`, `UNA_URL`, `APP_URL`, etc.) and parses **JSON** responses.
+- **All UNA API calls from app code** go through [`packages/app/lib/fetcher.ts`](../../../packages/app/lib/fetcher.ts) (`import { fetcher } from 'app/lib/fetcher'`). It normalizes hosts for web vs native (`use_proxy_web`, `use_proxy_native`, `UNA_URL`, `APP_URL`, etc.) and parses **JSON** responses.
 - **Endpoint shape:** `/api.php?r=module/action/Template` with params as required by UNA (often `params[]=...` with JSON). Do not invent ad hoc REST shapes without aligning with existing NEO usage.
 - **Page data:** NEO loads page payloads via UNA (e.g. flows using `get_page_by_request`). Responses must include page metadata, blocks configuration, and user context **without** assuming a logged-in user everywhere.
 

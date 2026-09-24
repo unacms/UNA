@@ -1,5 +1,6 @@
 'use client';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import type { PulseOnceOptions } from './use-pulse-once.types';
 
 /**
  * Web-specific implementation using CSS animations instead of React Native Animated.
@@ -19,10 +20,10 @@ export function usePulseOne({
     autoStart = true,
     respectReducedMotion = true,
     onEnd,
-} = {}) {
+}: PulseOnceOptions = {}) {
     const [opacity, setOpacity] = useState(1);
     const animationRef = useRef(null);
-    const timeoutsRef = useRef([]);
+    const timeoutsRef = useRef<ReturnType<typeof setTimeout>[]>([]);
 
     const clearTimeouts = useCallback(() => {
         timeoutsRef.current.forEach(clearTimeout);

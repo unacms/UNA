@@ -7,12 +7,15 @@ import {
 } from 'expo-audio';
 import { Sounds } from 'app/customization/sounds';
 import { appSetting } from 'app/lib/util'
+import type { AudioPlayer, AudioSource } from 'expo-audio';
 
-const cache = new Map();
+const sounds = Sounds as Record<string, AudioSource | undefined>;
+
+const cache = new Map<string, AudioPlayer>();
 const isSounds = appSetting('layout', 'sounds');
 let primed = false;
-let priming = null;
-const soundProfiles = {
+let priming: Promise<void> | null = null;
+const soundProfiles: Record<string, { playbackRate?: number; volume?: number }> = {
     tab: {
         playbackRate: 0.78,
         volume: 0.02,
@@ -21,7 +24,7 @@ const soundProfiles = {
 
 /** Two tab players so a re-tap never waits on `seekTo` of a still-playing click. */
 const TAB_POOL_SIZE = 2;
-const tabPool = [];
+const tabPool: AudioPlayer[] = [];
 let tabPoolIndex = 0;
 
 const sfxPlayerOptions = {
@@ -30,14 +33,14 @@ const sfxPlayerOptions = {
     updateInterval: 250,
 };
 
-function applyProfile(player, name) {
+function applyProfile(player: AudioPlayer, name: string) {
     const profile = soundProfiles[name];
     if (!profile) return;
     if (profile.volume != null) player.volume = profile.volume;
     if (profile.playbackRate != null) player.setPlaybackRate(profile.playbackRate);
 }
 
-function attachRewind(player) {
+function attachRewind(player: AudioPlayer) {
     player.addListener('playbackStatusUpdate', (status) => {
         if (status.didJustFinish) {
             void player.seekTo(0, 0, 0);
@@ -45,7 +48,7 @@ function attachRewind(player) {
     });
 }
 
-function createSfxPlayer(source, name) {
+function createSfxPlayer(source: AudioSource, name: string): AudioPlayer {
     const player = createAudioPlayer(source, sfxPlayerOptions);
     applyProfile(player, name);
     attachRewind(player);
@@ -53,7 +56,7 @@ function createSfxPlayer(source, name) {
 }
 
 function ensureTabPool() {
-    const source = Sounds.tab;
+    const source = sounds.tab;
     if (!source) return tabPool;
     while (tabPool.length < TAB_POOL_SIZE) {
         tabPool.push(createSfxPlayer(source, 'tab'));
@@ -66,7 +69,7 @@ function ensureTabPool() {
  * pipeline on the first `play()` (~100–300ms). A muted play per pooled player
  * at init pays that cost before the user's first tab tap.
  */
-async function warmPlayer(player, name) {
+async function warmPlayer(player: AudioPlayer, name: string) {
     try {
         player.volume = 0;
         player.play();
@@ -80,17 +83,17 @@ async function warmPlayer(player, name) {
     }
 }
 
-function getCachedPlayer(name) {
+function getCachedPlayer(name: string): AudioPlayer | null {
     let player = cache.get(name);
     if (player) return player;
-    const source = Sounds[name];
+    const source = sounds[name];
     if (!source) return null;
     player = createSfxPlayer(source, name);
     cache.set(name, player);
     return player;
 }
 
-function playReady(player) {
+function playReady(player: AudioPlayer) {
     if (!player.playing && player.currentTime < 0.02) {
         player.play();
         return;
@@ -103,14 +106,14 @@ function playReady(player) {
 function playTabSound() {
     const pool = ensureTabPool();
     if (!pool.length) return;
-    const player = pool[tabPoolIndex];
+    const player = pool[tabPoolIndex]!;
     tabPoolIndex = (tabPoolIndex + 1) % pool.length;
     playReady(player);
 }
 
-function playSoundNow(name) {
+function playSoundNow(name: string) {
     try {
-        if (!Sounds[name]) return;
+        if (!sounds[name]) return;
         if (name === 'tab') {
             playTabSound();
             return;
@@ -122,7 +125,7 @@ function playSoundNow(name) {
     }
 }
 
-export const playSound = (name) => {
+export const playSound = (name: string): void => {
     if (!isSounds)
         return;
     if (!primed) {
@@ -133,11 +136,11 @@ export const playSound = (name) => {
 };
 
 /** Stable callback per `name` — callers use it in `useCallback` deps without churning parent `onChange` handlers. */
-export function useSound(name) {
+export function useSound(name: string) {
     return useCallback(() => playSound(name), [name]);
 }
 
-export const initAudio = async () => {
+export const initAudio = async (): Promise<void> => {
     if (primed) return;
     if (priming) return priming;
     priming = (async () => {
@@ -152,7 +155,7 @@ export const initAudio = async () => {
             } catch {
                 // Session activation is best-effort — play() will activate if needed.
             }
-            const tabSource = Sounds.tab;
+            const tabSource = sounds.tab;
             if (tabSource) {
                 try {
                     await preload(tabSource);

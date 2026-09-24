@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Platform } from 'react-native'
 
 /** Sum of .header-fixed stacks (page header + cover/tab bar) — same as layout.web.js getTopOffset. */
-export function measureHeaderFixedOffset() {
+export function measureHeaderFixedOffset(): number {
     if (typeof document === 'undefined') return 0
     let sum = 0
     document.querySelectorAll('.header-fixed').forEach((el) => {
@@ -10,8 +10,8 @@ export function measureHeaderFixedOffset() {
         if (rect.height <= 0) return
         const style = getComputedStyle(el)
         sum += rect.height
-            + parseFloat(style.marginTop || 0)
-            + parseFloat(style.marginBottom || 0)
+            + parseFloat(style.marginTop || '0')
+            + parseFloat(style.marginBottom || '0')
     })
     return sum
 }
@@ -21,7 +21,7 @@ export function measureHeaderFixedOffset() {
  * Prefer this over wiki's top:0 + padding when opaque fixed cover/tab bars exist.
  * Web-only listeners: on RN `window` exists as a stub without addEventListener.
  */
-export function useStickyHeaderOffset(fallback = 0) {
+export function useStickyHeaderOffset(fallback: number | string = 0): number {
     const [offset, setOffset] = useState(() => Number(fallback) || 0)
 
     useEffect(() => {
@@ -52,7 +52,7 @@ export function useStickyHeaderOffset(fallback = 0) {
     return offset
 }
 
-export function stickySidebarStyle(stickyTop) {
+export function stickySidebarStyle(stickyTop: number | string | null | undefined): { top: number; maxHeight: string } {
     const top = Number(stickyTop) || 0
     return {
         top,

@@ -20,23 +20,26 @@ import { useSafeAreaInsets as useSafeAreaInsetsImpl, initialWindowMetrics } from
 import { TabRouteOverrideContext } from 'app/context/tab-route-override';
 import { isTabScopedChromeKey, useTabChromeKey } from 'app/context/tab-chrome';
 import { getTabKeyFromPathname } from 'app/lib/navigation/tab-path';
+import type { NavigationLike, RouterLike, SafeAreaInsets } from './router.types';
 
-export function usePathname() {
-    const override = useContext(TabRouteOverrideContext);
+type TabRouteOverride = { pathname?: string; isFocused?: boolean } | null;
+
+export function usePathname(): string {
+    const override = useContext(TabRouteOverrideContext) as TabRouteOverride;
     const pathname = usePathnameImpl();
     return override?.pathname ?? pathname;
 }
 
 /** Current bottom-tab path (`/tab0`…). Prefers the screen chrome key — NativeTabs has no `name` param. */
-export function useCurrentTabPath() {
+export function useCurrentTabPath(): string {
     const chromeKey = useTabChromeKey();
     const pathname = usePathname();
     if (isTabScopedChromeKey(chromeKey)) return chromeKey;
     return getTabKeyFromPathname(pathname);
 }
 
-export function useIsFocused() {
-    const override = useContext(TabRouteOverrideContext);
+export function useIsFocused(): boolean {
+    const override = useContext(TabRouteOverrideContext) as TabRouteOverride;
     const focused = useIsFocusedImpl();
     if (override && typeof override.isFocused === 'boolean') {
         return override.isFocused;
@@ -44,8 +47,8 @@ export function useIsFocused() {
     return focused;
 }
 
-export function useFocusEffect(effect) {
-    const override = useContext(TabRouteOverrideContext);
+export function useFocusEffect(effect: () => void | (() => void)): void {
+    const override = useContext(TabRouteOverrideContext) as TabRouteOverride;
     const hasOverride = !!override;
     useFocusEffectImpl(useCallback(() => {
         if (hasOverride) return undefined;
@@ -58,9 +61,9 @@ export function useFocusEffect(effect) {
     }, [effect, override?.isFocused]);
 }
 
-const EMPTY_INSETS = { top: 0, right: 0, bottom: 0, left: 0 };
+const EMPTY_INSETS: SafeAreaInsets = { top: 0, right: 0, bottom: 0, left: 0 };
 
-export function getWindowSafeAreaInsets() {
+export function getWindowSafeAreaInsets(): SafeAreaInsets {
     return initialWindowMetrics?.insets ?? EMPTY_INSETS;
 }
 
@@ -68,7 +71,7 @@ export function getWindowSafeAreaInsets() {
  * Chrome insets that stay put when the keyboard opens or a nested
  * SafeAreaProvider (NativeTabs) reports top=0 / bottom=keyboard.
  */
-export function useStableSafeAreaInsets() {
+export function useStableSafeAreaInsets(): SafeAreaInsets {
     const insets = useSafeAreaInsetsImpl();
     const win = getWindowSafeAreaInsets();
     const chromeRef = useRef({
@@ -90,26 +93,27 @@ export function useStableSafeAreaInsets() {
     };
 }
 
-export function goBack(navigation, router, callback) {
+export function goBack(navigation: NavigationLike, router: RouterLike, callback?: () => void): void {
     if (callback) {
         callback();
         return;
     }
 
     const canPopStack =
-        navigation?.getState?.()?.index > 0 ||
+        (navigation?.getState?.()?.index ?? 0) > 0 ||
         navigation?.canGoBack?.();
 
     if (canPopStack) {
         if (navigation?.canGoBack?.()) {
-            navigation.goBack();
+            navigation.goBack?.();
         } else {
-            router.back();
+            router.back?.();
         }
     }
 }
 
-export function redirectTo(router, url, tabname = '/tab0') {
+/** Native: open `url` inside a tab by replacing the tab route (`?url=…`). */
+export function redirectTo(router: RouterLike, url: string, tabname = '/tab0'): void {
     const normalizedUrl = url?.startsWith('/') ? url : `/${url}`;
 
     router.replace({

@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { isObjectsEqual } from 'app/lib/util'
 
-export default function useDebounce(value, delay) {
+/** `value` after it stops changing for `delay` ms (deep-compared, so equal objects don't retrigger). */
+export default function useDebounce<T>(value: T, delay: number): T {
     const [debouncedValue, setDebouncedValue] = useState(value);
 
     useEffect(() => {

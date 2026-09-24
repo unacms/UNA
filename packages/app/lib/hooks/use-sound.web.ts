@@ -2,7 +2,7 @@ import { Sounds } from 'app/customization/sounds';
 import { appSetting } from 'app/lib/util'
 import { hasRecentUserGesture } from 'app/lib/platform/feedback-haptics';
 
-const cache = new Map();
+const cache = new Map<string, HTMLAudioElement>();
 const isSounds = appSetting('layout', 'sounds');
 
 /**
@@ -12,7 +12,7 @@ const isSounds = appSetting('layout', 'sounds');
  */
 const GESTURE_GATED_SOUNDS = new Set(['click', 'tab']);
 
-export const playSound = (name) => {
+export const playSound = (name: string): void => {
     if (!isSounds)
         return;
     if (GESTURE_GATED_SOUNDS.has(name) && !hasRecentUserGesture())
@@ -20,7 +20,7 @@ export const playSound = (name) => {
     try {
         let audio = cache.get(name);
         if (!audio) {
-            audio = new Audio(Sounds[name]);
+            audio = new Audio((Sounds as Record<string, string>)[name]);
             audio.volume = 0.5;
             cache.set(name, audio);
         }
@@ -29,5 +29,5 @@ export const playSound = (name) => {
     } catch (e) {}
 };
 
-export const useSound = (name) => () => playSound(name);
-export const initAudio = () => {};
+export const useSound = (name: string) => () => playSound(name);
+export const initAudio = async (): Promise<void> => {};

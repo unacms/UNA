@@ -1,12 +1,13 @@
 import { useState, useEffect, useEffectEvent, useRef } from 'react';
 import { fetcher } from 'app/lib/fetcher';
 
-export default function useFetchForm(url, postData) {
-    const [data, setData] = useState(null);
-    const [error, setError] = useState(null);
-    const request = useRef(null);
+/** POST `postData` to `url` whenever it changes; aborts on endpoint change / unmount. */
+export default function useFetchForm(url: string | null | undefined, postData: BodyInit | null | undefined) {
+    const [data, setData] = useState<any>(null);
+    const [error, setError] = useState<unknown>(null);
+    const request = useRef<AbortController | null>(null);
 
-    const submit = useEffectEvent(async (body, signal) => {
+    const submit = useEffectEvent(async (body: BodyInit, signal: AbortSignal) => {
         if (!url) return null;
         return fetcher([url, '', body], false, { signal });
     });

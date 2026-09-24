@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { AccessibilityInfo, Animated } from 'react-native';
 import { nativeDriver } from 'app/lib/platform/animation';
+import type { PulseOnceOptions } from './use-pulse-once.types';
 
 /**
  * Parameters:
@@ -18,9 +19,9 @@ export function usePulseOne({
     autoStart = true,
     respectReducedMotion = true,
     onEnd,
-} = {}) {
+}: PulseOnceOptions = {}) {
     const opacity = useRef(new Animated.Value(1)).current;
-    const runningRef = useRef(null); // currently running animation, for cleanup on unmount
+    const runningRef = useRef<Animated.CompositeAnimation | null>(null); // currently running animation, for cleanup on unmount
 
     // One pulse: 1 -> minOpacity -> 1
     const onePulse = useMemo(() => {

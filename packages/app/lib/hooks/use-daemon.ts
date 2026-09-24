@@ -1,10 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
 import { fetcher } from 'app/lib/fetcher';
 
-const useDaemon = (url, isLoadOnInit = false, isActive = true, pollingInterval = 60000) => {
-    const [daemonData, setDaemonData] = useState(null);
-    const [error, setError] = useState(null);
-    const timeoutId = useRef(null);
+/** Poll a UNA endpoint every `pollingInterval` ms while `isActive`; `daemonData` is the response's `data`. */
+const useDaemon = (url: string | null | undefined, isLoadOnInit = false, isActive = true, pollingInterval = 60000) => {
+    const [daemonData, setDaemonData] = useState<any>(null);
+    const [error, setError] = useState<unknown>(null);
+    const timeoutId = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     useEffect(() => {
         if (!isActive || !url) return;
@@ -13,7 +14,7 @@ const useDaemon = (url, isLoadOnInit = false, isActive = true, pollingInterval =
 
         const fetchData = async () => {
             try {
-                const sResponse = await fetcher(url);
+                const sResponse = await fetcher(url!);
                 if (!cancelled) {
                     setDaemonData(sResponse.data);
                 }

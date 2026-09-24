@@ -1,5 +1,5 @@
 import { useRef, useCallback } from 'react';
-import { Platform } from 'react-native';
+import { Platform, type NativeScrollEvent, type NativeSyntheticEvent } from 'react-native';
 import { useSetScrollDirection, useSetScrollValue } from 'app/context/jotai/layout';
 import { nextScrollDirectionFromDelta } from 'app/lib/navigation/scroll-navigation-state';
 
@@ -11,7 +11,7 @@ export function useScroll() {
     const setScrollValue = useSetScrollValue();
     const isWeb = Platform.OS === 'web';
     
-    const handleNativeScroll = useCallback((event) => {
+    const handleNativeScroll = useCallback((event: NativeSyntheticEvent<NativeScrollEvent>) => {
         const currentScrollY = event.nativeEvent.contentOffset.y;
         const previousScrollY = scrollY.current;
 
