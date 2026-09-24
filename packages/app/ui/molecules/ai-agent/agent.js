@@ -315,7 +315,8 @@ export default function AiAgent({
                     className={cn(
                         historyOverlayOnly
                             ? ''
-                            : 'md:flex md:relative md:inset-auto md:z-auto md:w-56 md:shrink-0 md:bg-transparent md:border-r md:border-border/60 md:mr-3',
+                            // `z-0` not `z-auto`: Uniwind resolves `auto` to a string and Fabric casts zIndex to Double.
+                            : 'md:flex md:relative md:inset-auto md:z-0 md:w-56 md:shrink-0 md:bg-transparent md:border-r md:border-border/60 md:mr-3',
                         historyOpen ? 'flex absolute inset-0 z-10 bg-card' : 'hidden'
                     )}
                 >

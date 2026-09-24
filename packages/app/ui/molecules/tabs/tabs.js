@@ -602,7 +602,7 @@ export default function Tabs({
                           : useEqualWidth
                             ? 'w-full min-w-full'
                             : 'w-max min-w-full',
-                    'relative z-[2]',
+                    'relative z-20',
                     listClassName
                 )}
             >
@@ -616,7 +616,7 @@ export default function Tabs({
                             sizeCfg.item,
                             radiusPill,
                             tabStretch,
-                            'relative z-[3]',
+                            'relative z-30',
                             tab.key === currentTab
                                 ? variantCfg.trigger_active
                                 : variantCfg.trigger_inactive,
@@ -670,7 +670,7 @@ export default function Tabs({
                                 sizeCfg.item,
                                 radiusPill,
                                 'shrink-0 flex-none flex-row items-center justify-center gap-1',
-                                'relative z-[3]',
+                                'relative z-30',
                                 moreTriggerEndAlign && 'ml-auto',
                                 moreIsActive
                                     ? variantCfg.trigger_active
@@ -780,7 +780,7 @@ export default function Tabs({
                         }}
                         onLayout={collapseLayout.onContainerLayout}
                         className={cn(
-                            'relative z-[1] w-full min-w-0',
+                            'relative z-10 w-full min-w-0',
                             tabBarClassName
                         )}
                     >
@@ -833,7 +833,7 @@ export default function Tabs({
                         nestedScrollEnabled
                         keyboardShouldPersistTaps="handled"
                         scrollEventThrottle={16}
-                        className="relative z-[1] w-full max-w-full"
+                        className="relative z-10 w-full max-w-full"
                         onLayout={(e) => {
                             scrollViewWidthRef.current =
                                 e.nativeEvent.layout.width;
@@ -877,7 +877,7 @@ export default function Tabs({
                                         : useEqualWidth
                                           ? 'w-full min-w-full'
                                           : 'w-max min-w-full',
-                                    'relative z-[2]',
+                                    'relative z-20',
                                     listClassName
                                 )}
                             >
@@ -893,7 +893,7 @@ export default function Tabs({
                                             sizeCfg.item,
                                             radiusPill,
                                             tabStretch,
-                                            'relative z-[3]',
+                                            'relative z-30',
                                             tab.key === currentTab
                                                 ? variantCfg.trigger_active
                                                 : variantCfg.trigger_inactive,

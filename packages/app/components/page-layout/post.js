@@ -548,7 +548,7 @@ export default function PageLayout({ data, blocks, isModal = false, url, pageCla
                             onLayout={handleLayout}
                             style={isFormFixed && listWidth ? { width: listWidth + 5 } : undefined}
                             // pt-12: fade runs above the input (bottom-anchored panel grows upward).
-                            className="pt-12 lg:pt-0 bg-linear-to-t from-card from-40% to-transparent web:fixed web:bottom-0 web:z-50 lg:static lg:z-auto lg:w-full"
+                            className="pt-12 lg:pt-0 bg-linear-to-t from-card from-40% to-transparent web:fixed web:bottom-0 web:z-50 lg:static lg:z-0 lg:w-full"
                         >
                             <CommentsForm
                                 isModal={isModal}
