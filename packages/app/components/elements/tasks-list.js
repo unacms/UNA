@@ -735,7 +735,9 @@ export default function ElementTasksList({ data, blockWrapperProps }) {
         >
             {confirmAndForm}
 
-            <View className={cn('w-full', fillViewport && 'h-full min-h-0 flex-1')}>
+            {/* Spacing between toolbar / tasklists / sections: tasks-home pads
+                each part itself (p-4, px-4 pb-4); the embedded block uses gaps. */}
+            <View className={cn('w-full', fillViewport ? 'h-full min-h-0 flex-1' : 'gap-4')}>
                 {hasToolbar ? (
                     <Row className={cn(
                         'flex-wrap items-center justify-between gap-3',
@@ -773,7 +775,7 @@ export default function ElementTasksList({ data, blockWrapperProps }) {
                 <View className={cn(
                     'w-full ',
                     showTasklists && 'flex flex-col lg:flex-row',
-                    showTasklists && (fillViewport ? 'lg:items-stretch' : 'lg:items-start'),
+                    showTasklists && (fillViewport ? 'lg:items-stretch' : 'lg:items-start gap-4'),
                     fillViewport && 'min-h-0 flex-1',
                 )}>
                     {showTasklists ? (
