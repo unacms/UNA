@@ -42,7 +42,7 @@ class BxDolAiChat
 
     /**
      * Optional `?chat=` partition. Not identity — owner stays profile id / session id.
-     * `{owner}.{chat}` so parseThreadId does not treat the nonce as a context pid.
+     * `{owner}#{chat}` so parseThreadId does not treat the nonce as a context pid.
      */
     public static function sanitizeChatQueryId($s)
     {
@@ -53,14 +53,14 @@ class BxDolAiChat
     }
 
     /**
-     * Owner (profile id or guest session id) of a `{owner}` / `{owner}.{chat}` subindex.
+     * Owner (profile id or guest session id) of a `{owner}` / `{owner}#{chat}` subindex.
      */
     public static function chatHistoryOwnerFromSubindex($sSub)
     {
         $sSub = (string)$sSub;
         if ($sSub === '')
             return '';
-        $i = strpos($sSub, '.');
+        $i = strpos($sSub, '#');
         return $i === false ? $sSub : substr($sSub, 0, $i);
     }
 
@@ -96,7 +96,7 @@ class BxDolAiChat
             $sOwner = (string)$iProfileId;
             return [
                 'sender_profile_id' => $iProfileId,
-                'chat_history_subindex' => $sChat !== '' ? ($sOwner . '.' . $sChat) : $sOwner,
+                'chat_history_subindex' => $sChat !== '' ? ($sOwner . '#' . $sChat) : $sOwner,
             ];
         }
 
@@ -112,14 +112,14 @@ class BxDolAiChat
         $sOwner = (string)$oSession->getId();
         return [
             'sender_profile_id' => 0,
-            'chat_history_subindex' => $sChat !== '' ? ($sOwner . '.' . $sChat) : $sOwner,
+            'chat_history_subindex' => $sChat !== '' ? ($sOwner . '#' . $sChat) : $sOwner,
         ];
     }
 
     /**
      * `{trigger}:{agentId}:{contextPid}:{userSubindex}`.
      * Context is omitted when 0 so existing site-wide threads still load.
-     * User suffix (session id or profile id, optionally `.{chat}`) stays last so adopt can replace it.
+     * User suffix (session id or profile id, optionally `#{chat}`) stays last so adopt can replace it.
      */
     public static function threadId($aAgent, $aParams = [])
     {
@@ -186,13 +186,13 @@ class BxDolAiChat
      * or the base thread). Otherwise a block without `allow_new` would keep talking
      * to a base thread the agent closed days ago, while Studio shows a newer chat.
      *
-     * Explicit `?chat=` (subindex with a dot) is left alone. Falls back to the base
+     * Explicit `?chat=` (subindex with a #) is left alone. Falls back to the base
      * thread when nothing is open.
      */
     public function resolveCurrentChatThread($aAgent, $aParams)
     {
         $sSub = (string)($aParams['chat_history_subindex'] ?? '');
-        if ($sSub === '' || strpos($sSub, '.') !== false)
+        if ($sSub === '' || strpos($sSub, '#') !== false)
             return $aParams;
 
         $sCurrent = $this->_oDb->getCurrentOpenChatThreadId($aAgent, $sSub, (int)($aParams['chat_history_context_pid'] ?? 0));
@@ -219,7 +219,7 @@ class BxDolAiChat
     public function openPartitionedChatThread($aAgent, $aParams)
     {
         $sSub = (string)($aParams['chat_history_subindex'] ?? '');
-        if (strpos($sSub, '.') === false)
+        if (strpos($sSub, '#') === false)
             return 0;
 
         $sThreadId = self::threadId($aAgent, $aParams);
@@ -372,7 +372,7 @@ class BxDolAiChat
 
             $aUi = $this->_oUi->storedChatJsonToUiMessages($aRow['messages'] ?? '');
             // A `?chat=` thread is listed even before its first message (it was opened on purpose).
-            $bPartition = strpos((string)$aParsed['chat_history_subindex'], '.') !== false;
+            $bPartition = strpos((string)$aParsed['chat_history_subindex'], '#') !== false;
             if (!$aUi && $sThreadId !== $sMyDefault && !$bPartition)
                 continue;
 
@@ -658,7 +658,7 @@ class BxDolAiChat
         }
 
         $sSub = (string)$aParsed['chat_history_subindex'];
-        $iDot = strpos($sSub, '.');
+        $iDot = strpos($sSub, '#');
         $sChat = $iDot === false ? '' : substr($sSub, $iDot + 1);
 
         $sTitle = trim((string)($aRow['title'] ?? ''));
