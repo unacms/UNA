@@ -1,5 +1,5 @@
 import { View } from 'app/design/view'
-import { useCallback, useMemo, useEffect } from 'react'
+import { useCallback, useMemo, useEffect, type ComponentType, type ReactElement } from 'react'
 import { Platform, RefreshControl } from 'react-native'
 import { AnimatedLegendList } from '@legendapp/list/reanimated'
 import { useHeaderHeight, useCoverScrollCompensation } from 'app/context/jotai/layout'
@@ -12,6 +12,8 @@ import {
     omitProps,
     WEB_ONLY_PROPS,
     IGNORED_PROPS,
+    type UniListProps,
+    type UniListSlot,
 } from './shared'
 import { resolveEstimatedItemSize, estimateItemSize } from './item-size'
 import { useCoverRefreshArming } from './use-cover-refresh-arming'
@@ -19,7 +21,7 @@ import { useListScrollPublisher } from './use-list-scroll-publisher'
 
 /*
  * ============================================================================
- * UniList — native. See `shared.js` for the prop contract.
+ * UniList — native. See `shared.ts` for the prop contract.
  *
  * LegendList with three things layered on top:
  *   - page-header / cover spacers above and below the rows
@@ -28,7 +30,7 @@ import { useListScrollPublisher } from './use-list-scroll-publisher'
  * ============================================================================
  */
 
-const EMPTY_LIST_DATA = []
+const EMPTY_LIST_DATA: any[] = []
 
 /**
  * Stable header component. LegendList reconciles ListHeaderComponent by type;
@@ -41,6 +43,12 @@ function UniListChromeHeader({
     applyHeaderOffset,
     applyFooterOffset,
     header,
+}: {
+    coverOverlayPad: number
+    headerOffset: number
+    applyHeaderOffset: boolean
+    applyFooterOffset?: boolean
+    header: UniListSlot
 }) {
     return (
         <>
@@ -58,7 +66,9 @@ function UniListChromeHeader({
     )
 }
 
-export default function UniList(props) {
+export type { UniListProps } from './shared'
+
+export default function UniList(props: UniListProps) {
     const {
         preloadComponent,
         contentContainerStyle: contentContainerStyleProp,
@@ -108,7 +118,7 @@ export default function UniList(props) {
         [unit, estimatedItemSizeProp]
     )
     const getEstimatedItemSize = useCallback(
-        (_index, item) => estimateItemSize(unit, item, estimatedItemSize),
+        (_index: number, item: any) => estimateItemSize(unit, item, estimatedItemSize),
         [unit, estimatedItemSize]
     )
 
@@ -121,7 +131,7 @@ export default function UniList(props) {
     ].filter(Boolean).join(' ').trim()
 
     const listRenderItem = useCallback(
-        (info) => (
+        (info: { item: any; index: number }) => (
             <View className={layout || 'w-full'}>
                 {renderItem(info)}
             </View>
@@ -237,16 +247,13 @@ export default function UniList(props) {
     // Render
     // ------------------------------------------------------------------
 
-    const setListRef = useCallback((node) => {
+    const setListRef = useCallback((node: unknown) => {
         if (typeof refer === 'function') {
             refer(node)
         } else if (refer) {
-            refer.current = node
+            (refer as { current: unknown }).current = node
         }
     }, [refer])
-
-    // scrollToIndex on a not-yet-measured row is expected during restores; ignore.
-    const handleScrollToIndexFailed = useCallback(() => {}, [])
 
     return (
         <AnimatedLegendList
@@ -259,16 +266,15 @@ export default function UniList(props) {
             onEndReachedThreshold={1}
             data={rows}
             ListHeaderComponent={listHeaderElement}
-            ListEmptyComponent={preloadComponent ?? listEmptyComponentProp}
+            ListEmptyComponent={(preloadComponent ?? listEmptyComponentProp) as ReactElement | ComponentType<any> | null | undefined}
             ListFooterComponent={listFooterComponent}
-            keyExtractor={(item) => item.id}
+            keyExtractor={(item: any) => item.id}
             renderItem={layout ? listRenderItem : renderItem}
             onEndReached={preloadComponent ? undefined : onEndReached}
             onStartReached={preloadComponent ? undefined : onStartReached}
             onScroll={handleScroll}
             scrollEventThrottle={16}
             keyboardShouldPersistTaps="always"
-            onScrollToIndexFailed={handleScrollToIndexFailed}
             refreshControl={refreshControl}
             alignItemsAtEnd={inverted}
             maintainScrollAtEnd={inverted}

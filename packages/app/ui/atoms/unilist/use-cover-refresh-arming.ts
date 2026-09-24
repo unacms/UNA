@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import type { SharedValue } from 'react-native-reanimated'
 
 /**
  * Android's SwipeRefreshLayout treats "scroll back to 0 + overscroll" as a
@@ -27,11 +28,14 @@ const REARM_AFTER_MS = 400
  *   `armed` is state (for the RefreshControl prop); `onTopZoneChange` is what
  *   the scroll handler calls when the offset crosses the 16px line.
  */
-export function useCoverRefreshArming({ coverScrollY, coverOverlayPad }) {
+export function useCoverRefreshArming({ coverScrollY, coverOverlayPad }: {
+    coverScrollY?: SharedValue<number>
+    coverOverlayPad?: number
+}) {
     const hasCover = Boolean(coverScrollY)
     const [armed, setArmed] = useState(!hasCover)
     const armedRef = useRef(!hasCover)
-    const timerRef = useRef(null)
+    const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
     const clearTimer = useCallback(() => {
         if (timerRef.current) {
@@ -57,7 +61,7 @@ export function useCoverRefreshArming({ coverScrollY, coverOverlayPad }) {
         }, REARM_AFTER_MS)
     }, [])
 
-    const onTopZoneChange = useCallback((inTopZone) => {
+    const onTopZoneChange = useCallback((inTopZone: boolean) => {
         if (inTopZone) scheduleRearm()
         else disarm()
     }, [scheduleRearm, disarm])

@@ -1,6 +1,7 @@
 import { useCallback } from 'react'
 import { View } from 'app/design/view'
-import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd'
+import { DragDropContext, Droppable, Draggable, type DraggableProvided, type DropResult } from '@hello-pangea/dnd'
+import type { UniListRenderItem } from './shared'
 
 /**
  * Drag-and-drop reorderable list (web only).
@@ -15,8 +16,13 @@ import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd'
  * @param {Function} props.onSort     `@hello-pangea/dnd` onDragEnd result.
  * @param {object}   [props.style]    Wrapper style (fixed height, etc).
  */
-export default function SortableList({ data, renderItem, onSort, style }) {
-    const renderRow = useCallback((index, item, provided, isDragging) => (
+export default function SortableList({ data, renderItem, onSort, style }: {
+    data: any[]
+    renderItem: UniListRenderItem
+    onSort?: (result: DropResult) => void
+    style?: any
+}) {
+    const renderRow = useCallback((index: number, item: any, provided: DraggableProvided, isDragging: boolean) => (
         <div
             {...provided.draggableProps}
             {...provided.dragHandleProps}
@@ -32,7 +38,7 @@ export default function SortableList({ data, renderItem, onSort, style }) {
 
     return (
         <View style={style}>
-            <DragDropContext onDragEnd={onSort}>
+            <DragDropContext onDragEnd={onSort!}>
                 <Droppable
                     droppableId="droppable"
                     // The row being dragged is rendered in a portal; give it the same markup.

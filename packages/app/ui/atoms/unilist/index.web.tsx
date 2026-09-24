@@ -1,6 +1,7 @@
 import { VirtuosoGrid, Virtuoso } from 'react-virtuoso'
+import type { ViewStyle } from 'react-native'
 import { View } from 'app/design/view'
-import { useRef, useEffect, useState, useCallback, forwardRef, useMemo } from 'react'
+import { useRef, useEffect, useState, useCallback, forwardRef, useMemo, type ComponentType, type HTMLAttributes, type ReactNode } from 'react'
 import { paddingForList } from 'app/customization/functions'
 import {
     dedupeById,
@@ -9,6 +10,7 @@ import {
     NATIVE_ONLY_PROPS,
     IGNORED_PROPS,
     REVEAL_DELAY_MS,
+    type UniListProps,
 } from './shared'
 import { lazyComponent } from 'app/lib/lazy-component'
 
@@ -17,7 +19,7 @@ const SortableList = lazyComponent(() => import('./sortable-list'), { name: 'Sor
 
 /*
  * ============================================================================
- * UniList — web. See `shared.js` for the prop contract.
+ * UniList — web. See `shared.ts` for the prop contract.
  *
  * react-virtuoso in one of two shapes — `Virtuoso` (mode 'simple', one
  * column) or `VirtuosoGrid` (flex-wrap grid) — with the same wrapper, header,
@@ -31,7 +33,7 @@ const SortableList = lazyComponent(() => import('./sortable-list'), { name: 'Sor
  * real box ('', 'auto', '100%', 0, negative). Undefined means "use the window
  * as the scroller".
  */
-function parseHeight(height) {
+function parseHeight(height: unknown): string | undefined {
     if (typeof height === 'number') {
         return height > 0 ? `${height}px` : undefined
     }
@@ -48,7 +50,7 @@ function parseHeight(height) {
 }
 
 /** Grid container: rows wrap horizontally. */
-const GridListComponent = forwardRef(function GridListComponent({ className, ...props }, ref) {
+const GridListComponent = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(function GridListComponent({ className, ...props }, ref) {
     return (
         <div
             ref={ref}
@@ -58,7 +60,9 @@ const GridListComponent = forwardRef(function GridListComponent({ className, ...
     )
 })
 
-export default function UniList(props) {
+export type { UniListProps } from './shared'
+
+export default function UniList(props: UniListProps) {
     const {
         data: rawData,
         renderItem,
@@ -91,7 +95,7 @@ export default function UniList(props) {
     // Anything left over is a Virtuoso prop (overscan, computeItemKey, …).
     const rest = omitProps(restProps, [...NATIVE_ONLY_PROPS, ...IGNORED_PROPS])
 
-    const uniRef = useRef()
+    const uniRef = useRef<any>(undefined)
     const rows = useMemo(() => dedupeById(rawData), [rawData])
     const isGrid = mode != 'simple'
     const listPadding = paddingForList(endpoint)
@@ -105,7 +109,8 @@ export default function UniList(props) {
     // zero-sized scroller makes Virtuoso throw. With a height the prop decides
     // and the default is an own scroller.
     const isWindowScroll = !fixedHeight || (useWindowScrollProp ?? false)
-    const wrapperStyle = isWindowScroll ? undefined : { height: fixedHeight }
+    // Web CSS length ('400px', '50vh'), wider than RN DimensionValue.
+    const wrapperStyle = isWindowScroll ? undefined : ({ height: fixedHeight } as ViewStyle)
     const virtuosoStyle = {
         ...(isWindowScroll ? {} : { height: fixedHeight }),
         ...(paddingTop ? { paddingTop } : {}),
@@ -139,7 +144,7 @@ export default function UniList(props) {
         return () => clearTimeout(timer)
     }, [preloadComponent, waitForGrid])
 
-    const onGridReadyStateChanged = useCallback((ready) => {
+    const onGridReadyStateChanged = useCallback((ready: boolean) => {
         if (ready) setGridReady(true)
     }, [])
 
@@ -147,7 +152,7 @@ export default function UniList(props) {
     // Virtuoso pieces
     // ------------------------------------------------------------------
 
-    const itemContent = useCallback((index, item) => (
+    const itemContent = useCallback((index: number, item: any) => (
         <View className="min-h-px">
             {renderItem({ item, index })}
         </View>
@@ -156,7 +161,7 @@ export default function UniList(props) {
     /** Grid cell: `layout` class sets the column width (w-1/2, w-1/3, …). */
     const GridItemComponent = useMemo(() => {
         const widthClass = layout || 'w-full'
-        return function GridItem({ className, ...itemProps }) {
+        return function GridItem({ className, ...itemProps }: HTMLAttributes<HTMLDivElement>) {
             return <div className={`${widthClass} ${className || 'mb-3'}`} {...itemProps} />
         }
     }, [layout])
@@ -165,7 +170,7 @@ export default function UniList(props) {
         if (!ListFooterComponent) return null
         return typeof ListFooterComponent === 'function'
             ? <ListFooterComponent />
-            : ListFooterComponent
+            : (ListFooterComponent as ReactNode)
     }, [ListFooterComponent])
 
     // ------------------------------------------------------------------
@@ -198,7 +203,7 @@ export default function UniList(props) {
         )
     }
 
-    const List = isGrid ? VirtuosoGrid : Virtuoso
+    const List = (isGrid ? VirtuosoGrid : Virtuoso) as ComponentType<any>
     const virtuosoProps = {
         data: rows,
         useWindowScroll: isWindowScroll,

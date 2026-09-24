@@ -1,5 +1,5 @@
 import { useCallback, useLayoutEffect, useRef } from 'react'
-import { useAnimatedScrollHandler, useSharedValue, runOnJS } from 'react-native-reanimated'
+import { useAnimatedScrollHandler, useSharedValue, runOnJS, type SharedValue } from 'react-native-reanimated'
 import {
     useSetScrollDirection,
     useSetScrollValue,
@@ -39,7 +39,11 @@ const SCROLL_PUBLISH_DELTA = 8
  * @returns {{ handleScroll: Function, scrollYRef: { current: number } }}
  *   `scrollYRef.current` is the last offset seen by JS (for scroll caching on unmount).
  */
-export function useListScrollPublisher({ url, coverScrollY, onTopZoneChange }) {
+export function useListScrollPublisher({ url, coverScrollY, onTopZoneChange }: {
+    url?: string
+    coverScrollY?: SharedValue<number>
+    onTopZoneChange?: (inTopZone: boolean) => void
+}) {
     const setScrollDirection = useSetScrollDirection()
     const setScrollValue = useSetScrollValue()
     const setListMaxScrollOffset = useSetListMaxScrollOffset()
@@ -73,7 +77,7 @@ export function useListScrollPublisher({ url, coverScrollY, onTopZoneChange }) {
         }, [setScrollDirection, setScrollValue])
     )
 
-    const publishScrollValue = useCallback((y, maxOffset) => {
+    const publishScrollValue = useCallback((y: number, maxOffset: number) => {
         if (!isFocusedRef.current) return
         scrollYRef.current = y
         setListMaxScrollOffset((prev) => (prev === maxOffset ? prev : maxOffset))
@@ -84,7 +88,7 @@ export function useListScrollPublisher({ url, coverScrollY, onTopZoneChange }) {
         }
     }, [setListMaxScrollOffset, setScrollValue])
 
-    const publishScrollDirection = useCallback((direction) => {
+    const publishScrollDirection = useCallback((direction: number) => {
         if (!isFocusedRef.current) return
         if (direction !== directionRef.current) {
             directionRef.current = direction
@@ -92,7 +96,7 @@ export function useListScrollPublisher({ url, coverScrollY, onTopZoneChange }) {
         }
     }, [setScrollDirection])
 
-    const publishTopZone = useCallback((inTopZone) => {
+    const publishTopZone = useCallback((inTopZone: boolean) => {
         if (!isFocusedRef.current) return
         onTopZoneChange?.(inTopZone)
     }, [onTopZoneChange])

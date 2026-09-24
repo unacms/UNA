@@ -12,21 +12,21 @@
 const DEFAULT_ROW = 100
 const BLOCK_ROW = 160
 
-const ESTIMATED_ITEM_SIZE_BY_UNIT = {
+const ESTIMATED_ITEM_SIZE_BY_UNIT: Record<string, number> = {
     feed: 140,
     notifications: 64,
 }
 
 /** Baseline row height for a unit; explicit prop wins. */
-export function resolveEstimatedItemSize(unit, explicitSize) {
+export function resolveEstimatedItemSize(unit: string | undefined, explicitSize: number | undefined): number {
     if (typeof explicitSize === 'number' && explicitSize > 0) {
         return explicitSize
     }
-    return ESTIMATED_ITEM_SIZE_BY_UNIT[unit] ?? DEFAULT_ROW
+    return ESTIMATED_ITEM_SIZE_BY_UNIT[unit as string] ?? DEFAULT_ROW
 }
 
 /** Per-row estimate from the row's content shape. */
-export function estimateItemSize(unit, item, fallback) {
+export function estimateItemSize(unit: string | undefined, item: any, fallback: number): number {
     if (!item || typeof item !== 'object') {
         return fallback
     }

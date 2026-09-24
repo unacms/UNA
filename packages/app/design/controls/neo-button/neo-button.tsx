@@ -1,8 +1,5 @@
 /**
- * NeoButton — SwiftUI-faithful Button.
- *
- * Full prop reference and usage examples:
- *   packages/app/design/controls/neo-button/neo-button.md
+ * NeoButton — SwiftUI-faithful Button. Props: neo-button.types.ts.
  *
  * The API mirrors SwiftUI's Button axes:
  *
