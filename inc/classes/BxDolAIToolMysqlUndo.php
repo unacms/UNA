@@ -50,8 +50,9 @@ class BxDolAIToolMysqlUndo extends BxDolAITool
         $iLogId = (int)$log_id;
         $aCtx = BxDolAIToolMysqlWrite::currentLogContext();
         $sThread = $aCtx['thread_id'];
+        $iProfile = (int)$aCtx['profile_id'];
 
-        $aRows = $this->_pickRows($oDb, $sScope, $iLogId, $sThread);
+        $aRows = $this->_pickRows($oDb, $sScope, $iLogId, $sThread, $iProfile);
         if (!$aRows)
             throw new Exception('Nothing to undo in this chat.');
 
@@ -76,7 +77,7 @@ class BxDolAIToolMysqlUndo extends BxDolAITool
             $oDb->query("ALTER TABLE `sys_agents_sql_log` ADD `undone` int(11) NOT NULL DEFAULT 0");
     }
 
-    protected function _pickRows(BxDolDb $oDb, string $sScope, int $iLogId, string $sThread): array
+    protected function _pickRows(BxDolDb $oDb, string $sScope, int $iLogId, string $sThread, int $iProfile): array
     {
         if ($iLogId > 0) {
             $aRow = $oDb->getRow("SELECT * FROM `sys_agents_sql_log` WHERE `id` = :id LIMIT 1", ['id' => $iLogId]);
@@ -84,8 +85,13 @@ class BxDolAIToolMysqlUndo extends BxDolAITool
                 throw new Exception("log_id {$iLogId} not found.");
             if ((int)$aRow['undone'] > 0)
                 throw new Exception("log_id {$iLogId} is already undone.");
-            if ($sThread !== '' && (string)$aRow['thread_id'] !== $sThread)
+            if ($sThread !== '') {
+                if ((string)$aRow['thread_id'] !== $sThread)
+                    throw new Exception("log_id {$iLogId} belongs to another chat.");
+            }
+            else if ($iProfile <= 0 || (int)$aRow['profile_id'] !== $iProfile) {
                 throw new Exception("log_id {$iLogId} belongs to another chat.");
+            }
             return [$aRow];
         }
 
@@ -93,9 +99,12 @@ class BxDolAIToolMysqlUndo extends BxDolAITool
             $sSql = "SELECT * FROM `sys_agents_sql_log` WHERE `thread_id` = :t AND `undone` = 0 ORDER BY `id` DESC";
             $aBind = ['t' => $sThread];
         }
+        else if ($iProfile > 0) {
+            $sSql = "SELECT * FROM `sys_agents_sql_log` WHERE `profile_id` = :p AND `undone` = 0 AND `added` > :since ORDER BY `id` DESC";
+            $aBind = ['p' => $iProfile, 'since' => time() - 7200];
+        }
         else {
-            $sSql = "SELECT * FROM `sys_agents_sql_log` WHERE `undone` = 0 AND `added` > :since ORDER BY `id` DESC";
-            $aBind = ['since' => time() - 7200];
+            return [];
         }
 
         if ($sScope === 'last')
