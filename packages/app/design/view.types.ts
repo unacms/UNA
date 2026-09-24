@@ -11,6 +11,8 @@ import type {
 
 /** DOM-only props the web primitives forward to the element (ignored on native). */
 type WebExtras = {
+    onMouseDown?: (event: any) => void
+    onWheel?: (event: any) => void
     onMouseEnter?: (event: any) => void
     onMouseLeave?: (event: any) => void
     onKeyDown?: (event: any) => void

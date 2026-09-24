@@ -539,7 +539,7 @@ Examples:
 
 **Never send original uploads (`src_orig`) to `Image` / next/image** — web or native. UNA already transcodes; NEO only further optimizes that display URL.
 
-1. Pick the URL with [`pickUnaDisplaySrc`](packages/app/lib/image-helpers.js) / [`toUnaDisplayImageItem`](packages/app/lib/image-helpers.js) (`src`, then `medium` / `small` / `thumb` / `file`). Do not read `src_orig`.
+1. Pick the URL with [`pickUnaDisplaySrc`](packages/app/lib/image-helpers.ts) / [`toUnaDisplayImageItem`](packages/app/lib/image-helpers.ts) (`src`, then `medium` / `small` / `thumb` / `file`). Do not read `src_orig`.
 2. Render through `app/ui/atoms/image` only. Web uses next/image; native uses the same helper → `/_next/image`.
 3. Spreading a UNA object (`<Image {...image} />`) is safe: `getImageSrc` ignores `src_orig`. Flattening a list must still call `toUnaDisplayImageItem` so the original is not copied into `src`.
 4. `useOriginalImage` in the atom means “optimizer request failed, use the UNA display URL” — not `src_orig`.
@@ -725,7 +725,7 @@ yarn typecheck web      # one platform
 | Components | kebab-case | `profile-hover-card.js` |
 | Pages (Next.js) | lowercase | `page.js`, `layout.js` |
 | Screens (Expo) | kebab-case in folders | `app/(tabs)/index.tsx` |
-| Utilities | kebab-case | `form-helpers.js` |
+| Utilities | kebab-case | `form-helpers.ts` |
 | Types | PascalCase | `UserTypes.ts` |
 
 ### Import Aliases

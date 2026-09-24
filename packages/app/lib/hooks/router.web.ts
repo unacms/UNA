@@ -40,7 +40,6 @@ export function getWindowSafeAreaInsets(): SafeAreaInsets {
     return { top: 0, right: 0, bottom: 0, left: 0 };
 }
 
-// TODO: inverted? history.back() only runs when there is no history to go back to.
 export function goBack(_navigation: NavigationLike, _router: RouterLike, callback?: () => void): void {
     if (callback){
         callback(); 

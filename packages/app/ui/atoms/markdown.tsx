@@ -18,7 +18,7 @@ import { APP_URL, UNA_URL } from 'app/config'
 
 type AlertType = 'NOTE' | 'TIP' | 'IMPORTANT' | 'WARNING' | 'CAUTION'
 
-/** Blocks produced by lib/markdown (segments.js + images.js). */
+/** Blocks produced by lib/markdown (segments.ts + images.ts). */
 type MarkdownSegment =
     | { kind: 'markdown'; markdown: string }
     | { kind: 'lead'; markdown: string }

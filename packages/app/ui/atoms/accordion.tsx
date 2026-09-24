@@ -90,7 +90,7 @@ export function AccordionTrigger({
 }: AccordionTriggerProps) {
     const isWeb = Platform.OS === 'web';
     const playClick = useSound('click');
-    /** Native: `click` asset when `layout.sounds`. Web: [web-haptics](https://github.com/lochie/web-haptics) `nudge` + synth when `layout.sounds` + `layout.web_haptics_sounds` (see `feedback-haptics.web.js`); skip `useSound` on web to avoid doubling. */
+    /** Native: `click` asset when `layout.sounds`. Web: [web-haptics](https://github.com/lochie/web-haptics) `nudge` + synth when `layout.sounds` + `layout.web_haptics_sounds` (see `feedback-haptics.web.ts`); skip `useSound` on web to avoid doubling. */
     const handlePress = useCallback(
         (event: GestureResponderEvent) => {
             onPress?.(event);
