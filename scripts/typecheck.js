@@ -8,7 +8,8 @@
 // A base file shadowed by the platform variant (e.g. video.tsx next to video.web.tsx)
 // never ships on that platform, so it is left out of that platform's run. JS files are
 // not checked, only read for the types TS files import from them. `.ios` / `.android`
-// variants are not checked separately (native uses the `.native` / base files).
+// files are added to the native run as extra roots: their own code is checked, but
+// imports still resolve through `.native` / base files.
 
 const fs = require('fs');
 const path = require('path');
@@ -33,6 +34,7 @@ const PLATFORMS = {
     native: {
         extends: 'tsconfig.json',
         suffix: '.native',
+        extraSuffixes: ['.ios', '.android'],
         dirs: ['packages/app', 'apps/expo/app'],
         ambient: ['apps/expo'],
         compilerOptions: { strict: true },
@@ -57,14 +59,14 @@ function parse(file) {
     return { ext, base: stem.slice(0, stem.length - platform.length), platform };
 }
 
-function filesFor({ suffix, dirs, ambient }) {
+function filesFor({ suffix, extraSuffixes = [], dirs, ambient }) {
     const files = [];
     for (const dir of dirs) {
         for (const file of walk(path.join(root, dir))) {
             if (file.endsWith('.d.ts')) { files.push(file); continue; }
             const { ext, base, platform } = parse(file);
             if (ext !== '.ts' && ext !== '.tsx') continue;
-            if (platform && platform !== suffix) continue;
+            if (platform && platform !== suffix && !extraSuffixes.includes(platform)) continue;
             const shadowed = !platform && SOURCE_EXTS.some((e) => fs.existsSync(base + suffix + e));
             if (!shadowed) files.push(file);
         }

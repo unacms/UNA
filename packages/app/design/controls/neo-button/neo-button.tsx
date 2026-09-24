@@ -31,13 +31,14 @@
  * rest. This keeps the API mappable 1:1 to `@expo/ui/swift-ui` Button.
  *
  * Native: `native.expo_ui_buttons` (configs) routes eligible buttons through
- * Expo UI (`neo-button-expoui.{ios,android}.js`). Unmapped icons, custom
+ * Expo UI (`neo-button-expoui.{ios,android}.tsx`). Unmapped icons, custom
  * children, long-press, and `selected` on non-glass styles stay on the JS
  * surface. Glass keeps Expo UI for selected (tinted liquid glass) and
  * for `addon` counters (SwiftUI child in the label).
  */
 
-import React, { memo } from 'react';
+import React, { memo, type ReactNode } from 'react';
+import type { ViewStyle } from 'react-native';
 import { Pressable, View, MotionView, Row } from 'app/design/view';
 import { Text } from 'app/design/typography';
 import { Icon } from 'app/ui/atoms/icon';
@@ -66,6 +67,9 @@ import {
     resolveScoped,
 } from 'app/design/controls/neo-button/neo-button-resolver';
 import { NeoButtonExpoUI, getNativeIcon } from 'app/design/controls/neo-button/neo-button-expoui';
+import type { NeoButtonAddon, NeoButtonClassNames, NeoButtonProps } from 'app/design/controls/neo-button/neo-button.types';
+
+export type { NeoButtonProps } from 'app/design/controls/neo-button/neo-button.types';
 
 // `width="fill"` takes leftover space in a flex parent (`flex-auto`), not
 // 100% of the parent (`w-full`) — that would shove siblings out of the row.
@@ -73,7 +77,7 @@ import { NeoButtonExpoUI, getNativeIcon } from 'app/design/controls/neo-button/n
 // still uses `w-full` so the chrome fills this flex item.
 const FILL_WIDTH_CLASS = 'flex-auto min-w-0';
 
-const ICON_ACCESSIBLE_MAP = {
+const ICON_ACCESSIBLE_MAP: Record<string, string> = {
     X: 'Close', ChevronLeft: 'Previous', ChevronRight: 'Next',
     ChevronUp: 'Up', ChevronDown: 'Down', Plus: 'Add', Minus: 'Remove',
     Trash: 'Delete', Trash2: 'Delete', Edit: 'Edit', Edit2: 'Edit', Edit3: 'Edit',
@@ -85,7 +89,7 @@ const ICON_ACCESSIBLE_MAP = {
     LogIn: 'Login', LogOut: 'Logout',
 };
 
-const getAccessibleName = (accessibilityLabel, tooltip, label, image) => {
+const getAccessibleName = (accessibilityLabel: string | undefined, tooltip: unknown, label: unknown, image: unknown): string | undefined => {
     if (accessibilityLabel) return accessibilityLabel;
     if (tooltip && typeof tooltip === 'string') return tooltip;
     if (label && typeof label === 'string') return label;
@@ -96,14 +100,14 @@ const getAccessibleName = (accessibilityLabel, tooltip, label, image) => {
     return undefined;
 };
 
-const getAddon = (addon, hasLabel) => {
+const getAddon = (addon: NeoButtonAddon, hasLabel: boolean) => {
     const parsed = parseNeoButtonAddon(addon);
     if (!parsed) return null;
 
     const isPrimary = parsed.variant === 'primary';
     const bg = isPrimary ? 'bg-destructive' : 'bg-accent';
     const textColor = isPrimary ? 'text-destructive-foreground' : 'text-accent-foreground';
-    const pos = addon?.position === 'bottom' ? 'bottom-0 -end-1' : '-top-2 -end-2';
+    const pos = (typeof addon === 'object' ? addon?.position : undefined) === 'bottom' ? 'bottom-0 -end-1' : '-top-2 -end-2';
     const text = parsed.text;
 
     if (!hasLabel) {
@@ -125,7 +129,12 @@ const getAddon = (addon, hasLabel) => {
 
 /* --------------------------- image / label render -------------------------- */
 
-const NeoImage = memo(function NeoImage({ source, size, color, className }) {
+const NeoImage = memo(function NeoImage({ source, size, color, className }: {
+    source?: unknown;
+    size?: number;
+    color?: string;
+    className?: string;
+}) {
     if (source === undefined || source === null || source === '' || source === false) {
         return null;
     }
@@ -153,6 +162,19 @@ function renderLabel({
     label, image, imagePlacement,
     iconSize, labelGap, labelGapCls, fontCls, textCls, tintColor, classNames, loading,
     spreadContent,
+}: {
+    label: ReactNode;
+    image: unknown;
+    imagePlacement: string;
+    iconSize: number;
+    labelGap: number;
+    labelGapCls?: string;
+    fontCls?: string;
+    textCls?: string;
+    tintColor?: string;
+    classNames?: NeoButtonClassNames;
+    loading?: boolean;
+    spreadContent?: boolean;
 }) {
     const effectiveImage = loading ? '_loading' : image;
     if (!label && !effectiveImage) return null;
@@ -208,7 +230,7 @@ function renderLabel({
 
 /* -------------------- transition wrapper (per style) ---------------------- */
 
-const getWebTransition = (press, property) => {
+const getWebTransition = (press: any, property: string) => {
     const duration = press?.duration ?? (press?.spring ? 140 : 120);
     return {
         transitionProperty: property,
@@ -218,7 +240,12 @@ const getWebTransition = (press, property) => {
     };
 };
 
-function PressTransition({ active, transition, children, className }) {
+function PressTransition({ active, transition, children, className }: {
+    active: boolean;
+    transition: any;
+    children?: ReactNode;
+    className?: string;
+}) {
     const press = transition?.press;
 
     if (!press || press === false || press.type === 'shadow') {
@@ -280,7 +307,7 @@ function PressTransition({ active, transition, children, className }) {
     );
 }
 
-function PressHighlight({ active, rounded, color }) {
+function PressHighlight({ active, rounded, color }: { active: boolean; rounded?: string; color?: string }) {
     const className = cn('absolute inset-0 pointer-events-none z-10', rounded);
 
     if (isWeb) {
@@ -293,7 +320,7 @@ function PressHighlight({ active, rounded, color }) {
                     transitionProperty: 'opacity',
                     transitionDuration: '120ms',
                     transitionTimingFunction: 'ease-out',
-                }}
+                } as ViewStyle}
             />
         );
     }
@@ -310,11 +337,11 @@ function PressHighlight({ active, rounded, color }) {
 
 /* --------------------------- native mode gating ---------------------------- */
 
-function isNativeGlassStyle(style) {
+function isNativeGlassStyle(style: unknown) {
     return style === 'glass' || style === 'glassProminent';
 }
 
-function canRenderExpoUIButton(props, native) {
+function canRenderExpoUIButton(props: NeoButtonProps, native: { config: Record<string, any> }) {
     if (props.children !== undefined && props.children !== null && props.children !== false) return false;
     if (props.onLongPress) return false;
     const style = props.buttonStyle ?? props.style;
@@ -336,7 +363,7 @@ function canRenderExpoUIButton(props, native) {
 
 /* -------------------------- main Button component ------------------------- */
 
-export const NeoButton = (props) => {
+export const NeoButton = (props: NeoButtonProps) => {
     const native = useNeoButtonExpoUI(props);
 
     if (native && NeoButtonExpoUI && canRenderExpoUIButton(props, native)) {
@@ -348,7 +375,7 @@ export const NeoButton = (props) => {
 
 /* ----------------------- JS-styled implementation ------------------------- */
 
-const NeoButtonStyled = (props) => {
+const NeoButtonStyled = (props: NeoButtonProps) => {
     const {
         // SwiftUI core (`buttonStyle` avoids RN `Link` clobbering `style` on native)
         role, style, buttonStyle, controlSize, borderShape, tint,
@@ -391,7 +418,7 @@ const NeoButtonStyled = (props) => {
         forwardedRef,
 
         // Link-related: forwarded by NeoButtonLink, ignored here.
-        href, target, asExternal, emulate, variant, size, mode, noprefetch, // eslint-disable-line no-unused-vars
+        href, target, asExternal, emulate, variant, size, mode, noprefetch,
 
         // Anything else (e.g. data-* attrs) is forwarded to the surface.
         ...rest
@@ -452,18 +479,18 @@ const NeoButtonStyled = (props) => {
         if (resolved.haptics) FeedbackHaptics(resolved.haptics);
     };
 
-    const handlePress = (event) => {
+    const handlePress = (event: any) => {
         if (isWeb) event?.currentTarget?.blur?.();
         onPress?.(event);
     };
 
-    const handlePressIn = (event) => {
+    const handlePressIn = (event: any) => {
         fireHaptics();
         setIsPressed(true);
         onPressIn?.(event);
     };
 
-    const handleLongPress = (event) => {
+    const handleLongPress = (event: any) => {
         onLongPress?.(event);
     };
 
@@ -590,7 +617,7 @@ const NeoButtonStyled = (props) => {
     } : {};
 
     const pointerPressHandlers = isInteractive && isWeb ? {
-        onPointerDown: (event) => {
+        onPointerDown: (event: any) => {
             if (disabled) return;
             if (event.pointerType === 'mouse' && event.button !== 0) return;
             fireHaptics();
@@ -601,7 +628,7 @@ const NeoButtonStyled = (props) => {
         onPointerLeave: () => setIsPressed(false),
     } : {};
 
-    const cntProps = {
+    const cntProps: Record<string, any> = {
         ...rest,
         className: cn(
             `neo-btn neo-btn-${resolved.style} neo-btn-${resolved.controlSize}`,
@@ -617,7 +644,7 @@ const NeoButtonStyled = (props) => {
             disabled: !isActive,
             hitSlop: resolvedHitSlop,
             onPressIn: handlePressIn,
-            onPressOut: (event) => {
+            onPressOut: (event: any) => {
                 setIsPressed(false);
                 onPressOut?.(event);
             },
@@ -733,7 +760,7 @@ const NeoButtonStyled = (props) => {
 
 /* ------------------------------- ref wrapper ------------------------------ */
 
-export const NeoButtonRef = React.forwardRef((props, forwardedRef) => (
+export const NeoButtonRef = React.forwardRef<any, NeoButtonProps>((props, forwardedRef) => (
     <NeoButton {...props} forwardedRef={forwardedRef} />
 ));
 
@@ -746,7 +773,7 @@ export const NeoButtonLink = ({
     style,
     emulate,
     ...props
-}) => {
+}: NeoButtonProps) => {
     const finalHref = sanitazeUrl(href);
     const isExternal = isExternalUrl(finalHref) || asExternal === true;
 

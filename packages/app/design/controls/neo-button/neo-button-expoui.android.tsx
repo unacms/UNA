@@ -3,7 +3,7 @@
  * Style → component via `androidVariants`. Icons via `androidIcons` only.
  */
 
-import { StyleSheet } from 'react-native';
+import { StyleSheet, type ImageSourcePropType } from 'react-native';
 import { useResolveClassNames } from 'uniwind';
 import {
     Host,
@@ -24,8 +24,9 @@ import { useThemeValue } from 'app/design/theme';
 import { useResolvedNeoButton, resolveScoped, parseNeoButtonAddon } from 'app/design/controls/neo-button/neo-button-resolver';
 import { useFrozenHostSize, useLockedNativePress, wrapNativeButtonHost } from 'app/design/controls/neo-button/neo-button-expoui-host';
 import { FeedbackHaptics, findIconFromRemote } from 'app/lib/util';
+import type { NeoButtonExpoUIConfig, NeoButtonExpoUIProps } from 'app/design/controls/neo-button/neo-button.types';
 
-const VARIANT_COMPONENTS = {
+const VARIANT_COMPONENTS: Record<string, typeof Button> = {
     filled: Button,
     tonal: FilledTonalButton,
     outlined: OutlinedButton,
@@ -35,15 +36,15 @@ const VARIANT_COMPONENTS = {
 
 const TINT_FILLS_CONTAINER = new Set(['filled', 'elevated']);
 
-const isNativeColor = (color) =>
+const isNativeColor = (color: unknown): color is string =>
     typeof color === 'string' && color.length > 0 && !color.includes('var(');
 
-export function getNativeIcon(rawImage, config) {
+export function getNativeIcon(rawImage: unknown, config?: NeoButtonExpoUIConfig): ImageSourcePropType | null {
     if (typeof rawImage !== 'string' || rawImage === '') return null;
     return config?.androidIcons?.[findIconFromRemote(rawImage)] ?? null;
 }
 
-export function NeoButtonExpoUI(props) {
+export function NeoButtonExpoUI(props: NeoButtonExpoUIProps) {
     const {
         role, style, buttonStyle, controlSize, borderShape, tint,
         label, title, loadingLabel, image, systemImage, imagePlacement,
@@ -96,7 +97,7 @@ export function NeoButtonExpoUI(props) {
     const variantColors = pickedColors ? { ...pickedColors } : {};
     const { tintedContainerColor, tintedContentColor, ...baseColors } = variantColors;
     const explicitTint = isNativeColor(resolved.tint) ? resolved.tint : null;
-    let colors;
+    let colors: Record<string, any> | undefined;
     if (selected && !explicitTint && isNativeColor(tintedContainerColor)) {
         colors = {
             containerColor: tintedContainerColor,
@@ -130,7 +131,7 @@ export function NeoButtonExpoUI(props) {
     const firePress = (onPress || onPressIn) && !disabled && !loading
         ? () => {
               if (resolved.haptics) FeedbackHaptics(resolved.haptics);
-              (onPressIn || onPress)();
+              (onPressIn || onPress)!();
               if (onPress && onPressIn && onPress !== onPressIn) onPress();
           }
         : undefined;

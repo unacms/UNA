@@ -661,9 +661,15 @@ yarn typecheck          # web + native
 yarn typecheck web      # one platform
 ```
 
-[`scripts/typecheck.js`](scripts/typecheck.js) checks every `.ts`/`.tsx` in `packages/app` (plus the apps' own TS) once per platform, resolving `.web` / `.native` variants like webpack and Metro, and skipping a base file where a platform variant replaces it. Plain `tsc` in `apps/next` or `apps/expo` does **not** do this: it never checks `.web.tsx` / `.native.tsx` files. The Next build ignores type errors (`ignoreBuildErrors`), so this script is the only gate.
+[`scripts/typecheck.js`](scripts/typecheck.js) checks every `.ts`/`.tsx` in `packages/app` (plus the apps' own TS) once per platform, resolving `.web` / `.native` variants like webpack and Metro, and skipping a base file where a platform variant replaces it. `.ios` / `.android` files are checked in the native run too (their imports still resolve through `.native` / base files). Plain `tsc` in `apps/next` or `apps/expo` does **not** do this: it never checks `.web.tsx` / `.native.tsx` files. The Next build ignores type errors (`ignoreBuildErrors`), so this script is the only gate.
 
 **Platform pairs share types through a `*.types.ts` file** (e.g. `video.types.ts` for `video.tsx` + `video.web.tsx`). Don't import shared types from the base file: with platform resolution, `./video` inside `video.web.tsx` resolves to `video.web.tsx` itself.
+
+**Intentionally kept as JavaScript** (don't convert):
+- `packages/app/settings/**`: plain config data read through `appSetting(...)` by string path, so types on these objects wouldn't reach callers. Forks override them from JS in `customization/settings.js`. `settings/images-allowlist.js` is also `require`d by Node in `apps/next/next.config.js`.
+- `packages/app/design/tailwind/theme.js`: read by the Tailwind build.
+- `packages/app/lib/image/circle-png.js`: self-contained PNG encoder; no gain from types.
+- `packages/app/customization/**`: fork-override surface, see [Customization and fork branches](#customization-and-fork-branches).
 
 **Common patterns that cause production TypeScript errors:**
 

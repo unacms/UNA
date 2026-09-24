@@ -37,11 +37,23 @@
  * web-only handlers stop "creeping into native".
  */
 
-import React, { createContext, useContext, useMemo } from 'react';
+import React, { createContext, useContext, useMemo, type ReactNode } from 'react';
 import { Platform } from 'react-native';
 import { useWindowWidth, useIsDesktop } from 'app/context/measure';
 import { appSetting, getBreakpoint, isExpoUI } from 'app/lib/util';
 import { ThemeName, useThemeValue } from 'app/design/theme';
+import type { NeoButtonAddon, NeoButtonProps } from 'app/design/controls/neo-button/neo-button.types';
+
+/** Scopes resolveScoped() walks; any axis may be missing. */
+export type NeoScopeContext = {
+    platform?: 'web' | 'ios' | 'android';
+    pointer?: 'touch' | 'mouse';
+    breakpoint?: string;
+    theme?: 'light' | 'dark';
+    isDesktop?: boolean;
+    hydrated?: boolean;
+    controlSize?: string;
+};
 
 /* ----------------------------- scope plumbing ----------------------------- */
 
@@ -68,7 +80,7 @@ const SCOPE_KEYS = new Set([
  * nothing silently breaks. Spacing scale: 1 unit = 0.25rem = 4px
  * (so 44px → 11, 12px → px-3, 8px gap → gap-x-2, etc.).
  */
-const MIN_SIZE_CLASS = {
+const MIN_SIZE_CLASS: Record<number, string> = {
     28: 'min-h-7 min-w-7',
     32: 'min-h-8 min-w-8',
     36: 'min-h-9 min-w-9',
@@ -78,7 +90,7 @@ const MIN_SIZE_CLASS = {
     60: 'min-h-15 min-w-15',
     64: 'min-h-16 min-w-16',
 };
-const FIXED_SIZE_CLASS = {
+const FIXED_SIZE_CLASS: Record<number, string> = {
     28: 'h-7 w-7',
     32: 'h-8 w-8',
     36: 'h-9 w-9',
@@ -88,7 +100,7 @@ const FIXED_SIZE_CLASS = {
     60: 'h-15 w-15',
     64: 'h-16 w-16',
 };
-const PADDING_X_CLASS = {
+const PADDING_X_CLASS: Record<number, string> = {
     0: 'px-0',
     8: 'px-2',
     12: 'px-3',
@@ -97,7 +109,7 @@ const PADDING_X_CLASS = {
     24: 'px-6',
     32: 'px-8',
 };
-const LABEL_GAP_CLASS = {
+const LABEL_GAP_CLASS: Record<number, string> = {
     0: 'gap-x-0',
     4: 'gap-x-1',
     6: 'gap-x-1.5',
@@ -107,7 +119,7 @@ const LABEL_GAP_CLASS = {
 };
 // Web-only: maps `hitSlop` (px) → `hit-area-*` utility (see global.css).
 // `0` → no class (native still receives hitSlop={0} via the prop).
-const HIT_AREA_CLASS = {
+const HIT_AREA_CLASS: Record<number, string> = {
     0: '',
     2: 'hit-area-2',
     4: 'hit-area-4',
@@ -117,18 +129,18 @@ const HIT_AREA_CLASS = {
     14: 'hit-area-14',
 };
 
-const isPlainObject = (v) =>
+const isPlainObject = (v: unknown): v is Record<string, any> =>
     !!v && typeof v === 'object' && !Array.isArray(v) && !React.isValidElement(v);
 
-const hasScopeKey = (obj) => {
+const hasScopeKey = (obj: Record<string, any>) => {
     for (const k of Object.keys(obj)) if (SCOPE_KEYS.has(k)) return true;
     return false;
 };
 
-const mergeOrReplace = (left, right) => {
+const mergeOrReplace = (left: any, right: any): any => {
     if (right === undefined) return left;
     if (!isPlainObject(left) || !isPlainObject(right)) return right;
-    const out = { ...left };
+    const out: Record<string, any> = { ...left };
     for (const k of Object.keys(right)) {
         out[k] = mergeOrReplace(out[k], right[k]);
     }
@@ -140,12 +152,12 @@ const mergeOrReplace = (left, right) => {
  * Returns the value untouched if it's a primitive / array / element / a
  * plain object without any scope keys.
  */
-export function resolveScoped(value, ctx) {
+export function resolveScoped(value: any, ctx: NeoScopeContext): any {
     if (!isPlainObject(value)) return value;
     if (!hasScopeKey(value)) {
         // Plain nested object — recurse into each entry so deeper leaves
         // still resolve.
-        const out = {};
+        const out: Record<string, any> = {};
         for (const k of Object.keys(value)) out[k] = resolveScoped(value[k], ctx);
         return out;
     }
@@ -169,7 +181,7 @@ export function resolveScoped(value, ctx) {
         const bpIdx = BP_ORDER.indexOf(ctx.breakpoint);
         if (bpIdx >= 0) {
             for (let i = 0; i <= bpIdx; i++) {
-                const bp = BP_ORDER[i];
+                const bp = BP_ORDER[i]!;
                 if (bp in value) {
                     result = mergeOrReplace(result, resolveScoped(value[bp], ctx));
                 }
@@ -213,7 +225,7 @@ function useIsHydrated() {
  */
 export function usePointerCapability() {
     const ssrDefault = isWeb ? 'mouse' : 'touch';
-    const [pointer, setPointer] = React.useState(ssrDefault);
+    const [pointer, setPointer] = React.useState<'touch' | 'mouse'>(ssrDefault);
 
     React.useEffect(() => {
         if (!isWeb || typeof window === 'undefined' || !window.matchMedia) return;
@@ -234,7 +246,7 @@ export function usePointerCapability() {
 /**
  * Theme name normalised to 'light' | 'dark'.
  */
-function useThemeName() {
+function useThemeName(): 'light' | 'dark' {
     const t = ThemeName();
     return t === 'dark' ? 'dark' : 'light';
 }
@@ -254,7 +266,7 @@ function useThemeName() {
 export function useNeoEnv() {
     const hydrated = useIsHydrated();
 
-    const platform = isWeb ? 'web' : (Platform.OS === 'ios' ? 'ios' : 'android');
+    const platform: 'web' | 'ios' | 'android' = isWeb ? 'web' : (Platform.OS === 'ios' ? 'ios' : 'android');
     const measuredIsDesktop = useIsDesktop();
 
     const width = useWindowWidth();
@@ -268,8 +280,8 @@ export function useNeoEnv() {
     const breakpoint = hydrated ? measuredBreakpoint : '';
     // Native has no SSR — do not pin light for a frame or Expo UI Host
     // captures light iosColors and never picks up dark selected glass.
-    const theme      = (hydrated || !isWeb) ? measuredTheme : 'light';
-    const pointer    = hydrated ? measuredPointer    : (isWeb ? 'mouse' : 'touch');
+    const theme: 'light' | 'dark' = (hydrated || !isWeb) ? measuredTheme : 'light';
+    const pointer: 'touch' | 'mouse' = hydrated ? measuredPointer : (isWeb ? 'mouse' : 'touch');
     const isDesktop  = hydrated ? measuredIsDesktop  : isWeb;
 
     return useMemo(
@@ -280,10 +292,10 @@ export function useNeoEnv() {
 
 /* --------------------------- context providers ---------------------------- */
 
-const NeoButtonStyleContext = createContext(null);
-const NeoControlSizeContext = createContext(null);
+const NeoButtonStyleContext = createContext<string | null>(null);
+const NeoControlSizeContext = createContext<string | null>(null);
 
-export function NeoButtonStyleProvider({ style, children }) {
+export function NeoButtonStyleProvider({ style, children }: { style: string | null; children?: ReactNode }) {
     return (
         <NeoButtonStyleContext.Provider value={style}>
             {children}
@@ -291,7 +303,7 @@ export function NeoButtonStyleProvider({ style, children }) {
     );
 }
 
-export function NeoControlSizeProvider({ size, children }) {
+export function NeoControlSizeProvider({ size, children }: { size: string | null; children?: ReactNode }) {
     return (
         <NeoControlSizeContext.Provider value={size}>
             {children}
@@ -304,7 +316,7 @@ export const useNeoControlSize = () => useContext(NeoControlSizeContext);
 
 /* ------------------------------- main hook -------------------------------- */
 
-const SWIFTUI_BUTTON_STYLE = {
+const SWIFTUI_BUTTON_STYLE: Record<string, string> = {
     plain: 'plain',
     // `.bordered` tints a translucent wash — palette `--button` (#e4e4e7)
     // would not match JS `bg-button`. `.borderedProminent` paints that hex
@@ -325,7 +337,7 @@ const STYLES_WITHOUT_HOVER = new Set(['plain']);
 
 const GLASS_STYLES = new Set(['glass', 'glassProminent']);
 
-const SWIFTUI_CONTROL_SIZE = {
+const SWIFTUI_CONTROL_SIZE: Record<string, string> = {
     mini: 'mini',
     small: 'small',
     regular: 'regular',
@@ -333,7 +345,7 @@ const SWIFTUI_CONTROL_SIZE = {
     xlarge: 'extraLarge',
 };
 
-const SWIFTUI_BORDER_SHAPE = {
+const SWIFTUI_BORDER_SHAPE: Record<string, string> = {
     capsule: 'capsule',
     rectangle: 'rectangle',
     roundedRectangle: 'roundedRectangle',
@@ -345,7 +357,7 @@ const SWIFTUI_BORDER_SHAPE = {
  * pressedToggle, disabled }) and resolves each entry against ctx, then
  * concatenates `base` + the entry for the current state.
  */
-function resolveSlot(slotMap, state, ctx) {
+function resolveSlot(slotMap: Record<string, any> | undefined, state: string, ctx: NeoScopeContext): string {
     if (!slotMap) return '';
     const base = resolveScoped(slotMap.base, ctx) || '';
     const stateVal = resolveScoped(slotMap[state], ctx);
@@ -368,14 +380,20 @@ function resolveSlot(slotMap, state, ctx) {
  * `automatic`, etc.), we fall back to `bordered` so the button still
  * renders something usable instead of going completely unstyled.
  */
-function normalizeStyleProp(value) {
+function normalizeStyleProp(value: unknown): string | undefined {
     // React Native `Link`/`Pressable` also use a `style` prop (object/array).
     // When `NeoButtonLink` is rendered with `asChild`, that layout `style` can
     // overwrite the SwiftUI-style string — ignore non-strings here.
     return typeof value === 'string' ? value : undefined;
 }
 
-function resolveStyle({ propStyle, providerStyle, defaultsStyle, roleConfig, stylesTree }) {
+function resolveStyle({ propStyle, providerStyle, defaultsStyle, roleConfig, stylesTree }: {
+    propStyle?: string;
+    providerStyle?: string | null;
+    defaultsStyle?: string;
+    roleConfig?: Record<string, any>;
+    stylesTree?: Record<string, any>;
+}): string {
     const candidate =
         normalizeStyleProp(propStyle)
         ?? normalizeStyleProp(providerStyle)
@@ -387,7 +405,7 @@ function resolveStyle({ propStyle, providerStyle, defaultsStyle, roleConfig, sty
 }
 
 /** Theme gate for Expo UI rendering. Content eligibility is `canRenderExpoUIButton`. */
-export function useNeoButtonExpoUI(props = {}) {
+export function useNeoButtonExpoUI(props: NeoButtonProps = {}) {
     const providerStyle = useNeoButtonStyle();
     const tree = appSetting('theme', 'neo_button');
     const config = appSetting('theme', 'expo_ui', 'button');
@@ -396,7 +414,7 @@ export function useNeoButtonExpoUI(props = {}) {
     if (!config) return null;
 
     const platform = Platform.OS === 'ios' ? 'ios' : 'android';
-    const ctx = { platform };
+    const ctx: NeoScopeContext = { platform };
 
     if (!isExpoUI()) return null;
 
@@ -421,7 +439,7 @@ export function useNeoButtonExpoUI(props = {}) {
 }
 
 /** Counter / badge payload for NeoButton `addon` (conductor subtabs, etc.). */
-export function parseNeoButtonAddon(addon) {
+export function parseNeoButtonAddon(addon: NeoButtonAddon): { text: string; variant: string | undefined } | null {
     if (addon == null || addon === false || addon === '') return null;
     const isObj = typeof addon === 'object';
     const text = isObj ? addon.text : addon;
@@ -433,7 +451,7 @@ export function parseNeoButtonAddon(addon) {
 /**
  * Main hook used by `NeoButton`.
  */
-export function useResolvedNeoButton(props = {}) {
+export function useResolvedNeoButton(props: NeoButtonProps = {}) {
     const env = useNeoEnv();
     const themeKey = useThemeValue('light', 'dark');
     const providerStyle = useNeoButtonStyle();
@@ -466,7 +484,7 @@ export function useResolvedNeoButton(props = {}) {
         });
 
         // 2) Build resolver context (now that we know controlSize).
-        const ctx = { ...env, controlSize };
+        const ctx: NeoScopeContext = { ...env, controlSize };
 
         // 3) Resolve controlSize sizing.
         const sizeCfg = resolveScoped(sizesTree[controlSize], ctx) || {};
@@ -508,8 +526,8 @@ export function useResolvedNeoButton(props = {}) {
             : (stylesTree[style] || {});
         const containerSlot = styleDef.container || {};
         const textSlot = styleDef.text || {};
-        const containerCls = (state) => resolveSlot(containerSlot, state, ctx);
-        const textCls = (state) => {
+        const containerCls = (state: string) => resolveSlot(containerSlot, state, ctx);
+        const textCls = (state: string) => {
             const base = resolveSlot(textSlot, state, ctx);
             // Role text override (string or per-style object).
             let roleText = resolveScoped(roleConfig.textClass, ctx);

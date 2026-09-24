@@ -6,13 +6,19 @@
  * Cache the first measured size and apply it on the *next* mount instead.
  */
 
-import React from 'react';
+import React, { type ReactElement } from 'react';
 import { Pressable } from 'react-native';
 
-const HOST_SIZE_CACHE = new Map();
+type HostSize = { width: number; height: number };
+
+const HOST_SIZE_CACHE = new Map<string, HostSize>();
 const CACHE_LIMIT = 500;
 
-export function useFrozenHostSize({ contentKey, rnOwnsWidth, rnOwnsHeight }) {
+export function useFrozenHostSize({ contentKey, rnOwnsWidth, rnOwnsHeight }: {
+    contentKey: string;
+    rnOwnsWidth: boolean;
+    rnOwnsHeight: boolean;
+}) {
     const freezeWidth = !rnOwnsWidth;
     const freezeHeight = !rnOwnsHeight;
     const active = freezeWidth || freezeHeight;
@@ -21,11 +27,11 @@ export function useFrozenHostSize({ contentKey, rnOwnsWidth, rnOwnsHeight }) {
     // Keep matchContents on so the capsule always hugs the title.
     const pin = freezeHeight ? HOST_SIZE_CACHE.get(contentKey) : null;
 
-    const onLayoutContent = React.useCallback((e) => {
+    const onLayoutContent = React.useCallback((e: { nativeEvent: HostSize }) => {
         const { width, height } = e.nativeEvent;
         if (!freezeHeight || !width || !height || HOST_SIZE_CACHE.has(contentKey)) return;
         if (HOST_SIZE_CACHE.size >= CACHE_LIMIT) {
-            HOST_SIZE_CACHE.delete(HOST_SIZE_CACHE.keys().next().value);
+            HOST_SIZE_CACHE.delete(HOST_SIZE_CACHE.keys().next().value!);
         }
         HOST_SIZE_CACHE.set(contentKey, { width, height });
     }, [contentKey, freezeHeight]);
@@ -42,7 +48,7 @@ export function useFrozenHostSize({ contentKey, rnOwnsWidth, rnOwnsHeight }) {
     const pinnedHeight = freezeHeight && !!pin;
 
     return {
-        style: pinnedHeight ? { height: pin.height } : null,
+        style: pinnedHeight ? { height: pin!.height } : null,
         onLayoutContent: freezeHeight ? onLayoutContent : undefined,
         pinnedWidth: false,
         pinnedHeight,
@@ -56,7 +62,7 @@ const PRESS_LOCK_MS = 400;
  * Host and the RN wrapper can both deliver the same tap. A toggle (composer
  * Plus) then opens and closes in one gesture.
  */
-export function useLockedNativePress(handler) {
+export function useLockedNativePress(handler: (() => void) | undefined) {
     const lock = React.useRef(0);
     return React.useCallback(() => {
         if (!handler) return;
@@ -73,7 +79,14 @@ export function useLockedNativePress(handler) {
  * `onPress` (icon-only, keyboard). Pin height so the wrapper matches JS.
  * Fire on press-in so a keyboard layout jump cannot cancel the action.
  */
-export function wrapNativeButtonHost(host, { hitSlop = 0, fill = false, onPress, disabled, height, width }) {
+export function wrapNativeButtonHost(host: ReactElement, { hitSlop = 0, fill = false, onPress, disabled, height, width }: {
+    hitSlop?: number;
+    fill?: boolean;
+    onPress?: () => void;
+    disabled?: boolean;
+    height?: number | null;
+    width?: number | null;
+}) {
     const slop = hitSlop > 0
         ? { top: hitSlop, right: hitSlop, bottom: hitSlop, left: hitSlop }
         : undefined;

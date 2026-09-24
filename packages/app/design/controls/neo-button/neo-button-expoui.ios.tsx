@@ -6,6 +6,7 @@
 
 import { StyleSheet } from 'react-native';
 import { useResolveClassNames } from 'uniwind';
+import type { ComponentProps } from 'react';
 import { Host, Button, HStack, Image, Text, useNativeState } from '@expo/ui/swift-ui';
 import {
     buttonStyle as buttonStyleModifier,
@@ -26,23 +27,30 @@ import { useThemeValue } from 'app/design/theme';
 import { useResolvedNeoButton, resolveScoped, parseNeoButtonAddon } from 'app/design/controls/neo-button/neo-button-resolver';
 import { useFrozenHostSize, useLockedNativePress, wrapNativeButtonHost } from 'app/design/controls/neo-button/neo-button-expoui-host';
 import { FeedbackHaptics, findIconFromRemote } from 'app/lib/util';
+import type { NeoButtonExpoUIConfig, NeoButtonExpoUIProps } from 'app/design/controls/neo-button/neo-button.types';
+
+type SwiftUIModifier = ReturnType<typeof frame>;
+type FontParams = Parameters<typeof fontModifier>[0];
+type FontWeight = NonNullable<FontParams['weight']>;
+type SymbolEffectConfig = { effect: string; [key: string]: any };
+type SFSymbol = NonNullable<ComponentProps<typeof Image>['systemName']>;
 
 // SF Symbol names are lowercase dot-separated identifiers ('square.and.arrow.up').
 const SF_SYMBOL_RE = /^[a-z0-9]+(\.[a-z0-9]+)*$/;
 
 // NeoButton roles → SwiftUI ButtonRole. 'close' / 'confirm' have no SwiftUI
 // counterpart and stay 'default'.
-const SWIFTUI_ROLE = { cancel: 'cancel', destructive: 'destructive' };
+const SWIFTUI_ROLE: Record<string, 'cancel' | 'destructive'> = { cancel: 'cancel', destructive: 'destructive' };
 
 // Style chrome around the label, per SwiftUI controlSize. Subtracted from
 // theme height so the finished control lands on 28/32/44/52/64, not ~34pt.
-const SWIFTUI_LABEL_VPAD = { mini: 3, small: 5, regular: 7, large: 15, extraLarge: 20 };
+const SWIFTUI_LABEL_VPAD: Record<string, number> = { mini: 3, small: 5, regular: 7, large: 15, extraLarge: 20 };
 
 // Fallback pt sizes when `iosFont.size` is omitted — matches the Tailwind
 // `text-sm` / `text-base` / `text-lg` used in `controlSizes.font`.
-const FONT_SIZE_PT = { mini: 14, small: 14, regular: 16, large: 16, extraLarge: 18 };
+const FONT_SIZE_PT: Record<string, number> = { mini: 14, small: 14, regular: 16, large: 16, extraLarge: 18 };
 
-function fontSizeFromClass(fontCls, controlSize) {
+function fontSizeFromClass(fontCls: unknown, controlSize: string) {
     if (typeof fontCls === 'string') {
         if (fontCls.includes('text-xl')) return 20;
         if (fontCls.includes('text-lg')) return 18;
@@ -53,7 +61,7 @@ function fontSizeFromClass(fontCls, controlSize) {
     return FONT_SIZE_PT[controlSize] ?? 16;
 }
 
-const FONT_WEIGHT_FROM_CLASS = [
+const FONT_WEIGHT_FROM_CLASS: [string, FontWeight][] = [
     ['font-extralight', 'ultraLight'],
     ['font-thin', 'thin'],
     ['font-light', 'light'],
@@ -65,7 +73,7 @@ const FONT_WEIGHT_FROM_CLASS = [
     ['font-normal', 'regular'],
 ];
 
-function fontWeightFromClass(cls) {
+function fontWeightFromClass(cls: unknown): FontWeight | null {
     if (typeof cls !== 'string' || !cls) return null;
     for (const [token, weight] of FONT_WEIGHT_FROM_CLASS) {
         if (cls.includes(token)) return weight;
@@ -73,12 +81,18 @@ function fontWeightFromClass(cls) {
     return null;
 }
 
-const SWIFTUI_ICON_PT = { mini: 13, small: 14, regular: 17, large: 20, extraLarge: 24 };
+const SWIFTUI_ICON_PT: Record<string, number> = { mini: 13, small: 14, regular: 17, large: 20, extraLarge: 24 };
 
-const isNativeColor = (color) =>
+const isNativeColor = (color: unknown): color is string =>
     typeof color === 'string' && color.length > 0 && !color.includes('var(');
 
-function resolveIosStyleColors(style, explicitTint, selected, raw, fallbackTint) {
+function resolveIosStyleColors(
+    style: string,
+    explicitTint: unknown,
+    selected: boolean,
+    raw: any,
+    fallbackTint: unknown,
+): { tint: string | null; foreground: string | null } {
     // Unselected glass: no hex at all. SwiftUI `.glass` tints the *label*
     // when you set `.tint()`, so a resting `#27272a` / `#dbeafe` pins ink
     // and kills the invert over dark content behind the capsule.
@@ -98,14 +112,14 @@ function resolveIosStyleColors(style, explicitTint, selected, raw, fallbackTint)
     };
 }
 
-function normalizeSymbolEffect(raw) {
+function normalizeSymbolEffect(raw: any): SymbolEffectConfig | false | null {
     if (raw === false) return false;
     if (typeof raw === 'string') return { effect: raw };
     if (raw && typeof raw === 'object' && typeof raw.effect === 'string') return raw;
     return null;
 }
 
-function parseIosSymbol(mapped) {
+function parseIosSymbol(mapped: any): { name: string; effect: SymbolEffectConfig | false | null; options: any } | null {
     if (typeof mapped === 'string') {
         return SF_SYMBOL_RE.test(mapped) ? { name: mapped, effect: null, options: null } : null;
     }
@@ -119,17 +133,17 @@ function parseIosSymbol(mapped) {
     return null;
 }
 
-function resolveIosSymbol(rawImage, config) {
+function resolveIosSymbol(rawImage: unknown, config?: NeoButtonExpoUIConfig) {
     if (typeof rawImage !== 'string' || rawImage === '') return null;
     const lucideName = findIconFromRemote(rawImage);
     return parseIosSymbol(config?.iosSymbols?.[lucideName] || lucideName);
 }
 
-export function getNativeIcon(rawImage, config) {
+export function getNativeIcon(rawImage: unknown, config?: NeoButtonExpoUIConfig): string | null {
     return resolveIosSymbol(rawImage, config)?.name ?? null;
 }
 
-export function NeoButtonExpoUI(props) {
+export function NeoButtonExpoUI(props: NeoButtonExpoUIProps) {
     const {
         role, style, buttonStyle, controlSize, borderShape, tint,
         label, title, loadingLabel, image, systemImage, imagePlacement,
@@ -193,7 +207,7 @@ export function NeoButtonExpoUI(props) {
             ?? SWIFTUI_ICON_PT[nativeControlSize]
             ?? resolved.iconSize);
 
-    const vPad = SWIFTUI_LABEL_VPAD[nativeControlSize] ?? SWIFTUI_LABEL_VPAD.regular;
+    const vPad = SWIFTUI_LABEL_VPAD[nativeControlSize] ?? SWIFTUI_LABEL_VPAD.regular!;
     const isSelectedGlass = resolved.style === 'glass' && !!selected;
     const targetHeight = (rnOwnsHeight
         && [flatHost.height, flatHost.minHeight].find((v) => typeof v === 'number'))
@@ -214,7 +228,7 @@ export function NeoButtonExpoUI(props) {
         resolved.align === 'start' ? 'leading'
         : resolved.align === 'end' ? 'trailing'
         : 'center';
-    const labelModifiers = [];
+    const labelModifiers: SwiftUIModifier[] = [];
     if (isIconOnly) {
         labelModifiers.push(frame({
             width: borderShape === 'circle'
@@ -223,7 +237,7 @@ export function NeoButtonExpoUI(props) {
             height: labelFrameHeight,
         }));
     } else {
-        const labelFrame = {
+        const labelFrame: Parameters<typeof frame>[0] = {
             minHeight: labelFrameHeight,
             maxHeight: labelFrameHeight,
         };
@@ -270,7 +284,7 @@ export function NeoButtonExpoUI(props) {
     const iosFont = resolveScoped(nativeConfig?.iosFont, resolved.env);
     const textState = selected ? 'pressedToggle' : 'default';
     const textCls = typeof resolved.textCls === 'function' ? resolved.textCls(textState) : '';
-    const fontParams = {};
+    const fontParams: FontParams = {};
     if (iosFont && typeof iosFont === 'object') {
         if (typeof iosFont.family === 'string' && iosFont.family) {
             fontParams.family = iosFont.family;
@@ -302,8 +316,8 @@ export function NeoButtonExpoUI(props) {
         rnOwnsHeight,
     });
 
-    const modifiers = [
-        buttonStyleModifier(nativeButtonStyle),
+    const modifiers: SwiftUIModifier[] = [
+        buttonStyleModifier(nativeButtonStyle as Parameters<typeof buttonStyleModifier>[0]),
         controlSizeModifier(nativeControlSize),
     ];
 
@@ -311,7 +325,7 @@ export function NeoButtonExpoUI(props) {
         modifiers.push(
             borderShape === 'rectangle'
                 ? buttonBorderShapeModifier('roundedRectangle', 0)
-                : buttonBorderShapeModifier(mapping.buttonBorderShape),
+                : buttonBorderShapeModifier(mapping.buttonBorderShape as Parameters<typeof buttonBorderShapeModifier>[0]),
         );
     }
 
@@ -347,14 +361,14 @@ export function NeoButtonExpoUI(props) {
         ? () => {
               if (sfSymbol && iconEffect) symbolTrigger.set(symbolTrigger.get() + 1);
               if (resolved.haptics) FeedbackHaptics(resolved.haptics);
-              (onPressIn || onPress)();
+              (onPressIn || onPress)!();
               if (onPress && onPressIn && onPress !== onPressIn) onPress();
           }
         : undefined;
     const handlePress = useLockedNativePress(firePress);
 
     const imageModifiers = (sfSymbol && iconEffect)
-        ? [symbolEffect(iconEffect, {
+        ? [symbolEffect(iconEffect as Parameters<typeof symbolEffect>[0], {
             value: symbolTrigger,
             options: parsedSymbol?.options || { repeat: 'nonRepeating' },
         })]
@@ -394,6 +408,7 @@ export function NeoButtonExpoUI(props) {
             // `container` still applies keyboard safe area — Host box grows
             // and the visible control sits above it. `all` = Yoga size == chrome.
             ignoreSafeArea="all"
+            // @ts-expect-error Not in HostProps, but Host spreads the rest onto its native view.
             collapsable={false}
             style={[
                 hostClassStyle,
@@ -413,7 +428,7 @@ export function NeoButtonExpoUI(props) {
             >
                 <HStack spacing={resolved.labelGap} modifiers={labelModifiers}>
                     {(sfSymbol && resolved.imagePlacement !== 'trailing') ? (
-                        <Image systemName={sfSymbol} size={nativeIconSize} color={foregroundValue || undefined} modifiers={imageModifiers} />
+                        <Image systemName={sfSymbol as SFSymbol} size={nativeIconSize} color={foregroundValue || undefined} modifiers={imageModifiers} />
                     ) : null}
                     {!isIconOnly ? (
                         <Text modifiers={textModifiers.length ? textModifiers : undefined}>
@@ -421,7 +436,7 @@ export function NeoButtonExpoUI(props) {
                         </Text>
                     ) : null}
                     {(sfSymbol && resolved.imagePlacement === 'trailing') ? (
-                        <Image systemName={sfSymbol} size={nativeIconSize} color={foregroundValue || undefined} modifiers={imageModifiers} />
+                        <Image systemName={sfSymbol as SFSymbol} size={nativeIconSize} color={foregroundValue || undefined} modifiers={imageModifiers} />
                     ) : null}
                     {addonView}
                 </HStack>
