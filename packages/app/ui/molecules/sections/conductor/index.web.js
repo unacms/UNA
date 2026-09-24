@@ -10,6 +10,9 @@ import {
     fillTabs,
     ensureRouteInited,
     findConductorRouteIndex,
+    getConductorLayoutCols,
+    getConductorColumnsConfig,
+    isConductorColumnShown,
 } from './helpers'
 import {
     LeftColumnContent,
@@ -29,7 +32,7 @@ import { useTranslation } from 'react-i18next'
 import { useCurrentUser } from 'app/context/user'
 import { useBottomSheetData } from 'app/context/bottomsheet'
 import { useLayoutSettings } from 'app/context/layout-settings'
-import { useIsDesktop, useWindowHeight } from 'app/context/measure'
+import { useIsDesktop, useWindowHeight, useBreakpointName } from 'app/context/measure'
 import { useHeaderHeight, useFooterHeight } from 'app/context/jotai/layout'
 import { isTasksHomeUri } from 'app/components/elements/tasks/helpers'
 import { PageHeaderOptions } from 'app/ui/molecules/header/options'
@@ -87,6 +90,7 @@ export function Conductor({
     const { setBottomSheetData } = useBottomSheetData()
     const { layoutName: tmplLayout } = useLayoutSettings()
     const isDesktop = useIsDesktop()
+    const breakpointName = useBreakpointName()
     const pageHeaderHeight = useHeaderHeight()
     const footerHeight = useFooterHeight()
     const windowHeight = useWindowHeight()
@@ -247,6 +251,15 @@ export function Conductor({
     // Navigator always keeps its left column: it holds the section nav itself.
     const hasLeftColumn = tabRoute?.leftbar?.content?.length > 0 || layoutName === 'navigator'
     const hasRightColumn = (tabRoute?.sidebar?.content?.length > 0) || !!tabRoute?.blocks?.browse_sidebar
+    // TabSceneColumns hides each side panel below its configured breakpoint,
+    // which need not match the desktop switch (`tablet_mode_from`). The list
+    // takes over the blocks of whichever panel is hidden right now.
+    const { cells: columnCells = {} } = getConductorColumnsConfig(
+        tabRoute?.pageData?.uri,
+        getConductorLayoutCols(hasLeftColumn, hasRightColumn)
+    ) || {}
+    const isLeftColumnShown = isConductorColumnShown(columnCells.left?.breakpoint, breakpointName)
+    const isRightColumnShown = isConductorColumnShown(columnCells.right?.breakpoint, breakpointName)
     // /tasks-home only: pin the shell to the leftover viewport and scroll the
     // list inside it so the site header + task toolbar stay put.
     const isTasksHome = isTasksHomeUri(activeRoute?.pageData?.uri) || isTasksHomeUri(activeRoute?.key)
@@ -427,6 +440,8 @@ export function Conductor({
                         skeleton={skeleton}
                         leftColumnExcludedFromMainIds={leftColumnExcludedFromMainIds}
                         fillViewport={isTasksHome}
+                        isLeftColumnShown={isLeftColumnShown}
+                        isRightColumnShown={isRightColumnShown}
                     />
                 </TabSceneColumns>
             </View>

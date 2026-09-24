@@ -11,6 +11,7 @@ import {
     getPageSettings,
     getUnitModeBySource,
     deepEqual,
+    LAYOUT_BREAKPOINTS,
 } from 'app/lib/util'
 import { fetcher } from 'app/lib/fetcher'
 import { getSkeletonByEndPoint } from 'app/customization/functions'
@@ -956,6 +957,34 @@ export function getLeftColumnExcludedFromMainIds({
             .map((item) => item?.id)
             .filter((id) => id != null)
     )
+}
+
+/** Which side columns exist, as the `layouts` settings key suffix: 'c' | 'c-r' | 'l-c' | 'l-c-r'. */
+export function getConductorLayoutCols(hasLeft, hasRight) {
+    if (hasLeft && hasRight) return 'l-c-r'
+    if (hasLeft) return 'l-c'
+    if (hasRight) return 'c-r'
+    return 'c'
+}
+
+/**
+ * Web column config (sizes, `breakpoint`, `responsive`): the page's own
+ * `layouts` entry, else the generic one for this column combination.
+ */
+export function getConductorColumnsConfig(uri, layoutCols) {
+    return appSetting('layouts', uri) || appSetting('layouts', `cols-${layoutCols}`)
+}
+
+/**
+ * Side column is on screen at `breakpointName` (from `useBreakpointName`).
+ * The panel is CSS-hidden below its `breakpoint`, and the list shows the
+ * column's blocks inline exactly when this is false — both must agree, or a
+ * width range ends up with the blocks in neither place.
+ */
+export function isConductorColumnShown(breakpoint, breakpointName) {
+    const minWidth = LAYOUT_BREAKPOINTS[breakpoint]
+    if (!minWidth) return false
+    return (LAYOUT_BREAKPOINTS[breakpointName] ?? 0) >= minWidth
 }
 
 // ---------------------------------------------------------------------------

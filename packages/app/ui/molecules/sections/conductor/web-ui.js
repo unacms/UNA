@@ -18,6 +18,8 @@ import {
     getConductorRouteChildren,
     getConductorSidebarRootRoutes,
     getConductorDepthClassName,
+    getConductorLayoutCols,
+    getConductorColumnsConfig,
     registeredComponent,
 } from './helpers'
 import {
@@ -129,6 +131,10 @@ function scrollTabToStart() {
  *        in the left column, so the list must not repeat them.
  * @param {boolean}  [props.fillViewport=false]  Pin the scene to the parent
  *        height and skip window-scroll UniList (tasks-home).
+ * @param {boolean}  [props.isLeftColumnShown]  Left panel is on screen; when
+ *        not, its blocks render above the list. Defaults to desktop.
+ * @param {boolean}  [props.isRightColumnShown] Right panel is on screen; when
+ *        not, its blocks are appended to the list. Defaults to desktop.
  */
 export const TabScene = ({
     pageRoute,
@@ -140,8 +146,12 @@ export const TabScene = ({
     onFormChangedValues,
     leftColumnExcludedFromMainIds = null,
     fillViewport = false,
+    isLeftColumnShown,
+    isRightColumnShown,
 }) => {
     const isDesktop = useIsDesktop()
+    const showLeftColumnInList = !(isLeftColumnShown ?? isDesktop)
+    const showSidebarInList = !(isRightColumnShown ?? isDesktop)
     const uniRef = useRef()
     const { t } = useTranslation()
     const layout = layoutForList(pageRoute?.endpoint)
@@ -245,10 +255,12 @@ export const TabScene = ({
             skeleton={skeleton}
             skeletonCount={5}
             listItems={listItems}
-            includeSidebar={!isDesktop}
-            showMobileLeftColumn={!isDesktop}
+            includeSidebar={showSidebarInList}
+            showMobileLeftColumn={showLeftColumnInList}
             leftColumnExcludedFromMainIds={leftColumnExcludedFromMainIds}
             onFormChangedValues={onFormChangedValues}
+            // Same bottom spacing as the list rows below (see item-renderer).
+            leftColumnClassName="gap-y-4 mb-0.5 sm:mb-3 lg:mb-4"
             isInited={isInited}
             listReady={listReady}
             refreshing={isRefetching}
@@ -306,24 +318,14 @@ export const TabSceneColumns = ({
 
     const groupRef = useRef(null)
 
-    /** Which columns are present, as the settings key: 'c' | 'c-r' | 'l-c' | 'l-c-r'. */
-    const layoutCols =
-        !isLeftColumn && !isRightColumn
-            ? 'c'
-            : !isLeftColumn
-                ? 'c-r'
-                : !isRightColumn
-                    ? 'l-c'
-                    : 'l-c-r'
+    const layoutCols = getConductorLayoutCols(isLeftColumn, isRightColumn)
 
     // A page can override the column sizes for itself; otherwise fall back to
     // the generic config for this column combination.
-    const cellsCustomConfig = useMemo(() => {
-        return (
-            appSetting('layouts', pageRoute?.pageData?.uri) ||
-            appSetting('layouts', `cols-${layoutCols}`)
-        )
-    }, [pageRoute?.pageData?.uri, layoutCols])
+    const cellsCustomConfig = useMemo(
+        () => getConductorColumnsConfig(pageRoute?.pageData?.uri, layoutCols),
+        [pageRoute?.pageData?.uri, layoutCols]
+    )
 
 
     /** Identity of this arrangement: remounts the group when the shape changes. */
