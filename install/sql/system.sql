@@ -6272,6 +6272,7 @@ INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title`, `designb
 -- service blocks
 SET @iBlockOrder = IFNULL((SELECT `order` FROM `sys_pages_blocks` WHERE `object` = '' AND `cell_id` = 0 ORDER BY `order` DESC LIMIT 1), 0);
 INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title_system`, `title`, `designbox_id`, `tabs`, `async`, `visible_for_levels`, `type`, `content`, `deletable`, `copyable`, `active`, `order`) VALUES
+('', 0, 'system', '_sys_page_block_title_sys_search_ai', '_sys_page_block_title_search_ai', 11, 0, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:19:"get_block_search_ai";s:6:"params";a:0:{}s:5:"class";s:13:"TemplServices";}', 0, 1, 1, @iBlockOrder + 1),
 ('', 0, 'system', '_sys_page_block_title_sys_create_post', '_sys_page_block_title_create_post', 11, 1, 4, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:20:"get_create_post_form";s:6:"params";a:1:{i:0;i:0;}s:5:"class";s:13:"TemplServices";}', 0, 1, 1, @iBlockOrder + 1),
 ('', 0, 'system', '_sys_page_block_title_sys_create_post_context', '_sys_page_block_title_create_post_context', 11, 1, 4, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:20:"get_create_post_form";s:6:"params";a:1:{i:0;s:12:"{profile_id}";}s:5:"class";s:13:"TemplServices";}', 0, 1, 1, @iBlockOrder + 2),
 ('', 0, 'system', '_sys_page_block_title_sys_create_post_public', '_sys_page_block_title_create_post_public', 11, 1, 4, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:20:"get_create_post_form";s:6:"params";a:0:{}s:5:"class";s:13:"TemplServices";}', 0, 1, 1, @iBlockOrder + 3),
@@ -6720,7 +6721,7 @@ CREATE TABLE `sys_agents_models` (
   `key` varchar(255) NOT NULL DEFAULT '',
   `params` text NOT NULL,
   `params_user` text DEFAULT NULL,
-  `capabilities` enum('chatllm','chatvlm','embeddings') NOT NULL DEFAULT 'chatllm',
+  `capabilities` enum('chatllm','chatvlm','embeddings','judge') NOT NULL DEFAULT 'chatllm',
   `duplicate` tinyint(4) NOT NULL DEFAULT 1,
   `active` tinyint(4) NOT NULL DEFAULT 1,
   `changed` int(11) UNSIGNED NOT NULL DEFAULT 0,
@@ -6814,6 +6815,14 @@ INSERT INTO `sys_agents_models` (`type`, `model`, `title`, `icon`, `docs`, `key`
 
 INSERT INTO `sys_agents_models` (`type`, `model`, `title`, `icon`, `docs`, `key`, `params`, `params_user`, `capabilities`, `duplicate`, `active`, `changed`) VALUES
 ('cohere', 'command-a-03-2025', 'Cohere', 'ai-cohere.svg', 'https://docs.cohere.com/docs/models', '', '', NULL, 'chatllm', 0, 0, 0);
+
+SET @j = JSON_OBJECT(
+    'baseUri', 'https://api.typesafe.ai/v1',
+    'timeout', 15,
+    'retries', 2
+);
+INSERT INTO `sys_agents_models` (`type`, `model`, `title`, `icon`, `docs`, `key`, `params`, `params_user`, `capabilities`, `duplicate`, `active`, `changed`) VALUES
+('typesafe', 'jev-latest', 'TypeSafe (Jev)', 'ai-typesafe.svg', 'Judge model: answers typed questions (yes/no, choice, score) about a text with probabilities and confidence instead of generating text. It can not be assigned to an agent, it is used from code - moderation, guardrails, routing, search parsing. Models - https://docs.typesafe.ai/models, API - https://docs.typesafe.ai/api', '', CAST(@j AS CHAR), NULL, 'judge', 0, 0, 0);
 
 SET @j = JSON_OBJECT(
     'baseUri', 'https://api.moonshot.ai/v1',

@@ -3879,6 +3879,8 @@
     <string name="_sys_page_block_title_forgot_password"><![CDATA[Forgot Password]]></string>
     <string name="_sys_page_block_title_search_keyword_form"><![CDATA[Search Form]]></string>
     <string name="_sys_page_block_title_search_keyword_result"><![CDATA[Search Result]]></string>
+    <string name="_sys_page_block_title_sys_search_ai"><![CDATA[AI Search]]></string>
+    <string name="_sys_page_block_title_search_ai"><![CDATA[Search]]></string>
     <string name="_sys_page_block_title_membership_stats"><![CDATA[Membership Limits]]></string>
     <string name="_sys_page_block_system_title_login"><![CDATA[Log in with Sign up link]]></string>
     <string name="_sys_page_block_system_title_login_step2"><![CDATA[Log in - step2]]></string>

@@ -3835,6 +3835,8 @@
 	<string name="_sys_page_block_title_forgot_password"><![CDATA[Забыли пароль]]></string>
         <string name="_sys_page_block_title_search_keyword_form"><![CDATA[Форма поиска]]></string>
         <string name="_sys_page_block_title_search_keyword_result"><![CDATA[Результаты поиска]]></string>
+        <string name="_sys_page_block_title_sys_search_ai"><![CDATA[AI поиск]]></string>
+        <string name="_sys_page_block_title_search_ai"><![CDATA[Поиск]]></string>
         <string name="_sys_page_block_title_membership_stats"><![CDATA[Лимиты членства]]></string>
 	<string name="_sys_page_block_system_title_login"><![CDATA[Вход с линкой регистрации]]></string>
 	<string name="_sys_page_block_system_title_login_step2"><![CDATA[Вход - шаг 2]]></string>
