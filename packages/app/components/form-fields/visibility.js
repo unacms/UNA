@@ -3,7 +3,7 @@ import Field, { getValidationRules } from './_field';
 import { useFormContext } from 'react-hook-form';
 import { Button, NeoButton, Modal, Hidden } from 'app/design/controls'
 import { getVisibilityValues } from './select';
-import { visibilityById, appSetting } from 'app/lib/util';
+import { visibilityById } from 'app/lib/util';
 import RbList from 'app/ui/molecules/form-controls/radio-list';
 import ChkList from 'app/ui/molecules/form-controls/checkbox-list';
 import { View, Row, Pressable } from 'app/design/view'
@@ -13,8 +13,9 @@ import Profile from 'app/ui/molecules/profile/profile';
 import { useTranslation } from 'react-i18next'
 import i18n from 'i18next'
 import { useFormField } from 'app/lib/form/use-form-field';
+import { wellButtonProps } from 'app/lib/form/form-helpers';
+import FieldWell from './_well';
 
-const inputSettings = appSetting('theme', 'inputs');
 const SUB_TYPES = new Set([6, 8, 9]);
 const needsSub = (val) => SUB_TYPES.has(Number(val));
 const sameId = (a, b) => String(a) === String(b);
@@ -256,16 +257,14 @@ export default function FormFieldVisibility(props) {
         <>
             {modalElement}
             <Field {...props}>
-                <View className={`bg-input/60 shadow-btn-outline dark:shadow-btn-outline-deep rounded-lg w-full flex-auto items-center flex-row flex-wrap p-2 gap-1 ${inputSettings.surface_size?.regular ?? 'min-h-10'}`}>
-                    <Button
-                        title={displayText}
-                        startDecorator={visibilityData?.icon || 'Globe'}
-                        variant="default"
-                        size="sm"
-                        className="my-auto"
+                <FieldWell>
+                    <NeoButton
+                        {...wellButtonProps()}
+                        label={displayText}
+                        image={visibilityData?.icon || 'Globe'}
                         onPress={openModal}
                     />
-                </View>
+                </FieldWell>
             </Field>
         </>
     );

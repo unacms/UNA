@@ -287,6 +287,23 @@ function resolveLegacyNeoButton({
     };
 }
 
+/**
+ * NeoButton props for triggers and value chips inside a FieldWell (labels,
+ * selector, visibility): one style and size so they line up in the well.
+ * Legacy `variant` / `size` still map (e.g. embedded `text` → borderless).
+ */
+export function wellButtonProps({ variant, size }: { variant?: any; size?: any } = {}) {
+    return resolveLegacyNeoButton({
+        variant,
+        size: size ?? 'sm',
+        style: undefined,
+        controlSize: undefined,
+        borderShape: undefined,
+        rounded: false,
+        fallbackStyle: 'bordered',
+    });
+}
+
 export function PollButton({
     field_name,
     size = 'sm',

@@ -1,8 +1,8 @@
-import { View, Row, ScrollView } from 'app/design/view'
-import { getFormFieldByData, FileButton } from 'app/lib/form/form-helpers'
-import { Text } from 'app/design/typography'
+import { Row, ScrollView } from 'app/design/view'
+import { getFormFieldByData, FileButton, wellButtonProps } from 'app/lib/form/form-helpers'
 import { useTranslation } from 'react-i18next'
-
+import Field from './_field'
+import FieldWell from './_well'
 
 
 export function getMediaKind(fieldName) {
@@ -76,26 +76,20 @@ export default function MediaAttachments({
         mediaFields.find((f) => f.kind === 'image')?.key ??
         mediaFields[0]?.key
 
+    // Caption above a FieldWell, like labels / selector / visibility.
     return (
-        <>
-            <View className='w-full flex-wrap my-1 flex-row border rounded-xl border-border   py-1 px-2 items-center'>
-                <Text className="font-semibold px-3 py-1 justify-center my-auto text-sm flex-auto text-secondary-foreground ">
-                    {t(label)}
-                </Text>
-                <Row className=" justify-center items-center flex-row flex-wrap px-2">
-                    {mediaFields.map(({ key, kind }) => (
-                        <View className="ml-2" key={key}>
-                            <FileButton
-                                field_name={key}
-                                variant='text'
-                                icon={getIconForKind(kind)}
-                                rounded={false}
-                                tooltip={t('Add') + ' ' + key}
-                            />
-                        </View>
-                    ))}
-                </Row>
-            </View>
+        <Field caption={t(label)} format="default">
+            <FieldWell>
+                {mediaFields.map(({ key, kind }) => (
+                    <FileButton
+                        key={key}
+                        field_name={key}
+                        {...wellButtonProps({ variant: 'text' })}
+                        icon={getIconForKind(kind)}
+                        tooltip={t('Add') + ' ' + key}
+                    />
+                ))}
+            </FieldWell>
 
             <ScrollView
                 keyboardDismissMode="on-drag"
@@ -121,6 +115,6 @@ export default function MediaAttachments({
                     })}
                 </Row>
             </ScrollView>
-        </>
+        </Field>
     )
 }

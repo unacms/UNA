@@ -8,6 +8,9 @@ import { Text } from 'app/design/typography'
 import MediaAttachments from 'app/components/form-fields/media-attachments'
 import { useTranslation } from 'react-i18next'
 
+// Rendered below attachments in this order when the form display includes them.
+const OPTION_FIELDS = ['labels', 'cat', 'allow_comments', 'resolvable'];
+
 export default function FormPost(props) {
     const { t } = useTranslation()
     const { data, handleSubmit } = props;
@@ -35,9 +38,6 @@ export default function FormPost(props) {
             'p-4 border-dashed border-border'
         inputs['covers'].caption = 'Add cover image'
     }
-
-    if (inputs['allow_comments'])
-        inputs['allow_comments'].caption = '';
 
     // Prepare author name for the visibility switcher
     const authorName = <Text className="font-semibold text-card-foreground">{currentUser.display_name}</Text>;
@@ -94,7 +94,7 @@ export default function FormPost(props) {
                     )}
                 </View>
             </View>
-            <View className="flex-col">
+            <View className="flex-col gap-4 pt-3">
                 <MediaAttachments
                     inputs={inputs}
                     handleSubmit={handleSubmit}
@@ -102,41 +102,17 @@ export default function FormPost(props) {
                     label={t('Add to post')}
                 />
 
-                <View className='w-full my-1 flex-row border rounded-xl border-border  py-1 px-2'>
-                    <Text className="font-semibold px-3 py-1 justify-center my-auto text-sm  text-secondary-foreground ">{t('Labels')}</Text>
-                    <Row className=" justify-end items-center flex-auto px-2 ">
-                        {getFormFieldByData(
-                            inputs['labels'],
-                            handleSubmit,
-                            'notitle',
-                            { noPadding: true, align: 'right' }
-                        )}
-                    </Row>
-                </View>
-
-                <View className='w-full my-1 flex-row border rounded-xl border-border  py-1 px-2'>
-                    <Text className="font-semibold px-3 py-1 my-auto text-sm  text-secondary-foreground ">{t('Category')}</Text>
-                    <Row className=" justify-end items-center flex-auto px-2 ">
-                        {getFormFieldByData(
-                            inputs['cat'],
-                            handleSubmit,
-                            'notitle',
-                            { noPadding: true, align: 'right', variant: 'text', size: 'sm' }
-                        )}
-                    </Row>
-                </View>
-
-                <View className='w-full flex-row my-1  border rounded-xl border-border  py-1 px-2 mb-2'>
-                    <Text className="font-semibold px-3 py-1  my-auto text-sm flex-auto text-secondary-foreground ">{t('Allow Comments')}</Text>
-                    <View className=" gap-x-2 px-2 py-0.5 justify-start items-center  ">
-                        {getFormFieldByData(
-                            inputs['allow_comments'],
-                            handleSubmit,
-                            'default',
-                            { noPadding: true }
-                        )}
-                    </View>
-                </View>
+                {/* Standard field rendering, as in FormContent. bx_posts and bx_forum
+                    share this layout but not all fields; missing inputs render nothing. */}
+                {OPTION_FIELDS.map((key) =>
+                    getFormFieldByData(
+                        inputs[key],
+                        handleSubmit,
+                        'default',
+                        { form_name: props.name },
+                        key
+                    )
+                )}
                 {getFormFieldByData(
                     inputs['do_publish'],
                     handleSubmit,

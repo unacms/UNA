@@ -44,7 +44,7 @@ export const settingsInputs = {
         // Height-only tokens for chip wells / wrappers that bring their own padding.
         surface_size:{
             small: 'min-h-9',
-            regular: 'min-h-12',
+            regular: 'min-h-11',
             large: 'min-h-12',
         },
         base: 
@@ -72,7 +72,7 @@ export const settingsInputs = {
             'items-center flex-row-reverse justify-between gap-x-2 min-w-12  flex-auto  shadow-input-outline dark:shadow-input-outline-deep bg-input/50 ',
         size: {
             small: 'min-h-10 px-2 rounded-lg',
-            regular: 'min-h-12 px-3 rounded-xl',
+            regular: 'min-h-11 px-3 rounded-xl',
             large: 'min-h-16 px-4 rounded-xl',
         },
 
