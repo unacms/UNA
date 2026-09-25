@@ -11,7 +11,7 @@ import { useTranslation } from 'react-i18next'
 
 const AttachmentContainer = ({ children }) => (
     <View className="p-1 w-1/4">
-        <View className="aspect-square rounded-lg shadow-btn-outline dark:shadow-btn-outline-deep items-center justify-center">
+        <View className="aspect-video rounded-lg shadow-btn-outline dark:shadow-btn-outline-deep items-center justify-center">
             <View className="h-full w-full overflow-hidden rounded-lg">
                 {children}
             </View>
@@ -80,7 +80,7 @@ export default function ElementEntityAttachments({ data, blockWrapperProps }) {
     
     return (
         <BlockWrapper {...blockWrapperProps}>
-            <Modal id={'file-preview'} title={t('Preview title')} onVisible={!!showImage} onClose={() => {setShowImage(null)}}>
+            <Modal id={'file-preview'} title={t('Media')} onVisible={!!showImage} onClose={() => {setShowImage(null)}}>
                 {showImage && (
                     // Real proportions from API width/height; contain so nothing is cropped even when capped by max-h.
                     <View className="w-full max-h-[75vh]" style={{ aspectRatio: showImage.width && showImage.height ? showImage.width / showImage.height : 16 / 9 }}>
@@ -90,12 +90,13 @@ export default function ElementEntityAttachments({ data, blockWrapperProps }) {
                 )}
             </Modal>
             {aMedia.length > 0 && (
-                <Row className="relative flex-wrap w-full mx-auto max-w-4xl">
+                // Stretched with -mx-1 so the tiles' p-1 gutter doesn't inset the outer edges from the post text.
+                <Row className="relative flex-wrap -mx-1 max-w-4xl">
                     {aMedia}
                 </Row>
             )}
             {aFiles.length > 0 && (
-                <Row className={`flex-wrap w-full mx-auto max-w-4xl${aMedia.length > 0 ? ' mt-2' : ''}`}>
+                <Row className={`flex-wrap -mx-1 max-w-4xl${aMedia.length > 0 ? ' mt-2' : ''}`}>
                     {aFiles}
                 </Row>
             )}
