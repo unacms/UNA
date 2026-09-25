@@ -166,6 +166,10 @@ class BxDolAiTriggerMessage extends BxDolAiTrigger
             $iLotId = (int)($aJot['lot_id'] ?? 0);
         }
 
+        // No talk and no recipient: sendMessage would open a stray talk with participant 0.
+        if (!$iLotId && !$iRecipient)
+            return false;
+
         $aAutoReplyData = [
             'message' => $sMsg,
         ];

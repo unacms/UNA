@@ -1942,7 +1942,7 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
 
         // Async messenger agents run here from a background job: post the reply, nobody else will.
         if ('message' === $sType && is_string($mixedReply) && $mixedReply !== '')
-            BxDolAiTrigger::getInstance('message')->replyToMessage($aAgent, is_array($aParams) ? $aParams : [], $mixedReply);
+            BxDolAiTrigger::getInstance('message')->replyToMessage($aAgent, $aParams, $mixedReply);
 
         return $mixedReply;
     }
