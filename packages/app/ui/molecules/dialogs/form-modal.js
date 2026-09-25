@@ -9,14 +9,34 @@ import { useEffect, useCallback, useRef } from 'react'
 import { Loading } from 'app/customization/loading'
 import { getModalPostTitle } from 'app/customization/functions'
 import { appSetting } from 'app/lib/util';
-import { useModal, useCloseModal } from 'app/context/jotai/modal';
+import { useModal, useCloseModal, useOpenModalByUrl } from 'app/context/jotai/modal';
 import emitter from 'app/context/emitter';
 import { confirmDiscardUnsavedFormChanges } from 'app/lib/form/form-helpers';
 import { useTranslation } from 'react-i18next'
 
 const isWeb = Platform.OS === 'web';
 
-export default function FormModal({ pageData, setPageData, modalView, url }) {
+// feed.modal_hash: feed post modal keeps the feed URL and stores the post in #fi=,
+// so a reload renders the feed and reopens the modal (off: address bar shows the post URL)
+const FEED_MODAL_HASH = '#fi=';
+
+export const isFeedModalHash = () => isWeb && !!appSetting('feed', 'modal_hash');
+
+export const getFeedModalHistoryUrl = (url) =>
+    window.location.pathname + window.location.search + FEED_MODAL_HASH + encodeURIComponent(url);
+
+const getFeedModalUrlFromHash = () => {
+    const hash = window.location.hash;
+    if (!hash.startsWith(FEED_MODAL_HASH))
+        return '';
+    try {
+        return decodeURIComponent(hash.slice(FEED_MODAL_HASH.length));
+    } catch {
+        return '';
+    }
+};
+
+export default function FormModal({ pageData, setPageData, modalView, url, historyUrl }) {
     const { t } = useTranslation()
     const previousUrlRef = useRef(null);
 
@@ -40,10 +60,12 @@ export default function FormModal({ pageData, setPageData, modalView, url }) {
         if (!isWeb || !pageData || !url)
             return;
 
-        const normalizedUrl = '/' + url.replace(/^\/+/, '');
+        const normalizedUrl = historyUrl || '/' + url.replace(/^\/+/, '');
         previousUrlRef.current = window.location.pathname + window.location.search;
 
-        window.history.pushState({ modal: true }, '', normalizedUrl);
+        // reopened after reload (or url updated while open): the history entry is already there
+        if (window.location.pathname + window.location.search + window.location.hash !== normalizedUrl)
+            window.history.pushState({ modal: true }, '', normalizedUrl);
 
         const handlePopState = async () => {
             const proceed = await confirmDiscardUnsavedFormChanges();
@@ -59,7 +81,7 @@ export default function FormModal({ pageData, setPageData, modalView, url }) {
         return () => {
             window.removeEventListener('popstate', handlePopState);
         };
-    }, [!!pageData, url]);
+    }, [!!pageData, url, historyUrl]);
 
     if (!pageData)
         return null;
@@ -147,6 +169,15 @@ export default function FormModal({ pageData, setPageData, modalView, url }) {
 export const FormModalHost = () => {
     const modal = useModal();
     const closeModal = useCloseModal();
+    const openModalByUrl = useOpenModalByUrl();
+
+    useEffect(() => {
+        if (!isFeedModalHash())
+            return;
+        const url = getFeedModalUrlFromHash();
+        if (url)
+            openModalByUrl(url, getFeedModalHistoryUrl(url));
+    }, [openModalByUrl]);
 
     useEffect(() => {
         const subscription = emitter.addListener('link', async () => {
@@ -178,6 +209,7 @@ export const FormModalHost = () => {
                 pageData={modal.visible ? modal.pageData : false}
                 setPageData={(v) => { if (!v) closeModal(); }}
                 url={modal.url}
+                historyUrl={modal.historyUrl}
             />
         );
     }

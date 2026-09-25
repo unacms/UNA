@@ -23,6 +23,7 @@ import AnimatedBlock from 'app/ui/atoms/animated-block'
 import { components } from 'app/components/registry'
 import Scroll from 'app/ui/molecules/page/scroll'
 import { useOpenModalByUrl } from 'app/context/jotai/modal';
+import { isFeedModalHash, getFeedModalHistoryUrl } from 'app/ui/molecules/dialogs/form-modal';
 import { Skeleton } from 'app/ui/atoms/skeleton';
 
 function TimelineRecommendations({ data }) {
@@ -83,7 +84,8 @@ function DefaultFeedUnit({ data }) {
 
     const showCommentsModal = (initFormData) => {
         const url2 = (url.startsWith('/') ? url.slice(1) : url) + (initFormData?.cmt_id > 0 ? '#cmt_id=' + initFormData?.cmt_id : '#cmts');
-        openModalByUrl(url2);
+        // #cmts (scroll + focus the comment form) is only for the click, not for reopening after reload
+        openModalByUrl(url2, isFeedModalHash() ? getFeedModalHistoryUrl(url2.replace(/#cmts$/, '')) : '');
     }
 
     if (isCommentsModal) {

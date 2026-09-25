@@ -5,6 +5,8 @@ export const settingsFeed = {
         feed_container: 'relative flex-auto mx-auto w-full max-w-3xl  ',
         show_html: false,
         default_feed: 'foryou',
+        // web: post modal opened from the feed keeps the feed URL (+ #fi=<post>) so reload reopens it over the feed; false = address bar shows the post URL
+        modal_hash: false,
         list: [
             { name: 'foryou', icon: 'Sparkle', title: 'For you', showTitle: true },
             // { name: 'account', icon: 'Binoculars', title: 'Following', showTitle: true },

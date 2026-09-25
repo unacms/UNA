@@ -8,6 +8,8 @@ export type ModalState = {
     loading: boolean;
     /** Page URL for `mode: 'url'`. */
     url: string;
+    /** Web address-bar URL while the modal is open; empty → `url`. */
+    historyUrl: string;
     /** Loaded page data; `'loading'` while fetching, `false` when none. */
     pageData: any;
     mode: 'url' | 'content';
@@ -20,6 +22,7 @@ export const defaultModalState: ModalState = {
     visible: false,
     loading: false,
     url: '',
+    historyUrl: '',
     pageData: false,
     mode: 'url',
     content: null,
@@ -31,13 +34,14 @@ export const modalAtom = atom<ModalState>(defaultModalState);
 
 export const openModalByUrlAtom = atom(
     null,
-    async (_get, set, url: string | undefined) => {
+    async (_get, set, url: string | undefined, historyUrl: string = '') => {
         if (!url) return;
 
         set(modalAtom, {
             visible: true,
             loading: true,
             url,
+            historyUrl,
             pageData: 'loading',
             mode: 'url',
             content: null,
@@ -50,6 +54,7 @@ export const openModalByUrlAtom = atom(
                 visible: true,
                 loading: false,
                 url,
+                historyUrl,
                 pageData: sResponse?.data || false,
                 mode: 'url',
                 content: null,
