@@ -273,7 +273,15 @@ class BxDolAiTriggerMessage extends BxDolAiTrigger
     }
 
     /**
-     * The jot being answered, or the last jot in the talk, was written by an agent.
+     * Loop guard: the jot being answered was written by an agent. Only when that jot
+     * is unknown (no id, or it is gone) does the last jot in the talk decide instead.
+     *
+     * A known source jot is enough: processMessage() already refuses jots sent by
+     * or authored by an agent, so an agent never answers an agent. The last jot in
+     * the talk is often legitimately an agent's: another agent's reply to the same
+     * message in a group talk, or this agent's reply to the person's previous
+     * message when they sent two before the first answer came. Checking it then
+     * dropped those replies without a trace.
      */
     protected function isAgentFlood($oMessengerModule, $iLotId, $iSourceJotId)
     {
@@ -283,11 +291,10 @@ class BxDolAiTriggerMessage extends BxDolAiTrigger
 
         $iLotId = (int)$iLotId;
         $iSourceJotId = (int)$iSourceJotId;
-        if ($iSourceJotId) {
-            $aSrc = $oMessengerModule->_oDb->getJotById($iSourceJotId);
+        $aSrc = $iSourceJotId ? $oMessengerModule->_oDb->getJotById($iSourceJotId) : false;
+        if (!empty($aSrc)) {
             $iSrcAuthor = (int)($aSrc['user_id'] ?? 0);
-            if ($iSrcAuthor && $oAi->isAgentProfile($iSrcAuthor))
-                return true;
+            return $iSrcAuthor > 0 && $oAi->isAgentProfile($iSrcAuthor);
         }
 
         if (!$iLotId)
