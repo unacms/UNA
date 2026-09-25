@@ -278,6 +278,9 @@ export function CommentsBrowse({
     } = useInfiniteQuery({
         queryKey: qKey,
         queryFn: fetchComments,
+        // Pages without a comments block (e.g. an edit form opened in the
+        // post modal) have no thread to load.
+        enabled: !!requestUrl,
 
         initialPageParam: {
             start_from: 0,
@@ -438,7 +441,7 @@ export function CommentsBrowse({
             <View>
                 {(browseParams.object_id && hasNextPage && isFetchingNextPage) ? (
                     <View className=''><Loading /></View>
-                ) : (!refetchState.visibleItems.length && !refetchRef.current.isFirstLoad ? appStatic('components_comments_empty') : null)}
+                ) : (browseParams.object_id && !refetchState.visibleItems.length && !refetchRef.current.isFirstLoad ? appStatic('components_comments_empty') : null)}
                 {/* Spacer so last comments clear sticky composer (+ keyboard on native). */}
                 {marginBottom > 0 ? <View style={{ height: marginBottom }} collapsable={false} /> : null}
             </View>

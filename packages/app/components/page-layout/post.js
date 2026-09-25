@@ -428,21 +428,23 @@ export default function PageLayout({ data, blocks, isModal = false, url, pageCla
                     own clearance via `listBottomInset`. */}
                 {/* `style`, not `className`: KbStickyView wraps react-native's View
                     (RNW drops className) and KeyboardStickyView on native. */}
-                <KbStickyView
-                    style={{ position: 'absolute', left: 0, right: 0, bottom: 0 }}
-                    offset={{ closed: 0, opened: insets.bottom }}
-                >
-                    <View onLayout={handleLayout}>
-                        <CommentsForm
-                            isModal={isModal}
-                            fadeSurface="card"
-                            objectId={commentsObjectId}
-                            module={commentsModule}
-                            form={commentsForm}
-                            requestUrl={commentsRequestUrl}
-                        />
-                    </View>
-                </KbStickyView>
+                {ownsPageComments && (
+                    <KbStickyView
+                        style={{ position: 'absolute', left: 0, right: 0, bottom: 0 }}
+                        offset={{ closed: 0, opened: insets.bottom }}
+                    >
+                        <View onLayout={handleLayout}>
+                            <CommentsForm
+                                isModal={isModal}
+                                fadeSurface="card"
+                                objectId={commentsObjectId}
+                                module={commentsModule}
+                                form={commentsForm}
+                                requestUrl={commentsRequestUrl}
+                            />
+                        </View>
+                    </KbStickyView>
+                )}
             </View>
         )
 
@@ -501,21 +503,23 @@ export default function PageLayout({ data, blocks, isModal = false, url, pageCla
                                 marginBottom={listBottomInset + composerBottomGap}
                             />
                         </View>
-                        <KbStickyView
-                            style={{ position: 'absolute', left: 0, right: 0, bottom: composerBottomGap }}
-                            offset={{ closed: 0, opened: composerStickyOpened }}
-                        >
-                            <View onLayout={handleLayout}>
-                                <CommentsForm
-                                    isModal={isModal}
-                                    fadeSurface="card"
-                                    objectId={commentsObjectId}
-                                    module={commentsModule}
-                                    form={commentsForm}
-                                    requestUrl={commentsRequestUrl}
-                                />
-                            </View>
-                        </KbStickyView>
+                        {ownsPageComments && (
+                            <KbStickyView
+                                style={{ position: 'absolute', left: 0, right: 0, bottom: composerBottomGap }}
+                                offset={{ closed: 0, opened: composerStickyOpened }}
+                            >
+                                <View onLayout={handleLayout}>
+                                    <CommentsForm
+                                        isModal={isModal}
+                                        fadeSurface="card"
+                                        objectId={commentsObjectId}
+                                        module={commentsModule}
+                                        form={commentsForm}
+                                        requestUrl={commentsRequestUrl}
+                                    />
+                                </View>
+                            </KbStickyView>
+                        )}
                     </View>
                 </View>
             );
@@ -543,22 +547,24 @@ export default function PageLayout({ data, blocks, isModal = false, url, pageCla
                             replyId={replyId}
                         />
                     </View>
-                    <KbAvoidingView>
-                        <View
-                            onLayout={handleLayout}
-                            style={isFormFixed && listWidth ? { width: listWidth + 5 } : undefined}
-                            // pt-12: fade runs above the input (bottom-anchored panel grows upward).
-                            className="pt-12 lg:pt-0 bg-linear-to-t from-card from-40% to-transparent web:fixed web:bottom-0 web:z-50 lg:static lg:z-0 lg:w-full"
-                        >
-                            <CommentsForm
-                                isModal={isModal}
-                                objectId={commentsObjectId}
-                                module={commentsModule}
-                                form={commentsForm}
-                                requestUrl={commentsRequestUrl}
-                            />
-                        </View>
-                    </KbAvoidingView>
+                    {ownsPageComments && (
+                        <KbAvoidingView>
+                            <View
+                                onLayout={handleLayout}
+                                style={isFormFixed && listWidth ? { width: listWidth + 5 } : undefined}
+                                // pt-12: fade runs above the input (bottom-anchored panel grows upward).
+                                className="pt-12 lg:pt-0 bg-linear-to-t from-card from-40% to-transparent web:fixed web:bottom-0 web:z-50 lg:static lg:z-0 lg:w-full"
+                            >
+                                <CommentsForm
+                                    isModal={isModal}
+                                    objectId={commentsObjectId}
+                                    module={commentsModule}
+                                    form={commentsForm}
+                                    requestUrl={commentsRequestUrl}
+                                />
+                            </View>
+                        </KbAvoidingView>
+                    )}
                 </View>
             </View>
         );
@@ -628,12 +634,14 @@ export default function PageLayout({ data, blocks, isModal = false, url, pageCla
                             requestUrl={commentsRequestUrl}
                             replyId={replyId}
                         />
-                        <CommentsForm
-                            objectId={commentsObjectId}
-                            module={commentsModule}
-                            form={commentsForm}
-                            requestUrl={commentsRequestUrl}
-                        />
+                        {ownsPageComments && (
+                            <CommentsForm
+                                objectId={commentsObjectId}
+                                module={commentsModule}
+                                form={commentsForm}
+                                requestUrl={commentsRequestUrl}
+                            />
+                        )}
                     </View>
                 ) : (
                 <Block isBg className={`w-full mx-auto `}>
@@ -651,23 +659,25 @@ export default function PageLayout({ data, blocks, isModal = false, url, pageCla
                             replyId={replyId}
                         />
                     </View>
-                    <KbAvoidingView>
-                        <View
-                            onLayout={handleLayout}
-                            style={isFormFixed && listWidth ? { width: listWidth + 5 } : undefined}
-                            className="w-full max-lg:web:fixed max-lg:web:bottom-0 max-lg:z-50 lg:static min-h-4"
-                        >
-                                <CommentsForm
-                                    // No fade here: this branch only renders when
-                                    // `isDesktop` (>= lg), where the composer is
-                                    // `lg:static` — in flow, with nothing behind it.
-                                    objectId={commentsObjectId}
-                                    module={commentsModule}
-                                    form={commentsForm}
-                                    requestUrl={commentsRequestUrl}
-                                />
-                        </View>
-                    </KbAvoidingView>
+                    {ownsPageComments && (
+                        <KbAvoidingView>
+                            <View
+                                onLayout={handleLayout}
+                                style={isFormFixed && listWidth ? { width: listWidth + 5 } : undefined}
+                                className="w-full max-lg:web:fixed max-lg:web:bottom-0 max-lg:z-50 lg:static min-h-4"
+                            >
+                                    <CommentsForm
+                                        // No fade here: this branch only renders when
+                                        // `isDesktop` (>= lg), where the composer is
+                                        // `lg:static` — in flow, with nothing behind it.
+                                        objectId={commentsObjectId}
+                                        module={commentsModule}
+                                        form={commentsForm}
+                                        requestUrl={commentsRequestUrl}
+                                    />
+                            </View>
+                        </KbAvoidingView>
+                    )}
                 </Block>
                 )}
             </Panel>
