@@ -190,8 +190,6 @@ class BxTasksFormEntry extends BxBaseModTextFormEntry
     {
         $CNF = &$this->_oModule->_oConfig->CNF;
 
-        $aValsToAdd[$CNF['FIELD_STATE']] ??= 1;
-
         if(isset($CNF['FIELD_ADDED']) && empty($aValsToAdd[$CNF['FIELD_ADDED']])) {
             $iAdded = 0;
             if(isset($this->aInputs[$CNF['FIELD_ADDED']]))
