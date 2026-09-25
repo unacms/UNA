@@ -121,7 +121,8 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
             'GetDataApi' => 'BxBaseCmtsServices',
 
             'GetDataApi' => 'BxBaseUploaderServices',
-            
+            'GetUploadToken' => 'BxBaseUploaderServices',
+
             'GetStatBlock' => 'BxBaseDashboardServices',
             
             'PerfomActionApi' => 'BxBaseServiceGrid',

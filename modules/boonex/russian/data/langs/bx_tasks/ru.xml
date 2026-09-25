@@ -92,7 +92,7 @@
     <string name="_bx_tasks_form_entry_input_sys_date_due_date"><![CDATA[Срок]]></string>
     <string name="_bx_tasks_form_entry_input_date_due_date"><![CDATA[Срок]]></string>
     <string name="_bx_tasks_form_entry_input_sys_estimate"><![CDATA[Временные оценки]]></string>
-    <string name="_bx_tasks_form_entry_input_estimate"><![CDATA[Временные оценки (в баллах)]]></string>
+    <string name="_bx_tasks_form_entry_input_estimate"><![CDATA[Временные оценки]]></string>
     <string name="_bx_tasks_form_entry_input_sys_gh_issue_url"><![CDATA[GitHub проблема]]></string>
     <string name="_bx_tasks_form_entry_input_gh_issue_url"><![CDATA[GitHub проблема]]></string>
 
