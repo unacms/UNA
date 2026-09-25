@@ -9,7 +9,6 @@ import * as DocumentPicker from 'expo-document-picker';
 import { fetcher } from 'app/lib/fetcher';
 import { useFormContext, useController } from 'react-hook-form';
 import { uploadImage, md5, getStoragePickerKind, isExtAllowed, splitExtList } from 'app/lib/util';
-import Loading from 'app/ui/atoms/loading'
 import { Text } from 'app/design/typography'
 import { Image as ImageNative, Alert, Linking, Platform } from 'react-native';
 import { Image as ImageRN } from 'react-native';
@@ -28,6 +27,8 @@ import i18n from 'i18next';
 import { useFormInstanceId } from 'app/context/form-instance';
 import { trackFormUploadStart, trackFormUploadEnd, formResponseHasFieldErrors, FILES_FIELD_MIRRORS } from 'app/lib/form/form-helpers';
 import { isInlineImagePaste, revokePastedBlobUri } from 'app/lib/editor/editor-paste-images';
+import { setUploadProgress, clearUploadProgress } from 'app/lib/upload-progress';
+import UploadProgress from 'app/ui/atoms/upload-progress';
 
 function showPermissionAlert(type, canAskAgain) {
     const isCamera = type === 'camera';
@@ -187,6 +188,7 @@ export default function (props) {
     const name = props.name;
     const persistKey = [props.form_name, name].filter(Boolean).join(':');
     const [message, setMessage] = useState(false);
+    const [uploadError, setUploadError] = useState(null);
     const [images, setImages] = useState(() => {
         if (persistKey && fieldImagesByKey.has(persistKey)) {
             return fieldImagesByKey.get(persistKey);
@@ -311,7 +313,15 @@ export default function (props) {
                 })
             }
         } else if (isAutoGhosts) {
-            console.error('[files] upload returned no ghost', result);
+            // UNA rejected the file (wrong extension, size, …): drop the pending tile and say why.
+            console.warn('[files] upload returned no ghost', result);
+            setImageSource((prev) => ({
+                ...prev,
+                images: (prev?.images || []).filter((img) =>
+                    uploadId ? img.uploadId !== uploadId : img.hash !== hash
+                ),
+            }));
+            setUploadError(result?.error || i18n.t('Upload failed'));
         } else if (hash) {
             setImageSource((prev) => ({
                 ...prev,
@@ -357,6 +367,7 @@ export default function (props) {
             ? (readFieldImages(persistKey) || [])
             : (imageSource.images ? imageSource.images : []);
         if (!asset) return existing;
+        setUploadError(null);
 
         const objectsToAdd = [];
 
@@ -391,7 +402,10 @@ export default function (props) {
                 url + '&a=upload',
                 onUploadFinished,
                 fileMeta,
-                { signal: controller.signal }
+                {
+                    signal: controller.signal,
+                    onProgress: (fraction) => setUploadProgress(uploadId, fraction),
+                }
             );
 
             try {
@@ -464,6 +478,7 @@ export default function (props) {
             } finally {
                 inFlightUploadIds.delete(uploadId);
                 uploadAbortControllers.delete(uploadId);
+                clearUploadProgress(uploadId);
             }
         };
 
@@ -813,7 +828,7 @@ export default function (props) {
         return GhostsList(imageSource.images, bMultiple, handleDelete, props);
     }
     return (
-        <Field {...props} error2={formContext.formState.errors[name]}>
+        <Field {...props} error={uploadError || props.error} error2={formContext.formState.errors[name]}>
             {cropModal}
             <Msg onVisible={message} title={message} handleOk={() => { setMessage(false) }} />
             {!props.hide_button && <View>
@@ -926,7 +941,7 @@ function ActionButton({ imagesList, props, selectImage, handleDelete, bMultiple,
                             view="cover"
                             alt=""
                         />}
-                        {isPreload && <View className="absolute inset-0 items-center justify-center"><Loading /></View>}
+                        {isPreload && <View className="absolute inset-0 items-center justify-center bg-background/50"><UploadProgress uploadId={img.uploadId} size={64} /></View>}
                         <View className='absolute top-1 right-1'>
                             <NeoButton
                                 style="glass"
@@ -955,11 +970,10 @@ function GhostsList(imagesList, bMultiple, handleDelete, props) {
     const isCover = props.preview === "cover";
 
     const sizes = [
-        isCover ? "w-full h-[30vh] mb-4 sm:rounded-xl" : "w-20 h-20 mt-2 mr-2 rounded-lg",
+        isCover ? "w-full h-[30vh] mb-4 sm:rounded-xl" : "h-20 aspect-video mt-2 mr-2 rounded-lg",
         " justify-center items-center overflow-hidden bg-muted  ",
     ].join(" ");
 
-    const sizes2 = isCover ? '100%' : 100;
     return visible.map((img, index) => {
         const isImage = img?.file_type?.includes('image/');
         const isVideo = img?.file_type?.includes('video/');
@@ -971,21 +985,21 @@ function GhostsList(imagesList, bMultiple, handleDelete, props) {
             >
                 {isImage ? <ImageRN
                     source={{ uri: img.uri || img.file_url }}
-                    style={{ width: sizes2, height: sizes2, opacity: isPreload ? 0.5 : 1 }}
+                    style={{ width: '100%', height: '100%', opacity: isPreload ? 0.5 : 1 }}
                     resizeMode="cover"
                     view="cover"
                     alt=""
                 /> : (
 
                     isVideo ? (
-                        <Video src={img.uri || img.file_url} />
+                        <Video src={img.uri || img.file_url} fill cover />
                     ) : (
                         <View className="h-16 w-16 text-muted-foreground  items-center justify-center"><Icon icon="File" className="w-9 h-9" size={36} /></View>
                     )
 
                 )}
 
-                {isPreload && <View className="absolute inset-0 items-center justify-center"><Loading /></View>}
+                {isPreload && <View className="absolute inset-0 items-center justify-center bg-background/50"><UploadProgress uploadId={img.uploadId} /></View>}
 
                 <View className="absolute top-1 right-1">
                     <NeoButton

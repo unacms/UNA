@@ -1,6 +1,7 @@
 import { Platform } from 'react-native'
 import i18n from 'i18next';
 import { fetcher } from 'app/lib/fetcher';
+import { xhrRequest } from 'app/lib/xhr-request';
 import { ImageManipulator, SaveFormat } from 'app/lib/image/manipulator';
 import { appSetting } from 'app/config';
 import { isWeb } from './layout';
@@ -266,6 +267,9 @@ export const prepareImageForUpload = async ({
     return processedImage.uri;
 }
 
+/** Set once UNA rejects the CORS preflight of a progress-reporting direct upload. */
+let directUploadProgressBlocked = false;
+
 const shouldUploadDirect = (size: number): boolean =>
     typeof DIRECT_UPLOAD_OVER_MB === 'number' && DIRECT_UPLOAD_OVER_MB >= 0 && size > DIRECT_UPLOAD_OVER_MB * BYTES_IN_MB;
 
@@ -275,7 +279,12 @@ const shouldUploadDirect = (size: number): boolean =>
  * Resolves `null` when UNA can't issue a token (older server) — the caller falls back to the proxy.
  * UNA must allow the app origin (Studio → API → origins) for the cross-origin response to be readable.
  */
-async function uploadDirectToUna(fetchUrl: string, formData: FormData, signal?: AbortSignal): Promise<any | null> {
+async function uploadDirectToUna(
+    fetchUrl: string,
+    formData: FormData,
+    signal?: AbortSignal,
+    onProgress?: (fraction: number) => void,
+): Promise<any | null> {
     const query = fetchUrl.split('?')[1] || '';
     const params = new URLSearchParams(query);
     const tokenPath = '/api.php?r=system/get_upload_token/TemplUploaderServices'
@@ -290,9 +299,29 @@ async function uploadDirectToUna(fetchUrl: string, formData: FormData, signal?: 
     const onAbort = () => controller.abort();
     signal?.addEventListener('abort', onAbort);
     const timer = setTimeout(() => controller.abort(), UPLOAD_TIMEOUT_MS);
+    const directUrl = `${url}?${query}&ut=${encodeURIComponent(token)}&lang=${i18n.language}`;
     try {
+        if (onProgress && !directUploadProgressBlocked) {
+            let sentAny = false;
+            try {
+                const r = await xhrRequest(directUrl, {
+                    method: 'POST',
+                    body: formData,
+                    signal: controller.signal,
+                    onUploadProgress: (fraction) => {
+                        if (fraction > 0) sentAny = true;
+                        onProgress(fraction);
+                    },
+                });
+                return await r.json().catch(() => ({}));
+            } catch (err) {
+                if (sentAny || !(err instanceof TypeError)) throw err;
+                // Nothing left the browser: UNA rejected the preflight that progress events require.
+                directUploadProgressBlocked = true;
+            }
+        }
         // No custom headers: a "simple" CORS request, so the browser skips the preflight.
-        const r = await fetch(`${url}?${query}&ut=${encodeURIComponent(token)}&lang=${i18n.language}`, {
+        const r = await fetch(directUrl, {
             method: 'POST',
             body: formData,
             credentials: 'omit',
@@ -311,9 +340,9 @@ export const uploadImage = async (
     fetchUrl: string,
     calback: (payload: { result: any; extraVar: UploadExtra }) => void,
     extraVar?: UploadExtra,
-    options: { signal?: AbortSignal } = {},
+    options: { signal?: AbortSignal; onProgress?: (fraction: number) => void } = {},
 ) => {
-    const { signal } = options;
+    const { signal, onProgress } = options;
     if (isWeb) {
         let fileType = '';
         let fileExt = '';
@@ -350,7 +379,7 @@ export const uploadImage = async (
         let result: any = null;
         if (shouldUploadDirect(file.size)) {
             try {
-                result = await uploadDirectToUna(fetchUrl, formData, signal);
+                result = await uploadDirectToUna(fetchUrl, formData, signal, onProgress);
             } catch (err: any) {
                 if (signal?.aborted || err?.name === 'AbortError') throw err;
                 console.warn('[upload] direct upload to UNA failed, retrying through the proxy:', err);
@@ -360,6 +389,7 @@ export const uploadImage = async (
             result = await fetcher([fetchUrl, null, formData], false, {
                 timeoutMs: UPLOAD_TIMEOUT_MS,
                 signal,
+                onUploadProgress: onProgress,
             });
         }
         // Always pass the full API payload so callers can read data.ghost
@@ -380,6 +410,7 @@ export const uploadImage = async (
     const result = await fetcher([fetchUrl, null, formData], false, {
         timeoutMs: UPLOAD_TIMEOUT_MS,
         signal,
+        onUploadProgress: onProgress,
     });
     calback({ result, extraVar });
 };
