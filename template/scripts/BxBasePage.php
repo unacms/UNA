@@ -1404,11 +1404,11 @@ class BxBasePage extends BxDolPage
         $sContent = $aBlock['content'];
         // get_mockup_block blocks are stored with empty params, so BxDolService's memory cache would
         // hand every such block on the page the same tree; key the call by block id instead.
-        $aCall = is_string($sContent) ? @unserialize($sContent) : false;
-        if (is_array($aCall) && !empty($aCall['method']) && $aCall['method'] === 'get_mockup_block') {
-            $aCall['params'] = [(int)$aBlock['id']];
-            $sContent = serialize($aCall);
-        }
+        // Read and rewritten through the service-call codec: new blocks are stored as JSON, and
+        // old serialized ones must never be unserialized with objects allowed.
+        $aCall = BxDolService::decodeServiceCall($sContent);
+        if (is_array($aCall) && ($aCall['method'] ?? '') === 'get_mockup_block')
+            $sContent = BxDolService::getSerializedService($aCall['module'], $aCall['method'], [(int)$aBlock['id']], $aCall['class'] ?? '');
 
         $aResult = BxDolService::callSerialized($sContent, array_merge($this->_aMarkers, [
             'block_id' => $aBlock['id']
