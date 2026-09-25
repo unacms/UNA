@@ -126,22 +126,20 @@ jobs:
         fi
         base="${RAILWAY_BASE_ENVIRONMENT:-production}"
         railway link --project "$RAILWAY_PROJECT_ID" --environment "$base" --json
-        railway environment new "$RAILWAY_PR_ENVIRONMENT" || true
+        railway environment delete "$RAILWAY_PR_ENVIRONMENT" -y || true
+        railway environment new "$RAILWAY_PR_ENVIRONMENT" --duplicate "$base" --json
         railway link --project "$RAILWAY_PROJECT_ID" --environment "$RAILWAY_PR_ENVIRONMENT" --json
-        railway add --image mariadb:11 --service mariadb --json \
-          --variables MARIADB_ROOT_PASSWORD=una \
-          --variables MARIADB_DATABASE=una \
-          --variables MARIADB_USER=una \
-          --variables MARIADB_PASSWORD=una \
-          || true
-        railway add --service una --json || true
+        railway variable set --service mariadb --environment "$RAILWAY_PR_ENVIRONMENT" --skip-deploys \
+          MARIADB_ROOT_PASSWORD=una \
+          MARIADB_DATABASE=una \
+          MARIADB_USER=una \
+          MARIADB_PASSWORD=una
         railway variable set --service una --environment "$RAILWAY_PR_ENVIRONMENT" --skip-deploys \
           MYSQLHOST=mariadb.railway.internal \
           MYSQLPORT=3306 \
           MYSQLDATABASE=una \
           MYSQLUSER=una \
-          MYSQLPASSWORD=una \
-          || true
+          MYSQLPASSWORD=una
         railway domain --service una --environment "$RAILWAY_PR_ENVIRONMENT" || true
 
     - name: Deploy artefact
