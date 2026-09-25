@@ -290,6 +290,8 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
             'agent_id' => (int)$iId,
             'txt_readonly' => _t('_sys_agents_agents_txt_readonly'),
             'txt_chats' => _t('_sys_agents_agents_txt_chats'),
+            'txt_search' => bx_html_attribute(_t('_sys_agents_agents_txt_search')),
+            'txt_search_empty' => _t('_sys_agents_agents_txt_search_empty'),
             'bx_repeat:threads' => $aThreadsTpl,
         ]));
 
@@ -378,6 +380,7 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
             'created_at' => (string)($aThread['created_at'] ?? ''),
             'updated_at' => (string)($aThread['updated_at'] ?? ''),
             'artifacts' => $aArtifacts,
+            'messages' => (!empty($aThread['messages']) && is_array($aThread['messages'])) ? array_values($aThread['messages']) : [],
         ];
     }
 

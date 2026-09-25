@@ -1949,6 +1949,8 @@
     <string name="_adm_stg_cpt_option_sys_api_url_root_push"><![CDATA[Основной URL-адрес сайта в push-уведомлениях]]></string>
     <string name="_adm_stg_cpt_option_sys_agents_inspector_key"><![CDATA[Ключ Inspector]]></string>
     <string name="_adm_stg_cpt_option_sys_agents_inspector_key_info"><![CDATA[Получить ключ на https://app.inspector.dev/]]></string>
+    <string name="_adm_stg_cpt_option_sys_agents_operator_agent"><![CDATA[Агент оператора]]></string>
+    <string name="_adm_stg_cpt_option_sys_agents_operator_agent_info"><![CDATA[Агент для операторов сайта: блок на Dashboard и плавающий чат в App. Настройки блока зашиты в get_block_ai_agent_operator.]]></string>
     <string name="_adm_stg_cpt_option_sys_agents_asst_chats_trans_del"><![CDATA[Автоматическое удаление временных чатов каждый день]]></string>
     <string name="_adm_stg_cpt_option_sys_viewport_meta_tag"><![CDATA[Метатег области просмотра]]></string>
 
@@ -2374,6 +2376,8 @@
         <string name="_sys_agents_agents_txt_my_chat"><![CDATA[Мой чат]]></string>
         <string name="_sys_agents_agents_txt_guest_chat"><![CDATA[Гость]]></string>
         <string name="_sys_agents_agents_txt_readonly"><![CDATA[Только просмотр]]></string>
+        <string name="_sys_agents_agents_txt_search"><![CDATA[Поиск по чатам...]]></string>
+        <string name="_sys_agents_agents_txt_search_empty"><![CDATA[Чаты не найдены]]></string>
         <string name="_sys_agents_agents_popup_add"><![CDATA[Добавить агента]]></string>
         <string name="_sys_agents_agents_empty"><![CDATA[Пока нет агентов]]></string>
         <string name="_sys_agents_agents_empty_info"><![CDATA[Агенты выполняют автоматические задачи на сайте. Добавьте первого, чтобы начать.]]></string>

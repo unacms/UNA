@@ -131,7 +131,13 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
             'GetForm' => 'BxBaseSearchExtendedServices',
             'GetResults' => 'BxBaseSearchExtendedServices',
 
-            'WikiAction' => 'BxBaseServiceWiki'
+            'WikiAction' => 'BxBaseServiceWiki',
+
+            'AiChat' => 'BxBaseServices',
+            'AiChatUpload' => 'BxBaseServices',
+            'GetBlockAiAgentOperator' => 'BxBaseServices',
+            'GetAiChatThreads' => 'BxBaseServices',
+            'GetAiChatThread' => 'BxBaseServices',
         );
     }
 
@@ -865,7 +871,34 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
         ]]);
     }
 
-    public function serviceGetBlockAiAgent($iId = 0, $mixedContextPid = false, $bRequirePost = false)
+    /**
+     * AI agent chat block.
+     *
+     * Studio / `bx_srv('system', 'get_block_ai_agent', [...], 'TemplServices')`:
+     *
+     * array (
+     *   'module' => 'system',
+     *   'method' => 'get_block_ai_agent',
+     *   'params' =>
+     *   array (
+     *     0 => 6, // agent id
+     *     1 => array (
+     *       'context' => false,       // profile id, or false = resolve from the page
+     *       'require_post' => false,  // only accept a page/post as context
+     *       'allow_images' => true,   // composer image attachments
+     *       'allow_new' => false,     // "Start new" extra threads (`?chat=`)
+     *       'show_history' => false,  // "Chats" panel with the viewer's earlier threads (App only; operator block turns it on)
+     *     ),
+     *   ),
+     *   'class' => 'TemplServices',
+     * )
+     *
+     * Legacy positional params still work: (id, context, require_post, allow_images, allow_new, show_history).
+     *
+     * @param int $iId Agent id
+     * @param array|int|false $aParams Named options (preferred) or legacy context pid
+     */
+    public function serviceGetBlockAiAgent($iId = 0, $aParams = [], ...$aLegacy)
     {
         $bIsApi = bx_is_api();
 
@@ -873,9 +906,12 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
         if(!$aAgent || !is_array($aAgent))
             return $bIsApi ? [] : '';
 
+        $aParams = $this->_normalizeAiAgentBlockParams($aParams, $aLegacy);
+        $mixedContextPid = $aParams['context'];
+        $bRequirePost = $aParams['require_post'];
+
         $oAi = BxDolAi::getInstance();
         $oChat = BxDolAiChat::getInstance();
-        $bRequirePost = (bool)$bRequirePost;
         if ($mixedContextPid === false || $mixedContextPid === null || $mixedContextPid === '')
             $iContextPid = $oAi ? (int)$oChat->resolveChatHistoryContextPidFromPage($bRequirePost) : 0;
         else
@@ -887,6 +923,11 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
             'agent_profile' => BxDolProfile::getData($aAgent['profile_id']),
             'context_profile_id' => $iContextPid,
             'hidden_first_message' => (string)($aAgent['hidden_first_message'] ?? ''),
+            'allow_images' => $aParams['allow_images'] ? 1 : 0,
+            'allow_new' => $aParams['allow_new'] ? 1 : 0,
+            'show_history' => $aParams['show_history'] ? 1 : 0,
+            'max_images' => BxDolAiChatImages::MAX_PER_TURN,
+            'max_input_chars' => (int)($aAgent['max_input_chars'] ?? 0),
             ])];
 
         $sEndpoint = BX_DOL_URL_ROOT . 'sys-ai-chat/' . (int)$iId;
@@ -902,6 +943,125 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
             'endpoint_js' => json_encode($sEndpoint),
             'bundle_url' => BX_DOL_URL_ROOT . 'plugins_public/bundle.js',
         ]);
+    }
+
+    /**
+     * Operator AI agent block: the single definition of "which agent, with which
+     * settings" for site operators. The Dashboard page block and the App floating
+     * bubble both call this service with no params, so they can never diverge.
+     *
+     * Agent id comes from Studio > Settings > Agents (`sys_agents_operator_agent`).
+     * Block params are fixed here — change them here, and only here. This is the one
+     * block with the "Chats" history panel (`show_history`): operators come back to
+     * the same agent again and again, and need to find what it did last time.
+     *
+     * Studio: `{"module":"system","method":"get_block_ai_agent_operator","class":"TemplServices"}`
+     * API:    `api.php?r=system/get_block_ai_agent_operator/TemplServices`
+     */
+    public function serviceGetBlockAiAgentOperator()
+    {
+        $bIsApi = bx_is_api();
+
+        $iId = (int)getParam('sys_agents_operator_agent');
+        if ($iId <= 0)
+            return $bIsApi ? [] : '';
+
+        $aAgent = BxDolAiQuery::getAgentObject($iId);
+        $oAi = BxDolAi::getInstance();
+        if (!$aAgent || !is_array($aAgent) || !$oAi || !$oAi->canChatDirectly($aAgent))
+            return $bIsApi ? [] : '';
+
+        return $this->serviceGetBlockAiAgent($iId, [
+            'context' => false,
+            'require_post' => false,
+            'allow_images' => true,
+            'allow_new' => true,
+            'show_history' => true,
+        ]);
+    }
+
+    /**
+     * Studio > Settings select for `sys_agents_operator_agent`: active agents
+     * that can be chatted with directly (see BxDolAi::canChatDirectly).
+     */
+    public function serviceGetOptionsOperatorAgent()
+    {
+        $aResult = [
+            ['key' => '', 'value' => _t('_Select_one')],
+        ];
+
+        $aAgents = BxDolDb::getInstance()->getAll("SELECT `id`, `name` FROM `sys_agents_agents` WHERE `active` = 1 AND `trigger` IN ('manual', 'message') ORDER BY `name` ASC");
+        foreach ($aAgents as $aAgent) {
+            $aResult[] = [
+                'key' => (int)$aAgent['id'],
+                'value' => $aAgent['name'] . ' (#' . (int)$aAgent['id'] . ')',
+            ];
+        }
+
+        return $aResult;
+    }
+
+    /**
+     * Named options for {@see serviceGetBlockAiAgent}, plus legacy positional args.
+     *
+     * @return array{context:mixed,require_post:bool,allow_images:bool,allow_new:bool,show_history:bool}
+     */
+    protected function _normalizeAiAgentBlockParams($mixedParams, array $aLegacy = [])
+    {
+        $isOn = function ($v) {
+            return $v === true || $v === 1 || $v === '1' || $v === 'true' || $v === 'on' || $v === 'yes';
+        };
+
+        $aOut = [
+            'context' => false,
+            'require_post' => false,
+            'allow_images' => false,
+            'allow_new' => false,
+            'show_history' => false,
+        ];
+
+        $aNamedKeys = ['context', 'context_profile_id', 'require_post', 'allow_images', 'allow_new', 'show_history'];
+        $bNamed = is_array($mixedParams);
+        if ($bNamed && $mixedParams) {
+            $bNamed = false;
+            foreach ($aNamedKeys as $sKey) {
+                if (array_key_exists($sKey, $mixedParams)) {
+                    $bNamed = true;
+                    break;
+                }
+            }
+        }
+
+        if ($bNamed) {
+            if (array_key_exists('context', $mixedParams))
+                $aOut['context'] = $mixedParams['context'];
+            elseif (array_key_exists('context_profile_id', $mixedParams))
+                $aOut['context'] = $mixedParams['context_profile_id'];
+            if (array_key_exists('require_post', $mixedParams))
+                $aOut['require_post'] = $mixedParams['require_post'];
+            if (array_key_exists('allow_images', $mixedParams))
+                $aOut['allow_images'] = $mixedParams['allow_images'];
+            if (array_key_exists('allow_new', $mixedParams))
+                $aOut['allow_new'] = $mixedParams['allow_new'];
+            if (array_key_exists('show_history', $mixedParams))
+                $aOut['show_history'] = $mixedParams['show_history'];
+        } else {
+            $aOut['context'] = $mixedParams;
+            if (array_key_exists(0, $aLegacy))
+                $aOut['require_post'] = $aLegacy[0];
+            if (array_key_exists(1, $aLegacy))
+                $aOut['allow_images'] = $aLegacy[1];
+            if (array_key_exists(2, $aLegacy))
+                $aOut['allow_new'] = $aLegacy[2];
+            if (array_key_exists(3, $aLegacy))
+                $aOut['show_history'] = $aLegacy[3];
+        }
+
+        $aOut['require_post'] = $isOn($aOut['require_post']);
+        $aOut['allow_images'] = $isOn($aOut['allow_images']);
+        $aOut['allow_new'] = $isOn($aOut['allow_new']);
+        $aOut['show_history'] = $isOn($aOut['show_history']);
+        return $aOut;
     }
 
     public function serviceGetMenu($aParams)
@@ -1790,6 +1950,42 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
     public function serviceAiChat($iAgentId)
     {
         return BxDolAiTrigger::getInstance('chat')->handle($iAgentId);
+    }
+
+    /**
+     * Composer image upload for the chat widget (`$_FILES['file']`).
+     * → `{file_id, url, mime}` or `{error}`; the client sends the URL back as an image part of its next message.
+     */
+    public function serviceAiChatUpload($iAgentId)
+    {
+        return BxDolAiTrigger::getInstance('chat')->upload($iAgentId);
+    }
+
+    /**
+     * The caller's own conversations with an agent — the "Chats" panel of the App
+     * chat widget. Any context, base thread and `?chat=` partitions, newest first.
+     *
+     * API: `api.php?r=system/get_ai_chat_threads/TemplServices&params[]=<agent id>`
+     * → `{threads: [{thread_id, chat, context_pid, context_name, status, closed_reason,
+     *    title, preview, messages_count, created_ts, updated_ts}]}`.
+     * The row whose `chat` / context matches the widget (or the open one, when the
+     * widget has no `?chat=`) is the live conversation; the rest are read-only —
+     * see serviceGetAiChatThread.
+     */
+    public function serviceGetAiChatThreads($iAgentId)
+    {
+        return BxDolAiTrigger::getInstance('chat')->listThreads($iAgentId);
+    }
+
+    /**
+     * One of the caller's earlier conversations, read-only.
+     *
+     * API: `api.php?r=system/get_ai_chat_thread/TemplServices&params[]=<agent id>&params[]=<thread id>`
+     * → `{messages, status, closed_reason, artifacts}`; 403 for a thread of someone else.
+     */
+    public function serviceGetAiChatThread($iAgentId, $sThreadId = '')
+    {
+        return BxDolAiTrigger::getInstance('chat')->getThread($iAgentId, $sThreadId);
     }
 }
 
