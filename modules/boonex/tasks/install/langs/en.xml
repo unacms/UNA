@@ -92,7 +92,7 @@
     <string name="_bx_tasks_form_entry_input_sys_date_due_date"><![CDATA[Due date]]></string>
     <string name="_bx_tasks_form_entry_input_date_due_date"><![CDATA[Due date]]></string>
     <string name="_bx_tasks_form_entry_input_sys_estimate"><![CDATA[Estimate]]></string>
-    <string name="_bx_tasks_form_entry_input_estimate"><![CDATA[Estimate (in points)]]></string>
+    <string name="_bx_tasks_form_entry_input_estimate"><![CDATA[Estimate]]></string>
     <string name="_bx_tasks_form_entry_input_sys_gh_issue_url"><![CDATA[GitHub Issue]]></string>
     <string name="_bx_tasks_form_entry_input_gh_issue_url"><![CDATA[GitHub Issue]]></string>
 

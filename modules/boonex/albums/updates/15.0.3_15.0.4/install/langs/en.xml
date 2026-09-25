@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="en" flag="gb" title="English">
+	<string_add name="_bx_albums_form_media_display_delete"><![CDATA[Delete Media]]></string_add>
+	<string_add name="_bx_albums_form_media_input_sys_delete_confirm"><![CDATA[Delete confirmation]]></string_add>
+	<string_add name="_bx_albums_form_media_input_delete_confirm"><![CDATA[I am sure I want to delete this media]]></string_add>
+	<string_add name="_bx_albums_form_media_input_delete_confirm_info"><![CDATA[This action can not be undone]]></string_add>
+	<string_add name="_bx_albums_form_media_input_delete_confirm_error"><![CDATA[Please check this checkbox if you really want to delete the media]]></string_add>
+
+	<string_add name="_bx_albums_page_title_sys_edit_media"><![CDATA[Media - Edit]]></string_add>
+	<string_add name="_bx_albums_page_title_edit_media"><![CDATA[Edit Media]]></string_add>
+	<string_add name="_bx_albums_page_block_title_edit_media"><![CDATA[Edit Media]]></string_add>
+	<string_add name="_bx_albums_page_title_sys_move_media"><![CDATA[Media - Move]]></string_add>
+	<string_add name="_bx_albums_page_title_move_media"><![CDATA[Move Media]]></string_add>
+	<string_add name="_bx_albums_page_block_title_move_media"><![CDATA[Move Media]]></string_add>
+	<string_add name="_bx_albums_page_title_sys_delete_media"><![CDATA[Media - Delete]]></string_add>
+	<string_add name="_bx_albums_page_title_delete_media"><![CDATA[Delete Media]]></string_add>
+	<string_add name="_bx_albums_page_block_title_delete_media"><![CDATA[Delete Media]]></string_add>
+
+	<string_upd name="_bx_albums_page_title_sys_view_media"><![CDATA[Media - View]]></string_upd>
+	<string_upd name="_bx_albums_page_block_title_entry_view_media"><![CDATA[View Media]]></string_upd>
+</resources>

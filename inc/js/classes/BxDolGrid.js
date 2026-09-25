@@ -272,10 +272,22 @@ BxDolGrid.prototype.processJson = function (oData, sAction, isDisableLoading) {
             if (typeof($this.onReload) == 'function') {
                 $this.onReload(oData);
             } else {
-                $('#' + $this._sIdContainer).html($(oData.grid).find('#' + $this._sIdContainer).html());
-                var sFooter = $(oData.grid).find('.bx-grid-footer').size() ? $(oData.grid).find('.bx-grid-footer').html() : '';
-                $('#' + $this._sIdWrapper).find('.bx-grid-footer').html(sFooter);
                 $('#' + $this._sIdWrapper).find('.bx-grid-header-controls-counter-value').html(oData.total_count_f);
+
+                switch(sAction) {
+                    case 'load_more':
+                        var sClassData = 'bx-grid-table-data';
+                        $('#' + $this._sIdContainer).find('.' + sClassData).append($(oData.grid).find('#' + $this._sIdContainer + ' .' + sClassData).html());
+                        break;
+
+                    default:
+                        $('#' + $this._sIdContainer).html($(oData.grid).find('#' + $this._sIdContainer).html());
+                        break;
+                }
+
+                var oFooter = $(oData.grid).find('.bx-grid-footer');
+                $('#' + $this._sIdWrapper).find('.bx-grid-footer').html(oFooter.size() ? oFooter.html() : '');
+
                 $this._onDataReloaded(true);
             }
         }
@@ -340,6 +352,10 @@ BxDolGrid.prototype.processJson = function (oData, sAction, isDisableLoading) {
         	fContinue();
         });
     }
+    else if (oData && undefined != oData.toast) {
+        bx_toast(oData.toast);
+        fContinue();
+    }
     else
     	fContinue();
 };
@@ -353,6 +369,11 @@ BxDolGrid.prototype.loading = function (bShow) {
 BxDolGrid.prototype.reload = function (iStart, iPerPage) {
     var oData = this._getActionDataForReload(iStart, iPerPage);
     this.action('display', oData);
+};
+
+BxDolGrid.prototype.loadMore = function (iStart, iPerPage) {
+    var oData = this._getActionDataForReload(iStart, iPerPage);
+    this.action('load_more', oData);
 };
 
 BxDolGrid.prototype._getActionDataForReload = function (iStart, iPerPage) {

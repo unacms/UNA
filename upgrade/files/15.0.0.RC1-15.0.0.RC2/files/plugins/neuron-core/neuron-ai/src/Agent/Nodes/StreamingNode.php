@@ -1,0 +1,76 @@
+<?php
+
+declare(strict_types=1);
+
+namespace NeuronAI\Agent\Nodes;
+
+use NeuronAI\Agent\AgentState;
+use NeuronAI\Agent\ChatHistoryHelper;
+use NeuronAI\Agent\Events\AIInferenceEvent;
+use NeuronAI\Agent\Events\ToolCallEvent;
+use NeuronAI\Chat\Messages\Message;
+use NeuronAI\Chat\Messages\ToolCallMessage;
+use NeuronAI\Observability\Events\AgentError;
+use NeuronAI\Observability\Events\InferenceStart;
+use NeuronAI\Observability\Events\InferenceStop;
+use NeuronAI\Providers\AIProviderInterface;
+use NeuronAI\Workflow\Events\StopEvent;
+use Generator;
+use Throwable;
+
+use function end;
+
+class StreamingNode extends InferenceNode
+{
+    use ChatHistoryHelper;
+
+    public function __construct(
+        protected AIProviderInterface $provider,
+    ) {
+    }
+
+    /**
+     * @throws Throwable
+     */
+    public function __invoke(AIInferenceEvent $event, AgentState $state): Generator|ToolCallEvent
+    {
+        $inbound = $event->getMessages();
+        $messages = $this->pendingConversation($state, $inbound);
+        $lastMessage = end($messages);
+
+        try {
+            $this->emit('inference-start', new InferenceStart($lastMessage));
+
+            $stream = $this->provider
+                ->systemPrompt($event->instructions)
+                ->setTools($event->tools)
+                ->stream(...$messages);
+
+            // Yield all chunks as-is (TextChunk, ReasoningChunk, etc.)
+            foreach ($stream as $chunk) {
+                yield $chunk;
+            }
+
+            // Get the final message from the generator return value
+            $message = $stream->getReturn();
+
+            $this->emit('inference-stop', new InferenceStop($lastMessage, $message));
+
+            $this->addToChatHistory($state, $inbound);
+
+            // Route based on the message type
+            if ($message instanceof ToolCallMessage) {
+                return new ToolCallEvent($message, $event);
+            }
+
+            // Add the final message to the chat history (after tool loop)
+            $this->addToChatHistory($state, $message);
+
+            return new StopEvent();
+
+        } catch (Throwable $exception) {
+            $this->emit('error', new AgentError($exception));
+            throw $exception;
+        }
+    }
+}

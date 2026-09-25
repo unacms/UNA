@@ -786,6 +786,26 @@ class BxBaseModGeneralModule extends BxDolModule
         return $this->_oConfig->CNF['T']['txt_sample_single'] ?? '';
     }
 
+    /**
+     * @page service Service Calls
+     * @section bx_base_general Base General
+     * @subsection bx_base_general-other Other
+     * @subsubsection bx_base_general-module_sample module_config
+     * 
+     * @code bx_srv('bx_posts', 'module_config', [...]); @endcode
+     * 
+     * Get module config (CNF)
+     * 
+     * @see BxBaseModGeneralModule::serviceModuleConfig
+     */
+    /** 
+     * @ref bx_base_general-module_config "module_config"
+     */
+    public function serviceModuleConfig ()
+    {
+        return $this->_oConfig->getCNF();
+    }
+
     public function serviceGetModerators($iContentId)
     {
         return $this->getModerators($iContentId);

@@ -1,0 +1,16 @@
+<svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="80" height="80" fill="url(#paint0_linear_twitter)"/>
+<g transform="translate(14.451 14.451) scale(2.12911)">
+<svg:path xmlns:svg="http://www.w3.org/2000/svg" d="M14.234 10.162 22.977 0h-2.072l-7.591 8.824L7.251 0H.258l9.168 13.343L.258 24H2.33l8.016-9.318L16.749 24h6.993zm-2.837 3.299-.929-1.329L3.076 1.56h3.182l5.965 8.532.929 1.329 7.754 11.09h-3.182z" fill="#000000" />
+</g>
+<g transform="translate(14.451 15.451) scale(2.12911)">
+<path fill-rule="evenodd" fill="black" fill-opacity="0.1" d="M14.23 10.16 L22.98 0.00 L20.91 0.00 L13.31 8.82 L7.25 0.00 L0.26 0.00 L9.43 13.34 L0.26 24.00 L2.33 24.00 L10.35 14.68 L16.75 24.00 L23.74 24.00 Z"/>
+</g>
+<defs>
+<linearGradient id="paint0_linear_twitter" x1="40" y1="0" x2="40" y2="80" gradientUnits="userSpaceOnUse">
+<stop stop-color="#F3F4F6"/>
+<stop offset="1" stop-color="#E5E7EB"/>
+</linearGradient>
+
+</defs>
+</svg>

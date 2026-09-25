@@ -230,6 +230,11 @@ class BxDolAiQuery extends BxDolDb
         return $this->getAll("SELECT * FROM `sys_agents_agents` WHERE `trigger` = :trigger AND `active` = :active", ['trigger' => $sTrigger, 'active' => $bActiveOnly ? 1 : 0]);
     }
 
+    public function isAgentProfile($iProfileId)
+    {
+        return (int)$this->getOne("SELECT `id` FROM `sys_agents_agents` WHERE `profile_id` = :profile_id AND `active` = 1 LIMIT 1", ['profile_id' => (int)$iProfileId]) > 0;
+    }
+
     public function updateAgentField($iId, $sField, $sValue)
     {
         return $this->query("UPDATE `sys_agents_agents` SET `$sField` = :value WHERE `id` = :id", ['value' => $sValue, 'id' => $iId]);
@@ -303,9 +308,9 @@ class BxDolAiQuery extends BxDolDb
             ORDER BY `updated_at` DESC, `id` DESC
             LIMIT " . (int)$iLimit, [
             'site' => $sPrefix . ':' . $sOwner,
-            'site_chat' => $sPrefix . ':' . $sOwnerLike . '.%',
+            'site_chat' => $sPrefix . ':' . $sOwnerLike . '#%',
             'ctx' => $sPrefix . ':%:' . $sOwnerLike,
-            'ctx_chat' => $sPrefix . ':%:' . $sOwnerLike . '.%',
+            'ctx_chat' => $sPrefix . ':%:' . $sOwnerLike . '#%',
         ]);
     }
 
@@ -330,13 +335,13 @@ class BxDolAiQuery extends BxDolDb
         return (string)$this->getOne("
             SELECT `thread_id`
             FROM `sys_agents_chat_history`
-            WHERE (`thread_id` = :exact OR `thread_id` LIKE :dot)
+            WHERE (`thread_id` = :exact OR `thread_id` LIKE :hash)
               AND (`closed_reason` = '' OR `closed_reason` IS NULL)
             ORDER BY `updated_at` DESC, `id` DESC
             LIMIT 1
         ", [
             'exact' => $sBase,
-            'dot' => $sBase . '.%',
+            'hash' => $sBase . '#%',
         ]);
     }
 
@@ -563,7 +568,7 @@ class BxDolAiQuery extends BxDolDb
     }
 
     /**
-     * Rename this agent's guest threads (`…:{sessionId}` or `…:{sessionId}.{chat}`) onto a profile id.
+     * Rename this agent's guest threads (`…:{sessionId}` or `…:{sessionId}#{chat}`) onto a profile id.
      * If the member thread already has messages, drop the guest copy.
      */
     public function adoptGuestChatHistory($aAgent, $sSessionId, $iProfileId)

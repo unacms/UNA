@@ -17,12 +17,12 @@ $aConfig = [
     'name' => 'system',
     'title' => 'System',
     'note' => 'System module.',
-    'version' => '15.0.0.DEV',
+    'version' => BX_DOL_VERSION,
     'vendor' => 'UNA INC',
     'help_url' => '',
 
     'compatible_with' => array(
-        '15.0.x'
+        BX_DOL_VERSION
     ),
 
     /**

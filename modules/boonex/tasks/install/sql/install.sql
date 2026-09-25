@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS `bx_tasks_tasks` (
   `type` int(11) NOT NULL default '0',
   `priority` int(11) NOT NULL default '0',
   `estimate` int(11) NOT NULL default '0',
-  `state` int(11) NOT NULL default '0',
+  `state` int(11) NOT NULL default '2',
   `cat` int(11) NOT NULL,
   `multicat` text NOT NULL,
   `text` mediumtext NOT NULL,
@@ -147,6 +147,7 @@ CREATE TABLE IF NOT EXISTS `bx_tasks_files` (
   `mime_type` varchar(128) NOT NULL,
   `ext` varchar(32) NOT NULL,
   `size` bigint(20) NOT NULL,
+  `dimensions` varchar(24) NOT NULL,
   `added` int(11) NOT NULL,
   `modified` int(11) NOT NULL,
   `private` int(11) NOT NULL,
@@ -452,7 +453,10 @@ INSERT INTO `sys_objects_storage` (`object`, `engine`, `params`, `token_life`, `
 ('bx_tasks_videos', @sStorageEngine, '', 360, 2592000, 3, 'bx_tasks_videos', 'allow-deny', '{video}', '', 0, 0, 0, 0, 0, 0),
 ('bx_tasks_videos_resized', @sStorageEngine, '', 360, 2592000, 3, 'bx_tasks_videos_resized', 'allow-deny', '{imagevideo}', '', 0, 0, 0, 0, 0, 0),
 
-('bx_tasks_files', @sStorageEngine, '', 360, 2592000, 3, 'bx_tasks_files', 'deny-allow', '', '{dangerous}', 0, 0, 0, 0, 0, 0);
+('bx_tasks_files', @sStorageEngine, '', 360, 2592000, 3, 'bx_tasks_files', 'deny-allow', '', '{dangerous}', 0, 0, 0, 0, 0, 0),
+
+-- For Comments
+('bx_tasks_files_cmts', @sStorageEngine, '', 360, 2592000, 3, 'bx_tasks_files', 'deny-allow', '', '{dangerous}', 0, 0, 0, 0, 0, 0);
 
 INSERT INTO `sys_objects_transcoder` (`object`, `storage_object`, `source_type`, `source_params`, `private`, `atime_tracking`, `atime_pruning`, `ts`, `override_class_name`, `override_class_file`) VALUES 
 ('bx_tasks_preview', 'bx_tasks_photos_resized', 'Storage', 'a:1:{s:6:"object";s:15:"bx_tasks_covers";}', 'no', '1', '2592000', '0', '', ''),
@@ -526,7 +530,7 @@ INSERT INTO `sys_form_inputs`(`object`, `module`, `name`, `value`, `values`, `ch
 ('bx_tasks', 'bx_tasks', 'stickers', '', '#!bx_tasks_stickers', 0, 'checkbox_set', '_bx_tasks_form_entry_input_sys_stickers', '_bx_tasks_form_entry_input_stickers', '', 0, 0, 0, '', '', '', '', '', '', 'Set', '', 1, 0),
 ('bx_tasks', 'bx_tasks', 'type', '', '#!bx_tasks_types', 0, 'select', '_bx_tasks_form_entry_input_sys_type', '_bx_tasks_form_entry_input_type', '', 0, 0, 0, '', '', '', '', '', '', 'Int', '', 1, 0),
 ('bx_tasks', 'bx_tasks', 'priority', '', '#!bx_tasks_priorities', 0, 'select', '_bx_tasks_form_entry_input_sys_priority', '_bx_tasks_form_entry_input_priority', '', 0, 0, 0, '', '', '', '', '', '', 'Int', '', 1, 0),
-('bx_tasks', 'bx_tasks', 'state', '', '#!bx_tasks_states', 0, 'select', '_bx_tasks_form_entry_input_sys_state', '_bx_tasks_form_entry_input_state', '', 0, 0, 0, '', '', '', '', '', '', 'Int', '', 1, 0),
+('bx_tasks', 'bx_tasks', 'state', '', '#!bx_tasks_states', 2, 'select', '_bx_tasks_form_entry_input_sys_state', '_bx_tasks_form_entry_input_state', '', 0, 0, 0, '', '', '', '', '', '', 'Int', '', 1, 0),
 ('bx_tasks', 'bx_tasks', 'cat', '', '#!bx_tasks_cats', 0, 'select', '_bx_tasks_form_entry_input_sys_cat', '_bx_tasks_form_entry_input_cat', '', 1, 0, 0, '', '', '', 'avail', '', '_bx_tasks_form_entry_input_cat_err', 'Xss', '', 1, 0),
 ('bx_tasks', 'bx_tasks', 'multicat', '', '', 0, 'custom', '_bx_tasks_form_entry_input_sys_multicat', '_bx_tasks_form_entry_input_multicat', '', 1, 0, 0, '', '', '', 'avail', '', '_bx_tasks_form_entry_input_multicat_err', 'Xss', '', 1, 0),
 ('bx_tasks', 'bx_tasks', 'added', '', '', 0, 'datetime', '_bx_tasks_form_entry_input_sys_date_added', '_bx_tasks_form_entry_input_date_added', '', 0, 0, 0, '', '', '', '', '', '', '', '', 1, 0),
@@ -551,9 +555,10 @@ INSERT INTO `sys_form_display_inputs`(`display_name`, `input_name`, `visible_for
 ('bx_tasks_entry_add', 'stickers', 2147483647, 1, 7),
 ('bx_tasks_entry_add', 'initial_members', 192, 1, 8),
 ('bx_tasks_entry_add', 'due_date', 192, 1, 9),
-('bx_tasks_entry_add', 'controls', 2147483647, 1, 10),
-('bx_tasks_entry_add', 'do_publish', 2147483647, 1, 11),
-('bx_tasks_entry_add', 'do_cancel', 2147483647, 1, 12),
+('bx_tasks_entry_add', 'state', 192, 1, 10),
+('bx_tasks_entry_add', 'controls', 2147483647, 1, 11),
+('bx_tasks_entry_add', 'do_publish', 2147483647, 1, 12),
+('bx_tasks_entry_add', 'do_cancel', 2147483647, 1, 13),
 
 ('bx_tasks_entry_delete', 'delete_confirm', 2147483647, 1, 1),
 ('bx_tasks_entry_delete', 'do_submit', 2147483647, 1, 2),

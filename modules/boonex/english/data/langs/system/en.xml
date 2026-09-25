@@ -695,8 +695,8 @@
 	<string name="_adm_dbd_txt_us_accounts"><![CDATA[Accounts]]></string>
 	<string name="_adm_dbd_txt_us_active"><![CDATA[Active users]]></string>
 	<string name="_adm_dbd_txt_us_online"><![CDATA[Online now]]></string>
-	<string name="_adm_dbd_txt_us_pending"><![CDATA[{0} pending]]></string>
-        <string name="_adm_dbd_msg_upgrade_started"><![CDATA[Site will be upgraded within a minute.<br />Don't forget to <a href="{0}store.php?page=updates">check for modules updates</a> after that.]]></string>
+	<string name="_adm_dbd_txt_us_pending"><![CDATA[{0} pending]]></string>        
+        <string name="_adm_dbd_msg_upgrade_started"><![CDATA[<b>The core system will be updated in about a minute.</b><br />Once the update is complete, please check for available module updates.]]></string>
 	<string name="_adm_dbd_txt_su_database"><![CDATA[Database]]></string>
 	<string name="_adm_dbd_txt_su_system"><![CDATA[System]]></string>
 	<string name="_adm_dbd_txt_su_system_media"><![CDATA[System Media]]></string>

@@ -1,0 +1,463 @@
+/*--
+import url(../../../../../../../template/css/forms.css);
+--*/
+
+.bx-form-advanced-wrapper .bx-form-section-wrapper:first-child {
+    margin-top:0;
+}
+
+.bx-form-advanced-wrapper .bx-form-section-wrapper:last-child {
+    margin-bottom:0;
+}
+
+.bx-form-advanced-wrapper .bx-form-section-divider:first-child {
+    border: none; 
+    padding: 0; 
+}
+
+.bx-form-advanced-wrapper .bx-form-section-divider:first-child .bx-form-section-content {
+    padding-top:0; 
+}
+
+.bx-form-advanced-wrapper .bx-form-section-divider:last-child .bx-form-section-content {
+    padding-bottom:0;
+}
+
+.bx-form-input-wrapper-pgc {
+    position: relative;
+}
+
+.bx-form-option-info {
+    display: inline-flex;
+    flex-direction: column;
+}
+
+/*-- Section Toggler ---*/
+.bx-form-section-wrapper {
+    position: relative;
+}
+
+.bx-form-section {
+    margin: 0;
+}
+
+.bx-form-section-header .bx-form-section-title {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
+    -webkit-flex-wrap: nowrap;
+    flex-wrap: nowrap;
+
+    line-height: 1.25rem;
+    text-transform: uppercase;
+}
+
+.bx-form-section-header .bx-form-section-title .sys-icon {
+    color: inherit !important;
+}
+
+.bx-form-section-header .bx-form-section-title u {
+    cursor: pointer;
+}
+
+.bx-form-section-header .bx-form-section-title span {
+    white-space: nowrap;
+    text-transform: none;
+    font-size: 0.75rem;
+}
+
+.bx-form-section-hidden .bx-form-section-content {
+    display:none;
+}
+
+.bx-form-collapsable .bx-form-section-toggler {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
+    -webkit-justify-content: center;
+    justify-content: center;
+
+    width: 1.25rem;
+    height: 1.25rem;
+
+    text-decoration: none;
+
+    -moz-transform: rotate(180deg);
+    -webkit-transform: rotate(180deg);
+    -ms-transform: rotate(180deg);
+    -o-transform: rotate(180deg);
+
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -ms-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+
+    line-height: 1.25rem;
+}
+
+.bx-form-collapsed .bx-form-section-toggler {
+    -moz-transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+}
+
+.bx-form-section-toggler .sys-icon {
+    font-size:0.875rem;
+}
+
+/*--- One Line fields ---*/
+.bx-form-element-wrapper-oneline .bx-form-element {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-flow: row nowrap;
+    flex-flow: row nowrap;
+    -webkit-align-items: flex-start;
+    align-items: flex-start;
+    -webkit-justify-content: flex-start;
+    justify-content: flex-start;
+}
+.bx-form-input-wrapper-submit .bx-btn {
+    float: none;
+}
+.bx-form-input-wrapper-input_set .bx-btn {
+    float: left;
+}
+
+
+/*-- Form field: Password --*/
+.bx-artificer .bx-form-input-wrapper-password > .password-show,
+.bx-artificer .bx-form-input-wrapper-password > .password-hide {
+    position: absolute;
+    z-index: 1000;
+    
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
+    -webkit-justify-content: center;
+    justify-content: center;
+
+    top: 0;
+    right: 0;    
+    height: 100%;
+
+    /* WCAG 2.5.8 (AA): at least 24px wide. 1.75rem is the project's "mini"
+       button size. The side margin is reduced by exactly half the added
+       width, (28px - 18px) / 2 = 5px, so the eye glyph does not move. */
+    min-width: 1.75rem;
+
+    margin: 0 0.1875rem;
+}
+.bx-dir-rtl.bx-artificer .bx-form-input-wrapper-password > .password-show,
+.bx-dir-rtl.bx-artificer .bx-form-input-wrapper-password > .password-hide {
+    left: 0;
+    right: auto;
+}
+.bx-artificer .bx-form-input-password {
+    position: relative;
+
+    -moz-box-sizing: border-box;
+    -ms-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+
+    width: 100%;
+    height: 100%;
+
+    margin: 0;
+    padding: 0.5rem 0;
+
+    border: 0;
+    background-color: transparent;
+}
+.bx-artificer .bx-form-input-password:focus {
+    border-color: transparent;
+    outline: none;
+    box-shadow: none;
+}
+
+
+/*-- Form field: Slider/Doublerange --*/
+.bx-form-input-wrapper-slider,
+.bx-form-input-wrapper-doublerange {
+    position: relative;
+}
+.bx-form-input-wrapper-slider .ui-slider,
+.bx-form-input-wrapper-doublerange .ui-slider {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+}
+.bx-form-input-wrapper-slider .ui-slider .ui-slider-handle,
+.bx-form-input-wrapper-doublerange .ui-slider .ui-slider-handle { 
+    z-index: 1;
+}
+
+/*-- Form field: Price --*/
+.bx-form-element .bx-form-value .bx-form-input-wrapper-price {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: stretch;
+    align-items: stretch;
+}
+.bx-form-element .bx-form-value .bx-form-input-wrapper-price span {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
+
+    width: auto;
+}
+.bx-dir-ltr .bx-form-element .bx-form-value .bx-form-input-wrapper-price span {
+    border-right-width: 0;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+.bx-dir-rtl .bx-form-element .bx-form-value .bx-form-input-wrapper-price span {
+    border-left-width: 0;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+.bx-dir-ltr .bx-form-element .bx-form-value .bx-form-input-price:not(:first-child) {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+.bx-dir-rtl .bx-form-element .bx-form-value .bx-form-input-price:not(:first-child) {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+
+/*-- Form field: Date/Time Pickers --*/
+.bx-form-datepicker-modal {
+    z-index: 10001 !important;
+}
+
+
+/*-- Form field: Switcher --*/
+.bx-switcher-cont input {
+   display: none !important;
+}
+
+
+/*-- Form field: Checkbox/Radio Set --*/
+.bx-form-input-wrapper-checkbox_set label,
+.bx-artificer .bx-form-input-wrapper-radio_set label {
+    margin-left: 0.5rem;
+    vertical-align: text-bottom;
+}
+.bx-dir-rtl .bx-form-input-wrapper-checkbox_set label,
+.bx-dir-rtl.bx-artificer .bx-form-input-wrapper-radio_set label {
+    margin-left: 0;
+    margin-right: 0.5rem;
+}
+
+
+/*--- Form field: File ---*/
+.bx-form-input-wrapper-file .bx-btn {
+    display: inline-block;
+    float: none;
+}
+.bx-form-input-file {
+    position: fixed;
+    top: -1000px;
+
+    border: none;
+    background-color: transparent;
+    visibility: hidden;
+}
+
+
+/*--- Form field: Location ---*/
+.bx-form-element .bx-form-value .bx-form-input-location-cont input,
+.bx-form-element .bx-form-value .bx-form-input-location-cont select {
+    display: inline-block;
+}
+.bx-form-element .bx-form-value .bx-form-input-location-cont.minimized input,
+.bx-form-element .bx-form-value .bx-form-input-location-cont.minimized select {
+    display: block;
+}
+.bx-form-element .bx-form-input-location-cont:not(.minimized) .bx-form-input-location-country,
+.bx-form-element .bx-form-input-location-cont:not(.minimized) .bx-form-input-location-zip,
+.bx-form-element .bx-form-input-location-cont:not(.minimized) .bx-form-input-location-state,
+.bx-form-element .bx-form-input-location-cont:not(.minimized) .bx-form-input-location-city {
+    width:49%;
+}
+.bx-form-element .bx-form-input-location-street {
+    width:83%;
+}
+.bx-form-element .bx-form-input-location-street_number {
+    width:15%;
+}
+.bx-form-element .bx-form-input-location-street_number,
+.bx-form-element .bx-form-input-location-street,
+.bx-form-element .bx-form-input-location-state,
+.bx-form-element .bx-form-input-location-city {
+    margin-bottom: 0.25rem;
+}
+.bx-form-element .bx-form-input-location-cont:not(.minimized) .bx-form-input-location-street,
+.bx-form-element .bx-form-input-location-cont:not(.minimized) .bx-form-input-location-state,
+.bx-form-element .bx-form-input-location-cont:not(.minimized) .bx-form-input-location-country {
+    margin-left: 0.25rem;
+}
+.bx-dir-rtl .bx-form-element .bx-form-input-location-cont:not(.minimized) .bx-form-input-location-street,
+.bx-dir-rtl .bx-form-element .bx-form-input-location-cont:not(.minimized) .bx-form-input-location-state,
+.bx-dir-rtl .bx-form-element .bx-form-input-location-cont:not(.minimized) .bx-form-input-location-country {
+    margin-left: 0;
+    margin-right: 0.25rem;
+}
+.bx-form-element .bx-form-input-location-cont .bx-form-input-location-status-cont {
+    float:none;
+    width:98%;
+    line-height:normal;
+}
+.bx-form-element .bx-form-input-location-cont.minimized .bx-form-input-location-status-cont {
+    display: flex;
+    flex-direction: column;
+    width: auto;
+}
+.bx-form-element .bx-form-input-location-status {
+    float:left;
+}
+.bx-form-element .bx-form-input-location-copyright {
+    float:right;
+}
+.bx-form-element .bx-form-input-location-cont.minimized .bx-form-input-location-copyright {
+    float: none;
+    margin-top: 0.25rem;
+}
+
+.bx-form-element .bx-form-input-location-auto-cont {
+    display:table;
+}
+.bx-form-element .bx-form-input-location-auto-cont > div {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+
+/*--- Form field: Auto-siggestion ---*/
+.bx-form-value .bx-form-input-autotoken:not(.bx-form-input-labels) {
+    float: left;
+    padding: 0.125rem 0;
+    height: auto;
+    box-shadow: none;
+    min-height: 2.375rem;
+}
+.bx-form-value .bx-form-input-autotoken:not(.bx-form-input-labels) b {
+    display: flex;
+    align-items: center;
+    float: left;
+    margin: 0.125rem;
+    padding-right: 0.5rem;
+    border-radius: 1.25rem;
+
+    line-height: 2rem;
+    white-space: nowrap;
+    font-weight: normal;    
+    cursor: pointer;
+}
+.bx-dir-rtl .bx-form-value .bx-form-input-autotoken:not(.bx-form-input-labels) b {
+    padding-left: 1.5rem;
+    padding-right: 0;
+}
+.bx-form-value .bx-form-input-autotoken:not(.bx-form-input-labels) b.val-wo-icon {
+    padding-left: 1.5rem;
+}
+.bx-form-value .bx-form-input-autotoken:not(.bx-form-input-labels) b:hover {
+    opacity: 0.7;
+}
+.bx-form-value .bx-form-input-autotoken:not(.bx-form-input-labels) b .sys-icon {
+    display: inline-block;
+    width: 1.0rem;
+    height: 1.0rem;
+    line-height: 1.0rem;
+    text-align: center;
+    font-size: 0.7em;
+    font-weight: bold;
+    vertical-align: middle;
+}
+.bx-form-value .bx-form-input-autotoken:not(.bx-form-input-labels).bx-form-input-disabled b {
+    cursor: default;
+}
+.bx-form-value .bx-form-input-autotoken:not(.bx-form-input-labels).bx-form-input-disabled b .sys-icon {
+    display: none;
+}
+.bx-form-value .bx-form-input-autotoken:not(.bx-form-input-labels) input {
+    float: left;
+    width: auto;
+    margin: 0;
+    padding: 0 0 0 0.5rem;
+    border: 0;
+    box-shadow: none;
+}
+.bx-form-value .bx-form-input-autotoken:not(.bx-form-input-labels) .bx-account-unit-wo-info,
+.bx-form-value .bx-form-input-autotoken:not(.bx-form-input-labels) .bx-base-pofile-unit-wo-info {
+    display: inline-block;
+    vertical-align: top;
+
+    margin-right: 0.5rem;
+}
+.bx-dir-rtl .bx-form-value .bx-form-input-autotoken:not(.bx-form-input-labels) .bx-account-unit-wo-info,
+.bx-dir-rtl .bx-form-value .bx-form-input-autotoken:not(.bx-form-input-labels) .bx-base-pofile-unit-wo-info {
+    margin-left: 0.5rem;
+    margin-right: 0;
+}
+
+.sys-labels .bx-form-input-text.bx-form-input-autotoken.bx-form-input-disabled b {
+    height: 2rem;
+    line-height: 2rem;
+}
+
+.select2-container {
+    width:100% !important;
+}
+.bx-form-input-select {
+    -webkit-appearance:none;
+}
+
+/* MiniColors plug-in */
+.bx-form-input-wrapper.bx-form-input-wrapper-text .minicolors-theme-bootstrap .minicolors-swatch {
+    top: 0.5rem;
+    left: 0.5rem;
+
+    width: 1.5625rem;
+    height: 1.5625rem;
+}
+
+/* tiny mce */
+.bx-form-input-wrapper-html .gray-theme.fr-toolbar.fr-top{
+   border-radius: .375rem .375rem 0 0 !important; 
+}
+.bx-form-input-wrapper-html .fr-wrapper{
+    border-radius: 0 0 .375rem .375rem !important; 
+    border-bottom-color: #CCCCCC !important;
+}
+.bx-form-input-wrapper-html .second-toolbar{
+    border-bottom:none !important;
+}
+
+.bx-form-secret {
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0.5rem;
+    max-width: 100%;
+    min-width: 0;
+}
+.bx-form-secret-value {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-family: monospace;
+}
+.bx-form-secret-toggle {
+    flex-shrink: 0;
+    line-height: 1;
+    cursor: pointer;
+}
+

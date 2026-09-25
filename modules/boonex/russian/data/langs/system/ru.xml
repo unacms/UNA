@@ -675,7 +675,7 @@
 	<string name="_adm_dbd_txt_ver_auto"><![CDATA[Автоматические обновления]]></string>
 	<string name="_adm_dbd_txt_ver_beta"><![CDATA[Бета-обновления]]></string>
 	<string name="_adm_dbd_txt_ver_force"><![CDATA[Принудительные автообновления]]></string>
-	<string name="_adm_dbd_msg_upgrade_started"><![CDATA[Сайт будет обновлён через минуту. <br />После этого нужно <a href="{0}store.php?page=updates">проверить обновления для модулей</a>.]]></string>
+	<string name="_adm_dbd_msg_upgrade_started"><![CDATA[<b>Обновление основной системы займет около минуты.</b><br />После завершения обновления, пожалуйста, проверьте наличие обновлений для модулей.]]></string>
 	<string name="_adm_dbd_txt_su_database"><![CDATA[База данных]]></string>
 	<string name="_adm_dbd_txt_su_system"><![CDATA[Система]]></string>
 	<string name="_adm_dbd_txt_su_system_media"><![CDATA[Системные медиа]]></string>

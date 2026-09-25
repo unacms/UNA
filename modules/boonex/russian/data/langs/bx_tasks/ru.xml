@@ -92,7 +92,7 @@
     <string name="_bx_tasks_form_entry_input_sys_date_due_date"><![CDATA[Срок]]></string>
     <string name="_bx_tasks_form_entry_input_date_due_date"><![CDATA[Срок]]></string>
     <string name="_bx_tasks_form_entry_input_sys_estimate"><![CDATA[Временные оценки]]></string>
-    <string name="_bx_tasks_form_entry_input_estimate"><![CDATA[Временные оценки (в баллах)]]></string>
+    <string name="_bx_tasks_form_entry_input_estimate"><![CDATA[Временные оценки]]></string>
     <string name="_bx_tasks_form_entry_input_sys_gh_issue_url"><![CDATA[GitHub проблема]]></string>
     <string name="_bx_tasks_form_entry_input_gh_issue_url"><![CDATA[GitHub проблема]]></string>
 
@@ -476,7 +476,6 @@
     <string name="_bx_tasks_grid_action_title_bdt_add"><![CDATA[Добавить]]></string>
     <string name="_bx_tasks_grid_action_title_bdt_edit"><![CDATA[Редактировать]]></string>
     <string name="_bx_tasks_grid_action_title_bdt_delete"><![CDATA[Удалить]]></string>
-    <string name="_bx_tasks_grid_action_title_bdt_calculate"><![CDATA[Рассчитать]]></string>
     <string name="_bx_tasks_grid_popup_title_bdt_add"><![CDATA[Добавить бюджет]]></string>
     <string name="_bx_tasks_grid_popup_title_bdt_edit"><![CDATA[Редактировать бюджет]]></string>
 

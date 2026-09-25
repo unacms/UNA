@@ -21,6 +21,7 @@ class BxAccntGridAdministration extends BxBaseModProfileGridAdministration
 
         parent::__construct ($aOptions, $oTemplate);
 
+        $this->_sPaginateType = 'load_more';
         $this->_bDeleteWithBgJobs = true;
 
         $CNF = &$this->_oModule->_oConfig->CNF;

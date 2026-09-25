@@ -121,7 +121,8 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
             'GetDataApi' => 'BxBaseCmtsServices',
 
             'GetDataApi' => 'BxBaseUploaderServices',
-            
+            'GetUploadToken' => 'BxBaseUploaderServices',
+
             'GetStatBlock' => 'BxBaseDashboardServices',
             
             'PerfomActionApi' => 'BxBaseServiceGrid',
@@ -143,6 +144,7 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
             'GetAiAgentActivity' => 'BxBaseServices',
             'GetAiAgentChatThreads' => 'BxBaseServices',
             'GetAiAgentChatThread' => 'BxBaseServices',
+            'GetMockupBlock' => 'BxBaseServices',
         );
     }
 
@@ -1944,7 +1946,13 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
     public function serviceCallAgent($sType, $aAgent, $aParams)
     {
         $oAi = BxDolAi::getInstance();
-        return $oAi->callAgent($sType, $aAgent, $aParams);
+        $mixedReply = $oAi->callAgent($sType, $aAgent, $aParams);
+
+        // Async messenger agents run here from a background job: post the reply, nobody else will.
+        if ('message' === $sType && is_string($mixedReply) && $mixedReply !== '')
+            BxDolAiTrigger::getInstance('message')->replyToMessage($aAgent, $aParams, $mixedReply);
+
+        return $mixedReply;
     }
 
     public function serviceCallAgentForFormInput($iAgentId)
@@ -2223,6 +2231,33 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
         return BxDolProfile::getData($oProfile);
     }
 
+    /**
+     * Agent-written NEO mockup block (Studio: system / get_mockup_block / TemplServices).
+     * The tree is written by the `mockup_upsert` tool into sys_pages_blocks_data for this block;
+     * BxBasePage::_getBlockService passes the block id as the only param.
+     * @param int $iBlockId sys_pages_blocks.id
+     * @return array API block of type `mockup`
+     */
+    public function serviceGetMockupBlock($iBlockId = 0)
+    {
+        $aTree = BxDolAIToolMockup::getTree((int)$iBlockId);
+
+        if (!$aTree) {
+            $aTree = [
+                'type' => 'view',
+                'className' => 'gap-4 w-full',
+                'children' => [
+                    [
+                        'type' => 'text',
+                        'className' => 'text-muted-foreground',
+                        'text' => 'No mockup yet. Ask the mockup agent to generate one for this page.',
+                    ],
+                ],
+            ];
+        }
+
+        return [bx_api_get_block('mockup', $aTree)];
+    }
 }
 
 /** @} */

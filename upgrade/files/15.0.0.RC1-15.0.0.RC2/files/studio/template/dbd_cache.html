@@ -1,0 +1,12 @@
+<div id="bx-dbd-cache">
+    <div class="bx-dbd-block-content">
+        <bx_if:show_chart>
+            <div class="bx-dbd-chart"></div>
+
+            <script language="javascript">
+                __js_object__.initChart('cache', __chart_data__);
+            </script>
+        </bx_if:show_chart>
+        <bx_if:show_empty>__message__</bx_if:show_empty>
+    </div>
+</div>

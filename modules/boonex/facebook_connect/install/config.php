@@ -17,7 +17,7 @@ $aConfig = array(
     'name' => 'bx_facebook',
     'title' => 'Facebook connect',
     'note' => 'Join the site using Facebook account.',
-    'version' => '15.0.1.DEV',
+    'version' => '15.0.2.DEV',
     'vendor' => 'UNA INC',
     'help_url' => 'http://feed.una.io/?section={module_name}',
 

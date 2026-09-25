@@ -16,6 +16,7 @@ class BxBaseGrid extends BxDolGrid
     protected $_oTemplate;
     protected $_oFunctions;
     protected $_aPopupOptions = false;
+    protected $_sPaginateType; // default (empty value), simple, load_more
     protected $_aQueryAppend = [];
     protected $_aQueryAppendExclude = false; // an array of keys which shouldn't be pathed in http requests, but can be stored (used) in 'Query Append' array.
     protected $_aQueryAppendExcludeApi = false;
@@ -37,6 +38,7 @@ class BxBaseGrid extends BxDolGrid
         $this->_oFunctions = BxTemplFunctions::getInstanceWithTemplate($this->_oTemplate);
 
         $this->_aPopupOptions = [];
+        $this->_sPaginateType = '';
 
         $this->_aQueryAppend = [
             $this->_oTemplate->getCodeKey() => $this->_oTemplate->getCode()
@@ -62,11 +64,16 @@ class BxBaseGrid extends BxDolGrid
 
         require_once(BX_DIRECTORY_PATH_INC . "design.inc.php");
 
-        echoJson(array(
+        echoJson([
             'grid' => $this->getCode(false), 
             'total_count' => $this->_iTotalCount,
             'total_count_f' => $this->_getCounter()
-        ));
+        ]);
+    }
+
+    public function performActionLoadMore()
+    {
+        $this->performActionDisplay();
     }
 
     public function performActionReorder()
@@ -208,11 +215,11 @@ class BxBaseGrid extends BxDolGrid
                     $sPageUrl = bx_append_url_params($sPageUrl, $aParamsAppend);
             }
 
-            $aPaginateParams = array(
+            $aPaginateParams = [
                 'start' => $iStart,
                 'per_page' => $iPerPage,
-                'page_url' =>  $sPageUrl ? $sPageUrl : "javascript:glGrids." . $this->_sObject . ".reload('{start}'); void(0);",
-            );
+                'page_url' =>  $sPageUrl ? $sPageUrl : "javascript:glGrids." . $this->_sObject . "." . ($this->_sPaginateType == 'load_more' ? 'loadMore' : 'reload') . "('{start}'); void(0);",
+            ];
 
             $oPaginate = new BxTemplPaginate($aPaginateParams, $this->_oTemplate);
             $oPaginate->setNumFromDataArray($aData);
@@ -220,7 +227,7 @@ class BxBaseGrid extends BxDolGrid
             if (isset($this->_aOptions['paginate_simple']) && false !== $this->_aOptions['paginate_simple'])
                 $sPaginate = $oPaginate->getSimplePaginate($this->_aOptions['paginate_simple']);
             else
-                $sPaginate = $oPaginate->getPaginate();
+                $sPaginate = $oPaginate->{'get' . bx_gen_method_name($this->_sPaginateType) . 'Paginate'}();
         } else {
             $aData = $this->_getData ($sFilter, $sOrderField, $sOrderDir, $iStart, $iPerPage);
         }

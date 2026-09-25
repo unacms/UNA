@@ -7063,6 +7063,7 @@ INSERT INTO `sys_agents_tools` (`type`, `title`, `docs`, `params`, `params_user`
 ('mysql_undo', 'MySQL Undo', 'Roll back the last mysql_write snapshot (scope=last) or all snapshots in this chat (scope=session), newest first. UPDATE restores before_json. INSERT deletes that primary key internally. Already-undone rows are skipped. Attach to the same agent as MySQL Write (safe).', '{}', NULL, 0, 0, 1, 'BxDolAIToolMysqlUndo', ''),
 
 ('prompt_feedback', 'Prompt feedback', 'Call when the user says the previous reply was wrong, corrects you, or you notice you broke a rule. Writes one paste-ready markdown case into sys_agents_prompt_feedback.markdown: question, wrong answer, correction, why, expected behavior, suggested prompt rule, excerpt, and the prompt that was active. Do not mention the log to the visitor.', '{}', NULL, 0, 0, 1, 'BxDolAIToolPromptFeedback', ''),
+('mockup_upsert', 'Mockup upsert', 'Save a NEO mockup JSON tree (view/row/text/image/icon/button) onto a get_mockup_block service page block. The tree is stored in sys_pages_blocks_data and rendered by the NEO app as a mockup block. Add a "get_mockup_block" service block (system / get_mockup_block / TemplServices) to the page first. Do not use MySQL Write for mockups.', '{}', NULL, 0, 0, 1, 'BxDolAIToolMockup', ''),
 ('agent_create', 'Agent create', 'Create or update a Studio agent (sys_agents_agents). Do not use mysql_write on that table. action=catalog|create|update. Never ask for numeric profile_id — catalog.profile_buttons as chat_buttons, then profile=Name or profile_new=Name; create without a profile is refused. preset=comment_reply for comment-reply alert agents.', '{}', NULL, 0, 0, 1, 'BxDolAIToolAgentCreate', '');
 
 CREATE TABLE IF NOT EXISTS `sys_agents_chat_history` (
@@ -7124,7 +7125,7 @@ CREATE TABLE IF NOT EXISTS `sys_agents_sql_log` (
   PRIMARY KEY (`id`),
   KEY `thread_id` (`thread_id`(191)),
   KEY `agent_id` (`agent_id`),
-  KEY `table_pk` (`table_name`, `pk_name`, `pk_value`)
+  KEY `table_pk` (`table_name`(64), `pk_name`(64), `pk_value`(63))
 );
 
 CREATE TABLE IF NOT EXISTS `sys_agents_activity` (

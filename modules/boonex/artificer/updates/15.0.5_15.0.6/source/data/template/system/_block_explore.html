@@ -1,0 +1,61 @@
+<!-- 
+    This file contains a copy of Explore block which is stored in the DB and available for future customizations via Studio -> Pages builder.  
+    It's needed here to let Tailwind compailer know about the classes which should be included in compilation.
+-->
+<style>
+.bx-artificer-splash .bx-form-element .bx-btn.bx-btn-primary {
+    width: 100%;
+}
+</style>
+<div class="bx-artificer-splash relative max-w-7xl ring-1 ring-gray-200 dark:ring-gray-800 bg-gray-50 dark:bg-gray-900 shadow-sm rounded divide-y divide-gray-200 dark:divide-gray-800 my-2 lg:my-3 mx-2 lg:mx-3 xl:mx-auto overflow-hidden">
+    <div class="absolute top-0 left-0 w-full h-full dark:hidden z-1">
+        <img src="<bx_image_url:cover.svg />" class="object-cover h-full w-full" />
+    </div>
+    <div class="absolute top-0 left-0 w-full h-full hidden dark:block z-1">
+        <img src="<bx_image_url:cover-dark.svg />" class="object-cover h-full w-full" />
+    </div>
+    <div class="relative pb-8 z-2">
+        <div class="mt-6">
+            <div class="mx-auto max-w-7xl">
+                <div class="lg:grid lg:grid-cols-12 lg:gap-8">
+                    <div class="px-6 lg:px-8 text-center md:max-w-2xl md:mx-auto lg:col-span-6 lg:text-left lg:flex lg:items-center">
+                      <div>
+                        <h1 class="text-5xl tracking-tight font-bold text-gray-800 dark:text-white xl:text-6xl">
+                            <span class="block"><bx_text:_bx_artificer_txt_splash_welcome_l1 /></span>
+                            <span class="block pb-3 bg-clip-text text-transparent bg-gradient-to-r from-green-500 to-blue-500 sm:pb-5"><bx_text:_bx_artificer_txt_splash_welcome_l2 /></span>
+                        </h1>
+                        <p class="mt-3 text-base font-normal text-gray-700 dark:text-gray-300 sm:mt-5 sm:text-xl lg:text-lg xl:text-xl">
+                            <span class="block"><bx_text:_bx_artificer_txt_splash_welcome_l3 /></span>
+                        </p>
+                        <p class="mt-3 text-base font-light text-gray-700 dark:text-gray-300 sm:mt-5 sm:text-sm lg:text-xs xl:text-base">
+                            <span class="block"><bx_text:_bx_artificer_txt_splash_welcome_l4 /></span>
+                        </p>
+                      </div>
+                    </div>
+                    <div class="relative mt-16 px-6 lg:mt-0 lg:px-8 lg:col-span-6 lg:ml-4">
+                        <div class="opacity-80 relative max-w-lg ring-1 ring-white dark:ring-gray-700 sm:overflow-hidden bg-gray-50 dark:bg-gray-800 shadow-2xl rounded divide-y divide-gray-300 dark:divide-gray-700 m-2 lg:m-3  mx-auto bg-opacity-80">
+                            <div class="p-8">
+                                <div>
+                                    <h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-200"><bx_text:_bx_artificer_txt_splash_login_title /></h2>
+                                    <div class="mt-6">{{~system:login_form:TemplServiceLogin["no_join_text no_auth_buttons"]~}}</div>
+                                    <div class="mt-6 relative">
+                                        <div class="absolute inset-0 flex items-center" aria-hidden="true">
+                                            <div class="w-full border-t border-gray-300 dark:border-gray-700"></div>
+                                        </div>
+                                    </div>
+                                    <div class="pt-6">
+                                        <a class="bx-btn w-full flex justify-center py-2 px-4 border border-transparent rounded shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" href="__join_link__"><bx_text:_bx_artificer_txt_splash_login_join /></a>
+                                    </div>
+                                    <div class="mt-4">{{~system:member_auth_code:TemplServiceLogin~}}</div>
+                                </div>
+                            </div>
+                            <div class="px-4 py-6 bg-white dark:bg-gray-900 bg-opacity-50 sm:px-10">
+                                <p class="text-xs leading-5 text-gray-500">{{~bx_artificer:get_splash_marker["login_agreement"]~}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -14,7 +14,6 @@
 class BxDolAiChatImages
 {
     const STORAGE = 'sys_agents_chat_images';
-    const MAX_BYTES = 8388608;
     const MAX_PER_TURN = 4;
 
     public static function getInstance()
@@ -41,7 +40,8 @@ class BxDolAiChatImages
         $iSize = (int)($aFile['size'] ?? 0);
         if ($sTmp === '' || !is_uploaded_file($sTmp))
             return ['error' => 'No file'];
-        if ($iSize <= 0 || $iSize > self::MAX_BYTES)
+        $iMax = $this->maxBytes();
+        if ($iSize <= 0 || ($iMax > 0 && $iSize > $iMax))
             return ['error' => 'File is too large'];
 
         $sMime = strtolower((string)($aFile['type'] ?? ''));
@@ -127,8 +127,7 @@ class BxDolAiChatImages
     }
 
     /**
-     * Only http(s) URLs on this site (or its chat images storage). Site-relative
-     * paths are made absolute.
+     * http(s) URLs on this site or on the storage host. Site-relative paths are made absolute.
      */
     public function sanitizeUrl($sUrl)
     {
@@ -140,24 +139,49 @@ class BxDolAiChatImages
             $sUrl = rtrim(BX_DOL_URL_ROOT, '/') . $sUrl;
 
         $aUrl = parse_url($sUrl);
-        $aRoot = parse_url(BX_DOL_URL_ROOT);
-        if (empty($aUrl['scheme']) || empty($aUrl['host']))
+        if (empty($aUrl['scheme']) || empty($aUrl['host']) || !empty($aUrl['user']) || !empty($aUrl['pass']))
             return '';
         if (!in_array(strtolower($aUrl['scheme']), ['http', 'https'], true))
             return '';
 
-        $sHost = strtolower(preg_replace('/^www\./i', '', (string)$aUrl['host']));
-        $sRootHost = strtolower(preg_replace('/^www\./i', '', (string)($aRoot['host'] ?? '')));
-        $sPath = (string)($aUrl['path'] ?? '');
-        $sQuery = (string)($aUrl['query'] ?? '');
-        $bStorage = stripos($sPath, self::STORAGE) !== false
-            || stripos($sQuery, self::STORAGE) !== false
-            || stripos($sPath, '/storage.php') !== false;
+        $sHost = strtolower(preg_replace('/^www\./', '', $aUrl['host']));
+        return in_array($sHost, $this->allowedHosts(), true) ? $sUrl : '';
+    }
 
-        if ($sRootHost !== '' && strcasecmp($sHost, $sRootHost) !== 0 && !$bStorage)
-            return '';
+    /**
+     * This site, the storage domain, the storage endpoint, and the bucket host.
+     */
+    protected function allowedHosts()
+    {
+        $aHosts = [];
+        $aRoot = parse_url(BX_DOL_URL_ROOT);
+        if (!empty($aRoot['host']))
+            $aHosts[] = strtolower(preg_replace('/^www\./', '', $aRoot['host']));
 
-        return $sUrl;
+        $sDomain = trim((string)getParam('sys_storage_s3_domain'));
+        $sEndpoint = trim((string)getParam('sys_storage_s3_endpoint'));
+        $sBucket = strtolower(trim((string)getParam('sys_storage_s3_bucket')));
+        $sEndpointHost = '';
+
+        foreach ([$sDomain, $sEndpoint] as $sValue) {
+            if ($sValue === '')
+                continue;
+            $aValue = parse_url(preg_match('#://#', $sValue) ? $sValue : 'https://' . $sValue);
+            if (empty($aValue['host']))
+                continue;
+            $aHosts[] = strtolower($aValue['host']);
+            if ($sValue === $sEndpoint)
+                $sEndpointHost = strtolower($aValue['host']);
+        }
+
+        if (preg_match('/^[a-z0-9][a-z0-9.-]*[a-z0-9]$/', $sBucket)) {
+            if ($sEndpointHost !== '')
+                $aHosts[] = $sBucket . '.' . $sEndpointHost;
+            elseif ($sDomain === '')
+                $aHosts[] = $sBucket . '.s3.amazonaws.com';
+        }
+
+        return $aHosts;
     }
 
     /**
@@ -269,15 +293,33 @@ class BxDolAiChatImages
 
     protected function urlToBase64($sUrl)
     {
+        $sUrl = $this->sanitizeUrl($sUrl);
+        if ($sUrl === '')
+            return '';
+
         $sLocal = $this->urlToLocalPath($sUrl);
         $sBin = ($sLocal !== '' && is_readable($sLocal)) ? @file_get_contents($sLocal) : false;
-        if (!is_string($sBin) || $sBin === '')
-            $sBin = @file_get_contents($sUrl);
-        if (!is_string($sBin) || $sBin === '')
+        if (!is_string($sBin) || $sBin === '') {
+            $sCode = null;
+            $sBin = bx_file_get_contents($sUrl, [], 'get', [], $sCode, [], 10, [CURLOPT_FOLLOWLOCATION => false]);
+        }
+        $iMax = $this->maxBytes();
+        if (!is_string($sBin) || $sBin === '' || ($iMax > 0 && strlen($sBin) > $iMax))
             return '';
-        if (strlen($sBin) > self::MAX_BYTES)
-            return '';
+
         return base64_encode($sBin);
+    }
+
+    /**
+     * `max_file_size` of the chat images storage, in bytes. 0 means that object sets no limit.
+     */
+    public function maxBytes()
+    {
+        $oStorage = BxDolStorage::getObjectInstance(self::STORAGE);
+        if (!$oStorage)
+            return 0;
+
+        return (int)($oStorage->getObjectData()['max_file_size'] ?? 0);
     }
 
     /**

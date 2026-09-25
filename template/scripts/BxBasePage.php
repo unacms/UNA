@@ -544,8 +544,18 @@ class BxBasePage extends BxDolPage
         $sMetaTitle = $this->_getPageMetaTitle();
         $sName = $this->_getPageTitle();
         $sUri = $this->_aObject['uri'];
+        $sUrl = ($bGetParams && !empty($aGetParams[0]) ? $aGetParams[0] : $sUri) . ($sQueryString != '' ? '?' . $sQueryString : '');
         $sModule = $this->getModule();
         $aElements = $this->getPageBlocksAPI($aBlocks);
+
+        if(!$bLogged && !in_array($sUri, ['home', 'login', 'create-account']) && ($sAutoProfile = getParam('sys_account_default_profile_type'))) {
+            $sRedirect = getParam($sAutoProfile . '_redirect_aadd');
+            if($sRedirect == 'last') {
+                $aAutoProfileConfig = bx_srv($sAutoProfile, 'module_config');
+                if($sUri != ($aAutoProfileConfig['URI_ADD_ENTRY'] ?? ''))
+                    BxDolSession::getInstance()->setValue('custom-referrer', $sUrl);
+            }
+        }
 
         $a = [
             'id' => $this->_aObject['id'],
@@ -555,7 +565,7 @@ class BxBasePage extends BxDolPage
             'keywords' => $this->_getPageMetaKeywords(),
             'image' => '',
             'uri' => $sUri,
-            'url' => ($bGetParams && !empty($aGetParams[0]) ? $aGetParams[0] : $sUri) . ($sQueryString != '' ? '?' . $sQueryString : ''),
+            'url' => $sUrl,
             'author' => $this->_aObject['author'],
             'added' => $this->_aObject['added'],
             'module' => $sModule,
@@ -1401,7 +1411,16 @@ class BxBasePage extends BxDolPage
     {
         self::setBlockProcessing($aBlock);
 
-        $aResult = BxDolService::callSerialized($aBlock['content'], array_merge($this->_aMarkers, [
+        $sContent = $aBlock['content'];
+        // get_mockup_block blocks are stored with empty params, so BxDolService's memory cache would
+        // hand every such block on the page the same tree; key the call by block id instead.
+        $aCall = is_string($sContent) ? @unserialize($sContent) : false;
+        if (is_array($aCall) && !empty($aCall['method']) && $aCall['method'] === 'get_mockup_block') {
+            $aCall['params'] = [(int)$aBlock['id']];
+            $sContent = serialize($aCall);
+        }
+
+        $aResult = BxDolService::callSerialized($sContent, array_merge($this->_aMarkers, [
             'block_id' => $aBlock['id']
         ]));
 

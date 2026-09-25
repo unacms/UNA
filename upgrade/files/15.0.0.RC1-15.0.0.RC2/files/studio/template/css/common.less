@@ -1,0 +1,78 @@
+@import (reference) 'default.less';
+@import '../../../template/css/common.css';
+
+/**
+ * Overwrite default styles
+ */
+
+/* body */
+a {
+    color: rgba(30, 140, 240, 1); 
+}
+a:hover {
+    color: rgba(10, 120, 220, 1); 
+}
+.sys-icon:not(.sys-colored),
+.sys-icon-a {
+	color: rgba(30, 140, 240, 1); 
+}
+a:hover > .sys-icon,
+a:hover > .sys-icon-a {
+	color: rgba(10, 120, 220, 1); 
+}
+.sys-icon-a i {
+	.background-color (rgba(30, 140, 240, 1)) !important;
+	color: rgba(30, 140, 240, 1);
+}
+a:hover > .sys-icon-a i {
+	.background-color (rgba(10, 120, 220, 1)) !important;
+	color: rgba(10, 120, 220, 1);
+}
+
+/* popup */
+.bx-popup-applied:not(.bx-popup-chain) .bx-popup,
+.bx-popup-applied.bx-popup-chain .bx-popup-chain-item {
+    margin: 0.5rem;
+
+    .radius(24px);
+}
+.bx-popup-applied.bx-popup-menu:not(.bx-popup-chain) .bx-popup {
+    margin: 0; /* dropdowns hang from their trigger, the gap is set on .bx-popup-gap */
+    .radius(12px);
+}
+.bx-popup-applied .bx-popup-gap .bx-popup {
+    margin-left: 0;
+    margin-right: 0;
+}
+.bx-popup-width {
+    width: 50rem;
+}
+.bx-popup-border {
+    border: 1px solid rgba(40, 60, 80, 0.1);
+    .radius(3px);
+}
+.bx-popup-color-bg {
+    background-color: rgba(255, 255, 255, 1);
+}
+.bx-popup-content-indent {
+    padding: 1.25rem;
+}
+.bx-popup-menu .bx-popup-content-indent {
+  padding: 0.5rem 0 !important;
+}
+.bx-popup-header.bx-def-padding {
+    padding: 1.25rem 1.25rem 0 1.25rem;
+}
+.bx-popup-header-color-bg {
+    background-color: transparent;
+}
+.bx-popup-header h2 {
+    line-height: 1.5rem;
+    text-align: left;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+/**
+ * General
+ */
