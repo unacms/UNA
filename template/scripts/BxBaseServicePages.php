@@ -134,6 +134,9 @@ class BxBaseServicePages extends BxDol
 
     public function serviceSetPageBlockData($iBlockId, $iContentId = 0, $sContentModule = '')
     {
+        if (!isAdmin())
+            return false;
+
         $sData = @file_get_contents("php://input");
         $aData = json_decode($sData, true);
         if($aData === null)
