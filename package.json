@@ -157,7 +157,7 @@
     "@tailwindcss/container-queries": "^0.1.1",
     "@tailwindcss/typography": "^0.5.19",
     "@tanstack/ai": "^0.54.0",
-    "@tanstack/ai-client": "^0.33.1",
+    "@tanstack/ai-client": "^0.33.2",
     "@tanstack/ai-event-client": "^0.12.1",
     "@tanstack/ai-react": "^0.24.1",
     "@tanstack/ai-utils": "^0.4.0",
