@@ -136,7 +136,7 @@ class BxDolAiTriggerMessage extends BxDolAiTrigger
         return $this->sendMessengerMessage(
             (int)($aAgent['profile_id'] ?? 0),
             (int)($aParams['sender_profile_id'] ?? 0),
-            str_replace('\n', '', $sHtml),
+            str_replace("\n", '', $sHtml),
             (int)($aParams['message_lot_id'] ?? 0),
             (int)($aParams['message_id'] ?? 0)
         );
