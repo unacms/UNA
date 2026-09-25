@@ -708,10 +708,10 @@
     rehype-sanitize "^6.0.0"
     remark-gfm "^4.0.1"
 
-"@tanstack/ai-utils@^0.4.0":
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/@tanstack/ai-utils/-/ai-utils-0.4.0.tgz#d4ee407d446471d0ba1c500348e6b5be22e481ad"
-  integrity sha512-xqvAgPJkIuGk1m+jZKyb7vBTQIaBmUD9EVzlPkDWWMp80n69uwL0TnBZCVk+OwL9goTQiFy648dnBfLsiJgl6A==
+"@tanstack/ai-utils@^0.4.0", "@tanstack/ai-utils@^0.4.1":
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/@tanstack/ai-utils/-/ai-utils-0.4.1.tgz#2e23a36604de1877638fc980202dee6d3e9a1c7b"
+  integrity sha512-B3PGn2WYiRtivZCt7MUN2iXeoK9fwZhgdbrPIz5hPqVR8r8sNDZMmMqtiOkp7sxzPvVlCBItFVHw7QpZ9g6e9w==
 
 "@tanstack/ai@^0.54.0":
   version "0.54.0"
