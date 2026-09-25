@@ -91,6 +91,9 @@ jobs:
     needs: test
     if: github.event_name == 'pull_request' && github.event.action != 'closed'
     runs-on: ubuntu-latest
+    concurrency:
+      group: railway-pr-${{ github.event.pull_request.number }}
+      cancel-in-progress: true
     env:
       RAILWAY_API_TOKEN: ${{ secrets.RAILWAY_API_TOKEN }}
       RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
@@ -126,8 +129,12 @@ jobs:
         fi
         base="${RAILWAY_BASE_ENVIRONMENT:-production}"
         railway link --project "$RAILWAY_PROJECT_ID" --environment "$base" --json
-        railway environment delete "$RAILWAY_PR_ENVIRONMENT" -y || true
-        railway environment new "$RAILWAY_PR_ENVIRONMENT" --duplicate "$base" --json
+        environments=$(railway environment list --json)
+        if printf '%s\n' "$environments" | jq -e --arg name "$RAILWAY_PR_ENVIRONMENT" '.environments[] | select(.name == $name)' >/dev/null; then
+          echo "Reusing Railway environment $RAILWAY_PR_ENVIRONMENT"
+        else
+          railway environment new "$RAILWAY_PR_ENVIRONMENT" --duplicate "$base" --json
+        fi
         railway link --project "$RAILWAY_PROJECT_ID" --environment "$RAILWAY_PR_ENVIRONMENT" --json
         railway variable set --service mariadb --environment "$RAILWAY_PR_ENVIRONMENT" --skip-deploys \
           MARIADB_ROOT_PASSWORD=una \
