@@ -113,7 +113,7 @@ jobs:
         unzip -q packages/*.zip -d /tmp/una-pkg
         pkg_dir=$(find /tmp/una-pkg -mindepth 1 -maxdepth 1 -type d | head -n 1)
         cp -a "$pkg_dir"/. deploy/
-        cp scripts/railway/Dockerfile scripts/railway/entrypoint.sh scripts/railway/railway.toml deploy/
+        cp scripts/railway/Dockerfile scripts/railway/entrypoint.sh scripts/railway/railway.toml scripts/railway/.railwayignore deploy/
         chmod +x deploy/entrypoint.sh
 
     - name: Install Railway CLI
@@ -150,7 +150,7 @@ jobs:
         railway domain --service una --environment "$RAILWAY_PR_ENVIRONMENT" || true
 
     - name: Deploy artefact
-      run: railway up ./deploy --path-as-root --no-gitignore --ci --service una --environment "$RAILWAY_PR_ENVIRONMENT" --project "$RAILWAY_PROJECT_ID"
+      run: railway up ./deploy --path-as-root --no-gitignore --verbose --ci --service una --environment "$RAILWAY_PR_ENVIRONMENT" --project "$RAILWAY_PROJECT_ID"
 
     - name: Comment preview URL on PR
       env:
