@@ -770,6 +770,33 @@ class BxDolPage extends BxDolFactory implements iBxDolFactoryObject, iBxDolRepla
 
         return $oDb->setPageBlockData($iBlockId, $iContentId, $sContentModule, $sData);
     }
+
+    /**
+     * Get the content module a page keeps its blocks' data (bento grid) under.
+     * @param $aObject page object array
+     * @return string module name, or an empty string for system and custom pages
+     */
+    static public function getPageBlockDataModule($aObject)
+    {
+        if(!empty($aObject['module']) && !in_array($aObject['module'], ['system', 'custom']))
+            return $aObject['module'];
+
+        return '';
+    }
+
+    /**
+     * Check whether the current user may edit blocks' data (bento grid) kept for the given content.
+     * @param $iContentId content ID
+     * @param $sContentModule content module, see BxDolPage::getPageBlockDataModule
+     * @return boolean
+     */
+    static public function isAllowedEditPageBlockData($iContentId = 0, $sContentModule = '')
+    {
+        if(!empty($sContentModule) && bx_is_srv($sContentModule, 'check_allowed_with_content'))
+            return bx_srv($sContentModule, 'check_allowed_with_content', ['edit', $iContentId]) === CHECK_ACTION_RESULT_ALLOWED;
+
+        return isAdmin();
+    }
     
     static public function getBlockProcessing()
     {

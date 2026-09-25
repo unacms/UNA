@@ -1257,15 +1257,8 @@ class BxBasePage extends BxDolPage
             if(($mContentId = bx_get('id')) !== false) 
                 $iContentId = (int)$mContentId;
 
-            $sContentModule = '';
-            if(!empty($this->_aObject['module']) && !in_array($this->_aObject['module'], ['system', 'custom']))
-                $sContentModule = $this->_aObject['module'];
-
-            $bIsAllowedEdit = false;
-            if(!empty($sContentModule) && bx_is_srv($sContentModule, 'check_allowed_with_content'))
-                $bIsAllowedEdit = bx_srv($sContentModule, 'check_allowed_with_content', ['edit', $iContentId]) === CHECK_ACTION_RESULT_ALLOWED;
-            else
-                $bIsAllowedEdit = isAdmin();
+            $sContentModule = self::getPageBlockDataModule($this->_aObject);
+            $bIsAllowedEdit = self::isAllowedEditPageBlockData($iContentId, $sContentModule);
 
             return [bx_api_get_block('bento_grid', [
                 'title' => _t($aBlock['title']), 
