@@ -72,7 +72,11 @@ export default function Browse(props) {
         [props.data]
     );
     const isOneLine = data?.params?.view == 'showcase'
-    const isOnePage = props.only_one_page || isOneLine;
+    const isOnePage = props.only_one_page || props.extraProps?.only_one_page || isOneLine;
+    // Nested in the conductor list: no height is passed, so a second UniList
+    // collapses to 0 on native. Draw the cards in the parent list instead.
+    // Not when the list is the page scroller itself (home feed with header blocks).
+    const inlineCards = !isWeb && !props.height && !props.isInPanel && !props.exProps?.headerBlocks;
     const isShowTitleInside = props?.showTitleInside || props?.extraProps?.showTitleInside || isOneLine;
 
     const [defParams, setDefParams] = useState({
@@ -315,7 +319,7 @@ export default function Browse(props) {
             : <Galery items={items} autoscroll={props.extraProps?.autoscroll ?? 5000} />
     }
 
-    if ((props.sidebar && !props.extraProps?.galery) || isOneLine) {
+    if ((props.sidebar && !props.extraProps?.galery) || isOneLine || inlineCards) {
         if (!listReady) {
             contentElement = Preload
         } else {
@@ -450,7 +454,7 @@ export default function Browse(props) {
 
     return (
         <BlockWrapper {...props.blockWrapperProps}>
-            <View className={`w-full ${isOneLine ? '' : 'web:h-full '}`}>
+            <View className={`w-full ${isOneLine ? '  ' : 'web:h-full '}`}>
                 <View className="w-full" ></View>
                 <View className={`w-full ${props.showBg ? blockTheme['u-block-bg'] + ' ' + blockTheme['u-block-pad'] + ' ' + blockTheme['u-block-base'] : ''} ${responsiveClasses('rounded', props.blockWrapperProps?.config?.rounded)}`} style={isOneLine || !isWeb ? {} : styles}>
                     {isShowTitleInside && (

@@ -92,7 +92,7 @@ function PageContentUniversal({ children, data, layoutName, pageClasses }) {
                                 panelLine={cellsCustomConfig?.['panel-line']}
                                 currentBreakpoint={currentBreakpoint}
                                 cell={cell}
-                                index={topCell.length > 0 ? i : 0}
+                                index={topCell?.length > 0 ? i : 0}
                                 paddingClass={padding}
                                 gapClass={gap}
                             />

@@ -88,7 +88,7 @@ export const TabSceneHeader = React.memo(function TabSceneHeader({
     const standaloneContextSelector = useMemo(() => {
         if (!useStandaloneContextSelector || !ContextSelector) return null
         return (
-            <View style={selectorPadStyle}>
+            <View className={conductorTheme.cover_base || 'bg-card'} style={selectorPadStyle}>
                 <Row className={`${conductorTheme.standalone_context_selector} gap-2 items-center `}>
                     {useStandaloneCoverBackButton ? <CoverBackButton /> : null}
                     <View className="flex-1 shrink">

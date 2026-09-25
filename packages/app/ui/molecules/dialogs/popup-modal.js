@@ -38,7 +38,7 @@ export default function () {
                         href="/forgot-password"
                     />
                 
-                    <Button
+                    <ButtonLink
                         title={t('login_modal_new_account')}
                         variant="default"
                         fullWidth
