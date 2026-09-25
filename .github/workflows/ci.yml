@@ -91,6 +91,9 @@ jobs:
     needs: test
     if: github.event_name == 'pull_request' && github.event.action != 'closed'
     runs-on: ubuntu-latest
+    concurrency:
+      group: railway-pr-${{ github.event.pull_request.number }}
+      cancel-in-progress: true
     env:
       RAILWAY_API_TOKEN: ${{ secrets.RAILWAY_API_TOKEN }}
       RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
@@ -110,7 +113,7 @@ jobs:
         unzip -q packages/*.zip -d /tmp/una-pkg
         pkg_dir=$(find /tmp/una-pkg -mindepth 1 -maxdepth 1 -type d | head -n 1)
         cp -a "$pkg_dir"/. deploy/
-        cp scripts/railway/Dockerfile scripts/railway/entrypoint.sh scripts/railway/railway.toml deploy/
+        cp scripts/railway/Dockerfile scripts/railway/entrypoint.sh scripts/railway/railway.toml scripts/railway/.railwayignore deploy/
         chmod +x deploy/entrypoint.sh
 
     - name: Install Railway CLI
@@ -126,26 +129,28 @@ jobs:
         fi
         base="${RAILWAY_BASE_ENVIRONMENT:-production}"
         railway link --project "$RAILWAY_PROJECT_ID" --environment "$base" --json
-        railway environment new "$RAILWAY_PR_ENVIRONMENT" || true
+        environments=$(railway environment list --json)
+        if printf '%s\n' "$environments" | jq -e --arg name "$RAILWAY_PR_ENVIRONMENT" '.environments[] | select(.name == $name)' >/dev/null; then
+          echo "Reusing Railway environment $RAILWAY_PR_ENVIRONMENT"
+        else
+          railway environment new "$RAILWAY_PR_ENVIRONMENT" --duplicate "$base" --json
+        fi
         railway link --project "$RAILWAY_PROJECT_ID" --environment "$RAILWAY_PR_ENVIRONMENT" --json
-        railway add --image mariadb:11 --service mariadb --json \
-          --variables MARIADB_ROOT_PASSWORD=una \
-          --variables MARIADB_DATABASE=una \
-          --variables MARIADB_USER=una \
-          --variables MARIADB_PASSWORD=una \
-          || true
-        railway add --service una --json || true
+        railway variable set --service mariadb --environment "$RAILWAY_PR_ENVIRONMENT" --skip-deploys \
+          MARIADB_ROOT_PASSWORD=una \
+          MARIADB_DATABASE=una \
+          MARIADB_USER=una \
+          MARIADB_PASSWORD=una
         railway variable set --service una --environment "$RAILWAY_PR_ENVIRONMENT" --skip-deploys \
           MYSQLHOST=mariadb.railway.internal \
           MYSQLPORT=3306 \
           MYSQLDATABASE=una \
           MYSQLUSER=una \
-          MYSQLPASSWORD=una \
-          || true
+          MYSQLPASSWORD=una
         railway domain --service una --environment "$RAILWAY_PR_ENVIRONMENT" || true
 
     - name: Deploy artefact
-      run: railway up ./deploy --path-as-root --no-gitignore --ci --service una --environment "$RAILWAY_PR_ENVIRONMENT" --project "$RAILWAY_PROJECT_ID"
+      run: railway up ./deploy --path-as-root --no-gitignore --verbose --ci --service una --environment "$RAILWAY_PR_ENVIRONMENT" --project "$RAILWAY_PROJECT_ID"
 
     - name: Comment preview URL on PR
       env:

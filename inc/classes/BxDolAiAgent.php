@@ -29,6 +29,10 @@ class BxDolAiAgent extends RAG
             $logger = new BxDolLoggerDb('sys_agents_' . $this->aAgent['id']);
             $this->observe(new LogObserver($logger));
         }
+
+        // what the agent did (comments, content, SQL) — shown as activity history
+        if (class_exists('BxDolAiActivityObserver'))
+            $this->observe(new BxDolAiActivityObserver($this->aAgent, $this->aParams));
     }
 
     protected function provider(): NeuronAI\Providers\AIProviderInterface
