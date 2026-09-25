@@ -1,6 +1,7 @@
 import { Platform } from 'react-native';
 import i18n from 'i18next';
 import { appSetting, UNA_URL, APP_URL, APP_ORIGIN, MULTITENANT } from 'app/config';
+import { xhrRequest } from 'app/lib/xhr-request';
 
 /**
  * UNA request: an `/api.php?r=…` path, or a tuple
@@ -26,6 +27,8 @@ export type FetchOptions = {
     maxAttempts?: number;
     /** Don't log failures to the console. */
     silent?: boolean;
+    /** Report request body progress (0..1); sends over XMLHttpRequest instead of `fetch`. */
+    onUploadProgress?: (fraction: number) => void;
 };
 
 type AbortErrorLike = Error & { aborted?: boolean };
@@ -64,12 +67,13 @@ export async function fetcher (mixed: FetcherRequest, useProxy = false, fetchOpt
 
 async function fetcherRawOnce(
     url: string,
-    { data, headers, callback, signal, timeoutMs }: {
+    { data, headers, callback, signal, timeoutMs, onUploadProgress }: {
         data?: BodyInit | null;
         headers: Record<string, string>;
         callback?: (response: Response) => void;
         signal?: AbortSignal;
         timeoutMs?: number;
+        onUploadProgress?: (fraction: number) => void;
     },
 ): Promise<Response> {
     const controller = new AbortController();
@@ -85,14 +89,23 @@ async function fetcherRawOnce(
     const timer = setTimeout(() => controller.abort(), timeout);
 
     try {
-        const r = await fetch(url, {
-            method: data ? 'POST' : 'GET',
-            body: data ? data : null,
-            headers: headers,
-            cache: 'no-store',
-            credentials: 'include', // Set to true on UNA side - Access-Control-Allow-Credentials
-            signal: controller.signal,
-        });
+        const r = data && onUploadProgress
+            ? await xhrRequest(url, {
+                method: 'POST',
+                body: data,
+                headers,
+                withCredentials: true,
+                signal: controller.signal,
+                onUploadProgress,
+            })
+            : await fetch(url, {
+                method: data ? 'POST' : 'GET',
+                body: data ? data : null,
+                headers: headers,
+                cache: 'no-store',
+                credentials: 'include', // Set to true on UNA side - Access-Control-Allow-Credentials
+                signal: controller.signal,
+            });
         if (callback)
             callback(r);
         return r;
@@ -154,6 +167,7 @@ export async function fetcherRaw(host: string, mixed: FetcherRequest, fetchOptio
         timeoutMs,
         maxAttempts: maxAttemptsOverride,
         silent = false,
+        onUploadProgress,
     } = fetchOptions;
     const maxAttempts = maxAttemptsOverride ?? (data ? 1 : 3);
     const baseDelayMs = 300;
@@ -167,7 +181,7 @@ export async function fetcherRaw(host: string, mixed: FetcherRequest, fetchOptio
             throw err;
         }
         try {
-            return await fetcherRawOnce(url, { data, headers, callback, signal, timeoutMs });
+            return await fetcherRawOnce(url, { data, headers, callback, signal, timeoutMs, onUploadProgress });
         } catch (error: any) {
             lastError = error;
             if (error?.aborted) {
