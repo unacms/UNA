@@ -31,6 +31,11 @@ export default function CoverMorph({
     // layout (compact or expanded) instead of falling back to old Cover.
     const skipIdentityBar = isNone && isDesktop
     const skipCollapse = isCoverFixed || (isNone && !isDesktop)
+    // Desktop: collapsed strip duplicates the navbar identity — pin tabs only.
+    const hideCollapsedBar =
+        isDesktop &&
+        !isNone &&
+        !!appSetting('cover', 'hide_collapsed_bar_desktop', data?.profile?.module)
 
     const {
         collapsed,
@@ -45,6 +50,7 @@ export default function CoverMorph({
         onProgress,
         skipIdentityBar,
         skipCollapse,
+        hideCollapsedBar,
     })
 
     if (!data?.profile?.module) return null
@@ -65,7 +71,11 @@ export default function CoverMorph({
             tabBarRef={tabBarRef}
             onBarLayout={onBarLayout}
             flowH={flowH}
-            barClassName={cn(collapsed ? 'header-fixed sticky' : 'relative')}
+            hideCollapsedBar={hideCollapsedBar}
+            barClassName={cn(
+                collapsed ? 'header-fixed sticky' : 'relative',
+                collapsed && hideCollapsedBar && 'hidden',
+            )}
             barStyle={collapsed ? { top: stickyTop } : undefined}
         >
             {children}

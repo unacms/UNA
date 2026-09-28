@@ -14,6 +14,7 @@ export function useCoverMorph({
     onProgress,
     skipIdentityBar = false,
     skipCollapse = false,
+    hideCollapsedBar = false,
 }) {
     const isDesktop = useIsDesktop()
     const sizing = getCoverMorphSizing(isDesktop)
@@ -28,7 +29,7 @@ export function useCoverMorph({
         coverRef,
         tabBarRef,
         stickyTop,
-        stripH: sizing.stripH,
+        stripH: hideCollapsedBar ? 0 : sizing.stripH,
         pageKey,
         onProgress,
         avatarExpandedPx: sizing.avatarExpandedPx,

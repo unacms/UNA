@@ -95,14 +95,23 @@ export function useCoverMorphDriver({
             let range = 0
             let lastCollapsed = null
 
+            // Chrome scroll anchoring shifts scrollTop by the bar's height delta on
+            // every toggle, which flips the state back and forth (cover "shakes").
+            const root = document.documentElement
+            const prevOverflowAnchor = root.style.overflowAnchor
+            root.style.overflowAnchor = 'none'
+
             const measure = () => {
-                const slot = bar.querySelector('.ns--cover-morph-slot--')
-                const slotH = slot?.offsetHeight || 44
-                range = computeMorphCollapseRange(
-                    avatarExpandedPx,
-                    slotH,
-                    !!cover,
-                )
+                // Slot shrinks when collapsed; keep the expanded-state range.
+                if (!lastCollapsed || range <= 0) {
+                    const slot = bar.querySelector('.ns--cover-morph-slot--')
+                    const slotH = slot?.offsetHeight || 44
+                    range = computeMorphCollapseRange(
+                        avatarExpandedPx,
+                        slotH,
+                        !!cover,
+                    )
+                }
                 if (content) {
                     const reserve =
                         window.innerHeight -
@@ -115,7 +124,13 @@ export function useCoverMorphDriver({
             }
 
             const apply = () => {
-                const dist = bar.getBoundingClientRect().top - stickyTop
+                // Cover bottom = bar's in-flow top, and it keeps its height in both
+                // states, so the threshold depends on scroll only, not on bar layout.
+                const anchor = coverRef.current
+                const dist =
+                    (anchor
+                        ? anchor.getBoundingClientRect().bottom
+                        : bar.getBoundingClientRect().top) - stickyTop
                 let collapsed
                 if (range <= 0) {
                     collapsed = dist <= 1
@@ -154,6 +169,7 @@ export function useCoverMorphDriver({
                 window.removeEventListener('resize_panel', onResize)
                 resizeObserver?.disconnect()
                 if (content) content.style.minHeight = ''
+                root.style.overflowAnchor = prevOverflowAnchor
             }
         }
 

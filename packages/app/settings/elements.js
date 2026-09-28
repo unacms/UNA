@@ -32,6 +32,9 @@ export const settingsElements = {
         more_menu_in_navbar: {
             bx_groups: true,
         },
+        // Web desktop, by module: hide the collapsed identity strip (avatar,
+        // title, fans) so only the tab bar stays pinned under the header.
+        hide_collapsed_bar_desktop: {},
         picture_size: 400,
         crop_max_width: 2000,
         aspect_ratio_by_module: {},

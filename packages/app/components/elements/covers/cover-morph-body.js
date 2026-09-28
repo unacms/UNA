@@ -44,6 +44,7 @@ export function CoverMorphBody({
     tabBarRef,
     onBarLayout,
     flowH,
+    hideCollapsedBar = false,
     children,
     barClassName,
     barStyle,
@@ -107,9 +108,11 @@ export function CoverMorphBody({
         ? 0
         : isCoverFixed && !isNone
             ? 0
-            : compactBar
-                ? (isNone ? flowH : stripH)
-                : flowH
+            : collapsed && hideCollapsedBar
+                ? 0
+                : compactBar
+                    ? (isNone ? flowH : stripH)
+                    : flowH
 
     const profileTitle = profileData.display_name || profileData.title || ''
     const metaMenuItems = (data.meta_menu?.items || []).slice(
@@ -203,7 +206,7 @@ export function CoverMorphBody({
                     ) : (
                         <View className={`${contentWidth} mx-auto w-full`}>
                             {showAlwaysSelector ? (
-                                <View className="w-full h-14" />
+                                <View className={`${TABLET_MODE_FROM}:hidden w-full h-14`} />
                             ) : null}
                             <View
                                 className={`w-full ${appSetting('cover', 'aspect_ratio')}`}
