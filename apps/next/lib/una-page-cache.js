@@ -37,6 +37,10 @@ function shouldStore(payload) {
     if (!payload || typeof payload !== 'object') return false;
     if (payload.code === 404 || payload.code === 500 || payload.code === 503) return false;
     if (payload.data?.page_status == 404) return false;
+    // Unconfirmed viewer: confirm_email keeps the same cookie, so a cached page would
+    // keep showing the confirm lock after a successful confirmation.
+    const user = payload.data?.user;
+    if (user && (!user.confirmed || user.confirmed === '0')) return false;
     return Boolean(payload.data);
 }
 
