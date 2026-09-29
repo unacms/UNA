@@ -38,7 +38,7 @@ const VideoItem = ({ data, handleShowImage }) => (
     <AttachmentContainer>
         <Pressable className="w-full h-full" onPress={() => handleShowImage({ ...data, type: 'video' })}>
             <View className="w-full h-full pointer-events-none">
-                <Video fill cover muted src={data.src} poster={data.src_poster || data.poster} />
+                <Video fill cover muted src={data.src} poster={data.src_poster || data.poster} previewTime={3} />
             </View>
             <View className="absolute inset-0 items-center justify-center pointer-events-none">
                 <View className="rounded-full bg-black/50 p-2">
