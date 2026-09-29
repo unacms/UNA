@@ -865,9 +865,12 @@ class BxDolAIToolAgentCreate extends BxDolAITool
         if (!$oDb->isTableExists('bx_persons_data'))
             return ['error' => 'bx_persons_data is missing — cannot create a Persons profile'];
 
-        // new bot profiles always live under the preset Robot account (sys_profile_bot), not under the operator
-        $iAccount = $this->_botAccount();
-        if ($iAccount <= 0)
+        // new bot profiles always live under the preset Robot account (sys_profile_bot), not under the operator.
+        // author is that Robot profile's id; sys_profiles.account_id is the account that owns it.
+        $aBot = $this->_botIdentity();
+        $iAuthor = (int)$aBot['profile_id'];
+        $iAccount = (int)$aBot['account_id'];
+        if ($iAuthor <= 0 || $iAccount <= 0)
             return ['error' => 'Robot account not found: set sys_profile_bot (Studio → Settings → Bot profile) or sys_agents_profile, then retry.'];
 
         $aExist = $oDb->getRow("SELECT p.`id` FROM `sys_profiles` p INNER JOIN `bx_persons_data` d ON d.`id` = p.`content_id` AND p.`type` = 'bx_persons' WHERE p.`account_id` = :a AND d.`fullname` = :n LIMIT 1", [
@@ -883,7 +886,7 @@ class BxDolAIToolAgentCreate extends BxDolAITool
         $iNow = time();
         $iPublic = defined('BX_DOL_PG_ALL') ? BX_DOL_PG_ALL : 3;
         $aPerson = $this->_onlyExistingColumns($oDb, 'bx_persons_data', [
-            'author' => $iAccount,
+            'author' => $iAuthor,
             'added' => $iNow,
             'changed' => $iNow,
             'fullname' => $sName,
@@ -1010,9 +1013,11 @@ class BxDolAIToolAgentCreate extends BxDolAITool
     }
 
     /**
-     * Account of the preset Robot: owner of sys_profile_bot, then sys_agents_profile, then the operator agent's profile.
+     * Preset Robot profile and the account that owns it: sys_profile_bot, then sys_agents_profile, then the operator agent's profile.
+     *
+     * @return array{profile_id:int,account_id:int}
      */
-    protected function _botAccount(): int
+    protected function _botIdentity(): array
     {
         $oDb = BxDolDb::getInstance();
         $aCandidates = [
@@ -1025,9 +1030,17 @@ class BxDolAIToolAgentCreate extends BxDolAITool
                 continue;
             $iAccount = (int)$oDb->getOne("SELECT `account_id` FROM `sys_profiles` WHERE `id` = :id LIMIT 1", ['id' => $iProfile]);
             if ($iAccount > 0)
-                return $iAccount;
+                return ['profile_id' => $iProfile, 'account_id' => $iAccount];
         }
-        return 0;
+        return ['profile_id' => 0, 'account_id' => 0];
+    }
+
+    /**
+     * Account of the preset Robot. See _botIdentity().
+     */
+    protected function _botAccount(): int
+    {
+        return (int)$this->_botIdentity()['account_id'];
     }
 
     protected function _onlyExistingColumns(BxDolDb $oDb, string $sTable, array $aRow): array
