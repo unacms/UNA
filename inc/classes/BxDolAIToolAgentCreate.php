@@ -126,6 +126,8 @@ class BxDolAIToolAgentCreate extends BxDolAITool
         $tools = '',
         $model_id = 0,
         $profile_id = 0,
+        $profile = '',
+        $profile_new = '',
         $vector_store_id = 0,
         $async = null,
         $active = 1,
@@ -136,8 +138,6 @@ class BxDolAIToolAgentCreate extends BxDolAITool
         $form_input = '',
         $agent_id = 0,
         $query = '',
-        $profile = '',
-        $profile_new = '',
         $dry_run = false
     ): array {
         $sAction = strtolower(trim((string)$action));
