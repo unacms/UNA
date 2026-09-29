@@ -41,8 +41,8 @@ class BxDolAIToolAgentCreate extends BxDolAITool
             . 'Never ask the user for a numeric profile_id. action=catalog returns profiles and profile_buttons — call chat_buttons with exactly those labels. '
             . 'Existing: profile=display name or id. New bot: profile_new=Name (creates a Persons profile under the preset Robot account, sys_profile_bot). create without profile/profile_new is refused. '
             . 'preset=comment_reply for “reply to every comment”: trigger=alert, async=1, comments_* tools. '
-            . 'Pass module (bx_forum or “discussions”) or alert as unit:action (bx_forum:commentPost). '
-            . 'Show the plan, wait for Да via chat_buttons, then create. Prompt goes in prompt_system.'
+            . 'Pass module as one name from installed content modules: ' . $this->getContentModules() . '. Or alert as unit:action (for example bx_forum:commentPost). '
+            . 'Show the plan in the site language. Confirm with chat_buttons whose reply labels are exactly "' . _t('_Yes') . '" and "' . _t('_No') . '". Wait for ' . _t('_Yes') . ', then create. Prompt goes in prompt_system.'
         );
     }
 
@@ -60,7 +60,7 @@ class BxDolAIToolAgentCreate extends BxDolAITool
             new ToolProperty('prompt_tools', PropertyType::STRING, 'Optional extra tool rules. comment_reply appends loop-prevention rules.', false),
             new ToolProperty('trigger', PropertyType::STRING, 'alert | scheduler | webhook | manual | agent | message | form-input. Default from preset (comment_reply → alert).', false),
             new ToolProperty('alert', PropertyType::STRING, 'unit:action from sys_alerts_log, e.g. bx_forum:commentPost. Required for trigger=alert unless module is set.', false),
-            new ToolProperty('module', PropertyType::STRING, 'Installed module: machine name (bx_forum), uri (forum), or title (Discussions).', false),
+            new ToolProperty('module', PropertyType::STRING, 'Installed module: module from installed modules list.', false),
             new ToolProperty('tools', PropertyType::STRING, 'CSV of tool types or ids (comments_add,comments_get). comment_reply fills comments_* if empty.', false),
             new ToolProperty('model_id', PropertyType::INTEGER, 'Chat model id. Default = operator agent / sys_agents_model.', false),
             new ToolProperty('profile_id', PropertyType::INTEGER, 'Numeric profile id. Prefer profile (name) or profile_new. Do not ask the user for this number.', false),
@@ -246,7 +246,7 @@ class BxDolAIToolAgentCreate extends BxDolAITool
             'profile_hint' => 'Call chat_buttons now with exactly profile_buttons as reply labels (one per line, no other text). Tap on a name → profile=<name>; tap on «' . _t('_sys_agents_profile_btn_new', $sSuggest) . '» → profile_new=' . $sSuggest . '. create without profile/profile_new is refused.',
             'defaults' => $aDefaults,
             'presets' => self::PRESETS,
-            'comment_reply_hint' => 'Pick an alert like bx_forum:commentPost (module=discussions). Tools: comments_get,comments_add,comment_get,content_get. async=1.',
+            'comment_reply_hint' => 'Pick an alert, example - bx_forum:commentPost (module=bx_forum), module bx_forum must be installed. Tools: comments_get,comments_add,comment_get,content_get. async=1.',
             'alerts' => $aAlerts,
             'tools' => $aTools,
             'models' => $aModels,

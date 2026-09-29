@@ -16,18 +16,24 @@ class BxDolAIToolChatButtons extends BxDolAITool
 {
     public function __construct()
     {
+        $sYes = _t('_Yes');
+        $sNo = _t('_No');
+
         parent::__construct(
             'chat_buttons',
-            'Show clickable buttons under THIS assistant reply: Yes/No, suggested names, register/support links. Call once per turn, after the sentence the user should confirm. Do not write another assistant message after this tool. Do not say that buttons are ready.',
+            'Show clickable buttons under THIS assistant reply: ' . $sYes . '/' . $sNo . ', suggested names, register/support links. Call once per turn, after the sentence the user should confirm. Write every label in the site language. A yes/no choice uses exactly these labels: "' . $sYes . '" and "' . $sNo . '". Do not write another assistant message after this tool. Do not say that buttons are ready.',
         );
     }
 
     protected function properties(): array
     {
+        $sYes = _t('_Yes');
+        $sNo = _t('_No');
+
         return [
             new ArrayProperty(
                 name: 'buttons',
-                description: 'Buttons under this reply. reply = visitor tap sends that label as the next message; link = an https URL (site pages, help, registration). Example: [{"type":"reply","label":"Yes"},{"type":"reply","label":"No"}]',
+                description: 'Buttons under this reply. reply = visitor tap sends that label as the next message; link = an https URL (site pages, help, registration). Yes/no labels are exactly "' . $sYes . '" and "' . $sNo . '" (site language). Example: [{"type":"reply","label":"' . $sYes . '"},{"type":"reply","label":"' . $sNo . '"}]',
                 required: true,
                 items: new ObjectProperty(
                     name: 'button',
