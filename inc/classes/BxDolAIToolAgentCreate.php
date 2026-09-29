@@ -26,38 +26,8 @@ class BxDolAIToolAgentCreate extends BxDolAITool
     /** @var int[]|null see _allowedAccounts() */
     protected $_aAllowedAccounts = null;
 
-    protected const MODULE_ALIASES = [
-        'discussions' => 'bx_forum',
-        'discussion' => 'bx_forum',
-        'forum' => 'bx_forum',
-        'forums' => 'bx_forum',
-        'дискуссии' => 'bx_forum',
-        'дискуссия' => 'bx_forum',
-        'форум' => 'bx_forum',
-        'posts' => 'bx_posts',
-        'post' => 'bx_posts',
-        'публикации' => 'bx_posts',
-        'timeline' => 'bx_timeline',
-        'feed' => 'bx_timeline',
-        'лента' => 'bx_timeline',
-        'groups' => 'bx_groups',
-        'группы' => 'bx_groups',
-        'events' => 'bx_events',
-        'события' => 'bx_events',
-        'photos' => 'bx_photos',
-        'фото' => 'bx_photos',
-        'videos' => 'bx_videos',
-        'видео' => 'bx_videos',
-        'wiki' => 'bx_wiki',
-        'market' => 'bx_market',
-        'магазин' => 'bx_market',
-        'spaces' => 'bx_spaces',
-        'persons' => 'bx_persons',
-        'orgs' => 'bx_organizations',
-        'organizations' => 'bx_organizations',
-        'polls' => 'bx_polls',
-        'опросы' => 'bx_polls',
-    ];
+    /** @var array<string,string>|null lowercase label => sys_modules.name */
+    protected $_aModuleNames = null;
 
     protected const COMMENT_TOOLS = ['comments_get', 'comments_add', 'comment_get', 'content_get'];
 
@@ -90,7 +60,7 @@ class BxDolAIToolAgentCreate extends BxDolAITool
             new ToolProperty('prompt_tools', PropertyType::STRING, 'Optional extra tool rules. comment_reply appends loop-prevention rules.', false),
             new ToolProperty('trigger', PropertyType::STRING, 'alert | scheduler | webhook | manual | agent | message | form-input. Default from preset (comment_reply → alert).', false),
             new ToolProperty('alert', PropertyType::STRING, 'unit:action from sys_alerts_log, e.g. bx_forum:commentPost. Required for trigger=alert unless module is set.', false),
-            new ToolProperty('module', PropertyType::STRING, 'Module name or alias to pick the alert: bx_forum, discussions, posts, timeline, groups…', false),
+            new ToolProperty('module', PropertyType::STRING, 'Installed module: machine name (bx_forum), uri (forum), or title (Discussions).', false),
             new ToolProperty('tools', PropertyType::STRING, 'CSV of tool types or ids (comments_add,comments_get). comment_reply fills comments_* if empty.', false),
             new ToolProperty('model_id', PropertyType::INTEGER, 'Chat model id. Default = operator agent / sys_agents_model.', false),
             new ToolProperty('profile_id', PropertyType::INTEGER, 'Numeric profile id. Prefer profile (name) or profile_new. Do not ask the user for this number.', false),
@@ -567,11 +537,50 @@ class BxDolAIToolAgentCreate extends BxDolAITool
         if ($s === '')
             return '';
         $sLow = mb_strtolower($s);
-        if (isset(self::MODULE_ALIASES[$sLow]))
-            return self::MODULE_ALIASES[$sLow];
+        $aNames = $this->_moduleNames();
+        if (isset($aNames[$sLow]))
+            return $aNames[$sLow];
         if (preg_match('/^[a-z0-9_]+$/i', $s))
             return $s;
         return '';
+    }
+
+    /**
+     * Labels that mean a module: machine name, uri, install title, and the current-language title from _t().
+     * Enabled modules claim a label before disabled ones. A name or uri is never overwritten by a title.
+     *
+     * @return array<string,string>
+     */
+    protected function _moduleNames(): array
+    {
+        if ($this->_aModuleNames !== null)
+            return $this->_aModuleNames;
+
+        $this->_aModuleNames = [];
+        $oDb = BxDolDb::getInstance();
+        $aRows = $oDb->getAll("SELECT `name`, `uri`, `title` FROM `sys_modules` WHERE `name` <> '' ORDER BY `enabled` DESC, `name` ASC");
+        foreach ($aRows as $aRow)
+            $this->_rememberModule((string)$aRow['name'], (string)$aRow['name']);
+        foreach ($aRows as $aRow)
+            $this->_rememberModule((string)$aRow['uri'], (string)$aRow['name']);
+        foreach ($aRows as $aRow) {
+            $sName = (string)$aRow['name'];
+            $this->_rememberModule((string)$aRow['title'], $sName);
+            $sKey = BxDolModule::getTitleKey((string)$aRow['uri']);
+            $sTitle = _t($sKey);
+            if ($sTitle !== $sKey)
+                $this->_rememberModule($sTitle, $sName);
+        }
+
+        return $this->_aModuleNames;
+    }
+
+    protected function _rememberModule(string $sLabel, string $sName): void
+    {
+        $sLabel = mb_strtolower(trim($sLabel));
+        if ($sLabel === '' || isset($this->_aModuleNames[$sLabel]))
+            return;
+        $this->_aModuleNames[$sLabel] = $sName;
     }
 
     protected function _resolveAlert(string $sAlert, string $sModule, string $sPreset): array
