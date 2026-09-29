@@ -9,7 +9,7 @@ import Animated, {
 } from 'react-native-reanimated'
 import { View } from 'app/design/view'
 import { appSetting } from 'app/lib/util'
-import { CoverMorphBody } from './cover-morph-body'
+import CoverMorphBody from 'app/customization/covers/cover-morph-body'
 import { useCoverMorph } from './use-cover-morph'
 
 const COVER_OVERLAY_STYLE = {

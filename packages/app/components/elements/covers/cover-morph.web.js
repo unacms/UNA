@@ -2,7 +2,7 @@
 
 import { cn, appSetting } from 'app/lib/util'
 import { useIsDesktop } from 'app/context/measure'
-import { CoverMorphBody } from './cover-morph-body'
+import CoverMorphBody from 'app/customization/covers/cover-morph-body'
 import { useCoverMorph } from './use-cover-morph'
 
 /**
