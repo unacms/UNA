@@ -23,6 +23,9 @@ class BxDolAIToolAgentCreate extends BxDolAITool
     protected const PROFILE_NAME_MAX = 40;
     protected const VERSION = 4;
 
+    /** @var int[]|null see _allowedAccounts() */
+    protected $_aAllowedAccounts = null;
+
     protected const MODULE_ALIASES = [
         'discussions' => 'bx_forum',
         'discussion' => 'bx_forum',
@@ -699,7 +702,7 @@ class BxDolAIToolAgentCreate extends BxDolAITool
 
         $sQ = trim($sQuery);
         if ($sQ !== '' && mb_strlen($sQ) <= 80 && $oDb->isTableExists('bx_persons_data')) {
-            $aRows = $oDb->getAll("SELECT p.`id`, d.`fullname` FROM `sys_profiles` p INNER JOIN `bx_persons_data` d ON d.`id` = p.`content_id` AND p.`type` = 'bx_persons' WHERE d.`fullname` LIKE :q AND p.`status` = 'active' ORDER BY d.`fullname` ASC LIMIT 20", [
+            $aRows = $oDb->getAll("SELECT p.`id`, d.`fullname` FROM `sys_profiles` p INNER JOIN `bx_persons_data` d ON d.`id` = p.`content_id` AND p.`type` = 'bx_persons' WHERE d.`fullname` LIKE :q AND p.`status` = 'active'" . $this->_allowedAccountsSql() . " ORDER BY d.`fullname` ASC LIMIT 20", [
                 'q' => '%' . $sQ . '%',
             ]);
             foreach ($aRows as $aRow)
@@ -721,9 +724,42 @@ class BxDolAIToolAgentCreate extends BxDolAITool
         return $aOut;
     }
 
+    /**
+     * Accounts whose profiles an agent may act as: the operators' (the profiles
+     * Studio offers, get_options_agents_profile) and the Robot account's, where
+     * profile_new creates them. Never a member's: an agent on a member's profile
+     * would post, and as a message agent answer their messages, in their name.
+     *
+     * @return int[]
+     */
+    protected function _allowedAccounts(): array
+    {
+        if ($this->_aAllowedAccounts === null) {
+            $aIds = array_map('intval', (array)BxDolAccountQuery::getInstance()->getOperators());
+            $aIds[] = $this->_botAccount();
+            $this->_aAllowedAccounts = array_values(array_unique(array_filter($aIds)));
+        }
+        return $this->_aAllowedAccounts;
+    }
+
+    protected function _isAllowedAgentProfile(int $iProfileId): bool
+    {
+        if ($iProfileId <= 0)
+            return false;
+        $iAccount = (int)BxDolDb::getInstance()->getOne("SELECT `account_id` FROM `sys_profiles` WHERE `id` = :id LIMIT 1", ['id' => $iProfileId]);
+        return $iAccount > 0 && in_array($iAccount, $this->_allowedAccounts(), true);
+    }
+
+    /** `AND p.account_id IN (...)` for a query over `sys_profiles` aliased `p`. */
+    protected function _allowedAccountsSql(): string
+    {
+        $aIds = $this->_allowedAccounts();
+        return ' AND p.`account_id` IN (' . ($aIds ? implode(',', $aIds) : '0') . ')';
+    }
+
     protected function _pushProfile(array &$aOut, array &$aSeen, int $iId, string $sFallback, string $sSource): void
     {
-        if ($iId <= 0 || isset($aSeen[$iId]))
+        if ($iId <= 0 || isset($aSeen[$iId]) || !$this->_isAllowedAgentProfile($iId))
             return;
         try {
             $sName = $this->_profileDisplayName($iId, $sFallback);
@@ -777,6 +813,8 @@ class BxDolAIToolAgentCreate extends BxDolAITool
             $o = class_exists('BxDolProfile') ? BxDolProfile::getInstance($iId) : false;
             if (!$o)
                 return ['error' => "profile {$iId} not found"];
+            if (!$this->_isAllowedAgentProfile($iId))
+                return ['error' => "profile {$iId} belongs to a member, and an agent may not act as a member. Pick one from catalog.profiles or pass profile_new=<name>."];
             return ['profile_id' => $iId, 'name' => $o->getDisplayName(), 'created' => 0];
         }
 
@@ -792,14 +830,14 @@ class BxDolAIToolAgentCreate extends BxDolAITool
 
         $oDb = BxDolDb::getInstance();
         if ($oDb->isTableExists('bx_persons_data')) {
-            $aRows = $oDb->getAll("SELECT p.`id`, d.`fullname` FROM `sys_profiles` p INNER JOIN `bx_persons_data` d ON d.`id` = p.`content_id` AND p.`type` = 'bx_persons' WHERE d.`fullname` = :n AND p.`status` = 'active' LIMIT 10", [
+            $aRows = $oDb->getAll("SELECT p.`id`, d.`fullname` FROM `sys_profiles` p INNER JOIN `bx_persons_data` d ON d.`id` = p.`content_id` AND p.`type` = 'bx_persons' WHERE d.`fullname` = :n AND p.`status` = 'active'" . $this->_allowedAccountsSql() . " LIMIT 10", [
                 'n' => $sProfile,
             ]);
             foreach ($aRows as $aRow)
                 $aHits[(int)$aRow['id']] = ['id' => (int)$aRow['id'], 'name' => $aRow['fullname']];
 
             if (!$aHits) {
-                $aRows = $oDb->getAll("SELECT p.`id`, d.`fullname` FROM `sys_profiles` p INNER JOIN `bx_persons_data` d ON d.`id` = p.`content_id` AND p.`type` = 'bx_persons' WHERE d.`fullname` LIKE :n AND p.`status` = 'active' ORDER BY d.`fullname` ASC LIMIT 10", [
+                $aRows = $oDb->getAll("SELECT p.`id`, d.`fullname` FROM `sys_profiles` p INNER JOIN `bx_persons_data` d ON d.`id` = p.`content_id` AND p.`type` = 'bx_persons' WHERE d.`fullname` LIKE :n AND p.`status` = 'active'" . $this->_allowedAccountsSql() . " ORDER BY d.`fullname` ASC LIMIT 10", [
                     'n' => '%' . $sProfile . '%',
                 ]);
                 foreach ($aRows as $aRow)
@@ -1008,7 +1046,8 @@ class BxDolAIToolAgentCreate extends BxDolAITool
         $s = trim($s);
         if (strlen($s) <= $iMax)
             return $s;
-        return substr($s, 0, $iMax);
+        // at most $iMax bytes, never half a character: substr() split UTF-8 text mid-letter
+        return mb_strcut($s, 0, $iMax, 'UTF-8');
     }
 
     protected function _logSql(string $sOp, string $sTable, string $sPk, string $sPkValue, string $sSql, $mixedBefore, $mixedAfter): void
