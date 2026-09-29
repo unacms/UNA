@@ -871,7 +871,7 @@ class BxDolAIToolAgentCreate extends BxDolAITool
         $iAuthor = (int)$aBot['profile_id'];
         $iAccount = (int)$aBot['account_id'];
         if ($iAuthor <= 0 || $iAccount <= 0)
-            return ['error' => 'Robot account not found: set sys_profile_bot (Studio → Settings → Bot profile) or sys_agents_profile, then retry.'];
+            return ['error' => 'Robot account not found: set sys_profile_bot (Studio → Settings → Bot profile), then retry.'];
 
         $aExist = $oDb->getRow("SELECT p.`id` FROM `sys_profiles` p INNER JOIN `bx_persons_data` d ON d.`id` = p.`content_id` AND p.`type` = 'bx_persons' WHERE p.`account_id` = :a AND d.`fullname` = :n LIMIT 1", [
             'a' => $iAccount,
@@ -997,7 +997,7 @@ class BxDolAIToolAgentCreate extends BxDolAITool
         }
 
         $iModel = (int)($aOp['model_id'] ?? 0) ?: (int)(getParam('sys_agents_model'));
-        $iProfile = (int)($aOp['profile_id'] ?? 0) ?: (int)getParam('sys_agents_profile');
+        $iProfile = (int)($aOp['profile_id'] ?? 0);
         if ($iProfile <= 0)
             $iProfile = (int)getParam('sys_profile_bot');
         $iStore = (int)($aOp['vector_store_id'] ?? 0);
@@ -1013,7 +1013,7 @@ class BxDolAIToolAgentCreate extends BxDolAITool
     }
 
     /**
-     * Preset Robot profile and the account that owns it: sys_profile_bot, then sys_agents_profile, then the operator agent's profile.
+     * Preset Robot profile and the account that owns it: sys_profile_bot, then the operator agent's profile.
      *
      * @return array{profile_id:int,account_id:int}
      */
@@ -1022,7 +1022,6 @@ class BxDolAIToolAgentCreate extends BxDolAITool
         $oDb = BxDolDb::getInstance();
         $aCandidates = [
             (int)getParam('sys_profile_bot'),
-            (int)getParam('sys_agents_profile'),
             (int)($this->_defaults()['profile_id'] ?? 0),
         ];
         foreach ($aCandidates as $iProfile) {

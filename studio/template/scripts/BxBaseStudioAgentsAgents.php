@@ -128,7 +128,7 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
 
             $iProfileId = $oForm->getCleanValue('profile_id');
             if(empty($iProfileId)) {
-                $iProfileId = (int)getParam('sys_agents_profile');
+                $iProfileId = (int)getParam('sys_profile_bot');
                 if(empty($iProfileId))
                     $iProfileId = current(bx_srv('system', 'get_options_agents_profile', [false], 'TemplServices'))['key'];
 
@@ -197,7 +197,7 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
 
             $iProfileId = $oForm->getCleanValue('profile_id');
             if(empty($iProfileId)) {
-                $iProfileId = (int)getParam('sys_agents_profile');
+                $iProfileId = (int)getParam('sys_profile_bot');
                 if(empty($iProfileId))
                     $iProfileId = current(bx_srv('system', 'get_options_agents_profile', [false], 'TemplServices'))['key'];
 
