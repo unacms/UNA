@@ -805,7 +805,7 @@ class BxDolAIToolAgentCreate extends BxDolAITool
 
     protected function _profileDisplayName(int $iId, string $sFallback = ''): string
     {
-        $o = class_exists('BxDolProfile') ? BxDolProfile::getInstance($iId) : false;
+        $o = BxDolProfile::getInstance($iId);
         if ($o)
             return $o->getDisplayName();
         if ($sFallback !== '')
@@ -825,7 +825,7 @@ class BxDolAIToolAgentCreate extends BxDolAITool
             $iId = (int)$sProfile;
 
         if ($iId > 0) {
-            $o = class_exists('BxDolProfile') ? BxDolProfile::getInstance($iId) : false;
+            $o = BxDolProfile::getInstance($iId);
             if (!$o)
                 return ['error' => "profile {$iId} not found"];
             if (!$this->_isAllowedAgentProfile($iId))
@@ -1001,7 +1001,7 @@ class BxDolAIToolAgentCreate extends BxDolAITool
     {
         $oDb = BxDolDb::getInstance();
         $aOp = null;
-        $aCtx = class_exists('BxDolAIToolMysqlWrite') ? BxDolAIToolMysqlWrite::currentLogContext() : ['agent_id' => 0];
+        $aCtx = BxDolAIToolMysqlWrite::currentLogContext();
         $iFromChat = (int)($aCtx['agent_id'] ?? 0);
         if ($iFromChat > 0)
             $aOp = $oDb->getRow("SELECT `id`, `model_id`, `profile_id`, `vector_store_id` FROM `sys_agents_agents` WHERE `id` = :id LIMIT 1", ['id' => $iFromChat]);
@@ -1083,11 +1083,7 @@ class BxDolAIToolAgentCreate extends BxDolAITool
         if (!$oDb->isTableExists('sys_agents_sql_log'))
             return;
 
-        $aCtx = class_exists('BxDolAIToolMysqlWrite') ? BxDolAIToolMysqlWrite::currentLogContext() : [
-            'agent_id' => 0,
-            'profile_id' => 0,
-            'thread_id' => '',
-        ];
+        $aCtx = BxDolAIToolMysqlWrite::currentLogContext();
         $aSet = [
             'agent_id' => (int)($aCtx['agent_id'] ?? 0),
             'profile_id' => (int)($aCtx['profile_id'] ?? 0),

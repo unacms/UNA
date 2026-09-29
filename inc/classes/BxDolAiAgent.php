@@ -31,8 +31,7 @@ class BxDolAiAgent extends RAG
         }
 
         // what the agent did (comments, content, SQL) — shown as activity history
-        if (class_exists('BxDolAiActivityObserver'))
-            $this->observe(new BxDolAiActivityObserver($this->aAgent, $this->aParams));
+        $this->observe(new BxDolAiActivityObserver($this->aAgent, $this->aParams));
     }
 
     protected function provider(): NeuronAI\Providers\AIProviderInterface

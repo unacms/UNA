@@ -444,7 +444,7 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
     {
         $mixedResult = parent::_delete($mixedId);
         $this->_oDb->cleanCache('sys_agents_with_alert');
-        if ($mixedResult && class_exists('BxDolAiActivity'))
+        if ($mixedResult)
             BxDolAiActivity::deleteForAgent((int)$mixedId);
 
         return $mixedResult;
@@ -1252,7 +1252,7 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
             return;
         }
 
-        $aItems = class_exists('BxDolAiActivity') ? BxDolAiActivity::listForAgent($iId, 0, 200) : [];
+        $aItems = BxDolAiActivity::listForAgent($iId, 0, 200);
 
         $sTitle = _t('_sys_agents_agents_popup_activity', !empty($aAgent['title']) ? $aAgent['title'] : $aAgent['name']);
         if (strpos($sTitle, '_sys_agents_agents_popup_activity') === 0)

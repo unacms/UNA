@@ -2017,7 +2017,7 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
 
         $oDb = BxDolDb::getInstance();
         $aRows = $oDb->getAll("SELECT `a`.*, `m`.`title` AS `model_title` FROM `sys_agents_agents` AS `a` LEFT JOIN `sys_agents_models` AS `m` ON `m`.`id` = `a`.`model_id` ORDER BY `a`.`added` DESC, `a`.`id` DESC");
-        $aStats = class_exists('BxDolAiActivity') ? BxDolAiActivity::statsByAgent() : [];
+        $aStats = BxDolAiActivity::statsByAgent();
 
         $aAgents = [];
         foreach ($aRows as $aRow) {
@@ -2117,7 +2117,7 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
             return ['error' => _t('_sys_agents_agent_not_found'), 'code' => 404];
 
         $iLimit = max(1, min(200, (int)$iLimit));
-        $aItems = class_exists('BxDolAiActivity') ? BxDolAiActivity::listForAgent($iAgentId, (int)$iStart, $iLimit + 1) : [];
+        $aItems = BxDolAiActivity::listForAgent($iAgentId, (int)$iStart, $iLimit + 1);
         $bMore = count($aItems) > $iLimit;
         if ($bMore)
             array_pop($aItems);
