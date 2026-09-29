@@ -138,7 +138,7 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
             'GetBlockAiAgentOperator' => 'BxBaseServices',
             'GetAiChatThreads' => 'BxBaseServices',
             'GetAiChatThread' => 'BxBaseServices',
-            'GetAiAgents' => 'BxBaseServices', // !#### agents admin (App)
+            'GetAiAgents' => 'BxBaseServices',
             'GetBlockAiAgentsAdmin' => 'BxBaseServices',
             'SetAiAgentActive' => 'BxBaseServices',
             'GetAiAgentActivity' => 'BxBaseServices',
@@ -2002,7 +2002,7 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
     }
 
     /**
-     * !#### agents admin (App) — a cut-down Studio > Agents for operators:
+     * a cut-down Studio > Agents for operators:
      * the list with on/off, chat history for manual/message agents and the
      * activity history (what the agent did) for event-driven ones.
      *
