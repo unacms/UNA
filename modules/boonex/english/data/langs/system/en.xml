@@ -2426,6 +2426,11 @@
     <string name="_sys_agents_field_model_id_info"><![CDATA[AI model to use for this agent.]]></string>
     <string name="_sys_agents_field_profile_id"><![CDATA[Profile]]></string>
     <string name="_sys_agents_field_profile_id_inf"><![CDATA[AI agent will perform actions under this profile]]></string>
+    <string name="_sys_agents_profile_btn_new"><![CDATA[New: {0}]]></string>
+    <string name="_sys_agents_profile_name_commenter"><![CDATA[Commenter]]></string>
+    <string name="_sys_agents_profile_name_bot"><![CDATA[Bot]]></string>
+    <string name="_sys_agents_profile_required_err"><![CDATA[profile is required. Show chat_buttons with profile_buttons, then pass profile=<tapped name> or profile_new=<name> (for «{0}»).]]></string>
+    <string name="_sys_agents_profile_new_err"><![CDATA[profile_new must be a short display name (1–3 words, like a person): «{0}», «{1}». Not a prompt or sentence. catalog.suggested_new_name is the default.]]></string>
     <string name="_sys_agents_field_acl_levels"><![CDATA[Who can interact]]></string>
     <string name="_sys_agents_field_acl_levels_info"><![CDATA[Membership levels that may chat with this agent, use it in messenger, or fill form fields with it. Leave empty for Nobody. Studio operators can always use the agent to debug. Unauthenticated allows guests.]]></string>
     <string name="_sys_agents_field_trigger"><![CDATA[Trigger]]></string>

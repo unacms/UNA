@@ -233,7 +233,7 @@ class BxDolAIToolAgentCreate extends BxDolAITool
 
         $aDefaults = $this->_defaults();
         $aProfiles = $this->_listProfiles('');
-        $sSuggest = $this->_preset($sPreset) === 'comment_reply' ? 'Комментатор' : 'Бот';
+        $sSuggest = $this->_suggestProfileName($sPreset);
 
         return [
             'ok' => 1,
@@ -243,7 +243,7 @@ class BxDolAIToolAgentCreate extends BxDolAITool
             'profiles_count' => count($aProfiles),
             'suggested_new_name' => $sSuggest,
             'profile_buttons' => $this->_profileButtons($aProfiles, $sSuggest),
-            'profile_hint' => 'Call chat_buttons now with exactly profile_buttons as reply labels (one per line, no other text). Tap on a name → profile=<name>; tap on «Новый: ' . $sSuggest . '» → profile_new=' . $sSuggest . '. create without profile/profile_new is refused.',
+            'profile_hint' => 'Call chat_buttons now with exactly profile_buttons as reply labels (one per line, no other text). Tap on a name → profile=<name>; tap on «' . _t('_sys_agents_profile_btn_new', $sSuggest) . '» → profile_new=' . $sSuggest . '. create without profile/profile_new is refused.',
             'defaults' => $aDefaults,
             'presets' => self::PRESETS,
             'comment_reply_hint' => 'Pick an alert like bx_forum:commentPost (module=discussions). Tools: comments_get,comments_add,comment_get,content_get. async=1.',
@@ -279,10 +279,10 @@ class BxDolAIToolAgentCreate extends BxDolAITool
         if ($sProfileIn === '' && $sProfileNewIn === '' && (int)($aIn['profile_id'] ?? 0) <= 0) {
             // never fall back to the operator's own profile silently — the user must pick a name or a new one
             $aProfiles = $this->_listProfiles('');
-            $sSuggest = $sPreset === 'comment_reply' ? 'Комментатор' : 'Бот';
+            $sSuggest = $this->_suggestProfileName($sPreset);
             return [
                 'ok' => 0,
-                'error' => 'profile is required. Show chat_buttons with profile_buttons, then pass profile=<tapped name> or profile_new=<name> (for «Новый: …»).',
+                'error' => _t('_sys_agents_profile_required_err', _t('_sys_agents_profile_btn_new', $sSuggest)),
                 'profiles' => $aProfiles,
                 'suggested_new_name' => $sSuggest,
                 'profile_buttons' => $this->_profileButtons($aProfiles, $sSuggest),
@@ -729,8 +729,13 @@ class BxDolAIToolAgentCreate extends BxDolAITool
             if ($s !== '' && !in_array($s, $aOut, true))
                 $aOut[] = $s;
         }
-        $aOut[] = 'Новый: ' . $sSuggest;
+        $aOut[] = _t('_sys_agents_profile_btn_new', $sSuggest);
         return $aOut;
+    }
+
+    protected function _suggestProfileName(string $sPreset): string
+    {
+        return _t($this->_preset($sPreset) === 'comment_reply' ? '_sys_agents_profile_name_commenter' : '_sys_agents_profile_name_bot');
     }
 
     /**
@@ -784,14 +789,15 @@ class BxDolAIToolAgentCreate extends BxDolAITool
     protected function _shortDisplayName(string $s): array
     {
         $s = trim(preg_replace('/\s+/u', ' ', $s));
-        $s = preg_replace('/^новый\s*:\s*/iu', '', $s);
-        $s = trim($s);
+        $sPrefix = trim(_t('_sys_agents_profile_btn_new', ''));
+        if ($sPrefix !== '' && $sPrefix !== '_sys_agents_profile_btn_new')
+            $s = trim((string)preg_replace('/^' . preg_quote($sPrefix, '/') . '\s*/iu', '', $s));
         if ($s === '')
             return ['error' => 'profile name is empty'];
 
         $iWords = count(preg_split('/\s+/u', $s, -1, PREG_SPLIT_NO_EMPTY));
         if (mb_strlen($s) > self::PROFILE_NAME_MAX || $iWords > 3 || preg_match('/[\r\n.!?—–;:]/u', $s)) {
-            return ['error' => 'profile_new must be a short display name (1–3 words, like a person): «Отвечатор», «Комментатор», «Posts Bot». Not a prompt or sentence. catalog.suggested_new_name is the default.'];
+            return ['error' => _t('_sys_agents_profile_new_err', _t('_sys_agents_profile_name_commenter'), _t('_sys_agents_profile_name_bot'))];
         }
 
         return ['name' => $s];
