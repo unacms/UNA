@@ -135,12 +135,20 @@ class BxDolAIToolMysqlWrite extends BxDolAITool
      * column => literal from the SET clause (UPDATE / INSERT ... SET) or the
      * (columns) VALUES (...) pair. Expressions that are not plain literals
      * (NOW(), col + 1) are kept as their SQL text.
+     *
+     * SET and WHERE are located on a copy with quoted literals blanked
+     * ($sBare, same length as $sSql) so a value cannot end the clause.
      */
     protected function _parseAssignments(string $sSql, string $sOp): array
     {
         $aOut = [];
-        if (preg_match('/\bset\b(.+?)(?:\bwhere\b.*)?$/is', $sSql, $aM)) {
-            foreach ($this->_splitTopLevel($aM[1]) as $sPair) {
+        $sBare = $this->_maskLiterals($sSql, true);
+        if (preg_match('/\bset\b/i', $sBare, $aSet, PREG_OFFSET_CAPTURE)) {
+            $iFrom = $aSet[0][1] + strlen($aSet[0][0]);
+            $sClause = substr($sSql, $iFrom);
+            if (preg_match('/\bwhere\b/i', substr($sBare, $iFrom), $aWhere, PREG_OFFSET_CAPTURE))
+                $sClause = substr($sSql, $iFrom, $aWhere[0][1]);
+            foreach ($this->_splitTopLevel($sClause) as $sPair) {
                 if (preg_match('/^\s*(?:`?[a-zA-Z0-9_]+`?\s*\.\s*)?`?([a-zA-Z0-9_]+)`?\s*=\s*(.+)$/s', trim($sPair), $aP))
                     $aOut[$aP[1]] = $this->_literal(trim($aP[2]));
             }
@@ -155,6 +163,40 @@ class BxDolAIToolMysqlWrite extends BxDolAITool
             }
         }
         return $aOut;
+    }
+
+    /**
+     * Copy of $s with the inside of quoted literals replaced by spaces.
+     * Length and quote marks stay, so keyword offsets still point into $s.
+     * Quote rules match _splitTopLevel() (backslash and doubled quotes).
+     * $bIdents also blanks `identifiers`, so a column named where/set is not a clause boundary.
+     */
+    protected function _maskLiterals(string $s, bool $bIdents = false): string
+    {
+        $iLen = strlen($s);
+        $sQuote = '';
+        for ($i = 0; $i < $iLen; $i++) {
+            $c = $s[$i];
+            if ($sQuote !== '') {
+                if ($sQuote !== '`' && $c === '\\' && $i + 1 < $iLen) {
+                    $s[$i] = ' ';
+                    $s[++$i] = ' ';
+                } elseif ($c === $sQuote) {
+                    if ($i + 1 < $iLen && $s[$i + 1] === $sQuote) {
+                        $s[$i] = ' ';
+                        $s[++$i] = ' ';
+                    } else {
+                        $sQuote = '';
+                    }
+                } else {
+                    $s[$i] = ' ';
+                }
+                continue;
+            }
+            if ($c === "'" || $c === '"' || ($bIdents && $c === '`'))
+                $sQuote = $c;
+        }
+        return $s;
     }
 
     /** Split on commas that are outside quotes and parentheses. */
@@ -320,12 +362,18 @@ class BxDolAIToolMysqlWrite extends BxDolAITool
 
     protected function _wherePkValue(string $sSql, string $sPk, BxDolDb $oDb, string $sTable): string
     {
-        if (!preg_match('/\bwhere\b(.+)$/is', $sSql, $aM))
+        $sBare = $this->_maskLiterals($sSql, true);
+        if (!preg_match('/\bwhere\b/i', $sBare, $aWhere, PREG_OFFSET_CAPTURE))
             throw new Exception('UPDATE requires WHERE primary_key = value.');
 
-        $sWhere = trim($aM[1]);
-        $sWhere = preg_replace('/\s+(limit|order\s+by|offset)\b.*$/is', '', $sWhere);
-        $sWhere = trim($sWhere, " \t\n\r;");
+        $sWhere = substr($sSql, $aWhere[0][1] + strlen($aWhere[0][0]));
+        $sWhereBare = $this->_maskLiterals($sWhere, true);
+        $iCut = strlen($sWhere);
+        if (preg_match('/\s+(?:limit|offset)\b/i', $sWhereBare, $aTail, PREG_OFFSET_CAPTURE) && $aTail[0][1] < $iCut)
+            $iCut = $aTail[0][1];
+        if (preg_match('/\s+order\s+by\b/i', $sWhereBare, $aOrder, PREG_OFFSET_CAPTURE) && $aOrder[0][1] < $iCut)
+            $iCut = $aOrder[0][1];
+        $sWhere = trim(substr($sWhere, 0, $iCut), " \t\n\r;");
         if ($sWhere === '')
             throw new Exception('UPDATE requires WHERE primary_key = value.');
 
@@ -336,8 +384,9 @@ class BxDolAIToolMysqlWrite extends BxDolAITool
         $sPkRe = preg_quote($sPk, '/');
         $sTableRe = preg_quote($sTable, '/');
         $sIdent = '(?:`?' . $sTableRe . '`?\s*\.\s*)?`?' . $sPkRe . '`?';
-        if (preg_match('/(?:^|\band\s+)\s*\(?\s*' . $sIdent . '\s*=\s*(\d+|\'[^\']*\'|"[^"]*")/i', $sWhere, $aV))
-            return trim($aV[1], "\"'");
+        $sWhereMask = $this->_maskLiterals($sWhere);
+        if (preg_match('/(?:^|\band\s+)\s*\(?\s*' . $sIdent . '\s*=\s*(\d+|\'[^\']*\'|"[^"]*")/i', $sWhereMask, $aV, PREG_OFFSET_CAPTURE))
+            return trim(substr($sWhere, $aV[1][1], strlen($aV[1][0])), "\"'");
 
         $sTableSafe = str_replace('`', '', $sTable);
         $sPkSafe = str_replace('`', '', $sPk);
