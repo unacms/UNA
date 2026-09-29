@@ -1,8 +1,11 @@
 import { cn } from 'app/lib/util';
 import type { VideoProps } from './video.types';
 
-export default function ElementVideo({ src, controls, cover, fill, autoplay, muted, poster, className }: VideoProps) {
+export default function ElementVideo({ src, controls, cover, fill, autoplay, muted, poster, previewTime, className }: VideoProps) {
     if (!src) return null;
+
+    // Past-the-end times clamp to the last frame, so short clips still show something.
+    const source = !poster && previewTime && !src.includes('#') ? `${src}#t=${previewTime}` : src.toString();
 
     // fill = stretch to parent (thumbnail / lightbox), same as native. Legacy `cover` keeps the background-video look.
     const videoClass = fill
@@ -20,7 +23,7 @@ export default function ElementVideo({ src, controls, cover, fill, autoplay, mut
             playsInline
             preload="metadata"
         >
-            <source src={src.toString()} />
+            <source src={source} />
         </video>
     )
 }

@@ -11,6 +11,12 @@ export type VideoProps = {
     /** Callers pass `true` or the legacy `"muted"` string. */
     muted?: boolean | string;
     poster?: string;
+    /**
+     * Web, no poster: seconds into the video to load as the still frame instead
+     * of the first one (often black or a title card). Uses a `#t=` media fragment,
+     * so playback would start there too — only for thumbnails that don't play inline.
+     */
+    previewTime?: number;
     video_embed?: unknown;
     className?: string;
 };
