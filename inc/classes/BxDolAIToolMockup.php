@@ -80,8 +80,6 @@ class BxDolAIToolMockup extends BxDolAITool
 
     public static function currentBlockId()
     {
-        if (!class_exists('BxDolPage'))
-            return 0;
         $aProc = BxDolPage::getBlockProcessing();
         return (!empty($aProc['id'])) ? (int)$aProc['id'] : 0;
     }
