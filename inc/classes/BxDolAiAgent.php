@@ -105,7 +105,7 @@ class BxDolAiAgent extends RAG
     {
         if ($this->aAgent['chat_history_context']) {
             return new BxDolAiChatHistory(
-                thread_id: $this->getСhatHistoryThreadId(),
+                thread_id: $this->getChatHistoryThreadId(),
                 pdo: BxDolDb::getInstance()->getLink(),
                 table: 'sys_agents_chat_history',
                 contextWindow: $this->aAgent['chat_history_context']
@@ -130,7 +130,7 @@ class BxDolAiAgent extends RAG
         };
     }
 
-    protected function getСhatHistoryThreadId(): string
+    protected function getChatHistoryThreadId(): string
     {
         return BxDolAiChat::threadId($this->aAgent, $this->aParams);
     }

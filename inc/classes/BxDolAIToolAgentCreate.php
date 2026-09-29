@@ -65,7 +65,7 @@ class BxDolAIToolAgentCreate extends BxDolAITool
             new ToolProperty('model_id', PropertyType::INTEGER, 'Chat model id. Default = operator agent / sys_agents_model.', false),
             new ToolProperty('profile_id', PropertyType::INTEGER, 'Numeric profile id. Prefer profile (name) or profile_new. Do not ask the user for this number.', false),
             new ToolProperty('profile', PropertyType::STRING, 'Existing profile the agent acts as: display name, @uri, or id. From catalog.profiles. Do not ask the user for a number.', false),
-            new ToolProperty('profile_new', PropertyType::STRING, 'Short display name for a NEW Persons profile, like a person name: 1–3 words, max 40 chars. Examples: Отвечатор, Posts Bot. NEVER a prompt, sentence, or agent instructions.', false),
+            new ToolProperty('profile_new', PropertyType::STRING, 'Short display name for a NEW Persons profile, like a person name: 1–3 words, max 40 chars. Examples: Posts Bot. NEVER a prompt, sentence, or agent instructions.', false),
             new ToolProperty('vector_store_id', PropertyType::INTEGER, 'Knowledge store id. Default = operator / first active store / 0.', false),
             new ToolProperty('async', PropertyType::INTEGER, '1 = delayed (use for alert comment replies so the post is not blocked). Default 1 for alert.', false),
             new ToolProperty('active', PropertyType::INTEGER, '1 = run immediately. Default 1.', false),
