@@ -1,4 +1,4 @@
-import { UNA_URL, UNA_API_KEY, appSetting } from 'app/config';
+import { UNA_URL, UNA_API_KEY, MULTITENANT, appSetting } from 'app/config';
 import { cache } from 'react'
 import Root from 'app/root-client'
 import { Suspense } from 'react'
@@ -30,15 +30,20 @@ const getData = cache(async (path, searchParamsKey) => {
         return { data: { title: SITE_TITLE, description: SITE_TITLE }, code: 404 };
     }
     
-    let hdrs = await headers();
-    let cookieString = search_params.cookieString;    
+    const hdrs = await headers();
+    // The viewer's Cookie header exactly as the browser sent it — forwarded to UNA.
+    const cookieString = hdrs.get('cookie') || '';
+    // Tenant headers come from proxy.js only (it drops client-sent ones); never
+    // trust them in single-tenant mode.
+    const tenantUnaUrl = MULTITENANT ? hdrs.get('x-tenant-una-url') : null;
+    const tenantUnaKey = MULTITENANT ? hdrs.get('x-tenant-una-key') : null;
 
     const fetchHeaders = {
         cookie: cookieString,
-        authorization: 'Bearer ' + (hdrs?.get("x-tenant-una-key") ?? UNA_API_KEY),
+        authorization: 'Bearer ' + (tenantUnaKey ?? UNA_API_KEY),
     };
-    
-    let l = hdrs?.get("x-tenant-una-url") ?? UNA_URL;
+
+    let l = tenantUnaUrl ?? UNA_URL;
     l += '/api.php' + '?r=system/get_page_by_request/TemplServicePages&params[]=' + path;
     const langCode = resolveLangCode(cookieString, hdrs?.get('accept-language') || '');
     if (langCode) {
@@ -46,7 +51,7 @@ const getData = cache(async (path, searchParamsKey) => {
     }
     let searchParams = { ...search_params };
 
-    delete searchParams.cookieString;
+    delete searchParams.cookieString; // legacy: old proxy put cookies in the URL
     delete searchParams.path;
     delete searchParams._rsc;
     let sBlocks = '';
@@ -101,7 +106,7 @@ const getData = cache(async (path, searchParamsKey) => {
         path,
         key: unaPageCacheKey({
             url: l,
-            tenant: hdrs?.get('x-tenant-una-url') ?? '',
+            tenant: tenantUnaUrl ?? '',
             cookieString: cookieString || '',
         }),
         load: loadUnaPage,
@@ -218,7 +223,7 @@ export default async function Page(props) {
 
     return (
         <Suspense fallback={null}>
-            <Root path={'home'} data={data?.data} uri={data?.data?.uri} url={data?.data?.url} code={data?.code}></Root>
+            <Root path={path} data={data?.data} uri={data?.data?.uri} url={data?.data?.url} code={data?.code}></Root>
         </Suspense>
     )
 }

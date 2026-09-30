@@ -9,11 +9,26 @@ export const config = {
     //runtime: 'experimental-edge',
 };
 
-async function setTenantHeaders(response, tenant) {
-    response.headers.set("x-tenant-id", tenant.id);
-    response.headers.set("x-tenant-una-url", tenant.unaUrl);
-    response.headers.set("x-tenant-una-key", tenant.unaApiKey);
-    response.headers.set("x-tenant-revision", tenant.revision);
+const TENANT_HEADERS = ['x-tenant-id', 'x-tenant-una-url', 'x-tenant-una-key', 'x-tenant-revision'];
+
+/**
+ * Request headers for a Next route (page, icon API).
+ * - Client-sent `x-tenant-*` are always dropped: the page trusts them to pick
+ *   the UNA host and key, so a client must never be able to set them.
+ * - The resolved tenant is added here and passed with
+ *   `rewrite(url, { request: { headers } })` — it reaches the route only.
+ *   Response headers would also be sent to the browser (tenant API key).
+ */
+function routeRequestHeaders(request, tenant) {
+    const headers = new Headers(request.headers);
+    for (const name of TENANT_HEADERS) headers.delete(name);
+    if (MULTITENANT && tenant) {
+        headers.set('x-tenant-id', String(tenant.id));
+        headers.set('x-tenant-una-url', tenant.unaUrl);
+        headers.set('x-tenant-una-key', tenant.unaApiKey);
+        headers.set('x-tenant-revision', String(tenant.revision));
+    }
+    return headers;
 }
 
 async function resolveTenant(hostnameWithPort) {
@@ -112,42 +127,23 @@ export async function proxy(request) {
             return NextResponse.redirect(new URL('http://localhost:4000'), 307); // temporary redirect
         }        
 
-        // If the path is not an icon, treat it as a normal page: collect
-        // cookies and optionally append them as a `cookieString` query param
-        // so the downstream handler can access them.
+        // A normal page. The page reads the viewer's cookies from its own request
+        // (`headers()`), so they are never copied into the URL.
         if (!request.nextUrl.pathname.includes('.icon')) {
-            let c = request.cookies.getAll();
-            let cookieString = '';
-            c.map(function (item) {
-                cookieString += item.name + '=' + encodeURIComponent(item.value) + '; '
-            });
-
-            // Build the target URL using the original origin + path + search.
-            let url = request.nextUrl.origin + request.nextUrl.pathname + request.nextUrl.search;
             // Map root URL `/` to `/home` for downstream routing.
-            if (request.nextUrl.pathname == '/')
-                url = request.nextUrl.origin + '/home' + request.nextUrl.search            
+            const pathname = request.nextUrl.pathname == '/' ? '/home' : request.nextUrl.pathname;
+            const url = request.nextUrl.origin + pathname + request.nextUrl.search;
 
-            // If cookies exist, rewrite the request to include them as a query
-            // parameter. This is useful for server-side handlers that read the
-            // cookie string from the query.
-            if (cookieString != ''){
-                const response =  NextResponse.rewrite(new URL(url + (url.includes('?') ? '&' : '?') + "cookieString=" + cookieString));
-                if (MULTITENANT && tenant)
-                    setTenantHeaders(response, tenant)
-                return response
-            }
-            else{
-                // No cookies: perform a simple rewrite and add cache headers
-                // to suggest caching behavior at the CDN/Vercel level.
-                const response = NextResponse.rewrite(new URL(url))
+            const response = NextResponse.rewrite(new URL(url), {
+                request: { headers: routeRequestHeaders(request, tenant) },
+            });
+            if (request.cookies.getAll().length === 0) {
+                // Guests see the same page: let the CDN cache it.
                 response.headers.set('Cache-Control', 'public, s-maxage=1')
                 response.headers.set('CDN-Cache-Control', 'public, s-maxage=60')
                 response.headers.set('Vercel-CDN-Cache-Control', 'public, s-maxage=3600')
-                if (MULTITENANT && tenant)
-                    setTenantHeaders(response, tenant)
-                return response
             }
+            return response
         }
         else{
             // Path contains `.icon` — rewrite to internal `/api/icon` route,
@@ -155,10 +151,9 @@ export async function proxy(request) {
             const url = new URL(request.url);
             const iconApiUrl = new URL('/api/icon', request.url);
             iconApiUrl.search = url.search;
-            const response = NextResponse.rewrite(iconApiUrl);
-            if (MULTITENANT)
-                setTenantHeaders(response, tenant)
-            return response
+            return NextResponse.rewrite(iconApiUrl, {
+                request: { headers: routeRequestHeaders(request, tenant) },
+            });
         }
     }
     else {
