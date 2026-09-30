@@ -287,7 +287,9 @@ class BxDolAiSearchParser extends BxDolFactory
         if (!$aLiteral && ($sMode == self::NONE || $sMode == '' || $fModeConfidence < self::CONFIDENCE_MIN))
             return null;
 
-        if (!in_array($sField, ['starts', 'ends', 'created']))
+        // starts/ends/created are the main parser's answers. added/created/date_start/date_end are extended-search columns.
+        // 'date' is any other extended-search column: a missing year stays the current one.
+        if (!in_array($sField, ['starts', 'ends', 'created', 'added', 'date_start', 'date_end', 'date']))
             $sField = $sSection && $sSection != 'bx_events' ? 'created' : 'starts';
 
         $iYear = (int)$oNow->format('Y');
@@ -333,9 +335,9 @@ class BxDolAiSearchParser extends BxDolFactory
             if (checkdate($iMonth, $iDay, $iYear)) {
                 $oCandidate = (clone $oNow)->setDate($iYear, $iMonth, $iDay)->setTime(0, 0, 0);
                 $iDiffDays = (int)$oNow->diff($oCandidate)->format('%r%a');
-                if ($sField == 'created' && $iDiffDays > 1)
+                if (in_array($sField, ['created', 'added']) && $iDiffDays > 1)
                     $iYear--;
-                elseif ($sField != 'created' && $iDiffDays < -30)
+                elseif (in_array($sField, ['starts', 'ends', 'date_start', 'date_end']) && $iDiffDays < -30)
                     $iYear++;
             }
         }
