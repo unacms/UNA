@@ -4,6 +4,7 @@ import { BlockByName, DataByName } from 'app/components/block';
 import { LAYOUT_BREAKPOINTS, isNativeTabsEnabled, findElementBySource } from 'app/lib/util';
 import { CommentsBrowse, CommentsForm } from 'app/components/elements/comments-browse'
 import KbAvoidingView, { KbStickyView, useStickyComposerListInset } from 'app/ui/atoms/kb-avoiding-view';
+import { EdgeBlurView, edgeBlurConfig } from 'app/ui/atoms/edge-blur';
 import { Platform } from 'react-native'
 import { useLocalSearchParams } from 'app/lib/hooks/router'
 import emitter from 'app/context/emitter';
@@ -538,11 +539,14 @@ export default function PageLayout({ data, blocks, isModal = false, url, pageCla
                     </View>
                     {ownsPageComments && (
                         <KbAvoidingView>
-                            <View
+                            <EdgeBlurView
+                                edge="bottom"
+                                config={edgeBlurConfig('footer')}
                                 onLayout={handleLayout}
                                 style={isFormFixed && listWidth ? { width: listWidth + 5 } : undefined}
                                 // pt-12: fade runs above the input (bottom-anchored panel grows upward).
-                                className="pt-12 lg:pt-0 bg-linear-to-t from-card from-40% to-transparent web:fixed web:bottom-0 web:z-50 lg:static lg:z-0 lg:w-full"
+                                className="pt-12 lg:pt-0 web:fixed web:bottom-0 web:z-50 lg:static lg:z-0 lg:w-full"
+                                washClassName="bg-linear-to-t from-card from-40% to-transparent"
                             >
                                 <CommentsForm
                                     isModal={isModal}
@@ -551,7 +555,7 @@ export default function PageLayout({ data, blocks, isModal = false, url, pageCla
                                     form={commentsForm}
                                     requestUrl={commentsRequestUrl}
                                 />
-                            </View>
+                            </EdgeBlurView>
                         </KbAvoidingView>
                     )}
                 </View>

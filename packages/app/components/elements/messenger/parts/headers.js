@@ -8,14 +8,17 @@ import useDebounce from 'app/lib/hooks/use-debounce';
 import { getBackButtonWeb } from 'app/lib/common-helpers';
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import { components } from 'app/components/registry';
-import { useSetHeaderHeight } from 'app/context/jotai/layout';
 import { useTranslation } from 'react-i18next';
 
 const isWeb = Platform.OS === 'web';
 
-/** Overlay wash so lists can scroll behind in-panel chrome (agent / comments). */
-export const MESSENGER_OVERLAY_HEADER =
-    'absolute top-0 inset-x-0 z-10 bg-linear-to-b from-background from-40% to-transparent pb-8';
+/**
+ * Overlay chrome so lists can scroll behind it (agent / comments). Position
+ * and wash are split so iOS can swap the wash for a native blur (`EdgeBlurView`).
+ */
+export const MESSENGER_OVERLAY_HEADER = 'absolute top-0 inset-x-0 z-10 pb-8';
+export const MESSENGER_OVERLAY_HEADER_FADE =
+    'bg-linear-to-b from-background from-40% to-transparent';
 export const MESSENGER_OVERLAY_COMPOSER_FADE =
     'bg-linear-to-t from-background from-40% to-transparent';
 
@@ -134,21 +137,14 @@ export function MobileListHeader({ pageData, onSearch, addButtons, menuItems, me
     const { t } = useTranslation();
     const [showSearch, setShowSearch] = useState(false);
     const search = useDebouncedSearch(onSearch);
-    const setHeaderHeight = useSetHeaderHeight();
     const ContextSelector = components['molecule']['context_selector'];
     const listTitle = t('Messages');
 
-    // Native: the injected header can paint taller than the fixed h-16 chrome.
-    const onHeaderLayout = useCallback((event) => {
-        if (isWeb) return;
-        const { height } = event.nativeEvent.layout;
-        if (height > 0) {
-            setHeaderHeight(height);
-        }
-    }, [setHeaderHeight]);
-
+    // Header height comes from PageHeader's own onLayout, which also counts the
+    // edge-to-edge status bar inset. Measuring here would publish only this
+    // content's height and slide the first list row under the inbox/direct row.
     return (
-        <View onLayout={onHeaderLayout} className="w-full">
+        <View className="w-full">
             <Row className={`${appSetting('layout', 'page_content_width_default')} ${messengerHeaderContentClass()} max-w-full`}>
                 {showSearch ? (
                     <View className="flex-1 min-w-0 px-4">

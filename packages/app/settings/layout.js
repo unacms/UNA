@@ -87,6 +87,25 @@ export const settingsLayout = {
             fade: 'bg-linear-to-b from-background to-background/0',
             /** Extra px the color wash extends below the header. */
             fade_extend: 0,
+            /**
+             * Native wash where `fade_blur` is off (Android): solid through the
+             * header, easing out over `extend` px below it — like the iOS blur —
+             * so content scrolling underneath (chat) doesn't show through the
+             * title row. `extend` is visual only (lists keep `fade_extend`).
+             * null falls back to `fade` / `fade_extend`.
+             */
+            fade_native: { className: 'bg-linear-to-b from-background from-75% to-background/0', extend: 16 },
+            /**
+             * iOS: progressive blur instead of the `fade` wash, like native
+             * bars — a SwiftUI material masked by an eased gradient (fully
+             * blurred for `hold` of the height, then eases out). `extend` = px
+             * past the header. `tint` = opacity of `bg-background` over the
+             * material per scheme (dark `thin` alone reads as `bg-card`).
+             * null keeps the `fade` wash.
+             */
+            // Transparency knobs: `opacity` (peak strength, blur + tint) is the
+            // gentlest; `material` (ultraThin → thick), `hold`, `tint` also help.
+            fade_blur: { material: 'thin', hold: 0.5, opacity: 0.8, extend: 16, tint: { dark: 0.75 } },
             /** Optional. When set (non-blank), appended to `container` while scrollY > 0 (full-width bar: shadow, border, etc.). */
             container_scrolled: ' ns--header-wrapper-scrolled-- shadow-none lg:bg-card/60 lg:backdrop-blur-lg lg:shadow-border-b dark:lg:shadow-border-b-deep ne-- ',
             content: ' ns--header-content-- items-center justify-between h-16 lg:bg-card/60 lg:backdrop-blur-lg lg:shadow-border-b dark:lg:shadow-border-b-deep mx-auto w-full ne-- ',
@@ -99,6 +118,22 @@ export const settingsLayout = {
             active_item_indicator: 'absolute -bottom-2 left-0 h-0.5 rounded-full flex-none bg-ring',
             active_item_indicator_bg: 'absolute bottom-0 left-0 h-12 w-full overflow-hidden rounded-lg flex-none',
         },
+        /**
+         * iOS: native progressive blur behind bottom composers (post comments,
+         * messenger / agent) and in-panel overlay headers, instead of their
+         * `bg-linear-to-* … to-transparent` wash — same shape as
+         * `header.fade_blur` (`hold` is measured from the anchored edge;
+         * `extend` is unused, the containers carry their own fade run-up).
+         * null keeps the wash.
+         */
+        footer_fade_blur: { material: 'thin', hold: 0.45, opacity: 0.8, tint: { dark: 0.75 } },
+        /**
+         * iOS NativeTabs: native blur behind the floating tab bar on tab
+         * screens, matching `header.fade_blur`. Height = the tab screen's bottom
+         * safe-area inset (home indicator + tab bar, 83pt on iPhone 15 Pro) +
+         * `extend`. null leaves only the system edge effect.
+         */
+        tabbar_fade_blur: { material: 'thin', hold: 0.5, opacity: 0.8, extend: 44, tint: { dark: 0.75 } },
         vertical: {
             blocks: [
                 /*  {
