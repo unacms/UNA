@@ -17,12 +17,12 @@ $aConfig = array(
     'name' => 'bx_twitter',
     'title' => 'Twitter connect',
     'note' => 'Twitter login, join with a Twitter account',
-    'version' => '13.0.3.DEV',
-    'vendor' => 'Boonex',
+    'version' => '15.0.1.DEV',
+    'vendor' => 'UNA INC',
     'help_url' => 'http://feed.una.io/?section={module_name}',
 
     'compatible_with' => array(
-        '13.0.x'
+        '15.0.x'
     ),
 
     /**

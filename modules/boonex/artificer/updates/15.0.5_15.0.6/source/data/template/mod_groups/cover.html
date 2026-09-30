@@ -1,0 +1,45 @@
+<div class="bx-menu-toolbar-padding pt-16">
+    <div class="bx-base-pofile-cover-wrapper __class__ relative">
+        <div class="bx-base-pofile-cover relative">
+            <div class="bx-base-pofile-cover-image-wrp relative xl:px-4 overflow-hidden">
+                <div class="bx-base-pofile-cover-image bx-def-page-width relative mx-auto opacity-100 xl:rounded-b-lg <bx_if:show_cover_placeholder>bx-bpci-holder h-32 lg:h-32 bg-gradient-to-b from-green-400 to-green-500</bx_if:show_cover_placeholder><bx_if:show_cover>h-64 lg:h-80</bx_if:show_cover> __add_class__ ">
+                    <p class="bx-base-pofile-cover-image box-border absolute h-full w-full flex justify-center items-center">
+                        <img alt="" class="bx-base-pofile-cover-image w-full object-cover bg-cover xl:rounded-b-lg h-full relative __img_class__ bx-image-edit-source-__unique_id__" style="background-image:url(__cover_url__); __cover_settins__" src="<bx_icon_url:spacer.gif />" />
+                    </p>
+                    __cover_tweak__
+                </div>
+                
+            </div>
+            <div class="bx-base-pofile-cover-info bx-def-page-width relative mx-auto px-6 lg:px-8">
+                <div class="bx-base-pofile-ci-cnt relative flex flex-col -mt-24 lg:-mt-16 lg:flex-row lg:items-center">
+                    <bx_if:show_avatar>
+                        <div class="bx-base-pofile-cover-thumb relative lg:absolute flex justify-center lg:flex-none z-10 __add_class__">
+                            <a class="bx-base-pofile-cover-thumb hover:no-underline" href="__picture_href__" >
+                                <img alt="__title_attr__" class="bx-base-pofile-unit-thumb bx-def-ava-big bx-def-ava-big-size rounded-full ring-4 mx-auto ring-white dark:ring-gray-900 h-48 w-48 __img_class__ bx-image-edit-source-__unique_id__" src="__ava_url__"  <bx_if:show_ava_letter> style="display:none" </bx_if:show_ava_letter> />
+                                <p class="bx-base-pofile-unit-thumb bx-def-ava-big bx-def-ava-big-size flex items-center justify-center box-border m-0 rounded-full ring-4 mx-auto ring-white dark:ring-gray-900 h-48 w-48 text-white font-bold text-5xl __img_class__-placeholder" style="background-color:rgba(__color__);<bx_if:show_ava_image>display:none</bx_if:show_ava_image>" >__letter__</p>
+                            </a>
+                            <bx_if:show_online>
+                                <div class="bx-base-pofile-unit-online"></div>
+                            </bx_if:show_online>
+                            __picture_tweak__
+                        </div>
+                    </bx_if:show_avatar>
+                    <bx_if:show_avatar_placeholder>
+                        <div class="bx-base-pofile-cover-thumb-placeholder lg:absolute h-24 lg:flex-none"></div>
+                    </bx_if:show_avatar_placeholder>
+                    <div class="bx-base-pofile-cover-user relative flex flex-col lg:flex-row lg:items-start lg:justify-end mt-6 sm:pb-1 lg:w-full box-border">
+                        <div class="bx-base-profile-cover-title-bages min-w-0 flex-1 lg:mt-14 lg:mr-12 mb-2">
+                            <h1 class="bx-def-unit-info pl-1 text-gray-900 dark:text-gray-50 text-center lg:text-left text-4xl leading-14 font-bold truncate">__title__ </h1>
+                            <div class="bx-base-profile-cover-meta-holder mt-2 lg:h-8">
+                                <div class="bx-base-profile-cover-meta lg:absolute flex flex-row flex-wrap justify-center lg:justify-start text-sm">__meta__</div>
+                            </div>
+                        </div>
+                        <div class="bx-base-pofile-cover-actions relative flex lg:flex-1 h-14 md:h-10 mt-6 lg:mt-16" onclick="event.stopPropagation();">__action_menu__</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="bx-def-page-width mx-auto pt-5 px-4 sm:px-6 lg:px-8 border-b border-gray-200 dark:border-gray-800 box-border"></div>
+    </div>
+</div>
+__additional_code__

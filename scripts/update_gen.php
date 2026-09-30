@@ -411,6 +411,7 @@ Write minimal necessary code. Don't use complex SQL like CASE, WHEN, THEN.
 Output must be compatible with MySQL 5.5.3 and MariaDB 5.5.
 Make sure that not changed fields aren't updated.
 Don't make long delete statements with long condition, simple easy to read approach is better.
+Make sure that deleted tables are included.
 
 OLD install.sql:
 ```sql

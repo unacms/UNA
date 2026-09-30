@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="en" flag="gb" title="English">
+	<string_add name="_bx_market_option_visible_categories"><![CDATA[Number of visible categories]]></string_add>
+	<string_add name="_bx_market_menu_title_categories"><![CDATA[Categories]]></string_add>
+	<string_add name="_bx_market_txt_all_categories"><![CDATA[All Categories]]></string_add>
+</resources>

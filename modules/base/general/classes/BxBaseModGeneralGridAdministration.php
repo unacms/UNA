@@ -68,7 +68,7 @@ class BxBaseModGeneralGridAdministration extends BxBaseModGeneralGrid
 
         if($iAffected) {
             if(!$this->_bIsApi) 
-                $aResult = !$this->_bDeleteWithBgJobs ? ['grid' => $this->getCode(false), 'blink' => $aIdsAffected] : ['msg' => _t($CNF['T']['grid_action_msg_delete_scheduled'])];
+                $aResult = !$this->_bDeleteWithBgJobs ? ['grid' => $this->getCode(false), 'blink' => $aIdsAffected] : ['toast' => _t($CNF['T']['grid_action_msg_delete_scheduled'])];
             else 
                 $aResult = [];
         }

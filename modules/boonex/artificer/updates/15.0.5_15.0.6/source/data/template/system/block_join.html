@@ -1,0 +1,14 @@
+<div class="sys-jf">
+    <bx_if:show_auth>__content__</bx_if:show_auth>
+    <bx_if:show_form>__content__</bx_if:show_form>
+    <bx_if:show_login>
+        <hr class="bx-def-hr my-4" />
+        <div class="sys-jf-login">
+            <a class="bx-btn w-full justify-center text-center" href="__url__"><bx_text:_sys_txt_join_description_action /></a>
+        </div>
+    </bx_if:show_login>
+    <div class="sys-jf-agreement -mx-4">
+        <hr class="bx-def-hr mt-4" />
+        <div class="sys-jf-agreement-cnt pt-4 px-4 text-xs text-gray-600 dark:text-gray-400 [&_a]:underline [&_a]:underline-offset-2">__agreement__</div>
+    </div>
+</div>

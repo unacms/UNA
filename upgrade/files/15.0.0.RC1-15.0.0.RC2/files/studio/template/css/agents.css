@@ -1,0 +1,302 @@
+/**--- Agents ---**/
+.bx-agt-aica svg {
+    width: 1rem;
+    height: 1rem;
+}
+
+.bx-grid-table .bx-gc-icon svg,
+.bx-grid-table .bx-gc-icon img,
+.bx-grid-table .bx-gc-model_id svg,
+.bx-grid-table .bx-gc-trigger svg {
+    width: 1.5rem;
+    height: 1.5rem;
+    vertical-align: middle;
+}
+
+#grid-popup-sys_studio_agents_agents-message .bx-popup-width {
+    width: 68rem;
+    max-width: calc(100vw - 2rem);
+}
+.bx-agents-popup-chat-wrap {
+    display: flex;
+    gap: 0.75rem;
+    min-height: 32rem;
+    max-height: min(36rem, calc(100vh - 10rem));
+}
+.bx-agents-popup-chat-list {
+    flex: 0 0 15.5rem;
+    width: 15.5rem;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    border-right: 1px solid rgba(0,0,0,.08);
+    padding-right: 0.75rem;
+}
+.bx-agents-popup-chat-list-title {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+.bx-agents-popup-chat-list-items {
+    overflow-y: auto;
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+.bx-agents-popup-chat-thread {
+    display: block;
+    width: 100%;
+    text-align: left;
+    border: 0;
+    background: transparent;
+    padding: 0.5rem 0.6rem;
+    border-radius: 0.4rem;
+    cursor: pointer;
+}
+.bx-agents-popup-chat-thread:hover,
+.bx-agents-popup-chat-thread-active {
+    background: rgba(37, 99, 235, .08);
+}
+.bx-agents-popup-chat-thread-title {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.bx-agents-popup-chat-thread-meta {
+    display: block;
+    font-size: 0.75rem;
+    margin-top: 0.15rem;
+    white-space: pre-line;
+    line-height: 1.25;
+}
+.bx-agents-popup-chat-thread-status-opened {
+    color: #15803d;
+}
+.bx-agents-popup-chat-thread-status-closed {
+    color: #b45309;
+}
+.bx-agents-popup-chat-thread-dates {
+    display: block;
+    font-size: 0.7rem;
+    opacity: .6;
+    margin-top: 0.1rem;
+    line-height: 1.25;
+}
+.bx-agents-popup-chat-thread-dates span {
+    display: block;
+}
+.bx-agents-popup-chat-artifacts {
+    flex: 0 0 auto;
+    margin: 0 0 0.5rem;
+    padding: 0.5rem 0.65rem;
+    font-size: 0.8rem;
+    line-height: 1.35;
+    border: 1px solid rgba(0,0,0,.12);
+    border-radius: 0.4rem;
+    max-height: 8rem;
+    overflow-y: auto;
+    background: #fffbe6;
+}
+.bx-agents-popup-chat-artifacts-row {
+    display: flex;
+    gap: 0.5rem;
+    min-width: 0;
+}
+.bx-agents-popup-chat-artifacts-k {
+    flex: 0 0 7rem;
+    font-weight: 600;
+    opacity: .7;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.bx-agents-popup-chat-artifacts-v {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+.bx-agents-popup-chat-artifacts-empty {
+    opacity: .6;
+}
+.bx-agents-popup-chat-main {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+.bx-agents-popup-chat {
+    height: auto;
+    flex: 1 1 auto;
+    min-height: 16rem;
+}
+.bx-agents-popup-chat-note {
+    margin-top: 0.5rem;
+    font-size: 0.8rem;
+    opacity: .7;
+}
+
+/**--- Automators ---**/
+.cmt .bx-menu-custom.bx-menu-custom-hor > li > span {
+    margin-right: 0;
+}
+.cmt .bx-base-general-unit-meta ul.bx-menu-custom li:first-child .bx-base-general-unit-meta-div {
+  display: none;
+}
+.bx-def-vanilla-html pre,
+.cmt-body.bx-def-vanilla-html pre{
+    max-height: 20rem;
+
+    border-width: 0;
+    border-radius: 0.375rem;
+
+    background-color: #1f2937;
+
+    color: #e5e7eb;
+}
+
+/*-- Automators form: Providers --*/
+.bx-form-input-provider {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
+}
+.bx-form-input-provider-cell.bx-fi-pc-txt {
+    -webkit-flex: 1 1 auto;
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+}
+.bx-form-input-provider-cell.bx-fi-pc-btn {
+    -webkit-flex: 0 0 auto;
+    -ms-flex: 0 0 auto;
+    flex: 0 0 auto;
+}
+.bx-form-input-provider-add {
+    text-align: right;
+}
+.bx-form-input-provider-add .bx-form-input-button {
+    display: inline-block;
+    float: none;
+}
+
+/*-- Automators form: Tools --*/
+.bx-form-input-tools {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
+}
+.bx-form-input-tools-cell.bx-fi-pc-txt {
+    -webkit-flex: 1 1 auto;
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+}
+.bx-form-input-tools-cell.bx-fi-pc-btn {
+    -webkit-flex: 0 0 auto;
+    -ms-flex: 0 0 auto;
+    flex: 0 0 auto;
+}
+.bx-form-input-tools-add {
+    text-align: right;
+}
+.bx-form-input-tools-add .bx-form-input-button {
+    display: inline-block;
+    float: none;
+}
+
+/*-- Automators form: Helpers --*/
+.bx-form-input-helper {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
+}
+.bx-form-input-helper-cell.bx-fi-hc-txt {
+    -webkit-flex: 1 1 auto;
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+}
+.bx-form-input-helper-cell.bx-fi-hc-btn {
+    -webkit-flex: 0 0 auto;
+    -ms-flex: 0 0 auto;
+    flex: 0 0 auto;
+}
+.bx-form-input-helper-add {
+    text-align: right;
+}
+.bx-form-input-helper-add .bx-form-input-button {
+    display: inline-block;
+    float: none;
+}
+
+/*-- Automators form: Assistants --*/
+.bx-form-input-assistant {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
+}
+.bx-form-input-assistant-cell.bx-fi-ac-txt {
+    -webkit-flex: 1 1 auto;
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+}
+.bx-form-input-assistant-cell.bx-fi-ac-btn {
+    -webkit-flex: 0 0 auto;
+    -ms-flex: 0 0 auto;
+    flex: 0 0 auto;
+}
+.bx-form-input-assistant-add {
+    text-align: right;
+}
+.bx-form-input-assistant-add .bx-form-input-button {
+    display: inline-block;
+    float: none;
+}
+
+#bx-agents-agents-alert-payload pre {
+    max-height:250px; 
+    overflow:scroll;
+}
+
+.select2-container {
+    z-index: 999999 !important;
+}
+.select2-container .select2-selection--single {
+    height: 30px;
+}
+.bx-agents-automator-form .select2-container {
+    width: 100% !important;
+}
+#bx_std_agents_add_popup .bx-popup,
+#bx_std_agents_edit_popup .bx-popup {
+    overflow: visible;
+}
+
+.select2-results__option .bx-alert-wrap {
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+    width:100%;
+}
+.select2-results__option .bx-alert-text {
+    font-weight:600;
+}
+.select2-results__option .bx-alert-desc {
+    font-size:12px;
+    color:#888;
+}
+.select2-results__option .bx-alert-counter {
+    padding:2px 8px;
+    border-radius:10px;
+    font-size:12px;
+    height:fit-content;
+}
+
+/* Agent cards on the block's 16px content line: the list's -4px pull plus this 4px puts a card's 4px margin at 8px + 8px. */
+div.bx-std-block-content > .bx-agt-agents {
+    width: calc(100% - 0.5rem); /* the template's w-full assumed the old negative margins */
+    margin: 0.25rem;
+}

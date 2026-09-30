@@ -17,7 +17,7 @@ $aConfig = array(
     'name' => 'bx_artificer',
     'title' => 'Artificer',
     'note' => 'Artificer, design template, site theme',
-    'version' => '15.0.6.DEV',
+    'version' => '15.0.7.DEV',
     'vendor' => 'UNA INC',
     'help_url' => 'http://feed.una.io/?section={module_name}',
 

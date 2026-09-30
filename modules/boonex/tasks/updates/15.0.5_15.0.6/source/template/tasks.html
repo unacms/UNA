@@ -1,0 +1,61 @@
+<div id="__html_id__" class="bx-def-margin-top">
+    <bx_repeat:task_lists>
+        <div class="bx-tasks-tasklist mt-2 pb-2" id="bx-tasks-tasklist-__list_id__" data-list="__list_by_viewer__">
+            <div class="bx-tasks-tasklist-header bx-def-color-bg-hl p-2" onclick="javascript:__object__.toggle('__list_by_viewer__', this)">
+                <span class="bx-tasks-tl-collapse flex-none">
+                    <i class="sys-icon chevron-up bx-tasks-tl-hide"></i>
+                    <i class="sys-icon chevron-down bx-tasks-tl-show"></i>
+                </span>
+                <span class="bx-tasks-tasklist-title pl-2">
+                    <bx_if:allow_edit_list>
+                        <a href="javascript:void(0);" onclick="javascript:__object__.processTaskList(__context_id__, __list_id__, this, event)" title="__title__">__title__</a>
+                    </bx_if:allow_edit_list>
+                    <bx_if:deny_edit_list>
+                        __title__
+                    </bx_if:deny_edit_list>
+                </span>
+                <div class="bx-tasks-tasklist-actions flex">
+                    <bx_if:allow_add>
+                        <a class="bx-btn bx-btn-small bx-def-margin-sec-right" href="javascript:void(0);" onclick="__object__.processTask(__context_id__, __list_id__, this)"><bx_text:_bx_tasks_txt_new_task /></a>
+                    </bx_if:allow_add>
+                    <bx_if:allow_delete_list>
+                        <a class="bx-btn bx-btn-small" href="javascript:void(0);" onclick="__object__.deleteTaskList(__context_id__, __list_id__, this)"><i class="sys-icon remove"></i></a>
+                    </bx_if:allow_delete_list>
+                </div>
+            </div>
+            <div class="bx-tasks-tasks">
+                <bx_repeat:tasks>
+                    <div class="bx-def-padding-sec  bx-def-border-bottom  bx-tasks-task bx-tasks-task-__class__">
+                        <bx_if:show_manage>
+                            <div class="bx-tasks-task-checkbox pr-2">
+                                <bx_if:allow_manage>
+                                    <input id="checkbox__id__" type="checkbox" __checked__ class="promoted-input-checkbox" onclick="__object__.setCompleted(__id__, this)">
+                                </bx_if:allow_manage>
+                                <bx_if:deny_manage>
+                                    <input id="checkbox__id__" type="checkbox" __checked__ class="promoted-input-checkbox" disabled>
+                                </bx_if:deny_manage>
+                                <label for="checkbox__id__">
+                                    <i class="sys-icon far fa-check-circle bx-tasks-completed"></i>
+                                    <i class="sys-icon far circle bx-tasks-uncompleted"></i>
+                                </label>
+                            </div>
+                        </bx_if:show_manage>
+                        <a href="__url__" class="bx-tasks-task-name pr-2" title="__title__">__title__ </a>
+                        <span class="bx-task-badge flex pr-2">__badges__</span>
+                        <span class="bx-def-font-small bx-def-font-grayed pr-2">__created__</span>
+                        <span class="bx-def-font-small bx-def-font-grayed pr-2">__type__</span>
+                        <span class="bx-def-font-small col-green1 pr-2">__priority__</span>
+                        <span class="bx-task-due-date bx-def-font-small col-red1 pr-2">__due__</span>
+                        <span class="bx-task-state bx-def-font-small bx-def-font-grayed pr-2">__state__</span>
+                        <span class="bx-task-time bx-def-font-small bx-def-font-grayed pr-2">__time__</span>
+                        <div class="bx-tasks-members">
+                            <bx_repeat:members>
+                                __info__
+                            </bx_repeat:members>
+                        </div>
+                    </div>
+                </bx_repeat:tasks>
+            </div>
+        </div>
+    </bx_repeat:task_lists>
+</div>

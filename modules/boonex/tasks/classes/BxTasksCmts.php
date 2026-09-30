@@ -17,10 +17,12 @@ class BxTasksCmts extends BxTemplCmts
 
     public function __construct($sSystem, $iId, $iInit = 1)
     {
-        parent::__construct($sSystem, $iId, $iInit);
-
         $this->_sModule = 'bx_tasks';
         $this->_oModule = BxDolModule::getInstance($this->_sModule);
+
+        $this->_sTableImages = 'bx_tasks_files';
+
+        parent::__construct($sSystem, $iId, $iInit, $this->_oModule->_oTemplate);        
 
         $this->_iAuthorAuto = (int)getParam('sys_profile_bot');
 
@@ -157,6 +159,24 @@ class BxTasksCmts extends BxTemplCmts
             $sText = _t('_bx_tasks_txt_msg_format', $sText, bx_time_js((int)$iDate, BX_FORMAT_DATE, true));
 
         return $sText;
+    }
+
+    protected function _getFormObject($sAction = BX_CMT_ACTION_POST)
+    {
+        $CNF = &$this->_oModule->_oConfig->CNF;
+        $sFldImage = 'cmt_image';
+
+        $oResult = parent::_getFormObject($sAction);
+        if(!isset($oResult->aInputs[$sFldImage]))
+            return $oResult;
+
+        $oResult->aInputs[$sFldImage] = array_merge($oResult->aInputs[$sFldImage], [
+            'storage_object' => $CNF['OBJECT_STORAGE_CMTS'],
+            'images_transcoder' => '',
+            'upload_buttons_titles' => ['HTML5' => 'paperclip']
+        ]);
+
+        return $oResult;
     }
 }
 

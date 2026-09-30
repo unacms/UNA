@@ -18,7 +18,7 @@ $aConfig = array(
     'title' => 'Okta Connect',
     'note' => 'Okta login, join with an Okta account',
     'version' => '13.0.0.DEV',
-    'vendor' => 'UNA Inc',
+    'vendor' => 'UNA INC',
     'help_url' => 'http://feed.una.io/?section={module_name}',
 
     'compatible_with' => array(

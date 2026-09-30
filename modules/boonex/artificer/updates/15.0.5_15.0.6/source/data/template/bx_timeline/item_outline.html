@@ -1,0 +1,89 @@
+<div id="__html_id__" class="__style_prefix__-item __class__">
+    <a name="timeline-event-__id__"></a>
+    <div class="__style_prefix__-item-ind p-2">
+        <div class="__style_prefix__-item-cnt bx-def-box bx-def-box-round-corners bx-def-color-bg-box __class_content__ group/item hover:bg-gray-50 dark:hover:bg-gray-900 hover:shadow-lg">
+            <div class="__style_prefix__-blink-plate"></div>
+            <bx_if:show_note>
+                <div class="__style_prefix__-item-notes mt-3 md:mt-4">
+                    <bx_repeat:notes>
+                        <div class="__style_prefix__-item-note mt-2 first:mt-0 text-sm text-gray-500 dark:text-gray-400">
+                            <div class="__style_prefix__-in-text mx-3 md:mx-4 lg:mx-6<bx_if:show_note_color> col-__item_note_color__</bx_if:show_note_color>">__item_note__</div>
+                        </div>
+                    </bx_repeat:notes>
+                </div>
+                <div class="__style_prefix__-in-divider  bx-def-hr mt-3 md:mt-4"></div>
+            </bx_if:show_note>
+            <div class="__style_prefix__-item-owner flex items-center px-3 md:px-4 mt-3 md:mt-4 __class_owner__"> 
+                <div class="__style_prefix__-owner-avatar flex-shrink-0">__item_owner_unit__</div>
+                <div class="__style_prefix__-owner-info min-w-0 ltr:ml-3 rtl:mr-3 overflow-hidden">
+                    <div class="__style_prefix__-owner-name flex flex-wrap items-center">
+                        <a href="__item_owner_url__" class="__style_prefix__-owner-name bx-def-font-author flex items-center min-w-0 mr-1 hover:text-gray-900 dark:hover:text-white" title="__item_owner_title__"><div class="truncate">__item_owner_name__</div>__item_owner_badges__</a>
+                        <bx_if:show_owner_actions>
+                            <span class="__style_prefix__-owner-actions bx-def-font-meta">
+                                <bx_repeat:owner_actions>
+                                    <span class="__style_prefix__-oa-div mr-1">&#183;</span><a class="__style_prefix__-owner-action hover:underline" href="__href__" onclick="__onclick__" title="__title__"><i class="sys-icon __icon__"></i></a>
+                                </bx_repeat:owner_actions>
+                            </span>
+                        </bx_if:show_owner_actions>
+                    </div>
+                    <div class="__style_prefix__-item-meta bx-def-font-meta flex items-center flex-wrap">
+                        <bx_if:show_menu_item_meta>
+                            <span class="__style_prefix__-meta mr-1">__meta__</span>
+                        </bx_if:show_menu_item_meta>
+                        <bx_if:show_item_action>
+                            <span class="__style_prefix__-div mr-1">&#183;</span>
+                            <div class="__style_prefix__-item-action mr-1 flex items-center">
+                                <span class="flex items-center mr-1 lowercase">__item_owner_action__</span>
+                                <bx_if:show_timeline_owner>
+                                    <span class="mr-1"><bx_text:_bx_timeline_txt_to /></span> 
+                                    <span class="__style_prefix__-timeline-owner-name mr-1">
+                                        <bx_repeat:owners><span class="__style_prefix__-ton-div">, </span><a href="__owner_url__" class="__style_prefix__-ton-item text-blue-600 dark:text-blue-400 font-semibold hover:underline">__owner_username__</a></bx_repeat:owners>
+                                    </span> 
+                                </bx_if:show_timeline_owner>
+                            </div>
+                        </bx_if:show_item_action>
+                        <bx_if:show_pinned>
+                            <span class="__style_prefix__-pinned mr-1">
+                                <i class="sys-icon thumbtack" title="<bx_text_attribute:_bx_timeline_txt_pinned />"></i>
+                            </span>
+                        </bx_if:show_pinned>
+                        <bx_if:show_sticked>
+                            <span class="__style_prefix__-sticked mr-1">
+                                <i class="sys-icon thumbtack" title="<bx_text_attribute:_bx_timeline_txt_sticked />"></i>
+                            </span>
+                        </bx_if:show_sticked>
+                        <bx_if:show_hot>
+                            <span class="__style_prefix__-hot mr-1">
+                                <i class="sys-icon fire" title="<bx_text_attribute:_bx_timeline_txt_hot />"></i>
+                            </span>
+                        </bx_if:show_hot>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="__style_prefix__-item-content __style_prefix__-ic-__content_type__ bx-clearfix">__content__</div>
+            <bx_if:show_location>
+                <div class="__style_prefix__-item-location mx-3 md:mx-4 mt-3 md:mt-4 bx-def-font-grayed bx-clearfix">__location__</div>
+            </bx_if:show_location>
+            <bx_if:show_fields>
+                <div class="__style_prefix__-item-fields mx-3 md:mx-4 mt-3 md:mt-4 bx-def-font-grayed bx-clearfix">__fields__</div>
+            </bx_if:show_fields>
+            <bx_if:show_menu_item_counters>
+                <div class="__style_prefix__-item-activity __style_prefix__-ia-counters space-x-4 px-2 md:px-3">__menu_item_counters__</div>
+            </bx_if:show_menu_item_counters>
+            <div class="flex justify-between space-x-8 mt-2 md:mt-3 p-3 md:p-4 border-t border-gray-200 dark:border-gray-700">
+                <bx_if:show_menu_item_actions>
+                    <div class="__style_prefix__-item-activity">__menu_item_actions__</div>
+                </bx_if:show_menu_item_actions>
+               <bx_if:show_manage>
+                <div class="__style_prefix__-item-manage">
+                    <a class="group bx-stl-mil-sm" href="javascript:void(0)" onclick="__onclick__" title="<bx_text_attribute:_bx_timeline_menu_title_item_manage />" aria-label="<bx_text_attribute:_bx_timeline_menu_title_item_manage />" aria-haspopup="dialog" aria-expanded="false">
+                        <span class="bx-menu-item-icon bx-def-align-center leading-5"><i class="sys-icon ellipsis-h"></i></span>
+                    </a>
+                </div>
+            </bx_if:show_manage>
+            </div>
+            <div class="__style_prefix__-item-comments-holder">__comments__</div>
+        </div>
+    </div>
+</div>

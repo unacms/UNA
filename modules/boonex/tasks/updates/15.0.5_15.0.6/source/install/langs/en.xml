@@ -1,0 +1,669 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="en" flag="gb" title="English">
+
+    <string name="_bx_tasks"><![CDATA[Tasks]]></string>
+    <string name="_bx_tasks_cmts"><![CDATA[Tasks' Comments]]></string>
+    <string name="_bx_tasks_reactions"><![CDATA[Tasks' Reactions]]></string>
+
+    <string name="_bx_tasks_option_enable_auto_approve"><![CDATA[Auto approve a task after creation]]></string>
+    <string name="_bx_tasks_option_summary_chars"><![CDATA[Number of characters in auto-cropped task summary]]></string>
+    <string name="_bx_tasks_option_plain_summary_chars"><![CDATA[Number of characters in plain task description when task hasn't thumb]]></string>
+    <string name="_bx_tasks_option_per_page_browse"><![CDATA[Number of items per page]]></string>
+    <string name="_bx_tasks_option_per_page_profile"><![CDATA[Number of items on profile/group page]]></string>
+    <string name="_bx_tasks_option_rss_num"><![CDATA[Number of items in RSS feed]]></string>
+    <string name="_bx_tasks_option_searchable_fields"><![CDATA[Searchable fields for keyword search]]></string>
+    <string name="_bx_tasks_option_auto_activation_for_categories"><![CDATA[Auto-Activation For Categories]]></string>
+
+    <!-- Forms -->
+    <string name="_bx_tasks_form_entry"><![CDATA[Tasks]]></string>
+    <string name="_bx_tasks_form_entry_display_add"><![CDATA[Add Task]]></string>
+    <string name="_bx_tasks_form_entry_display_edit"><![CDATA[Edit Task]]></string>
+    <string name="_bx_tasks_form_entry_display_edit_body"><![CDATA[Edit Task's Body]]></string>
+    <string name="_bx_tasks_form_entry_display_edit_tasks_list"><![CDATA[Edit Task's List]]></string>
+    <string name="_bx_tasks_form_entry_display_edit_type"><![CDATA[Edit Task's Type]]></string>
+    <string name="_bx_tasks_form_entry_display_edit_priority"><![CDATA[Edit Task's Priority]]></string>
+    <string name="_bx_tasks_form_entry_display_edit_estimate"><![CDATA[Edit Task's Estimate]]></string>
+    <string name="_bx_tasks_form_entry_display_edit_due_date"><![CDATA[Edit Task's Due Date]]></string>
+    <string name="_bx_tasks_form_entry_display_edit_state"><![CDATA[Edit Task's State]]></string>
+    <string name="_bx_tasks_form_entry_display_delete"><![CDATA[Delete Task]]></string>
+    <string name="_bx_tasks_form_entry_display_view"><![CDATA[View Task]]></string>
+    <string name="_bx_tasks_form_entry_input_author"><![CDATA[Author]]></string>
+    <string name="_bx_tasks_form_entry_input_sys_do_submit"><![CDATA[Submit]]></string>
+    <string name="_bx_tasks_form_entry_input_do_submit"><![CDATA[Submit]]></string>
+    <string name="_bx_tasks_form_entry_input_sys_do_publish"><![CDATA[Publish]]></string>
+    <string name="_bx_tasks_form_entry_input_do_publish"><![CDATA[Publish]]></string>
+    <string name="_bx_tasks_form_entry_input_sys_do_cancel"><![CDATA[Cancel]]></string>
+    <string name="_bx_tasks_form_entry_input_do_cancel"><![CDATA[Cancel]]></string>
+    <string name="_bx_tasks_form_entry_input_sys_do_cancel_edit"><![CDATA[Cancel (Edit form)]]></string>
+    <string name="_bx_tasks_form_entry_input_do_cancel_edit"><![CDATA[Cancel]]></string>
+    <string name="_bx_tasks_form_entry_input_sys_controls"><![CDATA[Controls]]></string>
+    <string name="_bx_tasks_form_entry_input_sys_controls_edit"><![CDATA[Controls (Edit form)]]></string>
+    <string name="_bx_tasks_form_entry_input_sys_controls_edit_popup"><![CDATA[Controls (Edit form in popup)]]></string>
+    <string name="_bx_tasks_form_entry_input_sys_title"><![CDATA[Title]]></string>
+    <string name="_bx_tasks_form_entry_input_title"><![CDATA[Title]]></string>
+    <string name="_bx_tasks_form_entry_input_title_err"><![CDATA[Title is essential min 3 max 160.]]></string>
+    <string name="_bx_tasks_form_entry_input_sys_stickers"><![CDATA[Labels]]></string>
+    <string name="_bx_tasks_form_entry_input_stickers"><![CDATA[Labels]]></string>
+    <string name="_bx_tasks_form_entry_input_sys_type"><![CDATA[Type]]></string>
+    <string name="_bx_tasks_form_entry_input_type"><![CDATA[Type]]></string>
+    <string name="_bx_tasks_form_entry_input_sys_priority"><![CDATA[Priority]]></string>
+    <string name="_bx_tasks_form_entry_input_priority"><![CDATA[Priority]]></string>
+    <string name="_bx_tasks_form_entry_input_sys_state"><![CDATA[State]]></string>
+    <string name="_bx_tasks_form_entry_input_state"><![CDATA[State]]></string>
+    <string name="_bx_tasks_form_entry_input_sys_cat"><![CDATA[Category]]></string>
+    <string name="_bx_tasks_form_entry_input_cat"><![CDATA[Category]]></string>
+    <string name="_bx_tasks_form_entry_input_cat_err"><![CDATA[Please select category]]></string>
+    <string name="_bx_tasks_form_entry_input_sys_multicat"><![CDATA[Categories]]></string>
+    <string name="_bx_tasks_form_entry_input_multicat"><![CDATA[Categories]]></string>
+    <string name="_bx_tasks_form_entry_input_multicat_err"><![CDATA[Please select category]]></string>
+    <string name="_bx_tasks_form_entry_input_sys_text"><![CDATA[Text]]></string>
+    <string name="_bx_tasks_form_entry_input_text"><![CDATA[Text]]></string>
+    <string name="_bx_tasks_form_entry_input_text_err"><![CDATA[Text field can't be empty]]></string>
+    <string name="_bx_tasks_form_entry_input_sys_delete_confirm"><![CDATA[Delete confirmation]]></string>
+    <string name="_bx_tasks_form_entry_input_delete_confirm"><![CDATA[I am sure I want to delete this task]]></string>
+    <string name="_bx_tasks_form_entry_input_delete_confirm_info"><![CDATA[This action can not be undone]]></string>
+    <string name="_bx_tasks_form_entry_input_delete_confirm_error"><![CDATA[Please check this checkbox if you really want to delete the task]]></string>
+    <string name="_bx_tasks_form_entry_input_sys_covers"><![CDATA[Header Image]]></string>
+    <string name="_bx_tasks_form_entry_input_covers"><![CDATA[Header Image]]></string>
+    <string name="_bx_tasks_form_entry_input_covers_uploader_simple_title"><![CDATA[Upload]]></string>
+    <string name="_bx_tasks_form_entry_input_covers_uploader_html5_title"><![CDATA[Upload]]></string>
+    <string name="_bx_tasks_form_entry_input_sys_pictures"><![CDATA[Images]]></string>
+    <string name="_bx_tasks_form_entry_input_pictures"><![CDATA[]]></string>
+    <string name="_bx_tasks_form_entry_input_sys_videos"><![CDATA[Videos]]></string>
+    <string name="_bx_tasks_form_entry_input_videos"><![CDATA[]]></string>
+    <string name="_bx_tasks_form_entry_input_sys_files"><![CDATA[Files]]></string>
+    <string name="_bx_tasks_form_entry_input_files"><![CDATA[]]></string>
+    <string name="_bx_tasks_form_entry_input_sys_allow_view_to"><![CDATA[Visibility]]></string>
+    <string name="_bx_tasks_form_entry_input_allow_view_to"><![CDATA[Post to]]></string>
+    <string name="_bx_tasks_form_entry_input_sys_date_added"><![CDATA[Created]]></string>
+    <string name="_bx_tasks_form_entry_input_date_added"><![CDATA[Created]]></string>
+    <string name="_bx_tasks_form_entry_input_sys_date_changed"><![CDATA[Updated]]></string>
+    <string name="_bx_tasks_form_entry_input_date_changed"><![CDATA[Updated]]></string>
+    <string name="_bx_tasks_form_entry_input_sys_date_published"><![CDATA[Publishing time]]></string>
+    <string name="_bx_tasks_form_entry_input_date_published"><![CDATA[Publishing time]]></string>
+    <string name="_bx_tasks_form_entry_input_date_published_info"><![CDATA[Leave empty to publish immediately.]]></string>
+    <string name="_bx_tasks_form_entry_input_sys_attachments"><![CDATA[Attachments]]></string>
+    <string name="_bx_tasks_form_entry_input_sys_allow_comments"><![CDATA[Allow comments]]></string>
+    <string name="_bx_tasks_form_entry_input_allow_comments"><![CDATA[Allow comments]]></string>
+    <string name="_bx_tasks_form_entry_input_sys_tasks_list"><![CDATA[Task list]]></string>
+    <string name="_bx_tasks_form_entry_input_tasks_list"><![CDATA[Task list]]></string>
+    <string name="_bx_tasks_form_entry_input_sys_initial_members"><![CDATA[Assign to]]></string>
+    <string name="_bx_tasks_form_entry_input_initial_members"><![CDATA[Assign to]]></string>
+    <string name="_bx_tasks_form_entry_input_sys_date_due_date"><![CDATA[Due date]]></string>
+    <string name="_bx_tasks_form_entry_input_date_due_date"><![CDATA[Due date]]></string>
+    <string name="_bx_tasks_form_entry_input_sys_estimate"><![CDATA[Estimate]]></string>
+    <string name="_bx_tasks_form_entry_input_estimate"><![CDATA[Estimate (in points)]]></string>
+    <string name="_bx_tasks_form_entry_input_sys_gh_issue_url"><![CDATA[GitHub Issue]]></string>
+    <string name="_bx_tasks_form_entry_input_gh_issue_url"><![CDATA[GitHub Issue]]></string>
+
+    <string name="_bx_tasks_form_list_entry"><![CDATA[Tasklists]]></string>
+    <string name="_bx_tasks_form_list_entry_display_add"><![CDATA[Add Tasklist]]></string>
+    <string name="_bx_tasks_form_list_entry_display_edit"><![CDATA[Edit Tasklist]]></string>
+    <string name="_bx_tasks_form_list_entry_input_do_submit"><![CDATA[Submit]]></string>
+    <string name="_bx_tasks_form_list_entry_input_sys_do_submit"><![CDATA[Submit]]></string>
+    <string name="_bx_tasks_form_list_entry_input_sys_title"><![CDATA[Title]]></string>
+    <string name="_bx_tasks_form_list_entry_input_title"><![CDATA[Title]]></string>
+    <string name="_bx_tasks_form_list_entry_input_title_err"><![CDATA[Title is essential min 3 max 160.]]></string>
+
+    <string name="_bx_tasks_form_context"><![CDATA[Context]]></string>
+    <string name="_bx_tasks_form_display_context_edit"><![CDATA[Edit Context]]></string>
+    <string name="_bx_tasks_form_context_input_sys_gh_app_id"><![CDATA[GitHub App]]></string>
+    <string name="_bx_tasks_form_context_input_gh_app_id"><![CDATA[GitHub App]]></string>
+    <string name="_bx_tasks_form_context_input_sys_gh_username"><![CDATA[GitHub Username]]></string>
+    <string name="_bx_tasks_form_context_input_gh_username"><![CDATA[GitHub Username]]></string>
+    <string name="_bx_tasks_form_context_input_sys_gh_repository"><![CDATA[GitHub Repository]]></string>
+    <string name="_bx_tasks_form_context_input_gh_repository"><![CDATA[GitHub Repository]]></string>
+    <string name="_bx_tasks_form_context_input_sys_do_submit"><![CDATA[Submit]]></string>
+    <string name="_bx_tasks_form_context_input_do_submit"><![CDATA[Submit]]></string>
+    <string name="_bx_tasks_form_context_input_sys_do_cancel"><![CDATA[Cancel]]></string>
+    <string name="_bx_tasks_form_context_input_do_cancel"><![CDATA[Cancel]]></string>
+    <string name="_bx_tasks_form_context_input_sys_controls"><![CDATA[Controls]]></string>
+
+    <string name="_bx_tasks_form_time"><![CDATA[Time]]></string>
+    <string name="_bx_tasks_form_display_time_add"><![CDATA[Add Time]]></string>
+    <string name="_bx_tasks_form_display_time_edit"><![CDATA[Edit Time]]></string>
+    <string name="_bx_tasks_form_time_input_sys_sys"><![CDATA[System]]></string>
+    <string name="_bx_tasks_form_time_input_sys_object_id"><![CDATA[Object ID]]></string>
+    <string name="_bx_tasks_form_time_input_object_id"><![CDATA[Task]]></string>
+    <string name="_bx_tasks_form_time_input_object_id_err"><![CDATA[This field in essential. Please, fill it in.]]></string>
+    <string name="_bx_tasks_form_time_input_sys_action"><![CDATA[Action]]></string>
+    <string name="_bx_tasks_form_time_input_sys_submit"><![CDATA[Submit]]></string>
+    <string name="_bx_tasks_form_time_input_submit"><![CDATA[Submit]]></string>
+    <string name="_bx_tasks_form_time_input_sys_cancel"><![CDATA[Cancel]]></string>
+    <string name="_bx_tasks_form_time_input_cancel"><![CDATA[Cancel]]></string>
+    <string name="_bx_tasks_form_time_input_sys_controls"><![CDATA[Controls]]></string>
+    <string name="_bx_tasks_form_time_input_sys_value"><![CDATA[Time]]></string>
+    <string name="_bx_tasks_form_time_input_value"><![CDATA[Time]]></string>
+    <string name="_bx_tasks_form_time_input_value_err"><![CDATA[If you want to log some time fill this field in.]]></string>
+    <string name="_bx_tasks_form_time_input_sys_value_h"><![CDATA[Time: Hours]]></string>
+    <string name="_bx_tasks_form_time_input_value_h"><![CDATA[Hours]]></string>
+    <string name="_bx_tasks_form_time_input_value_h_placeholder"><![CDATA[hours]]></string>
+    <string name="_bx_tasks_form_time_input_sys_value_div"><![CDATA[Time: Divider]]></string>
+    <string name="_bx_tasks_form_time_input_value_div"><![CDATA[<div>:</div>]]></string>
+    <string name="_bx_tasks_form_time_input_sys_value_m"><![CDATA[Time: Minutes]]></string>
+    <string name="_bx_tasks_form_time_input_value_m"><![CDATA[Minutes]]></string>
+    <string name="_bx_tasks_form_time_input_value_m_placeholder"><![CDATA[minutes]]></string>
+    <string name="_bx_tasks_form_time_input_sys_value_date"><![CDATA[Date]]></string>
+    <string name="_bx_tasks_form_time_input_value_date"><![CDATA[Date]]></string>
+    <string name="_bx_tasks_form_time_input_sys_text"><![CDATA[Note]]></string>
+    <string name="_bx_tasks_form_time_input_text"><![CDATA[Note]]></string>
+
+    <string name="_bx_tasks_form_budget"><![CDATA[Budget]]></string>
+    <string name="_bx_tasks_form_display_budget_add"><![CDATA[Add Budget]]></string>
+    <string name="_bx_tasks_form_display_budget_edit"><![CDATA[Edit Budget]]></string>
+    <string name="_bx_tasks_form_budget_input_sys_submit"><![CDATA[Submit]]></string>
+    <string name="_bx_tasks_form_budget_input_submit"><![CDATA[Submit]]></string>
+    <string name="_bx_tasks_form_budget_input_sys_cancel"><![CDATA[Cancel]]></string>
+    <string name="_bx_tasks_form_budget_input_cancel"><![CDATA[Cancel]]></string>
+    <string name="_bx_tasks_form_budget_input_sys_controls"><![CDATA[Controls]]></string>
+    <string name="_bx_tasks_form_budget_input_sys_value"><![CDATA[Budget]]></string>
+    <string name="_bx_tasks_form_budget_input_value"><![CDATA[Budget]]></string>
+    <string name="_bx_tasks_form_budget_input_value_info"><![CDATA[Specify budget value in hours.]]></string>
+    <string name="_bx_tasks_form_budget_input_value_err"><![CDATA[If you want to add budget fill this field in.]]></string>
+    <string name="_bx_tasks_form_budget_input_sys_text"><![CDATA[Note]]></string>
+    <string name="_bx_tasks_form_budget_input_text"><![CDATA[Note]]></string>
+
+    <string name="_bx_tasks_form_pv_input_title"><![CDATA[Title]]></string>
+    <string name="_bx_tasks_form_pv_input_color"><![CDATA[Color]]></string>
+    <string name="_bx_tasks_form_pv_input_submit"><![CDATA[Submit]]></string>
+    <string name="_bx_tasks_form_pv_input_cancel"><![CDATA[Cancel]]></string>
+    <string name="_bx_tasks_form_pv_input_err"><![CDATA[This field is essential. Please, fill it in.]]></string>
+    <string name="_bx_tasks_popup_pv_title_add"><![CDATA[Add Value]]></string>
+    <string name="_bx_tasks_popup_pv_title_edit"><![CDATA[Edit Value]]></string>
+
+    <string name="_bx_tasks_category_form_entry"><![CDATA[Categories Form]]></string>
+    <string name="_bx_tasks_category_display_add"><![CDATA[Add category]]></string>
+    <string name="_bx_tasks_category_display_edit"><![CDATA[Edit category]]></string>
+    <string name="_bx_tasks_category_form_entry_input_sys_value"><![CDATA[Value]]></string>
+    <string name="_bx_tasks_category_form_entry_input_value"><![CDATA[Value]]></string>>
+    <string name="_bx_tasks_category_form_entry_input_value_err"><![CDATA[Value is essential. Please, fill in this field]]></string>
+    <string name="_bx_tasks_lmi_cpt_categories"><![CDATA[Categories]]></string>
+
+    <string name="_bx_tasks_form_f_input_author"><![CDATA[Author]]></string>
+    <string name="_bx_tasks_form_f_input_initial_members"><![CDATA[Assigned to]]></string>
+    <string name="_bx_tasks_form_f_input_type"><![CDATA[Type]]></string>
+    <string name="_bx_tasks_form_f_input_priority"><![CDATA[Priority]]></string>
+    <string name="_bx_tasks_form_f_input_estimate"><![CDATA[Estimate]]></string>
+    <string name="_bx_tasks_form_f_input_state"><![CDATA[State]]></string>
+    <string name="_bx_tasks_form_f_input_save_me"><![CDATA[Save for me]]></string>
+    <string name="_bx_tasks_form_f_input_save_all"><![CDATA[Save for all]]></string>
+    <string name="_bx_tasks_form_f_input_title"><![CDATA[Title]]></string>
+    <string name="_bx_tasks_form_f_input_apply"><![CDATA[Apply]]></string>
+    <string name="_bx_tasks_form_f_input_save"><![CDATA[Save]]></string>
+    <string name="_bx_tasks_form_f_input_cancel"><![CDATA[Cancel]]></string>
+    <string name="_bx_tasks_popup_f_title_add"><![CDATA[Add Filter]]></string>
+    
+    <!-- ACL -->
+    <string name="_bx_tasks_acl_action_create_entry"><![CDATA[Create Task]]></string>
+    <string name="_bx_tasks_acl_action_delete_entry"><![CDATA[Delete Task]]></string>
+    <string name="_bx_tasks_acl_action_view_entry"><![CDATA[View Task]]></string>
+    <string name="_bx_tasks_acl_action_set_thumb"><![CDATA[Set Task Header Image]]></string>
+    <string name="_bx_tasks_acl_action_edit_any_entry"><![CDATA[Edit Any Task]]></string>
+    <string name="_bx_tasks_acl_action_delete_any_entry"><![CDATA[Delete Any Task]]></string>
+
+    <!-- Pages -->
+    <string name="_bx_tasks_page_title_sys_create_entry"><![CDATA[New Task]]></string>
+    <string name="_bx_tasks_page_title_create_entry"><![CDATA[New Task]]></string>
+    <string name="_bx_tasks_page_block_title_create_entry"><![CDATA[New Task]]></string>
+    <string name="_bx_tasks_page_title_sys_edit_entry"><![CDATA[Edit]]></string>
+    <string name="_bx_tasks_page_title_edit_entry"><![CDATA[Edit]]></string>
+    <string name="_bx_tasks_page_block_title_edit_entry"><![CDATA[Edit]]></string>
+    <string name="_bx_tasks_page_title_sys_delete_entry"><![CDATA[Delete]]></string>
+    <string name="_bx_tasks_page_title_delete_entry"><![CDATA[Delete]]></string>
+    <string name="_bx_tasks_page_block_title_delete_entry"><![CDATA[Delete]]></string>
+    <string name="_bx_tasks_page_title_sys_view_entry"><![CDATA[View Task]]></string>
+    <string name="_bx_tasks_page_title_view_entry"><![CDATA[{title}]]></string>
+    <string name="_bx_tasks_page_block_title_entry_text"><![CDATA[Task Text]]></string>
+    <string name="_bx_tasks_page_title_browse"><![CDATA[Tasks]]></string>
+    <string name="_bx_tasks_page_title_search_results"><![CDATA[Tasks matching "{0}"]]></string>
+    <string name="_bx_tasks_page_title_browse_by_author"><![CDATA[Tasks of {display_name}]]></string>
+    <string name="_bx_tasks_page_title_browse_by_context"><![CDATA[Tasks in {display_name}]]></string>
+    <string name="_bx_tasks_page_title_browse_featured"><![CDATA[Featured Tasks]]></string>
+    <string name="_bx_tasks_page_title_browse_recent"><![CDATA[Latest Tasks]]></string>
+    <string name="_bx_tasks_page_title_browse_popular"><![CDATA[Popular Tasks]]></string>
+    <string name="_bx_tasks_page_title_browse_top"><![CDATA[Top Tasks]]></string>
+    <string name="_bx_tasks_page_title_browse_updated"><![CDATA[Updated Tasks]]></string>
+    <string name="_bx_tasks_page_title_sys_home"><![CDATA[Tasks Home]]></string>
+    <string name="_bx_tasks_page_title_home"><![CDATA[Tasks]]></string>
+    <string name="_bx_tasks_page_block_title_sys_home_entries"><![CDATA[Tasks]]></string>
+    <string name="_bx_tasks_page_block_title_home_entries"><![CDATA[Tasks]]></string>
+    <string name="_bx_tasks_page_block_title_featured_entries_view_extended"><![CDATA[Featured Tasks]]></string>
+    <string name="_bx_tasks_page_block_title_recent_entries"><![CDATA[Latest Tasks (Gallery View)]]></string>
+    <string name="_bx_tasks_page_block_title_recent_entries_view_extended"><![CDATA[Latest Tasks]]></string>
+    <string name="_bx_tasks_page_block_title_recent_entries_view_full"><![CDATA[Latest Tasks (Full View)]]></string>
+    <string name="_bx_tasks_page_block_title_entry_social_sharing"><![CDATA[Share]]></string>
+    <string name="_bx_tasks_page_block_title_entry_author"><![CDATA[Author]]></string>
+    <string name="_bx_tasks_page_block_title_entry_assignments"><![CDATA[Assignees]]></string>
+    <string name="_bx_tasks_page_block_title_entry_actions"><![CDATA[Actions]]></string>
+    <string name="_bx_tasks_page_block_title_sys_entry_comments"><![CDATA[Activity]]></string>
+    <string name="_bx_tasks_page_block_title_entry_comments"><![CDATA[Activity ({0})]]></string>
+    <string name="_bx_tasks_page_block_title_entry_reports"><![CDATA[Reports]]></string>
+    <string name="_bx_tasks_page_block_title_entry_comments_link"><![CDATA[Activity in <a href="{entry_link}">{title}</a>]]></string>
+    <string name="_bx_tasks_page_block_title_entry_attachments"><![CDATA[Attachments]]></string>
+    <string name="_bx_tasks_page_block_title_entry_all_actions"><![CDATA[All Actions]]></string>
+    <string name="_bx_tasks_page_title_sys_entries_popular"><![CDATA[Popular Tasks]]></string>
+    <string name="_bx_tasks_page_title_entries_popular"><![CDATA[Popular Tasks]]></string>
+    <string name="_bx_tasks_page_title_sys_entries_top"><![CDATA[Top Tasks]]></string>
+    <string name="_bx_tasks_page_title_entries_top"><![CDATA[Top Tasks]]></string>
+    <string name="_bx_tasks_page_title_sys_entries_updated"><![CDATA[Updated Tasks]]></string>
+    <string name="_bx_tasks_page_title_entries_updated"><![CDATA[Updated Tasks]]></string>
+    <string name="_bx_tasks_page_title_sys_entries_search"><![CDATA[Search]]></string>
+    <string name="_bx_tasks_page_title_entries_search"><![CDATA[Search]]></string>
+    <string name="_bx_tasks_page_block_title_search_form"><![CDATA[Search Form]]></string>
+    <string name="_bx_tasks_page_block_title_search_results"><![CDATA[Search Results]]></string>
+    <string name="_bx_tasks_page_block_title_search_form_cmts"><![CDATA[Activity Search Form]]></string>
+    <string name="_bx_tasks_page_block_title_search_results_cmts"><![CDATA[Activity Search Results]]></string>
+    <string name="_bx_tasks_page_block_title_popular_entries"><![CDATA[Popular Tasks]]></string>
+    <string name="_bx_tasks_page_block_title_popular_entries_view_extended"><![CDATA[Popular Tasks (Extended View)]]></string>
+    <string name="_bx_tasks_page_block_title_popular_entries_view_full"><![CDATA[Popular Tasks (Full View)]]></string>
+    <string name="_bx_tasks_page_block_title_top_entries"><![CDATA[Top Tasks]]></string>
+    <string name="_bx_tasks_page_block_title_updated_entries"><![CDATA[Updated Tasks]]></string>
+    <string name="_bx_tasks_page_title_sys_view_entry_comments"><![CDATA[Task Activity]]></string>
+    <string name="_bx_tasks_page_title_view_entry_comments"><![CDATA[Activity in {title}]]></string>
+    <string name="_bx_tasks_page_title_sys_entries_of_author"><![CDATA[Tasks of author]]></string>
+    <string name="_bx_tasks_page_title_entries_of_author"><![CDATA[Tasks by {display_name}]]></string>
+    <string name="_bx_tasks_page_title_sys_entries_in_context"><![CDATA[Context: Tasks]]></string>
+    <string name="_bx_tasks_page_title_entries_in_context"><![CDATA[Tasks in {display_name}]]></string>
+    <string name="_bx_tasks_page_block_title_favorites_of_author"><![CDATA[Favorites by <a href="{profile_link}">{display_name}</a>]]></string>
+    <string name="_bx_tasks_page_block_title_sys_favorites_of_author"><![CDATA[Favorites of author]]></string>
+    <string name="_bx_tasks_page_block_title_entries_of_author"><![CDATA[Tasks by <a href="{profile_link}">{display_name}</a>]]></string>
+    <string name="_bx_tasks_page_block_title_sys_entries_of_author"><![CDATA[Tasks of author]]></string>
+    <string name="_bx_tasks_page_block_title_entries_in_context"><![CDATA[Tasks in <a href="{profile_link}">{display_name}</a>]]></string>
+    <string name="_bx_tasks_page_block_title_sys_entries_in_context"><![CDATA[Tasks in context]]></string>
+    <string name="_bx_tasks_page_block_title_entries_actions"><![CDATA[Tasks actions]]></string>
+    <string name="_bx_tasks_page_block_title_browse_cmts"><![CDATA[Tasks' Activity]]></string>
+    <string name="_bx_tasks_page_title_sys_manage"><![CDATA[Manage Own]]></string>
+    <string name="_bx_tasks_page_title_sys_manage_administration"><![CDATA[Manage All]]></string>
+    <string name="_bx_tasks_page_title_manage"><![CDATA[Manage]]></string>
+    <string name="_bx_tasks_page_block_title_system_manage"><![CDATA[Manage Own]]></string>
+    <string name="_bx_tasks_page_block_title_system_manage_administration"><![CDATA[Manage All]]></string>
+    <string name="_bx_tasks_page_block_title_manage"><![CDATA[Manage]]></string>
+    <string name="_bx_tasks_page_title_sys_time_manage"><![CDATA[Manage Own Time]]></string>
+    <string name="_bx_tasks_page_title_sys_time_manage_administration"><![CDATA[Manage All Time]]></string>
+    <string name="_bx_tasks_page_title_time_manage"><![CDATA[Manage Time]]></string>
+    <string name="_bx_tasks_page_block_title_system_time_manage"><![CDATA[Manage Own Time]]></string>
+    <string name="_bx_tasks_page_block_title_system_time_manage_administration"><![CDATA[Manage All Time]]></string>
+    <string name="_bx_tasks_page_block_title_time_manage"><![CDATA[Manage Time]]></string>
+    <string name="_bx_tasks_page_title_sys_timers"><![CDATA[Timers]]></string>
+    <string name="_bx_tasks_page_title_timers"><![CDATA[Timers]]></string>
+    <string name="_bx_tasks_page_block_title_system_timers"><![CDATA[Timers]]></string>
+    <string name="_bx_tasks_page_block_title_timers"><![CDATA[Timers]]></string>
+    <string name="_bx_tasks_page_block_title_popular_keywords"><![CDATA[Popular Hashtags]]></string>
+    <string name="_bx_tasks_page_block_title_cats"><![CDATA[Tasks Categories]]></string>
+    <string name="_bx_tasks_page_block_title_sys_multicats"><![CDATA[Tasks Categories(Multi)]]></string>
+    <string name="_bx_tasks_page_block_title_multicats"><![CDATA[Tasks Categories]]></string>
+    <string name="_bx_tasks_page_block_title_entry_timer"><![CDATA[Timer]]></string>
+    <string name="_bx_tasks_page_block_title_entry_info"><![CDATA[Info]]></string>
+    <string name="_bx_tasks_page_block_title_my_entries"><![CDATA[My Tasks]]></string>
+    <string name="_bx_tasks_page_block_title_sys_recent_entries_view_showcase"><![CDATA[Latest Tasks (Showcase View)]]></string>
+    <string name="_bx_tasks_page_block_title_recent_entries_view_showcase"><![CDATA[Latest Tasks]]></string>
+    <string name="_bx_tasks_page_block_title_sys_popular_entries_view_showcase"><![CDATA[Popular Tasks (Showcase View)]]></string>
+    <string name="_bx_tasks_page_block_title_popular_entries_view_showcase"><![CDATA[Popular Tasks]]></string>
+    <string name="_bx_tasks_page_block_title_sys_featured_entries_view_showcase"><![CDATA[Featured Tasks (Showcase View)]]></string>
+    <string name="_bx_tasks_page_block_title_featured_entries_view_showcase"><![CDATA[Featured Tasks]]></string>
+    <string name="_bx_tasks_page_block_title_sys_entry_context"><![CDATA[Posted in]]></string>
+    <string name="_bx_tasks_page_block_title_entry_context"><![CDATA[Posted in]]></string>
+    <string name="_bx_tasks_page_block_title_sys_calendar_in_context"><![CDATA[Calendar]]></string>
+    <string name="_bx_tasks_page_block_title_calendar_in_context"><![CDATA[Calendar]]></string>
+    <string name="_bx_tasks_page_block_title_sys_calendar_of_author"><![CDATA[Calendar]]></string>
+    <string name="_bx_tasks_page_block_title_calendar_of_author"><![CDATA[Calendar]]></string>
+    <string name="_bx_tasks_page_title_sys_entries_time_in_context"><![CDATA[Context: My time]]></string>
+    <string name="_bx_tasks_page_title_entries_time_in_context"><![CDATA[My time in {display_name}]]></string>
+    <string name="_bx_tasks_page_title_sys_entries_time_in_context_administration"><![CDATA[Context: All time]]></string>
+    <string name="_bx_tasks_page_title_entries_time_in_context_administration"><![CDATA[All time in {display_name}]]></string>
+    <string name="_bx_tasks_page_block_title_sys_menu_in_context"><![CDATA[View context menu]]></string>
+    <string name="_bx_tasks_page_block_title_menu_in_context"><![CDATA[Menu]]></string>
+    <string name="_bx_tasks_page_block_title_sys_entries_time_in_context"><![CDATA[My time in context]]></string>
+    <string name="_bx_tasks_page_block_title_entries_time_in_context"><![CDATA[My Time in <a href="{profile_link}">{display_name}</a>]]></string>
+    <string name="_bx_tasks_page_block_title_sys_entries_time_in_context_administration"><![CDATA[All time in context]]></string>
+    <string name="_bx_tasks_page_block_title_entries_time_in_context_administration"><![CDATA[All Time in <a href="{profile_link}">{display_name}</a>]]></string>
+    <string name="_bx_tasks_page_title_sys_entries_budget_in_context_administration"><![CDATA[Context: Budget]]></string>
+    <string name="_bx_tasks_page_title_entries_budget_in_context_administration"><![CDATA[Budget in {display_name}]]></string>
+    <string name="_bx_tasks_page_block_title_sys_entries_budget_in_context_summary"><![CDATA[Budget summary in context]]></string>
+    <string name="_bx_tasks_page_block_title_entries_budget_in_context_summary"><![CDATA[Budget summary]]></string>
+    <string name="_bx_tasks_page_block_title_sys_entries_budget_in_context_administration"><![CDATA[Budget in context]]></string>
+    <string name="_bx_tasks_page_block_title_entries_budget_in_context_administration"><![CDATA[Budget in <a href="{profile_link}">{display_name}</a>]]></string>
+    <string name="_bx_tasks_page_title_sys_context_pre_values"><![CDATA[Context: Properties]]></string>
+    <string name="_bx_tasks_page_title_context_pre_values"><![CDATA[Properties]]></string>
+    <string name="_bx_tasks_page_block_title_system_context_pre_values"><![CDATA[Properties]]></string>
+    <string name="_bx_tasks_page_block_title_context_pre_values"><![CDATA[Properties]]></string>
+    <string name="_bx_tasks_page_title_sys_context_settings"><![CDATA[Context: Settings]]></string>
+    <string name="_bx_tasks_page_title_context_settings"><![CDATA[Settings]]></string>
+    <string name="_bx_tasks_page_block_title_system_context_authorize"><![CDATA[Authorize GitHub]]></string>
+    <string name="_bx_tasks_page_block_title_context_authorize"><![CDATA[Authorize GitHub]]></string>
+    <string name="_bx_tasks_page_block_title_system_context_settings"><![CDATA[Settings]]></string>
+    <string name="_bx_tasks_page_block_title_context_settings"><![CDATA[Settings]]></string>
+    <string name="_bx_tasks_page_block_title_system_menu_browse"><![CDATA[Browse menu]]></string>
+    <string name="_bx_tasks_page_block_title_menu_browse"><![CDATA[Browse]]></string>
+
+    <!-- Menus -->
+    <string name="_bx_tasks_menu_title_entry_attachments"><![CDATA[Form Attachments]]></string>
+    <string name="_bx_tasks_menu_set_title_entry_attachments"><![CDATA[Form Attachments]]></string>
+    <string name="_bx_tasks_menu_item_title_system_cpa_photo_simple"><![CDATA[Add Photo (simple)]]></string>
+    <string name="_bx_tasks_menu_item_title_cpa_photo_simple"><![CDATA[Add Photo]]></string>
+    <string name="_bx_tasks_menu_item_title_system_cpa_photo_html5"><![CDATA[Add Photo (html5)]]></string>
+    <string name="_bx_tasks_menu_item_title_cpa_photo_html5"><![CDATA[Add Photos]]></string>
+    <string name="_bx_tasks_menu_item_title_system_cpa_video_simple"><![CDATA[Add Video (simple)]]></string>
+    <string name="_bx_tasks_menu_item_title_cpa_video_simple"><![CDATA[Add Video]]></string>
+    <string name="_bx_tasks_menu_item_title_system_cpa_video_html5"><![CDATA[Add Video (html5)]]></string>
+    <string name="_bx_tasks_menu_item_title_cpa_video_html5"><![CDATA[Add Videos]]></string>
+    <string name="_bx_tasks_menu_item_title_system_cpa_video_record"><![CDATA[Record Video]]></string>
+    <string name="_bx_tasks_menu_item_title_cpa_video_record"><![CDATA[Record Video]]></string>
+    <string name="_bx_tasks_menu_item_title_system_cpa_file_simple"><![CDATA[Add File (simple)]]></string>
+    <string name="_bx_tasks_menu_item_title_cpa_file_simple"><![CDATA[Add File]]></string>
+    <string name="_bx_tasks_menu_item_title_system_cpa_file_html5"><![CDATA[Add File (html5)]]></string>
+    <string name="_bx_tasks_menu_item_title_cpa_file_html5"><![CDATA[Add Files]]></string>
+    <string name="_bx_tasks_menu_set_title_view_entry"><![CDATA[Task Actions]]></string>
+    <string name="_bx_tasks_menu_title_view_entry"><![CDATA[Task Actions]]></string>
+    <string name="_bx_tasks_menu_title_submenu"><![CDATA[Tasks Submenu]]></string>
+    <string name="_bx_tasks_menu_set_title_submenu"><![CDATA[Tasks Submenu]]></string>
+    <string name="_bx_tasks_menu_item_title_system_submenu_use"><![CDATA[Submenu: Usage]]></string>
+    <string name="_bx_tasks_menu_item_title_system_submenu_browse"><![CDATA[Submenu: Browse tasks in contexts]]></string>
+    <string name="_bx_tasks_menu_item_title_system_submenu_manage"><![CDATA[Submenu: Manage tasks]]></string>
+    <string name="_bx_tasks_menu_item_title_system_create_entry"><![CDATA[Task]]></string>
+    <string name="_bx_tasks_menu_item_title_create_entry"><![CDATA[Task]]></string>
+    <string name="_bx_tasks_menu_item_title_system_edit_entry"><![CDATA[Edit]]></string>
+    <string name="_bx_tasks_menu_item_title_edit_entry"><![CDATA[Edit]]></string>
+    <string name="_bx_tasks_menu_item_title_system_edit_entry_state"><![CDATA[Edit State]]></string>
+    <string name="_bx_tasks_menu_item_title_edit_entry_state"><![CDATA[Edit State]]></string>
+    <string name="_bx_tasks_menu_item_title_system_delete_entry"><![CDATA[Delete]]></string>
+    <string name="_bx_tasks_menu_item_title_delete_entry"><![CDATA[Delete]]></string>
+    <string name="_bx_tasks_menu_item_title_system_view_entry"><![CDATA[View Task]]></string>
+    <string name="_bx_tasks_menu_item_title_system_entries_home"><![CDATA[Tasks]]></string>
+    <string name="_bx_tasks_menu_item_title_entries_home"><![CDATA[Tasks]]></string>
+    <string name="_bx_tasks_menu_item_title_system_entries_public"><![CDATA[Latest]]></string>
+    <string name="_bx_tasks_menu_item_title_entries_public"><![CDATA[Latest]]></string>
+    <string name="_bx_tasks_menu_item_title_system_entries_manage"><![CDATA[Manage]]></string>
+    <string name="_bx_tasks_menu_item_title_entries_manage"><![CDATA[Manage]]></string>
+    <string name="_bx_tasks_menu_item_title_system_entries_popular"><![CDATA[Popular]]></string>
+    <string name="_bx_tasks_menu_item_title_entries_popular"><![CDATA[Popular]]></string>
+    <string name="_bx_tasks_menu_item_title_system_entries_top"><![CDATA[Top]]></string>
+    <string name="_bx_tasks_menu_item_title_entries_top"><![CDATA[Top]]></string>
+    <string name="_bx_tasks_menu_item_title_system_entries_search"><![CDATA[Search]]></string>
+    <string name="_bx_tasks_menu_item_title_entries_search"><![CDATA[Search]]></string>
+    <string name="_bx_tasks_menu_title_view_entry_submenu"><![CDATA[View Task Submenu]]></string>
+    <string name="_bx_tasks_menu_set_title_view_entry_submenu"><![CDATA[View Task Submenu]]></string>
+    <string name="_bx_tasks_menu_item_title_view_entry_submenu_entry"><![CDATA[Task]]></string>
+    <string name="_bx_tasks_menu_item_title_view_entry_submenu_comments"><![CDATA[Comments]]></string>
+    <string name="_bx_tasks_menu_item_title_system_view_entry_comments"><![CDATA[Task Comments]]></string>
+    <string name="_bx_tasks_menu_item_title_system_view_entries_author"><![CDATA[Tasks]]></string>
+    <string name="_bx_tasks_menu_item_title_view_entries_author"><![CDATA[Tasks]]></string>
+    <string name="_bx_tasks_menu_item_title_system_view_entries_in_context"><![CDATA[Tasks]]></string>
+    <string name="_bx_tasks_menu_item_title_view_entries_in_context"><![CDATA[Tasks]]></string>
+    <string name="_bx_tasks_menu_title_entries_my"><![CDATA[My Tasks Action Menu]]></string>
+    <string name="_bx_tasks_menu_set_title_entries_my"><![CDATA[My Tasks Menu]]></string>
+    <string name="_bx_tasks_menu_item_title_system_manage_my_tasks"><![CDATA[My tasks]]></string>
+    <string name="_bx_tasks_menu_item_title_manage_my_tasks"><![CDATA[Tasks]]></string>
+    <string name="_bx_tasks_menu_set_title_manage_tools"><![CDATA[Manage Tools - Item Submenu]]></string>
+    <string name="_bx_tasks_menu_title_manage_tools"><![CDATA[Manage Tools - Item Submenu]]></string>
+    <string name="_bx_tasks_menu_item_title_system_manage_account"><![CDATA[Manage account]]></string>
+    <string name="_bx_tasks_menu_item_title_manage_account"><![CDATA[Manage account]]></string>
+    <string name="_bx_tasks_menu_item_title_system_admt_tasks"><![CDATA[Tasks]]></string>
+    <string name="_bx_tasks_menu_item_title_admt_tasks"><![CDATA[Tasks]]></string>
+    <string name="_bx_tasks_menu_item_title_manage_my"><![CDATA[My Tasks]]></string>
+    <string name="_bx_tasks_menu_item_title_manage_all"><![CDATA[All Tasks]]></string>
+    <string name="_bx_tasks_menu_item_title_system_report_time"><![CDATA[Report Time]]></string>
+    <string name="_bx_tasks_menu_item_title_system_set_completed"><![CDATA[Complete]]></string>
+    <string name="_bx_tasks_menu_item_title_set_completed"><![CDATA[Complete]]></string>
+    <string name="_bx_tasks_menu_item_title_system_set_uncompleted"><![CDATA[Re-open]]></string>
+    <string name="_bx_tasks_menu_item_title_set_uncompleted"><![CDATA[Re-open]]></string>
+    <string name="_bx_tasks_menu_title_view_context_submenu"><![CDATA[View Context Submenu]]></string>
+    <string name="_bx_tasks_menu_set_title_view_context_submenu"><![CDATA[View Context Submenu]]></string>
+    <string name="_bx_tasks_menu_item_title_system_view_context_entries"><![CDATA[Tasks]]></string>
+    <string name="_bx_tasks_menu_item_title_view_context_entries"><![CDATA[Tasks]]></string>
+    <string name="_bx_tasks_menu_item_title_system_view_context_time"><![CDATA[My Time]]></string>
+    <string name="_bx_tasks_menu_item_title_view_context_time"><![CDATA[My Time]]></string>
+    <string name="_bx_tasks_menu_item_title_system_view_context_time_administration"><![CDATA[All Time]]></string>
+    <string name="_bx_tasks_menu_item_title_view_context_time_administration"><![CDATA[All Time]]></string>
+    <string name="_bx_tasks_menu_item_title_system_view_context_budget_administration"><![CDATA[Budget]]></string>
+    <string name="_bx_tasks_menu_item_title_view_context_budget_administration"><![CDATA[Budget]]></string>
+    <string name="_bx_tasks_menu_item_title_system_manage_context_pre_values"><![CDATA[Properties]]></string>
+    <string name="_bx_tasks_menu_item_title_manage_context_pre_values"><![CDATA[Properties]]></string>
+    <string name="_bx_tasks_menu_item_title_system_manage_context_settings"><![CDATA[Settings]]></string>
+    <string name="_bx_tasks_menu_item_title_manage_context_settings"><![CDATA[Settings]]></string>
+    <string name="_bx_tasks_menu_title_use_tools_submenu"><![CDATA[Usage Tools Submenu]]></string>
+    <string name="_bx_tasks_menu_set_title_use_tools_submenu"><![CDATA[Usage Tools Submenu]]></string>
+    <string name="_bx_tasks_menu_item_title_ut_submenu_home"><![CDATA[My Tasks]]></string>
+    <string name="_bx_tasks_menu_item_title_ut_submenu_timers"><![CDATA[My Timers]]></string>
+    <string name="_bx_tasks_menu_title_manage_tools_submenu"><![CDATA[Manage Tools Submenu]]></string>
+    <string name="_bx_tasks_menu_title_public_manage_tools_submenu"><![CDATA[Manage]]></string>
+    <string name="_bx_tasks_menu_set_title_manage_tools_submenu"><![CDATA[Manage Tools Submenu]]></string>
+    <string name="_bx_tasks_menu_item_title_mt_submenu_entries_common"><![CDATA[Manage my tasks]]></string>
+    <string name="_bx_tasks_menu_item_title_mt_submenu_entries_administration"><![CDATA[Tasks administration]]></string>
+    <string name="_bx_tasks_menu_item_title_mt_submenu_time_common"><![CDATA[Manage my time]]></string>
+    <string name="_bx_tasks_menu_item_title_mt_submenu_time_administration"><![CDATA[Time administration]]></string>
+    <string name="_bx_tasks_menu_title_browse"><![CDATA[Browse Tasks]]></string>
+    <string name="_bx_tasks_menu_set_title_browse"><![CDATA[Browse Tasks]]></string>
+
+    <!-- Grids -->
+    <string name="_bx_tasks_grid_filter_item_title_adm_select_one_filter1"><![CDATA[All Statuses]]></string>
+    <string name="_bx_tasks_grid_filter_item_title_adm_select_one_filter2"><![CDATA[Any Audience]]></string>
+    <string name="_bx_tasks_grid_filter_item_title_adm_select_one_filter3"><![CDATA[All Modules]]></string>
+    <string name="_bx_tasks_grid_filter_item_title_adm_active"><![CDATA[Active]]></string>
+    <string name="_bx_tasks_grid_filter_item_title_adm_hidden"><![CDATA[Hidden]]></string>
+    <string name="_bx_tasks_grid_filter_item_title_adm_pending"><![CDATA[Pending]]></string>
+    <string name="_bx_tasks_grid_column_title_adm_active"><![CDATA[Active]]></string>
+    <string name="_bx_tasks_grid_column_title_adm_title"><![CDATA[Title]]></string>
+    <string name="_bx_tasks_grid_column_title_adm_context_module"><![CDATA[Module]]></string>
+    <string name="_bx_tasks_grid_action_title_adm_audit_content"><![CDATA[Audit actions]]></string>
+    <string name="_bx_tasks_grid_column_title_adm_added"><![CDATA[Added]]></string>
+    <string name="_bx_tasks_grid_column_title_adm_author"><![CDATA[Author]]></string>>
+    <string name="_bx_tasks_grid_action_title_adm_add"><![CDATA[Add]]></string>
+    <string name="_bx_tasks_grid_action_title_adm_edit"><![CDATA[Edit]]></string>
+    <string name="_bx_tasks_grid_action_title_adm_delete"><![CDATA[Delete]]></string>
+    <string name="_bx_tasks_grid_action_title_adm_clear_reports"><![CDATA[Сlear reports]]></string>
+    <string name="_bx_tasks_grid_action_title_adm_more_actions"><![CDATA[More Actions]]></string>
+    <string name="_bx_tasks_grid_column_title_adm_status_admin"><![CDATA[Moderation]]></string>
+    <string name="_bx_tasks_grid_action_err_delete"><![CDATA[Cannot delete the selected task(s).]]></string>
+    <string name="_bx_tasks_grid_txt_account_manager"><![CDATA[Redirect to manage account.]]></string>
+
+    <string name="_bx_tasks_grid_column_title_tm_author_id"><![CDATA[Profile]]></string>
+    <string name="_bx_tasks_grid_column_title_tm_context_id"><![CDATA[Context]]></string>
+    <string name="_bx_tasks_grid_column_title_tm_context_module"><![CDATA[Module]]></string>
+    <string name="_bx_tasks_grid_column_title_tm_object_id"><![CDATA[Task]]></string>
+    <string name="_bx_tasks_grid_column_title_tm_text"><![CDATA[Note]]></string>
+    <string name="_bx_tasks_grid_column_title_tm_value"><![CDATA[Time]]></string>
+    <string name="_bx_tasks_grid_column_title_tm_value_date"><![CDATA[Date]]></string>
+    <string name="_bx_tasks_grid_action_title_tm_add"><![CDATA[Add]]></string>
+    <string name="_bx_tasks_grid_action_title_tm_edit"><![CDATA[Edit]]></string>
+    <string name="_bx_tasks_grid_action_title_tm_delete"><![CDATA[Remove]]></string>
+    <string name="_bx_tasks_grid_action_title_tm_calculate"><![CDATA[Calculate]]></string>
+    <string name="_bx_tasks_grid_filter_item_title_tm_select_one_author_id"><![CDATA[Any Assignee]]></string>
+    <string name="_bx_tasks_grid_filter_item_title_tm_select_one_context_module"><![CDATA[Any Module]]></string>
+    <string name="_bx_tasks_grid_filter_item_title_tm_select_one_object_id"><![CDATA[Any Task]]></string>
+    <string name="_bx_tasks_grid_popup_title_tm_add"><![CDATA[Add Time]]></string>
+    <string name="_bx_tasks_grid_popup_title_tm_edit"><![CDATA[Edit Time]]></string>
+    <string name="_bx_tasks_grid_popup_title_tm_calculate"><![CDATA[Total Spent Time]]></string>
+
+    <string name="_bx_tasks_grid_column_title_bdt_profile_id"><![CDATA[Profile]]></string>
+    <string name="_bx_tasks_grid_column_title_bdt_text"><![CDATA[Note]]></string>
+    <string name="_bx_tasks_grid_column_title_bdt_value"><![CDATA[Value]]></string>
+    <string name="_bx_tasks_grid_column_title_bdt_date"><![CDATA[Added]]></string>
+    <string name="_bx_tasks_grid_action_title_bdt_add"><![CDATA[Add]]></string>
+    <string name="_bx_tasks_grid_action_title_bdt_edit"><![CDATA[Edit]]></string>
+    <string name="_bx_tasks_grid_action_title_bdt_delete"><![CDATA[Delete]]></string>
+    <string name="_bx_tasks_grid_popup_title_bdt_add"><![CDATA[Add Budget]]></string>
+    <string name="_bx_tasks_grid_popup_title_bdt_edit"><![CDATA[Edit Budget]]></string>
+
+    <string name="_bx_tasks_grid_column_title_pv_active"><![CDATA[Active]]></string>
+    <string name="_bx_tasks_grid_column_title_pv_title"><![CDATA[Title]]></string>
+    <string name="_bx_tasks_grid_action_title_pv_add"><![CDATA[Add]]></string>
+    <string name="_bx_tasks_grid_action_title_pv_edit"><![CDATA[Edit]]></string>
+    <string name="_bx_tasks_grid_action_title_pv_activate"><![CDATA[Activate]]></string>
+    <string name="_bx_tasks_grid_action_title_pv_deactivate"><![CDATA[Deactivate]]></string>
+    <string name="_bx_tasks_grid_action_title_pv_delete"><![CDATA[Delete]]></string>
+    <string name="_bx_tasks_grid_action_confirm_pv_delete"><![CDATA[This action will remove the item from all tasks across the contexts and it cannot be undone. Do you want to preceed?]]></string>
+    <string name="_bx_tasks_grid_filter_item_title_pv_select_one_list"><![CDATA[Select list...]]></string>
+
+
+    <!-- Charts -->
+    <string name="_bx_tasks_chart_growth"><![CDATA[Tasks: Growth]]></string>
+    <string name="_bx_tasks_chart_growth_speed"><![CDATA[Tasks: Growth Speed]]></string>
+
+    <string name="_bx_tasks_search_extended"><![CDATA[Tasks Search]]></string>
+    <string name="_bx_tasks_search_extended_cmts"><![CDATA[Tasks Comments Search]]></string>
+
+    <string name="_bx_tasks_filter_title_select"><![CDATA[Select filter...]]></string>
+    <string name="_bx_tasks_filter_title_by_author"><![CDATA[Owned by current user]]></string>
+    <string name="_bx_tasks_filter_title_by_author_uncompleted"><![CDATA[Owned by current user and uncompleted]]></string>
+    <string name="_bx_tasks_filter_title_by_author_completed"><![CDATA[Owned by current user and completed]]></string>
+    <string name="_bx_tasks_filter_title_by_assignee"><![CDATA[Assigned to current user]]></string>
+    <string name="_bx_tasks_filter_title_by_assignee_uncompleted"><![CDATA[Assigned to current user and uncompleted]]></string>
+    <string name="_bx_tasks_filter_title_by_assignee_completed"><![CDATA[Assigned to current user completed]]></string>
+
+    <string name="_bx_tasks_pre_lists_types"><![CDATA[Types]]></string>
+    <string name="_bx_tasks_type_1"><![CDATA[Bug]]></string>
+    <string name="_bx_tasks_type_2"><![CDATA[Feature]]></string>
+    <string name="_bx_tasks_type_3"><![CDATA[Task]]></string>
+    <string name="_bx_tasks_pre_lists_stickers"><![CDATA[Labels]]></string>
+    <string name="_bx_tasks_sticker_1"><![CDATA[Bug]]></string>
+    <string name="_bx_tasks_sticker_2"><![CDATA[Feature]]></string>
+    <string name="_bx_tasks_sticker_3"><![CDATA[Improvement]]></string>
+    <string name="_bx_tasks_sticker_4"><![CDATA[Investigation]]></string>
+    <string name="_bx_tasks_sticker_5"><![CDATA[Discussion]]></string>
+    <string name="_bx_tasks_pre_lists_priorities"><![CDATA[Priorities]]></string>
+    <string name="_bx_tasks_priority_1"><![CDATA[Urgent]]></string>
+    <string name="_bx_tasks_priority_2"><![CDATA[High]]></string>
+    <string name="_bx_tasks_priority_3"><![CDATA[Medium]]></string>
+    <string name="_bx_tasks_priority_4"><![CDATA[Low]]></string>
+    <string name="_bx_tasks_priority_5"><![CDATA[No Priority]]></string>
+    <string name="_bx_tasks_pre_lists_estimates"><![CDATA[Estimates]]></string>
+    <string name="_bx_tasks_estimate_2"><![CDATA[2 points]]></string>
+    <string name="_bx_tasks_estimate_4"><![CDATA[4 points]]></string>
+    <string name="_bx_tasks_estimate_8"><![CDATA[8 points]]></string>
+    <string name="_bx_tasks_estimate_16"><![CDATA[16 points]]></string>
+    <string name="_bx_tasks_estimate_32"><![CDATA[32 points]]></string>
+    <string name="_bx_tasks_estimate_64"><![CDATA[64 points]]></string>
+    <string name="_bx_tasks_pre_lists_states"><![CDATA[States]]></string>
+    <string name="_bx_tasks_state_1"><![CDATA[Backlog]]></string>
+    <string name="_bx_tasks_state_2"><![CDATA[Todo]]></string>
+    <string name="_bx_tasks_state_3"><![CDATA[In Progress]]></string>
+    <string name="_bx_tasks_state_4"><![CDATA[In Review]]></string>
+    <string name="_bx_tasks_state_5"><![CDATA[Cancelled]]></string>
+    <string name="_bx_tasks_state_6"><![CDATA[Duplicate]]></string>
+    <string name="_bx_tasks_state_7"><![CDATA[Done]]></string>
+    <string name="_bx_tasks_pre_lists_cats"><![CDATA[Task categories]]></string>
+    <string name="_bx_tasks_cat_Animals_Pets"><![CDATA[Animals & Pets]]></string>
+    <string name="_bx_tasks_cat_Architecture"><![CDATA[Architecture]]></string>
+    <string name="_bx_tasks_cat_Art"><![CDATA[Art]]></string>
+    <string name="_bx_tasks_cat_Cars_Motorcycles"><![CDATA[Cars & Motorcycles]]></string>
+    <string name="_bx_tasks_cat_Celebrities"><![CDATA[Celebrities]]></string>
+    <string name="_bx_tasks_cat_Design"><![CDATA[Design]]></string>
+    <string name="_bx_tasks_cat_DIY_Crafts"><![CDATA[DIY & Crafts]]></string>
+    <string name="_bx_tasks_cat_Education"><![CDATA[Education]]></string>
+    <string name="_bx_tasks_cat_Film_Music_Books"><![CDATA[Film, Music & Books]]></string>
+    <string name="_bx_tasks_cat_Food_Drink"><![CDATA[Food & Drink]]></string>
+    <string name="_bx_tasks_cat_Gardening"><![CDATA[Gardening]]></string>
+    <string name="_bx_tasks_cat_Geek"><![CDATA[Geek]]></string>
+    <string name="_bx_tasks_cat_Hair_Beauty"><![CDATA[Hair & Beauty]]></string>
+    <string name="_bx_tasks_cat_Health_Fitness"><![CDATA[Health & Fitness]]></string>
+    <string name="_bx_tasks_cat_History"><![CDATA[History]]></string>
+    <string name="_bx_tasks_cat_Holidays_Events"><![CDATA[Holidays & Events]]></string>
+    <string name="_bx_tasks_cat_Home_Decor"><![CDATA[Home Decor]]></string>
+    <string name="_bx_tasks_cat_Humor"><![CDATA[Humor]]></string>
+    <string name="_bx_tasks_cat_Illustrations_Posters"><![CDATA[Illustrations & Posters]]></string>
+    <string name="_bx_tasks_cat_Kids_Parenting"><![CDATA[Kids & Parenting]]></string>
+    <string name="_bx_tasks_cat_Mens_Fashion"><![CDATA[Men's Fashion]]></string>
+    <string name="_bx_tasks_cat_Outdoors"><![CDATA[Outdoors]]></string>
+    <string name="_bx_tasks_cat_Photography"><![CDATA[Photography]]></string>
+    <string name="_bx_tasks_cat_Products"><![CDATA[Products]]></string>
+    <string name="_bx_tasks_cat_Quotes"><![CDATA[Quotes]]></string>
+    <string name="_bx_tasks_cat_Science_Nature"><![CDATA[Science & Nature]]></string>
+    <string name="_bx_tasks_cat_Sports"><![CDATA[Sports]]></string>
+    <string name="_bx_tasks_cat_Tattoos"><![CDATA[Tattoos]]></string>
+    <string name="_bx_tasks_cat_Technology"><![CDATA[Technology]]></string>
+    <string name="_bx_tasks_cat_Travel"><![CDATA[Travel]]></string>
+    <string name="_bx_tasks_cat_Weddings"><![CDATA[Weddings]]></string>
+    <string name="_bx_tasks_cat_Womens_Fashion"><![CDATA[Women's Fashion]]></string>
+
+    <string name="_bx_tasks_report_time_do_report"><![CDATA[Time]]></string>
+    <string name="_bx_tasks_report_time_do_unreport"><![CDATA[Revoke Time]]></string>
+
+    <string name="_bx_tasks_txt_all_entries_in"><![CDATA[<a href="{0}">All Tasks in {1} ({2})</a>]]></string>
+    <string name="_bx_tasks_txt_all_entries_by"><![CDATA[{0} tasks]]></string>
+    <string name="_bx_tasks_txt_sample_single"><![CDATA[task]]></string>
+    <string name="_bx_tasks_txt_sample_single_with_article"><![CDATA[a task]]></string>
+    <string name="_bx_tasks_txt_action_completed"><![CDATA[completed]]></string>
+    <string name="_bx_tasks_txt_action_reopened"><![CDATA[reopened]]></string>
+    <string name="_bx_tasks_txt_sample_comment_single"><![CDATA[comment to task]]></string>
+    <string name="_bx_tasks_txt_sample_vote_single"><![CDATA[vote to task]]></string>
+    <string name="_bx_tasks_txt_sample_reaction_single"><![CDATA['{0}' reaction to task]]></string>
+    <string name="_bx_tasks_txt_sample_score_up_single"><![CDATA[score up vote to task]]></string>
+    <string name="_bx_tasks_txt_sample_score_down_single"><![CDATA[score down vote to task]]></string>
+    <string name="_bx_tasks_txt_processing_awaiting"><![CDATA[Scheduled for publishing as soon as video conversion is complete.]]></string>
+    <string name="_bx_tasks_txt_processing_failed"><![CDATA[Task isn't published because video conversion failed, edit video to fix the issue.]]></string>
+    <string name="_bx_tasks_txt_scheduled_awaiting"><![CDATA[Task publishing date is {date_publish_uf}]]></string>
+    <string name="_bx_tasks_txt_list_title"><![CDATA[{0} ({1})]]></string>
+    <string name="_bx_tasks_txt_list_inbox"><![CDATA[Inbox]]></string>
+    <string name="_bx_tasks_txt_new_task_list"><![CDATA[New Task List]]></string>
+    <string name="_bx_tasks_txt_edit_task_list"><![CDATA[Edit Task List]]></string>
+    <string name="_bx_tasks_txt_delete_task_list"><![CDATA[Delete Task List]]></string>
+    <string name="_bx_tasks_txt_new_task"><![CDATA[New Task]]></string>
+    <string name="_bx_tasks_txt_total"><![CDATA[Total: {0}]]></string>
+    <string name="_bx_tasks_txt_estimate"><![CDATA[Estimate: {0}]]></string>
+    <string name="_bx_tasks_txt_set"><![CDATA[set...]]></string>
+    <string name="_bx_tasks_txt_flt_system"><![CDATA[System]]></string>
+    <string name="_bx_tasks_txt_flt_contextual"><![CDATA[Contextual]]></string>
+    <string name="_bx_tasks_txt_flt_my_permanent"><![CDATA[My saved]]></string>
+    <string name="_bx_tasks_txt_flt_my_temporary"><![CDATA[My temporary]]></string>
+    <string name="_bx_tasks_txt_flt_user_current"><![CDATA[Current user]]></string>
+
+    <string name="_bx_tasks_txt_timer_start"><![CDATA[Start]]></string>
+    <string name="_bx_tasks_txt_timer_pause"><![CDATA[Pause]]></string>
+    <string name="_bx_tasks_txt_timer_resume"><![CDATA[Resume]]></string>
+    <string name="_bx_tasks_txt_timer_clear"><![CDATA[Clear]]></string>
+    <string name="_bx_tasks_txt_timer_log"><![CDATA[Log]]></string>
+    <string name="_bx_tasks_txt_timer_edit_and_log"><![CDATA[Edit & Log]]></string>
+    <string name="_bx_tasks_txt_timers_clear"><![CDATA[Clear All]]></string>
+    <string name="_bx_tasks_txt_timers_log"><![CDATA[Log All]]></string>
+
+    <string name="_bx_tasks_txt_budget_total"><![CDATA[Budget:]]></string>
+    <string name="_bx_tasks_txt_budget_spent"><![CDATA[Spent:]]></string>
+    <string name="_bx_tasks_txt_budget_remains"><![CDATA[Remains:]]></string>
+    <string name="_bx_tasks_txt_budget_remains_value"><![CDATA[{0} ({1}%)]]></string>
+
+    <string name="_bx_tasks_txt_err_cannot_perform_action"><![CDATA[Cannot perform action. Please report.]]></string>
+    <string name="_bx_tasks_txt_err_empty_pre_list"><![CDATA[Please select a list to add items to.]]></string>
+    <string name="_bx_tasks_txt_err_timer_not_found"><![CDATA[Timer wasn't found or empty.]]></string>
+    <string name="_bx_tasks_txt_msg_perform_action"><![CDATA[The action was performed.]]></string>
+    <string name="_bx_tasks_txt_msg_status_hidden"><![CDATA[This task was hidden.]]></string>
+    <string name="_bx_tasks_txt_msg_status_pending"><![CDATA[This task is pending approval.]]></string>
+    <string name="_bx_tasks_txt_msg_confirm_tasklist_deletion"><![CDATA[You will delete all tasks that are contained in this tasklist. Are you sure?]]></string>
+    <string name="_bx_tasks_txt_msg_format"><![CDATA[{0} &#183; <span>{1}</span>]]></string>
+    <string name="_bx_tasks_txt_msg_synced"><![CDATA[The task was synced with GitHub: <b><a href="{ghi_link}" target="_blank">#{ghi_number}</a></b>]]></string> 
+    <string name="_bx_tasks_txt_msg_edit_tasks_list"><![CDATA[<a href="{author_link}">{author_name}</a> moved to <b>{value}</b>]]></string>
+    <string name="_bx_tasks_txt_msg_edit_type"><![CDATA[<a href="{author_link}">{author_name}</a> changed type to <b>{value}</b>]]></string>
+    <string name="_bx_tasks_txt_msg_edit_priority"><![CDATA[<a href="{author_link}">{author_name}</a> changed priority to <b>{value}</b>]]></string>
+    <string name="_bx_tasks_txt_msg_edit_estimate"><![CDATA[<a href="{author_link}">{author_name}</a> changed estimate to <b>{value}</b>]]></string>
+    <string name="_bx_tasks_txt_msg_edit_due_date"><![CDATA[<a href="{author_link}">{author_name}</a> changed due date to <b>{value}</b>]]></string>
+    <string name="_bx_tasks_txt_msg_edit_state"><![CDATA[<a href="{author_link}">{author_name}</a> changed state to <b>{value}</b>]]></string>
+    <string name="_bx_tasks_txt_msg_edit_initial_members"><![CDATA[<a href="{author_link}">{author_name}</a> assigned to <b>{value}</b>]]></string>
+    <string name="_bx_tasks_txt_msg_edit_title"><![CDATA[<a href="{author_link}">{author_name}</a> changed title to <b>{value}</b>]]></string>
+    <string name="_bx_tasks_txt_msg_edit_text"><![CDATA[<a href="{author_link}">{author_name}</a> changed text]]></string>
+    <string name="_bx_tasks_txt_msg_completed"><![CDATA[<a href="{author_link}">{author_name}</a> completed the task]]></string>
+    <string name="_bx_tasks_txt_msg_uncompleted"><![CDATA[<a href="{author_link}">{author_name}</a> re-opened the task]]></string>
+    <string name="_bx_tasks_txt_msg_report_time_for_date"><![CDATA[<a href="{author_link}">{author_name}</a> reported that {time} was spent on {date}]]></string>
+
+    <!-- Notifications -->
+    <string name="_bx_tasks_alert_action_completed_personal"><![CDATA[Complete task]]></string>
+    <string name="_bx_tasks_alert_action_completed_follow_member"><![CDATA[Complete task]]></string>
+    <string name="_bx_tasks_alert_action_completed_follow_context"><![CDATA[Complete task]]></string>
+    <string name="_bx_tasks_alert_action_reopened_personal"><![CDATA[Reopen task]]></string>
+    <string name="_bx_tasks_alert_action_reopened_follow_member"><![CDATA[Reopen task]]></string>
+    <string name="_bx_tasks_alert_action_reopened_follow_context"><![CDATA[Reopen task]]></string>
+    <string name="_bx_tasks_alert_action_expired_personal"><![CDATA[Expire task]]></string>
+    <string name="_bx_tasks_alert_action_assigned_personal"><![CDATA[Assign task]]></string>
+
+    <string name="_bx_tasks_txt_notification_completed"><![CDATA[{author_name_wrapped} completed {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b>]]></string>
+    <string name="_bx_tasks_txt_notification_completed_in_context"><![CDATA[{author_name_wrapped} completed {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b> in <b class="bx-ntfs-content-profile">{owner_name}</b>]]></string>
+    <string name="_bx_tasks_txt_notification_reopened"><![CDATA[{author_name_wrapped} reopened {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b>]]></string>
+    <string name="_bx_tasks_txt_notification_reopened_in_context"><![CDATA[{author_name_wrapped} reopened {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b> in <b class="bx-ntfs-content-profile">{owner_name}</b>]]></string>
+    <string name="_bx_tasks_txt_notification_expired"><![CDATA[<b class="bx-ntfs-content-entry">{entry_caption}</b> {entry_sample} expired]]></string>
+    <string name="_bx_tasks_txt_notification_expired_in_context"><![CDATA[<b class="bx-ntfs-content-entry">{entry_caption}</b> {entry_sample} expired in <b class="bx-ntfs-content-profile">{owner_name}</b>]]></string>
+    <string name="_bx_tasks_txt_notification_assigned"><![CDATA[{author_name_wrapped} assigned <b class="bx-ntfs-content-entry">{entry_caption}</b> {entry_sample} to <b class="bx-ntfs-content-profile">{entry_author_name}</b>]]></string>
+    <string name="_bx_tasks_txt_notification_assigned_in_context"><![CDATA[{author_name_wrapped} assigned <b class="bx-ntfs-content-entry">{entry_caption}</b> {entry_sample} to <b class="bx-ntfs-content-profile">{entry_author_name}</b> in <b class="bx-ntfs-content-profile">{owner_name}</b>]]></string>
+
+    <!-- Timeline -->
+    <string name="_bx_tasks_alert_action_completed"><![CDATA[completed]]></string>
+    <string name="_bx_tasks_alert_action_reopened"><![CDATA[reopened]]></string>
+</resources>
