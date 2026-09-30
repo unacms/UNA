@@ -10,7 +10,6 @@ import {
     BlockName,
     BlockActions,
 } from 'app/ui/molecules/page/page-block'
-import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View, Row } from 'app/design/view'
 import { Text } from 'app/design/typography'
@@ -21,7 +20,7 @@ import ProfileSwitcher from 'app/components/elements/profile-switcher'
 import { appSetting, cn } from 'app/lib/util'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu'
 import Link from 'app/ui/atoms/link'
-import { fetcher } from 'app/lib/fetcher'
+import { useFetch } from 'app/lib/hooks/use-fetch'
 import DasbordStatOld from 'app/components/elements/dashboard-stat-old'
 import { useLayoutSettings } from 'app/context/layout-settings'
 import { BlockWrapper } from 'app/components/block-wrapper'
@@ -341,17 +340,10 @@ function DashboardStatRemote(props) {
 
 function ElementDashboardStat(props) {
     const { t } = useTranslation()
-    const [data, setData] = useState(props.data)
     const { currentUser } = useCurrentUser()
-    useEffect(() => {
-        const fetchData = async () => {
-            const sResponse = await fetcher(
-                '/api.php?r=system/get_stat_block/TemplDashboardServices'
-            )
-            setData(sResponse?.data[0]?.data)
-        }
-        fetchData()
-    }, [])
+    // Page JSON carries a snapshot; refresh it (cached, so returning to the dashboard is instant).
+    const { data: sResponse } = useFetch('/api.php?r=system/get_stat_block/TemplDashboardServices')
+    const data = sResponse?.data?.[0]?.data ?? props.data
 
     const menu = appSetting('dashboard', 'menu')
     const list = appSetting('dashboard', 'modules_list')

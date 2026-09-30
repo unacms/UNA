@@ -1,11 +1,12 @@
 import { View, Pressable, Row } from 'app/design/view'
 import Link from 'app/ui/atoms/link'
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef } from 'react'
 import { Button } from 'app/design/controls'
 import { Text } from 'app/design/typography'
 import Profile from 'app/ui/molecules/profile/profile'
 import { useCurrentUser } from 'app/context/user'
 import { fetcher } from 'app/lib/fetcher';
+import { useFetch } from 'app/lib/hooks/use-fetch';
 import Redirect from 'app/ui/atoms/redirect';
 import { useTranslation } from 'react-i18next';
 import { Modal } from 'app/design/controls'
@@ -14,7 +15,6 @@ import { BlockWrapper } from 'app/components/block-wrapper'
 export default function ProfileSwitcher({ className, rounded = 'rounded-lg', children, hideTitle, listOnly, blockWrapperProps }) {
     const { t } = useTranslation();
     const { currentUser, setCurrentUser } = useCurrentUser();
-    const [data, setData] = useState(false)
     const [show, setShow] = useState(false)
     const redirectdRef = useRef();
     const wrapperClassName = className || '';
@@ -25,16 +25,12 @@ export default function ProfileSwitcher({ className, rounded = 'rounded-lg', chi
         setShow(false);
     };
 
-    async function fetchData() {
-        const sResponse = await fetcher('/api.php?r=system/account_profile_switcher/TemplServiceProfiles');
-        if (sResponse && sResponse.data && sResponse.data[0] && sResponse.data[0].data)
-            setData(sResponse.data[0].data);
-    }
-
-    useEffect(() => {
-        if (show)
-            fetchData()
-    }, [show]);
+    // Loaded when the modal opens; staleTime 0 re-checks on every open (cached list shows meanwhile).
+    const { data: sResponse } = useFetch(
+        show ? '/api.php?r=system/account_profile_switcher/TemplServiceProfiles' : null,
+        { staleTime: 0 }
+    );
+    const data = sResponse?.data?.[0]?.data || false;
 
     const handleClick = async (id) => {
         setShow(true)

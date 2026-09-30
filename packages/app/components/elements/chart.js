@@ -1,7 +1,7 @@
 import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
-import { fetcher } from 'app/lib/fetcher';
-import { useState, useEffect } from 'react';
+import { useFetch } from 'app/lib/hooks/use-fetch';
+import { useState, useEffect, useMemo } from 'react';
 import { appSetting } from 'app/lib/util';
 import Dropdown from 'app/ui/atoms/dropdown'
 import Calendar from 'app/ui/atoms/calendar'
@@ -83,26 +83,18 @@ function VictoryLineChart({size, dataChart}) {
 export default function ElementChart({ data, blockWrapperProps }) {
 
     const [chartParams, setChartParams] = useState(data.params);
-    const [dataChart, setDataChart] = useState([]);
     const [size, setSize] = useState([300, 300]);
 
-    const fetchData = async () => {
-        if (data.endpoint) {
-            const queryParams = Object.entries(chartParams)
-                .map(([key, value]) => `&params[]=${(value)}`)
-                .join('');
-            const sUrl = '/api.php?r=' + data.endpoint + queryParams;
-            const sResponse = await fetcher(sUrl);
-            if (sResponse?.data?.data) {
-                const transformedData = sResponse.data.data.map(([x, y]) => ({ x: new Date(x), y: y }));
-                setDataChart(transformedData);
-            }
-        }
-    };
-
-    useEffect(() => {
-        fetchData();
-    }, [chartParams]);
+    const chartUrl = data.endpoint
+        ? '/api.php?r=' + data.endpoint + Object.values(chartParams).map((value) => `&params[]=${value}`).join('')
+        : null;
+    // keepPreviousData: the current line stays while a new range loads.
+    const { data: sResponse } = useFetch(chartUrl, { keepPreviousData: true });
+    const points = sResponse?.data?.data;
+    const dataChart = useMemo(
+        () => (points ? points.map(([x, y]) => ({ x: new Date(x), y: y })) : []),
+        [points]
+    );
 
     const setParamValue = (key, value, format = '') => {
         if (format == 'date') {

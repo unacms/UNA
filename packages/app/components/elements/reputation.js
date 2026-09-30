@@ -5,8 +5,9 @@ import Profile from 'app/ui/molecules/profile/profile'
 import { Icon } from 'app/ui/atoms/icon'
 import { Svg, Path } from 'react-native-svg'
 import { Button, Modal } from 'app/design/controls'
-import { useState, useEffect, useCallback, useMemo } from 'react'
-import { fetcher } from 'app/lib/fetcher'
+import { useState, useCallback, useMemo } from 'react'
+import { useQueries } from '@tanstack/react-query'
+import { useFetch, fetchQueryOptions } from 'app/lib/hooks/use-fetch'
 import Tabs from 'app/ui/molecules/tabs/tabs'
 import {
     Table,
@@ -79,30 +80,16 @@ export function ReputationSummary({ data }) {
 }
 
 export function ReputationWidget({ data }) {
-    const [tabsData, setTabsData] = useState(data.tabs)
-    useEffect(() => {
-        const fetchAllTabs = async () => {
-            try {
-                const results = await Promise.all(
-                    data.tabs.map(async ({ url, title, data }, index) => {
-                        const loadedData =
-                            data ?? (await fetcher(url))?.data?.[0]?.data ?? []
-                        return {
-                            title: title,
-                            data: loadedData,
-                            index,
-                            url,
-                        }
-                    })
-                )
-                setTabsData(results)
-            } catch (error) {
-                console.error('Error loading data:', error)
-            }
-        }
-
-        fetchAllTabs()
-    }, [])
+    // Tabs without inline `data` load their own; each shows <Loading /> until then.
+    const tabQueries = useQueries({
+        queries: data.tabs.map((tab) => fetchQueryOptions(tab.data ? null : tab.url)),
+    })
+    const tabsData = data.tabs.map(({ url, title, data: inline }, index) => ({
+        title,
+        url,
+        index,
+        data: inline ?? (tabQueries[index]?.isSuccess ? (tabQueries[index].data?.data?.[0]?.data ?? []) : undefined),
+    }))
 
     // Reorder tabs: leaderboard tabs first, then "You" (summary) tab last
     const reorderedTabs = useMemo(() => {
@@ -296,18 +283,20 @@ export function ReputationLeaderboard({ data }) {
         formProps.data.inputs.username.caption = ''
     }
 
-    const [profilesList, setProfilesList] = useState(data.profiles)
+    // Filtered list: the latest search wins even if an older response lands later;
+    // the previous result stays on screen while the next one loads.
+    const [searchUrl, setSearchUrl] = useState(null)
+    const { data: searchResponse } = useFetch(searchUrl, { keepPreviousData: true })
+    const profilesList = (searchUrl && searchResponse?.data?.profiles) || data.profiles
 
-    const onFormChange = useCallback(async (values) => {
+    const onFormChange = useCallback((values) => {
         const transformedValues = Object.fromEntries(
             Object.entries(values).map(([key, value]) => [
                 key,
                 Array.isArray(value) ? value.join(',') : value,
             ])
         )
-        const requestUrl = data?.request_url + JSON.stringify(transformedValues)
-        const res = await fetcher(requestUrl)
-        setProfilesList(res.data.profiles)
+        setSearchUrl(data?.request_url + JSON.stringify(transformedValues))
     }, [])
 
     const searchForm = useMemo(

@@ -1,7 +1,7 @@
 import { View } from 'app/design/view';
 import { ButtonLink, Input } from 'app/design/controls';
-import { fetcher } from 'app/lib/fetcher';
-import { useState, useEffect } from 'react'
+import { useFetch } from 'app/lib/hooks/use-fetch';
+import { useState } from 'react'
 import Profile from 'app/ui/molecules/profile/profile'
 import { Text } from 'app/design/typography'
 import Card, { CardTitle } from 'app/ui/molecules/page/card'
@@ -12,19 +12,12 @@ import { useTranslation } from 'react-i18next'
 export default function InviteInContext({ blockWrapperProps }) {
     const { t } = useTranslation();
     const [inputValue, setInputValue] = useState("");
-    const [res, setRes] = useState("");
-    //aY9sC
-
-    useEffect(() => {
-        (async () => {
-            if (inputValue.length > 3) {
-                const sResponse = await fetcher(`/api.php?r=bx_invites/get_context_by_code/&params[]=${inputValue}&params[]={"initiate": 1}`);
-                setRes(sResponse.data)
-            }
-
-        })();
-
-    }, [inputValue]);
+    // Look up from the 4th character; a shorter code shows nothing (not the last match).
+    const requestUrl = inputValue.length > 3
+        ? `/api.php?r=bx_invites/get_context_by_code/&params[]=${encodeURIComponent(inputValue)}&params[]={"initiate": 1}`
+        : null;
+    const { data: sResponse } = useFetch(requestUrl);
+    const res = (requestUrl && sResponse?.data) || {};
 
     return (
         <BlockWrapper {...blockWrapperProps}>

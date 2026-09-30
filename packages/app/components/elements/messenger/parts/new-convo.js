@@ -1,7 +1,8 @@
 import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
 import { fetcher } from 'app/lib/fetcher';
-import { useEffect, useState } from 'react';
+import { useFetch } from 'app/lib/hooks/use-fetch';
+import { useMemo, useState } from 'react';
 import { Modal, NeoButton } from 'app/design/controls'
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import { SelectUsers } from 'app/components/form-fields/initial-members';
@@ -21,7 +22,12 @@ export default function CreateConvo({ onSave, initedData = [], convoId }) {
     const { t } = useTranslation();
     const [message, setMessage] = useState('');
     const [loading, setLoading] = useState(false);
-    const [agents, setAgents] = useState([]);
+    // Optional extra suggestions — quiet, single attempt; cached between openings.
+    const { data: agentsPayload } = useFetch(
+        '/api.php?r=bx_messenger/get_agents/Services&params=' + JSON.stringify({}),
+        { fetchOptions: AGENTS_FETCH_OPTIONS }
+    );
+    const agents = useMemo(() => parseAgentsList(agentsPayload), [agentsPayload]);
     const handleSave = async (data) => {
         setLoading(true);
         const params = {
@@ -38,23 +44,6 @@ export default function CreateConvo({ onSave, initedData = [], convoId }) {
             setMessage(sResponse.data.message)
         }
     };
-
-    useEffect(() => {
-        let cancelled = false;
-        (async () => {
-            try {
-                const payload = await fetcher(
-                    '/api.php?r=bx_messenger/get_agents/Services&params=' + JSON.stringify({}),
-                    false,
-                    AGENTS_FETCH_OPTIONS
-                );
-                if (!cancelled) setAgents(parseAgentsList(payload));
-            } catch {
-                if (!cancelled) setAgents([]);
-            }
-        })();
-        return () => { cancelled = true; };
-    }, []);
 
     return (
         <>

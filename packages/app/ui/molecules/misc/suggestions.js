@@ -4,15 +4,16 @@ import { useCurrentUser } from 'app/context/user';
 import { appSetting } from 'app/lib/util'
 import Browse from 'app/components/elements/browse'
 import { fetcher } from 'app/lib/fetcher';
+import { useFetch } from 'app/lib/hooks/use-fetch';
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import { useIsDesktop } from 'app/context/measure';
 
 export default function Suggestions(props) {
     const { currentUser } = useCurrentUser();
     const isDesktop = useIsDesktop();
-    const [dataIndexModal, setDataIndexModal] = useState(0);
     const { setBottomSheetData } = useBottomSheetData();
-    const [dataCount, setDataCount] = useState(0);
+    // Bumped when a suggestion is dismissed — re-renders onto the next one.
+    const [, setDismissed] = useState(0);
     let suggestionList = appSetting('suggestion', 'list');
 
     let suggestionListNames = suggestionList.map(item => item.name);
@@ -24,54 +25,34 @@ export default function Suggestions(props) {
     let filteredList = suggestionList.filter(item => suggestionListToShow.includes(item.name));
 
     let dataModal = filteredList[0];
+    const requestUrl = currentUser && dataModal ? dataModal.request_url.replace('{user_id}', currentUser.id) : null;
 
-    const changeData = async (isSaveToStore) => {
-        let a = dataIndexModal + 1;
-        if (a >= filteredList.length)
-            a = false;
-        if (isSaveToStore) {
-            suggestionListShown.push(filteredList[0].name)
-            if (!currentUser.settings)
-                currentUser.settings = {}
-            currentUser.settings.recomendation = suggestionListShown
-            let request_url = '/api.php?r=system/update_settings/TemplServiceProfiles&params[]={user_id}&params[]='.replace('{user_id}', currentUser.id) + JSON.stringify(currentUser.settings);
-            const sResponse = await fetcher(request_url);
-        }
-        setDataCount(0)
-        setDataIndexModal(a);
-    };
+    // Only show a suggestion whose list isn't empty.
+    const { data: sResponse } = useFetch(requestUrl);
+    const hasItems = (sResponse?.data?.[0]?.data?.data?.length ?? 0) > 0;
 
-    const onCloseEvent = () => {
-        changeData(true)
+    const onCloseEvent = async () => {
+        suggestionListShown.push(filteredList[0].name)
+        if (!currentUser.settings)
+            currentUser.settings = {}
+        currentUser.settings.recomendation = suggestionListShown
+        setDismissed((n) => n + 1);
+        let request_url = '/api.php?r=system/update_settings/TemplServiceProfiles&params[]={user_id}&params[]='.replace('{user_id}', currentUser.id) + JSON.stringify(currentUser.settings);
+        await fetcher(request_url);
     }
 
     useEffect(() => {
-        const fetchData = async () => {
-            let request_url = dataModal.request_url.replace('{user_id}', currentUser.id);
-            const sResponse = await fetcher(request_url);
-            if (sResponse.data[0].data.data.length == 0) {
-                changeData(false);
-            }
-            else {
-                setDataCount(1)
-            }
-        };
-        if (currentUser && dataModal)
-            fetchData();
-    }, [currentUser, dataModal]);
-
-    useEffect(() => {
-        if (currentUser && currentUser.confirmed && dataModal && dataCount > 0) {
+        if (currentUser && currentUser.confirmed && dataModal && hasItems) {
             if (dataModal.perLine > 1 && !isDesktop)
                 dataModal.perLine = 1
             let cnt = (
                 <View className={(isDesktop ? 'max-h-96' : '') + ''}>
-                    <Browse sidebar={isDesktop ? false : true} only_one_page={true} data={{ request_url: dataModal.request_url.replace('{user_id}', currentUser.id), "type": "obj_own_and_con", unit: "general-content-list" }} perLine={dataModal.perLine} unitType={dataModal.unitType} />
+                    <Browse sidebar={isDesktop ? false : true} only_one_page={true} data={{ request_url: requestUrl, "type": "obj_own_and_con", unit: "general-content-list" }} perLine={dataModal.perLine} unitType={dataModal.unitType} />
                 </View>
             );
             setBottomSheetData({ title: dataModal.title, content: cnt, showClose: true, onClose: onCloseEvent, snapPoints: ['50%', '65%'] });
         }
-    }, [dataCount, isDesktop]);
+    }, [hasItems, dataModal, isDesktop]);
 
     return <></>
 }

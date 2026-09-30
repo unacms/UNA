@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useFormContext, useWatch } from 'react-hook-form'
 import Field from './_field'
 import { View, Row } from 'app/design/view'
@@ -8,7 +8,7 @@ import { Text } from 'app/design/typography'
 import { Input } from 'app/design/controls'
 import CheckBox from 'app/ui/atoms/checkbox'
 import Loading from 'app/ui/atoms/loading'
-import { fetcher } from 'app/lib/fetcher'
+import { useFetch } from 'app/lib/hooks/use-fetch'
 import { useTranslation } from 'react-i18next'
 
 function resolveItemsUrl(requestUrl, moduleId) {
@@ -53,8 +53,6 @@ export default function PaymentItems(props) {
     const moduleId = useWatch({ control: formContext.control, name: 'module_id' })
     const sellerId = useWatch({ control: formContext.control, name: 'seller_id' })
 
-    const [loading, setLoading] = useState(false)
-    const [items, setItems] = useState([])
     const [filter, setFilter] = useState('')
     const [selected, setSelected] = useState({})
 
@@ -63,45 +61,25 @@ export default function PaymentItems(props) {
         props.module_request_url ||
         '/api.php?r=bx_payment/get_items&params[]=single&params[]='
 
+    const id = Number(moduleId)
+    let itemsUrl = id ? resolveItemsUrl(requestUrl, id) : null
+    if (itemsUrl && sellerId) {
+        itemsUrl += (itemsUrl.includes('?') ? '&' : '?') + 'seller_id=' + encodeURIComponent(sellerId)
+    }
+    // isInitialLoading: no spinner for a disabled query or a cached module.
+    const { data: itemsResponse, isInitialLoading: loading } = useFetch(itemsUrl)
+    const items = useMemo(
+        () => (itemsUrl ? normalizeItems(itemsResponse?.data ?? itemsResponse) : []),
+        [itemsUrl, itemsResponse]
+    )
+
+    // Module cleared → drop the selection too.
     useEffect(() => {
-        const id = Number(moduleId)
-        if (!id) {
-            setItems([])
-            setSelected({})
-            formContext.setValue('items', [])
-            return
-        }
-
-        let cancelled = false
-        const load = async () => {
-            setLoading(true)
-            try {
-                let url = resolveItemsUrl(requestUrl, id)
-                if (!url) return
-
-                if (sellerId) {
-                    url +=
-                        (url.includes('?') ? '&' : '?') +
-                        'seller_id=' +
-                        encodeURIComponent(sellerId)
-                }
-
-                const response = await fetcher(url)
-                if (cancelled) return
-
-                const list = normalizeItems(response?.data ?? response)
-                setItems(list)
-            } finally {
-                if (!cancelled) setLoading(false)
-            }
-        }
-
-        load()
-        return () => {
-            cancelled = true
-        }
+        if (id) return
+        setSelected({})
+        formContext.setValue('items', [])
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [moduleId, sellerId, requestUrl])
+    }, [id])
 
     useEffect(() => {
         const ids = Object.keys(selected).filter((id) => selected[id]?.checked)

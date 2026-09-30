@@ -5,7 +5,7 @@ import Svg, { Path, Circle, Ellipse } from 'react-native-svg'
 import Link from 'app/ui/atoms/link'
 import { Icon } from 'app/ui/atoms/icon'
 import Card from 'app/ui/molecules/page/card'
-import { fetcher } from 'app/lib/fetcher'
+import { useFetch } from 'app/lib/hooks/use-fetch'
 import { useEffect, useState } from 'react'
 import React from 'react'
 import { Animated } from 'react-native'
@@ -362,25 +362,12 @@ const AnimatedCounter = ({ value, duration }) => {
 
 export function ComponentsIntro(props) {
     const { t } = useTranslation()
-    const [data, setData] = useState(1)
-    const [data2, setData2] = useState([])
-    useEffect(() => {
-        const fetchData1 = async () => {
-            const sResponse = await fetcher('/api.php?r=q&q=accounts_count')
-            setData(sResponse)
-        }
-        fetchData1()
-    }, [])
-
-    useEffect(() => {
-        const fetchData2 = async () => {
-            const sResponse2 = await fetcher(
-                '/api.php?r=bx_persons/browse/&params[]={%22params%22:{%22per_page%22:%2212%22,%22start%22:0,%22type%22:%22active%22}}',
-            )
-            setData2(sResponse2.data[0].data.data)
-        }
-        fetchData2()
-    }, [])
+    const { data: accountsCount } = useFetch('/api.php?r=q&q=accounts_count')
+    const data = accountsCount ?? 1
+    const { data: activePersons } = useFetch(
+        '/api.php?r=bx_persons/browse/&params[]={%22params%22:{%22per_page%22:%2212%22,%22start%22:0,%22type%22:%22active%22}}',
+    )
+    const data2 = activePersons?.data?.[0]?.data?.data ?? []
 
     const CounterText = React.memo(({ data }) => {
         return (

@@ -1,6 +1,6 @@
 import { Icon } from 'app/ui/atoms/icon'
 import Card from 'app/ui/molecules/page/card'
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, Row, Pressable } from 'app/design/view'
 import { Text } from 'app/design/typography'
@@ -14,7 +14,7 @@ import { appSetting } from 'app/lib/util'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import i18n from 'i18next';
 import { useLayoutSettings } from 'app/context/layout-settings';
-import { fetcher } from 'app/lib/fetcher';
+import { useFetch } from 'app/lib/hooks/use-fetch';
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import { useTheme } from 'app/design/theme';
 
@@ -256,15 +256,10 @@ function ElementDashboardStat(props) {
     
     const { colors } = useTheme();
     const { t } = useTranslation();
-    const [data, setData] = useState(props.data);
     let { currentUser, setCurrentUser } = useCurrentUser()
-    useEffect(() => {
-        const fetchData = async () => {
-            const sResponse = await fetcher('/api.php?r=system/get_stat_block/TemplDashboardServices');
-            setData(sResponse.data[0].data);
-        };
-        fetchData();
-    }, []);
+    // Same request as the remote dashboard — they share one cache entry.
+    const { data: sResponse } = useFetch('/api.php?r=system/get_stat_block/TemplDashboardServices');
+    const data = sResponse?.data?.[0]?.data ?? props.data;
 
     let menu = appSetting('menu_items', 'menu_dashboard')
     

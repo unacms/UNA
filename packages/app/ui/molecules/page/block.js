@@ -1,25 +1,13 @@
-import { useState, useEffect } from 'react'
-import { useCurrentUser } from 'app/context/user'
-import { fetcher } from 'app/lib/fetcher';
+import { useFetch } from 'app/lib/hooks/use-fetch';
 import { BlockByDataInt as BlockByData } from 'app/components/block';
 
 export default function BlockByUrl({url, exProps}) {
-
-    const { currentUser, setCurrentUser } = useCurrentUser();
-    const [data, setData] = useState(false)
-    
-    async function fetchData() {
-        const sResponse = await fetcher(url);
-        setData(sResponse.data);
-    }
-
-    useEffect(() => {  
-        fetchData()
-    }, []);
+    const { data: sResponse } = useFetch(url);
+    const data = sResponse?.data;
 
     if (!data)
         return <></>;
 
     let cnt = {content: data, designbox_id: 0}
     return <BlockByData block = {cnt}  exProps={exProps}/>
-} 
+}

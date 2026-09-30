@@ -1,42 +1,23 @@
 import Field, { getValidationRules } from './_field';
 import { useFormContext } from 'react-hook-form';
 import { Input } from 'app/design/controls'
-import { useEffect, useState } from 'react';
-import { fetcher } from 'app/lib/fetcher';
+import { useFetch } from 'app/lib/hooks/use-fetch';
 import { appSetting } from 'app/lib/util';
 import { View } from 'app/design/view'
 import Embed from 'app/ui/molecules/content/embed'
 import { useFormField } from 'app/lib/form/use-form-field';
 
 function InnerEmbed({ url }) {
-    const [state, setState] = useState({
-        link: null,
-        excluded: []
-    });
+    // keepPreviousData: the old preview stays while the next URL resolves.
+    const { data: response } = useFetch(
+        url ? `/api.php?r=${appSetting("urls", "embeds_new")}${url}` : null,
+        { keepPreviousData: true }
+    );
 
-    useEffect(() => {
-        const fetchAndSetLink = async () => {
-            if (url && url !== state.link?.link) {
-                const response = await fetcher(`/api.php?r=${appSetting("urls", "embeds_new")}${url}`);
-                setState((prevState) => ({
-                    ...prevState,
-                    link: { link: url, data: response.data }
-                }));
-            } else if (!url) {
-                setState((prevState) => ({
-                    ...prevState,
-                    link: null
-                }));
-            }
-        };
-
-        fetchAndSetLink();
-    }, [url]);
-
-    if (state.link && state.link.data) {
+    if (url && response?.data) {
         return (
             <View className="w-full mt-2 max-w-md">
-                <Embed data={state.link.data} />
+                <Embed data={response.data} />
             </View>
         );
     }
