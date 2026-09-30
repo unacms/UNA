@@ -673,26 +673,19 @@
     "@tanstack/ai-event-client" "^0.11.3"
     "@tanstack/ai-utils" "^0.4.0"
 
-"@tanstack/ai-client@^0.33.2":
-  version "0.33.2"
-  resolved "https://registry.yarnpkg.com/@tanstack/ai-client/-/ai-client-0.33.2.tgz#0f24acbb53240cff75c82efb671f808ef019464e"
-  integrity sha512-niKGY1/noM/qqc6ywIJewxjZW/Ds9KMzSS0k8rS9lNYIiIzybU6z3WF5IIiRnACESv5ZHn5APAwTC1olV2qrAg==
+"@tanstack/ai-client@^0.35.1":
+  version "0.35.1"
+  resolved "https://registry.yarnpkg.com/@tanstack/ai-client/-/ai-client-0.35.1.tgz#7eae28b99e9efaf235eca2459b51d36ef3744df1"
+  integrity sha512-v+2cqVQP5ni5bYHXBkbbD1rrpufsxcqjzyZr0qPexv6TUJa1fmRAgbb8/jdQI5pqmhvbR1nOP38ZiJBj2oWcxg==
   dependencies:
-    "@tanstack/ai" "^0.58.0"
-    "@tanstack/ai-event-client" "^0.12.1"
+    "@tanstack/ai" "^0.61.0"
+    "@tanstack/ai-event-client" "^0.13.0"
     "@tanstack/ai-utils" "^0.4.1"
 
 "@tanstack/ai-event-client@^0.11.3":
   version "0.11.3"
   resolved "https://registry.yarnpkg.com/@tanstack/ai-event-client/-/ai-event-client-0.11.3.tgz#0e3927b54171d13b061bba8ac4a0283eaedd0a4d"
   integrity sha512-K5Nw05TG2NPJNunV7LI/5m7S97XHHdxN7vwTYcbKbmA5txlToaiF4wCfYBT406m7BOeGlLHZJpr3m1M6Vaai4g==
-  dependencies:
-    "@tanstack/devtools-event-client" "^0.4.1"
-
-"@tanstack/ai-event-client@^0.12.1":
-  version "0.12.1"
-  resolved "https://registry.yarnpkg.com/@tanstack/ai-event-client/-/ai-event-client-0.12.1.tgz#2c0f66bf957d960dcd1c62c9f9163f41dc4e7854"
-  integrity sha512-rQZ94m4FDyGPJA868/Z7ipZGQ9QA4taxYnC7jwIbRm9eRYf5ig+cmwirBmd/adPSsvL8Qr6hgEX8SULrpJpIyA==
   dependencies:
     "@tanstack/devtools-event-client" "^0.4.1"
 
@@ -731,14 +724,14 @@
     "@tanstack/ai-utils" "^0.4.0"
     partial-json "^0.1.7"
 
-"@tanstack/ai@^0.58.0":
-  version "0.58.0"
-  resolved "https://registry.yarnpkg.com/@tanstack/ai/-/ai-0.58.0.tgz#1c89c5a32150e0aac0c9a14d25a3dc46ce3dd8f7"
-  integrity sha512-8+JjYQdpU/RCrN8VguyMbkZaNODgYXxKiI2ZVuXfpMq6UL/Dp5pHk3MJH/eaiYOyij/ZALbQHmXr81pStv14Yw==
+"@tanstack/ai@^0.61.0":
+  version "0.61.0"
+  resolved "https://registry.yarnpkg.com/@tanstack/ai/-/ai-0.61.0.tgz#c9688d4a01ef150a4c5ac7c58c0db2bf73fd97db"
+  integrity sha512-9CHWeai5sFGkKZj/P3gS2yi8ccQerdMnlmWULS2nlBnSd0v4v3AKE9bC2AuiCJx7RXvsExvSH7GyO/Ayg5k3Rg==
   dependencies:
-    "@ag-ui/core" "0.1.1-canary.beta.0"
+    "@ag-ui/core" "1.0.0"
     "@standard-schema/spec" "^1.1.0"
-    "@tanstack/ai-event-client" "^0.12.1"
+    "@tanstack/ai-event-client" "^0.13.0"
     "@tanstack/ai-utils" "^0.4.1"
     partial-json "^0.1.7"
 
