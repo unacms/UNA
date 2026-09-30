@@ -5,7 +5,7 @@ import { getDomainByHostname } from './lib/domains/domains';
 export const config = {
     // Skip /.well-known/* so Digital Asset Links / AASA hit App Router routes
     // directly (no 404, no UNA rewrite).
-    matcher: ["/((?!sw.js|logo192.png|loader.svg|favicon.ico|favicon.svg|manifest.json|static/|_vercel|\\.well-known).*)"],
+    matcher: ["/((?!sw.js|logo192.png|loader.svg|favicon.ico|favicon.svg|manifest.json|static/|lucide/|_vercel|\\.well-known).*)"],
     //runtime: 'experimental-edge',
 };
 

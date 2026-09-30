@@ -9,28 +9,9 @@ import iconNodes from 'lucide-static/icon-nodes.json';
 // the backend/settings still reference don't start 404-ing. Regenerate on a
 // Lucide major upgrade.
 import iconAliases from './icon-aliases.json';
-
-/** Map PascalCase Lucide export names to dynamicIconImports keys (e.g. Share2 → share-2). */
-function iconNameToImportKey(name) {
-    return name
-        .replace(/([a-z0-9])([A-Z])/g, '$1-$2')
-        .replace(/([A-Z])([A-Z][a-z])/g, '$1-$2')
-        .replace(/([a-zA-Z])([0-9])/g, '$1-$2')
-        .replace(/([0-9])([a-zA-Z])/g, '$1-$2')
-        .toLowerCase();
-}
-
-const camelToKebab = (string) =>
-    string.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase();
-
-function escapeAttr(value) {
-    return String(value)
-        .replace(/&/g, '&amp;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;');
-}
+// Shared with the startup generator of public/lucide/*.svg, so the static files
+// and this route's fallback responses are byte-identical.
+import { iconNameToImportKey, renderLucideSvg } from '../../../lib/lucide-svg';
 
 /** @returns {number} finite positive integer, or fallback when invalid */
 function parsePositiveInt(value, fallback, max = 4096) {
@@ -42,27 +23,18 @@ function parsePositiveInt(value, fallback, max = 4096) {
     return num;
 }
 
-function renderIconNode(iconNode) {
-    return iconNode
-        .map(([tag, attrs]) => {
-            const attrString = Object.entries(attrs)
-                .filter(([key]) => key !== 'key')
-                .map(([key, value]) => `${camelToKebab(key)}="${escapeAttr(value)}"`)
-                .join(' ');
-            return attrString ? `<${tag} ${attrString}/>` : `<${tag}/>`;
-        })
-        .join('');
-}
-
-function renderLucideSvg(iconNode, { width, height, color, strokeWidth, fill }) {
-    const children = renderIconNode(iconNode);
-    return `<svg xmlns="http://www.w3.org/2000/svg" width="${escapeAttr(width)}" height="${escapeAttr(height)}" viewBox="0 0 24 24" fill="${escapeAttr(fill)}" stroke="${escapeAttr(color)}" stroke-width="${escapeAttr(strokeWidth)}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${children}</svg>`;
-}
-
 // react-doctor-disable-next-line react-doctor/server-auth-actions
 export async function GET(request) {
     try {
-        const { searchParams } = new URL(request.url);
+        const { searchParams, pathname } = new URL(request.url);
+        // Reached via the /lucide/<strokeWidth>/<Name>.svg rewrite in next.config.js
+        // (no static file for it): the handler sees the original URL, not the
+        // rewritten query, so take both values from the path.
+        const lucidePath = pathname.match(/^\/lucide\/(\d+)\/([A-Z][A-Za-z0-9]*)\.svg$/);
+        if (lucidePath && !searchParams.has('icon')) {
+            searchParams.set('strokeWidth', lucidePath[1]);
+            searchParams.set('icon', lucidePath[2]);
+        }
         const iconName = searchParams.get('icon');
 
         if (!iconName || !/^[A-Z][A-Za-z0-9]*$/.test(iconName)) {

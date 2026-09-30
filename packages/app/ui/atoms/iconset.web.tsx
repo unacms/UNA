@@ -3,17 +3,22 @@
 import { useMemo, type CSSProperties } from 'react';
 import type { IconCoreProps } from 'app/ui/atoms/icon';
 
+/** Stroke width as /api/icon applies it: integer 1–64, anything else is 2. */
+function maskStrokeWidth(strokeWidth: unknown) {
+    const num = Number(strokeWidth);
+    return Number.isInteger(num) && num > 0 && num <= 64 ? num : 2;
+}
+
 export function IconFromSet({ icon, InlineIcon, AnimatedIconComponent, width, height, size, _strokeWidth, color, cleanedClassName, rest, fill }: IconCoreProps) {
+    // No size in the URL: the mask is a vector scaled by mask-size, so one file
+    // serves every size. /lucide/* is static (apps/next/lib/generate-lucide-icons.js);
+    // a custom `fill` still needs the dynamic route.
     const maskUrl = useMemo(() => {
         if (!icon || InlineIcon || AnimatedIconComponent) return null;
-        let url = `/api/api.icon?icon=${icon}`;
-        if (width) url += `&width=${width}`;
-        if (height) url += `&height=${height}`;
-        if (size) url += `&size=${size}`;
-        if (_strokeWidth) url += `&strokeWidth=${_strokeWidth}`;
-        if (fill) url += `&fill=${fill}`;
-        return url;
-    }, [icon, InlineIcon, AnimatedIconComponent, width, height, size, _strokeWidth, fill]);
+        const strokeWidth = maskStrokeWidth(_strokeWidth);
+        if (fill) return `/api/api.icon?icon=${icon}&strokeWidth=${strokeWidth}&fill=${encodeURIComponent(fill)}`;
+        return `/lucide/${strokeWidth}/${icon}.svg`;
+    }, [icon, InlineIcon, AnimatedIconComponent, _strokeWidth, fill]);
 
     if (!maskUrl) return null;
 

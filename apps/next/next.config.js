@@ -52,6 +52,9 @@ function copyCustomizationResources() {
 // Run copy BEFORE loading config
 copyCustomizationResources();
 
+// Static web icons: public/lucide/<strokeWidth>/<Name>.svg (see lib/generate-lucide-icons.js).
+require('./lib/generate-lucide-icons').generateLucideIcons();
+
 const nextConfigCustom = require('app/customization/config/next.config');
 
 
@@ -188,6 +191,29 @@ const nextConfig = {
     // once that gets fixed, set this back to true
     reactStrictMode: false,
     poweredByHeader: false,
+    async rewrites() {
+        return {
+            // Only when no public/lucide file matches: stroke widths that were not
+            // generated, or Lucide names newer than the generated set. afterFiles,
+            // not fallback: fallback runs after dynamic routes, and [...path] would
+            // take the request first.
+            afterFiles: [
+                {
+                    source: '/lucide/:strokeWidth(\\d+)/:icon([A-Z][A-Za-z0-9]*).svg',
+                    destination: '/api/icon?icon=:icon&strokeWidth=:strokeWidth',
+                },
+            ],
+        };
+    },
+    async headers() {
+        return [
+            {
+                // File names are not versioned, so a Lucide upgrade must reach browsers.
+                source: '/lucide/:path*',
+                headers: [{ key: 'Cache-Control', value: 'public, max-age=604800, stale-while-revalidate=86400' }],
+            },
+        ];
+    },
     allowedDevOrigins: ['yasko.local', 'neo.localhost', 'bs-local.com'],
     /*experimental: {
       forceSwcTransforms: true,
