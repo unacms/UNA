@@ -35,7 +35,7 @@ class BxDolAIToolChatTitle extends BxDolAITool
     protected function properties(): array
     {
         return [
-            new ToolProperty('title', PropertyType::STRING, 'Conversation title, 3-6 words, no quotes, no trailing period. Example: "Счётчик комментариев поста 291"', true),
+            new ToolProperty('title', PropertyType::STRING, 'Conversation title, 3-6 words, no quotes, no trailing period. Example: "Comment counter for post 291"', true),
         ];
     }
 
