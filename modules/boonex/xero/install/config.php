@@ -16,7 +16,7 @@ $aConfig = array(
     'type' => BX_DOL_MODULE_TYPE_MODULE,
     'name' => 'bx_xero',
     'title' => 'Xero',
-    'note' => 'Xero integration module.',
+    'note' => 'Xero, accounting',
     'version' => '15.0.3.DEV',
     'vendor' => 'UNA INC',
     'help_url' => 'http://feed.una.io/?section={module_name}',

@@ -16,7 +16,7 @@ $aConfig = array(
     'type' => BX_DOL_MODULE_TYPE_MODULE,
     'name' => 'bx_github',
     'title' => 'GitHub',
-    'note' => 'GitHub integration module.',
+    'note' => 'GitHub integration',
     'version' => '15.0.0',
     'vendor' => 'UNA INC',
     'help_url' => 'http://feed.una.io/?section={module_name}',

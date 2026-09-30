@@ -16,7 +16,7 @@ $aConfig = array(
     'type' => BX_DOL_MODULE_TYPE_MODULE,
     'name' => 'bx_dolcon',
     'title' => 'Dolphin connect',
-    'note' => 'Join the site using Dolphin site account credentials.',
+    'note' => 'Dolphin login, join with a Dolphin account',
     'version' => '15.0.1.DEV',
     'vendor' => 'UNA INC',
     'help_url' => 'http://feed.una.io/?section={module_name}',

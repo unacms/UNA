@@ -17,7 +17,7 @@ $aConfig = array(
     'type' => BX_DOL_MODULE_TYPE_MODULE,
     'name' => 'bx_stream',
     'title' => 'Stream',
-    'note' => 'Live streaming module.',
+    'note' => 'Live streams, broadcasts',
     'version' => '15.0.3.DEV',
     'vendor' => 'UNA INC',
     'help_url' => 'http://feed.una.io/?section={module_name}',

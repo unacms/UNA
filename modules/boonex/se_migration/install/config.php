@@ -16,7 +16,7 @@ $aConfig = array(
     'type' => BX_DOL_MODULE_TYPE_MODULE,
     'name' => 'bx_se_migration',
     'title' => 'SocialEngine Migration',
-    'note' => 'Migration Tool',
+    'note' => 'SocialEngine migration, import from SocialEngine',
     'version' => '9.0.0',
     'vendor' => 'UNA INC',
     'help_url' => 'http://feed.una.io/?section={module_name}',

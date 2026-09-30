@@ -17,7 +17,7 @@ $aConfig = array(
     'type' => BX_DOL_MODULE_TYPE_MODULE,
     'name' => 'bx_massmailer',
     'title' => 'Mass mailer',
-    'note' => 'Mass mailer module.',
+    'note' => 'Mass mailer, newsletters, bulk email',
     'version' => '15.0.2.DEV',
     'vendor' => 'UNA INC',
     'help_url' => 'http://feed.una.io/?section={module_name}',

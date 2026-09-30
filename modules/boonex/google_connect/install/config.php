@@ -16,7 +16,7 @@ $aConfig = array(
     'type' => BX_DOL_MODULE_TYPE_MODULE,
     'name' => 'bx_googlecon',
     'title' => 'Google connect',
-    'note' => 'Join the site using LinkedIn account.',
+    'note' => 'Google login, join with a Google account',
     'version' => '15.0.2.DEV',
     'vendor' => 'UNA INC',
     'help_url' => 'http://feed.una.io/?section={module_name}',

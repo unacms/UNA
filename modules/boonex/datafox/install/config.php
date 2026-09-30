@@ -16,7 +16,7 @@ $aConfig = array(
     'type' => BX_DOL_MODULE_TYPE_MODULE,
     'name' => 'bx_datafox',
     'title' => 'Data Fox',
-    'note' => 'Data Fox API integration.',
+    'note' => 'Data Fox, API integration',
     'version' => '15.0.1.DEV',
     'vendor' => 'UNA INC',
     'help_url' => 'http://feed.una.io/?section={module_name}',

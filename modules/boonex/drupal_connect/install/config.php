@@ -16,7 +16,7 @@ $aConfig = array(
     'type' => BX_DOL_MODULE_TYPE_MODULE,
     'name' => 'bx_drupal',
     'title' => 'Drupal connect',
-    'note' => 'Join the site using Drupal account.',
+    'note' => 'Drupal login, join with a Drupal account',
     'version' => '9.0.0.DEV',
     'vendor' => 'UNA INC',
     'help_url' => 'http://feed.una.io/?section={module_name}',

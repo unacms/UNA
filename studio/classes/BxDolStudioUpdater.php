@@ -104,7 +104,12 @@ class BxDolStudioUpdater extends BxDolStudioInstaller
         //--- Perform action and check results ---//
         $aResult = array_merge($aResult, $this->_perform('install', $aParams));
         if($aResult['result']) {
-            $this->oDb->updateModule(array('version' => $this->_aConfig['version_to'], 'updated' => time()), array('id' => $aModuleInfo['id']));
+            $aSet = array('version' => $this->_aConfig['version_to'], 'updated' => time());
+            $aModuleConfig = self::getModuleConfig(BX_DIRECTORY_PATH_MODULES . $this->_aConfig['module_dir'] . 'install/config.php');
+            if (isset($aModuleConfig['note']))
+                $aSet['note'] = $aModuleConfig['note'];
+
+            $this->oDb->updateModule($aSet, array('id' => $aModuleInfo['id']));
 
             //--- Remove update package ---//
             $this->delete($aParams);

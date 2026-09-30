@@ -16,7 +16,7 @@ $aConfig = array(
     'type' => BX_DOL_MODULE_TYPE_MODULE,
     'name' => 'bx_invites',
     'title' => 'Invitations',
-    'note' => 'Invitations module.',
+    'note' => 'Invitations, invite codes, referrals',
     'version' => '15.0.3.DEV',
     'vendor' => 'UNA INC',
     'help_url' => 'http://feed.una.io/?section={module_name}',

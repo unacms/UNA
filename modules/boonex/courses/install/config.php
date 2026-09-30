@@ -17,7 +17,7 @@ $aConfig = array(
     'type' => BX_DOL_MODULE_TYPE_MODULE,
     'name' => 'bx_courses',
     'title' => 'Courses',
-    'note' => 'Basic course profiles functionality.',
+    'note' => 'Courses, lessons, learning',
     'version' => '15.0.3.DEV',
     'vendor' => 'UNA INC',
     'help_url' => 'http://feed.una.io/?section={module_name}',

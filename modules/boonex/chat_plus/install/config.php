@@ -16,7 +16,7 @@ $aConfig = array(
     'type' => BX_DOL_MODULE_TYPE_MODULE,
     'name' => 'bx_chat_plus',
     'title' => 'RocketChat',
-    'note' => 'RocketChat integration.',
+    'note' => 'RocketChat, live chat',
     'version' => '15.0.1.DEV',
     'vendor' => 'UNA INC',
     'help_url' => 'http://feed.una.io/?section={module_name}',

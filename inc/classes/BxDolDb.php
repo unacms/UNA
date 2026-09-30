@@ -891,24 +891,39 @@ class BxDolDb extends BxDolFactory implements iBxDolSingleton
         return 'db_' . $sName . '_' . bx_site_hash() . '.php';
     }
 
-    public function getCache ($sName, $sFunc)
+    /**
+     * @param mixed $iTTL seconds, when an integer. A non-integer third argument is ignored:
+     *        existing callers pass a query string in that position. The file engine only
+     *        drops the entry when this read passes a TTL; other engines expire on write.
+     */
+    public function getCache ($sName, $sFunc, $iTTL = false)
     {
         if (!$this->getParam('sys_db_cache_enable'))
             return false;
-        
+
+        if (!is_int($iTTL) || $iTTL < 1)
+            $iTTL = false;
+
         $oCache = $this->getDbCacheObject ();
         $sKey = $this->genDbCacheKey($sName);
-        return $oCache->getData($sKey);
+        return $oCache->getData($sKey, $iTTL);
     }
-    
-    public function setCache ($sName, $mData)
+
+    /**
+     * @param mixed $iTTL seconds, when an integer greater than zero. Otherwise the engine default
+     *        (the file engine keeps the entry until it is deleted).
+     */
+    public function setCache ($sName, $mData, $iTTL = false)
     {
         if (!$this->getParam('sys_db_cache_enable'))
             return false;
-        
+
+        if (!is_int($iTTL) || $iTTL < 1)
+            $iTTL = false;
+
         $oCache = $this->getDbCacheObject ();
         $sKey = $this->genDbCacheKey($sName);
-        $oCache->setData($sKey, $mData);
+        $oCache->setData($sKey, $mData, $iTTL);
     }
     
     public function fromCache ($sName, $sFunc)

@@ -16,7 +16,7 @@ $aConfig = array(
     'type' => BX_DOL_MODULE_TYPE_MODULE,
     'name' => 'bx_unacon',
     'title' => 'UNA connect',
-    'note' => 'Join the site using another UNA site account credentials.',
+    'note' => 'UNA connect, join with another UNA site',
     'version' => '15.0.2.DEV',
     'vendor' => 'UNA INC',
     'help_url' => 'http://feed.una.io/?section={module_name}',

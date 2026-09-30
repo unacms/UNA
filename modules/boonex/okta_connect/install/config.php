@@ -16,7 +16,7 @@ $aConfig = array(
     'type' => BX_DOL_MODULE_TYPE_MODULE,
     'name' => 'bx_oktacon',
     'title' => 'Okta Connect',
-    'note' => 'Join the site using Okta OAuth',
+    'note' => 'Okta login, join with an Okta account',
     'version' => '13.0.0.DEV',
     'vendor' => 'UNA INC',
     'help_url' => 'http://feed.una.io/?section={module_name}',
