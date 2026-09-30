@@ -15,6 +15,7 @@ import ProfilesList from 'app/ui/molecules/profile/profile-list'
 import { useTheme } from 'app/design/theme'
 import { Platform } from 'react-native'
 import SvgFile from 'app/ui/molecules/content/svg-file'
+import { useIconClassColor } from 'app/ui/atoms/icon-class-color'
 import MenuFooter from 'app/components/nav/menu-footer'
 import { appSetting } from 'app/lib/util'
 const isWeb = Platform.OS === 'web'
@@ -123,19 +124,63 @@ const SplashTextInner = () => {
     )
 }
 
+const SPLASH_PATHS = [
+    'M10 19a2 2 0 1 0 -4 0a2 2 0 0 0 4 0',
+    'M18 5a2 2 0 1 0 -4 0a2 2 0 0 0 4 0',
+    'M10 5a2 2 0 1 0 -4 0a2 2 0 0 0 4 0',
+    'M6 12a2 2 0 1 0 -4 0a2 2 0 0 0 4 0',
+    'M18 19a2 2 0 1 0 -4 0a2 2 0 0 0 4 0',
+    'M14 12a2 2 0 1 0 -4 0a2 2 0 0 0 4 0',
+    'M22 12a2 2 0 1 0 -4 0a2 2 0 0 0 4 0',
+    'M6 12h4',
+    'M14 12h4',
+    'M15 7l-2 3',
+    'M9 7l2 3',
+    'M11 14l-2 3',
+    'M13 14l2 3',
+    'M10 5h4',
+    'M10 19h4',
+    'M17 17l2 -3',
+    'M19 10l-2 -3',
+    'M7 7l-2 3',
+    'M5 14l2 3',
+]
+
+// Inline (not a fetched file): on web it is in the SSR HTML and cannot be the LCP element,
+// on native there is no network fetch. Web: stroke inherits CSS `color` from the wrapper;
+// native: react-native-svg needs a concrete color resolved from the class.
+const SplashIllustration = () => {
+    const className = 'text-secondary-foreground'
+    const color = useIconClassColor(className) || 'currentColor'
+    return (
+        <View className={`w-full h-full ${className}`}>
+            <Svg
+                role="img"
+                aria-label="Splash screen illustration"
+                width="100%"
+                height="100%"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke={color}
+                strokeWidth={1}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+            >
+                {SPLASH_PATHS.map((d) => (
+                    <Path key={d} d={d} />
+                ))}
+            </Svg>
+        </View>
+    )
+}
+
 const SplashTextComponent = (props) => {
     return isWeb ? (
         <View className="items-center lg:items-start relative gap-6 my-auto flex-auto w-full ">
 
             <View className="relative flex-auto h-48 w-48">
 
-                <SvgFile
-                    src_default="splash-light.svg"
-                    colorize
-                    priority
-                    className="text-secondary-foreground"
-                    alt="Splash screen illustration"
-                />
+                <SplashIllustration />
 
             </View>
             <View className="flex-auto w-full items-center lg:items-start">
@@ -145,13 +190,7 @@ const SplashTextComponent = (props) => {
     ) : (
         <View className=" items-center lg:items-start flex-auto gap-6 w-full mx-auto">
             <View className="flex-auto w-64 h-64">
-                <SvgFile
-                    src_dark="splash-dark.svg"
-                    src_default="splash-light.svg"
-                    colorize
-                    className="text-secondary-foreground"
-                    alt="Splash screen illustration"
-                />
+                <SplashIllustration />
             </View>
             <View className="flex-auto w-full">
                 <SplashTextInner />
