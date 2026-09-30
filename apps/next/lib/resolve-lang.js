@@ -50,6 +50,15 @@ export function resolveLangCode(cookieString = '', acceptLanguage = '') {
         return langMode
     }
 
+    // First visit: follow the same default the client applies in
+    // layout-settings hydrate(), or the client switches language mid-hydration
+    // and React throws away the server HTML (#418). Accept-Language only when
+    // the default is 'auto' (the client then reads navigator.languages).
+    const defaultLang = appSetting('layout', 'defaults')?.lang
+    if (defaultLang && defaultLang !== 'auto') {
+        return defaultLang
+    }
+
     return resolveLangFromAcceptLanguage(acceptLanguage)
 }
 
