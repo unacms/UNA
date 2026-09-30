@@ -22,14 +22,21 @@ module.exports = function inlineDynamicImports({ types: t }) {
     return {
         name: 'inline-dynamic-imports',
         visitor: {
-            CallExpression(path) {
-                if (path.node.callee.type !== 'Import' || !isInsideDynamicCall(path)) return;
-                path.replaceWith(
-                    t.callExpression(
-                        t.memberExpression(t.identifier('Promise'), t.identifier('resolve')),
-                        [t.callExpression(t.identifier('require'), path.node.arguments)]
-                    )
-                );
+            // Own traversal on Program enter: babel-preset-expo turns ESM into
+            // CommonJS in the same pass, after which `dynamic(...)` reads
+            // `(0, _dynamic.default)(...)` and no longer matches.
+            Program(programPath) {
+                programPath.traverse({
+                    CallExpression(path) {
+                        if (path.node.callee.type !== 'Import' || !isInsideDynamicCall(path)) return;
+                        path.replaceWith(
+                            t.callExpression(
+                                t.memberExpression(t.identifier('Promise'), t.identifier('resolve')),
+                                [t.callExpression(t.identifier('require'), path.node.arguments)]
+                            )
+                        );
+                    },
+                });
             },
         },
     };
