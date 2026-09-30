@@ -106,9 +106,22 @@ export const useIsDesktop = () => {
     const hydrated = useHydrated();
     return hydrated ? isDesktop : true;
 };
+// Window size is 0×0 during SSR (no window). Until hydration, return that same 0 so
+// styles derived from it (e.g. post layout `minHeight: windowHeight - 64`) match the
+// server HTML — React doesn't patch mismatched attributes, so they'd stay wrong.
+const SSR_WINDOW_SIZE = { width: 0, height: 0 };
 // New object per call: consumers re-render on any store change (fine on zustand v4;
 // needs useShallow on v5, which would otherwise loop).
-export const useWindowSize = () => useMeasureStore((s) => ({ width: s.windowWidth, height: s.windowHeight }));
-export const useWindowHeight = () => useMeasureStore((s) => (s.windowHeight));
-export const useWindowWidth = () => useMeasureStore((s) => (s.windowWidth));
+export const useWindowSize = () => {
+    const size = useMeasureStore((s) => ({ width: s.windowWidth, height: s.windowHeight }));
+    return useHydrated() ? size : SSR_WINDOW_SIZE;
+};
+export const useWindowHeight = () => {
+    const height = useMeasureStore((s) => s.windowHeight);
+    return useHydrated() ? height : SSR_WINDOW_SIZE.height;
+};
+export const useWindowWidth = () => {
+    const width = useMeasureStore((s) => s.windowWidth);
+    return useHydrated() ? width : SSR_WINDOW_SIZE.width;
+};
 export const useSetWindowSize = () => useMeasureStore((s) => s.setWindowSize);
