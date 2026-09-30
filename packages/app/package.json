@@ -14,7 +14,6 @@
     "crypto": "file:../../crypto-shim",
     "fbemitter": "^3.0.0",
     "flatted": "^3.3.1",
-    "html-entities": "^2.4.0",
     "i18next": "^23.5.1",
     "pusher-js": "8.4.0",
     "react-hook-form": "^7.45.2",

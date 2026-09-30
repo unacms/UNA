@@ -1,6 +1,7 @@
 import { Platform } from 'react-native'
 import { View, Row } from 'app/design/view'
-import AuthGoogle from 'app/ui/atoms/auth/google'
+import dynamic from 'next/dynamic'
+import { DynamicFallback } from 'app/lib/dynamic-fallback'
 import AuthGitHub from 'app/ui/atoms/auth/AuthGitHub'
 import AuthLinkedIn from 'app/ui/atoms/auth/AuthLinkedIn'
 import AuthX from 'app/ui/atoms/auth/AuthX'
@@ -11,6 +12,9 @@ import Link from 'app/ui/atoms/link'
 import { Button } from 'app/design/controls'
 import { Text } from 'app/design/typography'
 import { useTranslation } from 'react-i18next'
+
+// expo-auth-session is its own chunk: only pages with this panel load it.
+const AuthGoogle = dynamic(() => import('app/ui/atoms/auth/google'), { loading: DynamicFallback })
 
 function hasGoogleAuth() {
     const google = appSetting('auth', 'google')

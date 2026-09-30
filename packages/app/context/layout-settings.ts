@@ -6,7 +6,7 @@ import { appSetting } from 'app/lib/util'
 import { Appearance, Platform } from 'react-native'
 import * as RNLocalize from "react-native-localize";
 import { fetcher } from 'app/lib/fetcher'
-import i18n from 'i18next'
+import { changeI18nLanguage } from 'app/lib/i18n-resources'
 import emitter from 'app/context/emitter';
 import { clearAllPageCache } from 'app/lib/cache/clear-page-cache';
 
@@ -138,7 +138,7 @@ export const useLayoutSettingsStore = create<LayoutSettingsStore>()((set, get) =
             const stored = await persistedGet(STORAGE_KEY);
             const parsed: LayoutSettings = stored && typeof stored === 'object' ? stored : DEFAULT_LAYOUT_SETTINGS;
             const resolvedLangCode = resolveLangCode(parsed?.lang);
-            await i18n.changeLanguage(resolvedLangCode);
+            await changeI18nLanguage(resolvedLangCode);
             set({ layoutSettings: parsed, hydrated: true });
             if (parsed?.lang === 'auto') {
                 syncAutoLangCookies(resolvedLangCode);
@@ -148,7 +148,7 @@ export const useLayoutSettingsStore = create<LayoutSettingsStore>()((set, get) =
         } catch (e) {
             console.error('Hydratation error layoutSettings:', e);
             const fallbackLangCode = resolveLangCode(DEFAULT_LAYOUT_SETTINGS?.lang);
-            await i18n.changeLanguage(fallbackLangCode);
+            await changeI18nLanguage(fallbackLangCode);
             syncLanguageCookies(DEFAULT_LAYOUT_SETTINGS?.lang, fallbackLangCode);
             set({ layoutSettings: DEFAULT_LAYOUT_SETTINGS, hydrated: true });
         }
@@ -198,7 +198,7 @@ export const useLayoutSettings = () => {
     const setLang = useCallback(
         async (value: any) => {
             const v2 = resolveLangCode(value);
-            await i18n.changeLanguage(v2)
+            await changeI18nLanguage(v2)
             await useLayoutSettingsStore.getState().updateLayoutSettings({ lang: value });
             syncLanguageCookies(value, v2);
 
