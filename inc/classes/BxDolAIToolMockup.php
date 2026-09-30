@@ -21,8 +21,8 @@ class BxDolAIToolMockup extends BxDolAITool
 {
     const MAX_DEPTH = 24;
     const MAX_JSON = 200000;
-    /** sys_pages_blocks_data.data is TEXT: a longer tree is cut off and no longer parses. */
-    const MAX_STORED = 65535;
+    /** sys_pages_blocks_data.data is MEDIUMTEXT: a longer tree is cut off and no longer parses. */
+    const MAX_STORED = 16777215;
 
     public function __construct()
     {
