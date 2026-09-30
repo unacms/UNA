@@ -1,4 +1,5 @@
 const merge = require('deepmerge');
+const withPinFbjni = require('./plugins/with-pin-fbjni');
 let expoConfigCustom = {};
 try {
     expoConfigCustom = require('app/customization/config/app.config.js');
@@ -196,4 +197,5 @@ if (typeof (expoConfigCustom.android?.intentFilters) !== 'undefined')
 if (typeof (expoConfigCustom.plugins) !== 'undefined')
     expoConfig.plugins = [];
 
-module.exports = merge(expoConfig, expoConfigCustom);
+// Applied after the merge so forks that replace `plugins` still get it.
+module.exports = withPinFbjni(merge(expoConfig, expoConfigCustom));
