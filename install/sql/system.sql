@@ -6422,7 +6422,7 @@ CREATE TABLE IF NOT EXISTS `sys_pages_blocks_data` (
   `block_id` int(11) NOT NULL DEFAULT 0,
   `content_id` int(11) NOT NULL DEFAULT 0,
   `content_module` varchar(32) NOT NULL,
-  `data` text NOT NULL,
+  `data` mediumtext NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `block` (`block_id`, `content_id`, `content_module`)
 );
