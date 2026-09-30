@@ -20,7 +20,8 @@
  * it is among the candidates.
  *
  * Judgements are cached per (item, query) so repeated and paginated searches cost nothing, and the
- * ordered list of ids is cached per (query + filters) so pages stay consistent.
+ * ordered list of ids is cached per (viewer + query + filters) so pages stay consistent. The
+ * candidate set depends on who is searching, so that list is not shared between members.
  *
  * Limits: a judge request carries at most CANDIDATES_MAX items (the model's state limit), so this is
  * re-ranking of a window, not a search over the whole table. For a big table a recall layer
@@ -32,7 +33,7 @@ class BxDolAiSearchRerank extends BxDolFactory
     const KEYWORD_SHARE = 0.5;      // how much of the window the keyword query may take
     const TEXT_MAX = 220;           // characters of the item text put into the state
     const SCORE_MIN = 0.45;         // below this an item is dropped from the results
-    const CACHE_TTL_ORDER = 600;    // ordered ids per query+filters, seconds
+    const CACHE_TTL_ORDER = 600;    // ordered ids per viewer+query+filters, seconds
     const CACHE_TTL_ITEM = 86400;   // judgement per item+query, seconds
     const BUDGET_ITEMS_REQUEST = 200; // hard cap of judged items per request
 
@@ -82,7 +83,9 @@ class BxDolAiSearchRerank extends BxDolFactory
         if (!$aObject || empty($aObject['object_content_info']))
             return [];
 
-        $sCacheKeyOrder = $this->_getCacheKey('order', $sObject . '|' . $sQuery . '|' . md5(serialize($aSearchParams)));
+        // Content filter and any search_ids hook run as the current profile, so the same
+        // query and filters can produce a different set of ids for another member.
+        $sCacheKeyOrder = $this->_getCacheKey('order', $sObject . '|' . $sQuery . '|' . md5(serialize($aSearchParams)) . '|' . $this->_getViewerKey());
         $aOrder = $this->_oCache->getData($sCacheKeyOrder, self::CACHE_TTL_ORDER);
         if (is_array($aOrder) && !empty($aOrder['ids']))
             return $aOrder;
@@ -259,6 +262,16 @@ class BxDolAiSearchRerank extends BxDolFactory
         }
 
         return [$aScores, count($aAsk), $iCached];
+    }
+
+    /**
+     * Profile the candidates were selected for, plus the content-filter mask applied to that profile.
+     * Guests share profile 0 and the unauthenticated mask.
+     */
+    protected function _getViewerKey(): string
+    {
+        $iProfileId = (int)bx_get_logged_profile_id();
+        return $iProfileId ? $iProfileId : BxDolSession::getInstance()->getId();
     }
 
     protected function _getCacheKey(string $sType, string $sId): string

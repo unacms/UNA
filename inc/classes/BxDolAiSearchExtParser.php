@@ -34,6 +34,7 @@ class BxDolAiSearchExtParser extends BxDolAiSearchParser
     const BOOL_MIN = 0.6;
     const RADIUS_DEFAULT_KM = 50;   // radius search when the query names a place but no distance
     const RADIUS_MAX_KM = 500;
+    const CACHE_TTL_GEO_MISS = 600;  // a timeout or an empty answer is not a permanent "not found"
 
     protected $_aFields = [];
     protected $_aNumbers = [];
@@ -754,7 +755,8 @@ class BxDolAiSearchExtParser extends BxDolAiSearchParser
 
     /**
      * Place name (in any language) -> coordinates and normalized names, through the site's location
-     * field object (Nominatim by default). Cached, the geocoder is a remote service.
+     * field object (Nominatim by default). A hit is cached; a miss expires, so one timeout does not
+     * stay "not found" until the cache is cleared.
      * @return array|null [lat, lng, country (2 letters), city, label]
      */
     protected function _geocode(string $sPlace)
@@ -765,9 +767,19 @@ class BxDolAiSearchExtParser extends BxDolAiSearchParser
 
         $oDb = BxDolDb::getInstance();
         $sCacheKey = 'sys_ai_search_geo_' . md5(mb_strtolower($sPlace));
+        $sMissKey = $sCacheKey . '_miss';
+
         $mixedCached = $oDb->getCache($sCacheKey, '');
+        if (is_array($mixedCached) && isset($mixedCached['lat'], $mixedCached['lng']))
+            return $mixedCached;
+
+        // A failure used to be stored on the hit key as [] and getCache never expired it.
         if (is_array($mixedCached))
-            return $mixedCached ?: null;
+            $oDb->cleanCache($sCacheKey);
+
+        $mixedMiss = $oDb->getCache($sMissKey, '', self::CACHE_TTL_GEO_MISS);
+        if (is_array($mixedMiss) && (int)($mixedMiss['until'] ?? 0) > time())
+            return null;
 
         $o = BxDolLocationField::getObjectInstance(getParam('sys_location_field_default'));
         if (!$o || !method_exists($o, 'getLocation'))
@@ -777,7 +789,7 @@ class BxDolAiSearchExtParser extends BxDolAiSearchParser
 
         $aLocation = $o->getLocation(['q' => $sPlace]);
         if (empty($aLocation) || !isset($aLocation['lat'], $aLocation['lon'])) {
-            $oDb->setCache($sCacheKey, []);
+            $oDb->setCache($sMissKey, ['until' => time() + self::CACHE_TTL_GEO_MISS], self::CACHE_TTL_GEO_MISS);
             return null;
         }
 
@@ -798,6 +810,7 @@ class BxDolAiSearchExtParser extends BxDolAiSearchParser
         ];
 
         $oDb->setCache($sCacheKey, $aResult);
+        $oDb->cleanCache($sMissKey);
 
         return $aResult;
     }

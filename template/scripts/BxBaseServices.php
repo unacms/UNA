@@ -1665,6 +1665,14 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
             ]);
 
             if(!empty($aRank['ids'])) {
+                // getContentSearchResultUnit loads the row and, on the API, returns it without
+                // applying the content filter again, so drop ids this viewer cannot watch first.
+                $aRank['ids'] = $this->_filterRankedIds($aObject, $aRank['ids']);
+                if(!empty($aRank['scores']) && is_array($aRank['scores']))
+                    $aRank['scores'] = array_intersect_key($aRank['scores'], array_flip($aRank['ids']));
+            }
+
+            if(!empty($aRank['ids'])) {
                 $aIds = array_slice($aRank['ids'], $iStart, $iPerPage + 1);
                 $bHasMore = count($aIds) > $iPerPage;
                 if($bHasMore)
@@ -1711,6 +1719,39 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
             }
 
         return $aResults;
+    }
+
+    /**
+     * Ids still visible to the current profile under the module's content filter, in the same order.
+     * Modules without a content-filter field are returned unchanged.
+     */
+    protected function _filterRankedIds(array $aObject, array $aIds)
+    {
+        $aIds = array_values(array_filter(array_map('intval', $aIds)));
+        if(!$aIds)
+            return [];
+
+        $oModule = !empty($aObject['module']) ? BxDolModule::getInstance($aObject['module']) : null;
+        $CNF = $oModule && !empty($oModule->_oConfig->CNF) ? $oModule->_oConfig->CNF : [];
+        if(empty($CNF['TABLE_ENTRIES']) || empty($CNF['FIELD_ID']) || empty($CNF['FIELD_CF']))
+            return $aIds;
+
+        $oCf = BxDolContentFilter::getInstance();
+        if(!$oCf->isEnabled())
+            return $aIds;
+
+        $oDb = BxDolDb::getInstance();
+        $aVisible = $oDb->getColumn("SELECT `" . $CNF['FIELD_ID'] . "` FROM `" . $CNF['TABLE_ENTRIES'] . "` WHERE `" . $CNF['FIELD_ID'] . "` IN (" . $oDb->implode_escape($aIds) . ")" . $oCf->getSQLParts($CNF['TABLE_ENTRIES'], $CNF['FIELD_CF']));
+        if(!is_array($aVisible))
+            return [];
+
+        $aVisible = array_flip(array_map('intval', $aVisible));
+        $aResult = [];
+        foreach($aIds as $iId)
+            if(isset($aVisible[$iId]))
+                $aResult[] = $iId;
+
+        return $aResult;
     }
 
     /**
