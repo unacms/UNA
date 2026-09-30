@@ -342,9 +342,11 @@ export function CoverMorphBody({
                                 >
                                     {profileTitle}
                                 </Text>
-                                <View className="shrink-0">
-                                    <Badges badges={data.badges} size={compactBar ? '3xs' : 'xs'} />
-                                </View>
+                                {compactBar ? null : (
+                                    <View className="shrink-0">
+                                        <Badges badges={data.badges} size="xs" />
+                                    </View>
+                                )}
                             </Row>
                             <Row
                                 className={cn(

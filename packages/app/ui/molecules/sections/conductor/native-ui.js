@@ -1,14 +1,11 @@
 import React, { useCallback, useMemo } from "react";
 import { View, ScrollView, Row } from 'app/design/view';
 import { appSetting, isNativeTabsEnabled } from 'app/lib/util';
-import { hasConductorSubitems, registeredComponent } from './helpers';
+import { hasConductorSubitems } from './helpers';
 import { LeftColumnMenuDropdown, TabList, ListScene } from './shared-ui';
-import { CoverBackButton } from 'app/components/elements/covers/cover-elements';
 import CoverMorph from 'app/components/elements/covers/cover-morph';
 import { useStableSafeAreaInsets } from 'app/lib/hooks/router'
 import { useTranslation } from 'react-i18next';
-
-const conductorTheme = appSetting('theme', 'conductor')
 
 /*
  * ============================================================================
@@ -30,9 +27,8 @@ const conductorTheme = appSetting('theme', 'conductor')
  * - `'small'`   — profile without a cover image: same `CoverMorph` but static.
  * - `'none'`    — any other page: just the tab bar and the Filters button.
  *
- * With `context_selector.show_always` on, the context selector (and the back
- * button) are lifted out of the cover into a standalone row above it, so they
- * stay put while the cover collapses.
+ * The context selector and back button live inside the cover, as on web:
+ * a selector row above the image when expanded, ⇅ in the collapsed bar.
  *
  * @param {object}   props
  * @param {'dynamic'|'small'|'none'} props.headerMode
@@ -58,14 +54,7 @@ export const TabSceneHeader = React.memo(function TabSceneHeader({
     onOverlayHeight,
     onProgress,
 }) {
-    const ContextSelector = registeredComponent('molecule', 'context_selector');
     const { top: stableTopInset } = useStableSafeAreaInsets();
-    const useStandaloneContextSelector =
-        appSetting('context_selector', 'show_always') &&
-        pageContext &&
-        headerMode === 'dynamic';
-
-    const useStandaloneCoverBackButton = !!useStandaloneContextSelector;
 
     // Remounts the morph when the cover image or avatar changes; a plain data
     // refresh with the same images keeps the collapse state.
@@ -74,41 +63,12 @@ export const TabSceneHeader = React.memo(function TabSceneHeader({
     // With native tabs there is no navigation header, so the chrome is the
     // topmost thing on screen and has to clear the status bar itself.
     const nativeTabsTopInset = isNativeTabsEnabled() ? (stableTopInset || 0) : 0;
-    const selectorPadStyle = useMemo(
-        () => (nativeTabsTopInset > 0 ? { paddingTop: nativeTabsTopInset } : undefined),
-        [nativeTabsTopInset]
-    );
 
     const coverMode = appSetting(
         'cover',
         'view_by_module',
         coverBlock?.profile?.module,
     );
-
-    const standaloneContextSelector = useMemo(() => {
-        if (!useStandaloneContextSelector || !ContextSelector) return null
-        return (
-            <View className={conductorTheme.cover_base || 'bg-card'} style={selectorPadStyle}>
-                <Row className={`${conductorTheme.standalone_context_selector} gap-2 items-center `}>
-                    {useStandaloneCoverBackButton ? <CoverBackButton /> : null}
-                    <View className="flex-1 shrink">
-                        <ContextSelector
-                            data={pageContext}
-                            url={pageUri}
-                            uri={pageUri}
-                        />
-                    </View>
-                </Row>
-            </View>
-        )
-    }, [
-        useStandaloneContextSelector,
-        useStandaloneCoverBackButton,
-        selectorPadStyle,
-        ContextSelector,
-        pageContext,
-        pageUri,
-    ]);
 
     if (headerMode === 'dynamic' || headerMode === 'small') {
         const isOverlayMorph = headerMode === 'dynamic'
@@ -125,11 +85,8 @@ export const TabSceneHeader = React.memo(function TabSceneHeader({
                 coverScrollY={isOverlayMorph ? coverScrollY : undefined}
                 onOverlayHeight={isOverlayMorph ? onOverlayHeight : undefined}
                 onProgress={isOverlayMorph ? onProgress : undefined}
-                leading={standaloneContextSelector}
                 sceneHeader={sceneHeader}
                 filter={filter}
-                suppressContextSelector={useStandaloneContextSelector}
-                suppressCoverBackButton={useStandaloneCoverBackButton}
             />
         );
     }
