@@ -1,102 +1,11 @@
-import Root from 'app/root-client'
-import { Suspense } from 'react'
-import { Loading } from 'app/customization/loading'
+import NotFoundClient from './not-found-client'
 // CSS imports removed - already imported in root layout.js
 // This prevents Next.js from creating a separate not-found.css bundle
 // that gets speculatively preloaded on all pages
-import { cache } from 'react'
-import { UNA_URL, UNA_API_KEY } from 'app/config';
-import { cookies } from 'next/headers'
-import { appSetting } from 'app/config';
-import { resolveServerLangCode } from '../lib/resolve-lang'
 
-const SITE_TITLE = appSetting('config', 'title');;
-// Resilience tuning for the backend fetch below
-// so a slow/stalled backend degrades gracefully instead of hard-crashing the 404 page.
-const FETCH_TIMEOUT_MS = 3500;
-const MAX_ATTEMPTS = 3;
-const BASE_RETRY_DELAY_MS = 300;
-
-// Guest-safe 404 payload so the page still renders when the backend is unreachable.
-const buildFallbackData = () => ({
-    data: {
-        title: SITE_TITLE,
-        description: SITE_TITLE,
-        uri: 'home',
-        url: '/',
-        page_name: 'home',
-        page_type: 'home',
-        logged: 0,
-        blocks: {},
-        page_status: 404,
-    },
-    code: 404,
-});
-
-export const getData = cache(async () => {
-
-    const cookieStore = await cookies()
-    const cookieString = cookieStore.getAll()
-        .map((item) => item.name + '=' + encodeURIComponent(item.value))
-        .join('; ');
-
-    const opts = {
-        headers: {
-            cookie: cookieString,
-            authorization: 'Bearer ' + UNA_API_KEY,
-        },
-        cache: 'no-store'
-    };
-    const langCode = await resolveServerLangCode();
-    let l = UNA_URL + '/api.php' + '?r=system/get_page_by_request/TemplServicePages&params[]=' + 'home';
-    if (langCode) {
-        l += '&lang=' + encodeURIComponent(langCode);
-    }
-
-    for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
-        const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
-        try {
-            const res = await fetch(l, { ...opts, signal: controller.signal });
-            const b = await res.json();
-            // Backend returned something unexpected (no data envelope) — fall back.
-            if (!b || typeof b.data === 'undefined' || b.data === null) {
-                return buildFallbackData();
-            }
-            b.data.page_status = 404;
-            if (typeof b.code === 'undefined') {
-                b.code = 404;
-            }
-            return b;
-        } catch (error) {
-            const isTimeout = error?.name === 'AbortError' || error?.message === 'Timeout';
-            if (attempt < MAX_ATTEMPTS) {
-                await new Promise((resolve) => setTimeout(resolve, BASE_RETRY_DELAY_MS * attempt));
-                continue;
-            }
-            // Timeouts are the designed fallback path — do not console.error an
-            // AbortError or Next.js will surface it in the dev overlay.
-            if (isTimeout) {
-                console.warn('not-found getData timed out after retries; using fallback');
-            } else {
-                console.error('not-found getData fetch failed after retries:', error);
-            }
-            return buildFallbackData();
-        } finally {
-            clearTimeout(timeout);
-        }
-    }
-
-    return buildFallbackData();
-});
-
-export default async function NotFound() {
-    const data = await getData();    
-
-    
-    return (
-        <Suspense fallback={<Loading/>}>
-            <Root path={'home'} data={data?.data} uri={data?.data?.uri} url={data?.data?.url} code={data.code}></Root>
-        </Suspense>
-  )
+// No server data here: Next renders the root not-found into every page's RSC
+// payload, so anything fetched here is paid for on every request. The home
+// page chrome is loaded on the client, only when a 404 is shown.
+export default function NotFound() {
+    return <NotFoundClient />
 }

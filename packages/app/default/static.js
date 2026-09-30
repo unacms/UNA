@@ -130,9 +130,9 @@ const SplashTextComponent = (props) => {
             <View className="relative flex-auto h-48 w-48">
 
                 <SvgFile
-                    src_dark="splash-dark.svg"
                     src_default="splash-light.svg"
                     colorize
+                    priority
                     className="text-secondary-foreground"
                     alt="Splash screen illustration"
                 />
