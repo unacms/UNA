@@ -2,7 +2,11 @@ module.exports = function (api) {
     api.cache(true)
     return {
         presets: ['babel-preset-expo'],
-        plugins: ['@babel/plugin-transform-export-namespace-from'],
+        plugins: [
+            '@babel/plugin-transform-export-namespace-from',
+            // dynamic(() => import('./x')) → static require on native (see the file).
+            require('./babel-inline-dynamic-imports'),
+        ],
         overrides: [
             {
                 // Function form: Metro cache-key calls Babel without `filename`;
