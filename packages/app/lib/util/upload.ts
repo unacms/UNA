@@ -360,6 +360,7 @@ export const uploadImage = async (
             fileExt = extFromMime(fileType) || 'png';
             if (fileExt === 'svg+xml') fileExt = 'svg';
         } else {
+            
             const fileName = uri.split('/').pop()!; // file name
             fileExt = fileName.split('.').pop()!; // extension
             fileType = `image/${fileExt}`; // MIME type
