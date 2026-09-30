@@ -1680,6 +1680,9 @@ class BxBaseCmts extends BxDolCmts
 
             foreach($aFiles as $aFile) {
                 $sFile = $oStorage->getFileUrlById($aFile['image_id']);
+                if(!$sFile)
+                    continue;
+
                 $bImage = $oTranscoder && ($oTranscoder->isMimeTypeSupported($aFile['mime_type']) || $oTranscoder->isMimeTypeSvg($aFile['mime_type']));
 
                 $sPreview = '';

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="ru" flag="ru" title="Russian">
+	<string_add name="_bx_market_menu_title_categories"><![CDATA[Категории]]></string_add>
+	<string_add name="_bx_market_option_visible_categories"><![CDATA[Количество отображаемых категорий]]></string_add>
+	<string_add name="_bx_market_txt_all_categories"><![CDATA[Все категории]]></string_add>
+</resources>

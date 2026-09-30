@@ -544,8 +544,18 @@ class BxBasePage extends BxDolPage
         $sMetaTitle = $this->_getPageMetaTitle();
         $sName = $this->_getPageTitle();
         $sUri = $this->_aObject['uri'];
+        $sUrl = ($bGetParams && !empty($aGetParams[0]) ? $aGetParams[0] : $sUri) . ($sQueryString != '' ? '?' . $sQueryString : '');
         $sModule = $this->getModule();
         $aElements = $this->getPageBlocksAPI($aBlocks);
+
+        if(!$bLogged && !in_array($sUri, ['home', 'login', 'create-account']) && ($sAutoProfile = getParam('sys_account_default_profile_type'))) {
+            $sRedirect = getParam($sAutoProfile . '_redirect_aadd');
+            if($sRedirect == 'last') {
+                $aAutoProfileConfig = bx_srv($sAutoProfile, 'module_config');
+                if($sUri != ($aAutoProfileConfig['URI_ADD_ENTRY'] ?? ''))
+                    BxDolSession::getInstance()->setValue('custom-referrer', $sUrl);
+            }
+        }
 
         $a = [
             'id' => $this->_aObject['id'],
@@ -555,7 +565,7 @@ class BxBasePage extends BxDolPage
             'keywords' => $this->_getPageMetaKeywords(),
             'image' => '',
             'uri' => $sUri,
-            'url' => ($bGetParams && !empty($aGetParams[0]) ? $aGetParams[0] : $sUri) . ($sQueryString != '' ? '?' . $sQueryString : ''),
+            'url' => $sUrl,
             'author' => $this->_aObject['author'],
             'added' => $this->_aObject['added'],
             'module' => $sModule,

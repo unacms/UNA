@@ -1,0 +1,27 @@
+<svg width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="72" height="72" fill="url(#paint0_linear_114_2)"/>
+<path d="M36 16.2797L44 20.9464V30.2797L36 34.9464L28 30.2797V20.9464L36 16.2797Z" stroke="url(#paint1_linear_114_2)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M24 34.9464L32 39.613V48.9464L24 53.613L16 48.9464V39.613L24 34.9464Z" stroke="url(#paint2_linear_114_2)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M48 34.9464L56 39.613V48.9464L48 53.613L40 48.9464V39.613L48 34.9464Z" stroke="url(#paint3_linear_114_2)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M36 17.2797L44 21.9464V31.2797L36 35.9464L28 31.2797V21.9464L36 17.2797Z" stroke="black" stroke-opacity="0.1" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M24 35.9464L32 40.613V49.9464L24 54.613L16 49.9464V40.613L24 35.9464Z" stroke="black" stroke-opacity="0.1" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M48 35.9464L56 40.613V49.9464L48 54.613L40 49.9464V40.613L48 35.9464Z" stroke="black" stroke-opacity="0.1" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+<defs>
+<linearGradient id="paint0_linear_114_2" x1="36" y1="0" x2="36" y2="72" gradientUnits="userSpaceOnUse">
+<stop stop-color="#F43F5E"/>
+<stop offset="1" stop-color="#BE123C"/>
+</linearGradient>
+<linearGradient id="paint1_linear_114_2" x1="36" y1="16.2797" x2="36" y2="53.613" gradientUnits="userSpaceOnUse">
+<stop stop-color="white"/>
+<stop offset="1" stop-color="white" stop-opacity="0.6"/>
+</linearGradient>
+<linearGradient id="paint2_linear_114_2" x1="36" y1="16.2797" x2="36" y2="53.613" gradientUnits="userSpaceOnUse">
+<stop stop-color="white"/>
+<stop offset="1" stop-color="white" stop-opacity="0.6"/>
+</linearGradient>
+<linearGradient id="paint3_linear_114_2" x1="36" y1="16.2797" x2="36" y2="53.613" gradientUnits="userSpaceOnUse">
+<stop stop-color="white"/>
+<stop offset="1" stop-color="white" stop-opacity="0.6"/>
+</linearGradient>
+</defs>
+</svg>

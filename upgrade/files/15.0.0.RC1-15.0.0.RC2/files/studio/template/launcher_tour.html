@@ -1,0 +1,128 @@
+<script defer language="javascript">
+    var a = [{
+            id: 'tour-welcome',
+            title: '<bx_text_js:_sys_tour_launcher_welcome_title />',
+            text: '<bx_text_js:_sys_tour_launcher_welcome_txt />'
+        },{
+            id: 'tour-apps',
+            title: '<bx_text_js:_sys_tour_launcher_apps_title />',
+            text: '<bx_text_js:_sys_tour_launcher_apps_txt />',
+            sel: {element:$('.bx-std-widgets').get(0), on:'bottom'}
+        },{
+            id: 'tour-designer',
+            title: '<bx_text_js:_sys_tour_launcher_designer_title />',
+            text: '<bx_text_js:_sys_tour_launcher_designer_txt />',
+            sel: {element:$('.bx-std-widget-cont:has(.bx-std-widget-link[href*=designer])').get(0), on:'bottom'}
+        },{
+            id: 'tour-dashboard',
+            title: '<bx_text_js:_sys_tour_launcher_dashboard_title />',
+            text: '<bx_text_js:_sys_tour_launcher_dashboard_txt />',
+            sel: {element:$('.bx-std-widget-cont:has(.bx-std-widget-link[href*=dashboard])').get(0), on:'bottom'}
+        },{
+            id: 'tour-builder_page',
+            title: '<bx_text_js:_sys_tour_launcher_builder_page_title />',
+            text: '<bx_text_js:_sys_tour_launcher_builder_page_txt />',
+            sel: {element:$('.bx-std-widget-cont:has(.bx-std-widget-link[href*=builder_page])').get(0), on:'bottom'}
+        },{
+            id: 'tour-builder_permission',
+            title: '<bx_text_js:_sys_tour_launcher_builder_permissions_title />',
+            text: '<bx_text_js:_sys_tour_launcher_builder_permissions_txt />',
+            sel: {element:$('.bx-std-widget-cont:has(.bx-std-widget-link[href*=builder_permission])').get(0), on:'bottom'}
+        },{
+            id: 'tour-builder_forms',
+            title: '<bx_text_js:_sys_tour_launcher_builder_forms_title />',
+            text: '<bx_text_js:_sys_tour_launcher_builder_forms_txt />',
+            sel: {element:$('.bx-std-widget-cont:has(.bx-std-widget-link[href*=builder_forms])').get(0), on:'bottom'}
+        },{
+            id: 'tour-builder_menu',
+            title: '<bx_text_js:_sys_tour_launcher_builder_menus_title />',
+            text: '<bx_text_js:_sys_tour_launcher_builder_menus_txt />',
+            sel: {element:$('.bx-std-widget-cont:has(.bx-std-widget-link[href*=builder_menu])').get(0), on:'bottom'}
+        },{
+            id: 'tour-polyglot',
+            title: '<bx_text_js:_sys_tour_launcher_polyglot_title />',
+            text: '<bx_text_js:_sys_tour_launcher_polyglot_txt />',
+            sel: {element:$('.bx-std-widget-cont:has(.bx-std-widget-link[href*=polyglot])').get(0), on:'bottom'}
+        },{
+            id: 'tour-bx_accounts',
+            title: '<bx_text_js:_sys_tour_launcher_accounts_title />',
+            text: '<bx_text_js:_sys_tour_launcher_accounts_txt />',
+            sel: {element:$('.bx-std-widget-cont:has(.bx-std-widget-link[href*=bx_accounts])').get(0), on:'bottom'}
+        },{
+            id: 'tour-reorganize',
+            title: '<bx_text_js:_sys_tour_launcher_reorganize_title />',
+            text: '<bx_text_js:_sys_tour_launcher_reorganize_txt />',
+            sel: {element:$('.bx-menu-tab-account').get(0), on:'bottom'}
+        },{
+            id: 'tour-dock',
+            title: '<bx_text_js:_sys_tour_launcher_favourites_title />',
+            text: '<bx_text_js:_sys_tour_launcher_favourites_txt />',
+            sel: {element:$('.bx-std-menu-top-center').get(0), on:'bottom'}
+        },{
+            id: 'tour-add-apps',
+            title: '<bx_text_js:_sys_tour_launcher_add_apps_title />',
+            text: '<bx_text_js:_sys_tour_launcher_add_apps_txt />',
+            sel: {element:$('.bx-std-widget-cont:has(.bx-std-widget-link[href*=store])').get(0), on:'bottom'}
+        }
+    ];
+
+    glTour = new Shepherd.Tour({
+        useModalOverlay: true,
+        defaultStepOptions: {
+            classes: 'shepherd-active bx-def-z-index-modal',
+            showCancelLink: true,
+            scrollTo: { behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'center' },
+        }
+    });
+
+    //--- The page behind the overlay is inert while a step is open, so Tab and screen readers stay inside the step.
+    var fTourInert = function(bOn) {
+        var oMain = document.querySelector('.bx-main');
+        if(oMain)
+            oMain.inert = bOn;
+    };
+    glTour.on('show', function () { fTourInert(true); });
+    glTour.on('complete', function () { fTourInert(false); });
+
+    Shepherd.on('cancel', function () {
+        fTourInert(false);
+        $.cookie('launcher-tour-hidden', 1, {expires: 9999});
+    });
+
+    for (var i=0 ; i<a.length ; i++) {
+
+        if ('undefined' !== typeof(a[i].sel) && 'string' !== typeof(a[i].sel) && null == a[i].sel.element)
+            continue;
+
+        var aBtns = []
+        if (0 == i || i == (a.length - 1))
+            aBtns.push({
+                text: 0 == i ? '<bx_text_js:_sys_exit />' : '<bx_text_js:_sys_done />',
+                action: glTour.cancel,
+                classes: 0 == i ? 'shepherd-button-secondary' : 'shepherd-button-primary'
+            });
+
+        if (i != (a.length - 1))
+            aBtns.push({
+                text: '<bx_text_js:_sys_next />',
+                action: glTour.next,
+                classes: 'shepherd-button-primary'
+            });
+
+        var aOpts = {
+            id: a[i].id,
+            title: a[i].title,
+            text: a[i].text,
+            attachTo: a[i].sel,
+            buttons: aBtns
+        };
+        glTour.addStep(aOpts);
+    }
+
+    var bTourForced = /[?&]tour=1(&|$)/.test(window.location.search);
+    if (bTourForced && window.history.replaceState)
+        window.history.replaceState(null, '', window.location.pathname);
+
+    if (bTourForced || !$.cookie('launcher-tour-hidden'))
+        glTour.start();
+</script>

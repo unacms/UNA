@@ -17,7 +17,7 @@ $aConfig = array(
     'name' => 'bx_mailchimp',
     'title' => 'Mailchimp',
     'note' => 'Mailchimp integration.',
-    'version' => '15.0.1.DEV',
+    'version' => '15.0.2.DEV',
     'vendor' => 'UNA INC',
     'help_url' => 'http://feed.una.io/?section={module_name}',
 

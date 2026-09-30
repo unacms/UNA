@@ -12,7 +12,7 @@ bx_import('BxDolForm');
 class BxDolSearchExtended extends BxDolFactory implements iBxDolFactoryObject
 {
     public static $SEARCHABLE_TYPES = array(
-        'text', 'textarea', 'number', 'slider',
+        'text', 'textarea', 'number', 'price', 'slider',
         'select', 'radio_set',
         'checkbox_set', 'select_multiple',
         'checkbox', 'switcher',
@@ -23,7 +23,8 @@ class BxDolSearchExtended extends BxDolFactory implements iBxDolFactoryObject
     public static $TYPE_TO_TYPE_SEARCH = array(
         'text' => array('text', 'text_range'),
         'textarea' => array('text'),
-        'number' => array('text'),
+        'number' => array('text_range', 'text'),
+        'price' => array('text_range', 'text'),
         'slider' => array('text_range', 'text'),
         'text_auto' => array('text_auto'),
         'select' => array('checkbox_set', 'select_multiple', 'select'),
@@ -40,7 +41,8 @@ class BxDolSearchExtended extends BxDolFactory implements iBxDolFactoryObject
     public static $TYPE_TO_OPERATOR = array(
         'text' => array('like', '=', 'between'),
         'textarea' => array('like', '='),
-        'number' => array('='),
+        'number' => array('between', '='),
+        'price' => array('between', '='),
         'slider' => array('between', '='),
         'text_auto' => array('in'),
         'select' => array('in'),
@@ -49,8 +51,8 @@ class BxDolSearchExtended extends BxDolFactory implements iBxDolFactoryObject
         'select_multiple' => array('and'),
         'checkbox' => array('='),
         'switcher' => array('='),
-    	'datepicker' => array('between'), 
-    	'datetime' => array('between'),
+        'datepicker' => array('between'), 
+        'datetime' => array('between'),
         'location' => array('locate')
     );
 

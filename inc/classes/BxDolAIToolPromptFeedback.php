@@ -91,7 +91,6 @@ class BxDolAIToolPromptFeedback extends BxDolAITool
         ?string $user_correction = null
     ): array {
         $oDb = BxDolDb::getInstance();
-        self::ensureTable($oDb);
 
         $sReason = self::clip(trim((string)$error_reason), self::CLIP_FIELD);
         $sExpected = self::clip(trim((string)$expected_behavior), self::CLIP_FIELD);
@@ -159,42 +158,6 @@ class BxDolAIToolPromptFeedback extends BxDolAITool
             'severity' => $sSeverity,
             'msg' => 'Logged. Do not mention the log to the user. Acknowledge the correction and continue with the expected behavior.',
         ];
-    }
-
-    public static function ensureTable(BxDolDb $oDb): void
-    {
-        if (!$oDb->isTableExists(self::TABLE)) {
-            $oDb->query("CREATE TABLE IF NOT EXISTS `" . self::TABLE . "` (
-                `id` int(11) NOT NULL AUTO_INCREMENT,
-                `agent_id` int(11) NOT NULL DEFAULT 0,
-                `agent_name` varchar(255) NOT NULL DEFAULT '',
-                `profile_id` int(11) NOT NULL DEFAULT 0,
-                `thread_id` varchar(255) NOT NULL DEFAULT '',
-                `history_id` int(11) NOT NULL DEFAULT 0,
-                `category` varchar(32) NOT NULL DEFAULT 'other',
-                `severity` varchar(16) NOT NULL DEFAULT 'medium',
-                `user_question` mediumtext NOT NULL,
-                `wrong_answer` mediumtext NOT NULL,
-                `user_correction` mediumtext NOT NULL,
-                `error_reason` mediumtext NOT NULL,
-                `expected_behavior` mediumtext NOT NULL,
-                `suggested_prompt_rule` mediumtext NOT NULL,
-                `conversation_excerpt` mediumtext DEFAULT NULL,
-                `prompt_system` mediumtext DEFAULT NULL,
-                `prompt_hash` varchar(64) NOT NULL DEFAULT '',
-                `markdown` mediumtext NOT NULL,
-                `added` int(11) NOT NULL DEFAULT 0,
-                PRIMARY KEY (`id`),
-                KEY `agent_id` (`agent_id`),
-                KEY `thread_id` (`thread_id`(191)),
-                KEY `added` (`added`),
-                KEY `prompt_hash` (`prompt_hash`)
-            )");
-            return;
-        }
-
-        if (!$oDb->isFieldExists(self::TABLE, 'markdown'))
-            $oDb->query("ALTER TABLE `" . self::TABLE . "` ADD `markdown` mediumtext NOT NULL");
     }
 
     /**
@@ -289,7 +252,7 @@ class BxDolAIToolPromptFeedback extends BxDolAITool
             'thread_id' => $sThread,
             'history_id' => $iHistory,
             'prompt_system' => self::clip($sSystem, self::CLIP_FIELD),
-            'prompt_hash' => sha1($sSystem . "\n" . $sSteps . "\n" . $sOutput . "\n" . $sTools),
+            'prompt_hash' => hash('sha256', $sSystem . "\n" . $sSteps . "\n" . $sOutput . "\n" . $sTools),
             'prompt_steps' => self::clip($sSteps, self::CLIP_FIELD),
             'prompt_output' => self::clip($sOutput, self::CLIP_FIELD),
             'prompt_tools' => self::clip($sTools, self::CLIP_FIELD),

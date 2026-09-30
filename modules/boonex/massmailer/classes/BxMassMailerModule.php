@@ -250,11 +250,13 @@ class BxMassMailerModule extends BxBaseModGeneralModule
     */
     public function serviceCampagnSubscribers ($iContentId = 0, $iStart = 0, $iPerPage = 20)
     {
-        if(!$iContentId)
-            $iContentId = bx_process_input(bx_get('id'), BX_DATA_INT);
+        if($this->checkAllowed() !== CHECK_ACTION_RESULT_ALLOWED)
+            return $this->_bIsApi ? [] : '';
 
         if(!$iContentId)
-            return false;
+            $iContentId = bx_process_input(bx_get('id'), BX_DATA_INT);
+        if(!$iContentId)
+            return $this->_bIsApi ? [] : '';
         
         $CNF = &$this->_oConfig->CNF;
 

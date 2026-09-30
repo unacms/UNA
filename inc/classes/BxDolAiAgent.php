@@ -29,6 +29,9 @@ class BxDolAiAgent extends RAG
             $logger = new BxDolLoggerDb('sys_agents_' . $this->aAgent['id']);
             $this->observe(new LogObserver($logger));
         }
+
+        // what the agent did (comments, content, SQL) — shown as activity history
+        $this->observe(new BxDolAiActivityObserver($this->aAgent, $this->aParams));
     }
 
     protected function provider(): NeuronAI\Providers\AIProviderInterface
@@ -102,7 +105,7 @@ class BxDolAiAgent extends RAG
     {
         if ($this->aAgent['chat_history_context']) {
             return new BxDolAiChatHistory(
-                thread_id: $this->getСhatHistoryThreadId(),
+                thread_id: $this->getChatHistoryThreadId(),
                 pdo: BxDolDb::getInstance()->getLink(),
                 table: 'sys_agents_chat_history',
                 contextWindow: $this->aAgent['chat_history_context']
@@ -127,7 +130,7 @@ class BxDolAiAgent extends RAG
         };
     }
 
-    protected function getСhatHistoryThreadId(): string
+    protected function getChatHistoryThreadId(): string
     {
         return BxDolAiChat::threadId($this->aAgent, $this->aParams);
     }

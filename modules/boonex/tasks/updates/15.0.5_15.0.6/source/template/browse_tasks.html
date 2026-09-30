@@ -1,0 +1,24 @@
+<div class="flex justify-between">
+    <bx_if:show_filters>
+        <div class="bx-tasks-tasklist-filters flex flex-nowrap">
+            __filters__
+            <a class="bx-btn bx-btn-small bx-def-margin-sec-right" href="javascript:void(0);" onclick="__object__.createFilter(this, __context_id__)">
+                <bx_image_auto:filter />
+            </a>
+        </div>
+    </bx_if:show_filters>
+    <span>
+        <bx_if:allow_add_list>
+            <a class="bx-btn bx-btn-small bx-def-margin-sec-right bx-tasks-tasklist-add" href="javascript:void(0);" onclick="__object__.processTaskList(__context_id__, 0, this)">
+                <bx_text:_bx_tasks_txt_new_task_list />
+            </a>
+        </bx_if:allow_add_list>
+        <bx_if:allow_add_task>
+            <a class="bx-btn bx-btn-small bx-def-margin-sec-right bx-tasks-tasklist-add" href="javascript:void(0);" onclick="__object__.processTask(__context_id__, 0, this)">
+                <bx_text:_bx_tasks_txt_new_task />
+            </a>
+        </bx_if:allow_add_task>
+    </span>
+</div>
+__task_lists__
+__js_code__

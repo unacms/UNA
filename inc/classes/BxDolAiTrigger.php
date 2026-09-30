@@ -88,7 +88,7 @@ class BxDolAiTrigger extends BxDol implements iBxDolAiTrigger
         if ($this->appliesChatLimits()) {
             if ($oLimits->isChatTurnLimitReached($aAgent, $oLimits->getChatUserTurnCount($aAgent['id'], $aParams))) {
                 $oChat->emitConversationClosed('limit', '', $aAgent, $aParams);
-                return $oLimits->getChatLimitMessage($aAgent);
+                return $this->getChatLimitReply($aAgent);
             }
 
             if ($oLimits->isChatSessionRateLimited($aAgent, $aParams))
@@ -131,6 +131,14 @@ class BxDolAiTrigger extends BxDol implements iBxDolAiTrigger
     protected function appliesChatLimits()
     {
         return false;
+    }
+
+    /**
+     * What call() returns when the thread is at max_turns; null = reply with nothing.
+     */
+    protected function getChatLimitReply($aAgent)
+    {
+        return BxDolAiChatLimits::getInstance()->getChatLimitMessage($aAgent);
     }
 
     protected function getCallChatHistoryParams($aAgent, $mixedParams)

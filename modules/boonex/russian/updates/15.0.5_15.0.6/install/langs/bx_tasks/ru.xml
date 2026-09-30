@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="ru" flag="ru" title="Russian">
+	<string_add name="_bx_tasks_form_budget"><![CDATA[Бюджет]]></string_add>
+	<string_add name="_bx_tasks_form_budget_input_cancel"><![CDATA[Отменить]]></string_add>
+	<string_add name="_bx_tasks_form_budget_input_submit"><![CDATA[Выполнить]]></string_add>
+	<string_add name="_bx_tasks_form_budget_input_sys_cancel"><![CDATA[Отменить]]></string_add>
+	<string_add name="_bx_tasks_form_budget_input_sys_controls"><![CDATA[Управление]]></string_add>
+	<string_add name="_bx_tasks_form_budget_input_sys_submit"><![CDATA[Выполнить]]></string_add>
+	<string_add name="_bx_tasks_form_budget_input_sys_text"><![CDATA[Примечание]]></string_add>
+	<string_add name="_bx_tasks_form_budget_input_sys_value"><![CDATA[Бюджет]]></string_add>
+	<string_add name="_bx_tasks_form_budget_input_text"><![CDATA[Примечание]]></string_add>
+	<string_add name="_bx_tasks_form_budget_input_value"><![CDATA[Бюджет]]></string_add>
+	<string_add name="_bx_tasks_form_budget_input_value_err"><![CDATA[Если вы хотите добавить бюджет, заполните это поле.]]></string_add>
+	<string_add name="_bx_tasks_form_budget_input_value_info"><![CDATA[Укажите значение бюджета в часах.]]></string_add>
+	<string_add name="_bx_tasks_form_display_budget_add"><![CDATA[Добавить бюджет]]></string_add>
+	<string_add name="_bx_tasks_form_display_budget_edit"><![CDATA[Редактировать бюджет]]></string_add>
+	<string_add name="_bx_tasks_form_f_input_save"><![CDATA[Сохранить]]></string_add>
+	<string_add name="_bx_tasks_grid_action_title_bdt_add"><![CDATA[Добавить]]></string_add>
+	<string_add name="_bx_tasks_grid_action_title_bdt_delete"><![CDATA[Удалить]]></string_add>
+	<string_add name="_bx_tasks_grid_action_title_bdt_edit"><![CDATA[Редактировать]]></string_add>
+	<string_add name="_bx_tasks_grid_column_title_bdt_date"><![CDATA[Добавлено]]></string_add>
+	<string_add name="_bx_tasks_grid_column_title_bdt_profile_id"><![CDATA[Профиль]]></string_add>
+	<string_add name="_bx_tasks_grid_column_title_bdt_text"><![CDATA[Примечание]]></string_add>
+	<string_add name="_bx_tasks_grid_column_title_bdt_value"><![CDATA[Значение]]></string_add>
+	<string_add name="_bx_tasks_grid_popup_title_bdt_add"><![CDATA[Добавить бюджет]]></string_add>
+	<string_add name="_bx_tasks_grid_popup_title_bdt_edit"><![CDATA[Редактировать бюджет]]></string_add>
+	<string_add name="_bx_tasks_menu_item_title_system_submenu_browse"><![CDATA[Подменю: Просмотр задач в контекстах]]></string_add>
+	<string_add name="_bx_tasks_menu_item_title_system_submenu_manage"><![CDATA[Подменю: Управление задачами]]></string_add>
+	<string_add name="_bx_tasks_menu_item_title_system_submenu_use"><![CDATA[Подменю: Использование]]></string_add>
+	<string_add name="_bx_tasks_menu_item_title_system_view_context_budget_administration"><![CDATA[Бюджет]]></string_add>
+	<string_add name="_bx_tasks_menu_item_title_view_context_budget_administration"><![CDATA[Бюджет]]></string_add>
+	<string_add name="_bx_tasks_page_block_title_entries_budget_in_context_administration"><![CDATA[Бюджет в <a href="{profile_link}">{display_name}</a>]]></string_add>
+	<string_add name="_bx_tasks_page_block_title_entries_budget_in_context_summary"><![CDATA[Сводка бюджета]]></string_add>
+	<string_add name="_bx_tasks_page_block_title_sys_entries_budget_in_context_administration"><![CDATA[Бюджет в контексте]]></string_add>
+	<string_add name="_bx_tasks_page_block_title_sys_entries_budget_in_context_summary"><![CDATA[Сводка бюджета в контексте]]></string_add>
+	<string_add name="_bx_tasks_page_title_entries_budget_in_context_administration"><![CDATA[Бюджет в {display_name}]]></string_add>
+	<string_add name="_bx_tasks_page_title_sys_entries_budget_in_context_administration"><![CDATA[Контекст: Бюджет]]></string_add>
+	<string_add name="_bx_tasks_txt_budget_remains"><![CDATA[Осталось:]]></string_add>
+	<string_add name="_bx_tasks_txt_budget_remains_value"><![CDATA[{0} ({1}%)]]></string_add>
+	<string_add name="_bx_tasks_txt_budget_spent"><![CDATA[Использовано:]]></string_add>
+	<string_add name="_bx_tasks_txt_budget_total"><![CDATA[Бюджет:]]></string_add>
+	<string_add name="_bx_tasks_txt_msg_edit_initial_members"><![CDATA[<a href="{author_link}">{author_name}</a> изменил список исполнителей на <b>{value}</b>]]></string_add>
+	<string_add name="_bx_tasks_txt_msg_edit_text"><![CDATA[<a href="{author_link}">{author_name}</a> изменил текст]]></string_add>
+	<string_add name="_bx_tasks_txt_msg_edit_title"><![CDATA[<a href="{author_link}">{author_name}</a> изменил название на <b>{value}</b>]]></string_add>
+
+	<string_upd name="_bx_tasks_form_entry_input_allow_view_to"><![CDATA[Разместить в]]></string_upd>
+	<string_upd name="_bx_tasks_txt_notification_assigned"><![CDATA[{author_name_wrapped} - <b class="bx-ntfs-content-entry">{entry_caption}</b> {entry_sample} было назначено на <b class="bx-ntfs-content-profile">{entry_author_name}</b>]]></string_upd>
+	<string_upd name="_bx_tasks_txt_notification_assigned_in_context"><![CDATA[{author_name_wrapped} - <b class="bx-ntfs-content-entry">{entry_caption}</b> {entry_sample} было назначено на <b class="bx-ntfs-content-profile">{entry_author_name}</b> в <b class="bx-ntfs-content-profile">{owner_name}</b>]]></string_upd>
+	<string_upd name="_bx_tasks_txt_notification_completed"><![CDATA[{author_name_wrapped} - <b class="bx-ntfs-content-entry">{entry_caption}</b> {entry_sample} было завершено]]></string_upd>
+	<string_upd name="_bx_tasks_txt_notification_completed_in_context"><![CDATA[{author_name_wrapped} - <b class="bx-ntfs-content-entry">{entry_caption}</b> {entry_sample} было завершено в <b class="bx-ntfs-content-profile">{owner_name}</b>]]></string_upd>
+	<string_upd name="_bx_tasks_txt_notification_expired_in_context"><![CDATA[<b class="bx-ntfs-content-entry">{entry_caption}</b> {entry_sample} устарело в <b class="bx-ntfs-content-profile">{owner_name}</b>]]></string_upd>
+	<string_upd name="_bx_tasks_txt_notification_reopened"><![CDATA[{author_name_wrapped} - <b class="bx-ntfs-content-entry">{entry_caption}</b> {entry_sample} было открыто заново]]></string_upd>
+	<string_upd name="_bx_tasks_txt_notification_reopened_in_context"><![CDATA[{author_name_wrapped} - <b class="bx-ntfs-content-entry">{entry_caption}</b> {entry_sample} было открыто заново в <b class="bx-ntfs-content-profile">{owner_name}</b>]]></string_upd>
+</resources>

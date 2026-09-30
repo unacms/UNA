@@ -1,0 +1,48 @@
+<div class="bx-std-product bx-std-product-gallery" id="bx-std-product-__name__">
+	<div class="bx-std-product-cnt bx-std-product-gallery-cnt bx-def-padding-sec rounded-2xl bg-white/60 dark:bg-white/10 ring-1 ring-inset ring-white/50 dark:ring-white/[0.025] smooth-shadow-sm">
+            <!-- Title section -->
+            <div class="bx-std-product-title">
+                <div class="bx-std-pt-cnt">
+                    <div class="bx-std-pt-icon">
+                        <button type="button" aria-hidden="true" tabindex="-1" onclick="javascript:__js_object__.info('__name__', this)">
+                            <bx_if:no_icon>
+                                <div class="bx-std-pt-icon-plate">
+                                    <i class="sys-icon __icon__"></i>
+                                </div>
+                            </bx_if:no_icon>
+                            <bx_if:icon>
+                                <img src="__icon_url__" alt="" />
+                            </bx_if:icon>
+                        </button>
+                    </div>
+                    <div class="bx-std-pt-content">
+                        <div class="bx-std-pt-content-cnt">
+                            <div class="bx-std-pt-title">
+                                <button type="button" class="bx-def-font-color text-left" onclick="javascript:__js_object__.info('__name__', this)">__title__</button>
+                            </div>
+                            <div class="bx-std-pt-info">
+                                <span class="bx-std-pt-version">__version__</span>
+                                <span class="bx-std-pt-by"><bx_text:_by_author /></span>
+                                <span class="bx-std-pt-vendor">__vendor__</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <!-- Actions section -->
+        <div class="bx-std-product-actions bx-def-padding-sec-top">
+            <div class="bx-std-pa-actions">
+                <div class="bx-std-pc-buttons bx-std-pcb-install gap-4" <bx_if:hide_install>style="display:none"</bx_if:hide_install>>
+                    <button type="button" class="bx-btn bx-btn-primary" onclick="javascript:__js_object__.install('__dir__', this)"><bx_text:_adm_btn_install_submit /></button>
+                    <button type="button" class="bx-btn" onclick="javascript:__js_object__.remove('__dir__', this)"><bx_text:_adm_btn_delete_submit /></button>
+                </div>
+                <div class="bx-std-pc-buttons bx-std-pcb-queued" <bx_if:hide_queued>style="display:none"</bx_if:hide_queued>>
+                    <button type="button" class="bx-btn bx-btn-disabled" disabled><bx_text:_adm_btn_queued_submit /></button>
+                </div>
+                <div class="bx-std-pc-buttons bx-std-pcb-installed" <bx_if:hide_installed>style="display:none"</bx_if:hide_installed>>
+                    <button type="button" class="bx-btn bx-btn-disabled" disabled><bx_text:_adm_btn_installed_submit /></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="ru" flag="ru" title="Russian">
+    <string name="_bx_ntfs"><![CDATA[Уведомления]]></string>
+    <string name="_bx_notifications"><![CDATA[Уведомления]]></string>
+
+    <string name="_bx_ntfs_form_etemplate"><![CDATA[Шаблон электронного письма]]></string>
+    <string name="_bx_ntfs_form_etemplate_display_add"><![CDATA[Добавить шаблон электронного письма]]></string>
+    <string name="_bx_ntfs_form_etemplate_display_edit"><![CDATA[Редактировать шаблон электронного письма]]></string>
+    <string name="_bx_ntfs_form_etemplate_input_controls"><![CDATA[Элементы управления]]></string>
+    <string name="_bx_ntfs_form_etemplate_input_sys_do_submit"><![CDATA[Выполнить]]></string>
+    <string name="_bx_ntfs_form_etemplate_input_do_submit"><![CDATA[Выполнить]]></string>
+    <string name="_bx_ntfs_form_etemplate_input_sys_do_cancel"><![CDATA[Отменить]]></string>
+    <string name="_bx_ntfs_form_etemplate_input_do_cancel"><![CDATA[Отменить]]></string>
+    <string name="_bx_ntfs_form_etemplate_input_sys_type"><![CDATA[Тип]]></string>
+    <string name="_bx_ntfs_form_etemplate_input_type"><![CDATA[Тип]]></string>
+    <string name="_bx_ntfs_form_etemplate_input_sys_action"><![CDATA[Действие]]></string>
+    <string name="_bx_ntfs_form_etemplate_input_action"><![CDATA[Действие]]></string>
+    <string name="_bx_ntfs_form_etemplate_input_sys_subject"><![CDATA[Тема]]></string>
+    <string name="_bx_ntfs_form_etemplate_input_subject"><![CDATA[Тема]]></string>
+    <string name="_bx_ntfs_form_etemplate_input_sys_body"><![CDATA[Текст]]></string>
+    <string name="_bx_ntfs_form_etemplate_input_body"><![CDATA[Текст]]></string>
+    <string name="_bx_ntfs_form_etemplate_input_err_select"><![CDATA[Это поле обязательно для заполнения. Пожалуйста, выберите значение.]]></string>
+    <string name="_bx_ntfs_form_etemplate_input_err_enter"><![CDATA[Это поле обязательно для заполнения. Пожалуйста, заполните его.]]></string>
+
+    <string name="_bx_ntfs_page_title_system_view"><![CDATA[Уведомления]]></string>
+    <string name="_bx_ntfs_page_title_view"><![CDATA[Уведомления]]></string>
+    <string name="_bx_ntfs_page_block_title_view"><![CDATA[Уведомления]]></string>
+    <string name="_bx_ntfs_page_title_system_settings"><![CDATA[Настройки уведомлений]]></string>
+    <string name="_bx_ntfs_page_title_settings"><![CDATA[Настройки уведомлений]]></string>
+    <string name="_bx_ntfs_page_block_title_delivery"><![CDATA[Получить через]]></string>
+    <string name="_bx_ntfs_page_block_title_settings"><![CDATA[Уведомления]]></string>
+
+    <string name="_bx_ntfs_menu_title_submenu"><![CDATA[Уведомления - Подменю]]></string>
+    <string name="_bx_ntfs_menu_title_public_submenu"><![CDATA[Уведомления]]></string>
+    <string name="_bx_ntfs_menu_set_title_submenu"><![CDATA[Уведомления - Подменю]]></string>
+    <string name="_bx_ntfs_menu_item_title_system_notifications_all"><![CDATA[Все уведомления]]></string>
+    <string name="_bx_ntfs_menu_item_title_notifications_all"><![CDATA[Все уведомления]]></string>
+    <string name="_bx_ntfs_menu_title_settings"><![CDATA[Настройки - Подменю]]></string>
+    <string name="_bx_ntfs_menu_set_title_settings"><![CDATA[Настройки - Подменю]]></string>
+    <string name="_bx_ntfs_menu_item_title_system_notifications_site"><![CDATA[На сайте]]></string>
+    <string name="_bx_ntfs_menu_item_title_notifications_site"><![CDATA[На сайте]]></string>
+    <string name="_bx_ntfs_menu_item_title_system_notifications_email"><![CDATA[Email]]></string>
+    <string name="_bx_ntfs_menu_item_title_notifications_email"><![CDATA[Email]]></string>
+    <string name="_bx_ntfs_menu_item_title_system_notifications_push"><![CDATA[Push]]></string>
+    <string name="_bx_ntfs_menu_item_title_notifications_push"><![CDATA[Push]]></string>
+    <string name="_bx_ntfs_menu_item_title_system_notifications"><![CDATA[Уведомления]]></string>
+    <string name="_bx_ntfs_menu_item_title_notifications"><![CDATA[Уведомления]]></string>
+    <string name="_bx_ntfs_menu_item_title_system_preview"><![CDATA[Уведомления]]></string>
+    <string name="_bx_ntfs_menu_item_title_preview"><![CDATA[]]></string>
+
+    <string name="_bx_ntfs_menu_title_preview"><![CDATA[Уведомления - Пред просмотр]]></string>
+    <string name="_bx_ntfs_menu_set_title_preview"><![CDATA[Уведомления - Пред просмотр]]></string>
+    <string name="_bx_ntfs_menu_item_title_system_more"><![CDATA[Смотреть все уведомления]]></string>
+    <string name="_bx_ntfs_menu_item_title_more"><![CDATA[Смотреть все уведомления]]></string>
+    <string name="_bx_ntfs_lmi_cpt_site"><![CDATA[На сайте]]></string>
+    <string name="_bx_ntfs_lmi_cpt_email"><![CDATA[Email]]></string>
+    <string name="_bx_ntfs_lmi_cpt_push"><![CDATA[Push]]></string>
+    <string name="_bx_ntfs_lmi_cpt_etemplates_text"><![CDATA[Тексты email-ов]]></string>
+
+    <string name="_bx_ntfs_options_category_system"><![CDATA[Системные]]></string>
+    <string name="_bx_ntfs_option_events_per_page"><![CDATA[Количество элементов на странице]]></string>
+    <string name="_bx_ntfs_option_events_per_preview"><![CDATA[Количество элементов в пред просмотре]]></string>
+    <string name="_bx_ntfs_option_events_hide_site"><![CDATA[Уведомления на сайте]]></string>
+    <string name="_bx_ntfs_option_events_hide_email"><![CDATA[Уведомления через email]]></string>
+    <string name="_bx_ntfs_option_events_hide_push"><![CDATA[Push-уведомления]]></string>
+    <string name="_bx_ntfs_option_enable_group_settings"><![CDATA[Сгруппировать настройки по категориям]]></string>
+    <string name="_bx_ntfs_option_enable_group_events"><![CDATA[Сгруппировать оповещения по принадлежности к событию]]></string>
+    <string name="_bx_ntfs_option_enable_group_events"><![CDATA[Сгруппировать оповещения по принадлежности к событию (на уровне БД, экспериментально)]]></string>
+    <string name="_bx_ntfs_option_enable_clicked_indicator"><![CDATA[Включить индикатор перехода по ссылке уведомления]]></string>
+    <string name="_bx_ntfs_option_delivery_timeout"><![CDATA[Задержка перед отправкой Email и/или Push уведомлений (в секундах)]]></string>
+    <string name="_bx_ntfs_option_delivery_timeout_inf"><![CDATA[Положительное значение, отличное от '0', означает, что уведомления будут отправляться через Внутреннюю очередь.]]></string>
+    <string name="_bx_ntfs_option_queue_add_threshold"><![CDATA[Пороговое значение для добавления во Внутреннюю очередь]]></string>
+    <string name="_bx_ntfs_option_queue_add_threshold_inf"><![CDATA['0' означает, что добавление в очередь будет выполняться только тогда, когда очередь пуста.]]></string>
+    <string name="_bx_ntfs_option_queue_add_limit"><![CDATA[Количество уведомлений для обработки и добавления в очередь (Внутреннюю или Системную) за одно выполнение]]></string>
+    <string name="_bx_ntfs_option_queue_add_limit_inf"><![CDATA['0' означает, что все доступные уведомления будут обработаны одновременно.]]></string>
+    <string name="_bx_ntfs_option_clear_interval"><![CDATA[Срок жизни уведомления, в днях (0 - без ограничений)]]></string>
+    <string name="_bx_ntfs_option_processed_event"><![CDATA[Последнее событие, обработанное в процессе отправки оповещений]]></string>
+    <string name="_bx_ntfs_option_enable_own_actions"><![CDATA[Оповещать пользователя о его собственных действиях]]></string>
+    <string name="_bx_ntfs_option_enable_comment_post_ext"><![CDATA[Оповещать пользователя о новых комментариях к контенту, котороый он комментировал ранее]]></string>
+    <string name="_bx_ntfs_option_enable_reply_as_comment"><![CDATA[Рассматривать ответы как комментарии в уведомлении 'Новые комментарии'.]]></string>
+    <string name="_bx_ntfs_option_summary_chars"><![CDATA[Количество символов в автоматически обрезаемом резюме (применяется перед сохранением уведомления)]]></string>
+    <string name="_bx_ntfs_option_owner_name_chars"><![CDATA[Количество символов в автоматически обрезаемом имени автора в тексте уведомления]]></string>
+    <string name="_bx_ntfs_option_content_chars"><![CDATA[Количество символов в автоматически обрезаемом заголовке контента в тексте уведомления]]></string>
+    <string name="_bx_ntfs_option_email_subject_chars"><![CDATA[Количество символов в автоматически обрезаемой теме Email сообщения (0 - без ограничений)]]></string>
+    <string name="_bx_ntfs_option_push_message_chars"><![CDATA[Количество символов в автоматически обрезаемом сообщении push-уведомления]]></string>
+
+    <string name="_bx_ntfs_privacy_view"><![CDATA[Просматривать события]]></string>
+
+    <string name="_bx_ntfs_alert_action_group_comment"><![CDATA[Новые комментарии]]></string>
+    <string name="_bx_ntfs_alert_action_group_content_updated"><![CDATA[Контент был обновлен]]></string>
+    <string name="_bx_ntfs_alert_action_group_action_required"><![CDATA[Требуются ваши действия]]></string>
+    <string name="_bx_ntfs_alert_action_group_info_mention"><![CDATA[Участник упомянул ваше имя в сообщении или комментарии.]]></string>
+    <string name="_bx_ntfs_alert_action_group_info_friendship"><![CDATA[Участник стал вашим другом.]]></string>
+    <string name="_bx_ntfs_alert_action_group_info_subscription"><![CDATA[Участник теперь подписан на ваш профиль.]]></string>
+    <string name="_bx_ntfs_alert_action_group_info_comment_personal"><![CDATA[Кто-то опубликовал новый комментарий к вашему контенту.]]></string>
+    <string name="_bx_ntfs_alert_action_group_info_comment_follow_member"><![CDATA[Кто-то, на кого вы подписаны, опубликовал новый комментарий.]]></string>
+    <string name="_bx_ntfs_alert_action_group_info_comment_follow_context"><![CDATA[В теме, на которую вы подписаны, опубликованы новые комментарии.]]></string>
+    <string name="_bx_ntfs_alert_action_group_info_reply"><![CDATA[Участник ответил на один из ваших комментариев.]]></string>
+    <string name="_bx_ntfs_alert_action_group_info_vote_personal"><![CDATA[Участнику понравился один из ваших постов или комментариев.]]></string>
+    <string name="_bx_ntfs_alert_action_group_info_vote_follow_member"><![CDATA[Кто-то, на кого вы подписаны, поставил отметку 'Нравится' под публикацией или комментарием.]]></string>
+    <string name="_bx_ntfs_alert_action_group_info_vote_follow_context"><![CDATA[Кому-то понравился контент в теме, на которую вы подписаны.]]></string>
+    <string name="_bx_ntfs_alert_action_group_info_score_up_personal"><![CDATA[Один из участников дал вашему контенту оценку 'за'.]]></string>
+    <string name="_bx_ntfs_alert_action_group_info_score_up_follow_member"><![CDATA[Кто-то, из тех на кого вы подписаны, проголосовал 'за' за какой-то контент.]]></string>
+    <string name="_bx_ntfs_alert_action_group_info_score_up_follow_context"><![CDATA[Кто-то проголосовал 'за' за контент в пространстве, на которое вы подписаны.]]></string>
+    <string name="_bx_ntfs_alert_action_group_info_score_down_personal"><![CDATA[Один из участников дал вашему контенту оценку 'против'.]]></string>
+    <string name="_bx_ntfs_alert_action_group_info_score_down_follow_member"><![CDATA[Кто-то, из тех на кого вы подписаны, проголосовал 'против' какого-то контента.]]></string>
+    <string name="_bx_ntfs_alert_action_group_info_score_down_follow_context"><![CDATA[Кто-то дал оценку 'против' контенту в пространстве, на которое вы подписаны.]]></string>
+    <string name="_bx_ntfs_alert_action_group_info_fan_personal"><![CDATA[Кто-то стал поклонником вашего профиля, страницы или группы.]]></string>
+    <string name="_bx_ntfs_alert_action_group_info_fan_follow_member"><![CDATA[У кого-то, на кого вы подписаны, появились новые поклонники.]]></string>
+    <string name="_bx_ntfs_alert_action_group_info_fan_follow_context"><![CDATA[У пространства, за которым вы следите, появились новые поклонники.]]></string>
+    <string name="_bx_ntfs_alert_action_group_info_invite"><![CDATA[Вас пригласили присоединиться к пространству (группе, мероприятию и т. д.).]]></string>
+    <string name="_bx_ntfs_alert_action_group_info_join_personal"><![CDATA[Кто-то запросил присоединение к вашему пространству (группе, мероприятию и т. д.).]]></string>
+    <string name="_bx_ntfs_alert_action_group_info_join_follow_member"><![CDATA[Кто-то, на кого вы подписаны, получил новый запрос на присоединение к своему пространству.]]></string>
+    <string name="_bx_ntfs_alert_action_group_info_join_follow_context"><![CDATA[В пространство, на которое вы подписаны, поступил новый запрос на присоединение.]]></string>
+    <string name="_bx_ntfs_alert_action_group_info_content_personal"><![CDATA[Опубликован новый пост, статья или обновление, имеющие отношение к вам.]]></string>
+    <string name="_bx_ntfs_alert_action_group_info_content_follow_member"><![CDATA[Кто-то, на кого вы подписаны, опубликовал новый контент.]]></string>
+    <string name="_bx_ntfs_alert_action_group_info_content_follow_context"><![CDATA[Новый контент был опубликован в пространстве, на которое вы подписаны.]]></string>
+    <string name="_bx_ntfs_alert_action_group_info_action_required"><![CDATA[Есть вопрос или запрос, требующий вашего внимания.]]></string>
+    <string name="_bx_ntfs_alert_action_group_info_content_updated"><![CDATA[Ваш ранее опубликованный контент был отредактирован или обновлен.]]></string>
+    <string name="_bx_ntfs_alert_action_group_info_timeline_post_personal"><![CDATA[В вашу ленту новостей добавлены новые записи.]]></string>
+    <string name="_bx_ntfs_alert_action_group_info_timeline_post_follow_member"><![CDATA[Кто-то, на кого вы подписаны, поделился новой публикацией в своей ленте.]]></string>
+    <string name="_bx_ntfs_alert_action_group_info_timeline_post_follow_context"><![CDATA[В ленте новостей пространства, на которое вы подписаны, опубликованы новые публикации.]]></string>
+
+    <string name="_bx_ntfs_alert_action_added"><![CDATA[добавить]]></string>
+    <string name="_bx_ntfs_alert_action_commentPost"><![CDATA[добавить коментарий]]></string>
+    <string name="_bx_ntfs_alert_action_replyPost"><![CDATA[ответ на собственный комментарий]]></string>
+    <string name="_bx_ntfs_alert_action_doVote"><![CDATA[добавить голос]]></string>
+    <string name="_bx_ntfs_alert_action_timeline_post_common"><![CDATA[сообщение на линейке]]></string>
+    <string name="_bx_ntfs_alert_action_mention_added_personal"><![CDATA[Кто-то упомянул о Вас]]></string>
+    <string name="_bx_ntfs_alert_action_friendship_added_personal"><![CDATA[У Вас новый друг]]></string>
+    <string name="_bx_ntfs_alert_action_subscription_added_personal"><![CDATA[У Вас новый последователь]]></string>
+    <string name="_bx_ntfs_alert_action_comment_added_personal"><![CDATA[Кто-то добавил комментарий к ранее прокомментированому вами контенту]]></string>
+    <string name="_bx_ntfs_alert_action_added_follow_member"><![CDATA[Новый контент]]></string>
+    <string name="_bx_ntfs_alert_action_added_follow_context"><![CDATA[Новый контент]]></string>
+    <string name="_bx_ntfs_alert_action_commentPost_personal"><![CDATA[Кто-то добавил комментарий к вашему контенту]]></string>
+    <string name="_bx_ntfs_alert_action_commentPost_follow_member"><![CDATA[Новые комментарии]]></string>
+    <string name="_bx_ntfs_alert_action_commentPost_follow_context"><![CDATA[Новые комментарии]]></string>
+    <string name="_bx_ntfs_alert_action_replyPost_personal"><![CDATA[Кто-то ответил на ваш комментарий]]></string>
+    <string name="_bx_ntfs_alert_action_doVote_personal"><![CDATA[Кто-то отдал голос вашему контенту]]></string>
+    <string name="_bx_ntfs_alert_action_doVote_follow_member"><![CDATA[Новые голоса]]></string>
+    <string name="_bx_ntfs_alert_action_doVote_follow_context"><![CDATA[Новые голоса]]></string>
+    <string name="_bx_ntfs_alert_action_doVoteUp_personal"><![CDATA[Кто-то отдал голос 'За' ваш контент]]></string>
+    <string name="_bx_ntfs_alert_action_doVoteUp_follow_member"><![CDATA[Новые голоса 'За']]></string>
+    <string name="_bx_ntfs_alert_action_doVoteUp_follow_context"><![CDATA[Новые голоса 'За']]></string>
+    <string name="_bx_ntfs_alert_action_doVoteDown_personal"><![CDATA[Кто-то отдал голос 'Против' вашего контента]]></string>
+    <string name="_bx_ntfs_alert_action_doVoteDown_follow_member"><![CDATA[Новые голоса 'Против']]></string>
+    <string name="_bx_ntfs_alert_action_doVoteDown_follow_context"><![CDATA[Новые голоса 'Против']]></string>
+    <string name="_bx_ntfs_alert_action_fan_added_personal"><![CDATA[Новые фанаты]]></string>
+    <string name="_bx_ntfs_alert_action_fan_added_follow_member"><![CDATA[Новые фанаты]]></string>
+    <string name="_bx_ntfs_alert_action_fan_added_follow_context"><![CDATA[Новые фанаты]]></string>
+    <string name="_bx_ntfs_alert_action_join_request_personal"><![CDATA[Новые запросы на присоединение]]></string>
+    <string name="_bx_ntfs_alert_action_join_request_follow_member"><![CDATA[Новые запросы на присоединение]]></string>
+    <string name="_bx_ntfs_alert_action_join_request_follow_context"><![CDATA[Новые запросы на присоединение]]></string>
+    <string name="_bx_ntfs_alert_action_join_invitation_notif_personal"><![CDATA[Новые приглашения присоединиться]]></string>
+    <string name="_bx_ntfs_alert_action_timeline_post_common_personal"><![CDATA[Новые сообщения на Ленте]]></string>
+    <string name="_bx_ntfs_alert_action_timeline_post_common_follow_member"><![CDATA[Новые сообщения на Ленте]]></string>
+    <string name="_bx_ntfs_alert_action_timeline_post_common_follow_context"><![CDATA[Новые сообщения на Ленте]]></string>
+    <string name="_bx_ntfs_alert_action_publish_failed_personal"><![CDATA[Отложенная публикация не удалась]]></string>
+    <string name="_bx_ntfs_alert_action_publish_succeeded_personal"><![CDATA[Отложенная публикация успешно выполнена]]></string>
+    <string name="_bx_ntfs_alert_action_pending_approval_personal"><![CDATA[Новый контент, ожидающий одобрения]]></string>
+    <string name="_bx_ntfs_alert_action_approved_personal"><![CDATA[Ваш контент был активирован]]></string>
+    <string name="_bx_ntfs_alert_action_reported_content_personal"><![CDATA[Новая жалоба]]></string>
+
+    <string name="_bx_ntfs_setting_title_mask"><![CDATA[{0}: {1}]]></string>
+    <string name="_bx_ntfs_setting_type_personal"><![CDATA[Активность, относящаяся к вам]]></string>
+    <string name="_bx_ntfs_setting_type_follow_member"><![CDATA[Активность, относящаяся к пользователям, за которыми Вы следите]]></string>
+    <string name="_bx_ntfs_setting_type_follow_context"><![CDATA[Активность, относящаяся к контекстам (группам, событиям и тп), за которыми Вы следите]]></string>
+    <string name="_bx_ntfs_setting_type_other"><![CDATA[Другая активность]]></string>
+
+    <string name="_bx_ntfs_alert_module_comment"><![CDATA[Комментарии]]></string>
+    <string name="_bx_ntfs_alert_module_sys_cmts"><![CDATA[Комментарии]]></string>
+    <string name="_bx_ntfs_alert_module_sys_cmts_reactions"><![CDATA[Реакции к комментариям]]></string>
+    <string name="_bx_ntfs_alert_module_meta_mention"><![CDATA[Упоминания о профайлах]]></string>
+    <string name="_bx_ntfs_alert_module_sys_profiles_subscriptions"><![CDATA[Подписки профайлов]]></string>
+    <string name="_bx_ntfs_alert_module_sys_profiles_friends"><![CDATA[Друзья профайлов]]></string>
+    <string name="_bx_ntfs_alert_action_connection_added"><![CDATA[добавить связь]]></string>	
+
+    <string name="_bx_ntfs_txt_msg_no_results"><![CDATA[Пусто]]></string>
+    <string name="_bx_ntfs_txt_err_nothing_changed"><![CDATA[Ничего не изменилось.]]></string>
+    <string name="_bx_ntfs_txt_err_cannot_perform"><![CDATA[Невозможно выполнить действие.]]></string>
+
+    <string name="_bx_ntfs_txt_and"><![CDATA[и]]></string>
+    <string name="_bx_ntfs_txt_object_added"><![CDATA[{author_name_wrapped} - {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b>]]></string>
+    <string name="_bx_ntfs_txt_object_added_in_context"><![CDATA[{author_name_wrapped} - {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b> в <b class="bx-ntfs-content-profile">{owner_name}</b>]]></string>
+    <string name="_bx_ntfs_txt_object_post_common"><![CDATA[{author_name_wrapped} - {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b>]]></string>
+    <string name="_bx_ntfs_txt_object_post_common_in_context"><![CDATA[{author_name_wrapped} - {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b> в <b class="bx-ntfs-content-profile">{object_owner_name}</b>]]></string>
+    <string name="_bx_ntfs_txt_object_approved"><![CDATA[{author_name_wrapped} - одобрение <b class="bx-ntfs-content-entry">{entry_caption}</b> ({entry_sample})]]></string>
+    <string name="_bx_ntfs_txt_object_approved_in_context"><![CDATA[{author_name_wrapped} - одобрение <b class="bx-ntfs-content-entry">{entry_caption}</b> ({entry_sample}) в <b class="bx-ntfs-content-profile">{owner_name}</b>]]></string>
+    <string name="_bx_ntfs_txt_object_publish_failed"><![CDATA[Ошибка при публикации: {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b>]]></string>
+    <string name="_bx_ntfs_txt_object_publish_succeeded"><![CDATA[Успешная публикация: {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b>]]></string>
+    <string name="_bx_ntfs_txt_object_pending_approval"><![CDATA[{author_name_wrapped} - {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b> ожидает одобрения]]></string>
+    <string name="_bx_ntfs_txt_object_reported_content"><![CDATA[{author_name_wrapped} - новая жалоба: {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b>]]></string>
+    <string name="_bx_ntfs_txt_subobject_added"><![CDATA[{author_name_wrapped} - {subentry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b>]]></string>
+    <string name="_bx_ntfs_txt_subobject_added_in_context"><![CDATA[{author_name_wrapped} - {subentry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b> в <b class="bx-ntfs-content-profile">{owner_name}</b>]]></string>
+    <string name="_bx_ntfs_txt_new_event_subject"><![CDATA[Новое на сайте "{0}"]]></string>
+    <string name="_bx_ntfs_txt_et_preview_subject"><![CDATA[Тема:]]></string>
+    <string name="_bx_ntfs_txt_et_preview_body"><![CDATA[Текст:]]></string>
+
+    <string name="_bx_ntfs_email_new_event"><![CDATA[Новое уведомление]]></string>
+    <string name="_bx_ntfs_email_new_event_subject"><![CDATA[{subject}]]></string>
+    <string name="_bx_ntfs_email_new_event_body"><![CDATA[{email_header}
+<p> </p>
+{content}
+<p> </p>
+{email_footer}]]></string>
+
+    <string name="_bx_ntfs_grid_column_title_active"><![CDATA[Включено]]></string>
+    <string name="_bx_ntfs_grid_column_title_unit"><![CDATA[Модуль]]></string>
+    <string name="_bx_ntfs_grid_column_title_type"><![CDATA[Тип]]></string>
+    <string name="_bx_ntfs_grid_column_title_title"><![CDATA[Оповещение]]></string>
+    <string name="_bx_ntfs_grid_column_title_title_warning"><![CDATA[Значение данной настройки не корректно. Рекомендуется вкл\выкл настройку и обновить страницу.]]></string>
+    <string name="_bx_ntfs_grid_column_title_value"><![CDATA[Значение по умолчанию]]></string>
+    <string name="_bx_ntfs_grid_action_title_activate"><![CDATA[Включить]]></string>
+    <string name="_bx_ntfs_grid_action_title_deactivate"><![CDATA[Отключить]]></string>
+
+    <string name="_bx_ntfs_grid_column_title_ett_active"><![CDATA[Включено]]></string>
+    <string name="_bx_ntfs_grid_column_title_ett_type"><![CDATA[Тип]]></string>
+    <string name="_bx_ntfs_grid_column_title_ett_action"><![CDATA[Действие]]></string>
+    <string name="_bx_ntfs_grid_column_title_ett_subject"><![CDATA[Тема]]></string>
+    <string name="_bx_ntfs_grid_action_title_ett_add"><![CDATA[Добавить]]></string>
+    <string name="_bx_ntfs_grid_action_title_ett_preview"><![CDATA[Предварительный просмотр]]></string>
+    <string name="_bx_ntfs_grid_action_title_ett_edit"><![CDATA[Редактировать]]></string>
+    <string name="_bx_ntfs_grid_action_title_ett_delete"><![CDATA[Удалить]]></string>
+    <string name="_bx_ntfs_grid_popup_title_ett_add"><![CDATA[Добавить шаблон электронного письма]]></string>
+    <string name="_bx_ntfs_grid_popup_title_ett_edit"><![CDATA[Редактировать шаблон электронного письма]]></string>
+    <string name="_bx_ntfs_grid_popup_title_ett_preview"><![CDATA[Предпросмотр шаблона электронного письма]]></string>
+</resources>

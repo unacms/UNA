@@ -109,14 +109,16 @@ class BxBaseCover extends BxDolCover
      */
     public function displayEmpty ()
     {
-        $sTitle = $this->_oTemplate->getPageHeader();
+        $aTmplVarsTitle = ($sTitle = $this->_oTemplate->getPageHeader()) ? [
+            'title' => bx_process_output(strip_tags($sTitle))
+        ] : false;
 
-        return $this->_oTemplate->parseHtmlByName($this->_sTemplateNameEmpty, array(
-            'bx_if:title' => array(
-                'condition' => !empty($sTitle),
-                'content' => array('title' => bx_process_output(strip_tags($sTitle))),
-            ),
-        ));
+        return $this->_oTemplate->parseHtmlByName($this->_sTemplateNameEmpty, [
+            'bx_if:title' => [
+                'condition' => $aTmplVarsTitle !== false,
+                'content' => $aTmplVarsTitle,
+            ],
+        ]);
     }
 
     /**

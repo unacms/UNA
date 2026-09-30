@@ -1,0 +1,23 @@
+/*--- General ---*/
+div.bx-grid-header div.bx-form-element-wrapper {
+    position: relative;
+    float: left;
+    width: 165px;
+}
+/*--- Levels page -> Add Level block ---*/
+div.bx-prm-add-level {}
+div.bx-prm-add-level-cnt {}
+
+/*--- Actions page -> Panel Top style ---*/
+div.bx-grid-header div#bx-form-element-module,
+div.bx-grid-header div#bx-form-element-keyword {
+    margin-top: 0px;
+}
+
+/*--- Actions page -> Edit Option block ---*/
+div.bx-prm-edit-option {}
+div.bx-prm-edit-option-cnt {}
+
+/*--- Prices page -> Add/Edit Price block ---*/
+div.bx-prm-add-price {}
+div.bx-prm-add-price-cnt {}

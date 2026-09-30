@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="en" flag="gb" title="English">
+	<string_add name="_bx_tasks_form_budget"><![CDATA[Budget]]></string_add>
+	<string_add name="_bx_tasks_form_display_budget_add"><![CDATA[Add Budget]]></string_add>
+	<string_add name="_bx_tasks_form_display_budget_edit"><![CDATA[Edit Budget]]></string_add>
+	<string_add name="_bx_tasks_form_budget_input_sys_submit"><![CDATA[Submit]]></string_add>
+	<string_add name="_bx_tasks_form_budget_input_submit"><![CDATA[Submit]]></string_add>
+	<string_add name="_bx_tasks_form_budget_input_sys_cancel"><![CDATA[Cancel]]></string_add>
+	<string_add name="_bx_tasks_form_budget_input_cancel"><![CDATA[Cancel]]></string_add>
+	<string_add name="_bx_tasks_form_budget_input_sys_controls"><![CDATA[Controls]]></string_add>
+	<string_add name="_bx_tasks_form_budget_input_sys_value"><![CDATA[Budget]]></string_add>
+	<string_add name="_bx_tasks_form_budget_input_value"><![CDATA[Budget]]></string_add>
+	<string_add name="_bx_tasks_form_budget_input_value_info"><![CDATA[Specify budget value in hours.]]></string_add>
+	<string_add name="_bx_tasks_form_budget_input_value_err"><![CDATA[If you want to add budget fill this field in.]]></string_add>
+	<string_add name="_bx_tasks_form_budget_input_sys_text"><![CDATA[Note]]></string_add>
+	<string_add name="_bx_tasks_form_budget_input_text"><![CDATA[Note]]></string_add>
+	<string_add name="_bx_tasks_form_f_input_save"><![CDATA[Save]]></string_add>
+
+	<string_add name="_bx_tasks_page_title_sys_entries_budget_in_context_administration"><![CDATA[Context: Budget]]></string_add>
+	<string_add name="_bx_tasks_page_title_entries_budget_in_context_administration"><![CDATA[Budget in {display_name}]]></string_add>
+	<string_add name="_bx_tasks_page_block_title_sys_entries_budget_in_context_summary"><![CDATA[Budget summary in context]]></string_add>
+	<string_add name="_bx_tasks_page_block_title_entries_budget_in_context_summary"><![CDATA[Budget summary]]></string_add>
+	<string_add name="_bx_tasks_page_block_title_sys_entries_budget_in_context_administration"><![CDATA[Budget in context]]></string_add>
+	<string_add name="_bx_tasks_page_block_title_entries_budget_in_context_administration"><![CDATA[Budget in <a href="{profile_link}">{display_name}</a>]]></string_add>
+
+	<string_add name="_bx_tasks_menu_item_title_system_submenu_use"><![CDATA[Submenu: Usage]]></string_add>
+	<string_add name="_bx_tasks_menu_item_title_system_submenu_browse"><![CDATA[Submenu: Browse tasks in contexts]]></string_add>
+	<string_add name="_bx_tasks_menu_item_title_system_submenu_manage"><![CDATA[Submenu: Manage tasks]]></string_add>
+	<string_add name="_bx_tasks_menu_item_title_system_view_context_budget_administration"><![CDATA[Budget]]></string_add>
+	<string_add name="_bx_tasks_menu_item_title_view_context_budget_administration"><![CDATA[Budget]]></string_add>
+
+	<string_add name="_bx_tasks_grid_column_title_bdt_profile_id"><![CDATA[Profile]]></string_add>
+	<string_add name="_bx_tasks_grid_column_title_bdt_text"><![CDATA[Note]]></string_add>
+	<string_add name="_bx_tasks_grid_column_title_bdt_value"><![CDATA[Value]]></string_add>
+	<string_add name="_bx_tasks_grid_column_title_bdt_date"><![CDATA[Added]]></string_add>
+	<string_add name="_bx_tasks_grid_action_title_bdt_add"><![CDATA[Add]]></string_add>
+	<string_add name="_bx_tasks_grid_action_title_bdt_edit"><![CDATA[Edit]]></string_add>
+	<string_add name="_bx_tasks_grid_action_title_bdt_delete"><![CDATA[Delete]]></string_add>
+	<string_add name="_bx_tasks_grid_popup_title_bdt_add"><![CDATA[Add Budget]]></string_add>
+	<string_add name="_bx_tasks_grid_popup_title_bdt_edit"><![CDATA[Edit Budget]]></string_add>
+
+	<string_add name="_bx_tasks_txt_budget_total"><![CDATA[Budget:]]></string_add>
+	<string_add name="_bx_tasks_txt_budget_spent"><![CDATA[Spent:]]></string_add>
+	<string_add name="_bx_tasks_txt_budget_remains"><![CDATA[Remains:]]></string_add>
+	<string_add name="_bx_tasks_txt_budget_remains_value"><![CDATA[{0} ({1}%)]]></string_add>
+
+	<string_add name="_bx_tasks_txt_msg_edit_initial_members"><![CDATA[<a href="{author_link}">{author_name}</a> assigned to <b>{value}</b>]]></string_add>
+	<string_add name="_bx_tasks_txt_msg_edit_title"><![CDATA[<a href="{author_link}">{author_name}</a> changed title to <b>{value}</b>]]></string_add>
+	<string_add name="_bx_tasks_txt_msg_edit_text"><![CDATA[<a href="{author_link}">{author_name}</a> changed text]]></string_add>
+
+	<string_upd name="_bx_tasks_form_entry_input_allow_view_to"><![CDATA[Post to]]></string_upd>
+	<string_upd name="_bx_tasks_menu_item_title_mt_submenu_entries_common"><![CDATA[Manage my tasks]]></string_upd>
+	<string_upd name="_bx_tasks_menu_item_title_mt_submenu_entries_administration"><![CDATA[Tasks administration]]></string_upd>
+	<string_upd name="_bx_tasks_menu_item_title_mt_submenu_time_common"><![CDATA[Manage my time]]></string_upd>
+	<string_upd name="_bx_tasks_menu_item_title_mt_submenu_time_administration"><![CDATA[Time administration]]></string_upd>
+
+	<string_upd name="_bx_tasks_txt_notification_completed"><![CDATA[{author_name_wrapped} completed {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b>]]></string_upd>
+	<string_upd name="_bx_tasks_txt_notification_completed_in_context"><![CDATA[{author_name_wrapped} completed {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b> in <b class="bx-ntfs-content-profile">{owner_name}</b>]]></string_upd>
+	<string_upd name="_bx_tasks_txt_notification_reopened"><![CDATA[{author_name_wrapped} reopened {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b>]]></string_upd>
+	<string_upd name="_bx_tasks_txt_notification_reopened_in_context"><![CDATA[{author_name_wrapped} reopened {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b> in <b class="bx-ntfs-content-profile">{owner_name}</b>]]></string_upd>
+	<string_upd name="_bx_tasks_txt_notification_expired_in_context"><![CDATA[<b class="bx-ntfs-content-entry">{entry_caption}</b> {entry_sample} expired in <b class="bx-ntfs-content-profile">{owner_name}</b>]]></string_upd>
+	<string_upd name="_bx_tasks_txt_notification_assigned"><![CDATA[{author_name_wrapped} assigned <b class="bx-ntfs-content-entry">{entry_caption}</b> {entry_sample} to <b class="bx-ntfs-content-profile">{entry_author_name}</b>]]></string_upd>
+	<string_upd name="_bx_tasks_txt_notification_assigned_in_context"><![CDATA[{author_name_wrapped} assigned <b class="bx-ntfs-content-entry">{entry_caption}</b> {entry_sample} to <b class="bx-ntfs-content-profile">{entry_author_name}</b> in <b class="bx-ntfs-content-profile">{owner_name}</b>]]></string_upd>
+</resources>
