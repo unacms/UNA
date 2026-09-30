@@ -5,7 +5,6 @@ import { useIsFocused, useNavigation, usePathname, useRouter } from 'app/lib/hoo
 import { getTabList, splitTabBarItems } from 'app/components/nav/tabs/tab-menu';
 import { handleTabPress } from 'app/components/nav/tabs/tab-press';
 import { getSelectedTab, rememberSelectedTab } from 'app/lib/navigation/tab-history';
-import emitter from 'app/context/emitter';
 
 /**
  * NativeTabs has no Screen `listeners`. Re-tap / external / notif-clear live
@@ -34,9 +33,9 @@ export default function NativeTabPressSync({ tabKey }) {
             const match = String(tabKey || '').match(/^\/tab(\d+)$/);
             const tabIndex = match ? Number(match[1]) : 0;
 
+            // More: its trigger's own `tabPress` listener (expoui-tabs) opens the
+            // menu or the profile — handling it here too would do it twice.
             if (overflow.length > 0 && tabIndex === moreTabIndex) {
-                e.preventDefault?.();
-                emitter.emit('tabs-more', { action: 'open', stayOn: pathname });
                 return;
             }
 

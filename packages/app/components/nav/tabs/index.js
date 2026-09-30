@@ -29,7 +29,7 @@ import {
 } from 'app/lib/navigation/tab-history';
 import { clearAllPageCache } from 'app/lib/cache/clear-page-cache';
 import BottomSheet from 'app/ui/molecules/dialogs/bottomsheet-content';
-import { buildTabUrlIndex, getTabList, getTabRouteRootUrl, getTabsSessionKey } from './tab-menu';
+import { buildTabUrlIndex, getTabList, getTabRouteRootUrl, getTabsSessionKey, splitTabBarItems } from './tab-menu';
 
 function getTabNavigator() {
     return isNativeTabsEnabled()
@@ -84,13 +84,15 @@ function processUrl(url, router, currentUser, TabList) {
 
         const index = LinksForTabs?.find((item) => _path.includes(item.url))?.index ?? -1;
         const isRoot = index > -1 && getTabRouteRootUrl(index, TabList, currentUser) === _path;
+        // Without a url the More tab keeps its last page (expo-screen.js), so name its root.
+        const isMoreTab = index === splitTabBarItems(TabList).moreTabIndex;
 
 
         if (index > -1) {
             rememberSelectedTab(`/tab${index}`);
             const route = {
                 pathname: `/tab${index}`,
-                ...(isRoot ? {} : { params: { url: _path } })
+                ...(isRoot && !isMoreTab ? {} : { params: { url: _path } })
             };
             router.push(route);
         } else {
