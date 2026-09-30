@@ -28,10 +28,12 @@
  * rest. This keeps the API mappable 1:1 to `@expo/ui/swift-ui` Button.
  *
  * Native: `native.expo_ui_buttons` (configs) routes eligible buttons through
- * Expo UI (`neo-button-expoui.{ios,android}.tsx`). Unmapped icons, custom
- * children, long-press, and `selected` on non-glass styles stay on the JS
- * surface. Glass keeps Expo UI for selected (tinted liquid glass) and
- * for `addon` counters (SwiftUI child in the label).
+ * Expo UI (`neo-button-expoui.{ios,android}.tsx`). iOS draws Lucide or SF
+ * glyphs natively and hosts icon-like custom children (logo) in the SwiftUI
+ * label. Long-press, labelled custom children, glyphs with no native asset,
+ * and `selected` on non-glass styles stay on the JS surface (Android: also
+ * unmapped icons and all custom children). Glass keeps Expo UI for selected
+ * (tinted liquid glass) and for `addon` counters (SwiftUI child in the label).
  */
 
 import React, { memo, type ReactNode } from 'react';
@@ -63,7 +65,7 @@ import {
     useNeoEnv,
     resolveScoped,
 } from 'app/design/controls/neo-button/neo-button-resolver';
-import { NeoButtonExpoUI, getNativeIcon } from 'app/design/controls/neo-button/neo-button-expoui';
+import { NeoButtonExpoUI, getNativeIcon, hostsCustomContent } from 'app/design/controls/neo-button/neo-button-expoui';
 import type { NeoButtonAddon, NeoButtonClassNames, NeoButtonProps } from 'app/design/controls/neo-button/neo-button.types';
 
 export type { NeoButtonProps } from 'app/design/controls/neo-button/neo-button.types';
@@ -339,7 +341,7 @@ function isNativeGlassStyle(style: unknown) {
 }
 
 function canRenderExpoUIButton(props: NeoButtonProps, native: { config: Record<string, any> }) {
-    if (props.children !== undefined && props.children !== null && props.children !== false) return false;
+    const hasChildren = props.children !== undefined && props.children !== null && props.children !== false;
     if (props.onLongPress) return false;
     const style = props.buttonStyle ?? props.style;
     const glass = isNativeGlassStyle(style);
@@ -350,10 +352,14 @@ function canRenderExpoUIButton(props: NeoButtonProps, native: { config: Record<s
 
     const label = props.label ?? props.title;
     const hasLabel = (typeof label === 'string' && label !== '') || typeof label === 'number';
+    // Icon-like custom content (header logo, avatar): iOS hosts it in the
+    // SwiftUI label so it keeps native glass. Labelled custom rows stay JS.
+    if (hasChildren) return hostsCustomContent && !hasLabel && React.isValidElement(props.children);
     const rawImage = props.systemImage ?? props.image;
     const hasImage = (typeof rawImage === 'string' && rawImage !== '') || React.isValidElement(rawImage);
     if (!hasLabel && !hasImage) return false;
     if (!hasImage) return true;
+    if (React.isValidElement(rawImage)) return hostsCustomContent;
 
     return !!getNativeIcon(rawImage, native.config);
 }

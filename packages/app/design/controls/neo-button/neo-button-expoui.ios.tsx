@@ -1,13 +1,15 @@
 /**
- * SwiftUI NeoButton (`@expo/ui/swift-ui`). Icons are SF Symbols only.
+ * SwiftUI NeoButton (`@expo/ui/swift-ui`). Glyphs are Lucide template assets
+ * (`Lucide/<kebab>`) or SF Symbols per `iosIconSource`; icon-like custom
+ * content (header logo) is hosted in the label via `RNHostView`.
  * Label is framed to `controlSizes` height because SwiftUI hugs ~34pt at
  * `.regular`. Host `matchContents` is mount-only — never toggle it live.
  */
 
-import { StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { useResolveClassNames } from 'uniwind';
-import type { ComponentProps } from 'react';
-import { Host, Button, HStack, Image, Text, useNativeState } from '@expo/ui/swift-ui';
+import { isValidElement, type ComponentProps } from 'react';
+import { Host, Button, HStack, Image, RNHostView, Text, useNativeState } from '@expo/ui/swift-ui';
 import {
     buttonStyle as buttonStyleModifier,
     controlSize as controlSizeModifier,
@@ -21,12 +23,14 @@ import {
     glassEffect,
     background,
     padding,
+    resizable,
     shapes,
 } from '@expo/ui/swift-ui/modifiers';
 import { useThemeValue } from 'app/design/theme';
+import { lucideAssetName } from 'app/lib/platform/lucide-assets';
 import { useResolvedNeoButton, resolveScoped, parseNeoButtonAddon } from 'app/design/controls/neo-button/neo-button-resolver';
 import { useFrozenHostSize, useLockedNativePress, wrapNativeButtonHost } from 'app/design/controls/neo-button/neo-button-expoui-host';
-import { FeedbackHaptics, findIconFromRemote } from 'app/lib/util';
+import { FeedbackHaptics, appSetting, findIconFromRemote } from 'app/lib/util';
 import type { NeoButtonExpoUIConfig, NeoButtonExpoUIProps } from 'app/design/controls/neo-button/neo-button.types';
 
 type SwiftUIModifier = ReturnType<typeof frame>;
@@ -133,15 +137,35 @@ function parseIosSymbol(mapped: any): { name: string; effect: SymbolEffectConfig
     return null;
 }
 
-function resolveIosSymbol(rawImage: unknown, config?: NeoButtonExpoUIConfig) {
+type IosGlyph =
+    | { kind: 'sf'; name: string; effect: SymbolEffectConfig | false | null; options: any }
+    | { kind: 'asset'; name: string };
+
+/**
+ * `expo_ui.iosIconSource: 'lucide'` prefers the generated `Lucide/<kebab>`
+ * template asset, `'sf'` the `iosSymbols` SF Symbol; each falls back to the
+ * other. SF names (`systemImage`) never match a Lucide asset, so they stay SF.
+ */
+function resolveIosGlyph(rawImage: unknown, config?: NeoButtonExpoUIConfig): IosGlyph | null {
     if (typeof rawImage !== 'string' || rawImage === '') return null;
     const lucideName = findIconFromRemote(rawImage);
-    return parseIosSymbol(config?.iosSymbols?.[lucideName] || lucideName);
+    const symbol = parseIosSymbol(config?.iosSymbols?.[lucideName] || lucideName);
+    const sf: IosGlyph | null = symbol ? { kind: 'sf', ...symbol } : null;
+    const assetName = lucideAssetName(lucideName);
+    const asset: IosGlyph | null = assetName ? { kind: 'asset', name: assetName } : null;
+    return appSetting('theme', 'expo_ui', 'iosIconSource') === 'sf' ? (sf ?? asset) : (asset ?? sf);
 }
 
 export function getNativeIcon(rawImage: unknown, config?: NeoButtonExpoUIConfig): string | null {
-    return resolveIosSymbol(rawImage, config)?.name ?? null;
+    return resolveIosGlyph(rawImage, config)?.name ?? null;
 }
+
+/** Icon-like custom content (logo, avatar) renders inside the SwiftUI label via RNHostView. */
+export const hostsCustomContent = true;
+
+const HOSTED_CONTENT_STYLE = StyleSheet.create({
+    box: { alignItems: 'center', justifyContent: 'center' },
+}).box;
 
 export function NeoButtonExpoUI(props: NeoButtonExpoUIProps) {
     const {
@@ -152,6 +176,7 @@ export function NeoButtonExpoUI(props: NeoButtonExpoUIProps) {
         width, align,
         accessibilityLabel, alt,
         className, classNames,
+        children, contentInsets,
         nativeConfig,
     } = props;
 
@@ -171,9 +196,15 @@ export function NeoButtonExpoUI(props: NeoButtonExpoUIProps) {
         ? loadingLabel
         : (label ?? title ?? '');
 
-    const parsedSymbol = resolveIosSymbol(systemImage ?? image, nativeConfig);
-    const sfSymbol = parsedSymbol?.name;
-    const isIconOnly = !!sfSymbol && !effectiveLabel;
+    const glyph = resolveIosGlyph(systemImage ?? image, nativeConfig);
+    const sfSymbol = glyph?.kind === 'sf' ? glyph.name : undefined;
+    const assetName = glyph?.kind === 'asset' ? glyph.name : undefined;
+    // Icon-like custom content (header logo, avatar): children, or an element `image`.
+    const customContent = glyph
+        ? null
+        : (isValidElement(children) ? children : (isValidElement(image) ? image : null));
+    const isIconOnly = !!glyph && !effectiveLabel;
+    const isCustomOnly = !!customContent && !effectiveLabel;
     const pinToSquare = isIconOnly && resolved.aspectSquare;
     // Own width for every icon-only control. Capsule keeps JS paddingX so
     // bordered chrome is not clipped to the plus glyph (composer Plus).
@@ -186,15 +217,15 @@ export function NeoButtonExpoUI(props: NeoButtonExpoUIProps) {
     const defaultSymbolEffect = normalizeSymbolEffect(
         resolveScoped(nativeConfig?.iosSymbolEffect, resolved.env),
     );
-    const iconEffect = parsedSymbol?.effect === false
-        ? null
-        : (parsedSymbol?.effect || defaultSymbolEffect);
+    const sfEffect = glyph?.kind === 'sf' ? glyph.effect : null;
+    const iconEffect = sfEffect === false ? null : (sfEffect || defaultSymbolEffect);
     const symbolTrigger = useNativeState(0);
     const nativeLabel = String(
         effectiveLabel
         || accessibilityLabel
         || alt
-        || (sfSymbol ? sfSymbol.split('.')[0] : ''),
+        || (sfSymbol ? sfSymbol.split('.')[0] : '')
+        || (assetName ? assetName.slice(assetName.indexOf('/') + 1) : ''),
     );
     const nativeControlSize =
         nativeConfig?.iosControlSize?.[resolved.controlSize] ?? mapping.controlSize;
@@ -250,9 +281,13 @@ export function NeoButtonExpoUI(props: NeoButtonExpoUIProps) {
     // Glass uses `.plain` + `glassEffect` in both states so selected
     // does not remount or swap chrome. Pad once — same capsule either way.
     const isGlass = resolved.style === 'glass';
+    // `contentInsets.x` sizes the capsule around custom content (logo: 32pt
+    // mark + 2×6 = a 44pt circle at `regular`), like the JS path.
+    const customInsetX = customContent && contentInsets && typeof contentInsets === 'object'
+        && typeof contentInsets.x === 'number' ? contentInsets.x : null;
     if (isGlass) {
         labelModifiers.push(padding({
-            horizontal: resolved.paddingX ?? 12,
+            horizontal: customInsetX ?? resolved.paddingX ?? 12,
             vertical: vPad,
         }));
     }
@@ -307,7 +342,7 @@ export function NeoButtonExpoUI(props: NeoButtonExpoUIProps) {
         // Do not key on selected / tint — that remounts Host and the
         // capsule flashes at 0 before matchContents measures.
         contentKey: [
-            nativeLabel, sfSymbol || '', nativeControlSize, targetHeight,
+            nativeLabel, sfSymbol || assetName || (customContent ? 'custom' : ''), nativeControlSize, targetHeight,
             mapping.buttonStyle, borderShape || '', 'host-fit-v5',
             iosFont?.family || '', fontParams.weight || '', String(fontParams.size ?? ''), String(nativeIconSize),
             addonMeta?.text || '',
@@ -342,7 +377,7 @@ export function NeoButtonExpoUI(props: NeoButtonExpoUIProps) {
         modifiers.push(tintModifier(tintValue));
     }
     if (foregroundValue) labelModifiers.push(foregroundStyle(foregroundValue));
-    if (isIconOnly && nativeLabel) modifiers.push(accessibilityLabelModifier(nativeLabel));
+    if ((isIconOnly || isCustomOnly) && nativeLabel) modifiers.push(accessibilityLabelModifier(nativeLabel));
     // Do not use SwiftUI `disabled` — it changes intrinsic layout when the
     // control toggles. Fade + block presses on the RN wrapper instead.
     if (iconHostWidth != null) {
@@ -370,9 +405,28 @@ export function NeoButtonExpoUI(props: NeoButtonExpoUIProps) {
     const imageModifiers = (sfSymbol && iconEffect)
         ? [symbolEffect(iconEffect as Parameters<typeof symbolEffect>[0], {
             value: symbolTrigger,
-            options: parsedSymbol?.options || { repeat: 'nonRepeating' },
+            options: (glyph?.kind === 'sf' && glyph.options) || { repeat: 'nonRepeating' },
         })]
         : undefined;
+
+    // One glyph node for leading/trailing placement. Lucide assets are template
+    // images: SwiftUI tints them like SF Symbols (glass label vibrancy, selected
+    // `foregroundValue`) and the system caches the rasterized vector.
+    const glyphView = sfSymbol ? (
+        <Image systemName={sfSymbol as SFSymbol} size={nativeIconSize} color={foregroundValue || undefined} modifiers={imageModifiers} />
+    ) : assetName ? (
+        <Image
+            assetName={assetName}
+            color={foregroundValue || undefined}
+            modifiers={[resizable(), frame({ width: nativeIconSize, height: nativeIconSize })]}
+        />
+    ) : customContent ? (
+        <RNHostView matchContents>
+            <View collapsable={false} pointerEvents="none" style={HOSTED_CONTENT_STYLE}>
+                {customContent}
+            </View>
+        </RNHostView>
+    ) : null;
 
     const addonView = addonMeta ? (
         <Text
@@ -427,17 +481,13 @@ export function NeoButtonExpoUI(props: NeoButtonExpoUIProps) {
                 modifiers={modifiers}
             >
                 <HStack spacing={resolved.labelGap} modifiers={labelModifiers}>
-                    {(sfSymbol && resolved.imagePlacement !== 'trailing') ? (
-                        <Image systemName={sfSymbol as SFSymbol} size={nativeIconSize} color={foregroundValue || undefined} modifiers={imageModifiers} />
-                    ) : null}
-                    {!isIconOnly ? (
+                    {resolved.imagePlacement !== 'trailing' ? glyphView : null}
+                    {!isIconOnly && !isCustomOnly ? (
                         <Text modifiers={textModifiers.length ? textModifiers : undefined}>
                             {nativeLabel}
                         </Text>
                     ) : null}
-                    {(sfSymbol && resolved.imagePlacement === 'trailing') ? (
-                        <Image systemName={sfSymbol as SFSymbol} size={nativeIconSize} color={foregroundValue || undefined} modifiers={imageModifiers} />
-                    ) : null}
+                    {resolved.imagePlacement === 'trailing' ? glyphView : null}
                     {addonView}
                 </HStack>
             </Button>
