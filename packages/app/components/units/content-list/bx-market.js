@@ -1,3 +1,4 @@
+import { Platform } from "react-native";
 import Image from "app/ui/atoms/image";
 import { Text } from "app/design/typography";
 import { View, Row } from "app/design/view";
@@ -25,6 +26,8 @@ export default function Unit({ data }) {
     const sRate = starsData ? <Stars {...starsData} /> : undefined;
 
     const isSkeleton = data?.skeleton;
+    // raw HTML covers can only render on web; native falls back to the image
+    const hasHtmlCover = Platform.OS === 'web' && !!cover_raw?.trim();
 
     return (
         <UnitWrapper data={data} as="list" padding="p-1" className="mb-2 md:mb-0">
@@ -32,16 +35,16 @@ export default function Unit({ data }) {
                 <View className="w-full p-1">
                     <View className="w-full mb-auto bg-muted  aspect-video overflow-hidden rounded-xl">
                         <Skeleton className="" rounded='rounded-lg' visible={isSkeleton}>
-                            {cover_raw?.trim() != "" && (
+                            {hasHtmlCover && (
                                 <div
                                     dangerouslySetInnerHTML={{
                                         __html: cover_raw,
                                     }}
                                 ></div>
                             )}
-                            {cover_raw?.trim() == "" && (
+                            {!hasHtmlCover && (
                                 <Image
-                                    src={data.cover.medium}
+                                    src={data.cover?.medium}
                                     alt={data.title}
                                     view="cover"
                                     className="u-cover"

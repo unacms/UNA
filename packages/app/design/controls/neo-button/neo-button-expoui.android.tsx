@@ -44,6 +44,9 @@ export function getNativeIcon(rawImage: unknown, config?: NeoButtonExpoUIConfig)
     return config?.androidIcons?.[findIconFromRemote(rawImage)] ?? null;
 }
 
+/** Custom content (children / element `image`) stays on the JS path. */
+export const hostsCustomContent = false;
+
 export function NeoButtonExpoUI(props: NeoButtonExpoUIProps) {
     const {
         role, style, buttonStyle, controlSize, borderShape, tint,

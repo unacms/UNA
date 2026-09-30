@@ -150,6 +150,7 @@ export default function UniList(props: UniListProps) {
         url,
         coverScrollY,
         onTopZoneChange,
+        pinHeader: !!inverted,
     })
 
     const initialScrollOffset = useMemo(

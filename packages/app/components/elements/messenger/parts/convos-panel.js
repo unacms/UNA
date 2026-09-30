@@ -8,9 +8,11 @@ import { CreateConvoButton } from 'app/components/elements/messenger/parts/new-c
 import {
     ConvosPanelHeader,
     MESSENGER_OVERLAY_HEADER,
+    MESSENGER_OVERLAY_HEADER_FADE,
     MessengerListInset,
     useDebouncedSearch,
 } from 'app/components/elements/messenger/parts/headers';
+import { EdgeBlurView, edgeBlurConfig } from 'app/ui/atoms/edge-blur';
 import { useTranslation } from 'react-i18next';
 
 const isWeb = Platform.OS === 'web';
@@ -105,7 +107,7 @@ const ConvosPanel = memo(function ConvosPanel({
             {overlayList ? <View className="absolute inset-0">{list}</View> : list}
 
             {overlayList ? (
-                <View className={MESSENGER_OVERLAY_HEADER} pointerEvents="box-none">
+                <EdgeBlurView edge="top" config={edgeBlurConfig('footer')} className={MESSENGER_OVERLAY_HEADER} washClassName={MESSENGER_OVERLAY_HEADER_FADE} pointerEvents="box-none">
                     <View pointerEvents="auto">
                         <ConvosPanelHeader
                             title={listTitle}
@@ -119,7 +121,7 @@ const ConvosPanel = memo(function ConvosPanel({
                             onLayout={handleChromeLayout}
                         />
                     </View>
-                </View>
+                </EdgeBlurView>
             ) : null}
         </View>
     );

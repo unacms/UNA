@@ -324,20 +324,24 @@ export const settingsMenus = {
                 badge: 'notifications',
                 animated: true,
             },
+            // Fifth slot: own profile, shown as the avatar (iOS). With five items
+            // it is a plain tab; with more it is the More trigger and the menu's
+            // header, and the items below it fill the menu.
+            { key: '/tab4', title: 'Profile', url: '{profile}', icon: 'User' },
             {
-                key: '/tab4',
+                key: '/tab5',
                 title: 'Dashboard',
                 url: '/dashboard',
                 icon: 'CircleGauge',
             },
-            { key: '/tab5', title: 'Groups', url: '/groups-home', icon: 'UsersRound' },
-            { key: '/tab6', title: 'Events', url: '/events-home', icon: 'CalendarCheck' },
-            { key: '/tab7', title: 'Market', url: '/products-home', icon: 'Store' },
-            { key: '/tab8', title: 'Tasks', url: '/tasks-home', icon: 'ListChecks' },
-            { key: '/tab9', title: 'Docs', url: '/docs', icon: 'Book' },
-            { key: '/tab10', title: 'Blog', url: '/posts-home', icon: 'PencilLine' },
-            { key: '/tab11', title: 'Pricing', url: '/start', icon: 'Tag' },
-            { key: '/tab12', title: 'Sign out', url: '/logout', icon: 'LogOut' },
+            { key: '/tab6', title: 'Groups', url: '/groups-home', icon: 'UsersRound' },
+            { key: '/tab7', title: 'Events', url: '/events-home', icon: 'CalendarCheck' },
+            { key: '/tab8', title: 'Market', url: '/products-home', icon: 'Store' },
+            { key: '/tab9', title: 'Tasks', url: '/tasks-home', icon: 'ListChecks' },
+            { key: '/tab10', title: 'Docs', url: '/docs', icon: 'Book' },
+            { key: '/tab11', title: 'Blog', url: '/posts-home', icon: 'PencilLine' },
+            { key: '/tab12', title: 'Pricing', url: '/pricing', icon: 'Tag' },
+            { key: '/tab13', title: 'Sign out', url: '/logout', icon: 'LogOut' },
         ],
 
         menu_tabbar_non_logged: [

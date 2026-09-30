@@ -5,13 +5,34 @@ import { appSetting, parseUrl, parseQueryString, isNativeTabsEnabled } from 'app
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import { fetcher } from 'app/lib/fetcher';
 import { useLocalSearchParams, useIsFocused } from 'app/lib/hooks/router'
-import { ensureTabHistory, applyTabHistory } from 'app/lib/navigation/tab-history';
+import { ensureTabHistory, applyTabHistory, peekTabLastUrl } from 'app/lib/navigation/tab-history';
+import { splitTabBarItems } from 'app/components/nav/tabs/tab-menu';
 import { getCachedPageData, setCachedPageData } from 'app/lib/cache/native-tab-page-cache';
 import { clearAllPageCache } from 'app/lib/cache/clear-page-cache';
 import emitter from 'app/context/emitter'
 import * as SplashScreen from 'expo-splash-screen';
 import { TabChromeProvider } from 'app/context/tab-chrome';
 import { TabSlide } from 'app/components/nav/tab-slide';
+import { View } from 'react-native';
+import { useSafeAreaInsets } from 'app/lib/hooks/router';
+import { EdgeBlur, edgeBlurConfig } from 'app/ui/atoms/edge-blur';
+
+/**
+ * iOS NativeTabs: native blur behind the floating tab bar (`layout.tabbar_fade_blur`).
+ * Inside a tab screen the bottom safe-area inset already includes the tab bar
+ * (UIKit adds it), so the blur spans that inset plus `extend`.
+ */
+function TabBarEdgeBlur() {
+    const insets = useSafeAreaInsets();
+    const config = edgeBlurConfig('tabbar');
+    if (!config) return null;
+    const height = insets.bottom + (config.extend ?? 0);
+    return (
+        <View pointerEvents="none" style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height }}>
+            <EdgeBlur edge="bottom" config={config} />
+        </View>
+    );
+}
 
 const NativeTabPressSync = isNativeTabsEnabled()
     ? require('./native-tab-press-sync').default
@@ -89,7 +110,17 @@ function ScreenInner(params) {
     const pathname = params.tabname;
     const { currentUser } = useCurrentUser();
     const activated = useLazyTabActivation();
+    const tabListKey = currentUser ? 'menu_tabbar_logged' : 'menu_tabbar_non_logged';
+    const tabList = appSetting('menu_items', tabListKey) || [];
     let _path = routeParam(local.url);
+
+    // A native press on the More tab (switching to it or re-tapping it) is
+    // followed by a JUMP_TO that drops this route's params, and the root
+    // fallback below would swap in the first overflow item. Keep the page the
+    // More tab was showing.
+    if (!_path && pathname === `/tab${splitTabBarItems(tabList).moreTabIndex}`) {
+        _path = peekTabLastUrl(pathname);
+    }
 
     // BOTTOM TABS NAVIGATION
     // Also detect a stale URL from the other user context (e.g. guest's /safety still
@@ -99,8 +130,6 @@ function ScreenInner(params) {
     const isStaleContextUrl = !!otherMenuItem?.url && _path === otherMenuItem.url;
 
     if (!_path || _path.includes('/tab') || isStaleContextUrl) {
-        const tabListKey = currentUser ? 'menu_tabbar_logged' : 'menu_tabbar_non_logged';
-        const tabList = appSetting('menu_items', tabListKey);
         const item = tabList.find((item) => item.key === pathname);
         _path = item ? item.url : null;
         if (_path === '{profile}') {
@@ -111,6 +140,8 @@ function ScreenInner(params) {
     const userKey = currentUser?.id
         ? `${currentUser.id}-${currentUser.confirmed}`
         : 'guest';
+    // Same rule as the tab bar itself (tabs/index.js `isShowTabs`).
+    const isShowTabs = !!((currentUser && currentUser.confirmed) || appSetting('native', 'show_tabs_non_logged'));
 
     // Stable key per tab — no remount on in-tab navigation. Shell refresh uses refreshToken (redirectTo), not key.
     return (
@@ -128,6 +159,7 @@ function ScreenInner(params) {
                     />
                 </TabChromeProvider>
             ) : null}
+            {activated && isShowTabs && isNativeTabsEnabled() ? <TabBarEdgeBlur /> : null}
         </>
     );
 }

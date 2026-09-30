@@ -24,6 +24,16 @@ export function isTabBarLabelsEnabled() {
     return !!appSetting('native', 'tab_labels');
 }
 
+/**
+ * Android NativeTabs bar height (dp) without the system inset it pads itself
+ * with: Material 3 sizes it to its items once `with-android-tab-bar-height`
+ * (apps/expo/plugins) lifts the 80dp floor. iOS needs no constant — its bar is
+ * part of the tab screen's safe-area inset.
+ */
+export function androidTabBarHeight(labelsHidden: boolean) {
+    return labelsHidden ? 56 : 80;
+}
+
 export const LAYOUT_BREAKPOINTS = {
     '2xl': 1536,
     xl: 1280,

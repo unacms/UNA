@@ -224,16 +224,11 @@ export function usePageHeaderBase(pageData) {
         setScrollDirection(0);
     }, [isDesktop, pageData?.uri, pageData?.url, setScrollDirection]);
 
-    // Native: when the full bar is swapped (messenger list ↔ chat header) drop
-    // the stale height until the new bar measures. subHeader toggles must not
-    // zero it (Settings tabs clipped); the container onLayout corrects the total.
-    const prevMainRef = useRef(header.header);
-    useEffect(() => {
-        const prevMain = prevMainRef.current;
-        prevMainRef.current = header.header;
-        if (isWeb || prevMain === header.header) return;
-        setHeaderHeightAtom(0);
-    }, [header.header, isWeb, setHeaderHeightAtom]);
+    // Native: no reset when the full bar is swapped (messenger list ↔ chat
+    // header). A bar of a different height re-fires the container onLayout; one
+    // of the same height (a re-created injected header, e.g. on the messenger
+    // inbox/direct switch) never does, so a reset to 0 would stick and slide
+    // the list under the header.
 
     const pageTitle = useMemo(() => {
         let nextTitle = pageData?.name;
