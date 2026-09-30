@@ -16,7 +16,7 @@ $aConfig = array(
     'type' => BX_DOL_MODULE_TYPE_MODULE,
     'name' => 'bx_api',
     'title' => 'API',
-    'note' => 'API for backend.',
+    'note' => 'API, backend interface',
     'version' => '13.0.2.DEV',
     'vendor' => 'BoonEx',
     'help_url' => 'http://feed.una.io/?section={module_name}',

@@ -17,7 +17,7 @@ $aConfig = array(
     'type' => BX_DOL_MODULE_TYPE_MODULE,
     'name' => 'bx_ads',
     'title' => 'Ads',
-    'note' => 'Ads module.',
+    'note' => 'Ads, advertisements, classifieds',
     'version' => '15.0.5.DEV',
     'vendor' => 'UNA INC',
     'help_url' => 'http://feed.una.io/?section={module_name}',

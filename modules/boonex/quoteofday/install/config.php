@@ -17,7 +17,7 @@ $aConfig = array(
     'type' => BX_DOL_MODULE_TYPE_MODULE,
     'name' => 'bx_quoteofday',
     'title' => 'Quote of the Day',
-    'note' => 'Quote of the Day module.',
+    'note' => 'Quote of the day, daily quotes',
     'version' => '15.0.1.DEV',
     'vendor' => 'UNA INC',
     'help_url' => 'http://feed.una.io/?section={module_name}',

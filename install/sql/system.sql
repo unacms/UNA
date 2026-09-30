@@ -1755,6 +1755,7 @@ CREATE TABLE `sys_modules` (
   `subtypes` int(11) unsigned NOT NULL default '0',
   `name` varchar(32) NOT NULL default '',
   `title` varchar(255) NOT NULL default '',
+  `note` varchar(255) NOT NULL default '',
   `vendor` varchar(64) NOT NULL default '',
   `version` varchar(32) NOT NULL default '',
   `help_url` varchar(128) NOT NULL default '',

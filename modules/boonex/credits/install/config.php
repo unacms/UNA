@@ -17,7 +17,7 @@ $aConfig = array(
     'type' => BX_DOL_MODULE_TYPE_MODULE,
     'name' => 'bx_credits',
     'title' => 'Credits',
-    'note' => 'Credits module.',
+    'note' => 'Credits, virtual currency, balance',
     'version' => '15.0.3.DEV',
     'vendor' => 'UNA INC',
     'help_url' => 'http://feed.una.io/?section={module_name}',

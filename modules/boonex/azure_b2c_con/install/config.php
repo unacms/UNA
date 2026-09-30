@@ -16,7 +16,7 @@ $aConfig = array(
     'type' => BX_DOL_MODULE_TYPE_MODULE,
     'name' => 'bx_azrb2c',
     'title' => 'Azure B2C Connect',
-    'note' => 'Join the site using Azure B2C account.',
+    'note' => 'Azure B2C login, join with an Azure B2C account',
     'version' => '13.0.0.DEV',
     'vendor' => 'UNA Inc',
     'help_url' => 'http://feed.una.io/?section={module_name}',

@@ -29,30 +29,10 @@ class BxDolAiSearchParser extends BxDolFactory
     protected $_aAnswers = [];
 
     /**
-     * English hints per well-known search section; the section title (site language) is always appended.
+     * Section hints, module name => note from sys_modules. Null until the first load.
+     * The section title (site language) is always appended.
      */
-    protected $_aSectionHints = [
-        'bx_events' => 'Events, meetups, happenings, things scheduled on a date',
-        'bx_posts' => 'Posts, articles, blog entries, news',
-        'bx_persons' => 'People, members, users, profiles',
-        'bx_organizations' => 'Organizations, companies',
-        'bx_groups' => 'Groups, communities',
-        'bx_spaces' => 'Spaces, communities',
-        'bx_channels' => 'Channels, hashtags, topics',
-        'bx_forum' => 'Forum discussions, threads, questions',
-        'bx_courses' => 'Courses, lessons, learning',
-        'bx_market' => 'Products, market listings, things for sale',
-        'bx_jobs' => 'Jobs, vacancies',
-        'bx_polls' => 'Polls, votes',
-        'bx_photos' => 'Photos, pictures',
-        'bx_videos' => 'Videos',
-        'bx_files' => 'Files, documents',
-        'bx_albums' => 'Albums, media collections',
-        'bx_timeline' => 'Feed updates, timeline',
-        'bx_classes' => 'Classes, schedules',
-        'bx_wiki' => 'Wiki pages, documentation',
-        'bx_tasks' => 'Tasks, to-dos',
-    ];
+    protected $_aSectionHints = null;
 
     protected $_aRelative = [
         'today' => 'Today',
@@ -177,14 +157,36 @@ class BxDolAiSearchParser extends BxDolFactory
 
     // questions ------------------------
 
+    /**
+     * Keyword hints published by each module as its note (sys_modules.note).
+     */
+    protected function _getSectionHints(): array
+    {
+        if (is_array($this->_aSectionHints))
+            return $this->_aSectionHints;
+
+        $this->_aSectionHints = [];
+
+        $aModules = BxDolModuleQuery::getInstance()->getModules();
+        if (!is_array($aModules))
+            return $this->_aSectionHints;
+
+        foreach ($aModules as $aModule)
+            if (!empty($aModule['name']) && !empty($aModule['note']))
+                $this->_aSectionHints[$aModule['name']] = $aModule['note'];
+
+        return $this->_aSectionHints;
+    }
+
     protected function _getQuestions(array $aSections, array $aTokens): array
     {
         $aQuestions = [];
 
         if ($aSections) {
             $aCriteria = [];
+            $aHints = $this->_getSectionHints();
             foreach ($aSections as $sName => $sTitle)
-                $aCriteria[$sName] = (isset($this->_aSectionHints[$sName]) ? $this->_aSectionHints[$sName] . ' - ' : '') . $sTitle;
+                $aCriteria[$sName] = (!empty($aHints[$sName]) ? $aHints[$sName] . ' - ' : '') . $sTitle;
             $aCriteria['any'] = 'Not specified, everything, or a kind of content not listed';
 
             $aQuestions['section'] = BxDolAiJudge::choice('Which kind of content does the user want to find? The query may be in any language.', $aCriteria);

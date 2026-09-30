@@ -16,7 +16,7 @@ $aConfig = array(
     'type' => BX_DOL_MODULE_TYPE_MODULE,
     'name' => 'bx_linkedin',
     'title' => 'LinkedIn connect',
-    'note' => 'Join the site using LinkedIn account.',
+    'note' => 'LinkedIn login, join with a LinkedIn account',
     'version' => '14.0.1.DEV',
     'vendor' => 'UNA INC',
     'help_url' => 'http://feed.una.io/?section={module_name}',

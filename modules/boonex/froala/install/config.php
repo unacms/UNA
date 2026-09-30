@@ -17,7 +17,7 @@ $aConfig = array(
     'type' => BX_DOL_MODULE_TYPE_MODULE,
     'name' => 'bx_froala',
     'title' => 'Froala (not supported)',
-    'note' => 'Froala editor integration.',
+    'note' => 'Froala, rich text editor',
     'version' => '13.0.3.DEV',
     'vendor' => 'UNA INC',
     'help_url' => 'http://feed.una.io/?section={module_name}',

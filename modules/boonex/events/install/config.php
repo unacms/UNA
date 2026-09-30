@@ -17,7 +17,7 @@ $aConfig = array(
     'type' => BX_DOL_MODULE_TYPE_MODULE,
     'name' => 'bx_events',
     'title' => 'Events',
-    'note' => 'Events functionality.',
+    'note' => 'Events, meetups, happenings, things scheduled on a date',
     'version' => '15.0.4.DEV',
     'vendor' => 'UNA INC',
     'help_url' => 'http://feed.una.io/?section={module_name}',
