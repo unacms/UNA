@@ -261,6 +261,8 @@ export default function UniList(props: UniListProps) {
             // `initialScrollOffset` restore the position for this one.
             key={url || undefined}
             contentContainerStyle={contentContainerStyleProp}
+            // Not in LegendList's types, but it works: the prop reaches RN's Animated.ScrollView,
+            // which uniwind's metro resolver patches (it keeps Animated/components in scope).
             contentContainerClassName={contentContainerClassName || undefined}
             ref={setListRef}
             onEndReachedThreshold={1}
