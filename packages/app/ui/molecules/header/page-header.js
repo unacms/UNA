@@ -3,6 +3,7 @@ import { Animated, View } from 'react-native';
 import { nativeDriver } from 'app/lib/platform/animation';
 import { appSetting } from 'app/lib/util';
 import { isNativeTabsEnabled } from 'app/lib/util';
+import { EdgeBlur, edgeBlurConfig } from 'app/ui/atoms/edge-blur';
 import { useIsScrolled } from 'app/context/jotai/layout';
 import { getWindowSafeAreaInsets } from 'app/lib/hooks/router';
 import {
@@ -40,8 +41,12 @@ export const PageHeader = ({ pageData }) => {
     const headerBgOpacity = useRef(new Animated.Value(isScrolled ? 0 : 1)).current;
     const headerFadeOpacity = useRef(new Animated.Value(isScrolled ? 1 : 0)).current;
     const restingBackgroundClass = getHeaderRestingBackgroundClass();
-    const fadeClass = getHeaderFadeClass();
-    const fadeExtend = getHeaderFadeExtend();
+    // iOS: native progressive blur (EdgeBlur) replaces the wash when configured.
+    const fadeBlur = edgeBlurConfig('header');
+    // Elsewhere (Android): the native wash, solid through the header.
+    const nativeWash = fadeBlur ? null : appSetting('layout', 'header', 'fade_native');
+    const fadeClass = nativeWash?.className || getHeaderFadeClass();
+    const fadeExtend = fadeBlur?.extend ?? nativeWash?.extend ?? getHeaderFadeExtend();
     const fadeHeight = headerHeight > 0 ? headerHeight + fadeExtend : 0;
 
     useEffect(() => {
@@ -83,7 +88,7 @@ export const PageHeader = ({ pageData }) => {
         isScrolled,
     });
 
-    const showFade = !!fadeClass && fadeHeight > 0;
+    const showFade = (!!fadeClass || !!fadeBlur) && fadeHeight > 0;
     const headerPointerEvents = isCollapsibleHeader && scrollDirection === 1
         ? 'none'
         : (showFade ? 'box-none' : 'auto');
@@ -108,9 +113,11 @@ export const PageHeader = ({ pageData }) => {
             {showFade ? (
                 <Animated.View
                     pointerEvents="none"
-                    className={`absolute left-0 right-0 top-0 ${fadeClass}`}
+                    className="absolute left-0 right-0 top-0"
                     style={{ height: fadeHeight, opacity: headerFadeOpacity }}
-                />
+                >
+                    <EdgeBlur edge="top" config={fadeBlur} fallbackClassName={fadeClass} />
+                </Animated.View>
             ) : null}
             <View
                 pointerEvents="auto"

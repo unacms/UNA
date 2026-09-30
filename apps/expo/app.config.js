@@ -154,6 +154,12 @@ const expoConfig = {
         ],
         "./plugins/with-expo-audio-no-foreground-services.js",
         "./plugins/with-disable-enriched-markdown-math.js",
+        // Lucide as native template images (iOS asset catalog, Android vector drawables)
+        // for Expo UI buttons and NativeTabs (`expo_ui.iosIconSource` / `androidIconSource`).
+        "./plugins/with-lucide-assets.js",
+        // Android NativeTabs bar takes its items' height (no 80dp floor), so it
+        // is shorter with `native.tab_labels` off.
+        "./plugins/with-android-tab-bar-height.js",
         [
             "expo-image-picker",
             {

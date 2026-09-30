@@ -8,9 +8,10 @@ import { Text } from 'app/design/typography';
 import { NeoButton } from 'app/design/controls';
 import { useCurrentUser } from 'app/context/user';
 import emitter from 'app/context/emitter';
-import { appSetting, cn } from 'app/lib/util';
+import { androidTabBarHeight, appSetting, cn, isNativeTabsEnabled } from 'app/lib/util';
 import { useLocalSearchParams, useSafeAreaInsets } from 'app/lib/hooks/router';
 import { useFooterHeight } from 'app/context/jotai/layout';
+import { areTabBarLabelsHidden, getTabList } from 'app/components/nav/tabs/tab-menu';
 import { lazyComponent } from 'app/lib/lazy-component';
 import { fetchOperatorAgentBlock } from 'app/ui/molecules/ai-agent/operator-block';
 import { hiddenFirstMessageFromData } from 'app/ui/molecules/ai-agent/hidden-first-message';
@@ -18,7 +19,6 @@ import { hiddenFirstMessageFromData } from 'app/ui/molecules/ai-agent/hidden-fir
 const AiAgent = lazyComponent(() => import('app/ui/molecules/ai-agent/agent'), { name: 'AiAgent' });
 
 const isWeb = Platform.OS === 'web';
-const NATIVE_TAB_BAR = Platform.OS === 'ios' ? 52 : 56;
 // Emitter channel between the title bar here and the `AiAgent` inside; see its `channel` prop.
 const CHANNEL = 'operator_agent';
 
@@ -84,9 +84,15 @@ export function OperatorAgentFloat() {
     // No agent configured, or not allowed to chat with it: nothing to float.
     if (!isOperator || !data) return null;
 
-    const bottomOffset = 16
-        + (Number(footerHeight) || (isWeb ? 0 : NATIVE_TAB_BAR))
-        + (!isWeb ? (insets?.bottom || 0) : 0);
+    // Native: the page's safe-area bottom already covers the iOS tab bar (UIKit
+    // adds it to the tab screen) and JS tabs (the page ends above them). The
+    // Android NativeTabs bar is drawn over the page, so add its height. Tabs
+    // show by the same rule as the bar itself (tabs/index.js `isShowTabs`).
+    const showsTabs = !!((currentUser && currentUser.confirmed) || appSetting('native', 'show_tabs_non_logged'));
+    const androidTabBar = Platform.OS === 'android' && isNativeTabsEnabled() && showsTabs
+        ? androidTabBarHeight(areTabBarLabelsHidden(getTabList(currentUser) || []))
+        : 0;
+    const bottomOffset = 16 + (isWeb ? Number(footerHeight) || 0 : (insets?.bottom || 0) + androidTabBar);
     const panelWidth = Math.min(384, Math.max(280, windowWidth - 32));
     const panelHeight = Math.min(448, Math.max(320, windowHeight - bottomOffset - 88));
 

@@ -32,8 +32,10 @@ import {
     MobileChatHeader,
     ChatPanelHeader,
     MESSENGER_OVERLAY_HEADER,
+    MESSENGER_OVERLAY_HEADER_FADE,
     MESSENGER_OVERLAY_COMPOSER_FADE,
 } from 'app/components/elements/messenger/parts/headers';
+import { EdgeBlurView, edgeBlurConfig } from 'app/ui/atoms/edge-blur';
 
 const isWeb = Platform.OS === 'web';
 
@@ -565,7 +567,7 @@ export default function Messenger({ defaultConvoId, selectedMenu, convos, layout
                                 : { position: 'absolute', left: 0, right: 0, bottom: 0, zIndex: 10 }}
                             offset={{ closed: 0, opened: stickyOpened }}
                         >
-                            <View className={MESSENGER_OVERLAY_COMPOSER_FADE} pointerEvents="box-none">
+                            <EdgeBlurView edge="bottom" config={edgeBlurConfig('footer')} washClassName={MESSENGER_OVERLAY_COMPOSER_FADE} pointerEvents="box-none">
                                 <View onLayout={handleFormLayout} className="w-full" pointerEvents="auto">
                                     <Composer
                                         form={data.form}
@@ -574,7 +576,7 @@ export default function Messenger({ defaultConvoId, selectedMenu, convos, layout
                                         handleCancelReply={handleCancelReply}
                                     />
                                 </View>
-                            </View>
+                            </EdgeBlurView>
                         </KbStickyView>
                     ) : null}
                     </View>
@@ -636,11 +638,11 @@ export default function Messenger({ defaultConvoId, selectedMenu, convos, layout
                                         footerInset={formHeight + errorOffset}
                                     />
                                 ) : null}
-                                <View className={MESSENGER_OVERLAY_HEADER} pointerEvents="box-none">
+                                <EdgeBlurView edge="top" config={edgeBlurConfig('footer')} className={MESSENGER_OVERLAY_HEADER} washClassName={MESSENGER_OVERLAY_HEADER_FADE} pointerEvents="box-none">
                                     <View pointerEvents="auto">
                                         <ChatPanelHeader title={selectedConvo.title} onAction={handleConvoAction} />
                                     </View>
-                                </View>
+                                </EdgeBlurView>
                                 {listError ? (
                                     <View className="absolute left-0 right-0 z-10 mx-4" style={{ bottom: formHeight }}>
                                         <ElementMsg data={listError} />
@@ -650,7 +652,7 @@ export default function Messenger({ defaultConvoId, selectedMenu, convos, layout
                                     style={{ position: 'absolute', left: 0, right: 0, bottom: 0, zIndex: 10 }}
                                     offset={{ closed: 0, opened: 0 }}
                                 >
-                                    <View className={MESSENGER_OVERLAY_COMPOSER_FADE} pointerEvents="box-none">
+                                    <EdgeBlurView edge="bottom" config={edgeBlurConfig('footer')} washClassName={MESSENGER_OVERLAY_COMPOSER_FADE} pointerEvents="box-none">
                                         <View onLayout={handleFormLayout} className='w-full' pointerEvents="auto">
                                             <Composer
                                                 form={data.form}
@@ -659,7 +661,7 @@ export default function Messenger({ defaultConvoId, selectedMenu, convos, layout
                                                 handleCancelReply={handleCancelReply}
                                             />
                                         </View>
-                                    </View>
+                                    </EdgeBlurView>
                                 </KbStickyView>
                             </>
                         ) : (

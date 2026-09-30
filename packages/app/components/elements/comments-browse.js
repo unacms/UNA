@@ -1,6 +1,7 @@
 import { appSetting, stripTags } from 'app/lib/util';
 import { Pressable, View, Row } from 'app/design/view';
 import UniList from 'app/ui/atoms/unilist'
+import { EdgeBlurView, edgeBlurConfig } from 'app/ui/atoms/edge-blur'
 import { Text } from 'app/design/typography'
 import { useState, useReducer, useRef, useEffect, useCallback } from 'react';
 import { components } from 'app/components/registry';;
@@ -843,8 +844,11 @@ function CommentsFormInner ({ form: initialForm, requestUrl, module, objectId, i
     };
     
     return (
-        <View
-            className={` p-2 sm:p-4 ${FADE_SURFACE_CLASS[fadeSurface] || ''}`}
+        <EdgeBlurView
+            edge="bottom"
+            config={fadeSurface ? edgeBlurConfig('footer') : null}
+            className=" p-2 sm:p-4 "
+            washClassName={FADE_SURFACE_CLASS[fadeSurface] || ''}
             style={fadeSurface ? { paddingTop: FADE_RUN_UP } : undefined}
         >
             {
@@ -864,6 +868,6 @@ function CommentsFormInner ({ form: initialForm, requestUrl, module, objectId, i
                 </View>)
             }
             <Form {...form} exProps={combinedExProps} resetOnSubmit={true} classContainerName={" flex-row flex-wrap w-full items-start justify-between"} onFormSubmit={onFormSubmit} />
-        </View>
+        </EdgeBlurView>
     )
 }

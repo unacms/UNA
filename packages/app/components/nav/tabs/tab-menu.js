@@ -1,6 +1,6 @@
 import { createElement } from 'react';
 import { View } from 'app/design/view';
-import { appSetting } from 'app/lib/util';
+import { appSetting, isTabBarLabelsEnabled } from 'app/lib/util';
 
 /** Shared by JS RouterTabs and NativeTabs. */
 
@@ -82,6 +82,16 @@ export function resolveTabUrl(tab, currentUser) {
     return tab.url === '{profile}' ? currentUser?.url : tab.url;
 }
 
+/** Icons-only tab bar: labels off (`native.tab_labels`) or no tab has a title. */
+export function areTabBarLabelsHidden(tabList = []) {
+    return !isTabBarLabelsEnabled() || tabList.every((tab) => tab.title === '');
+}
+
+/** Own profile (`{profile}`) — drawn as the user's avatar in the tab bar. */
+export function isProfileTab(tab) {
+    return tab?.url === '{profile}';
+}
+
 export function isDashboardTab(tab, currentUser) {
     const tabUrl = resolveTabUrl(tab, currentUser);
     return tabUrl === appSetting('dashboard', 'url') || tab.icon === 'dashboard';
@@ -109,6 +119,17 @@ export function inferTabIndexFromUrl(pathname, tabList = [], currentUser) {
         }
     }
     return -1;
+}
+
+/** Drop separators left at either end or doubled up after filtering menu items. */
+export function trimMenuSeparators(items) {
+    const out = [];
+    for (const item of items) {
+        if (item?.type === 'separator' && (!out.length || out[out.length - 1]?.type === 'separator')) continue;
+        out.push(item);
+    }
+    while (out.length && out[out.length - 1]?.type === 'separator') out.pop();
+    return out;
 }
 
 export function tabBarMoreSeparator() {
