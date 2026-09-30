@@ -78,7 +78,7 @@ class BxDolAiJudgeTypeSafe extends BxDolAiJudge
 
         $aResponse = json_decode($sResponse, true);
         if (!is_array($aResponse) || !isset($aResponse['answers']) || !is_array($aResponse['answers']))
-            throw new Exception('TypeSafe API error: unexpected response ' . substr((string)$sResponse, 0, 300));
+            throw new Exception('TypeSafe API error: unexpected response ' . mb_substr((string)$sResponse, 0, 300));
 
         $this->_aLastUsage = isset($aResponse['usage']) && is_array($aResponse['usage']) ? $aResponse['usage'] : [];
         $this->_sLastModel = (string)($aResponse['model'] ?? '');
@@ -125,7 +125,7 @@ class BxDolAiJudgeTypeSafe extends BxDolAiJudge
                 return (string)$a['message'];
         }
 
-        return substr((string)$sResponse, 0, 300);
+        return mb_substr((string)$sResponse, 0, 300);
     }
 }
 

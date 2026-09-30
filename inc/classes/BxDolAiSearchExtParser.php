@@ -316,6 +316,16 @@ class BxDolAiSearchExtParser extends BxDolAiSearchParser
     // fields ------------------------
 
     /**
+     * Field name used as a caption when the language string is missing: price_recurring -> Price recurring.
+     */
+    protected function _getFieldCaption(string $sName): string
+    {
+        $s = str_replace('_', ' ', $sName);
+
+        return mb_strtoupper(mb_substr($s, 0, 1)) . mb_substr($s, 1);
+    }
+
+    /**
      * Active fields of the extended search object, normalized:
      * [name => [caption, kind (list|bool|number|date|location|text), multi, values, search_type, operator, type]]
      */
@@ -336,7 +346,7 @@ class BxDolAiSearchExtParser extends BxDolAiSearchParser
             $sOperator = $aField['search_operator'];
             $sCaption = trim(strip_tags(_t($aField['caption'])));
             if ($sCaption === '' || $sCaption == $aField['caption'])
-                $sCaption = ucfirst(str_replace('_', ' ', $sName));
+                $sCaption = $this->_getFieldCaption($sName);
 
             $a = ['caption' => $sCaption, 'search_type' => $sSearchType, 'operator' => $sOperator, 'type' => $aField['type'], 'multi' => false, 'values' => []];
 
@@ -459,7 +469,7 @@ class BxDolAiSearchExtParser extends BxDolAiSearchParser
                     continue;
                 $aCriteria = [];
                 foreach ($aNames as $sName)
-                    $aCriteria[$sName] = ucfirst(str_replace('_', ' ', $sName));
+                    $aCriteria[$sName] = $this->_getFieldCaption($sName);
                 $aQuestions['num_which'] = BxDolAiJudge::choice(
                     "\"{$sCaption}\" is stored in several ways. Which one does the query mean?",
                     $aCriteria + [self::NONE => 'Not specified']
@@ -510,7 +520,7 @@ class BxDolAiSearchExtParser extends BxDolAiSearchParser
         }
 
         if ($bLocation && $this->_aTokens) {
-            // the word is geocoded afterwards, so any language and spelling works ("в берлин" -> Berlin)
+            // the word is geocoded afterwards, so any language and spelling works
             $aQuestions['loc_city'] = BxDolAiJudge::choice(
                 'Which word names a place the items should be at — a city, town, area or country?',
                 $this->_tokensCriteria() + [self::NONE => 'No place in the query']
@@ -678,7 +688,7 @@ class BxDolAiSearchExtParser extends BxDolAiSearchParser
                 return null;
         }
 
-        $aDate = $this->_getDate($this->_sQuery, $oNow, '');
+        $aDate = $this->_getDate($this->_sQuery, $oNow, $sName);
         if (!$aDate)
             return null;
 
@@ -782,7 +792,7 @@ class BxDolAiSearchExtParser extends BxDolAiSearchParser
         $aResult = [
             'lat' => (float)$aLocation['lat'],
             'lng' => (float)$aLocation['lon'],
-            'country' => !empty($aAddress['country_code']) ? strtoupper((string)$aAddress['country_code']) : '',
+            'country' => !empty($aAddress['country_code']) ? mb_strtoupper((string)$aAddress['country_code']) : '',
             'city' => $sCity,
             'label' => trim(implode(', ', array_filter([$sCity, !empty($aAddress['country']) ? $aAddress['country'] : '']))),
         ];
@@ -793,7 +803,8 @@ class BxDolAiSearchExtParser extends BxDolAiSearchParser
     }
 
     /**
-     * "in 20 km", "в радиусе 20 км" -> 20; the number is not a value of any field then.
+     * "in 20 km" / "within 20 km" -> 20; the number is not a value of any field then.
+     * Unit words cover English and the same words in Cyrillic (code points, so the source stays ASCII).
      */
     protected function _getRadius(string $sQuery): int
     {
@@ -824,14 +835,15 @@ class BxDolAiSearchExtParser extends BxDolAiSearchParser
     }
 
     /**
-     * The extended parser has no time_field question: a date always refers to the field's own date.
+     * No time_field question: the column decides the year. added and created are posting dates,
+     * date_start and date_end are when the item happens. Any other column keeps the current year.
      */
-    protected function _getDate(string $sQuery, DateTime $oNow, string $sSection)
+    protected function _getDate(string $sQuery, DateTime $oNow, string $sField)
     {
-        if (!isset($this->_aAnswers['time_field']))
-            $this->_aAnswers['time_field'] = ['type' => 'choice', 'choice' => 'created', 'confidence' => 1.0, 'probabilities' => ['created' => 1.0]];
+        $sChoice = in_array($sField, ['added', 'created', 'date_start', 'date_end'], true) ? $sField : 'date';
+        $this->_aAnswers['time_field'] = ['type' => 'choice', 'choice' => $sChoice, 'confidence' => 1.0, 'probabilities' => [$sChoice => 1.0]];
 
-        return parent::_getDate($sQuery, $oNow, $sSection);
+        return parent::_getDate($sQuery, $oNow, '');
     }
 }
 
