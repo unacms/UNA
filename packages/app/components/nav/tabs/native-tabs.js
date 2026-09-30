@@ -272,6 +272,7 @@ export default function NativeTabNavigator({
                     />
                 );
             })}
+            {/* `[]`, not `null`: expo-router warns on any non-Screen child. */}
             {moreTab ? (
                 <RouterTabs.Screen
                     key={`tab${moreTabIndex}`}
@@ -319,7 +320,7 @@ export default function NativeTabNavigator({
                         },
                     })}
                 />
-            ) : null}
+            ) : []}
         </RouterTabs>
     );
 }
