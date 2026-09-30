@@ -357,11 +357,17 @@ class BxBaseMenu extends BxDolMenu
 
         $a['link'] = isset($a['link']) ? $this->_oPermalinks->permalink($a['link']) : 'javascript:void(0);';
 
-        $aTmplVarsAddon = $this->_bDisplayAddons ? $this->_getTmplVarsAddon($mixedAddon, $a) : array('addon' => '', 'addonf' => '');
-        $a['bx_if:addon'] = array (
+        $aTmplVarsAddon = $this->_bDisplayAddons ? $this->_getTmplVarsAddon($mixedAddon, $a) : ['addon' => '', 'addonf' => ''];
+        $a['bx_if:addon'] = [
             'condition' => $this->_bDisplayAddons && !empty($aTmplVarsAddon['addon']),
             'content' => $aTmplVarsAddon
-        );
+        ];
+        $a['bx_if:info'] = [
+            'condition' => (bool)$a['info'],
+            'content' => [
+                'info' => $a['info'],
+            ],
+        ];
 
         $a['attrs'] = $this->_getMenuAttrs($a);
         $a['attrs_wrp'] = '';
@@ -406,13 +412,9 @@ class BxBaseMenu extends BxDolMenu
             'condition' => (bool)$a['title'] && (!isset($a['icon_only']) || (int)$a['icon_only'] == 0),
             'content' => [
                 'title' => $a['title'],
-                'title_attr' => $a['title_attr']
-            ],
-        ];
-        $a['bx_if:info'] = [
-            'condition' => (bool)$a['info'],
-            'content' => [
-                'info' => $a['info'],
+                'title_attr' => $a['title_attr'],
+                'bx_if:info' => $a['bx_if:info'],
+                'bx_if:addon' => $a['bx_if:addon']
             ],
         ];
 
