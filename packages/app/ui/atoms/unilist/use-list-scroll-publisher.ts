@@ -36,13 +36,17 @@ const SCROLL_PUBLISH_DELTA = 8
  * @param {string}   [opts.url]            List identity; change = reset.
  * @param {object}   [opts.coverScrollY]   Shared value written every frame for the cover.
  * @param {Function} [opts.onTopZoneChange] `(inTopZone) => void`, from useCoverRefreshArming.
+ * @param {boolean}  [opts.pinHeader]      Never publish a scroll direction, so the
+ *   collapsible page header stays put (chat lists: they open scrolled to the
+ *   end, which would otherwise read as "scrolling down" and hide the header).
  * @returns {{ handleScroll: Function, scrollYRef: { current: number } }}
  *   `scrollYRef.current` is the last offset seen by JS (for scroll caching on unmount).
  */
-export function useListScrollPublisher({ url, coverScrollY, onTopZoneChange }: {
+export function useListScrollPublisher({ url, coverScrollY, onTopZoneChange, pinHeader = false }: {
     url?: string
     coverScrollY?: SharedValue<number>
     onTopZoneChange?: (inTopZone: boolean) => void
+    pinHeader?: boolean
 }) {
     const setScrollDirection = useSetScrollDirection()
     const setScrollValue = useSetScrollValue()
@@ -117,7 +121,9 @@ export function useListScrollPublisher({ url, coverScrollY, onTopZoneChange }: {
             const prevY = prevScrollYSV.get()
             prevScrollYSV.set(y)
             let direction = directionSV.get()
-            if (y < SCROLL_DIRECTION_THRESHOLD) {
+            if (pinHeader) {
+                direction = 0
+            } else if (y < SCROLL_DIRECTION_THRESHOLD) {
                 direction = 0
             } else if (y > prevY) {
                 direction = 1
@@ -153,7 +159,7 @@ export function useListScrollPublisher({ url, coverScrollY, onTopZoneChange }: {
                 Math.max(0, event.contentSize.height - event.layoutMeasurement.height)
             )
         },
-    }, [coverScrollY, publishTopZone, publishScrollDirection, publishScrollValue])
+    }, [coverScrollY, pinHeader, publishTopZone, publishScrollDirection, publishScrollValue])
 
     // Zero everything before paint when the list identity changes.
     // Shared values are stable objects; they are not in deps on purpose.
