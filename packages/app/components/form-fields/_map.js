@@ -1,42 +1,45 @@
-import Captcha from './captcha';
-import Custom from './custom';
-import Hidden from './hidden';
-import Password from './password';
-import Submit from './submit';
-import Switcher from './switcher';
-import TextField from './text';
-import Value from './value';
-import Phone from './phone';
-import TextTranslatable from './text-translatable';
-import MarkdownTranslatable from './markdown-translatable';
-import Editor from './editor';
-import { lazyComponent } from 'app/lib/lazy-component';
-import Select from './select';
-import Files from './files';
-import Location from './location';
-import Datetime from './datetime';
-import Selector from './selector';
-import BlockHeader from './block-header';
-import BlockEnd from './block-end';
-import Suggestion from './suggestion';
-import InitialMembers from './initial-members';
-import Labels from './labels';
-import InputSet from './input-set';
-import LocationRadius from './location-radius';
-import DoubleRange from './doublerange';
-import CheckboxSet from './checkbox-set';
-import Visibility from './visibility';
-import Stars from './stars';
-import MultiField from './multi-field';
-import Embed from './embed';
-import Polls from './polls';
-import StripeConnect from './stripe-connect';
-import List from './list';
-import Price from './price';
+import dynamic from 'next/dynamic';
+import { DynamicFallback } from 'app/lib/dynamic-fallback';
 
-// Markdown editor pulls @mdxeditor/editor (+lexical, mdast, micromark) on web;
-// load it only when a markdown field is actually rendered.
-const EditorMarkdown = lazyComponent(() => import('./editor-markdown'), { name: 'EditorMarkdown' });
+// Each field type is its own chunk: fetched when a form renders it, and
+// preloaded in the HTML when it was rendered during SSR (see lib/dynamic-fallback.js).
+// Heavy ones (markdown editor, files, location, Stripe, phone codes, sliders)
+// no longer reach pages without such a field.
+const Captcha = dynamic(() => import('./captcha'), { loading: DynamicFallback });
+const Custom = dynamic(() => import('./custom'), { loading: DynamicFallback });
+const Hidden = dynamic(() => import('./hidden'), { loading: DynamicFallback });
+const Password = dynamic(() => import('./password'), { loading: DynamicFallback });
+const Submit = dynamic(() => import('./submit'), { loading: DynamicFallback });
+const Switcher = dynamic(() => import('./switcher'), { loading: DynamicFallback });
+const TextField = dynamic(() => import('./text'), { loading: DynamicFallback });
+const Value = dynamic(() => import('./value'), { loading: DynamicFallback });
+const Phone = dynamic(() => import('./phone'), { loading: DynamicFallback });
+const TextTranslatable = dynamic(() => import('./text-translatable'), { loading: DynamicFallback });
+const MarkdownTranslatable = dynamic(() => import('./markdown-translatable'), { loading: DynamicFallback });
+const Editor = dynamic(() => import('./editor'), { loading: DynamicFallback });
+const EditorMarkdown = dynamic(() => import('./editor-markdown'), { loading: DynamicFallback });
+const Select = dynamic(() => import('./select'), { loading: DynamicFallback });
+const Files = dynamic(() => import('./files'), { loading: DynamicFallback });
+const Location = dynamic(() => import('./location'), { loading: DynamicFallback });
+const Datetime = dynamic(() => import('./datetime'), { loading: DynamicFallback });
+const Selector = dynamic(() => import('./selector'), { loading: DynamicFallback });
+const BlockHeader = dynamic(() => import('./block-header'), { loading: DynamicFallback });
+const BlockEnd = dynamic(() => import('./block-end'), { loading: DynamicFallback });
+const Suggestion = dynamic(() => import('./suggestion'), { loading: DynamicFallback });
+const InitialMembers = dynamic(() => import('./initial-members'), { loading: DynamicFallback });
+const Labels = dynamic(() => import('./labels'), { loading: DynamicFallback });
+const InputSet = dynamic(() => import('./input-set'), { loading: DynamicFallback });
+const LocationRadius = dynamic(() => import('./location-radius'), { loading: DynamicFallback });
+const DoubleRange = dynamic(() => import('./doublerange'), { loading: DynamicFallback });
+const CheckboxSet = dynamic(() => import('./checkbox-set'), { loading: DynamicFallback });
+const Visibility = dynamic(() => import('./visibility'), { loading: DynamicFallback });
+const Stars = dynamic(() => import('./stars'), { loading: DynamicFallback });
+const MultiField = dynamic(() => import('./multi-field'), { loading: DynamicFallback });
+const Embed = dynamic(() => import('./embed'), { loading: DynamicFallback });
+const Polls = dynamic(() => import('./polls'), { loading: DynamicFallback });
+const StripeConnect = dynamic(() => import('./stripe-connect'), { loading: DynamicFallback });
+const List = dynamic(() => import('./list'), { loading: DynamicFallback });
+const Price = dynamic(() => import('./price'), { loading: DynamicFallback });
 
 export const componentsMapDefault = {
     input_set: InputSet,

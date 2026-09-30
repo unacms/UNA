@@ -1,26 +1,26 @@
-import PageLayoutDefault from 'app/components/page-layout/default';
-import PageCustomPost from 'app/components/page-layout/post';
-import PageCustomTask from 'app/components/page-layout/task';
-import PageCustomPostWithoutComments from 'app/components/page-layout/post-without-comments';
-import PageCustomNavigator from 'app/components/page-layout/navigator';
-import PageCustomNavigatorSearch from 'app/components/page-layout/navigator-search';
-import PageCustomProfile from 'app/components/page-layout/profile';
-import PageCustomHome from 'app/components/page-layout/home';
-import PageCustomNotif from 'app/components/page-layout/notif';
-import PageCustomCreateAccount from 'app/components/page-layout/create-account';
-import PageCustomLogin from 'app/components/page-layout/login';
-import PageUniversal from 'app/components/page-layout/universal';
-import PageLayoutPlay from './play';
-import { lazyComponent } from 'app/lib/lazy-component';
+import dynamic from 'next/dynamic';
+import { DynamicFallback } from 'app/lib/dynamic-fallback';
 
-// Messenger (chat stack) and wiki (yaml frontmatter, TOC, side panels) are
-// whole-page layouts used on a few routes only — code-split them.
-const PageCustomMessenger = lazyComponent(() => import('app/components/page-layout/messenger'), { name: 'PageCustomMessenger' });
-const PageWiki = lazyComponent(() => import('app/components/page-layout/wiki'), { name: 'PageWiki' });
-// Dev-only playgrounds — keep them out of
-// the main chunk.
-const PagePlayground = lazyComponent(() => import('app/components/page-layout/_playground/playground'), { name: 'PagePlayground' });
-const PagePlaygroundForm = lazyComponent(() => import('app/components/page-layout/_playground/playground-form-layout'), { name: 'PagePlaygroundForm' });
+// Each page layout is its own chunk: fetched when a page uses it, and preloaded
+// in the HTML when it was rendered during SSR (see lib/dynamic-fallback.js).
+const PageLayoutDefault = dynamic(() => import('app/components/page-layout/default'), { loading: DynamicFallback });
+const PageCustomPost = dynamic(() => import('app/components/page-layout/post'), { loading: DynamicFallback });
+const PageCustomTask = dynamic(() => import('app/components/page-layout/task'), { loading: DynamicFallback });
+const PageCustomPostWithoutComments = dynamic(() => import('app/components/page-layout/post-without-comments'), { loading: DynamicFallback });
+const PageCustomNavigator = dynamic(() => import('app/components/page-layout/navigator'), { loading: DynamicFallback });
+const PageCustomNavigatorSearch = dynamic(() => import('app/components/page-layout/navigator-search'), { loading: DynamicFallback });
+const PageCustomProfile = dynamic(() => import('app/components/page-layout/profile'), { loading: DynamicFallback });
+const PageCustomHome = dynamic(() => import('app/components/page-layout/home'), { loading: DynamicFallback });
+const PageCustomNotif = dynamic(() => import('app/components/page-layout/notif'), { loading: DynamicFallback });
+const PageCustomCreateAccount = dynamic(() => import('app/components/page-layout/create-account'), { loading: DynamicFallback });
+const PageCustomLogin = dynamic(() => import('app/components/page-layout/login'), { loading: DynamicFallback });
+const PageUniversal = dynamic(() => import('app/components/page-layout/universal'), { loading: DynamicFallback });
+const PageLayoutPlay = dynamic(() => import('./play'), { loading: DynamicFallback });
+const PageCustomMessenger = dynamic(() => import('app/components/page-layout/messenger'), { loading: DynamicFallback });
+const PageWiki = dynamic(() => import('app/components/page-layout/wiki'), { loading: DynamicFallback });
+// Dev-only playgrounds.
+const PagePlayground = dynamic(() => import('app/components/page-layout/_playground/playground'), { loading: DynamicFallback });
+const PagePlaygroundForm = dynamic(() => import('app/components/page-layout/_playground/playground-form-layout'), { loading: DynamicFallback });
 
 export const componentsMapDefault = {
     'default': PageLayoutDefault,

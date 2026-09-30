@@ -22,9 +22,19 @@ const isUniwindInternal = (originModulePath) => {
 
 const uniwindResolveRequest = config.resolver?.resolveRequest;
 
+// Registry `_map.js` files use `next/dynamic` (web code splitting + SSR chunk
+// preload); on native it is a synchronous stand-in.
+const nextDynamicShimPath = require('path').resolve(
+  __dirname,
+  '../../packages/app/lib/platform/next-dynamic.native.js'
+);
+
 config.resolver = {
   ...config.resolver,
   resolveRequest: (context, moduleName, platform) => {
+    if (moduleName === 'next/dynamic') {
+      return { type: 'sourceFile', filePath: nextDynamicShimPath };
+    }
     // If the request comes from inside uniwind — route through native Metro,
     // bypassing the uniwind resolver. Breaks the cycle.
     // react-native -> uniwind/components -> react-native -> ...

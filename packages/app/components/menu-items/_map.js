@@ -1,16 +1,20 @@
-import Link from './link';
-import Button from './button';
-import Element from './element';
-import Callback from './callback';
-import Modal from './modal';
-import DropdownItem from './dropdown-item';
-import Submenu from './submenu';
-import Blockmenu from './blockmenu';
-import TopMenu from './topmenu';
-import Sidebar from './sidebar';
-import Unit from './unit';
-import SidebarWithWrapper from './sidebar-with-wrapper';
 import { memo } from "react";
+import dynamic from 'next/dynamic';
+import { DynamicFallback } from 'app/lib/dynamic-fallback';
+
+// Each menu item type is its own chunk (see lib/dynamic-fallback.js).
+const Link = dynamic(() => import('./link'), { loading: DynamicFallback });
+const Button = dynamic(() => import('./button'), { loading: DynamicFallback });
+const Element = dynamic(() => import('./element'), { loading: DynamicFallback });
+const Callback = dynamic(() => import('./callback'), { loading: DynamicFallback });
+const Modal = dynamic(() => import('./modal'), { loading: DynamicFallback });
+const DropdownItem = dynamic(() => import('./dropdown-item'), { loading: DynamicFallback });
+const Submenu = dynamic(() => import('./submenu'), { loading: DynamicFallback });
+const Blockmenu = dynamic(() => import('./blockmenu'), { loading: DynamicFallback });
+const TopMenu = dynamic(() => import('./topmenu'), { loading: DynamicFallback });
+const Sidebar = dynamic(() => import('./sidebar'), { loading: DynamicFallback });
+const Unit = dynamic(() => import('./unit'), { loading: DynamicFallback });
+const SidebarWithWrapper = dynamic(() => import('./sidebar-with-wrapper'), { loading: DynamicFallback });
 
 export const componentsMapDefault = {
     link: memo(Link),
@@ -27,4 +31,3 @@ export const componentsMapDefault = {
     blockmenu: memo(Blockmenu),
     topmenu: memo(TopMenu),
 };
-

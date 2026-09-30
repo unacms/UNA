@@ -1,79 +1,80 @@
-import Browse from './browse';
-import BrowseSimple from './browse-simple';
-import BrowseList from './browse-list';
-import Form from './form';
-import Msg from './msg';
-import Login from './login';
-import Redirect from './redirect';
+import dynamic from 'next/dynamic';
+import { DynamicFallback } from 'app/lib/dynamic-fallback';
+
+// Elements with a static `checkEmpty` (read by block.tsx before render) stay
+// eager — a dynamic() wrapper does not carry statics.
 import EntityText from './entity-text';
-import EntityPoll from './entity-poll';
-import EntityAttachments from './entity-attachments';
-import MarketAttachments from './market-attachments';
-import EntityAuthor from './entity-author';
-import EntityActions from './entity-actions';
-import EntityInfo from './entity-info';
-import EntityCover from './entity-cover';
-import ProfileMenu from './profile-menu';
-import CategoriesList from './categories-list';
-import FeedItem from './feed-item';
-import ProfileSwitcher from './profile-switcher';
-import ProfileContacts from './contacts';
-import SimpleList from './simple-list';
-import Lang from './lang';
-import Menu from './menu';
-import Grid from './grid';
 import DataTable from './table';
-import MultiPostForm from './multi-post-form';
-import Comments from './comments';
-import CommentContent from './comment-content';
-import ProfileList from './profiles-list';
-import Logout from './logout';
-import AiAgent from './ai_agent';
-import AiAgentsAdmin from './ai_agents_admin';
 import Static from './static';
 import Mockup from './mockup';
 
-import { lazyComponent } from 'app/lib/lazy-component';
-
-// Code-split: rarely rendered or heavy blocks (third-party editors, maps, grids,
-// payments, wiki, tasks, courses) load on first render instead of on every page.
-// The registry contract is unchanged — these are ordinary components. Elements
-// with a static `checkEmpty` (entity_text, static, table) must stay eager.
-const Messenger = lazyComponent(() => import('./messenger'), { name: 'Messenger' });
-const TasksMenu = lazyComponent(() => import('./tasks-menu'), { name: 'TasksMenu' });
-const TasksTimers = lazyComponent(() => import('./tasks-timers'), { name: 'TasksTimers' });
-const TasksList = lazyComponent(() => import('./tasks-list'), { name: 'TasksList' });
-const TasksBudget = lazyComponent(() => import('./tasks-budget'), { name: 'TasksBudget' });
-const TaskTimer = lazyComponent(() => import('./task-timer'), { name: 'TaskTimer' });
-const WikiBlocks = lazyComponent(() => import('./wiki-blocks'), { name: 'WikiBlocks' });
-const WikiHistory = lazyComponent(() => import('./wiki-history'), { name: 'WikiHistory' });
-const Chart = lazyComponent(() => import('./chart'), { name: 'Chart' });
-const Calendar = lazyComponent(() => import('./calendar'), { name: 'Calendar' });
-const Map = lazyComponent(() => import('./map'), { name: 'Map' });
-const SmartGrid = lazyComponent(() => import('./smart-grid'), { name: 'SmartGrid' });
-const Deploy = lazyComponent(() => import('./deploy'), { name: 'Deploy' });
-const StripeConnect = lazyComponent(() => import('./stripe-connect'), { name: 'StripeConnect' });
-const CreditsCheckout = lazyComponent(() => import('./credits-checkout'), { name: 'CreditsCheckout' });
-const PaymentOrderAdd = lazyComponent(() => import('./payment-order-add'), { name: 'PaymentOrderAdd' });
-const Bundles = lazyComponent(() => import('./bundles'), { name: 'Bundles' });
-const Membership = lazyComponent(() => import('./membership'), { name: 'Membership' });
-const Pricing = lazyComponent(() => import('./pricing'), { name: 'Pricing' });
-const CourseStructure = lazyComponent(() => import('./course-structure'), { name: 'CourseStructure' });
-const EditCourseContent = lazyComponent(() => import('./edit-course-content'), { name: 'EditCourseContent' });
-const ModuleStructure = lazyComponent(() => import('./module-structure'), { name: 'ModuleStructure' });
-const DashboardStat = lazyComponent(() => import('./dashboard-stat'), { name: 'DashboardStat' });
-const Invite = lazyComponent(() => import('./invite'), { name: 'Invite' });
-const InviteInContext = lazyComponent(() => import('./invite-in-context'), { name: 'InviteInContext' });
-const NotificationsSettings = lazyComponent(() => import('./notifications-settings'), { name: 'NotificationsSettings' });
-const SearchSections = lazyComponent(() => import('./search-sections'), { name: 'SearchSections' });
-const SearchAi = lazyComponent(() => import('./search-ai'), { name: 'SearchAi' });
-const lazyReputation = (name) => lazyComponent(() => import('./reputation').then((m) => ({ default: m[name] })), { name });
-const ReputationSummary = lazyReputation('ReputationSummary');
-const ReputationWidget = lazyReputation('ReputationWidget');
-const ReputationLeaderboard = lazyReputation('ReputationLeaderboard');
-const ReputationLevels = lazyReputation('ReputationLevels');
-const ReputationHistory = lazyReputation('ReputationHistory');
-const ReputationActions = lazyReputation('ReputationActions');
+// Everything else is its own chunk: fetched when a page renders it, and
+// preloaded in the HTML when it was rendered during SSR (see lib/dynamic-fallback.js).
+const Browse = dynamic(() => import('./browse'), { loading: DynamicFallback });
+const BrowseSimple = dynamic(() => import('./browse-simple'), { loading: DynamicFallback });
+const BrowseList = dynamic(() => import('./browse-list'), { loading: DynamicFallback });
+const Form = dynamic(() => import('./form'), { loading: DynamicFallback });
+const Msg = dynamic(() => import('./msg'), { loading: DynamicFallback });
+const Login = dynamic(() => import('./login'), { loading: DynamicFallback });
+const Redirect = dynamic(() => import('./redirect'), { loading: DynamicFallback });
+const EntityPoll = dynamic(() => import('./entity-poll'), { loading: DynamicFallback });
+const EntityAttachments = dynamic(() => import('./entity-attachments'), { loading: DynamicFallback });
+const MarketAttachments = dynamic(() => import('./market-attachments'), { loading: DynamicFallback });
+const EntityAuthor = dynamic(() => import('./entity-author'), { loading: DynamicFallback });
+const EntityActions = dynamic(() => import('./entity-actions'), { loading: DynamicFallback });
+const EntityInfo = dynamic(() => import('./entity-info'), { loading: DynamicFallback });
+const EntityCover = dynamic(() => import('./entity-cover'), { loading: DynamicFallback });
+const ProfileMenu = dynamic(() => import('./profile-menu'), { loading: DynamicFallback });
+const CategoriesList = dynamic(() => import('./categories-list'), { loading: DynamicFallback });
+const FeedItem = dynamic(() => import('./feed-item'), { loading: DynamicFallback });
+const ProfileSwitcher = dynamic(() => import('./profile-switcher'), { loading: DynamicFallback });
+const ProfileContacts = dynamic(() => import('./contacts'), { loading: DynamicFallback });
+const SimpleList = dynamic(() => import('./simple-list'), { loading: DynamicFallback });
+const Lang = dynamic(() => import('./lang'), { loading: DynamicFallback });
+const Menu = dynamic(() => import('./menu'), { loading: DynamicFallback });
+const Grid = dynamic(() => import('./grid'), { loading: DynamicFallback });
+const MultiPostForm = dynamic(() => import('./multi-post-form'), { loading: DynamicFallback });
+const Comments = dynamic(() => import('./comments'), { loading: DynamicFallback });
+const CommentContent = dynamic(() => import('./comment-content'), { loading: DynamicFallback });
+const ProfileList = dynamic(() => import('./profiles-list'), { loading: DynamicFallback });
+const Logout = dynamic(() => import('./logout'), { loading: DynamicFallback });
+const AiAgent = dynamic(() => import('./ai_agent'), { loading: DynamicFallback });
+const AiAgentsAdmin = dynamic(() => import('./ai_agents_admin'), { loading: DynamicFallback });
+const Messenger = dynamic(() => import('./messenger'), { loading: DynamicFallback });
+const TasksMenu = dynamic(() => import('./tasks-menu'), { loading: DynamicFallback });
+const TasksTimers = dynamic(() => import('./tasks-timers'), { loading: DynamicFallback });
+const TasksList = dynamic(() => import('./tasks-list'), { loading: DynamicFallback });
+const TasksBudget = dynamic(() => import('./tasks-budget'), { loading: DynamicFallback });
+const TaskTimer = dynamic(() => import('./task-timer'), { loading: DynamicFallback });
+const WikiBlocks = dynamic(() => import('./wiki-blocks'), { loading: DynamicFallback });
+const WikiHistory = dynamic(() => import('./wiki-history'), { loading: DynamicFallback });
+const Chart = dynamic(() => import('./chart'), { loading: DynamicFallback });
+const Calendar = dynamic(() => import('./calendar'), { loading: DynamicFallback });
+const Map = dynamic(() => import('./map'), { loading: DynamicFallback });
+const SmartGrid = dynamic(() => import('./smart-grid'), { loading: DynamicFallback });
+const Deploy = dynamic(() => import('./deploy'), { loading: DynamicFallback });
+const StripeConnect = dynamic(() => import('./stripe-connect'), { loading: DynamicFallback });
+const CreditsCheckout = dynamic(() => import('./credits-checkout'), { loading: DynamicFallback });
+const PaymentOrderAdd = dynamic(() => import('./payment-order-add'), { loading: DynamicFallback });
+const Bundles = dynamic(() => import('./bundles'), { loading: DynamicFallback });
+const Membership = dynamic(() => import('./membership'), { loading: DynamicFallback });
+const Pricing = dynamic(() => import('./pricing'), { loading: DynamicFallback });
+const CourseStructure = dynamic(() => import('./course-structure'), { loading: DynamicFallback });
+const EditCourseContent = dynamic(() => import('./edit-course-content'), { loading: DynamicFallback });
+const ModuleStructure = dynamic(() => import('./module-structure'), { loading: DynamicFallback });
+const DashboardStat = dynamic(() => import('./dashboard-stat'), { loading: DynamicFallback });
+const Invite = dynamic(() => import('./invite'), { loading: DynamicFallback });
+const InviteInContext = dynamic(() => import('./invite-in-context'), { loading: DynamicFallback });
+const NotificationsSettings = dynamic(() => import('./notifications-settings'), { loading: DynamicFallback });
+const SearchSections = dynamic(() => import('./search-sections'), { loading: DynamicFallback });
+const SearchAi = dynamic(() => import('./search-ai'), { loading: DynamicFallback });
+// Named exports of one module (one chunk): the loader resolves to the component itself.
+const ReputationSummary = dynamic(() => import('./reputation').then((m) => m.ReputationSummary), { loading: DynamicFallback });
+const ReputationWidget = dynamic(() => import('./reputation').then((m) => m.ReputationWidget), { loading: DynamicFallback });
+const ReputationLeaderboard = dynamic(() => import('./reputation').then((m) => m.ReputationLeaderboard), { loading: DynamicFallback });
+const ReputationLevels = dynamic(() => import('./reputation').then((m) => m.ReputationLevels), { loading: DynamicFallback });
+const ReputationHistory = dynamic(() => import('./reputation').then((m) => m.ReputationHistory), { loading: DynamicFallback });
+const ReputationActions = dynamic(() => import('./reputation').then((m) => m.ReputationActions), { loading: DynamicFallback });
 
 export const componentsMapDefault = {
     messenger_main_page: Messenger,

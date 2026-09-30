@@ -1,13 +1,17 @@
 import { memo } from "react";
-import GeneralContentList from './general-content-list';
-import GeneralProfileList from './general-profile-list';
-import Comments from './comments';
-import Activity from './activity';
-import Notifications from './notifications';
-import Feed from './feed';
-import Price from './price';
-import SearchResults from './search-results';
-import Invitations from './invitations';
+import dynamic from 'next/dynamic';
+import { DynamicFallback } from 'app/lib/dynamic-fallback';
+
+// Each unit is its own chunk (see lib/dynamic-fallback.js).
+const GeneralContentList = dynamic(() => import('./general-content-list'), { loading: DynamicFallback });
+const GeneralProfileList = dynamic(() => import('./general-profile-list'), { loading: DynamicFallback });
+const Comments = dynamic(() => import('./comments'), { loading: DynamicFallback });
+const Activity = dynamic(() => import('./activity'), { loading: DynamicFallback });
+const Notifications = dynamic(() => import('./notifications'), { loading: DynamicFallback });
+const Feed = dynamic(() => import('./feed'), { loading: DynamicFallback });
+const Price = dynamic(() => import('./price'), { loading: DynamicFallback });
+const SearchResults = dynamic(() => import('./search-results'), { loading: DynamicFallback });
+const Invitations = dynamic(() => import('./invitations'), { loading: DynamicFallback });
 
 
 const GeneralContentList_ = memo(GeneralContentList)
@@ -27,4 +31,3 @@ export const componentsMapDefault = {
     price: memo(Price),
     'search-results': memo(SearchResults)
 };
-

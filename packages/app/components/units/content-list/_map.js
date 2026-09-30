@@ -1,24 +1,28 @@
 import { memo } from "react";
-import UnitGroup from './bx-groups';
-import UnitSpace from './bx-spaces';
-import UnitAd from './bx-ads';
-import UnitChannel from './bx-channels';
-import UnitEvent from './bx-events';
-import UnitForum from './bx-forum';
-import UnitMarket from './bx-market';
-import UnitOrg from './bx-organizations';
-import UnitPerson from './bx-persons';
-import UnitDefault from './default';
-import UnitPosts from './bx-posts';
-import UnitCourses from './bx-courses';
-import UnitJob from './bx-jobs';
-import UnitVideos from './bx-videos';
-import UnitPoll from './bx-polls';
-import UnitProject from './bx-projects';
-import UnitTasksTimer from './bx-tasks-timer';
-import UnitTasks from './bx-tasks';
-import UnitAlbums from './bx-albums';
-import UnitPrivate from './private';
+import dynamic from 'next/dynamic';
+import { DynamicFallback } from 'app/lib/dynamic-fallback';
+
+// Each content unit is its own chunk (see lib/dynamic-fallback.js).
+const UnitGroup = dynamic(() => import('./bx-groups'), { loading: DynamicFallback });
+const UnitSpace = dynamic(() => import('./bx-spaces'), { loading: DynamicFallback });
+const UnitAd = dynamic(() => import('./bx-ads'), { loading: DynamicFallback });
+const UnitChannel = dynamic(() => import('./bx-channels'), { loading: DynamicFallback });
+const UnitEvent = dynamic(() => import('./bx-events'), { loading: DynamicFallback });
+const UnitForum = dynamic(() => import('./bx-forum'), { loading: DynamicFallback });
+const UnitMarket = dynamic(() => import('./bx-market'), { loading: DynamicFallback });
+const UnitOrg = dynamic(() => import('./bx-organizations'), { loading: DynamicFallback });
+const UnitPerson = dynamic(() => import('./bx-persons'), { loading: DynamicFallback });
+const UnitDefault = dynamic(() => import('./default'), { loading: DynamicFallback });
+const UnitPosts = dynamic(() => import('./bx-posts'), { loading: DynamicFallback });
+const UnitCourses = dynamic(() => import('./bx-courses'), { loading: DynamicFallback });
+const UnitJob = dynamic(() => import('./bx-jobs'), { loading: DynamicFallback });
+const UnitVideos = dynamic(() => import('./bx-videos'), { loading: DynamicFallback });
+const UnitPoll = dynamic(() => import('./bx-polls'), { loading: DynamicFallback });
+const UnitProject = dynamic(() => import('./bx-projects'), { loading: DynamicFallback });
+const UnitTasksTimer = dynamic(() => import('./bx-tasks-timer'), { loading: DynamicFallback });
+const UnitTasks = dynamic(() => import('./bx-tasks'), { loading: DynamicFallback });
+const UnitAlbums = dynamic(() => import('./bx-albums'), { loading: DynamicFallback });
+const UnitPrivate = dynamic(() => import('./private'), { loading: DynamicFallback });
 export const componentsMapDefault = {
     'bx_groups': memo(UnitGroup),
     'bx_spaces': memo(UnitSpace),
@@ -40,6 +44,5 @@ export const componentsMapDefault = {
     'bx_albums': memo(UnitAlbums),
     'sys_private': memo(UnitPrivate),
     'default': memo(UnitDefault),
-    
-};
 
+};

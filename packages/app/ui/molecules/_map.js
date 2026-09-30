@@ -1,30 +1,33 @@
 import { memo } from "react";
-import Likes from './objects/likes';    
-import Stars from './objects/stars';    
-import Reactions from './objects/reactions';    
-import Scores from './objects/scores';  
-import Comments from './objects/comments';  
-import Features from './objects/features';  
-import Favorites from './objects/favorites';  
-import Reports from './objects/reports';    
-import Reposts from './objects/reposts';    
-import Shares from './objects/shares';  
-import Connections from './objects/connections';    
-import ConnectionsExt from './objects/connections-ext';    
-import ConnectionsMenu from './objects/connections-menu';
-import Recommendation from './objects/recommendations'; 
-import ContextSelector from './sections/context-selector';  
-import Badges from './profile/badges';  
-import Splash from './sections/splash';  
-import HeaderElement from './header/header-element'; 
-import CounterIndicator from './misc/counter-indicator'; 
-import ProfileLink from './profile/profile-link'; 
-import NoContent from './misc/no-content'; 
-import { TaskTimer } from './misc/task-timer';
-import { lazyComponent } from 'app/lib/lazy-component';
+import dynamic from 'next/dynamic';
+import { DynamicFallback } from 'app/lib/dynamic-fallback';
 
-// AI chat pulls @tanstack/ai* on every page otherwise; load on first render.
-const AiAgent = lazyComponent(() => import('./ai-agent/agent'), { name: 'AiAgent' });
+// Each molecule is its own chunk: fetched when a page renders it, and preloaded
+// in the HTML when it was rendered during SSR (see lib/dynamic-fallback.js).
+const Likes = dynamic(() => import('./objects/likes'), { loading: DynamicFallback });
+const Stars = dynamic(() => import('./objects/stars'), { loading: DynamicFallback });
+const Reactions = dynamic(() => import('./objects/reactions'), { loading: DynamicFallback });
+const Scores = dynamic(() => import('./objects/scores'), { loading: DynamicFallback });
+const Comments = dynamic(() => import('./objects/comments'), { loading: DynamicFallback });
+const Features = dynamic(() => import('./objects/features'), { loading: DynamicFallback });
+const Favorites = dynamic(() => import('./objects/favorites'), { loading: DynamicFallback });
+const Reports = dynamic(() => import('./objects/reports'), { loading: DynamicFallback });
+const Reposts = dynamic(() => import('./objects/reposts'), { loading: DynamicFallback });
+const Shares = dynamic(() => import('./objects/shares'), { loading: DynamicFallback });
+const Connections = dynamic(() => import('./objects/connections'), { loading: DynamicFallback });
+const ConnectionsExt = dynamic(() => import('./objects/connections-ext'), { loading: DynamicFallback });
+const ConnectionsMenu = dynamic(() => import('./objects/connections-menu'), { loading: DynamicFallback });
+const Recommendation = dynamic(() => import('./objects/recommendations'), { loading: DynamicFallback });
+const ContextSelector = dynamic(() => import('./sections/context-selector'), { loading: DynamicFallback });
+const Badges = dynamic(() => import('./profile/badges'), { loading: DynamicFallback });
+const Splash = dynamic(() => import('./sections/splash'), { loading: DynamicFallback });
+const HeaderElement = dynamic(() => import('./header/header-element'), { loading: DynamicFallback });
+const CounterIndicator = dynamic(() => import('./misc/counter-indicator'), { loading: DynamicFallback });
+const ProfileLink = dynamic(() => import('./profile/profile-link'), { loading: DynamicFallback });
+const NoContent = dynamic(() => import('./misc/no-content'), { loading: DynamicFallback });
+const TaskTimer = dynamic(() => import('./misc/task-timer').then((m) => m.TaskTimer), { loading: DynamicFallback });
+// AI chat pulls @tanstack/ai* — never on pages without an agent.
+const AiAgent = dynamic(() => import('./ai-agent/agent'), { loading: DynamicFallback });
 
 export const componentsMapDefault = {
     likes: memo(Likes),
@@ -51,4 +54,3 @@ export const componentsMapDefault = {
     task_timer: TaskTimer,
     ai_agent: AiAgent,
 };
-
