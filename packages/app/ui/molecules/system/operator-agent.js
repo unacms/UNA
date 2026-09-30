@@ -12,7 +12,7 @@ import { appSetting, cn } from 'app/lib/util';
 import { useLocalSearchParams, useSafeAreaInsets } from 'app/lib/hooks/router';
 import { useFooterHeight } from 'app/context/jotai/layout';
 import { lazyComponent } from 'app/lib/lazy-component';
-import { fetchOperatorAgentBlock } from 'app/ui/molecules/ai-agent/helper';
+import { fetchOperatorAgentBlock } from 'app/ui/molecules/ai-agent/operator-block';
 import { hiddenFirstMessageFromData } from 'app/ui/molecules/ai-agent/hidden-first-message';
 
 const AiAgent = lazyComponent(() => import('app/ui/molecules/ai-agent/agent'), { name: 'AiAgent' });
