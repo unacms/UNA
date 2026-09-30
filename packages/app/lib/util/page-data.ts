@@ -107,15 +107,38 @@ export async function getPageData(url: string, codeOnly = false, fetchOptions: R
     );
 }
 
+/** A block inside `PageData.elements`. */
+export type PageElement = { id?: string | number; source?: string; type?: string; content?: any; [key: string]: any };
+
+/**
+ * First element in `data.elements` whose `source` equals `source`.
+ * Cells may be objects or arrays. `filter` narrows the match (e.g. `hasNonEmptyContent`).
+ * The one lookup for "block by source" — don't hand-roll another loop over `elements`.
+ */
+export function findElementBySource(
+    data: PageData | null | undefined,
+    source: string | number | null | undefined,
+    filter?: (el: PageElement) => boolean
+): PageElement | null {
+    if (source == null || source === '' || !data?.elements || typeof data.elements !== 'object') return null;
+    const wanted = String(source);
+    for (const cell of Object.values(data.elements)) {
+        if (!cell || typeof cell !== 'object') continue;
+        for (const el of Object.values(cell) as PageElement[]) {
+            if (el?.source === wanted && (!filter || filter(el))) return el;
+        }
+    }
+    return null;
+}
+
+/** `content` present and has at least one entry (the check `BlockByName` has always made). */
+export function hasNonEmptyContent(el: PageElement | null | undefined): boolean {
+    return !!el?.content && Object.keys(el.content).length > 0;
+}
+
 export function BlockDataByName(data: PageData | null | undefined, name: string | number | null | undefined): any {
-
     if (!name) return null;
-
-    return Object.values(data?.elements ?? {})
-        .flatMap(level1 =>
-            Object.values(level1).filter((item: any) => item?.source === name.toString())
-        )
-        .find(Boolean) || null;
+    return findElementBySource(data, name);
 }
 
 export function BlockDataByType(data: PageData | null | undefined, type: string | null | undefined): any {

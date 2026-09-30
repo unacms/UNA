@@ -41,7 +41,7 @@ function getAttachmentMenuItems(inputs) {
         items.push({
             id: 'video',
             title: 'Add Photos or Videos',
-            icon: 'Image',
+            icon: 'ImagePlay',
             onAction: () => emitter.emit('fld_files_video', { action: 'add', source: 'library', mediaTypes: ['images', 'videos'] }),
         });
     }
@@ -136,10 +136,10 @@ function ComposerToolbar({ data, handleSubmit, isWeb, children }) {
                 <FileButton field_name="photo" icon="Image" tooltip={t('Add Photos')} {...ATTACHMENT_BUTTON} />
             ) : null}
             {data.inputs['video'] ? (
-                <FileButton field_name="video" icon="Image" tooltip={t('Add Photos or Videos')} {...ATTACHMENT_BUTTON} />
+                <FileButton field_name="video" icon="ImagePlay" tooltip={t('Add Photos or Videos')} {...ATTACHMENT_BUTTON} />
             ) : null}
             {data.inputs['video'] && !isWeb ? (
-                <FileButton field_name="video" icon="Image" {...ATTACHMENT_BUTTON} />
+                <FileButton field_name="video" icon="ImagePlay" {...ATTACHMENT_BUTTON} />
             ) : null}
             {data.inputs['file'] ? (
                 <FileButton field_name="file" icon="Paperclip" {...ATTACHMENT_BUTTON} />

@@ -1,7 +1,7 @@
 import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import { View } from 'app/design/view';
 import { BlockByName, DataByName } from 'app/components/block';
-import { LAYOUT_BREAKPOINTS, isNativeTabsEnabled } from 'app/lib/util';
+import { LAYOUT_BREAKPOINTS, isNativeTabsEnabled, findElementBySource } from 'app/lib/util';
 import { CommentsBrowse, CommentsForm } from 'app/components/elements/comments-browse'
 import KbAvoidingView, { KbStickyView, useStickyComposerListInset } from 'app/ui/atoms/kb-avoiding-view';
 import { Platform } from 'react-native'
@@ -58,19 +58,8 @@ function blockSource(item) {
     return item?.name || item?.block?.name;
 }
 
-function findBlockBySource(data, source) {
-    if (!source || !data?.elements) return null;
-    for (const cell of Object.values(data.elements)) {
-        const entries = Array.isArray(cell) ? cell : Object.values(cell || {});
-        for (const el of entries) {
-            if (el?.source === source) return el;
-        }
-    }
-    return null;
-}
-
 function blockHasContentType(item, data, type) {
-    const el = findBlockBySource(data, blockSource(item));
+    const el = findElementBySource(data, blockSource(item));
     return Array.isArray(el?.content) && el.content.some((c) => c?.type === type);
 }
 

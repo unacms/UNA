@@ -12,6 +12,7 @@ import {
     getUnitModeBySource,
     deepEqual,
     LAYOUT_BREAKPOINTS,
+    findElementBySource,
 } from 'app/lib/util'
 import { fetcher } from 'app/lib/fetcher'
 import { getSkeletonByEndPoint } from 'app/customization/functions'
@@ -646,9 +647,7 @@ export function getContent(data, block) {
     if (!data || !data.elements || typeof data.elements !== 'object') {
         return { data: null, type: 'block', block }
     }
-    const b = Object.values(data.elements)
-        .flatMap((v) => (v && typeof v === 'object' ? Object.values(v) : []))
-        .find((element) => element?.content && element?.source === blockName)
+    const b = findElementBySource(data, blockName, (element) => !!element.content)
 
     return b?.content[0]?.type === 'browse' && !block.sidebar && !block.leftbar
         ? { data: b.content[0].data, type: 'browse' }

@@ -28,7 +28,31 @@ export function getBackButtonWeb() {
     }
 }
 
-export const BrowseItem = memo(({ item, index, numColumns, data, unitMode, props }: { item: any; index: any; numColumns: any; data: any; unitMode: any; props: any }) => (
+type BrowseItemProps = { item: any; index: any; numColumns: any; data: any; unitMode: any; props: any };
+
+function shallowEqualObjects(a: Record<string, any> | null | undefined, b: Record<string, any> | null | undefined): boolean {
+    if (a === b) return true;
+    if (!a || !b) return false;
+    const aKeys = Object.keys(a);
+    if (aKeys.length !== Object.keys(b).length) return false;
+    return aKeys.every((k) => Object.prototype.hasOwnProperty.call(b, k) && Object.is(a[k], b[k]));
+}
+
+/**
+ * `props` is the whole element props object (spread into every unit — forks may
+ * read any key). The parent hands in a fresh object whenever it re-renders, so
+ * compare it key by key; otherwise memo never skips and every card re-renders.
+ */
+function sameBrowseItem(prev: BrowseItemProps, next: BrowseItemProps): boolean {
+    return prev.item === next.item
+        && prev.index === next.index
+        && prev.numColumns === next.numColumns
+        && prev.data === next.data
+        && prev.unitMode === next.unitMode
+        && shallowEqualObjects(prev.props, next.props);
+}
+
+export const BrowseItem = memo(({ item, index, numColumns, data, unitMode, props }: BrowseItemProps) => (
     <View
         className={
             numColumns > 1
@@ -52,4 +76,4 @@ export const BrowseItem = memo(({ item, index, numColumns, data, unitMode, props
             data={item}
         />
     </View>
-))
+), sameBrowseItem)
