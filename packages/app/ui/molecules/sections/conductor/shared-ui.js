@@ -10,6 +10,8 @@ import { Button } from 'app/design/controls'
 import { useTranslation } from 'react-i18next'
 import { getSkeletonForList } from 'app/lib/skeleton-helpers'
 import { layoutForList, paddingForList } from 'app/customization/functions'
+import { useIsDesktop } from 'app/context/measure'
+import { Platform } from 'react-native'
 import {
     getAddon,
     getDropdownItemsFromLeftColumnBlock,
@@ -495,8 +497,9 @@ export function useListScene({
         [skeleton, route, unitType]
     )
 
+    const isDesktop = useIsDesktop()
     const layout = layoutForList(route?.endpoint)
-    const paddings = paddingForList(route?.endpoint)
+    const paddings = paddingForList(route?.endpoint, Platform.OS === 'web' && isDesktop)
 
     const Preload = useMemo(
         () => getSkeletonForList(skeletonKey, skeletonCount, true, layout, renderItem, paddings),

@@ -83,7 +83,10 @@ const ConvosPanel = memo(function ConvosPanel({
             useWindowScroll={windowScroll}
             height={windowScroll ? undefined : listH}
             renderItem={({ item, index }) => (
-                <ItemConvo selectedIndex={selectedConvoIndex} item={item} index={index} changeConvo={changeConvo} />
+                // Small screens show the list or the chat, never both, so a
+                // "current" row would only linger after Back. Desktop keeps it
+                // highlighted next to the open chat.
+                <ItemConvo selectedIndex={isSmallScreen ? -1 : selectedConvoIndex} item={item} index={index} changeConvo={changeConvo} />
             )}
             {...listOverlayProps}
         />
@@ -102,7 +105,7 @@ const ConvosPanel = memo(function ConvosPanel({
 
     return (
         <View
-            className={`${overlayList ? 'relative flex-1 min-h-0 overflow-hidden' : 'w-full'} ${fillScreen ? 'flex-1' : ''} ${isSmallScreen ? 'bg-card' : ''}`}
+            className={`${overlayList ? 'relative flex-1 min-h-0 overflow-hidden' : 'w-full'} ${fillScreen ? 'flex-1' : ''}`}
             style={overlayList
                 ? { height: panelHeight || listH }
                 : (!windowScroll && !fillScreen && listH > 0 ? { height: listH } : undefined)

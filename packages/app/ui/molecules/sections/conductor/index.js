@@ -293,6 +293,7 @@ export function Conductor({
         listItems,
         isPending,
         isFetching,
+        hasNextPage,
         refetch: refetchList,
         handleEndReached,
         listReady,
@@ -503,6 +504,7 @@ export function Conductor({
                     listReady={listReady}
                     isPending={isPending}
                     isFetching={isFetching}
+                    hasNextPage={hasNextPage}
                     onFormChangedValues={onFormChangedValues}
                     skipHeaderOffset={useLocalHeader}
                     listRef={listRef}

@@ -122,6 +122,7 @@ export function KbAvoidingViewScroll({
     children,
     onScroll,
     paddingTop = 0,
+    paddingBottom = 0,
     className,
     style,
     keyboardShouldPersistTaps = "always",
@@ -138,7 +139,7 @@ export function KbAvoidingViewScroll({
             style={style}
             onScroll={onScroll}
             keyboardShouldPersistTaps={keyboardShouldPersistTaps}
-            contentContainerStyle={{ flexGrow: 1, justifyContent: "flex-start", paddingTop: paddingTop }}
+            contentContainerStyle={{ flexGrow: 1, justifyContent: "flex-start", paddingTop: paddingTop, paddingBottom: paddingBottom }}
             contentInsetAdjustmentBehavior="never"
             automaticallyAdjustContentInsets={false}
             bottomOffset={keyboardOffset}

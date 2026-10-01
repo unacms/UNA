@@ -1,3 +1,5 @@
+import { useState } from 'react';
+import { Platform } from 'react-native';
 import { Text } from 'app/design/typography'
 import { View, Row, Pressable } from 'app/design/view'
 import Profile from 'app/ui/molecules/profile/profile'
@@ -5,14 +7,22 @@ import Time from 'app/ui/atoms/time'
 import { useCurrentUser } from 'app/context/user';
 import { stripTags } from 'app/lib/util';
 
+const isWeb = Platform.OS === 'web';
 
+// 8px outside + 8px inside, so avatars line up with the 16px list header and
+// tabs while the highlight keeps an 8px inset.
 export default function ({ item, index, changeConvo, selectedIndex }) {
     let { currentUser, setCurrentUser } = useCurrentUser();
+    // Native has no :active for the inner Row, so track the press to show the
+    // hover highlight while the finger is down.
+    const [pressed, setPressed] = useState(false);
     const participants = item.participants.filter(p => p.id != currentUser.id);
     const names = participants.map(p => p.display_name).join(', ');
-    //memo(
-    const Item = ({ item, index, changeConvo, selectedIndex }) => (<Pressable className="group w-full px-2 py-0.5 web:cursor-pointer" onPress={() => changeConvo(item)}>
-        <Row className={(selectedIndex == index ? ' bg-accent ' : ' web:group-hover:bg-muted/50 active:bg-muted/50 ') + ' relative w-full overflow-hidden gap-3 rounded-xl px-3 py-2 web:duration-200'} >
+    const pressProps = isWeb ? null : { onPressIn: () => setPressed(true), onPressOut: () => setPressed(false) };
+    const rowBg = selectedIndex == index ? ' bg-accent ' : (pressed ? ' bg-muted/60 ' : ' web:group-hover:bg-muted/60 active:bg-muted/60 ');
+
+    return (<Pressable className="group w-full px-2 py-0.5 web:cursor-pointer" onPress={() => changeConvo(item)} {...pressProps}>
+        <Row className={rowBg + ' relative w-full overflow-hidden gap-3 rounded-xl px-2 py-2 web:duration-200'} >
             
             <View className=" rounded-full flex-none bg-secondary mb-auto">
                 <Profile
@@ -44,7 +54,7 @@ export default function ({ item, index, changeConvo, selectedIndex }) {
             )}
 
             {participants.length > 1 && (
-                <View className="absolute bottom-1 start-9 bg-muted border border-card h-5 text-center justify-center rounded-full px-1">
+                <View className="absolute bottom-1 start-8 bg-muted border border-card h-5 text-center justify-center rounded-full px-1">
                     <Text className="text-center items-center text-muted-foreground text-xs font-semibold">
                         +{participants.length - 1}
                     </Text>
@@ -52,8 +62,4 @@ export default function ({ item, index, changeConvo, selectedIndex }) {
             )}
         </Row>
     </Pressable>);
-
-    //if (!isWeb) {
-    return <Item item={item} index={index} changeConvo={changeConvo} selectedIndex={selectedIndex} />
-    //}
 }

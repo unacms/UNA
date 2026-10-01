@@ -184,7 +184,9 @@ export function MobileListHeader({ pageData, onSearch, addButtons, menuItems, me
                 </Row>
             </Row>
             {menuItems?.length > 1 ? (
-                <Row className="w-full items-center px-4 pb-2">
+                // Same box as the conductor tab row (web `conductor.menu_cnt`,
+                // native-ui TabBar), so pills sit at the same height under the title.
+                <Row className="w-full items-center px-4 min-h-12 lg:min-h-14">
                     <MenuSwitcher items={menuItems} index={menuIndex} onChange={onMenuChange} />
                 </Row>
             ) : null}
