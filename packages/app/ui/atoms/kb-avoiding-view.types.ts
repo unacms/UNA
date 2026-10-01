@@ -31,4 +31,5 @@ export type ModalKbAwareScrollProps = KbAwareScrollProps;
 
 export type KbAvoidingViewScrollProps = KbAwareScrollProps & {
     paddingTop?: number;
+    paddingBottom?: number;
 };

@@ -53,6 +53,8 @@ export type UniListProps<T = any> = {
     skipHeaderOffset?: boolean
     /** Space to leave for the collapsing cover overlay. */
     coverOverlayPad?: number
+    /** Space after the last row for a tab bar drawn over the list (NativeTabs). */
+    tabBarInset?: number
     /** Reanimated shared value the cover reads. */
     coverScrollY?: SharedValue<number>
     estimatedItemSize?: number
@@ -121,7 +123,7 @@ export const WEB_ONLY_PROPS = [
  * them through to LegendList; web must strip them or they land on a DOM node.
  */
 export const NATIVE_ONLY_PROPS = [
-    'inverted', 'isModal', 'skipHeaderOffset', 'coverOverlayPad', 'coverScrollY',
+    'inverted', 'isModal', 'skipHeaderOffset', 'coverOverlayPad', 'coverScrollY', 'tabBarInset',
     'estimatedItemSize', 'refreshControl', 'progressViewOffset', 'scrollProps',
     'contentContainerStyle', 'contentContainerClassName',
     'maxToRenderPerBatch', 'initialNumToRender', 'initialScrollIndex', 'numColumns',

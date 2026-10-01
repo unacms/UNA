@@ -6,6 +6,8 @@ import { LeftColumnMenuDropdown, TabList, ListScene } from './shared-ui';
 import CoverMorph from 'app/components/elements/covers/cover-morph';
 import { useStableSafeAreaInsets } from 'app/lib/hooks/router'
 import { useTranslation } from 'react-i18next';
+import { useCurrentUser } from 'app/context/user';
+import { getNativeTabBarOverlayInset } from 'app/components/nav/tabs/tab-menu';
 
 /*
  * ============================================================================
@@ -209,6 +211,10 @@ export const TabScene = React.memo(function TabScene({
     isFetching = false,
     onFormChangedValues,
 }) {
+    // NativeTabs screens run under the tab bar; without this the last rows
+    // (e.g. Sign out on /dashboard) can't scroll clear of it.
+    const { currentUser } = useCurrentUser();
+    const tabBarInset = getNativeTabBarOverlayInset(currentUser);
     const uniListProps = useMemo(() => ({
         index: route?.index,
         maxToRenderPerBatch: 5,
@@ -219,6 +225,7 @@ export const TabScene = React.memo(function TabScene({
         skipHeaderOffset,
         coverOverlayPad,
         coverScrollY,
+        tabBarInset,
     }), [
         route?.index,
         route?.endpoint?.request_url,
@@ -226,6 +233,7 @@ export const TabScene = React.memo(function TabScene({
         skipHeaderOffset,
         coverOverlayPad,
         coverScrollY,
+        tabBarInset,
     ])
 
     return (
