@@ -21,6 +21,7 @@ const Recommendation = dynamic(() => import('./objects/recommendations'), { load
 const ContextSelector = dynamic(() => import('./sections/context-selector'), { loading: DynamicFallback });
 const Badges = dynamic(() => import('./profile/badges'), { loading: DynamicFallback });
 const Splash = dynamic(() => import('./sections/splash'), { loading: DynamicFallback });
+const ConfirmEmail = dynamic(() => import('./auth/confirm-email'), { loading: DynamicFallback });
 const HeaderElement = dynamic(() => import('./header/header-element'), { loading: DynamicFallback });
 const CounterIndicator = dynamic(() => import('./misc/counter-indicator'), { loading: DynamicFallback });
 const ProfileLink = dynamic(() => import('./profile/profile-link'), { loading: DynamicFallback });
@@ -46,6 +47,7 @@ export const componentsMapDefault = {
     recommendation: memo(Recommendation),
     context_selector: ContextSelector,
     splash: Splash,
+    confirm_email: ConfirmEmail,
     badges: Badges,
     header_element: HeaderElement,
     counter_indicator: CounterIndicator,

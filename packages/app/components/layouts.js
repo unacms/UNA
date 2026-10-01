@@ -10,7 +10,6 @@ import { Row } from 'app/design/view'
 import { appStatic } from 'app/lib/app-static'
 import Redirect from 'app/ui/atoms/redirect'
 import { useRef, useEffect, useMemo } from 'react';
-import ConfirmEmail from 'app/ui/molecules/auth/confirm-email'
 import PageByUrl from 'app/ui/molecules/page/page-by-url'
 import { registerAll } from 'app/components/registry-init';
 import { Text } from 'app/design/typography'
@@ -151,6 +150,7 @@ function PageLayoutContent({ layout, data }) {
         return <ErrorPage type={data?.page_status} />;
     }
 
+    const ConfirmEmail = components['molecule']['confirm_email']
     if (currentUser && !currentUser.confirmed && appSetting('layout', 'lock_unconfirmed')) {
         return <ConfirmEmail url={data.url} />;
     }

@@ -29,7 +29,8 @@ export default function ElementConfirmEmail(props) {
         const sRequest = '/api.php?r=system/confirm_email/TemplServiceAccount&params[]=' + inputValue;
         const sResponse = await fetcher(sRequest);
         if (sResponse.data == true) {
-            const nextUrl = resolvePostConfirmUrl(props.url);
+            // Forks may pick the landing page (props.resolveNextUrl, async, falsy = default).
+            const nextUrl = (await props.resolveNextUrl?.()) || resolvePostConfirmUrl(props.url);
             storageClear();
             clearAllPageCache();
             resetAllTabHistory();
