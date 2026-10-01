@@ -3,7 +3,7 @@ import { nativeDriver } from 'app/lib/platform/animation';
 import { getAnimatedFillProps } from 'app/ui/atoms/animated-icons/fill-props';
 import { AnimatedPath, omitUnsafeViewProps, type AnimatedIconProps } from 'app/ui/atoms/animated-icons/shared';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useAnimatedValue } from 'app/lib/hooks/use-animated-value';
 import { Animated, Easing, Platform } from 'react-native';
 import Svg from 'react-native-svg';
@@ -15,7 +15,7 @@ const DOT_2_D = 'M12 12h.01';
 const DOT_3_D = 'M16 12h.01';
 const DOT_IDLE_OPACITY = 1;
 const DOT_HIDDEN_OPACITY = 0.2;
-
+
 
 /**
  * Animated MessageCircleMore

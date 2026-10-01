@@ -3,7 +3,7 @@ import { nativeDriver } from 'app/lib/platform/animation';
 import { getAnimatedFillProps } from 'app/ui/atoms/animated-icons/fill-props';
 import { AnimatedPath, AnimatedG, omitUnsafeViewProps, type AnimatedIconProps } from 'app/ui/atoms/animated-icons/shared';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useAnimatedValue } from 'app/lib/hooks/use-animated-value';
 import { Animated, Platform } from 'react-native';
 import Svg, { G } from 'react-native-svg';

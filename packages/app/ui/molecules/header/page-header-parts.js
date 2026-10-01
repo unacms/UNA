@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useAnimatedValue } from 'app/lib/hooks/use-animated-value';
 import { Animated, Platform } from 'react-native';
 import { nativeDriver } from 'app/lib/platform/animation';
