@@ -1,4 +1,5 @@
 @font-face {
+  font-display: swap;
     font-family: 'sys-user-fal';
     font-style: normal;
     font-weight: 300;
@@ -15,6 +16,7 @@
 }
 
 @font-face {
+  font-display: swap;
     font-family: 'sys-user-fab';
     font-style: normal;
     font-weight: normal;
