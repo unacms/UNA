@@ -107,8 +107,6 @@
     "version_warning_text1": "Diese App (v. {{version}}) ist neuer als der verbundene Server (v. {{server_version}}).",
     "version_warning_text2": "Der UNA-Server wurde bis v. {{version}} getestet; die Kompatibilität darüber hinaus ist nicht garantiert.",
     "version_warning_text3": "Du kannst fortfahren, aber Stabilität und einige Funktionen können beeinträchtigt sein.",
-    "about_page_title": "Über uns",
-    "about_page_text": "Der Ort, um sich zu verbinden, zu teilen und mit der Community zu wachsen.",
     "comments_login_or": "oder",
     "comments_login_to_comment": "um zu kommentieren",
     "Login": "Anmelden",

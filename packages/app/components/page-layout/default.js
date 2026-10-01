@@ -7,6 +7,9 @@ export default function PageLayout({ children, data, pageClasses }) {
 
     return (
         <Page data={data}>
+            {/* Page override slot: the static component `components_<uri>` renders above the
+                UNA blocks when the registry has one (see appStatic). UNA shows nothing about it,
+                and only layouts mapped to this component get it (page-layout/_map.js). */}
             {data?.uri ? appStatic('components_' + data?.uri, data) : null}
             <View className={width}>
                 <View className={`${contentWidth} ${padding} ${gap} mx-auto`}>

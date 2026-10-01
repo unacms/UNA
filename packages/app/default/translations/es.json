@@ -107,8 +107,6 @@
     "version_warning_text1": "Esta aplicación (v. {{version}}) es más reciente que el servidor conectado (v. {{server_version}}).",
     "version_warning_text2": "El servidor UNA se probó hasta v. {{version}}; la compatibilidad posterior no está garantizada.",
     "version_warning_text3": "Puedes continuar, pero la estabilidad y algunas funciones pueden verse afectadas.",
-    "about_page_title": "Acerca de",
-    "about_page_text": "Un lugar para conectar, compartir y crecer con la comunidad.",
     "comments_login_or": "o",
     "comments_login_to_comment": "para comentar",
     "Login": "Iniciar sesión",

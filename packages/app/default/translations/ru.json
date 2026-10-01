@@ -107,8 +107,6 @@
     "version_warning_text1": "Это приложение (v. {{version}}) новее подключённого сервера (v. {{server_version}}).",
     "version_warning_text2": "Сервер UNA тестировался до v. {{version}}; совместимость дальше не гарантируется.",
     "version_warning_text3": "Можно продолжить, но стабильность и некоторые функции могут пострадать.",
-    "about_page_title": "О нас",
-    "about_page_text": "Место, где можно общаться, делиться и расти вместе с сообществом.",
     "comments_login_or": "или",
     "comments_login_to_comment": "чтобы комментировать",
     "Login": "Войти",

@@ -213,20 +213,6 @@ const JoinTextComponent = (props) => {
     )
 }
 
-const ComponentsAboutComponent = (props) => {
-    const { t } = useTranslation()
-    return (
-        <>
-            <Text className="text-3xl lg:text-4xl xl:text-5xl font-bold text-secondary-foreground ">
-                {t('about_page_title')}
-            </Text>
-            <Text className="text-lg lg:text-xl xl:text-2xl  text-muted-foreground ">
-                {t('about_page_text')}
-            </Text>
-        </>
-    )
-}
-
 const ComponentsCommentsEmpty = () => {
     const { t } = useTranslation()
     return (
@@ -565,9 +551,13 @@ const ComponentsFullFooter = () => {
 
 export { BootstrapOffline }
 
+// Upstream static component registry. appStatic() (lib/app-static.tsx) reads it through
+// customization/static.js, which re-exports this map upstream and is replaced by forks.
+// Every `components_*` key is also a page override slot: the default page layout renders
+// `components_<uri>` on top of the page with that URI, so don't name a non-page component
+// after a real page (a UNA page at /footer would render components_footer on top).
 export const staticDefault = {
     logo: Logo,
-    components_about: ComponentsAboutComponent,
     page_not_found: PageNotFound,
     page_error: PageError,
     bootstrap_offline: BootstrapOffline,
