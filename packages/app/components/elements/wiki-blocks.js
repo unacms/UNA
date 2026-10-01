@@ -5,10 +5,10 @@ import { BlockByDataInt as BlockByData } from 'app/components/block'
 import { Modal, NeoButton } from 'app/design/controls'
 import { View } from 'app/design/view'
 import { fetcher } from 'app/lib/fetcher'
-import emitter from 'app/context/emitter'
+import emitter, { EVENTS } from 'app/context/emitter'
 
 function reloadWikiPage() {
-    emitter.emit('wiki', { action: 'reload' })
+    emitter.emit(EVENTS.wiki, { action: 'reload' })
 }
 
 /** After add-page the shell is often not PageContentWiki (uri wiki-add-page), so wiki emit is a no-op. */
@@ -18,7 +18,7 @@ function reloadAfterAddPage() {
         window.location.reload()
         return
     }
-    emitter.emit('page', { action: 'reload' })
+    emitter.emit(EVENTS.page, { action: 'reload' })
 }
 
 async function openWikiActionForm(requestUrl, title, setFormBlock) {

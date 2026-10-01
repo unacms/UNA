@@ -7,7 +7,7 @@ import { components } from 'app/components/registry';
 import { FeedbackHaptics, appSetting, isNumeric, isObjectsEqual } from 'app/lib/util';
 import { sessionCacheGet, sessionCacheSet } from 'app/lib/util/storage';
 import { Platform } from 'react-native';
-import emitter from 'app/context/emitter';
+import emitter, { EVENTS } from 'app/context/emitter';
 import { FormInstanceProvider } from 'app/context/form-instance';
 import useDebounce from 'app/lib/hooks/use-debounce'
 import { Button } from 'app/design/controls';
@@ -169,7 +169,7 @@ export default function Form({
 
     useEffect(() => {
         if (submitError) {
-            emitter.emit(`form_${name}`, { action: 'received', formInstanceId });
+            emitter.emit(EVENTS.form(name), { action: 'received', formInstanceId });
         }
     }, [submitError, name, formInstanceId]);
 
@@ -202,7 +202,7 @@ export default function Form({
                 extra: null,
                 response: null,
             }));
-            emitter.emit(`form_${name}`, { action: 'received', formInstanceId, data: rawData });
+            emitter.emit(EVENTS.form(name), { action: 'received', formInstanceId, data: rawData });
             return;
         }
 
@@ -258,7 +258,7 @@ export default function Form({
             };
         });
 
-        emitter.emit(`form_${name}`, { action: 'received', formInstanceId, data: rawData });
+        emitter.emit(EVENTS.form(name), { action: 'received', formInstanceId, data: rawData });
     }, [dynamicData, initedData, formInstanceId, name, router, pathname]);
 
     useEffect(() => {
@@ -449,10 +449,10 @@ export default function Form({
                         return;
                     }
                     // awaitsResponse: the form posts to UNA itself and emits 'received' with the reply.
-                    emitter.emit(`form_${name}`, { action: 'submited', formInstanceId, awaitsResponse: !onFormSubmitInternal });
+                    emitter.emit(EVENTS.form(name), { action: 'submited', formInstanceId, awaitsResponse: !onFormSubmitInternal });
                     onSubmit(data);
                     if (onFormSubmitInternal) {
-                        emitter.emit(`form_${name}`, { action: 'received', formInstanceId });
+                        emitter.emit(EVENTS.form(name), { action: 'received', formInstanceId });
                     }
                 },
                 onError

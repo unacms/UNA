@@ -38,7 +38,7 @@ import { OperatorAgentPanel, useOperatorAgentData } from 'app/ui/molecules/syste
 import { useNativeTokenColor } from 'app/design/controls/neo-button/native-style-colors';
 import { getWindowSafeAreaInsets, useGlobalSearchParams, useRouter, usePathname, useSafeAreaInsets } from 'app/lib/hooks/router';
 import { nativeTabHref, rememberSelectedTab } from 'app/lib/navigation/tab-history';
-import emitter from 'app/context/emitter';
+import emitter, { EVENTS } from 'app/context/emitter';
 import * as WebBrowser from 'expo-web-browser';
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import { useCurrentUser } from 'app/context/user';
@@ -322,7 +322,7 @@ export default function ExpoUITabNavigator({
         : IOS_TAB_BAR.height + (getWindowSafeAreaInsets().bottom || 0));
 
     useEffect(() => {
-        const subscription = emitter.addListener('tabs-more', (data) => {
+        const subscription = emitter.addListener(EVENTS.tabsMore, (data) => {
             if (data?.action === 'open') setMoreMenuOpen(true);
             if (data?.action === 'close') setMoreMenuOpen(false);
         });

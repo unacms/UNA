@@ -8,7 +8,7 @@ import {
     navigateToTabRoot,
     rememberSelectedTab,
 } from 'app/lib/navigation/tab-history';
-import emitter from 'app/context/emitter';
+import emitter, { EVENTS } from 'app/context/emitter';
 
 function scheduleTabFeedback(defer) {
     if (defer) {
@@ -78,7 +78,7 @@ export async function handleTabPress({
         if (!isAtTabRoot(tabKey, currentUser)) {
             navigateToTabRoot(router, tabKey, currentUser);
         } else {
-            emitter.emit('conductor', { action: 'reset_to_first' });
+            emitter.emit(EVENTS.conductor, { action: 'reset_to_first' });
         }
 
         rememberSelectedTab(tabKey);

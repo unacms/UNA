@@ -8,7 +8,7 @@ import { appStatic } from 'app/lib/app-static'
 import { FeedbackHaptics, appSetting } from 'app/lib/util'
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next';
-import emitter from 'app/context/emitter'
+import emitter, { EVENTS } from 'app/context/emitter'
 
 const rootUrl = appSetting('context_selector', 'root_url');
 
@@ -86,7 +86,7 @@ export default function ContextSelector({ data: initialData, url, uri, mode }) {
 
     // When the page was refetched after a connection change, refresh the context list.
     useEffect(() => {
-        const subscription = emitter.addListener('page', (payload) => {
+        const subscription = emitter.addListener(EVENTS.page, (payload) => {
             if (payload?.action === 'updated' && payload.data?.context) {
                 setContextData(payload.data.context);
             }

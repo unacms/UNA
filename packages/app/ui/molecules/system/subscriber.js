@@ -4,7 +4,7 @@ import React, { useEffect, useCallback } from 'react';
 import { useCurrentUser } from 'app/context/user';
 import { storageClear } from 'app/lib/util';
 import { subscribe } from 'app/ui/atoms/socket';
-import emitter from 'app/context/emitter'
+import emitter, { EVENTS } from 'app/context/emitter'
 import { checkActionsOnConnectionsChanged } from 'app/customization/functions';
 
 // Debounce: UNA often sends several connection events for one join/leave.
@@ -33,7 +33,6 @@ export default function Subscriber() {
     }, []);
 
     const onUpdateProfile = useCallback(async (data) => {
-        emitter.emit('profile', { action: 'changed', data: data });
         setCurrentUser(JSON.parse(data));
     }, []);
 
@@ -48,7 +47,7 @@ export default function Subscriber() {
         if (!oActions?.reload_page) return;
         clearTimeout(connectionsReloadTimer);
         connectionsReloadTimer = setTimeout(() => {
-            emitter.emit('connections', {
+            emitter.emit(EVENTS.connections, {
                 action: 'changed',
                 object: oData,
                 reload: true,

@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import emitter from 'app/context/emitter';
+import emitter, { EVENTS } from 'app/context/emitter';
 import { fetcher } from 'app/lib/fetcher';
 import { clockToSeconds } from 'app/lib/tasks-meta';
 
-export const TASK_TIMER_SYNC_EVENT = 'task_timer_sync';
+export const TASK_TIMER_SYNC_EVENT = EVENTS.taskTimerSync;
 
 const sessions = new Map();
 

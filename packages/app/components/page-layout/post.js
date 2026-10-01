@@ -7,7 +7,7 @@ import KbAvoidingView, { KbStickyView, useStickyComposerListInset } from 'app/ui
 import { EdgeBlurView, edgeBlurConfig } from 'app/ui/atoms/edge-blur';
 import { Platform } from 'react-native'
 import { useLocalSearchParams } from 'app/lib/hooks/router'
-import emitter from 'app/context/emitter';
+import emitter, { EVENTS } from 'app/context/emitter';
 import { useIsDesktop, useWindowHeight, useBreakpoint, useBreakpointName } from 'app/context/measure';
 import { appSetting } from 'app/lib/util';
 import { Block } from 'app/ui/molecules/page/page-block';
@@ -185,7 +185,7 @@ export default function PageLayout({ data, blocks, isModal = false, url, pageCla
                     else {
                         // click on comments
                         setScrollToEnd(true);
-                        emitter.emit('editor', { action: 'focus', note: "a", timeout: 800 });
+                        emitter.emit(EVENTS.editor, { action: 'focus', note: "a", timeout: 800 });
                     }
 
                 }
@@ -198,7 +198,7 @@ export default function PageLayout({ data, blocks, isModal = false, url, pageCla
     useEffect(() => {
 
 
-        const subscription2 = emitter.addListener(`comment`, (data) => {
+        const subscription2 = emitter.addListener(EVENTS.comment, (data) => {
             if (data.action == 'send') {
                 setReplyId(false)
             }

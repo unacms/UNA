@@ -13,7 +13,7 @@ import { FeedbackHaptics } from 'app/lib/util';
 import { toUnaDisplayImageItem } from 'app/lib/image-helpers'
 import Carousel from 'app/ui/molecules/content/carousel'
 import { Modal } from 'app/design/controls'
-import emitter from 'app/context/emitter';
+import emitter, { EVENTS } from 'app/context/emitter';
 import { TouchableWithoutFeedback } from 'react-native';
 import { ContentMore } from 'app/ui/molecules/content/content-more'
 
@@ -54,7 +54,7 @@ export default function JotItem({ item, index, handleReply }) {
 
     const handleReplyInner = useCallback(async (item) => {
         FeedbackHaptics('Medium');
-        emitter.emit('editor', { action: 'focus' })
+        emitter.emit(EVENTS.editor, { action: 'focus' })
         handleReply(item);
     }, [handleReply]);
 
@@ -63,7 +63,7 @@ export default function JotItem({ item, index, handleReply }) {
         params: { ...item.reactions.params, button_size: "xs", button_variant: "link" }
     };
 
-    const Jot = <TouchableWithoutFeedback onPress={() => { emitter.emit('editor', { action: 'blur' }) }}><View className='w-full px-4 mt-3'>
+    const Jot = <TouchableWithoutFeedback onPress={() => { emitter.emit(EVENTS.editor, { action: 'blur' }) }}><View className='w-full px-4 mt-3'>
         <Row className="gap-2">
             
                 <Profile {...item.author_data} displayType="unit_wo_info" displaySize="base" showInfo="false" />

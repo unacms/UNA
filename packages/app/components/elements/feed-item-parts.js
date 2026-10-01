@@ -41,7 +41,7 @@ import * as FeedItems from 'app/lib/feed-items'
 import { Icon } from 'app/ui/atoms/icon'
 import { SafeMenuTrigger } from 'app/ui/atoms/safe-menu-trigger'
 import { stripTags, isWeb } from 'app/lib/util'
-import emitter from 'app/context/emitter';
+import emitter, { EVENTS } from 'app/context/emitter';
 
 
 export const FeedEditForm = memo(({ setViewState, viewState, id }) => {
@@ -382,7 +382,7 @@ const MenuManage_ = memo(({ id, menu, setViewState, defaultOpen }) => {
                 await fetcher(
                     '/api.php?r=bx_timeline/delete/&params[]=' + id
                 )
-                emitter.emit('feed', { action: 'remove_content', id: id });
+                emitter.emit(EVENTS.feed, { action: 'remove_content', id: id });
                 break
 
             default:

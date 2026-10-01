@@ -21,7 +21,7 @@ const ImageCropModal = lazyComponent(() => import('app/lib/image/crop-modal'), {
 import { getImageCropKind, isSvgAsset, getAssetImageSize } from 'app/lib/image/crop';
 import { getCoverAspectClass, getImageUploadLimits, shouldSkipImageCrop } from 'app/lib/image/upload-settings';
 import { useTranslation } from 'react-i18next'
-import emitter from 'app/context/emitter';
+import emitter, { EVENTS } from 'app/context/emitter';
 import { CaptionForFileInput } from 'app/customization/functions';
 import i18n from 'i18next';
 import { useFormInstanceId } from 'app/context/form-instance';
@@ -304,7 +304,7 @@ export default function (props) {
             setImageSourceN([{ ...ghost, hash, inlinePaste: !!extraVar.inlinePaste }], bMultiple);
             const src = ghost.file_url || ghost.url || result?.data?.link
             if (extraVar.inlinePaste && src) {
-                emitter.emit('editor', {
+                emitter.emit(EVENTS.editor, {
                     action: 'insert_inline_image',
                     form_name: formName,
                     src,
@@ -701,7 +701,7 @@ export default function (props) {
     }, [name, props.ext_deny, props.ext_allow, props.source, hasPermissionCamera, hasPermissionLibrary, requestPermissionCamera, requestPermissionLibrary, selectImage1]);
 
     useEffect(() => {
-        const subscription = emitter.addListener(`fld_files_${name}`, (data) => {
+        const subscription = emitter.addListener(EVENTS.fieldFiles(name), (data) => {
             if (data.action == 'add') {
                 // Let the composer Plus remount finish before presenting a picker.
                 setTimeout(() => selectImage(data.source, data.mediaTypes), 50);
@@ -725,7 +725,7 @@ export default function (props) {
             clearFieldImages(`${formName}:`);
             setImages(props?.values_src);
         };
-        const subscription = emitter.addListener(`form_${formName}`, (data) => {
+        const subscription = emitter.addListener(EVENTS.form(formName), (data) => {
             if (data.action == 'submited') {
                 // Wait for UNA's reply: on validation errors the uploaded files must stay.
                 if (data.awaitsResponse) awaitingSubmitRef.current = true;

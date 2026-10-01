@@ -13,7 +13,7 @@ import { storageClear } from 'app/lib/util';
 import Badge from 'app/ui/molecules/profile/badge';
 import Msg from 'app/ui/molecules/dialogs/msg';
 import Stripe from 'app/ui/molecules/integrations/stripe';
-import emitter from 'app/context/emitter';
+import emitter, { EVENTS } from 'app/context/emitter';
 import MenuItemActionBase, {
     getMenuItemFlags,
     resolveMenuItemIcon,
@@ -79,7 +79,7 @@ const handleClick = async (event, oProps, setBottomSheetData, redirectdRef, butt
         setButtonProps({ ...buttonProps, visible: false });
         // Wiki delete-block: refresh the page shell so the block disappears.
         if (String(buttonProps.request_url || '').includes('wiki_action')) {
-            emitter.emit('wiki', { action: 'reload' });
+            emitter.emit(EVENTS.wiki, { action: 'reload' });
         }
     }
 
@@ -98,13 +98,13 @@ const handleClick = async (event, oProps, setBottomSheetData, redirectdRef, butt
     if (oProps.data.on_callback == 'alert') {
         if (oProps.data.on_callback_clear_cache)
             storageClear();
-        emitter.emit('connections', { action: 'changed', reload: true });
+        emitter.emit(EVENTS.connections, { action: 'changed', reload: true });
     }
     if (oProps.data.on_callback == 'alert,hide') {
         setButtonProps({ ...buttonProps, visible: false });
         if (oProps.data.on_callback_clear_cache)
             storageClear();
-        emitter.emit('connections', { action: 'changed', reload: true });
+        emitter.emit(EVENTS.connections, { action: 'changed', reload: true });
     }
     if (oProps.data.on_callback == 'object') {
         const paymentData = {

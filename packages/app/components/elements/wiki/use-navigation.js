@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { getPageData } from 'app/lib/util'
 import { useGlobalSearchParams, usePathname } from 'app/lib/hooks/router'
-import emitter from 'app/context/emitter'
+import emitter, { EVENTS } from 'app/context/emitter'
 import {
   getCachedWikiPage,
   setCachedWikiPage,
@@ -47,7 +47,7 @@ export function useWikiNavigation({ data, url }) {
     }
 
     // Dismiss mobile DropdownPopup menus (listens for link:pressed).
-    emitter.emit('link', { action: 'pressed' })
+    emitter.emit(EVENTS.link, { action: 'pressed' })
 
     const requestId = ++navigateRequestIdRef.current
     const cached = getCachedWikiPage(pathKey)
@@ -147,7 +147,7 @@ export function useWikiNavigation({ data, url }) {
 
   // Reload current wiki page after add-page / add-block form success.
   useEffect(() => {
-    const subscription = emitter.addListener('wiki', async (payload) => {
+    const subscription = emitter.addListener(EVENTS.wiki, async (payload) => {
       if (payload?.action !== 'reload') return
       const path = pageDataRef.current?.url || routeUrl
       if (!path) return

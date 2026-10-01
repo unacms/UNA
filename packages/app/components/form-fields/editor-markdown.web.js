@@ -41,7 +41,7 @@ import {
 } from 'lexical'
 import { useThemeName } from 'app/design/theme'
 import { appSetting, cn } from 'app/lib/util'
-import emitter from 'app/context/emitter'
+import emitter, { EVENTS } from 'app/context/emitter'
 import Loading from 'app/ui/atoms/loading'
 
 const inputSettings = appSetting('theme', 'inputs')
@@ -188,7 +188,7 @@ export function MarkdownTextInput({
 
     useEffect(() => {
         if (!mounted) return undefined
-        const sub = emitter.addListener('editor', (data) => {
+        const sub = emitter.addListener(EVENTS.editor, (data) => {
             if (!editorRef.current) return
             if (data.action === 'focus') {
                 editorRef.current.focus()

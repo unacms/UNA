@@ -9,7 +9,7 @@ import { ensureTabHistory, applyTabHistory, peekTabLastUrl } from 'app/lib/navig
 import { splitTabBarItems } from 'app/components/nav/tabs/tab-menu';
 import { getCachedPageData, setCachedPageData } from 'app/lib/cache/native-tab-page-cache';
 import { clearAllPageCache } from 'app/lib/cache/clear-page-cache';
-import emitter from 'app/context/emitter'
+import emitter, { EVENTS } from 'app/context/emitter'
 import * as SplashScreen from 'expo-splash-screen';
 import { TabChromeProvider } from 'app/context/tab-chrome';
 import { TabSlide } from 'app/components/nav/tab-slide';
@@ -270,7 +270,7 @@ const Content = memo(({ pagePath, currentUser, tabKey, refreshToken, historyMode
 
     // Language switch (and other page reloads): drop stale cached JSON and refetch.
     useEffect(() => {
-        const subscription = emitter.addListener('page', (payload) => {
+        const subscription = emitter.addListener(EVENTS.page, (payload) => {
             if (payload?.action !== 'reload') return;
 
             clearAllPageCache();

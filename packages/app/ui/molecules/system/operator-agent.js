@@ -7,7 +7,7 @@ import { View, Row } from 'app/design/view';
 import { Text } from 'app/design/typography';
 import { NeoButton } from 'app/design/controls';
 import { useCurrentUser } from 'app/context/user';
-import emitter from 'app/context/emitter';
+import emitter, { EVENTS } from 'app/context/emitter';
 import { androidTabBarHeight, appSetting, cn, isNativeTabsEnabled } from 'app/lib/util';
 import { useLocalSearchParams, useSafeAreaInsets } from 'app/lib/hooks/router';
 import { useFooterHeight } from 'app/context/jotai/layout';
@@ -20,7 +20,7 @@ const AiAgent = lazyComponent(() => import('app/ui/molecules/ai-agent/agent'), {
 
 const isWeb = Platform.OS === 'web';
 // Emitter channel between the title bar here and the `AiAgent` inside; see its `channel` prop.
-const CHANNEL = 'operator_agent';
+const CHANNEL = EVENTS.operatorAgent;
 
 /**
  * The operator agent block when `user.operator` is true and the server has an

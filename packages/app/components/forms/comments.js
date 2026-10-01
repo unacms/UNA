@@ -8,7 +8,7 @@ import { useCurrentUser } from 'app/context/user'
 import Profile from 'app/ui/molecules/profile/profile'
 import { FileButton } from 'app/lib/form/form-helpers'
 import { useWindowHeight, useIsDesktop } from 'app/context/measure';
-import emitter from 'app/context/emitter';
+import emitter, { EVENTS } from 'app/context/emitter';
 import { useSound } from 'app/lib/hooks/use-sound';
 import { useTranslation } from 'react-i18next'
 import { StarsAction } from 'app/ui/atoms/stars'
@@ -63,11 +63,11 @@ export default function FormComments(props) {
             if (props.data.inputs['cmt_mood']) {
                 formContext.setValue('cmt_mood', 0);
             }
-            emitter.emit(`comment`, { action: 'send'})
-            emitter.emit(`editor`, { action: 'set_content', value: '' })
-            emitter.emit(`fld_files_cmt_image`, { action: 'clear' })
+            emitter.emit(EVENTS.comment, { action: 'send'})
+            emitter.emit(EVENTS.editor, { action: 'set_content', value: '' })
+            emitter.emit(EVENTS.fieldFiles('cmt_image'), { action: 'clear' })
             if (!isWeb) {
-                emitter.emit('editor', { action: 'blur' })
+                emitter.emit(EVENTS.editor, { action: 'blur' })
                 Keyboard.dismiss()
             }
         }

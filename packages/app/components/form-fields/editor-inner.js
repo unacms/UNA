@@ -20,7 +20,7 @@ import { useThemeName, useThemeValue } from 'app/design/theme'
 import { stripTags, appSetting, cn } from 'app/lib/util'
 import { commitEditorHtml, normalizeEditorHtml } from 'app/lib/editor/editor-form'
 import { useEditorFormField } from 'app/lib/form/use-form-field'
-import emitter from 'app/context/emitter'
+import emitter, { EVENTS } from 'app/context/emitter'
 import { TextInput } from 'react-native'
 import { useEditorMentions } from 'app/lib/editor/use-editor-mentions'
 import { MentionSuggestionsDropdown } from 'app/lib/editor/mention-suggestions-dropdown'
@@ -498,7 +498,7 @@ export default function RftText(props) {
 
 
     useEffect(() => {
-        const subscription = emitter.addListener('editor', (data) => {
+        const subscription = emitter.addListener(EVENTS.editor, (data) => {
             if (data.action == 'blur') {
                 if (data.timeout) {
                     setTimeout(() => {
@@ -572,7 +572,7 @@ export default function RftText(props) {
         })
 
         if (images.length > 0) {
-            emitter.emit(`form_${formName}`, {
+            emitter.emit(EVENTS.form(formName), {
                 action: 'pasted_images',
                 images,
                 ...(isLimitedHtml ? { inlinePaste: false } : null),

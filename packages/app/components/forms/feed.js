@@ -12,7 +12,7 @@ import { Keyboard } from 'react-native'
 import { useFormContext } from 'react-hook-form'
 import { PollButton, LabelButton, FileButton } from 'app/lib/form/form-helpers'
 import { useIsDesktop, useWindowHeight } from 'app/context/measure';
-import emitter from 'app/context/emitter';
+import emitter, { EVENTS } from 'app/context/emitter';
 import { Icon } from 'app/ui/atoms/icon'
 import { Text } from 'app/design/typography';
 import { useSound } from 'app/lib/hooks/use-sound';
@@ -34,7 +34,7 @@ function getAttachmentMenuItems(inputs) {
             id: 'photo',
             title: 'Add Photos',
             icon: 'Image',
-            onAction: () => emitter.emit('fld_files_photo', { action: 'add', source: 'library', mediaTypes: ['images'] }),
+            onAction: () => emitter.emit(EVENTS.fieldFiles('photo'), { action: 'add', source: 'library', mediaTypes: ['images'] }),
         });
     }
     if (inputs?.video) {
@@ -42,7 +42,7 @@ function getAttachmentMenuItems(inputs) {
             id: 'video',
             title: 'Add Photos or Videos',
             icon: 'ImagePlay',
-            onAction: () => emitter.emit('fld_files_video', { action: 'add', source: 'library', mediaTypes: ['images', 'videos'] }),
+            onAction: () => emitter.emit(EVENTS.fieldFiles('video'), { action: 'add', source: 'library', mediaTypes: ['images', 'videos'] }),
         });
     }
     if (inputs?.file) {
@@ -50,7 +50,7 @@ function getAttachmentMenuItems(inputs) {
             id: 'file',
             title: 'Add Files',
             icon: 'Paperclip',
-            onAction: () => emitter.emit('fld_files_file', { action: 'add' }),
+            onAction: () => emitter.emit(EVENTS.fieldFiles('file'), { action: 'add' }),
         });
     }
     if (inputs?.labels) {
@@ -58,7 +58,7 @@ function getAttachmentMenuItems(inputs) {
             id: 'labels',
             title: 'Add Labels',
             icon: 'Hash',
-            onAction: () => emitter.emit('fld_labels_labels', { action: 'add' }),
+            onAction: () => emitter.emit(EVENTS.fieldLabels('labels'), { action: 'add' }),
         });
     }
     if (inputs?.polls) {
@@ -66,7 +66,7 @@ function getAttachmentMenuItems(inputs) {
             id: 'polls',
             title: 'Add Polls',
             icon: 'ChartBarBig',
-            onAction: () => emitter.emit('fld_polls_polls', { action: 'add' }),
+            onAction: () => emitter.emit(EVENTS.fieldPolls('polls'), { action: 'add' }),
         });
     }
     return items;
@@ -273,7 +273,7 @@ export default function FormFeed({ data, handleSubmit, exProps, name, response }
     useEffect(() => {
         if (response?.id && response?.id != responseId) {
             playSound();
-            emitter.emit('feed', { action: 'new_content', data: response });
+            emitter.emit(EVENTS.feed, { action: 'new_content', data: response });
             onClose();
             setResponseId(response?.id)
         }

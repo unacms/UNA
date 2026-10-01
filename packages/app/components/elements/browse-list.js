@@ -28,7 +28,7 @@ import { subscribe } from 'app/ui/atoms/socket'
 import { useCurrentUser } from 'app/context/user'
 import { Button } from 'app/design/controls'
 import { useWindowHeight } from 'app/context/measure';
-import emitter from 'app/context/emitter'
+import emitter, { EVENTS } from 'app/context/emitter'
 import Snackbar from 'app/ui/atoms/snackbar'
 import { useIsFocused } from 'app/lib/hooks/router'
 import { useGetScrollValue } from 'app/context/jotai/layout'
@@ -201,7 +201,7 @@ export default function Browse(props) {
     useEffect(() => {
         if (props.no_scroll) return;
 
-        const subscription = emitter.addListener('conductor', (payload) => {
+        const subscription = emitter.addListener(EVENTS.conductor, (payload) => {
             if (!isFocusedRef.current) return;
             if (payload?.action !== 'reset_to_first') return;
 

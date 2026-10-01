@@ -10,7 +10,7 @@ import { Loading } from 'app/customization/loading'
 import { getModalPostTitle } from 'app/customization/functions'
 import { appSetting } from 'app/lib/util';
 import { useModal, useCloseModal, useOpenModalByUrl } from 'app/context/jotai/modal';
-import emitter from 'app/context/emitter';
+import emitter, { EVENTS } from 'app/context/emitter';
 import { confirmDiscardUnsavedFormChanges } from 'app/lib/form/form-helpers';
 import { useTranslation } from 'react-i18next'
 
@@ -180,7 +180,7 @@ export const FormModalHost = () => {
     }, [openModalByUrl]);
 
     useEffect(() => {
-        const subscription = emitter.addListener('link', async () => {
+        const subscription = emitter.addListener(EVENTS.link, async () => {
             const proceed = await confirmDiscardUnsavedFormChanges();
             if (!proceed) return;
             closeModal();

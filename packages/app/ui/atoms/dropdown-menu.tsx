@@ -10,7 +10,7 @@ import Redirect, { type RedirectHandle } from 'app/ui/atoms/redirect';
 import { appSetting } from 'app/lib/util';
 import { SafeMenuTrigger } from 'app/ui/atoms/safe-menu-trigger';
 import DropdownPopup, { DropdownMenuOpenContext, type DropdownButtonProps } from 'app/ui/atoms/dropdown-popup'
-import emitter from 'app/context/emitter';
+import emitter, { EVENTS } from 'app/context/emitter';
 import { components } from 'app/components/registry'
 import { useOpenModalByUrl, useOpenModalWithContent } from 'app/context/jotai/modal';
 import { sanitazeUrl, openExternalLink } from 'app/lib/util';
@@ -250,7 +250,7 @@ function DropdownMenuPopup({
     );
 
     useEffect(() => {
-        const subscription = emitter.addListener('dynamic_menu', (data: { action?: string }) => {
+        const subscription = emitter.addListener(EVENTS.dynamicMenu, (data: { action?: string }) => {
             if (data.action == 'hide') {
                 setIsOpen(false);
             }

@@ -11,7 +11,7 @@ import { useCallback, useMemo, type MouseEvent } from 'react'
 import type { HtmlProps } from './html.types'
 import { useRouter } from 'app/lib/hooks/router'
 import { sanitazeUrl, isExternalUrl } from 'app/lib/util'
-import emitter from 'app/context/emitter'
+import emitter, { EVENTS } from 'app/context/emitter'
 import { preprocessHtml, sanitizeHtml, flattenNestedAnchors, normalizeRenderedHref } from 'app/lib/html-helpers'
 
 /**
@@ -39,7 +39,7 @@ export default function ElementHtml({ customClassName, data, className = '', inn
         const rawHref = anchor.getAttribute('href')
         if (!rawHref) return
 
-        emitter.emit('link', { action: 'pressed' })
+        emitter.emit(EVENTS.link, { action: 'pressed' })
 
         const href = normalizeRenderedHref(rawHref)
         // Bare UNA hrefs (email / domain without a scheme) must not be left to

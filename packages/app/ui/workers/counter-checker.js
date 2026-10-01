@@ -6,13 +6,13 @@ import { useAppState } from 'app/lib/hooks/use-app-state';
 import { fetcher } from 'app/lib/fetcher';
 import { appSetting } from 'app/lib/util';
 import { clearCachedConductorState, markNotificationsConductorStale } from 'app/lib/cache/native-conductor-cache';
-import emitter from 'app/context/emitter';
+import emitter, { EVENTS } from 'app/context/emitter';
 
 function onNotificationsArrived() {
     // Url-only: covers navigator / notif layout keys after normalizeConductorCacheUrl.
     clearCachedConductorState(null, appSetting('notifications', 'url'));
     markNotificationsConductorStale();
-    emitter.emit('notifications', { action: 'arrived' });
+    emitter.emit(EVENTS.notifications, { action: 'arrived' });
 }
 
 const PROFILE_URL = '/api.php?r=system/profile_info/TemplServiceProfiles';

@@ -8,7 +8,7 @@ import Profile from 'app/ui/molecules/profile/profile'
 import CheckBox from 'app/ui/atoms/checkbox'
 import { Button } from 'app/design/controls'
 import { fetcher } from 'app/lib/fetcher'
-import emitter from 'app/context/emitter'
+import emitter, { EVENTS } from 'app/context/emitter'
 import { useTranslation } from 'react-i18next'
 
 function normalizeHistoryItems(data) {
@@ -119,7 +119,7 @@ export default function WikiHistory({
         try {
             const url = '/api.php?r=' + requestUrl + encodeURIComponent(revisions.join(','))
             await fetcher(url)
-            emitter.emit('wiki', { action: 'reload' })
+            emitter.emit(EVENTS.wiki, { action: 'reload' })
             exProps?.onClose?.()
         } finally {
             setSubmitting(false)

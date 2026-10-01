@@ -19,7 +19,7 @@ import { BlockByDataInt as BlockByData } from 'app/components/block';
 import { fetcher } from 'app/lib/fetcher';
 import { appSetting, cn, getLayoutName, getPageContentWidth, getPageData } from 'app/lib/util';
 import { redirectTo, useRouter } from 'app/lib/hooks/router';
-import emitter from 'app/context/emitter';
+import emitter, { EVENTS } from 'app/context/emitter';
 import { useIsDesktop } from 'app/context/measure';
 import Confirm from 'app/ui/molecules/dialogs/confirm';
 import { isFormResponseComplete } from 'app/lib/form/form-helpers';
@@ -640,7 +640,7 @@ export default function ElementTasksList({ data, blockWrapperProps }) {
         const formNames = getFormNamesFromBlock(formBlock);
         if (!formNames.length) return;
         const subscriptions = formNames.map((formName) =>
-            emitter.addListener(`form_${formName}`, (event) => {
+            emitter.addListener(EVENTS.form(formName), (event) => {
                 if (event.action === 'received' && isFormResponseComplete(event.data)) finishFormBlock();
             })
         );

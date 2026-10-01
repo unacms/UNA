@@ -5,7 +5,7 @@ import { useFocusEffect } from 'app/lib/hooks/router'
 import { useCurrentUser } from 'app/context/user';
 import { subscribe } from 'app/ui/atoms/socket';
 import { patchCachedPageDataByUrl } from 'app/lib/cache/native-tab-page-cache';
-import emitter from 'app/context/emitter';
+import emitter, { EVENTS } from 'app/context/emitter';
 
 const ConductorMemo = memo(Conductor, (prev, next) => (
     prev.ts === next.ts && prev.data?.timestamp === next.data?.timestamp
@@ -33,7 +33,7 @@ export default function PageLayoutProfile({ layoutName, data, uri, blocks }) {
     // When the current page was refetched after a connection change, apply it here.
     useEffect(() => {
         const pageUrl = pageData?.url;
-        const subscription = emitter.addListener('page', (payload) => {
+        const subscription = emitter.addListener(EVENTS.page, (payload) => {
             if (payload?.action !== 'updated' || !payload.data) return;
             const nextUrl = payload.data.url;
             if (pageUrl && nextUrl) {

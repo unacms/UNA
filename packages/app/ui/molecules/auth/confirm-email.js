@@ -2,7 +2,7 @@ import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
 import { NeoButton, NeoButtonLink, Input } from 'app/design/controls';
 import { useCurrentUser } from 'app/context/user'
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import Msg from 'app/ui/molecules/dialogs/msg';
 import { fetcher } from 'app/lib/fetcher';
 import { useTranslation } from 'react-i18next';
@@ -25,27 +25,53 @@ export default function ElementConfirmEmail(props) {
     const redirectdRef = useRef();
     const router = useRouter();
     const { t } = useTranslation();
+    // page data the post-confirm refresh started from (props.data comes from layouts)
+    const refreshFromRef = useRef(null);
+
+    // Web, same page: unlock only once the page data is fetched again with the confirmed session,
+    // otherwise the page loaded before confirmation shows up (stale join state etc).
+    useEffect(() => {
+        if (!refreshFromRef.current || props.data === refreshFromRef.current) return;
+        refreshFromRef.current = null;
+        setCurrentUser({ confirmed: true, confirm_pending: false });
+    }, [props.data, setCurrentUser]);
+
     const handleConfirm = async () => {
-        const sRequest = '/api.php?r=system/confirm_email/TemplServiceAccount&params[]=' + inputValue;
+        // second param: we understand { result, redirect } (old apps get plain true)
+        const sRequest = '/api.php?r=system/confirm_email/TemplServiceAccount&params[]=' + inputValue + '&params[]=1';
+        // keep the lock (layouts) while confirming: sockets fired by the confirmation may report a confirmed user first
+        setCurrentUser({ confirm_pending: true });
         const sResponse = await fetcher(sRequest);
-        if (sResponse.data == true) {
-            // Forks may pick the landing page (props.resolveNextUrl, async, falsy = default).
-            const nextUrl = (await props.resolveNextUrl?.()) || resolvePostConfirmUrl(props.url);
+        // true, or { result, redirect } when the server tells where to go after confirmation
+        if (sResponse.data == true || sResponse.data?.result) {
+            const nextUrl = sResponse.data?.redirect || resolvePostConfirmUrl(props.url);
             storageClear();
             clearAllPageCache();
             resetAllTabHistory();
-            setCurrentUser({
-                confirmed: true,
-            });
             if (isWeb) {
-                document.location = nextUrl;
+                const next = new URL(nextUrl, document.location.href);
+                const samePage = next.pathname + next.search === document.location.pathname + document.location.search;
+                if (samePage && props.data) {
+                    // already there (e.g. home showing the right group): refetch instead of a reload
+                    refreshFromRef.current = props.data;
+                    router.refresh();
+                } else if (samePage) {
+                    document.location.reload();
+                } else {
+                    document.location = nextUrl;
+                }
             } else {
+                setCurrentUser({
+                    confirmed: true,
+                    confirm_pending: false,
+                });
                 // Native previously stayed on whatever deep link was under the
                 // confirm lock (often previous account's /g/...), so force a clean route.
                 redirectTo(router, nextUrl, '/tab0');
             }
         }
         else {
+            setCurrentUser({ confirm_pending: false });
             setInputError(true);
         }
     }

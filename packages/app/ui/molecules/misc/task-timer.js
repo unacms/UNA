@@ -4,11 +4,11 @@ import { View, Row } from 'app/design/view';
 import Menu from 'app/components/menu';
 import { fetcher } from 'app/lib/fetcher';
 import { cn } from 'app/lib/util';
-import emitter from 'app/context/emitter';
+import emitter, { EVENTS } from 'app/context/emitter';
 import { Timer } from 'app/ui/atoms/timer';
 import { publishTimerSession } from 'app/lib/task-timer-sync';
 
-const TIMER_EVENT = 'task_timer';
+const TIMER_EVENT = EVENTS.taskTimer;
 const ZERO_TIME = { hours: 0, minutes: 0, seconds: 0 };
 
 const MENU_PARAMS = {

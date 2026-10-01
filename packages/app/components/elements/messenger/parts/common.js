@@ -13,7 +13,7 @@ import Msg from 'app/ui/molecules/dialogs/msg';
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import Profile from 'app/ui/molecules/profile/profile'
 import ElementMsg from 'app/components/elements/msg';
-import emitter from 'app/context/emitter';
+import emitter, { EVENTS } from 'app/context/emitter';
 import { getWindowSafeAreaInsets, useIsFocused, useSafeAreaInsets } from 'app/lib/hooks/router'
 import { useTranslation } from 'react-i18next'
 import {
@@ -367,7 +367,7 @@ export default function Messenger({ defaultConvoId, selectedMenu, convos, fetchC
     }, [jotUpdated]);
 
     const changeConvo = useCallback((convo) => {
-        emitter.emit('editor', { action: 'focus' });
+        emitter.emit(EVENTS.editor, { action: 'focus' });
         setConvoId(convo.id);
         if (isSmallScreenRef.current)
             setPanelsVisible({ convos: false, jots: true })
@@ -377,7 +377,7 @@ export default function Messenger({ defaultConvoId, selectedMenu, convos, fetchC
     }, [syncConvoUrl]);
 
     const showConvo = useCallback(() => {
-        emitter.emit('editor', { action: 'blur' });
+        emitter.emit(EVENTS.editor, { action: 'blur' });
         setPanelsVisible({ convos: true, jots: false })
         if (isWeb && typeof window !== 'undefined')
             window.scrollTo(0, 0);
@@ -390,7 +390,7 @@ export default function Messenger({ defaultConvoId, selectedMenu, convos, fetchC
 
     // Bottom-tab reselect: leave open chat and show conversation list.
     useEffect(() => {
-        const subscription = emitter.addListener('conductor', (payload) => {
+        const subscription = emitter.addListener(EVENTS.conductor, (payload) => {
             if (!isFocusedRef.current) return;
             if (payload?.action !== 'reset_to_first') return;
             if (!(isSmallScreen && panelsVisibleRef.current.jots && !panelsVisibleRef.current.convos)) return;

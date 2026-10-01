@@ -5,7 +5,7 @@ import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import { useOpenModalByUrl } from 'app/context/jotai/modal';
 import { useIsDesktop } from 'app/context/measure';
 import { useBottomSheetData } from 'app/context/bottomsheet';
-import emitter from 'app/context/emitter';
+import emitter, { EVENTS } from 'app/context/emitter';
 import { cn } from 'app/lib/util'
 
 const isWeb = Platform.OS == 'web'
@@ -83,7 +83,7 @@ export default function DynamicMenu({ name, isFixedCount, MenuItem, MenuItemEx, 
     // skips the outer handleSelect that normally closes the native bottomsheet.
     // Close it explicitly from the press paths that actually fire.
     const dismissOverflowMenu = useCallback(() => {
-        emitter.emit('dynamic_menu', { action: 'hide' });
+        emitter.emit(EVENTS.dynamicMenu, { action: 'hide' });
         if (!isWeb) {
             setBottomSheetData(false);
         }

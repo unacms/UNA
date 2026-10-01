@@ -9,7 +9,7 @@ import { useThemeValue } from 'app/design/theme'
 import { appSetting, cn } from 'app/lib/util'
 import { commitEditorHtml, normalizeEditorHtml } from 'app/lib/editor/editor-form'
 import { useEditorFormField } from 'app/lib/form/use-form-field'
-import emitter from 'app/context/emitter'
+import emitter, { EVENTS } from 'app/context/emitter'
 import { mentionsToUnaLinks, unaLinksToMentions, linkifyHtml } from './editor-mention-html'
 import { useEditorMentions } from 'app/lib/editor/use-editor-mentions'
 import { MentionSuggestionsDropdown } from 'app/lib/editor/mention-suggestions-dropdown'
@@ -135,7 +135,7 @@ export default function RftTextEnriched(props) {
 
     // ---- emitter (focus/blur/set_content/insert_inline_image), same as tentap ----
     useEffect(() => {
-        const sub = emitter.addListener('editor', (data) => {
+        const sub = emitter.addListener(EVENTS.editor, (data) => {
             if (!editorRef.current) return
             switch (data.action) {
                 case 'blur':
@@ -253,7 +253,7 @@ export default function RftTextEnriched(props) {
             }
         })
         // html=3 cannot keep <img> in the body; still upload to the files field.
-        emitter.emit(`form_${form_name}`, {
+        emitter.emit(EVENTS.form(form_name), {
             action: 'pasted_images',
             images,
             ...(isLimitedHtml ? { inlinePaste: false } : null),

@@ -8,7 +8,7 @@ import { View } from 'app/design/view'
 import { useTheme, useThemeValue } from 'app/design/theme'
 import { useCSSVariable } from 'uniwind'
 import { appSetting, cn } from 'app/lib/util'
-import emitter from 'app/context/emitter'
+import emitter, { EVENTS } from 'app/context/emitter'
 import { useTranslation } from 'react-i18next'
 
 const inputSettings = appSetting('theme', 'inputs')
@@ -90,7 +90,7 @@ export function MarkdownTextInput({
     }, [externalValue, name, setValue])
 
     useEffect(() => {
-        const sub = emitter.addListener('editor', (data) => {
+        const sub = emitter.addListener(EVENTS.editor, (data) => {
             if (!editorRef.current) return
             if (data.action === 'focus') {
                 editorRef.current.focus()

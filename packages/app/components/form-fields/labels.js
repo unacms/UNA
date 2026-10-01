@@ -4,7 +4,7 @@ import { View, Row } from 'app/design/view'
 import { useState, useEffect , useCallback } from 'react';
 import { Button, Modal, NeoButton } from "app/design/controls";
 import ChkList from 'app/ui/molecules/form-controls/checkbox-list';
-import emitter from 'app/context/emitter';
+import emitter, { EVENTS } from 'app/context/emitter';
 import { LabelButton, wellButtonProps } from 'app/lib/form/form-helpers'
 import FieldWell from './_well'
 import { useFormField } from 'app/lib/form/use-form-field';
@@ -20,7 +20,7 @@ export default function FormFieldLabels(props) {
     const [value2, setValue2] = useState(() => Array.isArray(field.value) ? field.value : []);
 
     useEffect(() => {
-        const subscription = emitter.addListener(`fld_labels_${name}`, (data) => {
+        const subscription = emitter.addListener(EVENTS.fieldLabels(name), (data) => {
             if (data.action == 'add') {
                 setIsModal(true)
             }

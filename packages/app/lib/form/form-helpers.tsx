@@ -4,7 +4,7 @@ import { Platform } from 'react-native';
 import { components } from 'app/components/registry';
 import { NeoButton } from "app/design/controls/neo-button/neo-button";
 import { useTranslation } from 'react-i18next';
-import emitter from 'app/context/emitter';
+import emitter, { EVENTS } from 'app/context/emitter';
 import { appSetting } from 'app/lib/util';
 import { useFormInstanceId } from 'app/context/form-instance';
 import { fetcher } from 'app/lib/fetcher';
@@ -72,7 +72,7 @@ export function trackFormUploadStart(formName: string, formInstanceId: string | 
     const key = uploadFormKey(formName, formInstanceId);
     if (!pendingUploadsByForm.has(key)) pendingUploadsByForm.set(key, new Set());
     pendingUploadsByForm.get(key).add(hash);
-    emitter.emit(`form_${formName}`, {
+    emitter.emit(EVENTS.form(formName), {
         action: 'upload_start',
         formInstanceId,
         hash,
@@ -89,7 +89,7 @@ export function trackFormUploadEnd(formName: string, formInstanceId: string | nu
         set.delete(hash);
         if (set.size === 0) pendingUploadsByForm.delete(k);
     }
-    emitter.emit(`form_${formName}`, {
+    emitter.emit(EVENTS.form(formName), {
         action: 'upload_end',
         formInstanceId,
         hash,
@@ -102,7 +102,7 @@ export function clearFormPendingUploads(formName: string, formInstanceId: string
     const key = uploadFormKey(formName, formInstanceId);
     if (!pendingUploadsByForm.has(key)) return;
     pendingUploadsByForm.delete(key);
-    emitter.emit(`form_${formName}`, {
+    emitter.emit(EVENTS.form(formName), {
         action: 'upload_clear',
         formInstanceId,
     });
@@ -121,7 +121,7 @@ export function useFormUploading(formName: string) {
             return;
         }
         setUploading(formHasPendingUploads(formName, formInstanceId));
-        const subscription = emitter.addListener(`form_${formName}`, (data: any) => {
+        const subscription = emitter.addListener(EVENTS.form(formName), (data: any) => {
             if (data.action === 'upload_start') {
                 // Starts are instance-scoped; ignore other forms' mounts.
                 if (formInstanceId != null && data.formInstanceId !== formInstanceId) return;
@@ -162,7 +162,7 @@ export function isFormUnsavedCloseGuardSkipped(formName: string) {
     return Array.isArray(skipped) && skipped.includes(formName);
 }
 
-export const UNSAVED_FORM_CONFIRM_REQUEST = 'unsaved_form_confirm_request';
+export const UNSAVED_FORM_CONFIRM_REQUEST = EVENTS.unsavedFormConfirm;
 
 const DEFAULT_DISCARD_MESSAGE = 'You have unsaved changes. Close without saving?';
 
@@ -342,7 +342,7 @@ export function PollButton({
             controlSize={resolved.controlSize}
             borderShape={resolved.borderShape}
             tooltip={t('Add Polls')}
-            onPress={() => emitter.emit(`fld_polls_${field_name}`, { action: 'add' })}
+            onPress={() => emitter.emit(EVENTS.fieldPolls(field_name), { action: 'add' })}
             {...rest}
         />
     );
@@ -374,7 +374,7 @@ export function LabelButton({
             controlSize={resolved.controlSize}
             borderShape={resolved.borderShape}
             tooltip={t('Add Labels')}
-            onPress={() => emitter.emit(`fld_labels_${field_name}`, { action: 'add' })}
+            onPress={() => emitter.emit(EVENTS.fieldLabels(field_name), { action: 'add' })}
             {...rest}
         />
     );
@@ -406,7 +406,7 @@ export function FileButton({
             controlSize={resolved.controlSize}
             borderShape={resolved.borderShape}
             tooltip={tooltip ?? t('Add Files')}
-            onPress={() => emitter.emit(`fld_files_${field_name}`, { action: 'add', source: source })}
+            onPress={() => emitter.emit(EVENTS.fieldFiles(field_name), { action: 'add', source: source })}
             {...rest}
         />
     );

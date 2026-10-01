@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import emitter from 'app/context/emitter'
+import emitter, { EVENTS } from 'app/context/emitter'
 import { View, Row } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { InputWithIcons, Button } from 'app/design/controls'
@@ -115,8 +115,8 @@ function SearchAiExtended({ blockWrapperProps, block }) {
             if (emittedRef.current) {
                 // the page's own endpoint may still carry filters this block set earlier
                 // (a session before ranking was turned on), so clear them as well
-                emitter.emit('conductor', { action: 'filters', values: {} })
-                if (rerank) emitter.emit('conductor', { action: 'endpoint', restore: true })
+                emitter.emit(EVENTS.conductor, { action: 'filters', values: {} })
+                if (rerank) emitter.emit(EVENTS.conductor, { action: 'endpoint', restore: true })
                 emittedRef.current = false
             }
             return
@@ -124,8 +124,8 @@ function SearchAiExtended({ blockWrapperProps, block }) {
 
         if (rerank) {
             // the ranked list carries the filters already; leave none on the page's own endpoint
-            emitter.emit('conductor', { action: 'filters', values: {} })
-            emitter.emit('conductor', {
+            emitter.emit(EVENTS.conductor, { action: 'filters', values: {} })
+            emitter.emit(EVENTS.conductor, {
                 action: 'endpoint',
                 request_url: block.results_url,
                 unit: 'general-content-list',
@@ -142,7 +142,7 @@ function SearchAiExtended({ blockWrapperProps, block }) {
             })
         }
         else
-            emitter.emit('conductor', { action: 'filters', values: filters || {} })
+            emitter.emit(EVENTS.conductor, { action: 'filters', values: filters || {} })
 
         emittedRef.current = true
     }, [filters, searchParams, query, keywordField, usePageResults, block.rerank, block.results_url, block.object])

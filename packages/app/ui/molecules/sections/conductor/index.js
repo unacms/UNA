@@ -25,7 +25,7 @@ import { PageHeaderOptions } from 'app/ui/molecules/header/options'
 import { useCurrentUser } from 'app/context/user'
 import Snackbar from 'app/ui/atoms/snackbar'
 import { useBottomSheetData } from 'app/context/bottomsheet'
-import emitter from 'app/context/emitter'
+import emitter, { EVENTS } from 'app/context/emitter'
 import { useIsFocused } from 'app/lib/hooks/router'
 import {
     getCachedConductorState,
@@ -182,7 +182,7 @@ export function Conductor({
             },
             // In-app links (`emitter`) may target another tab of this same page.
             subscribeExternalHref: (onHref) => {
-                const sub = emitter.addListener('link', (payload) => {
+                const sub = emitter.addListener(EVENTS.link, (payload) => {
                     if (!isFocusedRef.current) return
                     const href = payload?.href
                     if (!href) return

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import emitter from 'app/context/emitter'
+import emitter, { EVENTS } from 'app/context/emitter'
 import { useGetScrollValue } from 'app/context/jotai/layout'
 import { consumeNotificationsConductorStale } from 'app/lib/cache/native-conductor-cache'
 import { setListScrollOffset } from 'app/lib/cache/list-scroll-cache'
@@ -8,12 +8,12 @@ import { AT_TOP_SCROLL_THRESHOLD } from './native-ui'
 /**
  * Pull-to-refresh + app-wide emitter commands (section 4 of `index.js`).
  *
- * Four commands land here. All of them are focus-gated: tab screens stay
+ * Three commands land here. All of them are focus-gated: tab screens stay
  * mounted when blurred, so an ungated handler would refresh a list the user
  * is not looking at.
  *
  *   notifications/arrived     → refresh, but only on the notifications tab
- *   list/refresh, page/reload → plain refresh
+ *   page/reload               → plain refresh
  *   conductor/reset_to_first  → consecutive tap on the active bottom tab
  *                               while already at that tab's root: first go to
  *                               tab 0, then scroll to top, and only then refresh
@@ -52,7 +52,7 @@ export function useConductorCommands({
     // CounterChecker emits when unread grows; only act if notifications list is focused.
     // Keep the badge until the user leaves the tab (tabs/navigator still clear on enter).
     useEffect(() => {
-        const notifications = emitter.addListener('notifications', (payload) => {
+        const notifications = emitter.addListener(EVENTS.notifications, (payload) => {
             if (payload?.action !== 'arrived') return
             if (!isFocusedRef.current) return
             const unit = routesRef.current?.[indexRef.current]?.endpoint?.unit
@@ -61,19 +61,13 @@ export function useConductorCommands({
             consumeNotificationsConductorStale()
             onStartRefresh()
         })
-        const list = emitter.addListener('list', (payload) => {
-            if (!isFocusedRef.current) return
-            if (payload?.action === 'refresh') {
-                onStartRefresh()
-            }
-        })
-        const page = emitter.addListener('page', (payload) => {
+        const page = emitter.addListener(EVENTS.page, (payload) => {
             if (!isFocusedRef.current) return
             if (payload?.action === 'reload') {
                 onStartRefresh()
             }
         })
-        const conductor = emitter.addListener('conductor', (payload) => {
+        const conductor = emitter.addListener(EVENTS.conductor, (payload) => {
             if (!isFocusedRef.current) return
             if (payload?.action !== 'reset_to_first') return
 
@@ -98,7 +92,6 @@ export function useConductorCommands({
         })
         return () => {
             notifications.remove()
-            list.remove()
             page.remove()
             conductor.remove()
         }

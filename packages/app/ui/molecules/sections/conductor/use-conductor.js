@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react'
-import emitter from 'app/context/emitter'
+import emitter, { EVENTS } from 'app/context/emitter'
 import { deepEqual } from 'app/lib/util'
 import {
     partitionLeftColumn,
@@ -64,7 +64,7 @@ export function useLeftColumn({
  * Blocks that are not the filter form (e.g. the AI search block) set the same
  * filters through the emitter:
  *
- *   emitter.emit('conductor', { action: 'filters', values: { cat: [2], price: ['', '50'] } })
+ *   emitter.emit(EVENTS.conductor, { action: 'filters', values: { cat: [2], price: ['', '50'] } })
  *
  * `values` is a plain { input name: value } map, exactly what the search form
  * would submit; `merge: true` keeps the filters already applied.
@@ -72,8 +72,8 @@ export function useLeftColumn({
  * A block can also take over the list itself, when its own endpoint returns results the page's
  * block cannot produce (semantically ranked search, for one):
  *
- *   emitter.emit('conductor', { action: 'endpoint', request_url, params, unit, module })
- *   emitter.emit('conductor', { action: 'endpoint', restore: true })
+ *   emitter.emit(EVENTS.conductor, { action: 'endpoint', request_url, params, unit, module })
+ *   emitter.emit(EVENTS.conductor, { action: 'endpoint', restore: true })
  *
  * The page's own endpoint is kept and restored on `restore`, so clearing the query brings the
  * original list back.
@@ -181,7 +181,7 @@ export function useConductorFilters({
 
     // Filters and list source coming from a block instead of the filter form.
     useEffect(() => {
-        const sub = emitter.addListener('conductor', (payload) => {
+        const sub = emitter.addListener(EVENTS.conductor, (payload) => {
             if (isFocusedRef && !isFocusedRef.current) return
 
             if (payload?.action === 'endpoint') {

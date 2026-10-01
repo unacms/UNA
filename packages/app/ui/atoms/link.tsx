@@ -7,7 +7,7 @@ import { useCurrentUser } from 'app/context/user';
 import { appSetting, sanitazeUrl, cn } from 'app/lib/util';
 import { useMemo, useCallback } from 'react';
 import { Text } from 'app/design/typography'
-import emitter from 'app/context/emitter';
+import emitter, { EVENTS } from 'app/context/emitter';
 import type { LinkProps } from './link.types';
 const ThemeLinkSizes = appSetting('theme', 'link_sizes');
 const ThemeLinkStyles = appSetting('theme', 'link_styles');
@@ -39,7 +39,7 @@ export default function ElementLink({
 
     const handlePress = useCallback((e: any) => {
         if (haptics) FeedbackHaptics(haptics);
-        emitter.emit('link', { action: 'pressed', href: finalHref });
+        emitter.emit(EVENTS.link, { action: 'pressed', href: finalHref });
         onPress?.(e); 
     }, [haptics, finalHref, onPress]);
 

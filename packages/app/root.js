@@ -6,7 +6,7 @@ import { clearClientSessionState } from 'app/lib/platform/session-cleanup';
 import { useRouter, redirectTo } from 'app/lib/hooks/router'
 import Layouts from 'app/components/layouts';
 import { useSetScrollDirection, useSetScrollValue } from 'app/context/jotai/layout';
-import emitter from 'app/context/emitter';
+import emitter, { EVENTS } from 'app/context/emitter';
 import { Platform } from 'react-native'
 import { useWindowScrollNavigationSync } from 'app/lib/navigation/use-window-scroll-navigation-sync';
 
@@ -41,7 +41,7 @@ export function Root(props) {
         if (Platform.OS === 'web' && typeof window !== 'undefined') {
             window.location.reload();
         } else {
-            emitter.emit('page', { action: 'reload' });
+            emitter.emit(EVENTS.page, { action: 'reload' });
         }
     }, [currentUser?.id]);
 

@@ -40,7 +40,7 @@ import Search from 'app/ui/molecules/sections/search'
 import DynamicMenu from 'app/components/nav/menu-dynamic'
 import { layoutForList } from 'app/customization/functions'
 import FormModal, { handleFormModal } from 'app/ui/molecules/dialogs/form-modal'
-import emitter from 'app/context/emitter'
+import emitter, { EVENTS } from 'app/context/emitter'
 import CoverMorph from 'app/components/elements/covers/cover-morph'
 import { CoverMenuMore, CoverMenu } from 'app/components/elements/covers/menu-cover'
 import {
@@ -648,7 +648,7 @@ const TabMenuItemEx = memo(function TabMenuItemEx({ item }) {
     const addonContent = <Addon item={item} />
 
     const handlePress = () => {
-        emitter.emit('dynamic_menu', { action: 'hide' })
+        emitter.emit(EVENTS.dynamicMenu, { action: 'hide' })
         onSelect(item)
     }
 

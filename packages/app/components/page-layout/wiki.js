@@ -16,7 +16,7 @@ import { BlockByData } from 'app/components/block'
 import DropdownPopup from 'app/ui/atoms/dropdown-popup'
 import { useHeaderHeight, DEFAULT_HEADER_HEIGHT } from 'app/context/jotai/layout'
 import { PageHeaderOptions } from 'app/ui/molecules/header/options'
-import emitter from 'app/context/emitter'
+import emitter, { EVENTS } from 'app/context/emitter'
 import { parseWikiFrontMatter } from 'app/lib/markdown/frontmatter'
 import { wikiCacheKey } from 'app/lib/cache/wiki-page-cache'
 import {
@@ -179,7 +179,7 @@ function PageContentWiki({ data, scrollRef, url }) {
         setPendingScrollId(id)
 
         // Dismiss mobile DropdownPopup menus before scrolling.
-        emitter.emit('link', { action: 'pressed' })
+        emitter.emit(EVENTS.link, { action: 'pressed' })
 
         const offset = getWikiHeaderOffset(headerHeight)
 

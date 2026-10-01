@@ -3,7 +3,7 @@ import { Pressable } from 'app/design/view'
 import { useRouter } from 'app/lib/hooks/router'
 import { useCallback } from 'react';
 import { appSetting, cn, sanitazeUrl, isExternalUrl } from 'app/lib/util'
-import emitter from 'app/context/emitter';
+import emitter, { EVENTS } from 'app/context/emitter';
 import type { LinkProps } from './link.types';
 
 // Variants and sizes from theme
@@ -41,7 +41,7 @@ export default function ElementLink({
     const accessibleLabel = alt || (typeof children === 'string' ? children : undefined);
 
     const handlePress = useCallback((event?: { preventDefault?: () => void }) => {
-        emitter.emit('link', { action: 'pressed', href });
+        emitter.emit(EVENTS.link, { action: 'pressed', href });
         if (onPress) onPress(event);
         if (href) {
             try {
@@ -59,7 +59,7 @@ export default function ElementLink({
     }, [href, router, onPress]);
 
     const handleLinkClick = useCallback(() => {
-        emitter.emit('link', { action: 'pressed', href });
+        emitter.emit(EVENTS.link, { action: 'pressed', href });
         if (onClick) onClick();
     }, [onClick, target, href]);
 

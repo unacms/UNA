@@ -9,7 +9,7 @@ import Profile from 'app/ui/molecules/profile/profile'
 import { FileButton } from 'app/lib/form/form-helpers'
 import { useWindowHeight, useIsDesktop } from 'app/context/measure'
 import { useSound } from 'app/lib/hooks/use-sound'
-import emitter from 'app/context/emitter'
+import emitter, { EVENTS } from 'app/context/emitter'
 import { useTranslation } from 'react-i18next'
 
 export default function FormMessenger(props) {
@@ -42,10 +42,10 @@ export default function FormMessenger(props) {
         if (formContext.formState.isSubmitted) {
             playSound()
             formContext.setValue('message', '')
-            emitter.emit(`editor`, { action: 'set_content', value: '' })
-            emitter.emit(`fld_files_files`, { action: 'clear' })
+            emitter.emit(EVENTS.editor, { action: 'set_content', value: '' })
+            emitter.emit(EVENTS.fieldFiles('files'), { action: 'clear' })
             if (!isWeb) {
-                emitter.emit('editor', { action: 'blur' })
+                emitter.emit(EVENTS.editor, { action: 'blur' })
                 Keyboard.dismiss()
             }
         }

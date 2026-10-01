@@ -5,7 +5,7 @@ import { queryClient } from 'app/lib/platform/query-client'
 import { appSetting, storageClear } from 'app/lib/util'
 import { usePrefsStore } from 'app/context/prefs'
 import { useBottomSheetStore } from 'app/context/bottomsheet'
-import emitter from 'app/context/emitter'
+import emitter, { EVENTS } from 'app/context/emitter'
 import { logoutOneSignal } from 'app/lib/platform/one-signal'
 
 /**
@@ -32,9 +32,9 @@ export function clearClientSessionState() {
     }
 
     dismissNavigationOverlays()
-    emitter.emit('link', { action: 'pressed' })
-    emitter.emit('dynamic_menu', { action: 'hide' })
-    emitter.emit('editor', { action: 'blur' })
+    emitter.emit(EVENTS.link, { action: 'pressed' })
+    emitter.emit(EVENTS.dynamicMenu, { action: 'hide' })
+    emitter.emit(EVENTS.editor, { action: 'blur' })
 
     void logoutOneSignal()
 }

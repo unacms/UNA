@@ -5,7 +5,7 @@ import { useFormContext } from 'react-hook-form';
 import { NeoButton, Hidden } from 'app/design/controls';
 import { View, Row } from 'app/design/view';
 import { appSetting, cn } from 'app/lib/util';
-import emitter from 'app/context/emitter';
+import emitter, { EVENTS } from 'app/context/emitter';
 import { useFormInstanceId } from 'app/context/form-instance';
 import { useFormUploading } from 'app/lib/form/form-helpers';
 import { useFormField } from 'app/lib/form/use-form-field';
@@ -102,7 +102,7 @@ export default function FormFieldSubmit(props) {
 
     useEffect(() => {
         let timeoutId;
-        const subscription = emitter.addListener(`form_${form_name}`, (data) => {
+        const subscription = emitter.addListener(EVENTS.form(form_name), (data) => {
             if (formInstanceId != null && data.formInstanceId !== formInstanceId) return;
             if (data.action == 'submited') {
                 setIsSumbitting(true);

@@ -3,7 +3,7 @@ import { Modal } from 'app/design/controls';
 import { View } from 'app/design/view';
 import { fetcher } from 'app/lib/fetcher';
 import { BlockByDataInt as BlockByData } from 'app/components/block';
-import emitter from 'app/context/emitter';
+import emitter, { EVENTS } from 'app/context/emitter';
 import MenuItemActionBase from 'app/lib/menu-item-helpers';
 
 async function openModalFromRequest(oProps, setFormBlock) {
@@ -33,7 +33,7 @@ export default function MenuItemModal(oProps) {
     // Emit is a no-op when no wiki listener is mounted.
     const handleFormEmpty = useCallback(() => {
         setFormBlock(null);
-        emitter.emit('wiki', { action: 'reload' });
+        emitter.emit(EVENTS.wiki, { action: 'reload' });
     }, []);
 
     const formModal = formBlock ? (

@@ -4,7 +4,7 @@
  */
 import { Platform } from 'react-native';
 import { fetcher } from 'app/lib/fetcher';
-import emitter from 'app/context/emitter';
+import emitter, { EVENTS } from 'app/context/emitter';
 import { decodeText } from 'app/lib/util/html-text';
 import {
     canonicalTaskStatus,
@@ -14,7 +14,7 @@ import {
     statusSortIndex,
 } from 'app/lib/tasks-meta';
 
-export const TASKS_LIST_EVENT = 'tasks_list';
+export const TASKS_LIST_EVENT = EVENTS.tasksList;
 export const TASKS_HOME_PATH = '/tasks-home';
 
 const isWeb = Platform.OS === 'web';
@@ -782,7 +782,7 @@ export function taskViewHref(url) {
     return path.startsWith('/') ? path : `/${path}`;
 }
 
-const BROWSER_LOCATION_EVENT = 'tasks_browser_location';
+const BROWSER_LOCATION_EVENT = EVENTS.tasksBrowserLocation;
 let historyPatched = false;
 
 function patchHistoryLocationEvents() {

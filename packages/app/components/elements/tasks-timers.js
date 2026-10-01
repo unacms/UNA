@@ -6,7 +6,7 @@ import BrowseSimple from 'app/components/elements/browse-simple';
 import { Button } from 'app/design/controls';
 import { components } from 'app/components/registry';
 import { fetcher } from 'app/lib/fetcher';
-import emitter from 'app/context/emitter';
+import emitter, { EVENTS } from 'app/context/emitter';
 
 /** Payload is either `{ sections: [...] }` or a bare sections array. */
 function getSections(data) {
@@ -38,7 +38,7 @@ export default function ElementTasksTimers({ data, blockWrapperProps }) {
 
     useEffect(() => {
         // A logged / cleared timer disappears from the list without a refetch.
-        const subscription = emitter.addListener('task_timer', (event) => {
+        const subscription = emitter.addListener(EVENTS.taskTimer, (event) => {
             if (event.action === 'log' || event.action === 'clear') {
                 setTimersData((prev) => removeTimer(prev, event.id));
             }

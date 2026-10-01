@@ -24,7 +24,7 @@ import { StarsView } from 'app/ui/atoms/stars'
 import Loading from 'app/ui/atoms/loading'
 import { Icon } from 'app/ui/atoms/icon'
 import { usePulseOne } from 'app/lib/hooks/use-pulse-once'
-import emitter from 'app/context/emitter';
+import emitter, { EVENTS } from 'app/context/emitter';
 import { CardList } from 'app/ui/molecules/page/card'
 import { getPageData } from 'app/lib/util';
 import FormModal from 'app/ui/molecules/dialogs/form-modal';
@@ -102,7 +102,7 @@ function UnitCommentsDefault(props) {
                 props.handleReply(data)
             }
             else {
-                emitter.emit(`comment_${module}_${objectId}`, { action: 'reply_comment', data: data });
+                emitter.emit(EVENTS.commentThread(module, objectId), { action: 'reply_comment', data: data });
             }
         },
         [props.handleReply]
@@ -500,7 +500,7 @@ const MenuManage_ = memo(
                         cmt_id +
                         '}'
                     )
-                    emitter.emit(`comment_${module}_${cmt_object_id}`, { action: 'remove_content', data: { id: cmt_id } });
+                    emitter.emit(EVENTS.commentThread(module, cmt_object_id), { action: 'remove_content', data: { id: cmt_id } });
                     //setViewState({ view: 'deleted' })
                     // props.handleDelete()
                     break

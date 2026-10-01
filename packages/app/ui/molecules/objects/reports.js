@@ -19,7 +19,7 @@ import { appSetting } from 'app/lib/util';
 import {
     objectRequest,
 } from 'app/ui/molecules/objects/helpers';
-import emitter from 'app/context/emitter';
+import emitter, { EVENTS } from 'app/context/emitter';
 import Form from 'app/components/form';
 import { components } from 'app/components/registry';
 import Profile from 'app/ui/molecules/profile/profile';
@@ -264,7 +264,7 @@ export default function ElementReports(props) {
                 applyActionResponse(resolveActionPayload(response));
 
                 if (values?.sys == 'bx_tasks_time') {
-                    emitter.emit('task_timer', {
+                    emitter.emit(EVENTS.taskTimer, {
                         id: values.timer_id,
                         action: 'log',
                     });

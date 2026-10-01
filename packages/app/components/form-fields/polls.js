@@ -4,7 +4,7 @@ import { Button, Modal } from "app/design/controls";
 import { useState, useEffect, useCallback } from 'react';
 import Form from 'app/components/elements/form';
 import useFetchForm from 'app/lib/hooks/use-fetch-form'
-import emitter from 'app/context/emitter';
+import emitter, { EVENTS } from 'app/context/emitter';
 import { PollItem } from 'app/components/elements/entity-poll';
 import { useFormField } from 'app/lib/form/use-form-field';
 import { useTranslation } from 'react-i18next';
@@ -38,7 +38,7 @@ export default function FormFieldPolls(props) {
     }, [dynamicData]);
 
     useEffect(() => {
-        const subscription = emitter.addListener(`fld_polls_${name}`, (data) => {
+        const subscription = emitter.addListener(EVENTS.fieldPolls(name), (data) => {
             if (data.action == 'add') {
                 showSelect()
             }
@@ -86,7 +86,7 @@ export default function FormFieldPolls(props) {
                 className="mt-4"
                 title={t('Add Poll')}
                 onPress={() => {
-                    emitter.emit(`fld_polls_${name}`, { action: 'add' });
+                    emitter.emit(EVENTS.fieldPolls(name), { action: 'add' });
                 }}
             />}
         </Field>

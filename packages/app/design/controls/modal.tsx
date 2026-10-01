@@ -8,7 +8,7 @@ import { RemoveScroll } from 'react-remove-scroll';
 import { useStableSafeAreaInsets } from 'app/lib/hooks/router'
 import { useIsDesktop, useActualWindowHeight } from 'app/context/measure';
 import { NeoButton } from 'app/design/controls/neo-button/neo-button';
-import emitter from 'app/context/emitter';
+import emitter, { EVENTS } from 'app/context/emitter';
 import { confirmDiscardUnsavedFormChanges } from 'app/lib/form/form-helpers';
 import { ModalKbAwareScroll } from 'app/ui/atoms/kb-avoiding-view';
 import { pushFormEnsureVisibleHandler, scrollContainerByDelta } from 'app/lib/form/form-ensure-visible';
@@ -188,7 +188,7 @@ export function Modal({
     }, [onRequestClose, onClose, skipUnsavedGuard]);
 
     useEffect(() => {
-        const subscription = emitter.addListener('link', (data: { action?: string }) => {
+        const subscription = emitter.addListener(EVENTS.link, (data: { action?: string }) => {
             if (data.action == 'pressed') {
                 tryClose();
             }

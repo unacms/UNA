@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { getPageData } from 'app/lib/util';
 import { BlockByDataInt as BlockByData } from 'app/components/block';
 import Page from 'app/ui/molecules/page/page'
-import emitter from 'app/context/emitter'
+import emitter, { EVENTS } from 'app/context/emitter'
 
 export default function PageByUrl({ url }) {
 
@@ -21,7 +21,7 @@ export default function PageByUrl({ url }) {
     }, [url]);
 
     useEffect(() => {
-        const subscription = emitter.addListener('page', (payload) => {
+        const subscription = emitter.addListener(EVENTS.page, (payload) => {
             if (payload?.action !== 'reload') return;
             const currentUrl = urlRef.current;
             if (!currentUrl) return;

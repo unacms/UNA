@@ -20,7 +20,7 @@ import {
     isSameItemsForUniList
 } from 'app/lib/browse-query'
 import Snackbar from 'app/ui/atoms/snackbar'
-import emitter from 'app/context/emitter'
+import emitter, { EVENTS } from 'app/context/emitter'
 import { appStatic } from 'app/lib/app-static';
 import { ProfileDisplayName } from 'app/customization/functions';
 
@@ -53,7 +53,7 @@ const FADE_SURFACE_CLASS = {
 /** EnrichedTextInput keeps first responder unless explicitly blurred (unlike plain TextInput). */
 function dismissCommentEditorKeyboard() {
     if (Platform.OS === 'web') return;
-    emitter.emit('editor', { action: 'blur' });
+    emitter.emit(EVENTS.editor, { action: 'blur' });
     Keyboard.dismiss();
 }
 
@@ -186,14 +186,14 @@ export function CommentsBrowse({
         const sub3 = subscribe('cmts_' + browseParams.module + '_' + browseParams.object_id, 'comment_deleted', refetch);
         
 
-        const subscription = emitter.addListener(`page`, (data) => {
+        const subscription = emitter.addListener(EVENTS.page, (data) => {
             if (data.action == 'reload') {
                 refetchRef.current.skipToast = true
                 refetch();
             }
         })
 
-        const subscription2 = emitter.addListener(`comment_${baseParams.module}_${baseParams.object_id}`, (data) => {
+        const subscription2 = emitter.addListener(EVENTS.commentThread(baseParams.module, baseParams.object_id), (data) => {
             if (data.action == 'remove_content') {
                 dispatch({ type: 'REMOVE_ITEM', id: data.data.id })
                 if (refetchRef.current?.prevItems) {
@@ -716,7 +716,7 @@ function CommentsFormInner ({ form: initialForm, requestUrl, module, objectId, i
 
 
     useEffect(() => {
-        const subscription = emitter.addListener(`comment_${module}_${objectId}`, (data) => {
+        const subscription = emitter.addListener(EVENTS.commentThread(module, objectId), (data) => {
             if (data.action == 'reply_comment') {
                 setFormData({
                     text: stripTags(data.data.cmt_text),
@@ -728,7 +728,7 @@ function CommentsFormInner ({ form: initialForm, requestUrl, module, objectId, i
             }
         })
 
-        const subscription2 = emitter.addListener(`comment`, (data) => {
+        const subscription2 = emitter.addListener(EVENTS.comment, (data) => {
             if (data.action == 'send') {
                 setFormData({})
             }
@@ -781,7 +781,7 @@ function CommentsFormInner ({ form: initialForm, requestUrl, module, objectId, i
             }));
 
             if (mentionText) {
-                emitter.emit('editor', { action: 'set_content', value: mentionText });
+                emitter.emit(EVENTS.editor, { action: 'set_content', value: mentionText });
             }
 
             // Direct bridge focus after reply banner + content settle.
@@ -790,7 +790,7 @@ function CommentsFormInner ({ form: initialForm, requestUrl, module, objectId, i
                 if (cancelled) return;
                 setTimeout(() => {
                     if (cancelled) return;
-                    emitter.emit('editor', { action: 'focus' });
+                    emitter.emit(EVENTS.editor, { action: 'focus' });
                 }, 50);
             });
         };
@@ -805,8 +805,7 @@ function CommentsFormInner ({ form: initialForm, requestUrl, module, objectId, i
 
     useEffect(() => {
         if (dynamicData?.data?.browse && dynamicData?.data?.browse?.new?.[0]) {
-            emitter.emit(`comment_${module}_${objectId}`, { action: 'new_content', data: dynamicData.data.browse.data.data[0]['i' + dynamicData.data.browse.new[0]] });
-            emitter.emit(`comments`, { action: 'new_content', data: dynamicData.data, item: dynamicData.data.browse.data.data[0]['i' + dynamicData.data.browse.new[0]] });
+            emitter.emit(EVENTS.commentThread(module, objectId), { action: 'new_content', data: dynamicData.data.browse.data.data[0]['i' + dynamicData.data.browse.new[0]] });
             handleCancel() 
         }
     }, [dynamicData]);
@@ -830,7 +829,7 @@ function CommentsFormInner ({ form: initialForm, requestUrl, module, objectId, i
                 }
             }
         }));
-        emitter.emit('editor', { action: 'set_content', value: '' });
+        emitter.emit(EVENTS.editor, { action: 'set_content', value: '' });
     }
 
     const onFormSubmit = (formData, d) => {

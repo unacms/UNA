@@ -1,6 +1,6 @@
 import { Platform } from 'react-native';
 import { usePathname } from 'app/lib/hooks/router';
-import emitter from 'app/context/emitter';
+import emitter, { EVENTS } from 'app/context/emitter';
 import { appSetting } from 'app/lib/util';
 import { useBottomSheetStore } from 'app/context/bottomsheet';
 import { getTabKeyFromPathname, parseTabKey } from 'app/lib/navigation/tab-path';
@@ -19,9 +19,9 @@ export function dismissNavigationOverlays() {
     if (hadBottomSheet) {
         useBottomSheetStore.getState().setBottomSheetData(null);
     }
-    emitter.emit('link', { action: 'pressed' });
-    emitter.emit('dynamic_menu', { action: 'hide' });
-    emitter.emit('editor', { action: 'blur' });
+    emitter.emit(EVENTS.link, { action: 'pressed' });
+    emitter.emit(EVENTS.dynamicMenu, { action: 'hide' });
+    emitter.emit(EVENTS.editor, { action: 'blur' });
     return hadBottomSheet;
 }
 

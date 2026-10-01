@@ -7,7 +7,7 @@ import { Appearance, Platform } from 'react-native'
 import * as RNLocalize from "react-native-localize";
 import { fetcher } from 'app/lib/fetcher'
 import { changeI18nLanguage } from 'app/lib/i18n-resources'
-import emitter from 'app/context/emitter';
+import emitter, { EVENTS } from 'app/context/emitter';
 import { clearAllPageCache } from 'app/lib/cache/clear-page-cache';
 
 const STORAGE_KEY = 'layout-settings';
@@ -212,7 +212,7 @@ export const useLayoutSettings = () => {
                 window.location.reload();
             } else {
                 clearAllPageCache();
-                emitter.emit('page', { action: 'reload' });
+                emitter.emit(EVENTS.page, { action: 'reload' });
             }
         }, [isWeb]
     );

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from 'react'
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
 import { appSetting } from 'app/lib/util'
-import emitter from 'app/context/emitter'
+import emitter, { EVENTS } from 'app/context/emitter'
 import {
     refetchUniListReducer,
     isSameItemsForUniList,
@@ -114,7 +114,7 @@ export function useUniListQuery({
     useEffect(() => {
         if (listenPageReload !== true) return undefined
 
-        const subscription = emitter.addListener('page', (data: { action?: string }) => {
+        const subscription = emitter.addListener(EVENTS.page, (data: { action?: string }) => {
             if (data.action == 'reload') {
                 refetchRef.current.skipToast = true
                 refetch()
@@ -126,7 +126,7 @@ export function useUniListQuery({
     useEffect(() => {
         if (listenFeed !== true) return undefined
 
-        const subscription = emitter.addListener('feed', (data: any) => {
+        const subscription = emitter.addListener(EVENTS.feed, (data: any) => {
             const cacheKey = qKeyRef.current
 
             if (data.action == 'remove_content') {

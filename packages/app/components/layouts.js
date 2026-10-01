@@ -3,7 +3,7 @@ import Layout from 'app/components/layout';
 import { useCurrentUser, isWebAuthReady } from 'app/context/user'
 import { components } from 'app/components/registry';
 import { appSetting, getLayoutName, getPageContentPaddingTiers, getPageContentWidth, getPageData, strToObj } from 'app/lib/util'
-import emitter from 'app/context/emitter';
+import emitter, { EVENTS } from 'app/context/emitter';
 import { responsiveClasses } from 'app/lib/responsive-classes'
 import Cell from 'app/components/cell';
 import { Row } from 'app/design/view'
@@ -54,13 +54,13 @@ export default function Layouts({ path, data }) {
 
     // When connections change, refetch the current page and pass JSON to listeners.
     useEffect(() => {
-        const subscription = emitter.addListener('connections', async (payload) => {
+        const subscription = emitter.addListener(EVENTS.connections, async (payload) => {
             if (payload?.action !== 'changed' || payload?.reload === false) return;
             const pageUrl = urlRef.current;
             if (!pageUrl) return;
             const sResponse = await getPageData(pageUrl);
             if (sResponse?.data) {
-                emitter.emit('page', { action: 'updated', data: sResponse.data });
+                emitter.emit(EVENTS.page, { action: 'updated', data: sResponse.data });
             }
         });
         return () => subscription.remove();
@@ -151,8 +151,9 @@ function PageLayoutContent({ layout, data }) {
     }
 
     const ConfirmEmail = components['molecule']['confirm_email']
-    if (currentUser && !currentUser.confirmed && appSetting('layout', 'lock_unconfirmed')) {
-        return <ConfirmEmail url={data.url} />;
+    // confirm_pending: email just confirmed, page data not refetched yet (sockets may already report a confirmed user)
+    if (currentUser && (!currentUser.confirmed || currentUser.confirm_pending) && appSetting('layout', 'lock_unconfirmed')) {
+        return <ConfirmEmail url={data.url} data={data} />;
     }
 
     if ((hasProfileInformer || currentUser?.membership==2 && data.uri =='home') && appSetting('layout', 'lock_no_profile')) {

@@ -10,7 +10,7 @@ import { Pressable, ScrollView, View } from 'app/design/view'
 import { RemoveScroll } from 'react-remove-scroll';
 import { appSetting } from 'app/lib/util';
 import { useIsDesktop, useWindowSize } from 'app/context/measure';
-import emitter from 'app/context/emitter';
+import emitter, { EVENTS } from 'app/context/emitter';
 import { ButtonRef, NeoButtonRef } from 'app/design/controls'
 import type { ComponentType } from 'react';
 
@@ -133,7 +133,7 @@ export default function DropdownPopup({
     const isRealOpen = isControlledOutside ? open : isOpen;
 
     useEffect(() => {
-        const subscription = emitter.addListener('link', (data: { action?: string }) => {
+        const subscription = emitter.addListener(EVENTS.link, (data: { action?: string }) => {
             if (data.action == 'pressed') {
                 // Close both controlled and uncontrolled popups (e.g. wiki mobile nav).
                 if (isControlledOutside) {

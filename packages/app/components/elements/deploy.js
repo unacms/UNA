@@ -8,7 +8,7 @@ import { Row, View } from 'app/design/view';
 import { Text } from 'app/design/typography';
 import Confirm from 'app/ui/molecules/dialogs/confirm';
 import Badge from 'app/ui/molecules/profile/badge';
-import emitter from 'app/context/emitter';
+import emitter, { EVENTS } from 'app/context/emitter';
 import Link from 'app/ui/atoms/link';
 import { looksLikeHtml } from 'app/lib/util';
 import { isFormResponseComplete } from 'app/lib/form/form-helpers';
@@ -125,7 +125,7 @@ export default function ElementDeploy({ data, blockWrapperProps, url }) {
         if (!formNames.length) return;
 
         const subscriptions = formNames.map((formName) =>
-            emitter.addListener(`form_${formName}`, (event) => {
+            emitter.addListener(EVENTS.form(formName), (event) => {
                 if (event.action !== 'received') return;
                 if (!shouldCloseAfterFormResponse(event.data)) return;
 

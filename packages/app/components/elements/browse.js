@@ -35,7 +35,7 @@ import Link from 'app/ui/atoms/link'
 import Galery from 'app/ui/molecules/content/gallery'
 import { Button } from 'app/design/controls'
 import { useWindowHeight } from 'app/context/measure';
-import emitter from 'app/context/emitter'
+import emitter, { EVENTS } from 'app/context/emitter'
 import Snackbar from 'app/ui/atoms/snackbar'
 import DropdownPopup from 'app/ui/atoms/dropdown-popup'
 import { BlockWrapper } from 'app/components/block-wrapper'
@@ -236,20 +236,11 @@ export default function Browse(props) {
         };
     }, [refetch, props.data?.unit])
 
-    useEffect(() => {
-        const subscription = emitter.addListener('list', (payload) => {
-            if (payload?.action === 'refresh') {
-                refetch();
-            }
-        });
-        return () => subscription.remove();
-    }, [refetch]);
-
     // Bottom-tab reselect (same event as Conductor): scroll to top, or reload if already at top.
     useEffect(() => {
         if (props.data?.unit !== 'feed' || isOneLine || isOnePage) return;
 
-        const subscription = emitter.addListener('conductor', (payload) => {
+        const subscription = emitter.addListener(EVENTS.conductor, (payload) => {
             if (!isFocusedRef.current) return;
             if (payload?.action !== 'reset_to_first') return;
 
