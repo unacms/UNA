@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { Dimensions } from 'react-native';
 import { appSetting, getBreakpoint, LAYOUT_BREAKPOINTS } from 'app/lib/util';
-import { useState, useEffect, useLayoutEffect } from 'react';
+import { useState, useEffect, useSyncExternalStore } from 'react';
 import { Platform } from 'react-native'
 const DESKTOP_KEY = appSetting('layout', 'tablet_mode_from') || 'lg';
 const DESKTOP_FROM = LAYOUT_BREAKPOINTS[DESKTOP_KEY as keyof typeof LAYOUT_BREAKPOINTS] ?? LAYOUT_BREAKPOINTS.lg;
@@ -78,29 +78,27 @@ export const useActualWindowHeight = () => {
 
 
 // SSR always renders as desktop (window width is 0 on the server, see `isDesktop` above).
-// On web the first client render must return the same value as SSR, otherwise components
+// On web every hydrating render must return the same value as SSR, otherwise components
 // branching on `useIsDesktop()` (e.g. PageHeader's collapsible header) produce hydration
 // mismatches — which in Next 16 / React 19.2 dev can cascade into
 // "RangeError: Maximum call stack size exceeded" during hydration recovery.
-let didHydrate = Platform.OS !== 'web';
-const useHydrated = () => {
-    const [hydrated, setHydrated] = useState(didHydrate);
-    useLayoutEffect(() => {
-        if (!hydrated) {
-            didHydrate = true;
-            setHydrated(true);
-        }
-    }, [hydrated]);
-    return hydrated;
-};
+// useSyncExternalStore returns the server snapshot whenever React hydrates, then re-renders
+// with the client one. That holds per Suspense boundary: next/dynamic molecules (e.g. the
+// header toolbar) hydrate after the shell commits, when a module-level "hydrated" flag
+// would already read true. Client-only mounts (and native) get `true` right away.
+const subscribeNoop = () => () => {};
+const getHydratedOnClient = () => true;
+const getHydratedOnServer = () => false;
+const useHydrated = () => useSyncExternalStore(subscribeNoop, getHydratedOnClient, getHydratedOnServer);
 
-export const useBreakpoint = () => useMeasureStore((s) => s.currentBreakpoint);
-// SSR and the first client render share the same snapshot until hydration.
-export const useBreakpointName = () => {
+// SSR and hydrating renders use SSR_LAYOUT_BREAKPOINT (desktop, like useIsDesktop), so layouts
+// that switch structure on the breakpoint (universal.js rows vs panels, wiki/post flags) hydrate
+// cleanly and adapt to the real viewport right after.
+export const useBreakpoint = () => {
     const currentBreakpoint = useMeasureStore((s) => s.currentBreakpoint);
-    const hydrated = useHydrated();
-    return getBreakpoint(hydrated ? currentBreakpoint : SSR_LAYOUT_BREAKPOINT);
+    return useHydrated() ? currentBreakpoint : SSR_LAYOUT_BREAKPOINT;
 };
+export const useBreakpointName = () => getBreakpoint(useBreakpoint());
 export const useIsDesktop = () => {
     const isDesktop = useMeasureStore((s) => s.isDesktop);
     const hydrated = useHydrated();
