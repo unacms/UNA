@@ -1,16 +1,20 @@
 import { Text } from 'app/design/typography';
-import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import * as TabsPrimitive from '@radix-ui/react-tabs';
-import { appSetting } from 'app/lib/util';
 import { View } from 'app/design/view';
 import { cn } from 'app/lib/util';
 import { useTranslation } from 'react-i18next';
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import { Icon } from 'app/ui/atoms/icon';
-import { useTabsCollapseLayout } from 'app/ui/molecules/tabs/use-tabs-collapse-layout';
+import {
+    tabsTheme,
+    getTabsSizing,
+    useTabsMoreMenu,
+    getTabsBarLayout,
+    TabsMeasureRow,
+} from 'app/ui/molecules/tabs/tabs-shared';
 import {
     TABS_SELECTION_DURATION_MS,
-    TABS_SCROLL_INTO_VIEW_PADDING_PX,
     TABS_UNDERLINE_HEIGHT_PX,
     TABS_SELECTION_WEB_EASING,
 } from 'app/ui/molecules/tabs/tabs-selection-constants';
@@ -37,13 +41,6 @@ function useScrollActiveTabIntoView(currentTab, triggerRefs, enabled) {
     }, [currentTab, enabled]);
 }
 
-const tabsTheme = appSetting('theme', 'tabs');
-const tabsSizes = appSetting('theme', 'tabs_sizes');
-const rawTabsVariants = appSetting('theme', 'tabs_variants');
-const tabsVariants =
-    rawTabsVariants && typeof rawTabsVariants === 'object'
-        ? rawTabsVariants
-        : {};
 
 /**
  * @param {'default'|'secondary'} [variant]
@@ -106,67 +103,35 @@ export default function Tabs({
     const [ready, setReady] = useState(false);
     const readyRef = useRef(false);
 
-    const currentSizeKey = size || tabsSizes?.default_size || 'md';
-    const sizeCfg = tabsSizes?.[currentSizeKey] || tabsSizes?.md || {};
-    const variantCfg =
-        tabsVariants[variant] || tabsVariants.default || tabsVariants.secondary;
+    const {
+        currentSizeKey,
+        sizeCfg,
+        variantCfg,
+        radiusTrack,
+        radiusRow,
+        radiusPill,
+        gapPx,
+        listHorizontalPad,
+        scrollInset,
+        moreIconSize,
+    } = getTabsSizing({ size, variant, rounded });
 
-    /** Secondary uses a bottom line — outer track/row rounding clips the underline. */
-    const radiusTrack =
-        variant === 'secondary'
-            ? ''
-            : rounded
-              ? 'rounded-full'
-              : sizeCfg.track || 'rounded-xl';
-    const radiusRow =
-        variant === 'secondary'
-            ? ''
-            : rounded
-              ? 'rounded-full'
-              : sizeCfg.row || 'rounded-xl';
-    const radiusPill = rounded
-        ? 'rounded-full overflow-hidden'
-        : sizeCfg.pill || 'rounded-lg overflow-hidden';
 
-    const scrollInsetPx =
-        sizeCfg.scroll_inset ?? TABS_SCROLL_INTO_VIEW_PADDING_PX;
-    const gapPx = sizeCfg.gap_px ?? 4;
-    const listHorizontalPad =
-        2 * (sizeCfg.scroll_inset ?? TABS_SCROLL_INTO_VIEW_PADDING_PX);
-    const collapseLayout = useTabsCollapseLayout({
+    /** "More" menu opens when an overflow tab is active (keyboard arrows) and closes when back on-strip. */
+    const {
+        collapseLayout,
+        moreMenuOpen,
+        setMoreMenuOpen,
+        overflowMenuItems,
+        markMenuSelect,
+    } = useTabsMoreMenu({
         overflow,
         tabs,
         gapPx,
-        contentPaddingHorizontal:
-            overflow === 'collapse' ? listHorizontalPad : 0,
+        listHorizontalPad,
         equalWidth: useEqualWidth && !hug,
-    });
-
-    /** Sync "More" menu open state when an overflow tab is active (keyboard arrows) or close when back on-strip. */
-    const moreMenuDismissAfterMenuSelectRef = useRef(false);
-    const [moreMenuOpen, setMoreMenuOpen] = useState(false);
-    useEffect(() => {
-        if (overflow !== 'collapse') return;
-        if (!collapseLayout.overflowTabs?.length) {
-            setMoreMenuOpen(false);
-            return;
-        }
-        if (moreMenuDismissAfterMenuSelectRef.current) {
-            moreMenuDismissAfterMenuSelectRef.current = false;
-            setMoreMenuOpen(false);
-            return;
-        }
-        if (collapseLayout.isActiveInOverflow(currentTab)) {
-            setMoreMenuOpen(true);
-        } else {
-            setMoreMenuOpen(false);
-        }
-    }, [
-        overflow,
         currentTab,
-        collapseLayout.visibleCount,
-        collapseLayout.overflowTabs.length,
-    ]);
+    });
 
     useEffect(() => {
         if (activeTab !== undefined) setCurrentTab(activeTab);
@@ -182,19 +147,10 @@ export default function Tabs({
 
     const handleOverflowMenuSelect = useCallback(
         (item) => {
-            moreMenuDismissAfterMenuSelectRef.current = true;
+            markMenuSelect();
             handleTabChange(item.id);
         },
-        [handleTabChange]
-    );
-
-    const overflowMenuItems = useMemo(
-        () =>
-            collapseLayout.overflowTabs.map((tab) => ({
-                id: tab.key,
-                title: tab.title,
-            })),
-        [collapseLayout.overflowTabs]
+        [handleTabChange, markMenuSelect]
     );
 
     useScrollActiveTabIntoView(
@@ -279,26 +235,13 @@ export default function Tabs({
         return null;
     }
 
-    const moreIconSize =
-        currentSizeKey === 'lg' ? 20 : currentSizeKey === 'sm' ? 16 : 18;
-    const moreIsActive = collapseLayout.isActiveInOverflow(currentTab);
     const tabStretch =
         useEqualWidth && !hug
             ? /* min-w-min: never shrink below label + horizontal padding (min-w-0 squeezed long titles) */
               'flex-1 min-w-min basis-0 justify-center'
             : cn('shrink-0', hug && 'flex-none');
-    const moreTriggerEndAlign =
-        collapseLayout.overflowTabs.length > 0 &&
-        !(useEqualWidth && !hug);
-
-    /** Full-width measure row for collapse; track + tabs sit in a `w-max` strip when hug. */
-    const collapseHugStrip = overflow === 'collapse' && hug;
-    const tabBarWidthClass =
-        overflow === 'collapse'
-            ? 'w-full min-w-0'
-            : hug
-              ? 'w-max max-w-full self-start'
-              : 'w-full';
+    const { moreIsActive, moreTriggerEndAlign, collapseHugStrip, tabBarWidthClass } =
+        getTabsBarLayout({ overflow, hug, equalWidth: useEqualWidth, collapseLayout, currentTab });
 
     const trackView = (
         <View
@@ -383,7 +326,7 @@ export default function Tabs({
                             key={tab.key}
                             value={tab.key}
                             style={{
-                                scrollMarginInline: scrollInsetPx,
+                                scrollMarginInline: scrollInset,
                             }}
                             className={cn(
                                 'relative z-[3]',
@@ -425,40 +368,17 @@ export default function Tabs({
 
     const collapseRowInner = (
         <>
-            <View
-                className={cn(
-                    tabsTheme['u-controls-tabs-header-row'],
-                    variantCfg.row,
-                    radiusRow,
-                    sizeCfg.header,
-                    'flex flex-row flex-nowrap !flex-none shrink-0 min-w-0',
-                    useEqualWidth && !hug && 'w-full'
-                )}
-                style={{
-                    position: 'absolute',
-                    left: -10000,
-                    top: 0,
-                    opacity: 0,
-                    zIndex: -1,
-                }}
-                pointerEvents="none"
-            >
-                {tabs.map((tab, i) => (
-                    <View
-                        key={`tab-measure-${tab.key}`}
-                        onLayout={collapseLayout.onTabLayout(i)}
-                        className={cn(
-                            tabsTheme['u-controls-tabs-header-item'],
-                            sizeCfg.item,
-                            radiusPill,
-                            tabStretch,
-                            'flex-row'
-                        )}
-                    >
-                        <Text className={cn(sizeCfg.text)}>{tab.title}</Text>
-                    </View>
-                ))}
-            </View>
+            <TabsMeasureRow
+                tabs={tabs}
+                collapseLayout={collapseLayout}
+                variantCfg={variantCfg}
+                radiusRow={radiusRow}
+                radiusPill={radiusPill}
+                sizeCfg={sizeCfg}
+                tabStretch={tabStretch}
+                equalWidth={useEqualWidth}
+                hug={hug}
+            />
 
             {selectionLayer}
 

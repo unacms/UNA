@@ -9,32 +9,25 @@ import {
 import { View, ScrollView, Platform } from 'react-native';
 import { Text } from 'app/design/typography';
 import * as TabsPrimitive from 'app/ui/primitives/tabs';
-import { appSetting } from 'app/lib/util';
 import { cn } from 'app/lib/util';
 import { useTranslation } from 'react-i18next';
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import { Icon } from 'app/ui/atoms/icon';
-import { useTabsCollapseLayout } from 'app/ui/molecules/tabs/use-tabs-collapse-layout';
 import {
-    TABS_SCROLL_INTO_VIEW_PADDING_PX,
+    tabsTheme,
+    getTabsSizing,
+    useTabsMoreMenu,
+    getTabsBarLayout,
+    TabsMeasureRow,
+} from 'app/ui/molecules/tabs/tabs-shared';
+import {
     TABS_UNDERLINE_HEIGHT_PX,
 } from 'app/ui/molecules/tabs/tabs-selection-constants';
 import { tabsDebug } from 'app/ui/molecules/tabs/tabs-debug';
 
 /** Native: avoid synchronous layout+setState during the same commit as Fabric layout (use `useEffect` + rAF batching). Web: keep `useLayoutEffect` to avoid pill flicker. */
-/** Stable fallback so size config is never a fresh (mutable) object per render. */
-const EMPTY_SIZE_CFG = Object.freeze({});
-
 const useIsomorphicLayoutEffect =
     Platform.OS === 'web' ? useLayoutEffect : useEffect;
-
-const tabsTheme = appSetting('theme', 'tabs');
-const tabsSizes = appSetting('theme', 'tabs_sizes');
-const rawTabsVariants = appSetting('theme', 'tabs_variants');
-const tabsVariants =
-    rawTabsVariants && typeof rawTabsVariants === 'object'
-        ? rawTabsVariants
-        : {};
 
 /** RN layout often repeats with tiny float noise; always creating new objects in `onLayout` → `setState` re-renders forever. */
 const LAYOUT_EPS = 0.5;
@@ -177,78 +170,37 @@ export default function Tabs({
         width: 0,
         height: 0,
     });
-    const currentSizeKey = size || tabsSizes?.default_size || 'md';
-    const sizeCfg = tabsSizes?.[currentSizeKey] || tabsSizes?.md || EMPTY_SIZE_CFG;
-    const variantCfg =
-        tabsVariants[variant] || tabsVariants.default || tabsVariants.secondary;
+    const {
+        currentSizeKey,
+        sizeCfg,
+        variantCfg,
+        radiusTrack,
+        radiusRow,
+        radiusPill,
+        gapPx,
+        listHorizontalPad,
+        scrollInset,
+        moreIconSize,
+    } = getTabsSizing({ size, variant, rounded });
     const variantCfgRef = useRef(variantCfg);
     useIsomorphicLayoutEffect(() => {
         variantCfgRef.current = variantCfg;
     });
 
-    /** Secondary uses a bottom line, not a pill — rounding on outer track/row clips the indicator. */
-    const radiusTrack =
-        variant === 'secondary'
-            ? ''
-            : rounded
-              ? 'rounded-full'
-              : sizeCfg.track || 'rounded-xl';
-    const radiusRow =
-        variant === 'secondary'
-            ? ''
-            : rounded
-              ? 'rounded-full'
-              : sizeCfg.row || 'rounded-xl';
-    const radiusPill = rounded
-        ? 'rounded-full overflow-hidden'
-        : sizeCfg.pill || 'rounded-lg overflow-hidden';
-
-    const gapPx = sizeCfg.gap_px ?? 4;
-    const listHorizontalPad =
-        2 * (sizeCfg.scroll_inset ?? TABS_SCROLL_INTO_VIEW_PADDING_PX);
-    const collapseLayout = useTabsCollapseLayout({
+    const {
+        collapseLayout,
+        moreMenuOpen,
+        setMoreMenuOpen,
+        overflowMenuItems,
+        markMenuSelect,
+    } = useTabsMoreMenu({
         overflow,
         tabs,
         gapPx,
-        contentPaddingHorizontal:
-            overflow === 'collapse' ? listHorizontalPad : 0,
+        listHorizontalPad,
         equalWidth: useEqualWidth && !hug,
-    });
-    /** After picking a tab from the "More" menu, skip auto-reopen (effect would see overflow active and open again). */
-    const moreMenuDismissAfterMenuSelectRef = useRef(false);
-
-    const [moreMenuOpen, setMoreMenuOpen] = useState(false);
-    useEffect(() => {
-        if (overflow !== 'collapse') return;
-        if (!collapseLayout.overflowTabs?.length) {
-            setMoreMenuOpen(false);
-            return;
-        }
-        if (moreMenuDismissAfterMenuSelectRef.current) {
-            moreMenuDismissAfterMenuSelectRef.current = false;
-            setMoreMenuOpen(false);
-            return;
-        }
-        if (collapseLayout.isActiveInOverflow(currentTab)) {
-            /**
-             * Native `DropdownMenu` uses a full-screen `Modal` + backdrop. Auto-opening it here made the
-             * whole screen non-interactive (and could fight layout) whenever the active tab lived in overflow.
-             * Web keeps open-on-overflow for keyboard/focus parity.
-             */
-            if (Platform.OS === 'web') {
-                setMoreMenuOpen(true);
-            } else {
-                setMoreMenuOpen(false);
-            }
-        } else {
-            setMoreMenuOpen(false);
-        }
-    }, [
-        overflow,
         currentTab,
-        collapseLayout.visibleCount,
-        collapseLayout.overflowTabs.length,
-    ]);
+    });
 
     useEffect(() => {
         if (activeTab !== undefined) setCurrentTab(activeTab);
@@ -399,7 +351,6 @@ export default function Tabs({
         syncIndicatorLayoutRef.current();
     }, [currentTab, nativeScrollSkipIndicator]);
 
-    const scrollInset = sizeCfg.scroll_inset ?? TABS_SCROLL_INTO_VIEW_PADDING_PX;
     const scrollActiveTabIntoView = useCallback(() => {
         if (overflow === 'collapse') return;
         const triggerL = triggerLayoutsRef.current[currentTab];
@@ -470,45 +421,23 @@ export default function Tabs({
 
     const handleOverflowMenuSelect = useCallback(
         (item) => {
-            moreMenuDismissAfterMenuSelectRef.current = true;
+            markMenuSelect();
             handleTabChange(item.id);
         },
-        [handleTabChange]
-    );
-
-    const overflowMenuItems = useMemo(
-        () =>
-            collapseLayout.overflowTabs.map((tab) => ({
-                id: tab.key,
-                title: tab.title,
-            })),
-        [collapseLayout.overflowTabs]
+        [handleTabChange, markMenuSelect]
     );
 
     if (!tabs || tabs.length === 0) {
         return null;
     }
 
-    const moreIconSize =
-        currentSizeKey === 'lg' ? 20 : currentSizeKey === 'sm' ? 16 : 18;
-    const moreIsActive = collapseLayout.isActiveInOverflow(currentTab);
     const tabStretch =
         useEqualWidth && !hug
             ? /* min-w-min: never shrink below label + horizontal padding (min-w-0 was eating padding on long titles) */
               'flex-1 min-w-min basis-0 justify-center'
             : cn('shrink-0 flex-none');
-    const moreTriggerEndAlign =
-        collapseLayout.overflowTabs.length > 0 &&
-        !(useEqualWidth && !hug);
-
-    /** Full-width row for collapse measurement; track + pills sit in a `w-max` strip when hug so the track hugs tab width. */
-    const collapseHugStrip = overflow === 'collapse' && hug;
-    const tabBarWidthClass =
-        overflow === 'collapse'
-            ? 'w-full min-w-0'
-            : hug
-              ? 'w-max max-w-full self-start'
-              : 'w-full';
+    const { moreIsActive, moreTriggerEndAlign, collapseHugStrip, tabBarWidthClass } =
+        getTabsBarLayout({ overflow, hug, equalWidth: useEqualWidth, collapseLayout, currentTab });
 
     const trackView = (
         <View
@@ -547,40 +476,18 @@ export default function Tabs({
 
     const collapseListInner = (
         <>
-            <View
-                className={cn(
-                    tabsTheme['u-controls-tabs-header-row'],
-                    variantCfg.row,
-                    radiusRow,
-                    sizeCfg.header,
-                    'flex flex-row flex-nowrap !flex-none shrink-0 min-w-0',
-                    useEqualWidth && !hug && 'w-full'
-                )}
-                style={{
-                    position: 'absolute',
-                    left: -10000,
-                    top: 0,
-                    opacity: 0,
-                    zIndex: -1,
-                }}
-                pointerEvents="none"
-            >
-                {tabs.map((tab, i) => (
-                    <View
-                        key={`tab-measure-${tab.key}`}
-                        onLayout={collapseLayout.onTabLayout(i)}
-                        className={cn(
-                            tabsTheme['u-controls-tabs-header-item'],
-                            sizeCfg.item,
-                            radiusPill,
-                            tabStretch,
-                            'flex-row'
-                        )}
-                    >
-                        <Text className={cn(sizeCfg.text)}>{tab.title}</Text>
-                    </View>
-                ))}
-            </View>
+            <TabsMeasureRow
+                ViewComponent={View}
+                tabs={tabs}
+                collapseLayout={collapseLayout}
+                variantCfg={variantCfg}
+                radiusRow={radiusRow}
+                radiusPill={radiusPill}
+                sizeCfg={sizeCfg}
+                tabStretch={tabStretch}
+                equalWidth={useEqualWidth}
+                hug={hug}
+            />
 
             {!nativeScrollSkipIndicator && selectionLayer}
 
