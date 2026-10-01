@@ -4,7 +4,8 @@ export const PanelHandler = ({ gap, sizable, panelLine }) => {
     return null
 };
 
-export const PanelGroup = (props) => {
+// `clipInset` only applies to the web PanelGroup's overflow clip (resizable-panels.web.js).
+export const PanelGroup = ({ clipInset, ...props }) => {
     return <View {...props}/>
 };
 

@@ -102,9 +102,12 @@ export const settingsElements = {
     },
     panels: {
         'u-panel-base': ' ns--panel-base-- web:h-full min-w-0 flex-col ne-- ',
-        'u-panel-handler': 'relative w-0 web:before:absolute web:before:inset-y-0 web:before:-left-0.5 web:before:-right-0.5 web:before:bg-transparent web:before:hover:bg-accent web:before:active:bg-accent/50 web:before:duration-200 ',
+        // Invisible until hovered. Tailwind v4 applies variants left to right: `hover:before:` is
+        // `:hover::before`, while `before:hover:` would be `::before:hover`, which never matches.
+        // The line's `group-*` variants need the plain `group` marker PanelHandler puts on the handle.
+        'u-panel-handler': 'relative w-0 web:before:absolute web:before:inset-y-0 web:before:-left-0.5 web:before:-right-0.5 web:before:bg-transparent web:hover:before:bg-accent web:active:before:bg-accent/50 web:before:duration-200 ',
         'u-panel-line':
-            'absolute w-px web:h-full web:group-hover:bg-primary/50 active:bg-primary/50 rounded-full left-0 top-0 ',
+            'absolute w-px web:h-full web:group-hover:bg-primary/50 web:group-active:bg-primary/50 rounded-full left-0 top-0 ',
         'u-panel-group': ' ns--panel-group-- web:h-full flex ne-- ',
     },
     blocks: {

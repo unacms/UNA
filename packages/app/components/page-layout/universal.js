@@ -9,6 +9,16 @@ import Page from 'app/ui/molecules/page/page'
 const isRowLayout = (cell, currentBreakpoint) => !cell.defaultSize || (cell.breakpoint && currentBreakpoint <= LAYOUT_BREAKPOINTS[cell.breakpoint]);
 const hasData = (cellData) => Array.isArray(cellData) && cellData.length > 0;
 
+// Handles are zero-width flex items in the gap-spaced PanelGroup, so the gap lands on both
+// sides of them. Pull each one in by half a gap per side (gap-4 → -mx-2, same breakpoint
+// prefix) to keep columns one gap apart. Literals: @source inline in design/styles/utilities.css.
+const handleGapClasses = (gap) => String(gap || '').split(/\s+/).map((cls) => {
+    const match = cls.match(/^((?:[\w-]+:)*)gap-(\d+(?:\.\d+)?)$/);
+    if (!match) return '';
+    const half = Number(match[2]) / 2;
+    return half ? `${match[1]}-mx-${half}` : `${match[1]}mx-0`;
+}).filter(Boolean).join(' ');
+
 const row = (index, area) => ({ key: `cell_${index + 1}`, index, area });
 const col = (index, defaultSize, breakpoint) => ({
     key: `cell_${index + 1}`,
@@ -72,38 +82,44 @@ function PageContentUniversal({ children, data, layoutName, pageClasses }) {
         { key: 'cell_right', defaultSize: 25, minSize: 10, breakpoint: 'lg', data: data.elements?.['cell_right'], chd: children.find((c) => c.key === 'cell_right') }
     ] : cells.filter((c) => c.area === 'mid');
 
-    const hasPanelCells = midCells.some(cell => hasData(cell?.data) && !isRowLayout(cell, currentBreakpoint));
+    const panelCells = midCells.filter((cell) => hasData(cell?.data) && !isRowLayout(cell, currentBreakpoint));
+    const handleClassName = handleGapClasses(gap);
 
     return (
-        <View className={`mx-auto ${contentWidth} ${padding} ${gap}`}>
-            <PanelRow gapClass={gap} cell={topCell} currentBreakpoint={currentBreakpoint} />
-            {hasPanelCells && (
-                <PanelGroup
-                    key={`cells-${uri}-${layoutName}-${sizable ? 'sizable' : 'static'}`}
-                    autoSaveId={sizable ? `cells-${uri}-${layoutName}` : undefined}
-                    direction="horizontal"
-                    className={gap}
-                >
-                    {midCells.map((cell, i) => {
-                        return (
-                            <PanelCell
-                                key={cell.key}
-                                sizable={sizable}
-                                panelLine={cellsCustomConfig?.['panel-line']}
-                                currentBreakpoint={currentBreakpoint}
-                                cell={cell}
-                                index={topCell?.length > 0 ? i : 0}
-                                paddingClass={padding}
-                                gapClass={gap}
-                            />
-                        );
-                    })}
-                </PanelGroup>
-            )}
-            {midCells.map((cell, i) => {
-                return <PanelRow key={cell.key} gapClass={gap} currentBreakpoint={currentBreakpoint} cell={cell} />
-            })}
-            {bottomCell?.data?.length > 0 && <PanelRow gapClass={gap} cell={bottomCell} currentBreakpoint={currentBreakpoint} />}
+        // The PanelGroup's clipInset pokes past the content column; clip it at the page edge so
+        // it can't cause horizontal scroll when the page has no side padding.
+        <View className="w-full web:overflow-x-clip">
+            <View className={`mx-auto ${contentWidth} ${padding} ${gap}`}>
+                <PanelRow gapClass={gap} cell={topCell} currentBreakpoint={currentBreakpoint} />
+                {panelCells.length > 0 && (
+                    <PanelGroup
+                        key={`cells-${uri}-${layoutName}-${sizable ? 'sizable' : 'static'}`}
+                        autoSaveId={sizable ? `cells-${uri}-${layoutName}` : undefined}
+                        direction="horizontal"
+                        className={gap}
+                        clipInset
+                    >
+                        {panelCells.map((cell, i) => {
+                            return (
+                                <PanelCell
+                                    key={cell.key}
+                                    withHandle={i > 0}
+                                    handleClassName={handleClassName}
+                                    sizable={sizable}
+                                    panelLine={cellsCustomConfig?.['panel-line']}
+                                    cell={cell}
+                                    paddingClass={padding}
+                                    gapClass={gap}
+                                />
+                            );
+                        })}
+                    </PanelGroup>
+                )}
+                {midCells.map((cell, i) => {
+                    return <PanelRow key={cell.key} gapClass={gap} currentBreakpoint={currentBreakpoint} cell={cell} />
+                })}
+                {bottomCell?.data?.length > 0 && <PanelRow gapClass={gap} cell={bottomCell} currentBreakpoint={currentBreakpoint} />}
+            </View>
         </View>
     )
 }
@@ -116,15 +132,17 @@ const PanelRow = memo(({ cell, currentBreakpoint, gapClass }) => {
     );
 })
 
-const PanelCell = memo(({ cell, currentBreakpoint, index, sizable, panelLine, paddingClass, gapClass }) => {
+// Rendered for panel cells only (see `panelCells`); every panel after the first gets a handle,
+// disabled when the layout isn't sizable (the group still expects one between panels).
+const PanelCell = memo(({ cell, withHandle, handleClassName, sizable, panelLine, paddingClass, gapClass }) => {
     const panelProps = {
         ...(cell.defaultSize !== undefined && { defaultSize: cell.defaultSize }),
         ...(cell.minSize !== undefined && { minSize: cell.minSize }),
         ...(cell.maxSize !== undefined && { maxSize: cell.maxSize }),
     };
-    return (hasData(cell?.data) && !isRowLayout(cell, currentBreakpoint)) && (
+    return (
         <>
-            {(index > 0) && (sizable ? <PanelHandler sizable={sizable} panelLine={panelLine} /> : <View className='w-4' />)}
+            {withHandle && <PanelHandler sizable={sizable} panelLine={panelLine} gap={`w-0 ${handleClassName}`} />}
             <Panel {...panelProps} >
                 <View className={`w-full ${gapClass} `/*${paddingClass}*/}>
                     {cell.chd}
