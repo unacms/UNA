@@ -7,12 +7,12 @@ const isWeb = Platform.OS === 'web';
 export default function MenuItemSubmenu({ icon, title, pressed, disabled, addon, onPress, href }) {
     const controlSize = 'small';
     const borderShape = 'capsule';
+    // Glass on every platform: native draws Expo UI glass (tinted when
+    // selected), web the styled JS glass with its `pressedToggle` accent fill.
     // Do not branch on useIsDesktop() — SSR is forced desktop, then the first
     // layout effect flips it on narrow viewports and React 19 hydration
     // recovery can stack-overflow (see measure.js).
-    const style = isWeb
-        ? (pressed ? 'bordered' : 'borderless')
-        : 'glass';
+    const style = 'glass';
     const native = useNeoButtonExpoUI({ style, controlSize, borderShape });
     const useNativeGlass = !isWeb && !!native;
 

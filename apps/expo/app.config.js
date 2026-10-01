@@ -176,6 +176,10 @@ const expoConfig = {
             {
                 ios: {
                     deploymentTarget: '16.4',
+                    // UIKit scene lifecycle (ExpoAppSceneDelegate + UIApplicationSceneManifest):
+                    // apps built with the iOS 27 SDK (Xcode 27) are killed at launch on iOS 27
+                    // without it. Needs expo >= 57.0.23; a no-op (with a warning) from SDK 58.
+                    enableSceneSupport: true,
                 },
                 android: {
                     minSdkVersion: 29, // Android 10

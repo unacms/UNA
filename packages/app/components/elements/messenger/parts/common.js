@@ -532,7 +532,9 @@ export default function Messenger({ defaultConvoId, selectedMenu, convos, fetchC
         const bottomBarInset = tabBarOverlayInset || tabBarInset;
 
         return (
-            <View className='web:h-auto w-full h-full flex-row bg-card'>
+            // The conversation list sits on the screen background (rows are
+            // transparent, like notifications); only the open chat keeps a card fill.
+            <View className='web:h-auto w-full h-full flex-row'>
                 <PageHeaderOptions main={injectedHeader} />
                 {panelsVisible.convos && <View className='w-full'>
                     <ConvosPanel
@@ -548,7 +550,7 @@ export default function Messenger({ defaultConvoId, selectedMenu, convos, fetchC
                     />
                 </View>}
                 {panelsVisible.jots && (
-                    <View className="relative w-full">
+                    <View className="relative w-full bg-card">
                     <Msg onVisible={showMsg} title={showMsg} handleOk={() => { setShowMsg(false) }} />
                     {jotsLoaded && (
                         <JotsPanel

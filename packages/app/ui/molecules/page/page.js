@@ -6,6 +6,8 @@ import { useHeaderHeight, useFooterHeight, useGetScrollValue } from 'app/context
 import { KbAvoidingViewScroll } from 'app/ui/atoms/kb-avoiding-view';
 import { useEffect, useRef } from 'react';
 import { pushFormEnsureVisibleHandler, scrollContainerByDelta } from 'app/lib/form/form-ensure-visible'
+import { useCurrentUser } from 'app/context/user';
+import { getNativeTabBarOverlayInset } from 'app/components/nav/tabs/tab-menu';
 
 const isWeb = Platform.OS === 'web';
 
@@ -17,6 +19,10 @@ export default function Page({ children, data, page_width, processKeyboard=true,
     const getScrollValue = useGetScrollValue();
     const internalScrollRef = useRef(null);
     const scrollRef = scrollRefProp ?? internalScrollRef;
+    // NativeTabs screens run under the tab bar; without this the page's last
+    // content (e.g. Sign out on /dashboard) can't scroll clear of it.
+    const { currentUser } = useCurrentUser();
+    const tabBarInset = getNativeTabBarOverlayInset(currentUser);
 
     useEffect(() => {
         return pushFormEnsureVisibleHandler(({ windowY }) => {
@@ -36,8 +42,8 @@ export default function Page({ children, data, page_width, processKeyboard=true,
     return (
         <Wrapper
             ref={scrollRef}
-            {...(!isWeb && !processKeyboard ? { contentContainerStyle: { flexGrow: 1, paddingTop: headerHeightFromAtom } } : {})}
-            {...(!isWeb && processKeyboard ? { paddingTop: headerHeightFromAtom } : {})}
+            {...(!isWeb && !processKeyboard ? { contentContainerStyle: { flexGrow: 1, paddingTop: headerHeightFromAtom, paddingBottom: tabBarInset } } : {})}
+            {...(!isWeb && processKeyboard ? { paddingTop: headerHeightFromAtom, paddingBottom: tabBarInset } : {})}
             className={(page_width || getPageWidth(data?.uri, data?.config)) + ' mx-auto w-full'}
             style={isWeb ? { display: 'flex', flexDirection: 'column', minHeight: `calc(100vh - ${headerHeightFromAtom}px - ${footerHeightFromAtom}px)` } : undefined}
             keyboardShouldPersistTaps="always"

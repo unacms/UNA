@@ -1,6 +1,8 @@
 import { createElement } from 'react';
+import { Platform } from 'react-native';
 import { View } from 'app/design/view';
-import { appSetting, isNativeTabsEnabled, isTabBarLabelsEnabled } from 'app/lib/util';
+import { androidTabBarHeight, appSetting, isNativeTabsEnabled, isTabBarLabelsEnabled } from 'app/lib/util';
+import { getWindowSafeAreaInsets } from 'app/lib/hooks/router';
 
 /** Shared by JS RouterTabs and NativeTabs. */
 
@@ -48,6 +50,27 @@ export function hasNativeTabsMoreMenu(currentUser) {
     if (!isNativeTabsEnabled()) return false;
     const showsTabs = !!((currentUser && currentUser.confirmed) || appSetting('native', 'show_tabs_non_logged'));
     return showsTabs && splitTabBarItems(getTabList(currentUser) || []).overflow.length > 0;
+}
+
+// Keep in sync with TAB_BAR_RESERVE in app/components/nav/tab-slide.js (and
+// post.js, messenger/parts/common.js) — the iOS NativeTabs bar floats over the screen.
+const NATIVE_TAB_BAR_RESERVE = 56;
+
+/**
+ * Bottom space a NativeTabs screen leaves so its last content scrolls clear of
+ * the tab bar, which is drawn over the page (iOS floats it, Android paints it
+ * over). 0 on web, with JS tabs (the screen ends above the bar) and while the
+ * bar is hidden. Window insets, not `insets`: NativeTabs can report the
+ * keyboard height as the bottom inset (as in post.js).
+ */
+export function getNativeTabBarOverlayInset(currentUser) {
+    if (Platform.OS === 'web' || !isNativeTabsEnabled()) return 0;
+    const showsTabs = !!((currentUser && currentUser.confirmed) || appSetting('native', 'show_tabs_non_logged'));
+    if (!showsTabs) return 0;
+    const bar = Platform.OS === 'android'
+        ? androidTabBarHeight(areTabBarLabelsHidden(getTabList(currentUser) || []))
+        : NATIVE_TAB_BAR_RESERVE;
+    return bar + (getWindowSafeAreaInsets().bottom || 0);
 }
 
 /** Map a menu / transpile_urls index onto the Expo route (`tab0`…`tab4`). */

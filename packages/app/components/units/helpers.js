@@ -24,7 +24,9 @@ const UNIT_SURFACES = { card: Card, list: CardList };
 
 // Profile listings (people + orgs): CardList chrome belongs to the sm+ grid.
 const FLUSH_LIST_MODULES = new Set(['bx_persons', 'bx_organizations', 'system']);
-const FLUSH_LIST_PADDING = 'px-3 py-2 sm:p-2';
+// Mobile: 8px inside the row's 8px margin (u-card-list-flush), so the photo
+// lines up with the 16px page header and subtabs.
+const FLUSH_LIST_PADDING = 'px-2 py-2 sm:p-2';
 const FLUSH_ACTION_PRIMARY = 'w-1/2 sm:w-full pr-2 sm:pr-0';
 
 const UnitSurfaceContext = createContext(false);
@@ -83,7 +85,7 @@ function UnitSurface({
                     {flushOnMobile && Platform.OS !== 'web' && navPending ? (
                         <View
                             pointerEvents="none"
-                            className="absolute inset-0 bg-muted/60 animate-pulse"
+                            className="absolute inset-0 rounded-xl sm:rounded-2xl bg-muted/60 animate-pulse"
                         />
                     ) : null}
                     {children}
@@ -117,9 +119,50 @@ function FlushNavigatingUnit({ data, module, as, padding, className, children })
         setNavPending(false);
     }, []));
 
+    // A press that turns into a scroll never fires the tap, so drop the pending
+    // fill then instead of leaving it pulsing until the screen refocuses.
+    // Native: onPress fires right after onPressOut on a real tap. Web: touch
+    // scrolling cancels the pointer; a mouse released off the row gets no click.
+    const pressedRef = useRef(false);
+    const clearNavPending = useCallback((el) => {
+        el?.querySelector?.('.u-card-list')?.removeAttribute('data-nav');
+        setNavPending(false);
+    }, []);
     const flushNavProps = Platform.OS === 'web'
-        ? { onPointerDown: onFlushNavStart }
-        : { onPressIn: onFlushNavStart };
+        ? {
+            onPointerDown: (event) => {
+                pressedRef.current = false;
+                onFlushNavStart(event);
+            },
+            // Link rows report the tap through onClick, modal rows through onPress.
+            onClick: () => {
+                pressedRef.current = true;
+            },
+            onPress: () => {
+                pressedRef.current = true;
+            },
+            onPointerCancel: (event) => clearNavPending(event.currentTarget),
+            onPointerUp: (event) => {
+                const el = event.currentTarget;
+                setTimeout(() => {
+                    if (!pressedRef.current) clearNavPending(el);
+                }, 300);
+            },
+        }
+        : {
+            onPressIn: (event) => {
+                pressedRef.current = false;
+                onFlushNavStart(event);
+            },
+            onPress: () => {
+                pressedRef.current = true;
+            },
+            onPressOut: () => {
+                setTimeout(() => {
+                    if (!pressedRef.current) setNavPending(false);
+                }, 0);
+            },
+        };
 
     return (
         <UnitSurface

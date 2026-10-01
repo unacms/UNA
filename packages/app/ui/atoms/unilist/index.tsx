@@ -96,6 +96,7 @@ export default function UniList(props: UniListProps) {
         skipHeaderOffset,
         coverOverlayPad = 0,
         coverScrollY,
+        tabBarInset = 0,
         ...restProps
     } = props
     // RN ScrollView props (keyboardDismissMode, onScrollBeginDrag, …) pass through.
@@ -241,8 +242,11 @@ export default function UniList(props: UniListProps) {
             {applyCoverCompensation ? (
                 <View style={{ height: coverScrollCompensation }} />
             ) : null}
+            {tabBarInset > 0 ? (
+                <View style={{ height: tabBarInset }} />
+            ) : null}
         </>
-    ), [ListFooterComponent, applyCoverCompensation, coverScrollCompensation])
+    ), [ListFooterComponent, applyCoverCompensation, coverScrollCompensation, tabBarInset])
 
     // ------------------------------------------------------------------
     // Render

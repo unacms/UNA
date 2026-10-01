@@ -92,8 +92,10 @@ export const settingsElements = {
         'u-card-list': ' u-card-list bg-card/80 shadow-card-outline dark:shadow-card-outline-deep sm:rounded-2xl ',
         'u-card-list-padding': 'p-4 sm:rounded-2xl',
         // Profile listings: photo + meta + actions on mobile, card chrome from sm (grid).
-        'u-card-list-flush': ' u-card-list u-flush-nav relative isolate sm:bg-card/80 sm:shadow-card-outline sm:dark:shadow-card-outline-deep sm:rounded-2xl transition-colors duration-200 ease-out active:bg-muted/60 group-active:bg-muted/60 sm:active:bg-muted/60 sm:group-active:bg-muted/60 ',
-        'u-card-list-flush-padding': 'px-3 py-2 sm:p-4 sm:rounded-2xl',
+        // Mobile: 8px margin + rounded-xl, so the press / pending fill matches the
+        // Messages and Notifications rows.
+        'u-card-list-flush': ' u-card-list u-flush-nav relative isolate mx-2 sm:mx-0 rounded-xl sm:bg-card/80 sm:shadow-card-outline sm:dark:shadow-card-outline-deep sm:rounded-2xl transition-colors duration-200 ease-out active:bg-muted/60 group-active:bg-muted/60 sm:active:bg-muted/60 sm:group-active:bg-muted/60 ',
+        'u-card-list-flush-padding': 'px-2 py-2 sm:p-4 sm:rounded-2xl',
         'u-card-base': 'u-card-base rounded-2xl bg-card/80 text-card-foreground shadow-card-outline dark:shadow-card-outline-deep ',
         'u-card-padding': 'py-4 ',
         'u-card-header': 'px-4',
