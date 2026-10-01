@@ -54,6 +54,10 @@ export const settingsElements = {
         item_text_cnt: 'min-w-0 flex-1 flex flex-col self-center justify-center overflow-hidden',
         item_cnt_tabs_overflow: 'items-center w-full flex-row justify-start flex-1',
         item_text: ' block w-full text-sm font-semibold text-secondary-foreground web:group-hover:text-foreground px-2',
+        /** Selected item (current tab / page, picked option): the toggled look — `bg-accent` + `text-accent-foreground`. */
+        item_selected: ' bg-accent ',
+        item_text_selected: ' block w-full text-sm font-semibold text-accent-foreground px-2',
+        item_icon_selected: 'text-accent-foreground',
         item_description: 'block w-full text-xs font-normal leading-tight text-pretty text-muted-foreground px-2 break-words',
         item_group_header: 'px-2 pt-3 pb-1',
         item_group_header_first: 'p-2.5',
@@ -73,7 +77,7 @@ export const settingsElements = {
         item_icon:
             'flex shrink-0 items-center w-9 h-9 bg-muted/50 web:group-hover:bg-border rounded-full justify-center',
         item_icon_active:
-            'flex shrink-0 items-center w-9 h-9 bg-primary rounded-full justify-center',
+            'flex shrink-0 items-center w-9 h-9 bg-accent rounded-full justify-center',
         icon_size: 20, // Default icon size for dropdown menu icons
         icon_size_grid: 24,
     },

@@ -26,7 +26,7 @@ export const settingsExpoUi = {
         // children such as the header logo). Unselected glass has no tint so
         // iOS can invert label/icon color. Selected glass stays Expo UI
         // `.plain` + `glassEffect` tint from iosColors.glass.selected
-        // (liquid glass wash + accent-foreground label). Addon counters
+        // (`bg-accent` wash + `text-accent-foreground` label). Addon counters
         // render as a SwiftUI child on glass — they do not fall back to JS.
         button: {
             styles: true,
@@ -39,68 +39,48 @@ export const settingsExpoUi = {
                 glass: 'elevated',
                 glassProminent: 'filled',
             },
-            // Hex only — CSS variables do not resolve inside a native Host.
+            // Hex, or a theme class (`bg-*` / `text-*`) resolved to hex through
+            // Uniwind — raw CSS variables do not resolve inside a native Host.
+            // Classes follow the tokens in light / dark and in branch themes,
+            // and match the JS styles in buttons.js. Palettes are flat, or
+            // `{ default, dark }` for scheme-specific hex. `tinted*` / `selected`
+            // is the toggled look: `bg-accent` + `text-accent-foreground`.
             androidColors: {
                 tonal: {
-                    default: {
-                        containerColor: '#e4e4e7',
-                        contentColor: '#27272a',
-                        tintedContainerColor: '#dbeafe',
-                    },
-                    dark: {
-                        containerColor: '#27272a',
-                        contentColor: '#e4e4e7',
-                        tintedContainerColor: '#172554',
-                    },
+                    containerColor: 'bg-button',
+                    contentColor: 'text-button-foreground',
+                    tintedContainerColor: 'bg-accent',
+                    tintedContentColor: 'text-accent-foreground',
                 },
                 elevated: {
-                    default: {
-                        containerColor: '#e4e4e7',
-                        contentColor: '#27272a',
-                        tintedContainerColor: '#dbeafe',
-                        tintedContentColor: '#2563eb',
-                    },
-                    dark: {
-                        containerColor: '#27272a',
-                        contentColor: '#e4e4e7',
-                        tintedContainerColor: '#172554',
-                        tintedContentColor: '#bfdbfe',
-                    },
+                    containerColor: 'bg-button',
+                    contentColor: 'text-button-foreground',
+                    tintedContainerColor: 'bg-accent',
+                    tintedContentColor: 'text-accent-foreground',
                 },
-                text: {
-                    default: { contentColor: '#27272a' },
-                    dark: { contentColor: '#e4e4e7' },
-                },
-                filled: {
-                    default: { containerColor: '#2563eb', contentColor: '#fafafc' },
-                },
+                text: { contentColor: 'text-card-foreground' },
+                filled: { containerColor: 'bg-primary', contentColor: 'text-primary-foreground' },
             },
             iosTint: null,
+            // Same value rules as `androidColors` (hex or a `bg-*` / `text-*` class).
             iosColors: {
                 bordered: {
-                    default: { tint: '#e4e4e7', foreground: '#27272a' },
-                    dark: { tint: '#27272a', foreground: '#e4e4e7' },
+                    tint: 'bg-button',
+                    foreground: 'text-button-foreground',
+                    selected: { tint: 'bg-accent', foreground: 'text-accent-foreground' },
                 },
-                plain: {
-                    default: { tint: '#27272a' },
-                    dark: { tint: '#e4e4e7' },
-                },
-                borderless: {
-                    default: { tint: '#27272a' },
-                    dark: { tint: '#e4e4e7' },
-                },
+                plain: { tint: 'text-card-foreground' },
+                borderless: { tint: 'text-card-foreground' },
                 glass: {
                     // Resting: no tint — label/icon invert over dark content.
-                    // Selected: tint = liquid-glass wash, foreground = label/icon.
+                    // Selected: tint = liquid-glass wash, foreground = label/icon,
+                    // from the accent tokens (light and dark alike).
                     // iOS applies tint via `glassEffect`, not `.glassProminent`.
-                    selected: {
-                        default: { tint: '#dbeafe', foreground: '#2563eb' },
-                        dark: { tint: '#172554', foreground: '#bfdbfe' },
-                    },
+                    selected: { tint: 'bg-accent', foreground: 'text-accent-foreground' },
                 },
-                link: { default: { tint: '#2563eb' } },
-                borderedProminent: { default: { tint: '#2563eb' } },
-                glassProminent: { default: { tint: '#2563eb' } },
+                link: { tint: 'text-accent-foreground' },
+                borderedProminent: { tint: 'bg-primary' },
+                glassProminent: { tint: 'bg-primary' },
             },
             // Native label type. Null still applies size/weight from
             // `neo_button.controlSizes.*.font` and style text (`font-medium`).

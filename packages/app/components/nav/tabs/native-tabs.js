@@ -16,12 +16,14 @@ import { getBadgeForTab, getBadgeLabel } from './badges';
 import { isDashboardTab, isExternalTabUrl, resolveTabUrl, splitTabBarItems, buildTabBarMoreMenuItems, MORE_TAB_ICON } from './tab-menu';
 import { handleTabPress } from './tab-press';
 import { useBottomSheetData } from 'app/context/bottomsheet';
+import { useNativeTokenColor } from 'app/design/controls/neo-button/native-style-colors';
 
 const TAB_ICON_SIZE = 24;
 const TAB_BAR_HEIGHT = Platform.OS === 'ios' ? 52 : 56;
 const DETACH_INACTIVE_SCREENS = Platform.OS !== 'ios';
 const TAB_BAR_ITEM_STYLE = appSetting('theme', 'native_tabs', 'tabBarItemStyle');
-const TAB_BAR_BADGE_BACKGROUND = appSetting('theme', 'native_tabs', 'badgeBackground');
+const TAB_BAR_BADGE_BACKGROUND = appSetting('theme', 'native_tabs', 'badgeBackground') || 'bg-destructive';
+const TAB_BAR_SELECTED = appSetting('theme', 'native_tabs', 'selected');
 
 function getOverflowBadgeCount(currentUser, overflow = []) {
     let total = 0;
@@ -95,7 +97,8 @@ function MoreTabBarButton({ children, style, overflowItems, onSelectOverflow, ac
     );
 }
 
-function getScreenOptions(colors, isShowTabs) {
+/** `tokens`: theme colors resolved from `native_tabs` (badge fill, selected tab ink / fill). */
+function getScreenOptions(colors, isShowTabs, tokens) {
     return {
         tabBarStyle: {
             backgroundColor: colors.barsBackground,
@@ -111,7 +114,7 @@ function getScreenOptions(colors, isShowTabs) {
         },
         tabBarItemStyle: TAB_BAR_ITEM_STYLE,
         tabBarBadgeStyle: {
-            backgroundColor: TAB_BAR_BADGE_BACKGROUND || colors.primary,
+            backgroundColor: tokens.badgeBackground,
             position: 'absolute',
             top: -4,
             end: -6,
@@ -126,8 +129,8 @@ function getScreenOptions(colors, isShowTabs) {
         },
         tabBarAllowFontScaling: false,
         tabBarInactiveTintColor: colors.barsColor,
-        tabBarActiveTintColor: colors.primary,
-        tabBarActiveBackgroundColor: colors.primaryBg,
+        tabBarActiveTintColor: tokens.selectedInk || colors.primary,
+        tabBarActiveBackgroundColor: tokens.selectedIndicator || colors.primaryBg,
         unmountOnBlur: false,
         lazy: true,
         sceneStyle: {
@@ -179,9 +182,14 @@ export default function NativeTabNavigator({
     const router = useRouter();
     const { t } = useTranslation();
 
+    // Selected tab: the toggled look of selected glass buttons (`native_tabs.selected`).
+    const badgeBackground = useNativeTokenColor(TAB_BAR_BADGE_BACKGROUND);
+    const selectedInk = useNativeTokenColor(TAB_BAR_SELECTED?.foreground);
+    const selectedIndicator = useNativeTokenColor(TAB_BAR_SELECTED?.indicator);
+
     const screenOptions = useMemo(
-        () => getScreenOptions(colors, isShowTabs),
-        [colors, isShowTabs]
+        () => getScreenOptions(colors, isShowTabs, { badgeBackground, selectedInk, selectedIndicator }),
+        [colors, isShowTabs, badgeBackground, selectedInk, selectedIndicator]
     );
 
     const { visible, overflow, moreTabIndex } = useMemo(

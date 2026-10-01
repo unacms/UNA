@@ -20,7 +20,7 @@ import {
     fillMaxWidth,
     width as widthModifier,
 } from '@expo/ui/jetpack-compose/modifiers';
-import { useThemeValue } from 'app/design/theme';
+import { useAndroidStyleColors } from 'app/design/controls/neo-button/native-style-colors';
 import { useResolvedNeoButton, resolveScoped, parseNeoButtonAddon } from 'app/design/controls/neo-button/neo-button-resolver';
 import { useFrozenHostSize, useLockedNativePress, wrapNativeButtonHost } from 'app/design/controls/neo-button/neo-button-expoui-host';
 import { FeedbackHaptics, findIconFromRemote } from 'app/lib/util';
@@ -96,7 +96,7 @@ export function NeoButtonExpoUI(props: NeoButtonExpoUIProps) {
     const ButtonComponent = VARIANT_COMPONENTS[variant] ?? FilledTonalButton;
 
     const colorMap = nativeConfig?.androidColors?.[variant];
-    const pickedColors = useThemeValue(colorMap?.default, colorMap?.dark);
+    const pickedColors = useAndroidStyleColors(colorMap) as Record<string, any> | undefined;
     const variantColors = pickedColors ? { ...pickedColors } : {};
     const { tintedContainerColor, tintedContentColor, ...baseColors } = variantColors;
     const explicitTint = isNativeColor(resolved.tint) ? resolved.tint : null;
