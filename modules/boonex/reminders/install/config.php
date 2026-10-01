@@ -17,7 +17,7 @@ $aConfig = array(
     'type' => BX_DOL_MODULE_TYPE_MODULE,
     'name' => 'bx_reminders',
     'title' => 'Reminders',
-    'note' => 'Reminders module.',
+    'note' => 'Reminders, scheduled reminders',
     'version' => '11.0.0',
     'vendor' => 'UNA INC',
     'help_url' => 'http://feed.una.io/?section={module_name}',

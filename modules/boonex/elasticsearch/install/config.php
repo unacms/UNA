@@ -16,7 +16,7 @@ $aConfig = array(
     'type' => BX_DOL_MODULE_TYPE_MODULE,
     'name' => 'bx_elasticsearch',
     'title' => 'ElasticSearch',
-    'note' => 'Allows to translate content of the site on different languages',
+    'note' => 'Elasticsearch, search index, translate site content into different languages',
     'version' => '15.0.3.DEV',
     'vendor' => 'UNA INC',
     'help_url' => 'http://feed.una.io/?section={module_name}',

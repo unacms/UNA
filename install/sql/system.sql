@@ -4,7 +4,7 @@
 
 -- --------------------------------------------------------
 
-DROP TABLE IF EXISTS `sys_keys`, `sys_objects_editor`, `sys_objects_iconset`, `sys_objects_player`, `sys_objects_push`, `sys_objects_sms`, `sys_objects_embeds`, `sys_objects_file_handlers`, `sys_objects_captcha`, `sys_objects_cmts`, `sys_cmts_images`, `sys_cmts_images_preview`, `sys_cmts_images2entries`, `sys_cmts_ids`, `sys_cmts_meta_keywords`, `sys_cmts_meta_mentions`, `sys_cmts_votes`, `sys_cmts_votes_track`, `sys_cmts_reactions`, `sys_cmts_reactions_track`, `sys_cmts_reports`, `sys_cmts_reports_track`, `sys_cmts_scores`, `sys_cmts_scores_track`, `sys_email_templates`, `sys_queue_push`, `sys_queue_email`, `sys_options`, sys_options_types, `sys_options_categories`, `sys_options_mixes`, `sys_options_mixes2options`,  `sys_localization_categories`, `sys_localization_keys`, `sys_localization_languages`, `sys_localization_strings`, `sys_acl_actions`, `sys_acl_actions_track`, `sys_acl_matrix`, `sys_acl_levels`, `sys_sessions`, `sys_acl_levels_members`, `sys_objects_rss`, `sys_objects_search`, `sys_objects_search_extended`, `sys_search_extended_fields`, `sys_search_extended_sorting_fields`, `sys_statistics`, `sys_audit`, `sys_alerts`, `sys_alerts_cache_triggers`, `sys_alerts_log`, `sys_alerts_desc`, `sys_alerts_handlers`, `sys_injections`, `sys_injections_admin`, `sys_modules`, `sys_modules_file_tracks`, `sys_modules_relations`, `sys_permalinks`, `sys_objects_privacy`, `sys_privacy_defaults`, `sys_privacy_groups`, `sys_privacy_groups_custom`, `sys_privacy_groups_custom_members`, `sys_privacy_groups_custom_memberships`, `sys_objects_recommendation`, `sys_recommendation_criteria`, `sys_recommendation_data`, `sys_objects_auths`, `sys_objects_score`, `sys_objects_vote`, `sys_objects_report`, `sys_objects_view`, `sys_objects_favorite`, `sys_objects_feature`, `sys_objects_chart`, `sys_objects_content_info`, `sys_content_info_grids`, `sys_background_jobs`, `sys_cron_jobs`, `sys_objects_storage`, `sys_objects_uploader`, `sys_storage_user_quotas`, `sys_storage_tokens`, `sys_storage_ghosts`, `sys_storage_deletions`, `sys_storage_mime_types`, `sys_objects_transcoder`, `sys_transcoder_images_files`, `sys_transcoder_videos_files`, `sys_transcoder_audio_files`, `sys_transcoder_filters`, `sys_transcoder_queue`, `sys_transcoder_queue_files`, `sys_accounts`, `sys_accounts_password`, `sys_accounts_pictures`, `sys_accounts_pictures_resized`, `sys_profiles`, `sys_profiles_track`, `sys_objects_form`, `sys_form_displays`, `sys_form_inputs`, `sys_form_inputs_privacy`, `sys_form_display_inputs`, `sys_form_pre_lists`, `sys_form_pre_values`, `sys_menu_templates`, `sys_objects_menu`, `sys_menu_sets`, `sys_menu_items`, `sys_objects_grid`, `sys_grid_fields`, `sys_grid_actions`, `sys_objects_connection`, `sys_profiles_conn_bans`, `sys_profiles_conn_relations`, `sys_profiles_conn_subscriptions`, `sys_profiles_conn_friends`, `sys_objects_page`, `sys_pages_types`, `sys_pages_layouts`, `sys_pages_layout_columns`, `sys_pages_design_boxes`, `sys_pages_content_placeholders`, `sys_pages_blocks`, `sys_pages_blocks_data`, `sys_labels`, `sys_objects_metatags`, `sys_objects_category`, `sys_objects_live_updates`, `sys_objects_payments`, `sys_files`, `sys_images`, `sys_images_custom`, `sys_images_resized`, `sys_images_editor`, `sys_images_editor_resized`, `sys_wiki_files`, `sys_wiki_images_resized`, `sys_rewrite_rules`, `sys_seo_links`, `sys_seo_uri_rewrites`, `sys_api_keys`, `sys_api_origins`, `sys_agents_models`, `sys_agents_vector_store`, `sys_agents_vector_store_data`, `sys_agents_agents`, `sys_agents_tools`, `sys_agents_chat_history`, `sys_agents_chat_artifacts`, `sys_preloader`, `sys_std_roles`, `sys_std_roles_actions`, `sys_std_roles_actions2roles`, `sys_std_roles_members`, `sys_std_pages`, `sys_std_widgets`, `sys_std_widgets_bookmarks`, `sys_std_pages_widgets`, `sys_categories`, `sys_categories2objects`, `sys_objects_logs`, `sys_objects_location_field`, `sys_objects_location_map`, `sys_objects_wiki`, `sys_pages_wiki_blocks`, `sys_badges`, `sys_badges2objects`, `sys_form_fields_reaction`, `sys_form_fields_reaction_track`, `sys_form_fields_votes`, `sys_form_fields_votes_track`, `sys_form_fields_ids`, `sys_iframely_data`, `sys_embeded_data`, `sys_logger`;
+DROP TABLE IF EXISTS `sys_keys`, `sys_objects_editor`, `sys_objects_iconset`, `sys_objects_player`, `sys_objects_push`, `sys_objects_sms`, `sys_objects_embeds`, `sys_objects_file_handlers`, `sys_objects_captcha`, `sys_objects_cmts`, `sys_cmts_images`, `sys_cmts_images_preview`, `sys_cmts_images2entries`, `sys_cmts_ids`, `sys_cmts_meta_keywords`, `sys_cmts_meta_mentions`, `sys_cmts_votes`, `sys_cmts_votes_track`, `sys_cmts_reactions`, `sys_cmts_reactions_track`, `sys_cmts_reports`, `sys_cmts_reports_track`, `sys_cmts_scores`, `sys_cmts_scores_track`, `sys_email_templates`, `sys_queue_push`, `sys_queue_email`, `sys_options`, sys_options_types, `sys_options_categories`, `sys_options_mixes`, `sys_options_mixes2options`,  `sys_localization_categories`, `sys_localization_keys`, `sys_localization_languages`, `sys_localization_strings`, `sys_acl_actions`, `sys_acl_actions_track`, `sys_acl_matrix`, `sys_acl_levels`, `sys_sessions`, `sys_acl_levels_members`, `sys_objects_rss`, `sys_objects_search`, `sys_objects_search_extended`, `sys_search_extended_fields`, `sys_search_extended_sorting_fields`, `sys_statistics`, `sys_audit`, `sys_alerts`, `sys_alerts_cache_triggers`, `sys_alerts_log`, `sys_alerts_desc`, `sys_alerts_handlers`, `sys_injections`, `sys_injections_admin`, `sys_modules`, `sys_modules_file_tracks`, `sys_modules_relations`, `sys_permalinks`, `sys_objects_privacy`, `sys_privacy_defaults`, `sys_privacy_groups`, `sys_privacy_groups_custom`, `sys_privacy_groups_custom_members`, `sys_privacy_groups_custom_memberships`, `sys_objects_recommendation`, `sys_recommendation_criteria`, `sys_recommendation_data`, `sys_objects_auths`, `sys_objects_score`, `sys_objects_vote`, `sys_objects_report`, `sys_objects_view`, `sys_objects_favorite`, `sys_objects_feature`, `sys_objects_chart`, `sys_objects_content_info`, `sys_content_info_grids`, `sys_background_jobs`, `sys_cron_jobs`, `sys_objects_storage`, `sys_objects_uploader`, `sys_storage_user_quotas`, `sys_storage_tokens`, `sys_storage_ghosts`, `sys_storage_deletions`, `sys_storage_mime_types`, `sys_objects_transcoder`, `sys_transcoder_images_files`, `sys_transcoder_videos_files`, `sys_transcoder_audio_files`, `sys_transcoder_filters`, `sys_transcoder_queue`, `sys_transcoder_queue_files`, `sys_accounts`, `sys_accounts_password`, `sys_accounts_pictures`, `sys_accounts_pictures_resized`, `sys_profiles`, `sys_profiles_track`, `sys_objects_form`, `sys_form_displays`, `sys_form_inputs`, `sys_form_inputs_privacy`, `sys_form_display_inputs`, `sys_form_pre_lists`, `sys_form_pre_values`, `sys_menu_templates`, `sys_objects_menu`, `sys_menu_sets`, `sys_menu_items`, `sys_objects_grid`, `sys_grid_fields`, `sys_grid_actions`, `sys_objects_connection`, `sys_profiles_conn_bans`, `sys_profiles_conn_relations`, `sys_profiles_conn_subscriptions`, `sys_profiles_conn_friends`, `sys_objects_page`, `sys_pages_types`, `sys_pages_layouts`, `sys_pages_layout_columns`, `sys_pages_design_boxes`, `sys_pages_content_placeholders`, `sys_pages_blocks`, `sys_pages_blocks_data`, `sys_labels`, `sys_objects_metatags`, `sys_objects_category`, `sys_objects_live_updates`, `sys_objects_payments`, `sys_files`, `sys_images`, `sys_images_custom`, `sys_images_resized`, `sys_images_editor`, `sys_images_editor_resized`, `sys_wiki_files`, `sys_wiki_images_resized`, `sys_rewrite_rules`, `sys_seo_links`, `sys_seo_uri_rewrites`, `sys_api_keys`, `sys_api_origins`, `sys_agents_models`, `sys_agents_vector_store`, `sys_agents_vector_store_data`, `sys_agents_agents`, `sys_agents_tools`, `sys_agents_chat_history`, `sys_agents_chat_artifacts`, `sys_agents_chat_images`, `sys_agents_sql_log`, `sys_agents_prompt_feedback`, `sys_preloader`, `sys_std_roles`, `sys_std_roles_actions`, `sys_std_roles_actions2roles`, `sys_std_roles_members`, `sys_std_pages`, `sys_std_widgets`, `sys_std_widgets_bookmarks`, `sys_std_pages_widgets`, `sys_categories`, `sys_categories2objects`, `sys_objects_logs`, `sys_objects_location_field`, `sys_objects_location_map`, `sys_objects_wiki`, `sys_pages_wiki_blocks`, `sys_badges`, `sys_badges2objects`, `sys_form_fields_reaction`, `sys_form_fields_reaction_track`, `sys_form_fields_votes`, `sys_form_fields_votes_track`, `sys_form_fields_ids`, `sys_iframely_data`, `sys_embeded_data`, `sys_logger`;
 
 ALTER DATABASE DEFAULT CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci';
 SET NAMES 'utf8mb4' COLLATE 'utf8mb4_unicode_ci';
@@ -931,7 +931,8 @@ INSERT INTO `sys_options_categories`(`type_id`, `name`, `caption`, `hidden`, `or
 SET @iCategoryId = LAST_INSERT_ID();
 
 INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `info`, `value`, `type`, `extra`, `check`, `check_error`, `order`) VALUES
-(@iCategoryId, 'sys_agents_inspector_key', '_adm_stg_cpt_option_sys_agents_inspector_key', '_adm_stg_cpt_option_sys_agents_inspector_key_info', '', 'digit', '', '', '', 0);
+(@iCategoryId, 'sys_agents_inspector_key', '_adm_stg_cpt_option_sys_agents_inspector_key', '_adm_stg_cpt_option_sys_agents_inspector_key_info', '', 'digit', '', '', '', 0),
+(@iCategoryId, 'sys_agents_operator_agent', '_adm_stg_cpt_option_sys_agents_operator_agent', '_adm_stg_cpt_option_sys_agents_operator_agent_info', '', 'select', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:26:"get_options_operator_agent";s:5:"class";s:13:"TemplServices";}', '', '', 1);
 
 --
 -- CATEGORY (HIDDEN): Agents (usage)
@@ -1754,6 +1755,7 @@ CREATE TABLE `sys_modules` (
   `subtypes` int(11) unsigned NOT NULL default '0',
   `name` varchar(32) NOT NULL default '',
   `title` varchar(255) NOT NULL default '',
+  `note` varchar(255) NOT NULL default '',
   `vendor` varchar(64) NOT NULL default '',
   `version` varchar(32) NOT NULL default '',
   `help_url` varchar(128) NOT NULL default '',
@@ -2730,7 +2732,8 @@ INSERT INTO `sys_objects_storage` (`object`, `engine`, `params`, `token_life`, `
 ('sys_wiki_files', 'Local', '', 360, 2592000, 3, 'sys_wiki_files', 'allow-deny', '{image}', '', 0, 0, 0, 0, 0, 0),
 ('sys_wiki_images_resized', 'Local', '', 360, 2592000, 3, 'sys_wiki_images_resized', 'allow-deny', '{image}', '', 0, 0, 0, 0, 0, 0),
 ('sys_accounts_pictures', 'Local', '', 360, 2592000, 3, 'sys_accounts_pictures', 'allow-deny', '{image}', '', 0, 0, 0, 0, 0, 0),
-('sys_accounts_pictures_resized', 'Local', '', 360, 2592000, 3, 'sys_accounts_pictures_resized', 'allow-deny', '{image}', '', 0, 0, 0, 0, 0, 0);
+('sys_accounts_pictures_resized', 'Local', '', 360, 2592000, 3, 'sys_accounts_pictures_resized', 'allow-deny', '{image}', '', 0, 0, 0, 0, 0, 0),
+('sys_agents_chat_images', 'Local', '', 3600, 2592000, 3, 'sys_agents_chat_images', 'allow-deny', '{image}', '', 0, 0, 0, 0, 8388608, 0);
 
 CREATE TABLE IF NOT EXISTS `sys_storage_user_quotas` (
   `profile_id` int(11) NOT NULL,
@@ -5751,10 +5754,11 @@ INSERT INTO `sys_grid_actions` (`object`, `type`, `name`, `title`, `icon`, `icon
 ('sys_studio_agents_agents', 'bulk', 'delete', '_Delete', '', 0, 1, 1),
 ('sys_studio_agents_agents', 'single', 'manual', '_Run', 'play', 1, 0, 1),
 ('sys_studio_agents_agents', 'single', 'message', '_sys_agents_agents_act_message', 'comment', 1, 0, 2),
-('sys_studio_agents_agents', 'single', 'logs', '_Logs', 'file-alt', 1, 0, 3),
-('sys_studio_agents_agents', 'single', 'edit', '_Edit', 'pencil-alt', 1, 0, 4),
-('sys_studio_agents_agents', 'single', 'wipe_chat_history', '_sys_agents_agents_act_wipe_chat_history', 'eraser', 1, 1, 5),
-('sys_studio_agents_agents', 'single', 'delete', '_Delete', 'remove', 1, 1, 6),
+('sys_studio_agents_agents', 'single', 'activity', '_sys_agents_agents_act_activity', 'history', 1, 0, 3),
+('sys_studio_agents_agents', 'single', 'logs', '_Logs', 'file-alt', 1, 0, 4),
+('sys_studio_agents_agents', 'single', 'edit', '_Edit', 'pencil-alt', 1, 0, 5),
+('sys_studio_agents_agents', 'single', 'wipe_chat_history', '_sys_agents_agents_act_wipe_chat_history', 'eraser', 1, 1, 6),
+('sys_studio_agents_agents', 'single', 'delete', '_Delete', 'remove', 1, 1, 7),
 ('sys_studio_agents_agents', 'independent', 'add', '_adm_form_btn_field_add', '', 0, 0, 1);
 
 -- GRID: Agents Logs
@@ -6270,19 +6274,20 @@ INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title`, `designb
 -- service blocks
 SET @iBlockOrder = IFNULL((SELECT `order` FROM `sys_pages_blocks` WHERE `object` = '' AND `cell_id` = 0 ORDER BY `order` DESC LIMIT 1), 0);
 INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title_system`, `title`, `designbox_id`, `tabs`, `async`, `visible_for_levels`, `type`, `content`, `deletable`, `copyable`, `active`, `order`) VALUES
-('', 0, 'system', '_sys_page_block_title_sys_create_post', '_sys_page_block_title_create_post', 11, 1, 4, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:20:"get_create_post_form";s:6:"params";a:1:{i:0;i:0;}s:5:"class";s:13:"TemplServices";}', 0, 1, 1, @iBlockOrder + 1),
-('', 0, 'system', '_sys_page_block_title_sys_create_post_context', '_sys_page_block_title_create_post_context', 11, 1, 4, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:20:"get_create_post_form";s:6:"params";a:1:{i:0;s:12:"{profile_id}";}s:5:"class";s:13:"TemplServices";}', 0, 1, 1, @iBlockOrder + 2),
-('', 0, 'system', '_sys_page_block_title_sys_create_post_public', '_sys_page_block_title_create_post_public', 11, 1, 4, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:20:"get_create_post_form";s:6:"params";a:0:{}s:5:"class";s:13:"TemplServices";}', 0, 1, 1, @iBlockOrder + 3),
+('', 0, 'system', '_sys_page_block_title_sys_search_ai', '_sys_page_block_title_search_ai', 11, 0, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:19:"get_block_search_ai";s:6:"params";a:0:{}s:5:"class";s:19:"TemplServicesSearch";}', 0, 1, 1, @iBlockOrder + 1),
+('', 0, 'system', '_sys_page_block_title_sys_create_post', '_sys_page_block_title_create_post', 11, 1, 4, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:20:"get_create_post_form";s:6:"params";a:1:{i:0;i:0;}s:5:"class";s:13:"TemplServices";}', 0, 1, 1, @iBlockOrder + 2),
+('', 0, 'system', '_sys_page_block_title_sys_create_post_context', '_sys_page_block_title_create_post_context', 11, 1, 4, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:20:"get_create_post_form";s:6:"params";a:1:{i:0;s:12:"{profile_id}";}s:5:"class";s:13:"TemplServices";}', 0, 1, 1, @iBlockOrder + 3),
+('', 0, 'system', '_sys_page_block_title_sys_create_post_public', '_sys_page_block_title_create_post_public', 11, 1, 4, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:20:"get_create_post_form";s:6:"params";a:0:{}s:5:"class";s:13:"TemplServices";}', 0, 1, 1, @iBlockOrder + 4),
 
-('', 0, 'system', '_sys_page_block_title_sys_std_site_submenu', '_sys_page_block_title_std_site_submenu', 3, 0, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:16:"get_site_submenu";s:6:"params";a:0:{}s:5:"class";s:13:"TemplServices";}', 0, 1, 1, @iBlockOrder + 4),
+('', 0, 'system', '_sys_page_block_title_sys_std_site_submenu', '_sys_page_block_title_std_site_submenu', 3, 0, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:16:"get_site_submenu";s:6:"params";a:0:{}s:5:"class";s:13:"TemplServices";}', 0, 1, 1, @iBlockOrder + 5),
 
-('', 0, 'system', '_sys_page_block_title_sys_author', '_sys_page_block_title_author', 3, 0, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:16:"get_block_author";s:6:"params";a:2:{i:0;s:8:"{module}";i:1;s:4:"{id}";}s:5:"class";s:13:"TemplServices";}', 0, 1, 1, @iBlockOrder + 5),
+('', 0, 'system', '_sys_page_block_title_sys_author', '_sys_page_block_title_author', 3, 0, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:16:"get_block_author";s:6:"params";a:2:{i:0;s:8:"{module}";i:1;s:4:"{id}";}s:5:"class";s:13:"TemplServices";}', 0, 1, 1, @iBlockOrder + 6),
 
-('', 0, 'system', '_sys_page_block_title_sys_recom_friends', '_sys_page_block_title_recom_friends', 11, 1, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:30:"browse_recommendations_friends";s:6:"params";a:0:{}s:5:"class";s:20:"TemplServiceProfiles";}', 0, 1, 1, @iBlockOrder + 6),
-('', 0, 'system', '_sys_page_block_title_sys_recom_subscriptions', '_sys_page_block_title_recom_subscriptions', 11, 1, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:36:"browse_recommendations_subscriptions";s:6:"params";a:0:{}s:5:"class";s:20:"TemplServiceProfiles";}', 0, 1, 1, @iBlockOrder + 7),
-('', 0, 'system', '_sys_page_block_title_sys_invitations', '_sys_page_block_title_invitations', 11, 1, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:18:"browse_invitations";s:6:"params";a:0:{}s:5:"class";s:20:"TemplServiceProfiles";}', 0, 1, 1, @iBlockOrder + 8),
+('', 0, 'system', '_sys_page_block_title_sys_recom_friends', '_sys_page_block_title_recom_friends', 11, 1, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:30:"browse_recommendations_friends";s:6:"params";a:0:{}s:5:"class";s:20:"TemplServiceProfiles";}', 0, 1, 1, @iBlockOrder + 7),
+('', 0, 'system', '_sys_page_block_title_sys_recom_subscriptions', '_sys_page_block_title_recom_subscriptions', 11, 1, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:36:"browse_recommendations_subscriptions";s:6:"params";a:0:{}s:5:"class";s:20:"TemplServiceProfiles";}', 0, 1, 1, @iBlockOrder + 8),
+('', 0, 'system', '_sys_page_block_title_sys_invitations', '_sys_page_block_title_invitations', 11, 1, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:18:"browse_invitations";s:6:"params";a:0:{}s:5:"class";s:20:"TemplServiceProfiles";}', 0, 1, 1, @iBlockOrder + 9),
 
-('', 0, 'system', '_sys_page_block_title_sys_ai_agent', '_sys_page_block_title_ai_agent', 11, 0, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:18:"get_block_ai_agent";s:6:"params";a:1:{i:0;i:1;}s:5:"class";s:13:"TemplServices";}', 0, 1, 1, @iBlockOrder + 9);
+('', 0, 'system', '_sys_page_block_title_sys_ai_agent', '_sys_page_block_title_ai_agent', 11, 0, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:18:"get_block_ai_agent";s:6:"params";a:1:{i:0;i:1;}s:5:"class";s:13:"TemplServices";}', 0, 1, 1, @iBlockOrder + 10);
 
 -- content blocks
 INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title_system`, `title`, `designbox_id`, `tabs`, `async`, `visible_for_levels`, `type`, `content`, `deletable`, `copyable`, `active`, `active_api`, `order`) VALUES
@@ -6376,8 +6381,8 @@ INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title_system`, `
 
 ('sys_audit', 1, 'system', '_sys_page_block_title_system_audit_administration', '_sys_page_block_title_audit_administration', 11, 0, 0, 192, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:12:"manage_tools";s:6:"params";a:1:{i:0;s:14:"administration";}s:5:"class";s:18:"TemplAuditServices";}', 0, 1, 1, 1),
 ('sys_redirect', 1, 'system', '', '_sys_page_block_title_redirect', 11, 0, 0, 2147483647, 'service', 'a:3:{s:6:\"module\";s:6:\"system\";s:6:\"method\";s:8:\"redirect\";s:5:\"class\";s:13:\"TemplServices\";}', 0, 1, 1, 1),
-('sys_search_keyword', 1, 'system', '', '_sys_page_block_title_search_keyword_form', 13, 0, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:19:"search_keyword_form";s:6:"params";a:0:{}s:5:"class";s:13:"TemplServices";}', 0, 1, 1, 1),
-('sys_search_keyword', 1, 'system', '', '_sys_page_block_title_search_keyword_result', 0, 0, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:21:"search_keyword_result";s:6:"params";a:0:{}s:5:"class";s:13:"TemplServices";}', 0, 1, 1, 1),
+('sys_search_keyword', 1, 'system', '', '_sys_page_block_title_search_keyword_form', 13, 0, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:19:"search_keyword_form";s:6:"params";a:0:{}s:5:"class";s:19:"TemplServicesSearch";}', 0, 1, 1, 1),
+('sys_search_keyword', 1, 'system', '', '_sys_page_block_title_search_keyword_result', 0, 0, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:21:"search_keyword_result";s:6:"params";a:0:{}s:5:"class";s:19:"TemplServicesSearch";}', 0, 1, 1, 1),
 
 ('sys_wiki_add_page', 1, 'system', '', '_sys_page_block_title_wiki_add_page', 0, 0, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:13:"wiki_add_page";s:6:"params";a:2:{i:0;s:8:"{object}";i:1;s:5:"{uri}";}s:5:"class";s:16:"TemplServiceWiki";}', 0, 1, 1, 1),
 ('sys_sub_wiki_pages_list', 1, 'system', '', '_sys_page_block_title_wiki_pages_list', 0, 0, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:10:"pages_list";s:6:"params";a:0:{}s:5:"class";s:16:"TemplServiceWiki";}', 0, 1, 1, 1),
@@ -6419,7 +6424,7 @@ CREATE TABLE IF NOT EXISTS `sys_pages_blocks_data` (
   `block_id` int(11) NOT NULL DEFAULT 0,
   `content_id` int(11) NOT NULL DEFAULT 0,
   `content_module` varchar(32) NOT NULL,
-  `data` text NOT NULL,
+  `data` mediumtext NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `block` (`block_id`, `content_id`, `content_module`)
 );
@@ -6718,7 +6723,7 @@ CREATE TABLE `sys_agents_models` (
   `key` varchar(255) NOT NULL DEFAULT '',
   `params` text NOT NULL,
   `params_user` text DEFAULT NULL,
-  `capabilities` enum('chatllm','chatvlm','embeddings') NOT NULL DEFAULT 'chatllm',
+  `capabilities` enum('chatllm','chatvlm','embeddings','judge') NOT NULL DEFAULT 'chatllm',
   `duplicate` tinyint(4) NOT NULL DEFAULT 1,
   `active` tinyint(4) NOT NULL DEFAULT 1,
   `changed` int(11) UNSIGNED NOT NULL DEFAULT 0,
@@ -6812,6 +6817,14 @@ INSERT INTO `sys_agents_models` (`type`, `model`, `title`, `icon`, `docs`, `key`
 
 INSERT INTO `sys_agents_models` (`type`, `model`, `title`, `icon`, `docs`, `key`, `params`, `params_user`, `capabilities`, `duplicate`, `active`, `changed`) VALUES
 ('cohere', 'command-a-03-2025', 'Cohere', 'ai-cohere.svg', 'https://docs.cohere.com/docs/models', '', '', NULL, 'chatllm', 0, 0, 0);
+
+SET @j = JSON_OBJECT(
+    'baseUri', 'https://api.typesafe.ai/v1',
+    'timeout', 15,
+    'retries', 2
+);
+INSERT INTO `sys_agents_models` (`type`, `model`, `title`, `icon`, `docs`, `key`, `params`, `params_user`, `capabilities`, `duplicate`, `active`, `changed`) VALUES
+('typesafe', 'jev-latest', 'TypeSafe (Jev)', 'ai-typesafe.svg', 'Judge model: answers typed questions (yes/no, choice, score) about a text with probabilities and confidence instead of generating text. It can not be assigned to an agent, it is used from code - moderation, guardrails, routing, search parsing. Models - https://docs.typesafe.ai/models, API - https://docs.typesafe.ai/api', '', CAST(@j AS CHAR), NULL, 'judge', 0, 0, 0);
 
 SET @j = JSON_OBJECT(
     'baseUri', 'https://api.moonshot.ai/v1',
@@ -7052,7 +7065,16 @@ INSERT INTO `sys_agents_tools` (`type`, `title`, `docs`, `params`, `params_user`
 ('comment_get', 'Comment get', 'This tool allows agents to get single comment by global comment id.', '{}', NULL, 0, 0, 1, 'BxDolAIToolCmtsGetSingle', ''),
 
 ('chat_artifact_save', 'Chat artifact save', 'Save one field from the conversation into sys_agents_chat_artifacts.', '{}', NULL, 0, 0, 0, 'BxDolAIToolChatArtifactSave', ''),
-('chat_goal_reached', 'Chat goal reached', 'Call once when the conversation goal is done. Fires agent_conversation_closed with reason=goal.', '{}', NULL, 0, 0, 0, 'BxDolAIToolChatGoalReached', '');
+('chat_goal_reached', 'Chat goal reached', 'Call once when the conversation goal is done. Fires agent_conversation_closed with reason=goal.', '{}', NULL, 0, 0, 0, 'BxDolAIToolChatGoalReached', ''),
+('chat_buttons', 'Chat buttons', 'Clickable buttons under the assistant reply. Call instead of printing options in chat text.', '{}', NULL, 0, 0, 1, 'BxDolAIToolChatButtons', ''),
+('chat_title', 'Chat title', 'Lets the agent name the conversation (3-6 words) once, in its first reply. Shown in the chat history list.', '{}', NULL, 0, 0, 1, 'BxDolAIToolChatTitle', ''),
+
+('mysql_write_safe', 'MySQL Write (safe)', 'INSERT or UPDATE one row by primary key. DELETE/DROP/TRUNCATE/ALTER are blocked. Each change is snapshotted into sys_agents_sql_log (before/after JSON). Roll back with mysql_undo. Use together with MySQL Schema and MySQL Select. Do not enable the stock MySQL Write tool on the same agent.', '{}', NULL, 0, 0, 1, 'BxDolAIToolMysqlWrite', ''),
+('mysql_undo', 'MySQL Undo', 'Roll back the last mysql_write snapshot (scope=last) or all snapshots in this chat (scope=session), newest first. UPDATE restores before_json. INSERT deletes that primary key internally. Already-undone rows are skipped. Attach to the same agent as MySQL Write (safe).', '{}', NULL, 0, 0, 1, 'BxDolAIToolMysqlUndo', ''),
+
+('prompt_feedback', 'Prompt feedback', 'Call when the user says the previous reply was wrong, corrects you, or you notice you broke a rule. Writes one paste-ready markdown case into sys_agents_prompt_feedback.markdown: question, wrong answer, correction, why, expected behavior, suggested prompt rule, excerpt, and the prompt that was active. Do not mention the log to the visitor.', '{}', NULL, 0, 0, 1, 'BxDolAIToolPromptFeedback', ''),
+('mockup_upsert', 'Mockup upsert', 'Save a NEO mockup JSON tree (view/row/text/image/icon/button) onto a get_mockup_block service page block. The tree is stored in sys_pages_blocks_data and rendered by the NEO app as a mockup block. Add a "get_mockup_block" service block (system / get_mockup_block / TemplServices) to the page first. Do not use MySQL Write for mockups.', '{}', NULL, 0, 0, 1, 'BxDolAIToolMockup', ''),
+('agent_create', 'Agent create', 'Create or update a Studio agent (sys_agents_agents). Do not use mysql_write on that table. action=catalog|create|update. Never ask for numeric profile_id — catalog.profile_buttons as chat_buttons, then profile=Name or profile_new=Name; create without a profile is refused. preset=comment_reply for comment-reply alert agents.', '{}', NULL, 0, 0, 1, 'BxDolAIToolAgentCreate', '');
 
 CREATE TABLE IF NOT EXISTS `sys_agents_chat_history` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
@@ -7062,6 +7084,7 @@ CREATE TABLE IF NOT EXISTS `sys_agents_chat_history` (
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
   `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `closed_reason` varchar(16) NOT NULL DEFAULT '',
+  `title` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
   UNIQUE KEY `uk_thread_id` (`thread_id`(192)),
   KEY `ip_created` (`ip`, `created_at`)
@@ -7076,6 +7099,91 @@ CREATE TABLE IF NOT EXISTS `sys_agents_chat_artifacts` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `history_field` (`history_id`, `field_name`),
   KEY `history_id` (`history_id`)
+);
+
+CREATE TABLE IF NOT EXISTS `sys_agents_chat_images` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `profile_id` int(10) unsigned NOT NULL,
+  `remote_id` varchar(128) NOT NULL,
+  `path` varchar(255) NOT NULL,
+  `file_name` varchar(255) NOT NULL,
+  `mime_type` varchar(128) NOT NULL,
+  `ext` varchar(32) NOT NULL,
+  `size` bigint(20) NOT NULL,
+  `dimensions` varchar(24) NOT NULL,
+  `added` int(11) NOT NULL,
+  `modified` int(11) NOT NULL,
+  `private` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `remote_id` (`remote_id`)
+);
+
+CREATE TABLE IF NOT EXISTS `sys_agents_sql_log` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `agent_id` int(11) NOT NULL DEFAULT 0,
+  `profile_id` int(11) NOT NULL DEFAULT 0,
+  `thread_id` varchar(255) NOT NULL DEFAULT '',
+  `op` varchar(16) NOT NULL DEFAULT '',
+  `table_name` varchar(128) NOT NULL DEFAULT '',
+  `pk_name` varchar(64) NOT NULL DEFAULT '',
+  `pk_value` varchar(64) NOT NULL DEFAULT '',
+  `sql_text` mediumtext NOT NULL,
+  `before_json` longtext DEFAULT NULL,
+  `after_json` longtext DEFAULT NULL,
+  `undone` int(11) NOT NULL DEFAULT 0,
+  `added` int(11) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  KEY `thread_id` (`thread_id`(191)),
+  KEY `agent_id` (`agent_id`),
+  KEY `table_pk` (`table_name`(64), `pk_name`(64), `pk_value`(63))
+);
+
+CREATE TABLE IF NOT EXISTS `sys_agents_activity` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `agent_id` int(11) unsigned NOT NULL DEFAULT 0,
+  `profile_id` int(11) unsigned NOT NULL DEFAULT 0,
+  `trigger` varchar(32) NOT NULL DEFAULT '',
+  `thread_id` varchar(255) NOT NULL DEFAULT '',
+  `tool` varchar(64) NOT NULL DEFAULT '',
+  `action` varchar(32) NOT NULL DEFAULT '',
+  `unit` varchar(128) NOT NULL DEFAULT '',
+  `object_id` int(11) unsigned NOT NULL DEFAULT 0,
+  `object_url` varchar(1024) NOT NULL DEFAULT '',
+  `object_title` varchar(255) NOT NULL DEFAULT '',
+  `summary` text,
+  `details` mediumtext,
+  `ok` tinyint(1) NOT NULL DEFAULT 1,
+  `added` int(11) unsigned NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  KEY `agent_added` (`agent_id`, `added`),
+  KEY `thread_id` (`thread_id`(191))
+);
+
+CREATE TABLE IF NOT EXISTS `sys_agents_prompt_feedback` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `agent_id` int(11) NOT NULL DEFAULT 0,
+  `agent_name` varchar(255) NOT NULL DEFAULT '',
+  `profile_id` int(11) NOT NULL DEFAULT 0,
+  `thread_id` varchar(255) NOT NULL DEFAULT '',
+  `history_id` int(11) NOT NULL DEFAULT 0,
+  `category` varchar(32) NOT NULL DEFAULT 'other',
+  `severity` varchar(16) NOT NULL DEFAULT 'medium',
+  `user_question` mediumtext NOT NULL,
+  `wrong_answer` mediumtext NOT NULL,
+  `user_correction` mediumtext NOT NULL,
+  `error_reason` mediumtext NOT NULL,
+  `expected_behavior` mediumtext NOT NULL,
+  `suggested_prompt_rule` mediumtext NOT NULL,
+  `conversation_excerpt` mediumtext DEFAULT NULL,
+  `prompt_system` mediumtext DEFAULT NULL,
+  `prompt_hash` varchar(64) NOT NULL DEFAULT '',
+  `markdown` mediumtext NOT NULL,
+  `added` int(11) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  KEY `agent_id` (`agent_id`),
+  KEY `thread_id` (`thread_id`(191)),
+  KEY `added` (`added`),
+  KEY `prompt_hash` (`prompt_hash`)
 );
 
 -- --------------------------------------------------------

@@ -16,8 +16,8 @@ $aConfig = array(
     'type' => BX_DOL_MODULE_TYPE_MODULE,
     'name' => 'bx_twitter',
     'title' => 'Twitter connect',
-    'note' => 'Join the site using Twitter account.',
-    'version' => '15.0.0.DEV',
+    'note' => 'Twitter login, join with a Twitter account',
+    'version' => '15.0.1.DEV',
     'vendor' => 'UNA INC',
     'help_url' => 'http://feed.una.io/?section={module_name}',
 

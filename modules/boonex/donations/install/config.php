@@ -16,7 +16,7 @@ $aConfig = array(
     'type' => BX_DOL_MODULE_TYPE_MODULE,
     'name' => 'bx_donations',
     'title' => 'Donations',
-    'note' => 'Donations custom module.',
+    'note' => 'Donations, contributions, fundraising',
     'version' => '15.0.2.DEV',
     'vendor' => 'UNA INC',
     'help_url' => 'http://feed.una.io/?section={module_name}',

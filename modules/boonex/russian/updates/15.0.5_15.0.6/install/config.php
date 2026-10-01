@@ -45,10 +45,13 @@ $aConfig = array(
      */
     'language_category' => array(
         array('name' => 'Albums', 'path' => 'bx_albums/'),
+        array('name' => 'Chat+', 'path' => 'bx_chat_plus/'),
+        array('name' => 'Data Fox', 'path' => 'bx_datafox/'),
         array('name' => 'Market', 'path' => 'bx_market/'),
         array('name' => 'MassMailer', 'path' => 'bx_massmailer/'),
         array('name' => 'Notifications', 'path' => 'bx_notifications/'),
         array('name' => 'Tasks', 'path' => 'bx_tasks/'),
+        array('name' => 'UNA Connect', 'path' => 'bx_unacon/'),
         array('name' => 'System', 'path' => 'system/'),
     ),
 

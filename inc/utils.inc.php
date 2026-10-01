@@ -2416,7 +2416,15 @@ function bx_get_htmx_target ()
     if(!bx_is_htmx_request())
         return false;
 
-    return isset($_SERVER['HTTP_HX_TARGET']) ? $_SERVER['HTTP_HX_TARGET'] : false;
+    if(!isset($_SERVER['HTTP_HX_TARGET']))
+        return false;
+
+    // htmx 4 sends "tag#id" (e.g. div#bx-content-wrapper); htmx 2 sent the id alone.
+    $sTarget = $_SERVER['HTTP_HX_TARGET'];
+    if(($iHash = strpos($sTarget, '#')) !== false)
+        $sTarget = rawurldecode(substr($sTarget, $iHash + 1));
+
+    return $sTarget;
 }
 
 function bx_get_htmx_attrs ($aAttrs, $mPreload = false)
@@ -2432,7 +2440,7 @@ function bx_get_htmx_attrs ($aAttrs, $mPreload = false)
         $aHxAttrs['hx-' . $sIndex] = $mixedValue;
     });
 
-    return bx_convert_array2attrs($aHxAttrs) . ($mPreload ? ' preload="' . $mPreload . '"' : '');
+    return bx_convert_array2attrs($aHxAttrs) . ($mPreload ? ' hx-preload="' . bx_html_attribute($mPreload) . '"' : '');
 }
 
 function bx_idn_to_utf8($sUrl, $bReturnDomain = false)

@@ -16,7 +16,7 @@ $aConfig = array(
     'type' => BX_DOL_MODULE_TYPE_MODULE,
     'name' => 'bx_cas',
     'title' => 'CAS connect',
-    'note' => 'Join the site using CAS Identity Provider.',
+    'note' => 'CAS login, join with a CAS identity provider',
     'version' => '12.0.0.DEV',
     'vendor' => 'UNA INC',
     'help_url' => 'http://feed.una.io/?section={module_name}',

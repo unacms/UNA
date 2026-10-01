@@ -17,8 +17,10 @@ class BxNtfsUpdater extends BxDolStudioUpdater
             if(!$this->oDb->isFieldExists('bx_notifications_events', 'author_id'))
                 $this->oDb->query("ALTER TABLE `bx_notifications_events` ADD `author_id` int(11) NOT NULL default '0' AFTER `id`");
 
-            if(!$this->oDb->isFieldExists('bx_notifications_events', 'source_mac'))
+            if(!$this->oDb->isFieldExists('bx_notifications_events', 'source_mac')) {
                 $this->oDb->query("ALTER TABLE `bx_notifications_events` ADD `source_mac` varchar(64) NOT NULL default '' AFTER `source`");
+                $this->oDb->query("UPDATE `bx_notifications_events` SET `source_mac`=CONCAT('sys_old_', `id`) WHERE `source_mac`=''");
+            }
 
             if($this->oDb->isFieldExists('bx_notifications_events', 'source'))
                 $this->oDb->query("ALTER TABLE `bx_notifications_events` MODIFY `source` varchar(48) NOT NULL default ''");

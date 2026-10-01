@@ -9,6 +9,10 @@
 
 class BxDolAIModelFactory extends BxDolFactory
 {
+    /**
+     * Chat (chatllm / chatvlm) and embeddings models as NeuronAI providers.
+     * Judge models (capabilities = judge) are not NeuronAI providers, use getJudgeInstance().
+     */
     public static function getModelInstance(int $iId, array $aOverrides = []): NeuronAI\Providers\AIProviderInterface | NeuronAI\RAG\Embeddings\EmbeddingsProviderInterface
     {
         $iMaxTokensOverride = (int)($aOverrides['max_tokens'] ?? 0);
@@ -16,32 +20,12 @@ class BxDolAIModelFactory extends BxDolFactory
         if (isset($GLOBALS['bxDolClasses'][$sCacheKey]))
             return $GLOBALS['bxDolClasses'][$sCacheKey];
 
-        $aProvidersWithKey = ['anthropic', 'openai-embeddings', 'voyageai-embeddings', 'openai-like-embeddings', 'openai-responses', 'openai-like'];
-        $a = BxDolAiQuery::getModelObject($iId);
-        if (!$a) {
-            bx_log('sys_agents', "Agent AI Model with id {$iId} not found", BX_LOG_ERR);
-            throw new Exception("Agent AI Model with id {$iId} not found");
-        }
-        $a['key'] = (string)$a['key'];
-        if (in_array($a['type'], $aProvidersWithKey, true) && $a['key'] === '') {
-            bx_log('sys_agents', "Model with id {$iId} has empty key, can't be used", BX_LOG_ERR);
-            throw new Exception("Model with id {$iId} has empty key, can't be used");
-        }
+        list($a, $aParameters) = self::_getModel($iId);
 
-        if (!$a['active']) {
-            bx_log('sys_agents', "Model with id {$iId} is not active, can't be used", BX_LOG_ERR);
-            throw new Exception("Model with id {$iId} is not active, can't be used");
+        if ($a['capabilities'] == BxDolAiJudge::CAPABILITY) {
+            bx_log('sys_agents', "Model with id {$iId} is a judge model, it can't be used as a chat/embeddings provider", BX_LOG_ERR);
+            throw new Exception("Model with id {$iId} is a judge model, it can't be used as a chat/embeddings provider");
         }
-
-        $aParametersSystem = !empty($a['params']) ? json_decode($a['params'], true) : [];
-        $aParametersUser = !empty($a['params_user']) ? json_decode($a['params_user'], true) : [];
-        $aParameters = array_merge($aParametersSystem, $aParametersUser);
-
-        // replace markers {key} {model} in $aParameters recoursively
-        $aParameters = bx_replace_markers($aParameters, [
-            'key' => $a['key'],
-            'model' => $a['model']
-        ]);
 
         if ($iMaxTokensOverride > 0) {
             $aParameters['max_tokens'] = $iMaxTokensOverride;
@@ -225,5 +209,71 @@ class BxDolAIModelFactory extends BxDolFactory
         $GLOBALS['bxDolClasses'][$sCacheKey] = $o;
 
         return $o;
+    }
+
+    /**
+     * Judge models (capabilities = judge): typed questions -> structured answers, see BxDolAiJudge.
+     */
+    public static function getJudgeInstance(int $iId): BxDolAiJudge
+    {
+        $sCacheKey = __CLASS__ . '_Judge_' . $iId;
+        if (isset($GLOBALS['bxDolClasses'][$sCacheKey]))
+            return $GLOBALS['bxDolClasses'][$sCacheKey];
+
+        list($a, $aParameters) = self::_getModel($iId);
+
+        if ($a['capabilities'] != BxDolAiJudge::CAPABILITY) {
+            bx_log('sys_agents', "Model with id {$iId} is not a judge model", BX_LOG_ERR);
+            throw new Exception("Model with id {$iId} is not a judge model");
+        }
+
+        switch($a['type']) {
+            case 'typesafe':
+                $o = new BxDolAiJudgeTypeSafe($a, $aParameters);
+                break;
+            default:
+                bx_log('sys_agents', "Judge model type {$a['type']} is not supported", BX_LOG_ERR);
+                throw new Exception("Judge model type {$a['type']} is not supported");
+        }
+
+        $GLOBALS['bxDolClasses'][$sCacheKey] = $o;
+
+        return $o;
+    }
+
+    /**
+     * Load model row and its merged params; throws when the model is missing, inactive or has no key.
+     * @return array [model row, params]
+     */
+    protected static function _getModel(int $iId): array
+    {
+        $aProvidersWithKey = ['anthropic', 'openai-embeddings', 'voyageai-embeddings', 'openai-like-embeddings', 'openai-responses', 'openai-like', 'typesafe'];
+        $a = BxDolAiQuery::getModelObject($iId);
+        if (!$a) {
+            bx_log('sys_agents', "Agent AI Model with id {$iId} not found", BX_LOG_ERR);
+            throw new Exception("Agent AI Model with id {$iId} not found");
+        }
+        $a['key'] = (string)$a['key'];
+        if (in_array($a['type'], $aProvidersWithKey, true) && $a['key'] === '') {
+            bx_log('sys_agents', "Model with id {$iId} has empty key, can't be used", BX_LOG_ERR);
+            throw new Exception("Model with id {$iId} has empty key, can't be used");
+        }
+
+        if (!$a['active']) {
+            bx_log('sys_agents', "Model with id {$iId} is not active, can't be used", BX_LOG_ERR);
+            throw new Exception("Model with id {$iId} is not active, can't be used");
+        }
+
+        $aParametersSystem = !empty($a['params']) ? json_decode($a['params'], true) : [];
+        $aParametersUser = !empty($a['params_user']) ? json_decode($a['params_user'], true) : [];
+        $aParameters = array_merge(is_array($aParametersSystem) ? $aParametersSystem : [], is_array($aParametersUser) ? $aParametersUser : []);
+
+        // replace markers {key} {model} in $aParameters recoursively
+        $aParameters = bx_replace_markers($aParameters, [
+            'key' => $a['key'],
+            'model' => $a['model']
+        ]);
+
+        return [$a, $aParameters];
     }
 }

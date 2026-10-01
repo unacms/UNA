@@ -16,7 +16,7 @@ $aConfig = array(
     'type' => BX_DOL_MODULE_TYPE_MODULE,
     'name' => 'bx_dolphin_migration',
     'title' => 'Dolphin Migration',
-    'note' => 'Migration Tool',
+    'note' => 'Dolphin migration, import from Dolphin',
     'version' => '9.0.6.DEV',
     'vendor' => 'UNA INC',
     'help_url' => 'http://feed.una.io/?section={module_name}',

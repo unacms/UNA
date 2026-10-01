@@ -16,7 +16,7 @@ $aConfig = array(
     'type' => BX_DOL_MODULE_TYPE_MODULE,
     'name' => 'bx_help_tours',
     'title' => 'Help Tours',
-    'note' => 'Help Tours module',
+    'note' => 'Help tours, guided tours, onboarding',
     'version' => '14.0.1.DEV',
     'vendor' => 'UNA INC',
     'help_url' => 'http://feed.una.io/?section={module_name}',

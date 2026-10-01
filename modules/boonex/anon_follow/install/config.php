@@ -16,7 +16,7 @@ $aConfig = array(
     'type' => BX_DOL_MODULE_TYPE_MODULE,
     'name' => 'bx_anon_follow',
     'title' => 'Anonymous Follow',
-    'note' => 'This module add ability to follow anonymousy',
+    'note' => 'Anonymous follow, follow without signing in',
     'version' => '9.0.0',
     'vendor' => 'UNA INC',
     'help_url' => 'http://feed.boonex.com/?section={module_name}',

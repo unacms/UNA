@@ -55,10 +55,20 @@ class BxBaseUploaderServices extends BxDol
 
         $iProfileId = (int)bx_get_logged_profile_id();
         $isPrivate = (int)bx_get('p') ? 1 : 0;
+        $sAction = bx_process_input(bx_get('a'));
+
+        // Direct upload (bypassing the app proxy): the profile comes from a one-time upload token.
+        $sUploadToken = bx_get('ut');
+        if($sUploadToken !== false && $sUploadToken !== '') {
+            $sUploadToken = bx_process_input($sUploadToken);
+            $aToken = BxDolKey::getInstance()->getKeyData($sUploadToken, 'uploader');
+            if($sAction != 'upload' || !$this->isUploadTokenValid($aToken, $sUploaderObject, $sStorageObject))
+                return ['error' => _t('_Access denied'), 'code' => 403];
+
+            $iProfileId = (int)$aToken['profile_id'];
+        }
 
         $oUploader = BxDolUploader::getObjectInstance($sUploaderObject, $sStorageObject, $sUniqId);
-
-        $sAction = bx_process_input(bx_get('a'));
 
         switch ($sAction) {
 
@@ -78,6 +88,11 @@ class BxBaseUploaderServices extends BxDol
             case 'upload':
                 if(($aFile = $_FILES['file'] ?? false)) {
                     $aResult = $oUploader->handleUploads($iProfileId, $aFile, $isMultiple, $iContentId, $isPrivate);
+
+                    // One-time token: burn it once the file is stored.
+                    if(!empty($sUploadToken))
+                        BxDolKey::getInstance()->removeKey($sUploadToken);
+
                     if(($iId = (int)($aResult['id'] ?? 0)) && ($sImagesTranscoder = bx_get('img_trans')) !== false) {
                         $aGhosts = $oUploader->getGhosts($iProfileId, 'array', bx_process_input($sImagesTranscoder), $iContentId);
                         if(isset($aGhosts[$iId]))
@@ -113,6 +128,44 @@ class BxBaseUploaderServices extends BxDol
                 break;
 
         }
+    }
+
+    public function serviceGetUploadToken()
+    {
+        $iProfileId = (int)bx_get_logged_profile_id();
+        if(!$iProfileId)
+            return ['error' => _t('_Access denied'), 'code' => 403];
+
+        $sUploaderObject = bx_process_input(bx_get('uo'));
+        $sStorageObject = bx_process_input(bx_get('so'));
+        if(!$sUploaderObject || !$sStorageObject || !BxDolUploader::getObjectInstance($sUploaderObject, $sStorageObject, 'token'))
+            return ['error' => _t('_sys_request_page_not_found_cpt'), 'code' => 404];
+
+        $iLifetime = 900;
+        $sToken = BxDolKey::getInstance()->getNewKey([
+            'profile_id' => $iProfileId,
+            'uo' => $sUploaderObject,
+            'so' => $sStorageObject,
+            'expire' => time() + $iLifetime,
+        ], $iLifetime, 'uploader');
+        if(!$sToken)
+            return ['error' => _t('_error occured'), 'code' => 500];
+
+        return [
+            'token' => $sToken,
+            'url' => BX_DOL_URL_ROOT . 'api.php',
+            'expire' => $iLifetime,
+        ];
+    }
+
+    // sys_keys doesn't check expiration on read (only prune does), so the token keeps its own.
+    public function isUploadTokenValid($aToken, $sUploaderObject, $sStorageObject)
+    {
+        return !empty($aToken) && is_array($aToken)
+            && (int)($aToken['profile_id'] ?? 0) > 0
+            && (int)($aToken['expire'] ?? 0) >= time()
+            && ($aToken['uo'] ?? '') === $sUploaderObject
+            && ($aToken['so'] ?? '') === $sStorageObject;
     }
 }
 

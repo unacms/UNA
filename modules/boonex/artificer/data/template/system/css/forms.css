@@ -412,6 +412,13 @@ import url(../../../../../../../template/css/forms.css);
     line-height: 2rem;
 }
 
+.bx-form-value .bx-form-input-labels-sel b {
+    margin: 0.5rem 0.125rem 0 0.125rem;
+}
+.bx-form-value .bx-form-input-labels-sel b:after {
+    display: none;
+}
+
 .select2-container {
     width:100% !important;
 }

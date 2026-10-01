@@ -128,7 +128,7 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
 
             $iProfileId = $oForm->getCleanValue('profile_id');
             if(empty($iProfileId)) {
-                $iProfileId = (int)getParam('sys_agents_profile');
+                $iProfileId = (int)getParam('sys_profile_bot');
                 if(empty($iProfileId))
                     $iProfileId = current(bx_srv('system', 'get_options_agents_profile', [false], 'TemplServices'))['key'];
 
@@ -197,7 +197,7 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
 
             $iProfileId = $oForm->getCleanValue('profile_id');
             if(empty($iProfileId)) {
-                $iProfileId = (int)getParam('sys_agents_profile');
+                $iProfileId = (int)getParam('sys_profile_bot');
                 if(empty($iProfileId))
                     $iProfileId = current(bx_srv('system', 'get_options_agents_profile', [false], 'TemplServices'))['key'];
 
@@ -290,6 +290,8 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
             'agent_id' => (int)$iId,
             'txt_readonly' => _t('_sys_agents_agents_txt_readonly'),
             'txt_chats' => _t('_sys_agents_agents_txt_chats'),
+            'txt_search' => bx_html_attribute(_t('_sys_agents_agents_txt_search')),
+            'txt_search_empty' => _t('_sys_agents_agents_txt_search_empty'),
             'bx_repeat:threads' => $aThreadsTpl,
         ]));
 
@@ -378,6 +380,7 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
             'created_at' => (string)($aThread['created_at'] ?? ''),
             'updated_at' => (string)($aThread['updated_at'] ?? ''),
             'artifacts' => $aArtifacts,
+            'messages' => (!empty($aThread['messages']) && is_array($aThread['messages'])) ? array_values($aThread['messages']) : [],
         ];
     }
 
@@ -441,6 +444,8 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
     {
         $mixedResult = parent::_delete($mixedId);
         $this->_oDb->cleanCache('sys_agents_with_alert');
+        if ($mixedResult)
+            BxDolAiActivity::deleteForAgent((int)$mixedId);
 
         return $mixedResult;
     }
@@ -1216,6 +1221,68 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
         if ($aRow['trigger'] != 'manual' && $aRow['trigger'] != 'scheduler')
             return '';
         return parent::_getActionDefault ($sType, $sKey, $a, $isSmall, $isDisabled, $aRow);
+    }
+
+    /**
+     * Chat history only makes sense for agents people talk to; event agents get "activity" instead.
+     */
+    protected function _getActionMessage ($sType, $sKey, $a, $isSmall = false, $isDisabled = false, $aRow = array())
+    {
+        if (!in_array($aRow['trigger'], ['manual', 'message'], true))
+            return '';
+        return parent::_getActionDefault ($sType, $sKey, $a, $isSmall, $isDisabled, $aRow);
+    }
+
+    protected function _getActionActivity ($sType, $sKey, $a, $isSmall = false, $isDisabled = false, $aRow = array())
+    {
+        if (in_array($aRow['trigger'], ['manual', 'message'], true))
+            return '';
+        return parent::_getActionDefault ($sType, $sKey, $a, $isSmall, $isDisabled, $aRow);
+    }
+
+    /**
+     * What an event-driven agent did: BxDolAiActivity rows, newest first.
+     */
+    public function performActionActivity()
+    {
+        $iId = $this->_getId();
+        $aAgent = BxDolAiQuery::getAgentObject($iId);
+        if (!$aAgent) {
+            echoJson(['msg' => _t('_sys_txt_error_occured')]);
+            return;
+        }
+
+        $aItems = BxDolAiActivity::listForAgent($iId, 0, 200);
+
+        $sTitle = _t('_sys_agents_agents_popup_activity', !empty($aAgent['title']) ? $aAgent['title'] : $aAgent['name']);
+        if (strpos($sTitle, '_sys_agents_agents_popup_activity') === 0)
+            $sTitle = 'Activity of "' . (!empty($aAgent['title']) ? $aAgent['title'] : $aAgent['name']) . '"';
+        $sEmpty = _t('_sys_agents_agents_txt_activity_empty');
+        if ($sEmpty === '_sys_agents_agents_txt_activity_empty')
+            $sEmpty = 'Nothing yet';
+
+        $sRows = '';
+        foreach ($aItems as $aItem) {
+            $sText = bx_process_output($aItem['text']);
+            if ($aItem['url'] !== '')
+                $sText = '<a href="' . bx_html_attribute($aItem['url']) . '" target="_blank">' . $sText . '</a>';
+            $sSummary = $aItem['summary'] !== '' ? '<div class="bx-def-font-small" style="opacity:.75;">' . bx_process_output($aItem['summary']) . '</div>' : '';
+            $sRows .= '<div class="bx-def-padding-sec-tb" style="border-bottom:1px solid rgba(127,127,127,.2);' . ($aItem['ok'] ? '' : 'color:#c0392b;') . '">'
+                . '<div style="display:flex;gap:1rem;justify-content:space-between;">'
+                    . '<div>' . $sText . '</div>'
+                    . '<div class="bx-def-font-small" style="white-space:nowrap;opacity:.6;">' . bx_process_output($aItem['added_formatted']) . '</div>'
+                . '</div>'
+                . $sSummary
+            . '</div>';
+        }
+        if ($sRows === '')
+            $sRows = '<div class="bx-def-padding" style="opacity:.6;">' . bx_process_output($sEmpty) . '</div>';
+
+        $sContent = BxTemplStudioFunctions::getInstance()->popupBox('popup_agent_activity_' . $iId, $sTitle,
+            '<div class="bx-agents-popup-activity" style="max-height:70vh;overflow:auto;min-width:40rem;">' . $sRows . '</div>'
+        );
+
+        echoJson(['popup' => ['html' => $sContent, 'options' => ['closeOnOuterClick' => false]]]);
     }
 
     protected function _getAgentWithProfile($iProfileId, $iExcludeAgentId = 0)

@@ -16,8 +16,8 @@ $aConfig = array(
     'type' => BX_DOL_MODULE_TYPE_LANGUAGE,
     'name' => 'bx_en',
     'title' => 'English',
-    'note' => 'Language file',
-    'version' => '15.0.6.DEV',
+    'note' => 'English language, translations',
+    'version' => '15.0.7.DEV',
     'vendor' => 'UNA INC',
     'help_url' => 'http://feed.una.io/?section={module_name}',
 

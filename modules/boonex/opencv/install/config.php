@@ -16,7 +16,7 @@ $aConfig = array(
     'type' => BX_DOL_MODULE_TYPE_MODULE,
     'name' => 'bx_opencv',
     'title' => 'OpenCV',
-    'note' => 'OpenCV integration.',
+    'note' => 'OpenCV, image recognition',
     'version' => '13.0.0.DEV',
     'vendor' => 'UNA INC',
     'help_url' => 'http://feed.una.io/?section={module_name}',

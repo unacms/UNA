@@ -16,8 +16,8 @@ $aConfig = array(
     'type' => BX_DOL_MODULE_TYPE_MODULE,
     'name' => 'bx_timeline',
     'title' => 'Timeline',
-    'note' => 'Timeline module.',
-    'version' => '15.0.6.DEV',
+    'note' => 'Feed updates, timeline',
+    'version' => '15.0.7.DEV',
     'vendor' => 'UNA INC',
     'help_url' => 'http://feed.una.io/?section={module_name}',
 

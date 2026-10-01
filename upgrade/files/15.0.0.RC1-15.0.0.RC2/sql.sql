@@ -48,7 +48,7 @@ UPDATE `sys_acl_levels` SET `Icon` = 'user-shield' WHERE `Name` = '_adm_prm_txt_
 UPDATE `sys_acl_levels` SET `Icon` = 'shield-user' WHERE `Name` = '_adm_prm_txt_level_administrator';
 
 -- sys_modules
-UPDATE `sys_modules` SET `vendor` = 'UNA INC', `version` = '', `path` = 'system/' WHERE `name` = 'system';
+UPDATE `sys_modules` SET `vendor` = 'UNA INC', `path` = 'system/' WHERE `name` = 'system';
 
 -- sys_alerts_handlers
 UPDATE `sys_alerts_handlers` SET `class` = 'BxDolAiTriggerMessage', `file` = 'inc/classes/BxDolAiTriggerMessage.php' WHERE `name` = 'sys_agents';

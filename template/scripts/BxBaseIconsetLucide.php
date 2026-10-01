@@ -71,7 +71,9 @@ class BxBaseIconsetLucide extends BxBaseIconset
             'file-import' => 'file-input',
             'file-export' => 'file-output',
             'file-invoice' => 'receipt',
+            'file-pdf' => 'file-text',
             'file-word' => 'file-text',
+            'file-excel' => 'file-spreadsheet',
             'fire' => 'flame',
             'group' => 'users',
             'google' => 'log-in', //TODO: Brand icon. Update later.
