@@ -32,7 +32,7 @@ export const settingsElements = {
         content_ver: 'flex-col gap-1',
         content_hor: 'flex-row  ',
         item_ver:
-            ' web:group px-2  web:group flex w-full min-w-0 min-h-11 flex-row items-center rounded-xl font-medium web:hover:bg-muted/50 text-card-foreground web:hover:text-foreground web:hover:cursor-pointer ',
+            ' group px-2 flex w-full min-w-0 min-h-11 flex-row items-center rounded-xl font-medium web:hover:bg-muted/50 text-card-foreground web:hover:text-foreground web:hover:cursor-pointer ',
         item_hor:
             'flex block web:dark:hover:text-white rounded-full web:hover:cursor-pointer text-muted-foreground web:duration-200 outline-none ',
         item_np:
@@ -65,7 +65,7 @@ export const settingsElements = {
         /** Apps launcher waffle — icon above label, no description. */
         content_grid: 'w-full',
         item_grid:
-            'web:group flex w-full min-w-0 min-h-24 flex-col items-center justify-start gap-1.5 rounded-xl px-1 py-2.5 text-secondary-foreground web:hover:bg-muted/50 web:hover:text-foreground web:hover:cursor-pointer web:focus-visible:outline-2 web:duration-200',
+            'group flex w-full min-w-0 min-h-24 flex-col items-center justify-start gap-1.5 rounded-xl px-1 py-2.5 text-secondary-foreground web:hover:bg-muted/50 web:hover:text-foreground web:hover:cursor-pointer web:focus-visible:outline-2 web:duration-200',
         item_icon_grid:
             'flex shrink-0 items-center w-12 h-12 bg-muted/50 web:group-hover:bg-border rounded-full justify-center',
         item_text_grid:

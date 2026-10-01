@@ -6,9 +6,10 @@ export const settingsAccordion = {
     accordion: {
         root: 'web:overflow-hidden',
         /** `overflow-hidden` only on web — on iOS it clips the chevron row when the title wraps (transform + RN layout). */
-        item: 'border-b border-border/60 web:overflow-hidden web:group',
+        item: 'border-b border-border/60 web:overflow-hidden',
+        /** `group` here, not on `item`: `trigger_text` lights up over the trigger row, not over the open panel and the content inside it. */
         trigger:
-            'flex flex-row items-center justify-between py-4 font-medium',
+            'group flex flex-row items-center justify-between py-4 font-medium',
         /** Applied by `AccordionTriggerTitle` and when `AccordionTrigger` receives a string `title` prop */
         trigger_text: 'text-base lg:text-lg font-semibold text-secondary-foreground web:group-hover:text-foreground',
         /** Icon only — rotation is `style.transform` on `chevron_container` so NativeWind does not remount the icon when toggling open. */

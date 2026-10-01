@@ -10,7 +10,7 @@ export default function Unit({ data }) {
             data={data}
             displaySize="md"
             linkProps={{ variant: 'ghost', size: 'lg' }}
-            className="flex-row gap-2 items-center web:group"
+            className="flex-row gap-2 items-center"
             titleClassName="text-sm leading-tight font-semibold text-card-foreground web:group-hover:text-foreground"
             meta={
                 <UnitRecommendation

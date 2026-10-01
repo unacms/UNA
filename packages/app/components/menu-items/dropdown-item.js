@@ -124,7 +124,7 @@ export default function DropdownMenuItem({ item, index, link, handleSelect, clas
             : {};
     const Content = (
         <Wrapper
-            className={`web:group ${className} ${menuSettings[classes?.item || 'item_ver']}${item.selected ? ' bg-accent/50 text-foreground' : ''}`}
+            className={`group ${className} ${menuSettings[classes?.item || 'item_ver']}${item.selected ? ' bg-accent/50 text-foreground' : ''}`}
             key={key}
             {...pressProps}
             {...rowHoverProps}
