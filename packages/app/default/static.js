@@ -261,7 +261,7 @@ const ComponentsContentEmpty = () => {
     return (
         <>
             <View className="p-2">
-                <View className="gap-y-2 items-center opacity-80 justify-center mx-auto my-auto mb-auto py-4 px-8 h-full rounded-2xl  bg-muted-foreground/10 ">
+                <View className="gap-y-2 items-center opacity-80 justify-center mx-auto my-auto mb-auto py-4 px-8 web:h-full rounded-2xl  bg-muted-foreground/10 ">
                     <View className="mx-auto m-4 text-secondary-foreground">
                         <Icon icon="Binoculars" width={32} height={32} />
                     </View>

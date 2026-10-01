@@ -52,13 +52,21 @@ export default function PageLayout(props) {
         [props.data, props.blocks, layout]
     );
 
-    let menu = menuData;
-    if (!menu?.items) menu = { items: [] };
-
-    const isNamePresent = menu?.items?.some(item => item.name === props.data.uri);
-    if (!isNamePresent) {
-        menu.items.push({ id: -1, name: props.uri, title: '', link: props.data.url, hideInTop: true });
-    }
+    // Copy, never push into `props.data.menu.items`: that array is the page data's own.
+    const menu = useMemo(() => {
+        const uri = props.data.uri;
+        const items = [...(menuData?.items || [])];
+        if (items.some(item => item.name === uri)) return { ...menuData, items };
+        // A submenu titled after this page stands for it (UNA shows the title as
+        // that page's entry), e.g. sys_ntfs_submenu "Notifications" with only an
+        // Invitations item: show the page first as its own tab. Any other page
+        // missing from the menu stays a hidden route.
+        const sameTitle = (a, b) => !!a && !!b && a.trim().toLowerCase() === b.trim().toLowerCase();
+        if (sameTitle(menuData?.title, props.data.title) || sameTitle(menuData?.title, props.data.name)) {
+            return { ...menuData, items: [{ id: -1, name: uri, title: menuData.title, link: props.data.url }, ...items] };
+        }
+        return { ...menuData, items: [...items, { id: -1, name: uri, title: '', link: props.data.url, hideInTop: true }] };
+    }, [menuData, props.data.uri, props.data.url, props.data.title, props.data.name]);
 
     useEffect(() => {
         if (appSetting('notifications', 'url') === '/' + props?.data?.url) {

@@ -58,10 +58,15 @@ export function layoutForList(endpoint, unitMode = '') {
     return 'w-full @list-sm/list:w-1/2 @list-md/list:w-1/3 @list-lg/list:w-1/4 @list-xl/list:w-1/4 @list-sm/list:p-2 @list-md/list:p-2 ';
 }
 
-export function paddingForList(endpoint) {
+export function paddingForList(endpoint, isDesktop = false) {
 
+    // Notifications sit in a block card on desktop web only. Mobile (web and
+    // native) runs the list edge to edge, like Messages — on native a card
+    // would also reach up under the page header (the list pads for it inside).
     if (endpoint?.unit == "notifications")
-        return appSetting('theme', 'blocks', 'u-block-rounded') + ' ' +appSetting('theme', 'blocks', 'u-block-bg') + ' my-4';
+        return isDesktop
+            ? appSetting('theme', 'blocks', 'u-block-rounded') + ' ' + appSetting('theme', 'blocks', 'u-block-bg') + ' my-4'
+            : '';
     // Timeline and notifications use no padding (full width items)
     if (!endpoint || endpoint?.request_url?.includes('bx_timeline') || endpoint?.params?.request_url?.includes('bx_timeline'))
         return '';
