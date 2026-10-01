@@ -14,9 +14,9 @@ import { useTranslation } from 'react-i18next'
 
 const PARSE_DEBOUNCE_MS = 350
 const PARSE_MIN_LENGTH = 3
-const PARSE_URL = '/api.php?r=system/search_parse/TemplServices&params='
-const SEARCH_URL = '/api.php?r=system/get_data_search_api/TemplServices&params='
-const EXT_RESULTS_URL = '/api.php?r=system/search_ai_results/TemplServices&params='
+const PARSE_URL = '/api.php?r=system/search_parse/TemplServicesSearch&params='
+const SEARCH_URL = '/api.php?r=system/get_data_search_api/TemplServicesSearch&params='
+const EXT_RESULTS_URL = '/api.php?r=system/search_ai_results/TemplServicesSearch&params='
 
 export function getClientTimezone() {
     try {

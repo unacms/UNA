@@ -193,7 +193,7 @@ export function ElementSearchData(oProps) {
 
         try {
             const response = await fetcher(
-                '/api.php?r=system/get_data_search_api/TemplServices&params=' + JSON.stringify(params),
+                '/api.php?r=system/get_data_search_api/TemplServicesSearch&params=' + JSON.stringify(params),
                 false,
                 { signal: controller.signal },
             )
