@@ -45,8 +45,11 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
             'GetMenu' => 'BxBaseServices',
             'GetCreatePostForm' => 'BxBaseServices',
             'GetProductsNames' => 'BxBaseServices',
-            'KeywordSearch' => 'BxBaseServices',
-            'GetDataSearchApi' => 'BxBaseServices',
+            'KeywordSearch' => 'BxBaseServicesSearch',
+            'GetDataSearchApi' => 'BxBaseServicesSearch',
+            'SearchParse' => 'BxBaseServicesSearch',
+            'GetBlockSearchAi' => 'BxBaseServicesSearch',
+            'SearchAiResults' => 'BxBaseServicesSearch',
             'Cmts' => 'BxBaseServices',
             'GetFooter' => 'BxBaseServices',
             'SetBadges' => 'BxBaseServices',
@@ -121,7 +124,8 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
             'GetDataApi' => 'BxBaseCmtsServices',
 
             'GetDataApi' => 'BxBaseUploaderServices',
-            
+            'GetUploadToken' => 'BxBaseUploaderServices',
+
             'GetStatBlock' => 'BxBaseDashboardServices',
             
             'PerfomActionApi' => 'BxBaseServiceGrid',
@@ -137,6 +141,13 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
             'GetBlockAiAgentOperator' => 'BxBaseServices',
             'GetAiChatThreads' => 'BxBaseServices',
             'GetAiChatThread' => 'BxBaseServices',
+            'GetAiAgents' => 'BxBaseServices',
+            'GetBlockAiAgentsAdmin' => 'BxBaseServices',
+            'SetAiAgentActive' => 'BxBaseServices',
+            'GetAiAgentActivity' => 'BxBaseServices',
+            'GetAiAgentChatThreads' => 'BxBaseServices',
+            'GetAiAgentChatThread' => 'BxBaseServices',
+            'GetMockupBlock' => 'BxBaseServices',
         );
     }
 
@@ -1189,264 +1200,6 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
      * @page service Service Calls
      * @section bx_system_general System Services 
      * @subsection bx_system_general-general General
-     * @subsubsection bx_system_general-keyword_search keyword_search
-     * 
-     * @code bx_srv('system', 'keyword_search', ["bx_posts", ["keyword" => "test"}], 'TemplServices'); @endcode
-     * 
-     * @code {{~system:keyword_search:TemplServices["bx_posts", {"keyword":"test"}]~}} @endcode
-     * @code {{~system:keyword_search:TemplServices["bx_albums", {"meta_type": "location_country", "keyword": "AU"}, "unit.html"]~}} @endcode
-     * @code {{~system:keyword_search:TemplServices["bx_albums", {"meta_type": "location_country_state", "state":"NSW", "keyword": "AU"}, "unit.html"]~}} @endcode
-     * @code {{~system:keyword_search:TemplServices["bx_albums", {"meta_type": "location_country_city", "state":"NSW", "city":"Manly", "keyword": "AU"}, "unit.html"]~}} @endcode
-     * @code {{~system:keyword_search:TemplServices["bx_posts", {"meta_type": "mention", "keyword": 2}, "unit_gallery.html"]~}} @endcode
-     * @code {{~system:keyword_search:TemplServices["bx_posts", {"cat": "bx_posts_cats", "keyword": 3}, "unit_gallery.html"]~}} @endcode
-     * 
-     * Search by keyword
-     * @param $sSection - search object to search in, usually module name, for example: bx_posts
-     * @param $aCondition - condition for search, supported conditions: 
-     *          - search by keyword: ["keyword" => "test"]
-     *          - search by country: ["meta_type" => "location_country", "keyword" => "AU"]
-     *          - search by country and state: ["meta_type": "location_country_state", "state":"NSW", "keyword": "AU"]
-     *          - search by country, state and city: ["meta_type": "location_country_city", "state":"NSW", "city":"Manly", "keyword": "AU"]
-     *          - search for mentions: ["meta_type" => "mention", "keyword" => 2]
-     *          - search in category: ["cat": "bx_posts_cats", "keyword": 3]
-     * @param $sTemplate - template for displaying search results, for example: unit.html
-     * @param $iStart - paginate, display records starting from this number
-     * @param $iPerPage - paginate, display this number of records per page
-     * @param $bLiveSearch - search results like in live search
-     * 
-     * @see BxBaseServices::serviceKeywordSearch
-     */
-    /** 
-     * @ref bx_system_general-keyword_search "keyword_search"
-     */
-    public function serviceKeywordSearch ($sSection, $aCondition, $sTemplate = '', $iStart = 0, $iPerPage = 0, $bLiveSearch = 0, $bPaginate = false)
-    {
-        if (!$sSection || !isset($aCondition['keyword']))
-            return '';
-
-        $sClass = 'BxTemplSearch';
-
-        $sElsName = 'bx_elasticsearch';
-        $sElsMethod = 'is_configured';
-        if(BxDolRequest::serviceExists($sElsName, $sElsMethod) && BxDolService::call($sElsName, $sElsMethod)) {
-             $oModule = BxDolModule::getInstance($sElsName);
-
-             bx_import('Search', $oModule->_aModule);
-             $sClass = 'BxElsSearch';
-        }
-
-        $oSearch = new $sClass(array($sSection));
-        $oSearch->setLiveSearch($bLiveSearch);
-        $oSearch->setMetaType(isset($aCondition['meta_type']) ? $aCondition['meta_type'] : '');
-        $oSearch->setCategoryObject(isset($aCondition['cat']) ? $aCondition['cat'] : '');
-        $oSearch->setCustomSearchCondition($aCondition);
-        if (!$bPaginate)
-            $oSearch->setRawProcessing(true);
-        $oSearch->setCustomCurrentCondition(array(
-            'paginate' => array (
-                'start' => $iStart,
-                'perPage' => $iPerPage ? $iPerPage : BX_DOL_SEARCH_RESULTS_PER_PAGE_DEFAULT,
-            )));
-        if ($sTemplate)
-            $oSearch->setUnitTemplate($sTemplate);
-        
-        return $oSearch->response();
-    }
-
-    /**
-     * @page service Service Calls
-     * @section bx_system_general System Services 
-     * @subsection bx_system_general-general General
-     * @subsubsection bx_system_general-keyword_search keyword_search
-     * 
-     * @code bx_srv('system', 'search_keyword_form', 'TemplServices'); @endcode
-     * 
-     * Block with Search by Keywords Form
-     *  
-     * @see BxBaseServices::serviceSearchKeywordForm
-     */
-    /** 
-     * @ref bx_system_general-keyword_search "keyword_search"
-     */
-    public function serviceSearchKeywordForm ()
-    {
-        return $this->_getSearchObject()->getForm(BX_DB_PADDING_DEF, false, true);
-    }
-    
-    /**
-     * @page service Service Calls
-     * @section bx_system_general System Services 
-     * @subsection bx_system_general-general General
-     * @subsubsection bx_system_general-keyword_search keyword_search
-     * 
-     * @code bx_srv('system', 'search_keyword_result', 'TemplServices'); @endcode
-     * 
-     * Block with Search by Keywords Results
-     *  
-     * @see BxBaseServices::serviceSearchKeywordResult
-     */
-    /** 
-     * @ref bx_system_general-keyword_search "keyword_search"
-     */
-    public function serviceSearchKeywordResult ()
-    {
-        $sType = bx_process_input(bx_get('type'));
-        $sKeyword = bx_process_input(bx_get('keyword'));
-        $bKeyword = $sKeyword !== false;
-
-        if(bx_is_api())
-            return $this->serviceGetDataSearchApi(['params' => [
-                'type' => $sType,
-                'keyword' => $sKeyword,
-                'section' => bx_process_input(bx_get('section')),
-                'cat' => bx_process_input(bx_get('cat'))
-            ]]);
-
-        $sCode = '';
-        if($bKeyword) {
-            $oSearch = $this->_getSearchObject();
-
-            if(($sCode = $oSearch->response()))
-                $sCode = BxDolTemplate::getInstance()->parseHtmlByName('search_result_block.html', [
-                    'html_id' => 'bx-search-results-keyword',
-                    'class' => 'bx-search-results-container',
-                    'attrs' => '',
-                    'content' => $sCode,
-                    'bx_if:do_center' => [
-                        'condition' => false,
-                        'content' => [
-                            'html_id' => '',
-                            'selector_content' => ''
-                        ]
-                    ]
-                ]);
-            else
-                $sCode = $oSearch->getEmptyResult();
-        }
-
-        return $sCode;
-    }
-
-    /** 
-     * @ref bx_system_general-get_date_search_api "get_date_search_api"
-     * @api @ref bx_system_general-get_date_search_api "get_date_search_api"
-     */
-    public function serviceGetDataSearchApi ($aParams)
-    {
-        if(!bx_is_api())
-            return false;
-
-        if(is_string($aParams))
-            $aParams = bx_api_get_browse_params($aParams);
-
-        $bForceAll = ($aParams['params']['type'] ?? '') == 'keyword';
-
-        $aSectionsAvail = explode(',', getParam('sys_api_search_sections'));
-        $aSectionsAll = BxDolDb::getInstance()->fromCache(
-            'sys_global_search_pairs', 
-            'getPairs', 
-            'SELECT `ObjectName` AS `name`, `Title` AS `title` FROM `sys_objects_search` WHERE `GlobalSearch`=\'1\' ORDER BY `Order` ASC',
-            'name', 'title'
-        );
-
-        $aSections = [];
-        foreach($aSectionsAll as $sSectionName => $sSectionTitle)
-            if(in_array($sSectionName, $aSectionsAvail) || $bForceAll)
-                $aSections[$sSectionName] = [
-                    'name' => $sSectionName,
-                    'title' => _t($sSectionTitle)
-                ];
-
-        $aParamsBrowse = array_merge([
-            'keyword' => '',
-            'section' => '',
-            'sections' => array_values($aSections),
-            'start' => 0,
-            'per_page' => 12
-        ], !empty($aParams['params']) && is_array($aParams['params']) ? $aParams['params'] : []);
-
-        if(empty($aParamsBrowse['section']))
-            $aParamsBrowse['section'] = array_keys($aSections);
-        else if(is_string($aParamsBrowse['section']))
-            $aParamsBrowse['section'] = explode(',', $aParamsBrowse['section']);
-
-        $sClass = 'BxTemplSearch';
-        
-        $sSections = $aParamsBrowse['section'];
-        if ($aParamsBrowse['live'] !== true && count($sSections) > 1){
-            
-            $aParamsBrowse['section'] = [];
-            $aParamsBrowse['sections'] = [];
-            
-            $aDataRv = [];
-            foreach ($sSections as $sSection) {
-                $oSearch = new $sClass($sSection);
-                $oSearch->setLiveSearch(true);
-                $oSearch->setDataProcessing(true);
-                $oSearch->setCustomSearchCondition(['keyword' => $aParamsBrowse['keyword']]);
-                $oSearch->setCustomCurrentCondition([
-                    'paginate' => [
-                        'forceStart' => $aParamsBrowse['start'],
-                        'perPage' => $aParamsBrowse['per_page'],
-                    ]
-                ]);
-
-                $aData = $oSearch->response();
-                if(count($aData) > $aParamsBrowse['per_page'])
-                    $aData = array_slice($aData, $aParamsBrowse['start'], $aParamsBrowse['per_page']);
-
-                if (count($aData) > 0) {
-                    $oSearchResult = $oSearch->getSearchResultObject($sSection);
-                    $sSectionTitle = $oSearchResult->aCurrent['title'];
-
-                    $aParamsBrowse['section'][] = $sSection;
-                    $aParamsBrowse['sections'][] = ['name' => $sSection, 'title' => $sSectionTitle];
-
-                    $aDataRv[] = [
-                        'section' => $sSection, 
-                        'section_name' => $sSectionTitle, 
-                        'data' => $aData,
-                        'is_profile' => bx_srv('system', 'is_module_profile', [$oSearchResult->aCurrent['module_name']])
-                    ];
-                }
-                
-            }
-            return [bx_api_get_block('search_sections', [
-                'data' => $aDataRv,
-                'params' => $aParamsBrowse
-            ])];
-        }
-        else{
-            $oSearch = new $sClass($aParamsBrowse['section']);
-            $oSearch->setLiveSearch(true);
-            $oSearch->setDataProcessing(true);
-            $oSearch->setCustomSearchCondition(['keyword' => $aParamsBrowse['keyword']]);
-            $oSearch->setCustomCurrentCondition([
-                'paginate' => [
-                    'forceStart' => $aParamsBrowse['start'],
-                    'perPage' => $aParamsBrowse['per_page'],
-                ]
-            ]);
-
-            $aData = $oSearch->response();
-            if(count($aData) > $aParamsBrowse['per_page'])
-                $aData = array_slice($aData, $aParamsBrowse['start'], $aParamsBrowse['per_page']);
-
-            return [
-                bx_api_get_block('browse', [
-                    'unit' => 'search-results',  
-                    'request_url' => '/api.php?r=system/get_data_search_api/TemplServices&params[]=',
-                    'params' => $aParamsBrowse,
-                    'data' => $aData
-                ])
-            ];
-        }
-    }
-
-    /**
-     * @page service Service Calls
-     * @section bx_system_general System Services 
-     * @subsection bx_system_general-general General
      * @subsubsection bx_system_general-cmts cmts
      * 
      * @code bx_srv('system', 'cmts', ["sys_blocks", 1], 'TemplServices'); @endcode
@@ -1895,37 +1648,6 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
         return BxDolTemplate::getInstance()->parseHtmlByName('footer.html', []);
     }
 
-    private function _getSearchObject()
-    {
-        $sClass = 'BxTemplSearch';
-        $sElsName = 'bx_elasticsearch';
-        $sElsMethod = 'is_configured';
-        if(BxDolRequest::serviceExists($sElsName, $sElsMethod) && BxDolService::call($sElsName, $sElsMethod) && !bx_get('cat') && !bx_get('type')) {
-            $oModule = BxDolModule::getInstance($sElsName);
-            bx_import('Search', $oModule->_aModule);
-            $sClass = 'BxElsSearch';
-        }
-        /**
-         * @hooks
-         * @hookdef hook-system-search_keyword 'system', 'search_keyword' - hook to override sClass for search
-         * - $unit_name - equals `system`
-         * - $action - equals `search_keyword` 
-         * - $object_id - not used 
-         * - $sender_id - not used 
-         * - $extra_params - array of additional params with the following array keys:
-         *      - `override_result` - [string] by ref, class name for search, can be overridden in hook processing
-         * @hook @ref hook-system-search_keyword
-         */
-        bx_alert('system', 'search_keyword', 0, 0, array('class' => &$sClass, 'class_name_ref' => &$sClass));
-
-        $oSearch = new $sClass(bx_get('section'));
-        $oSearch->setLiveSearch(bx_get('live_search') ? 1 : 0);
-        $oSearch->setMetaType(bx_process_input(bx_get('type')));
-        $oSearch->setCategoryObject(bx_process_input(bx_get('cat')));
-
-        return $oSearch;
-    }
-
     public function serviceHomeRedirect()
     {
         header("Location:" . BX_DOL_URL_ROOT, true, 301);
@@ -1940,7 +1662,13 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
     public function serviceCallAgent($sType, $aAgent, $aParams)
     {
         $oAi = BxDolAi::getInstance();
-        return $oAi->callAgent($sType, $aAgent, $aParams);
+        $mixedReply = $oAi->callAgent($sType, $aAgent, $aParams);
+
+        // Async messenger agents run here from a background job: post the reply, nobody else will.
+        if ('message' === $sType && is_string($mixedReply) && $mixedReply !== '')
+            BxDolAiTrigger::getInstance('message')->replyToMessage($aAgent, $aParams, $mixedReply);
+
+        return $mixedReply;
     }
 
     public function serviceCallAgentForFormInput($iAgentId)
@@ -1987,6 +1715,264 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
     public function serviceGetAiChatThread($iAgentId, $sThreadId = '')
     {
         return BxDolAiTrigger::getInstance('chat')->getThread($iAgentId, $sThreadId);
+    }
+
+    /**
+     * a cut-down Studio > Agents for operators:
+     * the list with on/off, chat history for manual/message agents and the
+     * activity history (what the agent did) for event-driven ones.
+     *
+     * API: `api.php?r=system/get_ai_agents/TemplServices`
+     * → `{agents: [{id, name, title, description, trigger, trigger_title, alert, active, async,
+     *    has_chat, model, profile: {id, name, url, thumb}, activity_count, activity_last, added}], studio_url}`
+     */
+    public function serviceGetAiAgents()
+    {
+        if (!isAdmin())
+            return ['error' => _t('_sys_agents_unauthorized'), 'code' => 403];
+
+        $oDb = BxDolDb::getInstance();
+        $aRows = $oDb->getAll("SELECT `a`.*, `m`.`title` AS `model_title` FROM `sys_agents_agents` AS `a` LEFT JOIN `sys_agents_models` AS `m` ON `m`.`id` = `a`.`model_id` ORDER BY `a`.`added` DESC, `a`.`id` DESC");
+        $aStats = BxDolAiActivity::statsByAgent();
+
+        $aAgents = [];
+        foreach ($aRows as $aRow) {
+            $iId = (int)$aRow['id'];
+            $aAgents[] = [
+                'id' => $iId,
+                'name' => (string)$aRow['name'],
+                'title' => (string)(!empty($aRow['title']) ? $aRow['title'] : $aRow['name']),
+                'description' => (string)($aRow['description'] ?? ''),
+                'trigger' => (string)$aRow['trigger'],
+                'trigger_title' => $this->_aiAgentTriggerTitle((string)$aRow['trigger']),
+                'alert' => (string)($aRow['alert'] ?? ''),
+                'active' => (int)$aRow['active'],
+                'async' => (int)($aRow['async'] ?? 0),
+                'has_chat' => in_array($aRow['trigger'], ['manual', 'message'], true) ? 1 : 0,
+                'model' => (string)($aRow['model_title'] ?? ''),
+                'profile' => $this->_aiAgentProfileInfo((int)$aRow['profile_id']),
+                'activity_count' => (int)($aStats[$iId]['count'] ?? 0),
+                'activity_last' => (int)($aStats[$iId]['last'] ?? 0),
+                'added' => (int)($aRow['added'] ?? 0),
+            ];
+        }
+
+        return [
+            'agents' => $aAgents,
+            'studio_url' => bx_absolute_url('studio/agents.php?page=agents'),
+        ];
+    }
+
+    /**
+     * Page block with the same list, for operators only (everyone else gets an
+     * empty block). Put it on the Dashboard or any page in Studio > Pages:
+     * `{"module":"system","method":"get_block_ai_agents_admin","class":"TemplServices"}`.
+     * The App renders it as the `ai_agents_admin` element; there is no HTML version.
+     */
+    public function serviceGetBlockAiAgentsAdmin()
+    {
+        if (!bx_is_api())
+            return '';
+        if (!isAdmin())
+            return [];
+
+        $aList = $this->serviceGetAiAgents();
+        if (!is_array($aList) || isset($aList['error']))
+            return [];
+
+        // the operator chat (Studio > Settings > Agents) rides along as the first tab of
+        // the same block, so the Dashboard needs one block, not two
+        $aList['chat'] = null;
+        $aList['chat_title'] = '';
+        $iOperator = (int)getParam('sys_agents_operator_agent');
+        if ($iOperator > 0) {
+            $aOperatorBlock = $this->serviceGetBlockAiAgentOperator();
+            if (is_array($aOperatorBlock) && !empty($aOperatorBlock[0]['data']) && is_array($aOperatorBlock[0]['data'])) {
+                $aList['chat'] = $aOperatorBlock[0]['data'];
+                $aOperator = BxDolAiQuery::getAgentObject($iOperator);
+                $aList['chat_title'] = (string)(!empty($aOperator['title']) ? $aOperator['title'] : ($aOperator['name'] ?? ''));
+            }
+        }
+
+        return [bx_api_get_block('ai_agents_admin', $aList)];
+    }
+
+    /**
+     * API: `api.php?r=system/set_ai_agent_active/TemplServices&params[]=<agent id>&params[]=<0|1>`
+     */
+    public function serviceSetAiAgentActive($iAgentId, $iActive = 1)
+    {
+        if (!isAdmin())
+            return ['error' => _t('_sys_agents_unauthorized'), 'code' => 403];
+
+        $iAgentId = (int)$iAgentId;
+        $aAgent = $iAgentId ? BxDolAiQuery::getAgentObject($iAgentId) : false;
+        if (!$aAgent)
+            return ['error' => _t('_sys_agents_agent_not_found'), 'code' => 404];
+
+        $iActive = (int)$iActive ? 1 : 0;
+        $oDb = BxDolDb::getInstance();
+        $oDb->query("UPDATE `sys_agents_agents` SET `active` = :active WHERE `id` = :id", ['active' => $iActive, 'id' => $iAgentId]);
+        $oDb->cleanCache('sys_agents_with_alert');
+        $oDb->cleanMemory('sys_agents_with_form_' . (string)($aAgent['form_object'] ?? ''));
+
+        return ['id' => $iAgentId, 'active' => $iActive];
+    }
+
+    /**
+     * API: `api.php?r=system/get_ai_agent_activity/TemplServices&params[]=<agent id>&params[]=<start>&params[]=<limit>`
+     * → `{items: [{id, action, tool, ok, text, summary, unit, object_id, url, added, added_formatted}], has_more}`
+     */
+    public function serviceGetAiAgentActivity($iAgentId, $iStart = 0, $iLimit = 50)
+    {
+        if (!isAdmin())
+            return ['error' => _t('_sys_agents_unauthorized'), 'code' => 403];
+
+        $iAgentId = (int)$iAgentId;
+        if (!$iAgentId || !BxDolAiQuery::getAgentObject($iAgentId))
+            return ['error' => _t('_sys_agents_agent_not_found'), 'code' => 404];
+
+        $iLimit = max(1, min(200, (int)$iLimit));
+        $aItems = BxDolAiActivity::listForAgent($iAgentId, (int)$iStart, $iLimit + 1);
+        $bMore = count($aItems) > $iLimit;
+        if ($bMore)
+            array_pop($aItems);
+
+        return ['items' => $aItems, 'has_more' => $bMore ? 1 : 0];
+    }
+
+    /**
+     * Every conversation of an agent (all people, guests, contexts) — operators
+     * only; the App counterpart of the Studio chat popup. Transcripts are not
+     * included, see serviceGetAiAgentChatThread.
+     *
+     * API: `api.php?r=system/get_ai_agent_chat_threads/TemplServices&params[]=<agent id>`
+     * → `{threads: [{thread_id, title, status, closed_reason, created_at, updated_at, messages_count, preview}]}`
+     */
+    public function serviceGetAiAgentChatThreads($iAgentId)
+    {
+        if (!isAdmin())
+            return ['error' => _t('_sys_agents_unauthorized'), 'code' => 403];
+
+        $iAgentId = (int)$iAgentId;
+        $aAgent = $iAgentId ? BxDolAiQuery::getAgentObject($iAgentId) : false;
+        if (!$aAgent)
+            return ['error' => _t('_sys_agents_agent_not_found'), 'code' => 404];
+
+        $aThreads = BxDolAiChat::getInstance()->listAgentChatThreads($aAgent);
+
+        $aOut = [];
+        foreach ($aThreads as $aThread) {
+            $aMessages = is_array($aThread['messages'] ?? null) ? $aThread['messages'] : [];
+            if (!$aMessages)
+                continue;
+            $sPreview = '';
+            foreach (array_reverse($aMessages) as $aMessage) {
+                foreach ((array)($aMessage['parts'] ?? []) as $aPart) {
+                    if (($aPart['type'] ?? '') === 'text' && trim((string)($aPart['content'] ?? '')) !== '') {
+                        $sPreview = trim(strip_tags((string)$aPart['content']));
+                        break 2;
+                    }
+                }
+            }
+            if (mb_strlen($sPreview) > 160)
+                $sPreview = mb_substr($sPreview, 0, 159) . '…';
+
+            $aOut[] = [
+                'thread_id' => (string)$aThread['thread_id'],
+                'title' => (string)$aThread['title'],
+                'status' => (string)($aThread['status'] ?? 'opened'),
+                'closed_reason' => (string)($aThread['closed_reason'] ?? ''),
+                'created_at' => (string)($aThread['created_at'] ?? ''),
+                'updated_at' => (string)($aThread['updated_at'] ?? ''),
+                'messages_count' => count($aMessages),
+                'preview' => $sPreview,
+            ];
+        }
+
+        return ['threads' => $aOut];
+    }
+
+    /**
+     * API: `api.php?r=system/get_ai_agent_chat_thread/TemplServices&params[]=<agent id>&params[]=<thread id>`
+     * → `{messages, status, closed_reason, artifacts}` — same message shape as get_ai_chat_thread.
+     */
+    public function serviceGetAiAgentChatThread($iAgentId, $sThreadId = '')
+    {
+        if (!isAdmin())
+            return ['error' => _t('_sys_agents_unauthorized'), 'code' => 403];
+
+        $iAgentId = (int)$iAgentId;
+        $aAgent = $iAgentId ? BxDolAiQuery::getAgentObject($iAgentId) : false;
+        if (!$aAgent)
+            return ['error' => _t('_sys_agents_agent_not_found'), 'code' => 404];
+
+        $oChat = BxDolAiChat::getInstance();
+        $sThreadId = trim((string)$sThreadId);
+        if ($sThreadId === '')
+            return ['error' => _t('_sys_agents_agent_not_found'), 'code' => 404];
+
+        $aMessages = $oChat->getChatHistoryUiMessagesByThread($aAgent, $sThreadId);
+        if ($aMessages === false)
+            return ['error' => _t('_sys_agents_agent_not_found'), 'code' => 404];
+
+        $sReason = '';
+        $oDb = BxDolDb::getInstance();
+        if ($oDb->isFieldExists('sys_agents_chat_history', 'closed_reason'))
+            $sReason = trim((string)$oDb->getOne("SELECT `closed_reason` FROM `sys_agents_chat_history` WHERE `thread_id` = :t", ['t' => $sThreadId]));
+
+        return [
+            'messages' => is_array($aMessages) ? $aMessages : [],
+            'status' => $sReason !== '' ? 'closed' : 'opened',
+            'closed_reason' => $sReason,
+            'artifacts' => $oChat->getChatHistoryArtifactsByThread($aAgent, $sThreadId),
+        ];
+    }
+
+    protected function _aiAgentTriggerTitle($sTrigger)
+    {
+        $sKey = '_sys_agents_field_trigger_' . str_replace('-', '_', (string)$sTrigger);
+        $s = _t($sKey);
+        return $s !== $sKey ? $s : (string)$sTrigger;
+    }
+
+    protected function _aiAgentProfileInfo($iProfileId)
+    {
+        $iProfileId = (int)$iProfileId;
+        $oProfile = $iProfileId ? BxDolProfile::getInstance($iProfileId) : false;
+        if (!$oProfile)
+            return ['id' => $iProfileId, 'display_name' => $iProfileId ? '#' . $iProfileId : '', 'url' => false, 'url_avatar' => '', 'module' => ''];
+
+        // same shape as the ai_agent block's agent_profile, so the App's Profile molecule can render it
+        return BxDolProfile::getData($oProfile);
+    }
+
+    /**
+     * Agent-written NEO mockup block (Studio: system / get_mockup_block / TemplServices).
+     * The tree is written by the `mockup_upsert` tool into sys_pages_blocks_data for this block;
+     * BxBasePage::_getBlockService passes the block id as the only param.
+     * @param int $iBlockId sys_pages_blocks.id
+     * @return array API block of type `mockup`
+     */
+    public function serviceGetMockupBlock($iBlockId = 0)
+    {
+        $aTree = BxDolAIToolMockup::getTree((int)$iBlockId);
+
+        if (!$aTree) {
+            $aTree = [
+                'type' => 'view',
+                'className' => 'gap-4 w-full',
+                'children' => [
+                    [
+                        'type' => 'text',
+                        'className' => 'text-muted-foreground',
+                        'text' => 'No mockup yet. Ask the mockup agent to generate one for this page.',
+                    ],
+                ],
+            ];
+        }
+
+        return [bx_api_get_block('mockup', $aTree)];
     }
 }
 

@@ -7,7 +7,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         libzip-dev \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j$(nproc) gd mysqli pdo_mysql zip exif opcache \
-    && a2enmod rewrite \
+    && a2enmod rewrite deflate expires \
     && rm -rf /var/lib/apt/lists/*
 
 RUN printf '%s\n' \

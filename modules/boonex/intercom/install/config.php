@@ -16,8 +16,8 @@ $aConfig = array(
     'type' => BX_DOL_MODULE_TYPE_MODULE,
     'name' => 'bx_intercom',
     'title' => 'Intercom',
-    'note' => 'Intercom integration.',
-    'version' => '15.0.1.DEV',
+    'note' => 'Intercom, customer chat, support',
+    'version' => '15.0.2.DEV',
     'vendor' => 'UNA INC',
     'help_url' => 'http://feed.una.io/?section={module_name}',
 

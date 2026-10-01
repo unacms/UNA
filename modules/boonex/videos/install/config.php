@@ -17,7 +17,7 @@ $aConfig = array(
     'type' => BX_DOL_MODULE_TYPE_MODULE,
     'name' => 'bx_videos',
     'title' => 'Videos',
-    'note' => 'Basic video posting module.',
+    'note' => 'Videos',
     'version' => '15.0.4.DEV',
     'vendor' => 'UNA INC',
     'help_url' => 'http://feed.una.io/?section={module_name}',

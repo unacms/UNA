@@ -67,7 +67,7 @@ class BxBaseStudioAgentsVectorStore extends BxDolStudioAgentsInstruments
                     $iFilesAdded++;
                 }
             }
-            return echoJson(['msg' => _t('_sys_agents_vector_store_data_queued', $iFilesAdded)]);
+            return echoJson(['toast' => _t('_sys_agents_vector_store_data_queued', $iFilesAdded)]);
 
             if($oForm->add($iId) === false)
                 return echoJson(['msg' => _t('_sys_txt_error_occured')]);

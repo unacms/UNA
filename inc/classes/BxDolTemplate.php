@@ -867,7 +867,7 @@ class BxDolTemplate extends BxDolFactory implements iBxDolSingleton
      */
     function getPageHeader()
     {
-        return $this->aPage['header'];
+        return $this->aPage['header'] ?? '';
     }
 
     /**

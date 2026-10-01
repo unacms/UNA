@@ -16,7 +16,7 @@ $aConfig = array(
     'type' => BX_DOL_MODULE_TYPE_TEMPLATE,
     'name' => 'bx_ocean',
     'title' => 'Ocean (discontinued)',
-    'note' => 'Design template',
+    'note' => 'Ocean, design template, site theme',
     'version' => '13.0.10.DEV',
     'vendor' => 'UNA INC',
     'help_url' => 'http://feed.una.io/?section={module_name}',

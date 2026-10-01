@@ -1,0 +1,29 @@
+<div id="bx-dbd-users" class="bx-dbd-block-content">
+    <!-- the chart: the panel of the period tabs in the block caption (dbd_users_tabs.html); the rows below are its legend and pick the series -->
+    <div id="bx-dbd-users-chart" class="bx-dbd-hero bx-dbd-chart-hero bx-dbd-users-hero" role="tabpanel" aria-labelledby="bx-dbd-users-tab-all">
+        <div class="bx-dbd-chart-head bx-dbd-chart-head-sm bx-dbd-users-head">
+            <!-- the charted series' figure for the period and its title, and how many of it are online now (dashboard.js usersDraw) -->
+            <div class="bx-dbd-users-figure"><span class="bx-dbd-users-total bx-dbd-vi-title"></span><span class="bx-dbd-users-caption bx-dbd-chart-summary"></span></div>
+            <div class="bx-dbd-users-figure bx-dbd-users-online" title="<bx_text_attribute:_adm_dbd_txt_us_online />"><span class="bx-dbd-users-online-dot" aria-hidden="true"></span><span class="bx-dbd-users-online-count bx-dbd-vi-title"></span><span class="sr-only"><bx_text:_adm_dbd_txt_us_online /></span></div>
+        </div>
+        <div class="bx-dbd-users-bars" role="img" aria-label=""></div>
+    </div>
+    <!-- the legend: each series row shows its figure for the chosen period (dashboard.js usersDraw) -->
+    <div class="bx-dbd-htools-items bx-dbd-users-rows" role="group" aria-label="<bx_text_attribute:_adm_dbd_txt_us_series />">
+        <button type="button" class="bx-dbd-htools-item bx-dbd-users-row" data-series="accounts" aria-pressed="true" onclick="__js_object__.usersSeries('accounts', this)"><span class="bx-dbd-tile" aria-hidden="true">__icon_accounts__</span><span class="bx-dbd-htools-name"><bx_text:_adm_dbd_txt_us_accounts /></span><b class="bx-dbd-htools-value">__accounts__</b></button>
+        <button type="button" class="bx-dbd-htools-item bx-dbd-users-row" data-series="active" aria-pressed="false" onclick="__js_object__.usersSeries('active', this)"><span class="bx-dbd-tile" aria-hidden="true">__icon_active__</span><span class="bx-dbd-htools-name"><bx_text:_adm_dbd_txt_us_active /></span><b class="bx-dbd-htools-value">__active__</b></button>
+        <bx_if:show_profiles>
+            <bx_repeat:profiles>
+                <button type="button" class="bx-dbd-htools-item bx-dbd-users-row" data-series="__series__" aria-pressed="false" onclick="__js_object__.usersSeries('__series__', this)"><span class="bx-dbd-tile bx-dbd-tile-app" aria-hidden="true"><img src="__icon_url__" alt=""></span><span class="bx-dbd-htools-name">__name__<bx_if:show_note><span class="bx-dbd-htools-desc">__note__</span></bx_if:show_note></span><b class="bx-dbd-htools-value">__value__</b></button>
+            </bx_repeat:profiles>
+        </bx_if:show_profiles>
+        <bx_if:show_levels>
+            <bx_repeat:levels>
+                <button type="button" class="bx-dbd-htools-item bx-dbd-users-row" data-series="__series__" aria-pressed="false" onclick="__js_object__.usersSeries('__series__', this)"><span class="bx-dbd-tile" aria-hidden="true">__icon__</span><span class="bx-dbd-htools-name">__name__</span><b class="bx-dbd-htools-value">__value__</b></button>
+            </bx_repeat:levels>
+        </bx_if:show_levels>
+    </div>
+    <script language="javascript">
+        __js_object__.initUsersChart(__chart_data__);
+    </script>
+</div>

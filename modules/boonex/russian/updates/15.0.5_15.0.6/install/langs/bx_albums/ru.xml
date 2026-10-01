@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="ru" flag="ru" title="Russian">
+	<string_add name="_bx_albums_form_media_display_delete"><![CDATA[Удалить изображение]]></string_add>
+	<string_add name="_bx_albums_form_media_input_delete_confirm"><![CDATA[Я уверен, что хочу удалить это изображение]]></string_add>
+	<string_add name="_bx_albums_form_media_input_delete_confirm_error"><![CDATA[Отметьте флажок, если действительно хотите удалить это изображение]]></string_add>
+	<string_add name="_bx_albums_form_media_input_delete_confirm_info"><![CDATA[Это действие не может быть отменено]]></string_add>
+	<string_add name="_bx_albums_form_media_input_sys_delete_confirm"><![CDATA[Удалить подтверждение]]></string_add>
+	<string_add name="_bx_albums_page_block_title_delete_media"><![CDATA[Удалить медиа-файл]]></string_add>
+	<string_add name="_bx_albums_page_block_title_edit_media"><![CDATA[Редактировать медиа-файл]]></string_add>
+	<string_add name="_bx_albums_page_block_title_move_media"><![CDATA[Перенести медиа-файл]]></string_add>
+	<string_add name="_bx_albums_page_title_delete_media"><![CDATA[Удалить медиа-файл]]></string_add>
+	<string_add name="_bx_albums_page_title_edit_media"><![CDATA[Редактировать медиа-файл]]></string_add>
+	<string_add name="_bx_albums_page_title_move_media"><![CDATA[Перенести медиа-файл]]></string_add>
+	<string_add name="_bx_albums_page_title_sys_delete_media"><![CDATA[Медиа-файл - Удаление]]></string_add>
+	<string_add name="_bx_albums_page_title_sys_edit_media"><![CDATA[Медиа-файл - Редактирование]]></string_add>
+	<string_add name="_bx_albums_page_title_sys_move_media"><![CDATA[Медиа-файл - Перенос]]></string_add>
+
+	<string_upd name="_bx_albums_page_title_sys_view_media"><![CDATA[Медиа-файл - Просмотр]]></string_upd>
+</resources>

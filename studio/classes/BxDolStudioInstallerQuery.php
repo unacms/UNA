@@ -58,12 +58,13 @@ class BxDolStudioInstallerQuery extends BxDolModuleQuery
     function insertModule(&$aConfig)
     {
         $sHelpUrl = isset($aConfig['help_url']) ? $aConfig['help_url'] : '';
+        $sNote = isset($aConfig['note']) ? $aConfig['note'] : '';
 
         $sDependencies = '';
         if(isset($aConfig['install']['check_dependencies']) && (int)$aConfig['install']['check_dependencies'] == 1 && !empty($aConfig['dependencies']) && is_array($aConfig['dependencies']))
             $sDependencies = implode(',', array_keys($aConfig['dependencies']));
 
-        $sQuery = $this->prepare("INSERT IGNORE INTO `sys_modules`(`type`, `name`, `title`, `vendor`, `version`, `help_url`, `path`, `uri`, `class_prefix`, `db_prefix`, `lang_category`, `dependencies`, `date`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, UNIX_TIMESTAMP())", $aConfig['type'], $aConfig['name'], $aConfig['title'], $aConfig['vendor'], $aConfig['version'], $sHelpUrl, $aConfig['home_dir'], $aConfig['home_uri'], $aConfig['class_prefix'], $aConfig['db_prefix'], $aConfig['language_category'], $sDependencies);
+        $sQuery = $this->prepare("INSERT IGNORE INTO `sys_modules`(`type`, `name`, `title`, `note`, `vendor`, `version`, `help_url`, `path`, `uri`, `class_prefix`, `db_prefix`, `lang_category`, `dependencies`, `date`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, UNIX_TIMESTAMP())", $aConfig['type'], $aConfig['name'], $aConfig['title'], $sNote, $aConfig['vendor'], $aConfig['version'], $sHelpUrl, $aConfig['home_dir'], $aConfig['home_uri'], $aConfig['class_prefix'], $aConfig['db_prefix'], $aConfig['language_category'], $sDependencies);
         $iResult = (int)$this->query($sQuery);
 
         if ($iResult > 0) {

@@ -14,7 +14,7 @@ $aConfig = array(
     'vendor' => 'UNA INC',
 
     'compatible_with' => array(
-        '15.0.0-RC1'
+        '15.0.0-RC2'
     ),
 
     /**

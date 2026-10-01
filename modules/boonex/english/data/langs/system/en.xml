@@ -695,8 +695,8 @@
 	<string name="_adm_dbd_txt_us_accounts"><![CDATA[Accounts]]></string>
 	<string name="_adm_dbd_txt_us_active"><![CDATA[Active users]]></string>
 	<string name="_adm_dbd_txt_us_online"><![CDATA[Online now]]></string>
-	<string name="_adm_dbd_txt_us_pending"><![CDATA[{0} pending]]></string>
-        <string name="_adm_dbd_msg_upgrade_started"><![CDATA[Site will be upgraded within a minute.<br />Don't forget to <a href="{0}store.php?page=updates">check for modules updates</a> after that.]]></string>
+	<string name="_adm_dbd_txt_us_pending"><![CDATA[{0} pending]]></string>        
+        <string name="_adm_dbd_msg_upgrade_started"><![CDATA[<b>The core system will be updated in about a minute.</b><br />Once the update is complete, please check for available module updates.]]></string>
 	<string name="_adm_dbd_txt_su_database"><![CDATA[Database]]></string>
 	<string name="_adm_dbd_txt_su_system"><![CDATA[System]]></string>
 	<string name="_adm_dbd_txt_su_system_media"><![CDATA[System Media]]></string>
@@ -2426,6 +2426,11 @@
     <string name="_sys_agents_field_model_id_info"><![CDATA[AI model to use for this agent.]]></string>
     <string name="_sys_agents_field_profile_id"><![CDATA[Profile]]></string>
     <string name="_sys_agents_field_profile_id_inf"><![CDATA[AI agent will perform actions under this profile]]></string>
+    <string name="_sys_agents_profile_btn_new"><![CDATA[New: {0}]]></string>
+    <string name="_sys_agents_profile_name_commenter"><![CDATA[Commenter]]></string>
+    <string name="_sys_agents_profile_name_bot"><![CDATA[Bot]]></string>
+    <string name="_sys_agents_profile_required_err"><![CDATA[profile is required. Show chat_buttons with profile_buttons, then pass profile=<tapped name> or profile_new=<name> (for «{0}»).]]></string>
+    <string name="_sys_agents_profile_new_err"><![CDATA[profile_new must be a short display name (1–3 words, like a person): «{0}», «{1}». Not a prompt or sentence. catalog.suggested_new_name is the default.]]></string>
     <string name="_sys_agents_field_acl_levels"><![CDATA[Who can interact]]></string>
     <string name="_sys_agents_field_acl_levels_info"><![CDATA[Membership levels that may chat with this agent, use it in messenger, or fill form fields with it. Leave empty for Nobody. Studio operators can always use the agent to debug. Unauthenticated allows guests.]]></string>
     <string name="_sys_agents_field_trigger"><![CDATA[Trigger]]></string>
@@ -2542,6 +2547,23 @@
     
     <string name="_sys_agents_agents_act_wipe_chat_history"><![CDATA[Wipe chat history]]></string>
     <string name="_sys_agents_agents_act_message"><![CDATA[Message]]></string>
+    <string name="_sys_agents_agents_act_activity"><![CDATA[Activity]]></string>
+    <string name="_sys_agents_agents_popup_activity"><![CDATA[Activity of "{0}"]]></string>
+    <string name="_sys_agents_agents_txt_activity_empty"><![CDATA[Nothing yet]]></string>
+    <string name="_sys_agents_activity_failed"><![CDATA[failed]]></string>
+    <string name="_sys_agents_activity_comment_add"><![CDATA[Posted a comment on {target}]]></string>
+    <string name="_sys_agents_activity_comment_update"><![CDATA[Edited a comment on {target}]]></string>
+    <string name="_sys_agents_activity_comment_delete"><![CDATA[Deleted a comment on {target}]]></string>
+    <string name="_sys_agents_activity_content_add"><![CDATA[Created {target}]]></string>
+    <string name="_sys_agents_activity_content_update"><![CDATA[Updated {target}]]></string>
+    <string name="_sys_agents_activity_content_delete"><![CDATA[Deleted {target}]]></string>
+    <string name="_sys_agents_activity_db_write"><![CDATA[Changed {target}]]></string>
+    <string name="_sys_agents_activity_db_undo"><![CDATA[Rolled back changes]]></string>
+    <string name="_sys_agents_activity_email"><![CDATA[Sent an email to {unit}]]></string>
+    <string name="_sys_agents_activity_lang"><![CDATA[Changed language key {unit}]]></string>
+    <string name="_sys_agents_activity_agent"><![CDATA[Agent {unit}: #{object}]]></string>
+    <string name="_sys_agents_activity_mockup"><![CDATA[Updated page block #{object}]]></string>
+    <string name="_sys_page_block_title_ai_agents_admin"><![CDATA[Agents]]></string>
     <string name="_sys_agents_assistants_chats_msg_loading"><![CDATA[I'm thinking. Please wait.]]></string>
     <string name="_sys_agents_assistants_field_kwg_type"><![CDATA[Type]]></string>
     <string name="_sys_agents_assistants_field_kwg_type_text"><![CDATA[Text]]></string>
@@ -3879,6 +3901,8 @@
     <string name="_sys_page_block_title_forgot_password"><![CDATA[Forgot Password]]></string>
     <string name="_sys_page_block_title_search_keyword_form"><![CDATA[Search Form]]></string>
     <string name="_sys_page_block_title_search_keyword_result"><![CDATA[Search Result]]></string>
+    <string name="_sys_page_block_title_sys_search_ai"><![CDATA[AI Search]]></string>
+    <string name="_sys_page_block_title_search_ai"><![CDATA[Search]]></string>
     <string name="_sys_page_block_title_membership_stats"><![CDATA[Membership Limits]]></string>
     <string name="_sys_page_block_system_title_login"><![CDATA[Log in with Sign up link]]></string>
     <string name="_sys_page_block_system_title_login_step2"><![CDATA[Log in - step2]]></string>

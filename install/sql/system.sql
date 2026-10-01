@@ -1755,6 +1755,7 @@ CREATE TABLE `sys_modules` (
   `subtypes` int(11) unsigned NOT NULL default '0',
   `name` varchar(32) NOT NULL default '',
   `title` varchar(255) NOT NULL default '',
+  `note` varchar(255) NOT NULL default '',
   `vendor` varchar(64) NOT NULL default '',
   `version` varchar(32) NOT NULL default '',
   `help_url` varchar(128) NOT NULL default '',
@@ -5753,10 +5754,11 @@ INSERT INTO `sys_grid_actions` (`object`, `type`, `name`, `title`, `icon`, `icon
 ('sys_studio_agents_agents', 'bulk', 'delete', '_Delete', '', 0, 1, 1),
 ('sys_studio_agents_agents', 'single', 'manual', '_Run', 'play', 1, 0, 1),
 ('sys_studio_agents_agents', 'single', 'message', '_sys_agents_agents_act_message', 'comment', 1, 0, 2),
-('sys_studio_agents_agents', 'single', 'logs', '_Logs', 'file-alt', 1, 0, 3),
-('sys_studio_agents_agents', 'single', 'edit', '_Edit', 'pencil-alt', 1, 0, 4),
-('sys_studio_agents_agents', 'single', 'wipe_chat_history', '_sys_agents_agents_act_wipe_chat_history', 'eraser', 1, 1, 5),
-('sys_studio_agents_agents', 'single', 'delete', '_Delete', 'remove', 1, 1, 6),
+('sys_studio_agents_agents', 'single', 'activity', '_sys_agents_agents_act_activity', 'history', 1, 0, 3),
+('sys_studio_agents_agents', 'single', 'logs', '_Logs', 'file-alt', 1, 0, 4),
+('sys_studio_agents_agents', 'single', 'edit', '_Edit', 'pencil-alt', 1, 0, 5),
+('sys_studio_agents_agents', 'single', 'wipe_chat_history', '_sys_agents_agents_act_wipe_chat_history', 'eraser', 1, 1, 6),
+('sys_studio_agents_agents', 'single', 'delete', '_Delete', 'remove', 1, 1, 7),
 ('sys_studio_agents_agents', 'independent', 'add', '_adm_form_btn_field_add', '', 0, 0, 1);
 
 -- GRID: Agents Logs
@@ -5956,8 +5958,8 @@ INSERT INTO `sys_transcoder_filters` (`transcoder_object`, `filter`, `filter_par
 ('sys_icon_android_splash', 'Resize', 'a:3:{s:1:"w";s:3:"512";s:1:"h";s:3:"512";s:13:"square_resize";s:1:"1";}', '0'),
 ('sys_icon_facebook', 'Resize', 'a:4:{s:1:"w";s:3:"100";s:1:"h";s:3:"100";s:13:"square_resize";s:1:"1";s:10:"force_type";s:3:"png";}', '0'),
 ('sys_icon_favicon', 'Resize', 'a:4:{s:1:"w";s:2:"16";s:1:"h";s:2:"16";s:13:"square_resize";s:1:"1";s:10:"force_type";s:3:"png";}', '0'),
-('sys_cover', 'Resize', 'a:3:{s:1:"w";s:4:"1920";s:1:"h";s:3:"720";s:10:"force_type";s:3:"png";}', '0'),
-('sys_cover_unit_profile', 'Resize', 'a:3:{s:1:"w";s:3:"640";s:1:"h";s:3:"240";s:10:"force_type";s:3:"png";}', '0'),
+('sys_cover', 'Resize', 'a:3:{s:1:"w";s:4:"1920";s:1:"h";s:3:"720";s:7:"quality";s:2:"82";}', '0'),
+('sys_cover_unit_profile', 'Resize', 'a:3:{s:1:"w";s:3:"640";s:1:"h";s:3:"240";s:7:"quality";s:2:"82";}', '0'),
 ('sys_cover_preview', 'Resize', 'a:3:{s:1:"w";s:3:"120";s:1:"h";s:2:"45";s:10:"force_type";s:3:"jpg";}', '0'),
 ('sys_builder_page_preview', 'Resize', 'a:4:{s:1:"w";s:3:"128";s:1:"h";s:3:"128";s:13:"square_resize";s:1:"1";s:10:"force_type";s:3:"jpg";}', '0'),
 ('sys_builder_page_embed', 'ResizeVar', '', '0'),
@@ -6272,19 +6274,20 @@ INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title`, `designb
 -- service blocks
 SET @iBlockOrder = IFNULL((SELECT `order` FROM `sys_pages_blocks` WHERE `object` = '' AND `cell_id` = 0 ORDER BY `order` DESC LIMIT 1), 0);
 INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title_system`, `title`, `designbox_id`, `tabs`, `async`, `visible_for_levels`, `type`, `content`, `deletable`, `copyable`, `active`, `order`) VALUES
-('', 0, 'system', '_sys_page_block_title_sys_create_post', '_sys_page_block_title_create_post', 11, 1, 4, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:20:"get_create_post_form";s:6:"params";a:1:{i:0;i:0;}s:5:"class";s:13:"TemplServices";}', 0, 1, 1, @iBlockOrder + 1),
-('', 0, 'system', '_sys_page_block_title_sys_create_post_context', '_sys_page_block_title_create_post_context', 11, 1, 4, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:20:"get_create_post_form";s:6:"params";a:1:{i:0;s:12:"{profile_id}";}s:5:"class";s:13:"TemplServices";}', 0, 1, 1, @iBlockOrder + 2),
-('', 0, 'system', '_sys_page_block_title_sys_create_post_public', '_sys_page_block_title_create_post_public', 11, 1, 4, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:20:"get_create_post_form";s:6:"params";a:0:{}s:5:"class";s:13:"TemplServices";}', 0, 1, 1, @iBlockOrder + 3),
+('', 0, 'system', '_sys_page_block_title_sys_search_ai', '_sys_page_block_title_search_ai', 11, 0, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:19:"get_block_search_ai";s:6:"params";a:0:{}s:5:"class";s:19:"TemplServicesSearch";}', 0, 1, 1, @iBlockOrder + 1),
+('', 0, 'system', '_sys_page_block_title_sys_create_post', '_sys_page_block_title_create_post', 11, 1, 4, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:20:"get_create_post_form";s:6:"params";a:1:{i:0;i:0;}s:5:"class";s:13:"TemplServices";}', 0, 1, 1, @iBlockOrder + 2),
+('', 0, 'system', '_sys_page_block_title_sys_create_post_context', '_sys_page_block_title_create_post_context', 11, 1, 4, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:20:"get_create_post_form";s:6:"params";a:1:{i:0;s:12:"{profile_id}";}s:5:"class";s:13:"TemplServices";}', 0, 1, 1, @iBlockOrder + 3),
+('', 0, 'system', '_sys_page_block_title_sys_create_post_public', '_sys_page_block_title_create_post_public', 11, 1, 4, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:20:"get_create_post_form";s:6:"params";a:0:{}s:5:"class";s:13:"TemplServices";}', 0, 1, 1, @iBlockOrder + 4),
 
-('', 0, 'system', '_sys_page_block_title_sys_std_site_submenu', '_sys_page_block_title_std_site_submenu', 3, 0, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:16:"get_site_submenu";s:6:"params";a:0:{}s:5:"class";s:13:"TemplServices";}', 0, 1, 1, @iBlockOrder + 4),
+('', 0, 'system', '_sys_page_block_title_sys_std_site_submenu', '_sys_page_block_title_std_site_submenu', 3, 0, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:16:"get_site_submenu";s:6:"params";a:0:{}s:5:"class";s:13:"TemplServices";}', 0, 1, 1, @iBlockOrder + 5),
 
-('', 0, 'system', '_sys_page_block_title_sys_author', '_sys_page_block_title_author', 3, 0, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:16:"get_block_author";s:6:"params";a:2:{i:0;s:8:"{module}";i:1;s:4:"{id}";}s:5:"class";s:13:"TemplServices";}', 0, 1, 1, @iBlockOrder + 5),
+('', 0, 'system', '_sys_page_block_title_sys_author', '_sys_page_block_title_author', 3, 0, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:16:"get_block_author";s:6:"params";a:2:{i:0;s:8:"{module}";i:1;s:4:"{id}";}s:5:"class";s:13:"TemplServices";}', 0, 1, 1, @iBlockOrder + 6),
 
-('', 0, 'system', '_sys_page_block_title_sys_recom_friends', '_sys_page_block_title_recom_friends', 11, 1, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:30:"browse_recommendations_friends";s:6:"params";a:0:{}s:5:"class";s:20:"TemplServiceProfiles";}', 0, 1, 1, @iBlockOrder + 6),
-('', 0, 'system', '_sys_page_block_title_sys_recom_subscriptions', '_sys_page_block_title_recom_subscriptions', 11, 1, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:36:"browse_recommendations_subscriptions";s:6:"params";a:0:{}s:5:"class";s:20:"TemplServiceProfiles";}', 0, 1, 1, @iBlockOrder + 7),
-('', 0, 'system', '_sys_page_block_title_sys_invitations', '_sys_page_block_title_invitations', 11, 1, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:18:"browse_invitations";s:6:"params";a:0:{}s:5:"class";s:20:"TemplServiceProfiles";}', 0, 1, 1, @iBlockOrder + 8),
+('', 0, 'system', '_sys_page_block_title_sys_recom_friends', '_sys_page_block_title_recom_friends', 11, 1, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:30:"browse_recommendations_friends";s:6:"params";a:0:{}s:5:"class";s:20:"TemplServiceProfiles";}', 0, 1, 1, @iBlockOrder + 7),
+('', 0, 'system', '_sys_page_block_title_sys_recom_subscriptions', '_sys_page_block_title_recom_subscriptions', 11, 1, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:36:"browse_recommendations_subscriptions";s:6:"params";a:0:{}s:5:"class";s:20:"TemplServiceProfiles";}', 0, 1, 1, @iBlockOrder + 8),
+('', 0, 'system', '_sys_page_block_title_sys_invitations', '_sys_page_block_title_invitations', 11, 1, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:18:"browse_invitations";s:6:"params";a:0:{}s:5:"class";s:20:"TemplServiceProfiles";}', 0, 1, 1, @iBlockOrder + 9),
 
-('', 0, 'system', '_sys_page_block_title_sys_ai_agent', '_sys_page_block_title_ai_agent', 11, 0, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:18:"get_block_ai_agent";s:6:"params";a:1:{i:0;i:1;}s:5:"class";s:13:"TemplServices";}', 0, 1, 1, @iBlockOrder + 9);
+('', 0, 'system', '_sys_page_block_title_sys_ai_agent', '_sys_page_block_title_ai_agent', 11, 0, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:18:"get_block_ai_agent";s:6:"params";a:1:{i:0;i:1;}s:5:"class";s:13:"TemplServices";}', 0, 1, 1, @iBlockOrder + 10);
 
 -- content blocks
 INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title_system`, `title`, `designbox_id`, `tabs`, `async`, `visible_for_levels`, `type`, `content`, `deletable`, `copyable`, `active`, `active_api`, `order`) VALUES
@@ -6378,8 +6381,8 @@ INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title_system`, `
 
 ('sys_audit', 1, 'system', '_sys_page_block_title_system_audit_administration', '_sys_page_block_title_audit_administration', 11, 0, 0, 192, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:12:"manage_tools";s:6:"params";a:1:{i:0;s:14:"administration";}s:5:"class";s:18:"TemplAuditServices";}', 0, 1, 1, 1),
 ('sys_redirect', 1, 'system', '', '_sys_page_block_title_redirect', 11, 0, 0, 2147483647, 'service', 'a:3:{s:6:\"module\";s:6:\"system\";s:6:\"method\";s:8:\"redirect\";s:5:\"class\";s:13:\"TemplServices\";}', 0, 1, 1, 1),
-('sys_search_keyword', 1, 'system', '', '_sys_page_block_title_search_keyword_form', 13, 0, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:19:"search_keyword_form";s:6:"params";a:0:{}s:5:"class";s:13:"TemplServices";}', 0, 1, 1, 1),
-('sys_search_keyword', 1, 'system', '', '_sys_page_block_title_search_keyword_result', 0, 0, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:21:"search_keyword_result";s:6:"params";a:0:{}s:5:"class";s:13:"TemplServices";}', 0, 1, 1, 1),
+('sys_search_keyword', 1, 'system', '', '_sys_page_block_title_search_keyword_form', 13, 0, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:19:"search_keyword_form";s:6:"params";a:0:{}s:5:"class";s:19:"TemplServicesSearch";}', 0, 1, 1, 1),
+('sys_search_keyword', 1, 'system', '', '_sys_page_block_title_search_keyword_result', 0, 0, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:21:"search_keyword_result";s:6:"params";a:0:{}s:5:"class";s:19:"TemplServicesSearch";}', 0, 1, 1, 1),
 
 ('sys_wiki_add_page', 1, 'system', '', '_sys_page_block_title_wiki_add_page', 0, 0, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:13:"wiki_add_page";s:6:"params";a:2:{i:0;s:8:"{object}";i:1;s:5:"{uri}";}s:5:"class";s:16:"TemplServiceWiki";}', 0, 1, 1, 1),
 ('sys_sub_wiki_pages_list', 1, 'system', '', '_sys_page_block_title_wiki_pages_list', 0, 0, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:10:"pages_list";s:6:"params";a:0:{}s:5:"class";s:16:"TemplServiceWiki";}', 0, 1, 1, 1),
@@ -6421,7 +6424,7 @@ CREATE TABLE IF NOT EXISTS `sys_pages_blocks_data` (
   `block_id` int(11) NOT NULL DEFAULT 0,
   `content_id` int(11) NOT NULL DEFAULT 0,
   `content_module` varchar(32) NOT NULL,
-  `data` text NOT NULL,
+  `data` mediumtext NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `block` (`block_id`, `content_id`, `content_module`)
 );
@@ -6720,7 +6723,7 @@ CREATE TABLE `sys_agents_models` (
   `key` varchar(255) NOT NULL DEFAULT '',
   `params` text NOT NULL,
   `params_user` text DEFAULT NULL,
-  `capabilities` enum('chatllm','chatvlm','embeddings') NOT NULL DEFAULT 'chatllm',
+  `capabilities` enum('chatllm','chatvlm','embeddings','judge') NOT NULL DEFAULT 'chatllm',
   `duplicate` tinyint(4) NOT NULL DEFAULT 1,
   `active` tinyint(4) NOT NULL DEFAULT 1,
   `changed` int(11) UNSIGNED NOT NULL DEFAULT 0,
@@ -6814,6 +6817,14 @@ INSERT INTO `sys_agents_models` (`type`, `model`, `title`, `icon`, `docs`, `key`
 
 INSERT INTO `sys_agents_models` (`type`, `model`, `title`, `icon`, `docs`, `key`, `params`, `params_user`, `capabilities`, `duplicate`, `active`, `changed`) VALUES
 ('cohere', 'command-a-03-2025', 'Cohere', 'ai-cohere.svg', 'https://docs.cohere.com/docs/models', '', '', NULL, 'chatllm', 0, 0, 0);
+
+SET @j = JSON_OBJECT(
+    'baseUri', 'https://api.typesafe.ai/v1',
+    'timeout', 15,
+    'retries', 2
+);
+INSERT INTO `sys_agents_models` (`type`, `model`, `title`, `icon`, `docs`, `key`, `params`, `params_user`, `capabilities`, `duplicate`, `active`, `changed`) VALUES
+('typesafe', 'jev-latest', 'TypeSafe (Jev)', 'ai-typesafe.svg', 'Judge model: answers typed questions (yes/no, choice, score) about a text with probabilities and confidence instead of generating text. It can not be assigned to an agent, it is used from code - moderation, guardrails, routing, search parsing. Models - https://docs.typesafe.ai/models, API - https://docs.typesafe.ai/api', '', CAST(@j AS CHAR), NULL, 'judge', 0, 0, 0);
 
 SET @j = JSON_OBJECT(
     'baseUri', 'https://api.moonshot.ai/v1',
@@ -7061,7 +7072,9 @@ INSERT INTO `sys_agents_tools` (`type`, `title`, `docs`, `params`, `params_user`
 ('mysql_write_safe', 'MySQL Write (safe)', 'INSERT or UPDATE one row by primary key. DELETE/DROP/TRUNCATE/ALTER are blocked. Each change is snapshotted into sys_agents_sql_log (before/after JSON). Roll back with mysql_undo. Use together with MySQL Schema and MySQL Select. Do not enable the stock MySQL Write tool on the same agent.', '{}', NULL, 0, 0, 1, 'BxDolAIToolMysqlWrite', ''),
 ('mysql_undo', 'MySQL Undo', 'Roll back the last mysql_write snapshot (scope=last) or all snapshots in this chat (scope=session), newest first. UPDATE restores before_json. INSERT deletes that primary key internally. Already-undone rows are skipped. Attach to the same agent as MySQL Write (safe).', '{}', NULL, 0, 0, 1, 'BxDolAIToolMysqlUndo', ''),
 
-('prompt_feedback', 'Prompt feedback', 'Call when the user says the previous reply was wrong, corrects you, or you notice you broke a rule. Writes one paste-ready markdown case into sys_agents_prompt_feedback.markdown: question, wrong answer, correction, why, expected behavior, suggested prompt rule, excerpt, and the prompt that was active. Do not mention the log to the visitor.', '{}', NULL, 0, 0, 1, 'BxDolAIToolPromptFeedback', '');
+('prompt_feedback', 'Prompt feedback', 'Call when the user says the previous reply was wrong, corrects you, or you notice you broke a rule. Writes one paste-ready markdown case into sys_agents_prompt_feedback.markdown: question, wrong answer, correction, why, expected behavior, suggested prompt rule, excerpt, and the prompt that was active. Do not mention the log to the visitor.', '{}', NULL, 0, 0, 1, 'BxDolAIToolPromptFeedback', ''),
+('mockup_upsert', 'Mockup upsert', 'Save a NEO mockup JSON tree (view/row/text/image/icon/button) onto a get_mockup_block service page block. The tree is stored in sys_pages_blocks_data and rendered by the NEO app as a mockup block. Add a "get_mockup_block" service block (system / get_mockup_block / TemplServices) to the page first. Do not use MySQL Write for mockups.', '{}', NULL, 0, 0, 1, 'BxDolAIToolMockup', ''),
+('agent_create', 'Agent create', 'Create or update a Studio agent (sys_agents_agents). Do not use mysql_write on that table. action=catalog|create|update. Never ask for numeric profile_id — catalog.profile_buttons as chat_buttons, then profile=Name or profile_new=Name; create without a profile is refused. preset=comment_reply for comment-reply alert agents.', '{}', NULL, 0, 0, 1, 'BxDolAIToolAgentCreate', '');
 
 CREATE TABLE IF NOT EXISTS `sys_agents_chat_history` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
@@ -7122,7 +7135,28 @@ CREATE TABLE IF NOT EXISTS `sys_agents_sql_log` (
   PRIMARY KEY (`id`),
   KEY `thread_id` (`thread_id`(191)),
   KEY `agent_id` (`agent_id`),
-  KEY `table_pk` (`table_name`, `pk_name`, `pk_value`)
+  KEY `table_pk` (`table_name`(64), `pk_name`(64), `pk_value`(63))
+);
+
+CREATE TABLE IF NOT EXISTS `sys_agents_activity` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `agent_id` int(11) unsigned NOT NULL DEFAULT 0,
+  `profile_id` int(11) unsigned NOT NULL DEFAULT 0,
+  `trigger` varchar(32) NOT NULL DEFAULT '',
+  `thread_id` varchar(255) NOT NULL DEFAULT '',
+  `tool` varchar(64) NOT NULL DEFAULT '',
+  `action` varchar(32) NOT NULL DEFAULT '',
+  `unit` varchar(128) NOT NULL DEFAULT '',
+  `object_id` int(11) unsigned NOT NULL DEFAULT 0,
+  `object_url` varchar(1024) NOT NULL DEFAULT '',
+  `object_title` varchar(255) NOT NULL DEFAULT '',
+  `summary` text,
+  `details` mediumtext,
+  `ok` tinyint(1) NOT NULL DEFAULT 1,
+  `added` int(11) unsigned NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  KEY `agent_added` (`agent_id`, `added`),
+  KEY `thread_id` (`thread_id`(191))
 );
 
 CREATE TABLE IF NOT EXISTS `sys_agents_prompt_feedback` (

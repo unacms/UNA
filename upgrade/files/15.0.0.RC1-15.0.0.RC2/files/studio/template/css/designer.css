@@ -1,0 +1,51 @@
+/*--- Template Switcher ---*/
+div.bx-dsg-template {
+    position: relative;
+    width: 100%;
+}
+
+div.bx-dsg-icon {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    overflow: hidden;
+    line-height: 8rem;
+}
+
+div.bx-dsg-icon i.sys-icon {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    height: auto;
+
+    font-size: 96px;
+    text-align: center;
+    text-shadow: none;
+    color: white;
+}
+
+div.bx-dsg-template-info {
+    overflow: hidden;
+}
+
+span.bx-dsg-template-version {
+    font-weight: bold;
+}
+
+/*--- Icon Manager---*/
+.adm-dsg-icon .bx-form-input-files-uploaders {
+    margin-top: 0;
+}
+.adm-dsg-icon .adm-dsg-ip-icon_svg img {
+    max-height: 2rem;
+}
+
+/*--- Cover Manager---*/
+div.bx-dsg-cover {
+    position: relative;
+}
+
+div.bx-dsg-cover-actions .bx-btn {
+    float: none;
+    display: inline-flex; /* keeps the 32px Studio button's centred label */
+}

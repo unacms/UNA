@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="en" flag="gb" title="English">
+	<string name="_bx_datafox"><![CDATA[Data Fox]]></string>
+    <string name="_bx_datafox_wgt_cpt"><![CDATA[Data Fox (discontinued)]]></string>
+    <string name="_bx_datafox_adm_stg_cpt_type"><![CDATA[Data Fox]]></string>
+    <string name="_bx_datafox_adm_stg_cpt_category_general"><![CDATA[General]]></string>
+</resources>

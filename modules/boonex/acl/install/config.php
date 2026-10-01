@@ -16,8 +16,8 @@ $aConfig = array(
     'type' => BX_DOL_MODULE_TYPE_MODULE,
     'name' => 'bx_acl',
     'title' => 'Paid Levels',
-    'note' => 'Paid Levels module.',
-    'version' => '15.0.4.DEV',
+    'note' => 'Paid levels, membership levels, access',
+    'version' => '15.0.5.DEV',
     'vendor' => 'UNA INC',
     'help_url' => 'http://feed.una.io/?section={module_name}',
 

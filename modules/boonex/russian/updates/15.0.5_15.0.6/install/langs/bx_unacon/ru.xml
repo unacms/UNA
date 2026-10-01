@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="ru" flag="ru" title="Russian">
+	<string_add name="_bx_unacon_wgt_cpt"><![CDATA[UNA-соединение (прекращено)]]></string_add>
+</resources>

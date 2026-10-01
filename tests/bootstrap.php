@@ -19,6 +19,12 @@ if (!file_exists($sHeaderPath))
 
 require_once($sHeaderPath);
 
+// The global _t() is declared at the bottom of BxDolLanguages.php, so it only exists once that class
+// file has been loaded. A web request loads it while bootstrapping; the installer-generated header
+// used by CI does not, and unit tests that compare against _t() strings failed there with
+// "Call to undefined function _t()". Load it up front, as api.php does.
+bx_import('BxDolLanguages');
+
 class BxDolTestCase extends \PHPUnit\Framework\TestCase
 {
     /**

@@ -17,7 +17,7 @@ $aConfig = array(
     'type' => BX_DOL_MODULE_TYPE_MODULE,
     'name' => 'bx_reviews',
     'title' => 'Reviews',
-    'note' => 'Reviews based on Posts module.',
+    'note' => 'Reviews, ratings, opinions',
     'version' => '14.0.0.DEV',
     'vendor' => 'UNA INC',
     'help_url' => 'http://feed.una.io/?section={module_name}',

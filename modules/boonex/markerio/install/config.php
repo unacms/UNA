@@ -16,9 +16,9 @@ $aConfig = array(
     'type' => BX_DOL_MODULE_TYPE_MODULE,
     'name' => 'bx_markerio',
     'title' => 'Marker.io',
-    'note' => 'Marker.io integration module.',
+    'note' => 'Marker.io, visual feedback, bug reports',
     'version' => '13.0.3.DEV',
-    'vendor' => 'BoonEx',
+    'vendor' => 'UNA INC',
     'help_url' => 'http://feed.una.io/?section={module_name}',
 
     'compatible_with' => array(

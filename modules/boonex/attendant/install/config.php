@@ -17,7 +17,7 @@ $aConfig = array(
     'type' => BX_DOL_MODULE_TYPE_MODULE,
     'name' => 'bx_attendant',
     'title' => 'Attendant',
-    'note' => 'Attendant module.',
+    'note' => 'Attendant, site assistant',
     'version' => '14.0.1.DEV',
     'vendor' => 'UNA INC',
     'help_url' => 'http://feed.una.io/?section={module_name}',
