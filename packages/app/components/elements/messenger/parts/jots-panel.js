@@ -30,12 +30,15 @@ const JotsPanel = memo(function JotsPanel({ data, listHeight, refListJots, start
 
     const windowScroll = isWeb && isSmallScreen;
     const fillParent = !isSmallScreen;
+    // Native small screens: the chat fills the tab screen; header and composer
+    // overlay it and the insets keep the newest / oldest rows clear of them.
+    const fillScreen = !isWeb && isSmallScreen;
     const listH = Math.max(0, listHeight || 0);
 
     return (
         <View
-            className={fillParent ? 'absolute inset-0' : 'w-full'}
-            style={!fillParent && !windowScroll && listH > 0 ? { height: listH } : undefined}
+            className={fillParent ? 'absolute inset-0' : fillScreen ? 'w-full flex-1' : 'w-full'}
+            style={!fillParent && !fillScreen && !windowScroll && listH > 0 ? { height: listH } : undefined}
         >
             <UniList
                 refer={refListJots}

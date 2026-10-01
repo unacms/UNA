@@ -20,6 +20,7 @@ import {
     useSetScrollDirection,
 } from 'app/context/jotai/layout';
 import { useHeaderOptions } from 'app/ui/molecules/header/options';
+import { useIsTabSlideCopy } from 'app/context/tab-route-override';
 import MenuTop from 'app/components/nav/menu-top';
 
 const DEFAULT_CONTENT_PINNED_FIXED =
@@ -203,6 +204,10 @@ export function usePageHeaderBase(pageData) {
     const setScrollDirection = useSetScrollDirection();
     const setHeaderHeightAtom = useSetHeaderHeight();
     const headerHeight = useHeaderHeight();
+    // The slide-layer copy shares this tab's atoms but mounts fresh (messenger
+    // shows the default bar until its convos load). Only the real page publishes
+    // its height, or the copy's value can outlive it.
+    const isSlideCopy = useIsTabSlideCopy();
 
     const isWeb = Platform.OS === 'web';
     const isDesktop = useIsDesktop();
@@ -248,7 +253,7 @@ export function usePageHeaderBase(pageData) {
         // Native Host remounts (glass selected tint) can report 0 for a frame,
         // or main-only height before tabs finish layout — and may never emit
         // another event. Keep the last full offset while subtabs are showing.
-        if (height <= 0) return;
+        if (height <= 0 || isSlideCopy) return;
         setHeaderHeightAtom((prev) => {
             if (prev === height) return prev;
             // Host remount can report main-only (~64). Keep the last full
@@ -256,7 +261,7 @@ export function usePageHeaderBase(pageData) {
             if (!isWeb && header.subHeader && prev > height && height < 80) return prev;
             return height;
         });
-    }, [header.subHeader, isWeb, setHeaderHeightAtom]);
+    }, [header.subHeader, isSlideCopy, isWeb, setHeaderHeightAtom]);
 
     const mainHeaderHeightRef = useRef(0);
     const subHeaderHeightRef = useRef(0);
@@ -291,7 +296,7 @@ export function usePageHeaderBase(pageData) {
 
     useEffect(() => {
         if (header.header === false) {
-            setHeaderHeightAtom(0);
+            if (!isSlideCopy) setHeaderHeightAtom(0);
             return;
         }
         if (!header.subHeader) {
@@ -303,7 +308,7 @@ export function usePageHeaderBase(pageData) {
         if (isWeb) {
             syncHeaderHeight();
         }
-    }, [header.header, header.subHeader, isWeb, setHeaderHeightAtom, syncHeaderHeight]);
+    }, [header.header, header.subHeader, isSlideCopy, isWeb, setHeaderHeightAtom, syncHeaderHeight]);
 
     return {
         currentUser,

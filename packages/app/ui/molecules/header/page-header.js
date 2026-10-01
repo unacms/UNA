@@ -1,11 +1,11 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useLayoutEffect, useRef } from 'react';
 import { Animated, View } from 'react-native';
 import { nativeDriver } from 'app/lib/platform/animation';
 import { appSetting } from 'app/lib/util';
 import { isNativeTabsEnabled } from 'app/lib/util';
 import { EdgeBlur, edgeBlurConfig } from 'app/ui/atoms/edge-blur';
 import { useIsScrolled } from 'app/context/jotai/layout';
-import { getWindowSafeAreaInsets } from 'app/lib/hooks/router';
+import { getWindowSafeAreaInsets, useIsFocused } from 'app/lib/hooks/router';
 import {
     PageHeaderBody,
     PageHeaderSmall,
@@ -48,6 +48,20 @@ export const PageHeader = ({ pageData }) => {
     const fadeClass = nativeWash?.className || getHeaderFadeClass();
     const fadeExtend = fadeBlur?.extend ?? nativeWash?.extend ?? getHeaderFadeExtend();
     const fadeHeight = headerHeight > 0 ? headerHeight + fadeExtend : 0;
+
+    // Lists pad by the published height, and onLayout alone can miss a bar
+    // swap (messenger: default bar → list bar with the inbox/direct row), which
+    // leaves rows under the header for good. Re-read the committed layout after
+    // the bar changes and when the tab regains focus.
+    const layoutRef = useRef(null);
+    const isFocused = useIsFocused();
+    const hasBar = header.header !== false;
+    useLayoutEffect(() => {
+        if (!hasBar || !isFocused) return;
+        layoutRef.current?.measure((_x, _y, width, height) => {
+            onHeaderLayout({ nativeEvent: { layout: { width, height } } });
+        });
+    }, [hasBar, header.header, header.subHeader, isFocused, onHeaderLayout]);
 
     useEffect(() => {
         if (!isCollapsibleHeader || headerHeight <= 0) {
@@ -120,6 +134,7 @@ export const PageHeader = ({ pageData }) => {
                 </Animated.View>
             ) : null}
             <View
+                ref={layoutRef}
                 pointerEvents="auto"
                 onLayout={onHeaderLayout}
                 style={edgeToEdgeTop > 0 ? { paddingTop: edgeToEdgeTop } : undefined}

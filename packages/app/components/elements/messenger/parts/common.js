@@ -2,7 +2,7 @@ import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
 import { fetcher } from 'app/lib/fetcher';
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
-import { appSetting } from 'app/lib/util'
+import { androidTabBarHeight, appSetting, isNativeTabsEnabled } from 'app/lib/util'
 import { Platform } from 'react-native'
 import useFetchForm from 'app/lib/hooks/use-fetch-form'
 import { useCurrentUser } from 'app/context/user';
@@ -14,7 +14,7 @@ import { useBottomSheetData } from 'app/context/bottomsheet';
 import Profile from 'app/ui/molecules/profile/profile'
 import ElementMsg from 'app/components/elements/msg';
 import emitter from 'app/context/emitter';
-import { useIsFocused, useSafeAreaInsets } from 'app/lib/hooks/router'
+import { getWindowSafeAreaInsets, useIsFocused, useSafeAreaInsets } from 'app/lib/hooks/router'
 import { useTranslation } from 'react-i18next'
 import {
     Panel,
@@ -22,6 +22,7 @@ import {
     PanelHandler,
 } from 'app/ui/molecules/page/resizable-panels'
 import { useIsDesktop } from 'app/context/measure';
+import { areTabBarLabelsHidden, getTabList } from 'app/components/nav/tabs/tab-menu';
 import { useFooterHeight } from 'app/context/jotai/layout';
 import { PageHeaderOptions } from 'app/ui/molecules/header/options';
 import ConvosPanel from 'app/components/elements/messenger/parts/convos-panel';
@@ -41,6 +42,9 @@ const isWeb = Platform.OS === 'web';
 
 // Keep in sync with tabBarStyle.height in app/components/nav/tabs/native-tabs.js
 const TAB_BAR_HEIGHT = Platform.OS === 'ios' ? 52 : 56
+// Keep in sync with TAB_BAR_RESERVE in app/components/nav/tab-slide.js (and
+// post.js) — the iOS NativeTabs bar floats over the screen.
+const NATIVE_TAB_BAR_RESERVE = 56;
 
 /** Height of the in-panel desktop header rows (search / chat title), h-16. */
 const PANEL_HEADER_HEIGHT = 64;
@@ -51,17 +55,10 @@ const PANEL_HEADER_HEIGHT = 64;
  * Composer (small screens: stacked list ↔ chat; web desktop: resizable
  * two-column split inside the UNA block).
  */
-export default function Messenger({ defaultConvoId, selectedMenu, convos, layoutHeight, fetchConvos, data, pageData, onSave, addButtons, menuItems, menuIndex, onMenuChange }) {
+export default function Messenger({ defaultConvoId, selectedMenu, convos, fetchConvos, data, pageData, onSave, addButtons, menuItems, menuIndex, onMenuChange }) {
     const { t } = useTranslation();
     const insets = useSafeAreaInsets();
     const footerHeight = useFooterHeight();
-    // Form sits above the tab bar. On Android the root SafeAreaView also pads
-    // insets.bottom (iOS edges omit bottom) — sticky must compensate both or the
-    // composer lands too high when the keyboard covers that space.
-    // e.g. Android: 56 + ~44 nav inset ≈ 100
-    const stickyOpened = !isWeb
-        ? TAB_BAR_HEIGHT + (Platform.OS === 'android' ? insets.bottom : 0)
-        : 0;
     const { setBottomSheetData } = useBottomSheetData();
     const [convoId, setConvoId] = useState(defaultConvoId);
     const convoIdRef = useRef(convoId);
@@ -94,6 +91,22 @@ export default function Messenger({ defaultConvoId, selectedMenu, convos, layout
     const selectedConvoIndex = convosData && convoId ? convosData.findIndex(item => item.id === convoId) : -1;
     const selectedConvo = convosData ? convosData[selectedConvoIndex] : false;
     const { currentUser } = useCurrentUser();
+    // NativeTabs screens run under the tab bar (iOS floats it, Android draws
+    // it over the page), so lists pad and the composer rests this far up.
+    // Window insets, not `insets`: NativeTabs can report the keyboard height
+    // as the bottom inset (as in post.js). JS tabs end the screen above the bar.
+    const tabBarOverlayInset = isWeb || !isNativeTabsEnabled()
+        ? 0
+        : (Platform.OS === 'android'
+            ? androidTabBarHeight(areTabBarLabelsHidden(getTabList(currentUser) || []))
+            : NATIVE_TAB_BAR_RESERVE) + (getWindowSafeAreaInsets().bottom || 0);
+    // KeyboardStickyView lifts by (keyboard − opened), so opened is the
+    // composer's resting distance from the window bottom. JS tabs: the bar
+    // sits below the screen, plus Android's root SafeAreaView insets.bottom
+    // (iOS edges omit bottom), e.g. 56 + ~44 nav inset ≈ 100.
+    const stickyOpened = isWeb
+        ? 0
+        : tabBarOverlayInset || TAB_BAR_HEIGHT + (Platform.OS === 'android' ? insets.bottom : 0);
     const [replyItem, setReplyItem] = useState(false);
 
     const { data: dynamicData } = useFetchForm('/api.php?r=bx_messenger/get_send_form/Services&params=' + JSON.stringify({ id: selectedConvo?.id, convo_id: selectedConvo?.id, reply_id: replyItem ? replyItem?.id : 0 }), commentForm);
@@ -508,13 +521,15 @@ export default function Messenger({ defaultConvoId, selectedMenu, convos, layout
     const errorOffset = listError ? 60 : 0;
 
     if (isSmallScreen) {
-        // Native: absolute page header, so the list is height-bounded and
+        // Native: absolute page header, so the list fills the tab screen and
         // pads for chrome. Mobile web: window-scroll like conductor lists
         // (notifications, comments) so rows pass behind the collapsible page
         // header. Chat composer is viewport-fixed above the tab bar.
         const nativeHeaderInset = isWeb ? 0 : PANEL_HEADER_HEIGHT;
         const tabBarInset = isWeb ? footerHeight : 0;
         const composerInset = formHeight + errorOffset;
+        // Room to scroll the last row clear of the bar (web: the footer).
+        const bottomBarInset = tabBarOverlayInset || tabBarInset;
 
         return (
             <View className='web:h-auto w-full h-full flex-row bg-card'>
@@ -523,39 +538,33 @@ export default function Messenger({ defaultConvoId, selectedMenu, convos, layout
                     <ConvosPanel
                         data={convosData}
                         pageData={pageData}
-                        panelHeight={isWeb ? undefined : layoutHeight}
-                        listHeight={isWeb ? undefined : layoutHeight}
                         selectedConvoIndex={selectedConvoIndex}
                         changeConvo={changeConvo}
                         onSearch={handleSearch}
                         onSave={onSave}
                         addButtons={addButtons}
                         isSmallScreen={true}
-                        footerInset={tabBarInset}
+                        footerInset={bottomBarInset}
                     />
                 </View>}
                 {panelsVisible.jots && (
-                    <View
-                        className="relative w-full"
-                        style={!isWeb && layoutHeight > 0 ? { height: layoutHeight } : undefined}
-                    >
+                    <View className="relative w-full">
                     <Msg onVisible={showMsg} title={showMsg} handleOk={() => { setShowMsg(false) }} />
                     {jotsLoaded && (
                         <JotsPanel
                             data={jots.data.jots}
-                            listHeight={isWeb ? undefined : layoutHeight}
                             refListJots={refListJots}
                             startReached={handleStartReached}
                             handleReply={handleReply}
                             isSmallScreen={true}
                             headerInset={nativeHeaderInset}
-                            footerInset={composerInset + tabBarInset}
+                            footerInset={composerInset + bottomBarInset}
                         />
                     )}
                     {listError ? (
                         <View
                             className={isWeb ? 'fixed left-0 right-0 z-40 mx-4' : 'absolute left-0 right-0 z-10 mx-4'}
-                            style={{ bottom: formHeight + tabBarInset }}
+                            style={{ bottom: formHeight + bottomBarInset }}
                         >
                             <ElementMsg data={listError} />
                         </View>
@@ -564,7 +573,7 @@ export default function Messenger({ defaultConvoId, selectedMenu, convos, layout
                         <KbStickyView
                             style={isWeb
                                 ? { position: 'fixed', left: 0, right: 0, bottom: tabBarInset, zIndex: 40 }
-                                : { position: 'absolute', left: 0, right: 0, bottom: 0, zIndex: 10 }}
+                                : { position: 'absolute', left: 0, right: 0, bottom: tabBarOverlayInset, zIndex: 10 }}
                             offset={{ closed: 0, opened: stickyOpened }}
                         >
                             <EdgeBlurView edge="bottom" config={edgeBlurConfig('footer')} washClassName={MESSENGER_OVERLAY_COMPOSER_FADE} pointerEvents="box-none">

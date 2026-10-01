@@ -52,6 +52,10 @@ const ConvosPanel = memo(function ConvosPanel({
     }, []);
 
     const windowScroll = isWeb && isSmallScreen;
+    // Native small screens: fill the tab screen edge-to-edge like feed /
+    // conductor lists — rows scroll under the page header (UniList pads for
+    // it) and the native tab bar (`footerInset`).
+    const fillScreen = !isWeb && isSmallScreen;
     const listH = Math.max(0, listHeight || panelHeight || 0);
     const overlayList = !isSmallScreen;
     const headerInset = overlayList ? chromeHeight : 0;
@@ -98,10 +102,10 @@ const ConvosPanel = memo(function ConvosPanel({
 
     return (
         <View
-            className={`${overlayList ? 'relative flex-1 min-h-0 overflow-hidden' : 'w-full'} ${isSmallScreen ? 'bg-card' : ''}`}
+            className={`${overlayList ? 'relative flex-1 min-h-0 overflow-hidden' : 'w-full'} ${fillScreen ? 'flex-1' : ''} ${isSmallScreen ? 'bg-card' : ''}`}
             style={overlayList
                 ? { height: panelHeight || listH }
-                : (!windowScroll && listH > 0 ? { height: listH } : undefined)
+                : (!windowScroll && !fillScreen && listH > 0 ? { height: listH } : undefined)
             }
         >
             {overlayList ? <View className="absolute inset-0">{list}</View> : list}
