@@ -19,6 +19,7 @@ services:
             dockerfile: scripts/docker-compose/PHP.Dockerfile
         volumes:
             - ./scripts/docker-compose/php.ini:/usr/local/etc/php/php.ini
+            - ./scripts/docker-compose/php-fpm-pool.conf:/usr/local/etc/php-fpm.d/zz-una.conf
             - ./:/opt/una
         extra_hosts:
             - "host.docker.internal:host-gateway"
