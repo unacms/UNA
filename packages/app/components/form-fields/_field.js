@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { useAnimatedValue } from 'app/lib/hooks/use-animated-value';
 import { Animated, Platform } from 'react-native'
 import { View, Row } from 'app/design/view'
 import { Text } from 'app/design/typography'
@@ -43,7 +44,7 @@ function AdaptiveLabel({ caption, value, focused, htmlFor, children }) {
 
     const [boxH, setBoxH] = useState(0)
     const [labelH, setLabelH] = useState(0)
-    const [translateY] = useState(() => new Animated.Value(0))
+    const translateY = useAnimatedValue(0)
     const readyRef = useRef(false)
 
     const restingY =

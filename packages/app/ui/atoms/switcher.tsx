@@ -1,6 +1,7 @@
 'use client';
 
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useEffect, useRef } from 'react';
+import { useAnimatedValue } from 'app/lib/hooks/use-animated-value';
 import { Animated, Platform } from 'react-native'
 import { appSetting, FeedbackHaptics } from 'app/lib/util'
 import { Pressable, View } from 'app/design/view'
@@ -67,8 +68,8 @@ export default function Switch({
     const isWeb = Platform.OS === 'web';
     const playClick = useSound('click');
 
-    const translateX = useRef(new Animated.Value(value ? travel : 0)).current;
-    const scale = useRef(new Animated.Value(1)).current;
+    const translateX = useAnimatedValue(value ? travel : 0);
+    const scale = useAnimatedValue(1);
     const mountedRef = useRef(false);
     const travelRef = useRef(travel);
 

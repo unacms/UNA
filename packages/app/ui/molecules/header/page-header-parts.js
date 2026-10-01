@@ -1,4 +1,5 @@
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useAnimatedValue } from 'app/lib/hooks/use-animated-value';
 import { Animated, Platform } from 'react-native';
 import { nativeDriver } from 'app/lib/platform/animation';
 import { View, Row } from 'app/design/view';
@@ -37,7 +38,7 @@ const SUBTAB_REVEAL_FADE_MS = 220;
  */
 function RevealingSubHeader({ subHeader, onLayout }) {
     const [revealed, setRevealed] = useState(false);
-    const opacity = useRef(new Animated.Value(0)).current;
+    const opacity = useAnimatedValue(0);
 
     const hasSubHeader = !!subHeader;
     useEffect(() => {

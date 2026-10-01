@@ -1,13 +1,14 @@
 "use client"
 import { Platform } from 'react-native'
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
+import { useAnimatedValue } from 'app/lib/hooks/use-animated-value';
 import { View } from 'app/design/view'
 import { Animated } from 'react-native';
 import Svg, { G, Circle } from 'react-native-svg';
 import { nativeDriver } from 'app/lib/platform/animation'
 
 function RotatingIcon() {
-    const spinValue = useRef(new Animated.Value(0)).current;
+    const spinValue = useAnimatedValue(0);
 
     useEffect(() => {
         const animation = Animated.loop(

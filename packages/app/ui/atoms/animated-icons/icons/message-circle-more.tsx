@@ -3,7 +3,8 @@ import { nativeDriver } from 'app/lib/platform/animation';
 import { getAnimatedFillProps } from 'app/ui/atoms/animated-icons/fill-props';
 import { AnimatedPath, omitUnsafeViewProps, type AnimatedIconProps } from 'app/ui/atoms/animated-icons/shared';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
+import { useAnimatedValue } from 'app/lib/hooks/use-animated-value';
 import { Animated, Easing, Platform } from 'react-native';
 import Svg from 'react-native-svg';
 import { View } from 'app/design/view';
@@ -47,11 +48,11 @@ export function AnimatedMessageCircleMore({
     const isWeb = Platform.OS === 'web';
     const prevHoveredRef = useRef(false);
 
-    const scaleAnim = useRef(new Animated.Value(1)).current;
-    const fillOpacityAnim = useRef(new Animated.Value(0)).current;
-    const dot1Opacity = useRef(new Animated.Value(DOT_IDLE_OPACITY)).current;
-    const dot2Opacity = useRef(new Animated.Value(DOT_IDLE_OPACITY)).current;
-    const dot3Opacity = useRef(new Animated.Value(DOT_IDLE_OPACITY)).current;
+    const scaleAnim = useAnimatedValue(1);
+    const fillOpacityAnim = useAnimatedValue(0);
+    const dot1Opacity = useAnimatedValue(DOT_IDLE_OPACITY);
+    const dot2Opacity = useAnimatedValue(DOT_IDLE_OPACITY);
+    const dot3Opacity = useAnimatedValue(DOT_IDLE_OPACITY);
 
     let sceneScale = 1;
     if (pressed) sceneScale = 0.9;

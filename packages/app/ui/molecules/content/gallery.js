@@ -1,4 +1,5 @@
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect } from 'react';
+import { useAnimatedValue } from 'app/lib/hooks/use-animated-value';
 import { Animated, PanResponder, Dimensions } from 'react-native';
 import { View } from 'app/design/view';
 import { Button } from "app/design/controls";
@@ -9,8 +10,8 @@ const screenWidth = Dimensions.get('window').width;
 
 export default function Gallery({ items, autoscroll }) {
     const [currentIndex, setCurrentIndex] = useState(0);
-    const position = useRef(new Animated.Value(0)).current;
-    const opacity = useRef(new Animated.Value(1)).current;
+    const position = useAnimatedValue(0);
+    const opacity = useAnimatedValue(1);
     const [isPaused, setIsPaused] = useState(false);
 
 

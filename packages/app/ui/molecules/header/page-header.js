@@ -1,4 +1,5 @@
 import { useEffect, useLayoutEffect, useRef } from 'react';
+import { useAnimatedValue } from 'app/lib/hooks/use-animated-value';
 import { Animated, View } from 'react-native';
 import { nativeDriver } from 'app/lib/platform/animation';
 import { appSetting } from 'app/lib/util';
@@ -37,9 +38,9 @@ export const PageHeader = ({ pageData }) => {
     const edgeToEdgeTop = isNativeTabsEnabled() ? (getWindowSafeAreaInsets().top || 0) : 0;
 
     const isScrolled = useIsScrolled();
-    const headerTranslateY = useRef(new Animated.Value(0)).current;
-    const headerBgOpacity = useRef(new Animated.Value(isScrolled ? 0 : 1)).current;
-    const headerFadeOpacity = useRef(new Animated.Value(isScrolled ? 1 : 0)).current;
+    const headerTranslateY = useAnimatedValue(0);
+    const headerBgOpacity = useAnimatedValue(isScrolled ? 0 : 1);
+    const headerFadeOpacity = useAnimatedValue(isScrolled ? 1 : 0);
     const restingBackgroundClass = getHeaderRestingBackgroundClass();
     // iOS: native progressive blur (EdgeBlur) replaces the wash when configured.
     const fadeBlur = edgeBlurConfig('header');

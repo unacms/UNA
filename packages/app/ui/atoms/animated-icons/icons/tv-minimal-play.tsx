@@ -3,7 +3,8 @@ import { nativeDriver } from 'app/lib/platform/animation';
 import { getAnimatedFillProps } from 'app/ui/atoms/animated-icons/fill-props';
 import { AnimatedRect, AnimatedG, omitUnsafeViewProps, type AnimatedIconProps } from 'app/ui/atoms/animated-icons/shared';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
+import { useAnimatedValue } from 'app/lib/hooks/use-animated-value';
 import { Animated, Easing, Platform } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 import { View } from 'app/design/view';
@@ -49,9 +50,9 @@ export function AnimatedTvMinimalPlay({
     const isWeb = Platform.OS === 'web';
     const prevHoveredRef = useRef(false);
 
-    const scaleAnim = useRef(new Animated.Value(1)).current;
-    const fillOpacityAnim = useRef(new Animated.Value(0)).current;
-    const playTx = useRef(new Animated.Value(0)).current;
+    const scaleAnim = useAnimatedValue(1);
+    const fillOpacityAnim = useAnimatedValue(0);
+    const playTx = useAnimatedValue(0);
 
     let sceneScale = 1;
     if (pressed) sceneScale = 0.9;

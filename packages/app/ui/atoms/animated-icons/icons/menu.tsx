@@ -3,6 +3,7 @@ import { nativeDriver } from 'app/lib/platform/animation';
 import { AnimatedPath, AnimatedG, omitUnsafeViewProps, type AnimatedIconProps } from 'app/ui/atoms/animated-icons/shared';
 
 import { useEffect, useRef } from 'react';
+import { useAnimatedValue } from 'app/lib/hooks/use-animated-value';
 import { Animated, Easing, Platform } from 'react-native';
 import Svg, { G, Path } from 'react-native-svg';
 import { View } from 'app/design/view';
@@ -70,11 +71,11 @@ export function AnimatedMenu({
     const isWeb = Platform.OS === 'web';
     const prevHoveredRef = useRef(false);
 
-    const scaleAnim = useRef(new Animated.Value(1)).current;
-    const morph = useRef(new Animated.Value(0)).current;
-    const wiggleY1 = useRef(new Animated.Value(0)).current;
-    const wiggleY2 = useRef(new Animated.Value(0)).current;
-    const wiggleY3 = useRef(new Animated.Value(0)).current;
+    const scaleAnim = useAnimatedValue(1);
+    const morph = useAnimatedValue(0);
+    const wiggleY1 = useAnimatedValue(0);
+    const wiggleY2 = useAnimatedValue(0);
+    const wiggleY3 = useAnimatedValue(0);
 
     const topTy = morph.interpolate({
         inputRange: [0, 1],

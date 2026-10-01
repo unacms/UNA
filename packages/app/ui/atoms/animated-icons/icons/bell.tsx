@@ -3,7 +3,8 @@ import { nativeDriver } from 'app/lib/platform/animation';
 import { getAnimatedFillProps } from 'app/ui/atoms/animated-icons/fill-props';
 import { AnimatedPath, omitUnsafeViewProps, type AnimatedIconProps } from 'app/ui/atoms/animated-icons/shared';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
+import { useAnimatedValue } from 'app/lib/hooks/use-animated-value';
 import { Animated, Easing, Platform } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 import { View } from 'app/design/view';
@@ -44,9 +45,9 @@ export function AnimatedBell({
     const isWeb = Platform.OS === 'web';
     const prevHoveredRef = useRef(false);
 
-    const scaleAnim = useRef(new Animated.Value(1)).current;
-    const fillOpacityAnim = useRef(new Animated.Value(0)).current;
-    const shakeAnim = useRef(new Animated.Value(0)).current;
+    const scaleAnim = useAnimatedValue(1);
+    const fillOpacityAnim = useAnimatedValue(0);
+    const shakeAnim = useAnimatedValue(0);
     const shakeRotate = shakeAnim.interpolate({
         inputRange: [-10, 0, 10],
         outputRange: ['-10deg', '0deg', '10deg'],
