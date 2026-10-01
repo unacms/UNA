@@ -1,3 +1,16 @@
+const fs = require('fs')
+const path = require('path')
+
+// Yarn may hoist `next` to the repo root, or keep it under apps/next.
+const nextBin = [
+  path.join(__dirname, 'node_modules/next/dist/bin/next'),
+  path.join(__dirname, '../../node_modules/next/dist/bin/next'),
+].find((candidate) => fs.existsSync(candidate))
+
+if (!nextBin) {
+  throw new Error('next binary not found in apps/next/node_modules or the repo root node_modules')
+}
+
 const argEnvIndex = process.argv.indexOf('--env')
 let argEnv = (argEnvIndex !== -1 && process.argv[argEnvIndex + 1]) || ''
 const env = {
@@ -44,8 +57,7 @@ module.exports = {
   apps: [
     {
       name: 'neoapp',
-      //script: './../../node_modules/next/dist/bin/next',
-      script: './node_modules/next/dist/bin/next',
+      script: nextBin,
       args: 'start',
       instances: RUN_ENV_MAP[argEnv].instances,
       exec_mode: 'cluster',
