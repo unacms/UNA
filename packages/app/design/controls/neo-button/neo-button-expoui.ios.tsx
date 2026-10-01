@@ -27,7 +27,9 @@ import {
     shapes,
 } from '@expo/ui/swift-ui/modifiers';
 import { useThemeValue } from 'app/design/theme';
+import { useIosStyleColors, useNativeTokenColor } from 'app/design/controls/neo-button/native-style-colors';
 import { lucideAssetName } from 'app/lib/platform/lucide-assets';
+import { toHexColor } from 'app/lib/platform/native-color';
 import { useResolvedNeoButton, resolveScoped, parseNeoButtonAddon } from 'app/design/controls/neo-button/neo-button-resolver';
 import { useFrozenHostSize, useLockedNativePress, wrapNativeButtonHost } from 'app/design/controls/neo-button/neo-button-expoui-host';
 import { FeedbackHaptics, appSetting, findIconFromRemote } from 'app/lib/util';
@@ -114,6 +116,51 @@ function resolveIosStyleColors(
             : (isNativeColor(fallbackTint) ? fallbackTint : null),
         foreground: isNativeColor(fromTheme.foreground) ? fromTheme.foreground : null,
     };
+}
+
+type IosStyleColors = { tint?: string; foreground?: string };
+
+/** Counter badges match the JS `CounterIndicator`: `primary` is an alert count. */
+const ADDON_PALETTE = { tint: 'bg-accent', foreground: 'text-accent-foreground' };
+const ADDON_PRIMARY_PALETTE = { tint: 'bg-destructive', foreground: 'text-destructive-foreground' };
+/**
+ * Soft fill behind a badge on selected glass, whose wash already carries the
+ * accent: the foreground token at low alpha (applied here, so no extra class).
+ */
+const ADDON_WASH = 'bg-foreground';
+const ADDON_WASH_ALPHA = 0.1;
+
+/**
+ * Counter badge (`addon`) beside the label, colored from theme tokens. Its own
+ * component so plain buttons resolve none of these colors. On selected glass
+ * the text follows the label (`labelColor`) over a soft wash.
+ */
+function AddonBadge({ text, variant, palette, labelColor, onSelectedGlass }: {
+    text: string;
+    variant?: string;
+    palette?: unknown;
+    labelColor?: string | null;
+    onSelectedGlass: boolean;
+}) {
+    const regular = useIosStyleColors(palette ?? ADDON_PALETTE) as IosStyleColors | undefined;
+    const primary = useIosStyleColors(ADDON_PRIMARY_PALETTE) as IosStyleColors | undefined;
+    const washBase = useNativeTokenColor(ADDON_WASH);
+    const wash = washBase ? toHexColor(washBase, ADDON_WASH_ALPHA) ?? undefined : undefined;
+    const isPrimary = variant === 'primary';
+    const ink = isPrimary ? primary?.foreground : (labelColor || regular?.foreground);
+    const fill = isPrimary ? primary?.tint : (onSelectedGlass ? wash : regular?.tint);
+    return (
+        <Text
+            modifiers={[
+                fontModifier({ size: 11, weight: 'semibold' }),
+                ...(ink ? [foregroundStyle(ink)] : []),
+                padding({ horizontal: 6, vertical: 1 }),
+                ...(fill ? [background(fill, shapes.capsule())] : []),
+            ]}
+        >
+            {text}
+        </Text>
+    );
 }
 
 function normalizeSymbolEffect(raw: any): SymbolEffectConfig | false | null {
@@ -296,7 +343,7 @@ export function NeoButtonExpoUI(props: NeoButtonExpoUIProps) {
     const fallbackTint = useThemeValue(tintMap?.default ?? tintMap, tintMap?.dark);
     const styleColorMap = nativeConfig?.iosColors?.[resolved.style];
     const stylePalette = (selected ? styleColorMap?.selected : null) || styleColorMap;
-    const styleRaw = useThemeValue(stylePalette?.default, stylePalette?.dark);
+    const styleRaw = useIosStyleColors(stylePalette);
     const styleColors = resolved.role === 'destructive'
         ? { tint: null, foreground: null }
         : resolveIosStyleColors(resolved.style, mapping.tint, !!selected, styleRaw, fallbackTint);
@@ -307,10 +354,6 @@ export function NeoButtonExpoUI(props: NeoButtonExpoUIProps) {
     // selected so Host/matchContents never remount on tab switch.
     const nativeButtonStyle = isGlass ? 'plain' : mapping.buttonStyle;
     const addonMeta = parseNeoButtonAddon(addon);
-    const glassSelectedMap = nativeConfig?.iosColors?.glass?.selected;
-    const addonRaw = useThemeValue(glassSelectedMap?.default, glassSelectedMap?.dark);
-    const addonColors = resolveIosStyleColors('glass', null, true, addonRaw, fallbackTint);
-    const addonWash = useThemeValue('#00000014', '#ffffff22');
 
     // Size comes from `controlSizes.*.font` (`text-sm` …). Weight comes from
     // style text classes (`font-medium` on glass). `iosFont` overrides both.
@@ -429,27 +472,13 @@ export function NeoButtonExpoUI(props: NeoButtonExpoUIProps) {
     ) : null;
 
     const addonView = addonMeta ? (
-        <Text
-            modifiers={[
-                fontModifier({ size: 11, weight: 'semibold' }),
-                foregroundStyle(
-                    addonMeta.variant === 'primary'
-                        ? '#ffffff'
-                        : (foregroundValue || addonColors.foreground || '#2563eb'),
-                ),
-                padding({ horizontal: 6, vertical: 1 }),
-                background(
-                    addonMeta.variant === 'primary'
-                        ? '#e11d48'
-                        : (isSelectedGlass
-                            ? addonWash
-                            : (addonColors.tint || '#dbeafe')),
-                    shapes.capsule(),
-                ),
-            ]}
-        >
-            {addonMeta.text}
-        </Text>
+        <AddonBadge
+            text={addonMeta.text}
+            variant={addonMeta.variant}
+            palette={nativeConfig?.iosColors?.glass?.selected}
+            labelColor={foregroundValue}
+            onSelectedGlass={isSelectedGlass}
+        />
     ) : null;
 
     const host = (

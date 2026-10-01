@@ -24,7 +24,7 @@ const getIcon = (oItem, iconSize = 20, rowHovered) => {
     if (!oItem?.icon) return null;
 
     const selected = !!oItem.selected;
-    const className = [oItem?.class_item_icon, oItem?.addClassName, selected ? 'text-primary-foreground' : null]
+    const className = [oItem?.class_item_icon, oItem?.addClassName, selected ? (menuSettings.item_icon_selected ?? 'text-accent-foreground') : null]
         .filter(Boolean)
         .join(' ');
 
@@ -95,7 +95,7 @@ export default function DropdownMenuItem({ item, index, link, handleSelect, clas
 
     const itemTextKey = classes?.item_text_key || 'item_text';
     const itemTextClass =
-        menuSettings[itemTextKey] ?? menuSettings.item_text;
+        (item.selected ? menuSettings[`${itemTextKey}_selected`] : null) ?? menuSettings[itemTextKey] ?? menuSettings.item_text;
     const itemDescriptionClass =
         menuSettings.item_description ?? 'text-xs font-normal leading-tight text-pretty text-muted-foreground px-2';
     const itemCntKey = classes?.item_cnt_key ?? 'item_cnt';
@@ -124,7 +124,7 @@ export default function DropdownMenuItem({ item, index, link, handleSelect, clas
             : {};
     const Content = (
         <Wrapper
-            className={`web:group ${className} ${menuSettings[classes?.item || 'item_ver']}${item.selected ? ' bg-accent/50 text-foreground' : ''}`}
+            className={`group ${className} ${menuSettings[classes?.item || 'item_ver']}${item.selected ? ` ${menuSettings.item_selected ?? 'bg-accent'}` : ''}`}
             key={key}
             {...pressProps}
             {...rowHoverProps}

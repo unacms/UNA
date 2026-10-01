@@ -5,11 +5,8 @@ import Messenger from 'app/components/elements/messenger/parts/common'
 import { CreateConvoButton } from 'app/components/elements/messenger/parts/new-convo'
 import { fetcher } from 'app/lib/fetcher';
 import { Platform } from 'react-native'
-import { useLayoutSettings } from 'app/context/layout-settings';
-import { useIsDesktop, useWindowHeight } from 'app/context/measure';
-import { useHeaderHeight, useFooterHeight } from 'app/context/jotai/layout';
+import { useIsDesktop } from 'app/context/measure';
 import { BlockWrapper } from 'app/components/block-wrapper'
-import { useSafeAreaInsets } from 'app/lib/hooks/router'
 
 export default function MessengerEl(props) {
     const url = props.url;
@@ -22,8 +19,6 @@ export default function MessengerEl(props) {
         defaultMenuName = aUrl[1];
     if (aUrl.length > 2)
         defaultConvoId = aUrl[2];
-
-    const { layoutName: layout } = useLayoutSettings();
 
     const menuDefaultList = useMemo(() => {
         return props.data.menu.items.filter(item => ['inbox', 'direct'].includes(item.name));
@@ -39,7 +34,6 @@ export default function MessengerEl(props) {
     menuRef.current = menu;
     const fetchRequestId = useRef(0);
 
-    const windowWHeight = useWindowHeight();
     const fetchConvos = useCallback(async (term = '') => {
         const menuItem = menuRef.current?.data?.[menuRef.current?.index]?.name;
         if (!menuItem) return;
@@ -105,8 +99,6 @@ export default function MessengerEl(props) {
         menuIndex={menu.index}
         onMenuChange={onMenuChange}
         defaultConvoId={initedConvoId}
-        windowWHeight={windowWHeight}
-        layout={layout}
         onSave={onSave}
         addButtons={addButtons}
     />
@@ -114,27 +106,9 @@ export default function MessengerEl(props) {
     return messengerContainer;
 }
 
-const MessengerContainer = memo(({ convos, selectedMenu, blockData, pageData, windowWHeight, layout, fetchConvos, defaultConvoId, onSave, addButtons, menuItems, menuIndex, onMenuChange, block, alreadyWrapped }) => {
+const MessengerContainer = memo(({ convos, selectedMenu, blockData, pageData, fetchConvos, defaultConvoId, onSave, addButtons, menuItems, menuIndex, onMenuChange, block, alreadyWrapped }) => {
     const isWeb = Platform.OS == 'web'
     const isDesktop = useIsDesktop();
-    const insets = useSafeAreaInsets();
-    // Measured chrome from the layout atoms: the fixed PageHeader (including
-    // any injected messenger header) and the mobile-web bottom tab bar.
-    const headerHeight = useHeaderHeight();
-    const footerHeight = useFooterHeight();
-
-    const height = useMemo(() => {
-        if (!isWeb) {
-            let heightInit = windowWHeight - insets.bottom - insets.top;
-            if (Platform.OS == 'ios')
-                heightInit -= 64;
-            return heightInit;
-        }
-        // 'ver' desktop has no top header bar; every other web layout does.
-        if (layout == 'ver' && isDesktop)
-            return windowWHeight - footerHeight;
-        return windowWHeight - headerHeight - footerHeight;
-    }, [windowWHeight, layout, isDesktop, headerHeight, footerHeight, insets.top, insets.bottom])
 
     const messenger = (
         <Messenger
@@ -143,7 +117,6 @@ const MessengerContainer = memo(({ convos, selectedMenu, blockData, pageData, wi
             addButtons={addButtons}
             onSave={onSave}
             fetchConvos={fetchConvos}
-            layoutHeight={height}
             selectedMenu={selectedMenu}
             menuItems={menuItems}
             menuIndex={menuIndex}

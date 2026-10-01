@@ -11,7 +11,7 @@ import emitter from 'app/context/emitter';
 import { androidTabBarHeight, appSetting, cn, isNativeTabsEnabled } from 'app/lib/util';
 import { useLocalSearchParams, useSafeAreaInsets } from 'app/lib/hooks/router';
 import { useFooterHeight } from 'app/context/jotai/layout';
-import { areTabBarLabelsHidden, getTabList } from 'app/components/nav/tabs/tab-menu';
+import { areTabBarLabelsHidden, getTabList, hasNativeTabsMoreMenu } from 'app/components/nav/tabs/tab-menu';
 import { lazyComponent } from 'app/lib/lazy-component';
 import { fetchOperatorAgentBlock } from 'app/ui/molecules/ai-agent/operator-block';
 import { hiddenFirstMessageFromData } from 'app/ui/molecules/ai-agent/hidden-first-message';
@@ -23,45 +23,16 @@ const isWeb = Platform.OS === 'web';
 const CHANNEL = 'operator_agent';
 
 /**
- * Floating Agent for site operators. Shown on every page when `user.operator` is
- * true and the server has an operator agent (Studio > Settings > Agents). The block
- * payload is the same one the Dashboard page block renders — same agent, same
- * settings, same thread — see `fetchOperatorAgentBlock`.
+ * The operator agent block when `user.operator` is true and the server has an
+ * operator agent (Studio > Settings > Agents), else null. The payload is the one
+ * the Dashboard page block renders — same agent, same settings, same thread —
+ * see `fetchOperatorAgentBlock`. `enabled = false` skips the request.
  */
-export function OperatorAgentFloat() {
-    const { t } = useTranslation();
+export function useOperatorAgentData(enabled = true) {
     const { currentUser } = useCurrentUser();
-    const insets = useSafeAreaInsets();
-    const footerHeight = useFooterHeight();
-    const { width: windowWidth, height: windowHeight } = useWindowDimensions();
-    const [open, setOpen] = useState(false);
-    const [mounted, setMounted] = useState(false);
     const [data, setData] = useState(null);
-    // Which title-bar controls the widget can act on right now; it reports them on
-    // the channel once threads / restart permission are known.
-    const [controls, setControls] = useState({ history: false, restart: false });
-
-    const params = useLocalSearchParams();
     const operatorAgent = appSetting('ai', 'operator_agent') || {};
-    const enabled = operatorAgent.enabled !== false;
-    const showHistory = operatorAgent.show_history === true;
-    const isOperator = enabled && !!currentUser?.operator;
-
-    const openChat = useCallback(() => {
-        setOpen(true);
-        setMounted(true);
-    }, []);
-
-    const close = useCallback(() => setOpen(false), []);
-    const toggleHistory = useCallback(() => emitter.emit(CHANNEL, { action: 'toggle_history' }), []);
-    const startNew = useCallback(() => emitter.emit(CHANNEL, { action: 'start_new' }), []);
-
-    useEffect(() => {
-        const subscription = emitter.addListener(CHANNEL, (event) => {
-            if (event?.action === 'state') setControls({ history: !!event.history, restart: !!event.restart });
-        });
-        return () => subscription.remove();
-    }, []);
+    const isOperator = enabled && operatorAgent.enabled !== false && !!currentUser?.operator;
 
     useEffect(() => {
         if (!isOperator) return undefined;
@@ -78,21 +49,37 @@ export function OperatorAgentFloat() {
         };
     }, [isOperator]);
 
+    return isOperator ? data : null;
+}
+
+/**
+ * Agent chat card anchored bottom-right, `bottomOffset` above the window /
+ * screen bottom. Mounts on first open and then only hides, so the thread and
+ * draft survive closing. `children` render under the card (the float's button).
+ */
+export function OperatorAgentPanel({ data, open, onClose, bottomOffset, params, children }) {
+    const { t } = useTranslation();
+    const { width: windowWidth, height: windowHeight } = useWindowDimensions();
+    const [mounted, setMounted] = useState(open);
+    if (open && !mounted) setMounted(true);
+    // Which title-bar controls the widget can act on right now; it reports them on
+    // the channel once threads / restart permission are known.
+    const [controls, setControls] = useState({ history: false, restart: false });
+    const showHistory = (appSetting('ai', 'operator_agent') || {}).show_history === true;
+
+    const toggleHistory = useCallback(() => emitter.emit(CHANNEL, { action: 'toggle_history' }), []);
+    const startNew = useCallback(() => emitter.emit(CHANNEL, { action: 'start_new' }), []);
+
+    useEffect(() => {
+        const subscription = emitter.addListener(CHANNEL, (event) => {
+            if (event?.action === 'state') setControls({ history: !!event.history, restart: !!event.restart });
+        });
+        return () => subscription.remove();
+    }, []);
+
     const initialMessage = hiddenFirstMessageFromData(data, params);
     const agentId = data?.agent_id ?? '';
     const contextProfileId = Number(data?.context_profile_id) || 0;
-    // No agent configured, or not allowed to chat with it: nothing to float.
-    if (!isOperator || !data) return null;
-
-    // Native: the page's safe-area bottom already covers the iOS tab bar (UIKit
-    // adds it to the tab screen) and JS tabs (the page ends above them). The
-    // Android NativeTabs bar is drawn over the page, so add its height. Tabs
-    // show by the same rule as the bar itself (tabs/index.js `isShowTabs`).
-    const showsTabs = !!((currentUser && currentUser.confirmed) || appSetting('native', 'show_tabs_non_logged'));
-    const androidTabBar = Platform.OS === 'android' && isNativeTabsEnabled() && showsTabs
-        ? androidTabBarHeight(areTabBarLabelsHidden(getTabList(currentUser) || []))
-        : 0;
-    const bottomOffset = 16 + (isWeb ? Number(footerHeight) || 0 : (insets?.bottom || 0) + androidTabBar);
     const panelWidth = Math.min(384, Math.max(280, windowWidth - 32));
     const panelHeight = Math.min(448, Math.max(320, windowHeight - bottomOffset - 88));
 
@@ -145,29 +132,65 @@ export function OperatorAgentFloat() {
                                 controlSize="small"
                                 image="X"
                                 accessibilityLabel={t('operator_agent_close')}
-                                onPress={close}
+                                onPress={onClose}
                             />
                         </Row>
                     </Row>
                     <View className="flex-1 min-h-0 p-3">
-                        {data ? (
-                            <AiAgent
-                                key={`${agentId}:${contextProfileId}`}
-                                data={data}
-                                initialMessage={initialMessage}
-                                hideInitialMessage={!!initialMessage}
-                                height="h-full"
-                                showHistory={showHistory}
-                                // The panel is ~384px wide whatever the viewport is, so
-                                // the "Chats" list can only ever overlay the transcript.
-                                historyLayout="overlay"
-                                fadeSurface="card"
-                                channel={CHANNEL}
-                            />
-                        ) : null}
+                        <AiAgent
+                            key={`${agentId}:${contextProfileId}`}
+                            data={data}
+                            initialMessage={initialMessage}
+                            hideInitialMessage={!!initialMessage}
+                            height="h-full"
+                            showHistory={showHistory}
+                            // The panel is ~384px wide whatever the viewport is, so
+                            // the "Chats" list can only ever overlay the transcript.
+                            historyLayout="overlay"
+                            fadeSurface="card"
+                            channel={CHANNEL}
+                        />
                     </View>
                 </View>
             ) : null}
+            {children}
+        </View>
+    );
+}
+
+/**
+ * Floating Agent button + panel for site operators, on every page. With
+ * NativeTabs and a More tab the trigger lives in the More menu instead and the
+ * tab navigator hosts the panel (tabs/expoui-tabs.js), so pages render nothing.
+ */
+export function OperatorAgentFloat() {
+    const { t } = useTranslation();
+    const { currentUser } = useCurrentUser();
+    const insets = useSafeAreaInsets();
+    const footerHeight = useFooterHeight();
+    const params = useLocalSearchParams();
+    const [open, setOpen] = useState(false);
+    const hostedByTabBar = hasNativeTabsMoreMenu(currentUser);
+    const data = useOperatorAgentData(!hostedByTabBar);
+
+    const openChat = useCallback(() => setOpen(true), []);
+    const close = useCallback(() => setOpen(false), []);
+
+    // No agent configured, or not allowed to chat with it: nothing to float.
+    if (!data) return null;
+
+    // Native: the page's safe-area bottom already covers the iOS tab bar (UIKit
+    // adds it to the tab screen) and JS tabs (the page ends above them). The
+    // Android NativeTabs bar is drawn over the page, so add its height. Tabs
+    // show by the same rule as the bar itself (tabs/index.js `isShowTabs`).
+    const showsTabs = !!((currentUser && currentUser.confirmed) || appSetting('native', 'show_tabs_non_logged'));
+    const androidTabBar = Platform.OS === 'android' && isNativeTabsEnabled() && showsTabs
+        ? androidTabBarHeight(areTabBarLabelsHidden(getTabList(currentUser) || []))
+        : 0;
+    const bottomOffset = 16 + (isWeb ? Number(footerHeight) || 0 : (insets?.bottom || 0) + androidTabBar);
+
+    return (
+        <OperatorAgentPanel data={data} open={open} onClose={close} bottomOffset={bottomOffset} params={params}>
             {open ? null : (
                 <NeoButton
                     style="glassProminent"
@@ -178,6 +201,6 @@ export function OperatorAgentFloat() {
                     onPress={openChat}
                 />
             )}
-        </View>
+        </OperatorAgentPanel>
     );
 }

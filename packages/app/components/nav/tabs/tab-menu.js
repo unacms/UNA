@@ -1,6 +1,6 @@
 import { createElement } from 'react';
 import { View } from 'app/design/view';
-import { appSetting, isTabBarLabelsEnabled } from 'app/lib/util';
+import { appSetting, isNativeTabsEnabled, isTabBarLabelsEnabled } from 'app/lib/util';
 
 /** Shared by JS RouterTabs and NativeTabs. */
 
@@ -37,6 +37,17 @@ export function splitTabBarItems(tabList = []) {
         overflow: tabList.slice(moreTabIndex),
         moreTabIndex,
     };
+}
+
+/**
+ * NativeTabs showing a More tab. Its menu (iOS sheet / popup) hosts the
+ * operator agent, so pages skip the floating Agent button. Tabs show by the
+ * same rule as the bar itself (tabs/index.js `isShowTabs`).
+ */
+export function hasNativeTabsMoreMenu(currentUser) {
+    if (!isNativeTabsEnabled()) return false;
+    const showsTabs = !!((currentUser && currentUser.confirmed) || appSetting('native', 'show_tabs_non_logged'));
+    return showsTabs && splitTabBarItems(getTabList(currentUser) || []).overflow.length > 0;
 }
 
 /** Map a menu / transpile_urls index onto the Expo route (`tab0`…`tab4`). */

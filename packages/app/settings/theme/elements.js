@@ -32,7 +32,7 @@ export const settingsElements = {
         content_ver: 'flex-col gap-1',
         content_hor: 'flex-row  ',
         item_ver:
-            ' web:group px-2  web:group flex w-full min-w-0 min-h-11 flex-row items-center rounded-xl font-medium web:hover:bg-muted/50 text-card-foreground web:hover:text-foreground web:hover:cursor-pointer ',
+            ' group px-2 flex w-full min-w-0 min-h-11 flex-row items-center rounded-xl font-medium web:hover:bg-muted/50 text-card-foreground web:hover:text-foreground web:hover:cursor-pointer ',
         item_hor:
             'flex block web:dark:hover:text-white rounded-full web:hover:cursor-pointer text-muted-foreground web:duration-200 outline-none ',
         item_np:
@@ -54,6 +54,10 @@ export const settingsElements = {
         item_text_cnt: 'min-w-0 flex-1 flex flex-col self-center justify-center overflow-hidden',
         item_cnt_tabs_overflow: 'items-center w-full flex-row justify-start flex-1',
         item_text: ' block w-full text-sm font-semibold text-secondary-foreground web:group-hover:text-foreground px-2',
+        /** Selected item (current tab / page, picked option): the toggled look — `bg-accent` + `text-accent-foreground`. */
+        item_selected: ' bg-accent ',
+        item_text_selected: ' block w-full text-sm font-semibold text-accent-foreground px-2',
+        item_icon_selected: 'text-accent-foreground',
         item_description: 'block w-full text-xs font-normal leading-tight text-pretty text-muted-foreground px-2 break-words',
         item_group_header: 'px-2 pt-3 pb-1',
         item_group_header_first: 'p-2.5',
@@ -65,7 +69,7 @@ export const settingsElements = {
         /** Apps launcher waffle — icon above label, no description. */
         content_grid: 'w-full',
         item_grid:
-            'web:group flex w-full min-w-0 min-h-24 flex-col items-center justify-start gap-1.5 rounded-xl px-1 py-2.5 text-secondary-foreground web:hover:bg-muted/50 web:hover:text-foreground web:hover:cursor-pointer web:focus-visible:outline-2 web:duration-200',
+            'group flex w-full min-w-0 min-h-24 flex-col items-center justify-start gap-1.5 rounded-xl px-1 py-2.5 text-secondary-foreground web:hover:bg-muted/50 web:hover:text-foreground web:hover:cursor-pointer web:focus-visible:outline-2 web:duration-200',
         item_icon_grid:
             'flex shrink-0 items-center w-12 h-12 bg-muted/50 web:group-hover:bg-border rounded-full justify-center',
         item_text_grid:
@@ -73,7 +77,7 @@ export const settingsElements = {
         item_icon:
             'flex shrink-0 items-center w-9 h-9 bg-muted/50 web:group-hover:bg-border rounded-full justify-center',
         item_icon_active:
-            'flex shrink-0 items-center w-9 h-9 bg-primary rounded-full justify-center',
+            'flex shrink-0 items-center w-9 h-9 bg-accent rounded-full justify-center',
         icon_size: 20, // Default icon size for dropdown menu icons
         icon_size_grid: 24,
     },
@@ -102,9 +106,12 @@ export const settingsElements = {
     },
     panels: {
         'u-panel-base': ' ns--panel-base-- web:h-full min-w-0 flex-col ne-- ',
-        'u-panel-handler': 'relative w-0 web:before:absolute web:before:inset-y-0 web:before:-left-0.5 web:before:-right-0.5 web:before:bg-transparent web:before:hover:bg-accent web:before:active:bg-accent/50 web:before:duration-200 ',
+        // Invisible until hovered. Tailwind v4 applies variants left to right: `hover:before:` is
+        // `:hover::before`, while `before:hover:` would be `::before:hover`, which never matches.
+        // The line's `group-*` variants need the plain `group` marker PanelHandler puts on the handle.
+        'u-panel-handler': 'relative w-0 web:before:absolute web:before:inset-y-0 web:before:-left-0.5 web:before:-right-0.5 web:before:bg-transparent web:hover:before:bg-accent web:active:before:bg-accent/50 web:before:duration-200 ',
         'u-panel-line':
-            'absolute w-px web:h-full web:group-hover:bg-primary/50 active:bg-primary/50 rounded-full left-0 top-0 ',
+            'absolute w-px web:h-full web:group-hover:bg-primary/50 web:group-active:bg-primary/50 rounded-full left-0 top-0 ',
         'u-panel-group': ' ns--panel-group-- web:h-full flex ne-- ',
     },
     blocks: {

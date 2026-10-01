@@ -51,8 +51,13 @@ export const settingsTheme = {
                 marginRight: 0,
                 overflow: 'hidden',
             },
-            badgeBackground: 'rgba(239,68,68,1)', // Red color by default
+            // Tab badge fill: a hex or a `bg-*` token (web footer badges use `bg-destructive`).
+            badgeBackground: 'bg-destructive',
             badgeTextSize: 'text-xs leading-4 font-semibold', // Customizable text size for badge
+            // Selected tab (JS tabs and NativeTabs) and selected More sheet rows:
+            // the toggled look of selected glass buttons — indicator / row fill
+            // and icon / label ink. Hex or `bg-*` / `text-*` tokens.
+            selected: { indicator: 'bg-accent', foreground: 'text-accent-foreground' },
         },
         ...settingsButtons,
         ...settingsExpoUi,

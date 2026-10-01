@@ -292,7 +292,12 @@ export function getHeaderSettings(uri: string, isDesktop: boolean, layout: strin
     }
 }
 
-/** Per-page layout settings: remote `config` when enabled, else `layouts[uri]` from settings. */
+/**
+ * Per-page layout settings: remote `config` when enabled, else `layouts[uri]` from settings.
+ * Page override point: `layout` picks a page layout (components/page-layout/_map.js) and
+ * `blocks` sets its block list, which can name static components as `static:<name>`.
+ * Forks add `layouts[uri]` in customization/settings.js.
+ */
 export function getPageSettings(config: unknown, uri: string): any {
     if (!appSetting('layout', 'user_remote_config')) {
         return appSetting('layouts', uri);

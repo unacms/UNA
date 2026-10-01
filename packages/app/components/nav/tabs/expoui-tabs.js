@@ -29,11 +29,14 @@ import {
     isProfileTab,
     resolveTabUrl,
     splitTabBarItems,
+    tabBarMoreSeparator,
     trimMenuSeparators,
 } from './tab-menu';
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import { NativeMoreSheet, hasNativeMoreSheet } from 'app/components/nav/tabs/more-sheet';
-import { useRouter, usePathname, useSafeAreaInsets } from 'app/lib/hooks/router';
+import { OperatorAgentPanel, useOperatorAgentData } from 'app/ui/molecules/system/operator-agent';
+import { useNativeTokenColor } from 'app/design/controls/neo-button/native-style-colors';
+import { getWindowSafeAreaInsets, useGlobalSearchParams, useRouter, usePathname, useSafeAreaInsets } from 'app/lib/hooks/router';
 import { nativeTabHref, rememberSelectedTab } from 'app/lib/navigation/tab-history';
 import emitter from 'app/context/emitter';
 import * as WebBrowser from 'expo-web-browser';
@@ -41,6 +44,8 @@ import { useBottomSheetData } from 'app/context/bottomsheet';
 import { useCurrentUser } from 'app/context/user';
 
 const IOS_TAB_BAR_HEIGHT = 52;
+/** More popup entry that opens the operator agent (the iOS sheet shows an icon instead). */
+const OPERATOR_AGENT_ITEM_ID = 'operator-agent';
 
 function resolveTabIcons(icon) {
     const lucide = findIconFromRemote(icon) || icon;
@@ -293,8 +298,28 @@ export default function ExpoUITabNavigator({
     const activeOverflowUrl = activeOverflow.session === tabsSessionKey ? activeOverflow.url : null;
     const [moreMenuOpen, setMoreMenuOpen] = useState(false);
 
+    // Operator agent: opened from the More menu (same rule as pages skipping
+    // their floating button, `hasNativeTabsMoreMenu`) and shown over every tab.
+    const agentData = useOperatorAgentData(overflow.length > 0 && !!isShowTabs);
+    const agentParams = useGlobalSearchParams();
+    const [agentOpen, setAgentOpen] = useState(false);
+    const toggleAgent = () => {
+        setMoreMenuOpen(false);
+        setAgentOpen((open) => !open);
+    };
+
+    // Selected tab: the toggled look of selected glass buttons (`native_tabs.selected`).
+    const tabsSelected = appSetting('theme', 'native_tabs', 'selected');
+    const selectedInk = useNativeTokenColor(tabsSelected?.foreground) || colors.primary;
+    const selectedIndicator = useNativeTokenColor(tabsSelected?.indicator) || colors.primaryBg;
+    const badgeBackground = useNativeTokenColor(appSetting('theme', 'native_tabs', 'badgeBackground') || 'bg-destructive');
+
     // JS popup's hit area over the More tab; the Android bar pads itself with the system inset.
     const tabBarHeight = isAndroid ? androidTabBarHeight(hideLabels) + insets.bottom : IOS_TAB_BAR_HEIGHT;
+    // Agent card sits above the bar, where the page float used to.
+    const agentBottomOffset = 16 + (isAndroid
+        ? tabBarHeight
+        : IOS_TAB_BAR.height + (getWindowSafeAreaInsets().bottom || 0));
 
     useEffect(() => {
         const subscription = emitter.addListener('tabs-more', (data) => {
@@ -321,6 +346,10 @@ export default function ExpoUITabNavigator({
     // Plain function — React Compiler memoizes it (manual useCallback here
     // could not be preserved by the compiler).
     const handleOverflowSelect = async (item) => {
+        if (item?.id === OPERATOR_AGENT_ITEM_ID) {
+            toggleAgent();
+            return;
+        }
         if (item?.type === 'separator' || !item?.tab) return;
 
         const tab = item.tab;
@@ -366,8 +395,18 @@ export default function ExpoUITabNavigator({
     const sheetItems = trimMenuSeparators(overflowMenuItems.filter(
         (item) => item !== sheetHeader && !sheetExclude.includes(item.tab?.url)
     ));
-    // The profile is the only More link left: the avatar opens it directly.
-    const profileOnly = !!sheetHeader && !sheetItems.some((item) => item.isOverflow);
+    // The profile is the only More link left: the avatar opens it directly
+    // (unless the sheet is also where the operator agent opens).
+    const profileOnly = !!sheetHeader && !sheetItems.some((item) => item.isOverflow) && !agentData;
+    // Popup More menu (Android, iOS without the sheet): Agent heads the list,
+    // shown selected while its chat is open.
+    const popupMenuItems = agentData
+        ? [
+            { id: OPERATOR_AGENT_ITEM_ID, title: t('operator_agent_title'), icon: 'Sparkles', selected: agentOpen },
+            { ...tabBarMoreSeparator(), id: `${OPERATOR_AGENT_ITEM_ID}-separator` },
+            ...overflowMenuItems,
+        ]
+        : overflowMenuItems;
 
     // The menu opens over the current page: `MoreTabTarget` takes the tap on
     // iPhone, and the `disabled` native tab covers the rest (edge taps,
@@ -396,18 +435,18 @@ export default function ExpoUITabNavigator({
             <NativeTabs
                 key={tabsSessionKey}
                 hidden={!isShowTabs}
-                tintColor={colors.primary}
+                tintColor={selectedInk}
                 backgroundColor={isAndroid ? colors.barsBackground : undefined}
-                indicatorColor={isAndroid ? colors.primaryBg : undefined}
+                indicatorColor={isAndroid ? selectedIndicator : undefined}
                 rippleColor={isAndroid ? colors.primary : undefined}
-                badgeBackgroundColor={appSetting('theme', 'native_tabs', 'badgeBackground') || colors.primary}
+                badgeBackgroundColor={badgeBackground}
                 iconColor={{
                     default: colors.barsColor,
-                    selected: colors.primary,
+                    selected: selectedInk,
                 }}
                 labelStyle={{
                     default: { color: colors.barsColor },
-                    selected: { color: colors.primary },
+                    selected: { color: selectedInk },
                 }}
                 labelVisibilityMode={hideLabels ? 'unlabeled' : 'labeled'}
                 tabBarRespectsIMEInsets={isAndroid}
@@ -482,13 +521,15 @@ export default function ExpoUITabNavigator({
                         name: currentUser?.display_name,
                         avatar: currentUser?.avatar ? avatarImageUri(currentUser.avatar, SHEET_AVATAR_PT) : null,
                     } : null}
+                    onAgentPress={agentData ? toggleAgent : undefined}
+                    agentActive={agentOpen}
                 />
             ) : null}
             {collapsed && !hasNativeMoreSheet ? (
                 <NativeTabsMoreOverlay
                     visible={visible}
                     isShowTabs={isShowTabs}
-                    overflowMenuItems={overflowMenuItems}
+                    overflowMenuItems={popupMenuItems}
                     onSelectOverflow={handleOverflowSelect}
                     moreMenuOpen={moreMenuOpen}
                     onMoreMenuOpenChange={setMoreMenuOpen}
@@ -500,6 +541,15 @@ export default function ExpoUITabNavigator({
                 sessionKey={tabsSessionKey}
                 backgroundColor={colors.background}
             />
+            {agentData ? (
+                <OperatorAgentPanel
+                    data={agentData}
+                    open={agentOpen}
+                    onClose={() => setAgentOpen(false)}
+                    bottomOffset={agentBottomOffset}
+                    params={agentParams}
+                />
+            ) : null}
         </View>
     );
 }

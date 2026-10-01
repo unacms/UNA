@@ -10,7 +10,7 @@ export default function defaultUnit({ data }) {
     const viewsCount = getMetaItem(data, 'views')?.title
 
     return (
-        <UnitWrapper data={data} padding="p-2" className="gap-2 web:group web:hover:shadow-sm web:hover:bg-card web:duration-300 web:active:bg-accent">
+        <UnitWrapper data={data} padding="p-2" className="gap-2 web:hover:shadow-sm web:hover:bg-card web:duration-300 web:active:bg-accent">
             <View className="aspect-video rounded-lg overflow-hidden w-full">
                 <UnitImage
                     image={data.image}

@@ -22,6 +22,9 @@ const PageWiki = dynamic(() => import('app/components/page-layout/wiki'), { load
 const PagePlayground = dynamic(() => import('app/components/page-layout/_playground/playground'), { loading: DynamicFallback });
 const PagePlaygroundForm = dynamic(() => import('app/components/page-layout/_playground/playground-form-layout'), { loading: DynamicFallback });
 
+// Page layouts by name: UNA `layout`, or a page's `layout` setting (see getLayoutName).
+// Layouts mapped to PageLayoutDefault also get the `components_<uri>` page override slot
+// (page-layout/default.js). Forks extend this map in customization/page-layout/_map.js.
 export const componentsMapDefault = {
     'default': PageLayoutDefault,
     'post': PageCustomPost,

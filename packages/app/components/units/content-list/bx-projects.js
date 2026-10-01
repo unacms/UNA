@@ -23,7 +23,7 @@ export default function Unit({ data, unitType, module }) {
     });
     const isSkeleton = data?.skeleton;
     return (
-        <Card padding="p-1" className="relative web:group web:cursor-pointer active:opacity-80 active:scale-[0.98] active:shadow-btn-glass-pressed dark:active:shadow-btn-glass-pressed-deep transition-transform duration-200">
+        <Card padding="p-1" className="relative group web:cursor-pointer active:opacity-80 active:scale-[0.98] active:shadow-btn-glass-pressed dark:active:shadow-btn-glass-pressed-deep transition-transform duration-200">
             <Link
                 href={data.url}
                 hitarea={false}

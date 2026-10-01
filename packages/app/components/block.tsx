@@ -75,7 +75,11 @@ export type ElementProps = {
 const nameOf = (name: BlockName | null | undefined): string | undefined =>
     typeof name === 'string' ? name : name?.name;
 
-/** `static:*` names render a static component instead of a page element. */
+/**
+ * `static:<name>` block names render the static component `components_<name>` (see appStatic)
+ * instead of a page element. They come from block lists in settings or page config, e.g. a
+ * page's `blocks` setting (see getPageSettings).
+ */
 function staticBlockFor(name: BlockName | null | undefined, rest: Record<string, any>): ReactNode | null {
     const source = nameOf(name);
     if (!source?.includes('static')) return null;

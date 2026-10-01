@@ -153,8 +153,10 @@ export default function Unit({ data, module }) {
         onclick: (event, item) => runTaskAction(item.action, { setFormBlock }),
     };
 
+    // Named row group: TaskStatusIcon's plain `group-hover:` / `group-active:` belong to its
+    // status trigger's `group`, and a plain row `group` would light up and dim it with the row.
     const titleClassName = cn(
-        'min-w-0 truncate text-sm font-semibold leading-tight web:group-hover:text-foreground',
+        'min-w-0 truncate text-sm font-semibold leading-tight web:group-hover/task:text-foreground',
         isCompleted
             ? 'text-muted-foreground line-through'
             : 'text-card-foreground'
@@ -170,7 +172,7 @@ export default function Unit({ data, module }) {
             onPress={openTask}
             accessibilityRole="button"
             accessibilityLabel={data.title}
-            className={cn(appSetting('tasks', 'item_wrapper'), 'w-full web:group')}
+            className={cn(appSetting('tasks', 'item_wrapper'), 'w-full group/task')}
         >
             {formBlock ? (
                 <Modal
