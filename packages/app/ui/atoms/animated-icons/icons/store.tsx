@@ -3,12 +3,12 @@ import { nativeDriver } from 'app/lib/platform/animation';
 import { getAnimatedFillProps } from 'app/ui/atoms/animated-icons/fill-props';
 import { AnimatedPath, AnimatedG, omitUnsafeViewProps, type AnimatedIconProps } from 'app/ui/atoms/animated-icons/shared';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useAnimatedValue } from 'app/lib/hooks/use-animated-value';
 import { Animated, Easing, Platform } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 import { View } from 'app/design/view';
-
+
 
 /** lucide-react-native `store.js` v0.563 */
 const DOOR_D = 'M15 21v-5a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v5';
