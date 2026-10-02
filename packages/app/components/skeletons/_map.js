@@ -14,14 +14,20 @@ const Default = memo(() => (
     </Card>
 ));
 
+// Mobile: the flush profile row (56px avatar, two lines, button on the right)
+// the list loads into (components/units/content-list/bx-persons.js); sm+: the
+// grid card with a square photo.
 const Persons = memo(() => (
-    <Card className='flex-auto' padding="p-1.5 sm:m-1.5">
-        <View className="relative bg-secondary aspect-square rounded-xl w-full"></View>
-        <View className="p-2 gap-1 flex-auto justify-between">
-            <View className=" h-4 w-3/4 bg-muted rounded-full"></View>
-            <View className=" h-4 w-1/2 bg-muted rounded-full"></View>
+    <CardList flushOnMobile className="flex-auto animate-pulse" padding="px-2 py-2 sm:p-1.5 sm:m-1.5">
+        <View className="flex-row sm:flex-col items-center sm:items-stretch gap-3 sm:gap-0">
+            <View className="relative flex-none bg-secondary aspect-square h-14 w-14 rounded-full sm:h-auto sm:w-full sm:rounded-xl"></View>
+            <View className="py-1 sm:p-2 gap-2 sm:gap-1 flex-auto justify-center sm:justify-between">
+                <View className=" h-4 w-3/4 bg-muted rounded-full"></View>
+                <View className=" h-4 w-1/2 bg-muted rounded-full"></View>
+            </View>
+            <View className="sm:hidden flex-none h-9 w-24 bg-muted rounded-lg"></View>
         </View>
-    </Card>
+    </CardList>
 ));
 
 const OneColumn = memo(() => (
@@ -37,16 +43,15 @@ const OneColumn = memo(() => (
     </View>
 ));
 
+// Same box as the loaded row (components/units/notifications.js): 8px outside,
+// 8px inside, 56px avatar, 16px text.
 const Notif = memo(() => (
-    
-    <View className=" w-full max-w-4xl mx-auto">
-        <View className="animate-pulse px-2 py-1.5 flex-row items-center gap-3">
-            <View className="rounded-full bg-muted/50 h-11 w-11"></View>
-            <View className="flex-auto gap-1">
-                
-                <View className="h-3 w-full bg-muted/50 rounded-full"></View>           
-                
-                <View className="h-3 w-8 bg-muted/50 rounded-full"></View>
+    <View className="w-full max-w-4xl mx-auto px-2 py-0.5">
+        <View className="animate-pulse px-2 py-2 flex-row items-center gap-3">
+            <View className="rounded-full bg-muted/50 h-14 w-14 flex-none"></View>
+            <View className="flex-auto gap-2">
+                <View className="h-4 w-full bg-muted/50 rounded-full"></View>
+                <View className="h-4 w-1/3 bg-muted/50 rounded-full"></View>
             </View>
         </View>
     </View>

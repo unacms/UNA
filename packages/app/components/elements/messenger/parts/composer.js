@@ -1,17 +1,22 @@
 import { memo } from 'react';
+import { useWindowDimensions } from 'react-native';
 import { Text } from 'app/design/typography';
 import { View, Row } from 'app/design/view';
 import { NeoButton } from 'app/design/controls';
 import Form from 'app/components/elements/form';
 import { ContentMore } from 'app/ui/molecules/content/content-more';
 import { useTranslation } from 'react-i18next';
+import { hasLiquidGlass, IOS_TAB_BAR_MARGIN, LAYOUT_BREAKPOINTS } from 'app/lib/util';
 
 /** Message composer: optional reply-to strip + the UNA send form. */
 const Composer = memo(function Composer({ form, replyItem, onFormSubmit, handleCancelReply }) {
     const { t } = useTranslation();
+    const { width } = useWindowDimensions();
+    // 16px page gutter; an iPhone on iOS 26 lines up with the floating tab bar instead.
+    const alignToTabBar = hasLiquidGlass && width < LAYOUT_BREAKPOINTS.sm;
 
     return (
-        <View className="p-1.5 sm:p-2.5">
+        <View className="px-4 py-1.5 sm:p-2.5" style={alignToTabBar ? { paddingHorizontal: IOS_TAB_BAR_MARGIN } : undefined}>
             <View>
                 {replyItem ? (
                     <View className="bg-accent/60 rounded-xl border border-accent px-2.5 py-2 mb-2">

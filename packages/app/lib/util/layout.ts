@@ -34,6 +34,12 @@ export function androidTabBarHeight(labelsHidden: boolean) {
     return labelsHidden ? 56 : 80;
 }
 
+/** iOS 26+: Liquid Glass (SwiftUI `glassEffect`) and the floating tab bar; the app still supports iOS 16.4. */
+export const hasLiquidGlass = isIos && parseInt(String(Platform.Version), 10) >= 26
+
+/** Side margin of the iOS 26 floating tab bar on iPhone (measured on a 15 Pro). */
+export const IOS_TAB_BAR_MARGIN = 21
+
 export const LAYOUT_BREAKPOINTS = {
     '2xl': 1536,
     xl: 1280,

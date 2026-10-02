@@ -3,7 +3,6 @@ import type { ViewStyle } from 'react-native'
 import { View } from 'app/design/view'
 import { useRef, useEffect, useState, useCallback, forwardRef, useMemo, type ComponentType, type HTMLAttributes, type ReactNode } from 'react'
 import { paddingForList } from 'app/customization/functions'
-import { useIsDesktop } from 'app/context/measure'
 import {
     dedupeById,
     renderSlot,
@@ -99,8 +98,7 @@ export default function UniList(props: UniListProps) {
     const uniRef = useRef<any>(undefined)
     const rows = useMemo(() => dedupeById(rawData), [rawData])
     const isGrid = mode != 'simple'
-    const isDesktop = useIsDesktop()
-    const listPadding = paddingForList(endpoint, isDesktop)
+    const listPadding = paddingForList(endpoint)
 
     // ------------------------------------------------------------------
     // Scroller: own box or the window

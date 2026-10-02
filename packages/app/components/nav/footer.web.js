@@ -122,12 +122,12 @@ export default function () {
     return (
         <View
             className={
-                `min-h-16 fixed bottom-0 left-0 z-30 p-1 w-full lg:hidden  ${isInStandaloneMode() ? "pb-4" : ""}`
+                `min-h-16 fixed bottom-0 left-0 z-30 px-4 py-1 w-full lg:hidden  ${isInStandaloneMode() ? "pb-4" : ""}`
             }
             onLayout={(e) => setFooterHeight(e.nativeEvent.layout.height)}
         >
             <View
-                className={`z-50 bg-card shadow-btn-glass dark:shadow-btn-glass-deep rounded-2xl w-full pb-0 ${isInStandaloneMode() ? "h-12" : ""}`}
+                className={`z-50 bg-card shadow-btn-glass dark:shadow-btn-glass-deep rounded-full w-full pb-0 ${isInStandaloneMode() ? "h-12" : ""}`}
             >
                 <Row className="flex-auto items-center flex-row w-full p-1.5 gap-1">
                     {visibleTabs.filter(item => !item.hide).map((tab, index) => {
@@ -208,7 +208,7 @@ function MenuBottomItem({ link, tabKey, rootUrl, title, badge, icon, isActive, i
                  onClick={handlePress}
             >
                 <View
-                    className={` my-auto items-center rounded-xl min-h-12 justify-center p-1.5 text-center gap-1.5 web:hover:bg-muted/50 ${isActive && 'bg-accent/60'}`}
+                    className={` my-auto items-center rounded-full min-h-12 justify-center p-1.5 text-center gap-1.5 web:hover:bg-muted/50 ${isActive && 'bg-accent/60'}`}
                     onMouseEnter={useAnimatedIcon ? () => setGroupHovered(true) : undefined}
                     onMouseLeave={useAnimatedIcon ? () => setGroupHovered(false) : undefined}
                 >
@@ -268,7 +268,7 @@ function MoreBottomTrigger({ isOverflowActive }) {
 
     return (
         <View
-            className={`w-full my-auto items-center rounded-xl min-h-12 justify-center p-1.5 text-center gap-1.5 web:hover:bg-muted/50 ${isActive ? 'bg-accent/60' : ''}`}
+            className={`w-full my-auto items-center rounded-full min-h-12 justify-center p-1.5 text-center gap-1.5 web:hover:bg-muted/50 ${isActive ? 'bg-accent/60' : ''}`}
         >
             <View className="items-center justify-center">
                 <Icon

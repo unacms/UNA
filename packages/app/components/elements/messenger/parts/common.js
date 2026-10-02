@@ -532,8 +532,8 @@ export default function Messenger({ defaultConvoId, selectedMenu, convos, fetchC
         const bottomBarInset = tabBarOverlayInset || tabBarInset;
 
         return (
-            // The conversation list sits on the screen background (rows are
-            // transparent, like notifications); only the open chat keeps a card fill.
+            // The conversation list and the open chat sit on the screen background
+            // (rows and bubbles carry their own fill), like the desktop split view.
             <View className='web:h-auto w-full h-full flex-row'>
                 <PageHeaderOptions main={injectedHeader} />
                 {panelsVisible.convos && <View className='w-full'>
@@ -550,7 +550,7 @@ export default function Messenger({ defaultConvoId, selectedMenu, convos, fetchC
                     />
                 </View>}
                 {panelsVisible.jots && (
-                    <View className="relative w-full bg-card">
+                    <View className="relative w-full">
                     <Msg onVisible={showMsg} title={showMsg} handleOk={() => { setShowMsg(false) }} />
                     {jotsLoaded && (
                         <JotsPanel
@@ -573,8 +573,10 @@ export default function Messenger({ defaultConvoId, selectedMenu, convos, fetchC
                     ) : null}
                     {selectedConvo ? (
                         <KbStickyView
+                            // Web: from the window bottom, under the tab bar (footer z-30),
+                            // so the wash runs from the bar up through the composer.
                             style={isWeb
-                                ? { position: 'fixed', left: 0, right: 0, bottom: tabBarInset, zIndex: 40 }
+                                ? { position: 'fixed', left: 0, right: 0, bottom: 0, zIndex: 20 }
                                 : { position: 'absolute', left: 0, right: 0, bottom: tabBarOverlayInset, zIndex: 10 }}
                             offset={{ closed: 0, opened: stickyOpened }}
                         >
@@ -588,6 +590,9 @@ export default function Messenger({ defaultConvoId, selectedMenu, convos, fetchC
                                     />
                                 </View>
                             </EdgeBlurView>
+                            {isWeb && tabBarInset > 0 ? (
+                                <View pointerEvents="none" className="bg-background" style={{ height: tabBarInset }} />
+                            ) : null}
                         </KbStickyView>
                     ) : null}
                     </View>

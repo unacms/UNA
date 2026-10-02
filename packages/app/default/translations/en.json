@@ -69,6 +69,8 @@
     "item_bx_polls": "Poll",
     "feed_type_timeline_common_post": "",
     "feed_type_timeline_common_repost": "Reposted",
+    "feed_type_bx_events": "added an <b>Event</b>",
+    "feed_type_bx_ads": "added an <b>Ad</b>",
     "splash_page_title": "Welcome to",
     "splash_page_text": "NEO is the open-source networking organiser. Connect with your friends and communities. Communicate, collaborate and build your own network.",
     "splash_page_account": "Don't have an account?",

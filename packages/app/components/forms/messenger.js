@@ -3,7 +3,7 @@ import { useEffect, useMemo } from 'react'
 import { getFormFieldByData } from 'app/lib/form/form-helpers'
 import { Keyboard, Platform } from 'react-native'
 import { useFormContext } from 'react-hook-form'
-import { editorHtmlHasContent, removeEmptyTags } from 'app/lib/util'
+import { editorHtmlHasContent, removeEmptyTags, hasLiquidGlass } from 'app/lib/util'
 import { useCurrentUser } from 'app/context/user'
 import Profile from 'app/ui/molecules/profile/profile'
 import { FileButton } from 'app/lib/form/form-helpers'
@@ -11,6 +11,7 @@ import { useWindowHeight, useIsDesktop } from 'app/context/measure'
 import { useSound } from 'app/lib/hooks/use-sound'
 import emitter, { EVENTS } from 'app/context/emitter'
 import { useTranslation } from 'react-i18next'
+import { GlassSurface } from 'app/ui/atoms/glass-surface'
 
 export default function FormMessenger(props) {
     const { t } = useTranslation()
@@ -75,9 +76,13 @@ export default function FormMessenger(props) {
     props.data.inputs['files'].variant = 'default'
 
     const hasContent = !!hasText || !!imagesValue
+    const rounded = hasContent ? 'rounded-2xl' : 'rounded-full'
+    // iOS 26: Liquid Glass that grows with the editor; elsewhere a translucent card.
+    const surface = hasLiquidGlass ? '' : 'bg-card/90 backdrop-blur-lg shadow-btn-glass dark:shadow-btn-glass-deep'
 
     return (
-        <View className={`w-full flex-auto bg-card/90 backdrop-blur-lg shadow-btn-glass dark:shadow-btn-glass-deep ${hasContent ? 'rounded-2xl' : 'rounded-full'}`}>
+        <View className={`w-full flex-auto ${surface} ${rounded}`}>
+            {hasLiquidGlass ? <GlassSurface rounded={rounded} /> : null}
             {getFormFieldByData(props.data.inputs['action'], props.handleSubmit, 'custom')}
             {getFormFieldByData(props.data.inputs['cf'], props.handleSubmit, 'custom')}
             {getFormFieldByData(props.data.inputs['payload'], props.handleSubmit, 'custom')}

@@ -650,7 +650,7 @@ export function getContent(data, block) {
     const b = findElementBySource(data, blockName, (element) => !!element.content)
 
     return b?.content[0]?.type === 'browse' && !block.sidebar && !block.leftbar
-        ? { data: b.content[0].data, type: 'browse' }
+        ? { data: b.content[0].data, type: 'browse', designbox: b.config_api?.designbox }
         : { data: b, type: 'block', block: block }
 }
 
@@ -664,6 +664,7 @@ function processEndpoint(acc, b) {
         finished: false,
         unit: b.data.unit,
         module: b.data.module,
+        ...(b.designbox ? { designbox: b.designbox } : null),
     }
 }
 
@@ -677,6 +678,7 @@ function endpointFromBrowsePayload(payload) {
         finished: false,
         unit: payload.unit,
         module: payload.module,
+        ...(payload.designbox ? { designbox: payload.designbox } : null),
     }
 }
 
@@ -713,11 +715,14 @@ function mapLayoutBlocks(items = []) {
             type: 'block',
             block: { name: block?.source },
         }))
-    const endpoint = list.find(item => {
+    const browseBlock = list.find(item => {
         const type = getFirstContentType(item)
         return type === 'browse' || type === 'browse_list'
     })
-    return { content, endpoint: endpoint?.content?.[0]?.data }
+    const payload = browseBlock?.content?.[0]?.data
+    // The browse block's App config styles the list: its card per breakpoint (`paddingForList`).
+    const designbox = browseBlock?.config_api?.designbox
+    return { content, endpoint: payload && designbox ? { ...payload, designbox } : payload }
 }
 
 /** Build content/endpoint/sidebar/leftbar from layout_parsed page data. */
