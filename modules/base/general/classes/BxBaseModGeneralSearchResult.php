@@ -101,7 +101,9 @@ class BxBaseModGeneralSearchResult extends BxTemplSearchResult
             if(!empty($this->_aParams['filters']['values']) && is_array($this->_aParams['filters']['values']))
                 $aResult['params']['filters'] = $this->_aParams['filters']['values'];
 
-            $aResult['filters'] = $oModule->_oTemplate->getBrowsingFilters(array_merge(['mode' => $this->_sMode], $this->_aParams));
+            $mixedFilters = $oModule->_oTemplate->getBrowsingFilters(array_merge(['mode' => $this->_sMode], $this->_aParams));
+            if($mixedFilters)
+                $aResult['filters'] = $mixedFilters;
         }
 
         return $aResult;
@@ -115,6 +117,96 @@ class BxBaseModGeneralSearchResult extends BxTemplSearchResult
 
         if(!empty($aParams['filter']) && is_array($aParams['filter']))
             $this->addConditionsForFilter($CNF, $sMode, $aParams);
+
+        $this->addConditionsForSearchFilters($CNF, $aParams);
+    }
+
+    /**
+     * Search-form values posted as params.filters ({title: "toy"}).
+     * Operators come from the module's extended search fields, so a value
+     * is applied only when that field is an active search field on the entries table.
+     */
+    protected function addConditionsForSearchFilters($CNF, $aParams)
+    {
+        $aValues = [];
+        if(!empty($aParams['filters']['values']) && is_array($aParams['filters']['values']))
+            $aValues = $aParams['filters']['values'];
+        elseif(!empty($aParams['filters']) && is_array($aParams['filters']) && !isset($aParams['filters']['onclick']))
+            $aValues = $aParams['filters'];
+
+        if(!$aValues || !($sModule = $this->getModuleName()))
+            return;
+
+        $sTable = !empty($CNF['TABLE_ENTRIES']) ? $CNF['TABLE_ENTRIES'] : ($this->aCurrent['table'] ?? '');
+        if($sTable === '')
+            return;
+
+        $oDb = BxDolDb::getInstance();
+        $aFields = $oDb->getPairs(
+            "SELECT `name`, `search_operator` FROM `sys_search_extended_fields` WHERE `object` = :object AND `active` = 1",
+            'name',
+            'search_operator',
+            ['object' => $sModule]
+        );
+        if(empty($aFields) || !is_array($aFields))
+            return;
+
+        foreach($aValues as $sName => $mixedValue) {
+            if(!is_string($sName) || !isset($aFields[$sName]) || !preg_match('/^[A-Za-z0-9_]+$/', $sName))
+                continue;
+
+            $sOperator = $aFields[$sName];
+            if($sOperator === '' || $this->_isSearchFilterEmpty($mixedValue))
+                continue;
+
+            if(!$oDb->isFieldExists($sTable, $sName))
+                continue;
+
+            $aRestriction = [
+                'field' => $sName,
+                'table' => $sTable,
+                'operator' => $sOperator,
+                'value' => $mixedValue,
+            ];
+
+            switch($sOperator) {
+                case 'like':
+                case '=':
+                    if(is_array($mixedValue))
+                        continue 2;
+                    break;
+
+                case 'in':
+                case 'not in':
+                    $aRestriction['value'] = is_array($mixedValue) ? $mixedValue : [$mixedValue];
+                    break;
+
+                case 'between':
+                    if(!is_array($mixedValue))
+                        continue 2;
+                    break;
+
+                default:
+                    continue 2;
+            }
+
+            $this->aCurrent['restriction']['search_' . $sName] = $aRestriction;
+        }
+    }
+
+    protected function _isSearchFilterEmpty($mixedValue)
+    {
+        if($mixedValue === null || $mixedValue === '' || $mixedValue === false)
+            return true;
+
+        if(!is_array($mixedValue))
+            return false;
+
+        foreach($mixedValue as $mixedItem)
+            if(!$this->_isSearchFilterEmpty($mixedItem))
+                return false;
+
+        return true;
     }
 
     protected function addConditionsForAuthorStatus($CNF)

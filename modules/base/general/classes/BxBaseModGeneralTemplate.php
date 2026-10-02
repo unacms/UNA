@@ -510,6 +510,15 @@ class BxBaseModGeneralTemplate extends BxDolModuleTemplate
         return $this->parseHtmlByName('favorite-list-info.html', array('bx_repeat:items' => $aListsTmpl, 'author' => $oProfile->getUnit()));
     }
 
+    /**
+     * Modules with a browsing-filter form (Spaces, Events) override this.
+     * Others have nothing to render; calling the missing method fataled the API.
+     */
+    protected function _getBrowsingFiltersContent($aParams)
+    {
+        return '';
+    }
+
     public function getBrowsingFilters($aParams)
     {
         if(empty($aParams['mode']))

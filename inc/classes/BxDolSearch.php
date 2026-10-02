@@ -1243,6 +1243,19 @@ class BxDolSearchResult implements iBxDolReplaceable
                        case 'like':
                             $sqlCondition .= "LIKE " . $oDb->escape('%' . $aValue['value'] . '%');
                             break;
+                       case 'between':
+                            $sqlCondition = '';
+                            if(is_array($aValue['value'])) {
+                                $aRange = array_values($aValue['value']);
+                                $aParts = [];
+                                if(($mixedMin = $aRange[0] ?? '') !== '' && $mixedMin !== null)
+                                    $aParts[] = "`{$sFieldTable}`.`{$aValue['field']}` >= " . $oDb->escape($mixedMin);
+                                if(($mixedMax = $aRange[1] ?? '') !== '' && $mixedMax !== null)
+                                    $aParts[] = "`{$sFieldTable}`.`{$aValue['field']}` <= " . $oDb->escape($mixedMax);
+                                if($aParts)
+                                    $sqlCondition = '(' . implode(' AND ', $aParts) . ')';
+                            }
+                            break;
                        case 'in':
                        case 'not in':
                             $sValuesString = $this->getMultiValues($aValue['value']);
