@@ -237,7 +237,7 @@ export default function Form({
             const nextResponse = formItem?.response ?? prev.response;
             // Redirect is navigated above — do not mount ElementRedirect (double nav /
             // formOnly unmount race). Keep msg and other extras as usual.
-            const nextExtra = hideOnMsg && formItem
+            const nextExtra = hideOnMsg && formItem && formResponseHasFieldErrors(rawData)
                 ? null
                 : (otherItem ?? (redirectItem ? null : prev.extra));
 

@@ -30,7 +30,7 @@ import { useLeftColumn, useConductorFilters } from './use-conductor'
 import { useConductorRoutes } from './use-conductor-routes'
 import { useTranslation } from 'react-i18next'
 import { useCurrentUser } from 'app/context/user'
-import { useBottomSheetData } from 'app/context/bottomsheet'
+import { useBottomSheetStore } from 'app/context/bottomsheet'
 import { useLayoutSettings } from 'app/context/layout-settings'
 import { useIsDesktop, useWindowHeight, useBreakpointName } from 'app/context/measure'
 import { useHeaderHeight, useFooterHeight } from 'app/context/jotai/layout'
@@ -40,6 +40,9 @@ import { useStickyHeaderOffset, stickySidebarStyle } from 'app/lib/hooks/use-sti
 
 /** `html` class that makes the page block, not the document, the scroller (global.web.css). */
 const VIEWPORT_LOCK_CLASS = 'ns-viewport-lock'
+
+/** Stable fallback so `useLeftColumn` memos survive tabs without a left column. */
+const EMPTY_CONTENT = []
 
 /**
  * Conductor — web shell (native lives in `index.js`).
@@ -87,7 +90,9 @@ export function Conductor({
     const [timestamp] = useState(Date.now());
     const { t } = useTranslation()
     const { currentUser } = useCurrentUser()
-    const { setBottomSheetData } = useBottomSheetData()
+    // Setter only: subscribing to the sheet data would re-render the whole
+    // conductor on every sheet open/close.
+    const setBottomSheetData = useBottomSheetStore((state) => state.setBottomSheetData)
     const { layoutName: tmplLayout } = useLayoutSettings()
     const isDesktop = useIsDesktop()
     const breakpointName = useBreakpointName()
@@ -97,7 +102,7 @@ export function Conductor({
     // Clear page header + cover/tab `header-fixed` stack (profile menus). Wiki's top:0
     // padding trick overlaps Conductor's opaque fixed cover bar when scrolled.
     const stickyTop = useStickyHeaderOffset(pageHeaderHeight)
-    const stickyColumnStyle = stickySidebarStyle(stickyTop)
+    const stickyColumnStyle = useMemo(() => stickySidebarStyle(stickyTop), [stickyTop])
 
     const coverMode = appSetting('cover', 'view_by_module', data.cover_block?.profile?.module)
     const isCover = Boolean(data.cover_block) && coverMode != 'none'
@@ -230,7 +235,7 @@ export function Conductor({
 
     // UNA's left column carries two different things: dropdown menus (shown next
     // to the tabs) and filter blocks (sidebar on desktop, sheet on mobile).
-    const leftColumnContent = activeRoute?.leftbar?.content ?? []
+    const leftColumnContent = activeRoute?.leftbar?.content ?? EMPTY_CONTENT
 
     const {
         leftColumnMenuBlocks,

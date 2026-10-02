@@ -1,9 +1,8 @@
-import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
 import { appSetting } from 'app/lib/util'
 import emitter, { EVENTS } from 'app/context/emitter'
 import {
-    refetchUniListReducer,
     isSameItemsForUniList,
     flattenPagesForUniList,
     fetchUniListData,
@@ -53,15 +52,19 @@ export function useUniListQuery({
     canFetchNext,
 }: { queryKey: any; requestUrl: string; defaultParams: any; enabled?: boolean; deferNewItems?: any; refetchOnWindowFocus?: any; refetchOnReconnect?: any; gcTime?: number; getNextPageParam?: any; listenPageReload?: boolean; listenFeed?: boolean; matchesNewContent?: any; canFetchNext?: any }) {
     const queryClient = useQueryClient()
-    const [refetchState, dispatch] = useReducer(refetchUniListReducer, {
-        visibleItems: [],
-        hasNewData: false,
-    })
-    const refetchRef = useRef<{ prevItems: any[] | null; skipToast: boolean; [key: string]: any }>({
+    // Exposed as `skipToastRef` (tail skeleton count). Not read in render here:
+    // whether a data change is shown or deferred is decided by `requested` below.
+    const refetchRef = useRef<{ skipToast: boolean; [key: string]: any }>({
         skipToast: false,
-        isFirstLoad: true,
-        prevItems: [],
     })
+    /**
+     * The next data change was asked for (next page, pull-to-refresh, page
+     * reload, socket edit), so show it as is. State, not a ref: it is set from
+     * child callbacks/effects (which run before ours) and consumed in render,
+     * so it must not depend on effect order.
+     */
+    const [requested, setRequested] = useState(false)
+    const [frozen, setFrozen] = useState<{ key: string; items: any[] } | null>(null)
     const requestUrlRef = useRef(requestUrl)
     const paramsRef = useRef(defaultParams)
     const qKeyRef = useRef(queryKey)
@@ -117,6 +120,7 @@ export function useUniListQuery({
         const subscription = emitter.addListener(EVENTS.page, (data: { action?: string }) => {
             if (data.action == 'reload') {
                 refetchRef.current.skipToast = true
+                setRequested(true)
                 refetch()
             }
         })
@@ -130,14 +134,10 @@ export function useUniListQuery({
             const cacheKey = qKeyRef.current
 
             if (data.action == 'remove_content') {
-                removeItemFromUniListQueryCache(queryClient, cacheKey, data.id)
-                dispatch({ type: 'REMOVE_ITEM', id: data.id })
-                if (refetchRef.current?.prevItems) {
-                    refetchRef.current.prevItems = refetchRef.current.prevItems.filter(
-                        (item) => item.id != data.id
-                    )
-                }
                 refetchRef.current.skipToast = true
+                setRequested(true)
+                removeItemFromUniListQueryCache(queryClient, cacheKey, data.id)
+                setFrozen((f) => f && { ...f, items: f.items.filter((it: any) => it.id != data.id) })
             }
 
             if (data.action == 'new_content') {
@@ -147,29 +147,55 @@ export function useUniListQuery({
                     : true
                 if (!allowed) return
 
-                prependItemToUniListQueryCache(queryClient, cacheKey, item)
-                dispatch({ type: 'PREPEND_ITEM', item })
-                if (refetchRef.current?.prevItems) {
-                    refetchRef.current.prevItems = [
-                        item,
-                        ...refetchRef.current.prevItems,
-                    ]
-                }
                 refetchRef.current.skipToast = true
+                setRequested(true)
+                prependItemToUniListQueryCache(queryClient, cacheKey, item)
+                setFrozen((f) => f && { ...f, items: [item, ...f.items] })
             }
         })
 
         return () => subscription.remove()
     }, [listenFeed, queryClient])
 
-    const [listReady, setListReady] = useState(!queryEnabled)
+    /*
+     * Visible rows are derived from the query cache instead of being copied into
+     * local state by effects (one extra commit per data change, plus a reset
+     * commit per key change). Local state only holds `frozen`: the rows kept on
+     * screen while a background refetch waits behind "Show New".
+     *
+     * `seen` is the cache snapshot last reconciled. Comparing it in render
+     * ("adjust state when a prop changes") freezes the old rows before the new
+     * ones are ever committed.
+     */
+    const [seen, setSeen] = useState(() => ({ key: qKeyId, items: cacheItems, hadData: !!pagesData }))
+    if (seen.key !== qKeyId) {
+        // Another list: show what the cache has for it, nothing to defer.
+        setSeen({ key: qKeyId, items: cacheItems, hadData: !!pagesData })
+        if (frozen) setFrozen(null)
+        if (requested) setRequested(false)
+    } else if (seen.items !== cacheItems) {
+        const defer =
+            deferNewItems &&
+            seen.hadData &&
+            !frozen &&
+            !requested &&
+            !isSameItemsForUniList(seen.items, cacheItems)
+        if (defer) setFrozen({ key: qKeyId, items: seen.items })
+        setSeen({ key: qKeyId, items: cacheItems, hadData: !!pagesData })
+        if (requested) setRequested(false)
+    }
+
+    const isFrozen = !!frozen && frozen.key === qKeyId
+    const listItems = isFrozen ? frozen.items : cacheItems
+    const listReady = !queryEnabled || !!pagesData || status === 'error'
+
+    // skipToastRef only: on for the first page of a key, off once data landed.
     useEffect(() => {
         refetchRef.current.skipToast = true
-        refetchRef.current.isFirstLoad = true
-        refetchRef.current.prevItems = []
-        dispatch({ type: 'SET_ITEMS', items: [] })
-        setListReady(!queryEnabled)
-    }, [qKeyId, queryEnabled])
+    }, [qKeyId])
+    useEffect(() => {
+        if (pagesData) refetchRef.current.skipToast = false
+    }, [pagesData])
 
     const handleEndReached = useCallback(
         async (lastItemIndex: number | false) => {
@@ -179,51 +205,19 @@ export function useUniListQuery({
             if (hasNextPage === false) return
             if (lastItemIndex === false) return
             refetchRef.current.skipToast = true
+            setRequested(true)
             fetchNextPage()
         },
         [isFetchingNextPage, hasNextPage, fetchNextPage]
     )
 
-    useEffect(() => {
-        if (status === 'error') {
-            setListReady(true)
-        }
-    }, [status])
-
-    useEffect(() => {
-        if (!pagesData) return
-
-        const items = flattenPagesForUniList(pagesData)
-
-        if (refetchRef.current.isFirstLoad) {
-            dispatch({ type: 'SET_ITEMS', items })
-            refetchRef.current.prevItems = items
-            refetchRef.current.isFirstLoad = false
-            refetchRef.current.skipToast = false
-            setListReady(true)
-            return
-        }
-
-        if (!isSameItemsForUniList(refetchRef.current.prevItems, items)) {
-            if (refetchRef.current.skipToast || !deferNewItems) {
-                dispatch({ type: 'SET_ITEMS', items })
-            } else {
-                dispatch({ type: 'SHOW_NEW_DATA' })
-            }
-            refetchRef.current.skipToast = false
-            refetchRef.current.prevItems = items
-        }
-    }, [pagesData, deferNewItems])
-
     const refetchList = useCallback(() => {
         refetchRef.current.skipToast = true
+        setRequested(true)
         return refetch()
     }, [refetch])
 
-    const acceptNewData = useCallback(() => {
-        dispatch({ type: 'SET_ITEMS', items: cacheItems })
-        refetchRef.current.prevItems = cacheItems
-    }, [cacheItems])
+    const acceptNewData = useCallback(() => setFrozen(null), [])
 
     return {
         queryClient,
@@ -231,8 +225,8 @@ export function useUniListQuery({
         status,
         pagesData,
         cacheItems,
-        listItems: refetchState.visibleItems,
-        hasNewData: refetchState.hasNewData,
+        listItems,
+        hasNewData: isFrozen,
         acceptNewData,
         fetchNextPage,
         hasNextPage,
