@@ -3516,6 +3516,10 @@
     <string name="_sys_menu_item_title_account_dashboard_reports"><![CDATA[Жалобы]]></string>
     <string name="_sys_menu_item_title_system_account_dashboard_audit"><![CDATA[Аудит]]></string>
     <string name="_sys_menu_item_title_account_dashboard_audit"><![CDATA[Аудит]]></string>
+    <string name="_sys_menu_item_title_system_account_dashboard_admin"><![CDATA[Админ]]></string>
+    <string name="_sys_menu_item_title_account_dashboard_admin"><![CDATA[Админ]]></string>
+    <string name="_sys_menu_item_title_system_account_dashboard_agent"><![CDATA[Агент]]></string>
+    <string name="_sys_menu_item_title_account_dashboard_agent"><![CDATA[Агент]]></string>
 
     <string name="_sys_menu_item_title_system_ap_profile_active"><![CDATA[Активный профиль]]></string>
     <string name="_sys_menu_item_title_system_ap_profile_notifications"><![CDATA[Меню уведомлений]]></string>
@@ -3866,6 +3870,10 @@
 	<string name="_sys_page_block_system_title_login_only"><![CDATA[Вход]]></string>
         <string name="_sys_page_block_title_dashboard_content"><![CDATA[Панель - контент]]></string>
         <string name="_sys_page_block_title_dashboard_audit"><![CDATA[Панель - аудит]]></string>
+        <string name="_sys_page_block_title_system_dashboard_agent"><![CDATA[Панель - Агент (только для App-а)]]></string>
+        <string name="_sys_page_block_title_dashboard_agent"><![CDATA[Панель - Агент]]></string>
+        <string name="_sys_page_block_title_system_dashboard_admin"><![CDATA[Панель - Администрирование (только для App-а)]]></string>
+        <string name="_sys_page_block_title_dashboard_admin"><![CDATA[Панель - Администрирование]]></string>
         <string name="_sys_page_block_title_dashboard_reports"><![CDATA[Панель - жалобы]]></string>
         <string name="_sys_page_block_title_system_cmts_view"><![CDATA[Просмотр комментария]]></string>
         <string name="_sys_page_block_title_system_cmts_view_author"><![CDATA[Автор комментария]]></string>
@@ -3949,12 +3957,16 @@
 	<string name="_sys_page_title_system_confirm_phone"><![CDATA[Аккаунт - Создать - Подтверждение телефона]]></string>
 	<string name="_sys_page_title_system_create_account"><![CDATA[Аккаунт - Создать]]></string>
 	<string name="_sys_page_title_system_dashboard"><![CDATA[Панель]]></string>
-        <string name="_sys_page_title_system_dashboard_content"><![CDATA[Контент]]></string>
+        <string name="_sys_page_title_system_dashboard_content"><![CDATA[Панель - Контент]]></string>
         <string name="_sys_page_title_dashboard_content"><![CDATA[Контент]]></string>
-        <string name="_sys_page_title_system_dashboard_reports"><![CDATA[Жалобы]]></string>
+        <string name="_sys_page_title_system_dashboard_reports"><![CDATA[Панель -Жалобы]]></string>
         <string name="_sys_page_title_dashboard_reports"><![CDATA[Жалобы]]></string>
-        <string name="_sys_page_title_system_dashboard_audit"><![CDATA[Аудит]]></string>
+        <string name="_sys_page_title_system_dashboard_audit"><![CDATA[Панель - Аудит]]></string>
         <string name="_sys_page_title_dashboard_audit"><![CDATA[Аудит]]></string>
+        <string name="_sys_page_title_system_dashboard_agent"><![CDATA[Панель - Агент]]></string>
+        <string name="_sys_page_title_dashboard_agent"><![CDATA[Агент]]></string>
+        <string name="_sys_page_title_system_dashboard_admin"><![CDATA[Панель - Администрирование]]></string>
+        <string name="_sys_page_title_dashboard_admin"><![CDATA[Администрирование]]></string>
         <string name="_sys_page_title_system_forgot_password"><![CDATA[Вход - Забыли пароль]]></string>
         <string name="_sys_page_title_system_search_keyword"><![CDATA[Поиск по ключевым словам]]></string>
         <string name="_sys_page_title_search_keyword"><![CDATA[Поиск по ключевым словам]]></string>

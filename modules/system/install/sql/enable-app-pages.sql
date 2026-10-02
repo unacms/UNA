@@ -29,6 +29,8 @@ UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_terms' AND `mod
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_privacy' AND `module`='system' AND `title_system`='' AND `title`='_sys_page_block_title_privacy';
 
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_dashboard' AND `module`='system' AND `title_system`='_sys_page_block_title_dash_stats';
+UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_dashboard_agent' AND `module`='system' AND `title_system`='_sys_page_block_title_system_dashboard_agent' AND `title`='_sys_page_block_title_dashboard_agent';
+UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_dashboard_admin' AND `module`='system' AND `title_system`='_sys_page_block_title_system_dashboard_admin' AND `title`='_sys_page_block_title_dashboard_admin';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_dashboard_content' AND `module`='system' AND `title_system`='' AND `title`='_sys_page_block_title_dashboard_content';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_dashboard_audit' AND `module`='system' AND `title_system`='' AND `title`='_sys_page_block_title_dashboard_audit';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_dashboard_reports' AND `module`='system' AND `title_system`='' AND `title`='_sys_page_block_title_dashboard_reports';

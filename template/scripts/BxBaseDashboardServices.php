@@ -58,12 +58,13 @@ class BxBaseDashboardServices extends BxDol
     
     public function serviceGetStatBlock()
     {
-        $bEmpty = false;
-        if (defined('BX_API_PAGE'))
-           $bEmpty = true;
-        
+        $bApi = bx_is_api();
+        if(!$bApi)
+            return '';
+
         $aData = [];
-        
+
+        $bEmpty = defined('BX_API_PAGE');
         $iStartDate = time() - 24*3600*31;
 
         $iProfileId = (int)bx_get_logged_profile_id();
@@ -123,14 +124,23 @@ class BxBaseDashboardServices extends BxDol
                 ], $a);
             }
         }
-        
-        $bApi = bx_is_api();
-        if($bApi){
-            $oMenu = BxDolMenu::getObjectInstance('sys_account_dashboard_manage_tools');
-            return [bx_api_get_block('dashboard_stat', ['modules' => $aData, 'manage' => $oMenu->getCodeAPI()])];
-        }
+
+        return [bx_api_get_block('dashboard_stat', ['modules' => $aData])];
     }
-    
+
+    public function serviceGetAdminBlock()
+    {
+        $bApi = bx_is_api();
+        if(!$bApi)
+            return '';
+
+        $oMenu = BxDolMenu::getObjectInstance('sys_account_dashboard_manage_tools');
+        if(!$oMenu)
+            return [];
+
+        return [bx_api_get_block('dashboard_stat', ['manage' => $oMenu->getCodeAPI()])];
+    }
+
     public function serviceManageAudit()
     {
         return bx_srv('system', 'manage_tools', array(), 'TemplAuditServices');
