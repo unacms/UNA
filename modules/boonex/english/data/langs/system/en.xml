@@ -3551,8 +3551,6 @@
     <string name="_sys_menu_item_title_account_dashboard_reports"><![CDATA[Reports]]></string>
     <string name="_sys_menu_item_title_system_account_dashboard_audit"><![CDATA[Audit]]></string>
     <string name="_sys_menu_item_title_account_dashboard_audit"><![CDATA[Audit]]></string>
-    <string name="_sys_menu_item_title_system_account_dashboard_agent"><![CDATA[Agents]]></string>
-    <string name="_sys_menu_item_title_account_dashboard_agent"><![CDATA[Agents]]></string>
     <string name="_sys_menu_item_title_system_account_dashboard_admin"><![CDATA[Administration]]></string>
     <string name="_sys_menu_item_title_account_dashboard_admin"><![CDATA[Administration]]></string>
     <string name="_sys_menu_item_title_system_ap_profile_active"><![CDATA[Active Profile]]></string>
@@ -3873,6 +3871,8 @@
     <string name="_sys_page_block_title_audit_administration"><![CDATA[Audit]]></string>
     <string name="_sys_page_block_title_confirm_email"><![CDATA[Email Confirmation]]></string>
     <string name="_sys_page_block_title_confirm_phone"><![CDATA[Phone Confirmation]]></string>
+    <string name="_sys_page_block_title_system_copilot"><![CDATA[Copilot (for App only)]]></string>
+    <string name="_sys_page_block_title_copilot"><![CDATA[Copilot]]></string>
     <string name="_sys_page_block_title_create_account"><![CDATA[Sign up]]></string>
     <string name="_sys_page_block_title_sys_author"><![CDATA[Author]]></string>
     <string name="_sys_page_block_title_author"><![CDATA[Author]]></string>
@@ -3912,8 +3912,6 @@
     <string name="_sys_page_block_system_title_login_only"><![CDATA[Log in]]></string>
     <string name="_sys_page_block_title_dashboard_content"><![CDATA[Dashboard - Content]]></string>
     <string name="_sys_page_block_title_dashboard_audit"><![CDATA[Dashboard - Audit]]></string>
-    <string name="_sys_page_block_title_system_dashboard_agent"><![CDATA[Dashboard - Agent (for App only)]]></string>
-    <string name="_sys_page_block_title_dashboard_agent"><![CDATA[Dashboard - Agent]]></string>
     <string name="_sys_page_block_title_system_dashboard_admin"><![CDATA[Dashboard - Administration (for App only)]]></string>
     <string name="_sys_page_block_title_dashboard_admin"><![CDATA[Dashboard - Administration]]></string>
     <string name="_sys_page_block_title_dashboard_reports"><![CDATA[Dashboard - Reports]]></string>
@@ -4000,6 +3998,8 @@
     <string name="_sys_page_title_system_audit_administration"><![CDATA[Audit]]></string>
     <string name="_sys_page_title_system_confirm_email"><![CDATA[Account Create - Email Confirmation]]></string>
     <string name="_sys_page_title_system_confirm_phone"><![CDATA[Account Create - Phone Confirmation]]></string>
+    <string name="_sys_page_title_system_copilot"><![CDATA[Copilot (for App only)]]></string>
+    <string name="_sys_page_title_copilot"><![CDATA[Copilot]]></string>
     <string name="_sys_page_title_system_create_account"><![CDATA[Account - Create]]></string>
     <string name="_sys_page_title_system_dashboard"><![CDATA[Dashboard]]></string>
     <string name="_sys_page_title_system_dashboard_content"><![CDATA[Dashboard - Content]]></string>
@@ -4008,8 +4008,6 @@
     <string name="_sys_page_title_dashboard_reports"><![CDATA[Reports]]></string>
     <string name="_sys_page_title_system_dashboard_audit"><![CDATA[Dashboard - Audit]]></string>
     <string name="_sys_page_title_dashboard_audit"><![CDATA[Audit]]></string>
-    <string name="_sys_page_title_system_dashboard_agent"><![CDATA[Dashboard - Agent]]></string>
-    <string name="_sys_page_title_dashboard_agent"><![CDATA[Agent]]></string>
     <string name="_sys_page_title_system_dashboard_admin"><![CDATA[Dashboard - Administration]]></string>
     <string name="_sys_page_title_dashboard_admin"><![CDATA[Administration]]></string>
     <string name="_sys_page_title_system_forgot_password"><![CDATA[Log in - Forgot Password]]></string>

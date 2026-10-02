@@ -3,6 +3,7 @@
 --
 
 -- 'config_api' settings
+UPDATE `sys_objects_page` SET `config_api`='{"layout":"chat"}' WHERE `object`='sys_copilot';
 UPDATE `sys_objects_page` SET `config_api`='{\r\n    layout: \'create-account\',\r\n    blocks: {\r\n        form_join: {\r\n            name: \'system:create_account_form\',\r\n            showTitle: false,\r\n            showBg: false,\r\n        },\r\n        form_invitation: {\r\n            name: \'bx_invites:get_block_form_request\',\r\n            showTitle: false,\r\n            showBg: false,\r\n        },\r\n    },\r\n}' WHERE `object`='sys_create_account';
 UPDATE `sys_objects_page` SET `config_api`='{\r\n    layout: \'login\',\r\n}' WHERE `object`='sys_forgot_password';
 UPDATE `sys_objects_page` SET `config_api`='{\r\n    layout: \'post\',\r\n   \r\n}' WHERE `object`='sys_cmts_view';
@@ -28,8 +29,9 @@ UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_about' AND `mod
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_terms' AND `module`='system' AND `title_system`='' AND `title`='_sys_page_block_title_terms';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_privacy' AND `module`='system' AND `title_system`='' AND `title`='_sys_page_block_title_privacy';
 
+UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_copilot' AND `module`='system' AND `title_system`='_sys_page_block_title_system_copilot' AND `title`='_sys_page_block_title_copilot';
+
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_dashboard' AND `module`='system' AND `title_system`='_sys_page_block_title_dash_stats';
-UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_dashboard_agent' AND `module`='system' AND `title_system`='_sys_page_block_title_system_dashboard_agent' AND `title`='_sys_page_block_title_dashboard_agent';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_dashboard_admin' AND `module`='system' AND `title_system`='_sys_page_block_title_system_dashboard_admin' AND `title`='_sys_page_block_title_dashboard_admin';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_dashboard_content' AND `module`='system' AND `title_system`='' AND `title`='_sys_page_block_title_dashboard_content';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_dashboard_audit' AND `module`='system' AND `title_system`='' AND `title`='_sys_page_block_title_dashboard_audit';

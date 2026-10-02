@@ -5077,14 +5077,13 @@ INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `tit
 -- account dashboard
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `addon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES
 ('sys_account_dashboard', 'system', 'dashboard', '_sys_menu_item_title_system_account_dashboard', '_sys_menu_item_title_account_dashboard', 'page.php?i=dashboard', '', '', 'tachometer-alt', '', '', 2147483646, 1, 1, 1),
-('sys_account_dashboard', 'system', 'dashboard-agent', '_sys_menu_item_title_system_account_dashboard_agent', '_sys_menu_item_title_account_dashboard_agent', 'page.php?i=dashboard-agent', '', '', '', '', '', 2147483647, 0, 1, 2),
-('sys_account_dashboard', 'system', 'dashboard-admin', '_sys_menu_item_title_system_account_dashboard_admin', '_sys_menu_item_title_account_dashboard_admin', 'page.php?i=dashboard-admin', '', '', '', '', '', 2147483647, 0, 1, 3),
-('sys_account_dashboard', 'system', 'dashboard-subscriptions', '_sys_menu_item_title_system_subscriptions', '_sys_menu_item_title_subscriptions', 'subscriptions.php', '', '', 'credit-card col-blue3', '', '', 2147483646, 1, 1, 4),
-('sys_account_dashboard', 'system', 'dashboard-orders', '_sys_menu_item_title_system_orders', '_sys_menu_item_title_orders', 'orders.php', '', '', 'cart-arrow-down col-green3', '', '', 2147483646, 1, 1, 5),
-('sys_account_dashboard', 'system', 'dashboard-invoices', '_sys_menu_item_title_system_invoices', '_sys_menu_item_title_invoices', 'invoices.php', '', '', 'file-invoice col-green3', '', '', 2147483646, 1, 1, 6),
-('sys_account_dashboard', 'system', 'dashboard-content', '_sys_menu_item_title_system_account_dashboard_content', '_sys_menu_item_title_account_dashboard_content', 'page.php?i=dashboard-content', '', '', 'copy', '', '', 192, 1, 1, 7),
-('sys_account_dashboard', 'system', 'dashboard-reports', '_sys_menu_item_title_system_account_dashboard_reports', '_sys_menu_item_title_account_dashboard_reports', 'page.php?i=dashboard-reports', '', '', 'exclamation-circle', '', '', 192, 1, 1, 8),
-('sys_account_dashboard', 'system', 'dashboard-audit', '_sys_menu_item_title_system_account_dashboard_audit', '_sys_menu_item_title_account_dashboard_audit', 'page.php?i=dashboard-audit', '', '', 'history', '', '', 192, 1, 1, 9);
+('sys_account_dashboard', 'system', 'dashboard-admin', '_sys_menu_item_title_system_account_dashboard_admin', '_sys_menu_item_title_account_dashboard_admin', 'page.php?i=dashboard-admin', '', '', '', '', '', 2147483647, 0, 1, 2),
+('sys_account_dashboard', 'system', 'dashboard-subscriptions', '_sys_menu_item_title_system_subscriptions', '_sys_menu_item_title_subscriptions', 'subscriptions.php', '', '', 'credit-card col-blue3', '', '', 2147483646, 1, 1, 3),
+('sys_account_dashboard', 'system', 'dashboard-orders', '_sys_menu_item_title_system_orders', '_sys_menu_item_title_orders', 'orders.php', '', '', 'cart-arrow-down col-green3', '', '', 2147483646, 1, 1, 4),
+('sys_account_dashboard', 'system', 'dashboard-invoices', '_sys_menu_item_title_system_invoices', '_sys_menu_item_title_invoices', 'invoices.php', '', '', 'file-invoice col-green3', '', '', 2147483646, 1, 1, 5),
+('sys_account_dashboard', 'system', 'dashboard-content', '_sys_menu_item_title_system_account_dashboard_content', '_sys_menu_item_title_account_dashboard_content', 'page.php?i=dashboard-content', '', '', 'copy', '', '', 192, 1, 1, 6),
+('sys_account_dashboard', 'system', 'dashboard-reports', '_sys_menu_item_title_system_account_dashboard_reports', '_sys_menu_item_title_account_dashboard_reports', 'page.php?i=dashboard-reports', '', '', 'exclamation-circle', '', '', 192, 1, 1, 7),
+('sys_account_dashboard', 'system', 'dashboard-audit', '_sys_menu_item_title_system_account_dashboard_audit', '_sys_menu_item_title_account_dashboard_audit', 'page.php?i=dashboard-audit', '', '', 'history', '', '', 192, 1, 1, 8);
 
 -- comment manage menu
 INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES
@@ -6066,8 +6065,6 @@ INSERT INTO `sys_objects_page` (`object`, `uri`, `title_system`, `title`, `modul
 ('sys_dashboard_content', 'dashboard-content', '_sys_page_title_system_dashboard_content', '_sys_page_title_dashboard_content', 'system', 1, 12, '', 2147483646, 1, 'page.php?i=dashboard-content', '', '', '', 0, 1, 0, 'BxTemplPageDashboard', '', 0),
 ('sys_dashboard_reports', 'dashboard-reports', '_sys_page_title_system_dashboard_reports', '_sys_page_title_dashboard_reports', 'system', 1, 12, '', 2147483646, 1, 'page.php?i=dashboard-reports', '', '', '', 0, 1, 0, 'BxTemplPageDashboard', '', 0),
 ('sys_dashboard_audit', 'dashboard-audit', '_sys_page_title_system_dashboard_audit', '_sys_page_title_dashboard_audit', 'system', 1, 12, '', 2147483646, 1, 'page.php?i=dashboard-audit', '', '', '', 0, 1, 0, 'BxTemplPageDashboard', '', 0),
-('sys_dashboard_agent', 'dashboard-agent', '_sys_page_title_system_dashboard_agent', '_sys_page_title_dashboard_agent', 'system', 1, 5, '', 2147483646, 1, 'page.php?i=dashboard-agent', '', '', '', 0, 1, 0, 'BxTemplPageDashboard', '', 0),
-('sys_dashboard_admin', 'dashboard-admin', '_sys_page_title_system_dashboard_admin', '_sys_page_title_dashboard_admin', 'system', 1, 5, '', 2147483646, 1, 'page.php?i=dashboard-admin', '', '', '', 0, 1, 0, 'BxTemplPageDashboard', '', 0),
 ('sys_create_account', 'create-account', '_sys_page_title_system_create_account', '_sys_page_title_create_account', 'system', 1, 5, '', 2147483647, 1, 'page.php?i=create-account', '', '', '', 0, 1, 0, '', '', 0),
 ('sys_login', 'login', '_sys_page_title_system_login', '_sys_page_title_login', 'system', 0, 18, '', 2147483647, 1, 'page.php?i=login', '', '', '', 0, 1, 0, '', '', 0),
 ('sys_login_step2', 'login-step2', '_sys_page_title_system_login_step2', '_sys_page_title_login_step2', 'system', 1, 18, '', 2147483647, 1, 'page.php?i=login-step2', '', '', '', 0, 1, 0, '', '', 0),
@@ -6101,6 +6098,12 @@ INSERT INTO `sys_objects_page` (`object`, `uri`, `title_system`, `title`, `modul
 ('sys_recom_friends', 'friend-suggestions', '_sys_page_title_system_recom_friends', '_sys_page_title_recom_friends', 'system', 1, 5, '', 2147483646, 1, 'page.php?i=friend-suggestions', '', '', '', 0, 1, 0, 'BxTemplPageConnections', '', 0),
 ('sys_recom_subscriptions', 'follow-suggestions', '_sys_page_title_system_recom_subscriptions', '_sys_page_title_recom_subscriptions', 'system', 1, 5, '', 2147483646, 1, 'page.php?i=follow-suggestions', '', '', '', 0, 1, 0, 'BxTemplPageConnections', '', 0),
 ('sys_ntfs_context_invitations', 'context-invitations', '_sys_page_title_system_ntfs_context_invitations', '_sys_page_title_ntfs_context_invitations', 'system', 1, 5, '', 2147483646, 1, 'page.php?i=context-invitations', '', '', '', 0, 1, 0, 'BxTemplPageNotifications', '', 0);
+
+-- pages for APP (can be updated via separate enable-app-pages.sql)
+INSERT INTO `sys_objects_page` (`object`, `uri`, `title_system`, `title`, `module`, `cover`, `layout_id`, `submenu`, `visible_for_levels`, `visible_for_levels_editable`, `url`, `meta_description`, `meta_keywords`, `meta_robots`, `cache_lifetime`, `cache_editable`, `deletable`, `override_class_name`, `override_class_file`, `sticky_columns`) VALUES
+('sys_copilot', 'copilot', '_sys_page_title_system_copilot', '_sys_page_title_copilot', 'system', 1, 5, '', 192, 1, 'page.php?i=copilot', '', '', '', 0, 1, 0, '', '', 0),
+
+('sys_dashboard_admin', 'dashboard-admin', '_sys_page_title_system_dashboard_admin', '_sys_page_title_dashboard_admin', 'system', 1, 5, '', 192, 1, 'page.php?i=dashboard-admin', '', '', '', 0, 1, 0, 'BxTemplPageDashboard', '', 0);
 
 
 CREATE TABLE IF NOT EXISTS `sys_pages_types` (
@@ -6305,7 +6308,7 @@ INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title_system`, `
 ('sys_home', 2, 'system', '', '_sys_page_block_title_profile_stats', 3, 0, 0, 2147483644, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:13:"profile_stats";s:6:"params";a:0:{}s:5:"class";s:20:"TemplServiceProfiles";}', 0, 0, 1, 0, 1),
 ('sys_home', 3, 'system', '_sys_page_block_title_sys_create_post', '_sys_page_block_title_create_post', 11, 1, 4, 2147483644, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:20:"get_create_post_form";s:6:"params";a:1:{i:0;i:0;}s:5:"class";s:13:"TemplServices";}', 0, 0, 1, 0, 1);
 
--- content blocks for APP (activated via separate app-pages.sql)
+-- content blocks for APP (activated via separate enable-app-pages.sql)
 INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title_system`, `title`, `description`, `icon`, `designbox_id`, `class`, `submenu`, `tabs`, `async`, `visible_for_levels`, `hidden_on`, `type`, `content`, `content_empty`, `text`, `text_updated`, `help`, `cache_lifetime`, `config_api`, `deletable`, `copyable`, `active`, `active_api`, `order`) VALUES
 ('sys_home', 1, 'system', '', '_sys_page_block_title_create_account', '', '', 11, '', '', 0, 0, 1, '', 'service', 'a:4:{s:6:\"module\";s:6:\"system\";s:6:\"method\";s:19:\"create_account_form\";s:6:\"params\";a:0:{}s:5:\"class\";s:19:\"TemplServiceAccount\";}', '', '', 0, '', 0, '', 0, 0, 0, 0, 0),
 ('sys_home', 1, 'system', '_sys_page_block_system_title_login', '_sys_page_block_title_login', '', '', 11, '', '', 0, 0, 1, '', 'service', 'a:3:{s:6:\"module\";s:6:\"system\";s:6:\"method\";s:10:\"login_form\";s:5:\"class\";s:17:\"TemplServiceLogin\";}', '', '', 0, '', 0, '', 0, 0, 0, 0, 0),
@@ -6316,9 +6319,9 @@ INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title_system`, `
 ('sys_home', 4, 'system', '_sys_page_block_title_sys_invitations', '_sys_page_block_title_invitations', '', '', 11, '', '', 1, 0, 2147483644, '0', 'service', 'a:4:{s:6:\"module\";s:6:\"system\";s:6:\"method\";s:18:\"browse_invitations\";s:6:\"params\";a:0:{}s:5:\"class\";s:20:\"TemplServiceProfiles\";}', '', '', 0, '', 0, '', 1, 0, 0, 0, 0);
 
 INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title_system`, `title`, `designbox_id`, `class`, `submenu`, `tabs`, `async`, `visible_for_levels`, `hidden_on`, `type`, `content`, `content_empty`, `text`, `text_updated`, `help`, `cache_lifetime`, `config_api`, `deletable`, `copyable`, `active`, `active_api`, `order`) VALUES
-('sys_dashboard', 2, 'system', '_sys_page_block_title_dash_stats', '', 13, '', '', 0, 0, 2147483647, '0', 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:14:"get_stat_block";s:6:"params";a:0:{}s:5:"class";s:22:"TemplDashboardServices";}', '', '', 0, '', 0, '', 1, 0, 0, 0, 0),
+('sys_copilot', 1, 'system', '_sys_page_block_title_system_copilot', '_sys_page_block_title_copilot', 11, '', '', 0, 0, 192, '0', 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:25:"get_block_ai_agents_admin";s:6:"params";a:0:{}s:5:"class";s:13:"TemplServices";}', '', '', 0, '', 0, '', 1, 0, 0, 0, 0),
 
-('sys_dashboard_agent', 1, 'system', '_sys_page_block_title_system_dashboard_agent', '_sys_page_block_title_dashboard_agent', 11, '', '', 0, 0, 192, '0', 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:25:"get_block_ai_agents_admin";s:6:"params";a:0:{}s:5:"class";s:13:"TemplServices";}', '', '', 0, '', 0, '', 1, 0, 0, 0, 0),
+('sys_dashboard', 2, 'system', '_sys_page_block_title_dash_stats', '', 13, '', '', 0, 0, 2147483647, '0', 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:14:"get_stat_block";s:6:"params";a:0:{}s:5:"class";s:22:"TemplDashboardServices";}', '', '', 0, '', 0, '', 1, 0, 0, 0, 0),
 
 ('sys_dashboard_admin', 1, 'system', '_sys_page_block_title_system_dashboard_admin', '_sys_page_block_title_dashboard_admin', 11, '', '', 0, 0, 192, '0', 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:15:"get_admin_block";s:6:"params";a:0:{}s:5:"class";s:22:"TemplDashboardServices";}', '', '', 0, '', 0, '', 1, 0, 0, 0, 0);
 
