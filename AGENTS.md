@@ -18,7 +18,7 @@ Pick glyphs from https://lucide.dev; the vendored copies live in `plugins_public
 
 Add a missing English or Russian string with `scripts/add_lang_key.php`. Do not insert keys by hand into language XML, `sys_localization_keys`, or `sys_localization_strings`.
 
-Run it in the php container. Arguments are language (`en` or `ru`), key, and translation. An existing translation is left unchanged. The script appends the key to the right language file (`_sys_…` to system, `_bx_posts_…` to Posts, and so on), inserts it into the database when that language is installed, and recompiles the language cache.
+Run it in the php container. Arguments are language (`en` or `ru`), key, and translation. An existing translation is left unchanged. The script inserts the key in the right language file next to the closest existing keys (`_sys_…` to system, `_bx_posts_…` to Posts, and so on), inserts it into the database when that language is installed, and recompiles the language cache.
 
 ```bash
 docker exec -i una-php-1 php /opt/una/scripts/add_lang_key.php en _sys_example "Hello"

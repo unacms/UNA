@@ -2571,6 +2571,7 @@
     <string name="_sys_agents_assistants_field_kwg_text"><![CDATA[Text]]></string>
     <string name="_sys_agents_assistants_field_kwg_faq_q"><![CDATA[Question]]></string>
     <string name="_sys_agents_assistants_field_kwg_faq_a"><![CDATA[Answer]]></string>
+    <string name="_sys_agents_assistants_files_txt_size"><![CDATA[Size]]></string>
     <string name="_sys_agents_assistants_popup_add_knowledge"><![CDATA[Add Knowledge]]></string>
     <string name="_sys_agents_assistants_popup_ask"><![CDATA[Ask Assistant]]></string>
     <string name="_sys_agents_assistants_msg_knowledge_added"><![CDATA[Knowledge was added.]]></string>
@@ -4590,5 +4591,4 @@
     <string name="_sys_redirect_confirmation"><![CDATA[<div class="bx-def-font-h2 bx-def-margin-sec-bottom">You're going to a link outside {1}</div><div class="bx-def-font-small">Link: {0}</div><div class="bx-def-margin-sec-top">Are you sure you want to follow this link?</div>]]></string>
     <string name="_sys_redirect_confirmation_harmful"><![CDATA[<div class="bx-def-font-h2 bx-def-margin-sec-bottom">You're going to a potentially <b>harmful</b> link {1}</div><div class="bx-def-font-small">Link: {0}</div><div class="bx-def-margin-sec-top">Are you sure you want to follow this link?</div>]]></string>
     <string name="_sys_leave_page_confirmation"><![CDATA[<div class="bx-def-font-h2">Leave the page?</div><div class="bx-def-margin-sec-top">If you do it, your changes will not be saved.</div>]]></string>
-    <string name="_sys_agents_assistants_files_txt_size"><![CDATA[Size]]></string>
 </resources>

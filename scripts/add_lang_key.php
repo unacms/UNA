@@ -295,16 +295,142 @@ function writeLangString($sFile, $sLang, $sKey, $sTranslation)
             . '</resources>' . $sNl;
     }
 
-    $iPos = strrpos($sXml, '</resources>');
+    $iPos = insertionOffset($sXml, $sKey);
     if ($iPos === false)
         return false;
 
-    $sLine = '    <string name="' . htmlspecialchars($sKey, ENT_QUOTES | ENT_XML1, 'UTF-8') . '"><![CDATA[' . cdata($sTranslation) . ']]></string>' . $sNl;
+    $sIndent = indentAt($sXml, $iPos);
+    $sLine = $sIndent . '<string name="' . htmlspecialchars($sKey, ENT_QUOTES | ENT_XML1, 'UTF-8') . '"><![CDATA[' . cdata($sTranslation) . ']]></string>' . $sNl;
     if ($iPos > 0 && $sXml[$iPos - 1] !== "\n")
         $sLine = $sNl . $sLine;
 
     $sXml = substr($sXml, 0, $iPos) . $sLine . substr($sXml, $iPos);
     return file_put_contents($sFile, $sXml, LOCK_EX) !== false;
+}
+
+/**
+ * Byte offset where $sKey should be inserted: after the closest earlier
+ * sibling, or before </resources> when nothing shares a meaningful prefix.
+ * Sibling groups stay intact, so a new key lands beside a family rather
+ * than between two keys that belong together.
+ */
+function insertionOffset($sXml, $sKey)
+{
+    $iFallback = strrpos($sXml, '</resources>');
+    if ($iFallback === false)
+        return false;
+
+    $aEntries = langStringEntries($sXml);
+    if (!$aEntries)
+        return $iFallback;
+
+    $iBest = 0;
+    foreach ($aEntries as $aEntry) {
+        $iScore = commonNonEmptySegments($sKey, $aEntry['name']);
+        if ($iScore > $iBest)
+            $iBest = $iScore;
+    }
+    if ($iBest < 2)
+        return $iFallback;
+
+    $aClose = array();
+    foreach ($aEntries as $i => $aEntry) {
+        if (commonNonEmptySegments($sKey, $aEntry['name']) === $iBest)
+            $aClose[$i] = $aEntry;
+    }
+
+    $iPred = null;
+    $sPredName = null;
+    foreach ($aClose as $i => $aEntry) {
+        if (strcmp($aEntry['name'], $sKey) < 0 && ($sPredName === null || strcmp($aEntry['name'], $sPredName) > 0)) {
+            $iPred = $i;
+            $sPredName = $aEntry['name'];
+        }
+    }
+    if ($iPred !== null)
+        return clusterEdge($aEntries, $iPred, $iBest, false);
+
+    $iSucc = null;
+    $sSuccName = null;
+    foreach ($aClose as $i => $aEntry) {
+        if (strcmp($aEntry['name'], $sKey) > 0 && ($sSuccName === null || strcmp($aEntry['name'], $sSuccName) < 0)) {
+            $iSucc = $i;
+            $sSuccName = $aEntry['name'];
+        }
+    }
+    if ($iSucc !== null)
+        return clusterEdge($aEntries, $iSucc, $iBest, true);
+
+    return $iFallback;
+}
+
+function clusterEdge($aEntries, $iAnchor, $iMinScore, $bStart)
+{
+    $sAnchor = $aEntries[$iAnchor]['name'];
+    $iEdge = $iAnchor;
+
+    if ($bStart) {
+        for ($i = $iAnchor - 1; $i >= 0; $i--) {
+            if (commonNonEmptySegments($sAnchor, $aEntries[$i]['name']) <= $iMinScore)
+                break;
+            $iEdge = $i;
+        }
+        return $aEntries[$iEdge]['start'];
+    }
+
+    $iCount = count($aEntries);
+    for ($i = $iAnchor + 1; $i < $iCount; $i++) {
+        if (commonNonEmptySegments($sAnchor, $aEntries[$i]['name']) <= $iMinScore)
+            break;
+        $iEdge = $i;
+    }
+    return $aEntries[$iEdge]['end'];
+}
+
+function langStringEntries($sXml)
+{
+    $aEntries = array();
+    $sPattern = '/^([ \t]*)<string\b[^>]*\bname=(["\'])(.*?)\2[^>]*>.*?<\/string>[ \t]*(?:\r?\n)?/ms';
+    if (!preg_match_all($sPattern, $sXml, $aMatches, PREG_OFFSET_CAPTURE))
+        return $aEntries;
+
+    foreach ($aMatches[0] as $i => $aFull) {
+        $aEntries[] = array(
+            'name' => html_entity_decode($aMatches[3][$i][0], ENT_QUOTES | ENT_XML1, 'UTF-8'),
+            'indent' => $aMatches[1][$i][0],
+            'start' => $aFull[1],
+            'end' => $aFull[1] + strlen($aFull[0]),
+        );
+    }
+    return $aEntries;
+}
+
+function commonNonEmptySegments($sA, $sB)
+{
+    $aA = explode('_', $sA);
+    $aB = explode('_', $sB);
+    $n = min(count($aA), count($aB));
+    $iNonEmpty = 0;
+    for ($i = 0; $i < $n; $i++) {
+        if ($aA[$i] !== $aB[$i])
+            break;
+        if ($aA[$i] !== '')
+            $iNonEmpty++;
+    }
+    return $iNonEmpty;
+}
+
+function indentAt($sXml, $iPos)
+{
+    $aEntries = langStringEntries($sXml);
+    $sIndent = '    ';
+    foreach ($aEntries as $aEntry) {
+        if ($aEntry['start'] <= $iPos)
+            $sIndent = $aEntry['indent'];
+        if ($aEntry['start'] >= $iPos)
+            return $aEntry['indent'] !== '' ? $aEntry['indent'] : $sIndent;
+    }
+    return $sIndent;
 }
 
 function cdata($s)
