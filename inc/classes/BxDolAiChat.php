@@ -19,6 +19,12 @@ class BxDolAiChat
      */
     protected $_aPendingChatActions = [];
 
+    /**
+     * The assistant already wrote visible text this turn: `chat_buttons` refuses
+     * to hang buttons on an empty reply.
+     */
+    protected $_bTurnHasText = false;
+
     public static function getInstance()
     {
         if (!isset($GLOBALS['bxDolClasses'][__CLASS__]))
@@ -259,6 +265,18 @@ class BxDolAiChat
     public function resetPendingChatActions()
     {
         $this->_aPendingChatActions = [];
+        $this->_bTurnHasText = false;
+    }
+
+    public function markTurnText($sDelta)
+    {
+        if (trim((string)$sDelta) !== '')
+            $this->_bTurnHasText = true;
+    }
+
+    public function hasTurnText()
+    {
+        return $this->_bTurnHasText;
     }
 
     protected function normalizeChatButtonsInput($mixed)

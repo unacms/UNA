@@ -21,7 +21,7 @@ class BxDolAIToolChatButtons extends BxDolAITool
 
         parent::__construct(
             'chat_buttons',
-            'Show clickable buttons under THIS assistant reply: ' . $sYes . '/' . $sNo . ', suggested names, register/support links. Call once per turn, after the sentence the user should confirm. Write every label in the site language. A yes/no choice uses exactly these labels: "' . $sYes . '" and "' . $sNo . '". Do not write another assistant message after this tool. Do not say that buttons are ready.',
+            'Show clickable buttons under THIS assistant reply: ' . $sYes . '/' . $sNo . ', suggested names, register/support links. Call once per turn, only AFTER you wrote the visible sentence the user should answer (never with an empty reply). Write every label in the site language. A yes/no choice uses exactly these labels: "' . $sYes . '" and "' . $sNo . '". Do not write another assistant message after this tool. Do not say that buttons are ready.',
         );
     }
 
@@ -51,7 +51,11 @@ class BxDolAIToolChatButtons extends BxDolAITool
 
     public function __invoke($buttons): string
     {
-        $i = BxDolAiChat::getInstance()->setPendingChatActions(is_array($buttons) ? $buttons : []);
+        $oChat = BxDolAiChat::getInstance();
+        if (!$oChat->hasTurnText())
+            return 'Not shown: buttons need a visible sentence above them. First write the reply text (question or offer) as a normal assistant message, then call chat_buttons again.';
+
+        $i = $oChat->setPendingChatActions(is_array($buttons) ? $buttons : []);
 
         return $i > 0
             ? 'Buttons are already under your last sentence. Do not send another assistant message this turn. Wait for the user to tap a button.'
