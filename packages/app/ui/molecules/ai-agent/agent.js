@@ -815,6 +815,19 @@ function AiAgentChat({
                     const chosenReply = next?.role === 'user'
                         ? clipAgentText(messageText(next).trim(), maxChars)
                         : '';
+                    // A tapped quick reply already reads as the highlighted button above —
+                    // don't echo it again as a user bubble.
+                    const prev = visibleMessages[index - 1];
+                    if (
+                        message.role === 'user'
+                        && prev?.role === 'assistant'
+                        && !messageImages(message).length
+                    ) {
+                        const text = clipAgentText(messageText(message).trim(), maxChars);
+                        const isTappedReply = messageActions(prev, streamActionsForMessage(prev, streamActions))
+                            .some((action) => action.type !== 'link' && action.message === text);
+                        if (isTappedReply) return null;
+                    }
                     return (
                         <ChatBubble
                             key={message.id}
