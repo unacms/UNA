@@ -201,7 +201,7 @@ class BxDolAiTriggerChat extends BxDolAiTrigger
                         $aText[] = $s;
                     continue;
                 }
-                $aImage = $oImages->parsePart($aPart);
+                $aImage = $oImages->parseRequestPart($aPart);
                 if ($aImage)
                     $aImages[] = $aImage;
             }

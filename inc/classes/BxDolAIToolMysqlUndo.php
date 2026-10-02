@@ -44,16 +44,18 @@ class BxDolAIToolMysqlUndo extends BxDolAITool
 
         $sScope = strtolower(trim($scope));
         if (!in_array($sScope, ['last', 'session'], true))
-            throw new Exception('scope must be last or session.');
+            throw new BxDolAIToolException('scope must be last or session.');
 
         $iLogId = (int)$log_id;
         $aCtx = BxDolAIToolMysqlWrite::currentLogContext();
-        $sThread = $aCtx['thread_id'];
-        $iProfile = (int)$aCtx['profile_id'];
+        $sThread = (string)$aCtx['thread_id'];
+        // Only this chat's own changes: without a chat there is nothing that is ours to undo.
+        if ($sThread === '')
+            throw new BxDolAIToolException('Undo works inside a chat only: there is no current chat to undo changes of.');
 
-        $aRows = $this->_pickRows($oDb, $sScope, $iLogId, $sThread, $iProfile);
+        $aRows = $this->_pickRows($oDb, $sScope, $iLogId, $sThread);
         if (!$aRows)
-            throw new Exception('Nothing to undo in this chat.');
+            throw new BxDolAIToolException('Nothing to undo in this chat.');
 
         $aDone = [];
         foreach ($aRows as $aRow) {
@@ -68,35 +70,21 @@ class BxDolAIToolMysqlUndo extends BxDolAITool
         ];
     }
 
-    protected function _pickRows(BxDolDb $oDb, string $sScope, int $iLogId, string $sThread, int $iProfile): array
+    protected function _pickRows(BxDolDb $oDb, string $sScope, int $iLogId, string $sThread): array
     {
         if ($iLogId > 0) {
             $aRow = $oDb->getRow("SELECT * FROM `sys_agents_sql_log` WHERE `id` = :id LIMIT 1", ['id' => $iLogId]);
             if (!$aRow)
-                throw new Exception("log_id {$iLogId} not found.");
+                throw new BxDolAIToolException("log_id {$iLogId} not found.");
             if ((int)$aRow['undone'] > 0)
-                throw new Exception("log_id {$iLogId} is already undone.");
-            if ($sThread !== '') {
-                if ((string)$aRow['thread_id'] !== $sThread)
-                    throw new Exception("log_id {$iLogId} belongs to another chat.");
-            }
-            else if ($iProfile <= 0 || (int)$aRow['profile_id'] !== $iProfile) {
-                throw new Exception("log_id {$iLogId} belongs to another chat.");
-            }
+                throw new BxDolAIToolException("log_id {$iLogId} is already undone.");
+            if ((string)$aRow['thread_id'] !== $sThread)
+                throw new BxDolAIToolException("log_id {$iLogId} belongs to another chat.");
             return [$aRow];
         }
 
-        if ($sThread !== '') {
-            $sSql = "SELECT * FROM `sys_agents_sql_log` WHERE `thread_id` = :t AND `undone` = 0 ORDER BY `id` DESC";
-            $aBind = ['t' => $sThread];
-        }
-        else if ($iProfile > 0) {
-            $sSql = "SELECT * FROM `sys_agents_sql_log` WHERE `profile_id` = :p AND `undone` = 0 AND `added` > :since ORDER BY `id` DESC";
-            $aBind = ['p' => $iProfile, 'since' => time() - 7200];
-        }
-        else {
-            return [];
-        }
+        $sSql = "SELECT * FROM `sys_agents_sql_log` WHERE `thread_id` = :t AND `undone` = 0 ORDER BY `id` DESC";
+        $aBind = ['t' => $sThread];
 
         if ($sScope === 'last')
             $sSql .= " LIMIT 1";
@@ -115,16 +103,16 @@ class BxDolAIToolMysqlUndo extends BxDolAITool
         $sPkValue = (string)$aRow['pk_value'];
 
         if ($sTable === '' || $sPk === '' || $sPkValue === '')
-            throw new Exception("log_id {$aRow['id']} has incomplete snapshot.");
+            throw new BxDolAIToolException("log_id {$aRow['id']} has incomplete snapshot.");
         if (!$oDb->isValidFieldName($sTable) || !$oDb->isValidFieldName($sPk))
-            throw new Exception("log_id {$aRow['id']} has invalid table/pk.");
+            throw new BxDolAIToolException("log_id {$aRow['id']} has invalid table/pk.");
 
         if ($sOp === 'insert')
             $this->_undoInsert($oDb, $sTable, $sPk, $sPkValue);
-        else if ($sOp === 'update')
+        elseif ($sOp === 'update')
             $this->_undoUpdate($oDb, $aRow, $sTable, $sPk, $sPkValue);
         else
-            throw new Exception("Cannot undo op {$sOp}.");
+            throw new BxDolAIToolException("Cannot undo op {$sOp}.");
 
         $oDb->query("UPDATE `sys_agents_sql_log` SET `undone` = :ts WHERE `id` = :id", [
             'ts' => time(),
@@ -150,26 +138,26 @@ class BxDolAIToolMysqlUndo extends BxDolAITool
     {
         $aBefore = json_decode((string)$aRow['before_json'], true);
         if (!is_array($aBefore) || !$aBefore)
-            throw new Exception("log_id {$aRow['id']} has no before snapshot.");
+            throw new BxDolAIToolException("log_id {$aRow['id']} has no before snapshot.");
 
         $aCurrent = $this->_fetchRow($oDb, $sTable, $sPk, $sPkValue);
         if (!$aCurrent)
-            throw new Exception("Row {$sTable}.{$sPk}={$sPkValue} is gone; cannot restore.");
+            throw new BxDolAIToolException("Row {$sTable}.{$sPk}={$sPkValue} is gone; cannot restore.");
 
         $aAfter = json_decode((string)($aRow['after_json'] ?? ''), true);
         if (is_array($aAfter) && $aAfter && !$this->_rowsClose($aCurrent, $aAfter) && !$this->_rowsClose($aCurrent, $aBefore))
-            throw new Exception("Row {$sTable}.{$sPk}={$sPkValue} changed after the write; refuse undo.");
+            throw new BxDolAIToolException("Row {$sTable}.{$sPk}={$sPkValue} changed after the write; refuse undo.");
 
         $aSet = [];
         foreach ($aBefore as $sField => $mixedVal) {
             if (!$oDb->isValidFieldName($sField))
-                throw new Exception("Invalid field {$sField} in snapshot.");
+                throw new BxDolAIToolException("Invalid field {$sField} in snapshot.");
             if ($sField === $sPk)
                 continue;
             $aSet[$sField] = $mixedVal;
         }
         if (!$aSet)
-            throw new Exception("log_id {$aRow['id']} snapshot has nothing to restore.");
+            throw new BxDolAIToolException("log_id {$aRow['id']} snapshot has nothing to restore.");
 
         $sSet = '';
         foreach ($aSet as $sField => $mixedVal) {
