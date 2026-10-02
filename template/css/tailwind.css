@@ -963,7 +963,7 @@
     .bx-std .bx-form-input-wrapper-price span,
     .bx-std .bx-form-input-wrapper-password {
         @apply rounded-lg border-0 text-sm font-medium;
-        @apply bg-black/5 dark:bg-white/10 focus:bg-black/5 dark:focus:bg-white/10;
+        @apply bg-black/5 dark:bg-gray-900/50 focus:bg-black/5 dark:focus:bg-gray-900;
         @apply text-gray-900 dark:text-gray-100 focus:text-gray-900 dark:focus:text-gray-100;
         @apply placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:placeholder:text-gray-500 dark:focus:placeholder:text-gray-400;
         @apply ring-1 ring-inset ring-black/10 dark:ring-white/15;
