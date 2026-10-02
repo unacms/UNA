@@ -306,9 +306,13 @@ class BxBaseAccountForms extends BxDolProfileForms
         if ($iAccountId == getLoggedId())
             bx_logout();
 
-        // redirect to homepage
-        if(!$bIsApi)
-            $this->_redirectAndExit('', false);
+        // redirect to homepage (API: /logout clears client session, then goes home)
+        if($bIsApi)
+            return [
+                ['id' => 1, 'type' => 'redirect', 'data' => ['uri' => '/logout']],
+            ];
+
+        $this->_redirectAndExit('', false);
     }
 
     protected function _editAccountForm ($iAccountId, $sDisplayName)
