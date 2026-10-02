@@ -7,7 +7,7 @@ import AsyncWorker from 'app/ui/molecules/system/async-worker';
 import { View } from 'app/design/view';
 import { useCurrentUser } from 'app/context/user'
 import BottomSheet from 'app/ui/molecules/dialogs/bottomsheet-content';
-import { appSetting, storageClear, decodeText } from 'app/lib/util'
+import { appSetting, storageClear, decodeText, isChatLayout } from 'app/lib/util'
 import { appStatic } from 'app/lib/app-static'
 import { scheduleOneSignalSubscription } from 'app/lib/platform/one-signal';
 import { useThemeName, useThemeValue } from 'app/design/theme';
@@ -223,7 +223,7 @@ const Content = React.memo(({ children, currentUser, layoutName, url }) => {
     // The tab bar renders for logged-in users (or when show_tabbar_on_mobile_non_logged is set)
     // and only when the footer atom is truthy. Avoids phantom scroll on auth/guest pages.
     const showBottomTabBar = footer && (currentUser || appSetting('layout', 'show_tabbar_on_mobile_non_logged'));
-    const mainClassName = `${(layoutName != 'messenger' && layoutName != 'post' && layoutName != 'task' && !isHideHeader && showBottomTabBar) ? ' pb-16 web:lg:pb-0 lg:pb-0 ' : ''} ns--main-content-- w-full mx-auto ne--`;
+    const mainClassName = `${(!isChatLayout(layoutName) &&layoutName != 'post' && layoutName != 'task' && !isHideHeader && showBottomTabBar) ? ' pb-16 web:lg:pb-0 lg:pb-0 ' : ''} ns--main-content-- w-full mx-auto ne--`;
     const contentKey = (layoutName === 'layout_1_column_wiki' || layoutName === 'wiki')
         ? 'wiki'
         : url;

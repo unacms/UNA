@@ -51,14 +51,14 @@ export function ComposerAttachments({ images, disabled, onRemove }) {
 }
 
 /** Paperclip inside the composer pill — same chrome as comments FileButton. */
-export function AttachButton({ disabled, onPress }) {
+export function AttachButton({ disabled, onPress, image = 'Paperclip' }) {
     const { t } = useTranslation();
     return (
         <NeoButton
             style="borderless"
             borderShape="circle"
             controlSize="small"
-            image="Paperclip"
+            image={image}
             accessibilityLabel={t('Attach image')}
             disabled={disabled}
             onPress={onPress}

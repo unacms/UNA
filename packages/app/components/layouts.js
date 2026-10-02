@@ -21,7 +21,6 @@ import { Card } from 'app/ui/molecules/page/card'
 import { FormModalHost } from 'app/ui/molecules/dialogs/form-modal';
 import { UnsavedFormConfirmHost } from 'app/ui/molecules/dialogs/unsaved-form-confirm-host';
 import { VersionIncompatible, VersionWarning } from 'app/ui/molecules/system/version-notice';
-import { OperatorAgentFloat } from 'app/ui/molecules/system/operator-agent';
 import { useTranslation } from 'react-i18next';
 
 function WindowSizeSync() {
@@ -91,7 +90,6 @@ export default function Layouts({ path, data }) {
             <UnsavedFormConfirmHost />
             <FormModalHost />
             {isVersionInfo ? <VersionWarning serverVersion={data.version} /> : null}
-            <OperatorAgentFloat />
         </Layout>
     )
 }

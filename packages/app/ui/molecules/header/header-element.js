@@ -8,6 +8,7 @@ import MenuAdd from 'app/components/nav/menu-add'
 import MenuAccount from 'app/components/nav/menu-account'
 import MenuLauncher from 'app/components/nav/menu-launcher'
 import MenuHeaderNavigation from 'app/components/nav/menu-header-navigation'
+import { OperatorAgentHeaderButton } from 'app/ui/molecules/system/operator-agent'
 import { useIsDesktop } from 'app/context/measure';
 import { Platform } from 'react-native'
 import { useRouter } from 'app/lib/hooks/router'
@@ -42,7 +43,12 @@ export default function HeaderElement({ url, uri }) {
                             case "notifications":
                                 return bNotifs ? <NotificationButton uri={uri} buttonProps={item.props} /> : null
                             case "account":
-                                return <MenuAccount buttonProps={item.props} />
+                                return (
+                                    <Row className="items-center gap-3">
+                                        <OperatorAgentHeaderButton />
+                                        <MenuAccount buttonProps={item.props} />
+                                    </Row>
+                                )
                             case "menu_navigation":
                                 return <MenuHeaderNavigation {...(item.props || {})} />
                             case "link":

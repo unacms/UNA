@@ -25,6 +25,10 @@ import {
     sessionFromMessages,
     streamActionsForMessage,
 } from './message-content';
+import Profile from 'app/ui/molecules/profile/profile';
+import { MessageInput } from 'app/components/elements/chat/parts/message-input';
+import { EdgeBlurView, edgeBlurConfig } from 'app/ui/atoms/edge-blur';
+import { CHAT_OVERLAY_COMPOSER_FADE } from 'app/components/elements/chat/parts/headers';
 import { AgentStatus, ChatBubble } from './chat-bubble';
 import { CHAT_IMAGES_MAX_DEFAULT, chatImageParts, imageFilesFromDataTransfer, pickedFromFile, revokePickedPreview, uploadAgentChatImage } from './chat-images';
 import { pickAgentChatImage } from './pick-image';
@@ -93,18 +97,57 @@ const NO_MESSAGES = [];
  *   whenever those controls become available; History / Start new then stay out
  *   of the composer — the host draws them (the operator float's title bar).
  */
-export default function AiAgent({
+export default function AiAgent({ height = 'h-[28rem]', ...props }) {
+    const { chat, history, historyOverlayOnly } = useAiAgent(props);
+
+    // The frame keeps its final height while hydrating so the page does not jump
+    // when the transcript arrives; `chat` is simply empty until then.
+    return (
+        <Row className={cn(height, 'relative')}>
+            {history ? (
+                <View
+                    className={cn(
+                        historyOverlayOnly
+                            ? ''
+                            // `z-0` not `z-auto`: Uniwind resolves `auto` to a string and Fabric casts zIndex to Double.
+                            : 'md:flex md:relative md:inset-auto md:z-0 md:w-56 md:shrink-0 md:bg-transparent md:border-r md:border-border/60 md:mr-3',
+                        history.open ? 'flex absolute inset-0 z-10 bg-card' : 'hidden'
+                    )}
+                >
+                    <ChatThreads {...history.props} />
+                </View>
+            ) : null}
+            <View className="flex-1 min-w-0 min-h-0">{chat}</View>
+        </Row>
+    );
+}
+
+/**
+ * Everything `AiAgent` does, without its frame: the live chat element and the
+ * history list, so a host with its own layout (the agents page's split view) can
+ * put the list in a side panel instead of the built-in column. Takes the same
+ * props as `AiAgent` except `height`.
+ *
+ * @returns {{
+ *   chat: import('react').ReactNode,
+ *   history: null | { open: boolean, props: object },
+ *   historyOverlayOnly: boolean,
+ * }} `history` is null when there is no list to show; `open` only matters where
+ *   the list is an overlay; `props` are `ChatThreads` props (`onClose` included).
+ */
+export function useAiAgent({
     data,
     initialMessage = '',
     hideInitialMessage = false,
     placeholder,
     hideButton = false,
     hideIdentity = false,
-    height = 'h-[28rem]',
     showHistory: showHistoryProp,
     historyLayout = 'auto',
     historyAlways = false,
     channel,
+    variant = 'default',
+    headerInset = 0,
 }) {
     const { currentUser } = useCurrentUser();
     const agentId = data?.agent_id;
@@ -278,6 +321,8 @@ export default function AiAgent({
                 height="h-full"
                 onToggleHistory={composerToggleHistory}
                 historyOverlayOnly={historyOverlayOnly}
+                variant={variant}
+                headerInset={headerInset}
             />
         ) : null;
     } else if (ready && !needsPrefetch) {
@@ -302,39 +347,29 @@ export default function AiAgent({
                 onTurnEnd={showHistory ? refreshThreads : undefined}
                 onToggleHistory={composerToggleHistory}
                 historyOverlayOnly={historyOverlayOnly}
+                variant={variant}
+                headerInset={headerInset}
             />
         );
     }
 
-    // The frame keeps its final height while hydrating so the page does not jump
-    // when the transcript arrives; `chat` is simply empty until then.
-    return (
-        <Row className={cn(height, 'relative')}>
-            {historyVisible ? (
-                <View
-                    className={cn(
-                        historyOverlayOnly
-                            ? ''
-                            // `z-0` not `z-auto`: Uniwind resolves `auto` to a string and Fabric casts zIndex to Double.
-                            : 'md:flex md:relative md:inset-auto md:z-0 md:w-56 md:shrink-0 md:bg-transparent md:border-r md:border-border/60 md:mr-3',
-                        historyOpen ? 'flex absolute inset-0 z-10 bg-card' : 'hidden'
-                    )}
-                >
-                    <ChatThreads
-                        threads={threads}
-                        activeThreadId={viewingThreadId}
-                        liveThreadId={liveId}
-                        loading={threadsLoading}
-                        onSelect={selectThread}
-                        onClose={closeHistory}
-                        overlayOnly={historyOverlayOnly}
-                        onStartNew={onStartAgain}
-                    />
-                </View>
-            ) : null}
-            <View className="flex-1 min-w-0 min-h-0">{chat}</View>
-        </Row>
-    );
+    const history = historyVisible
+        ? {
+              open: historyOpen,
+              props: {
+                  threads,
+                  activeThreadId: viewingThreadId,
+                  liveThreadId: liveId,
+                  loading: threadsLoading,
+                  onSelect: selectThread,
+                  onClose: closeHistory,
+                  overlayOnly: historyOverlayOnly,
+                  onStartNew: onStartAgain,
+              },
+          }
+        : null;
+
+    return { chat, history, historyOverlayOnly };
 }
 
 function AiAgentChat({
@@ -356,6 +391,8 @@ function AiAgentChat({
     onTurnEnd,
     onToggleHistory,
     historyOverlayOnly = false,
+    variant = 'default',
+    headerInset = 0,
 }) {
     const { t } = useTranslation();
     const { currentUser } = useCurrentUser();
@@ -796,12 +833,125 @@ function AiAgentChat({
         void send();
     }, [send]);
 
+    // `variant="chat"`: the messenger's look — the same message input (avatar bottom-left,
+    // image picker + send bottom-right) and message items.
+    const isChat = variant === 'chat';
+    const [composerBoxHeight, setComposerBoxHeight] = useState(0);
+    const onComposerBoxLayout = useCallback((event) => {
+        const next = Math.round(event.nativeEvent.layout.height);
+        if (next > 0) setComposerBoxHeight((prev) => (prev === next ? prev : next));
+    }, []);
+    const hasDraft = !!input.trim() || pendingImages.length > 0;
+    const attachButton = (
+        <View><AttachButton disabled={!canAttach} onPress={attachImage} image={isChat ? 'Image' : undefined} /></View>
+    );
+    const composerButtons = (withSend = showSend) => (
+        <ComposerButtons
+            showSend={withSend}
+            showStartNew={showStartNew}
+            startNewInHistory={!!onToggleHistory && !historyOverlayOnly}
+            isLoading={isLoading}
+            canSend={!uploading && hasDraft}
+            onSend={send}
+            onStop={() => stop()}
+            onStartNew={onStartAgain}
+        />
+    );
+    const textInput = (
+        <TextInputClear
+            ref={inputRef}
+            multiline
+            value={input}
+            onChangeText={onInputChange}
+            editable={!sessionEnded}
+            accessibilityLabel={t('Message')}
+            onContentSizeChange={composer.onContentSizeChange}
+            placeholder={sessionEnded ? t('This conversation has ended') : (placeholder || t('Ask anything...'))}
+            className="w-full bg-transparent border-0 shadow-none outline-none ring-0 rounded-none p-0 min-h-0 leading-5 text-base text-card-foreground placeholder:text-muted-foreground resize-none web:overflow-y-auto web:focus:outline-none web:focus:ring-0 web:focus:border-0 web:focus-visible:outline-none web:focus-visible:ring-0 web:focus-visible:border-0 web:focus-visible:shadow-none web:focus-visible:bg-transparent"
+            style={{
+                outline: 'none',
+                boxShadow: 'none',
+                height: composer.height,
+                maxHeight: COMPOSER_MAX_PX,
+                padding: 0,
+                margin: 0,
+                // Centered on one line, top-aligned once it wraps.
+                textAlignVertical: composer.isMultiline ? 'top' : 'center',
+            }}
+            onKeyDown={isWeb && !sessionEnded ? onComposerKey : undefined}
+            onKeyPress={isWeb || sessionEnded ? undefined : onComposerKey}
+            onPaste={isWeb && allowImages && !sessionEnded ? onComposerPaste : undefined}
+            blurOnSubmit={false}
+            returnKeyType="default"
+            {...(isWeb ? { rows: 1 } : { scrollEnabled: composer.scrollEnabled })}
+        />
+    );
+
+    const composerBox = (
+                <View
+                    className={isChat ? 'px-4 py-1.5 sm:p-2.5' : 'pt-2'}
+                    onLayout={isChat ? onComposerBoxLayout : undefined}
+                    pointerEvents={isChat ? 'auto' : undefined}
+                    {...(isWeb && allowImages && !sessionEnded
+                        ? { onPaste: onComposerPaste, onDragOver: onComposerDragOver, onDrop: onComposerDrop }
+                        : null)}
+                >
+                    <ComposerNotice message={chatError?.message} />
+                    <ComposerNotice message={attachError} />
+                    <ComposerAttachments
+                        images={pendingImages}
+                        disabled={isLoading || uploading}
+                        onRemove={removePendingImage}
+                    />
+                    <Row className="items-center justify-center gap-2 w-full">
+                        {onToggleHistory ? <HistoryButton onPress={onToggleHistory} alwaysVisible={historyOverlayOnly} /> : null}
+                        {isChat ? (
+                            <View className={cn('flex-1 min-w-0', sessionEnded ? 'opacity-60' : '')}>
+                                <MessageInput
+                                    expanded={hasDraft}
+                                    avatar={currentUser ? (
+                                        <Profile
+                                            {...currentUser}
+                                            url_avatar={currentUser.avatar}
+                                            displayType="unit_wo_info"
+                                            displaySize="sm"
+                                        />
+                                    ) : null}
+                                    actions={<>
+                                        {allowImages && !sessionEnded ? attachButton : null}
+                                        {composerButtons(showSend && (hasDraft || isLoading))}
+                                    </>}
+                                >
+                                    <View className="w-full">{textInput}</View>
+                                </MessageInput>
+                            </View>
+                        ) : (
+                            <>
+                                {allowImages && !sessionEnded ? attachButton : null}
+                                <View
+                                    className={cn(
+                                        inputSettings.base,
+                                        inputSettings.rounded.default,
+                                        'flex-1 min-h-12 justify-center px-3 overflow-hidden web:focus-within:bg-card web:focus-within:border-ring/80 web:focus-within:shadow-none',
+                                        sessionEnded ? 'opacity-60' : ''
+                                    )}
+                                >
+                                    {textInput}
+                                </View>
+                                {composerButtons()}
+                            </>
+                        )}
+                    </Row>
+                </View>
+    );
+
     return (
-        <View className={cn(height, 'overflow-hidden')}>
+        <View className={cn(height, 'relative overflow-hidden')}>
             <ScrollView
                 ref={listRef}
                 className="min-h-0 flex-1"
-                contentContainerClassName="gap-1 grow-0"
+                contentContainerClassName={cn('grow-0', isChat ? '' : 'gap-1')}
+                contentContainerStyle={{ paddingTop: headerInset, paddingBottom: isChat && !readOnly ? composerBoxHeight : 0 }}
                 onScroll={onScroll}
                 scrollEventThrottle={100}
                 keyboardShouldPersistTaps="always"
@@ -843,6 +993,7 @@ function AiAgentChat({
                             hideIdentity={hideIdentity}
                             maxChars={maxChars}
                             messageFormat={messageFormat}
+                            variant={variant}
                         />
                     );
                 })}
@@ -866,75 +1017,16 @@ function AiAgentChat({
                         <HistoryButton onPress={onToggleHistory} alwaysVisible={historyOverlayOnly} />
                     </Row>
                 ) : null
-            ) : (
-            <View
-                className="pt-2"
-                {...(isWeb && allowImages && !sessionEnded
-                    ? { onPaste: onComposerPaste, onDragOver: onComposerDragOver, onDrop: onComposerDrop }
-                    : null)}
-            >
-                <ComposerNotice message={chatError?.message} />
-                <ComposerNotice message={attachError} />
-                <ComposerAttachments
-                    images={pendingImages}
-                    disabled={isLoading || uploading}
-                    onRemove={removePendingImage}
-                />
-                <View className="w-full">
-                    <Row className="items-center justify-center gap-2">
-                        {onToggleHistory ? <HistoryButton onPress={onToggleHistory} alwaysVisible={historyOverlayOnly} /> : null}
-                        {allowImages && !sessionEnded ? (
-                            <View><AttachButton disabled={!canAttach} onPress={attachImage} /></View>
-                        ) : null}
-                        <View
-                            className={cn(
-                                inputSettings.base,
-                                inputSettings.rounded.default,
-                                'flex-1 min-h-12 justify-center px-3 overflow-hidden web:focus-within:bg-card web:focus-within:border-ring/80 web:focus-within:shadow-none',
-                                sessionEnded ? 'opacity-60' : ''
-                            )}
-                        >
-                            <TextInputClear
-                                ref={inputRef}
-                                multiline
-                                value={input}
-                                onChangeText={onInputChange}
-                                editable={!sessionEnded}
-                                accessibilityLabel={t('Message')}
-                                onContentSizeChange={composer.onContentSizeChange}
-                                placeholder={sessionEnded ? t('This conversation has ended') : (placeholder || t('Ask anything...'))}
-                                className="w-full bg-transparent border-0 shadow-none outline-none ring-0 rounded-none p-0 min-h-0 leading-5 text-base text-card-foreground placeholder:text-muted-foreground resize-none web:overflow-y-auto web:focus:outline-none web:focus:ring-0 web:focus:border-0 web:focus-visible:outline-none web:focus-visible:ring-0 web:focus-visible:border-0 web:focus-visible:shadow-none web:focus-visible:bg-transparent"
-                                style={{
-                                    outline: 'none',
-                                    boxShadow: 'none',
-                                    height: composer.height,
-                                    maxHeight: COMPOSER_MAX_PX,
-                                    padding: 0,
-                                    margin: 0,
-                                    // Centered on one line, top-aligned once it wraps.
-                                    textAlignVertical: composer.isMultiline ? 'top' : 'center',
-                                }}
-                                onKeyDown={isWeb && !sessionEnded ? onComposerKey : undefined}
-                                onKeyPress={isWeb || sessionEnded ? undefined : onComposerKey}
-                                onPaste={isWeb && allowImages && !sessionEnded ? onComposerPaste : undefined}
-                                blurOnSubmit={false}
-                                returnKeyType="default"
-                                {...(isWeb ? { rows: 1 } : { scrollEnabled: composer.scrollEnabled })}
-                            />
-                        </View>
-                        <ComposerButtons
-                            showSend={showSend}
-                            showStartNew={showStartNew}
-                            startNewInHistory={!!onToggleHistory && !historyOverlayOnly}
-                            isLoading={isLoading}
-                            canSend={!uploading && (!!input.trim() || pendingImages.length > 0)}
-                            onSend={send}
-                            onStop={() => stop()}
-                            onStartNew={onStartAgain}
-                        />
-                    </Row>
+            ) : isChat ? (
+                // Floats over the transcript like the messenger's composer: messages
+                // scroll behind it, the list pads itself by its measured height.
+                <View className="absolute bottom-0 inset-x-0 z-10" pointerEvents="box-none">
+                    <EdgeBlurView edge="bottom" config={edgeBlurConfig('footer')} washClassName={CHAT_OVERLAY_COMPOSER_FADE} pointerEvents="box-none">
+                        {composerBox}
+                    </EdgeBlurView>
                 </View>
-            </View>
+            ) : (
+                composerBox
             )}
         </View>
     );

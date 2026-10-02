@@ -21,7 +21,7 @@ export const settingsLayout = {
         page_content_width:{
             layout_1_column_thin: 'w-full max-w-md',
             layout_1_column_half: 'w-full max-w-4xl',
-            messenger: 'w-full',
+            chat: 'w-full',
             // Page URI or layout name. Forks override in customization/settings.js.
             'tasks-home': 'w-full',
             task: 'w-full',
@@ -33,7 +33,7 @@ export const settingsLayout = {
         // Missing key → `page_content_padding_default`. `[]` = off. `true` = all breakpoints.
         // UNA `config.padding` still wins when the page sends it.
         page_content_padding_layouts: {
-            messenger: [],
+            chat: [],
         },
         page_content_gap: ' gap-4 ',
         page_content_gap_default: ' sm:gap-4 ',
@@ -155,6 +155,9 @@ export const settingsLayout = {
         },
         '/create-account': {
             max_width: '',
+        },
+        copilot: {
+            layout: 'chat',
         },
         home: {
             adjustable: false,
@@ -296,7 +299,7 @@ export const settingsLayout = {
                 },
             },
         },
-        messenger: {
+        chat: {
             adjustable: true,
             sizable: true,
             cells: {

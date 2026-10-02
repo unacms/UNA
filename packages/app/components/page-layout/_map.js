@@ -16,7 +16,7 @@ const PageCustomCreateAccount = dynamic(() => import('app/components/page-layout
 const PageCustomLogin = dynamic(() => import('app/components/page-layout/login'), { loading: DynamicFallback });
 const PageUniversal = dynamic(() => import('app/components/page-layout/universal'), { loading: DynamicFallback });
 const PageLayoutPlay = dynamic(() => import('./play'), { loading: DynamicFallback });
-const PageCustomMessenger = dynamic(() => import('app/components/page-layout/messenger'), { loading: DynamicFallback });
+const PageCustomChat = dynamic(() => import('app/components/page-layout/chat'), { loading: DynamicFallback });
 const PageWiki = dynamic(() => import('app/components/page-layout/wiki'), { loading: DynamicFallback });
 // Dev-only playgrounds.
 const PagePlayground = dynamic(() => import('app/components/page-layout/_playground/playground'), { loading: DynamicFallback });
@@ -36,7 +36,8 @@ export const componentsMapDefault = {
     'post-without-comments': PageCustomPostWithoutComments,
     'navigator': PageCustomNavigator,
     'navigator_search': PageCustomNavigatorSearch,
-    'messenger': PageCustomMessenger,
+    'chat': PageCustomChat,
+    'messenger': PageCustomChat, // alias of `chat`
     'profile': PageCustomProfile,
     'profile-alt': PageCustomProfile,
     'home': PageCustomHome,

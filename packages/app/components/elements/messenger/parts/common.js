@@ -8,7 +8,7 @@ import useFetchForm from 'app/lib/hooks/use-fetch-form'
 import { useCurrentUser } from 'app/context/user';
 import { subscribe } from 'app/ui/atoms/socket';
 import { KbStickyView } from 'app/ui/atoms/kb-avoiding-view';
-import CreateConvo from 'app/components/elements/messenger/parts/new-convo';
+import CreateConvo, { CreateConvoButton } from 'app/components/elements/messenger/parts/new-convo';
 import Msg from 'app/ui/molecules/dialogs/msg';
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import Profile from 'app/ui/molecules/profile/profile'
@@ -16,26 +16,23 @@ import ElementMsg from 'app/components/elements/msg';
 import emitter, { EVENTS } from 'app/context/emitter';
 import { getWindowSafeAreaInsets, useIsFocused, useSafeAreaInsets } from 'app/lib/hooks/router'
 import { useTranslation } from 'react-i18next'
-import {
-    Panel,
-    PanelGroup,
-    PanelHandler,
-} from 'app/ui/molecules/page/resizable-panels'
+import ChatPanels from 'app/components/elements/chat/parts/chat-panels'
 import { useIsDesktop } from 'app/context/measure';
 import { areTabBarLabelsHidden, getTabList } from 'app/components/nav/tabs/tab-menu';
 import { useFooterHeight } from 'app/context/jotai/layout';
 import { PageHeaderOptions } from 'app/ui/molecules/header/options';
-import ConvosPanel from 'app/components/elements/messenger/parts/convos-panel';
+import ConvosList from 'app/components/elements/chat/parts/convos-list';
+import ItemConvo from 'app/components/elements/messenger/parts/item-convo';
 import JotsPanel, { ChatEmptyState } from 'app/components/elements/messenger/parts/jots-panel';
 import Composer from 'app/components/elements/messenger/parts/composer';
+import { MobileListHeader, MobileChatHeader, ConvoActionsMenu } from 'app/components/elements/messenger/parts/headers';
 import {
-    MobileListHeader,
-    MobileChatHeader,
-    ChatPanelHeader,
-    MESSENGER_OVERLAY_HEADER,
-    MESSENGER_OVERLAY_HEADER_FADE,
-    MESSENGER_OVERLAY_COMPOSER_FADE,
-} from 'app/components/elements/messenger/parts/headers';
+    PanelHeader,
+    PANEL_HEADER_HEIGHT,
+    CHAT_OVERLAY_HEADER,
+    CHAT_OVERLAY_HEADER_FADE,
+    CHAT_OVERLAY_COMPOSER_FADE,
+} from 'app/components/elements/chat/parts/headers';
 import { EdgeBlurView, edgeBlurConfig } from 'app/ui/atoms/edge-blur';
 
 const isWeb = Platform.OS === 'web';
@@ -46,12 +43,9 @@ const TAB_BAR_HEIGHT = Platform.OS === 'ios' ? 52 : 56
 // post.js) — the iOS NativeTabs bar floats over the screen.
 const NATIVE_TAB_BAR_RESERVE = 56;
 
-/** Height of the in-panel desktop header rows (search / chat title), h-16. */
-const PANEL_HEADER_HEIGHT = 64;
-
 /**
  * Messenger root: owns conversation selection, panel visibility, URL/history
- * sync and the injected page header. Composes ConvosPanel / JotsPanel /
+ * sync and the injected page header. Composes ConvosList / JotsPanel /
  * Composer (small screens: stacked list ↔ chat; web desktop: resizable
  * two-column split inside the UNA block).
  */
@@ -516,9 +510,20 @@ export default function Messenger({ defaultConvoId, selectedMenu, convos, fetchC
     // ---------------------------------------------------------------------
     // Render
     // ---------------------------------------------------------------------
-    const cellsCustomConfig = appSetting('layouts', 'messenger')
     const jotsLoaded = !!(panelsVisible.jots && selectedConvo && jots?.data?.jots);
     const errorOffset = listError ? 60 : 0;
+    const convosListProps = {
+        title: t('Messages'),
+        emptyText: t('No conversations found'),
+        emptyAction: ({ resetSearch }) => (
+            addButtons?.length > 0 ? <CreateConvoButton variant="secondary" onSave={onSave} onShow={resetSearch} /> : null
+        ),
+        // Small screens show the list or the chat, never both, so a "current" row
+        // would only linger after Back. Desktop keeps it highlighted next to the open chat.
+        renderItem: ({ item, index }) => (
+            <ItemConvo selectedIndex={isSmallScreen ? -1 : selectedConvoIndex} item={item} index={index} changeConvo={changeConvo} />
+        ),
+    };
 
     if (isSmallScreen) {
         // Native: absolute page header, so the list fills the tab screen and
@@ -537,13 +542,10 @@ export default function Messenger({ defaultConvoId, selectedMenu, convos, fetchC
             <View className='web:h-auto w-full h-full flex-row'>
                 <PageHeaderOptions main={injectedHeader} />
                 {panelsVisible.convos && <View className='w-full'>
-                    <ConvosPanel
+                    <ConvosList
+                        {...convosListProps}
                         data={convosData}
-                        pageData={pageData}
-                        selectedConvoIndex={selectedConvoIndex}
-                        changeConvo={changeConvo}
                         onSearch={handleSearch}
-                        onSave={onSave}
                         addButtons={addButtons}
                         isSmallScreen={true}
                         footerInset={bottomBarInset}
@@ -580,7 +582,7 @@ export default function Messenger({ defaultConvoId, selectedMenu, convos, fetchC
                                 : { position: 'absolute', left: 0, right: 0, bottom: tabBarOverlayInset, zIndex: 10 }}
                             offset={{ closed: 0, opened: stickyOpened }}
                         >
-                            <EdgeBlurView edge="bottom" config={edgeBlurConfig('footer')} washClassName={MESSENGER_OVERLAY_COMPOSER_FADE} pointerEvents="box-none">
+                            <EdgeBlurView edge="bottom" config={edgeBlurConfig('footer')} washClassName={CHAT_OVERLAY_COMPOSER_FADE} pointerEvents="box-none">
                                 <View onLayout={handleFormLayout} className="w-full" pointerEvents="auto">
                                     <Composer
                                         form={data.form}
@@ -604,40 +606,24 @@ export default function Messenger({ defaultConvoId, selectedMenu, convos, fetchC
     const desktopJotsHeight = Math.max(0, contentHeight);
 
     return (
-        <View className="h-full w-full min-h-0" onLayout={handleSplitLayout}>
-            <PanelGroup
-                key={`cells-messenger-${cellsCustomConfig.sizable ? 'sizable' : 'static'}`}
-                autoSaveId={cellsCustomConfig.sizable ? `cells-messenger` : undefined}
-                direction="horizontal"
-                className="w-full min-w-0 relative flex-row"
-                style={{ height: contentHeight || '100%', overflow: 'hidden' }}
-            >
-                <Panel
-                    className={`block min-w-0`}
-                    {...cellsCustomConfig.cells?.left}
-                >
-                    <ConvosPanel
+        <ChatPanels
+            height={contentHeight}
+            onLayout={handleSplitLayout}
+            left={
+                    <ConvosList
+                        {...convosListProps}
                         data={convosData}
-                        pageData={pageData}
                         panelHeight={contentHeight}
                         listHeight={contentHeight}
-                        selectedConvoIndex={selectedConvoIndex}
-                        changeConvo={changeConvo}
                         onSearch={handleSearch}
-                        onSave={onSave}
                         addButtons={addButtons}
                         isSmallScreen={false}
                         menuItems={menuItems}
                         menuIndex={menuIndex}
                         onMenuChange={onMenuChange}
                     />
-                </Panel>
-                <PanelHandler
-                    gap="hidden lg:block"
-                    sizable={cellsCustomConfig.sizable}
-                    panelLine={cellsCustomConfig['panel-line']}
-                />
-                <Panel className="w-full min-w-0" {...cellsCustomConfig.cells?.center}>
+            }
+            center={
                     <View className='relative h-full min-h-0 overflow-hidden border-border/60 lg:border-l '>
                         <Msg onVisible={showMsg} title={showMsg} handleOk={() => { setShowMsg(false) }} />
                         {selectedConvo ? (
@@ -654,9 +640,9 @@ export default function Messenger({ defaultConvoId, selectedMenu, convos, fetchC
                                         footerInset={formHeight + errorOffset}
                                     />
                                 ) : null}
-                                <EdgeBlurView edge="top" config={edgeBlurConfig('footer')} className={MESSENGER_OVERLAY_HEADER} washClassName={MESSENGER_OVERLAY_HEADER_FADE} pointerEvents="box-none">
+                                <EdgeBlurView edge="top" config={edgeBlurConfig('footer')} className={CHAT_OVERLAY_HEADER} washClassName={CHAT_OVERLAY_HEADER_FADE} pointerEvents="box-none">
                                     <View pointerEvents="auto">
-                                        <ChatPanelHeader title={selectedConvo.title} onAction={handleConvoAction} />
+                                        <PanelHeader title={selectedConvo.title} actions={<ConvoActionsMenu onAction={handleConvoAction} style="glass" />} />
                                     </View>
                                 </EdgeBlurView>
                                 {listError ? (
@@ -668,7 +654,7 @@ export default function Messenger({ defaultConvoId, selectedMenu, convos, fetchC
                                     style={{ position: 'absolute', left: 0, right: 0, bottom: 0, zIndex: 10 }}
                                     offset={{ closed: 0, opened: 0 }}
                                 >
-                                    <EdgeBlurView edge="bottom" config={edgeBlurConfig('footer')} washClassName={MESSENGER_OVERLAY_COMPOSER_FADE} pointerEvents="box-none">
+                                    <EdgeBlurView edge="bottom" config={edgeBlurConfig('footer')} washClassName={CHAT_OVERLAY_COMPOSER_FADE} pointerEvents="box-none">
                                         <View onLayout={handleFormLayout} className='w-full' pointerEvents="auto">
                                             <Composer
                                                 form={data.form}
@@ -684,8 +670,7 @@ export default function Messenger({ defaultConvoId, selectedMenu, convos, fetchC
                             <ChatEmptyState />
                         )}
                     </View>
-                </Panel>
-            </PanelGroup>
-        </View>
+            }
+        />
     )
 }

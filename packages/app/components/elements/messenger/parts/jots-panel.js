@@ -5,7 +5,7 @@ import { View } from 'app/design/view';
 import UniList from 'app/ui/atoms/unilist';
 import ItemJot from 'app/components/elements/messenger/parts/item-jot';
 import { Icon } from 'app/ui/atoms/icon';
-import { MessengerListInset } from 'app/components/elements/messenger/parts/headers';
+import { ListInset } from 'app/components/elements/chat/parts/headers';
 import { useTranslation } from 'react-i18next';
 
 const isWeb = Platform.OS === 'web';
@@ -17,14 +17,14 @@ const JotsPanel = memo(function JotsPanel({ data, listHeight, refListJots, start
         if (isWeb) {
             return {
                 components: {
-                    Header: () => <MessengerListInset height={headerInset} />,
-                    Footer: () => <MessengerListInset height={footerInset} />,
+                    Header: () => <ListInset height={headerInset} />,
+                    Footer: () => <ListInset height={footerInset} />,
                 },
             };
         }
         return {
-            ListHeaderComponent: <MessengerListInset height={invertedNative ? footerInset : headerInset} />,
-            ListFooterComponent: <MessengerListInset height={invertedNative ? headerInset : footerInset} />,
+            ListHeaderComponent: <ListInset height={invertedNative ? footerInset : headerInset} />,
+            ListFooterComponent: <ListInset height={invertedNative ? headerInset : footerInset} />,
         };
     }, [headerInset, footerInset]);
 

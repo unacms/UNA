@@ -1,8 +1,7 @@
 import { View, Row } from 'app/design/view';
 import { fetcher } from 'app/lib/fetcher';
 import React, { useState, useMemo, useCallback } from 'react';
-import Profile from 'app/ui/molecules/profile/profile'
-import Time from 'app/ui/atoms/time'
+import MessageItem from 'app/components/elements/chat/parts/message-item'
 import { Button } from 'app/design/controls'
 import Form from 'app/components/elements/form';
 import useFetchForm from 'app/lib/hooks/use-fetch-form'
@@ -63,23 +62,35 @@ export default function JotItem({ item, index, handleReply }) {
         params: { ...item.reactions.params, button_size: "xs", button_variant: "link" }
     };
 
-    const Jot = <TouchableWithoutFeedback onPress={() => { emitter.emit(EVENTS.editor, { action: 'blur' }) }}><View className='w-full px-4 mt-3'>
-        <Row className="gap-2">
-            
-                <Profile {...item.author_data} displayType="unit_wo_info" displaySize="base" showInfo="false" />
-            
-            <View className='flex-auto'>
-                <View className='bg-card/60 shadow-card-outline dark:shadow-card-outline-deep rounded-xl px-3 ' >
-                    <Row className="items-center w-full justify-between gap-1 mb-0.5 pt-2">
-                        <Profile
-                            {...item.author_data}
-                            displayType="unit_wo_image"
-                        />
-                        
-                        <View className="">
-                            <Time className="text-muted-foreground text-sm" ts={item.created}></Time>
-                        </View>
-                    </Row>
+    const Jot = <TouchableWithoutFeedback onPress={() => { emitter.emit(EVENTS.editor, { action: 'blur' }) }}><View className='w-full'>
+        <MessageItem
+            author={item.author_data}
+            time={item.created}
+            footer={
+            <View className="flex-row justify-between items-center mt-0.5">
+                <View className="pl-12">
+                    <Button align="start" title={t("Reply")} size="xs" startDecorator="MessageCircle" variant="link" onPress={() => handleReplyInner(item)} rounded />
+                </View>
+                <Row className='gap-1'>
+                    <View className=''>
+                        <Reactions key={'reactions_' + item.id} {...reactionsWithUpdatedParams} />
+                    </View>
+                    {aManageMenu.length > 0 &&
+                        <DropdownMenu items={aManageMenu.map((aItem) => {
+                            return {
+                                id: aItem.id + '-' + aItem.name,
+                                name: aItem.name,
+                                link: aItem.link,
+                                title: aItem.title
+                            };
+                        })} onSelect={handleManageMenuSelect}>
+                            <Button variant="text" size="xs" startDecorator="Ellipsis" rounded />
+                        </DropdownMenu>
+                    }
+                </Row>
+            </View>
+                }
+        >
                     {viewState.view == 'edited' ? (
                         <Modal
                             title={t("Edit")}
@@ -124,31 +135,7 @@ export default function JotItem({ item, index, handleReply }) {
                         />
                         {aImg.length > 0 && <View className="max-w-xs w-full"><Carousel data={aImg} /></View>}
                     </View>}
-                </View>
-            </View>
-        </Row>
-        <View className="flex-row justify-between items-center mt-0.5">
-            <View className="pl-12">
-                <Button align="start" title={t("Reply")} size="xs" startDecorator="MessageCircle" variant="link" onPress={() => handleReplyInner(item)} rounded />
-            </View>
-            <Row className='gap-1'>
-                <View className=''>
-                    <Reactions key={'reactions_' + item.id} {...reactionsWithUpdatedParams} />
-                </View>
-                {aManageMenu.length > 0 &&
-                    <DropdownMenu items={aManageMenu.map((aItem) => {
-                        return {
-                            id: aItem.id + '-' + aItem.name,
-                            name: aItem.name,
-                            link: aItem.link,
-                            title: aItem.title
-                        };
-                    })} onSelect={handleManageMenuSelect}>
-                        <Button variant="text" size="xs" startDecorator="Ellipsis" rounded />
-                    </DropdownMenu>
-                }
-            </Row>
-        </View>
+        </MessageItem>
     </View></TouchableWithoutFeedback>
 
     return Jot

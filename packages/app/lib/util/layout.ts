@@ -133,8 +133,19 @@ function normalizeContentWidthKey(value: unknown): string {
     return value.split('?')[0]!.replace(/^\/+|\/+$/g, '');
 }
 
+/** `chat` is the shared list | conversation layout; `messenger` is its alias. */
+export function isChatLayout(layoutName: unknown): boolean {
+    return layoutName === 'chat' || layoutName === 'messenger';
+}
+
+/** Layout name used for settings lookups: the alias shares the `chat` entries. */
+function layoutSettingsKey(layoutKey: string): string {
+    return isChatLayout(layoutKey) ? 'chat' : layoutKey;
+}
+
 /** Layout name or page URI from `layout.page_content_width`. URI wins so a page can opt out of its layout cap. */
-export function getPageContentWidth(layoutKey: string, uri?: string): any {
+export function getPageContentWidth(layoutName: string, uri?: string): any {
+    const layoutKey = layoutSettingsKey(layoutName);
     const pageLayouts = appSetting('layout', 'page_content_width') || {};
     const uriKey = normalizeContentWidthKey(uri);
     if (uriKey && Object.prototype.hasOwnProperty.call(pageLayouts, uriKey)) {
@@ -150,8 +161,9 @@ export function getPageContentWidth(layoutKey: string, uri?: string): any {
     return appSetting('layout', 'page_content_width_default');
 }
 
-export function getPageContentPaddingTiers(layoutKey: string): any {
-    if (!layoutKey) return undefined;
+export function getPageContentPaddingTiers(layoutName: string): any {
+    if (!layoutName) return undefined;
+    const layoutKey = layoutSettingsKey(layoutName);
     const pageLayouts = appSetting('layout', 'page_content_padding_layouts') || {};
     return Object.prototype.hasOwnProperty.call(pageLayouts, layoutKey)
         ? pageLayouts[layoutKey]
@@ -252,7 +264,7 @@ export function getHeaderSettings(uri: string, isDesktop: boolean, layout: strin
         if (layout == 'navigator') {
             settings = { headerSettings: { offset: isDesktop ? true : false, header: false, backButton: false, menu: true, footer: true } }
         }
-        if (layout == 'messenger') {
+        if (isChatLayout(layout)) {
             settings = { headerSettings: { offset: false, header: false, backButton: false, menu: true, footer: true } }
         }
         if (layout == 'profile') {

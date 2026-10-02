@@ -9,6 +9,14 @@ import Html from 'app/ui/atoms/html';
 import { agentTextToHtml, messageActions, messageImages, messageText, clipAgentText } from './message-content';
 import { ChatActions } from './chat-actions';
 import Image from 'app/ui/atoms/image';
+import MessageItem from 'app/components/elements/chat/parts/message-item';
+
+/** Unix seconds a message was created, or 0 when the transcript carries no time. */
+function messageTime(message) {
+    const created = message?.createdAt;
+    const ms = created instanceof Date ? created.getTime() : typeof created === 'number' ? created : Date.parse(created);
+    return Number.isFinite(ms) ? Math.floor(ms / 1000) : 0;
+}
 
 /**
  * Message body. Agent output is HTML (see agentTextToHtml for how plain prose is
@@ -46,6 +54,7 @@ function ChatBubbleImpl({
     hideIdentity,
     maxChars = 0,
     messageFormat,
+    variant = 'default',
 }) {
     const { t } = useTranslation();
     const isUser = message.role === 'user';
@@ -68,6 +77,46 @@ function ChatBubbleImpl({
               url_avatar: user?.url_avatar,
           }
         : assistant;
+
+    const imagesElement = hasImages ? (
+        <View className="flex-row flex-wrap gap-2 mt-2">
+            {images.map((src) => (
+                <Image
+                    key={src}
+                    src={src}
+                    alt={t('Attached image')}
+                    view="cover"
+                    className="h-28 w-28 rounded-lg"
+                />
+            ))}
+        </View>
+    ) : null;
+    const actionsElement = hasActions ? (
+        <ChatActions
+            actions={actions}
+            onReply={onReply}
+            repliesEnabled={repliesEnabled}
+            chosenReply={chosenReply}
+        />
+    ) : null;
+
+    // Chat look: the messenger's message item (avatar, card with name + time, row below).
+    if (variant === 'chat') {
+        // Buttons without a message of their own: just the row, no empty card.
+        if (!showBubble) return <View className="w-full px-4 pl-16">{actionsElement}</View>;
+        return (
+            <MessageItem
+                author={author}
+                time={messageTime(message)}
+                footer={actionsElement ? <View className="pl-12 mt-0.5">{actionsElement}</View> : null}
+            >
+                <View className="pb-2 gap-0.5">
+                    <MessageBody text={text} isStreaming={isStreaming} format={messageFormat} />
+                    {imagesElement}
+                </View>
+            </MessageItem>
+        );
+    }
 
     return (
         <Row className="gap-2">
@@ -93,29 +142,10 @@ function ChatBubbleImpl({
                             </Text>
                         ) : null}
                         <MessageBody text={text} isStreaming={isStreaming} format={messageFormat} />
-                        {hasImages ? (
-                            <View className="flex-row flex-wrap gap-2 mt-2">
-                                {images.map((src) => (
-                                    <Image
-                                        key={src}
-                                        src={src}
-                                        alt={t('Attached image')}
-                                        view="cover"
-                                        className="h-28 w-28 rounded-lg"
-                                    />
-                                ))}
-                            </View>
-                        ) : null}
+                        {imagesElement}
                     </View>
                 ) : null}
-                {hasActions ? (
-                    <ChatActions
-                        actions={actions}
-                        onReply={onReply}
-                        repliesEnabled={repliesEnabled}
-                        chosenReply={chosenReply}
-                    />
-                ) : null}
+                {actionsElement}
             </View>
         </Row>
     );

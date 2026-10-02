@@ -28,7 +28,7 @@ function PlainContent({ html }) {
 }
 
 /**
- * Same row as the Messages conversation list (messenger/parts/item-convo.js):
+ * Same row as the Messages conversation list (chat/parts/convos-list-item.js):
  * 8px outside + 8px inside the highlight, a 56px avatar (`xl`, like Messages
  * and Connections), time top-right.
  * The text runs on for up to 3 lines instead of title + snippet.
