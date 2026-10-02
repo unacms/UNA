@@ -1,9 +1,11 @@
 import { KeyboardAvoidingView, ScrollView, View } from 'react-native'
 import { Platform } from 'react-native'
 import type { ReactNode } from 'react';
+import { View as AppView } from 'app/design/view';
 import type {
     KbAvoidingViewProps,
     KbAvoidingViewScrollProps,
+    KbGutterViewProps,
     KbStickyViewProps,
     ModalKbAwareScrollProps,
     StickyComposerListInset,
@@ -40,6 +42,11 @@ export default function KbAvoidingView({ children, ...rest }: KbAvoidingViewProp
 /** Web: no keyboard sticky — render as a plain View. */
 export function KbStickyView({ children, offset, enabled, ...rest }: KbStickyViewProps) {
     return <View {...(rest as object)}>{children}</View>;
+}
+
+/** Web: no keyboard covers the tab bar — the gutter stays in `className`. */
+export function KbGutterView({ children, className }: KbGutterViewProps) {
+    return <AppView className={className}>{children}</AppView>;
 }
 
 export function KbAvoidingViewScroll({ children, ...rest }: KbAvoidingViewScrollProps) {

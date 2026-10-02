@@ -1,7 +1,9 @@
 import { View } from 'app/design/view'
-import { useCallback, useMemo, useEffect, type ComponentType, type ReactElement } from 'react'
+import { useCallback, useMemo, useEffect, useRef, type ComponentType, type ReactElement } from 'react'
 import { Platform, RefreshControl } from 'react-native'
 import { AnimatedLegendList } from '@legendapp/list/reanimated'
+import { useSharedValue } from 'react-native-reanimated'
+import { KeyboardGestureArea } from 'react-native-keyboard-controller'
 import { useHeaderHeight, useCoverScrollCompensation } from 'app/context/jotai/layout'
 import { getListScrollOffset, setListScrollOffset } from 'app/lib/cache/list-scroll-cache'
 import { paddingForList } from 'app/customization/functions'
@@ -17,6 +19,7 @@ import {
 } from './shared'
 import { resolveEstimatedItemSize, estimateItemSize } from './item-size'
 import { useCoverRefreshArming } from './use-cover-refresh-arming'
+import { useChatKeyboard } from './use-chat-keyboard'
 import { useListScrollPublisher } from './use-list-scroll-publisher'
 
 /*
@@ -68,6 +71,11 @@ function UniListChromeHeader({
 
 export type { UniListProps } from './shared'
 
+function assignRef(ref: unknown, node: unknown) {
+    if (typeof ref === 'function') ref(node)
+    else if (ref) (ref as { current: unknown }).current = node
+}
+
 export default function UniList(props: UniListProps) {
     const {
         preloadComponent,
@@ -97,6 +105,7 @@ export default function UniList(props: UniListProps) {
         coverOverlayPad = 0,
         coverScrollY,
         tabBarInset = 0,
+        keyboardBottomOffset,
         ...restProps
     } = props
     // RN ScrollView props (keyboardDismissMode, onScrollBeginDrag, …) pass through.
@@ -147,11 +156,37 @@ export default function UniList(props: UniListProps) {
     const { armed: coverRefreshArmed, armedRef: coverRefreshArmedRef, onTopZoneChange } =
         useCoverRefreshArming({ coverScrollY, coverOverlayPad })
 
-    const { handleScroll, scrollYRef } = useListScrollPublisher({
+    // Chat (inverted): LegendList 2.0.19's `initialScrollIndex` sets the iOS
+    // ScrollView's `contentOffset` to the last row's *top*; its viewPosition fix
+    // only reaches the JS state, and it re-seeds on re-render. The chat opened
+    // ~a screen past its end. Pull such an offset back to the native end.
+    const listRef = useRef<any>(null)
+    const snapToEnd = useCallback((animated = false) => {
+        const list = listRef.current
+        const scroller = list?.getNativeScrollRef?.()
+        if (scroller?.scrollToEnd) scroller.scrollToEnd({ animated })
+        else list?.scrollToEnd?.({ animated })
+    }, [])
+
+    const keyboardAnimating = useSharedValue(false)
+    const { handleScroll, scrollYRef, scrollYSV, atEndSV } = useListScrollPublisher({
         url,
         coverScrollY,
         onTopZoneChange,
         pinHeader: !!inverted,
+        onOvershootEnd: inverted ? snapToEnd : undefined,
+        clampPaused: keyboardAnimating,
+    })
+
+    const chatKeyboardEnabled = !!inverted && typeof keyboardBottomOffset === 'number'
+    const chatKeyboard = useChatKeyboard({
+        enabled: chatKeyboardEnabled,
+        bottomOffset: keyboardBottomOffset ?? 0,
+        scrollY: scrollYSV,
+        atEnd: atEndSV,
+        animating: keyboardAnimating,
+        listRef,
+        snapToEnd,
     })
 
     const initialScrollOffset = useMemo(
@@ -253,14 +288,11 @@ export default function UniList(props: UniListProps) {
     // ------------------------------------------------------------------
 
     const setListRef = useCallback((node: unknown) => {
-        if (typeof refer === 'function') {
-            refer(node)
-        } else if (refer) {
-            (refer as { current: unknown }).current = node
-        }
+        assignRef(listRef, node)
+        assignRef(refer, node)
     }, [refer])
 
-    return (
+    const list = (
         <AnimatedLegendList
             // A new url is a new list: drop LegendList's layout cache and let
             // `initialScrollOffset` restore the position for this one.
@@ -293,7 +325,22 @@ export default function UniList(props: UniListProps) {
             estimatedItemSize={estimatedItemSize}
             getEstimatedItemSize={getEstimatedItemSize}
             drawDistance={inverted ? 400 : 250}
+            animatedProps={chatKeyboard.animatedProps}
+            style={chatKeyboard.animatedStyle}
+            // Chat: drag the list down to pull the keyboard away (iOS native).
+            keyboardDismissMode={chatKeyboardEnabled ? 'interactive' : undefined}
             {...rest}
         />
     )
+
+    // Android has no interactive keyboard dismiss of its own; the gesture area
+    // lets the keyboard follow a drag that reaches it, like iOS.
+    if (chatKeyboardEnabled && Platform.OS === 'android') {
+        return (
+            <KeyboardGestureArea interpolator="ios" style={{ flex: 1 }}>
+                {list}
+            </KeyboardGestureArea>
+        )
+    }
+    return list
 }

@@ -1,13 +1,15 @@
 import { use, useEffect, useState, type ComponentProps, type ReactNode } from 'react';
 import { HeaderHeightContext } from "expo-router/react-navigation";
 import { Keyboard, Platform } from 'react-native'
-import { KeyboardAwareScrollView, KeyboardAvoidingView, KeyboardProvider, KeyboardStickyView, useKeyboardState } from "react-native-keyboard-controller";
+import { KeyboardAwareScrollView, KeyboardAvoidingView, KeyboardProvider, KeyboardStickyView, useKeyboardState, useReanimatedKeyboardAnimation } from "react-native-keyboard-controller";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useStableSafeAreaInsets } from "app/lib/hooks/router";
-import Animated from "react-native-reanimated";
+import Animated, { Extrapolation, interpolate, useAnimatedStyle } from "react-native-reanimated";
+import { View } from "app/design/view";
 import type {
     KbAvoidingViewProps,
     KbAvoidingViewScrollProps,
+    KbGutterViewProps,
     KbStickyViewProps,
     ModalKbAwareScrollProps,
     StickyComposerListInset,
@@ -79,6 +81,26 @@ export function KbStickyView({ children, style, offset, enabled = true, ...rest 
             {children}
         </KeyboardStickyView>
     )
+}
+
+/**
+ * Side padding that eases from `gutter.rest` to `gutter.open` as the keyboard
+ * comes up, in step with KbStickyView: a composer lined up with the tab bar can
+ * widen once the keyboard covers the bar. Vertical padding stays in `className`.
+ */
+export function KbGutterView({ children, className, gutter }: KbGutterViewProps) {
+    const { progress } = useReanimatedKeyboardAnimation();
+    const rest = gutter?.rest ?? 0;
+    const open = gutter?.open ?? 0;
+    const gutterStyle = useAnimatedStyle(() => ({
+        paddingHorizontal: interpolate(progress.value, [0, 1], [rest, open], Extrapolation.CLAMP),
+    }));
+    if (!gutter) return <View className={className}>{children}</View>;
+    return (
+        <View className={className}>
+            <Animated.View style={gutterStyle}>{children}</Animated.View>
+        </View>
+    );
 }
 
 export function ModalKeyboardProvider({ children }: { children?: ReactNode }) {

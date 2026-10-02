@@ -55,6 +55,12 @@ export type UniListProps<T = any> = {
     coverOverlayPad?: number
     /** Space after the last row for a tab bar drawn over the list (NativeTabs). */
     tabBarInset?: number
+    /**
+     * Chat (inverted): move the rows up with the keyboard. The value is the part of
+     * the keyboard height the screen already pads for (the bar under the composer),
+     * like KbStickyView's `offset.opened`.
+     */
+    keyboardBottomOffset?: number
     /** Reanimated shared value the cover reads. */
     coverScrollY?: SharedValue<number>
     estimatedItemSize?: number
@@ -124,7 +130,7 @@ export const WEB_ONLY_PROPS = [
  */
 export const NATIVE_ONLY_PROPS = [
     'inverted', 'isModal', 'skipHeaderOffset', 'coverOverlayPad', 'coverScrollY', 'tabBarInset',
-    'estimatedItemSize', 'refreshControl', 'progressViewOffset', 'scrollProps',
+    'keyboardBottomOffset', 'estimatedItemSize', 'refreshControl', 'progressViewOffset', 'scrollProps',
     'contentContainerStyle', 'contentContainerClassName',
     'maxToRenderPerBatch', 'initialNumToRender', 'initialScrollIndex', 'numColumns',
     'keyExtractor', 'extraData', 'keyboardShouldPersistTaps', 'keyboardDismissMode',
