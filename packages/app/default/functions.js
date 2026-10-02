@@ -1,5 +1,8 @@
+import { Platform } from 'react-native'
 import { fetcher } from 'app/lib/fetcher'
 import { updateRouteDataForConnection, appSetting } from 'app/lib/util'
+import { normalizeTiers, responsiveClasses } from 'app/lib/responsive-classes'
+import { FLUSH_LIST_MODULES } from 'app/components/units/flush-list'
 import { components } from 'app/components/registry';
 import { settingsLayout } from 'app/settings/layout'
 import i18n from 'i18next'
@@ -58,24 +61,45 @@ export function layoutForList(endpoint, unitMode = '') {
     return 'w-full @list-sm/list:w-1/2 @list-md/list:w-1/3 @list-lg/list:w-1/4 @list-xl/list:w-1/4 @list-sm/list:p-2 @list-md/list:p-2 ';
 }
 
-export function paddingForList(endpoint, isDesktop = false) {
+/**
+ * Card chrome for a browse list, from its block's App config in UNA, e.g.
+ * {"designbox": {"bg": ["tablet", "desktop"]}}: the theme's block background,
+ * radius (`rounded` tiers) and space around the card, on the tiers listed.
+ * Web only: a native list scrolls under the overlaid page header and pads for
+ * it inside, so a card on its content would reach up under the header.
+ */
+function listCardClasses(designbox) {
+    if (Platform.OS !== 'web') return '';
+    const bg = normalizeTiers(designbox?.bg);
+    if (!bg) return '';
+    const rounded = responsiveClasses('rounded', designbox?.rounded);
+    if (bg === true) return [appSetting('theme', 'blocks', 'u-block-bg'), rounded, 'my-4'].join(' ');
+    return [responsiveClasses('bg', bg), rounded, responsiveClasses('card-my', bg)].join(' ');
+}
 
-    // Notifications sit in a block card on desktop web only. Mobile (web and
-    // native) runs the list edge to edge, like Messages — on native a card
-    // would also reach up under the page header (the list pads for it inside).
-    if (endpoint?.unit == "notifications")
-        return isDesktop
-            ? appSetting('theme', 'blocks', 'u-block-rounded') + ' ' + appSetting('theme', 'blocks', 'u-block-bg') + ' my-4'
-            : '';
-    // Timeline and notifications use no padding (full width items)
+export function paddingForList(endpoint) {
+    const card = listCardClasses(endpoint?.designbox);
+
+    // Timeline uses no padding (full width items)
     if (!endpoint || endpoint?.request_url?.includes('bx_timeline') || endpoint?.params?.request_url?.includes('bx_timeline'))
-        return '';
+        return card;
+    // Notification rows inset themselves 8px on the sides but sit 2px apart:
+    // 6px more at the top and bottom puts the first and last rows 8px from the
+    // list's edges too (below the subtabs, and inside the card where it shows).
+    if (endpoint?.unit == "notifications")
+        return ['py-1.5', card].join(' ').trim();
     // Groups and grid layouts get padding for better spacing
     if (endpoint?.module == 'bx_groups' || endpoint?.request_url?.includes('r=bx_groups'))
-        return 'm-1.5 @list-md/list:m-1.5';
+        return ['m-1.5 @list-md/list:m-1.5', card].join(' ').trim();
+    // Profile lists run flush rows on mobile: each row is its own card 8px in
+    // from the sides, with no gap between rows. 8px at the top and bottom puts
+    // the first and last cards 8px from the list's edges too (and 14px under the
+    // subtabs, like Notifications and Messages). The sm+ grid spaces its cards.
+    if (FLUSH_LIST_MODULES.has(endpoint?.module))
+        return [settingsLayout.layout.padding_content, 'py-2 sm:py-0', card].join(' ').trim();
 
     // Default padding for grid-based content lists
-    return settingsLayout.layout.padding_content;
+    return [settingsLayout.layout.padding_content, card].join(' ').trim();
 }
 
 

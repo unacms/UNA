@@ -11,10 +11,12 @@
 
 const DEFAULT_ROW = 100
 const BLOCK_ROW = 160
+// 56px avatar + 8px inside + 2px outside, top and bottom.
+const NOTIFICATION_ROW = 76
 
 const ESTIMATED_ITEM_SIZE_BY_UNIT: Record<string, number> = {
     feed: 140,
-    notifications: 64,
+    notifications: NOTIFICATION_ROW,
 }
 
 /** Baseline row height for a unit; explicit prop wins. */
@@ -37,7 +39,7 @@ export function estimateItemSize(unit: string | undefined, item: any, fallback: 
     }
 
     if (unit === 'notifications') {
-        return 64
+        return NOTIFICATION_ROW
     }
 
     if (unit === 'feed') {

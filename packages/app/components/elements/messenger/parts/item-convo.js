@@ -28,12 +28,13 @@ export default function ({ item, index, changeConvo, selectedIndex }) {
                 <Profile
                     {...participants[0]}
                     displayType="unit_wo_info"
-                    displaySize="base"
+                    displaySize="xl"
                 />
             </View>
             <View className="flex-1 my-auto ">
-                <Row className="items-center gap-1 ">
-                <Text className="block flex-1 min-w-0 text-sm leading-5 font-bold text-card-foreground web:group-hover:text-foreground line-clamp-1 truncate overflow-hidden max-w-full" numberOfLines={1}>
+                <Row className="items-center gap-2">
+                {/* Same type as the feed author name (profile_sizes.base + profile-link). */}
+                <Text className="block flex-1 min-w-0 text-base leading-6 font-semibold tracking-tight text-foreground line-clamp-1 truncate overflow-hidden max-w-full" numberOfLines={1}>
                     {names}
                 </Text>
                 <Time className="text-sm text-muted-foreground whitespace-nowrap" ts={item.date}></Time>
@@ -54,7 +55,7 @@ export default function ({ item, index, changeConvo, selectedIndex }) {
             )}
 
             {participants.length > 1 && (
-                <View className="absolute bottom-1 start-8 bg-muted border border-card h-5 text-center justify-center rounded-full px-1">
+                <View className="absolute bottom-1 start-10 bg-muted border border-card h-5 text-center justify-center rounded-full px-1">
                     <Text className="text-center items-center text-muted-foreground text-xs font-semibold">
                         +{participants.length - 1}
                     </Text>

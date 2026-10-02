@@ -18,6 +18,7 @@ import {
     menuItemsByName,
     visibilityById,
     runMenuItemCallback,
+    decodeText,
 } from 'app/lib/util'
 import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
@@ -204,6 +205,9 @@ export function prepareData(data) {
     return { url, commentsData, isShowMoreComments }
 }
 
+// `feed_type_*` translations wrap the noun in <b>…</b>; split() keeps it at odd indexes.
+const ACTION_NOUN = /<b>([\s\S]*?)<\/b>/;
+
 export const ItemInfo = memo(({ data, t }) => {
     const [showContextList, setShowContextList] = useState(false)
     const owners = data.owners
@@ -219,7 +223,7 @@ export const ItemInfo = memo(({ data, t }) => {
                     <Icon className="text-muted-foreground" icon='Dot' size={14} />
 
                     <Link href={data.owners[0].url} emulate={true}>
-                        <Text className=" text-secondary-foreground web:hover:text-accent-foreground font-medium text-xs ">
+                        <Text className=" text-secondary-foreground web:hover:text-accent-foreground font-normal text-sm leading-5 ">
                             {owners[0].title}
                         </Text>
                     </Link>
@@ -232,7 +236,7 @@ export const ItemInfo = memo(({ data, t }) => {
                             setShowContextList(true)
                         }}
                     >
-                        <Text className=" bg-muted px-1.5 leading-5 items-center justify-text-center justify-center h-5 rounded-md text-muted-foreground web:hover:text-accent-foreground text-xs font-medium">
+                        <Text className=" bg-muted px-1.5 leading-5 items-center justify-text-center justify-center h-5 rounded-md text-muted-foreground web:hover:text-accent-foreground text-sm font-normal">
                             {owners[0].title} + {owners.length - 1}
                         </Text>
                     </Pressable>
@@ -285,19 +289,23 @@ export const ItemInfo = memo(({ data, t }) => {
         let l = t(typeKey)
        
         if (l === typeKey) {
-            l = t('added a') + ' ' + t('item_' + data.type)
+            l = t('added a') + ' <b>' + t('item_' + data.type) + '</b>'
         }
         if (data.type == 'timeline_common_repost') {
-            l += ' ' + data.content.owner_name + "'s " + data.content.parse_type
+            l += ' <b>' + data.content.owner_name + "'s " + data.content.parse_type + '</b>'
         }
+        // The action reads regular, the thing it names semibold: "added a <b>Discussion</b>".
+        const parts = l ? l.split(ACTION_NOUN) : []
         return (
             l && (
                 <>
 
                     <Icon className="text-muted-foreground" icon='Dot' size={14} />
 
-                    <Text className="text-secondary-foreground font-semibold tracking-tight text-xs leading-5 ">
-                        {l}
+                    <Text className="text-secondary-foreground font-normal text-sm leading-5 ">
+                        {parts.map((part, i) => i % 2
+                            ? <Text key={i} className="font-semibold">{part}</Text>
+                            : decodeText(part))}
                     </Text>
                 </>
             )
@@ -503,7 +511,7 @@ export const VisibilityInfo = memo(({ data }) => {
             ) : icon ? (
                 <Icon className="text-secondary-foreground py-0.5 " icon={icon} width={14} height={14} />
             ) : null}
-            <Text className="text-secondary-foreground text-xs font-semibold tracking-tight leading-5">
+            <Text className="text-secondary-foreground text-sm font-normal leading-5">
                 {isUser ? data.author_data.display_name : text}
             </Text>
         </View>
@@ -561,8 +569,9 @@ export const Author = memo(({ data, url, t }) => {
                       mode: 'text',
                       hitSlop: { top: 8, bottom: 8, left: 8, right: 8 },
                   })}
-            size="xs"
+            size="sm"
             variant="secondary"
+            className="font-normal"
         >
             <Time ts={data.date} className="text-secondary-foreground" />
         </Link>

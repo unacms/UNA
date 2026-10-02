@@ -58,22 +58,27 @@ const ConvosPanel = memo(function ConvosPanel({
     const fillScreen = !isWeb && isSmallScreen;
     const listH = Math.max(0, listHeight || panelHeight || 0);
     const overlayList = !isSmallScreen;
-    const headerInset = overlayList ? chromeHeight : 0;
+    // Rows inset themselves 8px on the sides but sit 2px apart. 6px more at the
+    // top and bottom puts the first and last rows 8px from the list's edges,
+    // like Notifications (`paddingForList` py-1.5, on web and native).
+    const listEdge = 6;
+    const headerInset = (overlayList ? chromeHeight : 0) + listEdge;
+    const bottomInset = footerInset + listEdge;
     const listOverlayProps = useMemo(() => {
-        if (!headerInset && !footerInset) return {};
+        if (!headerInset && !bottomInset) return {};
         if (isWeb) {
             return {
                 components: {
                     Header: () => <MessengerListInset height={headerInset} />,
-                    Footer: () => <MessengerListInset height={footerInset} />,
+                    Footer: () => <MessengerListInset height={bottomInset} />,
                 },
             };
         }
         return {
             ListHeaderComponent: <MessengerListInset height={headerInset} />,
-            ListFooterComponent: <MessengerListInset height={footerInset} />,
+            ListFooterComponent: <MessengerListInset height={bottomInset} />,
         };
-    }, [headerInset, footerInset]);
+    }, [headerInset, bottomInset]);
 
     const list = data && data.length > 0 ? (
         <UniList
