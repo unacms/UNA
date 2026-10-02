@@ -19,9 +19,12 @@ UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_payment_checkout
 -- MENUS:
 UPDATE `sys_menu_items` SET `link`='page.php?i=payment-carts' WHERE `set_name`='sys_account_notifications' AND `module`='system' AND `name`='cart';
 UPDATE `sys_menu_items` SET `link`='page.php?i=payment-orders' WHERE `set_name`='sys_account_notifications' AND `module`='system' AND `name`='orders';
+UPDATE `sys_menu_items` SET `link`='page.php?i=payment-sbs-list-my' WHERE `set_name`='sys_account_dashboard' AND `module`='system' AND `name`='dashboard-subscriptions';
 UPDATE `sys_menu_items` SET `link`='page.php?i=payment-orders' WHERE `set_name`='sys_account_dashboard' AND `module`='system' AND `name`='dashboard-orders';
 
+
 -- MENUS: config_api
+
 
 -- MENUS: active_api
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_account_settings' AND `module`='bx_payment' AND `name`='payment-details';
