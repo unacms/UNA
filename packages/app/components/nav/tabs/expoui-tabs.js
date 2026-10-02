@@ -10,7 +10,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { PixelRatio, Platform, Pressable, useWindowDimensions } from 'react-native';
 import { Image } from 'expo-image';
 import { View } from 'app/design/view';
-import { androidTabBarHeight, appSetting, findIconFromRemote, isAndroid, isIos, FeedbackHaptics, clearNotif } from 'app/lib/util';
+import { androidTabBarHeight, appSetting, findIconFromRemote, isAndroid, isIos, FeedbackHaptics, clearNotif, IOS_TAB_BAR_MARGIN } from 'app/lib/util';
 import { useTranslation } from 'react-i18next';
 import { TabSlideHost } from 'app/components/nav/tab-slide';
 import { playTabFeedback } from 'app/components/nav/tab-feedback';
@@ -189,7 +189,7 @@ function renderTabTrigger({
  * bottom inset. Taps just outside it reach the `disabled` native tab, which
  * opens the menu too (with the indicator's bounce).
  */
-const IOS_TAB_BAR = { margin: 21, padding: 7.5, height: 49 };
+const IOS_TAB_BAR = { margin: IOS_TAB_BAR_MARGIN, padding: 7.5, height: 49 };
 
 function MoreTabTarget({ itemCount, onPress }) {
     const { width } = useWindowDimensions();

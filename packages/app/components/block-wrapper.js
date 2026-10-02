@@ -8,6 +8,7 @@ import { Button, ButtonLink, Modal, NeoButtonLink } from 'app/design/controls'
 import { Icon } from 'app/ui/atoms/icon'
 import { components } from 'app/components/registry'
 import { usePathname } from 'app/lib/hooks/router'
+import { normalizeTiers, responsiveClasses } from 'app/lib/responsive-classes'
 
 function pathComparable(path) {
     return String(path || '').replace(/^\/+/, '').split(/[?#]/)[0]
@@ -75,6 +76,16 @@ export function BlockWrapper({ config, block, wrapperClassses, showTitle, showBg
         bIsShowPadding = false;
     }
 
+    // The block's App config (Studio: "Config (for App in JSON format)") can set
+    // the design box per breakpoint, e.g. {"designbox": {"bg": ["tablet", "desktop"]}}.
+    // Each key (bg, padding, title, rounded) lists the tiers where that part shows;
+    // a missing key keeps designbox_id. Props from code still win below.
+    const designbox = config?.designbox || {};
+    if (designbox.bg != null) bIsShowBg = normalizeTiers(designbox.bg);
+    if (designbox.padding != null) bIsShowPadding = normalizeTiers(designbox.padding);
+    if (designbox.title != null) bIsShowTitle = normalizeTiers(designbox.title);
+    const rounded = designbox.rounded ?? config?.rounded;
+
     if (typeof showBg !== 'undefined') {
         bIsShowBg = showBg;
     }
@@ -122,7 +133,7 @@ export function BlockWrapper({ config, block, wrapperClassses, showTitle, showBg
                     key={block.id}
                     isBg={bIsShowBg}
                     isPad={bIsShowPadding}
-                    rounded={config?.rounded}
+                    rounded={rounded}
                     className={[
                         "w-full mx-auto",
                         fill ? "flex h-full min-h-0 flex-1 flex-col" : "",
@@ -137,6 +148,8 @@ export function BlockWrapper({ config, block, wrapperClassses, showTitle, showBg
                             className={[
                                 fill ? 'shrink-0' : '',
                                 fill && !bIsShowPadding ? 'px-4 pt-4' : '',
+                                // Title on some tiers only: hidden where it's off.
+                                Array.isArray(bIsShowTitle) ? responsiveClasses('title', bIsShowTitle) : '',
                             ].filter(Boolean).join(' ') || undefined}
                         >
                              

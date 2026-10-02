@@ -484,6 +484,21 @@ Cards, tiles, and bordered buttons draw their outline with `shadow-*`, which pai
 
 Leaf-level clipping is fine and expected: rounded media (`rounded-xl overflow-hidden` around an image or video), avatars, progress bars, and `truncate` text.
 
+### Block Design Box per Breakpoint
+
+A block's chrome (card background, padding, title) comes from UNA's `designbox_id`, which is one setting for every screen size. The block's App config (Studio → page builder → block → "Config (for App in JSON format)", sent as `config_api`) can set it per breakpoint, with the same tiers as the page config's `padding` / `gap`:
+
+```json
+{ "designbox": { "bg": ["tablet", "desktop"], "padding": ["mobile", "tablet", "desktop"], "title": ["desktop"], "rounded": ["tablet", "desktop"] } }
+```
+
+- Each key lists the tiers where that part shows: `mobile` (base), `tablet` (`sm:`), `desktop` (`lg:`). `true` / `false` mean every tier / none.
+- A missing key keeps `designbox_id`. Props passed from code (`showBg`, `showPadding`, `showTitle`) still win over both.
+- Keys are nested under `designbox` because `config_api` keys are also spread into every element of the block as props.
+- `BlockWrapper` reads them and `page-block.js` turns tiers into classes through `responsiveClasses` (presets `bg`, `block-pad-x` / `block-pad-y`, `title`, `rounded`). Prefixed classes must stay listed in `@source inline(...)` in `design/styles/utilities.css`; update that list if a fork changes `theme.blocks` `u-block-bg` or the block padding.
+- **List (browse) blocks** skip `BlockWrapper`. The conductor carries their `designbox` on the list endpoint, and `paddingForList` (`default/functions.js`) turns `bg` / `rounded` into a card around the list, with space around it where it shows. Web only: a native list scrolls under the overlaid page header, so a card would reach up under it. Example: Notifications (`bx_notifications_view`) uses `{"designbox": {"bg": ["desktop"]}}`, a card from 1024px up only.
+- Use this instead of per-page or per-block overrides in app code: block ids and pages differ between UNA sites.
+
 ---
 
 ## Animated icons (NEO)

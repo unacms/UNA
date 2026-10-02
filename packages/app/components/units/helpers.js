@@ -19,11 +19,10 @@ import { useTranslation } from 'react-i18next';
 import { Card, CardList } from 'app/ui/molecules/page/card';
 import LinkOrModal from 'app/ui/molecules/dialogs/link-or-modal';
 import { NeoButtonLink } from 'app/design/controls'
+import { FLUSH_LIST_MODULES } from 'app/components/units/flush-list';
 
 const UNIT_SURFACES = { card: Card, list: CardList };
 
-// Profile listings (people + orgs): CardList chrome belongs to the sm+ grid.
-const FLUSH_LIST_MODULES = new Set(['bx_persons', 'bx_organizations', 'system']);
 // Mobile: 8px inside the row's 8px margin (u-card-list-flush), so the photo
 // lines up with the 16px page header and subtabs.
 const FLUSH_LIST_PADDING = 'px-2 py-2 sm:p-2';
@@ -247,7 +246,7 @@ function isFollowersUnitType(unitType) {
 }
 
 function getPersonSocialLabel(data, { isFollowers } = {}) {
-    if (isFollowers) return `${data?.followers_count} followers`;
+    if (isFollowers) return tp('followers', data?.followers_count ?? 0, false);
     if (data?.mutual_friends_count > 0) {
         return tp('mutual_friends', data.mutual_friends_count, false);
     }
@@ -302,15 +301,25 @@ export function useUnitActions({ unitType, data, module, t = null }) {
     );
 }
 
+// Mobile rows use the theme's `xl` avatar (56px), like Messages and
+// Notifications; the sm+ grid shows the photo as a full-width square.
+const ROW_AVATAR = appSetting('theme', 'profile_sizes', 'xl');
+
+// Profile row name and count line: the feed author / Messages title type, then
+// a 20px line like the Messages snippet, with no gap between them.
+export const PROFILE_ROW_NAME = 'text-base leading-6 font-semibold tracking-tight text-foreground web:hover:underline';
+export const PROFILE_ROW_NAME_SKELETON = 'h-4 my-1 w-3/4';
+export const PROFILE_ROW_COUNT = 'truncate text-sm leading-5 font-normal flex-auto text-secondary-foreground';
+
 export function UnitProfileImage({
     data,
     skeleton,
-    skeletonClassName = 'h-24 w-24 sm:h-auto sm:w-full aspect-square',
+    skeletonClassName = `${ROW_AVATAR.container} sm:h-auto sm:w-full aspect-square`,
     rounded = 'rounded-full sm:rounded-lg',
 }) {
     return (
         <Skeleton className={skeletonClassName} rounded={rounded} visible={skeleton}>
-            <View className="h-24 w-24 sm:h-auto sm:w-full aspect-square rounded-full sm:rounded-lg overflow-hidden items-center bg-muted justify-center">
+            <View className={`${ROW_AVATAR.container} sm:h-auto sm:w-full aspect-square rounded-full sm:rounded-lg overflow-hidden items-center bg-muted justify-center`}>
                 <Image
                     src={data?.image?.src}
                     alt={data.title}
@@ -323,7 +332,7 @@ export function UnitProfileImage({
                         title={data?.fullname || data?.title}
                         id={data?.author_data?.id}
                         className="w-full h-full rounded-full sm:rounded-lg"
-                        textClassName="text-4xl sm:text-6xl xl:text-7xl"
+                        textClassName={`${ROW_AVATAR.letter_font} sm:text-6xl xl:text-7xl`}
                     />
                 )}
             </View>
@@ -409,6 +418,29 @@ export function UnitImage({
     );
 }
 
+/** The count text UnitProfileList shows ("6 friends", "12 members"); '' when there is none. */
+export function getProfileListLabel({
+    data,
+    label,
+    unitType,
+    listKey = 'members_list',
+    countKey = 'members',
+    fallbackCountKey,
+}) {
+    const primaryCount =
+        listKey === 'followers_list' ? data?.followers_count : data?.members_count
+    const resolved = unitType
+        ? getPersonSocialLabel(data, { isFollowers: isFollowersUnitType(unitType) })
+        : (label ?? (
+            getCountLabel(primaryCount, countKey) ||
+            (fallbackCountKey
+                ? getCountLabel(data?.members_count, fallbackCountKey)
+                : '')
+        ))
+    // en hides zero counts with a blank translation ("friends_0": " ").
+    return typeof resolved === 'string' ? resolved.trim() : resolved
+}
+
 export function UnitProfileList({
     data,
     label,
@@ -422,31 +454,33 @@ export function UnitProfileList({
     labelClassName = 'truncate text-sm tracking-tight flex-auto text-secondary-foreground',
     maxCount = 3,
     displaySize = '2xs',
+    /** false: just the count label, without the avatar previews. */
+    showList = true,
 }) {
     const isFollowers = !!unitType && isFollowersUnitType(unitType)
     const list = unitType
         ? getPersonSocialList(data, { isFollowers })
         : data?.[listKey]
-    const primaryCount =
-        listKey === 'followers_list' ? data?.followers_count : data?.members_count
-    const resolvedLabel = unitType
-        ? getPersonSocialLabel(data, { isFollowers })
-        : (label ?? (
-            getCountLabel(primaryCount, countKey) ||
-            (fallbackCountKey
-                ? getCountLabel(data?.members_count, fallbackCountKey)
-                : '')
-        ))
+    const resolvedLabel = getProfileListLabel({
+        data,
+        label,
+        unitType,
+        listKey,
+        countKey,
+        fallbackCountKey,
+    })
 
     return (
-        <Skeleton preset="profile-list" visible={skeleton}>
+        <Skeleton preset={showList ? 'profile-list' : undefined} className="h-4 w-20" visible={skeleton}>
             <Row className="items-center gap-1 min-w-0 flex-auto">
-                <ProfilesList
-                    data={list}
-                    showEmpty={false}
-                    maxCount={maxCount}
-                    displaySize={displaySize}
-                />
+                {showList ? (
+                    <ProfilesList
+                        data={list}
+                        showEmpty={false}
+                        maxCount={maxCount}
+                        displaySize={displaySize}
+                    />
+                ) : null}
                 {resolvedLabel ? (
                     <Text className={labelClassName}>{resolvedLabel}</Text>
                 ) : null}
@@ -487,6 +521,8 @@ export function UnitActions({
     primaryClassName,
     secondaryClassName = 'w-full',
     inlineSecondary = false,
+    /** Give it a width when the buttons size to their content (no w-full parent). */
+    skeletonClassName = 'h-9 w-full',
 }) {
     const flushOnMobile = use(UnitSurfaceContext);
     const resolvedPrimaryClassName = primaryClassName ?? (
@@ -507,7 +543,7 @@ export function UnitActions({
     return (
         <View className={className}>
             <View className={resolvedPrimaryClassName}>
-                <Skeleton className="h-9 w-full" rounded="rounded-lg" visible={skeleton}>
+                <Skeleton className={skeletonClassName} rounded="rounded-lg" visible={skeleton}>
                     {primaryMenuItem}
                     {inlineSecondary ? secondary : null}
                 </Skeleton>

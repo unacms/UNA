@@ -1,7 +1,7 @@
 import { View } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { appSetting } from 'app/lib/util'
-import { responsiveClasses } from 'app/lib/responsive-classes'
+import { normalizeTiers, responsiveClasses } from 'app/lib/responsive-classes'
 
 const blockTheme = appSetting('theme', 'blocks')
 
@@ -9,8 +9,6 @@ function createBlockComponent({
     baseClass,
     Component = View,
     role,
-    isBg,
-    isPad,
     ariaLevel,
     animate = false,
 }) {
@@ -21,22 +19,28 @@ function createBlockComponent({
         rounded,
         ...props
     }) {
-        // Card chrome (fill, outline shadow, radius) only when UNA background is on.
-        const roundedClass =
-            baseClass === 'u-block-base' && isBg
-                ? responsiveClasses('rounded', rounded)
-                : '';
+        // isBg / isPad: on or off (UNA designbox), or the tiers ['mobile', 'tablet',
+        // 'desktop'] where they apply (block config `designbox`, see block-wrapper.js).
+        const bg = baseClass === 'u-block-base' ? normalizeTiers(isBg) : false
+        const pad = normalizeTiers(isPad)
+
+        // Card chrome (fill, outline shadow, radius) only where UNA background is on.
+        const bgClass = bg === true ? blockTheme['u-block-bg'] : bg ? responsiveClasses('bg', bg) : ''
+        const roundedClass = bg ? responsiveClasses('rounded', rounded) : ''
 
         // UNA padding: py on the shell, px on header / content / footer.
-        const padY = baseClass === 'u-block-base'
-        const padX = baseClass === 'u-block-header' || baseClass === 'u-block-content' || baseClass === 'u-block-footer'
-        const padClass = isPad
-            ? (padY ? blockTheme['u-block-pad-y'] : padX ? blockTheme['u-block-pad-x'] : '')
-            : ''
+        const padSide = baseClass === 'u-block-base'
+            ? 'pad-y'
+            : baseClass === 'u-block-header' || baseClass === 'u-block-content' || baseClass === 'u-block-footer'
+                ? 'pad-x'
+                : ''
+        const padClass = !padSide || !pad
+            ? ''
+            : pad === true ? blockTheme['u-block-' + padSide] : responsiveClasses('block-' + padSide, pad)
 
         return (
             <Component
-                className={`${baseClass} ${isBg && baseClass == 'u-block-base' ? blockTheme['u-block-bg'] : ''} ${padClass} ${animate ? blockTheme['u-block-animate'] || '' : ''} ${blockTheme[baseClass] || ''} ${roundedClass} ${className}`}
+                className={`${baseClass} ${bgClass} ${padClass} ${animate ? blockTheme['u-block-animate'] || '' : ''} ${blockTheme[baseClass] || ''} ${roundedClass} ${className}`}
                 role={role}
                 aria-level={ariaLevel}
                 {...props}
@@ -47,8 +51,6 @@ function createBlockComponent({
 
 const Block = createBlockComponent({
     baseClass: 'u-block-base',
-    isBg: true,
-    isPad: true,
     animate: true,
 })
 const BlockHeader = createBlockComponent({ baseClass: 'u-block-header' })
