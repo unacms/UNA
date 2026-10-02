@@ -8,9 +8,9 @@ use PHPUnit\Framework\Attributes\DataProvider;
 class BxDolDbTest extends BxDolTestCase
 {
     #[DataProvider('providerForIsValidFieldName')]
-    public function testIsValidFieldName($s, $bRes)
+    public function testIsValidFieldName($s, $bRes, $bStrict = false)
     {
-        $this->assertEquals($bRes, (bool)BxDolDb::getInstance()->isValidFieldName($s));
+        $this->assertEquals($bRes, (bool)BxDolDb::getInstance()->isValidFieldName($s, $bStrict));
     }
 
     static public function providerForIsValidFieldName()
@@ -30,6 +30,14 @@ class BxDolDbTest extends BxDolTestCase
             array('💡', false),
             array('id;', true),
             array('`id`', false),
+            array('table`.`id', true),
+            array('name', true, true),
+            array('имя', false, true),
+            array('id;', false, true),
+            array('na``me2', false, true),
+            array('table`.`id', false, true),
+            array('12345', true, true),
+            array('', false, true),
         );
     }
 

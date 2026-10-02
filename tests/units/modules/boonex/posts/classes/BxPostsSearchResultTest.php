@@ -104,6 +104,35 @@ class BxPostsSearchResultTest extends BxPostsTestCase
         $this->assertSame('bx_posts_posts', $o->aCurrent['restriction']['filter']['table']);
     }
 
+    public function testAddConditionsForFilterRejectsRawTableAndBadNames()
+    {
+        $o = new BxPostsSearchResult('public');
+        $CNF = $this->_oModule->_oConfig->CNF;
+
+        $this->bxCallProtected($o, 'addConditionsForFilter', $CNF, 'public', [
+            'filter' => ['field' => 'id', 'value' => 1, 'operator' => '=', 'table' => 'sys_accounts'],
+        ]);
+        $this->assertArrayNotHasKey('filter', $o->aCurrent['restriction']);
+
+        $this->bxCallProtected($o, 'addConditionsForFilter', $CNF, 'public', [
+            'filter' => ['field' => 'id` OR 1', 'value' => 1, 'operator' => '=', 'table' => 'table'],
+        ]);
+        $this->assertArrayNotHasKey('filter', $o->aCurrent['restriction']);
+
+        $this->bxCallProtected($o, 'addConditionsForFilter', $CNF, 'public', [
+            'filter' => ['field' => 'cat', 'value' => 4, 'operator' => 'or 1=1', 'table' => 'table'],
+        ]);
+        $this->assertArrayNotHasKey('filter', $o->aCurrent['restriction']);
+
+        $o->aCurrent['restriction']['injected'] = [
+            'value' => 'x',
+            'field' => 'id` OR 1',
+            'operator' => '=',
+            'table' => 'bx_posts_posts',
+        ];
+        $this->assertStringNotContainsString('OR 1', $o->getRestriction());
+    }
+
     public function testGalleryUnitViewSwitchesTemplate()
     {
         $sPrev = bx_get('unit_view');

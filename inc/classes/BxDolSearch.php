@@ -1225,7 +1225,15 @@ class BxDolSearchResult implements iBxDolReplaceable
                 $sqlCondition = '';
                 if (isset($aValue['operator']) && isset($aValue['value']) && $aValue['value'] !== '' && $aValue['value'] !== false && $aValue['value'] !== null) {
                    $sFieldTable = isset($aValue['table']) ? $aValue['table'] : $this->aCurrent['table'];
-                   $sqlCondition = "`{$sFieldTable}`.`{$aValue['field']}` ";
+                   $sFieldName = isset($aValue['field']) ? $aValue['field'] : '';
+                   if(!$oDb->isValidFieldName($sFieldTable, true))
+                       continue;
+                   if($sFieldName !== '' && !$oDb->isValidFieldName($sFieldName, true))
+                       continue;
+                   if($sFieldName === '' && ($aValue['operator'] ?? '') !== 'against')
+                       continue;
+
+                   $sqlCondition = "`{$sFieldTable}`.`{$sFieldName}` ";
                    switch ($aValue['operator']) {
                        case 'empty value':
                             $sqlCondition .= " = '' ";
@@ -1418,9 +1426,11 @@ class BxDolSearchResult implements iBxDolReplaceable
         if (!$sKeyword)
             return '';
 
-        $sTable = empty($this->aCurrent['tableSearch']) ? $this->aCurrent['table'] : $this->aCurrent['tableSearch'];
-
         $oDb = BxDolDb::getInstance();
+
+        $sTable = empty($this->aCurrent['tableSearch']) ? $this->aCurrent['table'] : $this->aCurrent['tableSearch'];
+        if(!$oDb->isValidFieldName($sTable, true))
+            return '';
 
         $bLike = getParam('useLikeOperator');
 
@@ -1431,8 +1441,15 @@ class BxDolSearchResult implements iBxDolReplaceable
             $sKeyword = $oDb->escape('%' . preg_replace('/\s+/', '%', $sKeyword) . '%');
 
             $sSqlWhere = '';
-            foreach ($aFields as $sValue)
+            foreach ($aFields as $sValue) {
+                if(!$oDb->isValidFieldName($sValue, true))
+                    continue;
+
                 $sSqlWhere .= "`{$sTable}`.`$sValue` LIKE  " . $sKeyword . " OR ";
+            }
+
+            if($sSqlWhere === '')
+                return '';
 
             $sSqlWhere = '(' . trim($sSqlWhere, 'OR ') . ')';
 
@@ -1440,8 +1457,15 @@ class BxDolSearchResult implements iBxDolReplaceable
         	$sKeyword = $oDb->escape($sKeyword);
 
             $sSqlWhere = '';
-            foreach ($aFields as $sValue)
+            foreach ($aFields as $sValue) {
+                if(!$oDb->isValidFieldName($sValue, true))
+                    continue;
+
                 $sSqlWhere .= "`{$sTable}`.`$sValue`, ";
+            }
+
+            if($sSqlWhere === '')
+                return '';
 
             $sSqlWhere = trim($sSqlWhere, ', ');
             $sSqlWhere = " MATCH({$sSqlWhere}) AGAINST (" . $sKeyword . ") ";

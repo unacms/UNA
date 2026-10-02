@@ -152,7 +152,7 @@ class BxBaseModGeneralSearchResult extends BxTemplSearchResult
             return;
 
         foreach($aValues as $sName => $mixedValue) {
-            if(!is_string($sName) || !isset($aFields[$sName]) || !preg_match('/^[A-Za-z0-9_]+$/', $sName))
+            if(!is_string($sName) || !isset($aFields[$sName]) || !$oDb->isValidFieldName($sName, true))
                 continue;
 
             $sOperator = $aFields[$sName];
@@ -248,34 +248,60 @@ class BxBaseModGeneralSearchResult extends BxTemplSearchResult
     protected function addConditionsForFilter($CNF, $sMode, $aParams)
     {
         $aFilter = $aParams['filter'];
-        
-        if(empty($aFilter['field']) || empty($aFilter['value']))
+        $oDb = BxDolDb::getInstance();
+
+        if(empty($aFilter['field']) || !$oDb->isValidFieldName($aFilter['field'], true) || empty($aFilter['value']))
             return;
-        
-        $aRestriction = [
-            'value' => $aFilter['value'],
-            'field' => $aFilter['field'],
-            'operator' => '=',
-        ];
 
-        if(isset($aFilter['operator']))
-            $aRestriction['operator'] = $aFilter['operator'];
+        $aOperators = ['=', '!=', '<>', '<', '>', '<=', '>=', 'like', 'in', 'not in', 'between'];
+        $sOperator = '=';
+        if(isset($aFilter['operator'])) {
+            if(!is_string($aFilter['operator']))
+                return;
 
-        if(isset($aFilter['table']))
+            $sOperator = strtolower(trim($aFilter['operator']));
+            if(!in_array($sOperator, $aOperators, true))
+                return;
+        }
+
+        $sTable = $this->aCurrent['table'] ?? '';
+        if(isset($aFilter['table'])) {
+            if(!is_string($aFilter['table']))
+                return;
+
             switch($aFilter['table']) {
                 case 'table':
-                    $aRestriction['table'] = $this->aCurrent['table'];
+                    $sTable = $this->aCurrent['table'] ?? '';
                     break;
 
                 case 'tableSearch':
-                    $aRestriction['table'] = $this->aCurrent['tableSearch'];
+                    $sTable = $this->aCurrent['tableSearch'] ?? '';
                     break;
 
-                default: 
-                    $aRestriction['table'] = $aFilter['table'];
+                default:
+                    return;
             }
+        }
 
-        $this->aCurrent['restriction']['filter'] = $aRestriction;
+        if(!$oDb->isValidFieldName($sTable, true))
+            return;
+
+        if(!$oDb->isFieldExists($sTable, $aFilter['field']))
+            return;
+
+        $mixedValue = $aFilter['value'];
+        if(in_array($sOperator, ['like', '=', '!=', '<>', '<', '>', '<=', '>='], true) && is_array($mixedValue))
+            return;
+
+        if($sOperator === 'between' && !is_array($mixedValue))
+            return;
+
+        $this->aCurrent['restriction']['filter'] = [
+            'value' => $mixedValue,
+            'field' => $aFilter['field'],
+            'operator' => $sOperator,
+            'table' => $sTable,
+        ];
     }
 
     /**

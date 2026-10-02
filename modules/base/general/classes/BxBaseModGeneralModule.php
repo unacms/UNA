@@ -1406,9 +1406,13 @@ class BxBaseModGeneralModule extends BxDolModule
                 if(($sK = 'class_search_result') && isset($aParams['params'][$sK]))
                     $aParams[$sK] = $aParams['params'][$sK];
 
-                if(isset($aParams['params']['filters'])) {
-                    foreach($aParams['params']['filters'] as $sKey => $sValue)
+                if(isset($aParams['params']['filters']) && is_array($aParams['params']['filters'])) {
+                    foreach($aParams['params']['filters'] as $sKey => $sValue) {
+                        if(in_array($sKey, ['filter', 'condition', 'filters', 'class_search_result'], true))
+                            continue;
+
                         $aParams['params'][$sKey] = $sValue;
+                    }
 
                     $aParams['params']['filters'] = [
                         'values' => $aParams['params']['filters']
@@ -1419,6 +1423,12 @@ class BxBaseModGeneralModule extends BxDolModule
 
         if (isset($aParams['params']['condition']))
             unset($aParams['params']['condition']);
+
+        // **Unsafe on the API.** "filter" lets the caller pick both the column and the operator,
+        // so any real column of the module table can be queried, for example status or author.
+        // So 'filters' is safe, 'filter' isn't safe!
+        if($this->_bIsApi && isset($aParams['params']['filter']))
+            unset($aParams['params']['filter']);
 
         return $this->serviceBrowseWithCondition ($aParams);
     }

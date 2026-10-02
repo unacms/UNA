@@ -1018,12 +1018,21 @@ class BxDolDb extends BxDolFactory implements iBxDolSingleton
         return $s;
     }
 
-    public function isValidFieldName($s)
+    /**
+     * @param bool $bStrict one identifier of letters, digits and underscores. The loose check also allows a qualified name and most characters inside backticks.
+     */
+    public function isValidFieldName($s, $bStrict = false)
     {
+        if ($bStrict)
+            return is_string($s) && (bool)preg_match('/^[A-Za-z0-9_]+$/', $s);
+
+        if (!is_string($s))
+            return false;
+
         if (false !== strpos($s, '`.`')) {
             $a = explode('`.`', $s, 2);
             foreach ($a as $sField) {
-                if (false === $this->isValidFieldName($sField))
+                if (false === $this->isValidFieldName($sField, $bStrict))
                     return false;
             }
             return true;
