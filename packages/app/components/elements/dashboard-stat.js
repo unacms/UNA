@@ -136,6 +136,7 @@ function DashboardStatRemote(props) {
         ? menu || (data?.modules || []).filter((item) => list.includes(item.key))
         : []
     const manageItems = data?.manage?.items || []
+    const showWiki = !!appSetting('wiki', 'enable')
 
     if (!currentUser) return null
 
@@ -144,7 +145,7 @@ function DashboardStatRemote(props) {
             <Block className="u-max-width-block">
                 {hasModules ? <DashboardStatHeader /> : null}
                 <BlockContent className="!gap-3">
-                    {hasModules ? <DashboardStatModules modules={modules} /> : null}
+                    {hasModules ? <DashboardStatModules modules={modules} showWiki={showWiki} /> : null}
                     <DashboardStatMenu items={manageItems} showSettings={hasModules} />
                 </BlockContent>
                 {hasModules ? (
@@ -208,9 +209,10 @@ function DashboardStatHeader() {
     )
 }
 
-function DashboardStatModules({ modules }) {
+function DashboardStatModules({ modules, showWiki }) {
+    const { t } = useTranslation()
     const { currentUser } = useCurrentUser()
-    if (!modules.length) return null
+    if (!modules.length && !showWiki) return null
 
     return (
         <View className={DASHBOARD_GRID}>
@@ -278,6 +280,15 @@ function DashboardStatModules({ modules }) {
                     />
                 )
             })}
+            {/* Documentation is a destination like the modules, so it gets a tile too. */}
+            {showWiki ? (
+                <DashboardStatTile
+                    key="wiki"
+                    href="/wiki/overview"
+                    icon="BookOpenText"
+                    title={t('Documentation')}
+                />
+            ) : null}
         </View>
     )
 }
@@ -327,28 +338,14 @@ function DashboardSettingsMenu() {
     } = useLayoutSettings()
     const { t } = useTranslation()
     const langs = appSetting('layout', 'avaliable_langs')
-    const showWiki = !!appSetting('wiki', 'enable')
     const showLangs = langs.length > 1
     const showTheme = !!appSetting('dashboard', 'switch_theme')
     const showLayouts = appSetting('layout', 'avaliable_layouts').length > 1
     const showFeedUnits = appSetting('layout', 'avaliable_feed_units').length > 1
-    if (!(showWiki || showLangs || showTheme || showLayouts || showFeedUnits)) return null
+    if (!(showLangs || showTheme || showLayouts || showFeedUnits)) return null
 
     return (
         <View className={DASHBOARD_GRID}>
-            {showWiki ? (
-                <View className="w-full min-w-0">
-                    <NeoButtonLink
-                        href="/wiki/overview"
-                        label="Documentation"
-                        style="bordered"
-                        controlSize="large"
-                        image="BookOpenText"
-                        width="fill"
-                        align="start"
-                    />
-                </View>
-            ) : null}
             {showLangs ? (
                 <View className="w-full min-w-0">
                     <DropdownMenu

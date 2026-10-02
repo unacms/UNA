@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useAnimatedValue } from 'app/lib/hooks/use-animated-value';
 import { Animated, Platform } from 'react-native'
 import { View, Row } from 'app/design/view'

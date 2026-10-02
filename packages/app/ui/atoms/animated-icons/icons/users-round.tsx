@@ -3,7 +3,7 @@ import { nativeDriver } from 'app/lib/platform/animation';
 import { getAnimatedFillProps } from 'app/ui/atoms/animated-icons/fill-props';
 import { AnimatedPath, AnimatedG, omitUnsafeViewProps, type AnimatedIconProps } from 'app/ui/atoms/animated-icons/shared';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useAnimatedValue } from 'app/lib/hooks/use-animated-value';
 import { Animated, Easing, Platform } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
@@ -16,7 +16,7 @@ const SECONDARY_USER_D = 'M22 20c0-3.37-2-6.5-4-8a5 5 0 0 0-.45-8.3';
 const SECONDARY_USER_START_X = -4.5;
 const SECONDARY_USER_BOUNCE_X = 0.5;
 const SECONDARY_USER_SLIDE_MS = 420;
-
+
 
 /**
  * Animated UsersRound
