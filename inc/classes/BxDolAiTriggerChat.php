@@ -584,6 +584,7 @@ class BxDolAiTriggerChat extends BxDolAiTrigger
         if ($sType === 'TEXT_MESSAGE_CONTENT') {
             $sDelta = (string)($aPayload['delta'] ?? '');
             $aState['buf'] .= $sDelta;
+            BxDolAiChat::getInstance()->markTurnText($sDelta);
             if ($aState['mode'] === 'text') {
                 $fEmit($sEvent);
                 return;
