@@ -14,6 +14,14 @@ import url(../../../../../../../template/css/cover.css);
 .dark .bx-cover-wrapper {
     background-image: url(../images/cover-default-dark.svg);
 }
+/* Scrim under the white cover text. At 55% black even a pure white pixel of an uploaded
+   image keeps the text at 4.5:1; the default art is dark enough without it. */
+.bx-cover-wrapper > .bx-cover-gradient {
+    background-color: rgba(0, 0, 0, 0.55);
+}
+.bx-cover-wrapper.bx-cover-empty > .bx-cover-gradient {
+    background-color: transparent;
+}
 .bx-image-edit-buttons{
     position: absolute;
     left:1rem;

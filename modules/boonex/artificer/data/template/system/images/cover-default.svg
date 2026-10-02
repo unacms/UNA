@@ -1,1 +1,22 @@
-            <svg xmlns='http://www.w3.org/2000/svg' width='100%' height='100%' viewBox='0 0 1600 900'><rect fill='#93C5FD' width='1600' height='900'/><defs><linearGradient id='a' gradientUnits='userSpaceOnUse' x1='800' y1='897' x2='800' y2='450'><stop  offset='0' stop-color='#93C5FD'/><stop  offset='1' stop-color='#FFFFFF'/></linearGradient><linearGradient id='b' gradientUnits='userSpaceOnUse' x1='0' y1='860' x2='0' y2='380'><stop  offset='0' stop-color='#93C5FD'/><stop  offset='1' stop-color='#FFFFFF'/></linearGradient><linearGradient id='c' gradientUnits='userSpaceOnUse' x1='0' y1='800' x2='0' y2='300'><stop  offset='0' stop-color='#93C5FD'/><stop  offset='1' stop-color='#FFFFFF'/></linearGradient><linearGradient id='d' gradientUnits='userSpaceOnUse' x1='0' y1='760' x2='0' y2='250'><stop  offset='0' stop-color='#93C5FD'/><stop  offset='1' stop-color='#FFFFFF'/></linearGradient><linearGradient id='e' gradientUnits='userSpaceOnUse' x1='0' y1='700' x2='0' y2='200'><stop  offset='0' stop-color='#93C5FD'/><stop  offset='1' stop-color='#FFFFFF'/></linearGradient><linearGradient id='f' gradientUnits='userSpaceOnUse' x1='0' y1='660' x2='0' y2='150'><stop  offset='0' stop-color='#93C5FD'/><stop  offset='1' stop-color='#FFFFFF'/></linearGradient><linearGradient id='g' gradientUnits='userSpaceOnUse' x1='0' y1='600' x2='0' y2='100'><stop  offset='0' stop-color='#93C5FD'/><stop  offset='1' stop-color='#FFFFFF'/></linearGradient><linearGradient id='h' gradientUnits='userSpaceOnUse' x1='0' y1='530' x2='0' y2='50'><stop  offset='0' stop-color='#93C5FD'/><stop  offset='1' stop-color='#FFFFFF'/></linearGradient><linearGradient id='i' gradientUnits='userSpaceOnUse' x1='0' y1='450' x2='0' y2='0'><stop  offset='0' stop-color='#93C5FD'/><stop  offset='1' stop-color='#FFFFFF'/></linearGradient></defs><rect fill='url(#a)' width='1600' height='900'/><path fill='url(#b)'  d='M-1514 0v900c0 0 2039.4 0 2040.8 0c-20.1 0-47-48.7-55.2-69.1c-50.7-125.5 55.3-229.7 59.3-350.3c2.2-67.8-26.3-129-42-193.2c-24.3-99.5-13.3-209.1 37.9-287.4h-2040.8z'/><path fill='url(#c)'  d='M-1560 0v900c0 0 2039.4 0 2040.8 0c-20.1 0-47-48.7-55.2-69.1c-50.7-125.5 55.3-229.7 59.3-350.3c2.2-67.8-26.3-129-42-193.2c-24.3-99.5-13.3-209.1 37.9-287.4h-2040.9z'/><path fill='url(#d)'  d='M-1606 0v900c0 0 2039.4 0 2040.8 0c-20.1 0-47-48.7-55.2-69.1c-50.7-125.5 55.3-229.7 59.3-350.3c2.2-67.8-26.3-129-42-193.2c-24.3-99.5-13.3-209.1 37.9-287.4h-2041.1z'/><path fill='url(#e)'  d='M-1652 0v900c0 0 2039.4 0 2040.8 0c-20.1 0-47-48.7-55.2-69.1c-50.7-125.5 55.3-229.7 59.3-350.3c2.2-67.8-26.3-129-42-193.2c-24.3-99.5-13.3-209.1 37.9-287.4h-2041.2z'/><path fill='url(#f)'  d='M-1698 0v900c0 0 2039.4 0 2040.8 0c-20.1 0-47-48.7-55.2-69.1c-50.7-125.5 55.3-229.7 59.3-350.3c2.2-67.8-26.3-129-42-193.2c-24.8-99.5-13.9-209.1 37.3-287.4h-2040.8z'/><path fill='url(#g)'  d='M-1744 0v900c0 0 2039.4 0 2040.8 0c-20.1 0-47-48.7-55.2-69.1c-50.7-125.5 55.3-229.7 59.3-350.3c2.2-67.8-26.3-129-42-193.2c-24.3-99.5-13.3-209.1 37.9-287.4h-2041.5z'/><path fill='url(#h)'  d='M-1790 0v900c0 0 2039.4 0 2040.8 0c-20.1 0-47-48.7-55.2-69.1c-51.6-125.5 54.4-229.7 58.4-350.3c2.2-67.8-26.3-129-42-193.2c-24.3-99.5-13.3-209.1 37.9-287.4h-2040.8z'/><path fill='url(#i)'  d='M-1836 0v900c0 0 2039.4 0 2040.8 0c-20.1 0-47-48.7-55.2-69.1c-50.7-125.5 55.3-229.7 59.3-350.3c2.2-67.8-26.3-129-42-193.2c-24.3-99.5-13.3-209.1 37.9-287.4h-2041.8z'/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
+  <defs>
+    <linearGradient id="base" x1="0" y1="0" x2="1600" y2="900" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0F1C3F"/>
+      <stop offset="0.55" stop-color="#172B5E"/>
+      <stop offset="1" stop-color="#1B2352"/>
+    </linearGradient>
+    <radialGradient id="glow-a" cx="1240" cy="220" r="640" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#3B82F6" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#3B82F6" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glow-b" cx="260" cy="720" r="600" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#14B8A6" stop-opacity="0.28"/>
+      <stop offset="1" stop-color="#14B8A6" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#base)"/>
+  <rect width="1600" height="900" fill="url(#glow-a)"/>
+  <rect width="1600" height="900" fill="url(#glow-b)"/>
+  <path d="M0 540C260 480 540 600 820 548S1360 430 1600 470V900H0Z" fill="#fff" fill-opacity="0.04"/>
+  <path d="M0 640C300 590 580 690 880 640S1400 540 1600 575V900H0Z" fill="#fff" fill-opacity="0.04"/>
+</svg>

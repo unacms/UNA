@@ -720,7 +720,20 @@ class BxDolTranscoder extends BxDolFactory implements iBxDolFactoryObject
         else
             $o->setSquareResize (false);
 
-        if (IMAGE_ERROR_SUCCESS == $o->resize($sFile))
+        // Optional per-transcoder JPEG quality. BxDolImageResize is a singleton reused for every
+        // image in the request, so the previous quality is restored afterwards.
+        $iQualityPrev = null;
+        if (isset($aParams['quality']) && (int)$aParams['quality'] > 0) {
+            $iQualityPrev = $o->getJpegQuality();
+            $o->setJpegQuality((int)$aParams['quality']);
+        }
+
+        $iResult = $o->resize($sFile);
+
+        if ($iQualityPrev !== null)
+            $o->setJpegQuality($iQualityPrev);
+
+        if (IMAGE_ERROR_SUCCESS == $iResult)
             return true;
 
         bx_log('sys_transcoder', "[{$this->_aObject['object']}] ERROR: applyFilter_Resize failed for file ({$sFile}): " . $o->getError(), BX_LOG_ERR);
@@ -847,6 +860,17 @@ class BxDolTranscoder extends BxDolFactory implements iBxDolFactoryObject
             return false;
         }
 
+        $sTmpFile = $this->getTmpFilename ($aFile['file_name']);
+
+        // Prefer reading a local-engine source straight from disk. It avoids a
+        // self-referential HTTP round trip for every transcode (a small speed-up),
+        // and it works where the app cannot reach its own public URL from inside
+        // (e.g. a container whose BX_DOL_URL_ROOT is not routable locally).
+        $sLocalPath = $oStorageOriginal->getFileLocalPath($mixedHandler);
+        if ($sLocalPath && @copy($sLocalPath, $sTmpFile))
+            return $sTmpFile;
+
+        // Fallback: fetch over HTTP (remote storage engines, or if the disk copy failed).
         $sUrl = $oStorageOriginal->getFileUrlById($mixedHandler);
         if (!$sUrl) {
             bx_log('sys_transcoder', "[{$this->_aObject['object']}] ERROR: storeFileLocally_Storage failed, file({$mixedHandler}) wasn't found in source storage ({$this->_aObject['source_params']['object']})", BX_LOG_ERR);
@@ -859,7 +883,6 @@ class BxDolTranscoder extends BxDolFactory implements iBxDolFactoryObject
             return false;
         }
 
-        $sTmpFile = $this->getTmpFilename ($aFile['file_name']);
         if (!file_put_contents($sTmpFile, $sFileData)) {
             bx_log('sys_transcoder', "[{$this->_aObject['object']}] ERROR: storeFileLocally_Storage failed, file save failed ({$sTmpFile})", BX_LOG_ERR);
             return false;
