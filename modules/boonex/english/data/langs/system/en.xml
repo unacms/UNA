@@ -4590,4 +4590,5 @@
     <string name="_sys_redirect_confirmation"><![CDATA[<div class="bx-def-font-h2 bx-def-margin-sec-bottom">You're going to a link outside {1}</div><div class="bx-def-font-small">Link: {0}</div><div class="bx-def-margin-sec-top">Are you sure you want to follow this link?</div>]]></string>
     <string name="_sys_redirect_confirmation_harmful"><![CDATA[<div class="bx-def-font-h2 bx-def-margin-sec-bottom">You're going to a potentially <b>harmful</b> link {1}</div><div class="bx-def-font-small">Link: {0}</div><div class="bx-def-margin-sec-top">Are you sure you want to follow this link?</div>]]></string>
     <string name="_sys_leave_page_confirmation"><![CDATA[<div class="bx-def-font-h2">Leave the page?</div><div class="bx-def-margin-sec-top">If you do it, your changes will not be saved.</div>]]></string>
+    <string name="_sys_agents_assistants_files_txt_size"><![CDATA[Size]]></string>
 </resources>

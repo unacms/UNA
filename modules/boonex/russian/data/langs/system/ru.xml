@@ -4503,4 +4503,5 @@
   <string name="_sys_redirect_confirmation"><![CDATA[<div class="bx-def-font-h2 bx-def-margin-sec-bottom">Вы переходите по ссылке за пределы сайта "{1}"</div><div class="bx-def-font-small">Ссылка: {0}</div><div class="bx-def-margin-sec-top">Вы действительно хотите перейти по этой ссылке?</div>]]></string>
   <string name="_sys_redirect_confirmation_harmful"><![CDATA[<div class="bx-def-font-h2 bx-def-margin-sec-bottom">Вы переходите по <b>опасной</b> ссылке за пределы сайта "{1}"</div><div class="bx-def-font-small">Ссылка: {0}</div><div class="bx-def-margin-sec-top">Вы действительно хотите перейти по этой ссылке?</div>]]></string>
   <string name="_sys_leave_page_confirmation"><![CDATA[<div class="bx-def-font-h2">Покинуть страницу?</div><div class="bx-def-margin-sec-top">Если Вы это сделаете, ваши изменения не будут сохранены.</div>]]></string>
+    <string name="_sys_agents_assistants_files_txt_size"><![CDATA[Size]]></string>
 </resources>

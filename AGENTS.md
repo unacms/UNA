@@ -13,3 +13,20 @@ Placement: keep the outline in Lucide's 24-unit space and wrap each copy in `<g 
 Plate colours follow the app category: gray `#71717A → #3F3F46` system, green `#059669 → #065F46` content, orange `#D97706 → #92400E` profiles, purple `#7C3AED → #5B21B6` templates, red `#F43F5E → #BE123C` contexts (groups, spaces, events, courses), white `#F3F4F6 → #E5E7EB` languages; integrations sit on white or their brand colour.
 
 Pick glyphs from https://lucide.dev; the vendored copies live in `plugins_public/lucide/icons/`. `modules/boonex/mapshow/template/images/icons/std-icon.svg` (flattened, 80px) and `studio/template/images/modules/bx_polls.svg` (flattened, 72px) are reference implementations.
+
+## Language keys
+
+Add a missing English or Russian string with `scripts/add_lang_key.php`. Do not insert keys by hand into language XML, `sys_localization_keys`, or `sys_localization_strings`.
+
+Run it in the php container. Arguments are language (`en` or `ru`), key, and translation. An existing translation is left unchanged. The script appends the key to the right language file (`_sys_…` to system, `_bx_posts_…` to Posts, and so on), inserts it into the database when that language is installed, and recompiles the language cache.
+
+```bash
+docker exec -i una-php-1 php /opt/una/scripts/add_lang_key.php en _sys_example "Hello"
+
+docker exec -i una-php-1 php /opt/una/scripts/add_lang_key.php ru _sys_example - <<'EOF'
+Line one
+Line two
+EOF
+```
+
+Pass `-` as the translation to read stdin. That keeps line breaks; one trailing newline is removed. Add both `en` and `ru` when you introduce a key. Russian may be absent from the database; the Russian XML is still written, and re-running the command after Russian is installed fills the database from that file.
