@@ -39,14 +39,21 @@ const SCROLL_PUBLISH_DELTA = 8
  * @param {boolean}  [opts.pinHeader]      Never publish a scroll direction, so the
  *   collapsible page header stays put (chat lists: they open scrolled to the
  *   end, which would otherwise read as "scrolling down" and hide the header).
- * @returns {{ handleScroll: Function, scrollYRef: { current: number } }}
- *   `scrollYRef.current` is the last offset seen by JS (for scroll caching on unmount).
+ * @param {Function} [opts.onOvershootEnd] Called when the list rests past its end
+ *   without the user touching it (chat lists: LegendList can seed that offset).
+ * @param {object}   [opts.clampPaused]    Shared value; true while something else
+ *   drives the offset (the chat keyboard), so the end clamp waits.
+ * @returns {{ handleScroll: Function, scrollYRef: { current: number }, scrollYSV: object, atEndSV: object }}
+ *   `scrollYRef.current` is the last offset seen by JS (for scroll caching on unmount);
+ *   `scrollYSV` / `atEndSV` are the latest offset and at-the-end state on the UI thread.
  */
-export function useListScrollPublisher({ url, coverScrollY, onTopZoneChange, pinHeader = false }: {
+export function useListScrollPublisher({ url, coverScrollY, onTopZoneChange, pinHeader = false, onOvershootEnd, clampPaused }: {
     url?: string
     coverScrollY?: SharedValue<number>
     onTopZoneChange?: (inTopZone: boolean) => void
     pinHeader?: boolean
+    onOvershootEnd?: () => void
+    clampPaused?: SharedValue<boolean>
 }) {
     const setScrollDirection = useSetScrollDirection()
     const setScrollValue = useSetScrollValue()
@@ -63,6 +70,10 @@ export function useListScrollPublisher({ url, coverScrollY, onTopZoneChange, pin
     const directionSV = useSharedValue(0)
     const publishedScrollYSV = useSharedValue(0)
     const coverTopZoneSV = useSharedValue(true)
+    // A finger or a fling (incl. the bounce back) owns the offset: past-the-end is fine then.
+    const userScrollingSV = useSharedValue(false)
+    // Resting at the end (the iOS keyboard inset counts), as of the last scroll event.
+    const atEndSV = useSharedValue(true)
 
     // Only the focused screen may write the shared atoms. On focus, re-publish
     // the current offset so the header picks the right state straight away.
@@ -109,6 +120,13 @@ export function useListScrollPublisher({ url, coverScrollY, onTopZoneChange, pin
         onScroll: (event) => {
             const y = event.contentOffset.y
 
+            // iOS contentInset (the chat keyboard) extends the scrollable end.
+            const maxY = event.contentSize.height + (event.contentInset?.bottom ?? 0) - event.layoutMeasurement.height
+            atEndSV.set(y >= maxY - 2)
+            if (onOvershootEnd && !userScrollingSV.get() && !clampPaused?.get()) {
+                if (maxY > 0 && y > maxY + 1) runOnJS(onOvershootEnd)()
+            }
+
             if (coverScrollY) {
                 coverScrollY.set(y)
                 const inTopZone = y <= COVER_REFRESH_DISARM_Y
@@ -145,21 +163,29 @@ export function useListScrollPublisher({ url, coverScrollY, onTopZoneChange, pin
                 )
             }
         },
+        onBeginDrag: () => {
+            userScrollingSV.set(true)
+        },
         onEndDrag: (event) => {
+            userScrollingSV.set(false)
             publishedScrollYSV.set(event.contentOffset.y)
             runOnJS(publishScrollValue)(
                 event.contentOffset.y,
                 Math.max(0, event.contentSize.height - event.layoutMeasurement.height)
             )
+        },
+        onMomentumBegin: () => {
+            userScrollingSV.set(true)
         },
         onMomentumEnd: (event) => {
+            userScrollingSV.set(false)
             publishedScrollYSV.set(event.contentOffset.y)
             runOnJS(publishScrollValue)(
                 event.contentOffset.y,
                 Math.max(0, event.contentSize.height - event.layoutMeasurement.height)
             )
         },
-    }, [coverScrollY, pinHeader, publishTopZone, publishScrollDirection, publishScrollValue])
+    }, [coverScrollY, pinHeader, onOvershootEnd, clampPaused, publishTopZone, publishScrollDirection, publishScrollValue])
 
     // Zero everything before paint when the list identity changes.
     // Shared values are stable objects; they are not in deps on purpose.
@@ -178,5 +204,5 @@ export function useListScrollPublisher({ url, coverScrollY, onTopZoneChange, pin
         // eslint-disable-next-line react-hooks/exhaustive-deps -- shared values are stable
     }, [url, coverScrollY, setScrollValue, setScrollDirection, setListMaxScrollOffset])
 
-    return { handleScroll, scrollYRef }
+    return { handleScroll, scrollYRef, scrollYSV: prevScrollYSV, atEndSV }
 }

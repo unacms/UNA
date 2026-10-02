@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import { useWindowDimensions } from 'react-native';
+import { Platform, useWindowDimensions } from 'react-native';
 import { Text } from 'app/design/typography';
 import { View, Row } from 'app/design/view';
 import { NeoButton } from 'app/design/controls';
@@ -7,16 +7,21 @@ import Form from 'app/components/elements/form';
 import { ContentMore } from 'app/ui/molecules/content/content-more';
 import { useTranslation } from 'react-i18next';
 import { hasLiquidGlass, IOS_TAB_BAR_MARGIN, LAYOUT_BREAKPOINTS } from 'app/lib/util';
+import { KbGutterView } from 'app/ui/atoms/kb-avoiding-view';
 
 /** Message composer: optional reply-to strip + the UNA send form. */
 const Composer = memo(function Composer({ form, replyItem, onFormSubmit, handleCancelReply }) {
     const { t } = useTranslation();
     const { width } = useWindowDimensions();
-    // 16px page gutter; an iPhone on iOS 26 lines up with the floating tab bar instead.
-    const alignToTabBar = hasLiquidGlass && width < LAYOUT_BREAKPOINTS.sm;
+    // Phones (native): at rest, line up with the tab bar (the 16px gutter; iOS 26's
+    // floating bar sits at 21pt). With the keyboard up the bar is covered, so go to
+    // 8px: the avatar (8px inside) then lines up with the list avatars at 16px.
+    const gutter = Platform.OS !== 'web' && width < LAYOUT_BREAKPOINTS.sm
+        ? { rest: hasLiquidGlass ? IOS_TAB_BAR_MARGIN : 16, open: 8 }
+        : null;
 
     return (
-        <View className="px-4 py-1.5 sm:p-2.5" style={alignToTabBar ? { paddingHorizontal: IOS_TAB_BAR_MARGIN } : undefined}>
+        <KbGutterView className={gutter ? 'py-1.5' : 'px-4 py-1.5 sm:p-2.5'} gutter={gutter}>
             <View>
                 {replyItem ? (
                     <View className="bg-accent/60 rounded-xl border border-accent px-2.5 py-2 mb-2">
@@ -52,7 +57,7 @@ const Composer = memo(function Composer({ form, replyItem, onFormSubmit, handleC
                 ) : null}
                 <Form {...form} name="bx_messenger" resetOnSubmit={true} classContainerName=" flex-row flex-wrap w-full items-start justify-between" onFormSubmit={onFormSubmit} />
             </View>
-        </View>
+        </KbGutterView>
     );
 });
 

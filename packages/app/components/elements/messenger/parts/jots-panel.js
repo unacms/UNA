@@ -12,7 +12,7 @@ const isWeb = Platform.OS === 'web';
 const invertedNative = !isWeb;
 
 /** Message list of the open conversation. Desktop chrome overlays the parent; mobile web window-scrolls. */
-const JotsPanel = memo(function JotsPanel({ data, listHeight, refListJots, startReached, handleReply, isSmallScreen, headerInset = 0, footerInset = 0 }) {
+const JotsPanel = memo(function JotsPanel({ data, listHeight, refListJots, startReached, handleReply, isSmallScreen, headerInset = 0, footerInset = 0, keyboardBottomOffset }) {
     const listOverlayProps = useMemo(() => {
         if (isWeb) {
             return {
@@ -22,9 +22,11 @@ const JotsPanel = memo(function JotsPanel({ data, listHeight, refListJots, start
                 },
             };
         }
+        // UniList's chat mode keeps the rows top-to-bottom (alignItemsAtEnd, not a
+        // real invert), so the composer inset belongs at the bottom here too.
         return {
-            ListHeaderComponent: <ListInset height={invertedNative ? footerInset : headerInset} />,
-            ListFooterComponent: <ListInset height={invertedNative ? headerInset : footerInset} />,
+            ListHeaderComponent: <ListInset height={headerInset} />,
+            ListFooterComponent: <ListInset height={footerInset} />,
         };
     }, [headerInset, footerInset]);
 
@@ -51,6 +53,7 @@ const JotsPanel = memo(function JotsPanel({ data, listHeight, refListJots, start
                 height={windowScroll ? undefined : (listH || undefined)}
                 mode="simple"
                 useCustomScrollHandler={isSmallScreen && !isWeb}
+                keyboardBottomOffset={keyboardBottomOffset}
                 renderItem={({ item, index }) => <ItemJot handleReply={handleReply} item={item} index={index} />}
                 {...listOverlayProps}
             />

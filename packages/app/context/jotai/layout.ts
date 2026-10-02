@@ -76,6 +76,11 @@ const getSetScrollValueAtomForTab = (key: string) =>
         })
     );
 
+// The page draws its own blur down to the screen bottom (the messenger composer),
+// so the tab screen's bar blur (expo-screen TabBarEdgeBlur) stands down.
+const pageBottomBlurAtomsByTab = new Map<string, PrimitiveAtom<boolean>>();
+const getPageBottomBlurAtomForTab = (key: string) => getTabAtom(pageBottomBlurAtomsByTab, key, () => atom(false));
+
 function getHeaderHeightAtomForTab(key: string): NumberAtom {
     let next = headerHeightAtomsByTab.get(key);
     if (!next) {
@@ -109,6 +114,10 @@ export const useCoverScrollCompensation = () => useAtomValue(getCoverScrollCompe
 
 export const useSetHeaderHeight = () => useSetAtom(getHeaderHeightAtomForTab(useTabChromeKey()));
 export const useHeaderHeight = () => useAtomValue(getHeaderHeightAtomForTab(useTabChromeKey()));
+
+export const useSetPageBottomBlur = () => useSetAtom(getPageBottomBlurAtomForTab(useTabChromeKey()));
+/** Read outside the tab's chrome provider (the tab screen itself), hence the explicit key. */
+export const usePageBottomBlur = (tabKey: string) => useAtomValue(getPageBottomBlurAtomForTab(tabKey));
 
 export const useSetFooterHeight = () => useSetAtom(footerHeightAtom);
 export const useFooterHeight = () => useAtomValue(footerHeightAtom);

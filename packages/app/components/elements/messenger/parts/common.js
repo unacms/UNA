@@ -19,7 +19,7 @@ import { useTranslation } from 'react-i18next'
 import ChatPanels from 'app/components/elements/chat/parts/chat-panels'
 import { useIsDesktop } from 'app/context/measure';
 import { areTabBarLabelsHidden, getTabList } from 'app/components/nav/tabs/tab-menu';
-import { useFooterHeight } from 'app/context/jotai/layout';
+import { useFooterHeight, useSetPageBottomBlur } from 'app/context/jotai/layout';
 import { PageHeaderOptions } from 'app/ui/molecules/header/options';
 import ConvosList from 'app/components/elements/chat/parts/convos-list';
 import ItemConvo from 'app/components/elements/messenger/parts/item-convo';
@@ -102,6 +102,19 @@ export default function Messenger({ defaultConvoId, selectedMenu, convos, fetchC
         ? 0
         : tabBarOverlayInset || TAB_BAR_HEIGHT + (Platform.OS === 'android' ? insets.bottom : 0);
     const [replyItem, setReplyItem] = useState(false);
+    // iOS: one blur from the screen bottom up through the composer, instead of
+    // the tab screen's bar blur plus a separate one behind the composer.
+    const footerBlur = edgeBlurConfig('footer');
+    const ownsBottomBlur = !isWeb && isSmallScreen && !!selectedConvo && !!footerBlur && tabBarOverlayInset > 0;
+    const composerBlur = ownsBottomBlur
+        ? { ...footerBlur, hold: (tabBarOverlayInset + formHeight * (footerBlur.hold ?? 0.5)) / (tabBarOverlayInset + formHeight) }
+        : footerBlur;
+    const setPageBottomBlur = useSetPageBottomBlur();
+    useEffect(() => {
+        if (!ownsBottomBlur) return;
+        setPageBottomBlur(true);
+        return () => setPageBottomBlur(false);
+    }, [ownsBottomBlur, setPageBottomBlur]);
 
     const { data: dynamicData } = useFetchForm('/api.php?r=bx_messenger/get_send_form/Services&params=' + JSON.stringify({ id: selectedConvo?.id, convo_id: selectedConvo?.id, reply_id: replyItem ? replyItem?.id : 0 }), commentForm);
 
@@ -279,8 +292,14 @@ export default function Messenger({ defaultConvoId, selectedMenu, convos, fetchC
     const scrolTo = () => {
         if (refListJots && refListJots?.current) {
             setTimeout(() => {
-                if (refListJots?.current)
-                    refListJots.current.scrollToIndex({ animated: false, align: "end", behavior: "smooth", index: 9999999999 });
+                const list = refListJots?.current;
+                if (!list) return;
+                // Native (LegendList): to the real end, past the composer inset.
+                // scrollToIndex(last) aligns the row itself with the bottom edge,
+                // which left a new message behind the composer.
+                const scroller = !isWeb && list.getNativeScrollRef?.();
+                if (scroller?.scrollToEnd) scroller.scrollToEnd({ animated: true });
+                else list.scrollToIndex({ animated: false, align: "end", behavior: "smooth", index: 9999999999 });
             }, 100);
         }
     }
@@ -530,7 +549,6 @@ export default function Messenger({ defaultConvoId, selectedMenu, convos, fetchC
         // pads for chrome. Mobile web: window-scroll like conductor lists
         // (notifications, comments) so rows pass behind the collapsible page
         // header. Chat composer is viewport-fixed above the tab bar.
-        const nativeHeaderInset = isWeb ? 0 : PANEL_HEADER_HEIGHT;
         const tabBarInset = isWeb ? footerHeight : 0;
         const composerInset = formHeight + errorOffset;
         // Room to scroll the last row clear of the bar (web: the footer).
@@ -561,8 +579,9 @@ export default function Messenger({ defaultConvoId, selectedMenu, convos, fetchC
                             startReached={handleStartReached}
                             handleReply={handleReply}
                             isSmallScreen={true}
-                            headerInset={nativeHeaderInset}
                             footerInset={composerInset + bottomBarInset}
+                            // Rise with the keyboard as far as the composer does.
+                            keyboardBottomOffset={isWeb ? undefined : stickyOpened}
                         />
                     )}
                     {listError ? (
@@ -577,12 +596,19 @@ export default function Messenger({ defaultConvoId, selectedMenu, convos, fetchC
                         <KbStickyView
                             // Web: from the window bottom, under the tab bar (footer z-30),
                             // so the wash runs from the bar up through the composer.
+                            // iOS (ownsBottomBlur) the same, padded up to its resting spot.
                             style={isWeb
                                 ? { position: 'fixed', left: 0, right: 0, bottom: 0, zIndex: 20 }
-                                : { position: 'absolute', left: 0, right: 0, bottom: tabBarOverlayInset, zIndex: 10 }}
+                                : { position: 'absolute', left: 0, right: 0, bottom: ownsBottomBlur ? 0 : tabBarOverlayInset, zIndex: 10 }}
                             offset={{ closed: 0, opened: stickyOpened }}
                         >
-                            <EdgeBlurView edge="bottom" config={edgeBlurConfig('footer')} washClassName={CHAT_OVERLAY_COMPOSER_FADE} pointerEvents="box-none">
+                            <EdgeBlurView
+                                edge="bottom"
+                                config={composerBlur}
+                                washClassName={CHAT_OVERLAY_COMPOSER_FADE}
+                                pointerEvents="box-none"
+                                style={ownsBottomBlur ? { paddingBottom: tabBarOverlayInset } : undefined}
+                            >
                                 <View onLayout={handleFormLayout} className="w-full" pointerEvents="auto">
                                     <Composer
                                         form={data.form}

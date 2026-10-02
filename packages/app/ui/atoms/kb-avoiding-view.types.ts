@@ -21,6 +21,13 @@ export type KbStickyViewProps = Partial<ComponentProps<typeof KeyboardStickyView
     className?: string;
 };
 
+export type KbGutterViewProps = {
+    children?: ReactNode;
+    className?: string;
+    /** Native: side padding at rest and with the keyboard up; eases between them with the keyboard. */
+    gutter?: { rest: number; open: number } | null;
+};
+
 type KbAwareScrollProps = Partial<Omit<ComponentProps<typeof KeyboardAwareScrollView>, 'ref'>> & {
     children?: ReactNode;
     className?: string;

@@ -12,6 +12,7 @@ import { clearAllPageCache } from 'app/lib/cache/clear-page-cache';
 import emitter, { EVENTS } from 'app/context/emitter'
 import * as SplashScreen from 'expo-splash-screen';
 import { TabChromeProvider } from 'app/context/tab-chrome';
+import { usePageBottomBlur } from 'app/context/jotai/layout';
 import { TabSlide } from 'app/components/nav/tab-slide';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'app/lib/hooks/router';
@@ -22,10 +23,12 @@ import { EdgeBlur, edgeBlurConfig } from 'app/ui/atoms/edge-blur';
  * Inside a tab screen the bottom safe-area inset already includes the tab bar
  * (UIKit adds it), so the blur spans that inset plus `extend`.
  */
-function TabBarEdgeBlur() {
+function TabBarEdgeBlur({ tabKey }) {
     const insets = useSafeAreaInsets();
     const config = edgeBlurConfig('tabbar');
-    if (!config) return null;
+    // The page already blurs from the screen bottom up (messenger composer).
+    const pageOwnsBlur = usePageBottomBlur(tabKey);
+    if (!config || pageOwnsBlur) return null;
     const height = insets.bottom + (config.extend ?? 0);
     return (
         <View pointerEvents="none" style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height }}>
@@ -159,7 +162,7 @@ function ScreenInner(params) {
                     />
                 </TabChromeProvider>
             ) : null}
-            {activated && isShowTabs && isNativeTabsEnabled() ? <TabBarEdgeBlur /> : null}
+            {activated && isShowTabs && isNativeTabsEnabled() ? <TabBarEdgeBlur tabKey={pathname} /> : null}
         </>
     );
 }
