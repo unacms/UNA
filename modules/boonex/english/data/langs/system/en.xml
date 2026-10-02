@@ -3545,18 +3545,16 @@
     <string name="_sys_menu_item_title_system_account_profile_context"><![CDATA[Profiles]]></string>
     <string name="_sys_menu_item_title_system_account_dashboard"><![CDATA[Dashboard]]></string>
     <string name="_sys_menu_item_title_system_account_dashboard_administration"><![CDATA[Administration]]></string>
-
     <string name="_sys_menu_item_title_system_account_dashboard_content"><![CDATA[Content]]></string>
     <string name="_sys_menu_item_title_account_dashboard_content"><![CDATA[Content]]></string>
     <string name="_sys_menu_item_title_system_account_dashboard_reports"><![CDATA[Reports]]></string>
     <string name="_sys_menu_item_title_account_dashboard_reports"><![CDATA[Reports]]></string>
     <string name="_sys_menu_item_title_system_account_dashboard_audit"><![CDATA[Audit]]></string>
     <string name="_sys_menu_item_title_account_dashboard_audit"><![CDATA[Audit]]></string>
-    <string name="_sys_menu_item_title_system_account_dashboard_admin"><![CDATA[Admin]]></string>
-    <string name="_sys_menu_item_title_account_dashboard_admin"><![CDATA[Admin]]></string>
-    <string name="_sys_menu_item_title_system_account_dashboard_agent"><![CDATA[Agent]]></string>
-    <string name="_sys_menu_item_title_account_dashboard_agent"><![CDATA[Agent]]></string>
-
+    <string name="_sys_menu_item_title_system_account_dashboard_agent"><![CDATA[Agents]]></string>
+    <string name="_sys_menu_item_title_account_dashboard_agent"><![CDATA[Agents]]></string>
+    <string name="_sys_menu_item_title_system_account_dashboard_admin"><![CDATA[Administration]]></string>
+    <string name="_sys_menu_item_title_account_dashboard_admin"><![CDATA[Administration]]></string>
     <string name="_sys_menu_item_title_system_ap_profile_active"><![CDATA[Active Profile]]></string>
     <string name="_sys_menu_item_title_system_ap_profile_notifications"><![CDATA[Notifications Menu]]></string>
     <string name="_sys_menu_item_title_system_ap_profile_switcher"><![CDATA[Profile Switcher]]></string>

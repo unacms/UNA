@@ -3509,18 +3509,17 @@
     <string name="_sys_menu_item_title_system_account_menu"><![CDATA[Аккаунт]]></string>
     <string name="_sys_menu_item_title_system_account_profile_context"><![CDATA[Профили]]></string>
     <string name="_sys_menu_item_title_system_account_dashboard"><![CDATA[Панель]]></string>
-    <string name="_sys_menu_item_title_system_account_dashboard_administration"><![CDATA[Администрация]]></string>
+    <string name="_sys_menu_item_title_system_account_dashboard_administration"><![CDATA[Администрирование]]></string>
     <string name="_sys_menu_item_title_system_account_dashboard_content"><![CDATA[Контент]]></string>
     <string name="_sys_menu_item_title_account_dashboard_content"><![CDATA[Контент]]></string>
     <string name="_sys_menu_item_title_system_account_dashboard_reports"><![CDATA[Жалобы]]></string>
     <string name="_sys_menu_item_title_account_dashboard_reports"><![CDATA[Жалобы]]></string>
     <string name="_sys_menu_item_title_system_account_dashboard_audit"><![CDATA[Аудит]]></string>
     <string name="_sys_menu_item_title_account_dashboard_audit"><![CDATA[Аудит]]></string>
-    <string name="_sys_menu_item_title_system_account_dashboard_admin"><![CDATA[Админ]]></string>
-    <string name="_sys_menu_item_title_account_dashboard_admin"><![CDATA[Админ]]></string>
-    <string name="_sys_menu_item_title_system_account_dashboard_agent"><![CDATA[Агент]]></string>
-    <string name="_sys_menu_item_title_account_dashboard_agent"><![CDATA[Агент]]></string>
-
+    <string name="_sys_menu_item_title_system_account_dashboard_agent"><![CDATA[Агенты]]></string>
+    <string name="_sys_menu_item_title_account_dashboard_agent"><![CDATA[Агенты]]></string>
+    <string name="_sys_menu_item_title_system_account_dashboard_admin"><![CDATA[Администрирование]]></string>
+    <string name="_sys_menu_item_title_account_dashboard_admin"><![CDATA[Администрирование]]></string>
     <string name="_sys_menu_item_title_system_ap_profile_active"><![CDATA[Активный профиль]]></string>
     <string name="_sys_menu_item_title_system_ap_profile_notifications"><![CDATA[Меню уведомлений]]></string>
     <string name="_sys_menu_item_title_system_ap_profile_switcher"><![CDATA[Мои профили]]></string>
