@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useCallback } from 'react'
 import { appSetting } from 'app/lib/util'
 import { View, Row } from 'app/design/view'
 import { useTranslation } from 'react-i18next'
@@ -62,6 +62,23 @@ function TimelineRecommendations({ data }) {
     )
 }
 
+/**
+ * Copy of a UNA menu with `callback` set on its `item-comment` entry. A copy,
+ * not an in-place edit: `data` is the query cache object, shared by every
+ * render and reader of the feed.
+ */
+function withCommentCallback(menu, callback) {
+    if (!menu?.items?.some((x) => x.name === 'item-comment' && x.data)) return menu
+    return {
+        ...menu,
+        items: menu.items.map((x) =>
+            x.name === 'item-comment' && x.data
+                ? { ...x, data: { ...x.data, callback } }
+                : x
+        ),
+    }
+}
+
 function DefaultUnit({ data }) {
     if (data.type == 'timeline_recommendations') {
         return <TimelineRecommendations data={data} />
@@ -82,27 +99,20 @@ function DefaultFeedUnit({ data }) {
         [data]
     )
 
-    const showCommentsModal = (initFormData) => {
+    const showCommentsModal = useCallback((initFormData) => {
         const url2 = (url.startsWith('/') ? url.slice(1) : url) + (initFormData?.cmt_id > 0 ? '#cmt_id=' + initFormData?.cmt_id : '#cmts');
         // #cmts (scroll + focus the comment form) is only for the click, not for reopening after reload
         openModalByUrl(url2, isFeedModalHash() ? getFeedModalHistoryUrl(url2.replace(/#cmts$/, '')) : '');
-    }
+    }, [url, openModalByUrl])
 
-    if (isCommentsModal) {
-        const commentItem = data?.menu_actions?.items?.find(
-            (x) => x.name === 'item-comment'
-        )
-        if (commentItem?.data) {
-            commentItem.data.callback = showCommentsModal
-        }
-
-        const commentItem1 = data?.menu_counters?.items?.find(
-            (x) => x.name === 'item-comment'
-        )
-        if (commentItem1?.data) {
-            commentItem1.data.callback = showCommentsModal
-        }
-    }
+    const menuActions = useMemo(
+        () => isCommentsModal ? withCommentCallback(data?.menu_actions, showCommentsModal) : data?.menu_actions,
+        [isCommentsModal, data?.menu_actions, showCommentsModal]
+    )
+    const menuCounters = useMemo(
+        () => isCommentsModal ? withCommentCallback(data?.menu_counters, showCommentsModal) : data?.menu_counters,
+        [isCommentsModal, data?.menu_counters, showCommentsModal]
+    )
 
     if (viewState.view == 'deleted') return null
 
@@ -140,12 +150,12 @@ function DefaultFeedUnit({ data }) {
                         <MainContent url={url} data={data} />
                     </Skeleton>
                 </View>
-                {!!data.menu_counters?.items?.length && <>
+                {!!menuCounters?.items?.length && <>
                 
                     <View className="flex-auto px-4 ">
                         {appSetting('feed', 'counters_menu') && (
                             <CounterMenu
-                                data={data.menu_counters}
+                                data={menuCounters}
                             />
                         )}
                     </View>
@@ -153,7 +163,7 @@ function DefaultFeedUnit({ data }) {
 
                 <Row className="gap-2 items-center flex-auto justify-between p-4 pt-3  ">
                     <ActionMenu
-                        data={data.menu_actions}
+                        data={menuActions}
                     />
                     <View className="flex-none hidden">
                         <MenuManage

@@ -24,7 +24,7 @@ import { useConductorFocusRefresh } from './use-conductor-focus-refresh'
 import { PageHeaderOptions } from 'app/ui/molecules/header/options'
 import { useCurrentUser } from 'app/context/user'
 import Snackbar from 'app/ui/atoms/snackbar'
-import { useBottomSheetData } from 'app/context/bottomsheet'
+import { useBottomSheetStore } from 'app/context/bottomsheet'
 import emitter, { EVENTS } from 'app/context/emitter'
 import { useIsFocused } from 'app/lib/hooks/router'
 import {
@@ -32,6 +32,9 @@ import {
     setCachedConductorState,
 } from 'app/lib/cache/native-conductor-cache'
 import { useTranslation } from 'react-i18next'
+
+/** Stable fallback so `useLeftColumn` memos survive tabs without a left column. */
+const EMPTY_CONTENT = []
 
 /**
  * Conductor — native shell (web lives in `index.web.js`).
@@ -82,7 +85,9 @@ export function Conductor({
 }) {
     const { t } = useTranslation()
     const { currentUser } = useCurrentUser()
-    const { setBottomSheetData } = useBottomSheetData()
+    // Setter only: subscribing to the sheet data would re-render the whole
+    // conductor on every sheet open/close.
+    const setBottomSheetData = useBottomSheetStore((state) => state.setBottomSheetData)
     // Tab screens stay mounted when blurred (see tabs.js) — every write to the
     // shared header atom and every global emitter command must be gated on
     // focus, otherwise a background conductor clobbers the visible submenu.
@@ -355,7 +360,7 @@ export function Conductor({
 
     // UNA's left column carries two different things: dropdown menus (shown next
     // to the tabs) and filter blocks (shown in the bottom sheet).
-    const leftColumnContent = tabRoute?.leftbar?.content ?? []
+    const leftColumnContent = tabRoute?.leftbar?.content ?? EMPTY_CONTENT
     const {
         leftColumnMenuBlocks,
         leftColumnFilterBlocks,

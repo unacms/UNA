@@ -477,19 +477,28 @@ export function useListScene({
         [route?.endpoint, route?.blocks]
     )
 
+    // Unit rows get primitives only: when the `route` object is rebuilt (tab
+    // hydration, soft refresh, filters) the memoized ItemRenderer skips every
+    // visible post. Page blocks do read the route, so they still update.
+    const routeIndex = route?.index
+    const endpointUnit = route?.endpoint?.unit
+    const endpointModule = route?.endpoint?.module
     const renderItem = useCallback(
-        ({ item, index }) => (
-            <ItemRenderer
-                unitType={unitType}
-                unitMode={unitMode}
-                route={route}
-                item={item}
-                index={index}
-                unit={item?.unit || route?.endpoint?.unit}
-                module={item?.module || route?.endpoint?.module}
-            />
+        ({ item }) => (
+            item?.type === 'block' ? (
+                <ItemRenderer route={route} item={item} />
+            ) : (
+                <ItemRenderer
+                    unitType={unitType}
+                    unitMode={unitMode}
+                    routeIndex={routeIndex}
+                    item={item}
+                    unit={item?.unit || endpointUnit}
+                    module={item?.module || endpointModule}
+                />
+            )
         ),
-        [route, unitType, unitMode]
+        [route, routeIndex, endpointUnit, endpointModule, unitType, unitMode]
     )
 
     const skeletonKey = useMemo(

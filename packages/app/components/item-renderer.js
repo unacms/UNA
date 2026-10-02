@@ -14,12 +14,13 @@ function isTasksListBlock(item) {
     return typeof name === 'string' && name.includes('tasks_list');
 }
 
-function ItemRenderer_({ route, item, unit, module, unitMode, unitType, sidebar }) {
+/** `routeIndex`: unit rows get it instead of `route` (see useListScene). */
+function ItemRenderer_({ route, routeIndex, item, unit, module, unitMode, unitType, sidebar }) {
     if (item?.type === 'block') {
         return <BlockItemRenderer item={item} route={route} sidebar={sidebar} />;
     } else {
         return (
-            <View key={`${route?.index}-${item.id}`}>
+            <View key={`${routeIndex ?? route?.index}-${item.id}`}>
                 <Unit unitType={unitType} module={module} unit={unit} data={item} mode={unitMode} />
             </View>
         );
