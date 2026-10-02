@@ -38,11 +38,14 @@ export function UnsavedFormConfirmHost() {
 
     useEffect(() => {
         if (!visible || Platform.OS !== 'web') return;
-        const onKeyUp = (event) => {
-            if (event.key === 'Escape') dismiss(false);
+        const onKeyDown = (event) => {
+            if (event.key !== 'Escape') return;
+            event.preventDefault();
+            event.stopImmediatePropagation();
+            dismiss(false);
         };
-        window.addEventListener('keyup', onKeyUp);
-        return () => window.removeEventListener('keyup', onKeyUp);
+        window.addEventListener('keydown', onKeyDown, true);
+        return () => window.removeEventListener('keydown', onKeyDown, true);
     }, [visible]);
 
     if (Platform.OS !== 'web' || !mounted || !visible) return null;

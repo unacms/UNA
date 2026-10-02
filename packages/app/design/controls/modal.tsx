@@ -36,6 +36,8 @@ const isIPadWeb =
         (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
     );
 const modalSettings = appSetting('theme', 'modal');
+// Topmost modal wins Escape. Menus that preventDefault on the same keydown run first.
+const webModalEscapeStack: symbol[] = [];
 
 function ModalHeader({ title, headerBorder, onClose }: { title?: ReactNode; headerBorder: boolean; onClose?: () => void }) {
     const { t } = useTranslation();
@@ -247,6 +249,53 @@ export function Modal({
     const handleRequestClose = useCallback(() => {
         tryRequestClose();
     }, [tryRequestClose]);
+
+    useEffect(() => {
+        const isShown = onVisible == null ? true : !!onVisible;
+        if (!isWeb || !isShown) return undefined;
+
+        const id = Symbol('modal');
+        webModalEscapeStack.push(id);
+        const isTop = () => webModalEscapeStack[webModalEscapeStack.length - 1] === id;
+
+        const onKeyDown = (event: KeyboardEvent) => {
+            if (event.key !== 'Escape' || event.defaultPrevented || !isTop()) return;
+            // Let a menu/popover opened inside the modal consume Escape first.
+            queueMicrotask(() => {
+                if (event.defaultPrevented || !isTop()) return;
+                tryRequestClose();
+            });
+        };
+
+        const onMessage = (event: MessageEvent) => {
+            const source = event.source;
+            if (!source || source === window || !isTop()) return;
+            const fromEditorFrame = Array.from(document.querySelectorAll('iframe')).some(
+                (iframe) => iframe.contentWindow === source
+            );
+            if (!fromEditorFrame) return;
+
+            let data = event.data;
+            if (typeof data === 'string') {
+                try {
+                    data = JSON.parse(data);
+                } catch {
+                    return;
+                }
+            }
+            if (data?.type !== 'neo-modal-escape') return;
+            tryRequestClose();
+        };
+
+        window.addEventListener('keydown', onKeyDown);
+        window.addEventListener('message', onMessage);
+        return () => {
+            const index = webModalEscapeStack.lastIndexOf(id);
+            if (index !== -1) webModalEscapeStack.splice(index, 1);
+            window.removeEventListener('keydown', onKeyDown);
+            window.removeEventListener('message', onMessage);
+        };
+    }, [onVisible, tryRequestClose]);
 
     useEffect(() => {
         if (!isWeb || !scrollable || !onVisible) return;

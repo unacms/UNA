@@ -722,6 +722,18 @@ export default function RftText(props) {
                                 payload: event.shiftKey ? 'ArrowUp' : 'ArrowDown'
                             }));
                             return false;
+                        } else if (event.key === 'Escape') {
+                            if (mentionVisible) {
+                                event.preventDefault();
+                                event.stopPropagation();
+                                mentionVisible = false;
+                                editorElement.removeAttribute('query');
+                                window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'mention_hide' }));
+                                return false;
+                            }
+                            if (window.parent && window.parent !== window) {
+                                window.parent.postMessage(JSON.stringify({ type: 'neo-modal-escape' }), '*');
+                            }
                         }
                     }, true);
 
