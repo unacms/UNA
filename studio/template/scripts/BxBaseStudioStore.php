@@ -608,8 +608,15 @@ class BxBaseStudioStore extends BxDolStudioStore
         $oTemplate = BxDolStudioTemplate::getInstance();
 
         $aProduct = $this->loadProduct($sModuleName);
-        if(empty($aProduct) || !is_array($aProduct))
+        if(empty($aProduct) || !is_array($aProduct)) {
+            $aLocalProduct = array();
+            if(is_array($aProduct))
+                $aLocalProduct = $this->loadLocalProduct($sModuleName);
+            if(!empty($aLocalProduct) && is_array($aLocalProduct))
+                return $this->getLocalProduct($aLocalProduct);
+
             return array('code' => BX_DOL_STUDIO_IU_RC_FAILED, 'message' => (!empty($aProduct) ? $aProduct : _t('_adm_str_err_no_product_info')));
+        }
 
 		$aDownloaded = $this->getDownloadedModules(false);
 
@@ -758,6 +765,34 @@ class BxBaseStudioStore extends BxDolStudioStore
             'popup' => BxTemplStudioFunctions::getInstance()->popupBox('bx-std-str-popup-product', $aProduct['title'], $sContent, true), 
             'screenshots' => $iScreenshots
         ];
+    }
+
+    protected function getLocalProduct(array $aProduct)
+    {
+        $oTemplate = BxDolStudioTemplate::getInstance();
+        $sContent = $oTemplate->parseHtmlByName('str_product_view_local.html', array(
+            'title' => $aProduct['title'],
+            'vendor' => bx_process_output($aProduct['vendor']),
+            'version' => bx_process_output($aProduct['version']),
+            'bx_if:show_note' => array(
+                'condition' => !empty($aProduct['note']),
+                'content' => array(
+                    'note' => $aProduct['note'],
+                ),
+            ),
+        ));
+
+        return array(
+            'code' => BX_DOL_STUDIO_IU_RC_SUCCESS,
+            'message' => '',
+            'popup' => BxTemplStudioFunctions::getInstance()->popupBox(
+                'bx-std-str-popup-product',
+                $aProduct['title'],
+                $sContent,
+                true
+            ),
+            'screenshots' => 0,
+        );
     }
 
     protected function getFile($iFileId)
