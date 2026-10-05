@@ -13,6 +13,9 @@ a2enmod mpm_prefork rewrite >/dev/null 2>&1 || true
 
 mkdir -p cache cache_public logs tmp storage
 chmod a+rwX inc cache cache_public logs tmp storage
+if [ -f plugins/ffmpeg/ffmpeg.exe ]; then
+    chmod 0755 plugins/ffmpeg/ffmpeg.exe  # installer check only; UNA_FFMPEG_PATH is what runs
+fi
 
 parse_mysql_url() {
     _url="$1"
