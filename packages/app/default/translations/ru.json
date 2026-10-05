@@ -473,9 +473,5 @@
     "agents_admin_empty": "Агентов пока нет. Создайте в Studio.",
     "tasks_budget_total": "Всего",
     "tasks_budget_spent": "Потрачено",
-    "tasks_budget_remaining": "Осталось",
-    "Create your profile": "Создайте профиль",
-    "Your account doesn’t have a profile yet. Choose a profile type to get started.": "У вашей учётной записи ещё нет профиля. Выберите тип профиля, чтобы начать.",
-    "For yourself, with your own feed and connections.": "Для себя: собственная лента и связи.",
-    "For a company, team or community you run.": "Для компании, команды или сообщества, которыми вы управляете."
+    "tasks_budget_remaining": "Осталось"
 }

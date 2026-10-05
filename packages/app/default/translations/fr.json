@@ -471,9 +471,5 @@
     "agents_admin_empty": "Pas encore d’agents. Créez-en un dans Studio.",
     "tasks_budget_total": "Total",
     "tasks_budget_spent": "Dépensé",
-    "tasks_budget_remaining": "Restant",
-    "Create your profile": "Créez votre profil",
-    "Your account doesn’t have a profile yet. Choose a profile type to get started.": "Votre compte n’a pas encore de profil. Choisissez un type de profil pour commencer.",
-    "For yourself, with your own feed and connections.": "Pour vous, avec votre propre fil et vos relations.",
-    "For a company, team or community you run.": "Pour une entreprise, une équipe ou une communauté que vous gérez."
+    "tasks_budget_remaining": "Restant"
 }

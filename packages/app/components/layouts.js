@@ -151,8 +151,9 @@ function PageLayoutContent({ layout, data }) {
     if ((hasProfileInformer || currentUser?.membership==2 && data.uri =='home') && appSetting('layout', 'lock_no_profile')) {
 
         if (currentUser?.menu?.items?.length > 1) {
-            const CreateProfile = components['molecule']['create_profile']
-            return <CreateProfile items={currentUser.menu.items} />
+            // UNA's account-profile-switcher page: its "create profile" block brings the
+            // title, description and icon (editable in Studio) and the sys_add_profile menu.
+            return <PageByUrl url="account-profile-switcher" />;
         }
         else {
             return <PageByUrl url={currentUser?.menu?.items[0].link} />;
