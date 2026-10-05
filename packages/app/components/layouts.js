@@ -8,7 +8,7 @@ import { responsiveClasses } from 'app/lib/responsive-classes'
 import Cell from 'app/components/cell';
 import { appStatic } from 'app/lib/app-static'
 import Redirect from 'app/ui/atoms/redirect'
-import { useRef, useEffect, useMemo } from 'react';
+import { useRef, useEffect, useMemo, useState } from 'react';
 import PageByUrl from 'app/ui/molecules/page/page-by-url'
 import { registerAll } from 'app/components/registry-init';
 import { useWindowDimensions, Platform } from 'react-native';
@@ -110,7 +110,26 @@ function ErrorPage({ type }) {
     );
 }
 
-function PageLayoutContent({ layout, data }) {
+/**
+ * The page an account without a profile sees: UNA's account-profile-switcher, rendered
+ * like any page (layout padding, block header with icon, title and description) rather
+ * than PageByUrl, which embeds bare blocks for inline forms.
+ */
+function NoProfilePage({ uri }) {
+    const [page, setPage] = useState(null);
+    useEffect(() => {
+        let alive = true;
+        getPageData(uri, false).then((sResponse) => {
+            if (alive && sResponse?.data) setPage(sResponse.data);
+        });
+        return () => { alive = false; };
+    }, [uri]);
+    const layout = useMemo(() => (page ? getLayoutName(page, page.uri?.toString()) : null), [page]);
+    if (!page || !layout) return null;
+    return <PageLayoutContent layout={layout} data={page} skipProfileLock />;
+}
+
+function PageLayoutContent({ layout, data, skipProfileLock = false }) {
     const { currentUser } = useCurrentUser();
     const { layoutName, layoutBlocks, isCustomLayout, columnLayout = '' } = layout;
 
@@ -148,12 +167,12 @@ function PageLayoutContent({ layout, data }) {
         return <ConfirmEmail url={data.url} data={data} />;
     }
 
-    if ((hasProfileInformer || currentUser?.membership==2 && data.uri =='home') && appSetting('layout', 'lock_no_profile')) {
+    if (!skipProfileLock && (hasProfileInformer || currentUser?.membership==2 && data.uri =='home') && appSetting('layout', 'lock_no_profile')) {
 
         if (currentUser?.menu?.items?.length > 1) {
             // UNA's account-profile-switcher page: its "create profile" block brings the
             // title, description and icon (editable in Studio) and the sys_add_profile menu.
-            return <PageByUrl url="account-profile-switcher" />;
+            return <NoProfilePage uri="account-profile-switcher" />;
         }
         else {
             return <PageByUrl url={currentUser?.menu?.items[0].link} />;
