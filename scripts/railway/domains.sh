@@ -127,14 +127,18 @@ api_domain() { # api_domain <host> <environment>
     echo "api: https://$host ($label)"
 }
 
-# The client project: CLIENT_PROJECT when it exists, else the project serving DNS_ZONE.
+# The client project: CLIENT_PROJECT when set, else the project that serves DNS_ZONE
+# (by attached domain, so a renamed or similarly named project can't be picked by mistake).
 client_project_id() {
     local id p
-    if [ -n "$CLIENT_PROJECT" ] && id=$(vercel GET "/v9/projects/$CLIENT_PROJECT" 2>/dev/null | jq -r '.id // empty') && [ -n "$id" ]; then
+    if [ -n "$CLIENT_PROJECT" ]; then
+        id=$(vercel GET "/v9/projects/$CLIENT_PROJECT" | jq -r '.id // empty')
+        [ -n "$id" ] || die "Vercel project $CLIENT_PROJECT not found"
         echo "$id"; return
     fi
     for p in $(vercel GET "/v9/projects?limit=100" | jq -r '.projects[].id'); do
         if vercel GET "/v9/projects/$p/domains?limit=100" | jq -e --arg z "$DNS_ZONE" '.domains[] | select(.name == $z or .name == ("www." + $z))' >/dev/null; then
+            echo "client: project $(vercel GET "/v9/projects/$p" | jq -r .name) serves $DNS_ZONE" >&2
             echo "$p"; return
         fi
     done
@@ -149,11 +153,11 @@ client_alias() { # client_alias <host> [branch]
             | jq -r --arg b "$branch" '[.deployments[] | select(.meta.githubCommitRef == $b)] | sort_by(.created) | last | .uid // empty')
     fi
     if [ -n "$uid" ]; then
-        echo "client: $CLIENT_PROJECT branch $branch"
+        echo "client: branch $branch"
     else
         uid=$(vercel GET "/v6/deployments?projectId=$project&target=production&state=READY&limit=1" | jq -r '.deployments[0].uid // empty')
-        [ -n "$uid" ] || die "no ready production deployment of $CLIENT_PROJECT"
-        echo "client: $CLIENT_PROJECT production"
+        [ -n "$uid" ] || die "no ready production deployment of the client project"
+        echo "client: production"
     fi
     vercel POST "/v2/deployments/$uid/aliases" "$(jq -nc --arg a "$host" '{alias: $a}')" >/dev/null
     echo "client: https://$host"

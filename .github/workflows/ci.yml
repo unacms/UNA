@@ -103,7 +103,6 @@ jobs:
       # unacms.app hosts: the backend on Railway, the NEO client (neo-ci on Vercel) in front of it
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
       VERCEL_TEAM: yasko
-      CLIENT_PROJECT: una-ci
       PREVIEW_API_HOST: api-pr-${{ github.event.pull_request.number }}.unacms.app
       PREVIEW_CLIENT_HOST: pr-${{ github.event.pull_request.number }}.unacms.app
       UNA_PREVIEW_API_KEY: ${{ secrets.UNA_PREVIEW_API_KEY }}
@@ -333,7 +332,6 @@ jobs:
       RAILWAY_PR_ENVIRONMENT: pr-${{ github.event.pull_request.number }}
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
       VERCEL_TEAM: yasko
-      CLIENT_PROJECT: una-ci
     steps:
     - uses: actions/checkout@v4
       with:
