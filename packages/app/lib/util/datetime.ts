@@ -8,11 +8,84 @@ const isWeb = Platform.OS === 'web';
 const SSR_DATE_LOCALE = 'en-US';
 
 
-function getDateOrderByLocale(tag: string): string {
-    const lang = tag.toLowerCase();
-    if (lang.startsWith('en-us')) return 'M D, Y';
-    if (lang.startsWith('zh') || lang.startsWith('ja') || lang.startsWith('ko')) return 'Y M D';
-    return 'D M Y';
+/**
+ * Per-locale date layout. Plain table instead of `Intl` so web, iOS and
+ * Android format identically.
+ */
+export type DateFormatSpec = {
+    order: 'DMY' | 'MDY' | 'YMD';
+    /** Separator for the numeric form ("05.10.2026", "10/05/2026"). */
+    sep: string;
+    /** Appended to the day in the named form ("5. Okt. 2026"). */
+    dayMark: string;
+    /** First day of week, 0 = Sunday. */
+    weekStart: 0 | 1;
+};
+
+const DEFAULT_DATE_FORMAT: DateFormatSpec = { order: 'DMY', sep: '.', dayMark: '', weekStart: 1 };
+
+/** Full tag beats language. Keys are lowercase. */
+const DATE_FORMAT_BY_TAG: Record<string, Partial<DateFormatSpec>> = {
+    'en-us': { order: 'MDY', sep: '/', weekStart: 0 },
+    'en-ca': { order: 'YMD', sep: '-', weekStart: 0 },
+    'en-ph': { order: 'MDY', sep: '/', weekStart: 0 },
+    'fr-ca': { order: 'YMD', sep: '-', weekStart: 0 },
+    'pt-br': { sep: '/', weekStart: 0 },
+};
+
+const DATE_FORMAT_BY_LANG: Record<string, Partial<DateFormatSpec>> = {
+    en: { sep: '/' },
+    ru: { sep: '.' },
+    uk: { sep: '.' },
+    be: { sep: '.' },
+    pl: { sep: '.' },
+    cs: { sep: '.' },
+    tr: { sep: '.' },
+    de: { sep: '.', dayMark: '.' },
+    fr: { sep: '/' },
+    es: { sep: '/' },
+    it: { sep: '/' },
+    pt: { sep: '/' },
+    el: { sep: '/' },
+    ar: { sep: '/', weekStart: 0 },
+    he: { sep: '.', weekStart: 0 },
+    nl: { sep: '-' },
+    sv: { order: 'YMD', sep: '-' },
+    lt: { order: 'YMD', sep: '-' },
+    hu: { order: 'YMD', sep: '.' },
+    zh: { order: 'YMD', sep: '/', weekStart: 0 },
+    ja: { order: 'YMD', sep: '/', weekStart: 0 },
+    ko: { order: 'YMD', sep: '.', weekStart: 0 },
+};
+
+export function getDateFormatSpec(tag: string): DateFormatSpec {
+    const lower = tag.toLowerCase().replace('_', '-');
+    const lang = lower.split('-')[0] ?? '';
+    return {
+        ...DEFAULT_DATE_FORMAT,
+        ...DATE_FORMAT_BY_LANG[lang],
+        ...DATE_FORMAT_BY_TAG[lower],
+    };
+}
+
+const MONTH_SHORT = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const MONTH_LONG = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+const WEEKDAY_SHORT = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+
+/** Month name inside a date ("5 октября"); `monthIndex` is 0-11. */
+export function getMonthName(t: TFunction, monthIndex: number, length: 'short' | 'long' = 'short'): string {
+    const fallback = (length === 'long' ? MONTH_LONG : MONTH_SHORT)[monthIndex] ?? '';
+    return t(`date_month_${length}_${monthIndex + 1}`, { defaultValue: fallback });
+}
+
+/** Standalone month name for pickers and headers ("Октябрь"); `monthIndex` is 0-11. */
+export function getMonthTitle(t: TFunction, monthIndex: number): string {
+    return t(`date_month_name_${monthIndex + 1}`, { defaultValue: MONTH_LONG[monthIndex] ?? '' });
+}
+
+/** Two-letter weekday for calendar headers; `day` is 0 = Sunday … 6 = Saturday. */
+export function getWeekdayShort(t: TFunction, day: number): string {
+    return t(`date_weekday_short_${day}`, { defaultValue: WEEKDAY_SHORT[day] ?? '' });
 }
 
 function readDeviceLocaleTag(): string {
@@ -150,7 +223,7 @@ export const formatDate = (
         }
     }
 
-    return formatDateUniversal(date, {
+    return formatDateUniversal(date, t, {
         showDate,
         showTime,
         month,
@@ -162,8 +235,35 @@ export const formatDate = (
     });
 };
 
+/**
+ * Numeric: "05.10.2026" / "10/05/2026" / "2026/10/05", year dropped → "05.10".
+ * Named: "5 окт. 2026" / "Oct 5, 2026" / "2026 Oct 5", year dropped → "5 окт.".
+ */
+function formatDatePart(date: Date, t: TFunction, spec: DateFormatSpec, month: FormatDateOptions['month'], withYear: boolean): string {
+    const monthIndex = date.getMonth();
+    const year = String(date.getFullYear());
+
+    if (month === 'numeric' || month === '2-digit') {
+        const pad = month === '2-digit';
+        const d = pad ? String(date.getDate()).padStart(2, '0') : String(date.getDate());
+        const m = pad ? String(monthIndex + 1).padStart(2, '0') : String(monthIndex + 1);
+        const ordered = spec.order === 'MDY' ? [m, d, year]
+            : spec.order === 'YMD' ? [year, m, d]
+            : [d, m, year];
+        return ordered.filter(part => withYear || part !== year).join(spec.sep);
+    }
+
+    const name = getMonthName(t, monthIndex, month === 'long' ? 'long' : 'short');
+    const day = String(date.getDate()) + spec.dayMark;
+    if (spec.order === 'MDY')
+        return withYear ? `${name} ${day}, ${year}` : `${name} ${day}`;
+    if (spec.order === 'YMD')
+        return withYear ? `${year} ${name} ${day}` : `${name} ${day}`;
+    return withYear ? `${day} ${name} ${year}` : `${day} ${name}`;
+}
+
 // Universal date formatting function (same result everywhere)
-function formatDateUniversal(date: Date, {
+function formatDateUniversal(date: Date, t: TFunction, {
     showDate,
     showTime,
     month,
@@ -186,38 +286,8 @@ function formatDateUniversal(date: Date, {
 
     // --- DATE ---
     if (showDate && !rel) {
-        const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-        const monthLongNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-
-        const dayStr = String(date.getDate()); // can use padStart(2,'0') for 2-digit
-        const monthIndex = date.getMonth();
-
-        // getMonth() is 0-11, so the name lookups always hit.
-        let monthStr: string;
-        if (month === 'short') monthStr = monthNames[monthIndex]!;
-        else if (month === 'long') monthStr = monthLongNames[monthIndex]!;
-        else if (month === 'numeric') monthStr = String(monthIndex + 1);
-        else if (month === '2-digit') monthStr = String(monthIndex + 1).padStart(2, '0');
-        else monthStr = monthNames[monthIndex]!;
-
         const needYear = (yearPolicy === 'always') || (yearPolicy === 'auto' && date.getFullYear() !== nowYear);
-        const yearStr = String(date.getFullYear());
-
-        const tokens = { D: dayStr, M: monthStr, Y: needYear ? yearStr : '' };
-
-        // order + punctuation
-        const pattern = getDateOrderByLocale(localeTag); // "M D, Y" etc
-        const dateText = pattern
-            .replace(/\bD\b/g, tokens.D)
-            .replace(/\bM\b/g, tokens.M)
-            .replace(/\bY\b/g, tokens.Y)
-            // trim extra punctuation/spaces when year is hidden
-            .replace(/\s+,/g, ',')
-            .replace(/,\s*$/g, '')
-            .replace(/\s+/g, ' ')
-            .trim();
-
-        if (dateText) parts.push(dateText);
+        parts.push(formatDatePart(date, t, getDateFormatSpec(localeTag), month, needYear));
     }
 
     // --- TIME ---
@@ -248,10 +318,10 @@ export const formatDateInterval = (dateStart: number, dateEnd: number, t: TFunct
 
     if (isSingleDate)
         if (isSingleTime)
-            return formatDate(start, t, { inFuture: true, showTime: true, month: 'numeric', locale });
+            return formatDate(start, t, { inFuture: true, showTime: true, month: '2-digit', locale });
         else
-            return formatDate(start, t, { inFuture: true, showTime: true, month: 'numeric', locale }) + ' - ' + formatDate(end, t, { inFuture: true, showTime: true, showDate: false, month: 'numeric', locale });
+            return formatDate(start, t, { inFuture: true, showTime: true, month: '2-digit', locale }) + ' - ' + formatDate(end, t, { inFuture: true, showTime: true, showDate: false, month: '2-digit', locale });
     else
-        return formatDate(start, t, { inFuture: true, showTime: true, month: 'numeric', locale }) + ' - ' + formatDate(end, t, { inFuture: true, showTime: true, showDate: true, month: 'numeric', locale });
+        return formatDate(start, t, { inFuture: true, showTime: true, month: '2-digit', locale }) + ' - ' + formatDate(end, t, { inFuture: true, showTime: true, showDate: true, month: '2-digit', locale });
 
 };

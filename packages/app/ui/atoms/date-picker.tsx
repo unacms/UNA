@@ -5,9 +5,8 @@ import { useState, useMemo, type ReactNode } from 'react';
 import { Modal, Button, InputWithIcons, TextInputClear, NeoButton } from 'app/design/controls'
 import { Text } from 'app/design/typography';
 import { Platform } from 'react-native'
-import { formatDate, appSetting } from 'app/lib/util'
+import { formatDate, appSetting, useDateLocaleTag, getDateFormatSpec, getMonthTitle, getWeekdayShort } from 'app/lib/util'
 import { useTranslation } from 'react-i18next';
-import * as RNLocalize from 'react-native-localize';
 
 type Option = { value: string | number; label?: string };
 
@@ -88,11 +87,11 @@ for (let y = 1900; y <= 2100; y++) {
     years.push({ value: y });
 }
 
-const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const dateInputOpts = { yearPolicy: 'always' as const, month: '2-digit' as const };
 
-const months = monthNames.map((label, value) => ({ value, label }));
-
-export function MonthCalendar({ date = new Date(), onSelect, selectedDate }: { date?: Date; onSelect: (date: Date) => void; selectedDate?: Date | null }) {
+/** `weekStart`: first day of week, 0 = Sunday. */
+export function MonthCalendar({ date = new Date(), onSelect, selectedDate, weekStart = 1 }: { date?: Date; onSelect: (date: Date) => void; selectedDate?: Date | null; weekStart?: 0 | 1 }) {
+    const { t } = useTranslation();
     // Year and month to display
 
     const displayYear = date.getFullYear();
@@ -101,7 +100,8 @@ export function MonthCalendar({ date = new Date(), onSelect, selectedDate }: { d
     // First day of the month and total days
     const firstOfMonth = new Date(displayYear, displayMonth - 1, 1);
     const daysInMonth = new Date(displayYear, displayMonth, 0).getDate();
-    const startWeekday = firstOfMonth.getDay(); // 0=Sun…6=Sat
+    const startWeekday = (firstOfMonth.getDay() - weekStart + 7) % 7; // column of the 1st
+    const weekdays = Array.from({ length: 7 }, (_, i) => (i + weekStart) % 7);
 
     // Create array of 42 days (6 weeks)
     const cells = Array.from({ length: 42 }, (_, idx) => {
@@ -116,6 +116,13 @@ export function MonthCalendar({ date = new Date(), onSelect, selectedDate }: { d
 
     return (
         <View className="space-y-2 items-center">
+            <View className="flex-row">
+                {weekdays.map(day => (
+                    <View key={day} className="h-8 w-10 items-center justify-center">
+                        <Text className="text-xs font-medium text-muted-foreground">{getWeekdayShort(t, day)}</Text>
+                    </View>
+                ))}
+            </View>
             {weeks.map((week, wIdx) => (
                 <View key={wIdx} className="flex-row ">
                     {week.map((day, dIdx) => {
@@ -155,6 +162,8 @@ export function CalendarHeader({ value, addMonth, setDatePart }: {
     addMonth: (type: 'm', val: number) => void;
     setDatePart: (type: 'y' | 'm', val: number) => void;
 }) {
+    const { t } = useTranslation();
+    const months = useMemo(() => Array.from({ length: 12 }, (_, value) => ({ value, label: getMonthTitle(t, value) })), [t]);
 
     const setY = (val: DropdownValue) => {
         setDatePart('y', Number(val));
@@ -169,7 +178,7 @@ export function CalendarHeader({ value, addMonth, setDatePart }: {
             <Button rounded startDecorator="ChevronLeft" onPress={() => addMonth('m', -1)} />
 
 
-            <View className='w-28'>
+            <View className='w-32'>
                 <Dropdown labelField="label"
                     key={"year-dropdown1" + value}
                     valueField="value"
@@ -223,12 +232,9 @@ export default function DatePicker({ name, value = '', type, onChange, children,
     const bIsTime = type === 'datetime';
     const timeMode = appSetting('forms', 'time');
     const { t } = useTranslation();
-    const dateDisplayOpts = useMemo(() => {
-        const tag = RNLocalize.getLocales()?.[0]?.languageTag || 'en-US';
-        return tag.toLowerCase().startsWith('en-us')
-            ? { yearPolicy: 'always' as const, month: 'short' as const }
-            : { yearPolicy: 'always' as const, month: 'numeric' as const };
-    }, []);
+    const localeTag = useDateLocaleTag();
+    const dateDisplayOpts = { ...dateInputOpts, locale: localeTag };
+    const { weekStart } = getDateFormatSpec(localeTag);
     const [showModal, setShowModal] = useState(false);
     const initValue = formatDateTime(value);
     const [dValue, setdValue] = useState<Date | null>(value ? initValue : null);
@@ -321,7 +327,7 @@ export default function DatePicker({ name, value = '', type, onChange, children,
                     <View className='  w-full '>
                         <CalendarHeader value={cValue} addMonth={addMonth} setDatePart={setDatePart} />
                         <View className='mt-4'>
-                            <MonthCalendar date={cValue} selectedDate={dValue} onSelect={onSelectDate} />
+                            <MonthCalendar date={cValue} selectedDate={dValue} onSelect={onSelectDate} weekStart={weekStart} />
                         </View>
 
                     </View>

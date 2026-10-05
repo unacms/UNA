@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useController, useFormContext } from 'react-hook-form';
+import { get, useController, useFormContext } from 'react-hook-form';
 import { useGoogleAutocomplete } from '@appandflow/react-native-google-autocomplete';
 import { getValidationRules, getFormFieldDomId, getFormFieldErrorDomId } from 'app/components/form-fields/_field';
 import { fetcher } from 'app/lib/fetcher';
@@ -31,6 +31,35 @@ export type FormFieldOptions = {
     returnKey?: boolean;
 };
 
+/** Forms whose initial values Form has already captured (its one-shot baseline reset). */
+const baselinedForms = new WeakSet<object>();
+
+export function markFormBaseline(control: object) {
+    baselinedForms.add(control);
+}
+
+/**
+ * useController for UNA fields. Field components are code-split (next/dynamic),
+ * so a field can mount after Form captured its initial values. Such a field
+ * takes its current value as its default — otherwise its own mount-time sync
+ * (list JSON, files ids, …) compares against `undefined` and the untouched form
+ * trips the unsaved-changes close guard. Call before the field's own effects.
+ */
+export function useFieldController(params: Parameters<typeof useController>[0]) {
+    const controller = useController(params);
+    const { control, resetField, getValues } = useFormContext();
+    const { name } = params;
+
+    useEffect(() => {
+        if (!name || !baselinedForms.has(control)) return;
+        if (get(control._defaultValues, name) !== undefined) return;
+        resetField(name, { defaultValue: getValues(name), keepError: true });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [control, name]);
+
+    return controller;
+}
+
 export function useFormField(props: any, options: FormFieldOptions = {}) {
     const { setValue, getValues } = useFormContext();
     const name = props.name || '';
@@ -44,7 +73,7 @@ export function useFormField(props: any, options: FormFieldOptions = {}) {
     const rules = options.rules ?? EMPTY_RULES;
     const syncValue = options.syncValue !== false;
 
-    const { field } = useController({ name, rules, defaultValue });
+    const { field } = useFieldController({ name, rules, defaultValue });
     const { onBlur: fieldOnBlur } = field;
 
     const isAdaptiveLabel =
@@ -189,7 +218,7 @@ export function useLocationField({
     const [selectionMade, setSelectionMade] = useState(false);
     const formContext = useFormContext();
     const defaultValue = value ? value : '';
-    const { field } = useController({ name, rules: {}, defaultValue });
+    const { field } = useFieldController({ name, rules: {}, defaultValue });
     const {
         locationResults,
         searchError,

@@ -2,6 +2,7 @@ import { useEffect, useState, useMemo, useCallback, useId, useRef } from 'react'
 import { useForm, FormProvider } from 'react-hook-form';
 import { getFormFieldByData, isFormResponseComplete, normalizeFormResponseData, updateFormDirtyState, isFormUnsavedCloseGuardSkipped, formHasPendingUploads, clearFormPendingUploads, formResponseHasFieldErrors, FILES_FIELD_MIRRORS } from 'app/lib/form/form-helpers'
 import { getDefaultPasteStorageKey } from 'app/components/form-fields/media-attachments'
+import { markFormBaseline } from 'app/lib/form/use-form-field'
 import { View, Row } from 'app/design/view'
 import { components } from 'app/components/registry';
 import { FeedbackHaptics, appSetting, isNumeric, isObjectsEqual } from 'app/lib/util';
@@ -151,7 +152,8 @@ export default function Form({
     // form-level _defaultValues, and useForm() here has no defaultValues. isDirty
     // compares values against an empty baseline, so any prefilled form (even just
     // a csrf_token hidden input) is instantly "dirty". Re-baseline once after the
-    // fields have registered and run their mount-time value syncs.
+    // fields have registered and run their mount-time value syncs. Code-split
+    // fields that mount later baseline themselves (useFieldController).
     const isDirtyBaselineSetRef = useRef(false);
     useEffect(() => {
         if (isDirtyBaselineSetRef.current || !formBundle.form?.inputs) return;
@@ -162,6 +164,7 @@ export default function Form({
             keepIsSubmitted: true,
             keepSubmitCount: true,
         });
+        markFormBaseline(methods.control);
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [formBundle.form?.inputs]);
 

@@ -1,6 +1,7 @@
 'use client'
 import Field, { getValidationRules } from './_field'
-import { useController, useFormContext } from 'react-hook-form'
+import { useFormContext } from 'react-hook-form'
+import { useFieldController } from 'app/lib/form/use-form-field'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import {
     MDXEditor,
@@ -160,7 +161,7 @@ export function MarkdownTextInput({
     rules = {},
 }) {
     const externalValue = valueProp ?? ''
-    const { field } = useController({
+    const { field } = useFieldController({
         name,
         rules,
         defaultValue: externalValue,

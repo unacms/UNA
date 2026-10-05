@@ -7,7 +7,8 @@ import { Icon } from 'app/ui/atoms/icon';
 import { genRnd, appSetting, prepareImageForUpload } from 'app/lib/util';
 import * as DocumentPicker from 'expo-document-picker';
 import { fetcher } from 'app/lib/fetcher';
-import { useFormContext, useController } from 'react-hook-form';
+import { useFormContext } from 'react-hook-form';
+import { useFieldController } from 'app/lib/form/use-form-field';
 import { uploadImage, md5, getStoragePickerKind, isExtAllowed, splitExtList } from 'app/lib/util';
 import { Text } from 'app/design/typography'
 import { Image as ImageNative, Alert, Linking, Platform } from 'react-native';
@@ -211,7 +212,7 @@ export default function (props) {
     const video_source = formContext.watch('video_source');
     const rules = getValidationRules(props);
     const defaultValue = props?.value ? props.value : '';
-    const { field } = useController({ name, rules, defaultValue });
+    const { field } = useFieldController({ name, rules, defaultValue });
     const bMultiple = props.multiple;
     const [hasPermissionCamera, requestPermissionCamera] = ImagePicker.useCameraPermissions();
     const [hasPermissionLibrary, requestPermissionLibrary] = ImagePicker.useMediaLibraryPermissions();
@@ -927,8 +928,8 @@ function ActionButton({ imagesList, props, selectImage, handleDelete, bMultiple,
 
         button = (
             <Pressable onPress={() => selectImage(props.source ?? 'library')} >
-                <View className={w + ' native:max-w-full items-center justify-center bg-input ' + (isImage ? '' : '')}>
-                      {(!img || !img?.file_url) && (<View ref={drop} className=' text-muted-foreground/50 text-lg  flex-auto w-full border-border rounded-lg  justify-center  flex-col border border-dashed text-center'>
+                <View className={`qq ${w} native:max-w-full items-center justify-center bg-input `}>
+                      {(!img || !img?.file_url) && (<View ref={drop} className={`ss ${w} text-muted-foreground/50 text-lg flex-auto w-full border-border  justify-center flex-col border border-dashed text-center`}>
                         <Text className='text-muted-foreground/50 text-lg justify-center flex-col text-center'>
                             {props?.placeholder || CaptionForFileInput(props)}
                         </Text>

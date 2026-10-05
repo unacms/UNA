@@ -21,8 +21,8 @@ const SIZE_TO_CONTROL = {
 };
 
 /** Full-width in narrow form containers; hug content when the form is wider (matches legacy Button). */
-const RESPONSIVE_SUBMIT_WIDTH = 'w-full @sm/block:w-auto flex-auto web:w-full';
-const RESPONSIVE_SUBMIT_CONTAINER = 'w-full @sm/block:w-auto';
+const RESPONSIVE_SUBMIT_WIDTH = 'w-full @sm/form-container:w-auto flex-auto web:w-full';
+const RESPONSIVE_SUBMIT_CONTAINER = 'w-full @sm/form-container:w-auto';
 
 const VARIANT_TO_STYLE = {
     primary: 'borderedProminent',

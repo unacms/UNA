@@ -203,8 +203,14 @@ export default function Field({
         !use_caption_as_placeholder &&
         ['switcher', 'checkbox'].includes(type) == false
 
-    const captionElement = (
-        <View className=" gap-y-1 z-10">
+    // Wide form container: caption column 1/4, control column 3/4.
+    // Captionless fields (switcher, checkbox, notitle, submit) keep the
+    // control column aligned via ml-auto. Inline ('hor') and placeholder-caption
+    // forms keep the flat full-width layout.
+    const isGrid = form_layout !== 'hor' && !use_caption_as_placeholder
+
+    const captionElement = isShowCaption ? (
+        <View className="w-full @5xl/form-container:w-1/4 @5xl/form-container:pr-4 @5xl/form-container:min-h-11 @5xl/form-container:justify-center">
             <Text className=" text-secondary-foreground block px-0.5 w-full ">
                 <Row className="items-center gap-0.5">
                     <FieldCaption
@@ -229,26 +235,12 @@ export default function Field({
                     )}
                 </Row>
             </Text>
-            <View className="w-full">{children}</View>
         </View>
-    )
+    ) : null
 
-    return (
-        <View ref={wrapRef} collapsable={false} className={sClassName}>
-            {name && last_changed == name && (
-                <View className="absolute right-0 top-0 mb-1">
-                    <Button
-                        onPress={handleSubmit}
-                        startDecorator="RotateCw"
-                        variant="primary"
-                        size="xs"
-                        rounded
-                    />
-                </View>
-            )}
-            {isShowCaption ? (
-                captionElement
-            ) : isAdaptiveLabel && caption ? (
+    const control = (
+        <>
+            {!isShowCaption && isAdaptiveLabel && caption ? (
                 <AdaptiveLabel
                     caption={caption}
                     value={value}
@@ -276,6 +268,37 @@ export default function Field({
                         {stripTags(info)}
                     </Text>
                 </View>
+            )}
+        </>
+    )
+
+    return (
+        <View ref={wrapRef} collapsable={false} className={sClassName}>
+            {name && last_changed == name && (
+                <View className="absolute right-0 top-0 mb-1">
+                    <Button
+                        onPress={handleSubmit}
+                        startDecorator="RotateCw"
+                        variant="primary"
+                        size="xs"
+                        rounded
+                    />
+                </View>
+            )}
+            {isGrid ? (
+                <View className="@5xl/form-container:flex-row @5xl/form-container:items-start gap-y-1 z-10">
+                    {captionElement}
+                    <View
+                        className={cn(
+                            'w-full gap-1 @5xl/form-container:w-3/4',
+                            !isShowCaption && '@5xl/form-container:ml-auto'
+                        )}
+                    >
+                        {control}
+                    </View>
+                </View>
+            ) : (
+                control
             )}
         </View>
     )
