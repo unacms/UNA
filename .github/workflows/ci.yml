@@ -103,7 +103,6 @@ jobs:
       # unacms.app hosts: the backend on Railway, the NEO client (neo-ci on Vercel) in front of it
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
       VERCEL_TEAM: yasko
-      CLIENT_PROJECT: una-ci
       PREVIEW_API_HOST: api-pr-${{ github.event.pull_request.number }}.unacms.app
       PREVIEW_CLIENT_HOST: pr-${{ github.event.pull_request.number }}.unacms.app
       UNA_PREVIEW_API_KEY: ${{ secrets.UNA_PREVIEW_API_KEY }}
@@ -306,8 +305,9 @@ jobs:
       run: scripts/railway/domains.sh api-domain api.unacms.app "$RAILWAY_ENVIRONMENT"
 
     - name: Smoke test
+      # A fresh production install takes about 4 minutes; allow 10.
       run: |
-        for i in $(seq 1 30); do
+        for i in $(seq 1 60); do
           code=$(curl -s -o /dev/null -w '%{http_code}' https://api.unacms.app/ || true)
           [ "$code" = "200" ] && { echo "api.unacms.app is up"; exit 0; }
           # Until the certificate is issued, check the Railway hostname instead.
@@ -332,7 +332,6 @@ jobs:
       RAILWAY_PR_ENVIRONMENT: pr-${{ github.event.pull_request.number }}
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
       VERCEL_TEAM: yasko
-      CLIENT_PROJECT: una-ci
     steps:
     - uses: actions/checkout@v4
       with:
