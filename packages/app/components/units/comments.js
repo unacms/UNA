@@ -327,7 +327,8 @@ function UnitCommentsDefault(props) {
                         </View>
                         {viewState.view != 'edited' && imageList?.length > 0 && (
                             <View className="max-w-xs w-full">
-                                <Carousel data={imageList} />
+                                {/* max-w-xs: tiles never need more than 320px of image */}
+                                <Carousel data={imageList} maxWidth={320} />
                             </View>
                         )}
                         {viewState.view != 'edited' && fileList.length > 0 && (
