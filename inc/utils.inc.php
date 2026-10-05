@@ -2734,6 +2734,7 @@ function bx_api_get_image($mixedStorage, $iId)
         }
     }
 
+    $sLocalPath = '';
     if(!$sUrl && ($oS = BxDolStorage::getObjectInstance($sStorage))) {
         $sUrl = $oS->getFileUrlById($iId);
 
@@ -2742,12 +2743,28 @@ function bx_api_get_image($mixedStorage, $iId)
             $iWidth = (int)$aTmp[0];
             $iHeight = (int)$aTmp[1];
         }
+        else
+            $sLocalPath = $oS->getFileLocalPath($iId);
     }
 
     if(!$iWidth && !$iHeight && $sUrl) {
-        $aSize = BxDolImageResize::getInstance()->getImageSize($sUrl);
-        $iWidth = (int)$aSize['w'];
-        $iHeight = (int)$aSize['h'];
+        // Without stored dimensions the size used to be measured by downloading the
+        // image from its own public URL and decoding it, on every call (several times
+        // per feed item). Read the header of the local file when there is one, and
+        // measure each URL only once per request.
+        static $aSizes = [];
+        if(!isset($aSizes[$sUrl])) {
+            $aSize = false;
+            if($sLocalPath && ($aInfo = @getimagesize($sLocalPath)))
+                $aSize = ['w' => $aInfo[0], 'h' => $aInfo[1]];
+            if(!$aSize)
+                $aSize = BxDolImageResize::getInstance()->getImageSize($sUrl);
+            $aSizes[$sUrl] = $aSize;
+        }
+
+        $aSize = $aSizes[$sUrl];
+        $iWidth = (int)($aSize['w'] ?? 0);
+        $iHeight = (int)($aSize['h'] ?? 0);
     }
 
     if(!$iWidth && !$iHeight) {
