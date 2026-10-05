@@ -84,25 +84,41 @@ dns_records() {
     echo "$all"
 }
 
+# Values compare without case or a trailing dot ("Host.example." == "host.example").
 dns_has() { # dns_has <name> <type> <value>
-    dns_records | jq -e --arg n "$1" --arg t "$2" --arg v "$3" 'any(.[]; .name == $n and .type == $t and .value == $v)' >/dev/null
+    dns_records | jq -e --arg n "$1" --arg t "$2" --arg v "$3" \
+        'def norm: ascii_downcase | rtrimstr("."); any(.[]; .name == $n and .type == $t and (.value | norm) == ($v | norm))' >/dev/null
+}
+
+# Vercel's authoritative answer for <name>.DNS_ZONE: what resolvers will actually get.
+dns_served() { # dns_served <name> <type> <value>
+    command -v dig >/dev/null || return 1
+    local want got
+    want=$(tr '[:upper:]' '[:lower:]' <<< "${3%.}")
+    got=$(dig +short +norecurse "$2" "$1.$DNS_ZONE" @ns1.vercel-dns.com 2>/dev/null | tr -d '"' | sed 's/\.$//' | tr '[:upper:]' '[:lower:]')
+    grep -qxF "$want" <<< "$got"
 }
 
 dns_upsert() { # dns_upsert <name> <type> <value>
     local name=$1 type=$2 value=$3 id val
     while read -r id val; do
         [ -n "$id" ] || continue
-        if [ "$val" = "$value" ]; then echo "dns: $type $name ok"; return; fi
+        if [ "$(tr '[:upper:]' '[:lower:]' <<< "${val%.}")" = "$(tr '[:upper:]' '[:lower:]' <<< "${value%.}")" ]; then echo "dns: $type $name ok"; return; fi
         vercel DELETE "/v2/domains/$DNS_ZONE/records/$id" >/dev/null
     done < <(dns_records | jq -r --arg n "$name" --arg t "$type" '.[] | select(.name == $n and .type == $t) | "\(.id) \(.value)"')
     vercel POST "/v2/domains/$DNS_ZONE/records" \
         "$(jq -nc --arg n "$name" --arg t "$type" --arg v "$value" '{name: $n, type: $t, value: $v, ttl: 60}')" >/dev/null
     # Read it back: a record that silently didn't stick left previews without an API host.
+    # Vercel's record list can lag the write, so its nameserver's answer counts too.
     local try
-    for try in 1 2 3; do
-        dns_has "$name" "$type" "$value" && { echo "dns: $type $name -> $value"; return; }
-        sleep 2
+    for try in $(seq 1 10); do
+        if dns_has "$name" "$type" "$value" || dns_served "$name" "$type" "$value"; then
+            echo "dns: $type $name -> $value"; return
+        fi
+        sleep 3
     done
+    echo "dns: records named $name in $DNS_ZONE:" >&2
+    dns_records | jq -c --arg n "$name" '.[] | select(.name == $n) | {id, type, value}' >&2
     die "dns: $type $name was not found after writing it"
 }
 
