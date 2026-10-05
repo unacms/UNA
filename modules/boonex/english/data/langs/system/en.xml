@@ -3857,7 +3857,7 @@
     <string name="_sys_page_content_ph_text_units_list"><![CDATA[With text units list placeholder]]></string>
     <string name="_sys_page_content_ph_text_units_gallery"><![CDATA[With text units gallery placeholder]]></string>
     <string name="_sys_page_block_title_about"><![CDATA[About]]></string>
-    <string name="_sys_page_block_title_account_profile_create"><![CDATA[Create a profile...]]></string>
+    <string name="_sys_page_block_title_account_profile_create"><![CDATA[Create your profile]]></string>
     <string name="_sys_page_block_title_account_profile_switcher"><![CDATA[Use site as ...]]></string>
     <string name="_sys_page_block_title_account_settings_delete"><![CDATA[Delete Account]]></string>
     <string name="_sys_page_block_title_account_settings_email"><![CDATA[Email Settings]]></string>
@@ -3907,6 +3907,7 @@
     <string name="_sys_page_block_title_sys_search_ai"><![CDATA[AI Search]]></string>
     <string name="_sys_page_block_title_search_ai"><![CDATA[Search]]></string>
     <string name="_sys_page_block_title_membership_stats"><![CDATA[Membership Limits]]></string>
+    <string name="_sys_page_block_desc_account_profile_create"><![CDATA[Your account doesn’t have a profile yet. Choose a profile type to get started.]]></string>
     <string name="_sys_page_block_system_title_login"><![CDATA[Log in with Sign up link]]></string>
     <string name="_sys_page_block_system_title_login_step2"><![CDATA[Log in - step2]]></string>
     <string name="_sys_page_block_system_title_login_step3"><![CDATA[Log in - step3]]></string>

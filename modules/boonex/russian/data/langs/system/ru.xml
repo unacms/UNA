@@ -3814,7 +3814,7 @@
     <string name="_sys_page_content_ph_text_units_list"><![CDATA[С заполнителем в виде списка текстовых блоков]]></string>
     <string name="_sys_page_content_ph_text_units_gallery"><![CDATA[С заполнителем в виде галереи текстовых блоков]]></string>
 	<string name="_sys_page_block_title_about"><![CDATA[Об...]]></string>
-	<string name="_sys_page_block_title_account_profile_create"><![CDATA[Создать профиль...]]></string>
+	<string name="_sys_page_block_title_account_profile_create"><![CDATA[Создайте профиль]]></string>
 	<string name="_sys_page_block_title_account_profile_switcher"><![CDATA[Использовать сайт как ...]]></string>
 	<string name="_sys_page_block_title_account_settings_delete"><![CDATA[Удалить аккаунт]]></string>
 	<string name="_sys_page_block_title_account_settings_email"><![CDATA[Настройки email-а]]></string>
@@ -3864,6 +3864,7 @@
         <string name="_sys_page_block_title_sys_search_ai"><![CDATA[AI поиск]]></string>
         <string name="_sys_page_block_title_search_ai"><![CDATA[Поиск]]></string>
         <string name="_sys_page_block_title_membership_stats"><![CDATA[Лимиты членства]]></string>
+	<string name="_sys_page_block_desc_account_profile_create"><![CDATA[У вашей учётной записи ещё нет профиля. Выберите тип профиля, чтобы начать.]]></string>
 	<string name="_sys_page_block_system_title_login"><![CDATA[Вход с линкой регистрации]]></string>
 	<string name="_sys_page_block_system_title_login_step2"><![CDATA[Вход - шаг 2]]></string>
 	<string name="_sys_page_block_system_title_login_step3"><![CDATA[Вход - шаг 3]]></string>
