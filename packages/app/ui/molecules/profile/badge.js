@@ -113,6 +113,8 @@ export default function Badge({ data, variant = "default", size = 'sm', rounded 
                         width={imgSize}
                         height={imgSize}
                         view="cover"
+                        // Cover images default to `100vw` sizes, which fetched w=1080 for a 20px badge.
+                        sizes="48px"
                         src={data.badge_url}
                         alt={data.badge_url.title_attr}
                     />

@@ -21,7 +21,8 @@ export default function ElementVideo({ src, controls, cover, fill, autoplay, mut
             autoPlay={!!autoplay}
             muted={!!muted}
             playsInline
-            preload="metadata"
+            // With a poster nothing needs to load before the user presses play (autoplay overrides this).
+            preload={poster ? 'none' : 'metadata'}
         >
             <source src={source} />
         </video>

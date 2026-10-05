@@ -6,6 +6,7 @@ import { Text } from 'app/design/typography';
 import { Image as ImageOr, Platform } from 'react-native';
 import { appSetting, LAYOUT_BREAKPOINTS } from 'app/lib/util'
 import Video from 'app/ui/atoms/video';
+import VideoThumb from 'app/ui/atoms/video-thumb';
 import { lazyComponent } from 'app/lib/lazy-component';
 import { useWindowSize } from 'app/context/measure';
 import { useTranslation } from 'react-i18next';
@@ -16,17 +17,33 @@ const ReactNativeZoomableView = lazyComponent(
     { name: 'ZoomableView' }
 );
 
-const Image2 = memo((item) => {
+/**
+ * `sizes` for a gallery tile: the full gallery width, or half of it for the two-up rows.
+ * The gallery is never wider than `maxWidth`, so phones get 100vw/50vw and wider screens a fixed cap.
+ */
+function tileSizes(maxWidth, half) {
+    return half
+        ? `(max-width:${maxWidth}px) 50vw, ${Math.round(maxWidth / 2)}px`
+        : `(max-width:${maxWidth}px) 100vw, ${maxWidth}px`;
+}
 
+const Image2 = memo((item) => {
+    const { t } = useTranslation();
     const handlePress = useCallback(() => item.handleShowImage(item), [item]);
+    const sizes = tileSizes(item.maxWidth || LAYOUT_BREAKPOINTS.lg, item.len > 1);
 
     return (
         <View className={(item.len > 1 ? 'w-1/2' : 'w-full') + ' h-full bg-muted  '}>
-            <Pressable style={{ flex: 1, justifyContent: 'center' }} onPress={handlePress} >
+            <Pressable
+                style={{ flex: 1, justifyContent: 'center' }}
+                onPress={handlePress}
+                accessibilityLabel={item.type == 'video' ? t('Play video') : undefined}
+            >
+                {/* Video tiles show the poster only; playback starts in the lightbox (or a hover preview on web). */}
                 {item.type == 'image' ? ((item.width && item.height) ?
-                    <Image sizes={LAYOUT_BREAKPOINTS.xl} src={item.src} alt='' height={item.height} width={item.width} className=" u-cover   gap-x-1 " /> :
-                    <Image sizes={LAYOUT_BREAKPOINTS.xl} src={item.src} alt='' view="cover" className=" u-cover   gap-x-1 " />
-                ) : <Video cover={true} src={item.src} controls={false} muted={"muted"} autoplay={"autoplay"} />}
+                    <Image sizes={sizes} src={item.src} alt='' height={item.height} width={item.width} className=" u-cover   gap-x-1 " /> :
+                    <Image sizes={sizes} src={item.src} alt='' view="cover" className=" u-cover   gap-x-1 " />
+                ) : <VideoThumb src={item.src} poster={item.poster} sizes={sizes} />}
 
                 {item.row == 1 && item?.index2 == 1 && item.data.length > 3 && <View className='absolute z-50 w-full h-full text-center items-center justify-center'><Text className='text-5xl lg:text-7xl text-white'>+{item.data.length - 3}</Text></View>}
             </Pressable>
@@ -35,7 +52,7 @@ const Image2 = memo((item) => {
 });
 
 
-const Gallery = React.memo(({ data, handleShowImage, windowWidthOr, containerWidth }) => {
+const Gallery = React.memo(({ data, handleShowImage, windowWidthOr, containerWidth, maxWidth }) => {
     const data2 = useMemo(() => data.slice(0, 3), [data]);
     const len = data2.length;
     const dataR1 = useMemo(() => (len === 3 ? data2.slice(0, 1) : data2.slice(0, 2)), [data2, len]);
@@ -52,7 +69,7 @@ const Gallery = React.memo(({ data, handleShowImage, windowWidthOr, containerWid
         if (!data[0].height || !data[0].width) {
             return (
                 <View className={`${max_image_width} mx-auto ${max_image_aspect} w-full rounded-lg overflow-hidden 005`}>
-                    <Image2 handleShowImage={handleShowImage} data={data} row={0} index={0} key={0} src={data[0].src} type={data[0].type} />
+                    <Image2 handleShowImage={handleShowImage} data={data} maxWidth={maxWidth} row={0} index={0} key={0} src={data[0].src} poster={data[0].poster} type={data[0].type} />
                 </View>
             )
         }
@@ -68,7 +85,7 @@ const Gallery = React.memo(({ data, handleShowImage, windowWidthOr, containerWid
                 /*bg-secondary  */
                 return (<View className={`${max_image_width} ${aspect} w-full items-start justify-center  rounded-lg  overflow-hidden 003-` + w + '-' + h + '-' + (w > h)}>
                     <View style={{ aspectRatio: aspectStyle }} className='h-full'>
-                        <Image2 handleShowImage={handleShowImage} data={data} row={0} index={0} key={0} width={w} height={h} src={data[0].src} type={data[0].type} />
+                        <Image2 handleShowImage={handleShowImage} data={data} maxWidth={maxWidth} row={0} index={0} key={0} width={w} height={h} src={data[0].src} poster={data[0].poster} type={data[0].type} />
                     </View>
                 </View>)
             }
@@ -82,7 +99,7 @@ const Gallery = React.memo(({ data, handleShowImage, windowWidthOr, containerWid
                 /*bg-secondary  */
                 <View className={`${max_image_width}  ${aspect} w-full items-start justify-center rounded-lg overflow-hidden 002`}>
                     <View className='rounded-lg overflow-hidden max-w-full' style={{ aspectRatio: aspectStyle, width: w }} >
-                        <Image2 handleShowImage={handleShowImage} data={data} row={0} index={0} key={0} src={data[0].src} type={data[0].type} />
+                        <Image2 handleShowImage={handleShowImage} data={data} maxWidth={maxWidth} row={0} index={0} key={0} src={data[0].src} poster={data[0].poster} type={data[0].type} />
                     </View>
                 </View>
             );
@@ -95,7 +112,7 @@ const Gallery = React.memo(({ data, handleShowImage, windowWidthOr, containerWid
                 /*bg-secondary  */
                 <View className={`${max_image_width}  ${aspect} w-full items-center justify-center bg-muted/50 rounded-lg overflow-hidden`}>
                     <View style={{ aspectRatio: aspectStyle }} className='h-full max-w-full'>
-                        <Image2 handleShowImage={handleShowImage} data={data} row={0} index={0} key={0} width={w} height={h} src={data[0].src} type={data[0].type} />
+                        <Image2 handleShowImage={handleShowImage} data={data} maxWidth={maxWidth} row={0} index={0} key={0} width={w} height={h} src={data[0].src} poster={data[0].poster} type={data[0].type} />
                     </View>
                 </View>
             );
@@ -107,13 +124,13 @@ const Gallery = React.memo(({ data, handleShowImage, windowWidthOr, containerWid
         <View className={(data.length == 2 ? "aspect-video" : "aspect-square") + " w-full " + max_image_width + " gap-y-0.5 rounded sm:rounded-lg overflow-hidden mx-auto "}>
             <Row className={(len > 2 ? 'h-1/2' : 'h-full') + ' gap-x-0.5 w-full '}>
                 {dataR1?.map((item, index) => (
-                    <Image2 handleShowImage={handleShowImage} data={data} len={dataR1.length} row={0} index={index} key={index} src={item.src} type={item.type} />
+                    <Image2 handleShowImage={handleShowImage} data={data} maxWidth={maxWidth} len={dataR1.length} row={0} index={index} key={index} src={item.src} poster={item.poster} type={item.type} />
                 ))}
             </Row>
             <Row className={(len > 2 ? 'h-1/2 gap-y-0.5 ' : 'h-full') + ' gap-x-0.5 w-full '}>
                 {
                     dataR2?.map((item, index) => (
-                        <Image2 handleShowImage={handleShowImage} data={data} len={dataR2.length} row={1} index={dataR1.length + index} index2={index} key={index} src={item.src} type={item.type} />
+                        <Image2 handleShowImage={handleShowImage} data={data} maxWidth={maxWidth} len={dataR2.length} row={1} index={dataR1.length + index} index2={index} key={index} src={item.src} poster={item.poster} type={item.type} />
                     ))}
 
             </Row>
@@ -121,7 +138,11 @@ const Gallery = React.memo(({ data, handleShowImage, windowWidthOr, containerWid
     )
 });
 
-function CarouselContent({ data }) {
+/**
+ * @param data     items `{ src, type: 'image'|'video', width?, height?, poster? }`
+ * @param maxWidth widest the gallery is laid out (px); sizes the tile images. Default: lg.
+ */
+function CarouselContent({ data, maxWidth }) {
     const { t } = useTranslation();
     const [currentImageIndex, setCurrentImageIndex] = useState(false);
     const [imageSize2, setImageSize2] = useState([0, 0]);
@@ -256,6 +277,7 @@ function CarouselContent({ data }) {
                                 muted={false}
                                 controls={true}
                                 src={data[currentImageIndex].src}
+                                poster={data[currentImageIndex].poster}
                             />
                         </Pressable>
                     ) : null}
@@ -296,15 +318,15 @@ function CarouselContent({ data }) {
             </Modal>
         )}
         <View className="w-full mx-auto overflow-hidden" onLayout={handleLayout}>
-            <Gallery windowWidthOr={windowWidthOr} containerWidth={containerWidth} data={data} handleShowImage={handleShowImage} />
+            <Gallery windowWidthOr={windowWidthOr} containerWidth={containerWidth} maxWidth={maxWidth} data={data} handleShowImage={handleShowImage} />
         </View>
     </>
 }
 
-const Carousel = memo(({ data = [] }) => {
+const Carousel = memo(({ data = [], maxWidth }) => {
     if (!data.length) return null;
 
-    return <CarouselContent data={data} />;
+    return <CarouselContent data={data} maxWidth={maxWidth} />;
 });
 
 export default Carousel;

@@ -3,10 +3,10 @@ import { useState } from 'react';
 import Image from 'app/ui/atoms/image';
 import { Modal } from 'app/design/controls'
 import Video from 'app/ui/atoms/video';
+import VideoThumb from 'app/ui/atoms/video-thumb';
 import FileCard from 'app/ui/molecules/content/file-card';
 import { FeedbackHaptics } from 'app/lib/util';
 import { BlockWrapper } from 'app/components/block-wrapper'
-import { Icon } from 'app/ui/atoms/icon';
 import { useTranslation } from 'react-i18next'
 
 const AttachmentContainer = ({ children }) => (
@@ -37,14 +37,8 @@ const ImageItem = ({ data, handleShowImage }) => (
 const VideoItem = ({ data, handleShowImage }) => (
     <AttachmentContainer>
         <Pressable className="w-full h-full" onPress={() => handleShowImage({ ...data, type: 'video' })}>
-            <View className="w-full h-full pointer-events-none">
-                <Video fill cover muted src={data.src} poster={data.src_poster || data.poster} previewTime={3} />
-            </View>
-            <View className="absolute inset-0 items-center justify-center pointer-events-none">
-                <View className="rounded-full bg-black/50 p-2">
-                    <Icon icon="Play" size={16} color="white" fill="white" />
-                </View>
-            </View>
+            {/* Poster only: decoding a frame from the video itself downloaded part of every file. */}
+            <VideoThumb src={data.src} poster={data.src_poster || data.poster} sizes="(max-width:768px) 25vw, 224px" />
         </Pressable>
     </AttachmentContainer>
 );
@@ -85,7 +79,7 @@ export default function ElementEntityAttachments({ data, blockWrapperProps }) {
                     // Real proportions from API width/height; contain so nothing is cropped even when capped by max-h.
                     <View className="w-full max-h-[75vh]" style={{ aspectRatio: showImage.width && showImage.height ? showImage.width / showImage.height : 16 / 9 }}>
                         {showImage.type == 'image' && <Image src={showImage.src} alt='' view="cover" contentFit="contain" />}
-                        {showImage.type == 'video' && <Video fill controls autoplay src={showImage.src} />}
+                        {showImage.type == 'video' && <Video fill controls autoplay src={showImage.src} poster={showImage.src_poster || showImage.poster} />}
                     </View>
                 )}
             </Modal>
