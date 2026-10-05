@@ -23,6 +23,10 @@ function parsePositiveInt(value, fallback, max = 4096) {
     return num;
 }
 
+// Every response depends on the query; without this the build tries to prerender the route
+// and the catch below logs Next's DYNAMIC_SERVER_USAGE signal as "Error rendering icon".
+export const dynamic = 'force-dynamic';
+
 // react-doctor-disable-next-line react-doctor/server-auth-actions
 export async function GET(request) {
     try {
