@@ -6,22 +6,17 @@ import { appSetting, getLayoutName, getPageContentPaddingTiers, getPageContentWi
 import emitter, { EVENTS } from 'app/context/emitter';
 import { responsiveClasses } from 'app/lib/responsive-classes'
 import Cell from 'app/components/cell';
-import { Row } from 'app/design/view'
 import { appStatic } from 'app/lib/app-static'
 import Redirect from 'app/ui/atoms/redirect'
 import { useRef, useEffect, useMemo } from 'react';
 import PageByUrl from 'app/ui/molecules/page/page-by-url'
 import { registerAll } from 'app/components/registry-init';
-import { Text } from 'app/design/typography'
-import { ButtonLink } from 'app/design/controls'
 import { useWindowDimensions, Platform } from 'react-native';
 import { useSetWindowSize } from 'app/context/measure';
 import { coerceVersion, isBelowRange, isAboveRange } from 'app/lib/server-version';
-import { Card } from 'app/ui/molecules/page/card'
 import { FormModalHost } from 'app/ui/molecules/dialogs/form-modal';
 import { UnsavedFormConfirmHost } from 'app/ui/molecules/dialogs/unsaved-form-confirm-host';
 import { VersionIncompatible, VersionWarning } from 'app/ui/molecules/system/version-notice';
-import { useTranslation } from 'react-i18next';
 
 function WindowSizeSync() {
     const { width, height } = useWindowDimensions();
@@ -116,7 +111,6 @@ function ErrorPage({ type }) {
 }
 
 function PageLayoutContent({ layout, data }) {
-    const { t } = useTranslation();
     const { currentUser } = useCurrentUser();
     const { layoutName, layoutBlocks, isCustomLayout, columnLayout = '' } = layout;
 
@@ -157,16 +151,8 @@ function PageLayoutContent({ layout, data }) {
     if ((hasProfileInformer || currentUser?.membership==2 && data.uri =='home') && appSetting('layout', 'lock_no_profile')) {
 
         if (currentUser?.menu?.items?.length > 1) {
-            return (
-                <Card className='mx-auto my-4'>
-                    <Text className='text-card-foreground text-base font-semibold text-center'>{t('Create a profile to continue')}</Text>
-                    <Row className='gap-x-3'>
-                        {currentUser.menu.items.map(item => {
-                            return (<ButtonLink href={item.link} key={item.name} title={item.title} startDecorator={item.icon} />);
-                        })}
-                    </Row>
-                </Card>
-            )
+            const CreateProfile = components['molecule']['create_profile']
+            return <CreateProfile items={currentUser.menu.items} />
         }
         else {
             return <PageByUrl url={currentUser?.menu?.items[0].link} />;

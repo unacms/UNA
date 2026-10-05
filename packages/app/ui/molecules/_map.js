@@ -22,6 +22,7 @@ const ContextSelector = dynamic(() => import('./sections/context-selector'), { l
 const Badges = dynamic(() => import('./profile/badges'), { loading: DynamicFallback });
 const Splash = dynamic(() => import('./sections/splash'), { loading: DynamicFallback });
 const ConfirmEmail = dynamic(() => import('./auth/confirm-email'), { loading: DynamicFallback });
+const CreateProfile = dynamic(() => import('./auth/create-profile'), { loading: DynamicFallback });
 const HeaderElement = dynamic(() => import('./header/header-element'), { loading: DynamicFallback });
 const CounterIndicator = dynamic(() => import('./misc/counter-indicator'), { loading: DynamicFallback });
 const ProfileLink = dynamic(() => import('./profile/profile-link'), { loading: DynamicFallback });
@@ -48,6 +49,7 @@ export const componentsMapDefault = {
     context_selector: ContextSelector,
     splash: Splash,
     confirm_email: ConfirmEmail,
+    create_profile: CreateProfile,
     badges: Badges,
     header_element: HeaderElement,
     counter_indicator: CounterIndicator,
