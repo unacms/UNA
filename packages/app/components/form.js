@@ -3,6 +3,7 @@ import { useForm, FormProvider } from 'react-hook-form';
 import { getFormFieldByData, isFormResponseComplete, normalizeFormResponseData, updateFormDirtyState, isFormUnsavedCloseGuardSkipped, formHasPendingUploads, clearFormPendingUploads, formResponseHasFieldErrors, FILES_FIELD_MIRRORS } from 'app/lib/form/form-helpers'
 import { getDefaultPasteStorageKey } from 'app/components/form-fields/media-attachments'
 import { markFormBaseline } from 'app/lib/form/use-form-field'
+import { getFormInitialValues } from 'app/lib/form/field-initial-values'
 import { View, Row } from 'app/design/view'
 import { components } from 'app/components/registry';
 import { FeedbackHaptics, appSetting, isNumeric, isObjectsEqual } from 'app/lib/util';
@@ -147,26 +148,6 @@ export default function Form({
     useEffect(() => {
         return () => clearFormPendingUploads(name, formInstanceId);
     }, [name, formInstanceId]);
-
-    // RHF quirk: field-level defaultValue (useController) is NOT merged into the
-    // form-level _defaultValues, and useForm() here has no defaultValues. isDirty
-    // compares values against an empty baseline, so any prefilled form (even just
-    // a csrf_token hidden input) is instantly "dirty". Re-baseline once after the
-    // fields have registered and run their mount-time value syncs. Code-split
-    // fields that mount later baseline themselves (useFieldController).
-    const isDirtyBaselineSetRef = useRef(false);
-    useEffect(() => {
-        if (isDirtyBaselineSetRef.current || !formBundle.form?.inputs) return;
-        isDirtyBaselineSetRef.current = true;
-        methods.reset(methods.getValues(), {
-            keepErrors: true,
-            keepTouched: true,
-            keepIsSubmitted: true,
-            keepSubmitCount: true,
-        });
-        markFormBaseline(methods.control);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [formBundle.form?.inputs]);
 
     const { data: dynamicData, error: submitError } = useFetchForm(request?.url, postData);
 
@@ -382,10 +363,31 @@ export default function Form({
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [processedInputs]);
 
+    // Form default values = every field's untouched value (field-initial-values),
+    // set as soon as the form data arrives — code-split fields may not have
+    // loaded yet, so isDirty must not depend on what has mounted. RHF does not
+    // merge a field's own defaultValue into the form defaults. Types without an
+    // initial-value rule keep what they hold now; later ones baseline themselves
+    // at mount (useFieldController).
+    const isFirstResetRef = useRef(true);
     useEffect(() => {
-        if (!formBundle?.form?.updated || !processedInputs) return;
+        if (!processedInputs) return;
+        const initialValues = getFormInitialValues(processedInputs);
 
-        const values = Object.keys(processedInputs).reduce((result, key) => {
+        if (isFirstResetRef.current) {
+            isFirstResetRef.current = false;
+            methods.reset({ ...methods.getValues(), ...initialValues }, {
+                keepErrors: true,
+                keepTouched: true,
+                keepIsSubmitted: true,
+                keepSubmitCount: true,
+            });
+            markFormBaseline(methods.control);
+            return;
+        }
+        if (!formBundle?.form?.updated) return;
+
+        const legacyValues = Object.keys(processedInputs).reduce((result, key) => {
             const input = processedInputs[key];
             if (input?.value || input?.value === 0) {
                 result[key] = input.value;
@@ -396,6 +398,7 @@ export default function Form({
             }
             return result;
         }, {});
+        const values = { ...legacyValues, ...initialValues };
 
         // Validation errors: UNA re-renders the form without the files uploaded for this
         // submit, so keep what the files fields (and the ids they mirror) hold now.
@@ -414,7 +417,7 @@ export default function Form({
         methods.reset(values);
         methods.clearErrors();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [formBundle?.form?.updated]);
+    }, [processedInputs, formBundle?.form?.updated]);
 
     const { csrf_token, ...restDefaultValues } = defaultValues;
     // Include page url (not uri — uri can be shared across different pages) so

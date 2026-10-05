@@ -168,6 +168,27 @@ const DEFAULT_DISCARD_MESSAGE = 'You have unsaved changes. Close without saving?
 
 let pendingConfirmPromise: Promise<boolean> | null = null;
 
+// Close buttons of open modals, topmost last: on desktop the discard confirm is a
+// popover anchored to it, whatever asked to close (✕, Escape, backdrop, back, link).
+const discardAnchors: Array<() => Element | null> = [];
+
+/** Register a modal close button as the discard-confirm anchor; returns unregister. */
+export function pushDiscardConfirmAnchor(getAnchor: () => Element | null) {
+    discardAnchors.push(getAnchor);
+    return () => {
+        const index = discardAnchors.lastIndexOf(getAnchor);
+        if (index !== -1) discardAnchors.splice(index, 1);
+    };
+}
+
+function topDiscardConfirmAnchor() {
+    for (const getAnchor of [...discardAnchors].reverse()) {
+        const anchor = getAnchor();
+        if (anchor?.isConnected) return anchor;
+    }
+    return null;
+}
+
 /** Returns true when close should proceed. On web, shows Confirm if any form is dirty. */
 export function requestDiscardUnsavedFormChanges(message?: string) {
     if (!isWeb || !isAnyFormDirty()) return Promise.resolve(true);
@@ -176,8 +197,13 @@ export function requestDiscardUnsavedFormChanges(message?: string) {
     pendingConfirmPromise = new Promise((resolve) => {
         emitter.emit(UNSAVED_FORM_CONFIRM_REQUEST, {
             message: message ?? DEFAULT_DISCARD_MESSAGE,
+            anchor: topDiscardConfirmAnchor(),
             settle: (proceed: boolean) => {
                 pendingConfirmPromise = null;
+                if (proceed) {
+                    // Drop state kept outside RHF too (files kept across remounts).
+                    emitter.emit(EVENTS.unsavedFormDiscard, { formInstanceIds: [...dirtyFormInstances] });
+                }
                 resolve(proceed);
             },
         });
@@ -232,7 +258,7 @@ export function formResponseHasFieldErrors(responseData: any): boolean {
 export const FILES_FIELD_MIRRORS: Record<string, string> = { covers: 'thumb', videos: 'video' };
 
 /** UNA often sends phones as `type: "text"` with a name containing "phone". */
-function resolveFormFieldType(inputData: any) {
+export function resolveFormFieldType(inputData: any) {
     const type = String(inputData.type ?? '');
     if (type === 'text' && String(inputData.name || '').includes('phone')) {
         return 'phone';

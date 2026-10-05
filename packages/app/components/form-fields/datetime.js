@@ -1,19 +1,10 @@
 import Field, { getValidationRules } from './_field';
 import DatePicker from 'app/ui/atoms/date-picker'
 import { useFormField } from 'app/lib/form/use-form-field';
+import { datetimeInitialValue } from 'app/lib/form/field-initial-values';
 
 export default function FormFieldDatetime({ name, value = '', type, ...props }) {
-    const withTime = type === 'datetime';
-    let defaultValue = value;
-    if ((defaultValue == '0000-00-00 00:00:00Z' || defaultValue == '') && props.required == true) {
-        const date = new Date();
-        date.setHours(0, 0, 0, 0);
-        date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
-        defaultValue = date.toISOString().replace('T', ' ').substring(0, 19) + 'Z';
-    }
-    if (!withTime) {
-        defaultValue = defaultValue.substring(0, 10);
-    }
+    const defaultValue = datetimeInitialValue({ value, type, required: props.required });
 
     const { field } = useFormField(
         { name, value, type, ...props },

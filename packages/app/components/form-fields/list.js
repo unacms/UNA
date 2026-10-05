@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { View, Row } from 'app/design/view'
 import { strToObj } from 'app/lib/util';
 import { useFormField } from 'app/lib/form/use-form-field';
+import { listInitialRows } from 'app/lib/form/field-initial-values';
 
 export default function FormFieldList(props) {
     const params = strToObj(props.params) || {};
@@ -18,11 +19,7 @@ export default function FormFieldList(props) {
         }, {});
     };
 
-    const initedValue = props.value
-        ? (strToObj(props.value) || []).filter((obj) =>
-              Object.values(obj).some((val) => val !== '')
-          )
-        : [createEmpty()];
+    const initedValue = listInitialRows(props);
 
     const { field } = useFormField(props, {
         defaultValue: JSON.stringify(initedValue),
@@ -31,7 +28,9 @@ export default function FormFieldList(props) {
     const [values, setValues] = useState(initedValue);
 
     useEffect(() => {
-        field.onChange(JSON.stringify(values));
+        // Rows start equal to the form default — write user edits only.
+        const next = JSON.stringify(values);
+        if (next !== field.value) field.onChange(next);
     }, [values]);
 
     const addNew = () => {

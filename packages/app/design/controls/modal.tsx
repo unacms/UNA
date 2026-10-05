@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useRef, type ComponentType, type ReactNode } from 'react';
+import { useEffect, useCallback, useRef, type ComponentType, type ReactNode, type Ref } from 'react';
 import { Modal as ModalDef, Platform } from 'react-native'
 import { SafeAreaProvider, initialWindowMetrics } from 'react-native-safe-area-context';
 import { Pressable, View, ScrollView, Row } from 'app/design/view'
@@ -9,7 +9,7 @@ import { useStableSafeAreaInsets } from 'app/lib/hooks/router'
 import { useIsDesktop, useActualWindowHeight } from 'app/context/measure';
 import { NeoButton } from 'app/design/controls/neo-button/neo-button';
 import emitter, { EVENTS } from 'app/context/emitter';
-import { confirmDiscardUnsavedFormChanges } from 'app/lib/form/form-helpers';
+import { confirmDiscardUnsavedFormChanges, pushDiscardConfirmAnchor } from 'app/lib/form/form-helpers';
 import { ModalKbAwareScroll } from 'app/ui/atoms/kb-avoiding-view';
 import { pushFormEnsureVisibleHandler, scrollContainerByDelta } from 'app/lib/form/form-ensure-visible';
 import { useTranslation } from 'react-i18next';
@@ -39,7 +39,7 @@ const modalSettings = appSetting('theme', 'modal');
 // Topmost modal wins Escape. Menus that preventDefault on the same keydown run first.
 const webModalEscapeStack: symbol[] = [];
 
-function ModalHeader({ title, headerBorder, onClose }: { title?: ReactNode; headerBorder: boolean; onClose?: () => void }) {
+function ModalHeader({ title, headerBorder, onClose, closeRef }: { title?: ReactNode; headerBorder: boolean; onClose?: () => void; closeRef?: Ref<any> }) {
     const { t } = useTranslation();
     const align = !title && onClose ? 'end' : 'center';
     if (!title) return null;
@@ -56,7 +56,7 @@ function ModalHeader({ title, headerBorder, onClose }: { title?: ReactNode; head
             )}
             {(title && type !== 'string') && (title)}
             {(onClose && type === 'string') && (
-                <View className='absolute right-3 top-0 bottom-0 justify-center items-center'>
+                <View ref={closeRef} className='absolute right-3 top-0 bottom-0 justify-center items-center'>
                     <NeoButton style="glass" controlSize="regular" borderShape="circle" image="X" accessibilityLabel={t('Close')} onPress={onClose} />
                 </View>
             )}
@@ -112,6 +112,7 @@ export function Modal({
     const heightActual = isKeyboardOpen ? heightActual1 + 96 : heightActual1;
     const insets = useStableSafeAreaInsets();
     const fogRef = useRef<any>(null);
+    const closeRef = useRef<any>(null);
     const scrollRef = useRef<any>(null);
     const scrollYRef = useRef(0);
 
@@ -298,6 +299,12 @@ export function Modal({
     }, [onVisible, tryRequestClose]);
 
     useEffect(() => {
+        const isShown = onVisible == null ? true : !!onVisible;
+        if (!isWeb || !isShown || skipUnsavedGuard) return undefined;
+        return pushDiscardConfirmAnchor(() => closeRef.current);
+    }, [onVisible, skipUnsavedGuard]);
+
+    useEffect(() => {
         if (!isWeb || !scrollable || !onVisible) return;
 
         const normalizeWheelDelta = (deltaY: number, deltaMode = 0) => {
@@ -382,6 +389,7 @@ export function Modal({
         title={title}
         headerBorder={headerBorder}
         onClose={tryClose}
+        closeRef={closeRef}
     />
         <Cnt
             ref={scrollable ? scrollRef : undefined}

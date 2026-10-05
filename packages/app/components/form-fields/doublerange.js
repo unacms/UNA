@@ -5,6 +5,7 @@ import { useThemeName } from 'app/design/theme';
 import { View, Row } from 'app/design/view'
 import { appSetting } from 'app/lib/util';
 import { useFormField } from 'app/lib/form/use-form-field';
+import { doubleRangeInitialValue } from 'app/lib/form/field-initial-values';
 import { useTranslation } from 'react-i18next';
 
 const themeSettings = appSetting('theme', 'doublerange');
@@ -22,10 +23,7 @@ export default function FormFieldDoubleRange(props) {
     const themeName = useThemeName();
     const min = props.attrs.min;
     const max = props.attrs.max;
-    const defaultValue =
-        typeof props.value === 'string' && props.value !== ''
-            ? props.value
-            : `${min}-${max}`;
+    const defaultValue = doubleRangeInitialValue(props);
 
     const { field } = useFormField(props, {
         defaultValue,

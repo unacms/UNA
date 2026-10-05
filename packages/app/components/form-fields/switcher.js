@@ -4,16 +4,17 @@ import { View } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { appSetting } from 'app/lib/util'
 import { useFormField } from 'app/lib/form/use-form-field';
+import { switcherInitialValue } from 'app/lib/form/field-initial-values';
 
 const switcherTheme = appSetting('theme', 'switcher');
 
 export default function FormFieldSwitcher(props) {
-    const { caption, checked, size } = props;
+    const { caption, size } = props;
     const resolvedSize = resolveControlSize(size);
     const sizeClass = switcherTheme.size?.[resolvedSize] ?? switcherTheme.size?.regular ?? '';
 
     const { field } = useFormField(props, {
-        defaultValue: checked ? 1 : 0,
+        defaultValue: switcherInitialValue(props),
         syncValue: false,
     });
 

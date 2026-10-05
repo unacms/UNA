@@ -1,6 +1,6 @@
 import Field from './_field';
 import { View } from 'app/design/view'
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { Input, Hidden } from 'app/design/controls'
 import Dropdown from 'app/ui/atoms/dropdown'
@@ -9,7 +9,7 @@ import { useFetch } from 'app/lib/hooks/use-fetch';
 import { useFormField } from 'app/lib/form/use-form-field';
 
 export default function FormFieldSuggestion(props) {
-    const { setValue } = useFormContext();
+    const { setValue, resetField } = useFormContext();
     const { name, field } = useFormField(props);
     const defaultValue = props.value ? props.value : '';
 
@@ -36,14 +36,21 @@ export default function FormFieldSuggestion(props) {
     }
 
     // Picking a value fills dependent form fields from the callback (a side effect, not a query).
+    // The run for the saved value is part of the untouched form: it sets defaults, not edits.
+    const isInitialFillRef = useRef(true);
     useEffect(() => {
         if (!props.custom?.callback || isDisabled) return;
+        const isInitialFill = isInitialFillRef.current;
+        isInitialFillRef.current = false;
         let cancelled = false;
         (async () => {
             const sResponse = await fetcher('/api.php?r=' + props.custom.callback + field.value);
             if (cancelled || !sResponse?.data) return;
             Object.keys(sResponse.data).forEach(name2 => {
-                setValue(name2, (sResponse.data[name2].value));
+                const value2 = sResponse.data[name2].value;
+                // resetField only acts on registered fields; setValue covers the rest.
+                if (isInitialFill) resetField(name2, { defaultValue: value2, keepError: true });
+                setValue(name2, value2);
             });
         })();
         return () => {

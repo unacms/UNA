@@ -5,6 +5,13 @@ import { getValidationRules, getFormFieldDomId, getFormFieldErrorDomId } from 'a
 import { fetcher } from 'app/lib/fetcher';
 import { appSetting } from 'app/lib/util';
 import { useNativeReturnKeyNav } from 'app/context/form-focus-chain';
+import {
+    LOCATION_SUFFIX_FIELDS,
+    locationFormValues,
+    locationStringOf,
+    ownInitialValue,
+    syncedInitialValue,
+} from 'app/lib/form/field-initial-values';
 
 export const PLACEHOLDER_TEXT_COLOR = '#6b7280';
 
@@ -31,7 +38,7 @@ export type FormFieldOptions = {
     returnKey?: boolean;
 };
 
-/** Forms whose initial values Form has already captured (its one-shot baseline reset). */
+/** Forms whose default values Form has already set (from field-initial-values). */
 const baselinedForms = new WeakSet<object>();
 
 export function markFormBaseline(control: object) {
@@ -39,11 +46,12 @@ export function markFormBaseline(control: object) {
 }
 
 /**
- * useController for UNA fields. Field components are code-split (next/dynamic),
- * so a field can mount after Form captured its initial values. Such a field
- * takes its current value as its default — otherwise its own mount-time sync
- * (list JSON, files ids, …) compares against `undefined` and the untouched form
- * trips the unsaved-changes close guard. Call before the field's own effects.
+ * useController for UNA fields. Core field types get their default from Form
+ * (field-initial-values) before they mount. A field Form has no default for
+ * (fork override, input_set child, translatable, …) takes its value at mount
+ * as its default instead — code-split fields mount after Form set the others,
+ * and an `undefined` default would make the untouched form dirty. Call before
+ * the field's own effects.
  */
 export function useFieldController(params: Parameters<typeof useController>[0]) {
     const controller = useController(params);
@@ -64,14 +72,15 @@ export function useFormField(props: any, options: FormFieldOptions = {}) {
     const { setValue, getValues } = useFormContext();
     const name = props.name || '';
     const value = props.value;
+    const rules = options.rules ?? EMPTY_RULES;
+    const syncValue = options.syncValue !== false;
+    // Same rule as Form's default for the type (field-initial-values).
     const defaultValue =
         options.defaultValue !== undefined
             ? options.defaultValue
-            : value
-              ? value
-              : '';
-    const rules = options.rules ?? EMPTY_RULES;
-    const syncValue = options.syncValue !== false;
+            : syncValue
+              ? syncedInitialValue(value)
+              : ownInitialValue(value);
 
     const { field } = useFieldController({ name, rules, defaultValue });
     const { onBlur: fieldOnBlur } = field;
@@ -155,17 +164,6 @@ const GOOGLE_AUTOCOMPLETE_OPTIONS = {
     proxyUrl: '/api.php?goo=list&',
 };
 
-const SUFFIX_FIELDS = [
-    ['_country', 'country'],
-    ['_state', 'state'],
-    ['_city', 'city'],
-    ['_zip', 'zip'],
-    ['_lat', 'lat'],
-    ['_lng', 'lng'],
-    ['_street', 'street'],
-    ['_street_number', 'street_number'],
-];
-
 const EMPTY_LOCATION = {
     location_string: '',
     lat: '',
@@ -177,11 +175,6 @@ const EMPTY_LOCATION = {
     country: '',
     zipCode: '',
 };
-
-function locationStringOf(place: any) {
-    if (!place || typeof place !== 'object') return '';
-    return place.location_string || place.formattedAddress || '';
-}
 
 function toOnChangePayload(place: any) {
     const locationString = locationStringOf(place);
@@ -217,8 +210,7 @@ export function useLocationField({
 }: { name: string; value: any; onChange: any; syncName?: any; extraSuffixes?: any }) {
     const [selectionMade, setSelectionMade] = useState(false);
     const formContext = useFormContext();
-    const defaultValue = value ? value : '';
-    const { field } = useFieldController({ name, rules: {}, defaultValue });
+    const { field } = useFieldController({ name, rules: {}, defaultValue: ownInitialValue(value) });
     const {
         locationResults,
         searchError,
@@ -230,13 +222,12 @@ export function useLocationField({
     const incoming = locationStringOf(value);
 
     const applyPlace = useCallback((place: any) => {
-        const locationString = locationStringOf(place);
-        if (syncName) formContext?.setValue(name, locationString);
-        SUFFIX_FIELDS.forEach(([suffix, key]) => {
-            formContext?.setValue(name + suffix, place[key!]);
+        // Same values as Form's default for a saved place (field-initial-values).
+        Object.entries(locationFormValues(name, place, !!syncName)).forEach(([key, val]) => {
+            formContext?.setValue(key, val);
         });
         onChange?.(toOnChangePayload(place));
-        setTerm(locationString);
+        setTerm(locationStringOf(place));
     }, [formContext, name, onChange, setTerm, syncName]);
 
     useEffect(() => {
@@ -248,7 +239,7 @@ export function useLocationField({
     useEffect(() => {
         if (incoming || field.value) return;
         setTerm('');
-        SUFFIX_FIELDS.forEach(([suffix]) => {
+        LOCATION_SUFFIX_FIELDS.forEach(([suffix]) => {
             formContext?.unregister(name + suffix);
         });
         extraSuffixes.forEach((suffix: string) => {

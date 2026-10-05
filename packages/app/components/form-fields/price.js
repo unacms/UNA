@@ -5,17 +5,7 @@ import { useEffect } from 'react';
 import { Text } from 'app/design/typography';
 import { useTranslation } from 'react-i18next';
 import { useFormField } from 'app/lib/form/use-form-field';
-
-/** UNA may send `null`, a scalar, or `{ value, currency }`. Form submits a scalar string. */
-function normalizePriceValue(value) {
-    if (value == null || value === '') return '';
-    if (typeof value === 'object') {
-        const amount = value.value;
-        if (amount == null || amount === '') return '';
-        return String(amount);
-    }
-    return String(value);
-}
+import { normalizePriceValue } from 'app/lib/form/field-initial-values';
 
 function resolveCurrency(props, fieldValue) {
     if (props.value_currency) return props.value_currency;

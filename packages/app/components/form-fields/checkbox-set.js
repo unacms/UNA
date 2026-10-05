@@ -3,11 +3,12 @@ import CheckBox from 'app/ui/atoms/checkbox';
 import { View, Row } from 'app/design/view'
 import { appSetting } from 'app/lib/util';
 import { useFormField } from 'app/lib/form/use-form-field';
+import { stringArrayInitialValue } from 'app/lib/form/field-initial-values';
 
 const themeSettings = appSetting('theme', 'checkbox_set');
 
 export default function FormFieldCheckboxSet(props) {
-    const df = Array.isArray(props.value) ? props.value.map(String) : [];
+    const df = stringArrayInitialValue(props.value);
     const { field } = useFormField(props, {
         defaultValue: df,
         syncValue: false,

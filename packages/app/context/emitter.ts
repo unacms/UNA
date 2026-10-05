@@ -37,7 +37,12 @@ export const EVENTS = {
 
     unsavedFormConfirm: 'unsaved_form_confirm_request',
         /* Ask before leaving a form with unsaved changes.
-         *     message, settle(confirmed: boolean)
+         *     message, anchor (topmost modal close button | null), settle(confirmed: boolean)
+         */
+
+    unsavedFormDiscard: 'unsaved_form_discard',
+        /* The user chose to close without saving: these forms' edits are dropped.
+         *     formInstanceIds: string[]
          */
 
     fieldFiles: (name: string) => `fld_files_${name}`,

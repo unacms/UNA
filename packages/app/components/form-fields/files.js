@@ -9,6 +9,7 @@ import * as DocumentPicker from 'expo-document-picker';
 import { fetcher } from 'app/lib/fetcher';
 import { useFormContext } from 'react-hook-form';
 import { useFieldController } from 'app/lib/form/use-form-field';
+import { filesFieldValue } from 'app/lib/form/field-initial-values';
 import { uploadImage, md5, getStoragePickerKind, isExtAllowed, splitExtList } from 'app/lib/util';
 import { Text } from 'app/design/typography'
 import { Image as ImageNative, Alert, Linking, Platform } from 'react-native';
@@ -211,7 +212,8 @@ export default function (props) {
     const obfuscateFaces = formContext.watch('obfuscate_faces');
     const video_source = formContext.watch('video_source');
     const rules = getValidationRules(props);
-    const defaultValue = props?.value ? props.value : '';
+    // Same as Form's default for the type (field-initial-values).
+    const defaultValue = props?.values_src ? filesFieldValue(props.values_src) : '';
     const { field } = useFieldController({ name, rules, defaultValue });
     const bMultiple = props.multiple;
     const [hasPermissionCamera, requestPermissionCamera] = ImagePicker.useCameraPermissions();
@@ -333,33 +335,20 @@ export default function (props) {
         }
     }, [isAutoGhosts, bMultiple, formName, formInstanceId]);
 
-    const isInitialFilesSync = useRef(true);
     useEffect(() => {
         if (props.previewPlaceHolder) {
             props.previewPlaceHolder(name, GhostsList(imageSource.images, bMultiple, handleDelete, props));
         }
-        // The mount-time sync of pre-existing files (values_src) must not mark the
-        // form dirty: re-baseline the field instead of firing onChange.
-        const syncFieldValue = (nextValue) => {
-            if (isInitialFilesSync.current) {
-                isInitialFilesSync.current = false;
-                formContext.resetField(name, { defaultValue: nextValue });
-                return;
-            }
-            field.onChange(nextValue);
-        };
-        if (images) {
-            const fileIds = images
-                .filter(item => item.file_id !== undefined) // Keep only items with file_id
-                .map(item => item.file_id) // Extract file_id
-                .join(',');
-            if (FILES_FIELD_MIRRORS[name]) {
-                formContext.setValue(FILES_FIELD_MIRRORS[name], fileIds)
-            }
-            syncFieldValue(fileIds);
+        // The form default already holds the ids of the saved files (values_src,
+        // see field-initial-values): write only real changes — uploads, removals,
+        // or uploads kept from an unsaved earlier session of this form.
+        const fileIds = images ? filesFieldValue(images) : '';
+        const mirror = images && FILES_FIELD_MIRRORS[name];
+        if (mirror && formContext.getValues(mirror) !== fileIds) {
+            formContext.setValue(mirror, fileIds);
         }
-        else {
-            syncFieldValue('');
+        if (formContext.getValues(name) !== fileIds) {
+            field.onChange(fileIds);
         }
     }, [images]);
 
@@ -715,6 +704,17 @@ export default function (props) {
             subscription.remove();
         };
     }, [name, selectImage]);
+
+    useEffect(() => {
+        // "Close without saving": forget the uploads kept for remounts, or they
+        // come back (and make the form dirty) when the form is opened again.
+        const subscription = emitter.addListener(EVENTS.unsavedFormDiscard, (data) => {
+            if (!formInstanceId || !data?.formInstanceIds?.includes(formInstanceId)) return;
+            clearFieldImages(persistKey);
+            setImages(props?.values_src);
+        });
+        return () => subscription.remove();
+    }, [formInstanceId, persistKey]);
 
     const awaitingSubmitRef = useRef(false);
     useEffect(() => {

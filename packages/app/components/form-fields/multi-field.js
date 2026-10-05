@@ -4,34 +4,21 @@ import { Input } from 'app/design/controls'
 import React, { useEffect, useState } from 'react';
 import { Button } from 'app/design/controls'
 import { View, Row } from 'app/design/view';
+import { multiFieldFormValues, multiFieldInitialRows } from 'app/lib/form/field-initial-values';
 
 export default function FormFieldMultiField(props) {
     const name = props.name;
     const minCount = props.minCount || 2;
-    const transformedArray = props.value_ids ? props.value_ids.map((id, index) => ({
-        id,
-        value: props.value[index]
-    })) : makeArray(minCount);
 
-    const [values, setValues] = useState(transformedArray);
+    const [values, setValues] = useState(() => multiFieldInitialRows(props));
     const formContext = useFormContext();
 
     useEffect(() => {
-        const idsString = values.filter(item => item.id >= 0).map(item => item.id).join(',');
-        const valuesString = values.map(item => item.value).join(',');
-        formContext.setValue(name + '_ids', idsString);
-        formContext.setValue(name, valuesString);
-
+        // Rows start equal to the form default — write user edits only.
+        Object.entries(multiFieldFormValues(name, values)).forEach(([key, val]) => {
+            if (formContext.getValues(key) !== val) formContext.setValue(key, val);
+        });
     }, [props.name, values]);
-
-
-    function makeArray(N) {
-        const t0 = Date.now();
-        return Array.from({ length: N }, (_, i) => ({
-            id: -(t0 + i),
-            value: ''
-        }));
-    }
 
     const addNew = () => {
         setValues(prev => [...prev, { 'id': -Date.now(), value: '' }]);

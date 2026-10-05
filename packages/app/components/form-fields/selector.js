@@ -6,6 +6,7 @@ import ChkList from 'app/ui/molecules/form-controls/checkbox-list';
 import { Text } from 'app/design/typography';
 import { useTranslation } from 'react-i18next';
 import { useFormField } from 'app/lib/form/use-form-field';
+import { selectorInitialValue } from 'app/lib/form/field-initial-values';
 import { wellButtonProps } from 'app/lib/form/form-helpers';
 import FieldWell from './_well';
 
@@ -14,9 +15,7 @@ export default function FormFieldSelector(props) {
 
     const [isModal, setIsModal] = useState(false);
     const isMultiple = props.origtype == 'select' || props.is_single === true ? false : true;
-    const defaultValue = props?.value
-        ? (Array.isArray(props.value) ? props.value.map(String) : [String(props.value)])
-        : [];
+    const defaultValue = selectorInitialValue(props?.value);
     const { field } = useFormField(props, {
         defaultValue,
         syncValue: false,
