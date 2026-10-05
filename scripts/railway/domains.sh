@@ -10,11 +10,12 @@
 #
 # Environment: VERCEL_TOKEN, RAILWAY_PROJECT_ID (api-domain), RAILWAY_API_TOKEN (railway CLI),
 #   VERCEL_TEAM (team slug or id; found from DNS_ZONE ownership when unset),
-#   DNS_ZONE (default unacms.app), CLIENT_PROJECT (Vercel project of the NEO client, default neo).
+#   DNS_ZONE (default unacms.app), CLIENT_PROJECT (Vercel project of the NEO client; when unset
+#   or not found, the project that has DNS_ZONE attached).
 set -euo pipefail
 
 DNS_ZONE="${DNS_ZONE:-unacms.app}"
-CLIENT_PROJECT="${CLIENT_PROJECT:-neo}"
+CLIENT_PROJECT="${CLIENT_PROJECT:-}"
 RAILWAY_SERVICE="${RAILWAY_SERVICE:-una}"
 VERCEL_API=https://api.vercel.com
 
@@ -104,9 +105,23 @@ api_domain() { # api_domain <host> <environment>
     echo "api: https://$host ($label)"
 }
 
+# The client project: CLIENT_PROJECT when it exists, else the project serving DNS_ZONE.
+client_project_id() {
+    local id p
+    if [ -n "$CLIENT_PROJECT" ] && id=$(vercel GET "/v9/projects/$CLIENT_PROJECT" 2>/dev/null | jq -r '.id // empty') && [ -n "$id" ]; then
+        echo "$id"; return
+    fi
+    for p in $(vercel GET "/v9/projects?limit=100" | jq -r '.projects[].id'); do
+        if vercel GET "/v9/projects/$p/domains?limit=100" | jq -e --arg z "$DNS_ZONE" '.domains[] | select(.name == $z or .name == ("www." + $z))' >/dev/null; then
+            echo "$p"; return
+        fi
+    done
+    die "no Vercel project serves $DNS_ZONE"
+}
+
 client_alias() { # client_alias <host> [branch]
     local host=$1 branch=${2:-} project uid=""
-    project=$(vercel GET "/v9/projects/$CLIENT_PROJECT" | jq -r '.id')
+    project=$(client_project_id)
     if [ -n "$branch" ]; then
         uid=$(vercel GET "/v6/deployments?projectId=$project&state=READY&limit=100" \
             | jq -r --arg b "$branch" '[.deployments[] | select(.meta.githubCommitRef == $b)] | sort_by(.created) | last | .uid // empty')
