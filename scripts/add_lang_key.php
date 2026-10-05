@@ -16,6 +16,9 @@
  * A translation of "-" is read from stdin. A single trailing newline on
  * stdin is removed; newlines inside the text are kept.
  *
+ * When the key prefix doesn't name the module (bx_organizations uses _bx_orgs_),
+ * set ADD_LANG_KEY_MODULE=<module name>.
+ *
  * Run inside the php container:
  *   docker exec -i una-php-1 php /opt/una/scripts/add_lang_key.php en _sys_example "Hello"
  */
@@ -66,9 +69,21 @@ $sRoot = dirname(__DIR__) . '/';
 $aModules = loadModules($sRoot);
 $aLangModules = loadLanguageModules($sRoot);
 
-$aModule = findModuleByExistingKey($sRoot, $sKey, $aModules);
-if (!$aModule)
-    $aModule = inferModule($sKey, $aModules);
+// ADD_LANG_KEY_MODULE=<module name> picks the module when the key prefix can't tell
+// (e.g. _bx_orgs_ keys belong to bx_organizations).
+$sForced = getenv('ADD_LANG_KEY_MODULE');
+if ($sForced !== false && $sForced !== '') {
+    if (!isset($aModules[$sForced])) {
+        fwrite(STDERR, "Unknown module '$sForced'\n");
+        exit(2);
+    }
+    $aModule = $aModules[$sForced];
+}
+else {
+    $aModule = findModuleByExistingKey($sRoot, $sKey, $aModules);
+    if (!$aModule)
+        $aModule = inferModule($sKey, $aModules);
+}
 
 $sFile = resolveLangFile($sRoot, $sLang, $aModule, $aLangModules);
 $sRel = ltrim(str_replace('\\', '/', substr($sFile, strlen($sRoot))), '/');

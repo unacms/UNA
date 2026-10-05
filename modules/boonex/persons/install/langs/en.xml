@@ -227,6 +227,7 @@
     <string name="_bx_persons_menu_title_view_profile_submenu"><![CDATA[View Person Submenu]]></string>
     <string name="_bx_persons_menu_set_title_manage_tools"><![CDATA[Manage Tools Submenu]]></string>
     <string name="_bx_persons_menu_title_manage_tools"><![CDATA[Manage Tools Submenu]]></string>
+    <string name="_bx_persons_menu_item_info_create_profile"><![CDATA[For yourself, with your own feed and connections.]]></string>
     <string name="_bx_persons_menu_item_title_system_delete_with_content"><![CDATA[Delete with Data]]></string>
     <string name="_bx_persons_menu_item_title_delete_with_content"><![CDATA[Delete with Data]]></string>
     <string name="_bx_persons_menu_item_title_system_clear_reports"><![CDATA[Clear reports]]></string>

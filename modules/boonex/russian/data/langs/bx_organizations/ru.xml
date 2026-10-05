@@ -299,6 +299,7 @@
     <string name="_bx_orgs_menu_set_title_entries_my"><![CDATA[Организации профиля - Меню]]></string>
     <string name="_bx_orgs_menu_set_title_manage_tools"><![CDATA[Инструменты управления - Подменю]]></string>
     <string name="_bx_orgs_menu_title_manage_tools"><![CDATA[Инструменты управления - Подменю]]></string>
+    <string name="_bx_orgs_menu_item_info_create_profile"><![CDATA[Для компании, команды или сообщества, которыми вы управляете.]]></string>
     <string name="_bx_orgs_menu_item_title_system_delete_with_content"><![CDATA[Удалить с данными]]></string>
     <string name="_bx_orgs_menu_item_title_delete_with_content"><![CDATA[Удалить с данными]]></string>
     <string name="_bx_orgs_menu_item_title_system_clear_reports"><![CDATA[Очистить жалобы]]></string>
