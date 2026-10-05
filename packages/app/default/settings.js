@@ -15,7 +15,11 @@ export const settingsDefault = {
     config: {
         una_url: env('UNA_URL'),
         app_url: env('APP_URL'),
-        una_api_key: env('UNA_API_KEY'),    
+        una_api_key: env('UNA_API_KEY'),
+        // CI previews: pr-<n>.<domain> is served by the backend at api-pr-<n>.<domain>,
+        // authenticated with preview_api_key (server only). Unset = no preview hosts.
+        preview_domain: env('UNA_PREVIEW_DOMAIN'),
+        preview_api_key: env('UNA_PREVIEW_API_KEY'),    
         app_origin: env('APP_ORIGIN'),
         native_app_images_url:'https://neo.so',
           

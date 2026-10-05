@@ -1,4 +1,4 @@
-import { UNA_URL, UNA_API_KEY, MULTITENANT, appSetting } from 'app/config';
+import { UNA_URL, UNA_API_KEY, MULTITENANT, PREVIEW_DOMAIN, appSetting } from 'app/config';
 import { cache } from 'react'
 import Root from 'app/root-client'
 import { Suspense } from 'react'
@@ -33,10 +33,11 @@ const getData = cache(async (path, searchParamsKey) => {
     const hdrs = await headers();
     // The viewer's Cookie header exactly as the browser sent it — forwarded to UNA.
     const cookieString = hdrs.get('cookie') || '';
-    // Tenant headers come from proxy.js only (it drops client-sent ones); never
-    // trust them in single-tenant mode.
-    const tenantUnaUrl = MULTITENANT ? hdrs.get('x-tenant-una-url') : null;
-    const tenantUnaKey = MULTITENANT ? hdrs.get('x-tenant-una-key') : null;
+    // Tenant headers come from proxy.js only (it drops client-sent ones); trust them
+    // only when the proxy can set them: multi-tenant mode or CI preview hosts.
+    const trustTenantHeaders = MULTITENANT || !!PREVIEW_DOMAIN;
+    const tenantUnaUrl = trustTenantHeaders ? hdrs.get('x-tenant-una-url') : null;
+    const tenantUnaKey = trustTenantHeaders ? hdrs.get('x-tenant-una-key') : null;
 
     const fetchHeaders = {
         cookie: cookieString,
