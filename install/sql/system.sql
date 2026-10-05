@@ -6373,8 +6373,6 @@ INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title_system`, `
 
 ('sys_account_settings_delete', 1, 'system', '', '_sys_page_block_title_account_settings_delete', 11, 0, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:28:"account_settings_del_account";s:6:"params";a:0:{}s:5:"class";s:19:"TemplServiceAccount";}', 0, 1, 1, 1),
 
-('sys_account_profile_switcher', 1, 'system', '', '_sys_page_block_title_account_profile_create', 11, 0, 0, 2147483647, 'menu', 'sys_add_profile', 0, 1, 1, 1),
-
 ('sys_account_profile_switcher', 1, 'system', '', '_sys_page_block_title_account_profile_switcher', 11, 0, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:28:"account_profile_switcher_all";s:6:"params";a:0:{}s:5:"class";s:20:"TemplServiceProfiles";}', 0, 1, 1, 2),
 
 ('sys_profile_settings_cfilter', 1, 'system', '', '_sys_page_block_title_profile_settings_cfilter', 11, 0, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:24:"profile_settings_cfilter";s:6:"params";a:0:{}s:5:"class";s:20:"TemplServiceProfiles";}', 0, 1, 1, 2),
@@ -6405,6 +6403,11 @@ INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title_system`, `
 ('sys_recom_subscriptions', 1, 'system', '', '_sys_page_block_title_recom_subscriptions', 11, 0, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:36:"browse_recommendations_subscriptions";s:6:"params";a:2:{i:0;s:12:"{profile_id}";i:1;a:1:{s:13:"empty_message";b:1;}}s:5:"class";s:20:"TemplServiceProfiles";}', 0, 0, 1, 1),
 
 ('sys_ntfs_context_invitations', 1, 'system', '', '_sys_page_block_title_ntfs_context_invitations', 11, 0, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:18:"browse_invitations";s:6:"params";a:2:{i:0;s:19:"{logged_profile_id}";i:1;a:1:{s:13:"empty_message";b:1;}}s:5:"class";s:20:"TemplServiceProfiles";}', 0, 1, 1, 1);
+
+-- The "create profile" block describes itself: title, description and icon are shown by
+-- API clients (NEO) in the block header and can be changed in Studio.
+INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title_system`, `title`, `description`, `icon`, `designbox_id`, `tabs`, `async`, `visible_for_levels`, `type`, `content`, `deletable`, `copyable`, `active`, `order`) VALUES
+('sys_account_profile_switcher', 1, 'system', '', '_sys_page_block_title_account_profile_create', '_sys_page_block_desc_account_profile_create', 'user-plus', 11, 0, 0, 2147483647, 'menu', 'sys_add_profile', 0, 1, 1, 1);
 
 -- studio dashboard blocks
 INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title_system`, `title`, `icon`, `designbox_id`, `class`, `tabs`, `async`, `visible_for_levels`, `type`, `content`, `deletable`, `copyable`, `active`, `order`) VALUES

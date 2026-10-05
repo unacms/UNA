@@ -305,6 +305,7 @@
     <string name="_bx_orgs_menu_set_title_entries_my"><![CDATA[Profile Organizations Menu]]></string>
     <string name="_bx_orgs_menu_set_title_manage_tools"><![CDATA[Manage Tools Submenu]]></string>
     <string name="_bx_orgs_menu_title_manage_tools"><![CDATA[Manage Tools Submenu]]></string>
+    <string name="_bx_orgs_menu_item_info_create_profile"><![CDATA[For a company, team or community you run.]]></string>
     <string name="_bx_orgs_menu_item_title_system_delete_with_content"><![CDATA[Delete with Data]]></string>
     <string name="_bx_orgs_menu_item_title_delete_with_content"><![CDATA[Delete with Data]]></string>
     <string name="_bx_orgs_menu_item_title_system_clear_reports"><![CDATA[Clear reports]]></string>

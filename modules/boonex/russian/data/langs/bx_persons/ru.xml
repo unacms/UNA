@@ -213,6 +213,7 @@
     <string name="_bx_persons_menu_title_view_profile_submenu"><![CDATA[Подменю просмотра персоны]]></string>
     <string name="_bx_persons_menu_set_title_manage_tools"><![CDATA[Инструменты управления - Подменю]]></string>
     <string name="_bx_persons_menu_title_manage_tools"><![CDATA[Инструменты управления - Подменю]]></string>
+    <string name="_bx_persons_menu_item_info_create_profile"><![CDATA[Для себя: собственная лента и связи.]]></string>
     <string name="_bx_persons_menu_item_title_system_delete_with_content"><![CDATA[Удалить с данными]]></string>
     <string name="_bx_persons_menu_item_title_delete_with_content"><![CDATA[Удалить с данными]]></string>
     <string name="_bx_persons_menu_item_title_system_clear_reports"><![CDATA[Очистить жалобы]]></string>
