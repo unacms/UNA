@@ -126,8 +126,18 @@ jobs:
         chmod +x deploy/entrypoint.sh
 
     - name: Install Railway CLI
-      # Pinned npm package instead of piping an install script into sh.
-      run: npm install --global @railway/cli@5.35.0
+      # Pinned release, checked against its published SHA-256 before it is run.
+      env:
+        GH_TOKEN: ${{ github.token }}
+        RAILWAY_CLI_VERSION: v5.35.0
+        RAILWAY_CLI_SHA256: fb675d282e613ae9868b25be1ad4567d37b9c13901785f636dd0a13837f8ecf0
+      run: |
+        asset="railway-${RAILWAY_CLI_VERSION}-x86_64-unknown-linux-musl.tar.gz"
+        gh release download "$RAILWAY_CLI_VERSION" --repo railwayapp/cli --pattern "$asset" --dir /tmp/railway-cli
+        echo "${RAILWAY_CLI_SHA256}  /tmp/railway-cli/${asset}" | sha256sum -c -
+        tar -xzf "/tmp/railway-cli/${asset}" -C /tmp/railway-cli railway
+        sudo install -m 0755 /tmp/railway-cli/railway /usr/local/bin/railway
+        railway --version
 
     - name: Provision PR environment
       run: |
@@ -263,8 +273,18 @@ jobs:
         chmod +x deploy/entrypoint.sh
 
     - name: Install Railway CLI
-      # Pinned npm package instead of piping an install script into sh.
-      run: npm install --global @railway/cli@5.35.0
+      # Pinned release, checked against its published SHA-256 before it is run.
+      env:
+        GH_TOKEN: ${{ github.token }}
+        RAILWAY_CLI_VERSION: v5.35.0
+        RAILWAY_CLI_SHA256: fb675d282e613ae9868b25be1ad4567d37b9c13901785f636dd0a13837f8ecf0
+      run: |
+        asset="railway-${RAILWAY_CLI_VERSION}-x86_64-unknown-linux-musl.tar.gz"
+        gh release download "$RAILWAY_CLI_VERSION" --repo railwayapp/cli --pattern "$asset" --dir /tmp/railway-cli
+        echo "${RAILWAY_CLI_SHA256}  /tmp/railway-cli/${asset}" | sha256sum -c -
+        tar -xzf "/tmp/railway-cli/${asset}" -C /tmp/railway-cli railway
+        sudo install -m 0755 /tmp/railway-cli/railway /usr/local/bin/railway
+        railway --version
 
     - name: Configure production
       run: |
@@ -326,8 +346,18 @@ jobs:
         scripts/railway/domains.sh dns-remove "api-pr-${{ github.event.pull_request.number }}.unacms.app"
 
     - name: Install Railway CLI
-      # Pinned npm package instead of piping an install script into sh.
-      run: npm install --global @railway/cli@5.35.0
+      # Pinned release, checked against its published SHA-256 before it is run.
+      env:
+        GH_TOKEN: ${{ github.token }}
+        RAILWAY_CLI_VERSION: v5.35.0
+        RAILWAY_CLI_SHA256: fb675d282e613ae9868b25be1ad4567d37b9c13901785f636dd0a13837f8ecf0
+      run: |
+        asset="railway-${RAILWAY_CLI_VERSION}-x86_64-unknown-linux-musl.tar.gz"
+        gh release download "$RAILWAY_CLI_VERSION" --repo railwayapp/cli --pattern "$asset" --dir /tmp/railway-cli
+        echo "${RAILWAY_CLI_SHA256}  /tmp/railway-cli/${asset}" | sha256sum -c -
+        tar -xzf "/tmp/railway-cli/${asset}" -C /tmp/railway-cli railway
+        sudo install -m 0755 /tmp/railway-cli/railway /usr/local/bin/railway
+        railway --version
 
     - name: Delete PR environment
       run: |

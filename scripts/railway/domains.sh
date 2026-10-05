@@ -26,11 +26,18 @@ vercel() { # vercel <METHOD> <path> [json-body]
     local method=$1 path=$2 body=${3:-}
     local sep='?'; case "$path" in *\?*) sep='&' ;; esac
     local url="$VERCEL_API$path${TEAM_ID:+${sep}teamId=$TEAM_ID}${TEAM_SLUG:+${sep}slug=$TEAM_SLUG}"
-    if [ -n "$body" ]; then
-        curl -fsS -X "$method" -H "Authorization: Bearer $VERCEL_TOKEN" -H 'Content-Type: application/json' -d "$body" "$url"
-    else
-        curl -fsS -X "$method" -H "Authorization: Bearer $VERCEL_TOKEN" "$url"
+    local out code
+    out=$(mktemp)
+    code=$(curl -sS -o "$out" -w '%{http_code}' -X "$method" -H "Authorization: Bearer $VERCEL_TOKEN" \
+        ${body:+-H 'Content-Type: application/json' -d "$body"} "$url") || code=000
+    if [ "${code:0:1}" != 2 ]; then
+        # Vercel explains 403s (token scope, team access) in the body; show it.
+        echo "vercel: $method ${path%%\?*} -> HTTP $code: $(jq -r '.error.message // .error.code // empty' "$out" 2>/dev/null)" >&2
+        rm -f "$out"
+        return 1
     fi
+    cat "$out"
+    rm -f "$out"
 }
 
 # The Vercel team (or personal account) that owns DNS_ZONE; it also owns the client project.
