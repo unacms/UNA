@@ -11,6 +11,10 @@ export const queryClient = new QueryClient({
             // TanStack Query v4 name (`gcTime` is v5 and was silently ignored).
             cacheTime: 3 * 60 * 1000,
             refetchOnWindowFocus: false,
+            // Default 3 retries, but not after a fetcher timeout: each retry would re-run the
+            // same slow request (the fetcher has already waited `fetch_timeout_ms`).
+            retry: (failureCount, error) =>
+                (error as Error | undefined)?.message !== 'Timeout' && failureCount < 3,
         },
     },
 })

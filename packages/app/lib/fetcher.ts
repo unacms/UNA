@@ -21,9 +21,13 @@ export type FetcherRequest =
 export type FetchOptions = {
     /** Abort the request (throws an `AbortError` with `aborted: true`). */
     signal?: AbortSignal;
-    /** Per-attempt timeout; defaults to `config.fetch_timeout_ms` (15s). */
+    /** Per-attempt timeout; defaults to `config.fetch_timeout_ms`. */
     timeoutMs?: number;
-    /** Retries on timeout / network error; defaults to 3 for GET, 1 for POST. */
+    /**
+     * Attempts on a network error; defaults to 3 for GET, 1 for POST. A timeout is not
+     * retried: the server got the request and is still working on it, so sending it again
+     * only adds load (PHP keeps running an aborted request to the end).
+     */
     maxAttempts?: number;
     /** Don't log failures to the console. */
     silent?: boolean;
@@ -187,7 +191,7 @@ export async function fetcherRaw(host: string, mixed: FetcherRequest, fetchOptio
             if (error?.aborted) {
                 throw error;
             }
-            const isRetriable = error?.message === 'Timeout' || error?.name === 'TypeError';
+            const isRetriable = error?.name === 'TypeError';
             if (!isRetriable || attempt >= maxAttempts) {
                 if (!silent) {
                     if (error?.message === 'Timeout') {
