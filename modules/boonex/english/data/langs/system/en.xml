@@ -3872,8 +3872,8 @@
     <string name="_sys_page_block_title_audit_administration"><![CDATA[Audit]]></string>
     <string name="_sys_page_block_title_confirm_email"><![CDATA[Email Confirmation]]></string>
     <string name="_sys_page_block_title_confirm_phone"><![CDATA[Phone Confirmation]]></string>
-    <string name="_sys_page_block_title_system_copilot"><![CDATA[Copilot (for App only)]]></string>
-    <string name="_sys_page_block_title_copilot"><![CDATA[Copilot]]></string>
+    <string name="_sys_page_block_title_system_cooperator"><![CDATA[Cooperator (for App only)]]></string>
+    <string name="_sys_page_block_title_cooperator"><![CDATA[Cooperator]]></string>
     <string name="_sys_page_block_title_create_account"><![CDATA[Sign up]]></string>
     <string name="_sys_page_block_title_sys_author"><![CDATA[Author]]></string>
     <string name="_sys_page_block_title_author"><![CDATA[Author]]></string>
@@ -3999,8 +3999,8 @@
     <string name="_sys_page_title_system_audit_administration"><![CDATA[Audit]]></string>
     <string name="_sys_page_title_system_confirm_email"><![CDATA[Account Create - Email Confirmation]]></string>
     <string name="_sys_page_title_system_confirm_phone"><![CDATA[Account Create - Phone Confirmation]]></string>
-    <string name="_sys_page_title_system_copilot"><![CDATA[Copilot (for App only)]]></string>
-    <string name="_sys_page_title_copilot"><![CDATA[Copilot]]></string>
+    <string name="_sys_page_title_system_cooperator"><![CDATA[Cooperator (for App only)]]></string>
+    <string name="_sys_page_title_cooperator"><![CDATA[Cooperator]]></string>
     <string name="_sys_page_title_system_create_account"><![CDATA[Account - Create]]></string>
     <string name="_sys_page_title_system_dashboard"><![CDATA[Dashboard]]></string>
     <string name="_sys_page_title_system_dashboard_content"><![CDATA[Dashboard - Content]]></string>

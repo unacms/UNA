@@ -3829,8 +3829,8 @@
         <string name="_sys_page_block_title_audit_administration"><![CDATA[Аудит]]></string>
 	<string name="_sys_page_block_title_confirm_email"><![CDATA[Email - Подтверждение]]></string>
 	<string name="_sys_page_block_title_confirm_phone"><![CDATA[Телефон - Подтверждение]]></string>
-        <string name="_sys_page_block_title_system_copilot"><![CDATA[Второй пилот (только для App-а)]]></string>
-        <string name="_sys_page_block_title_copilot"><![CDATA[Второй пилот]]></string>
+        <string name="_sys_page_block_title_system_cooperator"><![CDATA[Соавтор (только для App-а)]]></string>
+        <string name="_sys_page_block_title_cooperator"><![CDATA[Соавтор]]></string>
 	<string name="_sys_page_block_title_create_account"><![CDATA[Присоединиться]]></string>
         <string name="_sys_page_block_title_sys_author"><![CDATA[Автор]]></string>
 	<string name="_sys_page_block_title_author"><![CDATA[Автор]]></string>
@@ -3954,8 +3954,8 @@
         <string name="_sys_page_title_system_audit_administration"><![CDATA[Аудит]]></string>
 	<string name="_sys_page_title_system_confirm_email"><![CDATA[Аккаунт - Создать - Подтверждение Email-а]]></string>
 	<string name="_sys_page_title_system_confirm_phone"><![CDATA[Аккаунт - Создать - Подтверждение телефона]]></string>
-        <string name="_sys_page_title_system_copilot"><![CDATA[Второй пилот (только для App-а)]]></string>
-        <string name="_sys_page_title_copilot"><![CDATA[Второй пилот]]></string>
+        <string name="_sys_page_title_system_cooperator"><![CDATA[Соавтор (только для App-а)]]></string>
+        <string name="_sys_page_title_cooperator"><![CDATA[Соавтор]]></string>
 	<string name="_sys_page_title_system_create_account"><![CDATA[Аккаунт - Создать]]></string>
 	<string name="_sys_page_title_system_dashboard"><![CDATA[Панель]]></string>
         <string name="_sys_page_title_system_dashboard_content"><![CDATA[Панель - Контент]]></string>

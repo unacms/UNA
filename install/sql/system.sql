@@ -6101,7 +6101,7 @@ INSERT INTO `sys_objects_page` (`object`, `uri`, `title_system`, `title`, `modul
 
 -- pages for APP (can be updated via separate enable-app-pages.sql)
 INSERT INTO `sys_objects_page` (`object`, `uri`, `title_system`, `title`, `module`, `cover`, `layout_id`, `submenu`, `visible_for_levels`, `visible_for_levels_editable`, `url`, `meta_description`, `meta_keywords`, `meta_robots`, `cache_lifetime`, `cache_editable`, `deletable`, `override_class_name`, `override_class_file`, `sticky_columns`) VALUES
-('sys_copilot', 'copilot', '_sys_page_title_system_copilot', '_sys_page_title_copilot', 'system', 1, 5, '', 192, 1, 'page.php?i=copilot', '', '', '', 0, 1, 0, '', '', 0),
+('sys_cooperator', 'cooperator', '_sys_page_title_system_cooperator', '_sys_page_title_cooperator', 'system', 1, 5, '', 192, 1, 'page.php?i=cooperator', '', '', '', 0, 1, 0, '', '', 0),
 
 ('sys_dashboard_admin', 'dashboard-admin', '_sys_page_title_system_dashboard_admin', '_sys_page_title_dashboard_admin', 'system', 1, 5, '', 192, 1, 'page.php?i=dashboard-admin', '', '', '', 0, 1, 0, 'BxTemplPageDashboard', '', 0);
 
@@ -6319,7 +6319,7 @@ INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title_system`, `
 ('sys_home', 4, 'system', '_sys_page_block_title_sys_invitations', '_sys_page_block_title_invitations', '', '', 11, '', '', 1, 0, 2147483644, '0', 'service', 'a:4:{s:6:\"module\";s:6:\"system\";s:6:\"method\";s:18:\"browse_invitations\";s:6:\"params\";a:0:{}s:5:\"class\";s:20:\"TemplServiceProfiles\";}', '', '', 0, '', 0, '', 1, 0, 0, 0, 0);
 
 INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title_system`, `title`, `designbox_id`, `class`, `submenu`, `tabs`, `async`, `visible_for_levels`, `hidden_on`, `type`, `content`, `content_empty`, `text`, `text_updated`, `help`, `cache_lifetime`, `config_api`, `deletable`, `copyable`, `active`, `active_api`, `order`) VALUES
-('sys_copilot', 1, 'system', '_sys_page_block_title_system_copilot', '_sys_page_block_title_copilot', 11, '', '', 0, 0, 192, '0', 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:25:"get_block_ai_agents_admin";s:6:"params";a:0:{}s:5:"class";s:13:"TemplServices";}', '', '', 0, '', 0, '', 1, 0, 0, 0, 0),
+('sys_cooperator', 1, 'system', '_sys_page_block_title_system_cooperator', '_sys_page_block_title_cooperator', 11, '', '', 0, 0, 192, '0', 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:25:"get_block_ai_agents_admin";s:6:"params";a:0:{}s:5:"class";s:13:"TemplServices";}', '', '', 0, '', 0, '', 1, 0, 0, 0, 0),
 
 ('sys_dashboard', 2, 'system', '_sys_page_block_title_dash_stats', '', 13, '', '', 0, 0, 2147483647, '0', 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:14:"get_stat_block";s:6:"params";a:0:{}s:5:"class";s:22:"TemplDashboardServices";}', '', '', 0, '', 0, '', 1, 0, 0, 0, 0),
 
