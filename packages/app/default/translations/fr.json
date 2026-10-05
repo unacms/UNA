@@ -473,7 +473,7 @@
     "tasks_budget_spent": "Dépensé",
     "tasks_budget_remaining": "Restant",
     "Create your profile": "Créez votre profil",
-    "Your account doesn’t have a profile yet. Choose one to start using the site.": "Votre compte n’a pas encore de profil. Choisissez-en un pour commencer à utiliser le site.",
-    "For yourself: post, follow people and join groups.": "Pour vous : publiez, suivez des personnes et rejoignez des groupes.",
+    "Your account doesn’t have a profile yet. Choose a profile type to get started.": "Votre compte n’a pas encore de profil. Choisissez un type de profil pour commencer.",
+    "For yourself, with your own feed and connections.": "Pour vous, avec votre propre fil et vos relations.",
     "For a company, team or community you run.": "Pour une entreprise, une équipe ou une communauté que vous gérez."
 }

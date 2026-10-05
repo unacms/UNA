@@ -7,15 +7,19 @@ import { appSetting } from 'app/lib/util'
 import { useTranslation } from 'react-i18next'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from 'app/ui/molecules/page/card'
 
-// One line under each profile type UNA usually offers; other types show their title only.
+// Fallback descriptions for the profile types UNA ships. A module can describe its own type
+// (in any language) through the menu item's `info`, which takes precedence; types with
+// neither show their title only.
 const PROFILE_TYPE_HINTS = [
-    [/persons?/, 'For yourself: post, follow people and join groups.'],
+    [/persons?/, 'For yourself, with your own feed and connections.'],
     [/organi[sz]ation/, 'For a company, team or community you run.'],
 ]
 
 function profileTypeHint(item) {
+    if (typeof item.info === 'string' && item.info.trim()) return item.info.trim()
     const key = `${item.name || ''} ${item.link || ''}`
-    return PROFILE_TYPE_HINTS.find(([pattern]) => pattern.test(key))?.[1]
+    const hint = PROFILE_TYPE_HINTS.find(([pattern]) => pattern.test(key))?.[1]
+    return hint ? { key: hint } : null
 }
 
 function ProfileTypeRow({ item }) {
@@ -25,6 +29,8 @@ function ProfileTypeRow({ item }) {
     // UNA icons may carry a FontAwesome style prefix ("far user").
     const icon = (item.icon || 'UserPlus').replace(/^(far|fas|fab)\s+/, '')
     const hint = profileTypeHint(item)
+    // UNA's `info` arrives translated; only NEO's own fallbacks go through t().
+    const hintText = typeof hint === 'string' ? hint : hint ? t(hint.key) : null
 
     return (
         <Link href={href} mode="plain" haptics="Light" alt={t(item.title)} className="w-full">
@@ -34,7 +40,7 @@ function ProfileTypeRow({ item }) {
                 </View>
                 <View className="min-w-0 flex-1 gap-0.5">
                     <Text className="text-base font-semibold text-card-foreground">{t(item.title)}</Text>
-                    {hint ? <Text className="text-sm text-muted-foreground">{t(hint)}</Text> : null}
+                    {hintText ? <Text className="text-sm text-muted-foreground">{hintText}</Text> : null}
                 </View>
                 <Icon icon="ChevronRight" size={18} className="shrink-0 text-muted-foreground" />
             </Row>
@@ -60,7 +66,7 @@ export default function ElementCreateProfile({ items = [] }) {
                         </View>
                         <CardTitle className="text-center text-xl font-semibold text-card-foreground">{t('Create your profile')}</CardTitle>
                         <CardDescription className="text-center">
-                            {t('Your account doesn’t have a profile yet. Choose one to start using the site.')}
+                            {t('Your account doesn’t have a profile yet. Choose a profile type to get started.')}
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="gap-3">

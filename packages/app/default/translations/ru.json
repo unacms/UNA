@@ -475,7 +475,7 @@
     "tasks_budget_spent": "Потрачено",
     "tasks_budget_remaining": "Осталось",
     "Create your profile": "Создайте профиль",
-    "Your account doesn’t have a profile yet. Choose one to start using the site.": "У вашей учётной записи ещё нет профиля. Выберите тип, чтобы начать пользоваться сайтом.",
-    "For yourself: post, follow people and join groups.": "Для себя: публикуйте, подписывайтесь на людей и вступайте в группы.",
+    "Your account doesn’t have a profile yet. Choose a profile type to get started.": "У вашей учётной записи ещё нет профиля. Выберите тип профиля, чтобы начать.",
+    "For yourself, with your own feed and connections.": "Для себя: собственная лента и связи.",
     "For a company, team or community you run.": "Для компании, команды или сообщества, которыми вы управляете."
 }
