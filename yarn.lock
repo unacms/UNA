@@ -265,10 +265,10 @@
     validate-npm-package-name "^8.0.0"
     walk-up-path "^4.0.0"
 
-"@npmcli/config@^11.1.0":
-  version "11.1.0"
-  resolved "https://registry.yarnpkg.com/@npmcli/config/-/config-11.1.0.tgz#e3f5fce4902f2c8e1010552a36174d0b62b702ee"
-  integrity sha512-xw2VW5qFHnkQL7svD7JY2hOu79golhbSsVFPe+yvMp4pShY31+VHGjh9jpdO3xhYgRUyo9gjmHD6a6UxeDwYjQ==
+"@npmcli/config@^11.2.0":
+  version "11.2.0"
+  resolved "https://registry.yarnpkg.com/@npmcli/config/-/config-11.2.0.tgz#09c37c17caaf7ce56ffbcace37b6000fc1ccc5d8"
+  integrity sha512-PZtUL2rXqThZUT5KGsbVEGdrJswgBoY56X8hXIozwoayHC/rRsaJCIz4nsBzHJvNpCjGEbufJqStaqB7Qdd4ww==
   dependencies:
     "@npmcli/map-workspaces" "^6.0.0"
     "@npmcli/package-json" "^8.0.0"
@@ -3697,14 +3697,14 @@ npm-user-validate@^5.0.0:
   resolved "https://registry.yarnpkg.com/npm-user-validate/-/npm-user-validate-5.0.0.tgz#3df96680ac4f9b673b1b280bebc541ecc5d01f80"
   integrity sha512-yZKlDPJOukQIRzXL+qYyuczXtnQTSF732zT6umGfy/8DxXEAdnv22eA/UpBsC0Fv9s4yfDYkK1pLnCPB0GxsqQ==
 
-npm@^12.1.0:
-  version "12.1.0"
-  resolved "https://registry.yarnpkg.com/npm/-/npm-12.1.0.tgz#b1a65ce40c1fb696b13349c56139aeac4fb7b9ab"
-  integrity sha512-Fyhu62pNx70YCs/5+dEmJQTFVmSKwvo5CA0qvBkGDRpob42MJ6G2RQ2tdxeKM4nYnIZDqkYAxEgqtoejn9QGtQ==
+npm@^12.2.0:
+  version "12.2.0"
+  resolved "https://registry.yarnpkg.com/npm/-/npm-12.2.0.tgz#9b58e3add8a0ad8c87c927f1a988f41435f4ffad"
+  integrity sha512-ZsJjKpTnlmSXOLLXiU1xDCzC4Wlok4IwZmh/aw2KUuXytU7q6qMv/cUT7MoeSf95Slwuw/lRXYefGzGCspHPNQ==
   dependencies:
     "@isaacs/string-locale-compare" "^1.1.0"
     "@npmcli/arborist" "^10.0.3"
-    "@npmcli/config" "^11.1.0"
+    "@npmcli/config" "^11.2.0"
     "@npmcli/fs" "^6.0.0"
     "@npmcli/git" "^8.0.0"
     "@npmcli/map-workspaces" "^6.0.0"
