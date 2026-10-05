@@ -13,9 +13,6 @@ a2enmod mpm_prefork rewrite >/dev/null 2>&1 || true
 
 mkdir -p cache cache_public logs tmp storage
 chmod a+rwX inc cache cache_public logs tmp storage
-if [ -f plugins/ffmpeg/ffmpeg.exe ]; then
-    chmod 0755 plugins/ffmpeg/ffmpeg.exe
-fi
 
 parse_mysql_url() {
     _url="$1"
@@ -121,6 +118,15 @@ else
         cp install/patterns/header.inc.php inc/header.inc.php
         chmod 0666 inc/header.inc.php
     fi
+fi
+
+# API key, origins and client URL for the NEO front end (idempotent, every start).
+php /usr/local/lib/una-railway/configure.php
+
+if [ "${UNA_DEMO_SEED:-0}" = "1" ]; then
+    echo "Seeding demo content..."
+    # A failed seed must not keep the site down; the log says what went wrong.
+    php /usr/local/lib/una-railway/seed.php || echo "Demo seed failed (exit $?)" >&2
 fi
 
 chown -R www-data:www-data inc cache cache_public logs tmp storage
