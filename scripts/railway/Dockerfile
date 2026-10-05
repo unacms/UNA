@@ -5,6 +5,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         libjpeg62-turbo-dev \
         libpng-dev \
         libzip-dev \
+        ffmpeg \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j$(nproc) gd mysqli pdo_mysql zip exif opcache \
     && a2enmod rewrite deflate expires \
@@ -19,10 +20,20 @@ RUN printf '%s\n' \
         'variables_order=EGPCS' \
         > /usr/local/etc/php/conf.d/una.ini
 
+# The bundled static plugins/ffmpeg/ffmpeg.exe segfaults on URL inputs (it resolves
+# hostnames with static glibc), which broke every video poster. Run Debian's ffmpeg instead.
+# Error reports by email are for ci.una.io; a preview would mail on every request.
+ENV UNA_FFMPEG_PATH=/usr/bin/ffmpeg \
+    UNA_DEBUG_EMAIL_REPORT=0
+
 COPY --chown=www-data:www-data . /var/www/html
 
+# plugins/ffmpeg/ffmpeg.exe stays: the installer's permission check requires it to be
+# executable, although UNA_FFMPEG_PATH means it never runs.
 RUN mv /var/www/html/entrypoint.sh /usr/local/bin/entrypoint.sh \
     && chmod +x /usr/local/bin/entrypoint.sh \
+    && mkdir -p /usr/local/lib/una-railway \
+    && mv /var/www/html/configure.php /var/www/html/seed.php /usr/local/lib/una-railway/ \
     && rm -f /var/www/html/Dockerfile /var/www/html/railway.toml \
     && mkdir -p /var/www/html/cache /var/www/html/cache_public /var/www/html/logs /var/www/html/tmp /var/www/html/storage \
     && chown -R www-data:www-data \

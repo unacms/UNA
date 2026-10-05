@@ -100,6 +100,13 @@ jobs:
       RAILWAY_BASE_ENVIRONMENT: ${{ secrets.RAILWAY_ENVIRONMENT }}
       RAILWAY_TEMPLATE_ENVIRONMENT: pr-template
       RAILWAY_PR_ENVIRONMENT: pr-${{ github.event.pull_request.number }}
+      # unacms.app hosts: the backend on Railway, the NEO client (neo-ci on Vercel) in front of it
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_TEAM: yasko
+      CLIENT_PROJECT: una-ci
+      PREVIEW_API_HOST: api-pr-${{ github.event.pull_request.number }}.unacms.app
+      PREVIEW_CLIENT_HOST: pr-${{ github.event.pull_request.number }}.unacms.app
+      UNA_PREVIEW_API_KEY: ${{ secrets.UNA_PREVIEW_API_KEY }}
     steps:
     - uses: actions/checkout@v4
 
@@ -114,13 +121,23 @@ jobs:
         unzip -q packages/*.zip -d /tmp/una-pkg
         pkg_dir=$(find /tmp/una-pkg -mindepth 1 -maxdepth 1 -type d | head -n 1)
         cp -a "$pkg_dir"/. deploy/
-        cp scripts/railway/Dockerfile scripts/railway/entrypoint.sh scripts/railway/railway.toml scripts/railway/.railwayignore deploy/
+        cp scripts/railway/Dockerfile scripts/railway/entrypoint.sh scripts/railway/railway.toml scripts/railway/.railwayignore \
+          scripts/railway/configure.php scripts/railway/seed.php deploy/
         chmod +x deploy/entrypoint.sh
 
     - name: Install Railway CLI
+      # Pinned release, checked against its published SHA-256 before it is run.
+      env:
+        GH_TOKEN: ${{ github.token }}
+        RAILWAY_CLI_VERSION: v5.35.0
+        RAILWAY_CLI_SHA256: fb675d282e613ae9868b25be1ad4567d37b9c13901785f636dd0a13837f8ecf0
       run: |
-        curl -fsSL https://railway.com/install.sh | sh
-        echo "$HOME/.railway/bin" >> "$GITHUB_PATH"
+        asset="railway-${RAILWAY_CLI_VERSION}-x86_64-unknown-linux-musl.tar.gz"
+        gh release download "$RAILWAY_CLI_VERSION" --repo railwayapp/cli --pattern "$asset" --dir /tmp/railway-cli
+        echo "${RAILWAY_CLI_SHA256}  /tmp/railway-cli/${asset}" | sha256sum -c -
+        tar -xzf "/tmp/railway-cli/${asset}" -C /tmp/railway-cli railway
+        sudo install -m 0755 /tmp/railway-cli/railway /usr/local/bin/railway
+        railway --version
 
     - name: Provision PR environment
       run: |
@@ -154,6 +171,9 @@ jobs:
             MYSQLDATABASE=una \
             MYSQLUSER=una \
             MYSQLPASSWORD=una \
+            UNA_DEMO_SEED=1 \
+            UNA_CLIENT_URL="https://$PREVIEW_CLIENT_HOST" \
+            ${UNA_PREVIEW_API_KEY:+UNA_API_KEY="$UNA_PREVIEW_API_KEY"} \
             && break
           sleep 5
         done
@@ -162,8 +182,22 @@ jobs:
     - name: Deploy artefact
       run: railway up ./deploy --path-as-root --no-gitignore --verbose --ci --service una --environment "$RAILWAY_PR_ENVIRONMENT" --project "$RAILWAY_PROJECT_ID"
 
+    - name: Preview domains on unacms.app
+      id: domains
+      if: env.VERCEL_TOKEN != ''
+      env:
+        # Branch names are attacker-controlled: pass as data, never interpolate into the script.
+        HEAD_REF: ${{ github.head_ref }}
+      run: |
+        scripts/railway/domains.sh api-domain "$PREVIEW_API_HOST" "$RAILWAY_PR_ENVIRONMENT"
+        # The client build of the same-named neo-ci branch when there is one, else production.
+        # Either way NEO's proxy maps pr-<n>.unacms.app to api-pr-<n>.unacms.app.
+        scripts/railway/domains.sh client-alias "$PREVIEW_CLIENT_HOST" "$HEAD_REF"
+        echo "ok=1" >> "$GITHUB_OUTPUT"
+
     - name: Comment preview URL on PR
       env:
+        DOMAINS_OK: ${{ steps.domains.outputs.ok }}
         GH_TOKEN: ${{ github.token }}
         PR_NUMBER: ${{ github.event.pull_request.number }}
       run: |
@@ -184,7 +218,12 @@ jobs:
         echo "Preview URL: $url"
 
         marker="<!-- railway-preview -->"
-        body=$(printf '%s\n**Preview**: %s\n\nRailway environment: `%s`' "$marker" "$url" "$RAILWAY_PR_ENVIRONMENT")
+        if [ "$DOMAINS_OK" = "1" ]; then
+          body=$(printf '%s\n**Preview**: https://%s (NEO client)\n**API**: https://%s (also %s)\n\nRailway environment: `%s`. A new custom domain needs a few minutes for its certificate.' \
+            "$marker" "$PREVIEW_CLIENT_HOST" "$PREVIEW_API_HOST" "$url" "$RAILWAY_PR_ENVIRONMENT")
+        else
+          body=$(printf '%s\n**Preview**: %s\n\nRailway environment: `%s`' "$marker" "$url" "$RAILWAY_PR_ENVIRONMENT")
+        fi
 
         comment_id=$(gh api "repos/${GITHUB_REPOSITORY}/issues/${PR_NUMBER}/comments" --paginate \
           --jq ".[] | select(.user.login == \"github-actions[bot]\" and (.body | contains(\"${marker}\"))) | .id" \
@@ -196,6 +235,92 @@ jobs:
           gh pr comment "$PR_NUMBER" --body "$body"
         fi
 
+  deploy-production:
+    # Runs next to the Jenkins deploy to ci.una.io, which is unchanged.
+    name: Deploy master to Railway (api.unacms.app)
+    needs: test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    concurrency:
+      group: railway-production
+      cancel-in-progress: false
+    environment:
+      name: production
+      url: https://api.unacms.app
+    env:
+      RAILWAY_API_TOKEN: ${{ secrets.RAILWAY_API_TOKEN }}
+      RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
+      RAILWAY_ENVIRONMENT: production
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_TEAM: yasko
+      UNA_API_KEY: ${{ secrets.UNA_API_KEY }}
+    steps:
+    - uses: actions/checkout@v4
+
+    - uses: actions/download-artifact@v4
+      with:
+        name: una-package
+        path: packages
+
+    - name: Prepare artefact
+      run: |
+        mkdir -p deploy
+        unzip -q packages/*.zip -d /tmp/una-pkg
+        pkg_dir=$(find /tmp/una-pkg -mindepth 1 -maxdepth 1 -type d | head -n 1)
+        cp -a "$pkg_dir"/. deploy/
+        cp scripts/railway/Dockerfile scripts/railway/entrypoint.sh scripts/railway/railway.toml scripts/railway/.railwayignore \
+          scripts/railway/configure.php scripts/railway/seed.php deploy/
+        chmod +x deploy/entrypoint.sh
+
+    - name: Install Railway CLI
+      # Pinned release, checked against its published SHA-256 before it is run.
+      env:
+        GH_TOKEN: ${{ github.token }}
+        RAILWAY_CLI_VERSION: v5.35.0
+        RAILWAY_CLI_SHA256: fb675d282e613ae9868b25be1ad4567d37b9c13901785f636dd0a13837f8ecf0
+      run: |
+        asset="railway-${RAILWAY_CLI_VERSION}-x86_64-unknown-linux-musl.tar.gz"
+        gh release download "$RAILWAY_CLI_VERSION" --repo railwayapp/cli --pattern "$asset" --dir /tmp/railway-cli
+        echo "${RAILWAY_CLI_SHA256}  /tmp/railway-cli/${asset}" | sha256sum -c -
+        tar -xzf "/tmp/railway-cli/${asset}" -C /tmp/railway-cli railway
+        sudo install -m 0755 /tmp/railway-cli/railway /usr/local/bin/railway
+        railway --version
+
+    - name: Configure production
+      run: |
+        if [ -z "$RAILWAY_API_TOKEN" ] || [ -z "$RAILWAY_PROJECT_ID" ]; then
+          echo "Set secrets RAILWAY_API_TOKEN (account token) and RAILWAY_PROJECT_ID" >&2
+          exit 1
+        fi
+        railway link --project "$RAILWAY_PROJECT_ID" --environment "$RAILWAY_ENVIRONMENT" --json
+        # Database credentials and UNA_HASH_SECRET live in the Railway environment, not here.
+        railway variable set --service una --environment "$RAILWAY_ENVIRONMENT" --skip-deploys \
+          UNA_CLIENT_URL=https://unacms.app \
+          ${UNA_API_KEY:+UNA_API_KEY="$UNA_API_KEY"}
+
+    - name: Deploy artefact
+      run: railway up ./deploy --path-as-root --no-gitignore --verbose --ci --service una --environment "$RAILWAY_ENVIRONMENT" --project "$RAILWAY_PROJECT_ID"
+
+    - name: api.unacms.app DNS
+      if: env.VERCEL_TOKEN != ''
+      run: scripts/railway/domains.sh api-domain api.unacms.app "$RAILWAY_ENVIRONMENT"
+
+    - name: Smoke test
+      run: |
+        for i in $(seq 1 30); do
+          code=$(curl -s -o /dev/null -w '%{http_code}' https://api.unacms.app/ || true)
+          [ "$code" = "200" ] && { echo "api.unacms.app is up"; exit 0; }
+          # Until the certificate is issued, check the Railway hostname instead.
+          host=$(railway domain list --service una --environment "$RAILWAY_ENVIRONMENT" --json | jq -r '.domains[] | select(.type == "service") | .domain' | head -n1)
+          if [ -n "$host" ] && [ "$(curl -s -o /dev/null -w '%{http_code}' "https://$host/" || true)" = "200" ]; then
+            echo "up at https://$host (api.unacms.app answered $code; certificate may still be pending)"
+            exit 0
+          fi
+          sleep 10
+        done
+        echo "UNA did not come up" >&2
+        exit 1
+
   teardown:
     name: Remove PR Railway environment
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
@@ -205,11 +330,34 @@ jobs:
       RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
       RAILWAY_BASE_ENVIRONMENT: ${{ secrets.RAILWAY_ENVIRONMENT }}
       RAILWAY_PR_ENVIRONMENT: pr-${{ github.event.pull_request.number }}
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_TEAM: yasko
+      CLIENT_PROJECT: una-ci
     steps:
-    - name: Install Railway CLI
+    - uses: actions/checkout@v4
+      with:
+        sparse-checkout: scripts/railway
+
+    - name: Remove preview domains
+      if: env.VERCEL_TOKEN != ''
+      continue-on-error: true
       run: |
-        curl -fsSL https://railway.com/install.sh | sh
-        echo "$HOME/.railway/bin" >> "$GITHUB_PATH"
+        scripts/railway/domains.sh client-unalias "pr-${{ github.event.pull_request.number }}.unacms.app"
+        scripts/railway/domains.sh dns-remove "api-pr-${{ github.event.pull_request.number }}.unacms.app"
+
+    - name: Install Railway CLI
+      # Pinned release, checked against its published SHA-256 before it is run.
+      env:
+        GH_TOKEN: ${{ github.token }}
+        RAILWAY_CLI_VERSION: v5.35.0
+        RAILWAY_CLI_SHA256: fb675d282e613ae9868b25be1ad4567d37b9c13901785f636dd0a13837f8ecf0
+      run: |
+        asset="railway-${RAILWAY_CLI_VERSION}-x86_64-unknown-linux-musl.tar.gz"
+        gh release download "$RAILWAY_CLI_VERSION" --repo railwayapp/cli --pattern "$asset" --dir /tmp/railway-cli
+        echo "${RAILWAY_CLI_SHA256}  /tmp/railway-cli/${asset}" | sha256sum -c -
+        tar -xzf "/tmp/railway-cli/${asset}" -C /tmp/railway-cli railway
+        sudo install -m 0755 /tmp/railway-cli/railway /usr/local/bin/railway
+        railway --version
 
     - name: Delete PR environment
       run: |
