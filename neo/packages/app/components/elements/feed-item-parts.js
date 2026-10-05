@@ -1,0 +1,714 @@
+
+import Link from 'app/ui/atoms/link'
+import Time from 'app/ui/atoms/time'
+import Profile from 'app/ui/molecules/profile/profile'
+import ProfileHoverCard from 'app/ui/molecules/profile/profile-hover-card'
+import {
+    memo,
+    useMemo,
+    useState,
+    useEffect,
+    useCallback,
+    useRef,
+} from 'react'
+import { useCurrentUser } from 'app/context/user'
+import {
+    appSetting,
+    isObjectsEqual,
+    menuItemsByName,
+    visibilityById,
+    runMenuItemCallback,
+    decodeText,
+} from 'app/lib/util'
+import { Text } from 'app/design/typography'
+import { View, Row } from 'app/design/view'
+import { Platform, StyleSheet } from 'react-native'
+import { Button, Modal } from 'app/design/controls'
+import Menu from 'app/components/menu'
+import DropdownMenu from 'app/ui/atoms/dropdown-menu'
+import { fetcher } from 'app/lib/fetcher'
+import { components } from 'app/components/registry'
+import Card from 'app/ui/molecules/page/card'
+import AnimatedBlock from 'app/ui/atoms/animated-block'
+import { CommentsBrowseShort } from 'app/components/elements/comments-browse';
+import { Pressable } from 'app/design/view'
+import { subscribe } from 'app/ui/atoms/socket'
+import { getDataForMenu } from 'app/lib/util'
+import Form from 'app/components/elements/form'
+import useFetchForm from 'app/lib/hooks/use-fetch-form'
+import { useTranslation } from 'react-i18next'
+import Loading from 'app/ui/atoms/loading'
+import * as FeedItems from 'app/lib/feed-items'
+import { Icon } from 'app/ui/atoms/icon'
+import { SafeMenuTrigger } from 'app/ui/atoms/safe-menu-trigger'
+import { stripTags, isWeb } from 'app/lib/util'
+import emitter, { EVENTS } from 'app/context/emitter';
+
+
+export const FeedEditForm = memo(({ setViewState, viewState, id }) => {
+    const { t } = useTranslation()
+    const [postData, setPostData] = useState(null)
+    const { data: dynamicData } = useFetchForm(
+        '/api.php?r=bx_timeline/get_edit_form/&params[]=' + id,
+        postData
+    )
+
+    const onFormSubmit = (formData, d) => {
+        setPostData(formData)
+    }
+
+    useEffect(() => {
+        if (dynamicData?.data?.item) setViewState({ view: '' })
+    }),
+        [dynamicData]
+
+    return (
+        <Modal
+            onVisible={true}
+            transparent={true}
+            headerBorder={true}
+            padding=" "
+        >
+            <View className='p-3 flex-auto'>
+                <Form
+                    {...viewState.data.form}
+                    classContainerName="flex-row flex-wrap w-full items-start justify-between"
+                    onFormSubmit={onFormSubmit}
+                    exProps={{
+                        onClose: () => {
+                            setViewState({ view: '' })
+                        },
+                        item: viewState?.data?.item,
+                    }}
+                />
+            </View>
+        </Modal>
+    )
+})
+
+export const CommentsSection = memo(
+    ({
+        isCommentsModal,
+        commentsDataInline,
+        data,
+        isShowMoreComments,
+        showCommentsModal,
+        url,
+        t,
+    }) => {
+        const ShowMoreCmts = (
+            <Button variant="text" size="xs" title={t('View more comments...')} />
+        )
+        return (
+            <View className="border-t border-border/40 p-1 lg:p-2 ">
+                
+                    {isShowMoreComments && (
+                        <View className="p-0.5 me-auto">
+                            {isCommentsModal ? (
+                                <Pressable
+                                    onPress={() => {
+                                        showCommentsModal()
+                                    }}
+                                >
+                                    {ShowMoreCmts}
+                                </Pressable>
+                            ) : (
+                                <Link href={url}>{ShowMoreCmts}</Link>
+                            )}
+                        </View>
+                    )}
+                <View className="px-2 ">
+                <CommentsBrowseShort
+                    contentUrl={url}
+                    browseData={commentsDataInline?.data}
+                    module={data?.cmts.module}
+                    handleReply={isCommentsModal ? showCommentsModal : 'link'}
+                /></View>
+            </View>
+        )
+    }
+)
+
+export const MainContent = memo(({ url, data, fulltext }) => {
+    const bIsTitle =
+        data?.content?.title && data?.content?.title?.trim() != ''
+            ? true
+            : false
+
+    let content_attach = []
+    if (data?.content?.images_attach && data?.content?.images_attach?.length > 0) {
+        content_attach = content_attach.concat(data.content.images_attach)
+    }
+    if (data?.content?.videos_attach && data?.content?.videos_attach?.length > 0) {
+        content_attach = content_attach.concat(data.content.videos_attach)
+    }
+    let files_attach = []
+    if (data?.content?.files_attach && data?.content?.files_attach.length > 0) {
+        files_attach = files_attach.concat(data.content.files_attach)
+    }
+
+    const styles = StyleSheet.create(
+        Platform.OS !== 'web'
+            ? {
+                card_image: {
+                    borderRadius: 0,
+                },
+            }
+            : {}
+    )
+
+    const commonProps = {
+        isCompact: false,
+        content_attach,
+        url,
+        data,
+        styles,
+        bIsTitle,
+        fulltext,
+    }
+
+    const unitTypes = appSetting('feed', 'units')
+    const contentType = data?.type
+    const componentName = unitTypes[contentType]
+
+    const ContentComponent = FeedItems[componentName]
+
+    return ContentComponent ? (
+        <ContentComponent {...commonProps} />
+    ) : (
+        <FeedItems.DefaultView
+            {...commonProps}
+            files_attach={files_attach}
+            bIsTimelineContent={
+                data?.type?.includes('timeline') || data?.type === 'bx_channels'
+            }
+        />
+    )
+})
+
+export function prepareData(data) {
+    const url = data?.url?.includes('://') ? data?.url : (data?.url?.startsWith('/') ? data?.url : '/' + data?.url)
+    let commentsData = null
+    let isShowMoreComments = false
+    if (data?.cmts?.data?.length > 0) {
+        commentsData = {
+            id: 'cmt_list',
+            insert: 'before',
+            type: 'browse',
+            data: data?.cmts,
+        }
+        if (data?.cmts?.total_count > appSetting('comments', 'count_in_feed')) {
+            isShowMoreComments = true
+        }
+    }
+
+    return { url, commentsData, isShowMoreComments }
+}
+
+// `feed_type_*` translations wrap the noun in <b>…</b>; split() keeps it at odd indexes.
+const ACTION_NOUN = /<b>([\s\S]*?)<\/b>/;
+
+export const ItemInfo = memo(({ data, t }) => {
+    const [showContextList, setShowContextList] = useState(false)
+    const owners = data.owners
+        ? data.owners.filter(
+            (item) => item.author_data?.id != data.context_data?.id
+        )
+        : []
+    const OwnersList = () =>
+        owners?.length > 0 ? (
+            owners?.length == 1 ? (
+                <>
+
+                    <Icon className="text-muted-foreground" icon='Dot' size={14} />
+
+                    <Link href={data.owners[0].url} emulate={true}>
+                        <Text className=" text-secondary-foreground web:hover:text-accent-foreground font-normal text-sm leading-5 ">
+                            {owners[0].title}
+                        </Text>
+                    </Link>
+                </>
+            ) : (
+                <>
+                    <Icon className="text-muted-foreground" icon='Dot' size={14} />
+                    <Pressable
+                        onPress={() => {
+                            setShowContextList(true)
+                        }}
+                    >
+                        <Text className=" bg-muted px-1.5 leading-5 items-center justify-text-center justify-center h-5 rounded-md text-muted-foreground web:hover:text-accent-foreground text-sm font-normal">
+                            {owners[0].title} + {owners.length - 1}
+                        </Text>
+                    </Pressable>
+                    <Modal
+                        onVisible={showContextList}
+                        onClose={() => {
+                            setShowContextList(false)
+                        }}
+                        transparent={true}
+                        headerBorder={true}
+                        title={t('Posted to')}
+                    >
+                        <View className="gap-x-2 mb-2">
+                            {owners.map((item, index) => (
+                                <Row
+                                    className="items-center py-1 pl-2 my-1 border border-border/60  rounded-lg web:hover:bg-primary/10 active:bg-primary/20 "
+                                    key={'chk' + index}
+                                >
+                                    <Link
+                                        key={`link-{$index}`}
+                                        href={item.url}
+                                        emulate={true}
+                                    >
+                                        <Text className="text-muted-foreground  text-sm">
+                                            {' '}
+                                            {item.title}
+                                        </Text>
+                                    </Link>
+                                </Row>
+                            ))}
+                        </View>
+                    </Modal>
+                </>
+            )
+        ) : (
+            <></>
+        )
+
+    const statusFlags = []
+    if (Number(data.pinned) > 0)
+        statusFlags.push({ key: 'pinned', icon: 'Pin' })
+    if (Number(data.promoted) > 0)
+        statusFlags.push({ key: 'promoted', icon: 'Flame' })
+    if (Number(data.sticked) > 0)
+        statusFlags.push({ key: 'sticked', icon: 'Pin' })
+    
+
+    const FeedType = () => {
+        const typeKey = 'feed_type_' + data.type
+        let l = t(typeKey)
+       
+        if (l === typeKey) {
+            l = t('added a') + ' <b>' + t('item_' + data.type) + '</b>'
+        }
+        if (data.type == 'timeline_common_repost') {
+            l += ' <b>' + data.content.owner_name + "'s " + data.content.parse_type + '</b>'
+        }
+        // The action reads regular, the thing it names semibold: "added a <b>Discussion</b>".
+        const parts = l ? l.split(ACTION_NOUN) : []
+        return (
+            l && (
+                <>
+
+                    <Icon className="text-muted-foreground" icon='Dot' size={14} />
+
+                    <Text className="text-secondary-foreground font-normal text-sm leading-5 ">
+                        {parts.map((part, i) => i % 2
+                            ? <Text key={i} className="font-semibold">{part}</Text>
+                            : decodeText(part))}
+                    </Text>
+                </>
+            )
+        )
+    }
+
+    return (
+        <>
+            <FeedType />
+            <OwnersList />
+            {statusFlags.map(({ key, icon }) => (
+                <Row key={key} className="items-center">
+                    <Icon className="text-muted-foreground" icon="Dot" size={14} />
+                    <Icon className="text-secondary-foreground py-0.5" icon={icon} width={14} height={14} />
+                </Row>
+            ))}
+        </>
+    )
+})
+
+export const MenuManage = ({ id, menu, setViewState, data }) => {
+    const [menuData, setMenuData] = useState(false)
+    const fetchedRef = useRef(false)
+    const dataRef = useRef(data)
+
+    useEffect(() => {
+        if (dataRef.current === data) return
+        dataRef.current = data
+        if (!fetchedRef.current || !menu?.object || menu.items) return
+        getDataForMenu(menu, setMenuData)
+    }, [data, menu])
+
+    if (!menu?.object) return null
+
+    if (menu.items)
+        return <MenuManage_ id={id} menu={menu} setViewState={setViewState} />
+
+    if (!menuData)
+        return (
+            <SafeMenuTrigger>
+                <Button
+                    variant="text"
+                    size="sm"
+                    startDecorator="Ellipsis"
+                    rounded="true"
+                    onPress={() => {
+                        fetchedRef.current = true
+                        if (Platform.OS === 'web')
+                            setMenuData({
+                                ...menu,
+                                items: [{ name: 'loader' }],
+                            })
+                        getDataForMenu(menu, setMenuData)
+                    }}
+                />
+            </SafeMenuTrigger>
+        )
+
+    return (
+        <MenuManage_
+            id={id}
+            menu={menuData}
+            defaultOpen={true}
+            setViewState={setViewState}
+        />
+    )
+}
+
+const MenuManage_ = memo(({ id, menu, setViewState, defaultOpen }) => {
+    const { t } = useTranslation()
+    const { currentUser } = useCurrentUser()
+    const handleMenuManageSelect = async (oItem, event) => {
+        switch (oItem.name) {
+            case 'item-edit':
+                const oResultEdit = await fetcher(
+                    '/api.php?r=bx_timeline/get_edit_form/&params[]=' + id
+                )
+                setViewState({ view: 'edited', data: oResultEdit.data })
+                break
+
+            case 'item-delete':
+                await fetcher(
+                    '/api.php?r=bx_timeline/delete/&params[]=' + id
+                )
+                emitter.emit(EVENTS.feed, { action: 'remove_content', id: id });
+                break
+
+            default:
+                await runMenuItemCallback(oItem)
+                break
+        }
+    }
+
+    let oReport = undefined
+    const aMenuManageItems = !!currentUser
+        ? menu &&
+        menuItemsByName(menu?.object, menu?.items, currentUser).map(
+            (aItem) => {
+                let sTitle = aItem.title
+                if (!!aItem.display_type && aItem.display_type == 'element') {
+                    const Element = components['molecule'][String(aItem.data.type)]
+                    if (!!Element) {
+                        sTitle = (
+                            <Element
+                                mode="dropdown-menu"
+                                key={aItem.id ? aItem.id : aItem.name}
+                                {...aItem.data}
+                            />
+                        )
+                    }
+                }
+
+                if (aItem.name == 'loader') {
+                    sTitle = <Loading size="small" />
+                }
+
+                return {
+                    id: aItem.id ? aItem.id : aItem.name,
+                    name: aItem.name,
+                    link: aItem.link,
+                    title: sTitle,
+                    icon: aItem.icon,
+                    image: aItem.image,
+                    data: aItem.data,
+                }
+            }
+        )
+        : []
+
+    return (
+        aMenuManageItems?.length > 0 && (
+            <>
+                <View className="flex-none" aria-label={t('Manage menu')}>
+                    <DropdownMenu
+                        mode="popup"
+                        items={aMenuManageItems}
+                        defaultOpen={defaultOpen}
+                        onSelect={handleMenuManageSelect}
+                    >
+                        <Button
+                            variant="text"
+                            size="sm"
+                            startDecorator="Ellipsis"
+                            rounded="true"
+                        />
+                    </DropdownMenu>
+                </View>
+                {!!oReport && oReport}
+            </>
+        )
+    )
+})
+
+export const ActionMenu = memo(({ data }) => {
+    const settings = appSetting('feed', 'actions_menu');
+
+    if (data?.items?.length > 2) {
+        for (let i = 2; i < data.items.length; i++)
+            if (data.items[i].data)
+                data.items[i].data.params = { 'button_show_title_from_size': 'sm' }
+            else
+                data.items[i].params = { 'button_show_title_from_size': 'sm' }
+    }
+
+    const data_other = {...data, items: data?.items.filter(item => item.class != " bx-mi-primary" && item.primary != 1 )};
+    const data_primary = {...data, items: data?.items.filter(item => item.class == " bx-mi-primary" || item.primary == 1 )};
+
+    return settings && <Row className="flex-auto justify-between">
+        <Menu {...data_primary} displayType="button" params={settings} />
+        <Menu {...data_other} displayType="button" params={settings} />
+    </Row>
+})
+
+export const CounterMenu = memo(({ data }) => {
+    const settings = appSetting('feed', 'counters_menu')
+    const data_other = {...data, items: data?.items.filter(item => item.class != " bx-mi-primary" && item.primary != 1 )};
+    const data_primary = {...data, items: data?.items.filter(item => item.class == " bx-mi-primary" || item.primary == 1 )};
+
+    return settings && <Row className="flex-auto justify-between">
+        <Menu {...data_primary} displayType="button" params={settings} />
+        <Menu {...data_other} displayType="button" params={settings} />
+    </Row>
+})
+
+export const VisibilityInfo = memo(({ data }) => {
+    const { t } = useTranslation()
+
+    if (data.feed_type == 'owner') return null
+
+    const visibilityData = visibilityById(data.object_privacy_view, t)
+    const icon = visibilityData ? visibilityData.icon : ''
+    const text = visibilityData ? visibilityData.text : ''
+    const isUser = data.object_privacy_view < 0
+
+    return (
+        <View className="gap-1 flex-row items-center ">
+            {isUser ? (
+                <Profile
+                    {...data.author_data}
+                    displayType="unit_wo_info"
+                    displaySize="2xs"
+                />
+            ) : icon ? (
+                <Icon className="text-secondary-foreground py-0.5 " icon={icon} width={14} height={14} />
+            ) : null}
+            <Text className="text-secondary-foreground text-sm font-normal leading-5">
+                {isUser ? data.author_data.display_name : text}
+            </Text>
+        </View>
+
+    )
+})
+
+export const AuthorActions = memo(({ data }) => {
+    if (!data.author_actions?.length) return null
+
+    return data.author_actions.map((item) => {
+        const Element = components['molecule'][String(item.type)]
+        if (!Element)
+            return null
+        return (
+            <Element
+                key={`action-${item.cid}-${item.iid}`}
+                params={{
+                    button_style: 'link',
+                    button_size: 'small',
+                    button_border_shape: 'capsule',
+                    hide_icon: true,
+               
+                }}
+                {...item}
+            />
+        )
+    })
+})
+
+export const Author = memo(({ data, url, t }) => {
+    const Badges = components['molecule']['badges']
+
+    const dataIcon =
+        data.object_privacy_view < 0 && data.feed_type != 'owner'
+            ? data.context_data
+            : data.author_data
+    const shouldShowVisibilityInfo =
+        data.feed_type != 'owner' &&
+        (data.object_privacy_view < 0 || !!visibilityById(data.object_privacy_view, t))
+
+    // Create a hover card wrapper function that only wraps avatar/name
+    const hoverCardWrapper = (content) => (
+        <ProfileHoverCard profileData={dataIcon}>
+            {content}
+        </ProfileHoverCard>
+    );
+
+    const TimestampLink = (
+        <Link
+            href={url}
+            {...(isWeb
+                ? { emulate: false }
+                : {
+                      mode: 'text',
+                      hitSlop: { top: 8, bottom: 8, left: 8, right: 8 },
+                  })}
+            size="sm"
+            variant="secondary"
+            className="font-normal"
+        >
+            <Time ts={data.date} className="text-secondary-foreground" />
+        </Link>
+    );
+
+    return (
+        <View className="flex-auto">
+            <Profile
+                {...dataIcon}
+                displayType="unit"
+                displaySize="base"
+                showInfo={
+                    <Row className="items-center flex-wrap min-h-5">
+                        {TimestampLink}
+                        {shouldShowVisibilityInfo && (
+                            <>
+                                <Icon className="text-muted-foreground" icon='Dot' size={14} />
+                                <VisibilityInfo data={data} />
+                            </>
+                        )}
+                        <ItemInfo data={data} t={t} />
+                    </Row>
+                }
+                showInfo2={<Badges badges={data.author_badges} size="3xs" />}
+                hoverCardWrapper={hoverCardWrapper}
+            />
+        </View>
+    )
+})
+
+export function SmallUnit({ data }) {
+    let url = '/' + data.url
+
+    // Create a hover card wrapper function for avatar only
+    const hoverCardWrapper = (content) => (
+        <ProfileHoverCard profileData={data.author_data}>
+            {content}
+        </ProfileHoverCard>
+    );
+
+    return (
+        <AnimatedBlock>
+            <Link href={url} className="w-full" emulate={true}>
+                <Card className={' w-full tl-' + data.id}>
+                    <View className=" mr-2 xl:mr-3 rounded-full flex-none bg-secondary-500/10">
+                        <Profile
+                            {...data.author_data}
+                            displayType="unit_wo_info"
+                            displaySize="base"
+                            hoverCardWrapper={hoverCardWrapper}
+                        />
+                    </View>
+                    <View className="flex-auto flex-col my-auto">
+                        <Row className="flex-row gap-2">
+                            <Text className=" text-sm flex-auto font-medium text-secondary-foreground ">
+                                {data.author_data.display_name}
+                            </Text>
+                            <Time variant="link" className="text-xs flex-none leading-5 "
+
+                                ts={data.date}
+                            ></Time>
+                        </Row>
+                        <Text
+                            className="flex-auto text-lg font-bold text-secondary-foreground  "
+                            numberOfLines={1}
+                        >
+                            {data.content.title}
+                        </Text>
+                        <View className="flex-row w-full items-end content-end">
+                            <Text
+                                className="flex-auto mr-2  text-base text-muted-foreground  "
+                                numberOfLines={1}
+                            >
+                                {data.plainText}
+                                {stripTags(data.content.text)}
+                            </Text>
+                            <View className="flex-none bg-primary rounded-full my-auto h-min px-1.5">
+                                {data.cmts.count > 0 && (
+                                    <Text className="text-xs text-white dark:text-black font-medium">
+                                        {data.cmts.count}
+                                    </Text>
+                                )}
+                            </View>
+                        </View>
+                    </View>
+                </Card>
+            </Link>
+        </AnimatedBlock>
+    )
+}
+
+export const UnitFeed = ({ data, mode, DefaultUnit, SmallUnit, feed_type }) => {
+    const enrichedData = useMemo(() => {
+        const mainImage = data?.content?.images?.length > 0 ? data.content.images[0] : null;
+        const comments = data?.cmts?.data?.length > 0
+            ? data.cmts.data[0][Object.keys(data.cmts.data[0])[0]].data
+            : null;
+        return { ...data, mainImage, comments, showMore: true };
+    }, [data?.id]);
+
+    const [datas, setDatas] = useState(enrichedData)
+
+    const onItemEdited = useCallback(
+        async (strData) => {
+            const editedData = JSON.parse(strData)
+            const editedId = editedData?.id
+            const currentId = datas?.id
+
+            if (editedId == null || currentId == null) {
+                return
+            }
+
+            if (editedId.toString() == currentId.toString()) {
+                const result = await fetcher(
+                    '/api.php?r=' +
+                    appSetting('urls', 'feed_item') +
+                    '{"params":{"browse":"id","value":' +
+                    editedId +
+                    '}}'
+                )
+                if (result.data && !isObjectsEqual(result.data, datas))
+                    setDatas(result.data)
+            }
+        },
+        [datas]
+    )
+
+    useEffect(() => {
+        const sub1 = subscribe('bx_timeline_0', 'edited', onItemEdited);
+        return () => {
+            sub1();
+        };
+    }, [])
+
+    return mode == 'small' ? (
+        <SmallUnit data={datas} />
+    ) : (
+        <DefaultUnit data={datas} />
+    )
+}

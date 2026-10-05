@@ -1,0 +1,199 @@
+/*
+ * Tailwind v4 design-token map (`@theme inline`) + runtime radius lengths.
+ * Single source for both Next (global.css) and Expo (global.combined.css).
+ *
+ * Colors and shadows are linked to the runtime palette / semantic tokens in
+ * `palette.css`. Radius keys point at `--neo-radius-*` defined in the
+ * `@layer base` block at the bottom (kept indirect so global.web.css can
+ * override radii at runtime — e.g. for the iOS-style superellipse corners).
+ */
+ @theme inline {
+    /* Web: next/font sets --font-*-family on <html>. Native: Expo overrides with System. */
+    --font-main: var(--font-main), ui-sans-serif, system-ui, sans-serif;
+    --font-title: var(--font-title), ui-serif, Georgia, serif;
+    /* V4 max-w-* uses --container-*; keep NEO list query sizes under list-* so max-w-sm/md/etc. stay unchanged. */
+    --breakpoint-3xl: 120rem;
+    --container-list-xs: 32rem;
+    --container-list-sm: 40rem;
+    --container-list-md: 48rem;
+    --container-list-lg: 64rem;
+    --container-list-xl: 80rem;
+    --color-border: rgb(var(--border));
+    --color-input: rgb(var(--input));
+    --color-button: rgb(var(--button));
+    --color-button-foreground: rgb(var(--button-foreground));
+    --color-button-hover: rgb(var(--button-hover));
+    --color-ring: rgb(var(--ring));
+    --color-background: rgb(var(--background));
+    --color-foreground: rgb(var(--foreground));
+    --color-segment: rgb(var(--segment));
+    --color-segment-foreground: rgb(var(--segment-foreground));
+    --color-card: rgb(var(--card));
+    --color-card-foreground: rgb(var(--card-foreground));
+    --color-popover: rgb(var(--popover));
+    --color-popover-foreground: rgb(var(--popover-foreground));
+    --color-primary: rgb(var(--primary));
+    --color-primary-hover: rgb(var(--primary-hover));
+    --color-primary-foreground: rgb(var(--primary-foreground));
+    --color-secondary: rgb(var(--secondary));
+    --color-secondary-foreground: rgb(var(--secondary-foreground));
+    --color-muted: rgb(var(--muted));
+    --color-muted-foreground: rgb(var(--muted-foreground));
+    --color-accent: rgb(var(--accent));
+    --color-accent-foreground: rgb(var(--accent-foreground));
+    --color-accent-50: rgb(var(--accent-50));
+    --color-accent-100: rgb(var(--accent-100));
+    --color-accent-200: rgb(var(--accent-200));
+    --color-accent-300: rgb(var(--accent-300));
+    --color-accent-400: rgb(var(--accent-400));
+    --color-accent-500: rgb(var(--accent-500));
+    --color-accent-600: rgb(var(--accent-600));
+    --color-accent-700: rgb(var(--accent-700));
+    --color-accent-800: rgb(var(--accent-800));
+    --color-accent-900: rgb(var(--accent-900));
+    --color-accent-950: rgb(var(--accent-950));
+    --color-destructive: rgb(var(--destructive));
+    --color-destructive-foreground: rgb(var(--destructive-foreground));
+    --color-neutral: rgb(var(--neutral));
+    --color-neutral-0: rgb(var(--neutral-0));
+    --color-neutral-50: rgb(var(--neutral-50));
+    --color-neutral-100: rgb(var(--neutral-100));
+    --color-neutral-200: rgb(var(--neutral-200));
+    --color-neutral-300: rgb(var(--neutral-300));
+    --color-neutral-400: rgb(var(--neutral-400));
+    --color-neutral-500: rgb(var(--neutral-500));
+    --color-neutral-600: rgb(var(--neutral-600));
+    --color-neutral-700: rgb(var(--neutral-700));
+    --color-neutral-800: rgb(var(--neutral-800));
+    --color-neutral-900: rgb(var(--neutral-900));
+    --color-neutral-950: rgb(var(--neutral-950));
+    --color-neutral-1000: rgb(var(--neutral-1000));
+    --color-link-primary: rgb(var(--link-primary));
+    --color-link-secondary: rgb(var(--link-secondary));
+    --color-link-tertiary: rgb(var(--link-tertiary));
+    --color-shadow: rgb(var(--shadow));
+    --color-shadow-xs: rgb(var(--shadow-xs));
+    --color-shadow-sm: rgb(var(--shadow-sm));
+    --color-shadow-md: rgb(var(--shadow-md));
+    --color-shadow-lg: rgb(var(--shadow-lg));
+    --color-shadow-xl: rgb(var(--shadow-xl));
+    --color-shadow-2xl: rgb(var(--shadow-2xl));
+    --color-white: rgb(var(--white));
+    --color-black: rgb(var(--black));
+    --color-green: rgb(var(--green));
+    --color-yellow: rgb(var(--yellow));
+    --color-blue: rgb(var(--blue));
+    --color-purple: rgb(var(--purple));
+    --color-red: rgb(var(--red));
+    --color-alert-note: rgb(var(--alert-note));
+    --color-alert-tip: rgb(var(--alert-tip));
+    --color-alert-important: rgb(var(--alert-important));
+    --color-alert-warning: rgb(var(--alert-warning));
+    --color-alert-caution: rgb(var(--alert-caution));
+    --radius-xs: var(--neo-radius-xs);
+    --radius-sm: var(--neo-radius-sm);
+    --radius-md: var(--neo-radius-md);
+    --radius-lg: var(--neo-radius-lg);
+    --radius-xl: var(--neo-radius-xl);
+    --radius-2xl: var(--neo-radius-2xl);
+    --radius-3xl: var(--neo-radius-3xl);
+    --radius-4xl: var(--neo-radius-4xl);
+    --radius-full: var(--neo-radius-full);
+    --radius-default: var(--neo-radius-default);
+    --radius: var(--neo-radius-default);
+
+    --text-2xs: 10px;
+    --text-2xs--line-height: 12px;
+
+    --shadow-none: 0 0 #0000;
+    --shadow-2xs: 0 1px rgb(0 0 0 / 0.05);
+    --shadow-2xs-deep: 0 1px rgb(0 0 0 / 0.25);
+    --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.1);
+    --shadow-xs-deep: 0 1px 2px 0 rgb(0 0 0 / 0.5);
+    --shadow-sm: 0 1px 3px rgb(0 0 0 / 0.05);
+    --shadow-sm-deep: 0 1px 3px rgb(0 0 0 / 0.5);
+    --shadow-md: 0 4px 6px rgb(0 0 0 / 0.1);
+    --shadow-md-deep: 0 4px 6px rgb(0 0 0 / 0.5);
+    --shadow-lg: 0 8px 16px rgb(0 0 0 / 0.1);
+    --shadow-lg-deep: 0 8px 16px rgb(0 0 0 / 0.5);
+    --shadow-xl: 0 12px 24px rgb(0 0 0 / 0.2);
+    --shadow-xl-deep: 0 12px 24px rgb(0 0 0 / 0.5);
+    --shadow-2xl: 0 24px 48px rgb(0 0 0 / 0.1);
+    --shadow-2xl-deep: 0 24px 48px rgb(0 0 0 / 0.5);
+    --shadow-border-b: 0 1px 0 0 rgb(0 0 0 / 0.05), 0 1px 4px -1px rgb(0 0 0 / 0.05);
+    --shadow-border-b-deep: 0 1px 0 0 rgb(255 255 255 / 0.05), 0 1px 4px -1px rgb(0 0 0 / 0.5);
+    --shadow-avatar: inset 0 0 0 1px rgb(0 0 0 / 0.05);
+    --shadow-avatar-deep: inset 0 0 0 1px rgb(255 255 255 / 0.05);
+    --shadow-avatar-stack: 0 0 0 1px rgb(var(--card));
+    --shadow-card-outline: var(--neo-shadow-card-outline);
+    --shadow-card-outline-deep: var(--neo-shadow-card-outline-deep);
+    --shadow-block-outline: var(--neo-shadow-block-outline);
+    --shadow-block-outline-deep: var(--neo-shadow-block-outline-deep);
+    --shadow-input-outline: var(--neo-shadow-input-outline);
+    --shadow-input-outline-deep: var(--neo-shadow-input-outline-deep);
+    --shadow-btn-outline: var(--neo-shadow-btn-outline);
+    --shadow-btn-outline-deep: var(--neo-shadow-btn-outline-deep);
+    --shadow-btn-glass: var(--neo-shadow-btn-glass);
+    --shadow-btn-glass-deep: var(--neo-shadow-btn-glass-deep);
+    --shadow-btn-glass-pressed: var(--neo-shadow-btn-glass-pressed);
+    --shadow-btn-glass-pressed-deep: var(--neo-shadow-btn-glass-pressed-deep);
+    --shadow-btn-glass-prominent: var(--neo-shadow-btn-glass-prominent);
+    --shadow-btn-glass-prominent-deep: var(--neo-shadow-btn-glass-prominent-deep);
+    --shadow-btn-glass-prominent-pressed: var(--neo-shadow-btn-glass-prominent-pressed);
+    --shadow-btn-glass-prominent-pressed-deep: var(--neo-shadow-btn-glass-prominent-pressed-deep);
+   
+    --container-8xl: 1440px;
+    --container-9xl: 1536px;
+    --container-10xl: 1920px;
+}
+
+/*
+ * Runtime radius lengths and component shadows.
+ * Tailwind v4 resolves theme literals into fixed `border-radius` in utilities;
+ * linking `@theme` --radius-* → `var(--neo-radius-*)` (above) keeps these
+ * runtime overrides working — see global.web.css for the iOS-style
+ * superellipse corner override.
+ *
+ * Downstream projects should override `--neo-shadow-*` variables from
+ * customization CSS instead of redefining generated Tailwind utilities.
+ */
+@layer base {
+    :root,
+    :host {
+        --neo-radius-xs: 0.125rem;
+        --neo-radius-sm: 0.125rem;
+        --neo-radius-default: 0.25rem;
+        --neo-radius-md: 0.375rem;
+        --neo-radius-lg: 0.5rem;
+        --neo-radius-xl: 0.75rem;
+        --neo-radius-2xl: 1rem;
+        --neo-radius-3xl: 1.5rem;
+        --neo-radius-4xl: 2rem;
+        --neo-radius-full: 9999px;
+
+        --neo-shadow-card-outline:        0 0 0 1px rgb(0 0 0 / 0.05), inset 0 0 0 1px rgb(255 255 255), 0 1px 3px -1px rgb(0 0 0 / 0.05);
+        --neo-shadow-card-outline-deep:  0 0 0 1px rgb(0 0 0 / 0.05), inset 0 0 0 1px rgb(255 255 255 / 0.05), 0 1px 3px -1px rgb(0 0 0 / 0.5);
+        
+        --neo-shadow-block-outline:        0 0 0 1px rgb(0 0 0 / 0.05), inset 0 0 0 1px rgb(255 255 255), 0 1px 3px -1px rgb(0 0 0 / 0.05);
+        --neo-shadow-block-outline-deep:  0 0 0 1px rgb(0 0 0 / 0.05), inset 0 0 0 1px rgb(255 255 255 / 0.05), 0 1px 3px -1px rgb(0 0 0 / 0.5);
+
+
+        --neo-shadow-input-outline:      inset 0 0 0 1px rgb(0 0 0 / 0.1);
+        --neo-shadow-input-outline-deep: inset 0 0 0 1px rgb(255 255 255 / 0.05);
+       
+        --neo-shadow-btn-outline:        inset 0 0 0 1px rgb(0 0 0 / 0.04), inset 0 0 0 2px rgb(255 255 255 / 0.5), 0 1px 3px -1px rgb(0 0 0 / 0.05);
+        --neo-shadow-btn-outline-deep:   inset 0 0 0 1px rgb(255 255 255 / 0.025), 0 4px 12px -4px rgb(0 0 0 / 0.5);
+       
+        --neo-shadow-btn-glass:                        inset 0 0 0 1px rgb(255 255 255 / 0.50), inset 0 1px 0 0 rgb(255 255 255 / 0.50), 0 0 0 1px rgb(0 0 0 / 0.05), 0 2px 8px -2px rgb(0 0 0 / 0.05), 0 4px 16px -4px rgb(0 0 0 / 0.05);
+        --neo-shadow-btn-glass-deep:                   inset 0 0 0 1px rgb(255 255 255 / 0.05), inset 0 1px 0 0 rgb(255 255 255 / 0.10), 0 0 0 1px rgb(0 0 0 / 0.2), 0 2px 8px -2px rgb(0 0 0 / 0.2), 0 4px 16px -4px rgb(0 0 0 / 0.2);
+       
+        --neo-shadow-btn-glass-pressed:                inset 0 0 0 1px rgb(255 255 255 / 0.50), inset 0 1px 0 0 rgb(255 255 255 / 0.50), 0 0 0 1px rgb(0 0 0 / 0.01), 0 1px 4px -1px rgb(0 0 0 / 0.1), 0 2px 8px -2px rgb(0 0 0 / 0.1);;
+        --neo-shadow-btn-glass-pressed-deep:           inset 0 0 0 1px rgb(255 255 255 / 0.05), inset 0 1px 0 0 rgb(255 255 255 / 0.10), 0 0 0 1px rgb(0 0 0 / 0.05), 0 1px 4px -1px rgb(0 0 0 / 0.5), 0 2px 8px -2px rgb(0 0 0 / 0.5);
+      
+        --neo-shadow-btn-glass-prominent:              inset 0 1px 0 0 rgb(255 255 255 / 0.10), inset 0 0 0 1px rgb(255 255 255 / 0.10), 0 0 0 1px rgb(0 0 0 / 0.01), 0 2px 8px -2px rgb(0 0 0 / 0.1), 0 4px 16px -4px rgb(0 0 0 / 0.1);
+        --neo-shadow-btn-glass-prominent-deep:         inset 0 1px 0 0 rgb(255 255 255 / 0.10), inset 0 0 0 1px rgb(255 255 255 / 0.10), 0 0 0 1px rgb(0 0 0 / 0.05), 0 2px 8px -2px rgb(0 0 0 / 0.5), 0 4px 16px -4px rgb(0 0 0 / 0.5);
+
+        --neo-shadow-btn-glass-prominent-pressed:      inset 0 1px 0 0 rgb(255 255 255 / 0.10), inset 0 0 0 1px rgb(255 255 255 / 0.10), 0 0 0 1px rgb(0 0 0 / 0.01), 0 1px 4px -1px rgb(0 0 0 / 0.1), 0 2px 8px -2px rgb(0 0 0 / 0.1);
+        --neo-shadow-btn-glass-prominent-pressed-deep: inset 0 1px 0 0 rgb(255 255 255 / 0.10), inset 0 0 0 1px rgb(255 255 255 / 0.10), 0 0 0 1px rgb(0 0 0 / 0.05), 0 1px 4px -1px rgb(0 0 0 / 0.5), 0 2px 8px -2px rgb(0 0 0 / 0.5);
+     }
+}

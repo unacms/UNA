@@ -1,0 +1,761 @@
+/* Global focus ring. Use solid (not auto) — auto ignores custom outline-color
+ * in Firefox/Safari. Keep offset ≥ 0 so overflow:hidden/clip on inputs doesn't
+ * eat the ring. Same alpha in light and dark (dark used to force / 0.8 and
+ * override this). */
+ *:focus-visible {
+    outline-color: rgb(var(--ring) / 0.6);
+    outline-style: solid;
+    outline-offset: 0px;
+    outline-width: 4px;
+}
+
+select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+/* The enriched editor (Tiptap/ProseMirror) gets its focus affordance from its
+ * container. Suppress the global focus-visible outline on the editable element
+ * itself — otherwise it shows up as a stray blue line under the current line
+ * whenever the browser's focus-visible heuristic kicks in (e.g. after typing). */
+.ProseMirror:focus,
+.ProseMirror:focus-visible,
+.tiptap:focus,
+.tiptap:focus-visible {
+    outline: none !important;
+}
+
+/* Rich text editors — I-beam over editable surface; pointer on links inside.
+ * TipTap puts min-height on the .eti-editor wrapper while ProseMirror is a
+ * child sized to content only — without inheriting min-height, clicks in the
+ * empty area miss the contenteditable and never focus the editor. */
+.eti-editor,
+.eti-editor .ProseMirror,
+.eti-editor .tiptap {
+    cursor: text;
+}
+
+.eti-editor > .ProseMirror,
+.eti-editor > .tiptap {
+    min-height: inherit;
+    box-sizing: border-box;
+}
+
+.eti-editor a {
+    cursor: pointer;
+}
+
+/* Generic web link hit area via pseudo-element; size variants below */
+.u-link-hitarea,
+.u-link-hitarea-xs,
+.u-link-hitarea-sm,
+.u-link-hitarea-md,
+.u-link-hitarea-lg {
+    position: relative;
+    z-index: 0;
+}
+
+.u-link-hitarea::before,
+.u-link-hitarea-xs::before,
+.u-link-hitarea-sm::before,
+.u-link-hitarea-md::before,
+.u-link-hitarea-lg::before {
+    content: "";
+    position: absolute;
+    inset: -2px -4px -2px -4px;
+    border-radius: 0;
+    /* Nearly invisible bg so hit-testing works without visual change */
+    background-color: rgba(0, 0, 0, 0.001);
+    pointer-events: auto;
+}
+
+/*
+ * Ghost link: hover/active background via ::after pseudo-element (web only).
+ * Default vars below; .u-link-hitarea-{size} blocks override when size is set.
+ */
+.u-link-ghost {
+    position: relative;
+    z-index: 0;
+    --u-link-ghost-inset-x: -5px;
+    --u-link-ghost-inset-y: -3px;
+    --u-link-ghost-radius: 0.375rem;
+}
+
+.u-link-ghost::after {
+    content: "";
+    position: absolute;
+    inset: var(--u-link-ghost-inset-y) var(--u-link-ghost-inset-x);
+    border-radius: var(--u-link-ghost-shape-radius, var(--u-link-ghost-radius));
+    background-color: transparent;
+    transition: background-color 0.15s ease;
+    z-index: -1;
+    pointer-events: none;
+    box-sizing: border-box;
+}
+
+.u-link-ghost:hover::after {
+    background-color: rgb(var(--muted) / 0.5);
+}
+
+.u-link-ghost:focus-visible::after {
+    background-color: rgb(var(--muted) / 0.5);
+}
+
+.u-link-ghost:active::after {
+    background-color: rgb(var(--muted) / 0.8);
+}
+
+/*
+ * Active ghost state for selected nav/tab items.
+ * Keeps the same pseudo-element shape as regular ghost links.
+ */
+.u-link-ghost-active::after {
+    background-color: rgb(var(--accent) / 0.8);
+}
+
+.u-link-ghost-active:hover::after {
+    background-color: rgb(var(--accent));
+}
+
+.u-link-ghost-active:focus-visible::after {
+    background-color: rgb(var(--accent) / 0.8);
+}
+
+.u-link-ghost-active:active::after {
+    background-color: rgb(var(--accent));
+}
+
+/*
+ * Ghost links: focus ring is drawn on ::after (the ghost shape) so the ring
+ * matches where the ghost insets end and uses --u-link-ghost-radius. No outline
+ * on the link so the ring is not oversized.
+ */
+.u-link-ghost.u-link-hitarea-xs:focus-visible,
+.u-link-ghost.u-link-hitarea-sm:focus-visible,
+.u-link-ghost.u-link-hitarea-md:focus-visible,
+.u-link-ghost.u-link-hitarea-lg:focus-visible {
+    outline: none;
+}
+
+.u-link-ghost.u-link-hitarea-xs:focus-visible::after,
+.u-link-ghost.u-link-hitarea-sm:focus-visible::after,
+.u-link-ghost.u-link-hitarea-md:focus-visible::after,
+.u-link-ghost.u-link-hitarea-lg:focus-visible::after {
+    --u-link-ghost-shape-radius: calc(var(--u-link-focus-radius, var(--u-link-ghost-radius)) + var(--u-link-focus-offset-ghost) + var(--u-link-focus-width));
+    inset: calc(var(--u-link-ghost-inset-y) - var(--u-link-focus-offset-ghost) - var(--u-link-focus-width)) calc(var(--u-link-ghost-inset-x) - var(--u-link-focus-offset-ghost) - var(--u-link-focus-width));
+    padding: var(--u-link-focus-offset-ghost);
+    border: var(--u-link-focus-width) solid rgb(var(--ring) / 0.8);
+    background-clip: content-box;
+}
+
+[data-theme="dark"] .u-link-ghost.u-link-hitarea-xs:focus-visible::after,
+[data-theme="dark"] .u-link-ghost.u-link-hitarea-sm:focus-visible::after,
+[data-theme="dark"] .u-link-ghost.u-link-hitarea-md:focus-visible::after,
+[data-theme="dark"] .u-link-ghost.u-link-hitarea-lg:focus-visible::after {
+    border-color: rgb(var(--ring) / 0.8);
+}
+
+@media (prefers-color-scheme: dark) {
+    :root .u-link-ghost.u-link-hitarea-xs:focus-visible::after,
+    :root .u-link-ghost.u-link-hitarea-sm:focus-visible::after,
+    :root .u-link-ghost.u-link-hitarea-md:focus-visible::after,
+    :root .u-link-ghost.u-link-hitarea-lg:focus-visible::after {
+        border-color: rgb(var(--ring) / 0.8);
+    }
+}
+
+/* xs: ~12–16px text → target ≥44px touch area */
+.u-link-hitarea-xs {
+    --u-link-ghost-inset-x: -2px;
+    --u-link-ghost-inset-y: -2px;
+    --u-link-ghost-radius: 0.25rem;
+    --u-link-focus-width: 2px;
+    --u-link-focus-offset: 2px;
+    --u-link-focus-offset-ghost: 4px;
+    --u-link-focus-radius: var(--u-link-ghost-radius);
+}
+.u-link-hitarea-xs::before { inset: -8px; }
+.u-link-hitarea-xs:focus-visible {
+    outline-width: var(--u-link-focus-width);
+    outline-offset: var(--u-link-focus-offset);
+}
+
+/* sm: ~14–20px text → target ≥44px touch area */
+.u-link-hitarea-sm {
+    --u-link-ghost-inset-x: -6px;
+    --u-link-ghost-inset-y: -2px;
+    --u-link-ghost-radius: 0.375rem;
+    --u-link-focus-width: 2px;
+    --u-link-focus-offset: 4px;
+    --u-link-focus-offset-ghost: 6px;
+    --u-link-focus-radius: var(--u-link-ghost-radius);
+}
+.u-link-hitarea-sm::before { left: -4px; right: -4px; top: -2px; bottom: -2px; }
+.u-link-hitarea-sm:focus-visible {
+    outline-width: var(--u-link-focus-width);
+    outline-offset: var(--u-link-focus-offset);
+}
+
+/* md: ~16–24px text → target ≥44px touch area */
+.u-link-hitarea-md {
+    --u-link-ghost-inset-x: -6px;
+    --u-link-ghost-inset-y: -6px;
+    --u-link-ghost-radius: 0.5rem;
+    --u-link-focus-width: 2px;
+    --u-link-focus-offset: 2px;
+    --u-link-focus-offset-ghost: 8px;
+    --u-link-focus-radius: var(--u-link-ghost-radius);
+}
+.u-link-hitarea-md::before { inset: -8px; }
+.u-link-hitarea-md:focus-visible {
+    outline-width: var(--u-link-focus-width);
+    outline-offset: var(--u-link-focus-offset);
+}
+
+/* lg: ~18–28px text → target ≥44px touch area */
+.u-link-hitarea-lg {
+    --u-link-ghost-inset-x: -8px;
+    --u-link-ghost-inset-y: -6px;
+    --u-link-ghost-radius: 0.5rem;
+    --u-link-focus-width: 2px;
+    --u-link-focus-offset: 1px;
+    --u-link-focus-offset-ghost: 1px;
+    --u-link-focus-radius: var(--u-link-ghost-radius);
+}
+.u-link-hitarea-lg::before { inset: -8px -8px -8px -8px; }
+.u-link-hitarea-lg:focus-visible {
+    outline-width: var(--u-link-focus-width);
+    outline-offset: var(--u-link-focus-offset);
+}
+
+/* Generic action (button) hit area */
+.u-action-hitarea::before {
+    content: "";
+    position: absolute;
+    inset: -8px;
+    border-radius: var(--u-action-hitarea-radius, 0.5rem);
+    /* match button rounding */
+}
+
+.u-action-hitarea-xs::before {
+    inset: -8px;
+}
+
+.u-action-hitarea-sm::before {
+    inset: -6px;
+}
+
+.u-action-hitarea-md::before {
+    inset: 0px;
+}
+
+.u-action-hitarea-lg::before {
+    inset: 0px;
+}
+
+/*
+ * NeoButton — isolated pseudo-element utilities.
+ * Kept separate from `u-action-hitarea-*` and `u-link-*` so the new component
+ * can evolve without breaking existing buttons/links.
+ *
+ *  hit-area-{n}                 — extended press/hover hit area via ::before.
+ *                                  Now a Tailwind `@utility` in `global.css`
+ *                                  (web only); NeoButton emits it from the
+ *                                  resolved `hitSlop`. See that file.
+ *  .u-neo-btn-ring              — focus ring on :focus-visible; uses
+ *                                  border-radius: inherit + corner-shape:
+ *                                  inherit so the outline follows the parent
+ *                                  (incl. the global superellipse multiplier).
+ *
+ * Note: the per-variant button surface (the "border via shadow" + inner
+ * highlight + drop) is now provided by the `shadow-btn-*` Tailwind tokens
+ * defined in `packages/app/design/styles/global.css` (@layer base) and `@theme inline`.
+ * Legacy JS extensions remain in `packages/app/design/tailwind/theme.js`. They live on the
+ * container element directly (not on a pseudo) so they apply on both web
+ * and native via className `boxShadow` mapping, automatically pick up
+ * the container's actual rounding/corner-shape, and avoid the iOS smooth
+ * corner regression that `border` styles cause.
+ */
+
+/*
+ * The button surface itself already has its own `border-radius` and
+ * (inside @supports) `corner-shape` set by the Tailwind `rounded-*`
+ * class — so we MUST NOT redeclare either of those on `:focus-visible`.
+ * Doing so (e.g. `border-radius: inherit`) would override the rounded
+ * class while focused and the outline would render as a square. We only
+ * declare the outline itself; the browser draws it following whatever
+ * border-radius / corner-shape the element already carries.
+ */
+.u-neo-btn-ring:focus-visible {
+    outline: 3px solid rgb(var(--ring) / 0.8);
+    outline-offset: 2px;
+}
+
+.u-neo-btn-link:focus-visible {
+    outline: none;
+}
+
+.u-neo-btn-link:focus-visible .u-neo-btn-ring {
+    outline: 3px solid rgb(var(--ring) / 0.8);
+    outline-offset: 2px;
+}
+
+.u-neo-btn-ring-never:focus-visible {
+    outline: none;
+}
+
+/*
+ * Press feedback: active-only background via ::after pseudo-element (web only).
+ * Used by default / secondary / accent variants — no hover background, only
+ * a brief muted flash on click. Reuses the same CSS vars as ghost for sizing.
+ */
+.u-link-press {
+    position: relative;
+    z-index: 0;
+    --u-link-ghost-inset-x: -2px;
+    --u-link-ghost-inset-y: 0px;
+    --u-link-ghost-radius: 0.25rem;
+}
+
+.u-link-press::after {
+    content: "";
+    position: absolute;
+    inset: var(--u-link-ghost-inset-y) var(--u-link-ghost-inset-x);
+    border-radius: var(--u-link-ghost-radius);
+    background-color: transparent;
+    transition: background-color 0.1s ease;
+    z-index: -1;
+    pointer-events: none;
+}
+
+.u-link-press:active::after {
+    background-color: rgb(var(--accent) / 0.8);
+}
+
+/* Line clamp utilities for text truncation */
+.line-clamp-1 {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.line-clamp-4 {
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.line-clamp-5 {
+    display: -webkit-box;
+    -webkit-line-clamp: 5;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.line-clamp-6 {
+    display: -webkit-box;
+    -webkit-line-clamp: 6;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+html {
+    /* Prevent text size change on orientation change https://gist.github.com/tfausak/2222823#file-ios-8-web-app-html-L138 */
+    -webkit-text-size-adjust: 100%;
+    height: 100%;
+    /* Single scroll container — avoid a second scrollbar on body */
+    overflow-y: scroll;
+    /* Reserve scrollbar width so content width stays stable when overflow toggles */
+    scrollbar-gutter: stable;
+    /* Always paint a track/thumb in the gutter (Firefox); see ::-webkit-scrollbar below */
+    scrollbar-width: thin;
+    scrollbar-color: rgb(var(--border)) rgb(var(--muted) / 0.5);
+    min-height: 100%;
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+
+/* Viewport-locked pages (tasks-home): the page block is the scroller, not the document.
+   A class, not inline style, so it never fights Radix/remove-scroll's inline body lock. */
+html.ns-viewport-lock,
+html.ns-viewport-lock body {
+    overflow: hidden;
+}
+
+/* Classic scrollbars on html — fills stable gutter; thumb spans track when page does not scroll */
+html::-webkit-scrollbar {
+    width: 0.75rem;
+}
+
+html::-webkit-scrollbar-track {
+    background-color: rgb(var(--muted) / 0.5);
+}
+
+html::-webkit-scrollbar-thumb {
+    background-color: rgb(var(--border));
+    border-radius: 9999px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+}
+
+html::-webkit-scrollbar-thumb:window-inactive {
+    background-color: rgb(var(--muted-foreground) / 0.35);
+}
+
+body {
+    display: flex;
+    overflow-y: visible;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: neutralscale;
+    -ms-overflow-style: scrollbar;
+    -webkit-overflow-scrolling: touch;
+    font-family: var(--font-main, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif);
+}
+
+html,
+body,
+#__next {
+    width: 100%;
+    /* To smooth any scrolling behavior */
+    -webkit-overflow-scrolling: touch;
+    margin: 0px;
+    padding: 0px;
+    /* Allows content to fill the viewport and go beyond the bottom */
+    min-height: 100%;
+}
+
+#__next {
+    flex-shrink: 0;
+    flex-basis: auto;
+    flex-direction: column;
+    flex-grow: 1;
+    display: flex;
+    flex: 1;
+}
+
+
+/* Fix for druggable items in grid*/
+.is-dragging {
+    z-index: 99999 !important;
+}
+
+@keyframes moving {
+    50% {
+        width: 100%;
+    }
+
+    100% {
+        width: 0;
+        right: 0;
+        left: unset;
+    }
+}
+
+[data-rsbs-overlay] {
+    z-index: 9999;
+}
+
+.pointerEvents {
+    pointer-events: auto;
+}
+
+
+div {
+    scrollbar-width: none;
+}
+
+
+
+html[theme="dark"]:root {
+    --rsbs-bg: rgba(17, 24, 39, 1);
+}
+
+.tippy-box[data-theme="mention mention_user"] .tippy-content .items:not(:has(div))::after {
+    content: 'Mention a user';
+    display: block;
+}
+
+.tippy-box[data-theme="mention mention_channel"] .tippy-content .items:not(:has(div))::after {
+    content: 'Select channel';
+    display: block;
+}
+
+.tippy-box[data-theme~=mention] {
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+
+.react-grid-item>.react-resizable-handle {
+    display: none;
+}
+
+.react-grid-item:hover>.react-resizable-handle {
+    display: block;
+    background-size: cover;
+}
+
+.react-grid-item:hover>.react-resizable-handle:after {
+    display: none;
+}
+
+.react-grid-item>.react-resizable-handle.react-resizable-handle-ne {
+    top: 5px !important;
+    right: 5px !important;
+}
+
+.react-grid-item>.react-resizable-handle.react-resizable-handle-e {
+    right: 5px !important;
+}
+
+.react-grid-item>.react-resizable-handle.react-resizable-handle-se {
+    bottom: 5px !important;
+    right: 5px !important;
+}
+
+.react-grid-item>.react-resizable-handle.react-resizable-handle-s {
+    bottom: 5px !important;
+}
+
+.react-grid-item>.react-resizable-handle.react-resizable-handle-n {
+    top: 5px !important;
+}
+
+.react-grid-item>.react-resizable-handle.react-resizable-handle-nw {
+    top: 5px !important;
+    left: 5px !important;
+}
+
+.react-grid-item>.react-resizable-handle.react-resizable-handle-w {
+    left: 5px !important;
+}
+
+.react-grid-item>.react-resizable-handle.react-resizable-handle-sw {
+    bottom: 5px !important;
+    left: 5px !important;
+}
+
+.grid-readonly .react-grid-item .react-resizable-handle {
+    display: none;
+}
+
+
+/* Tooltip animations - Web only */
+/* Tooltip animations with bounce and slight rotation */
+@keyframes tooltipBounceIn {
+    0% {
+        opacity: 0;
+        transform: translateX(-50%) translateY(8px) rotate(-1deg) scale(0.96);
+    }
+
+    50% {
+        opacity: 1;
+        transform: translateX(-50%) translateY(-3px) rotate(0.5deg) scale(1.02);
+    }
+
+    75% {
+        transform: translateX(-50%) translateY(1px) rotate(-0.3deg) scale(0.99);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0) rotate(0deg) scale(1);
+    }
+}
+
+@keyframes tooltipBounceInBottom {
+    0% {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-8px) rotate(1deg) scale(0.96);
+    }
+
+    50% {
+        opacity: 1;
+        transform: translateX(-50%) translateY(3px) rotate(-0.5deg) scale(1.02);
+    }
+
+    75% {
+        transform: translateX(-50%) translateY(-1px) rotate(0.3deg) scale(0.99);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0) rotate(0deg) scale(1);
+    }
+}
+
+@keyframes tooltipFadeOut {
+    0% {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0) rotate(0deg) scale(1);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateX(-50%) translateY(6px) rotate(-0.5deg) scale(0.98);
+    }
+}
+
+.animate-tooltip-in {
+    animation: tooltipBounceIn 500ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.animate-tooltip-in-bottom {
+    animation: tooltipBounceInBottom 500ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.animate-tooltip-out {
+    animation: tooltipFadeOut 150ms ease-out forwards;
+}
+
+
+/* Enhanced scrollbar hiding for tabs and other components */
+.u-controls-tabs-header,
+.u-controls-tabs-header-row {
+    scrollbar-width: none;
+    /* Firefox */
+    -ms-overflow-style: none;
+    /* IE and Edge */
+}
+
+.u-controls-tabs-header::-webkit-scrollbar,
+.u-controls-tabs-header-row::-webkit-scrollbar {
+    display: none;
+    /* Safari and Chrome */
+}
+
+
+/*
+ * Smooth (superellipse) corners — gated by `theme.corner_smoothing.enabled`.
+ * Next layout adds `.neo-corner-smooth` + `--neo-corner-superellipse-*` on <html>
+ * when enabled (see `app/design/corner-smoothing.js`). Without the class, radii
+ * stay at the plain `--neo-radius-*` values from theme.css.
+ */
+@supports (corner-shape: superellipse(1)) {
+    :root.neo-corner-smooth,
+    html.neo-corner-smooth {
+        --neo-radius-xs: calc(0.125rem * var(--neo-corner-superellipse-factor, 1.5)) !important;
+        --neo-radius-sm: calc(0.125rem * var(--neo-corner-superellipse-factor, 1.5)) !important;
+        --neo-radius-default: calc(0.25rem * var(--neo-corner-superellipse-factor, 1.5)) !important;
+        --neo-radius-md: calc(0.375rem * var(--neo-corner-superellipse-factor, 1.5)) !important;
+        --neo-radius-lg: calc(0.5rem * var(--neo-corner-superellipse-factor, 1.5)) !important;
+        --neo-radius-xl: calc(0.75rem * var(--neo-corner-superellipse-factor, 1.5)) !important;
+        --neo-radius-2xl: calc(1rem * var(--neo-corner-superellipse-factor, 1.5)) !important;
+        --neo-radius-3xl: calc(1.5rem * var(--neo-corner-superellipse-factor, 1.5)) !important;
+        --neo-radius-4xl: calc(2rem * var(--neo-corner-superellipse-factor, 1.5)) !important;
+        --neo-radius-full: calc(9999px * var(--neo-corner-superellipse-full-factor, 1)) !important;
+    }
+
+    /* Apply superellipse shape to any element with a rounded class */
+    .neo-corner-smooth :is([class~="rounded"], [class~="rounded-xs"], [class~="rounded-sm"], [class~="rounded-md"],
+        [class~="rounded-lg"], [class~="rounded-xl"], [class~="rounded-2xl"],
+        [class~="rounded-3xl"], [class~="rounded-4xl"],
+        [class*=":rounded"], [class*=":rounded-xs"], [class*=":rounded-sm"], [class*=":rounded-md"],
+        [class*=":rounded-lg"], [class*=":rounded-xl"], [class*=":rounded-2xl"],
+        [class*=":rounded-3xl"], [class*=":rounded-4xl"]) {
+        /* stylelint-disable-next-line property-no-unknown */
+        corner-shape: superellipse(var(--neo-corner-superellipse-factor, 1.6));
+    }
+
+    /* Full rounding uses full factor */
+    .neo-corner-smooth :is([class~="rounded-full"], [class*=":rounded-full"]) {
+        /* stylelint-disable-next-line property-no-unknown */
+        corner-shape: superellipse(var(--neo-corner-superellipse-full-factor, 1));
+    }
+
+    /* Keep pseudo-element rounding visually aligned with smooth corners */
+    .neo-corner-smooth .u-link-hitarea::before,
+    .neo-corner-smooth .u-link-hitarea-xs::before,
+    .neo-corner-smooth .u-link-hitarea-sm::before,
+    .neo-corner-smooth .u-link-hitarea-md::before,
+    .neo-corner-smooth .u-link-hitarea-lg::before {
+        border-radius: 0;
+        /* stylelint-disable-next-line property-no-unknown */
+        corner-shape: superellipse(var(--neo-corner-superellipse-factor, 1.6));
+    }
+
+    .neo-corner-smooth .u-link-ghost::after,
+    .neo-corner-smooth .u-link-ghost-active::after,
+    .neo-corner-smooth .u-link-press::after {
+        border-radius: calc(var(--u-link-ghost-shape-radius, var(--u-link-ghost-radius, 0.375rem)) * var(--neo-corner-superellipse-factor, 1.6));
+        /* stylelint-disable-next-line property-no-unknown */
+        corner-shape: superellipse(var(--neo-corner-superellipse-factor, 1.6));
+    }
+
+    .neo-corner-smooth .u-action-hitarea::before,
+    .neo-corner-smooth .u-action-hitarea-xs::before,
+    .neo-corner-smooth .u-action-hitarea-sm::before,
+    .neo-corner-smooth .u-action-hitarea-md::before,
+    .neo-corner-smooth .u-action-hitarea-lg::before {
+        border-radius: calc(var(--u-action-hitarea-radius, 0.5rem) * var(--neo-corner-superellipse-factor, 1.6));
+        /* stylelint-disable-next-line property-no-unknown */
+        corner-shape: superellipse(var(--neo-corner-superellipse-factor, 1.6));
+    }
+
+    /* Ensure focus rings follow the shape */
+    .neo-corner-smooth :is([class~="rounded-none"], [class*=":rounded-none"],
+        [class~="rounded"], [class$=":rounded"], [class*=":rounded "],
+        [class~="rounded-xs"], [class*=":rounded-xs"],
+        [class~="rounded-sm"], [class*=":rounded-sm"],
+        [class~="rounded-md"], [class*=":rounded-md"],
+        [class~="rounded-lg"], [class*=":rounded-lg"],
+        [class~="rounded-xl"], [class*=":rounded-xl"],
+        [class~="rounded-2xl"], [class*=":rounded-2xl"],
+        [class~="rounded-3xl"], [class*=":rounded-3xl"],
+        [class~="rounded-4xl"], [class*=":rounded-4xl"],
+        [class~="rounded-full"], [class*=":rounded-full"]):focus-visible {
+        outline-style: solid;
+    }
+}
+
+/*
+ * Flush list row: pulse the pending fill only (photo/text stay solid) while
+ * the profile RSC payload is in flight. `data-nav` is set on pointerdown.
+ */
+@keyframes u-flush-nav-pulse {
+    0%, 100% { opacity: 0.38; }
+    50% { opacity: 0.82; }
+}
+
+.u-flush-nav[data-nav="pending"]::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    border-radius: inherit;
+    background-color: rgb(var(--muted) / 0.6);
+    animation: u-flush-nav-pulse 1.6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .u-flush-nav[data-nav="pending"]::before {
+        animation: none;
+        opacity: 0.65;
+    }
+}
+
+/* Allow scroll events to pass through WebView/iframe to parent ScrollView */
+iframe[title*="TenTap"],
+iframe[title*="editor"],
+webview {
+    touch-action: pan-y pan-x;
+    -webkit-overflow-scrolling: touch;
+}

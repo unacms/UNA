@@ -1,0 +1,40 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "globalEnv": [
+    "UNA_API_KEY",
+    "PROTO",
+    "HOST",
+    "PORT",
+    "NEXT_PUBLIC_UNA_URL",
+    "NEXT_PUBLIC_APP_URL",
+    "NEXT_PUBLIC_ANALYTICS",
+    "NODE_ENV",
+    "VERCEL",
+    "VERCEL_ENV",
+    "VERCEL_URL",
+    "VERCEL_GIT_COMMIT_SHA",
+    "UNA_URL",
+    "APP_URL",
+    "APP_ORIGIN",
+    "HTTPS",
+    "UNA_PREVIEW_DOMAIN",
+    "NEXT_PUBLIC_UNA_PREVIEW_DOMAIN",
+    "UNA_PREVIEW_API_KEY",
+    "GOOGLE_WEB_CLIENT_ID",
+    "NEXT_PUBLIC_GOOGLE_WEB_CLIENT_ID",
+    "NEXT_PUBLIC_GOOGLE_MAPS_API_KEY",
+    "REDIS_URL"
+  ],
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": [".next/**", "dist/**"]
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true
+    },
+    "lint": {},
+    "typecheck": {}
+  }
+}

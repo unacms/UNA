@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "strictNullChecks": true,
+    "noUncheckedIndexedAccess": true,
+    "paths": {
+      "app/*": [
+        "./packages/app/*"
+      ]
+    }
+  },
+  "exclude": [
+    "**/node_modules",
+    "**/dist",
+    "**/types",
+    "apps/next/.next",
+    "apps/next/out"
+  ],
+  "extends": "expo/tsconfig.base"
+}

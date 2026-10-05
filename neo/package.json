@@ -1,0 +1,57 @@
+{
+  "name": "neo",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "devDependencies": {
+    "@types/blueimp-md5": "~2.18.2",
+    "@types/fbemitter": "~2.0.35",
+    "@types/react": "~19.2.10",
+    "@types/react-dom": "~19.2.3",
+    "babel-plugin-react-compiler": "^1.0.0",
+    "eslint": "^9.17.0",
+    "lerna-update-wizard": "^1.1.2",
+    "patch-package": "^8.0.1",
+    "turbo": "^2.5.8",
+    "typescript": "~6.0.3"
+  },
+  "scripts": {
+    "lint": "eslint apps packages scripts crypto-shim",
+    "typecheck": "node scripts/typecheck.js",
+    "preinstall": "node scripts/merge-package-customization.js",
+    "postinstall": "patch-package",
+    "native": "cd apps/expo && dotenv -e ../../.env.local -- expo start --clear",
+    "ios": "cd apps/expo && dotenv -e ../../.env.local -- yarn ios",
+    "ios:device": "cd apps/expo && dotenv -e ../../.env.local -- npx expo run:ios --device",
+    "android": "cd apps/expo && dotenv -e ../../.env.local -- npx expo run:android",
+    "web": "cd apps/next && dotenv -e ../../.env.local -- portless run next dev --webpack",
+    "web2": "cd apps/next && dotenv -e ../../.env.local -- yarn dev",
+    "build": "cd apps/next && dotenv -e ../../.env.local -- yarn build",
+    "prod": "cd apps/next && dotenv -e ../../.env.local -- portless run next start",
+    "prod2": "cd apps/next && dotenv -e ../../.env.local -- yarn start",
+    "prod:pm2": "cd apps/next && dotenv -e ../../.env.local -- yarn start:pm2",
+    "analyze": "cd apps/next && cross-env ANALYZE=true yarn build",
+    "clean": "rm -rf ./node_modules ./apps/expo/node_modules ./apps/next/node_modules ./packages/app/node_modules"
+  },
+  "engines": {
+    "node": "24.x"
+  },
+  "nohoist": [
+    "**/expo-router",
+    "**/expo-router/**"
+  ],
+  "dependencies": {
+    "@10play/react-native-web-webview": "^0.0.3",
+    "dotenv-cli": "^11.0.0",
+    "web-haptics": "^0.0.6"
+  },
+  "resolutions": {
+    "tailwindcss": "4.3.2",
+    "@tailwindcss/postcss": "4.3.2",
+    "@radix-ui/primitive": "1.1.7",
+    "@radix-ui/react-use-controllable-state": "1.2.3"
+  },
+  "packageManager": "yarn@1.22.22"
+}

@@ -1,0 +1,186 @@
+
+
+export const settingsElements = {
+    conductor: {
+        menu: ' w-full items-left justify-center',
+        menu_is_dynamic: false,
+        // Padding lives on the scroll *content* (w-max), not the overflow parent —
+        // otherwise tabs clip at the inset instead of scrolling edge-to-edge.
+        menu_cnt: ' flex-row flex-none w-max gap-2 min-h-12 lg:min-h-14 items-center px-4 ',
+        menu_categ_indent: ' pl-8 ',
+        topmenu_cnt:
+            'w-full px-8 pt-6 items-stretch justify-stretch sticky z-50 t-8 gap-x-8 hidden lg:flex p',
+        topmenu_button_variant: 'secondary',
+        topmenu_button_variant_active: 'secondary',
+        topmenu_button_align: 'start',
+        topmenu_button_fullWidth: false,
+        topmenu_button_size: 'base',
+        topmenu_button_pressed: true,
+        left_menu_cnt: '  ',
+        cover_base: 'ns--cover-base- w-full bg-card ne--',
+        cover_content:
+            'ns--conductor-cover-content-- items-center h-full w-full justify-between lg:p-4 ne--',
+        cover_small: 'mx-auto flex-row items-center ',
+
+        hide_top_menu_from: 'xl',
+        // Section title + icon next to conductor tabs (TopSidebar).
+        show_title: true,
+        standalone_context_selector: 'items-center justify-center w-full h-14 px-2',
+    },
+    dropdown_menu: {
+        content_shadow: ' shadow-lg ',
+        content_ver: 'flex-col gap-1',
+        content_hor: 'flex-row  ',
+        item_ver:
+            ' group px-2 flex w-full min-w-0 min-h-11 flex-row items-center rounded-xl font-medium web:hover:bg-muted/50 text-card-foreground web:hover:text-foreground web:hover:cursor-pointer ',
+        item_hor:
+            'flex block web:dark:hover:text-white rounded-full web:hover:cursor-pointer text-muted-foreground web:duration-200 outline-none ',
+        item_np:
+            'flex flex-row web:focus:outline-none items-center justify-between px-1 py-0.5 rounded-lg font-medium text-sm text-muted-foreground  web:hover:cursor-pointer',
+        /** Tabs overflow menu — match tab strip item height, padding, hover; text aligned in dropdown-item via item_text_key */
+        item_tabs_overflow_sm:
+            'group flex w-full min-h-9 h-9 px-3 flex-row items-center rounded-lg font-medium text-secondary-foreground web:hover:bg-muted/50 web:duration-200 web:hover:text-foreground web:cursor-pointer web:focus-visible:outline-2',
+        item_tabs_overflow_md:
+            'group flex w-full min-h-10 h-10 px-4 flex-row items-center rounded-lg font-medium text-base text-secondary-foreground web:hover:bg-muted/50 web:duration-200 web:hover:text-foreground web:cursor-pointer web:focus-visible:outline-2',
+        item_tabs_overflow_lg:
+            'group flex w-full min-h-12 h-12 px-6 flex-row items-center rounded-lg font-medium text-lg text-secondary-foreground web:hover:bg-muted/50 web:duration-200 web:hover:text-foreground web:cursor-pointer web:focus-visible:outline-2',
+        item_tabs_overflow_text_sm:
+            'text-left text-sm font-medium text-secondary-foreground web:group-hover:text-foreground whitespace-nowrap',
+        item_tabs_overflow_text_md:
+            'text-left text-base font-medium text-secondary-foreground web:group-hover:text-foreground whitespace-nowrap',
+        item_tabs_overflow_text_lg:
+            'text-left text-lg font-medium text-secondary-foreground web:group-hover:text-foreground whitespace-nowrap',
+        item_cnt: 'items-center w-full min-w-0 flex-row',
+        item_text_cnt: 'min-w-0 flex-1 flex flex-col self-center justify-center overflow-hidden',
+        item_cnt_tabs_overflow: 'items-center w-full flex-row justify-start flex-1',
+        item_text: ' block w-full text-sm font-semibold text-secondary-foreground web:group-hover:text-foreground px-2',
+        /** Selected item (current tab / page, picked option): the toggled look — `bg-accent` + `text-accent-foreground`. */
+        item_selected: ' bg-accent ',
+        item_text_selected: ' block w-full text-sm font-semibold text-accent-foreground px-2',
+        item_icon_selected: 'text-accent-foreground',
+        item_description: 'block w-full text-xs font-normal leading-tight text-pretty text-muted-foreground px-2 break-words',
+        item_group_header: 'px-2 pt-3 pb-1',
+        item_group_header_first: 'p-2.5',
+        item_group_header_text: 'text-xs font-semibold uppercase tracking-wide text-muted-foreground',
+        /** Sectioned menus (More): column tracks are set in dropdown-menu. */
+        content_sections: 'items-stretch gap-1',
+        content_sections_stacked: 'flex-col gap-1 w-full',
+        section: 'min-w-0',
+        /** Apps launcher waffle — icon above label, no description. */
+        content_grid: 'w-full',
+        item_grid:
+            'group flex w-full min-w-0 min-h-24 flex-col items-center justify-start gap-1.5 rounded-xl px-1 py-2.5 text-secondary-foreground web:hover:bg-muted/50 web:hover:text-foreground web:hover:cursor-pointer web:focus-visible:outline-2 web:duration-200',
+        item_icon_grid:
+            'flex shrink-0 items-center w-12 h-12 bg-muted/50 web:group-hover:bg-border rounded-full justify-center',
+        item_text_grid:
+            'w-full text-center text-xs font-medium leading-tight text-secondary-foreground web:group-hover:text-foreground px-0.5',
+        item_icon:
+            'flex shrink-0 items-center w-9 h-9 bg-muted/50 web:group-hover:bg-border rounded-full justify-center',
+        item_icon_active:
+            'flex shrink-0 items-center w-9 h-9 bg-accent rounded-full justify-center',
+        icon_size: 20, // Default icon size for dropdown menu icons
+        icon_size_grid: 24,
+    },
+    modal: {
+        fog: ' bg-background/95 ',
+        container:
+        ' bg-card/60 backdrop-blur shadow-card-outline dark:shadow-card-outline-deep md:rounded-3xl overflow-hidden ',
+        content: '',
+        header: ' px-3 py-2 min-h-14 items-start justify-start border-b border-border/60 ',
+    },
+    cards: {
+        'u-card-list': ' u-card-list bg-card/80 shadow-card-outline dark:shadow-card-outline-deep sm:rounded-2xl ',
+        'u-card-list-padding': 'p-4 sm:rounded-2xl',
+        // Profile listings: photo + meta + actions on mobile, card chrome from sm (grid).
+        // Mobile: 8px margin + rounded-xl, so the press / pending fill matches the
+        // Messages and Notifications rows.
+        'u-card-list-flush': ' u-card-list u-flush-nav relative isolate mx-2 sm:mx-0 rounded-xl sm:bg-card/80 sm:shadow-card-outline sm:dark:shadow-card-outline-deep sm:rounded-2xl transition-colors duration-200 ease-out active:bg-muted/60 group-active:bg-muted/60 sm:active:bg-muted/60 sm:group-active:bg-muted/60 ',
+        'u-card-list-flush-padding': 'px-2 py-2 sm:p-4 sm:rounded-2xl',
+        'u-card-base': 'u-card-base rounded-2xl bg-card/80 text-card-foreground shadow-card-outline dark:shadow-card-outline-deep ',
+        'u-card-padding': 'py-4 ',
+        'u-card-header': 'px-4',
+        'u-card-icon': ' ',
+        'u-card-title': 'font-semibold text-base tracking-tight text-secondary-foreground',
+        'u-card-description': 'text-muted-foreground text-sm sm:text-base text-balance',
+        'u-card-actions': ' ',
+        'u-card-content': 'px-4 ',
+        'u-card-footer': 'px-4 gap-1',
+    },
+    panels: {
+        'u-panel-base': ' ns--panel-base-- web:h-full min-w-0 flex-col ne-- ',
+        // Invisible until hovered. Tailwind v4 applies variants left to right: `hover:before:` is
+        // `:hover::before`, while `before:hover:` would be `::before:hover`, which never matches.
+        // The line's `group-*` variants need the plain `group` marker PanelHandler puts on the handle.
+        'u-panel-handler': 'relative w-0 web:before:absolute web:before:inset-y-0 web:before:-left-0.5 web:before:-right-0.5 web:before:bg-transparent web:hover:before:bg-accent web:active:before:bg-accent/50 web:before:duration-200 ',
+        'u-panel-line':
+            'absolute w-px web:h-full web:group-hover:bg-primary/50 web:group-active:bg-primary/50 rounded-full left-0 top-0 ',
+        'u-panel-group': ' ns--panel-group-- web:h-full flex ne-- ',
+    },
+    blocks: {
+        'u-block-base':
+            ' text-card-foreground gap-4 ',
+        'u-block-bg':
+            ' bg-card/60 shadow-block-outline dark:shadow-block-outline-deep ',
+        'u-block-pad':
+            ' p-4 ',
+        'u-block-pad-y':
+            ' py-4 ',
+        'u-block-pad-x':
+            ' px-4 ',
+        'u-block-rounded': 'rounded-2xl',
+        'u-block-rounded-default': 'sm:rounded-2xl',
+        'u-block-header':
+            ' flex-row gap-3  ',
+        'u-block-icon': ' items-center w-9 h-9 justify-center bg-muted/50 rounded-lg text-card-foreground flex-none',
+        'u-block-icon-size': 20, // Default icon size for block header icons
+        'u-block-name': ' flex-auto gap-1 ',
+        'u-block-title':
+            'text-card-foreground px-0.5 text-lg font-semibold tracking-tight',
+        'u-block-description': 'text-muted-foreground text-xs lg:text-sm leading-5 px-px',
+        'u-block-content': 'gap-0.5 ',  
+        'u-block-footer':
+            'flex text-card-foreground gap-4 pt-2',
+        'u-block-actions':
+            'flex flex-row text-card-foreground gap-2  ',
+        'u-block-animate':
+            'animate-in fade-in slide-in-from-top-2 duration-200',
+    },
+   
+    tables: {
+        // Base
+        'u-table-base':
+            'w-full border border-border/60 bg-transparent border-collapse overflow-hidden rounded-lg',
+        'u-table-header': 'border-border',
+        'u-table-body': 'border-border',
+        'u-table-footer': 'bg-muted/50 font-medium',
+        'u-table-row':
+            'flex overflow-hidden flex-row border-border border-b web:transition-colors web:hover:bg-muted/50 web:data-[state=selected]:bg-muted',
+        'u-table-head':
+            'text-muted-foreground text-left justify-center font-medium flex-1 h-12 px-4 text-sm',
+        'u-table-cell':
+            ' flex-row items-center text-foreground px-3 text-sm py-2',
+        'u-table-head-text':
+            'text-muted-foreground font-semibold tracking-tight leading-tight text-sm',
+        'u-table-cell-text': 'text-foreground text-sm',
+    },
+    // Tooltip component styles and configuration
+    tooltip: {            
+        // Content container (no overflow-hidden to allow arrow to show)
+        'tooltip-content': [
+            'z-50 rounded-lg px-3 py-2',
+            'bg-foreground shadow-lg',
+        ].join(' '),
+        
+        // Text inside tooltip
+        'tooltip-text': 'text-background text-sm font-medium',
+        
+        // Arrow base (rotated square approach - works with NativeWind)
+        'tooltip-arrow': 'absolute w-3 h-3 bg-foreground rotate-45',
+        
+        // Arrow positions per placement
+        'tooltip-arrow-bottom': '-top-1 left-1/2 -translate-x-1/2',   // tooltip below trigger
+        'tooltip-arrow-top': '-bottom-1 left-1/2 -translate-x-1/2',   // tooltip above trigger
+        'tooltip-arrow-left': '-right-1 top-1/2 -translate-y-1/2',    // tooltip left of trigger
+        'tooltip-arrow-right': '-left-1 top-1/2 -translate-y-1/2',    // tooltip right of trigger
+    }, 
+}

@@ -1,0 +1,358 @@
+import { Icon } from 'app/ui/atoms/icon'
+import Card from 'app/ui/molecules/page/card'
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { View, Row, Pressable } from 'app/design/view'
+import { Text } from 'app/design/typography'
+import { Button } from 'app/design/controls'
+import Link from 'app/ui/atoms/link'
+import { useCurrentUser } from 'app/context/user'
+import Profile from 'app/ui/molecules/profile/profile'
+import ProfileSwitcher from 'app/components/elements/profile-switcher';
+import { Modal } from 'app/design/controls'
+import { appSetting } from 'app/lib/util'
+import DropdownMenu from 'app/ui/atoms/dropdown-menu';
+import i18n from 'i18next';
+import { useLayoutSettings } from 'app/context/layout-settings';
+import { useFetch } from 'app/lib/hooks/use-fetch';
+import { useBottomSheetData } from 'app/context/bottomsheet';
+import { useTheme } from 'app/design/theme';
+
+function getCounter(num, icon = '', add = '', color = '') {
+    
+    if (!num) num = 0;
+    let sColor = 'gray'
+
+    if (num > 0) {
+        sColor = 'green'
+        if (icon == '')
+            icon = 'ArrowBigUp';
+    }
+    if (num < 0) {
+        sColor = 'red'
+        if (icon == '')
+            icon = 'ArrowBigDown';
+    }
+
+    return (
+        <Row className={'mb-auto    text-' + sColor + '-800 bg-' + sColor + '-200 dark:bg-' + sColor + '-950 gap-x-1 py-1 px-2 rounded-full  mb-auto dark:text-' + sColor + '-200 '}>
+            <Icon color={color} className={"text-" + sColor + "-600 dark:text-" + sColor + "-400"} icon={icon}  size={16} />
+            <Text className={"flex-none text-" + sColor + "-800 dark:text-" + sColor + "-200 text-xs"}>{num}{add}</Text>
+        </Row>
+    )
+}
+
+export default function PageLayout(props) {
+    const { setBottomSheetData } = useBottomSheetData();
+
+    const { t } = useTranslation();
+    let { currentUser, setCurrentUser } = useCurrentUser()
+    
+    const [showImage2, setShowImage2] = useState(false);
+    // Same preference store as the remote dashboard (theme / language / layout).
+    // Called before the guest early-return below — hook order must be stable.
+    const { themeName, setThemeName, layoutName, setLayoutName, setLang } = useLayoutSettings();
+
+
+    let profile = null
+    if (currentUser) {
+        let dUser = Object.assign({}, currentUser)
+        dUser.url_avatar = dUser.avatar
+        profile = <Profile {...dUser} displayType="unit_wo_info" size="lg" />
+    }
+    if (!currentUser) 
+        return <></>
+
+    const handleLang = (item) => setLang(item);
+    const handleTheme = (item) => setThemeName(item);
+    const handleFormat = (item) => setLayoutName(item);
+
+    const currentTheme = themeName || 'auto';
+    const currentFormat = layoutName || appSetting('layout', 'default_layout');
+
+    const langItems = [
+        { id: 'auto', key: 'auto', name: 'auto', title: t('lang_auto') },
+        ...appSetting('layout', 'avaliable_langs').map(lang => ({
+            id: lang,
+            key: lang,
+            name: lang,
+            title: t('lang_' + lang)
+        }))
+    ];
+
+    return (
+        <View className='w-full'>
+           { /*<Button title="Test bottomsheet"
+             onPress={() => {setBottomSheetData({ title: 'Choose labels', showClose: true, content: <View className='h-24 w-full'><Text>TextTextTextText</Text></View> })}}
+             
+            ></Button>*/}
+            <Modal id='file-preview2' title="VideoChat" onVisible={!!showImage2} onClose={() => {setShowImage2(null)}}>
+                
+            </Modal>
+            <View className={appSetting('layout', 'max_width') +" w-full mx-auto"}>
+                <View className={"u-max-width-block w-full px-2 pb-1 pt-2 sm:p-2  mx-auto"}>
+                    <Card rounded=" rounded-2xl " addClassName="  w-full p-4 flex-row ">
+                        <View className="justify-center sm:justify-between flex-auto my-auto w-full items-center">
+                            <View className="flex-row  w-full  items-center ">
+                                <View className="flex-auto  ">
+                                    
+                                    <Link href={currentUser.url}>
+                                        <View className="flex-row items-center ">
+                                        {profile}
+                                        <Text className="my-auto ml-3 text-secondary-foreground web:hover:text-foreground  web:hover: text-lg font-semibold ">
+                                            {currentUser.display_name}
+                                        </Text>
+                                        </View>
+                                    </Link>
+                                </View> 
+                                <View className="flex-none">
+                                <ProfileSwitcher hideTitle={true} >
+                                    <Button variant="outline" startDecorator="RefreshCw"  rounded  />
+                                </ProfileSwitcher>
+                                </View>
+                            </View>
+                            <View className="flex-row  items-center gap-x-2 my-auto hidden">
+                               <ProfileSwitcher hideTitle={true} >
+                                    <Button variant="outline" startDecorator="RefreshCw"  rounded  />
+                                </ProfileSwitcher>
+                                {
+                                    appSetting('layout', 'avaliable_langs').length > 1 && (
+                                        <View><DropdownMenu 
+                                            items={langItems}
+                                            onSelect={(oItem) => {handleLang(oItem.id)}}>
+                                               
+                                                    <Button
+                                                        variant="outline"                                               
+                                                        startDecorator="Languages"
+                                                        rounded
+                                                        align="left"
+                                                    />
+                                                
+                                        </DropdownMenu></View>)
+                                }
+                                
+                                {
+                                    appSetting('dashboard', 'switch_theme') && (
+                                        <View><DropdownMenu items={['dark', 'light','auto'].map(theme => ({
+                                                key: theme,
+                                                id: theme,
+                                                name: theme,
+                                                title: t('theme_' + theme)
+                                            }))} 
+                                            onSelect={(oItem) => {handleTheme(oItem.id)}}>
+                                               
+                                                    <Button
+                                                        variant="outline"
+                                                        startDecorator="Moon"
+                                                        rounded
+                                                        align="left"
+                                                    />
+                                              
+                                        </DropdownMenu></View>)
+                                }
+                               
+                                
+                                <Link href="/logout"><Button variant="outline" startDecorator="LogOut" rounded /></Link>
+                            </View>
+                            
+                        </View>
+                    </Card>
+                </View>
+               
+                <View className=" w-full ">
+                    
+                    <ElementDashboardStat {...props}/>
+                    <Card addClassName=" shadow flex-col m-2 p-3 sm:p-4">
+                               
+                            
+                               
+                                {
+                                    
+                                    appSetting('layout', 'avaliable_langs').length > 1 && (
+                                        <View className="mb-2">
+                                        <DropdownMenu 
+                                            items={langItems}
+                                            onSelect={(oItem) => {handleLang(oItem.id)}}>
+                                            
+                                                <Button
+                                                    variant="secondary"
+                                                    title= {t('lang_' + i18n.language)}
+                                                    startDecorator="Languages"
+                                                    fullWidth
+                                                    
+                                                    align="left"
+                                            />
+                                        </DropdownMenu>
+                                        </View>
+                                        )
+                                }
+                                {
+                                    appSetting('dashboard', 'switch_theme') && (
+                                        <View className="mb-2">
+
+                                        <DropdownMenu items={['dark', 'light','auto'].map(theme => ({
+                                                key: theme,
+                                                id: theme,
+                                                name: theme,
+                                                title: t('theme_' + theme)
+                                            }))} 
+                                            onSelect={(oItem) => {handleTheme(oItem.id)}}>
+                                               
+                                                    <Button
+                                                        variant="secondary"
+                                                        title= {t('theme_' + currentTheme)}
+                                                        startDecorator="Moon"
+                                                        fullWidth
+                                                        
+                                                        align="left"
+                                                    />
+                                              
+                                        </DropdownMenu>
+                                        </View>)
+                                }
+                                
+                                {
+                                    appSetting('layout', 'avaliable_layouts').length > 1 && (
+                                        
+                                        <View className='hidden sm:flex mb-2'>
+                                            <DropdownMenu 
+                                            items={appSetting('layout', 'avaliable_layouts').map(lang => ({
+                                                id: lang,
+                                                key: lang,
+                                                name: lang,
+                                                title: t('format_' + lang)
+                                            }))} 
+                                            onSelect={(oItem) => {handleFormat(oItem.id)}}>
+                                                <Pressable>
+                                                    <Button
+                                                        variant="secondary"
+                                                        title= {t('format_' + currentFormat)}
+                                                        startDecorator="Layout"
+                                                        fullWidth
+                                                       
+                                                        align="left"
+                                                    />
+                                                </Pressable>
+                                        </DropdownMenu></View>)
+                                }
+                                <Link href="/logout"><Button
+                                    variant="secondary"
+                                    title= {t("Sign out")}
+                                    startDecorator="LogOut"
+                                    fullWidth
+                                  
+                                    align="left"
+                                /></Link>
+                    </Card>
+                </View>
+                
+            </View>
+        </View>
+    )
+}
+
+
+function ElementDashboardStat(props) {
+    
+    const { colors } = useTheme();
+    const { t } = useTranslation();
+    let { currentUser, setCurrentUser } = useCurrentUser()
+    // Same request as the remote dashboard — they share one cache entry.
+    const { data: sResponse } = useFetch('/api.php?r=system/get_stat_block/TemplDashboardServices');
+    const data = sResponse?.data?.[0]?.data ?? props.data;
+
+    let menu = appSetting('menu_items', 'menu_dashboard')
+    
+    let menu_manage = appSetting('menu_items', 'menu_dashboard_manage')
+    if (!currentUser?.moderator)
+        menu_manage = [];
+
+    return (
+        <>
+            <Row className="flex-wrap flex-auto mb-auto px-1 sm:px-0">
+                {menu.map((item2, index) => {
+                    let item = data[item2.key];
+                    if (item) {
+                        if (item?.type != 'growth') {
+                            return <View className="  w-1/2 lg:w-1/3 xl:w-1/4 p-1 sm:p-2 web:duration-300 " key={index}>
+                                <Link href={item2.link}>
+                                    <Card rounded=" rounded-2xl " addClassName=" sm:web:hover:scale-105 web:duration-300 w-full p-4 " >
+                                        <Row className='space-x-1 w-full justify-between'>
+                                            {
+                                                item.count > 0 ? <Text className=" text-3xl -translate-y-1 font-semibold flex-auto text-secondary-foreground web:group-hover:text-foreground    ">
+                                                    {item.count}
+                                                </Text> : <View><Link href={item2.link2} emulate={true}><Button variant="outline" startDecorator="Plus" size="sm" rounded /></Link></View>
+                                            }
+                                            <View className="flex-none  text-secondary-foreground web:group-hover:text-foreground   font-semibold ">
+                                                <Icon icon={item2.icon} width={24} height={24} color={colors.default}/>
+                                            </View>
+                                        </Row>
+                                        <Row className="w-full my-auto gap-x-2 ">
+                                             
+                                            <Text className=" text-lg flex-auto text-secondary-foreground web:group-hover:text-foreground   font-semibold ">
+                                                {t(item2.title)}
+                                            </Text>
+                                            <View className='my-auto' ><Text>{getCounter(item[item2.action], item2.action_icon, '', colors.default)}</Text></View>
+                                           
+                                            
+                                        </Row>
+                                    </Card>
+                                </Link>
+                            </View>;
+                        }
+                        return (
+                            <View className=" w-1/2 lg:w-1/3  xl:w-1/4 p-1 sm:p-2 " key={index}>
+                                <Link href={item2.link} key={index}>
+                                    <Card rounded=" rounded-2xl " addClassName="w-full p-4 web:duration-300 sm:web:hover:scale-105 " margin="a">
+                                        <Row className=''>
+                                            <Text className=" text-3xl -translate-y-1 font-semibold flex-auto text-secondary-foreground web:group-hover:text-foreground    ">
+                                                {item.current}
+                                            </Text>
+                                            <View className="flex-none  text-secondary-foreground web:group-hover:text-foreground   font-semibold ">
+                                                <Icon icon={item2.icon} width={24} height={24} color={colors.default}/>
+                                            </View>
+
+                                        </Row>
+                                        <Row className="w-full gap-x-2">
+                                          
+                                            <Text className=" text-lg flex-auto text-secondary-foreground web:group-hover:text-foreground   font-semibold  ">
+                                                {t(item2.title)}
+                                            </Text>
+                                            <View className='my-auto' ><Text>{getCounter(item[item2.action], item2.action_icon, '', colors.default)}</Text></View>
+
+                                        </Row>
+                                    </Card>
+                                </Link>
+                            </View>
+                        )
+                    }
+                })}
+            </Row>
+
+            {menu_manage.length > 0 && <Card addClassName='m-2 mb-1 p-2 sm:p-3'>
+                
+                    <Text className="text-xl mx-1 mb-1 text-secondary-foreground  font-semibold">Admin Tools</Text>
+                
+                <View className="flex-row flex-wrap ">
+                    {menu_manage.map((item2, index) => {
+                        return <View className="  w-1/2 lg:w-1/3 xl:w-1/4 p-1 " key={index}>
+                            <Link href={item2.link}>
+                                
+
+                                    <Row className="w-full bg-muted p-2 rounded-lg my-auto items-center text-muted-foreground web:hover:text-foreground  ">
+                                        <View className="flex-none px-1 font-semibold ">
+                                            <Icon icon={item2.icon} width={24} height={24} color={colors.default}/>
+                                        </View>
+                                        <Text className="ml-3 sm: text-base flex-auto text-muted-foreground web:hover:text-foreground font-medium ">
+                                            {t(item2.title)}
+                                        </Text>
+
+                                    </Row>
+                                
+                            </Link>
+                        </View>;
+                    })}
+                </View></Card>}
+        </>
+    )
+}

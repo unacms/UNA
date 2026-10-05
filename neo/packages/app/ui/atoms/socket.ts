@@ -1,0 +1,35 @@
+import Pusher from 'pusher-js/react-native';
+import { appSetting } from 'app/lib/util'
+
+const conf = appSetting('config', 'sockets');
+const pusherInstance = new Pusher(conf.key, {
+    wsHost: conf.host,
+    wsPort: conf.port,
+    forceTLS: false,
+    enabledTransports: ['ws', 'wss'],
+    cluster: '',
+});
+
+const bindingCounts = new Map<string, number>();
+
+/** Bind `cb` to `event_name` on `channel_name`; returns the unsubscribe function. */
+export function subscribe(channel_name: string, event_name: string, cb: (data: any) => void): () => void {
+    if (!pusherInstance) return () => { };
+
+    let channel = pusherInstance.channel(channel_name);
+    if (!channel) channel = pusherInstance.subscribe(channel_name);
+
+    channel.bind(event_name, cb);
+    bindingCounts.set(channel_name, (bindingCounts.get(channel_name) || 0) + 1);
+
+    return () => {
+        channel.unbind(event_name, cb);
+        const count = (bindingCounts.get(channel_name) || 1) - 1;
+        if (count <= 0) {
+            bindingCounts.delete(channel_name);
+            pusherInstance.unsubscribe(channel_name);
+        } else {
+            bindingCounts.set(channel_name, count);
+        }
+    };
+}
