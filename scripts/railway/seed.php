@@ -80,10 +80,10 @@ function seedAs(array $aProfile): int
     return $aProfile[1];
 }
 
-// --- a public group
+// --- a public group (when the package has the Groups module)
 $iGroupProfileId = 0;
 $iOwner = seedAs($aProfiles[0]);
-$r = bx_srv('bx_groups', 'entity_add_forcedly', [$iOwner, [
+$r = !BxDolModuleQuery::getInstance()->isEnabledByName('bx_groups') ? ['message' => 'bx_groups is not installed'] : bx_srv('bx_groups', 'entity_add_forcedly', [$iOwner, [
     'group_name' => 'UNA Community',
     'group_desc' => 'Introduce yourself, share what you are building with UNA and NEO, and ask questions.',
     'allow_view_to' => BX_DOL_PG_ALL,
@@ -92,6 +92,8 @@ if (!empty($r['content']['profile_id'])) {
     $iGroupProfileId = (int)$r['content']['profile_id'];
     seedLog('group UNA Community');
 }
+else
+    seedLog('group skipped: ' . ($r['message'] ?? 'unknown'));
 
 // --- posts, each with a couple of comments from other people
 $aPosts = [
