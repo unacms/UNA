@@ -72,27 +72,46 @@ label_of() { # api-pr-12.unacms.app -> api-pr-12
     echo "${host%."$DNS_ZONE"}"
 }
 
+# All records of DNS_ZONE as one JSON array (Vercel pages them; follow `pagination.next`).
+dns_records() {
+    local page next="" all="[]"
+    while :; do
+        page=$(vercel GET "/v4/domains/$DNS_ZONE/records?limit=100${next:+&until=$next}")
+        all=$(jq -c --argjson a "$all" '$a + .records' <<< "$page")
+        next=$(jq -r '.pagination.next // empty' <<< "$page")
+        [ -n "$next" ] || break
+    done
+    echo "$all"
+}
+
+dns_has() { # dns_has <name> <type> <value>
+    dns_records | jq -e --arg n "$1" --arg t "$2" --arg v "$3" 'any(.[]; .name == $n and .type == $t and .value == $v)' >/dev/null
+}
+
 dns_upsert() { # dns_upsert <name> <type> <value>
-    local name=$1 type=$2 value=$3 current
-    current=$(vercel GET "/v4/domains/$DNS_ZONE/records?limit=100" \
-        | jq -r --arg n "$name" --arg t "$type" '.records[] | select(.name == $n and .type == $t) | "\(.id) \(.value)"')
+    local name=$1 type=$2 value=$3 id val
     while read -r id val; do
         [ -n "$id" ] || continue
         if [ "$val" = "$value" ]; then echo "dns: $type $name ok"; return; fi
         vercel DELETE "/v2/domains/$DNS_ZONE/records/$id" >/dev/null
-    done <<< "$current"
+    done < <(dns_records | jq -r --arg n "$name" --arg t "$type" '.[] | select(.name == $n and .type == $t) | "\(.id) \(.value)"')
     vercel POST "/v2/domains/$DNS_ZONE/records" \
         "$(jq -nc --arg n "$name" --arg t "$type" --arg v "$value" '{name: $n, type: $t, value: $v, ttl: 60}')" >/dev/null
-    echo "dns: $type $name -> $value"
+    # Read it back: a record that silently didn't stick left previews without an API host.
+    local try
+    for try in 1 2 3; do
+        dns_has "$name" "$type" "$value" && { echo "dns: $type $name -> $value"; return; }
+        sleep 2
+    done
+    die "dns: $type $name was not found after writing it"
 }
 
 dns_remove() { # dns_remove <name>  (also its _railway-verify TXT)
-    local name=$1
-    vercel GET "/v4/domains/$DNS_ZONE/records?limit=100" \
-        | jq -r --arg n "$name" --arg v "_railway-verify.$name" '.records[] | select(.name == $n or .name == $v) | .id' \
-        | while read -r id; do
-            vercel DELETE "/v2/domains/$DNS_ZONE/records/$id" >/dev/null && echo "dns: removed record $id"
-        done
+    local name=$1 id
+    while read -r id; do
+        [ -n "$id" ] || continue
+        vercel DELETE "/v2/domains/$DNS_ZONE/records/$id" >/dev/null && echo "dns: removed record $id"
+    done < <(dns_records | jq -r --arg n "$name" --arg v "_railway-verify.$name" '.[] | select(.name == $n or .name == $v) | .id')
 }
 
 api_domain() { # api_domain <host> <environment>
@@ -117,8 +136,11 @@ api_domain() { # api_domain <host> <environment>
     status=$(railway api 'query($id: String!, $projectId: String!) { customDomain(id: $id, projectId: $projectId) { status { verificationDnsHost verificationToken dnsRecords { hostlabel recordType requiredValue } } } }' \
         --variables "$(jq -nc --arg id "$id" --arg p "$RAILWAY_PROJECT_ID" '{id: $id, projectId: $p}')")
 
-    jq -r '.data.customDomain.status.dnsRecords[] | "\(.hostlabel) \(.recordType | sub("DNS_RECORD_TYPE_"; "")) \(.requiredValue)"' <<< "$status" \
-        | while read -r name type value; do dns_upsert "$name" "$type" "$value"; done
+    # Not a pipeline: dns_upsert must run in this shell so a failure fails the job.
+    local name type value
+    while read -r name type value; do
+        dns_upsert "$name" "$type" "$value"
+    done < <(jq -r '.data.customDomain.status.dnsRecords[] | "\(.hostlabel) \(.recordType | sub("DNS_RECORD_TYPE_"; "")) \(.requiredValue)"' <<< "$status")
 
     local vhost vtoken
     vhost=$(jq -r '.data.customDomain.status.verificationDnsHost // empty' <<< "$status")
