@@ -40,24 +40,28 @@ vercel() { # vercel <METHOD> <path> [json-body]
     rm -f "$out"
 }
 
-# The Vercel team (or personal account) that owns DNS_ZONE; it also owns the client project.
-# A team-scoped token can't list teams (403), so VERCEL_TEAM is the normal path.
+# The Vercel scope that owns DNS_ZONE (it also owns the client project): VERCEL_TEAM when
+# that works, else the token's personal account, else any team the token can list.
+# Logs which scope it used, and Vercel's reason when none works (usually token scope).
 TEAM_ID=""
 TEAM_SLUG=""
+owns_zone() { vercel GET "/v5/domains/$DNS_ZONE" >/dev/null; }
 resolve_team() {
     local team
     if [ -n "${VERCEL_TEAM:-}" ]; then
         case "$VERCEL_TEAM" in team_*) TEAM_ID=$VERCEL_TEAM ;; *) TEAM_SLUG=$VERCEL_TEAM ;; esac
-        vercel GET "/v5/domains/$DNS_ZONE" >/dev/null || die "team $VERCEL_TEAM has no access to $DNS_ZONE"
-        return
+        if owns_zone 2>/dev/null; then echo "vercel: scope $VERCEL_TEAM" >&2; return; fi
+        echo "vercel: $DNS_ZONE is not in scope $VERCEL_TEAM, trying the token's other scopes" >&2
+        TEAM_ID=""; TEAM_SLUG=""
     fi
-    for team in "" $(TEAM_ID="" vercel GET /v2/teams 2>/dev/null | jq -r '.teams[].id'); do
-        if TEAM_ID="$team" vercel GET "/v5/domains/$DNS_ZONE" >/dev/null 2>&1; then
-            TEAM_ID="$team"
-            return
-        fi
+    if owns_zone 2>/dev/null; then echo "vercel: personal scope" >&2; return; fi
+    for team in $(vercel GET /v2/teams 2>/dev/null | jq -r '.teams[].id'); do
+        TEAM_ID=$team
+        if owns_zone 2>/dev/null; then echo "vercel: scope $team" >&2; return; fi
     done
-    die "no Vercel team with access to $DNS_ZONE"
+    TEAM_ID=""
+    owns_zone || true # print Vercel's reason
+    die "VERCEL_TOKEN has no scope that owns $DNS_ZONE (check the token's scope in Vercel)"
 }
 
 label_of() { # api-pr-12.unacms.app -> api-pr-12
