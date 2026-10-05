@@ -9,11 +9,12 @@
 #   domains.sh client-unalias <host>
 #
 # Environment: VERCEL_TOKEN, RAILWAY_PROJECT_ID (api-domain), RAILWAY_API_TOKEN (railway CLI),
-#   DNS_ZONE (default unacms.app), CLIENT_PROJECT (default neo-ci).
+#   VERCEL_TEAM (team slug or id; found from DNS_ZONE ownership when unset),
+#   DNS_ZONE (default unacms.app), CLIENT_PROJECT (Vercel project of the NEO client, default neo).
 set -euo pipefail
 
 DNS_ZONE="${DNS_ZONE:-unacms.app}"
-CLIENT_PROJECT="${CLIENT_PROJECT:-neo-ci}"
+CLIENT_PROJECT="${CLIENT_PROJECT:-neo}"
 RAILWAY_SERVICE="${RAILWAY_SERVICE:-una}"
 VERCEL_API=https://api.vercel.com
 
@@ -23,7 +24,7 @@ die() { echo "domains.sh: $*" >&2; exit 1; }
 vercel() { # vercel <METHOD> <path> [json-body]
     local method=$1 path=$2 body=${3:-}
     local sep='?'; case "$path" in *\?*) sep='&' ;; esac
-    local url="$VERCEL_API$path${TEAM_ID:+${sep}teamId=$TEAM_ID}"
+    local url="$VERCEL_API$path${TEAM_ID:+${sep}teamId=$TEAM_ID}${TEAM_SLUG:+${sep}slug=$TEAM_SLUG}"
     if [ -n "$body" ]; then
         curl -fsS -X "$method" -H "Authorization: Bearer $VERCEL_TOKEN" -H 'Content-Type: application/json' -d "$body" "$url"
     else
@@ -32,10 +33,17 @@ vercel() { # vercel <METHOD> <path> [json-body]
 }
 
 # The Vercel team (or personal account) that owns DNS_ZONE; it also owns the client project.
+# A team-scoped token can't list teams (403), so VERCEL_TEAM is the normal path.
 TEAM_ID=""
+TEAM_SLUG=""
 resolve_team() {
     local team
-    for team in "" $(TEAM_ID="" vercel GET /v2/teams | jq -r '.teams[].id'); do
+    if [ -n "${VERCEL_TEAM:-}" ]; then
+        case "$VERCEL_TEAM" in team_*) TEAM_ID=$VERCEL_TEAM ;; *) TEAM_SLUG=$VERCEL_TEAM ;; esac
+        vercel GET "/v5/domains/$DNS_ZONE" >/dev/null || die "team $VERCEL_TEAM has no access to $DNS_ZONE"
+        return
+    fi
+    for team in "" $(TEAM_ID="" vercel GET /v2/teams 2>/dev/null | jq -r '.teams[].id'); do
         if TEAM_ID="$team" vercel GET "/v5/domains/$DNS_ZONE" >/dev/null 2>&1; then
             TEAM_ID="$team"
             return

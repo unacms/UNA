@@ -102,6 +102,8 @@ jobs:
       RAILWAY_PR_ENVIRONMENT: pr-${{ github.event.pull_request.number }}
       # unacms.app hosts: the backend on Railway, the NEO client (neo-ci on Vercel) in front of it
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_TEAM: yasko
+      CLIENT_PROJECT: neo
       PREVIEW_API_HOST: api-pr-${{ github.event.pull_request.number }}.unacms.app
       PREVIEW_CLIENT_HOST: pr-${{ github.event.pull_request.number }}.unacms.app
       UNA_PREVIEW_API_KEY: ${{ secrets.UNA_PREVIEW_API_KEY }}
@@ -124,9 +126,8 @@ jobs:
         chmod +x deploy/entrypoint.sh
 
     - name: Install Railway CLI
-      run: |
-        curl -fsSL https://railway.com/install.sh | sh
-        echo "$HOME/.railway/bin" >> "$GITHUB_PATH"
+      # Pinned npm package instead of piping an install script into sh.
+      run: npm install --global @railway/cli@5.35.0
 
     - name: Provision PR environment
       run: |
@@ -174,11 +175,14 @@ jobs:
     - name: Preview domains on unacms.app
       id: domains
       if: env.VERCEL_TOKEN != ''
+      env:
+        # Branch names are attacker-controlled: pass as data, never interpolate into the script.
+        HEAD_REF: ${{ github.head_ref }}
       run: |
         scripts/railway/domains.sh api-domain "$PREVIEW_API_HOST" "$RAILWAY_PR_ENVIRONMENT"
         # The client build of the same-named neo-ci branch when there is one, else production.
         # Either way NEO's proxy maps pr-<n>.unacms.app to api-pr-<n>.unacms.app.
-        scripts/railway/domains.sh client-alias "$PREVIEW_CLIENT_HOST" "${{ github.head_ref }}"
+        scripts/railway/domains.sh client-alias "$PREVIEW_CLIENT_HOST" "$HEAD_REF"
         echo "ok=1" >> "$GITHUB_OUTPUT"
 
     - name: Comment preview URL on PR
@@ -238,6 +242,7 @@ jobs:
       RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
       RAILWAY_ENVIRONMENT: production
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_TEAM: yasko
       UNA_API_KEY: ${{ secrets.UNA_API_KEY }}
     steps:
     - uses: actions/checkout@v4
@@ -258,9 +263,8 @@ jobs:
         chmod +x deploy/entrypoint.sh
 
     - name: Install Railway CLI
-      run: |
-        curl -fsSL https://railway.com/install.sh | sh
-        echo "$HOME/.railway/bin" >> "$GITHUB_PATH"
+      # Pinned npm package instead of piping an install script into sh.
+      run: npm install --global @railway/cli@5.35.0
 
     - name: Configure production
       run: |
@@ -307,6 +311,8 @@ jobs:
       RAILWAY_BASE_ENVIRONMENT: ${{ secrets.RAILWAY_ENVIRONMENT }}
       RAILWAY_PR_ENVIRONMENT: pr-${{ github.event.pull_request.number }}
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_TEAM: yasko
+      CLIENT_PROJECT: neo
     steps:
     - uses: actions/checkout@v4
       with:
@@ -320,9 +326,8 @@ jobs:
         scripts/railway/domains.sh dns-remove "api-pr-${{ github.event.pull_request.number }}.unacms.app"
 
     - name: Install Railway CLI
-      run: |
-        curl -fsSL https://railway.com/install.sh | sh
-        echo "$HOME/.railway/bin" >> "$GITHUB_PATH"
+      # Pinned npm package instead of piping an install script into sh.
+      run: npm install --global @railway/cli@5.35.0
 
     - name: Delete PR environment
       run: |
