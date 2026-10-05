@@ -167,6 +167,12 @@ const nextConfig = {
             process.env.NEXT_PUBLIC_GOOGLE_WEB_CLIENT_ID ||
             process.env.GOOGLE_WEB_CLIENT_ID ||
             '',
+        // Preview backends (see UNA_PREVIEW_DOMAIN in proxy.js); the browser needs it for
+        // the image allowlist. Only the domain, never the key.
+        NEXT_PUBLIC_UNA_PREVIEW_DOMAIN:
+            process.env.NEXT_PUBLIC_UNA_PREVIEW_DOMAIN ||
+            process.env.UNA_PREVIEW_DOMAIN ||
+            '',
     },
     // Disable source maps in production
     productionBrowserSourceMaps: false,

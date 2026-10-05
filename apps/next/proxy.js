@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { UNA_URL, UNA_API_KEY, MULTITENANT, joinUnaUrl } from 'app/config';
+import { UNA_URL, UNA_API_KEY, MULTITENANT, PREVIEW_DOMAIN, PREVIEW_API_KEY, joinUnaUrl } from 'app/config';
 import { getDomainByHostname } from './lib/domains/domains';
 
 export const config = {
@@ -22,7 +22,7 @@ const TENANT_HEADERS = ['x-tenant-id', 'x-tenant-una-url', 'x-tenant-una-key', '
 function routeRequestHeaders(request, tenant) {
     const headers = new Headers(request.headers);
     for (const name of TENANT_HEADERS) headers.delete(name);
-    if (MULTITENANT && tenant) {
+    if (tenant) {
         headers.set('x-tenant-id', String(tenant.id));
         headers.set('x-tenant-una-url', tenant.unaUrl);
         headers.set('x-tenant-una-key', tenant.unaApiKey);
@@ -35,6 +35,25 @@ async function resolveTenant(hostnameWithPort) {
     const hostname = hostnameWithPort.split(':')[0];
     const domain = await getDomainByHostname(hostname); 
     return domain;
+}
+
+/**
+ * CI previews (UNA's .github/workflows/ci.yml): `pr-<n>.<PREVIEW_DOMAIN>` is a client
+ * alias for PR <n>, whose backend is `api-pr-<n>.<PREVIEW_DOMAIN>`. Returned in the
+ * tenant shape so the proxy and the page use it the same way. Null for any other host,
+ * which keeps the configured UNA_URL.
+ */
+function resolvePreviewBackend(hostnameWithPort) {
+    if (!PREVIEW_DOMAIN || !PREVIEW_API_KEY) return null;
+    const hostname = String(hostnameWithPort || '').split(':')[0].toLowerCase();
+    const match = hostname.match(/^pr-(\d+)\.(.+)$/);
+    if (!match || match[2] !== PREVIEW_DOMAIN.toLowerCase()) return null;
+    return {
+        id: `preview-${match[1]}`,
+        unaUrl: `https://api-pr-${match[1]}.${PREVIEW_DOMAIN}`,
+        unaApiKey: PREVIEW_API_KEY,
+        revision: 0,
+    };
 }
 
 function cookieHeaderFromRequest(request) {
@@ -55,10 +74,10 @@ function sysAiChatPath(pathname) {
 function rewriteToUna(request, tenant, unaPath) {
     let unaUrl = UNA_URL;
     let unaApiKey = UNA_API_KEY;
-    if (MULTITENANT) {
-        if (tenant == null) {
-            return new NextResponse('Tenant not found', { status: 404 });
-        }
+    if (MULTITENANT && tenant == null) {
+        return new NextResponse('Tenant not found', { status: 404 });
+    }
+    if (tenant) {
         unaUrl = tenant.unaUrl;
         unaApiKey = tenant.unaApiKey;
     }
@@ -108,7 +127,7 @@ export async function proxy(request) {
     }
 
     const hostname = request.headers.get("host");
-    const tenant = MULTITENANT ? await resolveTenant(hostname) : null;
+    const tenant = MULTITENANT ? await resolveTenant(hostname) : resolvePreviewBackend(hostname);
 
     // Pretty URL for UNA Agents chat (GET hydrate JSON + POST AG-UI SSE).
     // Not a .php path, so it would otherwise hit the Next catch-all page.

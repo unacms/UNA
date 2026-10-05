@@ -5,6 +5,8 @@ export const APP_URL = appSetting('config', 'app_url') ;
 // Strip trailing slashes — UNA nginx 308s `//path` and relative Location breaks img/fetch.
 export const UNA_URL = String(appSetting('config', 'una_url') || '').replace(/\/+$/, '');
 export const UNA_API_KEY = appSetting('config', 'una_api_key');
+export const PREVIEW_DOMAIN = String(appSetting('config', 'preview_domain') || '');
+export const PREVIEW_API_KEY = appSetting('config', 'preview_api_key');
 export const APP_ORIGIN = appSetting('config', 'app_origin');
 
 /**

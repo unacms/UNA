@@ -7,6 +7,8 @@ export function env(key: string) {
         return process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
     // Client bundle only inlines NEXT_PUBLIC_*. next.config.js copies
     // GOOGLE_WEB_CLIENT_ID → NEXT_PUBLIC_GOOGLE_WEB_CLIENT_ID so SSR/CSR match.
+    if (key == 'UNA_PREVIEW_DOMAIN')
+        return process.env.NEXT_PUBLIC_UNA_PREVIEW_DOMAIN || process.env.UNA_PREVIEW_DOMAIN;
     if (key == 'GOOGLE_WEB_CLIENT_ID')
         return process.env.NEXT_PUBLIC_GOOGLE_WEB_CLIENT_ID || process.env.GOOGLE_WEB_CLIENT_ID;
 
