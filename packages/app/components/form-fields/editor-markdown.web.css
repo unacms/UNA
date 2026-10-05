@@ -1,0 +1,226 @@
+/*
+ * MDXEditor wiki field overrides.
+ * Imported AFTER @mdxeditor/editor/style.css so these win the cascade —
+ * MDXEditor sets --basePageBg: white on the same node with equal specificity.
+ */
+
+.mdxeditor.mdxeditor-wiki,
+.mdxeditor-popup-container.mdxeditor-wiki {
+    --basePageBg: rgb(var(--input));
+    --baseBase: rgb(var(--muted) / 0.35);
+    --baseBgSubtle: rgb(var(--muted) / 0.25);
+    --baseBg: rgb(var(--muted) / 0.45);
+    --baseBgHover: rgb(var(--muted) / 0.65);
+    --baseBgActive: rgb(var(--muted) / 0.85);
+    --baseLine: rgb(var(--border) / 0.6);
+    --baseBorder: rgb(var(--border) / 0.7);
+    --baseBorderHover: rgb(var(--border));
+    --baseSolid: rgb(var(--muted-foreground));
+    --baseSolidHover: rgb(var(--secondary-foreground));
+    --baseText: rgb(var(--muted-foreground));
+    --baseTextContrast: rgb(var(--card-foreground));
+    /* Used for disabled icons + select placeholder — must stay readable in dark. */
+    --baseBorderHover: rgb(var(--muted-foreground));
+
+    --accentBase: rgb(var(--accent));
+    --accentBgSubtle: rgb(var(--accent));
+    --accentBg: rgb(var(--accent));
+    --accentBgHover: rgb(var(--primary) / 0.12);
+    --accentBgActive: rgb(var(--primary) / 0.18);
+    --accentLine: rgb(var(--primary) / 0.35);
+    --accentBorder: rgb(var(--primary) / 0.45);
+    --accentBorderHover: rgb(var(--primary) / 0.6);
+    --accentSolid: rgb(var(--primary));
+    --accentSolidHover: rgb(var(--primary-hover));
+    --accentText: rgb(var(--primary));
+    --accentTextContrast: rgb(var(--primary-foreground));
+
+    color: rgb(var(--card-foreground));
+    background-color: rgb(var(--input));
+}
+
+.mdxeditor.mdxeditor-wiki .mdxeditor-wiki-toolbar,
+.mdxeditor.mdxeditor-wiki .mdxeditor-toolbar {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    border-radius: 0 !important;
+    border-bottom: 1px solid rgb(var(--border) / 0.6);
+    /* Solid chrome — sticky over scrolled content must not show text through. */
+    background-color: rgb(var(--muted)) !important;
+    position: sticky;
+    top: 0;
+    z-index: 3;
+}
+
+/* Active toolbar icons */
+.mdxeditor.mdxeditor-wiki .mdxeditor-toolbar svg,
+.mdxeditor.mdxeditor-wiki .mdxeditor-wiki-toolbar svg {
+    color: rgb(var(--secondary-foreground));
+}
+
+/*
+ * MDXEditor paints [data-disabled] icons with --baseBorderHover.
+ * That token maps to --border (near-black in dark) → invisible on the toolbar.
+ */
+.mdxeditor.mdxeditor-wiki .mdxeditor-toolbar [data-disabled] svg,
+.mdxeditor.mdxeditor-wiki .mdxeditor-wiki-toolbar [data-disabled] svg,
+.mdxeditor.mdxeditor-wiki .mdxeditor-toolbar button:disabled svg,
+.mdxeditor.mdxeditor-wiki .mdxeditor-wiki-toolbar button:disabled svg {
+    color: rgb(var(--muted-foreground)) !important;
+    opacity: 0.85;
+}
+
+/*
+ * Separators use --baseBorder / --baseBase (also near-black in dark).
+ * Force a readable hairline against the toolbar surface.
+ */
+.mdxeditor.mdxeditor-wiki .mdxeditor-toolbar [role='separator'],
+.mdxeditor.mdxeditor-wiki .mdxeditor-wiki-toolbar [role='separator'] {
+    border-left-color: rgb(var(--muted-foreground) / 0.45) !important;
+    border-right-color: transparent !important;
+    align-self: center;
+    min-height: 1rem;
+}
+
+/* Block type / language select — label was invisible (placeholder used --baseBorderHover). */
+.mdxeditor.mdxeditor-wiki .mdxeditor-toolbar button[role='combobox'],
+.mdxeditor.mdxeditor-wiki .mdxeditor-wiki-toolbar button[role='combobox'] {
+    color: rgb(var(--card-foreground)) !important;
+    background-color: rgb(var(--muted) / 0.55) !important;
+    border: 1px solid rgb(var(--border) / 0.6);
+}
+
+.mdxeditor.mdxeditor-wiki .mdxeditor-toolbar button[role='combobox'][data-placeholder] > span:first-child,
+.mdxeditor.mdxeditor-wiki .mdxeditor-wiki-toolbar button[role='combobox'][data-placeholder] > span:first-child {
+    color: rgb(var(--muted-foreground)) !important;
+}
+
+.mdxeditor.mdxeditor-wiki .mdxeditor-toolbar button[role='combobox']:disabled,
+.mdxeditor.mdxeditor-wiki .mdxeditor-wiki-toolbar button[role='combobox']:disabled {
+    color: rgb(var(--muted-foreground)) !important;
+    opacity: 0.85;
+}
+
+/*
+ * Parent surface scrolls (overflow-y: auto + maxHeight on the field wrapper).
+ * Don't trap overflow inside rich/source/diff — let content grow naturally.
+ */
+.mdxeditor.mdxeditor-wiki .mdxeditor-diff-source-wrapper {
+    display: block;
+    min-height: 0;
+}
+
+.mdxeditor.mdxeditor-wiki .mdxeditor-rich-text-editor {
+    overflow: visible !important;
+}
+
+/* Lexical root + wrapper */
+.mdxeditor.mdxeditor-wiki .mdxeditor-rich-text-editor .mdxeditor-root-contenteditable,
+.mdxeditor.mdxeditor-wiki .mdxeditor-root-contenteditable {
+    color: rgb(var(--card-foreground)) !important;
+    background-color: transparent;
+    caret-color: rgb(var(--card-foreground));
+    min-height: 7rem;
+    box-sizing: border-box;
+}
+
+.mdxeditor.mdxeditor-wiki .mdxeditor-source-editor,
+.mdxeditor.mdxeditor-wiki .mdxeditor-diff-editor,
+.mdxeditor.mdxeditor-wiki .cm-sourceView {
+    min-height: 12rem;
+    overflow: visible;
+}
+
+.mdxeditor.mdxeditor-wiki .cm-mergeView {
+    min-height: 12rem;
+    overflow: visible;
+}
+
+/* Source / diff CodeMirror panes (basicLight is hardcoded in MDXEditor). */
+.mdxeditor.mdxeditor-wiki .mdxeditor-source-editor,
+.mdxeditor.mdxeditor-wiki .mdxeditor-diff-editor,
+.mdxeditor.mdxeditor-wiki .cm-sourceView,
+.mdxeditor.mdxeditor-wiki .cm-editor {
+    background-color: rgb(var(--input)) !important;
+    color: rgb(var(--card-foreground)) !important;
+}
+
+.mdxeditor.mdxeditor-wiki .cm-scroller {
+    background-color: rgb(var(--input)) !important;
+    color: rgb(var(--card-foreground)) !important;
+    /* Grow with document; outer field surface scrolls. */
+    overflow: visible !important;
+}
+
+.mdxeditor.mdxeditor-wiki .cm-content {
+    caret-color: rgb(var(--card-foreground));
+    color: rgb(var(--card-foreground)) !important;
+}
+
+.mdxeditor.mdxeditor-wiki .cm-gutters {
+    background-color: rgb(var(--muted) / 0.35) !important;
+    color: rgb(var(--muted-foreground)) !important;
+    border: none !important;
+}
+
+.mdxeditor.mdxeditor-wiki .cm-activeLineGutter,
+.mdxeditor.mdxeditor-wiki .cm-activeLine {
+    background-color: rgb(var(--muted) / 0.25) !important;
+}
+
+.mdxeditor.mdxeditor-wiki .cm-selectionBackground,
+.mdxeditor.mdxeditor-wiki .cm-content ::selection {
+    background-color: rgb(var(--primary) / 0.35) !important;
+}
+
+.mdxeditor.mdxeditor-wiki .cm-cursor {
+    border-left-color: rgb(var(--card-foreground)) !important;
+}
+
+/* Syntax tokens — keep readable on dark input surfaces. */
+.mdxeditor.mdxeditor-wiki.dark-theme .cm-content .tok-keyword,
+.mdxeditor.mdxeditor-wiki.dark-theme .cm-content .tok-operator {
+    color: #c4b5fd;
+}
+
+.mdxeditor.mdxeditor-wiki.dark-theme .cm-content .tok-string,
+.mdxeditor.mdxeditor-wiki.dark-theme .cm-content .tok-string2 {
+    color: #86efac;
+}
+
+.mdxeditor.mdxeditor-wiki.dark-theme .cm-content .tok-comment {
+    color: rgb(var(--muted-foreground));
+}
+
+.mdxeditor.mdxeditor-wiki.dark-theme .cm-content .tok-heading,
+.mdxeditor.mdxeditor-wiki.dark-theme .cm-content .tok-strong {
+    color: #fde68a;
+}
+
+.mdxeditor.mdxeditor-wiki.dark-theme .cm-content .tok-link,
+.mdxeditor.mdxeditor-wiki.dark-theme .cm-content .tok-url,
+.mdxeditor.mdxeditor-wiki.dark-theme .cm-content .tok-meta {
+    color: #93c5fd;
+}
+
+.mdxeditor.mdxeditor-wiki.dark-theme .cm-content .tok-monospace,
+.mdxeditor.mdxeditor-wiki.dark-theme .cm-content .tok-atom {
+    color: #f9a8d4;
+}
+
+.mdxeditor-select-content.mdxeditor-wiki,
+.mdxeditor.mdxeditor-wiki .mdxeditor-select-content,
+[data-radix-popper-content-wrapper] .mdxeditor-select-content {
+    --basePageBg: rgb(var(--popover));
+    --baseBase: rgb(var(--popover));
+    --baseBg: rgb(var(--muted) / 0.45);
+    --baseBgHover: rgb(var(--muted) / 0.65);
+    --baseBgActive: rgb(var(--muted) / 0.85);
+    --baseBorder: rgb(var(--border) / 0.7);
+    --baseText: rgb(var(--muted-foreground));
+    --baseTextContrast: rgb(var(--popover-foreground));
+    background-color: rgb(var(--popover)) !important;
+    color: rgb(var(--popover-foreground)) !important;
+    border: 1px solid rgb(var(--border) / 0.6);
+}

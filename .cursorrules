@@ -1,0 +1,74 @@
+# NEO Project Cursor Rules
+
+Concise rules for AI assistants working on the NEO monorepo. The canonical, detailed guide is [AGENTS.md](AGENTS.md) — read it for project structure, framework versions, styling, customization workflow, skills, and checklists.
+
+## Project Overview
+
+NEO is a cross-platform UNA CMS frontend:
+- **Native app**: React Native with Expo (`apps/expo`), styled with Uniwind (Tailwind CSS v4 syntax)
+- **Web app**: Next.js App Router (`apps/next`), styled with Tailwind CSS 4
+- **Shared code**: `packages/app` (components, lib, design system, settings)
+- Yarn workspaces + Turborepo; lockfile: `yarn.lock`
+
+## Critical Rules
+
+### 1. Platform Consistency
+- Web and Native implementations should follow the same patterns
+- When fixing issues on one platform, check if the same issue exists on the other
+- Icon handling, theming, and component behavior should be consistent across platforms
+- On native, text styles do NOT cascade from View/Pressable to Text — apply text classes directly to `Text` (see AGENTS.md)
+
+### 2. Routing
+- **Native**: Expo Router with file-based routing (`apps/expo/app/`)
+- **Web**: Next.js App Router (`apps/next/app/`)
+
+### 3. UNA CMS API Integration
+- Use the `fetcher` function from `app/lib/fetcher` for all UNA API calls
+- Follow UNA's endpoint structure: `/api.php?r=module/action/Template&params[]=JSON`
+- Handle proxy routing automatically (web vs native configurations)
+- Use Bearer token authentication for server-side calls
+- Real-time updates via Pusher WebSocket subscriptions
+
+```javascript
+import { fetcher } from 'app/lib/fetcher';
+
+const data = await fetcher('/api.php?r=module/action/Template&params[]=JSON');
+```
+
+See the `una-api` skill (`.agents/skills/una-api/SKILL.md`) for backend contracts (guest-safe blocks, JSON responses).
+
+### 4. Authentication
+- Use existing `currentUser` patterns for authentication checks
+- Menu filtering follows established patterns in `packages/app/lib/util.ts` (see `util/menu.ts`)
+- Check both logged/non-logged state handling for consistency
+
+### 5. Customization Layer
+- Defaults live in `packages/app/default/` and default `_map.js` files — do not modify them in branch/fork projects
+- Overrides belong under `packages/app/customization/` (settings, translations, icons, component maps, config)
+
+### 6. Protected cleaned files
+- Stabilized modules must not be casually rewritten (see `.cursor/rules/protected-cleaned-files.mdc`)
+- On `main`/`master`: if a task needs them — stop and strongly recommend a feature branch; only edit there (or if the user explicitly overrides)
+- In child/fork repos: prefer `packages/app/customization/` only; do not touch protected shared paths unless explicitly requested on a feature branch
+- Protected list lives in `.cursor/rules/protected-cleaned-files.mdc` (grid, form-fields, objects, menu-items, content-list, profile-list, image atom, …)
+
+## Red Flags - Always Investigate
+
+- Different implementations between web and native for the same feature
+- Missing icons on one platform but working on another
+- Hardcoded colors instead of semantic design tokens
+- Direct fetch() calls bypassing the `fetcher` function
+- Incorrect UNA endpoint patterns (not following `/api.php?r=module/action/Template`)
+- Hardcoded UNA_URL instead of using proxy/env configuration
+- Direct Tailwind usage where design system components exist
+- Missing responsive breakpoints for mobile/desktop differences
+
+## Before Making Changes
+
+1. **Search existing code** for similar patterns and components
+2. **Test on both platforms** if making shared changes
+3. **Follow existing conventions** in the same directory/module
+4. **Use semantic design tokens**, not hardcoded values
+5. **Run `yarn typecheck`** from the repo root before finishing (web + native)
+
+For everything else (component hierarchy, Server vs Client Components, React Compiler notes, animated icons, NeoButton, skill precedence), defer to [AGENTS.md](AGENTS.md).

@@ -1,0 +1,375 @@
+import { useEffect, useState } from 'react'
+import { Linking, Platform } from 'react-native'
+import { Row, View } from 'app/design/view'
+import { H1C, Text } from 'app/design/typography'
+import { appSetting, openExternalLink, setClipboard } from 'app/lib/util'
+import Image from 'app/ui/atoms/image'
+import { NeoButtonLink } from 'app/design/controls'
+import Badge from 'app/ui/molecules/profile/badge'
+import DropdownMenu from 'app/ui/atoms/dropdown-menu'
+import { Icon } from 'app/ui/atoms/icon'
+import Markdown from 'app/ui/atoms/markdown'
+import Menu from 'app/components/menu'
+import { BlockWrapper } from 'app/components/block-wrapper'
+import Time from 'app/ui/atoms/time'
+import { getWikiBlockPayload } from './helpers'
+import { useTranslation } from 'react-i18next'
+
+const unaStoragePathPattern = /^\/?sys_[^/]+_files\//
+const markdownSourceStoragePrefix = 'wiki-markdown-source:v1:'
+const defaultAiPrompt = 'Read this documentation page, so I can ask questions about it:\n\n{url}'
+const markdownBaseMenuItems = [
+    {
+        id: 'copy-markdown',
+        icon: 'Copy',
+        title: 'Copy as Markdown',
+    },
+    {
+        id: 'view-markdown',
+        icon: 'ExternalLink',
+        title: 'View as Markdown',
+    },
+]
+
+function fallbackPlatformLabel(value) {
+    return String(value || '')
+        .replace(/[-_]+/g, ' ')
+        .replace(/\b\w/g, (character) => character.toUpperCase())
+}
+
+function resolveIconUrl(value) {
+    const source = String(value || '')
+    return unaStoragePathPattern.test(source)
+        ? `/s/${source.replace(/^\/+/, '')}`
+        : source
+}
+
+function resolvePageUrl(value) {
+    const source = String(value || '')
+    if (/^https?:\/\//i.test(source)) return source
+
+    if (Platform.OS === 'web' && typeof window !== 'undefined') {
+        const pathname = source
+            ? (source.startsWith('/') ? source : `/${source}`)
+            : window.location.pathname
+        return new URL(pathname, window.location.origin).toString()
+    }
+
+    const appUrl = String(appSetting('config', 'app_url') || '').replace(/\/$/, '')
+    return appUrl && source ? `${appUrl}/${source.replace(/^\/+/, '')}` : source
+}
+
+function createAiPrompt(template, pageUrl) {
+    return String(template || '')
+        .split('{url}')
+        .join(pageUrl)
+}
+
+function createAiAppUrl(template, prompt, pageUrl) {
+    return String(template || '')
+        .split('{prompt}')
+        .join(encodeURIComponent(prompt))
+        .split('{url}')
+        .join(encodeURIComponent(pageUrl))
+}
+
+async function openAiApp(url) {
+    if (/^https?:\/\//i.test(url)) {
+        await openExternalLink(url)
+        return
+    }
+    await Linking.openURL(url)
+}
+
+async function copyMarkdownSource(markdownSource) {
+    try {
+        await setClipboard(markdownSource)
+        return
+    } catch {
+        if (Platform.OS !== 'web' || typeof document === 'undefined') return
+    }
+
+    const textarea = document.createElement('textarea')
+    textarea.value = markdownSource
+    textarea.setAttribute('readonly', '')
+    textarea.style.left = '-9999px'
+    textarea.style.position = 'fixed'
+    document.body.appendChild(textarea)
+    textarea.select()
+
+    try {
+        document.execCommand('copy')
+    } finally {
+        textarea.remove()
+    }
+}
+
+// Icons already fetched this session — skip the skeleton on remount so
+// returning to a cached wiki page doesn't flash a placeholder.
+const loadedIconSrcs = new Set()
+
+function WikiDocumentIcon({ alt, size, src }) {
+    const [loaded, setLoaded] = useState(() => loadedIconSrcs.has(src))
+
+    useEffect(() => {
+        setLoaded(loadedIconSrcs.has(src))
+    }, [src])
+
+    const handleLoad = () => {
+        loadedIconSrcs.add(src)
+        setLoaded(true)
+    }
+
+    return (
+        <View className="relative rounded-lg overflow-hidden h-10 w-10 lg:h-12 lg:w-12 bg-muted">
+            <Image
+                alt={alt}
+                className="h-full w-full"
+                contentFit="contain"
+                fill
+                nobg
+                onLoad={handleLoad}
+                src={src}
+            />
+        </View>
+    )
+}
+
+export function WikiDocumentHeader({ markdownSource = '', metadata, pageUrl = '' }) {
+    const { t } = useTranslation()
+    const {
+        description,
+        iconUrl,
+        packageName,
+        platforms = [],
+        sourceCodeUrl,
+        tags = [],
+        title,
+    } = metadata || {}
+    const config = appSetting('wiki', 'document_header') || {}
+    const platformMap = config.platforms || {}
+    const tagConfig = config.tag || {}
+    const aiApps = config.ai_apps || {}
+    const resolvedPageUrl = resolvePageUrl(pageUrl)
+    const aiPrompt = createAiPrompt(config.ai_prompt || defaultAiPrompt, resolvedPageUrl)
+    const markdownMenuItems = [
+        ...markdownBaseMenuItems,
+        ...Object.entries(aiApps).flatMap(([id, aiApp]) => (
+            aiApp?.label && aiApp?.url
+                ? [{
+                    id: `ai-${id}`,
+                    aiAppUrl: createAiAppUrl(aiApp.url, aiPrompt, resolvedPageUrl),
+                    icon: aiApp.icon || 'Bot',
+                    title: aiApp.label,
+                }]
+                : []
+        )),
+    ]
+    const iconSize = Number(config.icon_size) || 56
+    const resolvedIconUrl = resolveIconUrl(iconUrl)
+
+    if (!title) return null
+
+    const handleMarkdownAction = (item) => {
+        if (item?.id === 'copy-markdown') {
+            void copyMarkdownSource(markdownSource)
+            return
+        }
+
+        if (item?.aiAppUrl) {
+            void openAiApp(item.aiAppUrl).catch(() => {})
+            return
+        }
+
+        if (item?.id !== 'view-markdown') return
+
+        if (Platform.OS === 'web' && typeof window !== 'undefined') {
+            const sourceId = globalThis.crypto?.randomUUID?.()
+                || `${Date.now()}-${Math.random().toString(36).slice(2)}`
+            const storageKey = `${markdownSourceStoragePrefix}${sourceId}`
+
+            try {
+                window.localStorage.setItem(
+                    storageKey,
+                    JSON.stringify({ source: markdownSource, title }),
+                )
+                window.open(
+                    `/wiki/markdown-source#${encodeURIComponent(storageKey)}`,
+                    '_blank',
+                    'noopener,noreferrer',
+                )
+                window.setTimeout(
+                    () => window.localStorage.removeItem(storageKey),
+                    5 * 60 * 1000,
+                )
+            } catch {
+                void copyMarkdownSource(markdownSource)
+            }
+            return
+        }
+
+        void openExternalLink(
+            `data:text/plain;charset=utf-8,${encodeURIComponent(markdownSource)}`,
+        )
+    }
+
+    const platformBadges = platforms.map((platform) => {
+        const key = String(platform).toLowerCase()
+        const platformConfig = platformMap[key] || {}
+        return {
+            key,
+            data: {
+                color: platformConfig.color || 'neutral',
+                icon: platformConfig.icon || 'Globe',
+                text: platformConfig.label || fallbackPlatformLabel(platform),
+            },
+        }
+    })
+
+    return (
+        <View className="w-full border-b border-border/60 gap-3 pb-2">
+            <Row className="items-center gap-4">
+                {resolvedIconUrl ? (
+                    <WikiDocumentIcon
+                        alt={`${title} icon`}
+                        size={iconSize}
+                        src={resolvedIconUrl}
+                    />
+                ) : null}
+                <H1C isfirst islast>{title}</H1C>
+            </Row>
+            <View className="min-w-0 flex-1 gap-4 flex-row flex-wrap justify-between">
+                {description ? (
+                    <Text className="text-lg leading-6 text-secondary-foreground flex-auto">
+                        {description}
+                    </Text>
+                ) : null}
+
+                {platformBadges.length > 0 || tags.length > 0 ? (
+                    <Row className="flex-wrap items-center justify-start gap-2  max-w-full min-w-0 shrink">
+                        {platformBadges.map((badge) => (
+                            <Badge
+                                key={`platform-${badge.key}`}
+                                data={{ ...badge.data }}
+                                rounded
+                                size="sm"
+                                variant="secondary"
+                            />
+                        ))}
+                        {tags.map((tag) => (
+                            <Badge
+                                key={`tag-${tag}`}
+                                data={{
+                                    color: tagConfig.color || 'neutral',
+                                    icon: tagConfig.icon || 'Tag',
+                                    text: tag,
+                                }}
+                                rounded
+                                size="sm"
+                                variant="outline"
+                            />
+                        ))}
+                    </Row>
+                ) : null}
+                <Row className="flex-wrap items-center justify-between gap-2 ">
+                    {packageName ? (
+                        <Row className="flex-wrap items-center gap-1">
+                            <Icon icon="Package" size={16} className="text-secondary-foreground" />
+                            <Text className="text-sm leading-7 text-secondary-foreground">{t('Version:')}</Text>
+                            <Badge
+                                data={{
+                                    color: 'neutral',
+                                    text: packageName,
+                                }}
+                                rounded
+                                size="xs"
+                                variant="secondary"
+                            />
+                        </Row>
+                    ) : null}
+                    <Row className="flex-wrap items-center gap-2 ">
+                        {sourceCodeUrl ? (
+                            <NeoButtonLink
+                                accessibilityLabel={`View ${title} source code`}
+                                asExternal
+                                borderShape="capsule"
+                                className="self-start"
+                                controlSize="mini"
+                                href={sourceCodeUrl}
+                                image="Github"
+                                label={t('Source')}
+                                style="borderless"
+                                target="_blank"
+                            />
+                        ) : null}
+                        {markdownSource ? (
+                            <DropdownMenu
+                                items={markdownMenuItems}
+                                onSelect={handleMarkdownAction}
+                                buttonProps={{
+                                    accessibilityLabel: 'Markdown actions',
+                                    borderShape: 'capsule',
+                                    controlSize: 'mini',
+                                    image: 'Copy',
+                                    label: 'Copy Page',
+                                    style: 'borderless',
+                                }}
+                                triggerAccessibilityLabel="Markdown actions"
+                            />
+                        ) : null}
+                    </Row>
+                </Row>
+            </View>
+        </View>
+    )
+}
+
+/** UNA-style article block: docs header + manage menu + Markdown body. */
+export function WikiArticleBlock({
+    block,
+    pageUrl,
+}) {
+    const { menu, added, attributes, body, raw } = getWikiBlockPayload(block);
+    const hasDocHeader = Boolean(attributes?.title);
+
+    return (
+        <BlockWrapper block={block} config={block?.config_api} showTitle={!hasDocHeader}>
+            {hasDocHeader ? (
+                <WikiDocumentHeader
+                    markdownSource={raw}
+                    metadata={attributes}
+                    pageUrl={pageUrl}
+                />
+            ) : null}
+            {body ? <Markdown data={body} /> : null}
+            {menu?.items?.length ? (
+                <Row className="mb-2 justify-end">
+                    <View className="w-full">
+                        <Menu
+                            {...menu}
+                            alignItems="start"
+                            autoSize
+                            autoFilter={false}
+                            params={{
+                                className: 'gap-x-2',
+                                button_variant: 'default',
+                                button_size: 'sm',
+                                button_rounded: false,
+                                button_full_width: false,
+                                show_action: true,
+                                show_counter: true,
+                                show_combined: true,
+                            }}
+                        />
+                    </View>
+                </Row>
+            ) : null}
+            {added ? (
+                <Time
+                    className="text-muted-foreground text-xs leading-5"
+                    ts={added}
+                />
+            ) : null}
+        </BlockWrapper>
+    );
+}

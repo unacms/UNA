@@ -1,0 +1,488 @@
+@import 'tailwindcss';
+
+/*
+ * Platform variants — same behavior as the old tailwind.config.js plugin (web: identity, native/ios/android: never match on web).
+ */
+@custom-variant web (&);
+@custom-variant native (@media not all);
+@custom-variant ios (@media not all);
+@custom-variant android (@media not all);
+
+/*
+ * Light variant — counterpart to dark, needed by shared `@variant light` tokens.
+ */
+@custom-variant light {
+    &:where(.light, .light *, [theme='light'], [theme='light'] *, [data-theme='light'], [data-theme='light'] *) {
+        @slot;
+    }
+    @media (prefers-color-scheme: light) {
+        &:where(:not([data-theme='dark']):not([data-theme='dark'] *):not([theme='dark']):not([theme='dark'] *):not(.dark):not(.dark *)) {
+            @slot;
+        }
+    }
+}
+
+/*
+ * Dark variant — html gets theme + data-theme from layout.web.js; keep .dark for compatibility with legacy darkMode: 'class'.
+ *
+ * Block form so the same `@variant dark { ... }` invocation (including the one
+ * inside `theme-tokens.css`) covers both:
+ *   1. Explicit dark attribute / class on any ancestor or self.
+ *   2. System dark preference, gated by a `:not([data-theme='light'])` guard so an
+ *      explicit light attribute always wins over `prefers-color-scheme: dark`.
+ *
+ * Side-effect: utility-level `dark:bg-...` now also responds to system dark
+ * (matches Uniwind's built-in `dark` variant on native — by design).
+ */
+@custom-variant dark {
+    &:where(.dark, .dark *, [theme='dark'], [theme='dark'] *, [data-theme='dark'], [data-theme='dark'] *) {
+        @slot;
+    }
+    @media (prefers-color-scheme: dark) {
+        &:where(:not([data-theme='light']):not([data-theme='light'] *):not([theme='light']):not([theme='light'] *):not(.light):not(.light *)) {
+            @slot;
+        }
+    }
+}
+
+/* Content scanning — Next app + shared package */
+@source '../../**/*.{js,jsx,ts,tsx}';
+
+/* Shared design tokens — Tailwind v4 `@theme inline` map + runtime radius lengths. */
+@import './theme.css';
+
+@import './utilities.css';
+
+/* Shared palette + semantic tokens (also imported by apps/expo/global.combined.css). */
+@import './palette.css';
+
+@plugin 'tailwindcss-animate';
+
+/*
+ * Hit area (web only) — expand a control's clickable region without affecting
+ * layout, via a transparent `::before` overlay. Same technique as bazza.dev's
+ * `hit-area` utility (https://bazza.dev/craft/2026/hit-area).
+ *
+ * `hit-area-{n}` extends the hit area by `n` * 1px on every side. NeoButton
+ * emits the value resolved from its `hitSlop` (theme `neo_button.controlSizes`)
+ * so web and native share one source of truth: native passes `hitSlop` to the
+ * RN Pressable, web applies the matching `hit-area-*` class here. React Native
+ * has no pseudo-elements, so this utility is intentionally web-only and lives
+ * in the Next-only `global.css` (not the shared `utilities.css`).
+ *
+ * The corner radius is purely cosmetic on an invisible overlay, so — unlike the
+ * focus ring — it does not need the superellipse corner-shape treatment.
+ */
+@utility hit-area-* {
+    position: relative;
+    z-index: 0;
+
+    &::before {
+        content: "";
+        position: absolute;
+        inset: calc(--value(integer) * -1px);
+        border-radius: var(--u-neo-btn-hitarea-radius, 0.75rem);
+        background-color: rgba(0, 0, 0, 0.001);
+        pointer-events: auto;
+        z-index: -1;
+    }
+}
+
+/*
+ * Fallback superellipse factors (overridden on <html> from theme.corner_smoothing
+ * via app/design/corner-smoothing.js when enabled). Consumed by global.web.css.
+ */
+@layer base {
+    :root {
+        --neo-corner-superellipse-factor: 1.5;
+        --neo-corner-superellipse-full-factor: 1;
+    }
+
+    /*
+     * Web `View` interop (`view.web.tsx` → `neo-v`): RN-style flex column reset.
+     * Lives in `base` so Tailwind utilities on the same node win over flex/display/position.
+     * `:where()` keeps specificity at 0 so authored utilities still override when needed.
+     */
+     .neo-v{
+        align-content: flex-start;
+        align-items: stretch;
+        box-sizing: border-box;
+        display: flex;
+        flex-basis: auto;
+        flex-direction: column;
+        flex-shrink: 0;
+        list-style: none;
+        margin: 0px;
+        min-height: 0px;
+        min-width: 0px;
+        padding: 0px;
+        position: relative;
+        text-decoration: none;
+        z-index: 0;
+    }
+    .neo-p{
+        align-content: flex-start;
+        align-items: stretch;
+        box-sizing: border-box;
+        display: flex;
+        flex-basis: auto;
+        flex-direction: column;
+        flex-shrink: 0;
+        list-style: none;
+        margin: 0px;
+        min-height: 0px;
+        min-width: 0px;
+        padding: 0px;
+        position: relative;
+        text-decoration: none;
+        z-index: 0;
+        touch-action: manipulation;
+    }
+    .neo-sh {
+        display: flex;
+        min-width: 0;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        overflow-y: hidden;
+    }
+    .neo-sv {
+        display: flex;
+        min-height: 0;
+        flex-direction: column;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+     /* Web `ScrollView` inner content — horizontal (view.web.tsx). */
+    .neo-sh-c {
+        display: flex;
+        min-height: 0;
+        flex-direction: row;
+        flex-wrap: nowrap;
+    }
+    /* Web `ScrollView` inner content — vertical (view.web.tsx). */
+    .neo-sv-c {
+        display: flex;
+        min-width: 0;
+        flex-direction: column;
+    }
+}
+
+/*
+ * Web-only HTML rendering rules.
+ * `.u-vanilla-html` / `.u-vanilla-html-small` base typography lives in
+ * `shared-utilities.css` (cross-platform). The descendant-selector rules below
+ * target real DOM elements (`p`, `ul`, `li`, `h1-h5`, `A`, `:first/:last-child`)
+ * and have no React Native equivalent — the corresponding components in
+ * app/ui/atoms/html.tsx style each tag explicitly per-platform.
+ */
+
+
+/*
+ * NeoButton realistic glass (web) — `neo_button.defaults.glassEffect: 'realistic'`.
+ * Layers rendered by NeoButton:
+ *
+ *   .neo-glass-wrap[data-neo-glass=<state>]   press tilt, size unit, colours
+ *     .neo-glass-shadow                       blurred ring under the button
+ *     .neo-glass (surface)                    sheen, drop + inset shadows, hover shrink
+ *       .neo-glass-rim                        conic rim, rotates on hover/press
+ *       …label…
+ *       .neo-glass-shine                      light sweep over the label
+ *
+ * `data-neo-glass` is NeoButton's state key (default | hovered | focused |
+ * pressed | pressedToggle | disabled): hover stays mouse-only and selected /
+ * disabled follow the same resolver logic as every other style. Fills stay on
+ * the theme (`styles.<glass>.realistic`); nothing here sets background-color,
+ * so `tint` still repaints glassProminent. Unlayered so it beats the
+ * container's `transition-*` / `shadow-*` utilities.
+ */
+@property --neo-glass-angle-1 {
+    syntax: '<angle>';
+    inherits: false;
+    initial-value: -75deg;
+}
+
+@property --neo-glass-angle-2 {
+    syntax: '<angle>';
+    inherits: false;
+    initial-value: -45deg;
+}
+
+.neo-glass-wrap {
+    /* 1u ≈ control height / 3; every length below scales with it. */
+    --neo-glass-u: 15px;
+    --neo-glass-bw: clamp(1px, calc(var(--neo-glass-u) * 0.1), 4px);
+    --neo-glass-time: 400ms;
+    --neo-glass-ease: cubic-bezier(0.25, 1, 0.5, 1);
+    --neo-glass-hl: 255 255 255;
+    --neo-glass-hl-a: 0.5;
+    --neo-glass-hl-soft-a: 0.2;
+    --neo-glass-sheen-a: 0.2;
+    --neo-glass-shine-a: 0.5;
+    --neo-glass-shade-a: 0.2;
+    --neo-glass-drop-a: 0.3;
+    --neo-glass-edge: 0 0 0;
+    --neo-glass-edge-a: 0.1;
+    --neo-glass-rim-a: 0.16;
+    --neo-glass-rim-top-a: 1;
+    --neo-glass-text-a: 0.08;
+
+    position: relative;
+    transition: transform var(--neo-glass-time) var(--neo-glass-ease);
+
+    /* A dark outline vanishes on a dark page; a faint light one keeps the silhouette. */
+    @variant dark {
+        --neo-glass-bw: clamp(1px, calc(var(--neo-glass-u) * 0.0625), 4px);
+        --neo-glass-hl-a: 0.16;
+        --neo-glass-hl-soft-a: 0.07;
+        --neo-glass-sheen-a: 0.08;
+        --neo-glass-shine-a: 0.12;
+        --neo-glass-shade-a: 0.5;
+        --neo-glass-drop-a: 0.5;
+        --neo-glass-edge: 255 255 255;
+        --neo-glass-edge-a: 0.06;
+        --neo-glass-rim-a: 0.1;
+        --neo-glass-rim-top-a: 0.5;
+        --neo-glass-text-a: 0.2;
+    }
+}
+
+/* White glow reads as a milky frame on a saturated fill. */
+.neo-glass-wrap > .neo-glass-prominent {
+    --neo-glass-hl-a: 0.35;
+    --neo-glass-hl-soft-a: 0.06;
+    --neo-glass-sheen-a: 0.12;
+    --neo-glass-shine-a: 0.25;
+    --neo-glass-edge-a: 0;
+    --neo-glass-rim-top-a: 0.7;
+    --neo-glass-text-a: 0.08;
+
+    @variant dark {
+        --neo-glass-hl-a: 0.2;
+        --neo-glass-hl-soft-a: 0.04;
+        --neo-glass-shine-a: 0.12;
+        --neo-glass-rim-top-a: 0.45;
+    }
+}
+
+.neo-glass-mini { --neo-glass-u: 10px; }
+.neo-glass-small { --neo-glass-u: 12px; }
+.neo-glass-regular { --neo-glass-u: 15px; }
+.neo-glass-large { --neo-glass-u: 17px; }
+.neo-glass-xlarge { --neo-glass-u: 21px; }
+
+/* ---- ground shadow ---- */
+
+/* Blur lives on the parent and the mask on `::after`: a mask on the blurred
+ * element itself clips the blur back to a hard ring. */
+.neo-glass-wrap > .neo-glass-shadow {
+    position: absolute;
+    inset: 0;
+    filter: blur(clamp(3px, calc(var(--neo-glass-u) * 0.3), 14px));
+    pointer-events: none;
+    transition: filter var(--neo-glass-time) var(--neo-glass-ease);
+}
+
+.neo-glass-wrap > .neo-glass-shadow::after {
+    content: '';
+    position: absolute;
+    top: calc(var(--neo-glass-u) * 0.5);
+    right: 0;
+    bottom: calc(var(--neo-glass-u) * -0.5);
+    left: 0;
+    padding: calc(var(--neo-glass-u) * 0.25);
+    box-sizing: border-box;
+    border-radius: inherit;
+    /* stylelint-disable-next-line property-no-unknown */
+    corner-shape: inherit;
+    background: linear-gradient(180deg,
+        rgb(0 0 0 / var(--neo-glass-shade-a)),
+        rgb(0 0 0 / calc(var(--neo-glass-shade-a) * 0.5)));
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    transition-property: top, bottom, opacity;
+    transition-duration: var(--neo-glass-time);
+    transition-timing-function: var(--neo-glass-ease);
+}
+
+.neo-glass-wrap[data-neo-glass='hovered'] > .neo-glass-shadow {
+    filter: blur(clamp(2px, calc(var(--neo-glass-u) * 0.15), 8px));
+}
+
+.neo-glass-wrap[data-neo-glass='hovered'] > .neo-glass-shadow::after {
+    top: calc(var(--neo-glass-u) * 0.125);
+    bottom: calc(var(--neo-glass-u) * 0.125);
+}
+
+.neo-glass-wrap[data-neo-glass='pressed'] > .neo-glass-shadow::after {
+    opacity: 0.75;
+}
+
+/* ---- surface ---- */
+
+/* `--neo-glass-drop` leads every state's box-shadow list so the lists stay
+ * pairwise inset/outset-compatible and the lift animates between states.
+ * Outer shadows are not painted under the element's own box, so the drop
+ * never greys the translucent fill. */
+.neo-glass-wrap > .neo-glass {
+    --neo-glass-lift: 1;
+    --neo-glass-drop:
+        0 0 0 calc(var(--neo-glass-bw) / 2 + 0.5px) rgb(var(--neo-glass-edge) / var(--neo-glass-edge-a)),
+        0 calc(var(--neo-glass-u) * 0.5 * var(--neo-glass-lift)) calc(var(--neo-glass-u) * 1 * var(--neo-glass-lift)) calc(var(--neo-glass-u) * -0.5) rgb(0 0 0 / var(--neo-glass-drop-a)),
+        0 calc(var(--neo-glass-u) * 0.2 * var(--neo-glass-lift)) calc(var(--neo-glass-u) * 0.5 * var(--neo-glass-lift)) 0 rgb(0 0 0 / calc(var(--neo-glass-drop-a) * 0.1));
+
+    isolation: isolate;
+    background-image: linear-gradient(-75deg,
+        rgb(var(--neo-glass-hl) / calc(var(--neo-glass-sheen-a) * 0.25)),
+        rgb(var(--neo-glass-hl) / var(--neo-glass-sheen-a)),
+        rgb(var(--neo-glass-hl) / calc(var(--neo-glass-sheen-a) * 0.25)));
+    box-shadow:
+        var(--neo-glass-drop),
+        inset 0 calc(var(--neo-glass-u) * 0.125) calc(var(--neo-glass-u) * 0.125) rgb(0 0 0 / 0.05),
+        inset 0 calc(var(--neo-glass-u) * -0.125) calc(var(--neo-glass-u) * 0.125) rgb(var(--neo-glass-hl) / var(--neo-glass-hl-a)),
+        0 calc(var(--neo-glass-u) * 0.25) calc(var(--neo-glass-u) * 0.125) calc(var(--neo-glass-u) * -0.125) rgb(0 0 0 / var(--neo-glass-shade-a)),
+        inset 0 0 calc(var(--neo-glass-u) * 0.1) calc(var(--neo-glass-u) * 0.25) rgb(var(--neo-glass-hl) / var(--neo-glass-hl-soft-a));
+    -webkit-backdrop-filter: blur(clamp(1px, calc(var(--neo-glass-u) * 0.125), 4px));
+    backdrop-filter: blur(clamp(1px, calc(var(--neo-glass-u) * 0.125), 4px));
+    text-shadow: 0 calc(var(--neo-glass-u) * 0.25) calc(var(--neo-glass-u) * 0.05) rgb(0 0 0 / var(--neo-glass-text-a));
+    transition-property: transform, box-shadow, backdrop-filter, background-color, opacity, text-shadow;
+    transition-duration: var(--neo-glass-time);
+    transition-timing-function: var(--neo-glass-ease);
+}
+
+.neo-glass-wrap > .neo-glass svg {
+    filter: drop-shadow(0 calc(var(--neo-glass-u) * 0.2) calc(var(--neo-glass-u) * 0.05) rgb(0 0 0 / var(--neo-glass-text-a)));
+}
+
+.neo-glass-wrap[data-neo-glass='hovered'] > .neo-glass,
+.neo-glass-wrap[data-neo-glass='pressed'] > .neo-glass {
+    transform: scale(0.975);
+    -webkit-backdrop-filter: blur(calc(var(--neo-glass-u) * 0.01));
+    backdrop-filter: blur(calc(var(--neo-glass-u) * 0.01));
+}
+
+.neo-glass-wrap[data-neo-glass='hovered'] > .neo-glass {
+    --neo-glass-lift: 0.6;
+    box-shadow:
+        var(--neo-glass-drop),
+        inset 0 calc(var(--neo-glass-u) * 0.125) calc(var(--neo-glass-u) * 0.125) rgb(0 0 0 / 0.05),
+        inset 0 calc(var(--neo-glass-u) * -0.125) calc(var(--neo-glass-u) * 0.125) rgb(var(--neo-glass-hl) / var(--neo-glass-hl-a)),
+        0 calc(var(--neo-glass-u) * 0.15) calc(var(--neo-glass-u) * 0.05) calc(var(--neo-glass-u) * -0.1) rgb(0 0 0 / calc(var(--neo-glass-shade-a) * 1.25)),
+        inset 0 0 calc(var(--neo-glass-u) * 0.05) calc(var(--neo-glass-u) * 0.1) rgb(var(--neo-glass-hl) / var(--neo-glass-hl-a));
+    text-shadow: calc(var(--neo-glass-u) * 0.025) calc(var(--neo-glass-u) * 0.025) calc(var(--neo-glass-u) * 0.025) rgb(0 0 0 / calc(var(--neo-glass-text-a) * 1.2));
+}
+
+.neo-glass-wrap[data-neo-glass='pressed'] > .neo-glass,
+.neo-glass-wrap[data-neo-glass='pressedToggle'] > .neo-glass {
+    --neo-glass-lift: 0.3;
+    box-shadow:
+        var(--neo-glass-drop),
+        inset 0 calc(var(--neo-glass-u) * 0.125) calc(var(--neo-glass-u) * 0.125) rgb(0 0 0 / 0.05),
+        inset 0 calc(var(--neo-glass-u) * -0.125) calc(var(--neo-glass-u) * 0.125) rgb(var(--neo-glass-hl) / var(--neo-glass-hl-a)),
+        0 calc(var(--neo-glass-u) * 0.125) calc(var(--neo-glass-u) * 0.125) calc(var(--neo-glass-u) * -0.125) rgb(0 0 0 / var(--neo-glass-shade-a)),
+        inset 0 0 calc(var(--neo-glass-u) * 0.1) calc(var(--neo-glass-u) * 0.25) rgb(var(--neo-glass-hl) / var(--neo-glass-hl-soft-a)),
+        0 calc(var(--neo-glass-u) * 0.225) calc(var(--neo-glass-u) * 0.05) 0 rgb(0 0 0 / calc(var(--neo-glass-shade-a) * 0.25)),
+        0 calc(var(--neo-glass-u) * 0.25) 0 0 rgb(var(--neo-glass-hl) / calc(var(--neo-glass-hl-a) * 1.5)),
+        inset 0 calc(var(--neo-glass-u) * 0.25) calc(var(--neo-glass-u) * 0.05) 0 rgb(0 0 0 / calc(var(--neo-glass-shade-a) * 0.75));
+    text-shadow: calc(var(--neo-glass-u) * 0.025) calc(var(--neo-glass-u) * 0.25) calc(var(--neo-glass-u) * 0.05) rgb(0 0 0 / calc(var(--neo-glass-text-a) * 1.2));
+}
+
+.neo-glass-wrap[data-neo-glass='pressed'] {
+    transform: rotate3d(1, 0, 0, 25deg);
+}
+
+/* ---- rim ---- */
+
+.neo-glass > .neo-glass-rim {
+    position: absolute;
+    z-index: 1;
+    inset: calc(var(--neo-glass-bw) / -2);
+    padding: var(--neo-glass-bw);
+    border-radius: inherit;
+    /* stylelint-disable-next-line property-no-unknown */
+    corner-shape: inherit;
+    pointer-events: none;
+    background:
+        conic-gradient(from var(--neo-glass-angle-1) at 50% 50%,
+            rgb(0 0 0 / var(--neo-glass-rim-a)),
+            rgb(0 0 0 / 0) 8% 42%,
+            rgb(0 0 0 / var(--neo-glass-rim-a)) 50%,
+            rgb(0 0 0 / 0) 58% 92%,
+            rgb(0 0 0 / var(--neo-glass-rim-a))),
+        linear-gradient(180deg,
+            rgb(var(--neo-glass-hl) / var(--neo-glass-rim-top-a)),
+            rgb(var(--neo-glass-hl) / var(--neo-glass-hl-a)) 45%);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    box-shadow: inset 0 0 0 calc(var(--neo-glass-bw) / 2) rgb(var(--neo-glass-hl) / var(--neo-glass-hl-a));
+    transition: --neo-glass-angle-1 500ms ease;
+}
+
+.neo-glass-wrap[data-neo-glass='hovered'] > .neo-glass > .neo-glass-rim {
+    --neo-glass-angle-1: -125deg;
+}
+
+/* ---- light sweep ---- */
+
+.neo-glass > .neo-glass-shine {
+    position: absolute;
+    z-index: 3;
+    inset: calc(var(--neo-glass-bw) / 2);
+    border-radius: inherit;
+    /* stylelint-disable-next-line property-no-unknown */
+    corner-shape: inherit;
+    pointer-events: none;
+    background-image: linear-gradient(var(--neo-glass-angle-2),
+        rgb(255 255 255 / 0) 0%,
+        rgb(255 255 255 / var(--neo-glass-shine-a)) 40% 50%,
+        rgb(255 255 255 / 0) 55%);
+    background-size: 200% 200%;
+    background-position: 0% 50%;
+    background-repeat: no-repeat;
+    mix-blend-mode: screen;
+    transition:
+        background-position calc(var(--neo-glass-time) * 1.25) var(--neo-glass-ease),
+        --neo-glass-angle-2 calc(var(--neo-glass-time) * 1.25) var(--neo-glass-ease);
+}
+
+.neo-glass-wrap[data-neo-glass='hovered'] > .neo-glass > .neo-glass-shine {
+    background-position: 25% 50%;
+}
+
+.neo-glass-wrap[data-neo-glass='pressed'] > .neo-glass > .neo-glass-shine {
+    background-position: 50% 15%;
+    --neo-glass-angle-2: -15deg;
+}
+
+/* Touch: no hover to set the light up, so the rim and sweep angles stay put. */
+@media (hover: none) and (pointer: coarse) {
+    .neo-glass-wrap[data-neo-glass] > .neo-glass > .neo-glass-rim {
+        --neo-glass-angle-1: -75deg;
+    }
+    .neo-glass-wrap[data-neo-glass] > .neo-glass > .neo-glass-shine {
+        --neo-glass-angle-2: -45deg;
+    }
+}
+
+/* `pressAnimation={false}` and reduced motion: keep the optics, drop the motion. */
+.neo-glass-wrap.neo-glass-still[data-neo-glass],
+.neo-glass-wrap.neo-glass-still[data-neo-glass] > .neo-glass {
+    transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .neo-glass-wrap[data-neo-glass],
+    .neo-glass-wrap[data-neo-glass] > .neo-glass {
+        transform: none;
+    }
+}
+
+/*
+ * Fork-safe overrides: do not @import customization paths from this file (merges can omit files).
+ * Next loads customization/design/styles/global.css + global.web.css immediately after this sheet
+ * — see apps/next/app/layout.js. Use those for extra @theme / @utility / @layer or plain CSS.
+ */

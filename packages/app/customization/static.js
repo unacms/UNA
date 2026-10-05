@@ -1,0 +1,5 @@
+import { staticDefault } from 'app/default/static';
+// DON'T EDIT THIS FILE IN MAIN REPO!!!
+// only for custom projects change some specific static components here if needed
+
+export const staticComponents = staticDefault;

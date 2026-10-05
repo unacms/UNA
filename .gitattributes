@@ -1,0 +1,15 @@
+# patch-package diffs must stay LF so they apply on Vercel/Linux
+patches/*.patch text eol=lf
+
+# Source stays LF in the repo whatever a client's core.autocrlf is. Explicit
+# `text`, not `text=auto`: a stray CR (\r\r\n) makes auto-detection call the
+# file binary, which hides its diffs and blocks text merges.
+*.js text eol=lf
+*.jsx text eol=lf
+*.mjs text eol=lf
+*.cjs text eol=lf
+*.ts text eol=lf
+*.tsx text eol=lf
+*.json text eol=lf
+*.css text eol=lf
+*.md text eol=lf

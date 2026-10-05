@@ -1,0 +1,259 @@
+import { Row, Pressable } from 'app/design/view'
+import { Button } from 'app/design/controls'
+import { useCurrentUser } from 'app/context/user'
+import {
+    appSetting,
+    menuItemsByName,
+    menuItemsByNameNew,
+    getHeaderToolbarNeoButtonDefaults,
+} from 'app/lib/util'
+import DropdownMenu from 'app/ui/atoms/dropdown-menu'
+import { useTranslation } from 'react-i18next'
+import Profile from 'app/ui/molecules/profile/profile'
+import ProfileSwitcher from 'app/components/elements/profile-switcher'
+import { useState, useRef } from 'react'
+import { Text } from 'app/design/typography'
+import { fetcher } from 'app/lib/fetcher'
+import RadioButton from 'app/ui/atoms/radiobutton'
+import Redirect from 'app/ui/atoms/redirect'
+import MenuFooter from 'app/components/nav/menu-footer'
+import { useIsDesktop } from 'app/context/measure';
+import { useMenuData } from 'app/context/menu-data';
+import { appStatic } from 'app/lib/app-static';
+
+export default function MenuAccount({ buttonProps, children }) {
+    const redirectdRef = useRef()
+    const { currentUser, setCurrentUser } = useCurrentUser()
+    const { menuData: accountMenuData } = useMenuData(appSetting('menu_items', 'objects', 'account'));
+    const { menuData: footerMenuData } = useMenuData(appSetting('menu_items', 'objects', 'footer'));
+    
+    const [data, setData] = useState(false)
+    const profileFetchRef = useRef(null)
+    const isDesktop = useIsDesktop();
+
+    const fetchDataPr = () => {
+        if (profileFetchRef.current) {
+            return profileFetchRef.current
+        }
+
+        const promise = fetcher(
+            '/api.php?r=system/account_profile_switcher/TemplServiceProfiles'
+        )
+            .then((sResponse) => {
+                if (sResponse?.data?.[0]?.data) {
+                    setData(sResponse.data[0].data)
+                }
+            })
+            .catch(() => {
+                // Timeout/network — account menu still works without profile list
+            })
+            .finally(() => {
+                profileFetchRef.current = null
+            })
+
+        profileFetchRef.current = promise
+        return promise
+    }
+
+    const handleMenuOpenChange = (open) => {
+        if (open && !data) {
+            fetchDataPr()
+        }
+    }
+
+    const { t } = useTranslation()
+
+    const menu_account_items = appSetting('layout', 'user_remote_config')
+        ? menuItemsByNameNew('menu_post', accountMenuData, currentUser)
+        : menuItemsByName(
+            '',
+            appSetting('menu_items', 'menu_account'),
+            currentUser
+        )
+
+    const menu_footer_items = appSetting('layout', 'user_remote_config')
+        ? menuItemsByNameNew('menu_post', footerMenuData, currentUser)
+        : menuItemsByName(
+            '',
+            appSetting('menu_items', 'menu_footer'),
+            currentUser
+        )
+
+    let profile = null
+    if (currentUser) {
+        let dUser = Object.assign({}, currentUser)
+        dUser.url_avatar = dUser.avatar
+        dUser.url = ''
+        profile = (
+            <Profile {...dUser} displayType="unit_wo_info" displaySize="md" />
+        )
+    }
+
+    const defaultButtonProps = {
+        ...getHeaderToolbarNeoButtonDefaults(isDesktop),
+        tooltip: t('Dashboard'),
+        borderShape: 'circle',
+        accessibilityLabel: t('Dashboard'),
+        children: profile,
+    }
+
+    buttonProps = { ...defaultButtonProps, ...(buttonProps || {}) }
+
+    if ((menu_account_items.length == 0 && accountMenuData) || !profile) return <></>
+
+    const isButton = !children
+
+    let profileList =
+        data?.profiles
+            ?.map((profile) => ({
+                ...profile,
+                link: '{switch_profile}',
+            }))
+            .slice(0, 3) || []
+
+    if (data?.profiles?.length > 3) {
+        profileList = [
+            ...profileList,
+            { link: '{separator}' },
+            { link: '{switch_profile_selector}' },
+        ]
+    }
+    else{
+         profileList = [
+            ...profileList,
+            { link: '{switch_profile_selector}' },
+        ]
+    }
+
+    const updatedMenu = menu_account_items.flatMap((item) =>
+        item.link === '{switch_profile}'
+            ? profileList
+                ? [
+                    { ...currentUser, link: '{switch_profile}' },
+                    { link: '{separator}' },
+                    ...profileList,
+                    { link: '{separator}' },
+                ]
+                : []
+            : item
+    )
+
+    const handleSwitch = async (id) => {
+        if (id != currentUser.id) {
+            const result = await fetcher(
+                '/api.php?r=system/switch_profile/TemplServiceAccount&params[]=' +
+                id
+            )
+            setCurrentUser(result.data)
+            redirectdRef.current.redirect('/')
+        } else {
+            redirectdRef.current.redirect(currentUser.url)
+        }
+    }
+
+
+
+    return (
+        <>
+            <Redirect ref={redirectdRef} />
+            <DropdownMenu
+                onOpenChange={handleMenuOpenChange}
+                items={updatedMenu.map((item, index) => {
+                    let sTitle = t(item.title)
+                    let sType = ''
+                    if (item.link == '{switch_profile}') {
+                        sTitle = (
+                            <Pressable
+                                className="w-full"
+                                onPress={() => handleSwitch(item.id)}
+                            >
+                                <Row
+                                    key={index}
+                                    className="items-center justify-between gap-x-3 w-full px-2 py-1.5 h-12 web:hover:bg-muted/50 rounded-lg group"
+                                >
+                                    <Row className="items-center flex-auto">
+                                        
+                                            <Profile
+                                                {...item}
+                                                url_avatar={item.avatar}
+                                                displayType="unit_wo_info"
+                                                displaySize="sm"
+                                            />
+                                        
+                                        <Text className="text-sm leading-8 px-1.5 font-medium text-secondary-foreground web:group-hover:text-foreground whitespace-nowrap">
+                                            {item.display_name}
+                                        </Text>
+                                    </Row>
+                                    {currentUser.id != item.id && <RadioButton
+                                        rb_obly={true}
+                                        value={''}
+                                        status={
+                                            item.id == currentUser.id
+                                                ? 'checked'
+                                                : 'unchecked'
+                                        }
+                                        title={''}
+                                    />}
+                                </Row>
+                            </Pressable>
+                        )
+                    }
+                    if (item.link == '{separator}') {
+                        sTitle = (
+                            <Row className="items-center flex-auto my-1 sm:border-t border-border/60"></Row>
+                        )
+                        sType = 'separator'
+                    }
+                    if (item.link == '{switch_profile_selector}') {
+                        sTitle = (
+                            <Row className="w-full items-center flex-auto my-1">
+                                <ProfileSwitcher className="w-full" hideTitle={true}>
+                                    <Button
+                                        variant="secondary"
+                                        fullWidth
+                                        align="center"
+                                        solid
+                                        size="sm"
+
+                                        startDecorator="CircleUserRound"
+                                        title={t('See all profiles')}
+                                    />
+                                </ProfileSwitcher>
+                            </Row>
+                        )
+                        sType = 'separator'
+                    }
+                    return {
+                        id: 'menu-' + index,
+                        link: item.link?.includes('://')
+                            ? item.link
+                            : item.link?.startsWith('/')
+                                ? item.link
+                                : '/' + item.link,
+                        title: sTitle,
+                        type: sType,
+                        target: item.target,
+                        content: item.content,
+                        icon: item.icon,
+                        className: item.className,
+                        description: item.description,
+                    }
+                })}
+                footer={
+                    menu_footer_items.length > 0 ? (
+                        <MenuFooter
+                            cntClasses="flex w-full items-center border-t border-border/60 justify-center flex-row flex-wrap gap-x-1 p-2 pb-1 mt-1 max-w-64"
+                            itemClassName="text-xs text-nowrap"
+                            menu_items={menu_footer_items}
+                            size="xs"
+                        />
+                    ) : null
+                }
+                buttonProps={isButton ? buttonProps : undefined}
+                resolveContent={(contentKey) => appStatic(contentKey)}
+            >
+                {!isButton && children}
+            </DropdownMenu>
+        </>
+    )
+}

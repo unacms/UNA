@@ -1,0 +1,43 @@
+export const settingsLinks = {
+    link_sizes: {
+        default_size: 'md',
+        default_variant: 'default',
+        xs: {
+            hitSlop: 8,
+            text: 'text-xs font-medium rounded-sm',
+            primary: 'p-1',
+        },
+        sm: {
+            hitSlop: 8,
+            text: 'text-sm font-medium rounded-md',
+            primary: ' p-1.5',
+        },
+        md: {
+            hitSlop: 8,
+            text: 'text-base font-medium rounded-md',
+            primary: 'p-2',
+        },
+        lg: {
+            hitSlop: 8,
+            text: 'text-lg font-medium rounded-lg',
+            primary: 'p-3',
+        }
+    },
+
+    link_styles: {
+        // Inherits text color; underline on hover; brief muted flash on press (via ::after pseudo)
+        default: ' font-medium text-card-foreground web:hover:text-foreground web:duration-200 ',
+
+        // Muted text; subtle underline on hover; brief muted flash on press
+        secondary: ' font-medium text-secondary-foreground web:hover:text-foreground web:hover:underline web:duration-200 ',
+
+        // Accent-colored text; underline on hover; brief muted flash on press
+        accent: ' font-medium text-accent-foreground web:hover:underline web:active:no-underline u-link-press web:duration-200 ',
+
+        // Inline-button style: real background + padding (padding added per-size via link_sizes[size].primary)
+        primary: 'text-accent-foreground web:hover:underline web:duration-200 ',
+
+        // No DOM padding; muted background appears on hover via ::after pseudo-element
+        ghost: 'text-accent-foreground u-link-ghost web:duration-200 ',
+    }
+}

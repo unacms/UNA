@@ -1,0 +1,872 @@
+import { appSetting, stripTags } from 'app/lib/util';
+import { Pressable, View, Row } from 'app/design/view';
+import UniList from 'app/ui/atoms/unilist'
+import { EdgeBlurView, edgeBlurConfig } from 'app/ui/atoms/edge-blur'
+import { Text } from 'app/design/typography'
+import { useState, useReducer, useRef, useEffect, useCallback } from 'react';
+import { components } from 'app/components/registry';;
+import { Button } from 'app/design/controls'
+import useFetchForm from 'app/lib/hooks/use-fetch-form'
+import { fetcher } from 'app/lib/fetcher';
+import Loading from 'app/ui/atoms/loading'
+import Form from 'app/components/elements/form';
+import DropdownMenu from 'app/ui/atoms/dropdown-menu';
+import { subscribe } from 'app/ui/atoms/socket';
+import { useCurrentUser } from 'app/context/user';
+import { useTranslation } from 'react-i18next';
+import { useInfiniteQuery } from '@tanstack/react-query'
+import {
+    refetchUniListReducer,
+    isSameItemsForUniList
+} from 'app/lib/browse-query'
+import Snackbar from 'app/ui/atoms/snackbar'
+import emitter, { EVENTS } from 'app/context/emitter'
+import { appStatic } from 'app/lib/app-static';
+import { ProfileDisplayName } from 'app/customization/functions';
+
+import { Keyboard, Platform, TouchableWithoutFeedback } from 'react-native';
+
+/**
+ * Bottom-anchored fade for a floating comment composer, keyed by the surface it
+ * covers. Solid at the bottom so the input stays legible, transparent by the top
+ * so comments scrolling behind remain partly visible.
+ *
+ * The run-up comes from `FADE_RUN_UP`, applied as an inline `paddingTop`: the panel
+ * is bottom-anchored, so top padding grows the gradient box upward past the input
+ * without moving the input, letting content fade well before it reaches the field.
+ * It has to be inline rather than a `pt-*` utility — the wrapper already sets
+ * `web:sm:p-2.5`, and that compound variant outranks any plain padding class.
+ * Inline styles apply identically on native.
+ *
+ * The colour classes are whole static literals on purpose: Tailwind (web) and
+ * Uniwind (native) both discover utilities by scanning source text, so an
+ * interpolated name like `from-${surface}` would never be generated. Uniwind
+ * parses `linear-gradient` natively, so these work on both platforms.
+ */
+const FADE_RUN_UP = 48;
+
+const FADE_SURFACE_CLASS = {
+    card: 'bg-linear-to-t from-card from-40% to-transparent',
+    background: 'bg-linear-to-t from-background from-40% to-transparent',
+};
+
+/** EnrichedTextInput keeps first responder unless explicitly blurred (unlike plain TextInput). */
+function dismissCommentEditorKeyboard() {
+    if (Platform.OS === 'web') return;
+    emitter.emit(EVENTS.editor, { action: 'blur' });
+    Keyboard.dismiss();
+}
+
+export function CommentsBrowse({
+    browse,
+    requestUrl,
+    module,
+    addItems,
+    height = 0,
+    classesBrowse = '',
+    commentsTitle = "Comments",
+    replyId,
+    hideActions = false,
+    scrollToIndex = false,
+    isModal = false,
+    marginBottom = 0,
+    useCustomScrollHandler,
+    embedded = false,
+}) {
+    const UnitComments = components['unit']['comments'];
+    const { t } = useTranslation();
+    const flashListRef = useRef(null);
+    /** Ignore item taps that start as a scroll (chat UX: keep keyboard while scrolling). */
+    const listDraggingRef = useRef(false);
+    const listDragTimeoutRef = useRef(null);
+
+    const markListDragging = useCallback(() => {
+        listDraggingRef.current = true;
+        if (listDragTimeoutRef.current) clearTimeout(listDragTimeoutRef.current);
+    }, []);
+
+    const clearListDragging = useCallback(() => {
+        if (listDragTimeoutRef.current) clearTimeout(listDragTimeoutRef.current);
+        // Brief grace so a cancelled press after drag does not blur the composer.
+        listDragTimeoutRef.current = setTimeout(() => {
+            listDraggingRef.current = false;
+        }, 80);
+    }, []);
+
+    const dismissComposerIfIdle = useCallback(() => {
+        if (listDraggingRef.current) return;
+        dismissCommentEditorKeyboard();
+    }, []);
+
+    const { currentUser } = useCurrentUser();
+    const viewMode = browse?.data?.view;
+
+    const [refetchState, dispatch] = useReducer(refetchUniListReducer, {
+        visibleItems: [],
+        hasNewData: false
+    })
+
+    const refetchRef = useRef({
+        skipToast: false,
+        isFirstLoad: true,
+        prevItems: []
+    })
+
+    const baseParams = {
+        //static
+        module: module,
+        object_id: browse?.data?.object_id,
+        per_view: browse?.data?.per_view,
+        view: browse?.data?.view,
+        max_level: browse?.data?.max_level,
+
+        //dynamic
+        order_way: browse?.data?.order,
+        start_from: browse?.data?.start,
+        total_count: browse?.data?.total_count
+    }
+
+    const [browseParams, setBrowseParams] = useState(baseParams);
+    const [scrollIndex, setScrollIndex] = useState(scrollToIndex);
+
+    function prepareUrl(params) {
+        let def = {
+            module: browseParams.module,
+            object_id: browseParams.object_id,
+            start_from: params?.start_from ?? browse?.data?.start ?? 0,
+            order_way: browseParams.order_way,
+        }
+        return requestUrl + JSON.stringify({ ...def, ...params })
+    }
+
+    async function fetchComments({ pageParam }) {
+        const {
+            start_from = 0,
+        } = pageParam || {}
+
+        const sRequest = prepareUrl({
+            is_form: false,
+            start_from,
+        })
+        const sResponse = await fetcher(sRequest)
+        const data = sResponse?.data?.browse?.data
+
+        return {
+            raw: sResponse,
+            tree: data?.data,
+            start: data?.start,
+            count: data?.count,
+            per_view: data?.per_view,
+            total_count: data?.total_count,
+        }
+    }
+
+    //Scroll to item by initial params 
+    useEffect(() => {
+        setScrollIndex(scrollToIndex)
+    }, [scrollToIndex]);
+
+    useEffect(() => {
+        if (scrollIndex !== false && scrollIndex !== true) {
+            scrollToItemByCommentId(scrollIndex);
+        }
+        //to the end
+        if (scrollIndex === true) {
+            scrollToItemByIndex(dataOut.length - 1);
+        }
+    }, [scrollIndex]);
+
+
+
+     
+    useEffect(() => {
+       
+        const sub1 = subscribe('cmts_' + browseParams.module + '_' + browseParams.object_id, 'comment_added', refetch);
+        const sub2 = subscribe('cmts_' + browseParams.module + '_' + browseParams.object_id, 'comment_edited', refetch);
+        const sub3 = subscribe('cmts_' + browseParams.module + '_' + browseParams.object_id, 'comment_deleted', refetch);
+        
+
+        const subscription = emitter.addListener(EVENTS.page, (data) => {
+            if (data.action == 'reload') {
+                refetchRef.current.skipToast = true
+                refetch();
+            }
+        })
+
+        const subscription2 = emitter.addListener(EVENTS.commentThread(baseParams.module, baseParams.object_id), (data) => {
+            if (data.action == 'remove_content') {
+                dispatch({ type: 'REMOVE_ITEM', id: data.data.id })
+                if (refetchRef.current?.prevItems) {
+                    refetchRef.current.prevItems = refetchRef.current.prevItems.filter(item => item.id != data.id)
+                }
+                refetchRef.current.skipToast = true;
+                setBrowseParams(prev => ({
+                    ...prev,
+                    total_count: prev.total_count - 1,
+                }));
+            }
+            if (data.action == 'new_content') {
+                //MANY BE NEED TO IMPROVE
+
+                const newItem = data.data;
+                // Use ref — it holds the current list inside the useEffect closure
+                const items = refetchRef.current.prevItems || [];
+
+                // Parent ID (assumed to be in data.cmt_parent_id)
+                const parentId = newItem.data?.cmt_parent_id || newItem.cmt_parent_id || 0;
+                let insertIndex = 0;
+
+                if (parentId == 0) {
+                    // Root comment
+                    // To prepend (newest on top):
+                    insertIndex = browseParams.order_way == 'asc' ? items.length : 0;
+                    // To append (oldest on top): insertIndex = items.length;
+
+                    newItem.level = 0;
+                } else {
+                    const parentIndex = items.findIndex(i => (i.data?.cmt_id == parentId) || (i.id == parentId));
+
+                    if (parentIndex !== -1) {
+                        const parent = items[parentIndex];
+                        newItem.level = (parent.level || 0) + 1;
+                        let i = parentIndex + 1;
+                        while (i < items.length && items[i].level > parent.level) {
+                            i++;
+                        }
+                        insertIndex = i;
+                    } else {
+                        insertIndex = 0;
+                        newItem.level = 0;
+                    }
+                    setBrowseParams(prev => ({
+                        ...prev,
+                        total_count: prev.total_count + 1,
+                    }));
+                }
+
+                const newItems = [...items];
+                newItems.splice(insertIndex, 0, newItem);
+
+
+                dispatch({ type: 'SET_ITEMS', items: newItems })
+
+                if (refetchRef.current) {
+                    refetchRef.current.prevItems = newItems
+                    refetchRef.current.skipToast = true
+                }
+
+                setScrollIndex(newItem.id)
+            }
+        })
+
+        return () => {
+            sub1();
+            sub2();
+            sub3();
+            subscription.remove();
+            subscription2.remove()
+        }
+    }, [])
+
+    const qKey = ['comments', module, currentUser?.id, browseParams.object_id, browseParams.order_way]
+
+    const {
+        data: pagesData,
+        fetchNextPage,
+        hasNextPage,
+        isFetchingNextPage,
+        refetch,
+    } = useInfiniteQuery({
+        queryKey: qKey,
+        queryFn: fetchComments,
+        // Pages without a comments block (e.g. an edit form opened in the
+        // post modal) have no thread to load.
+        enabled: !!requestUrl,
+
+        initialPageParam: {
+            start_from: 0,
+        },
+
+        getNextPageParam: (lastPage) => {
+            if (!lastPage || lastPage.start === 0 || lastPage.count === 0) return undefined
+            return {
+                start_from: lastPage.start
+            }
+        },
+
+        initialData: () => {
+            if (!browse?.data) return undefined
+            const d = browse.data
+            return {
+                pages: [
+                    {
+                        raw: { data: { browse: { data: d } } },
+                        tree: d.data,
+                        start: d.start,
+                        count: d.count,
+                        per_view: d.per_view,
+                        total_count: d.total_count,
+                    },
+                ],
+                pageParams: [
+                    {
+                        start_from: 0,
+                    },
+                ],
+            }
+        },
+        staleTime: appSetting('browse', 'stale_time'),
+        refetchOnWindowFocus: true,
+        refetchOnReconnect: true,
+    })
+
+
+    useEffect(() => {
+        if (!pagesData) return
+
+        const items = flattenPagesForComments(pagesData, viewMode)
+
+        if (refetchRef.current.isFirstLoad) {
+            dispatch({ type: 'SET_ITEMS', items })
+            refetchRef.current.prevItems = items
+            refetchRef.current.isFirstLoad = false
+            return
+        }
+
+        if (isSameItemsForUniList(refetchRef.current.prevItems, items)) {
+            return
+        }
+
+        if (refetchRef.current.skipToast) {
+            dispatch({ type: 'SET_ITEMS', items })
+            refetchRef.current.skipToast = false
+        } else {
+            dispatch({ type: 'SHOW_NEW_DATA' })
+        }
+
+
+        refetchRef.current.prevItems = items
+    }, [pagesData, viewMode])
+
+    useEffect(() => {
+
+        if (refetchRef.current.isFirstLoad && browseParams.order_way === baseParams.order_way) {
+            return
+        }
+
+        // Reload data when order_way changes
+        if (!refetchRef.current.isFirstLoad || browseParams.order_way !== baseParams.order_way) {
+            refetchRef.current.skipToast = true
+            refetchRef.current.isFirstLoad = true
+            refetch()
+        }
+    }, [browseParams.order_way])
+
+    const handleEndReached = useCallback(
+        (lastItemIndex) => {
+            if (!browseParams.object_id) return
+            if (!hasNextPage) return
+            if (isFetchingNextPage) return
+            if (lastItemIndex == false) return
+
+            refetchRef.current.skipToast = true
+            fetchNextPage()
+        },
+        [hasNextPage, browseParams.object_id, isFetchingNextPage]
+    )
+
+    const handleOrder = async (orderWay) => {
+        setBrowseParams(prev => ({
+            ...prev,
+            order_way: orderWay,
+        }));
+    }
+    const title = t(module + '_title') === module + '_title' ? t(commentsTitle) : t(module + '_title');
+
+    const header = browseParams.total_count > 0 && false ? (
+        <Row className={'flex-row ' + (classesBrowse ? classesBrowse : `px-3 pt-3 sm:px-4 justify-between items-center mt-3 border-t border-muted/60`)}>
+            <Text className='flex-auto text-base font-semibold text-secondary-foreground'>{title} ({browseParams.total_count})</Text>
+            {!appSetting('comments', 'hide_sort') && <View className="ml-4">
+                <Pressable className="flex-auto" onPress={(event) => { event.preventDefault() }}>
+                    <DropdownMenu items={[
+                        { id: 'newest', name: 'asc', title: t('Oldest first'), selected: browseParams.order_way == 'asc' },
+                        { id: 'oldest', name: 'desc', title: t('Newest first'), selected: browseParams.order_way == 'desc' }
+                    ]} onSelect={(oItem) => { handleOrder(oItem.name) }}>
+                        <Button variant="secondary" startDecorator={browseParams.order_way == 'asc' ? "ArrowDownAZ" : "ArrowDownZA"} size="xs" />
+                    </DropdownMenu>
+                </Pressable>
+            </View>}
+        </Row>) : <></>;
+
+    const extra = (addItems || []).filter(i => i.id !== 'block_comments-empty');
+
+    const dataOut = !refetchState.visibleItems.some(i => i.id === 'block_header') && extra.length
+        ? [...extra, { id: 'block_header', data: header }, ...refetchState.visibleItems]
+        : refetchState.visibleItems;
+
+    function scrollToItemByCommentId(cmtId) {
+        const itemIndex = dataOut.findIndex(obj => obj.id == cmtId);
+        if (itemIndex < 0) return;
+        scrollToItemByIndex(itemIndex);
+    }
+
+    function scrollToItemByIndex(itemIndex) {
+        if (itemIndex < 0) return;
+
+        const isLast = itemIndex >= dataOut.length - 1;
+
+        const scrollTo = (animated) => {
+            const list = flashListRef.current;
+            if (!list) return;
+            // Includes footer spacer (composer clearance) when present.
+            if (isLast && typeof list.scrollToEnd === 'function') {
+                list.scrollToEnd({ animated });
+                return;
+            }
+            list.scrollToIndex?.({
+                animated,
+                index: itemIndex,
+                align: 'end',
+                behavior: animated ? 'smooth' : 'auto',
+                viewPosition: 1,
+            });
+        };
+
+        // Retry once after row heights are measured (long threads otherwise undershoot).
+        setTimeout(() => scrollTo(true), 300);
+        setTimeout(() => scrollTo(false), 850);
+    }
+
+    const renderListFooter = useCallback(() => (
+        <TouchableWithoutFeedback onPress={dismissComposerIfIdle}>
+            <View>
+                {(browseParams.object_id && hasNextPage && isFetchingNextPage) ? (
+                    <View className=''><Loading /></View>
+                ) : (browseParams.object_id && !refetchState.visibleItems.length && !refetchRef.current.isFirstLoad ? appStatic('components_comments_empty') : null)}
+                {/* Spacer so last comments clear sticky composer (+ keyboard on native). */}
+                {marginBottom > 0 ? <View style={{ height: marginBottom }} collapsable={false} /> : null}
+            </View>
+        </TouchableWithoutFeedback>
+    ), [
+        browseParams.object_id,
+        hasNextPage,
+        isFetchingNextPage,
+        refetchState.visibleItems.length,
+        marginBottom,
+        dismissComposerIfIdle,
+    ]);
+
+    const renderItem = useCallback(({ item, index }) => {
+        if (item.id.toString().includes('block')) {
+            return (
+                <TouchableWithoutFeedback onPress={dismissComposerIfIdle}>
+                    <View>{item.data}</View>
+                </TouchableWithoutFeedback>
+            );
+        }
+        return (
+            <TouchableWithoutFeedback onPress={dismissComposerIfIdle}>
+                <View className="px-4" key={index}>
+                    <UnitComments
+                        selectedId={scrollToIndex}
+                        hideActions={hideActions}
+                        replyId={replyId}
+                        {...item}
+                        module={browseParams.module}
+                        view={viewMode}
+                        max_level={browseParams.max_level}
+                        isNewComment={false}
+                    />
+                </View>
+            </TouchableWithoutFeedback>
+        );
+    }, [scrollToIndex, hideActions, replyId, browseParams.module, browseParams.max_level, viewMode, dismissComposerIfIdle]);
+
+    return (
+        <>
+            <View className={embedded ? 'w-full' : 'flex-1 w-full min-h-0'} style={height > 0 ? { height } : undefined}>
+            <UniList
+                mode='simple'
+                isModal={isModal}
+                useCustomScrollHandler={useCustomScrollHandler}
+                useWindowScroll={!isModal && !embedded}
+                no_scroll={embedded}
+                flowLayout={embedded}
+                // UniList forces window scroll whenever it cannot resolve a height,
+                // which silently overrides `useWindowScroll: false`. In a modal the
+                // window cannot scroll, so without a real px height here the list is
+                // unscrollable and its overflow is clipped. Embedded (list-open
+                // task) lays out in flow so the browse card can scroll.
+                height={embedded ? undefined : (height > 0 ? height : undefined)}
+                style={embedded ? undefined : { flex: 1 }}
+                data={dataOut}
+                extraData={marginBottom}
+                refer={flashListRef}
+                onRefresh={refetch}
+                renderItem={renderItem}
+                onEndReached={handleEndReached}
+                ListFooterComponent={renderListFooter}
+                keyboardShouldPersistTaps="always"
+                keyboardDismissMode="none"
+                onScrollBeginDrag={markListDragging}
+                onScrollEndDrag={clearListDragging}
+                onMomentumScrollBegin={markListDragging}
+                onMomentumScrollEnd={clearListDragging}
+            />
+            </View>
+            {/*!refetchState.visibleItems.length && appStatic('components_comments_empty')*/}
+            <Snackbar
+                visible={refetchState.hasNewData}
+                position="top"
+                onPress={() => {
+                    const latestItems = flattenPagesForComments(pagesData, viewMode)
+                    dispatch({ type: 'SET_ITEMS', items: latestItems })
+
+                    refetchRef.current.prevItems = latestItems
+
+
+                    // TODO: scroll to the right place here
+                    if (flashListRef.current) {
+                        flashListRef.current.scrollToIndex?.({
+                            index: latestItems.length - 1,
+                            animated: true,
+                        })
+                    }
+                    setBrowseParams(prev => ({
+                        ...prev,
+                        total_count: pagesData.pages[0].total_count,
+                    }));
+                }}
+                variant="primary"
+                title={t('Show new comments')}
+                size="sm"
+            />
+
+        </>
+    )
+}
+
+function buildFlatListFromTree(items, viewMode) {
+    const result = []
+
+    function walk(items, level, last_child_in, lvls) {
+        if (!items) return
+
+        Object.keys(items).forEach((k) => {
+            let ilen = Object.keys(items[k]).length
+            let item = ilen == 1 ? items[k][Object.keys(items[k])[0]] : items[k]
+
+            let childs = Object.keys(item.items || {})
+            let last_child = 0
+            if (childs.length > 0) {
+                last_child = item.items[childs[childs.length - 1]].id
+            }
+
+            item.level = level
+            item.last_child = last_child_in
+            lvls[level] = last_child_in != item.id
+            item.lvls = lvls.slice()
+
+            // Keep parent as-is for now — can optimize later
+            item.parent = result.filter(
+                (item2) => item2.data.cmt_id == item.data.cmt_parent_id
+            )[0]
+
+            result.push(item)
+
+            if (item.items && viewMode != 'flat') {
+                walk(item.items, level + 1, last_child, lvls.slice())
+            }
+        })
+    }
+
+    walk(items, 0, 0, [])
+
+    return result
+}
+
+function flattenPagesForComments(pagesData, viewMode) {
+    if (!pagesData?.pages?.length) return []
+
+    const all = []
+
+    pagesData.pages.forEach((page) => {
+        const tree =
+            page?.raw?.data?.browse?.data?.data
+            || page.tree
+            || page.data
+        if (!tree) return
+
+        const flat = buildFlatListFromTree(tree, viewMode)
+        all.push(...flat)
+    })
+
+    return all
+}
+
+export function CommentsBrowseShort({
+    contentUrl,
+    browseData,
+    module,
+    handleReply
+}) {
+    const UnitComments = components['unit']['comments'];
+    const viewMode = browseData?.view;
+    const items = browseData?.data ? buildFlatListFromTree(browseData.data, viewMode) : [];
+    const maxCount= appSetting('comments', 'count_in_feed');
+
+    return (maxCount ? items.slice(0, maxCount) : items).map((item, index) => (
+        <View key={item.id}>
+            <UnitComments 
+                contentUrl={contentUrl} 
+                {...item} 
+                module={module} 
+                view={viewMode} 
+                max_level={browseData?.max_level} 
+                handleReply={handleReply} 
+            />
+        </View>))
+}
+
+export function findParent(data, c, o, insert) {
+    if (Array.isArray(data)) {
+        //for first level
+        data.map(function (d, k) {
+            if (o.data.cmt_vparent_id == d[Object.keys(d)[0]].id) {
+                if (insert == 'before')
+                    data[k][Object.keys(data[k])[0]].items = { ...c, ...data[k][Object.keys(data[k])[0]].items };
+                else
+                    data[k][Object.keys(data[k])[0]].items = { ...data[k][Object.keys(data[k])[0]].items, ...c };
+
+            }
+            data[k][Object.keys(data[k])[0]].items = findParent(data[k][Object.keys(data[k])[0]].items, c, o, insert)
+        })
+    }
+    else {
+        //for another levels
+        Object.keys(data).forEach(function (k) {
+            if (o.data.cmt_vparent_id == data[k].id) {
+                if (insert == 'before')
+                    data[k].items = { ...c, ...data[k].items };
+                else
+                    data[k].items = { ...data[k].items, ...c };
+            }
+            data[k].items = findParent(data[k].items, c, o)
+        });
+
+    }
+    return data;
+}
+
+export function parseData(browse, dynamicData) {
+    if (!dynamicData?.data?.browse?.data?.data)
+        return;
+    dynamicData.data.browse.data.data.map(function (c, kc) {
+        let o = c[Object.keys(c)[0]];
+        // add in root
+        if (o.data.cmt_vparent_id == 0) {
+            let bPresent = false;
+            browse.data.data.forEach(function (k) {
+                if (Object.keys(k)[0] == Object.keys(c)[0])
+                    bPresent = true;
+            });
+
+            if (!bPresent) {
+
+                if (dynamicData.data.browse.insert == 'before') {
+                    browse.data.data = browse.data.data.concat([c]);
+                }
+                else {
+                    browse.data.data = [c].concat(browse.data.data);
+                }
+            }
+        }
+        else {
+            browse.data.data = findParent(browse.data.data, c, o, dynamicData.data.browse.insert);
+        }
+    });
+    return browse;
+}
+
+/**
+ * `fadeSurface` — when the composer floats over scrolling comments (modal, and the
+ * fixed composer on small web screens) pass the surface colour it sits on
+ * (`'card'` | `'background'`). The panel then fades from that colour at the bottom
+ * to transparent at the top, so comments passing behind stay partly visible.
+ * Omit it when the composer is in normal flow (desktop full page) — there is
+ * nothing behind it to reveal.
+ */
+export function CommentsForm({ form: initialForm, requestUrl, module, objectId, isModal = false, fadeSurface }) {
+    if (!initialForm?.data?.inputs)
+        return <></>
+    return <CommentsFormInner form={initialForm} requestUrl={requestUrl} module={module} objectId={objectId} isModal={isModal} fadeSurface={fadeSurface} />
+}
+
+function CommentsFormInner ({ form: initialForm, requestUrl, module, objectId, isModal = false, fadeSurface }) {
+    const { t } = useTranslation();
+    const [formData, setFormData] = useState({});
+
+    const [form, setForm] = useState(initialForm);
+    
+    const [commentForm, setCommentForm] = useState();
+
+    const url = requestUrl + JSON.stringify({ 'module': module, 'object_id': objectId });
+
+    const { data: dynamicData } = useFetchForm(url, commentForm);
+
+
+    useEffect(() => {
+        const subscription = emitter.addListener(EVENTS.commentThread(module, objectId), (data) => {
+            if (data.action == 'reply_comment') {
+                setFormData({
+                    text: stripTags(data.data.cmt_text),
+                    parent_id: data.data.cmt_id,
+                    author: data.data.author_data,
+                    cmt_id: data.data.cmt_id,
+                    cmt_object_id: data.data.cmt_object_id
+                })
+            }
+        })
+
+        const subscription2 = emitter.addListener(EVENTS.comment, (data) => {
+            if (data.action == 'send') {
+                setFormData({})
+            }
+        })
+
+        return () => {
+            subscription.remove();
+            subscription2.remove();
+        }
+    }, [])
+
+    useEffect(() => {
+        if (!(formData.parent_id > 0)) return;
+
+        let cancelled = false;
+
+        const updateFormInputs = async () => {
+            let mentionText = '';
+
+            if (appSetting('comments', 'mentions')) {
+                const sUrl = appSetting('urls', 'cmts_menthion_url');
+                if (sUrl) {
+                    const sResponse = await fetcher(`/api.php?r=${sUrl}&params[]=${formData.cmt_id}&params[]=${formData.cmt_object_id}`);
+
+                    if (sResponse?.data) {
+                        mentionText = `<a class="bx-mention-link ${sResponse.data.add_classes}" ts="${formData.ts}" data-id="[object Object]" href="/mention${sResponse.data.id}" title="${sResponse.data.name.trim()}" dchar="@" data-profile-id="-1" contenteditable="false">${sResponse.data.name.trim()}</a>&shy;&nbsp;`;
+                    }
+                } else if (formData.author?.url === "/javascript:") {
+                    mentionText = `<a class="bx-mention-link" ts="${formData.ts}" data-id="[object Object]" href="#" title="${formData.author.display_name.trim()}" dchar="@" data-profile-id="-1" contenteditable="false">${formData.author.display_name.trim()}</a>&shy;&nbsp;`;
+                } else if (formData.author?.url) {
+                    mentionText = `<a class="bx-mention-link" ts="${formData.ts}" href="${formData.author.url}">${formData.author.display_name.trim()}</a>&shy;&nbsp;`;
+                }
+            }
+
+            if (cancelled) return;
+
+            // Parent id only — avoid remounting editor via cmt_text value/autofocus.
+            setForm(prevForm => ({
+                ...prevForm,
+                data: {
+                    ...prevForm.data,
+                    inputs: {
+                        ...prevForm.data.inputs,
+                        cmt_parent_id: {
+                            ...prevForm.data.inputs.cmt_parent_id,
+                            value: formData.parent_id
+                        },
+                    }
+                }
+            }));
+
+            if (mentionText) {
+                emitter.emit(EVENTS.editor, { action: 'set_content', value: mentionText });
+            }
+
+            // Direct bridge focus after reply banner + content settle.
+            // Avoid timeout remount (ghost TextInput) — it makes the composer slide in on iOS.
+            requestAnimationFrame(() => {
+                if (cancelled) return;
+                setTimeout(() => {
+                    if (cancelled) return;
+                    emitter.emit(EVENTS.editor, { action: 'focus' });
+                }, 50);
+            });
+        };
+
+        updateFormInputs();
+        return () => {
+            cancelled = true;
+        };
+    }, [formData.parent_id, formData.cmt_id, formData.cmt_object_id, formData.author, formData.ts]);
+
+
+
+    useEffect(() => {
+        if (dynamicData?.data?.browse && dynamicData?.data?.browse?.new?.[0]) {
+            emitter.emit(EVENTS.commentThread(module, objectId), { action: 'new_content', data: dynamicData.data.browse.data.data[0]['i' + dynamicData.data.browse.new[0]] });
+            handleCancel() 
+        }
+    }, [dynamicData]);
+
+    const handleCancel = async () => {
+        setFormData({});
+        setForm(prevForm => ({
+            ...prevForm,
+            data: {
+                ...prevForm.data,
+                inputs: {
+                    ...prevForm.data.inputs,
+                    cmt_parent_id: {
+                        ...prevForm.data.inputs.cmt_parent_id,
+                        value: 0
+                    },
+                    cmt_text: {
+                        ...prevForm.data.inputs.cmt_text,
+                        value: ''
+                    }
+                }
+            }
+        }));
+        emitter.emit(EVENTS.editor, { action: 'set_content', value: '' });
+    }
+
+    const onFormSubmit = (formData, d) => {
+        setCommentForm(formData);
+    }
+
+    const combinedExProps = {
+        ...(form?.exProps || {}),
+        browse: dynamicData?.data?.browse,
+        isModal,
+    };
+    
+    return (
+        <EdgeBlurView
+            edge="bottom"
+            config={fadeSurface ? edgeBlurConfig('footer') : null}
+            className=" p-2 sm:p-4 "
+            washClassName={FADE_SURFACE_CLASS[fadeSurface] || ''}
+            style={fadeSurface ? { paddingTop: FADE_RUN_UP } : undefined}
+        >
+            {
+                formData.parent_id > 0 && (<View className='bg-accent rounded-xl border border-accent px-2.5 py-2 mb-2'>
+                    <Row className='items-start justify-between max-w-full relative'>
+                        <View className=' flex-auto pr-4'>
+                            <Row className='max-w-full '>
+                                <Text className='text-xs text-popover-foreground '>{t('Reply to:')} </Text>
+                                <Text className='font-semibold text-xs text-popover-foreground '>{ProfileDisplayName(formData.author.display_name)}</Text>
+                            </Row>
+                            <Text className=' text-sm overflow-hidden text-popover-foreground ' numberOfLines={3}>{formData.parent_id > 0 ? formData.text : ''}</Text>
+                        </View>
+                        <View className=" -right-1 -top-1">
+                            <Button align="start" rounded startDecorator="X" size="xs" variant="text" onPress={() => handleCancel()} />
+                        </View>
+                    </Row>
+                </View>)
+            }
+            <Form {...form} exProps={combinedExProps} resetOnSubmit={true} classContainerName={" flex-row flex-wrap w-full items-start justify-between"} onFormSubmit={onFormSubmit} />
+        </EdgeBlurView>
+    )
+}

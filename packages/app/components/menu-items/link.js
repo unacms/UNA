@@ -1,0 +1,64 @@
+import { Text } from 'app/design/typography'
+import { View } from 'app/design/view'
+import Link from 'app/ui/atoms/link';
+import Time from 'app/ui/atoms/time';
+import Profile from 'app/ui/molecules/profile/profile';
+
+const DisplayLink = (oProps) => {
+    const sClassName = 'menu-item ' + ((oProps?.params && oProps.params?.classNameItem && oProps.params.classNameItem?.link) || 'flex max-w-full text-muted-foreground  web:hover:text-popover-foreground  web:hover:underline cursor-pointer');
+
+    return (
+        <View className={sClassName}>
+            <Link href={oProps.link}>{oProps.content}</Link>
+        </View>
+    );
+}
+
+const DisplayText = (oProps) => {
+    const sClassName = 'menu-item ' + ((oProps?.params && oProps.params?.classNameItem && oProps.params.classNameItem?.text) || 'flex max-w-full');
+
+    return (
+        <View className={sClassName}>{oProps.content}</View>
+    );
+}
+
+export default function MenuItemLink(oProps) {
+    
+    if(!oProps.title && !oProps.icon)
+        return;
+
+    const bShowLink = (oProps?.link && oProps.link != 'javascript:void(0)') || false;
+  
+    const sClassContent = 'flex flex-row items-center';
+
+    let sContent = undefined;
+    switch(oProps.content_type) {
+        case 'time':
+            sContent = (
+                <View className={sClassContent}>
+                  
+                    <Time ts={oProps.title}></Time>
+                </View>
+            );
+            break;
+
+        case 'profile':
+            sContent = (
+                <View className="flex">
+                    <Profile {...oProps.data} displayType="unit" displaySize="xs" showInfo="false" />
+                </View>
+            );
+            break;
+
+        case 'text':
+        default:
+            sContent = (
+                <View className={sClassContent}>
+                 
+                    <Text className=" mx-auto px-2 py-0.5 rounded-full bg-muted  flex text-sm text-muted-foreground ">{oProps.title}</Text>
+                </View>
+            );
+    }
+
+    return bShowLink ? <DisplayLink {...oProps} content={sContent} /> : <DisplayText {...oProps} content={sContent} />;
+}
