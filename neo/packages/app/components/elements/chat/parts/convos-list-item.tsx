@@ -26,8 +26,10 @@ type ConvosListItemProps = {
  * One row of a conversation list: avatar, title, time, one-line preview, unread
  * badge. Shared by the messenger and the agents page so both lists look the same.
  *
- * 8px outside + 8px inside, so avatars line up with the 16px list header and
- * tabs while the highlight keeps an 8px inset.
+ * Phones: an edge-to-edge row on the card surface (`bg-card`), 1px apart
+ * (feed cards are 2px), 16px inside. From sm: 8px outside + 8px inside, so avatars
+ * line up with the 16px list header and tabs while the highlight keeps an 8px
+ * inset.
  */
 export default function ConvosListItem({
     profile,
@@ -46,8 +48,8 @@ export default function ConvosListItem({
     const rowBg = selected ? ' bg-accent ' : (pressed ? ' bg-muted/60 ' : ' web:group-hover:bg-muted/60 active:bg-muted/60 ');
 
     return (
-        <Pressable className="group w-full px-2 py-0.5 web:cursor-pointer" onPress={onPress} {...pressProps}>
-            <Row className={rowBg + ' relative w-full overflow-hidden gap-3 rounded-xl px-2 py-2 web:duration-200'}>
+        <Pressable className="group w-full mt-px bg-card sm:mt-0 sm:bg-transparent sm:px-2 sm:py-0.5 web:cursor-pointer" onPress={onPress} {...pressProps}>
+            <Row className={rowBg + ' relative w-full overflow-hidden gap-3 sm:rounded-xl px-4 sm:px-2 py-2 web:duration-200'}>
                 <View className=" rounded-full flex-none bg-secondary mb-auto">
                     <Profile
                         {...profile}

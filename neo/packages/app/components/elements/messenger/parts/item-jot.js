@@ -2,7 +2,7 @@ import { View, Row } from 'app/design/view';
 import { fetcher } from 'app/lib/fetcher';
 import React, { useState, useMemo, useCallback } from 'react';
 import MessageItem from 'app/components/elements/chat/parts/message-item'
-import { Button } from 'app/design/controls'
+import { NeoButton } from 'app/design/controls'
 import Form from 'app/components/elements/form';
 import useFetchForm from 'app/lib/hooks/use-fetch-form'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
@@ -69,9 +69,9 @@ export default function JotItem({ item, index, handleReply }) {
             footer={
             <View className="flex-row justify-between items-center mt-0.5">
                 <View className="pl-12">
-                    <Button align="start" title={t("Reply")} size="xs" startDecorator="MessageCircle" variant="link" onPress={() => handleReplyInner(item)} rounded />
+                    <NeoButton style="borderless" controlSize="mini" borderShape="capsule" align="start" image="MessageCircle" label={t("Reply")} haptics={false} onPress={() => handleReplyInner(item)} />
                 </View>
-                <Row className='gap-1'>
+                <Row className='gap-2'>
                     <View className=''>
                         <Reactions key={'reactions_' + item.id} {...reactionsWithUpdatedParams} />
                     </View>
@@ -83,9 +83,8 @@ export default function JotItem({ item, index, handleReply }) {
                                 link: aItem.link,
                                 title: aItem.title
                             };
-                        })} onSelect={handleManageMenuSelect}>
-                            <Button variant="text" size="xs" startDecorator="Ellipsis" rounded />
-                        </DropdownMenu>
+                        })} onSelect={handleManageMenuSelect}
+                            buttonProps={{ style: 'borderless', controlSize: 'mini', borderShape: 'circle', image: 'Ellipsis', accessibilityLabel: t('More options') }} />
                     }
                 </Row>
             </View>

@@ -1,7 +1,6 @@
 import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
 import { useState, useRef, useCallback } from 'react';
-import { Button } from 'app/design/controls'
 import Link from 'app/ui/atoms/link'
 //import Mapbox from "@rnmapbox/maps";
 import { useWindowHeight } from 'app/context/measure';

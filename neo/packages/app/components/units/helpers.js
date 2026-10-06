@@ -4,7 +4,7 @@ import Image from 'app/ui/atoms/image';
 import Letter from 'app/ui/atoms/letter';
 import { Text } from 'app/design/typography';
 import { View, Row } from 'app/design/view';
-import { Button } from 'app/design/controls';
+import { NeoButton, legacyToNeoButtonProps } from 'app/design/controls';
 import Profile from 'app/ui/molecules/profile/profile';
 import ProfilesList from 'app/ui/molecules/profile/profile-list';
 import Badge from 'app/ui/molecules/profile/badge';
@@ -13,6 +13,7 @@ import { components } from 'app/components/registry';
 import { fetcher } from 'app/lib/fetcher';
 import { appSetting, cn, tp, sanitazeUrl } from 'app/lib/util';
 import { getUnitMenuItems } from 'app/customization/functions';
+import { UnitActionWidthContext } from 'app/components/units/unit-action-width';
 import { useRouter, useCurrentTabPath, useFocusEffect } from 'app/lib/hooks/router';
 import { nativeTabHref } from 'app/lib/navigation/tab-history';
 import { useTranslation } from 'react-i18next';
@@ -23,9 +24,9 @@ import { FLUSH_LIST_MODULES } from 'app/components/units/flush-list';
 
 const UNIT_SURFACES = { card: Card, list: CardList };
 
-// Mobile: 8px inside the row's 8px margin (u-card-list-flush), so the photo
+// Mobile: 16px inside the edge-to-edge row (u-card-list-flush), so the photo
 // lines up with the 16px page header and subtabs.
-const FLUSH_LIST_PADDING = 'px-2 py-2 sm:p-2';
+const FLUSH_LIST_PADDING = 'px-4 py-2 sm:p-2';
 const FLUSH_ACTION_PRIMARY = 'w-1/2 sm:w-full pr-2 sm:pr-0';
 
 const UnitSurfaceContext = createContext(false);
@@ -84,7 +85,7 @@ function UnitSurface({
                     {flushOnMobile && Platform.OS !== 'web' && navPending ? (
                         <View
                             pointerEvents="none"
-                            className="absolute inset-0 rounded-xl sm:rounded-2xl bg-muted/60 animate-pulse"
+                            className="absolute inset-0 sm:rounded-2xl bg-muted/60 animate-pulse"
                         />
                     ) : null}
                     {children}
@@ -523,6 +524,8 @@ export function UnitActions({
     inlineSecondary = false,
     /** Give it a width when the buttons size to their content (no w-full parent). */
     skeletonClassName = 'h-9 w-full',
+    /** Buttons hug their label below `sm` (profile rows on phones); see unit-action-width.js. */
+    compactOnMobile = false,
 }) {
     const flushOnMobile = use(UnitSurfaceContext);
     const resolvedPrimaryClassName = primaryClassName ?? (
@@ -541,15 +544,17 @@ export function UnitActions({
     ) : null;
 
     return (
-        <View className={className}>
-            <View className={resolvedPrimaryClassName}>
-                <Skeleton className={skeletonClassName} rounded="rounded-lg" visible={skeleton}>
-                    {primaryMenuItem}
-                    {inlineSecondary ? secondary : null}
-                </Skeleton>
+        <UnitActionWidthContext value={compactOnMobile ? 'compact-mobile' : 'fill'}>
+            <View className={className}>
+                <View className={resolvedPrimaryClassName}>
+                    <Skeleton className={skeletonClassName} rounded="rounded-lg" visible={skeleton}>
+                        {primaryMenuItem}
+                        {inlineSecondary ? secondary : null}
+                    </Skeleton>
+                </View>
+                {inlineSecondary ? null : secondary}
             </View>
-            {inlineSecondary ? null : secondary}
-        </View>
+        </UnitActionWidthContext>
     );
 }
 
@@ -575,18 +580,14 @@ export function UnitInvitationActions({
 
     return (
         <Row className="gap-x-2">
-            <Button
-                title={t('Accept')}
-                size={size}
-                variant={variant}
-                rounded
+            <NeoButton
+                {...legacyToNeoButtonProps({ variant, size, rounded: true, title: t('Accept') })}
+                expoUI={false}
                 onPress={() => processInvitation(data.callback_accept)}
             />
-            <Button
-                title={t('Decline')}
-                size={size}
-                variant={variant}
-                rounded
+            <NeoButton
+                {...legacyToNeoButtonProps({ variant, size, rounded: true, title: t('Decline') })}
+                expoUI={false}
                 onPress={() => processInvitation(data.callback_decline)}
             />
         </Row>

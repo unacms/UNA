@@ -8,7 +8,7 @@ import { ActivityIndicator } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { View, Row, Pressable } from 'app/design/view';
 import { Text } from 'app/design/typography';
-import { Button } from 'app/design/controls';
+import { NeoButton } from 'app/design/controls';
 import DropdownPopup from 'app/ui/atoms/dropdown-popup';
 import CheckBox from 'app/ui/atoms/checkbox';
 import { Icon } from 'app/ui/atoms/icon';
@@ -507,9 +507,9 @@ export default function TasksFilterSelector({
 
             {activeFilters.length > 0 && !isSavedFilterSelected ? (
                 <Row className="items-center gap-1">
-                    <Button size="sm" variant="text" title={t('Clear')} onPress={clearFilters} />
+                    <NeoButton style="borderless" controlSize="small" label={t('Clear')} onPress={clearFilters} />
                     {requestUrlSave ? (
-                        <Button size="sm" variant="text" title={t('Save')} onPress={onSave} />
+                        <NeoButton style="borderless" controlSize="small" label={t('Save')} onPress={onSave} />
                     ) : null}
                 </Row>
             ) : null}

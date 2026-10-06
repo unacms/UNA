@@ -134,7 +134,7 @@ function DefaultFeedUnit({ data }) {
                 <Row className="gap-3 p-4 pb-3 flex-auto">
                     <Skeleton visible={isSkeleton} preset='feed_author'>
                         <Author data={data} url={url} t={t} />
-                        <Row className="flex-none mb-auto items-center gap-1">
+                        <Row className="flex-none mb-auto items-center gap-2">
                             <AuthorActions data={data} />
                             <MenuManage
                                 id={data.id}

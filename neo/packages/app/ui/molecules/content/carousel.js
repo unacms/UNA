@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useMemo, memo } from 'react';
 import { View, Pressable, Row } from 'app/design/view'
 import Image from 'app/ui/atoms/image';
-import { Modal, Button, NeoButton } from "app/design/controls";
+import { Modal, NeoButton } from "app/design/controls";
 import { Text } from 'app/design/typography';
 import { Image as ImageOr, Platform } from 'react-native';
 import { appSetting, LAYOUT_BREAKPOINTS } from 'app/lib/util'
@@ -148,6 +148,8 @@ function CarouselContent({ data, maxWidth }) {
     const [imageSize2, setImageSize2] = useState([0, 0]);
     const [viewerSize, setViewerSize] = useState({ width: 0, height: 0 });
     const [containerWidth, setContainerWidth] = useState(0);
+    // Bottom of the close button's row; a native video starts below it (see the video branch).
+    const [closeRowBottom, setCloseRowBottom] = useState(0);
 
     const { width: windowWidthOr, height: windowHeightOr } = useWindowSize();
     const isWeb = Platform.OS === 'web';
@@ -219,7 +221,13 @@ function CarouselContent({ data, maxWidth }) {
                     style={viewerStyle}
                     onLayout={handleViewerLayout}
                 >
-                    <View className="absolute right-3 top-3 z-50">
+                    <View
+                        className="absolute right-3 top-3 z-50"
+                        onLayout={(event) => {
+                            const { y, height } = event.nativeEvent.layout;
+                            setCloseRowBottom(y + height);
+                        }}
+                    >
                         <NeoButton
                             style="bordered"
                             controlSize="regular"
@@ -264,12 +272,17 @@ function CarouselContent({ data, maxWidth }) {
                     ) : null}
 
                     {data[currentImageIndex].type === 'video' ? (
-                        <Pressable
+                        // Not a close-on-press Pressable like images: taps belong to the native player
+                        // controls (on Android a tap on Play also fired onPress and closed the lightbox).
+                        // Native players draw controls along the video's top edge (iOS: fullscreen and
+                        // AirPlay on the left, volume on the right), so the video starts below the close
+                        // button. Web's controls sit at the bottom.
+                        <View
                             style={{
                                 width: lightboxWidth || '100%',
                                 height: lightboxHeight || '100%',
+                                paddingTop: isWeb ? 0 : closeRowBottom,
                             }}
-                            onPress={() => setCurrentImageIndex(false)}
                         >
                             <Video
                                 fill
@@ -279,35 +292,37 @@ function CarouselContent({ data, maxWidth }) {
                                 src={data[currentImageIndex].src}
                                 poster={data[currentImageIndex].poster}
                             />
-                        </Pressable>
+                        </View>
                     ) : null}
 
                     {data[currentImageIndex].type === 'image' ? (
                         <Row style={{ pointerEvents: 'box-none' }} className="absolute inset-x-0 top-1/2 -mt-4 items-center justify-between px-4">
                             {currentImageIndex > 0 ? (
-                                <Button
-                                    variant="default"
-                                    rounded
-                                    size="base"
+                                <NeoButton
+                                    style="glass"
+                                    borderShape="circle"
+                                    image="ArrowLeft"
+                                    accessibilityLabel={t('Previous')}
+                                    classNames={{ root: 'self-center' }}
                                     onPress={() => {
                                         setImageSize2([0, 0]);
                                         setCurrentImageIndex(currentImageIndex - 1);
                                     }}
-                                    startDecorator="ArrowLeft"
                                 />
                             ) : (
                                 <View className="w-10" />
                             )}
                             {currentImageIndex !== data.length - 1 ? (
-                                <Button
-                                    variant="default"
-                                    rounded
-                                    size="base"
+                                <NeoButton
+                                    style="glass"
+                                    borderShape="circle"
+                                    image="ArrowRight"
+                                    accessibilityLabel={t('Next')}
+                                    classNames={{ root: 'self-center' }}
                                     onPress={() => {
                                         setImageSize2([0, 0]);
                                         setCurrentImageIndex(currentImageIndex + 1);
                                     }}
-                                    startDecorator="ArrowRight"
                                 />
                             ) : (
                                 <View className="w-10" />

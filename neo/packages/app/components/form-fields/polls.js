@@ -1,6 +1,6 @@
 import Field, { getValidationRules } from './_field';
 import { fetcher } from 'app/lib/fetcher';
-import { Button, Modal } from "app/design/controls";
+import { Modal, NeoButton } from "app/design/controls";
 import { useState, useEffect, useCallback } from 'react';
 import Form from 'app/components/elements/form';
 import useFetchForm from 'app/lib/hooks/use-fetch-form'
@@ -82,9 +82,9 @@ export default function FormFieldPolls(props) {
             {pollSource && pollSource.map((item, index) => {
                 return <PollItem results_url='/api.php?r=bx_timeline/get_block_poll_results'  disabled = {true} onDelete={() => { deletePoll(props.request_remove, item) }} key={"att" + index} data={item} showTitle={true} />
             })}
-             {!props.hide_button && <Button
-                className="mt-4"
-                title={t('Add Poll')}
+             {!props.hide_button && <NeoButton
+                classNames={{ root: 'mt-4' }}
+                label={t('Add Poll')}
                 onPress={() => {
                     emitter.emit(EVENTS.fieldPolls(name), { action: 'add' });
                 }}

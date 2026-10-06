@@ -5,7 +5,7 @@ import { EdgeBlurView, edgeBlurConfig } from 'app/ui/atoms/edge-blur'
 import { Text } from 'app/design/typography'
 import { useState, useReducer, useRef, useEffect, useCallback } from 'react';
 import { components } from 'app/components/registry';;
-import { Button } from 'app/design/controls'
+import { NeoButton } from 'app/design/controls'
 import useFetchForm from 'app/lib/hooks/use-fetch-form'
 import { fetcher } from 'app/lib/fetcher';
 import Loading from 'app/ui/atoms/loading'
@@ -391,9 +391,13 @@ export function CommentsBrowse({
                     <DropdownMenu items={[
                         { id: 'newest', name: 'asc', title: t('Oldest first'), selected: browseParams.order_way == 'asc' },
                         { id: 'oldest', name: 'desc', title: t('Newest first'), selected: browseParams.order_way == 'desc' }
-                    ]} onSelect={(oItem) => { handleOrder(oItem.name) }}>
-                        <Button variant="secondary" startDecorator={browseParams.order_way == 'asc' ? "ArrowDownAZ" : "ArrowDownZA"} size="xs" />
-                    </DropdownMenu>
+                    ]} onSelect={(oItem) => { handleOrder(oItem.name) }}
+                        buttonProps={{
+                            controlSize: 'mini',
+                            image: browseParams.order_way == 'asc' ? 'ArrowDownAZ' : 'ArrowDownZA',
+                            accessibilityLabel: t('Sort'),
+                        }}
+                    />
                 </Pressable>
             </View>}
         </Row>) : <></>;
@@ -861,7 +865,7 @@ function CommentsFormInner ({ form: initialForm, requestUrl, module, objectId, i
                             <Text className=' text-sm overflow-hidden text-popover-foreground ' numberOfLines={3}>{formData.parent_id > 0 ? formData.text : ''}</Text>
                         </View>
                         <View className=" -right-1 -top-1">
-                            <Button align="start" rounded startDecorator="X" size="xs" variant="text" onPress={() => handleCancel()} />
+                            <NeoButton style="borderless" controlSize="mini" borderShape="circle" image="X" accessibilityLabel={t('Cancel reply')} onPress={() => handleCancel()} />
                         </View>
                     </Row>
                 </View>)

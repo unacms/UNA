@@ -1,7 +1,7 @@
 import { View, Row } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
-import { Button } from 'app/design/controls'
+import { NeoButton } from 'app/design/controls'
 import Link from 'app/ui/atoms/link'
 import Card from 'app/ui/molecules/page/card'
 import Progress from 'app/ui/atoms/progress'
@@ -58,7 +58,7 @@ function CourseStructure({ data }) {
     };
 
     const handleAddModule = async (event) => {
-        event.preventDefault();
+        event?.preventDefault?.();
         const fetchedData = await fetcher(`/api.php?r=system/perfom_action_api/TemplServiceGrid/&params[]=&o=bx_courses_cnt_structure_manage&a=add&parent_id=0&entry_id=${courseId}`);
         const content = { content: fetchedData.data, designbox_id: 0 };
         setBottomSheetData({ title: content.content[0]?.title || " ", content: <View className='px-1'><BlockByData onFormEmpty={handleUpdate} block={content} /></View> });
@@ -120,17 +120,17 @@ function CourseStructure({ data }) {
 
                                 <Row className='justify-between'>
                                     <View className='my-2 text-xs '><Text className="text-white">{t('Module {{index}}', { index: item.index })}</Text></View>
-                                    {isEditable && <Row className='items-center justify-center gap-x-2'><DropdownMenu items={manageMenu} onSelect={(oItem) => { handleManage(oItem, item.id) }}><Button rounded startDecorator="Cog" size='sm' /></DropdownMenu><DragControl dragHandleProps={dragHandleProps}><Button rounded startDecorator="ArrowLeftRight" size='sm' /></DragControl></Row>}
+                                    {isEditable && <Row className='items-center justify-center gap-x-2'><DropdownMenu items={manageMenu} onSelect={(oItem) => { handleManage(oItem, item.id) }} buttonProps={{ controlSize: 'small', borderShape: 'circle', image: 'Cog', accessibilityLabel: t('Settings') }} /><DragControl dragHandleProps={dragHandleProps} accessibilityLabel={t('Reorder')} className="u-neo-btn-link hit-area-4"><NeoButton controlSize="small" borderShape="circle" image="ArrowLeftRight" interactive /></DragControl></Row>}
                                 </Row>
                                 <View className='h-12'>
                                     <Text className="text-white text-lg leading-tight tracking-tight font-bold text-secondary-foreground " numberOfLines={2}>{item.title}</Text>
                                 </View>
                             </View>
                             <Row className='gap-x-2 items-end mt-4'>
-                                <Button textColor={`text-${colorButtonText}`} bgColor={`bg-${colorButton}`} startDecorator={icon} variant="outline" title={item.status} size="xs" rounded />
+                                <NeoButton controlSize="mini" borderShape="capsule" image={icon} label={item.status} />
                                 {item?.counters?.map((item2, index) => {
                                     return (
-                                        <Button key={`cnt-${index}`} bgColor={`bg-white`} variant="default" title={`${item2.cn_progress} ${item2.cn_title}`} size="xs" rounded />
+                                        <NeoButton key={`cnt-${index}`} controlSize="mini" borderShape="capsule" label={`${item2.cn_progress} ${item2.cn_title}`} />
                                     )
                                 })}
                             </Row>
@@ -155,7 +155,7 @@ function CourseStructure({ data }) {
                     {isEditable && (<View className='m-2 w-72'>
                         <Card rounded=' rounded-none sm:rounded-2xl  ' >
                             <View className='h-40 items-center justify-center'>
-                                <Button rounded startDecorator="Plus" title={t('Add new')} onPress={(event) => { handleAddModule(event, courseId) }} size='sm' />
+                                <NeoButton controlSize="small" borderShape="capsule" image="Plus" label={t('Add new')} classNames={{ root: 'self-center' }} onPress={(event) => { handleAddModule(event, courseId) }} />
                             </View>
                         </Card>
                     </View>)

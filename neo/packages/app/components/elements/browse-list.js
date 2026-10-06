@@ -26,7 +26,7 @@ import { Text } from 'app/design/typography'
 import { getSkeletonForList } from 'app/lib/skeleton-helpers'
 import { subscribe } from 'app/ui/atoms/socket'
 import { useCurrentUser } from 'app/context/user'
-import { Button } from 'app/design/controls'
+import { NeoButton } from 'app/design/controls'
 import { useWindowHeight } from 'app/context/measure';
 import emitter, { EVENTS } from 'app/context/emitter'
 import Snackbar from 'app/ui/atoms/snackbar'
@@ -278,7 +278,7 @@ export default function Browse(props) {
     return (
         <BlockWrapper {...props.blockWrapperProps}><View className='w-full' style={styles}>
             {formProps && <View className=" w-full">
-                <Row className="w-full items-end justify-end"><Button startDecorator="Settings2" variant="outline" title={!showFilters ? "Show filters" : "Hide filters"} onPress={() => setShowFilters(!showFilters)} /></Row>
+                <Row className="w-full items-end justify-end"><NeoButton image="Settings2" label={!showFilters ? "Show filters" : "Hide filters"} onPress={() => setShowFilters(!showFilters)} classNames={{ root: 'self-end' }} /></Row>
                 {showFilters && <Form {...formProps} key="form" name={formProps.name} onChange={handleFilterFormChange} />}
             </View>
             }

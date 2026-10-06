@@ -1,5 +1,5 @@
 import { View } from 'app/design/view';
-import { Button } from 'app/design/controls';
+import { NeoButton } from 'app/design/controls';
 import { useTranslation } from 'react-i18next';
 
 export default function AuthSAML() {
@@ -10,12 +10,13 @@ export default function AuthSAML() {
 
     return (
         <View className='flex-1 min-w-200'>
-            <Button
+            <NeoButton
                 onPress={handleSAMLLogin}
-                title={t('Use SAML SSO')}
-                startDecorator="Lock" // Changed to string
-                fullWidth
-                size="base"
+                label={t('Use SAML SSO')}
+                image="Lock"
+                controlSize="large"
+                width="fill"
+                classNames={{ root: 'flex-none' }}
             />
         </View>
     );

@@ -154,3 +154,38 @@ function escapeHtml(s: string) {
 function escapeAttr(s: string) {
     return escapeHtml(s).replace(/'/g, '&#39;')
 }
+
+/**
+ * Web: the library's mention is a text mark, so Backspace/Delete would eat it letter by
+ * letter. Remove the whole mention next to a collapsed caret instead; true when handled.
+ */
+export function deleteWholeMention(editor: any, key: string) {
+    const state = editor?.state
+    const type = state?.schema?.marks?.mention
+    const sel = state?.selection
+    if (!type || !sel?.empty || (key !== 'Backspace' && key !== 'Delete')) return false
+
+    const $pos = sel.$from
+    const parent = $pos.parent
+    const at = key === 'Backspace' ? $pos.parentOffset - 1 : $pos.parentOffset
+    if (at < 0 || at >= parent.content.size) return false
+
+    // Children with offsets; the mention is the run of children sharing the mark at `at`.
+    const kids: Array<{ node: any; from: number; to: number }> = []
+    parent.forEach((node: any, offset: number) => kids.push({ node, from: offset, to: offset + node.nodeSize }))
+    const i = kids.findIndex((k) => at >= k.from && at < k.to)
+    const target = i >= 0 ? type.isInSet(kids[i].node.marks) : null
+    if (!target) return false
+
+    const same = (k: any) => !!k && !!type.isInSet(k.node.marks)?.eq(target)
+    let first = i
+    let last = i
+    while (same(kids[first - 1])) first--
+    while (same(kids[last + 1])) last++
+    const from = kids[first].from
+    const to = kids[last].to
+
+    const start = $pos.start()
+    editor.view.dispatch(state.tr.delete(start + from, start + to))
+    return true
+}

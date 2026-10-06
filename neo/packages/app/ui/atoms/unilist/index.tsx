@@ -7,7 +7,7 @@ import { KeyboardGestureArea } from 'react-native-keyboard-controller'
 import { useHeaderHeight, useCoverScrollCompensation } from 'app/context/jotai/layout'
 import { getListScrollOffset, setListScrollOffset } from 'app/lib/cache/list-scroll-cache'
 import { paddingForList } from 'app/customization/functions'
-import { getHeaderFadeExtend } from 'app/ui/molecules/header/page-header-parts'
+import { getHeaderFadeExtend, PageHeaderBand } from 'app/ui/molecules/header/page-header-parts'
 import {
     dedupeById,
     renderSlot,
@@ -59,7 +59,12 @@ function UniListChromeHeader({
                 <View style={{ height: coverOverlayPad }} />
             ) : null}
             {applyHeaderOffset && headerOffset > 0 ? (
-                <View style={{ height: headerOffset }} />
+                // Behind the page header at rest: the card surface (mobile
+                // layout). Part of the list, so it scrolls away and the fixed
+                // header keeps its own gradient chrome.
+                <View style={{ height: headerOffset }}>
+                    <PageHeaderBand height={headerOffset} />
+                </View>
             ) : null}
             {renderSlot(header)}
             {applyFooterOffset && headerOffset > 0 ? (

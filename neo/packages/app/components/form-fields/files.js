@@ -2,7 +2,7 @@ import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import Field, { getValidationRules } from './_field';
 import { View, Row, Pressable } from 'app/design/view';
 import * as ImagePicker from 'expo-image-picker';
-import { Button, NeoButton } from 'app/design/controls';
+import { NeoButton, legacyToNeoButtonProps } from 'app/design/controls';
 import { Icon } from 'app/ui/atoms/icon';
 import { genRnd, appSetting, prepareImageForUpload } from 'app/lib/util';
 import * as DocumentPicker from 'expo-document-picker';
@@ -738,7 +738,7 @@ export default function (props) {
                 if (data.data !== undefined && !formResponseHasFieldErrors(data.data)) resetImages();
             }
             if (data.action == 'pasted_images' && acceptsPastedImages && data.images?.length) {
-                const inlinePaste = data.inlinePaste === false ? false : isInlineImagePaste(formName)
+                const inlinePaste = typeof data.inlinePaste === 'boolean' ? data.inlinePaste : isInlineImagePaste(formName)
                 const assets = data.images.map((img) => ({ ...img, inlinePaste }))
                 uploadImages(assets).then((k) => setImageSource({ images: k }));
             }
@@ -899,7 +899,20 @@ function ActionButton({ imagesList, props, selectImage, handleDelete, bMultiple,
             }
         }
     };
-    let button = <Button startDecorator={props.icon ? props.icon : sIcon} tooltip={t("Add " + props.name)} title={props.title ? props.title : sTitle} size={props.size ? props.size : "base"} variant={props.variant ? props.variant : "text"} rounded={props.rounded ? props.rounded : false} onPress={() => selectImage(props.source ?? 'library')} />
+    const sLabel = props.title ? props.title : sTitle;
+    const sTooltip = t("Add " + props.name);
+    let button = <NeoButton
+        {...legacyToNeoButtonProps({
+            variant: props.variant || 'text',
+            size: props.size || 'base',
+            rounded: props.rounded,
+            title: sLabel,
+            startDecorator: props.icon ? props.icon : sIcon,
+            tooltip: sTooltip,
+        })}
+        accessibilityLabel={sLabel || sTooltip}
+        onPress={() => selectImage(props.source ?? 'library')}
+    />
 
     if (!bMultiple || props.useSingle) {
         let img = (imagesList || []).find((item) => !item?.inlinePaste) || null;
@@ -1024,11 +1037,11 @@ function ButtonCover({ imageSource, selectImage }) {
     let img = imagesList && imagesList.find(item => item.preload === true)
     let isImages = imagesList && imagesList.find(item => item.preload !== true)
 
-    return !isImages && <Button
-        title={t('Add Cover')}
-        startDecorator={img?.preload ? "_loading" : "Image"}
-        variant="outline"
-        size="xs"
+    return !isImages && <NeoButton
+        label={t('Add Cover')}
+        image="Image"
+        loading={!!img?.preload}
+        controlSize="mini"
         onPress={() => selectImage('library')}
     />
 }

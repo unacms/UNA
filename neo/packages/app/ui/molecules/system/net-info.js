@@ -6,7 +6,7 @@ import { AppState, Platform } from 'react-native';
 import NetInfo from '@react-native-community/netinfo';
 import { View } from 'app/design/view';
 import { Text } from 'app/design/typography';
-import { Button } from 'app/design/controls';
+import { NeoButton } from 'app/design/controls';
 import * as SplashScreen from 'expo-splash-screen';
 import { useTranslation } from 'react-i18next';
 
@@ -175,7 +175,7 @@ export function NetworkStatus({ children }) {
                 <Text className="text-center text-base text-foreground">
                     {t('No internet connection')}
                 </Text>
-                <View><Button title={t('Check connection')} onPress={recheck} /></View>
+                <View><NeoButton label={t('Check connection')} onPress={recheck} /></View>
 
             </View>
         );

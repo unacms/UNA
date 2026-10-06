@@ -27,7 +27,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { View, Pressable } from 'app/design/view';
 import { Text } from 'app/design/typography';
-import { Button } from 'app/design/controls';
+import { NeoButton, legacyToNeoButtonProps } from 'app/design/controls';
 import { Icon } from 'app/ui/atoms/icon';
 import { appSetting } from 'app/lib/util';
 import type { SnackbarProps } from './snackbar.types';
@@ -118,13 +118,9 @@ export default function Snackbar({
     }
 
     const content = showButton ? (
-        <Button
-            variant={variant}
-            size={size}
-            title={buttonTitle || title}
-            startDecorator={icon}
+        <NeoButton
+            {...legacyToNeoButtonProps({ variant, size, rounded: true, title: buttonTitle || title, startDecorator: icon })}
             onPress={handlePress}
-            rounded
         />
     ) : (
         <Pressable

@@ -6,7 +6,8 @@ import { Text } from 'app/design/typography'
 import Link from 'app/ui/atoms/link'
 import { appSetting, cn, stripTags } from 'app/lib/util'
 import { Icon } from 'app/ui/atoms/icon'
-import { Button } from 'app/design/controls'
+import { NeoButton } from 'app/design/controls'
+import i18n from 'i18next'
 import { queueFormEnsureVisible } from 'app/lib/form/form-ensure-visible'
 import { nativeDriver } from 'app/lib/platform/animation'
 
@@ -276,12 +277,14 @@ export default function Field({
         <View ref={wrapRef} collapsable={false} className={sClassName}>
             {name && last_changed == name && (
                 <View className="absolute right-0 top-0 mb-1">
-                    <Button
+                    <NeoButton
+                        style="borderedProminent"
+                        controlSize="mini"
+                        borderShape="circle"
+                        image="RotateCw"
+                        accessibilityLabel={i18n.t('Refresh')}
+                        haptics={false}
                         onPress={handleSubmit}
-                        startDecorator="RotateCw"
-                        variant="primary"
-                        size="xs"
-                        rounded
                     />
                 </View>
             )}

@@ -6,6 +6,7 @@ import { setClipboard, appSetting } from 'app/lib/util';
 import Msg from 'app/ui/molecules/dialogs/msg';
 import { useState } from 'react';
 import MenuItemActionBase from 'app/lib/menu-item-helpers';
+import { toControlSize } from 'app/design/controls';
 import { useTranslation } from 'react-i18next';
 
 export default function MenuItemSubmenuShare(oProps) {
@@ -62,6 +63,12 @@ export default function MenuItemSubmenuShare(oProps) {
         };
     });
 
+    // The trigger owns the press, so it carries the button's focus ring and 44px hit area.
+    const triggerSize = toControlSize(oProps.params?.button_size) ?? 'small';
+    const triggerHostClass = triggerSize === 'mini'
+        ? 'u-neo-btn-link hit-area-8'
+        : (triggerSize === 'small' ? 'u-neo-btn-link hit-area-4' : 'u-neo-btn-link');
+
     if (aSubmenuItems.length === 1) {
         return <></>;
     }
@@ -69,8 +76,14 @@ export default function MenuItemSubmenuShare(oProps) {
     return (
         <>
             <Msg onVisible={showMsg} title={showMsg} handleOk={() => { setShowMsg(false); }} />
-            <Pressable className={'flex-auto' + (oProps.params?.no_gap_between_buttons === true ? (oProps.params?.button_full_width ? '  px-0 ' : '  pr-2 ') : '')} onPress={(event) => { event.preventDefault(); }}>
-                <DropdownMenu items={aSubmenuItems} onSelect={handleMenuManageSelect}>
+            {/* Click guard only (keeps the click from reaching an enclosing link); the dropdown trigger is the button. */}
+            <Pressable className={'flex-auto' + (oProps.params?.no_gap_between_buttons === true ? (oProps.params?.button_full_width ? '  px-0 ' : '  pr-2 ') : '')} role="none" tabIndex={-1} onPress={(event) => { event?.preventDefault?.(); }}>
+                <DropdownMenu
+                    items={aSubmenuItems}
+                    onSelect={handleMenuManageSelect}
+                    triggerAccessibilityLabel={oProps?.title || t('Share')}
+                    triggerClassName={triggerHostClass}
+                >
                     <MenuItemActionBase
                         item={oProps}
                         title={oProps?.title ? oProps.title : ''}

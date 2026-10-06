@@ -31,7 +31,7 @@ import {
     FiltersButton,
 } from './shared-ui'
 import { useConductorList } from './use-conductor-list'
-import { Button, NeoButton, NeoButtonLink } from 'app/design/controls'
+import { NeoButton, NeoButtonLink } from 'app/design/controls'
 import Link from 'app/ui/atoms/link'
 import { getSkeletonForList } from 'app/lib/skeleton-helpers'
 import { useTranslation } from 'react-i18next'
@@ -686,12 +686,13 @@ const TabMenuButtonEx = memo(function TabMenuButtonEx({ visibleItemsCount }) {
     const { selectedIndex } = useContext(TabMenuContext)
     return (
         <View className="pr-3">
-            <Button
-                startDecorator="ChevronDown"
-                variant="text"
-                rounded
-                pressed={visibleItemsCount <= selectedIndex ? true : false}
-                size="sm"
+            <NeoButton
+                style="borderless"
+                controlSize="small"
+                borderShape="circle"
+                image="ChevronDown"
+                interactive
+                selected={visibleItemsCount <= selectedIndex}
             />
         </View>
     )
@@ -708,6 +709,7 @@ const TabMenu = function TabMenu({
     setIndex,
     onChangeRoute,
 }) {
+    const { t } = useTranslation()
     const name = 'cnd-main-menu'
     const useCompactNav = hasConductorSubitems(routes)
     const filteredItems = routes.filter((aItem) => aItem.hideInTop != true)
@@ -756,6 +758,8 @@ const TabMenu = function TabMenu({
                     isButtonOutside={false}
                     menuClasses={menuClasses}
                     menuExClasses="mr-auto ml-4 items-end"
+                    triggerAccessibilityLabel={t('More options')}
+                    triggerClassName="u-neo-btn-link hit-area-4"
                 />
             )}
         </TabMenuContext.Provider>
@@ -1283,7 +1287,7 @@ export const TabBar = ({
             contentWidth={contentWidth}
         >
              {isShowSecondLine && <Row className="px-0 w-full items-center">
-                <View className="flex-1 min-h-12 lg:min-h-14 min-w-0">
+                <View className="flex-1 min-h-13 lg:min-h-14 min-w-0">
                     {routes.length > 1 && <TabMenu
                         routes={routes}
                         index={index}

@@ -42,7 +42,7 @@ import { Icon } from 'app/ui/atoms/icon';
 import Tooltip from 'app/ui/molecules/dialogs/tooltip';
 import { Text } from 'app/design/typography';
 import { View } from 'app/design/view';
-import { Button, Modal } from 'app/design/controls';
+import { Modal, NeoButton } from 'app/design/controls';
 
 const isWeb = Platform.OS === 'web';
 
@@ -162,12 +162,13 @@ function buildCounterCompound({
 
         return (
             <View key={item.name} className={className}>
-                <Button
-                    size="sm"
-                    variant="text"
-                    startDecorator={getIcon(item.name)}
+                <NeoButton
+                    style="borderless"
+                    controlSize="small"
+                    borderShape="circle"
+                    image={getIcon(item.name)}
+                    accessibilityLabel={t('rvote_' + item.name + '_title')}
                     onPress={() => setSelectedTab(item.name)}
-                    rounded="true"
                 />
             </View>
         );
@@ -245,10 +246,19 @@ function ReactionPopover({
     });
     const buttonRef = useRef(null);
 
+    // RN host views have measureInWindow; the web View is a plain div, so fall
+    // back to its viewport rect (what RN-web's measureInWindow returns).
+    const measureButton = (callback) => {
+        const node = buttonRef.current;
+        if (typeof node?.measureInWindow === 'function') return node.measureInWindow(callback);
+        const rect = node?.getBoundingClientRect?.();
+        if (rect) callback(rect.left, rect.top, rect.width, rect.height);
+    };
+
     const openModal = () => {
         if (!buttonRef.current) return;
 
-        buttonRef.current.measureInWindow((x, y, width, height) => {
+        measureButton((x, y, width, height) => {
             const popupHeight = 60;
             const popoverWidth = 300;
             const padding = 10;
@@ -547,7 +557,7 @@ export default function ElementReactions(props) {
                             doReaction(item.name);
                         }}
                         disabled={isDisabled}
-                        asChild={!isWeb}
+                        asChild
                         childRefProp="forwardedRef"
                     >
                         <ActionButton

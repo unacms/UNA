@@ -4,21 +4,25 @@ import { Text } from 'app/design/typography'
 import { appSetting } from 'app/lib/util'
 import { useCurrentUser } from 'app/context/user';
 import Profile from 'app/ui/molecules/profile/profile';
-import { usePathname } from 'app/lib/hooks/router';
+import { useLocalSearchParams, usePathname } from 'app/lib/hooks/router';
 import { getFriendsCounter } from 'app/customization/functions';
 import { Icon } from 'app/ui/atoms/icon'
 import { useTranslation } from 'react-i18next';
-import { useFooter, useSetFooterHeight } from 'app/context/jotai/layout';
+import { useFooter, useFooterHeight, useSetFooterHeight } from 'app/context/jotai/layout';
 import { useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useSound } from 'app/lib/hooks/use-sound';
 import { isTabBarLabelsEnabled } from 'app/lib/util';
 import DropdownMenu, { DropdownMenuOpenContext } from 'app/ui/atoms/dropdown-menu';
+import { NeoButton } from 'app/design/controls';
+import { cn } from 'app/lib/util';
+import { OperatorAgentPanel, useOperatorAgentData } from 'app/ui/molecules/system/operator-agent';
 import {
     splitTabBarItems,
     buildTabBarMoreMenuItems,
     inferTabIndexFromUrl,
     isTabBarUrlActive,
     resolveTabUrl,
+    splitProfileMoreMenu,
 } from 'app/components/nav/tabs/tab-menu';
 import {
     consumeSkipTabInfer,
@@ -229,9 +233,38 @@ function MenuBottomItem({ link, tabKey, rootUrl, title, badge, icon, isActive, i
     );
 }
 
+/** The viewer's avatar, sized like a tab icon. */
+function TabAvatar({ currentUser, url }) {
+    return (
+        <View className="w-6 h-6">
+            <Profile
+                {...currentUser}
+                url_avatar={currentUser?.avatar}
+                url={url}
+                showLinks={false}
+                displayType="unit_wo_info"
+                displaySize="xs"
+            />
+        </View>
+    );
+}
+
+/**
+ * Last tab when the menu collapses into More. Like the native tab bars: a
+ * `{profile}` item first in More makes the tab the viewer's avatar and heads
+ * the menu (avatar, name, "View profile" and the operator agent button); if
+ * the profile is its only link and there is no agent, the avatar is a plain
+ * profile tab. Below `lg` the header's account item (and its Agent button) is
+ * hidden, so the agent opens from here.
+ */
 function MoreBottomItem({ visibleTabs, overflowTabs, pathname, currentUser }) {
     const { t } = useTranslation();
-    const items = useMemo(
+    const params = useLocalSearchParams();
+    const footerHeight = useFooterHeight();
+    const [menuOpen, setMenuOpen] = useState(false);
+    const [agentOpen, setAgentOpen] = useState(false);
+    const agentData = useOperatorAgentData(!!currentUser);
+    const allItems = useMemo(
         () => buildTabBarMoreMenuItems({
             visible: visibleTabs,
             overflow: overflowTabs,
@@ -242,9 +275,29 @@ function MoreBottomItem({ visibleTabs, overflowTabs, pathname, currentUser }) {
         }),
         [visibleTabs, overflowTabs, currentUser, t, pathname]
     );
+    const { header: profileItem, items: profileMenuItems, profileOnly } = splitProfileMoreMenu({
+        items: allItems,
+        overflow: overflowTabs,
+        hasAgent: !!agentData,
+    });
+    const items = profileItem ? profileMenuItems : allItems;
     const isOverflowActive = overflowTabs.some((tab) =>
         isTabBarUrlActive(pathname, resolveTabUrl(tab, currentUser))
     );
+    const avatarUser = profileItem ? currentUser : null;
+
+    if (profileItem && profileOnly) {
+        return (
+            <Link href={profileItem.link} className="group flex-1 min-w-0" alt={profileItem.title}>
+                <MoreBottomTrigger isOverflowActive={isOverflowActive} avatarUser={avatarUser} title={profileItem.title} />
+            </Link>
+        );
+    }
+
+    const toggleAgent = () => {
+        setMenuOpen(false);
+        setAgentOpen((open) => !open);
+    };
 
     return (
         <View className="flex-1 min-w-0">
@@ -252,16 +305,101 @@ function MoreBottomItem({ visibleTabs, overflowTabs, pathname, currentUser }) {
                 mode="popup"
                 showOnTop
                 openOnFocus={false}
+                open={menuOpen}
+                onOpenChange={setMenuOpen}
                 items={items}
                 triggerClassName="group flex-1 w-full h-full min-w-0"
+                header={profileItem || agentData ? (
+                    <MoreMenuHeader
+                        profileItem={profileItem}
+                        currentUser={currentUser}
+                        agentActive={agentOpen}
+                        onProfilePress={() => setMenuOpen(false)}
+                        onAgentPress={agentData ? toggleAgent : null}
+                    />
+                ) : null}
             >
-                <MoreBottomTrigger isOverflowActive={isOverflowActive} />
+                <MoreBottomTrigger
+                    isOverflowActive={isOverflowActive}
+                    avatarUser={avatarUser}
+                    title={profileItem ? profileItem.title : t('More')}
+                />
             </DropdownMenu>
+            {agentData ? (
+                <OperatorAgentPanel
+                    data={agentData}
+                    open={agentOpen}
+                    onClose={() => setAgentOpen(false)}
+                    bottomOffset={footerHeight + 8}
+                    params={params}
+                />
+            ) : null}
         </View>
     );
 }
 
-function MoreBottomTrigger({ isOverflowActive }) {
+/** Top of the More menu: the profile row (opens the profile) and the Agent button. */
+function MoreMenuHeader({ profileItem, currentUser, agentActive, onProfilePress, onAgentPress }) {
+    const { t } = useTranslation();
+    return (
+        <Row className="items-center gap-2 pb-1.5 mb-1.5 border-b border-border">
+            {profileItem ? (
+                <Link
+                    href={profileItem.link}
+                    onClick={onProfilePress}
+                    className="flex-1 min-w-0"
+                    alt={profileItem.title}
+                >
+                    <Row
+                        className={cn(
+                            'items-center gap-3 rounded-lg p-2 web:hover:bg-muted/50 web:cursor-pointer',
+                            profileItem.selected && 'bg-accent'
+                        )}
+                    >
+                        <View className="w-11 h-11">
+                            <Profile
+                                {...currentUser}
+                                url_avatar={currentUser?.avatar}
+                                url={profileItem.link}
+                                showLinks={false}
+                                displayType="unit_wo_info"
+                                displaySize="base"
+                            />
+                        </View>
+                        <View className="flex-1 min-w-0">
+                            <Text
+                                numberOfLines={1}
+                                className={cn(
+                                    'text-sm font-semibold',
+                                    profileItem.selected ? 'text-accent-foreground' : 'text-foreground'
+                                )}
+                            >
+                                {currentUser?.display_name || profileItem.title}
+                            </Text>
+                            <Text numberOfLines={1} className="text-xs text-muted-foreground">
+                                {t('View profile')}
+                            </Text>
+                        </View>
+                    </Row>
+                </Link>
+            ) : (
+                <View className="flex-1" />
+            )}
+            {onAgentPress ? (
+                <NeoButton
+                    style="borderless"
+                    borderShape="circle"
+                    image="Sparkles"
+                    selected={agentActive}
+                    accessibilityLabel={t(agentActive ? 'operator_agent_close' : 'operator_agent_open')}
+                    onPress={onAgentPress}
+                />
+            ) : null}
+        </Row>
+    );
+}
+
+function MoreBottomTrigger({ isOverflowActive, avatarUser, title }) {
     const { t } = useTranslation();
     const isOpen = useContext(DropdownMenuOpenContext) ?? false;
     const isActive = isOverflowActive || isOpen;
@@ -271,19 +409,23 @@ function MoreBottomTrigger({ isOverflowActive }) {
             className={`w-full my-auto items-center rounded-full min-h-12 justify-center p-1.5 text-center gap-1.5 web:hover:bg-muted/50 ${isActive ? 'bg-accent/60' : ''}`}
         >
             <View className="items-center justify-center">
-                <Icon
-                    icon="ChevronsUpDown"
-                    size={24}
-                    className={isActive
-                        ? 'text-accent-foreground'
-                        : 'text-secondary-foreground web:group-hover:text-foreground'}
-                />
+                {avatarUser ? (
+                    <TabAvatar currentUser={avatarUser} url={avatarUser.url} />
+                ) : (
+                    <Icon
+                        icon="ChevronsUpDown"
+                        size={24}
+                        className={isActive
+                            ? 'text-accent-foreground'
+                            : 'text-secondary-foreground web:group-hover:text-foreground'}
+                    />
+                )}
             </View>
             {isTabBarLabelsEnabled() ? (
                 <Text
                     className={`web:group-hover:text-accent-foreground text-[11px] tracking-tight leading-none font-medium whitespace-nowrap ${isActive ? 'text-accent-foreground' : 'text-secondary-foreground web:group-hover:text-foreground'}`}
                 >
-                    {t('More')}
+                    {title || t('More')}
                 </Text>
             ) : null}
         </View>

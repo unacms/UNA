@@ -2,7 +2,7 @@ import CheckBox from 'app/ui/atoms/checkbox';
 import { Row, View } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { useMemo, useState } from 'react';
-import { Button, Input } from "app/design/controls";
+import { NeoButton, Input } from "app/design/controls";
 import RadioButton from 'app/ui/atoms/radiobutton';
 import { useTranslation } from 'react-i18next';
 
@@ -74,11 +74,10 @@ export default function ({
             }
             {showApply ? (
                 <View className='flex-row justify-end pt-3 mt-3 border-t border-border/60 '>
-                    <Button
-                        variant="primary"
-                        size="base"
+                    <NeoButton
+                        style="borderedProminent"
                         disabled={value2.length === 0}
-                        title={t('Apply')}
+                        label={t('Apply')}
                         onPress={() => setValue(value2)}
                     />
                 </View>

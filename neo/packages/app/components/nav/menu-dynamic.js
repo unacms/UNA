@@ -17,7 +17,12 @@ function getFixedVisibleCount(persistent, allowZeroPersistant, isDesktop) {
     );
 }
 
-export default function DynamicMenu({ name, isFixedCount, MenuItem, MenuItemEx, ButtonEx, allowZeroPersistant = false, items, menuClasses, menuExClasses, isButtonOutside, offsetWidth = 50, persistent = 0 }) {
+/**
+ * `triggerClassName` / `triggerAccessibilityLabel` go to the overflow menu's
+ * trigger (the Pressable around `ButtonEx`): its accessible name, and the
+ * `u-neo-btn-link hit-area-*` host classes for a passive NeoButton inside.
+ */
+export default function DynamicMenu({ name, isFixedCount, MenuItem, MenuItemEx, ButtonEx, allowZeroPersistant = false, items, menuClasses, menuExClasses, isButtonOutside, offsetWidth = 50, persistent = 0, triggerClassName, triggerAccessibilityLabel }) {
     const isDesktop = useIsDesktop();
     const { setBottomSheetData } = useBottomSheetData();
     const openModalByUrl = useOpenModalByUrl();
@@ -99,6 +104,8 @@ export default function DynamicMenu({ name, isFixedCount, MenuItem, MenuItemEx, 
             }}
             mode={isWeb ? "popup" : ""}
             variant='nopad'
+            triggerClassName={triggerClassName}
+            triggerAccessibilityLabel={triggerAccessibilityLabel}
             items={items.slice(visibleItemsCount).map((aItem, iKey) => ({
                 id: 'menu-' + iKey,
                 link: aItem.link,

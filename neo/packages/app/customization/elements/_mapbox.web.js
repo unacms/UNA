@@ -1,6 +1,6 @@
 import { View, Row } from 'app/design/view'
 import { useState, useRef, useCallback, lazy, Suspense } from 'react';
-import { Button } from 'app/design/controls'
+import { NeoButton } from 'app/design/controls'
 import Loading from 'app/ui/atoms/loading'
 import { BlockWrapper } from 'app/components/block-wrapper'
 
@@ -87,7 +87,7 @@ export default function ElementMapBox({ data, blockWrapperProps }) {
         <View className=" items-center">
             <Row className="gap-x-4 my-2">
                 {dataSources.map((layer, index) => (
-                    <Button size="sm" key={layer.key} title={layer.name} pressed={selectedlayers.includes(layer.key)} onPress={() => selectedlayers.includes(layer.key) ? setSelectedLayers(selectedlayers.filter(name => name !== layer.key)) : setSelectedLayers([...selectedlayers, layer.key])} />
+                    <NeoButton controlSize="small" key={layer.key} label={layer.name} selected={selectedlayers.includes(layer.key)} onPress={() => selectedlayers.includes(layer.key) ? setSelectedLayers(selectedlayers.filter(name => name !== layer.key)) : setSelectedLayers([...selectedlayers, layer.key])} />
                 ))}
             </Row>
             <View className="aspect-square w-full max-w-3xl ">

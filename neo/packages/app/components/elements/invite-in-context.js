@@ -1,5 +1,5 @@
 import { View } from 'app/design/view';
-import { ButtonLink, Input } from 'app/design/controls';
+import { NeoButtonLink, Input } from 'app/design/controls';
 import { useFetch } from 'app/lib/hooks/use-fetch';
 import { useState } from 'react'
 import Profile from 'app/ui/molecules/profile/profile'
@@ -29,7 +29,7 @@ export default function InviteInContext({ blockWrapperProps }) {
                     <View>
                         <CardTitle>You're joining:</CardTitle>
                         <View className='w-full mt-4 justify-between sm:flex-row gap-y-3'><Profile {...res.data} displayType="unit" size="lg" />
-                            <ButtonLink href={res.data.url} variant="primary" size="base" title={t('Continue')} />
+                            <NeoButtonLink href={res.data.url} style="borderedProminent" label={t('Continue')} />
                         </View>
                     </View>
                 </Card>

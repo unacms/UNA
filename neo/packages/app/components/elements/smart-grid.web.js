@@ -4,7 +4,7 @@ import Image from 'app/ui/atoms/image';
 import { View, Pressable, Row } from 'app/design/view';
 import { Text } from 'app/design/typography';
 import { useState, useEffect, useMemo, memo } from 'react';
-import { Button, Modal } from "app/design/controls";
+import { NeoButton, Modal } from "app/design/controls";
 import { fetcher } from 'app/lib/fetcher';
 import Form from 'app/components/elements/form';
 import { appSetting } from 'app/lib/util'
@@ -292,11 +292,27 @@ export default function ({ is_allowed_edit, block_id, content_id, content_module
             <View key={block.i} className=" shadow groupweb:duration-200 overflow-hidden sm:rounded-2xl bg-card">
                 {blockContent}
                 {bAllowEdit && <View className="absolute left-1/4 w-1/2 flex-row justify-center gap-x-4  items-center bottom-5 z-50">
-                    <Pressable onMouseDown={(event) => onRemove(event, block.i)} onTouchStart={(event) => onRemove(event, block.i)}>
-                        <Button variant='default' size='xs' rounded startDecorator='X' />
+                    <Pressable
+                        className="u-neo-btn-link hit-area-8"
+                        role="button"
+                        tabIndex={0}
+                        aria-label={t('Remove')}
+                        onMouseDown={(event) => onRemove(event, block.i)}
+                        onTouchStart={(event) => onRemove(event, block.i)}
+                        onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') onRemove(event, block.i) }}
+                    >
+                        <NeoButton style="glass" controlSize="mini" borderShape="circle" image="X" interactive />
                     </Pressable>
-                    <Pressable onPressIn={(event) => { onChange(event, block.i) }}>
-                        <Button variant='default' size='xs' rounded startDecorator='Pencil' />
+                    <Pressable
+                        className="u-neo-btn-link hit-area-8"
+                        role="button"
+                        tabIndex={0}
+                        aria-label={t('Edit')}
+                        onMouseDown={(event) => onChange(event, block.i)}
+                        onTouchStart={(event) => onChange(event, block.i)}
+                        onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') onChange(event, block.i) }}
+                    >
+                        <NeoButton style="glass" controlSize="mini" borderShape="circle" image="Pencil" interactive />
                     </Pressable>
                 </View>}
 
@@ -331,11 +347,11 @@ export default function ({ is_allowed_edit, block_id, content_id, content_module
                         <Form {...form} resetOnSubmit={true} onFormSubmit={onFormSubmit} />
                     </View>
                 </Modal>}
-                {bAllowEdit && <Row className="gap-x-4 items-center justify-center">
-                    <Button variant='text' size='base' rounded startDecorator='NotepadText' onPress={() => { onAdd('text') }} />
-                    <Button variant='text' size='base' rounded startDecorator='Link' onPress={() => { onAdd('link') }} />
-                    <Button variant='text' size='base' rounded startDecorator='Image' onPress={() => { onAdd('image') }} />
-                    <Button variant='text' size='base' rounded startDecorator='MapPin' onPress={() => { onAdd('map') }} />
+                {bAllowEdit && <Row className="gap-x-4 items-center justify-center pt-1.5">
+                    <NeoButton style="borderless" borderShape="circle" image="NotepadText" accessibilityLabel={t('Add text')} onPress={() => { onAdd('text') }} />
+                    <NeoButton style="borderless" borderShape="circle" image="Link" accessibilityLabel={t('Add link')} onPress={() => { onAdd('link') }} />
+                    <NeoButton style="borderless" borderShape="circle" image="Image" accessibilityLabel={t('Add image')} onPress={() => { onAdd('image') }} />
+                    <NeoButton style="borderless" borderShape="circle" image="MapPin" accessibilityLabel={t('Add map')} onPress={() => { onAdd('map') }} />
                 </Row>}
                 <View className="-ml-2 -mr-2">
                     <ResponsiveReactGridLayoutM

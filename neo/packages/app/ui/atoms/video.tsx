@@ -18,6 +18,8 @@ function ElementVideoPlayer({ src, controls, cover, fill, autoplay, muted }: Vid
     const player = useVideoPlayer(src, player => {
         player.muted = muted ? true : false;
         player.loop = autoplay ? true : false;
+        // Same as web's autoPlay: start as soon as the player exists (it plays once the source loads).
+        if (autoplay) player.play();
     });
 
     // fill = stretch to parent (lightbox). Keep aspect-video by default so existing callers keep height.

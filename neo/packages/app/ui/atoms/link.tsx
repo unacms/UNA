@@ -2,7 +2,7 @@ import { Pressable } from 'app/design/view';
 import { useCurrentTabPath, Link } from 'app/lib/hooks/router'
 import { FeedbackHaptics, isExternalUrl, openExternalLink } from 'app/lib/util';
 import { nativeTabHref } from 'app/lib/navigation/tab-history';
-import { buildTabUrlIndex } from 'app/components/nav/tabs/tab-menu';
+import { findTabPathForUrl } from 'app/components/nav/tabs/tab-menu';
 import { useCurrentUser } from 'app/context/user';
 import { appSetting, sanitazeUrl, cn } from 'app/lib/util';
 import { useMemo, useCallback } from 'react';
@@ -53,22 +53,16 @@ export default function ElementLink({
    
     // Match against tab urls + transpile_urls so in-app links route to the same
     // tab as deep links (see processUrl in components/nav/tabs/index.js).
-    const LinksForTabs = useMemo(() => buildTabUrlIndex(TabList), [TabList]);
-
-    const index = LinksForTabs.find((item: any) => finalHref.includes(item.url))?.index ?? -1;
+    const matchedTabPath = useMemo(() => findTabPathForUrl(finalHref, TabList), [finalHref, TabList]);
 
     const p = useMemo(() => {
         if (target) {
             return finalHref;
         }
-        const pathname = tabPath
-            ? tabPath
-            : index !== -1
-              ? `/tab${index}`
-              : currentTabPath;
+        const pathname = tabPath || matchedTabPath || currentTabPath;
         // Keep push history entry for in-tab navigations (submenu uses tabHist: replace).
         return nativeTabHref(finalHref, pathname, { tabHist: 'push' });
-    }, [target, finalHref, index, currentTabPath, tabPath]);
+    }, [target, finalHref, matchedTabPath, currentTabPath, tabPath]);
 
     const currentPathname = currentTabPath || '';
     const targetPathname = typeof p === 'object' ? p.pathname : '';
