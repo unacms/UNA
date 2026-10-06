@@ -3,7 +3,7 @@ import { View, Row } from 'app/design/view'
 import { useState } from 'react';
 import Switch from 'app/ui/atoms/switcher'
 import { fetcher } from 'app/lib/fetcher';
-import { Button } from 'app/design/controls'
+import { NeoButton } from 'app/design/controls'
 import { firstLetterCap } from 'app/lib/util';
 import { useTranslation } from 'react-i18next';
 import { BlockWrapper } from 'app/components/block-wrapper'
@@ -41,12 +41,12 @@ export default function (props, blockWrapperProps) {
         <Row className='p-2'>
             {
                 data.map((item, index) => {
-                    return <View className='mr-2 ' key={'tab' + index}><Button
-                        variant={index == activeIndex ? 'outline' : "text"}
-                        pressed={index == activeIndex ? true : false}
-                        title={t(firstLetterCap(item.title))}
-                        rounded
-                        size='sm'
+                    return <View className='mr-2 ' key={'tab' + index}><NeoButton
+                        style={index == activeIndex ? undefined : 'borderless'}
+                        selected={index == activeIndex}
+                        label={t(firstLetterCap(item.title))}
+                        borderShape="capsule"
+                        controlSize="small"
                         onPress={() => setActiveIndex(index)}
                     /></View>
                 })

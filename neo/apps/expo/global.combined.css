@@ -16,7 +16,9 @@
 
 /*
  * Expo/Uniwind-only @theme inline additions:
- *   - fonts come from RN System (web uses next/font on <html>)
+ *   - fonts read --neo-font-main / --neo-font-title, which
+ *     design/fonts/native-fonts sets at startup from
+ *     customization/config/fonts.js (web uses next/font on <html>)
  *   - --breakpoint-3xl matches the legacy `screens.3xl` from theme.js
  *
  * NOTE: do NOT override the Tailwind v4 --container-* scale here. Web keeps the
@@ -27,10 +29,18 @@
  * come from the imported theme.css above.
  */
 @theme inline {
-    --font-main: System;
-    --font-title: System;
-    --font-sans: System;
+    --font-main: var(--neo-font-main);
+    --font-title: var(--neo-font-title);
+    --font-sans: var(--neo-font-main);
     --breakpoint-3xl: 120rem;
+}
+
+/* Until native-fonts runs: the platform UI font. */
+@layer base {
+    :root {
+        --neo-font-main: System;
+        --neo-font-title: System;
+    }
 }
 
 /*

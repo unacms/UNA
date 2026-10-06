@@ -25,6 +25,14 @@ const TYPES = [
  */
 export const components = Object.fromEntries(TYPES.map((type) => [type, {}]));
 
+/**
+ * Core form-field components (`form-fields/_map` as shipped, before fork
+ * overrides), filled by that map. form-initial-values compares the registered
+ * field with these instead of importing the map, which would close a require
+ * cycle through the fields that use the form helpers.
+ */
+export const coreFormFields = {};
+
 export function registerComponent(type, name, component) {
     (components[type] ||= {})[name] = component;
 }

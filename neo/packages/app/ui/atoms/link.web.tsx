@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { Pressable } from 'app/design/view'
 import { useRouter } from 'app/lib/hooks/router'
-import { useCallback } from 'react';
+import { useCallback, type CSSProperties } from 'react';
 import { appSetting, cn, sanitazeUrl, isExternalUrl } from 'app/lib/util'
 import emitter, { EVENTS } from 'app/context/emitter';
 import type { LinkProps } from './link.types';
@@ -58,10 +58,12 @@ export default function ElementLink({
         }
     }, [href, router, onPress]);
 
-    const handleLinkClick = useCallback(() => {
+    // The click event goes to `onClick` so a handler can `preventDefault()`
+    // (Next's Link then skips its own navigation).
+    const handleLinkClick = useCallback((event?: any) => {
         emitter.emit(EVENTS.link, { action: 'pressed', href });
-        if (onClick) onClick();
-    }, [onClick, target, href]);
+        onClick?.(event);
+    }, [onClick, href]);
 
     const sizeClass = (() => {
         if (!size) return '';
@@ -103,6 +105,8 @@ export default function ElementLink({
                 rel={rel}
                 href={href}
                 className={className}
+                // Inline style (NeoButtonLink: `--neo-hit-*` hit-area insets).
+                style={rest.style as CSSProperties | undefined}
                 prefetch={isPrefetch}
                 onClick={handleLinkClick}
                 onPointerDown={onPointerDown}

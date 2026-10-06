@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react';
 import { View, Row, Pressable, ScrollView } from 'app/design/view'
-import { Button, NeoButton } from 'app/design/controls'
+import { NeoButton } from 'app/design/controls'
 import { Text } from 'app/design/typography'
 import { useTranslation } from 'react-i18next'
 
@@ -66,8 +66,8 @@ export default function ScrollControl({ horisontal, children, step, initialValue
     return (
         <View className='w-full'>
             {title && <Row className='w-full justify-between items-center'><Text>{title}</Text><Row className="gap-x-2">
-                <Button disabled={offset.offset == 0} startDecorator="ChevronLeft" variant="outline" size="sm" rounded onPress={scrollUp} />
-                <Button disabled={!(offset.offset + offset.scrollViewWidth < offset.contentWidth)} size="sm" startDecorator="ChevronRight" variant="outline" rounded onPress={scrollDown} />
+                <NeoButton disabled={offset.offset == 0} controlSize="small" borderShape="circle" image="ChevronLeft" accessibilityLabel={t('Previous')} onPress={scrollUp} />
+                <NeoButton disabled={!(offset.offset + offset.scrollViewWidth < offset.contentWidth)} controlSize="small" borderShape="circle" image="ChevronRight" accessibilityLabel={t('Next')} onPress={scrollDown} />
             </Row></Row>}
             <ScrollView ref={scrollViewRef} horizontal={true}
                 onScroll={handleScroll}

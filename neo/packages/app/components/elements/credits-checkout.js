@@ -3,7 +3,7 @@
 import { useRef, useState } from 'react'
 import { View, Row } from 'app/design/view'
 import { Text } from 'app/design/typography'
-import { Button } from 'app/design/controls'
+import { NeoButton } from 'app/design/controls'
 import { BlockWrapper } from 'app/components/block-wrapper'
 import { BlockByDataInt as BlockByData } from 'app/components/block'
 import { fetcher } from 'app/lib/fetcher'
@@ -135,9 +135,9 @@ export default function CreditsCheckout({ blockWrapperProps, data, onFormEmpty }
                         block={{ content: resultContent, designbox_id: 0 }}
                     />
                     <View className="items-center">
-                        <Button
-                            variant="default"
-                            title={t('OK')}
+                        <NeoButton
+                            label={t('OK')}
+                            classNames={{ root: 'self-center' }}
                             onPress={() => onFormEmpty?.()}
                         />
                     </View>
@@ -197,10 +197,11 @@ export default function CreditsCheckout({ blockWrapperProps, data, onFormEmpty }
                 )}
 
                 <View className="items-center pt-1">
-                    <Button
-                        variant="default"
-                        title={t('Checkout')}
+                    <NeoButton
+                        label={t('Checkout')}
                         disabled={loading || !requestUrl}
+                        expoUI={false}
+                        classNames={{ root: 'self-center' }}
                         onPress={handleCheckout}
                     />
                 </View>

@@ -11,13 +11,12 @@ import { RemoveScroll } from 'react-remove-scroll';
 import { appSetting } from 'app/lib/util';
 import { useIsDesktop, useWindowSize } from 'app/context/measure';
 import emitter, { EVENTS } from 'app/context/emitter';
-import { ButtonRef, NeoButtonRef } from 'app/design/controls'
+import { NeoButtonRef, legacyToNeoButtonProps } from 'app/design/controls'
+import { isLegacyButtonProps, stripRoutingKeys } from 'app/design/controls/neo-button/legacy-button-map';
 import type { ComponentType } from 'react';
 
-// Trigger components, loosely typed: NeoButtonRef is still JS, and the legacy
-// ButtonRef has a fixed prop list — it silently drops collapsable / aria-* / onFocus
-// passed below (TODO: forward them, or stop passing them).
-const LegacyTriggerButton: ComponentType<any> = ButtonRef;
+// Trigger component, loosely typed: the popup passes RN / ARIA props
+// (collapsable, aria-*, onFocusCapture) that NeoButton forwards to its surface.
 const NeoTriggerButton: ComponentType<any> = NeoButtonRef;
 
 const dropdownTheme = appSetting('theme', 'dropdown');
@@ -52,12 +51,10 @@ function getBodyChild(node: any): Element | null {
 /** Open state for menu triggers (NeoButton `selected` / topmenu chevron). */
 export const DropdownMenuOpenContext = createContext(false);
 
-const isLegacyButtonProps = (props: DropdownButtonProps | undefined) =>
-    props?.legacyButton === true || props?.variant != null;
-
 /**
- * Trigger button props: NeoButton props by default; `legacyButton: true` or a
- * `variant` switches to the classic Button.
+ * Trigger button props: NeoButton props. `legacyButton: true` or any legacy
+ * key (`variant`, `size`, `startDecorator`, `title`, `rounded`, `fullWidth`)
+ * maps them through `legacyToNeoButtonProps` first.
  */
 export type DropdownButtonProps = Record<string, any>;
 
@@ -436,32 +433,24 @@ export default function DropdownPopup({
         (typeof buttonProps?.label === 'string' ? buttonProps.label : undefined) ||
         'Menu';
 
-    const legacyButton = buttonProps && isLegacyButtonProps(buttonProps);
-    const { legacyButton: _legacy, neoButton: _neo, ...neoButtonProps } = buttonProps || {};
+    const neoButtonProps = buttonProps
+        ? (isLegacyButtonProps(buttonProps) ? legacyToNeoButtonProps(buttonProps) : stripRoutingKeys(buttonProps))
+        : null;
 
     return (
         <>
-            {buttonProps ? (
-                legacyButton ? (
-                    <LegacyTriggerButton
-                        {...buttonProps}
-                        collapsable={false}
-                        ref={buttonRef}
-                        onPress={openTrigger}
-                        {...triggerMenuProps}
-                        {...triggerFocusProps}
-                    />
-                ) : (
-                    <NeoTriggerButton
-                        {...neoButtonProps}
-                        collapsable={false}
-                        ref={buttonRef}
-                        onPress={openTrigger}
-                        selected={isRealOpen}
-                        {...triggerMenuProps}
-                        {...triggerFocusProps}
-                    />
-                )
+            {neoButtonProps ? (
+                <NeoTriggerButton
+                    {...neoButtonProps}
+                    // The popup measures this ref; Expo UI (native) drops refs.
+                    expoUI={false}
+                    collapsable={false}
+                    ref={buttonRef}
+                    onPress={openTrigger}
+                    selected={isRealOpen}
+                    {...triggerMenuProps}
+                    {...triggerFocusProps}
+                />
             ) : (
                 <DropdownMenuOpenContext.Provider value={isRealOpen}>
                     <Pressable

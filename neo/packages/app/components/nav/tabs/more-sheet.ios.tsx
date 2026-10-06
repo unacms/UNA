@@ -33,7 +33,7 @@ type SFSymbol = NonNullable<ComponentProps<typeof Image>['systemName']>;
 export const hasNativeMoreSheet = !!appSetting('theme', 'expo_ui', 'tabs')?.more_sheet;
 
 const ICON_PT = 22;
-const AVATAR_PT = 40;
+const AVATAR_PT = 44;
 const AGENT_BUTTON_PT = 44;
 
 const AVATAR_STYLE = StyleSheet.create({
@@ -50,7 +50,7 @@ function RowIcon({ icon, color, size = ICON_PT }: { icon?: string; color?: strin
         : <Image systemName={name as SFSymbol} size={size - 2} color={color} modifiers={[box]} />;
 }
 
-/** Selected-row colors (`native_tabs.selected`): fill + icon / label ink, as hex. */
+/** Selected-row colors (`native_tabs.selected`: iosMoreIndicator fill + foreground ink), as hex. */
 type SelectedColors = { fill?: string; ink?: string };
 
 /** Selected row: the toggled capsule of the active tab (system fill if unresolved). */
@@ -171,7 +171,7 @@ function AgentButton({ active, onPress }: { active?: boolean; onPress: () => voi
 export function NativeMoreSheet({ open, onOpenChange, items, onSelect, profile, onAgentPress, agentActive }: NativeMoreSheetProps) {
     const tabsSelected = appSetting('theme', 'native_tabs', 'selected');
     const selectedColors: SelectedColors = {
-        fill: useNativeTokenColor(tabsSelected?.indicator) as string | undefined,
+        fill: useNativeTokenColor(tabsSelected?.iosMoreIndicator ?? tabsSelected?.indicator) as string | undefined,
         ink: useNativeTokenColor(tabsSelected?.foreground) as string | undefined,
     };
     const hasHeader = !!profile || !!onAgentPress;

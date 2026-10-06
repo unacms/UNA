@@ -2,8 +2,7 @@
 import { View, Row } from 'app/design/view';
 import { Text } from 'app/design/typography'
 import { useTranslation } from 'react-i18next';
-import Link from 'app/ui/atoms/link'
-import { Button } from 'app/design/controls';
+import { NeoButtonLink } from 'app/design/controls';
 import { BlockWrapper } from 'app/components/block-wrapper'
 import { Icon } from 'app/ui/atoms/icon'
 import BrowseSimple, { BrowseSimpleView } from 'app/components/elements/browse-simple'
@@ -48,9 +47,13 @@ export default function ElementSearchSections({ blockWrapperProps, data }: Searc
                         <View key={item.section}>
                             <Row className='items-center justify-between p-2 mb-0.5'>
                                 <Text className=" text-base font-semibold tracking-tight text-muted-foreground  ">{t(item.section_name)}</Text>
-                                <Link href={`/search-keyword?keyword=test&section=${item.section}`}>
-                                    <Button variant='link' size='sm' title={t('View all')} />
-                                </Link>
+                                <NeoButtonLink
+                                    href={`/search-keyword?keyword=test&section=${item.section}`}
+                                    style="borderless"
+                                    controlSize="small"
+                                    label={t('View all')}
+                                    classNames={{ root: 'self-center' }}
+                                />
                             </Row>
                             <BrowseSimple
                                 data={{

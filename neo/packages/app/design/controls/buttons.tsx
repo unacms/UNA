@@ -327,6 +327,7 @@ const ButtonContent = React.memo(({
 });
 
 
+/** @deprecated use NeoButton / NeoButtonLink (`legacyToNeoButtonProps` for legacy-vocabulary props). */
 export const Button = ({
     variant = BtnClsSize.default_variant,
     size = BtnClsSize.default_size,
@@ -483,12 +484,14 @@ export const Button = ({
     );
 }
 
+/** @deprecated use NeoButtonRef (or NeoButton with `forwardedRef`). */
 export const ButtonRef = React.forwardRef<any, ButtonProps>((props, forwardedRef) => {
     return (
         <Button {...props} forwardedRef={forwardedRef} />
     );
 });
 
+/** @deprecated use NeoButtonLink. */
 export const ButtonLink = ({
     href = '',
     target = '',

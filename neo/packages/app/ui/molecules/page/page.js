@@ -1,5 +1,6 @@
 import { View, ScrollView } from 'app/design/view';
-import { getPageWidth } from 'app/lib/util'
+import { getPageWidth, appSetting } from 'app/lib/util'
+import AppVersion from 'app/ui/atoms/app-version'
 import { Platform } from 'react-native'
 import { useScroll } from 'app/lib/hooks/use-scroll';
 import { useHeaderHeight, useFooterHeight, useGetScrollValue } from 'app/context/jotai/layout';
@@ -8,6 +9,7 @@ import { useEffect, useRef } from 'react';
 import { pushFormEnsureVisibleHandler, scrollContainerByDelta } from 'app/lib/form/form-ensure-visible'
 import { useCurrentUser } from 'app/context/user';
 import { getNativeTabBarOverlayInset } from 'app/components/nav/tabs/tab-menu';
+import { PageHeaderBand } from 'app/ui/molecules/header/page-header-parts';
 
 const isWeb = Platform.OS === 'web';
 
@@ -51,7 +53,12 @@ export default function Page({ children, data, page_width, processKeyboard=true,
             keyboardDismissMode="on-drag"
             onScroll={onScroll}   
         >
+            {/* Native: the card band behind the page header at rest; scrolls with the page. */}
+            {!isWeb && headerHeightFromAtom > 0 ? (
+                <PageHeaderBand height={headerHeightFromAtom} />
+            ) : null}
             {children}
+            {appSetting('native', 'app_version_pages')?.includes(data?.uri) && <AppVersion />}
         </Wrapper>
     )
 }

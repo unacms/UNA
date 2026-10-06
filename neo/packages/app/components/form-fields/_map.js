@@ -1,4 +1,5 @@
 import dynamic from 'next/dynamic';
+import { coreFormFields } from 'app/components/registry';
 import { DynamicFallback } from 'app/lib/dynamic-fallback';
 
 // Each field type is its own chunk: fetched when a form renders it, and
@@ -85,3 +86,5 @@ export const componentsMapDefault = {
     checkbox_set: CheckboxSet,
     list: List
 };
+
+Object.assign(coreFormFields, componentsMapDefault);

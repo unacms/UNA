@@ -20,6 +20,9 @@ import { View } from 'react-native';
 import { useColorScheme } from 'react-native';
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import { SafeAreaProvider, initialWindowMetrics } from 'react-native-safe-area-context';
+import { applyNativeFonts } from 'app/design/fonts/native-fonts';
+
+applyNativeFonts();
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
 

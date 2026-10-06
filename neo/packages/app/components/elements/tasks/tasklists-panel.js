@@ -111,13 +111,14 @@ function TasklistRow({ item, selected, onSelect, actionHandlers }) {
 
 /** A context (space/profile) with its tasklists, collapsible. */
 function TasklistGroup({ group, selectedId, selectedContextId, onSelect, actionHandlers }) {
+    const { t } = useTranslation();
     const [expanded, setExpanded] = useState(true);
     const groupSelected = selectedContextId != null
         && String(selectedContextId) === String(group.id)
         && listIdOrNull(selectedId) == null;
 
     return (
-        <View className="gap-0.5">
+        <View className="gap-1">
             <Row className={cn(
                 'items-center rounded-lg',
                 groupSelected && 'bg-muted/50',
@@ -137,7 +138,7 @@ function TasklistGroup({ group, selectedId, selectedContextId, onSelect, actionH
                     onPress={() => setExpanded((prev) => !prev)}
                     className="shrink-0 p-2 web:hover:bg-muted/50 rounded-lg"
                     accessibilityRole="button"
-                    accessibilityLabel={expanded ? 'Collapse' : 'Expand'}
+                    accessibilityLabel={expanded ? t('Collapse') : t('Expand')}
                 >
                     <Chevron expanded={expanded} size={14} />
                 </Pressable>
@@ -195,7 +196,7 @@ export default function TasklistsPanel({
 
             {expanded ? (
                 <View className={cn(
-                    'p-2 gap-0.5',
+                    'p-2 gap-1',
                     fill && 'lg:min-h-0 lg:flex-1 lg:overflow-y-auto',
                 )}>
                     {tasklists.map((item) => (

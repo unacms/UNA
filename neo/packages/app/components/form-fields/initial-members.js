@@ -4,7 +4,7 @@ import { View, Row, Pressable, ScrollView } from 'app/design/view'
 import { useState, useEffect, useReducer } from 'react';
 import { fetcher } from 'app/lib/fetcher';
 import Profile from 'app/ui/molecules/profile/profile'
-import { Button, NeoButton, Input, Modal } from 'app/design/controls'
+import { NeoButton, Input, Modal } from 'app/design/controls'
 import Loading from 'app/ui/atoms/loading'
 import { Icon } from 'app/ui/atoms/icon'
 import { useTranslation } from 'react-i18next';
@@ -146,7 +146,7 @@ export function SelectUsers({ onSave, initedData = [], requestUrl, isSingle = fa
                     onChangeText={onChangeText}
                     role="textbox"
                 />
-                <Button variant="primary" size="lg" disabled={state.selectedUsers.length == 0} startDecorator="Check" onPress={() => onSaveInt()} />
+                <NeoButton style="borderedProminent" controlSize="large" image="Check" accessibilityLabel={t('Save')} disabled={state.selectedUsers.length == 0} onPress={() => onSaveInt()} />
             </Row>
             <Row className="text-center w-full flex-wrap gap-1 ">
                 {!state.searchText && extraList.length > 0 && state.suggestedUsers.length > 0 && !state.showLoading ? (

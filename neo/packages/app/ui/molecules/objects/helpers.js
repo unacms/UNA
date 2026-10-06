@@ -306,7 +306,7 @@ export function ActionMenuLayout({
                 key={slot.key || itemKey + '-action-' + i}
                 className={
                     'flex-auto' +
-                    (slot.marginClass ?? (showBoth ? ' mr-1' : ''))
+                    (slot.marginClass ?? (showBoth ? ' me-2' : ''))
                 }
             >
                 {slot.element}

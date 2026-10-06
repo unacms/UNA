@@ -2,13 +2,15 @@ import { useRef, useState, useEffect } from 'react';
 import { useAnimatedValue } from 'app/lib/hooks/use-animated-value';
 import { Animated, PanResponder, Dimensions } from 'react-native';
 import { View } from 'app/design/view';
-import { Button } from "app/design/controls";
+import { NeoButton } from "app/design/controls";
 import { nativeDriver } from 'app/lib/platform/animation';
+import { useTranslation } from 'react-i18next';
 
 const screenWidth = Dimensions.get('window').width;
 
 
 export default function Gallery({ items, autoscroll }) {
+    const { t } = useTranslation();
     const [currentIndex, setCurrentIndex] = useState(0);
     const position = useAnimatedValue(0);
     const opacity = useAnimatedValue(1);
@@ -91,10 +93,10 @@ useEffect(() => {
                 {items[currentIndex]}
             </Animated.View>
             <View className='absolute top-1/4 left-2'>
-                <Button variant="secondary" rounded size="xs" onPress={goLeft} startDecorator="ArrowLeft" />
+                <NeoButton style="glass" controlSize="mini" borderShape="circle" image="ArrowLeft" accessibilityLabel={t('Previous')} onPress={goLeft} />
             </View>
             <View className='absolute top-1/4 right-2'>
-                <Button variant="secondary" rounded size="xs" onPress={goRight} startDecorator="ArrowRight" />
+                <NeoButton style="glass" controlSize="mini" borderShape="circle" image="ArrowRight" accessibilityLabel={t('Next')} onPress={goRight} />
             </View>
         </View>
     );

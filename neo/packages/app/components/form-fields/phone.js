@@ -3,7 +3,7 @@ import CountryFlag from 'react-native-country-flag';
 import { countries } from 'country-codes-flags-phone-codes';
 import { useTranslation } from 'react-i18next';
 import { Row, View } from 'app/design/view';
-import { Button, Input, Modal } from 'app/design/controls';
+import { NeoButton, Input, Modal } from 'app/design/controls';
 import RbList from 'app/ui/molecules/form-controls/radio-list';
 import Field from './_field';
 import { useFormField } from 'app/lib/form/use-form-field';
@@ -91,12 +91,14 @@ export default function FormFieldPhone(props) {
     return (
         <Field {...props} value={field.value} focused={focused} isAdaptiveLabel={isAdaptiveLabel}>
             <Row className="gap-x-2">
-                <Button
-                    size="lg"
-                    startDecorator={
+                <NeoButton
+                    controlSize="large"
+                    image={
                         <CountryFlag isoCode={selectedCountry.value} size={24} />
                     }
-                    title={selectedCountry.dialCode}
+                    label={selectedCountry.dialCode}
+                    accessibilityLabel={t('Country code') + ' ' + selectedCountry.dialCode}
+                    expoUI={false}
                     onPress={() => setModalVisible(true)}
                 />
                 <Input

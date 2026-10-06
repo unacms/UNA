@@ -43,6 +43,7 @@ import { useWindowWidth, useIsDesktop } from 'app/context/measure';
 import { appSetting, getBreakpoint, isExpoUI } from 'app/lib/util';
 import { ThemeName, useThemeValue } from 'app/design/theme';
 import type { NeoButtonAddon, NeoButtonProps } from 'app/design/controls/neo-button/neo-button.types';
+import { LEGACY_TO_CONTROL_SIZE, MIN_TARGET, hitSlopForHeight } from 'app/design/controls/neo-button/control-scale';
 
 /** Scopes resolveScoped() walks; any axis may be missing. */
 export type NeoScopeContext = {
@@ -103,6 +104,7 @@ const FIXED_SIZE_CLASS: Record<number, string> = {
 const PADDING_X_CLASS: Record<number, string> = {
     0: 'px-0',
     8: 'px-2',
+    10: 'px-2.5',
     12: 'px-3',
     16: 'px-4',
     20: 'px-5',
@@ -128,6 +130,34 @@ const HIT_AREA_CLASS: Record<number, string> = {
     10: 'hit-area-10',
     14: 'hit-area-14',
 };
+
+/* ------------------------- dev-only drift guard --------------------------- */
+
+const DEV = process.env.NODE_ENV !== 'production';
+const warnedOnce = new Set<string>();
+
+function warnOnce(message: string) {
+    if (warnedOnce.has(message)) return;
+    warnedOnce.add(message);
+    console.warn(message);
+}
+
+/**
+ * Warns once per size when the theme scale drifts: a target under MIN_TARGET,
+ * or a number with no static utility class (the renderer then falls back to
+ * inline styles, and web loses the `hit-area-*` class).
+ */
+function checkScaleOnce(controlSize: string, { height, paddingX, labelGap, hitSlop }: {
+    height: number; paddingX: number; labelGap: number; hitSlop: number;
+}) {
+    const problems: string[] = [];
+    if (height + 2 * hitSlop < MIN_TARGET) problems.push(`target ${height}+2×${hitSlop} < ${MIN_TARGET}`);
+    if (!MIN_SIZE_CLASS[height] || !FIXED_SIZE_CLASS[height]) problems.push(`no size class for height ${height}`);
+    if (PADDING_X_CLASS[paddingX] === undefined) problems.push(`no px-* class for paddingX ${paddingX}`);
+    if (LABEL_GAP_CLASS[labelGap] === undefined) problems.push(`no gap-x-* class for labelGap ${labelGap}`);
+    if (hitSlop > 0 && !HIT_AREA_CLASS[hitSlop]) problems.push(`no hit-area-* class for hitSlop ${hitSlop}`);
+    if (problems.length) warnOnce(`[NeoButton] controlSize "${controlSize}": ${problems.join('; ')}`);
+}
 
 const isPlainObject = (v: unknown): v is Record<string, any> =>
     !!v && typeof v === 'object' && !Array.isArray(v) && !React.isValidElement(v);
@@ -468,7 +498,15 @@ export function useResolvedNeoButton(props: NeoButtonProps = {}) {
 
         // 1) Pick high-level axes (props > providers > defaults).
         const role = props.role ?? defaults.role ?? 'default';
-        const controlSize = props.controlSize ?? providerSize ?? defaults.controlSize ?? 'regular';
+        // Legacy size names (`xs`/`sm`/`base`/`md`/`lg`/`xl`, e.g. UNA
+        // `params.button_size`) resolve to their Neo size; unknown → theme default.
+        const defaultSize: string = defaults.controlSize ?? 'regular';
+        const requestedSize: string = props.controlSize ?? providerSize ?? defaultSize;
+        const aliasedSize: string = LEGACY_TO_CONTROL_SIZE[requestedSize] ?? requestedSize;
+        const controlSize = sizesTree[aliasedSize] ? aliasedSize : defaultSize;
+        if (DEV && controlSize !== aliasedSize) {
+            warnOnce(`[NeoButton] unknown controlSize "${requestedSize}" → "${defaultSize}"`);
+        }
         const borderShape = props.borderShape ?? defaults.borderShape ?? 'roundedRectangle';
         const imagePlacement = props.imagePlacement ?? defaults.imagePlacement ?? 'leading';
         const align = props.align ?? defaults.align ?? 'center';
@@ -487,14 +525,21 @@ export function useResolvedNeoButton(props: NeoButtonProps = {}) {
         const ctx: NeoScopeContext = { ...env, controlSize };
 
         // 3) Resolve controlSize sizing.
+        //    Missing keys fall back to the theme's default size, then to the
+        //    regular scale. hitSlop is derived from the height unless the size
+        //    sets one explicitly (see `control-scale.ts`).
         const sizeCfg = resolveScoped(sizesTree[controlSize], ctx) || {};
-        const height = sizeCfg.height ?? 44;
-        const paddingX = sizeCfg.paddingX ?? 12;
-        const fontCls = sizeCfg.font ?? 'text-base';
-        const iconSize = sizeCfg.icon ?? 20;
-        const hitSlop = sizeCfg.hitSlop ?? 8;
-        const labelGap = sizeCfg.labelGap ?? 8;
+        const baseCfg = controlSize === defaultSize
+            ? sizeCfg
+            : (resolveScoped(sizesTree[defaultSize], { ...env, controlSize: defaultSize }) || {});
+        const height: number = sizeCfg.height ?? baseCfg.height ?? 44;
+        const paddingX: number = sizeCfg.paddingX ?? baseCfg.paddingX ?? 16;
+        const fontCls = sizeCfg.font ?? baseCfg.font ?? 'text-base';
+        const iconSize: number = sizeCfg.icon ?? baseCfg.icon ?? 24;
+        const hitSlop: number = sizeCfg.hitSlop ?? hitSlopForHeight(height);
+        const labelGap: number = sizeCfg.labelGap ?? baseCfg.labelGap ?? 8;
         const contentInsets = sizeCfg.contentInsets ?? {};
+        if (DEV) checkScaleOnce(controlSize, { height, paddingX, labelGap, hitSlop });
 
         // 4) Resolve borderShape (controlSize is in ctx so per-size rounded
         //    overrides like roundedRectangle.rounded.{mini|large|...} apply).

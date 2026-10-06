@@ -46,8 +46,10 @@ function Unit({ data }) {
     const pressProps = Platform.OS === 'web' ? null : { onPressIn: () => setPressed(true), onPressOut: () => setPressed(false) };
     return (
         <LinkOrModal href={url} showInModal={data.type ? appSetting('browse', 'show_in_modal', data.type) : false} {...pressProps}>
-            <View className="group w-full max-w-4xl mx-auto px-2 py-0.5 web:cursor-pointer">
-                <Row className={`${pressed ? 'bg-muted/60 ' : ''}relative w-full overflow-hidden gap-3 rounded-xl px-2 py-2 web:group-hover:bg-muted/60 active:bg-muted/60 web:duration-200`}>
+            {/* Phones: an edge-to-edge row on the card surface, 1px apart (feed
+                cards are 2px); from sm an 8px-inset rounded highlight. */}
+            <View className="group w-full max-w-4xl mx-auto mt-px bg-card sm:mt-0 sm:bg-transparent sm:px-2 sm:py-0.5 web:cursor-pointer">
+                <Row className={`${pressed ? 'bg-muted/60 ' : ''}relative w-full overflow-hidden gap-3 sm:rounded-xl px-4 sm:px-2 py-2 web:group-hover:bg-muted/60 active:bg-muted/60 web:duration-200`}>
                     <View className="rounded-full flex-none bg-secondary mb-auto">
                         <Skeleton visible={isSkeleton} className="h-14 w-14 rounded-full">
                             <Profile {...data.author_data} displayType="unit_wo_info" displaySize="xl" />

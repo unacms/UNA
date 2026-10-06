@@ -36,7 +36,7 @@
  * (tinted liquid glass) and for `addon` counters (SwiftUI child in the label).
  */
 
-import React, { memo, type ReactNode } from 'react';
+import React, { createContext, memo, useContext, type ReactNode } from 'react';
 import type { ViewStyle } from 'react-native';
 import { Pressable, View, MotionView, Row } from 'app/design/view';
 import { Text } from 'app/design/typography';
@@ -44,10 +44,14 @@ import { Icon } from 'app/ui/atoms/icon';
 import Link from 'app/ui/atoms/link';
 import Tooltip from 'app/ui/atoms/tooltip';
 import Loading from 'app/ui/atoms/loading';
+import { useIconClassColor } from 'app/ui/atoms/icon-class-color';
+import { useWindowWidth } from 'app/context/measure';
 import {
     cn,
     isWeb,
     isEmoji,
+    appSetting,
+    getBreakpoint,
     FeedbackHaptics,
     sanitazeUrl,
     isExternalUrl,
@@ -75,6 +79,36 @@ export type { NeoButtonProps } from 'app/design/controls/neo-button/neo-button.t
 // `min-w-0` lets the label ellipsis instead of overflowing. Inner surface
 // still uses `w-full` so the chrome fills this flex item.
 const FILL_WIDTH_CLASS = 'flex-auto min-w-0';
+
+// `showTitleFromSize`: the label shows from this breakpoint up (icon + label
+// buttons only). Static literals for Tailwind/Uniwind scanning. Web uses the
+// classes; native compares the window breakpoint (`useTitleHidden`).
+const BP_ORDER = ['sm', 'md', 'lg', 'xl', '2xl'];
+const TITLE_FROM_SIZE_CLASS: Record<string, string> = {
+    sm: 'hidden sm:block',
+    md: 'hidden md:block',
+    lg: 'hidden lg:block',
+    xl: 'hidden xl:block',
+    '2xl': 'hidden 2xl:block',
+};
+
+/** True below the `showTitleFromSize` breakpoint. Only native acts on it (web uses classes). */
+function useTitleHidden(showTitleFromSize: unknown): boolean {
+    const width = useWindowWidth();
+    if (typeof showTitleFromSize !== 'string' || !TITLE_FROM_SIZE_CLASS[showTitleFromSize]) return false;
+    return BP_ORDER.indexOf(getBreakpoint(width) || '') < BP_ORDER.indexOf(showTitleFromSize);
+}
+
+const hasImageValue = (image: unknown) =>
+    (typeof image === 'string' && image !== '') || React.isValidElement(image);
+
+/**
+ * Resolved label classes + icon size of the enclosing JS NeoButton, for element
+ * images that should follow the button's state colours (`LegacyDecoratorStack`).
+ */
+type NeoButtonContentValue = { textCls: string; iconSize: number };
+const NeoButtonContentContext = createContext<NeoButtonContentValue | null>(null);
+export const useNeoButtonContent = () => useContext(NeoButtonContentContext);
 
 const ICON_ACCESSIBLE_MAP: Record<string, string> = {
     X: 'Close', ChevronLeft: 'Previous', ChevronRight: 'Next',
@@ -128,6 +162,23 @@ const getAddon = (addon: NeoButtonAddon, hasLabel: boolean) => {
 
 /* --------------------------- image / label render -------------------------- */
 
+/**
+ * Loading spinner in the label colour of the current style/state, so it stays
+ * visible on prominent fills. Web: `currentColor` from the wrapper's `text-*`
+ * class. Native: the class resolved to a colour (Uniwind).
+ */
+function NeoSpinner({ className, color }: { className?: string; color?: string }) {
+    const classColor = useIconClassColor(className);
+    if (isWeb) {
+        return (
+            <View className={cn(className, 'overflow-visible')}>
+                <Loading size="small" color={color ?? 'currentColor'} />
+            </View>
+        );
+    }
+    return <Loading size="small" color={color ?? classColor} />;
+}
+
 const NeoImage = memo(function NeoImage({ source, size, color, className }: {
     source?: unknown;
     size?: number;
@@ -137,7 +188,7 @@ const NeoImage = memo(function NeoImage({ source, size, color, className }: {
     if (source === undefined || source === null || source === '' || source === false) {
         return null;
     }
-    if (source === '_loading') return <Loading size="small" />;
+    if (source === '_loading') return <NeoSpinner className={className} color={color} />;
     if (React.isValidElement(source)) return source;
     if (typeof source !== 'string') return null;
     if (isEmoji(source)) {
@@ -160,7 +211,7 @@ const NeoImage = memo(function NeoImage({ source, size, color, className }: {
 function renderLabel({
     label, image, imagePlacement,
     iconSize, labelGap, labelGapCls, fontCls, textCls, tintColor, classNames, loading,
-    spreadContent,
+    spreadContent, hideLabel,
 }: {
     label: ReactNode;
     image: unknown;
@@ -174,6 +225,8 @@ function renderLabel({
     classNames?: NeoButtonClassNames;
     loading?: boolean;
     spreadContent?: boolean;
+    /** Native `showTitleFromSize` below its breakpoint: keep the padding, drop the Text. */
+    hideLabel?: boolean;
 }) {
     const effectiveImage = loading ? '_loading' : image;
     if (!label && !effectiveImage) return null;
@@ -204,7 +257,7 @@ function renderLabel({
                     />
                 </View>
             ) : null}
-            {label ? (
+            {label && !hideLabel ? (
                 <Text
                     className={cn('min-w-0 shrink', fontCls, textCls, classNames?.text)}
                     {...(isWeb ? {} : { numberOfLines: 1 })}
@@ -341,10 +394,19 @@ function isNativeGlassStyle(style: unknown) {
 }
 
 function canRenderExpoUIButton(props: NeoButtonProps, native: { config: Record<string, any> }) {
+    if (props.expoUI === false) return false;
     const hasChildren = props.children !== undefined && props.children !== null && props.children !== false;
     if (props.onLongPress) return false;
     const style = props.buttonStyle ?? props.style;
     const glass = isNativeGlassStyle(style);
+    // Passive buttons (chips, drag handles, children-triggers) stay JS so a
+    // native button never swallows the parent's touches. Passive glass keeps
+    // Expo UI (liquid glass menu triggers in headers).
+    if (!props.onPress && !glass) return false;
+    // iOS Expo UI would render String(label) = "[object Object]".
+    if (React.isValidElement(props.label ?? props.title)) return false;
+    // Expo UI has no spinner.
+    if (props.loading !== undefined && !glass) return false;
     // Glass keeps Expo UI for selected + addon. Other styles have no native
     // selected/counter mapping and stay on the JS `selectedState` wash.
     if (parseNeoButtonAddon(props.addon) && !glass) return false;
@@ -368,17 +430,33 @@ function canRenderExpoUIButton(props: NeoButtonProps, native: { config: Record<s
 
 export const NeoButton = (props: NeoButtonProps) => {
     const native = useNeoButtonExpoUI(props);
+    const titleHidden = useTitleHidden(props.showTitleFromSize);
 
-    if (native && NeoButtonExpoUI && canRenderExpoUIButton(props, native)) {
-        return <NeoButtonExpoUI {...props} nativeConfig={native.config} />;
+    if (native && NeoButtonExpoUI) {
+        // `showTitleFromSize` below its breakpoint: the native button turns
+        // icon-only and keeps the label as its accessible name.
+        const label = props.label ?? props.title;
+        const dropTitle = titleHidden && !!label && hasImageValue(props.systemImage ?? props.image);
+        const expoProps: NeoButtonProps = dropTitle
+            ? {
+                ...props,
+                label: undefined,
+                title: undefined,
+                accessibilityLabel: props.accessibilityLabel
+                    ?? (typeof label === 'string' || typeof label === 'number' ? String(label) : undefined),
+            }
+            : props;
+        if (canRenderExpoUIButton(expoProps, native)) {
+            return <NeoButtonExpoUI {...expoProps} nativeConfig={native.config} />;
+        }
     }
 
-    return <NeoButtonStyled {...props} />;
+    return <NeoButtonStyled {...props} titleHidden={titleHidden} />;
 };
 
 /* ----------------------- JS-styled implementation ------------------------- */
 
-const NeoButtonStyled = (props: NeoButtonProps) => {
+const NeoButtonStyled = (props: NeoButtonProps & { titleHidden?: boolean }) => {
     const {
         // SwiftUI core (`buttonStyle` avoids RN `Link` clobbering `style` on native)
         role, style, buttonStyle, controlSize, borderShape, tint,
@@ -405,7 +483,10 @@ const NeoButtonStyled = (props: NeoButtonProps) => {
 
         // Accessibility / web
         accessibilityLabel, alt, tooltip = false, tooltipSide,
-        hitarea = true, hitSlop, focusRing,
+        hitarea = true, hitSlop, focusRing, accessibilityRole,
+
+        // Native renderer gating (handled in `NeoButton`).
+        expoUI: _expoUI, titleHidden = false,
 
         // Animation override
         transition,
@@ -475,20 +556,23 @@ const NeoButtonStyled = (props: NeoButtonProps) => {
 
     /* ------------------------------ handlers ---------------------------- */
 
-    // Fire on press-in (finger down), not onPress (finger up). SwiftUI's
-    // built-in click is press-in; JS Pressable has none, so this is what
-    // makes styled buttons feel like native when `native.expo_ui_buttons` is off.
+    // Haptics fire on press-in (finger down), not onPress (finger up): JS
+    // Pressable has no built-in feedback, so this is what makes styled
+    // buttons answer the touch when `native.expo_ui_buttons` is off.
     const fireHaptics = () => {
         if (resolved.haptics) FeedbackHaptics(resolved.haptics);
     };
 
     const handlePress = (event: any) => {
-        if (isWeb) event?.currentTarget?.blur?.();
+        // `loading` blocks presses (the button keeps focus and stays in the tab order).
+        if (loading) return;
+        // Blur only after a real pointer click; keyboard activation keeps focus (and the ring).
+        if (isWeb && event?.type === 'click' && event?.detail > 0) event?.currentTarget?.blur?.();
         onPress?.(event);
     };
 
     const handlePressIn = (event: any) => {
-        fireHaptics();
+        if (!loading) fireHaptics();
         setIsPressed(true);
         onPressIn?.(event);
     };
@@ -499,12 +583,16 @@ const NeoButtonStyled = (props: NeoButtonProps) => {
 
     const refProps = forwardedRef ? { ref: forwardedRef } : {};
 
+    // A menu trigger reports its state with `aria-expanded` (DropdownPopup);
+    // `aria-pressed` next to it would announce a toggle instead.
+    const isMenuTrigger = !!rest['aria-haspopup'];
     const buttonAttributes = isPressable
         ? {
               ...(accessibleName ? { 'aria-label': accessibleName, alt: accessibleName } : {}),
-              role: 'button',
-              ...(isPressedToggle ? { 'aria-pressed': true } : {}),
+              role: accessibilityRole || 'button',
+              ...(isPressedToggle && !isMenuTrigger ? { 'aria-pressed': true } : {}),
               ...(disabled ? { 'aria-disabled': true } : {}),
+              ...(loading ? { 'aria-busy': true } : {}),
           }
         : {};
 
@@ -543,10 +631,16 @@ const NeoButtonStyled = (props: NeoButtonProps) => {
     const needsPaddingFallback = keepsPaddingWhenIconOnly && !resolved.paddingXCls;
 
     // Web-only hit-area utility (RN uses the hitSlop prop instead). See the
-    // `hit-area-*` @utility in global.css.
-    const hitAreaClass = (hitarea !== false && isPressable && isWeb)
-        ? (resolved.hitAreaCls ?? '')
-        : '';
+    // `hit-area-*` @utility in global.css. Only active buttons get one, so a
+    // disabled button does not capture its neighbours' clicks. An explicit
+    // `hitSlop` prop (number or per-side insets) uses `hit-area-sides` with
+    // `--neo-hit-*` variables.
+    const webHitArea = hitarea !== false && isActive && isWeb;
+    const customHit = webHitArea && hitSlop !== undefined;
+    const hitInsets = typeof hitSlop === 'number'
+        ? { top: hitSlop, right: hitSlop, bottom: hitSlop, left: hitSlop }
+        : (hitSlop ?? {});
+    const hitAreaClass = !webHitArea ? '' : (customHit ? 'hit-area-sides' : (resolved.hitAreaCls ?? ''));
 
     /* ------------------- container / text classes ----------------------- */
 
@@ -595,6 +689,12 @@ const NeoButtonStyled = (props: NeoButtonProps) => {
         ...(insetLeft != null ? { paddingLeft: insetLeft } : null),
         ...(insetRight != null ? { paddingRight: insetRight } : null),
         ...(tintFillsSurface ? { backgroundColor: resolved.tint } : null),
+        ...(customHit ? {
+            '--neo-hit-t': hitInsets.top ?? 0,
+            '--neo-hit-r': hitInsets.right ?? 0,
+            '--neo-hit-b': hitInsets.bottom ?? 0,
+            '--neo-hit-l': hitInsets.left ?? 0,
+        } : null),
     };
 
     /* --------------------------- web ergonomics ------------------------- */
@@ -623,7 +723,7 @@ const NeoButtonStyled = (props: NeoButtonProps) => {
         onPointerDown: (event: any) => {
             if (disabled) return;
             if (event.pointerType === 'mouse' && event.button !== 0) return;
-            fireHaptics();
+            if (!loading) fireHaptics();
             setIsPressed(true);
         },
         onPointerUp: () => setIsPressed(false),
@@ -679,6 +779,16 @@ const NeoButtonStyled = (props: NeoButtonProps) => {
         return resolved.tint;
     })();
 
+    // `showTitleFromSize` (icon + label only): web hides the label with
+    // responsive classes; native drops the Text below the breakpoint. Either
+    // way the button stays labelled (padding, accessible name).
+    const titleFromSizeCls = (typeof showTitleFromSize === 'string' && isTitle && !!effectiveImage && !isCustomChildren)
+        ? TITLE_FROM_SIZE_CLASS[showTitleFromSize]
+        : undefined;
+    const labelClassNames = titleFromSizeCls && isWeb
+        ? { ...classNames, text: cn(classNames?.text, titleFromSizeCls) }
+        : classNames;
+
     const labelContent = isCustomChildren
         ? children
         : renderLabel({
@@ -691,18 +801,23 @@ const NeoButtonStyled = (props: NeoButtonProps) => {
             fontCls: resolved.fontCls,
             textCls,
             tintColor,
-            classNames,
+            classNames: labelClassNames,
             loading,
             spreadContent: resolved.align === 'between',
+            hideLabel: !isWeb && !!titleFromSizeCls && titleHidden,
         });
     const addonContent = getAddon(addon, isTitle);
 
     const glassFx = resolved.glassFx;
+    // Consumers are this button's own label content, which re-renders with it.
+    const contentValue = { textCls, iconSize: resolved.iconSize };
 
     const buttonElement = (
         <Cnt {...cntProps} className={cn(cntProps.className, containerCls)}>
             {glassFx ? <View className="neo-glass-rim" aria-hidden /> : null}
-            {labelContent}
+            <NeoButtonContentContext.Provider value={contentValue}>
+                {labelContent}
+            </NeoButtonContentContext.Provider>
             {addonContent && (
                 isTitle ? <View className="z-10 ml-1">{addonContent}</View> : <View className="absolute top-0 right-0 w-full h-full z-20 pointer-events-none">{addonContent}</View>
             )}
@@ -720,12 +835,20 @@ const NeoButtonStyled = (props: NeoButtonProps) => {
         </Cnt>
     );
 
-    const wrapperClass = cn(
+    // `u-neo-btn-root` lifts a focused button above later siblings so they
+    // cannot paint over its ring (global.web.css). The layout classes go on
+    // the outermost box: the Tooltip wrapper when there is one.
+    const { isDesktop } = useNeoEnv();
+    // Web only: native Tooltip renders no wrapper and drops `className`, so a
+    // wide native screen (isDesktop) would lose the root layout classes.
+    const tooltipWraps = isWeb && !!tooltip && isDesktop && !!appSetting('layout', 'tooltips');
+    const rootLayoutClass = cn(
         resolved.width === 'fill'
             ? FILL_WIDTH_CLASS
             : (pinIconOnlySquare ? 'self-start' : 'self-start max-w-full min-w-0'),
         classNames?.root,
     );
+    const wrapperClass = cn('u-neo-btn-root', tooltipWraps ? '' : rootLayoutClass);
 
     // Glass effect: press/hover motion is CSS keyed off `data-neo-glass`,
     // so the JS PressTransition scale is skipped.
@@ -754,9 +877,12 @@ const NeoButtonStyled = (props: NeoButtonProps) => {
 
     /* ---------------------------- tooltip wrap -------------------------- */
 
-    const isDesktop = useNeoEnv().isDesktop;
-    if (tooltip && isDesktop) {
-        return <Tooltip content={tooltip} side={tooltipSide} enabled>{wrapped}</Tooltip>;
+    if (tooltipWraps) {
+        return (
+            <Tooltip content={tooltip} side={tooltipSide} enabled className={cn('u-neo-btn-root', rootLayoutClass)}>
+                {wrapped}
+            </Tooltip>
+        );
     }
     return wrapped;
 };
@@ -771,42 +897,110 @@ export const NeoButtonRef = React.forwardRef<any, NeoButtonProps>((props, forwar
 
 export const NeoButtonLink = ({
     href = '',
+    // `''` keeps legacy ButtonLink parity: external links open in the same
+    // tab unless a `target` is passed.
     target = '',
     asExternal = false,
     style,
     emulate,
+    onPress,
+    onLongPress: _onLongPress,
     ...props
 }: NeoButtonProps) => {
     const finalHref = sanitazeUrl(href);
     const isExternal = isExternalUrl(finalHref) || asExternal === true;
 
-    // For an internal link the actual click target is the <a> wrapper, not the
-    // inner (non-pressable) NeoButton — so the hit area must live on the anchor.
-    // Resolve it from the same control size the button uses (hitSlop depends
-    // only on controlSize + env scope). External links render a pressable
-    // NeoButton directly, which draws its own hit area.
+    // Web: the <a> is the click target, so the hit area lives on it. Resolve
+    // it from the same control size the button uses (hitSlop depends only on
+    // controlSize + env scope).
     const { hitAreaCls } = useResolvedNeoButton({ controlSize: props.controlSize });
 
-    if (isExternal) {
-        const neoProps = { ...props, buttonStyle: style, interactive: true };
-        return <NeoButton {...neoProps} onPress={() => openExternalLink(finalHref)} />;
+    // Disabled: no anchor, so it is neither navigable nor a tab stop.
+    if (props.disabled) {
+        return <NeoButton {...props} buttonStyle={style} />;
     }
 
+    // Native external URL: the button itself opens the in-app browser.
+    if (isExternal && !isWeb) {
+        return (
+            <NeoButton
+                {...props}
+                buttonStyle={style}
+                accessibilityRole="link"
+                onPress={(event?: any) => {
+                    onPress?.(event);
+                    openExternalLink(finalHref);
+                }}
+            />
+        );
+    }
+
+    // Web: `classNames.root` lands on the <a>, the outermost box, so layout
+    // classes reach the parent's flex layout. Link renders no anchor for an
+    // empty href (unless emulated): the classes then stay on the button.
+    const webAnchor = isWeb && (!!finalHref || emulate === true);
+    const rootOnAnchor = webAnchor ? props.classNames?.root : undefined;
+    // Web hit area on the anchor: the size's `hit-area-*`, or `hit-area-sides`
+    // with `--neo-hit-*` for an explicit `hitSlop` (number or per-side insets).
+    const anchorHit = webAnchor && props.hitarea !== false;
+    const customHit = anchorHit && props.hitSlop !== undefined;
+    const hitInsets = typeof props.hitSlop === 'number'
+        ? { top: props.hitSlop, right: props.hitSlop, bottom: props.hitSlop, left: props.hitSlop }
+        : (props.hitSlop ?? {});
+    const anchorStyle = customHit
+        ? {
+            '--neo-hit-t': hitInsets.top ?? 0,
+            '--neo-hit-r': hitInsets.right ?? 0,
+            '--neo-hit-b': hitInsets.bottom ?? 0,
+            '--neo-hit-l': hitInsets.left ?? 0,
+        }
+        : undefined;
     const linkClassName = cn(
         'u-neo-btn-link',
-        hitAreaCls,
+        anchorHit ? (customHit ? 'hit-area-sides' : hitAreaCls) : '',
         props.width === 'fill'
             ? cn('block', FILL_WIDTH_CLASS)
             : 'inline-flex items-center max-w-full min-w-0 shrink',
+        rootOnAnchor,
     );
-    const neoProps = { ...props, buttonStyle: style, hitarea: false, interactive: true };
+    const neoProps: NeoButtonProps = {
+        ...props,
+        classNames: rootOnAnchor ? { ...props.classNames, root: undefined } : props.classNames,
+        buttonStyle: style,
+        // Web: the <a> owns the hit area. Native: `Link asChild` makes the
+        // NeoButton the pressable, so it keeps its own hitSlop.
+        hitarea: webAnchor ? false : props.hitarea,
+        interactive: true,
+        // Native: announced as a link (web: the <a> is the link; the inner
+        // button is not pressable, so it is neither a tab stop nor a button).
+        // `role` keeps `Link asChild`'s injected `role="link"` out of the
+        // SwiftUI role axis.
+        ...(isWeb ? {} : { accessibilityRole: 'link', role: props.role ?? 'default' }),
+    };
+    const label = props.label ?? props.title;
     const linkAccessibleName =
         props.accessibilityLabel ||
         props.alt ||
-        (typeof props.label === 'string' && props.label !== '' ? props.label : undefined);
+        (typeof label === 'string' && label !== '' ? label : undefined) ||
+        (typeof props.tooltip === 'string' && props.tooltip !== '' ? props.tooltip : undefined);
+    // Runs before navigation. Web `<a>`: onClick (`preventDefault()` cancels
+    // navigation). Emulated web links and native: Link's own onPress handler.
+    const pressProps = onPress
+        ? (isWeb && emulate !== true ? { onClick: onPress } : { onPress })
+        : {};
 
     return (
-        <Link href={href} target={target} asExternal={asExternal} emulate={emulate} mode="plain" className={linkClassName} alt={linkAccessibleName}>
+        <Link
+            href={href}
+            target={target}
+            asExternal={asExternal}
+            emulate={emulate}
+            mode="plain"
+            className={linkClassName}
+            alt={linkAccessibleName}
+            {...(anchorStyle ? { style: anchorStyle } : null)}
+            {...pressProps}
+        >
             <NeoButton {...neoProps} />
         </Link>
     );

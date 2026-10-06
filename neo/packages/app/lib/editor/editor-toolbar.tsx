@@ -7,10 +7,13 @@
 import { useState, useCallback, useMemo } from 'react'
 import { Platform, TextInput } from 'react-native'
 import { View } from 'app/design/view'
-import { Button } from 'app/design/controls'
-import { cn } from 'app/lib/util'
+import { NeoButton } from 'app/design/controls'
+import { appSetting, cn } from 'app/lib/util'
+import { fetcher } from 'app/lib/fetcher'
 import { getTiptapEditorFromContainer } from 'app/lib/editor/comment-editor-keyboard'
 import { useTranslation } from 'react-i18next'
+import { toEmbedImageSrc } from 'app/lib/editor/inline-video'
+import { UNA_URL } from 'app/config'
 
 export const EDITOR_TOOLBAR_COMMAND_IDS = [
     'bold',
@@ -27,6 +30,8 @@ export const EDITOR_TOOLBAR_COMMAND_IDS = [
     'outdent',
     'undo',
     'redo',
+    'image',
+    'video',
 ]
 
 export const COMMAND_LABELS: Record<string, string> = {
@@ -44,6 +49,18 @@ export const COMMAND_LABELS: Record<string, string> = {
     outdent: '←',
     undo: '↶',
     redo: '↷',
+    image: 'Image',
+    video: 'Video',
+    embed: 'Embed',
+}
+
+/** Lucide icons shown instead of the text label (the label stays as the a11y name). */
+export const COMMAND_ICONS: Record<string, string> = {
+    checklist: 'ListTodo',
+    code: 'Braces',
+    image: 'Image',
+    video: 'Video',
+    embed: 'CodeXml',
 }
 
 /**
@@ -65,6 +82,7 @@ export function EditorToolbar({ items = [], linkBar, className }: { items?: any[
             <View onMouseDown={onMouseDown}>
                 <LinkBar
                     initialUrl={linkBar.initialUrl}
+                    placeholder={linkBar.placeholder}
                     onSubmit={linkBar.onSubmit}
                     onCancel={linkBar.onCancel}
                     className={className}
@@ -78,12 +96,13 @@ export function EditorToolbar({ items = [], linkBar, className }: { items?: any[
     return (
         <View
             onMouseDown={onMouseDown}
-            className={cn('flex-row flex-wrap items-center gap-1 mt-2', className)}
+            className={cn('flex-row flex-wrap items-center gap-2 mt-2', className)}
         >
             {items.map((item) => (
                 <ToolbarButton
                     key={item.id}
                     label={item.label ?? COMMAND_LABELS[item.id] ?? item.id}
+                    icon={COMMAND_ICONS[item.id]}
                     active={!!item.active}
                     disabled={!!item.disabled}
                     onPress={item.onPress}
@@ -93,50 +112,63 @@ export function EditorToolbar({ items = [], linkBar, className }: { items?: any[
     )
 }
 
-function ToolbarButton({ label, active, disabled, onPress }: { label: string; active?: boolean; disabled?: boolean; onPress?: () => void }) {
+function ToolbarButton({ label, icon, active, disabled, onPress }: { label: string; icon?: string; active?: boolean; disabled?: boolean; onPress?: () => void }) {
     return (
-        <Button
-            variant="text"
-            size="xs"
-            pressed={!!active}
+        <NeoButton
+            style="borderless"
+            controlSize="mini"
+            selected={!!active}
             disabled={!!disabled}
-            title={label}
+            {...(icon ? { image: icon, accessibilityLabel: label } : { label })}
             onPress={onPress}
-            hitarea={false}
+            haptics={false}
         />
     )
 }
 
-function LinkBar({ initialUrl = '', onSubmit, onCancel, className }: { initialUrl?: string; onSubmit?: (value: string) => void; onCancel?: () => void; className?: string }) {
+function LinkBar({ initialUrl = '', placeholder, onSubmit, onCancel, className }: { initialUrl?: string; placeholder?: string; onSubmit?: (value: string) => void; onCancel?: () => void; className?: string }) {
     const { t } = useTranslation()
     const [url, setUrl] = useState(initialUrl || '')
+    const value = url.trim()
+    const canSubmit = /^https?:\/\/\S+\.\S+/i.test(value)
+    const submit = () => {
+        if (canSubmit) onSubmit?.(value)
+    }
 
     return (
         <View className={cn('flex-row items-center gap-2 mt-2', className)}>
-            <TextInput
-                value={url}
-                onChangeText={setUrl}
-                placeholder="https://"
-                autoCapitalize="none"
-                autoCorrect={false}
-                autoFocus
-                onSubmitEditing={() => onSubmit?.(url.trim())}
-                className="flex-1 min-w-0 text-sm text-foreground bg-transparent border-b border-border py-1 px-1"
-                style={Platform.OS === 'web' ? ({ outlineStyle: 'none' } as any) : undefined}
+            <View className="flex-1 min-w-0 flex-row items-center rounded-lg border border-border bg-background px-3 h-9">
+                <TextInput
+                    value={url}
+                    onChangeText={setUrl}
+                    placeholder={placeholder || 'https://'}
+                    placeholderTextColor="rgba(120,130,145,1)"
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                    keyboardType="url"
+                    autoFocus
+                    onSubmitEditing={submit}
+                    className="flex-1 min-w-0 w-full text-sm text-foreground bg-transparent"
+                    style={Platform.OS === 'web' ? ({ outlineStyle: 'none' } as any) : undefined}
+                />
+            </View>
+            <NeoButton
+                style="borderedProminent"
+                controlSize="small"
+                label={t('Insert')}
+                disabled={!canSubmit}
+                onPress={submit}
+                haptics={false}
+                classNames={{ root: 'self-center' }}
             />
-            <Button
-                variant="text"
-                size="xs"
-                title={t('Insert')}
-                onPress={() => onSubmit?.(url.trim())}
-                hitarea={false}
-            />
-            <Button
-                variant="text"
-                size="xs"
-                title={t('Cancel')}
+            <NeoButton
+                style="borderless"
+                controlSize="small"
+                image="X"
+                accessibilityLabel={t('Cancel')}
                 onPress={onCancel}
-                hitarea={false}
+                haptics={false}
+                classNames={{ root: 'self-center' }}
             />
         </View>
     )
@@ -152,8 +184,13 @@ export function useEnrichedToolbar({
     styleState,
     selection,
     enabled = true,
-}: { editorRef: any; containerRef: any; tipTap?: any; styleState: any; selection: any; enabled?: boolean }) {
+    onInsertImage,
+    onInsertVideo,
+    embeds = false,
+}: { editorRef: any; containerRef: any; tipTap?: any; styleState: any; selection: any; enabled?: boolean; onInsertImage?: () => void; onInsertVideo?: () => void; embeds?: boolean }) {
+    const { t } = useTranslation()
     const [linkOpen, setLinkOpen] = useState(false)
+    const [embedOpen, setEmbedOpen] = useState(false)
     const isWeb = Platform.OS === 'web'
 
     // Prefer the instance resolved by `useTiptapEditor`; fall back to a DOM
@@ -181,6 +218,28 @@ export function useEnrichedToolbar({
         setLinkOpen(false)
         ed.focus?.()
     }, [editorRef, selection])
+
+    // Embed: an image at the caret (atomic on every platform) — the page image from UNA,
+    // else UNA's embed-na.png — carrying the URL (toEmbedImageSrc); the post view renders
+    // it as an embed card / player (see splitInlineMedia).
+    const closeEmbed = useCallback(() => setEmbedOpen(false), [])
+    const submitEmbed = useCallback(async (url: string) => {
+        setEmbedOpen(false)
+        if (!editorRef?.current || !/^https?:\/\/\S+$/i.test(url)) return
+        let image = ''
+        try {
+            const res = await fetcher(
+                `/api.php?r=${appSetting('urls', 'embeds_new')}${encodeURIComponent(url)}`,
+                false,
+                { maxAttempts: 1, silent: true },
+            )
+            image = String(res?.data?.image || '').trim()
+        } catch {
+            // placeholder below
+        }
+        if (!/^https?:\/\//i.test(image)) image = `${UNA_URL}/template/images/embed-na.png`
+        editorRef?.current?.setImage?.(toEmbedImageSrc(image, url), 720, 405)
+    }, [editorRef])
 
     const items = useMemo(() => {
         if (!enabled || !styleState) return []
@@ -271,6 +330,17 @@ export function useEnrichedToolbar({
             },
         ]
 
+        // Picker → upload → inserted into the body (handlers live in the editor).
+        if (onInsertImage) {
+            defs.push({ id: 'image', onPress: onInsertImage })
+        }
+        if (onInsertVideo) {
+            defs.push({ id: 'video', onPress: onInsertVideo })
+        }
+        if (embeds) {
+            defs.push({ id: 'embed', onPress: () => setEmbedOpen(true) })
+        }
+
         // Indent / outdent / undo / redo via TipTap on web only.
         if (isWeb) {
             defs.push(
@@ -298,14 +368,15 @@ export function useEnrichedToolbar({
         }
 
         return defs
-    }, [enabled, styleState, editorRef, tipTap, isWeb, selection])
+    }, [enabled, styleState, editorRef, tipTap, isWeb, selection, onInsertImage, onInsertVideo, embeds])
 
-    const linkBar = linkOpen
+    const linkBar = linkOpen || embedOpen
         ? {
             visible: true,
+            placeholder: embedOpen ? t('Paste a link to embed') : undefined,
             initialUrl: '',
-            onSubmit: submitLink,
-            onCancel: closeLink,
+            onSubmit: embedOpen ? submitEmbed : submitLink,
+            onCancel: embedOpen ? closeEmbed : closeLink,
         }
         : null
 

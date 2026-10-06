@@ -64,7 +64,7 @@ export default function VideoThumb({ src, poster, sizes, hoverPreview = true, cl
 
             {!previewing && (
                 <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-                    <div className="rounded-full bg-black/50 p-3">
+                    <div className="flex rounded-full bg-black/50 p-3">
                         <Icon icon="Play" size={20} color="white" fill="white" />
                     </div>
                 </div>

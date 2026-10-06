@@ -5,8 +5,7 @@ import { useWindowDimensions } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { View, Row } from 'app/design/view';
 import { Text } from 'app/design/typography';
-import { Button, NeoButton } from 'app/design/controls';
-import Link from 'app/ui/atoms/link';
+import { NeoButton, NeoButtonLink } from 'app/design/controls';
 import DropdownPopup from 'app/ui/atoms/dropdown-popup';
 import { useCurrentUser } from 'app/context/user';
 import emitter, { EVENTS } from 'app/context/emitter';
@@ -17,6 +16,8 @@ import { hasNativeTabsMoreMenu } from 'app/components/nav/tabs/tab-menu';
 import { lazyComponent } from 'app/lib/lazy-component';
 import { fetchOperatorAgentBlock } from 'app/ui/molecules/ai-agent/operator-block';
 import { hiddenFirstMessageFromData } from 'app/ui/molecules/ai-agent/hidden-first-message';
+import { edgeWash } from 'app/ui/molecules/ai-agent/edge-wash';
+import { EdgeBlurView, edgeBlurConfig } from 'app/ui/atoms/edge-blur';
 
 const AiAgent = lazyComponent(() => import('app/ui/molecules/ai-agent/agent'), { name: 'AiAgent' });
 
@@ -65,6 +66,12 @@ function OperatorAgentBody({ data, params, onClose }) {
     // the channel once threads / restart permission are known.
     const [controls, setControls] = useState({ history: false, restart: false });
     const showHistory = (appSetting('ai', 'operator_agent') || {}).show_history === true;
+    // The title bar floats over the transcript; the chat starts below its measured height.
+    const [titleBarHeight, setTitleBarHeight] = useState(0);
+    const onTitleBarLayout = useCallback((event) => {
+        const next = Math.round(event.nativeEvent.layout.height);
+        setTitleBarHeight((prev) => (prev === next ? prev : next));
+    }, []);
 
     const toggleHistory = useCallback(() => emitter.emit(CHANNEL, { action: 'toggle_history' }), []);
     const startNew = useCallback(() => emitter.emit(CHANNEL, { action: 'start_new' }), []);
@@ -80,66 +87,81 @@ function OperatorAgentBody({ data, params, onClose }) {
     const agentId = data?.agent_id ?? '';
     const contextProfileId = Number(data?.context_profile_id) || 0;
 
+    // Messages scroll edge to edge under the title bar and the composer, which float on
+    // the panel's fade (as on the AI Agent block and the agents page); the chat keeps
+    // its margins inside.
     return (
-        <>
-            <Row className="items-center justify-between px-3 py-2 border-b border-border/60">
-                <Text className="text-sm font-semibold text-card-foreground">
-                    {t('operator_agent_title')}
-                </Text>
-                <Row className="items-center">
-                    {controls.history ? (
-                        <NeoButton
-                            style="borderless"
-                            borderShape="circle"
-                            controlSize="small"
-                            image="History"
-                            accessibilityLabel={t('agent_chats')}
-                            onPress={toggleHistory}
-                        />
-                    ) : null}
-                    {controls.restart ? (
-                        <NeoButton
-                            style="borderless"
-                            borderShape="circle"
-                            controlSize="small"
-                            image="RefreshCw"
-                            tooltip={t('Start new')}
-                            tooltipSide="bottom"
-                            accessibilityLabel={t('Start new')}
-                            onPress={startNew}
-                        />
-                    ) : null}
-                    <Link href={OPERATOR_ASSISTANT_URL}>
-                        <Button variant="link" size="sm" title={t('Open page')} />
-                    </Link>
-                    {onClose ? (
-                        <NeoButton
-                            style="borderless"
-                            borderShape="circle"
-                            controlSize="small"
-                            image="X"
-                            accessibilityLabel={t('operator_agent_close')}
-                            onPress={onClose}
-                        />
-                    ) : null}
-                </Row>
-            </Row>
-            <View className="flex-1 min-h-0 p-3">
-                <AiAgent
-                    key={`${agentId}:${contextProfileId}`}
-                    data={data}
-                    initialMessage={initialMessage}
-                    hideInitialMessage={!!initialMessage}
-                    height="h-full"
-                    showHistory={showHistory}
-                    // The card is ~384px wide whatever the viewport is, so
-                    // the "Chats" list can only ever overlay the transcript.
-                    historyLayout="overlay"
-                    fadeSurface="card"
-                    channel={CHANNEL}
-                />
+        <View className="flex-1 min-h-0 relative">
+            <AiAgent
+                key={`${agentId}:${contextProfileId}`}
+                data={data}
+                initialMessage={initialMessage}
+                hideInitialMessage={!!initialMessage}
+                height="h-full"
+                showHistory={showHistory}
+                // The card is ~384px wide whatever the viewport is, so
+                // the "Chats" list can only ever overlay the transcript.
+                historyLayout="overlay"
+                fadeSurface="panel"
+                gutter
+                headerInset={titleBarHeight}
+                channel={CHANNEL}
+            />
+            <View className="absolute top-0 inset-x-0 z-20" pointerEvents="box-none">
+                <EdgeBlurView edge="top" config={edgeBlurConfig('footer')} washClassName={edgeWash('panel').top} pointerEvents="box-none">
+                    <Row className="items-center justify-between ps-4 pe-2 pt-2 pb-4" pointerEvents="box-none" onLayout={onTitleBarLayout}>
+                        {/* Sized like a block title (theme `u-block-title`). */}
+                        <Text className="text-lg font-semibold tracking-tight text-card-foreground">
+                            {t('operator_agent_title')}
+                        </Text>
+                        <Row className="items-center gap-1">
+                            {controls.history ? (
+                                <NeoButton
+                                    style="borderless"
+                                    borderShape="circle"
+                                    controlSize="small"
+                                    image="History"
+                                    accessibilityLabel={t('agent_chats')}
+                                    onPress={toggleHistory}
+                                />
+                            ) : null}
+                            {controls.restart ? (
+                                <NeoButton
+                                    style="borderless"
+                                    borderShape="circle"
+                                    controlSize="small"
+                                    image="RefreshCw"
+                                    tooltip={t('Start new')}
+                                    tooltipSide="bottom"
+                                    accessibilityLabel={t('Start new')}
+                                    onPress={startNew}
+                                />
+                            ) : null}
+                            <NeoButtonLink
+                                href={OPERATOR_ASSISTANT_URL}
+                                style="borderless"
+                                borderShape="circle"
+                                controlSize="small"
+                                image="Expand"
+                                tooltip={t('Open page')}
+                                tooltipSide="bottom"
+                                accessibilityLabel={t('Open page')}
+                            />
+                            {onClose ? (
+                                <NeoButton
+                                    style="borderless"
+                                    borderShape="circle"
+                                    controlSize="small"
+                                    image="X"
+                                    accessibilityLabel={t('operator_agent_close')}
+                                    onPress={onClose}
+                                />
+                            ) : null}
+                        </Row>
+                    </Row>
+                </EdgeBlurView>
             </View>
-        </>
+        </View>
     );
 }
 
@@ -206,6 +228,8 @@ export function OperatorAgentHeaderButton({ buttonProps }) {
             onOpenChange={setOpen}
             minPopupWidth={384}
             maxPopupWidth={384}
+            // No inset: the chat runs to the panel's edges and keeps its margins inside.
+            contentClassName="p-0"
             buttonProps={{
                 ...getHeaderToolbarNeoButtonDefaults(isDesktop),
                 tooltip: label,

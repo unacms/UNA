@@ -4,7 +4,7 @@ import { stripTags, appSetting, isUrl } from 'app/lib/util';
 import { useState } from 'react';
 import { Block as PageBlock, BlockContent, BlockName, BlockActions, BlockHeader, BlockTitle, BlockDescription, BlockIcon } from 'app/ui/molecules/page/page-block'
 import { useTranslation } from 'react-i18next'
-import { Button, ButtonLink, Modal, NeoButtonLink } from 'app/design/controls'
+import { Modal, NeoButton, NeoButtonLink } from 'app/design/controls'
 import { Icon } from 'app/ui/atoms/icon'
 import { components } from 'app/components/registry'
 import { usePathname } from 'app/lib/hooks/router'
@@ -47,15 +47,27 @@ function BlockHeaderMenu({ menu, pathname }) {
 
 // `clip` is opt-in: tile/card shadows paint outside the content box, so blocks
 // never hide overflow by default. Inner scrollers own their own overflow.
-export function BlockWrapper({ config, block, wrapperClassses, showTitle, showBg, fullWidth, contentOnly, list, showPadding, extraProps, fill, clip = false, children }) {
+//
+// `overlayHeader`: for content that scrolls edge to edge under its own chrome (the AI
+// agent chat). The block drops its padding and clips to its own corners, and the
+// header is not laid out above the content: `children` is called as
+// `children({ header, surface })` with the usual header — icon, title, description,
+// actions — unpadded (null where the design box hides the title), for the content to
+// float over
+// itself, and the colour it sits on — 'card' where the block has its background,
+// 'background' (the page) where it has none — for fades over the content to start
+// from. Its gutters are then the content's to keep, inside the scroller.
+export function BlockWrapper({ config, block, wrapperClassses, showTitle, showBg, fullWidth, contentOnly, list, showPadding, extraProps, fill, clip = false, overlayHeader = false, children }) {
     const { t } = useTranslation()
     const [showHelp, setShowHelp] = useState(false)
     const pathname = usePathname()
 
     const blockMenu = block?.menu?.items?.length ? block.menu : null
 
+    const renderChildren = (header = null, surface = 'background') => (typeof children === 'function' ? children({ header, surface }) : children)
+
     if (block?.designbox_id == null)
-        return children;
+        return renderChildren();
 
     block.designbox_id = Number(block.designbox_id);
     const aNoTitle = [0, 10, 13, 3];
@@ -96,6 +108,7 @@ export function BlockWrapper({ config, block, wrapperClassses, showTitle, showBg
     if (typeof showPadding !== 'undefined') {
         bIsShowPadding = showPadding;
     }
+    if (overlayHeader) bIsShowPadding = false;
 
     const cssClasses = extraProps?.cssClasses || "";
     // Streamlined logic: avoid unnecessary fragment, ensure BlockContent is not wrapping elements twice
@@ -106,7 +119,7 @@ export function BlockWrapper({ config, block, wrapperClassses, showTitle, showBg
 
     if (contentOnly) {
         return (<View className={wrapperClassses}>
-            {children}
+            {renderChildren()}
         </View>)
     }
     const pureHelp = stripTags(block.help);
@@ -122,6 +135,48 @@ export function BlockWrapper({ config, block, wrapperClassses, showTitle, showBg
     const isHelp = !!block.help
     const hasHeaderActions = !!(config?.header_more_url || blockMenu)
     const fillClass = fill ? 'flex h-full min-h-0 flex-1 flex-col' : ''
+    // Title on some tiers only: hidden where it's off.
+    const titleTiersClass = Array.isArray(bIsShowTitle) ? responsiveClasses('title', bIsShowTitle) : ''
+
+    const headerName = (
+        <BlockName>
+            <View className="flex-row items-center gap-2">
+                {!!block.icon && <BlockIcon>
+                    <Icon icon={block.icon} size={appSetting('theme', 'blocks')['u-block-icon-size']}/>
+                </BlockIcon>}
+                <BlockTitle>{stripTags(block.title)}</BlockTitle></View>
+            {!!block.description && <BlockDescription>{block.description}</BlockDescription>}
+        </BlockName>
+    )
+    const headerActions = (
+        <>
+            {hasHeaderActions && (<BlockActions>
+                {blockMenu ? (
+                    <BlockHeaderMenu menu={blockMenu} pathname={pathname} />
+                ) : null}
+                {config?.header_more_url ? (
+                    <NeoButtonLink
+                        href={config?.header_more_url}
+                        label={t(config?.header_more_text || 'See all')}
+                        style="link"
+                        borderShape="roundedRectangle"
+                        controlSize="small"
+                    />
+                ) : null}
+            </BlockActions>)}
+            {(isHelp && isHelpLink) && <NeoButtonLink href={pureHelp} target="_blank" style="borderless" image="LifeBuoy" label={t('Help')} />}
+            {(isHelp && !isHelpLink) && <NeoButton style="borderless" image="LifeBuoy" label={t('Help')} onPress={() => setShowHelp(true)} />}
+        </>
+    )
+
+    // Plain text, like any block header: the content's fade is its chrome. (A pill is
+    // for interactive elements.) The content positions and pads it.
+    const overlayHeaderNode = overlayHeader && bIsShowTitle ? (
+        <BlockHeader className={titleTiersClass || undefined} pointerEvents="box-none">
+            {headerName}
+            {headerActions}
+        </BlockHeader>
+    ) : null
 
     return (
         <View className={`${wrapperClassses || 'w-full'} ${fillClass}`}>
@@ -137,47 +192,24 @@ export function BlockWrapper({ config, block, wrapperClassses, showTitle, showBg
                     className={[
                         "w-full mx-auto",
                         fill ? "flex h-full min-h-0 flex-1 flex-col" : "",
+                        // Content runs to the block's edges: keep it inside the rounded corners.
+                        overlayHeader ? "overflow-hidden" : "",
                         (!fullWidth && !cssClasses.includes("max-w-") ? appSetting('layout', 'max_width_block') : ""),
                         cssClasses,
                     ].filter(Boolean).join(" ")}
 
                 >
-                    {bIsShowTitle && (
+                    {bIsShowTitle && !overlayHeader && (
                         <BlockHeader
                             isPad={bIsShowPadding}
                             className={[
                                 fill ? 'shrink-0' : '',
                                 fill && !bIsShowPadding ? 'px-4 pt-4' : '',
-                                // Title on some tiers only: hidden where it's off.
-                                Array.isArray(bIsShowTitle) ? responsiveClasses('title', bIsShowTitle) : '',
+                                titleTiersClass,
                             ].filter(Boolean).join(' ') || undefined}
                         >
-                             
-                            <BlockName>
-                                <View className="flex-row items-center gap-2">
-                            {!!block.icon && <BlockIcon>
-                                <Icon icon={block.icon} size={appSetting('theme', 'blocks')['u-block-icon-size']}/>
-                            </BlockIcon>}
-                                <BlockTitle>{stripTags(block.title)}</BlockTitle></View>
-                                {!!block.description && <BlockDescription>{block.description}</BlockDescription>}
-                            </BlockName>
-
-                            {hasHeaderActions && (<BlockActions>
-                                {blockMenu ? (
-                                    <BlockHeaderMenu menu={blockMenu} pathname={pathname} />
-                                ) : null}
-                                {config?.header_more_url ? (
-                                    <NeoButtonLink
-                                        href={config?.header_more_url}
-                                        label={t(config?.header_more_text || 'See all')}
-                                        style="link"
-                                        borderShape="roundedRectangle"
-                                        controlSize="small"
-                                    />
-                                ) : null}
-                            </BlockActions>)}
-                            {(isHelp && isHelpLink) && <ButtonLink href={pureHelp} target="_blank" title={t('Help')} startDecorator='LifeBuoy' variant="text" />}
-                            {(isHelp && !isHelpLink) && <Button onPress={() => setShowHelp(true)} title={t('Help')} startDecorator='LifeBuoy' variant="text" />}
+                            {headerName}
+                            {headerActions}
                         </BlockHeader>
                     )}
                     <BlockContent
@@ -188,7 +220,8 @@ export function BlockWrapper({ config, block, wrapperClassses, showTitle, showBg
                                 : undefined
                         }
                     >
-                        {children}
+                        {/* Background on some tiers only counts as a card: it is where it shows most. */}
+                        {renderChildren(overlayHeaderNode, bIsShowBg ? 'card' : 'background')}
                     </BlockContent>
                 </PageBlock>
             </View>

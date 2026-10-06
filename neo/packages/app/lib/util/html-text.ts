@@ -240,12 +240,15 @@ function escapeRegExp(string: string): string {
     return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
 }
 
-/** Turn absolute own-site (UNA_URL) links into root-relative ones. */
+/**
+ * Turn absolute own-site (UNA_URL) links into root-relative ones.
+ * `src` values are left alone: storage images live on the UNA host, not the app.
+ */
 export function clearLinks<T extends string | null | undefined>(text: T): T {
     if (!text)
         return text;
-    const regex = new RegExp(escapeRegExp(UNA_URL), 'g');
-    return text!.replace(regex, '/') as T;
+    const regex = new RegExp(`(\\bsrc\\s*=\\s*["']\\s*)?${escapeRegExp(UNA_URL)}`, 'gi');
+    return text!.replace(regex, (match, src) => (src ? match : '/')) as T;
 }
 
 /** Unwrap mention spans and relativize own links. `attrs` / `htmlSpecialChars` are legacy, unused. */

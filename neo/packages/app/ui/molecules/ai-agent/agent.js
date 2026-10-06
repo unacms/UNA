@@ -7,7 +7,7 @@ import { View, Row, ScrollView } from 'app/design/view';
 import { TextInputClear } from 'app/design/controls';
 import { useCurrentUser } from 'app/context/user';
 import emitter from 'app/context/emitter';
-import { appSetting, cn, isWeb } from 'app/lib/util';
+import { cn, isWeb } from 'app/lib/util';
 import { createAgentChat, fetchAgentChatThread, hydrateAgentChat } from './helper';
 import { isHiddenFirstMessageText } from './hidden-first-message';
 import {
@@ -28,7 +28,7 @@ import {
 import Profile from 'app/ui/molecules/profile/profile';
 import { MessageInput } from 'app/components/elements/chat/parts/message-input';
 import { EdgeBlurView, edgeBlurConfig } from 'app/ui/atoms/edge-blur';
-import { CHAT_OVERLAY_COMPOSER_FADE } from 'app/components/elements/chat/parts/headers';
+import { edgeWash } from './edge-wash';
 import { AgentStatus, ChatBubble } from './chat-bubble';
 import { CHAT_IMAGES_MAX_DEFAULT, chatImageParts, imageFilesFromDataTransfer, pickedFromFile, revokePickedPreview, uploadAgentChatImage } from './chat-images';
 import { pickAgentChatImage } from './pick-image';
@@ -96,9 +96,24 @@ const NO_MESSAGES = [];
  *   `{ action: 'start_new' }` and reports `{ action: 'state', history, restart }`
  *   whenever those controls become available; History / Start new then stay out
  *   of the composer — the host draws them (the operator float's title bar).
+ * @param {'default'|'chat'} [props.variant] Message items: compact bubbles, or the
+ *   messenger's. The composer is the messenger's message input either way.
+ * @param {'card'|'panel'|'background'} [props.fadeSurface] Surface the fades behind
+ *   the header and the composer start from (see `edge-wash.js`): a block's card
+ *   (default), a floating panel (the operator float), or the page background (`chat`
+ *   variant default; a block without background, see BlockWrapper `overlayHeader`).
+ * @param {number} [props.headerInset] Height of chrome the host floats over the top of
+ *   the chat (its own title bar): the transcript and the history overlay start below it.
+ * @param {import('react').ReactNode} [props.header] Floated over the top of the
+ *   transcript on the fade (a block's title, see BlockWrapper `overlayHeader`);
+ *   messages scroll under it.
+ * @param {boolean} [props.gutter] The chat runs to its host's edges (a block without
+ *   padding): it keeps its margins inside — around the messages, the header and the
+ *   composer — so nothing that scrolls or casts a shadow is cut at the frame.
  */
 export default function AiAgent({ height = 'h-[28rem]', ...props }) {
     const { chat, history, historyOverlayOnly } = useAiAgent(props);
+    const gutter = !!props.gutter;
 
     // The frame keeps its final height while hydrating so the page does not jump
     // when the transcript arrives; `chat` is simply empty until then.
@@ -110,9 +125,12 @@ export default function AiAgent({ height = 'h-[28rem]', ...props }) {
                         historyOverlayOnly
                             ? ''
                             // `z-0` not `z-auto`: Uniwind resolves `auto` to a string and Fabric casts zIndex to Double.
-                            : 'md:flex md:relative md:inset-auto md:z-0 md:w-56 md:shrink-0 md:bg-transparent md:border-r md:border-border/60 md:mr-3',
-                        history.open ? 'flex absolute inset-0 z-10 bg-card' : 'hidden'
+                            : cn('md:flex md:relative md:inset-auto md:z-0 md:w-56 md:shrink-0 md:bg-transparent md:border-r md:border-border/60', gutter ? 'md:ps-3 md:pb-3' : 'md:mr-3'),
+                        history.open ? 'flex absolute inset-0 z-10 bg-card' : 'hidden',
+                        gutter && history.open ? 'p-3' : ''
                     )}
+                    // Below chrome the host floats over the chat (the float's title bar).
+                    style={history.open && props.headerInset ? { paddingTop: props.headerInset } : undefined}
                 >
                     <ChatThreads {...history.props} />
                 </View>
@@ -147,6 +165,9 @@ export function useAiAgent({
     historyAlways = false,
     channel,
     variant = 'default',
+    fadeSurface,
+    header = null,
+    gutter = false,
     headerInset = 0,
 }) {
     const { currentUser } = useCurrentUser();
@@ -322,6 +343,9 @@ export function useAiAgent({
                 onToggleHistory={composerToggleHistory}
                 historyOverlayOnly={historyOverlayOnly}
                 variant={variant}
+                fadeSurface={fadeSurface}
+                header={header}
+                gutter={gutter}
                 headerInset={headerInset}
             />
         ) : null;
@@ -348,6 +372,9 @@ export function useAiAgent({
                 onToggleHistory={composerToggleHistory}
                 historyOverlayOnly={historyOverlayOnly}
                 variant={variant}
+                fadeSurface={fadeSurface}
+                header={header}
+                gutter={gutter}
                 headerInset={headerInset}
             />
         );
@@ -392,6 +419,9 @@ function AiAgentChat({
     onToggleHistory,
     historyOverlayOnly = false,
     variant = 'default',
+    fadeSurface,
+    header = null,
+    gutter = false,
     headerInset = 0,
 }) {
     const { t } = useTranslation();
@@ -422,10 +452,6 @@ function AiAgentChat({
     const messageFormat = data?.message_format === 'text' ? 'text' : 'html';
     const allowImages = !!Number(data?.allow_images);
     const maxImages = Math.max(1, Number(data?.max_images) || CHAT_IMAGES_MAX_DEFAULT);
-
-    // Read per render rather than at module scope: theme settings arrive with the
-    // layout, so a snapshot taken at import time can be empty.
-    const inputSettings = appSetting('theme', 'inputs');
 
     const { listRef, onScroll, scrollToEnd, pinToBottom, followIfPinned } = useChatAutoscroll();
     const composer = useComposerHeight(inputRef, input);
@@ -607,12 +633,18 @@ function AiAgentChat({
         if (node && typeof node.focus === 'function') node.focus();
     }, [sessionEnded]);
 
+    // The floating composer's and header's measured heights, padded under and over
+    // the transcript (below).
+    const [composerBoxHeight, setComposerBoxHeight] = useState(0);
+    const [headerBoxHeight, setHeaderBoxHeight] = useState(0);
+
     // Follow the stream while the user is pinned to the bottom. `lastText` is in the deps
     // on purpose: it changes on every token, which is what keeps the view glued to a
-    // growing reply.
+    // growing reply. `composerBoxHeight`: the padding under the transcript arrives after
+    // the first layout, and the last message would otherwise stay under the composer.
     useLayoutEffect(() => {
         followIfPinned();
-    }, [followIfPinned, visibleMessages.length, lastText, isLoading, waitingForReply, composer.height]);
+    }, [followIfPinned, visibleMessages.length, lastText, isLoading, waitingForReply, composer.height, composerBoxHeight, headerBoxHeight, headerInset]);
 
     const onListMouseUp = useCallback((event) => {
         // Click anywhere in the transcript to get back to typing — but not when the click
@@ -833,30 +865,20 @@ function AiAgentChat({
         void send();
     }, [send]);
 
-    // `variant="chat"`: the messenger's look — the same message input (avatar bottom-left,
-    // image picker + send bottom-right) and message items.
+    // The messenger's composer: avatar bottom-left, image picker + send bottom-right,
+    // a pill that squares off once there is a draft. It floats over the transcript —
+    // messages scroll behind it and the list pads itself by its measured height.
     const isChat = variant === 'chat';
-    const [composerBoxHeight, setComposerBoxHeight] = useState(0);
+    const wash = edgeWash(fadeSurface || (isChat ? 'background' : 'card'));
     const onComposerBoxLayout = useCallback((event) => {
         const next = Math.round(event.nativeEvent.layout.height);
         if (next > 0) setComposerBoxHeight((prev) => (prev === next ? prev : next));
     }, []);
+    const onHeaderBoxLayout = useCallback((event) => {
+        const next = Math.round(event.nativeEvent.layout.height);
+        setHeaderBoxHeight((prev) => (prev === next ? prev : next));
+    }, []);
     const hasDraft = !!input.trim() || pendingImages.length > 0;
-    const attachButton = (
-        <View><AttachButton disabled={!canAttach} onPress={attachImage} image={isChat ? 'Image' : undefined} /></View>
-    );
-    const composerButtons = (withSend = showSend) => (
-        <ComposerButtons
-            showSend={withSend}
-            showStartNew={showStartNew}
-            startNewInHistory={!!onToggleHistory && !historyOverlayOnly}
-            isLoading={isLoading}
-            canSend={!uploading && hasDraft}
-            onSend={send}
-            onStop={() => stop()}
-            onStartNew={onStartAgain}
-        />
-    );
     const textInput = (
         <TextInputClear
             ref={inputRef}
@@ -888,70 +910,71 @@ function AiAgentChat({
     );
 
     const composerBox = (
-                <View
-                    className={isChat ? 'px-4 py-1.5 sm:p-2.5' : 'pt-2'}
-                    onLayout={isChat ? onComposerBoxLayout : undefined}
-                    pointerEvents={isChat ? 'auto' : undefined}
-                    {...(isWeb && allowImages && !sessionEnded
-                        ? { onPaste: onComposerPaste, onDragOver: onComposerDragOver, onDrop: onComposerDrop }
-                        : null)}
-                >
-                    <ComposerNotice message={chatError?.message} />
-                    <ComposerNotice message={attachError} />
-                    <ComposerAttachments
-                        images={pendingImages}
-                        disabled={isLoading || uploading}
-                        onRemove={removePendingImage}
-                    />
-                    <Row className="items-center justify-center gap-2 w-full">
-                        {onToggleHistory ? <HistoryButton onPress={onToggleHistory} alwaysVisible={historyOverlayOnly} /> : null}
-                        {isChat ? (
-                            <View className={cn('flex-1 min-w-0', sessionEnded ? 'opacity-60' : '')}>
-                                <MessageInput
-                                    expanded={hasDraft}
-                                    avatar={currentUser ? (
-                                        <Profile
-                                            {...currentUser}
-                                            url_avatar={currentUser.avatar}
-                                            displayType="unit_wo_info"
-                                            displaySize="sm"
-                                        />
-                                    ) : null}
-                                    actions={<>
-                                        {allowImages && !sessionEnded ? attachButton : null}
-                                        {composerButtons(showSend && (hasDraft || isLoading))}
-                                    </>}
-                                >
-                                    <View className="w-full">{textInput}</View>
-                                </MessageInput>
-                            </View>
-                        ) : (
-                            <>
-                                {allowImages && !sessionEnded ? attachButton : null}
-                                <View
-                                    className={cn(
-                                        inputSettings.base,
-                                        inputSettings.rounded.default,
-                                        'flex-1 min-h-12 justify-center px-3 overflow-hidden web:focus-within:bg-card web:focus-within:border-ring/80 web:focus-within:shadow-none',
-                                        sessionEnded ? 'opacity-60' : ''
-                                    )}
-                                >
-                                    {textInput}
-                                </View>
-                                {composerButtons()}
-                            </>
-                        )}
-                    </Row>
+        <View
+            // The page-wide chat has no frame around it, so it brings its own gutter;
+            // so does a chat that runs to its block's edges. Otherwise (the float) the
+            // host's padding provides one. The top padding is the fade's run-up above
+            // the pill.
+            className={isChat ? 'px-4 py-1.5 sm:p-2.5' : gutter ? 'px-4 pb-4 pt-3' : 'pt-3'}
+            onLayout={onComposerBoxLayout}
+            pointerEvents="auto"
+            {...(isWeb && allowImages && !sessionEnded
+                ? { onPaste: onComposerPaste, onDragOver: onComposerDragOver, onDrop: onComposerDrop }
+                : null)}
+        >
+            <ComposerNotice message={chatError?.message} />
+            <ComposerNotice message={attachError} />
+            <ComposerAttachments
+                images={pendingImages}
+                disabled={isLoading || uploading}
+                onRemove={removePendingImage}
+            />
+            <Row className="items-center justify-center gap-2 w-full">
+                {onToggleHistory ? <HistoryButton onPress={onToggleHistory} alwaysVisible={historyOverlayOnly} /> : null}
+                <View className={cn('flex-1 min-w-0', sessionEnded ? 'opacity-60' : '')}>
+                    <MessageInput
+                        expanded={hasDraft}
+                        avatar={currentUser && !hideIdentity ? (
+                            <Profile
+                                {...currentUser}
+                                url_avatar={currentUser.avatar}
+                                displayType="unit_wo_info"
+                                displaySize="sm"
+                            />
+                        ) : null}
+                        actions={<>
+                            {allowImages && !sessionEnded ? (
+                                <View><AttachButton disabled={!canAttach} onPress={attachImage} image="Image" /></View>
+                            ) : null}
+                            <ComposerButtons
+                                // Send appears once there is something to send; Stop while a reply streams.
+                                showSend={showSend && (hasDraft || isLoading)}
+                                showStartNew={showStartNew}
+                                startNewInHistory={!!onToggleHistory && !historyOverlayOnly}
+                                isLoading={isLoading}
+                                canSend={!uploading && hasDraft}
+                                onSend={send}
+                                onStop={() => stop()}
+                                onStartNew={onStartAgain}
+                            />
+                        </>}
+                    >
+                        <View className="w-full">{textInput}</View>
+                    </MessageInput>
                 </View>
+            </Row>
+        </View>
     );
 
     return (
-        <View className={cn(height, 'relative overflow-hidden')}>
+        // Not overflow-hidden: the transcript scrolls (and clips) itself, and the floating
+        // composer's shadow has to reach past the frame into the block's padding.
+        <View className={cn(height, 'relative')}>
             <ScrollView
                 ref={listRef}
                 className="min-h-0 flex-1"
-                contentContainerClassName={cn('grow-0', isChat ? '' : 'gap-1')}
-                contentContainerStyle={{ paddingTop: headerInset, paddingBottom: isChat && !readOnly ? composerBoxHeight : 0 }}
+                contentContainerClassName={cn('grow-0', isChat ? '' : 'gap-1', gutter ? 'px-4' : '')}
+                contentContainerStyle={{ paddingTop: headerInset + headerBoxHeight, paddingBottom: readOnly ? 0 : composerBoxHeight }}
                 onScroll={onScroll}
                 scrollEventThrottle={100}
                 keyboardShouldPersistTaps="always"
@@ -1011,22 +1034,28 @@ function AiAgentChat({
             </ScrollView>
 
             {/* A closed thread is only read; the way back is the history list itself. */}
+            {header ? (
+                <View className="absolute top-0 inset-x-0 z-10" pointerEvents="box-none">
+                    <EdgeBlurView edge="top" config={edgeBlurConfig('footer')} washClassName={wash.top} pointerEvents="box-none">
+                        <View className={gutter ? 'px-4 pt-4 pb-3' : 'pb-3'} pointerEvents="box-none" onLayout={onHeaderBoxLayout}>
+                            {header}
+                        </View>
+                    </EdgeBlurView>
+                </View>
+            ) : null}
+
             {readOnly ? (
                 onToggleHistory ? (
-                    <Row className="pt-2">
+                    <Row className={gutter ? 'px-4 pb-4 pt-2' : 'pt-2'}>
                         <HistoryButton onPress={onToggleHistory} alwaysVisible={historyOverlayOnly} />
                     </Row>
                 ) : null
-            ) : isChat ? (
-                // Floats over the transcript like the messenger's composer: messages
-                // scroll behind it, the list pads itself by its measured height.
+            ) : (
                 <View className="absolute bottom-0 inset-x-0 z-10" pointerEvents="box-none">
-                    <EdgeBlurView edge="bottom" config={edgeBlurConfig('footer')} washClassName={CHAT_OVERLAY_COMPOSER_FADE} pointerEvents="box-none">
+                    <EdgeBlurView edge="bottom" config={edgeBlurConfig('footer')} washClassName={wash.bottom} pointerEvents="box-none">
                         {composerBox}
                     </EdgeBlurView>
                 </View>
-            ) : (
-                composerBox
             )}
         </View>
     );

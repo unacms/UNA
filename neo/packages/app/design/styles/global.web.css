@@ -229,7 +229,8 @@ select {
     outline-offset: var(--u-link-focus-offset);
 }
 
-/* Generic action (button) hit area */
+/* Generic action (button) hit area: at least 44x44 (WCAG 2.5.5), sizes in settings/theme/buttons.js.
+ * xs 28 + 2*8, sm 36 + 2*4; base (44) and up are already large enough. */
 .u-action-hitarea::before {
     content: "";
     position: absolute;
@@ -243,14 +244,12 @@ select {
 }
 
 .u-action-hitarea-sm::before {
-    inset: -6px;
+    inset: -4px;
 }
 
-.u-action-hitarea-md::before {
-    inset: 0px;
-}
-
-.u-action-hitarea-lg::before {
+.u-action-hitarea-base::before,
+.u-action-hitarea-lg::before,
+.u-action-hitarea-xl::before {
     inset: 0px;
 }
 
@@ -303,6 +302,20 @@ select {
 
 .u-neo-btn-ring-never:focus-visible {
     outline: none;
+}
+
+/*
+ * Raise a focused button (its outermost box, `.u-neo-btn-root`) or link/host
+ * (`.u-neo-btn-link`) above later siblings so they can't paint over its 5px
+ * ring. In the `components` layer with zero specificity: explicit `z-*` /
+ * `absolute` utilities on the same element still win.
+ */
+@layer components {
+    :where(.u-neo-btn-root:has(.u-neo-btn-ring:focus-visible)),
+    :where(.u-neo-btn-link:focus-visible) {
+        position: relative;
+        z-index: 1;
+    }
 }
 
 /*
@@ -416,6 +429,21 @@ html::-webkit-scrollbar-thumb {
 
 html::-webkit-scrollbar-thumb:window-inactive {
     background-color: rgb(var(--muted-foreground) / 0.35);
+}
+
+/* Font roles set to 'system' for web in customization/config/fonts.js
+   (fonts-web.web.ts): the OS UI font — SF on Apple, Segoe UI on Windows,
+   Roboto on Android. `html.` outranks the next/font variable class, which
+   can set both variables. */
+html.neo-font-main-system,
+html.neo-font-title-system {
+    --neo-system-font: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+html.neo-font-main-system {
+    --font-main: var(--neo-system-font);
+}
+html.neo-font-title-system {
+    --font-title: var(--neo-system-font);
 }
 
 body {
@@ -674,6 +702,12 @@ html[theme="dark"]:root {
         corner-shape: superellipse(var(--neo-corner-superellipse-factor, 1.6));
     }
 
+    /* Segmented group corners (`NeoButtonGroup` rounded-s-* / rounded-e-*) match the container */
+    .neo-corner-smooth :is([class*="rounded-s-"], [class*="rounded-e-"]) {
+        /* stylelint-disable-next-line property-no-unknown */
+        corner-shape: superellipse(var(--neo-corner-superellipse-factor, 1.6));
+    }
+
     /* Full rounding uses full factor */
     .neo-corner-smooth :is([class~="rounded-full"], [class*=":rounded-full"]) {
         /* stylelint-disable-next-line property-no-unknown */
@@ -702,8 +736,9 @@ html[theme="dark"]:root {
     .neo-corner-smooth .u-action-hitarea::before,
     .neo-corner-smooth .u-action-hitarea-xs::before,
     .neo-corner-smooth .u-action-hitarea-sm::before,
-    .neo-corner-smooth .u-action-hitarea-md::before,
-    .neo-corner-smooth .u-action-hitarea-lg::before {
+    .neo-corner-smooth .u-action-hitarea-base::before,
+    .neo-corner-smooth .u-action-hitarea-lg::before,
+    .neo-corner-smooth .u-action-hitarea-xl::before {
         border-radius: calc(var(--u-action-hitarea-radius, 0.5rem) * var(--neo-corner-superellipse-factor, 1.6));
         /* stylelint-disable-next-line property-no-unknown */
         corner-shape: superellipse(var(--neo-corner-superellipse-factor, 1.6));
