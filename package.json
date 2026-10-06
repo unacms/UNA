@@ -54,7 +54,7 @@
     "marka": "github:fians/marka",
     "masonry-layout": "^4.2.2",
     "moment": "^2.30.1",
-    "moment-timezone": "^0.6.3",
+    "moment-timezone": "^0.6.5",
     "npm": "^12.2.0",
     "ovenplayer": "^0.10.54",
     "pdfjs-dist": "^6.3.289",
