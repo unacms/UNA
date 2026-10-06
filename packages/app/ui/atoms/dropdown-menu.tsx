@@ -46,6 +46,8 @@ export type DropdownMenuProps = {
     title?: string;
     variant?: DropdownMenuVariant;
     showOnTop?: boolean;
+    /** Rendered above the items (popup only). */
+    header?: ReactNode;
     /** Rendered under the items (popup only). */
     footer?: ReactNode;
     /** Native alert: add a Cancel option. */
@@ -129,6 +131,7 @@ function DropdownMenuPopup({
     buttonProps,
     variant,
     showOnTop,
+    header,
     footer,
     tabsOverflowSize,
     openOnFocus,
@@ -297,6 +300,7 @@ function DropdownMenuPopup({
                     )
                 }
             >
+                {header}
                 {isGridLayout ? (
                     <View className={menuSettings.content_grid} style={gridRowStyle}>
                         {gridItems!.map((item: DropdownMenuItemData, index: number) => {
@@ -548,6 +552,7 @@ export default function DropdownMenu({
     title,
     variant,
     showOnTop,
+    header,
     footer,
     cancelable = true,
     tabsOverflowSize,
@@ -572,6 +577,7 @@ export default function DropdownMenu({
                 onSelect={onSelect}
                 children={children}
                 defaultOpen={defaultOpen}
+                header={header}
                 footer={footer}
                 variant={variant}
                 tabsOverflowSize={tabsOverflowSize}

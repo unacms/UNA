@@ -28,6 +28,7 @@ import {
     isExternalTabUrl,
     isProfileTab,
     resolveTabUrl,
+    splitProfileMoreMenu,
     splitTabBarItems,
     tabBarMoreSeparator,
     trimMenuSeparators,
@@ -93,7 +94,7 @@ function getOverflowBadgeLabel(currentUser, overflow = []) {
 /** UITabBar draws `src` icons square at intrinsic size — resize + circle-mask once. */
 const TAB_AVATAR_PT = 28;
 /** Avatar in the More sheet's profile header. */
-const SHEET_AVATAR_PT = 40;
+const SHEET_AVATAR_PT = 44;
 const avatarIconCache = new Map();
 
 /** Absolute avatar URL, resized by the native images proxy when configured. */
@@ -212,7 +213,56 @@ function MoreTabTarget({ itemCount, onPress }) {
     );
 }
 
-/** Transparent hit target over the native More tab — opens the same popup as JS tabs (not with the iOS sheet). */
+/**
+ * Android: the bottom bar tints every tab icon with one color list, so the
+ * avatar can't be a native tab icon (it would come out as a flat tinted disc).
+ * It is drawn over its tab instead, centered on the Material 3 icon slot —
+ * 28dp below the bar's top edge, with or without labels. With `onPress` the
+ * whole tab column is the More target (the native tab is `disabled` while it
+ * opens the sheet); without, touches go through to the native tab.
+ */
+const ANDROID_TAB_ICON_CENTER = 28;
+
+function AndroidTabOverlay({ slotIndex, slotCount, barHeight, avatar, onPress, accessibilityLabel }) {
+    const { width } = useWindowDimensions();
+    const slot = width / slotCount;
+    return (
+        <Pressable
+            onPress={onPress}
+            disabled={!onPress}
+            pointerEvents={onPress ? 'auto' : 'none'}
+            accessibilityRole={onPress ? 'button' : undefined}
+            accessibilityLabel={onPress ? accessibilityLabel : undefined}
+            style={{
+                position: 'absolute',
+                bottom: 0,
+                left: slotIndex * slot,
+                width: slot,
+                height: barHeight,
+                zIndex: 9999,
+                elevation: 24,
+            }}
+        >
+            {avatar ? (
+                <Image
+                    source={{ uri: avatar }}
+                    alt=""
+                    contentFit="cover"
+                    style={{
+                        position: 'absolute',
+                        top: ANDROID_TAB_ICON_CENTER - TAB_AVATAR_PT / 2,
+                        left: (slot - TAB_AVATAR_PT) / 2,
+                        width: TAB_AVATAR_PT,
+                        height: TAB_AVATAR_PT,
+                        borderRadius: TAB_AVATAR_PT / 2,
+                    }}
+                />
+            ) : null}
+        </Pressable>
+    );
+}
+
+/** Transparent hit target over the native More tab — opens the same popup as JS tabs (without a native sheet). */
 function NativeTabsMoreOverlay({
     visible,
     isShowTabs,
@@ -385,19 +435,23 @@ export default function ExpoUITabNavigator({
 
     const collapsed = overflow.length > 0;
     const moreRoot = overflow[0];
-    // iOS: a `{profile}` item heading the More list makes the More tab the
-    // user's avatar and the sheet's header (Linear style).
-    const profileMore = collapsed && isIos && isProfileTab(moreRoot);
+    // A `{profile}` item heading the More list makes the More tab the user's
+    // avatar and the sheet's header (Linear style); web's footer does the same.
+    const profileMore = collapsed && isProfileTab(moreRoot);
     const sheetExclude = appSetting('theme', 'expo_ui', 'tabs')?.more_sheet_exclude || [];
-    const sheetHeader = profileMore && hasNativeMoreSheet
-        ? overflowMenuItems.find((item) => item.tab === moreRoot) ?? null
-        : null;
-    const sheetItems = trimMenuSeparators(overflowMenuItems.filter(
-        (item) => item !== sheetHeader && !sheetExclude.includes(item.tab?.url)
-    ));
+    const profileMenu = splitProfileMoreMenu({
+        items: overflowMenuItems,
+        overflow,
+        hasAgent: !!agentData,
+        exclude: sheetExclude,
+    });
+    const sheetHeader = profileMore && hasNativeMoreSheet ? profileMenu.header : null;
+    const sheetItems = sheetHeader
+        ? profileMenu.items
+        : trimMenuSeparators(overflowMenuItems.filter((item) => !sheetExclude.includes(item.tab?.url)));
     // The profile is the only More link left: the avatar opens it directly
     // (unless the sheet is also where the operator agent opens).
-    const profileOnly = !!sheetHeader && !sheetItems.some((item) => item.isOverflow) && !agentData;
+    const profileOnly = !!sheetHeader && profileMenu.profileOnly;
     // Popup More menu (Android, iOS without the sheet): Agent heads the list,
     // shown selected while its chat is open.
     const popupMenuItems = agentData
@@ -429,6 +483,14 @@ export default function ExpoUITabNavigator({
     const moreIcons = resolveTabIcons(profileMore ? moreRoot.icon : MORE_TAB_ICON);
     const moreTitle = profileMore ? t(moreRoot.title) : t('More');
     const overflowBadge = getOverflowBadgeLabel(currentUser, overflow);
+
+    // Android: avatar and More target drawn over the bar (see AndroidTabOverlay).
+    // Slots are the tabs the bar shows, plus More.
+    const barTabs = (collapsed ? visible : TabList).filter((tab) => tab.hide !== true);
+    const slotCount = barTabs.length + (collapsed ? 1 : 0);
+    const androidAvatar = isAndroid && currentUser?.avatar ? avatarImageUri(currentUser.avatar, TAB_AVATAR_PT) : null;
+    const avatarSlot = collapsed && profileMore ? barTabs.length : barTabs.findIndex(usesAvatarIcon);
+    const androidMoreTarget = isAndroid && isShowTabs && collapsed && hasNativeMoreSheet && !profileOnly;
 
     return (
         <View className="flex-1">
@@ -504,7 +566,7 @@ export default function ExpoUITabNavigator({
                     </NativeTabs.Trigger>
                 ) : null}
             </NativeTabs>
-            {collapsed && hasNativeMoreSheet && isShowTabs && !profileOnly && !Platform.isPad ? (
+            {isIos && collapsed && hasNativeMoreSheet && isShowTabs && !profileOnly && !Platform.isPad ? (
                 <MoreTabTarget
                     itemCount={visible.filter((tab) => tab.hide !== true).length + 1}
                     onPress={handleMoreTabPress}
@@ -523,6 +585,24 @@ export default function ExpoUITabNavigator({
                     } : null}
                     onAgentPress={agentData ? toggleAgent : undefined}
                     agentActive={agentOpen}
+                />
+            ) : null}
+            {androidMoreTarget ? (
+                <AndroidTabOverlay
+                    slotIndex={barTabs.length}
+                    slotCount={slotCount}
+                    barHeight={tabBarHeight}
+                    avatar={profileMore ? androidAvatar : null}
+                    onPress={handleMoreTabPress}
+                    accessibilityLabel={moreTitle}
+                />
+            ) : null}
+            {isAndroid && isShowTabs && androidAvatar && avatarSlot >= 0 && !(androidMoreTarget && avatarSlot === barTabs.length) ? (
+                <AndroidTabOverlay
+                    slotIndex={avatarSlot}
+                    slotCount={slotCount}
+                    barHeight={tabBarHeight}
+                    avatar={androidAvatar}
                 />
             ) : null}
             {collapsed && !hasNativeMoreSheet ? (
