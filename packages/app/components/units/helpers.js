@@ -13,6 +13,7 @@ import { components } from 'app/components/registry';
 import { fetcher } from 'app/lib/fetcher';
 import { appSetting, cn, tp, sanitazeUrl } from 'app/lib/util';
 import { getUnitMenuItems } from 'app/customization/functions';
+import { UnitActionWidthContext } from 'app/components/units/unit-action-width';
 import { useRouter, useCurrentTabPath, useFocusEffect } from 'app/lib/hooks/router';
 import { nativeTabHref } from 'app/lib/navigation/tab-history';
 import { useTranslation } from 'react-i18next';
@@ -523,6 +524,8 @@ export function UnitActions({
     inlineSecondary = false,
     /** Give it a width when the buttons size to their content (no w-full parent). */
     skeletonClassName = 'h-9 w-full',
+    /** Buttons hug their label below `sm` (profile rows on phones); see unit-action-width.js. */
+    compactOnMobile = false,
 }) {
     const flushOnMobile = use(UnitSurfaceContext);
     const resolvedPrimaryClassName = primaryClassName ?? (
@@ -541,15 +544,17 @@ export function UnitActions({
     ) : null;
 
     return (
-        <View className={className}>
-            <View className={resolvedPrimaryClassName}>
-                <Skeleton className={skeletonClassName} rounded="rounded-lg" visible={skeleton}>
-                    {primaryMenuItem}
-                    {inlineSecondary ? secondary : null}
-                </Skeleton>
+        <UnitActionWidthContext value={compactOnMobile ? 'compact-mobile' : 'fill'}>
+            <View className={className}>
+                <View className={resolvedPrimaryClassName}>
+                    <Skeleton className={skeletonClassName} rounded="rounded-lg" visible={skeleton}>
+                        {primaryMenuItem}
+                        {inlineSecondary ? secondary : null}
+                    </Skeleton>
+                </View>
+                {inlineSecondary ? null : secondary}
             </View>
-            {inlineSecondary ? null : secondary}
-        </View>
+        </UnitActionWidthContext>
     );
 }
 

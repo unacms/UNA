@@ -62,6 +62,7 @@ export default function Unit({ data, unitType, module }) {
                         skeleton={isSkeleton}
                         className="flex-none flex-row gap-2 sm:gap-0 sm:flex-col sm:pt-2"
                         primaryClassName="sm:w-full"
+                        compactOnMobile
                         secondaryClassName={`sm:w-auto${primaryMenuItem ? ' sm:mt-2' : ''}`}
                         skeletonClassName="h-9 w-24 sm:w-full"
                     />
