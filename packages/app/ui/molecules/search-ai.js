@@ -2,7 +2,8 @@ import { useEffect, useRef, useState } from 'react'
 import { fetcher } from 'app/lib/fetcher'
 import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
-import { Button } from 'app/design/controls'
+import { NeoButton } from 'app/design/controls'
+import { Icon } from 'app/ui/atoms/icon'
 import { useTranslation } from 'react-i18next'
 
 /**
@@ -171,17 +172,22 @@ export function SearchExtChips({ chips, onRemove, parsing = false }) {
     if (!list.length && !parsing) return null
 
     return (
-        <Row className="flex-wrap gap-1 items-center">
+        <Row className="flex-wrap gap-2 items-center">
             {list.map((chip) => (
-                <Button
+                <NeoButton
                     key={chip.field}
-                    size="xs"
-                    rounded
-                    variant="outline"
-                    endDecorator="X"
-                    title={chip.caption + ': ' + chip.label}
+                    controlSize="mini"
+                    borderShape="capsule"
+                    expoUI={false}
+                    classNames={{ root: 'self-center' }}
+                    accessibilityLabel={t('Remove') + ': ' + chip.caption + ': ' + chip.label}
                     onPress={() => onRemove(chip.field)}
-                />
+                >
+                    <Row className="flex-row items-center gap-x-1 min-w-0">
+                        <Text numberOfLines={1} className="text-xs font-medium tracking-tight text-button-foreground min-w-0 shrink whitespace-nowrap text-ellipsis overflow-hidden">{chip.caption + ': ' + chip.label}</Text>
+                        <Icon icon="X" size={16} className="text-button-foreground shrink-0 pointer-events-none" />
+                    </Row>
+                </NeoButton>
             ))}
             {parsing && (
                 <Text className="text-xs text-muted-foreground px-1">{t('Understanding your query…')}</Text>
@@ -203,51 +209,65 @@ export function SearchFilterChips({ filter, sections = [], onChange, parsing = f
     const hasKeyword = !!filter.keyword
 
     return (
-        <View className="w-full gap-y-1">
+        <View className="w-full gap-y-2">
             {sections.length > 0 && (
-                <Row className="flex-wrap gap-1 items-center">
-                    <Button
-                        size="xs"
-                        rounded
-                        variant={!filter.section ? 'primary' : 'secondary'}
-                        title={t('Everywhere')}
+                <Row className="flex-wrap gap-2 items-center">
+                    <NeoButton
+                        style={!filter.section ? 'borderedProminent' : undefined}
+                        controlSize="mini"
+                        borderShape="capsule"
+                        selected={!filter.section}
+                        selectedState="default"
+                        label={t('Everywhere')}
                         onPress={() => onChange({ ...filter, section: '' })}
                     />
                     {sections.map((s) => (
-                        <Button
+                        <NeoButton
                             key={s.name}
-                            size="xs"
-                            rounded
-                            variant={filter.section === s.name ? 'primary' : 'secondary'}
-                            title={s.title}
+                            style={filter.section === s.name ? 'borderedProminent' : undefined}
+                            controlSize="mini"
+                            borderShape="capsule"
+                            selected={filter.section === s.name}
+                            selectedState="default"
+                            label={s.title}
                             onPress={() => onChange({ ...filter, section: filter.section === s.name ? '' : s.name })}
                         />
                     ))}
                 </Row>
             )}
             {(hasDate || hasKeyword || parsing) && (
-                <Row className="flex-wrap gap-1 items-center">
+                <Row className="flex-wrap gap-2 items-center">
                     {hasDate && (
-                        <Button
-                            size="xs"
-                            rounded
-                            variant="outline"
-                            startDecorator="Calendar"
-                            endDecorator="X"
-                            title={formatDateLabel(filter.date, t)}
+                        <NeoButton
+                            controlSize="mini"
+                            borderShape="capsule"
+                            expoUI={false}
+                            classNames={{ root: 'self-center' }}
+                            accessibilityLabel={t('Remove') + ': ' + formatDateLabel(filter.date, t)}
                             onPress={() => onChange({ ...filter, date: null })}
-                        />
+                        >
+                            <Row className="flex-row items-center gap-x-1 min-w-0">
+                                <Icon icon="Calendar" size={16} className="text-button-foreground shrink-0 pointer-events-none" />
+                                <Text numberOfLines={1} className="text-xs font-medium tracking-tight text-button-foreground min-w-0 shrink whitespace-nowrap text-ellipsis overflow-hidden">{formatDateLabel(filter.date, t)}</Text>
+                                <Icon icon="X" size={16} className="text-button-foreground shrink-0 pointer-events-none" />
+                            </Row>
+                        </NeoButton>
                     )}
                     {hasKeyword && (
-                        <Button
-                            size="xs"
-                            rounded
-                            variant="outline"
-                            startDecorator="Search"
-                            endDecorator="X"
-                            title={filter.keyword}
+                        <NeoButton
+                            controlSize="mini"
+                            borderShape="capsule"
+                            expoUI={false}
+                            classNames={{ root: 'self-center' }}
+                            accessibilityLabel={t('Remove') + ': ' + filter.keyword}
                             onPress={() => onChange({ ...filter, keyword: '' })}
-                        />
+                        >
+                            <Row className="flex-row items-center gap-x-1 min-w-0">
+                                <Icon icon="Search" size={16} className="text-button-foreground shrink-0 pointer-events-none" />
+                                <Text numberOfLines={1} className="text-xs font-medium tracking-tight text-button-foreground min-w-0 shrink whitespace-nowrap text-ellipsis overflow-hidden">{filter.keyword}</Text>
+                                <Icon icon="X" size={16} className="text-button-foreground shrink-0 pointer-events-none" />
+                            </Row>
+                        </NeoButton>
                     )}
                     {parsing && (
                         <Text className="text-xs text-muted-foreground px-1">{t('Understanding your query…')}</Text>

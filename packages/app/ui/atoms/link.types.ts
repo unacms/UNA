@@ -30,7 +30,8 @@ export type LinkProps = {
     children?: ReactNode;
     onPress?: (event?: any) => void;
     onPressIn?: (event?: any) => void;
-    onClick?: () => void;
+    /** Web: runs on click before navigation; `event.preventDefault()` cancels it. */
+    onClick?: (event?: any) => void;
     onPointerDown?: (event?: any) => void;
     [key: string]: unknown;
 };

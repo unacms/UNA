@@ -5,14 +5,14 @@ import { fetcher } from 'app/lib/fetcher'
 import { Text } from 'app/design/typography'
 import { Pressable, View, Row, ScrollView } from 'app/design/view'
 import {
-    Button,
+    NeoButton,
     NeoButtonRef,
+    NeoButtonLink,
     Input,
     Modal,
 } from 'app/design/controls'
 import Redirect from 'app/ui/atoms/redirect'
 import { UnitSearchResultsSmall as SearchResults } from 'app/components/units/search-results'
-import Link from 'app/ui/atoms/link'
 import { useTranslation } from 'react-i18next'
 import { useBottomSheetData } from 'app/context/bottomsheet'
 import DropdownPopup from 'app/ui/atoms/dropdown-popup'
@@ -118,20 +118,18 @@ export function SearchPanel(props) {
                             setInputValue(value)
                         }}
                     />
-                    <Link
+                    <NeoButtonLink
                         href={
                             '/search-keyword?keyword=' +
                             inputValue +
                             '&section=' +
                             props.section
                         }
-                    >
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            endDecorator="Search"
-                        />
-                    </Link>
+                        controlSize="small"
+                        image="Search"
+                        accessibilityLabel={t('Search')}
+                        classNames={{ root: 'self-center' }}
+                    />
                 </Row>
             </View>
         </View>
@@ -225,12 +223,14 @@ export function ElementSearchData(oProps) {
     const cnt = !!popupContent && popupContent
 
     const cnt2 = (
-        <Button
-            variant="link"
-            size="sm"
-            fullWidth
-            endDecorator="ChevronsRight"
-            title={sTxtViewExtended}
+        <NeoButton
+            style="borderless"
+            controlSize="small"
+            width="fill"
+            image="ChevronsRight"
+            imagePlacement="trailing"
+            label={sTxtViewExtended}
+            classNames={{ root: 'self-stretch' }}
             onPress={() => handleRedirect()}
         />
     )
@@ -264,7 +264,7 @@ export function ElementSearchData(oProps) {
                         />
                     }
                 >
-                    <View key="search-data">
+                    <View key="search-data" className="web:px-1.5 web:pt-1.5">
                         {cnt2}
                         <View className="max-h-96">
                             <ScrollView>{cnt}</ScrollView>
@@ -300,12 +300,13 @@ export function ElementSearchData(oProps) {
                     {!!inputValue &&
                         appSetting('layout', 'extended_search') && (
                             <View className="hidden flex-row items-center mb-2 justify-end">
-                                <Button
-                                    variant="text"
-                                    size="sm"
-                                    rounded
-                                    endDecorator="ChevronsRight"
-                                    title={sTxtViewExtended}
+                                <NeoButton
+                                    style="borderless"
+                                    controlSize="small"
+                                    borderShape="capsule"
+                                    image="ChevronsRight"
+                                    imagePlacement="trailing"
+                                    label={sTxtViewExtended}
                                     onPress={() => handleRedirect()}
                                 />
                             </View>
@@ -320,12 +321,13 @@ export function ElementSearchData(oProps) {
             <Redirect ref={redirectdRef} />
             {!!inputValue && appSetting('layout', 'extended_search') && (
                 <View className="hidden flex-row items-center m-2 justify-end">
-                    <Button
-                        variant="text"
-                        size="sm"
-                        rounded
-                        endDecorator="ChevronsRight"
-                        title={sTxtViewExtended}
+                    <NeoButton
+                        style="borderless"
+                        controlSize="small"
+                        borderShape="capsule"
+                        image="ChevronsRight"
+                        imagePlacement="trailing"
+                        label={sTxtViewExtended}
                         onPress={() => handleRedirect()}
                     />
                 </View>
@@ -347,7 +349,7 @@ export function ElementSearchData(oProps) {
                     keyboardShouldPersistTaps="always"
                     keyboardDismissMode="none"
                 >
-                    {cnt && <View className="items-end">{cnt2}</View>}
+                    {cnt && <View className="items-end web:px-1.5 web:pt-1.5">{cnt2}</View>}
                     <View>{cnt}</View>
                 </ScrollView>
             </KbAvoidingView>

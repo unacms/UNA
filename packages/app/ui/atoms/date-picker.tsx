@@ -2,7 +2,7 @@ import { View, Row, Pressable } from 'app/design/view'
 import Dropdown, { type DropdownValue } from 'app/ui/atoms/dropdown'
 import { Icon } from 'app/ui/atoms/icon'
 import { useState, useMemo, type ReactNode } from 'react';
-import { Modal, Button, InputWithIcons, TextInputClear, NeoButton } from 'app/design/controls'
+import { Modal, InputWithIcons, TextInputClear, NeoButton } from 'app/design/controls'
 import { Text } from 'app/design/typography';
 import { Platform } from 'react-native'
 import { formatDate, appSetting, useDateLocaleTag, getDateFormatSpec, getMonthTitle, getWeekdayShort } from 'app/lib/util'
@@ -175,7 +175,7 @@ export function CalendarHeader({ value, addMonth, setDatePart }: {
     return (
         <Row className='items-center gap-x-2 justify-center'>
 
-            <Button rounded startDecorator="ChevronLeft" onPress={() => addMonth('m', -1)} />
+            <NeoButton borderShape="circle" image="ChevronLeft" accessibilityLabel={t('Previous month')} classNames={{ root: 'self-center' }} onPress={() => addMonth('m', -1)} />
 
 
             <View className='w-32'>
@@ -196,7 +196,7 @@ export function CalendarHeader({ value, addMonth, setDatePart }: {
                     value={value ? value.getFullYear() : ''}
                 />
             </View>
-            <Button rounded startDecorator="ChevronRight" onPress={() => addMonth('m', 1)} />
+            <NeoButton borderShape="circle" image="ChevronRight" accessibilityLabel={t('Next month')} classNames={{ root: 'self-center' }} onPress={() => addMonth('m', 1)} />
         </Row>
     )
 }

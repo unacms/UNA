@@ -4,7 +4,7 @@ import Time from 'app/ui/atoms/time'
 import Profile from 'app/ui/molecules/profile/profile'
 import { Icon } from 'app/ui/atoms/icon'
 import { Svg, Path } from 'react-native-svg'
-import { Button, Modal } from 'app/design/controls'
+import { Modal, NeoButton } from 'app/design/controls'
 import { useState, useCallback, useMemo } from 'react'
 import { useQueries } from '@tanstack/react-query'
 import { useFetch, fetchQueryOptions } from 'app/lib/hooks/use-fetch'
@@ -165,7 +165,7 @@ function ReputationSummarySimple({ data }) {
                     displaySize="xl"
                 />
 
-                <View className="flex-auto gap-0.5 justify-center">
+                <View className="flex-auto gap-y-2 justify-center">
                     <Text className="font-semibold text-lg text-foreground">
                         {data.author_data.display_name}
                     </Text>
@@ -179,18 +179,22 @@ function ReputationSummarySimple({ data }) {
                                 data={{ text: item.title, icon: item.icon }}
                             />
 
-                            <Button
-                                variant="text"
-                                rounded
-                                size="xs"
-                                startDecorator="ListPlus"
+                            <NeoButton
+                                style="borderless"
+                                borderShape="circle"
+                                controlSize="mini"
+                                image="ListPlus"
+                                accessibilityLabel={t('Levels')}
+                                classNames={{ root: 'self-center' }}
                                 onPress={() => setIsModal2(true)}
                             />
-                            <Button
-                                variant="text"
-                                rounded
-                                size="xs"
-                                startDecorator="Info"
+                            <NeoButton
+                                style="borderless"
+                                borderShape="circle"
+                                controlSize="mini"
+                                image="Info"
+                                accessibilityLabel={t('Score rules')}
+                                classNames={{ root: 'self-center' }}
                                 onPress={() => setIsModal(true)}
                             />
                         </View>

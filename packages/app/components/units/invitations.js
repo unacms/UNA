@@ -4,7 +4,7 @@ import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
 import { fetcher } from 'app/lib/fetcher';
 import { useState } from 'react';
-import { ButtonLink, Button } from 'app/design/controls'
+import { NeoButtonLink, NeoButton } from 'app/design/controls'
 import Image from 'app/ui/atoms/image'
 import ProfilesList from 'app/ui/molecules/profile/profile-list'
 import { useTranslation } from 'react-i18next';
@@ -70,9 +70,9 @@ export default function Unit(props) {
                             </View>
                             <View className="flex-row w-full gap-x-2">
 
-                                {!!data.callback_accept && <Button title={t('Accept')} size="sm" fullWidth variant="primary" onPress={() => { processInvitation(data.callback_accept) }} />}
-                                {!!data.callback_decline && <Button title={t('Decline')} size="sm" fullWidth variant="secondary" onPress={() => { processInvitation(data.callback_decline) }} />}
-                                {!!data.redirect_url && <ButtonLink href={data.redirect_url} title={data.redirect_title} size="sm" fullWidth variant="secondary" />}
+                                {!!data.callback_accept && <NeoButton style="borderedProminent" controlSize="small" width="fill" label={t('Accept')} expoUI={false} onPress={() => { processInvitation(data.callback_accept) }} />}
+                                {!!data.callback_decline && <NeoButton controlSize="small" width="fill" label={t('Decline')} expoUI={false} onPress={() => { processInvitation(data.callback_decline) }} />}
+                                {!!data.redirect_url && <NeoButtonLink href={data.redirect_url} controlSize="small" width="fill" label={data.redirect_title} />}
                             </View>
                         </View>
                     </View>
@@ -98,9 +98,9 @@ export default function Unit(props) {
                     </Text>
                     <View className="flex-none">
                         <Row className='gap-2'>
-                            {!!data.callback_accept && <Button title={t('Accept')} size="xs" variant="primary" rounded onPress={() => { processInvitation(data.callback_accept) }} />}
-                            {!!data.callback_decline && <Button startDecorator="X" size="xs" variant="default" rounded onPress={() => { processInvitation(data.callback_decline) }} />}
-                            {!!data.redirect_url && <Link href={data.redirect_url}><Button title={data.redirect_title} size="xs" fullWidth variant="default" /></Link>}
+                            {!!data.callback_accept && <NeoButton style="borderedProminent" controlSize="mini" borderShape="capsule" label={t('Accept')} expoUI={false} onPress={() => { processInvitation(data.callback_accept) }} />}
+                            {!!data.callback_decline && <NeoButton controlSize="mini" borderShape="circle" image="X" accessibilityLabel={t('Decline')} expoUI={false} onPress={() => { processInvitation(data.callback_decline) }} />}
+                            {!!data.redirect_url && <NeoButtonLink href={data.redirect_url} controlSize="mini" width="fill" label={data.redirect_title} />}
                         </Row>
                     </View>
                 </View>

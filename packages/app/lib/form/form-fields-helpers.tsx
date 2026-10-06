@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import { useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { Button } from 'app/design/controls';
+import { NeoButton } from 'app/design/controls';
 import { View, Row } from 'app/design/view';
 import { Text } from 'app/design/typography';
 
@@ -148,15 +148,17 @@ export function TranslatableLangTabs({
     if (entries.length < 2) return null;
 
     return (
-        <Row className="flex-wrap gap-1.5">
+        <Row className="flex-wrap gap-2">
             {entries.map((entry: any) => {
                 const selected = entry.fieldName === currentFieldName;
                 return (
-                    <Button
+                    <NeoButton
                         key={entry.fieldName}
-                        title={entry.title}
-                        size="xs"
-                        variant={selected ? 'primary' : 'default'}
+                        label={entry.title}
+                        controlSize="mini"
+                        style={selected ? 'borderedProminent' : undefined}
+                        selected={!!selected}
+                        selectedState="default"
                         onPress={() => onSelect(entry.fieldName)}
                     />
                 );
@@ -190,16 +192,16 @@ export function LocationSuggest({ searchError, selectionMade, locationResults, o
         <>
             {searchError ? <Text>{t('Error')}</Text> : null}
             {!selectionMade && locationResults.length > 0 ? (
-                <View className="absolute z-50 w-full max-w-md top-14 rounded-xl border-border border bg-card backdrop-blur-xl p-1">
+                <View className="absolute z-50 w-full max-w-md top-14 rounded-xl border-border border bg-card backdrop-blur-xl p-1 gap-y-1">
                     {locationResults.slice(0, 5).map((item) => (
-                        <Button
+                        <NeoButton
                             key={item.place_id}
-                            startDecorator="MapPin"
-                            variant="text"
-                            fullWidth
-                            align="left"
-                            size="xs"
-                            title={item.description}
+                            image="MapPin"
+                            style="borderless"
+                            width="fill"
+                            align="start"
+                            controlSize="small"
+                            label={item.description}
                             onPress={() => onSelect(item.place_id)}
                         />
                     ))}

@@ -4,7 +4,7 @@ import Image from 'app/ui/atoms/image';
 import Letter from 'app/ui/atoms/letter';
 import { Text } from 'app/design/typography';
 import { View, Row } from 'app/design/view';
-import { Button } from 'app/design/controls';
+import { NeoButton, legacyToNeoButtonProps } from 'app/design/controls';
 import Profile from 'app/ui/molecules/profile/profile';
 import ProfilesList from 'app/ui/molecules/profile/profile-list';
 import Badge from 'app/ui/molecules/profile/badge';
@@ -575,18 +575,14 @@ export function UnitInvitationActions({
 
     return (
         <Row className="gap-x-2">
-            <Button
-                title={t('Accept')}
-                size={size}
-                variant={variant}
-                rounded
+            <NeoButton
+                {...legacyToNeoButtonProps({ variant, size, rounded: true, title: t('Accept') })}
+                expoUI={false}
                 onPress={() => processInvitation(data.callback_accept)}
             />
-            <Button
-                title={t('Decline')}
-                size={size}
-                variant={variant}
-                rounded
+            <NeoButton
+                {...legacyToNeoButtonProps({ variant, size, rounded: true, title: t('Decline') })}
+                expoUI={false}
                 onPress={() => processInvitation(data.callback_decline)}
             />
         </Row>

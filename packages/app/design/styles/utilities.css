@@ -103,16 +103,18 @@
     }
 
     @variant web {
+    /* Paragraph gap: 16px (base) / 12px (small). Equal top and bottom margins collapse
+     * between siblings; the first/last-child rules below zero the outer edges. */
     .u-vanilla-html
         :where(p):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
-        margin-top: 12px !important;
-        margin-bottom: 12px !important;
+        margin-top: 16px !important;
+        margin-bottom: 16px !important;
     }
 
     .u-vanilla-html-small
         :where(p):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
-        margin-top: 8px !important;
-        margin-bottom: 8px !important;
+        margin-top: 12px !important;
+        margin-bottom: 12px !important;
     }
 
     .u-vanilla-html ul {

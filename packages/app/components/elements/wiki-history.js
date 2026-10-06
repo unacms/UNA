@@ -6,7 +6,7 @@ import Time from 'app/ui/atoms/time'
 import Link from 'app/ui/atoms/link'
 import Profile from 'app/ui/molecules/profile/profile'
 import CheckBox from 'app/ui/atoms/checkbox'
-import { Button } from 'app/design/controls'
+import { NeoButton } from 'app/design/controls'
 import { fetcher } from 'app/lib/fetcher'
 import emitter, { EVENTS } from 'app/context/emitter'
 import { useTranslation } from 'react-i18next'
@@ -147,17 +147,18 @@ export default function WikiHistory({
 
                 {editMode ? (
                     <Row className="gap-3 pt-3 justify-between items-center">
-                        <Button
-                            title={allSelected ? t('Deselect all') : t('Select all')}
-                            size="sm"
-                            variant="link"
+                        <NeoButton
+                            label={allSelected ? t('Deselect all') : t('Select all')}
+                            style="borderless"
+                            controlSize="small"
                             disabled={selected.size === 0 || submitting}
                             onPress={toggleAll}
                         />
-                        <Button
-                            title={t('Delete selected')}
-                            size="sm"
+                        <NeoButton
+                            label={t('Delete selected')}
+                            controlSize="small"
                             disabled={selected.size === 0 || submitting}
+                            expoUI={false}
                             onPress={handleSubmit}
                         />
                     </Row>

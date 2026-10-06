@@ -1,29 +1,25 @@
-import { View, Row } from 'app/design/view'
-import { appSetting } from 'app/lib/util'
-import { Fragment, type ReactNode } from 'react';
-
-const BtnClsSize = appSetting('theme', 'button_sizes');
-const BtnCls = appSetting('theme', 'button_styles');
+import type { ReactNode } from 'react';
+import { NeoButtonGroup } from 'app/design/controls/neo-button/neo-button-group';
+import { toControlSize } from 'app/design/controls/neo-button/control-scale';
 
 type ButtonsGroupProps = {
-    /** Theme `button_sizes` key (for the group rounding). */
+    /** Legacy size (`xs`/`sm`/`base`/`lg`/`xl`) or Neo controlSize, for the group rounding. */
     size?: string
-    children?: ReactNode[]
+    children?: ReactNode
     [key: string]: unknown
 }
 
+/**
+ * @deprecated use `NeoButtonGroup` with `ButtonMenuGroupItem` segments.
+ * Kept as a thin alias over NeoButtonGroup until the legacy cleanup.
+ */
 export function ButtonsGroup({
     size = 'base',
     children
 }: ButtonsGroupProps) {
     return (
-        <Row className={`${BtnCls.group?.container} ${BtnClsSize[size]?.rounded}`}>
-            {children?.map((child, i) => (
-                <Fragment key={`btngr-${i}`}>
-                    {child}
-                    {i < children.length - 1 && <View className={`${BtnCls.group?.separator}`} />}
-                </Fragment>
-            ))}
-        </Row>
+        <NeoButtonGroup controlSize={toControlSize(size) ?? 'regular'}>
+            {children}
+        </NeoButtonGroup>
     )
 }

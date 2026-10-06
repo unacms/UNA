@@ -1,4 +1,4 @@
-import { Button } from 'app/design/controls';
+import { NeoButton } from 'app/design/controls';
 import { useTranslation } from 'react-i18next';
 
 export default function AuthLinkedIn() {
@@ -8,13 +8,12 @@ export default function AuthLinkedIn() {
     };
 
     return (
-        <Button
+        <NeoButton
             onPress={handleLinkedInLogin}
-            title={t('Continue with LinkedIn')}
-            startDecorator="LinkedInIcon" // Changed to string
-
-            fullWidth
-            size="base"
+            label={t('Continue with LinkedIn')}
+            image="LinkedInIcon"
+            controlSize="large"
+            width="fill"
         />
     );
 } 

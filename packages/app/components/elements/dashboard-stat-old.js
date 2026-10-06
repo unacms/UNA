@@ -2,9 +2,9 @@ import { Icon } from 'app/ui/atoms/icon'
 import Card from 'app/ui/molecules/page/card'
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { View, Row, Pressable } from 'app/design/view'
+import { View, Row } from 'app/design/view'
 import { Text } from 'app/design/typography'
-import { Button } from 'app/design/controls'
+import { NeoButton, NeoButtonLink } from 'app/design/controls'
 import Link from 'app/ui/atoms/link'
 import { useCurrentUser } from 'app/context/user'
 import Profile from 'app/ui/molecules/profile/profile'
@@ -106,29 +106,22 @@ export default function PageLayout(props) {
                                     </Link>
                                 </View> 
                                 <View className="flex-none">
-                                <ProfileSwitcher hideTitle={true} >
-                                    <Button variant="outline" startDecorator="RefreshCw"  rounded  />
+                                <ProfileSwitcher hideTitle={true} className="u-neo-btn-link" accessibilityLabel={t('Switch profile')}>
+                                    <NeoButton borderShape="circle" image="RefreshCw" interactive />
                                 </ProfileSwitcher>
                                 </View>
                             </View>
                             <View className="flex-row  items-center gap-x-2 my-auto hidden">
-                               <ProfileSwitcher hideTitle={true} >
-                                    <Button variant="outline" startDecorator="RefreshCw"  rounded  />
+                               <ProfileSwitcher hideTitle={true} className="u-neo-btn-link" accessibilityLabel={t('Switch profile')}>
+                                    <NeoButton borderShape="circle" image="RefreshCw" interactive />
                                 </ProfileSwitcher>
                                 {
                                     appSetting('layout', 'avaliable_langs').length > 1 && (
                                         <View><DropdownMenu 
                                             items={langItems}
-                                            onSelect={(oItem) => {handleLang(oItem.id)}}>
-                                               
-                                                    <Button
-                                                        variant="outline"                                               
-                                                        startDecorator="Languages"
-                                                        rounded
-                                                        align="left"
-                                                    />
-                                                
-                                        </DropdownMenu></View>)
+                                            onSelect={(oItem) => {handleLang(oItem.id)}}
+                                            buttonProps={{ borderShape: 'circle', image: 'Languages', accessibilityLabel: t('Language') }}
+                                        /></View>)
                                 }
                                 
                                 {
@@ -139,20 +132,13 @@ export default function PageLayout(props) {
                                                 name: theme,
                                                 title: t('theme_' + theme)
                                             }))} 
-                                            onSelect={(oItem) => {handleTheme(oItem.id)}}>
-                                               
-                                                    <Button
-                                                        variant="outline"
-                                                        startDecorator="Moon"
-                                                        rounded
-                                                        align="left"
-                                                    />
-                                              
-                                        </DropdownMenu></View>)
+                                            onSelect={(oItem) => {handleTheme(oItem.id)}}
+                                            buttonProps={{ borderShape: 'circle', image: 'Moon', accessibilityLabel: t('Theme') }}
+                                        /></View>)
                                 }
                                
                                 
-                                <Link href="/logout"><Button variant="outline" startDecorator="LogOut" rounded /></Link>
+                                <NeoButtonLink href="/logout" borderShape="circle" image="LogOut" accessibilityLabel={t('Sign out')} />
                             </View>
                             
                         </View>
@@ -172,17 +158,9 @@ export default function PageLayout(props) {
                                         <View className="mb-2">
                                         <DropdownMenu 
                                             items={langItems}
-                                            onSelect={(oItem) => {handleLang(oItem.id)}}>
-                                            
-                                                <Button
-                                                    variant="secondary"
-                                                    title= {t('lang_' + i18n.language)}
-                                                    startDecorator="Languages"
-                                                    fullWidth
-                                                    
-                                                    align="left"
-                                            />
-                                        </DropdownMenu>
+                                            onSelect={(oItem) => {handleLang(oItem.id)}}
+                                            buttonProps={{ label: t('lang_' + i18n.language), image: 'Languages', width: 'fill', align: 'start' }}
+                                        />
                                         </View>
                                         )
                                 }
@@ -196,18 +174,9 @@ export default function PageLayout(props) {
                                                 name: theme,
                                                 title: t('theme_' + theme)
                                             }))} 
-                                            onSelect={(oItem) => {handleTheme(oItem.id)}}>
-                                               
-                                                    <Button
-                                                        variant="secondary"
-                                                        title= {t('theme_' + currentTheme)}
-                                                        startDecorator="Moon"
-                                                        fullWidth
-                                                        
-                                                        align="left"
-                                                    />
-                                              
-                                        </DropdownMenu>
+                                            onSelect={(oItem) => {handleTheme(oItem.id)}}
+                                            buttonProps={{ label: t('theme_' + currentTheme), image: 'Moon', width: 'fill', align: 'start' }}
+                                        />
                                         </View>)
                                 }
                                 
@@ -222,27 +191,17 @@ export default function PageLayout(props) {
                                                 name: lang,
                                                 title: t('format_' + lang)
                                             }))} 
-                                            onSelect={(oItem) => {handleFormat(oItem.id)}}>
-                                                <Pressable>
-                                                    <Button
-                                                        variant="secondary"
-                                                        title= {t('format_' + currentFormat)}
-                                                        startDecorator="Layout"
-                                                        fullWidth
-                                                       
-                                                        align="left"
-                                                    />
-                                                </Pressable>
-                                        </DropdownMenu></View>)
+                                            onSelect={(oItem) => {handleFormat(oItem.id)}}
+                                            buttonProps={{ label: t('format_' + currentFormat), image: 'Layout', width: 'fill', align: 'start' }}
+                                        /></View>)
                                 }
-                                <Link href="/logout"><Button
-                                    variant="secondary"
-                                    title= {t("Sign out")}
-                                    startDecorator="LogOut"
-                                    fullWidth
-                                  
-                                    align="left"
-                                /></Link>
+                                <NeoButtonLink
+                                    href="/logout"
+                                    label={t("Sign out")}
+                                    image="LogOut"
+                                    width="fill"
+                                    align="start"
+                                />
                     </Card>
                 </View>
                 
@@ -281,7 +240,7 @@ function ElementDashboardStat(props) {
                                             {
                                                 item.count > 0 ? <Text className=" text-3xl -translate-y-1 font-semibold flex-auto text-secondary-foreground web:group-hover:text-foreground    ">
                                                     {item.count}
-                                                </Text> : <View><Link href={item2.link2} emulate={true}><Button variant="outline" startDecorator="Plus" size="sm" rounded /></Link></View>
+                                                </Text> : <View><NeoButtonLink href={item2.link2} emulate={true} controlSize="small" borderShape="circle" image="Plus" accessibilityLabel={t('Add')} /></View>
                                             }
                                             <View className="flex-none  text-secondary-foreground web:group-hover:text-foreground   font-semibold ">
                                                 <Icon icon={item2.icon} width={24} height={24} color={colors.default}/>

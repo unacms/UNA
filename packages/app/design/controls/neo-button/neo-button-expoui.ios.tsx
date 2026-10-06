@@ -49,7 +49,7 @@ const SF_SYMBOL_RE = /^[a-z0-9]+(\.[a-z0-9]+)*$/;
 const SWIFTUI_ROLE: Record<string, 'cancel' | 'destructive'> = { cancel: 'cancel', destructive: 'destructive' };
 
 // Style chrome around the label, per SwiftUI controlSize. Subtracted from
-// theme height so the finished control lands on 28/32/44/52/64, not ~34pt.
+// theme height so the finished control lands on 28/36/44/52/64, not ~34pt.
 const SWIFTUI_LABEL_VPAD: Record<string, number> = { mini: 3, small: 5, regular: 7, large: 15, extraLarge: 20 };
 
 // Fallback pt sizes when `iosFont.size` is omitted — matches the Tailwind
@@ -221,7 +221,8 @@ export function NeoButtonExpoUI(props: NeoButtonExpoUIProps) {
         disabled = false, loading = false, selected = false, addon,
         haptics, onPress, onPressIn,
         width, align,
-        accessibilityLabel, alt,
+        accessibilityLabel, alt, accessibilityRole,
+        hitarea, hitSlop,
         className, classNames,
         children, contentInsets,
         nativeConfig,
@@ -235,9 +236,12 @@ export function NeoButtonExpoUI(props: NeoButtonExpoUIProps) {
     const mapping = resolved.nativeMapping;
     const fill = resolved.width === 'fill';
 
-    const hostClasses = [className, classNames?.root].filter(Boolean).join(' ');
-    const hostClassStyle = useResolveClassNames(hostClasses || '');
-    const flatHost = StyleSheet.flatten(hostClassStyle) || {};
+    // `className` styles the Host (the surface); `classNames.root` goes on the
+    // outer wrapper so self-* / flex-* / margins reach the parent's layout.
+    // Sizing decisions read both.
+    const hostClassStyle = useResolveClassNames(className || '');
+    const rootClassStyle = useResolveClassNames(classNames?.root || '');
+    const flatHost = StyleSheet.flatten([hostClassStyle, rootClassStyle]) || {};
 
     const effectiveLabel = (loading && loadingLabel != null && loadingLabel !== '')
         ? loadingLabel
@@ -435,12 +439,18 @@ export function NeoButtonExpoUI(props: NeoButtonExpoUIProps) {
         modifiers.push(frame({ height: targetHeight, alignment: 'center' }));
     }
 
-    const firePress = (onPress || onPressIn) && !disabled && !loading
+    // The wrapper fires `onPress` on release, so a scroll that starts on the
+    // button cancels it. `onPressIn` is the touch-down opt-in: on its own (or
+    // as the same handler as `onPress`) it is the action, fired once on
+    // touch-down; a different `onPressIn` runs alongside, like the JS button.
+    // The Host's own press (VoiceOver / TalkBack) goes through the same lock.
+    const pressInOnly = !!onPressIn && (!onPress || onPressIn === onPress);
+    const action = onPress || onPressIn;
+    const firePress = action && !disabled && !loading
         ? () => {
               if (sfSymbol && iconEffect) symbolTrigger.set(symbolTrigger.get() + 1);
               if (resolved.haptics) FeedbackHaptics(resolved.haptics);
-              (onPressIn || onPress)!();
-              if (onPress && onPressIn && onPress !== onPressIn) onPress();
+              action();
           }
         : undefined;
     const handlePress = useLockedNativePress(firePress);
@@ -524,11 +534,16 @@ export function NeoButtonExpoUI(props: NeoButtonExpoUIProps) {
     );
 
     return wrapNativeButtonHost(host, {
-        hitSlop: resolved.hitSlop,
+        hitSlop: hitarea === false ? 0 : (hitSlop ?? resolved.hitSlop),
         fill: fillWrapper,
         height: targetHeight,
         width: iconHostWidth,
-        onPress: handlePress,
+        // Keyed on the handler, not `disabled`, so toggling disabled never swaps the wrapper (Host remount).
+        onPress: onPress && !pressInOnly ? handlePress : undefined,
+        onPressIn: pressInOnly ? handlePress : onPressIn,
         disabled: disabled || loading,
+        rootStyle: rootClassStyle,
+        accessibilityRole,
+        accessibilityLabel: accessibilityRole ? nativeLabel : undefined,
     });
 }

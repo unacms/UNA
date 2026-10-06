@@ -4,7 +4,7 @@ import { stripTags, appSetting, isUrl } from 'app/lib/util';
 import { useState } from 'react';
 import { Block as PageBlock, BlockContent, BlockName, BlockActions, BlockHeader, BlockTitle, BlockDescription, BlockIcon } from 'app/ui/molecules/page/page-block'
 import { useTranslation } from 'react-i18next'
-import { Button, ButtonLink, Modal, NeoButtonLink } from 'app/design/controls'
+import { Modal, NeoButton, NeoButtonLink } from 'app/design/controls'
 import { Icon } from 'app/ui/atoms/icon'
 import { components } from 'app/components/registry'
 import { usePathname } from 'app/lib/hooks/router'
@@ -164,8 +164,8 @@ export function BlockWrapper({ config, block, wrapperClassses, showTitle, showBg
                     />
                 ) : null}
             </BlockActions>)}
-            {(isHelp && isHelpLink) && <ButtonLink href={pureHelp} target="_blank" title={t('Help')} startDecorator='LifeBuoy' variant="text" />}
-            {(isHelp && !isHelpLink) && <Button onPress={() => setShowHelp(true)} title={t('Help')} startDecorator='LifeBuoy' variant="text" />}
+            {(isHelp && isHelpLink) && <NeoButtonLink href={pureHelp} target="_blank" style="borderless" image="LifeBuoy" label={t('Help')} />}
+            {(isHelp && !isHelpLink) && <NeoButton style="borderless" image="LifeBuoy" label={t('Help')} onPress={() => setShowHelp(true)} />}
         </>
     )
 

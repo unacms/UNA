@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import Field, { getValidationRules } from './_field';
 import { useFormContext } from 'react-hook-form';
-import { Button, NeoButton, Modal, Hidden } from 'app/design/controls'
+import { NeoButton, Modal, Hidden } from 'app/design/controls'
 import { getVisibilityValues } from './select';
 import { visibilityById } from 'app/lib/util';
 import RbList from 'app/ui/molecules/form-controls/radio-list';
@@ -134,7 +134,7 @@ export default function FormFieldVisibility(props) {
                 <Text className="text-secondary-foreground text-2xl font-bold tracking-tight text-center">{selectedItem?.label}</Text>
             </View>
             <View>
-                <Button variant="secondary" size="base" rounded startDecorator="ArrowLeft" onPress={() => setSubKind(null)} />
+                <NeoButton style="glass" controlSize="regular" borderShape="circle" image="ArrowLeft" accessibilityLabel={t('Back')} onPress={() => setSubKind(null)} />
             </View>
         </Row>
     );
@@ -147,10 +147,9 @@ export default function FormFieldVisibility(props) {
         <>
             <RbList values={filteredValues} setValue={handleValueChange} selectedValue={field.value} />
             <View className="flex-row justify-end pt-3 mt-3 border-t border-border/60 ">
-                <Button
-                    title={t('Done')}
-                    size="base"
-                    variant="primary"
+                <NeoButton
+                    style="borderedProminent"
+                    label={t('Done')}
                     disabled={needsSub(field.value) && selectedSubLabels.length == 0}
                     onPress={applyVisibility}
                 />

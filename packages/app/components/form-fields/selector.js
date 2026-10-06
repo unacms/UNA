@@ -1,7 +1,7 @@
 import Field from './_field';
 import { View, Row } from 'app/design/view'
 import { useState, useMemo, useCallback } from 'react';
-import { Button, Modal, NeoButton } from "app/design/controls";
+import { Modal, NeoButton } from "app/design/controls";
 import ChkList from 'app/ui/molecules/form-controls/checkbox-list';
 import { Text } from 'app/design/typography';
 import { useTranslation } from 'react-i18next';
@@ -70,14 +70,15 @@ export default function FormFieldSelector(props) {
     }, [field.value, valuesList]);
 
     const header = <Row className=' w-full justify-between items-center'>
-        <View><Button onPress={() => { setIsModal(null) }} variant='outline' rounded startDecorator="X" /></View>
+        <View><NeoButton onPress={() => { setIsModal(null) }} style="glass" controlSize="regular" borderShape="circle" image="X" accessibilityLabel={t('Close')} /></View>
         <View className='w-full flex-auto items-center justify-center'><Text className="text-muted-foreground  text-xl font-bold">{'Choose ' + props.caption}</Text></View>
         <View >
-            <Button
-                startDecorator="Check"
-                variant="primary"
-                size="base"
-                rounded
+            <NeoButton
+                image="Check"
+                style="glassProminent"
+                controlSize="regular"
+                borderShape="circle"
+                accessibilityLabel={t('Done')}
                 onPress={() => { setFormValue(value2) }}
             />
         </View>

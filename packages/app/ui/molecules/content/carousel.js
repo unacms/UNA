@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useMemo, memo } from 'react';
 import { View, Pressable, Row } from 'app/design/view'
 import Image from 'app/ui/atoms/image';
-import { Modal, Button, NeoButton } from "app/design/controls";
+import { Modal, NeoButton } from "app/design/controls";
 import { Text } from 'app/design/typography';
 import { Image as ImageOr, Platform } from 'react-native';
 import { appSetting, LAYOUT_BREAKPOINTS } from 'app/lib/util'
@@ -285,29 +285,31 @@ function CarouselContent({ data, maxWidth }) {
                     {data[currentImageIndex].type === 'image' ? (
                         <Row style={{ pointerEvents: 'box-none' }} className="absolute inset-x-0 top-1/2 -mt-4 items-center justify-between px-4">
                             {currentImageIndex > 0 ? (
-                                <Button
-                                    variant="default"
-                                    rounded
-                                    size="base"
+                                <NeoButton
+                                    style="glass"
+                                    borderShape="circle"
+                                    image="ArrowLeft"
+                                    accessibilityLabel={t('Previous')}
+                                    classNames={{ root: 'self-center' }}
                                     onPress={() => {
                                         setImageSize2([0, 0]);
                                         setCurrentImageIndex(currentImageIndex - 1);
                                     }}
-                                    startDecorator="ArrowLeft"
                                 />
                             ) : (
                                 <View className="w-10" />
                             )}
                             {currentImageIndex !== data.length - 1 ? (
-                                <Button
-                                    variant="default"
-                                    rounded
-                                    size="base"
+                                <NeoButton
+                                    style="glass"
+                                    borderShape="circle"
+                                    image="ArrowRight"
+                                    accessibilityLabel={t('Next')}
+                                    classNames={{ root: 'self-center' }}
                                     onPress={() => {
                                         setImageSize2([0, 0]);
                                         setCurrentImageIndex(currentImageIndex + 1);
                                     }}
-                                    startDecorator="ArrowRight"
                                 />
                             ) : (
                                 <View className="w-10" />

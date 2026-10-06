@@ -1,5 +1,5 @@
 import { View, Row } from 'app/design/view'
-import { NeoButton , ButtonLink, NeoButtonLink } from 'app/design/controls'
+import { NeoButton, NeoButtonLink, legacyToNeoButtonProps } from 'app/design/controls'
 import { useCurrentUser } from 'app/context/user'
 import { appSetting, getHeaderToolbarNeoButtonDefaults } from 'app/lib/util'
 import Search from 'app/ui/molecules/sections/search'
@@ -114,28 +114,28 @@ export default function HeaderElement({ url, uri }) {
                                 }
                                 const linkTitle = item.props?.title || item.title;
                                 return (
-                                        <ButtonLink {...(item.props || {})}
-                                        {...(item.target ? { target: item.target } : {})} 
-                                        href={item.href == '{messenger}' ? appSetting('messenger', 'url') : item.href}
-                                        {...(linkTitle ? { title: t(linkTitle) } : {})}
-                                            {...(item.href === '{messenger}'
-                                                ? {
-                                                    addon: {
-                                                        variant: "primary",
-                                                        text: currentUser?.counters?.bx_messenger_new_messages,
-                                                        hideZero: true,
-                                                    },
-                                                    variant: isDesktop ? 'secondary' : 'text',
-                                                    size: isDesktop ? 'base' : 'base',
-                                                    pressed : appSetting('messenger', 'url') === '/' + uri
-                                                }
-                                                : {
-                                                    variant: item.props.variant ? item.props.variant :  isDesktop ? 'secondary' : 'text',
-
-
-                                                })}
+                                        <NeoButtonLink
+                                            {...legacyToNeoButtonProps({
+                                                ...(item.props || {}),
+                                                ...(linkTitle ? { title: t(linkTitle) } : {}),
+                                                ...(item.href === '{messenger}'
+                                                    ? {
+                                                        addon: {
+                                                            variant: "primary",
+                                                            text: currentUser?.counters?.bx_messenger_new_messages,
+                                                            hideZero: true,
+                                                        },
+                                                        variant: isDesktop ? 'secondary' : 'text',
+                                                        size: 'base',
+                                                        pressed: appSetting('messenger', 'url') === '/' + uri,
+                                                    }
+                                                    : {
+                                                        variant: item.props?.variant || (isDesktop ? 'secondary' : 'text'),
+                                                    }),
+                                            })}
+                                            {...(item.target ? { target: item.target } : {})}
+                                            href={item.href == '{messenger}' ? appSetting('messenger', 'url') : item.href}
                                         />
-                                    
                                 )
                             default:
                                 return null

@@ -1,7 +1,7 @@
 import { View } from 'app/design/view'
 import Link from 'app/ui/atoms/link'
 import { Text } from 'app/design/typography'
-import { Button } from 'app/design/controls'
+import { NeoButton } from 'app/design/controls'
 import { BlockWrapper } from 'app/components/block-wrapper'
 
 export default function CategoriesList({ data, blockWrapperProps }) {
@@ -12,7 +12,7 @@ export default function CategoriesList({ data, blockWrapperProps }) {
                     <View key={item.id || item.name || item.url || `menu-${index}`} className='w-full '>
                         <Link href={item.url}>
                             <View className="flex-row gap-x-1 border border-border/60  p-1 bg-card rounded-xl m-1">
-                                <Button variant="text" startDecorator="Folder" />
+                                <NeoButton style="borderless" image="Folder" />
                                 <Text className=" text-base my-auto font-medium text-secondary-foreground  ">
                                     {item.name}
                                 </Text>

@@ -54,7 +54,8 @@ export function NeoButtonExpoUI(props: NeoButtonExpoUIProps) {
         disabled = false, loading = false, selected = false, addon,
         haptics, onPress, onPressIn,
         width, align,
-        accessibilityLabel, alt,
+        accessibilityLabel, alt, accessibilityRole,
+        hitarea, hitSlop,
         className, classNames,
         nativeConfig,
     } = props;
@@ -67,9 +68,12 @@ export function NeoButtonExpoUI(props: NeoButtonExpoUIProps) {
 
     const fill = resolved.width === 'fill';
 
-    const hostClasses = [className, classNames?.root].filter(Boolean).join(' ');
-    const hostClassStyle = useResolveClassNames(hostClasses || '');
-    const flatHost = StyleSheet.flatten(hostClassStyle) || {};
+    // `className` styles the Host (the surface); `classNames.root` goes on the
+    // outer wrapper so self-* / flex-* / margins reach the parent's layout.
+    // Sizing decisions read both.
+    const hostClassStyle = useResolveClassNames(className || '');
+    const rootClassStyle = useResolveClassNames(classNames?.root || '');
+    const flatHost = StyleSheet.flatten([hostClassStyle, rootClassStyle]) || {};
 
     const effectiveLabel = (loading && loadingLabel != null && loadingLabel !== '')
         ? loadingLabel
@@ -131,11 +135,17 @@ export function NeoButtonExpoUI(props: NeoButtonExpoUIProps) {
         colors = baseColors;
     }
 
-    const firePress = (onPress || onPressIn) && !disabled && !loading
+    // The wrapper fires `onPress` on release, so a scroll that starts on the
+    // button cancels it. `onPressIn` is the touch-down opt-in: on its own (or
+    // as the same handler as `onPress`) it is the action, fired once on
+    // touch-down; a different `onPressIn` runs alongside, like the JS button.
+    // The Host's own press (VoiceOver / TalkBack) goes through the same lock.
+    const pressInOnly = !!onPressIn && (!onPress || onPressIn === onPress);
+    const action = onPress || onPressIn;
+    const firePress = action && !disabled && !loading
         ? () => {
               if (resolved.haptics) FeedbackHaptics(resolved.haptics);
-              (onPressIn || onPress)!();
-              if (onPress && onPressIn && onPress !== onPressIn) onPress();
+              action();
           }
         : undefined;
     const handlePress = useLockedNativePress(firePress);
@@ -196,11 +206,18 @@ export function NeoButtonExpoUI(props: NeoButtonExpoUIProps) {
     );
 
     return wrapNativeButtonHost(host, {
-        hitSlop: resolved.hitSlop,
+        hitSlop: hitarea === false ? 0 : (hitSlop ?? resolved.hitSlop),
         fill: fillWrapper,
         height: resolved.height,
         width: iconHostWidth,
-        onPress: handlePress,
+        // Keyed on the handler, not `disabled`, so toggling disabled never swaps the wrapper (Host remount).
+        onPress: onPress && !pressInOnly ? handlePress : undefined,
+        onPressIn: pressInOnly ? handlePress : onPressIn,
         disabled: disabled || loading,
+        rootStyle: rootClassStyle,
+        accessibilityRole,
+        accessibilityLabel: accessibilityRole
+            ? String(effectiveLabel || accessibilityLabel || alt || '') || undefined
+            : undefined,
     });
 }

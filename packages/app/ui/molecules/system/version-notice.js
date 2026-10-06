@@ -1,6 +1,5 @@
 import { View } from 'app/design/view';
 import { Text } from 'app/design/typography';
-import { Button } from 'app/design/controls';
 import { appSetting } from 'app/lib/util';
 import { useTranslation } from 'react-i18next';
 import { Card, CardHeader, CardTitle, CardContent } from 'app/ui/molecules/page/card';
@@ -47,15 +46,13 @@ export function VersionWarning({ serverVersion }) {
             <DropdownPopup
                 open={true}
                 minPopupWidth={320}
-                trigger={
-                    <Button
-                        key="btn"
-                        variant="danger"
-                        size="base"
-                        rounded
-                        startDecorator="TriangleAlert"
-                    />
-                }
+                buttonProps={{
+                    style: 'borderedProminent',
+                    role: 'destructive',
+                    borderShape: 'circle',
+                    image: 'TriangleAlert',
+                    accessibilityLabel: t('version_warning_title'),
+                }}
             >
                 <View className="gap-2">
                     <Text className="text-xs text-secondary-foreground font-medium">

@@ -5,7 +5,7 @@ import { Image, Platform } from 'react-native'
 import { ReactNativeZoomableView } from '@openspacelabs/react-native-zoomable-view'
 import { View, Row } from 'app/design/view'
 import { Text } from 'app/design/typography'
-import { Button, Modal, NeoButton } from 'app/design/controls'
+import { Modal, NeoButton } from 'app/design/controls'
 import { useTranslation } from 'react-i18next'
 import {
     CROP_MAX_ZOOM,
@@ -216,17 +216,16 @@ export default function ImageCropModal({
                     />
                 </Row>
                 <Row className="justify-center gap-3">
-                    <Button
-                        variant="default"
-                        size="base"
-                        title={t('Cancel')}
+                    <NeoButton
+                        label={t('Cancel')}
                         disabled={applying}
                         onPress={onCancel}
                     />
-                    <Button
-                        variant="primary"
-                        size="base"
-                        title={applying ? t('Saving...') : t('Apply')}
+                    <NeoButton
+                        style="borderedProminent"
+                        label={t('Apply')}
+                        loading={applying}
+                        loadingLabel={t('Saving...')}
                         disabled={applying || !viewport}
                         onPress={handleApply}
                     />

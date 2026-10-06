@@ -1,10 +1,9 @@
 import { View, Row, Pressable, ScrollView  } from 'app/design/view'
 import { useState, useReducer, useCallback } from 'react'
 import { Text } from 'app/design/typography'
-import Link from 'app/ui/atoms/link'
 import Card from 'app/ui/molecules/page/card'
 import CircularProgress from 'app/ui/atoms/circular-progress'
-import { Button, Modal } from 'app/design/controls'
+import { Modal, NeoButton, NeoButtonLink } from 'app/design/controls'
 import { Icon } from 'app/ui/atoms/icon'
 import { fetcher } from 'app/lib/fetcher'
 import { ContentMore } from 'app/ui/molecules/content/content-more';
@@ -129,7 +128,7 @@ export default function ModuleStructure({ data }) {
             const formData = await fetcher(`/api.php?r=system/perfom_action_api/TemplServiceGrid/&params[]=&o=bx_courses_cnt_structure_manage&a=edit&parent_id=${moduleData.parent_id}&entry_id=${courseId}&id=${id}`);
             const lessonData = await fetcher(`/api.php?r=bx_courses/entity_node_block/&params[]=${courseId}&params[]=${id}`);
             const gridData = await fetcher(`/api.php?r=system/perfom_action_api/TemplServiceGrid/&params[]=&o=bx_courses_cnt_data_manage&a=display&parent_id=${id}&entry_id=${courseId}`);
-            setBottomSheetData({ title: formData.data[0]?.title || " ", content: <View className='px-1'><EditLesson dispatch={dispatch} gridData={gridData} handleUpdate={handleUpdate} formData={formData.data} courseId={courseId} moduleId={moduleId} lessonId={id} lessonData={lessonData.data[0].data} /></View> });
+            setBottomSheetData({ title: formData.data[0]?.title || " ", content: <View className='px-1.5 pt-1.5'><EditLesson dispatch={dispatch} gridData={gridData} handleUpdate={handleUpdate} formData={formData.data} courseId={courseId} moduleId={moduleId} lessonId={id} lessonData={lessonData.data[0].data} /></View> });
 
         }
         if (item.action == "delete") {
@@ -139,7 +138,7 @@ export default function ModuleStructure({ data }) {
     };
 
     const handleAddLesson = useCallback(async (event) => {
-        event.preventDefault();
+        event?.preventDefault?.();
         const fetchedData = await fetcher(`/api.php?r=system/perfom_action_api/TemplServiceGrid/&params[]=&o=bx_courses_cnt_structure_manage&a=add&parent_id=${moduleId}&entry_id=${courseId}`);
         const content = { content: fetchedData.data, designbox_id: 0 };
         setBottomSheetData({ title: content.content[0]?.title || " ", content: <View className='px-1'><BlockByData onFormEmpty={handleUpdate} block={content} /></View> });
@@ -157,7 +156,7 @@ export default function ModuleStructure({ data }) {
     const lessonItemData = lessonIndex !== -1 ? lessonData.steps[lessonIndex] : null;
 
     let title = lessonId > 0 ? <View className='flex-1 ml-4 sm:ml-0'>
-        <Button startDecorator="ArrowLeft" variant="default" title={'Back'} size="sm" rounded onPress={() => { dispatch({ type: 'SET_LESSON_ID', lessonId: null }) }} />
+        <NeoButton controlSize="small" borderShape="capsule" image="ArrowLeft" label={'Back'} onPress={() => { dispatch({ type: 'SET_LESSON_ID', lessonId: null }) }} />
     </View> : <View className='flex-1 ml-4 sm:ml-0'>
         <Text className="text-xl leading-tight tracking-tight font-bold text-secondary-foreground ">{lessonData?.title}</Text>
         <Text className="text-xs text-secondary-foreground ">{lessonData?.sample} {lessonData?.index}</Text>
@@ -205,20 +204,20 @@ export default function ModuleStructure({ data }) {
                         {item.pass_status == 'completed' && <View className='h-16 w-16 rounded-full bg-emerald-400 items-center justify-center'><Text className=" text-white text-4xl"><Icon icon={icon} /></Text></View>}
                         {item.pass_status == 'in process' && <CircularProgress classes='h-16 w-16' progressColor="#F87171" percentage={item.pass_percent} />}
                         {item.pass_status == 'not started' && <View className='h-16 w-16 rounded-full bg-gray-500 items-center justify-center'><Text className=" text-white text-4xl"><Icon icon={icon} /></Text></View>}
-                        <Button variant="default" title={item.pass_progress} size="xs" rounded />
+                        <NeoButton controlSize="mini" borderShape="capsule" label={item.pass_progress} classNames={{ root: 'self-center' }} />
                     </View>}
                     <View className='flex-1'>
                         <View className='my-2 text-xs'><Text>{t('Lesson {{index}}', { index: index + 1 })}</Text></View>
                         <View className='h-12'>
                             <Text className="text-lg leading-tight tracking-tight font-bold text-secondary-foreground " numberOfLines={2}>{item.title}</Text>
                         </View>
-                        {(!isEditable && !!item.pass_title) && <Button startDecorator={icon} variant="default" textColor={`text-${textColor}`} bgColor={`bg-${color}`} title={item.pass_status} size="xs" rounded />}
-                        {isEditable && <Button variant="default" title={item.pass_progress} size="xs" rounded />}
+                        {(!isEditable && !!item.pass_title) && <NeoButton controlSize="mini" borderShape="capsule" image={icon} label={item.pass_status} />}
+                        {isEditable && <NeoButton controlSize="mini" borderShape="capsule" label={item.pass_progress} />}
                     </View>
                     <Row className='items-center justify-center gap-x-2'>
-                        {(!isEditable && !!item.pass_title) && <Button endDecorator="ArrowRight" variant="default" title={item.pass_title} size="sm" rounded onPress={() => { getLessonData(item.id, item.parent_id, true) }} />}
+                        {(!isEditable && !!item.pass_title) && <NeoButton controlSize="small" borderShape="capsule" image="ArrowRight" imagePlacement="trailing" label={item.pass_title} classNames={{ root: 'self-center' }} onPress={() => { getLessonData(item.id, item.parent_id, true) }} />}
                         {isEditable && <>
-                            <DropdownMenu items={manageMenu} onSelect={(oItem) => { handleManage(oItem, item.id) }}><Button rounded startDecorator="Cog" size='sm' /></DropdownMenu><DragControl dragHandleProps={dragHandleProps}><Button rounded startDecorator="ArrowUpDown" size='sm' /></DragControl>
+                            <DropdownMenu items={manageMenu} onSelect={(oItem) => { handleManage(oItem, item.id) }} buttonProps={{ controlSize: 'small', borderShape: 'circle', image: 'Cog', accessibilityLabel: t('Settings'), classNames: { root: 'self-center' } }} /><DragControl dragHandleProps={dragHandleProps} accessibilityLabel={t('Reorder')} className="u-neo-btn-link hit-area-4"><NeoButton controlSize="small" borderShape="circle" image="ArrowUpDown" interactive /></DragControl>
                             </>}
                     </Row>
                 </Row>
@@ -257,7 +256,7 @@ export default function ModuleStructure({ data }) {
                     {isEditable && (<Card rounded=' rounded-none sm:rounded-2xl  ' margin='mx-2  w-full p-3 sm:p-4 mb-1 sm:mb-4 '>
 
                         <Row className='w-full'>
-                            <Button rounded startDecorator="Plus" title={t('Add new')} onPress={(event) => { handleAddLesson(event, courseId) }} size='sm' />
+                            <NeoButton controlSize="small" borderShape="capsule" image="Plus" label={t('Add new')} onPress={(event) => { handleAddLesson(event, courseId) }} />
                         </Row>
                     </Card>
                     )
@@ -300,17 +299,16 @@ function EditLesson({ formData, handleUpdate, lessonData: initedLessonData, cour
 
     return (
         <View>
-            <Row className='gap-x-2'>
+            <Row className='gap-x-2 mb-2'>
 
                 {buttonConfigs.map(({ title, viewType: type }) => (
-                    <Button
+                    <NeoButton
                         key={type}
-                        variant="default"
-                        title={title}
-                        size="sm"
-                        rounded
+                        controlSize="small"
+                        borderShape="capsule"
+                        label={title}
                         onPress={() => setViewType(type)}
-                        pressed={viewType === type}
+                        selected={viewType === type}
                     />
                 ))}
             </Row>
@@ -327,13 +325,13 @@ function LessonStructure({ lessonData, startLessonPart }) {
 
     return (
         <View className='w-full '>
-            <ScrollView className='w-full'>
+            <ScrollView className='w-full px-1.5'>
                 <View className='mb-4'>
                     <ContentMore numberOfSymbols={360} showLess={true} content={lessonData?.text} numberOfLines={3} openSmall={false} customClassName="u-vanilla-html" />
                 </View>
                 <Row className='gap-x-4 mb-4'>
-                    <Button variant="default" textColor={`text-white`} bgColor={`${viewType === 0 ? 'bg-red-400' : 'bg-gray-400'}`} title={t('Lesson')} size="sm" onPress={() => { setViewType(0) }} />
-                    <Button variant="default" textColor={`text-white`} bgColor={`${viewType === 1 ? 'bg-red-400' : 'bg-gray-400'}`} title={t('Attachments')} size="sm" onPress={() => { setViewType(1) }} />
+                    <NeoButton controlSize="small" label={t('Lesson')} selected={viewType === 0} onPress={() => { setViewType(0) }} />
+                    <NeoButton controlSize="small" label={t('Attachments')} selected={viewType === 1} onPress={() => { setViewType(1) }} />
                 </Row>
                 {viewType === 0 && <LessonSteps lessonData={lessonData} startLessonPart={startLessonPart} />}
                 {viewType === 1 && <LessonAttach lessonData={lessonData} />}
@@ -390,13 +388,11 @@ function LessonAttach({ lessonData, isEditable, reloadData, courseId, lessonId, 
                 </Text>
             </View>
             <Row className="justify-center items-start gap-x-2">
-                <Link href={item.download_link}>
-                    <Button startDecorator="Download" variant="outline" title={t('Download')} size="sm" />
-                </Link>
+                <NeoButtonLink href={item.download_link} controlSize="small" image="Download" label={t('Download')} />
                 {isEditable && (
                     <>
-                        <Button startDecorator="Trash" variant="outline" size="sm" onPress={() => deleteAttachment(item.id)} />
-                        <Button startDecorator="Pencil" variant="outline" size="sm" onPress={() => editAttachment(item.id)} />
+                        <NeoButton controlSize="small" image="Trash" accessibilityLabel={t('Delete')} expoUI={false} onPress={() => deleteAttachment(item.id)} />
+                        <NeoButton controlSize="small" image="Pencil" accessibilityLabel={t('Edit')} onPress={() => editAttachment(item.id)} />
                     </>
                 )}
             </Row>
@@ -405,9 +401,7 @@ function LessonAttach({ lessonData, isEditable, reloadData, courseId, lessonId, 
 
     return <>
         {attachments.map(renderAttachment)}
-        {isEditable && <View className='py-2'><DropdownMenu items={addParams.values} onSelect={(oItem) => { handleAction(oItem) }}>
-            <Button startDecorator="Plus" variant="default" size="sm" title={addParams.title} />
-        </DropdownMenu></View>
+        {isEditable && <View className='py-2'><DropdownMenu items={addParams.values} onSelect={(oItem) => { handleAction(oItem) }} buttonProps={{ controlSize: 'small', image: 'Plus', label: addParams.title }} /></View>
         }
         {formData && <Modal onClose={handleClose} title={`Add ${formData.title}`}><BlockByData onFormEmpty={() => handleUpdate()} block={formData} /></Modal>}
     </>
@@ -435,6 +429,7 @@ const showAddForm = async (url) => {
 
 
 function LessonSteps({ lessonData, startLessonPart, isEditable, reloadData, courseId, lessonId, moduleId, addParams, dispatch, gridData  }) {
+    const { t } = useTranslation();
     const steps = lessonData.steps;
     const [formData, setFormData] = useState(null);
 
@@ -498,18 +493,18 @@ function LessonSteps({ lessonData, startLessonPart, isEditable, reloadData, cour
                             {item.image?.src && <Image view='cover' alt='' className="rounded" src={item.image?.src} />}
                         </View>
                         <View className={`flex-auto`}>
-                            <Button variant="default" textColor={`text-white`} bgColor={`bg-` + getColorByType(item.type)} title={item.type} size="xs" rounded />
+                            <NeoButton controlSize="mini" borderShape="capsule" label={item.type} />
                             <Text className="mt-2 text-lg leading-tight tracking-tight font-bold text-secondary-foreground " numberOfLines={2}>{item.title}</Text>
                         </View>
                         <Row className="justify-center items-center gap-x-2">
                             {(!!item.pass_link && !isEditable) && (
-                                <Button endDecorator="ArrowRight" variant="default" title={item.pass_title} size="sm" rounded onPress={() => { startLessonPart(item.id, true) }} />
+                                <NeoButton controlSize="small" borderShape="capsule" image="ArrowRight" imagePlacement="trailing" label={item.pass_title} classNames={{ root: 'self-center' }} onPress={() => { startLessonPart(item.id, true) }} />
                             )}
                             {isEditable && (
                                 <>
-                                    <Button startDecorator="Trash" variant="outline" size="sm" onPress={() => deleteStep(item.id)} />
-                                    <Button startDecorator="Pencil" variant="outline" size="sm" onPress={() => editStep(actionEdit)} />
-                                    <DragControl dragHandleProps={dragHandleProps}><Button  variant="outline" startDecorator="ArrowUpDown" size='sm' /></DragControl>
+                                    <NeoButton controlSize="small" image="Trash" accessibilityLabel={t('Delete')} expoUI={false} classNames={{ root: 'self-center' }} onPress={() => deleteStep(item.id)} />
+                                    <NeoButton controlSize="small" image="Pencil" accessibilityLabel={t('Edit')} classNames={{ root: 'self-center' }} onPress={() => editStep(actionEdit)} />
+                                    <DragControl dragHandleProps={dragHandleProps} accessibilityLabel={t('Reorder')} className="u-neo-btn-link hit-area-4"><NeoButton controlSize="small" image="ArrowUpDown" interactive /></DragControl>
                                 </>
                             )}
                         </Row>
@@ -531,9 +526,7 @@ function LessonSteps({ lessonData, startLessonPart, isEditable, reloadData, cour
         }
    
         </DragContext>
-        {isEditable && <View className='py-2'><DropdownMenu items={addParams.values} onSelect={(oItem) => { handleAction(oItem) }}>
-            <Button startDecorator="Plus" variant="default" size="sm" title={addParams.title} />
-        </DropdownMenu></View>
+        {isEditable && <View className='py-2'><DropdownMenu items={addParams.values} onSelect={(oItem) => { handleAction(oItem) }} buttonProps={{ controlSize: 'small', image: 'Plus', label: addParams.title }} /></View>
         }
         {formData && <Modal onClose={handleClose} title={`${formData.title}`}><BlockByData onFormEmpty={() => handleUpdate()} block={formData} /></Modal>}
     </>
@@ -584,7 +577,7 @@ function LessonItem({ lessonItemData, lessonIndex, lessonData, startLessonPart }
                 <ContentMore numberOfSymbols={360} showLess={false} content={lessonItemData?.text} numberOfLines={3} openSmall={true} customClassName="u-vanilla-html" />
             </View>
             {lessonIndex != steps.length - 1 &&
-                <Button endDecorator="ArrowRight" variant="default" title={'Next'} size="sm" rounded onPress={() => { startLessonPart(lessonData.steps[lessonIndex + 1].id, true) }} />
+                <NeoButton controlSize="small" borderShape="capsule" image="ArrowRight" imagePlacement="trailing" label={'Next'} onPress={() => { startLessonPart(lessonData.steps[lessonIndex + 1].id, true) }} />
             }
         </>
     );

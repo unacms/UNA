@@ -12,7 +12,7 @@ import { Platform } from 'react-native';
 import emitter, { EVENTS } from 'app/context/emitter';
 import { FormInstanceProvider } from 'app/context/form-instance';
 import useDebounce from 'app/lib/hooks/use-debounce'
-import { Button } from 'app/design/controls';
+import { NeoButton } from 'app/design/controls';
 import useFetchForm from 'app/lib/hooks/use-fetch-form'
 import { FormError } from 'app/components/form-fields/_field'
 import { useTranslation } from 'react-i18next'
@@ -654,12 +654,11 @@ export default function Form({
                     <View className={`${layout === 'hor' ? 'flex-row gap-x-4 items-center w-full' : 'w-full gap-4'}`}>
                         {inputs}
                         {(isAutoChange) && <Row className={`items-center justify-between  ${layout === 'hor' ? ' ' : ' '} `}>
-                            {(stableStringify(defaultFormValues) != stableStringify(currentFormValues)) && <Button
-                                title={t('Reset Filters')}
-                                startDecorator='X'
-                                size='sm'
-                                fullWidth
-                                variant='secondary'
+                            {(stableStringify(defaultFormValues) != stableStringify(currentFormValues)) && <NeoButton
+                                controlSize="small"
+                                width="fill"
+                                image="X"
+                                label={t('Reset Filters')}
                                 onPress={() => {
                                     if (isWeb) {
                                         const url = new URL(window.location.href);

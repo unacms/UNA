@@ -7,7 +7,7 @@
  */
 
 import React, { type ReactElement } from 'react';
-import { Pressable } from 'react-native';
+import { Pressable, StyleSheet, View, type Insets, type StyleProp, type ViewStyle } from 'react-native';
 
 type HostSize = { width: number; height: number };
 
@@ -56,7 +56,15 @@ export function useFrozenHostSize({ contentKey, rnOwnsWidth, rnOwnsHeight }: {
 }
 
 const FILL_STYLE = { flexGrow: 1, flexShrink: 1, flexBasis: 0, minWidth: 0 };
+const AUTO_STYLE = { flexGrow: 0, flexShrink: 0, alignSelf: 'flex-start' as const };
 const PRESS_LOCK_MS = 400;
+// Pressability measures the press rect once, when JS handles touch-down, and
+// never again. If the layout already moved by then (keyboard closing, busy JS
+// thread), the rect is off by the jump and the first move of a drifting finger
+// leaves the default 20–30pt retention, so the release is dropped.
+// Keep the release valid across a keyboard-height jump; a scroll still cancels,
+// since the scroll view takes the responder (RESPONDER_TERMINATED), not the rect.
+const PRESS_RETENTION_OFFSET = { top: 400, bottom: 400, left: 20, right: 20 };
 
 /**
  * Host and the RN wrapper can both deliver the same tap. A toggle (composer
@@ -73,46 +81,87 @@ export function useLockedNativePress(handler: (() => void) | undefined) {
     }, [handler]);
 }
 
+/** Hit area per side: a number for all sides, or insets; `undefined` when nothing extends. */
+export type NativeHitSlop = number | Insets | undefined;
+
+function toInsets(hitSlop: NativeHitSlop): Insets | undefined {
+    if (typeof hitSlop === 'number') {
+        return hitSlop > 0 ? { top: hitSlop, right: hitSlop, bottom: hitSlop, left: hitSlop } : undefined;
+    }
+    if (!hitSlop) return undefined;
+    const { top = 0, right = 0, bottom = 0, left = 0 } = hitSlop;
+    return top || right || bottom || left ? { top, right, bottom, left } : undefined;
+}
+
+const hasStyle = (style: StyleProp<ViewStyle>) => {
+    const flat = StyleSheet.flatten(style);
+    return !!flat && Object.keys(flat).length > 0;
+};
+
 /**
  * Host is not an RN Pressable, so hitSlop / flex-grow / the actual tap must
  * live on a wrapper. `box-only` claims the hit — Host often drops SwiftUI
  * `onPress` (icon-only, keyboard). Pin height so the wrapper matches JS.
- * Fire on press-in so a keyboard layout jump cannot cancel the action.
+ * `onPress` fires on release, like the JS NeoButton, so a scroll that starts
+ * on the button cancels it. `onPressIn` (touch-down) is the opt-in for a
+ * caller that must act before the keyboard or layout moves.
+ *
+ * The wrapper is the outermost box, so `rootStyle` (`classNames.root`) goes
+ * here and wins over the default flex sizing (self-*, flex-*, margins reach
+ * the parent's layout). A passive button (no handler) gets a plain View so
+ * the parent still receives the touch. `accessibilityRole` (NeoButtonLink:
+ * `link`) makes the wrapper the accessibility element.
  */
-export function wrapNativeButtonHost(host: ReactElement, { hitSlop = 0, fill = false, onPress, disabled, height, width }: {
-    hitSlop?: number;
+export function wrapNativeButtonHost(host: ReactElement, {
+    hitSlop = 0, fill = false, onPress, onPressIn, disabled, height, width, rootStyle, accessibilityRole, accessibilityLabel,
+}: {
+    hitSlop?: NativeHitSlop;
     fill?: boolean;
     onPress?: () => void;
+    onPressIn?: () => void;
     disabled?: boolean;
     height?: number | null;
     width?: number | null;
+    rootStyle?: StyleProp<ViewStyle>;
+    accessibilityRole?: string;
+    accessibilityLabel?: string;
 }) {
-    const slop = hitSlop > 0
-        ? { top: hitSlop, right: hitSlop, bottom: hitSlop, left: hitSlop }
-        : undefined;
-    if (!onPress && !slop && !fill) return host;
+    const slop = toInsets(hitSlop);
+    const withRoot = hasStyle(rootStyle);
+    const pressable = !!(onPress || onPressIn);
+    if (!pressable && !slop && !fill && !withRoot && !accessibilityRole) return host;
+
+    const style = [
+        fill ? FILL_STYLE : AUTO_STYLE,
+        {
+            ...(height != null ? { height } : null),
+            ...(width != null ? { width } : null),
+        },
+        rootStyle,
+    ];
+    const a11y = accessibilityRole
+        ? { accessible: true, role: accessibilityRole as any, accessibilityLabel }
+        : { accessible: false };
+
+    if (!pressable) {
+        return (
+            <View {...a11y} collapsable={false} style={style}>
+                {host}
+            </View>
+        );
+    }
 
     return (
         <Pressable
-            accessible={false}
+            {...a11y}
             collapsable={false}
-            onPressIn={disabled ? undefined : onPress}
+            onPress={disabled ? undefined : onPress}
+            onPressIn={disabled ? undefined : onPressIn}
             hitSlop={slop}
+            pressRetentionOffset={PRESS_RETENTION_OFFSET}
             pointerEvents="box-only"
             disabled={!!disabled}
-            style={[
-                fill
-                    ? FILL_STYLE
-                    : {
-                        flexGrow: 0,
-                        flexShrink: 0,
-                        alignSelf: 'flex-start',
-                    },
-                {
-                    ...(height != null ? { height } : null),
-                    ...(width != null ? { width } : null),
-                },
-            ]}
+            style={style}
         >
             {host}
         </Pressable>

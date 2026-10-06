@@ -1,6 +1,6 @@
 import { View, ScrollView, Row } from 'app/design/view'
 import { Text, H1 } from 'app/design/typography'
-import { Button, Modal } from 'app/design/controls'
+import { Modal, NeoButton, NeoButtonLink } from 'app/design/controls'
 import Svg, { Path, Circle, Ellipse } from 'react-native-svg'
 import Link from 'app/ui/atoms/link'
 import { Icon } from 'app/ui/atoms/icon'
@@ -319,11 +319,11 @@ const PageError = ({ error, reset }) => {
                     {error.message}
                 </Text>
 
-                <Button
+                <NeoButton
                     onPress={() => reset()}
-                    variant="default"
-                    title={t('Reload page')}
-                ></Button>
+                    label={t('Reload page')}
+                    classNames={{ root: 'self-center' }}
+                />
             </View>
         </View>
     )
@@ -336,7 +336,7 @@ const BootstrapOffline = ({ onRetry }) => {
             <Text className="text-center text-base text-foreground">
                 {t('No internet connection')}
             </Text>
-            {onRetry ? <Button title={t('Retry')} onPress={onRetry} /> : null}
+            {onRetry ? <NeoButton label={t('Retry')} onPress={onRetry} classNames={{ root: 'self-center' }} /> : null}
         </View>
     )
 }
@@ -502,48 +502,43 @@ const ComponentsFullFooter = () => {
     return (
         <>
             <View className="w-full h-16"></View>
-            <View className=" w-full p-3 flex-row justify-center bg-background border-t border-border/60 fixed bottom-0 ">
-                <Link href="/">
-                    <Button
-                        variant="text"
-                        title={t('Home')}
-                        className="mt-auto"
-                        size="sm"
-                    />
-                </Link>
-                <Link href="/about">
-                    <Button
-                        variant="text"
-                        title={t('About')}
-                        className="mt-auto"
-                        size="sm"
-                    />
-                </Link>
+            <View className=" w-full p-3 flex-row justify-center gap-2 bg-background border-t border-border/60 fixed bottom-0 ">
+                <NeoButtonLink
+                    href="/"
+                    style="borderless"
+                    controlSize="small"
+                    label={t('Home')}
+                    classNames={{ root: 'mt-auto' }}
+                />
+                <NeoButtonLink
+                    href="/about"
+                    style="borderless"
+                    controlSize="small"
+                    label={t('About')}
+                    classNames={{ root: 'mt-auto' }}
+                />
 
-                <Link href="/contact">
-                    <Button
-                        variant="text"
-                        title={t('Contact')}
-                        className="mt-auto"
-                        size="sm"
-                    />
-                </Link>
-                <Link href="/privacy">
-                    <Button
-                        variant="text"
-                        title={t('Privacy')}
-                        className="mt-auto"
-                        size="sm"
-                    />
-                </Link>
-                <Link href="/terms">
-                    <Button
-                        variant="text"
-                        title={t('Terms')}
-                        className="mt-auto"
-                        size="sm"
-                    />
-                </Link>
+                <NeoButtonLink
+                    href="/contact"
+                    style="borderless"
+                    controlSize="small"
+                    label={t('Contact')}
+                    classNames={{ root: 'mt-auto' }}
+                />
+                <NeoButtonLink
+                    href="/privacy"
+                    style="borderless"
+                    controlSize="small"
+                    label={t('Privacy')}
+                    classNames={{ root: 'mt-auto' }}
+                />
+                <NeoButtonLink
+                    href="/terms"
+                    style="borderless"
+                    controlSize="small"
+                    label={t('Terms')}
+                    classNames={{ root: 'mt-auto' }}
+                />
             </View>
         </>
     )

@@ -60,18 +60,20 @@ export default function ElementFeedItem({ data, isModal, blockWrapperProps }) {
 
     return (
         <BlockWrapper {...blockWrapperProps}>
-            
-                <Html key={tlContent || 'empty'} data={tlContent} customClassName="u-vanilla-html-small" />
-                {!!content?.embed && <Embed data={content.embed} />}
-                {content?.polls_attach?.length > 0 && (
-                    <View className='w-full'>
-                        {content.polls_attach.map((item, index) => {
-                            return <View key={"att" + index} className='mt-4'><PollItem data={item} showTitle={true} results_url='/api.php?r=bx_timeline/get_block_poll_results' /></View>
-                        })}
-                    </View>
-                    )
-                }
-                {content_attach.length > 0 && <UnitImages images={content_attach} />}
+                {/* Same stack and gap as the feed card (DefaultView in units/feed-views.js). */}
+                <View className="w-full gap-y-3">
+                    <Html key={tlContent || 'empty'} data={tlContent} customClassName="u-vanilla-html-small" />
+                    {!!content?.embed && <Embed data={content.embed} />}
+                    {content?.polls_attach?.length > 0 && (
+                        <View className='w-full'>
+                            {content.polls_attach.map((item, index) => {
+                                return <View key={"att" + index} className='mt-4'><PollItem data={item} showTitle={true} results_url='/api.php?r=bx_timeline/get_block_poll_results' /></View>
+                            })}
+                        </View>
+                        )
+                    }
+                    {content_attach.length > 0 && <UnitImages images={content_attach} />}
+                </View>
                 {
                     data.event.menu_actions.items.length > 0 && (<View className=" flex-row items-center ">
                         <View className="flex-auto  gap-2 mt-2 ">

@@ -1,4 +1,4 @@
-import { Button } from 'app/design/controls'
+import { NeoButton } from 'app/design/controls'
 import { components } from 'app/components/registry';
 
 
@@ -24,13 +24,14 @@ export default function MenuItemSubmenu({ menuItem, isPrimary }) {
         }
     } else {
         return (
-            <Button
-                variant={isPrimary ? "primary" : "secondary"}
-                size="sm"
-                fullWidth
-                title={menuItem.title}
-                className="my-auto"
-                startDecorator={menuItem.icon || false}
+            <NeoButton
+                style={isPrimary ? 'borderedProminent' : undefined}
+                controlSize="small"
+                width="fill"
+                image={menuItem.icon || undefined}
+                label={menuItem.title || undefined}
+                classNames={{ root: 'my-auto' }}
+                expoUI={false}
                 onPress={menuItem.onPress}
             />
         );

@@ -1,13 +1,12 @@
 import { Text } from 'app/design/typography'
 import { View } from 'app/design/view'
-import { Button, NeoButton } from 'app/design/controls'
+import { NeoButton, NeoButtonLink } from 'app/design/controls'
 import { useState, useMemo } from 'react'
 import { appSetting, clearNotif, getHeaderToolbarNeoButtonDefaults } from 'app/lib/util'
 import { useCurrentUser } from 'app/context/user'
 import DropdownPopup from 'app/ui/atoms/dropdown-popup'
 import { useTranslation } from 'react-i18next'
 import Browse from 'app/components/elements/browse'
-import Link from 'app/ui/atoms/link'
 import { useIsDesktop, useWindowHeight } from 'app/context/measure';
 
 export default function ({ buttonProps, children, tooltip, fullWidth, uri }) {
@@ -75,23 +74,23 @@ export default function ({ buttonProps, children, tooltip, fullWidth, uri }) {
             trigger={children ? children : undefined}
         >
             {ntfsOpen && (
-                <View key="ddp-content" className="gap-1">
+                <View key="ddp-content" className="gap-1 pt-1.5">
                     <View className="flex-row items-center px-2">
                         <Text className="text-secondary-foreground text-lg flex-auto font-bold">
                             {t('Notifications')}
                         </Text>
-                        <Link href={appSetting('notifications', 'url')}>
-                            <Button
-                                variant="link"
-                                size="sm"
-                                
-                                
-                                title={t('View all')}
+                        {appSetting('notifications', 'url') ? (
+                            <NeoButtonLink
+                                href={appSetting('notifications', 'url')}
+                                style="borderless"
+                                controlSize="small"
+                                label={t('View all')}
+                                classNames={{ root: 'self-center' }}
                                 onPress={() => {
                                     setNtfsOpen(false)
                                 }}
                             />
-                        </Link>
+                        ) : null}
                     </View>
                     {memoizedBrowse}
                 </View>

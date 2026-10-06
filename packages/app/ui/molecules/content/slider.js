@@ -1,8 +1,10 @@
 import { View,ScrollView, Row } from 'app/design/view'
 import { useState, useRef } from 'react'
-import { Button } from 'app/design/controls'
+import { NeoButton } from 'app/design/controls'
+import { useTranslation } from 'react-i18next'
 
 export function Slider(props) {
+    const { t } = useTranslation();
     const [scrollOffset, setScrollOffset] = useState({ x: 0, y: 0 });
     const [contentWidth, setContentWidth] = useState(0);
     const [scrollViewWidth, setScrollViewWidth] = useState(0);
@@ -34,7 +36,7 @@ export function Slider(props) {
     return (
         <Row className="w-full">
             <View className={isLeftButtonDisabled() ? 'hidden' : ''}>
-                <Button variant="text" startDecorator='ArrowLeft'  disabled={isLeftButtonDisabled()} onPress={scrollLeft} />
+                <NeoButton style="borderless" image="ArrowLeft" accessibilityLabel={t('Scroll left')} disabled={isLeftButtonDisabled()} onPress={scrollLeft} />
             </View>
             <View className='w-80 relative items-center'>
                 <ScrollView onScroll={handleScroll} ref={scrollViewRef} className='relative w-full' contentContainerStyle={{paddingHorizontal: 8}}
@@ -50,7 +52,7 @@ export function Slider(props) {
             </View>
             <View className={isRightButtonDisabled() ? 'hidden' : ''}>
             <View >
-                <Button variant="text" startDecorator='ArrowRight' disabled={isRightButtonDisabled()} onPress={scrollRight}  /></View>
+                <NeoButton style="borderless" image="ArrowRight" accessibilityLabel={t('Scroll right')} disabled={isRightButtonDisabled()} onPress={scrollRight} /></View>
             </View>
         </Row>
     )

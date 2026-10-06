@@ -100,13 +100,15 @@ export function MenuItemActionButton({
     image,
     contentInsets,
     actionButtonProps,
-}: { item: any; title?: any; icon?: any; onPress?: () => void; image?: any; contentInsets?: any; actionButtonProps?: any }) {
+    interactive = false,
+}: { item: any; title?: any; icon?: any; onPress?: () => void; image?: any; contentInsets?: any; actionButtonProps?: any; interactive?: boolean }) {
     const params = item?.params;
     const titleText = title ?? item?.title ?? '';
     const iconValue = image ?? icon ?? item?.icon ?? '';
     const ButtonAction = getActionButton(params);
 
-    const pressProps = onPress ? { onPress } : {};
+    // No onPress while a parent owns the press (Link, dropdown trigger): keep the hover/press visuals.
+    const pressProps = onPress ? { onPress } : (interactive ? { interactive: true } : {});
 
     if (params?.button_style) {
         return (
@@ -169,6 +171,7 @@ export default function MenuItemActionBase({
             title={titleText}
             icon={iconValue}
             onPress={buttonOnPress}
+            interactive={!buttonOnPress && (!!href || !!bare)}
             image={image}
             contentInsets={contentInsets}
             actionButtonProps={actionButtonProps}
