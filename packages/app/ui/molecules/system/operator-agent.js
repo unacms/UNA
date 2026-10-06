@@ -124,7 +124,9 @@ function OperatorAgentBody({ data, params, onClose }) {
                     ) : null}
                 </Row>
             </Row>
-            <View className="flex-1 min-h-0 p-3">
+            {/* Edge to edge: the chat keeps its margins inside, so messages scroll and blur
+                out under the composer right up to the card's edges. */}
+            <View className="flex-1 min-h-0">
                 <AiAgent
                     key={`${agentId}:${contextProfileId}`}
                     data={data}
@@ -136,6 +138,7 @@ function OperatorAgentBody({ data, params, onClose }) {
                     // the "Chats" list can only ever overlay the transcript.
                     historyLayout="overlay"
                     fadeSurface="card"
+                    gutter
                     channel={CHANNEL}
                 />
             </View>
