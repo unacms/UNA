@@ -499,10 +499,19 @@ const ComponentsPricingFooter = () => {
 
 const ComponentsFullFooter = () => {
     const { t } = useTranslation()
+    // The links wrap to a second row on narrow phones, so the spacer that keeps room
+    // for the fixed bar follows its measured height (h-16 is the one-row height).
+    // Web only: native has no `fixed`, the bar stays in flow and the spacer stays h-16.
+    // On phones the bar starts at the screen edge, not at its inset block, so the
+    // centred links don't run past the right edge (wider screens keep their placement).
+    const [barHeight, setBarHeight] = useState()
     return (
         <>
-            <View className="w-full h-16"></View>
-            <View className=" w-full p-3 flex-row justify-center gap-2 bg-background border-t border-border/60 fixed bottom-0 ">
+            <View className="w-full min-h-16" style={{ height: barHeight }}></View>
+            <View
+                onLayout={isWeb ? (e) => setBarHeight(e.nativeEvent.layout.height) : undefined}
+                className=" w-full p-3 flex-row flex-wrap justify-center gap-2 bg-background border-t border-border/60 fixed bottom-0 max-sm:left-0 "
+            >
                 <NeoButtonLink
                     href="/"
                     style="borderless"

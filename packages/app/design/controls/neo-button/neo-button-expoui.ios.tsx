@@ -87,7 +87,17 @@ function fontWeightFromClass(cls: unknown): FontWeight | null {
     return null;
 }
 
-const SWIFTUI_ICON_PT: Record<string, number> = { mini: 13, small: 14, regular: 17, large: 20, extraLarge: 24 };
+// Glyph point size comes from `neo_button.controlSizes.*.icon`, the value web
+// and Android draw, so one setting sizes every platform. Web draws Lucide on
+// its full 24-unit viewBox; the iOS template assets are trimmed to `1 1 22 22`
+// (apps/expo/plugins/with-lucide-assets.js), so a 22/24 frame draws the same
+// glyph at the same stroke width.
+const LUCIDE_ASSET_SCALE = 22 / 24;
+// SF Symbols: `Image size` is a font point size, and SF glyphs ink more of it
+// than Lucide does of its viewBox. Measured on the iOS 26 simulator against
+// web Lucide at the same `icon` value: plus 0.82, person.badge.plus 0.84,
+// magnifyingglass 0.87, arrow.right 0.74 (SF arrows run wide).
+const SF_SYMBOL_SCALE = 0.83;
 
 const isNativeColor = (color: unknown): color is string =>
     typeof color === 'string' && color.length > 0 && !color.includes('var(');
@@ -281,13 +291,12 @@ export function NeoButtonExpoUI(props: NeoButtonExpoUIProps) {
     const nativeControlSize =
         nativeConfig?.iosControlSize?.[resolved.controlSize] ?? mapping.controlSize;
 
-    const iosIconSizeCfg = resolveScoped(nativeConfig?.iosIconSize, resolved.env);
-    const nativeIconSize = typeof iosIconSizeCfg === 'number'
-        ? iosIconSizeCfg
-        : (iosIconSizeCfg?.[nativeControlSize]
-            ?? iosIconSizeCfg?.[resolved.controlSize]
-            ?? SWIFTUI_ICON_PT[nativeControlSize]
-            ?? resolved.iconSize);
+    // `expo_ui.button.iosIconSize` (a number, or scoped per controlSize) pins
+    // the iOS point size; unset, it follows `resolved.iconSize` like web.
+    const iosIconSizeOverride = resolveScoped(nativeConfig?.iosIconSize, resolved.env);
+    const nativeIconSize = typeof iosIconSizeOverride === 'number'
+        ? iosIconSizeOverride
+        : resolved.iconSize * (sfSymbol ? SF_SYMBOL_SCALE : LUCIDE_ASSET_SCALE);
 
     const vPad = SWIFTUI_LABEL_VPAD[nativeControlSize] ?? SWIFTUI_LABEL_VPAD.regular!;
     const isSelectedGlass = resolved.style === 'glass' && !!selected;
