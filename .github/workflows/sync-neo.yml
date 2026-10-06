@@ -3,7 +3,7 @@ name: Sync neo subtree
 on:
   push:
     branches:
-      - main
+      - master
 #    paths:
 #      - 'neo/**'
 
