@@ -28,6 +28,7 @@ import {
 import Profile from 'app/ui/molecules/profile/profile';
 import { MessageInput } from 'app/components/elements/chat/parts/message-input';
 import { EdgeBlurView, edgeBlurConfig } from 'app/ui/atoms/edge-blur';
+import { edgeWash } from './edge-wash';
 import { AgentStatus, ChatBubble } from './chat-bubble';
 import { CHAT_IMAGES_MAX_DEFAULT, chatImageParts, imageFilesFromDataTransfer, pickedFromFile, revokePickedPreview, uploadAgentChatImage } from './chat-images';
 import { pickAgentChatImage } from './pick-image';
@@ -57,57 +58,6 @@ const INTERACTIVE_SELECTOR = 'a, button, input, textarea, select, [contenteditab
 
 function isInteractiveTarget(target) {
     return typeof target?.closest === 'function' ? !!target.closest(INTERACTIVE_SELECTOR) : false;
-}
-
-/**
- * Native (non-iOS) wash behind the floating chrome: it fades from the surface the chat
- * sits on, so messages scrolling under it dissolve into that surface. iOS draws a
- * native blur and web a masked backdrop blur instead (see `EdgeChrome`).
- */
-const EDGE_WASH = {
-    card: {
-        top: 'bg-linear-to-b from-card from-40% to-transparent',
-        bottom: 'bg-linear-to-t from-card from-40% to-transparent',
-    },
-    background: {
-        top: 'bg-linear-to-b from-background from-40% to-transparent',
-        bottom: 'bg-linear-to-t from-background from-40% to-transparent',
-    },
-};
-
-/** Where the web blur is at full strength (the edge) and where it has faded out. */
-const BLUR_MASK = {
-    top: 'linear-gradient(to bottom, #000 40%, transparent)',
-    bottom: 'linear-gradient(to top, #000 40%, transparent)',
-};
-
-/**
- * Chrome over the transcript's top or bottom edge: messages scrolling under it blur
- * out progressively. Web draws a masked backdrop blur, which needs no surface colour,
- * so it reads the same on a card and on a block without background. Native keeps
- * `EdgeBlurView` (a native blur on iOS, the colour wash elsewhere).
- *
- * The blur is a sibling of the children, not their ancestor: a backdrop-filter or
- * mask on an ancestor would blur and fade the glass controls inside it too.
- */
-function EdgeChrome({ edge, washClassName, className, children }) {
-    if (!isWeb) {
-        return (
-            <EdgeBlurView edge={edge} config={edgeBlurConfig('footer')} washClassName={washClassName} className={className} pointerEvents="box-none">
-                {children}
-            </EdgeBlurView>
-        );
-    }
-    return (
-        <View className={className} pointerEvents="box-none">
-            <View
-                pointerEvents="none"
-                className="absolute inset-0 backdrop-blur-md"
-                style={{ maskImage: BLUR_MASK[edge], WebkitMaskImage: BLUR_MASK[edge] }}
-            />
-            {children}
-        </View>
-    );
 }
 
 /** Stable "no messages" so `useChat` does not see a new array on every render. */
@@ -148,12 +98,15 @@ const NO_MESSAGES = [];
  *   of the composer — the host draws them (the operator float's title bar).
  * @param {'default'|'chat'} [props.variant] Message items: compact bubbles, or the
  *   messenger's. The composer is the messenger's message input either way.
- * @param {'card'|'background'} [props.fadeSurface] Colour the composer's wash fades
- *   from on native (web blurs instead): the card the chat sits in (default), or the
- *   page background (`chat` variant default, the full-page agents view).
- * @param {import('react').ReactNode} [props.header] Chrome floated over the top of the
- *   transcript (a block's glass title, see BlockWrapper `overlayHeader`); messages
- *   scroll under it.
+ * @param {'card'|'panel'|'background'} [props.fadeSurface] Surface the fades behind
+ *   the header and the composer start from (see `edge-wash.js`): a block's card
+ *   (default), a floating panel (the operator float), or the page background (`chat`
+ *   variant default; a block without background, see BlockWrapper `overlayHeader`).
+ * @param {number} [props.headerInset] Height of chrome the host floats over the top of
+ *   the chat (its own title bar): the transcript and the history overlay start below it.
+ * @param {import('react').ReactNode} [props.header] Floated over the top of the
+ *   transcript on the fade (a block's title, see BlockWrapper `overlayHeader`);
+ *   messages scroll under it.
  * @param {boolean} [props.gutter] The chat runs to its host's edges (a block without
  *   padding): it keeps its margins inside — around the messages, the header and the
  *   composer — so nothing that scrolls or casts a shadow is cut at the frame.
@@ -176,6 +129,8 @@ export default function AiAgent({ height = 'h-[28rem]', ...props }) {
                         history.open ? 'flex absolute inset-0 z-10 bg-card' : 'hidden',
                         gutter && history.open ? 'p-3' : ''
                     )}
+                    // Below chrome the host floats over the chat (the float's title bar).
+                    style={history.open && props.headerInset ? { paddingTop: props.headerInset } : undefined}
                 >
                     <ChatThreads {...history.props} />
                 </View>
@@ -689,7 +644,7 @@ function AiAgentChat({
     // the first layout, and the last message would otherwise stay under the composer.
     useLayoutEffect(() => {
         followIfPinned();
-    }, [followIfPinned, visibleMessages.length, lastText, isLoading, waitingForReply, composer.height, composerBoxHeight, headerBoxHeight]);
+    }, [followIfPinned, visibleMessages.length, lastText, isLoading, waitingForReply, composer.height, composerBoxHeight, headerBoxHeight, headerInset]);
 
     const onListMouseUp = useCallback((event) => {
         // Click anywhere in the transcript to get back to typing — but not when the click
@@ -914,7 +869,7 @@ function AiAgentChat({
     // a pill that squares off once there is a draft. It floats over the transcript —
     // messages scroll behind it and the list pads itself by its measured height.
     const isChat = variant === 'chat';
-    const edgeWash = EDGE_WASH[fadeSurface] || EDGE_WASH[isChat ? 'background' : 'card'];
+    const wash = edgeWash(fadeSurface || (isChat ? 'background' : 'card'));
     const onComposerBoxLayout = useCallback((event) => {
         const next = Math.round(event.nativeEvent.layout.height);
         if (next > 0) setComposerBoxHeight((prev) => (prev === next ? prev : next));
@@ -958,9 +913,9 @@ function AiAgentChat({
         <View
             // The page-wide chat has no frame around it, so it brings its own gutter;
             // so does a chat that runs to its block's edges. Otherwise (the float) the
-            // host's padding provides one. The top padding is the blur's run-up above
+            // host's padding provides one. The top padding is the fade's run-up above
             // the pill.
-            className={isChat ? 'px-4 py-1.5 sm:p-2.5' : gutter ? 'px-4 pb-4 pt-6' : 'pt-6'}
+            className={isChat ? 'px-4 py-1.5 sm:p-2.5' : gutter ? 'px-4 pb-4 pt-3' : 'pt-3'}
             onLayout={onComposerBoxLayout}
             pointerEvents="auto"
             {...(isWeb && allowImages && !sessionEnded
@@ -1081,11 +1036,11 @@ function AiAgentChat({
             {/* A closed thread is only read; the way back is the history list itself. */}
             {header ? (
                 <View className="absolute top-0 inset-x-0 z-10" pointerEvents="box-none">
-                    <EdgeChrome edge="top" washClassName={edgeWash.top}>
-                        <View className={gutter ? 'px-3 pt-3 pb-6' : 'pb-6'} pointerEvents="box-none" onLayout={onHeaderBoxLayout}>
+                    <EdgeBlurView edge="top" config={edgeBlurConfig('footer')} washClassName={wash.top} pointerEvents="box-none">
+                        <View className={gutter ? 'px-4 pt-4 pb-3' : 'pb-3'} pointerEvents="box-none" onLayout={onHeaderBoxLayout}>
                             {header}
                         </View>
-                    </EdgeChrome>
+                    </EdgeBlurView>
                 </View>
             ) : null}
 
@@ -1097,9 +1052,9 @@ function AiAgentChat({
                 ) : null
             ) : (
                 <View className="absolute bottom-0 inset-x-0 z-10" pointerEvents="box-none">
-                    <EdgeChrome edge="bottom" washClassName={edgeWash.bottom}>
+                    <EdgeBlurView edge="bottom" config={edgeBlurConfig('footer')} washClassName={wash.bottom} pointerEvents="box-none">
                         {composerBox}
-                    </EdgeChrome>
+                    </EdgeBlurView>
                 </View>
             )}
         </View>
