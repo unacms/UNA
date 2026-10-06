@@ -73,6 +73,33 @@ function settingString(value) {
     return typeof value === 'string' ? value.trim() : '';
 }
 
+/**
+ * Background of the strip the page header covers at the top of the content
+ * (mobile layout, below lg): the list / page spacer on native, a block at the
+ * top of the page on web. Same surface as list cards (`u-card-list`): solid on
+ * phones, /80 from sm. It belongs to the content, so it scrolls away with it — the fixed
+ * header keeps its gradient chrome (`layout.header.fade`).
+ */
+export const PAGE_HEADER_BAND_CLASS = 'bg-card sm:bg-card/80 lg:bg-transparent';
+
+/** How far the band reaches above the content top: covers an iOS pull-down bounce. */
+const PAGE_HEADER_BAND_OVERSCROLL = 2000;
+
+/**
+ * Native header band, absolute at the top of the scroll content. It reaches
+ * far above the content, so pulling the list down (iOS bounce) keeps showing
+ * the band colour instead of its top edge and the screen behind it.
+ */
+export function PageHeaderBand({ height }) {
+    return (
+        <View
+            pointerEvents="none"
+            className={`absolute left-0 right-0 ${PAGE_HEADER_BAND_CLASS}`}
+            style={{ top: -PAGE_HEADER_BAND_OVERSCROLL, height: height + PAGE_HEADER_BAND_OVERSCROLL }}
+        />
+    );
+}
+
 /** `bg-*` including variant prefixes (`lg:bg-card`, `dark:lg:bg-card/60`). */
 const BG_UTILITY = /(?:^|\s)(?:[\w-]+?:)*bg-[^\s]+/g;
 const HAS_BG_UTILITY = /(?:^|\s)(?:[\w-]+?:)*bg-/;

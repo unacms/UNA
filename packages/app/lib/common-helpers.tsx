@@ -1,7 +1,7 @@
 import { View } from 'app/design/view';
-import { Button } from 'app/design/controls';
+import { NeoButton, NeoButtonLink } from 'app/design/controls';
 import { Platform } from 'react-native'
-import Link from 'app/ui/atoms/link'
+import i18n from 'i18next';
 import { memo } from 'react';
 import Unit from 'app/components/unit'
 
@@ -13,16 +13,14 @@ export function getBackButtonWeb() {
     if (hasHistory) {
         return (
             <View className="lg:hidden"  >
-               <Button rounded={true} size="base" variant="text" startDecorator="ArrowLeft" onPress={() => window.history.back()}/>
+               <NeoButton style="borderless" borderShape="circle" image="ArrowLeft" accessibilityLabel={i18n.t('Back')} onPress={() => window.history.back()} />
             </View>
         )
     }
     else{
         return (
             <View className="lg:hidden mr-1"  >
-                <Link href='/'>
-                    <Button rounded={true} size="sm" variant="secondary" startDecorator="ArrowLeft" />
-                </Link>
+                <NeoButtonLink href='/' controlSize="small" borderShape="circle" image="ArrowLeft" accessibilityLabel={i18n.t('Back')} />
             </View>
         )
     }

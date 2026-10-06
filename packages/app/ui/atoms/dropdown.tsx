@@ -5,7 +5,7 @@ import { useTheme } from 'app/design/theme';
 import { Modal } from 'app/design/controls'
 import { View } from 'app/design/view';
 import { Platform } from 'react-native'
-import { Button } from 'app/design/controls';
+import { NeoButton } from 'app/design/controls';
 import { useTranslation } from 'react-i18next';
 
 export type DropdownValue = NonNullable<PickerItemProps['value']>;
@@ -93,7 +93,7 @@ export default function Dropdown(props: DropdownProps) {
     }
     else{
         return ( <View>
-            <Button title={selectedText} alt={props.accessibilityLabel} disabled={props.disabled} onPress={() => setShowImage(true)} />
+            <NeoButton label={selectedText} accessibilityLabel={props.accessibilityLabel} expoUI={props.accessibilityLabel ? false : undefined} disabled={props.disabled} onPress={() => setShowImage(true)} />
             <Modal title={t('Title')} onVisible={showImage} onClose={() => setShowImage(false)}>
                 <PickerStyledIos itemStyle={{fontSize:16, color:colors.default }}
                     size={props.size}

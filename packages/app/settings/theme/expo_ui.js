@@ -87,13 +87,11 @@ export const settingsExpoUi = {
             // Override: { size: 15, weight: 'semibold', family: 'Inter' }
             // (`family` is a PostScript name — not CSS `font-main`).
             iosFont: null,
-            iosIconSize: {
-                mini: 14,
-                small: 16,
-                regular: 20,
-                large: 24,
-                extraLarge: 28,
-            },
+            // Glyph size follows `neo_button.controlSizes.*.icon` (same as web
+            // and Android). Override only to pin iOS: a point size, or scoped
+            // per NeoButton controlSize (mini … xlarge, not SwiftUI's
+            // extraLarge), e.g. { small: 18, regular: 22 }.
+            iosIconSize: null,
             iosControlSize: null,
             // Discrete SF Symbol effect on press (iOS 17+). `false` to disable.
             // Per-icon override: `{ name: 'bell.fill', effect: 'wiggle' }`.
@@ -160,9 +158,10 @@ export const settingsExpoUi = {
             androidIcons: null,
         },
         tabs: {
-            // iOS: More opens a native Liquid Glass sheet listing every route
-            // (tab routes, divider, overflow) in place of the tab bar, like
-            // Revolut / Linear. false = the JS popup (Android always uses it).
+            // More opens a native sheet listing every route (tab routes,
+            // divider, overflow): iOS a Liquid Glass sheet in place of the tab
+            // bar, like Revolut / Linear; Android a Material 3 modal bottom
+            // sheet. false = the JS popup.
             more_sheet: true,
             // Tab urls left out of the native sheet — its last rows sit where
             // the tab bar was, so keep destructive actions out of that spot.

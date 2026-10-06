@@ -27,6 +27,10 @@ export {
     NeoButtonStyleProvider, NeoControlSizeProvider,
     useNeoButtonExpoUI,
 } from 'app/design/controls/neo-button/neo-button';
+export type { NeoButtonProps } from 'app/design/controls/neo-button/neo-button';
+export { NeoButtonGroup, useNeoButtonGroupItem } from 'app/design/controls/neo-button/neo-button-group';
+export { legacyToNeoButtonProps } from 'app/design/controls/neo-button/legacy-button-map';
+export { toNeoStyle, toControlSize, hitSlopForHeight, MIN_TARGET } from 'app/design/controls/neo-button/control-scale';
 
 export {
     isExpoUI,

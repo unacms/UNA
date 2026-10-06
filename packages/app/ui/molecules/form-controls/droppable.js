@@ -49,6 +49,17 @@ export function DragItem({ index, data, renderItem, isDragEnabled  }) {
      ) : renderItem(index, data);
 }
 
-export function DragControl({dragHandleProps, children}) {
-    return <div className=''  {...dragHandleProps}>{children}</div>;
+// Space is dnd's (lift / drop). Enter is marked handled so a pressable card
+// around the handle (lessons, steps) does not open from it.
+const keepEnterInHandle = (event) => {
+    if (event.key === 'Enter') event.preventDefault();
+};
+
+/**
+ * The div is the focusable drag handle (dnd's role="button", tabIndex 0), so it
+ * carries the accessible name and the `u-neo-btn-link hit-area-*` host classes
+ * for a passive NeoButton inside (the focus ring then takes the button's shape).
+ */
+export function DragControl({ dragHandleProps, accessibilityLabel, className, children }) {
+    return <div className={className} aria-label={accessibilityLabel} onKeyDown={keepEnterInHandle} {...dragHandleProps}>{children}</div>;
 }

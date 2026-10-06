@@ -1,4 +1,4 @@
-// Props shared by more-sheet.tsx (no-op) and more-sheet.ios.tsx (native sheet).
+// Props shared by more-sheet.tsx (no-op) and the native sheets (more-sheet.ios.tsx, more-sheet.android.tsx).
 
 /** Items from `buildTabBarMoreMenuItems`: tab routes, a separator, overflow routes. */
 export type MoreSheetItem = {

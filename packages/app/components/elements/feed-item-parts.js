@@ -23,7 +23,7 @@ import {
 import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
 import { Platform, StyleSheet } from 'react-native'
-import { Button, Modal } from 'app/design/controls'
+import { Modal, NeoButton, NeoButtonLink } from 'app/design/controls'
 import Menu from 'app/components/menu'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu'
 import { fetcher } from 'app/lib/fetcher'
@@ -96,24 +96,27 @@ export const CommentsSection = memo(
         url,
         t,
     }) => {
-        const ShowMoreCmts = (
-            <Button variant="text" size="xs" title={t('View more comments...')} />
-        )
         return (
             <View className="border-t border-border/40 p-1 lg:p-2 ">
                 
                     {isShowMoreComments && (
                         <View className="p-0.5 me-auto">
                             {isCommentsModal ? (
-                                <Pressable
+                                <NeoButton
+                                    style="borderless"
+                                    controlSize="mini"
+                                    label={t('View more comments...')}
                                     onPress={() => {
                                         showCommentsModal()
                                     }}
-                                >
-                                    {ShowMoreCmts}
-                                </Pressable>
+                                />
                             ) : (
-                                <Link href={url}>{ShowMoreCmts}</Link>
+                                <NeoButtonLink
+                                    href={url}
+                                    style="borderless"
+                                    controlSize="mini"
+                                    label={t('View more comments...')}
+                                />
                             )}
                         </View>
                     )}
@@ -327,6 +330,7 @@ export const ItemInfo = memo(({ data, t }) => {
 })
 
 export const MenuManage = ({ id, menu, setViewState, data }) => {
+    const { t } = useTranslation()
     const [menuData, setMenuData] = useState(false)
     const fetchedRef = useRef(false)
     const dataRef = useRef(data)
@@ -346,11 +350,14 @@ export const MenuManage = ({ id, menu, setViewState, data }) => {
     if (!menuData)
         return (
             <SafeMenuTrigger>
-                <Button
-                    variant="text"
-                    size="sm"
-                    startDecorator="Ellipsis"
-                    rounded="true"
+                <NeoButton
+                    style="borderless"
+                    controlSize="small"
+                    borderShape="circle"
+                    image="Ellipsis"
+                    accessibilityLabel={t('More options')}
+                    expoUI={false}
+                    classNames={{ root: 'self-center' }}
                     onPress={() => {
                         fetchedRef.current = true
                         if (Platform.OS === 'web')
@@ -444,14 +451,14 @@ const MenuManage_ = memo(({ id, menu, setViewState, defaultOpen }) => {
                         items={aMenuManageItems}
                         defaultOpen={defaultOpen}
                         onSelect={handleMenuManageSelect}
-                    >
-                        <Button
-                            variant="text"
-                            size="sm"
-                            startDecorator="Ellipsis"
-                            rounded="true"
-                        />
-                    </DropdownMenu>
+                        buttonProps={{
+                            style: 'borderless',
+                            controlSize: 'small',
+                            borderShape: 'circle',
+                            image: 'Ellipsis',
+                            accessibilityLabel: t('More options'),
+                        }}
+                    />
                 </View>
                 {!!oReport && oReport}
             </>
@@ -473,7 +480,7 @@ export const ActionMenu = memo(({ data }) => {
     const data_other = {...data, items: data?.items.filter(item => item.class != " bx-mi-primary" && item.primary != 1 )};
     const data_primary = {...data, items: data?.items.filter(item => item.class == " bx-mi-primary" || item.primary == 1 )};
 
-    return settings && <Row className="flex-auto justify-between">
+    return settings && <Row className="flex-auto justify-between gap-1">
         <Menu {...data_primary} displayType="button" params={settings} />
         <Menu {...data_other} displayType="button" params={settings} />
     </Row>

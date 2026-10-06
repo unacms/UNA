@@ -1,5 +1,5 @@
 import { Row, Pressable } from 'app/design/view'
-import { Button } from 'app/design/controls'
+import { NeoButton } from 'app/design/controls'
 import { useCurrentUser } from 'app/context/user'
 import {
     appSetting,
@@ -206,17 +206,14 @@ export default function MenuAccount({ buttonProps, children }) {
                     }
                     if (item.link == '{switch_profile_selector}') {
                         sTitle = (
-                            <Row className="w-full items-center flex-auto my-1">
-                                <ProfileSwitcher className="w-full" hideTitle={true}>
-                                    <Button
-                                        variant="secondary"
-                                        fullWidth
-                                        align="center"
-                                        solid
-                                        size="sm"
-
-                                        startDecorator="CircleUserRound"
-                                        title={t('See all profiles')}
+                            <Row className="w-full items-center flex-auto my-1 px-1.5">
+                                <ProfileSwitcher className="w-full u-neo-btn-link hit-area-4" hideTitle={true} accessibilityLabel={t('See all profiles')}>
+                                    <NeoButton
+                                        controlSize="small"
+                                        width="fill"
+                                        image="CircleUserRound"
+                                        label={t('See all profiles')}
+                                        interactive
                                     />
                                 </ProfileSwitcher>
                             </Row>

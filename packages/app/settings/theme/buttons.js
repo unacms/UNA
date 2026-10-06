@@ -14,11 +14,11 @@ export const settingsButtons = {
         },
         sm: {
             rounded: 'rounded-lg ',
-            container: 'px-2.5 gap-1 h-8 min-w-8 ',
-            container_icon_only: 'h-8 w-8',
+            container: 'px-2.5 gap-1 h-9 min-w-9 ',
+            container_icon_only: 'h-9 w-9',
             text: 'text-sm leading-5',
             icon_size: 16,
-            hitSlop: 6,
+            hitSlop: 4,
         },
         base: {
             rounded: 'rounded-lg',
@@ -304,18 +304,19 @@ export const settingsButtons = {
             },
         },
 
-        // HIG scale: mini 28 / small 32 / regular 44 / large 52 / xlarge 64.
-        // hitSlop = max(0, ceil((44 − height) / 2)) so every size hits 44pt.
+        // Scale: mini 28 / small 36 / regular 44 / large 52 / xlarge 64 (same heights as legacy xs/sm/base/lg/xl).
+        // hitSlop is derived: max(0, ceil((44 − height) / 2)) → mini 8, small 4, regular+ 0 (resolver `hitSlopForHeight`).
+        // Add an explicit `hitSlop` only to deviate; the resolver warns in dev if height + 2·hitSlop < 44.
         controlSizes: {
-            mini:    { height: 28, paddingX: 10,  font: 'text-xs ', icon: 16, hitSlop: 8, labelGap: 4, contentInsets: { mediaLeading: { left: 2 } } },
-            small:   { height: 36, paddingX: 12, font: 'text-sm ', icon: 20, hitSlop: 6, labelGap: 6, contentInsets: { mediaLeading: { left: 4 } } },
+            mini:    { height: 28, paddingX: 10,  font: 'text-xs ', icon: 16, labelGap: 4, contentInsets: { mediaLeading: { left: 2 } } },
+            small:   { height: 36, paddingX: 12, font: 'text-sm ', icon: 20, labelGap: 6, contentInsets: { mediaLeading: { left: 4 } } },
             regular: {
-                default: { height: 44, paddingX: 16, font: 'text-base leading-11', icon: 24, hitSlop: 0, labelGap: 8, contentInsets: { mediaLeading: { left: 4 } } },
+                default: { height: 44, paddingX: 16, font: 'text-base leading-11', icon: 24, labelGap: 8, contentInsets: { mediaLeading: { left: 4 } } },
                // web:     { height: 44, paddingX: 12 },
                // mouse:   { height: 44, paddingX: 12, font: 'text-sm', icon: 20, hitSlop: 0, labelGap: 8, contentInsets: { mediaLeading: { left: 4 } } },
             },
-            large:  { height: 52, paddingX: 24, font: 'text-base leading-13', icon: 24, hitSlop: 0, labelGap: 10, contentInsets: { mediaLeading: { left: 6 } } },
-            xlarge:  { height: 64, paddingX: 32, font: 'text-lg leading-16', icon: 28, hitSlop: 0, labelGap: 12, contentInsets: { mediaLeading: { left: 8 } } },
+            large:  { height: 52, paddingX: 24, font: 'text-base leading-13', icon: 24, labelGap: 10, contentInsets: { mediaLeading: { left: 6 } } },
+            xlarge:  { height: 64, paddingX: 32, font: 'text-lg leading-16', icon: 28, labelGap: 12, contentInsets: { mediaLeading: { left: 8 } } },
         },
 
         // borderShape → rounding strategy. roundedRectangle scales with
@@ -336,11 +337,20 @@ export const settingsButtons = {
                     default: 'rounded-xl',
                     mini:    'rounded-md',
                     small:   'rounded-lg',
+                    regular: 'rounded-xl',
                     large:   'rounded-xl',
                     xlarge:  'rounded-2xl',
                 },
             },
             circle:    { rounded: 'rounded-full', aspectSquare: true },
+        },
+
+        // Segmented group (`NeoButtonGroup`, `ButtonsGroupMenu`). Rounding comes
+        // from the group's controlSize (`roundedRectangle`). No `overflow-hidden`:
+        // it would clip the segments' focus rings.
+        group: {
+            container: 'flex-row items-stretch border border-border',
+            separator: 'w-px self-stretch bg-border/60',
         },
 
         // SwiftUI roles. `defaultStyle` is used when no `style` prop is
@@ -354,7 +364,8 @@ export const settingsButtons = {
             confirm:     { defaultStyle: 'borderedProminent' },
             destructive: {
                 tint: 'rgb(var(--destructive))',
-                textClass: { default: 'text-destructive', borderedProminent: 'text-destructive-foreground' },
+                // Prominent styles paint the tint as the fill, so their label stays on the foreground.
+                textClass: { default: 'text-destructive', borderedProminent: 'text-destructive-foreground', glassProminent: 'text-destructive-foreground' },
             },
         },
 
@@ -371,7 +382,7 @@ export const settingsButtons = {
                     pressed: '',
                     active: '',
                     pressedToggle: '',
-                    disabled: '',
+                    disabled: 'opacity-50',
                 },
                 text: {
                     base: 'font-medium',
@@ -397,7 +408,8 @@ export const settingsButtons = {
                     focused: 'bg-button-hover ',
                     pressed: 'bg-button-hover ',
                     active: 'bg-button-hover ',
-                    pressedToggle: 'bg-button-hover ',
+                    // Selected must differ from hover; matches the native expo_ui bordered toggle.
+                    pressedToggle: 'bg-accent',
                     disabled: 'bg-button/50 ',
                 },
                 text: {
@@ -407,7 +419,7 @@ export const settingsButtons = {
                     focused: 'text-button-foreground',
                     pressed: 'text-button-foreground',
                     active: 'text-button-foreground',
-                    pressedToggle: 'text-button-foreground',
+                    pressedToggle: 'text-accent-foreground',
                     disabled: 'text-muted-foreground',
                 },
             },
@@ -446,7 +458,7 @@ export const settingsButtons = {
                     pressed: 'bg-accent/80 web:hover:bg-accent',
                     active: 'bg-muted/50 ',
                     pressedToggle: 'bg-muted',
-                    disabled: '',
+                    disabled: 'opacity-50',
                 },
                 text: {
                     base: 'font-semibold tracking-tight',

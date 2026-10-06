@@ -4,7 +4,7 @@ import { initStripe, useStripe } from '@stripe/stripe-react-native';
 import { fetcher } from 'app/lib/fetcher';
 import { APP_URL } from 'app/config';
 import { View } from 'app/design/view'
-import { Button } from 'app/design/controls';
+import { NeoButton } from 'app/design/controls';
 import { useTranslation } from 'react-i18next';
 
 export default function NativeStripe({ seller_id, items, payment_type }) {
@@ -87,8 +87,8 @@ export default function NativeStripe({ seller_id, items, payment_type }) {
 
     return (
         <View className='p-4'>
-            <Button
-                title={t('Pay')}
+            <NeoButton
+                label={t('Pay')}
                 onPress={onPayPress}
                 disabled={!clientSecret}
             />

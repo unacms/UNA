@@ -155,8 +155,10 @@ export const TabBar = React.memo(function TabBar({
             className="overflow-visible"
         >
             {/* Same box as web `conductor.menu_cnt`, so pills sit 16px in like
-                the page title and the list starts the same distance below. */}
-            <Row className="px-4 gap-2 items-center min-h-12 lg:min-h-14" >
+                the page title and the list starts the same distance below.
+                Below lg a 52px row (8px above and below the 36px pills) plus
+                2px under it: 10px from the pills to the end of the header band. */}
+            <Row className="px-4 gap-2 items-center min-h-13 lg:min-h-14 mb-0.5 lg:mb-0" >
                 {hasTabs ? (
                     <TabList
                         routes={routes}

@@ -6,9 +6,10 @@ import Video from 'app/ui/atoms/video';
 import Youtube from 'app/ui/molecules/content/youtube'
 import { fetcher } from 'app/lib/fetcher';
 import { useReducer } from 'react'
+import { useTranslation } from 'react-i18next'
 import RadioButton from 'app/ui/atoms/radiobutton';
 import { getColor } from 'app/components/elements/chart';
-import { Button } from 'app/design/controls'
+import { NeoButton } from 'app/design/controls'
 import { BlockWrapper } from 'app/components/block-wrapper'
 
 function Results({ data }) {
@@ -50,6 +51,7 @@ function Results({ data }) {
 }
 
 export function PollItem({ data, showTitle, onDelete, disabled = false, results_url = '/api.php?r=bx_polls/get_block_results' }) {
+    const { t } = useTranslation();
     const initialState = {
         isShowResults: data.is_performed,
         isVoted: data.is_performed,
@@ -94,16 +96,15 @@ export function PollItem({ data, showTitle, onDelete, disabled = false, results_
             {showTitle && <Text className="text-foreground p-1 rounded-xl  text-lg tracking-tight font-semibold">{data.title}</Text>}
             {(!data.is_hidden_results && totalVotes > 0) && (
                 
-                    <Button
-                        title={state.isShowResults ? "Show poll" : "Show results"}
-                        variant="secondary"
-                        size="sm"
-                        ring
+                    <NeoButton
+                        label={state.isShowResults ? "Show poll" : "Show results"}
+                        controlSize="small"
+                        classNames={{ root: 'self-center' }}
                         onPress={() => dispatch({ type: 'TOGGLE_RESULTS' })}
                     />
                 
             )}
-            {onDelete && (<Button onPress={() => { onDelete(data.id) }} startDecorator="X" rounded ring variant="secondary" size="sm" />)}
+            {onDelete && (<NeoButton onPress={() => { onDelete(data.id) }} image="X" borderShape="circle" controlSize="small" accessibilityLabel={t('Delete')} expoUI={false} classNames={{ root: 'self-center' }} />)}
         </Row>
             {state.isShowResults && <Results data={state.results} />}
 

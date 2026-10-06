@@ -160,6 +160,9 @@ const expoConfig = {
         // Android NativeTabs bar takes its items' height (no 80dp floor), so it
         // is shorter with `native.tab_labels` off.
         "./plugins/with-android-tab-bar-height.js",
+        // Fonts picked for iOS / Android in customization/config/fonts.js
+        // (embedded only when a platform uses a custom family, not 'system').
+        "./plugins/with-app-fonts.js",
         [
             "expo-image-picker",
             {

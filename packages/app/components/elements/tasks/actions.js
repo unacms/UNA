@@ -2,7 +2,8 @@
  * UNA tasks actions: `modal` opens a form, `callback` hits an endpoint
  * (optionally behind a confirm dialog), `menu` carries plain menu items.
  */
-import { Button } from 'app/design/controls';
+import { useTranslation } from 'react-i18next';
+import { NeoButton } from 'app/design/controls';
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import { fetcher } from 'app/lib/fetcher';
 import { apiUrl, emitTasksListRefresh } from './helpers';
@@ -60,13 +61,23 @@ export async function runTaskAction(action, { setFormBlock, setShowConfirm }) {
 }
 
 export function TaskActionsDropdown({ actions, ...handlers }) {
+    const { t } = useTranslation();
     const items = actionsToDropdownItems(actions);
     if (!items.length) return null;
 
     return (
-        <DropdownMenu items={items} onSelect={(item) => runTaskAction(item.action, handlers)}>
-            <Button variant="text" size="sm" rounded startDecorator="Ellipsis" />
-        </DropdownMenu>
+        <DropdownMenu
+            items={items}
+            onSelect={(item) => runTaskAction(item.action, handlers)}
+            buttonProps={{
+                style: 'borderless',
+                controlSize: 'small',
+                borderShape: 'circle',
+                image: 'Ellipsis',
+                accessibilityLabel: t('More options'),
+                classNames: { root: 'self-center' },
+            }}
+        />
     );
 }
 
@@ -95,10 +106,11 @@ export function MenuObjectActions({ actions, setShowConfirm }) {
     };
 
     return menuItems.map((item, index) => (
-        <Button
+        <NeoButton
             key={item?.id || item?.name || `menu-item-${index}`}
-            size="sm"
-            title={item?.title || item?.name}
+            style="glass"
+            controlSize="small"
+            label={item?.title || item?.name}
             onPress={() => onMenuItemPress(item)}
         />
     ));

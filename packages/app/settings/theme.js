@@ -57,7 +57,10 @@ export const settingsTheme = {
             // Selected tab (JS tabs and NativeTabs) and selected More sheet rows:
             // the toggled look of selected glass buttons — indicator / row fill
             // and icon / label ink. Hex or `bg-*` / `text-*` tokens.
-            selected: { indicator: 'bg-accent', foreground: 'text-accent-foreground' },
+            // iosMoreIndicator: the selected row fill in the iOS More sheet. The
+            // iOS Liquid Glass tab bar only draws its own gray pill for the
+            // selected tab, so the sheet matches that instead of `indicator`.
+            selected: { indicator: 'bg-accent', foreground: 'text-accent-foreground', iosMoreIndicator: 'bg-muted/60' },
         },
         ...settingsButtons,
         ...settingsExpoUi,
