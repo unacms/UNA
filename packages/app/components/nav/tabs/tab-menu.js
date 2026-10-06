@@ -96,6 +96,13 @@ export function buildTabUrlIndex(tabList = []) {
     return [...baseLinks, ...extra];
 }
 
+/** Tab route (`/tabN`) whose url (or transpile_urls entry) occurs in `url`; null when none matches. */
+export function findTabPathForUrl(url, tabList = []) {
+    if (!url) return null;
+    const item = buildTabUrlIndex(tabList).find((link) => url.includes(link.url));
+    return item ? `/tab${item.index}` : null;
+}
+
 export function getTabsSessionKey(currentUser) {
     return currentUser?.id
         ? `user-${currentUser.id}-${currentUser.confirmed}`

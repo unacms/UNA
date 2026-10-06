@@ -2,6 +2,7 @@
 
 export const settingsConfigs = {
     native: {
+        app_version_pages: ['about'], // page uris that show the native app version + build at the bottom
         enable_screens: true, //OLD appSetting('layout', 'native_enable_screens')
         lazy_tabs_preload_delay: 10000, 
         disable_screenshots: false, // OLD appSetting('layout', 'disable_screenshots')

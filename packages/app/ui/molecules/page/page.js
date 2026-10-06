@@ -1,5 +1,6 @@
 import { View, ScrollView } from 'app/design/view';
-import { getPageWidth } from 'app/lib/util'
+import { getPageWidth, appSetting } from 'app/lib/util'
+import AppVersion from 'app/ui/atoms/app-version'
 import { Platform } from 'react-native'
 import { useScroll } from 'app/lib/hooks/use-scroll';
 import { useHeaderHeight, useFooterHeight, useGetScrollValue } from 'app/context/jotai/layout';
@@ -52,6 +53,7 @@ export default function Page({ children, data, page_width, processKeyboard=true,
             onScroll={onScroll}   
         >
             {children}
+            {appSetting('native', 'app_version_pages')?.includes(data?.uri) && <AppVersion />}
         </Wrapper>
     )
 }
