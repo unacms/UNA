@@ -1951,9 +1951,6 @@ class BxBaseModGroupsModule extends BxBaseModProfileModule
     {
         $CNF = &$this->_oConfig->CNF;
 
-        if(($sMsg = $this->checkAllowedView($aDataEntry)) !== CHECK_ACTION_RESULT_ALLOWED)
-            return $sMsg;
-
         return $this->_checkAllowedConnect($aDataEntry, $isPerformAction, [$CNF['OBJECT_GRID_CONNECTIONS'], 'checkAllowedConnectByAcl'], false, false);
     }
 
