@@ -58,6 +58,13 @@ export function useFrozenHostSize({ contentKey, rnOwnsWidth, rnOwnsHeight }: {
 const FILL_STYLE = { flexGrow: 1, flexShrink: 1, flexBasis: 0, minWidth: 0 };
 const AUTO_STYLE = { flexGrow: 0, flexShrink: 0, alignSelf: 'flex-start' as const };
 const PRESS_LOCK_MS = 400;
+// Pressability measures the press rect once, when JS handles touch-down, and
+// never again. If the layout already moved by then (keyboard closing, busy JS
+// thread), the rect is off by the jump and the first move of a drifting finger
+// leaves the default 20–30pt retention, so the release is dropped.
+// Keep the release valid across a keyboard-height jump; a scroll still cancels,
+// since the scroll view takes the responder (RESPONDER_TERMINATED), not the rect.
+const PRESS_RETENTION_OFFSET = { top: 400, bottom: 400, left: 20, right: 20 };
 
 /**
  * Host and the RN wrapper can both deliver the same tap. A toggle (composer
@@ -95,20 +102,23 @@ const hasStyle = (style: StyleProp<ViewStyle>) => {
  * Host is not an RN Pressable, so hitSlop / flex-grow / the actual tap must
  * live on a wrapper. `box-only` claims the hit — Host often drops SwiftUI
  * `onPress` (icon-only, keyboard). Pin height so the wrapper matches JS.
- * Fire on press-in so a keyboard layout jump cannot cancel the action.
+ * `onPress` fires on release, like the JS NeoButton, so a scroll that starts
+ * on the button cancels it. `onPressIn` (touch-down) is the opt-in for a
+ * caller that must act before the keyboard or layout moves.
  *
  * The wrapper is the outermost box, so `rootStyle` (`classNames.root`) goes
  * here and wins over the default flex sizing (self-*, flex-*, margins reach
- * the parent's layout). A passive button (no `onPress`) gets a plain View so
+ * the parent's layout). A passive button (no handler) gets a plain View so
  * the parent still receives the touch. `accessibilityRole` (NeoButtonLink:
  * `link`) makes the wrapper the accessibility element.
  */
 export function wrapNativeButtonHost(host: ReactElement, {
-    hitSlop = 0, fill = false, onPress, disabled, height, width, rootStyle, accessibilityRole, accessibilityLabel,
+    hitSlop = 0, fill = false, onPress, onPressIn, disabled, height, width, rootStyle, accessibilityRole, accessibilityLabel,
 }: {
     hitSlop?: NativeHitSlop;
     fill?: boolean;
     onPress?: () => void;
+    onPressIn?: () => void;
     disabled?: boolean;
     height?: number | null;
     width?: number | null;
@@ -118,7 +128,8 @@ export function wrapNativeButtonHost(host: ReactElement, {
 }) {
     const slop = toInsets(hitSlop);
     const withRoot = hasStyle(rootStyle);
-    if (!onPress && !slop && !fill && !withRoot && !accessibilityRole) return host;
+    const pressable = !!(onPress || onPressIn);
+    if (!pressable && !slop && !fill && !withRoot && !accessibilityRole) return host;
 
     const style = [
         fill ? FILL_STYLE : AUTO_STYLE,
@@ -132,7 +143,7 @@ export function wrapNativeButtonHost(host: ReactElement, {
         ? { accessible: true, role: accessibilityRole as any, accessibilityLabel }
         : { accessible: false };
 
-    if (!onPress) {
+    if (!pressable) {
         return (
             <View {...a11y} collapsable={false} style={style}>
                 {host}
@@ -144,8 +155,10 @@ export function wrapNativeButtonHost(host: ReactElement, {
         <Pressable
             {...a11y}
             collapsable={false}
-            onPressIn={disabled ? undefined : onPress}
+            onPress={disabled ? undefined : onPress}
+            onPressIn={disabled ? undefined : onPressIn}
             hitSlop={slop}
+            pressRetentionOffset={PRESS_RETENTION_OFFSET}
             pointerEvents="box-only"
             disabled={!!disabled}
             style={style}

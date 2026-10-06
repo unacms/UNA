@@ -556,9 +556,9 @@ const NeoButtonStyled = (props: NeoButtonProps & { titleHidden?: boolean }) => {
 
     /* ------------------------------ handlers ---------------------------- */
 
-    // Fire on press-in (finger down), not onPress (finger up). SwiftUI's
-    // built-in click is press-in; JS Pressable has none, so this is what
-    // makes styled buttons feel like native when `native.expo_ui_buttons` is off.
+    // Haptics fire on press-in (finger down), not onPress (finger up): JS
+    // Pressable has no built-in feedback, so this is what makes styled
+    // buttons answer the touch when `native.expo_ui_buttons` is off.
     const fireHaptics = () => {
         if (resolved.haptics) FeedbackHaptics(resolved.haptics);
     };

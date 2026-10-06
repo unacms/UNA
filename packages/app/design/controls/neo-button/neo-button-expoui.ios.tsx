@@ -439,12 +439,18 @@ export function NeoButtonExpoUI(props: NeoButtonExpoUIProps) {
         modifiers.push(frame({ height: targetHeight, alignment: 'center' }));
     }
 
-    const firePress = (onPress || onPressIn) && !disabled && !loading
+    // The wrapper fires `onPress` on release, so a scroll that starts on the
+    // button cancels it. `onPressIn` is the touch-down opt-in: on its own (or
+    // as the same handler as `onPress`) it is the action, fired once on
+    // touch-down; a different `onPressIn` runs alongside, like the JS button.
+    // The Host's own press (VoiceOver / TalkBack) goes through the same lock.
+    const pressInOnly = !!onPressIn && (!onPress || onPressIn === onPress);
+    const action = onPress || onPressIn;
+    const firePress = action && !disabled && !loading
         ? () => {
               if (sfSymbol && iconEffect) symbolTrigger.set(symbolTrigger.get() + 1);
               if (resolved.haptics) FeedbackHaptics(resolved.haptics);
-              (onPressIn || onPress)!();
-              if (onPress && onPressIn && onPress !== onPressIn) onPress();
+              action();
           }
         : undefined;
     const handlePress = useLockedNativePress(firePress);
@@ -533,7 +539,8 @@ export function NeoButtonExpoUI(props: NeoButtonExpoUIProps) {
         height: targetHeight,
         width: iconHostWidth,
         // Keyed on the handler, not `disabled`, so toggling disabled never swaps the wrapper (Host remount).
-        onPress: (onPress || onPressIn) ? handlePress : undefined,
+        onPress: onPress && !pressInOnly ? handlePress : undefined,
+        onPressIn: pressInOnly ? handlePress : onPressIn,
         disabled: disabled || loading,
         rootStyle: rootClassStyle,
         accessibilityRole,

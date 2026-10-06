@@ -75,7 +75,12 @@ export type NeoButtonProps = {
     interactive?: boolean
     /** `FeedbackHaptics` type; `false` / `''` opts out. */
     haptics?: string | false
+    /** Fires on release; a scroll that starts on the button cancels it. */
     onPress?: (event?: any) => void
+    /**
+     * Fires on touch-down, before a scroll can cancel. Opt-in for a press that
+     * must act before the keyboard or layout moves (form submit on native).
+     */
     onPressIn?: (event?: any) => void
     onPressOut?: (event?: any) => void
     onLongPress?: (event?: any) => void
@@ -107,8 +112,7 @@ export type NeoButtonProps = {
      * Native: `false` always renders the JS surface instead of the Expo UI
      * (SwiftUI / Compose) button. Use it when the button's `ref` is measured,
      * for children on iOS, when `accessibilityLabel` differs from the visible
-     * label, or for irreversible actions inside scroll containers (Expo UI
-     * fires on touch-down). Default `true` (Expo UI when eligible).
+     * label. Default `true` (Expo UI when eligible).
      */
     expoUI?: boolean
 
