@@ -1,0 +1,30 @@
+name: Sync neo subtree
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'neo/**'
+
+permissions:
+  contents: read
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Push neo subtree
+        env:
+          NEO_REPO_TOKEN: ${{ secrets.NEO_REPO_TOKEN }}
+        run: |
+          git remote add neo \
+            "https://x-access-token:${NEO_REPO_TOKEN}@github.com/unacms/neo.git"
+
+          git subtree push --prefix neo neo main
