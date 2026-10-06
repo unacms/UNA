@@ -948,7 +948,9 @@ function AiAgentChat({
     );
 
     return (
-        <View className={cn(height, 'relative overflow-hidden')}>
+        // Not overflow-hidden: the transcript scrolls (and clips) itself, and the floating
+        // composer's shadow has to reach past the frame into the block's padding.
+        <View className={cn(height, 'relative')}>
             <ScrollView
                 ref={listRef}
                 className="min-h-0 flex-1"
