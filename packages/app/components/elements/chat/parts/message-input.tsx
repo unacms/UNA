@@ -25,7 +25,7 @@ type MessageInputProps = {
  * The message composer's surface, shared by the messenger form and the agent
  * chat: a translucent pill (Liquid Glass on iOS 26) with the avatar bottom-left
  * and the actions bottom-right. Empty, it is one rounded-full line and the
- * input leaves room for the avatar; once it has content it becomes rounded-2xl
+ * input leaves room for the avatar (if any); once it has content it becomes rounded-2xl
  * and the actions drop under the text.
  */
 export function MessageInput({ expanded, avatar, actions, header, footer, children }: MessageInputProps) {
@@ -43,7 +43,7 @@ export function MessageInput({ expanded, avatar, actions, header, footer, childr
                 <View className="flex-auto ">
                     <View className=" items-stretch ">
                         <View
-                            className={`p-2.5 min-h-12 flex-auto items-center justify-center ${expanded ? 'mb-10' : 'ms-10'}`}
+                            className={`p-2.5 min-h-12 flex-auto items-center justify-center ${expanded ? 'mb-10' : avatar ? 'ms-10' : ''}`}
                             style={isWeb
                                 ? ({ transition: 'height 0.1s cubic-bezier(0.25, 0.1, 0.25, 1), padding-bottom 0.1s cubic-bezier(0.25, 0.1, 0.25, 1)' } as unknown as ViewStyle /* web-only `transition` */)
                                 : undefined}
