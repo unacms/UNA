@@ -66,6 +66,9 @@ class BxBaseModGroupsMenuSnippetMeta extends BxBaseModProfileMenuSnippetMeta
     {
         $CNF = &$this->_oModule->_oConfig->CNF;
 
+        if(!isLogged() || $this->_oModule->checkAllowedFanAdd($this->_aContentInfo) !== CHECK_ACTION_RESULT_ALLOWED)
+            return false;
+
         if(!isset($CNF['OBJECT_CONNECTIONS']))
             return false;
 
@@ -78,6 +81,9 @@ class BxBaseModGroupsMenuSnippetMeta extends BxBaseModProfileMenuSnippetMeta
     protected function _getMenuItemLeave($aItem)
     {
         $CNF = &$this->_oModule->_oConfig->CNF;
+
+        if(!isLogged() || $this->_oModule->checkAllowedFanRemove($this->_aContentInfo) !== CHECK_ACTION_RESULT_ALLOWED)
+            return false;
 
         if(!isset($CNF['OBJECT_CONNECTIONS']))
             return false;
