@@ -16,13 +16,14 @@ export default function ElementAiAgent({ data, blockWrapperProps }) {
         // The chat scrolls edge to edge under its own chrome: the block's title floats
         // over the transcript on glass, and the chat keeps the margins inside.
         <BlockWrapper {...blockWrapperProps} overlayHeader>
-            {({ header }) => (
+            {({ header, surface }) => (
                 <AiAgent
                     key={`${agentId}:${contextProfileId}`}
                     data={data}
                     initialMessage={initialMessage}
                     hideInitialMessage={!!initialMessage}
                     header={header}
+                    fadeSurface={surface}
                     gutter
                 />
             )}

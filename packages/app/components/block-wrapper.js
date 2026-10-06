@@ -55,9 +55,11 @@ const OVERLAY_GLASS = hasLiquidGlass ? '' : 'bg-popover/50 web:backdrop-blur-md 
 // `overlayHeader`: for content that scrolls edge to edge under its own chrome (the AI
 // agent chat). The block drops its padding and clips to its own corners, and the
 // header is not laid out above the content: `children` is called as
-// `children({ header })` with the title, icon and description on a glass pill (null
-// where the design box hides the title), for the content to float over itself. Its
-// gutters are then the content's to keep, inside the scroller.
+// `children({ header, surface })` with the title, icon and description on a glass
+// pill (null where the design box hides the title), for the content to float over
+// itself, and the colour it sits on — 'card' where the block has its background,
+// 'background' (the page) where it has none — for fades over the content to start
+// from. Its gutters are then the content's to keep, inside the scroller.
 export function BlockWrapper({ config, block, wrapperClassses, showTitle, showBg, fullWidth, contentOnly, list, showPadding, extraProps, fill, clip = false, overlayHeader = false, children }) {
     const { t } = useTranslation()
     const [showHelp, setShowHelp] = useState(false)
@@ -65,7 +67,7 @@ export function BlockWrapper({ config, block, wrapperClassses, showTitle, showBg
 
     const blockMenu = block?.menu?.items?.length ? block.menu : null
 
-    const renderChildren = (header = null) => (typeof children === 'function' ? children({ header }) : children)
+    const renderChildren = (header = null, surface = 'background') => (typeof children === 'function' ? children({ header, surface }) : children)
 
     if (block?.designbox_id == null)
         return renderChildren();
@@ -225,7 +227,8 @@ export function BlockWrapper({ config, block, wrapperClassses, showTitle, showBg
                                 : undefined
                         }
                     >
-                        {renderChildren(overlayHeaderNode)}
+                        {/* Background on some tiers only counts as a card: it is where it shows most. */}
+                        {renderChildren(overlayHeaderNode, bIsShowBg ? 'card' : 'background')}
                     </BlockContent>
                 </PageBlock>
             </View>
