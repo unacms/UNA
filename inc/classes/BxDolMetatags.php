@@ -1026,7 +1026,11 @@ class BxDolMetatags extends BxDolFactory implements iBxDolFactoryObject
             if(substr(BX_DOL_URL_ROOT, -1) == '/' && substr($sRootUrl, -1) != '/')
                 $sRootUrl .= '/';
 
-            $s = str_replace(BX_DOL_URL_ROOT, $sRootUrl, $s);
+            $s = preg_replace(
+                '/(\shref\s*=\s*["\'])' . preg_quote(BX_DOL_URL_ROOT, '/') . '/i',
+                '${1}' . $sRootUrl,
+                $s
+            );
         }
         
         return $s;

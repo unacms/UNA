@@ -27,7 +27,8 @@ ob_end_clean();
 if (isset($_GET['dpx']))
     $oTranscoder->forceDevicePixelRatio((int)$_GET['dpx']);
 
-if (!$oTranscoder->isFileReady($sHandler) && !$oTranscoder->transcode ($sHandler)) {
+// Video goes through the transcoding queue (getFileUrl queues it), never inline ffmpeg here.
+if (!($oTranscoder instanceof BxDolTranscoderVideo) && !$oTranscoder->isFileReady($sHandler) && !$oTranscoder->transcode ($sHandler)) {
     bx_transcoder_error_occured();
     exit;
 }
