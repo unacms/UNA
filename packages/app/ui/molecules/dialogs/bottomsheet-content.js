@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo, useCallback, useRef } from 'react';
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import { View, ScrollView, Pressable } from 'app/design/view';
-import { Button } from 'app/design/controls';
+import { NeoButton } from 'app/design/controls';
 import { Text } from 'app/design/typography';
 import { Modal } from 'app/design/controls'
 import { BottomSheetModalProvider, BottomSheetBackdrop, BottomSheetModal, BottomSheetScrollView } from '@gorhom/bottom-sheet';
@@ -54,7 +54,7 @@ export default function ElementBottomSheetContent(props) {
             )}
             {showClose && (
                 <View className='absolute right-2 z-50 top-0 '>
-                    <Button startDecorator="X" tooltip={t('Close')} variant='text' size='sm' onPress={onClose} />
+                    <NeoButton style="borderless" controlSize="small" image="X" accessibilityLabel={t('Close')} tooltip={t('Close')} onPress={onClose} />
                 </View>
             )}
             {header}

@@ -3,7 +3,7 @@ import { useState, useRef, useEffect, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import { Text } from 'app/design/typography';
 import { View } from 'app/design/view';
-import { appSetting } from 'app/lib/util';
+import { appSetting, cn } from 'app/lib/util';
 import type { View as RNView, ViewStyle } from 'react-native';
 
 // react-native-web renders View as a DOM node, so the ref is both.
@@ -24,6 +24,8 @@ type TooltipProps = {
     content?: ReactNode;
     enabled?: boolean;
     side?: 'top' | 'bottom';
+    /** Classes on the wrapper box (it is the outermost box, so layout classes go here). */
+    className?: string;
 };
 
 const HIDDEN_STYLE: TooltipStyle = {
@@ -33,7 +35,7 @@ const HIDDEN_STYLE: TooltipStyle = {
     visibility: 'hidden',
 };
 
-export default function Tooltip({ children, content, enabled = true, side = 'bottom' }: TooltipProps) {
+export default function Tooltip({ children, content, enabled = true, side = 'bottom', className }: TooltipProps) {
     const tooltipsEnabled = appSetting('layout', 'tooltips');
     const shouldRenderTooltip = !!enabled && !!tooltipsEnabled;
 
@@ -123,7 +125,7 @@ export default function Tooltip({ children, content, enabled = true, side = 'bot
     return (
         <View
             {...eventHandlers}
-            className="relative"
+            className={cn('relative', className)}
             ref={wrapperRef}
         >
             {children}

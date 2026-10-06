@@ -1,12 +1,14 @@
 import Field from './_field';
-import { Input, Button } from 'app/design/controls'
+import { Input, NeoButton } from 'app/design/controls'
 import { useEffect, useState } from 'react';
 import { View, Row } from 'app/design/view'
 import { strToObj } from 'app/lib/util';
 import { useFormField } from 'app/lib/form/use-form-field';
 import { listInitialRows } from 'app/lib/form/field-initial-values';
+import { useTranslation } from 'react-i18next';
 
 export default function FormFieldList(props) {
+    const { t } = useTranslation();
     const params = strToObj(props.params) || {};
     const minCount = params.minCount || 1;
     const maxCount = params.maxCount || 10;
@@ -70,21 +72,21 @@ export default function FormFieldList(props) {
                         ))}
                         {index >= minCount && (
                             <View>
-                                <Button
-                                    variant="secondary"
+                                <NeoButton
+                                    controlSize="large"
+                                    image="X"
+                                    accessibilityLabel={t('Remove')}
                                     onPress={() => deleteValue(index)}
-                                    size="lg"
-                                    startDecorator="X"
                                 />
                             </View>
                         )}
                         {index == 0 && values.length < maxCount && (
                             <View>
-                                <Button
-                                    variant="secondary"
+                                <NeoButton
+                                    controlSize="large"
+                                    image="Plus"
+                                    accessibilityLabel={t('Add')}
                                     onPress={addNew}
-                                    size="lg"
-                                    startDecorator="Plus"
                                 />
                             </View>
                         )}

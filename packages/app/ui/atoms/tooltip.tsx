@@ -5,6 +5,8 @@ type TooltipProps = {
     content?: ReactNode;
     enabled?: boolean;
     side?: 'top' | 'bottom';
+    /** Web wrapper classes; native renders no wrapper. */
+    className?: string;
 };
 
 export default function Tooltip({ children }: TooltipProps) {

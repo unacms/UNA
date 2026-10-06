@@ -2,7 +2,7 @@ import Field from './_field';
 import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
 import { useState, useEffect , useCallback } from 'react';
-import { Button, Modal, NeoButton } from "app/design/controls";
+import { Modal, NeoButton } from "app/design/controls";
 import ChkList from 'app/ui/molecules/form-controls/checkbox-list';
 import emitter, { EVENTS } from 'app/context/emitter';
 import { LabelButton, wellButtonProps } from 'app/lib/form/form-helpers'
@@ -82,14 +82,15 @@ export default function FormFieldLabels(props) {
     );
 
     const header = <Row className=' w-full justify-between items-center'>
-        <View><Button onPress={() => { setIsModal(null) }} variant='secondary' rounded startDecorator="ArrowLeft" /></View>
+        <View><NeoButton style="glass" controlSize="regular" borderShape="circle" image="ArrowLeft" accessibilityLabel={t('Back')} onPress={() => { setIsModal(null) }} /></View>
         <View className='w-full flex-auto items-center justify-center'><Text className="text-secondary-foreground  text-xl font-bold">{'Choose ' + props.caption}</Text></View>
         <View >
-            <Button
-                startDecorator="Check"
-                variant="primary"
-                size="base"
-                rounded
+            <NeoButton
+                style="glassProminent"
+                controlSize="regular"
+                borderShape="circle"
+                image="Check"
+                accessibilityLabel={t('Done')}
                 onPress={() => setFormValue(value2)}
             />
         </View>

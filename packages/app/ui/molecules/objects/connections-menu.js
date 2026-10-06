@@ -1,5 +1,5 @@
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
-import { Button, ButtonMenuActionDefault } from 'app/design/controls'
+import { ButtonMenuActionDefault, legacyToNeoButtonProps } from 'app/design/controls'
 import { appSetting } from 'app/lib/util';
 import { useState } from 'react';
 import { fetcher } from 'app/lib/fetcher';
@@ -73,12 +73,7 @@ export default function ElementConnections(props) {
                     )
                 }
             )}
-        >
-            <Button
-                {...oButtonProps}
-                title={elementData.title}
-                startDecorator={icons['add']}
-            />
-        </DropdownMenu>
+            buttonProps={{ ...legacyToNeoButtonProps({ ...oButtonProps, title: elementData.title, startDecorator: icons['add'] }) }}
+        />
     )
 }

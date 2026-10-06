@@ -92,9 +92,25 @@ export type NeoButtonProps = {
     alt?: string
     tooltip?: ReactNode
     tooltipSide?: 'top' | 'bottom'
+    /** `false` drops the extended hit area (web `hit-area-*`, native hitSlop). */
     hitarea?: boolean
+    /** Overrides the size's derived hit area; per-side insets work on web too. */
     hitSlop?: number | { top?: number; right?: number; bottom?: number; left?: number }
     focusRing?: string
+    /**
+     * ARIA role override applied after the button's own `role="button"` (only
+     * on a pressable button). NeoButtonLink passes `'link'` on native. Not the
+     * SwiftUI `role` above.
+     */
+    accessibilityRole?: string
+    /**
+     * Native: `false` always renders the JS surface instead of the Expo UI
+     * (SwiftUI / Compose) button. Use it when the button's `ref` is measured,
+     * for children on iOS, when `accessibilityLabel` differs from the visible
+     * label, or for irreversible actions inside scroll containers (Expo UI
+     * fires on touch-down). Default `true` (Expo UI when eligible).
+     */
+    expoUI?: boolean
 
     // Animation override
     transition?: any

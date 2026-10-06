@@ -1,5 +1,5 @@
 import Field from './_field';
-import { Button } from 'app/design/controls';
+import { NeoButton } from 'app/design/controls';
 import { fetcher } from 'app/lib/fetcher';
 import { Row } from 'app/design/view'
 import { useRouter, redirectTo } from 'app/lib/hooks/router'
@@ -25,7 +25,7 @@ export default function FormFieldText(props) {
             <Msg onVisible={showMsg} title={showMsg} handleOk={() => { setShowMsg(false) }} />
             <Row className="gap-x-2">
                 {props.content.map((item, index) => (
-                    <Button key={`btn${index}`} onPress={() => { onClick(item.callback) }} title={item.title} />
+                    <NeoButton key={`btn${index}`} label={item.title} onPress={() => { onClick(item.callback) }} />
                 ))}
             </Row>
         </Field>

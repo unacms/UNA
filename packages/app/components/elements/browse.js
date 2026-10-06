@@ -31,9 +31,8 @@ import { useTranslation } from 'react-i18next'
 import { subscribe } from 'app/ui/atoms/socket'
 import { useCurrentUser } from 'app/context/user'
 import { layoutForList } from 'app/customization/functions'
-import Link from 'app/ui/atoms/link'
 import Galery from 'app/ui/molecules/content/gallery'
-import { Button } from 'app/design/controls'
+import { NeoButtonLink } from 'app/design/controls'
 import { useWindowHeight } from 'app/context/measure';
 import emitter, { EVENTS } from 'app/context/emitter'
 import Snackbar from 'app/ui/atoms/snackbar'
@@ -379,11 +378,11 @@ export default function Browse(props) {
     const filterElement = !!formProps ? (
         <Row className="w-full items-end justify-end mb-3 mt-3 sm:mt-0">
             <DropdownPopup
-                trigger={
-
-                    <Button startDecorator="Settings2" variant="outline" title={!showFilters ? "Show filters" : "Hide filters"} />
-
-                }
+                buttonProps={{
+                    image: 'Settings2',
+                    label: !showFilters ? "Show filters" : "Hide filters",
+                    classNames: { root: 'self-end' },
+                }}
                 minPopupWidth={120}
                 open={showFilters}
                 onOpenChange={handleOpenChange}
@@ -449,31 +448,31 @@ export default function Browse(props) {
                 <View className="w-full" ></View>
                 <View className={`w-full ${props.showBg ? blockTheme['u-block-bg'] + ' ' + blockTheme['u-block-pad'] + ' ' + blockTheme['u-block-base'] : ''} ${responsiveClasses('rounded', props.blockWrapperProps?.config?.rounded)}`} style={isOneLine || !isWeb ? {} : styles}>
                     {isShowTitleInside && (
-                        <Row className={`items-center justify-between ${props.showBg ? '' : 'p-2 '}`}>
+                        <Row className={`items-center justify-between gap-2 ${props.showBg ? '' : 'p-2 '}`}>
                              <View className="p-2">
                                 <BlockTitle>
                                 {t(props.block.title)}
                                 </BlockTitle>
                             </View>
                             {!!props.addLink && (
-                                <Link href={props.addLink.url}>
-                                    <Button
-                                        variant="link"
-                                        size="sm"
-                                        rounded
-                                        title={t(props.addLink.text)}
-                                    />
-                                </Link>
+                                <NeoButtonLink
+                                    href={props.addLink.url}
+                                    style="borderless"
+                                    controlSize="small"
+                                    borderShape="capsule"
+                                    label={t(props.addLink.text)}
+                                    classNames={{ root: 'self-center' }}
+                                />
                             )}
                             {(isOneLine && data.params.home_url) && (
-                                <Link href={data.params.home_url}>
-                                    <Button
-                                        variant="link"
-                                        size="sm"
-                                        rounded
-                                        title={t('View All')}
-                                    />
-                                </Link>
+                                <NeoButtonLink
+                                    href={data.params.home_url}
+                                    style="borderless"
+                                    controlSize="small"
+                                    borderShape="capsule"
+                                    label={t('View All')}
+                                    classNames={{ root: 'self-center' }}
+                                />
                             )}
 
                         </Row>

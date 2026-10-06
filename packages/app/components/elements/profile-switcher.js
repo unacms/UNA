@@ -1,7 +1,7 @@
 import { View, Pressable, Row } from 'app/design/view'
 import Link from 'app/ui/atoms/link'
 import { useState, useRef } from 'react'
-import { Button } from 'app/design/controls'
+import { NeoButton, NeoButtonLink } from 'app/design/controls'
 import { Text } from 'app/design/typography'
 import Profile from 'app/ui/molecules/profile/profile'
 import { useCurrentUser } from 'app/context/user'
@@ -66,12 +66,11 @@ export default function ProfileSwitcher({ className, rounded = 'rounded-lg', chi
                                 </Text></View>
                         </Row>
                         <View className='flex-none p-1.5'>
-                            {currentUser.profiles_count > 1 && <Button
-                                variant="text"
-                                size="sm"
-                                startDecorator="RefreshCw"
-                                fullWidth
-                                align="right"
+                            {currentUser.profiles_count > 1 && <NeoButton
+                                style="borderless"
+                                controlSize="small"
+                                image="RefreshCw"
+                                accessibilityLabel={t('Switch profile')}
                                 onPress={() => handleClick()}
                             />}
                         </View>
@@ -100,7 +99,7 @@ export default function ProfileSwitcher({ className, rounded = 'rounded-lg', chi
                                     <View className="flex-none ">{profile}</View>
                                     <Text className='text-sm my-auto flex-auto font-semibold truncate text-popover-foreground '>{item.display_name}</Text>
                                     <View className="text-sm bont-semibold flex-none my-auto">
-                                        <Button id="menu" startDecorator="RefreshCw" title={t('Switch')} variant='outline' size='sm' onPress={() => handleSwitch(item.id)} />
+                                        <NeoButton controlSize="small" image="RefreshCw" label={t('Switch')} expoUI={false} onPress={() => handleSwitch(item.id)} />
                                     </View>
                                 </View>
                             </Link>
@@ -109,25 +108,22 @@ export default function ProfileSwitcher({ className, rounded = 'rounded-lg', chi
                     {!listOnly && <View className='sm:flex-row justity-between mt-4 w-full sm:mx-0'>
                         {!!currentUser?.menu?.items && currentUser.menu.items.map((item, index) => (
                             <View key={index} className={'mb-2 sm:mb-0 w-full sm:w-1/' + (currentUser.menu.items.length + 1) + ' pr-2 '}>
-                                <Link href={`/${item.name}`}>
-                                    <Button
-                                        variant="outline"
-                                        title={t("New " + item.title)}
-                                        startDecorator="UserCircle"
-                                        fullWidth
-                                    />
-                                </Link>
+                                <NeoButtonLink
+                                    href={`/${item.name}`}
+                                    width="fill"
+                                    image="UserCircle"
+                                    label={t("New " + item.title)}
+                                />
                             </View>
                         ))}
                         {!!currentUser?.menu?.items && <View className={'w-full sm:w-1/' + (currentUser.menu.items.length + 1) + ''}>
-                            <Link href="/logout">
-                                <Button
-                                    variant="outline"
-                                    title={t("Sign out")}
-                                    startDecorator="LogOut"
-                                    fullWidth
-                                />
-                            </Link>
+                            <NeoButtonLink
+                                href="/logout"
+                                width="fill"
+                                image="LogOut"
+                                label={t("Sign out")}
+                                expoUI={false}
+                            />
                         </View>}
                     </View>}
                 </View>

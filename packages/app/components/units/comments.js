@@ -3,7 +3,7 @@ import { Platform, Animated } from 'react-native'
 import { menuItemsByName, FeedbackHaptics, appSetting, getDataForMenu, attachmentKindByName } from 'app/lib/util';
 import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
-import { Button, Modal } from 'app/design/controls'
+import { NeoButton, NeoButtonLink, Modal } from 'app/design/controls'
 import Time from 'app/ui/atoms/time'
 import Profile from 'app/ui/molecules/profile/profile'
 import { ContentMore } from 'app/ui/molecules/content/content-more'
@@ -340,34 +340,34 @@ function UnitCommentsDefault(props) {
                         )}
                     </View>
                     {(viewState.view != 'edited' && !data.disabled) && (
-                        <Row className="gap-1">
+                        <Row className="gap-2">
                             {(!!currentUser && isShowReply) && (
                                 props.handleReply === 'link' ? (
                                     <View>
-                                        <Link href={`${props.contentUrl}#cmt_id=${data.cmt_id}`}>
-                                            <Button
-                                                align="start"
-                                                title={t('Reply')}
-                                                size="xs"
-                                                rounded
-                                                startDecorator="MessageCircle"
-                                                variant="link"
-                                            />
-                                        </Link>
+                                        <NeoButtonLink
+                                            href={`${props.contentUrl}#cmt_id=${data.cmt_id}`}
+                                            style="borderless"
+                                            controlSize="mini"
+                                            borderShape="capsule"
+                                            align="start"
+                                            image="MessageCircle"
+                                            label={t('Reply')}
+                                        />
                                     </View>
                                 ) : (
-                                    <Button
+                                    <NeoButton
+                                        style="borderless"
+                                        controlSize="mini"
+                                        borderShape="capsule"
                                         align="start"
-                                        title={t('Reply')}
-                                        size="xs"
-                                        rounded
-                                        startDecorator="MessageCircle"
-                                        variant="link"
+                                        image="MessageCircle"
+                                        label={t('Reply')}
+                                        haptics={false}
                                         onPress={() => handleReply(data)}
                                     />
                                 )
                             )}
-                            <View className="flex-row flex-auto gap-1 ">
+                            <View className="flex-row flex-auto gap-2 ">
                                 {data.menu_actions?.items?.length > 0 && <Menu
                                     {...data.menu_actions}
                                     displayType="element"
@@ -415,6 +415,7 @@ const MenuManage = ({
     cmt_id,
 }) => {
     const [menuData, setMenuData] = useState(false)
+    const { t } = useTranslation()
 
     if (!menu?.object) return null
 
@@ -432,11 +433,12 @@ const MenuManage = ({
 
     if (!menuData)
         return (
-            <Button
-                variant="text"
-                size="xs"
-                rounded
-                startDecorator="Ellipsis"
+            <NeoButton
+                style="borderless"
+                controlSize="mini"
+                borderShape="circle"
+                image="Ellipsis"
+                accessibilityLabel={t('More options')}
                 onPress={() => {
                     if (Platform.OS === 'web')
                         setMenuData({ ...menu, items: [{ name: 'loader' }] })
@@ -469,6 +471,7 @@ const MenuManage_ = memo(
         cmt_id,
     }) => {
         let { currentUser, setCurrentUser } = useCurrentUser()
+        const { t } = useTranslation()
 
         //const refReport = useRef(null);
         //const [reportTitle, setReportTitle] = useState(null);
@@ -563,14 +566,14 @@ const MenuManage_ = memo(
                             }
                         })}
                         onSelect={handleManageMenuSelect}
-                    >
-                        <Button
-                            variant="text"
-                            size="xs"
-                            startDecorator="Ellipsis"
-                            rounded
-                        />
-                    </DropdownMenu>
+                        buttonProps={{
+                            style: 'borderless',
+                            controlSize: 'mini',
+                            borderShape: 'circle',
+                            image: 'Ellipsis',
+                            accessibilityLabel: t('More options'),
+                        }}
+                    />
                     {!!oReport && oReport}
                 </>
             )

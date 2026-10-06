@@ -6,7 +6,7 @@ import DropdownMenu, { DropdownMenuOpenContext } from 'app/ui/atoms/dropdown-men
 import UniList from 'app/ui/atoms/unilist'
 import { BlockByName } from 'app/components/block'
 import { ItemRenderer } from 'app/components/item-renderer'
-import { Button } from 'app/design/controls'
+import { NeoButton } from 'app/design/controls'
 import { useTranslation } from 'react-i18next'
 import { getSkeletonForList } from 'app/lib/skeleton-helpers'
 import { layoutForList, paddingForList } from 'app/customization/functions'
@@ -141,11 +141,10 @@ export function FiltersButton({
     if (!visible) return null
     return (
         <View className={className}>
-            <Button
-                title={t('Filters')}
-                variant="default"
-                size="sm"
-                rounded
+            <NeoButton
+                label={t('Filters')}
+                controlSize="small"
+                borderShape="capsule"
                 onPress={onPress}
             />
         </View>

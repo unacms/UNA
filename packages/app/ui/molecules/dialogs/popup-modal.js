@@ -1,6 +1,6 @@
 import { View, Row } from 'app/design/view'
 import { Text } from 'app/design/typography'
-import { Button, ButtonLink } from 'app/design/controls'
+import { NeoButtonLink } from 'app/design/controls'
 import React from 'react'
 import BlockByUrl from 'app/ui/molecules/page/block'
 import AuthPanel from 'app/ui/molecules/auth/auth'
@@ -29,21 +29,17 @@ export default function () {
             <View className="gap-y-2 w-full">
                 <Row className="flex-row gap-y-2 flex-wrap gap-x-2 w-full items-center justify-center"><AuthPanel /></Row>
                
-                    <ButtonLink
-                        title={t('login_modal_fp')}
-                        variant="default"
-                        startDecorator="RotateCcw"
-                        fullWidth
-                        size="base"
+                    <NeoButtonLink
+                        label={t('login_modal_fp')}
+                        image="RotateCcw"
+                        width="fill"
                         href="/forgot-password"
                     />
                 
-                    <ButtonLink
-                        title={t('login_modal_new_account')}
-                        variant="default"
-                        fullWidth
-                        size="base"
-                        startDecorator="UserRoundPlus"
+                    <NeoButtonLink
+                        label={t('login_modal_new_account')}
+                        width="fill"
+                        image="UserRoundPlus"
                         href="/create-account"
                     />
              

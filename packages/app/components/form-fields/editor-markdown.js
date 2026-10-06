@@ -4,7 +4,7 @@ import { useFormContext } from 'react-hook-form'
 import { useFieldController } from 'app/lib/form/use-form-field'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { EnrichedMarkdownTextInput } from 'react-native-enriched-markdown'
-import { Button } from 'app/design/controls'
+import { NeoButton } from 'app/design/controls'
 import { View } from 'app/design/view'
 import { useTheme, useThemeValue } from 'app/design/theme'
 import { useCSSVariable } from 'uniwind'
@@ -68,6 +68,7 @@ export function MarkdownTextInput({
     showToolbar = true,
     rules = {},
 }) {
+    const { t } = useTranslation()
     const externalValue = valueProp ?? ''
     const { field } = useFieldController({
         name,
@@ -161,24 +162,28 @@ export function MarkdownTextInput({
             />
 
             {showToolbar && !disabled && styleState ? (
-                <View className="mt-2 flex-row flex-wrap gap-1">
+                <View className="mt-2 flex-row flex-wrap gap-2">
                     <ToolbarButton
                         label="B"
+                        accessibilityLabel={t('Bold')}
                         active={styleState.bold?.isActive}
                         onPress={() => editorRef.current?.toggleBold()}
                     />
                     <ToolbarButton
                         label="I"
+                        accessibilityLabel={t('Italic')}
                         active={styleState.italic?.isActive}
                         onPress={() => editorRef.current?.toggleItalic()}
                     />
                     <ToolbarButton
                         label="U"
+                        accessibilityLabel={t('Underline')}
                         active={styleState.underline?.isActive}
                         onPress={() => editorRef.current?.toggleUnderline()}
                     />
                     <ToolbarButton
                         label="S"
+                        accessibilityLabel={t('Strikethrough')}
                         active={styleState.strikethrough?.isActive}
                         onPress={() => editorRef.current?.toggleStrikethrough()}
                     />
@@ -199,13 +204,15 @@ export function MarkdownTextInput({
     )
 }
 
-function ToolbarButton({ label, active, onPress }) {
+function ToolbarButton({ label, accessibilityLabel, active, onPress }) {
     return (
-        <Button
-            variant="text"
-            size="xs"
-            pressed={!!active}
-            title={label}
+        <NeoButton
+            style="borderless"
+            controlSize="mini"
+            selected={!!active}
+            label={label}
+            accessibilityLabel={accessibilityLabel}
+            haptics={false}
             onPress={onPress}
         />
     )

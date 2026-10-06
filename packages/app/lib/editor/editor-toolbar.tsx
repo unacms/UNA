@@ -7,7 +7,7 @@
 import { useState, useCallback, useMemo } from 'react'
 import { Platform, TextInput } from 'react-native'
 import { View } from 'app/design/view'
-import { Button } from 'app/design/controls'
+import { NeoButton } from 'app/design/controls'
 import { cn } from 'app/lib/util'
 import { getTiptapEditorFromContainer } from 'app/lib/editor/comment-editor-keyboard'
 import { useTranslation } from 'react-i18next'
@@ -78,7 +78,7 @@ export function EditorToolbar({ items = [], linkBar, className }: { items?: any[
     return (
         <View
             onMouseDown={onMouseDown}
-            className={cn('flex-row flex-wrap items-center gap-1 mt-2', className)}
+            className={cn('flex-row flex-wrap items-center gap-2 mt-2', className)}
         >
             {items.map((item) => (
                 <ToolbarButton
@@ -95,14 +95,14 @@ export function EditorToolbar({ items = [], linkBar, className }: { items?: any[
 
 function ToolbarButton({ label, active, disabled, onPress }: { label: string; active?: boolean; disabled?: boolean; onPress?: () => void }) {
     return (
-        <Button
-            variant="text"
-            size="xs"
-            pressed={!!active}
+        <NeoButton
+            style="borderless"
+            controlSize="mini"
+            selected={!!active}
             disabled={!!disabled}
-            title={label}
+            label={label}
             onPress={onPress}
-            hitarea={false}
+            haptics={false}
         />
     )
 }
@@ -124,19 +124,21 @@ function LinkBar({ initialUrl = '', onSubmit, onCancel, className }: { initialUr
                 className="flex-1 min-w-0 text-sm text-foreground bg-transparent border-b border-border py-1 px-1"
                 style={Platform.OS === 'web' ? ({ outlineStyle: 'none' } as any) : undefined}
             />
-            <Button
-                variant="text"
-                size="xs"
-                title={t('Insert')}
+            <NeoButton
+                style="borderless"
+                controlSize="mini"
+                label={t('Insert')}
                 onPress={() => onSubmit?.(url.trim())}
-                hitarea={false}
+                haptics={false}
+                classNames={{ root: 'self-center' }}
             />
-            <Button
-                variant="text"
-                size="xs"
-                title={t('Cancel')}
+            <NeoButton
+                style="borderless"
+                controlSize="mini"
+                label={t('Cancel')}
                 onPress={onCancel}
-                hitarea={false}
+                haptics={false}
+                classNames={{ root: 'self-center' }}
             />
         </View>
     )

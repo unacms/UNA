@@ -1,7 +1,7 @@
 import Field, { getValidationRules } from './_field';
 import Dropdown from 'app/ui/atoms/dropdown'
 import { Row } from 'app/design/view'
-import { Button } from 'app/design/controls'
+import { NeoButton } from 'app/design/controls'
 import { useFormField } from 'app/lib/form/use-form-field';
 
 export default function FormFieldSelect(props) {
@@ -23,11 +23,10 @@ export default function FormFieldSelect(props) {
             <Field {...props}>
                 <Row className="gap-x-2">
                     {values.map((item) => (
-                        <Button
+                        <NeoButton
                             key={item.value}
-                            variant="outline"
-                            pressed={field.value == item.value}
-                            title={item.label}
+                            selected={field.value == item.value}
+                            label={item.label}
                             onPress={() => {
                                 setValueF(item.value);
                             }}

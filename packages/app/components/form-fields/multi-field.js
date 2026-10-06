@@ -2,11 +2,13 @@ import Field from './_field';
 import { useFormContext } from 'react-hook-form';
 import { Input } from 'app/design/controls'
 import React, { useEffect, useState } from 'react';
-import { Button } from 'app/design/controls'
+import { NeoButton } from 'app/design/controls'
+import { useTranslation } from 'react-i18next';
 import { View, Row } from 'app/design/view';
 import { multiFieldFormValues, multiFieldInitialRows } from 'app/lib/form/field-initial-values';
 
 export default function FormFieldMultiField(props) {
+    const { t } = useTranslation();
     const name = props.name;
     const minCount = props.minCount || 2;
 
@@ -47,8 +49,8 @@ export default function FormFieldMultiField(props) {
 
                             />
 
-                            {index >= minCount && <View className='pl-2'><Button variant="secondary" onPress={() => deleteValue(value.id)} size="lg" startDecorator="X" /></View>}
-                            {index == minCount - 1 && <View className='pl-2'><Button variant="secondary" onPress={addNew} size="lg" startDecorator="Plus" /></View>}
+                            {index >= minCount && <View className='pl-2'><NeoButton onPress={() => deleteValue(value.id)} controlSize="large" image="X" accessibilityLabel={t('Remove')} /></View>}
+                            {index == minCount - 1 && <View className='pl-2'><NeoButton onPress={addNew} controlSize="large" image="Plus" accessibilityLabel={t('Add')} /></View>}
 
                         </Row>
                     )

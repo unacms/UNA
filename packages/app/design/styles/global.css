@@ -70,18 +70,44 @@
  * has no pseudo-elements, so this utility is intentionally web-only and lives
  * in the Next-only `global.css` (not the shared `utilities.css`).
  *
- * The corner radius is purely cosmetic on an invisible overlay, so — unlike the
- * focus ring — it does not need the superellipse corner-shape treatment.
+ * The overlay inherits the button's radius and corner-shape, so a capsule's or
+ * circle's hit area follows its outline. `isolation: isolate` (not `z-index: 0`)
+ * keeps the overlay behind the content without pinning the button's z-index,
+ * so a focused button can still be raised above its siblings (global.web.css).
+ *
+ * `hit-area-sides` takes per-side values from `--neo-hit-t/r/b/l` (unitless px),
+ * set inline by NeoButton for an explicit `hitSlop` prop (segmented groups,
+ * tight clusters).
  */
 @utility hit-area-* {
     position: relative;
-    z-index: 0;
+    isolation: isolate;
 
     &::before {
         content: "";
         position: absolute;
         inset: calc(--value(integer) * -1px);
-        border-radius: var(--u-neo-btn-hitarea-radius, 0.75rem);
+        border-radius: inherit;
+        corner-shape: inherit;
+        background-color: rgba(0, 0, 0, 0.001);
+        pointer-events: auto;
+        z-index: -1;
+    }
+}
+
+@utility hit-area-sides {
+    position: relative;
+    isolation: isolate;
+
+    &::before {
+        content: "";
+        position: absolute;
+        top: calc(var(--neo-hit-t, 0) * -1px);
+        right: calc(var(--neo-hit-r, 0) * -1px);
+        bottom: calc(var(--neo-hit-b, 0) * -1px);
+        left: calc(var(--neo-hit-l, 0) * -1px);
+        border-radius: inherit;
+        corner-shape: inherit;
         background-color: rgba(0, 0, 0, 0.001);
         pointer-events: auto;
         z-index: -1;

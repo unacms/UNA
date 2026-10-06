@@ -9,7 +9,7 @@ import AuthPasskey from 'app/ui/atoms/auth/AuthPasskey'
 import AuthSAML from 'app/ui/atoms/auth/AuthSAML'
 import { appSetting } from 'app/lib/util'
 import Link from 'app/ui/atoms/link'
-import { Button } from 'app/design/controls'
+import { NeoButtonLink } from 'app/design/controls'
 import { Text } from 'app/design/typography'
 import { useTranslation } from 'react-i18next'
 
@@ -82,20 +82,13 @@ export default function AuthPanel({
             )}
 
             {loginLink && (
-                <Link
+                <NeoButtonLink
                     href="/login"
-                    haptics="Medium"
-
-                >
-                    <Button
-                        title={t('Continue with email')}
-                        variant="default"
-                        fullWidth
-                        size="lg"
-                        startDecorator="UserRoundPlus"
-                        accessibilityRole="button"
-                    />
-                </Link>
+                    controlSize="large"
+                    width="fill"
+                    image="UserRoundPlus"
+                    label={t('Continue with email')}
+                />
             )}
 
             {showSeparator && altAuth ? (

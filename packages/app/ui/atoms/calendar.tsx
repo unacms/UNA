@@ -2,7 +2,7 @@ import { View, Row } from 'app/design/view'
 import Dropdown from 'app/ui/atoms/dropdown'
 import { useState, useReducer, useMemo, useEffect, type ComponentType } from 'react';
 import { Modal } from 'app/design/controls'
-import { Button } from 'app/design/controls';
+import { NeoButton } from 'app/design/controls';
 import { Text } from 'app/design/typography';
 import { Icon } from 'app/ui/atoms/icon';
 import { useTheme } from 'app/design/theme';
@@ -46,12 +46,12 @@ const loadCalendar = async (setDynamicCalendar: (factory: () => ComponentType<an
 
 const CalendarHeader = (dValue: DateTimeValue, addMonth: (type: 'y' | 'm', val: number) => void) => {
     return (
-    <Row className='w-full justify-between mb-4 items-center mt-2'>
-        <Button size="sm" rounded startDecorator="ChevronsLeft" onPress={() => addMonth('y', -1)} />
-        <Button size="sm" rounded startDecorator="ChevronLeft" onPress={() => addMonth('m', -1)} />
+    <Row className='w-full justify-between gap-2 mb-4 items-center mt-2'>
+        <NeoButton controlSize="small" borderShape="circle" image="ChevronsLeft" accessibilityLabel={i18n.t('Previous year')} classNames={{ root: 'self-center' }} onPress={() => addMonth('y', -1)} />
+        <NeoButton controlSize="small" borderShape="circle" image="ChevronLeft" accessibilityLabel={i18n.t('Previous month')} classNames={{ root: 'self-center' }} onPress={() => addMonth('m', -1)} />
         <Text className=" font-medium text-muted-foreground text-lg">{dValue.dt ? formatValueDate(dValue) : i18n.t('Select date')}</Text>
-        <Button size="sm" rounded startDecorator="ChevronRight" onPress={() => addMonth('m', 1)} />
-        <Button size="sm" rounded startDecorator="ChevronsRight" onPress={() => addMonth('y', 1)} />
+        <NeoButton controlSize="small" borderShape="circle" image="ChevronRight" accessibilityLabel={i18n.t('Next month')} classNames={{ root: 'self-center' }} onPress={() => addMonth('m', 1)} />
+        <NeoButton controlSize="small" borderShape="circle" image="ChevronsRight" accessibilityLabel={i18n.t('Next year')} classNames={{ root: 'self-center' }} onPress={() => addMonth('y', 1)} />
     </Row>
 )};
 
@@ -158,7 +158,7 @@ export default function CalendarField({ name, value = '', type, onChange }: Cale
                                 />
                             </View>
                         </Row>
-                            <Button title={t('Apply')} variant="secondary" onPress={() => { setFieldValue(dValue) }} />
+                            <NeoButton label={t('Apply')} classNames={{ root: 'self-center' }} onPress={() => { setFieldValue(dValue) }} />
                         </View>
                         )
                     }
@@ -168,7 +168,7 @@ export default function CalendarField({ name, value = '', type, onChange }: Cale
                 </View>
             </Modal>
             <Row>
-                <Button title={formatValue(cValue, bIsTime)} endDecorator="Calendar" onPress={() => { setShowModal(true) }} />
+                <NeoButton label={formatValue(cValue, bIsTime)} image="Calendar" imagePlacement="trailing" onPress={() => { setShowModal(true) }} />
             </Row>
         </>
     );

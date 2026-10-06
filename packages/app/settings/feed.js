@@ -35,6 +35,7 @@ export const settingsFeed = {
             menu_width: '',
             button_rounded: false,
             justify_items: 'start',
+            menu_gap: 'gap-1',
             no_gap_between_buttons: false, // is false no gap between buttons + right margin, is true  gap between buttons + no margin
         },
         counters_menu: {
@@ -50,6 +51,7 @@ export const settingsFeed = {
             no_gap_between_buttons: false,
             counter_button_class: 'mt-1 sm:mt-2',
             menu_item_spacing: 'me-0',
+            menu_gap: 'gap-1',
         },
         /*
         FOR COMBINED BUTTONS SHOULD BE SET IN THE FOLLOWING WAY:

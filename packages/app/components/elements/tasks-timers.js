@@ -3,7 +3,7 @@ import { View, Row } from 'app/design/view';
 import { Text } from 'app/design/typography';
 import { BlockWrapper } from 'app/components/block-wrapper';
 import BrowseSimple from 'app/components/elements/browse-simple';
-import { Button } from 'app/design/controls';
+import { NeoButton } from 'app/design/controls';
 import { components } from 'app/components/registry';
 import { fetcher } from 'app/lib/fetcher';
 import emitter, { EVENTS } from 'app/context/emitter';
@@ -62,11 +62,10 @@ export default function ElementTasksTimers({ data, blockWrapperProps }) {
                 {globalActions.length > 0 && sections.length > 0 ? (
                     <Row className="flex-wrap items-center justify-end gap-2 px-2">
                         {globalActions.map((item) => (
-                            <Button
+                            <NeoButton
                                 key={item.name}
-                                size="sm"
-                                variant="default"
-                                title={item.title || item.name}
+                                controlSize="small"
+                                label={item.title || item.name}
                                 onPress={() => runGlobalAction(item)}
                             />
                         ))}

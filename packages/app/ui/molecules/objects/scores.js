@@ -256,11 +256,11 @@ export default function ElementScore(props) {
             showAction={showAction}
             showCounter={showCounter}
             showBoth={showBoth}
-            params={{ ...params, counter_flex: 'flex-auto flex-row' + (showBoth ? ' mx-0.5' : '') }}
+            params={{ ...params, counter_flex: 'flex-auto flex-row' + (showBoth ? ' mx-2' : '') }}
             actionSlots={[
-                { element: actionButtons[0], key: key + '-action-up', marginClass: ' mr-0.5' },
+                { element: actionButtons[0], key: key + '-action-up', marginClass: ' me-2' },
                 'counter',
-                { element: actionButtons[1], key: key + '-action-down', marginClass: ' ml-0.5' },
+                { element: actionButtons[1], key: key + '-action-down', marginClass: ' ms-2' },
             ]}
             counterButton={counterButton}
             counterPopup={counterPopup}

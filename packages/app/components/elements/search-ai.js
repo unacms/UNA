@@ -3,10 +3,9 @@ import { useTranslation } from 'react-i18next'
 import emitter, { EVENTS } from 'app/context/emitter'
 import { View, Row } from 'app/design/view'
 import { Text } from 'app/design/typography'
-import { InputWithIcons, Button } from 'app/design/controls'
+import { InputWithIcons, NeoButton, NeoButtonLink } from 'app/design/controls'
 import { BlockWrapper } from 'app/components/block-wrapper'
 import { Icon } from 'app/ui/atoms/icon'
-import Link from 'app/ui/atoms/link'
 import Redirect from 'app/ui/atoms/redirect'
 import BrowseSimple, { BrowseSimpleView } from 'app/components/elements/browse-simple'
 import { UnitSearchResultsSmall } from 'app/components/units/search-results'
@@ -221,13 +220,11 @@ function SearchAiExtended({ blockWrapperProps, block }) {
 
                 {semantic && (
                     <Row className="flex-wrap gap-1 items-center">
-                        <Button
-                            size="xs"
-                            rounded
-                            variant="secondary"
-                            startDecorator="Sparkles"
-                            title={t('By meaning') + ': ' + query.trim()}
-                            hitarea={false}
+                        <NeoButton
+                            controlSize="mini"
+                            borderShape="capsule"
+                            image="Sparkles"
+                            label={t('By meaning') + ': ' + query.trim()}
                         />
                     </Row>
                 )}
@@ -261,10 +258,11 @@ function SearchAiExtended({ blockWrapperProps, block }) {
                                 />
                                 {hasMore && (
                                     <Row className="justify-center mt-1">
-                                        <Button
-                                            variant="outline"
-                                            size="sm"
-                                            title={loading ? t('Loading…') : t('Load more')}
+                                        <NeoButton
+                                            controlSize="small"
+                                            label={t('Load more')}
+                                            loading={loading}
+                                            loadingLabel={t('Loading…')}
                                             disabled={loading}
                                             onPress={() => load(results.length, true)}
                                         />
@@ -438,9 +436,14 @@ function SearchAiResults({ results, loading, section, allResultsUrl, onPress }) 
             )}
             {!!allResultsUrl && (
                 <Row className="justify-end mt-1">
-                    <Link href={allResultsUrl}>
-                        <Button variant="link" size="sm" endDecorator="ChevronsRight" title={t('See all results')} />
-                    </Link>
+                    <NeoButtonLink
+                        href={allResultsUrl}
+                        style="borderless"
+                        controlSize="small"
+                        image="ChevronsRight"
+                        imagePlacement="trailing"
+                        label={t('See all results')}
+                    />
                 </Row>
             )}
         </View>

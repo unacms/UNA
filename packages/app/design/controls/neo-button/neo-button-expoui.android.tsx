@@ -54,7 +54,8 @@ export function NeoButtonExpoUI(props: NeoButtonExpoUIProps) {
         disabled = false, loading = false, selected = false, addon,
         haptics, onPress, onPressIn,
         width, align,
-        accessibilityLabel, alt,
+        accessibilityLabel, alt, accessibilityRole,
+        hitarea, hitSlop,
         className, classNames,
         nativeConfig,
     } = props;
@@ -67,9 +68,12 @@ export function NeoButtonExpoUI(props: NeoButtonExpoUIProps) {
 
     const fill = resolved.width === 'fill';
 
-    const hostClasses = [className, classNames?.root].filter(Boolean).join(' ');
-    const hostClassStyle = useResolveClassNames(hostClasses || '');
-    const flatHost = StyleSheet.flatten(hostClassStyle) || {};
+    // `className` styles the Host (the surface); `classNames.root` goes on the
+    // outer wrapper so self-* / flex-* / margins reach the parent's layout.
+    // Sizing decisions read both.
+    const hostClassStyle = useResolveClassNames(className || '');
+    const rootClassStyle = useResolveClassNames(classNames?.root || '');
+    const flatHost = StyleSheet.flatten([hostClassStyle, rootClassStyle]) || {};
 
     const effectiveLabel = (loading && loadingLabel != null && loadingLabel !== '')
         ? loadingLabel
@@ -196,11 +200,17 @@ export function NeoButtonExpoUI(props: NeoButtonExpoUIProps) {
     );
 
     return wrapNativeButtonHost(host, {
-        hitSlop: resolved.hitSlop,
+        hitSlop: hitarea === false ? 0 : (hitSlop ?? resolved.hitSlop),
         fill: fillWrapper,
         height: resolved.height,
         width: iconHostWidth,
-        onPress: handlePress,
+        // Keyed on the handler, not `disabled`, so toggling disabled never swaps the wrapper (Host remount).
+        onPress: (onPress || onPressIn) ? handlePress : undefined,
         disabled: disabled || loading,
+        rootStyle: rootClassStyle,
+        accessibilityRole,
+        accessibilityLabel: accessibilityRole
+            ? String(effectiveLabel || accessibilityLabel || alt || '') || undefined
+            : undefined,
     });
 }

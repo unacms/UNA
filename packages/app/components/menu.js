@@ -3,35 +3,30 @@ import { appSetting, menuItemsByName } from 'app/lib/util';
 import { components } from 'app/components/registry';
 import { useCurrentUser } from 'app/context/user'
 import { useMemo, memo, useContext } from "react";
-import { Button, NeoButton } from 'app/design/controls';
+import { NeoButton, toNeoStyle, toControlSize } from 'app/design/controls';
 import DynamicMenu from 'app/components/nav/menu-dynamic';
 import { DropdownMenuOpenContext } from 'app/ui/atoms/dropdown-menu';
 import { Platform } from 'react-native'
 import { useOpenModalByUrl } from 'app/context/jotai/modal';
+import { useTranslation } from 'react-i18next';
+
+// DropdownMenu trigger host classes by the inner NeoButton's controlSize (static literals for Tailwind/Uniwind).
+const TRIGGER_HOST_CLASS = { mini: 'u-neo-btn-link hit-area-8', small: 'u-neo-btn-link hit-area-4' };
 
 const ButtonEx = memo(({ visibleItemsCount, params }) => {
     const isOpen = useContext(DropdownMenuOpenContext) ?? false;
     return (
         <View key="btn" className="">
-            {params.button_style ? (
-                <NeoButton
-                    image="Ellipsis"
-                    style={params.button_style}
-                    controlSize={params.button_size}
-                    borderShape={params.button_border_shape}
-                    // Parent DropdownPopup Pressable owns onPress; interactive
-                    // enables hover/focus visuals on the NeoButton surface.
-                    interactive
-                    selected={isOpen}
-                />
-            ) : (
-                <Button
-                    size={params.button_size}
-                    variant={params.button_variant || 'default'}
-                    startDecorator="Ellipsis"
-                    rounded={params.button_rounded}
-                />
-            )}
+            <NeoButton
+                image="Ellipsis"
+                style={params.button_style || toNeoStyle(params.button_variant || 'default').style}
+                controlSize={toControlSize(params.button_size)}
+                borderShape={params.button_border_shape ?? (params.button_rounded === true || params.button_rounded === 'true' ? 'circle' : undefined)}
+                // Parent DropdownPopup Pressable owns onPress; interactive
+                // enables hover/focus visuals on the NeoButton surface.
+                interactive
+                selected={isOpen}
+            />
         </View>
     );
 });
@@ -70,6 +65,7 @@ export default function ElementMenu(oProps) {
     const isWeb = Platform.OS == 'web'
     const { currentUser } = useCurrentUser();
     const openModalByUrl = useOpenModalByUrl();
+    const { t } = useTranslation();
     /*
      * Display type specified in menu can be overwritten with display type specified in item.
      * default display types: mixed, link, button, element, etc.
@@ -95,9 +91,12 @@ export default function ElementMenu(oProps) {
 
     //--- show vertical
     const bShowVertical = oProps?.params?.showVertical === true;
-
-    sClassName += bShowVertical ? ' flex-col items-center gap-y-2 w-full ' : ' flex-row  ';
     const oParams = oProps?.params || {};
+
+    // Horizontal gap keeps neighbouring buttons' 44px hit areas apart (mini needs 8px, small 4px).
+    // `menu_gap` is a class literal from settings; items with their own `menu_item_spacing` get none.
+    const sRowGap = oParams.menu_gap ?? (oParams.menu_item_spacing != null ? '' : 'gap-x-2');
+    sClassName += bShowVertical ? ' flex-col items-center gap-y-2 w-full ' : ` flex-row ${sRowGap} `;
 
 
     //--- horizontal menu items alignment
@@ -271,5 +270,7 @@ export default function ElementMenu(oProps) {
         menuClasses={sClassName}
         isButtonOutside={false}
         menuExClasses="mr-auto ml-3 sm:ml-4 items-end gap-y-2"
+        triggerAccessibilityLabel={t('More options')}
+        triggerClassName={TRIGGER_HOST_CLASS[toControlSize(oProps?.params?.button_size)] ?? 'u-neo-btn-link'}
     />
 }

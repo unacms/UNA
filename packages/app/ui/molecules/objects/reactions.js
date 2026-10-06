@@ -42,7 +42,7 @@ import { Icon } from 'app/ui/atoms/icon';
 import Tooltip from 'app/ui/molecules/dialogs/tooltip';
 import { Text } from 'app/design/typography';
 import { View } from 'app/design/view';
-import { Button, Modal } from 'app/design/controls';
+import { Modal, NeoButton } from 'app/design/controls';
 
 const isWeb = Platform.OS === 'web';
 
@@ -162,12 +162,13 @@ function buildCounterCompound({
 
         return (
             <View key={item.name} className={className}>
-                <Button
-                    size="sm"
-                    variant="text"
-                    startDecorator={getIcon(item.name)}
+                <NeoButton
+                    style="borderless"
+                    controlSize="small"
+                    borderShape="circle"
+                    image={getIcon(item.name)}
+                    accessibilityLabel={t('rvote_' + item.name + '_title')}
                     onPress={() => setSelectedTab(item.name)}
-                    rounded="true"
                 />
             </View>
         );
@@ -553,6 +554,7 @@ export default function ElementReactions(props) {
                         <ActionButton
                             startDecorator={getIcon(reaction)}
                             disabled={isDisabled}
+                            interactive
                             title={showLabel ? title : false}
                             {...buttonProps}
                         />

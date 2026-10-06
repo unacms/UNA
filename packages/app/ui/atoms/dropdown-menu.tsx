@@ -1,6 +1,7 @@
 import { Pressable, View } from 'app/design/view';
 import { useBottomSheetData } from 'app/context/bottomsheet';
-import { Button, NeoButton } from 'app/design/controls'
+import { NeoButton, legacyToNeoButtonProps } from 'app/design/controls'
+import { isLegacyButtonProps, stripRoutingKeys } from 'app/design/controls/neo-button/legacy-button-map';
 import { memo, useCallback, useEffect, useMemo, useRef, useState, type ComponentType, type ReactNode } from 'react';
 import { cn, groupDropdownItems, getDropdownSectionsLayout, dropdownLeafItems, getDropdownGridLayout, type DropdownSection, type DropdownSectionsLayout } from 'app/lib/util';
 import DropdownGridItem, { type DropdownGridMenuItem } from 'app/ui/atoms/dropdown-grid-item';
@@ -84,11 +85,9 @@ type SectionsLayout = Omit<DropdownSectionsLayout, 'minWidth' | 'maxWidth' | 'ga
 
 export { DropdownMenuOpenContext };
 
-// Mirrors the web trigger logic in dropdown-popup.tsx: legacy buttonProps drive
-// the classic `Button` (variant-based), otherwise we render `NeoButton`
-// (style/borderShape/image-based) so triggers look identical on both platforms.
-const isLegacyButtonProps = (props: DropdownButtonProps | undefined) =>
-    props?.legacyButton === true || props?.variant != null;
+// Mirrors the web trigger logic in dropdown-popup.tsx: legacy buttonProps
+// (`legacyButton`, `useNeoButton: false`, or legacy keys such as `variant`)
+// go through `legacyToNeoButtonProps`; either way the trigger is a NeoButton.
 
 function isNavigableDropdownItem(item: DropdownMenuItemData | undefined, onSelect: DropdownMenuProps['onSelect']) {
     if (typeof onSelect === 'function') return false;
@@ -523,14 +522,12 @@ function DropdownMenuNative({
     }, [defaultOpen, handlePress]);
 
     if (buttonProps) {
-        const useLegacyButton =
-            buttonProps.useNeoButton === false || isLegacyButtonProps(buttonProps);
-        if (useLegacyButton) {
-            return <Button {...buttonProps} onPress={handlePress} />;
-        }
-        const { legacyButton: _legacy, neoButton: _neo, useNeoButton: _useNeo, ...neoButtonProps } = buttonProps;
-        return <NeoButton {...neoButtonProps} onPress={handlePress} />;
-    }   
+        const neoButtonProps = (buttonProps.useNeoButton === false || isLegacyButtonProps(buttonProps))
+            ? legacyToNeoButtonProps(buttonProps)
+            : stripRoutingKeys(buttonProps);
+        // `handlePress` fires its own haptics.
+        return <NeoButton {...neoButtonProps} haptics={false} onPress={handlePress} />;
+    }
     return (
         <Pressable
             onPress={handlePress}

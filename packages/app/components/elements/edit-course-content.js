@@ -1,6 +1,6 @@
 import { View, Row } from 'app/design/view'
 import { Text } from 'app/design/typography'
-import { Button } from 'app/design/controls'
+import { NeoButton } from 'app/design/controls'
 import Link from 'app/ui/atoms/link'
 import Card from 'app/ui/molecules/page/card'
 import Progress from 'app/ui/atoms/progress'
@@ -45,10 +45,10 @@ function CourseStructure(props) {
                                     </View>
                                 </View>
                                 <Row className='gap-x-2 items-end mt-4'>
-                                    <Button textColor={`text-${colorButtonText}`} bgColor={`bg-${colorButton}`} startDecorator={icon} variant="outline" title={item.status} size="xs" rounded />
+                                    <NeoButton controlSize="mini" borderShape="capsule" image={icon} label={item.status} />
                                     {item.counters.map((item2, index) => {
                                         return (
-                                            <Button key={`cnt-${index}`} bgColor={`bg-white`} variant="default" title={`${item2.cn_progress} ${item2.cn_title}`} size="xs" rounded />
+                                            <NeoButton key={`cnt-${index}`} controlSize="mini" borderShape="capsule" label={`${item2.cn_progress} ${item2.cn_title}`} />
                                         )
                                     })}
                                 </Row>
@@ -58,7 +58,7 @@ function CourseStructure(props) {
                 )
             })
         }
-        <Button  title={t('Add module')} onPress={addModule}/>
+        <NeoButton label={t('Add module')} onPress={addModule} />
     </Scroll>
 }
 

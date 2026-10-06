@@ -1,6 +1,6 @@
 import { View, Row } from 'app/design/view'
 import { Text } from 'app/design/typography'
-import { Button, ButtonLink } from 'app/design/controls';
+import { NeoButton, NeoButtonLink } from 'app/design/controls';
 import { Icon } from 'app/ui/atoms/icon';
 import {
     Card,
@@ -89,9 +89,9 @@ function UniPriceCard({ data, onBuy }) {
             <CardFooter>
                 {currentUser
                     ? (!!firstNonEmpty && (
-                        <Button variant="primary" title={firstNonEmpty.title} onPress={() => { onBuy(firstNonEmpty) }} />
+                        <NeoButton style="borderedProminent" label={firstNonEmpty.title} expoUI={false} onPress={() => { onBuy(firstNonEmpty) }} />
                     ))
-                    : <ButtonLink href="/create-account" variant="primary" title={t('Create  account')} />}
+                    : <NeoButtonLink href="/create-account" style="borderedProminent" label={t('Create  account')} />}
             </CardFooter>
         </Card>
     )
@@ -107,7 +107,7 @@ function UniPriceList({ data, onBuy }) {
     return <Card className=" w-full text-left max-w-sm justify-center my-4 mx-auto" >
         <Row className='gap-x-4 items-center justify-between'>
             <Text className="text-2xl text-foreground font-semibold">{t(data.price.value.currency)} {priceParts.price} {priceParts.period ? `/ ${priceParts.period}` : ''}</Text>
-            {!!firstNonEmpty && <Button variant="primary" title={firstNonEmpty.title} onPress={() => { onBuy(firstNonEmpty) }} />}
+            {!!firstNonEmpty && <NeoButton style="borderedProminent" label={firstNonEmpty.title} classNames={{ root: 'self-center' }} expoUI={false} onPress={() => { onBuy(firstNonEmpty) }} />}
         </Row>
     </Card>
 }
