@@ -62,7 +62,7 @@ class BxBaseUploaderServices extends BxDol
         if($sUploadToken !== false && $sUploadToken !== '') {
             $sUploadToken = bx_process_input($sUploadToken);
             $aToken = BxDolKey::getInstance()->getKeyData($sUploadToken, 'uploader');
-            if($sAction != 'upload' || !$this->isUploadTokenValid($aToken, $sUploaderObject, $sStorageObject))
+            if(!in_array($sAction, ['upload', 'upload_inline']) || !$this->isUploadTokenValid($aToken, $sUploaderObject, $sStorageObject))
                 return ['error' => _t('_Access denied'), 'code' => 403];
 
             $iProfileId = (int)$aToken['profile_id'];
@@ -104,19 +104,51 @@ class BxBaseUploaderServices extends BxDol
                 break;
 
             case 'upload_inline':
-                $sStorageObject = bx_process_input(bx_get('o'));
+                // The upload token is bound to `so`; the inline storage must be the same one.
+                $sInlineStorage = bx_process_input(bx_get('o'));
+                if(!empty($sUploadToken) && $sInlineStorage !== $sStorageObject)
+                    return ['error' => _t('_Access denied'), 'code' => 403];
+                $sStorageObject = $sInlineStorage;
                 $sFile = bx_process_input(bx_get('f'));
 
                 $oStorage = BxDolStorage::getObjectInstance($sStorageObject);
+                if (!$oStorage || empty($_FILES['file']))
+                    return array('error' => '1');
 
                 if (!($iId = $oStorage->storeFileFromForm($_FILES['file'], false, $iProfileId))) {
                     return array('error' => '1');
                     exit;
                 }
 
+                if(!empty($sUploadToken))
+                    BxDolKey::getInstance()->removeKey($sUploadToken);
+
                 $oStorage->afterUploadCleanup($iId, $iProfileId);
 
                 $aFileInfo = $oStorage->getFile($iId);
+
+                // Video: queue transcoding and return stable image_transcoder.php links
+                // (`vt` - mp4 transcoder, `pt` - poster transcoder); they redirect once ready.
+                if ($aFileInfo && 0 === strncmp($aFileInfo['mime_type'], 'video/', 6) && ($sVideoTranscoder = bx_get('vt'))) {
+                    $aResult = ['link' => '', 'poster' => '', 'video' => 1];
+                    foreach (['link' => $sVideoTranscoder, 'poster' => bx_get('pt')] as $sKey => $sTranscoder) {
+                        if (!$sTranscoder)
+                            continue;
+
+                        $sTranscoder = bx_process_input($sTranscoder);
+                        // Only transcoders fed by this storage, so `h` can't point at foreign files.
+                        $aTranscoder = BxDolTranscoderQuery::getTranscoderObject($sTranscoder);
+                        $aSource = !empty($aTranscoder['source_params']) ? unserialize($aTranscoder['source_params']) : [];
+                        if (($aSource['object'] ?? '') !== $sStorageObject || !($oTranscoder = BxDolTranscoder::getObjectInstance($sTranscoder)))
+                            continue;
+
+                        $oTranscoder->getFileUrl($iId); // adds the file to the transcoding queue
+                        $aResult[$sKey] = BX_DOL_URL_ROOT . 'image_transcoder.php?o=' . $sTranscoder . '&h=' . $iId;
+                    }
+
+                    return $aResult['link'] ? $aResult : ['link' => $oStorage->getFileUrlById($iId)];
+                }
+
                 if ($aFileInfo && in_array($aFileInfo['ext'], array('jpg', 'jpeg', 'jpe', 'png'))) {
                     $oTranscoder = BxDolTranscoderImage::getObjectInstance(bx_get('t'));
                     $sUrl = $oTranscoder->getFileUrl($iId);
