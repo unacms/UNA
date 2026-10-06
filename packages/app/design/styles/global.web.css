@@ -431,6 +431,21 @@ html::-webkit-scrollbar-thumb:window-inactive {
     background-color: rgb(var(--muted-foreground) / 0.35);
 }
 
+/* Font roles set to 'system' for web in customization/config/fonts.js
+   (fonts-web.web.ts): the OS UI font — SF on Apple, Segoe UI on Windows,
+   Roboto on Android. `html.` outranks the next/font variable class, which
+   can set both variables. */
+html.neo-font-main-system,
+html.neo-font-title-system {
+    --neo-system-font: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+html.neo-font-main-system {
+    --font-main: var(--neo-system-font);
+}
+html.neo-font-title-system {
+    --font-title: var(--neo-system-font);
+}
+
 body {
     display: flex;
     overflow-y: visible;

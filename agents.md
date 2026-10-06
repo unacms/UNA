@@ -382,6 +382,15 @@ Reference tokens from `packages/app/default/settings.js` (and the `packages/app/
 | **Borders** | `rounded-lg`, `rounded-xl`, `rounded-2xl`, `border`, `border-border/60` |
 | **Shadows** | `shadow-sm`, `shadow-md`, `shadow-lg` |
 
+### Fonts
+
+Text uses two roles, `font-main` (default in `design/typography.tsx`) and `font-title` (headings). Pick the family per role and platform in [`customization/config/fonts.js`](packages/app/customization/config/fonts.js) (defaults: [`design/fonts/font-config.js`](packages/app/design/fonts/font-config.js)), e.g. `main: { web: 'inter', ios: 'system', android: 'inter' }`:
+
+- `'system'` = the platform UI font: SF Pro on iOS, the device sans-serif on Android, the OS font stack on web.
+- Any other value is a key of [`design/fonts/font-families.js`](packages/app/design/fonts/font-families.js) (`'inter'`). Native needs one **static** file per weight (iOS/Android pick the face by `fontWeight`; variable fonts don't work). Web needs a `next/font` instance per role in `webFontFamilies` ([`fonts-web.web.ts`](packages/app/design/fonts/fonts-web.web.ts)).
+- iOS/Android values are build settings: [`plugins/with-app-fonts.js`](apps/expo/plugins/with-app-fonts.js) embeds only the selected families, so changing them needs `expo prebuild` and a native rebuild. At runtime [`design/fonts/native-fonts.ts`](packages/app/design/fonts/native-fonts.ts) points the Uniwind font variables (and navigation header fonts) at the family.
+- Don't set `fontFamily` inline; use `font-main` / `font-title`.
+
 ### Button Styling
 
 Use button variants from settings:
