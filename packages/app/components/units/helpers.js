@@ -85,7 +85,7 @@ function UnitSurface({
                     {flushOnMobile && Platform.OS !== 'web' && navPending ? (
                         <View
                             pointerEvents="none"
-                            className="absolute inset-0 rounded-xl sm:rounded-2xl bg-muted/60 animate-pulse"
+                            className="absolute inset-0 sm:rounded-2xl bg-muted/60 animate-pulse"
                         />
                     ) : null}
                     {children}
