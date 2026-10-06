@@ -1,7 +1,6 @@
-import { View, Row } from 'app/design/view'
+import { View } from 'app/design/view'
 import Html from 'app/ui/atoms/html'
-import { GlassSurface } from 'app/ui/atoms/glass-surface'
-import { stripTags, appSetting, isUrl, hasLiquidGlass } from 'app/lib/util';
+import { stripTags, appSetting, isUrl } from 'app/lib/util';
 import { useState } from 'react';
 import { Block as PageBlock, BlockContent, BlockName, BlockActions, BlockHeader, BlockTitle, BlockDescription, BlockIcon } from 'app/ui/molecules/page/page-block'
 import { useTranslation } from 'react-i18next'
@@ -46,17 +45,15 @@ function BlockHeaderMenu({ menu, pathname }) {
     )
 }
 
-// Glass chrome of an overlay header: NeoButton's `glass` surface (Liquid Glass on iOS 26).
-const OVERLAY_GLASS = hasLiquidGlass ? '' : 'bg-popover/50 web:backdrop-blur-md shadow-btn-glass dark:shadow-btn-glass-deep'
-
 // `clip` is opt-in: tile/card shadows paint outside the content box, so blocks
 // never hide overflow by default. Inner scrollers own their own overflow.
 //
 // `overlayHeader`: for content that scrolls edge to edge under its own chrome (the AI
 // agent chat). The block drops its padding and clips to its own corners, and the
 // header is not laid out above the content: `children` is called as
-// `children({ header, surface })` with the title, icon and description on a glass
-// pill (null where the design box hides the title), for the content to float over
+// `children({ header, surface })` with the usual header — icon, title, description,
+// actions — unpadded (null where the design box hides the title), for the content to
+// float over
 // itself, and the colour it sits on — 'card' where the block has its background,
 // 'background' (the page) where it has none — for fades over the content to start
 // from. Its gutters are then the content's to keep, inside the scroller.
@@ -172,17 +169,13 @@ export function BlockWrapper({ config, block, wrapperClassses, showTitle, showBg
         </>
     )
 
-    // A capsule for a title alone; a rounded card once a description wraps under it.
-    const overlayRounded = block.description ? 'rounded-2xl' : 'rounded-full'
+    // Plain text, like any block header: the content's fade is its chrome. (A pill is
+    // for interactive elements.) The content positions and pads it.
     const overlayHeaderNode = overlayHeader && bIsShowTitle ? (
-        <Row className={['w-full items-start gap-2', titleTiersClass].filter(Boolean).join(' ')} pointerEvents="box-none">
-            <View className={`shrink min-w-0 py-1.5 pe-4 ${block.icon ? 'ps-1.5' : 'ps-4'} ${OVERLAY_GLASS} ${overlayRounded}`}>
-                {hasLiquidGlass ? <GlassSurface rounded={overlayRounded} /> : null}
-                {headerName}
-            </View>
-            <View className="flex-1" pointerEvents="none" />
+        <BlockHeader className={titleTiersClass || undefined} pointerEvents="box-none">
+            {headerName}
             {headerActions}
-        </Row>
+        </BlockHeader>
     ) : null
 
     return (

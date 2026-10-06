@@ -125,9 +125,9 @@ const NO_MESSAGES = [];
  *   and the composer start from: the card the chat sits in (default), or the page
  *   background (`chat` variant default, the full-page agents view; a block without
  *   background, see BlockWrapper `overlayHeader`).
- * @param {import('react').ReactNode} [props.header] Chrome floated over the top of the
- *   transcript (a block's glass title, see BlockWrapper `overlayHeader`); messages
- *   scroll under it.
+ * @param {import('react').ReactNode} [props.header] Floated over the top of the
+ *   transcript on the fade (a block's title, see BlockWrapper `overlayHeader`);
+ *   messages scroll under it.
  * @param {boolean} [props.gutter] The chat runs to its host's edges (a block without
  *   padding): it keeps its margins inside — around the messages, the header and the
  *   composer — so nothing that scrolls or casts a shadow is cut at the frame.
@@ -1056,7 +1056,7 @@ function AiAgentChat({
             {header ? (
                 <View className="absolute top-0 inset-x-0 z-10" pointerEvents="box-none">
                     <EdgeBlurView edge="top" config={edgeBlurConfig('footer')} washClassName={edgeWash.top} pointerEvents="box-none">
-                        <View className={gutter ? 'px-3 pt-3 pb-4' : 'pb-4'} pointerEvents="box-none" onLayout={onHeaderBoxLayout}>
+                        <View className={gutter ? 'px-4 pt-4 pb-3' : 'pb-3'} pointerEvents="box-none" onLayout={onHeaderBoxLayout}>
                             {header}
                         </View>
                     </EdgeBlurView>
