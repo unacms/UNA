@@ -83,20 +83,21 @@ export function paddingForList(endpoint) {
     // Timeline uses no padding (full width items)
     if (!endpoint || endpoint?.request_url?.includes('bx_timeline') || endpoint?.params?.request_url?.includes('bx_timeline'))
         return card;
-    // Notification rows inset themselves 8px on the sides but sit 2px apart:
+    // Notification rows: on phones edge-to-edge card rows, each 1px below the
+    // one above (the first below the header band). From sm they inset themselves 8px on the sides and sit 2px apart:
     // 6px more at the top and bottom puts the first and last rows 8px from the
     // list's edges too (below the subtabs, and inside the card where it shows).
     if (endpoint?.unit == "notifications")
-        return ['py-1.5', card].join(' ').trim();
+        return ['sm:py-1.5', card].join(' ').trim();
     // Groups and grid layouts get padding for better spacing
     if (endpoint?.module == 'bx_groups' || endpoint?.request_url?.includes('r=bx_groups'))
         return ['m-1.5 @list-md/list:m-1.5', card].join(' ').trim();
-    // Profile lists run flush rows on mobile: each row is its own card 8px in
-    // from the sides, with no gap between rows. 8px at the top and bottom puts
-    // the first and last cards 8px from the list's edges too (and 14px under the
-    // subtabs, like Notifications and Messages). The sm+ grid spaces its cards.
+    // Profile lists run flush rows on mobile: edge-to-edge card rows, each 1px
+    // below the one above, like the Notifications and Messages rows. The
+    // sm+ grid spaces its cards (`padding_content`: container queries from
+    // list-sm, 40rem, so never on a phone).
     if (FLUSH_LIST_MODULES.has(endpoint?.module))
-        return [settingsLayout.layout.padding_content, 'py-2 sm:py-0', card].join(' ').trim();
+        return [settingsLayout.layout.padding_content, card].join(' ').trim();
 
     // Default padding for grid-based content lists
     return [settingsLayout.layout.padding_content, card].join(' ').trim();

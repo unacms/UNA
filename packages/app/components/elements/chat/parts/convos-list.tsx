@@ -1,8 +1,9 @@
 import { memo, useCallback, useMemo, useState, type ReactNode } from 'react';
-import { Platform, type LayoutChangeEvent } from 'react-native';
+import { Platform, useWindowDimensions, type LayoutChangeEvent } from 'react-native';
 import { Text } from 'app/design/typography';
 import { View } from 'app/design/view';
 import UniList from 'app/ui/atoms/unilist';
+import { getBreakpoint } from 'app/lib/util';
 import type { UniListRenderItem } from 'app/ui/atoms/unilist/shared';
 import {
     ConvosListHeader,
@@ -80,10 +81,13 @@ const ConvosList = memo(function ConvosList({
     const fillScreen = !isWeb && !!isSmallScreen;
     const listH = Math.max(0, listHeight || panelHeight || 0);
     const overlayList = !isSmallScreen;
-    // Rows inset themselves 8px on the sides but sit 2px apart. 6px more at the
-    // top and bottom puts the first and last rows 8px from the list's edges,
-    // like Notifications (`paddingForList` py-1.5, on web and native).
-    const listEdge = 6;
+    // Phones: edge-to-edge card rows (each 1px below the one above, the first
+    // below the header too), like Notifications. Wider: rows
+    // inset themselves 8px on the sides but sit 2px apart; 6px more at the top
+    // and bottom puts the first and last rows 8px from the list's edges, like
+    // Notifications (`paddingForList` sm:py-1.5, on web and native).
+    const { width: windowWidth } = useWindowDimensions();
+    const listEdge = getBreakpoint(windowWidth) ? 6 : 0;
     const headerInset = (overlayList ? chromeHeight : 0) + listEdge;
     const bottomInset = footerInset + listEdge;
     const listOverlayProps = useMemo(() => {
