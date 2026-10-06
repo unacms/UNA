@@ -3,7 +3,7 @@ import { useForm, FormProvider } from 'react-hook-form';
 import { getFormFieldByData, isFormResponseComplete, normalizeFormResponseData, updateFormDirtyState, isFormUnsavedCloseGuardSkipped, formHasPendingUploads, clearFormPendingUploads, formResponseHasFieldErrors, FILES_FIELD_MIRRORS } from 'app/lib/form/form-helpers'
 import { getDefaultPasteStorageKey } from 'app/components/form-fields/media-attachments'
 import { markFormBaseline } from 'app/lib/form/use-form-field'
-import { getFormInitialValues } from 'app/lib/form/field-initial-values'
+import { getFormInitialValues } from 'app/lib/form/form-initial-values'
 import { View, Row } from 'app/design/view'
 import { components } from 'app/components/registry';
 import { FeedbackHaptics, appSetting, isNumeric, isObjectsEqual } from 'app/lib/util';
