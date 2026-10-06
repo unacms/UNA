@@ -88,6 +88,7 @@
         <exclude name="upgrade/**" />
         <exclude name="node_modules/**" />
         <exclude name="bower_components/**" />
+        <exclude name="neo/**" />
         <exclude name="modules/boonex/*/updates/**" />
     </fileset>
 
@@ -119,6 +120,7 @@
         <exclude name="modules/boonex/media/plugins/**" />
         <exclude name="modules/boonex/plyr/plugins/**" />
         <exclude name="modules/boonex/xero/plugins/**" />
+        <exclude name="modules/boonex/*/updates/**" />
         <exclude name="**/updates/**" />        
     </fileset>
 
