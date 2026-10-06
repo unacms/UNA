@@ -214,6 +214,8 @@ export function buildTabBarMoreMenuItems({
             animated: tab.animated,
             addClassName: tab.addClassName,
             selected,
+            isOverflow: !!isOverflow,
+            isProfile: isProfileTab(tab),
         };
 
         if (mode === 'web') {
@@ -221,7 +223,6 @@ export function buildTabBarMoreMenuItems({
         } else {
             item.tab = tab;
             item.tabIndex = tabIndex;
-            item.isOverflow = !!isOverflow;
         }
 
         return item;
@@ -237,4 +238,24 @@ export function buildTabBarMoreMenuItems({
     }
 
     return [...visibleItems, tabBarMoreSeparator(), ...overflowItems];
+}
+
+/**
+ * More menu headed by the own profile, on every platform: a `{profile}` item
+ * first in More makes the More tab the user's avatar, and the menu's header
+ * row (avatar, name, "View profile", plus the operator agent button).
+ *
+ * `items` from `buildTabBarMoreMenuItems`; `exclude`: tab urls left out of the
+ * menu (native sheets: `expo_ui.tabs.more_sheet_exclude`). Returns the header
+ * item (null without a profile More), the rest of the menu, and `profileOnly`
+ * — the profile is the only More link and there is no agent, so the avatar is
+ * a plain profile tab instead of a menu.
+ */
+export function splitProfileMoreMenu({ items = [], overflow = [], hasAgent = false, exclude = [] }) {
+    const header = isProfileTab(overflow[0]) ? items.find((item) => item.isProfile) ?? null : null;
+    const rest = trimMenuSeparators(items.filter(
+        (item) => item !== header && !(item.tab?.url && exclude.includes(item.tab.url))
+    ));
+    const profileOnly = !!header && !hasAgent && !rest.some((item) => item.isOverflow);
+    return { header, items: rest, profileOnly };
 }

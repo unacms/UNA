@@ -158,9 +158,10 @@ export const settingsExpoUi = {
             androidIcons: null,
         },
         tabs: {
-            // iOS: More opens a native Liquid Glass sheet listing every route
-            // (tab routes, divider, overflow) in place of the tab bar, like
-            // Revolut / Linear. false = the JS popup (Android always uses it).
+            // More opens a native sheet listing every route (tab routes,
+            // divider, overflow): iOS a Liquid Glass sheet in place of the tab
+            // bar, like Revolut / Linear; Android a Material 3 modal bottom
+            // sheet. false = the JS popup.
             more_sheet: true,
             // Tab urls left out of the native sheet — its last rows sit where
             // the tab bar was, so keep destructive actions out of that spot.
