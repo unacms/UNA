@@ -87,13 +87,11 @@ export const settingsExpoUi = {
             // Override: { size: 15, weight: 'semibold', family: 'Inter' }
             // (`family` is a PostScript name — not CSS `font-main`).
             iosFont: null,
-            iosIconSize: {
-                mini: 14,
-                small: 16,
-                regular: 20,
-                large: 24,
-                extraLarge: 28,
-            },
+            // Glyph size follows `neo_button.controlSizes.*.icon` (same as web
+            // and Android). Override only to pin iOS: a point size, or scoped
+            // per NeoButton controlSize (mini … xlarge, not SwiftUI's
+            // extraLarge), e.g. { small: 18, regular: 22 }.
+            iosIconSize: null,
             iosControlSize: null,
             // Discrete SF Symbol effect on press (iOS 17+). `false` to disable.
             // Per-icon override: `{ name: 'bell.fill', effect: 'wiggle' }`.
