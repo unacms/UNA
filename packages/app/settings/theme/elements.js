@@ -6,7 +6,9 @@ export const settingsElements = {
         menu_is_dynamic: false,
         // Padding lives on the scroll *content* (w-max), not the overflow parent —
         // otherwise tabs clip at the inset instead of scrolling edge-to-edge.
-        menu_cnt: ' flex-row flex-none w-max gap-2 min-h-12 lg:min-h-14 items-center px-4 ',
+        // Below lg: a 52px row (8px above and below the pills) plus mb-0.5,
+        // 10px from the pills to the end of the header band.
+        menu_cnt: ' flex-row flex-none w-max gap-2 min-h-13 lg:min-h-14 mb-0.5 lg:mb-0 items-center px-4 ',
         menu_categ_indent: ' pl-8 ',
         topmenu_cnt:
             'w-full px-8 pt-6 items-stretch justify-stretch sticky z-50 t-8 gap-x-8 hidden lg:flex p',
@@ -89,13 +91,15 @@ export const settingsElements = {
         header: ' px-3 py-2 min-h-14 items-start justify-start border-b border-border/60 ',
     },
     cards: {
-        'u-card-list': ' u-card-list bg-card/80 shadow-card-outline dark:shadow-card-outline-deep sm:rounded-2xl ',
+        // Mobile: edge to edge on the solid card surface, no outline shadow; from
+        // sm the detached, rounded cards are /80 with the outline shadow.
+        'u-card-list': ' u-card-list bg-card sm:bg-card/80 sm:shadow-card-outline sm:dark:shadow-card-outline-deep sm:rounded-2xl ',
         'u-card-list-padding': 'p-4 sm:rounded-2xl',
         // Profile listings: photo + meta + actions on mobile, card chrome from sm (grid).
-        // Mobile: 8px margin + rounded-xl, so the press / pending fill matches the
-        // Messages and Notifications rows.
-        'u-card-list-flush': ' u-card-list u-flush-nav relative isolate mx-2 sm:mx-0 rounded-xl sm:bg-card/80 sm:shadow-card-outline sm:dark:shadow-card-outline-deep sm:rounded-2xl transition-colors duration-200 ease-out active:bg-muted/60 group-active:bg-muted/60 sm:active:bg-muted/60 sm:group-active:bg-muted/60 ',
-        'u-card-list-flush-padding': 'px-2 py-2 sm:p-4 sm:rounded-2xl',
+        // Mobile: edge-to-edge rows on the card surface, 1px apart (feed cards are 2px), like
+        // the Messages and Notifications rows.
+        'u-card-list-flush': ' u-card-list u-flush-nav relative isolate mt-px sm:mt-0 bg-card sm:bg-card/80 sm:shadow-card-outline sm:dark:shadow-card-outline-deep sm:rounded-2xl transition-colors duration-200 ease-out active:bg-muted/60 group-active:bg-muted/60 sm:active:bg-muted/60 sm:group-active:bg-muted/60 ',
+        'u-card-list-flush-padding': 'px-4 py-2 sm:p-4 sm:rounded-2xl',
         'u-card-base': 'u-card-base rounded-2xl bg-card/80 text-card-foreground shadow-card-outline dark:shadow-card-outline-deep ',
         'u-card-padding': 'py-4 ',
         'u-card-header': 'px-4',

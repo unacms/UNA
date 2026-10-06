@@ -24,9 +24,9 @@ import { FLUSH_LIST_MODULES } from 'app/components/units/flush-list';
 
 const UNIT_SURFACES = { card: Card, list: CardList };
 
-// Mobile: 8px inside the row's 8px margin (u-card-list-flush), so the photo
+// Mobile: 16px inside the edge-to-edge row (u-card-list-flush), so the photo
 // lines up with the 16px page header and subtabs.
-const FLUSH_LIST_PADDING = 'px-2 py-2 sm:p-2';
+const FLUSH_LIST_PADDING = 'px-4 py-2 sm:p-2';
 const FLUSH_ACTION_PRIMARY = 'w-1/2 sm:w-full pr-2 sm:pr-0';
 
 const UnitSurfaceContext = createContext(false);
@@ -85,7 +85,7 @@ function UnitSurface({
                     {flushOnMobile && Platform.OS !== 'web' && navPending ? (
                         <View
                             pointerEvents="none"
-                            className="absolute inset-0 rounded-xl sm:rounded-2xl bg-muted/60 animate-pulse"
+                            className="absolute inset-0 sm:rounded-2xl bg-muted/60 animate-pulse"
                         />
                     ) : null}
                     {children}

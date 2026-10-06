@@ -1287,7 +1287,7 @@ export const TabBar = ({
             contentWidth={contentWidth}
         >
              {isShowSecondLine && <Row className="px-0 w-full items-center">
-                <View className="flex-1 min-h-12 lg:min-h-14 min-w-0">
+                <View className="flex-1 min-h-13 lg:min-h-14 min-w-0">
                     {routes.length > 1 && <TabMenu
                         routes={routes}
                         index={index}

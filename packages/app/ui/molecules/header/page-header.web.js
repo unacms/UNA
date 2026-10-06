@@ -5,6 +5,7 @@ import {
     useSetScrollValue,
 } from 'app/context/jotai/layout';
 import {
+    PAGE_HEADER_BAND_CLASS,
     PageHeaderBody,
     PageHeaderSmall,
     TextHeader,
@@ -174,6 +175,16 @@ export const PageHeader = ({ pageData }) => {
             {showFixedDesktopSpacer && (
                 <View aria-hidden="true" style={{ height: headerHeight }} />
             )}
+            {/* The card band behind the header at rest: part of the page (top of
+                the flow header's slot), so it scrolls away; the fixed header
+                layer that shows at the top keeps its gradient chrome. */}
+            {usesFixedOverlayHeader && headerHeight > 0 ? (
+                <div
+                    aria-hidden
+                    className={`pointer-events-none absolute left-0 right-0 top-0 ${PAGE_HEADER_BAND_CLASS}`}
+                    style={{ height: headerHeight }}
+                />
+            ) : null}
             <View
                 className={flowHeaderContainerClassName}
                 role={usesFixedOverlayHeader && shouldRenderFixedLayer ? undefined : 'banner'}
