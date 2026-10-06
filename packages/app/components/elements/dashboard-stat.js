@@ -196,12 +196,12 @@ function DashboardStatHeader() {
                 </BlockDescription>
             </BlockName>
             <BlockActions>
-                <ProfileSwitcher hideTitle={true}>
+                <ProfileSwitcher hideTitle={true} className="u-neo-btn-link" accessibilityLabel={t('Switch profile')}>
                     <NeoButton
                         style="bordered"
                         borderShape="circle"
                         image="RefreshCw"
-                        accessibilityLabel={t('Switch profile')}
+                        interactive
                     />
                 </ProfileSwitcher>
             </BlockActions>

@@ -120,7 +120,7 @@ function CourseStructure({ data }) {
 
                                 <Row className='justify-between'>
                                     <View className='my-2 text-xs '><Text className="text-white">{t('Module {{index}}', { index: item.index })}</Text></View>
-                                    {isEditable && <Row className='items-center justify-center gap-x-2'><DropdownMenu items={manageMenu} onSelect={(oItem) => { handleManage(oItem, item.id) }} buttonProps={{ controlSize: 'small', borderShape: 'circle', image: 'Cog', accessibilityLabel: t('Settings') }} /><DragControl dragHandleProps={dragHandleProps}><NeoButton controlSize="small" borderShape="circle" image="ArrowLeftRight" interactive /></DragControl></Row>}
+                                    {isEditable && <Row className='items-center justify-center gap-x-2'><DropdownMenu items={manageMenu} onSelect={(oItem) => { handleManage(oItem, item.id) }} buttonProps={{ controlSize: 'small', borderShape: 'circle', image: 'Cog', accessibilityLabel: t('Settings') }} /><DragControl dragHandleProps={dragHandleProps} accessibilityLabel={t('Reorder')} className="u-neo-btn-link hit-area-4"><NeoButton controlSize="small" borderShape="circle" image="ArrowLeftRight" interactive /></DragControl></Row>}
                                 </Row>
                                 <View className='h-12'>
                                     <Text className="text-white text-lg leading-tight tracking-tight font-bold text-secondary-foreground " numberOfLines={2}>{item.title}</Text>

@@ -12,7 +12,12 @@ import { useTranslation } from 'react-i18next';
 import { Modal } from 'app/design/controls'
 import { BlockWrapper } from 'app/components/block-wrapper'
 
-export default function ProfileSwitcher({ className, rounded = 'rounded-lg', children, hideTitle, listOnly, blockWrapperProps }) {
+/**
+ * Children mode: the Pressable host owns the press, so `accessibilityLabel` names
+ * it (a passive NeoButton inside drops its own). Callers pass `u-neo-btn-link`
+ * (+ `hit-area-4` small / `hit-area-8` mini) in `className` for the ring and target.
+ */
+export default function ProfileSwitcher({ className, rounded = 'rounded-lg', children, hideTitle, listOnly, blockWrapperProps, accessibilityLabel }) {
     const { t } = useTranslation();
     const { currentUser, setCurrentUser } = useCurrentUser();
     const [show, setShow] = useState(false)
@@ -45,7 +50,12 @@ export default function ProfileSwitcher({ className, rounded = 'rounded-lg', chi
     return (
         <BlockWrapper {...blockWrapperProps}>
             {true ?
-                <Pressable className={wrapperClassName} onPress={() => handleClick()}>
+                <Pressable
+                    className={wrapperClassName}
+                    accessibilityRole="button"
+                    accessibilityLabel={accessibilityLabel}
+                    onPress={() => handleClick()}
+                >
                     {children}
                 </Pressable> :
                 <Link href={currentUser.url} emulate={true} >

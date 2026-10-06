@@ -207,7 +207,7 @@ export default function MenuAccount({ buttonProps, children }) {
                     if (item.link == '{switch_profile_selector}') {
                         sTitle = (
                             <Row className="w-full items-center flex-auto my-1 px-1.5">
-                                <ProfileSwitcher className="w-full u-neo-btn-link hit-area-4" hideTitle={true}>
+                                <ProfileSwitcher className="w-full u-neo-btn-link hit-area-4" hideTitle={true} accessibilityLabel={t('See all profiles')}>
                                     <NeoButton
                                         controlSize="small"
                                         width="fill"

@@ -106,13 +106,13 @@ export default function PageLayout(props) {
                                     </Link>
                                 </View> 
                                 <View className="flex-none">
-                                <ProfileSwitcher hideTitle={true} className="u-neo-btn-link">
+                                <ProfileSwitcher hideTitle={true} className="u-neo-btn-link" accessibilityLabel={t('Switch profile')}>
                                     <NeoButton borderShape="circle" image="RefreshCw" interactive />
                                 </ProfileSwitcher>
                                 </View>
                             </View>
                             <View className="flex-row  items-center gap-x-2 my-auto hidden">
-                               <ProfileSwitcher hideTitle={true} className="u-neo-btn-link">
+                               <ProfileSwitcher hideTitle={true} className="u-neo-btn-link" accessibilityLabel={t('Switch profile')}>
                                     <NeoButton borderShape="circle" image="RefreshCw" interactive />
                                 </ProfileSwitcher>
                                 {
