@@ -2,6 +2,7 @@
 import { useCallback, useEffect, useRef } from 'react'
 import { Platform } from 'react-native'
 import { isCommentEditorEnterKey, isCommentEditorNewlineEnter } from 'app/lib/editor/comment-editor-keyboard'
+import { deleteWholeMention } from 'app/lib/editor/editor-mention-shared'
 
 const isWeb = Platform.OS === 'web'
 
@@ -84,6 +85,12 @@ export function useEnrichedKeyboard({
         }
 
         const onKeyDownCapture = (event: any) => {
+            if (!event.isComposing && !event.metaKey && !event.ctrlKey && !event.altKey
+                && deleteWholeMention(tipTap, event.key)) {
+                stopKey(event)
+                return
+            }
+
             // Shift/Option+Enter with the list open is still a newline, not a pick.
             const isNewlineEnter = event.key === 'Enter' && isCommentEditorNewlineEnter(event)
             if (!isNewlineEnter && handleMentionNavKey(event.key, handlersRef.current, insertMention)) {

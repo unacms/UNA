@@ -738,7 +738,7 @@ export default function (props) {
                 if (data.data !== undefined && !formResponseHasFieldErrors(data.data)) resetImages();
             }
             if (data.action == 'pasted_images' && acceptsPastedImages && data.images?.length) {
-                const inlinePaste = data.inlinePaste === false ? false : isInlineImagePaste(formName)
+                const inlinePaste = typeof data.inlinePaste === 'boolean' ? data.inlinePaste : isInlineImagePaste(formName)
                 const assets = data.images.map((img) => ({ ...img, inlinePaste }))
                 uploadImages(assets).then((k) => setImageSource({ images: k }));
             }

@@ -4,6 +4,8 @@ import { useState, useRef, useEffect, useMemo, useCallback, Component } from 're
 import { Platform } from 'react-native'
 import { EnrichedTextInput } from 'react-native-enriched-html'
 import { View } from 'app/design/view'
+import { Text } from 'app/design/typography'
+import { useTranslation } from 'react-i18next'
 import { EditorToolbar, useEnrichedToolbar } from 'app/lib/editor/editor-toolbar'
 import { useThemeValue } from 'app/design/theme'
 import { appSetting, cn } from 'app/lib/util'
@@ -22,7 +24,12 @@ import { useTiptapEditor } from 'app/lib/editor/use-tiptap-editor'
 import { useEnrichedMentionDropdown } from 'app/lib/editor/use-enriched-mention-dropdown'
 import { useEnrichedKeyboard } from 'app/lib/editor/use-enriched-keyboard'
 import { useIsDesktop } from 'app/context/measure'
-import { fitInlineImageSize, getEditorPasteImagesMode } from 'app/lib/editor/editor-paste-images'
+import { fitInlineImageSize, getEditorPasteImagesMode, revokePastedBlobUri } from 'app/lib/editor/editor-paste-images'
+import { pickEditorImages, pickEditorVideo } from 'app/lib/editor/pick-editor-images'
+import { uploadInlineVideo, toVideoPosterSrc } from 'app/lib/editor/inline-video'
+import { uploadInlineImage, swapEditorImageSrc } from 'app/lib/editor/upload-inline-image'
+import { trackFormUploadStart, trackFormUploadEnd } from 'app/lib/form/form-helpers'
+import { useFormInstanceId } from 'app/context/form-instance'
 
 const isWeb = Platform.OS === 'web'
 const inputSettings = appSetting('theme', 'inputs')
@@ -86,6 +93,8 @@ export default function RftTextEnriched(props) {
     const containerRef = useRef(null)
     const dropdownRef = useRef(null)
     const isDesktop = useIsDesktop()
+    const formInstanceId = useFormInstanceId()
+    const { t } = useTranslation()
     const isToolBar = html == 2 || html == 1
     // UNA html=3: rich editor, no toolbar. Images paste into attachments, not <img>.
     const isLimitedHtml = html == 3
@@ -236,11 +245,75 @@ export default function RftTextEnriched(props) {
         lastSetValue.current = next
     }, [field, isLimitedHtml, name, onFocus, resetField])
 
-    // ---- image paste (library onPasteImages: blob: on web, file:// on native) ----
+    // ---- images (paste + toolbar picker) ----
+    // Toolbar editors put images in the body by default; html=3 cannot keep <img>.
+    // Inline: upload to the editor storage (like UNA's Quill) and insert the link —
+    // not via the files field, whose ghosts become attachments with private URLs.
+    const pasteImagesMode = form_name
+        ? getEditorPasteImagesMode(form_name, isToolBar ? 'inline' : undefined)
+        : 'off'
+    const isInline = !isLimitedHtml && pasteImagesMode === 'inline'
+
+    const sendImagesToFiles = useCallback((images) => {
+        if (!images?.length || pasteImagesMode === 'off') return
+        if (isInline) {
+            images.forEach(async (img, index) => {
+                // Placeholder: the local blob:/file:// image right away, swapped for the
+                // uploaded URL (or dropped on failure). Submit waits on the pending upload.
+                const uploadId = `inline-${Date.now()}-${index}`
+                const size = fitInlineImageSize(img.width, img.height)
+                trackFormUploadStart(form_name, formInstanceId, uploadId)
+                callEditor(editorRef, 'setImage', img.uri, size.width, size.height)
+                try {
+                    const src = await uploadInlineImage(img)
+                    await swapEditorImageSrc(editorRef, tipTap, img.uri, src)
+                } finally {
+                    trackFormUploadEnd(form_name, formInstanceId, uploadId)
+                    revokePastedBlobUri(img.uri)
+                }
+            })
+            return
+        }
+        emitter.emit(EVENTS.form(form_name), {
+            action: 'pasted_images',
+            images,
+            inlinePaste: false,
+        })
+    }, [form_name, formInstanceId, isInline, pasteImagesMode, tipTap])
+
+    const onInsertImage = useCallback(async () => {
+        const images = await pickEditorImages()
+        sendImagesToFiles(images)
+    }, [sendImagesToFiles])
+
+    // Video: the body keeps its poster image (the editors have no <video>/<iframe>; an
+    // image is atomic on every platform); the post view renders it as a player — see
+    // splitInlineMedia. Until transcoded the poster link shows UNA's video-na.png.
+    const [videoProgress, setVideoProgress] = useState(null)
+    const onInsertVideo = useCallback(async () => {
+        const video = await pickEditorVideo()
+        if (!video) return
+        const uploadId = `inline-video-${Date.now()}`
+        trackFormUploadStart(form_name, formInstanceId, uploadId)
+        setVideoProgress(0)
+        try {
+            const res = await uploadInlineVideo(video, setVideoProgress)
+            if (res?.link) {
+                const size = video.width && video.height
+                    ? fitInlineImageSize(video.width, video.height)
+                    : { width: 720, height: 405 }
+                callEditor(editorRef, 'setImage', toVideoPosterSrc(res.link), size.width, size.height)
+            }
+        } finally {
+            setVideoProgress(null)
+            trackFormUploadEnd(form_name, formInstanceId, uploadId)
+        }
+    }, [form_name, formInstanceId])
+
+    // Library onPasteImages: blob: on web, file:// on native.
     const onPasteImages = useCallback((e) => {
         const imgs = e?.nativeEvent?.images || []
-        if (!imgs.length || !form_name) return
-        if (getEditorPasteImagesMode(form_name) === 'off') return
+        if (!imgs.length) return
         const images = imgs.map((img, index) => {
             const mimeType = img.type || 'image/png'
             const ext = mimeType.split('/')[1] || 'png'
@@ -252,13 +325,8 @@ export default function RftTextEnriched(props) {
                 height: img.height,
             }
         })
-        // html=3 cannot keep <img> in the body; still upload to the files field.
-        emitter.emit(EVENTS.form(form_name), {
-            action: 'pasted_images',
-            images,
-            ...(isLimitedHtml ? { inlinePaste: false } : null),
-        })
-    }, [form_name, isLimitedHtml])
+        sendImagesToFiles(images)
+    }, [sendImagesToFiles])
 
     // ---- Enter routing (desktop only; mobile Enter inserts newline) ----
     const submitOnEnter = isDesktop && (
@@ -321,6 +389,7 @@ export default function RftTextEnriched(props) {
         callEditor(editorRef, 'focus')
     }, [isDisabled])
 
+
     const { items: toolbarItems, linkBar } = useEnrichedToolbar({
         editorRef,
         containerRef,
@@ -328,6 +397,9 @@ export default function RftTextEnriched(props) {
         styleState,
         selection,
         enabled: isToolBar,
+        onInsertImage: pasteImagesMode === 'off' ? undefined : onInsertImage,
+        onInsertVideo: isInline ? onInsertVideo : undefined,
+        embeds: !isLimitedHtml,
     })
 
     const surfaceClass = isToolBar
@@ -387,8 +459,14 @@ export default function RftTextEnriched(props) {
                     />
                 </EnrichedEditorBoundary>
 
+
                 {isToolBar ? (
                     <EditorToolbar items={toolbarItems} linkBar={linkBar} />
+                ) : null}
+                {videoProgress != null ? (
+                    <Text className="text-xs text-muted-foreground mt-1">
+                        {t('Uploading video')} {Math.round(videoProgress * 100)}%
+                    </Text>
                 ) : null}
             </View>
         </View>

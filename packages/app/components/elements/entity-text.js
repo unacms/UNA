@@ -1,9 +1,10 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Platform } from 'react-native';
 import { useForm, FormProvider } from 'react-hook-form';
 import { View, Pressable } from 'app/design/view';
 import Image, { POST_ENTRY_COVER_SIZES, POST_ENTRY_COVER_WIDTH_CAP } from 'app/ui/atoms/image';
 import Html from 'app/ui/atoms/html';
+import { splitInlineMedia } from 'app/lib/editor/inline-video';
 import { Text, H1C } from 'app/design/typography';
 import { Input } from 'app/design/controls';
 import { appSetting, clearLinks, getYouTubeVideoId, cn } from 'app/lib/util'
@@ -13,6 +14,8 @@ import EntityAttachments from './entity-attachments';
 import TextMore from 'app/ui/molecules/content/text-more';
 import Video from 'app/ui/atoms/video';
 import Youtube from 'app/ui/molecules/content/youtube'
+import InlineVideo from 'app/ui/molecules/content/inline-video'
+import InlineEmbed from 'app/ui/molecules/content/inline-embed'
 import { BlockWrapper } from 'app/components/block-wrapper'
 import RftText from 'app/components/form-fields/editor-rft-text'
 
@@ -237,6 +240,20 @@ const getImagesData = (data) => {
     return att;
 };
 
+/** Post body with editor videos and embeds (standalone link paragraphs) rendered inline. */
+function HtmlWithMedia({ html }) {
+    // Split the raw HTML: clearLinks would turn UNA hrefs into relative ones.
+    const segments = useMemo(() => splitInlineMedia(html), [html])
+    if (!segments.some((s) => s.type !== 'html'))
+        return <Html data={clearLinks(html)} />
+
+    return segments.map((s, i) => {
+        if (s.type === 'video') return <InlineVideo key={i} src={s.src} poster={s.poster} />
+        if (s.type === 'embed') return <InlineEmbed key={i} url={s.url} />
+        return <Html key={i} data={clearLinks(s.html)} />
+    })
+}
+
 function Default({ data, showPad, sidebar, block, blockWrapperProps, editable, afterTitle }) {
     const att = getImagesData(data);
     const isSmall = block?.module == "bx_market";
@@ -289,10 +306,9 @@ function Default({ data, showPad, sidebar, block, blockWrapperProps, editable, a
                         initialValue={data.entry_text}
                     >
                         {(body) => {
-                            const display = clearLinks(body)
                             return isSmall
-                                ? <ContentMore showLess={true} content={display} numberOfLines={3} numberOfSymbols={360} openSmall={false} customClassName="u-vanilla-html" />
-                                : <Html data={display} />
+                                ? <ContentMore showLess={true} content={clearLinks(body)} numberOfLines={3} numberOfSymbols={360} openSmall={false} customClassName="u-vanilla-html" />
+                                : <HtmlWithMedia html={body} />
                         }}
                     </EditableTextField>
                 </View>

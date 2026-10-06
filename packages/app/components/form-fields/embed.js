@@ -10,7 +10,8 @@ import { useFormField } from 'app/lib/form/use-form-field';
 function InnerEmbed({ url }) {
     // keepPreviousData: the old preview stays while the next URL resolves.
     const { data: response } = useFetch(
-        url ? `/api.php?r=${appSetting("urls", "embeds_new")}${url}` : null,
+        // Encoded: the URL is a query value (`params[]=`), its own `&` would split it.
+        url ? `/api.php?r=${appSetting("urls", "embeds_new")}${encodeURIComponent(url)}` : null,
         { keepPreviousData: true }
     );
 

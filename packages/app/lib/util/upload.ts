@@ -287,6 +287,8 @@ async function uploadDirectToUna(
 ): Promise<any | null> {
     const query = fetchUrl.split('?')[1] || '';
     const params = new URLSearchParams(query);
+    // UNA honours upload tokens for `upload` and `upload_inline` only.
+    if (!['upload', 'upload_inline'].includes(params.get('a') || '')) return null;
     const tokenPath = '/api.php?r=system/get_upload_token/TemplUploaderServices'
         + '&uo=' + encodeURIComponent(params.get('uo') || '')
         + '&so=' + encodeURIComponent(params.get('so') || '');
