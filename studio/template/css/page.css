@@ -353,7 +353,6 @@ div.bx-std-block-content > [id^="bx-grid-wrap-"] > .bx-grid-footer {
     flex: none;
     display: flex;
     align-items: center;
-    height: 4rem;
     margin: auto 0 0;
     padding: 1rem;
     border-radius: 0 0 1.5rem 1.5rem;
