@@ -246,10 +246,19 @@ function ReactionPopover({
     });
     const buttonRef = useRef(null);
 
+    // RN host views have measureInWindow; the web View is a plain div, so fall
+    // back to its viewport rect (what RN-web's measureInWindow returns).
+    const measureButton = (callback) => {
+        const node = buttonRef.current;
+        if (typeof node?.measureInWindow === 'function') return node.measureInWindow(callback);
+        const rect = node?.getBoundingClientRect?.();
+        if (rect) callback(rect.left, rect.top, rect.width, rect.height);
+    };
+
     const openModal = () => {
         if (!buttonRef.current) return;
 
-        buttonRef.current.measureInWindow((x, y, width, height) => {
+        measureButton((x, y, width, height) => {
             const popupHeight = 60;
             const popoverWidth = 300;
             const padding = 10;
@@ -548,13 +557,12 @@ export default function ElementReactions(props) {
                             doReaction(item.name);
                         }}
                         disabled={isDisabled}
-                        asChild={!isWeb}
+                        asChild
                         childRefProp="forwardedRef"
                     >
                         <ActionButton
                             startDecorator={getIcon(reaction)}
                             disabled={isDisabled}
-                            interactive
                             title={showLabel ? title : false}
                             {...buttonProps}
                         />

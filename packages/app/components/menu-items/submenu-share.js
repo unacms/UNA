@@ -76,7 +76,8 @@ export default function MenuItemSubmenuShare(oProps) {
     return (
         <>
             <Msg onVisible={showMsg} title={showMsg} handleOk={() => { setShowMsg(false); }} />
-            <Pressable className={'flex-auto' + (oProps.params?.no_gap_between_buttons === true ? (oProps.params?.button_full_width ? '  px-0 ' : '  pr-2 ') : '')} onPress={(event) => { event.preventDefault(); }}>
+            {/* Click guard only (keeps the click from reaching an enclosing link); the dropdown trigger is the button. */}
+            <Pressable className={'flex-auto' + (oProps.params?.no_gap_between_buttons === true ? (oProps.params?.button_full_width ? '  px-0 ' : '  pr-2 ') : '')} role="none" tabIndex={-1} onPress={(event) => { event?.preventDefault?.(); }}>
                 <DropdownMenu
                     items={aSubmenuItems}
                     onSelect={handleMenuManageSelect}
