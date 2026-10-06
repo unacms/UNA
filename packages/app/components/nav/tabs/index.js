@@ -73,7 +73,16 @@ const BOOTSTRAP_TIMEOUT_MS = 5000;
 /** AbortController is unreliable on some Android RN builds — race a hard timer. */
 const BOOTSTRAP_HARD_TIMEOUT_MS = 5500;
 
+/**
+ * `<scheme>://expo-development-client/?url=<metro>` — what `expo run:ios` /
+ * `run:android` open to point a dev client at Metro. Not an app route: without
+ * a dev launcher it reaches us as the initial URL, and its `?url=` query would
+ * become the home tab's page ("/?url=http://…:8081"), which loads nothing.
+ */
+const DEV_CLIENT_URL = /^[a-z][\w.+-]*:\/\/expo-development-client(?:[/?]|$)/i;
+
 function processUrl(url, router, currentUser, TabList) {
+    if (DEV_CLIENT_URL.test(url)) return;
     if (currentUser?.id) {
         const LinksForTabs = buildTabUrlIndex(TabList);
 
