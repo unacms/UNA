@@ -13,13 +13,19 @@ export default function ElementAiAgent({ data, blockWrapperProps }) {
     const contextProfileId = Number(data?.context_profile_id) || 0;
 
     return (
-        <BlockWrapper {...blockWrapperProps}>
-            <AiAgent
-                key={`${agentId}:${contextProfileId}`}
-                data={data}
-                initialMessage={initialMessage}
-                hideInitialMessage={!!initialMessage}
-            />
+        // The chat scrolls edge to edge under its own chrome: the block's title floats
+        // over the transcript on glass, and the chat keeps the margins inside.
+        <BlockWrapper {...blockWrapperProps} overlayHeader>
+            {({ header }) => (
+                <AiAgent
+                    key={`${agentId}:${contextProfileId}`}
+                    data={data}
+                    initialMessage={initialMessage}
+                    hideInitialMessage={!!initialMessage}
+                    header={header}
+                    gutter
+                />
+            )}
         </BlockWrapper>
     );
 }
