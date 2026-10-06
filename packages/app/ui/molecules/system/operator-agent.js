@@ -5,8 +5,7 @@ import { useWindowDimensions } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { View, Row } from 'app/design/view';
 import { Text } from 'app/design/typography';
-import { Button, NeoButton } from 'app/design/controls';
-import Link from 'app/ui/atoms/link';
+import { NeoButton, NeoButtonLink } from 'app/design/controls';
 import DropdownPopup from 'app/ui/atoms/dropdown-popup';
 import { useCurrentUser } from 'app/context/user';
 import emitter, { EVENTS } from 'app/context/emitter';
@@ -111,10 +110,11 @@ function OperatorAgentBody({ data, params, onClose }) {
             <View className="absolute top-0 inset-x-0 z-20" pointerEvents="box-none">
                 <EdgeBlurView edge="top" config={edgeBlurConfig('footer')} washClassName={edgeWash('panel').top} pointerEvents="box-none">
                     <Row className="items-center justify-between ps-4 pe-2 pt-2 pb-4" pointerEvents="box-none" onLayout={onTitleBarLayout}>
-                        <Text className="text-sm font-semibold text-card-foreground">
+                        {/* Sized like a block title (theme `u-block-title`). */}
+                        <Text className="text-lg font-semibold tracking-tight text-card-foreground">
                             {t('operator_agent_title')}
                         </Text>
-                        <Row className="items-center">
+                        <Row className="items-center gap-1">
                             {controls.history ? (
                                 <NeoButton
                                     style="borderless"
@@ -137,9 +137,16 @@ function OperatorAgentBody({ data, params, onClose }) {
                                     onPress={startNew}
                                 />
                             ) : null}
-                            <Link href={OPERATOR_ASSISTANT_URL}>
-                                <Button variant="link" size="sm" title={t('Open page')} />
-                            </Link>
+                            <NeoButtonLink
+                                href={OPERATOR_ASSISTANT_URL}
+                                style="borderless"
+                                borderShape="circle"
+                                controlSize="small"
+                                image="Expand"
+                                tooltip={t('Open page')}
+                                tooltipSide="bottom"
+                                accessibilityLabel={t('Open page')}
+                            />
                             {onClose ? (
                                 <NeoButton
                                     style="borderless"
