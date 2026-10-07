@@ -83,14 +83,15 @@
         <exclude name="storage/**/*" />
         <exclude name="samples/**" />
         <exclude name="scripts/**" />
+        <exclude name="tools/**" />
         <exclude name="src/**" />
         <exclude name="tests/**" />
         <exclude name="packages/**" />
         <exclude name="upgrade/**" />
         <exclude name="node_modules/**" />
-        <exclude name="bower_components/**" />
-        <exclude name="neo/**" />
+        <exclude name="bower_components/**" />        
         <exclude name="modules/boonex/*/updates/**" />
+        <exclude name="neo/**" />
     </fileset>
 
     <fileset dir="${project.basedir}" defaultexcludes="true" id="doc_files">
@@ -102,6 +103,7 @@
         <exclude name="storage/**/*" />
         <exclude name="samples/**" />
         <exclude name="scripts/**" />
+        <exclude name="tools/**" />
         <exclude name="tests/**" />
         <exclude name="packages/**" />
         <exclude name="upgrade/**" />
@@ -123,6 +125,7 @@
         <exclude name="modules/boonex/xero/plugins/**" />
         <exclude name="modules/boonex/*/updates/**" />
         <exclude name="**/updates/**" />        
+        <exclude name="neo/**" />
     </fileset>
 
     <!-- ============================================  -->
