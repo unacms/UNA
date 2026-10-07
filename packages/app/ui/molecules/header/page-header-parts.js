@@ -1,10 +1,10 @@
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useAnimatedValue } from 'app/lib/hooks/use-animated-value';
-import { Animated, Platform } from 'react-native';
+import { Animated, Platform, useWindowDimensions } from 'react-native';
 import { nativeDriver } from 'app/lib/platform/animation';
 import { View, Row } from 'app/design/view';
 import { Text } from 'app/design/typography';
-import { FeedbackHaptics, appSetting, getMenuSettings } from 'app/lib/util';
+import { FeedbackHaptics, appSetting, getBreakpoint, getMenuSettings } from 'app/lib/util';
 import { useCurrentUser } from 'app/context/user';
 import { appStatic } from 'app/lib/app-static';
 import { usePathname, useRouter } from 'app/lib/hooks/router';
@@ -373,6 +373,13 @@ export const PageHeaderBody = memo(({
     router,
 }) => {
     const { t } = useTranslation();
+    // Logo variant per breakpoint. Web picks it with classes (SSR-safe);
+    // native renders only the matching one, since `display: none` subtrees of
+    // native (Expo UI) buttons trip Fabric's layout ownership assert in debug
+    // builds (facebook/react-native#52349).
+    const { width: windowWidth } = useWindowDimensions();
+    const breakpoint = getBreakpoint(windowWidth);
+    const logoSize = isWeb ? null : (!breakpoint ? 'phone' : (breakpoint === 'sm' || breakpoint === 'md') ? 'tablet' : 'desktop');
     const ContextSelector = components['molecule']['context_selector'];
     const HeaderElement = components['molecule']['header_element'];
     const pathname = usePathname();
@@ -408,7 +415,7 @@ export const PageHeaderBody = memo(({
 
     const Logo = (
         <>
-            <View className="sm:hidden">
+            {(isWeb || logoSize === 'phone') && <View className="sm:hidden">
                 {/* 32px mark + 6px insets = 44px content — a true circle at the
                     regular control height; wider marks degrade to a padded pill. */}
                 <NeoButtonLink
@@ -422,8 +429,8 @@ export const PageHeaderBody = memo(({
                 >
                     {appStatic('logo')}
                 </NeoButtonLink>
-            </View>
-            <View className="hidden sm:flex lg:hidden">
+            </View>}
+            {(isWeb || logoSize === 'tablet') && <View className="hidden sm:flex lg:hidden">
                 <NeoButtonLink
                     href="/home"
                     alt={t('Home')}
@@ -435,8 +442,8 @@ export const PageHeaderBody = memo(({
                 >
                     {appStatic('logo')}
                 </NeoButtonLink>
-            </View>
-            <View className="hidden lg:flex -ms-2">
+            </View>}
+            {(isWeb || logoSize === 'desktop') && <View className="hidden lg:flex -ms-2">
                 <NeoButtonLink
                     href="/home"
                     alt={t('Home')}
@@ -447,7 +454,7 @@ export const PageHeaderBody = memo(({
                 >
                     {appStatic('logo')}
                 </NeoButtonLink>
-            </View>
+            </View>}
         </>
     );
 

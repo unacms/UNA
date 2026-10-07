@@ -132,6 +132,13 @@
   "expo": {
     "install": {
       "exclude": []
+    },
+    "autolinking": {
+      "android": {
+        "buildFromSource": [
+          "^expo-ui$"
+        ]
+      }
     }
   }
 }
