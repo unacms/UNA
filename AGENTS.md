@@ -11,6 +11,7 @@ This repository contains the UNA PHP application and the NEO frontend monorepo a
 ├── ...                    # UNA PHP application
 ├── tests/                 # UNA PHP unit and integration tests
 ├── modules/               # UNA modules
+├── tools/                 # Agent MCP tools (see tools/AGENTS.md)
 ├── ...
 └── neo/                   # NEO frontend monorepo
     ├── apps/
@@ -41,10 +42,6 @@ These apply to UNA PHP (`inc/`, `modules/`, `studio/`, `template/`, and install 
 
 Before adding or changing a launcher tile (`studio/template/images/icons/wi-*.svg`, `modules/**/template/images/icons/std-icon.svg`), read [`.agents/skills/studio-icons/SKILL.md`](.agents/skills/studio-icons/SKILL.md).
 
-## Language keys
-
-Add a missing English and/or Russian string with `scripts/add_lang_key.php`. Do not insert keys by hand. Read [`.agents/skills/language-keys/SKILL.md`](.agents/skills/language-keys/SKILL.md) before adding one.
-
 ## Tests
 
 Run UNA PHPUnit inside the `php` service from `docker compose`. That container is on the `unanet` network and reaches MariaDB at the host name stored in the installed site (`mysql`). PHPUnit is `plugins/bin/phpunit` after `composer install` (dev dependencies included). The site must already be installed (`inc/header.inc.php` present). Start the stack with `docker compose up -d` first.
@@ -70,22 +67,6 @@ docker compose exec -w /opt/una php ./plugins/bin/phpunit -c tests/phpunit.xml -
 ```
 
 Integration tests read `tests/.env` when that file exists (`cp tests/.env.example tests/.env`). Otherwise they use the installer defaults. A case skips an account that is not installed. JUnit output is written to `logs/junit.xml`.
-
-## Database
-
-`tools/db.php` is an MCP server (stdio, protocol `2026-07-28`) for the installed UNA database. It reads the host, name, user, and password from `inc/header.inc.php` and connects directly. Run it inside the `php` service so that host (`mysql`) resolves. A `tools/call` of the `query` tool runs the statement on the live database for this instance.
-
-Messages are one JSON-RPC object per line. Every request includes `_meta.io.modelcontextprotocol/protocolVersion` (`2026-07-28`) and `_meta.io.modelcontextprotocol/clientCapabilities`. The server answers `server/discover`, `tools/list`, and `tools/call`.
-
-From the repository root, with the stack up (`docker compose up -d`):
-
-```bash
-docker compose exec -T -w /opt/una php php tools/db.php <<'EOF'
-{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"query","arguments":{"sql":"SELECT id, name FROM sys_modules LIMIT 5"},"_meta":{"io.modelcontextprotocol/protocolVersion":"2026-07-28","io.modelcontextprotocol/clientCapabilities":{}}}}
-EOF
-```
-
-A successful `query` result has `content` (tab-separated text; the word `NULL` stands for a null) and `structuredContent.results` (column names and rows, JSON `null` for a null). Several statements separated by semicolons are allowed. A statement that changes rows reports `affected`. A SQL failure comes back as `isError: true`.
 
 ## NEO (`neo/`)
 
