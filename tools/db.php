@@ -17,6 +17,7 @@ if (PHP_SAPI !== 'cli')
 const MCP_PROTOCOL_VERSION = '2026-07-28';
 const MCP_SERVER_NAME = 'una-db';
 const MCP_SERVER_VERSION = '1.0.0';
+const MAX_RESULT_ROWS = 1000;
 
 const JSONRPC_PARSE_ERROR = -32700;
 const JSONRPC_INVALID_REQUEST = -32600;
@@ -158,7 +159,7 @@ function queryTool(): array
     return [
         'name' => 'query',
         'title' => 'Query UNA database',
-        'description' => 'Run SQL against the installed UNA database. Several statements separated by semicolons are allowed. The statement runs on the live database for this instance.',
+        'description' => 'Run SQL against the installed UNA database. Several statements separated by semicolons run in one transaction and commit together. If a later statement fails, earlier statements in that transaction are rolled back. A statement that commits on its own, such as a schema change, is kept, and the error includes the results of statements that already committed. Each result set returns at most ' . MAX_RESULT_ROWS . ' rows and sets truncated when more rows matched.',
         'inputSchema' => [
             'type' => 'object',
             'properties' => [
@@ -190,6 +191,7 @@ function queryTool(): array
                                 ],
                             ],
                             'affected' => ['type' => 'integer'],
+                            'truncated' => ['type' => 'boolean'],
                         ],
                     ],
                 ],
@@ -226,6 +228,9 @@ function callTool(object $oParams): array
     try {
         $aResults = runSql($mSql);
     }
+    catch (DbCallException $oException) {
+        return ['result' => toolError($oException->getMessage(), $oException->aResults)];
+    }
     catch (RuntimeException $oException) {
         return ['result' => toolError($oException->getMessage())];
     }
@@ -240,61 +245,388 @@ function callTool(object $oParams): array
     ]];
 }
 
-function toolError(string $sMessage): array
+function toolError(string $sMessage, array $aResults = []): array
 {
-    return [
+    if ($aResults !== [])
+        $sMessage .= "\n\n" . formatResults($aResults);
+
+    $aError = [
         'content' => [[
             'type' => 'text',
             'text' => $sMessage,
         ]],
         'isError' => true,
     ];
+    if ($aResults !== [])
+        $aError['structuredContent'] = ['results' => $aResults];
+    return $aError;
+}
+
+class DbCallException extends RuntimeException
+{
+    /** @var list<array<string, mixed>> */
+    public array $aResults;
+
+    /**
+     * @param list<array<string, mixed>> $aResults
+     */
+    public function __construct(string $sMessage, array $aResults)
+    {
+        parent::__construct($sMessage);
+        $this->aResults = $aResults;
+    }
 }
 
 /**
- * @return list<array{columns: list<string>, rows: list<list<string|null>>}|array{affected: int}>
+ * @return list<array{columns?: list<string>, rows?: list<list<string|null>>, affected?: int, truncated?: bool}>
  */
 function runSql(string $sSql): array
 {
+    $aStatements = splitSqlStatements($sSql);
+    if ($aStatements === [])
+        throw new RuntimeException('sql must contain a statement');
+
     $oDb = dbConnect();
     try {
-        $bQueryOk = $oDb->multi_query($sSql);
+        if (dbInTransaction($oDb))
+            $oDb->rollback();
+    }
+    catch (RuntimeException $oException) {
+        dbDisconnect();
+        $oDb = dbConnect();
+    }
+    dbBegin($oDb);
+    $aPending = [];
+    $aCommitted = [];
+    try {
+        foreach ($aStatements as $sStatement) {
+            $bRestart = statementRestartsTransaction($sStatement);
+            $aStatementResults = runStatement($oDb, $sStatement);
+            if ($bRestart) {
+                $aCommitted = array_merge($aCommitted, $aPending);
+                $aPending = [];
+            }
+            if (!dbInTransaction($oDb)) {
+                if (!$bRestart && statementDiscardsPending($sStatement))
+                    $aPending = [];
+                else
+                    $aCommitted = array_merge($aCommitted, $aPending, $aStatementResults);
+                $aPending = [];
+                dbBegin($oDb);
+            }
+            else {
+                foreach ($aStatementResults as $aResult)
+                    $aPending[] = $aResult;
+            }
+        }
+        if (dbInTransaction($oDb))
+            dbCommit($oDb);
+    }
+    catch (RuntimeException $oException) {
+        $bOpen = false;
+        try {
+            $bOpen = dbInTransaction($oDb);
+        }
+        catch (RuntimeException $oIgnored) {
+            dbDisconnect();
+            $aMaybe = array_merge($aCommitted, $aPending);
+            if ($aMaybe !== []) {
+                throw new DbCallException(
+                    $oException->getMessage() . "\nThe connection closed before the outcome of earlier statements could be confirmed.",
+                    $aMaybe
+                );
+            }
+            throw $oException;
+        }
+
+        if ($bOpen) {
+            try {
+                $oDb->rollback();
+            }
+            catch (mysqli_sql_exception $oRollback) {
+                dbDisconnect();
+            }
+            if ($aCommitted !== []) {
+                throw new DbCallException(
+                    $oException->getMessage() . "\nEarlier statements that already committed are listed below. The rest of this call was rolled back.",
+                    $aCommitted
+                );
+            }
+            if ($aPending !== [])
+                throw new RuntimeException($oException->getMessage() . "\nEarlier statements in this call were rolled back.");
+            throw $oException;
+        }
+
+        $aCommitted = array_merge($aCommitted, $aPending);
+        if ($aCommitted !== []) {
+            throw new DbCallException(
+                $oException->getMessage() . "\nEarlier statements already committed on the live database.",
+                $aCommitted
+            );
+        }
+        throw $oException;
+    }
+
+    return array_merge($aCommitted, $aPending);
+}
+
+/**
+ * @return list<array{columns?: list<string>, rows?: list<list<string|null>>, affected?: int, truncated?: bool}>
+ */
+function runStatement(mysqli $oDb, string $sSql): array
+{
+    try {
+        $oDb->real_query($sSql);
     }
     catch (mysqli_sql_exception $oException) {
         throw new RuntimeException($oException->getMessage());
     }
-    if (!$bQueryOk)
-        throw new RuntimeException($oDb->error !== '' ? $oDb->error : 'Query failed');
 
     $aResults = [];
     do {
-        $oResult = $oDb->store_result();
-        if ($oResult instanceof mysqli_result) {
-            $aColumns = [];
-            foreach ($oResult->fetch_fields() as $oField)
-                $aColumns[] = $oField->name;
-            $aRows = [];
-            while ($aRow = $oResult->fetch_row()) {
-                $aCells = [];
-                foreach ($aRow as $mValue)
-                    $aCells[] = $mValue === null ? null : (string)$mValue;
-                $aRows[] = $aCells;
-            }
-            $oResult->free();
-            $aResults[] = ['columns' => $aColumns, 'rows' => $aRows];
-        }
-        elseif ($oDb->errno) {
-            throw new RuntimeException($oDb->error);
-        }
-        elseif ($oDb->field_count === 0) {
+        $oResult = $oDb->use_result();
+        if ($oResult instanceof mysqli_result)
+            $aResults[] = fetchBounded($oDb, $oResult);
+        elseif ($oDb->errno)
+            throw new RuntimeException($oDb->error !== '' ? $oDb->error : 'Query failed');
+        elseif ($oDb->field_count === 0)
             $aResults[] = ['affected' => $oDb->affected_rows];
-        }
     } while ($oDb->more_results() && nextDbResult($oDb));
 
     if ($oDb->errno)
-        throw new RuntimeException($oDb->error);
+        throw new RuntimeException($oDb->error !== '' ? $oDb->error : 'Query failed');
 
     return $aResults;
+}
+
+/**
+ * @return array{columns: list<string>, rows: list<list<string|null>>, truncated?: bool}
+ */
+function fetchBounded(mysqli $oDb, mysqli_result $oResult): array
+{
+    $aColumns = [];
+    foreach ($oResult->fetch_fields() as $oField)
+        $aColumns[] = $oField->name;
+
+    $aRows = [];
+    $bTruncated = false;
+    while ($aRow = $oResult->fetch_row()) {
+        if (count($aRows) >= MAX_RESULT_ROWS) {
+            $bTruncated = true;
+            break;
+        }
+        $aCells = [];
+        foreach ($aRow as $mValue)
+            $aCells[] = $mValue === null ? null : (string)$mValue;
+        $aRows[] = $aCells;
+    }
+
+    if ($bTruncated)
+        releaseResult($oDb, $oResult);
+    else
+        $oResult->free();
+
+    $aResult = ['columns' => $aColumns, 'rows' => $aRows];
+    if ($bTruncated)
+        $aResult['truncated'] = true;
+    return $aResult;
+}
+
+function releaseResult(mysqli $oDb, mysqli_result $oResult): void
+{
+    try {
+        $oKiller = dbOpen();
+        try {
+            $oKiller->query('KILL QUERY ' . (int)$oDb->thread_id);
+        }
+        catch (mysqli_sql_exception $oException) {
+        }
+        $oKiller->close();
+    }
+    catch (RuntimeException $oException) {
+    }
+
+    try {
+        $oResult->free();
+    }
+    catch (mysqli_sql_exception $oException) {
+        $bAlive = false;
+        try {
+            $bAlive = $oDb->ping();
+        }
+        catch (mysqli_sql_exception $oPing) {
+            $bAlive = false;
+        }
+        if (!$bAlive) {
+            dbDisconnect();
+            throw new RuntimeException($oException->getMessage());
+        }
+    }
+}
+
+/**
+ * @return list<string>
+ */
+function splitSqlStatements(string $sSql): array
+{
+    $aChars = mb_str_split($sSql);
+    $iLen = count($aChars);
+    $aStatements = [];
+    $sCurrent = '';
+    $sMode = '';
+    $sQuote = '';
+
+    for ($i = 0; $i < $iLen; $i++) {
+        $sChar = $aChars[$i];
+        $sNext = $i + 1 < $iLen ? $aChars[$i + 1] : '';
+
+        if ($sMode === 'line') {
+            $sCurrent .= $sChar;
+            if ($sChar === "\n" || $sChar === "\r")
+                $sMode = '';
+            continue;
+        }
+        if ($sMode === 'block') {
+            $sCurrent .= $sChar;
+            if ($sChar === '*' && $sNext === '/') {
+                $sCurrent .= $sNext;
+                $i++;
+                $sMode = '';
+            }
+            continue;
+        }
+        if ($sMode === 'quote' || $sMode === 'ident') {
+            $sCurrent .= $sChar;
+            if ($sMode === 'quote' && $sChar === '\\' && $sNext !== '') {
+                $sCurrent .= $sNext;
+                $i++;
+                continue;
+            }
+            if ($sChar === $sQuote) {
+                if ($sNext === $sQuote) {
+                    $sCurrent .= $sNext;
+                    $i++;
+                    continue;
+                }
+                $sMode = '';
+            }
+            continue;
+        }
+
+        if ($sChar === "'" || $sChar === '"') {
+            $sMode = 'quote';
+            $sQuote = $sChar;
+            $sCurrent .= $sChar;
+            continue;
+        }
+        if ($sChar === '`') {
+            $sMode = 'ident';
+            $sQuote = '`';
+            $sCurrent .= $sChar;
+            continue;
+        }
+        if ($sChar === '#') {
+            $sMode = 'line';
+            $sCurrent .= $sChar;
+            continue;
+        }
+        if ($sChar === '-' && $sNext === '-') {
+            $sThird = $i + 2 < $iLen ? $aChars[$i + 2] : '';
+            if ($sThird === '' || preg_match('/\s/u', $sThird) === 1) {
+                $sMode = 'line';
+                $sCurrent .= $sChar;
+                continue;
+            }
+        }
+        if ($sChar === '/' && $sNext === '*') {
+            $sMode = 'block';
+            $sCurrent .= $sChar;
+            continue;
+        }
+        if ($sChar === ';') {
+            if (sqlWithoutLeadingComments($sCurrent) !== '')
+                $aStatements[] = $sCurrent;
+            $sCurrent = '';
+            continue;
+        }
+        $sCurrent .= $sChar;
+    }
+
+    if (sqlWithoutLeadingComments($sCurrent) !== '')
+        $aStatements[] = $sCurrent;
+    return $aStatements;
+}
+
+function sqlWithoutLeadingComments(string $sSql): string
+{
+    $s = $sSql;
+    do {
+        $sNext = preg_replace(
+            '/\A(?:\s+|\/\*[\s\S]*?\*\/|#.*(?:\n|$)|--[ \t].*(?:\n|$)|--(?:\r\n|\n|\r|$))/u',
+            '',
+            $s,
+            1,
+            $iCount
+        );
+        if (!is_string($sNext))
+            return trim($s);
+        $s = $sNext;
+    } while ($iCount > 0);
+
+    return $s;
+}
+
+function statementRestartsTransaction(string $sSql): bool
+{
+    $s = sqlWithoutLeadingComments($sSql);
+    if (preg_match('/^BEGIN\b(?!\s+NOT\b)/i', $s) === 1)
+        return true;
+    return preg_match('/^START\s+TRANSACTION\b/i', $s) === 1;
+}
+
+function statementDiscardsPending(string $sSql): bool
+{
+    $s = sqlWithoutLeadingComments($sSql);
+    return preg_match('/^ROLLBACK\b(?!\s+TO\b)/i', $s) === 1;
+}
+
+function dbBegin(mysqli $oDb): void
+{
+    try {
+        $oDb->begin_transaction();
+    }
+    catch (mysqli_sql_exception $oException) {
+        throw new RuntimeException($oException->getMessage());
+    }
+}
+
+function dbCommit(mysqli $oDb): void
+{
+    try {
+        $oDb->commit();
+    }
+    catch (mysqli_sql_exception $oException) {
+        try {
+            $oDb->rollback();
+        }
+        catch (mysqli_sql_exception $oRollback) {
+            dbDisconnect();
+        }
+        throw new RuntimeException($oException->getMessage());
+    }
+}
+
+function dbInTransaction(mysqli $oDb): bool
+{
+    try {
+        $oResult = $oDb->query('SELECT @@SESSION.in_transaction');
+    }
+    catch (mysqli_sql_exception $oException) {
+        throw new RuntimeException($oException->getMessage());
+    }
+    $aRow = $oResult->fetch_row();
+    $oResult->free();
+    return isset($aRow[0]) && $aRow[0] === '1';
 }
 
 function nextDbResult(mysqli $oDb): bool
@@ -329,14 +661,35 @@ function formatResults(array $aResults): string
             }
             $aLines[] = implode("\t", $aCells);
         }
+        if (!empty($aResult['truncated']))
+            $aLines[] = '(truncated to ' . count($aResult['rows']) . ' rows)';
         $aBlocks[] = implode("\n", $aLines);
     }
     return implode("\n\n", $aBlocks);
 }
 
-function dbConnect(): mysqli
+function &dbStoredLink(): ?mysqli
 {
     static $oDb = null;
+    return $oDb;
+}
+
+function dbDisconnect(): void
+{
+    $oDb = &dbStoredLink();
+    if ($oDb instanceof mysqli) {
+        try {
+            $oDb->close();
+        }
+        catch (mysqli_sql_exception $oException) {
+        }
+    }
+    $oDb = null;
+}
+
+function dbConnect(): mysqli
+{
+    $oDb = &dbStoredLink();
     if ($oDb instanceof mysqli) {
         try {
             if ($oDb->ping())
@@ -347,6 +700,12 @@ function dbConnect(): mysqli
         }
     }
 
+    $oDb = dbOpen();
+    return $oDb;
+}
+
+function dbOpen(): mysqli
+{
     $sHeaderPath = dirname(__DIR__) . '/inc/header.inc.php';
     if (!is_readable($sHeaderPath))
         throw new RuntimeException('UNA is not installed (inc/header.inc.php is missing)');
@@ -372,8 +731,7 @@ function dbConnect(): mysqli
         throw new RuntimeException('Database connect failed: ' . $oException->getMessage());
     }
 
-    $oDb = $oLink;
-    return $oDb;
+    return $oLink;
 }
 
 /**

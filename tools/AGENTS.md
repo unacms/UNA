@@ -28,4 +28,4 @@ docker compose exec -T -w /opt/una php php tools/db.php <<'EOF'
 EOF
 ```
 
-A successful `query` result has `content` (tab-separated text; the word `NULL` stands for a null) and `structuredContent.results` (column names and rows, JSON `null` for a null). Several statements separated by semicolons are allowed. A statement that changes rows reports `affected`. A SQL failure comes back as `isError: true`.
+A successful `query` result has `content` (tab-separated text; the word `NULL` stands for a null) and `structuredContent.results` (column names and rows, JSON `null` for a null). Several statements separated by semicolons run in one transaction and commit together. If a later statement fails, earlier statements in that transaction are rolled back and the error says so. A statement that commits by itself, such as a schema change, stays applied; the error then includes the results of the statements that already committed. A statement that changes rows reports `affected`. A result set contains at most 1000 rows. A truncated set has `truncated` true and the text says it was truncated. A SQL failure comes back as `isError: true`.
