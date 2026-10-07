@@ -64,6 +64,19 @@ export function toVideoPosterSrc(mp4Link: string) {
 
 const decodeAmp = (s: string) => s.replace(/&amp;/g, '&')
 
+/** Only http(s) URLs may be embedded: anything else (`javascript:`, `data:`…) is dropped. */
+export function isHttpUrl(url: string | null | undefined): boolean {
+    if (!url) return false
+    try {
+        const { protocol } = new URL(url)
+        return protocol === 'http:' || protocol === 'https:'
+    } catch {
+        return false
+    }
+}
+
+const embedSegment = (url: string): InlineSegment | null => (isHttpUrl(url) ? { type: 'embed', url } : null)
+
 const IMG = '<img\\b[^>]*\\bsrc="([^"]+)"[^>]*>'
 // Legacy (link) format of the first builds: a paragraph with only a marked link.
 const LINK = '<a\\b[^>]*\\bhref="([^"]+)"[^>]*>[^<]*</a>'
@@ -82,14 +95,14 @@ function toSegment(rawSrc: string | undefined, isLink: boolean): InlineSegment |
     const fragment = src.slice(hash + 1)
     if (!isLink && fragment.startsWith(EMBED_MARK)) {
         try {
-            return { type: 'embed', url: decodeURIComponent(fragment.slice(EMBED_MARK.length)) }
+            return embedSegment(decodeURIComponent(fragment.slice(EMBED_MARK.length)))
         } catch {
             return null
         }
     }
     // Legacy embed link: `URL#neo-embed` / `URL#frag&neo-embed`.
     if (isLink && /(^|&)neo-embed$/.test(fragment)) {
-        return { type: 'embed', url: src.replace(/[#&]neo-embed$/, '') }
+        return embedSegment(src.replace(/[#&]neo-embed$/, ''))
     }
     return null
 }
