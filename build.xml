@@ -62,6 +62,7 @@
         <exclude name="ai/**" />
         <exclude name="inc/header*" />
         <exclude name="AGENTS.md" />
+        <exclude name="CLAUDE.md" />
         <exclude name="build.xml" />
         <exclude name="build.properties" />
         <exclude name="bower.json" />

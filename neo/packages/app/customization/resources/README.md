@@ -1,12 +1,13 @@
-# Agent documentation — customization layer
+# customization/resources
 
-This folder holds **per-project agent instructions** that **reference** the repo-root [`AGENTS.md`](../../../../AGENTS.md) and [`CLAUDE.md`](../../../../CLAUDE.md) and **extend** them with fork- or client-specific knowledge.
+Files a fork ships with its build, plus its notes for coding agents. The rules for forks and the full list of customization seams are in the NEO root [`AGENTS.md`](../../../../AGENTS.md#forks-and-the-customization-layer).
 
-## Workflow
+| Path | Used for |
+|---|---|
+| `web/` | Flat files copied into `apps/next/public/static/` whenever the Next config loads, served as `/static/<name>`: `favicon.svg`, `manifest.json` and every icon the manifest names. Subfolders aren't copied, and the copy never deletes stale files. The folder is optional. |
+| `native/` | App icon, splash and other native assets. Nothing reads this folder on its own; reference the files from `config/app.config.js` as `../../packages/app/customization/resources/native/<file>`. |
+| `sounds/` | Default notification and UI sounds, used through `customization/sounds.js`. |
+| `agents.md` | The fork's notes for every coding agent. |
+| `claude.md` | The fork's notes for Claude Code only. |
 
-| Repo | What to change |
-|------|----------------|
-| **Upstream NEO (this monorepo)** | Keep [`AGENTS.md`](../../../../AGENTS.md) and [`CLAUDE.md`](../../../../CLAUDE.md) as the shared source of truth. Leave the files in **this folder** minimal so they rarely conflict on merge. |
-| **Branch / fork / customer projects** | Prefer **only** editing files under [`packages/app/customization/`](..)—including [`agents.md`](agents.md) and [`claude.md`](claude.md) here—to add deployment URLs, UNA module notes, team conventions, or extra skills notes without touching root docs or default app code. |
-
-Root docs describe skills ([`.agents/skills/`](../../../../.agents/skills/)), UNA integration, and precedence—including the **local [`una-api`](../../../../.agents/skills/una-api/SKILL.md)** and **[`react-doctor`](../../../../.agents/skills/react-doctor/SKILL.md)** skills. This folder is the safe place to stack **additional** rules for a derivative build.
+Upstream NEO (`neo/` in [unacms/UNA](https://github.com/unacms/UNA)) keeps `agents.md` and `claude.md` as templates and changes nothing below their "Per-project additions" line, so a fork's notes there survive every sync.
