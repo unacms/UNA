@@ -16,6 +16,7 @@ import { Platform } from 'react-native'
 import { getWindowSafeAreaInsets, useRouter } from 'app/lib/hooks/router'
 import { navigateBackInTab } from 'app/lib/navigation/tab-history'
 import { useCoverBackTabKey, useShowCoverBackButton } from 'app/components/elements/use-cover-back'
+import { useIsPushedScreen } from 'app/context/tab-chrome'
 import { useTranslation } from 'react-i18next'
 
 // Matches `top-3` overlay spacing on the full cover.
@@ -36,6 +37,7 @@ function BackButton() {
     const { currentUser } = useCurrentUser()
     const currentTab = useCoverBackTabKey()
     const showBack = useShowCoverBackButton()
+    const isPushedScreen = useIsPushedScreen()
 
     const handleBackPress = () => {
         FeedbackHaptics('Medium')
@@ -45,6 +47,11 @@ function BackButton() {
             } else if (router?.replace) {
                 router.replace('/')
             }
+            return
+        }
+        // A pushed page pops the tab's stack; a tab root shows its root page.
+        if (isPushedScreen) {
+            router.back()
             return
         }
         navigateBackInTab(router, currentTab, currentUser)
