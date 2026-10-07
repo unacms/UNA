@@ -63,6 +63,8 @@
         <exclude name="inc/header*" />
         <exclude name="AGENTS.md" />
         <exclude name="CLAUDE.md" />
+        <exclude name=".agents/**" />
+        <exclude name=".claude/**" />
         <exclude name="build.xml" />
         <exclude name="build.properties" />
         <exclude name="bower.json" />
@@ -203,6 +205,14 @@
         <zip destfile="${project.basedir}/packages/${package_file}">
             <fileset dir="${project.basedir}/packages/tmp" defaultexcludes="true" />
         </zip>
+
+        <fail message="Package archive was not created: packages/${package_file}">
+            <condition>
+                <not>
+                    <available file="${project.basedir}/packages/${package_file}" />
+                </not>
+            </condition>
+        </fail>
 
         <delete dir="${project.basedir}/packages/tmp" quiet="true" />
 
