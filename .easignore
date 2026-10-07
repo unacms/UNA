@@ -1,16 +1,16 @@
-# .easignore — что НЕ уезжает в архив сборки EAS.
+# .easignore: what EAS leaves out of the build archive.
 #
-# Зачем отдельный файл: EAS копирует рабочую папку с фильтром по .gitignore,
-# поэтому yarn.lock, лежащий в .gitignore, не доезжал до билдера и там
-# заново резолвились все версии (так в проект приехал tailwind 4.3.3
-# со сломанными брейкпоинтами, см. uni-stack/uniwind#668).
+# Why a separate file: EAS copies the project folder filtered by .gitignore,
+# so the gitignored yarn.lock never reached the builder, which then re-resolved
+# every version. That is how tailwind 4.3.3, with broken breakpoints, got in
+# (see uni-stack/uniwind#668).
 #
-# Правила ниже — копия .gitignore БЕЗ yarn.lock, плюс то, что покрывали
-# вложенные .gitignore. Если добавляешь правило в .gitignore и оно должно
-# действовать и на сборку — добавь его и сюда.
+# The rules below are a copy of .gitignore WITHOUT yarn.lock, plus what the
+# nested .gitignore files covered. If you add a rule to .gitignore that should
+# also apply to builds, add it here too.
 #
-# ВАЖНО: пока этот файл существует, EAS полностью игнорирует все .gitignore.
-# .git и node_modules исключаются всегда, их перечислять не нужно.
+# IMPORTANT: while this file exists, EAS ignores every .gitignore.
+# .git and node_modules are always excluded and don't need listing.
 
 .env.local
 
@@ -108,8 +108,8 @@ package-lock.json
 *crash.log
 *crash*.log
 
-# --- из вложенных .gitignore (apps/next, apps/expo) ---
-# apps/expo/android и apps/expo/ios уже покрыты правилами **/*/android и **/*/ios выше.
+# --- from the nested .gitignore files (apps/next, apps/expo) ---
+# apps/expo/android and apps/expo/ios are already covered by **/*/android and **/*/ios above.
 out/
 coverage/
 dist/

@@ -1,17 +1,8 @@
-# Agent instructions — customization layer
+# Agent notes for this project
 
-This file is part of [`packages/app/customization/`](..). Use it to **add** project-specific guidance for AI agents **without** forking the main monorepo [`AGENTS.md`](../../../../AGENTS.md).
+This file belongs to the fork. Agents read it together with the NEO root [`AGENTS.md`](../../../../AGENTS.md), which covers NEO itself, the rules for forks and every customization seam. Claude Code loads it automatically through the root `CLAUDE.md`; other agents must be told to read it.
 
-## Canonical reference (read first)
-
-- **Full NEO monorepo instructions:** [`AGENTS.md` at repository root](../../../../AGENTS.md)
-- **Claude entry point:** [`CLAUDE.md` at repository root](../../../../CLAUDE.md)
-- **Installed Vercel/agent skills:** [`.agents/skills/`](../../../../.agents/skills/) — see root `AGENTS.md` for the skill table, CLI ids, and [skill precedence](../../../../AGENTS.md#skill-precedence-neo-vs-generic-guidance)
-
-## Upstream vs derivative projects
-
-- **Upstream:** Keep this file short; avoid duplicating root content.
-- **Branches / forks:** Edit **this file** (and other files under `packages/app/customization/` only) to record client-specific UNA endpoints, modules, branding, deployment, or team rules—so merges from upstream do not conflict with agent docs at the repo root.
+Upstream NEO keeps this file as an empty template so that syncing a fork never conflicts. In a fork, write the project's notes under "Per-project additions": the client's UNA URL and modules, deployment, branding, team rules.
 
 ---
 

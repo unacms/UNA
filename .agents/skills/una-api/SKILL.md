@@ -1,120 +1,62 @@
 ---
 name: una-api
-description: UNA CMS API contracts for NEO—guest-safe blocks, JSON responses, endpoint shape, and coordination with packages/app fetcher. Use when editing UNA PHP blocks/services, debugging blank pages from API failures, or integrating new UNA endpoints with the NEO monorepo.
-metadata:
-  author: neo
-  version: "1.0.0"
+description: How UNA CMS services must behave for NEO (guest-safe blocks, JSON-only responses, api.php contract) and how NEO calls them. Use when editing UNA PHP blocks or services that NEO renders, adding a new UNA endpoint for NEO, or debugging a blank or maintenance-mode NEO page caused by an API failure.
 ---
 
-# UNA CMS API — NEO integration
+# UNA API for NEO
 
-This skill describes how **UNA CMS** backends must behave so the **NEO** frontend (Yarn monorepo: `apps/next`, `apps/expo`, shared `packages/app`) receives **parseable JSON**, not PHP fatals or HTML error pages.
+NEO renders pages that UNA describes. Each app has one catch-all route that asks UNA for the page (`system/get_page_by_request/TemplServicePages`) and renders its blocks. The rest of the data comes from UNA services called through `api.php`. When a service prints a PHP fatal or an HTML error page instead of JSON, NEO can't render the page.
 
-## NEO frontend expectations
+UNA's PHP code is the rest of the UNA repo, one level above `neo/`. Paths below that start with `api.php`, `inc/` or `modules/` are UNA paths. Client forks of unacms/neo don't contain them.
 
-- **All UNA API calls from app code** go through [`packages/app/lib/fetcher.ts`](../../../packages/app/lib/fetcher.ts) (`import { fetcher } from 'app/lib/fetcher'`). It normalizes hosts for web vs native (`use_proxy_web`, `use_proxy_native`, `UNA_URL`, `APP_URL`, etc.) and parses **JSON** responses.
-- **Endpoint shape:** `/api.php?r=module/action/Template` with params as required by UNA (often `params[]=...` with JSON). Do not invent ad hoc REST shapes without aligning with existing NEO usage.
-- **Page data:** NEO loads page payloads via UNA (e.g. flows using `get_page_by_request`). Responses must include page metadata, blocks configuration, and user context **without** assuming a logged-in user everywhere.
+## The api.php contract
 
-## Critical issue — guest (non-logged-in) users
+- Route: `/api.php?r={module}/{method}/{class}`. The class defaults to `Module`; system services use `Templ*` classes, for example `system/get_page_by_request/TemplServicePages`.
+- Parameters: repeated `params[]=...`, or one JSON array `params=[...]`.
+- Only services the module marks safe (`is_safe_service`) or public (`is_public_service`) can be called. Anything else returns 403 `{status: 403, error}` unless `sys_api_access_unsafe_services` is on.
+- Success: `{status: 200, module, method, params, data, hash}`. NEO reads `data`.
+- A service that returns `['error' => ..., 'code' => ..., 'desc' => ...]` produces HTTP 500 with `{status, error, data}` (plus `code` when given).
+- Page blocks arrive in `data.elements`, keyed by cell (`cell_center`, ...).
 
-UNA still evaluates **all** configured blocks for a page when the user is a **guest**. If any block assumes a logged-in user and calls methods on `false` / null, PHP throws.
+## How NEO calls it
 
-### What breaks NEO
+- Client code calls UNA through `fetcher` from `app/lib/fetcher` (`packages/app/lib/fetcher.ts`):
+  - `fetcher(path)` does a GET.
+  - `fetcher([path, token, body])` POSTs `body`.
+  - It appends `&lang=`, so the path must already contain `?r=`.
+  - On web it calls same-origin `/api/...`; `apps/next/proxy.js` forwards that to UNA, adds `Authorization: Bearer UNA_API_KEY` and passes the viewer's cookies.
+  - Native calls `UNA_URL` directly with an `Origin: APP_ORIGIN` header and the session cookie. Native has no API key.
+  - If the body isn't JSON, `fetcher` returns `{}`, so a broken service shows up as missing data, not as an error.
+- Many endpoints come from UNA data rather than code: `'/api.php?r=' + data.request_url`. Fixed ones live in `appSetting('urls', ...)` (`packages/app/settings/configs.js`).
+- Three places skip `fetcher` on purpose:
+  - The web page shell (`apps/next/app/[...path]/page.js`) fetches the page JSON on the server with the API key and the viewer's cookies.
+  - AI chat streaming (`ui/molecules/ai-agent/helper.js`) reads server-sent events.
+  - Direct file uploads (`lib/util/upload.ts`).
+- If the page JSON can't be parsed, the web shell logs the PHP output and renders the page as `page_status: 503`. `Layout` then shows the maintenance screen for the whole page. The home page falls back to a static splash. Fix the PHP; the fallback is only a safety net.
 
-1. UNA returns an **HTML** error page (or PHP fatal output) instead of JSON.
-2. `fetcher` / client code cannot parse JSON → whole route can fail.
-3. Users may see a **blank page** (including static areas like splash).
+## Guests: the usual cause of broken pages
 
-**Example (anti-pattern):**
+For a guest, UNA evaluates every block whose `visible_for_levels` includes the guest level. A block that calls a method on a missing profile then fatals, and the whole page response stops being JSON.
 
 ```php
-// BAD — crashes when user is not logged in
-$user->isOnline();
+// Bad: fatal for guests
+$oProfile = BxDolProfile::getInstance();
+$bOnline = $oProfile->isOnline();
 
-// GOOD — guard first
-$user && $user->isOnline();
+// Good: getInstance() returns false for guests
+$oProfile = BxDolProfile::getInstance();
+if (!$oProfile)
+    return '';
+$bOnline = $oProfile->isOnline();
 ```
 
-## Best practices for UNA blocks and services
+- Guard every profile or user access: `BxDolProfile::getInstance()` returns false for guests, and so does `bx_get_logged_profile_id()`.
+- Return empty content (`''` or an empty array) for guests instead of throwing.
+- Block visibility is the `visible_for_levels` bitmask in `sys_pages_blocks`. Bit `2^(level_id - 1)` enables a member level; the guest level is id 1, so bit value 1 (`inc/classes/BxDolAcl.php`). Members-only blocks use `2147483646` (every level except guest). Give a block guest visibility only when its code handles guests.
+- Don't confuse this with `BX_DOL_PG_MEMBERS` / `BX_DOL_PG_ALL`: those are content privacy groups (`inc/classes/BxDolPrivacy.php`), not block visibility.
 
-### 1. Always guard user / profile context
+## Checks for a UNA change NEO uses
 
-```php
-public function serviceGetBlockContacts() {
-    $oProfile = BxDolProfile::getInstance();
-
-    if (!$oProfile) {
-        return array('content' => '', 'menu' => '');
-    }
-
-    $bOnline = $oProfile->isOnline();
-    // ...
-}
-```
-
-### 2. Block visibility (`visible_for`)
-
-- Use `BX_DOL_PG_MEMBERS` for blocks that require a logged-in user.
-- Use `BX_DOL_PG_ALL` only if the block code **explicitly** handles guests.
-
-### 3. Graceful degradation in templates
-
-Return empty states or safe defaults instead of throwing when profile/user is missing.
-
-### 4. Defensive service methods
-
-Check module enabled, then logged profile id (`bx_get_logged_profile_id()` or equivalent), return `''` or empty structures for guests when appropriate.
-
-## API response shape
-
-**Success** responses should be JSON NEO can consume, e.g.:
-
-```json
-{
-  "data": {
-    "title": "Page Title",
-    "uri": "/page-uri",
-    "logged": 0,
-    "blocks": { }
-  },
-  "code": 200
-}
-```
-
-**Never** return raw PHP error HTML inside an API response body for routes NEO expects as JSON.
-
-## Page-specific notes
-
-- **Home / guest splash:** Prefer blocks that work without auth; keep messenger, notifications, and user-only blocks on **members** visibility.
-- **Profile / content:** Respect permissions; return empty or restricted states instead of errors.
-
-## Testing checklist (UNA side)
-
-- [ ] Logged-out (guest) session
-- [ ] Logged-in user
-- [ ] Different permission levels
-- [ ] Network tab: response is JSON, no PHP error text in body
-
-## Debugging on UNA servers
-
-- Log errors; avoid `display_errors` on responses used as APIs.
-- Use server error logs (paths vary by hosting).
-
-## NEO frontend workaround (not a substitute for fixing UNA)
-
-The web app may handle API errors on specific routes (e.g. home) with fallback UI—see **[`apps/next/app/[...path]/page.js`](../../../apps/next/app/[...path]/page.js)** for graceful handling when `data.code` indicates server errors. **Fix the root cause in UNA**; the workaround is a safety net.
-
-## Summary
-
-| Do | Don't |
-|----|-------|
-| Guard `$oProfile` / user before use | Assume user is always logged in |
-| Return empty content for guests | Let PHP errors reach the response body |
-| Configure `visible_for` appropriately | Expose member-only blocks to guests without safe code |
-| Log errors server-side | Emit HTML fatal errors on JSON API routes |
-
-## Related NEO docs
-
-- Root agent guide: [`agents.md`](../../../agents.md) (UNA CMS API Integration, precedence).
-- Project rules: [`.cursorrules`](../../../.cursorrules).
+- Load the page as a guest and as a member, and as a member of a restricted level if the block is restricted.
+- In the network tab, every `api.php` response body is JSON with no PHP warnings or HTML in it. Turn `display_errors` off for API traffic and read the server error log instead.
+- New services NEO calls must be marked safe or public, or the call returns 403.
