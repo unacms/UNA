@@ -1660,6 +1660,7 @@
     /* 20px glyph in the 32px tile, like the header buttons (the svg fills the padding box; font icons get the same size). */
     .bx-std .bx-std-tile-btn > .sys-icon {
         @apply flex items-center justify-center text-[20px] leading-5;
+        @apply text-black/80 dark:text-white/80;
     }
     /* group-hover can't be @applied here (Tailwind would put .group above .bx-std), so the hovered link is spelled out. */
     .bx-std .group:hover .bx-std-tile-btn {

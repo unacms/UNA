@@ -107,6 +107,7 @@ class BxBaseStudioBuilderPage extends BxDolStudioBuilderPage
             'jquery.ui.touch-punch.min.js',
             'jquery.easing.js',
             'jquery.form.min.js',
+            'forms.js',
             'functions.js',
             'builder_page.js'
         ]);
