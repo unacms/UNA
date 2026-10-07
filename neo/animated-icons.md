@@ -1,6 +1,6 @@
 # Animated icons (NEO)
 
-This document describes how **Lucide-based animated icons** are wired in the monorepo so they work on **web and native** without breaking `react-native-svg` on the web.
+This document describes how **Lucide-based animated icons** are wired in NEO so they work on **web and native** without breaking `react-native-svg` on the web.
 
 ## When to use this
 
@@ -16,7 +16,7 @@ Use animated icons for nav items, tabs, or buttons where `Icon` is called with `
 ## Registry (required)
 
 - **Default map:** [`packages/app/default/animated-icons.js`](packages/app/default/animated-icons.js) — exports `animatedIcons` keyed by **Lucide component names** as returned after `findIconFromRemote` (e.g. `House`, `Compass`). Add new entries here for upstream NEO.
-- **Forks / custom apps:** extend via [`packages/app/customization/animated-icons.js`](packages/app/customization/animated-icons.js) by spreading the default `animatedIcons` and adding or overriding keys. **Do not** edit the customization file in the main upstream repo unless the project is a fork.
+- **Forks / custom apps:** extend via [`packages/app/customization/animated-icons.js`](packages/app/customization/animated-icons.js) by spreading the default `animatedIcons` and adding or overriding keys. Upstream NEO keeps that file a plain re-export (see [Forks and the customization layer](AGENTS.md#forks-and-the-customization-layer)).
 
 ```javascript
 import { animatedIcons as animatedIconsDefault } from 'app/default/animated-icons';
@@ -28,7 +28,7 @@ export const animatedIcons = {
 };
 ```
 
-If a name is missing from the registry, `Icon` falls back to the normal (non-animated) Lucide path.
+If a name is missing from the registry, `Icon` falls back to the normal (non-animated) Lucide path. An icon of the same name in `customization/icons-svg.js` wins over the animated registry, so a fork's custom icon is never animated.
 
 **Default registry keys (upstream NEO):** `House`, `Compass`, `TvMinimalPlay`, `Store`, `Shapes`, `Calendar`, `Bell`, `Info`, `Mail`, `Menu`, `MessageCircleMore`, `UsersRound` (see [`packages/app/default/animated-icons.js`](packages/app/default/animated-icons.js)).
 
@@ -43,18 +43,19 @@ Scene names supported by the parser: `fill`, `draw`, `morph`, `smoke`, `custom1`
 
 Reference implementations:
 
-- [`packages/app/ui/atoms/animated-icons/icons/house.js`](packages/app/ui/atoms/animated-icons/icons/house.js) — fill opacity, scale, and **draw** (stroke dash) on hover.
-- [`packages/app/ui/atoms/animated-icons/icons/compass.js`](packages/app/ui/atoms/animated-icons/icons/compass.js) — fill opacity, rotation, **paths aligned with Lucide**.
+- [`packages/app/ui/atoms/animated-icons/icons/house.tsx`](packages/app/ui/atoms/animated-icons/icons/house.tsx) — fill opacity, scale, and **draw** (stroke dash) on hover.
+- [`packages/app/ui/atoms/animated-icons/icons/compass.tsx`](packages/app/ui/atoms/animated-icons/icons/compass.tsx) — fill opacity, rotation, **paths aligned with Lucide**.
 
 Guidelines:
 
 1. **`'use client'`** — animated icons use React state / `Animated` from `react-native`.
-2. **Paths** — Copy path data from the same Lucide icon the app uses (`lucide-react-native` / `lucide-react` sources) so geometry matches the static icon.
+2. **Paths** — Copy path data from the same Lucide version the app uses (`lucide-react-native` on native, `lucide-static` on web) so geometry matches the static icon.
 3. **Colors** — Use `currentColor` / theme-driven stroke and fill; avoid hardcoded palette colors.
-4. **Active / “duotone”** — Prefer stroked shapes plus **`fill` + `fillOpacity`** animated from `Animated` (see House/Compass), not ad hoc SVG elements that render differently on web vs native.
-5. **Transforms on web** — Do **not** rely on `originX` / `originY` on `svg` `<G>` for pivot rotation. On web, `react-native-svg` can emit DOM properties that conflict with React 19. Use a **nested group**: translate to the pivot, apply rotation, translate back (see Compass).
-6. **Hover edge** — For one-shot hover effects (e.g. door draw), use a ref to detect **transition from not-hovered to hovered** so the animation does not re-fire every render.
-7. **Timing** — Adjust `duration`, `easing`, or spring `friction` / `tension` inside the icon file; keep durations in a sensible range (roughly hundreds of ms for UI feedback unless intentionally slow).
+4. **Active / “duotone”** — Prefer stroked shapes plus `fill` / `fillOpacity` from `getAnimatedFillProps` ([`animated-icons/fill-props.ts`](packages/app/ui/atoms/animated-icons/fill-props.ts)), not ad hoc SVG elements that render differently on web vs native. The fill fades on web only: `react-native-svg` ignores an animated `fillOpacity` on native, so native switches between `fill="none"` and a fixed 0.2 opacity.
+5. **SVG elements** — Use `AnimatedPath`, `AnimatedG`, `AnimatedRect` and `AnimatedCircle` from [`animated-icons/shared.tsx`](packages/app/ui/atoms/animated-icons/shared.tsx). They strip `collapsable` / `onLayout` before the props reach a web DOM `<svg>` element.
+6. **Transforms on web** — Do **not** rely on `originX` / `originY` on `svg` `<G>` for pivot rotation. On web, `react-native-svg` can emit DOM properties that conflict with React 19. Use a **nested group**: translate to the pivot, apply rotation, translate back (see Compass).
+7. **Hover edge** — For one-shot hover effects (e.g. door draw), use a ref to detect **transition from not-hovered to hovered** so the animation does not re-fire every render.
+8. **Timing** — Adjust `duration`, `easing`, or spring `friction` / `tension` inside the icon file; keep durations in a sensible range (roughly hundreds of ms for UI feedback unless intentionally slow).
 
 ## Checklist
 
@@ -63,4 +64,4 @@ Guidelines:
 - [ ] New icon tested on **web** and **native** (or native-only features gated with `Platform.OS`).
 - [ ] No `measureLayout` / layout thrash introduced from the icon itself (icons should stay self-contained).
 
-For general icon and styling rules, see [AGENTS.md](AGENTS.md) (Styling Guidelines, cross-platform components).
+For general icon and styling rules, see [AGENTS.md](AGENTS.md).

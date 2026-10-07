@@ -1,5 +1,15 @@
 # Notes for coding agents
 
+## NEO (`neo/`)
+
+`neo/` is NEO, the Next.js and Expo client for UNA, kept here as a git subtree. Before changing anything under `neo/`, read [`neo/AGENTS.md`](neo/AGENTS.md). Claude Code loads it through `neo/CLAUDE.md` when it opens a file there.
+
+- Run NEO's yarn scripts from `neo/`, not from the UNA root.
+- Branch from `master` and open the PR here. Start the title of a NEO-only PR with `Neo:`.
+- Never commit to unacms/neo. It is a mirror that `.github/workflows/sync-neo.yml` pushes on every push to `master`, and client projects fork it.
+- UNA CI doesn't check `neo/`. Run `yarn typecheck` and `yarn lint` in `neo/` before you push.
+- A UNA service that NEO calls must return JSON for guests too; see [`neo/.agents/skills/una-api/SKILL.md`](neo/.agents/skills/una-api/SKILL.md).
+
 ## Studio app icons (`studio/template/images/icons/wi-*.svg`, module `template/images/icons/std-icon.svg`)
 
 Every launcher tile is one SVG with three layers, in this order:
