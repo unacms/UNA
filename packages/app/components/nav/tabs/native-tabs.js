@@ -243,7 +243,9 @@ export default function NativeTabNavigator({
         playTabFeedback();
         setActiveOverflowUrl(item.isOverflow ? tabUrl : null);
         rememberSelectedTab(`/tab${routeIndex}`);
-        router.push(nativeTabHref(tabUrl, `/tab${routeIndex}`));
+        // The tab's root shows the picked page; `navigate` updates the existing
+        // root (popping pages above it) where `push` would stack a second one.
+        router.navigate(nativeTabHref(tabUrl, `/tab${routeIndex}`));
     }, [currentUser, moreTabIndex, router, setBottomSheetData, setCurrentUser]);
 
     const moreTab = overflow[0];

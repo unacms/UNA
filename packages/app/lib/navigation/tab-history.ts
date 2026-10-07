@@ -3,7 +3,7 @@ import { usePathname } from 'app/lib/hooks/router';
 import emitter, { EVENTS } from 'app/context/emitter';
 import { appSetting } from 'app/lib/util';
 import { useBottomSheetStore } from 'app/context/bottomsheet';
-import { getTabKeyFromPathname, parseTabKey } from 'app/lib/navigation/tab-path';
+import { getSelectedTabKey, getTabKeyFromPathname, parseTabKey, setSelectedTabKey } from 'app/lib/navigation/tab-path';
 
 export { getTabKeyFromPathname, parseTabKey } from 'app/lib/navigation/tab-path';
 
@@ -36,10 +36,44 @@ export function nativeTabHref(url: string | null | undefined, tabPath = '/tab0',
     };
 }
 
+/**
+ * In-tab link on native: a page pushed onto the tab's stack (`/tab0/page?url=`),
+ * or the tab root itself when `url` is that tab's root page — navigating there
+ * pops back to it instead of stacking a second copy.
+ */
+export function nativeTabPageHref(url: string | null | undefined, tabPath = '/tab0', currentUser?: unknown) {
+    const key = getTabKeyFromPathname(tabPath);
+    // The root check needs the session (logged-in and guest tab lists differ).
+    const isRoot = currentUser !== undefined
+        && tabHistoryPath(url) === tabHistoryPath(getTabRootUrl(key, currentUser));
+    if (!url || isRoot) {
+        return { pathname: key };
+    }
+    return { pathname: `${key}/page`, params: { url } };
+}
+
+/** Pages pushed onto each tab's stack and still mounted (page.tsx screens). */
+const pushedScreensByTab = new Map<string, number>();
+
+/** Called by a pushed page while mounted; returns its cleanup. */
+export function registerPushedScreen(tabKey: string | null | undefined) {
+    const key = parseTabKey(tabKey);
+    if (!key) return () => {};
+    pushedScreensByTab.set(key, (pushedScreensByTab.get(key) ?? 0) + 1);
+    return () => {
+        pushedScreensByTab.set(key, Math.max(0, (pushedScreensByTab.get(key) ?? 1) - 1));
+    };
+}
+
+/** True while the tab has pages pushed over its root. */
+export function hasPushedScreens(tabKey: string | null | undefined) {
+    const key = parseTabKey(tabKey);
+    return !!key && (pushedScreensByTab.get(key) ?? 0) > 0;
+}
+
 type TabHistoryState = {
     /** Back stack of in-tab URLs per tab key (`/tab0`…). */
     byTab: Record<string, string[]>;
-    lastSelectedKey: string | null;
     lastUrlByTab: Record<string, string | undefined>;
     skipTabInfer: boolean;
     skipTabInferPath: string | null;
@@ -47,7 +81,6 @@ type TabHistoryState = {
 
 const tabHistoryState: TabHistoryState = {
     byTab: {},
-    lastSelectedKey: null,
     lastUrlByTab: {},
     skipTabInfer: false,
     // Path the latest tab press already applied skip for. Survives Strict
@@ -148,7 +181,7 @@ export function applyTabHistory(tabKey: string | null | undefined, url: string |
 export function rememberSelectedTab(tabKey: string | null | undefined, options?: { fromPress?: boolean }) {
     const key = parseTabKey(tabKey);
     if (key) {
-        tabHistoryState.lastSelectedKey = key;
+        setSelectedTabKey(key);
         if (options?.fromPress) {
             tabHistoryState.skipTabInfer = true;
             tabHistoryState.skipTabInferPath = null;
@@ -181,12 +214,12 @@ export function consumeSkipTabInfer(pathname: string | null | undefined) {
 }
 
 export function getSelectedTab() {
-    return tabHistoryState.lastSelectedKey;
+    return getSelectedTabKey();
 }
 
 export function isSelectedTab(tabKey: string | null | undefined) {
     const key = parseTabKey(tabKey);
-    return !!key && tabHistoryState.lastSelectedKey === key;
+    return !!key && getSelectedTabKey() === key;
 }
 
 /** Last in-tab page for restore. Does not change the native back stack. */
@@ -308,7 +341,7 @@ export function navigateToTabRoot(router: any, tabKey: string | null | undefined
 
 export function resetAllTabHistory() {
     tabHistoryState.byTab = {};
-    tabHistoryState.lastSelectedKey = null;
+    setSelectedTabKey(null);
     tabHistoryState.lastUrlByTab = {};
     tabHistoryState.skipTabInfer = false;
     tabHistoryState.skipTabInferPath = null;

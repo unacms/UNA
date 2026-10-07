@@ -3,6 +3,7 @@ import { appSetting, FeedbackHaptics, clearNotif } from 'app/lib/util';
 import { playTabFeedback } from 'app/components/nav/tab-feedback';
 import { isExternalTabUrl, resolveTabUrl } from './tab-menu';
 import {
+    hasPushedScreens,
     isAtTabRoot,
     isSelectedTab,
     navigateToTabRoot,
@@ -75,7 +76,12 @@ export async function handleTabPress({
             e.stopPropagation?.();
         }
 
-        if (!isAtTabRoot(tabKey, currentUser)) {
+        if (hasPushedScreens(tabKey)) {
+            // Pages pushed onto the tab's stack: back to its root. The tab is
+            // focused, so its stack is the one `dismissAll` pops (the native
+            // pop-to-root is off: `disablePopToTop` on the triggers).
+            if (router?.canDismiss?.()) router.dismissAll();
+        } else if (!isAtTabRoot(tabKey, currentUser)) {
             navigateToTabRoot(router, tabKey, currentUser);
         } else {
             emitter.emit(EVENTS.conductor, { action: 'reset_to_first' });

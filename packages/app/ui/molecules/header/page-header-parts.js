@@ -12,7 +12,8 @@ import { components } from 'app/components/registry';
 import { useIsDesktop } from 'app/context/measure';
 import { NeoButton, NeoButtonLink } from 'app/design/controls';
 import Link from 'app/ui/atoms/link';
-import { canGoBackInTab, getTabKeyFromPathname, navigateBackInTab } from 'app/lib/navigation/tab-history';
+import { getTabKeyFromPathname } from 'app/lib/navigation/tab-history';
+import { useIsPushedScreen } from 'app/context/tab-chrome';
 import { useTranslation } from 'react-i18next';
 import {
     useHeaderHeight,
@@ -384,17 +385,20 @@ export const PageHeaderBody = memo(({
     const HeaderElement = components['molecule']['header_element'];
     const pathname = usePathname();
     const currentTab = getTabKeyFromPathname(pathname);
+    // Native: a page pushed onto the tab's stack can go back (the swipe and
+    // Android's back do the same).
+    const isPushedScreen = useIsPushedScreen();
     const canShowBackButton = isWeb
         ? (isBackButton &&
             (typeof isBackButton === 'function' || (typeof history !== 'undefined' && history.length > 2)))
-        : ((typeof isBackButton === 'function' || canGoBackInTab(currentTab))) && (appSetting('native', 'backbutton_in_header') ||  appSetting('native', 'backbutton_in_header_path')?.includes(pageData.uri));
+        : ((typeof isBackButton === 'function' || isPushedScreen)) && (appSetting('native', 'backbutton_in_header') ||  appSetting('native', 'backbutton_in_header_path')?.includes(pageData.uri));
     const onBackPress = () => {
         FeedbackHaptics('Medium');
         if (typeof isBackButton === 'function') {
             isBackButton();
         } else {
             if (!isWeb && router) {
-                navigateBackInTab(router, currentTab, currentUser);
+                router.back();
             } else {
                 router ? router.back() : history.back();
             }

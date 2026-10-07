@@ -1,11 +1,11 @@
 import { Root } from 'app/root'
-import { memo, useState, useEffect, useRef } from 'react'
+import { memo, useState, useEffect, useId, useRef } from 'react'
 import { useCurrentUser } from 'app/context/user';
 import { appSetting, parseUrl, parseQueryString, isNativeTabsEnabled } from 'app/lib/util'
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import { fetcher } from 'app/lib/fetcher';
 import { useLocalSearchParams, useIsFocused } from 'app/lib/hooks/router'
-import { ensureTabHistory, applyTabHistory, peekTabLastUrl } from 'app/lib/navigation/tab-history';
+import { ensureTabHistory, applyTabHistory, peekTabLastUrl, registerPushedScreen } from 'app/lib/navigation/tab-history';
 import { splitTabBarItems } from 'app/components/nav/tabs/tab-menu';
 import { getCachedPageData, setCachedPageData } from 'app/lib/cache/native-tab-page-cache';
 import { clearAllPageCache } from 'app/lib/cache/clear-page-cache';
@@ -23,11 +23,11 @@ import { EdgeBlur, edgeBlurConfig } from 'app/ui/atoms/edge-blur';
  * Inside a tab screen the bottom safe-area inset already includes the tab bar
  * (UIKit adds it), so the blur spans that inset plus `extend`.
  */
-function TabBarEdgeBlur({ tabKey }) {
+function TabBarEdgeBlur({ chromeKey }) {
     const insets = useSafeAreaInsets();
     const config = edgeBlurConfig('tabbar');
     // The page already blurs from the screen bottom up (messenger composer).
-    const pageOwnsBlur = usePageBottomBlur(tabKey);
+    const pageOwnsBlur = usePageBottomBlur(chromeKey);
     if (!config || pageOwnsBlur) return null;
     const height = insets.bottom + (config.extend ?? 0);
     return (
@@ -36,10 +36,6 @@ function TabBarEdgeBlur({ tabKey }) {
         </View>
     );
 }
-
-const NativeTabPressSync = isNativeTabsEnabled()
-    ? require('./native-tab-press-sync').default
-    : null;
 
 function isFetchablePagePath(path) {
     return Boolean(path && path.startsWith('/') && !path.includes('/?url='));
@@ -111,6 +107,12 @@ function useLazyTabActivation() {
 function ScreenInner(params) {
     const local = useLocalSearchParams();
     const pathname = params.tabname;
+    // A page pushed onto the tab's stack (`page.tsx`): its own chrome key, so
+    // header and scroll state don't mix with the pages below it.
+    const pushed = !!params.pushed;
+    const screenId = useId();
+    const chromeKey = pushed ? `${pathname}/page#${screenId}` : pathname;
+    useEffect(() => (pushed ? registerPushedScreen(pathname) : undefined), [pushed, pathname]);
     const { currentUser } = useCurrentUser();
     const activated = useLazyTabActivation();
     const tabListKey = currentUser ? 'menu_tabbar_logged' : 'menu_tabbar_non_logged';
@@ -121,7 +123,7 @@ function ScreenInner(params) {
     // followed by a JUMP_TO that drops this route's params, and the root
     // fallback below would swap in the first overflow item. Keep the page the
     // More tab was showing.
-    if (!_path && pathname === `/tab${splitTabBarItems(tabList).moreTabIndex}`) {
+    if (!_path && !pushed && pathname === `/tab${splitTabBarItems(tabList).moreTabIndex}`) {
         _path = peekTabLastUrl(pathname);
     }
 
@@ -132,7 +134,7 @@ function ScreenInner(params) {
     const otherMenuItem = (appSetting('menu_items', otherTabListKey) || []).find((item) => item.key === pathname);
     const isStaleContextUrl = !!otherMenuItem?.url && _path === otherMenuItem.url;
 
-    if (!_path || _path.includes('/tab') || isStaleContextUrl) {
+    if (!pushed && (!_path || _path.includes('/tab') || isStaleContextUrl)) {
         const item = tabList.find((item) => item.key === pathname);
         _path = item ? item.url : null;
         if (_path === '{profile}') {
@@ -149,20 +151,21 @@ function ScreenInner(params) {
     // Stable key per tab — no remount on in-tab navigation. Shell refresh uses refreshToken (redirectTo), not key.
     return (
         <>
-            {NativeTabPressSync ? <NativeTabPressSync tabKey={pathname} /> : null}
             {activated ? (
-                <TabChromeProvider tabKey={pathname}>
+                <TabChromeProvider tabKey={chromeKey} pushed={pushed}>
                     <Content
                         key={`${pathname}__${userKey}`}
                         pagePath={_path}
                         currentUser={currentUser}
                         tabKey={pathname}
+                        chromeKey={chromeKey}
+                        pushed={pushed}
                         refreshToken={local.refresh}
                         historyMode={routeParam(local.tabHist)}
                     />
                 </TabChromeProvider>
             ) : null}
-            {activated && isShowTabs && isNativeTabsEnabled() ? <TabBarEdgeBlur tabKey={pathname} /> : null}
+            {activated && isShowTabs && isNativeTabsEnabled() ? <TabBarEdgeBlur chromeKey={chromeKey} /> : null}
         </>
     );
 }
@@ -190,7 +193,7 @@ function resolvePageTimestamp(tabKey, pagePath, currentUser, { forceShellRefresh
     return existing?.data?.timestamp ?? Date.now();
 }
 
-const Content = memo(({ pagePath, currentUser, tabKey, refreshToken, historyMode }) => {
+const Content = memo(({ pagePath, currentUser, tabKey, chromeKey, pushed, refreshToken, historyMode }) => {
     // Page state carries the path it was loaded for. When the path changes, read
     // the cache during render (React "adjusting state while rendering") so body
     // appears in the same pass — no empty frame + layout-effect re-render.
@@ -213,20 +216,22 @@ const Content = memo(({ pagePath, currentUser, tabKey, refreshToken, historyMode
     tabKeyRef.current = tabKey;
     currentUserRef.current = currentUser;
 
+    // The tab history describes the tab root's own page changes (tab bar
+    // picks, redirects); pages pushed onto the stack are the stack's.
     useEffect(() => {
-        if (!tabKey) return;
+        if (!tabKey || pushed) return;
         ensureTabHistory(tabKey, currentUser, pagePath);
-    }, [tabKey, currentUser?.id, currentUser?.url, pagePath]);
+    }, [tabKey, pushed, currentUser?.id, currentUser?.url, pagePath]);
 
     useEffect(() => {
-        if (!tabKey || !pagePath) return;
+        if (!tabKey || !pagePath || pushed) return;
         applyTabHistory(
             tabKey,
             pagePath,
             currentUser,
             historyMode === 'replace' || historyMode === 'reset' ? historyMode : 'push',
         );
-    }, [tabKey, pagePath, currentUser?.id, currentUser?.url, historyMode]);
+    }, [tabKey, pagePath, pushed, currentUser?.id, currentUser?.url, historyMode]);
 
     // Stale-while-revalidate: show cache immediately, always refetch from server.
     useEffect(() => {
@@ -317,7 +322,7 @@ const Content = memo(({ pagePath, currentUser, tabKey, refreshToken, historyMode
     }
 
     return (
-        <TabSlide tabKey={tabKey} ready={!!pageData?.data}>
+        <TabSlide tabKey={tabKey} chromeKey={chromeKey} pushed={pushed} ready={!!pageData?.data}>
             {body}
         </TabSlide>
     );
