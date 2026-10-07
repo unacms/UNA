@@ -19,11 +19,23 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          # Default persist-credentials leaves GITHUB_TOKEN in
+          # http.https://github.com/.extraheader. Git sends that Authorization
+          # header on every github.com request, including the neo push. This
+          # job's token cannot see private unacms/neo, so GitHub answers
+          # "Repository not found".
+          persist-credentials: false
 
       - name: Push neo subtree
         env:
           NEO_REPO_TOKEN: ${{ secrets.NEO_REPO_TOKEN }}
         run: |
+          # Checkout writes the header into .git/config (v4.4.0). Newer
+          # checkout releases may keep it in an included credentials file;
+          # persist-credentials: false makes checkout delete both. Unset the
+          # local key as well so a leftover header cannot override the URL.
+          git config --local --unset-all http.https://github.com/.extraheader || true
+
           git remote add neo \
             "https://x-access-token:${NEO_REPO_TOKEN}@github.com/unacms/neo.git"
 
