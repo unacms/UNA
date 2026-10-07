@@ -11,6 +11,12 @@ permissions:
   contents: read
   pull-requests: write
 
+# A newer push to a PR, or closing it, cancels that PR's run in progress, so the teardown can't
+# race a preview deploy that is still creating the environment. Master pushes never cancel.
+concurrency:
+  group: ci-${{ github.event.pull_request.number && format('pr-{0}', github.event.pull_request.number) || github.sha }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   test:
     if: github.event_name == 'push' || github.event.action != 'closed'
@@ -86,26 +92,106 @@ jobs:
         path: packages/*.zip
         if-no-files-found: error
 
-  deploy:
-    name: Deploy PR to Railway
-    needs: test
-    if: github.event_name == 'pull_request' && github.event.action != 'closed'
+  preview-env:
+    # Same-repo PRs only: forks and Dependabot get no secrets, and Dependabot PRs need no preview.
+    name: Prepare PR environment
+    if: >-
+      github.event_name == 'pull_request' && github.event.action != 'closed'
+      && github.event.pull_request.head.repo.full_name == github.repository
+      && github.event.pull_request.user.login != 'dependabot[bot]'
     runs-on: ubuntu-latest
-    concurrency:
-      group: railway-pr-${{ github.event.pull_request.number }}
-      cancel-in-progress: true
     env:
       RAILWAY_API_TOKEN: ${{ secrets.RAILWAY_API_TOKEN }}
       RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
       RAILWAY_BASE_ENVIRONMENT: ${{ secrets.RAILWAY_ENVIRONMENT }}
       RAILWAY_TEMPLATE_ENVIRONMENT: pr-template
       RAILWAY_PR_ENVIRONMENT: pr-${{ github.event.pull_request.number }}
-      # unacms.app hosts: the backend on Railway, the NEO client (neo-ci on Vercel) in front of it
+      # unacms.app hosts: UNA (service una) and the NEO web client (service neo), both on Railway
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
       VERCEL_TEAM: yasko
       PREVIEW_API_HOST: api-pr-${{ github.event.pull_request.number }}.unacms.app
       PREVIEW_CLIENT_HOST: pr-${{ github.event.pull_request.number }}.unacms.app
       UNA_PREVIEW_API_KEY: ${{ secrets.UNA_PREVIEW_API_KEY }}
+    outputs:
+      domains: ${{ steps.domains.outputs.ok }}
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        sparse-checkout: |
+          .github/actions
+          scripts/railway
+
+    - uses: ./.github/actions/railway-cli
+
+    - name: Provision PR environment
+      run: |
+        if [ -z "$RAILWAY_API_TOKEN" ] || [ -z "$RAILWAY_PROJECT_ID" ]; then
+          echo "Set secrets RAILWAY_API_TOKEN (account token) and RAILWAY_PROJECT_ID" >&2
+          exit 1
+        fi
+        base="${RAILWAY_BASE_ENVIRONMENT:-production}"
+        template="${RAILWAY_TEMPLATE_ENVIRONMENT:-pr-template}"
+        railway link --project "$RAILWAY_PROJECT_ID" --environment "$base" --json
+
+        # Railway services are project-scoped: mariadb, una and neo already exist, so `railway add`
+        # cannot create them again and a plain new environment holds no instances of them
+        # (every preview after the first failed this way). A PR environment therefore gets
+        # its instances by duplicating the template environment. An environment left over
+        # from a failed run has no una instance; recreate it.
+        if ! railway service status --service una --environment "$RAILWAY_PR_ENVIRONMENT" >/dev/null 2>&1; then
+          railway environment delete "$RAILWAY_PR_ENVIRONMENT" -y >/dev/null 2>&1 || true
+          railway environment new "$RAILWAY_PR_ENVIRONMENT" --duplicate "$template" --json
+          # a duplicate may carry the template's deployments; the builds below replace them
+          railway down --service una --environment "$RAILWAY_PR_ENVIRONMENT" -y >/dev/null 2>&1 || true
+          railway down --service neo --environment "$RAILWAY_PR_ENVIRONMENT" -y >/dev/null 2>&1 || true
+        fi
+        railway link --project "$RAILWAY_PROJECT_ID" --environment "$RAILWAY_PR_ENVIRONMENT" --json
+        # An environment duplicated before the neo service existed lacks it.
+        scripts/railway/neo.sh instance "$RAILWAY_PR_ENVIRONMENT"
+
+        # The duplicated una instance is what `railway up` deploys into. Setting its variables
+        # doubles as the readiness check: it fails with "ServiceInstance not found" until it exists.
+        for i in $(seq 1 12); do
+          railway variable set --service una --environment "$RAILWAY_PR_ENVIRONMENT" --skip-deploys \
+            MYSQLHOST=mariadb.railway.internal \
+            MYSQLPORT=3306 \
+            MYSQLDATABASE=una \
+            MYSQLUSER=una \
+            MYSQLPASSWORD=una \
+            UNA_DEMO_SEED=1 \
+            UNA_CLIENT_URL="https://$PREVIEW_CLIENT_HOST" \
+            ${UNA_PREVIEW_API_KEY:+UNA_API_KEY="$UNA_PREVIEW_API_KEY"} \
+            && break
+          sleep 5
+        done
+        railway domain --service una --environment "$RAILWAY_PR_ENVIRONMENT" || true
+        railway domain --service neo --environment "$RAILWAY_PR_ENVIRONMENT" || true
+
+        # NEO talks to this PR's UNA through its Railway domain, which has a certificate from
+        # the start (the api-pr host gets one minutes later). UNA_AUTO_HOSTNAME makes UNA build
+        # its URLs from that host.
+        una_host=$(railway domain list --service una --environment "$RAILWAY_PR_ENVIRONMENT" --json | jq -r '.domains[] | select(.type == "service") | .domain' | head -n1)
+        [ -n "$una_host" ] || { echo "No Railway domain for una" >&2; exit 1; }
+        scripts/railway/neo.sh vars "$RAILWAY_PR_ENVIRONMENT" "https://${una_host#https://}" "https://$PREVIEW_CLIENT_HOST"
+
+    - name: Preview domains on unacms.app
+      id: domains
+      if: env.VERCEL_TOKEN != ''
+      run: |
+        scripts/railway/domains.sh railway-domain "$PREVIEW_API_HOST" "$RAILWAY_PR_ENVIRONMENT" una
+        # Until 2026-10 the client host was a Vercel alias of the neo-ci build; drop it if present.
+        scripts/railway/domains.sh client-unalias "$PREVIEW_CLIENT_HOST"
+        scripts/railway/domains.sh railway-domain "$PREVIEW_CLIENT_HOST" "$RAILWAY_PR_ENVIRONMENT" neo
+        echo "ok=1" >> "$GITHUB_OUTPUT"
+
+  deploy:
+    name: Deploy PR to Railway (una)
+    needs: [test, preview-env]
+    runs-on: ubuntu-latest
+    env:
+      RAILWAY_API_TOKEN: ${{ secrets.RAILWAY_API_TOKEN }}
+      RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
+      RAILWAY_PR_ENVIRONMENT: pr-${{ github.event.pull_request.number }}
     steps:
     - uses: actions/checkout@v4
 
@@ -124,104 +210,72 @@ jobs:
           scripts/railway/configure.php scripts/railway/seed.php deploy/
         chmod +x deploy/entrypoint.sh
 
-    - name: Install Railway CLI
-      # Pinned release, checked against its published SHA-256 before it is run.
-      env:
-        GH_TOKEN: ${{ github.token }}
-        RAILWAY_CLI_VERSION: v5.35.0
-        RAILWAY_CLI_SHA256: fb675d282e613ae9868b25be1ad4567d37b9c13901785f636dd0a13837f8ecf0
-      run: |
-        asset="railway-${RAILWAY_CLI_VERSION}-x86_64-unknown-linux-musl.tar.gz"
-        gh release download "$RAILWAY_CLI_VERSION" --repo railwayapp/cli --pattern "$asset" --dir /tmp/railway-cli
-        echo "${RAILWAY_CLI_SHA256}  /tmp/railway-cli/${asset}" | sha256sum -c -
-        tar -xzf "/tmp/railway-cli/${asset}" -C /tmp/railway-cli railway
-        sudo install -m 0755 /tmp/railway-cli/railway /usr/local/bin/railway
-        railway --version
-
-    - name: Provision PR environment
-      run: |
-        if [ -z "$RAILWAY_API_TOKEN" ] || [ -z "$RAILWAY_PROJECT_ID" ]; then
-          echo "Set secrets RAILWAY_API_TOKEN (account token) and RAILWAY_PROJECT_ID" >&2
-          exit 1
-        fi
-        base="${RAILWAY_BASE_ENVIRONMENT:-production}"
-        template="${RAILWAY_TEMPLATE_ENVIRONMENT:-pr-template}"
-        railway link --project "$RAILWAY_PROJECT_ID" --environment "$base" --json
-
-        # Railway services are project-scoped: mariadb and una already exist, so `railway add`
-        # cannot create them again and a plain new environment holds no instances of them
-        # (every preview after the first failed this way). A PR environment therefore gets
-        # its instances by duplicating the template environment. An environment left over
-        # from a failed run has no una instance; recreate it.
-        if ! railway service status --service una --environment "$RAILWAY_PR_ENVIRONMENT" >/dev/null 2>&1; then
-          railway environment delete "$RAILWAY_PR_ENVIRONMENT" -y >/dev/null 2>&1 || true
-          railway environment new "$RAILWAY_PR_ENVIRONMENT" --duplicate "$template" --json
-          # a duplicate may carry the template's una deployment; the artefact below replaces it
-          railway down --service una --environment "$RAILWAY_PR_ENVIRONMENT" -y >/dev/null 2>&1 || true
-        fi
-        railway link --project "$RAILWAY_PROJECT_ID" --environment "$RAILWAY_PR_ENVIRONMENT" --json
-
-        # The duplicated una instance is what `railway up` deploys into. Setting its variables
-        # doubles as the readiness check: it fails with "ServiceInstance not found" until it exists.
-        for i in $(seq 1 12); do
-          railway variable set --service una --environment "$RAILWAY_PR_ENVIRONMENT" --skip-deploys \
-            MYSQLHOST=mariadb.railway.internal \
-            MYSQLPORT=3306 \
-            MYSQLDATABASE=una \
-            MYSQLUSER=una \
-            MYSQLPASSWORD=una \
-            UNA_DEMO_SEED=1 \
-            UNA_CLIENT_URL="https://$PREVIEW_CLIENT_HOST" \
-            ${UNA_PREVIEW_API_KEY:+UNA_API_KEY="$UNA_PREVIEW_API_KEY"} \
-            && break
-          sleep 5
-        done
-        railway domain --service una --environment "$RAILWAY_PR_ENVIRONMENT" || true
+    - uses: ./.github/actions/railway-cli
 
     - name: Deploy artefact
       run: railway up ./deploy --path-as-root --no-gitignore --verbose --ci --service una --environment "$RAILWAY_PR_ENVIRONMENT" --project "$RAILWAY_PROJECT_ID"
 
-    - name: Preview domains on unacms.app
-      id: domains
-      if: env.VERCEL_TOKEN != ''
-      env:
-        # Branch names are attacker-controlled: pass as data, never interpolate into the script.
-        HEAD_REF: ${{ github.head_ref }}
-      run: |
-        scripts/railway/domains.sh api-domain "$PREVIEW_API_HOST" "$RAILWAY_PR_ENVIRONMENT"
-        # The client build of the same-named neo-ci branch when there is one, else production.
-        # Either way NEO's proxy maps pr-<n>.unacms.app to api-pr-<n>.unacms.app.
-        scripts/railway/domains.sh client-alias "$PREVIEW_CLIENT_HOST" "$HEAD_REF"
-        echo "ok=1" >> "$GITHUB_OUTPUT"
+  deploy-neo:
+    # NEO isn't covered by `test`, so it builds alongside it.
+    name: Deploy PR to Railway (neo)
+    needs: preview-env
+    runs-on: ubuntu-latest
+    env:
+      RAILWAY_API_TOKEN: ${{ secrets.RAILWAY_API_TOKEN }}
+      RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
+      RAILWAY_PR_ENVIRONMENT: pr-${{ github.event.pull_request.number }}
+    steps:
+    - uses: actions/checkout@v4
 
-    - name: Comment preview URL on PR
-      env:
-        DOMAINS_OK: ${{ steps.domains.outputs.ok }}
-        GH_TOKEN: ${{ github.token }}
-        PR_NUMBER: ${{ github.event.pull_request.number }}
+    - uses: ./.github/actions/railway-cli
+
+    - name: Deploy NEO
       run: |
-        json=$(railway domain list --service una --environment "$RAILWAY_PR_ENVIRONMENT" --json)
-        host=$(printf '%s\n' "$json" | jq -r '.domains[] | select(.type == "service") | .domain' | head -n1)
-        if [ -z "$host" ]; then
-          host=$(printf '%s\n' "$json" | jq -r '.domains[0].domain // empty')
-        fi
-        if [ -z "$host" ]; then
-          echo "No Railway domain found for service una" >&2
-          echo "$json" >&2
-          exit 1
-        fi
-        case "$host" in
-          https://*|http://*) url="$host" ;;
-          *) url="https://$host" ;;
-        esac
-        echo "Preview URL: $url"
+        scripts/railway/neo.sh stage /tmp/deploy-neo
+        railway up /tmp/deploy-neo --path-as-root --no-gitignore --verbose --ci --service neo --environment "$RAILWAY_PR_ENVIRONMENT" --project "$RAILWAY_PROJECT_ID"
+
+  preview-comment:
+    name: Comment preview URLs
+    needs: [preview-env, deploy, deploy-neo]
+    if: always() && needs.preview-env.result == 'success'
+    runs-on: ubuntu-latest
+    env:
+      RAILWAY_API_TOKEN: ${{ secrets.RAILWAY_API_TOKEN }}
+      RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
+      RAILWAY_PR_ENVIRONMENT: pr-${{ github.event.pull_request.number }}
+      PREVIEW_API_HOST: api-pr-${{ github.event.pull_request.number }}.unacms.app
+      PREVIEW_CLIENT_HOST: pr-${{ github.event.pull_request.number }}.unacms.app
+      DOMAINS_OK: ${{ needs.preview-env.outputs.domains }}
+      UNA_RESULT: ${{ needs.deploy.result }}
+      NEO_RESULT: ${{ needs.deploy-neo.result }}
+      GH_TOKEN: ${{ github.token }}
+      PR_NUMBER: ${{ github.event.pull_request.number }}
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        sparse-checkout: .github/actions
+
+    - uses: ./.github/actions/railway-cli
+
+    - name: Comment preview URLs on PR
+      run: |
+        railway link --project "$RAILWAY_PROJECT_ID" --environment "$RAILWAY_PR_ENVIRONMENT" --json >/dev/null
+        service_url() {
+          local host
+          host=$(railway domain list --service "$1" --environment "$RAILWAY_PR_ENVIRONMENT" --json | jq -r '.domains[] | select(.type == "service") | .domain' | head -n1)
+          [ -n "$host" ] && echo "https://${host#https://}"
+        }
+        una_url=$(service_url una || true)
+        neo_url=$(service_url neo || true)
+        state() { [ "$1" = success ] && echo "" || echo " (deploy: $1)"; }
 
         marker="<!-- railway-preview -->"
         if [ "$DOMAINS_OK" = "1" ]; then
-          body=$(printf '%s\n**Preview**: https://%s (NEO client)\n**API**: https://%s (also %s)\n\nRailway environment: `%s`. A new custom domain needs a few minutes for its certificate.' \
-            "$marker" "$PREVIEW_CLIENT_HOST" "$PREVIEW_API_HOST" "$url" "$RAILWAY_PR_ENVIRONMENT")
+          body=$(printf '%s\n**Preview**: https://%s (NEO web client%s, also %s)\n**API**: https://%s (UNA%s, also %s)\n\nRailway environment: `%s`. A new custom domain needs a few minutes for its certificate, and a fresh UNA install about 10.' \
+            "$marker" "$PREVIEW_CLIENT_HOST" "$(state "$NEO_RESULT")" "$neo_url" "$PREVIEW_API_HOST" "$(state "$UNA_RESULT")" "$una_url" "$RAILWAY_PR_ENVIRONMENT")
         else
-          body=$(printf '%s\n**Preview**: %s\n\nRailway environment: `%s`' "$marker" "$url" "$RAILWAY_PR_ENVIRONMENT")
+          body=$(printf '%s\n**Preview**: %s (NEO web client%s)\n**API**: %s (UNA%s)\n\nRailway environment: `%s`' \
+            "$marker" "$neo_url" "$(state "$NEO_RESULT")" "$una_url" "$(state "$UNA_RESULT")" "$RAILWAY_PR_ENVIRONMENT")
         fi
 
         comment_id=$(gh api "repos/${GITHUB_REPOSITORY}/issues/${PR_NUMBER}/comments" --paginate \
@@ -271,19 +325,7 @@ jobs:
           scripts/railway/configure.php scripts/railway/seed.php deploy/
         chmod +x deploy/entrypoint.sh
 
-    - name: Install Railway CLI
-      # Pinned release, checked against its published SHA-256 before it is run.
-      env:
-        GH_TOKEN: ${{ github.token }}
-        RAILWAY_CLI_VERSION: v5.35.0
-        RAILWAY_CLI_SHA256: fb675d282e613ae9868b25be1ad4567d37b9c13901785f636dd0a13837f8ecf0
-      run: |
-        asset="railway-${RAILWAY_CLI_VERSION}-x86_64-unknown-linux-musl.tar.gz"
-        gh release download "$RAILWAY_CLI_VERSION" --repo railwayapp/cli --pattern "$asset" --dir /tmp/railway-cli
-        echo "${RAILWAY_CLI_SHA256}  /tmp/railway-cli/${asset}" | sha256sum -c -
-        tar -xzf "/tmp/railway-cli/${asset}" -C /tmp/railway-cli railway
-        sudo install -m 0755 /tmp/railway-cli/railway /usr/local/bin/railway
-        railway --version
+    - uses: ./.github/actions/railway-cli
 
     - name: Configure production
       run: |
@@ -302,7 +344,7 @@ jobs:
 
     - name: api.unacms.app DNS
       if: env.VERCEL_TOKEN != ''
-      run: scripts/railway/domains.sh api-domain api.unacms.app "$RAILWAY_ENVIRONMENT"
+      run: scripts/railway/domains.sh railway-domain api.unacms.app "$RAILWAY_ENVIRONMENT" una
 
     - name: Smoke test
       # A fresh production install takes about 4 minutes; allow 10.
@@ -312,7 +354,7 @@ jobs:
           [ "$code" = "200" ] && { echo "api.unacms.app is up"; exit 0; }
           # Until the certificate is issued, check the Railway hostname instead.
           host=$(railway domain list --service una --environment "$RAILWAY_ENVIRONMENT" --json | jq -r '.domains[] | select(.type == "service") | .domain' | head -n1)
-          if [ -n "$host" ] && [ "$(curl -s -o /dev/null -w '%{http_code}' "https://$host/" || true)" = "200" ]; then
+          if [ -n "$host" ] && [ "$(curl -s -o /dev/null -w '%{http_code}' "https://${host#https://}/" || true)" = "200" ]; then
             echo "up at https://$host (api.unacms.app answered $code; certificate may still be pending)"
             exit 0
           fi
@@ -321,9 +363,70 @@ jobs:
         echo "UNA did not come up" >&2
         exit 1
 
+  deploy-production-neo:
+    # The NEO web client for unacms.app. NEO_PRODUCTION_HOST (a repository variable) is the
+    # public host; until it is set, the client is only on its Railway domain.
+    name: Deploy master to Railway (neo)
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    concurrency:
+      group: railway-production-neo
+      cancel-in-progress: false
+    environment:
+      name: production-neo
+      url: ${{ steps.urls.outputs.app_url }}
+    env:
+      RAILWAY_API_TOKEN: ${{ secrets.RAILWAY_API_TOKEN }}
+      RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
+      RAILWAY_ENVIRONMENT: production
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_TEAM: yasko
+      NEO_PRODUCTION_HOST: ${{ vars.NEO_PRODUCTION_HOST }}
+    steps:
+    - uses: actions/checkout@v4
+
+    - uses: ./.github/actions/railway-cli
+
+    - name: Configure neo
+      id: urls
+      run: |
+        railway link --project "$RAILWAY_PROJECT_ID" --environment "$RAILWAY_ENVIRONMENT" --json
+        railway domain --service neo --environment "$RAILWAY_ENVIRONMENT" || true
+        neo_host=$(railway domain list --service neo --environment "$RAILWAY_ENVIRONMENT" --json | jq -r '.domains[] | select(.type == "service") | .domain' | head -n1)
+        neo_host=${neo_host#https://}
+        [ -n "$neo_host" ] || { echo "No Railway domain for neo" >&2; exit 1; }
+        app_url="https://${NEO_PRODUCTION_HOST:-$neo_host}"
+        scripts/railway/neo.sh vars "$RAILWAY_ENVIRONMENT" https://api.unacms.app "$app_url"
+        echo "app_url=$app_url" >> "$GITHUB_OUTPUT"
+        echo "neo_url=https://$neo_host" >> "$GITHUB_OUTPUT"
+
+    - name: Deploy NEO
+      run: |
+        scripts/railway/neo.sh stage /tmp/deploy-neo
+        railway up /tmp/deploy-neo --path-as-root --no-gitignore --verbose --ci --service neo --environment "$RAILWAY_ENVIRONMENT" --project "$RAILWAY_PROJECT_ID"
+
+    - name: Production host DNS
+      if: env.NEO_PRODUCTION_HOST != '' && env.VERCEL_TOKEN != ''
+      run: scripts/railway/domains.sh railway-domain "$NEO_PRODUCTION_HOST" "$RAILWAY_ENVIRONMENT" neo
+
+    - name: Smoke test
+      env:
+        NEO_URL: ${{ steps.urls.outputs.neo_url }}
+      run: |
+        for i in $(seq 1 30); do
+          code=$(curl -s -o /dev/null -w '%{http_code}' "$NEO_URL/" || true)
+          [ "$code" = "200" ] && { echo "NEO is up at $NEO_URL"; exit 0; }
+          sleep 10
+        done
+        echo "NEO did not answer 200 at $NEO_URL (last: $code)" >&2
+        exit 1
+
   teardown:
     name: Remove PR Railway environment
-    if: github.event_name == 'pull_request' && github.event.action == 'closed'
+    if: >-
+      github.event_name == 'pull_request' && github.event.action == 'closed'
+      && github.event.pull_request.head.repo.full_name == github.repository
+      && github.event.pull_request.user.login != 'dependabot[bot]'
     runs-on: ubuntu-latest
     env:
       RAILWAY_API_TOKEN: ${{ secrets.RAILWAY_API_TOKEN }}
@@ -332,31 +435,24 @@ jobs:
       RAILWAY_PR_ENVIRONMENT: pr-${{ github.event.pull_request.number }}
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
       VERCEL_TEAM: yasko
+      PREVIEW_API_HOST: api-pr-${{ github.event.pull_request.number }}.unacms.app
+      PREVIEW_CLIENT_HOST: pr-${{ github.event.pull_request.number }}.unacms.app
     steps:
     - uses: actions/checkout@v4
       with:
-        sparse-checkout: scripts/railway
+        sparse-checkout: |
+          .github/actions
+          scripts/railway
 
     - name: Remove preview domains
       if: env.VERCEL_TOKEN != ''
       continue-on-error: true
       run: |
-        scripts/railway/domains.sh client-unalias "pr-${{ github.event.pull_request.number }}.unacms.app"
-        scripts/railway/domains.sh dns-remove "api-pr-${{ github.event.pull_request.number }}.unacms.app"
+        scripts/railway/domains.sh client-unalias "$PREVIEW_CLIENT_HOST"
+        scripts/railway/domains.sh dns-remove "$PREVIEW_CLIENT_HOST"
+        scripts/railway/domains.sh dns-remove "$PREVIEW_API_HOST"
 
-    - name: Install Railway CLI
-      # Pinned release, checked against its published SHA-256 before it is run.
-      env:
-        GH_TOKEN: ${{ github.token }}
-        RAILWAY_CLI_VERSION: v5.35.0
-        RAILWAY_CLI_SHA256: fb675d282e613ae9868b25be1ad4567d37b9c13901785f636dd0a13837f8ecf0
-      run: |
-        asset="railway-${RAILWAY_CLI_VERSION}-x86_64-unknown-linux-musl.tar.gz"
-        gh release download "$RAILWAY_CLI_VERSION" --repo railwayapp/cli --pattern "$asset" --dir /tmp/railway-cli
-        echo "${RAILWAY_CLI_SHA256}  /tmp/railway-cli/${asset}" | sha256sum -c -
-        tar -xzf "/tmp/railway-cli/${asset}" -C /tmp/railway-cli railway
-        sudo install -m 0755 /tmp/railway-cli/railway /usr/local/bin/railway
-        railway --version
+    - uses: ./.github/actions/railway-cli
 
     - name: Delete PR environment
       run: |
@@ -366,4 +462,10 @@ jobs:
         fi
         base="${RAILWAY_BASE_ENVIRONMENT:-production}"
         railway link --project "$RAILWAY_PROJECT_ID" --environment "$base" --json
-        railway environment delete "$RAILWAY_PR_ENVIRONMENT" -y
+        # The run for the PR's last push is cancelled above (workflow concurrency), so nothing
+        # can create the environment after this. A PR closed before its first deploy has none.
+        if railway environment delete "$RAILWAY_PR_ENVIRONMENT" -y; then
+          echo "Deleted $RAILWAY_PR_ENVIRONMENT"
+        else
+          echo "No environment $RAILWAY_PR_ENVIRONMENT to delete"
+        fi

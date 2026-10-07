@@ -1,12 +1,14 @@
 #!/usr/bin/env bash
-# Railway custom domains on unacms.app (DNS hosted by Vercel) and NEO client aliases.
+# Railway custom domains on unacms.app (DNS hosted by Vercel).
 # Used by .github/workflows/ci.yml; every subcommand is idempotent.
 #
-#   domains.sh api-domain <host> <railway-environment>   custom domain for service `una`, plus its DNS records
-#   domains.sh dns-remove <host>                         delete the records api-domain created for <host>
-#   domains.sh client-alias <host> [branch]              point <host> at the NEO client build of <branch>
-#                                                        (latest ready preview), or production when there is none
-#   domains.sh client-unalias <host>
+#   domains.sh railway-domain <host> <railway-environment> [service]
+#                                    custom domain for a Railway service (default `una`) plus its DNS records;
+#                                    `api-domain` is the old name
+#   domains.sh dns-remove <host>     delete the records railway-domain created for <host>
+#   domains.sh client-alias <host> [branch]   (Vercel client, before NEO moved to Railway) point <host> at
+#                                    the neo-ci build of <branch>, or its production build
+#   domains.sh client-unalias <host> remove such a Vercel alias
 #
 # Environment: VERCEL_TOKEN, RAILWAY_PROJECT_ID (api-domain), RAILWAY_API_TOKEN (railway CLI),
 #   VERCEL_TEAM (team slug or id; found from DNS_ZONE ownership when unset),
@@ -66,8 +68,9 @@ resolve_team() {
     die "VERCEL_TOKEN has no scope that owns $DNS_ZONE (check the token's scope in Vercel)"
 }
 
-label_of() { # api-pr-12.unacms.app -> api-pr-12
+label_of() { # api-pr-12.unacms.app -> api-pr-12; the zone apex -> ""
     local host=$1
+    [ "$host" != "$DNS_ZONE" ] || { echo ""; return; }
     [ "${host%."$DNS_ZONE"}" != "$host" ] || die "$host is not in $DNS_ZONE"
     echo "${host%."$DNS_ZONE"}"
 }
@@ -130,8 +133,9 @@ dns_remove() { # dns_remove <name>  (also its _railway-verify TXT)
     done < <(dns_records | jq -r --arg n "$name" --arg v "_railway-verify.$name" '.[] | select(.name == $n or .name == $v) | .id')
 }
 
-api_domain() { # api_domain <host> <environment>
+railway_domain() { # railway_domain <host> <environment> [service]
     local host=$1 env=$2 label id status
+    RAILWAY_SERVICE=${3:-$RAILWAY_SERVICE}
     label=$(label_of "$host")
     [ -n "${RAILWAY_PROJECT_ID:-}" ] || die "RAILWAY_PROJECT_ID is not set"
 
@@ -146,7 +150,7 @@ api_domain() { # api_domain <host> <environment>
         env_id=$(railway status --json | jq -r --arg e "$env" '.environments.edges[].node | select(.name == $e) | .id')
         railway api 'mutation($id: String!, $environmentId: String!, $port: Int) { customDomainUpdate(id: $id, environmentId: $environmentId, targetPort: $port) }' \
             --variables "$(jq -nc --arg id "$id" --arg e "$env_id" --argjson p "$RAILWAY_TARGET_PORT" '{id: $id, environmentId: $e, port: $p}')" >/dev/null
-        echo "api: $host now targets port $RAILWAY_TARGET_PORT"
+        echo "railway: $host now targets port $RAILWAY_TARGET_PORT"
     fi
 
     status=$(railway api 'query($id: String!, $projectId: String!) { customDomain(id: $id, projectId: $projectId) { status { verificationDnsHost verificationToken dnsRecords { hostlabel recordType requiredValue } } } }' \
@@ -154,15 +158,23 @@ api_domain() { # api_domain <host> <environment>
 
     # Not a pipeline: dns_upsert must run in this shell so a failure fails the job.
     local name type value
-    while read -r name type value; do
-        dns_upsert "$name" "$type" "$value"
-    done < <(jq -r '.data.customDomain.status.dnsRecords[] | "\(.hostlabel) \(.recordType | sub("DNS_RECORD_TYPE_"; "")) \(.requiredValue)"' <<< "$status")
+    # `|`-separated: the apex's host label can be empty, and `read` would drop an empty
+    # whitespace-separated field.
+    while IFS='|' read -r name type value; do
+        [ -n "$type" ] || continue
+        # The apex can't be a CNAME; Vercel DNS flattens an ALIAS record instead.
+        if [ -z "$label" ] && { [ -z "$name" ] || [ "$name" = "@" ]; }; then
+            dns_upsert "" ALIAS "$value"
+        else
+            dns_upsert "$name" "$type" "$value"
+        fi
+    done < <(jq -r '.data.customDomain.status.dnsRecords[] | "\(.hostlabel // "")|\(.recordType | sub("DNS_RECORD_TYPE_"; ""))|\(.requiredValue)"' <<< "$status")
 
     local vhost vtoken
     vhost=$(jq -r '.data.customDomain.status.verificationDnsHost // empty' <<< "$status")
     vtoken=$(jq -r '.data.customDomain.status.verificationToken // empty' <<< "$status")
     [ -z "$vhost" ] || dns_upsert "$vhost" TXT "$vtoken"
-    echo "api: https://$host ($label)"
+    echo "railway: https://$host -> $RAILWAY_SERVICE in $env"
 }
 
 # The client project: CLIENT_PROJECT when set, else the project that serves DNS_ZONE
@@ -207,9 +219,9 @@ client_unalias() {
 
 resolve_team
 case "${1:-}" in
-    api-domain)     api_domain "${2:?host}" "${3:?environment}" ;;
+    railway-domain|api-domain) railway_domain "${2:?host}" "${3:?environment}" "${4:-}" ;;
     dns-remove)     dns_remove "$(label_of "${2:?host}")" ;;
     client-alias)   client_alias "${2:?host}" "${3:-}" ;;
     client-unalias) client_unalias "${2:?host}" ;;
-    *) die "usage: domains.sh api-domain|dns-remove|client-alias|client-unalias ..." ;;
+    *) die "usage: domains.sh railway-domain|dns-remove|client-alias|client-unalias ..." ;;
 esac

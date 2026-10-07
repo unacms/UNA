@@ -1,0 +1,10 @@
+[build]
+builder = "DOCKERFILE"
+dockerfilePath = "Dockerfile"
+
+[deploy]
+# A static file: it skips the UNA proxy (proxy.js matcher), so a slow UNA can't fail a NEO deploy.
+healthcheckPath = "/favicon.svg"
+healthcheckTimeout = 300
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 5

@@ -8,6 +8,7 @@
 - Branch from `master` and open the PR here. Start the title of a NEO-only PR with `Neo:`.
 - Never commit to unacms/neo. It is a mirror that `.github/workflows/sync-neo.yml` pushes on every push to `master`, and client projects fork it.
 - UNA CI doesn't check `neo/`. Run `yarn typecheck` and `yarn lint` in `neo/` before you push.
+- CI deploys both halves to the `una-ci` Railway project: service `una` (UNA) and service `neo` (the NEO web client, built from `neo/` with `scripts/railway/neo/`). A PR gets `pr-<n>.unacms.app` (NEO) and `api-pr-<n>.unacms.app` (UNA); master deploys production. See `.github/workflows/ci.yml` and `scripts/railway/`.
 - A UNA service that NEO calls must return JSON for guests too; see [`neo/.agents/skills/una-api/SKILL.md`](neo/.agents/skills/una-api/SKILL.md).
 
 ## Studio app icons (`studio/template/images/icons/wi-*.svg`, module `template/images/icons/std-icon.svg`)
