@@ -68,6 +68,20 @@ docker compose exec -w /opt/una php ./plugins/bin/phpunit -c tests/phpunit.xml -
 
 Integration tests read `tests/.env` when that file exists (`cp tests/.env.example tests/.env`). Otherwise they use the installer defaults. A case skips an account that is not installed. JUnit output is written to `logs/junit.xml`.
 
+## UNA pull requests
+
+These apply to changes in UNA PHP (`inc/`, `modules/`, `studio/`, `template/`, `tests/`, and install or update SQL). They do not apply to a PR that only changes `neo/`.
+
+Before opening the pull request:
+
+- Add unit and/or integration tests for new functionality.
+- Run the affected test suites. The run must finish with no failed tests. A skipped case is acceptable only when the suite skips it because the account or module is not installed.
+- Review the change for security issues (injection, missing auth or permission checks, unsafe file or path handling, secrets in code or logs, and similar).
+- Review the change for performance issues and bottlenecks (queries in loops, unbounded result sets, repeated work per request, and similar).
+- When the change includes a database migration, apply that SQL locally with the `query` tool in `tools/db.php` (see [`tools/AGENTS.md`](tools/AGENTS.md)) before opening the pull request.
+
+The pull request description must include the database migration SQL when the change has one. When it has none, say that there is no database migration.
+
 ## NEO (`neo/`)
 
 `neo/` is NEO, the Next.js and Expo client for UNA, kept here as a git subtree. Before changing anything under `neo/`, read [`neo/AGENTS.md`](neo/AGENTS.md). Claude Code loads it through `neo/CLAUDE.md` when it opens a file there.
