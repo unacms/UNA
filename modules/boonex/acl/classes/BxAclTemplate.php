@@ -129,33 +129,37 @@ class BxAclTemplate extends BxBaseModGeneralTemplate
 
     public function displayLevelIcon($mixedValue)
     {
-        $bTmplVarsImage = $bTmplVarsIcon = false;
-        $aTmplVarsImage = $aTmplVarsIcon = array();
-        if(is_numeric($mixedValue) && (int)$mixedValue != 0) {
-            $oStorage = BxDolStorage::getObjectInstance(BX_DOL_STORAGE_OBJ_IMAGES);
+        list($sIcon, $sIconUrl, $sIconA, $sIconHtml) = BxTemplFunctions::getInstance()->getIcon($mixedValue);
 
-            $bTmplVarsImage = true;
-            $aTmplVarsImage = array(
-                'src' => $oStorage->getFileUrlById((int)$mixedValue),
-            );
-        }
-        else {
-            $bTmplVarsIcon = true;
-            $aTmplVarsIcon = array(
-                'name' => $mixedValue
-            );
-        }
+        $bTmplVarsIcon = $bTmplVarsImage = $bTmplVarsIconHtml = false;
+        $aTmplVarsIcon = $aTmplVarsImage = $aTmplVarsIconHtml = [];
+        if(($bTmplVarsIcon = $sIcon !== false))
+            $aTmplVarsIcon = [
+                'name' => $sIcon
+            ];
+        else if(($bTmplVarsImage = $sIconUrl !== false))
+            $aTmplVarsImage = [
+                'src' => $sIconUrl,
+            ];
+        else if(($bTmplVarsIconHtml = $sIconHtml !== false))
+            $aTmplVarsIconHtml = [
+                'icon_html' => $sIconHtml
+            ];
 
-    	return $this->parseHtmlByName('level_icon.html', array(
-    	    'bx_if:show_image' => array(
-    	        'condition' => $bTmplVarsImage,
-    	        'content' => $aTmplVarsImage
-    	    ),
-    	    'bx_if:show_icon' => array(
-    	        'condition' => $bTmplVarsIcon,
-    	        'content' => $aTmplVarsIcon
-    	    )
-    	));
+        return $this->parseHtmlByName('level_icon.html', [
+            'bx_if:show_image' => [
+                'condition' => $bTmplVarsImage,
+                'content' => $aTmplVarsImage
+            ],
+            'bx_if:show_icon' => [
+                'condition' => $bTmplVarsIcon,
+                'content' => $aTmplVarsIcon
+            ],
+            'bx_if:show_icon_html' => [
+                'condition' => $bTmplVarsIconHtml,
+                'content' => $aTmplVarsIconHtml 
+            ]
+        ]);
     }
 
     public function getJsCode($sType, $aParams = [], $bWrap = true)

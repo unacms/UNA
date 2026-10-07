@@ -627,37 +627,8 @@ class BxAclModule extends BxBaseModGeneralModule
             'added' => time()
         ]);
 
-        if($bImmediate && !empty($aMembershipInfo['transaction_id'])) {
-            $oPayments = BxDolPayments::getInstance();
-
-            $sLicenseOld = $aMembershipInfo['transaction_id'];
-            $aLicenseOld = $this->_oDb->getLicenses(['type' => 'by_license', 'license' => $sLicenseOld]);
-
-            $sOrderOld = '';
-            if(empty($aLicenseOld) || !is_array($aLicenseOld)) {
-                $aOrders = $oPayments->getOrdersInfo(['license' => $sLicenseOld]);
-                if(!empty($aOrders) && is_array($aOrders)) {
-                    $aOrder = reset($aOrders);
-                    $aPendings = $oPayments->getPendingOrdersInfo(['id' => $aOrder['pending_id']]);
-                    if(!empty($aPendings) && is_array($aPendings)) {
-                        $aPending = reset($aPendings);
-                        if($aPending['type'] == BX_ACL_LICENSE_TYPE_RECURRING)
-                            $sOrderOld = $aPending['order'];
-                    }
-                }    
-            }
-            else if($aLicenseOld['type'] == BX_ACL_LICENSE_TYPE_RECURRING)
-                $sOrderOld = $aLicenseOld['order'];
-
-            if(!empty($sOrderOld) && $sOrderOld != $sOrder && (($aResult = $oPayments->cancelSubscription($sOrderOld)) === false || (int)$aResult['code'] != 0)) {
-                sendMailTemplate($CNF['ETEMPLATE_SBS_CANCEL_REQUIRED'], 0, $iClientId, [
-                    'level' => _t($aMembershipInfo['name']),
-                    'order' => $sOrderOld,
-                    'date_starts' => $this->_oConfig->formatDate($aMembershipInfo['date_starts']),
-                    'date_expires' => $this->_oConfig->formatDate($aMembershipInfo['date_expires']),
-                ], BX_EMAIL_NOTIFY, true);
-            }
-        }
+        if($bImmediate)
+            $this->cancelSubscription($iClientId, $aMembershipInfo, $sOrder);
 
         return $aItem;
     }
@@ -704,6 +675,50 @@ class BxAclModule extends BxBaseModGeneralModule
             $oProfile->getThumb(),
             $oProfile->getUnit()
         );
+    }
+
+    public function cancelSubscription($iUserId, $aMembership = [], $sOrder = '')
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        if(!$aMembership || !is_array($aMembership))
+            $aMembership = BxDolAcl::getInstance()->getMemberMembershipInfo($iUserId);
+
+        $sLicense = '';
+        if(!$aMembership || !is_array($aMembership) || !($sLicense = $aMembership['transaction_id'] ?? false))
+            return;
+
+        $oPayments = BxDolPayments::getInstance();
+
+        $aLicense = $this->_oDb->getLicenses([
+            'type' => 'by_license', 
+            'license' => $sLicense
+        ]);
+
+        $sOrderDb = '';
+        if(!$aLicense || !is_array($aLicense)) {
+            $aOrders = $oPayments->getOrdersInfo(['license' => $sLicense]);
+            if($aOrders && is_array($aOrders)) {
+                $aOrder = reset($aOrders);
+
+                $aPendings = $oPayments->getPendingOrdersInfo(['id' => $aOrder['pending_id']]);
+                if($aPendings && is_array($aPendings)) {
+                    $aPending = reset($aPendings);
+                    if($aPending['type'] == BX_ACL_LICENSE_TYPE_RECURRING)
+                        $sOrderDb = $aPending['order'];
+                }
+            }    
+        }
+        else if($aLicense['type'] == BX_ACL_LICENSE_TYPE_RECURRING)
+            $sOrderDb = $aLicense['order'];
+
+        if($sOrderDb && (!$sOrder || $sOrder != $sOrderDb) && (($aResult = $oPayments->cancelSubscription($sOrderDb)) === false || (int)$aResult['code'] != 0))
+            sendMailTemplate($CNF['ETEMPLATE_SBS_CANCEL_REQUIRED'], 0, $iUserId, [
+                'level' => _t($aMembership['name']),
+                'order' => $sOrderDb,
+                'date_starts' => $this->_oConfig->formatDate($aMembership['date_starts']),
+                'date_expires' => $this->_oConfig->formatDate($aMembership['date_expires']),
+            ], BX_EMAIL_NOTIFY, true);
     }
 }
 

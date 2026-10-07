@@ -40,8 +40,6 @@ class BxAclGridView extends BxAclGridLevels
 
     public function performActionChoose()
     {
-        $CNF = &$this->_oModule->_oConfig->CNF;
-
         if(!$this->_iLogged)
             return $this->_bIsApi ? [] : echoJson([]);
 
@@ -51,12 +49,18 @@ class BxAclGridView extends BxAclGridLevels
 
         $aItem = $this->_oModule->_oDb->getPrices(['type' => 'by_id', 'value' => $aIds[0]]);
         if(!is_array($aItem) || empty($aItem) || (float)$aItem['price'] != 0)
-            return $this->_bIsApi ? [] : echoJson(array());
+            return $this->_bIsApi ? [] : echoJson([]);
+
+        $oAcl = BxDolAcl::getInstance();
+        $iUserId = bx_get_logged_profile_id();
+        $aMembershipInfo = $oAcl->getMemberMembershipInfo($iUserId);
 
         $aResult = [];
-        $iUserId = bx_get_logged_profile_id();
-        if(BxDolAcl::getInstance()->setMembership($iUserId, $aItem['level_id'], ['period' => $aItem['period'], 'period_unit' => $aItem['period_unit']], true))
+        if($oAcl->setMembership($iUserId, $aItem['level_id'], ['period' => $aItem['period'], 'period_unit' => $aItem['period_unit']], true)) {
+            $this->_oModule->cancelSubscription($iUserId, $aMembershipInfo);
+
             $aResult = ['grid' => $this->getCode(false), 'blink' => $aItem['id'], 'msg' => _t('_bx_acl_msg_performed')];
+        }
         else
             $aResult = ['msg' => _t('_bx_acl_err_cannot_perform')];
 

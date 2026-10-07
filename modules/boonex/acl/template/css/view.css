@@ -8,6 +8,10 @@ div.bx-acl-level-icon {
 	overflow: hidden;
 }
 
+div.bx-acl-level-icon svg {
+	display: inline-block;
+}
+
 div.bx-acl-level-icon .sys-icon {
 	line-height: 32px;
 	font-size: 24px;
