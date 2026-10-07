@@ -1,0 +1,5 @@
+**/node_modules
+**/.next
+apps/expo/ios
+apps/expo/android
+.env.local
