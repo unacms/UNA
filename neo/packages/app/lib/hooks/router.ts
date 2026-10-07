@@ -19,7 +19,7 @@ import { useIsFocused as useIsFocusedImpl } from 'expo-router/react-navigation';
 import { useSafeAreaInsets as useSafeAreaInsetsImpl, initialWindowMetrics } from 'react-native-safe-area-context';
 import { TabRouteOverrideContext } from 'app/context/tab-route-override';
 import { isTabScopedChromeKey, useTabChromeKey } from 'app/context/tab-chrome';
-import { getTabKeyFromPathname } from 'app/lib/navigation/tab-path';
+import { getSelectedTabKey, getTabKeyFromPathname } from 'app/lib/navigation/tab-path';
 import type { NavigationLike, RouterLike, SafeAreaInsets } from './router.types';
 
 type TabRouteOverride = { pathname?: string; isFocused?: boolean } | null;
@@ -34,7 +34,8 @@ export function usePathname(): string {
 export function useCurrentTabPath(): string {
     const chromeKey = useTabChromeKey();
     const pathname = usePathname();
-    if (isTabScopedChromeKey(chromeKey)) return chromeKey;
+    // A pushed page's key is `/tab0/page#…`: the tab is its first segment.
+    if (isTabScopedChromeKey(chromeKey)) return getTabKeyFromPathname(chromeKey);
     return getTabKeyFromPathname(pathname);
 }
 
@@ -112,12 +113,33 @@ export function goBack(navigation: NavigationLike, router: RouterLike, callback?
     }
 }
 
-/** Native: open `url` inside a tab by replacing the tab route (`?url=…`). */
-export function redirectTo(router: RouterLike, url: string, tabname = '/tab0'): void {
-    const normalizedUrl = url?.startsWith('/') ? url : `/${url}`;
+/**
+ * App path for a redirect target. The API can answer a page request with a
+ * redirect to its own absolute request URL (`https://api…/path?r=system/
+ * get_page_by_request…`); the page is its path.
+ */
+function toAppPath(url: string): string {
+    const absolute = /^https?:\/\/[^/]+(\/[^?#]*)?(\?[^#]*)?/i.exec(url || '');
+    if (absolute) {
+        const path = absolute[1] || '/';
+        const query = absolute[2] || '';
+        return /[?&]r=system(%2F|\/)get_page/i.test(query) ? path : path + query;
+    }
+    return url?.startsWith('/') ? url : `/${url}`;
+}
 
-    router.replace({
-        pathname: tabname,
-        params: { url: normalizedUrl, refresh: Date.now() }
-    })
+/**
+ * Native: open `url` in place of the current page. In the focused tab that is
+ * the screen on top of its stack (tab root or a pushed page), so its params
+ * change and nothing is pushed; another tab gets its root replaced.
+ */
+export function redirectTo(router: RouterLike, url: string, tabname = getSelectedTabKey() || '/tab0'): void {
+    const normalizedUrl = toAppPath(url);
+    const params = { url: normalizedUrl, refresh: Date.now() };
+
+    if (router.setParams && getTabKeyFromPathname(tabname) === getSelectedTabKey()) {
+        router.setParams(params);
+        return;
+    }
+    router.replace({ pathname: getTabKeyFromPathname(tabname), params });
 }

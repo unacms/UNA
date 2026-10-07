@@ -6,7 +6,7 @@ import { View } from 'app/design/view'
 import { appSetting, isExternalUrl, openExternalLink } from 'app/lib/util'
 import { useThemeValue } from 'app/design/theme'
 import { useRouter, useCurrentTabPath } from 'app/lib/hooks/router'
-import { nativeTabHref } from 'app/lib/navigation/tab-history'
+import { nativeTabPageHref } from 'app/lib/navigation/tab-history'
 import { preprocessHtml, normalizeRenderedHref } from 'app/lib/html-helpers'
 
 // This file is native-only (web content is rendered by html.web.js), so the
@@ -40,7 +40,7 @@ export default function ElementHtml({ customClassName, data, innerRef }: HtmlPro
             return
         }
         const relative = url.replace(/^https?:\/\/[^/]+/, '') || url
-        router.push(nativeTabHref(relative, tabPath))
+        router.push(nativeTabPageHref(relative, tabPath))
     }, [router, tabPath])
 
     if (!data) return null

@@ -15,7 +15,7 @@ import { appSetting, cn, tp, sanitazeUrl } from 'app/lib/util';
 import { getUnitMenuItems } from 'app/customization/functions';
 import { UnitActionWidthContext } from 'app/components/units/unit-action-width';
 import { useRouter, useCurrentTabPath, useFocusEffect } from 'app/lib/hooks/router';
-import { nativeTabHref } from 'app/lib/navigation/tab-history';
+import { nativeTabPageHref } from 'app/lib/navigation/tab-history';
 import { useTranslation } from 'react-i18next';
 import { Card, CardList } from 'app/ui/molecules/page/card';
 import LinkOrModal from 'app/ui/molecules/dialogs/link-or-modal';
@@ -295,7 +295,7 @@ export function useUnitActions({ unitType, data, module, t = null }) {
             currentRouter.push(
                 Platform.OS === 'web'
                     ? url
-                    : nativeTabHref(url, tabPathRef.current),
+                    : nativeTabPageHref(url, tabPathRef.current),
             );
         }, t, module),
         [unitType, data, module, t],

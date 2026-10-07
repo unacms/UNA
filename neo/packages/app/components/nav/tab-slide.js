@@ -51,15 +51,15 @@ function useHostSlots() {
     return Array.from(slots.values());
 }
 
-function publishSlot(tabKey, node) {
+function publishSlot(tabKey, node, chromeKey = tabKey, pushed = false) {
     const prev = slots.get(tabKey);
     if (!node && prev?.node) {
         return;
     }
-    if (prev?.node === node && prev?.tabKey === tabKey) {
+    if (prev?.node === node && prev?.chromeKey === chromeKey) {
         return;
     }
-    slots.set(tabKey, { tabKey, node });
+    slots.set(tabKey, { tabKey, node, chromeKey, pushed });
     notifyHost();
 }
 
@@ -159,7 +159,7 @@ export function TabSlideHost({ sessionKey, backgroundColor }) {
                 pointerEvents="box-none"
                 style={[styles.pageLayer, { bottom: bottomReserve, backgroundColor }]}
             >
-                {ordered.map(({ tabKey, node }) => {
+                {ordered.map(({ tabKey, node, chromeKey, pushed }) => {
                     const focused = tabKey === activeTabKey;
                     return (
                         <Animated.View
@@ -172,7 +172,7 @@ export function TabSlideHost({ sessionKey, backgroundColor }) {
                                 { transform: [{ translateX: getTranslate(tabKey, width) }] },
                             ]}
                         >
-                            <TabChromeProvider tabKey={tabKey}>
+                            <TabChromeProvider tabKey={chromeKey || tabKey} pushed={!!pushed}>
                                 <TabRouteOverrideContext.Provider
                                     value={{
                                         pathname: focused ? realPathname : tabKey,
@@ -192,9 +192,11 @@ export function TabSlideHost({ sessionKey, backgroundColor }) {
 
 /**
  * Pages render in the NativeTabs screen. The host only overlays the previous
- * page while the next one covers it.
+ * page while the next one covers it. A tab's slot holds the page on top of its
+ * stack: only the focused screen publishes, so a page below a pushed one (or
+ * one just popped) never takes it over.
  */
-export function TabSlide({ tabKey, ready = true, children }) {
+export function TabSlide({ tabKey, chromeKey = tabKey, pushed = false, ready = true, children }) {
     const isFocused = useIsFocused();
     const { width } = useWindowDimensions();
     const wasActiveRef = useRef(false);
@@ -206,10 +208,10 @@ export function TabSlide({ tabKey, ready = true, children }) {
     const node = (ready ? children : null) || lastNodeRef.current;
 
     useLayoutEffect(() => {
-        if (!nativeTabs || !tabKey) return undefined;
-        publishSlot(tabKey, node);
+        if (!nativeTabs || !tabKey || !isFocused) return undefined;
+        publishSlot(tabKey, node, chromeKey, pushed);
         return undefined;
-    }, [nativeTabs, node, tabKey]);
+    }, [nativeTabs, node, tabKey, chromeKey, pushed, isFocused]);
 
     useLayoutEffect(() => {
         if (!nativeTabs) return;

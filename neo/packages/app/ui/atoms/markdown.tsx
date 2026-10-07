@@ -7,7 +7,7 @@ import { Text } from 'app/design/typography'
 import { useTheme, useThemeValue } from 'app/design/theme'
 import { appSetting, isExternalUrl, openExternalLink, sanitazeUrl } from 'app/lib/util'
 import { useRouter, useCurrentTabPath } from 'app/lib/hooks/router'
-import { nativeTabHref } from 'app/lib/navigation/tab-history'
+import { nativeTabPageHref } from 'app/lib/navigation/tab-history'
 import { normalizeLinkHref } from 'app/components/form-fields/editor-mention-html'
 import { Icon } from 'app/ui/atoms/icon'
 import LazyCodeBlock from 'app/ui/atoms/code-block-lazy'
@@ -381,7 +381,7 @@ export default function ElementMarkdown({ data, customClassName, className = '',
             return
         }
         // Object href is native-only; the web router is typed for strings.
-        router.push(nativeTabHref(relative, tabPath) as any)
+        router.push(nativeTabPageHref(relative, tabPath) as any)
     }, [router, tabPath])
 
     const markdownStyle = useMemo((): MarkdownStyle => {

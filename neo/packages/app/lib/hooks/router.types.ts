@@ -13,4 +13,5 @@ export type NavigationLike = {
 export type RouterLike = {
     back?: () => void;
     replace: (href: any) => void;
+    setParams?: (params: any) => void;
 };

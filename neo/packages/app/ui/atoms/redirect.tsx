@@ -1,6 +1,6 @@
 import { useEffect, useRef, useCallback, type Ref } from 'react';
 import { useRouter, useCurrentTabPath } from 'app/lib/hooks/router'
-import { nativeTabHref } from 'app/lib/navigation/tab-history'
+import { nativeTabPageHref } from 'app/lib/navigation/tab-history'
 import { findTabPathForUrl, getTabList } from 'app/components/nav/tabs/tab-menu'
 import { useCurrentUser } from 'app/context/user'
 import { Platform } from 'react-native'
@@ -47,7 +47,7 @@ export default function ElementRedirect({ ref }: { ref?: Ref<RedirectHandle | nu
             const target = Platform.OS === 'web'
                 ? sUrl
                 // Same tab matching as ElementLink (e.g. messenger convo url → messenger tab).
-                : nativeTabHref(sUrl, findTabPathForUrl(sUrl, getTabList(currentUserRef.current)) || tabPathRef.current);
+                : nativeTabPageHref(sUrl, findTabPathForUrl(sUrl, getTabList(currentUserRef.current)) || tabPathRef.current, currentUserRef.current);
 
             // Web router takes strings only; the object form is native-only (Platform check above).
             currentRouter.push(target as string);

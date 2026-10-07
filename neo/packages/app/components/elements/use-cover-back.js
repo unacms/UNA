@@ -9,7 +9,8 @@ export function useCoverBackTabKey() {
     const chromeKey = useTabChromeKey()
     const pathKey = useTabKey()
     if (isTabScopedChromeKey(chromeKey)) {
-        return chromeKey
+        // A pushed page's key is `/tab0/page#…`: the tab is its first segment.
+        return getTabKeyFromPathname(chromeKey)
     }
     return getTabKeyFromPathname(pathKey)
 }

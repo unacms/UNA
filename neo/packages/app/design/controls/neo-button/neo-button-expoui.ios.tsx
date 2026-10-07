@@ -34,10 +34,10 @@ import { useResolvedNeoButton, resolveScoped, parseNeoButtonAddon } from 'app/de
 import { useFrozenHostSize, useLockedNativePress, wrapNativeButtonHost } from 'app/design/controls/neo-button/neo-button-expoui-host';
 import { FeedbackHaptics, appSetting, findIconFromRemote } from 'app/lib/util';
 import type { NeoButtonExpoUIConfig, NeoButtonExpoUIProps } from 'app/design/controls/neo-button/neo-button.types';
+import { NATIVE_BUTTON_FONT_FAMILY, fontSizeFromClass, fontWeightFromClass } from 'app/design/controls/neo-button/native-font';
 
 type SwiftUIModifier = ReturnType<typeof frame>;
 type FontParams = Parameters<typeof fontModifier>[0];
-type FontWeight = NonNullable<FontParams['weight']>;
 type SymbolEffectConfig = { effect: string; [key: string]: any };
 type SFSymbol = NonNullable<ComponentProps<typeof Image>['systemName']>;
 
@@ -52,40 +52,11 @@ const SWIFTUI_ROLE: Record<string, 'cancel' | 'destructive'> = { cancel: 'cancel
 // theme height so the finished control lands on 28/36/44/52/64, not ~34pt.
 const SWIFTUI_LABEL_VPAD: Record<string, number> = { mini: 3, small: 5, regular: 7, large: 15, extraLarge: 20 };
 
-// Fallback pt sizes when `iosFont.size` is omitted — matches the Tailwind
-// `text-sm` / `text-base` / `text-lg` used in `controlSizes.font`.
-const FONT_SIZE_PT: Record<string, number> = { mini: 14, small: 14, regular: 16, large: 16, extraLarge: 18 };
-
-function fontSizeFromClass(fontCls: unknown, controlSize: string) {
-    if (typeof fontCls === 'string') {
-        if (fontCls.includes('text-xl')) return 20;
-        if (fontCls.includes('text-lg')) return 18;
-        if (fontCls.includes('text-base')) return 16;
-        if (fontCls.includes('text-sm')) return 14;
-        if (fontCls.includes('text-xs')) return 12;
-    }
-    return FONT_SIZE_PT[controlSize] ?? 16;
-}
-
-const FONT_WEIGHT_FROM_CLASS: [string, FontWeight][] = [
-    ['font-extralight', 'ultraLight'],
-    ['font-thin', 'thin'],
-    ['font-light', 'light'],
-    ['font-semibold', 'semibold'],
-    ['font-extrabold', 'heavy'],
-    ['font-black', 'black'],
-    ['font-bold', 'bold'],
-    ['font-medium', 'medium'],
-    ['font-normal', 'regular'],
-];
-
-function fontWeightFromClass(cls: unknown): FontWeight | null {
-    if (typeof cls !== 'string' || !cls) return null;
-    for (const [token, weight] of FONT_WEIGHT_FROM_CLASS) {
-        if (cls.includes(token)) return weight;
-    }
-    return null;
-}
+// Horizontal inset `.bordered` / `.borderedProminent` already put around the
+// label, per SwiftUI controlSize (iOS 26/27 simulator, label edge to chrome
+// edge). The theme `paddingX` (16 at regular) is topped up from here, so the
+// label sits where the JS button puts it. extraLarge is not measured.
+const SWIFTUI_BORDERED_HPAD: Record<string, number> = { mini: 10, small: 10, regular: 12, large: 20, extraLarge: 20 };
 
 // Glyph point size comes from `neo_button.controlSizes.*.icon`, the value web
 // and Android draw, so one setting sizes every platform. Web draws Lucide on
@@ -352,6 +323,19 @@ export function NeoButtonExpoUI(props: NeoButtonExpoUIProps) {
         }));
     }
 
+    // Bordered chrome: top SwiftUI's own label inset up to the theme
+    // `paddingX` (or the button's `contentInsets`), like the JS button.
+    const hasBorderedChrome = mapping.buttonStyle === 'bordered' || mapping.buttonStyle === 'borderedProminent';
+    if (!isGlass && hasBorderedChrome && effectiveLabel && !isIconOnly && !isCustomOnly) {
+        const insets = typeof contentInsets === 'string'
+            ? resolved.contentInsets?.[contentInsets]
+            : (contentInsets && typeof contentInsets === 'object' ? contentInsets : null);
+        const nativeInset = SWIFTUI_BORDERED_HPAD[nativeControlSize] ?? SWIFTUI_BORDERED_HPAD.regular!;
+        const leading = Math.max(0, (insets?.left ?? resolved.paddingX ?? nativeInset) - nativeInset);
+        const trailing = Math.max(0, (insets?.right ?? resolved.paddingX ?? nativeInset) - nativeInset);
+        if (leading || trailing) labelModifiers.push(padding({ leading, trailing }));
+    }
+
     const tintMap = nativeConfig?.iosTint;
     const fallbackTint = useThemeValue(tintMap?.default ?? tintMap, tintMap?.dark);
     const styleColorMap = nativeConfig?.iosColors?.[resolved.style];
@@ -369,7 +353,9 @@ export function NeoButtonExpoUI(props: NeoButtonExpoUIProps) {
     const addonMeta = parseNeoButtonAddon(addon);
 
     // Size comes from `controlSizes.*.font` (`text-sm` …). Weight comes from
-    // style text classes (`font-medium` on glass). `iosFont` overrides both.
+    // style text classes (`font-medium` on glass). Family is the app font
+    // (Inter …), like the JS button; SF Pro when the app font is 'system'.
+    // `iosFont` overrides all three.
     // Previously a null `iosFont` skipped the modifier entirely, so SwiftUI
     // ignored theme type and subtabs looked unstyled.
     const iosFont = resolveScoped(nativeConfig?.iosFont, resolved.env);
@@ -385,12 +371,16 @@ export function NeoButtonExpoUI(props: NeoButtonExpoUIProps) {
         if (iosFont.textStyle) fontParams.textStyle = iosFont.textStyle;
         if (typeof iosFont.size === 'number') fontParams.size = iosFont.size;
     }
+    if (!fontParams.family && NATIVE_BUTTON_FONT_FAMILY) {
+        fontParams.family = NATIVE_BUTTON_FONT_FAMILY;
+    }
     if (fontParams.size == null) {
         fontParams.size = fontSizeFromClass(resolved.fontCls, nativeControlSize);
     }
     if (!fontParams.weight) {
         fontParams.weight = fontWeightFromClass(`${resolved.fontCls || ''} ${textCls || ''}`) || 'medium';
     }
+
     const textModifiers = [fontModifier(fontParams)];
     if (foregroundValue) textModifiers.push(foregroundStyle(foregroundValue));
 
@@ -400,7 +390,7 @@ export function NeoButtonExpoUI(props: NeoButtonExpoUIProps) {
         contentKey: [
             nativeLabel, sfSymbol || assetName || (customContent ? 'custom' : ''), nativeControlSize, targetHeight,
             mapping.buttonStyle, borderShape || '', 'host-fit-v5',
-            iosFont?.family || '', fontParams.weight || '', String(fontParams.size ?? ''), String(nativeIconSize),
+            fontParams.family || '', fontParams.weight || '', String(fontParams.size ?? ''), String(nativeIconSize),
             addonMeta?.text || '',
         ].join('|'),
         rnOwnsWidth,

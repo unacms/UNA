@@ -18,6 +18,7 @@ import {
 } from '@expo/ui/jetpack-compose';
 import {
     fillMaxWidth,
+    weight,
     width as widthModifier,
 } from '@expo/ui/jetpack-compose/modifiers';
 import { useAndroidStyleColors } from 'app/design/controls/neo-button/native-style-colors';
@@ -25,6 +26,7 @@ import { useResolvedNeoButton, resolveScoped, parseNeoButtonAddon } from 'app/de
 import { useFrozenHostSize, useLockedNativePress, wrapNativeButtonHost } from 'app/design/controls/neo-button/neo-button-expoui-host';
 import { FeedbackHaptics, findIconFromRemote } from 'app/lib/util';
 import type { NeoButtonExpoUIConfig, NeoButtonExpoUIProps } from 'app/design/controls/neo-button/neo-button.types';
+import { COMPOSE_FONT_WEIGHT, NATIVE_BUTTON_FONT_FAMILY, fontSizeFromClass, fontWeightFromClass } from 'app/design/controls/neo-button/native-font';
 
 const VARIANT_COMPONENTS: Record<string, typeof Button> = {
     filled: Button,
@@ -35,6 +37,9 @@ const VARIANT_COMPONENTS: Record<string, typeof Button> = {
 };
 
 const TINT_FILLS_CONTAINER = new Set(['filled', 'elevated']);
+
+// Material3 `ButtonDefaults.ContentPadding` vertical inset.
+const MATERIAL_PADDING_Y = 8;
 
 const isNativeColor = (color: unknown): color is string =>
     typeof color === 'string' && color.length > 0 && !color.includes('var(');
@@ -56,7 +61,7 @@ export function NeoButtonExpoUI(props: NeoButtonExpoUIProps) {
         width, align,
         accessibilityLabel, alt, accessibilityRole,
         hitarea, hitSlop,
-        className, classNames,
+        className, classNames, contentInsets,
         nativeConfig,
     } = props;
 
@@ -157,7 +162,31 @@ export function NeoButtonExpoUI(props: NeoButtonExpoUIProps) {
         rnOwnsHeight,
     });
 
+    // Label type from the theme, like the JS button and iOS: size from
+    // `controlSizes.*.font`, weight from the style's text classes, the app
+    // font family. Material's own label style is 14sp Roboto.
+    const textCls = typeof resolved.textCls === 'function' ? resolved.textCls(selected ? 'pressedToggle' : 'default') : '';
+    const labelStyle = {
+        fontSize: fontSizeFromClass(resolved.fontCls, resolved.controlSize),
+        fontWeight: COMPOSE_FONT_WEIGHT[fontWeightFromClass(`${resolved.fontCls || ''} ${textCls || ''}`) || 'medium'],
+        ...(NATIVE_BUTTON_FONT_FAMILY ? { fontFamily: NATIVE_BUTTON_FONT_FAMILY } : {}),
+    };
+
     const hasLabel = effectiveLabel !== '';
+    // Material pads a labelled button 24dp on the sides (12dp for text
+    // buttons). Container variants take the theme `paddingX` (or the button's
+    // `contentInsets`) instead, like the JS button; vertical stays Material's.
+    const insets = typeof contentInsets === 'string'
+        ? resolved.contentInsets?.[contentInsets]
+        : (contentInsets && typeof contentInsets === 'object' ? contentInsets : null);
+    const contentPadding = hasLabel && !isIconOnly && variant !== 'text' && resolved.paddingX != null
+        ? {
+            start: insets?.left ?? resolved.paddingX,
+            end: insets?.right ?? resolved.paddingX,
+            top: MATERIAL_PADDING_Y,
+            bottom: MATERIAL_PADDING_Y,
+        }
+        : undefined;
     const icon = iconSource ? (
         <ComposeIcon
             source={iconSource}
@@ -168,6 +197,12 @@ export function NeoButtonExpoUI(props: NeoButtonExpoUIProps) {
     const labelGapSpacer = (icon && hasLabel)
         ? <Spacer modifiers={[widthModifier(resolved.labelGap)]} />
         : null;
+    // Material centres a Button's content row. When the button is wider than
+    // its content, a weighted spacer pushes it to the start / end (`align`),
+    // like the iOS frame alignment.
+    const alignStart = rnOwnsWidth && resolved.align === 'start';
+    const alignEnd = rnOwnsWidth && resolved.align === 'end';
+    const alignSpacer = (alignStart || alignEnd) ? <Spacer modifiers={[weight(1)]} /> : null;
 
     const host = (
         <Host
@@ -192,15 +227,18 @@ export function NeoButtonExpoUI(props: NeoButtonExpoUIProps) {
                 onClick={handlePress}
                 enabled={true}
                 colors={colors}
+                contentPadding={contentPadding}
                 modifiers={rnOwnsWidth ? [fillMaxWidth()] : undefined}
             >
+                {alignEnd ? alignSpacer : null}
                 {resolved.imagePlacement !== 'trailing' ? icon : null}
                 {resolved.imagePlacement !== 'trailing' ? labelGapSpacer : null}
-                {hasLabel ? <ComposeText>{String(effectiveLabel)}</ComposeText> : null}
+                {hasLabel ? <ComposeText style={labelStyle}>{String(effectiveLabel)}</ComposeText> : null}
                 {addonMeta ? <Spacer modifiers={[widthModifier(resolved.labelGap)]} /> : null}
-                {addonMeta ? <ComposeText>{addonMeta.text}</ComposeText> : null}
+                {addonMeta ? <ComposeText style={labelStyle}>{addonMeta.text}</ComposeText> : null}
                 {resolved.imagePlacement === 'trailing' ? labelGapSpacer : null}
                 {resolved.imagePlacement === 'trailing' ? icon : null}
+                {alignStart ? alignSpacer : null}
             </ButtonComponent>
         </Host>
     );
