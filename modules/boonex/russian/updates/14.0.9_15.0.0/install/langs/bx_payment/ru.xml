@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="ru" flag="ru" title="Russian">
-	 <string_add name="_bx_payment_menu_title_public_cart_submenu"><![CDATA[Корзины]]></string_add>
-	<string_add name="_bx_payment_grid_action_title_crt_quantity_sub"><![CDATA[Уменьшить количество]]></string_add>
-	<string_add name="_bx_payment_grid_action_title_crt_quantity_add"><![CDATA[Увеличить количество]]></string_add>
-	<string_add name="_bx_payment_pp_api_err_wrong_item"><![CDATA[Продукт, на который вы хотите подписаться, имеет неверные данные на стороне PayPal. Пожалуйста, сообщите.]]></string_add>
-</resources>

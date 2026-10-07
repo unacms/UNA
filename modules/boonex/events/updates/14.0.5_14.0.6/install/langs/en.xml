@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="en" flag="gb" title="English">
-	<string_add name="_bx_events_option_rm_from_timeline_after"><![CDATA[Delete past events from Timeline after N hours (0 - don't delete)]]></string_add>
-</resources>

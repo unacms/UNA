@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="ru" flag="ru" title="Russian">
-	<string_add name="_bx_persons_form_profile_input_sys_profile_last_active"><![CDATA[Последняя активность аккаунта]]></string_add>
-    <string_add name="_bx_persons_form_profile_input_profile_last_active"><![CDATA[Последняя активность аккаунта]]></string_add>
-</resources>

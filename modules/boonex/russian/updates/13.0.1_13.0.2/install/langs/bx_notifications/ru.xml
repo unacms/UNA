@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="ru" flag="ru" title="Russian">
-	<string_add name="_bx_ntfs_txt_object_post_common"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b> - {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b>]]></string_add>
-    <string_add name="_bx_ntfs_txt_object_post_common_in_context"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b> - {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b> от <b class="bx-ntfs-content-profile">{object_owner_name}</b>]]></string_add>
-</resources>

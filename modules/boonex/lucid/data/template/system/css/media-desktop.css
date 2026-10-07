@@ -1,6 +1,0 @@
-@import url(../../../../../../../template/css/media-desktop.css);
-
-/*--- Header Toolbar ---*/ 
-.bx-media-desktop #bx-menu-toolbar-1-container .bx-menu-toolbar li.bx-menu-item-main-menu {
-    display: none;
-}

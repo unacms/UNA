@@ -1,9 +1,0 @@
-/*--- Grid ---*/
-#bx-grid-cont-bx_payment_grid_invoices .bx-grid-cell-single-actions-wrapper {
-    white-space: nowrap;
-}
-
-#bx-grid-cont-bx_payment_grid_invoices .bx-grid-cell-single-actions-wrapper .bx-btn {
-    display: inline-block;
-    float: none;
-}

@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="en" flag="gb" title="English">
-	<string_add name="_bx_events_txt_role_added"><![CDATA[Added]]></string_add>
-    <string_add name="_bx_events_txt_role_expired"><![CDATA[Expires]]></string_add>
-</resources>

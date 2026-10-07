@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="ru" flag="ru" title="Russian">
-	<string_add name="_bx_ads_alert_action_info_doInterest_personal"><![CDATA[Участник проявил интерес к вашей рекламе.]]></string_add>
-	<string_add name="_bx_ads_alert_action_info_license_register_personal"><![CDATA[Участник приобрел рекламируемый вами товар или услугу.]]></string_add>
-</resources>

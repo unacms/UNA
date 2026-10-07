@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="en" flag="gb" title="English">
-	<string_add name="_bx_timeline_option_enable_content_own_actions"><![CDATA[Event uses content's own actions (views, likes, etc)]]></string_add>
-</resources>

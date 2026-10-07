@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="ru" flag="ru" title="Russian">
-	<string_add name="_bx_groups_page_title_sys_followed"><![CDATA[Подписанные Группы]]></string_add>
-    <string_add name="_bx_groups_page_title_followed"><![CDATA[Подписанные Группы]]></string_add>
-	<string_add name="_bx_groups_page_block_title_sys_followed_entries"><![CDATA[Подписанные Группы]]></string_add>
-	<string_add name="_bx_groups_page_block_title_followed_entries"><![CDATA[Подписанные Группы]]></string_add>
-	<string_add name="_bx_groups_menu_item_title_system_entries_followed"><![CDATA[Подписанные]]></string_add>
-    <string_add name="_bx_groups_menu_item_title_entries_followed"><![CDATA[Подписанные]]></string_add>
-</resources>

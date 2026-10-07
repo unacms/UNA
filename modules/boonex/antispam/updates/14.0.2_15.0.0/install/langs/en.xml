@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="en" flag="gb" title="English">
-	<string_upd name="_bx_antispam_rule_note_spamhaus_org"><![CDATA[Detect spammy IPs: to use the service for free, your server must use its own private DNS server and have a reverse PTR record for its public IP.]]></string_upd>
-</resources>

@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="en" flag="gb" title="English">
-    <string_add name="_bx_market_page_title_sys_entries_by_category"><![CDATA[Products in category]]></string_add>
-    <string_add name="_bx_market_page_title_entries_by_category"><![CDATA[Products in {category_name}]]></string_add>
-    <string_add name="_bx_market_page_block_title_sys_entries_by_category"><![CDATA[Products in category]]></string_add>
-    <string_add name="_bx_market_page_block_title_entries_by_category"><![CDATA[{category_name}]]></string_add>
-</resources>

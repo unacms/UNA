@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="ru" flag="ru" title="Russian">
-	<string_add name="_bx_dev_bp_txt_sys_block_class"><![CDATA[CSS класс]]></string_add>
-    <string_add name="_bx_dev_bp_txt_block_class"><![CDATA[CSS класс]]></string_add>
-</resources>

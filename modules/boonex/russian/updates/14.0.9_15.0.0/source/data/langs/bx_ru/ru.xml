@@ -1,7 +1,0 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<resources name="ru" flag="ru" title="Russian">
-    <string name="_bx_ru"><![CDATA[Русский]]></string>
-    <string name="_bx_rsn_wgt_cpt"><![CDATA[Русский]]></string>
-    <string name="_bx_rsn_stg_cpt_type"><![CDATA[Русский]]></string>
-    <string name="_bx_rsn_stg_cpt_category_system"><![CDATA[Основные]]></string>
-</resources>

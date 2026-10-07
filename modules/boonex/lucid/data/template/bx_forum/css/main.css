@@ -1,9 +1,0 @@
-@import url(../../../../../forum/template/css/main.css);
-
-.cmt-reply.cmt-reply-bottom.bx-def-box {
-    margin-top: 1rem;
-}
-
-.cmt.bx-def-box .cmt-info > .bx-def-hr {
-    display: none;
-}

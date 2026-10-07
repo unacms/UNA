@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="ru" flag="ru" title="Russian">
-	<string_upd name="_bx_invites_msg_invitation_sent"><![CDATA[Сообщение с приглашением было поставлено в очередь для отправки по {0} эл. адресам из списка.]]></string_upd>
-	<string_upd name="_bx_invites_msg_request_sent"><![CDATA[Запрос на приглашение получен. Мы вышлем приглашение, когда придет ваша очередь.]]></string_upd>
-</resources>

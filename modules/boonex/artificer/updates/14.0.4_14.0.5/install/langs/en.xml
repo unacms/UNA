@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="en" flag="gb" title="English">
-	<string_add name="_bx_artificer_stg_cpt_option_header_search"><![CDATA[Enable floating search bar]]></string_add>
-</resources>

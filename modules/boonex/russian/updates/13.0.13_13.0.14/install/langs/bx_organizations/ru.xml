@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="ru" flag="ru" title="Russian">
-	<string_add name="_bx_orgs_txt_ntfs_accept_request"><![CDATA[В организацию <b class="bx-ntfs-content-profile">{owner_name}</b> вступил <b class="bx-ntfs-content-entry">{subentry_sample}</b>]]></string_add>
-    <string_add name="_bx_orgs_txt_ntfs_accept_request_for_owner"><![CDATA[<b class="bx-ntfs-content-entry">{subentry_sample}</b> был принят в вашу организацию]]></string_add>
-</resources>

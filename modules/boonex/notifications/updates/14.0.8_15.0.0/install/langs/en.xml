@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="en" flag="gb" title="English">
-	<string_add name="_bx_ntfs_menu_title_public_submenu"><![CDATA[Notifications]]></string_add>
-	<string_add name="_bx_ntfs_txt_new_event_subject"><![CDATA[New on "{0}"]]></string_add>
-
-	<string_upd name="_bx_ntfs_email_new_event_subject"><![CDATA[{subject}]]></string_upd>
-
-	<string_del name="_bx_ntfs_push_new_event_subject"><![CDATA[New on "{0}"]]></string_del>
-</resources>

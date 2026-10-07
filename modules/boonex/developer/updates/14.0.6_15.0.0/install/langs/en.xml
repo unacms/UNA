@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="en" flag="gb" title="English">
-	<string_add name="_bx_dev_nav_txt_sys_menus_title_public"><![CDATA[Title]]></string_add>
-	<string_add name="_bx_dev_nav_txt_menus_title_public"><![CDATA[Title]]></string_add>
-
-	<string_upd name="_bx_dev_nav_txt_sys_menus_title"><![CDATA[System Title]]></string_upd>
-	<string_upd name="_bx_dev_nav_txt_menus_title"><![CDATA[System Title]]></string_upd>
-</resources>

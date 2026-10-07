@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="ru" flag="ru" title="Russian">
-	<string_add name="_bx_channels_option_use_cover_as_thumb"><![CDATA[Использовать только изображение обложки]]></string_add>
-	<string_add name="_bx_channels_option_use_cover_as_thumb_inf"><![CDATA[После отключения не забудьте активировать поле «Загрузить изображение» в формах создания/редактирования канала.]]></string_add>
-	<string_add name="_bx_channels_menu_title_public_submenu"><![CDATA[Каналы]]></string_add>
-	<string_add name="_bx_channels_menu_title_view_profile_meta"><![CDATA[Канал - Мета инфо]]></string_add>
-	<string_add name="_bx_channels_menu_set_title_view_profile_meta"><![CDATA[Канал - Мета инфо]]></string_add>
-	<string_add name="_bx_channels_menu_item_title_system_subscriptions"><![CDATA[Подписки]]></string_add>
-</resources>

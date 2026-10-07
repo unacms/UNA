@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="en" flag="gb" title="English">
-	<string_add name="_polls_from"><![CDATA[Polls from: {0}]]></string_add>
-	<string_add name="_adm_stg_cpt_option_sys_cf_unauthenticated"><![CDATA[Content visible to unauthenticated users]]></string_add>
-	<string_add name="_sys_paginate_total"><![CDATA[{0}-{1} of {2}]]></string_add>
-</resources>

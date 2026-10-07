@@ -1,8 +1,0 @@
-@import url(../../../../../../../template/css/grid.css);
-
-.bx-grid-table-wrapper2:before {
-    background: linear-gradient(to right, rgba(245,250,255,0.9) 0%,rgba(245,250,255,0) 100%);
-}
-.bx-grid-table-wrapper2:after {
-    background: linear-gradient(to right, rgba(245,250,255,0) 0%,rgba(245,250,255,0.9) 100%);
-}

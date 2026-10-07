@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="en" flag="gb" title="English">
-	<string name="_bx_channels_option_use_cover_as_thumb"><![CDATA[Use cover image only]]></string>
-	<string name="_bx_channels_option_use_cover_as_thumb_inf"><![CDATA[After disabling don't forget to activate 'Upload Picture' field in Create/Edit channel forms.]]></string>
-	<string name="_bx_channels_menu_title_public_submenu"><![CDATA[Channels]]></string>
-	<string name="_bx_channels_menu_title_view_profile_meta"><![CDATA[Channel Meta]]></string>
-	<string name="_bx_channels_menu_set_title_view_profile_meta"><![CDATA[Channel Meta]]></string>
-	<string name="_bx_channels_menu_item_title_system_subscriptions"><![CDATA[Following]]></string>
-</resources>

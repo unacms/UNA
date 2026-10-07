@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="ru" flag="ru" title="Russian">
-	<string_add name="_bx_accnt_grid_action_msg_delete_scheduled"><![CDATA[Удаление аккаунта(ов) запланировано и будет выполнено через несколько минут.]]></string_add>
-</resources>

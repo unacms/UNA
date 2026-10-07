@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="ru" flag="ru" title="Russian">
-	<string_add name="_bx_ntfs_alert_action_reported_content_personal"><![CDATA[Новая жалоба]]></string_add>
-	<string_add name="_bx_ntfs_txt_object_reported_content"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b> - новая жалоба: {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b>]]></string_add>
-</resources>

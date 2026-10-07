@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="en" flag="gb" title="English">
-	<string_add name="_bx_stream_grid_action_publish"><![CDATA[Publish in videos module]]></string_add>
-    <string_add name="_bx_stream_grid_action_download"><![CDATA[Download recording]]></string_add>
-</resources>

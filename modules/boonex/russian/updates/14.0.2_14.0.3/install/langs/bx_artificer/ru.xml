@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="ru" flag="ru" title="Russian">
-	<string_add name="_bx_artificer_stg_cpt_option_use_htmx"><![CDATA[Использовать HTMX в верхнем меню и подменю страницы (экспериментально)]]></string_add>
-</resources>

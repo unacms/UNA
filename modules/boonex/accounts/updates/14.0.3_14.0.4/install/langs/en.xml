@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="en" flag="gb" title="English">
-	<string_add name="_bx_accnt_grid_action_msg_delete_scheduled"><![CDATA[Account(s) deletion was scheduled and would be done in a few minutes.]]></string_add>
-</resources>

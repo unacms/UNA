@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="ru" flag="ru" title="Russian">
-	<string name="_bx_googletagman"><![CDATA[Диспетчер тегов Google]]></string>
-
-        <string name="_bx_googletagman_adm_stg_cpt_type"><![CDATA[Диспетчер тегов Google]]></string>
-	<string name="_bx_googletagman_option_container_id"><![CDATA[Идентификатор контейнера]]></string>
-</resources>

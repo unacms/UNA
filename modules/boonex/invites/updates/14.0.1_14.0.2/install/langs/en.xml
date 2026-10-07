@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="en" flag="gb" title="English">
-    <string_upd name="_bx_invites_msg_invitation_sent"><![CDATA[Invitation message was queued to send to {0} email addresses from the list.]]></string_upd>
-	<string_upd name="_bx_invites_msg_request_sent"><![CDATA[Invitation request received. We'll send an invite when it's your turn.]]></string_upd>
-</resources>

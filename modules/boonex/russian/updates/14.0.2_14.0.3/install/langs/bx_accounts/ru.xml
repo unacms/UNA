@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="ru" flag="ru" title="Russian">
-	<string_upd name="_bx_accnt_menu_item_title_system_set_operator_role"><![CDATA[Сменить роль оператора]]></string_upd>
-    <string_upd name="_bx_accnt_menu_item_title_set_operator_role"><![CDATA[Сменить роль оператора]]></string_upd>
-</resources>

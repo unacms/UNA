@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="en" flag="gb" title="English">
-	<string_add name="_bx_ntfs_option_summary_chars"><![CDATA[Number of characters in auto-cropped summary (applied before saving a notification)]]></string_add>
-</resources>

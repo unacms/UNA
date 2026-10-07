@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="ru" flag="ru" title="Russian">
-	<string_add name="_bx_ntfs_option_owner_name_chars"><![CDATA[Количество символов в автоматически обрезаемом имени автора в тексте уведомления]]></string_add>
-	<string_add name="_bx_ntfs_option_content_chars"><![CDATA[Количество символов в автоматически обрезаемом заголовке контента в тексте уведомления]]></string_add>
-	<string_add name="_bx_ntfs_option_push_message_chars"><![CDATA[Количество символов в автоматически обрезаемом сообщении push-уведомления]]></string_add>
-
-	<string_upd name="_bx_ntfs_option_email_subject_chars"><![CDATA[Количество символов в автоматически обрезаемой теме Email сообщения (0 - без ограничений)]]></string_upd>
-</resources>

@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="ru" flag="ru" title="Russian">
-	<string_add name="_bx_massmailer_form_campaign_input_sys_is_one_per_account"><![CDATA[Одно письмо на один аккаунт]]></string_add>
-	<string_add name="_bx_massmailer_form_campaign_input_sys_is_track_links"><![CDATA[Отслеживать клики]]></string_add>
-</resources>

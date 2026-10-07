@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="en" flag="gb" title="English">
-	<string_add name="_bx_analytics_acl_action_use_analytics"><![CDATA[Use Analytics]]></string_add>
-</resources>

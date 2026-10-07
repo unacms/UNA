@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="en" flag="gb" title="English">
-	<string_upd name="_bx_persons_menu_item_title_system_delete_with_content"><![CDATA[Delete with Data]]></string_upd>
-	<string_upd name="_bx_persons_menu_item_title_delete_with_content"><![CDATA[Delete with Data]]></string_upd>
-	<string_upd name="_bx_persons_menu_item_title_system_delete_profile"><![CDATA[Delete Profile and Data]]></string_upd>
-	<string_upd name="_bx_persons_menu_item_title_delete_profile"><![CDATA[Delete Profile and Data]]></string_upd>
-	<string_upd name="_bx_persons_menu_item_title_system_delete_account_content"><![CDATA[Delete Account and Data]]></string_upd>
-	<string_upd name="_bx_persons_menu_item_title_delete_account_content"><![CDATA[Delete Account and Data]]></string_upd>
-</resources>

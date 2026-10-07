@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="ru" flag="ru" title="Russian">
-	<string_add name="_bx_timeline_option_enable_content_own_actions"><![CDATA[Событие использует собственные 'действия' контента (просмотры, голосование и тп.)]]></string_add>
-</resources>

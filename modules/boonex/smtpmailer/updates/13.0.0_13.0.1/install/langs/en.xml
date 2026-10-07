@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="en" flag="gb" title="English">
-	<string_add name="_bx_smtp_option_test_mode"><![CDATA[Test mode (reroute all emails to single email address)]]></string_add>
-    <string_add name="_bx_smtp_option_test_email"><![CDATA[Test email]]></string_add>
-    <string_add name="_bx_smtp_option_test_subj"><![CDATA[Test subject prefix]]></string_add>
-</resources>

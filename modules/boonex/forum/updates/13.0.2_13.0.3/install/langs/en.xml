@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="en" flag="gb" title="English">
-	<string_add name="_bx_forum_option_visible_categories"><![CDATA[Number of visible categories]]></string_add>
-    <string_add name="_bx_forum_option_visible_hashtags"><![CDATA[Number of visible hashtags]]></string_add>
-	<string_add name="_bx_forum_menu_title_categories"><![CDATA[Categories]]></string_add>
-</resources>

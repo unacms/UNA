@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="en" flag="gb" title="English">
-    <string_add name="_bx_acl_txt_level_caption_standard"><![CDATA[Free]]></string_add>
-    <string_add name="_bx_acl_txt_level_description_standard"><![CDATA[Try basic features for free.]]></string_add>
-    <string_add name="_bx_acl_txt_level_details_standard"><![CDATA[More info may be here.]]></string_add>
-</resources>

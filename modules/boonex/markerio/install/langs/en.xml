@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="en" flag="gb" title="English">
-    <string name="_bx_markerio"><![CDATA[Marker.io]]></string>
-
-    <string name="_bx_markerio_option_code"><![CDATA[Destination Code]]></string>
-
-    <string name="_bx_markerio_acl_action_use"><![CDATA[Leave feedback]]></string>
-</resources>

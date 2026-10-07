@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="en" flag="gb" title="English">
-	<string_add name="_bx_artificer_txt_splash_welcome_l4"><![CDATA[Powered by <a class="font-medium underline" href="https://una.io">UNA Community Management System</a>.]]></string_add>
-
-	<string_upd name="_bx_artificer_txt_splash_welcome_l3"><![CDATA[The best social media network for people to connect, collaborate, share content and inspire each other.]]></string_upd>
-</resources>

@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="ru" flag="ru" title="Russian">
-	<string_add name="_bx_market_form_entry_input_name_inf"><![CDATA[Уникальное имя для идентификации платежа.]]></string_add>
-
-	<string_upd name="_bx_market_form_entry_input_sys_name"><![CDATA[Идентификатор]]></string_upd>
-	<string_upd name="_bx_market_form_entry_input_name"><![CDATA[Идентификатор]]></string_upd>
-	<string_upd name="_bx_market_form_entry_input_name_err"><![CDATA[Идентификатор должен быть уникален и будет использоваться для внутренних целей. Пожалуйста, заполните это поле.]]></string_upd>
-</resources>

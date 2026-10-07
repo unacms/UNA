@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="en" flag="gb" title="English">
-	<string_add name="_bx_massmailer_form_campaign_input_sys_body_info"><![CDATA[Body Info]]></string_add>
-	<string_add name="_bx_massmailer_form_campaign_input_body_info"><![CDATA[]]></string_add>
-</resources>

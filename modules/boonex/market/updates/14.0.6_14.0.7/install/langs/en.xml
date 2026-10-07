@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="en" flag="gb" title="English">
-	<string_add name="_bx_market_form_entry_input_name_inf"><![CDATA[Unique name for payment identification.]]></string_add>
-
-	<string_upd name="_bx_market_form_entry_input_sys_name"><![CDATA[Identifier]]></string_upd>
-	<string_upd name="_bx_market_form_entry_input_name"><![CDATA[Identifier]]></string_upd>
-	<string_upd name="_bx_market_form_entry_input_name_err"><![CDATA[Identifier should be unique and is needed for internal usage. Please, fill in this field]]></string_upd>
-</resources>

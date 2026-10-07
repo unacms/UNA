@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="en" flag="gb" title="English">
-	<string name="_bx_new_comments"><![CDATA[New Comments]]></string>
-  <string name="_bx_new_comments_txt_new"><![CDATA[NEW!]]></string>
-  <string name="_bx_new_comments_session_interval"><![CDATA[Session interval in min]]></string>
-  <string name="_bx_new_comments_menu_item_title_system_is_new_comment"><![CDATA[New comment]]></string>
-  <string name="_bx_new_comments_menu_item_title_is_new_comment"><![CDATA[New comment]]></string>
-</resources>

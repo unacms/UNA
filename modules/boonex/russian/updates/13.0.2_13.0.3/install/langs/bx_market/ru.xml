@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="ru" flag="ru" title="Russian">
-	<string_add name="_bx_market_form_entry_input_sys_cover_raw"><![CDATA[Изображение заголовка (RAW)]]></string_add>
-	<string_add name="_bx_market_form_entry_input_cover_raw"><![CDATA[Изображение заголовка (RAW)]]></string_add>
-    <string_add name="_bx_market_form_entry_input_cover_raw_inf"><![CDATA[Если предоставлено, то оно будет использоваться вместо варианта на основе изображения.]]></string_add>
-</resources>

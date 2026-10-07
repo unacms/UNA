@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="en" flag="gb" title="English">
-	<string_add name="_bx_massmailer_form_campaign_send_all_display"><![CDATA[Send to all]]></string_add>
-	<string_add name="_bx_massmailer_form_campaign_send_test_display"><![CDATA[Send a test]]></string_add>
-</resources>

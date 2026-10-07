@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="ru" flag="ru" title="Russian">
-	<string_add name="_bx_timeline_page_block_title_system_view_channels"><![CDATA[Каналы (лента)]]></string_add>
-    <string_add name="_bx_timeline_page_block_title_view_channels"><![CDATA[Каналы]]></string_add>
-
-	<string_upd name="_bx_timeline_menu_item_title_system_item_copy"><![CDATA[Скопировать в буфер]]></string_upd>
-    <string_upd name="_bx_timeline_menu_item_title_item_copy"><![CDATA[Скопировать в буфер]]></string_upd>
-</resources>

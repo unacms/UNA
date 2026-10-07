@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="en" flag="gb" title="English">
-	<string name="_bx_profiler"><![CDATA[Profiler]]></string>
-	<string name="_bx_profiler_administration"><![CDATA[Profiler Administation]]></string>
-
-  <string name="_bx_profiler_log"><![CDATA[Profiler]]></string>
-</resources>

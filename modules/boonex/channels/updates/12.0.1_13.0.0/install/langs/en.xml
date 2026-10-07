@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="en" flag="gb" title="English">
-	<string_add name="_bx_channels_acl_action_delete_any_profile"><![CDATA[Delete Any Channel]]></string_add>
-	<string_add name="_bx_channels_page_block_title_sys_cover_block"><![CDATA[Cover]]></string_add>
-	<string_add name="_bx_channels_page_block_title_cover_block"><![CDATA[Cover]]></string_add>
-	<string_add name="_bx_channels_menu_item_title_system_followings"><![CDATA[Channels]]></string_add>
-	<string_add name="_bx_channels_menu_item_title_followings"><![CDATA[Channels]]></string_add>
-</resources>

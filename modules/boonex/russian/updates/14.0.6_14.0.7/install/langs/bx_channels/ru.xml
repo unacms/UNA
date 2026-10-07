@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="ru" flag="ru" title="Russian">
-	<string_add name="_bx_channels_alert_action_info_hashtag_added_notif_follow_context"><![CDATA[В пространстве, на которое вы подписаны, были добавлены или использованы новые хэштеги.]]></string_add>
-</resources>

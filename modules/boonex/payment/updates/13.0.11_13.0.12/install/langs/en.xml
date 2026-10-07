@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="en" flag="gb" title="English">
-	<string_add name="_bx_payment_txt_item"><![CDATA[Product]]></string_add>
-    <string_add name="_bx_payment_txt_quantity"><![CDATA[Qt.]]></string_add>
-	<string_add name="_bx_payment_txt_price_sold"><![CDATA[Sold Price]]></string_add>
-
-	<string_upd name="_bx_payment_form_processed_input_items"><![CDATA[]]></string_upd>
-</resources>

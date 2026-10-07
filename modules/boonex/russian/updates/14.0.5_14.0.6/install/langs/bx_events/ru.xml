@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="ru" flag="ru" title="Russian">
-	<string_add name="_bx_events_option_rm_from_timeline_after"><![CDATA[Удалить прошедшие события с Ленты через N часов (0 - не удалять)]]></string_add>
-</resources>

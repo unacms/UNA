@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="en" flag="gb" title="English">
-	<string_add name="_adm_stg_cpt_option_sys_alerts_logger"><![CDATA[Alerts/hooks logger]]></string_add>
-	<string_add name="_adm_stg_cpt_option_sys_alerts_stats"><![CDATA[Alerts/hooks stats]]></string_add>
-
-	<string_upd name="_sys_agents_field_alert_info"><![CDATA[Event that triggers the agent. Usually starts with system or module_name. Only events that have occurred at least once are shown. Second column shows alert stats, if 'n/a' then alert haven't happend yet. If 'n/a' everywhere then stats option is disabled in Developer module.]]></string_upd>
-</resources>

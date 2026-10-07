@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="ru" flag="ru" title="Russian">
-	<string_add name="_bx_events_alert_action_info_reminder_follow_context"><![CDATA[В пространстве, на которое вы подписаны, опубликованы новые напоминания.]]></string_add>
-</resources>

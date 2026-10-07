@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="en" flag="gb" title="English">
-	<string_add name="_bx_posts_acl_action_delete_any_entry"><![CDATA[Delete Any Post]]></string_add>
-
-	<string_upd name="_bx_posts_page_block_title_sys_entries_in_context"><![CDATA[Posts in context]]></string_upd>
-</resources>

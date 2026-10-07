@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="en" flag="gb" title="English">
-	<string_add name="_bx_events_alert_action_info_reminder_follow_context"><![CDATA[New reminders were posted in a space you follow.]]></string_add>
-</resources>

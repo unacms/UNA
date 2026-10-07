@@ -1,51 +1,101 @@
-.npm-pack
-.cursor
+.env.local
 
-# Exclude system cache folders
-packages/*
-cache/*
-cache_public/*
-tmp/*
-logs/*
-plugins/*
-plugins_public/*
-node_modules/*
-bower_components/*
-
-# Exclude main config file
-inc/header*
-
-# Exclude OS X folder attributes
+# OSX
+#
 .DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-Thumbs.db
 
-.*.swp
+# Xcode
+#
+build/
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+xcuserdata
+*.xccheckout
+*.moved-aside
+DerivedData
+*.hmap
+*.ipa
+*.xcuserstate
+project.xcworkspace
 
-cs_fixer_tmp*
-.php_cs.cache
-
-# Exclude tests files
-build.properties
-composer.phar
-tests/vendor
-tests/composer.phar
-tests/.env
-tests/.phpunit.cache
-tests/.phpunit.result.cache
-samples/img/*
-modules/boonex/acl_api
-modules/boonex/app_sumo
-modules/boonex/ether
-modules/boonex/market_api
-modules/boonex/media
-modules/boonex/messenger
-modules/boonex/una_mods
-modules/boonex/projects
-modules/vendor
-
-# Exclude IDE project folder
+# Android/IntelliJ
+#
+build/
 .idea
+.gradle
+local.properties
+*.iml
+
+# node.js
+#
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# BUCK
+buck-out/
+\.buckd/
+*.keystore
+
+# fastlane
+#
+# It is recommended to not store the screenshots in the git repo. Instead, use fastlane to re-generate the
+# screenshots whenever they are needed.
+# For more information about the recommended setup visit:
+# https://docs.fastlane.tools/best-practices/source-control/
+
+*/fastlane/report.xml
+*/fastlane/Preview.html
+*/fastlane/screenshots
+
+# Bundle artifacts
+*.jsbundle
+
+# CocoaPods
+/ios/Pods/
+
+# Expo
+.expo/*
+web-build/
+
+**/*/.expo
+
+**/*/.next
+
+**/*/ios
+**/*/android
+
+.turbo
+build/**
+
+
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+package-lock.json
+
+
+# Vercel skills CLI may emit IDE-specific symlinks; not used in this repo
+.trae/
+.windsurf/
+yarn.lock
+
+# Local junk / accidental copies (do not commit)
+*.bak
+*копия*
+*.stackdump
+*crash.log
+*crash*.log
+
+yarn.lock
+yarn.lock

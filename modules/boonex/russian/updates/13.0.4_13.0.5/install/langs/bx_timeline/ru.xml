@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="ru" flag="ru" title="Russian">
-	<string_add name="_bx_timeline_option_enable_hide_upon_delete"><![CDATA[Деактивировать сообщения при скрывании вместо удаления]]></string_add>
-	<string_add name="_bx_timeline_option_title_chars"><![CDATA[Количество символов в автогенерируемом заголовке сообщения]]></string_add>
-    <string_add name="_bx_timeline_option_title_chars_short"><![CDATA[Количество символов в автогенерируемом укороченном заголовке сообщения]]></string_add>
-	<string_add name="_bx_timeline_option_enable_sort_by_reaction"><![CDATA[Сортировать по дате последнего комментария (экспериментально, работает только для обновлений)]]></string_add>
-    <string_add name="_bx_timeline_option_enable_sort_by_unread"><![CDATA[Сортировать по состоянию "непрочитанный" (показывать непрочитанные первыми).]]></string_add>
-	<string_add name="_bx_timeline_alert_action_repost_personal"><![CDATA[Новый репост контента]]></string_add>
-</resources>

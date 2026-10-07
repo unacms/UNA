@@ -1,9 +1,0 @@
-@import url(../../../../../developer/template/css/main.css);
-
-body.bx-dev-page-body-single div.bx-std-page-bg {
-    background-image: url("../images/bx-dev-bg-single.png");
-}
-
-body.bx-dev-page-body-columns div.bx-std-page-bg {
-    background-image: url("../images/bx-dev-bg-columns.png");
-}

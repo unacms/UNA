@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="en" flag="gb" title="English">
-	<string_add name="_bx_events_option_enable_subscribe_for_past_events"><![CDATA[Enable join for past events]]></string_add>
-</resources>

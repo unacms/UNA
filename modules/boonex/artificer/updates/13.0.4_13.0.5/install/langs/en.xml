@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="en" flag="gb" title="English">
-	<string_add name="_bx_artificer_stg_cpt_option_images_custom"><![CDATA[Custom Images]]></string_add>
-    <string_add name="_bx_artificer_stg_cpt_option_images_custom_inf"><![CDATA[Each line represents an image. Line format: <b>name</b> => <b>value</b> => <b>type</b> => <b>class</b><br />Where <b>type</b> and/or <b>class</b> may be omitted. Available types are <b>ic</b> - icon (Font Awesome), <b>im</b> - image (file name or URL), <b>sc</b> - source code (SVG).]]></string_add>
-</resources>

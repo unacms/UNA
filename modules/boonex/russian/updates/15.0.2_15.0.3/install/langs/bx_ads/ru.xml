@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="ru" flag="ru" title="Russian">
-	<string_add name="_bx_ads_form_entry_input_sys_do_select"><![CDATA[Выбирать]]></string_add>
-	<string_add name="_bx_ads_form_entry_input_do_select"><![CDATA[Выбирать]]></string_add>
-
-	<string_upd name="_bx_ads_form_entry_input_title_err"><![CDATA[Заголовок обязателен, мин. 3 макс. 160.]]></string_upd>
-</resources>

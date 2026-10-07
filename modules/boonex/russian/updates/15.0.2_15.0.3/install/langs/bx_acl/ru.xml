@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="ru" flag="ru" title="Russian">
-	<string_add name="_bx_acl_txt_level_caption_standard"><![CDATA[Бесплатно]]></string_add>
-	<string_add name="_bx_acl_txt_level_description_standard"><![CDATA[Попробуйте базовые функции бесплатно.]]></string_add>
-	<string_add name="_bx_acl_txt_level_details_standard"><![CDATA[Более подробная информация может быть здесь.]]></string_add>
-</resources>

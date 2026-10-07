@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="ru" flag="ru" title="Russian">
-	<string_add name="_bx_posts_form_entry_input_sys_abstract"><![CDATA[Сводка]]></string_add>
-	<string_add name="_bx_posts_form_entry_input_abstract"><![CDATA[Сводка]]></string_add>
-</resources>

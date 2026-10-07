@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="ru" flag="ru" title="Russian">
-	<string_upd name="_bx_antispam_rule_note_spamhaus_org"><![CDATA[Обнаруживайте спамерские IP: чтобы пользоваться сервисом бесплатно, ваш сервер должен использовать собственный приватный DNS и иметь обратную PTR-запись для своего публичного IP]]></string_upd>
-</resources>

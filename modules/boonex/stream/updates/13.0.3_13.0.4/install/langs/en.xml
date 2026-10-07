@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="en" flag="gb" title="English">
-	<string_add name="_bx_stream_option_mute_embed"><![CDATA[Mute sound in embed by default]]></string_add>
-
-	<string_upd name="_bx_stream_form_entry_input_sys_covers"><![CDATA[Poster Image]]></string_upd>
-    <string_upd name="_bx_stream_form_entry_input_covers"><![CDATA[Poster Image]]></string_upd>
-	<string_upd name="_bx_stream_acl_action_set_thumb"><![CDATA[Set Stream Poster Image]]></string_upd>
-</resources>

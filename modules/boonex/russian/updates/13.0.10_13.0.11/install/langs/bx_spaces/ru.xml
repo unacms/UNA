@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="ru" flag="ru" title="Russian">
-	<string_add name="_bx_spaces_menu_item_title_leave_group_cancel_request"><![CDATA[Отменить присоединение]]></string_add>
-    <string_add name="_bx_spaces_menu_item_title_leave_group_reject_request"><![CDATA[Отвергнуть присоединение]]></string_add>
-
-	<string_del name="_bx_spaces_menu_item_title_leave_space_cancel_request"><![CDATA[Отменить присоединение]]></string_del>
-    <string_del name="_bx_spaces_menu_item_title_leave_space_reject_request"><![CDATA[Отвергнуть присоединение]]></string_del>
-</resources>

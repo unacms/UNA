@@ -1,4 +1,0 @@
-Options -Indexes
-<FilesMatch "^.*\.php|.*\.php5$">
-ForceType application/x-httpd-php-source
-</FilesMatch>

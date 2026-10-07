@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="ru" flag="ru" title="Russian">
-	<string_add name="_bx_accounts_option_last_active_sorting"><![CDATA[Включить сортировку по последней активности]]></string_add>
-</resources>

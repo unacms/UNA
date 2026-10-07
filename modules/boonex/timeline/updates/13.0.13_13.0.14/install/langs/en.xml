@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="en" flag="gb" title="English">
-	<string_upd name="_bx_timeline_option_events_per_page_profile"><![CDATA[Number of items in context (profile) timeline]]></string_upd>
-    <string_upd name="_bx_timeline_option_events_per_page_account"><![CDATA[Number of items in context (profile) + subscriptions timeline]]></string_upd>
-    <string_upd name="_bx_timeline_option_events_per_page_home"><![CDATA[Number of items in public timeline]]></string_upd>
-	<string_upd name="_bx_timeline_option_enable_infinite_scroll"><![CDATA[Enable Infinite Scroll]]></string_upd>
-</resources>

@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="en" flag="gb" title="English">
-	<string_add name="_bx_timeline_option_enable_hide_upon_delete"><![CDATA[Inactivate items upon hiding instead of deletion]]></string_add>
-	<string_add name="_bx_timeline_option_title_chars"><![CDATA[Number of characters in auto-generated update's title]]></string_add>
-    <string_add name="_bx_timeline_option_title_chars_short"><![CDATA[Number of characters in auto-generated update's short title]]></string_add>
-	<string_add name="_bx_timeline_option_enable_sort_by_reaction"><![CDATA[Sort by the date of last comment (experimental, works for updates only)]]></string_add>
-    <string_add name="_bx_timeline_option_enable_sort_by_unread"><![CDATA[Sort by 'unread' state (show unread first).]]></string_add>
-	<string_add name="_bx_timeline_alert_action_repost_personal"><![CDATA[New content repost]]></string_add>
-</resources>

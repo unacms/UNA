@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="ru" flag="ru" title="Russian">
-	<string_add name="_bx_market_page_title_sys_entries_by_category"><![CDATA[Продукты в категории]]></string_add>
-    <string_add name="_bx_market_page_title_entries_by_category"><![CDATA[Продукты в {category_name}]]></string_add>
-    <string_add name="_bx_market_page_block_title_sys_entries_by_category"><![CDATA[Продукты в категории]]></string_add>
-    <string_add name="_bx_market_page_block_title_entries_by_category"><![CDATA[{category_name}]]></string_add>
-</resources>

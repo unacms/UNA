@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="en" flag="gb" title="English">
-	<string_del name="_bx_timeline_menu_item_title_system_add_emoji"><![CDATA[Add Emoji]]></string_del>
-    <string_del name="_bx_timeline_menu_item_title_add_emoji"><![CDATA[Add Emoji]]></string_del>
-</resources>

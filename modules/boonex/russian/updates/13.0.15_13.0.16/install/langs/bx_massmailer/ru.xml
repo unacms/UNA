@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="ru" flag="ru" title="Russian">
-	<string_add name="_bx_massmailer_form_campaign_send_all_display"><![CDATA[Отправить всем]]></string_add>
-	<string_add name="_bx_massmailer_form_campaign_send_test_display"><![CDATA[Протестировать отправку]]></string_add>
-</resources>

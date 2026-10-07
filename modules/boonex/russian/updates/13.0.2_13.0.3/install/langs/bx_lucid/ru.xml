@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="ru" flag="ru" title="Russian">
-	<string_del name="_bx_lucid_stg_cpt_option_site_logo_width"><![CDATA[Ширина эмблемы]]></string_del>
-    <string_del name="_bx_lucid_stg_cpt_option_site_logo_height"><![CDATA[Высота эмблемы]]></string_del>
-</resources>

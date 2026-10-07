@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="en" flag="gb" title="English">
-	<string_add name="_bx_artificer_stg_cpt_option_use_htmx"><![CDATA[Use HTMX in Top menu and Page submenu (experimental)]]></string_add>
-</resources>

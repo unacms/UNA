@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="en" flag="gb" title="English">
-	<string_add name="_bx_ntfs_txt_object_post_common"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b> added a {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b>]]></string_add>
-    <string_add name="_bx_ntfs_txt_object_post_common_in_context"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b> has got a {entry_sample} <b class="bx-ntfs-content-entry">{entry_caption}</b> added by <b class="bx-ntfs-content-profile">{object_owner_name}</b>]]></string_add>
-</resources>

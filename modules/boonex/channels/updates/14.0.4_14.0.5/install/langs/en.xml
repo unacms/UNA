@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="en" flag="gb" title="English">
-	<string_add name="_bx_channels_alert_action_info_hashtag_added_notif_follow_context"><![CDATA[New hashtags were added or used in a space you follow.]]></string_add>
-</resources>

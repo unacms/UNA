@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="en" flag="gb" title="English">
-	<string_add name="_bx_acl_grid_column_price_value"><![CDATA[{0}{1}]]></string_add>
-</resources>

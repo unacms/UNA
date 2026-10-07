@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="en" flag="gb" title="English">
-	<string_add name="_bx_groups_option_enable_auto_approve"><![CDATA[Auto approve a group after creation]]></string_add>
-	<string_add name="_bx_groups_option_enable_subscribe_wo_join"><![CDATA[Allow to follow without join]]></string_add>
-	<string_add name="_bx_groups_grid_filter_item_title_adm_select_one_filter2"><![CDATA[Any Audience]]></string_add>
-	<string_add name="_bx_groups_grid_filter_item_title_adm_hidden"><![CDATA[Hidden]]></string_add>
-	<string_add name="_bx_groups_txt_status_hidden"><![CDATA[This group was hidden.]]></string_add>
-	<string_add name="_bx_groups_txt_cart_item_title_lifetime"><![CDATA[{0}: {1} (lifetime)]]></string_add>
-</resources>

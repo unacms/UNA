@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="en" flag="gb" title="English">
-	<string_add name="_bx_events_option_reminder_interval"><![CDATA[Reminder Interval]]></string_add>
-</resources>

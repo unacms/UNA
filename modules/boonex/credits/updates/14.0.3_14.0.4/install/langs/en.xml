@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="en" flag="gb" title="English">
-	<string_add name="_bx_credits_form_credit_input_amount_inf_wr"><![CDATA[Minimum amount is {wdw_minimum} credits and remaining balance after withdrawal should be {wdw_remaining} credits.]]></string_add>
-
-	<string_del name="_bx_credits_form_credit_input_amount_inf"><![CDATA[Minimum amount is {wdw_minimum} credits and remaining balance after withdrawal should be {wdw_remaining} credits.]]></string_del>
-	<string_del name="_bx_credits_form_credit_input_message_inf_wc"><![CDATA[Payment confirmation and other notes]]></string_del>
-</resources>

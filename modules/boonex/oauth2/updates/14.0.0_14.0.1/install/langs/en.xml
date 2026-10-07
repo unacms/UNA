@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="en" flag="gb" title="English">
-	<string_add name="_bx_oauth_lmi_cpt_keys"><![CDATA[Keys]]></string_add>
-</resources>

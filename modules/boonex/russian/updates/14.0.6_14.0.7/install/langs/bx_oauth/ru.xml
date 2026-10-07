@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="ru" flag="ru" title="Russian">
-	<string_add name="_bx_oauth_lmi_cpt_keys"><![CDATA[Ключи]]></string_add>
-</resources>

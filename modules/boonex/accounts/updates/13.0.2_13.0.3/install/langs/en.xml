@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="en" flag="gb" title="English">
-	<string_add name="_bx_accnt_grid_column_title_adm_last_active"><![CDATA[Last Active]]></string_add>
-</resources>

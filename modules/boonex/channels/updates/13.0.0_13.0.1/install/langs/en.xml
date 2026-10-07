@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="en" flag="gb" title="English">
-	<string_add name="_bx_channels_page_block_title_entry_reports"><![CDATA[Reports]]></string_add>
-	<string_add name="_bx_channels_grid_filter_item_title_adm_select_one_filter2"><![CDATA[Any Audience]]></string_add>
-</resources>

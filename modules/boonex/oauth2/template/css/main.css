@@ -1,9 +1,0 @@
-#bx-auth-form h3,
-#bx-auth-form .bx-auth-form-buttons {
-    text-align:center;
-}
-
-.bx-auth-form-buttons .bx-btn {
-    float: none;
-    display: inline-block;
-}

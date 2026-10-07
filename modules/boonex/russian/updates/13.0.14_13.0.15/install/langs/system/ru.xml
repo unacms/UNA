@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="ru" flag="ru" title="Russian">
-	<string_add name="_adm_bp_txt_page_meta_title"><![CDATA[Мета-заголовок страницы]]></string_add>
-	<string_add name="_adm_stg_cpt_option_sys_profiles_search_limit"><![CDATA[Количество реузьтатов в поиске профилей]]></string_add>
-</resources>

@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="en" flag="gb" title="English">
-	<string_add name="_bx_credits_form_credit_input_amount_err"><![CDATA[This field is essential. Please fill it in.]]></string_add>
-</resources>

@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="en" flag="gb" title="English">
-	<string_add name="_bx_timeline_option_hot_content_age_mux"><![CDATA[Adjustment coefficient  related  to content age (0 - no adjustment)]]></string_add>
-
-	<string_upd name="_bx_timeline_option_live_updates_length"><![CDATA[The length of Live Updates sample (leave 0 for automatic value)]]></string_upd>
-	<string_upd name="_bx_timeline_option_hot_interval"><![CDATA[Interval of time (in hours) to get Hot events (0 - no limit)]]></string_upd>
-</resources>

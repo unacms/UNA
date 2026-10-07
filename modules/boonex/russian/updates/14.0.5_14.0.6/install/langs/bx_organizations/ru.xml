@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="ru" flag="ru" title="Russian">
-	<string_upd name="_bx_orgs_menu_item_title_system_delete_with_content"><![CDATA[Удалить с данными]]></string_upd>
-	<string_upd name="_bx_orgs_menu_item_title_delete_with_content"><![CDATA[Удалить с данными]]></string_upd>
-	<string_upd name="_bx_orgs_menu_item_title_system_delete_profile"><![CDATA[Удалить профиль и данные]]></string_upd>
-	<string_upd name="_bx_orgs_menu_item_title_delete_profile"><![CDATA[Удалить профиль и данные]]></string_upd>
-	<string_upd name="_bx_orgs_menu_item_title_system_delete_account_content"><![CDATA[Удалить аккаунт и данные]]></string_upd>
-	<string_upd name="_bx_orgs_menu_item_title_delete_account_content"><![CDATA[Удалить аккаунт и данные]]></string_upd>
-</resources>

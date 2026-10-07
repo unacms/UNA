@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="ru" flag="ru" title="Russian">
-	<string_add name="_bx_payment_txt_item"><![CDATA[Товар]]></string_add>
-    <string_add name="_bx_payment_txt_quantity"><![CDATA[Шт.]]></string_add>
-	<string_add name="_bx_payment_txt_price_sold"><![CDATA[Цена продажи]]></string_add>
-
-	<string_upd name="_bx_payment_form_processed_input_items"><![CDATA[]]></string_upd>
-</resources>

@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="ru" flag="ru" title="Russian">
-	<string_del name="_bx_persons_menu_item_title_system_delete"><![CDATA[Удалить]]></string_del>
-    <string_del name="_bx_persons_menu_item_title_delete"><![CDATA[Удалить]]></string_del>
-	<string_del name="_bx_persons_grid_action_title_adm_delete"><![CDATA[Удалить]]></string_del>
-</resources>

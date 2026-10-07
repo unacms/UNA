@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="en" flag="gb" title="English">
-    <string name="_bx_ocean"><![CDATA[Ocean]]></string>
-    <string name="_bx_ocean_wgt_cpt"><![CDATA[Ocean (discontinued)]]></string>
-    <string name="_bx_ocean_stg_cpt_type"><![CDATA[Ocean]]></string>
-    <string name="_bx_ocean_stg_cpt_category_system"><![CDATA[General]]></string>
-    <string name="_bx_ocean_stg_cpt_option_switcher_name"><![CDATA[Name In Template Switcher]]></string>
-    <string name="_bx_ocean_stg_cpt_option_page_width"><![CDATA[Page Width]]></string>
-</resources>

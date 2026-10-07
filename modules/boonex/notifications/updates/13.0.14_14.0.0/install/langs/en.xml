@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="en" flag="gb" title="English">
-	<string_add name="_bx_ntfs_option_owner_name_chars"><![CDATA[Number of characters in auto-cropped author name in notification text]]></string_add>
-    <string_add name="_bx_ntfs_option_content_chars"><![CDATA[Number of characters in auto-cropped content title in notification text]]></string_add>
-	<string_add name="_bx_ntfs_option_push_message_chars"><![CDATA[Number of characters in auto-cropped push notification message]]></string_add>
-</resources>

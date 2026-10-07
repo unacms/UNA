@@ -1,8 +1,0 @@
-@import url(../../../../../files/template/css/main.css);
-
-.bx-files-inline-menu .bx-popup .bx-menu-custom.bx-menu-custom-ver .bx-menu-item  {
-    display: flex;
-    margin-top: 0;
-    box-shadow: none;
-    border-width: 0;
-}

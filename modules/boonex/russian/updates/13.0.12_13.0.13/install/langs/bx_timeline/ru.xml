@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="ru" flag="ru" title="Russian">
-	<string_upd name="_bx_timeline_option_events_per_page_profile"><![CDATA[Количество элементов в ленте контекста (профиля)]]></string_upd>
-    <string_upd name="_bx_timeline_option_events_per_page_account"><![CDATA[Количество элементов в ленте контекст (профиль) + подписки]]></string_upd>
-    <string_upd name="_bx_timeline_option_events_per_page_home"><![CDATA[Количество элементов в публичной ленте]]></string_upd>
-	<string_upd name="_bx_timeline_option_enable_infinite_scroll"><![CDATA[Включить 'Бесконечную прокрутку']]></string_upd>
-</resources>

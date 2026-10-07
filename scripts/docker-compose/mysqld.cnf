@@ -1,8 +1,0 @@
-[mysqld]
-sql_mode =
-
-transaction_isolation = READ-COMMITTED # or tx_isolation = READ-COMMITTED
-lock_wait_timeout = 4
-innodb_lock_wait_timeout = 4
-innodb_rollback_on_timeout = 1
-

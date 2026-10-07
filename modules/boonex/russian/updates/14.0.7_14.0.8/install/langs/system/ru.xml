@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="ru" flag="ru" title="Russian">
-	<string_add name="_adm_form_txt_field_type_price"><![CDATA[цена]]></string_add>
-</resources>

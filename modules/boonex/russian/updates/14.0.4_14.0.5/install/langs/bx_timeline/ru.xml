@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="ru" flag="ru" title="Russian">
-	<string_add name="_bx_timeline_option_hot_content_age_mux"><![CDATA[Коэффициент корректировки, связанный с возрастом контента (0 – без корректировки)]]></string_add>
-
-	<string_upd name="_bx_timeline_option_live_updates_length"><![CDATA[Длина выборки "Aвто обновления" (оставьте 0 для автоматического значения)]]></string_upd>
-	<string_upd name="_bx_timeline_option_hot_interval"><![CDATA[Интервал времени (в часах) для получения 'горячих' событий (0 – без ограничений)]]></string_upd>
-</resources>

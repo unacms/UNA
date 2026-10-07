@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="ru" flag="ru" title="Russian">
-    <string name="_bx_ocean_wgt_cpt"><![CDATA[Океан (прекращено)]]></string>
-    <string name="_bx_ocean_stg_cpt_type"><![CDATA[Океан]]></string>
-    <string name="_bx_ocean_stg_cpt_category_system"><![CDATA[Общие]]></string>
-    <string name="_bx_ocean_stg_cpt_option_switcher_name"><![CDATA[Название в переключателе тем]]></string>
-    <string name="_bx_ocean_stg_cpt_option_page_width"><![CDATA[Ширина страницы]]></string>
-</resources>

@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="ru" flag="ru" title="Russian">
-	<string_add name="_bx_ntfs_option_enable_clicked_indicator"><![CDATA[Включить индикатор перехода по ссылке уведомления]]></string_add>
-</resources>

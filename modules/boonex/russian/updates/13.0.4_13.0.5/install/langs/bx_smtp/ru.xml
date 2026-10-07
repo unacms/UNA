@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="ru" flag="ru" title="Russian">
-	<string_add name="_bx_smtp_option_test_mode"><![CDATA[Тестовый режим (перенаправить всю почту на единственный адрес)]]></string_add>
-    <string_add name="_bx_smtp_option_test_email"><![CDATA[Тестовый e-mail]]></string_add>
-    <string_add name="_bx_smtp_option_test_subj"><![CDATA[Тестовый префикс темы письма]]></string_add>
-</resources>

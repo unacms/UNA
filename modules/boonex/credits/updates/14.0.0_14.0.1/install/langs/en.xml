@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="en" flag="gb" title="English">
-	<string_upd name="_bx_credits_grid_action_title_htr_withdraw_confirm"><![CDATA[Confirm withdrawal]]></string_upd>
-    <string_upd name="_bx_credits_grid_action_title_htr_withdraw_request"><![CDATA[Request withdrawal]]></string_upd>
-	<string_upd name="_bx_credits_grid_popup_title_htr_withdraw_confirm"><![CDATA[Confirm withdrawal]]></string_upd>
-    <string_upd name="_bx_credits_grid_popup_title_htr_withdraw_request"><![CDATA[Request withdrawal]]></string_upd>
-</resources>

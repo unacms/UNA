@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="en" flag="gb" title="English">
-	<string_add name="_bx_artificer_stg_cpt_option_header_stretched"><![CDATA[Stretched Header]]></string_add>
-	<string_add name="_bx_artificer_txt_color_scheme_light"><![CDATA[Light]]></string_add>
-    <string_add name="_bx_artificer_txt_color_scheme_dark"><![CDATA[Dark]]></string_add>
-    <string_add name="_bx_artificer_txt_color_scheme_system"><![CDATA[System]]></string_add>
-</resources>

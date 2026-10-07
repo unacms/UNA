@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="en" flag="gb" title="English">
-	<string_add name="_bx_timeline_txt_do_repost_with"><![CDATA[Repost with Text]]></string_add>
-    <string_add name="_bx_timeline_txt_do_repost_to"><![CDATA[Repost to Context]]></string_add>
-</resources>

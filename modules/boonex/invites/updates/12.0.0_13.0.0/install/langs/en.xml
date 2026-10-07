@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="en" flag="gb" title="English">
-    <string_del name="_bx_invites_option_count_per_user"><![CDATA[How many invitations one user can send]]></string_del>
-</resources>

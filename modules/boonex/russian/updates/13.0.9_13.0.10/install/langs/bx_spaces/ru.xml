@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="ru" flag="ru" title="Russian">
-	<string_add name="_bx_spaces_menu_item_title_system_leave_group"><![CDATA[Покинуть пространство]]></string_add>
-    <string_add name="_bx_spaces_menu_item_title_leave_group"><![CDATA[Покинуть пространство]]></string_add>
-
-	<string_del name="_bx_spaces_menu_item_title_system_leave_space"><![CDATA[Покинуть пространство]]></string_del>
-    <string_del name="_bx_spaces_menu_item_title_leave_space"><![CDATA[Покинуть пространство]]></string_del>
-</resources>

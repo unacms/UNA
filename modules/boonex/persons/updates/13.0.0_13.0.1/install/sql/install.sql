@@ -1,4 +1,0 @@
--- FORMS
-DELETE FROM `sys_form_inputs` WHERE `object`='bx_person' AND `name`='last_name';
-INSERT INTO `sys_form_inputs`(`object`, `module`, `name`, `value`, `values`, `checked`, `type`, `caption_system`, `caption`, `info`, `required`, `collapsed`, `html`, `attrs`, `attrs_tr`, `attrs_wrapper`, `checker_func`, `checker_params`, `checker_error`, `db_pass`, `db_params`, `editable`, `deletable`, `rateable`) VALUES 
-('bx_person', 'bx_persons', 'last_name', '', '', 0, 'text', '_bx_persons_form_profile_input_sys_last_name', '_bx_persons_form_profile_input_last_name', '', 1, 0, 0, '', '', '', '', '', '', 'Xss', '', 1, 0, '');

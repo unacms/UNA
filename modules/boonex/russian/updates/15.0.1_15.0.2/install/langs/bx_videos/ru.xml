@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="ru" flag="ru" title="Russian">
-	<string_add name="_bx_videos_page_block_title_sys_multicats"><![CDATA[Видео категории(Мульти)]]></string_add>
-	<string_add name="_bx_videos_page_block_title_multicats"><![CDATA[Видео категории]]></string_add>
-	<string_add name="_bx_videos_page_block_title_sys_by_categoriers_entries_view_showcase"><![CDATA[Видео по категориям (Мульти, Витринный просмотр)]]></string_add>
-	<string_add name="_bx_videos_page_block_title_by_categoriers_entries_view_showcase"><![CDATA[Видео по категориям]]></string_add>
-	<string_add name="_bx_videos_page_block_title_favorites_entries_social_sharing"><![CDATA[Социальные действия]]></string_add>
-</resources>

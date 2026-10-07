@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="ru" flag="ru" title="Russian">
-	<string_add name="_bx_market_option_enable_no_payments"><![CDATA[Разрешить работать без платежей]]></string_add>
-	<string_add name="_bx_market_option_enable_icon"><![CDATA[Включить значок продукта]]></string_add>
-</resources>

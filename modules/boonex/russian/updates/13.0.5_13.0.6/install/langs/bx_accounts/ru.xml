@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="ru" flag="ru" title="Russian">
-	<string_add name="_bx_accnt_grid_column_title_adm_last_active"><![CDATA[Последняя активность]]></string_add>
-
-	<string_upd name="_bx_accnt_grid_column_title_adm_logged"><![CDATA[Последний вход]]></string_upd>
-</resources>

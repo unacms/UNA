@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="ru" flag="ru" title="Russian">
-	<string_add name="_bx_groups_option_enable_auto_approve"><![CDATA[Автоматически активировать группу после создания]]></string_add>
-	<string_add name="_bx_groups_option_enable_subscribe_wo_join"><![CDATA[Разрешить подписываться не членам группы]]></string_add>
-	<string_add name="_bx_groups_grid_filter_item_title_adm_select_one_filter2"><![CDATA[Любая аудитория]]></string_add>
-	<string_add name="_bx_groups_grid_filter_item_title_adm_hidden"><![CDATA[Спрятанные]]></string_add>
-	<string_add name="_bx_groups_txt_status_hidden"><![CDATA[Эта группа была скрыта.]]></string_add>
-	<string_add name="_bx_groups_txt_cart_item_title_lifetime"><![CDATA[{0}: {1} (пожизненно)]]></string_add>
-</resources>

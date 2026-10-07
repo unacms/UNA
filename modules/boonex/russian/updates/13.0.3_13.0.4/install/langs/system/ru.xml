@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="ru" flag="ru" title="Russian">
-	<string_add name="_adm_stg_cpt_option_sys_accounts_password_log_count"><![CDATA[Количество хранимых использованных паролей]]></string_add>
-	<string_add name="_adm_stg_cpt_option_sys_relations_enable"><![CDATA[Включить связи]]></string_add>
-	<string_add name="_adm_stg_cpt_option_sys_quill_allow_empty_tags"><![CDATA[Quill - разрешить пустые теги]]></string_add>
-	<string_add name="_sys_form_account_input_password_error_old_used"><![CDATA[Этот пароль уже был использован ранее, используйте другой]]></string_add>
-	<string_add name="_sys_menu_item_title_system_va_repost_with_text"><![CDATA[Сделать репост с текстом]]></string_add>
-	<string_add name="_sys_menu_item_title_system_va_repost_to_context"><![CDATA[Сделать репост в контекст]]></string_add>
-</resources>

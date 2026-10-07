@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="en" flag="gb" title="English">
-	<string_add name="_bx_ntfs_option_email_subject_chars"><![CDATA[Number of characters in auto-cropped email notification subject (0 - no limit)]]></string_add>
-
-	<string_upd name="_bx_ntfs_email_new_event_subject"><![CDATA[{site_name} notification: {subject}]]></string_upd>
-</resources>

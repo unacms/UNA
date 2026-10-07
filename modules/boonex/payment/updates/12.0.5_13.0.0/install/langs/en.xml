@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="en" flag="gb" title="English">
-	<string_add name="_bx_payment_form_details_form"><![CDATA[Details Form]]></string_add>
-    <string_add name="_bx_payment_form_details_display_edit"><![CDATA[Edit Details Display]]></string_add>
-</resources>

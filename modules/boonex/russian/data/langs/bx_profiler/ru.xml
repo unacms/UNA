@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="ru" flag="ru" title="Russian">
-	<string name="_bx_profiler"><![CDATA[Профайлер]]></string>
-	<string name="_bx_profiler_administration"><![CDATA[Профайлер - Администратор]]></string>
-	
-	<string name="_bx_profiler_log"><![CDATA[Профайлер]]></string>
-</resources>

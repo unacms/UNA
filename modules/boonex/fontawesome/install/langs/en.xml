@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="en" flag="gb" title="English">
-	<string name="_sys_module_fontawesome"><![CDATA[Font Awesome Pro]]></string>
-    <string name="_bx_fontawesome"><![CDATA[Font Awesome Pro]]></string>
-    <string name="_bx_fontawesome_adm_stg_cpt_type"><![CDATA[Font Awesome Pro]]></string>
-    <string name="_bx_fontawesome_adm_stg_cpt_category_general"><![CDATA[General]]></string>
-    <string name="_bx_fontawesome_option_icons_style"><![CDATA[Icons style]]></string>
-</resources>

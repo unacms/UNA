@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="ru" flag="ru" title="Russian">
-	<string_add name="_bx_ntfs_option_email_subject_chars"><![CDATA[Количество символов в автогенерируемой теме Email сообщения (0 - без ограничений)]]></string_add>
-
-	<string_upd name="_bx_ntfs_email_new_event_subject"><![CDATA["{site_name}" уведомление: {subject}]]></string_upd>
-</resources>

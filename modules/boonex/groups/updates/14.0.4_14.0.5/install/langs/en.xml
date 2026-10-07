@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="en" flag="gb" title="English">
-	<string_add name="_bx_groups_option_allow_in_contexts"><![CDATA[Allow posting groups in the following contexts (requires additional setup)]]></string_add>
-</resources>

@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="en" flag="gb" title="English">
-	<string_del name="_bx_decorous_stg_cpt_option_site_logo_width"><![CDATA[Logo width]]></string_del>
-	<string_del name="_bx_decorous_stg_cpt_option_site_logo_height"><![CDATA[Logo height]]></string_del>
-</resources>

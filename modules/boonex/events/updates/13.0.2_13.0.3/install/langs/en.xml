@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="en" flag="gb" title="English">
-	<string_add name="_bx_events_menu_item_title_ical_export"><![CDATA[Sync to Calendar]]></string_add>
-</resources>

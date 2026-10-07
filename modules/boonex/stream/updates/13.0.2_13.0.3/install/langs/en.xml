@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="en" flag="gb" title="English">
-	<string_add name="_bx_stream_option_always_accessible"><![CDATA[Make Stream page accessible when not streaming]]></string_add>
-    <string_add name="_bx_stream_option_mute"><![CDATA[Mute sound in player by default]]></string_add>
-</resources>

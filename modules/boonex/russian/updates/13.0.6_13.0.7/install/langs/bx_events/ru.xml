@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="ru" flag="ru" title="Russian">
-	<string_add name="_bx_events_txt_role_added"><![CDATA[Начало]]></string_add>
-    <string_add name="_bx_events_txt_role_expired"><![CDATA[Окончание]]></string_add>
-</resources>

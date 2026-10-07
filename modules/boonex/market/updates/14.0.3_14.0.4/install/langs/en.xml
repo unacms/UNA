@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="en" flag="gb" title="English">
-	<string_add name="_bx_market_option_enable_no_payments"><![CDATA[Allow to work without payments]]></string_add>
-	<string_add name="_bx_market_option_enable_icon"><![CDATA[Enable product icon]]></string_add>
-</resources>

@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="ru" flag="ru" title="Russian">
-	<string_upd name="_bx_market_err_not_accept_payments"><![CDATA[Вам необходимо активировать хотя бы одину платежную систему. Вы можете сделать это через меню Мой аккаунт -> страница Настройки -> <a href="{0}">вкладка Платёжи</a>.]]></string_upd>
-</resources>

@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="en" flag="gb" title="English">
-	<string_add name="_bx_orgs_acl_action_delete_any_profile"><![CDATA[Delete Any Organization's Profile]]></string_add>
-</resources>

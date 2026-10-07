@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="en" flag="gb" title="English">
-	<string_add name="_bx_spaces_menu_item_title_system_leave_group"><![CDATA[Leave Space]]></string_add>
-	<string_add name="_bx_spaces_menu_item_title_leave_group"><![CDATA[Leave Space]]></string_add>
-
-	<string_del name="_bx_spaces_menu_item_title_system_leave_space"><![CDATA[Leave Space]]></string_del>
-	<string_del name="_bx_spaces_menu_item_title_leave_space"><![CDATA[Leave Space]]></string_del>
-</resources>

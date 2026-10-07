@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="ru" flag="ru" title="Russian">
-	<string_add name="_bx_groups_page_block_title_sys_recom_fans"><![CDATA[Рекомендуемые группы (Вступить)]]></string_add>
-    <string_add name="_bx_groups_page_block_title_recom_fans"><![CDATA[Группы для вступления]]></string_add>
-
-	<string_upd name="_bx_groups_form_profile_input_group_name_err"><![CDATA[Поле должно содержать от 1 до 80 символов.]]></string_upd>
-</resources>

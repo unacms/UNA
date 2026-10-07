@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="en" flag="gb" title="English">
-	<string_upd name="_bx_stream_form_entry_input_title_err"><![CDATA[Title is essential min 3 max 160.]]></string_upd>
-
-	<string_del name="_bx_stream_form_entry_input_sys_date_published"><![CDATA[Publishing time]]></string_del>
-	<string_del name="_bx_stream_form_entry_input_date_published"><![CDATA[Publishing time]]></string_del>
-	<string_del name="_bx_stream_form_entry_input_date_published_info"><![CDATA[Leave empty to publish immediately.]]></string_del>
-</resources>

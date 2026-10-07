@@ -1,9 +1,0 @@
-{
-    "name": "unacms/xero",
-    "require": {
-        "xeroapi/xero-php-oauth2": "^10.0"
-    },
-    "config": {
-        "vendor-dir": "plugins"
-    }
-}

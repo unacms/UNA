@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="ru" flag="ru" title="Russian">
-	<string_del name="_bx_invites_option_count_per_user"><![CDATA[Сколько приглашений может послать один пользователь]]></string_del>
-</resources>

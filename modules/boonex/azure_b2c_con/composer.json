@@ -1,5 +1,0 @@
-{
-    "require": {
-        "alancting/php-microsoft-jwt": "^1.2"
-    }
-}

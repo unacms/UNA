@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="ru" flag="ru" title="Russian">
-	<string_upd name="_bx_posts_form_entry_input_title_err"><![CDATA[Заголовок обязателен, мин. 3 макс. 160.]]></string_upd>
-</resources>

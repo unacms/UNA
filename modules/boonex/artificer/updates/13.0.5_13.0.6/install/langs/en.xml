@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="en" flag="gb" title="English">
-	<string_add name="_bx_artificer_stg_cpt_option_color_scheme"><![CDATA[Color Scheme]]></string_add>
-    <string_add name="_bx_artificer_stg_cpt_option_color_scheme_auto"><![CDATA[Auto with switcher]]></string_add>
-    <string_add name="_bx_artificer_stg_cpt_option_color_scheme_light_only"><![CDATA[Light mode only]]></string_add>
-    <string_add name="_bx_artificer_stg_cpt_option_color_scheme_dark_only"><![CDATA[Dark mode only]]></string_add>
-
-	<string_upd name="_bx_artificer_stg_cpt_option_images_custom_inf"><![CDATA[Each line represents an image. Line format: <b>name</b> => <b>value</b> => <b>type</b> => <b>class</b><br />Where <b>type</b> and/or <b>class</b> may be omitted. Available types are <b>ic</b> - icon (Font Awesome), <b>im</b> - image (file name or URL), <b>sc</b> - source code (SVG).<br />Don't forget to clear template cache (if it's enabled) to see the changes.]]></string_upd>
-</resources>

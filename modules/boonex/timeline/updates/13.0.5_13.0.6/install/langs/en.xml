@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources name="en" flag="gb" title="English">
-	<string_upd name="_bx_timeline_option_enable_sort_by_unread"><![CDATA[Sort by 'unread' state (show unread first, experimental).]]></string_upd>
-	<string_upd name="_bx_timeline_txt_sample_with_video"><![CDATA[with media]]></string_upd>
-</resources>
