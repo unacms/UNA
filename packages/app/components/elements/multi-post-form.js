@@ -1,7 +1,8 @@
 import { Row, View } from 'app/design/view'
 import { NeoButton } from 'app/design/controls'
 import { useState, useEffect, useMemo } from 'react'
-import { menuItemsByNameNew, cloneObject } from 'app/lib/util'
+import { useWindowDimensions } from 'react-native'
+import { menuItemsByNameNew, cloneObject, getBreakpoint, isWeb } from 'app/lib/util'
 import { useCurrentUser } from 'app/context/user'
 import Profile from 'app/ui/molecules/profile/profile'
 import { CardList } from 'app/ui/molecules/page/card'
@@ -12,6 +13,12 @@ import { BlockWrapper } from 'app/components/block-wrapper'
 export default function MultiPostForm({ data, blockWrapperProps }) {
     const { currentUser } = useCurrentUser();
     const { t } = useTranslation()
+    const { width: windowWidth } = useWindowDimensions();
+    // Other content types: tablet and desktop only. Web hides them with
+    // classes (SSR-safe); native does not render them on phones, since a
+    // `display: none` subtree of native (Expo UI) buttons trips Fabric's
+    // layout ownership assert in debug builds (facebook/react-native#52349).
+    const showOtherTypes = isWeb || !!getBreakpoint(windowWidth);
     const [pageData, setPageData] = useState(false);
     const [pageDataDef, setPageDataDef] = useState(false);
     const menu_add_items = menuItemsByNameNew('', data.menu, currentUser).filter(item => item.name != 'more-auto');
@@ -74,7 +81,7 @@ export default function MultiPostForm({ data, blockWrapperProps }) {
                 />
 
                 <FormModal key={pageData?.ts} pageData={pageData} setPageData={setPageData} />
-                {menu_add_items.length > 0 && <Row className="gap-3 flex-none">
+                {menu_add_items.length > 0 && showOtherTypes && <Row className="hidden sm:flex gap-3 flex-none">
                     {menu_add_items.map((item, index) => (
                         <NeoButton key={item.name} style="bordered" borderShape="circle" controlSize="regular" onPress={() => handleFormModal(item, null, setPageData, data.params)} image={item.icon} />
                     ))}
