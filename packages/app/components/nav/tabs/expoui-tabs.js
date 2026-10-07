@@ -430,7 +430,9 @@ export default function ExpoUITabNavigator({
         setMoreMenuOpen(false);
         if (item.isOverflow) setActiveOverflow({ session: tabsSessionKey, url: tabUrl });
         rememberSelectedTab(`/tab${routeIndex}`);
-        router.push(nativeTabHref(tabUrl, `/tab${routeIndex}`));
+        // The tab's root shows the picked page; `navigate` updates the existing
+        // root (popping pages above it) where `push` would stack a second one.
+        router.navigate(nativeTabHref(tabUrl, `/tab${routeIndex}`));
     };
 
     const collapsed = overflow.length > 0;

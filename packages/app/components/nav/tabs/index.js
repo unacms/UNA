@@ -21,6 +21,8 @@ import * as SplashScreen from 'expo-splash-screen';
 import {
     canGoBackInTab,
     dismissNavigationOverlays,
+    hasPushedScreens,
+    nativeTabPageHref,
     getSelectedTab,
     getTabKeyFromPathname,
     navigateBackInTab,
@@ -97,19 +99,16 @@ function processUrl(url, router, currentUser, TabList) {
         const isMoreTab = index === splitTabBarItems(TabList).moreTabIndex;
 
 
-        if (index > -1) {
-            rememberSelectedTab(`/tab${index}`);
-            const route = {
-                pathname: `/tab${index}`,
-                ...(isRoot && !isMoreTab ? {} : { params: { url: _path } })
-            };
-            router.push(route);
+        const tabKey = index > -1 ? `/tab${index}` : '/tab0';
+        rememberSelectedTab(tabKey);
+        if (index > -1 && isRoot && !isMoreTab) {
+            // The tab's root page: show it (pops pages pushed over it).
+            router.navigate({ pathname: tabKey });
+        } else if (isMoreTab) {
+            router.navigate({ pathname: tabKey, params: { url: _path } });
         } else {
-            rememberSelectedTab('/tab0');
-            router.push({
-                pathname: '/tab0',
-                params: { url: _path }
-            });
+            // Any other page opens over its tab's root, so back returns there.
+            router.push(nativeTabPageHref(_path, tabKey));
         }
     }
 }
@@ -188,6 +187,10 @@ export default function Tabs() {
             }
 
             const tabKey = getTabKeyFromPathname(pathname);
+            // Pages pushed onto the tab's stack: the native stack pops them.
+            if (hasPushedScreens(tabKey)) {
+                return false;
+            }
             if (canGoBackInTab(tabKey)) {
                 navigateBackInTab(router, tabKey, currentUser);
                 return true;

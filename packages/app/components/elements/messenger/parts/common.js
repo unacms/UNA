@@ -14,7 +14,9 @@ import { useBottomSheetData } from 'app/context/bottomsheet';
 import Profile from 'app/ui/molecules/profile/profile'
 import ElementMsg from 'app/components/elements/msg';
 import emitter, { EVENTS } from 'app/context/emitter';
-import { getWindowSafeAreaInsets, useIsFocused, useSafeAreaInsets } from 'app/lib/hooks/router'
+import { getWindowSafeAreaInsets, useCurrentTabPath, useIsFocused, useRouter, useSafeAreaInsets } from 'app/lib/hooks/router'
+import { useIsPushedScreen } from 'app/context/tab-chrome';
+import { nativeTabPageHref } from 'app/lib/navigation/tab-history';
 import { useTranslation } from 'react-i18next'
 import ChatPanels from 'app/components/elements/chat/parts/chat-panels'
 import { useIsDesktop } from 'app/context/measure';
@@ -179,6 +181,13 @@ export default function Messenger({ defaultConvoId, selectedMenu, convos, fetchC
     // for programmatic selection, popstate to honor the browser back button.
     // ---------------------------------------------------------------------
     const messengerUrl = appSetting('messenger', 'url');
+    // Native (NativeTabs): a conversation is a page pushed onto the tab's
+    // stack, so the edge swipe / system back return to the list; its back
+    // arrow pops it.
+    const router = useRouter();
+    const currentTabPath = useCurrentTabPath();
+    const isPushedScreen = useIsPushedScreen();
+    const stackedChat = !isWeb && isNativeTabsEnabled();
 
     const isOnMessengerPath = useCallback(() => {
         if (!isWeb || typeof window === 'undefined') return false;
@@ -380,6 +389,11 @@ export default function Messenger({ defaultConvoId, selectedMenu, convos, fetchC
     }, [jotUpdated]);
 
     const changeConvo = useCallback((convo) => {
+        if (stackedChat && isSmallScreenRef.current) {
+            // No trailing slash: the API redirects `…/<id>/` to `…/<id>`.
+            router.push(nativeTabPageHref(`${messengerUrl}/${selectedMenu}/${convo.id}`, currentTabPath));
+            return;
+        }
         emitter.emit(EVENTS.editor, { action: 'focus' });
         setConvoId(convo.id);
         if (isSmallScreenRef.current)
@@ -387,10 +401,14 @@ export default function Messenger({ defaultConvoId, selectedMenu, convos, fetchC
         if (isWeb && typeof window !== 'undefined')
             window.scrollTo(0, 0);
         syncConvoUrl(convo.id, { push: true });
-    }, [syncConvoUrl]);
+    }, [syncConvoUrl, stackedChat, router, messengerUrl, selectedMenu, currentTabPath]);
 
     const showConvo = useCallback(() => {
         emitter.emit(EVENTS.editor, { action: 'blur' });
+        if (stackedChat && isPushedScreen && router.canGoBack?.()) {
+            router.back();
+            return;
+        }
         setPanelsVisible({ convos: true, jots: false })
         if (isWeb && typeof window !== 'undefined')
             window.scrollTo(0, 0);
@@ -399,7 +417,7 @@ export default function Messenger({ defaultConvoId, selectedMenu, convos, fetchC
 
         if (window.location.pathname !== messengerUrl)
             window.history.pushState(null, '', messengerUrl);
-    }, [messengerUrl, isOnMessengerPath]);
+    }, [messengerUrl, isOnMessengerPath, stackedChat, isPushedScreen, router]);
 
     // Bottom-tab reselect: leave open chat and show conversation list.
     useEffect(() => {

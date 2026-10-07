@@ -1,7 +1,7 @@
 import { Pressable } from 'app/design/view';
 import { useCurrentTabPath, Link } from 'app/lib/hooks/router'
 import { FeedbackHaptics, isExternalUrl, openExternalLink } from 'app/lib/util';
-import { nativeTabHref } from 'app/lib/navigation/tab-history';
+import { nativeTabPageHref } from 'app/lib/navigation/tab-history';
 import { findTabPathForUrl } from 'app/components/nav/tabs/tab-menu';
 import { useCurrentUser } from 'app/context/user';
 import { appSetting, sanitazeUrl, cn } from 'app/lib/util';
@@ -60,13 +60,13 @@ export default function ElementLink({
             return finalHref;
         }
         const pathname = tabPath || matchedTabPath || currentTabPath;
-        // Keep push history entry for in-tab navigations (submenu uses tabHist: replace).
-        return nativeTabHref(finalHref, pathname, { tabHist: 'push' });
-    }, [target, finalHref, matchedTabPath, currentTabPath, tabPath]);
+        // A page pushed onto that tab's native stack, or its root.
+        return nativeTabPageHref(finalHref, pathname, currentUser);
+    }, [target, finalHref, matchedTabPath, currentTabPath, tabPath, currentUser]);
 
-    const currentPathname = currentTabPath || '';
-    const targetPathname = typeof p === 'object' ? p.pathname : '';
-    const isSameTab = typeof p !== 'object' || !currentPathname || targetPathname === currentPathname;
+    // Pages always push (same tab or another one); a tab root is navigated to,
+    // which pops that tab's stack back to it.
+    const pushes = typeof p !== 'object' || 'params' in p;
 
 
     const sizeClass = (() => {
@@ -140,7 +140,7 @@ export default function ElementLink({
 
     return (
         <Link
-            push={isSameTab}
+            push={pushes}
             href={p}
             asChild
             onPress={handlePress}

@@ -1,0 +1,76 @@
+diff --git a/node_modules/@expo/ui/android/src/main/java/expo/modules/ui/TextView.kt b/node_modules/@expo/ui/android/src/main/java/expo/modules/ui/TextView.kt
+index 66905c6..8828e7f 100644
+--- a/node_modules/@expo/ui/android/src/main/java/expo/modules/ui/TextView.kt
++++ b/node_modules/@expo/ui/android/src/main/java/expo/modules/ui/TextView.kt
+@@ -133,7 +133,12 @@ enum class TextLineBreakType(val value: String) : Enumerable {
+   }
+ }
+ 
+-fun resolveFontFamily(name: String?, context: Context): FontFamily? {
++fun resolveFontFamily(
++  name: String?,
++  context: Context,
++  weight: FontWeight? = null,
++  italic: Boolean = false
++): FontFamily? {
+   if (name == null) return null
+   return when (name) {
+     "default" -> FontFamily.Default
+@@ -142,7 +147,11 @@ fun resolveFontFamily(name: String?, context: Context): FontFamily? {
+     "monospace" -> FontFamily.Monospace
+     "cursive" -> FontFamily.Cursive
+     else -> {
+-      val typeface = ReactFontManager.getInstance().getTypeface(name, Typeface.NORMAL, context.assets)
++      // A custom family registered as an XML font family (one file per
++      // weight) resolves to the face for this weight; with only
++      // Typeface.NORMAL it is always the regular face and `fontWeight` is lost.
++      val typeface = ReactFontManager.getInstance()
++        .getTypeface(name, weight?.weight ?: FontWeight.Normal.weight, italic, context.assets)
+       FontFamily(typeface)
+     }
+   }
+@@ -268,7 +277,14 @@ private fun AnnotatedString.Builder.appendSpans(spans: List<TextSpanRecord>, con
+       fontSize = span.fontSize?.sp ?: androidx.compose.ui.unit.TextUnit.Unspecified,
+       fontWeight = span.fontWeight?.toComposeFontWeight(),
+       fontStyle = span.fontStyle?.toComposeFontStyle(),
+-      fontFamily = context?.let { resolveFontFamily(span.fontFamily, it) },
++      fontFamily = context?.let {
++        resolveFontFamily(
++          span.fontFamily,
++          it,
++          span.fontWeight?.toComposeFontWeight(),
++          span.fontStyle?.toComposeFontStyle() == FontStyle.Italic
++        )
++      },
+       textDecoration = span.textDecoration?.toComposeTextDecoration(),
+       letterSpacing = span.letterSpacing?.sp ?: androidx.compose.ui.unit.TextUnit.Unspecified,
+       background = colorToComposeColorOrNull(span.background) ?: androidx.compose.ui.graphics.Color.Unspecified,
+@@ -298,7 +314,14 @@ fun FunctionalComposableScope.TextContent(props: TextProps) {
+       fontSize = props.fontSize?.sp ?: androidx.compose.ui.unit.TextUnit.Unspecified,
+       fontWeight = props.fontWeight?.toComposeFontWeight(),
+       fontStyle = props.fontStyle?.toComposeFontStyle(),
+-      fontFamily = appContext.reactContext?.let { resolveFontFamily(props.fontFamily, it) },
++      fontFamily = appContext.reactContext?.let {
++        resolveFontFamily(
++          props.fontFamily,
++          it,
++          props.fontWeight?.toComposeFontWeight(),
++          props.fontStyle?.toComposeFontStyle() == FontStyle.Italic
++        )
++      },
+       textDecoration = props.textDecoration?.toComposeTextDecoration(),
+       letterSpacing = props.letterSpacing?.sp ?: androidx.compose.ui.unit.TextUnit.Unspecified,
+       lineHeight = props.lineHeight?.sp ?: androidx.compose.ui.unit.TextUnit.Unspecified,
+diff --git a/node_modules/@expo/ui/android/src/main/java/expo/modules/ui/textfield/TextFieldShared.kt b/node_modules/@expo/ui/android/src/main/java/expo/modules/ui/textfield/TextFieldShared.kt
+index b7808d7..716ebb8 100644
+--- a/node_modules/@expo/ui/android/src/main/java/expo/modules/ui/textfield/TextFieldShared.kt
++++ b/node_modules/@expo/ui/android/src/main/java/expo/modules/ui/textfield/TextFieldShared.kt
+@@ -124,7 +124,7 @@ internal fun TextFieldTextStyleRecord?.toTextStyle(context: Context?): TextStyle
+     color = colorToComposeColorOrNull(color) ?: androidx.compose.ui.graphics.Color.Unspecified,
+     fontSize = fontSize?.sp ?: TextUnit.Unspecified,
+     fontWeight = fontWeight?.toComposeFontWeight(),
+-    fontFamily = context?.let { resolveFontFamily(fontFamily, it) },
++    fontFamily = context?.let { resolveFontFamily(fontFamily, it, fontWeight?.toComposeFontWeight()) },
+     letterSpacing = letterSpacing?.sp ?: TextUnit.Unspecified,
+     lineHeight = lineHeight?.sp ?: TextUnit.Unspecified,
+     textAlign = textAlign?.toComposeTextAlign() ?: TextAlign.Unspecified
