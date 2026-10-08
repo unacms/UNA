@@ -60,6 +60,7 @@ class EmployeeLeaveType implements ModelInterface, ArrayAccess
     protected static $openAPITypes = [
         'leave_type_id' => 'string',
         'schedule_of_accrual' => 'string',
+        'hours_accrued_annually' => 'double',
         'units_accrued_annually' => 'double',
         'type_of_units_to_accrue' => 'string',
         'maximum_to_accrue' => 'double',
@@ -81,6 +82,7 @@ class EmployeeLeaveType implements ModelInterface, ArrayAccess
     protected static $openAPIFormats = [
         'leave_type_id' => 'uuid',
         'schedule_of_accrual' => null,
+        'hours_accrued_annually' => 'double',
         'units_accrued_annually' => 'double',
         'type_of_units_to_accrue' => null,
         'maximum_to_accrue' => 'double',
@@ -123,7 +125,8 @@ class EmployeeLeaveType implements ModelInterface, ArrayAccess
     protected static $attributeMap = [
         'leave_type_id' => 'leaveTypeID',
         'schedule_of_accrual' => 'scheduleOfAccrual',
-        'units_accrued_annually' => 'unitsAccruedAnnually',
+        'hours_accrued_annually' => 'hoursAccruedAnnually',
+        'units_accrued_annually' => 'UnitsAccruedAnnually',
         'type_of_units_to_accrue' => 'typeOfUnitsToAccrue',
         'maximum_to_accrue' => 'maximumToAccrue',
         'opening_balance' => 'openingBalance',
@@ -144,6 +147,7 @@ class EmployeeLeaveType implements ModelInterface, ArrayAccess
     protected static $setters = [
         'leave_type_id' => 'setLeaveTypeId',
         'schedule_of_accrual' => 'setScheduleOfAccrual',
+        'hours_accrued_annually' => 'setHoursAccruedAnnually',
         'units_accrued_annually' => 'setUnitsAccruedAnnually',
         'type_of_units_to_accrue' => 'setTypeOfUnitsToAccrue',
         'maximum_to_accrue' => 'setMaximumToAccrue',
@@ -165,6 +169,7 @@ class EmployeeLeaveType implements ModelInterface, ArrayAccess
     protected static $getters = [
         'leave_type_id' => 'getLeaveTypeId',
         'schedule_of_accrual' => 'getScheduleOfAccrual',
+        'hours_accrued_annually' => 'getHoursAccruedAnnually',
         'units_accrued_annually' => 'getUnitsAccruedAnnually',
         'type_of_units_to_accrue' => 'getTypeOfUnitsToAccrue',
         'maximum_to_accrue' => 'getMaximumToAccrue',
@@ -259,6 +264,7 @@ class EmployeeLeaveType implements ModelInterface, ArrayAccess
     {
         $this->container['leave_type_id'] = isset($data['leave_type_id']) ? $data['leave_type_id'] : null;
         $this->container['schedule_of_accrual'] = isset($data['schedule_of_accrual']) ? $data['schedule_of_accrual'] : null;
+        $this->container['hours_accrued_annually'] = isset($data['hours_accrued_annually']) ? $data['hours_accrued_annually'] : null;
         $this->container['units_accrued_annually'] = isset($data['units_accrued_annually']) ? $data['units_accrued_annually'] : null;
         $this->container['type_of_units_to_accrue'] = isset($data['type_of_units_to_accrue']) ? $data['type_of_units_to_accrue'] : null;
         $this->container['maximum_to_accrue'] = isset($data['maximum_to_accrue']) ? $data['maximum_to_accrue'] : null;
@@ -361,6 +367,33 @@ class EmployeeLeaveType implements ModelInterface, ArrayAccess
         }
 
         $this->container['schedule_of_accrual'] = $schedule_of_accrual;
+
+        return $this;
+    }
+
+
+
+    /**
+     * Gets hours_accrued_annually
+     *
+     * @return double|null
+     */
+    public function getHoursAccruedAnnually()
+    {
+        return $this->container['hours_accrued_annually'];
+    }
+
+    /**
+     * Sets hours_accrued_annually
+     *
+     * @param double|null $hours_accrued_annually Deprecated use UnitsAccruedAnnually
+     *
+     * @return $this
+     */
+    public function setHoursAccruedAnnually($hours_accrued_annually)
+    {
+
+        $this->container['hours_accrued_annually'] = $hours_accrued_annually;
 
         return $this;
     }
@@ -515,7 +548,7 @@ class EmployeeLeaveType implements ModelInterface, ArrayAccess
     /**
      * Sets rate_accrued_hourly
      *
-     * @param double|null $rate_accrued_hourly not supported in Payroll NZ
+     * @param double|null $rate_accrued_hourly The number of hours added to the leave balance for every hour worked by the employee. This is normally 0, unless the scheduleOfAccrual chosen is \"OnHourWorked\"
      *
      * @return $this
      */

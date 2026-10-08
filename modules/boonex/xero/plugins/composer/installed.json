@@ -854,17 +854,17 @@
         },
         {
             "name": "xeroapi/xero-php-oauth2",
-            "version": "10.4.0",
-            "version_normalized": "10.4.0.0",
+            "version": "10.0.0",
+            "version_normalized": "10.0.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/XeroAPI/xero-php-oauth2.git",
-                "reference": "65888fa19484c10c62b6a36d9c49d73a3cb4f8d6"
+                "reference": "088ede5133200e970bb9e9e92fde52d077f807b1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/XeroAPI/xero-php-oauth2/zipball/65888fa19484c10c62b6a36d9c49d73a3cb4f8d6",
-                "reference": "65888fa19484c10c62b6a36d9c49d73a3cb4f8d6",
+                "url": "https://api.github.com/repos/XeroAPI/xero-php-oauth2/zipball/088ede5133200e970bb9e9e92fde52d077f807b1",
+                "reference": "088ede5133200e970bb9e9e92fde52d077f807b1",
                 "shasum": ""
             },
             "require": {
@@ -880,7 +880,7 @@
                 "friendsofphp/php-cs-fixer": "^3.60",
                 "squizlabs/php_codesniffer": "^3.10"
             },
-            "time": "2026-01-28T21:39:47+00:00",
+            "time": "2025-06-28T12:53:29+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -910,7 +910,7 @@
             ],
             "support": {
                 "issues": "https://github.com/XeroAPI/xero-php-oauth2/issues",
-                "source": "https://github.com/XeroAPI/xero-php-oauth2/tree/10.4.0"
+                "source": "https://github.com/XeroAPI/xero-php-oauth2/tree/10.0.0"
             },
             "install-path": "../xeroapi/xero-php-oauth2"
         }

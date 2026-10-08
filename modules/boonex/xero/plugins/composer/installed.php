@@ -137,9 +137,9 @@
             'dev_requirement' => false,
         ),
         'xeroapi/xero-php-oauth2' => array(
-            'pretty_version' => '10.4.0',
-            'version' => '10.4.0.0',
-            'reference' => '65888fa19484c10c62b6a36d9c49d73a3cb4f8d6',
+            'pretty_version' => '10.0.0',
+            'version' => '10.0.0.0',
+            'reference' => '088ede5133200e970bb9e9e92fde52d077f807b1',
             'type' => 'library',
             'install_path' => __DIR__ . '/../xeroapi/xero-php-oauth2',
             'aliases' => array(),

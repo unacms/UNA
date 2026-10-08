@@ -2104,11 +2104,6 @@ ul.nav-tabs {
       "type" : "string",
       "description" : "Tax number of contact – this is also known as the ABN (Australia), GST Number (New Zealand), VAT Number (UK) or Tax ID Number (US and global) in the Xero UI depending on which regionalized version of Xero you are using (max length = 50)"
     },
-    "TaxNumberType" : {
-      "type" : "string",
-      "description" : "Identifier of the regional type of tax number, such as US, UK, or other regional tax identifiers",
-      "enum" : [ "SSN", "EIN", "ITIN", "ATIN" ]
-    },
     "AccountsReceivableTaxType" : {
       "type" : "string",
       "description" : "The tax type from TaxRates"
@@ -4357,11 +4352,6 @@ ul.nav-tabs {
       "example" : false,
       "default" : false
     },
-    "Reference" : {
-      "type" : "string",
-      "description" : "An optional description for Overpayment",
-      "example" : "Ref for payment"
-    },
     "Attachments" : {
       "type" : "array",
       "description" : "See Attachments",
@@ -6348,7 +6338,7 @@ ul.nav-tabs {
           <nav id="scrollingNav">
             <ul class="sidenav nav nav-list">
               <li class="nav-header" data-group="Accounting"><strong>SDK: </strong><span id='sdk-name'></span></li>
-              <li class="nav-header" data-group="Accounting"><strong>VSN: </strong>10.4.0</li>
+              <li class="nav-header" data-group="Accounting"><strong>VSN: </strong>10.0.0</li>
               <li class="nav-header" data-group="Accounting"><a href="#api-Accounting">Methods</a></li>
               <li data-group="Accounting" data-name="createAccount" class="">
                 <a href="#api-Accounting-createAccount">createAccount</a>
@@ -11333,7 +11323,7 @@ This allows you to safely retry requests without the risk of duplicate processin
                   <div class="pull-right"></div>
                   <div class="clearfix"></div>
                   <p></p>
-                  <p class="marked">This endpoint is deprecated and will be removed April 28, 2026</p>
+                  <p class="marked"></p>
                   <p></p>
                   <br />
                   <pre class="prettyprint language-html prettyprinted" data-type="put"><code><span class="pln">/Employees</span></code></pre>
@@ -23737,7 +23727,7 @@ try {
                     
                     <tr>
                       <td>accounting.budgets.read</td>
-                      <td>Grant read-only access to read budgets</td>
+                      <td></td>
                     </tr>
                     
                   </table>
@@ -23913,7 +23903,7 @@ try {
                     
                     <tr>
                       <td>accounting.budgets.read</td>
-                      <td>Grant read-only access to read budgets</td>
+                      <td></td>
                     </tr>
                     
                   </table>
@@ -26827,7 +26817,7 @@ Order by an any element
                   <div class="pull-right"></div>
                   <div class="clearfix"></div>
                   <p></p>
-                  <p class="marked">This endpoint is deprecated and will be removed April 28, 2026</p>
+                  <p class="marked"></p>
                   <p></p>
                   <br />
                   <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/Employees/{EmployeeID}</span></code></pre>
@@ -26953,7 +26943,7 @@ Xero identifier for Tenant
                   <div class="pull-right"></div>
                   <div class="clearfix"></div>
                   <p></p>
-                  <p class="marked">This endpoint is deprecated and will be removed April 28, 2026</p>
+                  <p class="marked"></p>
                   <p></p>
                   <br />
                   <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/Employees</span></code></pre>
@@ -31795,10 +31785,9 @@ $order = "Status ASC";
 $page = 1;
 $unitdp = 4;
 $pageSize = 100;
-$references = array(&quot;Ref1&quot;, &quot;Ref2&quot;)
 
 try {
-  $result = $apiInstance->getOverpayments($xeroTenantId, $ifModifiedSince, $where, $order, $page, $unitdp, $pageSize, $references);
+  $result = $apiInstance->getOverpayments($xeroTenantId, $ifModifiedSince, $where, $order, $page, $unitdp, $pageSize);
 } catch (Exception $e) {
   echo 'Exception when calling AccountingApi->getOverpayments: ', $e->getMessage(), PHP_EOL;
 }
@@ -31973,26 +31962,6 @@ e.g. unitdp=4 – (Unit Decimal Places) You can opt in to use four decimal place
 
                     <div class="inner description marked">
 Number of records to retrieve per page
-                    </div>
-            </div>
-        </div>
-    </div>
-</td>
-</tr>
-
-                    <tr><td style="width:150px;">References</td>
-<td>
-
-
-    <div id="d2e199_getOverpayments_references">
-        <div class="json-schema-view">
-            <div class="primitive">
-                <span class="type">
-                    array[String]
-                </span>
-
-                    <div class="inner description marked">
-Filter by a comma-separated list of References
                     </div>
             </div>
         </div>
@@ -44432,7 +44401,7 @@ e.g. unitdp=4 – (Unit Decimal Places) You can opt in to use four decimal place
                   <div class="pull-right"></div>
                   <div class="clearfix"></div>
                   <p></p>
-                  <p class="marked">This endpoint is deprecated and will be removed April 28, 2026</p>
+                  <p class="marked"></p>
                   <p></p>
                   <br />
                   <pre class="prettyprint language-html prettyprinted" data-type="post"><code><span class="pln">/Employees</span></code></pre>
