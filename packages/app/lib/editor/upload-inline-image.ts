@@ -3,16 +3,25 @@ import { genRnd } from 'app/lib/util/misc'
 
 const INLINE_STORAGE = 'sys_images_editor'
 
+/** `upload_inline` outcome: the file link, or UNA's error text (`null` when it gave none). */
+export type InlineUploadResult = { link: string | null; error: string | null }
+
+/** UNA's text from a failed `upload_inline` answer; `null` for a bare `'1'` or a non-JSON reply. */
+export function inlineUploadError(data: any): string | null {
+    const error = data?.error
+    return typeof error === 'string' && error !== '' && error !== '1' ? error : null
+}
+
 /**
  * Upload one body image the way UNA's Quill does (`storage.php?a=upload`): straight into
  * the public editor storage with the ghost record dropped, so the URL is permanent and the
- * file never becomes a post attachment. Resolves the image URL, or `null` on failure.
+ * file never becomes a post attachment.
  */
 export function uploadInlineImage(image: {
     uri: string
     fileName?: string
     mimeType?: string
-}): Promise<string | null> {
+}): Promise<InlineUploadResult> {
     const url = '/api.php?r=system/get_data_api/TemplUploaderServices/&params[]='
         + '&a=upload_inline&uo=sys_html5'
         + `&so=${INLINE_STORAGE}&o=${INLINE_STORAGE}&t=${INLINE_STORAGE}&uid=${genRnd(8)}`
@@ -21,12 +30,16 @@ export function uploadInlineImage(image: {
         uploadImage(
             image.uri,
             url,
-            ({ result }) => resolve(result?.data?.link || result?.link || null),
+            ({ result }) => {
+                const data = result?.data || result
+                if (!data?.link) console.warn('[editor] inline image upload rejected', result)
+                resolve({ link: data?.link || null, error: data?.link ? null : inlineUploadError(data) })
+            },
             { fileName: image.fileName, mimeType: image.mimeType },
         )
             .catch((err) => {
                 console.warn('[editor] inline image upload failed', err)
-                resolve(null)
+                resolve({ link: null, error: null })
             })
     })
 }

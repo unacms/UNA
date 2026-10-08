@@ -66,6 +66,8 @@ export type DropdownMenuProps = {
     triggerStyle?: StyleProp<ViewStyle>;
     /** Sectioned menus: one column instead of side-by-side sections. */
     stacked?: boolean;
+    /** Popup min width (px) of a plain list menu; 256 by default. */
+    minPopupWidth?: number;
 };
 
 type DropdownMenuPopupProps = Omit<DropdownMenuProps, 'mode' | 'title' | 'cancelable'>;
@@ -143,6 +145,7 @@ function DropdownMenuPopup({
     triggerClassName,
     triggerStyle,
     stacked = false,
+    minPopupWidth = 256,
 }: DropdownMenuPopupProps) {
     const DropdownMenuItem = getDropdownMenuItem();
     const redirectdRef = useRef<RedirectHandle | null>(null);
@@ -274,7 +277,7 @@ function DropdownMenuPopup({
                         ? gridLayout!.popupWidth
                         : useSectionsLayout
                             ? sectionsMinPopupWidth
-                            : 256
+                            : minPopupWidth
                 }
                 maxPopupWidth={
                     isGridLayout
@@ -566,6 +569,7 @@ export default function DropdownMenu({
     triggerClassName,
     triggerStyle,
     stacked = false,
+    minPopupWidth,
 }: DropdownMenuProps) {
     const isWeb = Platform.OS === 'web';
 
@@ -591,6 +595,7 @@ export default function DropdownMenu({
                 triggerClassName={triggerClassName}
                 triggerStyle={triggerStyle}
                 stacked={stacked}
+                minPopupWidth={minPopupWidth}
             />
         );
     }

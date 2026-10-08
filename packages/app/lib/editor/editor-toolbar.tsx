@@ -4,7 +4,7 @@
  * Shared UI + enriched adapter. Tentap adapter lives in `editor-toolbar-tentap.ts`
  * so enriched does not pull `@10play/tentap-editor`.
  */
-import { useState, useCallback, useMemo } from 'react'
+import { useState, useCallback, useMemo, useEffect, useRef } from 'react'
 import { Platform, TextInput } from 'react-native'
 import { View } from 'app/design/view'
 import { NeoButton } from 'app/design/controls'
@@ -14,6 +14,7 @@ import { getTiptapEditorFromContainer } from 'app/lib/editor/comment-editor-keyb
 import { useTranslation } from 'react-i18next'
 import { toEmbedImageSrc } from 'app/lib/editor/inline-video'
 import { UNA_URL } from 'app/config'
+import DropdownMenu from 'app/ui/atoms/dropdown-menu'
 
 export const EDITOR_TOOLBAR_COMMAND_IDS = [
     'bold',
@@ -30,32 +31,50 @@ export const EDITOR_TOOLBAR_COMMAND_IDS = [
     'outdent',
     'undo',
     'redo',
+    'align',
     'image',
     'video',
 ]
 
+/** Accessible names of the toolbar buttons (every button shows an icon). */
 export const COMMAND_LABELS: Record<string, string> = {
-    bold: 'B',
-    italic: 'I',
+    bold: 'Bold',
+    italic: 'Italic',
     link: 'Link',
-    checklist: '☐',
-    code: '</>',
-    underline: 'U',
-    strikethrough: 'S',
-    quote: '❝',
-    bullet: '• List',
-    ordered: '1. List',
-    indent: '→',
-    outdent: '←',
-    undo: '↶',
-    redo: '↷',
+    checklist: 'Checklist',
+    code: 'Code',
+    underline: 'Underline',
+    strikethrough: 'Strikethrough',
+    quote: 'Quote',
+    bullet: 'Bulleted list',
+    ordered: 'Numbered list',
+    indent: 'Indent',
+    outdent: 'Outdent',
+    undo: 'Undo',
+    redo: 'Redo',
     image: 'Image',
     video: 'Video',
     embed: 'Embed',
+    align: 'Align',
+}
+
+/** Formatting buttons show their letter in that style (Lucide's letter icons look cramped at mini size). */
+const COMMAND_GLYPHS: Record<string, { text: string; className: string }> = {
+    bold: { text: 'B', className: 'font-bold' },
+    italic: { text: 'I', className: 'font-normal italic font-serif' },
+    underline: { text: 'U', className: 'font-normal underline' },
+    strikethrough: { text: 'S', className: 'font-normal line-through' },
+    quote: { text: '“', className: 'font-bold font-serif text-xl leading-none' },
 }
 
 /** Lucide icons shown instead of the text label (the label stays as the a11y name). */
 export const COMMAND_ICONS: Record<string, string> = {
+    bullet: 'List',
+    ordered: 'ListOrdered',
+    indent: 'ListIndentIncrease',
+    outdent: 'ListIndentDecrease',
+    undo: 'Undo2',
+    redo: 'Redo2',
     checklist: 'ListTodo',
     code: 'Braces',
     image: 'Image',
@@ -63,10 +82,72 @@ export const COMMAND_ICONS: Record<string, string> = {
     embed: 'CodeXml',
 }
 
+/** Paragraph alignments of the align menu; `left` clears it (`auto`). */
+const ALIGNMENTS = [
+    { id: 'left', title: 'Align left', icon: 'TextAlignStart' },
+    { id: 'center', title: 'Align center', icon: 'TextAlignCenter' },
+    { id: 'right', title: 'Align right', icon: 'TextAlignEnd' },
+]
+
+/** Width presets for a selected body image / video / embed (web); inserted media is at most 720px. */
+const MEDIA_SIZES = [
+    { id: 'size-s', label: 'S', width: 240 },
+    { id: 'size-m', label: 'M', width: 360 },
+    { id: 'size-l', label: 'L', width: 540 },
+    { id: 'size-xl', label: 'XL', width: 720 },
+]
+
+type SelectedMedia = { pos: number; width: number; height: number }
+
+/** Menu row: text only (the trigger shows the icon); `selected` marks the current choice. */
+type ToolbarMenuItem = { id: string; title: string; selected?: boolean }
+
+/** Toolbar item: a button, or (with `menu`) a dropdown whose choice goes to `onSelect`. */
+type ToolbarItem = {
+    id: string
+    disabled?: boolean
+    active?: boolean
+    onPress?: () => void
+    label?: string
+    icon?: string
+    menu?: ToolbarMenuItem[]
+    onSelect?: (id: string) => void
+}
+
+/** Web: the image node TipTap has selected (a click on it), `null` otherwise. */
+function useSelectedMedia(tipTap: any): SelectedMedia | null {
+    const [media, setMedia] = useState<SelectedMedia | null>(null)
+    const lastKey = useRef('')
+
+    useEffect(() => {
+        if (!tipTap?.on) return undefined
+        const update = () => {
+            const sel = tipTap.state?.selection
+            const node = sel?.node
+            const next = node?.type?.name?.toLowerCase().includes('image')
+                ? { pos: sel.from, width: Number(node.attrs?.width) || 0, height: Number(node.attrs?.height) || 0 }
+                : null
+            const key = next ? `${next.pos}:${next.width}:${next.height}` : ''
+            if (key === lastKey.current) return
+            lastKey.current = key
+            setMedia(next)
+        }
+        update()
+        tipTap.on('selectionUpdate', update)
+        tipTap.on('update', update)
+        return () => {
+            tipTap.off('selectionUpdate', update)
+            tipTap.off('update', update)
+        }
+    }, [tipTap])
+
+    return media
+}
+
 /**
  * Flat Enriched-style toolbar (+ optional inline link bar).
  */
-export function EditorToolbar({ items = [], linkBar, className }: { items?: any[]; linkBar?: any; className?: string }) {
+export function EditorToolbar({ items = [], linkBar, className }: { items?: ToolbarItem[]; linkBar?: any; className?: string }) {
     // Keep editor selection when clicking toolbar chrome (not the link URL input).
     const onMouseDown =
         Platform.OS === 'web'
@@ -98,11 +179,14 @@ export function EditorToolbar({ items = [], linkBar, className }: { items?: any[
             onMouseDown={onMouseDown}
             className={cn('flex-row flex-wrap items-center gap-2 mt-2', className)}
         >
-            {items.map((item) => (
+            {items.map((item) => item.menu ? (
+                <ToolbarMenu key={item.id} item={item} />
+            ) : (
                 <ToolbarButton
                     key={item.id}
                     label={item.label ?? COMMAND_LABELS[item.id] ?? item.id}
-                    icon={COMMAND_ICONS[item.id]}
+                    icon={item.icon ?? COMMAND_ICONS[item.id]}
+                    glyph={COMMAND_GLYPHS[item.id]}
                     active={!!item.active}
                     disabled={!!item.disabled}
                     onPress={item.onPress}
@@ -112,14 +196,44 @@ export function EditorToolbar({ items = [], linkBar, className }: { items?: any[
     )
 }
 
-function ToolbarButton({ label, icon, active, disabled, onPress }: { label: string; icon?: string; active?: boolean; disabled?: boolean; onPress?: () => void }) {
+/** Compact toolbar menus: short labels, no need for the default 256px popup. */
+const MENU_MIN_WIDTH = 160
+
+function ToolbarMenu({ item }: { item: ToolbarItem }) {
+    const label = item.label ?? COMMAND_LABELS[item.id] ?? item.id
+    const icon = item.icon ?? COMMAND_ICONS[item.id]
+    return (
+        <DropdownMenu
+            items={item.menu!}
+            onSelect={(choice) => item.onSelect?.(String(choice.id))}
+            mode="popup"
+            variant="tabs-overflow"
+            tabsOverflowSize="sm"
+            minPopupWidth={MENU_MIN_WIDTH}
+            buttonProps={{
+                style: 'borderless',
+                controlSize: 'mini',
+                selected: !!item.active,
+                disabled: !!item.disabled,
+                haptics: false,
+                ...(icon ? { image: icon, accessibilityLabel: label } : { label }),
+            }}
+            triggerAccessibilityLabel={label}
+        />
+    )
+}
+
+function ToolbarButton({ label, icon, glyph, active, disabled, onPress }: { label: string; icon?: string; glyph?: { text: string; className: string }; active?: boolean; disabled?: boolean; onPress?: () => void }) {
+    const content = glyph
+        ? { label: glyph.text, accessibilityLabel: label, classNames: { text: cn('text-base', glyph.className) }, expoUI: false }
+        : icon ? { image: icon, accessibilityLabel: label } : { label }
     return (
         <NeoButton
             style="borderless"
             controlSize="mini"
             selected={!!active}
             disabled={!!disabled}
-            {...(icon ? { image: icon, accessibilityLabel: label } : { label })}
+            {...content}
             onPress={onPress}
             haptics={false}
         />
@@ -202,6 +316,8 @@ export function useEnrichedToolbar({
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isWeb, enabled, tipTapProp, styleState, containerRef])
 
+    const selectedMedia = useSelectedMedia(tipTap)
+
     const closeLink = useCallback(() => setLinkOpen(false), [])
 
     const submitLink = useCallback((url: string) => {
@@ -257,7 +373,7 @@ export function useEnrichedToolbar({
         const canSink = !!(tip?.can?.()?.sinkListItem?.('listItem'))
         const canLift = !!(tip?.can?.()?.liftListItem?.('listItem'))
 
-        const defs: Array<{ id: string; disabled?: boolean; active?: boolean; onPress: () => void; label?: string }> = [
+        const defs: ToolbarItem[] = [
             {
                 id: 'bold',
                 active: s.bold?.isActive,
@@ -286,18 +402,6 @@ export function useEnrichedToolbar({
             //         }
             //     },
             // },
-            {
-                id: 'checklist',
-                active: s.checkboxList?.isActive,
-                disabled: s.checkboxList?.isBlocking,
-                onPress: run(() => ed()?.toggleCheckboxList?.(false)),
-            },
-            {
-                id: 'code',
-                active: s.inlineCode?.isActive,
-                disabled: s.inlineCode?.isBlocking,
-                onPress: run(() => ed()?.toggleInlineCode?.()),
-            },
             {
                 id: 'underline',
                 active: s.underline?.isActive,
@@ -330,6 +434,20 @@ export function useEnrichedToolbar({
             },
         ]
 
+        // Paragraph alignment; body media sit in their own paragraph, so it places them too.
+        const align = ['center', 'right'].includes(s.alignment) ? s.alignment : 'left'
+        defs.push({
+            id: 'align',
+            label: t('Alignment'),
+            icon: ALIGNMENTS.find((a) => a.id === align)?.icon,
+            active: align !== 'left',
+            menu: ALIGNMENTS.map((a) => ({ id: a.id, title: t(a.title), selected: a.id === align })),
+            onSelect: (id) => {
+                ed()?.setTextAlignment?.(id === 'left' ? 'auto' : id)
+                ed()?.focus?.()
+            },
+        })
+
         // Picker → upload → inserted into the body (handlers live in the editor).
         if (onInsertImage) {
             defs.push({ id: 'image', onPress: onInsertImage })
@@ -341,18 +459,64 @@ export function useEnrichedToolbar({
             defs.push({ id: 'embed', onPress: () => setEmbedOpen(true) })
         }
 
+        defs.push(
+            {
+                id: 'checklist',
+                active: s.checkboxList?.isActive,
+                disabled: s.checkboxList?.isBlocking,
+                onPress: run(() => ed()?.toggleCheckboxList?.(false)),
+            },
+            {
+                id: 'code',
+                active: s.inlineCode?.isActive,
+                disabled: s.inlineCode?.isBlocking,
+                onPress: run(() => ed()?.toggleInlineCode?.()),
+            },
+        )
+
+        // Size of the selected body media: width preset, height keeps the ratio (web only).
+        if (tip && selectedMedia) {
+            const { pos, width, height } = selectedMedia
+            const current = MEDIA_SIZES.find((size) => size.width === width)
+            defs.push({
+                id: 'size',
+                label: current?.label,
+                icon: current ? undefined : 'Scaling',
+                menu: MEDIA_SIZES.map((size) => ({ id: size.id, title: `${size.label} · ${size.width}px`, selected: size.width === width })),
+                onSelect: (id) => {
+                    const size = MEDIA_SIZES.find((item) => item.id === id)
+                    if (!size) return
+                    tip.chain().focus().command(({ tr }: any) => {
+                        const node = tr.doc.nodeAt(pos)
+                        if (!node) return false
+                        tr.setNodeMarkup(pos, undefined, {
+                            ...node.attrs,
+                            width: size.width,
+                            height: width && height ? Math.round(size.width * height / width) : node.attrs.height,
+                        })
+                        return true
+                    }).setNodeSelection(pos).run()
+                },
+            })
+        }
+
         // Indent / outdent / undo / redo via TipTap on web only.
         if (isWeb) {
             defs.push(
                 {
+                    // List item nesting: only the moves possible at the caret.
                     id: 'indent',
-                    disabled: !canSink,
-                    onPress: run(() => tip?.chain?.().focus().sinkListItem('listItem').run()),
-                },
-                {
-                    id: 'outdent',
-                    disabled: !canLift,
-                    onPress: run(() => tip?.chain?.().focus().liftListItem('listItem').run()),
+                    label: t('Indentation'),
+                    disabled: !canSink && !canLift,
+                    menu: [
+                        ...(canSink ? [{ id: 'indent', title: t('Indent') }] : []),
+                        ...(canLift ? [{ id: 'outdent', title: t('Outdent') }] : []),
+                    ],
+                    onSelect: (id) => {
+                        const chain = tip?.chain?.().focus()
+                        if (id === 'indent') chain?.sinkListItem('listItem').run()
+                        else chain?.liftListItem('listItem').run()
+                    },
                 },
                 {
                     id: 'undo',
@@ -368,7 +532,7 @@ export function useEnrichedToolbar({
         }
 
         return defs
-    }, [enabled, styleState, editorRef, tipTap, isWeb, selection, onInsertImage, onInsertVideo, embeds])
+    }, [enabled, styleState, editorRef, tipTap, isWeb, selection, selectedMedia, onInsertImage, onInsertVideo, embeds, t])
 
     const linkBar = linkOpen || embedOpen
         ? {

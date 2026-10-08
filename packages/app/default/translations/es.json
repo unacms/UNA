@@ -515,5 +515,12 @@
     "date_weekday_short_3": "mi",
     "date_weekday_short_4": "ju",
     "date_weekday_short_5": "vi",
-    "date_weekday_short_6": "sá"
+    "date_weekday_short_6": "sá",
+    "Alignment": "Alineación",
+    "Align left": "Alinear a la izquierda",
+    "Align center": "Centrar",
+    "Align right": "Alinear a la derecha",
+    "Indentation": "Sangría",
+    "Indent": "Aumentar sangría",
+    "Outdent": "Reducir sangría"
 }

@@ -517,5 +517,12 @@
     "date_weekday_short_3": "Ср",
     "date_weekday_short_4": "Чт",
     "date_weekday_short_5": "Пт",
-    "date_weekday_short_6": "Сб"
+    "date_weekday_short_6": "Сб",
+    "Alignment": "Выравнивание",
+    "Align left": "По левому краю",
+    "Align center": "По центру",
+    "Align right": "По правому краю",
+    "Indentation": "Отступ",
+    "Indent": "Увеличить отступ",
+    "Outdent": "Уменьшить отступ"
 }
