@@ -87,7 +87,7 @@ patches/         patch-package patches, applied on postinstall
 
 ## How a page renders
 
-- UNA decides the routes. Each app has one catch-all route (`apps/next/app/[...path]/page.js`, `apps/expo/app/[...path].js`, plus the tabs in `apps/expo/app/(tabs)/tab0` to `tab4`). It asks UNA for the page with `system/get_page_by_request/TemplServicePages` and renders the returned blocks.
+- UNA decides the routes. Each app has one catch-all route (`apps/next/app/[...path]/page.js`, `apps/expo/app/[...path].tsx`, plus the tabs in `apps/expo/app/(tabs)/tab0` to `tab4`). It asks UNA for the page with `system/get_page_by_request/TemplServicePages` and renders the returned blocks.
 - Blocks render through the component registry: `components[type][name]` from `app/components/registry`. It is a plain object on purpose; a `getComponent()` call trips `react-hooks/static-components`. `components/registry-init.js` registers each type from its customization `_map.js`. Default maps load components with `next/dynamic`; on native, `apps/expo/babel-inline-dynamic-imports.js` and the Metro shim turn those into `require` calls.
 - On web, `[...path]/page.js` is a Server Component. It fetches the page JSON with `fetch` (`cache: 'no-store'`), sending `Authorization: Bearer <UNA_API_KEY or tenant key>` and the viewer's cookies. React `cache()` shares that request between `generateMetadata` and `Page`, and `apps/next/lib/una-page-cache.js` keeps results per URL, tenant and cookie for `appSetting('cache', 'una_page_ttl')` seconds (20; 30 for profiles). It renders `Root` from `app/root-client` inside `Suspense`.
 - `cacheComponents` is off, so `'use cache'`, `cacheLife` and PPR don't work here. Don't add them.

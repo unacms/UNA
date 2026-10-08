@@ -1,7 +1,7 @@
 /**
  * /pg — dev-only Expo route for trying out the new NeoButton.
  *
- * Mirrors `apps/next/app/pg/page.js`. More specific than `[...path].js`, so it wins.
+ * Mirrors `apps/next/app/pg/page.js`. More specific than `[...path].tsx`, so it wins.
  */
 
 import { Root } from 'app/root';
