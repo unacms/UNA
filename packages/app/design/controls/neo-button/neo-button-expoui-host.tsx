@@ -7,7 +7,7 @@
  */
 
 import React, { type ReactElement } from 'react';
-import { Pressable, StyleSheet, View, type Insets, type StyleProp, type ViewStyle } from 'react-native';
+import { Pressable, StyleSheet, View, type Insets, type PressableProps, type StyleProp, type ViewStyle } from 'react-native';
 
 type HostSize = { width: number; height: number };
 
@@ -58,6 +58,9 @@ export function useFrozenHostSize({ contentKey, rnOwnsWidth, rnOwnsHeight }: {
 const FILL_STYLE = { flexGrow: 1, flexShrink: 1, flexBasis: 0, minWidth: 0 };
 const AUTO_STYLE = { flexGrow: 0, flexShrink: 0, alignSelf: 'flex-start' as const };
 const PRESS_LOCK_MS = 400;
+// A touch whose end never reached the wrapper (its target unmounted) stops
+// blocking the Host's own press after this long.
+const TOUCH_STALE_MS = 10000;
 // Pressability measures the press rect once, when JS handles touch-down, and
 // never again. If the layout already moved by then (keyboard closing, busy JS
 // thread), the rect is off by the jump and the first move of a drifting finger
@@ -66,19 +69,48 @@ const PRESS_LOCK_MS = 400;
 // since the scroll view takes the responder (RESPONDER_TERMINATED), not the rect.
 const PRESS_RETENTION_OFFSET = { top: 400, bottom: 400, left: 20, right: 20 };
 
+export type NativeTouchHandlers = Pick<PressableProps, 'onTouchStart' | 'onTouchEnd' | 'onTouchCancel'>;
+
 /**
- * Host and the RN wrapper can both deliver the same tap. A toggle (composer
- * Plus) then opens and closes in one gesture.
+ * Press handlers for a native button. A touch reaches both the SwiftUI /
+ * Compose button (which draws its pressed state) and the RN wrapper, and only
+ * the wrapper acts on it: `press` goes on the wrapper, so hitSlop, release
+ * timing, scroll cancel and keyboard-jump retention all hold. The Host's own
+ * press (`hostPress`) is dropped while the wrapper sees a touch and shortly
+ * after, so a touch the wrapper cancelled (scroll, keyboard-dismissing tap)
+ * cannot fire from the native side. It counts only when no touch came first:
+ * VoiceOver, TalkBack, Switch Control, a hardware keyboard.
+ * The lock keeps both from firing for one tap, which would open and close a
+ * toggle (composer Plus) in one gesture.
  */
-export function useLockedNativePress(handler: (() => void) | undefined) {
+export function useNativeButtonPress(handler: (() => void) | undefined) {
     const lock = React.useRef(0);
-    return React.useCallback(() => {
+    const touch = React.useRef({ down: false, at: 0 });
+
+    const press = React.useCallback(() => {
         if (!handler) return;
         const now = Date.now();
         if (now - lock.current < PRESS_LOCK_MS) return;
         lock.current = now;
         handler();
     }, [handler]);
+
+    const hostPress = React.useCallback(() => {
+        const { down, at } = touch.current;
+        if (Date.now() - at < (down ? TOUCH_STALE_MS : PRESS_LOCK_MS)) return;
+        press();
+    }, [press]);
+
+    const touchHandlers = React.useMemo<NativeTouchHandlers>(() => {
+        const end = () => { touch.current = { down: false, at: Date.now() }; };
+        return {
+            onTouchStart: () => { touch.current = { down: true, at: Date.now() }; },
+            onTouchEnd: end,
+            onTouchCancel: end,
+        };
+    }, []);
+
+    return { press, hostPress, touchHandlers };
 }
 
 /** Hit area per side: a number for all sides, or insets; `undefined` when nothing extends. */
@@ -100,11 +132,18 @@ const hasStyle = (style: StyleProp<ViewStyle>) => {
 
 /**
  * Host is not an RN Pressable, so hitSlop / flex-grow / the actual tap must
- * live on a wrapper. `box-only` claims the hit — Host often drops SwiftUI
- * `onPress` (icon-only, keyboard). Pin height so the wrapper matches JS.
- * `onPress` fires on release, like the JS NeoButton, so a scroll that starts
- * on the button cancels it. `onPressIn` (touch-down) is the opt-in for a
- * caller that must act before the keyboard or layout moves.
+ * live on a wrapper: Host often drops SwiftUI `onPress` (icon-only, keyboard).
+ * Pin height so the wrapper matches JS. `onPress` fires on release, like the
+ * JS NeoButton, so a scroll that starts on the button cancels it. `onPressIn`
+ * (touch-down) is the opt-in for a caller that must act before the keyboard
+ * or layout moves.
+ *
+ * The wrapper doesn't claim the hit (`box-only`): inside the Host the touch
+ * goes to the SwiftUI / Compose button, which draws its own pressed state,
+ * and RN's root touch handler still hands it to the wrapper, which presses.
+ * A touch in the hitSlop band lands on the wrapper alone. `touchHandlers`
+ * (`useNativeButtonPress`) tell the Host which touches the wrapper owns.
+ * Disabled claims the hit again, so a faded button shows no press.
  *
  * The wrapper is the outermost box, so `rootStyle` (`classNames.root`) goes
  * here and wins over the default flex sizing (self-*, flex-*, margins reach
@@ -113,12 +152,13 @@ const hasStyle = (style: StyleProp<ViewStyle>) => {
  * `link`) makes the wrapper the accessibility element.
  */
 export function wrapNativeButtonHost(host: ReactElement, {
-    hitSlop = 0, fill = false, onPress, onPressIn, disabled, height, width, rootStyle, accessibilityRole, accessibilityLabel,
+    hitSlop = 0, fill = false, onPress, onPressIn, touchHandlers, disabled, height, width, rootStyle, accessibilityRole, accessibilityLabel,
 }: {
     hitSlop?: NativeHitSlop;
     fill?: boolean;
     onPress?: () => void;
     onPressIn?: () => void;
+    touchHandlers?: NativeTouchHandlers;
     disabled?: boolean;
     height?: number | null;
     width?: number | null;
@@ -154,12 +194,13 @@ export function wrapNativeButtonHost(host: ReactElement, {
     return (
         <Pressable
             {...a11y}
+            {...touchHandlers}
             collapsable={false}
             onPress={disabled ? undefined : onPress}
             onPressIn={disabled ? undefined : onPressIn}
             hitSlop={slop}
             pressRetentionOffset={PRESS_RETENTION_OFFSET}
-            pointerEvents="box-only"
+            pointerEvents={disabled ? 'box-only' : 'auto'}
             disabled={!!disabled}
             style={style}
         >
