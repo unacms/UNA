@@ -3,7 +3,6 @@ import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
 import { appSetting } from 'app/lib/util'
 import emitter, { EVENTS } from 'app/context/emitter'
 import { subscribe } from 'app/ui/atoms/socket'
-import { useCurrentUserStore } from 'app/context/user'
 import {
     isSameItemsForUniList,
     flattenPagesForUniList,
@@ -41,8 +40,10 @@ export {
 /** Batch window for timeline `added` events, plus a random spread so clients don't all hit UNA at once. */
 const TIMELINE_BATCH_MS = 1000
 const TIMELINE_JITTER_MS = 2000
+/** Cap on timeline ids remembered as deleted, so a first page fetched before a deletion cannot bring the row back. */
+const TIMELINE_DELETED_MAX = 200
 
-type TimelineSocketEvent = { id?: number | string; author_id?: number | string; peformer_id?: number | string }
+type TimelineSocketEvent = { id?: number | string }
 
 /** Timeline socket payload: a JSON string or an object (`{ id, author_id, peformer_id }`). */
 function parseTimelinePayload(payload: unknown): TimelineSocketEvent | null {
@@ -188,13 +189,15 @@ export function useUniListQuery({
      * loaded UNA on each post. A deleted row is dropped from the cache without
      * a request. Added posts are batched: one first-page request after a
      * jittered delay, merged on top of the cache; nothing changes when the new
-     * post is not in this list. Own posts already arrive through `EVENTS.feed`.
+     * post is not in this list. Own posts are not skipped: `EVENTS.feed` only
+     * reaches the tab that posted, and the merge ignores rows already cached.
      */
     useEffect(() => {
         if (listenTimeline !== true) return undefined
 
         let timer: ReturnType<typeof setTimeout> | null = null
         let cancelled = false
+        const deletedIds = new Set<string>()
 
         const loadNewItems = async () => {
             timer = null
@@ -206,7 +209,10 @@ export function useUniListQuery({
                     defaultParams: paramsRef.current,
                 })
                 if (cancelled || cacheKey !== qKeyRef.current) return
-                if (mergeFirstPageIntoUniListQueryCache(queryClient, cacheKey, freshPage)) {
+                const page = deletedIds.size
+                    ? { ...freshPage, data: (freshPage?.data ?? []).filter((it: any) => !deletedIds.has(String(it.id))) }
+                    : freshPage
+                if (mergeFirstPageIntoUniListQueryCache(queryClient, cacheKey, page)) {
                     refetchRef.current.skipToast = true
                     setRequested(true)
                 }
@@ -215,18 +221,17 @@ export function useUniListQuery({
             }
         }
 
-        const offAdded = subscribe('bx_timeline_0', 'added', (payload: unknown) => {
-            const event = parseTimelinePayload(payload)
-            const user = useCurrentUserStore.getState().currentUser
-            // Loose compare: socket ids are strings, currentUser.id a number.
-            if (user && (event?.author_id == user.id || event?.peformer_id == user.id)) return
+        const offAdded = subscribe('bx_timeline_0', 'added', () => {
             if (timer) return
-            timer = setTimeout(loadNewItems, TIMELINE_BATCH_MS + Math.random() * TIMELINE_JITTER_MS)
+            // Jitter only spreads the load; not security-sensitive.
+            timer = setTimeout(loadNewItems, TIMELINE_BATCH_MS + Math.random() * TIMELINE_JITTER_MS) // NOSONAR
         })
 
         const offDeleted = subscribe('bx_timeline_0', 'deleted', (payload: unknown) => {
             const id = parseTimelinePayload(payload)?.id
             if (id == null) return
+            deletedIds.add(String(id))
+            if (deletedIds.size > TIMELINE_DELETED_MAX) deletedIds.delete(deletedIds.values().next().value as string)
             const cacheKey = qKeyRef.current
             const isShown = flattenPagesForUniList(queryClient.getQueryData(cacheKey)).some((it: any) => it.id == id)
             if (isShown) {
@@ -234,7 +239,7 @@ export function useUniListQuery({
                 setRequested(true)
                 removeItemFromUniListQueryCache(queryClient, cacheKey, id)
             }
-            setFrozen((f) => f && f.items.some((it: any) => it.id == id)
+            setFrozen((f) => f?.items.some((it: any) => it.id == id)
                 ? { ...f, items: f.items.filter((it: any) => it.id != id) }
                 : f)
         })
