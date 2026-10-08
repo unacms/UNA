@@ -24,7 +24,6 @@ import { Platform } from 'react-native'
 import UniList from 'app/ui/atoms/unilist'
 import { Text } from 'app/design/typography'
 import { getSkeletonForList } from 'app/lib/skeleton-helpers'
-import { subscribe } from 'app/ui/atoms/socket'
 import { useCurrentUser } from 'app/context/user'
 import { NeoButton } from 'app/design/controls'
 import { useWindowHeight } from 'app/context/measure';
@@ -145,6 +144,7 @@ export default function Browse(props) {
         getNextPageParam: startPerPageNextPageParam,
         listenPageReload: true,
         listenFeed: props.data?.unit === 'feed',
+        listenTimeline: props.data?.unit === 'feed',
     })
 
     let sSkeleton = data.module ? data.module : data.unit
@@ -185,17 +185,6 @@ export default function Browse(props) {
         [sSkeleton, layout, renderItem]
     )
 
-    useEffect(() => {
-        if (props.data?.unit !== 'feed') return;
-
-        const offAdded = subscribe('bx_timeline_0', 'added', refetch);
-        const offDeleted = subscribe('bx_timeline_0', 'deleted', refetch);
-        
-        return () => {
-            offAdded();
-            offDeleted();
-        };
-    }, [refetch, props.data?.unit])    
 
     // Bottom-tab reselect (same event as Conductor / Browse): scroll to top, or reload if already at top.
     useEffect(() => {

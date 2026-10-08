@@ -54,7 +54,7 @@ export function CoverMorphBody({
 }) {
     const { t } = useTranslation()
     const { currentUser } = useCurrentUser()
-    useDateLocaleTag()
+    const dateLocaleTag = useDateLocaleTag()
     const isDesktop = useIsDesktop()
     const breakpointName = useBreakpointName()
     const sizing = getCoverMorphSizing(isDesktop)
@@ -139,6 +139,7 @@ export function CoverMorphBody({
                 profileData.info?.date_start,
                 profileData.info?.date_end,
                 t,
+                dateLocaleTag,
             )}
         </Text>
     )

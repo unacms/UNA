@@ -28,7 +28,6 @@ import { responsiveClasses } from 'app/lib/responsive-classes'
 import { Text } from 'app/design/typography'
 import { getSkeletonForList } from 'app/lib/skeleton-helpers'
 import { useTranslation } from 'react-i18next'
-import { subscribe } from 'app/ui/atoms/socket'
 import { useCurrentUser } from 'app/context/user'
 import { layoutForList } from 'app/customization/functions'
 import Galery from 'app/ui/molecules/content/gallery'
@@ -181,6 +180,7 @@ export default function Browse(props) {
         refetchOnReconnect: updateMode != 'none',
         listenPageReload: true,
         listenFeed: props.data?.unit === 'feed',
+        listenTimeline: props.data?.unit === 'feed',
         canFetchNext: () => isOnePage != true && props.extraProps?.limit != true,
     })
 
@@ -222,18 +222,6 @@ export default function Browse(props) {
         [sSkeleton, numColumns, layout, renderItem]
     )
 
-
-    useEffect(() => {
-        if (props.data?.unit !== 'feed') return;
-
-        const offAdded = subscribe('bx_timeline_0', 'added', refetch);
-        const offDeleted = subscribe('bx_timeline_0', 'deleted', refetch);
-
-        return () => {
-            offAdded();
-            offDeleted();
-        };
-    }, [refetch, props.data?.unit])
 
     // Bottom-tab reselect (same event as Conductor): scroll to top, or reload if already at top.
     useEffect(() => {
