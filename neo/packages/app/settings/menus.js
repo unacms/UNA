@@ -318,7 +318,7 @@ export const settingsMenus = {
             },
             {
                 key: '/tab3',
-                title: 'Notifications',
+                title: 'Activity',
                 url: '/notifications-view',
                 icon: 'Bell',
                 badge: 'notifications',
