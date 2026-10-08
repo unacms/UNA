@@ -1,5 +1,87 @@
 # Notes for coding agents
 
+# Project Structure
+
+This repository contains the UNA PHP application and the NEO frontend monorepo as `neo/` subfolder.
+
+## Repository layout
+
+```text
+/
+├── ...                    # UNA PHP application
+├── tests/                 # UNA PHP unit and integration tests
+├── modules/               # UNA modules
+├── tools/                 # Agent MCP tools (see tools/AGENTS.md)
+├── ...
+└── neo/                   # NEO frontend monorepo
+    ├── apps/
+    │   ├── expo/          # Expo / React Native mobile application
+    │   └── next/          # Next.js web frontend
+    ├── packages/          # Shared frontend packages
+    ├── package.json
+    └── ...
+```
+
+## UNA coding restrictions
+
+These apply to UNA PHP (`inc/`, `modules/`, `studio/`, `template/`, and install or update SQL). They do not apply to `neo/`.
+
+- Text may contain multibyte characters. Do not use byte-oriented functions (`strlen`, `substr`, `strpos`, `strrpos`, `strtolower`, `strtoupper`, `substr_replace`) on it. Use `get_mb_len`, `get_mb_substr`, `get_mb_replace`, `bx_mb_strpos`, and `bx_mb_substr_replace` from `inc/utils.inc.php`.
+- Do not migrate the database from PHP. No `CREATE`, `ALTER`, or other schema change that runs when a page or service loads.
+- SQL belongs in a `*Db` or `*Query` class. Do not put queries in a module, template, form, page, grid or other classes.
+- HTML belongs in a template `*.html` file and is rendered with `parseHtmlByName`. Do not build markup as strings in PHP.
+- No Cyrillic characters in code, comments, or SQL. User-facing text is a language key. Errors and logs without translations is acceptable.
+- Common system classes (`BxDol*`, `BxBase*`, `BxTempl*`) are autoloaded. Do not guard them with `class_exists`, `bx_import`, or `require`. Custom modules classes need to be explicitly loaded with `bx_import`.
+- Do not hardcode a list of module names. Read installed modules from `BxDolModuleQuery`.
+- Do not call module by a literal name (`BxDolModule::getInstance('bx_posts')`, `BxDolService::call('bx_posts', ...)`, `new BxPostsModule`) without checking if module is installed `BxDolModuleQuery::getInstance()->isEnabledByName('bx_posts')`.
+- Call `getParam` only with a name that exists in `sys_options`. Declare the option in that module's install SQL before reading it.
+- Do not add or edit anything under `upgrade/files/`. That folder records past releases. Do not put new migrations there.
+- Set `active_api` in `install/sql/enable-app-pages.sql` (page blocks) and `install/sql/enable-app-menus.sql` (menu items) for core, for modules use `modules/boonex/*/install/sql/enable-app.sql` files. Do not set it in `install.sql`, `enable.sql`, or other common install and enable scripts.
+
+## Studio app icons
+
+Before adding or changing a launcher tile (`studio/template/images/icons/wi-*.svg`, `modules/**/template/images/icons/std-icon.svg`), read [`.agents/skills/studio-icons/SKILL.md`](.agents/skills/studio-icons/SKILL.md).
+
+## Tests
+
+Run UNA PHPUnit inside the `php` service from `docker compose`. That container is on the `unanet` network and reaches MariaDB at the host name stored in the installed site (`mysql`). PHPUnit is `plugins/bin/phpunit` after `composer install` (dev dependencies included). The site must already be installed (`inc/header.inc.php` present). Start the stack with `docker compose up -d` first.
+
+From the repository root:
+
+Unit tests:
+
+```bash
+docker compose exec -w /opt/una php ./plugins/bin/phpunit -c tests/phpunit.xml --testsuite Units
+```
+
+Integration tests:
+
+```bash
+docker compose exec -w /opt/una php ./plugins/bin/phpunit -c tests/phpunit.xml --testsuite Integration
+```
+
+One test class or method (`--filter` matches the class or method name):
+
+```bash
+docker compose exec -w /opt/una php ./plugins/bin/phpunit -c tests/phpunit.xml --filter TestName
+```
+
+Integration tests read `tests/.env` when that file exists (`cp tests/.env.example tests/.env`). Otherwise they use the installer defaults. A case skips an account that is not installed. JUnit output is written to `logs/junit.xml`.
+
+## UNA pull requests
+
+These apply to changes in UNA PHP (`inc/`, `modules/`, `studio/`, `template/`, `tests/`, and install or update SQL). They do not apply to a PR that only changes `neo/`.
+
+Before opening the pull request:
+
+- Add unit and/or integration tests for new functionality.
+- Run the affected test suites. The run must finish with no failed tests. A skipped case is acceptable only when the suite skips it because the account or module is not installed.
+- Review the change for security issues (injection, missing auth or permission checks, unsafe file or path handling, secrets in code or logs, and similar).
+- Review the change for performance issues and bottlenecks (queries in loops, unbounded result sets, repeated work per request, and similar).
+- When the change includes a database migration, apply that SQL locally with the `query` tool in `tools/db.php` (see [`tools/AGENTS.md`](tools/AGENTS.md)) before opening the pull request.
+
+The pull request description must include the database migration SQL when the change has one. When it has none, say that there is no database migration.
+
 ## NEO (`neo/`)
 
 `neo/` is NEO, the Next.js and Expo client for UNA, kept here as a git subtree. Before changing anything under `neo/`, read [`neo/AGENTS.md`](neo/AGENTS.md). Claude Code loads it through `neo/CLAUDE.md` when it opens a file there.
@@ -11,33 +93,3 @@
 - CI deploys both halves to the `una-ci` Railway project: service `una` (UNA) and service `neo` (the NEO web client, built from `neo/` with `scripts/railway/neo/`). A PR gets `pr-<n>.unacms.app` (NEO) and `api-pr-<n>.unacms.app` (UNA); master deploys production. See `.github/workflows/ci.yml` and `scripts/railway/`.
 - A UNA service that NEO calls must return JSON for guests too; see [`neo/.agents/skills/una-api/SKILL.md`](neo/.agents/skills/una-api/SKILL.md).
 
-## Studio app icons (`studio/template/images/icons/wi-*.svg`, module `template/images/icons/std-icon.svg`)
-
-Every launcher tile is one SVG with three layers, in this order:
-
-1. **Plate** – a full-size `<rect>` filled with a vertical `linearGradient`, lighter at the top, darker at the bottom (e.g. gray `#71717A → #3F3F46`, blue `#0284C7 → #1E40AF`, purple `#7C3AED → #5B21B6`).
-2. **Glyph** – the Lucide icon, flattened to one outline and filled (`fill-rule="evenodd"`) with a vertical white gradient, `white` at the top to `white` at 60% opacity at the bottom. Lucide draws a glyph as several stroked paths; layered translucent, every place two strokes overlap shows twice as dark, so expand each stroke to its outline (2 units wide, round caps and joins) and unite them first. `scripts/studio_icon_from_lucide.py` does this (shapely + svgpathtools; add the icon to its table and run it). Older tiles still carry the raw stroked paths (`stroke-linecap="round"`, `stroke-linejoin="round"`); flatten them when they are touched.
-3. **Shadow** – an exact copy of the glyph outline, drawn *after* the glyph, shifted 1px down, filled `black` with `fill-opacity="0.1"` (older stroked tiles: stroked `black` with `stroke-opacity="0.1"`).
-
-Placement: keep the outline in Lucide's 24-unit space and wrap each copy in `<g transform="translate(x y) scale(s)">` so the 24-unit box lands centred on the plate with a stroke width of 2 units (which scales to 4px on a 72px canvas at `scale(2)`, or 4.4px on an 80px canvas at `scale(2.2)`). The shadow group uses the same transform with `y + 1`. Studio's own tiles are 72×72 (`translate(12 12) scale(2)`, shadow `translate(12 13)`); newer module icons are 80×80 (`translate(13.6 13.6) scale(2.2)`, shadow `translate(13.6 14.6)`). Gradient `y1`/`y2` for the glyph are given in the group's own units (2 to 22).
-
-Plate colours follow the app category: gray `#71717A → #3F3F46` system, green `#059669 → #065F46` content, orange `#D97706 → #92400E` profiles, purple `#7C3AED → #5B21B6` templates, red `#F43F5E → #BE123C` contexts (groups, spaces, events, courses), white `#F3F4F6 → #E5E7EB` languages; integrations sit on white or their brand colour.
-
-Pick glyphs from https://lucide.dev; the vendored copies live in `plugins_public/lucide/icons/`. `modules/boonex/mapshow/template/images/icons/std-icon.svg` (flattened, 80px) and `studio/template/images/modules/bx_polls.svg` (flattened, 72px) are reference implementations.
-
-## Language keys
-
-Add a missing English or Russian string with `scripts/add_lang_key.php`. Do not insert keys by hand into language XML, `sys_localization_keys`, or `sys_localization_strings`.
-
-Run it in the php container. Arguments are language (`en` or `ru`), key, and translation. An existing translation is left unchanged. The script inserts the key in the right language file next to the closest existing keys (`_sys_…` to system, `_bx_posts_…` to Posts, and so on), inserts it into the database when that language is installed, and recompiles the language cache.
-
-```bash
-docker exec -i una-php-1 php /opt/una/scripts/add_lang_key.php en _sys_example "Hello"
-
-docker exec -i una-php-1 php /opt/una/scripts/add_lang_key.php ru _sys_example - <<'EOF'
-Line one
-Line two
-EOF
-```
-
-Pass `-` as the translation to read stdin. That keeps line breaks; one trailing newline is removed. Add both `en` and `ru` when you introduce a key. Russian may be absent from the database; the Russian XML is still written, and re-running the command after Russian is installed fills the database from that file.

@@ -72,3 +72,23 @@ composer test-integration
 JUnit report: `logs/junit-integration.xml`.
 
 Integration tests read `tests/.env` when present (`cp tests/.env.example tests/.env`). Without that file they use installer defaults. Tests skip an account that is not installed.
+
+DOCKER
+======
+
+Run the same suites inside the `php` service so PHP can reach MariaDB at host `mysql`. From the repository root, with `docker compose up -d` and UNA already installed:
+
+Unit tests:
+```
+docker compose exec -w /opt/una php ./plugins/bin/phpunit -c tests/phpunit.xml --testsuite Units
+```
+
+Integration tests:
+```
+docker compose exec -w /opt/una php ./plugins/bin/phpunit -c tests/phpunit.xml --testsuite Integration
+```
+
+One test class or method:
+```
+docker compose exec -w /opt/una php ./plugins/bin/phpunit -c tests/phpunit.xml --filter TestName
+```

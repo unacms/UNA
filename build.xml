@@ -63,6 +63,8 @@
         <exclude name="inc/header*" />
         <exclude name="AGENTS.md" />
         <exclude name="CLAUDE.md" />
+        <exclude name=".agents/**" />
+        <exclude name=".claude/**" />
         <exclude name="build.xml" />
         <exclude name="build.properties" />
         <exclude name="bower.json" />
@@ -83,14 +85,15 @@
         <exclude name="storage/**/*" />
         <exclude name="samples/**" />
         <exclude name="scripts/**" />
+        <exclude name="tools/**" />
         <exclude name="src/**" />
         <exclude name="tests/**" />
         <exclude name="packages/**" />
         <exclude name="upgrade/**" />
         <exclude name="node_modules/**" />
-        <exclude name="bower_components/**" />
-        <exclude name="neo/**" />
+        <exclude name="bower_components/**" />        
         <exclude name="modules/boonex/*/updates/**" />
+        <exclude name="neo/**" />
     </fileset>
 
     <fileset dir="${project.basedir}" defaultexcludes="true" id="doc_files">
@@ -102,6 +105,7 @@
         <exclude name="storage/**/*" />
         <exclude name="samples/**" />
         <exclude name="scripts/**" />
+        <exclude name="tools/**" />
         <exclude name="tests/**" />
         <exclude name="packages/**" />
         <exclude name="upgrade/**" />
@@ -123,6 +127,7 @@
         <exclude name="modules/boonex/xero/plugins/**" />
         <exclude name="modules/boonex/*/updates/**" />
         <exclude name="**/updates/**" />        
+        <exclude name="neo/**" />
     </fileset>
 
     <!-- ============================================  -->
@@ -200,6 +205,14 @@
         <zip destfile="${project.basedir}/packages/${package_file}">
             <fileset dir="${project.basedir}/packages/tmp" defaultexcludes="true" />
         </zip>
+
+        <fail message="Package archive was not created: packages/${package_file}">
+            <condition>
+                <not>
+                    <available file="${project.basedir}/packages/${package_file}" />
+                </not>
+            </condition>
+        </fail>
 
         <delete dir="${project.basedir}/packages/tmp" quiet="true" />
 
