@@ -22,9 +22,8 @@ import { PageHeaderOptions } from 'app/ui/molecules/header/options';
 import { useSafeAreaInsets, getWindowSafeAreaInsets } from 'app/lib/hooks/router'
 import { useStickyHeaderOffset, stickySidebarStyle } from 'app/lib/hooks/use-sticky-header-offset'
 import { Loading } from 'app/customization/loading'
-// Keep in sync with TAB_BAR_RESERVE in app/components/nav/tab-slide.js —
-// with expo native tabs the screen extends behind the system tab bar.
-const NATIVE_TAB_BAR_RESERVE = 56;
+import { useCurrentUser } from 'app/context/user'
+import { getNativeTabBarHeight } from 'app/components/nav/tabs/tab-menu'
 // Keep in sync with TAB_BAR_HEIGHT in app/components/nav/tabs/native-tabs.js —
 // the JS tab bar is in-flow, so the screen (and the composer's coordinate
 // space) ends this far above the window bottom.
@@ -115,6 +114,7 @@ export default function PageLayout({ data, blocks, isModal = false, url, pageCla
     const isWeb = Platform.OS == 'web';
     const windowHeight = useWindowHeight();
     const insets = useSafeAreaInsets();
+    const { currentUser } = useCurrentUser();
     const isDesktop = useIsDesktop();
     const [replyId, setReplyId] = useState(false);
     const [scrollToEnd, setScrollToEnd] = useState(false);
@@ -127,13 +127,14 @@ export default function PageLayout({ data, blocks, isModal = false, url, pageCla
     const { marginBottom: listBottomInset } = useStickyComposerListInset(formHeight);
     // Resting gap between the composer and the screen bottom (native page only):
     // with native tabs the page paints behind the system tab bar, so the composer
-    // must clear it; with JS tabs the screen already ends above the footer.
+    // must clear it (taller on Android with labels); with JS tabs the screen
+    // already ends above the footer.
     // Window insets, not `insets`: the NativeTabs nested SafeAreaProvider can
     // report bottom = keyboard height, which would bounce the composer.
     const composerBottomGap = isWeb
         ? 0
         : isNativeTabsEnabled()
-            ? NATIVE_TAB_BAR_RESERVE + (getWindowSafeAreaInsets().bottom || 0)
+            ? getNativeTabBarHeight(currentUser) + (getWindowSafeAreaInsets().bottom || 0)
             : COMPOSER_FOOTER_GAP;
     // KeyboardStickyView translates by (keyboardHeight − opened), so landing the
     // composer flush on the keyboard requires opened == its resting distance

@@ -1,17 +1,18 @@
 'use client';
 
 import { useLayoutEffect, useRef, useState } from 'react';
-import { Animated, Easing, Platform, StyleSheet, View, useWindowDimensions } from 'react-native';
+import { Animated, Easing, StyleSheet, View, useWindowDimensions } from 'react-native';
 import { useIsFocused, getWindowSafeAreaInsets } from 'app/lib/hooks/router';
 import { isNativeTabsEnabled } from 'app/lib/util';
 import { nativeDriver } from 'app/lib/platform/animation';
 import { TabChromeProvider } from 'app/context/tab-chrome';
 import { TabRouteOverrideContext } from 'app/context/tab-route-override';
 import { usePathname } from 'expo-router';
+import { useCurrentUser } from 'app/context/user';
+import { getNativeTabBarHeight } from 'app/components/nav/tabs/tab-menu';
 
 const SLIDE_MS = 320;
 const SLIDE_EASING = Easing.bezier(0.32, 0.72, 0, 1);
-const TAB_BAR_RESERVE = Platform.OS === 'ios' ? 56 : 56;
 
 const slots = new Map();
 const translateByKey = new Map();
@@ -136,7 +137,9 @@ export function TabSlideHost({ sessionKey, backgroundColor }) {
     const { width } = useWindowDimensions();
     const realPathname = usePathname();
     const sessionRef = useRef(sessionKey);
-    const bottomReserve = TAB_BAR_RESERVE + (getWindowSafeAreaInsets().bottom || 0);
+    const { currentUser } = useCurrentUser();
+    // Leave the tab bar's strip free (taller on Android with labels).
+    const bottomReserve = getNativeTabBarHeight(currentUser) + (getWindowSafeAreaInsets().bottom || 0);
 
     useLayoutEffect(() => {
         if (sessionRef.current === sessionKey) return;
