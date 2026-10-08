@@ -515,5 +515,12 @@
     "date_weekday_short_3": "me",
     "date_weekday_short_4": "je",
     "date_weekday_short_5": "ve",
-    "date_weekday_short_6": "sa"
+    "date_weekday_short_6": "sa",
+    "Alignment": "Alignement",
+    "Align left": "Aligner à gauche",
+    "Align center": "Centrer",
+    "Align right": "Aligner à droite",
+    "Indentation": "Retrait",
+    "Indent": "Augmenter le retrait",
+    "Outdent": "Diminuer le retrait"
 }

@@ -515,5 +515,12 @@
     "date_weekday_short_3": "Mi",
     "date_weekday_short_4": "Do",
     "date_weekday_short_5": "Fr",
-    "date_weekday_short_6": "Sa"
+    "date_weekday_short_6": "Sa",
+    "Alignment": "Ausrichtung",
+    "Align left": "Linksbündig",
+    "Align center": "Zentriert",
+    "Align right": "Rechtsbündig",
+    "Indentation": "Einzug",
+    "Indent": "Einzug vergrößern",
+    "Outdent": "Einzug verkleinern"
 }

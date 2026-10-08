@@ -5,11 +5,12 @@ import { Text } from 'app/design/typography'
 import Video from 'app/ui/atoms/video'
 import Loading from 'app/ui/atoms/loading'
 import { isInlineVideoReady } from 'app/lib/editor/inline-video-ready'
+import InlineMediaFrame from 'app/ui/molecules/content/inline-media-frame'
 
 const RECHECK_MS = 15000
 
 /** Editor video in a post body: a "processing" placeholder until UNA has transcoded the mp4. */
-export default function InlineVideo({ src, poster }) {
+export default function InlineVideo({ src, poster, width, height, align }) {
     const { t } = useTranslation()
     const [ready, setReady] = useState(false)
 
@@ -30,7 +31,7 @@ export default function InlineVideo({ src, poster }) {
     }, [src])
 
     return (
-        <View className='w-full aspect-video rounded-xl overflow-hidden my-3 bg-muted'>
+        <InlineMediaFrame width={width} height={height} align={align} keepRatio className='rounded-xl overflow-hidden bg-muted'>
             {ready ? (
                 <Video poster={poster} src={src} cover={true} controls={true} />
             ) : (
@@ -39,6 +40,6 @@ export default function InlineVideo({ src, poster }) {
                     <Text className='text-sm text-muted-foreground'>{t('Video is processing')}</Text>
                 </View>
             )}
-        </View>
+        </InlineMediaFrame>
     )
 }
