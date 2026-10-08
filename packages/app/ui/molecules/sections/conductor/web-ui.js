@@ -1097,7 +1097,7 @@ export const HeaderContainer = ({
     const pageHeaderHeight = useHeaderHeight()
     const uri = pageData?.uri
     // Mobile profile hides the page header (`header: false`); pin morph chrome
-    // at the viewport top, not at the leftover DEFAULT_HEADER_HEIGHT (64).
+    // at the viewport top, not at the leftover DEFAULT_HEADER_HEIGHT seed.
     const stickyTop =
         !isDesktop && layoutName === 'profile' ? 0 : (pageHeaderHeight || 0)
     // Remounts the morph when the cover image or avatar changes; a plain data
