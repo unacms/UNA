@@ -31,7 +31,7 @@ import { useIosStyleColors, useNativeTokenColor } from 'app/design/controls/neo-
 import { lucideAssetName } from 'app/lib/platform/lucide-assets';
 import { toHexColor } from 'app/lib/platform/native-color';
 import { useResolvedNeoButton, resolveScoped, parseNeoButtonAddon } from 'app/design/controls/neo-button/neo-button-resolver';
-import { useFrozenHostSize, useLockedNativePress, wrapNativeButtonHost } from 'app/design/controls/neo-button/neo-button-expoui-host';
+import { useFrozenHostSize, useNativeButtonPress, wrapNativeButtonHost } from 'app/design/controls/neo-button/neo-button-expoui-host';
 import { FeedbackHaptics, appSetting, findIconFromRemote } from 'app/lib/util';
 import type { NeoButtonExpoUIConfig, NeoButtonExpoUIProps } from 'app/design/controls/neo-button/neo-button.types';
 import { NATIVE_BUTTON_FONT_FAMILY, fontSizeFromClass, fontWeightFromClass } from 'app/design/controls/neo-button/native-font';
@@ -442,7 +442,7 @@ export function NeoButtonExpoUI(props: NeoButtonExpoUIProps) {
     // button cancels it. `onPressIn` is the touch-down opt-in: on its own (or
     // as the same handler as `onPress`) it is the action, fired once on
     // touch-down; a different `onPressIn` runs alongside, like the JS button.
-    // The Host's own press (VoiceOver / TalkBack) goes through the same lock.
+    // The Host's own press only counts without a touch (VoiceOver).
     const pressInOnly = !!onPressIn && (!onPress || onPressIn === onPress);
     const action = onPress || onPressIn;
     const firePress = action && !disabled && !loading
@@ -452,7 +452,7 @@ export function NeoButtonExpoUI(props: NeoButtonExpoUIProps) {
               action();
           }
         : undefined;
-    const handlePress = useLockedNativePress(firePress);
+    const { press, hostPress, touchHandlers } = useNativeButtonPress(firePress);
 
     const imageModifiers = (sfSymbol && iconEffect)
         ? [symbolEffect(iconEffect as Parameters<typeof symbolEffect>[0], {
@@ -515,7 +515,7 @@ export function NeoButtonExpoUI(props: NeoButtonExpoUIProps) {
         >
             <Button
                 role={SWIFTUI_ROLE[resolved.role]}
-                onPress={handlePress}
+                onPress={hostPress}
                 modifiers={modifiers}
             >
                 <HStack spacing={resolved.labelGap} modifiers={labelModifiers}>
@@ -538,8 +538,9 @@ export function NeoButtonExpoUI(props: NeoButtonExpoUIProps) {
         height: targetHeight,
         width: iconHostWidth,
         // Keyed on the handler, not `disabled`, so toggling disabled never swaps the wrapper (Host remount).
-        onPress: onPress && !pressInOnly ? handlePress : undefined,
-        onPressIn: pressInOnly ? handlePress : onPressIn,
+        onPress: onPress && !pressInOnly ? press : undefined,
+        onPressIn: pressInOnly ? press : onPressIn,
+        touchHandlers,
         disabled: disabled || loading,
         rootStyle: rootClassStyle,
         accessibilityRole,

@@ -23,7 +23,7 @@ import {
 } from '@expo/ui/jetpack-compose/modifiers';
 import { useAndroidStyleColors } from 'app/design/controls/neo-button/native-style-colors';
 import { useResolvedNeoButton, resolveScoped, parseNeoButtonAddon } from 'app/design/controls/neo-button/neo-button-resolver';
-import { useFrozenHostSize, useLockedNativePress, wrapNativeButtonHost } from 'app/design/controls/neo-button/neo-button-expoui-host';
+import { useFrozenHostSize, useNativeButtonPress, wrapNativeButtonHost } from 'app/design/controls/neo-button/neo-button-expoui-host';
 import { FeedbackHaptics, findIconFromRemote } from 'app/lib/util';
 import type { NeoButtonExpoUIConfig, NeoButtonExpoUIProps } from 'app/design/controls/neo-button/neo-button.types';
 import { COMPOSE_FONT_WEIGHT, NATIVE_BUTTON_FONT_FAMILY, fontSizeFromClass, fontWeightFromClass } from 'app/design/controls/neo-button/native-font';
@@ -144,7 +144,7 @@ export function NeoButtonExpoUI(props: NeoButtonExpoUIProps) {
     // button cancels it. `onPressIn` is the touch-down opt-in: on its own (or
     // as the same handler as `onPress`) it is the action, fired once on
     // touch-down; a different `onPressIn` runs alongside, like the JS button.
-    // The Host's own press (VoiceOver / TalkBack) goes through the same lock.
+    // The Host's own press only counts without a touch (TalkBack).
     const pressInOnly = !!onPressIn && (!onPress || onPressIn === onPress);
     const action = onPress || onPressIn;
     const firePress = action && !disabled && !loading
@@ -153,7 +153,7 @@ export function NeoButtonExpoUI(props: NeoButtonExpoUIProps) {
               action();
           }
         : undefined;
-    const handlePress = useLockedNativePress(firePress);
+    const { press, hostPress, touchHandlers } = useNativeButtonPress(firePress);
 
     const addonMeta = parseNeoButtonAddon(addon);
     const frozen = useFrozenHostSize({
@@ -224,7 +224,7 @@ export function NeoButtonExpoUI(props: NeoButtonExpoUIProps) {
             ]}
         >
             <ButtonComponent
-                onClick={handlePress}
+                onClick={hostPress}
                 enabled={true}
                 colors={colors}
                 contentPadding={contentPadding}
@@ -249,8 +249,9 @@ export function NeoButtonExpoUI(props: NeoButtonExpoUIProps) {
         height: resolved.height,
         width: iconHostWidth,
         // Keyed on the handler, not `disabled`, so toggling disabled never swaps the wrapper (Host remount).
-        onPress: onPress && !pressInOnly ? handlePress : undefined,
-        onPressIn: pressInOnly ? handlePress : onPressIn,
+        onPress: onPress && !pressInOnly ? press : undefined,
+        onPressIn: pressInOnly ? press : onPressIn,
+        touchHandlers,
         disabled: disabled || loading,
         rootStyle: rootClassStyle,
         accessibilityRole,
