@@ -10,7 +10,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { PixelRatio, Platform, Pressable, useWindowDimensions } from 'react-native';
 import { Image } from 'expo-image';
 import { View } from 'app/design/view';
-import { androidTabBarHeight, appSetting, findIconFromRemote, isAndroid, isIos, FeedbackHaptics, clearNotif, IOS_TAB_BAR_MARGIN } from 'app/lib/util';
+import { androidTabBarHeight, appSetting, findIconFromRemote, isAndroid, isIos, IOS_TAB_BAR_MARGIN } from 'app/lib/util';
 import { useTranslation } from 'react-i18next';
 import { TabSlideHost } from 'app/components/nav/tab-slide';
 import { playTabFeedback } from 'app/components/nav/tab-feedback';
@@ -19,15 +19,13 @@ import { ImageManipulator, SaveFormat } from 'app/lib/image/manipulator';
 import { pngBase64WithCircleMask } from 'app/lib/image/circle-png';
 import { getNativeOptimizedImageUrl } from 'app/lib/image-helpers';
 import { lucideAssetName, lucideDrawableName } from 'app/lib/platform/lucide-assets';
-import { getBadgeLabel } from './badges';
+import { getBadgeLabel, getOverflowBadgeTotal } from './badges';
 import {
     MORE_TAB_ICON,
     areTabBarLabelsHidden,
     buildTabBarMoreMenuItems,
     isDashboardTab,
-    isExternalTabUrl,
     isProfileTab,
-    resolveTabUrl,
     splitProfileMoreMenu,
     splitTabBarItems,
     tabBarMoreSeparator,
@@ -36,11 +34,11 @@ import {
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import { NativeMoreSheet, hasNativeMoreSheet } from 'app/components/nav/tabs/more-sheet';
 import { OperatorAgentPanel, useOperatorAgentData } from 'app/ui/molecules/system/operator-agent';
-import { useNativeTokenColor } from 'app/design/controls/neo-button/native-style-colors';
+import { useTabBarColors } from './tab-colors';
+import { selectOverflowTab } from './tab-press';
 import { getWindowSafeAreaInsets, useGlobalSearchParams, useRouter, usePathname, useSafeAreaInsets } from 'app/lib/hooks/router';
-import { nativeTabHref, rememberSelectedTab } from 'app/lib/navigation/tab-history';
+import { rememberSelectedTab } from 'app/lib/navigation/tab-history';
 import emitter, { EVENTS } from 'app/context/emitter';
-import * as WebBrowser from 'expo-web-browser';
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import { useCurrentUser } from 'app/context/user';
 
@@ -79,14 +77,7 @@ function tabIconProps(icons) {
 }
 
 function getOverflowBadgeLabel(currentUser, overflow = []) {
-    let total = 0;
-    for (const tab of overflow) {
-        if (tab?.hide === true) continue;
-        const label = getBadgeLabel(currentUser, tab);
-        if (!label) continue;
-        const n = parseInt(label, 10);
-        if (n > 0) total += n;
-    }
+    const total = getOverflowBadgeTotal(currentUser, overflow);
     if (total <= 0) return null;
     return total > 99 ? '99+' : String(total);
 }
@@ -358,11 +349,7 @@ export default function ExpoUITabNavigator({
         setAgentOpen((open) => !open);
     };
 
-    // Selected tab: the toggled look of selected glass buttons (`native_tabs.selected`).
-    const tabsSelected = appSetting('theme', 'native_tabs', 'selected');
-    const selectedInk = useNativeTokenColor(tabsSelected?.foreground) || colors.primary;
-    const selectedIndicator = useNativeTokenColor(tabsSelected?.indicator) || colors.primaryBg;
-    const badgeBackground = useNativeTokenColor(appSetting('theme', 'native_tabs', 'badgeBackground') || 'bg-destructive');
+    const { selectedInk, selectedIndicator, badgeBackground } = useTabBarColors(colors);
 
     // JS popup's hit area over the More tab; the Android bar pads itself with the system inset.
     const tabBarHeight = isAndroid ? androidTabBarHeight(hideLabels) + insets.bottom : IOS_TAB_BAR_HEIGHT;
@@ -400,39 +387,17 @@ export default function ExpoUITabNavigator({
             toggleAgent();
             return;
         }
-        if (item?.type === 'separator' || !item?.tab) return;
-
-        const tab = item.tab;
-        const tabUrl = resolveTabUrl(tab, currentUser);
-        const routeIndex = item.isOverflow ? moreTabIndex : item.tabIndex;
-        setBottomSheetData(null);
-
-        if (isExternalTabUrl(tabUrl)) {
-            await WebBrowser.openBrowserAsync(tabUrl);
-            FeedbackHaptics('Medium');
-            return;
-        }
-
-        const notificationUrl = appSetting('notifications', 'url');
-        if (tabUrl === notificationUrl) {
-            clearNotif();
-            setCurrentUser({
-                notifications: 0,
-                notificationsTs: Date.now(),
-                counters: {
-                    ...(currentUser?.counters || {}),
-                    bx_notifications: 0,
-                },
-            });
-        }
-
-        playTabFeedback();
+        const tabUrl = await selectOverflowTab({
+            item,
+            currentUser,
+            setCurrentUser,
+            setBottomSheetData,
+            router,
+            moreTabIndex,
+        });
+        if (!tabUrl) return;
         setMoreMenuOpen(false);
         if (item.isOverflow) setActiveOverflow({ session: tabsSessionKey, url: tabUrl });
-        rememberSelectedTab(`/tab${routeIndex}`);
-        // The tab's root shows the picked page; `navigate` updates the existing
-        // root (popping pages above it) where `push` would stack a second one.
-        router.navigate(nativeTabHref(tabUrl, `/tab${routeIndex}`));
     };
 
     const collapsed = overflow.length > 0;

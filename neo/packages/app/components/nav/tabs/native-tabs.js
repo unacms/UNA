@@ -2,43 +2,26 @@ import { Tabs as RouterTabs, useRouter, usePathname } from 'app/lib/hooks/router
 import { View } from 'app/design/view';
 import { Icon } from 'app/ui/atoms/icon';
 import { useCurrentUser } from 'app/context/user';
-import { appSetting, isTabBarLabelsEnabled, FeedbackHaptics, clearNotif } from 'app/lib/util';
+import { appSetting, isTabBarLabelsEnabled } from 'app/lib/util';
 import { Platform } from 'react-native';
 import Profile from 'app/ui/molecules/profile/profile';
 import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import * as WebBrowser from 'expo-web-browser';
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
-import { nativeTabHref, rememberSelectedTab } from 'app/lib/navigation/tab-history';
-import { playTabFeedback } from 'app/components/nav/tab-feedback';
 import { Text } from 'app/design/typography';
-import { getBadgeForTab, getBadgeLabel } from './badges';
-import { isDashboardTab, isExternalTabUrl, resolveTabUrl, splitTabBarItems, buildTabBarMoreMenuItems, MORE_TAB_ICON } from './tab-menu';
-import { handleTabPress } from './tab-press';
+import { getBadgeForTab, getOverflowBadgeTotal } from './badges';
+import { isDashboardTab, resolveTabUrl, splitTabBarItems, buildTabBarMoreMenuItems, MORE_TAB_ICON } from './tab-menu';
+import { handleTabPress, selectOverflowTab } from './tab-press';
+import { useTabBarColors } from './tab-colors';
 import { useBottomSheetData } from 'app/context/bottomsheet';
-import { useNativeTokenColor } from 'app/design/controls/neo-button/native-style-colors';
 
 const TAB_ICON_SIZE = 24;
 const TAB_BAR_HEIGHT = Platform.OS === 'ios' ? 52 : 56;
 const DETACH_INACTIVE_SCREENS = Platform.OS !== 'ios';
 const TAB_BAR_ITEM_STYLE = appSetting('theme', 'native_tabs', 'tabBarItemStyle');
-const TAB_BAR_BADGE_BACKGROUND = appSetting('theme', 'native_tabs', 'badgeBackground') || 'bg-destructive';
-const TAB_BAR_SELECTED = appSetting('theme', 'native_tabs', 'selected');
-
-function getOverflowBadgeCount(currentUser, overflow = []) {
-    let total = 0;
-    for (const tab of overflow) {
-        if (tab?.hide === true) continue;
-        const label = getBadgeLabel(currentUser, tab);
-        if (!label) continue;
-        const n = parseInt(label, 10);
-        if (n > 0) total += n;
-    }
-    return total;
-}
 
 function getBadgeForOverflow(currentUser, overflow = []) {
-    const count = getOverflowBadgeCount(currentUser, overflow);
+    const count = getOverflowBadgeTotal(currentUser, overflow);
     if (count <= 0) return null;
     const badgeTextSize = appSetting('theme', 'native_tabs', 'badgeTextSize') || 'text-xs';
     return (
@@ -129,8 +112,8 @@ function getScreenOptions(colors, isShowTabs, tokens) {
         },
         tabBarAllowFontScaling: false,
         tabBarInactiveTintColor: colors.barsColor,
-        tabBarActiveTintColor: tokens.selectedInk || colors.primary,
-        tabBarActiveBackgroundColor: tokens.selectedIndicator || colors.primaryBg,
+        tabBarActiveTintColor: tokens.selectedInk,
+        tabBarActiveBackgroundColor: tokens.selectedIndicator,
         unmountOnBlur: false,
         lazy: true,
         sceneStyle: {
@@ -182,10 +165,7 @@ export default function NativeTabNavigator({
     const router = useRouter();
     const { t } = useTranslation();
 
-    // Selected tab: the toggled look of selected glass buttons (`native_tabs.selected`).
-    const badgeBackground = useNativeTokenColor(TAB_BAR_BADGE_BACKGROUND);
-    const selectedInk = useNativeTokenColor(TAB_BAR_SELECTED?.foreground);
-    const selectedIndicator = useNativeTokenColor(TAB_BAR_SELECTED?.indicator);
+    const { badgeBackground, selectedInk, selectedIndicator } = useTabBarColors(colors);
 
     const screenOptions = useMemo(
         () => getScreenOptions(colors, isShowTabs, { badgeBackground, selectedInk, selectedIndicator }),
@@ -214,38 +194,15 @@ export default function NativeTabNavigator({
     );
 
     const handleOverflowSelect = useCallback(async (item) => {
-        if (item?.type === 'separator' || !item?.tab) return;
-
-        const tab = item.tab;
-        const tabUrl = resolveTabUrl(tab, currentUser);
-        const routeIndex = item.isOverflow ? moreTabIndex : item.tabIndex;
-        setBottomSheetData(null);
-
-        if (isExternalTabUrl(tabUrl)) {
-            await WebBrowser.openBrowserAsync(tabUrl);
-            FeedbackHaptics('Medium');
-            return;
-        }
-
-        const notificationUrl = appSetting('notifications', 'url');
-        if (tabUrl === notificationUrl) {
-            clearNotif();
-            setCurrentUser({
-                notifications: 0,
-                notificationsTs: Date.now(),
-                counters: {
-                    ...(currentUser?.counters || {}),
-                    bx_notifications: 0,
-                },
-            });
-        }
-
-        playTabFeedback();
-        setActiveOverflowUrl(item.isOverflow ? tabUrl : null);
-        rememberSelectedTab(`/tab${routeIndex}`);
-        // The tab's root shows the picked page; `navigate` updates the existing
-        // root (popping pages above it) where `push` would stack a second one.
-        router.navigate(nativeTabHref(tabUrl, `/tab${routeIndex}`));
+        const tabUrl = await selectOverflowTab({
+            item,
+            currentUser,
+            setCurrentUser,
+            setBottomSheetData,
+            router,
+            moreTabIndex,
+        });
+        if (tabUrl) setActiveOverflowUrl(item.isOverflow ? tabUrl : null);
     }, [currentUser, moreTabIndex, router, setBottomSheetData, setCurrentUser]);
 
     const moreTab = overflow[0];
