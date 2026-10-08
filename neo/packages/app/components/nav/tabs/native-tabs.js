@@ -258,7 +258,7 @@ export default function NativeTabNavigator({
             screenOptions={screenOptions}
         >
             {visible.map((tab, index) => {
-                const tabRouteName = `tab${index}/index`;
+                const tabRouteName = `tab${index}`;
                 const tabUrl = resolveTabUrl(tab, currentUser);
                 return (
                     <RouterTabs.Screen
@@ -286,7 +286,7 @@ export default function NativeTabNavigator({
             {moreTab ? (
                 <RouterTabs.Screen
                     key={`tab${moreTabIndex}`}
-                    name={`tab${moreTabIndex}/index`}
+                    name={`tab${moreTabIndex}`}
                     initialParams={{
                         url: resolveTabUrl(moreTab, currentUser),
                         name: `tab${moreTabIndex}`,
