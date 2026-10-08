@@ -98,18 +98,19 @@ export default function MultiPostForm({ data, blockWrapperProps }) {
     const handleTriggerPress = () => {
         // User clicked to create post - permanently dismiss tooltip
 
-        getFirstForm();
+        void getFirstForm();
     };
 
     // Fast track to "Add Photos or Videos": pick first (on web the file dialog
     // needs the click's user gesture), then open the form with the files queued
-    // for its media field, which uploads them on mount.
+    // for its media field, which uploads them on mount. Unsupported picks still
+    // open the form, where the field says so, like a pick inside the form.
     const handleMediaPress = async () => {
         if (!mediaField) return;
-        const assets = await pickLibraryMedia(mediaField.mediaTypes);
-        if (!assets.length) return;
-        queueFieldAssets(mediaField.name, assets);
-        getFirstForm();
+        const picked = await pickLibraryMedia(mediaField.mediaTypes);
+        if (!picked) return;
+        queueFieldAssets(mediaField.name, picked.assets, picked.unsupported);
+        await getFirstForm();
     };
 
     return (

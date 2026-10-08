@@ -517,7 +517,8 @@ export default function (props) {
     // Media the feed composer picked before opening this form (pending-field-assets).
     useEffect(() => {
         const queued = takeFieldAssets(name);
-        if (queued?.length) void finishPickedAssets(queued);
+        if (queued?.unsupported) setMessage('Some files are not supported.');
+        if (queued?.assets.length) void finishPickedAssets(queued.assets);
     }, [name, finishPickedAssets]);
 
     const resumedUploads = useRef(false);
@@ -794,7 +795,12 @@ export default function (props) {
         </>
     }
     if (props.list_only){
-        return GhostsList(imageSource.images, bMultiple, handleDelete, props);
+        // The composer renders its attachments this way; keep the field's
+        // "not supported" message, or the composer drops bad picks silently.
+        return <>
+            <Msg onVisible={message} title={message} handleOk={() => { setMessage(false) }} />
+            {GhostsList(imageSource.images, bMultiple, handleDelete, props)}
+        </>;
     }
     return (
         <Field {...props} error={uploadError || props.error} error2={formContext.formState.errors[name]}>
