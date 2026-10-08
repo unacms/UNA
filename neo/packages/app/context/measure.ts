@@ -89,7 +89,7 @@ export const useActualWindowHeight = () => {
 const subscribeNoop = () => () => {};
 const getHydratedOnClient = () => true;
 const getHydratedOnServer = () => false;
-const useHydrated = () => useSyncExternalStore(subscribeNoop, getHydratedOnClient, getHydratedOnServer);
+export const useHydrated = () => useSyncExternalStore(subscribeNoop, getHydratedOnClient, getHydratedOnServer);
 
 // SSR and hydrating renders use SSR_LAYOUT_BREAKPOINT (desktop, like useIsDesktop), so layouts
 // that switch structure on the breakpoint (universal.js rows vs panels, wiki/post flags) hydrate

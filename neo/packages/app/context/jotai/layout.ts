@@ -4,6 +4,8 @@ import { atom, useSetAtom, useAtomValue, type Atom, type PrimitiveAtom, type Wri
 type NumberAtom = PrimitiveAtom<number>;
 import { Platform } from 'react-native'
 import { useTabChromeKey } from 'app/context/tab-chrome';
+import { useHydrated } from 'app/context/measure';
+import { appSetting } from 'app/lib/util';
 const isWeb = Platform.OS == 'web'
 
 export const footerAtom = atom<boolean>(true);
@@ -31,11 +33,23 @@ export const coverScrollCompensationAtom = atom<number>(0);
 /** Scroll offset at which the native profile cover finishes collapsing (see conductor.js). */
 export const COVER_COLLAPSE_SCROLL = 500;
 /**
- * SSR/hydration seed for headerHeightAtom on web only.
- * After mount, PageHeader `onLayout` replaces this with the measured height.
- * Keep close to `layout.header.content` height (e.g. h-14 → 56) to minimize layout shift.
+ * Height in px of the first unprefixed `h-N` or `h-[Npx]` class, e.g. `h-14` → 56.
+ * Responsive variants (`sm:h-16`) are ignored: SSR can't know the viewport.
  */
-export const DEFAULT_HEADER_HEIGHT = 64;
+function heightFromClasses(classes: unknown, fallback: number): number {
+    if (typeof classes !== 'string') return fallback;
+    for (const cls of classes.split(/\s+/)) {
+        const match = /^h-(?:(\d+(?:\.\d+)?)|\[(\d+(?:\.\d+)?)px\])$/.exec(cls);
+        if (match) return match[1] ? Number(match[1]) * 4 : Number(match[2]);
+    }
+    return fallback;
+}
+/**
+ * SSR/hydration seed for headerHeightAtom on web only, taken from the
+ * `layout.header.content` height class (64 when it has none).
+ * After mount, PageHeader `onLayout` replaces this with the measured height.
+ */
+export const DEFAULT_HEADER_HEIGHT = heightFromClasses(appSetting('layout', 'header', 'content'), 64);
 export const headerHeightAtom = atom<number>(isWeb ? DEFAULT_HEADER_HEIGHT : 0);
 export const footerHeightAtom = atom<number>(0);
 
@@ -113,11 +127,23 @@ export const useSetCoverScrollCompensation = () => useSetAtom(getCoverScrollComp
 export const useCoverScrollCompensation = () => useAtomValue(getCoverScrollCompensationAtomForTab(useTabChromeKey()));
 
 export const useSetHeaderHeight = () => useSetAtom(getHeaderHeightAtomForTab(useTabChromeKey()));
-export const useHeaderHeight = () => useAtomValue(getHeaderHeightAtomForTab(useTabChromeKey()));
+/**
+ * Hydrating renders return the SSR value: the header measures itself before
+ * later Suspense boundaries hydrate, and a measured height there would not
+ * match the server HTML (e.g. Page's min-height). See useHydrated.
+ */
+export const useHeaderHeight = () => {
+    const height = useAtomValue(getHeaderHeightAtomForTab(useTabChromeKey()));
+    return useHydrated() ? height : DEFAULT_HEADER_HEIGHT;
+};
 
 export const useSetPageBottomBlur = () => useSetAtom(getPageBottomBlurAtomForTab(useTabChromeKey()));
 /** Read outside the tab's chrome provider (the tab screen itself), hence the explicit key. */
 export const usePageBottomBlur = (tabKey: string) => useAtomValue(getPageBottomBlurAtomForTab(tabKey));
 
 export const useSetFooterHeight = () => useSetAtom(footerHeightAtom);
-export const useFooterHeight = () => useAtomValue(footerHeightAtom);
+/** Hydrating renders return the SSR value (0), like useHeaderHeight. */
+export const useFooterHeight = () => {
+    const height = useAtomValue(footerHeightAtom);
+    return useHydrated() ? height : 0;
+};
