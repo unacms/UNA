@@ -52,9 +52,19 @@ export function hasNativeTabsMoreMenu(currentUser) {
     return showsTabs && splitTabBarItems(getTabList(currentUser) || []).overflow.length > 0;
 }
 
-// Keep in sync with TAB_BAR_RESERVE in app/components/nav/tab-slide.js (and
-// post.js, messenger/parts/common.js) — the iOS NativeTabs bar floats over the screen.
+// The iOS NativeTabs bar floats over the screen; this much of it is reserved.
 const NATIVE_TAB_BAR_RESERVE = 56;
+
+/**
+ * Height of the NativeTabs bar a screen runs under, without the system inset.
+ * Android's Material bar is 56dp icons-only and 80dp with labels
+ * (`androidTabBarHeight`); iOS reserves a fixed 56 for its floating bar.
+ */
+export function getNativeTabBarHeight(currentUser) {
+    return Platform.OS === 'android'
+        ? androidTabBarHeight(areTabBarLabelsHidden(getTabList(currentUser) || []))
+        : NATIVE_TAB_BAR_RESERVE;
+}
 
 /**
  * Bottom space a NativeTabs screen leaves so its last content scrolls clear of
@@ -67,10 +77,7 @@ export function getNativeTabBarOverlayInset(currentUser) {
     if (Platform.OS === 'web' || !isNativeTabsEnabled()) return 0;
     const showsTabs = !!((currentUser && currentUser.confirmed) || appSetting('native', 'show_tabs_non_logged'));
     if (!showsTabs) return 0;
-    const bar = Platform.OS === 'android'
-        ? androidTabBarHeight(areTabBarLabelsHidden(getTabList(currentUser) || []))
-        : NATIVE_TAB_BAR_RESERVE;
-    return bar + (getWindowSafeAreaInsets().bottom || 0);
+    return getNativeTabBarHeight(currentUser) + (getWindowSafeAreaInsets().bottom || 0);
 }
 
 /** Map a menu / transpile_urls index onto the Expo route (`tab0`…`tab4`). */
