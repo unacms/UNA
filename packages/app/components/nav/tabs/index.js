@@ -1,12 +1,11 @@
 import { useRouter, usePathname } from 'app/lib/hooks/router';
 import { View } from 'app/design/view';
 import { useCurrentUser } from 'app/context/user';
-import { appSetting, getPageData, parseUrl, isAndroid, isIos, isNativeTabsEnabled } from 'app/lib/util';
+import { appSetting, getPageData, isAndroid, isIos, isNativeTabsEnabled } from 'app/lib/util';
 import { Appearance, BackHandler, Text } from 'react-native';
 import { getWindowSafeAreaInsets } from 'app/lib/hooks/router';
 import { useEffect, useMemo, useState } from 'react';
 import { scheduleOneSignalSubscription } from 'app/lib/platform/one-signal';
-import * as Linking from 'expo-linking';
 import Suggestions from 'app/ui/molecules/misc/suggestions';
 import AsyncWorker from 'app/ui/molecules/system/async-worker';
 import Subscriber from 'app/ui/molecules/system/subscriber';
@@ -30,6 +29,7 @@ import {
     resetAllTabHistory,
 } from 'app/lib/navigation/tab-history';
 import { clearAllPageCache } from 'app/lib/cache/clear-page-cache';
+import { subscribeDeepLink, takeDeepLink } from 'app/lib/navigation/deep-link';
 import BottomSheet from 'app/ui/molecules/dialogs/bottomsheet-content';
 import { buildTabUrlIndex, getTabList, getTabRouteRootUrl, getTabsSessionKey, splitTabBarItems } from './tab-menu';
 
@@ -75,26 +75,13 @@ const BOOTSTRAP_TIMEOUT_MS = 5000;
 /** AbortController is unreliable on some Android RN builds — race a hard timer. */
 const BOOTSTRAP_HARD_TIMEOUT_MS = 5500;
 
-/**
- * `<scheme>://expo-development-client/?url=<metro>` — what `expo run:ios` /
- * `run:android` open to point a dev client at Metro. Not an app route: without
- * a dev launcher it reaches us as the initial URL, and its `?url=` query would
- * become the home tab's page ("/?url=http://…:8081"), which loads nothing.
- */
-const DEV_CLIENT_URL = /^[a-z][\w.+-]*:\/\/expo-development-client(?:[/?]|$)/i;
-
-function processUrl(url, router, currentUser, TabList) {
-    if (DEV_CLIENT_URL.test(url)) return;
+/** Opens a linked UNA page (`/view-post?id=1`, from `app/lib/navigation/deep-link`) in its tab. */
+function processUrl(path, router, currentUser, TabList) {
     if (currentUser?.id) {
         const LinksForTabs = buildTabUrlIndex(TabList);
 
-        let a = parseUrl(url);
-        let _path = '/' + a.path + (a.queryString ? '?' + a.queryString : '')
-        if (_path === '/')
-            _path = '/home';
-
-        const index = LinksForTabs?.find((item) => _path.includes(item.url))?.index ?? -1;
-        const isRoot = index > -1 && getTabRouteRootUrl(index, TabList, currentUser) === _path;
+        const index = LinksForTabs?.find((item) => path.includes(item.url))?.index ?? -1;
+        const isRoot = index > -1 && getTabRouteRootUrl(index, TabList, currentUser) === path;
         // Without a url the More tab keeps its last page (expo-screen.js), so name its root.
         const isMoreTab = index === splitTabBarItems(TabList).moreTabIndex;
 
@@ -105,10 +92,10 @@ function processUrl(url, router, currentUser, TabList) {
             // The tab's root page: show it (pops pages pushed over it).
             router.navigate({ pathname: tabKey });
         } else if (isMoreTab) {
-            router.navigate({ pathname: tabKey, params: { url: _path } });
+            router.navigate({ pathname: tabKey, params: { url: path } });
         } else {
             // Any other page opens over its tab's root, so back returns there.
-            router.push(nativeTabPageHref(_path, tabKey));
+            router.push(nativeTabPageHref(path, tabKey));
         }
     }
 }
@@ -139,35 +126,19 @@ export default function Tabs() {
     }, [themeName]);
 
     // DEEP LINKING
-
+    // expo-router routes every link: app routes (`/pg`, `/tab3`) open as they are,
+    // UNA pages reach the `[...path]` route, which queues them for us. A page
+    // linked before sign-in waits until a member is signed in.
     useEffect(() => {
-        // process links if app close
-        const fetchInitialUrl = async () => {
-            const url = await Linking.getInitialURL();
-            if (url) {
-                processUrl(url, router, currentUser, TabList);
+        if (!currentUser?.id) return;
+        const openQueuedPage = () => {
+            const path = takeDeepLink();
+            if (path) {
+                processUrl(path, router, currentUser, TabList);
             }
         };
-
-        fetchInitialUrl();
-
-        const handleUrl = (event) => {
-            const url = event.url;
-            if (url) {
-                setTimeout(() => {
-                    processUrl(url, router, currentUser, TabList);
-                }, 3000);
-            }
-        };
-
-        // process links if app open
-        if (currentUser?.id) {
-            const urlListener = Linking.addEventListener('url', handleUrl);
-            return () => {
-                urlListener.remove();
-            };
-        }
-
+        openQueuedPage();
+        return subscribeDeepLink(openQueuedPage);
     }, [currentUser?.id]);
 
     useEffect(() => {
