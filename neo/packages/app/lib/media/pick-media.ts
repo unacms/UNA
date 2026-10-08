@@ -23,6 +23,12 @@ export function showPermissionAlert(type: 'camera' | 'library', canAskAgain?: bo
     Alert.alert(title, message, buttons, { cancelable: true });
 }
 
+/** The alert the files field shows when the picker itself fails. */
+export function showPickerError(err: unknown) {
+    const message = err instanceof Error ? err.message : undefined;
+    Alert.alert(i18n.t('Upload error'), message ?? i18n.t('Could not open media picker.'));
+}
+
 export function getImagePickerOptions(mediaTypes: PickerMediaType[] | undefined, bMultiple: boolean): ImagePicker.ImagePickerOptions {
     const types = mediaTypes?.length ? mediaTypes : ['images' as const];
     const includesVideo = types.includes('videos');
@@ -52,28 +58,31 @@ export type PickedMedia = {
 
 /**
  * Opens the photo library outside a files field. Returns `null` when the user
- * cancels or denies access. Call it straight from a press handler: on web the
- * file dialog only opens while the click still counts as a user gesture, so
- * nothing may be awaited before it.
+ * cancels, denies access or the picker fails (the user gets the files field's
+ * alert). Call it straight from a press handler: on web the file dialog only
+ * opens while the click still counts as a user gesture, so nothing may be
+ * awaited before it.
  */
 export async function pickLibraryMedia(mediaTypes: PickerMediaType[], bMultiple = true): Promise<PickedMedia | null> {
-    if (Platform.OS !== 'web') {
-        const current = await ImagePicker.getMediaLibraryPermissionsAsync();
-        const permission = current.granted ? current : await ImagePicker.requestMediaLibraryPermissionsAsync();
-        if (!permission.granted) {
-            showPermissionAlert('library', permission.canAskAgain);
-            return null;
-        }
-    }
-
     let result: ImagePicker.ImagePickerResult;
     try {
+        if (Platform.OS !== 'web') {
+            const current = await ImagePicker.getMediaLibraryPermissionsAsync();
+            const permission = current.granted ? current : await ImagePicker.requestMediaLibraryPermissionsAsync();
+            if (!permission.granted) {
+                showPermissionAlert('library', permission.canAskAgain);
+                return null;
+            }
+        }
         result = await ImagePicker.launchImageLibraryAsync(getImagePickerOptions(mediaTypes, bMultiple));
     } catch (err) {
-        // Web rejects the whole pick when any file isn't an image or video
-        // ("Unsupported file type"); report it like the dropped picks below.
+        // Web rejects the whole pick when any file isn't an image or video;
+        // report that like the dropped picks below. Anything else is a failure.
+        if (Platform.OS === 'web' && err instanceof Error && /unsupported file type/i.test(err.message))
+            return { assets: [], unsupported: 1 };
         console.warn('[pick-media] library pick failed:', err);
-        return { assets: [], unsupported: 1 };
+        showPickerError(err);
+        return null;
     }
     if (result.canceled || !result.assets?.length)
         return null;

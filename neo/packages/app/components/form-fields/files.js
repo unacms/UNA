@@ -12,7 +12,7 @@ import { useFieldController } from 'app/lib/form/use-form-field';
 import { filesFieldValue } from 'app/lib/form/field-initial-values';
 import { uploadImage, md5, getStoragePickerKind, isExtAllowed, splitExtList } from 'app/lib/util';
 import { Text } from 'app/design/typography'
-import { Image as ImageNative, Alert, Platform } from 'react-native';
+import { Image as ImageNative, Platform } from 'react-native';
 import { Image as ImageRN } from 'react-native';
 import Video from 'app/ui/atoms/video';
 import Msg from 'app/ui/molecules/dialogs/msg';
@@ -31,7 +31,7 @@ import { trackFormUploadStart, trackFormUploadEnd, formResponseHasFieldErrors, F
 import { isInlineImagePaste, revokePastedBlobUri } from 'app/lib/editor/editor-paste-images';
 import { setUploadProgress, clearUploadProgress } from 'app/lib/upload-progress';
 import UploadProgress from 'app/ui/atoms/upload-progress';
-import { getImagePickerOptions, showPermissionAlert } from 'app/lib/media/pick-media';
+import { getImagePickerOptions, showPermissionAlert, showPickerError } from 'app/lib/media/pick-media';
 import { takeFieldAssets } from 'app/lib/form/pending-field-assets';
 
 function resolvePickerSource(source, fallback = 'library') {
@@ -655,7 +655,7 @@ export default function (props) {
             }
         } catch (err) {
             console.error('[files] selectImage failed:', err);
-            Alert.alert(i18n.t('Upload error'), err?.message ?? i18n.t('Could not open media picker.'));
+            showPickerError(err);
         }
     }, [name, props.ext_deny, props.ext_allow, props.source, hasPermissionCamera, hasPermissionLibrary, requestPermissionCamera, requestPermissionLibrary, selectImage1]);
 
