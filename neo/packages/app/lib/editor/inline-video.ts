@@ -1,6 +1,7 @@
 import { uploadImage } from 'app/lib/util/upload'
 import { genRnd } from 'app/lib/util/misc'
 import { revokePastedBlobUri } from './editor-paste-images'
+import { inlineUploadError, type InlineUploadResult } from './upload-inline-image'
 
 /** UNA editor video storage + transcoders (`sys_videos_editor*`, see UNA install SQL). */
 const VIDEO_STORAGE = 'sys_videos_editor'
@@ -14,7 +15,7 @@ const VIDEO_POSTER = 'sys_videos_editor_poster'
 export function uploadInlineVideo(
     video: { uri: string; fileName?: string; mimeType?: string },
     onProgress?: (fraction: number) => void,
-): Promise<{ link: string; poster: string } | null> {
+): Promise<InlineUploadResult> {
     const url = '/api.php?r=system/get_data_api/TemplUploaderServices/&params[]='
         + `&a=upload_inline&uo=sys_html5&so=${VIDEO_STORAGE}&o=${VIDEO_STORAGE}`
         + `&vt=${VIDEO_MP4}&pt=${VIDEO_POSTER}&uid=${genRnd(8)}`
@@ -25,14 +26,15 @@ export function uploadInlineVideo(
             url,
             ({ result }) => {
                 const data = result?.data || result
-                resolve(data?.link ? { link: data.link, poster: data.poster || '' } : null)
+                if (!data?.link) console.warn('[editor] inline video upload rejected', result)
+                resolve({ link: data?.link || null, error: data?.link ? null : inlineUploadError(data) })
             },
             { fileName: video.fileName, mimeType: video.mimeType },
             { onProgress },
         )
             .catch((err) => {
                 console.warn('[editor] inline video upload failed', err)
-                resolve(null)
+                resolve({ link: null, error: null })
             })
             .finally(() => revokePastedBlobUri(video.uri))
     })
@@ -40,8 +42,13 @@ export function uploadInlineVideo(
 
 export type InlineSegment =
     | { type: 'html'; html: string }
-    | { type: 'video'; src: string; poster: string }
-    | { type: 'embed'; url: string }
+    | ({ type: 'video'; src: string; poster: string } & InlineMediaLayout)
+    | ({ type: 'embed'; url: string } & InlineMediaLayout)
+
+export type InlineMediaAlign = 'left' | 'center' | 'right'
+
+/** Size and paragraph alignment the editor gave the media image (`width`/`height`, `text-align`). */
+export type InlineMediaLayout = { width?: number; height?: number; align?: InlineMediaAlign }
 
 /*
  * Video and embeds go into the body as images — the only atomic node of the editors on
@@ -62,6 +69,18 @@ export function toVideoPosterSrc(mp4Link: string) {
     return mp4Link.replace(`o=${VIDEO_MP4}&`, `o=${VIDEO_POSTER}&`)
 }
 
+/** The embedded URL an editor image src carries (`toEmbedImageSrc`), `null` for a plain image. */
+export function embedUrlFromImageSrc(src: string | null | undefined): string | null {
+    const hash = src ? src.indexOf(`#${EMBED_MARK}`) : -1
+    if (!src || hash < 0) return null
+    try {
+        const url = decodeURIComponent(src.slice(hash + 1 + EMBED_MARK.length))
+        return isHttpUrl(url) ? url : null
+    } catch {
+        return null
+    }
+}
+
 const decodeAmp = (s: string) => s.replace(/&amp;/g, '&')
 
 /** Only http(s) URLs may be embedded: anything else (`javascript:`, `data:`…) is dropped. */
@@ -77,10 +96,25 @@ export function isHttpUrl(url: string | null | undefined): boolean {
 
 const embedSegment = (url: string): InlineSegment | null => (isHttpUrl(url) ? { type: 'embed', url } : null)
 
-const IMG = '<img\\b[^>]*\\bsrc="([^"]+)"[^>]*>'
+const IMG = '(<img\\b[^>]*\\bsrc="([^"]+)"[^>]*>)'
 // Legacy (link) format of the first builds: a paragraph with only a marked link.
 const LINK = '<a\\b[^>]*\\bhref="([^"]+)"[^>]*>[^<]*</a>'
-const MEDIA = new RegExp(`<p[^>]*>\\s*${IMG}\\s*</p>|${IMG}|<p[^>]*>\\s*${LINK}\\s*</p>`, 'gi')
+// Groups: 1 paragraph attributes, 2-3 its image tag and src, 4-5 a bare image tag and src, 6 a legacy link.
+const MEDIA = new RegExp(`<p([^>]*)>\\s*${IMG}\\s*</p>|${IMG}|<p[^>]*>\\s*${LINK}\\s*</p>`, 'gi')
+
+const dimension = (tag: string, name: string) => {
+    const value = Number(tag.match(new RegExp(`\\b${name}="(\\d+)"`, 'i'))?.[1])
+    return value > 0 ? value : undefined
+}
+
+function toLayout(imgTag: string | undefined, pAttrs: string | undefined): InlineMediaLayout {
+    const align = pAttrs?.match(/text-align\s*:\s*(left|center|right)/i)?.[1]?.toLowerCase()
+    return {
+        width: imgTag ? dimension(imgTag, 'width') : undefined,
+        height: imgTag ? dimension(imgTag, 'height') : undefined,
+        align: align as InlineMediaAlign | undefined,
+    }
+}
 
 function toSegment(rawSrc: string | undefined, isLink: boolean): InlineSegment | null {
     if (!rawSrc) return null
@@ -113,8 +147,9 @@ export function splitInlineMedia(html: string | null | undefined): InlineSegment
     const segments: InlineSegment[] = []
     let last = 0
     for (const match of html.matchAll(MEDIA)) {
-        const segment = toSegment(match[1] || match[2] || match[3], !!match[3])
-        if (!segment) continue
+        const found = toSegment(match[3] || match[5] || match[6], !!match[6])
+        if (!found) continue
+        const segment = found.type === 'html' ? found : { ...found, ...toLayout(match[2] || match[4], match[1]) }
         const index = match.index ?? 0
         if (index > last) segments.push({ type: 'html', html: html.slice(last, index) })
         segments.push(segment)

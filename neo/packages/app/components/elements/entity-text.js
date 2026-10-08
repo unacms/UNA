@@ -248,8 +248,8 @@ function HtmlWithMedia({ html }) {
         return <Html data={clearLinks(html)} />
 
     return segments.map((s, i) => {
-        if (s.type === 'video') return <InlineVideo key={i} src={s.src} poster={s.poster} />
-        if (s.type === 'embed') return <InlineEmbed key={i} url={s.url} />
+        if (s.type === 'video') return <InlineVideo key={i} src={s.src} poster={s.poster} width={s.width} height={s.height} align={s.align} />
+        if (s.type === 'embed') return <InlineEmbed key={i} url={s.url} width={s.width} align={s.align} />
         return <Html key={i} data={clearLinks(s.html)} />
     })
 }

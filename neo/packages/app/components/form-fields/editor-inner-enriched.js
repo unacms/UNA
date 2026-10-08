@@ -27,6 +27,7 @@ import { useIsDesktop } from 'app/context/measure'
 import { fitInlineImageSize, getEditorPasteImagesMode, revokePastedBlobUri } from 'app/lib/editor/editor-paste-images'
 import { pickEditorImages, pickEditorVideo } from 'app/lib/editor/pick-editor-images'
 import { uploadInlineVideo, toVideoPosterSrc } from 'app/lib/editor/inline-video'
+import { useEditorEmbedViews } from 'app/lib/editor/editor-embed-views'
 import { uploadInlineImage, swapEditorImageSrc } from 'app/lib/editor/upload-inline-image'
 import { trackFormUploadStart, trackFormUploadEnd } from 'app/lib/form/form-helpers'
 import { useFormInstanceId } from 'app/context/form-instance'
@@ -105,6 +106,8 @@ export default function RftTextEnriched(props) {
 
     // Web only; null on native and until the library has mounted TipTap.
     const tipTap = useTiptapEditor(containerRef)
+    // Web: embed images in the body show as embed cards (portals into their node views).
+    const embedViews = useEditorEmbedViews(tipTap)
 
     // Toolbar inputs — only tracked when there is a toolbar to feed.
     const [styleState, setStyleState] = useState(null)
@@ -254,9 +257,14 @@ export default function RftTextEnriched(props) {
         : 'off'
     const isInline = !isLimitedHtml && pasteImagesMode === 'inline'
 
+    // Why the last inline image/video didn't make it into the body (UNA's text when it gave one).
+    const [mediaError, setMediaError] = useState(null)
+    const showUploadError = useCallback((error) => setMediaError(error || t('Upload failed')), [t])
+
     const sendImagesToFiles = useCallback((images) => {
         if (!images?.length || pasteImagesMode === 'off') return
         if (isInline) {
+            setMediaError(null)
             images.forEach(async (img, index) => {
                 // Placeholder: the local blob:/file:// image right away, swapped for the
                 // uploaded URL (or dropped on failure). Submit waits on the pending upload.
@@ -265,8 +273,9 @@ export default function RftTextEnriched(props) {
                 trackFormUploadStart(form_name, formInstanceId, uploadId)
                 callEditor(editorRef, 'setImage', img.uri, size.width, size.height)
                 try {
-                    const src = await uploadInlineImage(img)
-                    await swapEditorImageSrc(editorRef, tipTap, img.uri, src)
+                    const { link, error } = await uploadInlineImage(img)
+                    await swapEditorImageSrc(editorRef, tipTap, img.uri, link)
+                    if (!link) showUploadError(error)
                 } finally {
                     trackFormUploadEnd(form_name, formInstanceId, uploadId)
                     revokePastedBlobUri(img.uri)
@@ -279,7 +288,7 @@ export default function RftTextEnriched(props) {
             images,
             inlinePaste: false,
         })
-    }, [form_name, formInstanceId, isInline, pasteImagesMode, tipTap])
+    }, [form_name, formInstanceId, isInline, pasteImagesMode, tipTap, showUploadError])
 
     const onInsertImage = useCallback(async () => {
         const images = await pickEditorImages()
@@ -295,20 +304,23 @@ export default function RftTextEnriched(props) {
         if (!video) return
         const uploadId = `inline-video-${Date.now()}`
         trackFormUploadStart(form_name, formInstanceId, uploadId)
+        setMediaError(null)
         setVideoProgress(0)
         try {
-            const res = await uploadInlineVideo(video, setVideoProgress)
-            if (res?.link) {
+            const { link, error } = await uploadInlineVideo(video, setVideoProgress)
+            if (link) {
                 const size = video.width && video.height
                     ? fitInlineImageSize(video.width, video.height)
                     : { width: 720, height: 405 }
-                callEditor(editorRef, 'setImage', toVideoPosterSrc(res.link), size.width, size.height)
+                callEditor(editorRef, 'setImage', toVideoPosterSrc(link), size.width, size.height)
+            } else {
+                showUploadError(error)
             }
         } finally {
             setVideoProgress(null)
             trackFormUploadEnd(form_name, formInstanceId, uploadId)
         }
-    }, [form_name, formInstanceId])
+    }, [form_name, formInstanceId, showUploadError])
 
     // Library onPasteImages: blob: on web, file:// on native.
     const onPasteImages = useCallback((e) => {
@@ -460,12 +472,18 @@ export default function RftTextEnriched(props) {
                 </EnrichedEditorBoundary>
 
 
+                {embedViews}
                 {isToolBar ? (
                     <EditorToolbar items={toolbarItems} linkBar={linkBar} />
                 ) : null}
                 {videoProgress != null ? (
                     <Text className="text-xs text-muted-foreground mt-1">
                         {t('Uploading video')} {Math.round(videoProgress * 100)}%
+                    </Text>
+                ) : null}
+                {mediaError && videoProgress == null ? (
+                    <Text className="text-xs text-destructive mt-1" accessibilityRole="alert">
+                        {mediaError}
                     </Text>
                 ) : null}
             </View>
