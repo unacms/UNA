@@ -1,7 +1,7 @@
 /**
  * /pg/form — dev-only Expo route for the UNA Form kitchen sink.
  *
- * Mirrors `apps/next/app/pg/form/page.js`. More specific than `[...path].js`.
+ * Mirrors `apps/next/app/pg/form/page.js`. More specific than `[...path].tsx`.
  */
 
 import { Root } from 'app/root';
