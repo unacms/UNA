@@ -12,7 +12,7 @@ import { useFieldController } from 'app/lib/form/use-form-field';
 import { filesFieldValue } from 'app/lib/form/field-initial-values';
 import { uploadImage, md5, getStoragePickerKind, isExtAllowed, splitExtList } from 'app/lib/util';
 import { Text } from 'app/design/typography'
-import { Image as ImageNative, Alert, Linking, Platform } from 'react-native';
+import { Image as ImageNative, Alert, Platform } from 'react-native';
 import { Image as ImageRN } from 'react-native';
 import Video from 'app/ui/atoms/video';
 import Msg from 'app/ui/molecules/dialogs/msg';
@@ -31,25 +31,8 @@ import { trackFormUploadStart, trackFormUploadEnd, formResponseHasFieldErrors, F
 import { isInlineImagePaste, revokePastedBlobUri } from 'app/lib/editor/editor-paste-images';
 import { setUploadProgress, clearUploadProgress } from 'app/lib/upload-progress';
 import UploadProgress from 'app/ui/atoms/upload-progress';
-
-function showPermissionAlert(type, canAskAgain) {
-    const isCamera = type === 'camera';
-    const title = isCamera ? i18n.t('media_permission_camera_title') : i18n.t('media_permission_library_title');
-    const message = canAskAgain === false
-        ? i18n.t('media_permission_denied')
-        : i18n.t('media_permission_required');
-
-    const buttons = [{ text: i18n.t('Cancel'), style: 'cancel' }];
-
-    if (canAskAgain === false || Platform.OS === 'ios') {
-        buttons.push({
-            text: i18n.t('Open Settings'),
-            onPress: () => Linking.openSettings(),
-        });
-    }
-
-    Alert.alert(title, message, buttons, { cancelable: true });
-}
+import { getImagePickerOptions, showPermissionAlert } from 'app/lib/media/pick-media';
+import { takeFieldAssets } from 'app/lib/form/pending-field-assets';
 
 function resolvePickerSource(source, fallback = 'library') {
     if (source === 'camera' || source === 'library') {
@@ -122,27 +105,6 @@ function resolvePickerMediaTypes(fieldName, extAllow, source) {
     }
 
     return ['images', 'videos'];
-}
-
-function getImagePickerOptions(mediaTypes, bMultiple) {
-    const types = mediaTypes?.length ? mediaTypes : ['images'];
-    const includesVideo = types.includes('videos');
-    const options = {
-        mediaTypes: types,
-        quality: 1,
-        allowsMultipleSelection: Boolean(bMultiple),
-    };
-
-    if (Platform.OS === 'ios') {
-        options.preferredAssetRepresentationMode = includesVideo
-            ? ImagePicker.UIImagePickerPreferredAssetRepresentationMode.Compatible
-            : ImagePicker.UIImagePickerPreferredAssetRepresentationMode.Current;
-        if (includesVideo) {
-            options.shouldDownloadFromNetwork = true;
-        }
-    }
-
-    return options;
 }
 
 /** Survives ImagePicker remounts of the files field (same as abort maps). */
@@ -551,6 +513,12 @@ export default function (props) {
         const k = await uploadImages([croppedAsset]);
         setImageSourceN(k, bMultiple);
     }, [cropSession, bMultiple]);
+
+    // Media the feed composer picked before opening this form (pending-field-assets).
+    useEffect(() => {
+        const queued = takeFieldAssets(name);
+        if (queued?.length) void finishPickedAssets(queued);
+    }, [name, finishPickedAssets]);
 
     const resumedUploads = useRef(false);
     useEffect(() => {
