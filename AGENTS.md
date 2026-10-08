@@ -16,7 +16,7 @@ This repository contains the UNA PHP application and the NEO frontend monorepo a
 └── neo/                   # NEO frontend monorepo
     ├── apps/
     │   ├── expo/          # Expo / React Native mobile application
-    │   └── nextjs/        # Next.js web frontend
+    │   └── next/          # Next.js web frontend
     ├── packages/          # Shared frontend packages
     ├── package.json
     └── ...
