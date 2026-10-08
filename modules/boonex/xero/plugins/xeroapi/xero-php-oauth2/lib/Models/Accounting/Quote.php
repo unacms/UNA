@@ -486,7 +486,7 @@ class Quote implements ModelInterface, ArrayAccess
     /**
      * Gets contact
      *
-     * @return string|null
+     * @return \XeroAPI\XeroPHP\Models\Accounting\Contact|null
      */
     public function getContact()
     {
@@ -496,7 +496,7 @@ class Quote implements ModelInterface, ArrayAccess
     /**
      * Sets contact
      *
-     * @param string|null $contact contact
+     * @param \XeroAPI\XeroPHP\Models\Accounting\Contact|null $contact contact
      *
      * @return $this
      */

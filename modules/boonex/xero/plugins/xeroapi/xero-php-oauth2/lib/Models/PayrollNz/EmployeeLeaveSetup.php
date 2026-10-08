@@ -62,8 +62,6 @@ class EmployeeLeaveSetup implements ModelInterface, ArrayAccess
         'holiday_pay_opening_balance' => 'double',
         'annual_leave_opening_balance' => 'double',
         'negative_annual_leave_balance_paid_amount' => 'double',
-        'sick_leave_hours_to_accrue_annually' => 'double',
-        'sick_leave_maximum_hours_to_accrue' => 'double',
         'sick_leave_to_accrue_annually' => 'double',
         'sick_leave_maximum_to_accrue' => 'double',
         'sick_leave_opening_balance' => 'double',
@@ -82,8 +80,6 @@ class EmployeeLeaveSetup implements ModelInterface, ArrayAccess
         'holiday_pay_opening_balance' => 'double',
         'annual_leave_opening_balance' => 'double',
         'negative_annual_leave_balance_paid_amount' => 'double',
-        'sick_leave_hours_to_accrue_annually' => 'double',
-        'sick_leave_maximum_hours_to_accrue' => 'double',
         'sick_leave_to_accrue_annually' => 'double',
         'sick_leave_maximum_to_accrue' => 'double',
         'sick_leave_opening_balance' => 'double',
@@ -123,8 +119,6 @@ class EmployeeLeaveSetup implements ModelInterface, ArrayAccess
         'holiday_pay_opening_balance' => 'holidayPayOpeningBalance',
         'annual_leave_opening_balance' => 'annualLeaveOpeningBalance',
         'negative_annual_leave_balance_paid_amount' => 'negativeAnnualLeaveBalancePaidAmount',
-        'sick_leave_hours_to_accrue_annually' => 'sickLeaveHoursToAccrueAnnually',
-        'sick_leave_maximum_hours_to_accrue' => 'sickLeaveMaximumHoursToAccrue',
         'sick_leave_to_accrue_annually' => 'SickLeaveToAccrueAnnually',
         'sick_leave_maximum_to_accrue' => 'SickLeaveMaximumToAccrue',
         'sick_leave_opening_balance' => 'sickLeaveOpeningBalance',
@@ -143,8 +137,6 @@ class EmployeeLeaveSetup implements ModelInterface, ArrayAccess
         'holiday_pay_opening_balance' => 'setHolidayPayOpeningBalance',
         'annual_leave_opening_balance' => 'setAnnualLeaveOpeningBalance',
         'negative_annual_leave_balance_paid_amount' => 'setNegativeAnnualLeaveBalancePaidAmount',
-        'sick_leave_hours_to_accrue_annually' => 'setSickLeaveHoursToAccrueAnnually',
-        'sick_leave_maximum_hours_to_accrue' => 'setSickLeaveMaximumHoursToAccrue',
         'sick_leave_to_accrue_annually' => 'setSickLeaveToAccrueAnnually',
         'sick_leave_maximum_to_accrue' => 'setSickLeaveMaximumToAccrue',
         'sick_leave_opening_balance' => 'setSickLeaveOpeningBalance',
@@ -163,8 +155,6 @@ class EmployeeLeaveSetup implements ModelInterface, ArrayAccess
         'holiday_pay_opening_balance' => 'getHolidayPayOpeningBalance',
         'annual_leave_opening_balance' => 'getAnnualLeaveOpeningBalance',
         'negative_annual_leave_balance_paid_amount' => 'getNegativeAnnualLeaveBalancePaidAmount',
-        'sick_leave_hours_to_accrue_annually' => 'getSickLeaveHoursToAccrueAnnually',
-        'sick_leave_maximum_hours_to_accrue' => 'getSickLeaveMaximumHoursToAccrue',
         'sick_leave_to_accrue_annually' => 'getSickLeaveToAccrueAnnually',
         'sick_leave_maximum_to_accrue' => 'getSickLeaveMaximumToAccrue',
         'sick_leave_opening_balance' => 'getSickLeaveOpeningBalance',
@@ -237,8 +227,6 @@ class EmployeeLeaveSetup implements ModelInterface, ArrayAccess
         $this->container['holiday_pay_opening_balance'] = isset($data['holiday_pay_opening_balance']) ? $data['holiday_pay_opening_balance'] : null;
         $this->container['annual_leave_opening_balance'] = isset($data['annual_leave_opening_balance']) ? $data['annual_leave_opening_balance'] : null;
         $this->container['negative_annual_leave_balance_paid_amount'] = isset($data['negative_annual_leave_balance_paid_amount']) ? $data['negative_annual_leave_balance_paid_amount'] : null;
-        $this->container['sick_leave_hours_to_accrue_annually'] = isset($data['sick_leave_hours_to_accrue_annually']) ? $data['sick_leave_hours_to_accrue_annually'] : null;
-        $this->container['sick_leave_maximum_hours_to_accrue'] = isset($data['sick_leave_maximum_hours_to_accrue']) ? $data['sick_leave_maximum_hours_to_accrue'] : null;
         $this->container['sick_leave_to_accrue_annually'] = isset($data['sick_leave_to_accrue_annually']) ? $data['sick_leave_to_accrue_annually'] : null;
         $this->container['sick_leave_maximum_to_accrue'] = isset($data['sick_leave_maximum_to_accrue']) ? $data['sick_leave_maximum_to_accrue'] : null;
         $this->container['sick_leave_opening_balance'] = isset($data['sick_leave_opening_balance']) ? $data['sick_leave_opening_balance'] : null;
@@ -373,60 +361,6 @@ class EmployeeLeaveSetup implements ModelInterface, ArrayAccess
     {
 
         $this->container['negative_annual_leave_balance_paid_amount'] = $negative_annual_leave_balance_paid_amount;
-
-        return $this;
-    }
-
-
-
-    /**
-     * Gets sick_leave_hours_to_accrue_annually
-     *
-     * @return double|null
-     */
-    public function getSickLeaveHoursToAccrueAnnually()
-    {
-        return $this->container['sick_leave_hours_to_accrue_annually'];
-    }
-
-    /**
-     * Sets sick_leave_hours_to_accrue_annually
-     *
-     * @param double|null $sick_leave_hours_to_accrue_annually Deprecated use SickLeaveToAccrueAnnually
-     *
-     * @return $this
-     */
-    public function setSickLeaveHoursToAccrueAnnually($sick_leave_hours_to_accrue_annually)
-    {
-
-        $this->container['sick_leave_hours_to_accrue_annually'] = $sick_leave_hours_to_accrue_annually;
-
-        return $this;
-    }
-
-
-
-    /**
-     * Gets sick_leave_maximum_hours_to_accrue
-     *
-     * @return double|null
-     */
-    public function getSickLeaveMaximumHoursToAccrue()
-    {
-        return $this->container['sick_leave_maximum_hours_to_accrue'];
-    }
-
-    /**
-     * Sets sick_leave_maximum_hours_to_accrue
-     *
-     * @param double|null $sick_leave_maximum_hours_to_accrue Deprecated use SickLeaveMaximumToAccrue
-     *
-     * @return $this
-     */
-    public function setSickLeaveMaximumHoursToAccrue($sick_leave_maximum_hours_to_accrue)
-    {
-
-        $this->container['sick_leave_maximum_hours_to_accrue'] = $sick_leave_maximum_hours_to_accrue;
 
         return $this;
     }

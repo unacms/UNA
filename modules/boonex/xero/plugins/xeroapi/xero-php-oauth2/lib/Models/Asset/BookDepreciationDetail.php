@@ -64,7 +64,12 @@ class BookDepreciationDetail implements ModelInterface, ArrayAccess
         'cost_limit' => 'double',
         'residual_value' => 'double',
         'prior_accum_depreciation_amount' => 'double',
-        'current_accum_depreciation_amount' => 'double'
+        'current_accum_depreciation_amount' => 'double',
+        'business_use_capital_gain' => 'float',
+        'business_use_current_gain_loss' => 'float',
+        'private_use_capital_gain' => 'float',
+        'private_use_current_gain_loss' => 'float',
+        'initial_deduction_percentage' => 'float'
     ];
 
     /**
@@ -79,7 +84,12 @@ class BookDepreciationDetail implements ModelInterface, ArrayAccess
         'cost_limit' => 'double',
         'residual_value' => 'double',
         'prior_accum_depreciation_amount' => 'double',
-        'current_accum_depreciation_amount' => 'double'
+        'current_accum_depreciation_amount' => 'double',
+        'business_use_capital_gain' => 'decimal',
+        'business_use_current_gain_loss' => 'decimal',
+        'private_use_capital_gain' => 'decimal',
+        'private_use_current_gain_loss' => 'decimal',
+        'initial_deduction_percentage' => 'decimal'
     ];
 
     /**
@@ -115,7 +125,12 @@ class BookDepreciationDetail implements ModelInterface, ArrayAccess
         'cost_limit' => 'costLimit',
         'residual_value' => 'residualValue',
         'prior_accum_depreciation_amount' => 'priorAccumDepreciationAmount',
-        'current_accum_depreciation_amount' => 'currentAccumDepreciationAmount'
+        'current_accum_depreciation_amount' => 'currentAccumDepreciationAmount',
+        'business_use_capital_gain' => 'businessUseCapitalGain',
+        'business_use_current_gain_loss' => 'businessUseCurrentGainLoss',
+        'private_use_capital_gain' => 'privateUseCapitalGain',
+        'private_use_current_gain_loss' => 'privateUseCurrentGainLoss',
+        'initial_deduction_percentage' => 'initialDeductionPercentage'
     ];
 
     /**
@@ -130,7 +145,12 @@ class BookDepreciationDetail implements ModelInterface, ArrayAccess
         'cost_limit' => 'setCostLimit',
         'residual_value' => 'setResidualValue',
         'prior_accum_depreciation_amount' => 'setPriorAccumDepreciationAmount',
-        'current_accum_depreciation_amount' => 'setCurrentAccumDepreciationAmount'
+        'current_accum_depreciation_amount' => 'setCurrentAccumDepreciationAmount',
+        'business_use_capital_gain' => 'setBusinessUseCapitalGain',
+        'business_use_current_gain_loss' => 'setBusinessUseCurrentGainLoss',
+        'private_use_capital_gain' => 'setPrivateUseCapitalGain',
+        'private_use_current_gain_loss' => 'setPrivateUseCurrentGainLoss',
+        'initial_deduction_percentage' => 'setInitialDeductionPercentage'
     ];
 
     /**
@@ -145,7 +165,12 @@ class BookDepreciationDetail implements ModelInterface, ArrayAccess
         'cost_limit' => 'getCostLimit',
         'residual_value' => 'getResidualValue',
         'prior_accum_depreciation_amount' => 'getPriorAccumDepreciationAmount',
-        'current_accum_depreciation_amount' => 'getCurrentAccumDepreciationAmount'
+        'current_accum_depreciation_amount' => 'getCurrentAccumDepreciationAmount',
+        'business_use_capital_gain' => 'getBusinessUseCapitalGain',
+        'business_use_current_gain_loss' => 'getBusinessUseCurrentGainLoss',
+        'private_use_capital_gain' => 'getPrivateUseCapitalGain',
+        'private_use_current_gain_loss' => 'getPrivateUseCurrentGainLoss',
+        'initial_deduction_percentage' => 'getInitialDeductionPercentage'
     ];
 
     /**
@@ -215,6 +240,11 @@ class BookDepreciationDetail implements ModelInterface, ArrayAccess
         $this->container['residual_value'] = isset($data['residual_value']) ? $data['residual_value'] : null;
         $this->container['prior_accum_depreciation_amount'] = isset($data['prior_accum_depreciation_amount']) ? $data['prior_accum_depreciation_amount'] : null;
         $this->container['current_accum_depreciation_amount'] = isset($data['current_accum_depreciation_amount']) ? $data['current_accum_depreciation_amount'] : null;
+        $this->container['business_use_capital_gain'] = isset($data['business_use_capital_gain']) ? $data['business_use_capital_gain'] : null;
+        $this->container['business_use_current_gain_loss'] = isset($data['business_use_current_gain_loss']) ? $data['business_use_current_gain_loss'] : null;
+        $this->container['private_use_capital_gain'] = isset($data['private_use_capital_gain']) ? $data['private_use_capital_gain'] : null;
+        $this->container['private_use_current_gain_loss'] = isset($data['private_use_current_gain_loss']) ? $data['private_use_current_gain_loss'] : null;
+        $this->container['initial_deduction_percentage'] = isset($data['initial_deduction_percentage']) ? $data['initial_deduction_percentage'] : null;
     }
 
     /**
@@ -424,6 +454,141 @@ class BookDepreciationDetail implements ModelInterface, ArrayAccess
     {
 
         $this->container['current_accum_depreciation_amount'] = $current_accum_depreciation_amount;
+
+        return $this;
+    }
+
+
+
+    /**
+     * Gets business_use_capital_gain
+     *
+     * @return float|null
+     */
+    public function getBusinessUseCapitalGain()
+    {
+        return $this->container['business_use_capital_gain'];
+    }
+
+    /**
+     * Sets business_use_capital_gain
+     *
+     * @param float|null $business_use_capital_gain (New Zealand Orgs Only) The portion of capital gain realised from the disposal of a fixed asset that is attributable to its business use.
+     *
+     * @return $this
+     */
+    public function setBusinessUseCapitalGain($business_use_capital_gain)
+    {
+
+        $this->container['business_use_capital_gain'] = $business_use_capital_gain;
+
+        return $this;
+    }
+
+
+
+    /**
+     * Gets business_use_current_gain_loss
+     *
+     * @return float|null
+     */
+    public function getBusinessUseCurrentGainLoss()
+    {
+        return $this->container['business_use_current_gain_loss'];
+    }
+
+    /**
+     * Sets business_use_current_gain_loss
+     *
+     * @param float|null $business_use_current_gain_loss (New Zealand Orgs Only) Represents the gain or loss from the disposal of the business use portion of a fixed asset. This value records the financial result (profit or loss) related specifically to the asset’s business use.
+     *
+     * @return $this
+     */
+    public function setBusinessUseCurrentGainLoss($business_use_current_gain_loss)
+    {
+
+        $this->container['business_use_current_gain_loss'] = $business_use_current_gain_loss;
+
+        return $this;
+    }
+
+
+
+    /**
+     * Gets private_use_capital_gain
+     *
+     * @return float|null
+     */
+    public function getPrivateUseCapitalGain()
+    {
+        return $this->container['private_use_capital_gain'];
+    }
+
+    /**
+     * Sets private_use_capital_gain
+     *
+     * @param float|null $private_use_capital_gain (New Zealand Orgs Only) The portion of capital gain realised from the disposal of a fixed asset that is attributable to its private (non-business) use.
+     *
+     * @return $this
+     */
+    public function setPrivateUseCapitalGain($private_use_capital_gain)
+    {
+
+        $this->container['private_use_capital_gain'] = $private_use_capital_gain;
+
+        return $this;
+    }
+
+
+
+    /**
+     * Gets private_use_current_gain_loss
+     *
+     * @return float|null
+     */
+    public function getPrivateUseCurrentGainLoss()
+    {
+        return $this->container['private_use_current_gain_loss'];
+    }
+
+    /**
+     * Sets private_use_current_gain_loss
+     *
+     * @param float|null $private_use_current_gain_loss (New Zealand Orgs Only) Represents the gain or loss from the disposal of the private use portion of a fixed asset. This value records the financial result (profit or loss) related specifically to the asset’s private use.
+     *
+     * @return $this
+     */
+    public function setPrivateUseCurrentGainLoss($private_use_current_gain_loss)
+    {
+
+        $this->container['private_use_current_gain_loss'] = $private_use_current_gain_loss;
+
+        return $this;
+    }
+
+
+
+    /**
+     * Gets initial_deduction_percentage
+     *
+     * @return float|null
+     */
+    public function getInitialDeductionPercentage()
+    {
+        return $this->container['initial_deduction_percentage'];
+    }
+
+    /**
+     * Sets initial_deduction_percentage
+     *
+     * @param float|null $initial_deduction_percentage (New Zealand Orgs Only) The Investment Boost deduction percentage.
+     *
+     * @return $this
+     */
+    public function setInitialDeductionPercentage($initial_deduction_percentage)
+    {
+
+        $this->container['initial_deduction_percentage'] = $initial_deduction_percentage;
 
         return $this;
     }

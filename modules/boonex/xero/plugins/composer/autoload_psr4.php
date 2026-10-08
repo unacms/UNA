@@ -7,6 +7,7 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'XeroAPI\\XeroPHP\\' => array($vendorDir . '/xeroapi/xero-php-oauth2/lib'),
+    'Symfony\\Polyfill\\Php80\\' => array($vendorDir . '/symfony/polyfill-php80'),
     'Psr\\Http\\Message\\' => array($vendorDir . '/psr/http-factory/src', $vendorDir . '/psr/http-message/src'),
     'Psr\\Http\\Client\\' => array($vendorDir . '/psr/http-client/src'),
     'League\\OAuth2\\Client\\' => array($vendorDir . '/league/oauth2-client/src'),

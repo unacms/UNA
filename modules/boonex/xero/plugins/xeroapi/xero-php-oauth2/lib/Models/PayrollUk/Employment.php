@@ -62,7 +62,8 @@ class Employment implements ModelInterface, ArrayAccess
         'start_date' => '\DateTime',
         'employee_number' => 'string',
         'ni_category' => '\XeroAPI\XeroPHP\Models\PayrollUk\NICategoryLetter',
-        'ni_categories' => '\XeroAPI\XeroPHP\Models\PayrollUk\NICategory[]'
+        'ni_categories' => '\XeroAPI\XeroPHP\Models\PayrollUk\NICategory[]',
+        'contracts' => '\XeroAPI\XeroPHP\Models\PayrollUk\Contracts[]'
     ];
 
     /**
@@ -75,7 +76,8 @@ class Employment implements ModelInterface, ArrayAccess
         'start_date' => 'date',
         'employee_number' => null,
         'ni_category' => null,
-        'ni_categories' => null
+        'ni_categories' => null,
+        'contracts' => null
     ];
 
     /**
@@ -109,7 +111,8 @@ class Employment implements ModelInterface, ArrayAccess
         'start_date' => 'startDate',
         'employee_number' => 'employeeNumber',
         'ni_category' => 'niCategory',
-        'ni_categories' => 'niCategories'
+        'ni_categories' => 'niCategories',
+        'contracts' => 'contracts'
     ];
 
     /**
@@ -122,7 +125,8 @@ class Employment implements ModelInterface, ArrayAccess
         'start_date' => 'setStartDate',
         'employee_number' => 'setEmployeeNumber',
         'ni_category' => 'setNiCategory',
-        'ni_categories' => 'setNiCategories'
+        'ni_categories' => 'setNiCategories',
+        'contracts' => 'setContracts'
     ];
 
     /**
@@ -135,7 +139,8 @@ class Employment implements ModelInterface, ArrayAccess
         'start_date' => 'getStartDate',
         'employee_number' => 'getEmployeeNumber',
         'ni_category' => 'getNiCategory',
-        'ni_categories' => 'getNiCategories'
+        'ni_categories' => 'getNiCategories',
+        'contracts' => 'getContracts'
     ];
 
     /**
@@ -203,6 +208,7 @@ class Employment implements ModelInterface, ArrayAccess
         $this->container['employee_number'] = isset($data['employee_number']) ? $data['employee_number'] : null;
         $this->container['ni_category'] = isset($data['ni_category']) ? $data['ni_category'] : null;
         $this->container['ni_categories'] = isset($data['ni_categories']) ? $data['ni_categories'] : null;
+        $this->container['contracts'] = isset($data['contracts']) ? $data['contracts'] : null;
     }
 
     /**
@@ -370,6 +376,33 @@ class Employment implements ModelInterface, ArrayAccess
     {
 
         $this->container['ni_categories'] = $ni_categories;
+
+        return $this;
+    }
+
+
+
+    /**
+     * Gets contracts
+     *
+     * @return \XeroAPI\XeroPHP\Models\PayrollUk\Contracts[]|null
+     */
+    public function getContracts()
+    {
+        return $this->container['contracts'];
+    }
+
+    /**
+     * Sets contracts
+     *
+     * @param \XeroAPI\XeroPHP\Models\PayrollUk\Contracts[]|null $contracts The employee's contracts
+     *
+     * @return $this
+     */
+    public function setContracts($contracts)
+    {
+
+        $this->container['contracts'] = $contracts;
 
         return $this;
     }

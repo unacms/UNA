@@ -1092,6 +1092,53 @@ ul.nav-tabs {
   },
   "description" : ""
 };
+      defs["ContractType"] = {
+  "title" : "",
+  "type" : "string",
+  "description" : "The contract type of the employee.",
+  "example" : "FullTime",
+  "enum" : [ "FullTime", "PartTime", "ZeroHour", "Unspecified" ]
+};
+      defs["Contracts"] = {
+  "title" : "",
+  "required" : [ "contractType", "employmentStatus", "startDate" ],
+  "type" : "object",
+  "properties" : {
+    "startDate" : {
+      "type" : "string",
+      "description" : "The contract start date of the employee. This will be locked once an employee has been paid and cannot be changed (YYYY-MM-DD)",
+      "format" : "date",
+      "example" : "2024-12-02",
+      "x-is-date" : true
+    },
+    "employmentStatus" : {
+      "$ref" : "#/components/schemas/EmploymentStatus"
+    },
+    "contractType" : {
+      "$ref" : "#/components/schemas/ContractType"
+    },
+    "publicKey" : {
+      "type" : "string",
+      "description" : "The public key of the contract. Public key is required if the intention is to edit an existing contract. If no key is supplied a new contract will be created",
+      "format" : "uuid"
+    },
+    "isFixedTerm" : {
+      "type" : "boolean",
+      "description" : "describes whether the contract is fixed term (required if trying to create Fixed term contract)"
+    },
+    "fixedTermEndDate" : {
+      "type" : "string",
+      "description" : "The fixed term end date of the employee. Not required if isFixedTerm is false or not provided (required if trying to create Fixed term contract)",
+      "format" : "date",
+      "example" : "2025-11-01",
+      "x-is-date" : true
+    },
+    "developmentalRoleDetails" : {
+      "$ref" : "#/components/schemas/DevelopmentalRoleDetails"
+    }
+  },
+  "description" : ""
+};
       defs["CourtOrderLine"] = {
   "title" : "",
   "type" : "object",
@@ -1246,6 +1293,38 @@ ul.nav-tabs {
       "items" : {
         "$ref" : "#/components/schemas/Deduction"
       }
+    }
+  },
+  "description" : ""
+};
+      defs["DevelopmentalRoleDetails"] = {
+  "title" : "",
+  "required" : [ "developmentalRole", "endDate", "startDate" ],
+  "type" : "object",
+  "properties" : {
+    "startDate" : {
+      "type" : "string",
+      "description" : "The start date of the developmental role",
+      "format" : "date",
+      "example" : "2024-12-02",
+      "x-is-date" : true
+    },
+    "endDate" : {
+      "type" : "string",
+      "description" : "The end date of the developmental role",
+      "format" : "date",
+      "example" : "2024-12-02",
+      "x-is-date" : true
+    },
+    "developmentalRole" : {
+      "type" : "string",
+      "description" : "The developmental role type - \"Apprentice\" is the only supported role currently",
+      "example" : "Apprentice"
+    },
+    "publicKey" : {
+      "type" : "string",
+      "description" : "The public key of the developmental role. Public key is required if the intention is to edit an existing developmental role. If no key is supplied a new developmental role will be created",
+      "format" : "uuid"
     }
   },
   "description" : ""
@@ -1613,6 +1692,13 @@ ul.nav-tabs {
     "isOffPayrollWorker" : {
       "type" : "boolean",
       "description" : "Whether the employee is an off payroll worker"
+    },
+    "contracts" : {
+      "type" : "array",
+      "description" : "The employee's contracts",
+      "items" : {
+        "$ref" : "#/components/schemas/Contracts"
+      }
     }
   },
   "description" : ""
@@ -2300,6 +2386,13 @@ ul.nav-tabs {
       "items" : {
         "$ref" : "#/components/schemas/NICategory"
       }
+    },
+    "contracts" : {
+      "type" : "array",
+      "description" : "The employee's contracts",
+      "items" : {
+        "$ref" : "#/components/schemas/Contracts"
+      }
     }
   },
   "description" : ""
@@ -2319,6 +2412,13 @@ ul.nav-tabs {
     }
   },
   "description" : ""
+};
+      defs["EmploymentStatus"] = {
+  "title" : "",
+  "type" : "string",
+  "description" : "The employment status of the employee.",
+  "example" : "Employee",
+  "enum" : [ "Employee", "Worker", "Unspecified" ]
 };
       defs["InvalidField"] = {
   "title" : "",
@@ -3599,7 +3699,7 @@ ul.nav-tabs {
           <nav id="scrollingNav">
             <ul class="sidenav nav nav-list">
               <li class="nav-header" data-group="PayrollUk"><strong>SDK: </strong><span id='sdk-name'></span></li>
-              <li class="nav-header" data-group="PayrollUk"><strong>VSN: </strong>10.0.0</li>
+              <li class="nav-header" data-group="PayrollUk"><strong>VSN: </strong>10.4.0</li>
               <li class="nav-header" data-group="PayrollUk"><a href="#api-PayrollUk">Methods</a></li>
               <li data-group="PayrollUk" data-name="approveTimesheet" class="">
                 <a href="#api-PayrollUk-approveTimesheet">approveTimesheet</a>
@@ -3804,9 +3904,6 @@ ul.nav-tabs {
               </li>
               <li data-group="PayrollUk" data-name="updateEmployeeSalaryAndWage" class="">
                 <a href="#api-PayrollUk-updateEmployeeSalaryAndWage">updateEmployeeSalaryAndWage</a>
-              </li>
-              <li data-group="PayrollUk" data-name="updatePayRun" class="">
-                <a href="#api-PayrollUk-updatePayRun">updatePayRun</a>
               </li>
               <li data-group="PayrollUk" data-name="updateTimesheetLine" class="">
                 <a href="#api-PayrollUk-updateTimesheetLine">updateTimesheetLine</a>
@@ -14084,193 +14181,6 @@ This allows you to safely retry requests without the risk of duplicate processin
         "annualSalary" : 101,
         "status" : "ACTIVE",
         "paymentType" : "Salary"
-      }
-    }
-  },
-  "required" : true
-}
-    </script>
-                  </table>
-                </article>
-              </div>
-              <hr>
-              <div id="api-PayrollUk-updatePayRun">
-                <article id="api-PayrollUk-updatePayRun-0" data-group="User" data-name="updatePayRun" data-version="0">
-                  <div class="pull-left">
-                    <h1>updatePayRun</h1>
-                    <p>Updates a specific pay run</p>
-                  </div>
-                  <div class="pull-right"></div>
-                  <div class="clearfix"></div>
-                  <p></p>
-                  <p class="marked"></p>
-                  <p></p>
-                  <br />
-                  <pre class="prettyprint language-html prettyprinted" data-type="put"><code><span class="pln">/PayRuns/{PayRunID}</span></code></pre>
-                  <p>
-                  <h3>Usage and SDK Samples</h3>
-                  </p>
-                  <ul class="nav nav-tabs nav-tabs-examples">
-                    <!-- *****REPLACE***** comment out the other languages <li> -->
-                    <li class=""><a href="#examples-PayrollUk-updatePayRun-0-php">PHP</a></li>
-                  </ul>
-                  <div class="tab-content">
-                    <!-- *****REPLACE***** comment out the other languages tab-pane -->
-                    <div class="tab-pane" id="examples-PayrollUk-updatePayRun-0-php">
-                      <pre class="prettyprint"><code class="language-php"><&#63;php
-require_once(__DIR__ . '/vendor/autoload.php');
-
-// Configure OAuth2 access token for authorization: OAuth2
-$config = XeroAPI\XeroPHP\Configuration::getDefaultConfiguration()->setAccessToken( 'YOUR_ACCESS_TOKEN' );       
-
-$apiInstance = new XeroAPI\XeroPHP\Api\PayrollUkApi(
-    new GuzzleHttp\Client(),
-    $config
-);
-$xeroTenantId = "xeroTenantId_example";
-$payRunID = "38400000-8cf0-11bd-b23e-10b96e4ef00d";
-$idempotencyKey = "KEY_VALUE";
-$startDate = new DateTime('2020-10-28');
-$paymentDate = new DateTime('2020-10-30');
-
-$payRunCalendar = new XeroAPI\XeroPHP\Models\PayrollUk\PayRunCalendar;
-$payRunCalendar->setCalendarType(XeroAPI\XeroPHP\Models\PayrollUk\CalendarType.WEEKLY);
-$payRunCalendar->setPeriodStartDate($startDate);
-$payRunCalendar->setPaymentDate($paymentDate);
-
-try {
-  $result = $apiInstance->updatePayRun($xeroTenantId, $payRunID, $payRun, $idempotencyKey);
-} catch (Exception $e) {
-  echo 'Exception when calling PayrollUkApi->updatePayRun: ', $e->getMessage(), PHP_EOL;
-}
-?>
-</code></pre>
-                    </div>
-                  </div>
-                  <h2>Scopes</h2>
-                  <table>
-                    
-                    <tr>
-                      <td>payroll.payruns</td>
-                      <td>Grant read-write access to payroll payruns</td>
-                    </tr>
-                    
-                  </table>
-                  <h2>Parameters</h2>
-                  <div class="methodsubtabletitle">Path parameters</div>
-                  <table id="methodsubtable">
-                    <tr>
-                      <th width="150px">Name</th>
-                      <th>Description</th>
-                    </tr>
-                    <tr><td style="width:150px;">PayRunID<span style="color:red;">*</span></td>
-<td>
-
-
-    <div id="d2e199_updatePayRun_payRunID">
-        <div class="json-schema-view">
-            <div class="primitive">
-                <span class="type">
-                    UUID
-                </span>
-                    <span class="format">
-                        (uuid)
-                    </span>
-
-                    <div class="inner description marked">
-Identifier for the pay run
-                    </div>
-            </div>
-                <div class="inner required">
-                    Required
-                </div>
-        </div>
-    </div>
-</td>
-</tr>
-
-                  </table>
-                  <div class="methodsubtabletitle">Header parameters</div>
-                  <table id="methodsubtable">
-                    <tr>
-                      <th width="150px">Name</th>
-                      <th>Description</th>
-                    </tr>
-                    <tr><td style="width:150px;">Xero-Tenant-Id<span style="color:red;">*</span></td>
-<td>
-
-
-    <div id="d2e199_updatePayRun_xeroTenantId">
-        <div class="json-schema-view">
-            <div class="primitive">
-                <span class="type">
-                    String
-                </span>
-
-                    <div class="inner description marked">
-Xero identifier for Tenant
-                    </div>
-            </div>
-                <div class="inner required">
-                    Required
-                </div>
-        </div>
-    </div>
-</td>
-</tr>
-
-                    <tr><td style="width:150px;">Idempotency-Key</td>
-<td>
-
-
-    <div id="d2e199_updatePayRun_idempotencyKey">
-        <div class="json-schema-view">
-            <div class="primitive">
-                <span class="type">
-                    String
-                </span>
-
-                    <div class="inner description marked">
-This allows you to safely retry requests without the risk of duplicate processing. 128 character max.
-                    </div>
-            </div>
-        </div>
-    </div>
-</td>
-</tr>
-
-                  </table>
-                  <div class="methodsubtabletitle">Body parameters</div>
-                  <table id="methodsubtable">
-                    <tr>
-                      <th width="150px">Name</th>
-                      <th>Description</th>
-                    </tr>
-                    <tr>
-  <td style="width:150px;">payRun <span style="color:red;">*</span></td>
-  <td>
-    <div class="json-schema-view">
-      <div class="primitive">
-        <span class="type">
-        PayRun
-        </span>
-        <div class="inner description marked">
-          
-        </div>
-      </div>
-      <div class="inner required">
-        Required
-      </div>
-    </div>
-    <script type="application/ld+json">
-      {
-  "content" : {
-    "application/json" : {
-      "schema" : {
-        "$ref" : "#/components/schemas/PayRun"
-      },
-      "example" : {
-        "paymentDate" : "2020-05-01"
       }
     }
   },

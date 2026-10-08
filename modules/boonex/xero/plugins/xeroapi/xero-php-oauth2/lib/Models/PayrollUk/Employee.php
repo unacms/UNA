@@ -75,7 +75,8 @@ class Employee implements ModelInterface, ArrayAccess
         'ni_category' => '\XeroAPI\XeroPHP\Models\PayrollUk\NICategoryLetter',
         'ni_categories' => '\XeroAPI\XeroPHP\Models\PayrollUk\NICategory[]',
         'national_insurance_number' => 'string',
-        'is_off_payroll_worker' => 'bool'
+        'is_off_payroll_worker' => 'bool',
+        'contracts' => '\XeroAPI\XeroPHP\Models\PayrollUk\Contracts[]'
     ];
 
     /**
@@ -101,7 +102,8 @@ class Employee implements ModelInterface, ArrayAccess
         'ni_category' => null,
         'ni_categories' => null,
         'national_insurance_number' => null,
-        'is_off_payroll_worker' => null
+        'is_off_payroll_worker' => null,
+        'contracts' => null
     ];
 
     /**
@@ -148,7 +150,8 @@ class Employee implements ModelInterface, ArrayAccess
         'ni_category' => 'niCategory',
         'ni_categories' => 'niCategories',
         'national_insurance_number' => 'nationalInsuranceNumber',
-        'is_off_payroll_worker' => 'isOffPayrollWorker'
+        'is_off_payroll_worker' => 'isOffPayrollWorker',
+        'contracts' => 'contracts'
     ];
 
     /**
@@ -174,7 +177,8 @@ class Employee implements ModelInterface, ArrayAccess
         'ni_category' => 'setNiCategory',
         'ni_categories' => 'setNiCategories',
         'national_insurance_number' => 'setNationalInsuranceNumber',
-        'is_off_payroll_worker' => 'setIsOffPayrollWorker'
+        'is_off_payroll_worker' => 'setIsOffPayrollWorker',
+        'contracts' => 'setContracts'
     ];
 
     /**
@@ -200,7 +204,8 @@ class Employee implements ModelInterface, ArrayAccess
         'ni_category' => 'getNiCategory',
         'ni_categories' => 'getNiCategories',
         'national_insurance_number' => 'getNationalInsuranceNumber',
-        'is_off_payroll_worker' => 'getIsOffPayrollWorker'
+        'is_off_payroll_worker' => 'getIsOffPayrollWorker',
+        'contracts' => 'getContracts'
     ];
 
     /**
@@ -296,6 +301,7 @@ class Employee implements ModelInterface, ArrayAccess
         $this->container['ni_categories'] = isset($data['ni_categories']) ? $data['ni_categories'] : null;
         $this->container['national_insurance_number'] = isset($data['national_insurance_number']) ? $data['national_insurance_number'] : null;
         $this->container['is_off_payroll_worker'] = isset($data['is_off_payroll_worker']) ? $data['is_off_payroll_worker'] : null;
+        $this->container['contracts'] = isset($data['contracts']) ? $data['contracts'] : null;
     }
 
     /**
@@ -837,6 +843,33 @@ class Employee implements ModelInterface, ArrayAccess
     {
 
         $this->container['is_off_payroll_worker'] = $is_off_payroll_worker;
+
+        return $this;
+    }
+
+
+
+    /**
+     * Gets contracts
+     *
+     * @return \XeroAPI\XeroPHP\Models\PayrollUk\Contracts[]|null
+     */
+    public function getContracts()
+    {
+        return $this->container['contracts'];
+    }
+
+    /**
+     * Sets contracts
+     *
+     * @param \XeroAPI\XeroPHP\Models\PayrollUk\Contracts[]|null $contracts The employee's contracts
+     *
+     * @return $this
+     */
+    public function setContracts($contracts)
+    {
+
+        $this->container['contracts'] = $contracts;
 
         return $this;
     }

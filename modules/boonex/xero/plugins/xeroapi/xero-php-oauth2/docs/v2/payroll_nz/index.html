@@ -1682,20 +1682,6 @@ ul.nav-tabs {
       "example" : 10.0,
       "x-is-money" : true
     },
-    "sickLeaveHoursToAccrueAnnually" : {
-      "type" : "number",
-      "description" : "Deprecated use SickLeaveToAccrueAnnually",
-      "format" : "double",
-      "example" : 100.5,
-      "x-is-money" : true
-    },
-    "sickLeaveMaximumHoursToAccrue" : {
-      "type" : "number",
-      "description" : "Deprecated use SickLeaveMaximumToAccrue",
-      "format" : "double",
-      "example" : 200.5,
-      "x-is-money" : true
-    },
     "SickLeaveToAccrueAnnually" : {
       "type" : "number",
       "description" : "Number of units accrued annually for sick leave. The type of units is determined by the property \"TypeOfUnitsToAccrue\" on the \"Sick Leave\" leave type",
@@ -1769,13 +1755,7 @@ ul.nav-tabs {
       "description" : "The schedule of accrual",
       "enum" : [ "AnnuallyAfter6Months", "OnAnniversaryDate", "PercentageOfGrossEarnings", "NoAccruals" ]
     },
-    "hoursAccruedAnnually" : {
-      "type" : "number",
-      "description" : "Deprecated use UnitsAccruedAnnually",
-      "format" : "double",
-      "x-is-money" : true
-    },
-    "UnitsAccruedAnnually" : {
+    "unitsAccruedAnnually" : {
       "type" : "number",
       "description" : "The number of units accrued for the leave annually. This is 0 when the ScheduleOfAccrual chosen is \"NoAccruals\"",
       "format" : "double",
@@ -1803,7 +1783,7 @@ ul.nav-tabs {
     },
     "rateAccruedHourly" : {
       "type" : "number",
-      "description" : "The number of hours added to the leave balance for every hour worked by the employee. This is normally 0, unless the scheduleOfAccrual chosen is \"OnHourWorked\"",
+      "description" : "not supported in Payroll NZ",
       "format" : "double",
       "x-is-money" : true
     },
@@ -4086,7 +4066,7 @@ ul.nav-tabs {
           <nav id="scrollingNav">
             <ul class="sidenav nav nav-list">
               <li class="nav-header" data-group="PayrollNz"><strong>SDK: </strong><span id='sdk-name'></span></li>
-              <li class="nav-header" data-group="PayrollNz"><strong>VSN: </strong>10.0.0</li>
+              <li class="nav-header" data-group="PayrollNz"><strong>VSN: </strong>10.4.0</li>
               <li class="nav-header" data-group="PayrollNz"><a href="#api-PayrollNz">Methods</a></li>
               <li data-group="PayrollNz" data-name="approveTimesheet" class="">
                 <a href="#api-PayrollNz-approveTimesheet">approveTimesheet</a>
@@ -4294,9 +4274,6 @@ ul.nav-tabs {
               </li>
               <li data-group="PayrollNz" data-name="updateEmployeeTax" class="">
                 <a href="#api-PayrollNz-updateEmployeeTax">updateEmployeeTax</a>
-              </li>
-              <li data-group="PayrollNz" data-name="updatePayRun" class="">
-                <a href="#api-PayrollNz-updatePayRun">updatePayRun</a>
               </li>
               <li data-group="PayrollNz" data-name="updatePaySlipLineItems" class="">
                 <a href="#api-PayrollNz-updatePaySlipLineItems">updatePaySlipLineItems</a>
@@ -5368,8 +5345,6 @@ $employeeLeaveSetup = new XeroAPI\XeroPHP\Models\PayrollNz\EmployeeLeaveSetup;
 $employeeLeaveSetup->setIncludeHolidayPay(false);
 $employeeLeaveSetup->setHolidayPayOpeningBalance(10.5);
 $employeeLeaveSetup->setAnnualLeaveOpeningBalance(25.89);
-$employeeLeaveSetup->setSickLeaveHoursToAccrueAnnually(100.0);
-$employeeLeaveSetup->setSickLeaveMaximumHoursToAccrue(200.0);
 $employeeLeaveSetup->setSickLeaveOpeningBalance(10.5);
 $employeeLeaveSetup->setSickLeaveToAccrueAnnually($100.0);
 $employeeLeaveSetup->setSickLeaveMaximumToAccrue($200.0);
@@ -5511,7 +5486,6 @@ This allows you to safely retry requests without the risk of duplicate processin
       "example" : {
         "holidayPayOpeningBalance" : 10,
         "annualLeaveOpeningBalance" : 100,
-        "sickLeaveHoursToAccrueAnnually" : 20,
         "sickLeaveToAccrueAnnually" : 20,
         "sickLeaveOpeningBalance" : 10,
         "sickLeaveScheduleOfAccrual" : "OnAnniversaryDate",
@@ -5704,13 +5678,12 @@ This allows you to safely retry requests without the risk of duplicate processin
       "example" : {
         "leaveTypeID" : "35da97ae-05b9-427f-9a98-69157ba42cec",
         "scheduleOfAccrual" : "AnnuallyAfter6Months",
-        "hoursAccruedAnnually" : 10,
         "unitsAccruedAnnually" : 10,
         "typeOfUnitsToAccrue" : "Hours",
         "openingBalanceTypeOfUnits" : "Hours",
         "maximumToAccrue" : 80,
         "openingBalance" : 100,
-        "rateAccruedHourly" : 3.5
+        "rateAccruedHourly" : null
       }
     }
   },
@@ -14817,193 +14790,6 @@ This allows you to safely retry requests without the risk of duplicate processin
         "hasStudentLoanBalance" : false,
         "studentLoanBalance" : null,
         "studentLoanAsAt" : null
-      }
-    }
-  },
-  "required" : true
-}
-    </script>
-                  </table>
-                </article>
-              </div>
-              <hr>
-              <div id="api-PayrollNz-updatePayRun">
-                <article id="api-PayrollNz-updatePayRun-0" data-group="User" data-name="updatePayRun" data-version="0">
-                  <div class="pull-left">
-                    <h1>updatePayRun</h1>
-                    <p>Updates a pay run</p>
-                  </div>
-                  <div class="pull-right"></div>
-                  <div class="clearfix"></div>
-                  <p></p>
-                  <p class="marked"></p>
-                  <p></p>
-                  <br />
-                  <pre class="prettyprint language-html prettyprinted" data-type="put"><code><span class="pln">/PayRuns/{PayRunID}</span></code></pre>
-                  <p>
-                  <h3>Usage and SDK Samples</h3>
-                  </p>
-                  <ul class="nav nav-tabs nav-tabs-examples">
-                    <!-- *****REPLACE***** comment out the other languages <li> -->
-                    <li class=""><a href="#examples-PayrollNz-updatePayRun-0-php">PHP</a></li>
-                  </ul>
-                  <div class="tab-content">
-                    <!-- *****REPLACE***** comment out the other languages tab-pane -->
-                    <div class="tab-pane" id="examples-PayrollNz-updatePayRun-0-php">
-                      <pre class="prettyprint"><code class="language-php"><&#63;php
-require_once(__DIR__ . '/vendor/autoload.php');
-
-// Configure OAuth2 access token for authorization: OAuth2
-$config = XeroAPI\XeroPHP\Configuration::getDefaultConfiguration()->setAccessToken( 'YOUR_ACCESS_TOKEN' );       
-
-$apiInstance = new XeroAPI\XeroPHP\Api\PayrollNzApi(
-    new GuzzleHttp\Client(),
-    $config
-);
-$xeroTenantId = "xeroTenantId_example";
-$payRunID = "38400000-8cf0-11bd-b23e-10b96e4ef00d";
-$idempotencyKey = "KEY_VALUE";
-$startDate = new DateTime('2020-10-28');
-$paymentDate = new DateTime('2020-10-30');
-
-$payRunCalendar = new XeroAPI\XeroPHP\Models\PayrollNz\PayRunCalendar;
-$payRunCalendar->setCalendarType(XeroAPI\XeroPHP\Models\PayrollNz\CalendarType.WEEKLY);
-$payRunCalendar->setPeriodStartDate($startDate);
-$payRunCalendar->setPaymentDate($paymentDate);
-
-try {
-  $result = $apiInstance->updatePayRun($xeroTenantId, $payRunID, $payRun, $idempotencyKey);
-} catch (Exception $e) {
-  echo 'Exception when calling PayrollNzApi->updatePayRun: ', $e->getMessage(), PHP_EOL;
-}
-?>
-</code></pre>
-                    </div>
-                  </div>
-                  <h2>Scopes</h2>
-                  <table>
-                    
-                    <tr>
-                      <td>payroll.payruns</td>
-                      <td>Grant read-write access to payroll payruns</td>
-                    </tr>
-                    
-                  </table>
-                  <h2>Parameters</h2>
-                  <div class="methodsubtabletitle">Path parameters</div>
-                  <table id="methodsubtable">
-                    <tr>
-                      <th width="150px">Name</th>
-                      <th>Description</th>
-                    </tr>
-                    <tr><td style="width:150px;">PayRunID<span style="color:red;">*</span></td>
-<td>
-
-
-    <div id="d2e199_updatePayRun_payRunID">
-        <div class="json-schema-view">
-            <div class="primitive">
-                <span class="type">
-                    UUID
-                </span>
-                    <span class="format">
-                        (uuid)
-                    </span>
-
-                    <div class="inner description marked">
-Identifier for the pay run
-                    </div>
-            </div>
-                <div class="inner required">
-                    Required
-                </div>
-        </div>
-    </div>
-</td>
-</tr>
-
-                  </table>
-                  <div class="methodsubtabletitle">Header parameters</div>
-                  <table id="methodsubtable">
-                    <tr>
-                      <th width="150px">Name</th>
-                      <th>Description</th>
-                    </tr>
-                    <tr><td style="width:150px;">Xero-Tenant-Id<span style="color:red;">*</span></td>
-<td>
-
-
-    <div id="d2e199_updatePayRun_xeroTenantId">
-        <div class="json-schema-view">
-            <div class="primitive">
-                <span class="type">
-                    String
-                </span>
-
-                    <div class="inner description marked">
-Xero identifier for Tenant
-                    </div>
-            </div>
-                <div class="inner required">
-                    Required
-                </div>
-        </div>
-    </div>
-</td>
-</tr>
-
-                    <tr><td style="width:150px;">Idempotency-Key</td>
-<td>
-
-
-    <div id="d2e199_updatePayRun_idempotencyKey">
-        <div class="json-schema-view">
-            <div class="primitive">
-                <span class="type">
-                    String
-                </span>
-
-                    <div class="inner description marked">
-This allows you to safely retry requests without the risk of duplicate processing. 128 character max.
-                    </div>
-            </div>
-        </div>
-    </div>
-</td>
-</tr>
-
-                  </table>
-                  <div class="methodsubtabletitle">Body parameters</div>
-                  <table id="methodsubtable">
-                    <tr>
-                      <th width="150px">Name</th>
-                      <th>Description</th>
-                    </tr>
-                    <tr>
-  <td style="width:150px;">payRun <span style="color:red;">*</span></td>
-  <td>
-    <div class="json-schema-view">
-      <div class="primitive">
-        <span class="type">
-        PayRun
-        </span>
-        <div class="inner description marked">
-          
-        </div>
-      </div>
-      <div class="inner required">
-        Required
-      </div>
-    </div>
-    <script type="application/ld+json">
-      {
-  "content" : {
-    "application/json" : {
-      "schema" : {
-        "$ref" : "#/components/schemas/PayRun"
-      },
-      "example" : {
-        "paymentDate" : "2019-07-01"
       }
     }
   },

@@ -71,6 +71,7 @@ class Contact implements ModelInterface, ArrayAccess
         'contact_persons' => '\XeroAPI\XeroPHP\Models\Accounting\ContactPerson[]',
         'bank_account_details' => 'string',
         'tax_number' => 'string',
+        'tax_number_type' => 'string',
         'accounts_receivable_tax_type' => 'string',
         'accounts_payable_tax_type' => 'string',
         'addresses' => '\XeroAPI\XeroPHP\Models\Accounting\Address[]',
@@ -121,6 +122,7 @@ class Contact implements ModelInterface, ArrayAccess
         'contact_persons' => null,
         'bank_account_details' => null,
         'tax_number' => null,
+        'tax_number_type' => null,
         'accounts_receivable_tax_type' => null,
         'accounts_payable_tax_type' => null,
         'addresses' => null,
@@ -192,6 +194,7 @@ class Contact implements ModelInterface, ArrayAccess
         'contact_persons' => 'ContactPersons',
         'bank_account_details' => 'BankAccountDetails',
         'tax_number' => 'TaxNumber',
+        'tax_number_type' => 'TaxNumberType',
         'accounts_receivable_tax_type' => 'AccountsReceivableTaxType',
         'accounts_payable_tax_type' => 'AccountsPayableTaxType',
         'addresses' => 'Addresses',
@@ -242,6 +245,7 @@ class Contact implements ModelInterface, ArrayAccess
         'contact_persons' => 'setContactPersons',
         'bank_account_details' => 'setBankAccountDetails',
         'tax_number' => 'setTaxNumber',
+        'tax_number_type' => 'setTaxNumberType',
         'accounts_receivable_tax_type' => 'setAccountsReceivableTaxType',
         'accounts_payable_tax_type' => 'setAccountsPayableTaxType',
         'addresses' => 'setAddresses',
@@ -292,6 +296,7 @@ class Contact implements ModelInterface, ArrayAccess
         'contact_persons' => 'getContactPersons',
         'bank_account_details' => 'getBankAccountDetails',
         'tax_number' => 'getTaxNumber',
+        'tax_number_type' => 'getTaxNumberType',
         'accounts_receivable_tax_type' => 'getAccountsReceivableTaxType',
         'accounts_payable_tax_type' => 'getAccountsPayableTaxType',
         'addresses' => 'getAddresses',
@@ -367,6 +372,10 @@ class Contact implements ModelInterface, ArrayAccess
     const CONTACT_STATUS_ACTIVE = 'ACTIVE';
     const CONTACT_STATUS_ARCHIVED = 'ARCHIVED';
     const CONTACT_STATUS_GDPRREQUEST = 'GDPRREQUEST';
+    const TAX_NUMBER_TYPE_SSN = 'SSN';
+    const TAX_NUMBER_TYPE_EIN = 'EIN';
+    const TAX_NUMBER_TYPE_ITIN = 'ITIN';
+    const TAX_NUMBER_TYPE_ATIN = 'ATIN';
     const SALES_DEFAULT_LINE_AMOUNT_TYPE_INCLUSIVE = 'INCLUSIVE';
     const SALES_DEFAULT_LINE_AMOUNT_TYPE_EXCLUSIVE = 'EXCLUSIVE';
     const SALES_DEFAULT_LINE_AMOUNT_TYPE_NONE = 'NONE';
@@ -387,6 +396,21 @@ class Contact implements ModelInterface, ArrayAccess
             self::CONTACT_STATUS_ACTIVE,
             self::CONTACT_STATUS_ARCHIVED,
             self::CONTACT_STATUS_GDPRREQUEST,
+        ];
+    }
+    
+    /**
+     * Gets allowable values of the enum
+     *
+     * @return string[]
+     */
+    public function getTaxNumberTypeAllowableValues()
+    {
+        return [
+            self::TAX_NUMBER_TYPE_SSN,
+            self::TAX_NUMBER_TYPE_EIN,
+            self::TAX_NUMBER_TYPE_ITIN,
+            self::TAX_NUMBER_TYPE_ATIN,
         ];
     }
     
@@ -447,6 +471,7 @@ class Contact implements ModelInterface, ArrayAccess
         $this->container['contact_persons'] = isset($data['contact_persons']) ? $data['contact_persons'] : null;
         $this->container['bank_account_details'] = isset($data['bank_account_details']) ? $data['bank_account_details'] : null;
         $this->container['tax_number'] = isset($data['tax_number']) ? $data['tax_number'] : null;
+        $this->container['tax_number_type'] = isset($data['tax_number_type']) ? $data['tax_number_type'] : null;
         $this->container['accounts_receivable_tax_type'] = isset($data['accounts_receivable_tax_type']) ? $data['accounts_receivable_tax_type'] : null;
         $this->container['accounts_payable_tax_type'] = isset($data['accounts_payable_tax_type']) ? $data['accounts_payable_tax_type'] : null;
         $this->container['addresses'] = isset($data['addresses']) ? $data['addresses'] : null;
@@ -525,6 +550,14 @@ class Contact implements ModelInterface, ArrayAccess
 
         if (!is_null($this->container['tax_number']) && (mb_strlen($this->container['tax_number']) > 50)) {
             $invalidProperties[] = "invalid value for 'tax_number', the character length must be smaller than or equal to 50.";
+        }
+
+        $allowedValues = $this->getTaxNumberTypeAllowableValues();
+        if (!is_null($this->container['tax_number_type']) && !in_array($this->container['tax_number_type'], $allowedValues, true)) {
+            $invalidProperties[] = sprintf(
+                "invalid value for 'tax_number_type', must be one of '%s'",
+                implode("', '", $allowedValues)
+            );
         }
 
         $allowedValues = $this->getSalesDefaultLineAmountTypeAllowableValues();
@@ -944,6 +977,42 @@ class Contact implements ModelInterface, ArrayAccess
 
 
         $this->container['tax_number'] = $tax_number;
+
+        return $this;
+    }
+
+
+
+    /**
+     * Gets tax_number_type
+     *
+     * @return string|null
+     */
+    public function getTaxNumberType()
+    {
+        return $this->container['tax_number_type'];
+    }
+
+    /**
+     * Sets tax_number_type
+     *
+     * @param string|null $tax_number_type Identifier of the regional type of tax number, such as US, UK, or other regional tax identifiers
+     *
+     * @return $this
+     */
+    public function setTaxNumberType($tax_number_type)
+    {
+        $allowedValues = $this->getTaxNumberTypeAllowableValues();
+        if (!is_null($tax_number_type) && !in_array($tax_number_type, $allowedValues, true)) {
+            throw new \InvalidArgumentException(
+                sprintf(
+                    "Invalid value for 'tax_number_type', must be one of '%s'",
+                    implode("', '", $allowedValues)
+                )
+            );
+        }
+
+        $this->container['tax_number_type'] = $tax_number_type;
 
         return $this;
     }
