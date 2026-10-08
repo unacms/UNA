@@ -240,7 +240,12 @@ export default function DropdownPopup({
     /** Reposition when any scrollable ancestor scrolls (menu stays anchored to trigger). */
     useEffect(() => {
         if (!isWeb || !isRealOpen) return;
-        const onScroll = () => updateButtonPosition();
+        const onScroll = (event: Event) => {
+            // Scrolling the popup's own list doesn't move the trigger; re-measuring then
+            // shifts the popup (trigger was measured mid press-animation on open)
+            if (contentRef.current?.contains?.(event.target)) return;
+            updateButtonPosition();
+        };
         window.addEventListener('scroll', onScroll, true);
         return () => window.removeEventListener('scroll', onScroll, true);
     }, [isWeb, isRealOpen, updateButtonPosition]);

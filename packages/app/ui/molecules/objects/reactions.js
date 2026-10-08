@@ -10,7 +10,7 @@
  *   primary                  — button variant=primary
  */
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
     Modal as ReactNativeModal,
     TouchableWithoutFeedback,
@@ -226,14 +226,34 @@ function buildCounterCompound({
 
 // ---------------------------------------------------------------------------
 // Reaction picker popover (emoji bar next to button)
+//
+// Facebook-style: tap/click = default reaction (onDefault). The picker opens
+// on long press (native and touch web) or mouse hover (web); hovering out closes it.
 // ---------------------------------------------------------------------------
+
+const HOVER_OPEN_DELAY = 500;
+const HOVER_CLOSE_DELAY = 300;
+const HOVER_SLOP = 8;
+// Ignore the click that ends the long press which opened the picker.
+const OPEN_CLICK_GUARD = 500;
+
+function isPointInRect(x, y, rect, slop = 0) {
+    if (!rect) return false;
+    return (
+        x >= rect.left - slop &&
+        x <= rect.right + slop &&
+        y >= rect.top - slop &&
+        y <= rect.bottom + slop
+    );
+}
 
 function ReactionPopover({
     items,
     onTap,
+    onDefault,
     disabled,
+    haptics,
     children,
-    asChild = false,
     childRefProp = 'ref',
 }) {
     const { width: windowWidth, height: windowHeight } = useWindowSize();
@@ -245,6 +265,24 @@ function ReactionPopover({
         height: 0,
     });
     const buttonRef = useRef(null);
+    const barRef = useRef(null);
+    const openTimer = useRef(null);
+    const closeTimer = useRef(null);
+    const openedAt = useRef(0);
+
+    const clearTimers = () => {
+        clearTimeout(openTimer.current);
+        clearTimeout(closeTimer.current);
+        openTimer.current = null;
+        closeTimer.current = null;
+    };
+
+    useEffect(() => clearTimers, []);
+
+    const closeModal = () => {
+        clearTimers();
+        setModalVisible(false);
+    };
 
     // RN host views have measureInWindow; the web View is a plain div, so fall
     // back to its viewport rect (what RN-web's measureInWindow returns).
@@ -274,17 +312,71 @@ function ReactionPopover({
             }
 
             setButtonPos({ x: adjustedX, y: actY, width, height });
+            openedAt.current = Date.now();
             setModalVisible(true);
         });
     };
 
     const handleSelect = (item) => {
-        setModalVisible(false);
+        closeModal();
         onTap?.(item);
+    };
+
+    const handlePress = (event) => {
+        clearTimers();
+        onDefault?.(event);
+    };
+
+    const handleLongPress = () => {
+        if (disabled) return;
+        FeedbackHaptics(haptics);
+        openModal();
+    };
+
+    // --- web hover (mouse only; touch opens the picker with a long press) ---
+
+    const handlePointerEnter = (event) => {
+        if (disabled || modalVisible || event.pointerType !== 'mouse') return;
+        clearTimeout(openTimer.current);
+        openTimer.current = setTimeout(openModal, HOVER_OPEN_DELAY);
+    };
+
+    const handlePointerLeave = () => {
+        clearTimeout(openTimer.current);
+        openTimer.current = null;
+    };
+
+    // The overlay covers the button while open, so hit-test manually: keep
+    // the bar open while the pointer is over the button or the bar.
+    const isOverTarget = (x, y) =>
+        isPointInRect(x, y, barRef.current?.getBoundingClientRect?.(), HOVER_SLOP) ||
+        isPointInRect(x, y, buttonRef.current?.getBoundingClientRect?.(), HOVER_SLOP);
+
+    const handleOverlayMouseMove = (event) => {
+        if (isOverTarget(event.clientX, event.clientY)) {
+            clearTimeout(closeTimer.current);
+            closeTimer.current = null;
+        } else if (!closeTimer.current) {
+            closeTimer.current = setTimeout(closeModal, HOVER_CLOSE_DELAY);
+        }
+    };
+
+    const handleOverlayClick = (event) => {
+        // The modal is a portal: keep clicks from reaching the message row.
+        event.stopPropagation();
+        if (Date.now() - openedAt.current < OPEN_CLICK_GUARD) return;
+        const { clientX, clientY } = event;
+        if (isPointInRect(clientX, clientY, barRef.current?.getBoundingClientRect?.())) return;
+        closeModal();
+        // A click on the (covered) button still means "like", as on Facebook.
+        if (isPointInRect(clientX, clientY, buttonRef.current?.getBoundingClientRect?.())) {
+            onDefault?.(event);
+        }
     };
 
     const reactionBar = (
         <View
+            ref={barRef}
             style={{
                 top: buttonPos.y + buttonPos.height + 5,
                 left: buttonPos.x,
@@ -326,46 +418,52 @@ function ReactionPopover({
             presentationStyle="overFullScreen"
             transparent={true}
             visible={modalVisible}
-            onRequestClose={() => setModalVisible(false)}
+            onRequestClose={closeModal}
         >
-            <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
-                <View className="flex-1 bg-transparent">
-                    {isWeb ? (
-                        <RemoveScroll>{reactionBar}</RemoveScroll>
-                    ) : (
-                        reactionBar
-                    )}
+            {isWeb ? (
+                <View
+                    className="flex-1 bg-transparent"
+                    onMouseMove={handleOverlayMouseMove}
+                    onClick={handleOverlayClick}
+                >
+                    <RemoveScroll>{reactionBar}</RemoveScroll>
                 </View>
-            </TouchableWithoutFeedback>
+            ) : (
+                <TouchableWithoutFeedback onPress={closeModal}>
+                    <View className="flex-1 bg-transparent">{reactionBar}</View>
+                </TouchableWithoutFeedback>
+            )}
         </ReactNativeModal>
     ) : null;
 
-    if (asChild) {
-        const childProps = {
-            [childRefProp]: buttonRef,
-            onPress: disabled ? undefined : openModal,
-        };
+    const button =
+        children && typeof children === 'object'
+            ? React.cloneElement(children, {
+                  onPress: disabled ? undefined : handlePress,
+                  onLongPress: disabled ? undefined : handleLongPress,
+                  ...(isWeb ? {} : { [childRefProp]: buttonRef }),
+              })
+            : null;
+
+    if (isWeb) {
         return (
-            <View>
-                {children && typeof children === 'object' ? (
-                    <>
-                        {React.cloneElement(children, childProps)}
-                        {overlay}
-                    </>
-                ) : null}
+            <View
+                ref={buttonRef}
+                onPointerEnter={handlePointerEnter}
+                onPointerLeave={handlePointerLeave}
+                // Long press on touch opens the picker, not the browser menu
+                onContextMenu={(event) => event.preventDefault()}
+                className="select-none"
+            >
+                {button}
+                {overlay}
             </View>
         );
     }
 
     return (
         <View>
-            <TouchableOpacity
-                ref={buttonRef}
-                onPress={openModal}
-                disabled={disabled}
-            >
-                {children}
-            </TouchableOpacity>
+            {button}
             {overlay}
         </View>
     );
@@ -546,18 +644,22 @@ export default function ElementReactions(props) {
                 title: t('rvote_' + item.name + '_title'),
             }));
 
+            // Plain tap/click applies the default reaction ("like"), like Facebook.
+            const defaultReaction = (
+                items.find((item) => item.name === 'like') || items[0]
+            )?.name;
+
             actionButton =
                 items.length > 1 ? (
                     <ReactionPopover
                         key="action"
-                        type="modal"
-                        showPopupType="onPress"
                         items={reactionItems}
                         onTap={(item) => {
                             doReaction(item.name);
                         }}
+                        onDefault={() => doReaction(defaultReaction)}
                         disabled={isDisabled}
-                        asChild
+                        haptics={params.haptics_type}
                         childRefProp="forwardedRef"
                     >
                         <ActionButton
