@@ -37,6 +37,42 @@ export function normalizeAnchorHrefs(html: string) {
     })
 }
 
+const LINK_TEXT_MAX = 30
+
+const decodeAmp = (s: string) => s.replace(/&amp;/g, '&')
+const stripScheme = (s: string) => s.replace(/^https?:\/\//i, '').replace(/^www\./i, '').replace(/\/$/, '')
+
+// Display text for a bare URL: no scheme/www, domain always kept whole, rest cut with "…"
+export function shortenUrlText(url: string) {
+    const s = stripScheme(url)
+    if (s.length <= LINK_TEXT_MAX) return s
+    const hostLength = (s.split(/[/?#]/)[0] ?? s).length
+    return s.slice(0, Math.max(LINK_TEXT_MAX - 1, hostLength)) + '…'
+}
+
+// Auto-linked URLs (anchor text == href, or href already cut upstream with "..."/"…")
+// get short display text; href stays full. Anchors with custom text (mentions,
+// [text](url)) are left as is.
+export function shortenLinkTexts(html: string) {
+    if (!html || typeof html !== 'string') return html
+    return html.replace(/<a\b([^>]*?)\bhref=(["'])(.*?)\2([^>]*)>([^<]*)<\/a>/gi, (match, before: string, quote: string, href: string, after: string, text: string) => {
+        const textUrl = decodeAmp(text.trim())
+        const fullUrl = decodeAmp(href)
+        if (!/^(https?:\/\/|www\.)/i.test(textUrl))
+            return match
+        const cut = textUrl.match(/^(.*?)(\.\.\.|…)$/)
+        const isAutoLink = cut
+            ? stripScheme(fullUrl).startsWith(stripScheme(cut[1] ?? ''))
+            : stripScheme(textUrl) === stripScheme(fullUrl)
+        if (!isAutoLink || fullUrl.length <= LINK_TEXT_MAX)
+            return match
+        const short = shortenUrlText(fullUrl)
+        const escaped = short.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        const title = /\btitle=/i.test(before + after) ? '' : ` title=${quote}${href}${quote}`
+        return `<a${before}href=${quote}${href}${quote}${after}${title}>${escaped}</a>`
+    })
+}
+
 export const hasBlockHtml = (html: string) => (
     /<(p|div|ul|ol|li|h[1-6]|pre|blockquote|table|thead|tbody|tr)\b/i.test(html)
 )
@@ -52,6 +88,7 @@ export function preprocessHtml(data: any) {
     // where the editor didn't auto-link). Skips text already inside anchors/mentions/code.
     html = linkifyHtml(html)
     html = normalizeAnchorHrefs(html)
+    html = shortenLinkTexts(html)
     if (html.trim() !== '' && !hasBlockHtml(html)) html = `<p>${html}</p>`
 
     return html
