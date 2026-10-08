@@ -3781,8 +3781,8 @@
     <string name="_sys_menu_item_title_con_followers"><![CDATA[Подписчики]]></string>
     <string name="_sys_menu_item_title_recom_friends"><![CDATA[Предложения]]></string>
     <string name="_sys_menu_item_title_recom_subscriptions"><![CDATA[На кого подписаться]]></string>
-    <string name="_sys_menu_title_ntfs_submenu"><![CDATA[Уведомления]]></string>
-    <string name="_sys_menu_title_public_ntfs_submenu"><![CDATA[Уведомления]]></string>
+    <string name="_sys_menu_title_ntfs_submenu"><![CDATA[Активность]]></string>
+    <string name="_sys_menu_title_public_ntfs_submenu"><![CDATA[Активность]]></string>
     <string name="_sys_menu_set_title_ntfs_submenu"><![CDATA[Уведомления]]></string>
     <string name="_sys_menu_item_title_system_ntfs_context_invitations"><![CDATA[Уведомления: Контекстные приглашения]]></string>
     <string name="_sys_menu_item_title_ntfs_context_invitations"><![CDATA[Приглашения]]></string>
