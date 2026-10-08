@@ -62,7 +62,7 @@ function DashboardStatTile({ href, icon, title, count, trailing }) {
 
     return (
         <View className={cn(dropdownTheme.cnt, 'relative z-0 w-full min-w-0')}>
-            <Link href={href} mode="plain" className="block w-full min-w-0" alt={title}>
+            <Link href={href} className="block w-full min-w-0" alt={title}>
                 <Row className={cn(menuSettings.item_ver, 'min-h-0 items-center py-2')}>
                     <View className="min-w-0 flex-auto gap-1">
                         {icon ? (

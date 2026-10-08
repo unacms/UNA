@@ -6,6 +6,7 @@ import {
     hasPushedScreens,
     isAtTabRoot,
     isSelectedTab,
+    nativeTabHref,
     navigateToTabRoot,
     rememberSelectedTab,
 } from 'app/lib/navigation/tab-history';
@@ -19,6 +20,56 @@ function scheduleTabFeedback(defer) {
         return;
     }
     playTabFeedback();
+}
+
+/** Marks notifications read: on UNA and in the session's counters. */
+export function clearNotifCounter(currentUser, setCurrentUser) {
+    clearNotif();
+    setCurrentUser({
+        notifications: 0,
+        notificationsTs: Date.now(),
+        counters: {
+            ...(currentUser?.counters || {}),
+            bx_notifications: 0,
+        },
+    });
+}
+
+/**
+ * Shared More-menu pick (JS tabs and NativeTabs): opens an external URL in the
+ * browser, or shows the page on its tab — the More tab for an overflow item.
+ * Returns the tab URL it navigated to, or null when it didn't navigate.
+ */
+export async function selectOverflowTab({
+    item,
+    currentUser,
+    setCurrentUser,
+    setBottomSheetData,
+    router,
+    moreTabIndex,
+}) {
+    if (item?.type === 'separator' || !item?.tab) return null;
+
+    const tabUrl = resolveTabUrl(item.tab, currentUser);
+    const routeIndex = item.isOverflow ? moreTabIndex : item.tabIndex;
+    setBottomSheetData(null);
+
+    if (isExternalTabUrl(tabUrl)) {
+        await WebBrowser.openBrowserAsync(tabUrl);
+        FeedbackHaptics('Medium');
+        return null;
+    }
+
+    if (tabUrl === appSetting('notifications', 'url')) {
+        clearNotifCounter(currentUser, setCurrentUser);
+    }
+
+    playTabFeedback();
+    rememberSelectedTab(`/tab${routeIndex}`);
+    // The tab's root shows the picked page; `navigate` updates the existing
+    // root (popping pages above it) where `push` would stack a second one.
+    router.navigate(nativeTabHref(tabUrl, `/tab${routeIndex}`));
+    return tabUrl;
 }
 
 /**
@@ -57,15 +108,7 @@ export async function handleTabPress({
     const tabKey = `/tab${tabIndex}`;
     const shouldClearNotif = isJs ? e.type === 'tabPress' : true;
     if (shouldClearNotif && tabUrl === notificationUrl) {
-        clearNotif();
-        setCurrentUser({
-            notifications: 0,
-            notificationsTs: Date.now(),
-            counters: {
-                ...(currentUser?.counters || {}),
-                bx_notifications: 0,
-            },
-        });
+        clearNotifCounter(currentUser, setCurrentUser);
     }
 
     // Use last-selected tab, not pathname. NativeTabs may focus the target

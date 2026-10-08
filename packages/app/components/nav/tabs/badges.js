@@ -71,3 +71,14 @@ export function getBadgeLabel(currentUser, tab) {
     }
     return null;
 }
+
+/** Sum of the overflow tabs' badges, for the More tab. 0 when none. */
+export function getOverflowBadgeTotal(currentUser, overflow = []) {
+    let total = 0;
+    for (const tab of overflow) {
+        if (tab?.hide === true) continue;
+        const n = parseInt(getBadgeLabel(currentUser, tab), 10);
+        if (n > 0) total += n;
+    }
+    return total;
+}
