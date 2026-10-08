@@ -2,12 +2,16 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
 import { appSetting } from 'app/lib/util'
 import emitter, { EVENTS } from 'app/context/emitter'
+import { subscribe } from 'app/ui/atoms/socket'
+import { useCurrentUserStore } from 'app/context/user'
 import {
     isSameItemsForUniList,
     flattenPagesForUniList,
+    dedupeUniListItems,
     fetchUniListData,
     prependItemToUniListQueryCache,
     removeItemFromUniListQueryCache,
+    mergeFirstPageIntoUniListQueryCache,
     cursorNextPageParam,
 } from './helpers'
 
@@ -28,9 +32,29 @@ export {
     startPerPageNextPageParam,
     prependItemToUniListQueryCache,
     removeItemFromUniListQueryCache,
+    mergeFirstPageIntoUniListQueryCache,
+    dedupeUniListItems,
     matchesFeedOwnerFilter,
     isSameItemsForUniList,
 } from './helpers'
+
+/** Batch window for timeline `added` events, plus a random spread so clients don't all hit UNA at once. */
+const TIMELINE_BATCH_MS = 1000
+const TIMELINE_JITTER_MS = 2000
+
+type TimelineSocketEvent = { id?: number | string; author_id?: number | string; peformer_id?: number | string }
+
+/** Timeline socket payload: a JSON string or an object (`{ id, author_id, peformer_id }`). */
+function parseTimelinePayload(payload: unknown): TimelineSocketEvent | null {
+    if (typeof payload === 'string') {
+        try {
+            return JSON.parse(payload)
+        } catch {
+            return null
+        }
+    }
+    return payload && typeof payload === 'object' ? (payload as TimelineSocketEvent) : null
+}
 
 /**
  * Shared UniList infinite query: TanStack is the store.
@@ -48,9 +72,10 @@ export function useUniListQuery({
     getNextPageParam = cursorNextPageParam,
     listenPageReload = false,
     listenFeed = false,
+    listenTimeline = false,
     matchesNewContent,
     canFetchNext,
-}: { queryKey: any; requestUrl: string; defaultParams: any; enabled?: boolean; deferNewItems?: any; refetchOnWindowFocus?: any; refetchOnReconnect?: any; gcTime?: number; getNextPageParam?: any; listenPageReload?: boolean; listenFeed?: boolean; matchesNewContent?: any; canFetchNext?: any }) {
+}: { queryKey: any; requestUrl: string; defaultParams: any; enabled?: boolean; deferNewItems?: any; refetchOnWindowFocus?: any; refetchOnReconnect?: any; gcTime?: number; getNextPageParam?: any; listenPageReload?: boolean; listenFeed?: boolean; listenTimeline?: boolean; matchesNewContent?: any; canFetchNext?: any }) {
     const queryClient = useQueryClient()
     // Exposed as `skipToastRef` (tail skeleton count). Not read in render here:
     // whether a data change is shown or deferred is decided by `requested` below.
@@ -110,7 +135,7 @@ export function useUniListQuery({
     const isPending = (queryResult as { isPending?: boolean }).isPending
 
     const cacheItems = useMemo(
-        () => flattenPagesForUniList(pagesData),
+        () => dedupeUniListItems(flattenPagesForUniList(pagesData)),
         [pagesData]
     )
 
@@ -156,6 +181,71 @@ export function useUniListQuery({
 
         return () => subscription.remove()
     }, [listenFeed, queryClient])
+
+    /*
+     * Timeline socket (`bx_timeline_0`): every client gets every post of the
+     * site, so a full refetch here (all loaded pages, on every client at once)
+     * loaded UNA on each post. A deleted row is dropped from the cache without
+     * a request. Added posts are batched: one first-page request after a
+     * jittered delay, merged on top of the cache; nothing changes when the new
+     * post is not in this list. Own posts already arrive through `EVENTS.feed`.
+     */
+    useEffect(() => {
+        if (listenTimeline !== true) return undefined
+
+        let timer: ReturnType<typeof setTimeout> | null = null
+        let cancelled = false
+
+        const loadNewItems = async () => {
+            timer = null
+            const cacheKey = qKeyRef.current
+            try {
+                const freshPage = await fetchUniListData({
+                    pageParam: undefined,
+                    requestUrl: requestUrlRef.current,
+                    defaultParams: paramsRef.current,
+                })
+                if (cancelled || cacheKey !== qKeyRef.current) return
+                if (mergeFirstPageIntoUniListQueryCache(queryClient, cacheKey, freshPage)) {
+                    refetchRef.current.skipToast = true
+                    setRequested(true)
+                }
+            } catch {
+                // The next event or refetch catches up.
+            }
+        }
+
+        const offAdded = subscribe('bx_timeline_0', 'added', (payload: unknown) => {
+            const event = parseTimelinePayload(payload)
+            const user = useCurrentUserStore.getState().currentUser
+            // Loose compare: socket ids are strings, currentUser.id a number.
+            if (user && (event?.author_id == user.id || event?.peformer_id == user.id)) return
+            if (timer) return
+            timer = setTimeout(loadNewItems, TIMELINE_BATCH_MS + Math.random() * TIMELINE_JITTER_MS)
+        })
+
+        const offDeleted = subscribe('bx_timeline_0', 'deleted', (payload: unknown) => {
+            const id = parseTimelinePayload(payload)?.id
+            if (id == null) return
+            const cacheKey = qKeyRef.current
+            const isShown = flattenPagesForUniList(queryClient.getQueryData(cacheKey)).some((it: any) => it.id == id)
+            if (isShown) {
+                refetchRef.current.skipToast = true
+                setRequested(true)
+                removeItemFromUniListQueryCache(queryClient, cacheKey, id)
+            }
+            setFrozen((f) => f && f.items.some((it: any) => it.id == id)
+                ? { ...f, items: f.items.filter((it: any) => it.id != id) }
+                : f)
+        })
+
+        return () => {
+            cancelled = true
+            if (timer) clearTimeout(timer)
+            offAdded()
+            offDeleted()
+        }
+    }, [listenTimeline, queryClient])
 
     /*
      * Visible rows are derived from the query cache instead of being copied into
