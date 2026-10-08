@@ -26,7 +26,7 @@ export const settingsConfigs = {
         expo_native_tabs: true,
         // Text under tab bar icons (web mobile footer + native JS / NativeTabs).
         // false = icon-only. Per-tab empty `title` still hides that label.
-        tab_labels: false,
+        tab_labels: true,
     },
     urls: {
         embeds: '/oembed.php?html=1&a=get_link&l=',

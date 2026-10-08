@@ -2,7 +2,7 @@ import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
 import { fetcher } from 'app/lib/fetcher';
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
-import { androidTabBarHeight, appSetting, isNativeTabsEnabled } from 'app/lib/util'
+import { appSetting, isNativeTabsEnabled } from 'app/lib/util'
 import { Platform } from 'react-native'
 import useFetchForm from 'app/lib/hooks/use-fetch-form'
 import { useCurrentUser } from 'app/context/user';
@@ -20,7 +20,7 @@ import { nativeTabPageHref } from 'app/lib/navigation/tab-history';
 import { useTranslation } from 'react-i18next'
 import ChatPanels from 'app/components/elements/chat/parts/chat-panels'
 import { useIsDesktop } from 'app/context/measure';
-import { areTabBarLabelsHidden, getTabList } from 'app/components/nav/tabs/tab-menu';
+import { getNativeTabBarHeight } from 'app/components/nav/tabs/tab-menu';
 import { useFooterHeight, useSetPageBottomBlur } from 'app/context/jotai/layout';
 import { PageHeaderOptions } from 'app/ui/molecules/header/options';
 import ConvosList from 'app/components/elements/chat/parts/convos-list';
@@ -41,9 +41,6 @@ const isWeb = Platform.OS === 'web';
 
 // Keep in sync with tabBarStyle.height in app/components/nav/tabs/native-tabs.js
 const TAB_BAR_HEIGHT = Platform.OS === 'ios' ? 52 : 56
-// Keep in sync with TAB_BAR_RESERVE in app/components/nav/tab-slide.js (and
-// post.js) — the iOS NativeTabs bar floats over the screen.
-const NATIVE_TAB_BAR_RESERVE = 56;
 
 /**
  * Messenger root: owns conversation selection, panel visibility, URL/history
@@ -93,9 +90,7 @@ export default function Messenger({ defaultConvoId, selectedMenu, convos, fetchC
     // as the bottom inset (as in post.js). JS tabs end the screen above the bar.
     const tabBarOverlayInset = isWeb || !isNativeTabsEnabled()
         ? 0
-        : (Platform.OS === 'android'
-            ? androidTabBarHeight(areTabBarLabelsHidden(getTabList(currentUser) || []))
-            : NATIVE_TAB_BAR_RESERVE) + (getWindowSafeAreaInsets().bottom || 0);
+        : getNativeTabBarHeight(currentUser) + (getWindowSafeAreaInsets().bottom || 0);
     // KeyboardStickyView lifts by (keyboard − opened), so opened is the
     // composer's resting distance from the window bottom. JS tabs: the bar
     // sits below the screen, plus Android's root SafeAreaView insets.bottom
