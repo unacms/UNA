@@ -228,12 +228,14 @@ function buildCounterCompound({
 // Reaction picker popover (emoji bar next to button)
 //
 // Facebook-style: tap/click = default reaction (onDefault). The picker opens
-// on long press (native) or mouse hover (web); hovering out closes it.
+// on long press (native and touch web) or mouse hover (web); hovering out closes it.
 // ---------------------------------------------------------------------------
 
 const HOVER_OPEN_DELAY = 500;
 const HOVER_CLOSE_DELAY = 300;
 const HOVER_SLOP = 8;
+// Ignore the click that ends the long press which opened the picker.
+const OPEN_CLICK_GUARD = 500;
 
 function isPointInRect(x, y, rect, slop = 0) {
     if (!rect) return false;
@@ -266,6 +268,7 @@ function ReactionPopover({
     const barRef = useRef(null);
     const openTimer = useRef(null);
     const closeTimer = useRef(null);
+    const openedAt = useRef(0);
 
     const clearTimers = () => {
         clearTimeout(openTimer.current);
@@ -309,6 +312,7 @@ function ReactionPopover({
             }
 
             setButtonPos({ x: adjustedX, y: actY, width, height });
+            openedAt.current = Date.now();
             setModalVisible(true);
         });
     };
@@ -329,7 +333,7 @@ function ReactionPopover({
         openModal();
     };
 
-    // --- web hover (mouse only, so touch taps on mobile web stay a plain like) ---
+    // --- web hover (mouse only; touch opens the picker with a long press) ---
 
     const handlePointerEnter = (event) => {
         if (disabled || modalVisible || event.pointerType !== 'mouse') return;
@@ -360,6 +364,7 @@ function ReactionPopover({
     const handleOverlayClick = (event) => {
         // The modal is a portal: keep clicks from reaching the message row.
         event.stopPropagation();
+        if (Date.now() - openedAt.current < OPEN_CLICK_GUARD) return;
         const { clientX, clientY } = event;
         if (isPointInRect(clientX, clientY, barRef.current?.getBoundingClientRect?.())) return;
         closeModal();
@@ -435,12 +440,8 @@ function ReactionPopover({
         children && typeof children === 'object'
             ? React.cloneElement(children, {
                   onPress: disabled ? undefined : handlePress,
-                  ...(isWeb
-                      ? {}
-                      : {
-                            [childRefProp]: buttonRef,
-                            onLongPress: disabled ? undefined : handleLongPress,
-                        }),
+                  onLongPress: disabled ? undefined : handleLongPress,
+                  ...(isWeb ? {} : { [childRefProp]: buttonRef }),
               })
             : null;
 
@@ -450,6 +451,9 @@ function ReactionPopover({
                 ref={buttonRef}
                 onPointerEnter={handlePointerEnter}
                 onPointerLeave={handlePointerLeave}
+                // Long press on touch opens the picker, not the browser menu
+                onContextMenu={(event) => event.preventDefault()}
+                className="select-none"
             >
                 {button}
                 {overlay}
