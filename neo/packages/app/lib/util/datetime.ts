@@ -307,11 +307,15 @@ function formatDateUniversal(date: Date, t: TFunction, {
     return (rel || '') + parts.join(' ');
 }
 
-/** "start - end" for two Unix timestamps (seconds), collapsing a shared day or time. */
-export const formatDateInterval = (dateStart: number, dateEnd: number, t: TFunction): string => {
+/**
+ * "start - end" for two Unix timestamps (seconds), collapsing a shared day or time.
+ * Pass `locale` from `useDateLocaleTag()` in anything rendered on the server: the
+ * module-level tag switches to the device locale as soon as any component hydrates,
+ * so a later-hydrating caller without it renders a different date order than SSR.
+ */
+export const formatDateInterval = (dateStart: number, dateEnd: number, t: TFunction, locale: string = currentDateLocaleTag): string => {
     const start = new Date(dateStart * 1000);
     const end = new Date(dateEnd * 1000);
-    const locale = currentDateLocaleTag;
 
     const isSingleDate = isSameCalendarDay(start, end);
     const isSingleTime = isSameClockTime(start, end);

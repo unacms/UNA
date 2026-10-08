@@ -1,4 +1,4 @@
-import { formatDateInterval } from 'app/lib/util'
+import { formatDateInterval, useDateLocaleTag } from 'app/lib/util'
 import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
 import { useTranslation } from 'react-i18next';
@@ -15,6 +15,7 @@ import {
 
 export default function Unit({ data, unitType, module }) {
     const { t } = useTranslation();
+    const dateLocaleTag = useDateLocaleTag();
     const { primaryMenuItem, secondaryMenuItem } = useUnitActions({
         unitType,
         data,
@@ -44,7 +45,7 @@ export default function Unit({ data, unitType, module }) {
                                     numberOfLines={1}
                                     className="text-muted-foreground text-xs uppercase font-semibold tracking-tight"
                                 >
-                                    {formatDateInterval(data.date_start, data.date_end, t)}
+                                    {formatDateInterval(data.date_start, data.date_end, t, dateLocaleTag)}
                                 </Text>
                             ) : null}
                         </Skeleton>
