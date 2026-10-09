@@ -68,6 +68,8 @@
     "feed_type_bx_courses": "добавил(а) <b>курс</b>",
     "feed_type_bx_spaces": "добавил(а) <b>пространство</b>",
     "feed_type_bx_polls": "добавил(а) <b>опрос</b>",
+    "feed_type_bx_persons": "присоединился(-ась)",
+    "feed_type_bx_organizations": "создал(а) <b>организацию</b>",
     "splash_page_title": "Добро пожаловать в",
     "splash_page_text": "NEO — открытый сетевой органайзер. Общайтесь с друзьями и сообществами. Сотрудничайте и стройте свою сеть.",
     "splash_page_account": "Нет аккаунта?",

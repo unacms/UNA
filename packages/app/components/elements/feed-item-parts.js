@@ -292,7 +292,10 @@ export const ItemInfo = memo(({ data, t }) => {
         let l = t(typeKey)
        
         if (l === typeKey) {
-            l = t('added a') + ' <b>' + t('item_' + data.type) + '</b>'
+            // A type with no `item_*` label shows no action text rather than its raw key.
+            const itemKey = 'item_' + data.type
+            const item = t(itemKey)
+            l = item === itemKey ? '' : t('added a') + ' <b>' + item + '</b>'
         }
         if (data.type == 'timeline_common_repost') {
             l += ' <b>' + data.content.owner_name + "'s " + data.content.parse_type + '</b>'

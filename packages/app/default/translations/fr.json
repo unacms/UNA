@@ -68,6 +68,8 @@
     "feed_type_bx_courses": "a ajouté un <b>cours</b>",
     "feed_type_bx_spaces": "a ajouté un <b>espace</b>",
     "feed_type_bx_polls": "a ajouté un <b>sondage</b>",
+    "feed_type_bx_persons": "a rejoint",
+    "feed_type_bx_organizations": "a créé une <b>organisation</b>",
     "splash_page_title": "Bienvenue sur",
     "splash_page_text": "NEO est l’organisateur de réseaux open source. Connectez-vous avec vos amis et vos communautés. Communiquez, collaborez et construisez votre propre réseau.",
     "splash_page_account": "Vous n’avez pas de compte ?",
