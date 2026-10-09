@@ -176,7 +176,7 @@ class BxBaseVote extends BxDolVote
     
     public function getElementAPI($aParams = [])
     {
-        if(!($this->_bApi = bx_is_api()))
+        if(!($this->_bIsApi = bx_is_api()))
             return;
 
         if(!$this->isEnabled())
@@ -331,7 +331,7 @@ class BxBaseVote extends BxDolVote
 
     protected function _getDoVote($aParams = array(), $isAllowedVote = true)
     {
-        return $this->_bApi ? [] : '';
+        return $this->_bIsApi ? [] : '';
     }
 
     protected function _getCounterLabel($iCount, $aParams = array())

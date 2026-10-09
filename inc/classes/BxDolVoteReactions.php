@@ -78,7 +78,7 @@ class BxDolVoteReactions extends BxTemplVote
 
         if(!empty($sDefault)) {
             $aDefault = $this->_aDataList[$sDefault];
-            if(((!$this->_bQuickMode && !$this->_bSingleMode) || $this->_bApi) && isset($aDefault['default'])) {
+            if(((!$this->_bQuickMode && !$this->_bSingleMode) || $this->_bIsApi) && isset($aDefault['default'])) {
                 if(is_array($aDefault['default']))
                     $aDefault = array_merge ($aDefault, $aDefault['default']);
                 else
@@ -254,7 +254,7 @@ class BxDolVoteReactions extends BxTemplVote
         $iCount = (int)$aVote['count_' . $sReaction];
         $aResult = [
             'code' => 0,
-            'reaction' => $this->_bApi ? $aReactions[$sSwitchTo]['name'] : $sReaction,
+            'reaction' => $this->_bIsApi ? $aReactions[$sSwitchTo]['name'] : $sReaction,
             'rate' => $aVote['rate_' . $sReaction],
             'count' => $iCount,
             'countf' => $iCount > 0 ? $this->_getCounterLabel($iCount, array('reaction' => $sReaction)) : '',

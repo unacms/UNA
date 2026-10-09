@@ -15,8 +15,6 @@ class BxBaseConnection extends BxDolConnection
     protected $_oTemplate;
     protected $_oFunctions;
 
-    protected $_bApi = false; // NOSONAR php:S116, the same field as BxDolObject::$_bApi
-
     protected $_sStylePrefix;
     protected $_sJsObjName;
 
@@ -211,7 +209,7 @@ class BxBaseConnection extends BxDolConnection
 
     public function getElementAPI($iContent, $iInitiator = false, $aParams = [])
     {
-        if(!($this->_bApi = bx_is_api()))
+        if(!($this->_bIsApi = bx_is_api()))
             return;
 
         if(!$iInitiator && (!($iInitiator = bx_get_logged_profile_id()) || $iInitiator == $iContent))

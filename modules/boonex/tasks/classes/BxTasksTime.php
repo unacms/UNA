@@ -189,7 +189,7 @@ class BxTasksTime extends BxTemplReport
     {
         $mixedResult = parent::_getDoReport($aParams);
 
-        if($this->_bApi)
+        if($this->_bIsApi)
             $mixedResult['is_do_auto'] = $this->_iDoAuto($aParams);
 
         return $mixedResult;
@@ -200,16 +200,16 @@ class BxTasksTime extends BxTemplReport
         $iAuthorId = $this->_getAuthorId();
         $iAuthorNip = bx_get_ip_hash($this->_getAuthorIp());
 
-        $iObjectId = ($sKey = 'object_id') && $this->_bApi ? $this->_iId : ($aParams[$sKey] ?? $oForm->getCleanValue($sKey));
+        $iObjectId = ($sKey = 'object_id') && $this->_bIsApi ? $this->_iId : ($aParams[$sKey] ?? $oForm->getCleanValue($sKey));
 
         if(!$this->isAllowedReport(true))
             return ['code' => 2, 'message' => $this->msgErrAllowedReport()];
 
-        $iVh = ($sKey = 'value_h') && $this->_bApi ? $aParams[$sKey] : ($aParams[$sKey] ?? $oForm->getCleanValue($sKey));
-        $iVm = ($sKey = 'value_m') && $this->_bApi ? $aParams[$sKey] : ($aParams[$sKey] ?? $oForm->getCleanValue($sKey));
+        $iVh = ($sKey = 'value_h') && $this->_bIsApi ? $aParams[$sKey] : ($aParams[$sKey] ?? $oForm->getCleanValue($sKey));
+        $iVm = ($sKey = 'value_m') && $this->_bIsApi ? $aParams[$sKey] : ($aParams[$sKey] ?? $oForm->getCleanValue($sKey));
         $iValue = $this->_oModule->_oConfig->timeA2I([$iVh, $iVm]);
 
-        $sText = ($sKey = 'text') && $this->_bApi ? $aParams[$sKey] : ($aParams[$sKey] ?? $oForm->getCleanValue($sKey));
+        $sText = ($sKey = 'text') && $this->_bIsApi ? $aParams[$sKey] : ($aParams[$sKey] ?? $oForm->getCleanValue($sKey));
         $sText = bx_process_input($sText);
 
         $iId = (int)$oForm->insert(['object_id' => $iObjectId, 'author_id' => $iAuthorId, 'author_nip' => $iAuthorNip, 'value' => $iValue,  'text' => $sText,  'date' => time()]);
@@ -232,7 +232,7 @@ class BxTasksTime extends BxTemplReport
                 if($aTimer && ($iContentId = $aTimer['content_id'] ?? 0) && ($iProfileId = $aTimer['profile_id'] ?? 0)) {
                     $this->_oModule->serviceProcessTimer('clear', $iContentId, $iProfileId);
 
-                    if(!$this->_bApi)
+                    if(!$this->_bIsApi)
                         $aResult = array_merge($aResult, [
                             'label_title' => _t('_bx_tasks_txt_timer_log'),
                             'eval' => $aResult['eval'] . '; ' . $this->_oModule->_oConfig->getJsObject('timer'). '.reload(this, ' . $iContentId . ', ' . $iProfileId . ');'

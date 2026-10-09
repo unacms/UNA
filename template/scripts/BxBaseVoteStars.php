@@ -117,7 +117,7 @@ class BxBaseVoteStars extends BxDolVoteStars
         $bVoted = isset($aParams['is_voted']) && (bool)$aParams['is_voted'] === true;
         $bDisabled = !$isAllowedVote || ($bVoted && !$this->isUndo());
 
-        if($this->_bApi)
+        if($this->_bIsApi)
             return [
                 'is_undo' => $this->isUndo(),
                 'is_voted' => $bVoted,
