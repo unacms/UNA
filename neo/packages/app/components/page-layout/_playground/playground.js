@@ -78,6 +78,11 @@ function TabsGallery({ variant }) {
                     <Tabs variant={variant} overflow="collapse" tabs={demoTabs(5)} />
                 </View>
             </TabsRow>
+            <TabsRow label='overflow="collapse" hug (narrow box)'>
+                <View className="max-w-xs w-full">
+                    <Tabs variant={variant} overflow="collapse" hug tabs={demoTabs(5)} />
+                </View>
+            </TabsRow>
             <TabsRow label='overflow="scroll" (narrow box)'>
                 <View className="max-w-xs w-full">
                     <Tabs variant={variant} tabs={demoTabs(5)} />

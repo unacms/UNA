@@ -215,7 +215,12 @@ export function TabsMeasureRow({ ViewComponent = View, tabs, collapseLayout, var
                         'flex-row'
                     )}
                 >
-                    <Text className={cn(sizeCfg.text)}>{tab.title}</Text>
+                    {/* Both label styles stacked: the item measures as wide as the wider one, so a
+                        variant whose `text` / `text_active` change the font still collapses right. */}
+                    <ViewComponent className="flex-col">
+                        <Text className={getTabTextClass(false, sizeCfg, variantCfg)}>{tab.title}</Text>
+                        <Text className={getTabTextClass(true, sizeCfg, variantCfg)}>{tab.title}</Text>
+                    </ViewComponent>
                 </ViewComponent>
             ))}
         </ViewComponent>

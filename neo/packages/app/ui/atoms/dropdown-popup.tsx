@@ -119,20 +119,20 @@ export default function DropdownPopup({
     const isDesktop = useIsDesktop();
     const contentRef = useRef<any>(null);
     const restoreFocusRef = useRef<any>(null);
-    const [buttonPos, setButtonPos] = useState({ triggerY: 0, triggerHeight: 0, x: 0, width: 0, height: 0, maxHeight: 0, shouldOpenAbove: false });
+    // `viewportHeight` (web): height of the fixed popup layer, for anchoring an above-open popup by its bottom edge.
+    const [buttonPos, setButtonPos] = useState({ triggerY: 0, triggerHeight: 0, x: 0, width: 0, height: 0, maxHeight: 0, shouldOpenAbove: false, viewportHeight: 0 });
     const [popupHeight, setPopupHeight] = useState(0);
     const [popupRenderedWidth, setPopupRenderedWidth] = useState(0);
     /**
-     * Height of the rendered menu content. 0 while nothing has rendered yet: on web the
-     * menu rows come from the component registry (`next/dynamic`), and on the first open
-     * their chunk is still loading, so the popup showed as a thin empty strip and then
-     * grew. Until the content is ready we reserve one row and show a spinner.
+     * On web the menu rows come from the component registry (`next/dynamic`). On the first
+     * open their chunk is still loading, so the popup showed as a thin empty strip and then
+     * grew row by row. When the content measures empty we reserve one row with a spinner,
+     * and show the rows once their height has been stable for CONTENT_SETTLE_MS.
+     * The latch is a ref: several layout events can arrive before a re-render.
      */
-    const [contentHeight, setContentHeight] = useState(0);
-    /** False from an empty measurement until the height has been stable for CONTENT_SETTLE_MS. */
-    const [contentSettled, setContentSettled] = useState(true);
+    const [contentPending, setContentPending] = useState(false);
+    const contentLoadingRef = useRef(false);
     const settleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-    const contentPending = contentHeight <= 0 || !contentSettled;
     const { width: windowWidth, height: windowHeight } = useWindowSize();
     const isWeb = useMemo(() => Platform.OS === 'web', []);
     const isIos = useMemo(() => Platform.OS == 'ios', []);
@@ -222,9 +222,10 @@ export default function DropdownPopup({
                 height,
                 maxHeight,
                 shouldOpenAbove,
+                viewportHeight: isWeb ? document.documentElement.clientHeight : 0,
             });
         })) return;
-    }, [measureElement, minPopupWidth, showOnTop, windowHeight, windowWidth]);
+    }, [measureElement, minPopupWidth, showOnTop, windowHeight, windowWidth, isWeb]);
 
     const handleToggle = useCallback(
         (bOpen: boolean) => {
@@ -250,11 +251,11 @@ export default function DropdownPopup({
             }
         } else {
             measureRetryRef.current = 0;
-            setButtonPos({ triggerY: 0, triggerHeight: 0, x: 0, width: 0, height: 0, maxHeight: 0, shouldOpenAbove: false });
+            setButtonPos({ triggerY: 0, triggerHeight: 0, x: 0, width: 0, height: 0, maxHeight: 0, shouldOpenAbove: false, viewportHeight: 0 });
             setPopupHeight(0);
             setPopupRenderedWidth(0);
-            setContentHeight(0);
-            setContentSettled(true);
+            setContentPending(false);
+            contentLoadingRef.current = false;
             if (settleTimerRef.current) clearTimeout(settleTimerRef.current);
             settleTimerRef.current = null;
         }
@@ -320,10 +321,12 @@ export default function DropdownPopup({
     // we additionally drive `opacity` + `pointerEvents` to keep the popup
     // hidden while it is still anchored at (0, 0) on native.
     const triggerMeasured = buttonPos.height > 0 || buttonPos.width > 0;
-    // For "above" we also need to know the popup's own height (measured via
-    // onLayout) to anchor it at `triggerTop - popupHeight - gap`. For "below"
-    // we don't need it at all (popup is anchored at `triggerBottom + gap`).
-    const popupMeasured = (!buttonPos.shouldOpenAbove || popupHeight > 0) && popupRenderedWidth > 0;
+    // Native "above" needs the popup's own height (measured via onLayout) to
+    // anchor it at `triggerTop - popupHeight - gap`. Web anchors it by `bottom`,
+    // so it grows upwards in place (e.g. from the loading row to the full menu).
+    // "Below" is anchored at `triggerBottom + gap` on both.
+    const anchorAboveByBottom = isWeb && buttonPos.shouldOpenAbove;
+    const popupMeasured = (!buttonPos.shouldOpenAbove || anchorAboveByBottom || popupHeight > 0) && popupRenderedWidth > 0;
     const hasMeasured = triggerMeasured && popupMeasured;
 
     // Wait for the content too: on a first (loading) open the rows don't exist yet.
@@ -424,19 +427,22 @@ export default function DropdownPopup({
     const handleScrollLayout = (e: { nativeEvent: { layout: { height: number } } }) => {
         const h = Math.round(e.nativeEvent.layout.height);
         if (h <= 0) {
-            // Nothing rendered yet (first measurement is 0 too, so check before the equality bail-out).
-            if (contentSettled) setContentSettled(false);
-            if (contentHeight !== 0) setContentHeight(0);
+            // Nothing rendered yet.
+            if (settleTimerRef.current) clearTimeout(settleTimerRef.current);
+            settleTimerRef.current = null;
+            if (!contentLoadingRef.current) {
+                contentLoadingRef.current = true;
+                setContentPending(true);
+            }
             return;
         }
-        if (h === contentHeight) return;
-        setContentHeight(h);
-        if (contentSettled) return;
+        if (!contentLoadingRef.current) return;
         // Content was loading: show it once it stops growing.
         if (settleTimerRef.current) clearTimeout(settleTimerRef.current);
         settleTimerRef.current = setTimeout(() => {
             settleTimerRef.current = null;
-            setContentSettled(true);
+            contentLoadingRef.current = false;
+            setContentPending(false);
         }, CONTENT_SETTLE_MS);
     };
 
@@ -447,7 +453,9 @@ export default function DropdownPopup({
             pointerEvents={hasMeasured ? 'auto' : 'none'}
             style={{
                 position: 'absolute',
-                top: popupTop,
+                ...(anchorAboveByBottom
+                    ? { bottom: buttonPos.viewportHeight - buttonPos.triggerY + triggerGapAbove }
+                    : { top: popupTop }),
                 left: finalLeft,
                 opacity: hasMeasured ? 1 : 0,
                 visibility: hasMeasured ? 'visible' : 'hidden',
@@ -455,7 +463,9 @@ export default function DropdownPopup({
                 minWidth: maxPopupWidth ? Math.min(minPopupWidth, cappedPopupWidth) : minPopupWidth,
                 maxWidth: cappedPopupWidth,
                 ...(maxPopupWidth ? { width: cappedPopupWidth } : {}),
-                maxHeight: buttonPos.maxHeight,
+                // Unset until the trigger is measured: a 0 max height would measure the
+                // content as empty and take the loading path.
+                maxHeight: buttonPos.maxHeight || undefined,
                 zIndex: 1000,
             } as ViewStyle /* web-only `visibility` */}
             className={cn(contentClasses, contentClassName)}
@@ -468,9 +478,10 @@ export default function DropdownPopup({
                 className={cn(
                     'web:outline-none',
                     maxPopupWidth && 'w-full min-w-0 max-w-full',
-                    // Rows that render while loading stay out of flow and invisible, so the
+                    // Rows that render while loading stay out of flow and hidden (web:
+                    // `visibility: hidden`, so they are out of the Tab order too), and the
                     // popup keeps its one-row height until the whole menu is ready.
-                    contentPending && 'absolute left-0 right-0 top-0 opacity-0'
+                    contentPending && 'absolute left-0 right-0 top-0 opacity-0 web:invisible'
                 )}
                 contentContainerClassName={maxPopupWidth ? 'w-full min-w-0' : undefined}
             >

@@ -243,36 +243,26 @@ export default function Tabs({
     useEffect(() => {
         updateIndicator();
         const onResize = () => updateIndicator();
-        /**
-         * Re-measure whenever the row or a trigger changes size, not only on window resize:
-         * the first measurement can run before the layout settles (web font swap, a parent
-         * that changes width), which left the pill off its tab.
-         */
-        const observer =
-            typeof ResizeObserver === 'function'
-                ? new ResizeObserver(onResize)
-                : null;
-        if (observer) {
-            if (headerWrapperRef.current) observer.observe(headerWrapperRef.current);
-            Object.values(triggerRefs.current).forEach((node) => {
-                if (node) observer.observe(node);
-            });
-            if (moreRef.current) observer.observe(moreRef.current);
-        } else {
-            window.addEventListener('resize', onResize);
-        }
+        window.addEventListener('resize', onResize);
         const list = listRef.current;
         if (overflow !== 'collapse' && list) {
             list.addEventListener('scroll', onResize, { passive: true });
         }
         return () => {
-            if (observer) observer.disconnect();
-            else window.removeEventListener('resize', onResize);
+            window.removeEventListener('resize', onResize);
             if (overflow !== 'collapse' && list) {
                 list.removeEventListener('scroll', onResize);
             }
         };
     }, [updateIndicator, rounded, hug, overflow, collapseLayout.visibleCount]);
+
+    /**
+     * The row wrapper's `onLayout` (ResizeObserver in `design/view.web.tsx`) re-measures
+     * the pill whenever the row changes size. The first measurement can run before the
+     * layout settles (web font swap, a parent that changes width), which left the pill
+     * off its tab; window resize alone doesn't catch that.
+     */
+    const onHeaderLayout = useCallback(() => updateIndicator(), [updateIndicator]);
 
     const transitionStyle =
         ready
@@ -352,6 +342,7 @@ export default function Tabs({
                     listWrapperClassName
                 )}
                 ref={headerWrapperRef}
+                onLayout={onHeaderLayout}
             >
                 {selectionLayer}
                 <TabsPrimitive.List
@@ -561,6 +552,7 @@ export default function Tabs({
                                 listWrapperClassName
                             )}
                             ref={headerWrapperRef}
+                            onLayout={onHeaderLayout}
                         >
                             {collapseRowInner}
                         </View>
@@ -573,6 +565,7 @@ export default function Tabs({
                         listWrapperClassName
                     )}
                     ref={headerWrapperRef}
+                    onLayout={onHeaderLayout}
                 >
                     {collapseRowInner}
                 </View>
@@ -600,8 +593,10 @@ export default function Tabs({
                 {!collapseHugStrip && trackView}
                 <View
                     className={cn(
-                        'relative min-w-0 w-full overflow-hidden',
-                        !collapseHugStrip && radiusTrack
+                        // Clips the row to the track's corners. In collapse + hug the track and its own
+                        // clip live in the w-max strip below; clipping here would cut the track's shadow.
+                        'relative min-w-0 w-full',
+                        !collapseHugStrip && cn('overflow-hidden', radiusTrack)
                     )}
                 >
                     {overflow === 'collapse' ? collapseRow : scrollRow}

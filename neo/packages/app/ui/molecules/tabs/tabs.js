@@ -650,8 +650,10 @@ export default function Tabs({
                 {!collapseHugStrip && trackView}
                 <View
                     className={cn(
-                        'relative min-w-0 w-full overflow-hidden',
-                        !collapseHugStrip && radiusTrack
+                        // Clips the row to the track's corners. In collapse + hug the track and its own
+                        // clip live in the w-max strip below; clipping here would cut the track's shadow.
+                        'relative min-w-0 w-full',
+                        !collapseHugStrip && cn('overflow-hidden', radiusTrack)
                     )}
                 >
                     {overflow === 'collapse' ? (
