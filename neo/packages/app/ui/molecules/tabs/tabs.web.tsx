@@ -247,10 +247,11 @@ export default function Tabs({
     }, [updateIndicator, rounded, hug, overflow, collapseLayout.visibleCount]);
 
     /**
-     * The row wrapper's `onLayout` (ResizeObserver in `design/view.web.tsx`) re-measures
-     * the pill whenever the row changes size. The first measurement can run before the
-     * layout settles (web font swap, a parent that changes width), which left the pill
-     * off its tab; window resize alone doesn't catch that.
+     * Re-measures the pill through the shared `onLayout` path (ResizeObserver in
+     * `design/view.web.tsx`): on the row wrapper, for a parent that changes width, and on
+     * each tab label, for label widths that change while the row keeps its size (a web
+     * font swap in a full-width bar moves the selected tab). The first measurement can run
+     * before the layout settles; window resize alone doesn't catch that.
      */
     const onHeaderLayout = useCallback(() => updateIndicator(), [updateIndicator]);
 
@@ -375,11 +376,13 @@ export default function Tabs({
                                 triggerClassName
                             )}
                         >
-                            <Text
-                                className={getTabTextClass(tab.key === currentTab, sizeCfg, variantCfg)}
-                            >
-                                {tab.title}
-                            </Text>
+                            <View className="min-w-0" onLayout={onHeaderLayout}>
+                                <Text
+                                    className={getTabTextClass(tab.key === currentTab, sizeCfg, variantCfg)}
+                                >
+                                    {tab.title}
+                                </Text>
+                            </View>
                         </TabsPrimitive.Trigger>
                     ))}
                 </TabsPrimitive.List>
@@ -446,11 +449,13 @@ export default function Tabs({
                                 triggerClassName
                             )}
                         >
-                            <Text
-                                className={getTabTextClass(tab.key === currentTab, sizeCfg, variantCfg)}
-                            >
-                                {tab.title}
-                            </Text>
+                            <View className="min-w-0" onLayout={onHeaderLayout}>
+                                <Text
+                                    className={getTabTextClass(tab.key === currentTab, sizeCfg, variantCfg)}
+                                >
+                                    {tab.title}
+                                </Text>
+                            </View>
                         </TabsPrimitive.Trigger>
                     ))}
                     {collapseLayout.overflowTabs.length > 0 && (
