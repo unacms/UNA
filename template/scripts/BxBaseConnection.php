@@ -15,6 +15,8 @@ class BxBaseConnection extends BxDolConnection
     protected $_oTemplate;
     protected $_oFunctions;
 
+    protected $_bApi = false;
+
     protected $_sStylePrefix;
     protected $_sJsObjName;
 
