@@ -179,7 +179,7 @@ class BxBaseFavorite extends BxDolFavorite
 
     public function getElementAPI($aParams = [])
     {
-        if(!($this->_bApi = bx_is_api()))
+        if(!($this->_bIsApi = bx_is_api()))
             return;
 
         if(!$this->isEnabled())
@@ -253,7 +253,7 @@ class BxBaseFavorite extends BxDolFavorite
         if($bDisabled)
             $sClass .= $bShowDoFavoriteAsButton || $bShowDoFavoriteAsButtonSmall ? ' bx-btn-disabled' : 'bx-favorite-disabled';
 
-        if($this->_bApi)
+        if($this->_bIsApi)
             return [
                 'is_undo' => $this->isUndo(),
                 'is_favorited' => $bFavorited,

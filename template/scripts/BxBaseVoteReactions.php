@@ -430,7 +430,7 @@ class BxBaseVoteReactions extends BxDolVoteReactions
         else
             $sClass .= $bShowDoVoteAsButton || $bShowDoVoteAsButtonSmall ? ' bx-btn-disabled' : ' ' . $this->_sStylePrefix . '-disabled';
 
-        if($this->_bApi)
+        if($this->_bIsApi)
             return [
                 'is_undo' => $bUndo,
                 'is_voted' => $bVoted,

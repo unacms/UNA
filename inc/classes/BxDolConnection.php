@@ -131,6 +131,8 @@ class BxDolConnection extends BxDolFactory implements iBxDolFactoryObject
 {
     protected $_oQuery;
 
+    protected $_bIsApi;
+
     protected $_sObject;
     protected $_aObject;
     protected $_iInitiator;

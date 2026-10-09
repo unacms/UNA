@@ -41,7 +41,7 @@ class BxBaseConnectionTest extends BxDolTestCase
 
         $this->assertSame([], $aErrors);
         // A class name, not the object: ReflectionClass of an object also sees dynamic properties.
-        $this->assertTrue((new ReflectionClass(get_class($o)))->hasProperty('_bApi'));
+        $this->assertTrue((new ReflectionClass(get_class($o)))->hasProperty('_bIsApi'));
     }
 
     static public function providerForConnectionObjects()

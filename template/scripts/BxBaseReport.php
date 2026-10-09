@@ -52,7 +52,7 @@ class BxBaseReport extends BxDolReport
             'show_counter' => true,
             'show_counter_only' => true
         );
-        if($this->_bApi) {
+        if($this->_bIsApi) {
             $aTypes = BxDolFormQuery::getDataItems($this->_sTypesPreList);
 
             $this->_aElementDefaultsApi = array_merge($this->_aElementDefaults, [
@@ -119,10 +119,10 @@ class BxBaseReport extends BxDolReport
 
         $oForm = $this->_getFormObject();
         $oForm->initChecker();
-        if($oForm->isSubmittedAndValid() || ($this->_bApi && !empty($aParams) && is_array($aParams)))
+        if($oForm->isSubmittedAndValid() || ($this->_bIsApi && !empty($aParams) && is_array($aParams)))
             return $this->_report($bPerformed, $aParams, $oForm);
 
-        if($this->_bApi)
+        if($this->_bIsApi)
             return [
                 'code' => 0,
                 'api' => bx_api_get_block('form', $oForm->getCodeAPI(), [
@@ -268,7 +268,7 @@ class BxBaseReport extends BxDolReport
 
     public function getElementAPI($aParams = [])
     {
-        if(!$this->_bApi)
+        if(!$this->_bIsApi)
             return;
         
         if(!$this->isEnabled())
@@ -375,17 +375,17 @@ class BxBaseReport extends BxDolReport
         $iAuthorId = $this->_getAuthorId();
         $iAuthorNip = bx_get_ip_hash($this->_getAuthorIp());
 
-        $iObjectId = $this->_bApi ? $this->_iId : $oForm->getCleanValue('object_id');
+        $iObjectId = $this->_bIsApi ? $this->_iId : $oForm->getCleanValue('object_id');
         $iObjectAuthorId = $this->_oQuery->getObjectAuthorId($iObjectId);
 
         if(!$this->isAllowedReport(true))
             return ['code' => 2, 'message' => $this->msgErrAllowedReport()];
 
-        $sType = $this->_bApi ? $aParams['type'] : $oForm->getCleanValue('type');
+        $sType = $this->_bIsApi ? $aParams['type'] : $oForm->getCleanValue('type');
         if(!in_array($sType, $this->_aTypes)) 
             return ['code' => 5, 'message' => _t('_report_err_wrong_type')];
 
-        $sText = $this->_bApi ? $aParams['text'] : $oForm->getCleanValue('text');
+        $sText = $this->_bIsApi ? $aParams['text'] : $oForm->getCleanValue('text');
         $sText = bx_process_input($sText, BX_DATA_TEXT_MULTILINE);
 
         $iId = (int)$oForm->insert(['object_id' => $iObjectId, 'author_id' => $iAuthorId, 'author_nip' => $iAuthorNip, 'type' => $sType, 'text' => $sText,  'date' => time()]);
@@ -496,7 +496,7 @@ class BxBaseReport extends BxDolReport
 
         $sTitle = call_user_func_array('_t', $this->_getTitleDoReport($bReported, $aParams));
 
-        if($this->_bApi)
+        if($this->_bIsApi)
             return [
                 'is_undo' => $this->isUndo(),
                 'is_reported' => $bReported,

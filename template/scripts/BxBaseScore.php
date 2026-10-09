@@ -387,7 +387,7 @@ class BxBaseScore extends BxDolScore
 
     public function getElementAPI($aParams = [])
     {
-        if(!($this->_bApi = bx_is_api()))
+        if(!($this->_bIsApi = bx_is_api()))
             return;
 
         if(!$this->isEnabled())
@@ -449,7 +449,7 @@ class BxBaseScore extends BxDolScore
         if($bDisabled)
             $sClass .= $bShowDoVoteAsButton || $bShowDoVoteAsButtonSmall ? ' bx-btn-disabled' : 'bx-score-disabled';
 
-        if($this->_bApi)
+        if($this->_bIsApi)
             return [
                 'is_undo' => $bUndo,
                 'is_voted' => $bVoted,

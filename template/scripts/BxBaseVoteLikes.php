@@ -109,7 +109,7 @@ class BxBaseVoteLikes extends BxDolVoteLikes
         if($bDisabled)
             $sClass .= $bShowDoVoteAsButton || $bShowDoVoteAsButtonSmall ? ' bx-btn-disabled' : 'bx-vote-disabled';
 
-        if($this->_bApi)
+        if($this->_bIsApi)
             return [
                 'is_undo' => $this->isUndo(),
                 'is_voted' => $bVoted,

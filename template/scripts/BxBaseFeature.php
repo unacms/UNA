@@ -124,7 +124,7 @@ class BxBaseFeature extends BxDolFeature
 
     public function getElementAPI($aParams = [])
     {
-        if(!($this->_bApi = bx_is_api()))
+        if(!($this->_bIsApi = bx_is_api()))
             return;
 
         if(!$this->isEnabled())
@@ -173,7 +173,7 @@ class BxBaseFeature extends BxDolFeature
         if($bDisabled)
             $sClass .= $bShowDoFeatureAsButton || $bShowDoFeatureAsButtonSmall ? ' bx-btn-disabled' : 'bx-feature-disabled';
 
-        if($this->_bApi)
+        if($this->_bIsApi)
             return [
                 'is_undo' => $this->isUndo(),
                 'is_featured' => $bFeatured,

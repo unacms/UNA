@@ -23,7 +23,7 @@ class BxDolObject extends BxDolFactory implements iBxDolReplaceable
     protected $_oTemplate = null;
     protected $_oQuery = null;
 
-    protected $_bApi = false;
+    protected $_bIsApi = false;
 
     protected $_iId = 0; ///< item id the action to be performed with
     protected $_sSystem = ''; ///< current system name
@@ -42,7 +42,7 @@ class BxDolObject extends BxDolFactory implements iBxDolReplaceable
     {
         parent::__construct();
 
-        $this->_bApi = bx_is_api();
+        $this->_bIsApi = bx_is_api();
 
         $aSystems = $this->getSystems();
         if(!isset($aSystems[$sSystem]))
@@ -251,7 +251,7 @@ class BxDolObject extends BxDolFactory implements iBxDolReplaceable
 
     public function getElementAPI($aParams = [])
     {
-        if(!$this->_bApi)
+        if(!$this->_bIsApi)
             return;
 
         //TODO: Implement for Objects like Views, Votes, etc.
@@ -265,7 +265,7 @@ class BxDolObject extends BxDolFactory implements iBxDolReplaceable
 
     public function getCounterAPI($aParams = [])
     {
-        if(!$this->_bApi)
+        if(!$this->_bIsApi)
             return;
 
         //TODO: Implement for Objects like Views, Votes, etc.
