@@ -150,6 +150,11 @@ if (fs.existsSync(md4cEmscriptenSourcePath)) {
     }
 }
 
+const allowLocalImageIPs = ['1', 'true'].includes(process.env.NEO_IMAGES_ALLOW_LOCAL_IP);
+if (allowLocalImageIPs) {
+    console.warn('NEO_IMAGES_ALLOW_LOCAL_IP is on: next/image fetches from private IPs (SSRF risk). Local development only.');
+}
+
 const nextConfig = {
     typescript: {
         ignoreBuildErrors: true,
@@ -363,6 +368,9 @@ const nextConfig = {
         // Card thumbnails never need 3840w; dropping the top sizes avoids expensive optimizer failures.
         deviceSizes: [640, 750, 828, 1080, 1200, 1920],
         imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+        // Local development against a UNA on localhost or a LAN address. Next 16 refuses
+        // upstream images that resolve to a private IP (SSRF protection); never set in production.
+        dangerouslyAllowLocalIP: allowLocalImageIPs,
     },
 }
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
