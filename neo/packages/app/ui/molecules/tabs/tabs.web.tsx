@@ -1,10 +1,10 @@
 import { Text } from 'app/design/typography';
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect, useCallback, type MouseEvent, type RefObject } from 'react';
 import * as TabsPrimitive from '@radix-ui/react-tabs';
 import { View } from 'app/design/view';
 import { cn } from 'app/lib/util';
 import { useTranslation } from 'react-i18next';
-import DropdownMenu from 'app/ui/atoms/dropdown-menu';
+import DropdownMenu, { type DropdownMenuItemData } from 'app/ui/atoms/dropdown-menu';
 import { Icon } from 'app/ui/atoms/icon';
 import {
     tabsTheme,
@@ -15,6 +15,11 @@ import {
     hasTabContent,
     TabsMeasureRow,
 } from 'app/ui/molecules/tabs/tabs-shared';
+import type { View as RNView } from 'react-native';
+import type { TabItem, TabsProps } from './tabs.types';
+
+/** Design `View` ref on web: typed as the RN view, backed by a DOM element. */
+type WebViewRef = RNView & HTMLDivElement;
 import {
     TABS_SELECTION_DURATION_MS,
     TABS_UNDERLINE_HEIGHT_PX,
@@ -22,7 +27,11 @@ import {
 } from 'app/ui/molecules/tabs/tabs-selection-constants';
 
 /** Skip scrolling the active tab into view on the first paint only (tab changes after that scroll). */
-function useScrollActiveTabIntoView(currentTab, triggerRefs, enabled) {
+function useScrollActiveTabIntoView(
+    currentTab: string | undefined,
+    triggerRefs: RefObject<Record<string, HTMLElement>>,
+    enabled: boolean
+) {
     const skipFirstScrollRef = useRef(true);
 
     useEffect(() => {
@@ -31,7 +40,7 @@ function useScrollActiveTabIntoView(currentTab, triggerRefs, enabled) {
             skipFirstScrollRef.current = false;
             return;
         }
-        const el = triggerRefs.current?.[currentTab];
+        const el = currentTab ? triggerRefs.current[currentTab] : undefined;
         if (!el) return;
         requestAnimationFrame(() => {
             el.scrollIntoView({
@@ -50,7 +59,7 @@ function useScrollActiveTabIntoView(currentTab, triggerRefs, enabled) {
  * Radix's call then hits an already focused element and changes nothing. Browsers without
  * the option ignore it.
  */
-function focusTriggerOnMouseDown(event) {
+function focusTriggerOnMouseDown(event: MouseEvent<HTMLButtonElement>) {
     if (event.button !== 0 || event.ctrlKey) return;
     event.currentTarget.focus({ focusVisible: false });
 }
@@ -59,29 +68,10 @@ function focusTriggerOnMouseDown(event) {
 const NO_PANEL_PROPS = Object.freeze({ 'aria-controls': undefined });
 
 /**
- * Segmented tab bar. Styles come from `theme.tabs_variants` (settings/theme/tabs.js):
- * - `variant="default"`: flat segmented control in NeoButton `bordered` colours, sliding pill.
- * - `variant="glass"`: NeoButton `glass` track with a lighter glass pill.
- * - `variant="secondary"`: underline.
- * A theme can add more; each entry's `indicator` (`'pill'` | `'line'`) picks the selection shape.
- *
- * @param {string} [variant] — key of `theme.tabs_variants` (`default`, `glass`, `secondary`, or a theme's own)
- * @param {string} [trackClassName] — the surface behind the row (e.g. `bg-muted`)
- * @param {string} [pillClassName] — the selection indicator (pill, or the underline for `indicator: 'line'`), e.g. a lighter pill on a tinted track
- * @param {string} [headerClassName]
- * @param {boolean} [rounded]
- * @param {boolean} [equalWidth] — When true (and `hug` is false), tabs share extra space equally; each tab keeps at least `min-content` width (label + padding).
- * @param {boolean} [fullWidth] — Deprecated: use `equalWidth` instead.
- * @param {boolean} [hug] — label-width triggers; use with `equalWidth={false}` for a compact strip
- * @param {'scroll'|'collapse'} [overflow] — `scroll` (default) or `collapse` into a "More" menu
- * @param {string} [moreMenuTitle] — label for the overflow trigger (default: translated "More"). Pass `""` for icon-only.
- * @param {string} [moreLabel] — alias for `moreMenuTitle` (deprecated)
- * @param {string} [moreMenuIcon] — Lucide icon name for the overflow trigger (default: `ChevronDown`)
- * @param {string} [tabBarClassName] — With `overflow="scroll"`, outer tab bar; with `overflow="collapse"`, the full-width measure row — use `flex flex-row justify-center` to center a `hug` strip in the parent.
- * @param {string} [listWrapperClassName] — box around track + list + indicator
- * @param {string} [listClassName] — tab row only
- * @param {string} [triggerClassName] — each trigger only; not `TabsContent`
- * @param {(key: string) => void} [onTabChange] — user selection; not `activeTab` prop sync
+ * Segmented tab bar (web; native is tabs.tsx). Styles come from `theme.tabs_variants`
+ * (settings/theme/tabs.js): `variant="default"` is a flat segmented control, `"glass"` NeoButton
+ * glass, `"secondary"` an underline. A theme can add more; each entry's `indicator`
+ * (`'pill'` | `'line'`) picks the selection shape. Props are documented in tabs.types.ts.
  */
 export default function Tabs({
     tabs,
@@ -105,7 +95,7 @@ export default function Tabs({
     listClassName,
     triggerClassName,
     onTabChange,
-}) {
+}: TabsProps) {
     /** `fullWidth` is deprecated — same as `equalWidth` (first wins if both are set). */
     const useEqualWidth = equalWidth ?? fullWidth ?? false;
     const { t } = useTranslation();
@@ -114,10 +104,10 @@ export default function Tabs({
     const [currentTab, setCurrentTab] = useState(
         () => activeTab ?? tabs?.[0]?.key
     );
-    const headerWrapperRef = useRef(null);
-    const listRef = useRef(null);
-    const moreRef = useRef(null);
-    const triggerRefs = useRef({});
+    const headerWrapperRef = useRef<WebViewRef | null>(null);
+    const listRef = useRef<WebViewRef | null>(null);
+    const moreRef = useRef<WebViewRef | null>(null);
+    const triggerRefs = useRef<Record<string, HTMLElement>>({});
     const [rect, setRect] = useState({
         left: 0,
         top: 0,
@@ -165,15 +155,15 @@ export default function Tabs({
     const onTabChangeRef = useRef(onTabChange);
     onTabChangeRef.current = onTabChange;
 
-    const handleTabChange = useCallback((value) => {
+    const handleTabChange = useCallback((value: string) => {
         setCurrentTab(value);
         onTabChangeRef.current?.(value);
     }, []);
 
     const handleOverflowMenuSelect = useCallback(
-        (item) => {
+        (item: DropdownMenuItemData) => {
             markMenuSelect();
-            handleTabChange(item.id);
+            handleTabChange(String(item.id));
         },
         [handleTabChange, markMenuSelect]
     );
@@ -189,7 +179,7 @@ export default function Tabs({
             const wrapper = headerWrapperRef.current;
             if (!wrapper) return;
 
-            const applyRect = (elRect) => {
+            const applyRect = (elRect: DOMRect) => {
                 const wrapperRect = wrapper.getBoundingClientRect();
                 const left = elRect.left - wrapperRect.left;
                 const topRel = elRect.top - wrapperRect.top;
@@ -232,7 +222,7 @@ export default function Tabs({
                 return;
             }
 
-            const currentEl = triggerRefs.current?.[currentTab];
+            const currentEl = currentTab ? triggerRefs.current[currentTab] : undefined;
             if (!currentEl || typeof currentEl.getBoundingClientRect !== 'function') {
                 return;
             }
@@ -300,10 +290,10 @@ export default function Tabs({
                 'z-[1]'
             )}
             style={{
-                left: `${rect.left}px`,
-                top: `${rect.top}px`,
-                width: `${rect.width}px`,
-                height: `${rect.height}px`,
+                left: rect.left,
+                top: rect.top,
+                width: rect.width,
+                height: rect.height,
                 position: 'absolute',
                 ...transitionStyle,
             }}
@@ -435,7 +425,7 @@ export default function Tabs({
                         listClassName
                     )}
                 >
-                    {collapseLayout.visibleTabs.map((tab) => (
+                    {collapseLayout.visibleTabs.map((tab: TabItem) => (
                         <TabsPrimitive.Trigger
                             ref={(node) => {
                                 if (node) triggerRefs.current[tab.key] = node;
@@ -504,7 +494,7 @@ export default function Tabs({
                             </View>
                         </DropdownMenu>
                     )}
-                    {collapseLayout.overflowTabs.map((tab) => (
+                    {collapseLayout.overflowTabs.map((tab: TabItem) => (
                         <TabsPrimitive.Trigger
                             key={tab.key}
                             value={tab.key}

@@ -6,12 +6,12 @@ import {
     useLayoutEffect,
     useMemo,
 } from 'react';
-import { View, ScrollView, Platform } from 'react-native';
+import { View, ScrollView, Platform, type LayoutChangeEvent } from 'react-native';
 import { Text } from 'app/design/typography';
 import * as TabsPrimitive from 'app/ui/primitives/tabs';
 import { cn } from 'app/lib/util';
 import { useTranslation } from 'react-i18next';
-import DropdownMenu from 'app/ui/atoms/dropdown-menu';
+import DropdownMenu, { type DropdownMenuItemData } from 'app/ui/atoms/dropdown-menu';
 import { Icon } from 'app/ui/atoms/icon';
 import {
     tabsTheme,
@@ -22,6 +22,7 @@ import {
     hasTabContent,
     TabsMeasureRow,
 } from 'app/ui/molecules/tabs/tabs-shared';
+import type { TabItem, TabsProps } from './tabs.types';
 import {
     TABS_UNDERLINE_HEIGHT_PX,
 } from 'app/ui/molecules/tabs/tabs-selection-constants';
@@ -34,10 +35,13 @@ const useIsomorphicLayoutEffect =
 /** Underline height for the static (native scroll) line indicator. */
 const staticLineStyle = { height: TABS_UNDERLINE_HEIGHT_PX };
 
+type Layout = { x: number; y: number; width: number; height: number };
+type IndicatorRect = { left: number; top: number; width: number; height: number };
+
 /** RN layout often repeats with tiny float noise; always creating new objects in `onLayout` → `setState` re-renders forever. */
 const LAYOUT_EPS = 0.5;
 
-function isRnLayoutUnchanged(prev, next) {
+function isRnLayoutUnchanged(prev: Layout | undefined, next: Layout) {
     if (!prev || !next) return false;
     return (
         Math.abs(prev.x - next.x) < LAYOUT_EPS &&
@@ -47,7 +51,7 @@ function isRnLayoutUnchanged(prev, next) {
     );
 }
 
-function isIndicatorUnchanged(prev, next) {
+function isIndicatorUnchanged(prev: IndicatorRect, next: IndicatorRect) {
     return (
         Math.abs(prev.left - next.left) < LAYOUT_EPS &&
         Math.abs(prev.top - next.top) < LAYOUT_EPS &&
@@ -57,7 +61,7 @@ function isIndicatorUnchanged(prev, next) {
 }
 
 /** Whole pixels — avoids subpixel layout ↔ indicator sync loops on Fabric. */
-function normalizeRnLayout(layout) {
+function normalizeRnLayout(layout: Layout): Layout {
     return {
         x: Math.round(layout.x),
         y: Math.round(layout.y),
@@ -67,28 +71,9 @@ function normalizeRnLayout(layout) {
 }
 
 /**
- * @param {Array} tabs - { key, title, content }
- * @param {string} [activeTab]
- * @param {boolean} [equalWidth] — When true (and `hug` is false), tabs share extra space equally; each tab keeps at least `min-content` width (label + padding), never shrinking below that.
- * @param {boolean} [fullWidth] — Deprecated: use `equalWidth` instead (same behavior).
- * @param {string} [variant] — key of `theme.tabs_variants`: `default` (flat segmented control, NeoButton `bordered` colours), `glass` (NeoButton `glass`), `secondary` (underline), or a theme's own. The entry's `indicator` (`'pill'` | `'line'`) picks the selection shape.
- * @param {string} [size] sm | md | lg
- * @param {string} [contentClassName]
- * @param {string} [trackClassName] — the surface behind the row (e.g. `bg-muted`)
- * @param {string} [pillClassName] — the selection indicator (pill, or the underline for `indicator: 'line'`), e.g. a lighter pill on a tinted track
- * @param {string} [headerClassName] — classes on `Tabs` root (container)
- * @param {string} [tabBarClassName] — Bar wrapper: with `overflow="scroll"`, outer tab bar; with `overflow="collapse"`, the full-width measure row — use `flex flex-row justify-center` (web) / `flex-row justify-center` (native) to center a `hug` strip in the parent.
- * @param {string} [listWrapperClassName] — inner box that contains track + list (e.g. `mx-auto` with `hug`)
- * @param {string} [listClassName] — `TabsList` row only (e.g. `gap-1`, `justify-center`)
- * @param {string} [triggerClassName] — each tab trigger only (e.g. `mx-1`); does not affect tab panel content
- * @param {boolean} [rounded] — pill/track/row use `rounded-full`; when false, radii come from `tabs_sizes` (track, row, pill)
- * @param {boolean} [hug] — triggers only as wide as labels (no equal flex stretch). Combine with `equalWidth={false}` so the strip does not span the parent.
- * @param {'scroll'|'collapse'} [overflow] — `scroll`: horizontal scroll (default). `collapse`: overflow tabs move into a "More" menu.
- * @param {string} [moreMenuTitle] — label for the overflow trigger (default: translated "More"). Pass `""` for icon-only.
- * @param {string} [moreLabel] — alias for `moreMenuTitle` (deprecated).
- * @param {string} [moreMenuIcon] — Lucide icon name for the overflow trigger (default: `ChevronDown`).
- * @param {(key: string) => void} [onTabChange] — fired after the user selects a tab (new tab key).
- * @param {boolean} [disableScrollIntoView] — When true, skip horizontal scroll-to-active-tab after selection (useful on native if scroll fights layout).
+ * Segmented tab bar (native; web is tabs.web.tsx). Styles come from `theme.tabs_variants`
+ * (settings/theme/tabs.js): `variant="default"` is a flat segmented control, `"glass"` NeoButton
+ * glass, `"secondary"` an underline. Props are documented in tabs.types.ts.
  */
 export default function Tabs({
     tabs,
@@ -113,7 +98,7 @@ export default function Tabs({
     triggerClassName,
     onTabChange,
     disableScrollIntoView = false,
-}) {
+}: TabsProps) {
     /** `fullWidth` is deprecated — same as `equalWidth` (first wins if both are set). */
     const useEqualWidth = equalWidth ?? fullWidth ?? false;
     /**
@@ -143,7 +128,7 @@ export default function Tabs({
 
     const renderDiagRef = useRef(0);
     useIsomorphicLayoutEffect(() => {
-        if (!__DEV__ || !globalThis.__NEO_TABS_DEBUG__) return;
+        if (!__DEV__ || !(globalThis as { __NEO_TABS_DEBUG__?: boolean }).__NEO_TABS_DEBUG__) return;
         renderDiagRef.current += 1;
         tabsDebug('render', {
             n: renderDiagRef.current,
@@ -157,21 +142,21 @@ export default function Tabs({
     /** Layout of `TabsPrimitive.List` relative to the header row (same coords as the selection layer). */
     const listLayoutRef = useRef({ x: 0, y: 0, width: 0, height: 0 });
     /** Per-tab `Pressable` layout relative to the list — avoids `measureLayout`, which can hang on Fabric. */
-    const triggerLayoutsRef = useRef({});
+    const triggerLayoutsRef = useRef<Record<string, Layout>>({});
     /** "More" row view — `onLayout` is not relative to the tab list (Dropdown wraps the trigger). */
-    const moreViewRef = useRef(null);
+    const moreViewRef = useRef<View | null>(null);
     const currentTabRef = useRef(currentTab);
     useIsomorphicLayoutEffect(() => {
         currentTabRef.current = currentTab;
     });
 
-    const headerRowLayoutRef = useRef(null);
-    const scrollViewRef = useRef(null);
+    const headerRowLayoutRef = useRef<View | null>(null);
+    const scrollViewRef = useRef<ScrollView | null>(null);
     const scrollXRef = useRef(0);
     const scrollViewWidthRef = useRef(0);
     const skipFirstScrollIntoViewRef = useRef(true);
 
-    const [indicatorLayout, setIndicatorLayout] = useState({
+    const [indicatorLayout, setIndicatorLayout] = useState<IndicatorRect>({
         left: 0,
         top: 0,
         width: 0,
@@ -220,7 +205,7 @@ export default function Tabs({
         const tabKey = currentTabRef.current;
         const list = listLayoutRef.current;
 
-        const applyFromRect = (leftInHeader, topInHeader, width, height) => {
+        const applyFromRect = (leftInHeader: number, topInHeader: number, width: number, height: number) => {
             const l = Math.round(leftInHeader);
             const t0 = Math.round(topInHeader);
             const w = Math.round(width);
@@ -264,7 +249,7 @@ export default function Tabs({
 
         if (!list || list.width <= 0) return;
 
-        const triggerL = triggerLayoutsRef.current[tabKey];
+        const triggerL = tabKey ? triggerLayoutsRef.current[tabKey] : undefined;
         if (!triggerL) return;
 
         applyFromRect(
@@ -286,10 +271,10 @@ export default function Tabs({
     });
 
     /** Coalesce native indicator sync to one rAF — avoids layout↔setState reentrancy on Fabric when many triggers fire onLayout after a selection change. */
-    const indicatorRafRef = useRef(null);
+    const indicatorRafRef = useRef<number | null>(null);
     const indicatorSyncPendingRef = useRef(false);
 
-    const scheduleIndicatorSync = useCallback((source) => {
+    const scheduleIndicatorSync = useCallback((source: string) => {
         if (nativeScrollSkipIndicator) return;
         tabsDebug('schedule', { source });
         const flush = () => {
@@ -319,7 +304,7 @@ export default function Tabs({
     );
 
     const onListLayout = useCallback(
-        (e) => {
+        (e: LayoutChangeEvent) => {
             const layout = normalizeRnLayout(e.nativeEvent.layout);
             if (isRnLayoutUnchanged(listLayoutRef.current, layout)) return;
             listLayoutRef.current = layout;
@@ -329,7 +314,7 @@ export default function Tabs({
     );
 
     const onTriggerLayout = useCallback(
-        (tabKey) => (e) => {
+        (tabKey: string) => (e: LayoutChangeEvent) => {
             const layout = normalizeRnLayout(e.nativeEvent.layout);
             const prev = triggerLayoutsRef.current[tabKey];
             if (isRnLayoutUnchanged(prev, layout)) return;
@@ -342,7 +327,7 @@ export default function Tabs({
 
     const onMoreLayout = collapseLayout.onMoreLayout;
     const onMoreLayoutForTabs = useCallback(
-        (e) => {
+        (e: LayoutChangeEvent) => {
             onMoreLayout(e);
             if (!nativeScrollSkipIndicator) scheduleIndicatorSync('more');
         },
@@ -361,7 +346,7 @@ export default function Tabs({
 
     const scrollActiveTabIntoView = useCallback(() => {
         if (overflow === 'collapse') return;
-        const triggerL = triggerLayoutsRef.current[currentTab];
+        const triggerL = currentTab ? triggerLayoutsRef.current[currentTab] : undefined;
         const list = listLayoutRef.current;
         const scrollView = scrollViewRef.current;
         if (!triggerL || !list || !scrollView) return;
@@ -408,7 +393,7 @@ export default function Tabs({
     /** Theme `u-controls-tabs-selection-layer`: absolute + pointer-events-none + z-1 */
     const selectionStyle = useMemo(
         () => ({
-            position: 'absolute',
+            position: 'absolute' as const,
             left: indicatorLayout.left,
             top: indicatorLayout.top,
             width: indicatorLayout.width,
@@ -419,7 +404,7 @@ export default function Tabs({
     );
 
     /** Stable identity for `TabsPrimitive.Root` — unstable parent `onTabChange` must not recreate context every render. */
-    const handleTabChange = useCallback((value) => {
+    const handleTabChange = useCallback((value: string) => {
         tabsDebug('press', { from: currentTabRef.current, to: value });
         setCurrentTab(value);
         /** Defer sound/haptics so they do not run in the same sync stack as the press → commit (reduces native stalls). */
@@ -428,9 +413,9 @@ export default function Tabs({
     }, []);
 
     const handleOverflowMenuSelect = useCallback(
-        (item) => {
+        (item: DropdownMenuItemData) => {
             markMenuSelect();
-            handleTabChange(item.id);
+            handleTabChange(String(item.id));
         },
         [handleTabChange, markMenuSelect]
     );
@@ -538,7 +523,7 @@ export default function Tabs({
                     listClassName
                 )}
             >
-                {collapseLayout.visibleTabs.map((tab) => (
+                {collapseLayout.visibleTabs.map((tab: TabItem) => (
                     <TabsPrimitive.Trigger
                         key={tab.key}
                         value={tab.key}
@@ -611,7 +596,7 @@ export default function Tabs({
                         </View>
                     </DropdownMenu>
                 )}
-                {collapseLayout.overflowTabs.map((tab) => (
+                {collapseLayout.overflowTabs.map((tab: TabItem) => (
                     <TabsPrimitive.Trigger
                         key={tab.key}
                         value={tab.key}

@@ -467,7 +467,7 @@ export default function DropdownPopup({
                 // content as empty and take the loading path.
                 maxHeight: buttonPos.maxHeight || undefined,
                 zIndex: 1000,
-            } as ViewStyle /* web-only `visibility` */}
+            } as unknown as ViewStyle /* web-only `visibility` */}
             className={cn(contentClasses, contentClassName)}
         >
             <ScrollView
