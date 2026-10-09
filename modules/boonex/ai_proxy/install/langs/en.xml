@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="en" flag="gb" title="English">
+    <string name="_bx_ai_proxy"><![CDATA[AI Proxy]]></string>
+    <string name="_bx_ai_proxy_option_model"><![CDATA[Chat model]]></string>
+    <string name="_bx_ai_proxy_option_model_info"><![CDATA[Active chat model that answers operator proxy requests. The client cannot choose a different model.]]></string>
+</resources>
