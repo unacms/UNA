@@ -26,6 +26,7 @@ PLATES = {
     'purple': ('#7C3AED', '#5B21B6'),
     'red':    ('#F43F5E', '#BE123C'),
     'white':  ('#F3F4F6', '#E5E7EB'),
+    'rose':   ('#984F65', '#691C35'),
 }
 # glyph gradient (top, bottom): white fading out on a coloured plate, zinc on the white plate
 GLYPH = {
@@ -65,6 +66,7 @@ ICONS = [
     ('modules/boonex/nexus/template/images/icons/std-icon.svg', 'nexus', 'gray', 'galaxy', 80),
     ('modules/boonex/stream/template/images/icons/std-icon.svg', 'stream', 'green', 'circle-play', 80),
     ('modules/boonex/resources/template/images/icons/std-icon.svg', 'resources', 'green', 'rows-3', 80),
+    ('modules/boonex/ai_proxy/template/images/icons/std-icon.svg', 'ai_proxy', 'rose', 'bot', 80),
 ]
 
 # Brand artwork on the white plate: the source SVG's shapes are copied as they are (fills, gradients), scaled to

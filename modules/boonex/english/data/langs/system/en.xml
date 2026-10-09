@@ -2491,6 +2491,7 @@
     <string name="_sys_agents_field_prompt_tools"><![CDATA[Tools Prompt]]></string>
     <string name="_sys_agents_field_prompt_tools_info"><![CDATA[Instructions for using available tools.]]></string>
     <string name="_sys_agents_tools_popup_edit"><![CDATA[Edit tool]]></string>
+    <string name="_sys_agents_una_proxy_unconfigured"><![CDATA[The UNA proxy is not configured. Set the site UNA key and secret in Studio.]]></string>
     <string name="_sys_agents_field_title"><![CDATA[Title]]></string>
     <string name="_sys_agents_field_title_info"><![CDATA[Title to display]]></string>
     <string name="_sys_agents_field_description"><![CDATA[Description]]></string>
@@ -3878,7 +3879,9 @@
     <string name="_sys_page_block_title_sys_author"><![CDATA[Author]]></string>
     <string name="_sys_page_block_title_author"><![CDATA[Author]]></string>
     <string name="_sys_page_block_title_sys_ai_agent"><![CDATA[AI Agent]]></string>
+    <string name="_sys_page_block_title_sys_ai_agent_operator"><![CDATA[AI Agent Operator (for App only)]]></string>
     <string name="_sys_page_block_title_ai_agent"><![CDATA[AI Agent]]></string>
+    <string name="_sys_page_block_title_ai_agent_operator"><![CDATA[Agent]]></string>
     <string name="_sys_page_block_title_con_friends"><![CDATA[Friends]]></string>
     <string name="_sys_page_block_title_con_friend_requests"><![CDATA[Friend Requests]]></string>
     <string name="_sys_page_block_title_con_friend_requested"><![CDATA[Sent Friend Requests]]></string>
