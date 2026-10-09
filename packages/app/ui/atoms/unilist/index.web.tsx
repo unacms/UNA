@@ -49,6 +49,32 @@ function parseHeight(height: unknown): string | undefined {
     return value
 }
 
+/**
+ * Pixels rendered past each edge of the viewport, so window scroll never shows
+ * a blank band on a fast wheel. A module constant: Virtuoso republishes every
+ * prop on each render, and a new object makes it recompute the visible range.
+ */
+const INCREASE_VIEWPORT_BY = { top: 3000, bottom: 3000 }
+
+type Overscan = { main: number; reverse: number }
+
+/**
+ * Virtuoso `overscan` with the same value on both sides. A bare number only
+ * extends the list in the direction it last grew, so the visible range depends
+ * on that direction. When a grid item is re-measured (a card's button chunk
+ * loads and the card grows), VirtuosoGrid lays out its rows with the new height
+ * while its list boundary still has the old one; with a one-sided overscan each
+ * pass then flips the direction, the range alternates between two values, and
+ * the recursion ends in "Maximum call stack size exceeded". With equal sides the
+ * range depends on the scroll position only, so the next pass repeats it and
+ * Virtuoso stops there.
+ */
+function overscanBothSides(overscan: unknown, fallback: number): Overscan {
+    if (overscan && typeof overscan === 'object') return overscan as Overscan
+    const px = typeof overscan === 'number' ? overscan : fallback
+    return { main: px, reverse: px }
+}
+
 /** Grid container: rows wrap horizontally. */
 const GridListComponent = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(function GridListComponent({ className, ...props }, ref) {
     return (
@@ -90,10 +116,16 @@ export default function UniList(props: UniListProps) {
         url,
         refreshing,
         onRefresh,
+        overscan: overscanProp,
         ...restProps
     } = props
-    // Anything left over is a Virtuoso prop (overscan, computeItemKey, …).
+    // Anything left over is a Virtuoso prop (computeItemKey, …).
     const rest = omitProps(restProps, [...NATIVE_ONLY_PROPS, ...IGNORED_PROPS])
+    // Notifications are short rows; everything else pre-renders generously.
+    const overscan = useMemo(
+        () => overscanBothSides(overscanProp, unit === 'notifications' ? 100 : 900),
+        [overscanProp, unit]
+    )
 
     const uniRef = useRef<any>(undefined)
     const rows = useMemo(() => dedupeById(rawData), [rawData])
@@ -211,10 +243,8 @@ export default function UniList(props: UniListProps) {
         ref: refer ?? uniRef,
         startReached: onStartReached,
         endReached: onEndReached,
-        // Notifications are short rows; everything else pre-renders generously
-        // so window-scroll never shows a blank band on a fast wheel.
-        overscan: unit === 'notifications' ? 100 : 900,
-        increaseViewportBy: { top: 3000, bottom: 3000 },
+        overscan,
+        increaseViewportBy: INCREASE_VIEWPORT_BY,
         components: {
             ...(isGrid ? { List: GridListComponent, Item: GridItemComponent } : {}),
             Footer: FooterComponent,
