@@ -560,7 +560,7 @@ export default function PageLayoutPlayground({ data, children }) {
 
                     <Section
                         title={'Tabs: flat (variant="default")'}
-                        hint="NeoButton bordered colours: bg-button track, a lighter pill in both schemes."
+                        hint="Translucent bg-muted/60 rail with NeoButton bordered pill colours; the pill is lighter in both schemes."
                     >
                         <TabsGallery variant="default" />
                     </Section>

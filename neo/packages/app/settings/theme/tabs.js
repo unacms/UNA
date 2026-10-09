@@ -51,13 +51,14 @@ export const settingsTabs = {
      *   text / text_active   optional label classes; replace `u-controls-tabs-header-item-text*` when set
      */
     tabs_variants: {
-        // Flat segmented control: NeoButton `bordered` colours. The pill is
-        // lighter than the track in both schemes (white on neutral-200 in light,
-        // button-hover on button in dark).
+        // Flat segmented control: a translucent muted rail (it takes on tinted
+        // backgrounds) with NeoButton `bordered` pill colours. The pill is lighter
+        // than the rail in both schemes (white in light, button-hover in dark,
+        // where the 60% rail sits darker than solid muted).
         default: {
             indicator: 'pill',
             track:
-                'absolute inset-0 z-0 bg-button pointer-events-none',
+                'absolute inset-0 z-0 bg-muted/60 pointer-events-none',
             row: '',
             trigger_active: '',
             trigger_inactive:
