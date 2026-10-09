@@ -9,7 +9,8 @@ import { switcherInitialValue } from 'app/lib/form/field-initial-values';
 const switcherTheme = appSetting('theme', 'switcher');
 
 export default function FormFieldSwitcher(props) {
-    const { caption, size } = props;
+    const { caption, size, attrs } = props;
+    const disabled = !!attrs?.disabled;
     const resolvedSize = resolveControlSize(size);
     const sizeClass = switcherTheme.size?.[resolvedSize] ?? switcherTheme.size?.regular ?? '';
 
@@ -29,6 +30,7 @@ export default function FormFieldSwitcher(props) {
                     onValueChange={handleToggle}
                     value={!!field.value}
                     size={resolvedSize}
+                    disabled={disabled}
                 />
                 <Text className={switcherTheme['u-controls-switcher-text']}>
                     {caption}

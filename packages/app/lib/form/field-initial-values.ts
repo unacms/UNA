@@ -57,6 +57,17 @@ export function doubleRangeInitialValue(input: Input) {
 export function datetimeInitialValue(input: Input) {
     const withTime = input.type === 'datetime';
     let value = input.value ?? '';
+    // value may come as a unix timestamp - convert it to the 'YYYY-MM-DD HH:MM:SSZ' string the picker expects
+    if (typeof value === 'number' || /^\d+$/.test(String(value))) {
+        const ts = Number(value);
+        if (ts > 0) {
+            const date = new Date(ts * 1000);
+            date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
+            value = date.toISOString().replace('T', ' ').substring(0, 19) + 'Z';
+        } else {
+            value = '';
+        }
+    }
     if ((value == '0000-00-00 00:00:00Z' || value == '') && input.required == true) {
         const date = new Date();
         date.setHours(0, 0, 0, 0);
