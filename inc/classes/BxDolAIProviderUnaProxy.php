@@ -9,8 +9,7 @@
 
 class BxDolAIProviderUnaProxy extends NeuronAI\Providers\OpenAI\OpenAI
 {
-    // protected string $baseUri = 'https://unacms.com/m/ai_proxy/v1';
-    protected string $baseUri = 'http://hihi.com/una/m/ai_proxy/v1';
+    protected string $baseUri = 'https://unacms.com/m/ai_proxy/v1';
 
     public function __construct(
         string $sKey,
