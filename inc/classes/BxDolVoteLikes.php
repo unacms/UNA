@@ -12,6 +12,13 @@
  */
 class BxDolVoteLikes extends BxTemplVote
 {
+    /**
+     * A like can always be taken back, whatever the object's IsUndo setting.
+     * Votes that are likes only in form (poll answers) set it to false to
+     * keep IsUndo.
+     */
+    protected $_bUndoAlways = true;
+
     public function __construct($sSystem, $iId, $iInit = true, $oTemplate = false)
     {
         parent::__construct($sSystem, $iId, $iInit, $oTemplate);
@@ -26,6 +33,11 @@ class BxDolVoteLikes extends BxTemplVote
     public function getValue()
     {
         return (int)$this->_aSystem['min_value'];
+    }
+
+    public function isUndo()
+    {
+        return $this->_bUndoAlways || parent::isUndo();
     }
 
     /**

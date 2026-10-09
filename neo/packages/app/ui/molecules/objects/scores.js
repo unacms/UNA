@@ -210,10 +210,10 @@ export default function ElementScore(props) {
                         counterClass
                     }
                 >
-                    <Text className={'sv-old block h-5'}>
+                    <Text className={'sv-old block h-5 leading-5'}>
                         {scoreOld.toString()}
                     </Text>
-                    <Text className={'sv-new block h-5'}>
+                    <Text className={'sv-new block h-5 leading-5'}>
                         {score.toString()}
                     </Text>
                 </Text>

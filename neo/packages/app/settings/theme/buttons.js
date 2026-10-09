@@ -458,6 +458,8 @@ export const settingsButtons = {
                     pressed: 'bg-accent/80 web:hover:bg-accent',
                     active: 'bg-muted/50 ',
                     pressedToggle: 'bg-muted',
+                    // A cast like or reaction (selectedState="voted" in objects/likes, reactions).
+                    voted: 'bg-accent/60',
                     disabled: 'opacity-50',
                 },
                 text: {
@@ -468,6 +470,7 @@ export const settingsButtons = {
                     pressed: 'text-accent-foreground',
                     active: 'text-foreground',
                     pressedToggle: 'text-accent-foreground',
+                    voted: 'text-accent-foreground',
                     disabled: 'text-secondary-foreground',
                 },
             },
