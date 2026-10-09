@@ -29,6 +29,7 @@ class BxDolVoteReactions extends BxTemplVote
 
     protected $_sDataList; //--- Reactions list name.
     protected $_aDataList; //--- Reactions list with all reactions.
+    protected $_aDataListAll; //--- The whole Reactions list, also the reactions Solo mode leaves out.
 
     protected $_sDefault; //--- Default reaction name.
 
@@ -51,6 +52,7 @@ class BxDolVoteReactions extends BxTemplVote
 
         $this->_sDataList = 'sys_vote_reactions';
         $this->_aDataList = [];
+        $this->_aDataListAll = [];
 
         $this->_sDefault = 'default';
 
@@ -96,6 +98,8 @@ class BxDolVoteReactions extends BxTemplVote
         //--- The default reaction must be on the list.
         if($this->_sDefaultReaction !== '' && !isset($this->_aDataList[$this->_sDefaultReaction]))
             $this->_sDefaultReaction = '';
+
+        $this->_aDataListAll = $this->_aDataList;
 
         //--- Solo: only the default reaction (or the first one on the list) is available.
         if($this->_sMode == self::$sModeSolo && !empty($this->_aDataList)) {
@@ -174,6 +178,10 @@ class BxDolVoteReactions extends BxTemplVote
     {
         if(!empty($this->_aDataList[$sName]))
             return $this->_aDataList[$sName];
+
+        //--- Left out by Solo mode, but people may still have it.
+        if(!empty($this->_aDataListAll[$sName]))
+            return $this->_aDataListAll[$sName];
 
         //--- A free-picked emoji (Many mode), stored under its code.
         $sEmoji = self::decodeEmoji($sName);
@@ -387,14 +395,18 @@ class BxDolVoteReactions extends BxTemplVote
         $iAuthorId = $this->_getAuthorId();
         $iAuthorIp = $this->_getAuthorIp();
 
-        $sReaction = $this->normalizeReaction(isset($aVoteData['reaction']) ? $aVoteData['reaction'] : '');
+        $sRequested = isset($aVoteData['reaction']) ? trim((string)$aVoteData['reaction']) : '';
+        $aReactions = $this->getReactionsBy($iObjectId, $iAuthorId);
+
+        //--- One's own reaction can be taken back even when the settings no longer offer it
+        //--- (an emoji picked before Many mode was turned off, a reaction Solo mode leaves out).
+        $sReaction = in_array($sRequested, $aReactions, true) ? $sRequested : $this->normalizeReaction($sRequested);
         if($sReaction === false)
             return ['code' => BX_DOL_OBJECT_ERR_WRONG_DATE, 'message' => _t('_vote_err_reaction_not_available')];
 
         $aVoteData = ['reaction' => $sReaction, 'value' => $this->getValue()];
 
         $bUndo = $this->isUndo();
-        $aReactions = $this->getReactionsBy($iObjectId, $iAuthorId);
 
         //--- Take back a reaction one already has.
         if(in_array($sReaction, $aReactions)) {

@@ -176,5 +176,22 @@ class ReactionsModesTest extends BxDolIntegrationTestCase
 
         //--- Few mode refuses a free emoji.
         $this->assertSame(BX_DOL_OBJECT_ERR_WRONG_DATE, (int)$oVote->vote(['reaction' => '😀'])['code']);
+
+        //--- Reactions the settings no longer offer can still be taken back.
+        $this->configure('many', 'like', 2);
+        $oVote = $this->reactionsOrSkip($this->_iEventId);
+        $this->assertSame(['love', 'e_1f600'], $oVote->vote(['reaction' => '😀'])['api']['reactions']);
+
+        $this->configure('solo', 'like');
+        $oVote = $this->reactionsOrSkip($this->_iEventId);
+        $this->assertSame(BX_DOL_OBJECT_ERR_WRONG_DATE, (int)$oVote->vote(['reaction' => 'e_1f602'])['code'], 'An emoji one does not have is refused.');
+
+        $aResult = $oVote->vote(['reaction' => 'e_1f600']);
+        $this->assertSame(0, (int)$aResult['code']);
+        $this->assertSame(['love'], $aResult['api']['reactions']);
+
+        $aResult = $oVote->vote(['reaction' => 'love']);
+        $this->assertSame(0, (int)$aResult['code'], 'Solo mode with "like" still takes back "love".');
+        $this->assertSame([], $aResult['api']['reactions']);
     }
 }
