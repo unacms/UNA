@@ -80,34 +80,43 @@ export default function EmojiPicker({
                 placeholder={t('Search emoji')}
                 aria-label={t('Search emoji')}
                 role="searchbox"
+                autoCapitalize="none"
+                autoCorrect={false}
                 value={query}
                 onChangeText={setQuery}
             />
 
-            {!search ? (
-                <Row className="justify-between" role="tablist">
-                    {tabs.map((item) => {
-                        const active = item.id === tab;
-                        return (
-                            <Pressable
-                                key={item.id}
-                                role="tab"
-                                aria-selected={active}
-                                accessibilityLabel={item.title}
-                                onPress={() => setTab(item.id)}
-                                className={cn(
-                                    'w-8 h-8 items-center justify-center rounded-lg web:hover:bg-muted/60',
-                                    active && 'bg-muted'
-                                )}
-                            >
-                                <Text className={cn('text-lg', !active && 'opacity-60')}>{item.icon}</Text>
-                            </Pressable>
-                        );
-                    })}
-                </Row>
-            ) : null}
+            {/* The tabs stay while searching, so the picker keeps its size; a tab ends the search. */}
+            <Row className="justify-between" role="tablist">
+                {tabs.map((item) => {
+                    const active = !search && item.id === tab;
+                    return (
+                        <Pressable
+                            key={item.id}
+                            role="tab"
+                            aria-selected={active}
+                            accessibilityLabel={item.title}
+                            onPress={() => {
+                                setQuery('');
+                                setTab(item.id);
+                            }}
+                            className={cn(
+                                'w-8 h-8 items-center justify-center rounded-lg web:hover:bg-muted/60',
+                                active && 'bg-muted'
+                            )}
+                        >
+                            <Text className={cn('text-lg', !active && 'opacity-60')}>{item.icon}</Text>
+                        </Pressable>
+                    );
+                })}
+            </Row>
 
-            <ScrollView className="h-60" contentContainerClassName="flex-row flex-wrap">
+            <ScrollView
+                className="h-60"
+                contentContainerClassName="flex-row flex-wrap"
+                // One tap picks an emoji while the search keyboard is open.
+                keyboardShouldPersistTaps="handled"
+            >
                 {entries.map(([emoji, name]) => {
                     const chosen = selectedKeys.has(emojiKey(emoji));
                     const disabled = !chosen && !!isDisabled?.(emoji);

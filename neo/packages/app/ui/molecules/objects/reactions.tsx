@@ -23,7 +23,6 @@
 import React, { useState, useRef, useEffect, createContext, useContext, type ComponentType, type ReactNode } from 'react';
 import {
     Modal as ReactNativeModal,
-    TouchableWithoutFeedback,
     Platform,
     TouchableOpacity,
 } from 'react-native';
@@ -57,7 +56,7 @@ import {
 import { Icon } from 'app/ui/atoms/icon';
 import TooltipJs from 'app/ui/molecules/dialogs/tooltip';
 import { Text } from 'app/design/typography';
-import { View } from 'app/design/view';
+import { View, Pressable } from 'app/design/view';
 import { Modal, NeoButton } from 'app/design/controls';
 
 // The picker carries ~70 KB of emoji data: load it when it is first opened.
@@ -242,7 +241,7 @@ function buildCounterDivided({
                 startDecorator={getIcon(item.name)}
                 title={count}
                 // The count alone is no name; NeoButton would fall back to the icon's (Heart reads "Like").
-                accessibilityLabel={getTitle(item.name) + ' ' + count}
+                accessibilityLabel={getSpokenName(item.name, getTitle) + ' ' + count}
                 pressed={isMine}
                 selectedState={isMine ? 'voted' : undefined}
                 onPress={(event: any) => onOpenReaction(item.name, event)}
@@ -325,7 +324,7 @@ function buildCounterCompound({
                     controlSize="small"
                     borderShape="circle"
                     image={getIcon(item.name)}
-                    accessibilityLabel={getTitle(item.name)}
+                    accessibilityLabel={getSpokenName(item.name, getTitle)}
                     onPress={() => setSelectedTab(item.name)}
                 />
             </View>
@@ -384,13 +383,25 @@ const HOVER_SLOP = 8;
 const OPEN_CLICK_GUARD = 500;
 const PANEL_GAP = 6;
 const SCREEN_PADDING = 10;
-// measureInWindow on native reports y from below the status bar the Modal draws over.
-const NATIVE_Y_OFFSET = -20;
 
 type Rect = { left: number; right: number; top: number; bottom: number };
+type Box = { x: number; y: number; width: number; height: number };
 
 /** Closes the open popover; used by its panel after a choice. */
 const PopoverCloseContext = createContext<() => void>(() => {});
+
+// The action button and the counter of one object are separate instances. A
+// vote reaches the others at once, without waiting for (or needing) the socket.
+const voteListeners = new Map<string, Set<(next: ReactionState) => void>>();
+
+function shareVote(channel: string, next: ReactionState) {
+    voteListeners.get(channel)?.forEach((listener) => listener(next));
+}
+
+/** Screen readers name an emoji themselves; a picked one has no other title than "Reacted". */
+function getSpokenName(name: string, getTitle: (name: string) => string): string {
+    return emojiFromReactionCode(name) ?? getTitle(name);
+}
 
 function isPointInRect(x: number, y: number, rect: Rect | undefined, slop = 0) {
     if (!rect) return false;
@@ -425,11 +436,16 @@ function ReactionPopover({
     haptics?: string;
     childRefProp?: string;
 }) {
+    const { t } = useTranslation();
     const { width: windowWidth, height: windowHeight } = useWindowSize();
     const [modalVisible, setModalVisible] = useState(false);
-    const [panelPos, setPanelPos] = useState({ top: 0, left: 0 });
+    // The button and the overlay in window coordinates. Native measures the
+    // overlay once it is laid out, as it may not start at the window's top.
+    const [anchor, setAnchor] = useState<Box | null>(null);
+    const [nativeOverlay, setNativeOverlay] = useState<Box | null>(null);
     const buttonRef = useRef<any>(null);
     const panelRef = useRef<any>(null);
+    const overlayRef = useRef<any>(null);
     const openTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
     const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
     const openedAt = useRef(0);
@@ -461,22 +477,39 @@ function ReactionPopover({
         if (!buttonRef.current) return;
 
         measureButton((x, y, width, height) => {
-            const buttonY = isWeb ? y : y + NATIVE_Y_OFFSET;
-
-            // Below the button when it fits, else above it.
-            let top = buttonY + height + PANEL_GAP;
-            if (top + panelHeight > windowHeight - 16) top = buttonY - panelHeight - PANEL_GAP;
-            top = Math.max(8, top);
-
-            let left = x + width / 2 - panelWidth / 2;
-            left = Math.min(left, windowWidth - panelWidth - SCREEN_PADDING);
-            left = Math.max(SCREEN_PADDING, left);
-
-            setPanelPos({ top, left });
+            setAnchor({ x, y, width, height });
+            setNativeOverlay(null);
             openedAt.current = Date.now();
             setModalVisible(true);
         });
     };
+
+    const measureOverlay = () => {
+        overlayRef.current?.measureInWindow?.((x: number, y: number, width: number, height: number) =>
+            setNativeOverlay({ x, y, width, height })
+        );
+    };
+
+    // Below the button when it fits, else above it (anchored by its bottom
+    // edge, so the panel's real height doesn't matter), else at the top.
+    const overlay = isWeb ? { x: 0, y: 0, width: windowWidth, height: windowHeight } : nativeOverlay;
+    let panelStyle: { top?: number; bottom?: number; left: number } | null = null;
+    if (anchor && overlay) {
+        const buttonTop = anchor.y - overlay.y;
+        const below = buttonTop + anchor.height + PANEL_GAP;
+        const left = Math.max(
+            SCREEN_PADDING,
+            Math.min(
+                anchor.x - overlay.x + anchor.width / 2 - panelWidth / 2,
+                overlay.width - panelWidth - SCREEN_PADDING
+            )
+        );
+
+        if (below + panelHeight <= overlay.height - SCREEN_PADDING) panelStyle = { top: below, left };
+        else if (buttonTop - PANEL_GAP - panelHeight >= SCREEN_PADDING)
+            panelStyle = { bottom: overlay.height - buttonTop + PANEL_GAP, left };
+        else panelStyle = { top: SCREEN_PADDING, left };
+    }
 
     const handlePress = (event?: any) => {
         clearTimers();
@@ -544,19 +577,19 @@ function ReactionPopover({
         onContextMenu: (event: any) => event.preventDefault(),
     };
 
-    const panelView = (
+    const panelView = panelStyle ? (
         <View
             ref={panelRef}
-            style={{ top: panelPos.top, left: panelPos.left, width: panelWidth, elevation: 5 }}
+            style={{ ...panelStyle, width: panelWidth, elevation: 5 }}
             className="absolute"
             // Native: taps on the panel's own background must not reach the overlay, which closes it.
             onStartShouldSetResponder={() => true}
         >
             <PopoverCloseContext.Provider value={closeModal}>{panel}</PopoverCloseContext.Provider>
         </View>
-    );
+    ) : null;
 
-    const overlay = modalVisible ? (
+    const modal = modalVisible ? (
         <ReactNativeModal
             presentationStyle="overFullScreen"
             transparent={true}
@@ -568,9 +601,22 @@ function ReactionPopover({
                     <RemoveScroll>{panelView}</RemoveScroll>
                 </View>
             ) : (
-                <TouchableWithoutFeedback onPress={closeModal}>
-                    <View className="flex-1 bg-transparent">{panelView}</View>
-                </TouchableWithoutFeedback>
+                // The backdrop is a sibling of the panel: wrapping the panel in a
+                // touchable would merge its reactions into one accessibility element.
+                <View
+                    ref={overlayRef}
+                    className="flex-1 bg-transparent"
+                    accessibilityViewIsModal
+                    onLayout={measureOverlay}
+                >
+                    <Pressable
+                        className="absolute inset-0"
+                        accessibilityRole="button"
+                        accessibilityLabel={t('Close')}
+                        onPress={closeModal}
+                    />
+                    {panelView}
+                </View>
             )}
         </ReactNativeModal>
     ) : null;
@@ -585,7 +631,7 @@ function ReactionPopover({
         return (
             <View ref={buttonRef} className="select-none" {...buttonWebProps}>
                 {button}
-                {overlay}
+                {modal}
             </View>
         );
     }
@@ -593,7 +639,7 @@ function ReactionPopover({
     return (
         <View>
             {button}
-            {overlay}
+            {modal}
         </View>
     );
 }
@@ -726,6 +772,7 @@ export default function ElementReactions(props: ReactionsProps) {
     const counter = props.counter;
 
     const key = objectKey(props.type, props.system, props.object_id);
+    const channel = votedChannel(props.system, props.type, props.object_id);
 
     const settingsItems = settings[props.system]?.items ? settings[props.system].items : params.items;
     const iconset = settings[props.system]?.iconset ? settings[props.system].iconset : settings.iconset;
@@ -795,10 +842,10 @@ export default function ElementReactions(props: ReactionsProps) {
 
     // --- counters (live counts from the vote response / socket win) ---
 
-    const liveCount = (item: CounterItem): number => {
-        const fromState = state.counter?.['count_' + item.name];
-        return fromState != undefined ? Number(fromState) : Number(item.count) || 0;
-    };
+    // Once a vote has brought a full counter, a missing reaction is at 0: UNA
+    // leaves out picked emoji nobody has any more.
+    const liveCount = (item: CounterItem): number =>
+        Number(state.counter ? state.counter['count_' + item.name] : item.count) || 0;
 
     const counterItems: CounterItem[] = (() => {
         const base = (counter?.items ?? []).filter((item) => item?.name && item.name !== 'default');
@@ -856,7 +903,7 @@ export default function ElementReactions(props: ReactionsProps) {
                 : data.is_voted && data.reaction
                   ? [data.reaction]
                   : [];
-            setState((prev) => mergeState(prev, { ...data, reactions }));
+            shareVote(channel, { ...data, reactions });
         });
         playSound();
     };
@@ -895,10 +942,21 @@ export default function ElementReactions(props: ReactionsProps) {
     };
 
     useVotedSubscription({
-        channel: votedChannel(props.system, props.type, props.object_id),
+        channel,
         currentUserId: currentUser ? currentUser.id : 0,
         onUpdate: (next: ReactionState) => setState((prev) => mergeState(prev, next)),
     });
+
+    useEffect(() => {
+        const listener = (next: ReactionState) => setState((prev) => mergeState(prev, next));
+        const listeners = voteListeners.get(channel) ?? new Set();
+        listeners.add(listener);
+        voteListeners.set(channel, listeners);
+        return () => {
+            listeners.delete(listener);
+            if (!listeners.size) voteListeners.delete(channel);
+        };
+    }, [channel]);
 
     // --- action button ---
 
@@ -912,12 +970,16 @@ export default function ElementReactions(props: ReactionsProps) {
         // What the button shows.
         let icon: string;
         let label: string;
+        let spokenLabel: string | undefined;
         if (config.mode === 'solo' || (hasDefault && !shown)) {
             icon = getIcon(config.defaultName);
             label = getTitle(config.defaultName);
         } else if (hasDefault) {
             icon = getIcon(shown);
             label = getTitle(shown);
+            // A picked emoji shows as "Reacted"; name the emoji too ("fox Reacted").
+            const picked = emojiFromReactionCode(shown);
+            if (picked) spokenLabel = picked + ' ' + label;
         } else {
             icon = SMILE_PLUS;
             label = t('React');
@@ -938,7 +1000,7 @@ export default function ElementReactions(props: ReactionsProps) {
                 key="action"
                 startDecorator={icon}
                 title={showLabel ? label : false}
-                accessibilityLabel={label}
+                accessibilityLabel={spokenLabel ?? label}
                 pressed={pressed}
                 selectedState={pressed ? 'voted' : undefined}
                 disabled={disabled}
