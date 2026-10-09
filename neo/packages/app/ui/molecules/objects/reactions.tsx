@@ -198,6 +198,7 @@ function resolveConfig(
 function buildCounterDivided({
     t,
     getIcon,
+    getTitle,
     onOpenReaction,
     liveCount,
     items,
@@ -211,6 +212,7 @@ function buildCounterDivided({
 }: {
     t: (key: string) => string;
     getIcon: (name: string) => string;
+    getTitle: (name: string) => string;
     onOpenReaction: (name: string, event: any) => void;
     liveCount: (item: CounterItem) => number;
     items: CounterItem[];
@@ -239,6 +241,8 @@ function buildCounterDivided({
                 key={'counter-button-' + item.name}
                 startDecorator={getIcon(item.name)}
                 title={count}
+                // The count alone is no name; NeoButton would fall back to the icon's (Heart reads "Like").
+                accessibilityLabel={getTitle(item.name) + ' ' + count}
                 pressed={isMine}
                 selectedState={isMine ? 'voted' : undefined}
                 onPress={(event: any) => onOpenReaction(item.name, event)}
@@ -348,6 +352,7 @@ function buildCounterCompound({
                 key="counter"
                 startDecorator={icons}
                 title={total}
+                accessibilityLabel={t('Reactions') + ' ' + total}
                 onPress={onOpen}
             />,
         ],
@@ -995,6 +1000,7 @@ export default function ElementReactions(props: ReactionsProps) {
             counterParts = buildCounterDivided({
                 t,
                 getIcon,
+                getTitle,
                 onOpenReaction: openDividedVoters,
                 liveCount,
                 items: counterItems,
