@@ -2461,6 +2461,7 @@
         <string name="_sys_agents_field_prompt_tools"><![CDATA[Инструкция по инструментам]]></string>
         <string name="_sys_agents_field_prompt_tools_info"><![CDATA[Инструкции по использованию доступных инструментов.]]></string>
         <string name="_sys_agents_tools_popup_edit"><![CDATA[Редактирование инструмента]]></string>
+        <string name="_sys_agents_una_proxy_unconfigured"><![CDATA[Прокси UNA не настроен. Укажите ключ и секрет сайта в Studio.]]></string>
         <string name="_sys_agents_field_title"><![CDATA[Название]]></string>
         <string name="_sys_agents_field_title_info"><![CDATA[Название для отображения]]></string>
         <string name="_sys_agents_field_description"><![CDATA[Описание]]></string>
@@ -3835,7 +3836,9 @@
         <string name="_sys_page_block_title_sys_author"><![CDATA[Автор]]></string>
 	<string name="_sys_page_block_title_author"><![CDATA[Автор]]></string>
         <string name="_sys_page_block_title_sys_ai_agent"><![CDATA[ИИ агент]]></string>
+        <string name="_sys_page_block_title_sys_ai_agent_operator"><![CDATA[ИИ агент оператора (только для App-а)]]></string>
         <string name="_sys_page_block_title_ai_agent"><![CDATA[ИИ агент]]></string>
+        <string name="_sys_page_block_title_ai_agent_operator"><![CDATA[Агент]]></string>
         <string name="_sys_page_block_title_con_friends"><![CDATA[Друзья]]></string>
         <string name="_sys_page_block_title_con_friend_requests"><![CDATA[Хотят дружить]]></string>
         <string name="_sys_page_block_title_con_friend_requested"><![CDATA[Запрошенная дружба]]></string>
