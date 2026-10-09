@@ -761,7 +761,7 @@ class BxDolPrivacy extends BxDolFactory implements iBxDolFactoryObject
 
     public function checkSpace($aObject, $iViewerId)
     {
-        $oProfile = BxDolProfile::getInstance(-$aObject['group_id']);
+        $oProfile = BxDolProfile::getInstance(-(int)$aObject['group_id']);
         if (!$oProfile)
             return false;
 
@@ -991,7 +991,9 @@ class BxDolPrivacy extends BxDolFactory implements iBxDolFactoryObject
             return (bool)BxDolAcl::getInstance()->isMemberLevelInSet(array($iLevel), $iViewerId);
         }
 
-        if($aObject['group_id'] < 0)
+        // A space (context) is stored as its negative profile id. Compare numerically: under
+        // PHP 8 an empty or other non-numeric value compares as a string, so '' < 0 is true.
+        if(is_numeric($aObject['group_id']) && (int)$aObject['group_id'] < 0)
             return $this->checkSpace($aObject, $iViewerId);
 
         $aGroup = $this->_oDb->getGroupsBy(array('type' => 'id', 'id' => $aObject['group_id']));
