@@ -59,6 +59,13 @@ APP_ORIGIN=neo://app
 | `EAS_PROJECT_ID` | Optional. EAS builds and updates. |
 | `REDIS_URL` | Multi-tenant mode only: the domain map. |
 | `PORT`, `HOST`, `PROTO`, `HTTPS` | Self-hosted web server (`apps/next/pm2.config.js`). |
+| `NEO_IMAGES_ALLOW_LOCAL_IP` | Local development only. `1` lets `next/image` load images from a UNA on your machine or network; see below. |
+
+Next.js refuses to optimize an image whose host resolves to a private IP address (`127.0.0.1`, `::1`, `10.x`, `192.168.x`, ...). Against a local UNA (`UNA_URL=http://localhost:8088`), the dev server then logs "upstream image ... hostname resolved to private IP" and `/_next/image` answers 400 for every UNA image. Set `NEO_IMAGES_ALLOW_LOCAL_IP=1` in `.env.local` and restart the dev server; it turns on Next's `images.dangerouslyAllowLocalIP`.
+
+Never set it on a deployed server. The check stops server-side request forgery (SSRF): `/_next/image` fetches any URL on the image allowlist, and the allowlist includes `localhost` on every port. With the flag on, anyone can make the server request its own internal services through the image optimizer.
+
+The native app resizes images through the optimizer at `config.native_app_images_url`, a deployed NEO site by default. That site can't reach your local UNA, so the request fails and the app loads UNA's image URL directly. If you point `native_app_images_url` at your local web dev server, the same flag applies there.
 
 The web build on Vercel goes through Turborepo, which hides variables that `turbo.json` `globalEnv` doesn't list. Add new variables there.
 
