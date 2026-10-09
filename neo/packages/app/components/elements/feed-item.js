@@ -3,7 +3,7 @@ import Html from 'app/ui/atoms/html';
 import { useState, useEffect } from 'react'
 import Embed from 'app/ui/molecules/content/embed'
 import { cloneObject, appSetting } from 'app/lib/util';
-import { subscribe } from 'app/ui/atoms/socket';
+import { subscribeTimelineEdit } from 'app/lib/timeline-edits';
 import { ActionMenu, CounterMenu } from 'app/components/elements/feed-item-parts'
 import { UnitImages } from 'app/lib/feed-items'
 import { PollItem } from 'app/components/elements/entity-poll';
@@ -16,29 +16,18 @@ export default function ElementFeedItem({ data, isModal, blockWrapperProps }) {
 
     // Same as UnitFeed card: refetch on timeline "edited" socket
     useEffect(() => {
-        if (eventId == null) return
+        if (eventId == null) return undefined
 
-        const onItemEdited = async (strData) => {
-            try {
-                const editedData = JSON.parse(strData)
-                const editedId = editedData?.id
-                if (editedId == null || editedId.toString() !== eventId.toString()) return
-
-                const result = await fetcher(
-                    '/api.php?r=' +
-                    appSetting('urls', 'feed_item') +
-                    '{"params":{"browse":"id","value":' +
-                    editedId +
-                    '}}'
-                )
-                if (result.data?.content) setContent(result.data.content)
-            } catch {
-                // ignore malformed socket payloads
-            }
-        }
-
-        const unsub = subscribe('bx_timeline_0', 'edited', onItemEdited)
-        return () => unsub()
+        return subscribeTimelineEdit(eventId, async () => {
+            const result = await fetcher(
+                '/api.php?r=' +
+                appSetting('urls', 'feed_item') +
+                '{"params":{"browse":"id","value":' +
+                eventId +
+                '}}'
+            )
+            if (result.data?.content) setContent(result.data.content)
+        })
     }, [eventId])
 
     const tlContent = content?.text
