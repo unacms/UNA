@@ -87,6 +87,9 @@ $r = !BxDolModuleQuery::getInstance()->isEnabledByName('bx_groups') ? ['message'
     'group_name' => 'UNA Community',
     'group_desc' => 'Introduce yourself, share what you are building with UNA and NEO, and ask questions.',
     'allow_view_to' => BX_DOL_PG_ALL,
+    // Participants may post (the privacy object's default). Left out, the forced add
+    // stored '' (seen on api.unacms.app), which no privacy group matches.
+    'allow_post_to' => 'p',
 ]]);
 if (!empty($r['content']['profile_id'])) {
     $iGroupProfileId = (int)$r['content']['profile_id'];
