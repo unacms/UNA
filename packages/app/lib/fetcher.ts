@@ -145,10 +145,8 @@ export async function fetcherRaw(host: string, mixed: FetcherRequest, fetchOptio
     else {
         path = mixed;
     }
-    if (undefined === headers)
-        headers = {};
-
-    
+    // A copy: the caller's object may be reused for other requests.
+    headers = { ...headers };
 
     // add token and origin headers when necessary
     if (token)

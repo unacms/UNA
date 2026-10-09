@@ -83,7 +83,6 @@ function rewriteToUna(request, tenant, unaPath) {
     }
 
     const tmpHeaders = new Headers(request.headers);
-    tmpHeaders.set('x-hello-from-middleware1', 'hello');
     tmpHeaders.set('authorization', `Bearer ${unaApiKey}`);
     tmpHeaders.set('cookie', cookieHeaderFromRequest(request));
 

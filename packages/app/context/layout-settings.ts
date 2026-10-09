@@ -63,7 +63,19 @@ const getDefaultLangCode = (): string => {
     }
 };
 
-const resolveLangCode = (value: string | undefined): string => value && value != 'auto' ? value : getDefaultLangCode();
+/**
+ * Device language for `auto`, read once: every `useLayoutSettings` consumer
+ * resolves it on each render, and the locale lookup (Intl / RNLocalize) is not
+ * free. Not cached during SSR, where there is no device.
+ */
+let deviceLangCode: string | null = null;
+const getDeviceLangCode = (): string => {
+    if (Platform.OS === 'web' && typeof window === 'undefined') return getDefaultLangCode();
+    if (deviceLangCode === null) deviceLangCode = getDefaultLangCode();
+    return deviceLangCode;
+};
+
+const resolveLangCode = (value: string | undefined): string => value && value != 'auto' ? value : getDeviceLangCode();
 
 const getCookieValue = (name: string): string => {
     if (Platform.OS !== 'web' || typeof document === 'undefined') return '';
