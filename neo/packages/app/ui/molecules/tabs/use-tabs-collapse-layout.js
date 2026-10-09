@@ -10,6 +10,9 @@ import { TABS_DEFAULT_MORE_BUTTON_WIDTH_PX } from 'app/ui/molecules/tabs/tabs-se
 
 const WIDTH_EPS = 0.5;
 
+/** Stable empty list, so a stale measurement doesn't produce a new array each render. */
+const EMPTY_WIDTHS = Object.freeze([]);
+
 function isWidthUnchanged(prev, next) {
     return Math.abs((prev ?? 0) - (next ?? 0)) < WIDTH_EPS;
 }
@@ -75,19 +78,22 @@ export function useTabsCollapseLayout({
     );
 
     const [containerWidth, setContainerWidth] = useState(0);
-    const [tabWidths, setTabWidths] = useState(() => []);
+    /**
+     * Widths from the hidden measure row, tagged with the tab set they were measured for.
+     * Widths for another tab set are ignored rather than cleared from an effect: the first
+     * `onLayout` / ResizeObserver results can arrive before an effect runs, and clearing them
+     * then left the row un-collapsed until the next resize (an unchanged size never re-fires).
+     */
+    const [measured, setMeasured] = useState(() => ({ key: '', widths: [] }));
     const [moreWidth, setMoreWidth] = useState(0);
 
     const containerRef = useRef(null);
     const resizeObserverRef = useRef(null);
     const { width: windowWidth } = useWindowDimensions();
 
-    useEffect(() => {
-        if (overflow !== 'collapse') return;
-        setContainerWidth(0);
-        setTabWidths([]);
-        setMoreWidth(0);
-    }, [overflow, tabKeys, tabCount]);
+    /** Changes with the tab set; `TabsMeasureRow` uses it as its key so every tab re-reports its width. */
+    const measureKey = `${tabCount}\u0000${tabKeys}`;
+    const tabWidths = measured.key === measureKey ? measured.widths : EMPTY_WIDTHS;
 
     useEffect(() => {
         return () => {
@@ -162,10 +168,12 @@ export function useTabsCollapseLayout({
     const onTabLayout = useCallback(
         (index) => (e) => {
             const w = e.nativeEvent.layout.width;
-            setTabWidths((prev) => {
+            setMeasured((prevMeasured) => {
+                const prev =
+                    prevMeasured.key === measureKey ? prevMeasured.widths : EMPTY_WIDTHS;
                 const prevWidth = prev[index] ?? 0;
                 if (prev.length >= tabCount && isWidthUnchanged(prevWidth, w)) {
-                    return prev;
+                    return prevMeasured;
                 }
 
                 const next =
@@ -176,10 +184,10 @@ export function useTabsCollapseLayout({
                               (_, i) => prev[i] ?? 0
                           );
                 next[index] = w;
-                return next;
+                return { key: measureKey, widths: next };
             });
         },
-        [tabCount]
+        [tabCount, measureKey]
     );
 
     const onMoreLayout = useCallback((e) => {
@@ -236,6 +244,7 @@ export function useTabsCollapseLayout({
     );
 
     return {
+        measureKey,
         visibleCount,
         visibleTabs,
         overflowTabs,

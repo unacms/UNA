@@ -24,22 +24,37 @@ export const tabsVariants =
 /** Stable fallback so size config is never a fresh (mutable) object per render. */
 const EMPTY_SIZE_CFG = Object.freeze({});
 
+/**
+ * `'pill'` or `'line'`, from the variant's `indicator` key. Older theme entries
+ * without it get `'pill'` when they set a `pill` class, else `'line'` when they
+ * set a `line` class.
+ */
+export function getTabsIndicator(variantCfg) {
+    if (variantCfg?.indicator === 'pill' || variantCfg?.indicator === 'line') {
+        return variantCfg.indicator;
+    }
+    if (variantCfg?.pill?.trim()) return 'pill';
+    if (variantCfg?.line?.trim()) return 'line';
+    return 'pill';
+}
+
 /** Size / variant config and the radii derived from it. Pure. */
 export function getTabsSizing({ size, variant, rounded }) {
     const currentSizeKey = size || tabsSizes?.default_size || 'md';
     const sizeCfg = tabsSizes?.[currentSizeKey] || tabsSizes?.md || EMPTY_SIZE_CFG;
     const variantCfg =
         tabsVariants[variant] || tabsVariants.default || tabsVariants.secondary;
+    const indicator = getTabsIndicator(variantCfg);
 
-    /** Secondary uses a bottom line, not a pill — rounding on outer track/row clips the indicator. */
+    /** A line indicator sits on the bottom edge — rounding the outer track/row would clip it. */
     const radiusTrack =
-        variant === 'secondary'
+        indicator === 'line'
             ? ''
             : rounded
               ? 'rounded-full'
               : sizeCfg.track || 'rounded-xl';
     const radiusRow =
-        variant === 'secondary'
+        indicator === 'line'
             ? ''
             : rounded
               ? 'rounded-full'
@@ -52,6 +67,7 @@ export function getTabsSizing({ size, variant, rounded }) {
         currentSizeKey,
         sizeCfg,
         variantCfg,
+        indicator,
         radiusTrack,
         radiusRow,
         radiusPill,
@@ -61,6 +77,27 @@ export function getTabsSizing({ size, variant, rounded }) {
         listHorizontalPad: 2 * (sizeCfg.scroll_inset ?? TABS_SCROLL_INTO_VIEW_PADDING_PX),
         moreIconSize: currentSizeKey === 'lg' ? 20 : currentSizeKey === 'sm' ? 16 : 18,
     };
+}
+
+/**
+ * Tabs without `content` (a bar used only as a switcher) render no panel. An empty panel
+ * is still a tab stop on web (Radix gives it `tabIndex={0}`) and drew a focus ring under the bar.
+ */
+export function hasTabContent(tab) {
+    return tab.content !== undefined && tab.content !== null && tab.content !== false;
+}
+
+/** Label classes for a tab (or the "More" trigger). A variant's `text` / `text_active` replace the theme's. Pure. */
+export function getTabTextClass(active, sizeCfg, variantCfg) {
+    return active
+        ? cn(
+              variantCfg?.text_active || tabsTheme['u-controls-tabs-header-item-text-active'],
+              sizeCfg.text_active
+          )
+        : cn(
+              variantCfg?.text || tabsTheme['u-controls-tabs-header-item-text'],
+              sizeCfg.text
+          );
 }
 
 /**
@@ -178,7 +215,12 @@ export function TabsMeasureRow({ ViewComponent = View, tabs, collapseLayout, var
                         'flex-row'
                     )}
                 >
-                    <Text className={cn(sizeCfg.text)}>{tab.title}</Text>
+                    {/* Both label styles stacked: the item measures as wide as the wider one, so a
+                        variant whose `text` / `text_active` change the font still collapses right. */}
+                    <ViewComponent className="flex-col">
+                        <Text className={getTabTextClass(false, sizeCfg, variantCfg)}>{tab.title}</Text>
+                        <Text className={getTabTextClass(true, sizeCfg, variantCfg)}>{tab.title}</Text>
+                    </ViewComponent>
                 </ViewComponent>
             ))}
         </ViewComponent>
