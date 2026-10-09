@@ -15,6 +15,8 @@ class BxBaseConnection extends BxDolConnection
     protected $_oTemplate;
     protected $_oFunctions;
 
+    protected $_bApi = false; // NOSONAR php:S116, the same field as BxDolObject::$_bApi
+
     protected $_sStylePrefix;
     protected $_sJsObjName;
 
