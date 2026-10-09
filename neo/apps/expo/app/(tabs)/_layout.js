@@ -21,7 +21,7 @@ if (!i18n.isInitialized) {
     i18n.use(initReactI18next).init({
         compatibilityJSON: 'v3',
         resources: resources,
-        lng: 'en', // initial language, updated in useEffect
+        lng: 'en', // initial language, switched by useLayoutSettings hydrate()
         fallbackLng: 'en',
         interpolation: {
             escapeValue: false
@@ -41,7 +41,10 @@ const AppLayout = React.memo(() => {
         RNScreenshotPrevent.enableSecureView();
     }*/
 
-    const { langCode, themeName } = useLayoutSettings();
+    // Also loads the stored settings; their hydrate() and setLang() switch the
+    // i18n language, so no effect here (a second changeLanguage to the same
+    // language still re-renders every useTranslation consumer).
+    const { themeName } = useLayoutSettings();
 
 
     useEffect(() => {
@@ -60,13 +63,6 @@ const AppLayout = React.memo(() => {
             //console.log('OneSignal: notification clicked:', event);
         });*/
     }, []);
-
-    useEffect(() => {
-        // i18n is already initialized synchronously — just update language
-        if (i18n.isInitialized && langCode) {
-            i18n.changeLanguage(langCode);
-        }
-    }, [langCode]);
 
     useEffect(() => {
         Uniwind.setTheme(themeName !== 'auto' ? themeName : 'system');
