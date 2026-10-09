@@ -28,9 +28,40 @@ function ttlSeconds(path) {
     return readTtlSeconds('una_page_ttl', DEFAULT_TTL_SECONDS);
 }
 
-function fingerprint(cookieString = '') {
-    if (!cookieString) return 'guest';
-    return createHash('sha1').update(cookieString).digest('hex').slice(0, 16);
+/**
+ * Cookies that never change UNA's answer for a given URL. NEO's own language
+ * cookies only pick the `&lang=` already in the URL (UNA doesn't read them).
+ * Every client gets them on its first visit, so keying on them would give each
+ * guest a private cache entry.
+ */
+const NEO_ONLY_COOKIES = new Set(['neo_lang', 'neo_lang_code']);
+
+/**
+ * The viewer's cookies that can change the page, in a stable order. UNA's own
+ * `lang` cookie is dropped when it matches the URL's `lang` (the query string
+ * wins in UNA); any other cookie stays, since UNA modules read many of them.
+ */
+export function pageCookiesForCache(cookieString = '', url = '') {
+    const urlLang = String(url).match(/[?&]lang=([^&#]*)/)?.[1] || '';
+    return String(cookieString)
+        .split(';')
+        .map((part) => part.trim())
+        .filter(Boolean)
+        .filter((part) => {
+            const eq = part.indexOf('=');
+            const name = eq === -1 ? part : part.slice(0, eq);
+            if (NEO_ONLY_COOKIES.has(name)) return false;
+            if (name === 'lang' && urlLang && part.slice(eq + 1) === urlLang) return false;
+            return true;
+        })
+        .sort()
+        .join('; ');
+}
+
+function fingerprint(cookieString = '', url = '') {
+    const pageCookies = pageCookiesForCache(cookieString, url);
+    if (!pageCookies) return 'guest';
+    return createHash('sha1').update(pageCookies).digest('hex').slice(0, 16);
 }
 
 function shouldStore(payload) {
@@ -56,10 +87,11 @@ function evict(now) {
 
 /**
  * Cross-request cache + in-flight coalescing for UNA get_page_by_request.
- * Keyed by URL + tenant + viewer cookie fingerprint (never store the cookie).
+ * Keyed by URL + tenant + fingerprint of the cookies that can change the page
+ * (never store the cookie).
  */
 export function unaPageCacheKey({ url, tenant, cookieString }) {
-    return `${tenant || ''}|${url}|${fingerprint(cookieString)}`;
+    return `${tenant || ''}|${url}|${fingerprint(cookieString, url)}`;
 }
 
 export async function cachedUnaPageJson({ path, key, load }) {
