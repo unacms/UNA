@@ -1,18 +1,25 @@
 import { Text } from 'app/design/typography';
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect, useCallback, type MouseEvent, type RefObject } from 'react';
 import * as TabsPrimitive from '@radix-ui/react-tabs';
 import { View } from 'app/design/view';
 import { cn } from 'app/lib/util';
 import { useTranslation } from 'react-i18next';
-import DropdownMenu from 'app/ui/atoms/dropdown-menu';
+import DropdownMenu, { type DropdownMenuItemData } from 'app/ui/atoms/dropdown-menu';
 import { Icon } from 'app/ui/atoms/icon';
 import {
     tabsTheme,
     getTabsSizing,
     useTabsMoreMenu,
     getTabsBarLayout,
+    getTabTextClass,
+    hasTabContent,
     TabsMeasureRow,
 } from 'app/ui/molecules/tabs/tabs-shared';
+import type { View as RNView } from 'react-native';
+import type { TabItem, TabsProps } from './tabs.types';
+
+/** Design `View` ref on web: typed as the RN view, backed by a DOM element. */
+type WebViewRef = RNView & HTMLDivElement;
 import {
     TABS_SELECTION_DURATION_MS,
     TABS_UNDERLINE_HEIGHT_PX,
@@ -20,7 +27,11 @@ import {
 } from 'app/ui/molecules/tabs/tabs-selection-constants';
 
 /** Skip scrolling the active tab into view on the first paint only (tab changes after that scroll). */
-function useScrollActiveTabIntoView(currentTab, triggerRefs, enabled) {
+function useScrollActiveTabIntoView(
+    currentTab: string | undefined,
+    triggerRefs: RefObject<Record<string, HTMLElement>>,
+    enabled: boolean
+) {
     const skipFirstScrollRef = useRef(true);
 
     useEffect(() => {
@@ -29,7 +40,7 @@ function useScrollActiveTabIntoView(currentTab, triggerRefs, enabled) {
             skipFirstScrollRef.current = false;
             return;
         }
-        const el = triggerRefs.current?.[currentTab];
+        const el = currentTab ? triggerRefs.current[currentTab] : undefined;
         if (!el) return;
         requestAnimationFrame(() => {
             el.scrollIntoView({
@@ -41,24 +52,26 @@ function useScrollActiveTabIntoView(currentTab, triggerRefs, enabled) {
     }, [currentTab, enabled]);
 }
 
+/**
+ * Radix focuses the trigger from its own mousedown handler (`event.currentTarget.focus()`).
+ * Right after a page load Chrome treats that script focus as keyboard focus, so the first
+ * click showed the focus ring. Ours runs first and focuses with `focusVisible: false`;
+ * Radix's call then hits an already focused element and changes nothing. Browsers without
+ * the option ignore it.
+ */
+function focusTriggerOnMouseDown(event: MouseEvent<HTMLButtonElement>) {
+    if (event.button !== 0 || event.ctrlKey) return;
+    event.currentTarget.focus({ focusVisible: false });
+}
+
+/** Spread on a trigger whose tab has no panel, so `aria-controls` doesn't name a missing id. */
+const NO_PANEL_PROPS = Object.freeze({ 'aria-controls': undefined });
 
 /**
- * @param {'default'|'secondary'} [variant]
- * @param {string} [trackClassName]
- * @param {string} [headerClassName]
- * @param {boolean} [rounded]
- * @param {boolean} [equalWidth] — When true (and `hug` is false), tabs share extra space equally; each tab keeps at least `min-content` width (label + padding).
- * @param {boolean} [fullWidth] — Deprecated: use `equalWidth` instead.
- * @param {boolean} [hug] — label-width triggers; use with `equalWidth={false}` for a compact strip
- * @param {'scroll'|'collapse'} [overflow] — `scroll` (default) or `collapse` into a "More" menu
- * @param {string} [moreMenuTitle] — label for the overflow trigger (default: translated "More"). Pass `""` for icon-only.
- * @param {string} [moreLabel] — alias for `moreMenuTitle` (deprecated)
- * @param {string} [moreMenuIcon] — Lucide icon name for the overflow trigger (default: `ChevronDown`)
- * @param {string} [tabBarClassName] — With `overflow="scroll"`, outer tab bar; with `overflow="collapse"`, the full-width measure row — use `flex flex-row justify-center` to center a `hug` strip in the parent.
- * @param {string} [listWrapperClassName] — box around track + list + indicator
- * @param {string} [listClassName] — tab row only
- * @param {string} [triggerClassName] — each trigger only; not `TabsContent`
- * @param {(key: string) => void} [onTabChange] — user selection; not `activeTab` prop sync
+ * Segmented tab bar (web; native is tabs.tsx). Styles come from `theme.tabs_variants`
+ * (settings/theme/tabs.js): `variant="default"` is a flat segmented control, `"glass"` NeoButton
+ * glass, `"secondary"` an underline. A theme can add more; each entry's `indicator`
+ * (`'pill'` | `'line'`) picks the selection shape. Props are documented in tabs.types.ts.
  */
 export default function Tabs({
     tabs,
@@ -75,13 +88,14 @@ export default function Tabs({
     size,
     contentClassName = '',
     trackClassName,
+    pillClassName,
     headerClassName,
     tabBarClassName,
     listWrapperClassName,
     listClassName,
     triggerClassName,
     onTabChange,
-}) {
+}: TabsProps) {
     /** `fullWidth` is deprecated — same as `equalWidth` (first wins if both are set). */
     const useEqualWidth = equalWidth ?? fullWidth ?? false;
     const { t } = useTranslation();
@@ -90,10 +104,10 @@ export default function Tabs({
     const [currentTab, setCurrentTab] = useState(
         () => activeTab ?? tabs?.[0]?.key
     );
-    const headerWrapperRef = useRef(null);
-    const listRef = useRef(null);
-    const moreRef = useRef(null);
-    const triggerRefs = useRef({});
+    const headerWrapperRef = useRef<WebViewRef | null>(null);
+    const listRef = useRef<WebViewRef | null>(null);
+    const moreRef = useRef<WebViewRef | null>(null);
+    const triggerRefs = useRef<Record<string, HTMLElement>>({});
     const [rect, setRect] = useState({
         left: 0,
         top: 0,
@@ -107,6 +121,7 @@ export default function Tabs({
         currentSizeKey,
         sizeCfg,
         variantCfg,
+        indicator,
         radiusTrack,
         radiusRow,
         radiusPill,
@@ -140,15 +155,15 @@ export default function Tabs({
     const onTabChangeRef = useRef(onTabChange);
     onTabChangeRef.current = onTabChange;
 
-    const handleTabChange = useCallback((value) => {
+    const handleTabChange = useCallback((value: string) => {
         setCurrentTab(value);
         onTabChangeRef.current?.(value);
     }, []);
 
     const handleOverflowMenuSelect = useCallback(
-        (item) => {
+        (item: DropdownMenuItemData) => {
             markMenuSelect();
-            handleTabChange(item.id);
+            handleTabChange(String(item.id));
         },
         [handleTabChange, markMenuSelect]
     );
@@ -164,7 +179,7 @@ export default function Tabs({
             const wrapper = headerWrapperRef.current;
             if (!wrapper) return;
 
-            const applyRect = (elRect) => {
+            const applyRect = (elRect: DOMRect) => {
                 const wrapperRect = wrapper.getBoundingClientRect();
                 const left = elRect.left - wrapperRect.left;
                 const topRel = elRect.top - wrapperRect.top;
@@ -172,14 +187,21 @@ export default function Tabs({
                 const heightRel = elRect.height;
                 let top;
                 let height;
-                if (variant === 'secondary') {
+                if (indicator === 'line') {
                     top = topRel + heightRel - TABS_UNDERLINE_HEIGHT_PX;
                     height = TABS_UNDERLINE_HEIGHT_PX;
                 } else {
                     top = topRel;
                     height = heightRel;
                 }
-                setRect({ left, top, width, height });
+                setRect((prev) =>
+                    prev.left === left &&
+                    prev.top === top &&
+                    prev.width === width &&
+                    prev.height === height
+                        ? prev
+                        : { left, top, width, height }
+                );
                 if (!readyRef.current) {
                     readyRef.current = true;
                     setReady(true);
@@ -200,13 +222,13 @@ export default function Tabs({
                 return;
             }
 
-            const currentEl = triggerRefs.current?.[currentTab];
+            const currentEl = currentTab ? triggerRefs.current[currentTab] : undefined;
             if (!currentEl || typeof currentEl.getBoundingClientRect !== 'function') {
                 return;
             }
             applyRect(currentEl.getBoundingClientRect());
         } catch (e) {}
-    }, [currentTab, variant, overflow, tabs, collapseLayout.visibleCount]);
+    }, [currentTab, indicator, overflow, tabs, collapseLayout.visibleCount]);
 
     useEffect(() => {
         updateIndicator();
@@ -223,6 +245,15 @@ export default function Tabs({
             }
         };
     }, [updateIndicator, rounded, hug, overflow, collapseLayout.visibleCount]);
+
+    /**
+     * Re-measures the pill through the shared `onLayout` path (ResizeObserver in
+     * `design/view.web.tsx`): on the row wrapper, for a parent that changes width, and on
+     * each tab label, for label widths that change while the row keeps its size (a web
+     * font swap in a full-width bar moves the selected tab). The first measurement can run
+     * before the layout settles; window resize alone doesn't catch that.
+     */
+    const onHeaderLayout = useCallback(() => updateIndicator(), [updateIndicator]);
 
     const transitionStyle =
         ready
@@ -260,20 +291,21 @@ export default function Tabs({
                 'z-[1]'
             )}
             style={{
-                left: `${rect.left}px`,
-                top: `${rect.top}px`,
-                width: `${rect.width}px`,
-                height: `${rect.height}px`,
+                left: rect.left,
+                top: rect.top,
+                width: rect.width,
+                height: rect.height,
                 position: 'absolute',
                 ...transitionStyle,
             }}
         >
-            {variant === 'default' ? (
+            {indicator === 'pill' ? (
                 <View
                     className={cn(
                         'absolute inset-0',
                         radiusPill,
-                        variantCfg.pill
+                        variantCfg.pill,
+                        pillClassName
                     )}
                 />
             ) : (
@@ -281,7 +313,8 @@ export default function Tabs({
                     className={cn(
                         'absolute inset-0',
                         sizeCfg.indicator_inner,
-                        variantCfg.line
+                        variantCfg.line,
+                        pillClassName
                     )}
                 />
             )}
@@ -300,6 +333,7 @@ export default function Tabs({
                     listWrapperClassName
                 )}
                 ref={headerWrapperRef}
+                onLayout={onHeaderLayout}
             >
                 {selectionLayer}
                 <TabsPrimitive.List
@@ -325,6 +359,8 @@ export default function Tabs({
                             }}
                             key={tab.key}
                             value={tab.key}
+                            onMouseDown={focusTriggerOnMouseDown}
+                            {...(hasTabContent(tab) ? null : NO_PANEL_PROPS)}
                             style={{
                                 scrollMarginInline: scrollInset,
                             }}
@@ -340,25 +376,13 @@ export default function Tabs({
                                 triggerClassName
                             )}
                         >
-                            <Text
-                                className={cn(
-                                    tab.key === currentTab
-                                        ? cn(
-                                              tabsTheme[
-                                                  'u-controls-tabs-header-item-text-active'
-                                              ],
-                                              sizeCfg.text_active
-                                          )
-                                        : cn(
-                                              tabsTheme[
-                                                  'u-controls-tabs-header-item-text'
-                                              ],
-                                              sizeCfg.text
-                                          )
-                                )}
-                            >
-                                {tab.title}
-                            </Text>
+                            <View className="min-w-0" onLayout={onHeaderLayout}>
+                                <Text
+                                    className={getTabTextClass(tab.key === currentTab, sizeCfg, variantCfg)}
+                                >
+                                    {tab.title}
+                                </Text>
+                            </View>
                         </TabsPrimitive.Trigger>
                     ))}
                 </TabsPrimitive.List>
@@ -369,6 +393,7 @@ export default function Tabs({
     const collapseRowInner = (
         <>
             <TabsMeasureRow
+                key={collapseLayout.measureKey}
                 tabs={tabs}
                 collapseLayout={collapseLayout}
                 variantCfg={variantCfg}
@@ -403,13 +428,15 @@ export default function Tabs({
                         listClassName
                     )}
                 >
-                    {collapseLayout.visibleTabs.map((tab) => (
+                    {collapseLayout.visibleTabs.map((tab: TabItem) => (
                         <TabsPrimitive.Trigger
                             ref={(node) => {
                                 if (node) triggerRefs.current[tab.key] = node;
                             }}
                             key={tab.key}
                             value={tab.key}
+                            onMouseDown={focusTriggerOnMouseDown}
+                            {...(hasTabContent(tab) ? null : NO_PANEL_PROPS)}
                             className={cn(
                                 'relative z-[3]',
                                 tabsTheme['u-controls-tabs-header-item'],
@@ -422,25 +449,13 @@ export default function Tabs({
                                 triggerClassName
                             )}
                         >
-                            <Text
-                                className={cn(
-                                    tab.key === currentTab
-                                        ? cn(
-                                              tabsTheme[
-                                                  'u-controls-tabs-header-item-text-active'
-                                              ],
-                                              sizeCfg.text_active
-                                          )
-                                        : cn(
-                                              tabsTheme[
-                                                  'u-controls-tabs-header-item-text'
-                                              ],
-                                              sizeCfg.text
-                                          )
-                                )}
-                            >
-                                {tab.title}
-                            </Text>
+                            <View className="min-w-0" onLayout={onHeaderLayout}>
+                                <Text
+                                    className={getTabTextClass(tab.key === currentTab, sizeCfg, variantCfg)}
+                                >
+                                    {tab.title}
+                                </Text>
+                            </View>
                         </TabsPrimitive.Trigger>
                     ))}
                     {collapseLayout.overflowTabs.length > 0 && (
@@ -471,21 +486,7 @@ export default function Tabs({
                             >
                                 {resolvedMoreMenuTitle ? (
                                     <Text
-                                        className={cn(
-                                            moreIsActive
-                                                ? cn(
-                                                      tabsTheme[
-                                                          'u-controls-tabs-header-item-text-active'
-                                                      ],
-                                                      sizeCfg.text_active
-                                                  )
-                                                : cn(
-                                                      tabsTheme[
-                                                          'u-controls-tabs-header-item-text'
-                                                      ],
-                                                      sizeCfg.text
-                                                  )
-                                        )}
+                                        className={getTabTextClass(moreIsActive, sizeCfg, variantCfg)}
                                     >
                                         {resolvedMoreMenuTitle}
                                     </Text>
@@ -493,51 +494,24 @@ export default function Tabs({
                                 <Icon
                                     icon={moreMenuIcon}
                                     size={moreIconSize}
-                                    className={cn(
-                                        moreIsActive
-                                            ? cn(
-                                                  tabsTheme[
-                                                      'u-controls-tabs-header-item-text-active'
-                                                  ],
-                                                  sizeCfg.text_active
-                                              )
-                                            : cn(
-                                                  tabsTheme[
-                                                      'u-controls-tabs-header-item-text'
-                                                  ],
-                                                  sizeCfg.text
-                                              )
-                                    )}
+                                    className={getTabTextClass(moreIsActive, sizeCfg, variantCfg)}
                                 />
                             </View>
                         </DropdownMenu>
                     )}
-                    {collapseLayout.overflowTabs.map((tab) => (
+                    {collapseLayout.overflowTabs.map((tab: TabItem) => (
                         <TabsPrimitive.Trigger
                             key={tab.key}
                             value={tab.key}
                             ref={(node) => {
                                 if (node) triggerRefs.current[tab.key] = node;
                             }}
+                            {...(hasTabContent(tab) ? null : NO_PANEL_PROPS)}
                             className="sr-only absolute h-px w-px overflow-hidden opacity-0 pointer-events-none"
                             tabIndex={-1}
                         >
                             <Text
-                                className={cn(
-                                    tab.key === currentTab
-                                        ? cn(
-                                              tabsTheme[
-                                                  'u-controls-tabs-header-item-text-active'
-                                              ],
-                                              sizeCfg.text_active
-                                          )
-                                        : cn(
-                                              tabsTheme[
-                                                  'u-controls-tabs-header-item-text'
-                                              ],
-                                              sizeCfg.text
-                                          )
-                                )}
+                                className={getTabTextClass(tab.key === currentTab, sizeCfg, variantCfg)}
                             >
                                 {tab.title}
                             </Text>
@@ -559,22 +533,24 @@ export default function Tabs({
             )}
         >
             {collapseHugStrip ? (
-                <View
-                    className={cn(
-                        'relative min-w-0 overflow-hidden',
-                        'w-max max-w-full self-start',
-                        radiusTrack
-                    )}
-                >
+                <View className="relative min-w-0 w-max max-w-full self-start">
                     {trackView}
                     <View
                         className={cn(
-                            'relative min-w-0 w-full',
-                            listWrapperClassName
+                            'relative min-w-0 w-full overflow-hidden',
+                            radiusTrack
                         )}
-                        ref={headerWrapperRef}
                     >
-                        {collapseRowInner}
+                        <View
+                            className={cn(
+                                'relative min-w-0 w-full',
+                                listWrapperClassName
+                            )}
+                            ref={headerWrapperRef}
+                            onLayout={onHeaderLayout}
+                        >
+                            {collapseRowInner}
+                        </View>
                     </View>
                 </View>
             ) : (
@@ -584,6 +560,7 @@ export default function Tabs({
                         listWrapperClassName
                     )}
                     ref={headerWrapperRef}
+                    onLayout={onHeaderLayout}
                 >
                     {collapseRowInner}
                 </View>
@@ -600,19 +577,28 @@ export default function Tabs({
                 headerClassName
             )}
         >
+            {/* Track outside the clipping box so its outer shadow (glass ring + drop) is not cut off. */}
             <View
                 className={cn(
-                    'relative min-w-0 overflow-hidden',
+                    'relative min-w-0',
                     tabBarWidthClass,
-                    overflow !== 'collapse' && tabBarClassName,
-                    !collapseHugStrip && radiusTrack
+                    overflow !== 'collapse' && tabBarClassName
                 )}
             >
                 {!collapseHugStrip && trackView}
-                {overflow === 'collapse' ? collapseRow : scrollRow}
+                <View
+                    className={cn(
+                        // Clips the row to the track's corners. In collapse + hug the track and its own
+                        // clip live in the w-max strip below; clipping here would cut the track's shadow.
+                        'relative min-w-0 w-full',
+                        !collapseHugStrip && cn('overflow-hidden', radiusTrack)
+                    )}
+                >
+                    {overflow === 'collapse' ? collapseRow : scrollRow}
+                </View>
             </View>
 
-            {tabs.map((tab) => (
+            {tabs.filter(hasTabContent).map((tab) => (
                 <TabsPrimitive.Content
                     className={cn(
                         tabsTheme['u-controls-tabs-tab-content'],

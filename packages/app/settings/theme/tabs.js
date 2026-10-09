@@ -40,24 +40,55 @@ export const settingsTabs = {
             'absolute pointer-events-none',
     },
 
+    /**
+     * Tab bar styles, picked with `<Tabs variant="…">`. Each entry:
+     *   indicator         'pill' (sliding surface behind the active tab) or 'line' (underline).
+     *                     Missing: 'pill' when `pill` is set, else 'line' when `line` is set.
+     *   track             surface behind the whole row (absolute, fills the bar)
+     *   row               the tab list row
+     *   trigger_active / trigger_inactive   each tab (hover washes go on inactive)
+     *   pill / line       the selection indicator
+     *   text / text_active   optional label classes; replace `u-controls-tabs-header-item-text*` when set
+     */
     tabs_variants: {
+        // Flat segmented control: a translucent muted rail (it takes on tinted
+        // backgrounds) with NeoButton `bordered` pill colours. The pill is lighter
+        // than the rail in both schemes (white in light, button-hover in dark,
+        // where the 60% rail sits darker than solid muted).
         default: {
+            indicator: 'pill',
             track:
-                'absolute inset-0 z-0 bg-background border border-muted/60 pointer-events-none',
+                'absolute inset-0 z-0 bg-muted/60 pointer-events-none',
             row: '',
-            trigger_active: ' border border-transparent inset-0 ',
+            trigger_active: '',
             trigger_inactive:
-                ' group text-secondary-foreground web:hover:text-foreground web:hover:bg-muted/50 border border-transparent web:hover:border-background inset-0 ',
-            pill: ' bg-popover/80 shadow-sm border border-popover/80 inset-px',
+                ' group text-secondary-foreground web:hover:text-foreground web:hover:bg-button-hover/60 web:duration-200 ',
+            pill: 'bg-popover dark:bg-button-hover shadow-sm',
             line: '',
         },
+        // Glass segmented control: NeoButton `glass` (`theme.neo_button.styles.glass`).
+        // Track = the glass button at rest, pill = a lighter lens with the pressed shadow.
+        glass: {
+            indicator: 'pill',
+            track:
+                'absolute inset-0 z-0 web:backdrop-blur-md bg-popover/50 shadow-btn-glass dark:shadow-btn-glass-deep pointer-events-none',
+            row: '',
+            trigger_active: '',
+            trigger_inactive:
+                ' group web:hover:bg-muted/50 web:duration-200 ',
+            pill: 'bg-popover shadow-btn-glass-pressed dark:bg-foreground/15 dark:shadow-btn-glass-pressed-deep',
+            line: '',
+            text: 'font-medium text-card-foreground',
+            text_active: 'font-medium text-foreground',
+        },
         secondary: {
+            indicator: 'line',
             track:
                 'absolute inset-0 z-0 bg-transparent pointer-events-none',
             row: '',
             trigger_active: ' ',
             trigger_inactive:
-                ' group web:hover:bg-muted/50 web:duration-200',
+                ' group text-secondary-foreground web:hover:text-foreground web:hover:bg-muted/50 web:duration-200',
             pill: '',
             line: 'bg-ring',
         },
@@ -67,7 +98,7 @@ export const settingsTabs = {
     tabs_sizes: {
         default_size: 'md',
         sm: {
-            header: ' p-1 ',
+            header: ' p-1 gap-1 ',
             /** px — matches horizontal list padding; scroll-into-view uses this so tabs don’t sit flush on the viewport edge */
             scroll_inset: 4,
             gap_px: 4,
