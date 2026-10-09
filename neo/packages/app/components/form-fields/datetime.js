@@ -15,6 +15,11 @@ export default function FormFieldDatetime({ name, value = '', type, ...props }) 
         }
     );
 
+    // UNA passes the lower bound as the input's `min` attr (unix ts or date string)
+    const min = props?.attrs?.min;
+    let minDate = min ? new Date(/^\d+$/.test(String(min)) ? Number(min) * 1000 : String(min).replace(' ', 'T')) : undefined;
+    if (minDate && isNaN(minDate)) minDate = undefined;
+
     const setParamValue = (next) => {
         const date = new Date(next * 1000);
         if (props?.db?.pass == 'Date' || props?.db?.pass == 'DateTs') {
@@ -30,7 +35,7 @@ export default function FormFieldDatetime({ name, value = '', type, ...props }) 
 
     return (
         <Field {...props} name={name} type={type}>
-            <DatePicker value={field.value} type={type} name={name} onChange={setParamValue} />
+            <DatePicker value={field.value} type={type} name={name} minDate={minDate} disabled={!!props?.attrs?.disabled} onChange={setParamValue} />
         </Field>
     );
 }

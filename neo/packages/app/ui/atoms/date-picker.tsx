@@ -89,13 +89,14 @@ for (let y = 1900; y <= 2100; y++) {
 
 const dateInputOpts = { yearPolicy: 'always' as const, month: '2-digit' as const };
 
-/** `weekStart`: first day of week, 0 = Sunday. */
-export function MonthCalendar({ date = new Date(), onSelect, selectedDate, weekStart = 1 }: { date?: Date; onSelect: (date: Date) => void; selectedDate?: Date | null; weekStart?: 0 | 1 }) {
+/** `weekStart`: first day of week, 0 = Sunday. Days before `minDate` (by calendar day) can't be selected. */
+export function MonthCalendar({ date = new Date(), onSelect, selectedDate, weekStart = 1, minDate }: { date?: Date; onSelect: (date: Date) => void; selectedDate?: Date | null; weekStart?: 0 | 1; minDate?: Date }) {
     const { t } = useTranslation();
     // Year and month to display
 
     const displayYear = date.getFullYear();
     const displayMonth = date.getMonth() + 1;
+    const minDay = minDate ? new Date(minDate.getFullYear(), minDate.getMonth(), minDate.getDate()) : null;
 
     // First day of the month and total days
     const firstOfMonth = new Date(displayYear, displayMonth - 1, 1);
@@ -127,6 +128,7 @@ export function MonthCalendar({ date = new Date(), onSelect, selectedDate, weekS
                 <View key={wIdx} className="flex-row ">
                     {week.map((day, dIdx) => {
                         const isToday = selectedDate ? (new Date(displayYear, displayMonth - 1, day ?? 0)).toDateString() == selectedDate.toDateString() : null;
+                        const isDisabled = !!(day && minDay && new Date(displayYear, displayMonth - 1, day) < minDay);
 
                         return (
                             <View
@@ -138,10 +140,10 @@ export function MonthCalendar({ date = new Date(), onSelect, selectedDate, weekS
                                         className={`h-8 w-8 items-center justify-center rounded-full ${isToday ? 'bg-primary' : ''
                                             }`}
                                     >
-                                        <Pressable onPress={() => { onSelect(new Date(displayYear, displayMonth - 1, day, selectedDate ? selectedDate.getHours() : 0, selectedDate ? selectedDate.getMinutes() : 0, selectedDate ? selectedDate.getSeconds() : 0)) }}>
+                                        <Pressable disabled={isDisabled} accessibilityState={{ disabled: isDisabled }} onPress={() => { onSelect(new Date(displayYear, displayMonth - 1, day, selectedDate ? selectedDate.getHours() : 0, selectedDate ? selectedDate.getMinutes() : 0, selectedDate ? selectedDate.getSeconds() : 0)) }}>
                                             <Text
                                                 className={` text-base ${isToday ? 'text-white' : 'text-muted-foreground '
-                                                    }`}
+                                                    } ${isDisabled ? 'opacity-30' : ''}`}
                                             >
                                                 {day}
                                             </Text>
@@ -226,9 +228,13 @@ type DatePickerProps = {
     children?: ReactNode;
     /** Extra NeoButton props for the custom trigger. */
     buttonProps?: Record<string, any>;
+    /** Earliest selectable day. */
+    minDate?: Date;
+    /** Read-only: the calendar and time fields can't be opened or changed. */
+    disabled?: boolean;
 };
 
-export default function DatePicker({ name, value = '', type, onChange, children, buttonProps }: DatePickerProps) {
+export default function DatePicker({ name, value = '', type, onChange, children, buttonProps, minDate, disabled = false }: DatePickerProps) {
     const bIsTime = type === 'datetime';
     const timeMode = appSetting('forms', 'time');
     const { t } = useTranslation();
@@ -327,7 +333,7 @@ export default function DatePicker({ name, value = '', type, onChange, children,
                     <View className='  w-full '>
                         <CalendarHeader value={cValue} addMonth={addMonth} setDatePart={setDatePart} />
                         <View className='mt-4'>
-                            <MonthCalendar date={cValue} selectedDate={dValue} onSelect={onSelectDate} weekStart={weekStart} />
+                            <MonthCalendar date={cValue} selectedDate={dValue} onSelect={onSelectDate} weekStart={weekStart} minDate={minDate} />
                         </View>
 
                     </View>
@@ -339,15 +345,17 @@ export default function DatePicker({ name, value = '', type, onChange, children,
                     controlSize="small"
                     align="start"
                     {...buttonProps}
+                    disabled={disabled}
                     onPress={() => setShowModal(true)}
                     accessibilityLabel={dValue ? formatDate(dValue, t, dateDisplayOpts) : t('Select date')}
                 >
                     {children}
                 </NeoButton>
             ) : (
-            <Row className="w-full flex-nowrap items-center gap-3">
+            <Row className={`w-full flex-nowrap items-center gap-3 ${disabled ? 'opacity-50' : ''}`} pointerEvents={disabled ? 'none' : 'auto'}>
                 <Pressable
                     className="min-w-0 flex-1"
+                    disabled={disabled}
                     onPress={() => setShowModal(true)}
                     accessibilityRole="button"
                     accessibilityLabel={dValue ? formatDate(dValue, t, dateDisplayOpts) : t('Select date')}
