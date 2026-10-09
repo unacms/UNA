@@ -23,7 +23,8 @@
     "GOOGLE_WEB_CLIENT_ID",
     "NEXT_PUBLIC_GOOGLE_WEB_CLIENT_ID",
     "NEXT_PUBLIC_GOOGLE_MAPS_API_KEY",
-    "REDIS_URL"
+    "REDIS_URL",
+    "NEO_IMAGES_ALLOW_LOCAL_IP"
   ],
   "tasks": {
     "build": {
