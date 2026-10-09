@@ -1,0 +1,180 @@
+<?php
+
+use PHPUnit\Framework\Attributes\Group;
+
+/**
+ * Reactions settings: mode (solo / few / many), default reaction, reactions per person
+ * and free-picked emoji, which are stored as e_<hex> codes.
+ */
+#[Group('integration')]
+class ReactionsModesTest extends BxDolIntegrationTestCase
+{
+    private const SYSTEM = 'bx_timeline_reactions';
+    private const OPTIONS = ['sys_vote_reactions_mode', 'sys_vote_reactions_default', 'sys_vote_reactions_per_user', 'sys_vote_reactions_split_counters'];
+
+    private array $_aOptionsBackup = [];
+    private int $_iEventId = 0;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        foreach (self::OPTIONS as $sName)
+            $this->_aOptionsBackup[$sName] = getParam($sName);
+    }
+
+    protected function tearDown(): void
+    {
+        if ($this->_iEventId && ($oVote = $this->reactions($this->_iEventId))) {
+            $iAuthorId = bx_get_logged_profile_id();
+            foreach ($oVote->getReactionsBy($this->_iEventId, $iAuthorId) as $sReaction)
+                $oVote->vote(['reaction' => $sReaction]);
+        }
+
+        foreach ($this->_aOptionsBackup as $sName => $sValue)
+            setParam($sName, $sValue);
+
+        parent::tearDown();
+    }
+
+    private function configure(string $sMode, string $sDefault = 'like', int $iPerUser = 1): void
+    {
+        setParam('sys_vote_reactions_mode', $sMode);
+        setParam('sys_vote_reactions_default', $sDefault);
+        setParam('sys_vote_reactions_per_user', (string)$iPerUser);
+    }
+
+    /**
+     * A fresh instance: settings are read in the constructor and instances are cached.
+     */
+    private function reactions(int $iObjectId = 1): ?BxDolVoteReactions
+    {
+        if (!BxDolVote::getObjectInstance(self::SYSTEM, $iObjectId, false))
+            return null;
+
+        unset($GLOBALS['bxDolClasses']['BxDolVote!' . self::SYSTEM . $iObjectId]);
+        $oVote = BxDolVote::getObjectInstance(self::SYSTEM, $iObjectId);
+
+        return $oVote instanceof BxDolVoteReactions ? $oVote : null;
+    }
+
+    private function reactionsOrSkip(int $iObjectId = 1): BxDolVoteReactions
+    {
+        $oVote = $this->reactions($iObjectId);
+        if (!$oVote)
+            $this->markTestSkipped(self::SYSTEM . ' is not installed.');
+
+        return $oVote;
+    }
+
+    public function testEmojiValidation(): void
+    {
+        foreach (['😀', '❤️', '👍🏽', '🏳️‍🌈', '1️⃣', '🇺🇦'] as $sEmoji)
+            $this->assertTrue(BxDolVoteReactions::isEmoji($sEmoji), $sEmoji . ' is an emoji.');
+
+        foreach (['', 'a', 'like', '😀😀', '<b>', '😀 '] as $sText)
+            $this->assertFalse(BxDolVoteReactions::isEmoji($sText), '"' . $sText . '" is not one emoji.');
+    }
+
+    public function testEmojiCodeRoundTrip(): void
+    {
+        $this->assertSame('e_1f600', BxDolVoteReactions::encodeEmoji('😀'));
+        $this->assertSame('e_2764_fe0f', BxDolVoteReactions::encodeEmoji('❤️'));
+        $this->assertSame('❤️', BxDolVoteReactions::decodeEmoji('e_2764_fe0f'));
+
+        foreach (['e_', 'e_zz', 'e_61', 'like', 'e_d800', 'e_110000'] as $sCode)
+            $this->assertFalse(BxDolVoteReactions::decodeEmoji($sCode), $sCode . ' is not an emoji code.');
+    }
+
+    public function testFewModeTakesOnlyListedReactions(): void
+    {
+        $this->configure('few');
+        $oVote = $this->reactionsOrSkip();
+
+        $this->assertSame('like', $oVote->normalizeReaction('like'));
+        $this->assertFalse($oVote->normalizeReaction('😀'));
+        $this->assertFalse($oVote->normalizeReaction('e_1f600'));
+        $this->assertFalse($oVote->normalizeReaction('nope'));
+    }
+
+    public function testManyModeTakesAnyEmoji(): void
+    {
+        $this->configure('many');
+        $oVote = $this->reactionsOrSkip();
+
+        $this->assertSame('e_1f600', $oVote->normalizeReaction('😀'));
+        $this->assertSame('e_1f600', $oVote->normalizeReaction('e_1f600'));
+        $this->assertSame('like', $oVote->normalizeReaction('👍'), 'An emoji on the list is that reaction.');
+        $this->assertFalse($oVote->normalizeReaction('text'));
+        $this->assertFalse($oVote->normalizeReaction('👨‍👩‍👧‍👦'), 'Codes longer than the column are refused.');
+
+        $aReaction = $oVote->getReaction('e_1f600');
+        $this->assertIsArray($aReaction);
+        $this->assertSame('😀', $aReaction['emoji']);
+    }
+
+    public function testSoloModeKeepsOnlyTheDefault(): void
+    {
+        $this->configure('solo', 'love');
+        $oVote = $this->reactionsOrSkip();
+
+        $this->assertSame('solo', $oVote->getMode());
+        $this->assertSame('love', $oVote->getDefaultReaction());
+        $this->assertSame(1, $oVote->getPerUser());
+        $this->assertSame('love', $oVote->normalizeReaction('love'));
+        $this->assertFalse($oVote->normalizeReaction('like'));
+    }
+
+    public function testUnknownDefaultMeansNone(): void
+    {
+        $this->configure('few', 'no_such_reaction');
+        $this->assertSame('', $this->reactionsOrSkip()->getDefaultReaction());
+    }
+
+    public function testMemberReactionsWithLimitAndReplace(): void
+    {
+        if (!BxDolModuleQuery::getInstance()->isEnabledByName('bx_timeline'))
+            $this->markTestSkipped('Timeline is not installed.');
+
+        $this->_iEventId = (int)BxDolDb::getInstance()->getOne("SELECT `id` FROM `bx_timeline_events` WHERE `active` = 1 ORDER BY `id` DESC LIMIT 1");
+        if (!$this->_iEventId)
+            $this->markTestSkipped('There are no timeline events to react to.');
+
+        $this->bxLoginAsUser();
+        $iAuthorId = bx_get_logged_profile_id();
+
+        //--- Two reactions allowed: both stay, a third is refused, giving one again takes it back.
+        $this->configure('many', 'like', 2);
+        $oVote = $this->reactionsOrSkip($this->_iEventId);
+        if (!$oVote->isAllowedVote())
+            $this->markTestSkipped('The test user may not react to timeline events: ' . strip_tags((string)$oVote->msgErrAllowedVote()));
+
+        foreach ($oVote->getReactionsBy($this->_iEventId, $iAuthorId) as $sReaction)
+            $oVote->vote(['reaction' => $sReaction]);
+
+        $this->assertSame(0, (int)$oVote->vote(['reaction' => 'like'])['code']);
+        $aResult = $oVote->vote(['reaction' => '😀']);
+        $this->assertSame(0, (int)$aResult['code']);
+        $this->assertSame(['like', 'e_1f600'], $aResult['api']['reactions']);
+        $this->assertSame(1, (int)$aResult['api']['counter']['count_e_1f600']);
+
+        $aResult = $oVote->vote(['reaction' => 'love']);
+        $this->assertSame(BX_DOL_OBJECT_ERR_DUPLICATE, (int)$aResult['code']);
+
+        $aResult = $oVote->vote(['reaction' => 'e_1f600']);
+        $this->assertSame(0, (int)$aResult['code']);
+        $this->assertSame(['like'], $aResult['api']['reactions']);
+
+        //--- One reaction allowed: a new one replaces the old one.
+        $this->configure('few', 'like', 1);
+        $oVote = $this->reactionsOrSkip($this->_iEventId);
+
+        $aResult = $oVote->vote(['reaction' => 'love']);
+        $this->assertSame(0, (int)$aResult['code']);
+        $this->assertSame(['love'], $aResult['api']['reactions']);
+        $this->assertSame('love', $aResult['api']['reaction']);
+
+        //--- Few mode refuses a free emoji.
+        $this->assertSame(BX_DOL_OBJECT_ERR_WRONG_DATE, (int)$oVote->vote(['reaction' => '😀'])['code']);
+    }
+}

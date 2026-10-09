@@ -108,20 +108,27 @@ class BxBaseVoteReactions extends BxDolVoteReactions
         $aParams = array_merge($this->_aElementDefaultsApi, $aParams);
 
         $aVote = $this->_getVote();
-        $aReactions = $this->getReactions();
+        $aReactions = $this->getCountedReactions($aVote);
 
         $aItems = [];
         foreach($aReactions as $sName) {
+            $aReaction = $this->getReaction($sName);
             $iCount = (int)$aVote['count_' . $sName];
             $aItems[] = [
                 'name' => $sName,
                 'count' => $iCount,
                 'sum' => $aVote['sum_' . $sName],
-                'rate' => $aVote['rate_' . $sName]
+                'rate' => $aVote['rate_' . $sName],
+                'emoji' => $aReaction !== false ? $aReaction['emoji'] : '',
+                'title' => $aReaction !== false ? _t($aReaction['title']) : ''
             ];
         }
 
-        $sStyle = !empty($aParams['show_counter_style']) ? $aParams['show_counter_style'] : $this->_aElementDefaults['show_counter_style'];
+        //--- 'Split counters' setting: a counter per reaction.
+        if($this->isSplitCounters())
+            $sStyle = self::$_sCounterStyleDivided;
+        else
+            $sStyle = !empty($aParams['show_counter_style']) ? $aParams['show_counter_style'] : $this->_aElementDefaults['show_counter_style'];
 
         return ['type' => $sStyle, 'items' => $aItems];
     }
@@ -134,7 +141,7 @@ class BxBaseVoteReactions extends BxDolVoteReactions
 
         $bVote = $this->_isVote();
         $aVote = $this->_getVote();
-        $aReactions = $this->getReactions();
+        $aReactions = $this->getCountedReactions($aVote);
 
         $sClass = isset($aParams['class_counter']) ? $aParams['class_counter'] : '';
         if(isset($aParams['show_do_vote_as_button_small']) && (bool)$aParams['show_do_vote_as_button_small'] === true)
@@ -194,7 +201,7 @@ class BxBaseVoteReactions extends BxDolVoteReactions
 
         $bVote = $this->_isVote();
         $aVote = $this->_getVote();
-        $aReactions = $this->getReactions();
+        $aReactions = $this->getCountedReactions($aVote);
 
         $sClass = isset($aParams['class_counter']) ? $aParams['class_counter'] : '';
         if(isset($aParams['show_do_vote_as_button_small']) && (bool)$aParams['show_do_vote_as_button_small'] === true)
@@ -248,7 +255,7 @@ class BxBaseVoteReactions extends BxDolVoteReactions
 
         $bVote = $this->_isVote();
         $aVote = $this->_getVote();
-        $aReactions = $this->getReactions();
+        $aReactions = $this->getCountedReactions($aVote);
 
         $sClass = isset($aParams['class_counter']) ? $aParams['class_counter'] : '';
         if(isset($aParams['show_do_vote_as_button_small']) && (bool)$aParams['show_do_vote_as_button_small'] === true)
@@ -348,14 +355,48 @@ class BxBaseVoteReactions extends BxDolVoteReactions
         foreach($aReactions as $sName)
             $aT[$sName] = _t($this->_aDataList[$sName]['title']);
 
-        return parent::getElementAPI(array_merge($aParams, [
+        $aResult = parent::getElementAPI(array_merge($aParams, [
             't' => $aT
         ]));
+
+        if(is_array($aResult) && isset($aResult['type']))
+            $aResult['options'] = $this->getOptionsAPI();
+
+        return $aResult;
+    }
+
+    /**
+     * Reactions settings and the list, for clients that build their own picker.
+     */
+    public function getOptionsAPI()
+    {
+        $aItems = [];
+        foreach($this->getReactions(true) as $sName => $aReaction) {
+            if($sName === $this->_sDefault)
+                continue;
+
+            $aItems[] = [
+                'name' => $sName,
+                'title' => _t($aReaction['title']),
+                'emoji' => $aReaction['emoji'],
+            ];
+        }
+
+        return [
+            'mode' => $this->getMode(),
+            'default' => $this->getDefaultReaction(),
+            'per_user' => $this->getPerUser(),
+            'split_counters' => $this->isSplitCounters(),
+            'items' => $aItems,
+        ];
     }
 
     public function getPerformedByAPI($aParams = [])
     {
-        $aReactions = !empty($aParams['reaction']) ? [$aParams['reaction']] : $this->getReactions();
+        if(!empty($aParams['reaction']))
+            $aReactions = $this->getReaction($aParams['reaction']) !== false ? [$aParams['reaction']] : [];
+        else
+            $aReactions = $this->getCountedReactions($this->_getVote());
 
         $aResult = [];
         foreach($aReactions as $sReaction) {
@@ -402,7 +443,10 @@ class BxBaseVoteReactions extends BxDolVoteReactions
     	$bVoted = isset($aParams['is_voted']) && (bool)$aParams['is_voted'] === true;
         $bShowDoVoteAsButtonSmall = isset($aParams['show_do_vote_as_button_small']) && (bool)$aParams['show_do_vote_as_button_small'] === true;
         $bShowDoVoteAsButton = !$bShowDoVoteAsButtonSmall && isset($aParams['show_do_vote_as_button']) && (bool)$aParams['show_do_vote_as_button'] === true;
-        $bDisabled = !$isAllowedVote || ($bVoted && !$bUndo);
+
+        //--- With several reactions per person allowed, one can add more until the limit.
+        $aReactionsBy = $bVoted ? $this->getReactionsBy($this->getId(), $this->_getAuthorId()) : [];
+        $bDisabled = !$isAllowedVote || ($bVoted && !$bUndo && count($aReactionsBy) >= $this->getPerUser());
 
         $sClass = '';
         if($bShowDoVoteAsButton)
@@ -436,7 +480,9 @@ class BxBaseVoteReactions extends BxDolVoteReactions
                 'is_voted' => $bVoted,
                 'is_disabled' => $bDisabled,
                 'value' => $iValue,
-                'reaction' => $bVoted ? $sReaction : $this->_sDefault,
+                'reaction' => $bVoted ? ($sReaction !== '' ? $sReaction : $aParams['track']['reaction']) : $this->_sDefault,
+                'reactions' => $aReactionsBy,
+                'default' => $this->getDefaultReaction(),
                 'title' => _t($this->_getTitleDoWithTrack($bVoted, $aParams['track'])),
             ];
 
@@ -553,7 +599,7 @@ class BxBaseVoteReactions extends BxDolVoteReactions
                             'image' => $sUse == 'image' ? $this->getImage($sReaction) : '',
                         ]
                     ],
-                    'title_attr' => bx_html_attribute(_t($this->_aDataList[$sReaction]['title'])),
+                    'title_attr' => bx_html_attribute($aReaction !== false ? _t($aReaction['title']) : ''),
                 )
             ),
             'bx_if:show_text' => array(

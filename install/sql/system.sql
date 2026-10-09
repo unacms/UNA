@@ -570,7 +570,10 @@ INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `info`, `value`, `ty
 (@iCategoryId, 'sys_treat_cxt_in_cxt_as_cnt', '_adm_stg_cpt_option_sys_treat_cxt_in_cxt_as_cnt', '', 'on', 'checkbox', '', '', '', 52),
 (@iCategoryId, 'sys_check_fan_in_parent_context', '_adm_stg_cpt_option_sys_check_fan_in_parent_context', '', 'on', 'checkbox', '', '', '', 55),
 
-(@iCategoryId, 'sys_vote_reactions_quick_mode', '_adm_stg_cpt_option_sys_vote_reactions_quick_mode', '', 'on', 'checkbox', '', '', '', 60),
+(@iCategoryId, 'sys_vote_reactions_mode', '_adm_stg_cpt_option_sys_vote_reactions_mode', '_adm_stg_inf_option_sys_vote_reactions_mode', 'few', 'select', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:31:"get_options_vote_reactions_mode";s:5:"class";s:13:"TemplServices";}', '', '', 60),
+(@iCategoryId, 'sys_vote_reactions_default', '_adm_stg_cpt_option_sys_vote_reactions_default', '_adm_stg_inf_option_sys_vote_reactions_default', 'like', 'select', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:34:"get_options_vote_reactions_default";s:5:"class";s:13:"TemplServices";}', '', '', 61),
+(@iCategoryId, 'sys_vote_reactions_per_user', '_adm_stg_cpt_option_sys_vote_reactions_per_user', '_adm_stg_inf_option_sys_vote_reactions_per_user', '1', 'select', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:35:"get_options_vote_reactions_per_user";s:5:"class";s:13:"TemplServices";}', '', '', 62),
+(@iCategoryId, 'sys_vote_reactions_split_counters', '_adm_stg_cpt_option_sys_vote_reactions_split_counters', '_adm_stg_inf_option_sys_vote_reactions_split_counters', '', 'checkbox', '', '', '', 63),
 
 (@iCategoryId, 'sys_cmts_enable_auto_approve', '_adm_stg_cpt_option_sys_cmts_enable_auto_approve', '', 'on', 'checkbox', '', '', '', 70),
 
