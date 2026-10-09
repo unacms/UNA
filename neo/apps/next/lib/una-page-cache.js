@@ -54,7 +54,7 @@ export function pageCookiesForCache(cookieString = '', url = '') {
             if (name === 'lang' && urlLang && part.slice(eq + 1) === urlLang) return false;
             return true;
         })
-        .sort()
+        .sort((a, b) => a.localeCompare(b))
         .join('; ');
 }
 
