@@ -19,6 +19,9 @@ class BxPollsVoteSubentries extends BxTemplVoteLikes
 
     protected $_sTmplNameElementBlock;
 
+    // A poll vote follows the object's IsUndo setting, unlike a like.
+    protected $_bUndoAlways = false;
+
     function __construct($sSystem, $iId, $iInit = 1)
     {
     	$this->_sModule = 'bx_polls';
