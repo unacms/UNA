@@ -11,6 +11,8 @@ import {
     getTabsSizing,
     useTabsMoreMenu,
     getTabsBarLayout,
+    getTabTextClass,
+    hasTabContent,
     TabsMeasureRow,
 } from 'app/ui/molecules/tabs/tabs-shared';
 import {
@@ -41,10 +43,31 @@ function useScrollActiveTabIntoView(currentTab, triggerRefs, enabled) {
     }, [currentTab, enabled]);
 }
 
+/**
+ * Radix focuses the trigger from its own mousedown handler (`event.currentTarget.focus()`).
+ * Right after a page load Chrome treats that script focus as keyboard focus, so the first
+ * click showed the focus ring. Ours runs first and focuses with `focusVisible: false`;
+ * Radix's call then hits an already focused element and changes nothing. Browsers without
+ * the option ignore it.
+ */
+function focusTriggerOnMouseDown(event) {
+    if (event.button !== 0 || event.ctrlKey) return;
+    event.currentTarget.focus({ focusVisible: false });
+}
+
+/** Spread on a trigger whose tab has no panel, so `aria-controls` doesn't name a missing id. */
+const NO_PANEL_PROPS = Object.freeze({ 'aria-controls': undefined });
 
 /**
- * @param {'default'|'secondary'} [variant]
- * @param {string} [trackClassName]
+ * Segmented tab bar. Styles come from `theme.tabs_variants` (settings/theme/tabs.js):
+ * - `variant="default"`: flat segmented control in NeoButton `bordered` colours, sliding pill.
+ * - `variant="glass"`: NeoButton `glass` track with a lighter glass pill.
+ * - `variant="secondary"`: underline.
+ * A theme can add more; each entry's `indicator` (`'pill'` | `'line'`) picks the selection shape.
+ *
+ * @param {string} [variant] — key of `theme.tabs_variants` (`default`, `glass`, `secondary`, or a theme's own)
+ * @param {string} [trackClassName] — the surface behind the row (e.g. `bg-muted`)
+ * @param {string} [pillClassName] — the selection indicator (pill, or the underline for `indicator: 'line'`), e.g. a lighter pill on a tinted track
  * @param {string} [headerClassName]
  * @param {boolean} [rounded]
  * @param {boolean} [equalWidth] — When true (and `hug` is false), tabs share extra space equally; each tab keeps at least `min-content` width (label + padding).
@@ -75,6 +98,7 @@ export default function Tabs({
     size,
     contentClassName = '',
     trackClassName,
+    pillClassName,
     headerClassName,
     tabBarClassName,
     listWrapperClassName,
@@ -107,6 +131,7 @@ export default function Tabs({
         currentSizeKey,
         sizeCfg,
         variantCfg,
+        indicator,
         radiusTrack,
         radiusRow,
         radiusPill,
@@ -172,14 +197,21 @@ export default function Tabs({
                 const heightRel = elRect.height;
                 let top;
                 let height;
-                if (variant === 'secondary') {
+                if (indicator === 'line') {
                     top = topRel + heightRel - TABS_UNDERLINE_HEIGHT_PX;
                     height = TABS_UNDERLINE_HEIGHT_PX;
                 } else {
                     top = topRel;
                     height = heightRel;
                 }
-                setRect({ left, top, width, height });
+                setRect((prev) =>
+                    prev.left === left &&
+                    prev.top === top &&
+                    prev.width === width &&
+                    prev.height === height
+                        ? prev
+                        : { left, top, width, height }
+                );
                 if (!readyRef.current) {
                     readyRef.current = true;
                     setReady(true);
@@ -206,18 +238,36 @@ export default function Tabs({
             }
             applyRect(currentEl.getBoundingClientRect());
         } catch (e) {}
-    }, [currentTab, variant, overflow, tabs, collapseLayout.visibleCount]);
+    }, [currentTab, indicator, overflow, tabs, collapseLayout.visibleCount]);
 
     useEffect(() => {
         updateIndicator();
         const onResize = () => updateIndicator();
-        window.addEventListener('resize', onResize);
+        /**
+         * Re-measure whenever the row or a trigger changes size, not only on window resize:
+         * the first measurement can run before the layout settles (web font swap, a parent
+         * that changes width), which left the pill off its tab.
+         */
+        const observer =
+            typeof ResizeObserver === 'function'
+                ? new ResizeObserver(onResize)
+                : null;
+        if (observer) {
+            if (headerWrapperRef.current) observer.observe(headerWrapperRef.current);
+            Object.values(triggerRefs.current).forEach((node) => {
+                if (node) observer.observe(node);
+            });
+            if (moreRef.current) observer.observe(moreRef.current);
+        } else {
+            window.addEventListener('resize', onResize);
+        }
         const list = listRef.current;
         if (overflow !== 'collapse' && list) {
             list.addEventListener('scroll', onResize, { passive: true });
         }
         return () => {
-            window.removeEventListener('resize', onResize);
+            if (observer) observer.disconnect();
+            else window.removeEventListener('resize', onResize);
             if (overflow !== 'collapse' && list) {
                 list.removeEventListener('scroll', onResize);
             }
@@ -268,12 +318,13 @@ export default function Tabs({
                 ...transitionStyle,
             }}
         >
-            {variant === 'default' ? (
+            {indicator === 'pill' ? (
                 <View
                     className={cn(
                         'absolute inset-0',
                         radiusPill,
-                        variantCfg.pill
+                        variantCfg.pill,
+                        pillClassName
                     )}
                 />
             ) : (
@@ -281,7 +332,8 @@ export default function Tabs({
                     className={cn(
                         'absolute inset-0',
                         sizeCfg.indicator_inner,
-                        variantCfg.line
+                        variantCfg.line,
+                        pillClassName
                     )}
                 />
             )}
@@ -325,6 +377,8 @@ export default function Tabs({
                             }}
                             key={tab.key}
                             value={tab.key}
+                            onMouseDown={focusTriggerOnMouseDown}
+                            {...(hasTabContent(tab) ? null : NO_PANEL_PROPS)}
                             style={{
                                 scrollMarginInline: scrollInset,
                             }}
@@ -341,21 +395,7 @@ export default function Tabs({
                             )}
                         >
                             <Text
-                                className={cn(
-                                    tab.key === currentTab
-                                        ? cn(
-                                              tabsTheme[
-                                                  'u-controls-tabs-header-item-text-active'
-                                              ],
-                                              sizeCfg.text_active
-                                          )
-                                        : cn(
-                                              tabsTheme[
-                                                  'u-controls-tabs-header-item-text'
-                                              ],
-                                              sizeCfg.text
-                                          )
-                                )}
+                                className={getTabTextClass(tab.key === currentTab, sizeCfg, variantCfg)}
                             >
                                 {tab.title}
                             </Text>
@@ -369,6 +409,7 @@ export default function Tabs({
     const collapseRowInner = (
         <>
             <TabsMeasureRow
+                key={collapseLayout.measureKey}
                 tabs={tabs}
                 collapseLayout={collapseLayout}
                 variantCfg={variantCfg}
@@ -410,6 +451,8 @@ export default function Tabs({
                             }}
                             key={tab.key}
                             value={tab.key}
+                            onMouseDown={focusTriggerOnMouseDown}
+                            {...(hasTabContent(tab) ? null : NO_PANEL_PROPS)}
                             className={cn(
                                 'relative z-[3]',
                                 tabsTheme['u-controls-tabs-header-item'],
@@ -423,21 +466,7 @@ export default function Tabs({
                             )}
                         >
                             <Text
-                                className={cn(
-                                    tab.key === currentTab
-                                        ? cn(
-                                              tabsTheme[
-                                                  'u-controls-tabs-header-item-text-active'
-                                              ],
-                                              sizeCfg.text_active
-                                          )
-                                        : cn(
-                                              tabsTheme[
-                                                  'u-controls-tabs-header-item-text'
-                                              ],
-                                              sizeCfg.text
-                                          )
-                                )}
+                                className={getTabTextClass(tab.key === currentTab, sizeCfg, variantCfg)}
                             >
                                 {tab.title}
                             </Text>
@@ -471,21 +500,7 @@ export default function Tabs({
                             >
                                 {resolvedMoreMenuTitle ? (
                                     <Text
-                                        className={cn(
-                                            moreIsActive
-                                                ? cn(
-                                                      tabsTheme[
-                                                          'u-controls-tabs-header-item-text-active'
-                                                      ],
-                                                      sizeCfg.text_active
-                                                  )
-                                                : cn(
-                                                      tabsTheme[
-                                                          'u-controls-tabs-header-item-text'
-                                                      ],
-                                                      sizeCfg.text
-                                                  )
-                                        )}
+                                        className={getTabTextClass(moreIsActive, sizeCfg, variantCfg)}
                                     >
                                         {resolvedMoreMenuTitle}
                                     </Text>
@@ -493,21 +508,7 @@ export default function Tabs({
                                 <Icon
                                     icon={moreMenuIcon}
                                     size={moreIconSize}
-                                    className={cn(
-                                        moreIsActive
-                                            ? cn(
-                                                  tabsTheme[
-                                                      'u-controls-tabs-header-item-text-active'
-                                                  ],
-                                                  sizeCfg.text_active
-                                              )
-                                            : cn(
-                                                  tabsTheme[
-                                                      'u-controls-tabs-header-item-text'
-                                                  ],
-                                                  sizeCfg.text
-                                              )
-                                    )}
+                                    className={getTabTextClass(moreIsActive, sizeCfg, variantCfg)}
                                 />
                             </View>
                         </DropdownMenu>
@@ -519,25 +520,12 @@ export default function Tabs({
                             ref={(node) => {
                                 if (node) triggerRefs.current[tab.key] = node;
                             }}
+                            {...(hasTabContent(tab) ? null : NO_PANEL_PROPS)}
                             className="sr-only absolute h-px w-px overflow-hidden opacity-0 pointer-events-none"
                             tabIndex={-1}
                         >
                             <Text
-                                className={cn(
-                                    tab.key === currentTab
-                                        ? cn(
-                                              tabsTheme[
-                                                  'u-controls-tabs-header-item-text-active'
-                                              ],
-                                              sizeCfg.text_active
-                                          )
-                                        : cn(
-                                              tabsTheme[
-                                                  'u-controls-tabs-header-item-text'
-                                              ],
-                                              sizeCfg.text
-                                          )
-                                )}
+                                className={getTabTextClass(tab.key === currentTab, sizeCfg, variantCfg)}
                             >
                                 {tab.title}
                             </Text>
@@ -559,22 +547,23 @@ export default function Tabs({
             )}
         >
             {collapseHugStrip ? (
-                <View
-                    className={cn(
-                        'relative min-w-0 overflow-hidden',
-                        'w-max max-w-full self-start',
-                        radiusTrack
-                    )}
-                >
+                <View className="relative min-w-0 w-max max-w-full self-start">
                     {trackView}
                     <View
                         className={cn(
-                            'relative min-w-0 w-full',
-                            listWrapperClassName
+                            'relative min-w-0 w-full overflow-hidden',
+                            radiusTrack
                         )}
-                        ref={headerWrapperRef}
                     >
-                        {collapseRowInner}
+                        <View
+                            className={cn(
+                                'relative min-w-0 w-full',
+                                listWrapperClassName
+                            )}
+                            ref={headerWrapperRef}
+                        >
+                            {collapseRowInner}
+                        </View>
                     </View>
                 </View>
             ) : (
@@ -600,19 +589,26 @@ export default function Tabs({
                 headerClassName
             )}
         >
+            {/* Track outside the clipping box so its outer shadow (glass ring + drop) is not cut off. */}
             <View
                 className={cn(
-                    'relative min-w-0 overflow-hidden',
+                    'relative min-w-0',
                     tabBarWidthClass,
-                    overflow !== 'collapse' && tabBarClassName,
-                    !collapseHugStrip && radiusTrack
+                    overflow !== 'collapse' && tabBarClassName
                 )}
             >
                 {!collapseHugStrip && trackView}
-                {overflow === 'collapse' ? collapseRow : scrollRow}
+                <View
+                    className={cn(
+                        'relative min-w-0 w-full overflow-hidden',
+                        !collapseHugStrip && radiusTrack
+                    )}
+                >
+                    {overflow === 'collapse' ? collapseRow : scrollRow}
+                </View>
             </View>
 
-            {tabs.map((tab) => (
+            {tabs.filter(hasTabContent).map((tab) => (
                 <TabsPrimitive.Content
                     className={cn(
                         tabsTheme['u-controls-tabs-tab-content'],

@@ -11,6 +11,8 @@
  * NeoButtonStyleProvider / NeoControlSizeProvider cascades, per-style
  * transition behavior, and a "resolved config" debug strip showing the
  * exact env the resolver picked up (platform / pointer / breakpoint / theme).
+ * The Tabs gallery at the end shows the segmented styles that match it
+ * (flat = `bordered`, glass = `glass`).
  */
 
 import React from 'react';
@@ -24,6 +26,7 @@ import {
     resolveScoped,
 } from 'app/design/controls/neo-button/neo-button';
 import { Icon } from 'app/ui/atoms/icon';
+import Tabs from 'app/ui/molecules/tabs/tabs';
 import { appSetting } from 'app/lib/util';
 
 function Section({ title, hint, children }) {
@@ -40,6 +43,48 @@ function Section({ title, hint, children }) {
 
 function Stack({ children }) {
     return <View className="w-full gap-2">{children}</View>;
+}
+
+/* ---------------------------- Tabs gallery ---------------------------- */
+
+const TAB_TITLES = ['Overview', 'Activity', 'Members', 'Media', 'Settings'];
+
+function demoTabs(count = 3) {
+    return TAB_TITLES.slice(0, count).map((title) => ({ key: title.toLowerCase(), title }));
+}
+
+function TabsRow({ label, children }) {
+    return (
+        <View className="w-full gap-1">
+            <Text className="font-mono text-xs text-muted-foreground">{label}</Text>
+            {children}
+        </View>
+    );
+}
+
+function TabsGallery({ variant }) {
+    return (
+        <Stack>
+            {['sm', 'md', 'lg'].map((size) => (
+                <TabsRow key={size} label={`size="${size}"`}>
+                    <Tabs variant={variant} size={size} tabs={demoTabs()} equalWidth />
+                </TabsRow>
+            ))}
+            <TabsRow label="rounded hug">
+                <Tabs variant={variant} rounded hug tabs={demoTabs()} />
+            </TabsRow>
+            <TabsRow label='overflow="collapse" (narrow box)'>
+                <View className="max-w-xs w-full">
+                    <Tabs variant={variant} overflow="collapse" tabs={demoTabs(5)} />
+                </View>
+            </TabsRow>
+            <TabsRow label='overflow="scroll" (narrow box)'>
+                <View className="max-w-xs w-full">
+                    <Tabs variant={variant} tabs={demoTabs(5)} />
+                </View>
+            </TabsRow>
+        </Stack>
+    );
 }
 
 /* ---------------------- Sizes resolver chart -------------------------- */
@@ -506,6 +551,48 @@ export default function PageLayoutPlayground({ data, children }) {
                             onPress={() => {}}
                             classNames={{ container: 'px-8', image: 'text-yellow-500' }}
                         />
+                    </Section>
+
+                    <Section
+                        title={'Tabs: flat (variant="default")'}
+                        hint="NeoButton bordered colours: bg-button track, a lighter pill in both schemes."
+                    >
+                        <TabsGallery variant="default" />
+                    </Section>
+
+                    <Section
+                        title={'Tabs: glass (variant="glass")'}
+                        hint="NeoButton glass: blurred track with the glass ring, a lighter lens as the pill. Shown on a tinted backdrop."
+                    >
+                        <View className="w-full rounded-2xl p-4 bg-primary/15">
+                            <TabsGallery variant="glass" />
+                        </View>
+                    </Section>
+
+                    <Section
+                        title={'Tabs: underline (variant="secondary")'}
+                        hint="indicator: 'line'."
+                    >
+                        <TabsGallery variant="secondary" />
+                    </Section>
+
+                    <Section
+                        title="Tabs: trackClassName + pillClassName"
+                        hint="A muted track hides the flat pill in dark mode; pillClassName lifts it per instance."
+                    >
+                        <Stack>
+                            <TabsRow label='trackClassName="bg-muted"'>
+                                <Tabs trackClassName="bg-muted" tabs={demoTabs()} equalWidth />
+                            </TabsRow>
+                            <TabsRow label='trackClassName="bg-muted" pillClassName="bg-popover dark:bg-foreground/20"'>
+                                <Tabs
+                                    trackClassName="bg-muted"
+                                    pillClassName="bg-popover dark:bg-foreground/20"
+                                    tabs={demoTabs()}
+                                    equalWidth
+                                />
+                            </TabsRow>
+                        </Stack>
                     </Section>
 
                     <Section

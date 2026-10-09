@@ -14,12 +14,20 @@ import emitter, { EVENTS } from 'app/context/emitter';
 import { NeoButtonRef, legacyToNeoButtonProps } from 'app/design/controls'
 import { isLegacyButtonProps, stripRoutingKeys } from 'app/design/controls/neo-button/legacy-button-map';
 import type { ComponentType } from 'react';
+import ElementLoading from 'app/ui/atoms/loading';
 
 // Trigger component, loosely typed: the popup passes RN / ARIA props
 // (collapsable, aria-*, onFocusCapture) that NeoButton forwards to its surface.
 const NeoTriggerButton: ComponentType<any> = NeoButtonRef;
 
 const dropdownTheme = appSetting('theme', 'dropdown');
+
+/**
+ * After content was seen loading, wait this long without a height change before showing it.
+ * Each registry row has its own Suspense boundary and React reveals sibling boundaries up to
+ * 300ms apart, so without the wait the menu grows row by row.
+ */
+const CONTENT_SETTLE_MS = 350;
 
 const WEB_FOCUSABLE_SELECTOR = [
     'a[href]',
@@ -114,6 +122,17 @@ export default function DropdownPopup({
     const [buttonPos, setButtonPos] = useState({ triggerY: 0, triggerHeight: 0, x: 0, width: 0, height: 0, maxHeight: 0, shouldOpenAbove: false });
     const [popupHeight, setPopupHeight] = useState(0);
     const [popupRenderedWidth, setPopupRenderedWidth] = useState(0);
+    /**
+     * Height of the rendered menu content. 0 while nothing has rendered yet: on web the
+     * menu rows come from the component registry (`next/dynamic`), and on the first open
+     * their chunk is still loading, so the popup showed as a thin empty strip and then
+     * grew. Until the content is ready we reserve one row and show a spinner.
+     */
+    const [contentHeight, setContentHeight] = useState(0);
+    /** False from an empty measurement until the height has been stable for CONTENT_SETTLE_MS. */
+    const [contentSettled, setContentSettled] = useState(true);
+    const settleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const contentPending = contentHeight <= 0 || !contentSettled;
     const { width: windowWidth, height: windowHeight } = useWindowSize();
     const isWeb = useMemo(() => Platform.OS === 'web', []);
     const isIos = useMemo(() => Platform.OS == 'ios', []);
@@ -234,8 +253,16 @@ export default function DropdownPopup({
             setButtonPos({ triggerY: 0, triggerHeight: 0, x: 0, width: 0, height: 0, maxHeight: 0, shouldOpenAbove: false });
             setPopupHeight(0);
             setPopupRenderedWidth(0);
+            setContentHeight(0);
+            setContentSettled(true);
+            if (settleTimerRef.current) clearTimeout(settleTimerRef.current);
+            settleTimerRef.current = null;
         }
     }, [isRealOpen, updateButtonPosition]);
+
+    useEffect(() => () => {
+        if (settleTimerRef.current) clearTimeout(settleTimerRef.current);
+    }, []);
 
     /** Reposition when any scrollable ancestor scrolls (menu stays anchored to trigger). */
     useEffect(() => {
@@ -299,14 +326,15 @@ export default function DropdownPopup({
     const popupMeasured = (!buttonPos.shouldOpenAbove || popupHeight > 0) && popupRenderedWidth > 0;
     const hasMeasured = triggerMeasured && popupMeasured;
 
+    // Wait for the content too: on a first (loading) open the rows don't exist yet.
     useEffect(() => {
-        if (!isWeb || !isRealOpen || !hasMeasured) return;
+        if (!isWeb || !isRealOpen || !hasMeasured || contentPending) return;
         const id = requestAnimationFrame(() => {
             const first = getWebFocusableElements(contentRef.current)[0];
             first?.focus?.();
         });
         return () => cancelAnimationFrame(id);
-    }, [isWeb, isRealOpen, hasMeasured]);
+    }, [isWeb, isRealOpen, hasMeasured, contentPending]);
 
     useEffect(() => {
         if (!isWeb || !isRealOpen || !hasMeasured) return;
@@ -393,6 +421,25 @@ export default function DropdownPopup({
         }
     };
 
+    const handleScrollLayout = (e: { nativeEvent: { layout: { height: number } } }) => {
+        const h = Math.round(e.nativeEvent.layout.height);
+        if (h <= 0) {
+            // Nothing rendered yet (first measurement is 0 too, so check before the equality bail-out).
+            if (contentSettled) setContentSettled(false);
+            if (contentHeight !== 0) setContentHeight(0);
+            return;
+        }
+        if (h === contentHeight) return;
+        setContentHeight(h);
+        if (contentSettled) return;
+        // Content was loading: show it once it stops growing.
+        if (settleTimerRef.current) clearTimeout(settleTimerRef.current);
+        settleTimerRef.current = setTimeout(() => {
+            settleTimerRef.current = null;
+            setContentSettled(true);
+        }, CONTENT_SETTLE_MS);
+    };
+
     const Content = (
         <View
             ref={contentRef}
@@ -416,11 +463,25 @@ export default function DropdownPopup({
             <ScrollView
                 showsVerticalScrollIndicator={false}
                 tabIndex={isWeb ? -1 : undefined}
-                className={cn('web:outline-none', maxPopupWidth && 'w-full min-w-0 max-w-full')}
+                onLayout={handleScrollLayout}
+                pointerEvents={contentPending ? 'none' : undefined}
+                className={cn(
+                    'web:outline-none',
+                    maxPopupWidth && 'w-full min-w-0 max-w-full',
+                    // Rows that render while loading stay out of flow and invisible, so the
+                    // popup keeps its one-row height until the whole menu is ready.
+                    contentPending && 'absolute left-0 right-0 top-0 opacity-0'
+                )}
                 contentContainerClassName={maxPopupWidth ? 'w-full min-w-0' : undefined}
             >
                 {children}
             </ScrollView>
+            {contentPending ? (
+                // One menu row (44px, the regular control height) with a small spinner.
+                <View className="h-11 w-full items-center justify-center">
+                    <ElementLoading size="small" />
+                </View>
+            ) : null}
         </View>
     );
     const openTrigger = () => handleToggle(true);
