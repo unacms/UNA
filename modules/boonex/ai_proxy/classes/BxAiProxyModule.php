@@ -9,9 +9,6 @@
  * @{
  */
 
-require_once __DIR__ . '/BxAiProxyAuth.php';
-require_once __DIR__ . '/BxAiProxyCompletion.php';
-
 class BxAiProxyModule extends BxDolModule
 {
     function __construct($aModule)
@@ -42,6 +39,9 @@ class BxAiProxyModule extends BxDolModule
 
     public function completions(): void
     {
+        bx_import('Auth', $this->_aModule);
+        bx_import('Completion', $this->_aModule);
+
         $sBody = file_get_contents('php://input');
         if ($sBody === false)
             $sBody = '';
@@ -127,6 +127,8 @@ class BxAiProxyModule extends BxDolModule
 
     protected function assertChatModel(int $iId): void
     {
+        bx_import('Completion', $this->_aModule);
+
         if ($iId <= 0)
             throw new BxAiProxyException(503, 'The proxy model is not available');
 
