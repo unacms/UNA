@@ -26,7 +26,7 @@ class LikesUndoTest extends BxDolIntegrationTestCase
 
     public function testPollAnswerVotesKeepIsUndo(): void
     {
-        $aRows = BxDolDb::getInstance()->getAll("SELECT `Name`, `IsUndo` FROM `sys_objects_vote` WHERE `Name` LIKE '%\\_poll\\_answers'");
+        $aRows = BxDolDb::getInstance()->getAll("SELECT `Name`, `IsUndo` FROM `sys_objects_vote` WHERE `Name` LIKE '%\\_poll\\_answers' OR `Name` = 'bx_polls_subentries'");
         if (empty($aRows))
             $this->markTestSkipped('No poll answer vote objects are installed.');
 
@@ -55,15 +55,23 @@ class LikesUndoTest extends BxDolIntegrationTestCase
         if (!$oVote->isAllowedVote())
             $this->markTestSkipped('The test user may not like timeline events.');
 
-        $bVotedBefore = $oVote->isPerformed($iEventId, bx_get_logged_profile_id());
+        $iProfileId = bx_get_logged_profile_id();
+        $bVotedBefore = (bool)$oVote->isPerformed($iEventId, $iProfileId);
 
-        $aFirst = $oVote->vote(['value' => 1]);
-        $this->assertSame(0, (int)($aFirst['code'] ?? 0), 'First vote failed: ' . json_encode($aFirst));
-        $this->assertSame(!$bVotedBefore, $aFirst['api']['is_voted']);
+        try {
+            $aFirst = $oVote->vote(['value' => 1]);
+            $this->assertSame(0, (int)($aFirst['code'] ?? 0), 'First vote failed: ' . json_encode($aFirst));
+            $this->assertSame(!$bVotedBefore, $aFirst['api']['is_voted']);
 
-        // Before IsUndo was ignored for likes, this second vote was refused as a duplicate.
-        $aSecond = $oVote->vote(['value' => 1]);
-        $this->assertSame(0, (int)($aSecond['code'] ?? 0), 'Second vote failed: ' . json_encode($aSecond));
-        $this->assertSame($bVotedBefore, $aSecond['api']['is_voted']);
+            // Before IsUndo was ignored for likes, this second vote was refused as a duplicate.
+            $aSecond = $oVote->vote(['value' => 1]);
+            $this->assertSame(0, (int)($aSecond['code'] ?? 0), 'Second vote failed: ' . json_encode($aSecond));
+            $this->assertSame($bVotedBefore, $aSecond['api']['is_voted']);
+        }
+        finally {
+            // Leave the member's vote as it was, even when an assertion above failed.
+            if ((bool)$oVote->isPerformed($iEventId, $iProfileId) !== $bVotedBefore)
+                $oVote->vote(['value' => 1]);
+        }
     }
 }

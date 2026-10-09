@@ -410,6 +410,8 @@ export const settingsButtons = {
                     active: 'bg-button-hover ',
                     // Selected must differ from hover; matches the native expo_ui bordered toggle.
                     pressedToggle: 'bg-accent',
+                    // A cast like or reaction (selectedState="voted").
+                    voted: 'bg-accent/60',
                     disabled: 'bg-button/50 ',
                 },
                 text: {
@@ -420,6 +422,7 @@ export const settingsButtons = {
                     pressed: 'text-button-foreground',
                     active: 'text-button-foreground',
                     pressedToggle: 'text-accent-foreground',
+                    voted: 'text-accent-foreground',
                     disabled: 'text-muted-foreground',
                 },
             },
