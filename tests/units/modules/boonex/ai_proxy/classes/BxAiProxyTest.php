@@ -78,6 +78,70 @@ class BxAiProxyTest extends \PHPUnit\Framework\TestCase
         $this->assertIsString($sJson);
         $this->assertStringNotContainsString($sBodyModel, $sJson);
     }
+
+    public function testNestedToolSchemaKeepsArrayItemsAndObjectProperties()
+    {
+        $oProvider = new BxAiProxyTestProvider();
+        (new BxAiProxyCompletion())->run([
+            'messages' => [
+                ['role' => 'user', 'content' => 'search'],
+            ],
+            'tools' => [[
+                'type' => 'function',
+                'function' => [
+                    'name' => 'content_search',
+                    'description' => 'Search content',
+                    'parameters' => [
+                        'type' => 'object',
+                        'properties' => [
+                            'keyword' => [
+                                'type' => 'string',
+                                'description' => 'The keyword to search for.',
+                            ],
+                            'sections' => [
+                                'type' => 'array',
+                                'description' => 'List of sections to search in.',
+                                'items' => [
+                                    'type' => 'string',
+                                    'description' => 'Section name.',
+                                ],
+                            ],
+                            'data' => [
+                                'type' => 'array',
+                                'description' => 'Fields to write.',
+                                'minItems' => 1,
+                                'maxItems' => 8,
+                                'items' => [
+                                    'type' => 'object',
+                                    'properties' => [
+                                        'name' => ['type' => 'string', 'description' => 'Parameter name'],
+                                        'value' => ['type' => 'string', 'description' => 'Parameter value'],
+                                    ],
+                                    'required' => ['name', 'value'],
+                                ],
+                            ],
+                        ],
+                        'required' => ['keyword', 'data'],
+                    ],
+                ],
+            ]],
+        ], 7, function () use ($oProvider) {
+            return $oProvider;
+        });
+
+        $this->assertCount(1, $oProvider->aTools);
+        $aMapped = (new NeuronAI\Providers\OpenAI\ToolMapper())->map($oProvider->aTools);
+        $aProperties = $aMapped[0]['function']['parameters']['properties'];
+
+        $this->assertSame(['keyword', 'data'], $aMapped[0]['function']['parameters']['required']);
+        $this->assertSame('string', $aProperties['sections']['items']['type']);
+        $this->assertSame('Section name.', $aProperties['sections']['items']['description']);
+        $this->assertSame('object', $aProperties['data']['items']['type']);
+        $this->assertSame('string', $aProperties['data']['items']['properties']['name']['type']);
+        $this->assertSame(['name', 'value'], $aProperties['data']['items']['required']);
+        $this->assertSame(1, $aProperties['data']['minItems']);
+        $this->assertSame(8, $aProperties['data']['maxItems']);
+    }
 }
 
 class BxAiProxyTestProvider implements NeuronAI\Providers\AIProviderInterface

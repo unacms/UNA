@@ -192,28 +192,66 @@ class BxAiProxyCompletion
     protected function stubTool(string $sName, string $sDescription, array $aParameters): NeuronAI\Tools\Tool
     {
         $oTool = NeuronAI\Tools\Tool::make($sName, $sDescription);
-        $aProperties = isset($aParameters['properties']) && is_array($aParameters['properties']) ? $aParameters['properties'] : [];
-        $aRequired = isset($aParameters['required']) && is_array($aParameters['required']) ? $aParameters['required'] : [];
-        foreach ($aProperties as $sProp => $aSchema) {
-            if (!is_string($sProp) || !is_array($aSchema))
-                continue;
-            $sType = $aSchema['type'] ?? 'string';
-            try {
-                $oType = NeuronAI\Tools\PropertyType::fromSchema(is_array($sType) ? $sType : (string)$sType);
-            }
-            catch (Throwable $oException) {
-                $oType = NeuronAI\Tools\PropertyType::STRING;
-            }
-            $aEnum = isset($aSchema['enum']) && is_array($aSchema['enum']) ? array_values($aSchema['enum']) : [];
-            $oTool->addProperty(new NeuronAI\Tools\ToolProperty(
-                $sProp,
-                $oType,
-                isset($aSchema['description']) ? (string)$aSchema['description'] : null,
-                in_array($sProp, $aRequired, true),
-                $aEnum,
-            ));
-        }
+        foreach ($this->schemaProperties($aParameters) as $oProperty)
+            $oTool->addProperty($oProperty);
         return $oTool;
+    }
+
+    /**
+     * @return list<NeuronAI\Tools\ToolPropertyInterface>
+     */
+    protected function schemaProperties(array $aSchema): array
+    {
+        $aProperties = isset($aSchema['properties']) && is_array($aSchema['properties']) ? $aSchema['properties'] : [];
+        $aRequired = isset($aSchema['required']) && is_array($aSchema['required']) ? $aSchema['required'] : [];
+        $aBuilt = [];
+        foreach ($aProperties as $sProp => $aProperty) {
+            if (!is_string($sProp) || !is_array($aProperty))
+                continue;
+            $aBuilt[] = $this->schemaProperty($sProp, $aProperty, in_array($sProp, $aRequired, true));
+        }
+        return $aBuilt;
+    }
+
+    protected function schemaProperty(string $sName, array $aSchema, bool $bRequired): NeuronAI\Tools\ToolPropertyInterface
+    {
+        $sType = $aSchema['type'] ?? 'string';
+        try {
+            $oType = NeuronAI\Tools\PropertyType::fromSchema(is_array($sType) ? $sType : (string)$sType);
+        }
+        catch (Throwable $oException) {
+            $oType = NeuronAI\Tools\PropertyType::STRING;
+        }
+        $sDescription = isset($aSchema['description']) ? (string)$aSchema['description'] : null;
+
+        if ($oType === NeuronAI\Tools\PropertyType::ARRAY)
+            return $this->arrayProperty($sName, $aSchema, $bRequired, $sDescription);
+        if ($oType === NeuronAI\Tools\PropertyType::OBJECT)
+            return $this->objectProperty($sName, $aSchema, $bRequired, $sDescription);
+
+        $aEnum = isset($aSchema['enum']) && is_array($aSchema['enum']) ? array_values($aSchema['enum']) : [];
+        return new NeuronAI\Tools\ToolProperty($sName, $oType, $sDescription, $bRequired, $aEnum);
+    }
+
+    protected function arrayProperty(string $sName, array $aSchema, bool $bRequired, ?string $sDescription): NeuronAI\Tools\ArrayProperty
+    {
+        $oItems = null;
+        if (isset($aSchema['items']) && is_array($aSchema['items']) && !array_is_list($aSchema['items']))
+            $oItems = $this->schemaProperty($sName . '_item', $aSchema['items'], false);
+
+        $iMin = isset($aSchema['minItems']) && is_int($aSchema['minItems']) && $aSchema['minItems'] >= 0 ? $aSchema['minItems'] : null;
+        $iMax = isset($aSchema['maxItems']) && is_int($aSchema['maxItems']) && $aSchema['maxItems'] >= 0 ? $aSchema['maxItems'] : null;
+        if ($iMin !== null && $iMax !== null && $iMin > $iMax) {
+            $iMin = null;
+            $iMax = null;
+        }
+
+        return new NeuronAI\Tools\ArrayProperty($sName, $sDescription, $bRequired, $oItems, $iMin, $iMax);
+    }
+
+    protected function objectProperty(string $sName, array $aSchema, bool $bRequired, ?string $sDescription): NeuronAI\Tools\ObjectProperty
+    {
+        return new NeuronAI\Tools\ObjectProperty($sName, $sDescription, $bRequired, null, $this->schemaProperties($aSchema));
     }
 
     protected function callTool(array $aCall): NeuronAI\Tools\Tool
