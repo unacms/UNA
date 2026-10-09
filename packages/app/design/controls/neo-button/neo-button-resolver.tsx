@@ -387,10 +387,17 @@ const SWIFTUI_BORDER_SHAPE: Record<string, string> = {
  * pressedToggle, disabled }) and resolves each entry against ctx, then
  * concatenates `base` + the entry for the current state.
  */
+// The interaction states every style may define. Any other state is a custom
+// selected state (`selectedState="voted"`).
+const NEO_BUTTON_STATES = new Set(['default', 'hovered', 'focused', 'pressed', 'active', 'pressedToggle', 'disabled']);
+
 function resolveSlot(slotMap: Record<string, any> | undefined, state: string, ctx: NeoScopeContext): string {
     if (!slotMap) return '';
     const base = resolveScoped(slotMap.base, ctx) || '';
-    const stateVal = resolveScoped(slotMap[state], ctx);
+    let stateVal = resolveScoped(slotMap[state], ctx);
+    // A style without that custom selected state keeps its own selected look.
+    if (stateVal === undefined && !NEO_BUTTON_STATES.has(state))
+        stateVal = resolveScoped(slotMap.pressedToggle, ctx);
     const fallback = state !== 'default' ? resolveScoped(slotMap.default, ctx) : undefined;
     const main = (stateVal !== undefined ? stateVal : fallback) || '';
     return [base, main].filter(Boolean).join(' ');

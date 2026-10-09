@@ -125,6 +125,7 @@ export default function ElementLikes(props) {
                 title={showLabel ? title : false}
                 onPress={undoLike}
                 pressed={true}
+                selectedState="voted"
                 {...buttonProps}
             />
         );

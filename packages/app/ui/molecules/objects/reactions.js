@@ -632,6 +632,7 @@ export default function ElementReactions(props) {
                     startDecorator={getIcon(reaction)}
                     title={showLabel ? title : ''}
                     pressed={true}
+                    selectedState="voted"
                     onPress={undoReaction}
                     {...buttonProps}
                 />
