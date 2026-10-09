@@ -87,11 +87,12 @@ const getData = cache(async (path, searchParamsKey) => {
             return { data: { title: SITE_TITLE, description: SITE_TITLE }, code: res.status };
         }*/
 
-        const resClone = res.clone();
+        // Read the body once: a clone kept for the error branch buffered every page twice.
+        let text = '';
         try {
-            return await res.json();
+            text = await res.text();
+            return JSON.parse(text);
         } catch (error) {
-            const text = await resClone.text();
             const fatal = text.match(/Fatal error[^<]*/i)?.[0]
                 || text.match(/Uncaught [\w\\]+:[^\n<]+/)?.[0]
                 || text.slice(0, 200);

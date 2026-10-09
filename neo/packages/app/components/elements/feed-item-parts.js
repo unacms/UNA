@@ -8,13 +8,11 @@ import {
     useMemo,
     useState,
     useEffect,
-    useCallback,
     useRef,
 } from 'react'
 import { useCurrentUser } from 'app/context/user'
 import {
     appSetting,
-    isObjectsEqual,
     menuItemsByName,
     visibilityById,
     runMenuItemCallback,
@@ -32,7 +30,7 @@ import Card from 'app/ui/molecules/page/card'
 import AnimatedBlock from 'app/ui/atoms/animated-block'
 import { CommentsBrowseShort } from 'app/components/elements/comments-browse';
 import { Pressable } from 'app/design/view'
-import { subscribe } from 'app/ui/atoms/socket'
+import { subscribeTimelineEdit } from 'app/lib/timeline-edits'
 import { getDataForMenu } from 'app/lib/util'
 import Form from 'app/components/elements/form'
 import useFetchForm from 'app/lib/hooks/use-fetch-form'
@@ -673,48 +671,37 @@ export function SmallUnit({ data }) {
     )
 }
 
+/** Card fields derived from a timeline item (first image, first comments). */
+function enrichFeedItem(data) {
+    const mainImage = data?.content?.images?.length > 0 ? data.content.images[0] : null;
+    const comments = data?.cmts?.data?.length > 0
+        ? data.cmts.data[0][Object.keys(data.cmts.data[0])[0]].data
+        : null;
+    return { ...data, mainImage, comments, showMore: true };
+}
+
 export const UnitFeed = ({ data, mode, DefaultUnit, SmallUnit, feed_type }) => {
-    const enrichedData = useMemo(() => {
-        const mainImage = data?.content?.images?.length > 0 ? data.content.images[0] : null;
-        const comments = data?.cmts?.data?.length > 0
-            ? data.cmts.data[0][Object.keys(data.cmts.data[0])[0]].data
-            : null;
-        return { ...data, mainImage, comments, showMore: true };
-    }, [data?.id]);
+    const enrichedData = useMemo(() => enrichFeedItem(data), [data?.id]);
 
     const [datas, setDatas] = useState(enrichedData)
+    const itemId = datas?.id
 
-    const onItemEdited = useCallback(
-        async (strData) => {
-            const editedData = JSON.parse(strData)
-            const editedId = editedData?.id
-            const currentId = datas?.id
-
-            if (editedId == null || currentId == null) {
-                return
-            }
-
-            if (editedId.toString() == currentId.toString()) {
-                const result = await fetcher(
-                    '/api.php?r=' +
-                    appSetting('urls', 'feed_item') +
-                    '{"params":{"browse":"id","value":' +
-                    editedId +
-                    '}}'
-                )
-                if (result.data && !isObjectsEqual(result.data, datas))
-                    setDatas(result.data)
-            }
-        },
-        [datas]
-    )
-
+    // Reload the card when its post is edited. The edited item is enriched like
+    // the initial one: without `mainImage` the card dropped its picture.
     useEffect(() => {
-        const sub1 = subscribe('bx_timeline_0', 'edited', onItemEdited);
-        return () => {
-            sub1();
-        };
-    }, [])
+        if (itemId == null) return undefined
+        return subscribeTimelineEdit(itemId, async () => {
+            const result = await fetcher(
+                '/api.php?r=' +
+                appSetting('urls', 'feed_item') +
+                '{"params":{"browse":"id","value":' +
+                itemId +
+                '}}'
+            )
+            if (result.data)
+                setDatas(enrichFeedItem(result.data))
+        })
+    }, [itemId])
 
     return mode == 'small' ? (
         <SmallUnit data={datas} />
