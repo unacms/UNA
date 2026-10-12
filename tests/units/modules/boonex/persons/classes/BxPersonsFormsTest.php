@@ -138,8 +138,8 @@ class BxPersonsFormsTest extends BxPersonsTestCase
     {
         $CNF = &$this->_oModule->_oConfig->CNF;
         $oForm = BxDolForm::getObjectInstance($CNF['OBJECT_FORM_ENTRY'], $CNF['OBJECT_FORM_ENTRY_DISPLAY_EDIT_COVER'], $this->_oModule->_oTemplate);
-        if (!$oForm || empty($oForm->aInputs[$CNF['FIELD_COVER']]))
-            $this->markTestSkipped('Persons edit cover form or cover field is missing.');
+        $this->assertNotFalse($oForm, 'Persons edit cover form is missing.');
+        $this->assertNotEmpty($oForm->aInputs[$CNF['FIELD_COVER']], 'Persons cover field is missing.');
 
         $this->assertTrue($oForm->aInputs[$CNF['FIELD_COVER']]['is_profile']);
     }
