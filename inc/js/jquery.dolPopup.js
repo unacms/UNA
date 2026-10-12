@@ -893,6 +893,7 @@
             if (o.pointer != false) {                
                 
                 var yOffset = 8;
+                var xMargin = 8; // min distance from the window's left and right edges
                 var ePointAt = typeof o.pointer.el == 'string' ? $(o.pointer.el) : o.pointer.el;
                 if (!ePointAt)
                     ePointAt = $('body');
@@ -904,27 +905,41 @@
                 if (undefined == aOffsetPointer[0] || undefined == aOffsetPointer[1])
                     aOffsetPointer = [0, 0];
 
-                $el.position({
-                    of: ePointAt,
-                    my: o.pointer.align + '+' + parseInt(aOffset[0]) + ' top+' + yOffset + '+' + parseInt(aOffset[1] - 0),
-                    at: o.pointer.align + ' bottom',
-                    collision: 'fit none'
-                });
+                var fPosition = function() {
+                    // .position() moves the popup through .offset(), which measures the transformed box,
+                    // so while the show animation scales the popup it would land up and to the left
+                    // of its place: lay it out unscaled until it is placed
+                    var oStyle = $el.get(0).style;
+                    var sTransition = oStyle.transition, sTransform = oStyle.transform;
+                    $el.css({transition: 'none', transform: 'none'});
 
-                $el.find('.bx-popup-box-pointer').css('display', 'block').position({
-                    of: ePointAt,
-                    my: 'center+' + (parseInt(aOffsetPointer[0]) + parseInt(aOffset[0])) + ' top+' + yOffset + '+' + (parseInt(aOffsetPointer[1]) + parseInt(aOffset[1]) + 0),
-                    at: 'center bottom'
-                });
-
-                $(window).on('resize.popupPointer', function() {
                     $el.position({
                         of: ePointAt,
-                        my: o.pointer.align + '+' + parseInt(aOffset[0]) + ' top+' + yOffset + '+' + parseInt(aOffset[1]),
+                        my: o.pointer.align + '+' + parseInt(aOffset[0]) + ' top+' + yOffset + '+' + parseInt(aOffset[1] - 0),
                         at: o.pointer.align + ' bottom',
-                        collision: 'flip none'
+                        collision: 'fit none'
                     });
-                });
+
+                    // 'fit' only keeps the popup inside the window, flush with its edge
+                    var iWindowLeft = $(window).scrollLeft();
+                    var iLeftMin = iWindowLeft + xMargin;
+                    var iLeftMax = iWindowLeft + $(window).width() - xMargin - $el.outerWidth();
+                    var iLeft = $el.offset().left;
+                    if (iLeftMin <= iLeftMax && (iLeft < iLeftMin || iLeft > iLeftMax))
+                        $el.offset({left: Math.min(Math.max(iLeft, iLeftMin), iLeftMax)});
+
+                    $el.find('.bx-popup-box-pointer').css('display', 'block').position({
+                        of: ePointAt,
+                        my: 'center+' + (parseInt(aOffsetPointer[0]) + parseInt(aOffset[0])) + ' top+' + yOffset + '+' + (parseInt(aOffsetPointer[1]) + parseInt(aOffset[1]) + 0),
+                        at: 'center bottom'
+                    });
+
+                    $el.css({transition: sTransition, transform: sTransform});
+                };
+
+                fPosition();
+
+                $(window).on('resize.popupPointer', fPosition);
 
             } else if (o.position == 'fixed' || o.position == 'absolute') {
                 var bCenterHor = o.left != undefined && o.left == 'center';
