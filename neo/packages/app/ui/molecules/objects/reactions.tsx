@@ -527,7 +527,7 @@ function ReactionPopover({
         else onPress?.(event);
     };
 
-    // --- web keyboard: the arrow keys open the panel (Enter keeps its click action), Escape closes it ---
+    // --- web keyboard: the arrow keys open the panel (Enter keeps its click action) ---
 
     const handleButtonKeyDown = (event: any) => {
         if (disabled || modalVisible) return;
@@ -543,11 +543,6 @@ function ReactionPopover({
 
     // The arrow keys move between reactions; in the search field they move the caret.
     const handlePanelKeyDown = (event: any) => {
-        if (event.key === 'Escape') {
-            event.preventDefault();
-            closeModal();
-            return;
-        }
         const step = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[event.key as string];
         if (!step || event.target?.tagName === 'INPUT') return;
         const list = panelFocusables();
@@ -557,13 +552,37 @@ function ReactionPopover({
         list[(i + step + list.length) % list.length]?.focus();
     };
 
-    // Opened from the keyboard: focus the reaction already given, else the first control.
+    // Opened from the keyboard: focus the reaction already given, else the first control. The emoji picker loads
+    // lazily, so on its first opening the panel can still be empty: wait for its controls to appear.
     const panelShown = !!panelStyle;
     useEffect(() => {
         if (!isWeb || !modalVisible || !panelShown || !openedByKeyboard.current) return;
-        const list = panelFocusables();
-        (list.find((e) => e.getAttribute('aria-pressed') === 'true') ?? list[0])?.focus();
+        const focusInto = () => {
+            const list = panelFocusables();
+            if (!list.length) return false;
+            (list.find((e) => e.getAttribute('aria-pressed') === 'true') ?? list[0]).focus();
+            return true;
+        };
+        if (focusInto() || !panelRef.current) return;
+        const observer = new MutationObserver(() => {
+            if (focusInto()) observer.disconnect();
+        });
+        observer.observe(panelRef.current, { childList: true, subtree: true });
+        return () => observer.disconnect();
     }, [modalVisible, panelShown]);
+
+    // Escape closes the panel however it was opened (hover and click leave focus outside it).
+    useEffect(() => {
+        if (!isWeb || !modalVisible) return;
+        const onKeyDown = (event: KeyboardEvent) => {
+            if (event.key !== 'Escape') return;
+            event.preventDefault();
+            closeModal();
+        };
+        window.addEventListener('keydown', onKeyDown);
+        return () => window.removeEventListener('keydown', onKeyDown);
+        // eslint-disable-next-line react-hooks/exhaustive-deps -- closeModal only clears timers and state
+    }, [modalVisible]);
 
     const handleLongPress = () => {
         if (disabled) return;
