@@ -31,6 +31,7 @@ import AnimatedBlock from 'app/ui/atoms/animated-block'
 import { CommentsBrowseShort } from 'app/components/elements/comments-browse';
 import { Pressable } from 'app/design/view'
 import { subscribeTimelineEdit } from 'app/lib/timeline-edits'
+import { commentsObjectKey, storeObjectsFrom, useObjectState } from 'app/lib/object-state'
 import { getDataForMenu } from 'app/lib/util'
 import Form from 'app/components/elements/form'
 import useFetchForm from 'app/lib/hooks/use-fetch-form'
@@ -671,6 +672,8 @@ export function SmallUnit({ data }) {
     )
 }
 
+const cmtsFromProps = (cmts) => cmts
+
 /** Card fields derived from a timeline item (first image, first comments). */
 function enrichFeedItem(data) {
     const mainImage = data?.content?.images?.length > 0 ? data.content.images[0] : null;
@@ -686,6 +689,14 @@ export const UnitFeed = ({ data, mode, DefaultUnit, SmallUnit, feed_type }) => {
     const [datas, setDatas] = useState(enrichedData)
     const itemId = datas?.id
 
+    // Comments preview shared through the object store: a reload after a socket
+    // edit outlives the card, so the list cache doesn't bring back old comments.
+    const cmtsKey = datas?.cmts?.unit === 'comments' && datas.cmts.object_id != null
+        ? commentsObjectKey(datas.cmts.module, datas.cmts.object_id)
+        : null
+    const [cmts] = useObjectState(cmtsKey, datas?.cmts, cmtsFromProps)
+    const shown = cmts === datas?.cmts ? datas : enrichFeedItem({ ...datas, cmts })
+
     // Reload the card when its post is edited. The edited item is enriched like
     // the initial one: without `mainImage` the card dropped its picture.
     useEffect(() => {
@@ -698,14 +709,17 @@ export const UnitFeed = ({ data, mode, DefaultUnit, SmallUnit, feed_type }) => {
                 itemId +
                 '}}'
             )
-            if (result.data)
+            if (result.data) {
+                // Counters, reactions and comments of the post for every widget.
+                storeObjectsFrom(result.data)
                 setDatas(enrichFeedItem(result.data))
+            }
         })
     }, [itemId])
 
     return mode == 'small' ? (
-        <SmallUnit data={datas} />
+        <SmallUnit data={shown} />
     ) : (
-        <DefaultUnit data={datas} />
+        <DefaultUnit data={shown} />
     )
 }

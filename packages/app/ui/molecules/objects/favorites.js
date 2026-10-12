@@ -17,6 +17,7 @@ import { useTranslation } from 'react-i18next';
 import { appSetting, FeedbackHaptics } from 'app/lib/util';
 import {
     objectKey,
+    objectStateFromProps,
     mergeState,
     objectRequest,
     openPerformedBy,
@@ -30,6 +31,7 @@ import {
     PerformedByModal,
 } from 'app/ui/molecules/objects/helpers';
 import { View } from 'app/design/view';
+import { useObjectState } from 'app/lib/object-state';
 
 export default function ElementFavorites(props) {
     const { t } = useTranslation();
@@ -37,7 +39,6 @@ export default function ElementFavorites(props) {
     const settings = appSetting('social_actions', 'favorite');
     const params = { ...settings, ...props.params };
     const action = props.action;
-    const counter = props.counter;
 
     const key = objectKey(props.type, props.system, props.object_id);
 
@@ -54,10 +55,7 @@ export default function ElementFavorites(props) {
         ...buildButtonProps(props),
     };
 
-    const [objectData, setObjectData] = useState({
-        ...action,
-        ...{ counter },
-    });
+    const [objectData, setObjectData] = useObjectState(key, props, objectStateFromProps);
     const [popupVisible, setPopupVisible] = useState(false);
     const [performedBy, setPerformedBy] = useState();
 

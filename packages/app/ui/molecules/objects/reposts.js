@@ -11,12 +11,13 @@
  *   primary                  — button variant=primary
  */
 
-import { useState } from 'react';
 
 import { appSetting, FeedbackHaptics } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
+import { useObjectState } from 'app/lib/object-state';
 import {
     objectKey,
+    objectStateFromProps,
     mergeState,
     resolveDisplayFlags,
     buildButtonProps,
@@ -64,10 +65,7 @@ export default function ElementReposts(props) {
     const buttonProps = buildButtonProps(props);
     delete buttonProps.ring;
 
-    const [objectData, setObjectData] = useState({
-        ...action,
-        ...{ counter },
-    });
+    const [objectData, setObjectData] = useObjectState(key, props, objectStateFromProps);
 
     const doRepost = (event) => {
         event.preventDefault();

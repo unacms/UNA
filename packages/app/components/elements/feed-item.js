@@ -9,6 +9,7 @@ import { UnitImages } from 'app/lib/feed-items'
 import { PollItem } from 'app/components/elements/entity-poll';
 import { BlockWrapper } from 'app/components/block-wrapper'
 import { fetcher } from 'app/lib/fetcher'
+import { storeObjectsFrom } from 'app/lib/object-state'
 
 export default function ElementFeedItem({ data, isModal, blockWrapperProps }) {
     const eventId = data?.event?.id
@@ -26,6 +27,8 @@ export default function ElementFeedItem({ data, isModal, blockWrapperProps }) {
                 eventId +
                 '}}'
             )
+            // Counters and reactions of the post for every widget.
+            if (result.data) storeObjectsFrom(result.data)
             if (result.data?.content) setContent(result.data.content)
         })
     }, [eventId])

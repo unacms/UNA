@@ -3,7 +3,7 @@ import { useEffect, useMemo } from 'react'
 import { getFormFieldByData } from 'app/lib/form/form-helpers'
 import { Keyboard, Platform } from 'react-native'
 import { useFormContext } from 'react-hook-form'
-import { editorHtmlHasContent, removeEmptyTags, getStoragePickerKind } from 'app/lib/util'
+import { editorHtmlHasContent, editorHtmlIsSubmittable, hasFiles, removeEmptyTags, getStoragePickerKind } from 'app/lib/util'
 import { useCurrentUser } from 'app/context/user'
 import Profile from 'app/ui/molecules/profile/profile'
 import { FileButton } from 'app/lib/form/form-helpers'
@@ -45,10 +45,10 @@ export default function FormComments(props) {
         [rawEditorText]
     );
 
-    const hasSubmittableText = useMemo(() => {
-        const sanitized = removeEmptyTags(rawEditorText || '')
-        return sanitized.trim().length > 0
-    }, [rawEditorText]);
+    const hasSubmittableText = useMemo(
+        () => editorHtmlIsSubmittable(rawEditorText),
+        [rawEditorText]
+    );
 
     function setIsFocus() {
         // setIsExImage(false)
@@ -76,7 +76,7 @@ export default function FormComments(props) {
     const handleSubmitWithSanitization = () => {
         let sanitizedHtml = removeEmptyTags(formContext.getValues('cmt_text') || '');
         const images = formContext.getValues('cmt_image');
-        if (!sanitizedHtml.trim() && !images) return;
+        if (!editorHtmlIsSubmittable(sanitizedHtml) && !hasFiles(images)) return;
 
         formContext.setValue('cmt_text', sanitizedHtml, { shouldValidate: true, shouldDirty: true });
         props.handleSubmit();
@@ -191,7 +191,7 @@ export default function FormComments(props) {
                                                 'custom',
                                                 {
                                                     form_name: props.name,
-                                                    disabled: !hasSubmittableText && !imagesValue,
+                                                    disabled: !hasSubmittableText && !hasFiles(imagesValue),
                                                     className: 'w-full h-full',
                                                     notFullWidth: true,
                                                     noPadding: true,
