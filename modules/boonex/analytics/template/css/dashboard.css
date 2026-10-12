@@ -1,0 +1,386 @@
+/**
+ * Analytics dashboard blocks: overview, top lists and the Studio dashboard traffic block.
+ * Colours are custom properties, read by the chart script too, with a dark set for html.dark.
+ */
+.bx-analytics,
+.bx-analytics-std {
+    --bx-analytics-accent: #4f46e5;
+    --bx-analytics-accent-fill: rgba(79, 70, 229, 0.12);
+    --bx-analytics-bar: rgba(79, 70, 229, 0.09);
+    --bx-analytics-hover: rgba(15, 23, 42, 0.05);
+    --bx-analytics-border: rgba(15, 23, 42, 0.1);
+    --bx-analytics-grid: rgba(15, 23, 42, 0.08);
+    --bx-analytics-muted: #57606a;
+    --bx-analytics-good: #047857;
+    --bx-analytics-bad: #b91c1c;
+    --bx-analytics-online: #16a34a;
+}
+html.dark .bx-analytics,
+html.dark .bx-analytics-std {
+    --bx-analytics-accent: #a5b4fc;
+    --bx-analytics-accent-fill: rgba(165, 180, 252, 0.14);
+    --bx-analytics-bar: rgba(165, 180, 252, 0.12);
+    --bx-analytics-hover: rgba(255, 255, 255, 0.06);
+    --bx-analytics-border: rgba(255, 255, 255, 0.1);
+    --bx-analytics-grid: rgba(255, 255, 255, 0.08);
+    --bx-analytics-muted: #a8b0bb;
+    --bx-analytics-good: #6ee7b7;
+    --bx-analytics-bad: #fca5a5;
+    --bx-analytics-online: #4ade80;
+}
+
+.bx-analytics {
+    position: relative;
+    transition: opacity 0.15s ease;
+}
+.bx-analytics button {
+    font: inherit;
+    color: inherit;
+    background: none;
+    border: 0;
+    margin: 0;
+    cursor: pointer;
+    text-align: inherit;
+}
+.bx-analytics button:focus-visible,
+.bx-analytics select:focus-visible,
+.bx-analytics-std a:focus-visible {
+    outline: 2px solid var(--bx-analytics-accent);
+    outline-offset: 2px;
+}
+.bx-analytics-loading {
+    opacity: 0.55;
+    pointer-events: none;
+}
+.bx-analytics-failed::after {
+    content: attr(data-bx-analytics-error);
+    display: block;
+    margin-top: 0.5rem;
+    color: var(--bx-analytics-bad);
+    font-size: 0.875rem;
+}
+.bx-analytics-sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* toolbar */
+.bx-analytics-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+.bx-analytics-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 0.5rem 0.75rem;
+}
+.bx-analytics-control {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+.bx-analytics-control-label {
+    font-size: 0.75rem;
+    color: var(--bx-analytics-muted);
+}
+.bx-analytics-select {
+    min-width: 10rem;
+}
+.bx-analytics-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+.bx-analytics .bx-analytics-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    min-height: 2.25rem;
+    padding: 0 0.75rem;
+    border-radius: 999px;
+    background: var(--bx-analytics-accent-fill);
+    font-size: 0.875rem;
+}
+.bx-analytics-chip-name {
+    color: var(--bx-analytics-muted);
+}
+.bx-analytics-chip-value {
+    max-width: 16rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.bx-analytics-chip-x {
+    margin-left: 0.25rem;
+    font-size: 1.125rem;
+    line-height: 1;
+}
+
+/* online now */
+.bx-analytics-online {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+}
+.bx-analytics-online-dot {
+    width: 0.625rem;
+    height: 0.625rem;
+    border-radius: 50%;
+    background: var(--bx-analytics-online);
+    box-shadow: 0 0 0 0 var(--bx-analytics-online);
+    animation: bx-analytics-pulse 2s ease-out infinite;
+}
+@keyframes bx-analytics-pulse {
+    0% { box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.45); }
+    70% { box-shadow: 0 0 0 0.5rem rgba(22, 163, 74, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(22, 163, 74, 0); }
+}
+@media (prefers-reduced-motion: reduce) {
+    .bx-analytics-online-dot {
+        animation: none;
+    }
+    .bx-analytics {
+        transition: none;
+    }
+}
+
+/* key figures */
+.bx-analytics-kpis {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    border: 1px solid var(--bx-analytics-border);
+    border-radius: 0.75rem;
+    overflow: hidden;
+}
+.bx-analytics .bx-analytics-kpi {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 0.75rem 1rem;
+    box-shadow: inset -1px 0 0 var(--bx-analytics-border), inset 0 -1px 0 var(--bx-analytics-border);
+}
+.bx-analytics .bx-analytics-kpi:hover {
+    background: var(--bx-analytics-hover);
+}
+.bx-analytics .bx-analytics-kpi[aria-pressed="true"] {
+    background: var(--bx-analytics-accent-fill);
+    box-shadow: inset -1px 0 0 var(--bx-analytics-border), inset 0 -3px 0 var(--bx-analytics-accent);
+}
+.bx-analytics-kpi-title {
+    font-size: 0.8125rem;
+    color: var(--bx-analytics-muted);
+}
+.bx-analytics-kpi-figures {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.25rem 0.5rem;
+}
+.bx-analytics-kpi-value {
+    font-size: 1.5rem;
+    font-weight: 600;
+    line-height: 1.2;
+    font-variant-numeric: tabular-nums;
+}
+.bx-analytics-kpi-change {
+    font-size: 0.8125rem;
+    font-variant-numeric: tabular-nums;
+    color: var(--bx-analytics-muted);
+}
+.bx-analytics-trend-good {
+    color: var(--bx-analytics-good);
+}
+.bx-analytics-trend-bad {
+    color: var(--bx-analytics-bad);
+}
+
+@media (min-width: 40rem) {
+    .bx-analytics-kpis {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+@media (min-width: 72rem) {
+    .bx-analytics-kpis {
+        grid-template-columns: repeat(6, 1fr);
+    }
+}
+
+/* chart */
+.bx-analytics-chart {
+    position: relative;
+    height: 18rem;
+    margin-top: 1rem;
+}
+
+/* tabbed top lists */
+.bx-analytics-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 0.25rem;
+    margin-bottom: 0.75rem;
+    box-shadow: inset 0 -1px 0 var(--bx-analytics-border);
+}
+.bx-analytics .bx-analytics-tab {
+    flex: none;
+    min-height: 2.75rem;
+    padding: 0 0.625rem;
+    font-size: 0.9375rem;
+    color: var(--bx-analytics-muted);
+    white-space: nowrap;
+}
+.bx-analytics .bx-analytics-tab:hover {
+    color: inherit;
+}
+.bx-analytics .bx-analytics-tab[aria-selected="true"] {
+    color: inherit;
+    font-weight: 600;
+    box-shadow: inset 0 -2px 0 var(--bx-analytics-accent);
+}
+.bx-analytics-list-head {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 0.625rem 0.375rem;
+    font-size: 0.8125rem;
+    color: var(--bx-analytics-muted);
+}
+.bx-analytics-rows {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+.bx-analytics-row {
+    position: relative;
+}
+.bx-analytics .bx-analytics-row-btn,
+.bx-analytics-std-platform {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    width: 100%;
+    min-height: 2.25rem;
+    padding: 0 0.625rem;
+    border-radius: 0.5rem;
+    isolation: isolate;
+}
+.bx-analytics .bx-analytics-row-btn:hover {
+    background: var(--bx-analytics-hover);
+}
+.bx-analytics-row-bar {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: -1;
+    border-radius: 0.5rem;
+    background: var(--bx-analytics-bar);
+}
+.bx-analytics-row-label {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 0.9375rem;
+}
+.bx-analytics-row-value {
+    flex: none;
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+    font-size: 0.9375rem;
+}
+.bx-analytics-row-share {
+    display: inline-block;
+    min-width: 3.25rem;
+    text-align: right;
+    font-weight: 400;
+    font-size: 0.8125rem;
+    color: var(--bx-analytics-muted);
+}
+.bx-analytics-empty {
+    padding: 1.5rem 0.625rem;
+    text-align: center;
+    color: var(--bx-analytics-muted);
+}
+
+/* Studio dashboard: traffic */
+.bx-analytics-std {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    height: 100%;
+}
+.bx-analytics-std-online-title {
+    font-weight: 400;
+    color: var(--bx-analytics-muted);
+    font-size: 0.875rem;
+}
+.bx-analytics-std-kpis {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+}
+.bx-analytics-std-kpi {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+.bx-analytics-std-spark {
+    width: 100%;
+    height: 3.5rem;
+}
+.bx-analytics-std-spark polyline {
+    fill: none;
+    stroke: var(--bx-analytics-accent);
+    stroke-width: 2;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+}
+.bx-analytics-std-platforms {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+.bx-analytics-std-link {
+    margin-top: auto;
+    font-size: 0.875rem;
+}
+
+/* Studio: Overview tab */
+.bx-analytics-studio {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(22rem, 1fr));
+    gap: 1.5rem 2rem;
+}
+.bx-analytics-studio-wide {
+    grid-column: 1 / -1;
+}
+.bx-analytics-studio-title {
+    margin: 0 0 0.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+}
+.bx-analytics-std-kpi .bx-analytics-kpi-figures {
+    justify-content: flex-start;
+}

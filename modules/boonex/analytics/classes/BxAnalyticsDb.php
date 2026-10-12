@@ -14,6 +14,407 @@
  */
 class BxAnalyticsDb extends BxBaseModGeneralDb
 {
+    /**
+     * Report dimensions stored on sessions, as name => column. Filters and top lists accept
+     * these names only, so no user input reaches SQL as an identifier.
+     */
+    protected $_aSessionDimensions = [
+        'platform' => 'platform',
+        'app' => 'app',
+        'app_version' => 'app_version',
+        'hostname' => 'hostname',
+        'entry_path' => 'entry_path',
+        'exit_path' => 'exit_path',
+        'referrer' => 'referrer',
+        'referrer_host' => 'referrer_host',
+        'channel' => 'channel',
+        'utm_source' => 'utm_source',
+        'utm_medium' => 'utm_medium',
+        'utm_campaign' => 'utm_campaign',
+        'utm_term' => 'utm_term',
+        'utm_content' => 'utm_content',
+        'country' => 'country',
+        'region' => 'region',
+        'city' => 'city',
+        'language' => 'language',
+        'browser' => 'browser',
+        'os' => 'os',
+        'device' => 'device',
+        'screen' => 'screen',
+    ];
+
+    /**
+     * Report dimensions stored on pageview events.
+     */
+    protected $_aEventDimensions = [
+        'path' => 'path',
+        'title' => 'title',
+    ];
+
+    public function isDimension($sName)
+    {
+        return isset($this->_aSessionDimensions[$sName]) || isset($this->_aEventDimensions[$sName]);
+    }
+
+    public function isEventDimension($sName)
+    {
+        return isset($this->_aEventDimensions[$sName]);
+    }
+
+    /*
+     * Collecting
+     */
+
+    /**
+     * The salt for a day, created by the first hit of that day.
+     */
+    public function getSalt($sDay)
+    {
+        $sTable = $this->_oConfig->CNF['TABLE_SALTS'];
+
+        $this->query("INSERT IGNORE INTO `" . $sTable . "` (`day`, `salt`) VALUES (:day, :salt)", [
+            'day' => $sDay,
+            'salt' => random_bytes(32),
+        ]);
+
+        return (string)$this->getOne("SELECT `salt` FROM `" . $sTable . "` WHERE `day` = :day", ['day' => $sDay]);
+    }
+
+    /**
+     * Latest session of any of the visitor ids on a platform, active since a time.
+     */
+    public function getActiveSession($aVisitors, $sPlatform, $iSince)
+    {
+        $aBindings = ['platform' => $sPlatform, 'since' => $iSince];
+        $aIn = [];
+        foreach(array_values(array_unique($aVisitors)) as $i => $sVisitor) {
+            $aIn[] = ':v' . $i;
+            $aBindings['v' . $i] = $sVisitor;
+        }
+        if(empty($aIn))
+            return [];
+
+        return $this->getRow("SELECT * FROM `" . $this->_oConfig->CNF['TABLE_SESSIONS'] . "` WHERE `visitor` IN (" . implode(', ', $aIn) . ") AND `platform` = :platform AND `last_seen` >= :since ORDER BY `last_seen` DESC LIMIT 1", $aBindings);
+    }
+
+    public function insertSession($aSession)
+    {
+        unset($aSession['id']);
+
+        $aBindings = [];
+        foreach($aSession as $sField => $mixedValue)
+            $aBindings[$sField] = $mixedValue;
+
+        $sFields = '`' . implode('`, `', array_keys($aBindings)) . '`';
+        $sValues = ':' . implode(', :', array_keys($aBindings));
+        if(!$this->query("INSERT INTO `" . $this->_oConfig->CNF['TABLE_SESSIONS'] . "` (" . $sFields . ") VALUES (" . $sValues . ")", $aBindings))
+            return 0;
+
+        return (int)$this->lastId();
+    }
+
+    public function updateSession($iId, $aSet)
+    {
+        $aBindings = ['id' => (int)$iId];
+        $aSql = [];
+        foreach($aSet as $sField => $mixedValue) {
+            $aSql[] = '`' . $sField . '` = :f_' . $sField;
+            $aBindings['f_' . $sField] = $mixedValue;
+        }
+
+        return (int)$this->query("UPDATE `" . $this->_oConfig->CNF['TABLE_SESSIONS'] . "` SET " . implode(', ', $aSql) . " WHERE `id` = :id", $aBindings) > 0;
+    }
+
+    /**
+     * Insert events in one query.
+     *
+     * @param array $aRows rows with the same keys
+     * @return int rows inserted
+     */
+    public function insertEvents($aRows)
+    {
+        if(empty($aRows))
+            return 0;
+
+        $aFields = array_keys(reset($aRows));
+        $aBindings = [];
+        $aValues = [];
+        foreach(array_values($aRows) as $i => $aRow) {
+            $aPlaceholders = [];
+            foreach($aFields as $sField) {
+                $aPlaceholders[] = ':' . $sField . '_' . $i;
+                $aBindings[$sField . '_' . $i] = $aRow[$sField];
+            }
+            $aValues[] = '(' . implode(', ', $aPlaceholders) . ')';
+        }
+
+        return (int)$this->query("INSERT INTO `" . $this->_oConfig->CNF['TABLE_EVENTS'] . "` (`" . implode('`, `', $aFields) . "`) VALUES " . implode(', ', $aValues), $aBindings);
+    }
+
+    /**
+     * Add engaged time to the latest view of a page in a session.
+     */
+    public function addEngagedTime($iSessionId, $sPath, $iMs, $iMaxMs)
+    {
+        return (int)$this->query("UPDATE `" . $this->_oConfig->CNF['TABLE_EVENTS'] . "` SET `engaged` = LEAST(`engaged` + :ms, :max) WHERE `session_id` = :session AND `type` = 'pageview' AND `path` = :path ORDER BY `id` DESC LIMIT 1", [
+            'ms' => (int)$iMs,
+            'max' => (int)$iMaxMs,
+            'session' => (int)$iSessionId,
+            'path' => $sPath,
+        ]) > 0;
+    }
+
+    /*
+     * Maintenance
+     */
+
+    public function deleteSaltsBefore($sDay)
+    {
+        return (int)$this->query("DELETE FROM `" . $this->_oConfig->CNF['TABLE_SALTS'] . "` WHERE `day` < :day", ['day' => $sDay]);
+    }
+
+    /**
+     * Delete up to `$iLimit` events or sessions older than a time; returns how many went.
+     */
+    public function deleteEventsBefore($iTime, $iLimit)
+    {
+        return (int)$this->query("DELETE FROM `" . $this->_oConfig->CNF['TABLE_EVENTS'] . "` WHERE `ts` < :ts ORDER BY `ts` LIMIT " . (int)$iLimit, ['ts' => (int)$iTime]);
+    }
+
+    public function deleteSessionsBefore($iTime, $iLimit)
+    {
+        return (int)$this->query("DELETE FROM `" . $this->_oConfig->CNF['TABLE_SESSIONS'] . "` WHERE `last_seen` < :ts ORDER BY `last_seen` LIMIT " . (int)$iLimit, ['ts' => (int)$iTime]);
+    }
+
+    /**
+     * Unlink a deleted profile: its sessions and events stay as an anonymous visitor's.
+     */
+    public function forgetProfile($iProfileId, $sNewVisitor)
+    {
+        $aBindings = ['profile' => (int)$iProfileId, 'visitor' => $sNewVisitor];
+
+        $iSessions = (int)$this->query("UPDATE `" . $this->_oConfig->CNF['TABLE_SESSIONS'] . "` SET `profile_id` = 0, `visitor` = :visitor WHERE `profile_id` = :profile", $aBindings);
+        $iEvents = (int)$this->query("UPDATE `" . $this->_oConfig->CNF['TABLE_EVENTS'] . "` SET `profile_id` = 0, `visitor` = :visitor WHERE `profile_id` = :profile", $aBindings);
+
+        return $iSessions + $iEvents;
+    }
+
+    /*
+     * Reports. A filter is an array from BxAnalyticsFilter::get(): from, to (unix times,
+     * `to` exclusive), platform ('' for all) and dims (dimension => value).
+     */
+
+    /**
+     * Visitors, sessions, pageviews, bounces and total duration in a period.
+     */
+    public function getTotals($aFilter)
+    {
+        $aBindings = [];
+        $sWhere = $this->_getSessionsWhere($aFilter, $aBindings);
+
+        $aRow = $this->getRow("SELECT COUNT(DISTINCT `s`.`visitor`) AS `visitors`, COUNT(*) AS `sessions`, IFNULL(SUM(`s`.`pageviews`), 0) AS `pageviews`, IFNULL(SUM(`s`.`bounce`), 0) AS `bounces`, IFNULL(SUM(`s`.`duration`), 0) AS `duration` FROM `" . $this->_oConfig->CNF['TABLE_SESSIONS'] . "` AS `s` WHERE " . $sWhere, $aBindings);
+
+        // filtered by a page: count that page's views, not all views of the sessions that saw it
+        if(!empty($aRow) && $this->_hasEventDimensions($aFilter))
+            $aRow['pageviews'] = $this->_getPageviews($aFilter);
+
+        return $aRow;
+    }
+
+    /**
+     * The same metrics per time bucket.
+     *
+     * @param array $aFilter report filter
+     * @param string $sBucket hour, day, week or month
+     * @param int $iOffset timezone offset in seconds, for bucket boundaries
+     * @param array $aStarts exact bucket starts (unix times, ascending), required for months
+     *      and used for any bucket when given
+     * @return array rows keyed by bucket start time
+     */
+    public function getSeries($aFilter, $sBucket, $iOffset, $aStarts = [])
+    {
+        $aBindings = [];
+        $sWhere = $this->_getSessionsWhere($aFilter, $aBindings);
+        $sBucketSql = $this->_getBucketSql('`s`.`started`', $sBucket, $iOffset, $aStarts, $aBindings);
+
+        return $this->getAllWithKey("SELECT " . $sBucketSql . " AS `bucket`, COUNT(DISTINCT `s`.`visitor`) AS `visitors`, COUNT(*) AS `sessions`, IFNULL(SUM(`s`.`pageviews`), 0) AS `pageviews`, IFNULL(SUM(`s`.`bounce`), 0) AS `bounces`, IFNULL(SUM(`s`.`duration`), 0) AS `duration` FROM `" . $this->_oConfig->CNF['TABLE_SESSIONS'] . "` AS `s` WHERE " . $sWhere . " GROUP BY `bucket` ORDER BY `bucket`", 'bucket', $aBindings);
+    }
+
+    /**
+     * Top values of a dimension with visitors, sessions (session dimensions) and pageviews.
+     */
+    public function getTop($aFilter, $sDimension, $iLimit)
+    {
+        $iLimit = max(1, min(1000, (int)$iLimit));
+        $aBindings = [];
+
+        if(isset($this->_aEventDimensions[$sDimension])) {
+            $sColumn = $this->_aEventDimensions[$sDimension];
+            $sWhere = $this->_getEventsWhere($aFilter, $aBindings);
+
+            // grouped by the column: events also have a `value` column, which an alias would lose to
+            return $this->getAll("SELECT `e`.`" . $sColumn . "` AS `value`, COUNT(DISTINCT `e`.`visitor`) AS `visitors`, COUNT(*) AS `pageviews` FROM `" . $this->_oConfig->CNF['TABLE_EVENTS'] . "` AS `e` WHERE " . $sWhere . " GROUP BY `e`.`" . $sColumn . "` ORDER BY `visitors` DESC, `pageviews` DESC LIMIT " . $iLimit, $aBindings);
+        }
+
+        if(!isset($this->_aSessionDimensions[$sDimension]))
+            return [];
+
+        $sColumn = $this->_aSessionDimensions[$sDimension];
+        $sWhere = $this->_getSessionsWhere($aFilter, $aBindings);
+
+        return $this->getAll("SELECT `s`.`" . $sColumn . "` AS `value`, COUNT(DISTINCT `s`.`visitor`) AS `visitors`, COUNT(*) AS `sessions`, IFNULL(SUM(`s`.`pageviews`), 0) AS `pageviews`, IFNULL(SUM(`s`.`bounce`), 0) AS `bounces`, IFNULL(SUM(`s`.`duration`), 0) AS `duration` FROM `" . $this->_oConfig->CNF['TABLE_SESSIONS'] . "` AS `s` WHERE " . $sWhere . " GROUP BY `s`.`" . $sColumn . "` ORDER BY `visitors` DESC, `sessions` DESC LIMIT " . $iLimit, $aBindings);
+    }
+
+    /**
+     * Visitors active since a time, per platform.
+     */
+    public function getOnline($iSince)
+    {
+        return $this->getPairs("SELECT `platform`, COUNT(DISTINCT `visitor`) AS `visitors` FROM `" . $this->_oConfig->CNF['TABLE_SESSIONS'] . "` WHERE `last_seen` >= :since GROUP BY `platform`", 'platform', 'visitors', ['since' => (int)$iSince]);
+    }
+
+    /**
+     * Latest pageviews with their session's place and device, for the realtime list.
+     */
+    public function getRecentPageviews($iSince, $iLimit, $sPlatform = '')
+    {
+        $aBindings = ['since' => (int)$iSince];
+        $sWhere = '';
+        if($sPlatform !== '') {
+            $sWhere = ' AND `e`.`platform` = :platform';
+            $aBindings['platform'] = $sPlatform;
+        }
+
+        return $this->getAll("SELECT `e`.`ts`, `e`.`platform`, `e`.`path`, `e`.`title`, `e`.`profile_id`, `s`.`country`, `s`.`city`, `s`.`device`, `s`.`browser`, `s`.`os` FROM `" . $this->_oConfig->CNF['TABLE_EVENTS'] . "` AS `e` INNER JOIN `" . $this->_oConfig->CNF['TABLE_SESSIONS'] . "` AS `s` ON `s`.`id` = `e`.`session_id` WHERE `e`.`ts` >= :since AND `e`.`type` = 'pageview'" . $sWhere . " ORDER BY `e`.`id` DESC LIMIT " . max(1, min(100, (int)$iLimit)), $aBindings);
+    }
+
+    /**
+     * Whether anything was ever collected, per platform: the setup check in Studio.
+     */
+    public function getLastHits()
+    {
+        return $this->getPairs("SELECT `platform`, MAX(`last_seen`) AS `last` FROM `" . $this->_oConfig->CNF['TABLE_SESSIONS'] . "` GROUP BY `platform`", 'platform', 'last');
+    }
+
+    protected function _getPageviews($aFilter)
+    {
+        $aBindings = [];
+        $sWhere = $this->_getEventsWhere($aFilter, $aBindings);
+
+        return (int)$this->getOne("SELECT COUNT(*) FROM `" . $this->_oConfig->CNF['TABLE_EVENTS'] . "` AS `e` WHERE " . $sWhere, $aBindings);
+    }
+
+    protected function _hasEventDimensions($aFilter)
+    {
+        foreach($aFilter['dims'] as $sName => $sValue)
+            if(isset($this->_aEventDimensions[$sName]))
+                return true;
+
+        return false;
+    }
+
+    /**
+     * WHERE for sessions (alias `s`) that started in the period and match the filters. A page
+     * filter keeps the sessions that viewed that page.
+     */
+    protected function _getSessionsWhere($aFilter, &$aBindings)
+    {
+        $aSql = ['`s`.`started` >= :from', '`s`.`started` < :to'];
+        $aBindings['from'] = (int)$aFilter['from'];
+        $aBindings['to'] = (int)$aFilter['to'];
+
+        if($aFilter['platform'] !== '') {
+            $aSql[] = '`s`.`platform` = :platform';
+            $aBindings['platform'] = $aFilter['platform'];
+        }
+
+        $aEventSql = [];
+        foreach($aFilter['dims'] as $sName => $sValue) {
+            if(isset($this->_aSessionDimensions[$sName])) {
+                $aSql[] = '`s`.`' . $this->_aSessionDimensions[$sName] . '` = :d_' . $sName;
+                $aBindings['d_' . $sName] = $sValue;
+            }
+            elseif(isset($this->_aEventDimensions[$sName])) {
+                $aEventSql[] = '`ef`.`' . $this->_aEventDimensions[$sName] . '` = :d_' . $sName;
+                $aBindings['d_' . $sName] = $sValue;
+            }
+        }
+
+        if(!empty($aEventSql))
+            $aSql[] = "EXISTS (SELECT 1 FROM `" . $this->_oConfig->CNF['TABLE_EVENTS'] . "` AS `ef` WHERE `ef`.`session_id` = `s`.`id` AND `ef`.`type` = 'pageview' AND " . implode(' AND ', $aEventSql) . ")";
+
+        return implode(' AND ', $aSql);
+    }
+
+    /**
+     * WHERE for pageview events (alias `e`) in the period that match the filters. Session
+     * filters keep the events of matching sessions.
+     */
+    protected function _getEventsWhere($aFilter, &$aBindings)
+    {
+        $aSql = ['`e`.`ts` >= :from', '`e`.`ts` < :to', "`e`.`type` = 'pageview'"];
+        $aBindings['from'] = (int)$aFilter['from'];
+        $aBindings['to'] = (int)$aFilter['to'];
+
+        if($aFilter['platform'] !== '') {
+            $aSql[] = '`e`.`platform` = :platform';
+            $aBindings['platform'] = $aFilter['platform'];
+        }
+
+        $aSessionSql = [];
+        foreach($aFilter['dims'] as $sName => $sValue) {
+            if(isset($this->_aEventDimensions[$sName])) {
+                $aSql[] = '`e`.`' . $this->_aEventDimensions[$sName] . '` = :d_' . $sName;
+                $aBindings['d_' . $sName] = $sValue;
+            }
+            elseif(isset($this->_aSessionDimensions[$sName])) {
+                $aSessionSql[] = '`sf`.`' . $this->_aSessionDimensions[$sName] . '` = :d_' . $sName;
+                $aBindings['d_' . $sName] = $sValue;
+            }
+        }
+
+        if(!empty($aSessionSql))
+            $aSql[] = "EXISTS (SELECT 1 FROM `" . $this->_oConfig->CNF['TABLE_SESSIONS'] . "` AS `sf` WHERE `sf`.`id` = `e`.`session_id` AND " . implode(' AND ', $aSessionSql) . ")";
+
+        return implode(' AND ', $aSql);
+    }
+
+    /**
+     * Bucket start time of a timestamp column. Given a list of starts (months, or days across
+     * a daylight saving change), a row goes to the latest start before it. Otherwise hours,
+     * days and weeks (from Monday) are fixed lengths shifted by the timezone offset.
+     */
+    protected function _getBucketSql($sColumn, $sBucket, $iOffset, $aStarts, &$aBindings)
+    {
+        $iOffset = (int)$iOffset;
+
+        if(!empty($aStarts)) {
+            $aCases = [];
+            foreach(array_reverse(array_values($aStarts)) as $i => $iStart) {
+                $aCases[] = 'WHEN ' . $sColumn . ' >= :b' . $i . ' THEN :b' . $i . 'v';
+                $aBindings['b' . $i] = (int)$iStart;
+                $aBindings['b' . $i . 'v'] = (int)$iStart;
+            }
+            return 'CASE ' . implode(' ', $aCases) . ' ELSE 0 END';
+        }
+
+        switch($sBucket) {
+            case 'hour':
+                return 'FLOOR((' . $sColumn . ' + ' . $iOffset . ') / 3600) * 3600 - ' . $iOffset;
+
+            case 'week':
+                // 1970-01-05 was a Monday
+                return 'FLOOR((' . $sColumn . ' + ' . $iOffset . ' - 345600) / 604800) * 604800 + 345600 - ' . $iOffset;
+
+            default:
+                return 'FLOOR((' . $sColumn . ' + ' . $iOffset . ') / 86400) * 86400 - ' . $iOffset;
+        }
+    }
+
+    /*
+     * Content reports
+     */
+
     public function getGrowth($sTableName, $sColumnAdded, $iDateFrom, $iDateTo)
     {
         $aBindings = array(
@@ -23,7 +424,7 @@ class BxAnalyticsDb extends BxBaseModGeneralDb
         $sQuery = "SELECT DATE(FROM_UNIXTIME(`" . $sColumnAdded . "`)) AS `period`, YEAR(FROM_UNIXTIME(`" . $sColumnAdded . "`)) AS `year`, COUNT(*) AS `count` FROM " . $sTableName . " WHERE `" . $sColumnAdded . "` >= :datefrom AND `" . $sColumnAdded . "` <= :dateto GROUP BY `period`, `year` ORDER BY `year`, `period` ASC";
         return $this->getAll($sQuery, $aBindings);
     }
-          
+
     public function getGrowthInitValue($sTableName, $sColumnAdded, $iDateFrom)
     {
         $aBindings = array(
@@ -32,7 +433,7 @@ class BxAnalyticsDb extends BxBaseModGeneralDb
         $sQuery = "SELECT COUNT(*) AS `count` FROM " . $sTableName . " WHERE `" . $sColumnAdded . "` < :datefrom ";
         return $this->getOne($sQuery, $aBindings);
     }
-          
+
     public function getTopContentByLikes($sModuleName, $sTableName, $iDateFrom, $iDateTo)
     {
         $aBindings = array(
@@ -42,7 +443,7 @@ class BxAnalyticsDb extends BxBaseModGeneralDb
         $sQuery = "SELECT `object_id`,'" . $sModuleName . "' AS `module`, COUNT(*) AS `value` FROM `" . $sTableName . "` WHERE `date` >= :datefrom AND `date` <= :dateto GROUP BY `object_id` ORDER BY COUNT(*) DESC LIMIT 0, " . intval(getParam('bx_analytics_items_count'));
         return $this->getAll($sQuery, $aBindings);
     }
-          
+
     public function getMostFollowedProfiles($sModuleName, $iDateFrom, $iDateTo)
     {
         $aBindings = array(
@@ -53,7 +454,7 @@ class BxAnalyticsDb extends BxBaseModGeneralDb
 INNER JOIN `sys_profiles` ON `sys_profiles`.`id` = `sys_profiles_conn_subscriptions`.`content` WHERE sys_profiles.type='" . $sModuleName . "' AND `sys_profiles_conn_subscriptions`.`added` >= :datefrom AND `sys_profiles_conn_subscriptions`.`added` <= :dateto GROUP BY `sys_profiles`.`content_id`, `sys_profiles`.`type` ORDER BY COUNT(`sys_profiles_conn_subscriptions`.`id`) DESC LIMIT 0," . intval(getParam('bx_analytics_items_count'));
         return $this->getAll($sQuery, $aBindings);
     }
-          
+
     public function getMostActiveProfiles($sModuleName, $sContentModuleName, $sTableName, $sColumnAuthor, $sColumnAdded, $iDateFrom, $iDateTo)
     {
         $aBindings = array(

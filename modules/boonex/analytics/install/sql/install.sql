@@ -1,5 +1,84 @@
 SET @sName = 'bx_analytics';
 
+-- TABLES
+
+-- One row per visit: the visitor, the client it came from and how it arrived
+CREATE TABLE IF NOT EXISTS `bx_analytics_sessions` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `visitor` binary(16) NOT NULL,
+  `profile_id` int(11) unsigned NOT NULL DEFAULT '0',
+  `platform` varchar(16) NOT NULL DEFAULT '',
+  `app` varchar(64) NOT NULL DEFAULT '',
+  `app_version` varchar(32) NOT NULL DEFAULT '',
+  `started` int(11) unsigned NOT NULL DEFAULT '0',
+  `last_seen` int(11) unsigned NOT NULL DEFAULT '0',
+  `duration` int(11) unsigned NOT NULL DEFAULT '0',
+  `pageviews` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `events` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `bounce` tinyint(4) unsigned NOT NULL DEFAULT '1',
+  `hostname` varchar(128) NOT NULL DEFAULT '',
+  `entry_path` varchar(255) NOT NULL DEFAULT '',
+  `exit_path` varchar(255) NOT NULL DEFAULT '',
+  `referrer` varchar(255) NOT NULL DEFAULT '',
+  `referrer_host` varchar(128) NOT NULL DEFAULT '',
+  `channel` varchar(16) NOT NULL DEFAULT '',
+  `utm_source` varchar(128) NOT NULL DEFAULT '',
+  `utm_medium` varchar(128) NOT NULL DEFAULT '',
+  `utm_campaign` varchar(128) NOT NULL DEFAULT '',
+  `utm_term` varchar(128) NOT NULL DEFAULT '',
+  `utm_content` varchar(128) NOT NULL DEFAULT '',
+  `country` char(2) NOT NULL DEFAULT '',
+  `region` varchar(64) NOT NULL DEFAULT '',
+  `city` varchar(64) NOT NULL DEFAULT '',
+  `language` varchar(16) NOT NULL DEFAULT '',
+  `browser` varchar(32) NOT NULL DEFAULT '',
+  `browser_version` varchar(16) NOT NULL DEFAULT '',
+  `os` varchar(32) NOT NULL DEFAULT '',
+  `os_version` varchar(16) NOT NULL DEFAULT '',
+  `device` varchar(16) NOT NULL DEFAULT '',
+  `screen` varchar(16) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`),
+  KEY `visitor` (`visitor`, `last_seen`),
+  KEY `started` (`started`, `platform`),
+  KEY `last_seen` (`last_seen`),
+  KEY `profile_id` (`profile_id`, `started`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- One row per pageview or event; visitor, profile and platform are copied from the session
+CREATE TABLE IF NOT EXISTS `bx_analytics_events` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `session_id` bigint(20) unsigned NOT NULL,
+  `visitor` binary(16) NOT NULL,
+  `profile_id` int(11) unsigned NOT NULL DEFAULT '0',
+  `platform` varchar(16) NOT NULL DEFAULT '',
+  `ts` int(11) unsigned NOT NULL DEFAULT '0',
+  `type` varchar(16) NOT NULL DEFAULT 'pageview',
+  `name` varchar(64) NOT NULL DEFAULT '',
+  `hostname` varchar(128) NOT NULL DEFAULT '',
+  `path` varchar(255) NOT NULL DEFAULT '',
+  `title` varchar(255) NOT NULL DEFAULT '',
+  `module` varchar(32) NOT NULL DEFAULT '',
+  `object_id` int(11) unsigned NOT NULL DEFAULT '0',
+  `context_id` int(11) unsigned NOT NULL DEFAULT '0',
+  `value` double NOT NULL DEFAULT '0',
+  `engaged` int(11) unsigned NOT NULL DEFAULT '0',
+  `props` text NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `ts` (`ts`, `type`, `platform`),
+  KEY `session_id` (`session_id`, `ts`),
+  KEY `path` (`path`(100), `ts`),
+  KEY `object` (`module`, `object_id`, `ts`),
+  KEY `name` (`type`, `name`, `ts`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- A random salt per day for cookieless visitor ids; cron deletes old ones
+CREATE TABLE IF NOT EXISTS `bx_analytics_salts` (
+  `day` date NOT NULL,
+  `salt` binary(32) NOT NULL,
+  PRIMARY KEY (`day`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
 -- STUDIO: page & widget
 INSERT INTO `sys_std_pages`(`index`, `name`, `header`, `caption`, `icon`) VALUES
 (3, @sName, '_bx_analytics', '_bx_analytics', 'bx_analytics@modules/boonex/analytics/|std-icon.svg');

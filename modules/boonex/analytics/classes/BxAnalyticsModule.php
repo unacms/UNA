@@ -22,6 +22,8 @@ define('BX_ANALYTICS_MOST_ACTIVE_PROFILES', 'top_by_activity');
 class BxAnalyticsModule extends BxDolModule
 {
     protected $aColors = array('#3366CC', '#DC3912', '#FF9900', '#109618', '#990099');
+
+    protected $_oReports = null;
           
     function __construct(&$aModule)
     {
@@ -51,12 +53,9 @@ class BxAnalyticsModule extends BxDolModule
     */
     public function serviceGetCanvas()
     {
-		$sMsg = $this->checkAllowed();
-		if($sMsg !== CHECK_ACTION_RESULT_ALLOWED){
-			$this->_oTemplate->displayAccessDenied($sMsg, BX_PAGE_EMBED);
-			exit;
-		}
-		
+        if(bx_is_api() || $this->checkAllowed() !== CHECK_ACTION_RESULT_ALLOWED)
+            return bx_is_api() ? [] : '';
+
         return $this->_oTemplate->getCanvas();
     }
 	
@@ -132,6 +131,432 @@ class BxAnalyticsModule extends BxDolModule
         return $aResult;
     }
           
+    public function serviceGetSafeServices()
+    {
+        return array_merge(parent::serviceGetSafeServices(), [
+            'GetReport' => '',
+        ]);
+    }
+
+    public function serviceGetPublicServices()
+    {
+        return array_merge(parent::serviceGetPublicServices(), [
+            'Collect' => '',
+        ]);
+    }
+
+    /**
+     * @page service Service Calls
+     * @section bx_analytics Analytics
+     * @subsection bx_analytics-tracking Tracking
+     * @subsubsection bx_analytics-collect collect
+     *
+     * @code bx_srv('bx_analytics', 'collect', [$aPayload]); @endcode
+     * @code api.php?r=bx_analytics/collect with the JSON payload as the request body @endcode
+     *
+     * Store pageviews and events sent by NEO, the apps or another API client.
+     * The payload is described in BxAnalyticsCollector. Over the API the payload is read from
+     * the request body when no parameter is given.
+     *
+     * @param $mixedPayload payload array or JSON string
+     * @return array with `stored` - the number of hits stored
+     *
+     * @see BxAnalyticsModule::serviceCollect
+     */
+    /**
+     * @ref bx_analytics-collect "collect"
+     */
+    public function serviceCollect($mixedPayload = '')
+    {
+        if(empty($mixedPayload))
+            $mixedPayload = file_get_contents('php://input');
+
+        $aPayload = is_array($mixedPayload) ? $mixedPayload : json_decode((string)$mixedPayload, true);
+        if(!is_array($aPayload))
+            return ['stored' => 0];
+
+        $iStored = $this->getCollector()->collect($aPayload, [
+            'platform' => BX_ANALYTICS_PLATFORM_API,
+            'trusted' => $this->_isApiKeyRequest(),
+            'profile_id' => bx_get_logged_profile_id(),
+        ]);
+
+        return ['stored' => $iStored];
+    }
+
+    /**
+     * Hits from the classic tracker: same origin, a JSON body sent with sendBeacon.
+     */
+    public function actionCollect()
+    {
+        $aPayload = json_decode((string)file_get_contents('php://input'), true);
+        if(is_array($aPayload))
+            $this->getCollector()->collect($aPayload, [
+                'platform' => BX_ANALYTICS_PLATFORM_CORE_WEB,
+                'same_origin' => true,
+                'profile_id' => bx_get_logged_profile_id(),
+            ]);
+
+        header('HTTP/1.1 204 No Content');
+        header('Cache-Control: no-store');
+        exit;
+    }
+
+    /**
+     * @page service Service Calls
+     * @section bx_analytics Analytics
+     * @subsection bx_analytics-tracking Tracking
+     * @subsubsection bx_analytics-get_tracker_code get_tracker_code
+     *
+     * @code bx_srv('bx_analytics', 'get_tracker_code', [...]); @endcode
+     *
+     * The classic UI tracker, injected at the end of every page.
+     *
+     * @return HTML string, empty when tracking is off for the classic UI or for the viewer
+     *
+     * @see BxAnalyticsModule::serviceGetTrackerCode
+     */
+    /**
+     * @ref bx_analytics-get_tracker_code "get_tracker_code"
+     */
+    public function serviceGetTrackerCode()
+    {
+        if(!$this->_oConfig->isTrackingEnabled() || !$this->_oConfig->isPlatformEnabled(BX_ANALYTICS_PLATFORM_CORE_WEB))
+            return '';
+
+        $aLevels = $this->_oConfig->getExcludedLevels();
+        if(!empty($aLevels)) {
+            $iProfileId = bx_get_logged_profile_id();
+            $aMembership = BxDolAcl::getInstance()->getMemberMembershipInfo($iProfileId ? $iProfileId : 0);
+            if(!empty($aMembership['id']) && in_array((int)$aMembership['id'], $aLevels, true))
+                return '';
+        }
+
+        return $this->_oTemplate->getTrackerCode();
+    }
+
+    /**
+     * @page service Service Calls
+     * @section bx_analytics Analytics
+     * @subsection bx_analytics-reports Reports
+     * @subsubsection bx_analytics-get_report get_report
+     *
+     * @code bx_srv('bx_analytics', 'get_report', ['overview', ['range' => '30d', 'platform' => 'ios']]); @endcode
+     * @code api.php?r=bx_analytics/get_report&params[]=top&params[]={"group":"pages","tab":"entry","range":"7d"} @endcode
+     *
+     * Report data for NEO and other clients.
+     *
+     * @param $sReport overview, top or realtime
+     * @param $mixedParams filter parameters (see BxAnalyticsFilter), plus `group`, `tab` and
+     *      `limit` for top lists; an array or a JSON string
+     * @return array report data, or an error array when the viewer may not use analytics
+     *
+     * @see BxAnalyticsModule::serviceGetReport
+     */
+    /**
+     * @ref bx_analytics-get_report "get_report"
+     */
+    public function serviceGetReport($sReport, $mixedParams = [])
+    {
+        if(!$this->serviceIsAvaliable())
+            return ['error' => _t('_sys_txt_access_denied'), 'code' => 403];
+
+        $aParams = is_array($mixedParams) ? $mixedParams : json_decode((string)$mixedParams, true);
+        if(!is_array($aParams))
+            $aParams = [];
+
+        $aData = $this->getReportData($sReport, $aParams);
+        if($aData === false)
+            return ['error' => _t('_sys_request_page_not_found_cpt'), 'code' => 404];
+
+        return $aData;
+    }
+
+    /**
+     * Report fragments for the classic dashboard: data plus rendered HTML.
+     */
+    public function actionReport($sReport = '')
+    {
+        header('Content-Type: application/json; charset=utf-8');
+        header('Cache-Control: no-store');
+
+        if(!$this->serviceIsAvaliable()) {
+            http_response_code(403);
+            echo json_encode(['error' => _t('_sys_txt_access_denied')]);
+            exit;
+        }
+
+        $aParams = $_GET;
+        $aData = $this->getReportData($sReport, $aParams);
+        if($aData === false) {
+            http_response_code(404);
+            echo json_encode(['error' => _t('_sys_request_page_not_found_cpt')]);
+            exit;
+        }
+
+        echo json_encode([
+            'data' => $aData,
+            'html' => $this->_oTemplate->getReportHtml($sReport, $aData, $this->getFilter($aParams)),
+        ]);
+        exit;
+    }
+
+    /**
+     * @page service Service Calls
+     * @section bx_analytics Analytics
+     * @subsection bx_analytics-blocks Blocks
+     * @subsubsection bx_analytics-get_block_overview get_block_overview
+     *
+     * @code bx_srv('bx_analytics', 'get_block_overview'); @endcode
+     *
+     * Filters, key figures and the main chart. The filters it sets in the page URL drive
+     * every other analytics block on the page.
+     *
+     * @return HTML string, or a block description for the API; empty for viewers without access
+     *
+     * @see BxAnalyticsModule::serviceGetBlockOverview
+     */
+    /**
+     * @ref bx_analytics-get_block_overview "get_block_overview"
+     */
+    public function serviceGetBlockOverview()
+    {
+        if(!$this->serviceIsAvaliable())
+            return bx_is_api() ? [] : '';
+
+        if(bx_is_api())
+            return [bx_api_get_block('analytics_overview', $this->_getApiBlockData('overview'))];
+
+        $oFilter = $this->getFilter($_GET);
+
+        return $this->_oTemplate->getBlockOverview($this->getReports()->getOverview($oFilter), $this->getReports()->getRealtime($oFilter->get()['platform'], 0), $oFilter);
+    }
+
+    /**
+     * @page service Service Calls
+     * @section bx_analytics Analytics
+     * @subsection bx_analytics-blocks Blocks
+     * @subsubsection bx_analytics-get_block_top get_block_top
+     *
+     * @code bx_srv('bx_analytics', 'get_block_top', ['sources']); @endcode
+     *
+     * A tabbed top list: pages, sources, locations, devices or platforms.
+     *
+     * @param $sGroup list group
+     * @return HTML string, or a block description for the API; empty for viewers without access
+     *
+     * @see BxAnalyticsModule::serviceGetBlockTop
+     */
+    /**
+     * @ref bx_analytics-get_block_top "get_block_top"
+     */
+    public function serviceGetBlockTop($sGroup = 'pages')
+    {
+        if(!$this->serviceIsAvaliable() || !$this->getReports()->isGroup($sGroup))
+            return bx_is_api() ? [] : '';
+
+        if(bx_is_api())
+            return [bx_api_get_block('analytics_top', $this->_getApiBlockData('top', ['group' => $sGroup]))];
+
+        $oFilter = $this->getFilter($_GET);
+        $sTab = bx_get('tab_' . $sGroup);
+
+        return $this->_oTemplate->getBlockTop($this->getReports()->getTop($oFilter, $sGroup, is_string($sTab) ? $sTab : ''), $oFilter);
+    }
+
+    /**
+     * @page service Service Calls
+     * @section bx_analytics Analytics
+     * @subsection bx_analytics-blocks Blocks
+     * @subsubsection bx_analytics-get_studio_dashboard_traffic get_studio_dashboard_traffic
+     *
+     * @code bx_srv('bx_analytics', 'get_studio_dashboard_traffic'); @endcode
+     *
+     * Traffic block of the Studio dashboard: visitors online on every platform and the last 7 days.
+     *
+     * @return array with `content` for the Studio dashboard
+     *
+     * @see BxAnalyticsModule::serviceGetStudioDashboardTraffic
+     */
+    /**
+     * @ref bx_analytics-get_studio_dashboard_traffic "get_studio_dashboard_traffic"
+     */
+    public function serviceGetStudioDashboardTraffic()
+    {
+        if(!isAdmin())
+            return '';
+
+        $oFilter = $this->getFilter(['range' => '7d']);
+
+        return [
+            'content' => $this->_oTemplate->getStudioDashboardTraffic($this->getReports()->getOverview($oFilter), $this->getReports()->getRealtime('', 0), $this->getReports()->getTop($oFilter, 'platforms', 'platforms', 5)),
+        ];
+    }
+
+    /**
+     * @page service Service Calls
+     * @section bx_analytics Analytics
+     * @subsection bx_analytics-other Other
+     * @subsubsection bx_analytics-pruning pruning
+     *
+     * @code bx_srv('bx_analytics', 'pruning'); @endcode
+     *
+     * Hourly cron job: deletes old daily salts, then data past the retention period in
+     * small batches, within a time limit so other cron jobs aren't held up.
+     *
+     * @return int rows deleted
+     *
+     * @see BxAnalyticsModule::servicePruning
+     */
+    /**
+     * @ref bx_analytics-pruning "pruning"
+     */
+    public function servicePruning()
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        // yesterday's salt is still needed to continue visits that crossed midnight
+        $this->_oDb->deleteSaltsBefore(gmdate('Y-m-d', time() - 86400));
+
+        $iBefore = time() - 86400 * $this->_oConfig->getRetentionDays();
+        $iDeadline = time() + $CNF['PRUNING_SECONDS'];
+
+        $iDeleted = 0;
+        foreach(['deleteEventsBefore', 'deleteSessionsBefore'] as $sMethod)
+            do {
+                $iBatch = $this->_oDb->$sMethod($iBefore, $CNF['PRUNING_BATCH']);
+                $iDeleted += $iBatch;
+            } while($iBatch >= $CNF['PRUNING_BATCH'] && time() < $iDeadline);
+
+        return $iDeleted;
+    }
+
+    /**
+     * Forget a deleted profile: its visits stay in reports as an anonymous visitor's.
+     */
+    public function onProfileDelete($iProfileId)
+    {
+        $iProfileId = (int)$iProfileId;
+        if(!$iProfileId)
+            return 0;
+
+        return $this->_oDb->forgetProfile($iProfileId, random_bytes(16));
+    }
+
+    public function serviceGetOptionsPlatforms()
+    {
+        $aResult = [];
+        foreach($this->_oConfig->getPlatforms() as $sCode => $sTitle)
+            $aResult[$sCode] = _t($sTitle);
+
+        return $aResult;
+    }
+
+    public function serviceGetOptionsIdentity()
+    {
+        return [
+            BX_ANALYTICS_IDENTITY_COOKIELESS => _t('_bx_analytics_identity_cookieless'),
+            BX_ANALYTICS_IDENTITY_PERSISTENT => _t('_bx_analytics_identity_persistent'),
+        ];
+    }
+
+    public function serviceGetOptionsGeoSource()
+    {
+        return [
+            BX_ANALYTICS_GEO_NONE => _t('_bx_analytics_geo_none'),
+            BX_ANALYTICS_GEO_HEADERS => _t('_bx_analytics_geo_headers'),
+        ];
+    }
+
+    public function getCollector()
+    {
+        bx_import('UserAgent', $this->_aModule);
+        bx_import('Source', $this->_aModule);
+        bx_import('Request', $this->_aModule);
+        bx_import('Collector', $this->_aModule);
+
+        return new BxAnalyticsCollector($this);
+    }
+
+    public function getFilter($aParams)
+    {
+        bx_import('Filter', $this->_aModule);
+
+        return new BxAnalyticsFilter($this, $aParams);
+    }
+
+    public function getReports()
+    {
+        if($this->_oReports === null) {
+            bx_import('Reports', $this->_aModule);
+            $this->_oReports = new BxAnalyticsReports($this);
+        }
+
+        return $this->_oReports;
+    }
+
+    /**
+     * Report data by name, or false for an unknown report.
+     */
+    public function getReportData($sReport, $aParams)
+    {
+        $oFilter = $this->getFilter($aParams);
+        $oReports = $this->getReports();
+
+        switch($sReport) {
+            case 'overview':
+                return array_merge($oReports->getOverview($oFilter), ['filter' => $oFilter->getParams()]);
+
+            case 'top':
+                $sGroup = isset($aParams['group']) && is_string($aParams['group']) ? $aParams['group'] : '';
+                if(!$oReports->isGroup($sGroup))
+                    return false;
+
+                $sTab = isset($aParams['tab']) && is_string($aParams['tab']) ? $aParams['tab'] : '';
+                $iLimit = isset($aParams['limit']) ? max(1, min(100, (int)$aParams['limit'])) : 10;
+
+                return array_merge($oReports->getTop($oFilter, $sGroup, $sTab, $iLimit), ['filter' => $oFilter->getParams()]);
+
+            case 'realtime':
+                $sPlatform = isset($aParams['platform']) && $this->_oConfig->isPlatform($aParams['platform']) ? $aParams['platform'] : '';
+
+                return $oReports->getRealtime($sPlatform, 20);
+        }
+
+        return false;
+    }
+
+    /**
+     * What an API block carries: the report and the endpoint NEO calls for its data.
+     */
+    protected function _getApiBlockData($sReport, $aParams = [])
+    {
+        return [
+            'report' => $sReport,
+            'params' => $aParams,
+            'request_url' => 'bx_analytics/get_report&params[]=' . $sReport,
+            'platforms' => $this->serviceGetOptionsPlatforms(),
+        ];
+    }
+
+    /**
+     * The request came through api.php with an API key that api.php has already checked:
+     * the NEO server, whose proxy headers carry the visitor's address.
+     */
+    protected function _isApiKeyRequest()
+    {
+        if(!defined('BX_API') || !getParam('sys_api_access_by_key'))
+            return false;
+
+        $sAuth = isset($_SERVER['HTTP_AUTHORIZATION']) ? $_SERVER['HTTP_AUTHORIZATION'] : '';
+        if($sAuth === '' && function_exists('getallheaders')) {
+            $aHeaders = array_change_key_case((array)getallheaders(), CASE_LOWER);
+            $sAuth = isset($aHeaders['authorization']) ? $aHeaders['authorization'] : '';
+        }
+
+        return strpos($sAuth, 'Bearer ') === 0;
+    }
+
     /**
     * Action methods
     */
@@ -303,7 +728,7 @@ class BxAnalyticsModule extends BxDolModule
                         $sColumnAuthor = $oContentModule->_oConfig->CNF['FIELD_AUTHOR'];
                         $sColumnAdded = $oContentModule->_oConfig->CNF['FIELD_ADDED'];
                         if (!empty($sContentTable) && !empty($sColumnAuthor) && !empty($sColumnAdded) && (!BxDolRequest::serviceExists($sContentModule, 'act_as_profile') || BxDolService::call($sContentModule, 'act_as_profile') == false)){
-                            $aData1 = $this->_oDb->getMostActiveProfiles($sModuleName, $sContentModule, $sContentTable, $sColumnAuthor, $sColumnAuthor, $sColumnAdded, $iDateFrom, $iDateTo);
+                            $aData1 = $this->_oDb->getMostActiveProfiles($sModuleName, $sContentModule, $sContentTable, $sColumnAuthor, $sColumnAdded, $iDateFrom, $iDateTo);
                             foreach($aData1 as $aTmp3){
                                 if (array_key_exists($aTmp3['object_id'], $aData))
                                     $aData[$aTmp3['object_id']]['value'] += $aTmp3['value'];
@@ -497,6 +922,10 @@ class BxAnalyticsModule extends BxDolModule
 	
 	public function checkAllowed($isPerformAction = false)
     {
+        // site administrators always see analytics, whatever their profile's level
+        if(isAdmin())
+            return CHECK_ACTION_RESULT_ALLOWED;
+
         $aCheck = checkActionModule(bx_get_logged_profile_id(), 'use analytics', $this->getName(), $isPerformAction);
         if ($aCheck[CHECK_ACTION_RESULT] !== CHECK_ACTION_RESULT_ALLOWED)
              return _t('_sys_txt_access_denied');
