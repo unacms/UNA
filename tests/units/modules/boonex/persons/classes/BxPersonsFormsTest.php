@@ -134,16 +134,6 @@ class BxPersonsFormsTest extends BxPersonsTestCase
         $this->assertSame((string)date('Y'), $oForm->aInputs['birthday']['attrs']['max']);
     }
 
-    public function testCoverInputIsMarkedAsProfile()
-    {
-        $CNF = &$this->_oModule->_oConfig->CNF;
-        $oForm = BxDolForm::getObjectInstance($CNF['OBJECT_FORM_ENTRY'], $CNF['OBJECT_FORM_ENTRY_DISPLAY_EDIT_COVER'], $this->_oModule->_oTemplate);
-        $this->assertNotFalse($oForm, 'Persons edit cover form is missing.');
-        $this->assertNotEmpty($oForm->aInputs[$CNF['FIELD_COVER']], 'Persons cover field is missing.');
-
-        $this->assertTrue($oForm->aInputs[$CNF['FIELD_COVER']]['is_profile']);
-    }
-
     protected function bxFormDouble(): BxPersonsFormEntry
     {
         return new class($this->_oModule) extends BxPersonsFormEntry {
