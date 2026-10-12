@@ -15,12 +15,25 @@ const TREND_TEXT: Record<Trend, string> = {
     flat: 'text-muted-foreground',
 };
 
-function KpiTile({ metric, title, kpi, selected, strings, onPress }: {
+// Tiles per row by the block's own width: the block sits in a column, so the viewport
+// breakpoints (used until the first measurement) say little about its room.
+const TILE_WIDTH: Record<number, string> = { 2: 'w-1/2', 3: 'w-1/3', 6: 'w-1/6' };
+const TILE_WIDTH_BEFORE_LAYOUT = 'w-1/2 sm:w-1/3 lg:w-1/6';
+
+function getTileWidth(width: number): string {
+    if (width <= 0) return TILE_WIDTH_BEFORE_LAYOUT;
+    if (width >= 840) return TILE_WIDTH[6] ?? TILE_WIDTH_BEFORE_LAYOUT;
+    if (width >= 420) return TILE_WIDTH[3] ?? TILE_WIDTH_BEFORE_LAYOUT;
+    return TILE_WIDTH[2] ?? TILE_WIDTH_BEFORE_LAYOUT;
+}
+
+function KpiTile({ metric, title, kpi, selected, strings, widthClass, onPress }: {
     metric: string;
     title: string;
     kpi: AnalyticsKpi;
     selected: boolean;
     strings: AnalyticsStrings;
+    widthClass: string;
     onPress: () => void;
 }) {
     const value = formatMetric(metric, kpi.value, strings);
@@ -29,7 +42,7 @@ function KpiTile({ metric, title, kpi, selected, strings, onPress }: {
     const label = [`${title}: ${value}`, change, previous].filter(Boolean).join(', ');
 
     return (
-        <View className="w-1/2 p-1 sm:w-1/3 lg:w-1/6">
+        <View className={cn('p-1', widthClass)}>
             <Pressable
                 onPress={onPress}
                 accessibilityRole="button"
@@ -59,6 +72,7 @@ export default function AnalyticsOverview({ data, blockWrapperProps }: Analytics
     const strings = getStrings(data);
     const { report, hidden, isLoading, isError, isUpdating, refetch } = useAnalyticsReport<OverviewReport>(data);
     const [metric, setMetric] = useState('visitors');
+    const [width, setWidth] = useState(0);
 
     if (hidden) return null;
 
@@ -82,7 +96,12 @@ export default function AnalyticsOverview({ data, blockWrapperProps }: Analytics
     } else {
         content = (
             <View className={cn('w-full gap-4', isUpdating && 'opacity-60')} aria-busy={isUpdating}>
-                <View className="-m-1 flex-row flex-wrap" role="group" accessibilityLabel={strings.key_figures}>
+                <View
+                    className="-m-1 flex-row flex-wrap"
+                    role="group"
+                    accessibilityLabel={strings.key_figures}
+                    onLayout={(event) => setWidth(Math.round(event.nativeEvent.layout.width))}
+                >
                     {metrics.map((name) => {
                         const kpi = kpis[name];
                         return kpi ? (
@@ -93,6 +112,7 @@ export default function AnalyticsOverview({ data, blockWrapperProps }: Analytics
                                 kpi={kpi}
                                 selected={name === selected}
                                 strings={strings}
+                                widthClass={getTileWidth(width)}
                                 onPress={() => setMetric(name)}
                             />
                         ) : null;

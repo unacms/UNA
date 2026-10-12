@@ -103,7 +103,8 @@ export default function AnalyticsTop({ data, blockWrapperProps }: AnalyticsEleme
                         tabs={tabs.map((item) => ({ key: item.name, title: item.title }))}
                         activeTab={tab || report?.tab}
                         onTabChange={setTab}
-                        overflow="scroll"
+                        // in a narrow column (the right bar) the tabs that don't fit go into "More"
+                        overflow="collapse"
                         hug
                         equalWidth={false}
                         triggerClassName="native:min-h-11"
