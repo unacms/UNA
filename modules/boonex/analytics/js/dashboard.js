@@ -247,37 +247,36 @@ BxAnalyticsDashboard.prototype.selectMetric = function (oButton) {
 
     this.setUrlParam('metric', oButton.getAttribute('data-bx-analytics-metric'));
 
-    var oData = this.getChartData(oBlock);
+    var oJson = oBlock.querySelector('.bx-analytics-chart-data');
+    var oData = oJson ? this.getChartData(oJson) : null;
     if (oData) {
         oData.metric = oButton.getAttribute('data-bx-analytics-metric');
-        this.destroyChart(oBlock);
-        this.drawChart(oBlock, oData);
+        this.drawChart(oJson, oData);
     }
 };
 
-BxAnalyticsDashboard.prototype.getChartData = function (oBlock) {
-    var oJson = oBlock.querySelector('.bx-analytics-chart-data');
-    if (!oJson)
-        return null;
-
-    if (!oBlock._bxAnalyticsData) {
+/**
+ * The data of a chart: JSON in a script element right after the chart's container.
+ */
+BxAnalyticsDashboard.prototype.getChartData = function (oJson) {
+    if (!oJson._bxAnalyticsData) {
         try {
-            oBlock._bxAnalyticsData = JSON.parse(oJson.textContent);
+            oJson._bxAnalyticsData = JSON.parse(oJson.textContent);
         } catch (e) {
             return null;
         }
     }
 
-    return oBlock._bxAnalyticsData;
+    return oJson._bxAnalyticsData;
 };
 
 BxAnalyticsDashboard.prototype.drawCharts = function (oRoot) {
     var $this = this;
-    var aBlocks = oRoot.matches && oRoot.matches('[data-bx-analytics-block="overview"]') ? [oRoot] : oRoot.querySelectorAll('[data-bx-analytics-block="overview"]');
-    Array.prototype.forEach.call(aBlocks, function (oBlock) {
-        var oData = $this.getChartData(oBlock);
+    var aJson = oRoot.querySelectorAll ? oRoot.querySelectorAll('.bx-analytics-chart-data') : [];
+    Array.prototype.forEach.call(aJson, function (oJson) {
+        var oData = $this.getChartData(oJson);
         if (oData)
-            $this.drawChart(oBlock, oData);
+            $this.drawChart(oJson, oData);
     });
 };
 
@@ -345,93 +344,162 @@ BxAnalyticsDashboard.prototype.destroyChart = function (oBlock) {
         oMap._bxAnalyticsMap = null;
     }
 
-    var oCanvas = oBlock.querySelector('canvas');
-    if (oCanvas && oCanvas._bxAnalyticsChart) {
-        oCanvas._bxAnalyticsChart.destroy();
-        oCanvas._bxAnalyticsChart = null;
-    }
+    oBlock.querySelectorAll('canvas').forEach(function (oCanvas) {
+        if (oCanvas._bxAnalyticsChart) {
+            oCanvas._bxAnalyticsChart.destroy();
+            oCanvas._bxAnalyticsChart = null;
+        }
+    });
 };
 
-BxAnalyticsDashboard.prototype.drawChart = function (oBlock, oData) {
-    var oCanvas = oBlock.querySelector('canvas');
+/**
+ * Colours for the chart: the accent and a categorical palette, from the block's CSS.
+ */
+BxAnalyticsDashboard.prototype.getColors = function (oElement) {
+    var oStyle = window.getComputedStyle(oElement);
+    var get = function (sName, sDefault) {
+        return oStyle.getPropertyValue(sName).trim() || sDefault;
+    };
+
+    var aPalette = [];
+    for (var i = 1; i <= 8; i++)
+        aPalette.push(get('--bx-analytics-c' + i, '#4f46e5'));
+
+    return {
+        accent: get('--bx-analytics-accent', '#4f46e5'),
+        fill: get('--bx-analytics-accent-fill', 'rgba(79, 70, 229, 0.15)'),
+        grid: get('--bx-analytics-grid', 'rgba(0, 0, 0, 0.08)'),
+        muted: get('--bx-analytics-muted', '#6b7280'),
+        palette: aPalette
+    };
+};
+
+/**
+ * Draw the chart a JSON element describes, in the canvas of the container before it.
+ * Kinds: a metric over time (the overview, `series` with every metric), stacked bars per
+ * category (`labels` and `datasets`), and lines per category (`datasets`, kind `lines`).
+ */
+BxAnalyticsDashboard.prototype.drawChart = function (oJson, oData) {
+    var oContainer = oJson.previousElementSibling;
+    var oCanvas = oContainer ? oContainer.querySelector('canvas') : null;
     if (!oCanvas || typeof Chart === 'undefined')
         return;
 
+    if (oCanvas._bxAnalyticsChart) {
+        oCanvas._bxAnalyticsChart.destroy();
+        oCanvas._bxAnalyticsChart = null;
+    }
+
     var $this = this;
-    var sMetric = oData.metric;
-    var oStyle = window.getComputedStyle(oBlock);
-    var sAccent = oStyle.getPropertyValue('--bx-analytics-accent').trim() || '#4f46e5';
-    var sFill = oStyle.getPropertyValue('--bx-analytics-accent-fill').trim() || 'rgba(79, 70, 229, 0.15)';
-    var sGrid = oStyle.getPropertyValue('--bx-analytics-grid').trim() || 'rgba(0, 0, 0, 0.08)';
-    var sMuted = oStyle.getPropertyValue('--bx-analytics-muted').trim() || '#6b7280';
-
-    var aLabels = [];
-    var aValues = [];
-    var aPartial = [];
-    oData.series.forEach(function (oPoint) {
-        aLabels.push($this.formatBucket(oPoint.t, oData.bucket, oData.tz));
-        aValues.push(oPoint.future ? null : oPoint[sMetric]);
-        aPartial.push(!!oPoint.partial);
-    });
-
+    var oColors = this.getColors(oContainer);
     var bReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var sKind = oData.kind || 'metric';
+    var sMetric = oData.metric || 'number';
+    var oChart;
+
+    var oScales = {
+        x: {
+            stacked: sKind === 'stacked',
+            grid: {display: false},
+            ticks: {color: oColors.muted, autoSkip: true, maxRotation: 0, maxTicksLimit: 8}
+        },
+        y: {
+            stacked: sKind === 'stacked',
+            beginAtZero: true,
+            grid: {color: oColors.grid},
+            border: {display: false},
+            ticks: {
+                color: oColors.muted,
+                precision: sMetric === 'pages_per_session' ? 1 : 0,
+                callback: function (fValue) {
+                    return $this.formatMetric(sMetric, fValue);
+                }
+            }
+        }
+    };
+
+    if (sKind === 'metric') {
+        var aLabels = [], aValues = [], aPartial = [];
+        oData.series.forEach(function (oPoint) {
+            aLabels.push($this.formatBucket(oPoint.t, oData.bucket, oData.tz));
+            aValues.push(oPoint.future ? null : oPoint[sMetric]);
+            aPartial.push(!!oPoint.partial);
+        });
+
+        oChart = {
+            type: 'line',
+            data: {
+                labels: aLabels,
+                datasets: [{
+                    label: oData.titles[sMetric],
+                    data: aValues,
+                    borderColor: oColors.accent,
+                    backgroundColor: oColors.fill,
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.3,
+                    pointRadius: 0,
+                    pointHoverRadius: 4,
+                    spanGaps: false,
+                    // the period still in progress is drawn dashed, so its low value doesn't read as a drop
+                    segment: {
+                        borderDash: function (oContext) {
+                            return aPartial[oContext.p1DataIndex] ? [4, 4] : undefined;
+                        }
+                    }
+                }]
+            },
+            legend: false,
+            label: function (oContext) {
+                return oData.titles[sMetric] + ': ' + $this.formatMetric(sMetric, oContext.parsed.y);
+            }
+        };
+    }
+    else {
+        oChart = {
+            type: sKind === 'stacked' ? 'bar' : 'line',
+            data: {
+                labels: oData.labels.map(function (iTime) { return $this.formatBucket(iTime, oData.bucket || 'day', oData.tz || 'UTC'); }),
+                datasets: oData.datasets.map(function (oSet, iIndex) {
+                    var sColor = oColors.palette[iIndex % oColors.palette.length];
+                    return {
+                        label: oSet.label,
+                        data: oSet.values,
+                        backgroundColor: sColor,
+                        borderColor: sColor,
+                        borderWidth: sKind === 'stacked' ? 0 : 2,
+                        borderRadius: sKind === 'stacked' ? 2 : 0,
+                        pointRadius: 0,
+                        tension: 0.3
+                    };
+                })
+            },
+            legend: oData.datasets.length > 1,
+            label: function (oContext) {
+                return oContext.dataset.label + ': ' + $this.formatMetric(sMetric, oContext.parsed.y);
+            }
+        };
+    }
 
     oCanvas._bxAnalyticsChart = new Chart(oCanvas, {
-        type: 'line',
-        data: {
-            labels: aLabels,
-            datasets: [{
-                label: oData.titles[sMetric],
-                data: aValues,
-                borderColor: sAccent,
-                backgroundColor: sFill,
-                borderWidth: 2,
-                fill: true,
-                tension: 0.3,
-                pointRadius: 0,
-                pointHoverRadius: 4,
-                spanGaps: false,
-                // the period still in progress is drawn dashed, so its low value doesn't read as a drop
-                segment: {
-                    borderDash: function (oContext) {
-                        return aPartial[oContext.p1DataIndex] ? [4, 4] : undefined;
-                    }
-                }
-            }]
-        },
+        type: oChart.type,
+        data: oChart.data,
         options: {
             responsive: true,
             maintainAspectRatio: false,
             animation: bReducedMotion ? false : {duration: 300},
             interaction: {mode: 'index', intersect: false},
             plugins: {
-                legend: {display: false},
+                legend: {
+                    display: oChart.legend,
+                    position: 'bottom',
+                    labels: {color: oColors.muted, boxWidth: 12, boxHeight: 12}
+                },
                 tooltip: {
-                    callbacks: {
-                        label: function (oContext) {
-                            return oData.titles[sMetric] + ': ' + $this.formatMetric(sMetric, oContext.parsed.y);
-                        }
-                    }
+                    callbacks: {label: oChart.label}
                 }
             },
-            scales: {
-                x: {
-                    grid: {display: false},
-                    ticks: {color: sMuted, autoSkip: true, maxRotation: 0, maxTicksLimit: 8}
-                },
-                y: {
-                    beginAtZero: true,
-                    grid: {color: sGrid},
-                    border: {display: false},
-                    ticks: {
-                        color: sMuted,
-                        precision: sMetric === 'pages_per_session' ? 1 : 0,
-                        callback: function (fValue) {
-                            return $this.formatMetric(sMetric, fValue);
-                        }
-                    }
-                }
-            }
+            scales: oScales
         }
     });
 };

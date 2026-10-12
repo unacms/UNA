@@ -92,8 +92,11 @@ class BxAnalyticsCollector
 
         $sUserAgent = $this->_oRequest->getUserAgent();
         $aClient = $this->_getClient($sPlatform, $aPayload, $sUserAgent);
-        if($aClient === false)
+        if($aClient === false) {
+            // a bot that runs the tracker (a headless browser): counted with the bots
+            $this->collectBot($sUserAgent, $aHits[0]['url'], $sPlatform);
             return 0;
+        }
 
         $iProfileId = isset($aContext['profile_id']) ? (int)$aContext['profile_id'] : 0;
         if($iProfileId && $this->_isExcludedProfile($iProfileId))
@@ -111,6 +114,32 @@ class BxAnalyticsCollector
             return 0;
 
         return $this->_store($aSession, $aHits);
+    }
+
+    /**
+     * Count a request from a bot. Bots don't run the tracker, so the page itself reports
+     * them as it renders. They are kept as totals per day, bot and page, never as visits.
+     *
+     * @param string $sUserAgent the request's user agent
+     * @param string $sUrl the requested URL or path
+     * @param string $sPlatform where the request came to
+     * @return bool whether it was a bot and was counted
+     */
+    public function collectBot($sUserAgent, $sUrl, $sPlatform = BX_ANALYTICS_PLATFORM_CORE_WEB)
+    {
+        if(!$this->_oConfig->isTrackingEnabled() || !$this->_oConfig->isTrackBots() || !$this->_oConfig->isPlatform($sPlatform))
+            return false;
+
+        $aBot = BxAnalyticsUserAgent::getBot($sUserAgent);
+        if(!$aBot)
+            return false;
+
+        $aUrl = $this->_parseUrl((string)$sUrl);
+        $sPath = $aUrl !== false ? $aUrl['path'] : '';
+        if($sPath !== '' && $this->_isExcludedPath($sPath, $this->_oConfig->getExcludedPaths()))
+            return false;
+
+        return $this->_oDb->addBotHit(gmdate('Y-m-d', $this->_iNow), $aBot['name'], $aBot['category'], $sPlatform, $sPath, $this->_iNow);
     }
 
     /**

@@ -164,9 +164,42 @@ class BxAnalyticsDb extends BxBaseModGeneralDb
         ]) > 0;
     }
 
+    /**
+     * Count one bot request: a daily total per bot and platform, and per bot category and page.
+     */
+    public function addBotHit($sDay, $sBot, $sCategory, $sPlatform, $sPath, $iTime)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        $bResult = $this->query("INSERT INTO `" . $CNF['TABLE_BOTS'] . "` (`day`, `bot`, `category`, `platform`, `hits`, `last_seen`) VALUES (:day, :bot, :category, :platform, 1, :ts) ON DUPLICATE KEY UPDATE `hits` = `hits` + 1, `last_seen` = GREATEST(`last_seen`, VALUES(`last_seen`))", [
+            'day' => $sDay,
+            'bot' => $sBot,
+            'category' => $sCategory,
+            'platform' => $sPlatform,
+            'ts' => (int)$iTime,
+        ]) !== false;
+
+        if($sPath !== '')
+            $this->query("INSERT INTO `" . $CNF['TABLE_BOT_PAGES'] . "` (`day`, `category`, `path_hash`, `path`, `hits`) VALUES (:day, :category, :hash, :path, 1) ON DUPLICATE KEY UPDATE `hits` = `hits` + 1", [
+                'day' => $sDay,
+                'category' => $sCategory,
+                'hash' => substr(sha1($sPath, true), 0, 8),
+                'path' => $sPath,
+            ]);
+
+        return $bResult;
+    }
+
     /*
      * Maintenance
      */
+
+    public function deleteBotsBefore($sDay)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        return (int)$this->query("DELETE FROM `" . $CNF['TABLE_BOTS'] . "` WHERE `day` < :day", ['day' => $sDay]) + (int)$this->query("DELETE FROM `" . $CNF['TABLE_BOT_PAGES'] . "` WHERE `day` < :day", ['day' => $sDay]);
+    }
 
     public function deleteSaltsBefore($sDay)
     {
@@ -346,6 +379,85 @@ class BxAnalyticsDb extends BxBaseModGeneralDb
         }
 
         return $this->getPairs("SELECT FLOOR(`ts` / 60) * 60 AS `minute`, COUNT(*) AS `pageviews` FROM `" . $this->_oConfig->CNF['TABLE_EVENTS'] . "` WHERE `ts` >= :since AND `type` = 'pageview'" . $sWhere . " GROUP BY `minute`", 'minute', 'pageviews', $aBindings);
+    }
+
+    /**
+     * Bot totals in a period: hits and distinct bots, optionally for some categories.
+     */
+    public function getBotTotals($aFilter, $aCategories = [])
+    {
+        $aBindings = [];
+        $sWhere = $this->_getBotsWhere($aFilter, $aCategories, $aBindings);
+
+        return $this->getRow("SELECT IFNULL(SUM(`hits`), 0) AS `hits`, COUNT(DISTINCT `bot`) AS `bots` FROM `" . $this->_oConfig->CNF['TABLE_BOTS'] . "` WHERE " . $sWhere, $aBindings);
+    }
+
+    /**
+     * Bot hits per day and category.
+     */
+    public function getBotSeries($aFilter)
+    {
+        $aBindings = [];
+        $sWhere = $this->_getBotsWhere($aFilter, [], $aBindings);
+
+        return $this->getAll("SELECT `day`, `category`, SUM(`hits`) AS `hits` FROM `" . $this->_oConfig->CNF['TABLE_BOTS'] . "` WHERE " . $sWhere . " GROUP BY `day`, `category` ORDER BY `day`", $aBindings);
+    }
+
+    /**
+     * Bots with their hits, last visit and platforms, busiest first.
+     */
+    public function getBotList($aFilter, $aCategories, $iLimit, $iStart = 0)
+    {
+        $aBindings = [];
+        $sWhere = $this->_getBotsWhere($aFilter, $aCategories, $aBindings);
+
+        return $this->getAll("SELECT `bot`, `category`, SUM(`hits`) AS `hits`, MAX(`last_seen`) AS `last_seen`, GROUP_CONCAT(DISTINCT `platform` ORDER BY `platform`) AS `platforms` FROM `" . $this->_oConfig->CNF['TABLE_BOTS'] . "` WHERE " . $sWhere . " GROUP BY `bot`, `category` ORDER BY `hits` DESC LIMIT " . max(0, (int)$iStart) . ", " . max(1, min(1000, (int)$iLimit)), $aBindings);
+    }
+
+    public function getBotListCount($aFilter, $aCategories)
+    {
+        $aBindings = [];
+        $sWhere = $this->_getBotsWhere($aFilter, $aCategories, $aBindings);
+
+        return (int)$this->getOne("SELECT COUNT(DISTINCT `bot`, `category`) FROM `" . $this->_oConfig->CNF['TABLE_BOTS'] . "` WHERE " . $sWhere, $aBindings);
+    }
+
+    /**
+     * Pages bots asked for most.
+     */
+    public function getBotPages($aFilter, $aCategories, $iLimit)
+    {
+        $aBindings = [];
+        $sWhere = $this->_getBotsWhere($aFilter, $aCategories, $aBindings, false);
+
+        return $this->getAll("SELECT `path`, SUM(`hits`) AS `hits` FROM `" . $this->_oConfig->CNF['TABLE_BOT_PAGES'] . "` WHERE " . $sWhere . " GROUP BY `path_hash`, `path` ORDER BY `hits` DESC LIMIT " . max(1, min(100, (int)$iLimit)), $aBindings);
+    }
+
+    /**
+     * Bot rows are per UTC day: the period's days, its platform (the pages table has none)
+     * and the categories.
+     */
+    protected function _getBotsWhere($aFilter, $aCategories, &$aBindings, $bPlatform = true)
+    {
+        $aSql = ['`day` >= :day_from', '`day` <= :day_to'];
+        $aBindings['day_from'] = gmdate('Y-m-d', (int)$aFilter['from']);
+        $aBindings['day_to'] = gmdate('Y-m-d', max((int)$aFilter['from'], (int)$aFilter['to'] - 1));
+
+        if($bPlatform && $aFilter['platform'] !== '') {
+            $aSql[] = '`platform` = :platform';
+            $aBindings['platform'] = $aFilter['platform'];
+        }
+
+        if(!empty($aCategories)) {
+            $aIn = [];
+            foreach(array_values($aCategories) as $i => $sCategory) {
+                $aIn[] = ':c' . $i;
+                $aBindings['c' . $i] = $sCategory;
+            }
+            $aSql[] = '`category` IN (' . implode(', ', $aIn) . ')';
+        }
+
+        return implode(' AND ', $aSql);
     }
 
     /**

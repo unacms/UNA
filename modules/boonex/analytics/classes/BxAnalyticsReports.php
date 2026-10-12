@@ -380,6 +380,131 @@ class BxAnalyticsReports
     }
 
     /**
+     * Bots and agents: totals, hits per day by category, the bots and the pages they ask for.
+     * Tabs narrow it to a category; AI covers crawlers and assistants fetching for a person.
+     */
+    public function getBots(BxAnalyticsFilter $oFilter, $aParams = [])
+    {
+        bx_import('UserAgent', $this->_oModule->_aModule);
+
+        $aCategories = [
+            'all' => [],
+            'ai' => [BxAnalyticsUserAgent::BOT_AI_CRAWLER, BxAnalyticsUserAgent::BOT_AI_AGENT],
+            'search' => [BxAnalyticsUserAgent::BOT_SEARCH],
+            'social' => [BxAnalyticsUserAgent::BOT_SOCIAL],
+            'seo' => [BxAnalyticsUserAgent::BOT_SEO],
+            'monitor' => [BxAnalyticsUserAgent::BOT_MONITOR],
+            'script' => [BxAnalyticsUserAgent::BOT_SCRIPT, BxAnalyticsUserAgent::BOT_FEED, BxAnalyticsUserAgent::BOT_OTHER],
+        ];
+        $sTab = $this->_getTab($aParams, 'bots', $aCategories);
+        $aIn = $aCategories[$sTab];
+        $aFilter = $oFilter->get();
+
+        $aTotals = $this->_oDb->getBotTotals($aFilter, $aIn);
+        $aAi = $this->_oDb->getBotTotals($aFilter, $aCategories['ai']);
+        $aHumans = $this->_oDb->getTotals(array_merge($aFilter, ['dims' => []]));
+        $iHits = (int)$aTotals['hits'];
+        $iAll = $sTab == 'all' ? $iHits : (int)$this->_oDb->getBotTotals($aFilter)['hits'];
+
+        $aTiles = [
+            ['title' => _t('_bx_analytics_metric_bot_hits'), 'value' => $iHits, 'type' => 'number'],
+            ['title' => _t('_bx_analytics_metric_bots'), 'value' => (int)$aTotals['bots'], 'type' => 'number'],
+            ['title' => _t('_bx_analytics_metric_ai_hits'), 'value' => (int)$aAi['hits'], 'type' => 'number'],
+            ['title' => _t('_bx_analytics_metric_bot_share'), 'value' => $iAll + (int)$aHumans['pageviews'] ? round(100 * $iAll / ($iAll + (int)$aHumans['pageviews']), 1) : 0, 'type' => 'percent'],
+        ];
+
+        // hits per day and category, every day of the period
+        $aDays = [];
+        for($i = (int)$aFilter['from']; $i < (int)$aFilter['to'] && count($aDays) < 800; $i += 86400)
+            $aDays[gmdate('Y-m-d', $i)] = true;
+        $aDays = array_keys($aDays);
+
+        $aSeries = [];
+        foreach($this->_oDb->getBotSeries($aFilter) as $aRow)
+            if(empty($aIn) || in_array($aRow['category'], $aIn, true))
+                $aSeries[$aRow['category']][$aRow['day']] = (int)$aRow['hits'];
+
+        $aDatasets = [];
+        foreach($aSeries as $sCategory => $aValues)
+            $aDatasets[] = [
+                'key' => $sCategory,
+                'label' => _t('_bx_analytics_bot_' . $sCategory),
+                'values' => array_map(function($sDay) use ($aValues) { return isset($aValues[$sDay]) ? $aValues[$sDay] : 0; }, $aDays),
+            ];
+
+        $iTotal = $this->_oDb->getBotListCount($aFilter, $aIn);
+        $iPages = max(1, (int)ceil($iTotal / $this->_iPerPage));
+        $iPage = min($iPages, max(1, (int)$this->_param($aParams, 'page_bot_list', 1)));
+
+        $aBots = $this->_oDb->getBotList($aFilter, $aIn, $this->_iPerPage, ($iPage - 1) * $this->_iPerPage);
+        $iMax = 1;
+        foreach($aBots as $aBot)
+            $iMax = max($iMax, (int)$aBot['hits']);
+
+        $aRows = [];
+        foreach($aBots as $aBot)
+            $aRows[] = [
+                'label' => $aBot['bot'],
+                'sub' => _t('_bx_analytics_bot_' . $aBot['category']),
+                'bar' => round(100 * $aBot['hits'] / $iMax, 1),
+                'values' => [
+                    'hits' => (int)$aBot['hits'],
+                    'last_seen' => (int)$aBot['last_seen'],
+                    'platforms' => implode(', ', array_map(function($s) { return $this->getLabel('platform', $s); }, explode(',', (string)$aBot['platforms']))),
+                ],
+            ];
+
+        $aPagesRows = [];
+        $aPages = $this->_oDb->getBotPages($aFilter, $aIn, 10);
+        $iMaxPage = 1;
+        foreach($aPages as $aPage)
+            $iMaxPage = max($iMaxPage, (int)$aPage['hits']);
+        foreach($aPages as $aPage)
+            $aPagesRows[] = [
+                'label' => $aPage['path'],
+                'bar' => round(100 * $aPage['hits'] / $iMaxPage, 1),
+                'values' => ['hits' => (int)$aPage['hits']],
+            ];
+
+        return [
+            'tab' => $sTab,
+            'tabs' => $this->_getTabs(array_flip(array_keys($aCategories)), $sTab, '_bx_analytics_tab_bots_'),
+            'tiles' => $aTiles,
+            'chart' => [
+                'kind' => 'stacked',
+                'labels' => array_map(function($sDay) { return strtotime($sDay . ' 00:00:00 UTC'); }, $aDays),
+                'bucket' => 'day',
+                'tz' => 'UTC',
+                'datasets' => $aDatasets,
+            ],
+            'bots' => [
+                'name' => 'bot_list',
+                'caption' => _t('_bx_analytics_lmi_cpt_bots'),
+                'columns' => [
+                    ['key' => 'label', 'type' => 'label', 'title' => _t('_bx_analytics_txt_bot')],
+                    ['key' => 'hits', 'type' => 'number', 'title' => _t('_bx_analytics_metric_bot_hits')],
+                    ['key' => 'platforms', 'type' => 'text', 'title' => _t('_bx_analytics_dim_platform')],
+                    ['key' => 'last_seen', 'type' => 'datetime', 'title' => _t('_bx_analytics_txt_last_seen')],
+                ],
+                'rows' => $aRows,
+                'page' => $iPage,
+                'pages' => $iPages,
+                'empty' => _t('_bx_analytics_txt_no_bots'),
+            ],
+            'pages' => [
+                'name' => 'bot_pages',
+                'caption' => _t('_bx_analytics_txt_bot_pages'),
+                'columns' => [
+                    ['key' => 'label', 'type' => 'label', 'title' => _t('_bx_analytics_tab_pages')],
+                    ['key' => 'hits', 'type' => 'number', 'title' => _t('_bx_analytics_metric_bot_hits')],
+                ],
+                'rows' => $aPagesRows,
+                'empty' => _t('_bx_analytics_txt_no_bots'),
+            ],
+        ];
+    }
+
+    /**
      * A human name for a stored dimension value.
      */
     public function getLabel($sDimension, $sValue)
@@ -438,11 +563,11 @@ class BxAnalyticsReports
         return isset($aTabs[$sTab]) ? $sTab : key($aTabs);
     }
 
-    protected function _getTabs($aTabs, $sActive)
+    protected function _getTabs($aTabs, $sActive, $sKeyPrefix = '_bx_analytics_tab_')
     {
         $aResult = [];
         foreach(array_keys($aTabs) as $sName)
-            $aResult[] = ['name' => $sName, 'title' => _t('_bx_analytics_tab_' . $sName), 'active' => $sName == $sActive];
+            $aResult[] = ['name' => $sName, 'title' => _t($sKeyPrefix . $sName), 'active' => $sName == $sActive];
 
         return $aResult;
     }

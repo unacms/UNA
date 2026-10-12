@@ -28,7 +28,7 @@ class BxAnalyticsModule extends BxDolModule
     /**
      * Reports that blocks, Studio and the API may ask for; each is a BxAnalyticsReports method.
      */
-    protected $_aReports = ['filters', 'overview', 'top', 'table', 'realtime', 'map'];
+    protected $_aReports = ['filters', 'overview', 'top', 'table', 'realtime', 'map', 'bots'];
 
     /**
      * Studio sections: page => list of [report, block params, spans all columns].
@@ -40,6 +40,7 @@ class BxAnalyticsModule extends BxDolModule
         'sources' => [['filters', [], true], ['table', ['table' => 'sources'], true]],
         'audience' => [['filters', [], true], ['top', ['group' => 'locations']], ['top', ['group' => 'devices']], ['top', ['group' => 'platforms']]],
         'map' => [['filters', [], true], ['map', [], true]],
+        'bots' => [['filters', [], true], ['bots', [], true]],
     ];
           
     function __construct(&$aModule)
@@ -240,6 +241,14 @@ class BxAnalyticsModule extends BxDolModule
     {
         if(!$this->_oConfig->isTrackingEnabled() || !$this->_oConfig->isPlatformEnabled(BX_ANALYTICS_PLATFORM_CORE_WEB))
             return '';
+
+        // bots don't run the tracker: the page counts them as it renders
+        bx_import('UserAgent', $this->_aModule);
+        $sUserAgent = isset($_SERVER['HTTP_USER_AGENT']) ? (string)$_SERVER['HTTP_USER_AGENT'] : '';
+        if(BxAnalyticsUserAgent::isBot($sUserAgent)) {
+            $this->getCollector()->collectBot($sUserAgent, isset($_SERVER['REQUEST_URI']) ? (string)$_SERVER['REQUEST_URI'] : '');
+            return '';
+        }
 
         $aLevels = $this->_oConfig->getExcludedLevels();
         if(!empty($aLevels)) {
@@ -452,14 +461,20 @@ class BxAnalyticsModule extends BxDolModule
         if(!isset($this->_aStudioSections[$sSection]))
             return '';
 
+        // one report under the filter bar needs no heading: the section title names it
+        $iReports = 0;
+        foreach($this->_aStudioSections[$sSection] as $aBlock)
+            if($aBlock[0] != 'filters')
+                $iReports++;
+
         $aBlocks = [];
         foreach($this->_aStudioSections[$sSection] as $aBlock) {
             list($sReport, $aParams, $bWide) = array_pad($aBlock, 3, false);
 
             $sTitle = '';
-            if($sReport == 'top')
+            if($iReports > 1 && $sReport == 'top')
                 $sTitle = _t('_bx_analytics_group_' . $aParams['group']);
-            elseif(!in_array($sReport, ['filters', 'overview', 'table'], true))
+            elseif($iReports > 1 && !in_array($sReport, ['filters', 'overview', 'table'], true))
                 $sTitle = _t('_bx_analytics_report_' . (isset($aParams['title']) ? $aParams['title'] : $sReport));
 
             $aBlocks[] = [
@@ -547,6 +562,7 @@ class BxAnalyticsModule extends BxDolModule
         $this->_oDb->deleteSaltsBefore(gmdate('Y-m-d', time() - 86400));
 
         $iBefore = time() - 86400 * $this->_oConfig->getRetentionDays();
+        $this->_oDb->deleteBotsBefore(gmdate('Y-m-d', $iBefore));
         $iDeadline = time() + $CNF['PRUNING_SECONDS'];
 
         $iDeleted = 0;

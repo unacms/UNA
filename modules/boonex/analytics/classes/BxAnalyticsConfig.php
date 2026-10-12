@@ -67,6 +67,8 @@ class BxAnalyticsConfig extends BxBaseModGeneralConfig
             'TABLE_SESSIONS' => $aModule['db_prefix'] . 'sessions',
             'TABLE_EVENTS' => $aModule['db_prefix'] . 'events',
             'TABLE_SALTS' => $aModule['db_prefix'] . 'salts',
+            'TABLE_BOTS' => $aModule['db_prefix'] . 'bots',
+            'TABLE_BOT_PAGES' => $aModule['db_prefix'] . 'bot_pages',
 
             // hits per request and their properties, to bound the work of one beacon
             'MAX_HITS_PER_REQUEST' => 20,
@@ -138,6 +140,11 @@ class BxAnalyticsConfig extends BxBaseModGeneralConfig
     public function isLinkMembers()
     {
         return getParam('bx_analytics_link_members') == 'on';
+    }
+
+    public function isTrackBots()
+    {
+        return getParam('bx_analytics_track_bots') == 'on';
     }
 
     public function isRespectDnt()

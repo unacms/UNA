@@ -81,6 +81,29 @@ CREATE TABLE IF NOT EXISTS `bx_analytics_salts` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
+-- Bots and agents per day: crawlers, AI fetchers, link previews and scripts don't run the
+-- tracker, so they are counted on the server and kept as daily totals, not as visits
+CREATE TABLE IF NOT EXISTS `bx_analytics_bots` (
+  `day` date NOT NULL,
+  `bot` varchar(64) NOT NULL,
+  `category` varchar(16) NOT NULL DEFAULT '',
+  `platform` varchar(16) NOT NULL DEFAULT '',
+  `hits` int(11) unsigned NOT NULL DEFAULT '0',
+  `last_seen` int(11) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`day`, `bot`, `platform`),
+  KEY `category` (`category`, `day`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Pages bots asked for, per day and bot category
+CREATE TABLE IF NOT EXISTS `bx_analytics_bot_pages` (
+  `day` date NOT NULL,
+  `category` varchar(16) NOT NULL DEFAULT '',
+  `path_hash` binary(8) NOT NULL,
+  `path` varchar(255) NOT NULL DEFAULT '',
+  `hits` int(11) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`day`, `category`, `path_hash`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- STUDIO: page & widget
 INSERT INTO `sys_std_pages`(`index`, `name`, `header`, `caption`, `icon`) VALUES
 (3, @sName, '_bx_analytics', '_bx_analytics', 'bx_analytics@modules/boonex/analytics/|std-icon.svg');

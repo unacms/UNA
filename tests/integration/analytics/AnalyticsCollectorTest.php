@@ -27,7 +27,7 @@ class AnalyticsCollectorTest extends BxDolIntegrationTestCase
 
         $this->_cleanup();
 
-        foreach (['bx_analytics_tracking' => 'on', 'bx_analytics_platforms' => 'core-web,next-web,rn-ios,rn-android,api', 'bx_analytics_respect_dnt' => 'on', 'bx_analytics_link_members' => 'on', 'bx_analytics_identity' => 'cookieless', 'bx_analytics_exclude_ips' => '', 'bx_analytics_exclude_levels' => '', 'bx_analytics_exclude_paths' => '', 'bx_analytics_geo_source' => 'headers'] as $sName => $sValue)
+        foreach (['bx_analytics_track_bots' => 'on', 'bx_analytics_tracking' => 'on', 'bx_analytics_platforms' => 'core-web,next-web,rn-ios,rn-android,api', 'bx_analytics_respect_dnt' => 'on', 'bx_analytics_link_members' => 'on', 'bx_analytics_identity' => 'cookieless', 'bx_analytics_exclude_ips' => '', 'bx_analytics_exclude_levels' => '', 'bx_analytics_exclude_paths' => '', 'bx_analytics_geo_source' => 'headers'] as $sName => $sValue)
             $this->_setOption($sName, $sValue);
     }
 
@@ -187,6 +187,30 @@ class AnalyticsCollectorTest extends BxDolIntegrationTestCase
         $this->assertFalse($this->_oModule->getReportData('nope', $aParams), 'unknown reports are refused');
     }
 
+    public function testBotsAreCountedApart()
+    {
+        $oCollector = new BxAnalyticsCollector($this->_oModule, new BxAnalyticsRequest($this->_server('66.249.66.1')), self::NOW);
+        $this->assertTrue($oCollector->collectBot('Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)', '/page/explore?utm_source=x'));
+        $this->assertTrue($oCollector->collectBot('Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)', '/page/explore'));
+        $this->assertTrue($oCollector->collectBot('Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; ChatGPT-User/1.0; +https://openai.com/bot)', '/'));
+        $this->assertFalse($oCollector->collectBot(self::UA_SAFARI, '/'), 'browsers are not bots');
+
+        // a headless browser that runs the tracker is a bot, not a visit
+        $this->assertSame(0, $this->_collect($this->_server('66.249.66.1', [], 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/120.0.0.0 Safari/537.36'), ['platform' => 'core-web', 'hits' => [['type' => 'pageview', 'url' => 'http://una.test/']]], self::NOW));
+        $this->assertCount(0, $this->_sessions());
+
+        $aFilter = $this->_filter(['range' => 'custom', 'from' => '2001-09-09', 'to' => '2001-09-09'])->get();
+        $this->assertEquals(['hits' => 4, 'bots' => 3], $this->_oModule->_oDb->getBotTotals($aFilter));
+        $this->assertEquals(['hits' => 1, 'bots' => 1], $this->_oModule->_oDb->getBotTotals($aFilter, ['ai_agent']));
+
+        $aPages = $this->_oModule->_oDb->getBotPages($aFilter, ['search'], 10);
+        $this->assertEquals([['path' => '/page/explore', 'hits' => 2]], $aPages, 'campaign tags are not part of the path');
+
+        $aReport = $this->_oModule->getReports()->getBots($this->_filter(['range' => 'custom', 'from' => '2001-09-09', 'to' => '2001-09-09']), ['tab_bots' => 'ai']);
+        $this->assertSame('ai', $aReport['tab']);
+        $this->assertSame(['ChatGPT'], array_column($aReport['bots']['rows'], 'label'));
+    }
+
     protected function _collect($aServer, $aPayload, $iNow, $aContext = [])
     {
         $oCollector = new BxAnalyticsCollector($this->_oModule, new BxAnalyticsRequest($aServer), $iNow);
@@ -224,5 +248,7 @@ class AnalyticsCollectorTest extends BxDolIntegrationTestCase
         $oDb->query("DELETE FROM `bx_analytics_events` WHERE `ts` < :to", ['to' => $iTo]);
         $oDb->query("DELETE FROM `bx_analytics_sessions` WHERE `started` < :to", ['to' => $iTo]);
         $oDb->query("DELETE FROM `bx_analytics_salts` WHERE `day` < '2002-01-01'");
+        $oDb->query("DELETE FROM `bx_analytics_bots` WHERE `day` < '2002-01-01'");
+        $oDb->query("DELETE FROM `bx_analytics_bot_pages` WHERE `day` < '2002-01-01'");
     }
 }

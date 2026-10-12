@@ -14,6 +14,14 @@
     --bx-analytics-good: #047857;
     --bx-analytics-bad: #b91c1c;
     --bx-analytics-online: #16a34a;
+    --bx-analytics-c1: #4f46e5;
+    --bx-analytics-c2: #0891b2;
+    --bx-analytics-c3: #d97706;
+    --bx-analytics-c4: #db2777;
+    --bx-analytics-c5: #16a34a;
+    --bx-analytics-c6: #7c3aed;
+    --bx-analytics-c7: #dc2626;
+    --bx-analytics-c8: #64748b;
 }
 html.dark .bx-analytics,
 html.dark .bx-analytics-std {
@@ -27,6 +35,14 @@ html.dark .bx-analytics-std {
     --bx-analytics-good: #6ee7b7;
     --bx-analytics-bad: #fca5a5;
     --bx-analytics-online: #4ade80;
+    --bx-analytics-c1: #a5b4fc;
+    --bx-analytics-c2: #67e8f9;
+    --bx-analytics-c3: #fcd34d;
+    --bx-analytics-c4: #f9a8d4;
+    --bx-analytics-c5: #86efac;
+    --bx-analytics-c6: #c4b5fd;
+    --bx-analytics-c7: #fca5a5;
+    --bx-analytics-c8: #cbd5e1;
 }
 
 .bx-analytics {
@@ -610,4 +626,44 @@ html.dark .bx-analytics-map .leaflet-tile-pane {
     margin: 0.75rem 0 0;
     font-size: 0.8125rem;
     color: var(--bx-analytics-muted);
+}
+
+/* tiles: key figures that aren't chart switches */
+.bx-analytics-tiles {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+    border: 1px solid var(--bx-analytics-border);
+    border-radius: 0.75rem;
+    overflow: hidden;
+}
+.bx-analytics-tile {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 0.75rem 1rem;
+    box-shadow: inset -1px 0 0 var(--bx-analytics-border), inset 0 -1px 0 var(--bx-analytics-border);
+}
+.bx-analytics-tile-sub {
+    font-size: 0.8125rem;
+    color: var(--bx-analytics-muted);
+}
+.bx-analytics-chart-sm {
+    height: 13rem;
+}
+.bx-analytics-columns {
+    display: grid;
+    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+    gap: 1.5rem 2rem;
+    margin-top: 1.25rem;
+}
+@media (max-width: 64rem) {
+    .bx-analytics-columns {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+.bx-analytics-columns > div > .bx-analytics-subtitle:first-child {
+    margin-top: 0;
+}
+.bx-analytics-table .bx-analytics-cell-label {
+    min-width: 14rem;
 }

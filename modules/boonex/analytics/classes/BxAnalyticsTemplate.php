@@ -451,6 +451,47 @@ class BxAnalyticsTemplate extends BxBaseModGeneralTemplate
         ]);
     }
 
+    protected function _getBotsHtml($aData, $oFilter)
+    {
+        return $this->parseHtmlByName('bots.html', [
+            'tabs' => $this->_getTabsHtml('bots', $aData['tabs']),
+            'tiles' => $this->_getTilesHtml($aData['tiles']),
+            'chart_label' => $this->_esc(_t('_bx_analytics_txt_chart_bots')),
+            'chart_json' => $this->_json($aData['chart']),
+            'bots' => $this->_getTableHtml($aData['bots'], $oFilter),
+            'pages_title' => $aData['pages']['caption'],
+            'pages' => $this->_getTableHtml($aData['pages'], $oFilter),
+        ]);
+    }
+
+    /**
+     * Key figures that are not chart switches: title, value and an optional note or change.
+     */
+    protected function _getTilesHtml($aTiles)
+    {
+        $aItems = [];
+        foreach($aTiles as $aTile)
+            $aItems[] = [
+                'title' => $aTile['title'],
+                'value' => $this->formatValue(isset($aTile['type']) ? $aTile['type'] : 'number', $aTile['value']),
+                'bx_if:sub' => [
+                    'condition' => !empty($aTile['sub']),
+                    'content' => ['sub' => !empty($aTile['sub']) ? $this->_esc($aTile['sub']) : ''],
+                ],
+                'bx_if:change' => [
+                    'condition' => isset($aTile['change']) && $aTile['change'] !== null,
+                    'content' => [
+                        'change' => isset($aTile['change']) ? $this->_formatChange($aTile['change']) : '',
+                        'trend' => isset($aTile['change']) ? $this->_trend(isset($aTile['metric']) ? $aTile['metric'] : '', $aTile['change']) : 'flat',
+                    ],
+                ],
+            ];
+
+        return $this->parseHtmlByName('tiles.html', [
+            'bx_repeat:tiles' => $aItems,
+        ]);
+    }
+
     /**
      * A table report: columns with types, rows with a label cell that filters, links or is plain.
      */
@@ -503,6 +544,7 @@ class BxAnalyticsTemplate extends BxBaseModGeneralTemplate
 
         return $this->parseHtmlByName('table.html', [
             'tabs' => !empty($aTable['tabs']) ? $this->_getTabsHtml($aTable['name'], $aTable['tabs']) : '',
+            'panel_attrs' => !empty($aTable['tabs']) ? 'role="tabpanel" id="bx-analytics-panel-' . $aTable['name'] . '"' : '',
             'name' => $aTable['name'],
             'caption' => $this->_esc($aTable['caption']),
             'bx_if:rows' => [

@@ -56,6 +56,33 @@ class BxAnalyticsUserAgentTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
+    public static function providerBotNames()
+    {
+        return [
+            'Google' => ['Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)', 'Googlebot', 'search'],
+            'OpenAI crawler' => ['Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; GPTBot/1.2; +https://openai.com/gptbot)', 'GPTBot', 'ai_crawler'],
+            'ChatGPT fetching for a person' => ['Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; ChatGPT-User/1.0; +https://openai.com/bot)', 'ChatGPT', 'ai_agent'],
+            'Anthropic crawler' => ['Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; ClaudeBot/1.0; +claudebot@anthropic.com)', 'ClaudeBot', 'ai_crawler'],
+            'Claude fetching for a person' => ['Mozilla/5.0 (compatible; Claude-User/1.0; +Claude-User@anthropic.com)', 'Claude', 'ai_agent'],
+            'Ahrefs' => ['Mozilla/5.0 (compatible; AhrefsBot/7.0; +http://ahrefs.com/robot/)', 'Ahrefs', 'seo'],
+            'Facebook preview' => ['facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)', 'Facebook', 'social'],
+            'monitor' => ['Mozilla/5.0+(compatible; UptimeRobot/2.0; http://www.uptimerobot.com/)', 'UptimeRobot', 'monitor'],
+            'curl' => ['curl/8.4.0', 'curl', 'script'],
+            'unlisted crawler by name' => ['Mozilla/5.0 (compatible; ExampleCrawler/2.0)', 'ExampleCrawler', 'other'],
+        ];
+    }
+
+    #[DataProvider('providerBotNames')]
+    public function testGetBot($sUserAgent, $sName, $sCategory)
+    {
+        $this->assertSame(['name' => $sName, 'category' => $sCategory], BxAnalyticsUserAgent::getBot($sUserAgent));
+    }
+
+    public function testBrowserIsNotABot()
+    {
+        $this->assertNull(BxAnalyticsUserAgent::getBot('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Safari/605.1.15'));
+    }
+
     #[DataProvider('providerBots')]
     public function testBots($sUserAgent)
     {
