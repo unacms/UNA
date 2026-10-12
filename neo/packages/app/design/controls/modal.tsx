@@ -115,6 +115,9 @@ export function Modal({
     const closeRef = useRef<any>(null);
     const scrollRef = useRef<any>(null);
     const scrollYRef = useRef(0);
+    const panelRef = useRef<any>(null);
+    // Web: whether the last pointerdown landed on the fog, outside the panel.
+    const pressStartedOutsideRef = useRef(false);
 
     const handleScroll = useCallback((event: any) => {
         const y = event?.nativeEvent?.contentOffset?.y;
@@ -236,8 +239,26 @@ export function Modal({
     const modalBottomOffset = 24 + (insets?.bottom ?? 0)
 
 
+    // A drag that starts inside the panel and ends on the fog (selecting text past
+    // the edge) still fires a click on the fog. Close only when the press began
+    // on the fog too.
+    useEffect(() => {
+        const isShown = onVisible == null ? true : !!onVisible;
+        if (!isWeb || !isShown) return undefined;
+
+        const onPointerDown = (event: PointerEvent) => {
+            const target = event.target as Node | null;
+            const fog = fogRef.current;
+            const panel = panelRef.current;
+            pressStartedOutsideRef.current = !!(target && fog?.contains(target) && !panel?.contains(target));
+        };
+
+        document.addEventListener('pointerdown', onPointerDown, true);
+        return () => document.removeEventListener('pointerdown', onPointerDown, true);
+    }, [onVisible]);
+
     const handleWebOuterPress = useCallback((event: any) => {
-        if (isOuterClose) {
+        if (isOuterClose && pressStartedOutsideRef.current) {
             tryClose();
         }
         event.stopPropagation();
@@ -416,7 +437,7 @@ export function Modal({
                     onPress={handleWebOuterPress}
                 >
                     <RemoveScroll className={`flex-1  flex flex-col w-full sm:justify-center ${autoHeight && 'justify-center'} overflow-hidden`} >
-                        <View style={{paddingBottom: isKeyboardOpen ? 96 : 0, height: (isDesktop && !isIPadWeb) || autoHeight ? 'auto' : heightActual }} className={`w-full ${maxWidth} left-0 right-0 z-50 w-full mx-auto ${modalSettings.container} `}>
+                        <View ref={panelRef} style={{paddingBottom: isKeyboardOpen ? 96 : 0, height: (isDesktop && !isIPadWeb) || autoHeight ? 'auto' : heightActual }} className={`w-full ${maxWidth} left-0 right-0 z-50 w-full mx-auto ${modalSettings.container} `}>
                        
                             {content}
 
