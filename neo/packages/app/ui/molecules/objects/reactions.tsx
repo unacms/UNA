@@ -906,6 +906,9 @@ export default function ElementReactions(props: ReactionsProps) {
                   ? [data.reaction]
                   : [];
             shareVote(channel, { ...data, reactions });
+        }).catch(() => {
+            // A timeout or a network error never reaches the callback: undo the optimistic change.
+            setState(before);
         });
         playSound();
     };

@@ -2,7 +2,8 @@
 /**
  * Writes packages/app/lib/emoji/emoji-data.ts for the emoji picker from the
  * unicode-emoji-json package (a devDependency): every base emoji (no skin-tone
- * variants) up to MAX_EMOJI_VERSION, with its name, grouped as in Unicode.
+ * variants) up to MAX_EMOJI_VERSION that UNA can store as a reaction, with its
+ * name, grouped as in Unicode.
  *
  *   node scripts/generate-emoji-data.js
  *
@@ -15,6 +16,17 @@ const path = require('path');
 const MAX_EMOJI_VERSION = 15.0;
 const OUT = path.join(__dirname, '..', 'packages', 'app', 'lib', 'emoji', 'emoji-data.ts');
 
+/**
+ * UNA keeps a picked emoji as `e_<hex code points>` in a varchar(32) column and takes one pictograph (with its
+ * variation selector, skin tone and ZWJ parts), a keycap or a flag: BxDolVoteReactions::isEmoji and normalizeReaction.
+ * Emoji it would refuse (families, couples, England and Scotland flags) stay out of the picker.
+ */
+const PART = '(?:\\p{Extended_Pictographic}(?:\\u{FE0F}|[\\u{1F3FB}-\\u{1F3FF}])?)';
+const UNA_EMOJI = new RegExp(`^(?:${PART}(?:\\u{200D}${PART})*|[#*0-9]\\u{FE0F}?\\u{20E3}|\\p{Regional_Indicator}{2})$`, 'u');
+const UNA_CODE_MAX = 32;
+const fitsUna = (emoji) =>
+    UNA_EMOJI.test(emoji) && ('e_' + Array.from(emoji, (c) => c.codePointAt(0).toString(16)).join('_')).length <= UNA_CODE_MAX;
+
 const groups = require('unicode-emoji-json/data-by-group.json');
 const { version } = require('unicode-emoji-json/package.json');
 
@@ -24,7 +36,7 @@ const out = groups
         id: group.slug,
         title: group.name,
         emojis: group.emojis
-            .filter((e) => parseFloat(e.emoji_version) <= MAX_EMOJI_VERSION)
+            .filter((e) => parseFloat(e.emoji_version) <= MAX_EMOJI_VERSION && fitsUna(e.emoji))
             .map((e) => [e.emoji, e.name]),
     }))
     .filter((group) => group.emojis.length > 0);
