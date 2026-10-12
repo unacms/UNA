@@ -1,10 +1,15 @@
 /**
- * Comment composer Enter-key policy (web / DOM KeyboardEvent).
- * Shift/Option+Enter: newline; plain Enter and Cmd/Ctrl+Enter: submit.
+ * Composer Enter-key policy (web / DOM KeyboardEvent).
+ * Submit on Enter (messenger): Shift/Option+Enter is a newline, plain Enter submits.
+ * Submit on Cmd/Ctrl+Enter (comments, feed posts): plain Enter stays a newline.
  */
 
 export function isCommentEditorNewlineEnter(event: any) {
     return !!(event?.shiftKey || event?.altKey);
+}
+
+export function isSubmitModEnter(event: any) {
+    return !!(event?.metaKey || event?.ctrlKey);
 }
 
 export function isCommentEditorEnterKey(event: any) {
