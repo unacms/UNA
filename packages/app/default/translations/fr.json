@@ -524,5 +524,19 @@
     "Align right": "Aligner à droite",
     "Indentation": "Retrait",
     "Indent": "Augmenter le retrait",
-    "Outdent": "Diminuer le retrait"
+    "Outdent": "Diminuer le retrait",
+    "React": "Réagir",
+    "Reacted": "Réaction ajoutée",
+    "Search emoji": "Rechercher un emoji",
+    "No emoji found": "Aucun emoji trouvé",
+    "You can give up to {{count}} reactions": "Vous pouvez donner jusqu’à {{count}} réactions",
+    "Smileys & Emotion": "Smileys et émotions",
+    "People & Body": "Personnes et corps",
+    "Animals & Nature": "Animaux et nature",
+    "Food & Drink": "Nourriture et boissons",
+    "Travel & Places": "Voyages et lieux",
+    "Activities": "Activités",
+    "Objects": "Objets",
+    "Symbols": "Symboles",
+    "Flags": "Drapeaux"
 }
