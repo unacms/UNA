@@ -865,6 +865,9 @@ export default function ElementReactions(props: ReactionsProps) {
     const buttonProps = buildButtonProps(props);
 
     const [state, setState] = useState<ReactionState>({});
+    // Counts every change to `state` (a tap here, a vote from another instance, the socket), so a failed request
+    // only undoes its own optimistic change, never a newer one.
+    const changes = useRef(0);
     const [performedBy, setPerformedBy] = useState<Record<string, any[]>>();
 
     // compound: one modal + selected tab
@@ -959,6 +962,10 @@ export default function ElementReactions(props: ReactionsProps) {
         replaced.forEach((name) => bump(name, -1));
 
         const before = state;
+        const change = ++changes.current;
+        const undo = () => {
+            if (changes.current === change) setState(before);
+        };
         setState((prev) => ({
             ...prev,
             is_voted: next.length > 0,
@@ -969,7 +976,7 @@ export default function ElementReactions(props: ReactionsProps) {
 
         objectRequest(object_params, 'do', { value: 1, reaction }, (data: any) => {
             if (!data || data.code) {
-                setState(before);
+                undo();
                 return;
             }
             // A backend without multiple reactions sends only `reaction`.
@@ -981,7 +988,7 @@ export default function ElementReactions(props: ReactionsProps) {
             shareVote(channel, { ...data, reactions });
         }).catch(() => {
             // A timeout or a network error never reaches the callback: undo the optimistic change.
-            setState(before);
+            undo();
         });
         playSound();
     };
@@ -1022,11 +1029,17 @@ export default function ElementReactions(props: ReactionsProps) {
     useVotedSubscription({
         channel,
         currentUserId: currentUser ? currentUser.id : 0,
-        onUpdate: (next: ReactionState) => setState((prev) => mergeState(prev, next)),
+        onUpdate: (next: ReactionState) => {
+            changes.current++;
+            setState((prev) => mergeState(prev, next));
+        },
     });
 
     useEffect(() => {
-        const listener = (next: ReactionState) => setState((prev) => mergeState(prev, next));
+        const listener = (next: ReactionState) => {
+            changes.current++;
+            setState((prev) => mergeState(prev, next));
+        };
         const listeners = voteListeners.get(channel) ?? new Set();
         listeners.add(listener);
         voteListeners.set(channel, listeners);
