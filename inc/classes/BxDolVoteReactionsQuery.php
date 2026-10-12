@@ -20,7 +20,13 @@ class BxDolVoteReactionsQuery extends BxDolVoteQuery
     public function getVote($iObjectId)
     {
         $aReactions = $this->_oModule->getReactions();
-        $aReactionsGot = $this->getAllWithKey('SELECT * FROM ' . $this->_sTable . ' WHERE `object_id` = :object_id', 'reaction', array('object_id' => $iObjectId));
+        $aReactionsGot = $this->getAllWithKey('SELECT * FROM ' . $this->_sTable . ' WHERE `object_id` = :object_id ORDER BY `count` DESC', 'reaction', array('object_id' => $iObjectId));
+
+        // Free-picked emoji (Many mode) are counted under their code; add the ones this object has.
+        if($this->_oModule->isFreeEmojiAllowed())
+            foreach($aReactionsGot as $sName => $aRow)
+                if((int)$aRow['count'] > 0 && !in_array($sName, $aReactions) && $this->_oModule->getReaction($sName) !== false)
+                    $aReactions[] = $sName;
 
         $aResult = array();
         foreach($aReactions as $sName) {
@@ -62,13 +68,60 @@ class BxDolVoteReactionsQuery extends BxDolVoteQuery
             return false;
 
         if($bUndo)
-            return $this->_deleteTrack($iObjectId, $iAuthorId);
+            return $this->_deleteTrackReaction($iObjectId, $iAuthorId, $sReaction);
 
         $iNow = time();
         $iAuthorNip = bx_get_ip_hash($sAuthorIp);
         $sQuery = $this->prepare("INSERT INTO `{$this->_sTableTrack}` SET `object_id` = ?, `author_id` = ?, `author_nip` = ?, `reaction` = ?, `value` = ?, `date` = ?", $iObjectId, $iAuthorId, $iAuthorNip, $sReaction, $iValue, $iNow);
         if((int)$this->query($sQuery) > 0)
             return $this->lastId();
+
+        return false;
+    }
+
+    /**
+     * The author's reactions to the object, oldest first.
+     */
+    public function getReactionsBy($iObjectId, $iAuthorId)
+    {
+        return $this->getColumn("SELECT `reaction` FROM `{$this->_sTableTrack}` WHERE `object_id` = :object_id AND `author_id` = :author_id ORDER BY `id` ASC", [
+            'object_id' => $iObjectId,
+            'author_id' => $iAuthorId
+        ]);
+    }
+
+    /**
+     * The author's latest reaction to the object (what the do-button shows).
+     */
+    public function getTrackLatest($iObjectId, $iAuthorId)
+    {
+        return $this->getRow("SELECT * FROM `{$this->_sTableTrack}` WHERE `object_id` = :object_id AND `author_id` = :author_id ORDER BY `id` DESC LIMIT 1", [
+            'object_id' => $iObjectId,
+            'author_id' => $iAuthorId
+        ]);
+    }
+
+    public function getTrackReaction($iObjectId, $iAuthorId, $sReaction)
+    {
+        return $this->getRow("SELECT * FROM `{$this->_sTableTrack}` WHERE `object_id` = :object_id AND `author_id` = :author_id AND `reaction` = :reaction LIMIT 1", [
+            'object_id' => $iObjectId,
+            'author_id' => $iAuthorId,
+            'reaction' => $sReaction
+        ]);
+    }
+
+    protected function _deleteTrackReaction($iObjectId, $iAuthorId, $sReaction)
+    {
+        $iId = (int)$this->getOne("SELECT `id` FROM `{$this->_sTableTrack}` WHERE `object_id` = :object_id AND `author_id` = :author_id AND `reaction` = :reaction LIMIT 1", [
+            'object_id' => $iObjectId,
+            'author_id' => $iAuthorId,
+            'reaction' => $sReaction
+        ]);
+        if(!$iId)
+            return false;
+
+        if((int)$this->query("DELETE FROM `{$this->_sTableTrack}` WHERE `id` = :id LIMIT 1", ['id' => $iId]) > 0)
+            return $iId;
 
         return false;
     }
@@ -138,9 +191,12 @@ class BxDolVoteReactionsQuery extends BxDolVoteQuery
     protected function _updateTriggerTable($iObjectId, $aEntry)
     {
         $iCounted = $iTotalCount = $fTotalRate = 0;
-        $aReactions = $this->_oModule->getReactions();
-        foreach($aReactions as $sName) {
-            $iCount = (int)$aEntry['count_' . $sName];
+        foreach($aEntry as $sKey => $mixedValue) {
+            if(strncmp($sKey, 'count_', 6) !== 0)
+                continue;
+
+            $sName = substr($sKey, 6);
+            $iCount = (int)$mixedValue;
             if($iCount == 0)
                 continue;
 

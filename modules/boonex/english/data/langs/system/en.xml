@@ -1899,6 +1899,10 @@
     <string name="_adm_stg_inf_option_sys_live_search_limit"><![CDATA[Set the maximum number of results displayed in Live Search suggestion box.]]></string>
     <string name="_adm_stg_cpt_option_sys_profiles_search_limit"><![CDATA[Profile Search Results]]></string>
     <string name="_adm_stg_inf_option_sys_profiles_search_limit"><![CDATA[Set the maximum number of results displayed per page in Profile Search.]]></string>
+    <string name="_adm_stg_inf_option_sys_vote_reactions_default"><![CDATA[Given with a single click or tap; other reactions are a hover or long press away. With none, the reaction button always opens the choice of reactions.]]></string>
+    <string name="_adm_stg_inf_option_sys_vote_reactions_mode"><![CDATA[Solo: one reaction, the default one, given with a click. Few: a short list of reactions to choose from. Many: any emoji, chosen in an emoji picker.]]></string>
+    <string name="_adm_stg_inf_option_sys_vote_reactions_per_user"><![CDATA[How many different reactions one person may give to the same content. Works in the Few and Many modes.]]></string>
+    <string name="_adm_stg_inf_option_sys_vote_reactions_split_counters"><![CDATA[Show a separate counter for each reaction instead of one total.]]></string>
     <string name="_adm_stg_cpt_option_sys_per_page_browse_showcase"><![CDATA[Number of items in showcase view]]></string>
     <string name="_adm_stg_inf_option_sys_per_page_browse_showcase"><![CDATA[Set the maximum number of results displayed in horizontal carousel.]]></string>
     <string name="_adm_stg_cpt_option_sys_session_lifetime_in_min"><![CDATA[Session lifetime (min)]]></string>
@@ -1944,7 +1948,14 @@
     <string name="_adm_stg_inf_option_sys_profile_bot"><![CDATA[Choose profile which will be used as an author of system actions.]]></string>
     <string name="_adm_stg_cpt_option_sys_logs_storage_default"><![CDATA[Default logs storage]]></string>
     <string name="_adm_stg_cpt_option_sys_logs_level"><![CDATA[Log Level]]></string>
+    <string name="_adm_stg_cpt_option_sys_vote_reactions_default"><![CDATA[Default reaction]]></string>
+    <string name="_adm_stg_cpt_option_sys_vote_reactions_mode"><![CDATA[Reactions mode]]></string>
+    <string name="_adm_stg_cpt_option_sys_vote_reactions_mode_few"><![CDATA[Few]]></string>
+    <string name="_adm_stg_cpt_option_sys_vote_reactions_mode_many"><![CDATA[Many]]></string>
+    <string name="_adm_stg_cpt_option_sys_vote_reactions_mode_solo"><![CDATA[Solo]]></string>
+    <string name="_adm_stg_cpt_option_sys_vote_reactions_per_user"><![CDATA[Reactions per person]]></string>
     <string name="_adm_stg_cpt_option_sys_vote_reactions_quick_mode"><![CDATA[Enable 'Quick Reactions' mode - vote with default reaction when clicked]]></string>
+    <string name="_adm_stg_cpt_option_sys_vote_reactions_split_counters"><![CDATA[Split counters]]></string>
     <string name="_adm_stg_cpt_option_sys_cmts_enable_auto_approve"><![CDATA[Auto approve a comment after creation]]></string>
     <string name="_adm_stg_cpt_option_sys_create_post_form_preloading_list"><![CDATA[Asynchronous forms preload in "Create Post" block]]></string>
     <string name="_adm_stg_inf_option_sys_create_post_form_preloading_list"><![CDATA[]]></string>
@@ -1991,6 +2002,7 @@
     <string name="_adm_stg_cpt_option_sys_pwa_manifest_theme_color"><![CDATA[Theme color]]></string>
 
     <string name="_adm_stg_cpt_category_pwa_sw"><![CDATA[Service Worker]]></string>
+    <string name="_adm_stg_cpt_category_reactions"><![CDATA[Reactions]]></string>
     <string name="_adm_stg_cpt_option_sys_pwa_sw_enable"><![CDATA[Enable]]></string>
     <string name="_adm_stg_cpt_option_sys_pwa_sw_cache"><![CDATA[URLs to cache on install (each in new line)]]></string>
     <string name="_adm_stg_cpt_option_sys_pwa_sw_offline"><![CDATA[Offline page]]></string>
@@ -2491,6 +2503,7 @@
     <string name="_sys_agents_field_prompt_tools"><![CDATA[Tools Prompt]]></string>
     <string name="_sys_agents_field_prompt_tools_info"><![CDATA[Instructions for using available tools.]]></string>
     <string name="_sys_agents_tools_popup_edit"><![CDATA[Edit tool]]></string>
+    <string name="_sys_agents_una_proxy_unconfigured"><![CDATA[The UNA proxy is not configured. Set the site UNA key and secret in Studio.]]></string>
     <string name="_sys_agents_field_title"><![CDATA[Title]]></string>
     <string name="_sys_agents_field_title_info"><![CDATA[Title to display]]></string>
     <string name="_sys_agents_field_description"><![CDATA[Description]]></string>
@@ -3878,7 +3891,9 @@
     <string name="_sys_page_block_title_sys_author"><![CDATA[Author]]></string>
     <string name="_sys_page_block_title_author"><![CDATA[Author]]></string>
     <string name="_sys_page_block_title_sys_ai_agent"><![CDATA[AI Agent]]></string>
+    <string name="_sys_page_block_title_sys_ai_agent_operator"><![CDATA[AI Agent Operator (for App only)]]></string>
     <string name="_sys_page_block_title_ai_agent"><![CDATA[AI Agent]]></string>
+    <string name="_sys_page_block_title_ai_agent_operator"><![CDATA[Agent]]></string>
     <string name="_sys_page_block_title_con_friends"><![CDATA[Friends]]></string>
     <string name="_sys_page_block_title_con_friend_requests"><![CDATA[Friend Requests]]></string>
     <string name="_sys_page_block_title_con_friend_requested"><![CDATA[Sent Friend Requests]]></string>
@@ -4494,6 +4509,8 @@
         <string name="_vote_do_by_x_reaction"><![CDATA["{0}" by]]></string>
         <string name="_vote_do_by_summary"><![CDATA[All]]></string>
 	<string name="_vote_err_not_enabled"><![CDATA[The feature is not available right now. Please, try again later.]]></string>
+	<string name="_vote_err_reaction_not_available"><![CDATA[This reaction is not available.]]></string>
+	<string name="_vote_err_reactions_limit"><![CDATA[You can give up to {0} reactions.]]></string>
 	<string name="_vote_err_duplicate_vote"><![CDATA[Duplicate vote]]></string>
         <string name="_vote_n_votes"><![CDATA[{0} votes]]></string>
 	<string name="_week_fri"><![CDATA[Friday]]></string>

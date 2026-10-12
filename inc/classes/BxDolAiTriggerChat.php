@@ -321,7 +321,7 @@ class BxDolAiTriggerChat extends BxDolAiTrigger
                 foreach ($oAdapter->start() as $sEvent)
                     $fEmit($sEvent);
             }
-            $sMsg = $oException->getMessage();
+            $sMsg = isAdmin() ? self::visibleError($oException) : $oException->getMessage();
             $fEmit('data: ' . json_encode(['type' => 'RUN_ERROR', 'message' => $sMsg !== '' ? $sMsg : _t('_sys_agents_exception')]) . "\n\n");
             foreach ($oAdapter->end() as $sEvent)
                 $fEmit($sEvent);

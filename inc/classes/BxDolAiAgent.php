@@ -101,6 +101,30 @@ class BxDolAiAgent extends RAG
             return new NeuronAI\RAG\VectorStore\MemoryVectorStore();
     }
 
+    /**
+     * Retrieval is built for every chat. The embeddings provider is set only
+     * when the agent has a knowledge store with an embedding model.
+     */
+    protected function retrieval(): NeuronAI\RAG\Retrieval\RetrievalInterface
+    {
+        if (!isset($this->embeddingsProvider)) {
+            if ((int)($this->aAgent['vector_store_id'] ?? 0) > 0)
+                throw new Exception("Vector store {$this->aAgent['vector_store_id']} has no embedding model");
+
+            return new BxDolAiRetrievalNone();
+        }
+
+        return new NeuronAI\RAG\Retrieval\SimilarityRetrieval(
+            $this->resolveVectorStore(),
+            $this->resolveEmbeddingsProvider()
+        );
+    }
+
+    protected function embeddings(): NeuronAI\RAG\Embeddings\EmbeddingsProviderInterface
+    {
+        throw new Exception('Embedding model is not configured');
+    }
+
     protected function chatHistory(): NeuronAI\Chat\History\ChatHistoryInterface
     {
         if ($this->aAgent['chat_history_context']) {

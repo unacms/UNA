@@ -27,7 +27,7 @@ class BxDolAIModelFactory extends BxDolFactory
             throw new Exception("Model with id {$iId} is a judge model, it can't be used as a chat/embeddings provider");
         }
 
-        if ($iMaxTokensOverride > 0) {
+        if ($iMaxTokensOverride > 0 && ($a['type'] ?? '') !== 'una-proxy') {
             $aParameters['max_tokens'] = $iMaxTokensOverride;
             if (!isset($aParameters['parameters']) || !is_array($aParameters['parameters']))
                 $aParameters['parameters'] = [];
@@ -163,6 +163,13 @@ class BxDolAIModelFactory extends BxDolFactory
                     strict_response: $aParameters['strict_response'] ?? false,
                 );
                 break;
+            case 'una-proxy':
+                $o = new BxDolAIProviderUnaProxy(
+                    sKey: (string)getParam('sys_oauth_key'),
+                    sSecret: (string)getParam('sys_oauth_secret'),
+                    sModel: (string)$a['model'],
+                );
+                break;
 
             // embeddings models ------------------------
             case 'ollama-embeddings':
@@ -247,6 +254,7 @@ class BxDolAIModelFactory extends BxDolFactory
      */
     protected static function _getModel(int $iId): array
     {
+        // una-proxy signs with the site UNA key. An empty provider key is expected.
         $aProvidersWithKey = ['anthropic', 'openai-embeddings', 'voyageai-embeddings', 'openai-like-embeddings', 'openai-responses', 'openai-like', 'typesafe'];
         $a = BxDolAiQuery::getModelObject($iId);
         if (!$a) {

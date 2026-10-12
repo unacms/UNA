@@ -90,6 +90,11 @@ class BxDolAiQuery extends BxDolDb
                         $sWhereClause .= " AND `capabilities` = :capabilities";
                     }
                 }
+
+                if (!empty($aParams['type_not'])) {
+                    $aMethod['params'][3]['type_not'] = $aParams['type_not'];
+                    $sWhereClause .= " AND `type` <> :type_not";
+                }
                 break;
         }
 

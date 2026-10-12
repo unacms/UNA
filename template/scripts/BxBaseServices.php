@@ -1311,6 +1311,39 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
         return $aResults;
     }
 
+    public function serviceGetOptionsVoteReactionsMode()
+    {
+        return [
+            BxDolVoteReactions::$sModeSolo => _t('_adm_stg_cpt_option_sys_vote_reactions_mode_solo'),
+            BxDolVoteReactions::$sModeFew => _t('_adm_stg_cpt_option_sys_vote_reactions_mode_few'),
+            BxDolVoteReactions::$sModeMany => _t('_adm_stg_cpt_option_sys_vote_reactions_mode_many'),
+        ];
+    }
+
+    public function serviceGetOptionsVoteReactionsDefault()
+    {
+        $aResults = [
+            '' => _t('_None')
+        ];
+
+        $aReactions = BxDolFormQuery::getDataItems('sys_vote_reactions', false, BX_DATA_VALUES_ALL);
+        foreach($aReactions as $sName => $aReaction) {
+            $aData = !empty($aReaction['Data']) ? unserialize($aReaction['Data']) : [];
+            $aResults[$sName] = trim((!empty($aData['emoji']) ? $aData['emoji'] . ' ' : '') . _t($aReaction['LKey']));
+        }
+
+        return $aResults;
+    }
+
+    public function serviceGetOptionsVoteReactionsPerUser()
+    {
+        $aResults = [];
+        for($i = 1; $i <= BxDolVoteReactions::$iPerUserMax; $i++)
+            $aResults[$i] = $i;
+
+        return $aResults;
+    }
+
     public function serviceGetOptionsLocationFieldDefault()
     {
         $aResults = array();

@@ -204,7 +204,6 @@ class BxDolVote extends BxDolObjectVote
     public function vote($aVoteData = [], $aRequestParamsData = [])
     {
         $iObjectId = $this->getId();
-        $iObjectAuthorId = $this->getObjectAuthorId($iObjectId);
         $iAuthorId = $this->_getAuthorId();
         $iAuthorIp = $this->_getAuthorIp();
 
@@ -223,6 +222,17 @@ class BxDolVote extends BxDolObjectVote
             if(!empty($aTrack) && is_array($aTrack))
                 $aVoteData = array_intersect_key($aTrack, $aVoteData);
         }
+
+        return $this->_vote($iObjectId, $iAuthorId, $iAuthorIp, $aVoteData, $bPerformUndo, $aRequestParamsData);
+    }
+
+    /**
+     * Store a vote (or take it back when $bPerformUndo), fire the alerts and the socket event.
+     * Checks (permissions, duplicates) are the caller's job.
+     */
+    protected function _vote($iObjectId, $iAuthorId, $iAuthorIp, $aVoteData, $bPerformUndo, $aRequestParamsData = [])
+    {
+        $iObjectAuthorId = $this->getObjectAuthorId($iObjectId);
 
         $iId = $this->_putVoteData($iObjectId, $iAuthorId, $iAuthorIp, $aVoteData, $bPerformUndo);
         if($iId === false)
@@ -273,7 +283,7 @@ class BxDolVote extends BxDolObjectVote
             'object_id' => $iObjectId
         ], $aAlertExtras, $aVoteData));
 
-        $aResult = $this->_returnVoteData($iObjectId, $iAuthorId, $iAuthorIp, $aVoteData, !$bVoted, $aRequestParamsData);
+        $aResult = $this->_returnVoteData($iObjectId, $iAuthorId, $iAuthorIp, $aVoteData, !$bPerformUndo, $aRequestParamsData);
 
         if(($oSockets = BxDolSockets::getInstance()) && $oSockets->isEnabled())
             $oSockets->sendEvent($this->getSocketName(), $iObjectId, 'voted', json_encode($this->_returnVoteDataForSocket($aResult)));

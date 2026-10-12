@@ -570,8 +570,6 @@ INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `info`, `value`, `ty
 (@iCategoryId, 'sys_treat_cxt_in_cxt_as_cnt', '_adm_stg_cpt_option_sys_treat_cxt_in_cxt_as_cnt', '', 'on', 'checkbox', '', '', '', 52),
 (@iCategoryId, 'sys_check_fan_in_parent_context', '_adm_stg_cpt_option_sys_check_fan_in_parent_context', '', 'on', 'checkbox', '', '', '', 55),
 
-(@iCategoryId, 'sys_vote_reactions_quick_mode', '_adm_stg_cpt_option_sys_vote_reactions_quick_mode', '', 'on', 'checkbox', '', '', '', 60),
-
 (@iCategoryId, 'sys_cmts_enable_auto_approve', '_adm_stg_cpt_option_sys_cmts_enable_auto_approve', '', 'on', 'checkbox', '', '', '', 70),
 
 (@iCategoryId, 'sys_create_post_form_preloading_list', '_adm_stg_cpt_option_sys_create_post_form_preloading_list', '_adm_stg_inf_option_sys_create_post_form_preloading_list', '', 'list', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:44:"get_options_create_post_form_preloading_list";s:5:"class";s:13:"TemplServices";}', '', '', 80);
@@ -842,6 +840,18 @@ INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `ex
 (@iCategoryId, 'sys_sockets_app_id', '_adm_stg_cpt_option_sys_sockets_app_id', '', 'digit', '', '', '', 3),
 (@iCategoryId, 'sys_sockets_key', '_adm_stg_cpt_option_sys_sockets_key', '', 'digit', '', '', '', 4),
 (@iCategoryId, 'sys_sockets_secret', '_adm_stg_cpt_option_sys_sockets_secret', '', 'secret', '', '', '', 5);
+
+--
+-- CATEGORY: Reactions
+--
+INSERT INTO `sys_options_categories`(`type_id`, `name`, `caption`, `hidden`, `order`) VALUES (@iTypeId, 'reactions', '_adm_stg_cpt_category_reactions', 0, 23);
+SET @iCategoryId = LAST_INSERT_ID();
+
+INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `info`, `value`, `type`, `extra`, `check`, `check_error`, `order`) VALUES
+(@iCategoryId, 'sys_vote_reactions_mode', '_adm_stg_cpt_option_sys_vote_reactions_mode', '_adm_stg_inf_option_sys_vote_reactions_mode', 'few', 'select', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:31:"get_options_vote_reactions_mode";s:5:"class";s:13:"TemplServices";}', '', '', 1),
+(@iCategoryId, 'sys_vote_reactions_default', '_adm_stg_cpt_option_sys_vote_reactions_default', '_adm_stg_inf_option_sys_vote_reactions_default', 'like', 'select', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:34:"get_options_vote_reactions_default";s:5:"class";s:13:"TemplServices";}', '', '', 2),
+(@iCategoryId, 'sys_vote_reactions_per_user', '_adm_stg_cpt_option_sys_vote_reactions_per_user', '_adm_stg_inf_option_sys_vote_reactions_per_user', '1', 'select', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:35:"get_options_vote_reactions_per_user";s:5:"class";s:13:"TemplServices";}', '', '', 3),
+(@iCategoryId, 'sys_vote_reactions_split_counters', '_adm_stg_cpt_option_sys_vote_reactions_split_counters', '_adm_stg_inf_option_sys_vote_reactions_split_counters', '', 'checkbox', '', '', '', 4);
 
 --
 -- CATEGORY (HIDDEN): Audit
@@ -6347,7 +6357,7 @@ INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title_system`, `
 ('sys_home', 1, 'system', '', '_sys_page_block_title_homepage_menu', 13, 0, 0, 2147483647, 'menu', 'sys_homepage', 0, 1, 1, 0, 0),
 
 ('sys_home', 2, 'system', '', '_sys_page_block_title_profile_stats', 3, 0, 0, 2147483644, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:13:"profile_stats";s:6:"params";a:0:{}s:5:"class";s:20:"TemplServiceProfiles";}', 0, 0, 1, 0, 1),
-('sys_home', 3, 'system', '_sys_page_block_title_sys_create_post', '_sys_page_block_title_create_post', 11, 1, 4, 2147483644, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:20:"get_create_post_form";s:6:"params";a:1:{i:0;i:0;}s:5:"class";s:13:"TemplServices";}', 0, 0, 1, 0, 1);
+('sys_home', 3, 'system', '_sys_page_block_title_sys_create_post', '_sys_page_block_title_create_post', 0, 1, 4, 2147483644, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:20:"get_create_post_form";s:6:"params";a:1:{i:0;i:0;}s:5:"class";s:13:"TemplServices";}', 0, 0, 1, 0, 1);
 
 -- content blocks for APP (activated via separate enable-app-pages.sql)
 INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title_system`, `title`, `description`, `icon`, `designbox_id`, `class`, `submenu`, `tabs`, `async`, `visible_for_levels`, `hidden_on`, `type`, `content`, `content_empty`, `text`, `text_updated`, `help`, `cache_lifetime`, `config_api`, `deletable`, `copyable`, `active`, `active_api`, `order`) VALUES

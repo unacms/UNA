@@ -107,10 +107,34 @@ class BxDolAiTrigger extends BxDol implements iBxDolAiTrigger
             $mixed = $oMessage->getContent();
         } catch (Exception $exception) {
             bx_log('sys_agents', "Exception in '{$aAgent['name']}' agent: " . $exception->getMessage() . " INPUT:" . $sParams, BX_LOG_ERR);
-            $mixed = _t('_sys_agents_exception');
+            $mixed = isAdmin() ? self::visibleError($exception) : _t('_sys_agents_exception');
         }
 
         return $mixed;
+    }
+
+    /**
+     * Provider failures keep their full text in the log. Operators see the
+     * provider's own message, such as an authentication error.
+     */
+    public static function visibleError(Throwable $oException): string
+    {
+        $s = trim($oException->getMessage());
+        if ($s === '')
+            return _t('_sys_agents_exception');
+
+        $iJson = bx_mb_strpos($s, '{');
+        if ($iJson !== false) {
+            $sJson = get_mb_substr($s, $iJson, get_mb_len($s) - $iJson);
+            $a = json_decode($sJson, true);
+            if (is_array($a)) {
+                $sMessage = trim((string)($a['error']['message'] ?? ''));
+                if ($sMessage !== '')
+                    return $sMessage;
+            }
+        }
+
+        return $s;
     }
 
     protected function getAi()
