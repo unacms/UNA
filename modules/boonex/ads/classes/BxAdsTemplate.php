@@ -130,7 +130,7 @@ class BxAdsTemplate extends BxBaseModTextTemplate
             return [bx_api_get_block('chart', ['type' => 'pie', 'title' => 'Summary', 'labels' => $aTmplVarsDataLabels, 'data' => $aTmplVarsDataSet])];
         }
 
-        $this->addJs(['chart.min.js']);
+        $this->addJs(['chart.umd.min.js']);
         $this->addCss(['chart.css']);
         return $this->parseHtmlByName('chart_stats.html', [
             'chart_id' => $this->MODULE . '_chart_summary',
@@ -195,7 +195,7 @@ class BxAdsTemplate extends BxBaseModTextTemplate
             return [bx_api_get_block('chart', ['type' => 'pie', 'title' => 'ROI', 'labels' => $aTmplVarsDataLabels, 'data' => $aTmplVarsDataSet, 'text' => 'ROI: ' . $fRoi . '%'])];
         }
 
-        $this->addJs(['chart.min.js']);
+        $this->addJs(['chart.umd.min.js']);
         $this->addCss(['chart.css']);
         return $this->parseHtmlByName('entry-roi.html', [
             'chart' => $this->parseHtmlByName('chart_stats.html', [

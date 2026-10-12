@@ -161,7 +161,7 @@ class BxBaseChartServices extends BxDol
         }
 
         $oTemplate = BxDolTemplate::getInstance();
-        $oTemplate->addJs(array('chart.min.js'));
+        $oTemplate->addJs(array('chart.umd.min.js'));
         $oTemplate->addCss(array('chart.css'));
 
         return $oTemplate->parseHtmlByName('chart_stats.html', array(
