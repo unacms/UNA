@@ -8,8 +8,9 @@ export function isCommentEditorNewlineEnter(event: any) {
     return !!(event?.shiftKey || event?.altKey);
 }
 
+/** Cmd/Ctrl+Enter; with Shift/Option added it stays a newline. */
 export function isSubmitModEnter(event: any) {
-    return !!(event?.metaKey || event?.ctrlKey);
+    return !!(event?.metaKey || event?.ctrlKey) && !isCommentEditorNewlineEnter(event);
 }
 
 export function isCommentEditorEnterKey(event: any) {

@@ -258,7 +258,10 @@ export function Modal({
     }, [onVisible]);
 
     const handleWebOuterPress = useCallback((event: any) => {
-        if (isOuterClose && pressStartedOutsideRef.current) {
+        // Enter/Space on the focused backdrop has no pointerdown to check. RNW passes
+        // the raw keyup event for keys and a synthetic click event for pointers.
+        const fromKeyboard = String((event?.nativeEvent ?? event)?.type || '').startsWith('key');
+        if (isOuterClose && (fromKeyboard || pressStartedOutsideRef.current)) {
             tryClose();
         }
         event.stopPropagation();
