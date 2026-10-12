@@ -865,9 +865,16 @@ export default function ElementReactions(props: ReactionsProps) {
     const buttonProps = buildButtonProps(props);
 
     const [state, setState] = useState<ReactionState>({});
-    // Counts every change to `state` (a tap here, a vote from another instance, the socket), so a failed request
-    // only undoes its own optimistic change, never a newer one.
+    // A failed request undoes its optimistic change unless the viewer's reactions changed again since (another tap,
+    // their vote from another instance or device). Counts from the server (another member's vote over the socket)
+    // don't block the undo; they replace the optimistic counts instead.
     const changes = useRef(0);
+    const syncs = useRef(0);
+    const applyUpdate = (next: ReactionState) => {
+        if (next.reactions !== undefined || next.reaction !== undefined || next.is_voted !== undefined) changes.current++;
+        if (next.counter !== undefined) syncs.current++;
+        setState((prev) => mergeState(prev, next));
+    };
     const [performedBy, setPerformedBy] = useState<Record<string, any[]>>();
 
     // compound: one modal + selected tab
@@ -963,8 +970,16 @@ export default function ElementReactions(props: ReactionsProps) {
 
         const before = state;
         const change = ++changes.current;
+        const sync = syncs.current;
         const undo = () => {
-            if (changes.current === change) setState(before);
+            if (changes.current !== change) return;
+            setState((prev) => ({
+                ...prev,
+                is_voted: before.is_voted,
+                reactions: before.reactions,
+                reaction: before.reaction,
+                counter: syncs.current === sync ? before.counter : prev.counter,
+            }));
         };
         setState((prev) => ({
             ...prev,
@@ -1029,17 +1044,11 @@ export default function ElementReactions(props: ReactionsProps) {
     useVotedSubscription({
         channel,
         currentUserId: currentUser ? currentUser.id : 0,
-        onUpdate: (next: ReactionState) => {
-            changes.current++;
-            setState((prev) => mergeState(prev, next));
-        },
+        onUpdate: applyUpdate,
     });
 
     useEffect(() => {
-        const listener = (next: ReactionState) => {
-            changes.current++;
-            setState((prev) => mergeState(prev, next));
-        };
+        const listener = applyUpdate;
         const listeners = voteListeners.get(channel) ?? new Set();
         listeners.add(listener);
         voteListeners.set(channel, listeners);
