@@ -10,7 +10,7 @@
  *   displayType              — 'action' | 'counter' | 'both' (default both)
  *   primary                  — button variant=primary
  *
- * Modes (UNA Studio > Settings > Site settings):
+ * Modes (UNA Studio > Settings > Global > Reactions):
  *   solo — one reaction, the default one; a click gives or takes it back.
  *   few  — the reactions list in a bar next to the button.
  *   many — the list plus any emoji, in an emoji picker.
@@ -703,6 +703,8 @@ function ReactionBar({
                             accessibilityRole="button"
                             accessibilityLabel={item.title}
                             accessibilityState={{ selected: chosen, disabled }}
+                            // Web drops accessibilityState: say which reactions are chosen, as toggles.
+                            {...(isWeb ? { 'aria-pressed': chosen, 'aria-disabled': disabled } : {})}
                             onPress={() => {
                                 close();
                                 onSelect(item.name);

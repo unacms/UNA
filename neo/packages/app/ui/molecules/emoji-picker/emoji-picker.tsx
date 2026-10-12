@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next';
 import { View, Pressable, ScrollView, Row } from 'app/design/view';
 import { Text } from 'app/design/typography';
 import { InputWithIcons } from 'app/design/controls';
-import { cn } from 'app/lib/util';
+import { cn, isWeb } from 'app/lib/util';
 import { EMOJI_GROUPS, type EmojiEntry } from 'app/lib/emoji/emoji-data';
 import { emojiKey } from 'app/lib/emoji/reaction-emoji';
 
@@ -126,6 +126,8 @@ export default function EmojiPicker({
                             accessibilityRole="button"
                             accessibilityLabel={name}
                             accessibilityState={{ selected: chosen, disabled }}
+                            // Web drops accessibilityState: say which emoji are chosen, as toggles.
+                            {...(isWeb ? { 'aria-pressed': chosen, 'aria-disabled': disabled } : {})}
                             disabled={disabled}
                             onPress={() => onSelect(emoji)}
                             className={cn(
