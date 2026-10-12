@@ -449,6 +449,8 @@ function ReactionPopover({
     const openTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
     const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
     const openedAt = useRef(0);
+    // Web keyboard: opened from the keyboard, focus goes into the panel and comes back to the button on close.
+    const openedByKeyboard = useRef(false);
 
     const clearTimers = () => {
         if (openTimer.current) clearTimeout(openTimer.current);
@@ -459,9 +461,17 @@ function ReactionPopover({
 
     useEffect(() => clearTimers, []);
 
+    /** The panel's controls a keyboard can reach: the picker's search field, then the reactions that can be chosen. */
+    const panelFocusables = (): HTMLElement[] =>
+        Array.from(panelRef.current?.querySelectorAll?.('input, [role="button"]:not([aria-disabled="true"])') ?? []);
+
     const closeModal = () => {
         clearTimers();
         setModalVisible(false);
+        if (isWeb && openedByKeyboard.current) {
+            openedByKeyboard.current = false;
+            buttonRef.current?.querySelector?.('[role="button"], button')?.focus();
+        }
     };
 
     // RN host views have measureInWindow; the web View is a plain div, so fall
@@ -516,6 +526,44 @@ function ReactionPopover({
         if (openOnPress) openModal();
         else onPress?.(event);
     };
+
+    // --- web keyboard: the arrow keys open the panel (Enter keeps its click action), Escape closes it ---
+
+    const handleButtonKeyDown = (event: any) => {
+        if (disabled || modalVisible) return;
+        const opens = event.key === 'ArrowDown' || event.key === 'ArrowUp' || (openOnPress && (event.key === 'Enter' || event.key === ' '));
+        if (!opens) return;
+        openedByKeyboard.current = true;
+        if (event.key.startsWith('Arrow')) {
+            event.preventDefault();
+            clearTimers();
+            openModal();
+        }
+    };
+
+    // The arrow keys move between reactions; in the search field they move the caret.
+    const handlePanelKeyDown = (event: any) => {
+        if (event.key === 'Escape') {
+            event.preventDefault();
+            closeModal();
+            return;
+        }
+        const step = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[event.key as string];
+        if (!step || event.target?.tagName === 'INPUT') return;
+        const list = panelFocusables();
+        const i = list.indexOf(event.target);
+        if (i < 0) return;
+        event.preventDefault();
+        list[(i + step + list.length) % list.length]?.focus();
+    };
+
+    // Opened from the keyboard: focus the reaction already given, else the first control.
+    const panelShown = !!panelStyle;
+    useEffect(() => {
+        if (!isWeb || !modalVisible || !panelShown || !openedByKeyboard.current) return;
+        const list = panelFocusables();
+        (list.find((e) => e.getAttribute('aria-pressed') === 'true') ?? list[0])?.focus();
+    }, [modalVisible, panelShown]);
 
     const handleLongPress = () => {
         if (disabled) return;
@@ -573,15 +621,19 @@ function ReactionPopover({
     const buttonWebProps: Record<string, unknown> = {
         onPointerEnter: handlePointerEnter,
         onPointerLeave: handlePointerLeave,
+        onKeyDown: handleButtonKeyDown,
         // Long press on touch opens the popover, not the browser menu
         onContextMenu: (event: any) => event.preventDefault(),
     };
+
+    const panelWebProps: Record<string, unknown> = isWeb ? { onKeyDown: handlePanelKeyDown } : {};
 
     const panelView = panelStyle ? (
         <View
             ref={panelRef}
             style={{ ...panelStyle, width: panelWidth, elevation: 5 }}
             className="absolute"
+            {...panelWebProps}
             // Native: taps on the panel's own background must not reach the overlay, which closes it.
             onStartShouldSetResponder={() => true}
         >
@@ -699,6 +751,8 @@ function ReactionBar({
                     return (
                         <TouchableOpacity
                             key={item.name}
+                            // Round, so the keyboard focus outline follows the item's circle.
+                            style={{ borderRadius: 9999 }}
                             disabled={disabled}
                             accessibilityRole="button"
                             accessibilityLabel={item.title}
