@@ -10,6 +10,7 @@ import Profile from 'app/ui/molecules/profile/profile'
 import { NeoButton } from 'app/design/controls/neo-button/neo-button'
 import { fetcher } from 'app/lib/fetcher'
 import { useProfileImageUpload } from 'app/lib/image/use-profile-image-upload'
+import { getCoverAspectClass } from 'app/lib/image/upload-settings'
 import { useCurrentUser } from 'app/context/user'
 import Loading from 'app/ui/atoms/loading'
 import { Platform } from 'react-native'
@@ -102,6 +103,7 @@ export function CoverImage({
         moduleName: profileData?.module || '',
         storage: coverData?.storage || '',
         initialUrl: mode == 'cover' ? coverData?.src : profileData?.url_avatar,
+        isProfile: true,
     })
 
     const handleSwitch = async (id) => {
@@ -119,7 +121,7 @@ export function CoverImage({
             <>
                 <View
                     className={`bg-accent/50 lg:rounded-xl mx-auto gap-2 flex-1 overflow-hidden w-full
-                    ${isCover ? `${appSetting('cover', 'aspect_ratio')}` : 'pb-32'}`}
+                    ${isCover ? getCoverAspectClass(profileData?.module, true) : 'pb-32'}`}
                 >
                     {isCover ? (
                         <Image
