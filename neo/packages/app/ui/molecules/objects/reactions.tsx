@@ -1071,8 +1071,14 @@ export default function ElementReactions(props: ReactionsProps) {
         onUpdate: applyUpdate,
     });
 
+    // The listener stays bound per channel; it calls the latest applyUpdate.
+    const applyUpdateRef = useRef(applyUpdate);
     useEffect(() => {
-        const listener = applyUpdate;
+        applyUpdateRef.current = applyUpdate;
+    });
+
+    useEffect(() => {
+        const listener = (next: ReactionState) => applyUpdateRef.current(next);
         const listeners = voteListeners.get(channel) ?? new Set();
         listeners.add(listener);
         voteListeners.set(channel, listeners);
