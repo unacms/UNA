@@ -17,6 +17,7 @@ import { useTranslation } from 'react-i18next';
 import { appSetting, FeedbackHaptics } from 'app/lib/util';
 import {
     objectKey,
+    objectStateFromProps,
     mergeState,
     objectRequest,
     openPerformedBy,
@@ -32,6 +33,7 @@ import {
     PerformedByModal,
 } from 'app/ui/molecules/objects/helpers';
 import { useCurrentUser } from 'app/context/user';
+import { useObjectState } from 'app/lib/object-state';
 import DropdownPopup from 'app/ui/atoms/dropdown-popup';
 import { StarsAction } from 'app/ui/atoms/stars';
 import { View, Pressable } from 'app/design/view';
@@ -56,10 +58,7 @@ export default function ElementStars(props) {
         resolveDisplayFlags(params, props?.displayType);
     const buttonProps = buildButtonProps(props);
 
-    const [objectData, setObjectData] = useState({
-        ...action,
-        ...{ counter },
-    });
+    const [objectData, setObjectData] = useObjectState(key, props, objectStateFromProps);
     const [popupVisibleDo, setPopupVisibleDo] = useState(false);
     const [popupVisiblePb, setPopupVisiblePb] = useState(false);
     const [performedBy, setPerformedBy] = useState();

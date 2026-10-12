@@ -7,6 +7,7 @@ import { useEffect } from 'react';
 import { fetcher } from 'app/lib/fetcher';
 import { FeedbackHaptics } from 'app/lib/util';
 import { subscribe } from 'app/ui/atoms/socket';
+import { socialObjectKey } from 'app/lib/object-state';
 import Profile from 'app/ui/molecules/profile/profile';
 import { View, Row } from 'app/design/view';
 import {
@@ -25,9 +26,13 @@ import {
 
 /** Stable DOM/React key: type-system-objectId[-extra] */
 export function objectKey(type, system, objectId, extra) {
-    const parts = [type, system.replace(/_/g, '-'), objectId];
-    if (extra) parts.push(extra);
-    return parts.join('-');
+    const key = socialObjectKey(type, system, objectId);
+    return extra ? key + '-' + extra : key;
+}
+
+/** Shared state of a social object widget: its action fields, `counter` and server `ts`. */
+export function objectStateFromProps(props) {
+    return { ...props.action, counter: props.counter, ts: props.ts };
 }
 
 export function mergeState(prev, next) {
@@ -156,7 +161,7 @@ export function useVotedSubscription({ channel, currentUserId, onUpdate }) {
             const next =
                 payload.api.performer_id == currentUserId
                     ? payload.api
-                    : { counter: payload.api.counter };
+                    : { counter: payload.api.counter, ts: payload.api.ts };
             onUpdate(next);
         });
         return unsubscribe;

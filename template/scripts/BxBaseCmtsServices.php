@@ -724,6 +724,7 @@ class BxBaseCmtsServices extends BxDol
             'view' => $aDp['type'],
             'module' => $oCmts->getSystemName(), 
             'object_id' => $oCmts->getId(),
+            'ts' => microtime(true),
             'max_level' => $oCmts->getSystemInfo()['number_of_levels'],
             'highlighted' => 0,
             'data' => $aCmtsRv,

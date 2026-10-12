@@ -357,6 +357,7 @@ class BxDolScore extends BxDolObjectVote
         ];
 
         $aResult['api'] = [
+            'ts' => microtime(true),
             'performer_id' => $iAuthorId,
             'is_voted' => $aResult['voted'], //TODO: Remove after 14.0.0-RC3 is released.
             'is_disabled' => $aResult['disabled'], //TODO: Remove after 14.0.0-RC3 is released.

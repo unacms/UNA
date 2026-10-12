@@ -423,6 +423,7 @@ class BxBaseScore extends BxDolScore
             'type' => 'scores',
             'system' => $this->_sSystem,
             'object_id' => $this->_iId,
+            'ts' => microtime(true),
             'params' => array_intersect_key($aParams, array_flip($this->_aElementParamsApi)),
             'action' => [
                 BX_DOL_SCORE_DO_UP => $aDoVoteUp,

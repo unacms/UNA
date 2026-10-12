@@ -823,6 +823,7 @@ class BxBaseCmts extends BxDolCmts
             'type' => $this->_sType,
             'system' => $this->_sSystem,
             'object_id' => $this->_iId,
+            'ts' => microtime(true),
             'params' => array_intersect_key($aParams, array_flip($this->_aElementParamsApi)),
             'action' => $aDoComment,
             'counter' => $aCounter

@@ -365,6 +365,7 @@ class BxDolVote extends BxDolObjectVote
         ];
 
         $aResult['api'] = [
+            'ts' => microtime(true),
             'performer_id' => $iAuthorId,
             'is_voted' => $aResult['voted'],
             'is_disabled' => $aResult['disabled'],

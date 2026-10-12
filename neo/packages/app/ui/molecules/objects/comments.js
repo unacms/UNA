@@ -1,6 +1,7 @@
 import { useState, useMemo, useCallback, useRef } from 'react';
 import { appSetting } from 'app/lib/util';
 import { useActionsData } from 'app/context/actions';
+import { useObjectState } from 'app/lib/object-state';
 import { View } from 'app/design/view';
 import { NeoButton } from 'app/design/controls';
 import Redirect from 'app/ui/atoms/redirect';
@@ -24,6 +25,12 @@ const handleDo = (redirectRef, link, callback, event) => {
     if (!link) return;
     redirectRef.current.redirect(link);
 };
+
+const commentsStateFromProps = (props) => ({
+    action: props.action,
+    counter: props.counter,
+    ts: props.ts,
+});
 
 export default function ElementComments(props) {
     const redirectRef = useRef();
@@ -67,8 +74,8 @@ export default function ElementComments(props) {
         [actionsDataState, showBoth, key]
     );
 
-    const action = props.action;
-    const counter = props.counter;
+    // The count changes when the post is reloaded after a socket edit.
+    const [{ action, counter }] = useObjectState(key, props, commentsStateFromProps);
 
     const handlePress = useCallback(
         (event) =>

@@ -320,3 +320,21 @@ export function stripTagsWithLinks(s: any, allowed: string[] = ['a', 'p', 'br'])
 export function removeEmptyTags(html: string): string {
     return html.replace(/<p>(?:\s|&nbsp;)*<\/p>/gi, '');
 }
+
+/**
+ * True when rich-editor HTML is worth sending: visible text or embedded media.
+ * Blank lines, `<html>` wrappers, `<br>` and `&nbsp;` alone are not.
+ */
+export function editorHtmlIsSubmittable(html: unknown): boolean {
+    if (!html || typeof html !== 'string') return false
+    if (/<(img|video|audio|iframe)\b/i.test(html)) return true
+    const text = String(stripTags(html))
+        .replace(/&nbsp;|&#160;| |​|﻿/gi, ' ')
+        .trim()
+    return text.length > 0
+}
+
+/** True when a form files value holds at least one file (`[]` after a clear is empty). */
+export function hasFiles(value: unknown): boolean {
+    return Array.isArray(value) ? value.length > 0 : !!value
+}

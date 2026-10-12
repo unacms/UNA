@@ -45,6 +45,7 @@ import {
     ActionMenuLayout as ActionMenuLayoutJs,
 } from 'app/ui/molecules/objects/helpers';
 import { useCurrentUser } from 'app/context/user';
+import { objectTs, useObjectState } from 'app/lib/object-state';
 import { useWindowSize } from 'app/context/measure';
 import { useSound } from 'app/lib/hooks/use-sound';
 import { lazyComponent } from 'app/lib/lazy-component';
@@ -106,6 +107,7 @@ type ReactionAction = {
 
 /** Live state from the vote response and the socket; overrides the props. */
 type ReactionState = {
+    ts?: number;
     is_voted?: boolean;
     is_disabled?: boolean;
     reaction?: string;
@@ -132,8 +134,24 @@ type ReactionsProps = {
     params?: Record<string, any>;
     displayType?: string;
     primary?: boolean;
+    /** Server time of the data (UNA `ts`). */
+    ts?: number;
     [key: string]: any;
 };
+
+type ReactionsObjectState = {
+    action?: ReactionAction;
+    counter?: ReactionsProps['counter'];
+    live: ReactionState;
+    ts?: number;
+};
+
+const reactionsStateFromProps = (props: ReactionsProps): ReactionsObjectState => ({
+    action: props.action,
+    counter: props.counter,
+    live: {},
+    ts: props.ts,
+});
 
 const MODES: readonly ReactionMode[] = ['solo', 'few', 'many'];
 const PER_USER_MAX = 5;
@@ -843,10 +861,17 @@ export default function ElementReactions(props: ReactionsProps) {
 
     const settings = appSetting('social_actions', 'reaction');
     const params = { ...settings, ...props.params };
-    const action = props.action;
-    const counter = props.counter;
-
     const key = objectKey(props.type, props.system, props.object_id);
+
+    // Shared with every widget of this object, so own and socket updates outlive
+    // the widget. `live` holds them over the props' action and counter.
+    const [objectState, setObjectState] = useObjectState(key, props, reactionsStateFromProps);
+    const { action, counter, live: state } = objectState;
+    const setState = (update: (prev: ReactionState) => ReactionState) =>
+        setObjectState((prev) => {
+            const live = update(prev.live);
+            return { ...prev, live, ts: objectTs(live) ?? prev.ts };
+        });
     const channel = votedChannel(props.system, props.type, props.object_id);
 
     const settingsItems = settings[props.system]?.items ? settings[props.system].items : params.items;
@@ -864,7 +889,6 @@ export default function ElementReactions(props: ReactionsProps) {
 
     const buttonProps = buildButtonProps(props);
 
-    const [state, setState] = useState<ReactionState>({});
     // A failed request undoes its optimistic change unless the viewer's reactions changed again since (another tap,
     // their vote from another instance or device). Counts from the server (another member's vote over the socket)
     // don't block the undo; they replace the optimistic counts instead.
@@ -1047,8 +1071,14 @@ export default function ElementReactions(props: ReactionsProps) {
         onUpdate: applyUpdate,
     });
 
+    // The listener stays bound per channel; it calls the latest applyUpdate.
+    const applyUpdateRef = useRef(applyUpdate);
     useEffect(() => {
-        const listener = applyUpdate;
+        applyUpdateRef.current = applyUpdate;
+    });
+
+    useEffect(() => {
+        const listener = (next: ReactionState) => applyUpdateRef.current(next);
         const listeners = voteListeners.get(channel) ?? new Set();
         listeners.add(listener);
         voteListeners.set(channel, listeners);

@@ -3,7 +3,7 @@ import { useEffect, useMemo } from 'react'
 import { getFormFieldByData } from 'app/lib/form/form-helpers'
 import { Keyboard, Platform } from 'react-native'
 import { useFormContext } from 'react-hook-form'
-import { editorHtmlHasContent, removeEmptyTags } from 'app/lib/util'
+import { editorHtmlHasContent, editorHtmlIsSubmittable, hasFiles, removeEmptyTags } from 'app/lib/util'
 import { useCurrentUser } from 'app/context/user'
 import Profile from 'app/ui/molecules/profile/profile'
 import { FileButton } from 'app/lib/form/form-helpers'
@@ -31,10 +31,10 @@ export default function FormMessenger(props) {
         [rawEditorText]
     )
 
-    const hasSubmittableText = useMemo(() => {
-        const sanitized = removeEmptyTags(rawEditorText || '')
-        return sanitized.trim().length > 0
-    }, [rawEditorText])
+    const hasSubmittableText = useMemo(
+        () => editorHtmlIsSubmittable(rawEditorText),
+        [rawEditorText]
+    )
 
     const playSound = useSound('success')
 
@@ -54,7 +54,7 @@ export default function FormMessenger(props) {
     const handleSubmitWithSanitization = () => {
         let sanitizedHtml = removeEmptyTags(formContext.getValues('message') || '')
         const images = formContext.getValues('files')
-        if (!sanitizedHtml.trim() && !images) return
+        if (!editorHtmlIsSubmittable(sanitizedHtml) && !hasFiles(images)) return
 
         formContext.setValue('message', sanitizedHtml, { shouldValidate: true, shouldDirty: true })
         props.handleSubmit()
@@ -108,7 +108,7 @@ export default function FormMessenger(props) {
                             'custom',
                             {
                                 form_name: props.name,
-                                disabled: !hasSubmittableText && !imagesValue,
+                                disabled: !hasSubmittableText && !hasFiles(imagesValue),
                                 className: 'w-full h-full',
                                 notFullWidth: true,
                                 noPadding: true,
