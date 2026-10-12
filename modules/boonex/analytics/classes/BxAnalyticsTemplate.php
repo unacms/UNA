@@ -1273,6 +1273,77 @@ class BxAnalyticsTemplate extends BxBaseModGeneralTemplate
     }
 
     /**
+     * Query: what to break down and sort by, the first values over time, the table, and the
+     * CSV download of every value.
+     */
+    protected function _getQueryHtml($aData, $oFilter)
+    {
+        $aDimensions = ['event' => [], 'session' => []];
+        foreach($aData['dimensions'] as $aDimension)
+            $aDimensions[$aDimension['kind']][] = [
+                'dim_value' => $aDimension['name'],
+                'dim_title' => $aDimension['title'],
+                'dim_selected' => $aDimension['name'] == $aData['dimension'] ? 'selected="selected"' : '',
+            ];
+
+        $aMetrics = [];
+        foreach($aData['metrics'] as $aMetric)
+            $aMetrics[] = [
+                'metric_value' => $aMetric['name'],
+                'metric_title' => $aMetric['title'],
+                'metric_selected' => $aMetric['name'] == $aData['metric'] ? 'selected="selected"' : '',
+            ];
+
+        $aDirs = [];
+        foreach(['desc', 'asc'] as $sDir)
+            $aDirs[] = [
+                'dir_value' => $sDir,
+                'dir_title' => _t('_bx_analytics_txt_sort_' . $sDir),
+                'dir_selected' => $sDir == $aData['dir'] ? 'selected="selected"' : '',
+            ];
+
+        $bRows = !empty($aData['rows']);
+        $sExportUrl = bx_append_url_params(BX_DOL_URL_ROOT . $this->_oConfig->getBaseUri() . 'export/query/', http_build_query(array_merge($oFilter->getParams(), [
+            'q_dim' => $aData['dimension'],
+            'q_metric' => $aData['metric'],
+            'q_dir' => $aData['dir'],
+        ]), '', '&', PHP_QUERY_RFC3986));
+
+        return $this->parseHtmlByName('query.html', [
+            'dimension_label' => _t('_bx_analytics_txt_dimension'),
+            'event_dims_label' => _t('_bx_analytics_txt_dims_event'),
+            'bx_repeat:event_dims' => $aDimensions['event'],
+            'session_dims_label' => _t('_bx_analytics_txt_dims_session'),
+            'bx_repeat:session_dims' => $aDimensions['session'],
+            'metric_label' => _t('_bx_analytics_txt_metric'),
+            'bx_repeat:metrics' => $aMetrics,
+            'dir_label' => _t('_bx_analytics_txt_sort'),
+            'bx_repeat:dirs' => $aDirs,
+            'bx_if:download' => [
+                'condition' => $bRows,
+                'content' => [
+                    'export_url' => $this->_esc($sExportUrl),
+                    'download' => _t('_bx_analytics_txt_download_csv'),
+                ],
+            ],
+            'bx_if:chart' => [
+                'condition' => $bRows,
+                'content' => [
+                    'chart_label' => $this->_esc(_t('_bx_analytics_txt_chart_query', _t('_bx_analytics_metric_' . $aData['metric']), count($aData['chart']['series']))),
+                    'chart_json' => $this->_json($aData['chart']),
+                ],
+            ],
+            'table' => $this->_getTableHtml($aData, $oFilter),
+            'bx_if:truncated' => [
+                'condition' => $aData['total'] > $aData['export_max'],
+                'content' => [
+                    'truncated' => _t('_bx_analytics_txt_csv_truncated', $this->formatValue('number', $aData['export_max']), $this->formatValue('number', $aData['total'])),
+                ],
+            ],
+        ]);
+    }
+
+    /**
      * A table report: columns with types, rows with a label cell that filters, links or is plain.
      */
     protected function _getTableHtml($aTable, $oFilter)
@@ -1282,6 +1353,8 @@ class BxAnalyticsTemplate extends BxBaseModGeneralTemplate
             $aColumns[] = [
                 'type' => $aColumn['type'],
                 'title' => $aColumn['title'],
+                // the column the rows are sorted by: ascending or descending
+                'sort' => isset($aColumn['sort']) && in_array($aColumn['sort'], ['ascending', 'descending'], true) ? 'aria-sort="' . $aColumn['sort'] . '"' : '',
             ];
 
         $aRows = [];
@@ -1412,6 +1485,405 @@ class BxAnalyticsTemplate extends BxBaseModGeneralTemplate
             'group' => $sGroup,
             'label' => $this->_esc(_t('_bx_analytics_group_' . $sGroup)),
             'bx_repeat:tabs' => $aItems,
+        ]);
+    }
+
+    /**
+     * Studio > API: pick a report, edit its parameters, see the call as bx_srv, as an
+     * api.php URL and as NEO's request, and run it.
+     *
+     * @param array $aData catalog (see BxAnalyticsModule::getApiCatalog), api_enabled, api_access
+     */
+    public function getStudioApi($aData)
+    {
+        $aCatalog = $aData['catalog'];
+
+        $aNotices = [];
+        if(!$aData['api_enabled'])
+            $aNotices[] = ['notice' => $this->_esc(_t('_bx_analytics_txt_api_disabled'))];
+        elseif(!$aData['api_access'])
+            $aNotices[] = ['notice' => $this->_esc(_t('_bx_analytics_txt_api_no_access'))];
+
+        // a top list first: it shows what parameters do
+        $sSelected = isset($aCatalog['reports']['top']) ? 'top' : (string)key($aCatalog['reports']);
+
+        $aReports = [];
+        $aDocs = [];
+        foreach($aCatalog['reports'] as $sReport => $aParams) {
+            $aReports[] = [
+                'report_value' => $sReport,
+                'report_title' => $this->_esc(_t('_bx_analytics_report_' . $sReport)),
+                'report_selected' => $sReport == $sSelected ? 'selected="selected"' : '',
+            ];
+
+            $aDocs[] = [
+                'doc_report' => $sReport,
+                'doc_hidden' => $sReport == $sSelected ? '' : 'hidden',
+                'doc_table' => $this->_getApiParamsHtml($aParams, _t('_bx_analytics_txt_api_report_params', _t('_bx_analytics_report_' . $sReport))),
+            ];
+        }
+
+        $this->_addToolsAssets();
+
+        return $this->_getToolsJsInit() . $this->parseHtmlByName('studio_api.html', [
+            'bx_if:notices' => [
+                'condition' => !empty($aNotices),
+                'content' => ['bx_repeat:notices' => $aNotices],
+            ],
+            'intro' => _t('_bx_analytics_txt_api_intro'),
+            'csrf' => $this->_esc((string)BxDolForm::getCsrfToken()),
+            'report_label' => _t('_bx_analytics_txt_api_report'),
+            'bx_repeat:reports' => $aReports,
+            'params_label' => _t('_bx_analytics_txt_api_params'),
+            'params_hint' => _t('_bx_analytics_txt_api_params_hint'),
+            'docs_label' => _t('_bx_analytics_txt_api_docs'),
+            'params_default' => $this->_esc($sSelected == 'top' ? '{"group": "pages", "range": "7d"}' : '{"range": "7d"}'),
+            'common_table' => $this->_getApiParamsHtml($aCatalog['common'], _t('_bx_analytics_txt_api_common_params')),
+            'bx_repeat:docs' => $aDocs,
+            'code_srv' => $this->_getCodeHtml('bx-analytics-api-srv', _t('_bx_analytics_txt_api_srv'), ''),
+            'code_url' => $this->_getCodeHtml('bx-analytics-api-url', _t('_bx_analytics_txt_api_url'), ''),
+            'code_neo' => $this->_getCodeHtml('bx-analytics-api-neo', _t('_bx_analytics_txt_api_neo'), ''),
+            'run' => _t('_bx_analytics_txt_api_run'),
+            'response_label' => _t('_bx_analytics_txt_api_response'),
+            'copy' => _t('_bx_analytics_txt_copy'),
+            'copied' => $this->_esc(_t('_bx_analytics_txt_copied')),
+            'catalog_json' => $this->_json([
+                'root' => BX_DOL_URL_ROOT,
+                'module' => $this->MODULE,
+                'reports' => array_keys($aCatalog['reports']),
+            ]),
+        ]);
+    }
+
+    /**
+     * A table of parameters: name and what it accepts.
+     */
+    protected function _getApiParamsHtml($aParams, $sCaption)
+    {
+        $aRows = [];
+        foreach($aParams as $sName => $aParam) {
+            switch($aParam['type']) {
+                case 'enum':
+                    $sAccepts = _t('_bx_analytics_txt_api_type_enum', implode(', ', $aParam['values']));
+                    break;
+                case 'enum_by':
+                    $aLists = [];
+                    foreach($aParam['values'] as $sBy => $aValues)
+                        $aLists[] = $sBy . ': ' . implode(', ', $aValues);
+                    $sAccepts = _t('_bx_analytics_txt_api_type_enum_by', $aParam['by'], implode('; ', $aLists));
+                    break;
+                case 'int':
+                    $sAccepts = isset($aParam['max']) ? _t('_bx_analytics_txt_api_type_int_range', $aParam['min'], $aParam['max']) : _t('_bx_analytics_txt_api_type_int', $aParam['min']);
+                    break;
+                case 'date':
+                    $sAccepts = _t('_bx_analytics_txt_api_type_date');
+                    break;
+                case 'dims':
+                    $sAccepts = _t('_bx_analytics_txt_api_type_dims', implode(', ', $aParam['values']));
+                    break;
+                default:
+                    $sAccepts = _t('_bx_analytics_txt_api_type_string');
+            }
+            if(isset($aParam['default']))
+                $sAccepts .= ' ' . _t('_bx_analytics_txt_api_default', $aParam['default']);
+
+            $aRows[] = [
+                'param_name' => $this->_esc($sName),
+                'param_accepts' => $this->_esc($sAccepts),
+            ];
+        }
+
+        return $this->parseHtmlByName('api_params.html', [
+            'caption' => $this->_esc($sCaption),
+            'bx_if:params' => [
+                'condition' => !empty($aRows),
+                'content' => [
+                    'caption' => $this->_esc($sCaption),
+                    'col_param' => _t('_bx_analytics_txt_api_col_param'),
+                    'col_accepts' => _t('_bx_analytics_txt_api_col_accepts'),
+                    'bx_repeat:params' => $aRows,
+                ],
+            ],
+            'bx_if:none' => [
+                'condition' => empty($aRows),
+                'content' => ['none' => _t('_bx_analytics_txt_api_no_params')],
+            ],
+        ]);
+    }
+
+    /**
+     * Studio > Dashboards: site pages with analytics blocks, and a form for a new one.
+     *
+     * @param array $aData pages (see BxAnalyticsModule::getDashboards)
+     */
+    public function getStudioDashboards($aData)
+    {
+        $aPages = [];
+        foreach($aData['pages'] as $aPage)
+            $aPages[] = [
+                'view_url' => $this->_esc($aPage['view_url']),
+                'page_title' => $this->_esc($aPage['title']),
+                'blocks' => $this->formatValue('number', $aPage['blocks']),
+                'api_blocks' => $this->formatValue('number', $aPage['api_blocks']),
+                'edit_url' => $this->_esc($aPage['edit_url']),
+                'edit' => _t('_bx_analytics_txt_dash_edit'),
+                'edit_label' => $this->_esc(_t('_bx_analytics_txt_dash_edit_label', $aPage['title'])),
+            ];
+
+        $this->_addToolsAssets();
+
+        return $this->_getToolsJsInit() . $this->parseHtmlByName('studio_dashboards.html', [
+            'intro' => _t('_bx_analytics_txt_dash_intro'),
+            'bx_if:pages' => [
+                'condition' => !empty($aPages),
+                'content' => [
+                    'caption' => $this->_esc(_t('_bx_analytics_txt_dash_pages')),
+                    'col_page' => _t('_bx_analytics_txt_dash_col_page'),
+                    'col_blocks' => _t('_bx_analytics_txt_dash_blocks'),
+                    'col_neo' => _t('_bx_analytics_txt_dash_neo_blocks'),
+                    'col_actions' => _t('_bx_analytics_txt_dash_col_actions'),
+                    'bx_repeat:pages' => $aPages,
+                ],
+            ],
+            'bx_if:empty' => [
+                'condition' => empty($aPages),
+                'content' => ['empty' => _t('_bx_analytics_txt_dash_empty')],
+            ],
+            'neo_note' => _t('_bx_analytics_txt_dash_neo_note'),
+            'create_title' => _t('_bx_analytics_txt_dash_create'),
+            'csrf' => $this->_esc((string)BxDolForm::getCsrfToken()),
+            'label_title' => _t('_bx_analytics_txt_dash_title'),
+            'create_hint' => _t('_bx_analytics_txt_dash_create_hint'),
+            'disable_warning' => _t('_bx_analytics_txt_dash_disable_warning'),
+            'create' => _t('_bx_analytics_txt_dash_create_btn'),
+        ]);
+    }
+
+    /**
+     * Studio > Setup: tracker status per platform, checks of the admin's own browser, what
+     * each client needs, and custom events.
+     *
+     * @param array $aData status (see BxAnalyticsModule::getSetupStatus), tracking, injection,
+     *      track_actions, alerts, api_enabled, api_key, api_origin
+     */
+    public function getStudioSetup($aData)
+    {
+        $sRoot = BX_DOL_URL_ROOT;
+        $sCsrf = $this->_esc((string)BxDolForm::getCsrfToken());
+
+        // what NEO and the apps need from the site
+        $aNeoChecks = [
+            ['on' => $aData['api_enabled'], 'text' => _t('_bx_analytics_txt_setup_neo_api')],
+            ['on' => $aData['api_key'] || $aData['api_origin'], 'text' => _t('_bx_analytics_txt_setup_neo_access')],
+        ];
+        foreach([BX_ANALYTICS_PLATFORM_NEXT_WEB, BX_ANALYTICS_PLATFORM_RN_IOS, BX_ANALYTICS_PLATFORM_RN_ANDROID] as $sPlatform) {
+            $aStatus = $aData['status'][$sPlatform];
+            $aNeoChecks[] = [
+                'on' => $aStatus['enabled'],
+                'text' => _t($aStatus['enabled'] ? '_bx_analytics_txt_setup_platform_on' : '_bx_analytics_txt_setup_platform_off', _t($this->_oConfig->getPlatforms()[$sPlatform])),
+            ];
+        }
+
+        $aChecks = [];
+        foreach($aNeoChecks as $aCheck)
+            $aChecks[] = [
+                'check_state' => $aCheck['on'] ? 'yes' : 'no',
+                'check_icon' => $this->_getIconHtml($aCheck['on'] ? 'check' : 'x'),
+                'check_text' => $this->_esc($aCheck['text']),
+            ];
+
+        $aAlerts = [];
+        foreach($aData['alerts'] as $sAlert)
+            $aAlerts[] = ['alert' => $this->_esc($sAlert)];
+
+        $sCurl = "curl -X POST '" . $sRoot . "api.php?r=" . $this->MODULE . "/collect' \\\n"
+            . "  -H 'Authorization: Bearer YOUR_API_KEY' \\\n"
+            . "  -H 'Content-Type: application/json' \\\n"
+            . "  -d '{\"platform\": \"api\", \"app\": \"my-client\", \"app_version\": \"1.0.0\", \"hits\": [{\"type\": \"pageview\", \"url\": \"https://example.com/pricing\", \"title\": \"Pricing\"}, {\"type\": \"event\", \"name\": \"signup_click\", \"url\": \"https://example.com/pricing\", \"props\": {\"plan\": \"pro\"}}]}'";
+
+        $this->_addToolsAssets();
+
+        return $this->_getToolsJsInit() . $this->parseHtmlByName('studio_setup.html', [
+            'bx_if:tracking_off' => [
+                'condition' => !$aData['tracking'],
+                'content' => [
+                    'tracking_off' => _t('_bx_analytics_txt_setup_tracking_off'),
+                    'settings_url' => $this->_esc(BX_DOL_URL_STUDIO . 'module.php?name=' . $this->MODULE . '&page=settings'),
+                    'settings' => _t('_bx_analytics_txt_setup_open_settings'),
+                ],
+            ],
+            'status_title' => _t('_bx_analytics_txt_setup_status'),
+            'status' => $this->getSetupStatusHtml($aData['status']),
+            'check_title' => _t('_bx_analytics_txt_setup_check_title'),
+            'check_hint' => _t('_bx_analytics_txt_setup_check_hint'),
+            'csrf' => $sCsrf,
+            'check' => _t('_bx_analytics_txt_setup_check'),
+            'test' => _t('_bx_analytics_txt_setup_test'),
+            'test_warning' => _t('_bx_analytics_txt_setup_test_warning'),
+            'install_title' => _t('_bx_analytics_txt_setup_install'),
+            'core_web_title' => _t('_bx_analytics_platform_core_web'),
+            'core_web_text' => _t('_bx_analytics_txt_setup_core_web'),
+            'injection_state' => $aData['injection'] ? 'yes' : 'no',
+            'injection_icon' => $this->_getIconHtml($aData['injection'] ? 'check' : 'x'),
+            'injection' => _t($aData['injection'] ? '_bx_analytics_txt_setup_injection_on' : '_bx_analytics_txt_setup_injection_off'),
+            'core_web_exclusions' => _t('_bx_analytics_txt_setup_core_web_exclusions'),
+            'neo_title' => _t('_bx_analytics_txt_setup_neo_title'),
+            'neo_text' => _t('_bx_analytics_txt_setup_neo'),
+            'bx_repeat:neo_checks' => $aChecks,
+            'api_title' => _t('_bx_analytics_platform_api'),
+            'api_text' => _t('_bx_analytics_txt_setup_api'),
+            'code_curl' => $this->_getCodeHtml('bx-analytics-setup-curl', _t('_bx_analytics_txt_setup_curl'), $sCurl),
+            'core_title' => _t('_bx_analytics_platform_core'),
+            'core_text' => _t('_bx_analytics_txt_setup_core'),
+            'actions_state' => $aData['track_actions'] ? 'yes' : 'no',
+            'actions_icon' => $this->_getIconHtml($aData['track_actions'] ? 'check' : 'x'),
+            'actions' => _t($aData['track_actions'] ? '_bx_analytics_txt_setup_actions_on' : '_bx_analytics_txt_setup_actions_off'),
+            'alerts_label' => _t('_bx_analytics_txt_setup_alerts'),
+            'bx_repeat:alerts' => $aAlerts,
+            'events_title' => _t('_bx_analytics_txt_setup_events'),
+            'events_hint' => _t('_bx_analytics_txt_setup_events_hint'),
+            'code_classic' => $this->_getCodeHtml('bx-analytics-setup-js', _t('_bx_analytics_txt_setup_events_classic'), "window.bx_analytics && bx_analytics.track('signup_click', {plan: 'pro'});"),
+            'code_neo' => $this->_getCodeHtml('bx-analytics-setup-neo', _t('_bx_analytics_txt_setup_events_neo'), "import { trackEvent } from 'app/lib/analytics';\n\ntrackEvent('signup_click', { plan: 'pro' });"),
+            'code_server' => $this->_getCodeHtml('bx-analytics-setup-srv', _t('_bx_analytics_txt_setup_events_server'), "bx_srv('" . $this->MODULE . "', 'track', ['export_done', ['rows' => 120]]);"),
+            'events_warning' => _t('_bx_analytics_txt_setup_events_warning'),
+        ]);
+    }
+
+    /**
+     * The tracker status table, on the page and after a test event.
+     */
+    public function getSetupStatusHtml($aStatus)
+    {
+        $aPlatforms = $this->_oConfig->getPlatforms();
+
+        $aRows = [];
+        foreach($aStatus as $sPlatform => $aRow) {
+            $bApp = $this->_oConfig->isAppPlatform($sPlatform);
+            $aRows[] = [
+                'platform_title' => _t($aPlatforms[$sPlatform]),
+                'status' => $aRow['status'],
+                'status_icon' => $this->_getIconHtml($aRow['status']),
+                'status_title' => _t('_bx_analytics_txt_setup_status_' . $aRow['status']),
+                'last' => $aRow['last'] ? $this->formatValue('datetime', $aRow['last']) : _t('_bx_analytics_txt_setup_never'),
+                'hits' => $this->formatValue('number', $aRow['hits']),
+                // the server's own hits keep no visits
+                'visitors' => $sPlatform == BX_ANALYTICS_PLATFORM_CORE ? _t('_bx_analytics_txt_not_available') : $this->formatValue('number', $aRow['visitors']),
+                'sessions' => $sPlatform == BX_ANALYTICS_PLATFORM_CORE ? _t('_bx_analytics_txt_not_available') : $this->formatValue('number', $aRow['sessions']),
+                'version' => $bApp && $aRow['app_version'] !== '' ? $this->_esc($aRow['app_version']) : ($bApp ? _t('_bx_analytics_txt_setup_none') : _t('_bx_analytics_txt_not_available')),
+            ];
+        }
+
+        return $this->parseHtmlByName('setup_status.html', [
+            'caption' => $this->_esc(_t('_bx_analytics_txt_setup_status')),
+            'col_platform' => _t('_bx_analytics_txt_platform'),
+            'col_status' => _t('_bx_analytics_txt_setup_col_status'),
+            'col_last' => _t('_bx_analytics_txt_setup_last_hit'),
+            'col_hits' => _t('_bx_analytics_txt_setup_hits_24h'),
+            'col_visitors' => _t('_bx_analytics_txt_setup_visitors_24h'),
+            'col_sessions' => _t('_bx_analytics_txt_setup_sessions_7d'),
+            'col_version' => _t('_bx_analytics_txt_setup_app_version'),
+            'bx_repeat:rows' => $aRows,
+        ]);
+    }
+
+    /**
+     * The result of "Check this browser": tracked or not and why, and what the server sees.
+     *
+     * @param array $aCheck see BxAnalyticsCollector::check
+     */
+    public function getSetupCheckHtml($aCheck)
+    {
+        $bTracked = $aCheck['reasons'] == ['ok'];
+
+        $aReasons = [];
+        foreach($aCheck['reasons'] as $sReason)
+            if($sReason != 'ok')
+                $aReasons[] = [
+                    'reason_kind' => 'no',
+                    'reason_icon' => $this->_getIconHtml('x'),
+                    'reason' => _t('_bx_analytics_txt_check_' . $sReason),
+                ];
+        foreach($aCheck['notes'] as $sNote)
+            $aReasons[] = [
+                'reason_kind' => 'note',
+                'reason_icon' => $this->_getIconHtml('info'),
+                'reason' => _t('_bx_analytics_txt_check_' . $sNote),
+            ];
+
+        $sGeo = _t('_bx_analytics_txt_check_geo_none');
+        if($aCheck['geo_source'] != BX_ANALYTICS_GEO_HEADERS)
+            $sGeo = _t('_bx_analytics_txt_check_geo_off');
+        elseif($aCheck['country_header'] !== '')
+            $sGeo = _t('_bx_analytics_txt_check_geo_header', $this->_esc(str_replace('_', '-', preg_replace('/^HTTP_/', '', $aCheck['country_header']))), $this->_esc($aCheck['country']));
+
+        return $this->parseHtmlByName('setup_check.html', [
+            'verdict_state' => $bTracked ? 'yes' : 'no',
+            'verdict_icon' => $this->_getIconHtml($bTracked ? 'check' : 'x'),
+            'verdict' => _t($bTracked ? '_bx_analytics_txt_check_tracked' : '_bx_analytics_txt_check_not_tracked'),
+            'bx_if:reasons' => [
+                'condition' => !empty($aReasons),
+                'content' => ['bx_repeat:reasons' => $aReasons],
+            ],
+            'ip_label' => _t('_bx_analytics_txt_check_ip'),
+            'ip' => $aCheck['ip'] !== '' ? $this->_esc($aCheck['ip']) : _t('_bx_analytics_txt_not_available'),
+            'remote_label' => _t('_bx_analytics_txt_check_remote_addr'),
+            'remote' => $aCheck['remote_addr'] !== '' ? $this->_esc($aCheck['remote_addr']) : _t('_bx_analytics_txt_not_available'),
+            'geo_label' => _t('_bx_analytics_txt_check_geo'),
+            'geo' => $sGeo,
+            'identity_label' => _t('_bx_analytics_adm_stg_cpt_identity'),
+            'identity' => _t('_bx_analytics_identity_' . $aCheck['identity']),
+        ]);
+    }
+
+    /**
+     * A code snippet with a copy button. The code is text: it is escaped here.
+     */
+    protected function _getCodeHtml($sId, $sLabel, $sCode)
+    {
+        return $this->parseHtmlByName('code.html', [
+            'code_id' => $sId,
+            'code_label' => $this->_esc($sLabel),
+            'code' => $this->_esc($sCode),
+            'copy' => _t('_bx_analytics_txt_copy'),
+            'copied' => $this->_esc(_t('_bx_analytics_txt_copied')),
+        ]);
+    }
+
+    /**
+     * A small Lucide icon next to a status text, hidden from screen readers.
+     *
+     * @param string $sName receiving, quiet, nodata, off, check, x, info
+     */
+    protected function _getIconHtml($sName)
+    {
+        $aIcons = ['receiving' => 'check', 'quiet' => 'clock', 'nodata' => 'minus', 'off' => 'power', 'check' => 'check', 'x' => 'x', 'info' => 'info'];
+        $sIcon = isset($aIcons[$sName]) ? $aIcons[$sName] : 'info';
+
+        $aVars = [];
+        foreach(array_unique(array_values($aIcons)) as $sGlyph)
+            $aVars['bx_if:' . $sGlyph] = ['condition' => $sGlyph == $sIcon, 'content' => []];
+
+        return $this->parseHtmlByName('icon.html', $aVars);
+    }
+
+    protected function _addToolsAssets()
+    {
+        $this->_addAssets(['studio_tools.js'], ['dashboard.css']);
+    }
+
+    protected function _getToolsJsInit()
+    {
+        return $this->getJsCode('tools', [
+            'aStrings' => [
+                'error' => _t('_bx_analytics_txt_error_loading'),
+                'running' => _t('_bx_analytics_txt_api_running'),
+                'meta' => _t('_bx_analytics_txt_api_meta', '{status}', '{ms}', '{size}'),
+                'truncated' => _t('_bx_analytics_txt_api_truncated'),
+                'bad_json' => _t('_bx_analytics_txt_api_bad_params'),
+            ],
+        ], [
+            'mask' => "if(typeof window.{object} == 'undefined') window.{object} = new {class}({params});",
+            'wrap' => true,
         ]);
     }
 

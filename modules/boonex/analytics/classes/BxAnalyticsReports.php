@@ -39,6 +39,31 @@ class BxAnalyticsReports
 
     protected $_aMetrics = ['visitors', 'sessions', 'pageviews', 'pages_per_session', 'bounce_rate', 'duration'];
 
+    /**
+     * Tabs of the other reports: report => [tab => what the tab shows]. The first is the default.
+     * - map: the period's visitors or those online now
+     * - events: event types
+     * - retention: whether only members count (cohorts of member visitors)
+     * - errors: statuses (`new` is open or resolved, first seen in the period)
+     * - performance: pages grouped by route or by path
+     * - revenue: splits as columns of the ledger
+     */
+    protected $_aReportTabs = [
+        'map' => ['period' => 'period', 'live' => 'live'],
+        // set in the constructor: the hit types are constants of the config, which the module loads on first use
+        'events' => [],
+        'retention' => ['members' => true, 'visitors' => false],
+        'errors' => [
+            'open' => ['open'],
+            'new' => ['open', 'resolved'],
+            'resolved' => ['resolved'],
+            'ignored' => ['ignored'],
+            'all' => ['open', 'resolved', 'ignored'],
+        ],
+        'performance' => ['route' => 'route', 'path' => 'path'],
+        'revenue' => ['sources' => 'module', 'providers' => 'provider', 'platforms' => 'platform', 'first_touch' => 'first_channel', 'last_touch' => 'last_channel', 'campaigns' => 'last_utm_campaign'],
+    ];
+
     protected $_iPerPage = 25;
 
     protected $_oModule;
@@ -53,6 +78,8 @@ class BxAnalyticsReports
         $this->_oModule = $oModule;
         $this->_oDb = $oModule->_oDb;
         $this->_oConfig = $oModule->_oConfig;
+
+        $this->_aReportTabs['events'] = ['all' => [BX_ANALYTICS_HIT_EVENT, BX_ANALYTICS_HIT_UNA], 'custom' => [BX_ANALYTICS_HIT_EVENT], 'site' => [BX_ANALYTICS_HIT_UNA]];
     }
 
     public function getGroups()
@@ -68,6 +95,93 @@ class BxAnalyticsReports
     public function getMetrics()
     {
         return $this->_aMetrics;
+    }
+
+    /**
+     * What get_report accepts, for the API playground: the filter parameters every report
+     * reads, and each report's own. A parameter is [type, values, min, max, default] with
+     * type enum (one of values), enum_by (one of values[the value of the parameter `by`]),
+     * int (min to max), date (YYYY-MM-DD), string, or dims (an object of dimension => value,
+     * the dimensions in values).
+     *
+     * @return array common => parameters, reports => [report => parameters]
+     */
+    public function getParamsSchema()
+    {
+        $fEnum = function($aValues, $sDefault = null) {
+            return ['type' => 'enum', 'values' => array_values($aValues), 'default' => $sDefault !== null ? $sDefault : reset($aValues)];
+        };
+        $fInt = function($iMin, $iMax = null, $iDefault = null) {
+            return array_filter(['type' => 'int', 'min' => $iMin, 'max' => $iMax, 'default' => $iDefault], function($m) { return $m !== null; });
+        };
+        $fString = function() {
+            return ['type' => 'string'];
+        };
+
+        // a tab is one of its group's or table's: group or table => tabs
+        $fTabs = function($sBy, $aLists) {
+            return ['type' => 'enum_by', 'by' => $sBy, 'values' => array_map('array_keys', $aLists)];
+        };
+
+        $aDimensions = array_keys($this->_oDb->getDimensions());
+        $aQueryMetrics = [];
+        foreach($aDimensions as $sDimension)
+            $aQueryMetrics = array_merge($aQueryMetrics, $this->_oDb->getBreakdownMetrics($sDimension));
+
+        bx_import('Filter', $this->_oModule->_aModule);
+
+        return [
+            'common' => [
+                'range' => $fEnum(BxAnalyticsFilter::$aRanges, BxAnalyticsFilter::RANGE_DEFAULT),
+                'from' => ['type' => 'date'],
+                'to' => ['type' => 'date'],
+                'tz' => ['type' => 'string', 'default' => 'UTC'],
+                'platform' => ['type' => 'enum', 'values' => array_keys($this->_oConfig->getPlatforms())],
+                'bucket' => ['type' => 'enum', 'values' => ['hour', 'day', 'week', 'month']],
+                'f' => ['type' => 'dims', 'values' => array_values(array_diff($aDimensions, ['platform']))],
+            ],
+            'reports' => [
+                'filters' => [],
+                'overview' => [],
+                'top' => ['group' => $fEnum(array_keys($this->_aGroups)), 'tab' => $fTabs('group', $this->_aGroups), 'limit' => $fInt(1, 100, 10)],
+                'table' => ['table' => $fEnum(array_keys($this->_aTables)), 'tab' => $fTabs('table', $this->_aTables), 'page' => $fInt(1)],
+                'realtime' => ['limit' => $fInt(0, 50, 20)],
+                'map' => ['tab' => $fEnum(array_keys($this->_aReportTabs['map']))],
+                'bots' => ['tab' => $fEnum(array_keys($this->_getBotCategories())), 'page_bot_list' => $fInt(1)],
+                'events' => ['event' => $fString(), 'tab' => $fEnum(array_keys($this->_aReportTabs['events'])), 'page_events' => $fInt(1)],
+                'sessions' => ['session' => $fInt(1), 'page_sessions' => $fInt(1)],
+                'users' => ['user' => $fInt(1), 'session' => $fInt(1), 'page_users' => $fInt(1)],
+                'journeys' => ['jfrom' => $fString(), 'via' => $fString()],
+                'retention' => ['tab' => $fEnum(array_keys($this->_aReportTabs['retention']))],
+                'goals' => [],
+                'funnels' => ['funnel' => $fInt(1)],
+                'revenue' => ['tab' => $fEnum(array_keys($this->_aReportTabs['revenue']))],
+                'subscriptions' => [],
+                'sales' => [],
+                'credits' => [],
+                'errors' => ['error' => $fInt(1), 'tab' => $fEnum(array_keys($this->_aReportTabs['errors'])), 'page_errors' => $fInt(1)],
+                'performance' => ['vital' => $fEnum(BxAnalyticsVitals::METRICS), 'vital_device' => $fEnum(['all', 'mobile', 'desktop']), 'tab' => $fEnum(array_keys($this->_aReportTabs['performance'])), 'page_performance' => $fInt(1)],
+                'query' => ['q_dim' => $fEnum($aDimensions), 'q_metric' => $fEnum(array_unique($aQueryMetrics)), 'q_dir' => $fEnum(['desc', 'asc']), 'page_query' => $fInt(1)],
+            ],
+        ];
+    }
+
+    /**
+     * Bot tabs: tab => bot categories (none for all).
+     */
+    protected function _getBotCategories()
+    {
+        bx_import('UserAgent', $this->_oModule->_aModule);
+
+        return [
+            'all' => [],
+            'ai' => [BxAnalyticsUserAgent::BOT_AI_CRAWLER, BxAnalyticsUserAgent::BOT_AI_AGENT],
+            'search' => [BxAnalyticsUserAgent::BOT_SEARCH],
+            'social' => [BxAnalyticsUserAgent::BOT_SOCIAL],
+            'seo' => [BxAnalyticsUserAgent::BOT_SEO],
+            'monitor' => [BxAnalyticsUserAgent::BOT_MONITOR],
+            'script' => [BxAnalyticsUserAgent::BOT_SCRIPT, BxAnalyticsUserAgent::BOT_FEED, BxAnalyticsUserAgent::BOT_OTHER],
+        ];
     }
 
     /**
@@ -198,7 +312,8 @@ class BxAnalyticsReports
 
         $iTotal = $this->_oDb->getTopCount($aFilter, $sDimension);
         $iPages = max(1, (int)ceil($iTotal / $this->_iPerPage));
-        $iPage = min($iPages, max(1, (int)$this->_param($aParams, 'page', $this->_param($aParams, 'page_' . $sTable, 1))));
+        // page_<table> first: in Studio `page` names the section
+        $iPage = min($iPages, max(1, (int)$this->_param($aParams, 'page_' . $sTable, $this->_param($aParams, 'page', 1))));
         $iStart = ($iPage - 1) * $this->_iPerPage;
 
         if($this->_oDb->isEventDimension($sDimension)) {
@@ -255,6 +370,272 @@ class BxAnalyticsReports
             'page' => $iPage,
             'pages' => $iPages,
             'total' => $iTotal,
+        ];
+    }
+
+    /**
+     * Explore any dimension: its values sorted by a metric, a page at a time, and the first
+     * few of them over time. Same shape as a table, so it renders and pages like one.
+     * Params: q_dim, q_metric, q_dir (see getQueryParams), page (or page_query).
+     */
+    public function getQuery(BxAnalyticsFilter $oFilter, $aParams = [])
+    {
+        $aQuery = $this->getQueryParams($aParams);
+        $sDimension = $aQuery['dimension'];
+        $sMetric = $aQuery['metric'];
+        $aFilter = $oFilter->get();
+
+        $iTotal = $this->_oDb->getTopCount($aFilter, $sDimension);
+        $iPages = max(1, (int)ceil($iTotal / $this->_iPerPage));
+        // page_query first: in Studio `page` names the section
+        $iPage = min($iPages, max(1, (int)$this->_param($aParams, 'page_query', $this->_param($aParams, 'page', 1))));
+        $iStart = ($iPage - 1) * $this->_iPerPage;
+
+        $aRows = $this->_getQueryRows($aFilter, $aQuery, $this->_iPerPage, $iStart);
+
+        // the chart follows the first values in this order, whatever page the table shows
+        $iSeries = (int)$this->_oConfig->CNF['QUERY_SERIES_VALUES'];
+        $aFirst = $iStart == 0 ? array_slice($aRows, 0, $iSeries) : $this->_getQueryRows($aFilter, $aQuery, $iSeries, 0, $iSeries, false);
+
+        $fMax = 0;
+        foreach($aRows as $aRow)
+            $fMax = max($fMax, (float)$aRow[$sMetric]);
+
+        $aResult = [];
+        foreach($aRows as $aRow)
+            $aResult[] = [
+                'label' => $this->getLabel($sDimension, $aRow['value']),
+                'filter' => ['dim' => $sDimension, 'value' => $aRow['value']],
+                'bar' => $fMax > 0 ? round(100 * $aRow[$sMetric] / $fMax, 1) : 0,
+                'values' => $aRow,
+            ];
+
+        $aDimensions = [];
+        foreach($this->_oDb->getDimensions() as $sName => $sKind)
+            $aDimensions[] = ['name' => $sName, 'title' => _t('_bx_analytics_dim_' . $sName), 'kind' => $sKind];
+
+        $aMetrics = [];
+        foreach($aQuery['metrics'] as $sName)
+            $aMetrics[] = ['name' => $sName, 'title' => _t('_bx_analytics_metric_' . $sName)];
+
+        return [
+            'name' => 'query',
+            'caption' => _t('_bx_analytics_dim_' . $sDimension),
+            'dimension' => $sDimension,
+            'kind' => $aQuery['kind'],
+            'metric' => $sMetric,
+            'dir' => $aQuery['dir'],
+            'dimensions' => $aDimensions,
+            'metrics' => $aMetrics,
+            'tabs' => [],
+            'columns' => $this->_getQueryColumns($aQuery),
+            'rows' => $aResult,
+            'page' => $iPage,
+            'pages' => $iPages,
+            'total' => $iTotal,
+            'export_max' => (int)$this->_oConfig->CNF['MAX_EXPORT_ROWS'],
+            'chart' => $this->_getQuerySeries($aFilter, $aQuery, $aFirst),
+        ];
+    }
+
+    /**
+     * What a query asks for, from q_dim (a dimension, see BxAnalyticsDb::getDimensions),
+     * q_metric (one the dimension can be sorted by) and q_dir (asc or desc). Anything unknown
+     * falls back to the first valid choice: pages, by visitors, highest first.
+     *
+     * @return array dimension, kind (event or session), metric, metrics (the dimension's
+     *      sortable metrics), dir
+     */
+    public function getQueryParams($aParams)
+    {
+        $aDimensions = $this->_oDb->getDimensions();
+        $sDimension = (string)$this->_param($aParams, 'q_dim');
+        if(!isset($aDimensions[$sDimension]))
+            $sDimension = key($aDimensions);
+
+        $aMetrics = $this->_oDb->getBreakdownMetrics($sDimension);
+        $sMetric = (string)$this->_param($aParams, 'q_metric');
+        if(!in_array($sMetric, $aMetrics, true))
+            $sMetric = $aMetrics[0];
+
+        return [
+            'dimension' => $sDimension,
+            'kind' => $aDimensions[$sDimension],
+            'metric' => $sMetric,
+            'metrics' => $aMetrics,
+            'dir' => $this->_param($aParams, 'q_dir') === 'asc' ? 'asc' : 'desc',
+        ];
+    }
+
+    /**
+     * Every value of a report's dimension with its metrics, for a CSV download: the query,
+     * or a table or top list tab (by visitors). Rows are the label, the stored value and the
+     * metrics as plain numbers.
+     *
+     * @param string $sReport query, table or top
+     * @param int $iMax rows at most
+     * @return array dimension, header, rows, total (values in the period), truncated; or false
+     */
+    public function getExport($sReport, BxAnalyticsFilter $oFilter, $aParams, $iMax)
+    {
+        switch($sReport) {
+            case 'query':
+                $aQuery = $this->getQueryParams($aParams);
+                break;
+
+            case 'table':
+            case 'top':
+                $aLists = $sReport == 'table' ? $this->_aTables : $this->_aGroups;
+                $sList = (string)$this->_param($aParams, $sReport == 'table' ? 'table' : 'group');
+                if(!isset($aLists[$sList]))
+                    return false;
+                $aQuery = $this->getQueryParams(['q_dim' => $aLists[$sList][$this->_getTab($aParams, $sList, $aLists[$sList])]]);
+                break;
+
+            default:
+                return false;
+        }
+
+        $aFilter = $oFilter->get();
+        $aColumns = $this->_getQueryColumns($aQuery);
+
+        $aHeader = [$aColumns[0]['title'], _t('_bx_analytics_txt_raw_value')];
+        foreach(array_slice($aColumns, 1) as $aColumn)
+            $aHeader[] = $aColumn['title'];
+
+        // one query: pages of a re-run aggregate would cost a full scan each and could
+        // repeat or skip values that change places while hits come in
+        $iMax = max(1, (int)$iMax);
+        $aRows = [];
+        foreach($this->_getQueryRows($aFilter, $aQuery, $iMax, 0, $iMax) as $aRow) {
+            $aLine = [$this->getLabel($aQuery['dimension'], $aRow['value']), $aRow['value']];
+            foreach(array_slice($aColumns, 1) as $aColumn)
+                $aLine[] = isset($aRow[$aColumn['key']]) ? $aRow[$aColumn['key']] : 0;
+            $aRows[] = $aLine;
+        }
+
+        $iTotal = $this->_oDb->getTopCount($aFilter, $aQuery['dimension']);
+
+        return [
+            'dimension' => $aQuery['dimension'],
+            'header' => $aHeader,
+            'rows' => $aRows,
+            'total' => $iTotal,
+            'truncated' => $iTotal > count($aRows),
+        ];
+    }
+
+    /**
+     * Query rows: the stored value and the metrics as numbers (KPIs for a session dimension,
+     * pageview figures for a page or title).
+     *
+     * @param bool $bPathSessions pages get entries, bounce rate and exits
+     */
+    protected function _getQueryRows($aFilter, $aQuery, $iLimit, $iStart, $iMax = 1000, $bPathSessions = true)
+    {
+        $aRows = $this->_oDb->getBreakdown($aFilter, $aQuery['dimension'], $aQuery['metric'], $aQuery['dir'] == 'asc' ? 'ASC' : 'DESC', $iLimit, $iStart, $iMax, $bPathSessions);
+
+        $aResult = [];
+        foreach($aRows as $aRow)
+            $aResult[] = ['value' => (string)$aRow['value']] + ($aQuery['kind'] == 'session' ? $this->_getKpis($aRow) : $this->_getPageKpis($aRow));
+
+        return $aResult;
+    }
+
+    /**
+     * Metrics of a page or title row from BxAnalyticsDb::getPageStats.
+     */
+    protected function _getPageKpis($aRow)
+    {
+        $aResult = [
+            'visitors' => isset($aRow['visitors']) ? (int)$aRow['visitors'] : 0,
+            'pageviews' => isset($aRow['pageviews']) ? (int)$aRow['pageviews'] : 0,
+            'engaged' => isset($aRow['engaged']) ? round((float)$aRow['engaged'], 1) : 0,
+        ];
+
+        if(isset($aRow['entries']))
+            $aResult += [
+                'entries' => (int)$aRow['entries'],
+                'bounce_rate' => (float)$aRow['bounce_rate'],
+                'exits' => (int)$aRow['exits'],
+            ];
+
+        return $aResult;
+    }
+
+    /**
+     * Table columns of a query, the sorted one marked.
+     */
+    protected function _getQueryColumns($aQuery)
+    {
+        if($aQuery['kind'] == 'session')
+            $aTypes = ['visitors' => 'number', 'sessions' => 'number', 'pageviews' => 'number', 'bounce_rate' => 'percent', 'pages_per_session' => 'decimal', 'duration' => 'duration'];
+        else {
+            $aTypes = ['visitors' => 'number', 'pageviews' => 'number', 'engaged' => 'engaged'];
+            if($aQuery['dimension'] == 'path')
+                $aTypes += ['entries' => 'number', 'bounce_rate' => 'percent', 'exits' => 'number'];
+        }
+
+        $aColumns = [['key' => 'label', 'type' => 'label', 'title' => _t('_bx_analytics_dim_' . $aQuery['dimension'])]];
+        foreach($aTypes as $sKey => $sType) {
+            $aColumn = ['key' => $sKey, 'type' => $sType, 'title' => _t('_bx_analytics_metric_' . $sKey)];
+            if($sKey == $aQuery['metric'])
+                $aColumn['sort'] = $aQuery['dir'] == 'asc' ? 'ascending' : 'descending';
+            $aColumns[] = $aColumn;
+        }
+
+        return $aColumns;
+    }
+
+    /**
+     * The chosen metric of some values per bucket. A bucket without data is 0 for a count
+     * and a gap for an average or a rate; buckets after now are gaps.
+     */
+    protected function _getQuerySeries($aFilter, $aQuery, $aValues)
+    {
+        $sMetric = $aQuery['metric'];
+        $bRatio = in_array($sMetric, ['pages_per_session', 'bounce_rate', 'duration', 'engaged'], true);
+
+        $aData = [];
+        foreach($this->_oDb->getBreakdownSeries($aFilter, $aQuery['dimension'], array_column($aValues, 'value'), $aFilter['bucket'], $aFilter['offset'], $aFilter['starts']) as $aRow) {
+            $aKpis = $aQuery['kind'] == 'session' ? $this->_getKpis($aRow) : $this->_getPageKpis($aRow);
+            $aData[(string)$aRow['value']][(int)$aRow['bucket']] = $aKpis[$sMetric];
+        }
+
+        $aBuckets = $aFilter['buckets'];
+        $aSeries = [];
+        foreach($aValues as $aValue) {
+            $aPoints = [];
+            foreach($aBuckets as $i => $iBucket) {
+                $iNext = isset($aBuckets[$i + 1]) ? $aBuckets[$i + 1] : $aFilter['to'];
+                if($iBucket > $aFilter['now'])
+                    $mixedValue = null;
+                elseif(isset($aData[$aValue['value']][$iBucket]))
+                    $mixedValue = $aData[$aValue['value']][$iBucket];
+                else
+                    $mixedValue = $bRatio ? null : 0;
+
+                $aPoints[] = [
+                    't' => $iBucket,
+                    'v' => $mixedValue,
+                    'partial' => $iBucket <= $aFilter['now'] && $aFilter['now'] < $iNext,
+                ];
+            }
+
+            $aSeries[] = [
+                'value' => $aValue['value'],
+                'label' => $this->getLabel($aQuery['dimension'], $aValue['value']),
+                'points' => $aPoints,
+            ];
+        }
+
+        return [
+            'kind' => 'series',
+            'metric' => $sMetric,
+            'title' => _t('_bx_analytics_metric_' . $sMetric),
+            'bucket' => $aFilter['bucket'],
+            'tz' => $aFilter['tz'],
+            'series' => $aSeries,
         ];
     }
 
@@ -324,7 +705,7 @@ class BxAnalyticsReports
     {
         bx_import('Geo', $this->_oModule->_aModule);
 
-        $aTabs = ['period' => 'period', 'live' => 'live'];
+        $aTabs = $this->_aReportTabs['map'];
         $sTab = $this->_getTab($aParams, 'map', $aTabs);
 
         $aFilter = $oFilter->get();
@@ -388,15 +769,7 @@ class BxAnalyticsReports
     {
         bx_import('UserAgent', $this->_oModule->_aModule);
 
-        $aCategories = [
-            'all' => [],
-            'ai' => [BxAnalyticsUserAgent::BOT_AI_CRAWLER, BxAnalyticsUserAgent::BOT_AI_AGENT],
-            'search' => [BxAnalyticsUserAgent::BOT_SEARCH],
-            'social' => [BxAnalyticsUserAgent::BOT_SOCIAL],
-            'seo' => [BxAnalyticsUserAgent::BOT_SEO],
-            'monitor' => [BxAnalyticsUserAgent::BOT_MONITOR],
-            'script' => [BxAnalyticsUserAgent::BOT_SCRIPT, BxAnalyticsUserAgent::BOT_FEED, BxAnalyticsUserAgent::BOT_OTHER],
-        ];
+        $aCategories = $this->_getBotCategories();
         $sTab = $this->_getTab($aParams, 'bots', $aCategories);
         $aIn = $aCategories[$sTab];
         $aFilter = $oFilter->get();
@@ -516,7 +889,7 @@ class BxAnalyticsReports
         if($aEvent)
             return $this->_getEventDetail($oFilter, $aEvent);
 
-        $aTabs = ['all' => [BX_ANALYTICS_HIT_EVENT, BX_ANALYTICS_HIT_UNA], 'custom' => [BX_ANALYTICS_HIT_EVENT], 'site' => [BX_ANALYTICS_HIT_UNA]];
+        $aTabs = $this->_aReportTabs['events'];
         $sTab = $this->_getTab($aParams, 'events', $aTabs);
         $aFilter = $oFilter->get();
 
@@ -972,7 +1345,7 @@ class BxAnalyticsReports
      */
     public function getRetention(BxAnalyticsFilter $oFilter, $aParams = [])
     {
-        $aTabs = ['members' => true, 'visitors' => false];
+        $aTabs = $this->_aReportTabs['retention'];
         $sTab = $this->_getTab($aParams, 'retention', $aTabs);
         $aFilter = $oFilter->get();
 
@@ -1156,13 +1529,7 @@ class BxAnalyticsReports
 
         // ignored errors keep counting but stay out of everything but their own tab
         $aCounted = ['open', 'resolved'];
-        $aTabs = [
-            'open' => ['open'],
-            'new' => $aCounted,
-            'resolved' => ['resolved'],
-            'ignored' => ['ignored'],
-            'all' => ['open', 'resolved', 'ignored'],
-        ];
+        $aTabs = $this->_aReportTabs['errors'];
         $sTab = $this->_getTab($aParams, 'errors', $aTabs);
         $aFilter = $oFilter->get();
         $iNewFrom = $sTab == 'new' ? (int)$aFilter['from'] : 0;
@@ -1443,7 +1810,7 @@ class BxAnalyticsReports
         if(!in_array($sDevice, ['all', 'mobile', 'desktop'], true))
             $sDevice = 'all';
 
-        $aGroups = ['route' => 'route', 'path' => 'path'];
+        $aGroups = $this->_aReportTabs['performance'];
         $sGroup = $this->_getTab($aParams, 'performance', $aGroups);
 
         // the cards: exact counts on each side of the thresholds, and the histograms of the
@@ -1650,8 +2017,7 @@ class BxAnalyticsReports
         foreach($aSeries as $sKey => $aValues)
             $aDatasets[] = ['key' => $sKey, 'label' => _t('_bx_analytics_metric_revenue_' . $sKey), 'values' => $aValues];
 
-        // revenue splits: tab => ledger column
-        $aTabs = ['sources' => 'module', 'providers' => 'provider', 'platforms' => 'platform', 'first_touch' => 'first_channel', 'last_touch' => 'last_channel', 'campaigns' => 'last_utm_campaign'];
+        $aTabs = $this->_aReportTabs['revenue'];
         $sTab = $this->_getTab($aParams, 'revenue', $aTabs);
 
         $fNet = (float)$aCurrent['net'];
@@ -2427,7 +2793,11 @@ class BxAnalyticsReports
         $sModuleTitle = $sModule !== '' ? $this->_getModuleTitle($sModule) : '';
 
         if($sType == BX_ANALYTICS_HIT_UNA) {
-            $sLabel = _t('_bx_analytics_action_' . $sName);
+            // an action without a title of its own (a module's, or a newer one) by its name
+            $sKey = '_bx_analytics_action_' . $sName;
+            $sLabel = _t($sKey);
+            if($sLabel === $sKey)
+                $sLabel = $sName;
             return $sModuleTitle !== '' && $sModule != 'account' ? $sLabel . ' · ' . $sModuleTitle : $sLabel;
         }
 

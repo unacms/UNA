@@ -99,44 +99,24 @@ class BxAnalyticsCollector
      */
     public function collect($aPayload, $aContext = [])
     {
-        if(!is_array($aPayload) || !$this->_oConfig->isTrackingEnabled())
+        if(!is_array($aPayload))
             return 0;
 
-        $sPlatform = isset($aPayload['platform']) && is_string($aPayload['platform']) ? $aPayload['platform'] : (isset($aContext['platform']) ? $aContext['platform'] : BX_ANALYTICS_PLATFORM_API);
-        // `core` is the server's own platform, never a client's
-        if($sPlatform == BX_ANALYTICS_PLATFORM_CORE || !$this->_oConfig->isPlatformEnabled($sPlatform))
-            return 0;
-
-        if($this->_oConfig->isRespectDnt() && $this->_oRequest->isDoNotTrack())
-            return 0;
-
-        $bSameOrigin = !empty($aContext['same_origin']);
-        if($bSameOrigin && $this->_oRequest->isCrossSite())
-            return 0;
-
-        $aHits = $this->_getHits($aPayload, $bSameOrigin);
-        if(empty($aHits))
-            return 0;
-
-        $sIp = $this->_oRequest->getIp($this->_oConfig->getTrustedProxies(), !empty($aContext['trusted']));
-        if($sIp !== '' && BxAnalyticsRequest::inList($sIp, $this->_oConfig->getExcludedIps()))
-            return 0;
-
-        $sUserAgent = $this->_oRequest->getUserAgent();
-        $aClient = $this->_getClient($sPlatform, $aPayload, $sUserAgent);
-        if($aClient === false) {
+        $aAccept = $this->_accept($aPayload, $aContext);
+        if(!empty($aAccept['reasons'])) {
             // a bot that runs the tracker (a headless browser): counted with the bots
-            $this->collectBot($sUserAgent, $aHits[0]['url'], $sPlatform);
+            if($aAccept['reasons'][0] == 'bot')
+                $this->collectBot($aAccept['user_agent'], $aAccept['hits'][0]['url'], $aAccept['platform']);
+
             return 0;
         }
 
-        $iProfileId = isset($aContext['profile_id']) ? (int)$aContext['profile_id'] : 0;
-        if($iProfileId && $this->_isExcludedProfile($iProfileId))
-            return 0;
-        if(!$iProfileId && in_array(MEMBERSHIP_ID_NON_MEMBER, $this->_oConfig->getExcludedLevels(), true))
-            return 0;
-        if(!$this->_oConfig->isLinkMembers())
-            $iProfileId = 0;
+        $sPlatform = $aAccept['platform'];
+        $aHits = $aAccept['hits'];
+        $sIp = $aAccept['ip'];
+        $sUserAgent = $aAccept['user_agent'];
+        $aClient = $aAccept['client'];
+        $iProfileId = $aAccept['profile_id'];
 
         $sVid = isset($aPayload['vid']) && is_string($aPayload['vid']) && preg_match('/^[a-zA-Z0-9_-]{16,64}$/', $aPayload['vid']) ? $aPayload['vid'] : '';
         $aVisitor = $this->_getVisitor($sIp, $sUserAgent, $iProfileId, $sVid);
@@ -164,6 +144,121 @@ class BxAnalyticsCollector
         }
 
         return $this->_store($aSession, $aHits, $aClientRow);
+    }
+
+    /**
+     * What collect() would do with a payload, without storing anything: the reasons it would
+     * drop the hits (or `ok`), and what it knows about the request. For the Setup section's
+     * check of the admin's own browser.
+     *
+     * @param array $aPayload decoded tracker payload
+     * @param array $aContext as for collect()
+     * @return array reasons (tracking_off, platform_off, dnt, cross_site, excluded_path,
+     *      no_hits, excluded_ip, bot, excluded_level; or ok), notes (link_members_off: stored,
+     *      but not tied to the member), platform, ip (resolved), remote_addr, country_header,
+     *      country, geo_source, identity
+     */
+    public function check($aPayload, $aContext = [])
+    {
+        $aAccept = $this->_accept(is_array($aPayload) ? $aPayload : [], $aContext, true);
+        $aCountry = $this->_oRequest->getCountryHeader();
+
+        return [
+            'reasons' => !empty($aAccept['reasons']) ? $aAccept['reasons'] : ['ok'],
+            'notes' => $aAccept['notes'],
+            'platform' => $aAccept['platform'],
+            'ip' => $aAccept['ip'],
+            'remote_addr' => $this->_oRequest->getRemoteAddr(),
+            'country_header' => $aCountry ? $aCountry['header'] : '',
+            'country' => $aCountry ? $aCountry['country'] : '',
+            'geo_source' => $this->_oConfig->getGeoSource(),
+            'identity' => $this->_oConfig->getIdentityMode(),
+        ];
+    }
+
+    /**
+     * The guards of collect() in one place: whether a payload's hits are kept, and what the
+     * request tells about the visitor. collect() stops at the first reason; a check collects
+     * them all.
+     *
+     * @param bool $bAll go on after a reason, to list every one
+     * @return array reasons (empty when the hits are kept), notes, platform, hits, ip,
+     *      user_agent, client (false for a bot), profile_id (0 when members aren't linked)
+     */
+    protected function _accept($aPayload, $aContext, $bAll = false)
+    {
+        $aResult = [
+            'reasons' => [],
+            'notes' => [],
+            'platform' => isset($aPayload['platform']) && is_string($aPayload['platform']) ? $aPayload['platform'] : (isset($aContext['platform']) ? $aContext['platform'] : BX_ANALYTICS_PLATFORM_API),
+            'hits' => [],
+            'ip' => '',
+            'user_agent' => '',
+            'client' => false,
+            'profile_id' => 0,
+        ];
+
+        // true when the caller should stop here
+        $fReject = function($sReason) use (&$aResult, $bAll) {
+            $aResult['reasons'][] = $sReason;
+            return !$bAll;
+        };
+
+        if(!$this->_oConfig->isTrackingEnabled() && $fReject('tracking_off'))
+            return $aResult;
+
+        // `core` is the server's own platform, never a client's
+        $sPlatform = $aResult['platform'];
+        if(($sPlatform == BX_ANALYTICS_PLATFORM_CORE || !$this->_oConfig->isPlatformEnabled($sPlatform)) && $fReject('platform_off'))
+            return $aResult;
+
+        if($this->_oConfig->isRespectDnt() && $this->_oRequest->isDoNotTrack() && $fReject('dnt'))
+            return $aResult;
+
+        $bSameOrigin = !empty($aContext['same_origin']);
+        if($bSameOrigin && $this->_oRequest->isCrossSite() && $fReject('cross_site'))
+            return $aResult;
+
+        $aResult['hits'] = $this->_getHits($aPayload, $bSameOrigin);
+        if(empty($aResult['hits']) && $fReject($this->_getNoHitsReason($aPayload)))
+            return $aResult;
+
+        $aResult['ip'] = $this->_oRequest->getIp($this->_oConfig->getTrustedProxies(), !empty($aContext['trusted']));
+        if($aResult['ip'] !== '' && BxAnalyticsRequest::inList($aResult['ip'], $this->_oConfig->getExcludedIps()) && $fReject('excluded_ip'))
+            return $aResult;
+
+        $aResult['user_agent'] = $this->_oRequest->getUserAgent();
+        $aResult['client'] = $this->_getClient($sPlatform, $aPayload, $aResult['user_agent']);
+        if($aResult['client'] === false && !empty($aResult['hits']) && $fReject('bot'))
+            return $aResult;
+
+        $iProfileId = isset($aContext['profile_id']) ? (int)$aContext['profile_id'] : 0;
+        $bExcluded = $iProfileId ? $this->_isExcludedProfile($iProfileId) : in_array(MEMBERSHIP_ID_NON_MEMBER, $this->_oConfig->getExcludedLevels(), true);
+        if($bExcluded && $fReject('excluded_level'))
+            return $aResult;
+
+        if($iProfileId && !$this->_oConfig->isLinkMembers()) {
+            $aResult['notes'][] = 'link_members_off';
+            $iProfileId = 0;
+        }
+        $aResult['profile_id'] = $iProfileId;
+
+        return $aResult;
+    }
+
+    /**
+     * Why a payload has no usable hits: all of them on excluded paths, or none valid.
+     */
+    protected function _getNoHitsReason($aPayload)
+    {
+        $aInput = isset($aPayload['hits']) && is_array($aPayload['hits']) ? $aPayload['hits'] : [$aPayload];
+        foreach($aInput as $aHit) {
+            $aUrl = is_array($aHit) && isset($aHit['url']) && is_string($aHit['url']) ? $this->_parseUrl($aHit['url']) : false;
+            if($aUrl !== false && $this->_isExcludedPath($aUrl['path'], $this->_oConfig->getExcludedPaths()))
+                return 'excluded_path';
+        }
+
+        return 'no_hits';
     }
 
     /**
@@ -202,16 +297,20 @@ class BxAnalyticsCollector
      * @param int $iObjectId content, comment or profile the action is about
      * @param int $iProfileId who did it
      * @param array $aContext `platform` (otherwise worked out from the request), `api_key` (the
-     *      request carries an accepted API key), `props`, `value`
-     * @return bool whether it was stored
+     *      request carries an accepted API key), `props`, `value`, `type` (`event` for a custom
+     *      event from server code, which the "track site actions" setting doesn't turn off)
+     * @return bool whether it was stored (not when tracking is off, the platform isn't
+     *      enabled or the member's level is excluded)
      */
     public function collectAction($sName, $sModule, $iObjectId, $iProfileId, $aContext = [])
     {
-        if(!$this->_oConfig->isTrackingEnabled() || !$this->_oConfig->isTrackActions())
+        $sType = isset($aContext['type']) && $aContext['type'] === BX_ANALYTICS_HIT_EVENT ? BX_ANALYTICS_HIT_EVENT : BX_ANALYTICS_HIT_UNA;
+        if(!$this->_oConfig->isTrackingEnabled() || ($sType == BX_ANALYTICS_HIT_UNA && !$this->_oConfig->isTrackActions()))
             return false;
 
         $sPlatform = !empty($aContext['platform']) ? $aContext['platform'] : $this->_oRequest->getPlatform(defined('BX_API'), !empty($aContext['api_key']));
-        if(!$this->_oConfig->isPlatform($sPlatform))
+        // a platform left out of Settings > Platforms collects nothing, server events included
+        if(!$this->_oConfig->isPlatformEnabled($sPlatform))
             return false;
 
         $iProfileId = (int)$iProfileId;
@@ -229,7 +328,7 @@ class BxAnalyticsCollector
             'profile_id' => $iLinkedProfileId,
             'platform' => $sPlatform,
             'ts' => $this->_iNow,
-            'type' => BX_ANALYTICS_HIT_UNA,
+            'type' => $sType,
             'name' => get_mb_substr((string)$sName, 0, 64),
             'hostname' => '',
             'path' => '',

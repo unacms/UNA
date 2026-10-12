@@ -44,6 +44,7 @@ CREATE TABLE IF NOT EXISTS `bx_analytics_sessions` (
   KEY `visitor` (`visitor`, `last_seen`),
   KEY `started` (`started`, `platform`),
   KEY `last_seen` (`last_seen`),
+  KEY `platform_seen` (`platform`, `last_seen`),
   KEY `profile_id` (`profile_id`, `started`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -68,6 +69,7 @@ CREATE TABLE IF NOT EXISTS `bx_analytics_events` (
   `props` text NOT NULL,
   PRIMARY KEY (`id`),
   KEY `ts` (`ts`, `type`, `platform`),
+  KEY `platform` (`platform`, `ts`),
   KEY `session_id` (`session_id`, `ts`),
   KEY `path` (`path`(100), `ts`),
   KEY `object` (`module`, `object_id`, `ts`),

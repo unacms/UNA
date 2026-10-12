@@ -51,6 +51,28 @@ class BxAnalyticsDb extends BxBaseModGeneralDb
         'title' => 'title',
     ];
 
+    /**
+     * What a breakdown of a session dimension may be sorted by, as metric => SQL over the
+     * sessions (alias `s`). Fixed expressions: the metric name from the request only picks one.
+     */
+    protected $_aSessionMetrics = [
+        'visitors' => 'COUNT(DISTINCT `s`.`visitor`)',
+        'sessions' => 'COUNT(*)',
+        'pageviews' => 'SUM(`s`.`pageviews`)',
+        'pages_per_session' => 'SUM(`s`.`pageviews`) / COUNT(*)',
+        'bounce_rate' => 'SUM(`s`.`bounce`) / COUNT(*)',
+        'duration' => 'SUM(`s`.`duration`) / COUNT(*)',
+    ];
+
+    /**
+     * The same for an event dimension, over pageview events (alias `e`).
+     */
+    protected $_aEventMetrics = [
+        'visitors' => 'COUNT(DISTINCT `e`.`visitor`)',
+        'pageviews' => 'COUNT(*)',
+        'engaged' => 'IFNULL(AVG(NULLIF(`e`.`engaged`, 0)), 0)',
+    ];
+
     public function isDimension($sName)
     {
         return isset($this->_aSessionDimensions[$sName]) || isset($this->_aEventDimensions[$sName]);
@@ -59,6 +81,32 @@ class BxAnalyticsDb extends BxBaseModGeneralDb
     public function isEventDimension($sName)
     {
         return isset($this->_aEventDimensions[$sName]);
+    }
+
+    /**
+     * Every report dimension, as name => kind (event or session): pages first.
+     */
+    public function getDimensions()
+    {
+        $aResult = [];
+        foreach(array_keys($this->_aEventDimensions) as $sName)
+            $aResult[$sName] = 'event';
+        foreach(array_keys($this->_aSessionDimensions) as $sName)
+            $aResult[$sName] = 'session';
+
+        return $aResult;
+    }
+
+    /**
+     * Metrics a breakdown of a dimension may be sorted by, the default first; empty for an
+     * unknown dimension.
+     */
+    public function getBreakdownMetrics($sDimension)
+    {
+        if(isset($this->_aEventDimensions[$sDimension]))
+            return array_keys($this->_aEventMetrics);
+
+        return isset($this->_aSessionDimensions[$sDimension]) ? array_keys($this->_aSessionMetrics) : [];
     }
 
     /*
@@ -383,10 +431,101 @@ class BxAnalyticsDb extends BxBaseModGeneralDb
     }
 
     /**
+     * Values of any dimension with every metric it has, sorted by one of them, a page at a
+     * time: the Query report and its CSV. Session dimensions get the summed session columns
+     * (visitors, sessions, pageviews, bounces, duration), event dimensions what getPageStats
+     * returns. Ties go by the number of rows, then by the value, so pages don't overlap.
+     *
+     * @param string $sMetric one of getBreakdownMetrics($sDimension); anything else sorts by the first
+     * @param string $sDir ASC or DESC (anything else is DESC)
+     * @param int $iMax the most rows one call returns
+     * @param bool $bPathSessions pages get entries, bounces and exits (see getPageStats)
+     */
+    public function getBreakdown($aFilter, $sDimension, $sMetric, $sDir, $iLimit, $iStart = 0, $iMax = 1000, $bPathSessions = true)
+    {
+        $sDir = $sDir === 'ASC' ? 'ASC' : 'DESC';
+
+        if(isset($this->_aEventDimensions[$sDimension]))
+            return $this->getPageStats($aFilter, $sDimension, $iLimit, $iStart, isset($this->_aEventMetrics[$sMetric]) ? $sMetric : 'visitors', $sDir, $iMax, $bPathSessions);
+
+        if(!isset($this->_aSessionDimensions[$sDimension]))
+            return [];
+
+        $sColumn = $this->_aSessionDimensions[$sDimension];
+        $sOrder = isset($this->_aSessionMetrics[$sMetric]) ? $this->_aSessionMetrics[$sMetric] : $this->_aSessionMetrics['visitors'];
+        $aBindings = [];
+        $sWhere = $this->_getSessionsWhere($aFilter, $aBindings);
+
+        return $this->getAll("SELECT `s`.`" . $sColumn . "` AS `value`, COUNT(DISTINCT `s`.`visitor`) AS `visitors`, COUNT(*) AS `sessions`, IFNULL(SUM(`s`.`pageviews`), 0) AS `pageviews`, IFNULL(SUM(`s`.`bounce`), 0) AS `bounces`, IFNULL(SUM(`s`.`duration`), 0) AS `duration` FROM `" . $this->_oConfig->CNF['TABLE_SESSIONS'] . "` AS `s` WHERE " . $sWhere . " GROUP BY `s`.`" . $sColumn . "` ORDER BY " . $sOrder . " " . $sDir . ", COUNT(*) " . $sDir . ", `s`.`" . $sColumn . "` ASC LIMIT " . max(0, (int)$iStart) . ", " . max(1, min((int)$iMax, (int)$iLimit)), $aBindings);
+    }
+
+    /**
+     * The metrics of some values of a dimension per time bucket: rows with bucket, value and
+     * the columns getBreakdown returns for that dimension (without entries and exits).
+     * `value` is the asked value itself: the tables compare text without case and trailing
+     * spaces, so a group's own spelling ('facebook' for 'Facebook') can differ per bucket.
+     *
+     * @param array $aValues the values to follow, a few at most
+     * @see getSeries for the bucket parameters
+     */
+    public function getBreakdownSeries($aFilter, $sDimension, $aValues, $sBucket, $iOffset, $aStarts = [])
+    {
+        if(empty($aValues))
+            return [];
+
+        $aValues = array_values(array_map('strval', $aValues));
+        $aBindings = [];
+
+        if(isset($this->_aEventDimensions[$sDimension])) {
+            $sColumn = '`e`.`' . $this->_aEventDimensions[$sDimension] . '`';
+            $sWhere = $this->_getEventsWhere($aFilter, $aBindings);
+            $sIn = $this->_getInSql($aValues, 'qv', $aBindings);
+            $sValue = $this->_getValueCaseSql($sColumn, $aValues, $aBindings);
+            $sBucketSql = $this->_getBucketSql('`e`.`ts`', $sBucket, $iOffset, $aStarts, $aBindings);
+
+            return $this->getAll("SELECT " . $sBucketSql . " AS `bucket`, " . $sValue . " AS `value`, COUNT(DISTINCT `e`.`visitor`) AS `visitors`, COUNT(*) AS `pageviews`, IFNULL(AVG(NULLIF(`e`.`engaged`, 0)), 0) / 1000 AS `engaged` FROM `" . $this->_oConfig->CNF['TABLE_EVENTS'] . "` AS `e` WHERE " . $sWhere . " AND " . $sColumn . " IN (" . $sIn . ") GROUP BY `bucket`, `value` ORDER BY `bucket`", $aBindings);
+        }
+
+        if(!isset($this->_aSessionDimensions[$sDimension]))
+            return [];
+
+        $sColumn = '`s`.`' . $this->_aSessionDimensions[$sDimension] . '`';
+        $sWhere = $this->_getSessionsWhere($aFilter, $aBindings);
+        $sIn = $this->_getInSql($aValues, 'qv', $aBindings);
+        $sValue = $this->_getValueCaseSql($sColumn, $aValues, $aBindings);
+        $sBucketSql = $this->_getBucketSql('`s`.`started`', $sBucket, $iOffset, $aStarts, $aBindings);
+
+        return $this->getAll("SELECT " . $sBucketSql . " AS `bucket`, " . $sValue . " AS `value`, COUNT(DISTINCT `s`.`visitor`) AS `visitors`, COUNT(*) AS `sessions`, IFNULL(SUM(`s`.`pageviews`), 0) AS `pageviews`, IFNULL(SUM(`s`.`bounce`), 0) AS `bounces`, IFNULL(SUM(`s`.`duration`), 0) AS `duration` FROM `" . $this->_oConfig->CNF['TABLE_SESSIONS'] . "` AS `s` WHERE " . $sWhere . " AND " . $sColumn . " IN (" . $sIn . ") GROUP BY `bucket`, `value` ORDER BY `bucket`", $aBindings);
+    }
+
+    /**
+     * CASE expression that turns a column into the first of some values it equals, in the
+     * column's collation.
+     */
+    protected function _getValueCaseSql($sColumn, $aValues, &$aBindings)
+    {
+        $sResult = 'CASE';
+        foreach(array_values($aValues) as $i => $sValue) {
+            $sResult .= ' WHEN ' . $sColumn . ' = :qw' . $i . ' THEN :qt' . $i;
+            $aBindings['qw' . $i] = $sValue;
+            $aBindings['qt' . $i] = $sValue;
+        }
+
+        return $sResult . ' END';
+    }
+
+    /**
      * Pages (or titles) with visitors, pageviews and average engaged time in seconds; pages
      * also get entries, bounces of the sessions that entered there, and exits.
+     *
+     * @param string $sMetric sort by this metric (visitors, pageviews, engaged), ties by the
+     *      row count and the value; empty for the usual order, visitors then pageviews
+     * @param string $sDir ASC or DESC, with a metric
+     * @param int $iMax the most rows one call returns
+     * @param bool $bPathSessions pages get entries, bounces and exits; false skips the two
+     *      queries on visits when only the values and their own figures are needed
      */
-    public function getPageStats($aFilter, $sDimension, $iLimit, $iStart = 0)
+    public function getPageStats($aFilter, $sDimension, $iLimit, $iStart = 0, $sMetric = '', $sDir = 'DESC', $iMax = 1000, $bPathSessions = true)
     {
         if(!isset($this->_aEventDimensions[$sDimension]))
             return [];
@@ -395,8 +534,14 @@ class BxAnalyticsDb extends BxBaseModGeneralDb
         $aBindings = [];
         $sWhere = $this->_getEventsWhere($aFilter, $aBindings);
 
-        $aRows = $this->getAllWithKey("SELECT `e`.`" . $sColumn . "` AS `value`, COUNT(DISTINCT `e`.`visitor`) AS `visitors`, COUNT(*) AS `pageviews`, IFNULL(AVG(NULLIF(`e`.`engaged`, 0)), 0) / 1000 AS `engaged` FROM `" . $this->_oConfig->CNF['TABLE_EVENTS'] . "` AS `e` WHERE " . $sWhere . " GROUP BY `e`.`" . $sColumn . "` ORDER BY `visitors` DESC, `pageviews` DESC LIMIT " . max(0, (int)$iStart) . ", " . max(1, min(1000, (int)$iLimit)), 'value', $aBindings);
-        if(empty($aRows) || $sDimension != 'path')
+        $sOrder = '`visitors` DESC, `pageviews` DESC';
+        if(isset($this->_aEventMetrics[$sMetric])) {
+            $sDir = $sDir === 'ASC' ? 'ASC' : 'DESC';
+            $sOrder = $this->_aEventMetrics[$sMetric] . ' ' . $sDir . ', COUNT(*) ' . $sDir . ', `e`.`' . $sColumn . '` ASC';
+        }
+
+        $aRows = $this->getAllWithKey("SELECT `e`.`" . $sColumn . "` AS `value`, COUNT(DISTINCT `e`.`visitor`) AS `visitors`, COUNT(*) AS `pageviews`, IFNULL(AVG(NULLIF(`e`.`engaged`, 0)), 0) / 1000 AS `engaged` FROM `" . $this->_oConfig->CNF['TABLE_EVENTS'] . "` AS `e` WHERE " . $sWhere . " GROUP BY `e`.`" . $sColumn . "` ORDER BY " . $sOrder . " LIMIT " . max(0, (int)$iStart) . ", " . max(1, min((int)$iMax, (int)$iLimit)), 'value', $aBindings);
+        if(empty($aRows) || $sDimension != 'path' || !$bPathSessions)
             return array_values($aRows);
 
         foreach($aRows as $sPath => $aRow)
@@ -919,9 +1064,134 @@ class BxAnalyticsDb extends BxBaseModGeneralDb
     /**
      * Whether anything was ever collected, per platform: the setup check in Studio.
      */
-    public function getLastHits()
+    public function getLastHits($iUntil)
     {
-        return $this->getPairs("SELECT `platform`, MAX(`last_seen`) AS `last` FROM `" . $this->_oConfig->CNF['TABLE_SESSIONS'] . "` GROUP BY `platform`", 'platform', 'last');
+        return $this->getPairs("SELECT `platform`, MAX(`last_seen`) AS `last` FROM `" . $this->_oConfig->CNF['TABLE_SESSIONS'] . "` WHERE `last_seen` <= :until GROUP BY `platform`", 'platform', 'last', ['until' => (int)$iUntil]);
+    }
+
+    /**
+     * Hits in a time range per platform, from the index on events: platform => [hits, last].
+     */
+    public function getRecentHits($iSince, $iUntil)
+    {
+        return $this->getAllWithKey("SELECT `platform`, COUNT(*) AS `hits`, MAX(`ts`) AS `last` FROM `" . $this->_oConfig->CNF['TABLE_EVENTS'] . "` WHERE `ts` >= :since AND `ts` <= :until GROUP BY `platform`", 'platform', ['since' => (int)$iSince, 'until' => (int)$iUntil]);
+    }
+
+    /**
+     * The latest hit of a platform up to a time, visit or not (the server's own hits and
+     * actions outside a visit keep none): one lookup in the platform index.
+     */
+    public function getLastEvent($sPlatform, $iUntil)
+    {
+        return (int)$this->getOne("SELECT MAX(`ts`) FROM `" . $this->_oConfig->CNF['TABLE_EVENTS'] . "` WHERE `platform` = :platform AND `ts` <= :until", ['until' => (int)$iUntil, 'platform' => $sPlatform]);
+    }
+
+    /**
+     * Visitors in visits active in a time range, per platform.
+     */
+    public function getActiveVisitors($iSince, $iUntil)
+    {
+        return $this->getPairs("SELECT `platform`, COUNT(DISTINCT `visitor`) AS `visitors` FROM `" . $this->_oConfig->CNF['TABLE_SESSIONS'] . "` WHERE `last_seen` >= :since AND `started` <= :until GROUP BY `platform`", 'platform', 'visitors', ['since' => (int)$iSince, 'until' => (int)$iUntil]);
+    }
+
+    /**
+     * Visits started in a time range, per platform.
+     */
+    public function getStartedSessions($iSince, $iUntil)
+    {
+        return $this->getPairs("SELECT `platform`, COUNT(*) AS `sessions` FROM `" . $this->_oConfig->CNF['TABLE_SESSIONS'] . "` WHERE `started` >= :since AND `started` <= :until GROUP BY `platform`", 'platform', 'sessions', ['since' => (int)$iSince, 'until' => (int)$iUntil]);
+    }
+
+    /**
+     * App versions in visits started in a time range, as rows of platform and app_version.
+     */
+    public function getAppVersions($iSince, $iUntil, $aPlatforms)
+    {
+        if(empty($aPlatforms))
+            return [];
+
+        $aBindings = ['since' => (int)$iSince, 'until' => (int)$iUntil];
+        $sIn = $this->_getInSql($aPlatforms, 'platform', $aBindings);
+
+        return $this->getAll("SELECT DISTINCT `platform`, `app_version` FROM `" . $this->_oConfig->CNF['TABLE_SESSIONS'] . "` WHERE `started` >= :since AND `started` <= :until AND `platform` IN (" . $sIn . ") AND `app_version` <> '' LIMIT 1000", $aBindings);
+    }
+
+    /*
+     * Studio tools
+     */
+
+    /**
+     * Site pages with active analytics blocks: the module's own page, builder copies on any
+     * other page, and pages made with the Dashboards tool. Studio's own pages are left out.
+     * Each page with its number of blocks and how many of them NEO renders (active_api).
+     */
+    public function getPagesWithBlocks($sModule)
+    {
+        return $this->getAll("SELECT `p`.`object`, `p`.`uri`, `p`.`url`, `p`.`title`, `p`.`module`, `p`.`deletable`, COUNT(`b`.`id`) AS `blocks`, SUM(`b`.`active_api`) AS `api_blocks`
+            FROM `sys_pages_blocks` AS `b`
+            INNER JOIN `sys_objects_page` AS `p` ON `p`.`object` = `b`.`object`
+            WHERE `b`.`module` = :module AND `b`.`type` = 'service' AND `b`.`active` = 1 AND `b`.`object` <> '' AND `b`.`object` NOT LIKE 'sys\_std\_%'
+            GROUP BY `p`.`object`, `p`.`uri`, `p`.`url`, `p`.`title`, `p`.`module`, `p`.`deletable`
+            ORDER BY `p`.`id`", ['module' => $sModule]);
+    }
+
+    public function isPageObject($sObject)
+    {
+        return (bool)$this->getOne("SELECT 1 FROM `sys_objects_page` WHERE `object` = :object LIMIT 1", ['object' => $sObject]);
+    }
+
+    public function isPageUri($sUri)
+    {
+        return (bool)$this->getOne("SELECT 1 FROM `sys_objects_page` WHERE `uri` = :uri LIMIT 1", ['uri' => $sUri]);
+    }
+
+    /**
+     * A new page of the module, with copies of the blocks in some cells of another page.
+     * The copies are shown in NEO (active_api) and can't be copied again from the builder.
+     *
+     * @param array $aPage object, uri, title_system, title, module, layout_id, author
+     * @param string $sFrom the page whose blocks are copied
+     * @param array $aCells cell ids to copy
+     * @return int blocks copied, or false when the page wasn't created
+     */
+    public function insertPageWithBlocks($aPage, $sFrom, $aCells)
+    {
+        $bInserted = $this->query("INSERT INTO `sys_objects_page` SET `author` = :author, `added` = :added, `object` = :object, `uri` = :uri, `title_system` = :title_system, `title` = :title, `module` = :module, `layout_id` = :layout_id, `visible_for_levels` = 2147483647, `visible_for_levels_editable` = 1, `url` = :url, `meta_robots` = 'noindex', `cache_lifetime` = 0, `cache_editable` = 1, `deletable` = 1", [
+            'author' => (int)$aPage['author'],
+            'added' => time(),
+            'object' => $aPage['object'],
+            'uri' => $aPage['uri'],
+            'title_system' => $aPage['title_system'],
+            'title' => $aPage['title'],
+            'module' => $aPage['module'],
+            'layout_id' => (int)$aPage['layout_id'],
+            'url' => 'page.php?i=' . $aPage['uri'],
+        ]);
+        if(!$bInserted)
+            return false;
+
+        $aBindings = ['object' => $aPage['object'], 'from' => $sFrom];
+        $sIn = $this->_getInSql(array_map('intval', $aCells), 'cell', $aBindings);
+
+        return (int)$this->query("INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title_system`, `title`, `designbox_id`, `class`, `visible_for_levels`, `type`, `content`, `deletable`, `copyable`, `active`, `active_api`, `order`)
+            SELECT :object, `cell_id`, `module`, `title_system`, `title`, `designbox_id`, `class`, `visible_for_levels`, `type`, `content`, 1, 0, 1, 1, `order`
+            FROM `sys_pages_blocks` WHERE `object` = :from AND `active` = 1 AND `cell_id` IN (" . $sIn . ") ORDER BY `cell_id`, `order`", $aBindings);
+    }
+
+    /**
+     * Whether the classic tracker is injected into the site's pages.
+     */
+    public function isInjectionActive($sName)
+    {
+        return (bool)$this->getOne("SELECT `active` FROM `sys_injections` WHERE `name` = :name LIMIT 1", ['name' => $sName]);
+    }
+
+    /**
+     * Alerts a handler listens to, as rows of unit and action.
+     */
+    public function getHandlerAlerts($sHandler)
+    {
+        return $this->getAll("SELECT `a`.`unit`, `a`.`action` FROM `sys_alerts` AS `a` INNER JOIN `sys_alerts_handlers` AS `h` ON `h`.`id` = `a`.`handler_id` WHERE `h`.`name` = :name ORDER BY `a`.`id`", ['name' => $sHandler]);
     }
 
     protected function _getPageviews($aFilter)

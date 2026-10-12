@@ -1,0 +1,48 @@
+<div class="bx-analytics-query">
+    <div class="bx-analytics-controls bx-analytics-query-controls">
+        <label class="bx-analytics-control">
+            <span class="bx-analytics-control-label">__dimension_label__</span>
+            <select class="bx-def-font-inputs bx-form-input-select bx-analytics-select" data-bx-analytics-param="q_dim">
+                <optgroup label="__event_dims_label__">
+                    <bx_repeat:event_dims>
+                        <option value="__dim_value__" __dim_selected__>__dim_title__</option>
+                    </bx_repeat:event_dims>
+                </optgroup>
+                <optgroup label="__session_dims_label__">
+                    <bx_repeat:session_dims>
+                        <option value="__dim_value__" __dim_selected__>__dim_title__</option>
+                    </bx_repeat:session_dims>
+                </optgroup>
+            </select>
+        </label>
+        <label class="bx-analytics-control">
+            <span class="bx-analytics-control-label">__metric_label__</span>
+            <select class="bx-def-font-inputs bx-form-input-select bx-analytics-select" data-bx-analytics-param="q_metric">
+                <bx_repeat:metrics>
+                    <option value="__metric_value__" __metric_selected__>__metric_title__</option>
+                </bx_repeat:metrics>
+            </select>
+        </label>
+        <label class="bx-analytics-control">
+            <span class="bx-analytics-control-label">__dir_label__</span>
+            <select class="bx-def-font-inputs bx-form-input-select bx-analytics-select" data-bx-analytics-param="q_dir">
+                <bx_repeat:dirs>
+                    <option value="__dir_value__" __dir_selected__>__dir_title__</option>
+                </bx_repeat:dirs>
+            </select>
+        </label>
+        <bx_if:download>
+            <a class="bx-analytics-download" href="__export_url__" download>__download__</a>
+        </bx_if:download>
+    </div>
+    <bx_if:chart>
+        <div class="bx-analytics-chart">
+            <canvas role="img" aria-label="__chart_label__"></canvas>
+        </div>
+        <script type="application/json" class="bx-analytics-chart-data">__chart_json__</script>
+    </bx_if:chart>
+    __table__
+    <bx_if:truncated>
+        <p class="bx-analytics-note">__truncated__</p>
+    </bx_if:truncated>
+</div>

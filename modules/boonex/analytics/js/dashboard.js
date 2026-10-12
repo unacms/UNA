@@ -76,7 +76,9 @@ BxAnalyticsDashboard.prototype.init = function () {
         }
 
         if ((oTarget = oEvent.target.closest('[data-bx-analytics-filter]'))) {
-            $this.setParam('f[' + oTarget.getAttribute('data-bx-analytics-filter') + ']', oTarget.getAttribute('data-bx-analytics-value'));
+            // the platform has a parameter of its own (the filter bar's select), not f[platform]
+            sName = oTarget.getAttribute('data-bx-analytics-filter');
+            $this.setParam(sName === 'platform' ? 'platform' : 'f[' + sName + ']', oTarget.getAttribute('data-bx-analytics-value'));
             return;
         }
 
@@ -506,9 +508,34 @@ BxAnalyticsDashboard.prototype.getColors = function (oElement) {
 };
 
 /**
+ * Several values over time (kind `series`: `series` of {label, points of {t, v, partial}})
+ * as lines per category, the bucket in progress dashed.
+ */
+BxAnalyticsDashboard.prototype.getSeriesLines = function (oData) {
+    var aSeries = oData.series || [];
+
+    return {
+        kind: 'lines',
+        metric: oData.metric,
+        bucket: oData.bucket,
+        tz: oData.tz,
+        legend: true,
+        labels: aSeries.length ? aSeries[0].points.map(function (oPoint) { return oPoint.t; }) : [],
+        datasets: aSeries.map(function (oSeries) {
+            return {
+                label: oSeries.label,
+                values: oSeries.points.map(function (oPoint) { return oPoint.v; }),
+                partial: oSeries.points.map(function (oPoint) { return !!oPoint.partial; })
+            };
+        })
+    };
+};
+
+/**
  * Draw the chart a JSON element describes, in the canvas of the container before it.
  * Kinds: a metric over time (the overview, `series` with every metric), stacked bars per
- * category (`labels` and `datasets`), and lines per category (`datasets`, kind `lines`).
+ * category (`labels` and `datasets`), lines per category (`datasets`, kind `lines`), and
+ * several values of one metric over time (kind `series`, the query).
  */
 BxAnalyticsDashboard.prototype.drawChart = function (oJson, oData) {
     var oContainer = oJson.previousElementSibling;
@@ -524,6 +551,9 @@ BxAnalyticsDashboard.prototype.drawChart = function (oJson, oData) {
     var $this = this;
     var oColors = this.getColors(oContainer);
     var bReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (oData.kind === 'series')
+        oData = this.getSeriesLines(oData);
+
     var sKind = oData.kind || 'metric';
     var sMetric = oData.metric || 'number';
     var oChart;
@@ -605,11 +635,18 @@ BxAnalyticsDashboard.prototype.drawChart = function (oJson, oData) {
                         spanGaps: false,
                         borderRadius: sKind === 'stacked' ? 2 : 0,
                         pointRadius: 0,
-                        tension: 0.3
+                        pointHoverRadius: sKind === 'stacked' ? 0 : 4,
+                        tension: 0.3,
+                        // the bucket still in progress is drawn dashed
+                        segment: oSet.partial ? {
+                            borderDash: function (oContext) {
+                                return oSet.partial[oContext.p1DataIndex] ? [4, 4] : undefined;
+                            }
+                        } : undefined
                     };
                 })
             },
-            legend: oData.datasets.length > 1,
+            legend: oData.legend || oData.datasets.length > 1,
             label: function (oContext) {
                 return oContext.dataset.label + ': ' + $this.formatMetric(sMetric, oContext.parsed.y, oData);
             }
@@ -693,6 +730,7 @@ BxAnalyticsDashboard.prototype.formatMetric = function (sMetric, fValue, oData) 
             return Number(fValue).toFixed(1);
 
         case 'duration':
+        case 'engaged':
             var iSeconds = Math.round(fValue);
             if (iSeconds < 60)
                 return iSeconds + (this._aStrings.duration_s || 's');

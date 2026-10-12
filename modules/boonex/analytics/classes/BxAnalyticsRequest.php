@@ -88,17 +88,37 @@ class BxAnalyticsRequest
     }
 
     /**
+     * The address the request came from, before any proxy header is read, or ''.
+     */
+    public function getRemoteAddr()
+    {
+        return $this->_valid($this->_get('REMOTE_ADDR'));
+    }
+
+    /**
      * ISO 3166-1 alpha-2 country from CDN headers, or ''. "XX" and "T1" (Tor) mean unknown.
      */
     public function getCountry()
     {
+        $aCountry = $this->getCountryHeader();
+
+        return $aCountry ? $aCountry['country'] : '';
+    }
+
+    /**
+     * The CDN header the country comes from and its value, or null when there is none.
+     *
+     * @return array|null header (as in $_SERVER) and country
+     */
+    public function getCountryHeader()
+    {
         foreach(self::$_aCountryHeaders as $sHeader) {
             $sValue = mb_strtoupper(trim($this->_get($sHeader)));
             if(preg_match('/^[A-Z]{2}$/', $sValue) && !in_array($sValue, ['XX', 'T1', 'ZZ'], true))
-                return $sValue;
+                return ['header' => $sHeader, 'country' => $sValue];
         }
 
-        return '';
+        return null;
     }
 
     /**

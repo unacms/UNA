@@ -1,0 +1,60 @@
+<div class="bx-analytics bx-analytics-tool bx-analytics-setup">
+    <bx_if:tracking_off>
+        <p class="bx-analytics-notice">__tracking_off__ <a class="bx-analytics-tool-link" href="__settings_url__">__settings__</a></p>
+    </bx_if:tracking_off>
+    <h3 class="bx-analytics-subtitle bx-analytics-subtitle-first">__status_title__</h3>
+    <div data-bx-analytics-setup-status>__status__</div>
+
+    <h3 class="bx-analytics-subtitle">__check_title__</h3>
+    <p class="bx-analytics-tool-intro">__check_hint__</p>
+    <div class="bx-analytics-form-actions">
+        <button type="button" class="bx-analytics-tool-btn bx-analytics-tool-btn-primary" data-bx-analytics-setup="check" data-bx-analytics-csrf="__csrf__">__check__</button>
+        <button type="button" class="bx-analytics-tool-btn" data-bx-analytics-setup="test_event" data-bx-analytics-csrf="__csrf__" aria-describedby="bx-analytics-setup-test-warning">__test__</button>
+    </div>
+    <p class="bx-analytics-note" id="bx-analytics-setup-test-warning">__test_warning__</p>
+    <div class="bx-analytics-setup-result" data-bx-analytics-setup-result role="status"></div>
+
+    <h3 class="bx-analytics-subtitle">__install_title__</h3>
+    <div class="bx-analytics-setup-clients">
+        <section class="bx-analytics-setup-client">
+            <h4 class="bx-analytics-setup-client-title">__core_web_title__</h4>
+            <p>__core_web_text__</p>
+            <p class="bx-analytics-state bx-analytics-state-__injection_state__">__injection_icon__<span>__injection__</span></p>
+            <p class="bx-analytics-hint">__core_web_exclusions__</p>
+        </section>
+        <section class="bx-analytics-setup-client">
+            <h4 class="bx-analytics-setup-client-title">__neo_title__</h4>
+            <p>__neo_text__</p>
+            <ul class="bx-analytics-checklist">
+                <bx_repeat:neo_checks>
+                    <li class="bx-analytics-state bx-analytics-state-__check_state__">__check_icon__<span>__check_text__</span></li>
+                </bx_repeat:neo_checks>
+            </ul>
+        </section>
+        <section class="bx-analytics-setup-client">
+            <h4 class="bx-analytics-setup-client-title">__api_title__</h4>
+            <p>__api_text__</p>
+            __code_curl__
+        </section>
+        <section class="bx-analytics-setup-client">
+            <h4 class="bx-analytics-setup-client-title">__core_title__</h4>
+            <p>__core_text__</p>
+            <p class="bx-analytics-state bx-analytics-state-__actions_state__">__actions_icon__<span>__actions__</span></p>
+            <p class="bx-analytics-control-label">__alerts_label__</p>
+            <ul class="bx-analytics-tags">
+                <bx_repeat:alerts>
+                    <li><code>__alert__</code></li>
+                </bx_repeat:alerts>
+            </ul>
+        </section>
+    </div>
+
+    <h3 class="bx-analytics-subtitle">__events_title__</h3>
+    <p class="bx-analytics-tool-intro">__events_hint__</p>
+    <div class="bx-analytics-setup-events">
+        __code_classic__
+        __code_neo__
+        __code_server__
+    </div>
+    <p class="bx-analytics-note">__events_warning__</p>
+</div>

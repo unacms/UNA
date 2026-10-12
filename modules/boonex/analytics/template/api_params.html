@@ -1,0 +1,24 @@
+<bx_if:params>
+    <div class="bx-analytics-table-wrap" role="region" aria-label="__caption__" tabindex="0">
+        <table class="bx-analytics-table bx-analytics-tool-table bx-analytics-api-table">
+            <caption class="bx-analytics-sr">__caption__</caption>
+            <thead>
+                <tr>
+                    <th scope="col" class="bx-analytics-col-text">__col_param__</th>
+                    <th scope="col" class="bx-analytics-col-text">__col_accepts__</th>
+                </tr>
+            </thead>
+            <tbody>
+                <bx_repeat:params>
+                    <tr>
+                        <td class="bx-analytics-col-text"><code>__param_name__</code></td>
+                        <td class="bx-analytics-col-text bx-analytics-col-wrap">__param_accepts__</td>
+                    </tr>
+                </bx_repeat:params>
+            </tbody>
+        </table>
+    </div>
+</bx_if:params>
+<bx_if:none>
+    <p class="bx-analytics-note">__none__</p>
+</bx_if:none>

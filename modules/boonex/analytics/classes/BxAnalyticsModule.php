@@ -28,7 +28,7 @@ class BxAnalyticsModule extends BxDolModule
     /**
      * Reports that blocks, Studio and the API may ask for; each is a BxAnalyticsReports method.
      */
-    protected $_aReports = ['filters', 'overview', 'top', 'table', 'realtime', 'map', 'bots', 'sessions', 'users', 'events', 'journeys', 'retention', 'goals', 'funnels', 'revenue', 'subscriptions', 'sales', 'credits', 'errors', 'performance'];
+    protected $_aReports = ['filters', 'overview', 'top', 'table', 'realtime', 'map', 'bots', 'sessions', 'users', 'events', 'journeys', 'retention', 'goals', 'funnels', 'revenue', 'subscriptions', 'sales', 'credits', 'errors', 'performance', 'query'];
 
     /**
      * Reports that show members by name.
@@ -39,6 +39,12 @@ class BxAnalyticsModule extends BxDolModule
      * Reports that show money and buyers.
      */
     protected $_aRevenueReports = ['revenue', 'subscriptions', 'sales', 'credits'];
+
+    /**
+     * Reports with a CSV download. None of them names members: one that does must stay
+     * behind the same checks as getReportData (checkAllowedPeople).
+     */
+    protected $_aExportReports = ['query', 'table', 'top'];
 
     /**
      * Payment alerts (unit `system`) that keep the revenue ledger.
@@ -69,7 +75,28 @@ class BxAnalyticsModule extends BxDolModule
         'credits' => [['filters', [], true], ['credits', [], true]],
         'errors' => [['filters', [], true], ['errors', [], true]],
         'performance' => [['filters', [], true], ['performance', [], true]],
+        'query' => [['filters', [], true], ['query', [], true]],
     ];
+
+    /**
+     * Studio sections that are admin tools, not reports: the API playground, the pages built
+     * from analytics blocks, and the tracker setup. They show page objects, addresses and
+     * settings, so they stay out of $_aReports, which get_report (any API client) can ask for.
+     */
+    protected $_aStudioTools = ['api', 'dashboards', 'setup'];
+
+    /**
+     * The page whose blocks a new analytics page starts with, and the cells copied: the
+     * center and the right bar of layout 12, the cells NEO's dashboard tabs show.
+     */
+    protected $_sDashboardTemplate = 'bx_analytics_page';
+    protected $_aDashboardCells = [2, 3];
+    protected $_iDashboardLayout = 12;
+
+    /**
+     * The event the Setup section's test sends.
+     */
+    const SETUP_TEST_EVENT = 'analytics_setup_test';
           
     function __construct(&$aModule)
     {
@@ -229,6 +256,49 @@ class BxAnalyticsModule extends BxDolModule
         ]);
 
         return ['stored' => $iStored];
+    }
+
+    /**
+     * @page service Service Calls
+     * @section bx_analytics Analytics
+     * @subsection bx_analytics-tracking Tracking
+     * @subsubsection bx_analytics-track track
+     *
+     * @code bx_srv('bx_analytics', 'track', ['export_done', ['rows' => 120]]); @endcode
+     *
+     * Record a custom event from server code, such as a finished import or a webhook. It is
+     * stored like a site action: on the platform of the request (core for cron jobs), joined
+     * to the member's running visit on that platform when there is one. For PHP only: not
+     * available over the API. Don't call `collect` from server code instead, which records
+     * the server's own address and user agent as an API client.
+     *
+     * @param $sName event name: up to 64 letters, digits, spaces and _ . : / -
+     * @param $aProps properties: up to 30 keys of letters, digits, _ . -, with scalar values
+     * @param $iProfileId who did it; 0 for the logged in member, if any
+     * @param $fValue a number to sum in reports, such as an amount
+     * @return bool whether it was stored (false when tracking is off, the name is invalid, or
+     *      the platform or the member's level is excluded)
+     *
+     * @see BxAnalyticsModule::serviceTrack
+     */
+    /**
+     * @ref bx_analytics-track "track"
+     */
+    public function serviceTrack($sName, $aProps = [], $iProfileId = 0, $fValue = 0)
+    {
+        if(!is_string($sName) || !preg_match('/^[\p{L}\p{N} _.:\/-]{1,64}$/u', $sName))
+            return false;
+
+        $iProfileId = (int)$iProfileId;
+        if(!$iProfileId)
+            $iProfileId = (int)bx_get_logged_profile_id();
+
+        return $this->getCollector()->collectAction($sName, '', 0, $iProfileId, [
+            'type' => BX_ANALYTICS_HIT_EVENT,
+            'api_key' => $this->_isApiKeyRequest(),
+            'props' => is_array($aProps) ? $aProps : [],
+            'value' => is_numeric($fValue) ? (float)$fValue : 0,
+        ]);
     }
 
     /**
@@ -426,6 +496,29 @@ class BxAnalyticsModule extends BxDolModule
     }
 
     /**
+     * A report as a CSV download: GET export/<report>/ with the page's filters and the
+     * report's own parameters (q_dim, q_metric, q_dir for the query; table or group and tab
+     * otherwise). Every value of the dimension, up to MAX_EXPORT_ROWS rows. Reading, so the
+     * analytics permission is checked without counting a use of it.
+     */
+    public function actionExport($sReport = '')
+    {
+        $aExport = $this->getReportExport((string)$sReport, $_GET);
+        if($aExport === false)
+            $this->_outputJson(['error' => _t('_sys_txt_access_denied'), 'code' => 403]);
+
+        header('Content-Type: text/csv; charset=utf-8');
+        header('Content-Disposition: attachment; filename="' . $aExport['filename'] . '"');
+        header('Cache-Control: no-store');
+        header('X-Content-Type-Options: nosniff');
+
+        $rOutput = fopen('php://output', 'w');
+        BxAnalyticsCsv::write($rOutput, $aExport['header'], $aExport['rows']);
+        fclose($rOutput);
+        exit;
+    }
+
+    /**
      * @page service Service Calls
      * @section bx_analytics Analytics
      * @subsection bx_analytics-blocks Blocks
@@ -547,6 +640,15 @@ class BxAnalyticsModule extends BxDolModule
      */
     public function getStudioSection($sSection)
     {
+        // admin tools: not reports, so get_report and the blocks never reach them
+        if(in_array($sSection, $this->_aStudioTools, true)) {
+            if(!isAdmin())
+                return '';
+
+            $sMethod = '_getStudio' . bx_gen_method_name($sSection);
+            return $this->_oTemplate->getStudioSection([['title' => '', 'content' => $this->$sMethod(), 'wide' => true]]);
+        }
+
         if(!isset($this->_aStudioSections[$sSection]))
             return '';
 
@@ -599,6 +701,397 @@ class BxAnalyticsModule extends BxDolModule
             return '';
 
         return $this->_oTemplate->getBlock($sReport, $aData, $this->getFilter($aParams), $aBlockParams);
+    }
+
+    /*
+     * Studio tools: API playground, dashboards, setup. Site administrators only.
+     */
+
+    /**
+     * Reports the viewer may ask get_report for, with their parameters: common (the filter)
+     * and reports => [report => parameters]. Reports with members or money are left out
+     * without the permission to see them.
+     */
+    public function getApiCatalog()
+    {
+        $aSchema = $this->getReports()->getParamsSchema();
+
+        $aReports = [];
+        foreach($this->_aReports as $sReport)
+            if($this->_isReportAllowed($sReport) && isset($aSchema['reports'][$sReport]))
+                $aReports[$sReport] = $aSchema['reports'][$sReport];
+
+        return ['common' => $aSchema['common'], 'reports' => $aReports];
+    }
+
+    /**
+     * Run get_report as api.php would for the current viewer and answer with api.php's
+     * envelope: status, module, method, params and data, or status and error. Only a report
+     * of the catalog is run: the playground never takes a service or a method name.
+     *
+     * @param string $sReport report name
+     * @param mixed $mixedParams the report's parameters, an array or a JSON object string
+     */
+    public function getApiResponse($sReport, $mixedParams)
+    {
+        if(is_array($mixedParams))
+            $aParams = $mixedParams;
+        else
+            $aParams = trim((string)$mixedParams) === '' ? [] : json_decode((string)$mixedParams, true);
+        if(!is_array($aParams) || (!empty($aParams) && array_values($aParams) === $aParams))
+            return ['status' => 400, 'error' => _t('_bx_analytics_txt_api_bad_params')];
+
+        $aCatalog = $this->getApiCatalog();
+        if(!is_string($sReport) || !isset($aCatalog['reports'][$sReport]))
+            return ['status' => 404, 'error' => _t('_sys_request_page_not_found_cpt')];
+
+        $mixedRet = $this->serviceGetReport($sReport, $aParams);
+        if(is_array($mixedRet) && isset($mixedRet['error']))
+            return [
+                'status' => isset($mixedRet['code']) ? (int)$mixedRet['code'] : 500,
+                'error' => $mixedRet['error'],
+                'data' => '',
+            ];
+
+        return [
+            'status' => 200,
+            'module' => $this->getName(),
+            'method' => 'get_report',
+            'params' => [$sReport, (object)$aParams],
+            'data' => $mixedRet,
+        ];
+    }
+
+    /**
+     * Run a report from the API playground: POST report, params (JSON), csrf_token.
+     */
+    public function actionApi()
+    {
+        $this->_checkAdminRequest();
+
+        $iStart = microtime(true);
+        $aResponse = $this->getApiResponse((string)bx_get('report', 'post'), (string)bx_get('params', 'post'));
+
+        $this->_outputJson([
+            'ok' => true,
+            'ms' => (int)round(1000 * (microtime(true) - $iStart)),
+            'response' => $aResponse,
+        ]);
+    }
+
+    /**
+     * Site pages with analytics blocks: title, blocks, blocks NEO renders, view and builder
+     * links, and whether the page goes away with the module (created by it).
+     */
+    public function getDashboards()
+    {
+        $oPermalinks = BxDolPermalinks::getInstance();
+
+        $aResult = [];
+        foreach($this->_oDb->getPagesWithBlocks($this->getName()) as $aPage)
+            $aResult[] = [
+                'object' => $aPage['object'],
+                'title' => _t($aPage['title']),
+                'blocks' => (int)$aPage['blocks'],
+                'api_blocks' => (int)$aPage['api_blocks'],
+                'view_url' => bx_absolute_url($oPermalinks->permalink($aPage['url'] !== '' ? $aPage['url'] : 'page.php?i=' . $aPage['uri'])),
+                'edit_url' => BX_DOL_URL_STUDIO . 'builder_page.php?type=' . rawurlencode($aPage['module']) . '&page=' . rawurlencode($aPage['object']),
+                'module_page' => $aPage['module'] == $this->getName(),
+            ];
+
+        return $aResult;
+    }
+
+    /**
+     * A new site page of the module with the analytics page's blocks in the center and the
+     * right bar, all shown in NEO. Its title is a language string in every language. Pages
+     * of the module are removed when the module is disabled.
+     *
+     * @param string $sTitle page title, 1 to 100 characters
+     * @return array|false object, uri, edit_url and view_url, or false
+     */
+    public function createDashboard($sTitle)
+    {
+        $sTitle = trim((string)$sTitle);
+        if($sTitle === '' || get_mb_len($sTitle) > 100)
+            return false;
+
+        $sUri = uriGenerate(get_mb_substr($sTitle, 0, 50), 'sys_objects_page', 'uri', ['empty' => 'analytics']);
+
+        // the object names language keys: Latin letters, digits and _ only, whatever the title
+        $sName = trim(preg_replace('/[^a-z0-9_]+/', '_', get_mb_substr($sUri, 0, 40)), '_');
+        $sObject = uriGenerate($this->getName() . '_' . ($sName !== '' ? $sName : 'dashboard'), 'sys_objects_page', 'object', ['divider' => '_']);
+        if($this->_oDb->isPageObject($sObject) || $this->_oDb->isPageUri($sUri))
+            return false;
+
+        $sKey = '_' . $sObject . '_page_title';
+        $sKeySystem = '_' . $sObject . '_page_title_sys';
+        $oLanguages = BxDolStudioLanguagesUtils::getInstance();
+
+        // disabling the module removes its pages but not their titles: keys of a page that is
+        // gone are stale, and adding a string to an existing key fails
+        $oLanguages->deleteLanguageString($sKey);
+        $oLanguages->deleteLanguageString($sKeySystem);
+
+        if(!$oLanguages->addLanguageString($sKey, $sTitle) || !$oLanguages->addLanguageString($sKeySystem, $sTitle)) {
+            $oLanguages->deleteLanguageString($sKey);
+            $oLanguages->deleteLanguageString($sKeySystem);
+            return false;
+        }
+
+        $mixedBlocks = $this->_oDb->insertPageWithBlocks([
+            'object' => $sObject,
+            'uri' => $sUri,
+            'title_system' => $sKeySystem,
+            'title' => $sKey,
+            'module' => $this->getName(),
+            'layout_id' => $this->_iDashboardLayout,
+            'author' => bx_get_logged_profile_id(),
+        ], $this->_sDashboardTemplate, $this->_aDashboardCells);
+
+        // page objects and their URIs are cached
+        foreach(['sys_pages_objects_data', 'sys_pages_uri_object_map', 'sys_pages_urirewrite_object_map'] as $sCache)
+            $this->_oDb->cleanCache($sCache);
+
+        if($mixedBlocks === false) {
+            $oLanguages->deleteLanguageString($sKey);
+            $oLanguages->deleteLanguageString($sKeySystem);
+            return false;
+        }
+
+        return [
+            'object' => $sObject,
+            'uri' => $sUri,
+            'blocks' => $mixedBlocks,
+            'edit_url' => BX_DOL_URL_STUDIO . 'builder_page.php?type=' . rawurlencode($this->getName()) . '&page=' . rawurlencode($sObject),
+            'view_url' => bx_absolute_url(BxDolPermalinks::getInstance()->permalink('page.php?i=' . $sUri)),
+        ];
+    }
+
+    /**
+     * Create an analytics page: POST title, csrf_token. Answers with its builder link.
+     */
+    public function actionDashboardCreate()
+    {
+        $this->_checkAdminRequest();
+
+        $aPage = $this->createDashboard((string)bx_get('title', 'post'));
+        if($aPage === false)
+            $this->_outputJson(['error' => _t('_bx_analytics_txt_dash_create_failed')]);
+
+        $this->_outputJson(['ok' => true, 'url' => $aPage['edit_url']]);
+    }
+
+    /**
+     * Activity per platform: last (latest hit), hits (last 24 hours), visitors (in visits
+     * active in the last 24 hours), sessions (started in the last 7 days), app_version (the
+     * highest seen in those visits, apps only). Kept for a minute.
+     *
+     * @param int $iNow the time to count back from
+     * @param bool $bCache use and fill the minute's copy
+     */
+    public function getPlatformActivity($iNow, $bCache = true)
+    {
+        $sCache = 'bx_analytics_platform_activity';
+        if($bCache) {
+            $aCached = $this->_oDb->getCache($sCache, '', 60);
+            if(is_array($aCached))
+                return $aCached;
+        }
+
+        $iDay = $iNow - 86400;
+        $iWeek = $iNow - 7 * 86400;
+        $aHits = $this->_oDb->getRecentHits($iDay, $iNow);
+        $aLast = $this->_oDb->getLastHits($iNow);
+        $aVisitors = $this->_oDb->getActiveVisitors($iDay, $iNow);
+        $aSessions = $this->_oDb->getStartedSessions($iWeek, $iNow);
+
+        $aApps = array_values(array_filter(array_keys($this->_oConfig->getPlatforms()), [$this->_oConfig, 'isAppPlatform']));
+        $aVersions = [];
+        foreach($this->_oDb->getAppVersions($iWeek, $iNow, $aApps) as $aRow)
+            if(!isset($aVersions[$aRow['platform']]) || version_compare($aRow['app_version'], $aVersions[$aRow['platform']], '>'))
+                $aVersions[$aRow['platform']] = $aRow['app_version'];
+
+        $aResult = [];
+        foreach(array_keys($this->_oConfig->getPlatforms()) as $sPlatform) {
+            $iLast = max(isset($aLast[$sPlatform]) ? (int)$aLast[$sPlatform] : 0, isset($aHits[$sPlatform]) ? (int)$aHits[$sPlatform]['last'] : 0);
+
+            // hits outside a visit (the server's own, actions without a running visit) are
+            // only in events: without a hit in the last 24 hours, look up the latest one
+            if(!isset($aHits[$sPlatform]))
+                $iLast = max($iLast, $this->_oDb->getLastEvent($sPlatform, $iNow));
+
+            $aResult[$sPlatform] = [
+                'last' => $iLast,
+                'hits' => isset($aHits[$sPlatform]) ? (int)$aHits[$sPlatform]['hits'] : 0,
+                'visitors' => isset($aVisitors[$sPlatform]) ? (int)$aVisitors[$sPlatform] : 0,
+                'sessions' => isset($aSessions[$sPlatform]) ? (int)$aSessions[$sPlatform] : 0,
+                'app_version' => isset($aVersions[$sPlatform]) ? $aVersions[$sPlatform] : '',
+            ];
+        }
+
+        if($bCache)
+            $this->_oDb->setCache($sCache, $aResult, 60);
+
+        return $aResult;
+    }
+
+    /**
+     * Tracker status per platform: enabled, status (receiving: a hit in the last hour,
+     * quiet: in the last 7 days, nodata, off) and the activity.
+     *
+     * @param int $iNow the time to count back from
+     * @param bool $bCache use the minute's copy of the activity
+     */
+    public function getSetupStatus($iNow, $bCache = true)
+    {
+        $bTracking = $this->_oConfig->isTrackingEnabled();
+        $aActivity = $this->getPlatformActivity($iNow, $bCache);
+
+        $aResult = [];
+        foreach($aActivity as $sPlatform => $aRow) {
+            $bEnabled = $bTracking && $this->_oConfig->isPlatformEnabled($sPlatform);
+
+            $sStatus = 'nodata';
+            if(!$bEnabled)
+                $sStatus = 'off';
+            elseif($aRow['last'] >= $iNow - 3600)
+                $sStatus = 'receiving';
+            elseif($aRow['last'] >= $iNow - 7 * 86400)
+                $sStatus = 'quiet';
+
+            $aResult[$sPlatform] = ['platform' => $sPlatform, 'enabled' => $bEnabled, 'status' => $sStatus] + $aRow;
+        }
+
+        return $aResult;
+    }
+
+    /**
+     * What the classic tracker's collector would do with a pageview of the site's home page
+     * from the current request: a dry run that stores nothing.
+     */
+    public function checkRequest()
+    {
+        return $this->getCollector()->check($this->_getSetupPayload(BX_ANALYTICS_HIT_PAGEVIEW), $this->_getSetupContext());
+    }
+
+    /**
+     * Dry run of the tracker for the admin's browser: POST csrf_token. Answers with the
+     * result rendered.
+     */
+    public function actionCheck()
+    {
+        $this->_checkAdminRequest();
+
+        $this->_outputJson(['ok' => true, 'html' => $this->_oTemplate->getSetupCheckHtml($this->checkRequest())]);
+    }
+
+    /**
+     * Send a test event from the admin's browser through the real collector: POST
+     * csrf_token. It is stored like any hit, so it adds a visit. Answers with whether it
+     * was stored and the status table again.
+     */
+    public function actionTestEvent()
+    {
+        $this->_checkAdminRequest();
+
+        $iStored = $this->getCollector()->collect($this->_getSetupPayload(BX_ANALYTICS_HIT_EVENT), $this->_getSetupContext());
+        $this->_oDb->cleanCache('bx_analytics_platform_activity');
+
+        $this->_outputJson([
+            'ok' => true,
+            'stored' => $iStored,
+            'message' => _t($iStored ? '_bx_analytics_txt_setup_test_stored' : '_bx_analytics_txt_setup_test_dropped'),
+            'html' => $this->_oTemplate->getSetupStatusHtml($this->getSetupStatus(time(), false)),
+        ]);
+    }
+
+    /**
+     * A classic tracker hit on the site's home page, for the Setup checks.
+     */
+    protected function _getSetupPayload($sType)
+    {
+        $aHit = ['type' => $sType, 'url' => BX_DOL_URL_ROOT, 'title' => _t('_bx_analytics_txt_setup_test_title')];
+        if($sType == BX_ANALYTICS_HIT_EVENT)
+            $aHit['name'] = self::SETUP_TEST_EVENT;
+
+        return ['platform' => BX_ANALYTICS_PLATFORM_CORE_WEB, 'hits' => [$aHit]];
+    }
+
+    protected function _getSetupContext()
+    {
+        return [
+            'platform' => BX_ANALYTICS_PLATFORM_CORE_WEB,
+            'same_origin' => true,
+            'profile_id' => bx_get_logged_profile_id(),
+        ];
+    }
+
+    /**
+     * Studio > API: the playground.
+     */
+    protected function _getStudioApi()
+    {
+        return $this->_oTemplate->getStudioApi([
+            'catalog' => $this->getApiCatalog(),
+            'api_enabled' => (bool)getParam('sys_api_enable'),
+            'api_access' => getParam('sys_api_access_by_origin') || getParam('sys_api_access_by_key'),
+        ]);
+    }
+
+    /**
+     * Studio > Dashboards: pages with analytics blocks, and a new one.
+     */
+    protected function _getStudioDashboards()
+    {
+        return $this->_oTemplate->getStudioDashboards([
+            'pages' => $this->getDashboards(),
+        ]);
+    }
+
+    /**
+     * Studio > Setup: tracker status per platform, what each client needs, custom events,
+     * and the checks of the admin's own browser.
+     */
+    protected function _getStudioSetup()
+    {
+        $aAlerts = [];
+        foreach($this->_oDb->getHandlerAlerts($this->getName()) as $aAlert) {
+            // the alerts that record site actions, not the ones that keep data in order; new
+            // content of each module (sync_actions) is said in words, not listed
+            if(in_array($aAlert['unit'] . ':' . $aAlert['action'], ['profile:delete', 'system:enable', 'system:disable'], true) || ($aAlert['unit'] == 'system' && in_array($aAlert['action'], $this->_aPaymentAlerts, true)) || ($aAlert['action'] == 'added' && $aAlert['unit'] != 'comment'))
+                continue;
+            $aAlerts[] = $aAlert['unit'] . ':' . $aAlert['action'];
+        }
+
+        return $this->_oTemplate->getStudioSetup([
+            'status' => $this->getSetupStatus(time()),
+            'tracking' => $this->_oConfig->isTrackingEnabled(),
+            'injection' => $this->_oDb->isInjectionActive('bx_analytics_tracker'),
+            'track_actions' => $this->_oConfig->isTrackActions(),
+            'alerts' => $aAlerts,
+            'api_enabled' => (bool)getParam('sys_api_enable'),
+            'api_key' => (bool)getParam('sys_api_access_by_key'),
+            'api_origin' => (bool)getParam('sys_api_access_by_origin'),
+        ]);
+    }
+
+    /**
+     * Whether the request is a POST from a site administrator with a valid form token: what
+     * every Studio tool action needs.
+     */
+    public function isAdminRequest()
+    {
+        return isAdmin() && isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST' && BxDolForm::isCsrfTokenValid((string)bx_get('csrf_token', 'post'), false);
+    }
+
+    /**
+     * Answer 403 and stop, unless the request is an administrator's POST with a valid token.
+     */
+    protected function _checkAdminRequest()
+    {
+        if(!$this->isAdminRequest())
+            $this->_outputJson(['error' => _t('_sys_txt_access_denied'), 'code' => 403]);
     }
 
     /**
@@ -899,13 +1392,7 @@ class BxAnalyticsModule extends BxDolModule
      */
     public function getReportData($sReport, $aParams)
     {
-        if(!in_array($sReport, $this->_aReports, true))
-            return false;
-
-        if(in_array($sReport, $this->_aPeopleReports, true) && $this->checkAllowedPeople() !== CHECK_ACTION_RESULT_ALLOWED)
-            return false;
-
-        if(in_array($sReport, $this->_aRevenueReports, true) && $this->checkAllowedRevenue() !== CHECK_ACTION_RESULT_ALLOWED)
+        if(!$this->_isReportAllowed($sReport))
             return false;
 
         $oReports = $this->getReports();
@@ -921,6 +1408,48 @@ class BxAnalyticsModule extends BxDolModule
         $aData['filter'] = $oFilter->getParams();
 
         return $aData;
+    }
+
+    /**
+     * A report's rows for a CSV download, behind the same checks as getReportData: header,
+     * rows, total, truncated, and filename (made of the report, the dimension and the
+     * period's dates only). False when the viewer may not use analytics or see the report,
+     * and for a report without a download. The use isn't counted: the action is countable,
+     * and reading a report again is not another use.
+     */
+    public function getReportExport($sReport, $aParams)
+    {
+        if(!$this->serviceIsAvaliable() || !in_array($sReport, $this->_aExportReports, true) || !$this->_isReportAllowed($sReport))
+            return false;
+
+        $oFilter = $this->getFilter($aParams);
+        $aExport = $this->getReports()->getExport($sReport, $oFilter, $aParams, $this->_oConfig->CNF['MAX_EXPORT_ROWS']);
+        if($aExport === false)
+            return false;
+
+        $aFilter = $oFilter->get();
+        bx_import('Csv', $this->_aModule);
+        $aExport['filename'] = BxAnalyticsCsv::getFilename([$sReport, $aExport['dimension'], $aFilter['from_date'], $aFilter['to_date']]);
+
+        return $aExport;
+    }
+
+    /**
+     * Whether a report exists and the viewer may see it: reports with members need "view
+     * analytics people", reports with money "view analytics revenue".
+     */
+    protected function _isReportAllowed($sReport)
+    {
+        if(!in_array($sReport, $this->_aReports, true))
+            return false;
+
+        if(in_array($sReport, $this->_aPeopleReports, true) && $this->checkAllowedPeople() !== CHECK_ACTION_RESULT_ALLOWED)
+            return false;
+
+        if(in_array($sReport, $this->_aRevenueReports, true) && $this->checkAllowedRevenue() !== CHECK_ACTION_RESULT_ALLOWED)
+            return false;
+
+        return true;
     }
 
     /**

@@ -98,6 +98,10 @@ class BxAnalyticsConfig extends BxBaseModGeneralConfig
             // funnel steps at most
             'MAX_FUNNEL_STEPS' => 6,
 
+            // Query: values drawn on the chart, and rows in a CSV download at most
+            'QUERY_SERIES_VALUES' => 5,
+            'MAX_EXPORT_ROWS' => 10000,
+
             // hits per request and their properties, to bound the work of one beacon
             'MAX_HITS_PER_REQUEST' => 20,
             'MAX_PROPS_LENGTH' => 2048,
@@ -134,10 +138,12 @@ class BxAnalyticsConfig extends BxBaseModGeneralConfig
         $this->_aJsClasses = [
             'analytics' => 'BxAnalytics',
             'dashboard' => 'BxAnalyticsDashboard',
+            'tools' => 'BxAnalyticsStudioTools',
         ];
         $this->_aJsObjects = [
             'analytics' => 'oAnalytics',
             'dashboard' => 'oBxAnalyticsDashboard',
+            'tools' => 'oBxAnalyticsStudioTools',
         ];
     }
 
