@@ -73,6 +73,32 @@ class BxAnalyticsDb extends BxBaseModGeneralDb
         'engaged' => 'IFNULL(AVG(NULLIF(`e`.`engaged`, 0)), 0)',
     ];
 
+    /**
+     * Whether the report session settings were applied on this connection.
+     */
+    protected static $_bReportSession = false;
+
+    /**
+     * Session settings for report queries, once per connection. MariaDB, and MySQL before
+     * 8.0.20, sort rows wider than max_length_for_sort_data (1024 bytes) by row id and read
+     * every row again after the sort: a top list of pages (a 255 character utf8mb4 path)
+     * over 90 days then reads each of its pageviews twice, in random order. A larger limit
+     * keeps the columns in the sort. MySQL 8.0.20 and later always do that and deprecated
+     * the variable, so it is left alone there.
+     */
+    public function setReportSession()
+    {
+        if(self::$_bReportSession)
+            return;
+        self::$_bReportSession = true;
+
+        $sVersion = (string)BxDolDb::getLink()->getAttribute(PDO::ATTR_SERVER_VERSION);
+        if(stripos($sVersion, 'mariadb') === false && !version_compare($sVersion, '8.0.20', '<'))
+            return;
+
+        $this->query("SET SESSION `max_length_for_sort_data` = 8192");
+    }
+
     public function isDimension($sName)
     {
         return isset($this->_aSessionDimensions[$sName]) || isset($this->_aEventDimensions[$sName]);
@@ -290,6 +316,46 @@ class BxAnalyticsDb extends BxBaseModGeneralDb
         $CNF = &$this->_oConfig->CNF;
 
         return (int)$this->query("DELETE FROM `" . $CNF['TABLE_BOTS'] . "` WHERE `day` < :day", ['day' => $sDay]) + (int)$this->query("DELETE FROM `" . $CNF['TABLE_BOT_PAGES'] . "` WHERE `day` < :day", ['day' => $sDay]);
+    }
+
+    /**
+     * Add to a rate limit counter and return its new value. One upsert by the primary key;
+     * LAST_INSERT_ID(expr) hands the value back without reading the row again.
+     *
+     * @param string $sKey 8 bytes, see BxAnalyticsCollector::_getLimitKey
+     * @param int $iBucket the minute's or hour's start
+     * @param int $iHits how much to add
+     * @return int the counter after the addition, 0 when it couldn't be written
+     */
+    public function addLimitHits($sKey, $iBucket, $iHits)
+    {
+        $iHits = max(1, (int)$iHits);
+        $mixedResult = $this->query("INSERT INTO `" . $this->_oConfig->CNF['TABLE_LIMITS'] . "` (`key`, `bucket`, `hits`) VALUES (:key, :bucket, LAST_INSERT_ID(:hits)) ON DUPLICATE KEY UPDATE `hits` = LAST_INSERT_ID(`hits` + :add)", [
+            'key' => $sKey,
+            'bucket' => (int)$iBucket,
+            'hits' => $iHits,
+            'add' => $iHits,
+        ]);
+        if($mixedResult === false)
+            return 0;
+
+        return (int)$this->getOne("SELECT LAST_INSERT_ID()");
+    }
+
+    /**
+     * A rate limit counter's value, without adding to it.
+     */
+    public function getLimitHits($sKey, $iBucket)
+    {
+        return (int)$this->getOne("SELECT `hits` FROM `" . $this->_oConfig->CNF['TABLE_LIMITS'] . "` WHERE `key` = :key AND `bucket` = :bucket", ['key' => $sKey, 'bucket' => (int)$iBucket]);
+    }
+
+    /**
+     * Delete up to `$iLimit` rate limit counters of minutes and hours that started before a time.
+     */
+    public function deleteLimitsBefore($iTime, $iLimit)
+    {
+        return (int)$this->query("DELETE FROM `" . $this->_oConfig->CNF['TABLE_LIMITS'] . "` WHERE `bucket` < :ts ORDER BY `bucket` LIMIT " . (int)$iLimit, ['ts' => (int)$iTime]);
     }
 
     public function deleteSaltsBefore($sDay)
@@ -743,40 +809,33 @@ class BxAnalyticsDb extends BxBaseModGeneralDb
     }
 
     /**
-     * Visitors' first visit and the weeks they came back in, for cohorts: members only, or
-     * every visitor id. Weeks start on Monday in the timezone offset.
+     * Weekly cohorts counted in the database, in one pass over the visits kept: visitors
+     * whose first visit (ever kept) falls in the period, by the week of that visit and the
+     * weeks they visited in, as a bit mask (bit n: week n of the period). Members only, or
+     * every visitor id. The period starts on a week boundary and weeks are 7 days long, as
+     * the week buckets of the reports. A visitor's own rows never reach PHP.
      *
-     * @return array [visitor => ['first' => first visit time, 'weeks' => [week start, ...]]]
+     * The visits are read in the order of the `visitor` key, which holds every column used
+     * here, so the grouping needs neither a sort nor a temporary table.
+     *
+     * @param int $iFrom the first week's start
+     * @return array rows of cohort (the week of the first visit, 0 for the period's first),
+     *      weeks (the bit mask) and visitors
      */
-    public function getVisitorWeeks($iFrom, $iTo, $iOffset, $sPlatform, $bMembersOnly)
+    public function getRetentionCohorts($iFrom, $iTo, $sPlatform, $bMembersOnly)
     {
-        $sTable = $this->_oConfig->CNF['TABLE_SESSIONS'];
-        $aBindings = ['to' => (int)$iTo];
-        $sWhere = '`started` < :to';
+        $aBindings = ['to' => (int)$iTo, 'from_first' => (int)$iFrom, 'from_in' => (int)$iFrom, 'from_week' => (int)$iFrom, 'from_cohort' => (int)$iFrom];
+        $sWhere = '`s`.`started` < :to';
         if($bMembersOnly)
-            $sWhere .= ' AND `profile_id` > 0';
+            $sWhere .= ' AND `s`.`profile_id` > 0';
         if($sPlatform !== '') {
-            $sWhere .= ' AND `platform` = :platform';
+            $sWhere .= ' AND `s`.`platform` = :platform';
             $aBindings['platform'] = $sPlatform;
         }
 
-        // visitors whose first visit (ever kept) falls in the period
-        $aFirst = $this->getPairs("SELECT HEX(`visitor`) AS `v`, MIN(`started`) AS `first` FROM `" . $sTable . "` WHERE " . $sWhere . " GROUP BY `visitor` HAVING `first` >= :from", 'v', 'first', array_merge($aBindings, ['from' => (int)$iFrom]));
-        if(empty($aFirst))
-            return [];
-
-        $sWeek = $this->_getBucketSql('`started`', 'week', $iOffset, [], $aBindings);
-        $aRows = $this->getAll("SELECT HEX(`visitor`) AS `v`, " . $sWeek . " AS `week` FROM `" . $sTable . "` WHERE " . $sWhere . " AND `started` >= :from GROUP BY `visitor`, `week`", array_merge($aBindings, ['from' => (int)$iFrom]));
-
-        $aResult = [];
-        foreach($aRows as $aRow)
-            if(isset($aFirst[$aRow['v']])) {
-                if(!isset($aResult[$aRow['v']]))
-                    $aResult[$aRow['v']] = ['first' => (int)$aFirst[$aRow['v']], 'weeks' => []];
-                $aResult[$aRow['v']]['weeks'][] = (int)$aRow['week'];
-            }
-
-        return $aResult;
+        return $this->getAll("SELECT FLOOR((`f`.`first` - :from_cohort) / 604800) AS `cohort`, `f`.`weeks`, COUNT(*) AS `visitors`
+            FROM (SELECT MIN(`s`.`started`) AS `first`, BIT_OR(IF(`s`.`started` >= :from_in, 1 << FLOOR((`s`.`started` - :from_week) / 604800), 0)) AS `weeks` FROM `" . $this->_oConfig->CNF['TABLE_SESSIONS'] . "` AS `s` WHERE " . $sWhere . " GROUP BY `s`.`visitor` HAVING `first` >= :from_first) AS `f`
+            GROUP BY `cohort`, `f`.`weeks`", $aBindings);
     }
 
     /*
@@ -1287,13 +1346,18 @@ class BxAnalyticsDb extends BxBaseModGeneralDb
         $iOffset = (int)$iOffset;
 
         if(!empty($aStarts)) {
-            $aCases = [];
-            foreach(array_reverse(array_values($aStarts)) as $i => $iStart) {
-                $aCases[] = 'WHEN ' . $sColumn . ' >= :b' . $i . ' THEN :b' . $i . 'v';
+            // INTERVAL() finds the last start up to the value by a binary search over the
+            // ascending list, ELT() returns that start; a CASE with a branch per start costs a
+            // comparison per bucket for every row (90 at 90 days). Before the first start: 0.
+            $aFind = [];
+            $aPick = [];
+            foreach(array_values($aStarts) as $i => $iStart) {
+                $aFind[] = ':b' . $i;
+                $aPick[] = ':b' . $i . 'v';
                 $aBindings['b' . $i] = (int)$iStart;
                 $aBindings['b' . $i . 'v'] = (int)$iStart;
             }
-            return 'CASE ' . implode(' ', $aCases) . ' ELSE 0 END';
+            return 'IFNULL(ELT(INTERVAL(' . $sColumn . ', ' . implode(', ', $aFind) . '), ' . implode(', ', $aPick) . '), 0)';
         }
 
         switch($sBucket) {

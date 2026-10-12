@@ -17,6 +17,8 @@
 	<string name="_bx_analytics_adm_stg_inf_geo_source"><![CDATA[CDN headers: the country that Cloudflare, Vercel or CloudFront add to each request, and the region and city on Vercel.]]></string>
 	<string name="_bx_analytics_adm_stg_inf_identity"><![CDATA[Cookieless: a hash of the address and browser that changes daily, with nothing stored on the device. A guest who comes back another day counts as a new visitor. Persistent: a random id kept in the browser or app, which allows guest retention but may need consent.]]></string>
 	<string name="_bx_analytics_adm_stg_inf_ignore_params"><![CDATA[Left out of stored page paths, so one page is not counted as many. Separate with commas; * matches any characters. Campaign tags and ad click ids are always left out.]]></string>
+	<string name="_bx_analytics_adm_stg_inf_limit_hits"><![CDATA[How many pageviews, events, errors and timings the trackers may send from one address in a minute (an IPv6 address counts by its /64 network). More are dropped until the next minute, and the tracker keeps sending. Raise it when many visitors share one address, as in an office or a school. 0: no limit. Site actions and payments are never limited.]]></string>
+	<string name="_bx_analytics_adm_stg_inf_limit_visits"><![CDATA[How many visits may start from one address in an hour (an IPv6 address counts by its /64 network). Hits that would start another visit are dropped, so a script cannot fill the reports with visits. Visits already running go on. 0: no limit.]]></string>
 	<string name="_bx_analytics_adm_stg_inf_link_members"><![CDATA[Record the profile of signed-in members, for member sessions and retention. Deleting a profile unlinks its visits.]]></string>
 	<string name="_bx_analytics_adm_stg_inf_online_window"><![CDATA[Visitors active within this time count as online.]]></string>
 	<string name="_bx_analytics_adm_stg_inf_platforms"><![CDATA[Clients whose visits are recorded.]]></string>
@@ -179,6 +181,8 @@
 	<string name="_bx_analytics_adm_stg_cpt_tracking"><![CDATA[Collect visits and events]]></string>
 	<string name="_bx_analytics_adm_stg_cpt_trusted_proxies"><![CDATA[Trusted proxies]]></string>
 	<string name="_bx_analytics_adm_stg_cpt_items_count"><![CDATA[Max number of items]]></string>
+	<string name="_bx_analytics_adm_stg_cpt_limit_hits"><![CDATA[Hits per minute from one address]]></string>
+	<string name="_bx_analytics_adm_stg_cpt_limit_visits"><![CDATA[New visits per hour from one address]]></string>
 	<string name="_bx_analytics_adm_stg_cpt_link_members"><![CDATA[Link visits to members]]></string>
 	<string name="_bx_analytics_adm_stg_cpt_default_interval_day"><![CDATA[Default interval in days]]></string>
 	<string name="_bx_analytics_adm_stg_cpt_errors_ignore"><![CDATA[Ignored errors]]></string>
@@ -657,6 +661,7 @@
 	<string name="_bx_analytics_txt_check_no_hits"><![CDATA[The page address is not one of the site's own.]]></string>
 	<string name="_bx_analytics_txt_check_not_tracked"><![CDATA[Visits from this browser are not recorded]]></string>
 	<string name="_bx_analytics_txt_check_platform_off"><![CDATA[The classic site is not among the tracked platforms (Settings > Platforms).]]></string>
+	<string name="_bx_analytics_txt_check_rate_limited"><![CDATA[Your address has sent more than the limits allow (Settings > Hits per minute, New visits per hour). Its hits are dropped until the next minute, or new visits until the next hour.]]></string>
 	<string name="_bx_analytics_txt_check_remote_addr"><![CDATA[Connection from (REMOTE_ADDR)]]></string>
 	<string name="_bx_analytics_txt_check_tracked"><![CDATA[Visits from this browser are recorded]]></string>
 	<string name="_bx_analytics_txt_check_tracking_off"><![CDATA[Tracking is off.]]></string>

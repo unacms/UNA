@@ -80,6 +80,20 @@ class BxAnalyticsReports
         $this->_oConfig = $oModule->_oConfig;
 
         $this->_aReportTabs['events'] = ['all' => [BX_ANALYTICS_HIT_EVENT, BX_ANALYTICS_HIT_UNA], 'custom' => [BX_ANALYTICS_HIT_EVENT], 'site' => [BX_ANALYTICS_HIT_UNA]];
+
+        $this->_oDb->setReportSession();
+    }
+
+    /**
+     * Whether a report shows live figures (visitors online, the last minutes), which are
+     * never cached.
+     */
+    public function isLive($sReport, $aParams = [])
+    {
+        if(in_array($sReport, ['realtime', 'filters'], true))
+            return true;
+
+        return $sReport == 'map' && $this->_getTab($aParams, 'map', $this->_aReportTabs['map']) == 'live';
     }
 
     public function getGroups()
@@ -1363,17 +1377,17 @@ class BxAnalyticsReports
         for($i = 0; $i < $iWeeks; $i++)
             $aCohorts[$iFrom + $i * 604800] = ['size' => 0, 'back' => array_fill(0, $iWeeks - $i, 0)];
 
-        foreach($this->_oDb->getVisitorWeeks($iFrom, $iNow + 1, $iOffset, $aFilter['platform'], $aTabs[$sTab]) as $aVisitor) {
-            $iCohort = $fWeek($aVisitor['first']);
+        foreach($this->_oDb->getRetentionCohorts($iFrom, $iNow + 1, $aFilter['platform'], $aTabs[$sTab]) as $aRow) {
+            $iCohort = $iFrom + (int)$aRow['cohort'] * 604800;
             if(!isset($aCohorts[$iCohort]))
                 continue;
 
-            $aCohorts[$iCohort]['size']++;
-            foreach(array_unique($aVisitor['weeks']) as $iWeek) {
-                $iIndex = (int)round(($iWeek - $iCohort) / 604800);
-                if($iIndex >= 0 && isset($aCohorts[$iCohort]['back'][$iIndex]))
-                    $aCohorts[$iCohort]['back'][$iIndex]++;
-            }
+            $iVisitors = (int)$aRow['visitors'];
+            $iMask = (int)$aRow['weeks'];
+            $aCohorts[$iCohort]['size'] += $iVisitors;
+            foreach(array_keys($aCohorts[$iCohort]['back']) as $iIndex)
+                if($iMask & (1 << ((int)$aRow['cohort'] + $iIndex)))
+                    $aCohorts[$iCohort]['back'][$iIndex] += $iVisitors;
         }
 
         $aRows = [];

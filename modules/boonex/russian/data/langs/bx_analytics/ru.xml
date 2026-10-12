@@ -17,6 +17,8 @@
 	<string name="_bx_analytics_adm_stg_inf_geo_source"><![CDATA[Заголовки CDN: страна, которую Cloudflare, Vercel или CloudFront добавляют к каждому запросу, и регион с городом на Vercel.]]></string>
 	<string name="_bx_analytics_adm_stg_inf_identity"><![CDATA[Без cookie: хеш адреса и браузера, который меняется каждый день, на устройстве ничего не хранится. Гость, вернувшийся в другой день, считается новым посетителем. Постоянный: случайный идентификатор в браузере или приложении, позволяет считать удержание гостей, но может требовать согласия.]]></string>
 	<string name="_bx_analytics_adm_stg_inf_ignore_params"><![CDATA[Не включаются в сохраняемые пути страниц, чтобы одна страница не считалась как несколько. Через запятую; * означает любые символы. Метки кампаний и идентификаторы кликов не включаются всегда.]]></string>
+	<string name="_bx_analytics_adm_stg_inf_limit_hits"><![CDATA[Сколько просмотров, событий, ошибок и замеров трекеры могут отправить с одного адреса за минуту (адрес IPv6 считается по своей сети /64). Остальные отбрасываются до следующей минуты, а трекер продолжает отправку. Увеличьте значение, если многие посетители заходят с одного адреса, например из офиса или школы. 0: без ограничения. Действия на сайте и платежи не ограничиваются.]]></string>
+	<string name="_bx_analytics_adm_stg_inf_limit_visits"><![CDATA[Сколько визитов может начаться с одного адреса за час (адрес IPv6 считается по своей сети /64). Обращения, которые начали бы ещё один визит, отбрасываются, чтобы скрипт не заполнил отчёты визитами. Уже идущие визиты продолжаются. 0: без ограничения.]]></string>
 	<string name="_bx_analytics_adm_stg_inf_link_members"><![CDATA[Записывать профиль вошедших участников для их сеансов и удержания. При удалении профиля его посещения отвязываются.]]></string>
 	<string name="_bx_analytics_adm_stg_inf_online_window"><![CDATA[Посетители, активные в течение этого времени, считаются онлайн.]]></string>
 	<string name="_bx_analytics_adm_stg_inf_platforms"><![CDATA[Клиенты, посещения с которых записываются.]]></string>
@@ -179,6 +181,8 @@
 	<string name="_bx_analytics_adm_stg_cpt_tracking"><![CDATA[Собирать посещения и события]]></string>
 	<string name="_bx_analytics_adm_stg_cpt_trusted_proxies"><![CDATA[Доверенные прокси]]></string>
 	<string name="_bx_analytics_adm_stg_cpt_items_count"><![CDATA[Количество позиций]]></string>
+	<string name="_bx_analytics_adm_stg_cpt_limit_hits"><![CDATA[Обращений в минуту с одного адреса]]></string>
+	<string name="_bx_analytics_adm_stg_cpt_limit_visits"><![CDATA[Новых визитов в час с одного адреса]]></string>
 	<string name="_bx_analytics_adm_stg_cpt_link_members"><![CDATA[Связывать посещения с участниками]]></string>
 	<string name="_bx_analytics_adm_stg_cpt_default_interval_day"><![CDATA[Интервал в днях по умолчанию]]></string>
 	<string name="_bx_analytics_adm_stg_cpt_errors_ignore"><![CDATA[Игнорируемые ошибки]]></string>
@@ -657,6 +661,7 @@
 	<string name="_bx_analytics_txt_check_no_hits"><![CDATA[Адрес страницы не принадлежит сайту.]]></string>
 	<string name="_bx_analytics_txt_check_not_tracked"><![CDATA[Визиты из этого браузера не записываются]]></string>
 	<string name="_bx_analytics_txt_check_platform_off"><![CDATA[Классического сайта нет среди отслеживаемых платформ (Настройки > Платформы).]]></string>
+	<string name="_bx_analytics_txt_check_rate_limited"><![CDATA[С вашего адреса отправлено больше, чем позволяют ограничения (Настройки > Обращений в минуту, Новых визитов в час). Обращения отбрасываются до следующей минуты, а новые визиты до следующего часа.]]></string>
 	<string name="_bx_analytics_txt_check_remote_addr"><![CDATA[Подключение с адреса (REMOTE_ADDR)]]></string>
 	<string name="_bx_analytics_txt_check_tracked"><![CDATA[Визиты из этого браузера записываются]]></string>
 	<string name="_bx_analytics_txt_check_tracking_off"><![CDATA[Отслеживание выключено.]]></string>

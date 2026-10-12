@@ -232,8 +232,14 @@ class BxAnalyticsModule extends BxDolModule
      * The payload is described in BxAnalyticsCollector. Over the API the payload is read from
      * the request body when no parameter is given.
      *
+     * One address may send so many hits a minute and start so many visits an hour (Settings >
+     * Tracking). Past a limit the hits are dropped, and the answer is still a success with
+     * `stored: 0` and `limited: true`, not an error: a tracker goes on, and its hits are
+     * stored again from the next minute. Send fewer, batched requests when you see it.
+     *
      * @param $mixedPayload payload array or JSON string
-     * @return array with `stored` - the number of hits stored
+     * @return array with `stored` - the number of hits stored; `limited` - true when they
+     *      were dropped for a rate limit
      *
      * @see BxAnalyticsModule::serviceCollect
      */
@@ -249,13 +255,14 @@ class BxAnalyticsModule extends BxDolModule
         if(!is_array($aPayload))
             return ['stored' => 0];
 
-        $iStored = $this->getCollector()->collect($aPayload, [
+        $oCollector = $this->getCollector();
+        $iStored = $oCollector->collect($aPayload, [
             'platform' => BX_ANALYTICS_PLATFORM_API,
             'trusted' => $this->_isApiKeyRequest(),
             'profile_id' => bx_get_logged_profile_id(),
         ]);
 
-        return ['stored' => $iStored];
+        return $oCollector->isLimited() ? ['stored' => 0, 'limited' => true] : ['stored' => $iStored];
     }
 
     /**
@@ -356,7 +363,8 @@ class BxAnalyticsModule extends BxDolModule
     }
 
     /**
-     * Hits from the classic tracker: same origin, a JSON body sent with sendBeacon.
+     * Hits from the classic tracker: same origin, a JSON body sent with sendBeacon. Always
+     * 204, hits dropped for a rate limit too (see BxAnalyticsCollector::_isWithinHitLimit).
      */
     public function actionCollect()
     {
@@ -1177,7 +1185,7 @@ class BxAnalyticsModule extends BxDolModule
     /**
      * What pruning deletes and from when: a BxAnalyticsDb delete method => the time before
      * which its rows go. Vitals have a shorter retention of their own (a row per sampled
-     * page view), never longer than the rest.
+     * page view), never longer than the rest. Rate limit counters are kept for 2 hours.
      *
      * @param int $iNow the time pruning runs at
      */
@@ -1191,6 +1199,8 @@ class BxAnalyticsModule extends BxDolModule
             'deleteErrorHitsBefore' => $iBefore,
             'deleteErrorGroupsBefore' => $iBefore,
             'deleteVitalsBefore' => (int)$iNow - 86400 * $this->_oConfig->getVitalsRetentionDays(),
+            // the collector's rate limit counters: the last full hour and the running one
+            'deleteLimitsBefore' => (int)$iNow - 7200,
         ];
     }
 
@@ -1401,13 +1411,64 @@ class BxAnalyticsModule extends BxDolModule
             return false;
 
         $oFilter = $this->getFilter($aParams);
+
+        // the same report with the same filters and parameters, for the same kind of viewer,
+        // comes from the cache for a few minutes; live figures never do
+        $sCache = $oReports->isLive($sReport, $aParams) ? '' : $this->_getReportCacheName($sReport, $oFilter, $aParams);
+        if($sCache !== '') {
+            $aCached = $this->_oDb->getCache($sCache, '', $this->_oConfig->CNF['REPORT_CACHE_TTL']);
+            if(is_array($aCached))
+                return $aCached;
+        }
+
         $aData = $oReports->$sMethod($oFilter, $aParams);
         if($aData === false)
             return false;
 
         $aData['filter'] = $oFilter->getParams();
 
+        if($sCache !== '')
+            $this->_oDb->setCache($sCache, $aData, $this->_oConfig->CNF['REPORT_CACHE_TTL']);
+
         return $aData;
+    }
+
+    /**
+     * Drop every cached report, after a change that reports show (goals, funnels, the status
+     * of an error). Keys of the database cache are `db_<name>_<site hash>.php` (see
+     * BxDolDb::genDbCacheKey), so the prefix is the name's start after `db_`.
+     */
+    public function cleanReportCache()
+    {
+        $oCache = $this->_oDb->getDbCacheObject();
+        if($oCache)
+            $oCache->removeAllByPrefix('db_' . $this->_oConfig->CNF['REPORT_CACHE_PREFIX']);
+    }
+
+    /**
+     * The cache name of a report: the report, the resolved filter (not the current second,
+     * so a cached copy serves the whole period), its parameters, the language and what the
+     * viewer may see (money, people, managing, administration), since reports differ by those.
+     */
+    protected function _getReportCacheName($sReport, $oFilter, $aParams)
+    {
+        $aFilter = $oFilter->get();
+        unset($aFilter['now'], $aFilter['buckets']);
+
+        $aOwn = [];
+        foreach($aParams as $sKey => $mixedValue)
+            if(is_string($sKey) && $sKey !== '' && $sKey[0] != '_')
+                $aOwn[$sKey] = $mixedValue;
+        ksort($aOwn);
+
+        $aViewer = [
+            isAdmin(),
+            $this->checkAllowedRevenue() === CHECK_ACTION_RESULT_ALLOWED,
+            $this->checkAllowedPeople() === CHECK_ACTION_RESULT_ALLOWED,
+            $this->checkAllowedManage() === CHECK_ACTION_RESULT_ALLOWED,
+        ];
+
+        return $this->_oConfig->CNF['REPORT_CACHE_PREFIX'] . md5(json_encode([$sReport, $aFilter, $aOwn, bx_lang_name(), $aViewer]));
     }
 
     /**
@@ -1920,6 +1981,7 @@ class BxAnalyticsModule extends BxDolModule
                     $aResult = ['ok' => (bool)$iId, 'id' => $iId];
                 }
             }
+            $this->cleanReportCache();
         }
 
         $this->_outputJson($aResult);
@@ -1959,6 +2021,7 @@ class BxAnalyticsModule extends BxDolModule
                     $aResult = ['ok' => (bool)$iId, 'id' => $iId];
                 }
             }
+            $this->cleanReportCache();
         }
 
         $this->_outputJson($aResult);
@@ -1977,8 +2040,10 @@ class BxAnalyticsModule extends BxDolModule
             $iId = (int)bx_get('id', 'post');
             if(!in_array($sStatus, ['open', 'resolved', 'ignored'], true) || !$iId || !$this->_oDb->getErrorGroup($iId))
                 $aResult = ['error' => _t('_sys_request_page_not_found_cpt'), 'code' => 404];
-            else
+            else {
                 $aResult = ['ok' => $this->_oDb->setErrorStatus($iId, $sStatus, time()), 'id' => $iId];
+                $this->cleanReportCache();
+            }
         }
 
         $this->_outputJson($aResult);

@@ -78,6 +78,7 @@ class BxAnalyticsConfig extends BxBaseModGeneralConfig
             'TABLE_SESSIONS' => $aModule['db_prefix'] . 'sessions',
             'TABLE_EVENTS' => $aModule['db_prefix'] . 'events',
             'TABLE_SALTS' => $aModule['db_prefix'] . 'salts',
+            'TABLE_LIMITS' => $aModule['db_prefix'] . 'limits',
             'TABLE_BOTS' => $aModule['db_prefix'] . 'bots',
             'TABLE_BOT_PAGES' => $aModule['db_prefix'] . 'bot_pages',
             'TABLE_GOALS' => $aModule['db_prefix'] . 'goals',
@@ -101,6 +102,12 @@ class BxAnalyticsConfig extends BxBaseModGeneralConfig
             // Query: values drawn on the chart, and rows in a CSV download at most
             'QUERY_SERIES_VALUES' => 5,
             'MAX_EXPORT_ROWS' => 10000,
+
+            // report data is cached this many seconds per report, filters, parameters,
+            // language and kind of viewer (live reports aren't); goal, funnel and error
+            // status changes drop the copies
+            'REPORT_CACHE_TTL' => 180,
+            'REPORT_CACHE_PREFIX' => 'bx_analytics_report_',
 
             // hits per request and their properties, to bound the work of one beacon
             'MAX_HITS_PER_REQUEST' => 20,
@@ -180,6 +187,22 @@ class BxAnalyticsConfig extends BxBaseModGeneralConfig
     public function getSessionTimeout()
     {
         return 60 * max(1, (int)getParam('bx_analytics_session_timeout'));
+    }
+
+    /**
+     * Hits the public collector takes from one address in a minute, 0 for no limit.
+     */
+    public function getLimitHitsPerMinute()
+    {
+        return max(0, (int)getParam('bx_analytics_limit_hits'));
+    }
+
+    /**
+     * Visits that may start from one address in an hour, 0 for no limit.
+     */
+    public function getLimitVisitsPerHour()
+    {
+        return max(0, (int)getParam('bx_analytics_limit_visits'));
     }
 
     public function getOnlineWindow()

@@ -406,5 +406,7 @@ class AnalyticsExploreTest extends BxDolIntegrationTestCase
         $oDb->query("DELETE FROM `bx_analytics_events` WHERE `ts` < :to OR (`type` = 'event' AND `name` = :name)", ['to' => $iTo, 'name' => self::EVENT]);
         $oDb->query("DELETE FROM `bx_analytics_sessions` WHERE `started` < :to", ['to' => $iTo]);
         $oDb->query("DELETE FROM `bx_analytics_salts` WHERE `day` < '2002-01-01'");
+        $oDb->query("DELETE FROM `bx_analytics_limits` WHERE `bucket` < 1009843200");
+        $this->_oModule->cleanReportCache(); // reports of the test data cached by the run before
     }
 }

@@ -869,6 +869,8 @@ class AnalyticsRevenueTest extends BxDolIntegrationTestCase
         $oDb->query("DELETE FROM `bx_analytics_events` WHERE `ts` < :to", ['to' => $iTo]);
         $oDb->query("DELETE FROM `bx_analytics_sessions` WHERE `started` < :to", ['to' => $iTo]);
         $oDb->query("DELETE FROM `bx_analytics_salts` WHERE `day` < '2002-01-01'");
+        $oDb->query("DELETE FROM `bx_analytics_limits` WHERE `bucket` < 1009843200");
+        $this->_oModule->cleanReportCache(); // reports of the test data cached by the run before
         if ($oDb->getOne("SHOW TABLES LIKE 'bx_credits_history'"))
             $oDb->query("DELETE FROM `bx_credits_history` WHERE `order` LIKE 'test-rev-%'");
 

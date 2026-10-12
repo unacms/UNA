@@ -29,7 +29,7 @@ class AnalyticsCollectorTest extends BxDolIntegrationTestCase
 
         $this->_cleanup();
 
-        foreach (['bx_analytics_track_actions' => 'on', 'bx_analytics_track_bots' => 'on', 'bx_analytics_tracking' => 'on', 'bx_analytics_platforms' => 'core-web,next-web,rn-ios,rn-android,api,core', 'bx_analytics_respect_dnt' => 'on', 'bx_analytics_link_members' => 'on', 'bx_analytics_identity' => 'cookieless', 'bx_analytics_exclude_ips' => '', 'bx_analytics_exclude_levels' => '', 'bx_analytics_exclude_paths' => '', 'bx_analytics_geo_source' => 'headers'] as $sName => $sValue)
+        foreach (['bx_analytics_track_actions' => 'on', 'bx_analytics_track_bots' => 'on', 'bx_analytics_tracking' => 'on', 'bx_analytics_platforms' => 'core-web,next-web,rn-ios,rn-android,api,core', 'bx_analytics_respect_dnt' => 'on', 'bx_analytics_link_members' => 'on', 'bx_analytics_identity' => 'cookieless', 'bx_analytics_exclude_ips' => '', 'bx_analytics_exclude_levels' => '', 'bx_analytics_exclude_paths' => '', 'bx_analytics_geo_source' => 'headers', 'bx_analytics_limit_hits' => '300', 'bx_analytics_limit_visits' => '100'] as $sName => $sValue)
             $this->_setOption($sName, $sValue);
     }
 
@@ -397,6 +397,118 @@ class AnalyticsCollectorTest extends BxDolIntegrationTestCase
         $this->assertNotContains($iFunnel, array_column($oReports->getFunnels($oFilter)['funnels'], 'id'), 'a deleted funnel is not listed');
     }
 
+    public function testHitsPerMinuteLimit()
+    {
+        $this->_setOption('bx_analytics_limit_hits', '5');
+        $this->_setOption('bx_analytics_limit_visits', '0');
+        $aServer = $this->_server('81.2.69.142');
+        $fPayload = function ($iHits, $sPage = 'a') {
+            return ['platform' => 'core-web', 'hits' => array_fill(0, $iHits, ['type' => 'pageview', 'url' => 'http://una.test/' . $sPage])];
+        };
+
+        // NOW is 40 seconds into its minute: NOW + 19 is the same minute, NOW + 20 the next
+        $this->assertSame(3, $this->_collect($aServer, $fPayload(3), self::NOW));
+        $this->assertSame(2, $this->_collect($aServer, $fPayload(2), self::NOW + 10), 'up to the limit');
+
+        $oCollector = new BxAnalyticsCollector($this->_oModule, new BxAnalyticsRequest($aServer), self::NOW + 19);
+        $this->assertSame(0, $oCollector->collect($fPayload(1, 'over'), ['platform' => 'api']), 'over the limit');
+        $this->assertTrue($oCollector->isLimited());
+        $this->assertContains('rate_limited', $oCollector->check($fPayload(1), ['platform' => 'api'])['reasons'], 'the Setup check tells');
+
+        $this->assertSame(1, $this->_collect($this->_server('93.184.216.34'), $fPayload(1), self::NOW + 19), 'another address has its own limit');
+
+        // site actions and server events are not limited
+        $this->assertTrue($oCollector->collectAction('signup', 'account', 1, 0, ['platform' => 'core-web']));
+
+        $oCollector = new BxAnalyticsCollector($this->_oModule, new BxAnalyticsRequest($aServer), self::NOW + 20);
+        $this->assertSame(1, $oCollector->collect($fPayload(1, 'next'), ['platform' => 'api']), 'a new minute counts anew');
+        $this->assertFalse($oCollector->isLimited());
+
+        $aPaths = BxDolDb::getInstance()->getColumn("SELECT `path` FROM `bx_analytics_events` WHERE `ts` < :to AND `type` = 'pageview'", ['to' => self::NOW + 86400]);
+        $this->assertNotContains('/over', $aPaths);
+        $this->assertContains('/next', $aPaths);
+        $this->assertSame(6, (int)$this->_sessions()[0]['pageviews'], 'the dropped hit is not in the visit');
+
+        // the counters keep no address
+        $aRows = BxDolDb::getInstance()->getAll("SELECT * FROM `bx_analytics_limits` WHERE `bucket` < 1009843200 ORDER BY `bucket`, `hits`");
+        $this->assertSame([[self::NOW - 40, 1], [self::NOW - 40, 6], [self::NOW + 20, 1]], array_map(function ($a) { return [(int)$a['bucket'], (int)$a['hits']]; }, $aRows), 'dropped hits count too');
+        foreach ($aRows as $a)
+            $this->assertSame(8, strlen($a['key']));
+    }
+
+    public function testVisitsPerHourLimit()
+    {
+        $this->_setOption('bx_analytics_limit_hits', '0');
+        $this->_setOption('bx_analytics_limit_visits', '2');
+        $this->_setOption('bx_analytics_track_errors', 'on');
+        $aHit = ['platform' => 'core-web', 'hits' => [['type' => 'pageview', 'url' => 'http://una.test/'], ['type' => 'error', 'url' => 'http://una.test/', 'kind' => 'js', 'message' => 'Test 2001 limited error', 'stack' => "Error: x\n    at f (/js/app.js:1:1)"]]];
+
+        // a script that changes its user agent with every request
+        $this->assertSame(2, $this->_collect($this->_server('81.2.69.142', [], self::UA_SAFARI . ' a'), $aHit, self::NOW));
+        $this->assertSame(2, $this->_collect($this->_server('81.2.69.142', [], self::UA_SAFARI . ' b'), $aHit, self::NOW + 1));
+        $oCollector = new BxAnalyticsCollector($this->_oModule, new BxAnalyticsRequest($this->_server('81.2.69.142', [], self::UA_SAFARI . ' c')), self::NOW + 2);
+        $this->assertSame(0, $oCollector->collect($aHit, ['platform' => 'api']), 'a third visit in the hour');
+        $this->assertTrue($oCollector->isLimited());
+        $this->assertSame(0, (int)BxDolDb::getInstance()->getOne("SELECT COUNT(*) FROM `bx_analytics_error_hits` WHERE `ts` < :to AND `session_id` = 0", ['to' => self::NOW + 86400]), 'its errors are dropped too');
+
+        $this->assertSame(1, $this->_collect($this->_server('81.2.69.142', [], self::UA_SAFARI . ' a'), ['platform' => 'core-web', 'hits' => [['type' => 'pageview', 'url' => 'http://una.test/b']]], self::NOW + 3), 'a running visit goes on');
+        $this->assertCount(2, $this->_sessions());
+
+        // NOW is 2800 seconds into its hour
+        $this->assertSame(2, $this->_collect($this->_server('81.2.69.142', [], self::UA_SAFARI . ' c'), $aHit, self::NOW + 800), 'a new hour counts anew');
+        $this->assertCount(3, $this->_sessions());
+    }
+
+    public function testLimitAddresses()
+    {
+        $this->_setOption('bx_analytics_limit_hits', '2');
+        $aHit = ['platform' => 'core-web', 'hits' => [['type' => 'pageview', 'url' => 'http://una.test/']]];
+
+        // one IPv6 /64 network is one address
+        $this->assertSame(1, $this->_collect($this->_server('2001:db8:1:2::1'), $aHit, self::NOW));
+        $this->assertSame(1, $this->_collect($this->_server('2001:db8:1:2::ffff'), $aHit, self::NOW));
+        $this->assertSame(0, $this->_collect($this->_server('2001:db8:1:2:abcd::5'), $aHit, self::NOW));
+        $this->assertSame(1, $this->_collect($this->_server('2001:db8:1:3::1'), $aHit, self::NOW), 'another network');
+
+        // an IPv4 address written as IPv6 is that address
+        $this->assertSame(1, $this->_collect($this->_server('81.2.69.142'), $aHit, self::NOW));
+        $this->assertSame(1, $this->_collect($this->_server('::ffff:81.2.69.142'), $aHit, self::NOW));
+        $this->assertSame(0, $this->_collect($this->_server('81.2.69.142'), $aHit, self::NOW));
+
+        // a bot that runs the tracker is limited too: no bot rows past the limit
+        $sBot = 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)';
+        $this->_collect($this->_server('93.184.216.34', [], $sBot), $aHit, self::NOW);
+        $this->_collect($this->_server('93.184.216.34', [], $sBot), $aHit, self::NOW);
+        $this->_collect($this->_server('93.184.216.34', [], $sBot), $aHit, self::NOW);
+        $this->assertSame(2, (int)BxDolDb::getInstance()->getOne("SELECT SUM(`hits`) FROM `bx_analytics_bots` WHERE `day` < '2002-01-01'"));
+
+        $this->_setOption('bx_analytics_limit_hits', '0');
+        $this->assertSame(1, $this->_collect($this->_server('81.2.69.142'), $aHit, self::NOW), 'no limit');
+    }
+
+    public function testLimitsArePruned()
+    {
+        $this->_setOption('bx_analytics_limit_hits', '100');
+        $this->_setOption('bx_analytics_limit_visits', '100');
+        $this->_collect($this->_server('81.2.69.142'), ['platform' => 'core-web', 'hits' => [['type' => 'pageview', 'url' => 'http://una.test/']]], self::NOW);
+
+        $fCount = function () {
+            return (int)BxDolDb::getInstance()->getOne("SELECT COUNT(*) FROM `bx_analytics_limits` WHERE `bucket` < 1009843200");
+        };
+        $this->assertSame(2, $fCount(), 'a minute of hits and an hour of visits');
+
+        $oDb = $this->_oModule->_oDb;
+        $oDb->deleteLimitsBefore($this->_oModule->getPruningCutoffs(self::NOW + 3600)['deleteLimitsBefore'], 100);
+        $this->assertSame(2, $fCount(), 'kept for 2 hours');
+
+        // NOW is 40 seconds into its minute and 2800 seconds into its hour
+        $oDb->deleteLimitsBefore($this->_oModule->getPruningCutoffs(self::NOW + 4401)['deleteLimitsBefore'], 100);
+        $this->assertSame(1, $fCount(), 'the hour goes once it started over 2 hours ago, the later minute is kept');
+
+        $oDb->deleteLimitsBefore($this->_oModule->getPruningCutoffs(self::NOW + 7200)['deleteLimitsBefore'], 100);
+        $this->assertSame(0, $fCount());
+    }
+
     protected function _collect($aServer, $aPayload, $iNow, $aContext = [])
     {
         $oCollector = new BxAnalyticsCollector($this->_oModule, new BxAnalyticsRequest($aServer), $iNow);
@@ -434,6 +546,10 @@ class AnalyticsCollectorTest extends BxDolIntegrationTestCase
         $oDb->query("DELETE FROM `bx_analytics_events` WHERE `ts` < :to", ['to' => $iTo]);
         $oDb->query("DELETE FROM `bx_analytics_sessions` WHERE `started` < :to", ['to' => $iTo]);
         $oDb->query("DELETE FROM `bx_analytics_salts` WHERE `day` < '2002-01-01'");
+        $oDb->query("DELETE FROM `bx_analytics_limits` WHERE `bucket` < 1009843200");
+        $this->_oModule->cleanReportCache(); // reports of the test data cached by the run before
+        $oDb->query("DELETE FROM `bx_analytics_error_hits` WHERE `ts` < :to", ['to' => $iTo]);
+        $oDb->query("DELETE FROM `bx_analytics_errors` WHERE `message` = 'Test 2001 limited error'");
         $oDb->query("DELETE FROM `bx_analytics_bots` WHERE `day` < '2002-01-01'");
         $oDb->query("DELETE FROM `bx_analytics_bot_pages` WHERE `day` < '2002-01-01'");
         foreach ($this->_aGoals as $iId)

@@ -59,6 +59,11 @@
  *     content laid out; app_start once per cold start, from process start to the first page.
  *     nav: navigate, reload, back_forward, prerender, soft, restore.
  *   Vitals join a running visit and are dropped without one; they count no pageview or event.
+ *
+ * Rate limits: one address (an IPv6 address by its /64 network) may send so many hits a
+ * minute and start so many visits an hour (Settings > Tracking). Past a limit the hits are
+ * dropped quietly and the request is answered as usual, see _isWithinHitLimit. Site actions,
+ * custom events from server code and payments don't come through collect() and aren't limited.
  */
 class BxAnalyticsCollector
 {
@@ -70,6 +75,11 @@ class BxAnalyticsCollector
 
     protected $_aSalts = [];
     protected $_sIgnoredParams = null;
+
+    /**
+     * Whether the last collect() dropped its hits for a rate limit.
+     */
+    protected $_bLimited = false;
 
     /**
      * Query parameters removed from stored paths: campaign tags and click ids are in the
@@ -99,15 +109,22 @@ class BxAnalyticsCollector
      */
     public function collect($aPayload, $aContext = [])
     {
+        $this->_bLimited = false;
         if(!is_array($aPayload))
             return 0;
 
         $aAccept = $this->_accept($aPayload, $aContext);
-        if(!empty($aAccept['reasons'])) {
-            // a bot that runs the tracker (a headless browser): counted with the bots
-            if($aAccept['reasons'][0] == 'bot')
-                $this->collectBot($aAccept['user_agent'], $aAccept['hits'][0]['url'], $aAccept['platform']);
+        $bBot = !empty($aAccept['reasons']) && $aAccept['reasons'][0] == 'bot';
+        if(!empty($aAccept['reasons']) && !$bBot)
+            return 0;
 
+        // a flood from one address, a headless bot's too, writes nothing past the limit
+        if(!$this->_isWithinHitLimit($aAccept['ip'], count($aAccept['hits'])))
+            return 0;
+
+        // a bot that runs the tracker (a headless browser): counted with the bots
+        if($bBot) {
+            $this->collectBot($aAccept['user_agent'], $aAccept['hits'][0]['url'], $aAccept['platform']);
             return 0;
         }
 
@@ -134,7 +151,10 @@ class BxAnalyticsCollector
             'country' => $this->_oConfig->getGeoSource() == BX_ANALYTICS_GEO_HEADERS ? $this->_oRequest->getCountry() : '',
         ];
 
-        $aSession = $this->_getSession($sPlatform, $aVisitor, $iProfileId, $aPayload, $aClient, $aHits);
+        $aSession = $this->_getSession($sPlatform, $aVisitor, $iProfileId, $aPayload, $aClient, $aHits, $sIp);
+        if($this->_bLimited)
+            return 0;
+
         if(empty($aSession)) {
             // errors without a visit (an app that crashed before its first page, a beacon after
             // the visit timed out) are kept on their own; vitals belong to a page view
@@ -147,6 +167,14 @@ class BxAnalyticsCollector
     }
 
     /**
+     * Whether the last collect() dropped its hits because the address was over a rate limit.
+     */
+    public function isLimited()
+    {
+        return $this->_bLimited;
+    }
+
+    /**
      * What collect() would do with a payload, without storing anything: the reasons it would
      * drop the hits (or `ok`), and what it knows about the request. For the Setup section's
      * check of the admin's own browser.
@@ -154,13 +182,15 @@ class BxAnalyticsCollector
      * @param array $aPayload decoded tracker payload
      * @param array $aContext as for collect()
      * @return array reasons (tracking_off, platform_off, dnt, cross_site, excluded_path,
-     *      no_hits, excluded_ip, bot, excluded_level; or ok), notes (link_members_off: stored,
-     *      but not tied to the member), platform, ip (resolved), remote_addr, country_header,
-     *      country, geo_source, identity
+     *      no_hits, excluded_ip, bot, excluded_level, rate_limited; or ok), notes
+     *      (link_members_off: stored, but not tied to the member), platform, ip (resolved),
+     *      remote_addr, country_header, country, geo_source, identity
      */
     public function check($aPayload, $aContext = [])
     {
         $aAccept = $this->_accept(is_array($aPayload) ? $aPayload : [], $aContext, true);
+        if($this->_isOverLimit($aAccept['ip']))
+            $aAccept['reasons'][] = 'rate_limited';
         $aCountry = $this->_oRequest->getCountryHeader();
 
         return [
@@ -449,9 +479,12 @@ class BxAnalyticsCollector
 
     /**
      * The visitor's running session on this platform, or a new one. A guest session that
-     * signs in continues as the member's.
+     * signs in continues as the member's. No new one past the address's limit of visits an
+     * hour (`_bLimited` tells).
+     *
+     * @param string $sIp the client's address, for the rate limit
      */
-    protected function _getSession($sPlatform, $aVisitor, $iProfileId, $aPayload, $aClient, $aHits)
+    protected function _getSession($sPlatform, $aVisitor, $iProfileId, $aPayload, $aClient, $aHits, $sIp = '')
     {
         $aSession = $this->_oDb->getActiveSession($aVisitor['lookup'], $sPlatform, $this->_iNow - $this->_oConfig->getSessionTimeout());
         if(!empty($aSession)) {
@@ -471,6 +504,11 @@ class BxAnalyticsCollector
                 break;
             }
         if($aFirst === null)
+            return [];
+
+        // a script that changes its user agent or visitor id for every request would start a
+        // visit with each
+        if(!$this->_isWithinVisitLimit($sIp))
             return [];
 
         $sReferrer = isset($aPayload['referrer']) && is_string($aPayload['referrer']) ? $aPayload['referrer'] : '';
@@ -1027,6 +1065,92 @@ class BxAnalyticsCollector
             array_pop($aResult);
 
         return $aResult;
+    }
+
+    /**
+     * Count a request's hits against the address's limit for the minute. Past the limit the
+     * hits are dropped, and the request is answered as usual (the classic tracker's 204,
+     * `stored: 0` over the API) rather than with 429: NEO stops sending for the rest of the
+     * visit on any answer but 200, and a short burst (queued hits sent at once, an office or
+     * a school behind one address) shouldn't silence real visitors once it is over. The
+     * next minute counts anew. Hits dropped still count, so a flood stays over the limit for
+     * the whole minute.
+     *
+     * @return bool whether the hits may be stored
+     */
+    protected function _isWithinHitLimit($sIp, $iHits)
+    {
+        $iLimit = $this->_oConfig->getLimitHitsPerMinute();
+        if(!$iLimit || !$iHits)
+            return true;
+
+        // a counter that couldn't be written (0) doesn't stop tracking
+        $iCount = $this->_oDb->addLimitHits($this->_getLimitKey('hits', $sIp), $this->_getLimitBucket(60), $iHits);
+        if($iCount > $iLimit)
+            $this->_bLimited = true;
+
+        return !$this->_bLimited;
+    }
+
+    /**
+     * Count a new visit against the address's limit for the hour.
+     *
+     * @return bool whether the visit may start
+     */
+    protected function _isWithinVisitLimit($sIp)
+    {
+        $iLimit = $this->_oConfig->getLimitVisitsPerHour();
+        if(!$iLimit)
+            return true;
+
+        $iCount = $this->_oDb->addLimitHits($this->_getLimitKey('visits', $sIp), $this->_getLimitBucket(3600), 1);
+        if($iCount > $iLimit)
+            $this->_bLimited = true;
+
+        return !$this->_bLimited;
+    }
+
+    /**
+     * Whether an address is at a limit now: its next hit, or its next new visit, would be
+     * dropped. Reads the counters without adding to them.
+     */
+    protected function _isOverLimit($sIp)
+    {
+        $iHits = $this->_oConfig->getLimitHitsPerMinute();
+        if($iHits && $this->_oDb->getLimitHits($this->_getLimitKey('hits', $sIp), $this->_getLimitBucket(60)) >= $iHits)
+            return true;
+
+        $iVisits = $this->_oConfig->getLimitVisitsPerHour();
+
+        return $iVisits && $this->_oDb->getLimitHits($this->_getLimitKey('visits', $sIp), $this->_getLimitBucket(3600)) >= $iVisits;
+    }
+
+    /**
+     * Start of the running minute or hour.
+     */
+    protected function _getLimitBucket($iSeconds)
+    {
+        return $this->_iNow - $this->_iNow % $iSeconds;
+    }
+
+    /**
+     * 8-byte key of a rate limit counter: the kind and the address hashed with the day's
+     * salt, so the table never holds an address. An IPv6 address counts by its /64 network,
+     * which one device or home usually has to itself and can change addresses within at will.
+     */
+    protected function _getLimitKey($sKind, $sIp)
+    {
+        $sAddress = (string)$sIp;
+        if(filter_var($sAddress, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
+            $sBinary = inet_pton($sAddress);
+            // an IPv4 address written as IPv6 (::ffff:1.2.3.4) is that IPv4 address
+            if(substr($sBinary, 0, 12) === str_repeat("\0", 10) . "\xff\xff")
+                $sAddress = inet_ntop(substr($sBinary, 12));
+            else
+                $sAddress = bin2hex(substr($sBinary, 0, 8)) . '/64';
+        }
+
+        return substr($this->_hash('limit:' . $sKind . '|' . $sAddress, $this->_getSalt(gmdate('Y-m-d', $this->_iNow))), 0, 8);
     }
 
     protected function _getSalt($sDay)

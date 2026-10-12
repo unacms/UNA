@@ -18,7 +18,9 @@ INSERT INTO `sys_options` (`category_id`, `name`, `caption`, `info`, `value`, `t
 (@iCategoryId, 'bx_analytics_online_window', '_bx_analytics_adm_stg_cpt_online_window', '_bx_analytics_adm_stg_inf_online_window', '5', 'digit', '', '', '', '', 4),
 (@iCategoryId, 'bx_analytics_ignore_params', '_bx_analytics_adm_stg_cpt_ignore_params', '_bx_analytics_adm_stg_inf_ignore_params', 'range, tz, platform, metric, bucket, from, to, jfrom, f[*], tab_*, page_*, q_*', 'text', '', '', '', '', 5),
 (@iCategoryId, 'bx_analytics_track_bots', '_bx_analytics_adm_stg_cpt_track_bots', '_bx_analytics_adm_stg_inf_track_bots', 'on', 'checkbox', '', '', '', '', 6),
-(@iCategoryId, 'bx_analytics_track_actions', '_bx_analytics_adm_stg_cpt_track_actions', '_bx_analytics_adm_stg_inf_track_actions', 'on', 'checkbox', '', '', '', '', 7);
+(@iCategoryId, 'bx_analytics_track_actions', '_bx_analytics_adm_stg_cpt_track_actions', '_bx_analytics_adm_stg_inf_track_actions', 'on', 'checkbox', '', '', '', '', 7),
+(@iCategoryId, 'bx_analytics_limit_hits', '_bx_analytics_adm_stg_cpt_limit_hits', '_bx_analytics_adm_stg_inf_limit_hits', '300', 'digit', '', '', '', '', 8),
+(@iCategoryId, 'bx_analytics_limit_visits', '_bx_analytics_adm_stg_cpt_limit_visits', '_bx_analytics_adm_stg_inf_limit_visits', '100', 'digit', '', '', '', '', 9);
 
 INSERT INTO `sys_options_categories` (`type_id`, `name`, `caption`, `hidden`, `order`) VALUES(@iTypeId, 'bx_analytics_privacy', '_bx_analytics_adm_stg_cpt_category_privacy', 0, 2);
 SET @iCategoryId = LAST_INSERT_ID();

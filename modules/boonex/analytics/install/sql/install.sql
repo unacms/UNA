@@ -41,8 +41,10 @@ CREATE TABLE IF NOT EXISTS `bx_analytics_sessions` (
   `device` varchar(16) NOT NULL DEFAULT '',
   `screen` varchar(16) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
-  KEY `visitor` (`visitor`, `last_seen`),
-  KEY `started` (`started`, `platform`),
+  -- the visitor's open visit; read in this order, retention cohorts need no sort
+  KEY `visitor` (`visitor`, `last_seen`, `started`, `platform`, `profile_id`),
+  -- covers the key figures and their chart (no row is read for them)
+  KEY `started` (`started`, `platform`, `visitor`, `profile_id`, `pageviews`, `bounce`, `duration`),
   KEY `last_seen` (`last_seen`),
   KEY `platform_seen` (`platform`, `last_seen`),
   KEY `profile_id` (`profile_id`, `started`)
@@ -69,9 +71,12 @@ CREATE TABLE IF NOT EXISTS `bx_analytics_events` (
   `props` text NOT NULL,
   PRIMARY KEY (`id`),
   KEY `ts` (`ts`, `type`, `platform`),
+  -- covers pages, titles aside, and the events list by type and period
+  KEY `type_ts` (`type`, `ts`, `platform`, `path`, `name`, `module`, `visitor`, `session_id`, `engaged`),
   KEY `platform` (`platform`, `ts`),
   KEY `session_id` (`session_id`, `ts`),
-  KEY `path` (`path`(100), `ts`),
+  -- covers one page (a filter, a goal, a funnel step, the Query chart) over a period
+  KEY `path` (`type`, `path`, `ts`, `session_id`, `visitor`, `engaged`),
   KEY `object` (`module`, `object_id`, `ts`),
   KEY `name` (`type`, `name`, `ts`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -81,6 +86,17 @@ CREATE TABLE IF NOT EXISTS `bx_analytics_salts` (
   `day` date NOT NULL,
   `salt` binary(32) NOT NULL,
   PRIMARY KEY (`day`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Rate limits of the public collector: hits per address and minute, new visits per address
+-- and hour. The key is a keyed hash of the kind and the address with the day's salt, never
+-- the address; `bucket` is the minute's or hour's start. Cron deletes buckets over 2 hours old
+CREATE TABLE IF NOT EXISTS `bx_analytics_limits` (
+  `key` binary(8) NOT NULL,
+  `bucket` int(11) unsigned NOT NULL,
+  `hits` int(11) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`key`, `bucket`),
+  KEY `bucket` (`bucket`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 

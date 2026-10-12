@@ -425,7 +425,7 @@ class AnalyticsHealthTest extends BxDolIntegrationTestCase
         // ten days later: vitals are past their 5 days, the rest is within its 30
         $iNow = self::NOW + 10 * 86400;
         $aCutoffs = $this->_oModule->getPruningCutoffs($iNow);
-        $this->assertSame(['deleteEventsBefore', 'deleteSessionsBefore', 'deleteErrorHitsBefore', 'deleteErrorGroupsBefore', 'deleteVitalsBefore'], array_keys($aCutoffs));
+        $this->assertSame(['deleteEventsBefore', 'deleteSessionsBefore', 'deleteErrorHitsBefore', 'deleteErrorGroupsBefore', 'deleteVitalsBefore', 'deleteLimitsBefore'], array_keys($aCutoffs));
         $this->assertSame($iNow - 5 * 86400, $aCutoffs['deleteVitalsBefore']);
         foreach (['deleteEventsBefore', 'deleteSessionsBefore', 'deleteErrorHitsBefore', 'deleteErrorGroupsBefore'] as $sMethod)
             $this->assertSame($iNow - 30 * 86400, $aCutoffs[$sMethod], $sMethod);
@@ -512,5 +512,7 @@ class AnalyticsHealthTest extends BxDolIntegrationTestCase
         $oDb->query("DELETE FROM `bx_analytics_vitals` WHERE `ts` < :to", ['to' => $iTo]);
         $oDb->query("DELETE FROM `bx_analytics_errors` WHERE `created` < :to AND `last_seen` < :to2", ['to' => $iTo, 'to2' => $iTo]);
         $oDb->query("DELETE FROM `bx_analytics_salts` WHERE `day` < '2002-01-01'");
+        $oDb->query("DELETE FROM `bx_analytics_limits` WHERE `bucket` < 1009843200");
+        $this->_oModule->cleanReportCache(); // reports of the test data cached by the run before
     }
 }
