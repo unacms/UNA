@@ -7,7 +7,7 @@ import { useEffect } from 'react';
 import { fetcher } from 'app/lib/fetcher';
 import { FeedbackHaptics } from 'app/lib/util';
 import { subscribe } from 'app/ui/atoms/socket';
-import { socialObjectKey } from 'app/lib/object-state';
+import { objectStateGeneration, objectTs, socialObjectKey } from 'app/lib/object-state';
 import Profile from 'app/ui/molecules/profile/profile';
 import { View, Row } from 'app/design/view';
 import {
@@ -35,8 +35,21 @@ export function objectStateFromProps(props) {
     return { ...props.action, counter: props.counter, ts: props.ts };
 }
 
+/**
+ * Merge a response or a socket update into the state. An update older than the
+ * state (a late response after a newer socket event) still brings the viewer's
+ * own fields, but keeps the newer `counter` and `ts`.
+ */
 export function mergeState(prev, next) {
-    return !prev ? next : { ...prev, ...next };
+    if (!prev) return next;
+    if (!next) return prev;
+    const prevTs = objectTs(prev);
+    const nextTs = objectTs(next);
+    if (prevTs !== undefined && nextTs !== undefined && nextTs < prevTs) {
+        const { counter, ts, ...own } = next;
+        return { ...prev, ...own };
+    }
+    return { ...prev, ...next };
 }
 
 // ---------------------------------------------------------------------------
@@ -46,7 +59,8 @@ export function mergeState(prev, next) {
 /**
  * UNA object request: /api.php?r=system/{action}/{service}&params[]={s,o,...}
  * @param {{ service: string, system: string, objectId: string|number }} object_params
- * @returns full fetcher response; onLoad gets response.data when provided
+ * @returns full fetcher response; onLoad gets response.data when provided.
+ * A response that arrives after a logout or a profile switch is dropped (null).
  */
 export async function objectRequest(
     { service, system, objectId },
@@ -62,7 +76,9 @@ export async function objectRequest(
         service +
         '&params[]=' +
         JSON.stringify(body);
+    const generation = objectStateGeneration();
     const response = await fetcher(url);
+    if (generation !== objectStateGeneration()) return null;
     if (typeof onLoad === 'function') onLoad(response?.data);
     return response;
 }
