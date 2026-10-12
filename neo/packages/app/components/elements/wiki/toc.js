@@ -350,7 +350,9 @@ function WikiTocTrack({ geometry, activeIds }) {
                         width={geometry.width}
                         height={geometry.height}
                         viewBox={`0 0 ${geometry.width} ${geometry.height}`}
-                        style={{ marginTop: -trackTop }}
+                        // The clip box is a flex column: without flexShrink 0 the SVG
+                        // shrinks to the clip height and the rail draws scaled down.
+                        style={{ marginTop: -trackTop, flexShrink: 0 }}
                     >
                         <Path
                             d={geometry.d}
@@ -597,19 +599,24 @@ function WikiTocMenuList({ items, activeIds = [], focusedId = null, onPress }) {
     )
 }
 
-export function WikiTocDropdown({ items, activeIds, focusedId = null, onPress, label }) {
+/**
+ * @param {object} props
+ * @param {boolean} [props.compact] — icon-only circle on mobile, label from `sm` up
+ */
+export function WikiTocDropdown({ items, activeIds, focusedId = null, onPress, label, compact = false }) {
     if (!items?.length || items.length < 2) return null
 
-    return (
+    const renderDropdown = (iconOnly) => (
         <DropdownPopup
             minPopupWidth={256}
             contentClasses={isWeb ? 'rounded-xl border border-popover mt-2 bg-popover/60 backdrop-blur shadow-md' : undefined}
             buttonProps={{
-                label,
+                label: iconOnly ? undefined : label,
+                accessibilityLabel: label,
                 style: 'borderless',
                 controlSize: 'small',
                 image: 'TextAlignStart',
-                borderShape: 'capsule',
+                borderShape: iconOnly ? 'circle' : 'capsule',
             }}
         >
             <View className="p-1">
@@ -621,5 +628,16 @@ export function WikiTocDropdown({ items, activeIds, focusedId = null, onPress, l
                 />
             </View>
         </DropdownPopup>
+    )
+
+    if (!compact) return renderDropdown(false)
+
+    // NeoButton `showTitleFromSize` keeps the capsule padding when the label is
+    // hidden, so swap two triggers by CSS instead (SSR-safe, no measuring).
+    return (
+        <>
+            <View className="sm:hidden">{renderDropdown(true)}</View>
+            <View className="hidden sm:flex">{renderDropdown(false)}</View>
+        </>
     )
 }

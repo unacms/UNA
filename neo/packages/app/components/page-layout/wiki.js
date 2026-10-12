@@ -279,7 +279,7 @@ function PageContentWiki({ data, scrollRef, url }) {
                                     style: 'borderless',
                                     controlSize: 'regular',
                                     image: 'Menu',
-                                    borderShape: 'capsule',
+                                    borderShape: 'circle',
                                 }}
                             >
                                 <View className="p-1">
@@ -305,6 +305,7 @@ function PageContentWiki({ data, scrollRef, url }) {
                                 focusedId={focusedTocId}
                                 onPress={handleTocPress}
                                 label={tocMenuLabel}
+                                compact
                             />
                         </View>
                     ) : null}
