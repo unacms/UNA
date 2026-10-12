@@ -2002,6 +2002,7 @@
     <string name="_adm_stg_cpt_option_sys_pwa_manifest_theme_color"><![CDATA[Theme color]]></string>
 
     <string name="_adm_stg_cpt_category_pwa_sw"><![CDATA[Service Worker]]></string>
+    <string name="_adm_stg_cpt_category_reactions"><![CDATA[Reactions]]></string>
     <string name="_adm_stg_cpt_option_sys_pwa_sw_enable"><![CDATA[Enable]]></string>
     <string name="_adm_stg_cpt_option_sys_pwa_sw_cache"><![CDATA[URLs to cache on install (each in new line)]]></string>
     <string name="_adm_stg_cpt_option_sys_pwa_sw_offline"><![CDATA[Offline page]]></string>

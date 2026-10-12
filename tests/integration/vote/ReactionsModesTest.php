@@ -67,6 +67,20 @@ class ReactionsModesTest extends BxDolIntegrationTestCase
         return $oVote;
     }
 
+    public function testSettingsHaveTheirOwnSection(): void
+    {
+        $oDb = BxDolDb::getInstance();
+        $aCategory = $oDb->getRow("SELECT `id`, `caption`, `hidden` FROM `sys_options_categories` WHERE `name` = 'reactions'");
+        $this->assertNotEmpty($aCategory, 'Studio > Settings > Global has a Reactions section');
+        $this->assertSame(0, (int)$aCategory['hidden']);
+        $this->assertNotSame($aCategory['caption'], _t($aCategory['caption']), 'the section has a title');
+
+        $aOptions = $oDb->getPairs("SELECT `name`, `category_id` FROM `sys_options` WHERE `name` IN ('" . implode("', '", self::OPTIONS) . "')", 'name', 'category_id');
+        $this->assertSame(self::OPTIONS, array_keys(array_intersect_key(array_flip(self::OPTIONS), $aOptions)), 'all reaction options exist');
+        foreach ($aOptions as $sName => $iCategoryId)
+            $this->assertSame((int)$aCategory['id'], (int)$iCategoryId, $sName . ' is in the Reactions section');
+    }
+
     public function testEmojiValidation(): void
     {
         foreach (['😀', '❤️', '👍🏽', '🏳️‍🌈', '1️⃣', '🇺🇦'] as $sEmoji)

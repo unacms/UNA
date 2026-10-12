@@ -1973,6 +1973,7 @@
     <string name="_adm_stg_cpt_option_sys_pwa_manifest_theme_color"><![CDATA[Цвет темы]]></string>
 
     <string name="_adm_stg_cpt_category_pwa_sw"><![CDATA[Service Worker]]></string>
+    <string name="_adm_stg_cpt_category_reactions"><![CDATA[Реакции]]></string>
     <string name="_adm_stg_cpt_option_sys_pwa_sw_enable"><![CDATA[Включить]]></string>
     <string name="_adm_stg_cpt_option_sys_pwa_sw_cache"><![CDATA[URL-адреса для кэширования при установке (каждый в новой строке)]]></string>
     <string name="_adm_stg_cpt_option_sys_pwa_sw_offline"><![CDATA[Офлайн-страница]]></string>
