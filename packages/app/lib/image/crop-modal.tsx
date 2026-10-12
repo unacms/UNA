@@ -90,16 +90,17 @@ export default function ImageCropModal({
     sourceHeight,
     kind = 'picture',
     module,
+    isProfile = false,
     fileSizeBytes,
     onCancel,
     onConfirm,
-}: { visible: any; uri?: any; sourceWidth?: any; sourceHeight?: any; kind?: any; module?: any; fileSizeBytes?: any; onCancel?: () => void; onConfirm?: any }) {
+}: { visible: any; uri?: any; sourceWidth?: any; sourceHeight?: any; kind?: any; module?: any; isProfile?: boolean; fileSizeBytes?: any; onCancel?: () => void; onConfirm?: any }) {
     const { t } = useTranslation()
     const zoomRef = useRef<any>(null)
     const transformRef = useRef<any>(null)
     const [viewport, setViewport] = useState<any>(null)
     const [applying, setApplying] = useState(false)
-    const aspect = getCropAspect(kind, module)
+    const aspect = getCropAspect(kind, module, isProfile)
     const isCircle = kind === 'picture'
 
     useEffect(() => {

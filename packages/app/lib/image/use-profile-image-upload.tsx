@@ -15,7 +15,8 @@ export function useProfileImageUpload({
     moduleName,
     storage,
     initialUrl,
-}: { kind: any; profileId: any; moduleName: any; storage: any; initialUrl: string }) {
+    isProfile = false,
+}: { kind: any; profileId: any; moduleName: any; storage: any; initialUrl: string; isProfile?: boolean }) {
     const [localImageUrl, setLocalImageUrl] = useState<string | undefined>(undefined)
     const [isUploading, setIsUploading] = useState(false)
     const [cropSession, setCropSession] = useState<any>(null)
@@ -84,6 +85,7 @@ export function useProfileImageUpload({
             sourceHeight={cropSession?.height}
             kind={cropSession?.kind || kind}
             module={moduleName}
+            isProfile={isProfile}
             fileSizeBytes={cropSession?.fileSizeBytes}
             onCancel={() => setCropSession(null)}
             onConfirm={handleCropConfirm}

@@ -12,7 +12,13 @@ export const settingsElements = {
     },
     cover: {
         use_background: true, 
-        aspect_ratio: 'aspect-video lg:aspect-3/1', 
+        // Every cover except profile ones: content entries, their form
+        // previews and crops. Profile covers (persons, groups, events, ...)
+        // use `profile_aspect_ratio`; `aspect_ratio_by_module` wins over both.
+        // The crop takes the first `aspect-N/M` ratio of the class, so a
+        // profile cover crops at 3:1.
+        aspect_ratio: 'aspect-video',
+        profile_aspect_ratio: 'aspect-video lg:aspect-3/1',
         allow_edit: true, 
         allow_switch: true, 
         // Skip CoverMorph collapse (expanded cover stays in flow). Do not

@@ -51,11 +51,13 @@ export function shouldSkipImageCrop(formName: string) {
     return getImageUploadLimits(formName).skip
 }
 
-export function getCoverAspectClass(formNameOrModule: string) {
-    const module = getModuleFromFormName(formNameOrModule)
+/** Profile covers: the page cover block, and a form cover input UNA marks with `is_profile`. */
+export function getCoverAspectClass(formNameOrModule?: string, isProfile = false) {
+    const module = getModuleFromFormName(formNameOrModule || '')
     const byModule = module ? appSetting('cover', 'aspect_ratio_by_module', module) : ''
     if (byModule) return byModule
-    return appSetting('cover', 'aspect_ratio') || 'aspect-3/1'
+    if (isProfile) return appSetting('cover', 'profile_aspect_ratio') || 'aspect-video lg:aspect-3/1'
+    return appSetting('cover', 'aspect_ratio') || 'aspect-video'
 }
 
 export function getPictureCropOutput() {
