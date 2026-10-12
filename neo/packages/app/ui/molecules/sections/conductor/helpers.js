@@ -478,6 +478,8 @@ export function filterConductorPageBlocks(pageBlocks) {
 /**
  * Center-column list rows (small web + native).
  * Desktop omits sidebar (`includeSidebar: false`); phone always appends it.
+ * Order: page blocks, list items, sidebar, then `afterList` blocks (the
+ * page's bottom area), as in the universal layout.
  */
 export function buildConductorListRows({
     pageBlocks,
@@ -492,7 +494,12 @@ export function buildConductorListRows({
             (item) => !item.data?.hidden_on?.includes?.('phone')
         )
         : []
-    const base = [...blocks, ...(listItems ?? []), ...sidebar]
+    const base = [
+        ...blocks.filter((item) => !item.afterList),
+        ...(listItems ?? []),
+        ...sidebar,
+        ...blocks.filter((item) => item.afterList),
+    ]
     if (!feedType) return base
     return base.map((item) =>
         item.feed_type === feedType ? item : { ...item, feed_type: feedType }
@@ -725,15 +732,43 @@ function mapLayoutBlocks(items = []) {
     return { content, endpoint: payload && designbox ? { ...payload, designbox } : payload }
 }
 
-/** Build content/endpoint/sidebar/leftbar from layout_parsed page data. */
+/** Block whose content is an entity cover (`entity_cover` element). */
+function isEntityCoverBlock(item) {
+    return Array.isArray(item?.content)
+        && item.content.some((entry) => entry?.type === 'entity_cover')
+}
+
+/**
+ * Build content/endpoint/sidebar/leftbar from layout_parsed page data.
+ *
+ * The top and bottom areas join the center column, like the rows of the
+ * universal layout: top blocks above the center blocks, bottom blocks after
+ * the list (marked `afterList`, see buildConductorListRows). The list is the
+ * center's browse block; the top's or the bottom's only when the center has
+ * none (the person profile keeps its timeline in the top area).
+ */
 function processParsedUrl(data) {
     const elements = data?.elements || {}
-    const cellCenter = mapLayoutBlocks(elements.cell_center)
-    const cellRight = mapLayoutBlocks(elements.cell_right)
-    const cellLeft = mapLayoutBlocks(elements.cell_left)
-    const browsePayload = cellCenter.endpoint
+    // A profile page's cover comes from `cover_block` (the Conductor header);
+    // an entity cover block in any cell would draw it a second time.
+    const cell = (name) => {
+        const items = Array.isArray(elements[name]) ? elements[name] : []
+        return mapLayoutBlocks(
+            data?.cover_block?.profile ? items.filter((item) => !isEntityCoverBlock(item)) : items
+        )
+    }
+    const cellTop = cell('cell_top')
+    const cellCenter = cell('cell_center')
+    const cellBottom = cell('cell_bottom')
+    const cellRight = cell('cell_right')
+    const cellLeft = cell('cell_left')
+    const browsePayload = cellCenter.endpoint ?? cellTop.endpoint ?? cellBottom.endpoint
     return {
-        content: cellCenter.content,
+        content: [
+            ...cellTop.content,
+            ...cellCenter.content,
+            ...cellBottom.content.map((item) => ({ ...item, afterList: true })),
+        ],
         endpoint: endpointFromBrowsePayload(browsePayload),
         sidebar: { endpoint: cellRight.endpoint, content: cellRight.content },
         leftbar: { endpoint: cellLeft.endpoint, content:  cellLeft.content },
@@ -744,13 +779,14 @@ function processParsedUrl(data) {
  * Derive list content, browse endpoint, sidebar and leftbar from page JSON.
  *
  * Two page formats come from UNA:
- * - `layout_parsed` — cells already split into left / center / right; each
- *   cell is a list of blocks. Handled by `processParsedUrl`.
+ * - `layout_parsed` — cells already split into top / left / center / right /
+ *   bottom; each cell is a list of blocks. Handled by `processParsedUrl`.
  * - classic — a flat `elements` map plus a `blocks` config that says which
  *   block is sidebar / leftbar / hidden. Walked here.
  *
- * In both, the first `browse` block in the center becomes the `endpoint`;
- * every other block becomes a `{ type: 'block' }` row for its column.
+ * In both, the first `browse` block in the center becomes the `endpoint`
+ * (parsed pages fall back to the top, then the bottom area); every other
+ * block becomes a `{ type: 'block' }` row for its column.
  */
 export function processUrl(data, blocks) {
     if (data.layout_parsed) {

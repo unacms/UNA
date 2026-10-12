@@ -114,6 +114,7 @@ export type PageElement = { id?: string | number; source?: string; type?: string
  * First element in `data.elements` whose `source` equals `source`.
  * Cells may be objects or arrays. `filter` narrows the match (e.g. `hasNonEmptyContent`).
  * The one lookup for "block by source" — don't hand-roll another loop over `elements`.
+ * A specific block you already hold (its `id`) is `findElementById`.
  */
 export function findElementBySource(
     data: PageData | null | undefined,
@@ -126,6 +127,26 @@ export function findElementBySource(
         if (!cell || typeof cell !== 'object') continue;
         for (const el of Object.values(cell) as PageElement[]) {
             if (el?.source === wanted && (!filter || filter(el))) return el;
+        }
+    }
+    return null;
+}
+
+/**
+ * The element in `data.elements` whose block `id` equals `id`. Use it when
+ * several blocks can share a `source` (one service with different params), where
+ * `findElementBySource` would always return the first of them.
+ */
+export function findElementById(
+    data: PageData | null | undefined,
+    id: string | number | null | undefined
+): PageElement | null {
+    if (id == null || id === '' || !data?.elements || typeof data.elements !== 'object') return null;
+    const wanted = String(id);
+    for (const cell of Object.values(data.elements)) {
+        if (!cell || typeof cell !== 'object') continue;
+        for (const el of Object.values(cell) as PageElement[]) {
+            if (el?.id != null && String(el.id) === wanted) return el;
         }
     }
     return null;
