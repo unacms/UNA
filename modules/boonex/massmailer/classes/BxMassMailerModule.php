@@ -62,7 +62,14 @@ class BxMassMailerModule extends BxBaseModGeneralModule
             return '';
         
         header('Content-Type: application/json');
-        
+        echo json_encode($this->getReportsData($sReportName, $sReportType, $sDateFrom, $sDateTo, $sSegment));
+    }
+
+    /**
+     * Chart.js 4 config for a report: type, data and options.
+     */
+    public function getReportsData($sReportName, $sReportType, $sDateFrom, $sDateTo, $sSegment)
+    {
         $aColors = array('#3366CC', '#DC3912', '#FF9900', '#109618', '#990099');
         $iDateFrom = strtotime($sDateFrom);
         $iDateTo = strtotime($sDateTo);
@@ -131,6 +138,8 @@ class BxMassMailerModule extends BxBaseModGeneralModule
             
             case "CAMPAIGN_REPORT":
                 $aDataStat = $this->_oDb->getStatByCampaignId($sReportType);
+                // One category for all bars: a category axis without labels places no bars.
+                $aValues['labels'] = array('');
                 $aValues['values'][0]['legend'] = _t('_bx_massmailer_txt_sent_total_title', $aDataStat['total']);
                 array_push($aValues['values'][0]['data'], $aDataStat['total']);
                 $aValues['values'][1] = array('legend' => _t('_bx_massmailer_txt_opened_total_title', $aDataStat['seen']) , 'data' => array($aDataStat['seen']));
@@ -159,7 +168,6 @@ class BxMassMailerModule extends BxBaseModGeneralModule
                     'unit' => $sUnit,
                  ),
                 'display' => true,
-                'distribution' => 'linear',
                 'ticks' => array(
                     'display' => true,
                     'autoSkip' => true,
@@ -194,29 +202,29 @@ class BxMassMailerModule extends BxBaseModGeneralModule
                 'datasets' => $aDataForChartDatasets
             ),
             'options' => array(
-                'legend' => array(
-                    'position' => 'bottom',
-                    'display' => count($aValues['values']) == 1 ? false : true
+                'plugins' => array(
+                    'legend' => array(
+                        'position' => 'bottom',
+                        'display' => count($aValues['values']) == 1 ? false : true
+                    )
                 ),
                 'scales' => array(
-                    'yAxes' => array(
-                        array(
-                            'ticks' => array(
-                                'max' => $iMaxValueY,
-                                'min' => $iMinValueY,
-                                'stepSize' => $this->getReportStep($iMinValueY, $iMaxValueY),
-                                'autoSkip' => true
-                            )
+                    'y' => array(
+                        'max' => $iMaxValueY,
+                        'min' => $iMinValueY,
+                        'ticks' => array(
+                            'stepSize' => $this->getReportStep($iMinValueY, $iMaxValueY),
+                            'autoSkip' => true
                         )
                     ),
-                    'xAxes' => array($aDataForChartXAxes)
+                    'x' => $aDataForChartXAxes
                 )
             ),
             'links' => $aValues['links'],
             'strings' => $aValues['strings'],
         );
         
-        echo json_encode($aDataForChart);
+        return $aDataForChart;
     }
   
     /**
