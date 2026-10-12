@@ -166,15 +166,25 @@ class AnalyticsCollectorTest extends BxDolIntegrationTestCase
         $aIos = $this->_oModule->getReports()->getOverview($this->_filter($aParams + ['platform' => 'rn-ios']));
         $this->assertSame(1, $aIos['kpis']['visitors']['value']);
 
-        $aPages = $this->_oModule->getReports()->getTop($this->_filter($aParams), 'pages', 'pages');
+        $aPages = $this->_oModule->getReports()->getTop($this->_filter($aParams), ['group' => 'pages', 'tab' => 'pages']);
         $this->assertSame(['/a', '/b'], array_column($aPages['items'], 'value'));
         $this->assertSame([2, 1], array_column($aPages['items'], 'visitors'));
 
-        $aChannels = $this->_oModule->getReports()->getTop($this->_filter($aParams + ['f' => ['path' => '/b']]), 'sources', 'channels');
+        $aChannels = $this->_oModule->getReports()->getTop($this->_filter($aParams + ['f' => ['path' => '/b']]), ['group' => 'sources', 'tab' => 'channels']);
         $this->assertSame(['direct'], array_column($aChannels['items'], 'value'), 'a page filter keeps the sessions that saw it');
 
-        $aPlatforms = $this->_oModule->getReports()->getTop($this->_filter($aParams), 'platforms', 'platforms');
+        $aPlatforms = $this->_oModule->getReports()->getTop($this->_filter($aParams), ['group' => 'platforms', 'tab' => 'platforms']);
         $this->assertEqualsCanonicalizing(['core-web', 'rn-ios'], array_column($aPlatforms['items'], 'value'));
+
+        $aTable = $this->_oModule->getReports()->getTable($this->_filter($aParams), ['table' => 'pages']);
+        $this->assertSame(['/a', '/b'], array_column($aTable['rows'], 'label'));
+        $this->assertSame(2, $aTable['rows'][0]['values']['entries'], 'both sessions entered on /a');
+        $this->assertSame(1, $aTable['rows'][0]['values']['exits'], 'the one-page session left from /a');
+        $this->assertEquals(50, $aTable['rows'][0]['values']['bounce_rate']);
+        $this->assertSame(2, $aTable['total']);
+
+        $this->assertFalse($this->_oModule->getReports()->getTable($this->_filter($aParams), ['table' => 'nope']));
+        $this->assertFalse($this->_oModule->getReportData('nope', $aParams), 'unknown reports are refused');
     }
 
     protected function _collect($aServer, $aPayload, $iNow, $aContext = [])

@@ -24,6 +24,23 @@ class BxAnalyticsModule extends BxDolModule
     protected $aColors = array('#3366CC', '#DC3912', '#FF9900', '#109618', '#990099');
 
     protected $_oReports = null;
+
+    /**
+     * Reports that blocks, Studio and the API may ask for; each is a BxAnalyticsReports method.
+     */
+    protected $_aReports = ['filters', 'overview', 'top', 'table', 'realtime', 'map'];
+
+    /**
+     * Studio sections: page => list of [report, block params, spans all columns].
+     */
+    protected $_aStudioSections = [
+        'overview' => [['filters', [], true], ['overview', [], true], ['top', ['group' => 'pages']], ['top', ['group' => 'sources']], ['top', ['group' => 'locations']], ['top', ['group' => 'devices']], ['top', ['group' => 'platforms']]],
+        'realtime' => [['realtime', [], true]],
+        'pages' => [['filters', [], true], ['table', ['table' => 'pages'], true]],
+        'sources' => [['filters', [], true], ['table', ['table' => 'sources'], true]],
+        'audience' => [['filters', [], true], ['top', ['group' => 'locations']], ['top', ['group' => 'devices']], ['top', ['group' => 'platforms']]],
+        'map' => [['filters', [], true], ['map', [], true]],
+    ];
           
     function __construct(&$aModule)
     {
@@ -241,14 +258,15 @@ class BxAnalyticsModule extends BxDolModule
      * @subsection bx_analytics-reports Reports
      * @subsubsection bx_analytics-get_report get_report
      *
-     * @code bx_srv('bx_analytics', 'get_report', ['overview', ['range' => '30d', 'platform' => 'ios']]); @endcode
+     * @code bx_srv('bx_analytics', 'get_report', ['overview', ['range' => '30d', 'platform' => 'rn-ios']]); @endcode
      * @code api.php?r=bx_analytics/get_report&params[]=top&params[]={"group":"pages","tab":"entry","range":"7d"} @endcode
      *
-     * Report data for NEO and other clients.
+     * Report data for NEO and other clients. Reports: filters, overview, top, table, realtime
+     * and the other sections listed in BxAnalyticsModule::$_aReports.
      *
-     * @param $sReport overview, top or realtime
-     * @param $mixedParams filter parameters (see BxAnalyticsFilter), plus `group`, `tab` and
-     *      `limit` for top lists; an array or a JSON string
+     * @param $sReport report name
+     * @param $mixedParams filter parameters (see BxAnalyticsFilter) and the report's own
+     *      (group, table, tab, page, limit...); an array or a JSON string
      * @return array report data, or an error array when the viewer may not use analytics
      *
      * @see BxAnalyticsModule::serviceGetReport
@@ -273,7 +291,9 @@ class BxAnalyticsModule extends BxDolModule
     }
 
     /**
-     * Report fragments for the classic dashboard: data plus rendered HTML.
+     * A report block reloaded by the dashboard script: data plus rendered HTML. The block's
+     * own parameters (group, table...) come as JSON in `bp`, the filters as the page's URL
+     * parameters.
      */
     public function actionReport($sReport = '')
     {
@@ -286,7 +306,13 @@ class BxAnalyticsModule extends BxDolModule
             exit;
         }
 
-        $aParams = $_GET;
+        $aBlockParams = json_decode((string)bx_get('bp'), true);
+        if(!is_array($aBlockParams))
+            $aBlockParams = [];
+
+        $aParams = array_merge($_GET, $aBlockParams);
+        unset($aParams['bp']);
+
         $aData = $this->getReportData($sReport, $aParams);
         if($aData === false) {
             http_response_code(404);
@@ -296,9 +322,32 @@ class BxAnalyticsModule extends BxDolModule
 
         echo json_encode([
             'data' => $aData,
-            'html' => $this->_oTemplate->getReportHtml($sReport, $aData, $this->getFilter($aParams)),
+            'html' => $this->_oTemplate->getReportHtml($sReport, $aData, $this->getFilter($aParams), $aBlockParams),
         ]);
         exit;
+    }
+
+    /**
+     * @page service Service Calls
+     * @section bx_analytics Analytics
+     * @subsection bx_analytics-blocks Blocks
+     * @subsubsection bx_analytics-get_block_filters get_block_filters
+     *
+     * @code bx_srv('bx_analytics', 'get_block_filters'); @endcode
+     *
+     * The filter bar: period, platform, active filters and visitors online. It keeps the
+     * filters in the page URL, and every analytics block on the page follows them.
+     *
+     * @return HTML string, or a block description for the API; empty for viewers without access
+     *
+     * @see BxAnalyticsModule::serviceGetBlockFilters
+     */
+    /**
+     * @ref bx_analytics-get_block_filters "get_block_filters"
+     */
+    public function serviceGetBlockFilters()
+    {
+        return $this->_getBlock('filters');
     }
 
     /**
@@ -309,8 +358,7 @@ class BxAnalyticsModule extends BxDolModule
      *
      * @code bx_srv('bx_analytics', 'get_block_overview'); @endcode
      *
-     * Filters, key figures and the main chart. The filters it sets in the page URL drive
-     * every other analytics block on the page.
+     * Key figures with the change against the previous period, and the main chart.
      *
      * @return HTML string, or a block description for the API; empty for viewers without access
      *
@@ -321,15 +369,7 @@ class BxAnalyticsModule extends BxDolModule
      */
     public function serviceGetBlockOverview()
     {
-        if(!$this->serviceIsAvaliable())
-            return bx_is_api() ? [] : '';
-
-        if(bx_is_api())
-            return [bx_api_get_block('analytics_overview', $this->_getApiBlockData('overview'))];
-
-        $oFilter = $this->getFilter($_GET);
-
-        return $this->_oTemplate->getBlockOverview($this->getReports()->getOverview($oFilter), $this->getReports()->getRealtime($oFilter->get()['platform'], 0), $oFilter);
+        return $this->_getBlock('overview');
     }
 
     /**
@@ -352,16 +392,103 @@ class BxAnalyticsModule extends BxDolModule
      */
     public function serviceGetBlockTop($sGroup = 'pages')
     {
-        if(!$this->serviceIsAvaliable() || !$this->getReports()->isGroup($sGroup))
+        return $this->_getBlock('top', ['group' => $sGroup]);
+    }
+
+    /**
+     * @page service Service Calls
+     * @section bx_analytics Analytics
+     * @subsection bx_analytics-blocks Blocks
+     * @subsubsection bx_analytics-get_block_table get_block_table
+     *
+     * @code bx_srv('bx_analytics', 'get_block_table', ['pages']); @endcode
+     *
+     * A full table with every metric, a page at a time: pages or sources.
+     *
+     * @param $sTable table name
+     * @return HTML string, or a block description for the API; empty for viewers without access
+     *
+     * @see BxAnalyticsModule::serviceGetBlockTable
+     */
+    /**
+     * @ref bx_analytics-get_block_table "get_block_table"
+     */
+    public function serviceGetBlockTable($sTable = 'pages')
+    {
+        return $this->_getBlock('table', ['table' => $sTable]);
+    }
+
+    /**
+     * @page service Service Calls
+     * @section bx_analytics Analytics
+     * @subsection bx_analytics-blocks Blocks
+     * @subsubsection bx_analytics-get_block_report get_block_report
+     *
+     * @code bx_srv('bx_analytics', 'get_block_report', ['realtime']); @endcode
+     *
+     * Any other report as a block: realtime, map, bots, sessions, users, events, goals,
+     * funnels, journeys, retention, revenue, subscriptions, sales, credits, errors,
+     * performance, query.
+     *
+     * @param $sReport report name
+     * @param $aParams the report's own parameters
+     * @return HTML string, or a block description for the API; empty for viewers without access
+     *
+     * @see BxAnalyticsModule::serviceGetBlockReport
+     */
+    /**
+     * @ref bx_analytics-get_block_report "get_block_report"
+     */
+    public function serviceGetBlockReport($sReport, $aParams = [])
+    {
+        return $this->_getBlock($sReport, is_array($aParams) ? $aParams : []);
+    }
+
+    /**
+     * A Studio section: the filter bar (where the section uses it) and the section's blocks.
+     */
+    public function getStudioSection($sSection)
+    {
+        if(!isset($this->_aStudioSections[$sSection]))
+            return '';
+
+        $aBlocks = [];
+        foreach($this->_aStudioSections[$sSection] as $aBlock) {
+            list($sReport, $aParams, $bWide) = array_pad($aBlock, 3, false);
+
+            $sTitle = '';
+            if($sReport == 'top')
+                $sTitle = _t('_bx_analytics_group_' . $aParams['group']);
+            elseif(!in_array($sReport, ['filters', 'overview', 'table'], true))
+                $sTitle = _t('_bx_analytics_report_' . (isset($aParams['title']) ? $aParams['title'] : $sReport));
+
+            $aBlocks[] = [
+                'title' => $sTitle,
+                'content' => $this->_getBlock($sReport, $aParams ? $aParams : []),
+                'wide' => (bool)$bWide,
+            ];
+        }
+
+        return $this->_oTemplate->getStudioSection($aBlocks);
+    }
+
+    /**
+     * A report as a page block: a description NEO renders from for the API, HTML otherwise.
+     */
+    protected function _getBlock($sReport, $aBlockParams = [])
+    {
+        if(!$this->serviceIsAvaliable() || !in_array($sReport, $this->_aReports, true))
             return bx_is_api() ? [] : '';
 
         if(bx_is_api())
-            return [bx_api_get_block('analytics_top', $this->_getApiBlockData('top', ['group' => $sGroup]))];
+            return [bx_api_get_block('analytics_' . $sReport, $this->_getApiBlockData($sReport, $aBlockParams))];
 
-        $oFilter = $this->getFilter($_GET);
-        $sTab = bx_get('tab_' . $sGroup);
+        $aParams = array_merge($_GET, $aBlockParams);
+        $aData = $this->getReportData($sReport, $aParams);
+        if($aData === false)
+            return '';
 
-        return $this->_oTemplate->getBlockTop($this->getReports()->getTop($oFilter, $sGroup, is_string($sTab) ? $sTab : ''), $oFilter);
+        return $this->_oTemplate->getBlock($sReport, $aData, $this->getFilter($aParams), $aBlockParams);
     }
 
     /**
@@ -387,9 +514,10 @@ class BxAnalyticsModule extends BxDolModule
             return '';
 
         $oFilter = $this->getFilter(['range' => '7d']);
+        $oReports = $this->getReports();
 
         return [
-            'content' => $this->_oTemplate->getStudioDashboardTraffic($this->getReports()->getOverview($oFilter), $this->getReports()->getRealtime('', 0), $this->getReports()->getTop($oFilter, 'platforms', 'platforms', 5)),
+            'content' => $this->_oTemplate->getStudioDashboardTraffic($oReports->getOverview($oFilter), $oReports->getRealtime($oFilter, ['limit' => 0]), $oReports->getTop($oFilter, ['group' => 'platforms', 'limit' => 5])),
         ];
     }
 
@@ -496,34 +624,26 @@ class BxAnalyticsModule extends BxDolModule
     }
 
     /**
-     * Report data by name, or false for an unknown report.
+     * Report data by name, or false for an unknown report or parameters it doesn't know.
      */
     public function getReportData($sReport, $aParams)
     {
-        $oFilter = $this->getFilter($aParams);
+        if(!in_array($sReport, $this->_aReports, true))
+            return false;
+
         $oReports = $this->getReports();
+        $sMethod = 'get' . bx_gen_method_name($sReport);
+        if(!method_exists($oReports, $sMethod))
+            return false;
 
-        switch($sReport) {
-            case 'overview':
-                return array_merge($oReports->getOverview($oFilter), ['filter' => $oFilter->getParams()]);
+        $oFilter = $this->getFilter($aParams);
+        $aData = $oReports->$sMethod($oFilter, $aParams);
+        if($aData === false)
+            return false;
 
-            case 'top':
-                $sGroup = isset($aParams['group']) && is_string($aParams['group']) ? $aParams['group'] : '';
-                if(!$oReports->isGroup($sGroup))
-                    return false;
+        $aData['filter'] = $oFilter->getParams();
 
-                $sTab = isset($aParams['tab']) && is_string($aParams['tab']) ? $aParams['tab'] : '';
-                $iLimit = isset($aParams['limit']) ? max(1, min(100, (int)$aParams['limit'])) : 10;
-
-                return array_merge($oReports->getTop($oFilter, $sGroup, $sTab, $iLimit), ['filter' => $oFilter->getParams()]);
-
-            case 'realtime':
-                $sPlatform = isset($aParams['platform']) && $this->_oConfig->isPlatform($aParams['platform']) ? $aParams['platform'] : '';
-
-                return $oReports->getRealtime($sPlatform, 20);
-        }
-
-        return false;
+        return $aData;
     }
 
     /**

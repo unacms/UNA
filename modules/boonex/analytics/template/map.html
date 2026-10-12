@@ -1,0 +1,30 @@
+__tabs__
+<div class="bx-analytics-panel bx-analytics-map-layout" role="tabpanel" id="bx-analytics-panel-map" __refresh__>
+    <div class="bx-analytics-map" role="img" aria-label="__map_label__"></div>
+    <script type="application/json" class="bx-analytics-map-data">__map_json__</script>
+    <div class="bx-analytics-map-side">
+        <div class="bx-analytics-list-head" aria-hidden="true">
+            <span>__column__</span>
+            <span>__visitors__</span>
+        </div>
+        <bx_if:countries>
+            <ul class="bx-analytics-rows">
+                <bx_repeat:countries>
+                    <li class="bx-analytics-row">
+                        <button type="button" class="bx-analytics-row-btn" data-bx-analytics-filter="country" data-bx-analytics-value="__value__" title="__filter_title__">
+                            <span class="bx-analytics-row-bar" style="width: __bar__%" aria-hidden="true"></span>
+                            <span class="bx-analytics-row-label">__label__</span>
+                            <span class="bx-analytics-row-value">__visitors__ <span class="bx-analytics-row-share">__share__%</span></span>
+                        </button>
+                    </li>
+                </bx_repeat:countries>
+            </ul>
+        </bx_if:countries>
+        <bx_if:empty>
+            <div class="bx-analytics-empty">__empty__</div>
+        </bx_if:empty>
+        <bx_if:unknown>
+            <p class="bx-analytics-note">__unknown__</p>
+        </bx_if:unknown>
+    </div>
+</div>

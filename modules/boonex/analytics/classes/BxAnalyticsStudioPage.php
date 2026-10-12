@@ -10,8 +10,10 @@
  */
 
 /**
- * Studio page of the module: reports first, then the content reports and the settings.
- * Tabs render the same block services as the site's analytics page.
+ * Studio page of the module: every report section in a side menu grouped like the reports
+ * themselves (traffic, behavior, conversion, revenue, health, community, explore), then setup
+ * and settings. A section shows the same block services the site's page builder offers, with
+ * the filter bar on top, so a report looks and counts the same in Studio and on any page.
  */
 class BxAnalyticsStudioPage extends BxTemplStudioModule
 {
@@ -20,6 +22,21 @@ class BxAnalyticsStudioPage extends BxTemplStudioModule
 
     protected $sPageDefault = 'overview';
 
+    /**
+     * Section => [page => icon]. The empty section has no heading.
+     */
+    protected $_aSections = [
+        '' => ['overview' => 'chart-line'],
+        'traffic' => ['realtime' => 'bolt', 'pages' => 'file-alt', 'sources' => 'share-alt', 'audience' => 'users', 'map' => 'globe-americas', 'bots' => 'robot'],
+        'behavior' => ['sessions' => 'history', 'users' => 'user', 'events' => 'mouse-pointer'],
+        'conversion' => ['goals' => 'bullseye', 'funnels' => 'filter', 'journeys' => 'route', 'retention' => 'redo'],
+        'revenue' => ['revenue' => 'dollar-sign', 'subscriptions' => 'sync', 'sales' => 'shopping-cart', 'credits' => 'coins'],
+        'health' => ['errors' => 'exclamation-triangle', 'performance' => 'tachometer-alt'],
+        'community' => ['content' => 'layer-group'],
+        'explore' => ['query' => 'database', 'api' => 'code', 'dashboards' => 'th-large'],
+        'configure' => ['setup' => 'plug', 'settings' => 'cog'],
+    ];
+
     function __construct($sModule, $mixedPageName, $sPage = "")
     {
         $this->_sModule = 'bx_analytics';
@@ -27,28 +44,70 @@ class BxAnalyticsStudioPage extends BxTemplStudioModule
 
         parent::__construct($sModule, $mixedPageName, $sPage);
 
-        $this->aMenuItems = array_merge([
-            'overview' => ['name' => 'overview', 'icon' => 'chart-line', 'title' => '_bx_analytics_lmi_cpt_overview'],
-            'content' => ['name' => 'content', 'icon' => 'chart-bar', 'title' => '_bx_analytics_lmi_cpt_content'],
-        ], $this->aMenuItems);
+        $aSettings = $this->aMenuItems[BX_DOL_STUDIO_MOD_TYPE_SETTINGS];
+
+        $this->aMenuItems = [];
+        foreach($this->_aSections as $aPages)
+            foreach($aPages as $sPage => $sIcon)
+                $this->aMenuItems[$sPage] = $sPage == BX_DOL_STUDIO_MOD_TYPE_SETTINGS ? $aSettings : [
+                    'name' => $sPage,
+                    'icon' => $sIcon,
+                    'title' => '_bx_analytics_lmi_cpt_' . $sPage,
+                ];
     }
 
-    protected function getOverview()
+    /**
+     * The side menu in sections, each drawn by Studio's own menu object.
+     */
+    protected function getPageMenuObject($aMenu = [], $aMarkers = [])
     {
-        $this->_oModule->_oTemplate->setStudio(true);
+        $this->_oModule->_oTemplate->addStudioCss(['studio.css']);
 
-        $sOverview = $this->_oModule->serviceGetBlockOverview();
-        if($sOverview === '')
-            return '';
+        $aByName = [];
+        foreach($aMenu as $aItem)
+            $aByName[$aItem['name']] = $aItem;
 
-        $aCards = [];
-        foreach(array_keys($this->_oModule->getReports()->getGroups()) as $sGroup)
-            $aCards[] = [
-                'title' => _t('_bx_analytics_group_' . $sGroup),
-                'content' => $this->_oModule->serviceGetBlockTop($sGroup),
+        $aSections = [];
+        foreach($this->_aSections as $sSection => $aPages) {
+            $aItems = [];
+            foreach(array_keys($aPages) as $sPage)
+                if(isset($aByName[$sPage]))
+                    $aItems[] = $aByName[$sPage];
+
+            if(empty($aItems))
+                continue;
+
+            $aSections[] = [
+                'name' => $sSection !== '' ? $sSection : 'main',
+                'title' => $sSection !== '' ? _t('_bx_analytics_section_' . $sSection) : '',
+                'menu' => parent::getPageMenuObject($aItems, $aMarkers),
             ];
+        }
 
-        return $this->_oModule->_oTemplate->getStudioOverview($sOverview, $aCards);
+        bx_import('StudioMenu', $this->_oModule->_aModule);
+
+        return new BxAnalyticsStudioMenu($this->_oModule->_oTemplate, $aSections);
+    }
+
+    /**
+     * Report sections: the page name is the section the module renders.
+     */
+    public function getPageCode($sPage = '', $bWrap = true)
+    {
+        if(empty($sPage))
+            $sPage = $this->sPage;
+
+        if($sPage != BX_DOL_STUDIO_MOD_TYPE_SETTINGS && isset($this->aMenuItems[$sPage]) && !method_exists($this, 'get' . bx_gen_method_name($sPage))) {
+            $sResult = parent::getPageCode('', $bWrap);
+            if($sResult === false)
+                return false;
+
+            $this->_oModule->_oTemplate->setStudio(true);
+
+            return $this->getBlockCode(['content' => $this->_oModule->getStudioSection($sPage)]) . $sResult;
+        }
+
+        return parent::getPageCode($sPage, $bWrap);
     }
 
     protected function getContent()

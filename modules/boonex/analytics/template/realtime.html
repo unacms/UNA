@@ -1,0 +1,44 @@
+<div class="bx-analytics-realtime" data-bx-analytics-refresh="15">
+    <div class="bx-analytics-realtime-head">
+        <div class="bx-analytics-realtime-online" role="status">
+            <span class="bx-analytics-online-dot" aria-hidden="true"></span>
+            <span class="bx-analytics-realtime-count">__online__</span>
+            <span class="bx-analytics-realtime-label">__online_title__</span>
+        </div>
+        <bx_if:platforms>
+            <ul class="bx-analytics-rows bx-analytics-realtime-platforms">
+                <bx_repeat:platforms>
+                    <li class="bx-analytics-row bx-analytics-std-platform">
+                        <span class="bx-analytics-row-bar" style="width: __share__%" aria-hidden="true"></span>
+                        <span class="bx-analytics-row-label">__label__</span>
+                        <span class="bx-analytics-row-value">__visitors__</span>
+                    </li>
+                </bx_repeat:platforms>
+            </ul>
+        </bx_if:platforms>
+    </div>
+    <div class="bx-analytics-minutes" role="img" aria-label="__minutes_label__">
+        <bx_repeat:minutes>
+            <span class="bx-analytics-minute" style="height: __height__%" title="__title__"></span>
+        </bx_repeat:minutes>
+    </div>
+    <div class="bx-analytics-minutes-axis" aria-hidden="true"><span>__axis_start__</span><span>__axis_end__</span></div>
+    <h3 class="bx-analytics-subtitle">__recent_title__</h3>
+    <bx_if:recent>
+        <ul class="bx-analytics-feed">
+            <bx_repeat:recent>
+                <li class="bx-analytics-feed-item">
+                    <span class="bx-analytics-feed-time">__time__</span>
+                    <span class="bx-analytics-feed-page">
+                        <span class="bx-analytics-feed-title">__title__</span>
+                        <span class="bx-analytics-feed-path">__path__</span>
+                    </span>
+                    <span class="bx-analytics-feed-meta">__meta__</span>
+                </li>
+            </bx_repeat:recent>
+        </ul>
+    </bx_if:recent>
+    <bx_if:empty>
+        <div class="bx-analytics-empty">__empty__</div>
+    </bx_if:empty>
+</div>

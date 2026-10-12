@@ -118,6 +118,31 @@ class BxAnalyticsRequest
         return $this->_clean(rawurldecode($sCity), 64);
     }
 
+    /**
+     * Visitor coordinates from the edge (Vercel, or Cloudflare's visitor location headers),
+     * rounded to one decimal (about 10 km), or null.
+     *
+     * @return array|null [lat, lng]
+     */
+    public function getCoordinates()
+    {
+        foreach([['HTTP_X_VERCEL_IP_LATITUDE', 'HTTP_X_VERCEL_IP_LONGITUDE'], ['HTTP_CF_IPLATITUDE', 'HTTP_CF_IPLONGITUDE']] as list($sLat, $sLng)) {
+            $sLatValue = $this->_get($sLat);
+            $sLngValue = $this->_get($sLng);
+            if(!is_numeric($sLatValue) || !is_numeric($sLngValue))
+                continue;
+
+            $fLat = (float)$sLatValue;
+            $fLng = (float)$sLngValue;
+            if($fLat < -90 || $fLat > 90 || $fLng < -180 || $fLng > 180)
+                continue;
+
+            return [round($fLat, 1), round($fLng, 1)];
+        }
+
+        return null;
+    }
+
     public function getUserAgent()
     {
         return $this->_clean($this->_get('HTTP_USER_AGENT'), 512);

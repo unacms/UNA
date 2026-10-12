@@ -12,11 +12,12 @@
  * Analytics blocks on a page share one set of filters kept in the page URL: range, tz,
  * platform, f[dimension] and the chart metric. Changing a filter reloads every block
  * from the server, which renders it from the same templates as the first page load.
+ * A block's own state (its tab, its page) is kept in the URL too, as tab_<name> and
+ * page_<name>, so a reload or a shared link shows the same thing.
  */
 function BxAnalyticsDashboard(oOptions) {
     this._sActionUrl = oOptions.sActionUrl;
     this._aStrings = oOptions.aStrings || {};
-    this._oCharts = {};
 
     var $this = this;
     if (document.readyState === 'loading')
@@ -35,7 +36,7 @@ BxAnalyticsDashboard.prototype.init = function () {
     });
 
     document.addEventListener('click', function (oEvent) {
-        var oTarget;
+        var oTarget, oBlock, sName;
 
         if ((oTarget = oEvent.target.closest('[data-bx-analytics-metric]'))) {
             $this.selectMetric(oTarget);
@@ -43,9 +44,25 @@ BxAnalyticsDashboard.prototype.init = function () {
         }
 
         if ((oTarget = oEvent.target.closest('[data-bx-analytics-tab]'))) {
-            var oBlock = oTarget.closest('[data-bx-analytics-block]');
-            $this.setUrlParam('tab_' + oBlock.getAttribute('data-bx-analytics-group'), oTarget.getAttribute('data-bx-analytics-tab'));
+            oBlock = oTarget.closest('[data-bx-analytics-block]');
+            sName = $this.getBlockName(oBlock);
+            $this.setUrlParam('tab_' + sName, oTarget.getAttribute('data-bx-analytics-tab'));
+            $this.setUrlParam('page_' + sName, null);
             $this.reload(oBlock, true);
+            return;
+        }
+
+        if ((oTarget = oEvent.target.closest('[data-bx-analytics-pager]'))) {
+            oBlock = oTarget.closest('[data-bx-analytics-block]');
+            $this.setUrlParam('page_' + oTarget.getAttribute('data-bx-analytics-pager'), oTarget.getAttribute('data-bx-analytics-page'));
+            $this.reload(oBlock, false);
+            return;
+        }
+
+        if ((oTarget = oEvent.target.closest('[data-bx-analytics-open]'))) {
+            oBlock = oTarget.closest('[data-bx-analytics-block]');
+            $this.setUrlParam(oTarget.getAttribute('data-bx-analytics-open'), oTarget.getAttribute('data-bx-analytics-value'));
+            $this.reload(oBlock, false);
             return;
         }
 
@@ -72,6 +89,21 @@ BxAnalyticsDashboard.prototype.init = function () {
     });
 
     this.drawCharts(document);
+    this.drawMaps(document);
+
+    // blocks that follow live data reload themselves while the page is visible
+    setInterval(function () {
+        if (document.visibilityState !== 'visible')
+            return;
+
+        document.querySelectorAll('[data-bx-analytics-refresh]').forEach(function (oRefresh) {
+            var oBlock = oRefresh.closest('[data-bx-analytics-block]');
+            var iEvery = 1000 * parseInt(oRefresh.getAttribute('data-bx-analytics-refresh'), 10);
+            if (oBlock && !oBlock._bxAnalyticsBusy && Date.now() - (oBlock._bxAnalyticsLoaded || $this._iStarted) >= iEvery)
+                $this.reload(oBlock, false, true);
+        });
+    }, 5000);
+    this._iStarted = Date.now();
 
     // the server rendered in UTC when the page URL had no timezone
     var sTz = this.getTimezone();
@@ -91,9 +123,36 @@ BxAnalyticsDashboard.prototype.getTimezone = function () {
 };
 
 /**
- * Set a filter parameter (null removes it) and reload every block.
+ * A block's own parameters (group, table...), set by the server.
+ */
+BxAnalyticsDashboard.prototype.getBlockParams = function (oBlock) {
+    try {
+        return JSON.parse(oBlock.getAttribute('data-bx-analytics-params') || '{}') || {};
+    } catch (e) {
+        return {};
+    }
+};
+
+/**
+ * The name a block keeps its tab and page under in the URL.
+ */
+BxAnalyticsDashboard.prototype.getBlockName = function (oBlock) {
+    var oParams = this.getBlockParams(oBlock);
+    return oParams.group || oParams.table || oBlock.getAttribute('data-bx-analytics-block');
+};
+
+/**
+ * Set a filter parameter (null removes it) and reload every block; lists start again
+ * from their first page.
  */
 BxAnalyticsDashboard.prototype.setParam = function (sName, sValue) {
+    var oUrl = new URL(window.location.href);
+    Array.from(oUrl.searchParams.keys()).forEach(function (sKey) {
+        if (sKey.indexOf('page_') === 0)
+            oUrl.searchParams.delete(sKey);
+    });
+    window.history.replaceState(window.history.state, '', oUrl.toString());
+
     this.setUrlParam(sName, sValue);
     if (!new URL(window.location.href).searchParams.get('tz'))
         this.setUrlParam('tz', this.getTimezone());
@@ -119,24 +178,22 @@ BxAnalyticsDashboard.prototype.reloadAll = function () {
 };
 
 /**
- * Replace a block with a fresh copy for the current URL parameters.
+ * Replace a block with a fresh copy for the current URL parameters. A quiet reload (live
+ * blocks) keeps the block as it is until the new copy arrives.
  */
-BxAnalyticsDashboard.prototype.reload = function (oBlock, bKeepFocus) {
+BxAnalyticsDashboard.prototype.reload = function (oBlock, bKeepFocus, bQuiet) {
     var $this = this;
     var sReport = oBlock.getAttribute('data-bx-analytics-block');
     var oParams = new URL(window.location.href).searchParams;
-
-    if (sReport === 'top') {
-        var sGroup = oBlock.getAttribute('data-bx-analytics-group');
-        oParams.set('group', sGroup);
-        if (oParams.get('tab_' + sGroup))
-            oParams.set('tab', oParams.get('tab_' + sGroup));
-    }
+    oParams.set('bp', oBlock.getAttribute('data-bx-analytics-params') || '{}');
 
     var sFocusTab = bKeepFocus && document.activeElement ? document.activeElement.getAttribute('data-bx-analytics-tab') : null;
 
-    oBlock.setAttribute('aria-busy', 'true');
-    oBlock.classList.add('bx-analytics-loading');
+    oBlock._bxAnalyticsBusy = true;
+    if (!bQuiet) {
+        oBlock.setAttribute('aria-busy', 'true');
+        oBlock.classList.add('bx-analytics-loading');
+    }
 
     // the module URL is m/analytics/ with permalinks and modules/?r=analytics/ without
     var sUrl = this._sActionUrl + 'report/' + sReport + '/';
@@ -152,12 +209,18 @@ BxAnalyticsDashboard.prototype.reload = function (oBlock, bKeepFocus) {
             var oWrapper = document.createElement('div');
             oWrapper.innerHTML = oData.html;
             var oNew = oWrapper.firstElementChild;
-            if (!oNew)
+            if (!oNew) {
+                oBlock._bxAnalyticsBusy = false;
                 return;
+            }
 
             $this.destroyChart(oBlock);
             oBlock.replaceWith(oNew);
+            oNew._bxAnalyticsLoaded = Date.now();
             $this.drawCharts(oNew);
+            $this.drawMaps(oNew);
+            if (typeof bx_time === 'function')
+                bx_time(undefined, false, oNew);
 
             if (sFocusTab) {
                 var oTab = oNew.querySelector('[data-bx-analytics-tab="' + sFocusTab + '"]');
@@ -166,10 +229,13 @@ BxAnalyticsDashboard.prototype.reload = function (oBlock, bKeepFocus) {
             }
         })
         .catch(function () {
+            oBlock._bxAnalyticsBusy = false;
             oBlock.removeAttribute('aria-busy');
             oBlock.classList.remove('bx-analytics-loading');
-            oBlock.classList.add('bx-analytics-failed');
-            oBlock.setAttribute('data-bx-analytics-error', $this._aStrings.error || '');
+            if (!bQuiet) {
+                oBlock.classList.add('bx-analytics-failed');
+                oBlock.setAttribute('data-bx-analytics-error', $this._aStrings.error || '');
+            }
         });
 };
 
@@ -215,7 +281,70 @@ BxAnalyticsDashboard.prototype.drawCharts = function (oRoot) {
     });
 };
 
+/**
+ * Visitors on a Leaflet map: a circle per country (or place), its area by visitors.
+ */
+BxAnalyticsDashboard.prototype.drawMaps = function (oRoot) {
+    if (typeof L === 'undefined')
+        return;
+
+    var aMaps = oRoot.querySelectorAll ? oRoot.querySelectorAll('.bx-analytics-map') : [];
+    Array.prototype.forEach.call(aMaps, function (oElement) {
+        if (oElement._bxAnalyticsMap)
+            return;
+
+        var oJson = oElement.parentNode.querySelector('.bx-analytics-map-data');
+        var oData;
+        try {
+            oData = JSON.parse(oJson.textContent);
+        } catch (e) {
+            return;
+        }
+
+        var oMap = L.map(oElement, {worldCopyJump: true, minZoom: 1, scrollWheelZoom: false}).setView([25, 10], 2);
+        oElement._bxAnalyticsMap = oMap;
+
+        try {
+            L.tileLayer.provider(oData.provider || 'OpenStreetMap.Mapnik').addTo(oMap);
+        } catch (e) {
+            L.tileLayer.provider('OpenStreetMap.Mapnik').addTo(oMap);
+        }
+
+        var sAccent = window.getComputedStyle(oElement).getPropertyValue('--bx-analytics-accent').trim() || '#4f46e5';
+        var aItems = oData.points && oData.points.length ? oData.points : oData.countries;
+        var iMax = 1;
+        aItems.forEach(function (o) { iMax = Math.max(iMax, o.visitors); });
+
+        // the whole world when there is little to show, otherwise just the places with visitors
+        if (aItems.length > 1)
+            oMap.fitBounds(L.latLngBounds(aItems.map(function (o) { return [o.lat, o.lng]; })), {padding: [30, 30], maxZoom: 5});
+        else if (aItems.length === 1)
+            oMap.setView([aItems[0].lat, aItems[0].lng], 4);
+
+        aItems.forEach(function (o) {
+            L.circleMarker([o.lat, o.lng], {
+                radius: 4 + 26 * Math.sqrt(o.visitors / iMax),
+                color: sAccent,
+                weight: 1,
+                fillColor: sAccent,
+                fillOpacity: 0.35
+            }).bindTooltip(function () {
+                // place names come from request headers: text, never HTML
+                var oTip = document.createElement('span');
+                oTip.textContent = o.label + ': ' + o.visitors + ' ' + oData.visitors.toLowerCase();
+                return oTip;
+            }).addTo(oMap);
+        });
+    });
+};
+
 BxAnalyticsDashboard.prototype.destroyChart = function (oBlock) {
+    var oMap = oBlock.querySelector('.bx-analytics-map');
+    if (oMap && oMap._bxAnalyticsMap) {
+        oMap._bxAnalyticsMap.remove();
+        oMap._bxAnalyticsMap = null;
+    }
+
     var oCanvas = oBlock.querySelector('canvas');
     if (oCanvas && oCanvas._bxAnalyticsChart) {
         oCanvas._bxAnalyticsChart.destroy();
@@ -346,7 +475,9 @@ BxAnalyticsDashboard.prototype.formatMetric = function (sMetric, fValue) {
             var iSeconds = Math.round(fValue);
             if (iSeconds < 60)
                 return iSeconds + (this._aStrings.duration_s || 's');
-            return Math.floor(iSeconds / 60) + (this._aStrings.duration_m || 'm') + ' ' + (iSeconds % 60) + (this._aStrings.duration_s || 's');
+            if (iSeconds < 3600)
+                return Math.floor(iSeconds / 60) + (this._aStrings.duration_m || 'm') + ' ' + (iSeconds % 60) + (this._aStrings.duration_s || 's');
+            return Math.floor(iSeconds / 3600) + (this._aStrings.duration_h || 'h') + ' ' + Math.floor((iSeconds % 3600) / 60) + (this._aStrings.duration_m || 'm');
     }
 
     try {

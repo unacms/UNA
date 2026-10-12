@@ -30,6 +30,8 @@ CREATE TABLE IF NOT EXISTS `bx_analytics_sessions` (
   `country` char(2) NOT NULL DEFAULT '',
   `region` varchar(64) NOT NULL DEFAULT '',
   `city` varchar(64) NOT NULL DEFAULT '',
+  `lat` decimal(4,1) DEFAULT NULL,
+  `lng` decimal(4,1) DEFAULT NULL,
   `language` varchar(16) NOT NULL DEFAULT '',
   `browser` varchar(32) NOT NULL DEFAULT '',
   `browser_version` varchar(16) NOT NULL DEFAULT '',

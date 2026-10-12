@@ -160,6 +160,14 @@ class BxAnalyticsConfig extends BxBaseModGeneralConfig
         return $this->_getList('bx_analytics_exclude_paths');
     }
 
+    /**
+     * Query parameters left out of stored paths, as patterns with * for any characters.
+     */
+    public function getIgnoredParams()
+    {
+        return $this->_getList('bx_analytics_ignore_params');
+    }
+
     public function getTrustedProxies()
     {
         return $this->_getList('bx_analytics_trusted_proxies');

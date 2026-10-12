@@ -243,9 +243,9 @@ class BxAnalyticsDb extends BxBaseModGeneralDb
     /**
      * Top values of a dimension with visitors, sessions (session dimensions) and pageviews.
      */
-    public function getTop($aFilter, $sDimension, $iLimit)
+    public function getTop($aFilter, $sDimension, $iLimit, $iStart = 0)
     {
-        $iLimit = max(1, min(1000, (int)$iLimit));
+        $sLimit = ' LIMIT ' . max(0, (int)$iStart) . ', ' . max(1, min(1000, (int)$iLimit));
         $aBindings = [];
 
         if(isset($this->_aEventDimensions[$sDimension])) {
@@ -253,7 +253,7 @@ class BxAnalyticsDb extends BxBaseModGeneralDb
             $sWhere = $this->_getEventsWhere($aFilter, $aBindings);
 
             // grouped by the column: events also have a `value` column, which an alias would lose to
-            return $this->getAll("SELECT `e`.`" . $sColumn . "` AS `value`, COUNT(DISTINCT `e`.`visitor`) AS `visitors`, COUNT(*) AS `pageviews` FROM `" . $this->_oConfig->CNF['TABLE_EVENTS'] . "` AS `e` WHERE " . $sWhere . " GROUP BY `e`.`" . $sColumn . "` ORDER BY `visitors` DESC, `pageviews` DESC LIMIT " . $iLimit, $aBindings);
+            return $this->getAll("SELECT `e`.`" . $sColumn . "` AS `value`, COUNT(DISTINCT `e`.`visitor`) AS `visitors`, COUNT(*) AS `pageviews` FROM `" . $this->_oConfig->CNF['TABLE_EVENTS'] . "` AS `e` WHERE " . $sWhere . " GROUP BY `e`.`" . $sColumn . "` ORDER BY `visitors` DESC, `pageviews` DESC" . $sLimit, $aBindings);
         }
 
         if(!isset($this->_aSessionDimensions[$sDimension]))
@@ -262,7 +262,101 @@ class BxAnalyticsDb extends BxBaseModGeneralDb
         $sColumn = $this->_aSessionDimensions[$sDimension];
         $sWhere = $this->_getSessionsWhere($aFilter, $aBindings);
 
-        return $this->getAll("SELECT `s`.`" . $sColumn . "` AS `value`, COUNT(DISTINCT `s`.`visitor`) AS `visitors`, COUNT(*) AS `sessions`, IFNULL(SUM(`s`.`pageviews`), 0) AS `pageviews`, IFNULL(SUM(`s`.`bounce`), 0) AS `bounces`, IFNULL(SUM(`s`.`duration`), 0) AS `duration` FROM `" . $this->_oConfig->CNF['TABLE_SESSIONS'] . "` AS `s` WHERE " . $sWhere . " GROUP BY `s`.`" . $sColumn . "` ORDER BY `visitors` DESC, `sessions` DESC LIMIT " . $iLimit, $aBindings);
+        return $this->getAll("SELECT `s`.`" . $sColumn . "` AS `value`, COUNT(DISTINCT `s`.`visitor`) AS `visitors`, COUNT(*) AS `sessions`, IFNULL(SUM(`s`.`pageviews`), 0) AS `pageviews`, IFNULL(SUM(`s`.`bounce`), 0) AS `bounces`, IFNULL(SUM(`s`.`duration`), 0) AS `duration` FROM `" . $this->_oConfig->CNF['TABLE_SESSIONS'] . "` AS `s` WHERE " . $sWhere . " GROUP BY `s`.`" . $sColumn . "` ORDER BY `visitors` DESC, `sessions` DESC" . $sLimit, $aBindings);
+    }
+
+    /**
+     * How many different values a dimension has in the period, for paging.
+     */
+    public function getTopCount($aFilter, $sDimension)
+    {
+        $aBindings = [];
+
+        if(isset($this->_aEventDimensions[$sDimension])) {
+            $sWhere = $this->_getEventsWhere($aFilter, $aBindings);
+            return (int)$this->getOne("SELECT COUNT(DISTINCT `e`.`" . $this->_aEventDimensions[$sDimension] . "`) FROM `" . $this->_oConfig->CNF['TABLE_EVENTS'] . "` AS `e` WHERE " . $sWhere, $aBindings);
+        }
+
+        if(!isset($this->_aSessionDimensions[$sDimension]))
+            return 0;
+
+        $sWhere = $this->_getSessionsWhere($aFilter, $aBindings);
+        return (int)$this->getOne("SELECT COUNT(DISTINCT `s`.`" . $this->_aSessionDimensions[$sDimension] . "`) FROM `" . $this->_oConfig->CNF['TABLE_SESSIONS'] . "` AS `s` WHERE " . $sWhere, $aBindings);
+    }
+
+    /**
+     * Pages (or titles) with visitors, pageviews and average engaged time in seconds; pages
+     * also get entries, bounces of the sessions that entered there, and exits.
+     */
+    public function getPageStats($aFilter, $sDimension, $iLimit, $iStart = 0)
+    {
+        if(!isset($this->_aEventDimensions[$sDimension]))
+            return [];
+
+        $sColumn = $this->_aEventDimensions[$sDimension];
+        $aBindings = [];
+        $sWhere = $this->_getEventsWhere($aFilter, $aBindings);
+
+        $aRows = $this->getAllWithKey("SELECT `e`.`" . $sColumn . "` AS `value`, COUNT(DISTINCT `e`.`visitor`) AS `visitors`, COUNT(*) AS `pageviews`, IFNULL(AVG(NULLIF(`e`.`engaged`, 0)), 0) / 1000 AS `engaged` FROM `" . $this->_oConfig->CNF['TABLE_EVENTS'] . "` AS `e` WHERE " . $sWhere . " GROUP BY `e`.`" . $sColumn . "` ORDER BY `visitors` DESC, `pageviews` DESC LIMIT " . max(0, (int)$iStart) . ", " . max(1, min(1000, (int)$iLimit)), 'value', $aBindings);
+        if(empty($aRows) || $sDimension != 'path')
+            return array_values($aRows);
+
+        foreach($aRows as $sPath => $aRow)
+            $aRows[$sPath] = array_merge($aRow, ['entries' => 0, 'bounces' => 0, 'bounce_rate' => 0, 'exits' => 0]);
+
+        // entries, bounces and exits come from the sessions that started in the period
+        $aSessionFilter = $aFilter;
+        unset($aSessionFilter['dims']['path']);
+
+        foreach(['entry_path' => ['entries', 'bounces'], 'exit_path' => ['exits', '']] as $sSessionColumn => list($sCount, $sBounces)) {
+            $aSessionBindings = [];
+            $sSessionWhere = $this->_getSessionsWhere($aSessionFilter, $aSessionBindings);
+
+            $aIn = [];
+            foreach(array_keys($aRows) as $i => $sPath) {
+                $aIn[] = ':p' . $i;
+                $aSessionBindings['p' . $i] = (string)$sPath;
+            }
+
+            $aCounts = $this->getAllWithKey("SELECT `s`.`" . $sSessionColumn . "` AS `value`, COUNT(*) AS `cnt`, SUM(`s`.`bounce`) AS `bounces` FROM `" . $this->_oConfig->CNF['TABLE_SESSIONS'] . "` AS `s` WHERE " . $sSessionWhere . " AND `s`.`" . $sSessionColumn . "` IN (" . implode(', ', $aIn) . ") GROUP BY `s`.`" . $sSessionColumn . "`", 'value', $aSessionBindings);
+            foreach($aCounts as $sPath => $aCount) {
+                if(!isset($aRows[$sPath]))
+                    continue;
+                $aRows[$sPath][$sCount] = (int)$aCount['cnt'];
+                if($sBounces) {
+                    $aRows[$sPath][$sBounces] = (int)$aCount['bounces'];
+                    $aRows[$sPath]['bounce_rate'] = $aCount['cnt'] ? round(100 * $aCount['bounces'] / $aCount['cnt'], 1) : 0;
+                }
+            }
+        }
+
+        return array_values($aRows);
+    }
+
+    /**
+     * Pageviews per minute since a time, keyed by the minute's start.
+     */
+    public function getPageviewsPerMinute($iSince, $sPlatform = '')
+    {
+        $aBindings = ['since' => (int)$iSince];
+        $sWhere = '';
+        if($sPlatform !== '') {
+            $sWhere = ' AND `platform` = :platform';
+            $aBindings['platform'] = $sPlatform;
+        }
+
+        return $this->getPairs("SELECT FLOOR(`ts` / 60) * 60 AS `minute`, COUNT(*) AS `pageviews` FROM `" . $this->_oConfig->CNF['TABLE_EVENTS'] . "` WHERE `ts` >= :since AND `type` = 'pageview'" . $sWhere . " GROUP BY `minute`", 'minute', 'pageviews', $aBindings);
+    }
+
+    /**
+     * Visitors per rounded location (sessions with coordinates from the edge), for the map.
+     */
+    public function getMapPoints($aFilter, $iLimit = 500)
+    {
+        $aBindings = [];
+        $sWhere = $this->_getSessionsWhere($aFilter, $aBindings);
+
+        return $this->getAll("SELECT `s`.`lat`, `s`.`lng`, MAX(`s`.`city`) AS `city`, MAX(`s`.`country`) AS `country`, COUNT(DISTINCT `s`.`visitor`) AS `visitors` FROM `" . $this->_oConfig->CNF['TABLE_SESSIONS'] . "` AS `s` WHERE " . $sWhere . " AND `s`.`lat` IS NOT NULL GROUP BY `s`.`lat`, `s`.`lng` ORDER BY `visitors` DESC LIMIT " . max(1, min(2000, (int)$iLimit)), $aBindings);
     }
 
     /**

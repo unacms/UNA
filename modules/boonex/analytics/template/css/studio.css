@@ -1,0 +1,40 @@
+/**
+ * Studio: the analytics side menu in sections. Items keep Studio's own markup and styles;
+ * this adds the section headings. On phones the menu is one row of tabs, so the sections
+ * dissolve into it and the headings hide.
+ */
+.bx-analytics-std-menu-section + .bx-analytics-std-menu-section {
+    margin-top: 1rem;
+}
+.bx-analytics-std-menu-title {
+    padding: 0 0.75rem 0.375rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1rem;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: #4b5563;
+}
+html.dark .bx-analytics-std-menu-title {
+    color: #9ca3af;
+}
+.bx-analytics-std-menu-section > .bx-clear {
+    display: none;
+}
+
+@media (max-width: 1023px) {
+    .bx-analytics-std-menu-title {
+        padding: 0 0.25rem 0.25rem;
+        font-size: 0.625rem;
+        text-align: center;
+        overflow-wrap: anywhere;
+    }
+}
+@media (max-width: 767px) {
+    .bx-analytics-std-menu-section {
+        display: contents;
+    }
+    .bx-analytics-std-menu-title {
+        display: none;
+    }
+}

@@ -15,7 +15,8 @@ INSERT INTO `sys_options` (`category_id`, `name`, `caption`, `info`, `value`, `t
 (@iCategoryId, 'bx_analytics_tracking', '_bx_analytics_adm_stg_cpt_tracking', '_bx_analytics_adm_stg_inf_tracking', 'on', 'checkbox', '', '', '', '', 1),
 (@iCategoryId, 'bx_analytics_platforms', '_bx_analytics_adm_stg_cpt_platforms', '_bx_analytics_adm_stg_inf_platforms', 'core-web,next-web,rn-ios,rn-android,api,core', 'list', 'a:2:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:21:"get_options_platforms";}', '', '', '', 2),
 (@iCategoryId, 'bx_analytics_session_timeout', '_bx_analytics_adm_stg_cpt_session_timeout', '_bx_analytics_adm_stg_inf_session_timeout', '30', 'digit', '', '', '', '', 3),
-(@iCategoryId, 'bx_analytics_online_window', '_bx_analytics_adm_stg_cpt_online_window', '_bx_analytics_adm_stg_inf_online_window', '5', 'digit', '', '', '', '', 4);
+(@iCategoryId, 'bx_analytics_online_window', '_bx_analytics_adm_stg_cpt_online_window', '_bx_analytics_adm_stg_inf_online_window', '5', 'digit', '', '', '', '', 4),
+(@iCategoryId, 'bx_analytics_ignore_params', '_bx_analytics_adm_stg_cpt_ignore_params', '_bx_analytics_adm_stg_inf_ignore_params', 'range, tz, platform, metric, bucket, from, to, f[*], tab_*, page_*', 'text', '', '', '', '', 5);
 
 INSERT INTO `sys_options_categories` (`type_id`, `name`, `caption`, `hidden`, `order`) VALUES(@iTypeId, 'bx_analytics_privacy', '_bx_analytics_adm_stg_cpt_category_privacy', 0, 2);
 SET @iCategoryId = LAST_INSERT_ID();
@@ -44,13 +45,29 @@ INSERT INTO `sys_objects_page`(`object`, `title_system`, `title`, `module`, `lay
 ('bx_analytics_page', '_bx_analytics_page_title_sys_page', '_bx_analytics_page_title_page', @sName, 10, 2147483647, 1, 'analytics', '', '', '', 'noindex', 0, 1, 0, 'BxAnalyticsPage', 'modules/boonex/analytics/classes/BxAnalyticsPage.php');
 
 INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title_system`, `title`, `designbox_id`, `visible_for_levels`, `type`, `content`, `deletable`, `copyable`, `active`, `order`) VALUES
-('bx_analytics_page', 1, @sName, '_bx_analytics_page_block_title_system_overview', '_bx_analytics_page_block_title_overview', 11, 2147483647, 'service', 'a:2:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:18:"get_block_overview";}', 0, 1, 1, 1),
+('bx_analytics_page', 1, @sName, '_bx_analytics_page_block_title_system_filters', '_bx_analytics_page_block_title_filters', 11, 2147483647, 'service', 'a:2:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:17:"get_block_filters";}', 0, 1, 1, 1),
+('bx_analytics_page', 1, @sName, '_bx_analytics_page_block_title_system_overview', '_bx_analytics_page_block_title_overview', 11, 2147483647, 'service', 'a:2:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:18:"get_block_overview";}', 0, 1, 1, 2),
 ('bx_analytics_page', 2, @sName, '_bx_analytics_page_block_title_system_top_pages', '_bx_analytics_page_block_title_top_pages', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:13:"get_block_top";s:6:"params";a:1:{i:0;s:5:"pages";}}', 0, 1, 1, 1),
 ('bx_analytics_page', 2, @sName, '_bx_analytics_page_block_title_system_top_locations', '_bx_analytics_page_block_title_top_locations', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:13:"get_block_top";s:6:"params";a:1:{i:0;s:9:"locations";}}', 0, 1, 1, 2),
 ('bx_analytics_page', 2, @sName, '_bx_analytics_page_block_title_system_top_platforms', '_bx_analytics_page_block_title_top_platforms', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:13:"get_block_top";s:6:"params";a:1:{i:0;s:9:"platforms";}}', 0, 1, 1, 3),
 ('bx_analytics_page', 3, @sName, '_bx_analytics_page_block_title_system_top_sources', '_bx_analytics_page_block_title_top_sources', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:13:"get_block_top";s:6:"params";a:1:{i:0;s:7:"sources";}}', 0, 1, 1, 1),
 ('bx_analytics_page', 3, @sName, '_bx_analytics_page_block_title_system_top_devices', '_bx_analytics_page_block_title_top_devices', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:13:"get_block_top";s:6:"params";a:1:{i:0;s:7:"devices";}}', 0, 1, 1, 2),
 ('bx_analytics_page', 4, @sName, '_bx_analytics_page_block_title_system_canvas', '_bx_analytics_page_block_title_canvas', 11, 2147483647, 'service', 'a:2:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:10:"get_canvas";}', 0, 1, 1, 1);
+
+-- BLOCKS: every report for the page builder
+INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title_system`, `title`, `designbox_id`, `visible_for_levels`, `type`, `content`, `deletable`, `copyable`, `active`, `order`) VALUES
+('', 0, @sName, '_bx_analytics_page_block_title_system_filters', '_bx_analytics_page_block_title_filters', 11, 2147483647, 'service', 'a:2:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:17:"get_block_filters";}', 0, 1, 1, 1),
+('', 0, @sName, '_bx_analytics_page_block_title_system_overview', '_bx_analytics_page_block_title_overview', 11, 2147483647, 'service', 'a:2:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:18:"get_block_overview";}', 0, 1, 1, 2),
+('', 0, @sName, '_bx_analytics_page_block_title_system_top_pages', '_bx_analytics_page_block_title_top_pages', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:13:"get_block_top";s:6:"params";a:1:{i:0;s:5:"pages";}}', 0, 1, 1, 3),
+('', 0, @sName, '_bx_analytics_page_block_title_system_top_sources', '_bx_analytics_page_block_title_top_sources', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:13:"get_block_top";s:6:"params";a:1:{i:0;s:7:"sources";}}', 0, 1, 1, 4),
+('', 0, @sName, '_bx_analytics_page_block_title_system_top_locations', '_bx_analytics_page_block_title_top_locations', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:13:"get_block_top";s:6:"params";a:1:{i:0;s:9:"locations";}}', 0, 1, 1, 5),
+('', 0, @sName, '_bx_analytics_page_block_title_system_top_devices', '_bx_analytics_page_block_title_top_devices', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:13:"get_block_top";s:6:"params";a:1:{i:0;s:7:"devices";}}', 0, 1, 1, 6),
+('', 0, @sName, '_bx_analytics_page_block_title_system_top_platforms', '_bx_analytics_page_block_title_top_platforms', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:13:"get_block_top";s:6:"params";a:1:{i:0;s:9:"platforms";}}', 0, 1, 1, 7),
+('', 0, @sName, '_bx_analytics_page_block_title_system_table_pages', '_bx_analytics_page_block_title_table_pages', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:15:"get_block_table";s:6:"params";a:1:{i:0;s:5:"pages";}}', 0, 1, 1, 8),
+('', 0, @sName, '_bx_analytics_page_block_title_system_table_sources', '_bx_analytics_page_block_title_table_sources', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:15:"get_block_table";s:6:"params";a:1:{i:0;s:7:"sources";}}', 0, 1, 1, 9),
+('', 0, @sName, '_bx_analytics_page_block_title_system_realtime', '_bx_analytics_page_block_title_realtime', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:16:"get_block_report";s:6:"params";a:1:{i:0;s:8:"realtime";}}', 0, 1, 1, 10),
+('', 0, @sName, '_bx_analytics_page_block_title_system_map', '_bx_analytics_page_block_title_map', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:16:"get_block_report";s:6:"params";a:1:{i:0;s:3:"map";}}', 0, 1, 1, 11),
+('', 0, @sName, '_bx_analytics_page_block_title_system_canvas', '_bx_analytics_page_block_title_canvas', 11, 2147483647, 'service', 'a:2:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:10:"get_canvas";}', 0, 1, 1, 12);
 
 -- STUDIO DASHBOARD: traffic next to the core blocks
 SET @iStdDashboardOrder = (SELECT IFNULL(MAX(`order`), 0) + 1 FROM `sys_pages_blocks` WHERE `object` = 'sys_std_dashboard' AND `cell_id` = 1);

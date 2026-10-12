@@ -37,6 +37,7 @@ class BxAnalyticsCollector
     protected $_iNow;
 
     protected $_aSalts = [];
+    protected $_sIgnoredParams = null;
 
     /**
      * Query parameters removed from stored paths: campaign tags and click ids are in the
@@ -171,13 +172,17 @@ class BxAnalyticsCollector
         $sLanguage = isset($aPayload['language']) && is_string($aPayload['language']) && preg_match('/^[a-zA-Z]{2,3}(-[a-zA-Z0-9]{2,4})?$/', $aPayload['language']) ? $aPayload['language'] : $this->_oRequest->getLanguage();
         $sScreen = isset($aPayload['screen']) && is_string($aPayload['screen']) && preg_match('/^\d{2,5}x\d{2,5}$/', $aPayload['screen']) ? $aPayload['screen'] : '';
 
-        $aGeo = ['country' => '', 'region' => '', 'city' => ''];
-        if($this->_oConfig->getGeoSource() == BX_ANALYTICS_GEO_HEADERS)
+        $aGeo = ['country' => '', 'region' => '', 'city' => '', 'lat' => null, 'lng' => null];
+        if($this->_oConfig->getGeoSource() == BX_ANALYTICS_GEO_HEADERS) {
+            $aCoordinates = $this->_oRequest->getCoordinates();
             $aGeo = [
                 'country' => $this->_oRequest->getCountry(),
                 'region' => $this->_oRequest->getRegion(),
                 'city' => $this->_oRequest->getCity(),
+                'lat' => $aCoordinates ? $aCoordinates[0] : null,
+                'lng' => $aCoordinates ? $aCoordinates[1] : null,
             ];
+        }
 
         $iStarted = $aFirst['ts'];
         $aSession = array_merge([
@@ -434,12 +439,13 @@ class BxAnalyticsCollector
             $sPath = '/' . $sPath;
 
         if(!empty($aParts['query'])) {
+            $sIgnored = $this->_getIgnoredParamsPattern();
             $aQuery = [];
             foreach(explode('&', $aParts['query']) as $sPair) {
                 if($sPair === '')
                     continue;
                 $sKey = mb_strtolower(urldecode(explode('=', $sPair, 2)[0]));
-                if(!in_array($sKey, $this->_aDropParams, true))
+                if(!in_array($sKey, $this->_aDropParams, true) && ($sIgnored === '' || !preg_match($sIgnored, $sKey)))
                     $aQuery[] = $sPair;
             }
             if(!empty($aQuery))
@@ -451,6 +457,21 @@ class BxAnalyticsCollector
             'hostname' => isset($aParts['host']) ? mb_strtolower($aParts['host']) : '',
             'path' => get_mb_substr(rawurldecode($sPath), 0, 255),
         ];
+    }
+
+    /**
+     * One regular expression for the ignored query parameters setting, or ''.
+     */
+    protected function _getIgnoredParamsPattern()
+    {
+        if($this->_sIgnoredParams !== null)
+            return $this->_sIgnoredParams;
+
+        $aPatterns = [];
+        foreach($this->_oConfig->getIgnoredParams() as $sParam)
+            $aPatterns[] = str_replace('\\*', '.*', preg_quote(mb_strtolower($sParam), '/'));
+
+        return $this->_sIgnoredParams = empty($aPatterns) ? '' : '/^(' . implode('|', $aPatterns) . ')$/u';
     }
 
     /**
