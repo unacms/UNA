@@ -4,11 +4,13 @@ import { createPortal } from 'react-dom'
 import { useFetch } from 'app/lib/hooks/use-fetch'
 import { appSetting } from 'app/lib/util'
 import EmbedJs from 'app/ui/molecules/content/embed'
-import { embedUrlFromImageSrc } from './inline-video'
+import Html from 'app/ui/atoms/html'
+import { embedUrlFromImageSrc, tableMarkdownFromImageSrc } from './inline-video'
+import { markdownTableToHtml } from './markdown-table'
 
 const Embed = EmbedJs as ComponentType<{ data: Record<string, any> }>
 
-type EmbedView = { id: number; dom: HTMLElement; url: string; image: string }
+type EmbedView = { id: number; dom: HTMLElement; image: string } & ({ url: string } | { table: string })
 
 let nextViewId = 0
 
@@ -19,9 +21,16 @@ function EditorEmbedCard({ url, image }: { url: string; image: string }) {
     return <img src={image} alt="" style={{ display: 'block', width: '100%', height: 'auto' }} />
 }
 
+/** Table block as the post shows it (the editor body has the same `u-vanilla-html` styles). */
+function EditorTableCard({ markdown }: { markdown: string }) {
+    return <Html data={markdownTableToHtml(markdown)} />
+}
+
+const isBlockImage = (src: unknown) => !!(embedUrlFromImageSrc(src as string) || tableMarkdownFromImageSrc(src as string))
+
 /**
  * Web: draw body embeds (images with a `#neo-embed=` src, see toEmbedImageSrc) as embed
- * cards in the editor. The image node view is swapped through TipTap's node view getter,
+ * cards, and table blocks (`#neo-table=`, see markdown-table.ts) as tables, in the editor. The image node view is swapped through TipTap's node view getter,
  * so the HTML stays the same image; each card is a portal rendered by the editor (theme,
  * fetch cache). Cards ignore the pointer: a click selects the node like an image.
  */
@@ -47,14 +56,18 @@ export function useEditorEmbedViews(tipTap: any): ReactNode {
             dom.style.maxWidth = '100%'
             dom.style.borderRadius = '8px'
             const render = (node: any) => {
-                dom.style.width = `${Number(node.attrs?.width) || 720}px`
-                upsert({ id, dom, url: embedUrlFromImageSrc(node.attrs?.src)!, image: String(node.attrs?.src).split('#')[0]! })
+                const src = node.attrs?.src
+                const image = String(src).split('#')[0]!
+                const table = tableMarkdownFromImageSrc(src)
+                // A table spans the body; an embed keeps the width the size menu gave it.
+                dom.style.width = table ? '100%' : `${Number(node.attrs?.width) || 720}px`
+                upsert(table ? { id, dom, image, table } : { id, dom, image, url: embedUrlFromImageSrc(src)! })
             }
             render(initial)
             return {
                 dom,
                 update: (node: any) => {
-                    if (node.type !== initial.type || !embedUrlFromImageSrc(node.attrs?.src)) return false
+                    if (node.type !== initial.type || !isBlockImage(node.attrs?.src)) return false
                     render(node)
                     return true
                 },
@@ -74,7 +87,7 @@ export function useEditorEmbedViews(tipTap: any): ReactNode {
                 return {
                     ...nodeViews,
                     image: (node: any, ...rest: any[]) =>
-                        embedUrlFromImageSrc(node.attrs?.src) ? createEmbedView(node) : image(node, ...rest),
+                        isBlockImage(node.attrs?.src) ? createEmbedView(node) : image(node, ...rest),
                 }
             },
         })
@@ -90,7 +103,9 @@ export function useEditorEmbedViews(tipTap: any): ReactNode {
     return views.map((view) =>
         createPortal(
             <span style={{ display: 'block', pointerEvents: 'none' }}>
-                <EditorEmbedCard url={view.url} image={view.image} />
+                {'table' in view
+                    ? <EditorTableCard markdown={view.table} />
+                    : <EditorEmbedCard url={view.url} image={view.image} />}
             </span>,
             view.dom,
             String(view.id),
