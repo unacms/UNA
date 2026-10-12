@@ -27,7 +27,7 @@ class AnalyticsCollectorTest extends BxDolIntegrationTestCase
 
         $this->_cleanup();
 
-        foreach (['bx_analytics_track_bots' => 'on', 'bx_analytics_tracking' => 'on', 'bx_analytics_platforms' => 'core-web,next-web,rn-ios,rn-android,api', 'bx_analytics_respect_dnt' => 'on', 'bx_analytics_link_members' => 'on', 'bx_analytics_identity' => 'cookieless', 'bx_analytics_exclude_ips' => '', 'bx_analytics_exclude_levels' => '', 'bx_analytics_exclude_paths' => '', 'bx_analytics_geo_source' => 'headers'] as $sName => $sValue)
+        foreach (['bx_analytics_track_actions' => 'on', 'bx_analytics_track_bots' => 'on', 'bx_analytics_tracking' => 'on', 'bx_analytics_platforms' => 'core-web,next-web,rn-ios,rn-android,api', 'bx_analytics_respect_dnt' => 'on', 'bx_analytics_link_members' => 'on', 'bx_analytics_identity' => 'cookieless', 'bx_analytics_exclude_ips' => '', 'bx_analytics_exclude_levels' => '', 'bx_analytics_exclude_paths' => '', 'bx_analytics_geo_source' => 'headers'] as $sName => $sValue)
             $this->_setOption($sName, $sValue);
     }
 
@@ -209,6 +209,56 @@ class AnalyticsCollectorTest extends BxDolIntegrationTestCase
         $aReport = $this->_oModule->getReports()->getBots($this->_filter(['range' => 'custom', 'from' => '2001-09-09', 'to' => '2001-09-09']), ['tab_bots' => 'ai']);
         $this->assertSame('ai', $aReport['tab']);
         $this->assertSame(['ChatGPT'], array_column($aReport['bots']['rows'], 'label'));
+    }
+
+    public function testSiteActionsJoinTheVisit()
+    {
+        $iProfileId = 987654321;
+        $aServer = $this->_server('93.184.216.34', ['REQUEST_METHOD' => 'POST']);
+
+        $this->_collect($aServer, ['platform' => 'rn-ios', 'app' => 'com.neo.so', 'hits' => [['type' => 'pageview', 'url' => '/page/create-post']]], self::NOW, ['profile_id' => $iProfileId]);
+
+        $oCollector = new BxAnalyticsCollector($this->_oModule, new BxAnalyticsRequest($aServer), self::NOW + 20);
+        $this->assertTrue($oCollector->collectAction('content_add', 'bx_posts', 77, $iProfileId, ['platform' => 'rn-ios']));
+
+        // a renewal by cron has no visit and runs on the server's own platform
+        $oCron = new BxAnalyticsCollector($this->_oModule, new BxAnalyticsRequest([]), self::NOW + 30);
+        $this->assertTrue($oCron->collectAction('login', 'account', 1, $iProfileId));
+
+        $aSessions = $this->_sessions();
+        $this->assertCount(1, $aSessions);
+        $this->assertSame(1, (int)$aSessions[0]['events']);
+        $this->assertSame(0, (int)$aSessions[0]['bounce'], 'doing something is not a bounce');
+
+        $aEvents = BxDolDb::getInstance()->getAll("SELECT `session_id`, `type`, `name`, `module`, `object_id`, `platform` FROM `bx_analytics_events` WHERE `type` = 'una' AND `ts` < :to ORDER BY `id`", ['to' => self::NOW + 86400]);
+        $this->assertEquals([
+            ['session_id' => $aSessions[0]['id'], 'type' => 'una', 'name' => 'content_add', 'module' => 'bx_posts', 'object_id' => 77, 'platform' => 'rn-ios'],
+            ['session_id' => 0, 'type' => 'una', 'name' => 'login', 'module' => 'account', 'object_id' => 1, 'platform' => 'core'],
+        ], $aEvents);
+
+        $aParams = ['range' => 'custom', 'from' => '2001-09-09', 'to' => '2001-09-09'];
+        $oReports = $this->_oModule->getReports();
+
+        $aList = $oReports->getEvents($this->_filter($aParams), ['tab_events' => 'site']);
+        $this->assertSame('list', $aList['view']);
+        $this->assertCount(2, $aList['rows']);
+
+        $aDetail = $oReports->getEvents($this->_filter($aParams), ['event' => 'una|content_add|bx_posts']);
+        $this->assertSame('detail', $aDetail['view']);
+        $this->assertSame(1, $aDetail['tiles'][0]['value']);
+        $this->assertSame([['label' => $oReports->getLabel('platform', 'rn-ios'), 'count' => 1, 'share' => 100.0]], $aDetail['platforms']);
+
+        $this->assertNull($oReports->getEvents($this->_filter($aParams), ['event' => 'pageview|x|y'])['event'] ?? null, 'pageviews are not events');
+
+        $aSessionsList = $oReports->getSessions($this->_filter($aParams));
+        $this->assertCount(1, $aSessionsList['rows']);
+        $aSessionDetail = $oReports->getSessions($this->_filter($aParams), ['session' => $aSessions[0]['id']]);
+        $this->assertSame(['pageview', 'una'], array_column($aSessionDetail['timeline'], 'type'));
+        $this->assertSame(20, $aSessionDetail['timeline'][1]['offset']);
+
+        $aUsers = $oReports->getUsers($this->_filter($aParams));
+        $this->assertSame(1, count($aUsers['rows']));
+        $this->assertSame(['param' => 'user', 'value' => $iProfileId], $aUsers['rows'][0]['open']);
     }
 
     protected function _collect($aServer, $aPayload, $iNow, $aContext = [])

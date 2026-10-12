@@ -24,6 +24,12 @@ define('BX_ANALYTICS_IDENTITY_PERSISTENT', 'persistent');
 define('BX_ANALYTICS_GEO_NONE', 'none');
 define('BX_ANALYTICS_GEO_HEADERS', 'headers');
 
+// hit and event types: pageviews, custom events, page leaves (engaged time), site actions
+define('BX_ANALYTICS_HIT_PAGEVIEW', 'pageview');
+define('BX_ANALYTICS_HIT_EVENT', 'event');
+define('BX_ANALYTICS_HIT_LEAVE', 'leave');
+define('BX_ANALYTICS_HIT_UNA', 'una');
+
 class BxAnalyticsConfig extends BxBaseModGeneralConfig
 {
     /**
@@ -140,6 +146,11 @@ class BxAnalyticsConfig extends BxBaseModGeneralConfig
     public function isLinkMembers()
     {
         return getParam('bx_analytics_link_members') == 'on';
+    }
+
+    public function isTrackActions()
+    {
+        return getParam('bx_analytics_track_actions') == 'on';
     }
 
     public function isTrackBots()

@@ -17,7 +17,8 @@ INSERT INTO `sys_options` (`category_id`, `name`, `caption`, `info`, `value`, `t
 (@iCategoryId, 'bx_analytics_session_timeout', '_bx_analytics_adm_stg_cpt_session_timeout', '_bx_analytics_adm_stg_inf_session_timeout', '30', 'digit', '', '', '', '', 3),
 (@iCategoryId, 'bx_analytics_online_window', '_bx_analytics_adm_stg_cpt_online_window', '_bx_analytics_adm_stg_inf_online_window', '5', 'digit', '', '', '', '', 4),
 (@iCategoryId, 'bx_analytics_ignore_params', '_bx_analytics_adm_stg_cpt_ignore_params', '_bx_analytics_adm_stg_inf_ignore_params', 'range, tz, platform, metric, bucket, from, to, f[*], tab_*, page_*', 'text', '', '', '', '', 5),
-(@iCategoryId, 'bx_analytics_track_bots', '_bx_analytics_adm_stg_cpt_track_bots', '_bx_analytics_adm_stg_inf_track_bots', 'on', 'checkbox', '', '', '', '', 6);
+(@iCategoryId, 'bx_analytics_track_bots', '_bx_analytics_adm_stg_cpt_track_bots', '_bx_analytics_adm_stg_inf_track_bots', 'on', 'checkbox', '', '', '', '', 6),
+(@iCategoryId, 'bx_analytics_track_actions', '_bx_analytics_adm_stg_cpt_track_actions', '_bx_analytics_adm_stg_inf_track_actions', 'on', 'checkbox', '', '', '', '', 7);
 
 INSERT INTO `sys_options_categories` (`type_id`, `name`, `caption`, `hidden`, `order`) VALUES(@iTypeId, 'bx_analytics_privacy', '_bx_analytics_adm_stg_cpt_category_privacy', 0, 2);
 SET @iCategoryId = LAST_INSERT_ID();
@@ -69,7 +70,10 @@ INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title_system`, `
 ('', 0, @sName, '_bx_analytics_page_block_title_system_realtime', '_bx_analytics_page_block_title_realtime', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:16:"get_block_report";s:6:"params";a:1:{i:0;s:8:"realtime";}}', 0, 1, 1, 10),
 ('', 0, @sName, '_bx_analytics_page_block_title_system_map', '_bx_analytics_page_block_title_map', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:16:"get_block_report";s:6:"params";a:1:{i:0;s:3:"map";}}', 0, 1, 1, 11),
 ('', 0, @sName, '_bx_analytics_page_block_title_system_bots', '_bx_analytics_page_block_title_bots', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:16:"get_block_report";s:6:"params";a:1:{i:0;s:4:"bots";}}', 0, 1, 1, 12),
-('', 0, @sName, '_bx_analytics_page_block_title_system_canvas', '_bx_analytics_page_block_title_canvas', 11, 2147483647, 'service', 'a:2:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:10:"get_canvas";}', 0, 1, 1, 13);
+('', 0, @sName, '_bx_analytics_page_block_title_system_events', '_bx_analytics_page_block_title_events', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:16:"get_block_report";s:6:"params";a:1:{i:0;s:6:"events";}}', 0, 1, 1, 13),
+('', 0, @sName, '_bx_analytics_page_block_title_system_sessions', '_bx_analytics_page_block_title_sessions', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:16:"get_block_report";s:6:"params";a:1:{i:0;s:8:"sessions";}}', 0, 1, 1, 14),
+('', 0, @sName, '_bx_analytics_page_block_title_system_users', '_bx_analytics_page_block_title_users', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:16:"get_block_report";s:6:"params";a:1:{i:0;s:5:"users";}}', 0, 1, 1, 15),
+('', 0, @sName, '_bx_analytics_page_block_title_system_canvas', '_bx_analytics_page_block_title_canvas', 11, 2147483647, 'service', 'a:2:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:10:"get_canvas";}', 0, 1, 1, 16);
 
 -- STUDIO DASHBOARD: traffic next to the core blocks
 SET @iStdDashboardOrder = (SELECT IFNULL(MAX(`order`), 0) + 1 FROM `sys_pages_blocks` WHERE `object` = 'sys_std_dashboard' AND `cell_id` = 1);
@@ -86,23 +90,37 @@ INSERT INTO `sys_acl_actions` (`Module`, `Name`, `AdditionalParamName`, `Title`,
 (@sName, 'use analytics', NULL, '_bx_analytics_acl_action_use_analytics', '', 1, 3);
 SET @iIdActionUseAnalytics = LAST_INSERT_ID();
 
+INSERT INTO `sys_acl_actions` (`Module`, `Name`, `AdditionalParamName`, `Title`, `Desc`, `Countable`, `DisabledForLevels`) VALUES
+(@sName, 'view analytics people', NULL, '_bx_analytics_acl_action_view_people', '', 0, 3);
+SET @iIdActionViewPeople = LAST_INSERT_ID();
+
 SET @iModerator = 7;
 SET @iAdministrator = 8;
 INSERT INTO `sys_acl_matrix` (`IDLevel`, `IDAction`) VALUES
 (@iModerator, @iIdActionUseAnalytics),
-(@iAdministrator, @iIdActionUseAnalytics);
+(@iAdministrator, @iIdActionUseAnalytics),
+(@iAdministrator, @iIdActionViewPeople);
 
 -- INJECTIONS: the tracker on every page
 INSERT INTO `sys_injections` (`name`, `page_index`, `key`, `type`, `data`, `replace`, `active`) VALUES
 ('bx_analytics_tracker', 0, 'injection_footer', 'service', 'a:2:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:16:"get_tracker_code";}', 0, 1);
 
--- ALERTS: forget deleted profiles
+-- ALERTS: forget deleted profiles, record site actions (new content is subscribed per
+-- module by the sync_actions service)
 INSERT INTO `sys_alerts_handlers` (`name`, `class`, `file`, `service_call`) VALUES
 (@sName, 'BxAnalyticsAlertsResponse', 'modules/boonex/analytics/classes/BxAnalyticsAlertsResponse.php', '');
 SET @iHandler := LAST_INSERT_ID();
 
 INSERT INTO `sys_alerts` (`unit`, `action`, `handler_id`) VALUES
-('profile', 'delete', @iHandler);
+('profile', 'delete', @iHandler),
+('system', 'enable', @iHandler),
+('system', 'disable', @iHandler),
+('account', 'add', @iHandler),
+('account', 'login', @iHandler),
+('profile', 'add', @iHandler),
+('system', 'connection_added', @iHandler),
+('comment', 'added', @iHandler),
+('vote', 'do', @iHandler);
 
 -- CRON: daily salts and data retention
 INSERT INTO `sys_cron_jobs` (`name`, `time`, `class`, `file`, `service_call`) VALUES

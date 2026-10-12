@@ -190,6 +190,44 @@ class BxAnalyticsDb extends BxBaseModGeneralDb
         return $bResult;
     }
 
+    /**
+     * Replace the module's subscriptions to per-module actions (content added) with the given
+     * unit => [actions] list. Fixed subscriptions from enable.sql with the same action name
+     * (comment/added) are listed in `$aFixedUnits` and stay.
+     *
+     * @return int subscriptions written
+     */
+    public function setActionAlerts($sHandler, $aActions, $aUnits, $aFixedUnits = [])
+    {
+        $iHandlerId = (int)$this->getOne("SELECT `id` FROM `sys_alerts_handlers` WHERE `name` = :name LIMIT 1", ['name' => $sHandler]);
+        if(!$iHandlerId)
+            return 0;
+
+        $aIn = [];
+        $aBindings = ['handler' => $iHandlerId];
+        foreach(array_values($aActions) as $i => $sAction) {
+            $aIn[] = ':a' . $i;
+            $aBindings['a' . $i] = $sAction;
+        }
+        $sKeep = '';
+        foreach(array_values($aFixedUnits) as $i => $sUnit) {
+            $sKeep .= ($sKeep === '' ? '' : ', ') . ':k' . $i;
+            $aBindings['k' . $i] = $sUnit;
+        }
+        $this->query("DELETE FROM `sys_alerts` WHERE `handler_id` = :handler AND `action` IN (" . implode(', ', $aIn) . ")" . ($sKeep !== '' ? " AND `unit` NOT IN (" . $sKeep . ")" : ''), $aBindings);
+
+        $iWritten = 0;
+        foreach($aUnits as $sUnit => $aUnitActions)
+            foreach($aUnitActions as $sAction)
+                $iWritten += (int)$this->query("INSERT INTO `sys_alerts` (`unit`, `action`, `handler_id`) VALUES (:unit, :action, :handler)", [
+                    'unit' => $sUnit,
+                    'action' => $sAction,
+                    'handler' => $iHandlerId,
+                ]);
+
+        return $iWritten;
+    }
+
     /*
      * Maintenance
      */
@@ -379,6 +417,200 @@ class BxAnalyticsDb extends BxBaseModGeneralDb
         }
 
         return $this->getPairs("SELECT FLOOR(`ts` / 60) * 60 AS `minute`, COUNT(*) AS `pageviews` FROM `" . $this->_oConfig->CNF['TABLE_EVENTS'] . "` WHERE `ts` >= :since AND `type` = 'pageview'" . $sWhere . " GROUP BY `minute`", 'minute', 'pageviews', $aBindings);
+    }
+
+    /*
+     * Behavior: events, sessions, members
+     */
+
+    /**
+     * Events grouped by type, name and module, most frequent first.
+     */
+    public function getEventList($aFilter, $aTypes, $iLimit, $iStart = 0)
+    {
+        $aBindings = [];
+        $sWhere = $this->_getAnyEventsWhere($aFilter, $aTypes, $aBindings);
+
+        return $this->getAll("SELECT `e`.`type`, `e`.`name`, `e`.`module`, COUNT(*) AS `count`, COUNT(DISTINCT `e`.`visitor`) AS `visitors`, MAX(`e`.`ts`) AS `last` FROM `" . $this->_oConfig->CNF['TABLE_EVENTS'] . "` AS `e` WHERE " . $sWhere . " GROUP BY `e`.`type`, `e`.`name`, `e`.`module` ORDER BY `count` DESC LIMIT " . max(0, (int)$iStart) . ", " . max(1, min(1000, (int)$iLimit)), $aBindings);
+    }
+
+    public function getEventListCount($aFilter, $aTypes)
+    {
+        $aBindings = [];
+        $sWhere = $this->_getAnyEventsWhere($aFilter, $aTypes, $aBindings);
+
+        return (int)$this->getOne("SELECT COUNT(DISTINCT `e`.`type`, `e`.`name`, `e`.`module`) FROM `" . $this->_oConfig->CNF['TABLE_EVENTS'] . "` AS `e` WHERE " . $sWhere, $aBindings);
+    }
+
+    /**
+     * One event's count and visitors per time bucket, per platform, and the properties of
+     * its latest occurrences.
+     */
+    public function getEventSeries($aFilter, $aEvent, $sBucket, $iOffset, $aStarts = [])
+    {
+        $aBindings = [];
+        $sWhere = $this->_getAnyEventsWhere($aFilter, [$aEvent['type']], $aBindings, $aEvent);
+        $sBucketSql = $this->_getBucketSql('`e`.`ts`', $sBucket, $iOffset, $aStarts, $aBindings);
+
+        return $this->getAllWithKey("SELECT " . $sBucketSql . " AS `bucket`, COUNT(*) AS `count`, COUNT(DISTINCT `e`.`visitor`) AS `visitors` FROM `" . $this->_oConfig->CNF['TABLE_EVENTS'] . "` AS `e` WHERE " . $sWhere . " GROUP BY `bucket` ORDER BY `bucket`", 'bucket', $aBindings);
+    }
+
+    public function getEventPlatforms($aFilter, $aEvent)
+    {
+        $aBindings = [];
+        $sWhere = $this->_getAnyEventsWhere($aFilter, [$aEvent['type']], $aBindings, $aEvent);
+
+        return $this->getAll("SELECT `e`.`platform`, COUNT(*) AS `count`, COUNT(DISTINCT `e`.`visitor`) AS `visitors` FROM `" . $this->_oConfig->CNF['TABLE_EVENTS'] . "` AS `e` WHERE " . $sWhere . " GROUP BY `e`.`platform` ORDER BY `count` DESC", $aBindings);
+    }
+
+    public function getEventProps($aFilter, $aEvent, $iLimit = 2000)
+    {
+        $aBindings = [];
+        $sWhere = $this->_getAnyEventsWhere($aFilter, [$aEvent['type']], $aBindings, $aEvent);
+
+        return $this->getColumn("SELECT `e`.`props` FROM `" . $this->_oConfig->CNF['TABLE_EVENTS'] . "` AS `e` WHERE " . $sWhere . " AND `e`.`props` != '' ORDER BY `e`.`id` DESC LIMIT " . max(1, min(10000, (int)$iLimit)), $aBindings);
+    }
+
+    /**
+     * Sessions that started in the period, latest first, optionally of one member.
+     */
+    public function getSessionList($aFilter, $iLimit, $iStart = 0, $iProfileId = 0)
+    {
+        $aBindings = [];
+        $sWhere = $this->_getSessionsWhere($aFilter, $aBindings);
+        if($iProfileId) {
+            $sWhere .= ' AND `s`.`profile_id` = :profile';
+            $aBindings['profile'] = (int)$iProfileId;
+        }
+
+        return $this->getAll("SELECT `s`.* FROM `" . $this->_oConfig->CNF['TABLE_SESSIONS'] . "` AS `s` WHERE " . $sWhere . " ORDER BY `s`.`started` DESC LIMIT " . max(0, (int)$iStart) . ", " . max(1, min(1000, (int)$iLimit)), $aBindings);
+    }
+
+    public function getSessionListCount($aFilter, $iProfileId = 0)
+    {
+        $aBindings = [];
+        $sWhere = $this->_getSessionsWhere($aFilter, $aBindings);
+        if($iProfileId) {
+            $sWhere .= ' AND `s`.`profile_id` = :profile';
+            $aBindings['profile'] = (int)$iProfileId;
+        }
+
+        return (int)$this->getOne("SELECT COUNT(*) FROM `" . $this->_oConfig->CNF['TABLE_SESSIONS'] . "` AS `s` WHERE " . $sWhere, $aBindings);
+    }
+
+    public function getSession($iId)
+    {
+        return $this->getRow("SELECT * FROM `" . $this->_oConfig->CNF['TABLE_SESSIONS'] . "` WHERE `id` = :id", ['id' => (int)$iId]);
+    }
+
+    public function getSessionEvents($iId, $iLimit = 500)
+    {
+        return $this->getAll("SELECT `ts`, `type`, `name`, `path`, `title`, `module`, `object_id`, `value`, `engaged`, `props` FROM `" . $this->_oConfig->CNF['TABLE_EVENTS'] . "` WHERE `session_id` = :id ORDER BY `id` LIMIT " . max(1, min(5000, (int)$iLimit)), ['id' => (int)$iId]);
+    }
+
+    /**
+     * Members who visited in the period with their visits, pageviews, time and platforms,
+     * the latest visitor first.
+     */
+    public function getMemberList($aFilter, $iLimit, $iStart = 0)
+    {
+        $aBindings = [];
+        $sWhere = $this->_getSessionsWhere($aFilter, $aBindings);
+
+        return $this->getAll("SELECT `s`.`profile_id`, COUNT(*) AS `sessions`, SUM(`s`.`pageviews`) AS `pageviews`, SUM(`s`.`duration`) AS `duration`, MIN(`s`.`started`) AS `first`, MAX(`s`.`last_seen`) AS `last`, GROUP_CONCAT(DISTINCT `s`.`platform` ORDER BY `s`.`platform`) AS `platforms`, SUBSTRING_INDEX(GROUP_CONCAT(`s`.`country` ORDER BY `s`.`last_seen` DESC), ',', 1) AS `country` FROM `" . $this->_oConfig->CNF['TABLE_SESSIONS'] . "` AS `s` WHERE " . $sWhere . " AND `s`.`profile_id` > 0 GROUP BY `s`.`profile_id` ORDER BY `last` DESC LIMIT " . max(0, (int)$iStart) . ", " . max(1, min(1000, (int)$iLimit)), $aBindings);
+    }
+
+    public function getMemberListCount($aFilter)
+    {
+        $aBindings = [];
+        $sWhere = $this->_getSessionsWhere($aFilter, $aBindings);
+
+        return (int)$this->getOne("SELECT COUNT(DISTINCT `s`.`profile_id`) FROM `" . $this->_oConfig->CNF['TABLE_SESSIONS'] . "` AS `s` WHERE " . $sWhere . " AND `s`.`profile_id` > 0", $aBindings);
+    }
+
+    /**
+     * A member's totals over all the data kept, and per platform.
+     */
+    public function getMemberTotals($iProfileId)
+    {
+        $aBindings = ['profile' => (int)$iProfileId];
+        $sTable = $this->_oConfig->CNF['TABLE_SESSIONS'];
+
+        return [
+            'totals' => $this->getRow("SELECT COUNT(*) AS `sessions`, IFNULL(SUM(`pageviews`), 0) AS `pageviews`, IFNULL(SUM(`duration`), 0) AS `duration`, MIN(`started`) AS `first`, MAX(`last_seen`) AS `last` FROM `" . $sTable . "` WHERE `profile_id` = :profile", $aBindings),
+            'platforms' => $this->getPairs("SELECT `platform`, COUNT(*) AS `sessions` FROM `" . $sTable . "` WHERE `profile_id` = :profile GROUP BY `platform` ORDER BY `sessions` DESC", 'platform', 'sessions', $aBindings),
+        ];
+    }
+
+    /**
+     * A member's events and site actions in the period, most frequent first.
+     */
+    public function getMemberActions($iProfileId, $aFilter, $iLimit = 20)
+    {
+        $aBindings = [];
+        $sWhere = $this->_getAnyEventsWhere(array_merge($aFilter, ['dims' => []]), [BX_ANALYTICS_HIT_EVENT, BX_ANALYTICS_HIT_UNA], $aBindings);
+        $aBindings['profile'] = (int)$iProfileId;
+
+        return $this->getAll("SELECT `e`.`type`, `e`.`name`, `e`.`module`, COUNT(*) AS `count`, MAX(`e`.`ts`) AS `last` FROM `" . $this->_oConfig->CNF['TABLE_EVENTS'] . "` AS `e` WHERE " . $sWhere . " AND `e`.`profile_id` = :profile GROUP BY `e`.`type`, `e`.`name`, `e`.`module` ORDER BY `count` DESC LIMIT " . max(1, min(100, (int)$iLimit)), $aBindings);
+    }
+
+    /**
+     * WHERE for events (alias `e`) of some types in the period, optionally one event
+     * (type, name, module), with session filters through the event's session.
+     */
+    protected function _getAnyEventsWhere($aFilter, $aTypes, &$aBindings, $aEvent = null)
+    {
+        $aSql = ['`e`.`ts` >= :from', '`e`.`ts` < :to'];
+        $aBindings['from'] = (int)$aFilter['from'];
+        $aBindings['to'] = (int)$aFilter['to'];
+
+        $aIn = [];
+        foreach(array_values($aTypes) as $i => $sType) {
+            $aIn[] = ':t' . $i;
+            $aBindings['t' . $i] = $sType;
+        }
+        $aSql[] = '`e`.`type` IN (' . implode(', ', $aIn) . ')';
+
+        if($aEvent !== null) {
+            $aSql[] = '`e`.`name` = :ev_name';
+            $aSql[] = '`e`.`module` = :ev_module';
+            $aBindings['ev_name'] = $aEvent['name'];
+            $aBindings['ev_module'] = $aEvent['module'];
+        }
+
+        if($aFilter['platform'] !== '') {
+            $aSql[] = '`e`.`platform` = :platform';
+            $aBindings['platform'] = $aFilter['platform'];
+        }
+
+        $aSessionSql = [];
+        foreach($aFilter['dims'] as $sName => $sValue) {
+            if(isset($this->_aSessionDimensions[$sName])) {
+                $aSessionSql[] = '`sf`.`' . $this->_aSessionDimensions[$sName] . '` = :d_' . $sName;
+                $aBindings['d_' . $sName] = $sValue;
+            }
+            elseif(isset($this->_aEventDimensions[$sName])) {
+                $aSessionSql[] = "EXISTS (SELECT 1 FROM `" . $this->_oConfig->CNF['TABLE_EVENTS'] . "` AS `ef` WHERE `ef`.`session_id` = `e`.`session_id` AND `ef`.`type` = 'pageview' AND `ef`.`" . $this->_aEventDimensions[$sName] . "` = :d_" . $sName . ")";
+                $aBindings['d_' . $sName] = $sValue;
+            }
+        }
+
+        if(!empty($aSessionSql)) {
+            // session dimensions go through the session; page filters stand on their own
+            $aOwn = [];
+            $aThrough = [];
+            foreach($aSessionSql as $sSql)
+                if(strncmp($sSql, 'EXISTS', 6) === 0)
+                    $aOwn[] = $sSql;
+                else
+                    $aThrough[] = $sSql;
+
+            if(!empty($aThrough))
+                $aSql[] = "EXISTS (SELECT 1 FROM `" . $this->_oConfig->CNF['TABLE_SESSIONS'] . "` AS `sf` WHERE `sf`.`id` = `e`.`session_id` AND " . implode(' AND ', $aThrough) . ")";
+            $aSql = array_merge($aSql, $aOwn);
+        }
+
+        return implode(' AND ', $aSql);
     }
 
     /**

@@ -464,6 +464,168 @@ class BxAnalyticsTemplate extends BxBaseModGeneralTemplate
         ]);
     }
 
+    protected function _getEventsHtml($aData, $oFilter)
+    {
+        if($aData['view'] == 'list')
+            return $this->_getTableHtml($aData, $oFilter);
+
+        $aProps = [];
+        foreach($aData['props'] as $aTable)
+            $aProps[] = [
+                'title' => $this->_esc($aTable['caption']),
+                'table' => $this->_getTableHtml($aTable, $oFilter),
+            ];
+
+        return $this->parseHtmlByName('event.html', [
+            'back' => _t('_bx_analytics_txt_back_events'),
+            'title' => $this->_esc($aData['title']),
+            'tiles' => $this->_getTilesHtml($aData['tiles']),
+            'chart_label' => $this->_esc(_t('_bx_analytics_txt_chart_event', $aData['title'])),
+            'chart_json' => $this->_json($aData['chart']),
+            'platforms_title' => _t('_bx_analytics_tab_platforms'),
+            'platforms' => $this->_getBarsHtml($aData['platforms'], 'count'),
+            'bx_repeat:props' => $aProps,
+            'bx_if:no_props' => [
+                'condition' => empty($aProps),
+                'content' => [
+                    'props_title' => _t('_bx_analytics_txt_properties'),
+                    'no_props' => _t('_bx_analytics_txt_no_properties'),
+                ],
+            ],
+        ]);
+    }
+
+    protected function _getSessionsHtml($aData, $oFilter)
+    {
+        if($aData['view'] == 'list')
+            return $this->_getTableHtml($aData, $oFilter);
+
+        return $this->_getSessionHtml($aData);
+    }
+
+    protected function _getUsersHtml($aData, $oFilter)
+    {
+        if($aData['view'] == 'list')
+            return $this->_getTableHtml($aData, $oFilter);
+
+        if($aData['view'] == 'detail')
+            return $this->_getSessionHtml($aData);
+
+        return $this->parseHtmlByName('user.html', [
+            'back' => _t('_bx_analytics_txt_back_members'),
+            'member' => $this->_getMemberHtml($aData['member']),
+            'tiles' => $this->_getTilesHtml($aData['tiles']),
+            'sessions_title' => _t('_bx_analytics_lmi_cpt_sessions'),
+            'sessions' => $this->_getTableHtml($aData['sessions'], $oFilter),
+            'platforms_title' => _t('_bx_analytics_tab_platforms'),
+            'platforms' => $this->_getBarsHtml($aData['platforms'], 'count'),
+            'actions_title' => $aData['actions']['caption'],
+            'actions' => $this->_getTableHtml($aData['actions'], $oFilter),
+        ]);
+    }
+
+    protected function _getSessionHtml($aData)
+    {
+        $aFacts = [];
+        foreach($aData['facts'] as $aFact)
+            $aFacts[] = [
+                'title' => $aFact['title'],
+                'value' => $aFact['value'] === '' ? '&mdash;' : $this->formatValue($aFact['type'], $aFact['value']),
+            ];
+
+        $aKinds = [
+            BX_ANALYTICS_HIT_PAGEVIEW => _t('_bx_analytics_event_type_pageview'),
+            BX_ANALYTICS_HIT_EVENT => _t('_bx_analytics_event_type_event'),
+            BX_ANALYTICS_HIT_UNA => _t('_bx_analytics_event_type_una'),
+        ];
+
+        $aTimeline = [];
+        foreach($aData['timeline'] as $aItem)
+            $aTimeline[] = [
+                'type' => $aItem['type'],
+                'offset' => sprintf('%d:%02d', intdiv($aItem['offset'], 60), $aItem['offset'] % 60),
+                'kind' => isset($aKinds[$aItem['type']]) ? $aKinds[$aItem['type']] : $this->_esc($aItem['type']),
+                'label' => $this->_esc($aItem['label']),
+                'bx_if:path' => [
+                    'condition' => $aItem['path'] !== '' && $aItem['path'] !== $aItem['label'],
+                    'content' => ['path' => $this->_esc($aItem['path'])],
+                ],
+                'engaged' => $aItem['engaged'] ? $this->formatValue('duration', $aItem['engaged']) : '',
+            ];
+
+        return $this->parseHtmlByName('session.html', [
+            'back' => _t('_bx_analytics_txt_back_sessions'),
+            'member' => $this->_getMemberHtml($aData['member']),
+            'bx_repeat:facts' => $aFacts,
+            'timeline_title' => _t('_bx_analytics_txt_timeline'),
+            'bx_if:timeline' => [
+                'condition' => !empty($aTimeline),
+                'content' => ['bx_repeat:timeline' => $aTimeline],
+            ],
+            'bx_if:empty' => [
+                'condition' => empty($aTimeline),
+                'content' => ['empty' => _t('_bx_analytics_txt_no_data')],
+            ],
+        ]);
+    }
+
+    protected function _getMemberHtml($aMember)
+    {
+        $bMember = !empty($aMember);
+
+        return $this->parseHtmlByName('member.html', [
+            'bx_if:thumb' => [
+                'condition' => $bMember && !empty($aMember['thumb']),
+                'content' => ['thumb' => $bMember ? $this->_esc($aMember['thumb']) : ''],
+            ],
+            'bx_if:no_thumb' => [
+                'condition' => !$bMember || empty($aMember['thumb']),
+                'content' => [],
+            ],
+            'bx_if:link' => [
+                'condition' => $bMember,
+                'content' => [
+                    'url' => $bMember ? $this->_esc($aMember['url']) : '',
+                    'name' => $bMember ? $this->_esc($aMember['name']) : '',
+                ],
+            ],
+            'bx_if:text' => [
+                'condition' => !$bMember,
+                'content' => ['name' => _t('_bx_analytics_txt_guest')],
+            ],
+        ]);
+    }
+
+    /**
+     * Shares as bars: items with label, a count under `$sKey` and share in percent.
+     */
+    protected function _getBarsHtml($aItems, $sKey)
+    {
+        $iMax = 1;
+        foreach($aItems as $aItem)
+            $iMax = max($iMax, (int)$aItem[$sKey]);
+
+        $aRows = [];
+        foreach($aItems as $aItem)
+            $aRows[] = [
+                'label' => $this->_esc($aItem['label']),
+                'value' => $this->formatValue('number', $aItem[$sKey]),
+                'share' => $aItem['share'],
+                'bar' => round(100 * $aItem[$sKey] / $iMax, 1),
+            ];
+
+        return $this->parseHtmlByName('bars.html', [
+            'bx_if:items' => [
+                'condition' => !empty($aRows),
+                'content' => ['bx_repeat:items' => $aRows],
+            ],
+            'bx_if:empty' => [
+                'condition' => empty($aRows),
+                'content' => ['empty' => _t('_bx_analytics_txt_no_data')],
+            ],
+        ]);
+    }
+
     /**
      * Key figures that are not chart switches: title, value and an optional note or change.
      */
@@ -520,7 +682,7 @@ class BxAnalyticsTemplate extends BxBaseModGeneralTemplate
                     'bx_if:value' => [
                         'condition' => !$bLabel,
                         'content' => [
-                            'value' => !$bLabel ? $this->formatValue($aColumn['type'], isset($aRow['values'][$sKey]) ? $aRow['values'][$sKey] : null) : '',
+                            'cell_value' => !$bLabel ? $this->formatValue($aColumn['type'], isset($aRow['values'][$sKey]) ? $aRow['values'][$sKey] : null) : '',
                         ],
                     ],
                 ];
@@ -576,27 +738,29 @@ class BxAnalyticsTemplate extends BxBaseModGeneralTemplate
 
         return [
             'bar' => isset($aRow['bar']) ? $aRow['bar'] : 0,
+            // placeholder names are unique across the row: the parser fills every one with
+            // the same name from any part of the row
             'bx_if:filter' => [
                 'condition' => $bFilter,
                 'content' => [
-                    'dimension' => $bFilter ? $aRow['filter']['dim'] : '',
-                    'value' => $bFilter ? $this->_esc($aRow['filter']['value']) : '',
-                    'title' => $this->_esc(_t('_bx_analytics_txt_filter_by', $aRow['label'])),
+                    'filter_dim' => $bFilter ? $aRow['filter']['dim'] : '',
+                    'filter_value' => $bFilter ? $this->_esc($aRow['filter']['value']) : '',
+                    'filter_title' => $this->_esc(_t('_bx_analytics_txt_filter_by', $aRow['label'])),
                     'label' => $sLabel,
                 ],
             ],
             'bx_if:link' => [
                 'condition' => $bLink,
                 'content' => [
-                    'href' => $bLink ? $this->_esc($aRow['link']) : '',
+                    'link_href' => $bLink ? $this->_esc($aRow['link']) : '',
                     'label' => $sLabel,
                 ],
             ],
             'bx_if:open' => [
                 'condition' => $bOpen,
                 'content' => [
-                    'param' => $bOpen ? $aRow['open']['param'] : '',
-                    'value' => $bOpen ? $this->_esc($aRow['open']['value']) : '',
+                    'open_param' => $bOpen ? $aRow['open']['param'] : '',
+                    'open_value' => $bOpen ? $this->_esc($aRow['open']['value']) : '',
                     'label' => $sLabel,
                 ],
             ],

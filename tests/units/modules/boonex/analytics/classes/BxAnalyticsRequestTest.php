@@ -9,6 +9,7 @@ class BxAnalyticsRequestTest extends \PHPUnit\Framework\TestCase
 {
     public static function setUpBeforeClass(): void
     {
+        require_once BX_DIRECTORY_PATH_MODULES . 'boonex/analytics/classes/BxAnalyticsConfig.php';
         require_once BX_DIRECTORY_PATH_MODULES . 'boonex/analytics/classes/BxAnalyticsRequest.php';
     }
 
@@ -53,6 +54,25 @@ class BxAnalyticsRequestTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('', (new BxAnalyticsRequest(['HTTP_CF_IPCOUNTRY' => 'XX']))->getCountry(), 'unknown');
         $this->assertSame('', (new BxAnalyticsRequest(['HTTP_CF_IPCOUNTRY' => 'T1']))->getCountry(), 'Tor');
         $this->assertSame('São Paulo', (new BxAnalyticsRequest(['HTTP_X_VERCEL_IP_CITY' => 'S%C3%A3o%20Paulo']))->getCity());
+    }
+
+    public static function providerPlatform()
+    {
+        return [
+            'cron' => [[], false, false, 'core'],
+            'classic page' => [['REQUEST_METHOD' => 'POST'], false, false, 'core-web'],
+            'NEO says so' => [['REQUEST_METHOD' => 'GET', 'HTTP_X_NEO_PLATFORM' => 'android'], true, false, 'rn-android'],
+            'NEO web server' => [['REQUEST_METHOD' => 'GET'], true, true, 'next-web'],
+            'iOS app' => [['REQUEST_METHOD' => 'GET', 'HTTP_ORIGIN' => 'neo://app', 'HTTP_USER_AGENT' => 'NEO/1 CFNetwork/1568 Darwin/24.0.0'], true, false, 'rn-ios'],
+            'Android app' => [['REQUEST_METHOD' => 'GET', 'HTTP_ORIGIN' => 'neo://app', 'HTTP_USER_AGENT' => 'okhttp/4.12.0'], true, false, 'rn-android'],
+            'other API client' => [['REQUEST_METHOD' => 'GET', 'HTTP_USER_AGENT' => 'curl/8.4.0'], true, false, 'api'],
+        ];
+    }
+
+    #[DataProvider('providerPlatform')]
+    public function testPlatform($aServer, $bApi, $bApiKey, $sExpected)
+    {
+        $this->assertSame($sExpected, (new BxAnalyticsRequest($aServer))->getPlatform($bApi, $bApiKey));
     }
 
     public function testPrivacySignals()

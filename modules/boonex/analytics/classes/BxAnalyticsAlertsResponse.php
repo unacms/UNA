@@ -22,8 +22,7 @@ class BxAnalyticsAlertsResponse extends BxDolAlertsResponse
 
     public function response($oAlert)
     {
-        if($oAlert->sUnit == 'profile' && $oAlert->sAction == 'delete')
-            BxDolModule::getInstance($this->_sModule)->onProfileDelete($oAlert->iObject);
+        BxDolModule::getInstance($this->_sModule)->onAlert($oAlert);
     }
 }
 

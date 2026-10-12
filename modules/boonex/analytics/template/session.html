@@ -1,0 +1,32 @@
+<div class="bx-analytics-detail">
+    <button type="button" class="bx-analytics-back" data-bx-analytics-open="session" data-bx-analytics-value="">__back__</button>
+    __member__
+    <dl class="bx-analytics-facts">
+        <bx_repeat:facts>
+            <div class="bx-analytics-fact">
+                <dt>__title__</dt>
+                <dd>__value__</dd>
+            </div>
+        </bx_repeat:facts>
+    </dl>
+    <h3 class="bx-analytics-subtitle">__timeline_title__</h3>
+    <bx_if:timeline>
+        <ol class="bx-analytics-timeline">
+            <bx_repeat:timeline>
+                <li class="bx-analytics-timeline-item bx-analytics-timeline-__type__">
+                    <span class="bx-analytics-timeline-time">__offset__</span>
+                    <span class="bx-analytics-timeline-dot" aria-hidden="true"></span>
+                    <span class="bx-analytics-timeline-body">
+                        <span class="bx-analytics-timeline-kind">__kind__</span>
+                        <span class="bx-analytics-timeline-label">__label__</span>
+                        <bx_if:path><span class="bx-analytics-timeline-path">__path__</span></bx_if:path>
+                    </span>
+                    <span class="bx-analytics-timeline-engaged">__engaged__</span>
+                </li>
+            </bx_repeat:timeline>
+        </ol>
+    </bx_if:timeline>
+    <bx_if:empty>
+        <div class="bx-analytics-empty">__empty__</div>
+    </bx_if:empty>
+</div>

@@ -28,7 +28,12 @@ class BxAnalyticsModule extends BxDolModule
     /**
      * Reports that blocks, Studio and the API may ask for; each is a BxAnalyticsReports method.
      */
-    protected $_aReports = ['filters', 'overview', 'top', 'table', 'realtime', 'map', 'bots'];
+    protected $_aReports = ['filters', 'overview', 'top', 'table', 'realtime', 'map', 'bots', 'sessions', 'users', 'events'];
+
+    /**
+     * Reports that show members by name.
+     */
+    protected $_aPeopleReports = ['sessions', 'users'];
 
     /**
      * Studio sections: page => list of [report, block params, spans all columns].
@@ -41,6 +46,9 @@ class BxAnalyticsModule extends BxDolModule
         'audience' => [['filters', [], true], ['top', ['group' => 'locations']], ['top', ['group' => 'devices']], ['top', ['group' => 'platforms']]],
         'map' => [['filters', [], true], ['map', [], true]],
         'bots' => [['filters', [], true], ['bots', [], true]],
+        'sessions' => [['filters', [], true], ['sessions', [], true]],
+        'users' => [['filters', [], true], ['users', [], true]],
+        'events' => [['filters', [], true], ['events', [], true]],
     ];
           
     function __construct(&$aModule)
@@ -495,6 +503,9 @@ class BxAnalyticsModule extends BxDolModule
         if(!$this->serviceIsAvaliable() || !in_array($sReport, $this->_aReports, true))
             return bx_is_api() ? [] : '';
 
+        if(in_array($sReport, $this->_aPeopleReports, true) && $this->checkAllowedPeople() !== CHECK_ACTION_RESULT_ALLOWED)
+            return bx_is_api() ? [] : '';
+
         if(bx_is_api())
             return [bx_api_get_block('analytics_' . $sReport, $this->_getApiBlockData($sReport, $aBlockParams))];
 
@@ -576,6 +587,107 @@ class BxAnalyticsModule extends BxDolModule
     }
 
     /**
+     * @page service Service Calls
+     * @section bx_analytics Analytics
+     * @subsection bx_analytics-tracking Tracking
+     * @subsubsection bx_analytics-sync_actions sync_actions
+     *
+     * @code bx_srv('bx_analytics', 'sync_actions'); @endcode
+     *
+     * Subscribe to "added" of every content module on the site, so new content becomes an
+     * event (comments and votes have site-wide alerts). Runs when the module is enabled and
+     * whenever another module is enabled or disabled.
+     *
+     * @return int subscriptions written
+     *
+     * @see BxAnalyticsModule::serviceSyncActions
+     */
+    /**
+     * @ref bx_analytics-sync_actions "sync_actions"
+     */
+    public function serviceSyncActions()
+    {
+        $aUnits = [];
+
+        foreach(BxDolModuleQuery::getInstance()->getModulesBy(['type' => 'modules', 'active' => 1]) as $aModule) {
+            $oModule = BxDolModule::getInstance($aModule['name']);
+            if($oModule instanceof iBxDolContentInfoService)
+                $aUnits[$aModule['name']][] = 'added';
+        }
+
+        $iWritten = $this->_oDb->setActionAlerts($this->getName(), ['added'], $aUnits, ['comment']);
+        BxDolAlerts::cacheInvalidate();
+
+        return $iWritten;
+    }
+
+    /**
+     * Alerts the module listens to: deleted profiles, modules switched on and off, and the
+     * site actions it records as events.
+     */
+    public function onAlert($oAlert)
+    {
+        $sUnit = $oAlert->sUnit;
+        $sAction = $oAlert->sAction;
+
+        if($sUnit == 'profile' && $sAction == 'delete') {
+            $this->onProfileDelete($oAlert->iObject);
+            return;
+        }
+
+        if($sUnit == 'system' && in_array($sAction, ['enable', 'disable'], true)) {
+            if(empty($oAlert->aExtras['config']['name']) || $oAlert->aExtras['config']['name'] != $this->getName())
+                $this->serviceSyncActions();
+            return;
+        }
+
+        $aContext = ['api_key' => $this->_isApiKeyRequest()];
+        $iSender = (int)$oAlert->iSender;
+
+        switch($sAction) {
+            case 'add':
+                if($sUnit == 'account') {
+                    $this->getCollector()->collectAction('signup', 'account', $oAlert->iObject, 0, $aContext);
+                    return;
+                }
+                if($sUnit == 'profile') {
+                    $sType = isset($oAlert->aExtras['module']) ? $oAlert->aExtras['module'] : '';
+                    $this->getCollector()->collectAction('profile_add', $sType, $oAlert->iObject, $oAlert->iObject, $aContext);
+                }
+                return;
+
+            case 'login':
+                if($sUnit == 'account') {
+                    $oProfile = BxDolProfile::getInstanceAccountProfile($oAlert->iObject);
+                    $this->getCollector()->collectAction('login', 'account', $oAlert->iObject, $oProfile ? $oProfile->id() : 0, $aContext);
+                }
+                return;
+
+            case 'connection_added':
+                if($sUnit == 'system')
+                    $this->getCollector()->collectAction('connection', isset($oAlert->aExtras['object_name']) ? $oAlert->aExtras['object_name'] : '', isset($oAlert->aExtras['content']) ? (int)$oAlert->aExtras['content'] : 0, $iSender, $aContext);
+                return;
+
+            case 'added':
+                // comments of any system, or new content of a module
+                if($sUnit == 'comment')
+                    $this->getCollector()->collectAction('comment', isset($oAlert->aExtras['object_system']) ? $oAlert->aExtras['object_system'] : '', isset($oAlert->aExtras['object_id']) ? (int)$oAlert->aExtras['object_id'] : 0, $iSender, $aContext);
+                else
+                    $this->getCollector()->collectAction('content_add', $sUnit, $oAlert->iObject, $iSender, $aContext);
+                return;
+
+            case 'do':
+                if($sUnit == 'vote') {
+                    $aProps = [];
+                    if(!empty($oAlert->aExtras['reaction']) && is_string($oAlert->aExtras['reaction']))
+                        $aProps['reaction'] = $oAlert->aExtras['reaction'];
+                    $this->getCollector()->collectAction('vote', isset($oAlert->aExtras['object_system']) ? $oAlert->aExtras['object_system'] : '', isset($oAlert->aExtras['object_id']) ? (int)$oAlert->aExtras['object_id'] : 0, $iSender, $aContext + ['props' => $aProps]);
+                }
+                return;
+        }
+    }
+
+    /**
      * Forget a deleted profile: its visits stay in reports as an anonymous visitor's.
      */
     public function onProfileDelete($iProfileId)
@@ -645,6 +757,9 @@ class BxAnalyticsModule extends BxDolModule
     public function getReportData($sReport, $aParams)
     {
         if(!in_array($sReport, $this->_aReports, true))
+            return false;
+
+        if(in_array($sReport, $this->_aPeopleReports, true) && $this->checkAllowedPeople() !== CHECK_ACTION_RESULT_ALLOWED)
             return false;
 
         $oReports = $this->getReports();
@@ -1056,6 +1171,23 @@ class BxAnalyticsModule extends BxDolModule
         return json_encode($aDataForChart);
     }
 	
+    /**
+     * Reports that show members by name: sessions and users. Site administrators always
+     * see them; everyone else needs "view analytics people" besides "use analytics".
+     */
+    public function checkAllowedPeople()
+    {
+        if(isAdmin())
+            return CHECK_ACTION_RESULT_ALLOWED;
+
+        if($this->checkAllowed() !== CHECK_ACTION_RESULT_ALLOWED)
+            return _t('_sys_txt_access_denied');
+
+        $aCheck = checkActionModule(bx_get_logged_profile_id(), 'view analytics people', $this->getName(), false);
+
+        return $aCheck[CHECK_ACTION_RESULT] === CHECK_ACTION_RESULT_ALLOWED ? CHECK_ACTION_RESULT_ALLOWED : _t('_sys_txt_access_denied');
+    }
+
 	public function checkAllowed($isPerformAction = false)
     {
         // site administrators always see analytics, whatever their profile's level

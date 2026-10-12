@@ -9,10 +9,6 @@
  * @{
  */
 
-define('BX_ANALYTICS_HIT_PAGEVIEW', 'pageview');
-define('BX_ANALYTICS_HIT_EVENT', 'event');
-define('BX_ANALYTICS_HIT_LEAVE', 'leave');
-
 /**
  * Takes a batch of hits from a tracker, decides whether to keep them, adds what the server
  * knows (visitor id, member, country, browser, traffic source) and writes sessions and events.
@@ -140,6 +136,73 @@ class BxAnalyticsCollector
             return false;
 
         return $this->_oDb->addBotHit(gmdate('Y-m-d', $this->_iNow), $aBot['name'], $aBot['category'], $sPlatform, $sPath, $this->_iNow);
+    }
+
+    /**
+     * Record something done on the site (a sign-up, a post, a comment, a reaction) as an
+     * event of type `una`, from whatever client did it. The event joins the actor's running
+     * visit on that client when there is one, so funnels and journeys see it.
+     *
+     * @param string $sName action name: signup, login, profile_add, content_add, comment, vote, connection...
+     * @param string $sModule module or object system the action happened in
+     * @param int $iObjectId content, comment or profile the action is about
+     * @param int $iProfileId who did it
+     * @param array $aContext `platform` (otherwise worked out from the request), `api_key` (the
+     *      request carries an accepted API key), `props`, `value`
+     * @return bool whether it was stored
+     */
+    public function collectAction($sName, $sModule, $iObjectId, $iProfileId, $aContext = [])
+    {
+        if(!$this->_oConfig->isTrackingEnabled() || !$this->_oConfig->isTrackActions())
+            return false;
+
+        $sPlatform = !empty($aContext['platform']) ? $aContext['platform'] : $this->_oRequest->getPlatform(defined('BX_API'), !empty($aContext['api_key']));
+        if(!$this->_oConfig->isPlatform($sPlatform))
+            return false;
+
+        $iProfileId = (int)$iProfileId;
+        if($iProfileId && $this->_isExcludedProfile($iProfileId))
+            return false;
+
+        $iLinkedProfileId = $this->_oConfig->isLinkMembers() ? $iProfileId : 0;
+        $aSession = [];
+        if($sPlatform != BX_ANALYTICS_PLATFORM_CORE) {
+            $aVisitor = $this->_getVisitor($this->_oRequest->getIp($this->_oConfig->getTrustedProxies(), !empty($aContext['api_key'])), $this->_oRequest->getUserAgent(), $iLinkedProfileId, '');
+            $aSession = $this->_oDb->getActiveSession($aVisitor['lookup'], $sPlatform, $this->_iNow - $this->_oConfig->getSessionTimeout());
+        }
+        else {
+            $aVisitor = ['id' => $iLinkedProfileId ? $this->_hash('p:' . $iLinkedProfileId, BX_DOL_SECRET) : str_repeat("\0", 16)];
+        }
+
+        $aProps = isset($aContext['props']) && is_array($aContext['props']) ? $this->_getProps($aContext['props']) : [];
+
+        $iStored = $this->_oDb->insertEvents([[
+            'session_id' => !empty($aSession) ? (int)$aSession['id'] : 0,
+            'visitor' => !empty($aSession) ? $aSession['visitor'] : $aVisitor['id'],
+            'profile_id' => $iLinkedProfileId,
+            'platform' => $sPlatform,
+            'ts' => $this->_iNow,
+            'type' => BX_ANALYTICS_HIT_UNA,
+            'name' => get_mb_substr((string)$sName, 0, 64),
+            'hostname' => '',
+            'path' => '',
+            'title' => '',
+            'module' => get_mb_substr(preg_replace('/[^a-z0-9_]/', '', mb_strtolower((string)$sModule)), 0, 32),
+            'object_id' => max(0, (int)$iObjectId),
+            'context_id' => 0,
+            'value' => isset($aContext['value']) && is_numeric($aContext['value']) ? (float)$aContext['value'] : 0,
+            'engaged' => 0,
+            'props' => empty($aProps) ? '' : json_encode($aProps, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
+        ]]);
+
+        if($iStored && !empty($aSession))
+            $this->_oDb->updateSession($aSession['id'], [
+                'events' => min((int)$aSession['events'] + 1, 65535),
+                'bounce' => 0,
+                'last_seen' => max((int)$aSession['last_seen'], $this->_iNow),
+            ]);
+
+        return $iStored > 0;
     }
 
     /**

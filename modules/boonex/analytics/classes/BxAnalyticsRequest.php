@@ -143,6 +143,50 @@ class BxAnalyticsRequest
         return null;
     }
 
+    /**
+     * The client of the current request, for actions recorded on the server.
+     * - no request (cron, background jobs, command line): core
+     * - a page or form of the classic UI: core-web
+     * - NEO says which client it is in X-Neo-Platform (web, ios, android)
+     * - otherwise the NEO web server is the request with the API key, and the native apps
+     *   are told apart by their HTTP stack (CFNetwork on iOS, okhttp on Android)
+     * - any other API client: api
+     *
+     * @param bool $bApi the request came through api.php
+     * @param bool $bApiKey it carries an API key api.php accepted
+     */
+    public function getPlatform($bApi, $bApiKey = false)
+    {
+        // cron and the command line have no request method
+        if($this->_get('REQUEST_METHOD') === '')
+            return BX_ANALYTICS_PLATFORM_CORE;
+
+        if(!$bApi)
+            return BX_ANALYTICS_PLATFORM_CORE_WEB;
+
+        $aNeo = [
+            'web' => BX_ANALYTICS_PLATFORM_NEXT_WEB,
+            'ios' => BX_ANALYTICS_PLATFORM_RN_IOS,
+            'android' => BX_ANALYTICS_PLATFORM_RN_ANDROID,
+        ];
+        $sNeo = mb_strtolower($this->_get('HTTP_X_NEO_PLATFORM'));
+        if(isset($aNeo[$sNeo]))
+            return $aNeo[$sNeo];
+
+        if($bApiKey)
+            return BX_ANALYTICS_PLATFORM_NEXT_WEB;
+
+        $sUserAgent = $this->_get('HTTP_USER_AGENT');
+        if($this->_get('HTTP_ORIGIN') !== '') {
+            if(preg_match('/CFNetwork|Darwin/i', $sUserAgent))
+                return BX_ANALYTICS_PLATFORM_RN_IOS;
+            if(preg_match('/okhttp|Dalvik/i', $sUserAgent))
+                return BX_ANALYTICS_PLATFORM_RN_ANDROID;
+        }
+
+        return BX_ANALYTICS_PLATFORM_API;
+    }
+
     public function getUserAgent()
     {
         return $this->_clean($this->_get('HTTP_USER_AGENT'), 512);

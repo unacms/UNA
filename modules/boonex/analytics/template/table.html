@@ -19,13 +19,13 @@ __tabs__
                                         <div class="bx-analytics-cell-label">
                                             <span class="bx-analytics-row-bar" style="width: __bar__%" aria-hidden="true"></span>
                                             <bx_if:filter>
-                                                <button type="button" class="bx-analytics-cell-btn" data-bx-analytics-filter="__dimension__" data-bx-analytics-value="__value__" title="__title__">__label__</button>
+                                                <button type="button" class="bx-analytics-cell-btn" data-bx-analytics-filter="__filter_dim__" data-bx-analytics-value="__filter_value__" title="__filter_title__">__label__</button>
                                             </bx_if:filter>
                                             <bx_if:link>
-                                                <a class="bx-analytics-cell-link" href="__href__">__label__</a>
+                                                <a class="bx-analytics-cell-link" href="__link_href__">__label__</a>
                                             </bx_if:link>
                                             <bx_if:open>
-                                                <button type="button" class="bx-analytics-cell-btn" data-bx-analytics-open="__param__" data-bx-analytics-value="__value__">__label__</button>
+                                                <button type="button" class="bx-analytics-cell-btn" data-bx-analytics-open="__open_param__" data-bx-analytics-value="__open_value__">__label__</button>
                                             </bx_if:open>
                                             <bx_if:text>
                                                 <span class="bx-analytics-cell-text">__label__</span>
@@ -35,7 +35,7 @@ __tabs__
                                             </bx_if:sub>
                                         </div>
                                     </bx_if:label>
-                                    <bx_if:value>__value__</bx_if:value>
+                                    <bx_if:value>__cell_value__</bx_if:value>
                                 </td>
                             </bx_repeat:cells>
                         </tr>
