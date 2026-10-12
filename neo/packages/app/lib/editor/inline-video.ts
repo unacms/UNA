@@ -1,5 +1,6 @@
 import { uploadImage } from 'app/lib/util/upload'
 import { genRnd } from 'app/lib/util/misc'
+import { alignFromAttrs } from 'app/lib/html-helpers'
 import { revokePastedBlobUri } from './editor-paste-images'
 import { inlineUploadError, type InlineUploadResult } from './upload-inline-image'
 
@@ -44,20 +45,39 @@ export type InlineSegment =
     | { type: 'html'; html: string }
     | ({ type: 'video'; src: string; poster: string } & InlineMediaLayout)
     | ({ type: 'embed'; url: string } & InlineMediaLayout)
+    | ({ type: 'table'; markdown: string } & InlineMediaLayout)
 
 export type InlineMediaAlign = 'left' | 'center' | 'right'
 
-/** Size and paragraph alignment the editor gave the media image (`width`/`height`, `text-align`). */
+/** Size and paragraph alignment the editor gave the media image (`width`/`height`, `text-*` class or `text-align`). */
 export type InlineMediaLayout = { width?: number; height?: number; align?: InlineMediaAlign }
 
 /*
  * Video and embeds go into the body as images — the only atomic node of the editors on
  * web, iOS and Android (deleted as a whole, shown as a preview):
  * - video: the poster transcoder link `image_transcoder.php?o=sys_videos_editor_poster&h=ID`;
- * - embed: the page image (or UNA's embed-na.png) with the URL in a `#neo-embed=` fragment.
- * The post view swaps them for a player / embed card.
+ * - embed: the page image (or UNA's embed-na.png) with the URL in a `#neo-embed=` fragment;
+ * - table: UNA's table-na.png with the GFM Markdown of the table in a `#neo-table=` fragment.
+ * The post view swaps them for a player / embed card / table.
  */
 const EMBED_MARK = 'neo-embed='
+const TABLE_MARK = 'neo-table='
+
+/** Image src for a table: the placeholder image carrying the table's Markdown in its fragment. */
+export function toTableImageSrc(image: string, markdown: string) {
+    return `${image.split('#')[0]}#${TABLE_MARK}${encodeURIComponent(markdown)}`
+}
+
+/** The table Markdown an editor image src carries (`toTableImageSrc`), `null` for any other image. */
+export function tableMarkdownFromImageSrc(src: string | null | undefined): string | null {
+    const hash = src ? src.indexOf(`#${TABLE_MARK}`) : -1
+    if (!src || hash < 0) return null
+    try {
+        return decodeURIComponent(src.slice(hash + 1 + TABLE_MARK.length)) || null
+    } catch {
+        return null
+    }
+}
 
 /** Image src for an embed: the preview image carrying the embedded URL in its fragment. */
 export function toEmbedImageSrc(image: string, url: string) {
@@ -108,11 +128,10 @@ const dimension = (tag: string, name: string) => {
 }
 
 function toLayout(imgTag: string | undefined, pAttrs: string | undefined): InlineMediaLayout {
-    const align = pAttrs?.match(/text-align\s*:\s*(left|center|right)/i)?.[1]?.toLowerCase()
     return {
         width: imgTag ? dimension(imgTag, 'width') : undefined,
         height: imgTag ? dimension(imgTag, 'height') : undefined,
-        align: align as InlineMediaAlign | undefined,
+        align: alignFromAttrs(pAttrs),
     }
 }
 
@@ -127,6 +146,10 @@ function toSegment(rawSrc: string | undefined, isLink: boolean): InlineSegment |
     const hash = src.indexOf('#')
     if (hash < 0) return null
     const fragment = src.slice(hash + 1)
+    if (!isLink && fragment.startsWith(TABLE_MARK)) {
+        const markdown = tableMarkdownFromImageSrc(src)
+        return markdown ? { type: 'table', markdown } : null
+    }
     if (!isLink && fragment.startsWith(EMBED_MARK)) {
         try {
             return embedSegment(decodeURIComponent(fragment.slice(EMBED_MARK.length)))
@@ -141,7 +164,7 @@ function toSegment(rawSrc: string | undefined, isLink: boolean): InlineSegment |
     return null
 }
 
-/** Split post HTML into plain HTML chunks, inline editor videos and embeds. */
+/** Split post HTML into plain HTML chunks, inline editor videos, embeds and tables. */
 export function splitInlineMedia(html: string | null | undefined): InlineSegment[] {
     if (!html) return []
     const segments: InlineSegment[] = []

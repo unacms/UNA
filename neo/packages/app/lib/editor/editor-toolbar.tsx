@@ -12,11 +12,12 @@ import { appSetting, cn } from 'app/lib/util'
 import { fetcher } from 'app/lib/fetcher'
 import { getTiptapEditorFromContainer } from 'app/lib/editor/comment-editor-keyboard'
 import { useTranslation } from 'react-i18next'
-import { toEmbedImageSrc } from 'app/lib/editor/inline-video'
+import { toEmbedImageSrc, tableMarkdownFromImageSrc } from 'app/lib/editor/inline-video'
 import { UNA_URL } from 'app/config'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu'
 
 export const EDITOR_TOOLBAR_COMMAND_IDS = [
+    'heading',
     'bold',
     'italic',
     'link',
@@ -34,10 +35,12 @@ export const EDITOR_TOOLBAR_COMMAND_IDS = [
     'align',
     'image',
     'video',
+    'source',
 ]
 
 /** Accessible names of the toolbar buttons (every button shows an icon). */
 export const COMMAND_LABELS: Record<string, string> = {
+    heading: 'Heading',
     bold: 'Bold',
     italic: 'Italic',
     link: 'Link',
@@ -56,6 +59,7 @@ export const COMMAND_LABELS: Record<string, string> = {
     video: 'Video',
     embed: 'Embed',
     align: 'Align',
+    source: 'HTML source',
 }
 
 /** Formatting buttons show their letter in that style (Lucide's letter icons look cramped at mini size). */
@@ -80,6 +84,7 @@ export const COMMAND_ICONS: Record<string, string> = {
     image: 'Image',
     video: 'Video',
     embed: 'CodeXml',
+    source: 'FileCode',
 }
 
 /** Paragraph alignments of the align menu; `left` clears it (`auto`). */
@@ -88,6 +93,15 @@ const ALIGNMENTS = [
     { id: 'center', title: 'Align center', icon: 'TextAlignCenter' },
     { id: 'right', title: 'Align right', icon: 'TextAlignEnd' },
 ]
+
+/** Block types of the heading menu; `paragraph` clears the active heading. */
+const HEADINGS = [
+    { id: 'paragraph', title: 'Normal text', icon: 'Heading' },
+    { id: 'h1', title: 'Heading 1', icon: 'Heading1' },
+    { id: 'h2', title: 'Heading 2', icon: 'Heading2' },
+    { id: 'h3', title: 'Heading 3', icon: 'Heading3' },
+]
+const HEADING_TOGGLES: Record<string, string> = { h1: 'toggleH1', h2: 'toggleH2', h3: 'toggleH3' }
 
 /** Width presets for a selected body image / video / embed (web); inserted media is at most 720px. */
 const MEDIA_SIZES = [
@@ -124,7 +138,8 @@ function useSelectedMedia(tipTap: any): SelectedMedia | null {
         const update = () => {
             const sel = tipTap.state?.selection
             const node = sel?.node
-            const next = node?.type?.name?.toLowerCase().includes('image')
+            // Table blocks span the body: no size presets.
+            const next = node?.type?.name?.toLowerCase().includes('image') && !tableMarkdownFromImageSrc(node.attrs?.src)
                 ? { pos: sel.from, width: Number(node.attrs?.width) || 0, height: Number(node.attrs?.height) || 0 }
                 : null
             const key = next ? `${next.pos}:${next.width}:${next.height}` : ''
@@ -301,7 +316,8 @@ export function useEnrichedToolbar({
     onInsertImage,
     onInsertVideo,
     embeds = false,
-}: { editorRef: any; containerRef: any; tipTap?: any; styleState: any; selection: any; enabled?: boolean; onInsertImage?: () => void; onInsertVideo?: () => void; embeds?: boolean }) {
+    source = null,
+}: { editorRef: any; containerRef: any; tipTap?: any; styleState: any; selection: any; enabled?: boolean; onInsertImage?: () => void; onInsertVideo?: () => void; embeds?: boolean; source?: { active: boolean; onToggle: () => void } | null }) {
     const { t } = useTranslation()
     const [linkOpen, setLinkOpen] = useState(false)
     const [embedOpen, setEmbedOpen] = useState(false)
@@ -373,7 +389,22 @@ export function useEnrichedToolbar({
         const canSink = !!(tip?.can?.()?.sinkListItem?.('listItem'))
         const canLift = !!(tip?.can?.()?.liftListItem?.('listItem'))
 
+        // Block type; toggling the active level clears it, so `paragraph` toggles that one.
+        const heading = HEADINGS.find((h) => h.id !== 'paragraph' && s[h.id]?.isActive)?.id ?? 'paragraph'
         const defs: ToolbarItem[] = [
+            {
+                id: 'heading',
+                label: t('Heading'),
+                icon: HEADINGS.find((h) => h.id === heading)?.icon,
+                active: heading !== 'paragraph',
+                disabled: !!(s.h1?.isBlocking && s.h2?.isBlocking && s.h3?.isBlocking),
+                menu: HEADINGS.map((h) => ({ id: h.id, title: t(h.title), selected: h.id === heading })),
+                onSelect: (id) => {
+                    const toggle = HEADING_TOGGLES[id === 'paragraph' ? heading : id]
+                    if (toggle && id !== heading) ed()?.[toggle]?.()
+                    ed()?.focus?.()
+                },
+            },
             {
                 id: 'bold',
                 active: s.bold?.isActive,
@@ -531,10 +562,18 @@ export function useEnrichedToolbar({
             )
         }
 
-        return defs
-    }, [enabled, styleState, editorRef, tipTap, isWeb, selection, selectedMedia, onInsertImage, onInsertVideo, embeds, t])
+        // HTML source view: the editor is hidden, so only the toggle back stays usable.
+        if (source) {
+            defs.push({ id: 'source', label: t('HTML source'), active: source.active, onPress: source.onToggle })
+            if (source.active) {
+                return defs.map((item) => (item.id === 'source' ? item : { ...item, active: false, disabled: true }))
+            }
+        }
 
-    const linkBar = linkOpen || embedOpen
+        return defs
+    }, [enabled, styleState, editorRef, tipTap, isWeb, selection, selectedMedia, onInsertImage, onInsertVideo, embeds, source, t])
+
+    const linkBar = !source?.active && (linkOpen || embedOpen)
         ? {
             visible: true,
             placeholder: embedOpen ? t('Paste a link to embed') : undefined,

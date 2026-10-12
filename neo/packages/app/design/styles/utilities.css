@@ -11,6 +11,8 @@
 }
 
 @source inline("line-clamp-{3..6}");
+/* Paragraph alignment the editor stores as a class (html-helpers alignStylesToClasses). */
+@source inline("text-{left,center,right}");
 /* Avatar placeholder colors — keep in sync with theme.profile_colors (settings/theme/profiles.js). */
 @source inline("bg-{orange,yellow,green,teal,sky,indigo,purple,pink,rose,red}-500");
 @source inline("bg-{green,red,gray,emerald,rose}-200 dark:bg-{green,red,gray,emerald,rose}-950");
@@ -117,12 +119,48 @@
         margin-bottom: 12px !important;
     }
 
-    .u-vanilla-html ul {
+    /* Checkbox lists (data-type) draw their own boxes. */
+    .u-vanilla-html ul:not([data-type]),
+    .u-vanilla-html-small ul:not([data-type]) {
         @apply list-disc pl-5 my-2;
     }
 
-    .u-vanilla-html li {
+    .u-vanilla-html ol,
+    .u-vanilla-html-small ol {
+        @apply list-decimal pl-5 my-2;
+    }
+
+    .u-vanilla-html li,
+    .u-vanilla-html-small li {
         @apply mb-1.5;
+    }
+
+    /* Tables (editor table blocks, see InlineTable); the wrapper scrolls wide ones. */
+    .u-vanilla-html table,
+    .u-vanilla-html-small table {
+        @apply w-full border-collapse text-sm;
+    }
+
+    .u-vanilla-html :is(th, td),
+    .u-vanilla-html-small :is(th, td) {
+        @apply border-b border-border px-3 py-2 align-top;
+    }
+
+    .u-vanilla-html :is(th, td):not([align]),
+    .u-vanilla-html-small :is(th, td):not([align]) {
+        @apply text-left;
+    }
+
+    .u-vanilla-html th,
+    .u-vanilla-html-small th {
+        @apply border-b-2 bg-muted/50 font-semibold text-popover-foreground;
+    }
+
+    /* The editor wraps list item text in <p>: no paragraph gap inside an item. */
+    .u-vanilla-html li > p,
+    .u-vanilla-html-small li > p {
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
     }
 
     .u-vanilla-html blockquote,

@@ -13,4 +13,9 @@ export type HtmlProps = {
      * destinations (an agent's answer), where leaving the page loses the thread.
      */
     linksInNewTab?: boolean
+    /**
+     * false: `data` is final HTML built in the app (a table block, markdown-table.ts).
+     * Skips preprocessHtml, whose entity decoding would turn escaped text back into tags.
+     */
+    preprocess?: boolean
 }
