@@ -1,7 +1,7 @@
 SET @sName = 'bx_analytics';
 
 -- TABLES
-DROP TABLE IF EXISTS `bx_analytics_sessions`, `bx_analytics_events`, `bx_analytics_salts`, `bx_analytics_bots`, `bx_analytics_bot_pages`, `bx_analytics_goals`, `bx_analytics_funnels`, `bx_analytics_revenue`, `bx_analytics_subscriptions`;
+DROP TABLE IF EXISTS `bx_analytics_sessions`, `bx_analytics_events`, `bx_analytics_salts`, `bx_analytics_bots`, `bx_analytics_bot_pages`, `bx_analytics_goals`, `bx_analytics_funnels`, `bx_analytics_revenue`, `bx_analytics_subscriptions`, `bx_analytics_errors`, `bx_analytics_error_hits`, `bx_analytics_vitals`;
 
 -- STUDIO WIDGET
 DELETE FROM `tp`, `tw`, `twb`, `tpw` 

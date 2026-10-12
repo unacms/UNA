@@ -1,3 +1,4 @@
 export { AnalyticsTracker } from './analytics-tracker';
-export { trackEvent } from './tracker';
-export type { AnalyticsProps, TrackEventOptions } from './analytics.types';
+export { AnalyticsErrorBoundary } from './error-boundary';
+export { trackError, trackEvent } from './tracker';
+export type { AnalyticsProps, TrackErrorOptions, TrackEventOptions } from './analytics.types';

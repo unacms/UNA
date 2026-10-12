@@ -120,7 +120,7 @@ class AnalyticsCollectorTest extends BxDolIntegrationTestCase
         $this->assertTrue($this->_oModule->serviceIsSafeService('get_tracker_config'), 'NEO reads it over the API');
 
         $a = $this->_oModule->serviceGetTrackerConfig('rn-ios');
-        $this->assertSame(['enabled', 'persistent', 'respect_dnt', 'session_timeout'], array_keys($a), 'settings only, nothing about the site or the viewer');
+        $this->assertSame(['enabled', 'persistent', 'respect_dnt', 'session_timeout', 'errors', 'errors_ignore', 'vitals', 'vitals_sample'], array_keys($a), 'settings only, nothing about the site or the viewer');
         $this->assertTrue($a['enabled']);
         $this->assertFalse($a['persistent']);
         $this->assertTrue($a['respect_dnt']);
@@ -135,10 +135,28 @@ class AnalyticsCollectorTest extends BxDolIntegrationTestCase
         $this->_setOption('bx_analytics_platforms', 'next-web');
         $this->assertFalse($this->_oModule->serviceGetTrackerConfig('rn-ios')['enabled'], 'platform switched off');
 
+        // health: what NEO reports about errors and timings
+        $this->_setOption('bx_analytics_track_errors', 'on');
+        $this->_setOption('bx_analytics_track_vitals', 'on');
+        $this->_setOption('bx_analytics_vitals_sample', '25');
+        $this->_setOption('bx_analytics_errors_ignore', "ResizeObserver loop*\r\nScript error.*");
+        $a = $this->_oModule->serviceGetTrackerConfig('next-web');
+        $this->assertTrue($a['errors']);
+        $this->assertTrue($a['vitals']);
+        $this->assertSame(25, $a['vitals_sample']);
+        $this->assertSame(['ResizeObserver loop*', 'Script error.*'], $a['errors_ignore'], 'one pattern per line');
+
+        $this->_setOption('bx_analytics_vitals_sample', '0');
+        $this->assertFalse($this->_oModule->serviceGetTrackerConfig('next-web')['vitals'], 'nothing sampled');
+        $this->_setOption('bx_analytics_track_errors', '');
+        $this->assertFalse($this->_oModule->serviceGetTrackerConfig('next-web')['errors']);
+
         $this->_setOption('bx_analytics_tracking', '');
         $a = $this->_oModule->serviceGetTrackerConfig('next-web');
         $this->assertFalse($a['enabled'], 'tracking off');
         $this->assertFalse($a['persistent'], 'no visitor id to keep when nothing is sent');
+        $this->_setOption('bx_analytics_track_errors', 'on');
+        $this->assertFalse($this->_oModule->serviceGetTrackerConfig('next-web')['errors'], 'no errors when nothing is sent');
     }
 
     public function testGuestSignsInAndIsForgotten()

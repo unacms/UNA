@@ -590,7 +590,7 @@ class BxAnalyticsReports
         // the most common values of each property among the latest occurrences; a sale's
         // properties only for those who may see revenue (events recorded earlier carry amounts)
         $aProps = [];
-        $bMoney = $aEvent['type'] == BX_ANALYTICS_HIT_UNA && in_array($aEvent['name'], ['purchase', 'renewal'], true);
+        $bMoney = $aEvent['type'] == BX_ANALYTICS_HIT_UNA && in_array($aEvent['name'], ['purchase', 'renewal', 'trial_start'], true);
         foreach($bMoney && $this->_oModule->checkAllowedRevenue() !== CHECK_ACTION_RESULT_ALLOWED ? [] : $this->_oDb->getEventProps($aFilter, $aEvent) as $sJson) {
             $a = json_decode($sJson, true);
             if(!is_array($a))
@@ -1137,6 +1137,472 @@ class BxAnalyticsReports
                 return true;
 
         return false;
+    }
+
+    /*
+     * Health: client errors and performance
+     */
+
+    /**
+     * Client errors grouped by fingerprint, with their hits, visitors and platforms in the
+     * period and a trend per group. With `error` (a group id) one group in detail. Tabs: open,
+     * new (first seen in the period), resolved, ignored, all.
+     */
+    public function getErrors(BxAnalyticsFilter $oFilter, $aParams = [])
+    {
+        $iError = (int)$this->_param($aParams, 'error', 0);
+        if($iError)
+            return $this->_getErrorDetail($oFilter, $iError);
+
+        // ignored errors keep counting but stay out of everything but their own tab
+        $aCounted = ['open', 'resolved'];
+        $aTabs = [
+            'open' => ['open'],
+            'new' => $aCounted,
+            'resolved' => ['resolved'],
+            'ignored' => ['ignored'],
+            'all' => ['open', 'resolved', 'ignored'],
+        ];
+        $sTab = $this->_getTab($aParams, 'errors', $aTabs);
+        $aFilter = $oFilter->get();
+        $iNewFrom = $sTab == 'new' ? (int)$aFilter['from'] : 0;
+
+        // crashes are fatal errors in the apps, against the apps' visits
+        $aApps = array_values(array_filter(array_keys($this->_oConfig->getPlatforms()), [$this->_oConfig, 'isAppPlatform']));
+        $aTotals = $this->_oDb->getErrorTotals($aFilter, $aCounted, $aApps);
+        $aBefore = $this->_oDb->getErrorTotals($oFilter->getPrevious(), $aCounted);
+        $aSessions = $this->_oDb->getSessionsPerPlatform($aFilter);
+        $iSessions = (int)array_sum($aSessions);
+        $iAppSessions = 0;
+        foreach($aApps as $sApp)
+            $iAppSessions += isset($aSessions[$sApp]) ? (int)$aSessions[$sApp] : 0;
+
+        $aTiles = [
+            ['title' => _t('_bx_analytics_metric_errors'), 'value' => (int)$aTotals['hits'], 'type' => 'number', 'metric' => 'errors', 'change' => $this->_change((int)$aTotals['hits'], (int)$aBefore['hits'])],
+            ['title' => _t('_bx_analytics_metric_error_sessions'), 'value' => $iSessions ? round(100 * $aTotals['sessions'] / $iSessions, 1) : null, 'type' => 'percent', 'sub' => _t('_bx_analytics_txt_n_sessions', (int)$aTotals['sessions'])],
+        ];
+        if($aFilter['platform'] === '' || $this->_oConfig->isAppPlatform($aFilter['platform']))
+            $aTiles[] = ['title' => _t('_bx_analytics_metric_crash_free'), 'value' => $iAppSessions ? round(100 - 100 * min($iAppSessions, (int)$aTotals['fatal_sessions']) / $iAppSessions, 2) : null, 'type' => 'percent_precise', 'sub' => _t('_bx_analytics_txt_crash_free_apps')];
+        $aTiles[] = ['title' => _t('_bx_analytics_metric_new_errors'), 'value' => $this->_oDb->getErrorListCount($aFilter, $aCounted, (int)$aFilter['from']), 'type' => 'number'];
+
+        $iTotal = $this->_oDb->getErrorListCount($aFilter, $aTabs[$sTab], $iNewFrom);
+        $iPages = max(1, (int)ceil($iTotal / $this->_iPerPage));
+        $iPage = min($iPages, max(1, (int)$this->_param($aParams, 'page_errors', 1)));
+
+        $aList = $this->_oDb->getErrorList($aFilter, $aTabs[$sTab], $iNewFrom, $this->_iPerPage, ($iPage - 1) * $this->_iPerPage);
+        $aIds = array_map('intval', array_column($aList, 'error_id'));
+        $aGroups = $this->_oDb->getErrorGroups($aIds);
+        $aTrends = $this->_oDb->getErrorTrends($aFilter, $aIds, $aFilter['bucket'], $aFilter['offset'], $aFilter['starts']);
+
+        $iMax = 1;
+        foreach($aList as $aRow)
+            $iMax = max($iMax, (int)$aRow['count']);
+
+        $aRows = [];
+        foreach($aList as $aRow) {
+            $iId = (int)$aRow['error_id'];
+            if(!isset($aGroups[$iId]))
+                continue;
+
+            $aGroup = $aGroups[$iId];
+            $aTrend = [];
+            foreach($aFilter['buckets'] as $iBucket)
+                $aTrend[] = isset($aTrends[$iId][$iBucket]) ? $aTrends[$iId][$iBucket] : 0;
+
+            $aRows[] = [
+                'label' => $this->getErrorLabel($aGroup),
+                'sub' => implode(' · ', array_filter([
+                    _t('_bx_analytics_error_kind_' . $aGroup['kind']),
+                    $this->_getErrorLocation($aGroup),
+                    (int)$aRow['fatal'] ? _t('_bx_analytics_txt_fatal') : '',
+                    $sTab == 'all' ? _t('_bx_analytics_error_status_' . $aGroup['status']) : '',
+                ])),
+                'open' => ['param' => 'error', 'value' => $iId],
+                'bar' => round(100 * $aRow['count'] / $iMax, 1),
+                'values' => [
+                    'trend' => $aTrend,
+                    'count' => (int)$aRow['count'],
+                    'users' => (int)$aRow['users'],
+                    'platforms' => $this->_getPlatformsText($aRow['platforms']),
+                    'first_seen' => (int)$aGroup['first_seen'],
+                    'last_seen' => (int)$aRow['last_in'],
+                ],
+            ];
+        }
+
+        return [
+            'view' => 'list',
+            'tiles' => $aTiles,
+            'name' => 'errors',
+            'caption' => _t('_bx_analytics_lmi_cpt_errors'),
+            'tab' => $sTab,
+            'tabs' => $this->_getTabs($aTabs, $sTab, '_bx_analytics_tab_errors_'),
+            'columns' => [
+                ['key' => 'label', 'type' => 'label', 'title' => _t('_bx_analytics_txt_error')],
+                ['key' => 'trend', 'type' => 'spark', 'title' => _t('_bx_analytics_txt_trend')],
+                ['key' => 'count', 'type' => 'number', 'title' => _t('_bx_analytics_metric_occurrences')],
+                ['key' => 'users', 'type' => 'number', 'title' => _t('_bx_analytics_metric_visitors')],
+                ['key' => 'platforms', 'type' => 'text', 'title' => _t('_bx_analytics_dim_platform')],
+                ['key' => 'last_seen', 'type' => 'datetime', 'title' => _t('_bx_analytics_txt_last_seen')],
+            ],
+            'rows' => $aRows,
+            'page' => $iPage,
+            'pages' => $iPages,
+            'empty' => _t($sTab == 'open' || $sTab == 'new' ? '_bx_analytics_txt_no_errors' : '_bx_analytics_txt_no_data'),
+        ];
+    }
+
+    /**
+     * One error group: what and where, its hits over time and by client, and the latest
+     * occurrences. The stack and the visits behind the occurrences can carry what a visitor
+     * typed or opened, so they need the people permission.
+     */
+    protected function _getErrorDetail(BxAnalyticsFilter $oFilter, $iId)
+    {
+        $aGroup = $this->_oDb->getErrorGroup($iId);
+        if(empty($aGroup))
+            return ['view' => 'detail', 'missing' => true, 'title' => _t('_bx_analytics_txt_error_missing')];
+
+        $aFilter = $oFilter->get();
+        $bPeople = $this->_oModule->checkAllowedPeople() === CHECK_ACTION_RESULT_ALLOWED;
+        $bManage = $this->_oModule->checkAllowedManage() === CHECK_ACTION_RESULT_ALLOWED;
+
+        $aStats = $this->_oDb->getErrorStats($aFilter, $iId);
+        $aRows = $this->_oDb->getErrorSeries($aFilter, $iId, $aFilter['bucket'], $aFilter['offset'], $aFilter['starts']);
+        $aCounts = [];
+        $aUsers = [];
+        foreach($aFilter['buckets'] as $iBucket) {
+            $aCounts[] = isset($aRows[$iBucket]) ? (int)$aRows[$iBucket]['count'] : 0;
+            $aUsers[] = isset($aRows[$iBucket]) ? (int)$aRows[$iBucket]['users'] : 0;
+        }
+
+        // where it happens: a table per client column that has values
+        $aBreakdowns = [];
+        foreach(['platform', 'route', 'browser', 'os', 'device', 'app_version', 'country'] as $sColumn) {
+            $aValues = $this->_oDb->getErrorBreakdown($aFilter, $iId, $sColumn);
+            if(empty($aValues) || (count($aValues) == 1 && $aValues[0]['value'] === ''))
+                continue;
+
+            $iTotal = 0;
+            foreach($aValues as $aValue)
+                $iTotal += (int)$aValue['count'];
+
+            $aBreakdownRows = [];
+            foreach($aValues as $aValue)
+                $aBreakdownRows[] = [
+                    'label' => $this->getLabel($sColumn, (string)$aValue['value']),
+                    'bar' => $iTotal ? round(100 * $aValue['count'] / $iTotal, 1) : 0,
+                    'values' => [
+                        'count' => (int)$aValue['count'],
+                        'share' => $iTotal ? round(100 * $aValue['count'] / $iTotal, 1) : 0,
+                    ],
+                ];
+
+            $sTitle = _t($sColumn == 'route' ? '_bx_analytics_txt_route' : '_bx_analytics_dim_' . $sColumn);
+            $aBreakdowns[] = [
+                'name' => 'error_' . $sColumn,
+                'caption' => $sTitle,
+                'columns' => [
+                    ['key' => 'label', 'type' => 'label', 'title' => $sTitle],
+                    ['key' => 'count', 'type' => 'number', 'title' => _t('_bx_analytics_metric_occurrences')],
+                    ['key' => 'share', 'type' => 'percent', 'title' => _t('_bx_analytics_txt_share')],
+                ],
+                'rows' => $aBreakdownRows,
+            ];
+        }
+
+        $aOccurrences = [];
+        foreach($this->_oDb->getErrorOccurrences($aFilter, $iId) as $aHit) {
+            $aRow = [
+                'label' => $aHit['path'] !== '' ? $aHit['path'] : '/',
+                'sub' => implode(' · ', array_filter([
+                    $this->getLabel('platform', $aHit['platform']),
+                    $aHit['app_version'],
+                    $aHit['device'] !== '' ? $this->getLabel('device', $aHit['device']) : '',
+                    $aHit['browser'],
+                    $aHit['os'],
+                    $aHit['country'] !== '' ? $this->getLabel('country', $aHit['country']) : '',
+                ])),
+                'values' => [
+                    'ts' => (int)$aHit['ts'],
+                    'repeats' => (int)$aHit['repeats'],
+                ],
+            ];
+            // the visit behind it, for those who may see visits (Studio is for administrators)
+            if($bPeople && (int)$aHit['session_id'] && isAdmin())
+                $aRow['link'] = BX_DOL_URL_STUDIO . 'module.php?name=' . $this->_oModule->getName() . '&page=sessions&session=' . (int)$aHit['session_id'];
+            $aOccurrences[] = $aRow;
+        }
+
+        $aActions = [];
+        if($bManage)
+            foreach(['resolved', 'ignored', 'open'] as $sStatus)
+                if($sStatus != $aGroup['status'])
+                    $aActions[] = ['op' => $sStatus, 'title' => _t('_bx_analytics_txt_error_mark_' . $sStatus)];
+
+        $sLocation = $this->_getErrorLocation($aGroup, true);
+
+        return [
+            'view' => 'detail',
+            'id' => (int)$aGroup['id'],
+            'title' => $this->getErrorLabel($aGroup),
+            'status' => $aGroup['status'],
+            'facts' => array_values(array_filter([
+                ['title' => _t('_bx_analytics_txt_error_status'), 'value' => _t('_bx_analytics_error_status_' . $aGroup['status']), 'type' => 'text'],
+                ['title' => _t('_bx_analytics_txt_error_kind'), 'value' => _t('_bx_analytics_error_kind_' . $aGroup['kind']) . ((int)$aGroup['fatal'] ? ' · ' . _t('_bx_analytics_txt_fatal') : ''), 'type' => 'text'],
+                $sLocation !== '' ? ['title' => _t('_bx_analytics_txt_error_source'), 'value' => $sLocation, 'type' => 'text'] : null,
+                (int)$aGroup['status_code'] ? ['title' => _t('_bx_analytics_txt_error_http_status'), 'value' => (string)(int)$aGroup['status_code'], 'type' => 'text'] : null,
+                ['title' => _t('_bx_analytics_txt_first_seen'), 'value' => (int)$aGroup['first_seen'], 'type' => 'datetime'],
+                ['title' => _t('_bx_analytics_txt_last_seen'), 'value' => (int)$aGroup['last_seen'], 'type' => 'datetime'],
+                ['title' => _t('_bx_analytics_txt_error_all_time'), 'value' => (int)$aGroup['occurrences'], 'type' => 'number'],
+            ])),
+            'stack' => $bPeople ? (string)$aGroup['stack'] : '',
+            'stack_hidden' => !$bPeople && (string)$aGroup['stack'] !== '',
+            'tiles' => [
+                ['title' => _t('_bx_analytics_metric_occurrences'), 'value' => (int)$aStats['count'], 'type' => 'number'],
+                ['title' => _t('_bx_analytics_metric_visitors'), 'value' => (int)$aStats['users'], 'type' => 'number'],
+                ['title' => _t('_bx_analytics_metric_sessions'), 'value' => (int)$aStats['sessions'], 'type' => 'number'],
+            ],
+            'chart' => [
+                'kind' => 'lines',
+                'labels' => $aFilter['buckets'],
+                'bucket' => $aFilter['bucket'],
+                'tz' => $aFilter['tz'],
+                'datasets' => [
+                    ['key' => 'count', 'label' => _t('_bx_analytics_metric_occurrences'), 'values' => $aCounts],
+                    ['key' => 'users', 'label' => _t('_bx_analytics_metric_visitors'), 'values' => $aUsers],
+                ],
+            ],
+            'breakdowns' => $aBreakdowns,
+            'occurrences' => [
+                'name' => 'error_hits',
+                'caption' => _t('_bx_analytics_txt_error_latest'),
+                'columns' => [
+                    ['key' => 'label', 'type' => 'label', 'title' => _t('_bx_analytics_tab_pages')],
+                    ['key' => 'repeats', 'type' => 'number', 'title' => _t('_bx_analytics_metric_occurrences')],
+                    ['key' => 'ts', 'type' => 'datetime', 'title' => _t('_bx_analytics_txt_time')],
+                ],
+                'rows' => $aOccurrences,
+            ],
+            'manage' => $bManage,
+            'actions' => $aActions,
+        ];
+    }
+
+    /**
+     * What an error group is called in lists: its message, or a name for the catch-all group.
+     */
+    public function getErrorLabel($aGroup)
+    {
+        if($aGroup['kind'] == BxAnalyticsErrors::KIND_OVERFLOW)
+            return _t('_bx_analytics_txt_error_overflow');
+
+        return $aGroup['message'] !== '' ? $aGroup['message'] : _t('_bx_analytics_txt_unknown');
+    }
+
+    /**
+     * Script and position of an error, file:line or file:line:column.
+     */
+    protected function _getErrorLocation($aGroup, $bColumn = false)
+    {
+        if($aGroup['source'] === '')
+            return '';
+
+        $sLocation = $aGroup['source'];
+        if((int)$aGroup['line'])
+            $sLocation .= ':' . (int)$aGroup['line'] . ($bColumn && (int)$aGroup['col'] ? ':' . (int)$aGroup['col'] : '');
+
+        return $sLocation;
+    }
+
+    /**
+     * Web vitals and app timings: the 75th percentile of each metric with the share of good,
+     * needing improvement and poor values; the chosen metric over time, by platform and by
+     * page. Params: `vital` (metric), `vital_device` (all, mobile, desktop), tab
+     * (`tab_performance`): route or path.
+     */
+    public function getPerformance(BxAnalyticsFilter $oFilter, $aParams = [])
+    {
+        $aFilter = $oFilter->get();
+        $aThresholds = $this->_oConfig->CNF['VITALS'];
+        $iMinSamples = 20;
+
+        // the metrics the platform has: web vitals in browsers, screen loads and starts in apps
+        $sPlatform = $aFilter['platform'];
+        $aMetrics = BxAnalyticsVitals::METRICS;
+        if($sPlatform !== '' && $this->_oConfig->isBrowserPlatform($sPlatform))
+            $aMetrics = BxAnalyticsVitals::WEB_METRICS;
+        elseif($sPlatform !== '' && $this->_oConfig->isAppPlatform($sPlatform))
+            $aMetrics = BxAnalyticsVitals::APP_METRICS;
+
+        $sMetric = (string)$this->_param($aParams, 'vital', '');
+        if(!in_array($sMetric, $aMetrics, true))
+            $sMetric = $aMetrics[0];
+
+        $sDevice = (string)$this->_param($aParams, 'vital_device', 'all');
+        if(!in_array($sDevice, ['all', 'mobile', 'desktop'], true))
+            $sDevice = 'all';
+
+        $aGroups = ['route' => 'route', 'path' => 'path'];
+        $sGroup = $this->_getTab($aParams, 'performance', $aGroups);
+
+        // the cards: exact counts on each side of the thresholds, and the histograms of the
+        // metrics with enough samples, each in one pass
+        $aDistribution = $this->_oDb->getVitalsDistribution($aFilter, $sDevice, $aThresholds);
+        $aCardMetrics = [];
+        foreach($aMetrics as $sCardMetric)
+            if($aDistribution[$sCardMetric]['samples'] >= $iMinSamples)
+                $aCardMetrics[] = $sCardMetric;
+        list($aCardHistograms) = $this->_getHistograms($this->_oDb->getVitalsHistograms($aFilter, $aCardMetrics, $sDevice));
+
+        $aCards = [];
+        foreach($aMetrics as $sCardMetric) {
+            $aCount = $aDistribution[$sCardMetric];
+            $iSamples = $aCount['samples'];
+
+            $mixedP75 = null;
+            if(isset($aCardHistograms[$sCardMetric]))
+                $mixedP75 = BxAnalyticsVitals::getPercentile($aCardHistograms[$sCardMetric], 0.75, $iMinSamples, [$aCount['good'], $iSamples - $aCount['good'] - $aCount['poor'], $aCount['poor']], $aThresholds[$sCardMetric]);
+
+            $aCards[] = [
+                'metric' => $sCardMetric,
+                'title' => _t('_bx_analytics_vital_' . $sCardMetric),
+                'unit' => BxAnalyticsVitals::getUnit($sCardMetric),
+                'value' => $mixedP75 !== null ? BxAnalyticsVitals::toDisplay($sCardMetric, round($mixedP75)) : null,
+                'rating' => $mixedP75 !== null ? BxAnalyticsVitals::getRating(round($mixedP75), $aThresholds[$sCardMetric]) : '',
+                'samples' => $iSamples,
+                'good' => $iSamples ? round(100 * $aCount['good'] / $iSamples, 1) : 0,
+                'needs_improvement' => $iSamples ? round(100 * ($iSamples - $aCount['good'] - $aCount['poor']) / $iSamples, 1) : 0,
+                'poor' => $iSamples ? round(100 * $aCount['poor'] / $iSamples, 1) : 0,
+                'good_max' => BxAnalyticsVitals::toDisplay($sCardMetric, $aThresholds[$sCardMetric][0]),
+                'poor_min' => BxAnalyticsVitals::toDisplay($sCardMetric, $aThresholds[$sCardMetric][1]),
+                'active' => $sCardMetric == $sMetric,
+            ];
+        }
+
+        $sUnit = BxAnalyticsVitals::getUnit($sMetric);
+        $fP75 = function($aHistogram, $aSides, $iMin) use ($sMetric, $aThresholds) {
+            $mixedValue = BxAnalyticsVitals::getPercentile($aHistogram, 0.75, $iMin, $aSides, $aThresholds[$sMetric]);
+            return $mixedValue !== null ? BxAnalyticsVitals::toDisplay($sMetric, round($mixedValue)) : null;
+        };
+        $fRating = function($mixedValue) use ($sMetric, $aThresholds) {
+            return $mixedValue !== null ? BxAnalyticsVitals::getRating($sMetric == 'cls' ? round($mixedValue * 1000) : $mixedValue, $aThresholds[$sMetric]) : '';
+        };
+
+        // the 75th percentile per time bucket, with the thresholds as lines; a bucket with few
+        // samples is left as a gap
+        list($aByBucket, $aBucketSides) = $this->_getHistograms($this->_oDb->getVitalsHistogram($aFilter, $sMetric, $sDevice, 'bucket', [], [$aFilter['bucket'], $aFilter['offset'], $aFilter['starts']]));
+        $aValues = [];
+        foreach($aFilter['buckets'] as $iBucket)
+            $aValues[] = isset($aByBucket[$iBucket]) ? $fP75($aByBucket[$iBucket], $aBucketSides[$iBucket], 5) : null;
+        $iCount = count($aFilter['buckets']);
+
+        $aPlatformRows = [];
+        list($aByPlatform, $aPlatformSides) = $this->_getHistograms($this->_oDb->getVitalsHistogram($aFilter, $sMetric, $sDevice, 'platform'));
+        foreach($aByPlatform as $sValue => $aHistogram) {
+            $mixedValue = $fP75($aHistogram, $aPlatformSides[$sValue], $iMinSamples);
+            $aPlatformRows[] = [
+                'label' => $this->getLabel('platform', (string)$sValue),
+                'values' => ['p75' => $mixedValue, 'rating' => $fRating($mixedValue), 'samples' => (int)array_sum($aHistogram)],
+            ];
+        }
+        usort($aPlatformRows, function($a, $b) { return $b['values']['samples'] - $a['values']['samples']; });
+
+        $iTotal = $this->_oDb->getVitalsPagesCount($aFilter, $sMetric, $sDevice, $sGroup);
+        $iPages = max(1, (int)ceil($iTotal / $this->_iPerPage));
+        $iPage = min($iPages, max(1, (int)$this->_param($aParams, 'page_performance', 1)));
+        $aPages = $this->_oDb->getVitalsPages($aFilter, $sMetric, $sDevice, $sGroup, $this->_iPerPage, ($iPage - 1) * $this->_iPerPage);
+        list($aPageHistograms, $aPageSides) = $this->_getHistograms($this->_oDb->getVitalsHistogram($aFilter, $sMetric, $sDevice, $sGroup, array_map('strval', array_keys($aPages))));
+
+        $iMax = 1;
+        foreach($aPages as $iSamples)
+            $iMax = max($iMax, (int)$iSamples);
+
+        $aPageRows = [];
+        foreach($aPages as $sValue => $iSamples) {
+            $mixedValue = isset($aPageHistograms[$sValue]) ? $fP75($aPageHistograms[$sValue], $aPageSides[$sValue], $iMinSamples) : null;
+            $aPageRows[] = [
+                'label' => (string)$sValue,
+                'bar' => round(100 * $iSamples / $iMax, 1),
+                'values' => ['p75' => $mixedValue, 'rating' => $fRating($mixedValue), 'samples' => (int)$iSamples],
+            ];
+        }
+
+        $aColumns = function($sTitle) use ($sUnit) {
+            return [
+                ['key' => 'label', 'type' => 'label', 'title' => $sTitle],
+                ['key' => 'p75', 'type' => $sUnit, 'title' => _t('_bx_analytics_txt_p75')],
+                ['key' => 'rating', 'type' => 'rating', 'title' => _t('_bx_analytics_txt_rating')],
+                ['key' => 'samples', 'type' => 'number', 'title' => _t('_bx_analytics_txt_samples')],
+            ];
+        };
+
+        $aDevices = [];
+        foreach(['all', 'mobile', 'desktop'] as $sValue)
+            $aDevices[] = ['value' => $sValue, 'title' => _t('_bx_analytics_txt_device_' . $sValue), 'selected' => $sValue == $sDevice];
+
+        return [
+            'metric' => $sMetric,
+            'metric_title' => _t('_bx_analytics_vital_' . $sMetric),
+            'unit' => $sUnit,
+            'device' => $sDevice,
+            'devices' => $aDevices,
+            'min_samples' => $iMinSamples,
+            'cards' => $aCards,
+            'chart' => [
+                'kind' => 'lines',
+                'metric' => $sUnit,
+                'labels' => $aFilter['buckets'],
+                'bucket' => $aFilter['bucket'],
+                'tz' => $aFilter['tz'],
+                'datasets' => [
+                    ['key' => 'p75', 'label' => _t('_bx_analytics_txt_p75'), 'values' => $aValues],
+                    ['key' => 'good', 'label' => _t('_bx_analytics_txt_threshold_good'), 'values' => array_fill(0, $iCount, BxAnalyticsVitals::toDisplay($sMetric, $aThresholds[$sMetric][0])), 'dashed' => true, 'tone' => 'good'],
+                    ['key' => 'poor', 'label' => _t('_bx_analytics_txt_threshold_poor'), 'values' => array_fill(0, $iCount, BxAnalyticsVitals::toDisplay($sMetric, $aThresholds[$sMetric][1])), 'dashed' => true, 'tone' => 'bad'],
+                ],
+            ],
+            'platforms' => [
+                'name' => 'vital_platforms',
+                'caption' => _t('_bx_analytics_tab_platforms'),
+                'columns' => $aColumns(_t('_bx_analytics_dim_platform')),
+                'rows' => $aPlatformRows,
+                'empty' => _t('_bx_analytics_txt_no_vitals'),
+            ],
+            // named after the block, so its pager and the tabs (which reset the page) share page_performance
+            'pages' => [
+                'name' => 'performance',
+                'caption' => _t('_bx_analytics_txt_vitals_pages'),
+                'tab' => $sGroup,
+                'tabs' => $this->_getTabs($aGroups, $sGroup, '_bx_analytics_tab_vitals_'),
+                'columns' => $aColumns(_t($sGroup == 'route' ? '_bx_analytics_txt_route' : '_bx_analytics_tab_pages')),
+                'rows' => $aPageRows,
+                'page' => $iPage,
+                'pages' => $iPages,
+                'empty' => _t('_bx_analytics_txt_no_vitals'),
+            ],
+        ];
+    }
+
+    /**
+     * Histogram rows (grp, hb, n, and side when the query has it) as [[group => [bucket =>
+     * count]], [group => [counts up to the good threshold, between, above the poor one]]].
+     */
+    protected function _getHistograms($aRows)
+    {
+        $aHistograms = [];
+        $aSides = [];
+        foreach($aRows as $aRow) {
+            $sGroup = (string)$aRow['grp'];
+            $iBucket = (int)$aRow['hb'];
+            $aHistograms[$sGroup][$iBucket] = (isset($aHistograms[$sGroup][$iBucket]) ? $aHistograms[$sGroup][$iBucket] : 0) + (int)$aRow['n'];
+
+            if(!isset($aSides[$sGroup]))
+                $aSides[$sGroup] = isset($aRow['side']) ? [0, 0, 0] : [];
+            if(isset($aRow['side']))
+                $aSides[$sGroup][min(2, max(0, (int)$aRow['side']))] += (int)$aRow['n'];
+        }
+
+        return [$aHistograms, $aSides];
     }
 
     /*

@@ -53,6 +53,30 @@ function neoPlatformHeader(host: string): string | null {
 
 type AbortErrorLike = Error & { aborted?: boolean };
 
+/** Hears UNA requests that failed on the server (analytics: `http` errors). */
+export type ServerErrorListener = (status: number, path: string) => void;
+
+let serverErrorListener: ServerErrorListener | null = null;
+
+export function setServerErrorListener(listener: ServerErrorListener | null): void {
+    serverErrorListener = listener;
+}
+
+/**
+ * UNA answers a service's own error (`{error, code}`: access denied, not found, a form
+ * error) with HTTP 500 too, so only a failure counts: a body that isn't UNA's JSON (a PHP
+ * fatal, a gateway error) or an error the service itself marks 5xx.
+ */
+function noteServerError(status: number, mixed: FetcherRequest, body: any): void {
+    if (!serverErrorListener) return;
+    if (body && typeof body === 'object' && 'error' in body && !(Number(body.code) >= 500)) return;
+    try {
+        serverErrorListener(status, Array.isArray(mixed) ? mixed[0] : mixed);
+    } catch {
+        // a listener never breaks a request
+    }
+}
+
 const USE_PROXY_WEB = appSetting('config', 'use_proxy_web'); 
 const USE_PROXY_NATIVE = appSetting('config', 'use_proxy_native');
 const FETCH_TIMEOUT_MS: number = appSetting('config', 'fetch_timeout_ms') || 15000;
@@ -79,6 +103,7 @@ export async function fetcher (mixed: FetcherRequest, useProxy = false, fetchOpt
         } catch (error: any) {
             a = {};
         }
+        if (r.status >= 500) noteServerError(r.status, mixed, a);
         return a;
     });
 

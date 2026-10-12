@@ -271,8 +271,30 @@ class BxAnalyticsDb extends BxBaseModGeneralDb
 
         $iSessions = (int)$this->query("UPDATE `" . $this->_oConfig->CNF['TABLE_SESSIONS'] . "` SET `profile_id` = 0, `visitor` = :visitor WHERE `profile_id` = :profile", $aBindings);
         $iEvents = (int)$this->query("UPDATE `" . $this->_oConfig->CNF['TABLE_EVENTS'] . "` SET `profile_id` = 0, `visitor` = :visitor WHERE `profile_id` = :profile", $aBindings);
+        $iErrors = (int)$this->query("UPDATE `" . $this->_oConfig->CNF['TABLE_ERROR_HITS'] . "` SET `profile_id` = 0, `visitor` = :visitor WHERE `profile_id` = :profile", $aBindings);
 
-        return $iSessions + $iEvents;
+        return $iSessions + $iEvents + $iErrors;
+    }
+
+    /**
+     * Delete up to `$iLimit` error hits or vitals older than a time; returns how many went.
+     */
+    public function deleteErrorHitsBefore($iTime, $iLimit)
+    {
+        return (int)$this->query("DELETE FROM `" . $this->_oConfig->CNF['TABLE_ERROR_HITS'] . "` WHERE `ts` < :ts ORDER BY `ts` LIMIT " . (int)$iLimit, ['ts' => (int)$iTime]);
+    }
+
+    public function deleteVitalsBefore($iTime, $iLimit)
+    {
+        return (int)$this->query("DELETE FROM `" . $this->_oConfig->CNF['TABLE_VITALS'] . "` WHERE `ts` < :ts ORDER BY `ts` LIMIT " . (int)$iLimit, ['ts' => (int)$iTime]);
+    }
+
+    /**
+     * Error groups last seen before a time: their hits are gone too.
+     */
+    public function deleteErrorGroupsBefore($iTime, $iLimit)
+    {
+        return (int)$this->query("DELETE FROM `" . $this->_oConfig->CNF['TABLE_ERRORS'] . "` WHERE `last_seen` < :ts ORDER BY `last_seen` LIMIT " . (int)$iLimit, ['ts' => (int)$iTime]);
     }
 
     /*
@@ -1018,6 +1040,537 @@ class BxAnalyticsDb extends BxBaseModGeneralDb
     }
 
     /*
+     * Health: errors and vitals
+     */
+
+    /**
+     * Columns of an error hit that filters read directly; other dimensions go through its visit.
+     */
+    protected $_aErrorHitDimensions = ['app_version', 'browser', 'os', 'device', 'country', 'path'];
+
+    /**
+     * Columns an error breakdown may group by.
+     */
+    protected $_aErrorBreakdowns = ['platform', 'app_version', 'browser', 'os', 'device', 'country', 'route'];
+
+    /**
+     * Raise a visit's error count by `$iCount` unless that passes `$iMax`.
+     *
+     * @return bool whether the errors fit
+     */
+    public function addSessionErrors($iSessionId, $iCount, $iMax)
+    {
+        return (int)$this->query("UPDATE `" . $this->_oConfig->CNF['TABLE_SESSIONS'] . "` SET `errors` = `errors` + :n WHERE `id` = :id AND `errors` + :n2 <= :max", [
+            'id' => (int)$iSessionId,
+            'n' => (int)$iCount,
+            'n2' => (int)$iCount,
+            'max' => (int)$iMax,
+        ]) > 0;
+    }
+
+    public function getErrorGroupByFingerprint($sFingerprint)
+    {
+        return $this->getRow("SELECT `id`, `status`, `status_changed` FROM `" . $this->_oConfig->CNF['TABLE_ERRORS'] . "` WHERE `fingerprint` = :fingerprint", ['fingerprint' => $sFingerprint]);
+    }
+
+    /**
+     * Error groups created in a time span (server time, whatever the age of their first error).
+     */
+    public function getErrorGroupsCreated($iFrom, $iTo)
+    {
+        return (int)$this->getOne("SELECT COUNT(*) FROM `" . $this->_oConfig->CNF['TABLE_ERRORS'] . "` WHERE `created` >= :from AND `created` <= :to", ['from' => (int)$iFrom, 'to' => (int)$iTo]);
+    }
+
+    /**
+     * Add an occurrence to an error's group, creating the group with its sample stack when it
+     * is new. The stack is replaced by a newer one once a day, so it follows new releases.
+     * `stack` comes before `stack_ts` in the update: MySQL assigns left to right.
+     *
+     * @param string $sFingerprint 16 bytes, see BxAnalyticsErrors::getFingerprint
+     * @param array $aError kind, message, source, line, col, status, stack, fatal, repeats
+     * @param int $iTime when it happened
+     * @param int $iNow server time
+     * @param int $iId the group's id when it is known to exist: an update, which doesn't use
+     *      up an auto-increment id as INSERT ... ON DUPLICATE KEY UPDATE does
+     * @return int the group's id, 0 on failure
+     */
+    public function saveErrorGroup($sFingerprint, $aError, $iTime, $iNow, $iId = 0)
+    {
+        if($iId) {
+            $bResult = $this->query("UPDATE `" . $this->_oConfig->CNF['TABLE_ERRORS'] . "` SET
+                `first_seen` = LEAST(`first_seen`, :first_seen),
+                `last_seen` = GREATEST(`last_seen`, :last_seen),
+                `occurrences` = `occurrences` + :occurrences,
+                `fatal` = GREATEST(`fatal`, :fatal),
+                `stack` = IF(:stack != '' AND `stack_ts` < :stack_ts - 86400, :stack_new, `stack`),
+                `stack_ts` = IF(:stack_check != '' AND `stack_ts` < :stack_ts_check - 86400, :stack_ts_new, `stack_ts`)
+                WHERE `id` = :id", [
+                'id' => (int)$iId,
+                'first_seen' => (int)$iTime,
+                'last_seen' => (int)$iTime,
+                'occurrences' => isset($aError['repeats']) ? (int)$aError['repeats'] : 1,
+                'fatal' => (int)$aError['fatal'],
+                'stack' => $aError['stack'],
+                'stack_new' => $aError['stack'],
+                'stack_check' => $aError['stack'],
+                'stack_ts' => (int)$iNow,
+                'stack_ts_check' => (int)$iNow,
+                'stack_ts_new' => (int)$iNow,
+            ]);
+
+            return $bResult !== false ? (int)$iId : 0;
+        }
+
+        $bResult = $this->query("INSERT INTO `" . $this->_oConfig->CNF['TABLE_ERRORS'] . "` (`fingerprint`, `kind`, `message`, `source`, `line`, `col`, `status_code`, `stack`, `stack_ts`, `first_seen`, `last_seen`, `occurrences`, `fatal`, `created`) VALUES (:fingerprint, :kind, :message, :source, :line, :col, :status_code, :stack, :stack_ts, :first_seen, :last_seen, :occurrences, :fatal, :created)
+            ON DUPLICATE KEY UPDATE `id` = LAST_INSERT_ID(`id`),
+                `first_seen` = LEAST(`first_seen`, VALUES(`first_seen`)),
+                `last_seen` = GREATEST(`last_seen`, VALUES(`last_seen`)),
+                `occurrences` = `occurrences` + VALUES(`occurrences`),
+                `fatal` = GREATEST(`fatal`, VALUES(`fatal`)),
+                `stack` = IF(VALUES(`stack`) != '' AND `stack_ts` < VALUES(`stack_ts`) - 86400, VALUES(`stack`), `stack`),
+                `stack_ts` = IF(VALUES(`stack`) != '' AND `stack_ts` < VALUES(`stack_ts`) - 86400, VALUES(`stack_ts`), `stack_ts`)", [
+            'fingerprint' => $sFingerprint,
+            'kind' => $aError['kind'],
+            'message' => $aError['message'],
+            'source' => $aError['source'],
+            'line' => (int)$aError['line'],
+            'col' => (int)$aError['col'],
+            'status_code' => (int)$aError['status'],
+            'stack' => $aError['stack'],
+            'stack_ts' => $aError['stack'] !== '' ? (int)$iNow : 0,
+            'first_seen' => (int)$iTime,
+            'last_seen' => (int)$iTime,
+            'occurrences' => isset($aError['repeats']) ? (int)$aError['repeats'] : 1,
+            'fatal' => (int)$aError['fatal'],
+            'created' => (int)$iNow,
+        ]);
+
+        return $bResult !== false ? (int)$this->lastId() : 0;
+    }
+
+    /**
+     * Set an error group's status (open, resolved, ignored), optionally only from another one.
+     */
+    public function setErrorStatus($iId, $sStatus, $iTime, $sFrom = '')
+    {
+        $aBindings = ['id' => (int)$iId, 'status' => $sStatus, 'time' => (int)$iTime];
+        $sWhere = '';
+        if($sFrom !== '') {
+            $sWhere = ' AND `status` = :from';
+            $aBindings['from'] = $sFrom;
+        }
+
+        return $this->query("UPDATE `" . $this->_oConfig->CNF['TABLE_ERRORS'] . "` SET `status` = :status, `status_changed` = :time WHERE `id` = :id" . $sWhere, $aBindings) !== false;
+    }
+
+    public function getErrorGroup($iId)
+    {
+        return $this->getRow("SELECT `id`, `kind`, `message`, `source`, `line`, `col`, `status_code`, `stack`, `first_seen`, `last_seen`, `occurrences`, `fatal`, `status`, `status_changed` FROM `" . $this->_oConfig->CNF['TABLE_ERRORS'] . "` WHERE `id` = :id", ['id' => (int)$iId]);
+    }
+
+    public function getErrorGroups($aIds)
+    {
+        if(empty($aIds))
+            return [];
+
+        $aBindings = [];
+        $aIn = [];
+        foreach(array_values($aIds) as $i => $iId) {
+            $aIn[] = ':id' . $i;
+            $aBindings['id' . $i] = (int)$iId;
+        }
+
+        return $this->getAllWithKey("SELECT `id`, `kind`, `message`, `source`, `line`, `col`, `status_code`, `first_seen`, `last_seen`, `occurrences`, `fatal`, `status` FROM `" . $this->_oConfig->CNF['TABLE_ERRORS'] . "` WHERE `id` IN (" . implode(', ', $aIn) . ")", 'id', $aBindings);
+    }
+
+    /**
+     * Insert error hits in one query.
+     *
+     * @return int rows inserted
+     */
+    public function insertErrorHits($aRows)
+    {
+        return $this->_insertRows($this->_oConfig->CNF['TABLE_ERROR_HITS'], $aRows);
+    }
+
+    /**
+     * One page view's vitals; metrics not measured are left NULL.
+     */
+    public function insertVitals($aRow)
+    {
+        return $this->_insertRows($this->_oConfig->CNF['TABLE_VITALS'], [$aRow]);
+    }
+
+    /**
+     * Error hits, visits with errors, visitors, and visits that ended in a fatal error on some
+     * platforms, for error groups in some statuses.
+     *
+     * @param array $aFilter report filter
+     * @param array $aStatuses group statuses
+     * @param array $aFatalPlatforms platforms whose fatal errors are crashes (the apps)
+     */
+    public function getErrorTotals($aFilter, $aStatuses, $aFatalPlatforms = [])
+    {
+        $aBindings = [];
+        $sWhere = $this->_getErrorHitsWhere($aFilter, $aStatuses, $aBindings);
+
+        // a crash outside any visit known (an app that stopped before its first page, or whose
+        // visit could not be found when it reported the crash on its next launch) is a visit too
+        $sFatal = '0';
+        if(!empty($aFatalPlatforms))
+            $sFatal = "COUNT(DISTINCT CASE WHEN `h`.`fatal` = 1 AND `h`.`session_id` > 0 AND `h`.`platform` IN (" . $this->_getInSql($aFatalPlatforms, 'fp', $aBindings) . ") THEN `h`.`session_id` END) + COUNT(CASE WHEN `h`.`fatal` = 1 AND `h`.`session_id` = 0 AND `h`.`platform` IN (" . $this->_getInSql($aFatalPlatforms, 'fu', $aBindings) . ") THEN `h`.`id` END)";
+
+        return $this->getRow("SELECT IFNULL(SUM(`h`.`repeats`), 0) AS `hits`, COUNT(DISTINCT NULLIF(`h`.`session_id`, 0)) AS `sessions`, COUNT(DISTINCT `h`.`visitor`) AS `users`, " . $sFatal . " AS `fatal_sessions` FROM `" . $this->_oConfig->CNF['TABLE_ERROR_HITS'] . "` AS `h` INNER JOIN `" . $this->_oConfig->CNF['TABLE_ERRORS'] . "` AS `g` ON `g`.`id` = `h`.`error_id` WHERE " . $sWhere, $aBindings);
+    }
+
+    /**
+     * Visits that started in the period per platform.
+     */
+    public function getSessionsPerPlatform($aFilter)
+    {
+        $aBindings = [];
+        $sWhere = $this->_getSessionsWhere($aFilter, $aBindings);
+
+        return $this->getPairs("SELECT `s`.`platform`, COUNT(*) AS `sessions` FROM `" . $this->_oConfig->CNF['TABLE_SESSIONS'] . "` AS `s` WHERE " . $sWhere . " GROUP BY `s`.`platform`", 'platform', 'sessions', $aBindings);
+    }
+
+    /**
+     * Error groups with their hits in the period, most frequent first.
+     *
+     * @param int $iFirstSeenFrom only groups first seen since this time (new errors), 0 for any
+     */
+    public function getErrorList($aFilter, $aStatuses, $iFirstSeenFrom, $iLimit, $iStart = 0)
+    {
+        $aBindings = [];
+        $sWhere = $this->_getErrorHitsWhere($aFilter, $aStatuses, $aBindings, $iFirstSeenFrom);
+
+        return $this->getAll("SELECT `h`.`error_id`, SUM(`h`.`repeats`) AS `count`, COUNT(DISTINCT NULLIF(`h`.`session_id`, 0)) AS `sessions`, COUNT(DISTINCT `h`.`visitor`) AS `users`, GROUP_CONCAT(DISTINCT `h`.`platform` ORDER BY `h`.`platform`) AS `platforms`, MAX(`h`.`fatal`) AS `fatal`, MAX(`h`.`ts`) AS `last_in` FROM `" . $this->_oConfig->CNF['TABLE_ERROR_HITS'] . "` AS `h` INNER JOIN `" . $this->_oConfig->CNF['TABLE_ERRORS'] . "` AS `g` ON `g`.`id` = `h`.`error_id` WHERE " . $sWhere . " GROUP BY `h`.`error_id` ORDER BY `count` DESC, `h`.`error_id` DESC LIMIT " . max(0, (int)$iStart) . ", " . max(1, min(1000, (int)$iLimit)), $aBindings);
+    }
+
+    public function getErrorListCount($aFilter, $aStatuses, $iFirstSeenFrom = 0)
+    {
+        $aBindings = [];
+        $sWhere = $this->_getErrorHitsWhere($aFilter, $aStatuses, $aBindings, $iFirstSeenFrom);
+
+        return (int)$this->getOne("SELECT COUNT(DISTINCT `h`.`error_id`) FROM `" . $this->_oConfig->CNF['TABLE_ERROR_HITS'] . "` AS `h` INNER JOIN `" . $this->_oConfig->CNF['TABLE_ERRORS'] . "` AS `g` ON `g`.`id` = `h`.`error_id` WHERE " . $sWhere, $aBindings);
+    }
+
+    /**
+     * Hits per time bucket of some error groups, or of one with visitors too.
+     *
+     * @return array [error id => [bucket => count]]
+     */
+    public function getErrorTrends($aFilter, $aIds, $sBucket, $iOffset, $aStarts = [])
+    {
+        if(empty($aIds))
+            return [];
+
+        $aBindings = [];
+        $sWhere = $this->_getErrorHitsWhere($aFilter, [], $aBindings) . " AND `h`.`error_id` IN (" . $this->_getInSql($aIds, 'e', $aBindings) . ")";
+        $sBucketSql = $this->_getBucketSql('`h`.`ts`', $sBucket, $iOffset, $aStarts, $aBindings);
+
+        $aResult = [];
+        foreach($this->getAll("SELECT `h`.`error_id`, " . $sBucketSql . " AS `bucket`, SUM(`h`.`repeats`) AS `count` FROM `" . $this->_oConfig->CNF['TABLE_ERROR_HITS'] . "` AS `h` WHERE " . $sWhere . " GROUP BY `h`.`error_id`, `bucket`", $aBindings) as $aRow)
+            $aResult[(int)$aRow['error_id']][(int)$aRow['bucket']] = (int)$aRow['count'];
+
+        return $aResult;
+    }
+
+    public function getErrorSeries($aFilter, $iId, $sBucket, $iOffset, $aStarts = [])
+    {
+        $aBindings = ['error' => (int)$iId];
+        $sWhere = $this->_getErrorHitsWhere($aFilter, [], $aBindings) . " AND `h`.`error_id` = :error";
+        $sBucketSql = $this->_getBucketSql('`h`.`ts`', $sBucket, $iOffset, $aStarts, $aBindings);
+
+        return $this->getAllWithKey("SELECT " . $sBucketSql . " AS `bucket`, SUM(`h`.`repeats`) AS `count`, COUNT(DISTINCT `h`.`visitor`) AS `users` FROM `" . $this->_oConfig->CNF['TABLE_ERROR_HITS'] . "` AS `h` WHERE " . $sWhere . " GROUP BY `bucket` ORDER BY `bucket`", 'bucket', $aBindings);
+    }
+
+    /**
+     * One error group's hits, visits and visitors in the period.
+     */
+    public function getErrorStats($aFilter, $iId)
+    {
+        $aBindings = ['error' => (int)$iId];
+        $sWhere = $this->_getErrorHitsWhere($aFilter, [], $aBindings) . " AND `h`.`error_id` = :error";
+
+        return $this->getRow("SELECT IFNULL(SUM(`h`.`repeats`), 0) AS `count`, COUNT(DISTINCT NULLIF(`h`.`session_id`, 0)) AS `sessions`, COUNT(DISTINCT `h`.`visitor`) AS `users` FROM `" . $this->_oConfig->CNF['TABLE_ERROR_HITS'] . "` AS `h` WHERE " . $sWhere, $aBindings);
+    }
+
+    /**
+     * One error group's hits by a client column: platform, app version, browser, OS, device,
+     * country or route.
+     */
+    public function getErrorBreakdown($aFilter, $iId, $sColumn, $iLimit = 10)
+    {
+        if(!in_array($sColumn, $this->_aErrorBreakdowns, true))
+            return [];
+
+        $aBindings = ['error' => (int)$iId];
+        $sWhere = $this->_getErrorHitsWhere($aFilter, [], $aBindings) . " AND `h`.`error_id` = :error";
+
+        return $this->getAll("SELECT `h`.`" . $sColumn . "` AS `value`, SUM(`h`.`repeats`) AS `count`, COUNT(DISTINCT `h`.`visitor`) AS `users` FROM `" . $this->_oConfig->CNF['TABLE_ERROR_HITS'] . "` AS `h` WHERE " . $sWhere . " GROUP BY `h`.`" . $sColumn . "` ORDER BY `count` DESC LIMIT " . max(1, min(100, (int)$iLimit)), $aBindings);
+    }
+
+    /**
+     * One error group's latest hits in the period.
+     */
+    public function getErrorOccurrences($aFilter, $iId, $iLimit = 20)
+    {
+        $aBindings = ['error' => (int)$iId];
+        $sWhere = $this->_getErrorHitsWhere($aFilter, [], $aBindings) . " AND `h`.`error_id` = :error";
+
+        return $this->getAll("SELECT `h`.`ts`, `h`.`session_id`, `h`.`platform`, `h`.`app_version`, `h`.`browser`, `h`.`os`, `h`.`device`, `h`.`country`, `h`.`path`, `h`.`repeats`, `h`.`fatal` FROM `" . $this->_oConfig->CNF['TABLE_ERROR_HITS'] . "` AS `h` WHERE " . $sWhere . " ORDER BY `h`.`ts` DESC, `h`.`id` DESC LIMIT " . max(1, min(100, (int)$iLimit)), $aBindings);
+    }
+
+    /**
+     * A log-scale histogram of a metric (see BxAnalyticsVitals::getBucket), optionally per
+     * platform, page (route or path) or time bucket.
+     *
+     * @param array $aFilter report filter
+     * @param string $sMetric a BxAnalyticsVitals::METRICS column
+     * @param string $sDevice all, mobile (with tablets) or desktop
+     * @param string $sGroup '', platform, route, path or bucket
+     * @param array $aIn values of the group to keep (pages)
+     * @param array $aBucket [bucket, offset, starts] when grouped by time
+     * @return array rows of grp, hb, side (0 up to the good threshold, 1 between, 2 above
+     *      the poor one), n
+     */
+    public function getVitalsHistogram($aFilter, $sMetric, $sDevice, $sGroup = '', $aIn = [], $aBucket = [])
+    {
+        if(!in_array($sMetric, BxAnalyticsVitals::METRICS, true))
+            return [];
+
+        $aBindings = [
+            'side_good' => (int)$this->_oConfig->CNF['VITALS'][$sMetric][0],
+            'side_poor' => (int)$this->_oConfig->CNF['VITALS'][$sMetric][1],
+        ];
+        $sWhere = $this->_getVitalsWhere($aFilter, $sDevice, $aBindings) . " AND `v`.`" . $sMetric . "` IS NOT NULL";
+
+        switch($sGroup) {
+            case 'platform':
+            case 'route':
+            case 'path':
+                $sGroupSql = "`v`.`" . $sGroup . "`";
+                if(!empty($aIn))
+                    $sWhere .= " AND `v`.`" . $sGroup . "` IN (" . $this->_getInSql($aIn, 'g', $aBindings) . ")";
+                break;
+
+            case 'bucket':
+                $sGroupSql = $this->_getBucketSql('`v`.`ts`', $aBucket[0], $aBucket[1], $aBucket[2], $aBindings);
+                break;
+
+            default:
+                $sGroupSql = "''";
+        }
+
+        return $this->getAll("SELECT " . $sGroupSql . " AS `grp`, " . $this->_getVitalsBucketSql($sMetric) . " AS `hb`, (`v`.`" . $sMetric . "` > :side_good) + (`v`.`" . $sMetric . "` > :side_poor) AS `side`, COUNT(*) AS `n` FROM `" . $this->_oConfig->CNF['TABLE_VITALS'] . "` AS `v` WHERE " . $sWhere . " GROUP BY `grp`, `hb`, `side`", $aBindings);
+    }
+
+    /**
+     * Log-scale histograms of several metrics in one pass over the period: each row is
+     * paired with every metric (a derived table of their names), and the metric's own
+     * column is bucketed.
+     *
+     * @return array rows of grp (the metric), hb, n
+     */
+    public function getVitalsHistograms($aFilter, $aMetrics, $sDevice)
+    {
+        $aMetrics = array_values(array_intersect(BxAnalyticsVitals::METRICS, $aMetrics));
+        if(empty($aMetrics))
+            return [];
+
+        $aBindings = [];
+        $sWhere = $this->_getVitalsWhere($aFilter, $sDevice, $aBindings);
+
+        $aNames = [];
+        $aValue = [];
+        $aBucket = [];
+        foreach($aMetrics as $sMetric) {
+            // names from BxAnalyticsVitals::METRICS only
+            $aNames[] = "SELECT '" . $sMetric . "' AS `metric`";
+            $aValue[] = "WHEN '" . $sMetric . "' THEN `v`.`" . $sMetric . "`";
+            $aBucket[] = "WHEN '" . $sMetric . "' THEN " . $this->_getVitalsBucketSql($sMetric);
+        }
+
+        // the vitals table is read first and once; the metric names join to each row
+        return $this->getAll("SELECT `m`.`metric` AS `grp`, CASE `m`.`metric` " . implode(' ', $aBucket) . " END AS `hb`, COUNT(*) AS `n` FROM `" . $this->_oConfig->CNF['TABLE_VITALS'] . "` AS `v` STRAIGHT_JOIN (" . implode(' UNION ALL ', $aNames) . ") AS `m` WHERE " . $sWhere . " AND CASE `m`.`metric` " . implode(' ', $aValue) . " END IS NOT NULL GROUP BY `grp`, `hb`", $aBindings);
+    }
+
+    /**
+     * A metric's histogram bucket, see BxAnalyticsVitals::getBucket.
+     */
+    protected function _getVitalsBucketSql($sMetric)
+    {
+        return "IF(`v`.`" . $sMetric . "` = 0, -1, FLOOR(LN(`v`.`" . $sMetric . "`) * " . BxAnalyticsVitals::BUCKETS . "))";
+    }
+
+    /**
+     * Samples, good and poor values of every metric in one pass.
+     *
+     * @param array $aThresholds metric => [good up to, poor above], stored units
+     * @return array metric => [samples, good, poor]
+     */
+    public function getVitalsDistribution($aFilter, $sDevice, $aThresholds)
+    {
+        $aBindings = [];
+        $sWhere = $this->_getVitalsWhere($aFilter, $sDevice, $aBindings);
+
+        $aSql = [];
+        foreach(BxAnalyticsVitals::METRICS as $sMetric) {
+            $aSql[] = "SUM(`v`.`" . $sMetric . "` IS NOT NULL) AS `" . $sMetric . "_n`, SUM(`v`.`" . $sMetric . "` <= :" . $sMetric . "_good) AS `" . $sMetric . "_good`, SUM(`v`.`" . $sMetric . "` > :" . $sMetric . "_poor) AS `" . $sMetric . "_poor`";
+            $aBindings[$sMetric . '_good'] = (int)$aThresholds[$sMetric][0];
+            $aBindings[$sMetric . '_poor'] = (int)$aThresholds[$sMetric][1];
+        }
+
+        $aRow = $this->getRow("SELECT " . implode(', ', $aSql) . " FROM `" . $this->_oConfig->CNF['TABLE_VITALS'] . "` AS `v` WHERE " . $sWhere, $aBindings);
+
+        $aResult = [];
+        foreach(BxAnalyticsVitals::METRICS as $sMetric)
+            $aResult[$sMetric] = [
+                'samples' => isset($aRow[$sMetric . '_n']) ? (int)$aRow[$sMetric . '_n'] : 0,
+                'good' => isset($aRow[$sMetric . '_good']) ? (int)$aRow[$sMetric . '_good'] : 0,
+                'poor' => isset($aRow[$sMetric . '_poor']) ? (int)$aRow[$sMetric . '_poor'] : 0,
+            ];
+
+        return $aResult;
+    }
+
+    /**
+     * Pages (routes or paths) with the most samples of a metric.
+     */
+    public function getVitalsPages($aFilter, $sMetric, $sDevice, $sGroup, $iLimit, $iStart = 0)
+    {
+        if(!in_array($sMetric, BxAnalyticsVitals::METRICS, true) || !in_array($sGroup, ['route', 'path'], true))
+            return [];
+
+        $aBindings = [];
+        $sWhere = $this->_getVitalsWhere($aFilter, $sDevice, $aBindings) . " AND `v`.`" . $sMetric . "` IS NOT NULL";
+
+        return $this->getPairs("SELECT `v`.`" . $sGroup . "` AS `value`, COUNT(*) AS `n` FROM `" . $this->_oConfig->CNF['TABLE_VITALS'] . "` AS `v` WHERE " . $sWhere . " GROUP BY `v`.`" . $sGroup . "` ORDER BY `n` DESC, `value` LIMIT " . max(0, (int)$iStart) . ", " . max(1, min(1000, (int)$iLimit)), 'value', 'n', $aBindings);
+    }
+
+    public function getVitalsPagesCount($aFilter, $sMetric, $sDevice, $sGroup)
+    {
+        if(!in_array($sMetric, BxAnalyticsVitals::METRICS, true) || !in_array($sGroup, ['route', 'path'], true))
+            return 0;
+
+        $aBindings = [];
+        $sWhere = $this->_getVitalsWhere($aFilter, $sDevice, $aBindings) . " AND `v`.`" . $sMetric . "` IS NOT NULL";
+
+        return (int)$this->getOne("SELECT COUNT(DISTINCT `v`.`" . $sGroup . "`) FROM `" . $this->_oConfig->CNF['TABLE_VITALS'] . "` AS `v` WHERE " . $sWhere, $aBindings);
+    }
+
+    /**
+     * WHERE for error hits (alias `h`, joined to their group `g` when statuses are given) in
+     * the period. Filters use the hit's own client columns; other dimensions go through its
+     * visit, so errors outside a visit drop out of those.
+     */
+    protected function _getErrorHitsWhere($aFilter, $aStatuses, &$aBindings, $iFirstSeenFrom = 0)
+    {
+        $sWhere = $this->_getHealthWhere('h', $this->_aErrorHitDimensions, $aFilter, $aBindings);
+
+        if(!empty($aStatuses))
+            $sWhere .= " AND `g`.`status` IN (" . $this->_getInSql($aStatuses, 'st', $aBindings) . ")";
+
+        if($iFirstSeenFrom) {
+            $sWhere .= " AND `g`.`first_seen` >= :first_seen";
+            $aBindings['first_seen'] = (int)$iFirstSeenFrom;
+        }
+
+        return $sWhere;
+    }
+
+    /**
+     * WHERE for vitals (alias `v`) in the period, on a kind of device.
+     */
+    protected function _getVitalsWhere($aFilter, $sDevice, &$aBindings)
+    {
+        $sWhere = $this->_getHealthWhere('v', ['device', 'path'], $aFilter, $aBindings);
+
+        if($sDevice == 'mobile')
+            $sWhere .= " AND `v`.`device` IN ('mobile', 'tablet')";
+        elseif($sDevice == 'desktop')
+            $sWhere .= " AND `v`.`device` = 'desktop'";
+
+        return $sWhere;
+    }
+
+    /**
+     * Period, platform and dimension filters for a health table with `ts`, `platform` and
+     * `session_id` columns. Dimensions in `$aOwn` are columns of the table.
+     */
+    protected function _getHealthWhere($sAlias, $aOwn, $aFilter, &$aBindings)
+    {
+        $aSql = ['`' . $sAlias . '`.`ts` >= :from', '`' . $sAlias . '`.`ts` < :to'];
+        $aBindings['from'] = (int)$aFilter['from'];
+        $aBindings['to'] = (int)$aFilter['to'];
+
+        if($aFilter['platform'] !== '') {
+            $aSql[] = '`' . $sAlias . '`.`platform` = :platform';
+            $aBindings['platform'] = $aFilter['platform'];
+        }
+
+        $aThrough = [];
+        foreach($aFilter['dims'] as $sName => $sValue) {
+            if(in_array($sName, $aOwn, true)) {
+                $aSql[] = '`' . $sAlias . '`.`' . $sName . '` = :d_' . $sName;
+                // health hits keep only the page parameters of a path, a pageview's path its whole query
+                $aBindings['d_' . $sName] = $sName == 'path' ? get_mb_substr(BxAnalyticsErrors::getCleanPath($sValue), 0, 255) : $sValue;
+            }
+            elseif(isset($this->_aSessionDimensions[$sName])) {
+                $aThrough[] = '`sf`.`' . $this->_aSessionDimensions[$sName] . '` = :d_' . $sName;
+                $aBindings['d_' . $sName] = $sValue;
+            }
+            elseif(isset($this->_aEventDimensions[$sName])) {
+                $aSql[] = "EXISTS (SELECT 1 FROM `" . $this->_oConfig->CNF['TABLE_EVENTS'] . "` AS `ef` WHERE `ef`.`session_id` = `" . $sAlias . "`.`session_id` AND `ef`.`type` = 'pageview' AND `ef`.`" . $this->_aEventDimensions[$sName] . "` = :d_" . $sName . ")";
+                $aBindings['d_' . $sName] = $sValue;
+            }
+        }
+
+        if(!empty($aThrough))
+            $aSql[] = "EXISTS (SELECT 1 FROM `" . $this->_oConfig->CNF['TABLE_SESSIONS'] . "` AS `sf` WHERE `sf`.`id` = `" . $sAlias . "`.`session_id` AND " . implode(' AND ', $aThrough) . ")";
+
+        return implode(' AND ', $aSql);
+    }
+
+    /**
+     * Placeholders for an IN list, with their bindings.
+     */
+    protected function _getInSql($aValues, $sPrefix, &$aBindings)
+    {
+        $aIn = [];
+        foreach(array_values($aValues) as $i => $mixedValue) {
+            $aIn[] = ':' . $sPrefix . $i;
+            $aBindings[$sPrefix . $i] = $mixedValue;
+        }
+
+        return implode(', ', $aIn);
+    }
+
+    /**
+     * Insert rows with the same keys in one query.
+     */
+    protected function _insertRows($sTable, $aRows)
+    {
+        if(empty($aRows))
+            return 0;
+
+        $aFields = array_keys(reset($aRows));
+        $aBindings = [];
+        $aValues = [];
+        foreach(array_values($aRows) as $i => $aRow) {
+            $aPlaceholders = [];
+            foreach($aFields as $sField) {
+                $aPlaceholders[] = ':' . $sField . '_' . $i;
+                $aBindings[$sField . '_' . $i] = $aRow[$sField];
+            }
+            $aValues[] = '(' . implode(', ', $aPlaceholders) . ')';
+        }
+
+        return (int)$this->query("INSERT INTO `" . $sTable . "` (`" . implode('`, `', $aFields) . "`) VALUES " . implode(', ', $aValues), $aBindings);
+    }
+
+    /*
      * Revenue: the ledger and subscriptions
      */
 
@@ -1074,7 +1627,8 @@ class BxAnalyticsDb extends BxBaseModGeneralDb
     }
 
     /**
-     * Time of the first charge of each order the ledger has: [pending id => time].
+     * Time of the first paid charge of each order the ledger has (a trial's registration is
+     * not one): [pending id => time].
      */
     public function getRevenueFirstCharges($sPayment, $aPendingIds)
     {
@@ -1086,7 +1640,8 @@ class BxAnalyticsDb extends BxBaseModGeneralDb
     }
 
     /**
-     * Transactions of a list the ledger has as a sale or a renewal: [transaction id, ...].
+     * Transactions of a list the ledger has as a charge (a sale, a renewal or a trial's
+     * registration): [transaction id, ...].
      */
     public function getRevenueCharged($sPayment, $aTransactionIds)
     {
@@ -1094,12 +1649,21 @@ class BxAnalyticsDb extends BxBaseModGeneralDb
         if(empty($aTransactionIds))
             return [];
 
-        return array_map('intval', $this->getColumn("SELECT DISTINCT `transaction_id` FROM `" . $this->_oConfig->CNF['TABLE_REVENUE'] . "` WHERE `payment` = :payment AND `transaction_id` IN (" . $this->implode_escape($aTransactionIds) . ") AND `kind` IN ('sale', 'renewal')", ['payment' => $sPayment]));
+        return array_map('intval', $this->getColumn("SELECT DISTINCT `transaction_id` FROM `" . $this->_oConfig->CNF['TABLE_REVENUE'] . "` WHERE `payment` = :payment AND `transaction_id` IN (" . $this->implode_escape($aTransactionIds) . ") AND `kind` IN ('sale', 'renewal', 'trial')", ['payment' => $sPayment]));
     }
 
     /**
-     * Charges of an order in the ledger from a time on: first and last time, and how many
-     * (the rows of one charge share their time).
+     * A charge got its kind once its subscription's trial was known (`kind` is part of the
+     * unique key: a transaction has one charge row, so the change never meets another row).
+     */
+    public function updateRevenueKind($iId, $sKind)
+    {
+        return (int)$this->query("UPDATE IGNORE `" . $this->_oConfig->CNF['TABLE_REVENUE'] . "` SET `kind` = :kind WHERE `id` = :id", ['id' => (int)$iId, 'kind' => $sKind]);
+    }
+
+    /**
+     * Paid charges of an order in the ledger from a time on (a trial's registration is not
+     * one): first and last time, and how many (the rows of one charge share their time).
      */
     public function getRevenuePaid($sPayment, $iPendingId, $iSince = 0)
     {
@@ -1168,6 +1732,19 @@ class BxAnalyticsDb extends BxBaseModGeneralDb
             'payment' => $sPayment,
             'pending' => (int)$iPendingId,
         ]);
+    }
+
+    /**
+     * Start and trial (days) of the subscriptions with a trial among some orders:
+     * [pending id => ['started' => time, 'trial' => days]].
+     */
+    public function getSubscriptionTrials($sPayment, $aPendingIds)
+    {
+        $aPendingIds = array_values(array_unique(array_map('intval', $aPendingIds)));
+        if(empty($aPendingIds))
+            return [];
+
+        return $this->getAllWithKey("SELECT `pending_id`, `started`, `trial` FROM `" . $this->_oConfig->CNF['TABLE_SUBSCRIPTIONS'] . "` WHERE `payment` = :payment AND `pending_id` IN (" . $this->implode_escape($aPendingIds) . ") AND `trial` > 0", 'pending_id', ['payment' => $sPayment]);
     }
 
     /**
@@ -1308,7 +1885,8 @@ class BxAnalyticsDb extends BxBaseModGeneralDb
     }
 
     /**
-     * Net revenue of members over all the ledger: [profile id => amount].
+     * Net revenue of members over all the ledger, trials' registrations aside (they took no
+     * money): [profile id => amount].
      */
     public function getLifetimeValues($aProfileIds, $sPayment)
     {
@@ -1316,7 +1894,7 @@ class BxAnalyticsDb extends BxBaseModGeneralDb
         if(empty($aProfileIds))
             return [];
 
-        return $this->getPairs("SELECT `client_id`, IFNULL(SUM(`amount_default`), 0) AS `ltv` FROM `" . $this->_oConfig->CNF['TABLE_REVENUE'] . "` WHERE `cash` = 1 AND `payment` = :payment AND `client_id` IN (" . $this->implode_escape($aProfileIds) . ") GROUP BY `client_id`", 'client_id', 'ltv', ['payment' => $sPayment]);
+        return $this->getPairs("SELECT `client_id`, IFNULL(SUM(`amount_default`), 0) AS `ltv` FROM `" . $this->_oConfig->CNF['TABLE_REVENUE'] . "` WHERE `cash` = 1 AND `payment` = :payment AND `kind` <> 'trial' AND `client_id` IN (" . $this->implode_escape($aProfileIds) . ") GROUP BY `client_id`", 'client_id', 'ltv', ['payment' => $sPayment]);
     }
 
     /**
@@ -1358,11 +1936,12 @@ class BxAnalyticsDb extends BxBaseModGeneralDb
 
     /**
      * WHERE for ledger rows (alias `r`) of one payment module in the period, money or credits
-     * (null: both), on the filter's platform.
+     * (null: both), on the filter's platform. A trial's registration took no money: no revenue
+     * sum, count or chart reads it.
      */
     protected function _getRevenueWhere($aFilter, $iCash, &$aBindings)
     {
-        $aSql = ['`r`.`ts` >= :from', '`r`.`ts` < :to', '`r`.`payment` = :payment'];
+        $aSql = ['`r`.`ts` >= :from', '`r`.`ts` < :to', '`r`.`payment` = :payment', "`r`.`kind` <> 'trial'"];
         if($iCash !== null) {
             array_unshift($aSql, '`r`.`cash` = :cash');
             $aBindings['cash'] = (int)$iCash ? 1 : 0;

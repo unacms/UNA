@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS `bx_analytics_sessions` (
   `duration` int(11) unsigned NOT NULL DEFAULT '0',
   `pageviews` smallint(5) unsigned NOT NULL DEFAULT '0',
   `events` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `errors` smallint(5) unsigned NOT NULL DEFAULT '0',
   `bounce` tinyint(4) unsigned NOT NULL DEFAULT '1',
   `hostname` varchar(128) NOT NULL DEFAULT '',
   `entry_path` varchar(255) NOT NULL DEFAULT '',
@@ -129,6 +130,10 @@ CREATE TABLE IF NOT EXISTS `bx_analytics_funnels` (
 -- Revenue ledger: one row per money movement the payment module reports (a sale, a renewal,
 -- a refund or a reversal of a processed order), with the amount in the site's default
 -- currency and the platform and traffic source of the buyer. Pruning never touches it.
+-- A subscription's trial is registered at the full price although nothing was charged: those
+-- rows have the kind `trial` and no revenue report reads them. A transaction has one charge
+-- row (sale, renewal or trial) and at most one negation (refund or reversal), hence the
+-- unique key on the payment module, transaction and kind.
 CREATE TABLE IF NOT EXISTS `bx_analytics_revenue` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `ts` int(11) unsigned NOT NULL DEFAULT '0',
@@ -197,6 +202,81 @@ CREATE TABLE IF NOT EXISTS `bx_analytics_subscriptions` (
   KEY `paid` (`first_paid`, `canceled`),
   KEY `started` (`started`),
   KEY `canceled` (`canceled`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Client errors grouped by fingerprint (kind, normalized message, top frame, HTTP status),
+-- with a sample stack. `created` is server time, for the limit of new groups an hour;
+-- `first_seen` and `last_seen` are when the errors happened.
+CREATE TABLE IF NOT EXISTS `bx_analytics_errors` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `fingerprint` binary(16) NOT NULL,
+  `kind` varchar(16) NOT NULL DEFAULT 'js',
+  `message` varchar(255) NOT NULL DEFAULT '',
+  `source` varchar(255) NOT NULL DEFAULT '',
+  `line` int(11) unsigned NOT NULL DEFAULT '0',
+  `col` int(11) unsigned NOT NULL DEFAULT '0',
+  `status_code` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `stack` text NOT NULL,
+  `stack_ts` int(11) unsigned NOT NULL DEFAULT '0',
+  `first_seen` int(11) unsigned NOT NULL DEFAULT '0',
+  `last_seen` int(11) unsigned NOT NULL DEFAULT '0',
+  `occurrences` int(11) unsigned NOT NULL DEFAULT '0',
+  `fatal` tinyint(4) unsigned NOT NULL DEFAULT '0',
+  `status` varchar(16) NOT NULL DEFAULT 'open',
+  `status_changed` int(11) unsigned NOT NULL DEFAULT '0',
+  `created` int(11) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `fingerprint` (`fingerprint`),
+  KEY `created` (`created`),
+  KEY `last_seen` (`last_seen`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- One row per error report from a client (repeats on one page counted in `repeats`). The
+-- client's columns are copied, so an error outside a visit (`session_id` 0) still has them.
+CREATE TABLE IF NOT EXISTS `bx_analytics_error_hits` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `error_id` int(11) unsigned NOT NULL,
+  `ts` int(11) unsigned NOT NULL DEFAULT '0',
+  `session_id` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `visitor` binary(16) NOT NULL,
+  `profile_id` int(11) unsigned NOT NULL DEFAULT '0',
+  `platform` varchar(16) NOT NULL DEFAULT '',
+  `app_version` varchar(32) NOT NULL DEFAULT '',
+  `browser` varchar(32) NOT NULL DEFAULT '',
+  `os` varchar(32) NOT NULL DEFAULT '',
+  `device` varchar(16) NOT NULL DEFAULT '',
+  `country` char(2) NOT NULL DEFAULT '',
+  `path` varchar(255) NOT NULL DEFAULT '',
+  `route` varchar(128) NOT NULL DEFAULT '',
+  `repeats` smallint(5) unsigned NOT NULL DEFAULT '1',
+  `fatal` tinyint(4) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `ts` (`ts`, `platform`),
+  KEY `error_id` (`error_id`, `ts`),
+  KEY `profile_id` (`profile_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Web vitals and app timings: one row per sampled page view or screen, NULL for what wasn't
+-- measured; milliseconds, CLS in thousandths. No visitor or member is stored.
+CREATE TABLE IF NOT EXISTS `bx_analytics_vitals` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `ts` int(11) unsigned NOT NULL DEFAULT '0',
+  `session_id` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `platform` varchar(16) NOT NULL DEFAULT '',
+  `device` varchar(16) NOT NULL DEFAULT '',
+  `path` varchar(255) NOT NULL DEFAULT '',
+  `route` varchar(128) NOT NULL DEFAULT '',
+  `nav` varchar(16) NOT NULL DEFAULT '',
+  `ttfb` mediumint(8) unsigned DEFAULT NULL,
+  `fcp` mediumint(8) unsigned DEFAULT NULL,
+  `lcp` mediumint(8) unsigned DEFAULT NULL,
+  `inp` mediumint(8) unsigned DEFAULT NULL,
+  `cls` smallint(5) unsigned DEFAULT NULL,
+  `screen_load` mediumint(8) unsigned DEFAULT NULL,
+  `app_start` mediumint(8) unsigned DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `ts` (`ts`, `platform`),
+  KEY `route` (`route`, `ts`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- STUDIO: page & widget

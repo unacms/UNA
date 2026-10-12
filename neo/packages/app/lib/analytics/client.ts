@@ -2,6 +2,7 @@ import { Dimensions, Platform } from 'react-native';
 import Constants from 'expo-constants';
 import i18n from 'i18next';
 import type { AnalyticsClient } from './analytics.types';
+import { cleanUrl } from './privacy';
 
 type ApplicationModule = {
     applicationId?: string | null;
@@ -56,6 +57,16 @@ export function getClient(): AnalyticsClient {
         device: tablet ? 'tablet' : 'mobile',
     };
     return client;
+}
+
+/** Stack frames of an app have no site origin to drop. */
+export function getOwnOrigin(): string {
+    return '';
+}
+
+/** The screen an error or vitals hit belongs to: its UNA page path without the query string. */
+export function getHealthPageUrl(viewUrl: string): string {
+    return cleanUrl(viewUrl) || '/';
 }
 
 /** The path events are sent with before the first screen view. */

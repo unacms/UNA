@@ -1,13 +1,26 @@
-import { fetcher } from 'app/lib/fetcher';
+import { fetcher, setServerErrorListener } from 'app/lib/fetcher';
 import { persistedGet, persistedSet } from 'app/lib/util/storage';
 import { getClient, getFallbackUrl, getInitialReferrer, isClientAvailable, isTrackingBlocked } from './client';
-import type { AnalyticsHit, AnalyticsPayload, AnalyticsProps, TrackerConfig, TrackEventOptions } from './analytics.types';
+import {
+    acceptHealthHit,
+    captureError,
+    configureHealth,
+    resetViewErrors,
+    setHealthSink,
+    takeErrorHits,
+    takeVitalsHit,
+} from './health';
+import { cleanUrl } from './privacy';
+import type { AnalyticsHit, AnalyticsPayload, AnalyticsProps, TrackerConfig, TrackErrorOptions, TrackEventOptions } from './analytics.types';
 
 /**
  * Pageviews (screen views), engaged time and custom events for UNA's analytics module
  * (bx_analytics). The same model as the classic UI's tracker (modules/boonex/analytics/js/
  * tracker.js): a pageview on every page, a `leave` hit with the visible time when the page
  * is left or hidden, events on demand.
+ *
+ * Errors and vitals (`health.ts`) go out with these hits: errors within seconds and with the
+ * page's leave hit, vitals one per request.
  *
  * Settings come once per app start from `bx_analytics/get_tracker_config`. When the module
  * is missing, tracking is off for this client, or UNA answers a hit with an error, nothing
@@ -18,12 +31,16 @@ const CONFIG_URL = '/api.php?r=bx_analytics/get_tracker_config';
 const COLLECT_URL = '/api.php?r=bx_analytics/collect';
 /** BxAnalyticsConfig MAX_HITS_PER_REQUEST */
 const MAX_HITS = 20;
+/** BxAnalyticsConfig MAX_ERRORS_PER_REQUEST and MAX_VITALS_PER_REQUEST: UNA drops the rest. */
+const MAX_PER_REQUEST: Partial<Record<AnalyticsHit['type'], number>> = { error: 10, vitals: 1 };
 /** UNA ignores `age` from an hour on. */
 const MAX_AGE_MS = 3600 * 1000;
 /** After a network failure, wait this long before asking for the settings again. */
 const CONFIG_RETRY_MS = 60 * 1000;
 const REQUEST_TIMEOUT_MS = 10 * 1000;
 const VISITOR_ID_KEY = 'analytics_vid';
+/** The tracker's own requests: their failures aren't reported, or a broken collector would report itself. */
+const OWN_REQUEST = /[?&]r=bx_analytics\/(?:collect|get_tracker_config)\b/;
 
 type State = 'idle' | 'loading' | 'on' | 'off';
 type QueuedHit = { hit: AnalyticsHit; at: number };
@@ -63,6 +80,12 @@ async function getVisitorId(): Promise<string> {
 function turnOff(): void {
     state = 'off';
     pending = [];
+    configureHealth(null);
+}
+
+function toNumber(value: unknown, min: number, max: number, fallback: number): number {
+    const number = Number(value);
+    return Number.isFinite(number) ? Math.min(max, Math.max(min, number)) : fallback;
 }
 
 async function loadConfig(): Promise<void> {
@@ -83,7 +106,19 @@ async function loadConfig(): Promise<void> {
             persistent: !!data.persistent,
             respect_dnt: !!data.respect_dnt,
             session_timeout: Number(data.session_timeout) > 0 ? Number(data.session_timeout) : 1800,
+            errors: !!data.errors,
+            errors_ignore: Array.isArray(data.errors_ignore)
+                ? data.errors_ignore.filter((pattern: unknown): pattern is string => typeof pattern === 'string').slice(0, 100)
+                : [],
+            vitals: !!data.vitals,
+            vitals_sample: toNumber(data.vitals_sample, 0, 100, 0),
         };
+        configureHealth({
+            errors: config.errors,
+            ignore: config.errors_ignore,
+            vitals: config.vitals,
+            vitalsSample: config.vitals_sample,
+        });
         try {
             visitorId = config.persistent ? await getVisitorId() : '';
         } catch {
@@ -98,12 +133,44 @@ async function loadConfig(): Promise<void> {
         return;
     }
 
+    // errors and vitals collected before the settings were known: only what the site takes
     const now = Date.now();
     const queued = pending
-        .filter((item) => now - item.at < MAX_AGE_MS)
-        .map(({ hit, at }) => (now - at > 0 ? { ...hit, age: now - at } : hit));
+        .filter((item) => now - item.at < MAX_AGE_MS && acceptHealthHit(item.hit))
+        .map(({ hit, at }) => (now - at > 0 ? { ...hit, age: (hit.age ?? 0) + now - at } : hit));
     pending = [];
-    if (queued.length) void post(queued, false);
+    if (queued.length) void postInTurn(splitForCollect(queued));
+}
+
+/**
+ * Hits in requests UNA takes whole: at most MAX_HITS each, and no more errors or vitals
+ * than it reads from one request. The order stays.
+ */
+function splitForCollect(hits: AnalyticsHit[]): AnalyticsHit[][] {
+    const batches: AnalyticsHit[][] = [];
+    let batch: AnalyticsHit[] = [];
+    let counts: Partial<Record<AnalyticsHit['type'], number>> = {};
+    for (const hit of hits) {
+        const limit = MAX_PER_REQUEST[hit.type];
+        const count = counts[hit.type] ?? 0;
+        if (batch.length >= MAX_HITS || (limit !== undefined && count >= limit)) {
+            batches.push(batch);
+            batch = [];
+            counts = {};
+        }
+        batch.push(hit);
+        counts[hit.type] = (counts[hit.type] ?? 0) + 1;
+    }
+    if (batch.length) batches.push(batch);
+    return batches;
+}
+
+/** Requests one after another: a later one's errors and vitals join the visit an earlier one started. */
+async function postInTurn(batches: AnalyticsHit[][]): Promise<void> {
+    for (const batch of batches) {
+        if (state === 'off') return;
+        await post(batch, false);
+    }
 }
 
 async function post(hits: AnalyticsHit[], keepalive: boolean): Promise<void> {
@@ -138,6 +205,20 @@ function submit(hits: AnalyticsHit[], keepalive = false): void {
     if (state === 'idle' && now >= configRetryAt) void loadConfig();
 }
 
+/** A UNA request failed on the server (a PHP fatal, a gateway error): an `http` error. */
+function onServerError(status: number, path: string): void {
+    if (OWN_REQUEST.test(path)) return;
+    const endpoint = cleanUrl(path);
+    captureError('http', { message: `HTTP ${status} ${endpoint}`, source: endpoint, status });
+}
+
+// Errors flow into the queue as soon as this module runs in a browser or an app, even before
+// AnalyticsTracker mounts (web: a root layout that failed renders global-error.tsx instead).
+if (isClientAvailable()) {
+    setHealthSink((hits, keepalive) => submit(hits, keepalive));
+    setServerErrorListener(onServerError);
+}
+
 /** The visible time on the current page since the last leave hit, as a hit, or null. */
 function takeLeaveHit(): AnalyticsHit | null {
     const now = Date.now();
@@ -169,10 +250,17 @@ export function trackPageview(url: string, title = '', force = false): void {
     const hits: AnalyticsHit[] = [];
     const leave = takeLeaveHit();
     if (leave) hits.push(leave);
+    if (currentUrl) {
+        hits.push(...takeErrorHits(true));
+        resetViewErrors();
+    }
 
     currentUrl = url;
     currentTitle = title;
     hits.push(title ? { type: 'pageview', url, title } : { type: 'pageview', url });
+    // after the pageview: vitals join a running visit
+    const vitals = takeVitalsHit(false);
+    if (vitals) hits.push(vitals);
     submit(hits);
 }
 
@@ -190,7 +278,13 @@ export function setTrackerVisible(visible: boolean): void {
         const leave = takeLeaveHit();
         visibleSince = 0;
         hiddenAt = now;
-        if (leave) submit([leave], true);
+        const hits = takeErrorHits(true);
+        if (leave) hits.unshift(leave);
+        const vitals = takeVitalsHit(true);
+        if (vitals) hits.push(vitals);
+        if (hits.length) submit(hits, true);
+        // UNA takes one vitals hit per request
+        for (let more = takeVitalsHit(false); more; more = takeVitalsHit(false)) submit([more], true);
         return;
     }
 
@@ -228,4 +322,18 @@ export function trackEvent(name: string, props?: AnalyticsProps, options?: Track
     if (typeof options?.value === 'number' && Number.isFinite(options.value)) hit.value = options.value;
     if (options?.nonInteractive) hit.non_interactive = 1;
     submit([hit]);
+}
+
+/**
+ * Report an error the app handled itself to UNA's analytics, e.g. `trackError(error)` in a
+ * `catch`. Error boundaries pass `{ kind: 'react', fatal: true }`. Safe anywhere, like
+ * `trackEvent`; sent only when the site tracks errors.
+ */
+export function trackError(error: unknown, options?: TrackErrorOptions): void {
+    captureError(options?.kind ?? 'js', {
+        error,
+        componentStack: options?.componentStack,
+        fatal: options?.fatal,
+        nonErrorPrefix: 'Non-Error exception: ',
+    });
 }

@@ -4,8 +4,8 @@ use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * The revenue ledger's arithmetic: MRR per period unit, conversion to the default currency
- * from an order's rate snapshot, sale or renewal, period lengths, trial registrations and
- * the first item of an order.
+ * from an order's rate snapshot, sale, renewal or trial, period lengths, trial registrations
+ * and the first item of an order.
  */
 class BxAnalyticsRevenueTest extends \PHPUnit\Framework\TestCase
 {
@@ -100,6 +100,39 @@ class BxAnalyticsRevenueTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse(BxAnalyticsRevenue::isTrialRegistration($aTrial, 1700000000 + 14 * 86400 - 600), 'charged when it ends, a little early');
         $this->assertFalse(BxAnalyticsRevenue::isTrialRegistration(['started' => 1700000000, 'trial' => 0], 1700000005), 'no trial');
         $this->assertFalse(BxAnalyticsRevenue::isTrialRegistration([], 1700000005));
+    }
+
+    public function testChargeKind()
+    {
+        $aTrial = ['started' => 1700000000, 'trial' => 7];
+        $iPaid = 1700000000 + 7 * 86400;
+
+        $this->assertSame('trial', BxAnalyticsRevenue::getChargeKind('recurring', $aTrial, 1700000005, $iPaid), 'the registration took no money');
+        $this->assertSame('sale', BxAnalyticsRevenue::getChargeKind('recurring', $aTrial, $iPaid, $iPaid), 'the first charge after the trial');
+        $this->assertSame('renewal', BxAnalyticsRevenue::getChargeKind('recurring', $aTrial, $iPaid + 7 * 86400, $iPaid));
+        $this->assertSame('sale', BxAnalyticsRevenue::getChargeKind('recurring', [], 1700000005, 1700000005), 'no trial');
+        $this->assertSame('sale', BxAnalyticsRevenue::getChargeKind('single', $aTrial, 1700000005, 1700000005), 'only subscriptions have trials');
+
+        $this->assertSame(['purchase', 'renewal', 'trial_start'], array_map(['BxAnalyticsRevenue', 'getActionName'], ['sale', 'renewal', 'trial']));
+    }
+
+    public function testKindChanges()
+    {
+        $aTrial = ['started' => 1700000000, 'trial' => 7];
+        $iPaid = 1700000000 + 7 * 86400;
+
+        // read before the trial was known: the registration became the sale
+        $aRows = [
+            ['id' => 1, 'transaction_id' => 11, 'kind' => 'sale', 'ts' => 1700000005],
+            ['id' => 2, 'transaction_id' => 12, 'kind' => 'renewal', 'ts' => $iPaid],
+            ['id' => 3, 'transaction_id' => 13, 'kind' => 'renewal', 'ts' => $iPaid + 7 * 86400],
+        ];
+        $this->assertSame([1 => 'trial', 2 => 'sale'], BxAnalyticsRevenue::getKindChanges('recurring', $aTrial, $aRows));
+        $this->assertSame([], BxAnalyticsRevenue::getKindChanges('recurring', ['started' => 1700000000, 'trial' => 0], $aRows), 'no trial');
+
+        // a negated charge keeps its kind and is not taken for a registration
+        $aRows[] = ['id' => 4, 'transaction_id' => 11, 'kind' => 'refund', 'ts' => $iPaid + 3600];
+        $this->assertSame([2 => 'sale'], BxAnalyticsRevenue::getKindChanges('recurring', $aTrial, $aRows));
     }
 
     public function testFirstItem()

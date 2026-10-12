@@ -23,6 +23,42 @@
  *   os, os_version, device   sent by native apps, which have no browser user agent
  *   hits         list of {type: pageview|event|leave, url, title, name, value, props, engaged,
  *                module, object_id, context_id, age}; one hit may also be given at the top level
+ *
+ * Health hits (see BxAnalyticsModule::serviceGetTrackerConfig for the client settings: send
+ * them only when `errors` is true, and vitals only for `vitals_sample` percent of page loads):
+ *
+ *   {type: 'error', url, kind, message, source, line, col, stack, component_stack, fatal,
+ *    repeats, status, age, deferred}
+ *     kind       js (uncaught error), promise (unhandled rejection), react (error boundary),
+ *                native (RN global handler), http (a request answered 500 or more), resource
+ *                (a script or style that failed to load)
+ *     message    the error's message, up to 500 characters (255 are kept); for http
+ *                "HTTP 502 /api.php" (no query string), or empty with `status` set
+ *     source, line, col   the script and position, when known
+ *     stack      the stack as the runtime prints it (V8/Hermes "at fn (file:1:2)" or
+ *                Firefox/Safari "fn@file:1:2"), up to 8000 characters; component_stack is
+ *                React's component stack of an error boundary
+ *     fatal      1 when the app or page could not go on (a root boundary, isFatal on native)
+ *     repeats    how many times it happened on this page or screen, 1 to 100 (deduplicate
+ *                on the client and count instead of sending each)
+ *     status     HTTP status, http kind only
+ *     age        milliseconds since it happened, up to 7 days: an app that crashed sends the
+ *                error on its next launch with `deferred: 1` and the real age
+ *   Error hits never start a visit. They join the visitor's visit on the platform they
+ *   happened in (the running one, or for a deferred error the earlier one it ended), or are
+ *   stored on their own (an app that crashes before its first page). At most 10 per request
+ *   and 50 per visit; messages matching the ignore list are dropped. Strip query strings
+ *   before sending (keep only `i` and `r`); the server strips them again and redacts tokens
+ *   and emails.
+ *
+ *   {type: 'vitals', url, nav, metrics: {ttfb, fcp, lcp, inp, cls, screen_load, app_start}}
+ *     one per page view or screen, sent once when it is left or hidden (with the leave hit);
+ *     timings in milliseconds (0 to 120000), cls a score (0 to 10); leave out what wasn't
+ *     measured. Web pages: ttfb, fcp, lcp, inp, cls on a full load; screen_load (and cls,
+ *     inp) after a soft navigation. Apps: screen_load, from the navigation to the screen's
+ *     content laid out; app_start once per cold start, from process start to the first page.
+ *     nav: navigate, reload, back_forward, prerender, soft, restore.
+ *   Vitals join a running visit and are dropped without one; they count no pageview or event.
  */
 class BxAnalyticsCollector
 {
@@ -105,11 +141,29 @@ class BxAnalyticsCollector
         $sVid = isset($aPayload['vid']) && is_string($aPayload['vid']) && preg_match('/^[a-zA-Z0-9_-]{16,64}$/', $aPayload['vid']) ? $aPayload['vid'] : '';
         $aVisitor = $this->_getVisitor($sIp, $sUserAgent, $iProfileId, $sVid);
 
-        $aSession = $this->_getSession($sPlatform, $aVisitor, $iProfileId, $aPayload, $aClient, $aHits);
-        if(empty($aSession))
-            return 0;
+        // what an error hit outside a visit records about the client
+        $aClientRow = [
+            'lookup' => $aVisitor['lookup'],
+            'visitor' => $aVisitor['id'],
+            'profile_id' => $iProfileId,
+            'platform' => $sPlatform,
+            'app_version' => $this->_string($aPayload, 'app_version', 32, '/^[a-zA-Z0-9._+ -]+$/'),
+            'browser' => $aClient['browser'],
+            'os' => $aClient['os'],
+            'device' => $aClient['device'],
+            'country' => $this->_oConfig->getGeoSource() == BX_ANALYTICS_GEO_HEADERS ? $this->_oRequest->getCountry() : '',
+        ];
 
-        return $this->_store($aSession, $aHits);
+        $aSession = $this->_getSession($sPlatform, $aVisitor, $iProfileId, $aPayload, $aClient, $aHits);
+        if(empty($aSession)) {
+            // errors without a visit (an app that crashed before its first page, a beacon after
+            // the visit timed out) are kept on their own; vitals belong to a page view
+            $aErrors = array_filter($aHits, function($aHit) { return $aHit['type'] == BX_ANALYTICS_HIT_ERROR; });
+
+            return $this->_storeErrors([], $aErrors, $aClientRow);
+        }
+
+        return $this->_store($aSession, $aHits, $aClientRow);
     }
 
     /**
@@ -310,10 +364,10 @@ class BxAnalyticsCollector
             return $aSession;
         }
 
-        // a hit that only closes a page doesn't start a visit
+        // a hit that only closes a page, reports an error or a page's timings doesn't start a visit
         $aFirst = null;
         foreach($aHits as $aHit)
-            if($aHit['type'] != BX_ANALYTICS_HIT_LEAVE) {
+            if(!in_array($aHit['type'], [BX_ANALYTICS_HIT_LEAVE, BX_ANALYTICS_HIT_ERROR, BX_ANALYTICS_HIT_VITALS], true)) {
                 $aFirst = $aHit;
                 break;
             }
@@ -369,8 +423,10 @@ class BxAnalyticsCollector
 
     /**
      * Write the hits and update the session's counters in one query.
+     *
+     * @param array $aClientRow the client's columns for errors that don't belong to the visit
      */
-    protected function _store($aSession, $aHits)
+    protected function _store($aSession, $aHits, $aClientRow = [])
     {
         $iPageviews = (int)$aSession['pageviews'];
         $iEvents = (int)$aSession['events'];
@@ -379,9 +435,31 @@ class BxAnalyticsCollector
         $iLastSeen = (int)$aSession['last_seen'];
 
         $aRows = [];
+        $aErrors = [];
         $iStored = 0;
         foreach($aHits as $aHit) {
+            if($aHit['type'] == BX_ANALYTICS_HIT_ERROR) {
+                $aErrors[] = $aHit;
+                if($this->_isSessionError($aSession, $aHit))
+                    $iLastSeen = max($iLastSeen, $aHit['ts']);
+                continue;
+            }
+
             $iLastSeen = max($iLastSeen, $aHit['ts']);
+
+            // a page's timings: a row of their own, no pageview or event
+            if($aHit['type'] == BX_ANALYTICS_HIT_VITALS) {
+                $iStored += $this->_oDb->insertVitals(array_merge([
+                    'ts' => $aHit['ts'],
+                    'session_id' => (int)$aSession['id'],
+                    'platform' => $aSession['platform'],
+                    'device' => $aSession['device'],
+                    'path' => $aHit['path'],
+                    'route' => $aHit['route'],
+                    'nav' => $aHit['vitals']['nav'],
+                ], $aHit['vitals']['metrics']));
+                continue;
+            }
 
             if($aHit['type'] == BX_ANALYTICS_HIT_LEAVE) {
                 if($aHit['engaged'] > 0)
@@ -434,7 +512,108 @@ class BxAnalyticsCollector
             'exit_path' => $sExitPath,
         ]);
 
+        if(!empty($aErrors))
+            $iStored += $this->_storeErrors($aSession, $aErrors, $aClientRow);
+
         return $iStored;
+    }
+
+    /**
+     * Whether an error happened in the visit: not before it started (a deferred error from an
+     * app's previous run, sent when it starts again, belongs to an earlier visit). A minute of
+     * slack covers an error buffered before the first pageview was sent.
+     */
+    protected function _isSessionError($aSession, $aHit)
+    {
+        return !empty($aSession) && $aHit['ts'] >= (int)$aSession['started'] - 60;
+    }
+
+    /**
+     * The visit an error that is not part of the running one happened in: the visitor's last
+     * visit on the platform that had started by then and had not timed out. An app that
+     * crashed sends the error on its next launch, often after that visit timed out.
+     *
+     * @return array the visit, or [] when it happened outside any
+     */
+    protected function _getErrorSession($aClientRow, $aHit)
+    {
+        if(empty($aClientRow['lookup']))
+            return [];
+
+        $iTime = (int)$aHit['ts'];
+        $aSession = $this->_oDb->getActiveSession($aClientRow['lookup'], $aClientRow['platform'], $iTime - $this->_oConfig->getSessionTimeout(), $iTime + 60);
+
+        return !empty($aSession) && $this->_isSessionError($aSession, $aHit) ? $aSession : [];
+    }
+
+    /**
+     * Store error hits under their groups. One that belongs to a visit (the running one, or
+     * an earlier one it happened in) raises that visit's error count, and is dropped past the
+     * limit per visit.
+     *
+     * @param array $aSession the running visit, or [] for none
+     * @param array $aErrors error hits from _getHits
+     * @param array $aClientRow visitor ids (lookup), platform and client columns for errors outside a visit
+     * @return int hits stored
+     */
+    protected function _storeErrors($aSession, $aErrors, $aClientRow)
+    {
+        $aRows = [];
+        foreach($aErrors as $aHit) {
+            $aVisit = $this->_isSessionError($aSession, $aHit) ? $aSession : $this->_getErrorSession($aClientRow, $aHit);
+            $bLinked = !empty($aVisit);
+            if($bLinked && !$this->_oDb->addSessionErrors($aVisit['id'], 1, $this->_oConfig->CNF['MAX_ERRORS_PER_SESSION']))
+                continue;
+
+            $iErrorId = $this->_getErrorGroup($aHit['error'], $aHit['ts']);
+            if(!$iErrorId)
+                continue;
+
+            $aSource = $bLinked ? $aVisit : $aClientRow;
+            $aRows[] = [
+                'error_id' => $iErrorId,
+                'ts' => $aHit['ts'],
+                'session_id' => $bLinked ? (int)$aVisit['id'] : 0,
+                'visitor' => $aSource['visitor'],
+                'profile_id' => (int)$aSource['profile_id'],
+                'platform' => $aSource['platform'],
+                'app_version' => $aSource['app_version'],
+                'browser' => $aSource['browser'],
+                'os' => $aSource['os'],
+                'device' => $aSource['device'],
+                'country' => $aSource['country'],
+                'path' => $aHit['path'],
+                'route' => $aHit['route'],
+                'repeats' => $aHit['error']['repeats'],
+                'fatal' => $aHit['error']['fatal'],
+            ];
+        }
+
+        return $this->_oDb->insertErrorHits($aRows);
+    }
+
+    /**
+     * The id of an error's group, created when it is new. Past the limit of new groups an
+     * hour, a new error goes to one catch-all group, so a flood of random messages can't fill
+     * the table. A resolved error that happens again after it was resolved is open again.
+     */
+    protected function _getErrorGroup($aError, $iTime)
+    {
+        $sFingerprint = BxAnalyticsErrors::getFingerprint($aError);
+
+        $aGroup = $this->_oDb->getErrorGroupByFingerprint($sFingerprint);
+        if(empty($aGroup) && $this->_oDb->getErrorGroupsCreated($this->_iNow - 3600, $this->_iNow) >= $this->_oConfig->CNF['MAX_NEW_ERROR_GROUPS_PER_HOUR']) {
+            $aError = ['repeats' => $aError['repeats']] + BxAnalyticsErrors::getOverflowError();
+            $sFingerprint = BxAnalyticsErrors::getFingerprint($aError);
+            $aGroup = $this->_oDb->getErrorGroupByFingerprint($sFingerprint);
+        }
+
+        $iId = $this->_oDb->saveErrorGroup($sFingerprint, $aError, $iTime, $this->_iNow, !empty($aGroup) ? (int)$aGroup['id'] : 0);
+
+        if($iId && !empty($aGroup) && $aGroup['status'] == 'resolved' && $iTime > (int)$aGroup['status_changed'])
+            $this->_oDb->setErrorStatus($iId, 'open', $this->_iNow, 'resolved');
+
+        return $iId;
     }
 
     /**
@@ -451,13 +630,26 @@ class BxAnalyticsCollector
         $sPlatform = isset($aPayload['platform']) ? $aPayload['platform'] : '';
         $sApp = $this->_string($aPayload, 'app', 64, '/^[a-zA-Z0-9._ -]+$/');
 
+        $aTypes = [BX_ANALYTICS_HIT_PAGEVIEW, BX_ANALYTICS_HIT_EVENT, BX_ANALYTICS_HIT_LEAVE];
+        if($this->_oConfig->isTrackErrors())
+            $aTypes[] = BX_ANALYTICS_HIT_ERROR;
+        if($this->_oConfig->isTrackVitals())
+            $aTypes[] = BX_ANALYTICS_HIT_VITALS;
+        $aLimits = [
+            BX_ANALYTICS_HIT_ERROR => $this->_oConfig->CNF['MAX_ERRORS_PER_REQUEST'],
+            BX_ANALYTICS_HIT_VITALS => $this->_oConfig->CNF['MAX_VITALS_PER_REQUEST'],
+        ];
+
         $aHits = [];
         foreach($aInput as $aHit) {
             if(!is_array($aHit))
                 continue;
 
             $sType = isset($aHit['type']) && is_string($aHit['type']) ? $aHit['type'] : BX_ANALYTICS_HIT_PAGEVIEW;
-            if(!in_array($sType, [BX_ANALYTICS_HIT_PAGEVIEW, BX_ANALYTICS_HIT_EVENT, BX_ANALYTICS_HIT_LEAVE], true))
+            if(!in_array($sType, $aTypes, true))
+                continue;
+
+            if(isset($aLimits[$sType]) && $aLimits[$sType]-- <= 0)
                 continue;
 
             $aUrl = $this->_parseUrl(isset($aHit['url']) && is_string($aHit['url']) ? $aHit['url'] : '');
@@ -481,12 +673,34 @@ class BxAnalyticsCollector
                     continue;
             }
 
-            $iAge = isset($aHit['age']) ? (int)$aHit['age'] : 0;
-            $iAge = $iAge > 0 && $iAge < 3600 * 1000 ? intdiv($iAge, 1000) : 0;
+            // an error may come late: an app sends the one that stopped it when it starts again
+            $iMaxAge = $sType == BX_ANALYTICS_HIT_ERROR ? $this->_oConfig->CNF['MAX_ERROR_AGE'] : 3600;
+            $iAge = isset($aHit['age']) && is_numeric($aHit['age']) ? (int)$aHit['age'] : 0;
+            if($sType == BX_ANALYTICS_HIT_ERROR && $iAge >= $iMaxAge * 1000)
+                continue;
+            $iAge = $iAge > 0 && $iAge < $iMaxAge * 1000 ? intdiv($iAge, 1000) : 0;
+
+            $aHealth = [];
+            if($sType == BX_ANALYTICS_HIT_ERROR) {
+                $aHealth = ['error' => $this->_getErrorInput($aHit)];
+                if($aHealth['error'] === false)
+                    continue;
+            }
+            elseif($sType == BX_ANALYTICS_HIT_VITALS) {
+                $aHealth = ['vitals' => $this->_getVitalsInput($aHit)];
+                if($aHealth['vitals'] === false)
+                    continue;
+            }
+            // errors and timings keep only the page parameters of a query string, whatever
+            // the client sent
+            if(!empty($aHealth)) {
+                $aUrl['path'] = get_mb_substr(BxAnalyticsErrors::getCleanPath($aUrl['path']), 0, 255);
+                $aHealth['route'] = BxAnalyticsErrors::getRoute($aUrl['path']);
+            }
 
             $aProps = isset($aHit['props']) && is_array($aHit['props']) ? $this->_getProps($aHit['props']) : [];
 
-            $aHits[] = [
+            $aHits[] = $aHealth + [
                 'type' => $sType,
                 'name' => $sName,
                 'url' => $aUrl['url'],
@@ -505,6 +719,69 @@ class BxAnalyticsCollector
         }
 
         return $aHits;
+    }
+
+    /**
+     * An error hit's fields, sanitized, or false for noise, an ignored message or nothing usable.
+     */
+    protected function _getErrorInput($aHit)
+    {
+        $sKind = isset($aHit['kind']) && is_string($aHit['kind']) && $aHit['kind'] !== '' ? $aHit['kind'] : 'js';
+        if(!in_array($sKind, BxAnalyticsErrors::KINDS, true))
+            return false;
+
+        $aHosts = $this->_oConfig->getInternalHosts();
+        $fText = function($sKey, $iInput) use ($aHit) {
+            return isset($aHit[$sKey]) && is_string($aHit[$sKey]) ? get_mb_substr($aHit[$sKey], 0, $iInput) : '';
+        };
+
+        $iStatus = $sKind == 'http' && isset($aHit['status']) && is_numeric($aHit['status']) ? min(599, max(0, (int)$aHit['status'])) : 0;
+
+        $sMessage = BxAnalyticsErrors::sanitize($fText('message', BxAnalyticsErrors::MAX_MESSAGE_INPUT), BxAnalyticsErrors::MAX_MESSAGE, $aHosts);
+        if($sMessage === '' && $iStatus)
+            $sMessage = 'HTTP ' . $iStatus;
+        if($sMessage === '')
+            return false;
+
+        $sSource = BxAnalyticsErrors::sanitize($fText('source', 2048), BxAnalyticsErrors::MAX_SOURCE, $aHosts);
+        $sStack = BxAnalyticsErrors::sanitizeStack($fText('stack', BxAnalyticsErrors::MAX_STACK_INPUT), $fText('component_stack', BxAnalyticsErrors::MAX_STACK_INPUT), $aHosts);
+
+        if(BxAnalyticsErrors::isNoise($sMessage, $sStack, $sSource) || BxAnalyticsErrors::isIgnored($sMessage, $this->_oConfig->getErrorsIgnore()))
+            return false;
+
+        return [
+            'kind' => $sKind,
+            'message' => $sMessage,
+            'source' => $sSource,
+            'line' => isset($aHit['line']) && is_numeric($aHit['line']) ? min(10000000, max(0, (int)$aHit['line'])) : 0,
+            'col' => isset($aHit['col']) && is_numeric($aHit['col']) ? min(10000000, max(0, (int)$aHit['col'])) : 0,
+            'status' => $iStatus,
+            'stack' => $sStack,
+            'fatal' => !empty($aHit['fatal']) ? 1 : 0,
+            'repeats' => isset($aHit['repeats']) && is_numeric($aHit['repeats']) ? min(100, max(1, (int)$aHit['repeats'])) : 1,
+        ];
+    }
+
+    /**
+     * A vitals hit's navigation type and the metrics in range, or false when none is.
+     */
+    protected function _getVitalsInput($aHit)
+    {
+        if(!isset($aHit['metrics']) || !is_array($aHit['metrics']))
+            return false;
+
+        $aMetrics = [];
+        foreach(BxAnalyticsVitals::METRICS as $sMetric) {
+            $mixedValue = isset($aHit['metrics'][$sMetric]) ? BxAnalyticsVitals::getValue($sMetric, $aHit['metrics'][$sMetric]) : null;
+            if($mixedValue !== null)
+                $aMetrics[$sMetric] = $mixedValue;
+        }
+        if(empty($aMetrics))
+            return false;
+
+        $sNav = isset($aHit['nav']) && is_string($aHit['nav']) && in_array($aHit['nav'], BxAnalyticsVitals::NAVS, true) ? $aHit['nav'] : '';
+
+        return ['nav' => $sNav, 'metrics' => $aMetrics];
     }
 
     /**

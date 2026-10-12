@@ -16,6 +16,12 @@
  * default currency with the rate the order was placed at. Subscriptions are kept beside it,
  * with their price per month (MRR).
  *
+ * A subscription with a trial is registered by the payment module when the trial starts, with
+ * transactions at the full price although nothing was charged. Those rows are kept with the
+ * kind `trial` (amounts for reference only): no revenue sum, count or chart reads them, they
+ * are never refunded or reversed, and they make a `trial_start` action with no value instead
+ * of a purchase. The first charge after the trial is the order's sale, the later ones renewals.
+ *
  * A movement the buyer's own request makes carries the buyer's platform, visit and traffic
  * sources; a webhook or a cron job is the platform `core`. Money is always written; the visit
  * and the sources only when the request could be tracked.
@@ -28,6 +34,7 @@ class BxAnalyticsRevenue
     const KIND_RENEWAL = 'renewal';
     const KIND_REFUND = 'refund';
     const KIND_REVERSAL = 'reversal';
+    const KIND_TRIAL = 'trial';
 
     const TYPE_SINGLE = 'single';
     const TYPE_RECURRING = 'recurring';
@@ -213,6 +220,68 @@ class BxAnalyticsRevenue
     }
 
     /**
+     * The kind of a charge, trials included: a charge of a recurring order that registered its
+     * trial (see isTrialRegistration()) is a `trial`, any other follows getKind() with the
+     * order's first paid charge.
+     *
+     * @param array $aSubscription ledger subscription row (started, trial), [] for none
+     * @param int $iFirstPaidTs time of the order's first charge that is not a trial registration
+     */
+    public static function getChargeKind($sType, $aSubscription, $iChargeTs, $iFirstPaidTs)
+    {
+        if($sType == self::TYPE_RECURRING && self::isTrialRegistration($aSubscription, $iChargeTs))
+            return self::KIND_TRIAL;
+
+        return self::getKind($sType, $iChargeTs, $iFirstPaidTs);
+    }
+
+    /**
+     * The action a charge of the current request records: a purchase, a renewal, or the start
+     * of a trial (with no value, it took no money).
+     */
+    public static function getActionName($sKind)
+    {
+        switch($sKind) {
+            case self::KIND_RENEWAL:
+                return 'renewal';
+            case self::KIND_TRIAL:
+                return 'trial_start';
+        }
+
+        return 'purchase';
+    }
+
+    /**
+     * Kinds of an order's charges, from its ledger rows (sale, renewal and trial rows; refund and
+     * reversal rows are read to leave the charges they negate as they are) and its subscription:
+     * [row id => kind] for the rows whose kind differs. Used when the subscription becomes known
+     * after its charges were read (the import reads transactions before subscriptions).
+     */
+    public static function getKindChanges($sType, $aSubscription, $aRows)
+    {
+        $aNegated = [];
+        $iFirst = 0;
+        foreach($aRows as $aRow) {
+            if(in_array($aRow['kind'], [self::KIND_REFUND, self::KIND_REVERSAL], true))
+                $aNegated[(int)$aRow['transaction_id']] = true;
+            else if($sType != self::TYPE_RECURRING || !self::isTrialRegistration($aSubscription, (int)$aRow['ts']))
+                $iFirst = $iFirst ? min($iFirst, (int)$aRow['ts']) : (int)$aRow['ts'];
+        }
+
+        $aChanges = [];
+        foreach($aRows as $aRow) {
+            if(!in_array($aRow['kind'], [self::KIND_SALE, self::KIND_RENEWAL, self::KIND_TRIAL], true) || isset($aNegated[(int)$aRow['transaction_id']]))
+                continue;
+
+            $sKind = self::getChargeKind($sType, $aSubscription, (int)$aRow['ts'], $iFirst);
+            if($sKind != $aRow['kind'])
+                $aChanges[(int)$aRow['id']] = $sKind;
+        }
+
+        return $aChanges;
+    }
+
+    /**
      * Module and item of an order's first item, from the payment module's item descriptors
      * (vendor_module_item_count, joined with ":").
      *
@@ -276,9 +345,10 @@ class BxAnalyticsRevenue
     }
 
     /**
-     * An order was paid (or a subscription charged): every transaction of the order the ledger
-     * doesn't have yet. A transaction the current request made gets its context and becomes a
-     * purchase or renewal event, so goals and funnels can end in a sale.
+     * An order was paid, a subscription charged or its trial registered: every transaction of
+     * the order the ledger doesn't have yet. A transaction the current request made gets its
+     * context and becomes a purchase, renewal or trial_start event, so goals and funnels can
+     * end in a sale or a trial.
      *
      * @return int movements added
      */
@@ -304,68 +374,72 @@ class BxAnalyticsRevenue
         $sType = isset($aPending['type']) ? $aPending['type'] : self::TYPE_SINGLE;
         $fRate = $this->getRate(isset($aPending['currency']) ? (string)$aPending['currency'] : '', isset($aPending['data']) ? $aPending['data'] : '');
 
-        // a renewal brings the whole order along: skip the charges the ledger has; the order's
-        // first charge is the earliest one either side knows (the payment module deletes a
-        // transaction its seller cancels, the ledger keeps it)
-        $aKnown = [];
-        $iFirst = 0;
-        foreach($this->_oDb->getRevenueRows($sPayment, $iPendingId, [self::KIND_SALE, self::KIND_RENEWAL]) as $aRow) {
-            $aKnown[(int)$aRow['transaction_id']] = true;
-            $iFirst = $iFirst ? min($iFirst, (int)$aRow['ts']) : (int)$aRow['ts'];
-        }
-        foreach($aTransactions as $aTransaction) {
-            $iTs = !empty($aTransaction['date']) ? (int)$aTransaction['date'] : $this->_iNow;
-            $iFirst = $iFirst ? min($iFirst, $iTs) : $iTs;
-        }
+        // a renewal brings the whole order along: skip the charges the ledger has
+        $aRows = $this->_oDb->getRevenueRows($sPayment, $iPendingId, [self::KIND_SALE, self::KIND_RENEWAL, self::KIND_TRIAL]);
+        $aKnown = array_flip(array_map('intval', array_column($aRows, 'transaction_id')));
 
-        // a subscription's first sale a webhook registers keeps the platform of the buyer's checkout
-        $aSubscription = $sType == self::TYPE_RECURRING ? $this->_oDb->getSubscriptionRow($sPayment, $iPendingId) : [];
+        $aNew = [];
+        foreach($aTransactions as $aTransaction)
+            if(!isset($aKnown[(int)$aTransaction['id']]))
+                $aNew[] = $aTransaction;
+        if(empty($aNew))
+            return 0;
+
+        // the subscription tells a trial's registration from a charge: its row is made first
+        // when the subscription began before analytics was installed. A subscription's first
+        // sale a webhook registers keeps the platform of the buyer's checkout.
+        $aSubscription = [];
+        if($sType == self::TYPE_RECURRING && $this->_ensureSubscription($sPayment, $aPending))
+            $aSubscription = $this->_oDb->getSubscriptionRow($sPayment, $iPendingId);
         $sCheckoutPlatform = !empty($aSubscription['platform']) ? (string)$aSubscription['platform'] : '';
+
+        // the order's first paid charge is the earliest one either side knows (the payment
+        // module deletes a transaction its seller cancels, the ledger keeps it); the
+        // registration of a trial is not one
+        $iFirst = 0;
+        foreach($aRows as $aRow)
+            if($aRow['kind'] != self::KIND_TRIAL)
+                $iFirst = $iFirst ? min($iFirst, (int)$aRow['ts']) : (int)$aRow['ts'];
+        foreach($aNew as $aTransaction) {
+            $iTs = !empty($aTransaction['date']) ? (int)$aTransaction['date'] : $this->_iNow;
+            if(self::getChargeKind($sType, $aSubscription, $iTs, $iTs) != self::KIND_TRIAL)
+                $iFirst = $iFirst ? min($iFirst, $iTs) : $iTs;
+        }
 
         $iAdded = 0;
         $aLive = [];
-        $aCharges = [];
-        foreach($aTransactions as $aTransaction) {
-            if(isset($aKnown[(int)$aTransaction['id']]))
-                continue;
-
+        $aPaid = [];
+        foreach($aNew as $aTransaction) {
             $iTs = !empty($aTransaction['date']) ? (int)$aTransaction['date'] : $this->_iNow;
-            $sKind = self::getKind($sType, $iTs, $iFirst);
+            $sKind = self::getChargeKind($sType, $aSubscription, $iTs, $iFirst);
             $bLive = abs($this->_iNow - $iTs) <= self::LIVE_WINDOW;
 
-            $aContext = $bLive ? $this->getContext((int)$aPending['client_id'], isset($aPending['provider']) ? $aPending['provider'] : '', $sKind, $iTs, $sKind == self::KIND_SALE ? $sCheckoutPlatform : '') : $this->_getImportContext((int)$aPending['client_id'], $iTs);
+            // a trial starts at the checkout, like a sale
+            $sContextKind = $sKind == self::KIND_TRIAL ? self::KIND_SALE : $sKind;
+            $aContext = $bLive ? $this->getContext((int)$aPending['client_id'], isset($aPending['provider']) ? $aPending['provider'] : '', $sContextKind, $iTs, $sContextKind == self::KIND_SALE ? $sCheckoutPlatform : '') : $this->_getImportContext((int)$aPending['client_id'], $iTs);
             $aRow = $this->_getLedgerRow($sPayment, $aPending, $aTransaction, $sKind, $iTs, $fRate, $aContext);
             if(!$this->_oDb->insertRevenue($aRow))
                 continue;
 
             $iAdded++;
-            $aCharges[$iTs] = true;
+            if($sKind != self::KIND_TRIAL)
+                $aPaid[$iTs] = $iTs;
             if($bLive)
                 $aLive[] = [$aRow, $aContext];
         }
 
-        if($iAdded && $sType == self::TYPE_RECURRING) {
-            $this->_ensureSubscription($sPayment, $aPending);
-
-            // the registration of a trial took no money: the subscription pays from its first charge
-            $aSubscription = $this->_oDb->getSubscriptionRow($sPayment, $iPendingId);
-            $aPaid = [];
-            foreach(array_keys($aCharges) as $iTs)
-                if(!self::isTrialRegistration($aSubscription, $iTs))
-                    $aPaid[] = $iTs;
-
-            if(!empty($aPaid))
-                $this->_oDb->addSubscriptionPayments($sPayment, $iPendingId, count($aPaid), min($aPaid), max($aPaid));
-        }
+        // the registration of a trial took no money: the subscription pays from its first charge
+        if(!empty($aPaid) && $sType == self::TYPE_RECURRING)
+            $this->_oDb->addSubscriptionPayments($sPayment, $iPendingId, count($aPaid), min($aPaid), max($aPaid));
 
         // no amounts or order numbers in the properties: the events report shows them to
         // everyone who may use analytics, revenue or not
         foreach($aLive as list($aRow, $aContext))
             if($aContext['track'])
-                $this->_getCollector()->collectAction($aRow['kind'] == self::KIND_RENEWAL ? 'renewal' : 'purchase', $aRow['module'], $aRow['item_id'], $aRow['client_id'], [
+                $this->_getCollector()->collectAction(self::getActionName($aRow['kind']), $aRow['module'], $aRow['item_id'], $aRow['client_id'], [
                     'platform' => $aContext['platform'],
                     'api_key' => $this->_isApiKey(),
-                    'value' => $aRow['amount_default'] !== null ? (float)$aRow['amount_default'] : 0,
+                    'value' => $aRow['kind'] != self::KIND_TRIAL && $aRow['amount_default'] !== null ? (float)$aRow['amount_default'] : 0,
                     'props' => [
                         'provider' => $aRow['provider'],
                     ],
@@ -379,8 +453,9 @@ class BxAnalyticsRevenue
      * ledger negates its own rows: every sale of a single order, and only the latest charge of
      * a recurring one (the provider refunds one charge). A refund keeps the platform and the
      * sources of the sale it takes back, so net revenue per source stays right. A transaction
-     * its seller already cancelled (a reversal) is not taken back again, and an order is
-     * refunded once: the payment module deletes it.
+     * its seller already cancelled (a reversal) is not taken back again, a trial's registration
+     * took no money and is never taken back (a refund during the trial adds nothing), and an
+     * order is refunded once: the payment module deletes it.
      *
      * @return int movements added
      */
@@ -694,20 +769,34 @@ class BxAnalyticsRevenue
 
     /**
      * Past transactions into the ledger, with the time they were registered and no platform.
-     * A transaction the ledger has as a sale or a renewal is skipped whatever its kind, and
-     * kinds follow the same rule as live payments (see registerPayment()).
+     * A transaction the ledger has as a sale, a renewal or a trial is skipped whatever its kind,
+     * and kinds follow the same rule as live payments (see registerPayment()) with the
+     * subscriptions the ledger has. The import reads transactions before subscriptions, so the
+     * trial of a subscription the ledger doesn't have yet is applied when importSubscriptions()
+     * reads it.
      *
      * @return int movements added
      */
     public function importTransactions($sPayment, $aRows)
     {
-        $aFirst = [];
+        $aTypes = [];
         foreach($aRows as $aRow)
-            $aFirst[(int)$aRow['pending_id']] = isset($aFirst[(int)$aRow['pending_id']]) ? min($aFirst[(int)$aRow['pending_id']], (int)$aRow['date']) : (int)$aRow['date'];
+            $aTypes[(int)$aRow['pending_id']] = !empty($aRow['type']) ? $aRow['type'] : self::TYPE_SINGLE;
+
+        // trials of the recurring orders on this page: [pending id => started, trial]
+        $aTrials = $this->_oDb->getSubscriptionTrials($sPayment, array_keys(array_filter($aTypes, function($sType) { return $sType == self::TYPE_RECURRING; })));
+
+        $aFirst = [];
+        foreach($aRows as $aRow) {
+            $iPendingId = (int)$aRow['pending_id'];
+            $aSubscription = isset($aTrials[$iPendingId]) ? $aTrials[$iPendingId] : [];
+            if(self::getChargeKind($aTypes[$iPendingId], $aSubscription, (int)$aRow['date'], (int)$aRow['date']) != self::KIND_TRIAL)
+                $aFirst[$iPendingId] = isset($aFirst[$iPendingId]) ? min($aFirst[$iPendingId], (int)$aRow['date']) : (int)$aRow['date'];
+        }
 
         // a renewal on this page may belong to an order whose sale the ledger already has
-        foreach($this->_oDb->getRevenueFirstCharges($sPayment, array_keys($aFirst)) as $iPendingId => $iTs)
-            $aFirst[(int)$iPendingId] = min($aFirst[(int)$iPendingId], (int)$iTs);
+        foreach($this->_oDb->getRevenueFirstCharges($sPayment, array_keys($aTypes)) as $iPendingId => $iTs)
+            $aFirst[(int)$iPendingId] = isset($aFirst[(int)$iPendingId]) ? min($aFirst[(int)$iPendingId], (int)$iTs) : (int)$iTs;
 
         $aKnown = array_flip($this->_oDb->getRevenueCharged($sPayment, array_column($aRows, 'id')));
 
@@ -727,7 +816,7 @@ class BxAnalyticsRevenue
             ];
 
             $iTs = (int)$aRow['date'];
-            $sKind = self::getKind($aPending['type'], $iTs, $aFirst[(int)$aRow['pending_id']]);
+            $sKind = self::getChargeKind($aPending['type'], isset($aTrials[$aPending['id']]) ? $aTrials[$aPending['id']] : [], $iTs, isset($aFirst[$aPending['id']]) ? $aFirst[$aPending['id']] : 0);
             $fRate = $this->getRate($aPending['currency'], $aPending['data']);
 
             $iAdded += $this->_oDb->insertRevenue($this->_getLedgerRow($sPayment, $aPending, $aRow, $sKind, $iTs, $fRate, $this->_getImportContext((int)$aRow['client_id'], $iTs)));
@@ -737,7 +826,9 @@ class BxAnalyticsRevenue
     }
 
     /**
-     * Past subscriptions, current or cancelled, with their payments taken from the ledger.
+     * Past subscriptions, current or cancelled, with their payments taken from the ledger. The
+     * charges of a subscription with a trial follow its trial: the import read them before it
+     * knew it (see importTransactions()).
      */
     public function importSubscriptions($sPayment, $aRows, $bDeleted)
     {
@@ -758,7 +849,12 @@ class BxAnalyticsRevenue
             ];
 
             $aSubscription = $this->_getSubscriptionRow($sPayment, $aPending, $aRow);
-            $aPaid = $this->_oDb->getRevenuePaid($sPayment, $aPending['id'], self::getTrialPaidFrom(['trial' => $aSubscription['trial'], 'started' => (int)$aRow['date_add']]));
+            $aTrial = ['trial' => $aSubscription['trial'], 'started' => (int)$aRow['date_add']];
+            if($aTrial['trial'] > 0)
+                foreach(self::getKindChanges(self::TYPE_RECURRING, $aTrial, $this->_oDb->getRevenueRows($sPayment, $aPending['id'])) as $iId => $sKind)
+                    $this->_oDb->updateRevenueKind($iId, $sKind);
+
+            $aPaid = $this->_oDb->getRevenuePaid($sPayment, $aPending['id'], self::getTrialPaidFrom($aTrial));
 
             $iImported += (int)$this->_oDb->importSubscriptionRow(array_merge($aSubscription, [
                 'status' => $bDeleted ? self::STATUS_CANCELED : $aSubscription['status'],

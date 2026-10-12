@@ -34,7 +34,17 @@ INSERT INTO `sys_options` (`category_id`, `name`, `caption`, `info`, `value`, `t
 (@iCategoryId, 'bx_analytics_geo_source', '_bx_analytics_adm_stg_cpt_geo_source', '_bx_analytics_adm_stg_inf_geo_source', 'headers', 'select', 'a:2:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:22:"get_options_geo_source";}', '', '', '', 8),
 (@iCategoryId, 'bx_analytics_retention_days', '_bx_analytics_adm_stg_cpt_retention_days', '_bx_analytics_adm_stg_inf_retention_days', '400', 'digit', '', '', '', '', 9);
 
-INSERT INTO `sys_options_categories` (`type_id`, `name`, `caption`, `hidden`, `order`) VALUES(@iTypeId,  'bx_analytics_general', '_bx_analytics_adm_stg_cpt_category_content', 0, 3);
+INSERT INTO `sys_options_categories` (`type_id`, `name`, `caption`, `hidden`, `order`) VALUES(@iTypeId, 'bx_analytics_health', '_bx_analytics_adm_stg_cpt_category_health', 0, 3);
+SET @iCategoryId = LAST_INSERT_ID();
+
+INSERT INTO `sys_options` (`category_id`, `name`, `caption`, `info`, `value`, `type`, `extra`, `check`, `check_params`, `check_error`, `order`) VALUES
+(@iCategoryId, 'bx_analytics_track_errors', '_bx_analytics_adm_stg_cpt_track_errors', '_bx_analytics_adm_stg_inf_track_errors', 'on', 'checkbox', '', '', '', '', 1),
+(@iCategoryId, 'bx_analytics_errors_ignore', '_bx_analytics_adm_stg_cpt_errors_ignore', '_bx_analytics_adm_stg_inf_errors_ignore', 'ResizeObserver loop*\nScript error.*\n*Non-Error promise rejection*', 'text', '', '', '', '', 2),
+(@iCategoryId, 'bx_analytics_track_vitals', '_bx_analytics_adm_stg_cpt_track_vitals', '_bx_analytics_adm_stg_inf_track_vitals', 'on', 'checkbox', '', '', '', '', 3),
+(@iCategoryId, 'bx_analytics_vitals_sample', '_bx_analytics_adm_stg_cpt_vitals_sample', '_bx_analytics_adm_stg_inf_vitals_sample', '100', 'digit', '', '', '', '', 4),
+(@iCategoryId, 'bx_analytics_vitals_retention_days', '_bx_analytics_adm_stg_cpt_vitals_retention_days', '_bx_analytics_adm_stg_inf_vitals_retention_days', '90', 'digit', '', '', '', '', 5);
+
+INSERT INTO `sys_options_categories` (`type_id`, `name`, `caption`, `hidden`, `order`) VALUES(@iTypeId,  'bx_analytics_general', '_bx_analytics_adm_stg_cpt_category_content', 0, 4);
 SET @iCategoryId = LAST_INSERT_ID();
 
 INSERT INTO `sys_options` (`category_id`, `name`, `caption`, `value`, `type`, `extra`, `check`, `check_params`, `check_error`, `order`) VALUES
@@ -45,7 +55,7 @@ INSERT INTO `sys_options` (`category_id`, `name`, `caption`, `value`, `type`, `e
 -- hidden: where the import of past payments stands; the transactions cursor is the last
 -- imported transaction id (-1 when done), the subscriptions cursor is "active:<pending id>",
 -- "deleted:<pending id>" or -1
-INSERT INTO `sys_options_categories` (`type_id`, `name`, `caption`, `hidden`, `order`) VALUES(@iTypeId, 'bx_analytics_system', '_bx_analytics_adm_stg_cpt_category_system', 1, 4);
+INSERT INTO `sys_options_categories` (`type_id`, `name`, `caption`, `hidden`, `order`) VALUES(@iTypeId, 'bx_analytics_system', '_bx_analytics_adm_stg_cpt_category_system', 1, 5);
 SET @iCategoryId = LAST_INSERT_ID();
 
 INSERT INTO `sys_options` (`category_id`, `name`, `caption`, `value`, `type`, `extra`, `check`, `check_params`, `check_error`, `order`) VALUES
@@ -91,7 +101,9 @@ INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title_system`, `
 ('', 0, @sName, '_bx_analytics_page_block_title_system_subscriptions', '_bx_analytics_page_block_title_subscriptions', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:16:"get_block_report";s:6:"params";a:1:{i:0;s:13:"subscriptions";}}', 0, 1, 1, 21),
 ('', 0, @sName, '_bx_analytics_page_block_title_system_sales', '_bx_analytics_page_block_title_sales', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:16:"get_block_report";s:6:"params";a:1:{i:0;s:5:"sales";}}', 0, 1, 1, 22),
 ('', 0, @sName, '_bx_analytics_page_block_title_system_credits', '_bx_analytics_page_block_title_credits', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:16:"get_block_report";s:6:"params";a:1:{i:0;s:7:"credits";}}', 0, 1, 1, 23),
-('', 0, @sName, '_bx_analytics_page_block_title_system_canvas', '_bx_analytics_page_block_title_canvas', 11, 2147483647, 'service', 'a:2:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:10:"get_canvas";}', 0, 1, 1, 24);
+('', 0, @sName, '_bx_analytics_page_block_title_system_errors', '_bx_analytics_page_block_title_errors', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:16:"get_block_report";s:6:"params";a:1:{i:0;s:6:"errors";}}', 0, 1, 1, 24),
+('', 0, @sName, '_bx_analytics_page_block_title_system_performance', '_bx_analytics_page_block_title_performance', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:16:"get_block_report";s:6:"params";a:1:{i:0;s:11:"performance";}}', 0, 1, 1, 25),
+('', 0, @sName, '_bx_analytics_page_block_title_system_canvas', '_bx_analytics_page_block_title_canvas', 11, 2147483647, 'service', 'a:2:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:10:"get_canvas";}', 0, 1, 1, 26);
 
 -- STUDIO DASHBOARD: traffic next to the core blocks
 SET @iStdDashboardOrder = (SELECT IFNULL(MAX(`order`), 0) + 1 FROM `sys_pages_blocks` WHERE `object` = 'sys_std_dashboard' AND `cell_id` = 1);

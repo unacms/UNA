@@ -158,6 +158,10 @@ class AnalyticsRevenueTest extends BxDolIntegrationTestCase
 
         $aSbs = $this->_oModule->_oDb->getSubscriptionRow('bx_payment', $aWeekly['id']);
         $this->assertSame(['13.0000', 'trial', 0, 0], [$aSbs['mrr_default'], $aSbs['status'], (int)$aSbs['first_paid'], (int)$aSbs['paid_count']], 'a weekly 3 plan is 13 a month; the trial took no money');
+        $this->assertSame(['trial'], array_column($this->_ledger($aWeekly), 'kind'));
+
+        $aTiles = array_column($this->_oModule->getReports()->getRevenue($this->_filter(), [])['tiles'], 'value', 'key');
+        $this->assertEquals([240.0, 1], [$aTiles['gross'], $aTiles['orders']], 'the trial is not revenue');
 
         $aReport = $this->_oModule->getReports()->getSubscriptions($this->_filter(), []);
         $aTiles = array_column($aReport['tiles'], 'value', 'key');
@@ -171,6 +175,122 @@ class AnalyticsRevenueTest extends BxDolIntegrationTestCase
         $oEnd->onPaymentAlert($this->_alert('register_payment', ['pending' => $aWeekly]));
         $aSbs = $this->_oModule->_oDb->getSubscriptionRow('bx_payment', $aWeekly['id']);
         $this->assertSame(['active', self::NOW + 7 * 86400, 1], [$aSbs['status'], (int)$aSbs['first_paid'], (int)$aSbs['paid_count']]);
+        $this->assertSame(['trial', 'sale'], array_column($this->_ledger($aWeekly), 'kind'), 'the first charge after the trial is the sale');
+    }
+
+    public function testTrial()
+    {
+        // a weekly 3 plan with a week of trial, checked out in NEO web
+        $aServer = $this->_server(['HTTP_X_NEO_PLATFORM' => 'web']);
+        $aPending = $this->_order('recurring', 'stripe_v3', 'USD', 3);
+        $aSubscription = ['subscription_id' => 'test-rev-sub-t', 'period' => 1, 'period_unit' => 'week', 'status' => 'trial', 'trial' => 7];
+        $oBuyer = $this->_buyer($aServer);
+        $oBuyer->onPaymentAlert($this->_alert('create_subscription', ['pending' => $aPending, 'subscription' => $aSubscription]));
+
+        // the payment module registers the order at the full price when the trial starts
+        $iRegistration = $this->_transaction($aPending, 3);
+        $oBuyer->onPaymentAlert($this->_alert('register_payment', ['pending' => $aPending]));
+        $oBuyer->onPaymentAlert($this->_alert('register_payment', ['pending' => $aPending]));
+        $this->assertSame([['trial', '3.0000', 'next-web']], array_map(function ($a) { return [$a['kind'], $a['amount_default'], $a['platform']]; }, $this->_ledger($aPending)), 'kept for reference, once');
+
+        $oReports = $this->_oModule->getReports();
+        $aTiles = array_column($oReports->getRevenue($this->_filter(), [])['tiles'], 'value', 'key');
+        $this->assertEquals([0.0, 0.0, 0, 0], [$aTiles['gross'], $aTiles['net'], $aTiles['orders'], $aTiles['customers']], 'no money yet');
+        $aTiles = array_column($oReports->getSubscriptions($this->_filter(), [])['tiles'], 'value', 'key');
+        $this->assertEquals([0.0, 0, 1], [$aTiles['mrr'], $aTiles['active'], $aTiles['trials']]);
+        $this->assertSame([], $oReports->getLifetimeValues([self::CLIENT]), 'no lifetime value');
+
+        // the trial start is an action of the visit, with no value
+        $aEvents = BxDolDb::getInstance()->getAll("SELECT `name`, `value`, `platform` FROM `bx_analytics_events` WHERE `type` = 'una' AND `ts` < :to ORDER BY `id`", ['to' => self::NOW + 30 * 86400]);
+        $this->assertEquals([['name' => 'trial_start', 'value' => 0, 'platform' => 'next-web']], $aEvents);
+
+        // a seller cancelling the registration takes no money back
+        (new BxAnalyticsRevenue($this->_oModule, new BxAnalyticsRequest([]), self::NOW + 60, ['logged' => self::SELLER]))->onPaymentAlert($this->_alert('cancel_order', ['type' => 'processed', 'order' => ['id' => $iRegistration]], self::SELLER));
+        $this->assertCount(1, $this->_ledger($aPending));
+
+        // the first charge when the trial ends, and a renewal a week later, both by cron
+        foreach ([7, 14] as $iDays) {
+            $oCron = new BxAnalyticsRevenue($this->_oModule, new BxAnalyticsRequest([]), self::NOW + $iDays * 86400, ['api' => false, 'api_key' => false, 'logged' => 0]);
+            $oCron->onPaymentAlert($this->_alert('prolong_subscription', ['pending' => $aPending, 'subscription' => $aSubscription]));
+            $this->_transaction($aPending, 3, self::NOW + $iDays * 86400);
+            $oCron->onPaymentAlert($this->_alert('register_payment', ['pending' => $aPending]));
+        }
+
+        $aRows = $this->_ledger($aPending);
+        $this->assertSame([['trial', 'next-web'], ['sale', 'next-web'], ['renewal', 'core']], array_map(function ($a) { return [$a['kind'], $a['platform']]; }, $aRows), 'the sale keeps the checkout platform');
+
+        $aSbs = $this->_oModule->_oDb->getSubscriptionRow('bx_payment', $aPending['id']);
+        $this->assertSame(['active', self::NOW + 7 * 86400, self::NOW + 14 * 86400, 2], [$aSbs['status'], (int)$aSbs['first_paid'], (int)$aSbs['last_paid'], (int)$aSbs['paid_count']]);
+
+        $oFilter = new BxAnalyticsFilter($this->_oModule, ['range' => 'custom', 'from' => '2001-09-08', 'to' => '2001-09-24'], self::NOW + 20 * 86400);
+        $aRevenue = $oReports->getRevenue($oFilter, []);
+        $aTiles = array_column($aRevenue['tiles'], 'value', 'key');
+        $this->assertEquals([6.0, 6.0, 1, 1], [$aTiles['gross'], $aTiles['net'], $aTiles['orders'], $aTiles['customers']]);
+        $this->assertEquals(6.0, array_sum(array_filter($aRevenue['chart']['datasets'][0]['values'])), 'the chart has the charges only');
+
+        $aSubscriptions = $oReports->getSubscriptions($oFilter, []);
+        $aTiles = array_column($aSubscriptions['tiles'], 'value', 'key');
+        $this->assertEquals([13.0, 1, 0, 1], [$aTiles['mrr'], $aTiles['active'], $aTiles['trials'], $aTiles['new']]);
+        $this->assertSame(1, array_sum(array_filter($aSubscriptions['movement']['datasets'][1]['values'])), 'one renewal: the first charge is the sale');
+
+        $this->assertEquals([self::CLIENT => 6.0], array_map('floatval', $oReports->getLifetimeValues([self::CLIENT])));
+        $aSales = $oReports->getSales($oFilter, []);
+        $this->assertSame(['net' => 6.0, 'units' => 1, 'orders' => 1, 'renewals' => 1], $aSales['items']['rows'][0]['values']);
+
+        $aEvents = BxDolDb::getInstance()->getPairs("SELECT `name`, SUM(`value`) AS `value` FROM `bx_analytics_events` WHERE `type` = 'una' AND `ts` < :to GROUP BY `name`", 'name', 'value', ['to' => self::NOW + 30 * 86400]);
+        $this->assertEquals(['purchase' => 3, 'renewal' => 3, 'trial_start' => 0], $aEvents, 'the first charge is the purchase');
+
+        // a refund during the trial takes nothing back; after it, the latest charge
+        $aEarly = $this->_order('recurring', 'paypal_api', 'USD', 5);
+        $this->_buyer($aServer)->onPaymentAlert($this->_alert('create_subscription', ['pending' => $aEarly, 'subscription' => ['subscription_id' => 'test-rev-sub-t2', 'period' => 1, 'period_unit' => 'month', 'status' => 'trial', 'trial' => 14]]));
+        $this->_transaction($aEarly, 5);
+        $this->_buyer($aServer)->onPaymentAlert($this->_alert('register_payment', ['pending' => $aEarly]));
+        $this->_deletePayment($aEarly);
+        (new BxAnalyticsRevenue($this->_oModule, new BxAnalyticsRequest([]), self::NOW + 600, ['logged' => 0]))->onPaymentAlert($this->_alert('refund_payment', ['pending' => $aEarly]));
+        $this->assertSame(['trial'], array_column($this->_ledger($aEarly), 'kind'));
+
+        $this->_deletePayment($aPending);
+        (new BxAnalyticsRevenue($this->_oModule, new BxAnalyticsRequest([]), self::NOW + 15 * 86400, ['logged' => 0]))->onPaymentAlert($this->_alert('refund_payment', ['pending' => $aPending]));
+        $aRows = $this->_ledger($aPending);
+        $this->assertSame(['trial', 'sale', 'renewal', 'refund'], array_column($aRows, 'kind'));
+        $this->assertSame($aRows[2]['transaction_id'], $aRows[3]['transaction_id']);
+    }
+
+    public function testTrialImport()
+    {
+        // a weekly plan with a week of trial the ledger never saw: registered, charged, renewed
+        $aPending = $this->_order('recurring', 'stripe_v3', 'USD', 3);
+        $iFirst = $this->_transaction($aPending, 3, self::NOW - 20 * 86400);
+        $this->_transaction($aPending, 3, self::NOW - 13 * 86400);
+        $this->_transaction($aPending, 3, self::NOW - 6 * 86400);
+
+        // transactions are read before subscriptions: the trial isn't known yet
+        $oRevenue = $this->_oModule->getRevenue();
+        $aPage = bx_srv_ic('bx_payment', 'get_transactions_after', [$iFirst - 1, 10], 'Orders');
+        $this->assertSame(3, $oRevenue->importTransactions('bx_payment', $aPage));
+        $this->assertSame(['sale', 'renewal', 'renewal'], array_column($this->_ledger($aPending), 'kind'));
+
+        // its subscription brings the trial
+        $aSubscription = [
+            'pending_id' => $aPending['id'], 'subscription_id' => 'test-rev-sub-ti', 'period' => 1, 'period_unit' => 'week', 'trial' => 7,
+            'date_add' => self::NOW - 20 * 86400, 'date_next' => self::NOW + 86400, 'status' => 'active', 'client_id' => self::CLIENT, 'seller_id' => self::SELLER,
+            'type' => 'recurring', 'provider' => 'stripe_v3', 'items' => self::SELLER . '_' . $this->_iModuleId . '_1_1', 'amount' => 3, 'currency' => 'USD',
+            'order' => $aPending['order'], 'data' => $aPending['data'],
+        ];
+        $this->assertSame(1, $oRevenue->importSubscriptions('bx_payment', [$aSubscription], false));
+        $this->assertSame(['trial', 'sale', 'renewal'], array_column($this->_ledger($aPending), 'kind'));
+        $aSbs = $this->_oModule->_oDb->getSubscriptionRow('bx_payment', $aPending['id']);
+        $this->assertSame([self::NOW - 13 * 86400, self::NOW - 6 * 86400, 2], [(int)$aSbs['first_paid'], (int)$aSbs['last_paid'], (int)$aSbs['paid_count']]);
+
+        // read again, nothing new; read with the subscription known, the kinds are right at once
+        $this->assertSame(0, $oRevenue->importTransactions('bx_payment', $aPage));
+        BxDolDb::getInstance()->query("DELETE FROM `bx_analytics_revenue` WHERE `payment` = 'bx_payment' AND `pending_id` = :id", ['id' => (int)$aPending['id']]);
+        $this->assertSame(3, $oRevenue->importTransactions('bx_payment', $aPage));
+        $this->assertSame(['trial', 'sale', 'renewal'], array_column($this->_ledger($aPending), 'kind'));
+
+        $oFilter = new BxAnalyticsFilter($this->_oModule, ['range' => 'custom', 'from' => '2001-08-19', 'to' => '2001-09-09'], self::NOW + 86400);
+        $aTiles = array_column($this->_oModule->getReports()->getRevenue($oFilter, [])['tiles'], 'value', 'key');
+        $this->assertEquals([6.0, 1], [$aTiles['gross'], $aTiles['orders']]);
     }
 
     public function testChargeWithAddons()

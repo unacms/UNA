@@ -30,6 +30,11 @@ define('BX_ANALYTICS_HIT_EVENT', 'event');
 define('BX_ANALYTICS_HIT_LEAVE', 'leave');
 define('BX_ANALYTICS_HIT_UNA', 'una');
 
+// health hits: a client error, and a page's web vitals (or an app screen's load times); they
+// are stored apart from events and never start a visit
+define('BX_ANALYTICS_HIT_ERROR', 'error');
+define('BX_ANALYTICS_HIT_VITALS', 'vitals');
+
 class BxAnalyticsConfig extends BxBaseModGeneralConfig
 {
     /**
@@ -79,6 +84,9 @@ class BxAnalyticsConfig extends BxBaseModGeneralConfig
             'TABLE_FUNNELS' => $aModule['db_prefix'] . 'funnels',
             'TABLE_REVENUE' => $aModule['db_prefix'] . 'revenue',
             'TABLE_SUBSCRIPTIONS' => $aModule['db_prefix'] . 'subscriptions',
+            'TABLE_ERRORS' => $aModule['db_prefix'] . 'errors',
+            'TABLE_ERROR_HITS' => $aModule['db_prefix'] . 'error_hits',
+            'TABLE_VITALS' => $aModule['db_prefix'] . 'vitals',
 
             // import of past payments: the cursors, rows read per service call, and the time
             // one step may take in the hourly cron and from the Studio button
@@ -93,6 +101,27 @@ class BxAnalyticsConfig extends BxBaseModGeneralConfig
             // hits per request and their properties, to bound the work of one beacon
             'MAX_HITS_PER_REQUEST' => 20,
             'MAX_PROPS_LENGTH' => 2048,
+
+            // health: error hits per request and per visit, new error groups per hour (more go
+            // to one catch-all group), how old a deferred error may be (an app that crashed
+            // sends it on the next launch), and vitals hits per request
+            'MAX_ERRORS_PER_REQUEST' => 10,
+            'MAX_ERRORS_PER_SESSION' => 50,
+            'MAX_NEW_ERROR_GROUPS_PER_HOUR' => 200,
+            'MAX_ERROR_AGE' => 7 * 86400,
+            'MAX_VITALS_PER_REQUEST' => 1,
+
+            // vitals thresholds, metric => [good up to, poor above]: milliseconds, and CLS in
+            // thousandths (the web.dev and Lighthouse values; app screens and starts by RN guides)
+            'VITALS' => [
+                'lcp' => [2500, 4000],
+                'inp' => [200, 500],
+                'cls' => [100, 250],
+                'fcp' => [1800, 3000],
+                'ttfb' => [800, 1800],
+                'screen_load' => [1000, 2500],
+                'app_start' => [2000, 4000],
+            ],
 
             // engaged time above this on one page is a tab left open, not reading
             'MAX_ENGAGED_MS' => 30 * 60 * 1000,
@@ -213,6 +242,45 @@ class BxAnalyticsConfig extends BxBaseModGeneralConfig
     public function getRetentionDays()
     {
         return max(1, (int)getParam('bx_analytics_retention_days'));
+    }
+
+    public function isTrackErrors()
+    {
+        return getParam('bx_analytics_track_errors') == 'on';
+    }
+
+    public function isTrackVitals()
+    {
+        return getParam('bx_analytics_track_vitals') == 'on';
+    }
+
+    /**
+     * Percent of page loads that measure vitals, 0 to 100; the client samples.
+     */
+    public function getVitalsSample()
+    {
+        return min(100, max(0, (int)getParam('bx_analytics_vitals_sample')));
+    }
+
+    /**
+     * Error messages that are not stored, one pattern per line with * for any characters.
+     * Lines, not commas: messages have spaces and commas.
+     */
+    public function getErrorsIgnore()
+    {
+        $sValue = trim((string)getParam('bx_analytics_errors_ignore'));
+        if($sValue === '')
+            return [];
+
+        return array_values(array_filter(array_map('trim', preg_split('/\R/u', $sValue)), 'strlen'));
+    }
+
+    /**
+     * Vitals are kept for this many days, at most as long as the rest.
+     */
+    public function getVitalsRetentionDays()
+    {
+        return min($this->getRetentionDays(), max(1, (int)getParam('bx_analytics_vitals_retention_days')));
     }
 
     /**

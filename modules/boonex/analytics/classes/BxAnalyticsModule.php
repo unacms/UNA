@@ -28,7 +28,7 @@ class BxAnalyticsModule extends BxDolModule
     /**
      * Reports that blocks, Studio and the API may ask for; each is a BxAnalyticsReports method.
      */
-    protected $_aReports = ['filters', 'overview', 'top', 'table', 'realtime', 'map', 'bots', 'sessions', 'users', 'events', 'journeys', 'retention', 'goals', 'funnels', 'revenue', 'subscriptions', 'sales', 'credits'];
+    protected $_aReports = ['filters', 'overview', 'top', 'table', 'realtime', 'map', 'bots', 'sessions', 'users', 'events', 'journeys', 'retention', 'goals', 'funnels', 'revenue', 'subscriptions', 'sales', 'credits', 'errors', 'performance'];
 
     /**
      * Reports that show members by name.
@@ -67,6 +67,8 @@ class BxAnalyticsModule extends BxDolModule
         'subscriptions' => [['filters', [], true], ['subscriptions', [], true]],
         'sales' => [['filters', [], true], ['sales', [], true]],
         'credits' => [['filters', [], true], ['credits', [], true]],
+        'errors' => [['filters', [], true], ['errors', [], true]],
+        'performance' => [['filters', [], true], ['performance', [], true]],
     ];
           
     function __construct(&$aModule)
@@ -240,12 +242,20 @@ class BxAnalyticsModule extends BxDolModule
      *
      * Tracker settings for NEO and the apps, read once when the client starts:
      * whether to send hits at all, whether to keep a visitor id (persistent identity mode),
-     * whether to honour Do Not Track, and the session timeout.
+     * whether to honour Do Not Track, the session timeout, and what to report about the
+     * app's health. The hits are described in BxAnalyticsCollector.
      *
      * @param $sPlatform client platform code (next-web, rn-ios, rn-android, api); when empty,
      *      the platform of the request
-     * @return array with `enabled`, `persistent`, `respect_dnt` (booleans) and
-     *      `session_timeout` (seconds)
+     * @return array with
+     *      - `enabled`, `persistent`, `respect_dnt` (booleans), `session_timeout` (seconds)
+     *      - `errors` (boolean): send `error` hits
+     *      - `errors_ignore` (array of strings): messages not to send, patterns with * for any
+     *        characters, matched against the whole message, case-insensitively; the server
+     *        drops them too, so filtering on the client only saves requests
+     *      - `vitals` (boolean): send `vitals` hits
+     *      - `vitals_sample` (0 to 100): percent of page loads (app launches on native) that
+     *        measure vitals, decided once per load with Math.random() * 100 < vitals_sample
      *
      * @see BxAnalyticsModule::serviceGetTrackerConfig
      */
@@ -268,6 +278,10 @@ class BxAnalyticsModule extends BxDolModule
             'persistent' => $bEnabled && $this->_oConfig->getIdentityMode() == BX_ANALYTICS_IDENTITY_PERSISTENT,
             'respect_dnt' => $this->_oConfig->isRespectDnt(),
             'session_timeout' => $this->_oConfig->getSessionTimeout(),
+            'errors' => $bEnabled && $this->_oConfig->isTrackErrors(),
+            'errors_ignore' => $this->_oConfig->getErrorsIgnore(),
+            'vitals' => $bEnabled && $this->_oConfig->isTrackVitals() && $this->_oConfig->getVitalsSample() > 0,
+            'vitals_sample' => $this->_oConfig->getVitalsSample(),
         ];
     }
 
@@ -342,7 +356,8 @@ class BxAnalyticsModule extends BxDolModule
      * Report data for NEO and other clients. Reports: filters, overview, top, table, realtime
      * and the other sections listed in BxAnalyticsModule::$_aReports. Sessions and users need
      * the "view analytics people" permission; revenue, subscriptions, sales and credits need
-     * "view analytics revenue".
+     * "view analytics revenue". Errors and performance need only "use analytics", but an
+     * error's stack trace (visitor text) is left out without "view analytics people".
      *
      * @param $sReport report name
      * @param $mixedParams filter parameters (see BxAnalyticsFilter) and the report's own
@@ -648,9 +663,9 @@ class BxAnalyticsModule extends BxDolModule
         $iDeadline = time() + $CNF['PRUNING_SECONDS'];
 
         $iDeleted = 0;
-        foreach(['deleteEventsBefore', 'deleteSessionsBefore'] as $sMethod)
+        foreach($this->getPruningCutoffs(time()) as $sMethod => $iTime)
             do {
-                $iBatch = $this->_oDb->$sMethod($iBefore, $CNF['PRUNING_BATCH']);
+                $iBatch = $this->_oDb->$sMethod($iTime, $CNF['PRUNING_BATCH']);
                 $iDeleted += $iBatch;
             } while($iBatch >= $CNF['PRUNING_BATCH'] && time() < $iDeadline);
 
@@ -664,6 +679,26 @@ class BxAnalyticsModule extends BxDolModule
         }
 
         return $iDeleted;
+    }
+
+    /**
+     * What pruning deletes and from when: a BxAnalyticsDb delete method => the time before
+     * which its rows go. Vitals have a shorter retention of their own (a row per sampled
+     * page view), never longer than the rest.
+     *
+     * @param int $iNow the time pruning runs at
+     */
+    public function getPruningCutoffs($iNow)
+    {
+        $iBefore = (int)$iNow - 86400 * $this->_oConfig->getRetentionDays();
+
+        return [
+            'deleteEventsBefore' => $iBefore,
+            'deleteSessionsBefore' => $iBefore,
+            'deleteErrorHitsBefore' => $iBefore,
+            'deleteErrorGroupsBefore' => $iBefore,
+            'deleteVitalsBefore' => (int)$iNow - 86400 * $this->_oConfig->getVitalsRetentionDays(),
+        ];
     }
 
     /**
@@ -822,6 +857,8 @@ class BxAnalyticsModule extends BxDolModule
         bx_import('UserAgent', $this->_aModule);
         bx_import('Source', $this->_aModule);
         bx_import('Request', $this->_aModule);
+        bx_import('Errors', $this->_aModule);
+        bx_import('Vitals', $this->_aModule);
         bx_import('Collector', $this->_aModule);
 
         return new BxAnalyticsCollector($this);
@@ -848,6 +885,8 @@ class BxAnalyticsModule extends BxDolModule
     public function getReports()
     {
         if($this->_oReports === null) {
+            bx_import('Errors', $this->_aModule);
+            bx_import('Vitals', $this->_aModule);
             bx_import('Reports', $this->_aModule);
             $this->_oReports = new BxAnalyticsReports($this);
         }
@@ -1391,6 +1430,26 @@ class BxAnalyticsModule extends BxDolModule
                     $aResult = ['ok' => (bool)$iId, 'id' => $iId];
                 }
             }
+        }
+
+        $this->_outputJson($aResult);
+    }
+
+    /**
+     * Mark an error group open, resolved or ignored: POST op (the status), id, csrf_token.
+     * An ignored error is left out of the lists but keeps counting; a resolved one opens
+     * again when it happens after that.
+     */
+    public function actionErrorStatus()
+    {
+        $aResult = $this->_checkManageRequest();
+        if($aResult === true) {
+            $sStatus = (string)bx_get('op', 'post');
+            $iId = (int)bx_get('id', 'post');
+            if(!in_array($sStatus, ['open', 'resolved', 'ignored'], true) || !$iId || !$this->_oDb->getErrorGroup($iId))
+                $aResult = ['error' => _t('_sys_request_page_not_found_cpt'), 'code' => 404];
+            else
+                $aResult = ['ok' => $this->_oDb->setErrorStatus($iId, $sStatus, time()), 'id' => $iId];
         }
 
         $this->_outputJson($aResult);

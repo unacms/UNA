@@ -344,7 +344,12 @@ BxAnalyticsDashboard.prototype.runAction = function (oButton) {
             return $this.reload(oBlock, false);
         })
         .then(function (oNew) {
-            $this.focusAfterOpen(oNew, 'edit_' + sKind, 'new');
+            // a status change keeps the view: focus goes to the first action left
+            var oAction = oNew && sKind === 'error_status' ? oNew.querySelector('[data-bx-analytics-action="error_status"]') : null;
+            if (oAction)
+                oAction.focus();
+            else
+                $this.focusAfterOpen(oNew, 'edit_' + sKind, 'new');
         })
         .catch(function (oException) {
             oButton.disabled = false;
@@ -494,6 +499,8 @@ BxAnalyticsDashboard.prototype.getColors = function (oElement) {
         fill: get('--bx-analytics-accent-fill', 'rgba(79, 70, 229, 0.15)'),
         grid: get('--bx-analytics-grid', 'rgba(0, 0, 0, 0.08)'),
         muted: get('--bx-analytics-muted', '#6b7280'),
+        good: get('--bx-analytics-good', '#047857'),
+        bad: get('--bx-analytics-bad', '#b91c1c'),
         palette: aPalette
     };
 };
@@ -534,7 +541,7 @@ BxAnalyticsDashboard.prototype.drawChart = function (oJson, oData) {
             border: {display: false},
             ticks: {
                 color: oColors.muted,
-                precision: sMetric === 'pages_per_session' ? 1 : 0,
+                precision: sMetric === 'pages_per_session' ? 1 : (sMetric === 'cls' ? undefined : 0),
                 callback: function (fValue) {
                     return $this.formatMetric(sMetric, fValue, oData);
                 }
@@ -585,13 +592,17 @@ BxAnalyticsDashboard.prototype.drawChart = function (oJson, oData) {
             data: {
                 labels: oData.labels.map(function (iTime) { return $this.formatBucket(iTime, oData.bucket || 'day', oData.tz || 'UTC'); }),
                 datasets: oData.datasets.map(function (oSet, iIndex) {
-                    var sColor = oColors.palette[iIndex % oColors.palette.length];
+                    // a set may ask for a meaning colour (good, bad) instead of the next in the palette
+                    var sColor = oSet.tone && oColors[oSet.tone] ? oColors[oSet.tone] : oColors.palette[iIndex % oColors.palette.length];
                     return {
                         label: oSet.label,
                         data: oSet.values,
                         backgroundColor: sColor,
                         borderColor: sColor,
-                        borderWidth: sKind === 'stacked' ? 0 : 2,
+                        borderWidth: sKind === 'stacked' ? 0 : (oSet.dashed ? 1.5 : 2),
+                        // reference lines, such as a metric's thresholds
+                        borderDash: oSet.dashed ? [6, 4] : undefined,
+                        spanGaps: false,
                         borderRadius: sKind === 'stacked' ? 2 : 0,
                         pointRadius: 0,
                         tension: 0.3
@@ -669,6 +680,14 @@ BxAnalyticsDashboard.prototype.formatMetric = function (sMetric, fValue, oData) 
 
         case 'bounce_rate':
             return Math.round(fValue) + '%';
+
+        // timings: 850ms, 2.40s
+        case 'ms':
+            return fValue >= 1000 ? (fValue / 1000).toFixed(2) + (this._aStrings.duration_s || 's') : Math.round(fValue) + (this._aStrings.ms || 'ms');
+
+        // layout shift: a score
+        case 'cls':
+            return Number(fValue).toFixed(fValue && fValue < 0.1 ? 3 : 2);
 
         case 'pages_per_session':
             return Number(fValue).toFixed(1);

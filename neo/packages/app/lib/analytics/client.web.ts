@@ -1,4 +1,5 @@
 import type { AnalyticsClient } from './analytics.types';
+import { cleanUrl } from './privacy';
 
 type PrivacyNavigator = Navigator & { globalPrivacyControl?: boolean };
 
@@ -14,6 +15,17 @@ export function getClient(): AnalyticsClient {
         language: window.navigator.language || '',
         screen: screen ? `${screen.width}x${screen.height}` : '',
     };
+}
+
+/** The site's own origin, dropped from error sources and stack frames. */
+export function getOwnOrigin(): string {
+    return window.location.origin;
+}
+
+/** The page an error or vitals hit belongs to: the address bar without its query string. */
+export function getHealthPageUrl(_viewUrl: string): string {
+    const origin = window.location.origin;
+    return origin + cleanUrl(window.location.href, origin);
 }
 
 /** The URL events are sent with before the first pageview. */

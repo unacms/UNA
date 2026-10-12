@@ -64,12 +64,46 @@ class BxAnalyticsTemplate extends BxBaseModGeneralTemplate
     public function getTrackerCode()
     {
         return $this->parseHtmlByName('tracker.html', [
-            'src' => BX_DOL_URL_MODULES . 'boonex/analytics/js/tracker.js?v=' . (int)getParam('sys_revision'),
+            'src' => $this->_getTrackerUrl(),
             'endpoint' => BX_DOL_URL_ROOT . $this->_oConfig->getBaseUri() . 'collect',
             'platform' => BX_ANALYTICS_PLATFORM_CORE_WEB,
             'identity' => $this->_oConfig->getIdentityMode(),
             'dnt' => $this->_oConfig->isRespectDnt() ? 1 : 0,
+            'errors' => $this->_oConfig->isTrackErrors() ? 1 : 0,
+            // percent of page loads that measure vitals, 0 for none
+            'vitals' => $this->_oConfig->isTrackVitals() ? $this->_oConfig->getVitalsSample() : 0,
         ]);
+    }
+
+    /**
+     * The tracker's URL. Every classic page loads it, so when the site minifies its scripts
+     * it is minified too, once per revision, into the public cache next to the site's
+     * scripts (clearing the JS cache removes it); the source file otherwise, or when the
+     * cache can't be written.
+     */
+    protected function _getTrackerUrl()
+    {
+        $iRevision = (int)getParam('sys_revision');
+        $sSource = 'boonex/analytics/js/tracker.js';
+        $sUrl = BX_DOL_URL_MODULES . $sSource . '?v=' . $iRevision;
+        if(bx_is_dbg() || getParam('sys_template_cache_js_enable') != 'on' || getParam('sys_template_cache_minify_js_enable') != 'on')
+            return $sUrl;
+
+        $sName = $this->getCacheFilePrefix('js') . 'bx_analytics_tracker_' . bx_site_hash($sSource . $iRevision) . '.js';
+        $sPath = BX_DIRECTORY_PATH_CACHE_PUBLIC . $sName;
+        if(!file_exists($sPath)) {
+            $sCode = @file_get_contents(BX_DIRECTORY_PATH_MODULES . $sSource);
+            $sMinified = $sCode !== false ? BxDolMinify::getInstance()->minifyJs($sCode) : '';
+            // written aside and moved in, so a page never loads a half-written file
+            $sTemp = $sPath . '.' . uniqid() . '.tmp';
+            if($sMinified === '' || @file_put_contents($sTemp, $sMinified) === false || !@rename($sTemp, $sPath)) {
+                @unlink($sTemp);
+                return $sUrl;
+            }
+            @chmod($sPath, BX_DOL_FILE_RIGHTS);
+        }
+
+        return BX_DOL_URL_CACHE_PUBLIC . $sName;
     }
 
     /**
@@ -203,9 +237,24 @@ class BxAnalyticsTemplate extends BxBaseModGeneralTemplate
             case 'rate':
                 return (abs($mixedValue) < 10 && round($mixedValue) != $mixedValue ? number_format((float)$mixedValue, 1) : round($mixedValue)) . '%';
 
+            // shares close to 100%, such as crash-free visits: 99.95%, not 100%
+            case 'percent_precise':
+                return rtrim(rtrim(number_format((float)$mixedValue, 2), '0'), '.') . '%';
+
             case 'pages_per_session':
             case 'decimal':
                 return number_format((float)$mixedValue, 1);
+
+            // good, needs_improvement or poor, as a coloured label
+            case 'rating':
+                return $this->parseHtmlByName('rating.html', [
+                    'rating' => str_replace('_', '-', $this->_esc($mixedValue)),
+                    'title' => _t('_bx_analytics_rating_' . preg_replace('/[^a-z_]/', '', (string)$mixedValue)),
+                ]);
+
+            // a small line of values over time
+            case 'spark':
+                return is_array($mixedValue) ? $this->_getSparkHtml($mixedValue) : '';
 
             case 'duration':
             case 'engaged':
@@ -1009,6 +1058,154 @@ class BxAnalyticsTemplate extends BxBaseModGeneralTemplate
     }
 
     /**
+     * Errors: the list with its key figures, or one error group. Messages, sources and
+     * stacks come from visitors' browsers and apps: every one is escaped.
+     */
+    protected function _getErrorsHtml($aData, $oFilter)
+    {
+        if($aData['view'] == 'list')
+            return $this->parseHtmlByName('errors.html', [
+                'tiles' => $this->_getTilesHtml($aData['tiles']),
+                'table' => $this->_getTableHtml($aData, $oFilter),
+            ]);
+
+        if(!empty($aData['missing']))
+            return $this->parseHtmlByName('error_missing.html', [
+                'back' => _t('_bx_analytics_txt_back_errors'),
+                'text' => $this->_esc($aData['title']),
+            ]);
+
+        $sCsrf = $aData['manage'] ? (string)BxDolForm::getCsrfToken() : '';
+        $aActions = [];
+        foreach($aData['actions'] as $aAction)
+            $aActions[] = [
+                'action_op' => $aAction['op'],
+                'action_id' => (int)$aData['id'],
+                'action_csrf' => $this->_esc($sCsrf),
+                'action_title' => $aAction['title'],
+            ];
+
+        $aFacts = [];
+        foreach($aData['facts'] as $aFact)
+            $aFacts[] = [
+                'fact_title' => $aFact['title'],
+                'fact_value' => $this->formatValue($aFact['type'], $aFact['value']),
+            ];
+
+        $aBreakdowns = [];
+        foreach($aData['breakdowns'] as $aTable)
+            $aBreakdowns[] = [
+                'breakdown_title' => $this->_esc($aTable['caption']),
+                'breakdown' => $this->_getTableHtml($aTable, $oFilter),
+            ];
+
+        $bStack = $aData['stack'] !== '';
+
+        return $this->parseHtmlByName('error.html', [
+            'back' => _t('_bx_analytics_txt_back_errors'),
+            'title' => $this->_esc($aData['title']),
+            'bx_if:actions' => [
+                'condition' => !empty($aActions),
+                'content' => [
+                    'actions_label' => $this->_esc(_t('_bx_analytics_txt_error_actions')),
+                    'bx_repeat:actions' => $aActions,
+                ],
+            ],
+            'bx_repeat:facts' => $aFacts,
+            'tiles' => $this->_getTilesHtml($aData['tiles']),
+            'chart_label' => $this->_esc(_t('_bx_analytics_txt_chart_error', $aData['title'])),
+            'chart_json' => $this->_json($aData['chart']),
+            'stack_title' => _t('_bx_analytics_txt_error_stack'),
+            'bx_if:no_stack' => [
+                'condition' => !$bStack,
+                'content' => ['no_stack' => _t($aData['stack_hidden'] ? '_bx_analytics_txt_error_stack_hidden' : '_bx_analytics_txt_error_no_stack')],
+            ],
+            'bx_if:breakdowns' => [
+                'condition' => !empty($aBreakdowns),
+                'content' => ['bx_repeat:breakdowns' => $aBreakdowns],
+            ],
+            'latest_title' => $this->_esc($aData['occurrences']['caption']),
+            'latest' => $this->_getTableHtml($aData['occurrences'], $oFilter),
+            // last: visitor text goes in after every placeholder is filled
+            'bx_if:stack' => [
+                'condition' => $bStack,
+                'content' => [
+                    'stack_label' => $this->_esc(_t('_bx_analytics_txt_error_stack')),
+                    'stack' => $this->_esc($aData['stack']),
+                ],
+            ],
+        ]);
+    }
+
+    /**
+     * Performance: a card per metric (75th percentile, rating, distribution) that picks the
+     * metric for the chart and the tables.
+     */
+    protected function _getPerformanceHtml($aData, $oFilter)
+    {
+        $aDevices = [];
+        foreach($aData['devices'] as $aDevice)
+            $aDevices[] = [
+                'device_value' => $aDevice['value'],
+                'device_title' => $aDevice['title'],
+                'device_selected' => $aDevice['selected'] ? 'selected="selected"' : '',
+            ];
+
+        $aCards = [];
+        foreach($aData['cards'] as $aCard)
+            $aCards[] = [
+                'card_metric' => $aCard['metric'],
+                'card_title' => $aCard['title'],
+                'card_value' => $aCard['value'] !== null ? $this->formatValue($aCard['unit'], $aCard['value']) : _t('_bx_analytics_txt_not_enough_data'),
+                'card_rating' => $aCard['rating'] !== '' ? str_replace('_', '-', $aCard['rating']) : 'none',
+                'card_rating_title' => $aCard['rating'] !== '' ? _t('_bx_analytics_rating_' . $aCard['rating']) : '',
+                'card_pressed' => $aCard['active'] ? 'true' : 'false',
+                'card_good' => $aCard['good'],
+                'card_ni' => $aCard['needs_improvement'],
+                'card_poor' => $aCard['poor'],
+                'card_dist' => $aCard['samples'] ? _t('_bx_analytics_txt_vital_distribution', $this->formatValue('percent', $aCard['good']), $this->formatValue('percent', $aCard['needs_improvement']), $this->formatValue('percent', $aCard['poor'])) : '',
+                'card_samples' => _t('_bx_analytics_txt_n_samples', $this->formatValue('number', $aCard['samples'])),
+                'card_thresholds' => _t('_bx_analytics_txt_vital_thresholds', $this->formatValue($aCard['unit'], $aCard['good_max']), $this->formatValue($aCard['unit'], $aCard['poor_min'])),
+            ];
+
+        return $this->parseHtmlByName('performance.html', [
+            'device_label' => _t('_bx_analytics_txt_device'),
+            'bx_repeat:devices' => $aDevices,
+            'cards_label' => $this->_esc(_t('_bx_analytics_txt_vitals_metrics')),
+            'bx_repeat:cards' => $aCards,
+            'chart_title' => $this->_esc(_t('_bx_analytics_txt_chart_vital', $aData['metric_title'])),
+            'chart_label' => $this->_esc(_t('_bx_analytics_txt_chart_vital', $aData['metric_title'])),
+            'chart_json' => $this->_json($aData['chart']),
+            'platforms_title' => $this->_esc($aData['platforms']['caption']),
+            'platforms' => $this->_getTableHtml($aData['platforms'], $oFilter),
+            'pages_title' => $this->_esc($aData['pages']['caption']),
+            'pages' => $this->_getTableHtml($aData['pages'], $oFilter),
+        ]);
+    }
+
+    /**
+     * A sparkline of values over time, scaled to its own maximum.
+     */
+    protected function _getSparkHtml($aValues)
+    {
+        $aValues = array_values($aValues);
+        $iCount = count($aValues);
+        if(!$iCount)
+            return '';
+
+        $fMax = max(1, max($aValues));
+        $aPoints = [];
+        foreach($aValues as $i => $mixedValue)
+            $aPoints[] = round($iCount > 1 ? 100 * $i / ($iCount - 1) : 50, 2) . ',' . round(22 - 20 * (float)$mixedValue / $fMax, 2);
+        if($iCount == 1)
+            $aPoints[] = '100,' . round(22 - 20 * (float)$aValues[0] / $fMax, 2);
+
+        return $this->parseHtmlByName('spark.html', [
+            'points' => implode(' ', $aPoints),
+        ]);
+    }
+
+    /**
      * Short notes under a report: how amounts are counted, what is missing.
      */
     protected function _getNotesHtml($aNotes)
@@ -1229,6 +1426,7 @@ class BxAnalyticsTemplate extends BxBaseModGeneralTemplate
                 'duration_h' => _t('_bx_analytics_txt_duration_h'),
                 'duration_m' => _t('_bx_analytics_txt_duration_m'),
                 'duration_s' => _t('_bx_analytics_txt_duration_s'),
+                'ms' => _t('_bx_analytics_txt_ms'),
                 'error' => _t('_bx_analytics_txt_error_loading'),
             ],
         ], [
