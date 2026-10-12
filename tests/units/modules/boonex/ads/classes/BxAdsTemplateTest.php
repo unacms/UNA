@@ -55,6 +55,25 @@ class BxAdsTemplateTest extends BxDolTestCase
         $this->assertChartJs4Added();
     }
 
+    public function testPromotionSummaryColoursAreSixDigitHex()
+    {
+        //--- With this seed the first two draws are below 0x100000, which dechex() wrote as 5 digits.
+        mt_srand(47);
+        try {
+            $s = $this->_oModule->_oTemplate->entryPromotionSummary($this->bxSampleAd());
+        }
+        finally {
+            mt_srand();
+        }
+
+        $this->assertSame(1, preg_match('/"backgroundColor":(\[[^\]]*\])/', $s, $aMatches));
+        $aColours = json_decode($aMatches[1], true);
+
+        $this->assertCount(2, $aColours);
+        foreach ($aColours as $sColour)
+            $this->assertMatchesRegularExpression('/^#[0-9a-f]{6}$/', $sColour);
+    }
+
     private function assertChartJs4Added(): void
     {
         $aPaths = array_column($this->bxGetProtected(BxDolTemplate::getInstance(), 'aPage')['js_compiled'], 'path');

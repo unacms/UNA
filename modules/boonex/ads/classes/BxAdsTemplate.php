@@ -123,7 +123,7 @@ class BxAdsTemplate extends BxBaseModTextTemplate
 
             $aTmplVarsDataLabels[] = $sTitle . ' - ' . $iValue;
             $aTmplVarsDataSet['data'][] = $iValue;
-            $aTmplVarsDataSet['backgroundColor'][] = '#' . dechex(rand(0x000000, 0xFFFFFF));
+            $aTmplVarsDataSet['backgroundColor'][] = sprintf('#%06x', rand(0x000000, 0xFFFFFF));
         }
 
         if($this->_bIsApi){
@@ -156,7 +156,7 @@ class BxAdsTemplate extends BxBaseModTextTemplate
 
         $aTmplVarsDataLabels[] = $sTitleLocal . ' - ' . $iValueLocal;
         $aTmplVarsDataSet['data'][] = $iValueLocal;
-        $aTmplVarsDataSet['backgroundColor'][] = '#' . dechex(rand(0x000000, 0xFFFFFF));
+        $aTmplVarsDataSet['backgroundColor'][] = sprintf('#%06x', rand(0x000000, 0xFFFFFF));
 
         //--- Get income external (from source)
         $iValueSource = 0;
@@ -175,7 +175,7 @@ class BxAdsTemplate extends BxBaseModTextTemplate
 
                 $aTmplVarsDataLabels[] = $sTitleSource . ' - ' . $iValueSource;
                 $aTmplVarsDataSet['data'][] = $iValueSource;
-                $aTmplVarsDataSet['backgroundColor'][] = '#' . dechex(rand(0x000000, 0xFFFFFF));
+                $aTmplVarsDataSet['backgroundColor'][] = sprintf('#%06x', rand(0x000000, 0xFFFFFF));
             }
         }
 
@@ -185,7 +185,7 @@ class BxAdsTemplate extends BxBaseModTextTemplate
 
         $aTmplVarsDataLabels[] = $sTitleInvestment . ' - ' . $iValueInvestment;
         $aTmplVarsDataSet['data'][] = $iValueInvestment;
-        $aTmplVarsDataSet['backgroundColor'][] = '#' . dechex(rand(0x000000, 0xFFFFFF));
+        $aTmplVarsDataSet['backgroundColor'][] = sprintf('#%06x', rand(0x000000, 0xFFFFFF));
 
         $fRoi = 0;
         if($iValueInvestment > 0)
