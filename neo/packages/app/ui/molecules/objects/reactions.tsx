@@ -559,9 +559,9 @@ function ReactionPopover({
         if (!isWeb || !modalVisible || !panelShown || !openedByKeyboard.current) return;
         const focusInto = () => {
             const list = panelFocusables();
-            if (!list.length) return false;
-            (list.find((e) => e.getAttribute('aria-pressed') === 'true') ?? list[0]).focus();
-            return true;
+            const target = list.find((e) => e.getAttribute('aria-pressed') === 'true') ?? list[0];
+            target?.focus();
+            return !!target;
         };
         if (focusInto() || !panelRef.current) return;
         const observer = new MutationObserver(() => {
