@@ -1,7 +1,7 @@
 'use client'
 import { useFormContext } from 'react-hook-form'
 import { useState, useRef, useEffect, useMemo, useCallback, Component } from 'react'
-import { Platform } from 'react-native'
+import { Platform, TextInput } from 'react-native'
 import { EnrichedTextInput } from 'react-native-enriched-html'
 import { View } from 'app/design/view'
 import { Text } from 'app/design/typography'
@@ -13,6 +13,7 @@ import { commitEditorHtml, normalizeEditorHtml } from 'app/lib/editor/editor-for
 import { useEditorFormField } from 'app/lib/form/use-form-field'
 import emitter, { EVENTS } from 'app/context/emitter'
 import { mentionsToUnaLinks, unaLinksToMentions, linkifyHtml } from './editor-mention-html'
+import { alignClassesToStyles } from 'app/lib/html-helpers'
 import { useEditorMentions } from 'app/lib/editor/use-editor-mentions'
 import { MentionSuggestionsDropdown } from 'app/lib/editor/mention-suggestions-dropdown'
 import {
@@ -31,16 +32,27 @@ import { useEditorEmbedViews } from 'app/lib/editor/editor-embed-views'
 import { uploadInlineImage, swapEditorImageSrc } from 'app/lib/editor/upload-inline-image'
 import { trackFormUploadStart, trackFormUploadEnd } from 'app/lib/form/form-helpers'
 import { useFormInstanceId } from 'app/context/form-instance'
+import { useEnrichedHtmlStyle } from 'app/lib/editor/enriched-html-style'
+import { useMarkdownPaste } from 'app/lib/editor/markdown-paste'
 
 const isWeb = Platform.OS === 'web'
 const inputSettings = appSetting('theme', 'inputs')
 
-const mentionColors = {
-    light: 'rgba(37, 99, 235, 1)',
-    dark: 'rgba(59, 130, 246, 1)',
-}
-
 const EMPTY_SELECTION = { start: 0, end: 0, text: '' }
+
+/** Markdown typed at the start of a line (every platform); the library default has only the lists. */
+const MARKDOWN_SHORTCUTS = [
+    { trigger: '- ', style: 'unordered_list' },
+    { trigger: '1. ', style: 'ordered_list' },
+    { trigger: '# ', style: 'h1' },
+    { trigger: '## ', style: 'h2' },
+    { trigger: '### ', style: 'h3' },
+    { trigger: '> ', style: 'blockquote' },
+]
+
+/** One block per line in the source view; a newline between blocks is not content. */
+const formatSourceHtml = (html) => html
+    .replace(/(<\/(?:p|h[1-6]|ul|ol|li|blockquote|div)>)(?!\n)(?=.)/gi, '$1\n')
 
 /** Call an imperative method on the library handle, tolerating a not-ready editor. */
 function callEditor(editorRef, method, ...args) {
@@ -100,14 +112,15 @@ export default function RftTextEnriched(props) {
     // UNA html=3: rich editor, no toolbar. Images paste into attachments, not <img>.
     const isLimitedHtml = html == 3
     const isCommentsEditor = container_class === 'comments'
-    const themeKey = useThemeValue('light', 'dark')
-    const mentionColorFallback = useThemeValue(mentionColors.light, mentionColors.dark)
     const editorTextColor = useThemeValue('rgba(30,40,55,1)', 'rgba(225,230,240,1)')
 
     // Web only; null on native and until the library has mounted TipTap.
     const tipTap = useTiptapEditor(containerRef)
     // Web: embed images in the body show as embed cards (portals into their node views).
     const embedViews = useEditorEmbedViews(tipTap)
+    // Web: pasted Markdown text becomes formatted content (toolbar editors only).
+    const isRich = isToolBar && !isLimitedHtml
+    useMarkdownPaste(tipTap, isRich)
 
     // Toolbar inputs — only tracked when there is a toolbar to feed.
     const [styleState, setStyleState] = useState(null)
@@ -130,12 +143,18 @@ export default function RftTextEnriched(props) {
     // changing defaultValue destroys/recreates TipTap. After destroy, schema is
     // null and getHTML() throws ("Cannot read properties of null (reading 'cached')").
     // Keep defaultValue fixed for the component lifetime; push later updates via setValue.
-    const [initialDefaultValue] = useState(() => unaLinksToMentions(value || ''))
+    const [initialDefaultValue] = useState(() => alignClassesToStyles(unaLinksToMentions(value || '')))
     const lastSetValue = useRef(value)
+    // HTML source view text, null while the editor is shown (see toggleSource). The ref
+    // mirrors 'open' for effects: external content (a reset after submit, set_content)
+    // replaces an open source view, and a closed one gets no no-op update.
+    const [sourceHtml, setSourceHtml] = useState(null)
+    const sourceOpenRef = useRef(false)
     useEffect(() => {
         if (editorRef.current && value !== lastSetValue.current) {
             lastSetValue.current = value
-            callEditor(editorRef, 'setValue', unaLinksToMentions(value || ''))
+            callEditor(editorRef, 'setValue', alignClassesToStyles(unaLinksToMentions(value || '')))
+            if (sourceOpenRef.current) setSourceHtml(formatSourceHtml(value || ''))
         }
     }, [value])
 
@@ -167,7 +186,8 @@ export default function RftTextEnriched(props) {
                     break
                 case 'set_content':
                     lastSetValue.current = data.value
-                    callEditor(editorRef, 'setValue', unaLinksToMentions(data.value || ''))
+                    callEditor(editorRef, 'setValue', alignClassesToStyles(unaLinksToMentions(data.value || '')))
+                    if (sourceOpenRef.current) setSourceHtml(formatSourceHtml(data.value || ''))
                     break
                 case 'insert_inline_image': {
                     if (data.form_name && form_name && data.form_name !== form_name) return
@@ -363,18 +383,10 @@ export default function RftTextEnriched(props) {
         onEnterSubmit,
     })
 
-    // ---- styles (htmlStyle) from theme ----
-    const htmlStyle = useMemo(() => {
-        const mentionCfg = appSetting('editor', 'mention') || {}
-        const color = mentionCfg.editor_color?.[themeKey] || mentionColorFallback
-        const backgroundColor = mentionCfg.editor_background?.[themeKey] || 'transparent'
-        return {
-            // No underline on links/mentions/tags — color alone marks them (the
-            // library default underlines <a>, so override it explicitly).
-            a: { color, textDecorationLine: 'none' },
-            mention: { color, backgroundColor, textDecorationLine: 'none' },
-        }
-    }, [themeKey, mentionColorFallback])
+    // Same styles as the published post: `htmlStyle` on native, the `u-vanilla-html`
+    // class on web (design/styles/global.web.css bridges the library's own CSS).
+    const htmlStyle = useEnrichedHtmlStyle({ small: isCommentsEditor })
+    const contentClass = isCommentsEditor ? 'u-vanilla-html-small' : 'u-vanilla-html'
 
     const editorStyle = useMemo(() => ({
         minHeight: initialHeight,
@@ -394,13 +406,40 @@ export default function RftTextEnriched(props) {
         if (isDisabled) return
         const target = e?.target
         if (!target?.closest) return
-        if (target.closest('.ProseMirror')) return
+        if (target.closest('.ProseMirror, textarea')) return
         if (target.closest('a, button, [role="button"]')) return
         if (dropdownRef.current?.contains?.(target)) return
         e.preventDefault?.()
         callEditor(editorRef, 'focus')
     }, [isDisabled])
 
+
+    // ---- HTML source view (toolbar button) ----
+    // The editor stays mounted (hidden): recreating TipTap loses its state. Source edits
+    // go straight to the form value, so a submit from this view saves them; leaving it
+    // loads the HTML back into the editor, which drops what its schema can't hold.
+    const isSource = sourceHtml !== null
+    const onChangeSource = useCallback((text) => {
+        setSourceHtml(text)
+        const next = normalizeEditorHtml(text, { isLimitedHtml })
+        field.onChange(next)
+        lastSetValue.current = next
+    }, [field, isLimitedHtml])
+    const toggleSource = useCallback(() => {
+        if (sourceHtml === null) {
+            sourceOpenRef.current = true
+            setSourceHtml(formatSourceHtml(field.value || ''))
+            return
+        }
+        sourceOpenRef.current = false
+        callEditor(editorRef, 'setValue', alignClassesToStyles(unaLinksToMentions(sourceHtml)))
+        setSourceHtml(null)
+        setTimeout(() => callEditor(editorRef, 'focus'), 0)
+    }, [sourceHtml, field.value])
+    const source = useMemo(
+        () => (isToolBar && !isLimitedHtml ? { active: isSource, onToggle: toggleSource } : null),
+        [isToolBar, isLimitedHtml, isSource, toggleSource]
+    )
 
     const { items: toolbarItems, linkBar } = useEnrichedToolbar({
         editorRef,
@@ -412,6 +451,7 @@ export default function RftTextEnriched(props) {
         onInsertImage: pasteImagesMode === 'off' ? undefined : onInsertImage,
         onInsertVideo: isInline ? onInsertVideo : undefined,
         embeds: !isLimitedHtml,
+        source,
     })
 
     const surfaceClass = isToolBar
@@ -445,31 +485,50 @@ export default function RftTextEnriched(props) {
             />
 
             <View className={surfaceClass}>
-                <EnrichedEditorBoundary>
-                    <EnrichedTextInput
-                        ref={editorRef}
-                        defaultValue={initialDefaultValue}
-                        placeholder={placeholder}
-                        placeholderTextColor="rgba(120,130,145,1)"
-                        editable={!isDisabled}
-                        autoFocus={isWeb ? false : !!autofocus}
+                {isSource ? (
+                    <TextInput
+                        value={sourceHtml}
+                        onChangeText={onChangeSource}
+                        multiline
+                        autoFocus
                         autoCapitalize="none"
-                        mentionIndicators={MENTION_INDICATORS}
-                        htmlStyle={htmlStyle}
-                        submitBehavior={submitBehavior}
-                        style={editorStyle}
-                        onChangeHtml={onChangeHtml}
-                        onChangeState={isToolBar ? onChangeState : undefined}
-                        onChangeSelection={isToolBar ? onChangeSelection : undefined}
-                        onStartMention={onStartMention}
-                        onChangeMention={onChangeMention}
-                        onEndMention={onEndMention}
-                        onPasteImages={onPasteImages}
-                        onSubmitEditing={onSubmitEditing}
-                        onKeyPress={onKeyPress}
-                        onFocus={handleFocus}
+                        autoCorrect={false}
+                        spellCheck={false}
+                        editable={!isDisabled}
+                        textAlignVertical="top"
+                        accessibilityLabel={t('HTML source')}
+                        className="font-mono text-sm text-foreground bg-transparent"
+                        style={{ height: Math.max(initialHeight, maxHeight), ...(isWeb ? { outlineStyle: 'none', resize: 'vertical' } : null) }}
                     />
-                </EnrichedEditorBoundary>
+                ) : null}
+                <View className={cn(isWeb && contentClass, isSource && 'hidden')}>
+                    <EnrichedEditorBoundary>
+                        <EnrichedTextInput
+                            ref={editorRef}
+                            defaultValue={initialDefaultValue}
+                            placeholder={placeholder}
+                            placeholderTextColor="rgba(120,130,145,1)"
+                            editable={!isDisabled}
+                            autoFocus={isWeb ? false : !!autofocus}
+                            autoCapitalize="none"
+                            mentionIndicators={MENTION_INDICATORS}
+                            textShortcuts={isRich ? MARKDOWN_SHORTCUTS : undefined}
+                            htmlStyle={htmlStyle}
+                            submitBehavior={submitBehavior}
+                            style={editorStyle}
+                            onChangeHtml={onChangeHtml}
+                            onChangeState={isToolBar ? onChangeState : undefined}
+                            onChangeSelection={isToolBar ? onChangeSelection : undefined}
+                            onStartMention={onStartMention}
+                            onChangeMention={onChangeMention}
+                            onEndMention={onEndMention}
+                            onPasteImages={onPasteImages}
+                            onSubmitEditing={onSubmitEditing}
+                            onKeyPress={onKeyPress}
+                            onFocus={handleFocus}
+                        />
+                    </EnrichedEditorBoundary>
+                </View>
 
 
                 {embedViews}

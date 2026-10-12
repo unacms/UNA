@@ -108,6 +108,60 @@ export function flattenNestedAnchors(html: string) {
     return out
 }
 
+// Block tags that carry paragraph alignment.
+const ALIGN_BLOCK = /<(p|h[1-6]|li|blockquote|div)\b([^>]*)>/gi
+const ALIGN_CLASS = /(^|\s)text-(left|center|right)(?=\s|$)/
+
+const attrValue = (attrs: string, name: string) =>
+    attrs.match(new RegExp(`\\s${name}\\s*=\\s*("([^"]*)"|'([^']*)')`, 'i'))
+const withoutAttr = (attrs: string, name: string) =>
+    attrs.replace(new RegExp(`\\s${name}\\s*=\\s*("[^"]*"|'[^']*'|[^\\s>]+)`, 'gi'), '')
+
+/** Paragraph alignment of an opening tag's attributes: its `text-*` class, else its `text-align` style. */
+export function alignFromAttrs(attrs: string | undefined): 'left' | 'center' | 'right' | undefined {
+    if (!attrs) return undefined
+    const cls = attrValue(attrs, 'class')
+    const fromClass = (cls?.[2] ?? cls?.[3] ?? '').match(ALIGN_CLASS)?.[2]
+    const style = attrValue(attrs, 'style')
+    const fromStyle = (style?.[2] ?? style?.[3] ?? '').match(/text-align\s*:\s*(left|center|right)/i)?.[1]
+    return (fromClass || fromStyle?.toLowerCase()) as 'left' | 'center' | 'right' | undefined
+}
+
+/**
+ * Editor → stored HTML: `style="text-align: …"` on a block becomes a Tailwind class
+ * (`text-center` / `text-right`; left is the default and is dropped). Inline styles are
+ * stripped on save (stripInlinePresentation), a class survives it and UNA's purifier.
+ */
+export function alignStylesToClasses(html: string) {
+    if (!html || typeof html !== 'string') return html || ''
+    return html.replace(ALIGN_BLOCK, (tag, name: string, attrs: string) => {
+        const style = attrValue(attrs, 'style')
+        const align = (style?.[2] ?? style?.[3] ?? '').match(/text-align\s*:\s*(left|center|right)/i)?.[1]?.toLowerCase()
+        if (!align) return tag
+        const cls = attrValue(attrs, 'class')
+        const classes = (cls?.[2] ?? cls?.[3] ?? '').split(/\s+/).filter((c) => c && !ALIGN_CLASS.test(` ${c}`))
+        if (align !== 'left') classes.push(`text-${align}`)
+        const rest = withoutAttr(attrs, 'class')
+        return `<${name}${rest}${classes.length ? ` class="${classes.join(' ')}"` : ''}>`
+    })
+}
+
+/**
+ * Stored HTML → enriched editor / native renderer: they read alignment from
+ * `text-align` only, so a `text-*` class becomes that style again.
+ */
+export function alignClassesToStyles(html: string) {
+    if (!html || typeof html !== 'string') return html || ''
+    return html.replace(ALIGN_BLOCK, (tag, name: string, attrs: string) => {
+        const cls = attrValue(attrs, 'class')
+        const align = (cls?.[2] ?? cls?.[3] ?? '').match(ALIGN_CLASS)?.[2]
+        if (!align || /text-align\s*:/i.test(attrValue(attrs, 'style')?.[0] ?? '')) return tag
+        const style = attrValue(attrs, 'style')
+        const css = [(style?.[2] ?? style?.[3] ?? '').trim().replace(/;$/, ''), `text-align: ${align}`].filter(Boolean).join('; ')
+        return `<${name}${withoutAttr(attrs, 'style')} style="${css}">`
+    })
+}
+
 /**
  * Strip paste/docs presentation junk that fights design tokens (Word/Notion/docs
  * often wrap text in `<span style="color: …">` / `<font color=…>`).
