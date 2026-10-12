@@ -23,14 +23,14 @@ function openAnchorsInNewTab(html: string) {
     return html.replace(/<a\b(?![^>]*\btarget\s*=)([^>]*)>/gi, '<a target="_blank" rel="noopener noreferrer"$1>')
 }
 
-export default function ElementHtml({ customClassName, data, className = '', innerRef, linksInNewTab = false }: HtmlProps) {
+export default function ElementHtml({ customClassName, data, className = '', innerRef, linksInNewTab = false, preprocess = true }: HtmlProps) {
     const router = useRouter()
 
     const html = useMemo(() => {
         if (!data) return ''
-        const clean = sanitizeHtml(flattenNestedAnchors(preprocessHtml(data)))
+        const clean = sanitizeHtml(flattenNestedAnchors(preprocess ? preprocessHtml(data) : data))
         return linksInNewTab ? openAnchorsInNewTab(clean) : clean
-    }, [data, linksInNewTab])
+    }, [data, linksInNewTab, preprocess])
 
     const handleClick = useCallback((event: MouseEvent<HTMLDivElement>) => {
         const anchor = (event.target as Element | null)?.closest?.('a')

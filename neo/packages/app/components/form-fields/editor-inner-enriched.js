@@ -54,6 +54,9 @@ const MARKDOWN_SHORTCUTS = [
 const formatSourceHtml = (html) => html
     .replace(/(<\/(?:p|h[1-6]|ul|ol|li|blockquote|div)>)(?!\n)(?=.)/gi, '$1\n')
 
+/** External content (a reset after submit, set_content) replaces an open source view too. */
+const sourceViewOf = (html) => (open) => (open === null ? null : formatSourceHtml(html || ''))
+
 /** Call an imperative method on the library handle, tolerating a not-ready editor. */
 function callEditor(editorRef, method, ...args) {
     try {
@@ -145,10 +148,13 @@ export default function RftTextEnriched(props) {
     // Keep defaultValue fixed for the component lifetime; push later updates via setValue.
     const [initialDefaultValue] = useState(() => alignClassesToStyles(unaLinksToMentions(value || '')))
     const lastSetValue = useRef(value)
+    // HTML source view text, null while the editor is shown (see toggleSource).
+    const [sourceHtml, setSourceHtml] = useState(null)
     useEffect(() => {
         if (editorRef.current && value !== lastSetValue.current) {
             lastSetValue.current = value
             callEditor(editorRef, 'setValue', alignClassesToStyles(unaLinksToMentions(value || '')))
+            setSourceHtml(sourceViewOf(value))
         }
     }, [value])
 
@@ -181,6 +187,7 @@ export default function RftTextEnriched(props) {
                 case 'set_content':
                     lastSetValue.current = data.value
                     callEditor(editorRef, 'setValue', alignClassesToStyles(unaLinksToMentions(data.value || '')))
+                    setSourceHtml(sourceViewOf(data.value))
                     break
                 case 'insert_inline_image': {
                     if (data.form_name && form_name && data.form_name !== form_name) return
@@ -411,7 +418,6 @@ export default function RftTextEnriched(props) {
     // The editor stays mounted (hidden): recreating TipTap loses its state. Source edits
     // go straight to the form value, so a submit from this view saves them; leaving it
     // loads the HTML back into the editor, which drops what its schema can't hold.
-    const [sourceHtml, setSourceHtml] = useState(null)
     const isSource = sourceHtml !== null
     const onChangeSource = useCallback((text) => {
         setSourceHtml(text)

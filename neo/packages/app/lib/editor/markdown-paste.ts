@@ -1,6 +1,6 @@
 'use client'
 import { useEffect } from 'react'
-import { marked, type Token } from 'marked'
+import { marked, type Token, type Links } from 'marked'
 import { tableImageHtml } from './markdown-table'
 
 /*
@@ -30,6 +30,22 @@ function joinTableRows(text: string) {
 }
 
 /**
+ * A table block keeps only its own Markdown, so reference links (`[Docs][docs]`,
+ * `[docs][]`, `[docs]`) defined elsewhere in the paste become inline links.
+ */
+function inlineReferenceLinks(raw: string, links: Links) {
+    return raw.replace(/\[([^\]\n]+)\]\[([^\]\n]*)\]|\[([^\]\n]+)\](?![([:])/g, (match, text, label, short) => {
+        const key = String(label || text || short).toLowerCase().replace(/\s+/g, ' ').trim()
+        const def = links[key]
+        if (!def?.href) return match
+        // A raw `|` would split the table cell, `>` would end the <…> destination.
+        const href = def.href.replace(/\|/g, '%7C').replace(/>/g, '%3E')
+        const title = def.title ? ` "${def.title.replace(/["|]/g, '')}"` : ''
+        return `[${text ?? short}](<${href}>${title})`
+    })
+}
+
+/**
  * Markdown → body HTML. Tables become table blocks (an atomic image the post view
  * draws as the table, see markdown-table.ts); everything else is plain HTML.
  */
@@ -45,7 +61,7 @@ export function markdownToHtml(text: string) {
         }
         if (run.length) html += parse(run)
         run = []
-        html += tableImageHtml(token.raw)
+        html += tableImageHtml(inlineReferenceLinks(token.raw, tokens.links))
     }
     if (run.length) html += parse(run)
     return html

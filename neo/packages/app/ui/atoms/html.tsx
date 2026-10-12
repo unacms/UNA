@@ -15,7 +15,7 @@ import { useEnrichedHtmlStyle } from 'app/lib/editor/enriched-html-style'
 
 // Native renderer using the enriched-html library's display component. Renders the
 // HTML output of the editor 1:1 (formatting, links, native mention pills).
-export default function ElementHtml({ customClassName, data, innerRef }: HtmlProps) {
+export default function ElementHtml({ customClassName, data, innerRef, preprocess = true }: HtmlProps) {
     const textColor = useThemeValue('rgba(30, 40, 55, 1)', 'rgba(225, 230, 240, 1)')
     const router = useRouter()
     const tabPath = useCurrentTabPath()
@@ -43,7 +43,7 @@ export default function ElementHtml({ customClassName, data, innerRef }: HtmlPro
 
     if (!data) return null
     // The renderer reads alignment from `text-align` only (stored as a `text-*` class).
-    const source = `<html>${alignClassesToStyles(preprocessHtml(data))}</html>`
+    const source = `<html>${alignClassesToStyles(preprocess ? preprocessHtml(data) : data)}</html>`
 
     return (
         <View className={`max-w-full ${customClassName || ''}`} ref={innerRef}>

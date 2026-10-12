@@ -10,7 +10,7 @@ export default function InlineTable({ markdown }: InlineTableProps) {
     if (!html) return null
     return (
         <div className="my-4 max-w-full overflow-x-auto">
-            <Html data={html} />
+            <Html data={html} preprocess={false} />
         </div>
     )
 }

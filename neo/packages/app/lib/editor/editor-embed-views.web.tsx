@@ -23,7 +23,7 @@ function EditorEmbedCard({ url, image }: { url: string; image: string }) {
 
 /** Table block as the post shows it (the editor body has the same `u-vanilla-html` styles). */
 function EditorTableCard({ markdown }: { markdown: string }) {
-    return <Html data={markdownTableToHtml(markdown)} />
+    return <Html data={markdownTableToHtml(markdown)} preprocess={false} />
 }
 
 const isBlockImage = (src: unknown) => !!(embedUrlFromImageSrc(src as string) || tableMarkdownFromImageSrc(src as string))

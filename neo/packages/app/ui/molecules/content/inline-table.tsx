@@ -21,7 +21,7 @@ export default function InlineTable({ markdown }: InlineTableProps) {
         <Row key={key} className={header ? 'border-b-2 border-border bg-muted/50' : 'border-b border-border'}>
             {cells.map((cell, i) => (
                 <View key={i} className="px-3 py-2" style={{ width: COLUMN_WIDTH }}>
-                    <Html data={cellHtml(cell, table.align[i] ?? null, header)} customClassName="u-vanilla-html-small" />
+                    <Html data={cellHtml(cell, table.align[i] ?? null, header)} customClassName="u-vanilla-html-small" preprocess={false} />
                 </View>
             ))}
         </Row>
