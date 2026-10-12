@@ -383,8 +383,9 @@ html.dark .bx-analytics-std {
     font-size: 0.875rem;
 }
 
-/* Studio: Overview tab */
+/* Studio: a section's blocks; with the Studio block's own 8px, content sits 16px from its edge */
 .bx-analytics-studio {
+    padding: 0.5rem;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(22rem, 1fr));
     gap: 1.5rem 2rem;

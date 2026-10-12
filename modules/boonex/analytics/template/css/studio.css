@@ -38,3 +38,8 @@ html.dark .bx-analytics-std-menu-title {
         display: none;
     }
 }
+
+/* Lucide glyphs on the menu tiles follow the tile, never the iconset's blue */
+div.bx-std-pmen-item svg.bx-analytics-std-menu-icon {
+    color: inherit;
+}

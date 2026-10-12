@@ -23,18 +23,18 @@ class BxAnalyticsStudioPage extends BxTemplStudioModule
     protected $sPageDefault = 'overview';
 
     /**
-     * Section => [page => icon]. The empty section has no heading.
+     * Section => [page => Lucide glyph]. The empty section has no heading.
      */
     protected $_aSections = [
         '' => ['overview' => 'chart-line'],
-        'traffic' => ['realtime' => 'bolt', 'pages' => 'file-alt', 'sources' => 'share-alt', 'audience' => 'users', 'map' => 'globe-americas', 'bots' => 'robot'],
-        'behavior' => ['sessions' => 'history', 'users' => 'user', 'events' => 'mouse-pointer'],
-        'conversion' => ['goals' => 'bullseye', 'funnels' => 'filter', 'journeys' => 'route', 'retention' => 'redo'],
-        'revenue' => ['revenue' => 'dollar-sign', 'subscriptions' => 'sync', 'sales' => 'shopping-cart', 'credits' => 'coins'],
-        'health' => ['errors' => 'exclamation-triangle', 'performance' => 'tachometer-alt'],
-        'community' => ['content' => 'layer-group'],
-        'explore' => ['query' => 'database', 'api' => 'code', 'dashboards' => 'th-large'],
-        'configure' => ['setup' => 'plug', 'settings' => 'cog'],
+        'traffic' => ['realtime' => 'zap', 'pages' => 'file-text', 'sources' => 'share-2', 'audience' => 'users', 'map' => 'earth', 'bots' => 'bot'],
+        'behavior' => ['sessions' => 'history', 'users' => 'user', 'events' => 'mouse-pointer-click'],
+        'conversion' => ['goals' => 'target', 'funnels' => 'funnel', 'journeys' => 'route', 'retention' => 'repeat'],
+        'revenue' => ['revenue' => 'circle-dollar-sign', 'subscriptions' => 'refresh-cw', 'sales' => 'shopping-cart', 'credits' => 'coins'],
+        'health' => ['errors' => 'triangle-alert', 'performance' => 'gauge'],
+        'community' => ['content' => 'layers'],
+        'explore' => ['query' => 'database', 'api' => 'code', 'dashboards' => 'layout-dashboard'],
+        'configure' => ['setup' => 'plug', 'settings' => 'settings'],
     ];
 
     function __construct($sModule, $mixedPageName, $sPage = "")
@@ -51,7 +51,8 @@ class BxAnalyticsStudioPage extends BxTemplStudioModule
             foreach($aPages as $sPage => $sIcon)
                 $this->aMenuItems[$sPage] = $sPage == BX_DOL_STUDIO_MOD_TYPE_SETTINGS ? $aSettings : [
                     'name' => $sPage,
-                    'icon' => $sIcon,
+                    'icon' => '',
+                    'lucide' => $sIcon,
                     'title' => '_bx_analytics_lmi_cpt_' . $sPage,
                 ];
     }
@@ -62,6 +63,9 @@ class BxAnalyticsStudioPage extends BxTemplStudioModule
     protected function getPageMenuObject($aMenu = [], $aMarkers = [])
     {
         $this->_oModule->_oTemplate->addStudioCss(['studio.css']);
+
+        bx_import('StudioMenu', $this->_oModule->_aModule);
+        bx_import('StudioMenuItems', $this->_oModule->_aModule);
 
         $aByName = [];
         foreach($aMenu as $aItem)
@@ -77,14 +81,17 @@ class BxAnalyticsStudioPage extends BxTemplStudioModule
             if(empty($aItems))
                 continue;
 
+            $oMenu = new BxAnalyticsStudioMenuItems(['template' => 'menu_side.html', 'menu_items' => $aItems]);
+            if(!empty($aMarkers))
+                $oMenu->addMarkers($aMarkers);
+            $oMenu->setInlineIcons($this->bPageMenuIconsInline);
+
             $aSections[] = [
                 'name' => $sSection !== '' ? $sSection : 'main',
                 'title' => $sSection !== '' ? _t('_bx_analytics_section_' . $sSection) : '',
-                'menu' => parent::getPageMenuObject($aItems, $aMarkers),
+                'menu' => $oMenu,
             ];
         }
-
-        bx_import('StudioMenu', $this->_oModule->_aModule);
 
         return new BxAnalyticsStudioMenu($this->_oModule->_oTemplate, $aSections);
     }
