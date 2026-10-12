@@ -58,10 +58,14 @@ function put(key: string, entry: Entry) {
     // Re-insert so Map order is least recently written first.
     entries.delete(key);
     entries.set(key, entry);
-    while (entries.size > MAX_ENTRIES) {
-        const oldest = entries.keys().next().value as string;
-        entries.delete(oldest);
-        notify(oldest);
+    // Evict the oldest entries no mounted widget reads: an evicted entry would
+    // send a mounted widget back to its (older) props. The limit gives way
+    // when every entry is on screen.
+    if (entries.size > MAX_ENTRIES) {
+        for (const oldest of [...entries.keys()]) {
+            if (entries.size <= MAX_ENTRIES) break;
+            if (oldest !== key && !listeners.has(oldest)) entries.delete(oldest);
+        }
     }
     notify(key);
 }
@@ -128,8 +132,20 @@ export function storeObjectsFrom(data: unknown) {
     }
 }
 
+let generation = 0;
+
+/**
+ * Changes on every clear. A request started before a logout or a profile
+ * switch compares it before writing, so the previous viewer's state can't
+ * come back.
+ */
+export function objectStateGeneration() {
+    return generation;
+}
+
 /** Drop everything (logout, profile switch). */
 export function clearObjectState() {
+    generation++;
     const keys = [...entries.keys()];
     entries.clear();
     keys.forEach(notify);
@@ -164,11 +180,17 @@ export function useObjectState<T>(key: string | null | undefined, props: any, in
     else if (current?.state !== undefined) value = current.state as T;
     else value = init(current?.props ?? props);
 
-    // Props newer than the shared state (a reloaded list): share them, so older
-    // copies of the object catch up too.
+    // Share props that are the newest data for the object: the first copy on
+    // screen seeds the entry, a reloaded list replaces an older one. Older copies
+    // then show them too, and a socket update merges onto them rather than onto
+    // an older copy's fields. Props without `ts` (an older UNA) never seed:
+    // nothing would let a fresher copy replace them. Runs again when the entry
+    // changes, so a cleared or evicted entry is seeded by the copies on screen.
     useEffect(() => {
-        if (shared && propsNewer) put(key as string, { props, ts: propsTs });
-    }, [shared, key, propsNewer, props, propsTs]);
+        if (!shared || propsTs === undefined) return;
+        const stored = entries.get(key as string);
+        if (!stored || isNewer(propsTs, stored)) put(key as string, { props, ts: propsTs });
+    }, [shared, key, props, propsTs, entry]);
 
     const setValue = useCallback<SetState<T>>(
         (next) => {

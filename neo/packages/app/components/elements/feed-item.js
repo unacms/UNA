@@ -9,7 +9,7 @@ import { UnitImages } from 'app/lib/feed-items'
 import { PollItem } from 'app/components/elements/entity-poll';
 import { BlockWrapper } from 'app/components/block-wrapper'
 import { fetcher } from 'app/lib/fetcher'
-import { storeObjectsFrom } from 'app/lib/object-state'
+import { objectStateGeneration, storeObjectsFrom } from 'app/lib/object-state'
 
 export default function ElementFeedItem({ data, isModal, blockWrapperProps }) {
     const eventId = data?.event?.id
@@ -20,6 +20,7 @@ export default function ElementFeedItem({ data, isModal, blockWrapperProps }) {
         if (eventId == null) return undefined
 
         return subscribeTimelineEdit(eventId, async () => {
+            const generation = objectStateGeneration()
             const result = await fetcher(
                 '/api.php?r=' +
                 appSetting('urls', 'feed_item') +
@@ -27,8 +28,9 @@ export default function ElementFeedItem({ data, isModal, blockWrapperProps }) {
                 eventId +
                 '}}'
             )
-            // Counters and reactions of the post for every widget.
-            if (result.data) storeObjectsFrom(result.data)
+            // Counters and reactions of the post for every widget, unless the
+            // viewer logged out or switched profiles meanwhile.
+            if (result.data && generation === objectStateGeneration()) storeObjectsFrom(result.data)
             if (result.data?.content) setContent(result.data.content)
         })
     }, [eventId])

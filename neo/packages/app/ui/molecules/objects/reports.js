@@ -216,19 +216,23 @@ export default function ElementReports(props) {
         (payload) => {
             if (!payload) return;
 
-            setReportState((prev) => ({
-                action: {
-                    ...prev.action,
-                    is_reported: payload?.is_reported ?? prev.action.is_reported,
-                    is_disabled: payload?.is_disabled ?? prev.action.is_disabled,
-                    title: payload?.title ?? prev.action.title,
-                },
-                counter:
-                    payload?.counter?.count !== undefined
-                        ? { count: Number(payload.counter.count || 0) }
-                        : prev.counter,
-                ts: payload?.ts ?? prev.ts,
-            }));
+            setReportState((prev) => {
+                // A late response keeps the newer counter (see mergeState).
+                const older = payload?.ts !== undefined && prev.ts !== undefined && payload.ts < prev.ts;
+                return {
+                    action: {
+                        ...prev.action,
+                        is_reported: payload?.is_reported ?? prev.action.is_reported,
+                        is_disabled: payload?.is_disabled ?? prev.action.is_disabled,
+                        title: payload?.title ?? prev.action.title,
+                    },
+                    counter:
+                        payload?.counter?.count !== undefined && !older
+                            ? { count: Number(payload.counter.count || 0) }
+                            : prev.counter,
+                    ts: older ? prev.ts : (payload?.ts ?? prev.ts),
+                };
+            });
 
             if (typeof props?.onChangeTitle === 'function' && payload?.title) {
                 props.onChangeTitle(payload.title);
