@@ -659,19 +659,176 @@ function extFileExists( $sFileSrc )
     return (file_exists( $sFileSrc ) && is_file( $sFileSrc )) ? true : false;
 }
 
+/**
+ * Get the address of the current visitor.
+ * @see bx_get_visitor_ip
+ * @return string IP address, or "0.0.0.0" when there is none (CLI)
+ */
 function getVisitorIP()
 {
-    $ip = "0.0.0.0";
-    if (isset($_SERVER['HTTP_X_FORWARDED_FOR']) && !empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-        $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
-    } elseif (isset($_SERVER['HTTP_CLIENT_IP']) && !empty($_SERVER['HTTP_CLIENT_IP'])) {
-        $ip = $_SERVER['HTTP_CLIENT_IP'];
-    } elseif (!isset( $_SERVER['HTTP_X_FORWARDED_FOR']) || empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-        if (!isset( $_SERVER['HTTP_CLIENT_IP']) && empty($_SERVER['HTTP_CLIENT_IP']) && isset($_SERVER['REMOTE_ADDR']))
-            $ip = $_SERVER['REMOTE_ADDR'];
+    return bx_get_visitor_ip($_SERVER);
+}
+
+/**
+ * Get the visitor address from a $_SERVER-like array.
+ *
+ * Headers set by proxies count only when the connection comes from a trusted proxy:
+ * a private, loopback or shared (100.64.0.0/10, used by cloud load balancers) address,
+ * or one of the trusted proxies. Otherwise any client could put an arbitrary address into them.
+ *
+ * X-Forwarded-For is read from the right, see bx_ip_from_forwarded_for. Proxies append to it,
+ * so a visitor can't hide their address behind a value they sent themselves.
+ * CF-Connecting-IP, True-Client-IP and X-Real-IP count only when X-Forwarded-For is absent:
+ * a proxy that doesn't set them passes a visitor's own value through.
+ *
+ * @param array $aServer request variables, usually $_SERVER
+ * @param array|null $aTrustedProxies addresses and CIDR ranges of public proxies and CDNs,
+ *          null reads them from the 'sys_trusted_proxies' option
+ * @return string IP address, or "0.0.0.0" when there is none
+ */
+function bx_get_visitor_ip($aServer, $aTrustedProxies = null)
+{
+    $sRemote = bx_ip_normalize(isset($aServer['REMOTE_ADDR']) ? $aServer['REMOTE_ADDR'] : '');
+    if ($sRemote === '')
+        return '0.0.0.0';
+
+    if ($aTrustedProxies === null)
+        $aTrustedProxies = bx_ip_list(getParam('sys_trusted_proxies'));
+
+    if (!bx_is_trusted_proxy($sRemote, $aTrustedProxies))
+        return $sRemote;
+
+    if (!empty($aServer['HTTP_X_FORWARDED_FOR']) && is_string($aServer['HTTP_X_FORWARDED_FOR']))
+        return bx_ip_from_forwarded_for($aServer['HTTP_X_FORWARDED_FOR'], $aTrustedProxies, $sRemote);
+
+    foreach (['HTTP_CF_CONNECTING_IP', 'HTTP_TRUE_CLIENT_IP', 'HTTP_X_REAL_IP'] as $sHeader) {
+        $sIp = isset($aServer[$sHeader]) && is_string($aServer[$sHeader]) ? bx_ip_normalize($aServer[$sHeader]) : '';
+        if ($sIp !== '')
+            return $sIp;
     }
 
-    return filter_var($ip, FILTER_VALIDATE_IP) ? $ip : "0.0.0.0";
+    return $sRemote;
+}
+
+/**
+ * Get the visitor address from X-Forwarded-For, "client, proxy1, proxy2".
+ * Each proxy appends the address it got the request from, so the header is read from the right:
+ * trusted proxies are skipped, and the first address that isn't one is the visitor.
+ * Everything to the left of it came from the visitor and can be anything.
+ * When all addresses are trusted (intranets, local development), the leftmost one is the visitor.
+ *
+ * @param string $sHeader X-Forwarded-For value
+ * @param array $aTrustedProxies addresses and CIDR ranges of public proxies and CDNs
+ * @param string $sDefault address of the nearest proxy, returned when the header has no usable address
+ * @return string IP address
+ */
+function bx_ip_from_forwarded_for($sHeader, $aTrustedProxies, $sDefault)
+{
+    $sIp = $sDefault;
+    foreach (array_reverse(explode(',', $sHeader)) as $sEntry) {
+        if (trim($sEntry) === '')
+            continue;
+
+        // a proxy that didn't know the address ("unknown"), nothing to the left of it is reliable
+        $sEntry = bx_ip_normalize($sEntry);
+        if ($sEntry === '')
+            break;
+
+        $sIp = $sEntry;
+        if (!bx_is_trusted_proxy($sEntry, $aTrustedProxies))
+            break;
+    }
+
+    return $sIp;
+}
+
+/**
+ * Whether proxy headers from an address can be trusted: it's an internal address
+ * or it's in the list of trusted proxies.
+ */
+function bx_is_trusted_proxy($sIp, $aTrustedProxies)
+{
+    return bx_is_internal_ip($sIp) || bx_ip_in_list($sIp, $aTrustedProxies);
+}
+
+/**
+ * Validate an address as proxies write it: "1.2.3.4", "1.2.3.4:5678", "2001:db8::1",
+ * "[2001:db8::1]" or "[2001:db8::1]:5678".
+ * @return string the address without a port, or an empty string when it is not valid
+ */
+function bx_ip_normalize($sIp)
+{
+    $sIp = trim((string)$sIp);
+
+    $aMatches = [];
+    if (preg_match('/^\[([0-9a-f:.]+)\](?::\d+)?$/i', $sIp, $aMatches))
+        $sIp = $aMatches[1];
+    elseif (preg_match('/^(\d{1,3}(?:\.\d{1,3}){3}):\d+$/', $sIp, $aMatches))
+        $sIp = $aMatches[1];
+
+    return filter_var($sIp, FILTER_VALIDATE_IP) !== false ? $sIp : '';
+}
+
+/**
+ * Whether an address can't come from the internet directly: private, loopback, link-local
+ * and other reserved ranges, and the shared range 100.64.0.0/10 (carrier-grade NAT,
+ * the source address of load balancers on Railway and other clouds).
+ */
+function bx_is_internal_ip($sIp)
+{
+    return is_private_ip($sIp) || bx_ip_in_list($sIp, ['100.64.0.0/10']);
+}
+
+/**
+ * Split a list of addresses and CIDR ranges separated by commas, spaces or new lines.
+ */
+function bx_ip_list($s)
+{
+    return preg_split('/[\s,;]+/', (string)$s, -1, PREG_SPLIT_NO_EMPTY);
+}
+
+/**
+ * Whether an address matches one of addresses or CIDR ranges in a list, IPv4 or IPv6.
+ * @param string $sIp address
+ * @param array $aList addresses and ranges, like "203.0.113.7", "203.0.113.0/24", "2001:db8::/32"
+ */
+function bx_ip_in_list($sIp, $aList)
+{
+    $sIpBits = bx_ip_bits($sIp);
+    if ($sIpBits === '' || !is_array($aList))
+        return false;
+
+    $iLength = strlen($sIpBits);
+    foreach ($aList as $sEntry) {
+        list($sNet, $sPrefix) = array_pad(explode('/', trim((string)$sEntry), 2), 2, (string)$iLength);
+
+        // a different family or not an address at all
+        $sNetBits = bx_ip_bits($sNet);
+        if (strlen($sNetBits) != $iLength)
+            continue;
+
+        if (ctype_digit($sPrefix) && (int)$sPrefix <= $iLength && strncmp($sNetBits, $sIpBits, (int)$sPrefix) === 0)
+            return true;
+    }
+
+    return false;
+}
+
+/**
+ * Address as a string of "0" and "1", 32 characters for IPv4 and 128 for IPv6.
+ * @return string bits, or an empty string when it is not an address
+ */
+function bx_ip_bits($sIp)
+{
+    $sIp = trim((string)$sIp);
+    if (filter_var($sIp, FILTER_VALIDATE_IP) === false)
+        return '';
+
+    $sBits = '';
+    foreach (unpack('C*', inet_pton($sIp)) as $iByte)
+        $sBits .= sprintf('%08b', $iByte);
+
+    return $sBits;
 }
 
 function genFlag($sLang = '', $oTemplate = null)
