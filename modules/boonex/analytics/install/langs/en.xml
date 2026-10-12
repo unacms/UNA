@@ -278,6 +278,7 @@
 	<string name="_bx_analytics_tab_utm_term"><![CDATA[UTM term]]></string>
 	<string name="_bx_analytics_txt_empty_title_item"><![CDATA[Empty title]]></string>
 	<string name="_bx_analytics_txt_error_loading"><![CDATA[Couldn't load this report. Reload the page to try again.]]></string>
+	<string name="_bx_analytics_txt_error_report"><![CDATA[Couldn't load this report.]]></string>
 	<string name="_bx_analytics_txt_event"><![CDATA[Event]]></string>
 	<string name="_bx_analytics_txt_item"><![CDATA[Item]]></string>
 	<string name="_bx_analytics_txt_journey_from"><![CDATA[Where visitors went from {0}]]></string>

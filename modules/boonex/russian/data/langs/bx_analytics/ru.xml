@@ -278,6 +278,7 @@
 	<string name="_bx_analytics_tab_utm_term"><![CDATA[UTM term]]></string>
 	<string name="_bx_analytics_txt_empty_title_item"><![CDATA[Пустой заголовок]]></string>
 	<string name="_bx_analytics_txt_error_loading"><![CDATA[Не удалось загрузить отчёт. Обновите страницу, чтобы попробовать снова.]]></string>
+	<string name="_bx_analytics_txt_error_report"><![CDATA[Не удалось загрузить отчёт.]]></string>
 	<string name="_bx_analytics_txt_event"><![CDATA[Событие]]></string>
 	<string name="_bx_analytics_txt_item"><![CDATA[Позиция]]></string>
 	<string name="_bx_analytics_txt_journey_from"><![CDATA[Куда переходили посетители со страницы {0}]]></string>

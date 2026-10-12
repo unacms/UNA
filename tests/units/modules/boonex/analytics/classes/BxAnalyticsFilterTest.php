@@ -57,6 +57,16 @@ class BxAnalyticsFilterTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(39600, $a['offset']);
     }
 
+    public function testLegacyTimezoneNameIsAccepted()
+    {
+        // Chrome and Hermes report India as Asia/Calcutta, a backward-compatible name
+        $a = $this->filter(['range' => 'today', 'tz' => 'Asia/Calcutta'])->get();
+
+        $this->assertSame('Asia/Calcutta', $a['tz']);
+        $this->assertSame(19800, $a['offset']);
+        $this->assertSame(gmmktime(18, 30, 0, 10, 12, 2026), $a['from']);
+    }
+
     public function testTwelveMonthsUseCalendarMonths()
     {
         $a = $this->filter(['range' => '12m'])->get();

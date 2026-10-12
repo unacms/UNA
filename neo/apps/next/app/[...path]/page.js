@@ -42,6 +42,8 @@ const getData = cache(async (path, searchParamsKey) => {
     const fetchHeaders = {
         cookie: cookieString,
         authorization: 'Bearer ' + (tenantUnaKey ?? UNA_API_KEY),
+        // The page is rendered for a NEO web viewer: UNA records site actions with this platform.
+        'x-neo-platform': 'web',
     };
 
     let l = tenantUnaUrl ?? UNA_URL;

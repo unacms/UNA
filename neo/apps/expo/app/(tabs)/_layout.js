@@ -9,6 +9,7 @@ import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClient } from 'app/lib/platform/query-client'
 import { Provider as JotaiProvider } from 'jotai'
 import { NetworkStatus } from 'app/ui/molecules/system/net-info';
+import { AnalyticsTracker } from 'app/lib/analytics';
 
 //import RNScreenshotPrevent, { addListener } from 'react-native-screenshot-prevent';
 import i18n from 'i18next';
@@ -103,6 +104,7 @@ const AppLayout = React.memo(() => {
                         <Shell {...shellProps}>
                             <Tabs />
                             <PortalHost />
+                            <AnalyticsTracker />
                         </Shell>
                     </QueryClientProvider>
                 </NetworkStatus>

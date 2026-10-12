@@ -165,6 +165,7 @@ class BxAnalyticsModule extends BxDolModule
     {
         return array_merge(parent::serviceGetSafeServices(), [
             'GetReport' => '',
+            'GetTrackerConfig' => '',
         ]);
     }
 
@@ -212,6 +213,48 @@ class BxAnalyticsModule extends BxDolModule
         ]);
 
         return ['stored' => $iStored];
+    }
+
+    /**
+     * @page service Service Calls
+     * @section bx_analytics Analytics
+     * @subsection bx_analytics-tracking Tracking
+     * @subsubsection bx_analytics-get_tracker_config get_tracker_config
+     *
+     * @code bx_srv('bx_analytics', 'get_tracker_config', ['rn-ios']); @endcode
+     * @code api.php?r=bx_analytics/get_tracker_config&params[]=next-web @endcode
+     *
+     * Tracker settings for NEO and the apps, read once when the client starts:
+     * whether to send hits at all, whether to keep a visitor id (persistent identity mode),
+     * whether to honour Do Not Track, and the session timeout.
+     *
+     * @param $sPlatform client platform code (next-web, rn-ios, rn-android, api); when empty,
+     *      the platform of the request
+     * @return array with `enabled`, `persistent`, `respect_dnt` (booleans) and
+     *      `session_timeout` (seconds)
+     *
+     * @see BxAnalyticsModule::serviceGetTrackerConfig
+     */
+    /**
+     * @ref bx_analytics-get_tracker_config "get_tracker_config"
+     */
+    public function serviceGetTrackerConfig($sPlatform = '')
+    {
+        if(!is_string($sPlatform) || $sPlatform === '') {
+            bx_import('Request', $this->_aModule);
+            $oRequest = new BxAnalyticsRequest();
+            $sPlatform = $oRequest->getPlatform(defined('BX_API'), $this->_isApiKeyRequest());
+        }
+
+        // `core` is the server's own platform, never a client's
+        $bEnabled = $this->_oConfig->isTrackingEnabled() && $sPlatform != BX_ANALYTICS_PLATFORM_CORE && $this->_oConfig->isPlatformEnabled($sPlatform);
+
+        return [
+            'enabled' => $bEnabled,
+            'persistent' => $bEnabled && $this->_oConfig->getIdentityMode() == BX_ANALYTICS_IDENTITY_PERSISTENT,
+            'respect_dnt' => $this->_oConfig->isRespectDnt(),
+            'session_timeout' => $this->_oConfig->getSessionTimeout(),
+        ];
     }
 
     /**
@@ -817,7 +860,8 @@ class BxAnalyticsModule extends BxDolModule
                 'key_figures' => _t('_bx_analytics_txt_key_figures'),
                 'visitors' => _t('_bx_analytics_metric_visitors'),
                 'no_data' => _t('_bx_analytics_txt_no_data'),
-                'error' => _t('_bx_analytics_txt_error_loading'),
+                // NEO shows a Retry button next to it, so no "reload the page"
+                'error' => _t('_bx_analytics_txt_error_report'),
                 'duration_h' => _t('_bx_analytics_txt_duration_h'),
                 'duration_m' => _t('_bx_analytics_txt_duration_m'),
                 'duration_s' => _t('_bx_analytics_txt_duration_s'),

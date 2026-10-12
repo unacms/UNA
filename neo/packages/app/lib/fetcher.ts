@@ -33,7 +33,23 @@ export type FetchOptions = {
     silent?: boolean;
     /** Report request body progress (0..1); sends over XMLHttpRequest instead of `fetch`. */
     onUploadProgress?: (fraction: number) => void;
+    /** Let the request outlive the page (`fetch` keepalive), e.g. a hit sent as the page is hidden. */
+    keepalive?: boolean;
 };
+
+/**
+ * Which NEO client sends a request (`X-Neo-Platform`: web, ios, android), so UNA records
+ * site actions (sign-ups, posts, comments) with the right platform. Native always sends it.
+ * Web sends it only when the request stays on its own origin (the `/api` proxy) or runs on
+ * the server: in a cross-origin browser request a custom header needs a CORS preflight,
+ * which older UNA versions don't allow for this header.
+ */
+function neoPlatformHeader(host: string): string | null {
+    if (Platform.OS === 'ios' || Platform.OS === 'android') return Platform.OS;
+    if (Platform.OS !== 'web') return null;
+    if (typeof window === 'undefined') return 'web';
+    return host.startsWith(window.location.origin) ? 'web' : null;
+}
 
 type AbortErrorLike = Error & { aborted?: boolean };
 
@@ -71,13 +87,14 @@ export async function fetcher (mixed: FetcherRequest, useProxy = false, fetchOpt
 
 async function fetcherRawOnce(
     url: string,
-    { data, headers, callback, signal, timeoutMs, onUploadProgress }: {
+    { data, headers, callback, signal, timeoutMs, onUploadProgress, keepalive }: {
         data?: BodyInit | null;
         headers: Record<string, string>;
         callback?: (response: Response) => void;
         signal?: AbortSignal;
         timeoutMs?: number;
         onUploadProgress?: (fraction: number) => void;
+        keepalive?: boolean;
     },
 ): Promise<Response> {
     const controller = new AbortController();
@@ -109,6 +126,7 @@ async function fetcherRawOnce(
                 cache: 'no-store',
                 credentials: 'include', // Set to true on UNA side - Access-Control-Allow-Credentials
                 signal: controller.signal,
+                ...(keepalive ? { keepalive: true } : null),
             });
         if (callback)
             callback(r);
@@ -155,6 +173,9 @@ export async function fetcherRaw(host: string, mixed: FetcherRequest, fetchOptio
         headers['Origin'] = origin;
     else if ('web' !== Platform.OS)
         headers['Origin'] = APP_ORIGIN;
+    const neoPlatform = neoPlatformHeader(host);
+    if (neoPlatform && !headers['X-Neo-Platform'])
+        headers['X-Neo-Platform'] = neoPlatform;
 
    // headers['Content-Type'] = "application/json";
     headers['Cache-Control'] = "no-cache";
@@ -170,6 +191,7 @@ export async function fetcherRaw(host: string, mixed: FetcherRequest, fetchOptio
         maxAttempts: maxAttemptsOverride,
         silent = false,
         onUploadProgress,
+        keepalive,
     } = fetchOptions;
     const maxAttempts = maxAttemptsOverride ?? (data ? 1 : 3);
     const baseDelayMs = 300;
@@ -183,7 +205,7 @@ export async function fetcherRaw(host: string, mixed: FetcherRequest, fetchOptio
             throw err;
         }
         try {
-            return await fetcherRawOnce(url, { data, headers, callback, signal, timeoutMs, onUploadProgress });
+            return await fetcherRawOnce(url, { data, headers, callback, signal, timeoutMs, onUploadProgress, keepalive });
         } catch (error: any) {
             lastError = error;
             if (error?.aborted) {

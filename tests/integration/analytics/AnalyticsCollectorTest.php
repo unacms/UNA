@@ -115,6 +115,32 @@ class AnalyticsCollectorTest extends BxDolIntegrationTestCase
         $this->assertSame(['rn-android', 'com.neo.so', '1.5.0', 'Android', '15', 'tablet', 'com.neo.so'], [$a['platform'], $a['app'], $a['app_version'], $a['os'], $a['os_version'], $a['device'], $a['hostname']]);
     }
 
+    public function testTrackerConfig()
+    {
+        $this->assertTrue($this->_oModule->serviceIsSafeService('get_tracker_config'), 'NEO reads it over the API');
+
+        $a = $this->_oModule->serviceGetTrackerConfig('rn-ios');
+        $this->assertSame(['enabled', 'persistent', 'respect_dnt', 'session_timeout'], array_keys($a), 'settings only, nothing about the site or the viewer');
+        $this->assertTrue($a['enabled']);
+        $this->assertFalse($a['persistent']);
+        $this->assertTrue($a['respect_dnt']);
+        $this->assertSame($this->_oModule->_oConfig->getSessionTimeout(), $a['session_timeout']);
+
+        $this->assertFalse($this->_oModule->serviceGetTrackerConfig('core')['enabled'], 'the server platform is not for clients');
+        $this->assertFalse($this->_oModule->serviceGetTrackerConfig('windows-phone')['enabled'], 'unknown platform');
+
+        $this->_setOption('bx_analytics_identity', 'persistent');
+        $this->assertTrue($this->_oModule->serviceGetTrackerConfig('next-web')['persistent']);
+
+        $this->_setOption('bx_analytics_platforms', 'next-web');
+        $this->assertFalse($this->_oModule->serviceGetTrackerConfig('rn-ios')['enabled'], 'platform switched off');
+
+        $this->_setOption('bx_analytics_tracking', '');
+        $a = $this->_oModule->serviceGetTrackerConfig('next-web');
+        $this->assertFalse($a['enabled'], 'tracking off');
+        $this->assertFalse($a['persistent'], 'no visitor id to keep when nothing is sent');
+    }
+
     public function testGuestSignsInAndIsForgotten()
     {
         $iProfileId = 987654321;

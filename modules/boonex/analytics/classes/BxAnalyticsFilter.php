@@ -96,7 +96,8 @@ class BxAnalyticsFilter
     {
         $sRange = isset($aInput['range']) && in_array($aInput['range'], self::$aRanges, true) ? $aInput['range'] : self::RANGE_DEFAULT;
 
-        $sTz = isset($aInput['tz']) && is_string($aInput['tz']) && in_array($aInput['tz'], timezone_identifiers_list(), true) ? $aInput['tz'] : 'UTC';
+        // with the backward-compatible names (Asia/Calcutta, Europe/Kiev), which Intl still reports on some runtimes
+        $sTz = isset($aInput['tz']) && is_string($aInput['tz']) && in_array($aInput['tz'], timezone_identifiers_list(DateTimeZone::ALL_WITH_BC), true) ? $aInput['tz'] : 'UTC';
         $oTz = new DateTimeZone($sTz);
 
         $oNow = (new DateTime('@' . $this->_iNow))->setTimezone($oTz);
