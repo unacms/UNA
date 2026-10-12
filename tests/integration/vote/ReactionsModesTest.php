@@ -91,6 +91,24 @@ class ReactionsModesTest extends BxDolIntegrationTestCase
             $this->assertSame((int)$aCategory['id'], (int)$iCategoryId, $sName . ' is in the Reactions section');
     }
 
+    public function testWebCounterFollowsSplitSetting(): void
+    {
+        $oVote = $this->memberOnEventOrSkip('few', 1);
+        $sWrapper = 'counter-wrapper-' . BX_DOL_VOTE_TYPE_REACTIONS . '-';
+
+        setParam('sys_vote_reactions_split_counters', 'on');
+        $oVote = $this->reactionsOrSkip($this->_iEventId);
+        $this->assertStringContainsString($sWrapper . 'divided', $oVote->getCounter(), 'Split counters: a counter per reaction.');
+        $this->assertStringContainsString($sWrapper . 'divided', $oVote->getCounter(['show_counter_style' => 'compound']));
+
+        setParam('sys_vote_reactions_split_counters', '');
+        $oVote = $this->reactionsOrSkip($this->_iEventId);
+        $this->assertStringContainsString($sWrapper . 'compound', $oVote->getCounter(), 'One total, as NEO shows it.');
+        $this->assertStringContainsString($sWrapper . 'compound', $oVote->getCounter(['show_counter_style' => 'divided']));
+
+        $this->assertStringNotContainsString($sWrapper . 'compound', $oVote->getCounter(['show_counter_style' => 'simple']), 'A simple counter stays simple.');
+    }
+
     public function testEmojiValidation(): void
     {
         foreach (['😀', '❤️', '👍🏽', '🏳️‍🌈', '1️⃣', '🇺🇦'] as $sEmoji)

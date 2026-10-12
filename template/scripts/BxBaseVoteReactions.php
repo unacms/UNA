@@ -92,8 +92,13 @@ class BxBaseVoteReactions extends BxDolVoteReactions
     {
         $aParams = array_merge($this->_aElementDefaults, $aParams);
 
+        //--- 'Split counters' setting, as in the API: a counter per reaction, or one total. A page that asks for
+        //--- the 'simple' counter (a bare number) keeps it.
+        if($aParams['show_counter_style'] != self::$_sCounterStyleSimple)
+            $aParams['show_counter_style'] = $this->isSplitCounters() ? self::$_sCounterStyleDivided : self::$_sCounterStyleCompound;
+
         $sDefault = $aParams['show_counter_style'];
-        $sCounterStyle = !empty($aParams['show_counter_style']) ? $aParams['show_counter_style'] : $sDefault;
+        $sCounterStyle = $aParams['show_counter_style'];
 
         $sMethodPrefix = '_getCounter';
         $sMethod = $sMethodPrefix . bx_gen_method_name($sCounterStyle);
