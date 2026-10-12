@@ -782,11 +782,42 @@ class BxAnalyticsModule extends BxDolModule
      */
     protected function _getApiBlockData($sReport, $aParams = [])
     {
+        $aRanges = [];
+        foreach(['today', 'yesterday', '24h', '7d', '30d', '90d', '12m'] as $sRange)
+            $aRanges[] = ['value' => $sRange, 'title' => _t('_bx_analytics_range_' . $sRange)];
+
+        $aPlatforms = [];
+        foreach($this->_oConfig->getPlatforms() as $sCode => $sTitle)
+            $aPlatforms[] = ['value' => $sCode, 'title' => _t($sTitle)];
+
+        $aMetrics = [];
+        foreach($this->getReports()->getMetrics() as $sMetric)
+            $aMetrics[$sMetric] = _t('_bx_analytics_metric_' . $sMetric);
+
         return [
             'report' => $sReport,
-            'params' => $aParams,
-            'request_url' => 'bx_analytics/get_report&params[]=' . $sReport,
-            'platforms' => $this->serviceGetOptionsPlatforms(),
+            'params' => (object)$aParams,
+            // the element asks for its data itself, with the page's filters, from get_report
+            'request_url' => 'bx_analytics/get_report',
+            'ranges' => $aRanges,
+            'platforms' => $aPlatforms,
+            'metrics' => $aMetrics,
+            'strings' => [
+                'range' => _t('_bx_analytics_txt_range'),
+                'platform' => _t('_bx_analytics_txt_platform'),
+                'all_platforms' => _t('_bx_analytics_txt_all_platforms'),
+                'online' => _t('_bx_analytics_txt_online_now', '{0}'),
+                'remove_filter' => _t('_bx_analytics_txt_remove_filter', '{0}'),
+                'filter_by' => _t('_bx_analytics_txt_filter_by', '{0}'),
+                'previous_period' => _t('_bx_analytics_txt_previous_period', '{0}'),
+                'key_figures' => _t('_bx_analytics_txt_key_figures'),
+                'visitors' => _t('_bx_analytics_metric_visitors'),
+                'no_data' => _t('_bx_analytics_txt_no_data'),
+                'error' => _t('_bx_analytics_txt_error_loading'),
+                'duration_h' => _t('_bx_analytics_txt_duration_h'),
+                'duration_m' => _t('_bx_analytics_txt_duration_m'),
+                'duration_s' => _t('_bx_analytics_txt_duration_s'),
+            ],
         ];
     }
 
