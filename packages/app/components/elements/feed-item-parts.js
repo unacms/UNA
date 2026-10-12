@@ -31,7 +31,7 @@ import AnimatedBlock from 'app/ui/atoms/animated-block'
 import { CommentsBrowseShort } from 'app/components/elements/comments-browse';
 import { Pressable } from 'app/design/view'
 import { subscribeTimelineEdit } from 'app/lib/timeline-edits'
-import { commentsObjectKey, storeObjectsFrom, useObjectState } from 'app/lib/object-state'
+import { commentsObjectKey, objectStateGeneration, storeObjectsFrom, useObjectState } from 'app/lib/object-state'
 import { getDataForMenu } from 'app/lib/util'
 import Form from 'app/components/elements/form'
 import useFetchForm from 'app/lib/hooks/use-fetch-form'
@@ -702,6 +702,7 @@ export const UnitFeed = ({ data, mode, DefaultUnit, SmallUnit, feed_type }) => {
     useEffect(() => {
         if (itemId == null) return undefined
         return subscribeTimelineEdit(itemId, async () => {
+            const generation = objectStateGeneration()
             const result = await fetcher(
                 '/api.php?r=' +
                 appSetting('urls', 'feed_item') +
@@ -710,8 +711,9 @@ export const UnitFeed = ({ data, mode, DefaultUnit, SmallUnit, feed_type }) => {
                 '}}'
             )
             if (result.data) {
-                // Counters, reactions and comments of the post for every widget.
-                storeObjectsFrom(result.data)
+                // Counters, reactions and comments of the post for every widget,
+                // unless the viewer logged out or switched profiles meanwhile.
+                if (generation === objectStateGeneration()) storeObjectsFrom(result.data)
                 setDatas(enrichFeedItem(result.data))
             }
         })

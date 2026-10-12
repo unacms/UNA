@@ -149,7 +149,8 @@ type ReactionsObjectState = {
 const reactionsStateFromProps = (props: ReactionsProps): ReactionsObjectState => ({
     action: props.action,
     counter: props.counter,
-    live: {},
+    // `ts` lets mergeState keep a newer counter from a late response.
+    live: props.ts !== undefined ? { ts: props.ts } : {},
     ts: props.ts,
 });
 
