@@ -524,5 +524,19 @@
     "Align right": "Alinear a la derecha",
     "Indentation": "Sangría",
     "Indent": "Aumentar sangría",
-    "Outdent": "Reducir sangría"
+    "Outdent": "Reducir sangría",
+    "React": "Reaccionar",
+    "Reacted": "Reaccionaste",
+    "Search emoji": "Buscar emoji",
+    "No emoji found": "No se encontraron emojis",
+    "You can give up to {{count}} reactions": "Puedes dar hasta {{count}} reacciones",
+    "Smileys & Emotion": "Caritas y emociones",
+    "People & Body": "Personas y cuerpo",
+    "Animals & Nature": "Animales y naturaleza",
+    "Food & Drink": "Comida y bebida",
+    "Travel & Places": "Viajes y lugares",
+    "Activities": "Actividades",
+    "Objects": "Objetos",
+    "Symbols": "Símbolos",
+    "Flags": "Banderas"
 }

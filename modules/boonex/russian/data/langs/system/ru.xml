@@ -1871,6 +1871,10 @@
     <string name="_adm_stg_inf_option_sys_live_search_limit"><![CDATA[Установите максимальное количество результатов, отображаемых в поле предложений интерактивного поиска.]]></string>
     <string name="_adm_stg_cpt_option_sys_profiles_search_limit"><![CDATA[Результаты поиска профилей]]></string>
     <string name="_adm_stg_inf_option_sys_profiles_search_limit"><![CDATA[Установите максимальное количество результатов, отображаемых на странице поиска профиля.]]></string>
+    <string name="_adm_stg_inf_option_sys_vote_reactions_default"><![CDATA[Ставится одним нажатием, остальные реакции открываются наведением или долгим нажатием. Если не выбрана, кнопка реакций всегда открывает выбор.]]></string>
+    <string name="_adm_stg_inf_option_sys_vote_reactions_mode"><![CDATA[Одна: только реакция по умолчанию, ставится одним нажатием. Несколько: короткий список реакций на выбор. Много: любой эмодзи из полного списка.]]></string>
+    <string name="_adm_stg_inf_option_sys_vote_reactions_per_user"><![CDATA[Сколько разных реакций один человек может поставить одному материалу. Работает в режимах «Несколько» и «Много».]]></string>
+    <string name="_adm_stg_inf_option_sys_vote_reactions_split_counters"><![CDATA[Показывать отдельный счётчик для каждой реакции вместо общего.]]></string>
     <string name="_adm_stg_cpt_option_sys_per_page_browse_showcase"><![CDATA[Количество позиций при витринном отображении]]></string>
     <string name="_adm_stg_inf_option_sys_per_page_browse_showcase"><![CDATA[Установите максимальное количество результатов, отображаемых в горизонтальной карусели.]]></string>
     <string name="_adm_stg_cpt_option_sys_session_auth"><![CDATA[Аутентификация через сессию]]></string>
@@ -1915,7 +1919,14 @@
     <string name="_adm_stg_inf_option_sys_profile_bot"><![CDATA[Выберите профиль, который будет использоваться в качестве автора системных действий.]]></string>
     <string name="_adm_stg_cpt_option_sys_logs_storage_default"><![CDATA[Система логирования по умолчанию]]></string>
     <string name="_adm_stg_cpt_option_sys_logs_level"><![CDATA[Уровень логирования]]></string>
+    <string name="_adm_stg_cpt_option_sys_vote_reactions_default"><![CDATA[Реакция по умолчанию]]></string>
+    <string name="_adm_stg_cpt_option_sys_vote_reactions_mode"><![CDATA[Режим реакций]]></string>
+    <string name="_adm_stg_cpt_option_sys_vote_reactions_mode_few"><![CDATA[Несколько]]></string>
+    <string name="_adm_stg_cpt_option_sys_vote_reactions_mode_many"><![CDATA[Много]]></string>
+    <string name="_adm_stg_cpt_option_sys_vote_reactions_mode_solo"><![CDATA[Одна]]></string>
+    <string name="_adm_stg_cpt_option_sys_vote_reactions_per_user"><![CDATA[Реакций от одного человека]]></string>
     <string name="_adm_stg_cpt_option_sys_vote_reactions_quick_mode"><![CDATA[Включить режим 'Быстрых реакций' - голосовать при клике, используя реакцию по умолчанию]]></string>
+    <string name="_adm_stg_cpt_option_sys_vote_reactions_split_counters"><![CDATA[Отдельные счётчики]]></string>
     <string name="_adm_stg_cpt_option_sys_cmts_enable_auto_approve"><![CDATA[Автоматически активировать комментарий после создания]]></string>
     <string name="_adm_stg_cpt_option_sys_create_post_form_preloading_list"><![CDATA[Асинхронная предварительная загрузка форм в блоке "Создать публикацию"]]></string>
     <string name="_adm_stg_inf_option_sys_create_post_form_preloading_list"><![CDATA[]]></string>
@@ -1962,6 +1973,7 @@
     <string name="_adm_stg_cpt_option_sys_pwa_manifest_theme_color"><![CDATA[Цвет темы]]></string>
 
     <string name="_adm_stg_cpt_category_pwa_sw"><![CDATA[Service Worker]]></string>
+    <string name="_adm_stg_cpt_category_reactions"><![CDATA[Реакции]]></string>
     <string name="_adm_stg_cpt_option_sys_pwa_sw_enable"><![CDATA[Включить]]></string>
     <string name="_adm_stg_cpt_option_sys_pwa_sw_cache"><![CDATA[URL-адреса для кэширования при установке (каждый в новой строке)]]></string>
     <string name="_adm_stg_cpt_option_sys_pwa_sw_offline"><![CDATA[Офлайн-страница]]></string>
@@ -4418,6 +4430,8 @@
         <string name="_vote_do_by_x_reaction"><![CDATA["{0}" от]]></string>
         <string name="_vote_do_by_summary"><![CDATA[Все]]></string>
 	<string name="_vote_err_not_enabled"><![CDATA[Ваш голос не может быть принят в данный момент. Пожалуйста, попробуйте позднее.]]></string>
+	<string name="_vote_err_reaction_not_available"><![CDATA[Эта реакция недоступна.]]></string>
+	<string name="_vote_err_reactions_limit"><![CDATA[Можно поставить не больше {0} реакций.]]></string>
 	<string name="_vote_err_duplicate_vote"><![CDATA[Повторный голос]]></string>
         <string name="_vote_n_votes"><![CDATA[{0} голосов]]></string>
 	<string name="_week_fri"><![CDATA[Пятница]]></string>

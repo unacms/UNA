@@ -526,5 +526,19 @@
     "Align right": "По правому краю",
     "Indentation": "Отступ",
     "Indent": "Увеличить отступ",
-    "Outdent": "Уменьшить отступ"
+    "Outdent": "Уменьшить отступ",
+    "React": "Реакция",
+    "Reacted": "Есть реакция",
+    "Search emoji": "Найти эмодзи",
+    "No emoji found": "Эмодзи не найдены",
+    "You can give up to {{count}} reactions": "Реакций можно поставить не больше: {{count}}",
+    "Smileys & Emotion": "Смайлики и эмоции",
+    "People & Body": "Люди и тело",
+    "Animals & Nature": "Животные и природа",
+    "Food & Drink": "Еда и напитки",
+    "Travel & Places": "Путешествия и места",
+    "Activities": "Занятия",
+    "Objects": "Предметы",
+    "Symbols": "Символы",
+    "Flags": "Флаги"
 }
