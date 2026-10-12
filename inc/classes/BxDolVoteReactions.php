@@ -400,7 +400,9 @@ class BxDolVoteReactions extends BxTemplVote
 
         //--- One's own reaction can be taken back even when the settings no longer offer it
         //--- (an emoji picked before Many mode was turned off, a reaction Solo mode leaves out).
-        $sReaction = in_array($sRequested, $aReactions, true) ? $sRequested : $this->normalizeReaction($sRequested);
+        $sReaction = $this->_getOwnReaction($sRequested, $aReactions);
+        if($sReaction === false)
+            $sReaction = $this->normalizeReaction($sRequested);
         if($sReaction === false)
             return ['code' => BX_DOL_OBJECT_ERR_WRONG_DATE, 'message' => _t('_vote_err_reaction_not_available')];
 
@@ -495,12 +497,30 @@ class BxDolVoteReactions extends BxTemplVote
         if($sReaction === false)
             return false;
 
-        $sReaction = $this->normalizeReaction(bx_process_input($sReaction));
+        $sRequested = trim((string)bx_process_input($sReaction));
+        $sReaction = $this->normalizeReaction($sRequested);
+        if($sReaction === false)
+            $sReaction = $this->_getOwnReaction($sRequested, $this->getReactionsBy($this->getId(), $this->_getAuthorId()));
         if($sReaction === false)
             return false;
 
         $aData['reaction'] = $sReaction;
         return $aData;
+    }
+
+    /**
+     * The stored name of the author's own reaction which `$sRequested` names (by its name, e_<hex> code or emoji),
+     * or false. One's own reaction can always be taken back, even when the settings no longer offer it.
+     */
+    protected function _getOwnReaction($sRequested, $aReactions)
+    {
+        if(in_array($sRequested, $aReactions, true))
+            return $sRequested;
+
+        if(self::isEmoji($sRequested) && in_array(($sCode = self::encodeEmoji($sRequested)), $aReactions, true))
+            return $sCode;
+
+        return false;
     }
 
     protected function _returnVoteData($iObjectId, $iAuthorId, $iAuthorIp, $aData, $bVoted, $aParams = [])

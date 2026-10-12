@@ -14,6 +14,8 @@ class ReactionsModesTest extends BxDolIntegrationTestCase
 
     private array $_aOptionsBackup = [];
     private int $_iEventId = 0;
+    /** The test member's reactions to the event before the test, given back in tearDown. */
+    private array $_aReactionsBackup = [];
 
     protected function setUp(): void
     {
@@ -25,9 +27,17 @@ class ReactionsModesTest extends BxDolIntegrationTestCase
 
     protected function tearDown(): void
     {
+        unset($_GET['value'], $_GET['reaction']);
+
         if ($this->_iEventId && ($oVote = $this->reactions($this->_iEventId))) {
             $iAuthorId = bx_get_logged_profile_id();
             foreach ($oVote->getReactionsBy($this->_iEventId, $iAuthorId) as $sReaction)
+                $oVote->vote(['reaction' => $sReaction]);
+
+            //--- Give back what the member had before the test, in a mode that takes any of it.
+            $this->configure('many', 'like', 5);
+            $oVote = $this->reactions($this->_iEventId);
+            foreach ($this->_aReactionsBackup as $sReaction)
                 $oVote->vote(['reaction' => $sReaction]);
         }
 
@@ -145,26 +155,67 @@ class ReactionsModesTest extends BxDolIntegrationTestCase
         $this->assertSame('', $this->reactionsOrSkip()->getDefaultReaction());
     }
 
-    public function testMemberReactionsWithLimitAndReplace(): void
+    /**
+     * The test member on the latest timeline event, with their reactions to it set aside (tearDown gives them back),
+     * in the given mode.
+     */
+    private function memberOnEventOrSkip(string $sMode, int $iPerUser): BxDolVoteReactions
     {
         if (!BxDolModuleQuery::getInstance()->isEnabledByName('bx_timeline'))
             $this->markTestSkipped('Timeline is not installed.');
 
-        $this->_iEventId = (int)BxDolDb::getInstance()->getOne("SELECT `id` FROM `bx_timeline_events` WHERE `active` = 1 ORDER BY `id` DESC LIMIT 1");
-        if (!$this->_iEventId)
+        $iEventId = (int)BxDolDb::getInstance()->getOne("SELECT `id` FROM `bx_timeline_events` WHERE `active` = 1 ORDER BY `id` DESC LIMIT 1");
+        if (!$iEventId)
             $this->markTestSkipped('There are no timeline events to react to.');
 
         $this->bxLoginAsUser();
-        $iAuthorId = bx_get_logged_profile_id();
-
-        //--- Two reactions allowed: both stay, a third is refused, giving one again takes it back.
-        $this->configure('many', 'like', 2);
-        $oVote = $this->reactionsOrSkip($this->_iEventId);
+        $this->configure($sMode, 'like', $iPerUser);
+        $oVote = $this->reactionsOrSkip($iEventId);
         if (!$oVote->isAllowedVote())
             $this->markTestSkipped('The test user may not react to timeline events: ' . strip_tags((string)$oVote->msgErrAllowedVote()));
 
-        foreach ($oVote->getReactionsBy($this->_iEventId, $iAuthorId) as $sReaction)
+        $this->_iEventId = $iEventId;
+        $this->_aReactionsBackup = $oVote->getReactionsBy($iEventId, bx_get_logged_profile_id());
+        foreach ($this->_aReactionsBackup as $sReaction)
             $oVote->vote(['reaction' => $sReaction]);
+
+        return $oVote;
+    }
+
+    /**
+     * The reaction a classic web request (`actionVote`) asks for, as `_getVoteData` reads it, or false.
+     */
+    private function webVoteReaction(BxDolVoteReactions $oVote, string $sReaction)
+    {
+        $_GET['value'] = '1';
+        $_GET['reaction'] = $sReaction;
+        $aData = (new ReflectionMethod($oVote, '_getVoteData'))->invoke($oVote);
+
+        return $aData === false ? false : $aData['reaction'];
+    }
+
+    public function testWebTakesBackLeftoverReaction(): void
+    {
+        $oVote = $this->memberOnEventOrSkip('many', 2);
+        $this->assertSame(0, (int)$oVote->vote(['reaction' => '😀'])['code']);
+
+        //--- Few mode no longer offers the emoji, but its owner can still send it back to take it back.
+        $this->configure('few', 'like', 2);
+        $oVote = $this->reactionsOrSkip($this->_iEventId);
+        $this->assertSame('e_1f600', $this->webVoteReaction($oVote, 'e_1f600'));
+        $this->assertSame('e_1f600', $this->webVoteReaction($oVote, '😀'));
+        $this->assertFalse($this->webVoteReaction($oVote, 'e_1f602'), 'An emoji one does not have is refused.');
+        $this->assertSame('love', $this->webVoteReaction($oVote, 'love'));
+
+        $aResult = $oVote->vote(['reaction' => $this->webVoteReaction($oVote, 'e_1f600')]);
+        $this->assertSame(0, (int)$aResult['code']);
+        $this->assertSame([], $aResult['api']['reactions']);
+    }
+
+    public function testMemberReactionsWithLimitAndReplace(): void
+    {
+        //--- Two reactions allowed: both stay, a third is refused, giving one again takes it back.
+        $oVote = $this->memberOnEventOrSkip('many', 2);
 
         $this->assertSame(0, (int)$oVote->vote(['reaction' => 'like'])['code']);
         $aResult = $oVote->vote(['reaction' => '😀']);
