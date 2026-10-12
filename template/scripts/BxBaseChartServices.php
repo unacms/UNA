@@ -157,7 +157,7 @@ class BxBaseChartServices extends BxDol
             $aTmplVarsDataLabels[] = $sTitleAttr . ' - ' . $iValue;
 
             $aTmplVarsDataSet['data'][] = $iValue;
-            $aTmplVarsDataSet['backgroundColor'][] = sprintf('#%06x', rand(0x000000, 0xFFFFFF));
+            $aTmplVarsDataSet['backgroundColor'][] = sprintf('#%06x', random_int(0x000000, 0xFFFFFF));
         }
 
         $oTemplate = BxDolTemplate::getInstance();

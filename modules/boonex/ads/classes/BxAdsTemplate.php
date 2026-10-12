@@ -388,7 +388,7 @@ class BxAdsTemplate extends BxBaseModTextTemplate
      */
     protected function _getChartColor()
     {
-        return sprintf('#%06x', rand(0x000000, 0xFFFFFF));
+        return sprintf('#%06x', random_int(0x000000, 0xFFFFFF));
     }
 
     protected function _entryBreadcrumb($iCategory, &$oPermalink, &$aTmplVarsItems)
