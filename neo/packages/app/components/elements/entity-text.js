@@ -3,6 +3,7 @@ import { Platform } from 'react-native';
 import { useForm, FormProvider } from 'react-hook-form';
 import { View, Pressable } from 'app/design/view';
 import Image, { POST_ENTRY_COVER_SIZES, POST_ENTRY_COVER_WIDTH_CAP } from 'app/ui/atoms/image';
+import { getCoverAspectClass } from 'app/lib/image/upload-settings';
 import Html from 'app/ui/atoms/html';
 import { splitInlineMedia } from 'app/lib/editor/inline-video';
 import { Text, H1C } from 'app/design/typography';
@@ -277,7 +278,7 @@ function Default({ data, showPad, sidebar, block, blockWrapperProps, editable, a
                     <Youtube videoId={videoId} size={3} />
                 </View>}
                 {(!!data.image && !data.video) && (
-                    <View className="w-full h-[30vh] mb-4 sm:rounded-xl overflow-hidden">
+                    <View className={`w-full ${getCoverAspectClass(block?.module)} mb-4 sm:rounded-xl overflow-hidden`}>
                         <Image
                             {...data.image}
                             alt={data.title}

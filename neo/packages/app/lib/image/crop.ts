@@ -23,12 +23,12 @@ export function getImageCropKind(fieldName: string) {
     return null
 }
 
-export function getCoverCropAspect(module: string) {
-    return parseAspectRatioClass(getCoverAspectClass(module)) || 3
+export function getCoverCropAspect(module: string, isProfile = false) {
+    return parseAspectRatioClass(getCoverAspectClass(module, isProfile)) || 16 / 9
 }
 
-export function getCropAspect(kind: string, module: string) {
-    return kind === 'cover' ? getCoverCropAspect(module) : 1
+export function getCropAspect(kind: string, module: string, isProfile = false) {
+    return kind === 'cover' ? getCoverCropAspect(module, isProfile) : 1
 }
 
 export function isSvgAsset(asset: any) {

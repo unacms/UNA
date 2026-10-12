@@ -775,6 +775,7 @@ export default function (props) {
             sourceHeight={cropSession?.height}
             kind={cropSession?.kind || 'picture'}
             module={formName}
+            isProfile={!!props.is_profile}
             fileSizeBytes={cropSession?.asset?.fileSize || cropSession?.asset?.size}
             onCancel={handleCropCancel}
             onConfirm={handleCropConfirm}
@@ -893,7 +894,7 @@ function ActionButton({ imagesList, props, selectImage, handleDelete, bMultiple,
         if (!img && props.useUrl) {
             img = { file_url: props.value, file_type: "image/jpeg" };
         }
-        let w = 'web:w-full ' + getCoverAspectClass(props.form_name);
+        let w = 'web:w-full ' + getCoverAspectClass(props.form_name, !!props.is_profile);
 
         const isPictureField = props.name == 'picture' || props.name == 'avatar' || props.name == 'badge';
         if (props.name == 'picture' || props.name == 'avatar')
@@ -958,7 +959,7 @@ function GhostsList(imagesList, bMultiple, handleDelete, props) {
     const isCover = props.preview === "cover";
 
     const sizes = [
-        isCover ? "w-full h-[30vh] mb-4 sm:rounded-xl" : "h-20 aspect-video mt-2 mr-2 rounded-lg",
+        isCover ? `w-full ${getCoverAspectClass(props.form_name)} mb-4 sm:rounded-xl` : "h-20 aspect-video mt-2 mr-2 rounded-lg",
         " justify-center items-center overflow-hidden bg-muted  ",
     ].join(" ");
 
