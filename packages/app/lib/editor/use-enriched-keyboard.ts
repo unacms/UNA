@@ -1,7 +1,7 @@
 'use client'
 import { useCallback, useEffect, useRef } from 'react'
 import { Platform } from 'react-native'
-import { isCommentEditorEnterKey, isCommentEditorNewlineEnter } from 'app/lib/editor/comment-editor-keyboard'
+import { isCommentEditorEnterKey, isCommentEditorNewlineEnter, isSubmitModEnter } from 'app/lib/editor/comment-editor-keyboard'
 import { deleteWholeMention } from 'app/lib/editor/editor-mention-shared'
 
 const isWeb = Platform.OS === 'web'
@@ -36,8 +36,11 @@ function handleMentionNavKey(key: string, h: any, insertMention: any) {
  * Enter/mention key routing for the enriched editor.
  *
  * Comment composers run the library in `newline` mode and route Enter
- * themselves: Shift/Option+Enter inserts a break, plain Enter submits, and
- * while the mention list is open Enter/arrows/Escape drive the list.
+ * themselves: with `submitOnEnter` (messenger) Shift/Option+Enter inserts a
+ * break and plain Enter submits. Any editor with `onEnterSubmit` but without
+ * `submitOnEnter` (comments, feed posts) submits on Cmd/Ctrl+Enter and keeps
+ * plain Enter as a newline. While the mention list is open Enter/arrows/Escape
+ * drive the list.
  *
  * - native: via the library's `onKeyPress` (returned here);
  * - web: via a capture-phase keydown on the ProseMirror root so TipTap's own
@@ -57,10 +60,17 @@ export function useEnrichedKeyboard({
     }, [onEnterSubmit])
 
     const routesEnter = submitOnEnter && isCommentsEditor
+    const routesModEnter = !submitOnEnter && !!onEnterSubmit
 
     const onKeyPress = useCallback((e: any) => {
         const nativeEvent = e?.nativeEvent
         const h = handlersRef.current
+
+        if (routesModEnter && isCommentEditorEnterKey(nativeEvent) && isSubmitModEnter(nativeEvent)
+            && !h?.suggestions?.length) {
+            onEnterSubmitRef.current?.()
+            return
+        }
 
         if (routesEnter && isCommentEditorEnterKey(nativeEvent)) {
             if (isCommentEditorNewlineEnter(nativeEvent)) return
@@ -73,7 +83,7 @@ export function useEnrichedKeyboard({
         }
 
         handleMentionNavKey(nativeEvent?.key, h, insertMention)
-    }, [routesEnter, handlersRef, insertMention])
+    }, [routesEnter, routesModEnter, handlersRef, insertMention])
 
     useEffect(() => {
         if (!isWeb || !tipTap?.view?.dom) return undefined
@@ -98,6 +108,12 @@ export function useEnrichedKeyboard({
                 return
             }
 
+            if (routesModEnter && isCommentEditorEnterKey(event) && isSubmitModEnter(event)) {
+                stopKey(event)
+                onEnterSubmitRef.current?.()
+                return
+            }
+
             if (!routesEnter || !isCommentEditorEnterKey(event)) return
             stopKey(event)
             if (isCommentEditorNewlineEnter(event)) {
@@ -109,7 +125,7 @@ export function useEnrichedKeyboard({
 
         dom.addEventListener('keydown', onKeyDownCapture, true)
         return () => dom.removeEventListener('keydown', onKeyDownCapture, true)
-    }, [tipTap, routesEnter, handlersRef, insertMention])
+    }, [tipTap, routesEnter, routesModEnter, handlersRef, insertMention])
 
     return isWeb ? undefined : onKeyPress
 }

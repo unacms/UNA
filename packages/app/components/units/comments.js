@@ -547,6 +547,8 @@ const MenuManage_ = memo(
                     name: aItem.name,
                     link: aItem.link,
                     title: sTitle,
+                    icon: aItem.icon,
+                    image: aItem.image,
                 }
             })
             : []
@@ -557,14 +559,7 @@ const MenuManage_ = memo(
                     <DropdownMenu
                         mode="popup"
                         defaultOpen={defaultOpen}
-                        items={aMenuManageItems.map((aItem) => {
-                            return {
-                                id: aItem.id ? aItem.id : aItem.name,
-                                name: aItem.name,
-                                link: aItem.link,
-                                title: aItem.title,
-                            }
-                        })}
+                        items={aMenuManageItems}
                         onSelect={handleManageMenuSelect}
                         buttonProps={{
                             style: 'borderless',

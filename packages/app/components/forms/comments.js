@@ -164,8 +164,9 @@ export default function FormComments(props) {
                                         initialHeight: minHeightEditor,
                                         maxHeight: maxHeightEditor,
                                         onFocus: setIsFocus,
+                                        // Cmd/Ctrl+Enter submits; plain Enter is a newline
+                                        // unless `comments.submit_comment_on_enter` is on.
                                         onEnterSubmit: handleEditorEnterSubmit,
-                                        enableSubmitOnEnter: isDesktop,
                                     }
                                 )}
                             </View>
