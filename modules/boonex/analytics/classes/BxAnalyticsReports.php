@@ -1001,6 +1001,113 @@ class BxAnalyticsReports
         ];
     }
 
+    /**
+     * Goals with their conversions: visits and visitors that reached them, the conversion
+     * rate of all visits, and the change against the previous period.
+     */
+    public function getGoals(BxAnalyticsFilter $oFilter, $aParams = [])
+    {
+        $aFilter = $oFilter->get();
+        $aPrevious = $oFilter->getPrevious();
+
+        $aTotals = $this->_oDb->getTotals($aFilter);
+        $aTotalsPrevious = $this->_oDb->getTotals($aPrevious);
+        $iSessions = (int)$aTotals['sessions'];
+        $iSessionsPrevious = (int)$aTotalsPrevious['sessions'];
+
+        $aGoals = [];
+        foreach($this->_oDb->getGoals() as $aGoal) {
+            $aCurrent = $this->_oDb->getGoalTotals($aFilter, $aGoal);
+            $aBefore = $this->_oDb->getGoalTotals($aPrevious, $aGoal);
+            $fRate = $iSessions ? round(100 * $aCurrent['sessions'] / $iSessions, 2) : 0;
+            $fRateBefore = $iSessionsPrevious ? round(100 * $aBefore['sessions'] / $iSessionsPrevious, 2) : 0;
+
+            $aGoals[] = [
+                'id' => (int)$aGoal['id'],
+                'name' => $aGoal['name'],
+                'type' => $aGoal['type'],
+                'pattern' => $aGoal['pattern'],
+                'conversions' => (int)$aCurrent['sessions'],
+                'visitors' => (int)$aCurrent['visitors'],
+                'rate' => $fRate,
+                'change' => $this->_change($fRate, $fRateBefore),
+            ];
+        }
+
+        return [
+            'goals' => $aGoals,
+            'sessions' => $iSessions,
+            'manage' => $this->_oModule->checkAllowedManage() === CHECK_ACTION_RESULT_ALLOWED,
+            'edit' => (string)$this->_param($aParams, 'edit_goal', ''),
+        ];
+    }
+
+    /**
+     * A funnel's steps with the visits that reached each one in order within the visit, and
+     * the drop between steps. Param `funnel` (default: the first).
+     */
+    public function getFunnels(BxAnalyticsFilter $oFilter, $aParams = [])
+    {
+        $aFunnels = $this->_oDb->getFunnels();
+        $iFunnel = (int)$this->_param($aParams, 'funnel', 0);
+
+        $aFunnel = !empty($aFunnels) ? $aFunnels[0] : null;
+        foreach($aFunnels as $a)
+            if((int)$a['id'] === $iFunnel)
+                $aFunnel = $a;
+
+        $aSteps = [];
+        if($aFunnel) {
+            $aDefinition = json_decode($aFunnel['steps'], true);
+            $aDefinition = is_array($aDefinition) ? $aDefinition : [];
+
+            // each visit walks the steps in order: a step counts when it happens after the previous one
+            $aReached = null;
+            foreach($aDefinition as $i => $aStep) {
+                $aTimes = $this->_oDb->getStepTimes($oFilter->get(), $aStep);
+                $aNext = [];
+                foreach($aTimes as $iSession => $aSessionTimes) {
+                    if($aReached !== null && !isset($aReached[$iSession]))
+                        continue;
+
+                    $iAfter = $aReached === null ? -1 : $aReached[$iSession];
+                    foreach($aSessionTimes as $iTime)
+                        if($iTime >= $iAfter) {
+                            $aNext[$iSession] = $iTime;
+                            break;
+                        }
+                }
+                $aReached = $aNext;
+
+                $aSteps[] = [
+                    'type' => $aStep['type'],
+                    'pattern' => $aStep['pattern'],
+                    'sessions' => count($aReached),
+                ];
+            }
+
+            $iFirst = !empty($aSteps) ? $aSteps[0]['sessions'] : 0;
+            foreach($aSteps as $i => $aStep) {
+                $aSteps[$i]['rate'] = $iFirst ? round(100 * $aStep['sessions'] / $iFirst, 1) : 0;
+                $aSteps[$i]['drop'] = $i > 0 && $aSteps[$i - 1]['sessions'] ? round(100 * ($aSteps[$i - 1]['sessions'] - $aStep['sessions']) / $aSteps[$i - 1]['sessions'], 1) : null;
+            }
+        }
+
+        $aList = [];
+        foreach($aFunnels as $a)
+            $aList[] = ['id' => (int)$a['id'], 'name' => $a['name'], 'active' => $aFunnel && (int)$a['id'] === (int)$aFunnel['id']];
+
+        return [
+            'funnels' => $aList,
+            'funnel' => $aFunnel ? ['id' => (int)$aFunnel['id'], 'name' => $aFunnel['name']] : null,
+            'steps' => $aSteps,
+            'manage' => $this->_oModule->checkAllowedManage() === CHECK_ACTION_RESULT_ALLOWED,
+            'edit' => (string)$this->_param($aParams, 'edit_funnel', ''),
+            'definition' => $aFunnel ? json_decode($aFunnel['steps'], true) : [],
+            'max_steps' => $this->_oConfig->CNF['MAX_FUNNEL_STEPS'],
+        ];
+    }
+
     protected function _inSequences($aSequences, $sPage)
     {
         foreach($aSequences as $aSequence)

@@ -905,3 +905,231 @@ html.dark .bx-analytics-map .leaflet-tile-pane {
 html.dark .bx-analytics-cohorts td.bx-analytics-cohort-strong {
     color: #111827;
 }
+
+/* goals: one card per goal with its conversion rate */
+.bx-analytics-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+    gap: 0.75rem;
+    list-style: none;
+    margin: 0 0 1rem;
+    padding: 0;
+}
+.bx-analytics-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+    min-width: 0;
+    padding: 1rem;
+    border: 1px solid var(--bx-analytics-border);
+    border-radius: 0.75rem;
+}
+.bx-analytics-card-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+.bx-analytics-card-title {
+    min-width: 0;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+}
+.bx-analytics-card-sub {
+    font-size: 0.8125rem;
+    color: var(--bx-analytics-muted);
+    overflow-wrap: anywhere;
+}
+.bx-analytics-card-figures {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    margin-top: 0.25rem;
+}
+.bx-analytics-card-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.25rem 0.75rem;
+    margin-top: auto;
+    padding-top: 0.25rem;
+}
+.bx-analytics-badge {
+    flex: none;
+    padding: 0.125rem 0.5rem;
+    border-radius: 999px;
+    background: var(--bx-analytics-hover);
+    font-size: 0.75rem;
+    color: var(--bx-analytics-muted);
+    white-space: nowrap;
+}
+.bx-analytics-meter {
+    height: 0.375rem;
+    border-radius: 999px;
+    background: var(--bx-analytics-bar);
+    overflow: hidden;
+}
+.bx-analytics-meter > span {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: var(--bx-analytics-accent);
+}
+.bx-analytics .bx-analytics-link-btn {
+    min-height: 2.25rem;
+    padding: 0 0.25rem;
+    color: var(--bx-analytics-accent);
+    font-size: 0.875rem;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+.bx-analytics .bx-analytics-danger {
+    color: var(--bx-analytics-bad);
+}
+.bx-analytics .bx-analytics-add-btn {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.25rem;
+    padding: 0 0.875rem;
+    border: 1px dashed var(--bx-analytics-accent);
+    border-radius: 0.5rem;
+    color: var(--bx-analytics-accent);
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+.bx-analytics .bx-analytics-add-btn:hover,
+.bx-analytics .bx-analytics-link-btn:hover {
+    background: var(--bx-analytics-hover);
+}
+
+/* funnels: steps as bars of the first step's visits, with the drop between them */
+.bx-analytics-funnel-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+.bx-analytics .bx-analytics-chip-active {
+    box-shadow: inset 0 0 0 2px var(--bx-analytics-accent);
+    font-weight: 600;
+}
+.bx-analytics-funnel {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.bx-analytics-funnel-step {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+}
+.bx-analytics-funnel-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 0;
+}
+.bx-analytics-funnel-number {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 999px;
+    background: var(--bx-analytics-accent-fill);
+    color: var(--bx-analytics-accent);
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+.bx-analytics-funnel-pattern {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-weight: 500;
+}
+.bx-analytics-funnel-bar-track {
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-height: 2.25rem;
+    border-radius: 0.5rem;
+    background: var(--bx-analytics-hover);
+    overflow: hidden;
+}
+.bx-analytics-funnel-fill {
+    position: absolute;
+    inset: 0 auto 0 0;
+    background: color-mix(in srgb, var(--bx-analytics-accent) 32%, transparent);
+}
+.bx-analytics-funnel-figures {
+    position: relative;
+    padding: 0 0.75rem;
+    font-size: 0.875rem;
+    font-variant-numeric: tabular-nums;
+}
+.bx-analytics-funnel-drop {
+    align-self: flex-start;
+    margin: 0 0 0.5rem 2rem;
+    font-size: 0.8125rem;
+    color: var(--bx-analytics-bad);
+}
+
+/* goal and funnel forms */
+.bx-analytics-form {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 0.75rem 1rem;
+    margin-top: 0.5rem;
+    padding: 1rem;
+    border: 1px solid var(--bx-analytics-border);
+    border-radius: 0.75rem;
+}
+.bx-analytics-form .bx-analytics-subtitle {
+    flex: 1 0 100%;
+    margin: 0;
+}
+.bx-analytics-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    min-width: 0;
+}
+.bx-analytics-field-wide {
+    flex: 1 0 100%;
+}
+.bx-analytics-field-grow {
+    flex: 1 1 12rem;
+}
+.bx-analytics-field-row {
+    display: flex;
+    flex: 1 0 100%;
+    align-items: center;
+    gap: 0.5rem;
+}
+.bx-analytics-field-row .bx-analytics-funnel-number {
+    margin-right: 0.25rem;
+}
+.bx-analytics-hint {
+    flex: 1 0 100%;
+    font-size: 0.8125rem;
+    color: var(--bx-analytics-muted);
+}
+.bx-analytics-form-error {
+    flex: 1 0 100%;
+    margin: 0;
+    font-size: 0.875rem;
+    color: var(--bx-analytics-bad);
+}
+.bx-analytics-form-actions {
+    display: flex;
+    flex: 1 0 100%;
+    gap: 0.5rem;
+}

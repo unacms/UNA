@@ -607,6 +607,116 @@ class BxAnalyticsDb extends BxBaseModGeneralDb
         return $aResult;
     }
 
+    /*
+     * Goals and funnels
+     */
+
+    public function getGoals()
+    {
+        return $this->getAll("SELECT * FROM `" . $this->_oConfig->CNF['TABLE_GOALS'] . "` ORDER BY `order`, `id`");
+    }
+
+    public function getGoal($iId)
+    {
+        return $this->getRow("SELECT * FROM `" . $this->_oConfig->CNF['TABLE_GOALS'] . "` WHERE `id` = :id", ['id' => (int)$iId]);
+    }
+
+    public function saveGoal($iId, $aGoal)
+    {
+        $sTable = $this->_oConfig->CNF['TABLE_GOALS'];
+        $aBindings = ['name' => $aGoal['name'], 'type' => $aGoal['type'], 'pattern' => $aGoal['pattern']];
+        if($iId)
+            return $this->query("UPDATE `" . $sTable . "` SET `name` = :name, `type` = :type, `pattern` = :pattern WHERE `id` = :id", $aBindings + ['id' => (int)$iId]) !== false ? (int)$iId : 0;
+
+        if(!$this->query("INSERT INTO `" . $sTable . "` (`name`, `type`, `pattern`, `added`, `order`) VALUES (:name, :type, :pattern, UNIX_TIMESTAMP(), (SELECT IFNULL(MAX(`o`.`order`), 0) + 1 FROM `" . $sTable . "` AS `o`))", $aBindings))
+            return 0;
+
+        return (int)$this->lastId();
+    }
+
+    public function deleteGoal($iId)
+    {
+        return (int)$this->query("DELETE FROM `" . $this->_oConfig->CNF['TABLE_GOALS'] . "` WHERE `id` = :id", ['id' => (int)$iId]) > 0;
+    }
+
+    public function getFunnels()
+    {
+        return $this->getAll("SELECT * FROM `" . $this->_oConfig->CNF['TABLE_FUNNELS'] . "` ORDER BY `order`, `id`");
+    }
+
+    public function getFunnel($iId)
+    {
+        return $this->getRow("SELECT * FROM `" . $this->_oConfig->CNF['TABLE_FUNNELS'] . "` WHERE `id` = :id", ['id' => (int)$iId]);
+    }
+
+    public function saveFunnel($iId, $sName, $aSteps)
+    {
+        $sTable = $this->_oConfig->CNF['TABLE_FUNNELS'];
+        $aBindings = ['name' => $sName, 'steps' => json_encode(array_values($aSteps), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)];
+        if($iId)
+            return $this->query("UPDATE `" . $sTable . "` SET `name` = :name, `steps` = :steps WHERE `id` = :id", $aBindings + ['id' => (int)$iId]) !== false ? (int)$iId : 0;
+
+        if(!$this->query("INSERT INTO `" . $sTable . "` (`name`, `steps`, `added`, `order`) VALUES (:name, :steps, UNIX_TIMESTAMP(), (SELECT IFNULL(MAX(`o`.`order`), 0) + 1 FROM `" . $sTable . "` AS `o`))", $aBindings))
+            return 0;
+
+        return (int)$this->lastId();
+    }
+
+    public function deleteFunnel($iId)
+    {
+        return (int)$this->query("DELETE FROM `" . $this->_oConfig->CNF['TABLE_FUNNELS'] . "` WHERE `id` = :id", ['id' => (int)$iId]) > 0;
+    }
+
+    /**
+     * Visits and visitors that reached a goal (a page or an event) in the period.
+     */
+    public function getGoalTotals($aFilter, $aGoal)
+    {
+        $aBindings = [];
+        $sWhere = $this->_getAnyEventsWhere($aFilter, [BX_ANALYTICS_HIT_PAGEVIEW, BX_ANALYTICS_HIT_EVENT, BX_ANALYTICS_HIT_UNA], $aBindings) . ' AND ' . $this->_getMatchSql($aGoal, $aBindings, 'g');
+
+        return $this->getRow("SELECT COUNT(DISTINCT `e`.`session_id`) AS `sessions`, COUNT(DISTINCT `e`.`visitor`) AS `visitors`, COUNT(*) AS `count`, IFNULL(SUM(`e`.`value`), 0) AS `value` FROM `" . $this->_oConfig->CNF['TABLE_EVENTS'] . "` AS `e` WHERE " . $sWhere, $aBindings);
+    }
+
+    /**
+     * Times a step of a funnel happened, per visit: [session id => [time, ...]] in time order.
+     */
+    public function getStepTimes($aFilter, $aStep, $iLimit = 200000)
+    {
+        $aBindings = [];
+        $sWhere = $this->_getAnyEventsWhere($aFilter, [BX_ANALYTICS_HIT_PAGEVIEW, BX_ANALYTICS_HIT_EVENT, BX_ANALYTICS_HIT_UNA], $aBindings) . ' AND ' . $this->_getMatchSql($aStep, $aBindings, 's') . ' AND `e`.`session_id` > 0';
+
+        $aResult = [];
+        foreach($this->getAll("SELECT `e`.`session_id`, `e`.`ts` FROM `" . $this->_oConfig->CNF['TABLE_EVENTS'] . "` AS `e` WHERE " . $sWhere . " ORDER BY `e`.`session_id`, `e`.`ts`, `e`.`id` LIMIT " . max(1, min(1000000, (int)$iLimit)), $aBindings) as $aRow)
+            $aResult[(int)$aRow['session_id']][] = (int)$aRow['ts'];
+
+        return $aResult;
+    }
+
+    /**
+     * SQL that matches events to a goal or a funnel step: a page path (exact, or with * for
+     * any characters) or an event name (custom event or site action, `name@module` for one module).
+     */
+    protected function _getMatchSql($aMatch, &$aBindings, $sPrefix)
+    {
+        $sPattern = (string)$aMatch['pattern'];
+
+        if($aMatch['type'] == 'page') {
+            $aBindings[$sPrefix . '_pattern'] = str_replace('*', '%', addcslashes($sPattern, '\\%_'));
+            return "`e`.`type` = 'pageview' AND `e`.`path` LIKE :" . $sPrefix . "_pattern";
+        }
+
+        $aParts = explode('@', $sPattern, 2);
+        $aBindings[$sPrefix . '_name'] = $aParts[0];
+        $sSql = "`e`.`type` IN ('event', 'una') AND `e`.`name` = :" . $sPrefix . "_name";
+        if(isset($aParts[1]) && $aParts[1] !== '') {
+            $aBindings[$sPrefix . '_module'] = $aParts[1];
+            $sSql .= " AND `e`.`module` = :" . $sPrefix . "_module";
+        }
+
+        return $sSql;
+    }
+
     /**
      * WHERE for events (alias `e`) of some types in the period, optionally one event
      * (type, name, module), with session filters through the event's session.

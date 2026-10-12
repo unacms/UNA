@@ -748,6 +748,181 @@ class BxAnalyticsTemplate extends BxBaseModGeneralTemplate
         ]);
     }
 
+    protected function _getGoalsHtml($aData, $oFilter)
+    {
+        $sCsrf = $aData['manage'] ? (string)BxDolForm::getCsrfToken() : '';
+        $aTypes = ['page' => _t('_bx_analytics_txt_goal_type_page'), 'event' => _t('_bx_analytics_txt_goal_type_event')];
+
+        $fMax = 0;
+        foreach($aData['goals'] as $aGoal)
+            $fMax = max($fMax, $aGoal['rate']);
+
+        $aGoals = [];
+        $aEdit = null;
+        foreach($aData['goals'] as $aGoal) {
+            if($aData['edit'] !== '' && $aGoal['id'] === (int)$aData['edit'])
+                $aEdit = $aGoal;
+
+            $aGoals[] = [
+                'id' => $aGoal['id'],
+                'name' => $this->_esc($aGoal['name']),
+                'type' => _t('_bx_analytics_txt_goal_badge_' . $aGoal['type']),
+                'pattern' => $this->_esc($aGoal['pattern']),
+                'rate' => $this->formatValue('percent', $aGoal['rate']),
+                'change' => $this->_formatChange($aGoal['change']),
+                'trend' => $this->_trend('', $aGoal['change']),
+                'conversions' => _t('_bx_analytics_txt_conversions', $this->formatValue('number', $aGoal['conversions']), $this->formatValue('number', $aGoal['visitors'])),
+                'bar' => $fMax ? round(100 * $aGoal['rate'] / $fMax, 1) : 0,
+                'bx_if:actions' => [
+                    'condition' => $aData['manage'],
+                    'content' => [
+                        'id' => $aGoal['id'],
+                        'edit' => _t('_bx_analytics_txt_edit'),
+                        'delete' => _t('_bx_analytics_txt_delete'),
+                        'confirm' => $this->_esc(_t('_bx_analytics_txt_goal_delete_confirm', $aGoal['name'])),
+                        'csrf' => $this->_esc($sCsrf),
+                    ],
+                ],
+            ];
+        }
+
+        $bForm = $aData['manage'] && ($aEdit || $aData['edit'] === 'new');
+
+        return $this->parseHtmlByName('goals.html', [
+            'bx_if:goals' => [
+                'condition' => !empty($aGoals),
+                'content' => ['bx_repeat:goals' => $aGoals],
+            ],
+            'bx_if:empty' => [
+                'condition' => empty($aGoals),
+                'content' => ['empty' => _t('_bx_analytics_txt_no_goals')],
+            ],
+            'bx_if:add' => [
+                'condition' => $aData['manage'] && !$bForm,
+                'content' => ['add' => _t('_bx_analytics_txt_add_goal')],
+            ],
+            'bx_if:form' => [
+                'condition' => $bForm,
+                'content' => [
+                    'form_title' => _t($aEdit ? '_bx_analytics_txt_edit_goal' : '_bx_analytics_txt_add_goal'),
+                    'form_id' => $aEdit ? $aEdit['id'] : 0,
+                    'form_csrf' => $this->_esc($sCsrf),
+                    'form_name' => $aEdit ? $this->_esc($aEdit['name']) : '',
+                    'form_pattern' => $aEdit ? $this->_esc($aEdit['pattern']) : '',
+                    'page_selected' => !$aEdit || $aEdit['type'] == 'page' ? 'selected' : '',
+                    'event_selected' => $aEdit && $aEdit['type'] == 'event' ? 'selected' : '',
+                    'label_name' => _t('_bx_analytics_txt_name'),
+                    'label_type' => _t('_bx_analytics_txt_goal_type'),
+                    'label_pattern' => _t('_bx_analytics_txt_goal_match'),
+                    'type_page' => $aTypes['page'],
+                    'type_event' => $aTypes['event'],
+                    'hint' => _t('_bx_analytics_txt_match_hint'),
+                    'save' => _t('_bx_analytics_txt_save'),
+                    'cancel' => _t('_bx_analytics_txt_cancel'),
+                ],
+            ],
+        ]);
+    }
+
+    protected function _getFunnelsHtml($aData, $oFilter)
+    {
+        $sCsrf = $aData['manage'] ? (string)BxDolForm::getCsrfToken() : '';
+        $aTypes = ['page' => _t('_bx_analytics_txt_goal_type_page'), 'event' => _t('_bx_analytics_txt_goal_type_event')];
+
+        $aList = [];
+        foreach($aData['funnels'] as $aFunnel)
+            $aList[] = [
+                'id' => $aFunnel['id'],
+                'name' => $this->_esc($aFunnel['name']),
+                'active' => $aFunnel['active'] ? 'bx-analytics-chip-active' : '',
+                'pressed' => $aFunnel['active'] ? 'true' : 'false',
+            ];
+
+        $aSteps = [];
+        foreach($aData['steps'] as $i => $aStep)
+            $aSteps[] = [
+                'number' => $i + 1,
+                'pattern' => $this->_esc($aStep['pattern']),
+                'type' => _t('_bx_analytics_txt_goal_badge_' . $aStep['type']),
+                'rate_bar' => $aStep['rate'],
+                'sessions' => _t('_bx_analytics_txt_n_sessions', $this->formatValue('number', $aStep['sessions'])),
+                'rate' => $this->formatValue('percent', $aStep['rate']),
+                'bx_if:drop' => [
+                    'condition' => $aStep['drop'] !== null,
+                    'content' => ['drop' => _t('_bx_analytics_txt_dropped', $this->formatValue('percent', (float)$aStep['drop']))],
+                ],
+            ];
+
+        $sEdit = (string)$aData['edit'];
+        $bNew = $sEdit === 'new';
+        $bEdit = $aData['funnel'] && $sEdit !== '' && (int)$sEdit === $aData['funnel']['id'];
+        $bForm = $aData['manage'] && ($bNew || $bEdit);
+
+        $aRows = [];
+        $aDefinition = $bEdit ? $aData['definition'] : [];
+        for($i = 0; $i < $aData['max_steps']; $i++) {
+            $aStep = isset($aDefinition[$i]) ? $aDefinition[$i] : ['type' => 'page', 'pattern' => ''];
+            $aRows[] = [
+                'row_number' => $i + 1,
+                'row_type_label' => _t('_bx_analytics_txt_step_type', $i + 1),
+                'row_pattern_label' => _t('_bx_analytics_txt_step_match', $i + 1),
+                'row_page' => $aStep['type'] == 'page' ? 'selected' : '',
+                'row_type_page' => $aTypes['page'],
+                'row_type_event' => $aTypes['event'],
+                'row_event' => $aStep['type'] == 'event' ? 'selected' : '',
+                'row_pattern' => $this->_esc($aStep['pattern']),
+            ];
+        }
+
+        return $this->parseHtmlByName('funnels.html', [
+            'bx_if:list' => [
+                'condition' => count($aList) > 1,
+                'content' => [
+                    'list_label' => $this->_esc(_t('_bx_analytics_lmi_cpt_funnels')),
+                    'bx_repeat:list' => $aList,
+                ],
+            ],
+            'bx_if:manage' => [
+                'condition' => $aData['manage'] && !$bForm,
+                'content' => [
+                    'add' => _t('_bx_analytics_txt_add_funnel'),
+                    'bx_if:current' => [
+                        'condition' => (bool)$aData['funnel'],
+                        'content' => [
+                            'current_id' => $aData['funnel'] ? $aData['funnel']['id'] : 0,
+                            'edit' => _t('_bx_analytics_txt_edit'),
+                            'delete' => _t('_bx_analytics_txt_delete'),
+                            'confirm' => $this->_esc(_t('_bx_analytics_txt_funnel_delete_confirm', $aData['funnel'] ? $aData['funnel']['name'] : '')),
+                            'csrf' => $this->_esc($sCsrf),
+                        ],
+                    ],
+                ],
+            ],
+            'bx_if:steps' => [
+                'condition' => !empty($aSteps) && !$bForm,
+                'content' => ['bx_repeat:steps' => $aSteps],
+            ],
+            'bx_if:empty' => [
+                'condition' => empty($aSteps) && !$bForm,
+                'content' => ['empty' => _t('_bx_analytics_txt_no_funnels')],
+            ],
+            'bx_if:form' => [
+                'condition' => $bForm,
+                'content' => [
+                    'form_title' => _t($bEdit ? '_bx_analytics_txt_edit_funnel' : '_bx_analytics_txt_add_funnel'),
+                    'form_id' => $bEdit ? $aData['funnel']['id'] : 0,
+                    'form_csrf' => $this->_esc($sCsrf),
+                    'form_name' => $bEdit ? $this->_esc($aData['funnel']['name']) : '',
+                    'label_name' => _t('_bx_analytics_txt_name'),
+                    'bx_repeat:rows' => $aRows,
+                    'hint' => _t('_bx_analytics_txt_funnel_hint'),
+                    'save' => _t('_bx_analytics_txt_save'),
+                    'cancel' => _t('_bx_analytics_txt_cancel'),
+                ],
+            ],
+        ]);
+    }
+
     /**
      * Key figures that are not chart switches: title, value and an optional note or change.
      */

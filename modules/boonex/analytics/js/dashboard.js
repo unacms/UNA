@@ -61,8 +61,17 @@ BxAnalyticsDashboard.prototype.init = function () {
 
         if ((oTarget = oEvent.target.closest('[data-bx-analytics-open]'))) {
             oBlock = oTarget.closest('[data-bx-analytics-block]');
-            $this.setUrlParam(oTarget.getAttribute('data-bx-analytics-open'), oTarget.getAttribute('data-bx-analytics-value'));
-            $this.reload(oBlock, false);
+            sName = oTarget.getAttribute('data-bx-analytics-open');
+            var sValue = oTarget.getAttribute('data-bx-analytics-value');
+            $this.setUrlParam(sName, sValue);
+            $this.reload(oBlock, false).then(function (oNew) {
+                $this.focusAfterOpen(oNew, sName, sValue);
+            });
+            return;
+        }
+
+        if ((oTarget = oEvent.target.closest('[data-bx-analytics-action]'))) {
+            $this.runAction(oTarget);
             return;
         }
 
@@ -73,6 +82,15 @@ BxAnalyticsDashboard.prototype.init = function () {
 
         if ((oTarget = oEvent.target.closest('[data-bx-analytics-unfilter]')))
             $this.setParam('f[' + oTarget.getAttribute('data-bx-analytics-unfilter') + ']', null);
+    });
+
+    document.addEventListener('submit', function (oEvent) {
+        var oForm = oEvent.target.closest('[data-bx-analytics-form]');
+        if (!oForm)
+            return;
+
+        oEvent.preventDefault();
+        $this.submitForm(oForm);
     });
 
     // arrow keys move between tabs, as in any tab list
@@ -199,7 +217,7 @@ BxAnalyticsDashboard.prototype.reload = function (oBlock, bKeepFocus, bQuiet) {
     var sUrl = this._sActionUrl + 'report/' + sReport + '/';
     sUrl += (sUrl.indexOf('?') === -1 ? '?' : '&') + oParams.toString();
 
-    fetch(sUrl, {credentials: 'same-origin'})
+    return fetch(sUrl, {credentials: 'same-origin'})
         .then(function (oResponse) {
             if (!oResponse.ok)
                 throw new Error(oResponse.status);
@@ -211,7 +229,7 @@ BxAnalyticsDashboard.prototype.reload = function (oBlock, bKeepFocus, bQuiet) {
             var oNew = oWrapper.firstElementChild;
             if (!oNew) {
                 oBlock._bxAnalyticsBusy = false;
-                return;
+                return null;
             }
 
             $this.destroyChart(oBlock);
@@ -227,6 +245,8 @@ BxAnalyticsDashboard.prototype.reload = function (oBlock, bKeepFocus, bQuiet) {
                 if (oTab)
                     oTab.focus();
             }
+
+            return oNew;
         })
         .catch(function () {
             oBlock._bxAnalyticsBusy = false;
@@ -236,6 +256,110 @@ BxAnalyticsDashboard.prototype.reload = function (oBlock, bKeepFocus, bQuiet) {
                 oBlock.classList.add('bx-analytics-failed');
                 oBlock.setAttribute('data-bx-analytics-error', $this._aStrings.error || '');
             }
+
+            return null;
+        });
+};
+
+/**
+ * Keyboard focus after a block opened something: the first field of a form it shows, or the
+ * control for the same thing (a back or cancel leads to the control that opened it).
+ */
+BxAnalyticsDashboard.prototype.focusAfterOpen = function (oBlock, sName, sValue) {
+    if (!oBlock)
+        return;
+
+    var oFocus = oBlock.querySelector('[data-bx-analytics-form] input:not([type="hidden"]), [data-bx-analytics-form] select');
+    if (!oFocus && sValue)
+        oFocus = oBlock.querySelector('[data-bx-analytics-open="' + sName + '"][data-bx-analytics-value="' + CSS.escape(sValue) + '"]');
+    if (!oFocus)
+        oFocus = oBlock.querySelector('[data-bx-analytics-open="' + sName + '"]');
+
+    if (oFocus)
+        oFocus.focus();
+};
+
+/**
+ * Send a goal or funnel form; on success close the form and show the saved item.
+ */
+BxAnalyticsDashboard.prototype.submitForm = function (oForm) {
+    var $this = this;
+    var sKind = oForm.getAttribute('data-bx-analytics-form');
+    var oBlock = oForm.closest('[data-bx-analytics-block]');
+    var oError = oForm.querySelector('.bx-analytics-form-error');
+    var oSubmit = oForm.querySelector('[type="submit"]');
+    var sSaved = '';
+
+    var oData = new FormData(oForm);
+    oData.set('op', 'save');
+
+    oSubmit.disabled = true;
+    this.post(sKind, oData)
+        .then(function (oResult) {
+            if (!oResult.ok)
+                throw new Error(oResult.error || $this._aStrings.error || '');
+
+            sSaved = oResult.id ? String(oResult.id) : '';
+            $this.setUrlParam('edit_' + sKind, null);
+            if (sKind === 'funnel' && oResult.id)
+                $this.setUrlParam('funnel', String(oResult.id));
+
+            return $this.reload(oBlock, false);
+        })
+        .then(function (oNew) {
+            $this.focusAfterOpen(oNew, 'edit_' + sKind, sSaved);
+        })
+        .catch(function (oException) {
+            oSubmit.disabled = false;
+            oError.textContent = oException.message || $this._aStrings.error || '';
+            oError.hidden = false;
+        });
+};
+
+/**
+ * A button that changes data: delete a goal or a funnel after the viewer confirms it.
+ */
+BxAnalyticsDashboard.prototype.runAction = function (oButton) {
+    var $this = this;
+    var sKind = oButton.getAttribute('data-bx-analytics-action');
+    var sConfirm = oButton.getAttribute('data-bx-analytics-confirm');
+    if (sConfirm && !window.confirm(sConfirm))
+        return;
+
+    var oBlock = oButton.closest('[data-bx-analytics-block]');
+    var oData = new FormData();
+    oData.set('op', oButton.getAttribute('data-bx-analytics-op'));
+    oData.set('id', oButton.getAttribute('data-bx-analytics-id'));
+    oData.set('csrf_token', oButton.getAttribute('data-bx-analytics-csrf') || '');
+
+    oButton.disabled = true;
+    this.post(sKind, oData)
+        .then(function (oResult) {
+            if (!oResult.ok)
+                throw new Error(oResult.error || '');
+
+            if (sKind === 'funnel')
+                $this.setUrlParam('funnel', null);
+
+            return $this.reload(oBlock, false);
+        })
+        .then(function (oNew) {
+            $this.focusAfterOpen(oNew, 'edit_' + sKind, 'new');
+        })
+        .catch(function (oException) {
+            oButton.disabled = false;
+            window.alert(oException.message || $this._aStrings.error || '');
+        });
+};
+
+BxAnalyticsDashboard.prototype.post = function (sAction, oData) {
+    var sUrl = this._sActionUrl + sAction + '/';
+
+    return fetch(sUrl, {method: 'POST', body: oData, credentials: 'same-origin'})
+        .then(function (oResponse) {
+            return oResponse.json().catch(function () {
+                return {error: ''};
+            });
         });
 };
 

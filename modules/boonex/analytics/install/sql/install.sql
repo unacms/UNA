@@ -104,6 +104,28 @@ CREATE TABLE IF NOT EXISTS `bx_analytics_bot_pages` (
   PRIMARY KEY (`day`, `category`, `path_hash`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Goals: a page (path, * for any characters) or an event (name, or name@module) that
+-- counts as a conversion
+CREATE TABLE IF NOT EXISTS `bx_analytics_goals` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(128) NOT NULL DEFAULT '',
+  `type` varchar(16) NOT NULL DEFAULT 'page',
+  `pattern` varchar(255) NOT NULL DEFAULT '',
+  `added` int(11) unsigned NOT NULL DEFAULT '0',
+  `order` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Funnels: steps as a JSON list of {type, pattern}, matched in order within a visit
+CREATE TABLE IF NOT EXISTS `bx_analytics_funnels` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(128) NOT NULL DEFAULT '',
+  `steps` text NOT NULL,
+  `added` int(11) unsigned NOT NULL DEFAULT '0',
+  `order` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- STUDIO: page & widget
 INSERT INTO `sys_std_pages`(`index`, `name`, `header`, `caption`, `icon`) VALUES
 (3, @sName, '_bx_analytics', '_bx_analytics', 'bx_analytics@modules/boonex/analytics/|std-icon.svg');

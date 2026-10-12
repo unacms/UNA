@@ -75,6 +75,11 @@ class BxAnalyticsConfig extends BxBaseModGeneralConfig
             'TABLE_SALTS' => $aModule['db_prefix'] . 'salts',
             'TABLE_BOTS' => $aModule['db_prefix'] . 'bots',
             'TABLE_BOT_PAGES' => $aModule['db_prefix'] . 'bot_pages',
+            'TABLE_GOALS' => $aModule['db_prefix'] . 'goals',
+            'TABLE_FUNNELS' => $aModule['db_prefix'] . 'funnels',
+
+            // funnel steps at most
+            'MAX_FUNNEL_STEPS' => 6,
 
             // hits per request and their properties, to bound the work of one beacon
             'MAX_HITS_PER_REQUEST' => 20,

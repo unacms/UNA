@@ -13,6 +13,8 @@ class AnalyticsCollectorTest extends BxDolIntegrationTestCase
 
     protected $_oModule;
     protected $_aOptions = [];
+    protected $_aGoals = [];
+    protected $_aFunnels = [];
 
     protected function setUp(): void
     {
@@ -296,6 +298,52 @@ class AnalyticsCollectorTest extends BxDolIntegrationTestCase
         $this->assertEquals(33.3, $aCohorts[0]['weeks'][1], 'one of three came back the next week');
     }
 
+    public function testGoalsAndFunnels()
+    {
+        $oDb = $this->_oModule->_oDb;
+        $iPricing = $oDb->saveGoal(0, ['name' => 'Test 2001 pricing', 'type' => 'page', 'pattern' => '/pricing*']);
+        $iBuy = $oDb->saveGoal(0, ['name' => 'Test 2001 buy', 'type' => 'event', 'pattern' => 'buy']);
+        $iFunnel = $oDb->saveFunnel(0, 'Test 2001 funnel', [
+            ['type' => 'page', 'pattern' => '/'],
+            ['type' => 'page', 'pattern' => '/pricing*'],
+            ['type' => 'event', 'pattern' => 'buy'],
+        ]);
+        $this->_aGoals = [$iPricing, $iBuy];
+        $this->_aFunnels = [$iFunnel];
+        $this->assertGreaterThan(0, $iPricing);
+        $this->assertGreaterThan(0, $iFunnel);
+
+        // A: / -> /pricing -> buy, B: / -> buy -> /pricing?plan=pro, C: /pricing only
+        $aVisits = [
+            ['93.184.216.1', [['pageview', '/'], ['pageview', '/pricing'], ['event', '/pricing', 'buy']]],
+            ['93.184.216.2', [['pageview', '/'], ['event', '/', 'buy'], ['pageview', '/pricing?plan=pro']]],
+            ['93.184.216.3', [['pageview', '/pricing']]],
+        ];
+        foreach ($aVisits as $iVisit => list($sIp, $aHits))
+            foreach ($aHits as $i => $aHit)
+                $this->_collect($this->_server($sIp), ['platform' => 'core-web', 'hits' => [['type' => $aHit[0], 'url' => 'http://una.test' . $aHit[1], 'name' => isset($aHit[2]) ? $aHit[2] : '']]], self::NOW + $iVisit * 100 + $i * 10);
+
+        $oReports = $this->_oModule->getReports();
+        $oFilter = $this->_filter(['range' => 'custom', 'from' => '2001-09-09', 'to' => '2001-09-09']);
+
+        $aGoals = array_column($oReports->getGoals($oFilter)['goals'], null, 'id');
+        $this->assertSame(3, $aGoals[$iPricing]['conversions'], 'a page goal with * matches the query string too');
+        $this->assertEquals(100, $aGoals[$iPricing]['rate']);
+        $this->assertSame(2, $aGoals[$iBuy]['conversions']);
+        $this->assertEquals(66.67, $aGoals[$iBuy]['rate']);
+
+        $aFunnel = $oReports->getFunnels($oFilter, ['funnel' => $iFunnel]);
+        $this->assertSame($iFunnel, $aFunnel['funnel']['id']);
+        $this->assertSame([2, 2, 1], array_column($aFunnel['steps'], 'sessions'), 'a step counts only after the previous one');
+        $this->assertEquals([100, 100, 50], array_column($aFunnel['steps'], 'rate'));
+        $this->assertEquals([null, 0, 50], array_column($aFunnel['steps'], 'drop'));
+
+        $this->assertTrue($oDb->deleteGoal($iBuy));
+        $this->assertFalse((bool)$oDb->getGoal($iBuy));
+        $this->assertTrue($oDb->deleteFunnel($iFunnel));
+        $this->assertNotContains($iFunnel, array_column($oReports->getFunnels($oFilter)['funnels'], 'id'), 'a deleted funnel is not listed');
+    }
+
     protected function _collect($aServer, $aPayload, $iNow, $aContext = [])
     {
         $oCollector = new BxAnalyticsCollector($this->_oModule, new BxAnalyticsRequest($aServer), $iNow);
@@ -335,5 +383,10 @@ class AnalyticsCollectorTest extends BxDolIntegrationTestCase
         $oDb->query("DELETE FROM `bx_analytics_salts` WHERE `day` < '2002-01-01'");
         $oDb->query("DELETE FROM `bx_analytics_bots` WHERE `day` < '2002-01-01'");
         $oDb->query("DELETE FROM `bx_analytics_bot_pages` WHERE `day` < '2002-01-01'");
+        foreach ($this->_aGoals as $iId)
+            $this->_oModule->_oDb->deleteGoal($iId);
+        foreach ($this->_aFunnels as $iId)
+            $this->_oModule->_oDb->deleteFunnel($iId);
+        $this->_aGoals = $this->_aFunnels = [];
     }
 }

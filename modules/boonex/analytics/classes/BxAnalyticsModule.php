@@ -28,7 +28,7 @@ class BxAnalyticsModule extends BxDolModule
     /**
      * Reports that blocks, Studio and the API may ask for; each is a BxAnalyticsReports method.
      */
-    protected $_aReports = ['filters', 'overview', 'top', 'table', 'realtime', 'map', 'bots', 'sessions', 'users', 'events', 'journeys', 'retention'];
+    protected $_aReports = ['filters', 'overview', 'top', 'table', 'realtime', 'map', 'bots', 'sessions', 'users', 'events', 'journeys', 'retention', 'goals', 'funnels'];
 
     /**
      * Reports that show members by name.
@@ -51,6 +51,8 @@ class BxAnalyticsModule extends BxDolModule
         'events' => [['filters', [], true], ['events', [], true]],
         'journeys' => [['filters', [], true], ['journeys', [], true]],
         'retention' => [['filters', [], true], ['retention', [], true]],
+        'goals' => [['filters', [], true], ['goals', [], true]],
+        'funnels' => [['filters', [], true], ['funnels', [], true]],
     ];
           
     function __construct(&$aModule)
@@ -1204,6 +1206,131 @@ class BxAnalyticsModule extends BxDolModule
         return json_encode($aDataForChart);
     }
 	
+    /**
+     * Who may define goals and funnels: site administrators, and levels with "manage analytics"
+     * besides "use analytics".
+     */
+    public function checkAllowedManage()
+    {
+        if(isAdmin())
+            return CHECK_ACTION_RESULT_ALLOWED;
+
+        if($this->checkAllowed() !== CHECK_ACTION_RESULT_ALLOWED)
+            return _t('_sys_txt_access_denied');
+
+        $aCheck = checkActionModule(bx_get_logged_profile_id(), 'manage analytics', $this->getName(), false);
+
+        return $aCheck[CHECK_ACTION_RESULT] === CHECK_ACTION_RESULT_ALLOWED ? CHECK_ACTION_RESULT_ALLOWED : _t('_sys_txt_access_denied');
+    }
+
+    /**
+     * Save or delete a goal: POST op (save, delete), id, name, type (page, event), pattern, csrf_token.
+     */
+    public function actionGoal()
+    {
+        $aResult = $this->_checkManageRequest();
+        if($aResult === true) {
+            $iId = (int)bx_get('id', 'post');
+            if(bx_get('op', 'post') == 'delete')
+                $aResult = ['ok' => $this->_oDb->deleteGoal($iId)];
+            else {
+                $aGoal = $this->_getMatchInput(bx_get('type', 'post'), bx_get('pattern', 'post'));
+                $sName = trim((string)bx_get('name', 'post'));
+                if($aGoal === false || $sName === '' || get_mb_len($sName) > 128)
+                    $aResult = ['error' => _t('_bx_analytics_txt_goal_invalid')];
+                else {
+                    $iId = $this->_oDb->saveGoal($iId, ['name' => $sName] + $aGoal);
+                    $aResult = ['ok' => (bool)$iId, 'id' => $iId];
+                }
+            }
+        }
+
+        $this->_outputJson($aResult);
+    }
+
+    /**
+     * Save or delete a funnel: POST op, id, name, step_type[], step_pattern[], csrf_token.
+     */
+    public function actionFunnel()
+    {
+        $aResult = $this->_checkManageRequest();
+        if($aResult === true) {
+            $iId = (int)bx_get('id', 'post');
+            if(bx_get('op', 'post') == 'delete')
+                $aResult = ['ok' => $this->_oDb->deleteFunnel($iId), 'id' => 0];
+            else {
+                $aTypes = bx_get('step_type', 'post');
+                $aPatterns = bx_get('step_pattern', 'post');
+                $aSteps = [];
+                if(is_array($aTypes) && is_array($aPatterns))
+                    foreach(array_values($aTypes) as $i => $sType) {
+                        if(!isset($aPatterns[$i]) || trim((string)$aPatterns[$i]) === '')
+                            continue;
+                        $aStep = $this->_getMatchInput($sType, $aPatterns[$i]);
+                        if($aStep === false) {
+                            $aSteps = false;
+                            break;
+                        }
+                        $aSteps[] = $aStep;
+                    }
+
+                $sName = trim((string)bx_get('name', 'post'));
+                if($aSteps === false || count($aSteps) < 2 || count($aSteps) > $this->_oConfig->CNF['MAX_FUNNEL_STEPS'] || $sName === '' || get_mb_len($sName) > 128)
+                    $aResult = ['error' => _t('_bx_analytics_txt_funnel_invalid')];
+                else {
+                    $iId = $this->_oDb->saveFunnel($iId, $sName, $aSteps);
+                    $aResult = ['ok' => (bool)$iId, 'id' => $iId];
+                }
+            }
+        }
+
+        $this->_outputJson($aResult);
+    }
+
+    /**
+     * A POST from a manager with a valid form token, or an error array.
+     */
+    protected function _checkManageRequest()
+    {
+        if($_SERVER['REQUEST_METHOD'] != 'POST' || $this->checkAllowedManage() !== CHECK_ACTION_RESULT_ALLOWED)
+            return ['error' => _t('_sys_txt_access_denied'), 'code' => 403];
+
+        if(!BxDolForm::isCsrfTokenValid((string)bx_get('csrf_token', 'post'), false))
+            return ['error' => _t('_sys_txt_access_denied'), 'code' => 403];
+
+        return true;
+    }
+
+    /**
+     * A goal or funnel step from form input: a page path (starting with / or *, * for any
+     * characters) or an event name (name, or name@module), or false.
+     */
+    protected function _getMatchInput($sType, $sPattern)
+    {
+        $sPattern = trim((string)$sPattern);
+        if($sPattern === '' || get_mb_len($sPattern) > 255)
+            return false;
+
+        if($sType == 'page')
+            return in_array(get_mb_substr($sPattern, 0, 1), ['/', '*'], true) ? ['type' => 'page', 'pattern' => $sPattern] : false;
+
+        if($sType == 'event')
+            return preg_match('/^[\p{L}\p{N} _.:\/-]{1,64}(@[a-z0-9_]{1,32})?$/u', $sPattern) ? ['type' => 'event', 'pattern' => $sPattern] : false;
+
+        return false;
+    }
+
+    protected function _outputJson($aResult)
+    {
+        header('Content-Type: application/json; charset=utf-8');
+        header('Cache-Control: no-store');
+        if(isset($aResult['code']))
+            http_response_code((int)$aResult['code']);
+
+        echo json_encode($aResult);
+        exit;
+    }
+
     /**
      * Reports that show members by name: sessions and users. Site administrators always
      * see them; everyone else needs "view analytics people" besides "use analytics".
