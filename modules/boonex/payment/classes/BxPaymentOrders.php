@@ -148,6 +148,32 @@ class BxPaymentOrders extends BxBaseModPaymentOrders
         return $this->_oModule->_oDb->getOrderPending(array('type' => 'mixed', 'conditions' => $aConditions));
     }
 
+    /**
+     * @page service Service Calls
+     * @section bx_payment Payment
+     * @subsection bx_payment-other Other
+     * @subsubsection bx_payment-get_transactions_after get_transactions_after
+     *
+     * @code bx_srv('bx_payment', 'get_transactions_after', [0, 500], 'Orders'); @endcode
+     *
+     * Get processed transactions a page at a time, in the order they were registered, to read
+     * the whole payment history in steps. Pass the id of the last transaction of the previous
+     * page to get the next one.
+     *
+     * @param $iAfterId integer value, the transactions with a greater ID are returned (0 for the first page).
+     * @param $iLimit integer value, transactions per page (at most 5000).
+     * @return an array of transactions ordered by ID. Each has the transaction's ID, pending_id, client_id, seller_id, author_id, module_id, item_id, item_count, amount, currency and date, and its order's type, provider, order, pending_currency, pending_amount and data (the serialized currency snapshot).
+     *
+     * @see BxPaymentOrders::serviceGetTransactionsAfter
+     */
+    /**
+     * @ref bx_payment-get_transactions_after "get_transactions_after"
+     */
+    public function serviceGetTransactionsAfter($iAfterId = 0, $iLimit = 500)
+    {
+        return $this->_oModule->_oDb->getTransactionsAfter((int)$iAfterId, (int)$iLimit);
+    }
+
     public function serviceProcessOrder($iSellerId, $iClientId, $iModuleId, $aItems, $sType, $sOrder)
     {
         $mixedResult = $this->addOrder(array(

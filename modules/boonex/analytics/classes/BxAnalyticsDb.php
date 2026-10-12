@@ -83,9 +83,14 @@ class BxAnalyticsDb extends BxBaseModGeneralDb
     /**
      * Latest session of any of the visitor ids on a platform, active since a time.
      */
-    public function getActiveSession($aVisitors, $sPlatform, $iSince)
+    public function getActiveSession($aVisitors, $sPlatform, $iSince, $iUntil = 0)
     {
         $aBindings = ['platform' => $sPlatform, 'since' => $iSince];
+        $sUntil = '';
+        if($iUntil) {
+            $sUntil = ' AND `started` <= :until';
+            $aBindings['until'] = (int)$iUntil;
+        }
         $aIn = [];
         foreach(array_values(array_unique($aVisitors)) as $i => $sVisitor) {
             $aIn[] = ':v' . $i;
@@ -94,7 +99,7 @@ class BxAnalyticsDb extends BxBaseModGeneralDb
         if(empty($aIn))
             return [];
 
-        return $this->getRow("SELECT * FROM `" . $this->_oConfig->CNF['TABLE_SESSIONS'] . "` WHERE `visitor` IN (" . implode(', ', $aIn) . ") AND `platform` = :platform AND `last_seen` >= :since ORDER BY `last_seen` DESC LIMIT 1", $aBindings);
+        return $this->getRow("SELECT * FROM `" . $this->_oConfig->CNF['TABLE_SESSIONS'] . "` WHERE `visitor` IN (" . implode(', ', $aIn) . ") AND `platform` = :platform AND `last_seen` >= :since" . $sUntil . " ORDER BY `last_seen` DESC LIMIT 1", $aBindings);
     }
 
     public function insertSession($aSession)
@@ -1010,6 +1015,382 @@ class BxAnalyticsDb extends BxBaseModGeneralDb
             default:
                 return 'FLOOR((' . $sColumn . ' + ' . $iOffset . ') / 86400) * 86400 - ' . $iOffset;
         }
+    }
+
+    /*
+     * Revenue: the ledger and subscriptions
+     */
+
+    /**
+     * Ledger columns a revenue split may group by, as name => column.
+     */
+    protected $_aRevenueDimensions = [
+        'module' => 'module',
+        'provider' => 'provider',
+        'platform' => 'platform',
+        'first_channel' => 'first_channel',
+        'first_referrer_host' => 'first_referrer_host',
+        'first_utm_campaign' => 'first_utm_campaign',
+        'last_channel' => 'last_channel',
+        'last_referrer_host' => 'last_referrer_host',
+        'last_utm_campaign' => 'last_utm_campaign',
+        'seller_id' => 'seller_id',
+    ];
+
+    /**
+     * Add a money movement unless the same movement (payment module, transaction, kind) is
+     * there already; returns 1 when it was added.
+     */
+    public function insertRevenue($aRow)
+    {
+        $aBindings = [];
+        foreach($aRow as $sField => $mixedValue)
+            $aBindings[$sField] = $mixedValue;
+
+        $sFields = '`' . implode('`, `', array_keys($aBindings)) . '`';
+        $sValues = ':' . implode(', :', array_keys($aBindings));
+
+        return (int)$this->query("INSERT IGNORE INTO `" . $this->_oConfig->CNF['TABLE_REVENUE'] . "` (" . $sFields . ") VALUES (" . $sValues . ")", $aBindings);
+    }
+
+    /**
+     * Ledger rows of an order, of some kinds, in transaction order.
+     */
+    public function getRevenueRows($sPayment, $iPendingId, $aKinds = [])
+    {
+        $aBindings = ['payment' => $sPayment, 'pending' => (int)$iPendingId];
+
+        return $this->getAll("SELECT * FROM `" . $this->_oConfig->CNF['TABLE_REVENUE'] . "` WHERE `payment` = :payment AND `pending_id` = :pending" . $this->_getKindsSql($aKinds, $aBindings) . " ORDER BY `transaction_id`, `id`", $aBindings);
+    }
+
+    /**
+     * The ledger row of a transaction, of some kinds.
+     */
+    public function getRevenueRow($sPayment, $iTransactionId, $aKinds = [])
+    {
+        $aBindings = ['payment' => $sPayment, 'transaction' => (int)$iTransactionId];
+
+        return $this->getRow("SELECT * FROM `" . $this->_oConfig->CNF['TABLE_REVENUE'] . "` WHERE `payment` = :payment AND `transaction_id` = :transaction" . $this->_getKindsSql($aKinds, $aBindings) . " ORDER BY `id` LIMIT 1", $aBindings);
+    }
+
+    /**
+     * Time of the first charge of each order the ledger has: [pending id => time].
+     */
+    public function getRevenueFirstCharges($sPayment, $aPendingIds)
+    {
+        $aPendingIds = array_values(array_unique(array_map('intval', $aPendingIds)));
+        if(empty($aPendingIds))
+            return [];
+
+        return $this->getPairs("SELECT `pending_id`, MIN(`ts`) AS `first` FROM `" . $this->_oConfig->CNF['TABLE_REVENUE'] . "` WHERE `payment` = :payment AND `pending_id` IN (" . $this->implode_escape($aPendingIds) . ") AND `kind` IN ('sale', 'renewal') GROUP BY `pending_id`", 'pending_id', 'first', ['payment' => $sPayment]);
+    }
+
+    /**
+     * Transactions of a list the ledger has as a sale or a renewal: [transaction id, ...].
+     */
+    public function getRevenueCharged($sPayment, $aTransactionIds)
+    {
+        $aTransactionIds = array_values(array_unique(array_map('intval', $aTransactionIds)));
+        if(empty($aTransactionIds))
+            return [];
+
+        return array_map('intval', $this->getColumn("SELECT DISTINCT `transaction_id` FROM `" . $this->_oConfig->CNF['TABLE_REVENUE'] . "` WHERE `payment` = :payment AND `transaction_id` IN (" . $this->implode_escape($aTransactionIds) . ") AND `kind` IN ('sale', 'renewal')", ['payment' => $sPayment]));
+    }
+
+    /**
+     * Charges of an order in the ledger from a time on: first and last time, and how many
+     * (the rows of one charge share their time).
+     */
+    public function getRevenuePaid($sPayment, $iPendingId, $iSince = 0)
+    {
+        return $this->getRow("SELECT IFNULL(MIN(`ts`), 0) AS `first`, IFNULL(MAX(`ts`), 0) AS `last`, COUNT(DISTINCT `ts`) AS `count` FROM `" . $this->_oConfig->CNF['TABLE_REVENUE'] . "` WHERE `payment` = :payment AND `pending_id` = :pending AND `kind` IN ('sale', 'renewal') AND `ts` >= :since", [
+            'payment' => $sPayment,
+            'pending' => (int)$iPendingId,
+            'since' => (int)$iSince,
+        ]);
+    }
+
+    /**
+     * Give an order's rows that have no visit yet the buyer's platform, visit and sources.
+     */
+    public function updateRevenueContext($sPayment, $iPendingId, $aSet)
+    {
+        $aBindings = ['payment' => $sPayment, 'pending' => (int)$iPendingId];
+        $aSql = [];
+        foreach($aSet as $sField => $mixedValue) {
+            $aSql[] = '`' . $sField . '` = :f_' . $sField;
+            $aBindings['f_' . $sField] = $mixedValue;
+        }
+
+        return (int)$this->query("UPDATE `" . $this->_oConfig->CNF['TABLE_REVENUE'] . "` SET " . implode(', ', $aSql) . " WHERE `payment` = :payment AND `pending_id` = :pending AND `session_id` = 0", $aBindings);
+    }
+
+    /**
+     * The traffic source of a member's first visit, and of the latest one that started by a time.
+     *
+     * @return array ['first' => row or [], 'last' => row or []] with channel, referrer_host, utm_campaign
+     */
+    public function getSessionSources($iProfileId, $iTime)
+    {
+        $sSql = "SELECT `channel`, `referrer_host`, `utm_campaign` FROM `" . $this->_oConfig->CNF['TABLE_SESSIONS'] . "` WHERE `profile_id` = :profile AND `started` <= :time ORDER BY `started` %s LIMIT 1";
+        $aBindings = ['profile' => (int)$iProfileId, 'time' => (int)$iTime];
+
+        return [
+            'first' => $this->getRow(sprintf($sSql, 'ASC'), $aBindings),
+            'last' => $this->getRow(sprintf($sSql, 'DESC'), $aBindings),
+        ];
+    }
+
+    /**
+     * A deleted profile: its money stays in the ledger, its visit and traffic sources don't.
+     */
+    public function forgetRevenueProfile($iProfileId)
+    {
+        return (int)$this->query("UPDATE `" . $this->_oConfig->CNF['TABLE_REVENUE'] . "` SET `session_id` = 0, `first_channel` = '', `first_referrer_host` = '', `first_utm_campaign` = '', `last_channel` = '', `last_referrer_host` = '', `last_utm_campaign` = '' WHERE `client_id` = :profile", ['profile' => (int)$iProfileId]);
+    }
+
+    /**
+     * Rows the import of past payments wrote (they have no platform).
+     */
+    public function getRevenueImportedCount($sPayment)
+    {
+        return (int)$this->getOne("SELECT COUNT(*) FROM `" . $this->_oConfig->CNF['TABLE_REVENUE'] . "` WHERE `payment` = :payment AND `platform` = ''", ['payment' => $sPayment]);
+    }
+
+    public function hasRevenue($sPayment)
+    {
+        return (bool)$this->getOne("SELECT 1 FROM `" . $this->_oConfig->CNF['TABLE_REVENUE'] . "` WHERE `payment` = :payment LIMIT 1", ['payment' => $sPayment]);
+    }
+
+    public function getSubscriptionRow($sPayment, $iPendingId)
+    {
+        return $this->getRow("SELECT * FROM `" . $this->_oConfig->CNF['TABLE_SUBSCRIPTIONS'] . "` WHERE `payment` = :payment AND `pending_id` = :pending", [
+            'payment' => $sPayment,
+            'pending' => (int)$iPendingId,
+        ]);
+    }
+
+    /**
+     * A new subscription, or new terms for one the ledger has (it keeps its start, payments
+     * and cancellation).
+     */
+    public function saveSubscriptionRow($aRow)
+    {
+        $aBindings = [];
+        foreach($aRow as $sField => $mixedValue)
+            $aBindings[$sField] = $mixedValue;
+
+        $aUpdate = [];
+        foreach(['subscription_id', 'client_id', 'seller_id', 'module_id', 'module', 'item_id', 'provider', 'period', 'period_unit', 'trial', 'amount_default', 'mrr_default'] as $sField)
+            if(array_key_exists($sField, $aBindings))
+                $aUpdate[] = '`' . $sField . '` = VALUES(`' . $sField . '`)';
+        if(array_key_exists('status', $aBindings))
+            $aUpdate[] = "`status` = IF(`canceled` > 0, `status`, VALUES(`status`))";
+
+        $sFields = '`' . implode('`, `', array_keys($aBindings)) . '`';
+        $sValues = ':' . implode(', :', array_keys($aBindings));
+
+        return $this->query("INSERT INTO `" . $this->_oConfig->CNF['TABLE_SUBSCRIPTIONS'] . "` (" . $sFields . ") VALUES (" . $sValues . ") ON DUPLICATE KEY UPDATE " . implode(', ', $aUpdate), $aBindings) !== false;
+    }
+
+    /**
+     * A subscription read from the payment module's history: fills what the ledger doesn't
+     * know yet and leaves what it recorded live.
+     */
+    public function importSubscriptionRow($aRow)
+    {
+        $aBindings = [];
+        foreach($aRow as $sField => $mixedValue)
+            $aBindings[$sField] = $mixedValue;
+
+        $sFields = '`' . implode('`, `', array_keys($aBindings)) . '`';
+        $sValues = ':' . implode(', :', array_keys($aBindings));
+
+        return $this->query("INSERT INTO `" . $this->_oConfig->CNF['TABLE_SUBSCRIPTIONS'] . "` (" . $sFields . ") VALUES (" . $sValues . ") ON DUPLICATE KEY UPDATE
+            `first_paid` = IF(`first_paid` = 0, VALUES(`first_paid`), LEAST(`first_paid`, IF(VALUES(`first_paid`) > 0, VALUES(`first_paid`), `first_paid`))),
+            `last_paid` = GREATEST(`last_paid`, VALUES(`last_paid`)),
+            `paid_count` = GREATEST(`paid_count`, VALUES(`paid_count`)),
+            `reason` = IF(`canceled` = 0, VALUES(`reason`), `reason`),
+            `status` = IF(`canceled` = 0 AND VALUES(`canceled`) > 0, VALUES(`status`), `status`),
+            `canceled` = IF(`canceled` = 0, VALUES(`canceled`), `canceled`)", $aBindings) !== false;
+    }
+
+    public function updateSubscriptionRow($sPayment, $iPendingId, $aSet)
+    {
+        $aBindings = ['payment' => $sPayment, 'pending' => (int)$iPendingId];
+        $aSql = [];
+        foreach($aSet as $sField => $mixedValue) {
+            $aSql[] = '`' . $sField . '` = :f_' . $sField;
+            $aBindings['f_' . $sField] = $mixedValue;
+        }
+
+        return (int)$this->query("UPDATE `" . $this->_oConfig->CNF['TABLE_SUBSCRIPTIONS'] . "` SET " . implode(', ', $aSql) . " WHERE `payment` = :payment AND `pending_id` = :pending", $aBindings);
+    }
+
+    /**
+     * Charges of a subscription were recorded (`$iCount` charges, from `$iFirst` to `$iLast`):
+     * it is active (unless cancelled) since its first.
+     */
+    public function addSubscriptionPayments($sPayment, $iPendingId, $iCount, $iFirst, $iLast)
+    {
+        return (int)$this->query("UPDATE `" . $this->_oConfig->CNF['TABLE_SUBSCRIPTIONS'] . "` SET `first_paid` = IF(`first_paid` = 0, :first, LEAST(`first_paid`, :first)), `last_paid` = GREATEST(`last_paid`, :last), `paid_count` = `paid_count` + :count, `status` = IF(`canceled` > 0, `status`, 'active') WHERE `payment` = :payment AND `pending_id` = :pending", [
+            'payment' => $sPayment,
+            'pending' => (int)$iPendingId,
+            'count' => (int)$iCount,
+            'first' => (int)$iFirst,
+            'last' => (int)$iLast,
+        ]);
+    }
+
+    /**
+     * Gross (sales and renewals), refunds (refunds and reversals, positive), net, orders,
+     * paying customers, renewals and movements without an exchange rate in a period.
+     *
+     * @param array $aFilter report filter with `payment`, the payment module to read
+     * @param int $iCash 1 for money, 0 for orders paid with credits, null for both
+     */
+    public function getRevenueTotals($aFilter, $iCash = 1)
+    {
+        $aBindings = [];
+        $sWhere = $this->_getRevenueWhere($aFilter, $iCash, $aBindings);
+
+        return $this->getRow("SELECT " . $this->_getRevenueSums() . ", COUNT(*) AS `movements` FROM `" . $this->_oConfig->CNF['TABLE_REVENUE'] . "` AS `r` WHERE " . $sWhere, $aBindings);
+    }
+
+    /**
+     * The same sums per time bucket: rows keyed by bucket start.
+     */
+    public function getRevenueSeries($aFilter, $iCash = 1)
+    {
+        $aBindings = [];
+        $sWhere = $this->_getRevenueWhere($aFilter, $iCash, $aBindings);
+        $sBucket = $this->_getBucketSql('`r`.`ts`', $aFilter['bucket'], $aFilter['offset'], $aFilter['starts'], $aBindings);
+
+        return $this->getAllWithKey("SELECT " . $sBucket . " AS `bucket`, " . $this->_getRevenueSums() . " FROM `" . $this->_oConfig->CNF['TABLE_REVENUE'] . "` AS `r` WHERE " . $sWhere . " GROUP BY `bucket` ORDER BY `bucket`", 'bucket', $aBindings);
+    }
+
+    /**
+     * Net and gross revenue, customers and orders per value of a ledger column, the largest first.
+     */
+    public function getRevenueSplit($aFilter, $sDimension, $iLimit, $iCash = 1)
+    {
+        if(!isset($this->_aRevenueDimensions[$sDimension]))
+            return [];
+
+        $aBindings = [];
+        $sWhere = $this->_getRevenueWhere($aFilter, $iCash, $aBindings);
+        $sColumn = '`r`.`' . $this->_aRevenueDimensions[$sDimension] . '`';
+
+        return $this->getAll("SELECT " . $sColumn . " AS `value`, " . $this->_getRevenueSums() . " FROM `" . $this->_oConfig->CNF['TABLE_REVENUE'] . "` AS `r` WHERE " . $sWhere . " GROUP BY " . $sColumn . " ORDER BY `net` DESC LIMIT " . max(1, min(1000, (int)$iLimit)), $aBindings);
+    }
+
+    /**
+     * Items that brought the most net revenue, with units sold and orders.
+     */
+    public function getRevenueTopItems($aFilter, $iLimit)
+    {
+        $aBindings = [];
+        $sWhere = $this->_getRevenueWhere($aFilter, 1, $aBindings);
+
+        return $this->getAll("SELECT `r`.`module_id`, MAX(`r`.`module`) AS `module`, `r`.`item_id`, IFNULL(SUM(`r`.`amount_default`), 0) AS `net`, IFNULL(SUM(IF(`r`.`kind` = 'sale', `r`.`item_count`, 0)), 0) AS `units`, COUNT(DISTINCT IF(`r`.`kind` = 'sale', `r`.`pending_id`, NULL)) AS `orders`, SUM(`r`.`kind` = 'renewal') AS `renewals` FROM `" . $this->_oConfig->CNF['TABLE_REVENUE'] . "` AS `r` WHERE " . $sWhere . " GROUP BY `r`.`module_id`, `r`.`item_id` ORDER BY `net` DESC LIMIT " . max(1, min(100, (int)$iLimit)), $aBindings);
+    }
+
+    /**
+     * Revenue the site sold itself (`$iSiteAdmin`, 0 when unknown), revenue of other sellers,
+     * and commission invoices paid to the site (rows of the payment module's own items).
+     */
+    public function getRevenueSellers($aFilter, $iSiteAdmin)
+    {
+        $aBindings = ['admin' => (int)$iSiteAdmin, 'payment_module' => isset($aFilter['payment']) ? $aFilter['payment'] : ''];
+        $sWhere = $this->_getRevenueWhere($aFilter, 1, $aBindings);
+
+        return $this->getRow("SELECT IFNULL(SUM(IF(`r`.`module` <> :payment_module AND `r`.`seller_id` = :admin, `r`.`amount_default`, 0)), 0) AS `site`, IFNULL(SUM(IF(`r`.`module` <> :payment_module AND `r`.`seller_id` <> :admin, `r`.`amount_default`, 0)), 0) AS `vendors`, IFNULL(SUM(IF(`r`.`module` = :payment_module, `r`.`amount_default`, 0)), 0) AS `commissions`, COUNT(DISTINCT IF(`r`.`module` <> :payment_module AND `r`.`seller_id` <> :admin, `r`.`seller_id`, NULL)) AS `vendor_count` FROM `" . $this->_oConfig->CNF['TABLE_REVENUE'] . "` AS `r` WHERE " . $sWhere, $aBindings);
+    }
+
+    /**
+     * Net revenue of members over all the ledger: [profile id => amount].
+     */
+    public function getLifetimeValues($aProfileIds, $sPayment)
+    {
+        $aProfileIds = array_values(array_unique(array_filter(array_map('intval', $aProfileIds))));
+        if(empty($aProfileIds))
+            return [];
+
+        return $this->getPairs("SELECT `client_id`, IFNULL(SUM(`amount_default`), 0) AS `ltv` FROM `" . $this->_oConfig->CNF['TABLE_REVENUE'] . "` WHERE `cash` = 1 AND `payment` = :payment AND `client_id` IN (" . $this->implode_escape($aProfileIds) . ") GROUP BY `client_id`", 'client_id', 'ltv', ['payment' => $sPayment]);
+    }
+
+    /**
+     * Subscriptions that were paying or in trial at some time in a period: paid or started
+     * with a trial before its end, and not cancelled before its start.
+     */
+    public function getSubscriptionRows($aFilter)
+    {
+        $aBindings = ['from' => (int)$aFilter['from'], 'to' => (int)$aFilter['to'], 'payment' => isset($aFilter['payment']) ? $aFilter['payment'] : ''];
+        $sPlatform = '';
+        if($aFilter['platform'] !== '') {
+            $sPlatform = ' AND `platform` = :platform';
+            $aBindings['platform'] = $aFilter['platform'];
+        }
+
+        return $this->getAll("SELECT `pending_id`, `module`, `item_id`, `period`, `period_unit`, `trial`, `mrr_default`, `started`, `first_paid`, `last_paid`, `canceled`, `status` FROM `" . $this->_oConfig->CNF['TABLE_SUBSCRIPTIONS'] . "` WHERE `payment` = :payment" . $sPlatform . " AND (`canceled` = 0 OR `canceled` >= :from) AND ((`first_paid` > 0 AND `first_paid` < :to) OR ((`trial` > 0 OR `status` = 'trial') AND `started` < :to))", $aBindings);
+    }
+
+    /**
+     * Why subscriptions were cancelled in a period: [reason => count], the most frequent first.
+     * `cancel` is the payment module's default for no reason, counted with the empty one.
+     */
+    public function getSubscriptionReasons($aFilter, $iLimit)
+    {
+        $aBindings = ['from' => (int)$aFilter['from'], 'to' => (int)$aFilter['to'], 'payment' => isset($aFilter['payment']) ? $aFilter['payment'] : ''];
+        $sPlatform = '';
+        if($aFilter['platform'] !== '') {
+            $sPlatform = ' AND `platform` = :platform';
+            $aBindings['platform'] = $aFilter['platform'];
+        }
+
+        return $this->getPairs("SELECT IF(`reason` = 'cancel', '', `reason`) AS `cause`, COUNT(*) AS `count` FROM `" . $this->_oConfig->CNF['TABLE_SUBSCRIPTIONS'] . "` WHERE `payment` = :payment" . $sPlatform . " AND `canceled` >= :from AND `canceled` < :to GROUP BY `cause` ORDER BY `count` DESC LIMIT " . max(1, min(100, (int)$iLimit)), 'cause', 'count', $aBindings);
+    }
+
+    protected function _getRevenueSums()
+    {
+        return "IFNULL(SUM(IF(`r`.`kind` IN ('sale', 'renewal'), `r`.`amount_default`, 0)), 0) AS `gross`, IFNULL(-SUM(IF(`r`.`kind` IN ('refund', 'reversal'), `r`.`amount_default`, 0)), 0) AS `refunds`, IFNULL(SUM(`r`.`amount_default`), 0) AS `net`, COUNT(DISTINCT IF(`r`.`kind` = 'sale', `r`.`pending_id`, NULL)) AS `orders`, COUNT(DISTINCT IF(`r`.`kind` IN ('sale', 'renewal'), `r`.`client_id`, NULL)) AS `customers`, COUNT(DISTINCT IF(`r`.`kind` = 'renewal', CONCAT(`r`.`pending_id`, ':', `r`.`ts`), NULL)) AS `renewals`, SUM(`r`.`kind` IN ('refund', 'reversal')) AS `refund_count`, IFNULL(SUM(`r`.`amount_default` IS NULL), 0) AS `unconverted`";
+    }
+
+    /**
+     * WHERE for ledger rows (alias `r`) of one payment module in the period, money or credits
+     * (null: both), on the filter's platform.
+     */
+    protected function _getRevenueWhere($aFilter, $iCash, &$aBindings)
+    {
+        $aSql = ['`r`.`ts` >= :from', '`r`.`ts` < :to', '`r`.`payment` = :payment'];
+        if($iCash !== null) {
+            array_unshift($aSql, '`r`.`cash` = :cash');
+            $aBindings['cash'] = (int)$iCash ? 1 : 0;
+        }
+        $aBindings['from'] = (int)$aFilter['from'];
+        $aBindings['to'] = (int)$aFilter['to'];
+        $aBindings['payment'] = isset($aFilter['payment']) ? (string)$aFilter['payment'] : '';
+
+        if($aFilter['platform'] !== '') {
+            $aSql[] = '`r`.`platform` = :platform';
+            $aBindings['platform'] = $aFilter['platform'];
+        }
+
+        return implode(' AND ', $aSql);
+    }
+
+    protected function _getKindsSql($aKinds, &$aBindings)
+    {
+        if(empty($aKinds))
+            return '';
+
+        $aIn = [];
+        foreach(array_values($aKinds) as $i => $sKind) {
+            $aIn[] = ':k' . $i;
+            $aBindings['k' . $i] = $sKind;
+        }
+
+        return ' AND `kind` IN (' . implode(', ', $aIn) . ')';
     }
 
     /*

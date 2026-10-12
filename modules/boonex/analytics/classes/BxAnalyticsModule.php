@@ -28,12 +28,22 @@ class BxAnalyticsModule extends BxDolModule
     /**
      * Reports that blocks, Studio and the API may ask for; each is a BxAnalyticsReports method.
      */
-    protected $_aReports = ['filters', 'overview', 'top', 'table', 'realtime', 'map', 'bots', 'sessions', 'users', 'events', 'journeys', 'retention', 'goals', 'funnels'];
+    protected $_aReports = ['filters', 'overview', 'top', 'table', 'realtime', 'map', 'bots', 'sessions', 'users', 'events', 'journeys', 'retention', 'goals', 'funnels', 'revenue', 'subscriptions', 'sales', 'credits'];
 
     /**
      * Reports that show members by name.
      */
     protected $_aPeopleReports = ['sessions', 'users'];
+
+    /**
+     * Reports that show money and buyers.
+     */
+    protected $_aRevenueReports = ['revenue', 'subscriptions', 'sales', 'credits'];
+
+    /**
+     * Payment alerts (unit `system`) that keep the revenue ledger.
+     */
+    protected $_aPaymentAlerts = ['register_payment', 'refund_payment', 'create_subscription', 'prolong_subscription', 'overdue_subscription', 'cancel_subscription', 'cancel_order', 'finalize_checkout'];
 
     /**
      * Studio sections: page => list of [report, block params, spans all columns].
@@ -53,6 +63,10 @@ class BxAnalyticsModule extends BxDolModule
         'retention' => [['filters', [], true], ['retention', [], true]],
         'goals' => [['filters', [], true], ['goals', [], true]],
         'funnels' => [['filters', [], true], ['funnels', [], true]],
+        'revenue' => [['filters', [], true], ['revenue', [], true]],
+        'subscriptions' => [['filters', [], true], ['subscriptions', [], true]],
+        'sales' => [['filters', [], true], ['sales', [], true]],
+        'credits' => [['filters', [], true], ['credits', [], true]],
     ];
           
     function __construct(&$aModule)
@@ -326,7 +340,9 @@ class BxAnalyticsModule extends BxDolModule
      * @code api.php?r=bx_analytics/get_report&params[]=top&params[]={"group":"pages","tab":"entry","range":"7d"} @endcode
      *
      * Report data for NEO and other clients. Reports: filters, overview, top, table, realtime
-     * and the other sections listed in BxAnalyticsModule::$_aReports.
+     * and the other sections listed in BxAnalyticsModule::$_aReports. Sessions and users need
+     * the "view analytics people" permission; revenue, subscriptions, sales and credits need
+     * "view analytics revenue".
      *
      * @param $sReport report name
      * @param $mixedParams filter parameters (see BxAnalyticsFilter) and the report's own
@@ -341,6 +357,9 @@ class BxAnalyticsModule extends BxDolModule
     public function serviceGetReport($sReport, $mixedParams = [])
     {
         if(!$this->serviceIsAvaliable())
+            return ['error' => _t('_sys_txt_access_denied'), 'code' => 403];
+
+        if((in_array($sReport, $this->_aRevenueReports, true) && $this->checkAllowedRevenue() !== CHECK_ACTION_RESULT_ALLOWED) || (in_array($sReport, $this->_aPeopleReports, true) && $this->checkAllowedPeople() !== CHECK_ACTION_RESULT_ALLOWED))
             return ['error' => _t('_sys_txt_access_denied'), 'code' => 403];
 
         $aParams = is_array($mixedParams) ? $mixedParams : json_decode((string)$mixedParams, true);
@@ -364,7 +383,7 @@ class BxAnalyticsModule extends BxDolModule
         header('Content-Type: application/json; charset=utf-8');
         header('Cache-Control: no-store');
 
-        if(!$this->serviceIsAvaliable()) {
+        if(!$this->serviceIsAvaliable() || (in_array($sReport, $this->_aRevenueReports, true) && $this->checkAllowedRevenue() !== CHECK_ACTION_RESULT_ALLOWED)) {
             http_response_code(403);
             echo json_encode(['error' => _t('_sys_txt_access_denied')]);
             exit;
@@ -553,6 +572,9 @@ class BxAnalyticsModule extends BxDolModule
         if(in_array($sReport, $this->_aPeopleReports, true) && $this->checkAllowedPeople() !== CHECK_ACTION_RESULT_ALLOWED)
             return bx_is_api() ? [] : '';
 
+        if(in_array($sReport, $this->_aRevenueReports, true) && $this->checkAllowedRevenue() !== CHECK_ACTION_RESULT_ALLOWED)
+            return bx_is_api() ? [] : '';
+
         if(bx_is_api())
             return [bx_api_get_block('analytics_' . $sReport, $this->_getApiBlockData($sReport, $aBlockParams))];
 
@@ -603,7 +625,9 @@ class BxAnalyticsModule extends BxDolModule
      * @code bx_srv('bx_analytics', 'pruning'); @endcode
      *
      * Hourly cron job: deletes old daily salts, then data past the retention period in
-     * small batches, within a time limit so other cron jobs aren't held up.
+     * small batches, within a time limit so other cron jobs aren't held up. The revenue
+     * ledger is never pruned. While past payments are being imported, the cron imports
+     * another step of them.
      *
      * @return int rows deleted
      *
@@ -629,6 +653,15 @@ class BxAnalyticsModule extends BxDolModule
                 $iBatch = $this->_oDb->$sMethod($iBefore, $CNF['PRUNING_BATCH']);
                 $iDeleted += $iBatch;
             } while($iBatch >= $CNF['PRUNING_BATCH'] && time() < $iDeadline);
+
+        try {
+            $oRevenue = $this->getRevenue();
+            if($oRevenue->getBackfillStatus()['state'] == 'running')
+                $oRevenue->backfill(time() + $CNF['BACKFILL_SECONDS']);
+        }
+        catch(Throwable $e) {
+            bx_log('sys_payments', 'bx_analytics: import of past payments failed: ' . $e->getMessage(), BX_LOG_ERR);
+        }
 
         return $iDeleted;
     }
@@ -676,6 +709,17 @@ class BxAnalyticsModule extends BxDolModule
     {
         $sUnit = $oAlert->sUnit;
         $sAction = $oAlert->sAction;
+
+        // money: whatever goes wrong here must never break a checkout
+        if($sUnit == 'system' && !empty($oAlert->aExtras['module']) && in_array($sAction, $this->_aPaymentAlerts, true)) {
+            try {
+                $this->getRevenue()->onPaymentAlert($oAlert);
+            }
+            catch(Throwable $e) {
+                bx_log('sys_payments', 'bx_analytics: payment alert ' . $sAction . ' failed: ' . $e->getMessage(), BX_LOG_ERR);
+            }
+            return;
+        }
 
         if($sUnit == 'profile' && $sAction == 'delete') {
             $this->onProfileDelete($oAlert->iObject);
@@ -735,7 +779,9 @@ class BxAnalyticsModule extends BxDolModule
     }
 
     /**
-     * Forget a deleted profile: its visits stay in reports as an anonymous visitor's.
+     * Forget a deleted profile: its visits stay in reports as an anonymous visitor's. Its
+     * payments stay in the revenue ledger, as they stay in the payment module, but lose the
+     * visit and the traffic sources they were tied to.
      */
     public function onProfileDelete($iProfileId)
     {
@@ -743,7 +789,7 @@ class BxAnalyticsModule extends BxDolModule
         if(!$iProfileId)
             return 0;
 
-        return $this->_oDb->forgetProfile($iProfileId, random_bytes(16));
+        return $this->_oDb->forgetProfile($iProfileId, random_bytes(16)) + $this->_oDb->forgetRevenueProfile($iProfileId);
     }
 
     public function serviceGetOptionsPlatforms()
@@ -788,6 +834,17 @@ class BxAnalyticsModule extends BxDolModule
         return new BxAnalyticsFilter($this, $aParams);
     }
 
+    /**
+     * The revenue ledger, for the current request.
+     */
+    public function getRevenue()
+    {
+        $this->getCollector(); // loads the request, user agent and collector classes
+        bx_import('Revenue', $this->_aModule);
+
+        return new BxAnalyticsRevenue($this);
+    }
+
     public function getReports()
     {
         if($this->_oReports === null) {
@@ -807,6 +864,9 @@ class BxAnalyticsModule extends BxDolModule
             return false;
 
         if(in_array($sReport, $this->_aPeopleReports, true) && $this->checkAllowedPeople() !== CHECK_ACTION_RESULT_ALLOWED)
+            return false;
+
+        if(in_array($sReport, $this->_aRevenueReports, true) && $this->checkAllowedRevenue() !== CHECK_ACTION_RESULT_ALLOWED)
             return false;
 
         $oReports = $this->getReports();
@@ -867,6 +927,11 @@ class BxAnalyticsModule extends BxDolModule
                 'duration_s' => _t('_bx_analytics_txt_duration_s'),
             ],
         ];
+    }
+
+    public function isApiKeyRequest()
+    {
+        return $this->_isApiKeyRequest();
     }
 
     /**
@@ -1390,6 +1455,44 @@ class BxAnalyticsModule extends BxDolModule
         $aCheck = checkActionModule(bx_get_logged_profile_id(), 'view analytics people', $this->getName(), false);
 
         return $aCheck[CHECK_ACTION_RESULT] === CHECK_ACTION_RESULT_ALLOWED ? CHECK_ACTION_RESULT_ALLOWED : _t('_sys_txt_access_denied');
+    }
+
+    /**
+     * Reports that show money and buyers: revenue, subscriptions, sales, credits, and members'
+     * lifetime value. Site administrators always see them; everyone else needs "view analytics
+     * revenue" besides "use analytics".
+     */
+    public function checkAllowedRevenue()
+    {
+        if(isAdmin())
+            return CHECK_ACTION_RESULT_ALLOWED;
+
+        if($this->checkAllowed() !== CHECK_ACTION_RESULT_ALLOWED)
+            return _t('_sys_txt_access_denied');
+
+        $aCheck = checkActionModule(bx_get_logged_profile_id(), 'view analytics revenue', $this->getName(), false);
+
+        return $aCheck[CHECK_ACTION_RESULT] === CHECK_ACTION_RESULT_ALLOWED ? CHECK_ACTION_RESULT_ALLOWED : _t('_sys_txt_access_denied');
+    }
+
+    /**
+     * Import past payments from the payment module now: POST op (import, restart), csrf_token.
+     * Site administrators only. One step runs within a time limit; the hourly cron continues.
+     */
+    public function actionBackfill()
+    {
+        if(!isAdmin() || $_SERVER['REQUEST_METHOD'] != 'POST' || !BxDolForm::isCsrfTokenValid((string)bx_get('csrf_token', 'post'), false))
+            $this->_outputJson(['error' => _t('_sys_txt_access_denied'), 'code' => 403]);
+
+        $oRevenue = $this->getRevenue();
+        $aStatus = $oRevenue->getBackfillStatus();
+        if($aStatus['state'] == 'unavailable')
+            $this->_outputJson(['error' => _t('_bx_analytics_txt_revenue_no_payment')]);
+
+        if(bx_get('op', 'post') == 'restart' || $aStatus['state'] == 'done')
+            $oRevenue->restartBackfill();
+
+        $this->_outputJson(['ok' => true] + $oRevenue->backfill(time() + $this->_oConfig->CNF['BACKFILL_SECONDS']));
     }
 
 	public function checkAllowed($isPerformAction = false)

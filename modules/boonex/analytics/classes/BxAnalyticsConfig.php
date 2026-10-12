@@ -77,6 +77,15 @@ class BxAnalyticsConfig extends BxBaseModGeneralConfig
             'TABLE_BOT_PAGES' => $aModule['db_prefix'] . 'bot_pages',
             'TABLE_GOALS' => $aModule['db_prefix'] . 'goals',
             'TABLE_FUNNELS' => $aModule['db_prefix'] . 'funnels',
+            'TABLE_REVENUE' => $aModule['db_prefix'] . 'revenue',
+            'TABLE_SUBSCRIPTIONS' => $aModule['db_prefix'] . 'subscriptions',
+
+            // import of past payments: the cursors, rows read per service call, and the time
+            // one step may take in the hourly cron and from the Studio button
+            'OPTION_BACKFILL' => 'bx_analytics_revenue_backfill',
+            'OPTION_BACKFILL_SBS' => 'bx_analytics_revenue_backfill_sbs',
+            'BACKFILL_PAGE' => 500,
+            'BACKFILL_SECONDS' => 10,
 
             // funnel steps at most
             'MAX_FUNNEL_STEPS' => 6,
@@ -189,8 +198,8 @@ class BxAnalyticsConfig extends BxBaseModGeneralConfig
     public function getIgnoredParams()
     {
         return $this->_getList('bx_analytics_ignore_params');
-    }
-
+    }
+
     public function getTrustedProxies()
     {
         return $this->_getList('bx_analytics_trusted_proxies');

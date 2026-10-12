@@ -126,6 +126,79 @@ CREATE TABLE IF NOT EXISTS `bx_analytics_funnels` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Revenue ledger: one row per money movement the payment module reports (a sale, a renewal,
+-- a refund or a reversal of a processed order), with the amount in the site's default
+-- currency and the platform and traffic source of the buyer. Pruning never touches it.
+CREATE TABLE IF NOT EXISTS `bx_analytics_revenue` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `ts` int(11) unsigned NOT NULL DEFAULT '0',
+  `kind` varchar(16) NOT NULL DEFAULT '',
+  `cash` tinyint(4) unsigned NOT NULL DEFAULT '1',
+  `payment` varchar(32) NOT NULL DEFAULT '',
+  `pending_id` int(11) unsigned NOT NULL DEFAULT '0',
+  `transaction_id` int(11) unsigned NOT NULL DEFAULT '0',
+  `order` varchar(32) NOT NULL DEFAULT '',
+  `module_id` int(11) unsigned NOT NULL DEFAULT '0',
+  `module` varchar(32) NOT NULL DEFAULT '',
+  `item_id` int(11) unsigned NOT NULL DEFAULT '0',
+  `item_count` int(11) unsigned NOT NULL DEFAULT '0',
+  `seller_id` int(11) unsigned NOT NULL DEFAULT '0',
+  `author_id` int(11) unsigned NOT NULL DEFAULT '0',
+  `client_id` int(11) unsigned NOT NULL DEFAULT '0',
+  `provider` varchar(32) NOT NULL DEFAULT '',
+  `type` varchar(16) NOT NULL DEFAULT '',
+  `amount` decimal(14,4) NOT NULL DEFAULT '0',
+  `currency` varchar(4) NOT NULL DEFAULT '',
+  `rate` double NOT NULL DEFAULT '1',
+  `amount_default` decimal(14,4) DEFAULT NULL,
+  `platform` varchar(16) NOT NULL DEFAULT '',
+  `session_id` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `first_channel` varchar(16) NOT NULL DEFAULT '',
+  `first_referrer_host` varchar(128) NOT NULL DEFAULT '',
+  `first_utm_campaign` varchar(128) NOT NULL DEFAULT '',
+  `last_channel` varchar(16) NOT NULL DEFAULT '',
+  `last_referrer_host` varchar(128) NOT NULL DEFAULT '',
+  `last_utm_campaign` varchar(128) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `movement` (`payment`, `transaction_id`, `kind`),
+  KEY `ts` (`cash`, `ts`, `platform`),
+  KEY `pending` (`payment`, `pending_id`),
+  KEY `module` (`module_id`, `ts`),
+  KEY `seller` (`seller_id`, `ts`),
+  KEY `client` (`client_id`, `ts`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Subscriptions as the ledger sees them: plan, price per period and per month (MRR) in the
+-- default currency, when they started, were first and last paid, and were cancelled
+CREATE TABLE IF NOT EXISTS `bx_analytics_subscriptions` (
+  `payment` varchar(32) NOT NULL DEFAULT '',
+  `pending_id` int(11) unsigned NOT NULL DEFAULT '0',
+  `subscription_id` varchar(32) NOT NULL DEFAULT '',
+  `client_id` int(11) unsigned NOT NULL DEFAULT '0',
+  `seller_id` int(11) unsigned NOT NULL DEFAULT '0',
+  `module_id` int(11) unsigned NOT NULL DEFAULT '0',
+  `module` varchar(32) NOT NULL DEFAULT '',
+  `item_id` int(11) unsigned NOT NULL DEFAULT '0',
+  `provider` varchar(32) NOT NULL DEFAULT '',
+  `period` int(11) unsigned NOT NULL DEFAULT '1',
+  `period_unit` varchar(16) NOT NULL DEFAULT '',
+  `trial` int(11) unsigned NOT NULL DEFAULT '0',
+  `amount_default` decimal(14,4) DEFAULT NULL,
+  `mrr_default` decimal(14,4) DEFAULT NULL,
+  `status` varchar(16) NOT NULL DEFAULT '',
+  `started` int(11) unsigned NOT NULL DEFAULT '0',
+  `first_paid` int(11) unsigned NOT NULL DEFAULT '0',
+  `last_paid` int(11) unsigned NOT NULL DEFAULT '0',
+  `paid_count` int(11) unsigned NOT NULL DEFAULT '0',
+  `canceled` int(11) unsigned NOT NULL DEFAULT '0',
+  `reason` varchar(255) NOT NULL DEFAULT '',
+  `platform` varchar(16) NOT NULL DEFAULT '',
+  PRIMARY KEY (`payment`, `pending_id`),
+  KEY `paid` (`first_paid`, `canceled`),
+  KEY `started` (`started`),
+  KEY `canceled` (`canceled`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- STUDIO: page & widget
 INSERT INTO `sys_std_pages`(`index`, `name`, `header`, `caption`, `icon`) VALUES
 (3, @sName, '_bx_analytics', '_bx_analytics', 'bx_analytics@modules/boonex/analytics/|std-icon.svg');

@@ -306,12 +306,21 @@ class AnalyticsCollectorTest extends BxDolIntegrationTestCase
         $oFilter = $this->_filter(['range' => 'custom', 'from' => '2001-09-09', 'to' => '2001-09-09']);
 
         $aJourneys = $oReports->getJourneys($oFilter);
-        $this->assertSame('/', $aJourneys['from'], 'the top entry page by default');
+        $this->assertSame('/', $aJourneys['jfrom'], 'the top entry page by default');
         $this->assertSame(3, $aJourneys['from_sessions']);
         $this->assertSame([['page' => '/a', 'sessions' => 2, 'share' => 66.7], ['page' => '/d', 'sessions' => 1, 'share' => 33.3]], $aJourneys['next']);
 
         $aVia = $oReports->getJourneys($oFilter, ['via' => '/a']);
         $this->assertEqualsCanonicalizing(['/b', '/c'], array_column($aVia['after'], 'page'), 'a page reloaded in place counts once');
+
+        // the start page has its own param, so it doesn't break a custom date range
+        $aRequest = ['range' => 'custom', 'from' => '2001-09-09', 'to' => '2001-09-09', 'jfrom' => '/a'];
+        $oRequestFilter = $this->_filter($aRequest);
+        $this->assertSame($oFilter->get()['from'], $oRequestFilter->get()['from'], 'jfrom keeps the custom range');
+        $this->assertSame($oFilter->get()['to'], $oRequestFilter->get()['to']);
+        $aFromA = $oReports->getJourneys($oRequestFilter, $aRequest);
+        $this->assertSame('/a', $aFromA['jfrom']);
+        $this->assertSame(2, $aFromA['from_sessions']);
 
         $aPaths = array_map(function ($a) { return implode(' ', $a['pages']); }, $aJourneys['paths']);
         $this->assertContains('/ /a /b', $aPaths);

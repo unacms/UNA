@@ -436,6 +436,10 @@
     <string name="_bx_payment_txt_all_clients"><![CDATA[All Clients]]></string>
     <string name="_bx_payment_txt_all_modules"><![CDATA[All Modules]]></string>
     <string name="_bx_payment_txt_all_items"><![CDATA[All Items]]></string>
+    <string name="_bx_payment_txt_analytics_invoices_issued"><![CDATA[Issued]]></string>
+    <string name="_bx_payment_txt_analytics_invoices_overdue"><![CDATA[Overdue]]></string>
+    <string name="_bx_payment_txt_analytics_invoices_paid"><![CDATA[Paid]]></string>
+    <string name="_bx_payment_txt_analytics_invoices_unpaid"><![CDATA[Unpaid]]></string>
     <string name="_bx_payment_txt_status_scheduled"><![CDATA[Scheduled]]></string>
     <string name="_bx_payment_txt_status_trial"><![CDATA[Trial]]></string>
     <string name="_bx_payment_txt_status_active"><![CDATA[Active]]></string>

@@ -536,7 +536,7 @@ BxAnalyticsDashboard.prototype.drawChart = function (oJson, oData) {
                 color: oColors.muted,
                 precision: sMetric === 'pages_per_session' ? 1 : 0,
                 callback: function (fValue) {
-                    return $this.formatMetric(sMetric, fValue);
+                    return $this.formatMetric(sMetric, fValue, oData);
                 }
             }
         }
@@ -575,7 +575,7 @@ BxAnalyticsDashboard.prototype.drawChart = function (oJson, oData) {
             },
             legend: false,
             label: function (oContext) {
-                return oData.titles[sMetric] + ': ' + $this.formatMetric(sMetric, oContext.parsed.y);
+                return oData.titles[sMetric] + ': ' + $this.formatMetric(sMetric, oContext.parsed.y, oData);
             }
         };
     }
@@ -600,7 +600,7 @@ BxAnalyticsDashboard.prototype.drawChart = function (oJson, oData) {
             },
             legend: oData.datasets.length > 1,
             label: function (oContext) {
-                return oContext.dataset.label + ': ' + $this.formatMetric(sMetric, oContext.parsed.y);
+                return oContext.dataset.label + ': ' + $this.formatMetric(sMetric, oContext.parsed.y, oData);
             }
         };
     }
@@ -652,11 +652,21 @@ BxAnalyticsDashboard.prototype.formatBucket = function (iTime, sBucket, sTz) {
     }
 };
 
-BxAnalyticsDashboard.prototype.formatMetric = function (sMetric, fValue) {
+BxAnalyticsDashboard.prototype.formatMetric = function (sMetric, fValue, oData) {
     if (fValue === null || fValue === undefined)
         return '';
 
     switch (sMetric) {
+        // amounts in the site's default currency, which the chart data names
+        case 'money':
+            try {
+                if (oData && oData.currency)
+                    return new Intl.NumberFormat(document.documentElement.lang || undefined, {style: 'currency', currency: oData.currency, notation: Math.abs(fValue) >= 10000 ? 'compact' : 'standard', minimumFractionDigits: 0, maximumFractionDigits: Math.abs(fValue) >= 100 ? 0 : 2}).format(fValue);
+            } catch (e) {
+                // an unknown currency code: the number alone
+            }
+            break;
+
         case 'bounce_rate':
             return Math.round(fValue) + '%';
 

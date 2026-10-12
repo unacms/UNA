@@ -165,14 +165,7 @@ class BxAnalyticsCollector
             return false;
 
         $iLinkedProfileId = $this->_oConfig->isLinkMembers() ? $iProfileId : 0;
-        $aSession = [];
-        if($sPlatform != BX_ANALYTICS_PLATFORM_CORE) {
-            $aVisitor = $this->_getVisitor($this->_oRequest->getIp($this->_oConfig->getTrustedProxies(), !empty($aContext['api_key'])), $this->_oRequest->getUserAgent(), $iLinkedProfileId, '');
-            $aSession = $this->_oDb->getActiveSession($aVisitor['lookup'], $sPlatform, $this->_iNow - $this->_oConfig->getSessionTimeout());
-        }
-        else {
-            $aVisitor = ['id' => $iLinkedProfileId ? $this->_hash('p:' . $iLinkedProfileId, BX_DOL_SECRET) : str_repeat("\0", 16)];
-        }
+        list($aVisitor, $aSession) = $this->_getRequestVisit($sPlatform, $iLinkedProfileId, !empty($aContext['api_key']));
 
         $aProps = isset($aContext['props']) && is_array($aContext['props']) ? $this->_getProps($aContext['props']) : [];
 
@@ -203,6 +196,75 @@ class BxAnalyticsCollector
             ]);
 
         return $iStored > 0;
+    }
+
+    /**
+     * Whether something a member did may be tied to their visits: tracking is on and the
+     * member's level isn't excluded. For the member's own request (`$bRequest`) also: its
+     * platform is enabled, it doesn't ask not to be tracked (when that is respected), its
+     * address isn't excluded and a browser platform isn't a bot.
+     *
+     * @param string $sPlatform platform of the request
+     * @param int $iProfileId the member
+     * @param bool $bApiKey the request carries an accepted API key
+     * @param bool $bRequest the request is the member's own, not a webhook or a cron job
+     */
+    public function isTracked($sPlatform, $iProfileId, $bApiKey = false, $bRequest = true)
+    {
+        if(!$this->_oConfig->isTrackingEnabled())
+            return false;
+
+        if((int)$iProfileId && $this->_isExcludedProfile((int)$iProfileId))
+            return false;
+
+        if(!$bRequest)
+            return true;
+
+        if(!$this->_oConfig->isPlatformEnabled($sPlatform))
+            return false;
+
+        if($this->_oConfig->isRespectDnt() && $this->_oRequest->isDoNotTrack())
+            return false;
+
+        $sIp = $this->_oRequest->getIp($this->_oConfig->getTrustedProxies(), $bApiKey);
+        if($sIp !== '' && BxAnalyticsRequest::inList($sIp, $this->_oConfig->getExcludedIps()))
+            return false;
+
+        if($this->_oConfig->isBrowserPlatform($sPlatform) && BxAnalyticsUserAgent::isBot($this->_oRequest->getUserAgent()))
+            return false;
+
+        return true;
+    }
+
+    /**
+     * The running visit of the request's visitor on a platform, or an empty array.
+     *
+     * @param string $sPlatform platform of the request
+     * @param int $iProfileId the signed-in member, used when members are linked to visits
+     * @param bool $bApiKey the request carries an accepted API key
+     */
+    public function getRequestSession($sPlatform, $iProfileId, $bApiKey = false)
+    {
+        list(, $aSession) = $this->_getRequestVisit($sPlatform, $this->_oConfig->isLinkMembers() ? (int)$iProfileId : 0, $bApiKey);
+
+        return $aSession;
+    }
+
+    /**
+     * Visitor ids of the current request and its running visit on a platform. The server's
+     * own platform has no visits: its visitor is the member, or nobody.
+     *
+     * @return array [visitor ids, session or []]
+     */
+    protected function _getRequestVisit($sPlatform, $iLinkedProfileId, $bApiKey)
+    {
+        if($sPlatform == BX_ANALYTICS_PLATFORM_CORE)
+            return [['id' => $iLinkedProfileId ? $this->_hash('p:' . $iLinkedProfileId, BX_DOL_SECRET) : str_repeat("\0", 16)], []];
+
+        $aVisitor = $this->_getVisitor($this->_oRequest->getIp($this->_oConfig->getTrustedProxies(), $bApiKey), $this->_oRequest->getUserAgent(), $iLinkedProfileId, '');
+
+        // a visit that started after the action (a clock given by a test or an import) isn't its visit
+        return [$aVisitor, $this->_oDb->getActiveSession($aVisitor['lookup'], $sPlatform, $this->_iNow - $this->_oConfig->getSessionTimeout(), $this->_iNow)];
     }
 
     /**

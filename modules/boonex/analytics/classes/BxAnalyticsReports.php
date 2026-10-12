@@ -587,9 +587,11 @@ class BxAnalyticsReports
         foreach($aPlatforms as $i => $a)
             $aPlatforms[$i]['share'] = $iTotal ? round(100 * $a['count'] / $iTotal, 1) : 0;
 
-        // the most common values of each property among the latest occurrences
+        // the most common values of each property among the latest occurrences; a sale's
+        // properties only for those who may see revenue (events recorded earlier carry amounts)
         $aProps = [];
-        foreach($this->_oDb->getEventProps($aFilter, $aEvent) as $sJson) {
+        $bMoney = $aEvent['type'] == BX_ANALYTICS_HIT_UNA && in_array($aEvent['name'], ['purchase', 'renewal'], true);
+        foreach($bMoney && $this->_oModule->checkAllowedRevenue() !== CHECK_ACTION_RESULT_ALLOWED ? [] : $this->_oDb->getEventProps($aFilter, $aEvent) as $sJson) {
             $a = json_decode($sJson, true);
             if(!is_array($a))
                 continue;
@@ -753,35 +755,49 @@ class BxAnalyticsReports
         $iPages = max(1, (int)ceil($iTotal / $this->_iPerPage));
         $iPage = min($iPages, max(1, (int)$this->_param($aParams, 'page_users', 1)));
 
+        $aMembers = $this->_oDb->getMemberList($aFilter, $this->_iPerPage, ($iPage - 1) * $this->_iPerPage);
+
+        // lifetime value: what each member paid, for viewers who may see revenue
+        $bRevenue = $this->_oModule->checkAllowedRevenue() === CHECK_ACTION_RESULT_ALLOWED;
+        $aLtv = $bRevenue ? $this->getLifetimeValues(array_column($aMembers, 'profile_id')) : [];
+
         $aRows = [];
-        foreach($this->_oDb->getMemberList($aFilter, $this->_iPerPage, ($iPage - 1) * $this->_iPerPage) as $aRow) {
+        foreach($aMembers as $aRow) {
             $aMember = $this->getMember((int)$aRow['profile_id']);
+            $aValues = [
+                'sessions' => (int)$aRow['sessions'],
+                'pageviews' => (int)$aRow['pageviews'],
+                'duration' => (int)$aRow['duration'],
+                'platforms' => $this->_getPlatformsText($aRow['platforms']),
+                'last' => (int)$aRow['last'],
+            ];
+            if($bRevenue)
+                $aValues['ltv'] = isset($aLtv[$aRow['profile_id']]) ? round((float)$aLtv[$aRow['profile_id']], 2) : 0;
+
             $aRows[] = [
                 'label' => $aMember ? $aMember['name'] : _t('_bx_analytics_txt_deleted_member'),
                 'sub' => $aRow['country'] !== '' ? $this->getLabel('country', $aRow['country']) : '',
                 'open' => ['param' => 'user', 'value' => (int)$aRow['profile_id']],
-                'values' => [
-                    'sessions' => (int)$aRow['sessions'],
-                    'pageviews' => (int)$aRow['pageviews'],
-                    'duration' => (int)$aRow['duration'],
-                    'platforms' => $this->_getPlatformsText($aRow['platforms']),
-                    'last' => (int)$aRow['last'],
-                ],
+                'values' => $aValues,
             ];
         }
+
+        $aColumns = [
+            ['key' => 'label', 'type' => 'label', 'title' => _t('_bx_analytics_txt_member_name')],
+            ['key' => 'sessions', 'type' => 'number', 'title' => _t('_bx_analytics_metric_sessions')],
+            ['key' => 'pageviews', 'type' => 'number', 'title' => _t('_bx_analytics_metric_pageviews')],
+            ['key' => 'duration', 'type' => 'duration', 'title' => _t('_bx_analytics_txt_time_spent')],
+            ['key' => 'platforms', 'type' => 'text', 'title' => _t('_bx_analytics_tab_platforms')],
+        ];
+        if($bRevenue)
+            $aColumns[] = ['key' => 'ltv', 'type' => 'money', 'title' => _t('_bx_analytics_txt_lifetime_value')];
+        $aColumns[] = ['key' => 'last', 'type' => 'datetime', 'title' => _t('_bx_analytics_txt_last_seen')];
 
         return [
             'view' => 'list',
             'name' => 'users',
             'caption' => _t('_bx_analytics_lmi_cpt_users'),
-            'columns' => [
-                ['key' => 'label', 'type' => 'label', 'title' => _t('_bx_analytics_txt_member_name')],
-                ['key' => 'sessions', 'type' => 'number', 'title' => _t('_bx_analytics_metric_sessions')],
-                ['key' => 'pageviews', 'type' => 'number', 'title' => _t('_bx_analytics_metric_pageviews')],
-                ['key' => 'duration', 'type' => 'duration', 'title' => _t('_bx_analytics_txt_time_spent')],
-                ['key' => 'platforms', 'type' => 'text', 'title' => _t('_bx_analytics_tab_platforms')],
-                ['key' => 'last', 'type' => 'datetime', 'title' => _t('_bx_analytics_txt_last_seen')],
-            ],
+            'columns' => $aColumns,
             'rows' => $aRows,
             'page' => $iPage,
             'pages' => $iPages,
@@ -818,16 +834,22 @@ class BxAnalyticsReports
 
         $aSessions = $this->getSessions($oFilter, $aParams, $iProfileId);
 
+        $aTiles = [
+            ['title' => _t('_bx_analytics_metric_sessions'), 'value' => $iSessions, 'type' => 'number'],
+            ['title' => _t('_bx_analytics_metric_pageviews'), 'value' => (int)$aTotals['totals']['pageviews'], 'type' => 'number'],
+            ['title' => _t('_bx_analytics_txt_time_spent'), 'value' => (int)$aTotals['totals']['duration'], 'type' => 'duration'],
+            ['title' => _t('_bx_analytics_txt_first_seen'), 'value' => (int)$aTotals['totals']['first'], 'type' => 'date'],
+            ['title' => _t('_bx_analytics_txt_last_seen'), 'value' => (int)$aTotals['totals']['last'], 'type' => 'datetime'],
+        ];
+        if($this->_oModule->checkAllowedRevenue() === CHECK_ACTION_RESULT_ALLOWED) {
+            $aLtv = $this->getLifetimeValues([$iProfileId]);
+            $aTiles[] = ['title' => _t('_bx_analytics_txt_lifetime_value'), 'value' => isset($aLtv[$iProfileId]) ? round((float)$aLtv[$iProfileId], 2) : 0, 'type' => 'money'];
+        }
+
         return [
             'view' => 'user',
             'member' => $this->getMember($iProfileId),
-            'tiles' => [
-                ['title' => _t('_bx_analytics_metric_sessions'), 'value' => $iSessions, 'type' => 'number'],
-                ['title' => _t('_bx_analytics_metric_pageviews'), 'value' => (int)$aTotals['totals']['pageviews'], 'type' => 'number'],
-                ['title' => _t('_bx_analytics_txt_time_spent'), 'value' => (int)$aTotals['totals']['duration'], 'type' => 'duration'],
-                ['title' => _t('_bx_analytics_txt_first_seen'), 'value' => (int)$aTotals['totals']['first'], 'type' => 'date'],
-                ['title' => _t('_bx_analytics_txt_last_seen'), 'value' => (int)$aTotals['totals']['last'], 'type' => 'datetime'],
-            ],
+            'tiles' => $aTiles,
             'platforms' => $aPlatforms,
             'actions' => [
                 'name' => 'user_actions',
@@ -874,12 +896,12 @@ class BxAnalyticsReports
         arsort($aEntries);
         arsort($aPaths);
 
-        $sFrom = (string)$this->_param($aParams, 'from', '');
+        $sFrom = (string)$this->_param($aParams, 'jfrom', '');
         if($sFrom === '' || !isset($aEntries[$sFrom]) && !$this->_inSequences($aSequences, $sFrom))
             $sFrom = !empty($aEntries) ? (string)key($aEntries) : '';
         $sVia = (string)$this->_param($aParams, 'via', '');
 
-        // the page after the first visit of `from`, and after `via` when it came right after
+        // the page after the first visit of `jfrom`, and after `via` when it came right after
         $iFromSessions = 0;
         $aNext = [];
         $iNextExits = 0;
@@ -930,7 +952,7 @@ class BxAnalyticsReports
             $aEntryList[] = ['page' => (string)$sPage, 'sessions' => $iCount, 'active' => (string)$sPage === $sFrom];
 
         return [
-            'from' => $sFrom,
+            'jfrom' => $sFrom,
             'via' => $sVia !== '' && $iViaSessions ? $sVia : '',
             'sessions' => $iTotal,
             'truncated' => count($aRows) >= $iLimit,
@@ -1115,6 +1137,799 @@ class BxAnalyticsReports
                 return true;
 
         return false;
+    }
+
+    /*
+     * Revenue. Amounts come from the ledger in the site's default currency, as the payment
+     * module recorded them; orders paid with credits are reported apart from money.
+     */
+
+    /**
+     * Gross and net revenue, refunds, orders, paying customers and revenue per customer, over
+     * time and split by source, provider, platform and the buyers' traffic sources. Param
+     * `tab` (or tab_revenue): sources, providers, platforms, first_touch, last_touch, campaigns.
+     */
+    public function getRevenue(BxAnalyticsFilter $oFilter, $aParams = [])
+    {
+        $aMoney = $this->getMoney();
+        $aFilter = $this->_getRevenueFilter($oFilter->get(), $aMoney);
+        $aPrevious = $this->_getRevenueFilter($oFilter->getPrevious(), $aMoney);
+
+        $aCurrent = $this->_oDb->getRevenueTotals($aFilter);
+        $aBefore = $this->_oDb->getRevenueTotals($aPrevious);
+
+        $aTiles = [];
+        foreach(['gross' => 'money', 'refunds' => 'money', 'net' => 'money', 'orders' => 'number', 'customers' => 'number', 'arppu' => 'money'] as $sKey => $sType) {
+            $fValue = $sKey == 'arppu' ? ((int)$aCurrent['customers'] ? (float)$aCurrent['net'] / (int)$aCurrent['customers'] : 0) : (float)$aCurrent[$sKey];
+            $fPrevious = $sKey == 'arppu' ? ((int)$aBefore['customers'] ? (float)$aBefore['net'] / (int)$aBefore['customers'] : 0) : (float)$aBefore[$sKey];
+
+            $aTiles[] = [
+                'key' => $sKey,
+                'title' => _t('_bx_analytics_metric_revenue_' . $sKey),
+                'value' => $sType == 'money' ? round($fValue, 2) : (int)$fValue,
+                'previous' => $sType == 'money' ? round($fPrevious, 2) : (int)$fPrevious,
+                'change' => $this->_change($fValue, $fPrevious),
+                'type' => $sType,
+                'metric' => $sKey,
+            ];
+        }
+
+        $aRows = $this->_oDb->getRevenueSeries($aFilter);
+        $aSeries = ['gross' => [], 'net' => [], 'refunds' => []];
+        foreach($aFilter['buckets'] as $iBucket)
+            foreach(array_keys($aSeries) as $sKey)
+                $aSeries[$sKey][] = $iBucket > $aFilter['now'] ? null : (isset($aRows[$iBucket]) ? round((float)$aRows[$iBucket][$sKey], 2) : 0);
+
+        $aDatasets = [];
+        foreach($aSeries as $sKey => $aValues)
+            $aDatasets[] = ['key' => $sKey, 'label' => _t('_bx_analytics_metric_revenue_' . $sKey), 'values' => $aValues];
+
+        // revenue splits: tab => ledger column
+        $aTabs = ['sources' => 'module', 'providers' => 'provider', 'platforms' => 'platform', 'first_touch' => 'first_channel', 'last_touch' => 'last_channel', 'campaigns' => 'last_utm_campaign'];
+        $sTab = $this->_getTab($aParams, 'revenue', $aTabs);
+
+        $fNet = (float)$aCurrent['net'];
+        $aSplit = [];
+        foreach($this->_oDb->getRevenueSplit($aFilter, $aTabs[$sTab], 25) as $aRow) {
+            $fRowNet = (float)$aRow['net'];
+            $aSplit[] = [
+                'label' => $this->getRevenueLabel($aTabs[$sTab], (string)$aRow['value'], $aMoney['payment']),
+                'bar' => $fNet > 0 ? max(0, round(100 * $fRowNet / $fNet, 1)) : 0,
+                'values' => [
+                    'net' => round($fRowNet, 2),
+                    'share' => $fNet > 0 ? round(100 * $fRowNet / $fNet, 1) : 0,
+                    'customers' => (int)$aRow['customers'],
+                    'orders' => (int)$aRow['orders'],
+                ],
+            ];
+        }
+
+        return [
+            'money' => $aMoney,
+            'tiles' => $aTiles,
+            'chart' => [
+                'kind' => 'lines',
+                'metric' => 'money',
+                'currency' => $aMoney['code'],
+                'labels' => $aFilter['buckets'],
+                'bucket' => $aFilter['bucket'],
+                'tz' => $aFilter['tz'],
+                'datasets' => $aDatasets,
+            ],
+            'split' => [
+                'name' => 'revenue',
+                'caption' => _t('_bx_analytics_txt_revenue_split'),
+                'tab' => $sTab,
+                'tabs' => $this->_getTabs($aTabs, $sTab, '_bx_analytics_tab_revenue_'),
+                'columns' => [
+                    ['key' => 'label', 'type' => 'label', 'title' => _t('_bx_analytics_tab_revenue_' . $sTab)],
+                    ['key' => 'net', 'type' => 'money', 'title' => _t('_bx_analytics_metric_revenue_net')],
+                    ['key' => 'share', 'type' => 'percent', 'title' => _t('_bx_analytics_txt_share')],
+                    ['key' => 'customers', 'type' => 'number', 'title' => _t('_bx_analytics_metric_revenue_customers')],
+                    ['key' => 'orders', 'type' => 'number', 'title' => _t('_bx_analytics_metric_revenue_orders')],
+                ],
+                'rows' => $aSplit,
+                'empty' => _t('_bx_analytics_txt_no_revenue'),
+            ],
+            'notes' => $this->_getRevenueNotes($aMoney, (int)$aCurrent['unconverted']),
+            'import' => $this->_getImportStatus(),
+        ];
+    }
+
+    /**
+     * Monthly recurring revenue, new, renewed and cancelled subscriptions and churn per
+     * bucket, the plans that bring the MRR, and why members cancel.
+     */
+    public function getSubscriptions(BxAnalyticsFilter $oFilter, $aParams = [])
+    {
+        $aMoney = $this->getMoney();
+        $aFilter = $this->_getRevenueFilter($oFilter->get(), $aMoney);
+        $aPrevious = $this->_getRevenueFilter($oFilter->getPrevious(), $aMoney);
+        $iNow = (int)$aFilter['now'];
+
+        bx_import('Revenue', $this->_oModule->_aModule);
+
+        // subscriptions alive in either period, read once
+        $aRows = $this->_oDb->getSubscriptionRows(array_merge($aFilter, ['from' => $aPrevious['from']]));
+
+        list($aCurrent) = $this->_sweepSubscriptions($aRows, [[$aFilter['from'], min($aFilter['to'], $iNow)]]);
+        list($aBefore) = $this->_sweepSubscriptions($aRows, [[$aPrevious['from'], min($aPrevious['to'], $iNow)]]);
+
+        $aTiles = [];
+        foreach(['mrr' => 'money', 'active' => 'number', 'trials' => 'number', 'new' => 'number', 'cancelled' => 'number', 'churn' => 'percent'] as $sKey => $sType) {
+            $sSub = '';
+            if($sKey == 'trials' && $aCurrent['trial_mrr'] > 0)
+                $sSub = _t('_bx_analytics_txt_sbs_trial_mrr', _t_format_currency($aCurrent['trial_mrr']));
+            else if($sKey == 'churn' && $aCurrent['churn'] === null)
+                $sSub = _t('_bx_analytics_txt_sbs_churn_no_base');
+
+            $aTiles[] = [
+                'key' => $sKey,
+                'title' => _t('_bx_analytics_metric_sbs_' . $sKey),
+                'value' => $aCurrent[$sKey],
+                'previous' => $aBefore[$sKey],
+                'change' => $aCurrent[$sKey] !== null && $aBefore[$sKey] !== null ? $this->_change($aCurrent[$sKey], $aBefore[$sKey]) : null,
+                'type' => $sType,
+                'metric' => $sKey,
+                'sub' => $sSub,
+            ];
+        }
+
+        // per bucket, within the period (the first bucket may start before it); renewals paid
+        // with credits too, like the subscriptions
+        $aRenewals = $this->_oDb->getRevenueSeries($aFilter, null);
+        $aBuckets = $aFilter['buckets'];
+        $aSpans = [];
+        foreach($aBuckets as $i => $iBucket)
+            if($iBucket <= $iNow)
+                $aSpans[$i] = [max($iBucket, $aFilter['from']), min(isset($aBuckets[$i + 1]) ? $aBuckets[$i + 1] : $aFilter['to'], $iNow)];
+        $aSwept = array_combine(array_keys($aSpans), $this->_sweepSubscriptions($aRows, $aSpans));
+
+        $aMrr = $aNew = $aRenewed = $aCancelled = [];
+        foreach($aBuckets as $i => $iBucket) {
+            if(!isset($aSwept[$i])) {
+                $aMrr[] = $aNew[] = $aRenewed[] = $aCancelled[] = null;
+                continue;
+            }
+
+            $aMrr[] = $aSwept[$i]['mrr'];
+            $aNew[] = $aSwept[$i]['new'];
+            $aCancelled[] = $aSwept[$i]['cancelled'];
+            $aRenewed[] = isset($aRenewals[$iBucket]) ? (int)$aRenewals[$iBucket]['renewals'] : 0;
+        }
+
+        // plans paying at the end of the period, by MRR
+        $iEnd = min($aFilter['to'], $iNow);
+        $aPlans = [];
+        foreach($aRows as $aRow) {
+            if(!$this->_isPaying($aRow, $iEnd))
+                continue;
+
+            $sKey = $aRow['module'] . '|' . (int)$aRow['item_id'];
+            if(!isset($aPlans[$sKey]))
+                $aPlans[$sKey] = ['module' => $aRow['module'], 'item_id' => (int)$aRow['item_id'], 'active' => 0, 'mrr' => 0];
+            $aPlans[$sKey]['active']++;
+            $aPlans[$sKey]['mrr'] += (float)$aRow['mrr_default'];
+        }
+        uasort($aPlans, function($a, $b) { return $b['mrr'] <=> $a['mrr']; });
+
+        $aPlanRows = [];
+        foreach(array_slice($aPlans, 0, 10) as $aPlan) {
+            $aItem = $this->_getCartItem($aPlan['module'], $aPlan['item_id']);
+            $aPlanRows[] = [
+                'label' => $aItem['title'],
+                'sub' => $aItem['module_title'],
+                'link' => $aItem['url'],
+                'bar' => $aCurrent['mrr'] > 0 ? round(100 * $aPlan['mrr'] / $aCurrent['mrr'], 1) : 0,
+                'values' => ['active' => $aPlan['active'], 'mrr' => round($aPlan['mrr'], 2)],
+            ];
+        }
+
+        $aReasons = $this->_oDb->getSubscriptionReasons($aFilter, 10);
+        $iReasons = array_sum($aReasons);
+        $aReasonRows = [];
+        foreach($aReasons as $sReason => $iCount)
+            $aReasonRows[] = [
+                'label' => $sReason !== '' && $sReason !== 'cancel' ? $sReason : _t('_bx_analytics_txt_sbs_no_reason'),
+                'bar' => $iReasons ? round(100 * $iCount / $iReasons, 1) : 0,
+                'values' => ['count' => (int)$iCount, 'share' => $iReasons ? round(100 * $iCount / $iReasons, 1) : 0],
+            ];
+
+        $aLabels = $aFilter['buckets'];
+
+        return [
+            'money' => $aMoney,
+            'tiles' => $aTiles,
+            'chart' => [
+                'kind' => 'lines',
+                'metric' => 'money',
+                'currency' => $aMoney['code'],
+                'labels' => $aLabels,
+                'bucket' => $aFilter['bucket'],
+                'tz' => $aFilter['tz'],
+                'datasets' => [['key' => 'mrr', 'label' => _t('_bx_analytics_metric_sbs_mrr'), 'values' => $aMrr]],
+            ],
+            'movement' => [
+                'kind' => 'stacked',
+                'metric' => 'number',
+                'labels' => $aLabels,
+                'bucket' => $aFilter['bucket'],
+                'tz' => $aFilter['tz'],
+                'datasets' => [
+                    ['key' => 'new', 'label' => _t('_bx_analytics_metric_sbs_new'), 'values' => $aNew],
+                    ['key' => 'renewed', 'label' => _t('_bx_analytics_metric_sbs_renewed'), 'values' => $aRenewed],
+                    ['key' => 'cancelled', 'label' => _t('_bx_analytics_metric_sbs_cancelled'), 'values' => $aCancelled],
+                ],
+            ],
+            'plans' => [
+                'name' => 'sbs_plans',
+                'caption' => _t('_bx_analytics_txt_sbs_plans'),
+                'columns' => [
+                    ['key' => 'label', 'type' => 'label', 'title' => _t('_bx_analytics_txt_sbs_plan')],
+                    ['key' => 'active', 'type' => 'number', 'title' => _t('_bx_analytics_metric_sbs_active')],
+                    ['key' => 'mrr', 'type' => 'money', 'title' => _t('_bx_analytics_metric_sbs_mrr')],
+                ],
+                'rows' => $aPlanRows,
+                'empty' => _t('_bx_analytics_txt_no_subscriptions'),
+            ],
+            'reasons' => [
+                'name' => 'sbs_reasons',
+                'caption' => _t('_bx_analytics_txt_sbs_reasons'),
+                'columns' => [
+                    ['key' => 'label', 'type' => 'label', 'title' => _t('_bx_analytics_txt_sbs_reason')],
+                    ['key' => 'count', 'type' => 'number', 'title' => _t('_bx_analytics_metric_sbs_cancelled')],
+                    ['key' => 'share', 'type' => 'percent', 'title' => _t('_bx_analytics_txt_share')],
+                ],
+                'rows' => $aReasonRows,
+                'empty' => _t('_bx_analytics_txt_no_cancellations'),
+            ],
+            'notes' => $this->_getRevenueNotes($aMoney, 0),
+        ];
+    }
+
+    /**
+     * The items that sell best, the sellers of a multi-vendor site, the site's own sales
+     * against its vendors' and the commissions they paid, and commission invoices.
+     */
+    public function getSales(BxAnalyticsFilter $oFilter, $aParams = [])
+    {
+        $aMoney = $this->getMoney();
+        $aFilter = $this->_getRevenueFilter($oFilter->get(), $aMoney);
+
+        $aTotals = $this->_oDb->getRevenueTotals($aFilter);
+        $fNet = (float)$aTotals['net'];
+
+        $aItems = [];
+        foreach($this->_oDb->getRevenueTopItems($aFilter, 10) as $aRow) {
+            $aItem = $this->_getCartItem($aRow['module'], (int)$aRow['item_id']);
+            $aItems[] = [
+                'label' => $aItem['title'],
+                'sub' => $aItem['module_title'],
+                'link' => $aItem['url'],
+                'bar' => $fNet > 0 ? max(0, round(100 * $aRow['net'] / $fNet, 1)) : 0,
+                'values' => [
+                    'net' => round((float)$aRow['net'], 2),
+                    'units' => (int)$aRow['units'],
+                    'orders' => (int)$aRow['orders'],
+                    'renewals' => (int)$aRow['renewals'],
+                ],
+            ];
+        }
+
+        $aSellers = [];
+        foreach($this->_oDb->getRevenueSplit($aFilter, 'seller_id', 10) as $aRow) {
+            $aMember = $this->getMember((int)$aRow['value']);
+            $aSellers[] = [
+                'label' => $aMember ? $aMember['name'] : _t('_bx_analytics_txt_deleted_member'),
+                'link' => $aMember ? $aMember['url'] : '',
+                'bar' => $fNet > 0 ? max(0, round(100 * $aRow['net'] / $fNet, 1)) : 0,
+                'values' => [
+                    'net' => round((float)$aRow['net'], 2),
+                    'orders' => (int)$aRow['orders'],
+                    'customers' => (int)$aRow['customers'],
+                ],
+            ];
+        }
+
+        $iSiteAdmin = (int)BxDolPayments::getInstance()->getOption('site_admin');
+        $aSplit = $this->_oDb->getRevenueSellers($aFilter, $iSiteAdmin);
+
+        $aTiles = [
+            ['title' => _t('_bx_analytics_metric_revenue_net'), 'value' => round($fNet, 2), 'type' => 'money'],
+        ];
+        if($iSiteAdmin)
+            $aTiles[] = ['title' => _t('_bx_analytics_metric_sales_site'), 'value' => round((float)$aSplit['site'], 2), 'type' => 'money'];
+        $aTiles[] = ['title' => _t('_bx_analytics_metric_sales_vendors'), 'value' => round((float)$aSplit['vendors'], 2), 'type' => 'money', 'sub' => _t('_bx_analytics_txt_sales_vendor_count', (int)$aSplit['vendor_count'])];
+        $aTiles[] = ['title' => _t('_bx_analytics_metric_sales_commissions'), 'value' => round((float)$aSplit['commissions'], 2), 'type' => 'money'];
+
+        $aInvoices = [];
+        foreach($this->getRevenueSources(['from' => $aFilter['from'], 'to' => $aFilter['to']], 'money') as $aSource)
+            foreach($aSource['metrics'] as $aMetric)
+                $aInvoices[] = [
+                    'title' => _t($aMetric['title']),
+                    'value' => isset($aMetric['value']) ? $aMetric['value'] : 0,
+                    'type' => 'number',
+                    'sub' => isset($aMetric['money']) && $aMetric['money'] !== null ? _t_format_currency($aMetric['money']) : '',
+                ];
+
+        return [
+            'money' => $aMoney,
+            'tiles' => $aTiles,
+            'items' => [
+                'name' => 'sales_items',
+                'caption' => _t('_bx_analytics_txt_sales_items'),
+                'columns' => [
+                    ['key' => 'label', 'type' => 'label', 'title' => _t('_bx_analytics_txt_item')],
+                    ['key' => 'net', 'type' => 'money', 'title' => _t('_bx_analytics_metric_revenue_net')],
+                    ['key' => 'units', 'type' => 'number', 'title' => _t('_bx_analytics_metric_sales_units')],
+                    ['key' => 'renewals', 'type' => 'number', 'title' => _t('_bx_analytics_metric_sbs_renewed')],
+                ],
+                'rows' => $aItems,
+                'empty' => _t('_bx_analytics_txt_no_revenue'),
+            ],
+            'sellers' => [
+                'name' => 'sales_sellers',
+                'caption' => _t('_bx_analytics_txt_sales_sellers'),
+                'columns' => [
+                    ['key' => 'label', 'type' => 'label', 'title' => _t('_bx_analytics_txt_sales_seller')],
+                    ['key' => 'net', 'type' => 'money', 'title' => _t('_bx_analytics_metric_revenue_net')],
+                    ['key' => 'orders', 'type' => 'number', 'title' => _t('_bx_analytics_metric_revenue_orders')],
+                    ['key' => 'customers', 'type' => 'number', 'title' => _t('_bx_analytics_metric_revenue_customers')],
+                ],
+                'rows' => $aSellers,
+                'empty' => _t('_bx_analytics_txt_no_revenue'),
+            ],
+            'invoices' => $aInvoices,
+            'notes' => $this->_getRevenueNotes($aMoney, (int)$aTotals['unconverted']),
+        ];
+    }
+
+    /**
+     * The credits economy as the modules that keep credits report it: bought, spent, granted,
+     * sent and withdrawn, the top spenders and the credits members hold; and from the ledger,
+     * what credits paid for, by module, valued in money.
+     */
+    public function getCredits(BxAnalyticsFilter $oFilter, $aParams = [])
+    {
+        $aMoney = $this->getMoney();
+        $aFilter = $this->_getRevenueFilter($oFilter->get(), $aMoney);
+
+        $aSources = $this->getRevenueSources([
+            'from' => $aFilter['from'],
+            'to' => $aFilter['to'],
+            'starts' => $aFilter['buckets'],
+            'limit' => 10,
+        ], 'credits');
+
+        $aSource = reset($aSources);
+        $sSource = (string)key($aSources);
+
+        $aTiles = $aDatasets = $aSpenders = [];
+        if($aSource) {
+            foreach($aSource['metrics'] as $sKey => $aMetric) {
+                $aTiles[] = [
+                    'title' => _t($aMetric['title']),
+                    'value' => (float)$aMetric['value'],
+                    'type' => 'credits',
+                    'sub' => isset($aMetric['money']) && $aMetric['money'] !== null && (float)$aMetric['value'] > 0 ? _t_format_currency($aMetric['money']) : '',
+                ];
+
+                if(in_array($sKey, ['bought', 'spent', 'granted', 'withdrawn'], true))
+                    $aDatasets[] = [
+                        'key' => $sKey,
+                        'label' => _t($aMetric['title']),
+                        'values' => array_map(function($iBucket) use ($aMetric, $aFilter) {
+                            return $iBucket > $aFilter['now'] ? null : (isset($aMetric['series'][$iBucket]) ? (float)$aMetric['series'][$iBucket] : 0);
+                        }, $aFilter['buckets']),
+                    ];
+            }
+
+            if(!empty($aSource['snapshot']['balance'])) {
+                $aBalance = $aSource['snapshot']['balance'];
+                $aTiles[] = [
+                    'title' => _t($aBalance['title']),
+                    'value' => (float)$aBalance['value'],
+                    'type' => 'credits',
+                    'sub' => _t('_bx_analytics_txt_credits_liability', _t_format_currency(isset($aBalance['money_default']) ? $aBalance['money_default'] : 0)),
+                ];
+            }
+
+            if(!empty($aSource['lists']['top_spenders']['rows'])) {
+                $aList = $aSource['lists']['top_spenders']['rows'];
+                $fMax = 0;
+                foreach($aList as $aRow)
+                    $fMax = max($fMax, (float)$aRow['value']);
+
+                foreach($aList as $aRow) {
+                    $aMember = $this->getMember(isset($aRow['profile_id']) ? (int)$aRow['profile_id'] : 0);
+                    $aSpenders[] = [
+                        'label' => $aMember ? $aMember['name'] : (isset($aRow['label']) ? (string)$aRow['label'] : _t('_bx_analytics_txt_deleted_member')),
+                        'link' => $aMember ? $aMember['url'] : '',
+                        'bar' => $fMax > 0 ? round(100 * $aRow['value'] / $fMax, 1) : 0,
+                        'values' => ['value' => (float)$aRow['value']],
+                    ];
+                }
+            }
+        }
+
+        // what orders paid with credits bought, valued in money
+        $aSpentRows = [];
+        $aSpent = $this->_oDb->getRevenueSplit($aFilter, 'module', 10, 0);
+        $fSpent = 0;
+        foreach($aSpent as $aRow)
+            $fSpent += max(0, (float)$aRow['net']);
+        foreach($aSpent as $aRow)
+            $aSpentRows[] = [
+                'label' => $this->getRevenueLabel('module', (string)$aRow['value'], $aMoney['payment']),
+                'bar' => $fSpent > 0 ? max(0, round(100 * $aRow['net'] / $fSpent, 1)) : 0,
+                'values' => ['net' => round((float)$aRow['net'], 2), 'orders' => (int)$aRow['orders']],
+            ];
+
+        // credit bundles sold for money
+        $fBundles = 0;
+        if($sSource !== '')
+            foreach($this->_oDb->getRevenueSplit($aFilter, 'module', 1000) as $aRow)
+                if($aRow['value'] === $sSource)
+                    $fBundles = (float)$aRow['net'];
+
+        if($aSource)
+            $aTiles[] = ['title' => _t('_bx_analytics_metric_credits_bundles'), 'value' => round($fBundles, 2), 'type' => 'money'];
+
+        $aNotes = [];
+        if($aMoney['credits_only'])
+            $aNotes[] = _t('_bx_analytics_txt_revenue_credits_only');
+
+        return [
+            'money' => $aMoney,
+            'available' => !empty($aSource),
+            'title' => $aSource ? _t($aSource['title']) : '',
+            'tiles' => $aTiles,
+            'chart' => [
+                'kind' => 'lines',
+                'metric' => 'number',
+                'labels' => $aFilter['buckets'],
+                'bucket' => $aFilter['bucket'],
+                'tz' => $aFilter['tz'],
+                'datasets' => $aDatasets,
+            ],
+            'spenders' => [
+                'name' => 'credits_spenders',
+                'caption' => _t('_bx_analytics_txt_credits_spenders'),
+                'columns' => [
+                    ['key' => 'label', 'type' => 'label', 'title' => _t('_bx_analytics_txt_member_name')],
+                    ['key' => 'value', 'type' => 'credits', 'title' => _t('_bx_analytics_txt_credits_spent')],
+                ],
+                'rows' => $aSpenders,
+                'empty' => _t('_bx_analytics_txt_no_credits'),
+            ],
+            'spent' => [
+                'name' => 'credits_spent',
+                'caption' => _t('_bx_analytics_txt_credits_spent_on'),
+                'columns' => [
+                    ['key' => 'label', 'type' => 'label', 'title' => _t('_bx_analytics_tab_revenue_sources')],
+                    ['key' => 'net', 'type' => 'money', 'title' => _t('_bx_analytics_txt_credits_value')],
+                    ['key' => 'orders', 'type' => 'number', 'title' => _t('_bx_analytics_metric_revenue_orders')],
+                ],
+                'rows' => $aSpentRows,
+                'empty' => _t('_bx_analytics_txt_no_credits'),
+            ],
+            'notes' => $aNotes,
+        ];
+    }
+
+    /**
+     * The site's default currency and the payment module the ledger is read for.
+     */
+    public function getMoney()
+    {
+        $oPayments = BxDolPayments::getInstance();
+        $bActive = $oPayments->isActive();
+
+        return [
+            'active' => $bActive,
+            'payment' => $bActive ? (string)$oPayments->getActive() : '',
+            'code' => $bActive ? (string)$oPayments->getCurrencyCode() : '',
+            'credits_only' => $bActive && (bool)$oPayments->isCreditsOnly(),
+        ];
+    }
+
+    /**
+     * What modules report about their own economy through the get_analytics_revenue service,
+     * found in every installed module: [module name => report], the ones of a unit only. The
+     * unit is read first (meta), so a module of another unit doesn't compute its report.
+     *
+     * @param array $aParams from, to, starts, limit; or meta to learn titles and units only
+     * @param string $sUnit money or credits, '' for any
+     */
+    public function getRevenueSources($aParams, $sUnit = '')
+    {
+        $aResult = [];
+        foreach(BxDolModuleQuery::getInstance()->getModulesBy(['type' => 'modules', 'active' => 1]) as $aModule) {
+            if(empty($aModule['name']) || !bx_is_srv($aModule['name'], 'get_analytics_revenue'))
+                continue;
+
+            if($sUnit !== '' && empty($aParams['meta'])) {
+                $aMeta = bx_srv($aModule['name'], 'get_analytics_revenue', [['meta' => true]]);
+                if(empty($aMeta['unit']) || $aMeta['unit'] != $sUnit)
+                    continue;
+            }
+
+            $aReport = bx_srv($aModule['name'], 'get_analytics_revenue', [$aParams]);
+            if(empty($aReport) || !is_array($aReport) || empty($aReport['unit']) || ($sUnit !== '' && $aReport['unit'] != $sUnit))
+                continue;
+
+            if(empty($aParams['meta']) && (empty($aReport['metrics']) || !is_array($aReport['metrics'])))
+                continue;
+
+            $aResult[$aModule['name']] = $aReport;
+        }
+
+        return $aResult;
+    }
+
+    /**
+     * A human name for a ledger value: a module's title, a provider, a platform, a channel.
+     */
+    public function getRevenueLabel($sDimension, $sValue, $sPayment = '')
+    {
+        switch($sDimension) {
+            case 'module':
+                if($sValue === '')
+                    return _t('_bx_analytics_txt_unknown');
+                if($sPayment !== '' && $sValue === $sPayment)
+                    return _t('_bx_analytics_txt_revenue_commissions');
+                return $this->_getModuleTitle($sValue);
+
+            case 'provider':
+                if($sValue === '')
+                    return _t('_bx_analytics_txt_unknown');
+                $sValue = str_replace('_', ' ', $sValue);
+                return mb_strtoupper(get_mb_substr($sValue, 0, 1)) . get_mb_substr($sValue, 1, get_mb_len($sValue) - 1);
+
+            case 'platform':
+                return $sValue !== '' ? $this->getLabel('platform', $sValue) : _t('_bx_analytics_txt_revenue_imported');
+
+            case 'first_channel':
+            case 'last_channel':
+                return $sValue !== '' ? $this->getLabel('channel', $sValue) : _t('_bx_analytics_txt_revenue_untracked');
+
+            case 'last_utm_campaign':
+            case 'first_utm_campaign':
+                return $sValue !== '' ? $sValue : _t('_bx_analytics_txt_revenue_no_campaign');
+        }
+
+        return $sValue;
+    }
+
+    /**
+     * Net revenue of members over all the ledger, for the Users report: [profile id => amount].
+     */
+    public function getLifetimeValues($aProfileIds)
+    {
+        $aMoney = $this->getMoney();
+        if($aMoney['payment'] === '')
+            return [];
+
+        return $this->_oDb->getLifetimeValues($aProfileIds, $aMoney['payment']);
+    }
+
+    /**
+     * Subscription figures over spans of time, sorted and not overlapping. For each span: MRR
+     * and paying subscriptions at its end, trials at its end, new and ended (cancelled, or
+     * unpaid past the grace time) paying subscriptions in it, and churn (of those paying at
+     * its start, the share that ended in it). One pass over the rows, each finding its spans
+     * by binary search.
+     *
+     * @param array $aSpans [[from, to], ...]
+     * @return array a result per span, in the order of $aSpans
+     */
+    protected function _sweepSubscriptions($aRows, $aSpans)
+    {
+        $aSpans = array_values($aSpans);
+        $iSpans = count($aSpans);
+        $aFroms = array_map('intval', array_column($aSpans, 0));
+        $aTos = array_map('intval', array_column($aSpans, 1));
+
+        // counts at the spans' ends (or starts) are ranges of spans: added as differences
+        $aDiff = array_fill_keys(['mrr', 'active', 'trials', 'trial_mrr', 'at_start'], array_fill(0, $iSpans + 1, 0));
+        $aNew = $aEnded = $aChurned = array_fill(0, $iSpans, 0);
+
+        foreach($aRows as $aRow) {
+            $iFirst = (int)$aRow['first_paid'];
+            $iEnd = $this->_getSubscriptionEnd($aRow);
+            $fMrr = (float)$aRow['mrr_default'];
+
+            if($iFirst) {
+                $this->_addSpans($aDiff['mrr'], $aTos, $iFirst, $iEnd, $fMrr);
+                $this->_addSpans($aDiff['active'], $aTos, $iFirst, $iEnd, 1);
+                $this->_addSpans($aDiff['at_start'], $aFroms, $iFirst, $iEnd, 1);
+
+                if(($i = $this->_findSpan($aFroms, $aTos, $iFirst)) !== null)
+                    $aNew[$i]++;
+
+                if($iEnd && ($i = $this->_findSpan($aFroms, $aTos, $iEnd)) !== null) {
+                    $aEnded[$i]++;
+                    if($iFirst < $aFroms[$i])
+                        $aChurned[$i]++;
+                }
+            }
+
+            // in trial from its start until the trial, its first charge or its end is over
+            $iTrialEnd = $this->_getTrialEnd($aRow);
+            if($iTrialEnd !== null) {
+                $iUntil = 0;
+                foreach([$iTrialEnd, $iFirst, $iEnd] as $iTime)
+                    if($iTime)
+                        $iUntil = $iUntil ? min($iUntil, $iTime) : $iTime;
+
+                $this->_addSpans($aDiff['trials'], $aTos, (int)$aRow['started'], $iUntil, 1);
+                $this->_addSpans($aDiff['trial_mrr'], $aTos, (int)$aRow['started'], $iUntil, $fMrr);
+            }
+        }
+
+        $aResults = [];
+        $aSum = array_fill_keys(array_keys($aDiff), 0);
+        for($i = 0; $i < $iSpans; $i++) {
+            foreach($aDiff as $sKey => $aValues)
+                $aSum[$sKey] += $aValues[$i];
+
+            if($aTos[$i] <= $aFroms[$i]) {
+                $aResults[] = ['mrr' => null, 'active' => null, 'trials' => null, 'trial_mrr' => 0, 'new' => null, 'cancelled' => null, 'churn' => null];
+                continue;
+            }
+
+            $aResults[] = [
+                'mrr' => round($aSum['mrr'], 2),
+                'active' => (int)$aSum['active'],
+                'trials' => (int)$aSum['trials'],
+                'trial_mrr' => round($aSum['trial_mrr'], 2),
+                'new' => $aNew[$i],
+                'cancelled' => $aEnded[$i],
+                'churn' => $aSum['at_start'] ? round(100 * $aChurned[$i] / $aSum['at_start'], 1) : null,
+            ];
+        }
+
+        return $aResults;
+    }
+
+    /**
+     * Add a value to the spans whose edge (from `$aEdges`, ascending) is in (`$iAfter`,
+     * `$iUntil`], `$iUntil` 0 for no end.
+     */
+    protected function _addSpans(&$aDiff, $aEdges, $iAfter, $iUntil, $mixedValue)
+    {
+        $iLo = self::_firstAbove($aEdges, $iAfter);
+        $iHi = $iUntil ? self::_firstAbove($aEdges, $iUntil) : count($aEdges);
+        if($iLo >= $iHi)
+            return;
+
+        $aDiff[$iLo] += $mixedValue;
+        $aDiff[$iHi] -= $mixedValue;
+    }
+
+    /**
+     * The span a time falls in, or null.
+     */
+    protected function _findSpan($aFroms, $aTos, $iTime)
+    {
+        $i = self::_firstAbove($aFroms, $iTime) - 1;
+
+        return $i >= 0 && $iTime < $aTos[$i] ? $i : null;
+    }
+
+    /**
+     * Index of the first value greater than `$iTime` in an ascending list, or its length.
+     */
+    protected static function _firstAbove($aList, $iTime)
+    {
+        $iLo = 0;
+        $iHi = count($aList);
+        while($iLo < $iHi) {
+            $iMid = ($iLo + $iHi) >> 1;
+            if($aList[$iMid] > $iTime)
+                $iHi = $iMid;
+            else
+                $iLo = $iMid + 1;
+        }
+
+        return $iLo;
+    }
+
+    /**
+     * A subscription was paying at a time: first paid before it and not ended by then.
+     */
+    protected function _isPaying($aRow, $iTime)
+    {
+        $iFirst = (int)$aRow['first_paid'];
+        $iEnd = $this->_getSubscriptionEnd($aRow);
+
+        return $iFirst && $iFirst < $iTime && (!$iEnd || $iEnd >= $iTime);
+    }
+
+    /**
+     * When a subscription stopped paying, or 0: its cancellation, or for an unpaid one the end
+     * of its last paid period and the grace time (a failed charge the payment module stopped
+     * retrying never cancels it).
+     */
+    protected function _getSubscriptionEnd($aRow)
+    {
+        if((int)$aRow['canceled'])
+            return (int)$aRow['canceled'];
+
+        if($aRow['status'] != BxAnalyticsRevenue::STATUS_UNPAID || !(int)$aRow['last_paid'])
+            return 0;
+
+        return (int)$aRow['last_paid'] + (int)BxAnalyticsRevenue::getPeriodSeconds($aRow['period'], $aRow['period_unit']) + BxAnalyticsRevenue::UNPAID_GRACE;
+    }
+
+    /**
+     * When a subscription's trial ends (0: a trial of unknown length), or null without a trial.
+     */
+    protected function _getTrialEnd($aRow)
+    {
+        if((int)$aRow['trial'] > 0)
+            return (int)$aRow['started'] + 86400 * (int)$aRow['trial'];
+
+        return $aRow['status'] == BxAnalyticsRevenue::STATUS_TRIAL ? 0 : null;
+    }
+
+    /**
+     * Title, link and module of something sold, from its module's get_cart_item.
+     */
+    protected function _getCartItem($sModule, $iItemId)
+    {
+        $aResult = [
+            'title' => _t('_bx_analytics_txt_item_n', (int)$iItemId),
+            'url' => '',
+            'module_title' => $sModule !== '' ? $this->_getModuleTitle($sModule) : '',
+        ];
+
+        if($sModule === '' || !BxDolModuleQuery::getInstance()->isEnabledByName($sModule) || !bx_is_srv($sModule, 'get_cart_item'))
+            return $aResult;
+
+        $aItem = bx_srv($sModule, 'get_cart_item', [(int)$iItemId]);
+        if(!empty($aItem) && is_array($aItem)) {
+            if(!empty($aItem['title']) && is_string($aItem['title']))
+                $aResult['title'] = strip_tags($aItem['title']);
+            if(!empty($aItem['url']) && is_string($aItem['url']))
+                $aResult['url'] = $aItem['url'];
+        }
+
+        return $aResult;
+    }
+
+    protected function _getRevenueFilter($aFilter, $aMoney)
+    {
+        $aFilter['payment'] = $aMoney['payment'];
+
+        return $aFilter;
+    }
+
+    protected function _getRevenueNotes($aMoney, $iUnconverted)
+    {
+        $aNotes = [];
+        if(!$aMoney['active'])
+            $aNotes[] = _t('_bx_analytics_txt_revenue_no_payment');
+        if($aMoney['credits_only'])
+            $aNotes[] = _t('_bx_analytics_txt_revenue_credits_only');
+        if($iUnconverted > 0)
+            $aNotes[] = _t('_bx_analytics_txt_revenue_no_rate', $iUnconverted);
+        $aNotes[] = _t('_bx_analytics_txt_revenue_as_recorded', $aMoney['code'] !== '' ? $aMoney['code'] : '-');
+
+        return $aNotes;
+    }
+
+    /**
+     * Where the import of past payments stands, for administrators.
+     */
+    protected function _getImportStatus()
+    {
+        if(!isAdmin())
+            return [];
+
+        $aStatus = $this->_oModule->getRevenue()->getBackfillStatus(true);
+
+        return $aStatus['state'] == 'unavailable' ? [] : $aStatus;
     }
 
     /**

@@ -556,6 +556,41 @@ class BxPaymentDb extends BxBaseModPaymentDb
         return $this->getOrderProcessed($aParams);
     }
 
+    /**
+     * Processed transactions with their order, a page at a time by transaction id: for
+     * reading the whole history in steps (analytics imports past payments this way).
+     */
+    public function getTransactionsAfter($iAfterId, $iLimit)
+    {
+        return $this->getAll("SELECT `tt`.`id`, `tt`.`pending_id`, `tt`.`client_id`, `tt`.`seller_id`, `tt`.`author_id`, `tt`.`module_id`, `tt`.`item_id`, `tt`.`item_count`, `tt`.`amount`, `tt`.`currency`, `tt`.`date`, `ttp`.`type`, `ttp`.`provider`, `ttp`.`order`, `ttp`.`currency` AS `pending_currency`, `ttp`.`amount` AS `pending_amount`, `ttp`.`data`
+            FROM `" . $this->_sPrefix . "transactions` AS `tt`
+            LEFT JOIN `" . $this->_sPrefix . "transactions_pending` AS `ttp` ON `tt`.`pending_id`=`ttp`.`id`
+            WHERE `tt`.`id` > :after
+            ORDER BY `tt`.`id` ASC
+            LIMIT " . max(1, min(5000, (int)$iLimit)), [
+            'after' => (int)$iAfterId
+        ]);
+    }
+
+    /**
+     * Subscriptions, active or deleted, with their order, a page at a time by pending order id.
+     */
+    public function getSubscriptionsAfter($iAfterPendingId, $iLimit, $bDeleted = false)
+    {
+        $sSelectClause = "`ts`.`pending_id`, `ts`.`subscription_id`, `ts`.`period`, `ts`.`period_unit`, `ts`.`trial`, `ts`.`date_add`, `ts`.`date_next`, `ts`.`status`, `ttp`.`client_id`, `ttp`.`seller_id`, `ttp`.`type`, `ttp`.`provider`, `ttp`.`items`, `ttp`.`amount`, `ttp`.`currency`, `ttp`.`order`, `ttp`.`data`";
+        if($bDeleted)
+            $sSelectClause .= ", `ts`.`reason`, `ts`.`deleted`";
+
+        return $this->getAll("SELECT " . $sSelectClause . "
+            FROM `" . $this->_sPrefix . "subscriptions" . ($bDeleted ? "_deleted" : "") . "` AS `ts`
+            LEFT JOIN `" . $this->_sPrefix . "transactions_pending` AS `ttp` ON `ts`.`pending_id`=`ttp`.`id`
+            WHERE `ts`.`pending_id` > :after
+            ORDER BY `ts`.`pending_id` ASC
+            LIMIT " . max(1, min(5000, (int)$iLimit)), [
+            'after' => (int)$iAfterPendingId
+        ]);
+    }
+
     /*
      * Subscriptions methods
      */
@@ -848,6 +883,17 @@ class BxPaymentDb extends BxBaseModPaymentDb
             WHERE 1" . $sWhereClause;
 
         return call_user_func_array(array($this, $aMethod['name']), $aMethod['params']);
+    }
+
+    /**
+     * Analytics: commission invoices issued in a period (`to` exclusive) by status and currency.
+     */
+    public function getAnalyticsInvoices($iFrom, $iTo)
+    {
+        return $this->getAll("SELECT `status`, `currency`, COUNT(*) AS `count`, SUM(`amount`) AS `amount` FROM `" . $this->_oConfig->CNF['TABLE_INVOICES'] . "` WHERE `date_issue` >= :from AND `date_issue` < :to GROUP BY `status`, `currency`", [
+            'from' => (int)$iFrom,
+            'to' => (int)$iTo
+        ]);
     }
 
     public function insertInvoice($aValues)

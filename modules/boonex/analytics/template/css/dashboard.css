@@ -1133,3 +1133,53 @@ html.dark .bx-analytics-cohorts td.bx-analytics-cohort-strong {
     flex: 1 0 100%;
     gap: 0.5rem;
 }
+
+/* revenue: splits, notes under a report, the import of past payments */
+.bx-analytics-revenue-split {
+    margin-top: 1.25rem;
+}
+.bx-analytics-notes {
+    margin-top: 1rem;
+}
+.bx-analytics-notes .bx-analytics-note {
+    margin: 0.25rem 0 0;
+}
+.bx-analytics-import {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem 1.5rem;
+    margin-top: 1.25rem;
+    padding: 1rem;
+    border: 1px solid var(--bx-analytics-border);
+    border-radius: 0.75rem;
+}
+.bx-analytics-import-text {
+    flex: 1 1 20rem;
+    min-width: 0;
+}
+.bx-analytics-import .bx-analytics-subtitle {
+    margin-top: 0;
+}
+.bx-analytics-import-status {
+    margin: 0 0 0.25rem;
+}
+.bx-analytics .bx-analytics-import-btn {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    padding: 0 1rem;
+    border: 1px solid var(--bx-analytics-accent);
+    border-radius: 0.5rem;
+    color: var(--bx-analytics-accent);
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+.bx-analytics .bx-analytics-import-btn:hover {
+    background: var(--bx-analytics-hover);
+}
+.bx-analytics .bx-analytics-import-btn:disabled {
+    opacity: 0.6;
+    cursor: progress;
+}

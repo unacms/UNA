@@ -222,6 +222,13 @@ class BxAnalyticsTemplate extends BxBaseModGeneralTemplate
             case 'cls':
                 return number_format((float)$mixedValue, 3);
 
+            case 'money':
+                // the site's default currency, the way the payment module shows it
+                return $this->_esc(_t_format_currency((float)$mixedValue));
+
+            case 'credits':
+                return rtrim(rtrim(number_format((float)$mixedValue, 2), '0'), '.');
+
             case 'datetime':
                 return bx_time_js((int)$mixedValue, BX_FORMAT_DATE_TIME, true);
 
@@ -676,13 +683,13 @@ class BxAnalyticsTemplate extends BxBaseModGeneralTemplate
                 'content' => ['empty' => _t('_bx_analytics_txt_no_data')],
             ],
             'bx_if:flow' => [
-                'condition' => $aData['from'] !== '',
+                'condition' => $aData['jfrom'] !== '',
                 'content' => [
-                    'flow_label' => $this->_esc(_t('_bx_analytics_txt_journey_from', $aData['from'])),
+                    'flow_label' => $this->_esc(_t('_bx_analytics_txt_journey_from', $aData['jfrom'])),
                     'step1' => _t('_bx_analytics_txt_step', 1),
                     'step2' => _t('_bx_analytics_txt_step', 2),
                     'step3' => _t('_bx_analytics_txt_step', 3),
-                    'from' => $this->_esc($aData['from']),
+                    'from' => $this->_esc($aData['jfrom']),
                     'from_sessions' => $this->formatValue('number', $aData['from_sessions']),
                     'bx_repeat:next' => $fNodes($aData['next'], true),
                     'bx_repeat:after' => $fNodes($aData['after'], false),
@@ -923,6 +930,122 @@ class BxAnalyticsTemplate extends BxBaseModGeneralTemplate
         ]);
     }
 
+    protected function _getRevenueHtml($aData, $oFilter)
+    {
+        return $this->parseHtmlByName('revenue.html', [
+            'tiles' => $this->_getTilesHtml($aData['tiles']),
+            'chart_label' => $this->_esc(_t('_bx_analytics_txt_chart_revenue')),
+            'chart_json' => $this->_json($aData['chart']),
+            'split' => $this->_getTableHtml($aData['split'], $oFilter),
+            'notes' => $this->_getNotesHtml($aData['notes']),
+            'import' => $this->_getImportHtml($aData['import']),
+        ]);
+    }
+
+    protected function _getSubscriptionsHtml($aData, $oFilter)
+    {
+        return $this->parseHtmlByName('subscriptions.html', [
+            'tiles' => $this->_getTilesHtml($aData['tiles']),
+            'chart_label' => $this->_esc(_t('_bx_analytics_txt_chart_mrr')),
+            'chart_json' => $this->_json($aData['chart']),
+            'movement_title' => _t('_bx_analytics_txt_sbs_movement'),
+            'movement_label' => $this->_esc(_t('_bx_analytics_txt_sbs_movement')),
+            'movement_json' => $this->_json($aData['movement']),
+            'plans_title' => $this->_esc($aData['plans']['caption']),
+            'plans' => $this->_getTableHtml($aData['plans'], $oFilter),
+            'reasons_title' => $this->_esc($aData['reasons']['caption']),
+            'reasons' => $this->_getTableHtml($aData['reasons'], $oFilter),
+            'notes' => $this->_getNotesHtml($aData['notes']),
+        ]);
+    }
+
+    protected function _getSalesHtml($aData, $oFilter)
+    {
+        return $this->parseHtmlByName('sales.html', [
+            'tiles' => $this->_getTilesHtml($aData['tiles']),
+            'items_title' => $this->_esc($aData['items']['caption']),
+            'items' => $this->_getTableHtml($aData['items'], $oFilter),
+            'sellers_title' => $this->_esc($aData['sellers']['caption']),
+            'sellers' => $this->_getTableHtml($aData['sellers'], $oFilter),
+            'bx_if:invoices' => [
+                'condition' => !empty($aData['invoices']),
+                'content' => [
+                    'invoices_title' => _t('_bx_analytics_txt_sales_invoices'),
+                    'invoices' => !empty($aData['invoices']) ? $this->_getTilesHtml($aData['invoices']) : '',
+                ],
+            ],
+            'notes' => $this->_getNotesHtml($aData['notes']),
+        ]);
+    }
+
+    protected function _getCreditsHtml($aData, $oFilter)
+    {
+        if(empty($aData['available']))
+            return $this->parseHtmlByName('credits.html', [
+                'bx_if:credits' => ['condition' => false, 'content' => []],
+                'bx_if:none' => [
+                    'condition' => true,
+                    'content' => ['empty' => _t('_bx_analytics_txt_credits_none')],
+                ],
+                'notes' => '',
+            ]);
+
+        return $this->parseHtmlByName('credits.html', [
+            'bx_if:credits' => [
+                'condition' => true,
+                'content' => [
+                    'tiles' => $this->_getTilesHtml($aData['tiles']),
+                    'chart_label' => $this->_esc(_t('_bx_analytics_txt_chart_credits')),
+                    'chart_json' => $this->_json($aData['chart']),
+                    'spenders_title' => $this->_esc($aData['spenders']['caption']),
+                    'spenders' => $this->_getTableHtml($aData['spenders'], $oFilter),
+                    'spent_title' => $this->_esc($aData['spent']['caption']),
+                    'spent' => $this->_getTableHtml($aData['spent'], $oFilter),
+                ],
+            ],
+            'bx_if:none' => ['condition' => false, 'content' => []],
+            'notes' => $this->_getNotesHtml($aData['notes']),
+        ]);
+    }
+
+    /**
+     * Short notes under a report: how amounts are counted, what is missing.
+     */
+    protected function _getNotesHtml($aNotes)
+    {
+        if(empty($aNotes))
+            return '';
+
+        $aItems = [];
+        foreach($aNotes as $sNote)
+            $aItems[] = ['note' => $this->_esc($sNote)];
+
+        return $this->parseHtmlByName('notes.html', [
+            'bx_repeat:notes' => $aItems,
+        ]);
+    }
+
+    /**
+     * The import of past payments, with a button to run a step now, for administrators.
+     */
+    protected function _getImportHtml($aImport)
+    {
+        if(empty($aImport) || empty($aImport['state']))
+            return '';
+
+        $bRunning = $aImport['state'] == 'running';
+
+        return $this->parseHtmlByName('import.html', [
+            'title' => _t('_bx_analytics_txt_import_title'),
+            'text' => $this->_esc(_t($bRunning ? '_bx_analytics_txt_import_running' : '_bx_analytics_txt_import_done', $this->formatValue('number', $aImport['imported']))),
+            'hint' => _t('_bx_analytics_txt_import_hint'),
+            'button' => _t($bRunning ? '_bx_analytics_txt_import_continue' : '_bx_analytics_txt_import_again'),
+            'op' => $bRunning ? 'import' : 'restart',
+            'confirm' => $bRunning ? '' : $this->_esc(_t('_bx_analytics_txt_import_confirm')),
+            'csrf' => $this->_esc((string)BxDolForm::getCsrfToken()),
+        ]);
+    }
+
     /**
      * Key figures that are not chart switches: title, value and an optional note or change.
      */
@@ -932,7 +1055,8 @@ class BxAnalyticsTemplate extends BxBaseModGeneralTemplate
         foreach($aTiles as $aTile)
             $aItems[] = [
                 'title' => $aTile['title'],
-                'value' => $this->formatValue(isset($aTile['type']) ? $aTile['type'] : 'number', $aTile['value']),
+                // nothing to measure (a rate without a base): say so instead of an empty tile
+                'value' => $aTile['value'] === null ? _t('_bx_analytics_txt_not_available') : $this->formatValue(isset($aTile['type']) ? $aTile['type'] : 'number', $aTile['value']),
                 'bx_if:sub' => [
                     'condition' => !empty($aTile['sub']),
                     'content' => ['sub' => !empty($aTile['sub']) ? $this->_esc($aTile['sub']) : ''],
@@ -1171,7 +1295,7 @@ class BxAnalyticsTemplate extends BxBaseModGeneralTemplate
             return 'flat';
 
         $bUp = $mixedChange > 0;
-        if(in_array($sMetric, ['bounce_rate', 'errors'], true))
+        if(in_array($sMetric, ['bounce_rate', 'errors', 'refunds', 'cancelled', 'churn'], true))
             return $bUp ? 'bad' : 'good';
 
         return $bUp ? 'good' : 'bad';

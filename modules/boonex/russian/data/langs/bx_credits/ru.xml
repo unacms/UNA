@@ -314,6 +314,15 @@
 
 
     <!-- Checkout process -->
+    <string name="_bx_credits_txt_analytics_balance"><![CDATA[На балансах участников]]></string>
+    <string name="_bx_credits_txt_analytics_bought"><![CDATA[Куплено]]></string>
+    <string name="_bx_credits_txt_analytics_granted"><![CDATA[Начислено администрацией]]></string>
+    <string name="_bx_credits_txt_analytics_sent"><![CDATA[Переведено участникам]]></string>
+    <string name="_bx_credits_txt_analytics_service_in"><![CDATA[Начислено модулями]]></string>
+    <string name="_bx_credits_txt_analytics_service_out"><![CDATA[Списано модулями]]></string>
+    <string name="_bx_credits_txt_analytics_spent"><![CDATA[Потрачено на покупки]]></string>
+    <string name="_bx_credits_txt_analytics_top_spenders"><![CDATA[Больше всего потратили]]></string>
+    <string name="_bx_credits_txt_analytics_withdrawn"><![CDATA[Выведено]]></string>
     <string name="_bx_credits_txt_checkout"><![CDATA[Подтверждение оплаты]]></string>
     <string name="_bx_credits_txt_checkout_to"><![CDATA[Заплатить {0} за:]]></string>
     <string name="_bx_credits_txt_checkout_price_money"><![CDATA[Цена:]]></string>

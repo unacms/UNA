@@ -255,6 +255,63 @@ class BxPaymentModule extends BxBaseModPaymentModule
     /**
      * @page service Service Calls
      * @section bx_payment Payment
+     * @subsection bx_payment-other Other
+     * @subsubsection bx_payment-get_analytics_revenue get_analytics_revenue
+     *
+     * @code bx_srv('bx_payment', 'get_analytics_revenue', [['from' => 1700000000, 'to' => 1702592000]]); @endcode
+     *
+     * Commission invoices for the Analytics module's revenue reports: how many were issued in
+     * a period and how many of them are paid, unpaid and overdue, with their amounts in the
+     * default currency. Analytics finds this service in every installed module.
+     *
+     * @param $aParams array with `from` and `to` (unix times, `to` exclusive); with `meta` only the title and the unit are returned.
+     * @return array with title (language key), unit (money) and metrics (key => title, value as the number of invoices, money as their amount in the default currency or null when a currency has no exchange rate), or an empty array when commissions are not used
+     *
+     * @see BxPaymentModule::serviceGetAnalyticsRevenue
+     */
+    /**
+     * @ref bx_payment-get_analytics_revenue "get_analytics_revenue"
+     */
+    public function serviceGetAnalyticsRevenue($aParams = [])
+    {
+        $aResult = [
+            'title' => '_bx_payment',
+            'unit' => 'money',
+        ];
+        if(!is_array($aParams) || !empty($aParams['meta']))
+            return $aResult;
+
+        $aRows = $this->_oDb->getAnalyticsInvoices(isset($aParams['from']) ? (int)$aParams['from'] : 0, isset($aParams['to']) ? (int)$aParams['to'] : time());
+        if(empty($aRows))
+            return [];
+
+        $sDefault = $this->_oConfig->getDefaultCurrencyCode();
+        $aMetrics = [];
+        foreach(['issued', BX_PAYMENT_INV_STATUS_PAID, BX_PAYMENT_INV_STATUS_UNPAID, BX_PAYMENT_INV_STATUS_OVERDUE] as $sMetric)
+            $aMetrics[$sMetric] = ['title' => '_bx_payment_txt_analytics_invoices_' . $sMetric, 'value' => 0, 'money' => 0];
+
+        foreach($aRows as $aRow) {
+            $fMoney = (float)$aRow['amount'];
+            if($aRow['currency'] !== '' && strcmp($aRow['currency'], $sDefault) != 0)
+                $fMoney = $this->serviceConvert($fMoney, $aRow['currency'], $sDefault);
+
+            foreach(['issued', $aRow['status']] as $sMetric) {
+                if(!isset($aMetrics[$sMetric]))
+                    continue;
+
+                $aMetrics[$sMetric]['value'] += (int)$aRow['count'];
+                $aMetrics[$sMetric]['money'] = $fMoney === false || $aMetrics[$sMetric]['money'] === null ? null : $aMetrics[$sMetric]['money'] + $fMoney;
+            }
+        }
+
+        $aResult['metrics'] = $aMetrics;
+
+        return $aResult;
+    }
+
+    /**
+     * @page service Service Calls
+     * @section bx_payment Payment
      * @subsection bx_payment-purchase_processing Purchase Processing
      * @subsubsection bx_payment-is_credits_only is_credits_only
      * 
@@ -1729,7 +1786,7 @@ class BxPaymentModule extends BxBaseModPaymentModule
             $this->_oDb->updateSubscription(['pay_attempts' => (int)$aSubscription['pay_attempts'] + 1], ['id' => $aSubscription['id']]);
 
             if(($mixedResult = $oProvider->makePayment($aPending)) !== true) {
-                $this->_oDb->updateSubscription(['status' => BX_PAYMENT_SBS_STATUS_UNPAID], ['id' => $aSubscription['id']]);
+                $this->getObjectSubscriptions()->overdue($aPending);
 
                 $this->log($aSubscription, 'Time Tracker', 'Payment cannot be processed (code: ' . (!empty($mixedResult['code']) ? (int)$mixedResult['code'] : 0) . ').', BX_LOG_ERR);
                 continue;
@@ -1806,7 +1863,8 @@ class BxPaymentModule extends BxBaseModPaymentModule
     {
         $this->alert('cancel_subscription', 0, $aPending['client_id'], [
             'pending' => $aPending,
-            'subscription' => $aSubscription
+            'subscription' => $aSubscription,
+            'reason' => isset($aResult['reason']) ? (string)$aResult['reason'] : ''
         ]);
     }
 

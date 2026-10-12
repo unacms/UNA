@@ -16,7 +16,7 @@ INSERT INTO `sys_options` (`category_id`, `name`, `caption`, `info`, `value`, `t
 (@iCategoryId, 'bx_analytics_platforms', '_bx_analytics_adm_stg_cpt_platforms', '_bx_analytics_adm_stg_inf_platforms', 'core-web,next-web,rn-ios,rn-android,api,core', 'list', 'a:2:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:21:"get_options_platforms";}', '', '', '', 2),
 (@iCategoryId, 'bx_analytics_session_timeout', '_bx_analytics_adm_stg_cpt_session_timeout', '_bx_analytics_adm_stg_inf_session_timeout', '30', 'digit', '', '', '', '', 3),
 (@iCategoryId, 'bx_analytics_online_window', '_bx_analytics_adm_stg_cpt_online_window', '_bx_analytics_adm_stg_inf_online_window', '5', 'digit', '', '', '', '', 4),
-(@iCategoryId, 'bx_analytics_ignore_params', '_bx_analytics_adm_stg_cpt_ignore_params', '_bx_analytics_adm_stg_inf_ignore_params', 'range, tz, platform, metric, bucket, from, to, f[*], tab_*, page_*', 'text', '', '', '', '', 5),
+(@iCategoryId, 'bx_analytics_ignore_params', '_bx_analytics_adm_stg_cpt_ignore_params', '_bx_analytics_adm_stg_inf_ignore_params', 'range, tz, platform, metric, bucket, from, to, jfrom, f[*], tab_*, page_*', 'text', '', '', '', '', 5),
 (@iCategoryId, 'bx_analytics_track_bots', '_bx_analytics_adm_stg_cpt_track_bots', '_bx_analytics_adm_stg_inf_track_bots', 'on', 'checkbox', '', '', '', '', 6),
 (@iCategoryId, 'bx_analytics_track_actions', '_bx_analytics_adm_stg_cpt_track_actions', '_bx_analytics_adm_stg_inf_track_actions', 'on', 'checkbox', '', '', '', '', 7);
 
@@ -41,6 +41,16 @@ INSERT INTO `sys_options` (`category_id`, `name`, `caption`, `value`, `type`, `e
 (@iCategoryId, 'bx_analytics_modules_disabled', '_bx_analytics_adm_stg_cpt_modules_enabled', '', 'rlist', 'a:2:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:11:"get_modules";}', '', '', '', 1),
 (@iCategoryId, 'bx_analytics_items_count', '_bx_analytics_adm_stg_cpt_items_count', '20', 'digit', '', '', '', '', 2),
 (@iCategoryId, 'bx_analytics_default_interval_day', '_bx_analytics_adm_stg_cpt_default_interval_day', '90', 'digit', '', '', '', '', 3);
+
+-- hidden: where the import of past payments stands; the transactions cursor is the last
+-- imported transaction id (-1 when done), the subscriptions cursor is "active:<pending id>",
+-- "deleted:<pending id>" or -1
+INSERT INTO `sys_options_categories` (`type_id`, `name`, `caption`, `hidden`, `order`) VALUES(@iTypeId, 'bx_analytics_system', '_bx_analytics_adm_stg_cpt_category_system', 1, 4);
+SET @iCategoryId = LAST_INSERT_ID();
+
+INSERT INTO `sys_options` (`category_id`, `name`, `caption`, `value`, `type`, `extra`, `check`, `check_params`, `check_error`, `order`) VALUES
+(@iCategoryId, 'bx_analytics_revenue_backfill', '', '0', 'digit', '', '', '', '', 1),
+(@iCategoryId, 'bx_analytics_revenue_backfill_sbs', '', '', 'text', '', '', '', '', 2);
 
 -- PAGES & BLOCKS
 INSERT INTO `sys_objects_page`(`object`, `title_system`, `title`, `module`, `layout_id`, `visible_for_levels`, `visible_for_levels_editable`, `uri`, `url`, `meta_description`, `meta_keywords`, `meta_robots`, `cache_lifetime`, `cache_editable`, `deletable`, `override_class_name`, `override_class_file`) VALUES
@@ -77,7 +87,11 @@ INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title_system`, `
 ('', 0, @sName, '_bx_analytics_page_block_title_system_retention', '_bx_analytics_page_block_title_retention', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:16:"get_block_report";s:6:"params";a:1:{i:0;s:9:"retention";}}', 0, 1, 1, 17),
 ('', 0, @sName, '_bx_analytics_page_block_title_system_goals', '_bx_analytics_page_block_title_goals', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:16:"get_block_report";s:6:"params";a:1:{i:0;s:5:"goals";}}', 0, 1, 1, 18),
 ('', 0, @sName, '_bx_analytics_page_block_title_system_funnels', '_bx_analytics_page_block_title_funnels', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:16:"get_block_report";s:6:"params";a:1:{i:0;s:7:"funnels";}}', 0, 1, 1, 19),
-('', 0, @sName, '_bx_analytics_page_block_title_system_canvas', '_bx_analytics_page_block_title_canvas', 11, 2147483647, 'service', 'a:2:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:10:"get_canvas";}', 0, 1, 1, 20);
+('', 0, @sName, '_bx_analytics_page_block_title_system_revenue', '_bx_analytics_page_block_title_revenue', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:16:"get_block_report";s:6:"params";a:1:{i:0;s:7:"revenue";}}', 0, 1, 1, 20),
+('', 0, @sName, '_bx_analytics_page_block_title_system_subscriptions', '_bx_analytics_page_block_title_subscriptions', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:16:"get_block_report";s:6:"params";a:1:{i:0;s:13:"subscriptions";}}', 0, 1, 1, 21),
+('', 0, @sName, '_bx_analytics_page_block_title_system_sales', '_bx_analytics_page_block_title_sales', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:16:"get_block_report";s:6:"params";a:1:{i:0;s:5:"sales";}}', 0, 1, 1, 22),
+('', 0, @sName, '_bx_analytics_page_block_title_system_credits', '_bx_analytics_page_block_title_credits', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:16:"get_block_report";s:6:"params";a:1:{i:0;s:7:"credits";}}', 0, 1, 1, 23),
+('', 0, @sName, '_bx_analytics_page_block_title_system_canvas', '_bx_analytics_page_block_title_canvas', 11, 2147483647, 'service', 'a:2:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:10:"get_canvas";}', 0, 1, 1, 24);
 
 -- STUDIO DASHBOARD: traffic next to the core blocks
 SET @iStdDashboardOrder = (SELECT IFNULL(MAX(`order`), 0) + 1 FROM `sys_pages_blocks` WHERE `object` = 'sys_std_dashboard' AND `cell_id` = 1);
@@ -102,20 +116,26 @@ INSERT INTO `sys_acl_actions` (`Module`, `Name`, `AdditionalParamName`, `Title`,
 (@sName, 'manage analytics', NULL, '_bx_analytics_acl_action_manage', '', 0, 3);
 SET @iIdActionManage = LAST_INSERT_ID();
 
+INSERT INTO `sys_acl_actions` (`Module`, `Name`, `AdditionalParamName`, `Title`, `Desc`, `Countable`, `DisabledForLevels`) VALUES
+(@sName, 'view analytics revenue', NULL, '_bx_analytics_acl_action_view_revenue', '', 0, 3);
+SET @iIdActionViewRevenue = LAST_INSERT_ID();
+
 SET @iModerator = 7;
 SET @iAdministrator = 8;
 INSERT INTO `sys_acl_matrix` (`IDLevel`, `IDAction`) VALUES
 (@iModerator, @iIdActionUseAnalytics),
 (@iAdministrator, @iIdActionUseAnalytics),
 (@iAdministrator, @iIdActionViewPeople),
-(@iAdministrator, @iIdActionManage);
+(@iAdministrator, @iIdActionManage),
+(@iAdministrator, @iIdActionViewRevenue);
 
 -- INJECTIONS: the tracker on every page
 INSERT INTO `sys_injections` (`name`, `page_index`, `key`, `type`, `data`, `replace`, `active`) VALUES
 ('bx_analytics_tracker', 0, 'injection_footer', 'service', 'a:2:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:16:"get_tracker_code";}', 0, 1);
 
 -- ALERTS: forget deleted profiles, record site actions (new content is subscribed per
--- module by the sync_actions service)
+-- module by the sync_actions service), and keep the revenue ledger from the payment alerts
+-- every payment module fires on the `system` unit
 INSERT INTO `sys_alerts_handlers` (`name`, `class`, `file`, `service_call`) VALUES
 (@sName, 'BxAnalyticsAlertsResponse', 'modules/boonex/analytics/classes/BxAnalyticsAlertsResponse.php', '');
 SET @iHandler := LAST_INSERT_ID();
@@ -129,7 +149,15 @@ INSERT INTO `sys_alerts` (`unit`, `action`, `handler_id`) VALUES
 ('profile', 'add', @iHandler),
 ('system', 'connection_added', @iHandler),
 ('comment', 'added', @iHandler),
-('vote', 'do', @iHandler);
+('vote', 'do', @iHandler),
+('system', 'register_payment', @iHandler),
+('system', 'refund_payment', @iHandler),
+('system', 'create_subscription', @iHandler),
+('system', 'prolong_subscription', @iHandler),
+('system', 'overdue_subscription', @iHandler),
+('system', 'cancel_subscription', @iHandler),
+('system', 'cancel_order', @iHandler),
+('system', 'finalize_checkout', @iHandler);
 
 -- CRON: daily salts and data retention
 INSERT INTO `sys_cron_jobs` (`name`, `time`, `class`, `file`, `service_call`) VALUES
