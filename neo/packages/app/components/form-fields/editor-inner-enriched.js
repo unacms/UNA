@@ -54,9 +54,6 @@ const MARKDOWN_SHORTCUTS = [
 const formatSourceHtml = (html) => html
     .replace(/(<\/(?:p|h[1-6]|ul|ol|li|blockquote|div)>)(?!\n)(?=.)/gi, '$1\n')
 
-/** External content (a reset after submit, set_content) replaces an open source view too. */
-const sourceViewOf = (html) => (open) => (open === null ? null : formatSourceHtml(html || ''))
-
 /** Call an imperative method on the library handle, tolerating a not-ready editor. */
 function callEditor(editorRef, method, ...args) {
     try {
@@ -148,13 +145,16 @@ export default function RftTextEnriched(props) {
     // Keep defaultValue fixed for the component lifetime; push later updates via setValue.
     const [initialDefaultValue] = useState(() => alignClassesToStyles(unaLinksToMentions(value || '')))
     const lastSetValue = useRef(value)
-    // HTML source view text, null while the editor is shown (see toggleSource).
+    // HTML source view text, null while the editor is shown (see toggleSource). The ref
+    // mirrors 'open' for effects: external content (a reset after submit, set_content)
+    // replaces an open source view, and a closed one gets no no-op update.
     const [sourceHtml, setSourceHtml] = useState(null)
+    const sourceOpenRef = useRef(false)
     useEffect(() => {
         if (editorRef.current && value !== lastSetValue.current) {
             lastSetValue.current = value
             callEditor(editorRef, 'setValue', alignClassesToStyles(unaLinksToMentions(value || '')))
-            setSourceHtml(sourceViewOf(value))
+            if (sourceOpenRef.current) setSourceHtml(formatSourceHtml(value || ''))
         }
     }, [value])
 
@@ -187,7 +187,7 @@ export default function RftTextEnriched(props) {
                 case 'set_content':
                     lastSetValue.current = data.value
                     callEditor(editorRef, 'setValue', alignClassesToStyles(unaLinksToMentions(data.value || '')))
-                    setSourceHtml(sourceViewOf(data.value))
+                    if (sourceOpenRef.current) setSourceHtml(formatSourceHtml(data.value || ''))
                     break
                 case 'insert_inline_image': {
                     if (data.form_name && form_name && data.form_name !== form_name) return
@@ -427,9 +427,11 @@ export default function RftTextEnriched(props) {
     }, [field, isLimitedHtml])
     const toggleSource = useCallback(() => {
         if (sourceHtml === null) {
+            sourceOpenRef.current = true
             setSourceHtml(formatSourceHtml(field.value || ''))
             return
         }
+        sourceOpenRef.current = false
         callEditor(editorRef, 'setValue', alignClassesToStyles(unaLinksToMentions(sourceHtml)))
         setSourceHtml(null)
         setTimeout(() => callEditor(editorRef, 'focus'), 0)
