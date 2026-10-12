@@ -314,6 +314,12 @@ export default function FormFeed({ data, handleSubmit, exProps, name, response }
     const isPollsPresent = !!data.inputs['polls'];
     const isLabelsPresent = !!data.inputs['labels'];
     const isButtonDisabled = !hasText || ((!isHiddenVisibility && object_privacy_view == '')) ? true : false;
+
+    // Same guards as the submit button: nothing to post or a post already in flight.
+    const handleEditorEnterSubmit = () => {
+        if (isButtonDisabled || formContext.formState.isSubmitting) return;
+        handleSubmit();
+    };
     if (isFormOnly) {
         return (
             <RNView style={{ position: 'relative', width: '100%', flex: 1, gap: 12 }}>
@@ -388,6 +394,8 @@ export default function FormFeed({ data, handleSubmit, exProps, name, response }
                                         classes: 'flex-auto',
                                         initialHeight: 160,
                                         maxHeight: screenHeight / 2 - 80 ,
+                                        // Cmd/Ctrl+Enter posts; plain Enter is a newline.
+                                        onEnterSubmit: handleEditorEnterSubmit,
                                     }
                                 )}
                             </View>

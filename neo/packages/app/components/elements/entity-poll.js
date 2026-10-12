@@ -1,5 +1,6 @@
 import { View, Row } from 'app/design/view';
 import Image, { POST_ENTRY_COVER_SIZES, POST_ENTRY_COVER_WIDTH_CAP } from 'app/ui/atoms/image';
+import { getCoverAspectClass } from 'app/lib/image/upload-settings';
 import { Text, H1 } from 'app/design/typography';
 import { appSetting, getYouTubeVideoId } from 'app/lib/util'
 import Video from 'app/ui/atoms/video';
@@ -123,7 +124,7 @@ export function PollItem({ data, showTitle, onDelete, disabled = false, results_
     );
 }
 
-export default function ElementEntityPoll({ data, blockWrapperProps }) {
+export default function ElementEntityPoll({ data, block, blockWrapperProps }) {
     const videoId = data.video_embed && getYouTubeVideoId(data.video_embed) || null;
     return (
         <BlockWrapper {...blockWrapperProps}><View className="w-full">
@@ -135,7 +136,7 @@ export default function ElementEntityPoll({ data, blockWrapperProps }) {
                     <Youtube videoId={videoId} size={3} />
                 </View>}
                 {(!!data.image && !data.video) && (
-                    <View className="w-full aspect-2/1 rounded-xl overflow-hidden lg:mt-6">
+                    <View className={`w-full ${getCoverAspectClass(block?.module)} rounded-xl overflow-hidden lg:mt-6`}>
                         <Image
                             {...data.image}
                             alt={data.title}

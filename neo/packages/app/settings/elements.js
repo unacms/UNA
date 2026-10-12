@@ -12,7 +12,13 @@ export const settingsElements = {
     },
     cover: {
         use_background: true, 
-        aspect_ratio: 'aspect-video lg:aspect-3/1', 
+        // Every cover except profile ones: content entries, their form
+        // previews and crops. Profile covers (persons, groups, events, ...)
+        // use `profile_aspect_ratio`; `aspect_ratio_by_module` wins over both.
+        // The crop takes the first `aspect-N/M` ratio of the class, so a
+        // profile cover crops at 3:1.
+        aspect_ratio: 'aspect-video',
+        profile_aspect_ratio: 'aspect-video lg:aspect-3/1',
         allow_edit: true, 
         allow_switch: true, 
         // Skip CoverMorph collapse (expanded cover stays in flow). Do not
@@ -54,7 +60,7 @@ export const settingsElements = {
         count_in_feed: 3, //OLD appSetting('layout', 'comments_count_in_feed')
         mentions: true, //OLD appSetting('layout', 'comments_mentions')
         in_reply: true, //OLD appSetting('layout', 'show_in_reply_comments')
-        submit_comment_on_enter: true,
+        submit_comment_on_enter: false, // false: Cmd/Ctrl+Enter submits, Enter is a newline
     },
     carousel: {
         image_width: '', //appSetting('layout', 'carousel_image_width')

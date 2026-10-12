@@ -977,6 +977,7 @@
     .bx-std .bx-form-input-datetime,
     .bx-std .bx-form-input-text,
     .bx-std .bx-form-input-price,
+    .bx-std .bx-form-input-wrapper-price span,
     .bx-std .bx-form-input-wrapper-password {
         @apply h-8 py-0 leading-5;
     }

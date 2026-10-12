@@ -46,6 +46,43 @@ select {
     cursor: pointer;
 }
 
+/* The editor body uses the published-post typography (`.u-vanilla-html` /
+ * `.u-vanilla-html-small`, set around it in editor-inner-enriched.js). Those rules
+ * live in `@layer utilities`, so the library's unlayered EnrichedText.css (zero
+ * margins, `line-height: normal`, drawn list markers) would always win.
+ * `revert-layer` drops the library values back to the layered ones: one style set
+ * for the editor and the page. Checkbox lists keep the library layout. */
+:is(.u-vanilla-html, .u-vanilla-html-small) .eti-editor :is(h1, h2, h3, h4, h5, h6) {
+    margin: revert-layer;
+    font-size: revert-layer;
+    font-weight: revert-layer;
+    line-height: revert-layer;
+    color: revert-layer;
+}
+
+:is(.u-vanilla-html, .u-vanilla-html-small) .eti-editor blockquote {
+    margin: revert-layer;
+    padding: revert-layer;
+    border: revert-layer;
+    color: revert-layer;
+}
+
+:is(.u-vanilla-html, .u-vanilla-html-small) .eti-editor :is(ul:not([data-type]), ol) {
+    margin: revert-layer;
+    padding: revert-layer;
+    list-style: revert-layer;
+}
+
+:is(.u-vanilla-html, .u-vanilla-html-small) .eti-editor :is(ul:not([data-type]), ol) > li {
+    display: revert-layer;
+    margin: revert-layer;
+    min-height: revert-layer;
+}
+
+:is(.u-vanilla-html, .u-vanilla-html-small) .eti-editor :is(ul:not([data-type]), ol) > li::before {
+    content: none;
+}
+
 /* Generic web link hit area via pseudo-element; size variants below */
 .u-link-hitarea,
 .u-link-hitarea-xs,

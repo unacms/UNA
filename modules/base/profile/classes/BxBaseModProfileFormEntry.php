@@ -57,6 +57,9 @@ class BxBaseModProfileFormEntry extends BxBaseModGeneralFormEntry
                 'uploaders_id' => $sUploadersId,
                 'uploaders' => $aUploaders
             );
+
+            // Lets the app crop a profile cover in the profile aspect ratio.
+            $this->aInputs[$CNF['FIELD_COVER']]['is_profile'] = true;
         }
 
         if (($sKey = 'FIELD_BADGE') && !empty($CNF[$sKey]) && isset($this->aInputs[$CNF[$sKey]])) {

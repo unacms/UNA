@@ -1,18 +1,19 @@
 import { stripTags, stripTagsWithLinks } from 'app/lib/util'
-import { stripInlinePresentation } from 'app/lib/html-helpers'
+import { stripInlinePresentation, alignStylesToClasses } from 'app/lib/html-helpers'
 
 const LIMITED_HTML_TAGS = ['a', 'p', 'br', 'span']
 
 /**
  * Normalize editor HTML before writing it to RHF.
  * `html == 3` is a rich field without a toolbar: keep a small tag allowlist
- * (no inline `<img>`). Both modes strip paste presentation.
+ * (no inline `<img>`). Both modes strip paste presentation; paragraph alignment
+ * is kept as a `text-*` class (alignStylesToClasses).
  */
 export function normalizeEditorHtml(html: string, { isLimitedHtml }: { isLimitedHtml?: boolean } = {}) {
     const source = html ?? ''
-    return stripInlinePresentation(
+    return stripInlinePresentation(alignStylesToClasses(
         isLimitedHtml ? stripTagsWithLinks(source, LIMITED_HTML_TAGS) : source
-    )
+    ))
 }
 
 /**

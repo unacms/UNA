@@ -14,6 +14,7 @@ import {
 } from './menu-cover'
 import { Platform } from 'react-native'
 import { CoverImage, CoverBackButton } from './cover-elements'
+import { getCoverAspectClass } from 'app/lib/image/upload-settings'
 import { useShowCoverBackButton } from 'app/components/elements/use-cover-back'
 import {
     AVATAR_COLLAPSED,
@@ -88,6 +89,7 @@ export function CoverMorphBody({
     const isMin = coverMode === 'min'
     const isNone = coverMode === 'none'
     const isCoverFixed = !!appSetting('cover', 'fixed')
+    const coverAspect = getCoverAspectClass(profileData?.module, true)
     const coverAllowed = showImage && !isMin && !isNone
     // Same on web and native: hide the cover image once collapsed.
     // Web keeps an empty flow-sized box so sticky collapse can still expand.
@@ -187,7 +189,7 @@ export function CoverMorphBody({
                                 </Row>
                             ) : null}
                             <View
-                                className={`w-full ${appSetting('cover', 'aspect_ratio')}`}
+                                className={`w-full ${coverAspect}`}
                             >
                                 <CoverImage
                                     mode="cover"
@@ -210,7 +212,7 @@ export function CoverMorphBody({
                                 <View className={`${TABLET_MODE_FROM}:hidden w-full h-14`} />
                             ) : null}
                             <View
-                                className={`w-full ${appSetting('cover', 'aspect_ratio')}`}
+                                className={`w-full ${coverAspect}`}
                             />
                         </View>
                     )}

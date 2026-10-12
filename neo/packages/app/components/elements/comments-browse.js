@@ -111,6 +111,9 @@ export function CommentsBrowse({
         isFirstLoad: true,
         prevItems: []
     })
+    // State, not the ref: the empty placeholder must re-render once the first
+    // page lands, even when the list stays empty.
+    const [isLoaded, setIsLoaded] = useState(false)
 
     const baseParams = {
         //static
@@ -330,6 +333,7 @@ export function CommentsBrowse({
             dispatch({ type: 'SET_ITEMS', items })
             refetchRef.current.prevItems = items
             refetchRef.current.isFirstLoad = false
+            setIsLoaded(true)
             return
         }
 
@@ -446,7 +450,7 @@ export function CommentsBrowse({
             <View>
                 {(browseParams.object_id && hasNextPage && isFetchingNextPage) ? (
                     <View className=''><Loading /></View>
-                ) : (browseParams.object_id && !refetchState.visibleItems.length && !refetchRef.current.isFirstLoad ? appStatic('components_comments_empty') : null)}
+                ) : (browseParams.object_id && !refetchState.visibleItems.length && isLoaded ? appStatic('components_comments_empty') : null)}
                 {/* Spacer so last comments clear sticky composer (+ keyboard on native). */}
                 {marginBottom > 0 ? <View style={{ height: marginBottom }} collapsable={false} /> : null}
             </View>
@@ -456,6 +460,7 @@ export function CommentsBrowse({
         hasNextPage,
         isFetchingNextPage,
         refetchState.visibleItems.length,
+        isLoaded,
         marginBottom,
         dismissComposerIfIdle,
     ]);

@@ -3,6 +3,7 @@ import { Platform } from 'react-native';
 import { useForm, FormProvider } from 'react-hook-form';
 import { View, Pressable } from 'app/design/view';
 import Image, { POST_ENTRY_COVER_SIZES, POST_ENTRY_COVER_WIDTH_CAP } from 'app/ui/atoms/image';
+import { getCoverAspectClass } from 'app/lib/image/upload-settings';
 import Html from 'app/ui/atoms/html';
 import { splitInlineMedia } from 'app/lib/editor/inline-video';
 import { Text, H1C } from 'app/design/typography';
@@ -16,6 +17,7 @@ import Video from 'app/ui/atoms/video';
 import Youtube from 'app/ui/molecules/content/youtube'
 import InlineVideo from 'app/ui/molecules/content/inline-video'
 import InlineEmbed from 'app/ui/molecules/content/inline-embed'
+import InlineTable from 'app/ui/molecules/content/inline-table'
 import { BlockWrapper } from 'app/components/block-wrapper'
 import RftText from 'app/components/form-fields/editor-rft-text'
 
@@ -240,7 +242,7 @@ const getImagesData = (data) => {
     return att;
 };
 
-/** Post body with editor videos and embeds (standalone link paragraphs) rendered inline. */
+/** Post body with editor videos, embeds (standalone link paragraphs) and tables rendered inline. */
 function HtmlWithMedia({ html }) {
     // Split the raw HTML: clearLinks would turn UNA hrefs into relative ones.
     const segments = useMemo(() => splitInlineMedia(html), [html])
@@ -250,6 +252,7 @@ function HtmlWithMedia({ html }) {
     return segments.map((s, i) => {
         if (s.type === 'video') return <InlineVideo key={i} src={s.src} poster={s.poster} width={s.width} height={s.height} align={s.align} />
         if (s.type === 'embed') return <InlineEmbed key={i} url={s.url} width={s.width} align={s.align} />
+        if (s.type === 'table') return <InlineTable key={i} markdown={s.markdown} />
         return <Html key={i} data={clearLinks(s.html)} />
     })
 }
@@ -275,7 +278,7 @@ function Default({ data, showPad, sidebar, block, blockWrapperProps, editable, a
                     <Youtube videoId={videoId} size={3} />
                 </View>}
                 {(!!data.image && !data.video) && (
-                    <View className="w-full h-[30vh] mb-4 sm:rounded-xl overflow-hidden">
+                    <View className={`w-full ${getCoverAspectClass(block?.module)} mb-4 sm:rounded-xl overflow-hidden`}>
                         <Image
                             {...data.image}
                             alt={data.title}
