@@ -220,6 +220,7 @@ class BxDolFeature extends BxDolObject
         ];
 
         $aResult['api'] = [
+            'ts' => microtime(true),
             'is_featured' => $aResult['featured'],
             'is_disabled' => $aResult['disabled'],
             'icon' => $aResult['label_icon'],

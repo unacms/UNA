@@ -303,6 +303,7 @@ class BxBaseReport extends BxDolReport
             'type' => 'reports',
             'system' => $this->_sSystem,
             'object_id' => $this->_iId,
+            'ts' => microtime(true),
             'params' => array_intersect_key($aParams, array_flip($this->_aElementParamsApi)),
             'action' => $aDoReport,
             'counter' => $aCounter
@@ -610,6 +611,7 @@ class BxBaseReport extends BxDolReport
         );
 
         $aResult['api'] = [
+            'ts' => microtime(true),
             'performer_id' => $iAuthorId,
             'is_reported' => $aResult['reported'],
             'is_disabled' => $aResult['disabled'],

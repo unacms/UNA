@@ -17,8 +17,10 @@ import { useTranslation } from 'react-i18next';
 
 import { appSetting } from 'app/lib/util';
 import {
+    objectKey,
     objectRequest,
 } from 'app/ui/molecules/objects/helpers';
+import { useObjectState } from 'app/lib/object-state';
 import emitter, { EVENTS } from 'app/context/emitter';
 import Form from 'app/components/form';
 import { components } from 'app/components/registry';
@@ -139,12 +141,24 @@ function resolveActionPayload(response) {
 // Main
 // ---------------------------------------------------------------------------
 
+function reportStateFromProps(props) {
+    const action = props?.action ?? {};
+    return {
+        action: {
+            is_undo: action.is_undo === true,
+            is_reported: action.is_reported === true,
+            is_disabled: action.is_disabled === true,
+            title: action.title ?? '',
+        },
+        counter: { count: Number(props?.counter?.count ?? 0) },
+        ts: props?.ts,
+    };
+}
+
 export default function ElementReports(props) {
     const { t } = useTranslation();
     const DropdownMenuItem = components['menu-item']['dropdown'];
 
-    const initialAction = props?.action ?? {};
-    const initialCounter = props?.counter ?? {};
     const system = props?.system;
     const objectId = props?.object_id;
     const isTextMode = props?.mode === 'text';
@@ -157,15 +171,13 @@ export default function ElementReports(props) {
     const settings = appSetting('social_actions', 'report') || {};
     const params = { ...settings, ...(props?.params || {}) };
 
-    const [actionState, setActionState] = useState({
-        is_undo: initialAction?.is_undo === true,
-        is_reported: initialAction?.is_reported === true,
-        is_disabled: initialAction?.is_disabled === true,
-        title: initialAction?.title ?? '',
-    });
-    const [counterState, setCounterState] = useState({
-        count: Number(initialCounter?.count ?? 0),
-    });
+    const [reportState, setReportState] = useObjectState(
+        system && objectId ? objectKey(props.type, system, objectId) : null,
+        props,
+        reportStateFromProps
+    );
+    const actionState = reportState.action;
+    const counterState = reportState.counter;
     const [reportForm, setReportForm] = useState(null);
     const [reportFormVisible, setReportFormVisible] = useState(false);
     const [performedByVisible, setPerformedByVisible] = useState(false);
@@ -204,22 +216,25 @@ export default function ElementReports(props) {
         (payload) => {
             if (!payload) return;
 
-            setActionState((prev) => ({
-                ...prev,
-                is_reported: payload?.is_reported ?? prev.is_reported,
-                is_disabled: payload?.is_disabled ?? prev.is_disabled,
-                title: payload?.title ?? prev.title,
+            setReportState((prev) => ({
+                action: {
+                    ...prev.action,
+                    is_reported: payload?.is_reported ?? prev.action.is_reported,
+                    is_disabled: payload?.is_disabled ?? prev.action.is_disabled,
+                    title: payload?.title ?? prev.action.title,
+                },
+                counter:
+                    payload?.counter?.count !== undefined
+                        ? { count: Number(payload.counter.count || 0) }
+                        : prev.counter,
+                ts: payload?.ts ?? prev.ts,
             }));
-
-            if (payload?.counter?.count !== undefined) {
-                setCounterState({ count: Number(payload.counter.count || 0) });
-            }
 
             if (typeof props?.onChangeTitle === 'function' && payload?.title) {
                 props.onChangeTitle(payload.title);
             }
         },
-        [props]
+        [props, setReportState]
     );
 
     const closeReportForm = useCallback(() => {

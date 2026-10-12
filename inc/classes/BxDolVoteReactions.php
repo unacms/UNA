@@ -278,6 +278,7 @@ class BxDolVoteReactions extends BxTemplVote
         $aDefaultInfo = $this->getReaction($aDefault['name']);
 
         $aResult['api'] = [
+            'ts' => microtime(true),
             'performer_id' => $iAuthorId,
             'is_voted' => $aResult['voted'],
             'is_disabled' => $aResult['disabled'],

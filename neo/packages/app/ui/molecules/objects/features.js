@@ -10,11 +10,12 @@
  *   o                        — optional settings key for icons
  */
 
-import { useState } from 'react';
 
 import { appSetting, FeedbackHaptics } from 'app/lib/util';
+import { useObjectState } from 'app/lib/object-state';
 import {
     mergeState,
+    objectKey,
     objectRequest,
     buildButtonProps,
     pickActionButton,
@@ -23,6 +24,8 @@ import {
 } from 'app/ui/molecules/objects/helpers';
 import { components } from 'app/components/registry';
 import { NeoButton } from 'app/design/controls';
+
+const featureStateFromProps = (props) => ({ ...props.action, ts: props.ts });
 
 export default function ElementFeatures(props) {
     const settings = appSetting('social_actions', 'feature');
@@ -40,7 +43,11 @@ export default function ElementFeatures(props) {
     const showCombined = params?.show_combined === true;
     const buttonProps = { ...buildButtonProps(props) };
 
-    const [objectData, setObjectData] = useState(action);
+    const [objectData, setObjectData] = useObjectState(
+        objectKey(props.type, props.system, props.object_id),
+        props,
+        featureStateFromProps
+    );
 
     const object_params = {
         service: 'TemplFeatureServices',

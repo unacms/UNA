@@ -36,6 +36,7 @@ import {
     ActionMenuLayout,
 } from 'app/ui/molecules/objects/helpers';
 import { useCurrentUser } from 'app/context/user';
+import { objectTs, useObjectState } from 'app/lib/object-state';
 import { useWindowSize } from 'app/context/measure';
 import { useSound } from 'app/lib/hooks/use-sound';
 import { Icon } from 'app/ui/atoms/icon';
@@ -473,6 +474,13 @@ function ReactionPopover({
 // Main
 // ---------------------------------------------------------------------------
 
+const reactionsStateFromProps = (props) => ({
+    action: props.action,
+    counter: props.counter,
+    live: {},
+    ts: props.ts,
+});
+
 export default function ElementReactions(props) {
     const { t } = useTranslation();
     const { currentUser } = useCurrentUser();
@@ -480,10 +488,17 @@ export default function ElementReactions(props) {
 
     const settings = appSetting('social_actions', 'reaction');
     const params = { ...settings, ...props.params };
-    const action = props.action;
-    const counter = props.counter;
-
     const key = objectKey(props.type, props.system, props.object_id);
+
+    // Shared with every widget of this object. `live` holds own and socket
+    // updates: their counter ({ count_<name> }) is not shaped like props' ({ items }).
+    const [objectState, setObjectState] = useObjectState(key, props, reactionsStateFromProps);
+    const { action, counter, live: actionsData } = objectState;
+    const setActionsData = (update) =>
+        setObjectState((prev) => {
+            const live = update(prev.live);
+            return { ...prev, live, ts: objectTs(live) ?? prev.ts };
+        });
 
     const items = settings[props.system]?.items
         ? settings[props.system].items
@@ -505,7 +520,6 @@ export default function ElementReactions(props) {
 
     const buttonProps = buildButtonProps(props);
 
-    const [actionsData, setActionsData] = useState({});
     const [performedBy, setPerformedBy] = useState();
 
     // compound: one modal + selected tab
@@ -553,7 +567,7 @@ export default function ElementReactions(props) {
         const reaction =
             actionsData?.reaction != undefined
                 ? actionsData.reaction
-                : props.action.reaction;
+                : action.reaction;
 
         objectRequest(object_params, 'do', { value: 1, reaction }, (data) =>
             setActionsData((prev) => mergeState(prev, data))
