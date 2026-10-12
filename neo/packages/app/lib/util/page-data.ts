@@ -110,6 +110,9 @@ export async function getPageData(url: string, codeOnly = false, fetchOptions: R
 /** A block inside `PageData.elements`. */
 export type PageElement = { id?: string | number; source?: string; type?: string; content?: any; [key: string]: any };
 
+/** A block `source` or `id` to look up; missing values match nothing. */
+type ElementKey = string | number | null | undefined;
+
 /**
  * First element in `data.elements` whose `source` equals `source`.
  * Cells may be objects or arrays. `filter` narrows the match (e.g. `hasNonEmptyContent`).
@@ -118,7 +121,7 @@ export type PageElement = { id?: string | number; source?: string; type?: string
  */
 export function findElementBySource(
     data: PageData | null | undefined,
-    source: string | number | null | undefined,
+    source: ElementKey,
     filter?: (el: PageElement) => boolean
 ): PageElement | null {
     if (source == null || source === '' || !data?.elements || typeof data.elements !== 'object') return null;
@@ -139,7 +142,7 @@ export function findElementBySource(
  */
 export function findElementById(
     data: PageData | null | undefined,
-    id: string | number | null | undefined
+    id: ElementKey
 ): PageElement | null {
     if (id == null || id === '' || !data?.elements || typeof data.elements !== 'object') return null;
     const wanted = String(id);
