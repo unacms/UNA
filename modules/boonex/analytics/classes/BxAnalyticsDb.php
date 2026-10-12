@@ -554,6 +554,59 @@ class BxAnalyticsDb extends BxBaseModGeneralDb
         return $this->getAll("SELECT `e`.`type`, `e`.`name`, `e`.`module`, COUNT(*) AS `count`, MAX(`e`.`ts`) AS `last` FROM `" . $this->_oConfig->CNF['TABLE_EVENTS'] . "` AS `e` WHERE " . $sWhere . " AND `e`.`profile_id` = :profile GROUP BY `e`.`type`, `e`.`name`, `e`.`module` ORDER BY `count` DESC LIMIT " . max(1, min(100, (int)$iLimit)), $aBindings);
     }
 
+    /*
+     * Conversion: journeys, retention
+     */
+
+    /**
+     * Pageview paths in session order, for journeys: rows of session id and path, at most
+     * `$iLimit` (the latest sessions win when there are more).
+     */
+    public function getPagePaths($aFilter, $iLimit = 200000)
+    {
+        $aBindings = [];
+        $sWhere = $this->_getEventsWhere($aFilter, $aBindings);
+
+        return $this->getAll("SELECT `e`.`session_id`, `e`.`path` FROM `" . $this->_oConfig->CNF['TABLE_EVENTS'] . "` AS `e` WHERE " . $sWhere . " ORDER BY `e`.`session_id` DESC, `e`.`id` LIMIT " . max(1, min(1000000, (int)$iLimit)), $aBindings);
+    }
+
+    /**
+     * Visitors' first visit and the weeks they came back in, for cohorts: members only, or
+     * every visitor id. Weeks start on Monday in the timezone offset.
+     *
+     * @return array [visitor => ['first' => first visit time, 'weeks' => [week start, ...]]]
+     */
+    public function getVisitorWeeks($iFrom, $iTo, $iOffset, $sPlatform, $bMembersOnly)
+    {
+        $sTable = $this->_oConfig->CNF['TABLE_SESSIONS'];
+        $aBindings = ['to' => (int)$iTo];
+        $sWhere = '`started` < :to';
+        if($bMembersOnly)
+            $sWhere .= ' AND `profile_id` > 0';
+        if($sPlatform !== '') {
+            $sWhere .= ' AND `platform` = :platform';
+            $aBindings['platform'] = $sPlatform;
+        }
+
+        // visitors whose first visit (ever kept) falls in the period
+        $aFirst = $this->getPairs("SELECT HEX(`visitor`) AS `v`, MIN(`started`) AS `first` FROM `" . $sTable . "` WHERE " . $sWhere . " GROUP BY `visitor` HAVING `first` >= :from", 'v', 'first', array_merge($aBindings, ['from' => (int)$iFrom]));
+        if(empty($aFirst))
+            return [];
+
+        $sWeek = $this->_getBucketSql('`started`', 'week', $iOffset, [], $aBindings);
+        $aRows = $this->getAll("SELECT HEX(`visitor`) AS `v`, " . $sWeek . " AS `week` FROM `" . $sTable . "` WHERE " . $sWhere . " AND `started` >= :from GROUP BY `visitor`, `week`", array_merge($aBindings, ['from' => (int)$iFrom]));
+
+        $aResult = [];
+        foreach($aRows as $aRow)
+            if(isset($aFirst[$aRow['v']])) {
+                if(!isset($aResult[$aRow['v']]))
+                    $aResult[$aRow['v']] = ['first' => (int)$aFirst[$aRow['v']], 'weeks' => []];
+                $aResult[$aRow['v']]['weeks'][] = (int)$aRow['week'];
+            }
+
+        return $aResult;
+    }
+
     /**
      * WHERE for events (alias `e`) of some types in the period, optionally one event
      * (type, name, module), with session filters through the event's session.

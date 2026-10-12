@@ -626,6 +626,128 @@ class BxAnalyticsTemplate extends BxBaseModGeneralTemplate
         ]);
     }
 
+    protected function _getJourneysHtml($aData, $oFilter)
+    {
+        $aEntries = [];
+        foreach($aData['entries'] as $aEntry)
+            $aEntries[] = [
+                'page' => $this->_esc($aEntry['page']),
+                'label' => $this->_esc($aEntry['page']),
+                'sessions' => $this->formatValue('number', $aEntry['sessions']),
+                'active' => $aEntry['active'] ? 'bx-analytics-row-btn-active' : '',
+                'pressed' => $aEntry['active'] ? 'true' : 'false',
+            ];
+
+        $fNodes = function($aItems, $bOpen) use ($aData) {
+            $aResult = [];
+            foreach($aItems as $aItem) {
+                $bExit = !empty($aItem['exit']);
+                $bActive = !$bExit && $bOpen && $aItem['page'] === $aData['via'];
+                $aResult[] = [
+                    'label' => $bExit ? _t('_bx_analytics_txt_left_site') : $this->_esc($aItem['page']),
+                    'share' => $aItem['share'],
+                    'class' => ($bExit ? 'bx-analytics-flow-exit' : '') . ($bActive ? ' bx-analytics-flow-node-active' : ''),
+                    'attrs' => $bOpen && !$bExit ? 'data-bx-analytics-open="via" data-bx-analytics-value="' . $this->_esc($aItem['page']) . '" aria-pressed="' . ($bActive ? 'true' : 'false') . '"' : 'disabled',
+                ];
+            }
+            return $aResult;
+        };
+
+        $iMax = 1;
+        foreach($aData['paths'] as $aPath)
+            $iMax = max($iMax, $aPath['sessions']);
+
+        $aPathRows = [];
+        foreach($aData['paths'] as $aPath)
+            $aPathRows[] = [
+                'label' => implode(' → ', $aPath['pages']),
+                'bar' => round(100 * $aPath['sessions'] / $iMax, 1),
+                'values' => ['sessions' => $aPath['sessions'], 'share' => $aPath['share']],
+            ];
+
+        return $this->parseHtmlByName('journeys.html', [
+            'entries_title' => _t('_bx_analytics_txt_start_page'),
+            'bx_if:entries' => [
+                'condition' => !empty($aEntries),
+                'content' => ['bx_repeat:entries' => $aEntries],
+            ],
+            'bx_if:no_entries' => [
+                'condition' => empty($aEntries),
+                'content' => ['empty' => _t('_bx_analytics_txt_no_data')],
+            ],
+            'bx_if:flow' => [
+                'condition' => $aData['from'] !== '',
+                'content' => [
+                    'flow_label' => $this->_esc(_t('_bx_analytics_txt_journey_from', $aData['from'])),
+                    'step1' => _t('_bx_analytics_txt_step', 1),
+                    'step2' => _t('_bx_analytics_txt_step', 2),
+                    'step3' => _t('_bx_analytics_txt_step', 3),
+                    'from' => $this->_esc($aData['from']),
+                    'from_sessions' => $this->formatValue('number', $aData['from_sessions']),
+                    'bx_repeat:next' => $fNodes($aData['next'], true),
+                    'bx_repeat:after' => $fNodes($aData['after'], false),
+                    'bx_if:no_after' => [
+                        'condition' => empty($aData['after']),
+                        'content' => ['no_after' => _t('_bx_analytics_txt_pick_next')],
+                    ],
+                ],
+            ],
+            'paths_title' => _t('_bx_analytics_txt_top_paths'),
+            'paths' => $this->_getTableHtml([
+                'name' => 'paths',
+                'caption' => _t('_bx_analytics_txt_top_paths'),
+                'columns' => [
+                    ['key' => 'label', 'type' => 'label', 'title' => _t('_bx_analytics_txt_path')],
+                    ['key' => 'sessions', 'type' => 'number', 'title' => _t('_bx_analytics_metric_sessions')],
+                    ['key' => 'share', 'type' => 'percent', 'title' => _t('_bx_analytics_txt_share')],
+                ],
+                'rows' => $aPathRows,
+            ], $oFilter),
+            'bx_if:truncated' => [
+                'condition' => $aData['truncated'],
+                'content' => ['truncated' => _t('_bx_analytics_txt_journeys_truncated')],
+            ],
+        ]);
+    }
+
+    protected function _getRetentionHtml($aData, $oFilter)
+    {
+        $aWeeks = [];
+        for($i = 0; $i < $aData['weeks']; $i++)
+            $aWeeks[] = ['week' => _t('_bx_analytics_txt_week_n', $i)];
+
+        $oTz = new DateTimeZone($aData['tz']);
+        $aRows = [];
+        foreach($aData['rows'] as $aRow) {
+            $aCells = [];
+            foreach($aRow['weeks'] as $mixedPercent)
+                $aCells[] = [
+                    'heat' => $mixedPercent !== null ? round($mixedPercent / 100, 3) : 0,
+                    'strong' => $mixedPercent !== null && $mixedPercent >= 45 ? 'bx-analytics-cohort-strong' : '',
+                    'percent' => $mixedPercent !== null && $aRow['size'] ? $this->formatValue('percent', $mixedPercent) : '',
+                ];
+
+            $aRows[] = [
+                'start' => (new DateTime('@' . $aRow['start']))->setTimezone($oTz)->format('Y-m-d'),
+                'size' => $this->formatValue('number', $aRow['size']),
+                'bx_repeat:cells' => $aCells,
+            ];
+        }
+
+        return $this->parseHtmlByName('retention.html', [
+            'tabs' => $this->_getTabsHtml('retention', $aData['tabs']),
+            'bx_if:cookieless' => [
+                'condition' => $aData['cookieless'],
+                'content' => ['cookieless' => _t('_bx_analytics_txt_retention_cookieless')],
+            ],
+            'caption' => $this->_esc(_t('_bx_analytics_lmi_cpt_retention')),
+            'cohort_title' => _t('_bx_analytics_txt_cohort'),
+            'size_title' => _t('_bx_analytics_metric_visitors'),
+            'bx_repeat:weeks' => $aWeeks,
+            'bx_repeat:rows' => $aRows,
+        ]);
+    }
+
     /**
      * Key figures that are not chart switches: title, value and an optional note or change.
      */

@@ -73,7 +73,9 @@ INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title_system`, `
 ('', 0, @sName, '_bx_analytics_page_block_title_system_events', '_bx_analytics_page_block_title_events', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:16:"get_block_report";s:6:"params";a:1:{i:0;s:6:"events";}}', 0, 1, 1, 13),
 ('', 0, @sName, '_bx_analytics_page_block_title_system_sessions', '_bx_analytics_page_block_title_sessions', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:16:"get_block_report";s:6:"params";a:1:{i:0;s:8:"sessions";}}', 0, 1, 1, 14),
 ('', 0, @sName, '_bx_analytics_page_block_title_system_users', '_bx_analytics_page_block_title_users', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:16:"get_block_report";s:6:"params";a:1:{i:0;s:5:"users";}}', 0, 1, 1, 15),
-('', 0, @sName, '_bx_analytics_page_block_title_system_canvas', '_bx_analytics_page_block_title_canvas', 11, 2147483647, 'service', 'a:2:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:10:"get_canvas";}', 0, 1, 1, 16);
+('', 0, @sName, '_bx_analytics_page_block_title_system_journeys', '_bx_analytics_page_block_title_journeys', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:16:"get_block_report";s:6:"params";a:1:{i:0;s:8:"journeys";}}', 0, 1, 1, 16),
+('', 0, @sName, '_bx_analytics_page_block_title_system_retention', '_bx_analytics_page_block_title_retention', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:16:"get_block_report";s:6:"params";a:1:{i:0;s:9:"retention";}}', 0, 1, 1, 17),
+('', 0, @sName, '_bx_analytics_page_block_title_system_canvas', '_bx_analytics_page_block_title_canvas', 11, 2147483647, 'service', 'a:2:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:10:"get_canvas";}', 0, 1, 1, 18);
 
 -- STUDIO DASHBOARD: traffic next to the core blocks
 SET @iStdDashboardOrder = (SELECT IFNULL(MAX(`order`), 0) + 1 FROM `sys_pages_blocks` WHERE `object` = 'sys_std_dashboard' AND `cell_id` = 1);

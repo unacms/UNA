@@ -261,6 +261,41 @@ class AnalyticsCollectorTest extends BxDolIntegrationTestCase
         $this->assertSame(['param' => 'user', 'value' => $iProfileId], $aUsers['rows'][0]['open']);
     }
 
+    public function testJourneysAndRetention()
+    {
+        // three members' visits: / -> /a -> /b, / -> /a -> /c, / -> /d, the first coming back a week later
+        $aVisits = [
+            [987654321, self::NOW, ['/', '/a', '/b']],
+            [987654322, self::NOW + 100, ['/', '/a', '/a', '/c']],
+            [987654323, self::NOW + 200, ['/', '/d']],
+            [987654321, self::NOW + 7 * 86400, ['/']],
+        ];
+        foreach ($aVisits as list($iProfileId, $iTime, $aPages))
+            foreach ($aPages as $i => $sPage)
+                $this->_collect($this->_server('93.184.216.' . ($iProfileId % 100)), ['platform' => 'core-web', 'hits' => [['type' => 'pageview', 'url' => 'http://una.test' . $sPage]]], $iTime + $i * 10, ['profile_id' => $iProfileId]);
+
+        $oReports = $this->_oModule->getReports();
+        $oFilter = $this->_filter(['range' => 'custom', 'from' => '2001-09-09', 'to' => '2001-09-09']);
+
+        $aJourneys = $oReports->getJourneys($oFilter);
+        $this->assertSame('/', $aJourneys['from'], 'the top entry page by default');
+        $this->assertSame(3, $aJourneys['from_sessions']);
+        $this->assertSame([['page' => '/a', 'sessions' => 2, 'share' => 66.7], ['page' => '/d', 'sessions' => 1, 'share' => 33.3]], $aJourneys['next']);
+
+        $aVia = $oReports->getJourneys($oFilter, ['via' => '/a']);
+        $this->assertEqualsCanonicalizing(['/b', '/c'], array_column($aVia['after'], 'page'), 'a page reloaded in place counts once');
+
+        $aPaths = array_map(function ($a) { return implode(' ', $a['pages']); }, $aJourneys['paths']);
+        $this->assertContains('/ /a /b', $aPaths);
+
+        $aRetention = $oReports->getRetention(new BxAnalyticsFilter($this->_oModule, ['range' => '7d'], self::NOW + 8 * 86400));
+        $aCohorts = array_values(array_filter($aRetention['rows'], function ($a) { return $a['size'] > 0; }));
+        $this->assertCount(1, $aCohorts);
+        $this->assertSame(3, $aCohorts[0]['size']);
+        $this->assertEquals(100, $aCohorts[0]['weeks'][0]);
+        $this->assertEquals(33.3, $aCohorts[0]['weeks'][1], 'one of three came back the next week');
+    }
+
     protected function _collect($aServer, $aPayload, $iNow, $aContext = [])
     {
         $oCollector = new BxAnalyticsCollector($this->_oModule, new BxAnalyticsRequest($aServer), $iNow);

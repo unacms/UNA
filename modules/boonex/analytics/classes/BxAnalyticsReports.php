@@ -845,6 +845,172 @@ class BxAnalyticsReports
     }
 
     /**
+     * Where visitors go from a page: the pages they open next and, for one of those, the
+     * pages after it; and the most common three-page paths from the entry page. Params:
+     * `from` (default: the top entry page), `via` (a next page to follow further).
+     */
+    public function getJourneys(BxAnalyticsFilter $oFilter, $aParams = [])
+    {
+        $iLimit = 200000;
+        $aRows = $this->_oDb->getPagePaths($oFilter->get(), $iLimit);
+
+        // each visit's pages in order, a page reloaded in place counted once
+        $aSequences = [];
+        foreach($aRows as $aRow) {
+            $iSession = (int)$aRow['session_id'];
+            if(!isset($aSequences[$iSession]))
+                $aSequences[$iSession] = [];
+            if(end($aSequences[$iSession]) !== $aRow['path'])
+                $aSequences[$iSession][] = $aRow['path'];
+        }
+
+        $aEntries = [];
+        $aPaths = [];
+        foreach($aSequences as $aSequence) {
+            $aEntries[$aSequence[0]] = (isset($aEntries[$aSequence[0]]) ? $aEntries[$aSequence[0]] : 0) + 1;
+            $sPath = implode("\n", array_slice($aSequence, 0, 3));
+            $aPaths[$sPath] = (isset($aPaths[$sPath]) ? $aPaths[$sPath] : 0) + 1;
+        }
+        arsort($aEntries);
+        arsort($aPaths);
+
+        $sFrom = (string)$this->_param($aParams, 'from', '');
+        if($sFrom === '' || !isset($aEntries[$sFrom]) && !$this->_inSequences($aSequences, $sFrom))
+            $sFrom = !empty($aEntries) ? (string)key($aEntries) : '';
+        $sVia = (string)$this->_param($aParams, 'via', '');
+
+        // the page after the first visit of `from`, and after `via` when it came right after
+        $iFromSessions = 0;
+        $aNext = [];
+        $iNextExits = 0;
+        $iViaSessions = 0;
+        $aAfter = [];
+        $iAfterExits = 0;
+        foreach($aSequences as $aSequence) {
+            $i = array_search($sFrom, $aSequence, true);
+            if($i === false)
+                continue;
+
+            $iFromSessions++;
+            if(!isset($aSequence[$i + 1])) {
+                $iNextExits++;
+                continue;
+            }
+
+            $sNext = $aSequence[$i + 1];
+            $aNext[$sNext] = (isset($aNext[$sNext]) ? $aNext[$sNext] : 0) + 1;
+
+            if($sVia !== '' && $sNext === $sVia) {
+                $iViaSessions++;
+                if(isset($aSequence[$i + 2]))
+                    $aAfter[$aSequence[$i + 2]] = (isset($aAfter[$aSequence[$i + 2]]) ? $aAfter[$aSequence[$i + 2]] : 0) + 1;
+                else
+                    $iAfterExits++;
+            }
+        }
+        arsort($aNext);
+        arsort($aAfter);
+
+        $fStep = function($aCounts, $iExits, $iTotal, $iLimit) {
+            $aResult = [];
+            foreach(array_slice($aCounts, 0, $iLimit, true) as $sPage => $iCount)
+                $aResult[] = ['page' => (string)$sPage, 'sessions' => $iCount, 'share' => $iTotal ? round(100 * $iCount / $iTotal, 1) : 0];
+            if($iExits)
+                $aResult[] = ['page' => '', 'exit' => true, 'sessions' => $iExits, 'share' => $iTotal ? round(100 * $iExits / $iTotal, 1) : 0];
+            return $aResult;
+        };
+
+        $iTotal = count($aSequences);
+        $aTopPaths = [];
+        foreach(array_slice($aPaths, 0, 10, true) as $sPath => $iCount)
+            $aTopPaths[] = ['pages' => explode("\n", (string)$sPath), 'sessions' => $iCount, 'share' => $iTotal ? round(100 * $iCount / $iTotal, 1) : 0];
+
+        $aEntryList = [];
+        foreach(array_slice($aEntries, 0, 10, true) as $sPage => $iCount)
+            $aEntryList[] = ['page' => (string)$sPage, 'sessions' => $iCount, 'active' => (string)$sPage === $sFrom];
+
+        return [
+            'from' => $sFrom,
+            'via' => $sVia !== '' && $iViaSessions ? $sVia : '',
+            'sessions' => $iTotal,
+            'truncated' => count($aRows) >= $iLimit,
+            'entries' => $aEntryList,
+            'from_sessions' => $iFromSessions,
+            'next' => $fStep($aNext, $iNextExits, $iFromSessions, 8),
+            'after' => $iViaSessions ? $fStep($aAfter, $iAfterExits, $iViaSessions, 8) : [],
+            'via_sessions' => $iViaSessions,
+            'paths' => $aTopPaths,
+        ];
+    }
+
+    /**
+     * Weekly cohorts by first visit and the share of each that came back in the weeks after.
+     * Tabs: members (stable ids) or all visitor ids (with cookieless ids a guest is new every
+     * day, so only persistent ids make guest retention meaningful).
+     */
+    public function getRetention(BxAnalyticsFilter $oFilter, $aParams = [])
+    {
+        $aTabs = ['members' => true, 'visitors' => false];
+        $sTab = $this->_getTab($aParams, 'retention', $aTabs);
+        $aFilter = $oFilter->get();
+
+        $iWeeks = 12;
+        $iOffset = (int)$aFilter['offset'];
+        $fWeek = function($iTime) use ($iOffset) {
+            return (int)(floor(($iTime + $iOffset - 345600) / 604800) * 604800 + 345600 - $iOffset);
+        };
+
+        $iNow = (int)$aFilter['now'];
+        $iThisWeek = $fWeek($iNow);
+        $iFrom = $iThisWeek - ($iWeeks - 1) * 604800;
+
+        $aCohorts = [];
+        for($i = 0; $i < $iWeeks; $i++)
+            $aCohorts[$iFrom + $i * 604800] = ['size' => 0, 'back' => array_fill(0, $iWeeks - $i, 0)];
+
+        foreach($this->_oDb->getVisitorWeeks($iFrom, $iNow + 1, $iOffset, $aFilter['platform'], $aTabs[$sTab]) as $aVisitor) {
+            $iCohort = $fWeek($aVisitor['first']);
+            if(!isset($aCohorts[$iCohort]))
+                continue;
+
+            $aCohorts[$iCohort]['size']++;
+            foreach(array_unique($aVisitor['weeks']) as $iWeek) {
+                $iIndex = (int)round(($iWeek - $iCohort) / 604800);
+                if($iIndex >= 0 && isset($aCohorts[$iCohort]['back'][$iIndex]))
+                    $aCohorts[$iCohort]['back'][$iIndex]++;
+            }
+        }
+
+        $aRows = [];
+        foreach($aCohorts as $iStart => $aCohort)
+            $aRows[] = [
+                'start' => $iStart,
+                'size' => $aCohort['size'],
+                'weeks' => array_map(function($iCount) use ($aCohort) {
+                    return $aCohort['size'] ? round(100 * $iCount / $aCohort['size'], 1) : null;
+                }, $aCohort['back']),
+            ];
+
+        return [
+            'tab' => $sTab,
+            'tabs' => $this->_getTabs($aTabs, $sTab, '_bx_analytics_tab_retention_'),
+            'weeks' => $iWeeks,
+            'tz' => $aFilter['tz'],
+            'rows' => $aRows,
+            'cookieless' => $sTab == 'visitors' && $this->_oConfig->getIdentityMode() == BX_ANALYTICS_IDENTITY_COOKIELESS,
+        ];
+    }
+
+    protected function _inSequences($aSequences, $sPage)
+    {
+        foreach($aSequences as $aSequence)
+            if(in_array($sPage, $aSequence, true))
+                return true;
+
+        return false;
+    }
+
+    /**
      * Name, link and picture of a profile, or null when it no longer exists.
      */
     public function getMember($iProfileId)

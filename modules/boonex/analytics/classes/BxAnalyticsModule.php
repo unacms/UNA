@@ -28,7 +28,7 @@ class BxAnalyticsModule extends BxDolModule
     /**
      * Reports that blocks, Studio and the API may ask for; each is a BxAnalyticsReports method.
      */
-    protected $_aReports = ['filters', 'overview', 'top', 'table', 'realtime', 'map', 'bots', 'sessions', 'users', 'events'];
+    protected $_aReports = ['filters', 'overview', 'top', 'table', 'realtime', 'map', 'bots', 'sessions', 'users', 'events', 'journeys', 'retention'];
 
     /**
      * Reports that show members by name.
@@ -49,6 +49,8 @@ class BxAnalyticsModule extends BxDolModule
         'sessions' => [['filters', [], true], ['sessions', [], true]],
         'users' => [['filters', [], true], ['users', [], true]],
         'events' => [['filters', [], true], ['events', [], true]],
+        'journeys' => [['filters', [], true], ['journeys', [], true]],
+        'retention' => [['filters', [], true], ['retention', [], true]],
     ];
           
     function __construct(&$aModule)
