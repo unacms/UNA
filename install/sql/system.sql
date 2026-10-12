@@ -676,6 +676,9 @@ INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `ex
 (@iCategoryId, 'sys_lock_from_unauthenticated', '_adm_stg_cpt_option_sys_lock_from_unauthenticated', '', 'checkbox', '', '', '', 50),
 (@iCategoryId, 'sys_lock_from_unauthenticated_exceptions', '_adm_stg_cpt_option_sys_lock_from_unauthenticated_exceptions', 'login,forgot-password,create-account,confirm-email,terms,privacy,contact,about,home', 'text', '', '', '', 52);
 
+INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `info`, `value`, `type`, `extra`, `check`, `check_error`, `order`) VALUES
+(@iCategoryId, 'sys_trusted_proxies', '_adm_stg_cpt_option_sys_trusted_proxies', '_adm_stg_inf_option_sys_trusted_proxies', '', 'text', '', '', '', 60);
+
 --
 -- CATEGORY: Storage
 --

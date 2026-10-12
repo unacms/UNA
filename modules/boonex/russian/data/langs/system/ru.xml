@@ -1871,6 +1871,7 @@
     <string name="_adm_stg_inf_option_sys_live_search_limit"><![CDATA[Установите максимальное количество результатов, отображаемых в поле предложений интерактивного поиска.]]></string>
     <string name="_adm_stg_cpt_option_sys_profiles_search_limit"><![CDATA[Результаты поиска профилей]]></string>
     <string name="_adm_stg_inf_option_sys_profiles_search_limit"><![CDATA[Установите максимальное количество результатов, отображаемых на странице поиска профиля.]]></string>
+    <string name="_adm_stg_inf_option_sys_trusted_proxies"><![CDATA[Адреса или диапазоны CIDR публичных прокси-серверов и CDN перед сайтом, например Cloudflare, через запятую или с новой строки. Прокси в частных сетях указывать не нужно. Адрес посетителя — ближайший адрес в X-Forwarded-For, который не принадлежит доверенному прокси, поэтому укажите все публичные прокси, через которые проходят запросы.]]></string>
     <string name="_adm_stg_inf_option_sys_vote_reactions_default"><![CDATA[Ставится одним нажатием, остальные реакции открываются наведением или долгим нажатием. Если не выбрана, кнопка реакций всегда открывает выбор.]]></string>
     <string name="_adm_stg_inf_option_sys_vote_reactions_mode"><![CDATA[Одна: только реакция по умолчанию, ставится одним нажатием. Несколько: короткий список реакций на выбор. Много: любой эмодзи из полного списка.]]></string>
     <string name="_adm_stg_inf_option_sys_vote_reactions_per_user"><![CDATA[Сколько разных реакций один человек может поставить одному материалу. Работает в режимах «Несколько» и «Много».]]></string>
@@ -1913,6 +1914,7 @@
     <string name="_adm_stg_cpt_option_sys_enable_post_to_context_for_privacy"><![CDATA[Включить возможность добавления контента в контекст, используя поле "Конфиденциальность"]]></string>
     <string name="_adm_stg_cpt_option_sys_hide_post_to_context_for_privacy"><![CDATA[Скрыть из поля "Конфиденциальность" возможность добавления контента в контекст модулей]]></string>
     <string name="_adm_stg_cpt_option_sys_treat_cxt_in_cxt_as_cnt"><![CDATA[Рассматривать контекст, размещенный в контексте, как контент]]></string>
+    <string name="_adm_stg_cpt_option_sys_trusted_proxies"><![CDATA[Доверенные прокси]]></string>
     <string name="_adm_stg_cpt_option_sys_check_fan_in_parent_context"><![CDATA[Только для участников родительской группы (события, курса и т.п.)]]></string>
     <string name="_adm_stg_cpt_option_sys_search_keyword_min_len"><![CDATA[Минимальная длина слова в поиске по сайту]]></string>
     <string name="_adm_stg_cpt_option_sys_profile_bot"><![CDATA[Профиль системного бота]]></string>

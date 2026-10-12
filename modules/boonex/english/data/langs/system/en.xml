@@ -1899,6 +1899,7 @@
     <string name="_adm_stg_inf_option_sys_live_search_limit"><![CDATA[Set the maximum number of results displayed in Live Search suggestion box.]]></string>
     <string name="_adm_stg_cpt_option_sys_profiles_search_limit"><![CDATA[Profile Search Results]]></string>
     <string name="_adm_stg_inf_option_sys_profiles_search_limit"><![CDATA[Set the maximum number of results displayed per page in Profile Search.]]></string>
+    <string name="_adm_stg_inf_option_sys_trusted_proxies"><![CDATA[Addresses or CIDR ranges of public proxies and CDNs in front of the site, such as Cloudflare, separated by commas or new lines. Proxies on private networks don't need to be listed. The visitor's address is the nearest one in X-Forwarded-For that isn't a trusted proxy, so list every public proxy that requests pass through.]]></string>
     <string name="_adm_stg_inf_option_sys_vote_reactions_default"><![CDATA[Given with a single click or tap; other reactions are a hover or long press away. With none, the reaction button always opens the choice of reactions.]]></string>
     <string name="_adm_stg_inf_option_sys_vote_reactions_mode"><![CDATA[Solo: one reaction, the default one, given with a click. Few: a short list of reactions to choose from. Many: any emoji, chosen in an emoji picker.]]></string>
     <string name="_adm_stg_inf_option_sys_vote_reactions_per_user"><![CDATA[How many different reactions one person may give to the same content. Works in the Few and Many modes.]]></string>
@@ -1942,6 +1943,7 @@
     <string name="_adm_stg_cpt_option_sys_enable_post_to_context_for_privacy"><![CDATA[Allow to post to context using Privacy field]]></string>
     <string name="_adm_stg_cpt_option_sys_hide_post_to_context_for_privacy"><![CDATA[Hide post to context for modules in Privacy field]]></string>
     <string name="_adm_stg_cpt_option_sys_treat_cxt_in_cxt_as_cnt"><![CDATA[Treat context posted in context as content]]></string>
+    <string name="_adm_stg_cpt_option_sys_trusted_proxies"><![CDATA[Trusted proxies]]></string>
     <string name="_adm_stg_cpt_option_sys_check_fan_in_parent_context"><![CDATA[Only parent group(space, event, etc) members can join]]></string>
     <string name="_adm_stg_cpt_option_sys_search_keyword_min_len"><![CDATA[Keyword min length in site search]]></string>
     <string name="_adm_stg_cpt_option_sys_profile_bot"><![CDATA[System Bot profile]]></string>
