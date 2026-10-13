@@ -5,8 +5,8 @@ import { appSetting, parseUrl, parseQueryString, isNativeTabsEnabled } from 'app
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import { fetcher } from 'app/lib/fetcher';
 import { useLocalSearchParams, useIsFocused } from 'app/lib/hooks/router'
-import { ensureTabHistory, applyTabHistory, peekTabLastUrl, registerPushedScreen } from 'app/lib/navigation/tab-history';
-import { splitTabBarItems } from 'app/components/nav/tabs/tab-menu';
+import { ensureTabHistory, applyTabHistory, registerPushedScreen } from 'app/lib/navigation/tab-history';
+import { resolveTabPageUrl } from 'app/components/nav/tab-page-url';
 import { getCachedPageData, setCachedPageData } from 'app/lib/cache/native-tab-page-cache';
 import { clearAllPageCache } from 'app/lib/cache/clear-page-cache';
 import emitter, { EVENTS } from 'app/context/emitter'
@@ -115,32 +115,9 @@ function ScreenInner(params) {
     useEffect(() => (pushed ? registerPushedScreen(pathname) : undefined), [pushed, pathname]);
     const { currentUser } = useCurrentUser();
     const activated = useLazyTabActivation();
-    const tabListKey = currentUser ? 'menu_tabbar_logged' : 'menu_tabbar_non_logged';
-    const tabList = appSetting('menu_items', tabListKey) || [];
-    let _path = routeParam(local.url);
-
-    // A native press on the More tab (switching to it or re-tapping it) is
-    // followed by a JUMP_TO that drops this route's params, and the root
-    // fallback below would swap in the first overflow item. Keep the page the
-    // More tab was showing.
-    if (!_path && !pushed && pathname === `/tab${splitTabBarItems(tabList).moreTabIndex}`) {
-        _path = peekTabLastUrl(pathname);
-    }
-
-    // BOTTOM TABS NAVIGATION
-    // Also detect a stale URL from the other user context (e.g. guest's /safety still
-    // held by Expo Router after login). Recompute it from the current context's menu.
-    const otherTabListKey = currentUser ? 'menu_tabbar_non_logged' : 'menu_tabbar_logged';
-    const otherMenuItem = (appSetting('menu_items', otherTabListKey) || []).find((item) => item.key === pathname);
-    const isStaleContextUrl = !!otherMenuItem?.url && _path === otherMenuItem.url;
-
-    if (!pushed && (!_path || _path.includes('/tab') || isStaleContextUrl)) {
-        const item = tabList.find((item) => item.key === pathname);
-        _path = item ? item.url : null;
-        if (_path === '{profile}') {
-            _path = currentUser?.url;
-        }
-    }
+    // The More tab's last page after a params-dropping JUMP_TO, a stale URL from the
+    // other user context and the tab-root fallback: see resolveTabPageUrl.
+    const _path = resolveTabPageUrl(pathname, routeParam(local.url), currentUser, pushed);
 
     const userKey = currentUser?.id
         ? `${currentUser.id}-${currentUser.confirmed}`

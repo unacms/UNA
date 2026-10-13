@@ -438,6 +438,10 @@
     <string name="_bx_payment_txt_all_clients"><![CDATA[Все клиенты]]></string>
     <string name="_bx_payment_txt_all_modules"><![CDATA[Все модули]]></string>
     <string name="_bx_payment_txt_all_items"><![CDATA[Все продукты]]></string>
+    <string name="_bx_payment_txt_analytics_invoices_issued"><![CDATA[Выставлено]]></string>
+    <string name="_bx_payment_txt_analytics_invoices_overdue"><![CDATA[Просрочено]]></string>
+    <string name="_bx_payment_txt_analytics_invoices_paid"><![CDATA[Оплачено]]></string>
+    <string name="_bx_payment_txt_analytics_invoices_unpaid"><![CDATA[Не оплачено]]></string>
     <string name="_bx_payment_txt_status_scheduled"><![CDATA[Запланированно]]></string>
     <string name="_bx_payment_txt_status_trial"><![CDATA[Пробный]]></string>
     <string name="_bx_payment_txt_status_active"><![CDATA[Активно]]></string>

@@ -856,6 +856,110 @@ class BxCreditsModule extends BxBaseModGeneralModule
     	return true;
     }
 
+    /**
+     * @page service Service Calls
+     * @section bx_credits Credits
+     * @subsection bx_credits-other Other
+     * @subsubsection bx_credits-get_analytics_revenue get_analytics_revenue
+     *
+     * @code bx_srv('bx_credits', 'get_analytics_revenue', [['from' => 1700000000, 'to' => 1702592000, 'starts' => [...], 'limit' => 10]]); @endcode
+     *
+     * The credits economy for the Analytics module's revenue reports: credits bought, spent on
+     * checkouts, granted, sent, moved by other modules and withdrawn in a period, with a series
+     * per time bucket, the top spenders, and the credits members hold now (a liability).
+     * Analytics finds this service in every installed module, so the module is never named there.
+     *
+     * @param $aParams array with:
+     * a. from - period start (unix time)
+     * b. to - period end, exclusive (unix time)
+     * c. starts - bucket starts (unix times, ascending) for the series; a row goes to the latest start before it
+     * d. limit - rows in top lists
+     * e. meta - when true, only the title and the unit are returned
+     * @return array with title (language key), unit (credits), metrics (key => title, value, count, money, series [start => value]), lists (top_spenders => title, rows [profile_id, value]) and snapshot (balance => title, value, holders, money_default)
+     *
+     * @see BxCreditsModule::serviceGetAnalyticsRevenue
+     */
+    /**
+     * @ref bx_credits-get_analytics_revenue "get_analytics_revenue"
+     */
+    public function serviceGetAnalyticsRevenue($aParams = [])
+    {
+        $aResult = [
+            'title' => '_bx_credits',
+            'unit' => 'credits',
+        ];
+        if(!is_array($aParams) || !empty($aParams['meta']))
+            return $aResult;
+
+        $iFrom = isset($aParams['from']) ? (int)$aParams['from'] : 0;
+        $iTo = isset($aParams['to']) ? (int)$aParams['to'] : time();
+        $aStarts = isset($aParams['starts']) && is_array($aParams['starts']) ? $aParams['starts'] : [];
+        $iLimit = isset($aParams['limit']) ? (int)$aParams['limit'] : 10;
+
+        // metric => [transfer type, direction]
+        $aMetrics = [
+            'bought' => [BX_CREDITS_TRANSFER_TYPE_PURCHASE, BX_CREDITS_DIRECTION_IN],
+            'spent' => [BX_CREDITS_TRANSFER_TYPE_CHECKOUT, BX_CREDITS_DIRECTION_OUT],
+            'granted' => [BX_CREDITS_TRANSFER_TYPE_GRANT, BX_CREDITS_DIRECTION_IN],
+            'sent' => [BX_CREDITS_TRANSFER_TYPE_SEND, BX_CREDITS_DIRECTION_OUT],
+            'service_in' => [BX_CREDITS_TRANSFER_TYPE_SERVICE, BX_CREDITS_DIRECTION_IN],
+            'service_out' => [BX_CREDITS_TRANSFER_TYPE_SERVICE, BX_CREDITS_DIRECTION_OUT],
+            'withdrawn' => [BX_CREDITS_TRANSFER_TYPE_WITHDRAW, BX_CREDITS_DIRECTION_OUT],
+        ];
+
+        $aTotals = [];
+        foreach($this->_oDb->getAnalyticsTotals($iFrom, $iTo) as $aRow)
+            $aTotals[$aRow['type'] . '|' . $aRow['direction']] = $aRow;
+
+        $aSeries = [];
+        foreach($this->_oDb->getAnalyticsSeries($iFrom, $iTo, $aStarts) as $aRow)
+            $aSeries[$aRow['type'] . '|' . $aRow['direction']][(int)$aRow['bucket']] = (float)$aRow['amount'];
+
+        $aWithdrawn = $this->_oDb->getAnalyticsWithdrawn($iFrom, $iTo);
+
+        $aResult['metrics'] = [];
+        foreach($aMetrics as $sMetric => list($sType, $sDirection)) {
+            $sKey = $sType . '|' . $sDirection;
+            $fValue = isset($aTotals[$sKey]) ? (float)$aTotals[$sKey]['amount'] : 0;
+
+            $aValues = [];
+            foreach($aStarts as $iStart)
+                $aValues[(int)$iStart] = isset($aSeries[$sKey][(int)$iStart]) ? $aSeries[$sKey][(int)$iStart] : 0;
+
+            $aResult['metrics'][$sMetric] = [
+                'title' => '_bx_credits_txt_analytics_' . $sMetric,
+                'value' => $fValue,
+                'count' => isset($aTotals[$sKey]) ? (int)$aTotals[$sKey]['count'] : 0,
+                // withdrawals are paid out at their own rate
+                'money' => $sMetric == 'withdrawn' ? (float)$aWithdrawn['money'] : $this->_oConfig->convertC2M($fValue),
+                'series' => $aValues,
+            ];
+        }
+
+        $aSpenders = [];
+        foreach($this->_oDb->getAnalyticsTopSpenders($iFrom, $iTo, $iLimit) as $aRow)
+            $aSpenders[] = ['profile_id' => (int)$aRow['profile_id'], 'value' => (float)$aRow['amount']];
+
+        $aResult['lists'] = [
+            'top_spenders' => [
+                'title' => '_bx_credits_txt_analytics_top_spenders',
+                'rows' => $aSpenders,
+            ],
+        ];
+
+        $aBalance = $this->_oDb->getAnalyticsBalance();
+        $aResult['snapshot'] = [
+            'balance' => [
+                'title' => '_bx_credits_txt_analytics_balance',
+                'value' => (float)$aBalance['balance'],
+                'holders' => (int)$aBalance['holders'],
+                'money_default' => $this->_oConfig->convertC2M((float)$aBalance['balance']),
+            ],
+        ];
+
+        return $aResult;
+    }
+
     public function serviceGetProfileBalance($iProfileId = 0)
     {
         return $this->getProfileBalance($iProfileId);

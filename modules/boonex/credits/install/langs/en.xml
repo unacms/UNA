@@ -316,6 +316,15 @@
 
 
     <!-- Checkout process -->
+    <string name="_bx_credits_txt_analytics_balance"><![CDATA[Held by members]]></string>
+    <string name="_bx_credits_txt_analytics_bought"><![CDATA[Bought]]></string>
+    <string name="_bx_credits_txt_analytics_granted"><![CDATA[Granted]]></string>
+    <string name="_bx_credits_txt_analytics_sent"><![CDATA[Sent to members]]></string>
+    <string name="_bx_credits_txt_analytics_service_in"><![CDATA[Credited by modules]]></string>
+    <string name="_bx_credits_txt_analytics_service_out"><![CDATA[Charged by modules]]></string>
+    <string name="_bx_credits_txt_analytics_spent"><![CDATA[Spent on checkouts]]></string>
+    <string name="_bx_credits_txt_analytics_top_spenders"><![CDATA[Top spenders]]></string>
+    <string name="_bx_credits_txt_analytics_withdrawn"><![CDATA[Withdrawn]]></string>
     <string name="_bx_credits_txt_checkout"><![CDATA[Checkout]]></string>
     <string name="_bx_credits_txt_checkout_to"><![CDATA[Pay to {0} for:]]></string>
     <string name="_bx_credits_txt_checkout_price_money"><![CDATA[Price:]]></string>

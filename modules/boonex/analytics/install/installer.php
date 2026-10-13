@@ -15,6 +15,19 @@ class BxAnalyticsInstaller extends BxBaseModTextInstaller
     {
         parent::__construct($aConfig);
     }
+
+    /**
+     * Subscribe to the actions of the modules installed now; later ones are added when they
+     * are enabled (the system/enable alert).
+     */
+    protected function _onEnableAfter()
+    {
+        $iResult = parent::_onEnableAfter();
+        if($iResult == BX_DOL_STUDIO_INSTALLER_SUCCESS)
+            BxDolService::call($this->_aConfig['name'], 'sync_actions');
+
+        return $iResult;
+    }
 }
 
 /** @} */

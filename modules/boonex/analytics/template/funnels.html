@@ -1,0 +1,76 @@
+<div class="bx-analytics-funnels">
+    <div class="bx-analytics-funnel-bar">
+        <bx_if:list>
+            <div class="bx-analytics-chips" role="group" aria-label="__list_label__">
+                <bx_repeat:list>
+                    <button type="button" class="bx-analytics-chip __active__" data-bx-analytics-open="funnel" data-bx-analytics-value="__id__" aria-pressed="__pressed__">__name__</button>
+                </bx_repeat:list>
+            </div>
+        </bx_if:list>
+        <bx_if:manage>
+            <div class="bx-analytics-card-actions">
+                <button type="button" class="bx-analytics-add-btn" data-bx-analytics-open="edit_funnel" data-bx-analytics-value="new">__add__</button>
+                <bx_if:current>
+                    <button type="button" class="bx-analytics-link-btn" data-bx-analytics-open="edit_funnel" data-bx-analytics-value="__current_id__">__edit__</button>
+                    <button type="button" class="bx-analytics-link-btn bx-analytics-danger" data-bx-analytics-action="funnel" data-bx-analytics-op="delete" data-bx-analytics-id="__current_id__" data-bx-analytics-confirm="__confirm__" data-bx-analytics-csrf="__csrf__">__delete__</button>
+                </bx_if:current>
+            </div>
+        </bx_if:manage>
+    </div>
+    <bx_if:steps>
+        <ol class="bx-analytics-funnel">
+            <bx_repeat:steps>
+                <li class="bx-analytics-funnel-step">
+                    <div class="bx-analytics-funnel-label">
+                        <span class="bx-analytics-funnel-number">__number__</span>
+                        <span class="bx-analytics-funnel-pattern">__pattern__</span>
+                        <span class="bx-analytics-badge">__type__</span>
+                    </div>
+                    <div class="bx-analytics-funnel-bar-track">
+                        <span class="bx-analytics-funnel-fill" style="width: __rate_bar__%"></span>
+                        <span class="bx-analytics-funnel-figures">__sessions__ · __rate__</span>
+                    </div>
+                    <bx_if:drop>
+                        <span class="bx-analytics-funnel-drop">__drop__</span>
+                    </bx_if:drop>
+                </li>
+            </bx_repeat:steps>
+        </ol>
+    </bx_if:steps>
+    <bx_if:empty>
+        <div class="bx-analytics-empty">__empty__</div>
+    </bx_if:empty>
+    <bx_if:form>
+        <form class="bx-analytics-form" data-bx-analytics-form="funnel" novalidate>
+            <h3 class="bx-analytics-subtitle">__form_title__</h3>
+            <input type="hidden" name="id" value="__form_id__" />
+            <input type="hidden" name="csrf_token" value="__form_csrf__" />
+            <label class="bx-analytics-field bx-analytics-field-wide">
+                <span class="bx-analytics-control-label">__label_name__</span>
+                <input type="text" name="name" value="__form_name__" maxlength="128" required class="bx-def-font-inputs bx-form-input-text" />
+            </label>
+            <bx_repeat:rows>
+                <div class="bx-analytics-field-row">
+                    <span class="bx-analytics-funnel-number" aria-hidden="true">__row_number__</span>
+                    <label class="bx-analytics-field">
+                        <span class="bx-analytics-sr">__row_type_label__</span>
+                        <select name="step_type[]" class="bx-def-font-inputs bx-form-input-select">
+                            <option value="page" __row_page__>__row_type_page__</option>
+                            <option value="event" __row_event__>__row_type_event__</option>
+                        </select>
+                    </label>
+                    <label class="bx-analytics-field bx-analytics-field-grow">
+                        <span class="bx-analytics-sr">__row_pattern_label__</span>
+                        <input type="text" name="step_pattern[]" value="__row_pattern__" maxlength="255" class="bx-def-font-inputs bx-form-input-text" />
+                    </label>
+                </div>
+            </bx_repeat:rows>
+            <span class="bx-analytics-hint">__hint__</span>
+            <p class="bx-analytics-form-error" role="alert" hidden></p>
+            <div class="bx-analytics-form-actions">
+                <button type="submit" class="bx-btn bx-btn-primary bx-btn-small">__save__</button>
+                <button type="button" class="bx-btn bx-btn-small" data-bx-analytics-open="edit_funnel" data-bx-analytics-value="">__cancel__</button>
+            </div>
+        </form>
+    </bx_if:form>
+</div>

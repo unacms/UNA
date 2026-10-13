@@ -1,0 +1,35 @@
+<div class="bx-analytics-toolbar">
+    <div class="bx-analytics-controls">
+        <label class="bx-analytics-control">
+            <span class="bx-analytics-control-label">__range_label__</span>
+            <select class="bx-def-font-inputs bx-form-input-select bx-analytics-select" data-bx-analytics-param="range">
+                <bx_repeat:ranges>
+                    <option value="__value__" __selected__>__title__</option>
+                </bx_repeat:ranges>
+            </select>
+        </label>
+        <label class="bx-analytics-control">
+            <span class="bx-analytics-control-label">__platform_label__</span>
+            <select class="bx-def-font-inputs bx-form-input-select bx-analytics-select" data-bx-analytics-param="platform">
+                <bx_repeat:platforms>
+                    <option value="__value__" __selected__>__title__</option>
+                </bx_repeat:platforms>
+            </select>
+        </label>
+        <bx_if:chips>
+            <div class="bx-analytics-chips">
+                <bx_repeat:chips>
+                    <button type="button" class="bx-analytics-chip" data-bx-analytics-unfilter="__name__" aria-label="__remove__">
+                        <span class="bx-analytics-chip-name">__title__:</span> <span class="bx-analytics-chip-value">__value__</span>
+                        <span class="bx-analytics-chip-x" aria-hidden="true">&times;</span>
+                    </button>
+                </bx_repeat:chips>
+            </div>
+        </bx_if:chips>
+    </div>
+    <div class="bx-analytics-online" title="__online_title__">
+        <span class="bx-analytics-online-dot" aria-hidden="true"></span>
+        <span class="bx-analytics-online-count">__online__</span>
+        <span class="bx-analytics-sr">__online_title__</span>
+    </div>
+</div>

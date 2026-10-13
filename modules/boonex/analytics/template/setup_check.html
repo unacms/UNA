@@ -1,0 +1,28 @@
+<div class="bx-analytics-setup-check">
+    <p class="bx-analytics-state bx-analytics-state-__verdict_state__ bx-analytics-setup-verdict">__verdict_icon__<span>__verdict__</span></p>
+    <bx_if:reasons>
+        <ul class="bx-analytics-checklist">
+            <bx_repeat:reasons>
+                <li class="bx-analytics-state bx-analytics-state-__reason_kind__">__reason_icon__<span>__reason__</span></li>
+            </bx_repeat:reasons>
+        </ul>
+    </bx_if:reasons>
+    <dl class="bx-analytics-facts">
+        <div class="bx-analytics-fact">
+            <dt>__ip_label__</dt>
+            <dd><code>__ip__</code></dd>
+        </div>
+        <div class="bx-analytics-fact">
+            <dt>__remote_label__</dt>
+            <dd><code>__remote__</code></dd>
+        </div>
+        <div class="bx-analytics-fact">
+            <dt>__geo_label__</dt>
+            <dd>__geo__</dd>
+        </div>
+        <div class="bx-analytics-fact">
+            <dt>__identity_label__</dt>
+            <dd>__identity__</dd>
+        </div>
+    </dl>
+</div>

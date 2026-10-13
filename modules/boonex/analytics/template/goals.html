@@ -1,0 +1,61 @@
+<div class="bx-analytics-goals">
+    <bx_if:goals>
+        <ul class="bx-analytics-cards">
+            <bx_repeat:goals>
+                <li class="bx-analytics-card">
+                    <div class="bx-analytics-card-head">
+                        <span class="bx-analytics-card-title">__name__</span>
+                        <span class="bx-analytics-badge">__type__</span>
+                    </div>
+                    <span class="bx-analytics-card-sub">__pattern__</span>
+                    <div class="bx-analytics-card-figures">
+                        <span class="bx-analytics-kpi-value">__rate__</span>
+                        <span class="bx-analytics-kpi-change bx-analytics-trend-__trend__">__change__</span>
+                    </div>
+                    <span class="bx-analytics-card-sub">__conversions__</span>
+                    <div class="bx-analytics-meter" aria-hidden="true"><span style="width: __bar__%"></span></div>
+                    <bx_if:actions>
+                        <div class="bx-analytics-card-actions">
+                            <button type="button" class="bx-analytics-link-btn" data-bx-analytics-open="edit_goal" data-bx-analytics-value="__id__">__edit__</button>
+                            <button type="button" class="bx-analytics-link-btn bx-analytics-danger" data-bx-analytics-action="goal" data-bx-analytics-op="delete" data-bx-analytics-id="__id__" data-bx-analytics-confirm="__confirm__" data-bx-analytics-csrf="__csrf__">__delete__</button>
+                        </div>
+                    </bx_if:actions>
+                </li>
+            </bx_repeat:goals>
+        </ul>
+    </bx_if:goals>
+    <bx_if:empty>
+        <div class="bx-analytics-empty">__empty__</div>
+    </bx_if:empty>
+    <bx_if:add>
+        <button type="button" class="bx-analytics-add-btn" data-bx-analytics-open="edit_goal" data-bx-analytics-value="new">__add__</button>
+    </bx_if:add>
+    <bx_if:form>
+        <form class="bx-analytics-form" data-bx-analytics-form="goal" novalidate>
+            <h3 class="bx-analytics-subtitle">__form_title__</h3>
+            <input type="hidden" name="id" value="__form_id__" />
+            <input type="hidden" name="csrf_token" value="__form_csrf__" />
+            <label class="bx-analytics-field">
+                <span class="bx-analytics-control-label">__label_name__</span>
+                <input type="text" name="name" value="__form_name__" maxlength="128" required class="bx-def-font-inputs bx-form-input-text" />
+            </label>
+            <label class="bx-analytics-field">
+                <span class="bx-analytics-control-label">__label_type__</span>
+                <select name="type" class="bx-def-font-inputs bx-form-input-select">
+                    <option value="page" __page_selected__>__type_page__</option>
+                    <option value="event" __event_selected__>__type_event__</option>
+                </select>
+            </label>
+            <label class="bx-analytics-field bx-analytics-field-wide">
+                <span class="bx-analytics-control-label">__label_pattern__</span>
+                <input type="text" name="pattern" value="__form_pattern__" maxlength="255" required class="bx-def-font-inputs bx-form-input-text" />
+                <span class="bx-analytics-hint">__hint__</span>
+            </label>
+            <p class="bx-analytics-form-error" role="alert" hidden></p>
+            <div class="bx-analytics-form-actions">
+                <button type="submit" class="bx-btn bx-btn-primary bx-btn-small">__save__</button>
+                <button type="button" class="bx-btn bx-btn-small" data-bx-analytics-open="edit_goal" data-bx-analytics-value="">__cancel__</button>
+            </div>
+        </form>
+    </bx_if:form>
+</div>

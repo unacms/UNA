@@ -33,9 +33,67 @@ export type FetchOptions = {
     silent?: boolean;
     /** Report request body progress (0..1); sends over XMLHttpRequest instead of `fetch`. */
     onUploadProgress?: (fraction: number) => void;
+    /** Let the request outlive the page (`fetch` keepalive), e.g. a hit sent as the page is hidden. */
+    keepalive?: boolean;
 };
 
+/**
+ * Which NEO client sends a request (`X-Neo-Platform`: web, ios, android), so UNA records
+ * site actions (sign-ups, posts, comments) with the right platform. Native always sends it.
+ * Web sends it only when the request stays on its own origin (the `/api` proxy) or runs on
+ * the server: in a cross-origin browser request a custom header needs a CORS preflight,
+ * which older UNA versions don't allow for this header.
+ */
+function neoPlatformHeader(host: string): string | null {
+    if (Platform.OS === 'ios' || Platform.OS === 'android') return Platform.OS;
+    if (Platform.OS !== 'web') return null;
+    if (typeof window === 'undefined') return 'web';
+    return host.startsWith(window.location.origin) ? 'web' : null;
+}
+
+let analyticsVisitorId = '';
+
+/**
+ * The analytics visitor id this device keeps when UNA's analytics uses persistent visitor
+ * ids ('' otherwise), set by the analytics tracker. Sent as `X-Analytics-Vid` where
+ * `X-Neo-Platform` is, so a sign-up or another site action joins this device's visit. Never
+ * from the web server: one module instance serves every viewer there.
+ */
+export function setAnalyticsVisitorId(id: string): void {
+    analyticsVisitorId = id;
+}
+
+function analyticsVisitorHeader(neoPlatform: string | null): string | null {
+    if (!analyticsVisitorId || !neoPlatform) return null;
+    if (Platform.OS === 'web' && typeof window === 'undefined') return null;
+    return analyticsVisitorId;
+}
+
 type AbortErrorLike = Error & { aborted?: boolean };
+
+/** Hears UNA requests that failed on the server (analytics: `http` errors). */
+export type ServerErrorListener = (status: number, path: string) => void;
+
+let serverErrorListener: ServerErrorListener | null = null;
+
+export function setServerErrorListener(listener: ServerErrorListener | null): void {
+    serverErrorListener = listener;
+}
+
+/**
+ * UNA answers a service's own error (`{error, code}`: access denied, not found, a form
+ * error) with HTTP 500 too, so only a failure counts: a body that isn't UNA's JSON (a PHP
+ * fatal, a gateway error) or an error the service itself marks 5xx.
+ */
+function noteServerError(status: number, mixed: FetcherRequest, body: any): void {
+    if (!serverErrorListener) return;
+    if (body && typeof body === 'object' && 'error' in body && !(Number(body.code) >= 500)) return;
+    try {
+        serverErrorListener(status, Array.isArray(mixed) ? mixed[0] : mixed);
+    } catch {
+        // a listener never breaks a request
+    }
+}
 
 const USE_PROXY_WEB = appSetting('config', 'use_proxy_web'); 
 const USE_PROXY_NATIVE = appSetting('config', 'use_proxy_native');
@@ -63,6 +121,7 @@ export async function fetcher (mixed: FetcherRequest, useProxy = false, fetchOpt
         } catch (error: any) {
             a = {};
         }
+        if (r.status >= 500) noteServerError(r.status, mixed, a);
         return a;
     });
 
@@ -71,13 +130,14 @@ export async function fetcher (mixed: FetcherRequest, useProxy = false, fetchOpt
 
 async function fetcherRawOnce(
     url: string,
-    { data, headers, callback, signal, timeoutMs, onUploadProgress }: {
+    { data, headers, callback, signal, timeoutMs, onUploadProgress, keepalive }: {
         data?: BodyInit | null;
         headers: Record<string, string>;
         callback?: (response: Response) => void;
         signal?: AbortSignal;
         timeoutMs?: number;
         onUploadProgress?: (fraction: number) => void;
+        keepalive?: boolean;
     },
 ): Promise<Response> {
     const controller = new AbortController();
@@ -109,6 +169,7 @@ async function fetcherRawOnce(
                 cache: 'no-store',
                 credentials: 'include', // Set to true on UNA side - Access-Control-Allow-Credentials
                 signal: controller.signal,
+                ...(keepalive ? { keepalive: true } : null),
             });
         if (callback)
             callback(r);
@@ -155,6 +216,12 @@ export async function fetcherRaw(host: string, mixed: FetcherRequest, fetchOptio
         headers['Origin'] = origin;
     else if ('web' !== Platform.OS)
         headers['Origin'] = APP_ORIGIN;
+    const neoPlatform = neoPlatformHeader(host);
+    if (neoPlatform && !headers['X-Neo-Platform'])
+        headers['X-Neo-Platform'] = neoPlatform;
+    const analyticsVisitor = analyticsVisitorHeader(neoPlatform);
+    if (analyticsVisitor && !headers['X-Analytics-Vid'])
+        headers['X-Analytics-Vid'] = analyticsVisitor;
 
    // headers['Content-Type'] = "application/json";
     headers['Cache-Control'] = "no-cache";
@@ -170,6 +237,7 @@ export async function fetcherRaw(host: string, mixed: FetcherRequest, fetchOptio
         maxAttempts: maxAttemptsOverride,
         silent = false,
         onUploadProgress,
+        keepalive,
     } = fetchOptions;
     const maxAttempts = maxAttemptsOverride ?? (data ? 1 : 3);
     const baseDelayMs = 300;
@@ -183,7 +251,7 @@ export async function fetcherRaw(host: string, mixed: FetcherRequest, fetchOptio
             throw err;
         }
         try {
-            return await fetcherRawOnce(url, { data, headers, callback, signal, timeoutMs, onUploadProgress });
+            return await fetcherRawOnce(url, { data, headers, callback, signal, timeoutMs, onUploadProgress, keepalive });
         } catch (error: any) {
             lastError = error;
             if (error?.aborted) {

@@ -172,6 +172,33 @@ class BxPaymentSubscriptions extends BxBaseModPaymentSubscriptions
     /**
      * @page service Service Calls
      * @section bx_payment Payment
+     * @subsection bx_payment-other Other
+     * @subsubsection bx_payment-get_subscriptions_after get_subscriptions_after
+     *
+     * @code bx_srv('bx_payment', 'get_subscriptions_after', [0, 500, false], 'Subscriptions'); @endcode
+     *
+     * Get subscriptions a page at a time, ordered by their pending transaction ID, to read
+     * them all in steps. Pass the pending ID of the last subscription of the previous page to
+     * get the next one.
+     *
+     * @param $iAfterPendingId integer value, the subscriptions with a greater pending ID are returned (0 for the first page).
+     * @param $iLimit integer value, subscriptions per page (at most 5000).
+     * @param $bDeleted boolean value, read cancelled (deleted) subscriptions instead of the current ones.
+     * @return an array of subscriptions. Each has pending_id, subscription_id, period, period_unit, trial, date_add, date_next and status, its order's client_id, seller_id, type, provider, items, amount, currency, order and data, and for deleted ones the reason and the time they were deleted.
+     *
+     * @see BxPaymentSubscriptions::serviceGetSubscriptionsAfter
+     */
+    /**
+     * @ref bx_payment-get_subscriptions_after "get_subscriptions_after"
+     */
+    public function serviceGetSubscriptionsAfter($iAfterPendingId = 0, $iLimit = 500, $bDeleted = false)
+    {
+        return $this->_oModule->_oDb->getSubscriptionsAfter((int)$iAfterPendingId, (int)$iLimit, (bool)$bDeleted);
+    }
+
+    /**
+     * @page service Service Calls
+     * @section bx_payment Payment
      * @subsection bx_payment-purchase_processing Purchase Processing
      * @subsubsection bx_payment-subscribe subscribe
      * 
@@ -506,7 +533,7 @@ class BxPaymentSubscriptions extends BxBaseModPaymentSubscriptions
         if(!$this->_oModule->_oDb->deleteSubscription($aSubscription['id'], $sReason))
             return false;
 
-        $this->_oModule->onSubscriptionCancel($aPending, $aSubscription);
+        $this->_oModule->onSubscriptionCancel($aPending, $aSubscription, ['reason' => $sReason]);
 
         return true;
     }

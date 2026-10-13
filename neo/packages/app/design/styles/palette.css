@@ -94,6 +94,18 @@
             --shadow-lg: var(--neutral-950);
             --shadow-xl: var(--neutral-950);
             --shadow-2xl: var(--neutral-950);
+            /* Chart series: the accent, then cyan, amber, pink, green, violet (3:1 on cards) */
+            --chart-1: var(--accent-600);
+            --chart-2: 8 145 178;
+            --chart-3: 217 119 6;
+            --chart-4: 219 39 119;
+            --chart-5: 22 163 74;
+            --chart-6: 124 58 237;
+            /* Chart series that are good news (3:1 on cards); bad news uses --destructive */
+            --chart-good: 5 150 105;
+            /* Text of a change for the better or the worse (4.5:1 on cards) */
+            --trend-good: 4 120 87;
+            --trend-bad: 190 18 60;
         }
 
         /* Semantic — dark overrides */
@@ -133,6 +145,15 @@
             --shadow-lg: var(--black);
             --shadow-xl: var(--black);
             --shadow-2xl: var(--black);
+            --chart-1: var(--accent-400);
+            --chart-2: 103 232 249;
+            --chart-3: 252 211 77;
+            --chart-4: 249 168 212;
+            --chart-5: 134 239 172;
+            --chart-6: 196 181 253;
+            --chart-good: 52 211 153;
+            --trend-good: 110 231 183;
+            --trend-bad: 253 164 175;
         }
     }
 }

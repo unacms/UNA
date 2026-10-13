@@ -75,6 +75,10 @@ const ReputationLeaderboard = dynamic(() => import('./reputation').then((m) => m
 const ReputationLevels = dynamic(() => import('./reputation').then((m) => m.ReputationLevels), { loading: DynamicFallback });
 const ReputationHistory = dynamic(() => import('./reputation').then((m) => m.ReputationHistory), { loading: DynamicFallback });
 const ReputationActions = dynamic(() => import('./reputation').then((m) => m.ReputationActions), { loading: DynamicFallback });
+const AnalyticsFilters = dynamic(() => import('./analytics').then((m) => m.AnalyticsFilters), { loading: DynamicFallback });
+const AnalyticsOverview = dynamic(() => import('./analytics').then((m) => m.AnalyticsOverview), { loading: DynamicFallback });
+const AnalyticsTop = dynamic(() => import('./analytics').then((m) => m.AnalyticsTop), { loading: DynamicFallback });
+const AnalyticsReport = dynamic(() => import('./analytics').then((m) => m.AnalyticsReport), { loading: DynamicFallback });
 
 export const componentsMapDefault = {
     messenger_main_page: Messenger,
@@ -87,6 +91,14 @@ export const componentsMapDefault = {
     reputation_history: ReputationHistory,
     reputation_actions: ReputationActions,
     reputation_widget: ReputationWidget,
+    analytics_filters: AnalyticsFilters,
+    analytics_overview: AnalyticsOverview,
+    analytics_top: AnalyticsTop,
+    // revenue reports: one element renders them all by their parts
+    analytics_revenue: AnalyticsReport,
+    analytics_subscriptions: AnalyticsReport,
+    analytics_sales: AnalyticsReport,
+    analytics_credits: AnalyticsReport,
     tasks_menu: TasksMenu,
     tasks_timers: TasksTimers,
     tasks_list: TasksList,

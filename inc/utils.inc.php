@@ -2666,7 +2666,7 @@ function bx_api_check_access()
 
             if ('OPTIONS' == $_SERVER['REQUEST_METHOD']) {
                 header('Access-Control-Allow-Methods: POST, GET');
-                header('Access-Control-Allow-Headers: Accept-Encoding, Authorization, Cache-Control, Connection, Host, Origin, Pragma, Referer, User-Agent, X-Custom-Header, X-Requested-With');
+                header('Access-Control-Allow-Headers: Accept-Encoding, Authorization, Cache-Control, Connection, Host, Origin, Pragma, Referer, User-Agent, X-Custom-Header, X-Neo-Platform, X-Requested-With');
                 exit;
             }
         }

@@ -443,6 +443,70 @@ class BxCreditsDb extends BxBaseModGeneralDb
         $sQuery = "DELETE FROM `" . $this->_oConfig->CNF['TABLE_WITHDRAWALS'] . "` WHERE " . $this->arrayToSQL($aWhere, ' AND ');
         return (int)$this->query($sQuery) > 0;
     }
+
+    /**
+     * Analytics: credits moved in a period (`to` exclusive), by transfer type and direction.
+     */
+    public function getAnalyticsTotals($iFrom, $iTo)
+    {
+        return $this->getAll("SELECT `type`, `direction`, SUM(`amount`) AS `amount`, COUNT(*) AS `count` FROM `" . $this->_oConfig->CNF['TABLE_HISTORY'] . "` WHERE `date` >= :from AND `date` < :to GROUP BY `type`, `direction`", [
+            'from' => (int)$iFrom,
+            'to' => (int)$iTo
+        ]);
+    }
+
+    /**
+     * Analytics: the same per time bucket; a row goes to the latest of the bucket starts before it.
+     */
+    public function getAnalyticsSeries($iFrom, $iTo, $aStarts)
+    {
+        $aStarts = array_values(array_map('intval', $aStarts));
+        if(empty($aStarts))
+            return [];
+
+        $aBindings = ['from' => (int)$iFrom, 'to' => (int)$iTo];
+        $aCases = [];
+        foreach(array_reverse($aStarts) as $i => $iStart) {
+            $aCases[] = 'WHEN `date` >= :b' . $i . ' THEN :b' . $i . 'v';
+            $aBindings['b' . $i] = $iStart;
+            $aBindings['b' . $i . 'v'] = $iStart;
+        }
+
+        return $this->getAll("SELECT CASE " . implode(' ', $aCases) . " ELSE 0 END AS `bucket`, `type`, `direction`, SUM(`amount`) AS `amount` FROM `" . $this->_oConfig->CNF['TABLE_HISTORY'] . "` WHERE `date` >= :from AND `date` < :to GROUP BY `bucket`, `type`, `direction`", $aBindings);
+    }
+
+    /**
+     * Analytics: profiles that spent the most credits on checkouts in a period (the buyer's side).
+     */
+    public function getAnalyticsTopSpenders($iFrom, $iTo, $iLimit)
+    {
+        return $this->getAll("SELECT `first_pid` AS `profile_id`, SUM(`amount`) AS `amount` FROM `" . $this->_oConfig->CNF['TABLE_HISTORY'] . "` WHERE `date` >= :from AND `date` < :to AND `type` = :type AND `direction` = :direction GROUP BY `first_pid` ORDER BY `amount` DESC LIMIT " . max(1, min(100, (int)$iLimit)), [
+            'from' => (int)$iFrom,
+            'to' => (int)$iTo,
+            'type' => BX_CREDITS_TRANSFER_TYPE_CHECKOUT,
+            'direction' => BX_CREDITS_DIRECTION_OUT
+        ]);
+    }
+
+    /**
+     * Analytics: confirmed withdrawals in a period, in credits and in money at their own rate.
+     */
+    public function getAnalyticsWithdrawn($iFrom, $iTo)
+    {
+        return $this->getRow("SELECT COUNT(*) AS `count`, IFNULL(SUM(`amount`), 0) AS `amount`, IFNULL(SUM(`amount` * `rate`), 0) AS `money` FROM `" . $this->_oConfig->CNF['TABLE_WITHDRAWALS'] . "` WHERE `status` = :status AND `confirmed` >= :from AND `confirmed` < :to", [
+            'status' => BX_CREDITS_WITHDRAWAL_STATUS_CONFIRMED,
+            'from' => (int)$iFrom,
+            'to' => (int)$iTo
+        ]);
+    }
+
+    /**
+     * Analytics: credits members hold now, and how many members hold any.
+     */
+    public function getAnalyticsBalance()
+    {
+        return $this->getRow("SELECT IFNULL(SUM(`balance`), 0) AS `balance`, SUM(`balance` > 0) AS `holders` FROM `" . $this->_oConfig->CNF['TABLE_PROFILES'] . "`");
+    }
 }
 
 /** @} */

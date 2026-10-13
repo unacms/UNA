@@ -13,6 +13,7 @@ import Subscriber from 'app/ui/molecules/system/subscriber'
 import InterfaceSounds from 'app/ui/molecules/system/interface-sounds'
 import { useLayoutSettings } from 'app/context/layout-settings'
 import { addI18nResources, changeI18nLanguage } from 'app/lib/i18n-resources'
+import { AnalyticsTracker } from 'app/lib/analytics'
 
 // The Google OAuth popup returns to a page of this app: close it and hand the
 // result to the opener. Here, not in the lazily loaded Google button, so it
@@ -100,7 +101,9 @@ export function Providers({ children, initialLang = 'en', initialResources }) {
                     <SpeedInsights />
                     {children}
                     <Subscriber />
+                    <AnalyticsTracker />
                     <InterfaceSounds />
+
                 </QueryClientProvider>
             </JotaiProvider>
         </I18nextProvider>

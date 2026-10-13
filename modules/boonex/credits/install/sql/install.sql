@@ -71,7 +71,8 @@ CREATE TABLE IF NOT EXISTS `bx_credits_history` (
   `info` varchar(255) NOT NULL DEFAULT '',
   `date` int(11) NOT NULL DEFAULT '0',
   `cleared` int(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `date` (`date`, `type`, `direction`)
 );
 
 -- TABLE: withdrawals

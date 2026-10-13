@@ -1,0 +1,46 @@
+<div class="bx-analytics bx-analytics-tool bx-analytics-dashboards">
+    <p class="bx-analytics-tool-intro">__intro__</p>
+    <bx_if:pages>
+        <div class="bx-analytics-table-wrap" role="region" aria-label="__caption__" tabindex="0">
+            <table class="bx-analytics-table bx-analytics-tool-table">
+                <caption class="bx-analytics-sr">__caption__</caption>
+                <thead>
+                    <tr>
+                        <th scope="col" class="bx-analytics-col-text">__col_page__</th>
+                        <th scope="col">__col_blocks__</th>
+                        <th scope="col">__col_neo__</th>
+                        <th scope="col" class="bx-analytics-col-text"><span class="bx-analytics-sr">__col_actions__</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <bx_repeat:pages>
+                        <tr>
+                            <td class="bx-analytics-col-text bx-analytics-col-wrap"><a class="bx-analytics-tool-link" href="__view_url__">__page_title__</a></td>
+                            <td>__blocks__</td>
+                            <td>__api_blocks__</td>
+                            <td class="bx-analytics-col-text"><a class="bx-analytics-tool-link" href="__edit_url__" aria-label="__edit_label__">__edit__</a></td>
+                        </tr>
+                    </bx_repeat:pages>
+                </tbody>
+            </table>
+        </div>
+    </bx_if:pages>
+    <bx_if:empty>
+        <div class="bx-analytics-empty">__empty__</div>
+    </bx_if:empty>
+    <p class="bx-analytics-note">__neo_note__</p>
+    <form class="bx-analytics-form" data-bx-analytics-dashboard-form novalidate>
+        <h3 class="bx-analytics-subtitle">__create_title__</h3>
+        <input type="hidden" name="csrf_token" value="__csrf__" />
+        <label class="bx-analytics-field bx-analytics-field-grow">
+            <span class="bx-analytics-control-label">__label_title__</span>
+            <input type="text" name="title" maxlength="100" required class="bx-def-font-inputs bx-form-input-text" aria-describedby="bx-analytics-dash-hint bx-analytics-dash-warning" />
+        </label>
+        <p class="bx-analytics-hint" id="bx-analytics-dash-hint">__create_hint__</p>
+        <p class="bx-analytics-notice" id="bx-analytics-dash-warning">__disable_warning__</p>
+        <p class="bx-analytics-form-error" role="alert" hidden></p>
+        <div class="bx-analytics-form-actions">
+            <button type="submit" class="bx-analytics-tool-btn bx-analytics-tool-btn-primary">__create__</button>
+        </div>
+    </form>
+</div>
