@@ -20,6 +20,13 @@ export function WikiBreadcrumb({ items, onNavigate, compact = false }) {
     const { t } = useTranslation()
     if (!items?.length) return null
 
+    // Compact sits next to the header buttons: match their label type
+    // (neo_button regular + borderless) so the row reads as one line.
+    const textCls = compact
+        ? 'text-base leading-6 font-semibold tracking-tight'
+        : 'text-sm leading-5'
+    const currentCls = compact ? 'text-card-foreground' : 'text-foreground font-medium'
+
     return (
         <Row
             className={`items-center flex-wrap min-w-0 ${compact ? 'gap-1 flex-1' : 'gap-1.5'}`}
@@ -38,10 +45,8 @@ export function WikiBreadcrumb({ items, onNavigate, compact = false }) {
                     {item.isCurrent || !item.path || !onNavigate ? (
                         <Text
                             numberOfLines={1}
-                            className={`text-sm leading-5 ${
-                                item.isCurrent
-                                    ? 'text-foreground font-medium'
-                                    : 'text-muted-foreground'
+                            className={`${textCls} ${
+                                item.isCurrent ? currentCls : 'text-muted-foreground'
                             }`}
                         >
                             {item.title}
@@ -56,7 +61,7 @@ export function WikiBreadcrumb({ items, onNavigate, compact = false }) {
                         >
                             <Text
                                 numberOfLines={1}
-                                className="text-sm leading-5 text-muted-foreground web:hover:text-foreground"
+                                className={`${textCls} text-muted-foreground web:hover:text-foreground`}
                             >
                                 {item.title}
                             </Text>
