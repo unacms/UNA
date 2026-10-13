@@ -24,8 +24,8 @@ class BxBaseStudioMenuAccountPopup extends BxDolStudioMenuAccountPopup
     }
 
     /**
-     * The signed-in name is rendered as a label, the theme item as a segmented control, and Manage Apps (it switches
-     * edit mode on the launcher) and Sounds as toggle buttons; everything else stays a link.
+     * The signed-in name is rendered as a label, the theme and sounds items as segmented controls, and Manage Apps (it
+     * switches edit mode on the launcher) as a toggle button; everything else stays a link.
      * The tour item follows the 'site_tour_studio' setting, like the launcher tour itself.
      */
     protected function _getMenuItem ($aItem)
@@ -33,7 +33,7 @@ class BxBaseStudioMenuAccountPopup extends BxDolStudioMenuAccountPopup
         if($aItem['name'] == 'tour' && getParam('site_tour_studio') != 'on')
             return false;
 
-        if($aItem['name'] == 'sounds' && getParam('sys_std_ui_sounds') != 'on')
+        if($aItem['name'] == 'sounds' && !BxDolSounds::getInstance()->isOn('studio'))
             return false;
 
         $aItem = parent::_getMenuItem($aItem);
@@ -47,8 +47,7 @@ class BxBaseStudioMenuAccountPopup extends BxDolStudioMenuAccountPopup
             'class_add' => $aItem['class_add'],
             'title' => $aItem['title'],
             'link' => $aItem['link'],
-            // Sounds is the visitor's on/off switch for interface sounds; bx_sound_mark_switches() sets aria-pressed.
-            'attrs' => $aItem['attrs'] . ($aItem['name'] == 'sounds' ? ' data-bx-sounds-switch="1"' : ''),
+            'attrs' => $aItem['attrs'],
             'onclick_attr' => !empty($aItem['onclick']) ? 'onclick="' . bx_html_attribute($aItem['onclick']) . '"' : '',
             'icon_html' => $aItem['bx_if:image_inline']['condition'] ? $aItem['bx_if:image_inline']['content']['image'] : $this->getMenuIconHtml($aItem['icon']),
         ];
@@ -59,11 +58,19 @@ class BxBaseStudioMenuAccountPopup extends BxDolStudioMenuAccountPopup
                 'title_light' => bx_html_attribute(_t('_sys_menu_item_title_sa_scheme_light')),
                 'title_dark' => bx_html_attribute(_t('_sys_menu_item_title_sa_scheme_dark')),
             ]);
+        // The visitor's level of interface sounds; bx_sound_mark_switches() checks the current one.
+        if($sName == 'sounds')
+            $aContent = array_merge($aContent, [
+                'title_off' => bx_html_attribute(_t('_sys_txt_sounds_level_off')),
+                'title_quiet' => bx_html_attribute(_t('_sys_txt_sounds_level_quiet')),
+                'title_full' => bx_html_attribute(_t('_sys_txt_sounds_level_full')),
+            ]);
 
         $aBlocks = [
             'show_label' => $sName == 'account',
             'show_theme' => $sName == 'scheme',
-            'show_button' => in_array($sName, ['edit', 'sounds']),
+            'show_sounds' => $sName == 'sounds',
+            'show_button' => $sName == 'edit',
             'show_link' => !in_array($sName, ['account', 'scheme', 'edit', 'sounds']),
         ];
         foreach($aBlocks as $sBlock => $bCondition)

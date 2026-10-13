@@ -91,7 +91,7 @@ BxDolVote.prototype._cueOnVote = function(oData)
     if(oData.code != undefined && parseInt(oData.code) != 0)
         bx_sound('error');
     else
-        bx_sound('toggle', {direction: oData.voted ? 'forward' : 'back'});
+        bx_sound('toggle', {direction: oData.voted ? 'forward' : 'back', group: 'reactions'});
 };
 
 BxDolVote.prototype.onVoteAs = function(oData)

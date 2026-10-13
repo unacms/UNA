@@ -132,6 +132,7 @@ class BxBaseIconsetLucide extends BxBaseIconset
             'users' => 'users-round',
             'video-camera' => 'video',
             'volume-up' => 'volume-2',
+            'volume-down' => 'volume-1',
             'volume-mute' => 'volume-x',
             'at' => 'at-sign',
             'backspace' => 'delete',

@@ -1470,6 +1470,54 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
         return $aResults;
     }
 
+    /**
+     * Option values for Settings > Global > Sounds (BxDolSounds).
+     */
+    public function serviceGetOptionsSoundsPlatforms()
+    {
+        return $this->_getOptionsSounds(BxDolSounds::PLATFORMS, 'platform');
+    }
+
+    public function serviceGetOptionsSoundsLevel()
+    {
+        return $this->_getOptionsSounds(BxDolSounds::LEVELS, 'level');
+    }
+
+    public function serviceGetOptionsSoundsSet()
+    {
+        return $this->_getOptionsSounds(BxDolSounds::SETS, 'set');
+    }
+
+    public function serviceGetOptionsSoundsVolume()
+    {
+        $aResults = [];
+        foreach(BxDolSounds::VOLUMES as $iVolume)
+            $aResults[$iVolume] = $iVolume . '%';
+
+        return $aResults;
+    }
+
+    /**
+     * A kind of action plays the main set (empty value), a set of its own, or nothing.
+     */
+    public function serviceGetOptionsSoundsGroup()
+    {
+        return array_merge(
+            ['' => _t('_adm_stg_cpt_option_sys_sounds_group_main')],
+            $this->_getOptionsSounds(BxDolSounds::SETS, 'set'),
+            [BxDolSounds::GROUP_OFF => _t('_adm_stg_cpt_option_sys_sounds_group_off')]
+        );
+    }
+
+    protected function _getOptionsSounds($aValues, $sKind)
+    {
+        $aResults = [];
+        foreach($aValues as $sValue)
+            $aResults[$sValue] = _t('_adm_stg_cpt_option_sys_sounds_' . $sKind . '_' . $sValue);
+
+        return $aResults;
+    }
+
     public function serviceGetOptionsIconsetDefault()
     {
         $aObjects = BxDolIconsetQuery::getObjects();

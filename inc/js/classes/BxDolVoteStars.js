@@ -53,9 +53,9 @@ BxDolVoteStars.prototype._cueOnVote = function(oData)
     if(oData.code != undefined && parseInt(oData.code) != 0)
         bx_sound('error');
     else if(oData.voted)
-        bx_sound('select');
+        bx_sound('select', {group: 'reactions'});
     else
-        bx_sound('toggle', {direction: 'back'});
+        bx_sound('toggle', {direction: 'back', group: 'reactions'});
 };
 
 BxDolVoteStars.prototype.onVote = function (oLink, oData, onComplete)

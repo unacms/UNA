@@ -1,10 +1,9 @@
 <?php
 
-use PHPUnit\Framework\Attributes\DataProvider;
-
 /**
- * Interface sounds (Cuelume, plugins_public/cuelume): the site and Studio options load it, form controls and tab
- * menus carry the data-cuelume-* attributes its bind() plays, and the visitor's Sounds switch follows the option.
+ * Interface sounds (Cuelume, plugins_public/cuelume): Settings > Sounds (BxDolSounds) decides where they play and how,
+ * form controls and tab menus carry the data-cuelume-* attributes its bind() plays, and the visitor's Sounds control
+ * follows the settings.
  */
 class BxBaseInterfaceSoundsTest extends BxDolTestCase
 {
@@ -26,25 +25,84 @@ class BxBaseInterfaceSoundsTest extends BxDolTestCase
         return $oMethod->invokeArgs($oObject, $aArgs);
     }
 
-    public static function providerForInjections(): array
+    private function withOptions(array $aOptions, callable $fTest)
     {
-        return [
-            'site' => [BxTemplFunctions::class, 'sys_ui_sounds'],
-            'studio' => [BxTemplStudioFunctions::class, 'sys_std_ui_sounds'],
-        ];
+        if (!$aOptions)
+            return $fTest();
+
+        $sName = array_key_first($aOptions);
+        $sValue = $aOptions[$sName];
+        unset($aOptions[$sName]);
+
+        return $this->withOption($sName, $sValue, fn() => $this->withOptions($aOptions, $fTest));
     }
 
-    #[DataProvider('providerForInjections')]
-    public function testHeadInjectionFollowsItsOwnOption(string $sClass, string $sOption): void
+    public function testHeadInjectionFollowsTheSitePlatform(): void
     {
-        $oFunctions = $sClass::getInstance();
-        $this->assertSame($sOption, $this->callProtected($oFunctions, 'getSoundsOption'));
+        $oFunctions = BxTemplFunctions::getInstance();
 
-        $sOn = $this->withOption($sOption, 'on', fn() => $this->callProtected($oFunctions, 'getInjHeadSounds'));
-        $this->assertStringContainsString("bx_sound_init('" . BX_DOL_URL_PLUGINS_PUBLIC . "cuelume/cuelume.min.js')", $sOn);
+        $sOn = $this->withOption('sys_sounds_platforms', 'site,ios', fn() => $this->callProtected($oFunctions, 'getInjHeadSounds'));
+        $this->assertStringContainsString("bx_sound_init('" . BX_DOL_URL_PLUGINS_PUBLIC . "cuelume/cuelume.min.js', {", $sOn);
+        $this->assertStringContainsString('"on":true', $sOn);
+        $this->assertStringNotContainsString('"platforms"', $sOn);
 
-        $sOff = $this->withOption($sOption, '', fn() => $this->callProtected($oFunctions, 'getInjHeadSounds'));
+        $sOff = $this->withOption('sys_sounds_platforms', 'studio,neo_web', fn() => $this->callProtected($oFunctions, 'getInjHeadSounds'));
         $this->assertSame('', $sOff);
+    }
+
+    public function testStudioKeepsItsPreviewsWhileSilent(): void
+    {
+        $oFunctions = BxTemplStudioFunctions::getInstance();
+
+        $sOff = $this->withOption('sys_sounds_platforms', 'site', fn() => $this->callProtected($oFunctions, 'getInjHeadSounds'));
+        $this->assertStringContainsString('bx_sound_init(', $sOff);
+        $this->assertStringContainsString('"on":false', $sOff);
+
+        $sOn = $this->withOption('sys_sounds_platforms', 'studio', fn() => $this->callProtected($oFunctions, 'getInjHeadSounds'));
+        $this->assertStringContainsString('"on":true', $sOn);
+    }
+
+    public function testConfigListsOnlyWhatDiffersFromTheMainSet(): void
+    {
+        $aConfig = $this->withOptions([
+            'sys_sounds_platforms' => 'ios,site,nowhere',
+            'sys_sounds_level' => 'loud',
+            'sys_sounds_set' => 'mech',
+            'sys_sounds_volume' => '50',
+            'sys_sounds_buttons' => 'off',
+            'sys_sounds_choices' => 'mech',
+            'sys_sounds_reactions' => 'bubble',
+            'sys_sounds_menus' => 'nonsense',
+            'sys_sounds_navigation' => '',
+        ], fn() => BxDolSounds::getInstance()->getConfig());
+
+        $this->assertSame(['site', 'ios'], $aConfig['platforms']);
+        $this->assertSame('full', $aConfig['level'], 'An unknown level starts people at full.');
+        $this->assertSame('mech', $aConfig['set']);
+        $this->assertSame(0.5, $aConfig['volume']);
+        $this->assertSame(['buttons' => 'off', 'reactions' => 'bubble'], (array)$aConfig['groups']);
+        $this->assertSame('{}', json_encode($this->withOptions(['sys_sounds_buttons' => '', 'sys_sounds_reactions' => ''], fn() => BxDolSounds::getInstance()->getConfig()['groups'])), 'Apps get an object, not a list.');
+    }
+
+    public function testEachKindOfActionOffersTheMainSetEverySetAndSilence(): void
+    {
+        $aValues = BxDolService::call('system', 'get_options_sounds_group', [], 'TemplServices');
+
+        $this->assertSame(array_merge([''], BxDolSounds::SETS, ['off']), array_map('strval', array_keys($aValues)));
+        $this->assertSame([100, 75, 50, 25], array_keys(BxDolService::call('system', 'get_options_sounds_volume', [], 'TemplServices')));
+    }
+
+    public function testSoundsSelectsPreviewInStudio(): void
+    {
+        $oOptions = new BxTemplStudioOptions('system', 'sounds');
+        $aSelect = ['name' => 'sys_sounds_reactions', 'type' => 'select', 'caption' => '', 'info' => '', 'value' => '', 'extra' => 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:24:"get_options_sounds_group";s:5:"class";s:13:"TemplServices";}'];
+
+        $aField = $this->callProtected($oOptions, 'field', [$aSelect, []]);
+        $this->assertSame('bx_sound_preview(this)', $aField['attrs']['onchange']);
+        $this->assertSame('reactions', $aField['attrs']['data-bx-sound-option']);
+
+        $aOther = $this->callProtected($oOptions, 'field', [array_merge($aSelect, ['name' => 'sys_vote_reactions_mode', 'extra' => 'a,b']), []]);
+        $this->assertArrayNotHasKey('onchange', $aOther['attrs']);
     }
 
     private function genInput(array $aInput): string
@@ -111,21 +169,37 @@ class BxBaseInterfaceSoundsTest extends BxDolTestCase
         $this->assertStringNotContainsString('data-cuelume-select', $this->menuCode('menu_vertical.html'));
     }
 
-    public function testSoundsSwitchFollowsTheSiteOption(): void
+    public function testSoundsItemFollowsTheSitePlatform(): void
     {
         $oMenu = BxDolMenu::getObjectInstance('sys_account_notifications');
-        if (!$oMenu)
+        if(!$oMenu)
             $this->markTestSkipped('sys_account_notifications is not installed.');
 
         $aItem = ['id' => 0, 'name' => 'sounds', 'module' => 'system', 'title' => '_sys_menu_item_title_sounds', 'link' => 'javascript:void(0);', 'onclick' => 'bx_sound_toggle(this);', 'target' => '', 'icon' => 'volume-up', 'addon' => '', 'submenu_object' => '', 'visible_for_levels' => 2147483647, 'active' => 1];
 
-        $this->assertTrue($this->withOption('sys_ui_sounds', 'on', fn() => $this->callProtected($oMenu, '_isVisible', [$aItem])));
-        $this->assertFalse($this->withOption('sys_ui_sounds', '', fn() => $this->callProtected($oMenu, '_isVisible', [$aItem])));
+        $this->assertTrue($this->withOption('sys_sounds_platforms', 'site', fn() => $this->callProtected($oMenu, '_isVisible', [$aItem])));
+        $this->assertFalse($this->withOption('sys_sounds_platforms', 'studio,ios', fn() => $this->callProtected($oMenu, '_isVisible', [$aItem])));
 
-        $aRendered = $this->withOption('sys_ui_sounds', 'on', fn() => $this->callProtected($oMenu, '_getMenuItem', [$aItem]));
+        $aRendered = $this->withOption('sys_sounds_platforms', 'site', fn() => $this->callProtected($oMenu, '_getMenuItem', [$aItem]));
         $this->assertIsArray($aRendered);
-        $this->assertStringContainsString('role="switch"', $aRendered['attrs']);
+        $this->assertStringContainsString('role="button"', $aRendered['attrs'], 'Three levels: a button that steps through them, not a switch.');
         $this->assertStringContainsString('data-bx-sounds-switch="1"', $aRendered['attrs']);
+    }
+
+    public function testStudioSoundsItemIsALevelRadioGroup(): void
+    {
+        $oMenu = BxDolMenu::getObjectInstance('sys_studio_account_popup');
+        if(!$oMenu)
+            $this->markTestSkipped('sys_studio_account_popup is not installed.');
+
+        $aItem = ['id' => 0, 'name' => 'sounds', 'module' => 'system', 'title' => '_sys_menu_item_title_sa_sounds', 'link' => 'javascript:void(0)', 'onclick' => 'bx_sound_toggle(this);', 'target' => '', 'icon' => 'ami-sounds.svg', 'addon' => '', 'submenu_object' => '', 'visible_for_levels' => 2147483647, 'active' => 1];
+
+        $this->assertFalse($this->withOption('sys_sounds_platforms', 'site', fn() => $this->callProtected($oMenu, '_getMenuItem', [$aItem])));
+
+        $aRendered = $this->withOption('sys_sounds_platforms', 'studio', fn() => $this->callProtected($oMenu, '_getMenuItem', [$aItem]));
+        $this->assertTrue($aRendered['bx_if:show_sounds']['condition']);
+        $this->assertFalse($aRendered['bx_if:show_button']['condition']);
+        $this->assertSame(_t('_sys_txt_sounds_level_quiet'), $aRendered['bx_if:show_sounds']['content']['title_quiet']);
     }
 
     public function testStudioReplyCarriesItsCue(): void
@@ -140,14 +214,17 @@ class BxBaseInterfaceSoundsTest extends BxDolTestCase
         $this->assertStringContainsString('"cue":{"cue":"success","emphasis":"subtle"}', $sReply);
     }
 
-    public function testFreshInstallDeclaresOptionsAndSwitches(): void
+    public function testFreshInstallDeclaresTheSoundsSection(): void
     {
         $sSql = file_get_contents(__DIR__ . '/../../../../install/sql/system.sql');
         $this->assertNotFalse($sSql);
 
-        foreach (['sys_ui_sounds', 'sys_std_ui_sounds'] as $sOption)
-            $this->assertMatchesRegularExpression("/\\(@iCategoryId, '" . $sOption . "', '_adm_stg_cpt_option_" . $sOption . "', '_adm_stg_inf_option_" . $sOption . "', 'on', 'checkbox',/", $sSql);
+        $this->assertStringContainsString("(@iTypeId, 'sounds', '_adm_stg_cpt_category_sounds', 0, 24)", $sSql);
+        $this->assertStringContainsString("'sys_sounds_platforms', '_adm_stg_cpt_option_sys_sounds_platforms', '_adm_stg_inf_option_sys_sounds_platforms', 'site,studio,neo_web,ios,android', 'list',", $sSql);
+        foreach (BxDolSounds::GROUPS as $sGroup)
+            $this->assertMatchesRegularExpression("/\\(@iCategoryId, 'sys_sounds_" . $sGroup . "', '_adm_stg_cpt_option_sys_sounds_" . $sGroup . "', '_adm_stg_inf_option_sys_sounds_" . $sGroup . "', '', 'select',/", $sSql);
 
+        $this->assertStringNotContainsString('sys_ui_sounds', $sSql);
         $this->assertStringContainsString("('sys_account_notifications', 'system', 'sounds',", $sSql);
         $this->assertStringContainsString("('sys_studio_account_popup', 'system', 'sounds',", $sSql);
     }

@@ -542,8 +542,6 @@ INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `info`, `value`, `ty
 (@iCategoryId, 'site_email_notify', '_adm_stg_cpt_option_site_email_notify', '_adm_stg_inf_option_site_email_notify', 'admin@example.com', 'digit', '', '', '', 4),
 (@iCategoryId, 'site_tour_home', '_adm_stg_cpt_option_site_tour_home', '_adm_stg_inf_option_site_tour_home', 'on', 'checkbox', '', '', '', 6),
 (@iCategoryId, 'site_tour_studio', '_adm_stg_cpt_option_site_tour_studio', '_adm_stg_inf_option_site_tour_studio', 'on', 'checkbox', '', '', '', 7),
-(@iCategoryId, 'sys_ui_sounds', '_adm_stg_cpt_option_sys_ui_sounds', '_adm_stg_inf_option_sys_ui_sounds', 'on', 'checkbox', '', '', '', 8),
-(@iCategoryId, 'sys_std_ui_sounds', '_adm_stg_cpt_option_sys_std_ui_sounds', '_adm_stg_inf_option_sys_std_ui_sounds', 'on', 'checkbox', '', '', '', 9),
 
 (@iCategoryId, 'sys_autoupdate', '_adm_stg_cpt_option_sys_autoupdate', '_adm_stg_inf_option_sys_autoupdate', 'on', 'checkbox', '', '', '', 10),
 (@iCategoryId, 'sys_autoupdate_force_modified_files', '_adm_stg_cpt_option_sys_autoupdate_force_modified_files', '_adm_stg_inf_option_sys_autoupdate_force_modified_files', '', 'checkbox', '', '', '', 12),
@@ -854,6 +852,25 @@ INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `info`, `value`, `ty
 (@iCategoryId, 'sys_vote_reactions_default', '_adm_stg_cpt_option_sys_vote_reactions_default', '_adm_stg_inf_option_sys_vote_reactions_default', 'like', 'select', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:34:"get_options_vote_reactions_default";s:5:"class";s:13:"TemplServices";}', '', '', 2),
 (@iCategoryId, 'sys_vote_reactions_per_user', '_adm_stg_cpt_option_sys_vote_reactions_per_user', '_adm_stg_inf_option_sys_vote_reactions_per_user', '1', 'select', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:35:"get_options_vote_reactions_per_user";s:5:"class";s:13:"TemplServices";}', '', '', 3),
 (@iCategoryId, 'sys_vote_reactions_split_counters', '_adm_stg_cpt_option_sys_vote_reactions_split_counters', '_adm_stg_inf_option_sys_vote_reactions_split_counters', '', 'checkbox', '', '', '', 4);
+
+--
+-- CATEGORY: Sounds
+--
+INSERT INTO `sys_options_categories`(`type_id`, `name`, `caption`, `hidden`, `order`) VALUES (@iTypeId, 'sounds', '_adm_stg_cpt_category_sounds', 0, 24);
+SET @iCategoryId = LAST_INSERT_ID();
+
+INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `info`, `value`, `type`, `extra`, `check`, `check_error`, `order`) VALUES
+(@iCategoryId, 'sys_sounds_platforms', '_adm_stg_cpt_option_sys_sounds_platforms', '_adm_stg_inf_option_sys_sounds_platforms', 'site,studio,neo_web,ios,android', 'list', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:28:"get_options_sounds_platforms";s:5:"class";s:13:"TemplServices";}', '', '', 1),
+(@iCategoryId, 'sys_sounds_level', '_adm_stg_cpt_option_sys_sounds_level', '_adm_stg_inf_option_sys_sounds_level', 'full', 'select', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:24:"get_options_sounds_level";s:5:"class";s:13:"TemplServices";}', '', '', 2),
+(@iCategoryId, 'sys_sounds_set', '_adm_stg_cpt_option_sys_sounds_set', '_adm_stg_inf_option_sys_sounds_set', 'default', 'select', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:22:"get_options_sounds_set";s:5:"class";s:13:"TemplServices";}', '', '', 3),
+(@iCategoryId, 'sys_sounds_volume', '_adm_stg_cpt_option_sys_sounds_volume', '_adm_stg_inf_option_sys_sounds_volume', '100', 'select', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:25:"get_options_sounds_volume";s:5:"class";s:13:"TemplServices";}', '', '', 4),
+(@iCategoryId, 'sys_sounds_buttons', '_adm_stg_cpt_option_sys_sounds_buttons', '_adm_stg_inf_option_sys_sounds_buttons', '', 'select', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:24:"get_options_sounds_group";s:5:"class";s:13:"TemplServices";}', '', '', 10),
+(@iCategoryId, 'sys_sounds_choices', '_adm_stg_cpt_option_sys_sounds_choices', '_adm_stg_inf_option_sys_sounds_choices', '', 'select', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:24:"get_options_sounds_group";s:5:"class";s:13:"TemplServices";}', '', '', 11),
+(@iCategoryId, 'sys_sounds_reactions', '_adm_stg_cpt_option_sys_sounds_reactions', '_adm_stg_inf_option_sys_sounds_reactions', '', 'select', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:24:"get_options_sounds_group";s:5:"class";s:13:"TemplServices";}', '', '', 12),
+(@iCategoryId, 'sys_sounds_menus', '_adm_stg_cpt_option_sys_sounds_menus', '_adm_stg_inf_option_sys_sounds_menus', '', 'select', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:24:"get_options_sounds_group";s:5:"class";s:13:"TemplServices";}', '', '', 13),
+(@iCategoryId, 'sys_sounds_navigation', '_adm_stg_cpt_option_sys_sounds_navigation', '_adm_stg_inf_option_sys_sounds_navigation', '', 'select', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:24:"get_options_sounds_group";s:5:"class";s:13:"TemplServices";}', '', '', 14),
+(@iCategoryId, 'sys_sounds_results', '_adm_stg_cpt_option_sys_sounds_results', '_adm_stg_inf_option_sys_sounds_results', '', 'select', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:24:"get_options_sounds_group";s:5:"class";s:13:"TemplServices";}', '', '', 15),
+(@iCategoryId, 'sys_sounds_notifications', '_adm_stg_cpt_option_sys_sounds_notifications', '_adm_stg_inf_option_sys_sounds_notifications', '', 'select', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:24:"get_options_sounds_group";s:5:"class";s:13:"TemplServices";}', '', '', 16);
 
 --
 -- CATEGORY (HIDDEN): Audit

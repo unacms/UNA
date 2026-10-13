@@ -52,7 +52,7 @@ BxDolConnection.prototype.connect = function(oLink, sAction, iContentId, bConfir
                     if(oData.err)
                         bx_sound('error');
                     else
-                        bx_sound('toggle', {direction: /^(remove|reject|cancel|unfollow|unsubscribe)/i.test(sAction) ? 'back' : 'forward'});
+                        bx_sound('toggle', {direction: /^(remove|reject|cancel|unfollow|unsubscribe)/i.test(sAction) ? 'back' : 'forward', group: 'reactions'});
 
                 if(oData.err)
                     bx_alert(oData.msg);

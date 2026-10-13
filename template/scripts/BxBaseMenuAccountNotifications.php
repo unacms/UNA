@@ -64,7 +64,7 @@ class BxBaseMenuAccountNotifications extends BxTemplMenu
                 break;
 
             case 'sounds':
-                if(getParam('sys_ui_sounds') != 'on')
+                if(!BxDolSounds::getInstance()->isOn('site'))
                     return false;
                 break;
         }
@@ -73,13 +73,13 @@ class BxBaseMenuAccountNotifications extends BxTemplMenu
     }
 
     /**
-     * Sounds is the visitor's own on/off switch for interface sounds in this browser; bx_sound_mark_switches()
-     * sets its state on load.
+     * Sounds steps through the visitor's own level of interface sounds in this browser (full, quiet, off);
+     * bx_sound_mark_switches() shows the level on its icon and in its name.
      */
     protected function _getMenuItem ($a)
     {
         if($a['name'] == 'sounds')
-            $a['attrs_add'] = trim((!empty($a['attrs_add']) ? $a['attrs_add'] : '') . ' role="switch" aria-checked="true" data-bx-sounds-switch="1"');
+            $a['attrs_add'] = trim((!empty($a['attrs_add']) ? $a['attrs_add'] : '') . ' role="button" data-bx-sounds-switch="1"');
 
         return parent::_getMenuItem($a);
     }

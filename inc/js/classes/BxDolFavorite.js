@@ -115,7 +115,7 @@ BxDolFavorite.prototype.onFavorite = function(oData, oElement)
         if(oData.code != undefined && parseInt(oData.code) != 0)
             bx_sound('error');
         else
-            bx_sound('toggle', {direction: oData.favorited ? 'forward' : 'back'});
+            bx_sound('toggle', {direction: oData.favorited ? 'forward' : 'back', group: 'reactions'});
     var fContinue = function() {
         if(oData && oData.code != 0)
             return;
