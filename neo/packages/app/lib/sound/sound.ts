@@ -128,6 +128,14 @@ export function startInterfaceSounds(): () => void {
                 }
                 await Promise.all(pool.players.map(warmPlayer));
             }
+            // The other cues load in the background, so their first play is not late either.
+            const loaded = new Set<AudioSource>();
+            for (const key of Object.keys(sounds)) {
+                const source = sounds[key];
+                if (!source || loaded.has(source)) continue;
+                loaded.add(source);
+                poolFor(key);
+            }
         } finally {
             primed = true;
             priming = null;
