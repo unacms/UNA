@@ -227,7 +227,7 @@ export function WikiDocumentHeader({ markdownSource = '', metadata, pageUrl = ''
     })
 
     return (
-        <View className="w-full border-b border-border/60 gap-3 pb-2">
+        <View className="w-full border-b border-border/60 gap-3 pb-2 mb-4">
             <Row className="items-center gap-4">
                 {resolvedIconUrl ? (
                     <WikiDocumentIcon
