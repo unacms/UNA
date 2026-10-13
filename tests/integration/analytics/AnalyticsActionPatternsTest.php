@@ -11,6 +11,7 @@ class AnalyticsActionPatternsTest extends BxDolIntegrationTestCase
     const NOW = 1000000000;
 
     const UA_SAFARI = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Safari/605.1.15';
+    const UA_APP = 'NEO/1 CFNetwork/1.0 Darwin/24.0.0';
 
     const ACCOUNT = 987654351;
     const PROFILE = 987654352;
@@ -128,8 +129,23 @@ class AnalyticsActionPatternsTest extends BxDolIntegrationTestCase
         foreach ($aAlerts as $i => list($sUnit, $sAction, $iObject, $iSender, $aExtras))
             $this->_alert($aServer, self::NOW + 10 + $i, $sUnit, $sAction, $iObject, $iSender, $aExtras);
 
+        // the same post page as the other clients record it: the classic site without
+        // permalinks, NEO on the web and the apps (the UNA page path, see NEO's toPagePath)
+        $aPostPages = [
+            ['93.184.216.65', self::UA_SAFARI, ['platform' => 'core-web', 'url' => 'https://una.test/page.php?i=view-post&id=70']],
+            ['93.184.216.66', self::UA_SAFARI, ['platform' => 'next-web', 'url' => 'https://neo.test/view-post?id=70']],
+            ['93.184.216.67', self::UA_APP, ['platform' => 'rn-ios', 'app' => 'com.neo.so', 'url' => '/view-post?id=70']],
+            ['93.184.216.68', self::UA_APP, ['platform' => 'rn-android', 'app' => 'com.neo.so', 'url' => '/view-post?id=70']],
+        ];
+        foreach ($aPostPages as $i => list($sIp, $sUserAgent, $aHit)) {
+            $sUrl = $aHit['url'];
+            unset($aHit['url']);
+            $this->_collect($this->_server($sIp, $sUserAgent), $aHit + ['hits' => [['type' => 'pageview', 'url' => $sUrl]]], self::NOW + 100 + $i);
+        }
+
         $aSessions = $this->_sessions();
-        $this->assertCount(1, $aSessions);
+        $this->assertCount(1 + count($aPostPages), $aSessions);
+        $this->assertEquals(['core-web', 'core-web', 'next-web', 'rn-ios', 'rn-android'], array_column($aSessions, 'platform'));
         $aRecorded = BxDolDb::getInstance()->getColumn("SELECT DISTINCT `name` FROM `bx_analytics_events` WHERE `type` = 'una' AND `session_id` = :id", ['id' => $aSessions[0]['id']]);
         $this->assertCount(count($aAlerts), $aRecorded, 'every alert is a site action of the visit');
 
@@ -162,10 +178,11 @@ class AnalyticsActionPatternsTest extends BxDolIntegrationTestCase
             foreach ($aExamples['event'] as $sPattern)
                 $this->assertContains(explode('@', $sPattern)[0], $aRecorded, $sKey . ': ' . $sPattern . ' names an action the module records');
 
-            // and each of them, as a goal, counts the visit that did it
+            // and each of them, as a goal, counts the visit that did it; a page example
+            // counts the post page on every client
             foreach ($aExamples as $sType => $aPatterns)
                 foreach ($aPatterns as $sPattern)
-                    $this->assertSame(1, (int)$oDb->getGoalTotals($aFilter, ['type' => $sType, 'pattern' => $sPattern])['sessions'], $sKey . ': ' . $sPattern . ' matches');
+                    $this->assertSame($sType == 'page' ? count($aSessions) : 1, (int)$oDb->getGoalTotals($aFilter, ['type' => $sType, 'pattern' => $sPattern])['sessions'], $sKey . ': ' . $sPattern . ' matches');
         }
     }
 
@@ -175,7 +192,7 @@ class AnalyticsActionPatternsTest extends BxDolIntegrationTestCase
     protected function _examples($sText, $sActionRegExp)
     {
         $aPages = [];
-        if (preg_match_all('#(?<![\p{L}\d])/[\p{L}\d_\-/*?=.]*[\p{L}\d_\-/*?=]#u', $sText, $aMatches))
+        if (preg_match_all('#(?<![\p{L}\d*/])[/*][\p{L}\d_\-/*?=.]*[\p{L}\d_\-/*?=]#u', $sText, $aMatches))
             $aPages = array_values(array_unique($aMatches[0]));
 
         $sProse = str_replace($aPages, ' ', $sText);
@@ -214,9 +231,9 @@ class AnalyticsActionPatternsTest extends BxDolIntegrationTestCase
         return new BxAnalyticsFilter($this->_oModule, ['range' => 'custom', 'from' => '2001-09-09', 'to' => '2001-09-09'], self::NOW + 86400);
     }
 
-    protected function _server($sIp)
+    protected function _server($sIp, $sUserAgent = self::UA_SAFARI)
     {
-        return ['REMOTE_ADDR' => $sIp, 'HTTP_USER_AGENT' => self::UA_SAFARI, 'REQUEST_METHOD' => 'POST'];
+        return ['REMOTE_ADDR' => $sIp, 'HTTP_USER_AGENT' => $sUserAgent, 'REQUEST_METHOD' => 'POST'];
     }
 
     protected function _sessions()

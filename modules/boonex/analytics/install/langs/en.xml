@@ -415,7 +415,7 @@
 	<string name="_bx_analytics_txt_location"><![CDATA[Location]]></string>
 	<string name="_bx_analytics_txt_map_label"><![CDATA[Map of visitors by location]]></string>
 	<string name="_bx_analytics_txt_map_unknown"><![CDATA[{0} visitors from unknown locations are not on the map.]]></string>
-	<string name="_bx_analytics_txt_match_hint"><![CDATA[A page path starts with / and can use * for any characters, for example /page/view-post*. An action is an event name such as signup, or name@module for one module, for example content_add@bx_posts.]]></string>
+	<string name="_bx_analytics_txt_match_hint"><![CDATA[A page path starts with / or *, and * stands for any characters: *view-post* matches the post page on the site and in the apps. An action is an event name such as signup, or name@module for one module, for example content_add@bx_posts.]]></string>
 	<string name="_bx_analytics_txt_member"><![CDATA[member]]></string>
 	<string name="_bx_analytics_txt_member_name"><![CDATA[Member]]></string>
 	<string name="_bx_analytics_txt_metric"><![CDATA[Metric]]></string>
@@ -684,7 +684,7 @@
 	<string name="_bx_analytics_txt_filter_by"><![CDATA[Show only {0}]]></string>
 	<string name="_bx_analytics_txt_first_seen"><![CDATA[First seen]]></string>
 	<string name="_bx_analytics_txt_funnel_delete_confirm"><![CDATA[Delete the funnel "{0}"?]]></string>
-	<string name="_bx_analytics_txt_funnel_hint"><![CDATA[Fill in 2 to 6 steps in the order visitors take them. A visit counts for a step when it reaches that step after the previous one. Each step is a page path (/page/view-post*) or an action (signup, content_add@bx_posts).]]></string>
+	<string name="_bx_analytics_txt_funnel_hint"><![CDATA[Fill in 2 to 6 steps in the order visitors take them. A visit counts for a step when it reaches that step after the previous one. Each step is a page path (*view-post* for the post page on every platform) or an action (signup, content_add@bx_posts).]]></string>
 	<string name="_bx_analytics_txt_funnel_invalid"><![CDATA[Enter a name and 2 to 6 steps. Page paths start with / (or *); action names use letters, digits and _ . : / -]]></string>
 	<string name="_bx_analytics_txt_goal_badge_event"><![CDATA[Action]]></string>
 	<string name="_bx_analytics_txt_goal_badge_page"><![CDATA[Page]]></string>

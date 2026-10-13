@@ -246,9 +246,10 @@ html.dark .bx-analytics-std {
 }
 
 /*
- * Tabbed top lists: one row of tabs. A row wider than its card scrolls sideways, like the site's main menu bar, with the scrollbar
- * hidden; where scroll-driven animations work, the clipped end fades out to show there is more. The fade stops at the ends, and
- * scroll-padding keeps a tab focused by keyboard clear of it.
+ * Tabbed top lists. On a touch screen the tabs stay in one row, and a row wider than its card scrolls sideways, like the site's main
+ * menu bar, with the scrollbar hidden; where scroll-driven animations work, the clipped end fades out to show there is more. The
+ * fade stops at the ends, and the script scrolls the selected or focused tab clear of it (scroll-padding sets by how much). With a
+ * mouse, which can't swipe a row, the tabs wrap onto a second line instead.
  */
 @property --bx-analytics-tabs-fade-start {
     syntax: "<length>";
@@ -296,6 +297,16 @@ html.dark .bx-analytics-std {
     to {
         --bx-analytics-tabs-fade-start: 2rem;
         --bx-analytics-tabs-fade-end: 0px;
+    }
+}
+@media (hover: hover) and (pointer: fine) {
+    .bx-analytics-tabs {
+        flex-wrap: wrap;
+        column-gap: 0.25rem;
+        overflow: visible;
+        -webkit-mask-image: none;
+        mask-image: none;
+        animation: none;
     }
 }
 .bx-analytics .bx-analytics-tab {

@@ -108,8 +108,17 @@ BxAnalyticsDashboard.prototype.init = function () {
         oEvent.preventDefault();
     });
 
+    // a focused tab in a row that scrolls is moved clear of the row's faded ends; focus()
+    // alone scrolls only a tab that is out of sight, not one that is cut off
+    document.addEventListener('focusin', function (oEvent) {
+        var oTab = oEvent.target.closest('[data-bx-analytics-tab]');
+        if (oTab)
+            $this.showTab(oTab);
+    });
+
     this.drawCharts(document);
     this.drawMaps(document);
+    this.showSelectedTabs(document);
 
     // blocks that follow live data reload themselves while the page is visible
     setInterval(function () {
@@ -260,6 +269,7 @@ BxAnalyticsDashboard.prototype.reload = function (oBlock, bKeepFocus, bQuiet) {
             oNew._bxAnalyticsLoaded = Date.now();
             $this.drawCharts(oNew);
             $this.drawMaps(oNew);
+            $this.showSelectedTabs(oNew);
             if (typeof bx_time === 'function')
                 bx_time(undefined, false, oNew);
 
@@ -282,6 +292,41 @@ BxAnalyticsDashboard.prototype.reload = function (oBlock, bKeepFocus, bQuiet) {
 
             return null;
         });
+};
+
+/**
+ * Scroll each tab row that is wider than its card (touch screens) to its selected tab, as
+ * a fresh row starts at its first tab.
+ */
+BxAnalyticsDashboard.prototype.showSelectedTabs = function (oRoot) {
+    var $this = this;
+    oRoot.querySelectorAll('[data-bx-analytics-tab][aria-selected="true"]').forEach(function (oTab) {
+        $this.showTab(oTab);
+    });
+};
+
+/**
+ * Scroll a tab's row, not the page, so that the whole tab shows clear of the row's faded
+ * ends (its scroll-padding).
+ */
+BxAnalyticsDashboard.prototype.showTab = function (oTab) {
+    var oRow = oTab.parentNode;
+    if (!oRow || oRow.scrollWidth <= oRow.clientWidth)
+        return;
+
+    var oStyle = window.getComputedStyle(oRow);
+    var fPadStart = parseFloat(oStyle.scrollPaddingInlineStart) || 0;
+    var fPadEnd = parseFloat(oStyle.scrollPaddingInlineEnd) || 0;
+    var bRtl = oStyle.direction === 'rtl';
+    var fPadLeft = bRtl ? fPadEnd : fPadStart;
+    var fPadRight = bRtl ? fPadStart : fPadEnd;
+
+    var oRowRect = oRow.getBoundingClientRect();
+    var oTabRect = oTab.getBoundingClientRect();
+    if (oTabRect.left < oRowRect.left + fPadLeft)
+        oRow.scrollLeft -= oRowRect.left + fPadLeft - oTabRect.left;
+    else if (oTabRect.right > oRowRect.right - fPadRight)
+        oRow.scrollLeft += oTabRect.right - oRowRect.right + fPadRight;
 };
 
 /**
