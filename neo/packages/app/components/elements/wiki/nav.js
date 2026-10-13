@@ -20,12 +20,10 @@ export function WikiBreadcrumb({ items, onNavigate, compact = false }) {
     const { t } = useTranslation()
     if (!items?.length) return null
 
-    // Compact sits next to the header buttons: match their label type
+    // Sits next to the "On this page" trigger: match its label type
     // (neo_button regular + borderless) so the row reads as one line.
-    const textCls = compact
-        ? 'text-base leading-6 font-semibold tracking-tight'
-        : 'text-sm leading-5'
-    const currentCls = compact ? 'text-card-foreground' : 'text-foreground font-medium'
+    const textCls = 'text-base leading-6 font-semibold tracking-tight'
+    const currentCls = 'text-card-foreground'
 
     return (
         <Row
