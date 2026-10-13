@@ -81,19 +81,30 @@ let current = DEFAULT_SOUND_CONFIG;
 let currentJson = JSON.stringify(current);
 const listeners = new Set<() => void>();
 
-function setConfig(next: SoundConfig, persist: boolean) {
+/** Settings a page brought this run: they win over the stored copy, even when it is read later. */
+let fromPage = false;
+/** What storage holds, once written or read this run. */
+let storedJson: string | null = null;
+
+function setConfig(next: SoundConfig) {
     const json = JSON.stringify(next);
     if (json === currentJson) return;
     current = next;
     currentJson = json;
-    if (persist) void persistedSet(STORAGE_KEY, next);
     listeners.forEach((listener) => listener());
 }
 
 /** Apply the settings a page brought (`data.sounds`); unchanged settings cost a string compare. */
 export function applySoundConfig(raw: unknown): void {
     const next = parseSoundConfig(raw);
-    if (next) setConfig(next, true);
+    if (!next) return;
+    fromPage = true;
+    const json = JSON.stringify(next);
+    if (json !== storedJson) {
+        storedJson = json;
+        void persistedSet(STORAGE_KEY, next);
+    }
+    setConfig(next);
 }
 
 export function getSoundConfig(): SoundConfig {
@@ -138,8 +149,10 @@ export function cueSet(state: SoundState, cue: Cue, options?: CueOptions): Sound
     return (group && state.groups[group]) || state.set;
 }
 
-// The stored copy, read once at start; a page that arrives first wins.
+// The stored copy, read once at start; settings a page brought first win.
 void persistedGet(STORAGE_KEY).then((stored) => {
     const parsed = parseSoundConfig(stored);
-    if (parsed && current === DEFAULT_SOUND_CONFIG) setConfig(parsed, false);
+    if (!parsed || fromPage) return;
+    storedJson = JSON.stringify(parsed);
+    setConfig(parsed);
 });
