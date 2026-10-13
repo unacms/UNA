@@ -199,6 +199,8 @@ export default function ElementStars(props) {
                     >
                         <StarsAction
                             rating={rate}
+                            // Rating content counts as a reaction in UNA's sound settings, like taking it back.
+                            soundGroup="reactions"
                             onChange={
                                 !isDisabled
                                     ? (number) => {
