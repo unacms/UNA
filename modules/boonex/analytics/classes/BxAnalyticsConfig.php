@@ -329,7 +329,11 @@ class BxAnalyticsConfig extends BxBaseModGeneralConfig
         if($sValue === '')
             return [];
 
-        return array_values(array_filter(array_map('trim', preg_split('/\R/u', $sValue)), 'strlen'));
+        $aLines = preg_split('/\R/u', $sValue);
+        if($aLines === false)
+            return [];
+
+        return array_values(array_filter(array_map('trim', $aLines), 'get_mb_len'));
     }
 
     /**
@@ -374,7 +378,7 @@ class BxAnalyticsConfig extends BxBaseModGeneralConfig
         if($sValue === '')
             return [];
 
-        return array_values(array_filter(array_map('trim', preg_split('/[\s,]+/', $sValue)), 'strlen'));
+        return array_values(array_filter(array_map('trim', preg_split('/[\s,]+/', $sValue)), 'get_mb_len'));
     }
 }
 
