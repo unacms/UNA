@@ -199,7 +199,10 @@ function SizedMarkdownImage({ alt, height, src, width }: { alt?: string; height?
             style={{
                 borderRadius: 8,
                 height: resolvedHeight,
+                // Spaced like a paragraph (web `.u-vanilla-html p` margins); the
+                // outer edges are zeroed by the first/last-child rules.
                 marginBottom: 16,
+                marginTop: 16,
                 maxWidth: '100%',
                 width: resolvedWidth,
             }}
@@ -252,7 +255,7 @@ function MarkdownSegments({
             return (
                 <View
                     key={`markdown-${index}`}
-                    className={`${index > 0 ? 'markdown-continuation' : ''} min-w-0 max-w-full`}
+                    className={`${index > 0 ? 'markdown-continuation' : ''} ${index < segments.length - 1 ? 'markdown-followed' : ''} min-w-0 max-w-full`}
                 >
                     <EnrichedMarkdownText
                         selectable

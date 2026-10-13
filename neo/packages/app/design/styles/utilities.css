@@ -194,9 +194,13 @@
         margin-top: 0 !important;
     }
 
+    /* `.markdown-followed`: a text segment with an image / code segment after
+     * it keeps its last margin, so the gap matches paragraph spacing. */
     .u-vanilla-html
         div
-        > :where(:last-child):not(:where([class~='not-prose'] *)),
+        > :where(:last-child):not(
+            :where([class~='not-prose'] *, .markdown-followed *)
+        ),
     .u-vanilla-html > :where(:last-child):not(:where([class~='not-prose'] *)) {
         margin-bottom: 0 !important;
     }
@@ -213,7 +217,9 @@
 
     .u-vanilla-html-small
         div
-        > :where(:last-child):not(:where([class~='not-prose'] *)),
+        > :where(:last-child):not(
+            :where([class~='not-prose'] *, .markdown-followed *)
+        ),
     .u-vanilla-html-small
         > :where(:last-child):not(:where([class~='not-prose'] *)) {
         margin-bottom: 0 !important;
