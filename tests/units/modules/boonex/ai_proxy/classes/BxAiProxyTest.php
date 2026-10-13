@@ -3,12 +3,13 @@
 /**
  * Master proxy auth and model selection. Loaded without enabling bx_ai_proxy.
  */
-class BxAiProxyTest extends \PHPUnit\Framework\TestCase
+class BxAiProxyTest extends BxDolTestCase
 {
     public static function setUpBeforeClass(): void
     {
         require_once BX_DIRECTORY_PATH_MODULES . 'boonex/ai_proxy/classes/BxAiProxyAuth.php';
         require_once BX_DIRECTORY_PATH_MODULES . 'boonex/ai_proxy/classes/BxAiProxyCompletion.php';
+        require_once BX_DIRECTORY_PATH_MODULES . 'boonex/ai_proxy/classes/BxAiProxyKnowledge.php';
     }
 
     public function testMatchingKeyAndSecret()
@@ -142,6 +143,71 @@ class BxAiProxyTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, $aProperties['data']['minItems']);
         $this->assertSame(8, $aProperties['data']['maxItems']);
     }
+
+    public function testKnowledgeUsesConfiguredStoreAndDropsEmbeddings()
+    {
+        $iSeenStore = 0;
+        $iSeenEmbedder = 0;
+        $sSeenQuery = '';
+        $oEmbedder = new BxAiProxyTestEmbeddings();
+        $oStore = new BxAiProxyTestVectorStore();
+
+        $aResult = (new BxAiProxyKnowledge())->run([
+            'query' => 'how do pages work',
+            'store_id' => 99,
+        ], 42, function (int $iId) use (&$iSeenStore) {
+            $iSeenStore = $iId;
+            return [
+                'active' => 1,
+                'type' => 'file',
+                'embedding_provider_id' => 7,
+            ];
+        }, function (int $iId) use (&$iSeenEmbedder, &$sSeenQuery, $oEmbedder) {
+            $iSeenEmbedder = $iId;
+            $oEmbedder->fOnEmbed = function (string $sText) use (&$sSeenQuery) {
+                $sSeenQuery = $sText;
+            };
+            return $oEmbedder;
+        }, function (int $iId) use ($oStore, &$iSeenStore) {
+            $this->assertSame($iSeenStore, $iId);
+            return $oStore;
+        });
+
+        $this->assertSame(42, $iSeenStore);
+        $this->assertSame(7, $iSeenEmbedder);
+        $this->assertSame('how do pages work', $sSeenQuery);
+        $this->assertSame([0.5, 0.25], $oStore->aSeenEmbedding);
+        $this->assertCount(1, $aResult['documents']);
+        $this->assertSame(['content', 'sourceType', 'sourceName', 'score'], array_keys($aResult['documents'][0]));
+        $this->assertSame('Pages are blocks.', $aResult['documents'][0]['content']);
+        $this->assertSame('file', $aResult['documents'][0]['sourceType']);
+        $this->assertSame('pages.md', $aResult['documents'][0]['sourceName']);
+        $this->assertEqualsWithDelta(0.9, $aResult['documents'][0]['score'], 0.0001);
+    }
+
+    public function testUnaProxyKnowledgeStoreReturnsNoDocuments()
+    {
+        $bEmbed = false;
+        $aResult = (new BxAiProxyKnowledge())->run([
+            'query' => 'pages',
+            'store_id' => 99,
+        ], 42, function (int $iId) {
+            $this->assertSame(42, $iId);
+            return [
+                'active' => 1,
+                'type' => 'una-proxy',
+                'embedding_provider_id' => 7,
+            ];
+        }, function () use (&$bEmbed) {
+            $bEmbed = true;
+            throw new Exception('should not embed');
+        }, function () {
+            throw new Exception('should not open store');
+        });
+
+        $this->assertFalse($bEmbed);
+        $this->assertSame(['documents' => []], $aResult);
+    }
 }
 
 class BxAiProxyTestProvider implements NeuronAI\Providers\AIProviderInterface
@@ -215,5 +281,69 @@ class BxAiProxyTestProvider implements NeuronAI\Providers\AIProviderInterface
         }
 
         return false;
+    }
+}
+
+class BxAiProxyTestEmbeddings implements NeuronAI\RAG\Embeddings\EmbeddingsProviderInterface
+{
+    /** @var callable(string): void|null */
+    public $fOnEmbed = null;
+
+    public function embedText(string $text): array
+    {
+        if ($this->fOnEmbed !== null)
+            ($this->fOnEmbed)($text);
+
+        return [0.5, 0.25];
+    }
+
+    public function embedDocument(NeuronAI\RAG\Document $document): NeuronAI\RAG\Document
+    {
+        $document->embedding = $this->embedText($document->getContent());
+        return $document;
+    }
+
+    public function embedDocuments(array $documents): array
+    {
+        foreach ($documents as $document)
+            $this->embedDocument($document);
+
+        return $documents;
+    }
+}
+
+class BxAiProxyTestVectorStore implements NeuronAI\RAG\VectorStore\VectorStoreInterface
+{
+    public array $aSeenEmbedding = [];
+
+    public function addDocument(NeuronAI\RAG\Document $document): NeuronAI\RAG\VectorStore\VectorStoreInterface
+    {
+        return $this;
+    }
+
+    public function addDocuments(array $documents): NeuronAI\RAG\VectorStore\VectorStoreInterface
+    {
+        return $this;
+    }
+
+    public function deleteBySource(string $sourceType, string $sourceName): NeuronAI\RAG\VectorStore\VectorStoreInterface
+    {
+        return $this;
+    }
+
+    public function deleteBy(string $sourceType, ?string $sourceName = null): NeuronAI\RAG\VectorStore\VectorStoreInterface
+    {
+        return $this;
+    }
+
+    public function similaritySearch(array $embedding): iterable
+    {
+        $this->aSeenEmbedding = $embedding;
+        $oDocument = new NeuronAI\RAG\Document('Pages are blocks.');
+        $oDocument->sourceType = 'file';
+        $oDocument->sourceName = 'pages.md';
+        $oDocument->embedding = [9.9, 8.8];
+        $oDocument->setScore(0.9);
+        return [$oDocument];
     }
 }

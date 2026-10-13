@@ -46,12 +46,23 @@ INSERT INTO `sys_agents_models` SET
     `duplicate` = 0;
 SET @iUnaProxyModel = LAST_INSERT_ID();
 
+INSERT INTO `sys_agents_vector_store` SET
+    `embedding_provider_id` = 0,
+    `type` = 'una-proxy',
+    `title` = 'UNA knowledge',
+    `docs` = 'Remote knowledge on the UNA master. The master embeds and searches.',
+    `topk` = 4,
+    `duplicate` = 0,
+    `active` = 1;
+SET @iUnaProxyStore = LAST_INSERT_ID();
+
 INSERT INTO `sys_agents_agents` SET
     `name` = 'una_operator',
     `title` = 'UNA operator',
     `model_id` = @iUnaProxyModel,
     `profile_id` = @iProfileIdBot,
-    `prompt_system` = 'You are the site operator assistant. Answer questions about this site content. Use content_structure, content_search, content_get, and comments_get. Do not change data.',
+    `vector_store_id` = @iUnaProxyStore,
+    `prompt_system` = 'You are the site operator assistant. Answer questions about this site content. Use content_structure, content_search, content_get, and comments_get. Use the extra context for how UNA works. Do not change data.',
     `tools` = CONCAT_WS(',',
         (SELECT `id` FROM `sys_agents_tools` WHERE `type` = 'content_structure' ORDER BY `id` LIMIT 1),
         (SELECT `id` FROM `sys_agents_tools` WHERE `type` = 'content_search' ORDER BY `id` LIMIT 1),

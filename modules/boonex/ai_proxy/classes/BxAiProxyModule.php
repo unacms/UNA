@@ -37,27 +37,24 @@ class BxAiProxyModule extends BxDolModule
         return $aResult;
     }
 
+    public function serviceGetKnowledgeOptions()
+    {
+        $aResult = [
+            ['key' => '', 'value' => _t('_Select_one')],
+        ];
+
+        $aStores = $this->_oDb->getActiveKnowledgeStores();
+        foreach ($aStores as $iId => $sTitle)
+            $aResult[] = ['key' => (int)$iId, 'value' => (string)$sTitle];
+
+        return $aResult;
+    }
+
     public function completions(): void
     {
-        bx_import('Auth', $this->_aModule);
         bx_import('Completion', $this->_aModule);
 
-        $sBody = file_get_contents('php://input');
-        if ($sBody === false)
-            $sBody = '';
-
-        $aAuth = (new BxAiProxyAuth())->authenticateRequest(
-            $this->requestHeader('X-Una-Key'),
-            $this->requestHeader('X-Una-Sign'),
-            $sBody
-        );
-        if (empty($aAuth['ok']))
-            $this->jsonError(401, 'Unauthorized', 'authentication_error');
-
-        $aBody = json_decode($sBody, true);
-        if (!is_array($aBody))
-            $this->jsonError(400, 'Bad request', 'invalid_request_error');
-
+        $aBody = $this->authenticatedBody();
         $bStarted = false;
         try {
             $iId = (int)getParam('bx_ai_proxy_model');
@@ -102,6 +99,70 @@ class BxAiProxyModule extends BxDolModule
                 return;
             $this->jsonError(503, 'The proxy model is not available', 'server_error');
         }
+    }
+
+    public function knowledge(): void
+    {
+        bx_import('Completion', $this->_aModule);
+        bx_import('Knowledge', $this->_aModule);
+
+        $aBody = $this->authenticatedBody();
+        try {
+            $iId = (int)getParam('bx_ai_proxy_knowledge');
+            $aResult = (new BxAiProxyKnowledge())->run(
+                $aBody,
+                $iId,
+                static function (int $iStoreId) {
+                    return BxDolAiQuery::getVectorStoreObject($iStoreId);
+                },
+                static function (int $iModelId) {
+                    return BxDolAIModelFactory::getModelInstance($iModelId);
+                },
+                static function (int $iStoreId) {
+                    return BxDolAIVectorStoreFactory::getVectorStoreInstance($iStoreId);
+                }
+            );
+            header('Content-Type: application/json; charset=utf-8');
+            echo json_encode($aResult, JSON_UNESCAPED_UNICODE);
+        }
+        catch (BxAiProxyException $oException) {
+            $sType = 'server_error';
+            if ($oException->httpCode() === 400)
+                $sType = 'invalid_request_error';
+            elseif ($oException->httpCode() === 401)
+                $sType = 'authentication_error';
+            $this->jsonError($oException->httpCode(), $oException->getMessage(), $sType);
+        }
+        catch (Throwable $oException) {
+            bx_log('sys_agents', 'AI proxy knowledge failed: ' . $oException->getMessage(), BX_LOG_ERR);
+            $this->jsonError(503, 'The proxy knowledge is not available', 'server_error');
+        }
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    protected function authenticatedBody(): array
+    {
+        bx_import('Auth', $this->_aModule);
+
+        $sBody = file_get_contents('php://input');
+        if ($sBody === false)
+            $sBody = '';
+
+        $aAuth = (new BxAiProxyAuth())->authenticateRequest(
+            $this->requestHeader('X-Una-Key'),
+            $this->requestHeader('X-Una-Sign'),
+            $sBody
+        );
+        if (empty($aAuth['ok']))
+            $this->jsonError(401, 'Unauthorized', 'authentication_error');
+
+        $aBody = json_decode($sBody, true);
+        if (!is_array($aBody))
+            $this->jsonError(400, 'Bad request', 'invalid_request_error');
+
+        return $aBody;
     }
 
     public function requestHeader(string $sName): string

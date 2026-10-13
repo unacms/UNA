@@ -11,4 +11,5 @@ VALUES (@iTypeId, @sName, '_bx_ai_proxy', 10);
 SET @iCategId = LAST_INSERT_ID();
 
 INSERT INTO `sys_options` (`name`, `value`, `category_id`, `caption`, `info`, `type`, `extra`, `check`, `check_params`, `check_error`, `order`) VALUES
-('bx_ai_proxy_model', '', @iCategId, '_bx_ai_proxy_option_model', '_bx_ai_proxy_option_model_info', 'select', '{"module":"bx_ai_proxy","method":"get_model_options"}', '', '', '', 1);
+('bx_ai_proxy_model', '', @iCategId, '_bx_ai_proxy_option_model', '_bx_ai_proxy_option_model_info', 'select', '{"module":"bx_ai_proxy","method":"get_model_options"}', '', '', '', 1),
+('bx_ai_proxy_knowledge', '', @iCategId, '_bx_ai_proxy_option_knowledge', '_bx_ai_proxy_option_knowledge_info', 'select', '{"module":"bx_ai_proxy","method":"get_knowledge_options"}', '', '', '', 2);

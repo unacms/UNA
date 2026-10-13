@@ -102,11 +102,18 @@ class BxDolAiAgent extends RAG
     }
 
     /**
-     * Retrieval is built for every chat. The embeddings provider is set only
-     * when the agent has a knowledge store with an embedding model.
+     * Retrieval is built for every chat. A una-proxy store is searched on the
+     * master. Any other store needs an embedding model on this site.
      */
     protected function retrieval(): NeuronAI\RAG\Retrieval\RetrievalInterface
     {
+        if (($this->aAgent['vector_store_type'] ?? '') === 'una-proxy') {
+            return new BxDolAiRetrievalUnaProxy(
+                (string)getParam('sys_oauth_key'),
+                (string)getParam('sys_oauth_secret')
+            );
+        }
+
         if (!isset($this->embeddingsProvider)) {
             if ((int)($this->aAgent['vector_store_id'] ?? 0) > 0)
                 throw new Exception("Vector store {$this->aAgent['vector_store_id']} has no embedding model");

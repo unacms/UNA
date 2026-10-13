@@ -13,11 +13,14 @@ $aRequest = array_values(array_filter($GLOBALS['aRequest'] ?? [], static functio
     return $sPart !== '';
 }));
 
-$bCompletion = ($_SERVER['REQUEST_METHOD'] ?? '') === 'POST'
-    && $aRequest === ['v1', 'chat', 'completions']
-    && !empty($GLOBALS['aModule']['enabled']);
+echoDbgLog($aRequest);
 
-if (!$bCompletion) {
+$bEnabled = !empty($GLOBALS['aModule']['enabled']);
+$bPost = ($_SERVER['REQUEST_METHOD'] ?? '') === 'POST';
+$bCompletion = $bPost && $aRequest === ['v1', 'chat', 'completions'] && $bEnabled;
+$bKnowledge = $bPost && $aRequest === ['v1', 'knowledge', 'search'] && $bEnabled;
+
+if (!$bCompletion && !$bKnowledge) {
     http_response_code(404);
     header('Content-Type: application/json; charset=utf-8');
     echo json_encode([
@@ -33,6 +36,9 @@ $oModule = BxDolModule::getInstance($GLOBALS['aModule']['name']);
 if (!$oModule)
     return;
 
-$oModule->completions();
+if ($bKnowledge)
+    $oModule->knowledge();
+else
+    $oModule->completions();
 
 /** @} */
