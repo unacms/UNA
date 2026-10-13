@@ -1261,17 +1261,10 @@ class BxAnalyticsReports
     public function getJourneys(BxAnalyticsFilter $oFilter, $aParams = [])
     {
         $iLimit = 200000;
-        $aRows = $this->_oDb->getPagePaths($oFilter->get(), $iLimit);
 
         // each visit's pages in order, a page reloaded in place counted once
-        $aSequences = [];
-        foreach($aRows as $aRow) {
-            $iSession = (int)$aRow['session_id'];
-            if(!isset($aSequences[$iSession]))
-                $aSequences[$iSession] = [];
-            if(end($aSequences[$iSession]) !== $aRow['path'])
-                $aSequences[$iSession][] = $aRow['path'];
-        }
+        $aRead = $this->_oDb->getPageSequences($oFilter->get(), $iLimit);
+        $aSequences = $aRead['sequences'];
 
         $aEntries = [];
         $aPaths = [];
@@ -1342,7 +1335,7 @@ class BxAnalyticsReports
             'jfrom' => $sFrom,
             'via' => $sVia !== '' && $iViaSessions ? $sVia : '',
             'sessions' => $iTotal,
-            'truncated' => count($aRows) >= $iLimit,
+            'truncated' => $aRead['rows'] >= $iLimit,
             'entries' => $aEntryList,
             'from_sessions' => $iFromSessions,
             'next' => $fStep($aNext, $iNextExits, $iFromSessions, 8),
@@ -1471,29 +1464,15 @@ class BxAnalyticsReports
             $aDefinition = is_array($aDefinition) ? $aDefinition : [];
 
             // each visit walks the steps in order: a step counts when it happens after the previous one
-            $aReached = null;
-            foreach($aDefinition as $i => $aStep) {
-                $aTimes = $this->_oDb->getStepTimes($oFilter->get(), $aStep);
-                $aNext = [];
-                foreach($aTimes as $iSession => $aSessionTimes) {
-                    if($aReached !== null && !isset($aReached[$iSession]))
-                        continue;
-
-                    $iAfter = $aReached === null ? -1 : $aReached[$iSession];
-                    foreach($aSessionTimes as $iTime)
-                        if($iTime >= $iAfter) {
-                            $aNext[$iSession] = $iTime;
-                            break;
-                        }
-                }
-                $aReached = $aNext;
-
+            $aDefinition = array_values(array_filter($aDefinition, function($aStep) {
+                return is_array($aStep) && isset($aStep['type'], $aStep['pattern']);
+            }));
+            foreach($this->_oDb->getFunnelCounts($oFilter->get(), $aDefinition) as $i => $iSessions)
                 $aSteps[] = [
-                    'type' => $aStep['type'],
-                    'pattern' => $aStep['pattern'],
-                    'sessions' => count($aReached),
+                    'type' => $aDefinition[$i]['type'],
+                    'pattern' => $aDefinition[$i]['pattern'],
+                    'sessions' => $iSessions,
                 ];
-            }
 
             $iFirst = !empty($aSteps) ? $aSteps[0]['sessions'] : 0;
             foreach($aSteps as $i => $aStep) {

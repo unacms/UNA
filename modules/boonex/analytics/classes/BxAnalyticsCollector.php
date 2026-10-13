@@ -91,6 +91,29 @@ class BxAnalyticsCollector
         'yclid', 'mc_cid', 'mc_eid', 'igshid', 'sccid', 'epik', '_ga', '_gl', 'ref', 'source', '_r', '_t',
     ];
 
+    /**
+     * Query parameters that carry secrets or a person's identity, dropped from stored paths
+     * with their values: a password reset key, an email confirmation or unsubscribe code, an
+     * OAuth code, an invitation or API token, an address, a mail recipient's tracking id.
+     * Reports show paths to everyone who may use analytics, and keep them for months.
+     */
+    protected $_aSecretParams = [
+        'key', 'code', 'token', 'hash', 'secret', 'password', 'pass', 'passwd', 'pwd', 'auth', 'sid', 'sk',
+        'otp', 'email', 'session', 'ticket', 'invite', 'confirm', 'signature', 'sig',
+        '_hsenc', '_hsmi', 'mkt_tok', '_ke',
+    ];
+
+    /**
+     * Compound names of such parameters: api_key, access_token, reset-code, user.email...
+     */
+    protected $_sSecretParamsPattern = '/[_.-](key|code|token|hash|secret|password|passwd|pwd|auth|sid|session|otp|email|signature)$/';
+
+    /**
+     * Seconds between a guest visit's last hit and a member's hit for the visit to become the
+     * member's (signing in), when the guest is known only by address and browser.
+     */
+    const SIGN_IN_SECONDS = 120;
+
     public function __construct($oModule, $oRequest = null, $iNow = null)
     {
         $this->_oModule = $oModule;
@@ -140,7 +163,7 @@ class BxAnalyticsCollector
 
         // what an error hit outside a visit records about the client
         $aClientRow = [
-            'lookup' => $aVisitor['lookup'],
+            'ids' => $aVisitor,
             'visitor' => $aVisitor['id'],
             'profile_id' => $iProfileId,
             'platform' => $sPlatform,
@@ -328,9 +351,12 @@ class BxAnalyticsCollector
      * @param int $iProfileId who did it
      * @param array $aContext `platform` (otherwise worked out from the request), `api_key` (the
      *      request carries an accepted API key), `props`, `value`, `type` (`event` for a custom
-     *      event from server code, which the "track site actions" setting doesn't turn off)
+     *      event from server code, which the "track site actions" setting doesn't turn off),
+     *      `request` (whether the request is the actor's own, whose Do Not Track, address and
+     *      user agent apply; by default any request but the server platform's)
      * @return bool whether it was stored (not when tracking is off, the platform isn't
-     *      enabled or the member's level is excluded)
+     *      enabled, the member's or the guest's level is excluded, or the request isn't
+     *      tracked: Do Not Track when respected, an excluded address, a bot)
      */
     public function collectAction($sName, $sModule, $iObjectId, $iProfileId, $aContext = [])
     {
@@ -343,8 +369,14 @@ class BxAnalyticsCollector
         if(!$this->_oConfig->isPlatformEnabled($sPlatform))
             return false;
 
+        // the same rules as the visitor's own hits; a cron job or a webhook (the server's
+        // platform) has no visitor request to read them from
         $iProfileId = (int)$iProfileId;
-        if($iProfileId && $this->_isExcludedProfile($iProfileId))
+        $bRequest = isset($aContext['request']) ? (bool)$aContext['request'] : $sPlatform != BX_ANALYTICS_PLATFORM_CORE;
+        if(!$this->isTracked($sPlatform, $iProfileId, !empty($aContext['api_key']), $bRequest))
+            return false;
+
+        if(!$iProfileId && in_array(MEMBERSHIP_ID_NON_MEMBER, $this->_oConfig->getExcludedLevels(), true))
             return false;
 
         $iLinkedProfileId = $this->_oConfig->isLinkMembers() ? $iProfileId : 0;
@@ -447,7 +479,7 @@ class BxAnalyticsCollector
         $aVisitor = $this->_getVisitor($this->_oRequest->getIp($this->_oConfig->getTrustedProxies(), $bApiKey), $this->_oRequest->getUserAgent(), $iLinkedProfileId, '');
 
         // a visit that started after the action (a clock given by a test or an import) isn't its visit
-        return [$aVisitor, $this->_oDb->getActiveSession($aVisitor['lookup'], $sPlatform, $this->_iNow - $this->_oConfig->getSessionTimeout(), $this->_iNow)];
+        return [$aVisitor, $this->_findSession($aVisitor, $sPlatform, $this->_iNow - $this->_oConfig->getSessionTimeout(), $this->_iNow, $this->_iNow)];
     }
 
     /**
@@ -455,38 +487,70 @@ class BxAnalyticsCollector
      * Members get one id across devices and days. Persistent mode uses the client's own id.
      * Cookieless mode hashes the address and user agent with a salt that changes daily, and
      * also checks yesterday's id so a visit doesn't split at midnight.
+     *
+     * @return array id, lookup, anonymous (the ids of the guest), member (a member's ids),
+     *      device (the guest id is the device's own, not the address and browser)
      */
     protected function _getVisitor($sIp, $sUserAgent, $iProfileId, $sVid)
     {
-        $sToday = gmdate('Y-m-d', $this->_iNow);
-        $sYesterday = gmdate('Y-m-d', $this->_iNow - 86400);
-
-        $aAnonymous = [
-            $this->_hash($sIp . '|' . $sUserAgent, $this->_getSalt($sToday)),
-            $this->_hash($sIp . '|' . $sUserAgent, $this->_getSalt($sYesterday)),
-        ];
-
-        if($sVid !== '' && $this->_oConfig->getIdentityMode() == BX_ANALYTICS_IDENTITY_PERSISTENT)
+        $bDevice = $sVid !== '' && $this->_oConfig->getIdentityMode() == BX_ANALYTICS_IDENTITY_PERSISTENT;
+        if($bDevice)
             $aAnonymous = [$this->_hash('v:' . $sVid, BX_DOL_SECRET)];
+        else {
+            $sToday = gmdate('Y-m-d', $this->_iNow);
+            $sYesterday = gmdate('Y-m-d', $this->_iNow - 86400);
+            $this->_loadSalts([$sToday, $sYesterday]);
+
+            $aAnonymous = [
+                $this->_hash($sIp . '|' . $sUserAgent, $this->_getSalt($sToday)),
+                $this->_hash($sIp . '|' . $sUserAgent, $this->_getSalt($sYesterday)),
+            ];
+        }
 
         if($iProfileId) {
             $sMember = $this->_hash('p:' . $iProfileId, BX_DOL_SECRET);
-            return ['id' => $sMember, 'lookup' => array_merge([$sMember], $aAnonymous), 'anonymous' => $aAnonymous];
+            return ['id' => $sMember, 'lookup' => array_merge([$sMember], $aAnonymous), 'anonymous' => $aAnonymous, 'member' => true, 'device' => $bDevice];
         }
 
-        return ['id' => $aAnonymous[0], 'lookup' => $aAnonymous, 'anonymous' => $aAnonymous];
+        return ['id' => $aAnonymous[0], 'lookup' => $aAnonymous, 'anonymous' => $aAnonymous, 'member' => false, 'device' => $bDevice];
+    }
+
+    /**
+     * The visitor's latest visit on a platform active since a time. A member's own visit comes
+     * first. A guest visit is the member's (they signed in during it) when the guest id is the
+     * device's own, or else only when the visit was active just before: people behind one
+     * address (a mobile carrier, an office) often have the same browser, and so the same
+     * cookieless id, and one signing in mustn't take over another's visit.
+     *
+     * @param int $iUntil the visit started by then, 0 for any
+     * @param int $iAt when the member's hit happened
+     * @return array the visit or []
+     */
+    protected function _findSession($aVisitor, $sPlatform, $iSince, $iUntil = 0, $iAt = 0)
+    {
+        if(empty($aVisitor['member']))
+            return $this->_oDb->getActiveSession($aVisitor['lookup'], $sPlatform, $iSince, $iUntil);
+
+        $aSession = $this->_oDb->getActiveSession([$aVisitor['id']], $sPlatform, $iSince, $iUntil);
+        if(!empty($aSession))
+            return $aSession;
+
+        if(empty($aVisitor['device']))
+            $iSince = max($iSince, ($iAt ? $iAt : $this->_iNow) - self::SIGN_IN_SECONDS);
+
+        return $this->_oDb->getActiveSession($aVisitor['anonymous'], $sPlatform, $iSince, $iUntil);
     }
 
     /**
      * The visitor's running session on this platform, or a new one. A guest session that
-     * signs in continues as the member's. No new one past the address's limit of visits an
-     * hour (`_bLimited` tells).
+     * signs in continues as the member's (see _findSession). No new one past the address's
+     * limit of visits an hour (`_bLimited` tells).
      *
      * @param string $sIp the client's address, for the rate limit
      */
     protected function _getSession($sPlatform, $aVisitor, $iProfileId, $aPayload, $aClient, $aHits, $sIp = '')
     {
-        $aSession = $this->_oDb->getActiveSession($aVisitor['lookup'], $sPlatform, $this->_iNow - $this->_oConfig->getSessionTimeout());
+        $aSession = $this->_findSession($aVisitor, $sPlatform, $this->_iNow - $this->_oConfig->getSessionTimeout());
         if(!empty($aSession)) {
             if($iProfileId && !(int)$aSession['profile_id'] && $aSession['visitor'] !== $aVisitor['id']) {
                 $this->_oDb->updateSession($aSession['id'], ['profile_id' => $iProfileId, 'visitor' => $aVisitor['id']]);
@@ -674,11 +738,11 @@ class BxAnalyticsCollector
      */
     protected function _getErrorSession($aClientRow, $aHit)
     {
-        if(empty($aClientRow['lookup']))
+        if(empty($aClientRow['ids']))
             return [];
 
         $iTime = (int)$aHit['ts'];
-        $aSession = $this->_oDb->getActiveSession($aClientRow['lookup'], $aClientRow['platform'], $iTime - $this->_oConfig->getSessionTimeout(), $iTime + 60);
+        $aSession = $this->_findSession($aClientRow['ids'], $aClientRow['platform'], $iTime - $this->_oConfig->getSessionTimeout(), $iTime + 60, $iTime);
 
         return !empty($aSession) && $this->_isSessionError($aSession, $aHit) ? $aSession : [];
     }
@@ -690,7 +754,7 @@ class BxAnalyticsCollector
      *
      * @param array $aSession the running visit, or [] for none
      * @param array $aErrors error hits from _getHits
-     * @param array $aClientRow visitor ids (lookup), platform and client columns for errors outside a visit
+     * @param array $aClientRow visitor ids (ids, see _getVisitor), platform and client columns for errors outside a visit
      * @return int hits stored
      */
     protected function _storeErrors($aSession, $aErrors, $aClientRow)
@@ -985,7 +1049,9 @@ class BxAnalyticsCollector
 
     /**
      * Host, path and full URL of a hit. The path keeps its query string, because classic
-     * pages are told apart by it (page.php?i=view-post&id=5), but drops tracking parameters.
+     * pages are told apart by it (page.php?i=view-post&id=5), but drops tracking parameters
+     * and secrets (a reset key, a confirmation code, a token), and what is left is redacted
+     * as error paths are (addresses, tokens, long hashes).
      *
      * @return array|false
      */
@@ -1013,7 +1079,7 @@ class BxAnalyticsCollector
                 if($sPair === '')
                     continue;
                 $sKey = mb_strtolower(urldecode(explode('=', $sPair, 2)[0]));
-                if(!in_array($sKey, $this->_aDropParams, true) && ($sIgnored === '' || !preg_match($sIgnored, $sKey)))
+                if(!in_array($sKey, $this->_aDropParams, true) && !$this->_isSecretParam($sKey) && ($sIgnored === '' || !preg_match($sIgnored, $sKey)))
                     $aQuery[] = $sPair;
             }
             if(!empty($aQuery))
@@ -1023,8 +1089,16 @@ class BxAnalyticsCollector
         return [
             'url' => $sUrl,
             'hostname' => isset($aParts['host']) ? mb_strtolower($aParts['host']) : '',
-            'path' => get_mb_substr(rawurldecode($sPath), 0, 255),
+            'path' => get_mb_substr(BxAnalyticsErrors::redact(rawurldecode($sPath)), 0, 255),
         ];
+    }
+
+    /**
+     * Whether a query parameter's name says it carries a secret or a person's identity.
+     */
+    protected function _isSecretParam($sKey)
+    {
+        return in_array($sKey, $this->_aSecretParams, true) || preg_match($this->_sSecretParamsPattern, $sKey);
     }
 
     /**
@@ -1155,10 +1229,19 @@ class BxAnalyticsCollector
 
     protected function _getSalt($sDay)
     {
-        if(!isset($this->_aSalts[$sDay]))
-            $this->_aSalts[$sDay] = $this->_oDb->getSalt($sDay);
+        $this->_loadSalts([$sDay]);
 
         return $this->_aSalts[$sDay];
+    }
+
+    /**
+     * Read the salts of some days in one query, for this collector's request.
+     */
+    protected function _loadSalts($aDays)
+    {
+        $aMissing = array_values(array_diff($aDays, array_keys($this->_aSalts)));
+        if(!empty($aMissing))
+            $this->_aSalts = array_merge($this->_aSalts, $this->_oDb->getSalts($aMissing));
     }
 
     /**

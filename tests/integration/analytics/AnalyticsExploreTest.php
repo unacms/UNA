@@ -112,7 +112,12 @@ class AnalyticsExploreTest extends BxDolIntegrationTestCase
         foreach ($a['chart']['series'] as $aSeries)
             $this->assertSame($aBuckets, array_column($aSeries['points'], 't'));
 
-        // counts over the buckets add up to the row
+        // counts over the buckets add up to the row, for pages too (events have a `value`
+        // column, which the grouping once took for the value asked)
+        $a = $oReports->getQuery($oFilter, ['q_dim' => 'path', 'q_metric' => 'pageviews']);
+        foreach ($a['chart']['series'] as $i => $aSeries)
+            $this->assertSame($a['rows'][$i]['values']['pageviews'], array_sum(array_column($aSeries['points'], 'v')), $a['rows'][$i]['label']);
+
         $a = $oReports->getQuery($oFilter, ['q_dim' => 'country', 'q_metric' => 'pageviews']);
         $this->assertSame(['GB', 'US', 'FR', 'DE'], array_column(array_column($a['rows'], 'filter'), 'value'));
         foreach ($a['chart']['series'] as $i => $aSeries)

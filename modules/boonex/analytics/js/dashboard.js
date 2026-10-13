@@ -125,13 +125,34 @@ BxAnalyticsDashboard.prototype.init = function () {
     }, 5000);
     this._iStarted = Date.now();
 
-    // the server rendered in UTC when the page URL had no timezone
+    // without a timezone in the page URL the server takes the viewer's from a cookie, kept
+    // here; only a page drawn before the cookie was set (or in another zone) loads again
     var sTz = this.getTimezone();
     var oUrl = new URL(window.location.href);
-    if (!oUrl.searchParams.get('tz') && sTz && sTz !== 'UTC') {
-        this.setUrlParam('tz', sTz);
-        this.reloadAll();
+    if (!oUrl.searchParams.get('tz') && sTz) {
+        var sRendered = this.getTimezoneCookie() || 'UTC';
+        this.setTimezoneCookie(sTz);
+        if (sTz !== sRendered) {
+            this.setUrlParam('tz', sTz);
+            this.reloadAll();
+        }
     }
+};
+
+/**
+ * The timezone cookie the server reads when a request has no `tz` (BxAnalyticsFilter).
+ */
+BxAnalyticsDashboard.prototype.getTimezoneCookie = function () {
+    var aMatch = document.cookie.match(/(?:^|;\s*)bx_analytics_tz=([^;]*)/);
+    try {
+        return aMatch ? decodeURIComponent(aMatch[1]) : '';
+    } catch (e) {
+        return '';
+    }
+};
+
+BxAnalyticsDashboard.prototype.setTimezoneCookie = function (sTz) {
+    document.cookie = 'bx_analytics_tz=' + encodeURIComponent(sTz) + '; path=/; max-age=31536000; SameSite=Lax' + (window.location.protocol === 'https:' ? '; Secure' : '');
 };
 
 BxAnalyticsDashboard.prototype.getTimezone = function () {

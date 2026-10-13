@@ -173,12 +173,148 @@ class AnalyticsCollectorTest extends BxDolIntegrationTestCase
         $this->assertSame($iProfileId, (int)$aSessions[0]['profile_id']);
         $sMemberVisitor = $aSessions[0]['visitor'];
 
+        $oDb = BxDolDb::getInstance();
+        $sGuestVisitor = $oDb->getOne("SELECT `visitor` FROM `bx_analytics_events` WHERE `ts` = :ts", ['ts' => self::NOW]);
+        $this->assertNotSame($sMemberVisitor, $sGuestVisitor, 'the page viewed before signing in keeps the guest\'s id');
+
+        // site actions about the account and the profile, and another visit days later
+        $oCollector = new BxAnalyticsCollector($this->_oModule, new BxAnalyticsRequest($aServer + ['REQUEST_METHOD' => 'POST']), self::NOW + 40);
+        $this->assertTrue($oCollector->collectAction('login', 'account', 4242, $iProfileId, ['platform' => 'next-web']));
+        $this->assertTrue($oCollector->collectAction('profile_add', 'bx_persons', $iProfileId, $iProfileId, ['platform' => 'next-web']));
+        $this->_collect($this->_server('81.2.69.142'), $aHit, self::NOW + 2 * 86400, ['profile_id' => $iProfileId]);
+        $this->assertCount(2, $this->_sessions());
+
         $this->_oModule->onProfileDelete($iProfileId);
 
         $aSessions = $this->_sessions();
-        $this->assertSame(0, (int)$aSessions[0]['profile_id']);
+        $this->assertSame([0, 0], array_map('intval', array_column($aSessions, 'profile_id')));
         $this->assertNotSame($sMemberVisitor, $aSessions[0]['visitor']);
-        $this->assertSame(0, (int)BxDolDb::getInstance()->getOne("SELECT COUNT(*) FROM `bx_analytics_events` WHERE `profile_id` = :p", ['p' => $iProfileId]));
+        $this->assertNotSame($aSessions[0]['visitor'], $aSessions[1]['visitor'], 'its visits are not tied to one another');
+        $this->assertSame(0, (int)$oDb->getOne("SELECT COUNT(*) FROM `bx_analytics_events` WHERE `profile_id` = :p", ['p' => $iProfileId]));
+
+        $aEvents = $oDb->getAll("SELECT `e`.`visitor`, `e`.`object_id`, `s`.`visitor` AS `session_visitor` FROM `bx_analytics_events` AS `e` INNER JOIN `bx_analytics_sessions` AS `s` ON `s`.`id` = `e`.`session_id` WHERE `e`.`ts` < :to ORDER BY `e`.`id`", ['to' => self::NOW + 30 * 86400]);
+        $this->assertCount(5, $aEvents);
+        foreach ($aEvents as $a) {
+            $this->assertSame($a['session_visitor'], $a['visitor'], 'every event is its visit\'s, the one before signing in too');
+            $this->assertNotContains($a['visitor'], [$sMemberVisitor, $sGuestVisitor]);
+        }
+        $this->assertSame([0, 0], array_map('intval', $oDb->getColumn("SELECT `object_id` FROM `bx_analytics_events` WHERE `type` = 'una' AND `ts` < :to", ['to' => self::NOW + 30 * 86400])), 'the account and the profile the actions were about');
+    }
+
+    public function testSignInTakesOverOnlyARecentGuestVisit()
+    {
+        $aHit = ['platform' => 'next-web', 'hits' => [['type' => 'pageview', 'url' => 'https://neo.test/']]];
+        $fProfiles = function () {
+            return array_map('intval', array_column($this->_sessions(), 'profile_id'));
+        };
+
+        // someone else behind the same address with the same browser, 10 minutes before
+        $aServer = $this->_server('93.184.216.34');
+        $this->_collect($aServer, $aHit, self::NOW);
+        $this->_collect($aServer, $aHit, self::NOW + 600, ['profile_id' => 987654321]);
+        $this->assertSame([0, 987654321], $fProfiles(), 'a member doesn\'t take over an older guest visit');
+
+        // the member's own visit comes first, while the guest's goes on
+        $this->_collect($aServer, $aHit, self::NOW + 700);
+        $this->_collect($aServer, $aHit, self::NOW + 720, ['profile_id' => 987654321]);
+        $this->assertSame([0, 987654321], $fProfiles());
+        $this->assertSame([2, 2], array_map('intval', array_column($this->_sessions(), 'pageviews')));
+
+        // a guest visit active right before is the member's: they signed in during it
+        $this->_collect($this->_server('93.184.216.35'), $aHit, self::NOW + 1000);
+        $this->_collect($this->_server('93.184.216.35'), $aHit, self::NOW + 1060, ['profile_id' => 987654322]);
+        $this->assertSame([0, 987654321, 987654322], $fProfiles());
+
+        // a visitor id kept by the device is the device's own, however long ago
+        $this->_setOption('bx_analytics_identity', 'persistent');
+        $aDevice = $aHit + ['vid' => 'phpunit-device-0001'];
+        $this->_collect($this->_server('93.184.216.36'), $aDevice, self::NOW + 2000);
+        $this->_collect($this->_server('93.184.216.36'), $aDevice, self::NOW + 2900, ['profile_id' => 987654323]);
+        $this->assertSame([0, 987654321, 987654322, 987654323], $fProfiles());
+    }
+
+    public function testSecretsAreNotStored()
+    {
+        $aServer = $this->_server('81.2.69.142');
+        $aUrls = [
+            'http://una.test/page.php?i=forgot-password&key=abcDEF1234567890xyz',
+            'http://una.test/page.php?i=confirm-email&code=0123456789abcdef',
+            'http://una.test/page.php?i=unsubscribe-notifications&id=42&code=5f4dcc3b5aa765d61d8327deb882cf99',
+            'http://una.test/page/oauth-callback?code=4%2F0AX4XfWh&state=xyz&access_token=ya29.secret',
+            'http://una.test/page/invite?Email=jane%40example.com&api_key=k1&_hsenc=p2ANqtz',
+            'http://una.test/page/search?q=jane%40example.com',
+        ];
+        foreach ($aUrls as $i => $sUrl)
+            $this->_collect($aServer, ['platform' => 'core-web', 'hits' => [['type' => 'pageview', 'url' => $sUrl]]], self::NOW + $i * 10);
+
+        $aPaths = BxDolDb::getInstance()->getColumn("SELECT `path` FROM `bx_analytics_events` WHERE `ts` < :to ORDER BY `id`", ['to' => self::NOW + 86400]);
+        $this->assertSame([
+            '/page.php?i=forgot-password',
+            '/page.php?i=confirm-email',
+            '/page.php?i=unsubscribe-notifications&id=42',
+            '/page/oauth-callback?state=xyz',
+            '/page/invite',
+            '/page/search?q=<redacted>',
+        ], $aPaths, 'keys, codes, tokens and addresses are dropped; what is left is redacted');
+
+        $aSession = $this->_sessions()[0];
+        $this->assertSame(['/page.php?i=forgot-password', '/page/search?q=<redacted>'], [$aSession['entry_path'], $aSession['exit_path']]);
+
+        // link previews and mail scanners fetch these links too
+        $oCollector = new BxAnalyticsCollector($this->_oModule, new BxAnalyticsRequest($this->_server('66.249.66.1')), self::NOW);
+        $this->assertTrue($oCollector->collectBot('Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)', '/page.php?i=forgot-password&key=abcDEF1234567890xyz'));
+        $this->assertSame(['/page.php?i=forgot-password'], BxDolDb::getInstance()->getColumn("SELECT `path` FROM `bx_analytics_bot_pages` WHERE `day` < '2002-01-01'"));
+    }
+
+    public function testSiteActionsFollowTheVisitorsChoice()
+    {
+        $fAction = function ($aExtra = [], $sUserAgent = self::UA_SAFARI, $iProfileId = 987654321) {
+            $oCollector = new BxAnalyticsCollector($this->_oModule, new BxAnalyticsRequest($this->_server('81.2.69.142', ['REQUEST_METHOD' => 'POST'] + $aExtra, $sUserAgent)), self::NOW);
+            return $oCollector->collectAction('login', 'account', 1, $iProfileId, ['platform' => 'core-web']);
+        };
+
+        $this->assertFalse($fAction(['HTTP_DNT' => '1']), 'Do Not Track');
+        $this->assertFalse($fAction(['HTTP_SEC_GPC' => '1']), 'Global Privacy Control');
+        $this->assertFalse($fAction([], 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)'), 'a bot');
+        $this->_setOption('bx_analytics_exclude_ips', '81.2.69.0/24');
+        $this->assertFalse($fAction(), 'an excluded address');
+        $this->_setOption('bx_analytics_exclude_ips', '');
+
+        $this->assertTrue($fAction());
+
+        // a cron job has no visitor request: its headers don't apply
+        $oCron = new BxAnalyticsCollector($this->_oModule, new BxAnalyticsRequest([]), self::NOW);
+        $this->assertTrue($oCron->collectAction('renewal', 'account', 1, 987654321));
+
+        // a guest's action, when guests aren't tracked
+        $this->_setOption('bx_analytics_exclude_levels', (string)MEMBERSHIP_ID_NON_MEMBER);
+        $this->assertFalse($fAction([], self::UA_SAFARI, 0));
+
+        $this->assertSame(2, (int)BxDolDb::getInstance()->getOne("SELECT COUNT(*) FROM `bx_analytics_events` WHERE `type` = 'una' AND `ts` < :to", ['to' => self::NOW + 86400]));
+    }
+
+    public function testLargeCollectBodiesAreNotRead()
+    {
+        $iMax = $this->_oModule->_oConfig->CNF['MAX_COLLECT_BYTES'];
+        $sPath = '/phpunit-collect-size';
+        $fPayload = function ($iTitle) use ($sPath) {
+            return json_encode(['platform' => 'api', 'hits' => [['type' => 'pageview', 'url' => 'http://una.test' . $sPath, 'title' => str_repeat('a', $iTitle)]]]);
+        };
+
+        $this->assertTrue($this->_oModule->isCollectBodyAllowed($fPayload(100)));
+        $this->assertFalse($this->_oModule->isCollectBodyAllowed($fPayload($iMax)));
+
+        // the service stores now, with the request's own address: the rows are deleted after
+        $oDb = BxDolDb::getInstance();
+        try {
+            $this->assertSame(['stored' => 0], $this->_oModule->serviceCollect($fPayload($iMax)), 'too large: refused before it is decoded');
+            $this->assertSame(0, (int)$oDb->getOne("SELECT COUNT(*) FROM `bx_analytics_events` WHERE `path` = :path", ['path' => $sPath]));
+            $this->assertSame(['stored' => 1], $this->_oModule->serviceCollect($fPayload(100)), 'the same hit, small enough');
+        }
+        finally {
+            $oDb->query("DELETE FROM `bx_analytics_sessions` WHERE `entry_path` = :path AND `started` > :since", ['path' => $sPath, 'since' => time() - 3600]);
+            $oDb->query("DELETE FROM `bx_analytics_events` WHERE `path` = :path AND `ts` > :since", ['path' => $sPath, 'since' => time() - 3600]);
+        }
     }
 
     public function testCookielessVisitorsChangeDaily()

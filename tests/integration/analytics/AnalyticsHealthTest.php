@@ -183,12 +183,14 @@ class AnalyticsHealthTest extends BxDolIntegrationTestCase
         $iId = (int)$aHits[0]['error_id'];
         $this->assertSame(5, (int)$oDb->getErrorGroup($iId)['occurrences']);
         $this->assertSame(self::NOW + 60, (int)$oDb->getErrorGroup($iId)['last_seen']);
+        $this->assertSame('Test 2001 item 77 failed', $oDb->getErrorGroup($iId)['message'], 'the latest occurrence\'s text, none older than the group\'s last occurrence');
 
         $this->assertTrue($oDb->setErrorStatus($iId, 'resolved', self::NOW + 100));
 
         // a deferred report of an older occurrence doesn't reopen it, a new one does
         $this->_collect($aServer, ['platform' => 'next-web', 'hits' => [$aError + ['age' => 90 * 1000]]], self::NOW + 120);
         $this->assertSame('resolved', $oDb->getErrorGroup($iId)['status']);
+        $this->assertSame('Test 2001 item 77 failed', $oDb->getErrorGroup($iId)['message'], 'an older occurrence reported late leaves it');
 
         $this->_collect($aServer, ['platform' => 'next-web', 'hits' => [$aError]], self::NOW + 200);
         $this->assertSame('open', $oDb->getErrorGroup($iId)['status']);
@@ -425,9 +427,9 @@ class AnalyticsHealthTest extends BxDolIntegrationTestCase
         // ten days later: vitals are past their 5 days, the rest is within its 30
         $iNow = self::NOW + 10 * 86400;
         $aCutoffs = $this->_oModule->getPruningCutoffs($iNow);
-        $this->assertSame(['deleteEventsBefore', 'deleteSessionsBefore', 'deleteErrorHitsBefore', 'deleteErrorGroupsBefore', 'deleteVitalsBefore', 'deleteLimitsBefore'], array_keys($aCutoffs));
+        $this->assertSame(['deleteLimitsBefore', 'deleteVitalsBefore', 'deleteErrorHitsBefore', 'deleteErrorGroupsBefore', 'clearErrorStacksBefore', 'deleteEventsBefore', 'deleteSessionsBefore'], array_keys($aCutoffs), 'the small, fast growing tables first: they share the run\'s time limit');
         $this->assertSame($iNow - 5 * 86400, $aCutoffs['deleteVitalsBefore']);
-        foreach (['deleteEventsBefore', 'deleteSessionsBefore', 'deleteErrorHitsBefore', 'deleteErrorGroupsBefore'] as $sMethod)
+        foreach (['deleteEventsBefore', 'deleteSessionsBefore', 'deleteErrorHitsBefore', 'deleteErrorGroupsBefore', 'clearErrorStacksBefore'] as $sMethod)
             $this->assertSame($iNow - 30 * 86400, $aCutoffs[$sMethod], $sMethod);
 
         $oDb = $this->_oModule->_oDb;
@@ -437,6 +439,12 @@ class AnalyticsHealthTest extends BxDolIntegrationTestCase
         $this->assertCount(1, $this->_sessions());
         $this->assertCount(1, $this->_errorHits());
         $this->assertSame(1, (int)BxDolDb::getInstance()->getOne("SELECT COUNT(*) FROM `bx_analytics_errors` WHERE `message` = 'Test 2001 pruned error'"));
+        $this->assertNotSame('', $oDb->getErrorGroup($this->_groupId('Test 2001 pruned error'))['stack'], 'a sample within the retention stays');
+
+        // a group that goes on happening keeps its sample stack no longer than the rest
+        $this->assertSame(1, $oDb->clearErrorStacksBefore(self::NOW + 1, 100));
+        $aGroup = BxDolDb::getInstance()->getRow("SELECT `stack`, `stack_ts` FROM `bx_analytics_errors` WHERE `id` = :id", ['id' => $this->_groupId('Test 2001 pruned error')]);
+        $this->assertSame(['', 0], [$aGroup['stack'], (int)$aGroup['stack_ts']]);
         $this->assertSame(0, (int)BxDolDb::getInstance()->getOne("SELECT COUNT(*) FROM `bx_analytics_vitals` WHERE `ts` < :to", ['to' => self::NOW + 30 * 86400]));
 
         // vitals are never kept longer than the rest

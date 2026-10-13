@@ -67,6 +67,23 @@ class BxAnalyticsFilterTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(gmmktime(18, 30, 0, 10, 12, 2026), $a['from']);
     }
 
+    public function testTimezoneFromTheDashboardCookie()
+    {
+        $aCookie = $_COOKIE;
+        try {
+            // a page opened from a menu has no tz: the viewer's zone, as the dashboard keeps it
+            $_COOKIE[BxAnalyticsFilter::TZ_COOKIE] = 'Australia/Sydney';
+            $this->assertSame('Australia/Sydney', $this->filter(['range' => 'today'])->get()['tz']);
+            $this->assertSame('Europe/Paris', $this->filter(['range' => 'today', 'tz' => 'Europe/Paris'])->get()['tz'], 'the request\'s own wins');
+
+            $_COOKIE[BxAnalyticsFilter::TZ_COOKIE] = 'Mars/Olympus';
+            $this->assertSame('UTC', $this->filter(['range' => 'today'])->get()['tz'], 'not a zone');
+        }
+        finally {
+            $_COOKIE = $aCookie;
+        }
+    }
+
     public function testTwelveMonthsUseCalendarMonths()
     {
         $a = $this->filter(['range' => '12m'])->get();

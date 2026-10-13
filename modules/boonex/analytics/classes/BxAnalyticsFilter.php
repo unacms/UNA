@@ -26,6 +26,12 @@ class BxAnalyticsFilter
      */
     const RANGE_MAX_DAYS = 731;
 
+    /**
+     * The viewer's IANA timezone, kept by the dashboard (js/dashboard.js) for requests
+     * without `tz`.
+     */
+    const TZ_COOKIE = 'bx_analytics_tz';
+
     public static $aRanges = ['today', 'yesterday', '24h', '7d', '30d', '90d', '12m', 'custom'];
 
     protected $_oDb;
@@ -96,8 +102,15 @@ class BxAnalyticsFilter
     {
         $sRange = isset($aInput['range']) && in_array($aInput['range'], self::$aRanges, true) ? $aInput['range'] : self::RANGE_DEFAULT;
 
-        // with the backward-compatible names (Asia/Calcutta, Europe/Kiev), which Intl still reports on some runtimes
-        $sTz = isset($aInput['tz']) && is_string($aInput['tz']) && in_array($aInput['tz'], timezone_identifiers_list(DateTimeZone::ALL_WITH_BC), true) ? $aInput['tz'] : 'UTC';
+        // with the backward-compatible names (Asia/Calcutta, Europe/Kiev), which Intl still
+        // reports on some runtimes; without one in the request, the viewer's own from the
+        // dashboard's cookie, so a page opened from a menu isn't drawn in UTC and then again
+        $aZones = timezone_identifiers_list(DateTimeZone::ALL_WITH_BC);
+        $sTz = 'UTC';
+        if(isset($aInput['tz']) && is_string($aInput['tz']) && in_array($aInput['tz'], $aZones, true))
+            $sTz = $aInput['tz'];
+        elseif(!isset($aInput['tz']) && isset($_COOKIE[self::TZ_COOKIE]) && is_string($_COOKIE[self::TZ_COOKIE]) && in_array($_COOKIE[self::TZ_COOKIE], $aZones, true))
+            $sTz = $_COOKIE[self::TZ_COOKIE];
         $oTz = new DateTimeZone($sTz);
 
         $oNow = (new DateTime('@' . $this->_iNow))->setTimezone($oTz);

@@ -439,6 +439,8 @@ class BxAnalyticsRevenue
                 $this->_getCollector()->collectAction(self::getActionName($aRow['kind']), $aRow['module'], $aRow['item_id'], $aRow['client_id'], [
                     'platform' => $aContext['platform'],
                     'api_key' => $this->_isApiKey(),
+                    // decided by getContext: a webhook or a cron job is not the buyer's request
+                    'request' => $aContext['buyer'],
                     'value' => $aRow['kind'] != self::KIND_TRIAL && $aRow['amount_default'] !== null ? (float)$aRow['amount_default'] : 0,
                     'props' => [
                         'provider' => $aRow['provider'],

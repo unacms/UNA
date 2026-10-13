@@ -16,15 +16,20 @@
 class BxAnalyticsRequest
 {
     /**
-     * Headers that carry the client address when a proxy or CDN sits in front of the site,
-     * checked in this order. X-Forwarded-For can list several addresses; the first public one wins.
+     * Headers that carry the client address when a proxy or CDN sits in front of the site
+     * and there is no X-Forwarded-For, checked in this order.
      */
     protected static $_aIpHeaders = [
         'HTTP_CF_CONNECTING_IP',
         'HTTP_TRUE_CLIENT_IP',
-        'HTTP_X_FORWARDED_FOR',
         'HTTP_X_REAL_IP',
     ];
+
+    /**
+     * The shared address space of carrier-grade NAT, where cloud load balancers (Railway)
+     * connect from; PHP doesn't count it as private.
+     */
+    protected static $_aInternalRanges = ['100.64.0.0/10'];
 
     /**
      * Country headers set by CDNs and hosting edges.
@@ -46,9 +51,16 @@ class BxAnalyticsRequest
 
     /**
      * Client address. Proxy headers count only when the request comes from a trusted proxy:
-     * a private or loopback address (load balancers, the NEO server in the same network),
-     * an address from the trusted list, or a request the caller has already authenticated
-     * (the NEO server's API key).
+     * a private, loopback or shared (100.64.0.0/10) address (load balancers, the NEO server in
+     * the same network), an address from the trusted list, or a request the caller has
+     * already authenticated (the NEO server's API key).
+     *
+     * X-Forwarded-For is read from the right, as core's visitor address is: each proxy
+     * appends the address it got the request from, so trusted proxies are skipped and the
+     * first address that isn't one is the client. Whatever is left of it came from the
+     * client, which could otherwise pick any address for each request: past the rate limits
+     * and the excluded addresses. CF-Connecting-IP, True-Client-IP and X-Real-IP count only
+     * without X-Forwarded-For, since a proxy that doesn't set them passes the client's own.
      *
      * @param array $aTrustedProxies addresses and CIDR ranges whose proxy headers are trusted
      * @param bool $bTrustedRequest the request carries a valid API key
@@ -60,31 +72,45 @@ class BxAnalyticsRequest
         if($sRemote === '' && !$bTrustedRequest)
             return '';
 
-        if(!$bTrustedRequest && !self::isPrivate($sRemote) && !self::inList($sRemote, $aTrustedProxies))
+        if(!$bTrustedRequest && !self::isTrustedProxy($sRemote, $aTrustedProxies))
             return $sRemote;
 
-        foreach(self::$_aIpHeaders as $sHeader) {
-            $sValue = $this->_get($sHeader);
-            if($sValue === '')
-                continue;
+        $sForwarded = $this->_get('HTTP_X_FORWARDED_FOR');
+        if($sForwarded !== '') {
+            $sIp = $sRemote;
+            foreach(array_reverse(explode(',', $sForwarded)) as $sCandidate) {
+                if(trim($sCandidate) === '')
+                    continue;
 
-            $sFirstValid = '';
-            foreach(explode(',', $sValue) as $sCandidate) {
+                // a hop that didn't know the address ("unknown"): nothing left of it is reliable
                 $sCandidate = $this->_valid($sCandidate);
                 if($sCandidate === '')
-                    continue;
-                if(!self::isPrivate($sCandidate))
-                    return $sCandidate;
-                if($sFirstValid === '')
-                    $sFirstValid = $sCandidate;
+                    break;
+
+                $sIp = $sCandidate;
+                if(!self::isTrustedProxy($sCandidate, $aTrustedProxies))
+                    break;
             }
 
-            // a private network behind a private proxy (local development, intranets)
-            if($sFirstValid !== '')
-                return $sFirstValid;
+            return $sIp;
+        }
+
+        foreach(self::$_aIpHeaders as $sHeader) {
+            $sIp = $this->_valid($this->_get($sHeader));
+            if($sIp !== '')
+                return $sIp;
         }
 
         return $sRemote;
+    }
+
+    /**
+     * Whether the proxy headers of a request from an address are trusted: a private,
+     * loopback or shared address, or one in the trusted list.
+     */
+    public static function isTrustedProxy($sIp, $aTrustedProxies = [])
+    {
+        return self::isPrivate($sIp) || self::inList($sIp, self::$_aInternalRanges) || self::inList($sIp, $aTrustedProxies);
     }
 
     /**

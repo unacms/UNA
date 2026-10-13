@@ -109,9 +109,11 @@ class BxAnalyticsConfig extends BxBaseModGeneralConfig
             'REPORT_CACHE_TTL' => 180,
             'REPORT_CACHE_PREFIX' => 'bx_analytics_report_',
 
-            // hits per request and their properties, to bound the work of one beacon
+            // hits per request and their properties, to bound the work of one beacon, and the
+            // largest request body read at all (20 hits, 10 of them errors with long stacks)
             'MAX_HITS_PER_REQUEST' => 20,
             'MAX_PROPS_LENGTH' => 2048,
+            'MAX_COLLECT_BYTES' => 256 * 1024,
 
             // health: error hits per request and per visit, new error groups per hour (more go
             // to one catch-all group), how old a deferred error may be (an app that crashed

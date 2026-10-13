@@ -113,6 +113,26 @@ class AnalyticsScaleTest extends BxDolIntegrationTestCase
         $this->_oModule->cleanReportCache();
         $this->assertSame(3, $this->_oModule->getReportData('overview', $this->_aDay)['kpis']['sessions']['value'], 'dropped');
 
+        // in files, reports are plain text: as PHP scripts read with include(), opcache would
+        // keep every one of them
+        if ($this->_oModule->_oDb->getDbCacheObject() instanceof BxDolCacheFile) {
+            $sPattern = BX_DIRECTORY_PATH_CACHE . 'db_' . $this->_oModule->_oConfig->CNF['REPORT_CACHE_PREFIX'] . '*';
+            $aFiles = glob($sPattern);
+            $this->assertNotEmpty($aFiles);
+            foreach ($aFiles as $sFile) {
+                $sData = file_get_contents($sFile);
+                $this->assertStringStartsWith(BxAnalyticsModule::REPORT_CACHE_GUARD, $sData);
+                $this->assertStringNotContainsString('$mixedData', $sData);
+            }
+
+            // past their time to live they are pruned, whether read again or not
+            $this->assertSame(0, $this->_oModule->pruneReportCache(time()));
+            foreach ($aFiles as $sFile)
+                touch($sFile, time() - 3600);
+            $this->assertSame(count($aFiles), $this->_oModule->pruneReportCache(time()));
+            $this->assertSame([], array_values(array_intersect($aFiles, glob($sPattern))));
+        }
+
         // live figures are never cached
         $oReports = $this->_oModule->getReports();
         foreach (['realtime' => [], 'filters' => [], 'map' => ['tab' => 'live']] as $sReport => $aParams)
@@ -155,6 +175,19 @@ class AnalyticsScaleTest extends BxDolIntegrationTestCase
         $this->assertSame(['/x' => 1, '/y' => 1, '/z' => 1], $fPages($oData->getTop($fFilter(['country' => 'DE']), 'path', 10)));
         $this->assertSame(['/x' => 1], $fPages($oData->getTop($fFilter(['country' => 'FR']), 'path', 10)));
         $this->assertSame(2, (int)$oData->getTotals($fFilter(['country' => 'DE']))['pageviews'], 'visits of the day: b with its 2 views; a began the day before');
+
+        // goals and events through the visit: a short period looks each visit up, a longer one
+        // finds the visits first; both count the same
+        $oDb->query("INSERT INTO `bx_analytics_events` SET `session_id` = :s, `visitor` = :v, `platform` = 'core-web', `ts` = :ts, `type` = 'event', `name` = 'phpunit_scale', `props` = ''", ['s' => $oDb->getOne("SELECT `id` FROM `bx_analytics_sessions` WHERE `visitor` = :v", ['v' => $this->_visitor('b')]), 'v' => $this->_visitor('b'), 'ts' => $iDay + 3800]);
+        $aGoal = ['type' => 'page', 'pattern' => '/x'];
+        $fLong = function ($aDims) { return (new BxAnalyticsFilter($this->_oModule, ['range' => 'custom', 'from' => '2001-08-30', 'to' => '2001-09-09', 'tz' => 'UTC', 'f' => $aDims], self::NOW + 86400))->get(); };
+        $this->assertSame(['sessions', 'visitors'], array_keys($oData->getGoalTotals($fFilter(['country' => 'DE']), $aGoal)), 'columns of the covering key only');
+        $this->assertSame(1, (int)$oData->getGoalTotals($fFilter(['country' => 'DE']), $aGoal)['sessions'], 'b viewed /x in the day');
+        $this->assertSame(2, (int)$oData->getGoalTotals($fLong(['country' => 'DE']), $aGoal)['sessions'], 'a too over 11 days');
+        $this->assertSame(1, (int)$oData->getGoalTotals($fLong(['country' => 'FR']), $aGoal)['sessions']);
+        foreach ([$fFilter(['country' => 'DE']), $fLong(['country' => 'DE'])] as $aFilter)
+            $this->assertSame(['phpunit_scale' => 1], array_map('intval', array_column($oData->getEventList($aFilter, ['event'], 10), 'count', 'name')));
+        $this->assertSame([], $oData->getEventList($fLong(['country' => 'FR']), ['event'], 10));
 
         // visits of the day that viewed a page, that page's views of the day
         $aTotals = $oData->getTotals($fFilter(['path' => '/x']));

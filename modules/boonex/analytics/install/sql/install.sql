@@ -47,7 +47,8 @@ CREATE TABLE IF NOT EXISTS `bx_analytics_sessions` (
   KEY `started` (`started`, `platform`, `visitor`, `profile_id`, `pageviews`, `bounce`, `duration`),
   KEY `last_seen` (`last_seen`),
   KEY `platform_seen` (`platform`, `last_seen`),
-  KEY `profile_id` (`profile_id`, `started`)
+  -- a member's visits; with the last hit and the platform it pages the members list alone
+  KEY `profile_id` (`profile_id`, `started`, `last_seen`, `platform`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- One row per pageview or event; visitor, profile and platform are copied from the session
@@ -71,14 +72,17 @@ CREATE TABLE IF NOT EXISTS `bx_analytics_events` (
   `props` text NOT NULL,
   PRIMARY KEY (`id`),
   KEY `ts` (`ts`, `type`, `platform`),
-  -- covers pages, titles aside, and the events list by type and period
+  -- covers pages and the events list by type and period
   KEY `type_ts` (`type`, `ts`, `platform`, `path`, `name`, `module`, `visitor`, `session_id`, `engaged`),
   KEY `platform` (`platform`, `ts`),
   KEY `session_id` (`session_id`, `ts`),
-  -- covers one page (a filter, a goal, a funnel step, the Query chart) over a period
-  KEY `path` (`type`, `path`, `ts`, `session_id`, `visitor`, `engaged`),
-  KEY `object` (`module`, `object_id`, `ts`),
-  KEY `name` (`type`, `name`, `ts`)
+  -- covers one page (a filter, a goal, a funnel step, the Query chart) over a period, on a platform too
+  KEY `path` (`type`, `path`, `ts`, `platform`, `session_id`, `visitor`, `engaged`),
+  -- the same for page titles: the titles tab, a title filter
+  KEY `title` (`type`, `title`, `ts`, `platform`, `session_id`, `visitor`, `engaged`),
+  KEY `name` (`type`, `name`, `ts`),
+  -- a member's events: forgetting a deleted profile, the member's actions in a period
+  KEY `profile_id` (`profile_id`, `ts`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- A random salt per day for cookieless visitor ids; cron deletes old ones

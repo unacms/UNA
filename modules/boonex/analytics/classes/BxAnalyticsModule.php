@@ -97,6 +97,12 @@ class BxAnalyticsModule extends BxDolModule
      * The event the Setup section's test sends.
      */
     const SETUP_TEST_EVENT = 'analytics_setup_test';
+
+    /**
+     * The start of a cached report: the cache directory holds .php files, and one requested
+     * over HTTP shows nothing past it.
+     */
+    const REPORT_CACHE_GUARD = "<?php exit; ?>\n";
           
     function __construct(&$aModule)
     {
@@ -272,7 +278,10 @@ class BxAnalyticsModule extends BxDolModule
     public function serviceCollect($mixedPayload = '')
     {
         if(empty($mixedPayload))
-            $mixedPayload = file_get_contents('php://input');
+            $mixedPayload = $this->_getCollectBody();
+
+        if(is_string($mixedPayload) && !$this->isCollectBodyAllowed($mixedPayload))
+            return ['stored' => 0];
 
         $aPayload = is_array($mixedPayload) ? $mixedPayload : json_decode((string)$mixedPayload, true);
         if(!is_array($aPayload))
@@ -391,7 +400,8 @@ class BxAnalyticsModule extends BxDolModule
      */
     public function actionCollect()
     {
-        $aPayload = json_decode((string)file_get_contents('php://input'), true);
+        $sBody = $this->_getCollectBody();
+        $aPayload = $sBody !== false ? json_decode($sBody, true) : null;
         if(is_array($aPayload))
             $this->getCollector()->collect($aPayload, [
                 'platform' => BX_ANALYTICS_PLATFORM_CORE_WEB,
@@ -402,6 +412,31 @@ class BxAnalyticsModule extends BxDolModule
         header('HTTP/1.1 204 No Content');
         header('Cache-Control: no-store');
         exit;
+    }
+
+    /**
+     * Whether a collect request's body is small enough to decode: no larger than a tracker
+     * ever sends (MAX_COLLECT_BYTES). The endpoint is open to anyone, and decoding takes
+     * memory and time before any rate limit applies.
+     */
+    public function isCollectBodyAllowed($sBody)
+    {
+        return is_string($sBody) && mb_strlen($sBody, '8bit') <= $this->_oConfig->CNF['MAX_COLLECT_BYTES'];
+    }
+
+    /**
+     * The body of a collect request, or false when it is too large (see isCollectBodyAllowed),
+     * told by its length header before it is read when there is one.
+     */
+    protected function _getCollectBody()
+    {
+        $iMax = $this->_oConfig->CNF['MAX_COLLECT_BYTES'];
+        if(isset($_SERVER['CONTENT_LENGTH']) && (int)$_SERVER['CONTENT_LENGTH'] > $iMax)
+            return false;
+
+        $sBody = file_get_contents('php://input', false, null, 0, $iMax + 1);
+
+        return $this->isCollectBodyAllowed($sBody) ? $sBody : false;
     }
 
     /**
@@ -1147,11 +1182,14 @@ class BxAnalyticsModule extends BxDolModule
         if(!isAdmin())
             return '';
 
-        $oFilter = $this->getFilter(['range' => '7d']);
-        $oReports = $this->getReports();
+        // the week's figures come from the report cache; only the visitors online are live
+        $aOverview = $this->getReportData('overview', ['range' => '7d']);
+        $aPlatforms = $this->getReportData('top', ['range' => '7d', 'group' => 'platforms', 'limit' => 5]);
+        if($aOverview === false || $aPlatforms === false)
+            return '';
 
         return [
-            'content' => $this->_oTemplate->getStudioDashboardTraffic($oReports->getOverview($oFilter), $oReports->getRealtime($oFilter, ['limit' => 0]), $oReports->getTop($oFilter, ['group' => 'platforms', 'limit' => 5])),
+            'content' => $this->_oTemplate->getStudioDashboardTraffic($aOverview, $this->getReports()->getRealtime($this->getFilter(['range' => '7d']), ['limit' => 0]), $aPlatforms),
         ];
     }
 
@@ -1193,6 +1231,8 @@ class BxAnalyticsModule extends BxDolModule
                 $iDeleted += $iBatch;
             } while($iBatch >= $CNF['PRUNING_BATCH'] && time() < $iDeadline);
 
+        $this->pruneReportCache(time());
+
         try {
             $oRevenue = $this->getRevenue();
             if($oRevenue->getBackfillStatus()['state'] == 'running')
@@ -1209,6 +1249,11 @@ class BxAnalyticsModule extends BxDolModule
      * What pruning deletes and from when: a BxAnalyticsDb delete method => the time before
      * which its rows go. Vitals have a shorter retention of their own (a row per sampled
      * page view), never longer than the rest. Rate limit counters are kept for 2 hours.
+     * Error groups that go on happening keep their sample stack as long as the rest.
+     *
+     * The run's time limit is shared, in this order: the small tables that grow fastest
+     * come first, so a backlog of events (after the retention was lowered) can't leave the
+     * rate limit counters growing for hours.
      *
      * @param int $iNow the time pruning runs at
      */
@@ -1217,13 +1262,14 @@ class BxAnalyticsModule extends BxDolModule
         $iBefore = (int)$iNow - 86400 * $this->_oConfig->getRetentionDays();
 
         return [
-            'deleteEventsBefore' => $iBefore,
-            'deleteSessionsBefore' => $iBefore,
-            'deleteErrorHitsBefore' => $iBefore,
-            'deleteErrorGroupsBefore' => $iBefore,
-            'deleteVitalsBefore' => (int)$iNow - 86400 * $this->_oConfig->getVitalsRetentionDays(),
             // the collector's rate limit counters: the last full hour and the running one
             'deleteLimitsBefore' => (int)$iNow - 7200,
+            'deleteVitalsBefore' => (int)$iNow - 86400 * $this->_oConfig->getVitalsRetentionDays(),
+            'deleteErrorHitsBefore' => $iBefore,
+            'deleteErrorGroupsBefore' => $iBefore,
+            'clearErrorStacksBefore' => $iBefore,
+            'deleteEventsBefore' => $iBefore,
+            'deleteSessionsBefore' => $iBefore,
         ];
     }
 
@@ -1439,7 +1485,7 @@ class BxAnalyticsModule extends BxDolModule
         // comes from the cache for a few minutes; live figures never do
         $sCache = $oReports->isLive($sReport, $aParams) ? '' : $this->_getReportCacheName($sReport, $oFilter, $aParams);
         if($sCache !== '') {
-            $aCached = $this->_oDb->getCache($sCache, '', $this->_oConfig->CNF['REPORT_CACHE_TTL']);
+            $aCached = $this->_getReportCache($sCache);
             if(is_array($aCached))
                 return $aCached;
         }
@@ -1451,7 +1497,7 @@ class BxAnalyticsModule extends BxDolModule
         $aData['filter'] = $oFilter->getParams();
 
         if($sCache !== '')
-            $this->_oDb->setCache($sCache, $aData, $this->_oConfig->CNF['REPORT_CACHE_TTL']);
+            $this->_setReportCache($sCache, $aData);
 
         return $aData;
     }
@@ -1463,9 +1509,83 @@ class BxAnalyticsModule extends BxDolModule
      */
     public function cleanReportCache()
     {
-        $oCache = $this->_oDb->getDbCacheObject();
+        $oCache = $this->_getReportCacheEngine();
+        if(!$oCache)
+            $oCache = $this->_oDb->getDbCacheObject();
         if($oCache)
             $oCache->removeAllByPrefix('db_' . $this->_oConfig->CNF['REPORT_CACHE_PREFIX']);
+    }
+
+    /**
+     * Delete cached reports past their time to live, in files: a file is deleted when its own
+     * report is read again, and most never are (yesterday's filters, a tab opened once).
+     * Other cache engines expire entries themselves.
+     *
+     * @param int $iNow the current time
+     * @return int files deleted
+     */
+    public function pruneReportCache($iNow)
+    {
+        $oCache = $this->_getReportCacheEngine();
+        if(!$oCache)
+            $oCache = $this->_oDb->getDbCacheObject();
+        if(!($oCache instanceof BxDolCacheFile) || !($rDir = opendir(BX_DIRECTORY_PATH_CACHE)))
+            return 0;
+
+        $sPrefix = 'db_' . $this->_oConfig->CNF['REPORT_CACHE_PREFIX'];
+        $iBefore = (int)$iNow - $this->_oConfig->CNF['REPORT_CACHE_TTL'];
+
+        $iDeleted = 0;
+        while(($sFile = readdir($rDir)) !== false)
+            if(bx_mb_strpos($sFile, $sPrefix) === 0 && @filemtime(BX_DIRECTORY_PATH_CACHE . $sFile) < $iBefore && $oCache->delData($sFile))
+                $iDeleted++;
+        closedir($rDir);
+
+        return $iDeleted;
+    }
+
+    /**
+     * The cache of reports: the database cache's engine, but with files as plain text. The
+     * file engine writes PHP scripts read with include(), and opcache would keep a compiled
+     * copy of every report (a new one for every filter, page and day) until it ran out of
+     * memory. Null when the database cache is off.
+     */
+    protected function _getReportCacheEngine()
+    {
+        if(!getParam('sys_db_cache_enable'))
+            return null;
+
+        $oCache = $this->_oDb->getDbCacheObject();
+
+        return $oCache instanceof BxDolCacheFile ? bx_instance('BxDolCacheFileHtml') : $oCache;
+    }
+
+    /**
+     * A cached report, as JSON after REPORT_CACHE_GUARD, or null.
+     */
+    protected function _getReportCache($sName)
+    {
+        $oCache = $this->_getReportCacheEngine();
+        if(!$oCache)
+            return null;
+
+        $sData = $oCache->getData($this->_oDb->genDbCacheKey($sName), $this->_oConfig->CNF['REPORT_CACHE_TTL']);
+        if(!is_string($sData) || bx_mb_strpos($sData, self::REPORT_CACHE_GUARD) !== 0)
+            return null;
+
+        $aData = json_decode(get_mb_substr($sData, get_mb_len(self::REPORT_CACHE_GUARD), get_mb_len($sData)), true);
+
+        return is_array($aData) ? $aData : null;
+    }
+
+    protected function _setReportCache($sName, $aData)
+    {
+        $oCache = $this->_getReportCacheEngine();
+        $sData = json_encode($aData, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRESERVE_ZERO_FRACTION);
+        if(!$oCache || $sData === false)
+            return false;
+
+        return $oCache->setData($this->_oDb->genDbCacheKey($sName), self::REPORT_CACHE_GUARD . $sData, $this->_oConfig->CNF['REPORT_CACHE_TTL']);
     }
 
     /**
