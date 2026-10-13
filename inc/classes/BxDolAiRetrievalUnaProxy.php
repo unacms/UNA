@@ -11,7 +11,7 @@
 
 class BxDolAiRetrievalUnaProxy implements NeuronAI\RAG\Retrieval\RetrievalInterface
 {
-    public const URL = 'https://unacms.com/m/ai_proxy/v1/knowledge/search';
+    public const URL = 'https://api.unacms.com/m/ai_proxy/v1/knowledge/search';
 
     /**
      * @param callable(string, array): array{code:int, body:string}|null $fPost
