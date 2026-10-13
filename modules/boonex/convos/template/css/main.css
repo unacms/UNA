@@ -15,6 +15,16 @@
 .bx-cnv-collaborator.bx-def-margin-sec-right-auto {
     float:right;
 }
+.bx-cnv-collaborator .bx-def-unit-alert {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.bx-cnv-collaborator .bx-def-unit-alert svg {
+    display: inline-block;
+    width: 0.75rem;
+    height: 0.75rem;
+}
 .bx-cnv-collaborator .bx-cnv-collaborator-last-replier {
     left: -2px;
     right: auto;
@@ -25,7 +35,7 @@
     display:none;
 }
 
-.bx-grid-table .bx-cnv-collaborator-author {
+.bx-grid-table .bx-cnv-collaborator.bx-cnv-collaborator-author {
     display:inline;
     display:inline-block;
 }

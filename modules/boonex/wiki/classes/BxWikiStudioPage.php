@@ -17,7 +17,7 @@ class BxWikiStudioPage extends BxTemplStudioModule
 
         $this->aMenuItems = array(
             'settings' => ['name' => 'settings', 'icon' => 'cogs', 'title' => '_adm_lmi_cpt_settings'],
-            'import' => ['name' => 'import', 'icon' => 'fab github', 'title' => '_bx_wiki_import'],
+            'import' => ['name' => 'import', 'icon' => 'download', 'title' => '_bx_wiki_import'],
         );
     }
 
