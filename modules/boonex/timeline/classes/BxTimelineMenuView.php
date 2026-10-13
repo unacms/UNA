@@ -25,6 +25,7 @@ class BxTimelineMenuView extends BxTemplMenuCustom
         parent::__construct($aObject, $this->_oModule->_oTemplate);
 
         $this->_bShowDivider = false;
+        $this->_bCueSelect = true; // the feed switcher is a row of tabs (interface sounds)
     }
 }
 

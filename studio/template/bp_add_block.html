@@ -9,6 +9,7 @@
                         bx_loading($("#__form_id__"), true);
                     },
                     success: function(oData) {
+                        bx_sound_form_reply(oData);
                         $(".bx-popup-applied:visible").dolPopupHide();
                         oBxDolStudioPage.processJson(oData);
                     }

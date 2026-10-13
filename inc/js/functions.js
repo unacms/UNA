@@ -45,6 +45,10 @@ function processJsonData(oData) {
 	        eval(oData.eval);
 	};
 
+	// A reply can name its interface sound: 'error', or {cue: 'success', emphasis: 'subtle'}. It plays now, before any alert.
+	if(oData && oData.cue != undefined)
+		bx_sound(typeof(oData.cue) == 'object' ? oData.cue.cue : oData.cue, typeof(oData.cue) == 'object' ? oData.cue : undefined);
+
 	if(oData && oData.object != undefined && oData.grid != undefined)
 		if(glGrids[oData.object] != undefined)
 			glGrids[oData.object].processJson(oData);
@@ -748,6 +752,9 @@ function bx_menu_slide_inline (sMenu, e, sPosition) {
         sPosition = 'block';
 
     if (eSlider.is(':visible')) {
+        if(typeof(bx_sound) == 'function')
+            bx_sound('close', {emphasis: 'subtle'});
+
         fClose();
         $(e).focus();
 
@@ -759,6 +766,10 @@ function bx_menu_slide_inline (sMenu, e, sPosition) {
 
         $(document).off('click.bx-sliding-menu touchend.bx-sliding-menu');
         $(window).off('resize.bx-sliding-menu');
+
+        // Some templates (Artificer) draw a sidebar instead and keep this call on the trigger: no menu, no sound.
+        if(eSlider.length && typeof(bx_sound) == 'function')
+            bx_sound('open', {emphasis: 'subtle'});
 
         fOpen();
         eSlider.find('.bx-popup-content a:first').focus();
@@ -804,6 +815,10 @@ function bx_menu_slide_close_all_opened () {
  */
 function bx_menu_show_live_update(oData) {
     var sSelectorAddon = '.bx-menu-item-addon';
+
+    // Something arrived (a notification, a message, a request): one ready, however many counters went up.
+    if(parseInt(oData.count_new) > parseInt(oData.count_old))
+        bx_sound('ready');
 
     //--- Update Child Menu Item
     if(oData.mi_child) {
@@ -1726,6 +1741,161 @@ function bx_set_color_scheme_html()
         $('html').addClass('dark')
     else
         $('html').removeClass('dark')
+}
+
+/*
+ * Interface sounds are Cuelume's cues (plugins_public/cuelume, MIT): one cue per
+ * interface job, picked by the "Which cue?" table at https://cuelume.dev/agents.md.
+ * Controls carry data-cuelume-* attributes, which Cuelume's bind() plays as they
+ * are pressed; outcomes call bx_sound(). Nothing plays on hover, on page load, or
+ * per item of a burst. The module is loaded only where the site or Studio option
+ * is on (BxBaseFunctions::getInjHeadSounds), and a visitor can turn sounds off for
+ * this browser (bx_sound_toggle).
+ */
+var glBxSounds = {url: '', module: null, readyAt: 0};
+
+function bx_sound_init(sUrl)
+{
+    glBxSounds.url = sUrl;
+    if(bx_sound_is_on())
+        bx_sound_load();
+
+    $(document).ready(function() {
+        bx_sound_mark_switches();
+    });
+}
+
+function bx_sound_load()
+{
+    if(!glBxSounds.url)
+        return null;
+
+    if(!glBxSounds.module)
+        glBxSounds.module = import(glBxSounds.url).then(function(oCuelume) {
+            oCuelume.bind();
+            return oCuelume;
+        });
+
+    return glBxSounds.module;
+}
+
+function bx_sound_is_on()
+{
+    if(!glBxSounds.url)
+        return false;
+
+    try {
+        return localStorage.getItem('bx-sounds') !== 'off';
+    }
+    catch(e) {
+        return true;
+    }
+}
+
+/**
+ * Play the cue for an outcome, e.g. bx_sound('success', {emphasis: 'subtle'}) once a form is saved.
+ * Arrivals ('ready') that come together, like several live updates in one poll, play once.
+ */
+function bx_sound(sCue, oOptions)
+{
+    if(!bx_sound_is_on())
+        return;
+
+    if(sCue == 'ready') {
+        var iNow = Date.now();
+        if(iNow - glBxSounds.readyAt < 2000)
+            return;
+
+        glBxSounds.readyAt = iNow;
+    }
+
+    bx_sound_load().then(function(oCuelume) {
+        oCuelume.play(sCue, oOptions);
+    }, function() {});
+}
+
+/**
+ * The reply to an AJAX form: error when UNA refuses it (a non-zero code, or the form or a popup back with a field
+ * error), a subtle success otherwise.
+ */
+function bx_sound_form_reply(oData)
+{
+    if(!oData)
+        return;
+
+    var fHasError = function(sHtml) {
+        return typeof(sHtml) == 'string' && $('<div>' + sHtml + '</div>').find('.bx-form-warn').filter(function() {
+            return $.trim($(this).text()).length > 0;
+        }).length > 0;
+    };
+
+    var bRejected = (oData.code != undefined && parseInt(oData.code) != 0) || fHasError(oData.form) || fHasError(oData.popup && typeof(oData.popup) == 'object' ? oData.popup.html : oData.popup);
+
+    if(bRejected)
+        bx_sound('error');
+    else
+        bx_sound('success', {emphasis: 'subtle'});
+}
+
+/**
+ * The visitor's Sounds switch: turns interface sounds off or on in this browser.
+ */
+function bx_sound_toggle(oSwitch)
+{
+    if(!glBxSounds.url)
+        return;
+
+    var bOn = !bx_sound_is_on();
+    try {
+        if(bOn)
+            localStorage.removeItem('bx-sounds');
+        else
+            localStorage.setItem('bx-sounds', 'off');
+    }
+    catch(e) {}
+
+    bx_sound_mark_switches();
+
+    bx_sound_load().then(function(oCuelume) {
+        oCuelume.setEnabled(bOn);
+
+        // Turning off is heard as silence; turning on answers from the same click.
+        if(bOn)
+            oCuelume.play('toggle');
+    }, function() {});
+}
+
+/**
+ * Show the visitor's setting on every Sounds switch: its ARIA state, and its icon. Studio's icon carries both the
+ * sound waves and the mute cross (.bx-sounds-icon-on / .bx-sounds-icon-off); the site's font icon turns from
+ * volume-up to volume-mute (the Lucide iconset redraws it from a new <i>).
+ */
+function bx_sound_mark_switches()
+{
+    var bOn = bx_sound_is_on();
+    var sIcon = bOn ? 'volume-up' : 'volume-mute';
+    var bRedraw = false;
+
+    $('[data-bx-sounds-switch]').each(function() {
+        $(this).attr($(this).attr('role') == 'switch' ? 'aria-checked' : 'aria-pressed', bOn ? 'true' : 'false');
+        $(this).find('.bx-sounds-icon-on').css('display', bOn ? '' : 'none');
+        $(this).find('.bx-sounds-icon-off').css('display', bOn ? 'none' : '');
+
+        $(this).find('.sys-icon.volume-up, .sys-icon.volume-mute').each(function() {
+            if($(this).hasClass(sIcon))
+                return;
+
+            if(this.tagName.toLowerCase() == 'i')
+                $(this).removeClass('volume-up volume-mute').addClass(sIcon);
+            else {
+                $(this).replaceWith($('<i>').addClass('sys-icon ' + sIcon));
+                bRedraw = true;
+            }
+        });
+    });
+
+    if(bRedraw && typeof(bx_iconset_init_lucide) == 'function')
+        bx_iconset_init_lucide();
 }
 
 function bx_is_mouse()

@@ -62,9 +62,26 @@ class BxBaseMenuAccountNotifications extends BxTemplMenu
                 if(!$oPayments->isActive())
                     return false;
                 break;
+
+            case 'sounds':
+                if(getParam('sys_ui_sounds') != 'on')
+                    return false;
+                break;
         }
 
         return true;
+    }
+
+    /**
+     * Sounds is the visitor's own on/off switch for interface sounds in this browser; bx_sound_mark_switches()
+     * sets its state on load.
+     */
+    protected function _getMenuItem ($a)
+    {
+        if($a['name'] == 'sounds')
+            $a['attrs_add'] = trim((!empty($a['attrs_add']) ? $a['attrs_add'] : '') . ' role="switch" aria-checked="true" data-bx-sounds-switch="1"');
+
+        return parent::_getMenuItem($a);
     }
 
     protected function _getTmplVarsAddon($mixedAddon, $aMenuItem)

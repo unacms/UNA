@@ -919,6 +919,25 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
         return $sContent;
     }
 
+    /**
+     * Interface sounds: Cuelume's cues (plugins_public/cuelume, MIT), loaded as a module and bound once when the
+     * site's option is on. Studio checks its own option. See bx_sound_init in inc/js/functions.js.
+     */
+    protected function getInjHeadSounds()
+    {
+        if(getParam($this->getSoundsOption()) != 'on')
+            return '';
+
+        return $this->_oTemplate->parseHtmlByName('sounds_init.html', [
+            'url' => bx_js_string(BX_DOL_URL_PLUGINS_PUBLIC . 'cuelume/index.js', BX_ESCAPE_STR_APOS)
+        ]);
+    }
+
+    protected function getSoundsOption()
+    {
+        return 'sys_ui_sounds';
+    }
+
     protected function getInjHeadLiveUpdates() 
     {
         $sContent = '';

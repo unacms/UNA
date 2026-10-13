@@ -47,6 +47,13 @@ BxDolConnection.prototype.connect = function(oLink, sAction, iContentId, bConfir
                 if(typeof(oData) != 'object')
                     return;
 
+                // Following or befriending is a toggle: on when made, off when removed or declined.
+                if(typeof(bx_sound) == 'function')
+                    if(oData.err)
+                        bx_sound('error');
+                    else
+                        bx_sound('toggle', {direction: /^(remove|reject|cancel|unfollow|unsubscribe)/i.test(sAction) ? 'back' : 'forward'});
+
                 if(oData.err)
                     bx_alert(oData.msg);
                 else {

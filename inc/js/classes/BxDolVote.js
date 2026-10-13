@@ -67,6 +67,8 @@ BxDolVote.prototype.vote = function(oLink, iValue, onComplete)
     	this._sActionsUrl,
     	oParams,
     	function(oData) {
+            $this._cueOnVote(oData);
+
             if(oData && oData.message != undefined)
                 bx_alert(oData.message, function() {
                     $this.onVote(oLink, oData, onComplete);
@@ -76,6 +78,20 @@ BxDolVote.prototype.vote = function(oLink, iValue, onComplete)
         },
         'json'
     );
+};
+
+/**
+ * The interface sound of the visitor's own vote: a like is a toggle, on when given and off when taken back.
+ */
+BxDolVote.prototype._cueOnVote = function(oData)
+{
+    if(typeof(bx_sound) != 'function' || !oData)
+        return;
+
+    if(oData.code != undefined && parseInt(oData.code) != 0)
+        bx_sound('error');
+    else
+        bx_sound('toggle', {direction: oData.voted ? 'forward' : 'back'});
 };
 
 BxDolVote.prototype.onVoteAs = function(oData)

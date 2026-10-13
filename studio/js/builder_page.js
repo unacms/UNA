@@ -41,9 +41,13 @@ function BxDolStudioBuilderPage(oOptions) {
             connectWith: $this.aSortingConf.parent,
             start: function(oEvent, oUi) {
                 oUi.item.addClass('adm-bp-block-dragging').width(300);
+
+                bx_sound('select'); // picked up
             },
             stop: function(oEvent, oUi) {
                 oUi.item.removeClass('adm-bp-block-dragging');
+
+                bx_sound('tap', {emphasis: 'strong'}); // dropped
                 $this.reorder(oUi.item);
             }
     	});
@@ -142,6 +146,7 @@ BxDolStudioBuilderPage.prototype.reorder = function(oDraggable) {
         },
         function(oData) {
             if(oData.code != 0) {
+                bx_sound('error');
                 bx_alert(oData.message);
                 return;
             }
@@ -240,6 +245,8 @@ BxDolStudioBuilderPage.prototype.deleteBlock = function(iId) {
 };
 
 BxDolStudioBuilderPage.prototype.onDeleteBlock = function(iId, oData) {
+    bx_sound('close', {emphasis: 'strong'}); // a confirmed delete
+
     bx_loading(this.oHtmlIds['edit_block_popup_id'], false);
     $('.bx-popup-applied:visible').dolPopupHide();
 
@@ -254,6 +261,8 @@ BxDolStudioBuilderPage.prototype.onDeleteBlock = function(iId, oData) {
 BxDolStudioBuilderPage.prototype.onChangeSettingGroup = function(sName, oLink) {
     var $this = this;
 
+    bx_sound('select');
+
     var sClass = 'bx-menu-tab-active';
     $(oLink).parents('.bx-std-pmen-item:first').addClass(sClass).siblings('.bx-std-pmen-item').removeClass(sClass);
 
@@ -267,6 +276,8 @@ BxDolStudioBuilderPage.prototype.onChangeSettingGroup = function(sName, oLink) {
 };
 
 BxDolStudioBuilderPage.prototype.onChangeLayout = function(iId, oLink) {
+    bx_sound('select');
+
     $('#' + this.oHtmlIds['settings_group_id'] + 'layout > .adm-bp-layout-active').removeClass('adm-bp-layout-active');
     $('#' + this.oHtmlIds['layout_id'] + iId).addClass('adm-bp-layout-active');
     $("[name = 'layout_id']").val(iId);

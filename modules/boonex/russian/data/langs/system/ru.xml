@@ -1871,6 +1871,8 @@
     <string name="_adm_stg_inf_option_sys_live_search_limit"><![CDATA[Установите максимальное количество результатов, отображаемых в поле предложений интерактивного поиска.]]></string>
     <string name="_adm_stg_cpt_option_sys_profiles_search_limit"><![CDATA[Результаты поиска профилей]]></string>
     <string name="_adm_stg_inf_option_sys_profiles_search_limit"><![CDATA[Установите максимальное количество результатов, отображаемых на странице поиска профиля.]]></string>
+    <string name="_adm_stg_inf_option_sys_std_ui_sounds"><![CDATA[Короткие тихие звуки нажатий, меню и результатов действий в Студии (Cuelume). Каждый администратор может выключить их в меню аккаунта.]]></string>
+    <string name="_adm_stg_inf_option_sys_ui_sounds"><![CDATA[Короткие тихие звуки нажатий, меню и результатов действий (Cuelume). Участники могут выключить их для себя в меню аккаунта.]]></string>
     <string name="_adm_stg_inf_option_sys_vote_reactions_default"><![CDATA[Ставится одним нажатием, остальные реакции открываются наведением или долгим нажатием. Если не выбрана, кнопка реакций всегда открывает выбор.]]></string>
     <string name="_adm_stg_inf_option_sys_vote_reactions_mode"><![CDATA[Одна: только реакция по умолчанию, ставится одним нажатием. Несколько: короткий список реакций на выбор. Много: любой эмодзи из полного списка.]]></string>
     <string name="_adm_stg_inf_option_sys_vote_reactions_per_user"><![CDATA[Сколько разных реакций один человек может поставить одному материалу. Работает в режимах «Несколько» и «Много».]]></string>
@@ -1913,6 +1915,7 @@
     <string name="_adm_stg_cpt_option_sys_enable_post_to_context_for_privacy"><![CDATA[Включить возможность добавления контента в контекст, используя поле "Конфиденциальность"]]></string>
     <string name="_adm_stg_cpt_option_sys_hide_post_to_context_for_privacy"><![CDATA[Скрыть из поля "Конфиденциальность" возможность добавления контента в контекст модулей]]></string>
     <string name="_adm_stg_cpt_option_sys_treat_cxt_in_cxt_as_cnt"><![CDATA[Рассматривать контекст, размещенный в контексте, как контент]]></string>
+    <string name="_adm_stg_cpt_option_sys_ui_sounds"><![CDATA[Звуки интерфейса на сайте]]></string>
     <string name="_adm_stg_cpt_option_sys_check_fan_in_parent_context"><![CDATA[Только для участников родительской группы (события, курса и т.п.)]]></string>
     <string name="_adm_stg_cpt_option_sys_search_keyword_min_len"><![CDATA[Минимальная длина слова в поиске по сайту]]></string>
     <string name="_adm_stg_cpt_option_sys_profile_bot"><![CDATA[Профиль системного бота]]></string>
@@ -1994,6 +1997,7 @@
     <string name="_adm_stg_cpt_option_sys_std_show_header_right_search"><![CDATA[Студия: Показать поиск в заголовке справа]]></string>
     <string name="_adm_stg_cpt_option_sys_std_show_header_right_site"><![CDATA[Студия: Показывать ссылку 'сайт' в заголовке]]></string>
     <string name="_adm_stg_cpt_option_sys_std_show_launcher_left"><![CDATA[Студия: Показать левую область с меню в лаунчере]]></string>
+    <string name="_adm_stg_cpt_option_sys_std_ui_sounds"><![CDATA[Звуки интерфейса в Студии]]></string>
     <string name="_adm_stg_cpt_option_sys_std_pgt_etemplates_editor"><![CDATA[Полиглот в Студии: Включить визуальный редактор]]></string>
 
     <string name="_adm_stg_cpt_option_sys_bg_jobs_process_per_run"><![CDATA[Фоновые задачи: Количество заданий для обработки за один запуск]]></string>
@@ -3475,6 +3479,7 @@
     <string name="_sys_menu_item_title_social_sharing_facebook"><![CDATA[Поделиться в Facebook]]></string>
     <string name="_sys_menu_item_title_social_sharing_twitter"><![CDATA[Поделиться в Twitter]]></string>
     <string name="_sys_menu_item_title_social_sharing_pinterest"><![CDATA[Поделиться в Pinterest]]></string>
+    <string name="_sys_menu_item_title_sounds"><![CDATA[Звуки]]></string>
     <string name="_sys_menu_item_title_sm_in_reply_to"><![CDATA[В ответ к]]></string>
     <string name="_sys_menu_item_title_sm_author"><![CDATA[Автор]]></string>
     <string name="_sys_menu_item_title_sm_date"><![CDATA[Дата]]></string>
@@ -3605,6 +3610,7 @@
     <string name="_sys_menu_item_title_system_social_sharing_facebook"><![CDATA[Поделиться в Facebook]]></string>
     <string name="_sys_menu_item_title_system_social_sharing_twitter"><![CDATA[Поделиться в Twitter]]></string>
     <string name="_sys_menu_item_title_system_social_sharing_pinterest"><![CDATA[Поделиться в Pinterest]]></string>
+    <string name="_sys_menu_item_title_system_sounds"><![CDATA[Звуки]]></string>
     <string name="_sys_menu_item_title_system_sm_in_reply_to"><![CDATA[В ответ к]]></string>
     <string name="_sys_menu_item_title_system_sm_author"><![CDATA[Автор]]></string>
     <string name="_sys_menu_item_title_system_sm_date"><![CDATA[Дата]]></string>
@@ -3768,7 +3774,9 @@
     <string name="_sys_menu_item_title_system_sa_account"><![CDATA[Аккаунт]]></string>
     <string name="_sys_menu_item_title_sa_account"><![CDATA[{member_display_name}]]></string>
     <string name="_sys_menu_item_title_system_sa_site"><![CDATA[Открыть веб-приложение]]></string>
+    <string name="_sys_menu_item_title_system_sa_sounds"><![CDATA[Звуки]]></string>
     <string name="_sys_menu_item_title_sa_site"><![CDATA[Открыть веб-приложение]]></string>
+    <string name="_sys_menu_item_title_sa_sounds"><![CDATA[Звуки]]></string>
     <string name="_sys_menu_item_title_system_sa_edit"><![CDATA[Управление приложениями]]></string>
     <string name="_sys_menu_item_title_sa_edit"><![CDATA[Управление приложениями]]></string>
     <string name="_sys_menu_item_title_system_sa_tour"><![CDATA[Вводный тур]]></string>

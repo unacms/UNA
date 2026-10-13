@@ -46,6 +46,7 @@ BxDolStudioModule.prototype.activate = function(oCheckbox, sName, iWidgetId) {
             $('.bx-popup-applied:visible').dolPopupHide();
 
             if(oData.code != 0) {
+                bx_sound('error'); // the switch goes back
                 $(oCheckbox).attr('checked', 'checked').trigger('enable');
                 return;
             }

@@ -31,6 +31,10 @@ function bx_get_js_result($aParams)
     if(!empty($aParams['eval']))
         $aResult['eval'] = $aParams['eval'];
 
+    // the reply's interface sound, played by processJsonData: 'error' or ['cue' => 'success', 'emphasis' => 'subtle']
+    if(!empty($aParams['cue']))
+        $aResult['cue'] = $aParams['cue'];
+
     $sResult = "window.parent.processJsonData(" . json_encode($aResult) . ");";
     if(isset($aParams['on_page_load']) && $aParams['on_page_load'] === true)
         $sResult = "$(document).ready(function() {" . $sResult . "});";

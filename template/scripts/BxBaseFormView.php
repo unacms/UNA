@@ -656,7 +656,8 @@ BLAH;
 			            },
 			            success: function (oData) {
 			            	bx_loading($("form#{$this->id}"), false);
-			
+
+			                bx_sound_form_reply(oData);
 			                processJsonData(oData);
 			            }
 			        });
@@ -1408,13 +1409,16 @@ BLAH;
             case 'datetime':
             case 'number':
             case 'time':
-            case 'checkbox':
-            case 'radio':
             case 'image':
             case 'slider':
             case 'doublerange':
             case 'hidden':
                 $sInput = $this->genInputStandard($aInput);
+            break;
+
+            case 'checkbox':
+            case 'radio':
+                $sInput = $this->genInputCheckbox($aInput); // a standard input that also carries its interface sound
             break;
 
             case 'phone':
@@ -1718,6 +1722,9 @@ BLAH;
     
     function genInputCheckbox(&$aInput, $bWrapped = false)
     {
+        // Interface sounds (Cuelume): a checkbox toggles, a radio selects.
+        $this->_addInputCue($aInput, $aInput['type'] == 'radio' ? 'data-cuelume-select' : 'data-cuelume-toggle');
+
         $sInput = $this->genInputStandard($aInput);
 
         return $bWrapped ? $this->genWrapperInput($aInput, $sInput) : $sInput;
@@ -1731,6 +1738,9 @@ BLAH;
      */
     function genInputButton(&$aInput)
     {
+        // Interface sounds (Cuelume): a button taps, subtly unless it submits the form.
+        $this->_addInputCue($aInput, 'data-cuelume-tap', $aInput['type'] == 'submit' ? '' : 'subtle');
+
         $aAttrs = $this->_genInputButtonAttrs($aInput);
 
         $sClassAdd = "bx-def-font-inputs bx-form-input-{$aInput['type']} bx-btn";
@@ -1751,6 +1761,23 @@ BLAH;
         ]);
     }
     
+    /**
+     * Mark an input for Cuelume's bind() (see bx_sound_init), unless the field picked its own cue.
+     */
+    protected function _addInputCue(&$aInput, $sAttr, $sEmphasis = '')
+    {
+        $aAttrs = !empty($aInput['attrs']) && is_array($aInput['attrs']) ? $aInput['attrs'] : [];
+        foreach($aAttrs as $sKey => $mixedValue)
+            if(strncmp($sKey, 'data-cuelume-', 13) === 0)
+                return;
+
+        $aAttrs[$sAttr] = '';
+        if($sEmphasis)
+            $aAttrs['data-cuelume-emphasis'] = $sEmphasis;
+
+        $aInput['attrs'] = $aAttrs;
+    }
+
     protected function _genInputButtonAttrs(&$aInput)
     {
         $aAttrs = !empty($aInput['attrs']) ? $aInput['attrs'] : [];

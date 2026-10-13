@@ -25,7 +25,8 @@
         onShow: function () {},
         onBeforeHide: function () {},
         onHide: function () {},
-        speed: 200
+        speed: 200,
+        cue: true // play the open/close interface sound (see bx_sound); alerts report outcomes, which play their own
     }; 
 
     $.fn.dolPopupDefaultPointerOptions = {
@@ -80,6 +81,26 @@
         return widthNoScroll - widthWithScroll;
     };
 
+    /**
+     * A popup sounds as it opens and when the visitor closes it (close element, Escape, outer click, its trigger).
+     * One closed from code after a save stays quiet: the save plays its own cue. Menus anchored to a pointer are
+     * frequent, so they are subtle.
+     */
+    function _dolPopupCue (o, sCue, $el) {
+        if (!o || o.cue === false || typeof(bx_sound) != 'function')
+            return;
+
+        // A press on the trigger of an open popup is an outer mousedown and then the trigger's own click: one close.
+        if ($el) {
+            var iNow = Date.now();
+            if (sCue == 'close' && iNow - ($el.data('bx-popup-cue-closed') || 0) < 500)
+                return;
+            $el.data('bx-popup-cue-closed', sCue == 'close' ? iNow : 0);
+        }
+
+        bx_sound(sCue, {emphasis: false != o.pointer ? 'subtle' : 'normal'});
+    };
+
     function _dolPopupLockScreen (bLock) {
         var eBody = $(document.body);
         var eBodyHtml = $("html, body");
@@ -126,8 +147,10 @@
                 height: $(window).height()
             });
         }).on('keyup.popup', function(oEvent) {
-            if(o.closeOnOuterClick && oEvent.which == 27)
+            if(o.closeOnOuterClick && oEvent.which == 27) {
+                _dolPopupCue(o, 'close', $this);
                 $this.dolPopupHide();
+            }
         });
 
         return this.each(function() {
@@ -140,9 +163,12 @@
                 return false;
 
             if ($el.is(":visible")) { // if popup is shown - hide it
+                _dolPopupCue($el.data('bx-popup-options') || o, 'close', $el);
                 $el.dolPopupHide();
                 return true;
             } 
+
+            _dolPopupCue(o, 'open', $el);
 
             if (false != o.pointer)
                 $el.addClass('bx-popup-with-pointer'); // to make all popups with pointer not responsive add: .removeClass('bx-popup-responsive')
@@ -187,6 +213,7 @@
                         $(o.closeElement, $el)
                             .css('cursor', 'hand')
                             .click(function() {
+                                _dolPopupCue($el.data('bx-popup-options'), 'close', $el);
                                 $el.dolPopupHide();
                             });
                     }
@@ -196,6 +223,7 @@
                         var fCallback = function(e) {
                             if ($el.hasClass('bx-popup-applied') && $el.is(':visible')) {
                                 if ($(e.target).parents('#' + $el.attr('id')).length == 0) {
+                                    _dolPopupCue($el.data('bx-popup-options'), 'close', $el);
                                     $el.dolPopupHide();
                                 }
                             }
@@ -710,6 +738,7 @@
                 oBtnOk.html(sDefBtnOkTitle);
         };
 
+        options.cue = false;
         oAPopup.dolPopup(options);
     };
 
@@ -758,6 +787,7 @@
             if(bFuncNo)
                 options.onClickNo(oCPopup);
 
+            _dolPopupCue(options, 'close', oCPopup);
             oCPopup.dolPopupHide();
         });
 

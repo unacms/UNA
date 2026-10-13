@@ -24,13 +24,16 @@ class BxBaseStudioMenuAccountPopup extends BxDolStudioMenuAccountPopup
     }
 
     /**
-     * The signed-in name is rendered as a label, the theme item as a segmented control and Manage Apps as a toggle button
-     * (it switches edit mode on the launcher); everything else stays a link.
+     * The signed-in name is rendered as a label, the theme item as a segmented control, and Manage Apps (it switches
+     * edit mode on the launcher) and Sounds as toggle buttons; everything else stays a link.
      * The tour item follows the 'site_tour_studio' setting, like the launcher tour itself.
      */
     protected function _getMenuItem ($aItem)
     {
         if($aItem['name'] == 'tour' && getParam('site_tour_studio') != 'on')
+            return false;
+
+        if($aItem['name'] == 'sounds' && getParam('sys_std_ui_sounds') != 'on')
             return false;
 
         $aItem = parent::_getMenuItem($aItem);
@@ -44,7 +47,8 @@ class BxBaseStudioMenuAccountPopup extends BxDolStudioMenuAccountPopup
             'class_add' => $aItem['class_add'],
             'title' => $aItem['title'],
             'link' => $aItem['link'],
-            'attrs' => $aItem['attrs'],
+            // Sounds is the visitor's on/off switch for interface sounds; bx_sound_mark_switches() sets aria-pressed.
+            'attrs' => $aItem['attrs'] . ($aItem['name'] == 'sounds' ? ' data-bx-sounds-switch="1"' : ''),
             'onclick_attr' => !empty($aItem['onclick']) ? 'onclick="' . bx_html_attribute($aItem['onclick']) . '"' : '',
             'icon_html' => $aItem['bx_if:image_inline']['condition'] ? $aItem['bx_if:image_inline']['content']['image'] : $this->getMenuIconHtml($aItem['icon']),
         ];
@@ -59,8 +63,8 @@ class BxBaseStudioMenuAccountPopup extends BxDolStudioMenuAccountPopup
         $aBlocks = [
             'show_label' => $sName == 'account',
             'show_theme' => $sName == 'scheme',
-            'show_button' => $sName == 'edit',
-            'show_link' => !in_array($sName, ['account', 'scheme', 'edit']),
+            'show_button' => in_array($sName, ['edit', 'sounds']),
+            'show_link' => !in_array($sName, ['account', 'scheme', 'edit', 'sounds']),
         ];
         foreach($aBlocks as $sBlock => $bCondition)
             $aItem['bx_if:' . $sBlock] = [

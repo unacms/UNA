@@ -542,6 +542,8 @@ INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `info`, `value`, `ty
 (@iCategoryId, 'site_email_notify', '_adm_stg_cpt_option_site_email_notify', '_adm_stg_inf_option_site_email_notify', 'admin@example.com', 'digit', '', '', '', 4),
 (@iCategoryId, 'site_tour_home', '_adm_stg_cpt_option_site_tour_home', '_adm_stg_inf_option_site_tour_home', 'on', 'checkbox', '', '', '', 6),
 (@iCategoryId, 'site_tour_studio', '_adm_stg_cpt_option_site_tour_studio', '_adm_stg_inf_option_site_tour_studio', 'on', 'checkbox', '', '', '', 7),
+(@iCategoryId, 'sys_ui_sounds', '_adm_stg_cpt_option_sys_ui_sounds', '_adm_stg_inf_option_sys_ui_sounds', 'on', 'checkbox', '', '', '', 8),
+(@iCategoryId, 'sys_std_ui_sounds', '_adm_stg_cpt_option_sys_std_ui_sounds', '_adm_stg_inf_option_sys_std_ui_sounds', 'on', 'checkbox', '', '', '', 9),
 
 (@iCategoryId, 'sys_autoupdate', '_adm_stg_cpt_option_sys_autoupdate', '_adm_stg_inf_option_sys_autoupdate', 'on', 'checkbox', '', '', '', 10),
 (@iCategoryId, 'sys_autoupdate_force_modified_files', '_adm_stg_cpt_option_sys_autoupdate_force_modified_files', '_adm_stg_inf_option_sys_autoupdate_force_modified_files', '', 'checkbox', '', '', '', 12),
@@ -5108,6 +5110,7 @@ INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `tit
 ('sys_account_notifications', 'system', 'cart', '_sys_menu_item_title_system_cart', '_sys_menu_item_title_cart', 'cart.php', '', '', 'cart-plus', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:20:"get_cart_items_count";s:6:"params";a:0:{}s:5:"class";s:21:"TemplPaymentsServices";}', '', 2147483646, 1, 1, 6),
 ('sys_account_notifications', 'system', 'orders', '_sys_menu_item_title_system_orders', '_sys_menu_item_title_orders', 'orders.php', '', '', 'cart-arrow-down', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:16:"get_orders_count";s:6:"params";a:1:{i:0;s:3:"new";}s:5:"class";s:21:"TemplPaymentsServices";}', '', 2147483646, 0, 1, 7),
 ('sys_account_notifications', 'system', 'invoices', '_sys_menu_item_title_system_invoices', '_sys_menu_item_title_invoices', 'invoices.php', '', '', 'file-invoice', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:18:"get_invoices_count";s:6:"params";a:1:{i:0;s:6:"unpaid";}s:5:"class";s:21:"TemplPaymentsServices";}', '', 2147483646, 0, 1, 8),
+('sys_account_notifications', 'system', 'sounds', '_sys_menu_item_title_system_sounds', '_sys_menu_item_title_sounds', 'javascript:void(0);', 'bx_sound_toggle(this);', '', 'volume-up', '', '', 2147483646, 1, 1, 9998),
 ('sys_account_notifications', 'system', 'logout', '_sys_menu_item_title_system_logout', '_sys_menu_item_title_logout', 'page.php?i=logout', '', '', 'sign-out-alt', '', '', 2147483646, 1, 1, 9999);
 
 -- account settings menu
@@ -5217,6 +5220,7 @@ INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `tit
 ('sys_studio_account_popup', 'system', 'tour', '_sys_menu_item_title_system_sa_tour', '_sys_menu_item_title_sa_tour', '{url_studio}launcher.php?tour=1', 'if(typeof glTour !== ''undefined'') { glTour.start(); return false; }', '', 'ami-tour.svg', '', 2147483647, 1, 0, 0, 4),
 ('sys_studio_account_popup', 'system', 'scheme', '_sys_menu_item_title_system_sa_scheme', '_sys_menu_item_title_sa_scheme', 'javascript:void(0)', '', '', 'ami-theme.svg', '', 2147483647, 1, 0, 0, 7),
 ('sys_studio_account_popup', 'system', 'language', '_sys_menu_item_title_system_sa_language', '_sys_menu_item_title_sa_language', 'javascript:void(0)', 'bx_menu_popup(''sys_switch_language_popup'', window);', '', 'ami-language.svg', '', 2147483647, 1, 0, 0, 5),
+('sys_studio_account_popup', 'system', 'sounds', '_sys_menu_item_title_system_sa_sounds', '_sys_menu_item_title_sa_sounds', 'javascript:void(0)', 'bx_sound_toggle(this);', '', 'ami-sounds.svg', '', 2147483647, 1, 0, 0, 8),
 ('sys_studio_account_popup', 'system', 'logout', '_sys_menu_item_title_system_sa_logout', '_sys_menu_item_title_sa_logout', '{url_root}logout.php', '{js_object}.clickLogout(this);', '', 'ami-logout.svg', '', 2147483647, 1, 0, 0, 6);
 -- --------------------------------------------------------
 
