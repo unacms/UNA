@@ -199,8 +199,9 @@ function SizedMarkdownImage({ alt, height, src, width }: { alt?: string; height?
             style={{
                 borderRadius: 8,
                 height: resolvedHeight,
-                // Spaced like a paragraph (web `.u-vanilla-html p` margins); the
-                // outer edges are zeroed by the first/last-child rules.
+                // Spaced like a paragraph (web `.u-vanilla-html p` margins; they
+                // collapse with neighbours in `.markdown-flow`). The outer edges are
+                // zeroed by the first/last-child rules.
                 marginBottom: 16,
                 marginTop: 16,
                 maxWidth: '100%',
@@ -255,7 +256,7 @@ function MarkdownSegments({
             return (
                 <View
                     key={`markdown-${index}`}
-                    className={`${index > 0 ? 'markdown-continuation' : ''} ${index < segments.length - 1 ? 'markdown-followed' : ''} min-w-0 max-w-full`}
+                    className={`markdown-text ${index > 0 ? 'markdown-continuation' : ''} ${index < segments.length - 1 ? 'markdown-followed' : ''} min-w-0 max-w-full`}
                 >
                     <EnrichedMarkdownText
                         selectable
@@ -490,7 +491,7 @@ export default function ElementMarkdown({ data, customClassName, className = '',
     if (!data) return null
 
     return (
-        <View className={`max-w-full u-vanilla-html ${customClassName || ''} ${className}`.trim()} ref={innerRef}>
+        <View className={`max-w-full u-vanilla-html markdown-flow ${customClassName || ''} ${className}`.trim()} ref={innerRef}>
             <MarkdownSegments
                 alertMarkdownStyle={alertMarkdownStyle}
                 handleLinkPress={handleLinkPress}
