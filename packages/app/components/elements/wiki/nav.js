@@ -2,12 +2,10 @@ import { useEffect, useState } from 'react'
 import { View, Row, Pressable } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { Icon } from 'app/ui/atoms/icon'
-import Image from 'app/ui/atoms/image'
-import { NeoButton, NeoButtonLink } from 'app/design/controls'
-import { isEmoji } from 'app/lib/util'
+import { components } from 'app/components/registry'
+import { getConductorDepthClassName } from 'app/ui/molecules/sections/conductor/helpers'
 import { useGlobalSearchParams, usePathname } from 'app/lib/hooks/router'
 import {
-  getDepthClassName,
   getItemId,
   getItemPath,
   getRouteParam,
@@ -20,9 +18,15 @@ export function WikiBreadcrumb({ items, onNavigate, compact = false }) {
     const { t } = useTranslation()
     if (!items?.length) return null
 
+    // Sits next to the "On this page" trigger: match its label type
+    // (neo_button regular + borderless) so the row reads as one line.
+    const textCls = 'text-base leading-6 font-semibold tracking-tight'
+    const currentCls = 'text-card-foreground'
+
     return (
         <Row
-            className={`items-center flex-wrap min-w-0 ${compact ? 'gap-1 flex-1' : 'gap-1.5'}`}
+            // -ms-1 cancels the first link's px-1 so its text lines up with the article.
+            className={`items-center flex-wrap min-w-0 ${compact ? 'gap-1 flex-1' : 'gap-1.5 -ms-1'}`}
             role="navigation"
             accessibilityLabel={t('Breadcrumb')}
         >
@@ -38,10 +42,8 @@ export function WikiBreadcrumb({ items, onNavigate, compact = false }) {
                     {item.isCurrent || !item.path || !onNavigate ? (
                         <Text
                             numberOfLines={1}
-                            className={`text-sm leading-5 ${
-                                item.isCurrent
-                                    ? 'text-foreground font-medium'
-                                    : 'text-muted-foreground'
+                            className={`${textCls} ${
+                                item.isCurrent ? currentCls : 'text-muted-foreground'
                             }`}
                         >
                             {item.title}
@@ -56,7 +58,7 @@ export function WikiBreadcrumb({ items, onNavigate, compact = false }) {
                         >
                             <Text
                                 numberOfLines={1}
-                                className="text-sm leading-5 text-muted-foreground web:hover:text-foreground"
+                                className={`${textCls} text-muted-foreground web:hover:text-foreground`}
                             >
                                 {item.title}
                             </Text>
@@ -110,48 +112,6 @@ export function isImageSource(icon) {
     return false;
 }
 
-export function WikiMenuItem({ title, icon, isActive, iconEnd }) {
-    const iconClassName = isActive
-        ? 'text-accent-foreground'
-        : 'text-secondary-foreground web:group-hover:text-foreground'
-    const iconBackgroundClassName = isActive
-        ? 'text-accent-foreground'
-        : 'text-secondary-foreground'
-
-    return (
-        <Row className="w-full items-center gap-2">
-            <View className={`h-8 w-8 shrink-0 items-center justify-center  ${iconBackgroundClassName}`}>
-                {isImageSource(icon) ? (
-                    <Image
-                        src={icon}
-                        className="h-6 w-6 rounded-md"
-                        view="cover"
-                        sizes="auto"
-                    />
-                ) : isEmoji(icon) ? (
-                    <Text className="text-xs leading-none">{icon}</Text>
-                ) : (
-                    <Icon icon={icon} size={20} className={iconClassName} />
-                )}
-            </View>
-
-            <Text className={`flex-1 text-sm leading-5 font-semibold ${isActive ? 'text-accent-foreground' : 'text-secondary-foreground web:group-hover:text-foreground'}`}>
-                {title}
-            </Text>
-
-            {!!iconEnd && (
-                <View className="ml-auto h-6 w-6 shrink-0 items-center justify-center rounded-full">
-                    {isEmoji(iconEnd) ? (
-                        <Text className="text-xs leading-none text-secondary-foreground">{iconEnd}</Text>
-                    ) : (
-                        <Icon icon={iconEnd} size={15} className="text-secondary-foreground web:group-hover:text-foreground" />
-                    )}
-                </View>
-            )}
-        </Row>
-    )
-}
-
 export function ActiveBranchExpander({ currentPathComparable, items, setExpandedMap }) {
     useEffect(() => {
         const activeExpandedMap = buildExpandedMapForPath(items, currentPathComparable);
@@ -185,6 +145,7 @@ export function MenuWiki({ onNavigate, block, url }) {
     const currentPathComparable = normalizePathComparable(url) || routePathComparable;
     const initialPathComparable = normalizePathComparable(url);
     const topLevelItems = data?.content?.items || [];
+    const MenuItemSidebarWithWrapper = components['menu-item']['sidebar_with_wrapper'];
     const [expandedMap, setExpandedMap] = useState(() => buildExpandedMapForPath(topLevelItems, initialPathComparable));
 
     const toggleExpanded = (id) => {
@@ -199,7 +160,6 @@ export function MenuWiki({ onNavigate, block, url }) {
             const children = item?.subitems || [];
             const hasChildren = children.length > 0;
             const isExpanded = Boolean(expandedMap[itemId]);
-            const depthClassName = getDepthClassName(depth);
             const title = item?.title || item?.name;
             const icon = item?.icon || item?.image || 'Circle';
             const canNavigate = hasItemPath(item);
@@ -209,53 +169,32 @@ export function MenuWiki({ onNavigate, block, url }) {
             // Parent-only nodes (no path) toggle expand/collapse; leaves navigate.
             const showChevron = !canNavigate && hasChildren;
             const menuIconEnd = showChevron ? (isExpanded ? 'ChevronDown' : 'ChevronRight') : null;
-            const menuItem = (
-                <WikiMenuItem
-                    title={title}
-                    icon={icon}
-                    isActive={menuIsActive}
-                    iconEnd={menuIconEnd}
-                />
-            );
-
+            let handlePress;
+            if (canNavigate) {
+                handlePress = (event) => {
+                    onNavigate?.(itemPath)
+                    event?.preventDefault?.()
+                }
+            } else if (hasChildren) {
+                handlePress = () => toggleExpanded(itemId)
+            }
             return (
-                <View key={`lmenu-${itemId}`} className={`w-full ${depthClassName}`}>
-                    {canNavigate ? (
-                        <NeoButtonLink
-                            href={itemPath}
-                            alt={title}
-                            style="borderless"
-                            controlSize="large"
-                            width="fill"
-                            align="start"
-                            contentInsets={{ x: 8 }}
-                            selected={menuIsActive}
-                            selectedState="pressed"
-                            className="group"
-                            onPress={(event) => {
-                                onNavigate?.(itemPath)
-                                event?.preventDefault?.()
-                            }}
-                        >
-                            {menuItem}
-                        </NeoButtonLink>
-                    ) : (
-                        <NeoButton
-                            alt={title}
-                            style="borderless"
-                            controlSize="large"
-                            width="fill"
-                            align="start"
-                            contentInsets={{ x: 8 }}
-                            interactive
-                            className="group"
-                            onPress={hasChildren ? () => toggleExpanded(itemId) : undefined}
-                        >
-                            {menuItem}
-                        </NeoButton>
-                    )}
+                <View key={`lmenu-${itemId}`} className="w-full">
+                    {/* Same item as the conductor sidebar (menu-item/sidebar_with_wrapper),
+                        so wiki and section menus look alike and forks style both at once.
+                        Indent on a wrapper: on the button it loses to the inline contentInsets padding. */}
+                    <View className={getConductorDepthClassName(depth)}>
+                    <MenuItemSidebarWithWrapper
+                        link={canNavigate ? itemPath : undefined}
+                        title={title}
+                        icon={icon}
+                        iconEnd={menuIconEnd}
+                        isActive={menuIsActive}
+                        onPress={handlePress}
+                    />
+                    </View>
                     {hasChildren && isExpanded && (
-                        <View className="mt-1 gap-1">
+                        <View className="gap-0.5">
                             {renderItems(children, depth + 1, indexPath)}
                         </View>
                     )}
@@ -270,7 +209,7 @@ export function MenuWiki({ onNavigate, block, url }) {
                 items={topLevelItems}
                 setExpandedMap={setExpandedMap}
             />
-            <View className=' gap-1 lg:-mx-2'>
+            <View className='gap-0.5 lg:-mx-2'>
                 {renderItems(topLevelItems)}
             </View>
         </>
