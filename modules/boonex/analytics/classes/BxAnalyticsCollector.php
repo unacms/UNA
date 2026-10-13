@@ -614,11 +614,11 @@ class BxAnalyticsCollector
 
     /**
      * The name of the lock that starts a visit, one per visitor and platform; MySQL allows 64
-     * characters.
+     * characters, so the hash is cut to 40.
      */
     protected function _getVisitLockName($sPlatform, $aVisitor)
     {
-        return 'bx_analytics_s_' . md5($sPlatform . '|' . $aVisitor['id']);
+        return 'bx_analytics_s_' . substr(hash('sha256', $sPlatform . '|' . $aVisitor['id']), 0, 40);
     }
 
     /**
