@@ -77,6 +77,10 @@
         var oSidebar = bx_sidebar_get(sType);
         var bSidebarActive = bx_sidebar_active(sType);
 
+        // A drawer opening or closing (interface sounds, see bx_sound).
+        if(typeof(bx_sound) == 'function')
+            bx_sound(bSidebarActive ? 'close' : 'open');
+
         oSidebar.toggleClass('bx-sidebar-active', !bSidebarActive);
 
         var oTrigger = $('.bx-sidebar-' + sType + '-trigger');

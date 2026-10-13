@@ -1,12 +1,12 @@
 import { useCallback, type ReactNode, type Ref } from 'react';
-import { Platform, type GestureResponderEvent, type TextProps, type ViewProps } from 'react-native';
+import { type GestureResponderEvent, type TextProps, type ViewProps } from 'react-native';
 import { View } from 'app/design/view';
 import * as AccordionPrimitive from 'app/ui/primitives/accordion';
 import { cn } from 'app/lib/util';
 import { Icon } from 'app/ui/atoms/icon';
 import { Text } from 'app/design/typography';
 import { appSetting, FeedbackHaptics } from 'app/lib/util';
-import { useSound } from 'app/lib/hooks/use-sound';
+import { cueAttributes, playPressCue } from 'app/lib/sound';
 
 const accordionTheme = appSetting('theme', 'accordion') ?? {};
 
@@ -72,7 +72,7 @@ type AccordionTriggerProps = {
     children?: ReactNode;
     chevronClassName?: string;
     onPress?: (event: GestureResponderEvent) => void;
-    /** When false, skips `FeedbackHaptics` + native click sound (web still uses web-haptics only if you call it — here we skip all feedback). */
+    /** When false, skips `FeedbackHaptics` and the open / close sound. */
     feedback?: boolean;
     ref?: Ref<any>;
     [key: string]: unknown;
@@ -88,19 +88,17 @@ export function AccordionTrigger({
     feedback = true,
     ...props
 }: AccordionTriggerProps) {
-    const isWeb = Platform.OS === 'web';
-    const playClick = useSound('click');
-    /** Native: `click` asset when `layout.sounds`. Web: [web-haptics](https://github.com/lochie/web-haptics) `nudge` + synth when `layout.sounds` + `layout.web_haptics_sounds` (see `feedback-haptics.web.ts`); skip `useSound` on web to avoid doubling. */
+    const { isExpanded } = AccordionPrimitive.useIsExpanded();
+    // Expanding and collapsing are frequent: subtle open / close.
+    const cue = isExpanded ? 'close' : 'open';
     const handlePress = useCallback(
         (event: GestureResponderEvent) => {
             onPress?.(event);
             if (!feedback) return;
-            if (!isWeb) {
-                playClick();
-            }
+            playPressCue({ cue, emphasis: 'subtle' });
             FeedbackHaptics('Nudge');
         },
-        [feedback, isWeb, onPress, playClick]
+        [feedback, onPress, cue]
     );
 
     const label =
@@ -116,6 +114,7 @@ export function AccordionTrigger({
         <AccordionPrimitive.Header className="flex">
             <AccordionPrimitive.Trigger
                 className={cn(accordionTheme.trigger, className)}
+                {...(feedback ? cueAttributes({ cue, emphasis: 'subtle' }) : {})}
                 {...props}
                 onPress={handlePress}
             >

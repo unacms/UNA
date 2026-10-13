@@ -176,6 +176,12 @@ class BxBaseStudioFunctions extends BxBaseFunctions implements iBxDolSingleton
             'id' => $mixedWidget['id'],
             'name' => strtolower($sCaption),
             'url' => !empty($mixedWidget['url']) ? bx_replace_markers($mixedWidget['url'], $aMarkers) : 'javascript:void(0)',
+            // opening an app is a route change that loads for a moment: the soft 'loading' cue (interface sounds); a tile
+            // with its own click handler sounds through it
+            'bx_if:show_navigate_cue' => array(
+                'condition' => empty($mixedWidget['click']),
+                'content' => array()
+            ),
             'bx_if:show_click_icon' => array(
                 'condition' => !empty($mixedWidget['click']),
                 'content' => array(
@@ -234,6 +240,19 @@ class BxBaseStudioFunctions extends BxBaseFunctions implements iBxDolSingleton
     protected function getInjHeadLiveUpdates() 
     {
         return '';
+    }
+
+    protected function getSoundsPlatform()
+    {
+        return 'studio';
+    }
+
+    /**
+     * Settings > Sounds plays each choice as it is made, even while Studio itself is silent.
+     */
+    protected function isSoundsPreview()
+    {
+        return true;
     }
 
     protected function getInjFooterPopupMenus() 

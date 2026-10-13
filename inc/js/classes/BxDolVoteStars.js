@@ -42,6 +42,22 @@ BxDolVoteStars.prototype.init = function ()
     });
 };
 
+/**
+ * Rating is choosing a value: a select, and a toggle going off when the rating is taken back.
+ */
+BxDolVoteStars.prototype._cueOnVote = function(oData)
+{
+    if(typeof(bx_sound) != 'function' || !oData)
+        return;
+
+    if(oData.code != undefined && parseInt(oData.code) != 0)
+        bx_sound('error');
+    else if(oData.voted)
+        bx_sound('select', {group: 'reactions'});
+    else
+        bx_sound('toggle', {direction: 'back', group: 'reactions'});
+};
+
 BxDolVoteStars.prototype.onVote = function (oLink, oData, onComplete)
 {
     if(oData && oData.code != 0)

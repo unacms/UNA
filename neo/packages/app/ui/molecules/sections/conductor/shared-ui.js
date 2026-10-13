@@ -4,9 +4,11 @@ import { Text } from 'app/design/typography'
 import { Icon } from 'app/ui/atoms/icon'
 import DropdownMenu, { DropdownMenuOpenContext } from 'app/ui/atoms/dropdown-menu'
 import UniList from 'app/ui/atoms/unilist'
-import { BlockByName } from 'app/components/block'
+import { BlockByName, BlockByData } from 'app/components/block'
+import { findElementById, hasNonEmptyContent } from 'app/lib/util'
 import { ItemRenderer } from 'app/components/item-renderer'
 import { NeoButton } from 'app/design/controls'
+import { cueAttributes, PressCueContext } from 'app/lib/sound'
 import { useTranslation } from 'react-i18next'
 import { getSkeletonForList } from 'app/lib/skeleton-helpers'
 import { layoutForList, paddingForList } from 'app/customization/functions'
@@ -53,6 +55,18 @@ function leftColumnBlockKey(block, index) {
 }
 
 /**
+ * The page element a left-column item stands for, found by its block id: a
+ * page can hold several blocks from one service (same `source`, other params),
+ * and a lookup by source would render the first one each time. Searched in
+ * `pageData`, not taken from the item, so restored filter values apply.
+ * `undefined` when the item has no id or `pageData` lacks it.
+ */
+function leftColumnElement(block, pageData) {
+    if (!block || typeof block !== 'object') return undefined
+    return findElementById(pageData, block.data?.id) ?? undefined
+}
+
+/**
  * Shared left-column / filters block list (native sheet + web sidebar/mobile).
  * Pass `route` to read UNA `route.leftbar.content`; `items` overrides that list.
  */
@@ -76,21 +90,29 @@ export const LeftColumnContent = memo(function LeftColumnContent({
           )
         : (data ?? route?.pageData)
 
+    const blockProps = { onChange, onFormSubmit, saveOnChanges, sidebar: true }
+
     return (
         <View className={className}>
             {items.map((block, index) => {
                 const name = resolveLeftColumnBlockName(block)
                 if (!name) return null
+                const element = leftColumnElement(block, pageData)
+                // Same rule as BlockByName: a block with no content renders nothing.
+                if (element && !hasNonEmptyContent(element)) return null
                 return (
                     <View key={`lb-${leftColumnBlockKey(block, index)}`}>
-                        <BlockByName
-                            name={name}
-                            data={pageData}
-                            onChange={onChange}
-                            onFormSubmit={onFormSubmit}
-                            saveOnChanges={saveOnChanges}
-                            sidebar={true}
-                        />
+                        {element ? (
+                            <BlockByData
+                                data={element}
+                                name={name}
+                                uri={pageData?.uri}
+                                url={pageData?.url}
+                                {...blockProps}
+                            />
+                        ) : (
+                            <BlockByName name={name} data={pageData} {...blockProps} />
+                        )}
                     </View>
                 )
             })}
@@ -292,6 +314,7 @@ export function TabItem({ item, selectedIndex, onPress }) {
                     accessibilityRole="link"
                     accessibilityLabel={item.title}
                     onPress={handlePress}
+                    {...cueAttributes('select')}
                 >
                     <Text className="text-base font-medium text-card-foreground">
                         {item.title}
@@ -303,17 +326,20 @@ export function TabItem({ item, selectedIndex, onPress }) {
 
     if (!MenuItemSubmenu) return null
 
+    // A top tab selects (Cuelume: tabs and segmented controls), not a plain tap.
     return (
         <View className={`${item?.menu_settings?.class || ''}`}>
-            <MenuItemSubmenu
-                title={item.title}
-                pressed={item.index == selectedIndex}
-                disabled={item?.item?.disabled}
-                addon={getAddon(item.addon)}
-                href={href}
-                onPress={handlePress}
-                item={item}
-            />
+            <PressCueContext.Provider value="select">
+                <MenuItemSubmenu
+                    title={item.title}
+                    pressed={item.index == selectedIndex}
+                    disabled={item?.item?.disabled}
+                    addon={getAddon(item.addon)}
+                    href={href}
+                    onPress={handlePress}
+                    item={item}
+                />
+            </PressCueContext.Provider>
         </View>
     )
 }

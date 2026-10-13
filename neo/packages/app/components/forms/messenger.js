@@ -8,7 +8,6 @@ import { useCurrentUser } from 'app/context/user'
 import Profile from 'app/ui/molecules/profile/profile'
 import { FileButton } from 'app/lib/form/form-helpers'
 import { useWindowHeight, useIsDesktop } from 'app/context/measure'
-import { useSound } from 'app/lib/hooks/use-sound'
 import emitter, { EVENTS } from 'app/context/emitter'
 import { useTranslation } from 'react-i18next'
 import { MessageInput } from 'app/components/elements/chat/parts/message-input'
@@ -36,11 +35,9 @@ export default function FormMessenger(props) {
         [rawEditorText]
     )
 
-    const playSound = useSound('success')
-
     useEffect(() => {
+        // The success cue plays when UNA returns the sent message (messenger/parts/common.js).
         if (formContext.formState.isSubmitted) {
-            playSound()
             formContext.setValue('message', '')
             emitter.emit(EVENTS.editor, { action: 'set_content', value: '' })
             emitter.emit(EVENTS.fieldFiles('files'), { action: 'clear' })

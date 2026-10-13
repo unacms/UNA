@@ -62,9 +62,13 @@ BxDolStudioLauncher.prototype.init = function() {
             placeholder: $this.aSortingConf.placeholder,
             start: function(oEvent, oUi) {
                 oUi.item.addClass('bx-std-widget-dragging');
+
+                bx_sound('select'); // picked up
             },
             stop: function(oEvent, oUi) {
                 oUi.item.removeClass('bx-std-widget-dragging');
+
+                bx_sound('tap', {emphasis: 'strong'}); // dropped
                 $this.reorder(oUi.item);
             }
     	});
@@ -167,6 +171,7 @@ BxDolStudioLauncher.prototype.reorder = function(oDraggable) {
         },
         function(oData) {
             if(oData.code != 0) {
+                bx_sound('error');
                 bx_alert(oData.message);
                 return;
             }
@@ -275,6 +280,14 @@ BxDolStudioLauncher.prototype.rearrange = function(iWidgetId, oSelect) {
 };
 
 BxDolStudioLauncher.prototype.enableJitter = function() {
+    if(!this.bJitterMode)
+        bx_sound('toggle');
+
+    // While editing, a press on a tile starts a drag, not a visit: its cue sleeps until Done.
+    $(this.aSortingConf.parent).find('[data-cuelume-navigate]').each(function() {
+        $(this).attr('data-bx-cue-navigate', $(this).attr('data-cuelume-navigate')).removeAttr('data-cuelume-navigate');
+    });
+
     $(this.aJitterConf.elements).fadeIn('fast');
     $(this.aJitterConf.item).removeClass('bx-std-widget-icon-trans');
     $(this.aSortingConf.parent).addClass('bx-std-jitter').sortable('option', 'disabled', false);
@@ -286,6 +299,13 @@ BxDolStudioLauncher.prototype.enableJitter = function() {
 BxDolStudioLauncher.prototype.disableJitter = function() {
     var oActive = $(document.activeElement);
     var oWidget = oActive.closest(this.aSortingConf.item);
+
+    if(this.bJitterMode)
+        bx_sound('toggle', {direction: 'back'});
+
+    $(this.aSortingConf.parent).find('[data-bx-cue-navigate]').each(function() {
+        $(this).attr('data-cuelume-navigate', $(this).attr('data-bx-cue-navigate')).removeAttr('data-bx-cue-navigate');
+    });
 
     $(this.aJitterConf.elements).fadeOut('fast');	
     $(this.aJitterConf.item).addClass('bx-std-widget-icon-trans');
@@ -325,6 +345,8 @@ BxDolStudioLauncher.prototype.move = function(oButton, iDirection) {
         oWidget.insertBefore(oSibling);
     else
         oWidget.insertAfter(oSibling);
+
+    bx_sound('select', {direction: iDirection < 0 ? 'back' : 'forward'}); // reordered
 
     $(oButton).trigger('focus');
 

@@ -110,14 +110,18 @@ export async function getPageData(url: string, codeOnly = false, fetchOptions: R
 /** A block inside `PageData.elements`. */
 export type PageElement = { id?: string | number; source?: string; type?: string; content?: any; [key: string]: any };
 
+/** A block `source` or `id` to look up; missing values match nothing. */
+type ElementKey = string | number | null | undefined;
+
 /**
  * First element in `data.elements` whose `source` equals `source`.
  * Cells may be objects or arrays. `filter` narrows the match (e.g. `hasNonEmptyContent`).
  * The one lookup for "block by source" — don't hand-roll another loop over `elements`.
+ * A specific block you already hold (its `id`) is `findElementById`.
  */
 export function findElementBySource(
     data: PageData | null | undefined,
-    source: string | number | null | undefined,
+    source: ElementKey,
     filter?: (el: PageElement) => boolean
 ): PageElement | null {
     if (source == null || source === '' || !data?.elements || typeof data.elements !== 'object') return null;
@@ -126,6 +130,26 @@ export function findElementBySource(
         if (!cell || typeof cell !== 'object') continue;
         for (const el of Object.values(cell) as PageElement[]) {
             if (el?.source === wanted && (!filter || filter(el))) return el;
+        }
+    }
+    return null;
+}
+
+/**
+ * The element in `data.elements` whose block `id` equals `id`. Use it when
+ * several blocks can share a `source` (one service with different params), where
+ * `findElementBySource` would always return the first of them.
+ */
+export function findElementById(
+    data: PageData | null | undefined,
+    id: ElementKey
+): PageElement | null {
+    if (id == null || id === '' || !data?.elements || typeof data.elements !== 'object') return null;
+    const wanted = String(id);
+    for (const cell of Object.values(data.elements)) {
+        if (!cell || typeof cell !== 'object') continue;
+        for (const el of Object.values(cell) as PageElement[]) {
+            if (el?.id != null && String(el.id) === wanted) return el;
         }
     }
     return null;

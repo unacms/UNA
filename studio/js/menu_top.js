@@ -123,7 +123,7 @@ BxDolStudioMenuTop.prototype.setTheme = function(oButton, iCode) {
 BxDolStudioMenuTop.prototype.markTheme = function() {
     var sTheme = bx_get_color_scheme();
 
-    $('.bx-theme-option').each(function() {
+    $('.bx-theme-option[data-bx-theme]').each(function() {
         var bChecked = $(this).data('bx-theme') == sTheme;
         $(this).attr('aria-checked', bChecked ? 'true' : 'false').attr('tabindex', bChecked ? '0' : '-1');
     });

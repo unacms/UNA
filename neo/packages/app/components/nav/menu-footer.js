@@ -7,6 +7,7 @@ import { useCurrentUserNoCounters } from 'app/context/user';
 import { useMenuData } from 'app/context/menu-data';
 import { useLayoutSettings } from 'app/context/layout-settings';
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
+import { SOUND_LEVEL_ITEMS, useSoundsLevel } from 'app/lib/hooks/use-sounds-level';
 
 export const MENU_FOOTER_CLASSES = 'flex w-full items-center border-t border-border/60 justify-center flex-row flex-wrap gap-1 p-4 min-h-16';
 // Settings use the historical misspelling; keep this key aligned with settings/layout.js.
@@ -105,6 +106,40 @@ function FooterThemeSwitcher({ visualProps }) {
     );
 }
 
+function FooterSoundsLevel({ visualProps }) {
+    const { t } = useTranslation();
+    const { level, setLevel } = useSoundsLevel();
+
+    // The chosen level answers itself (`setLevel` plays it at the new level), so its option makes no sound of its own.
+    const items = SOUND_LEVEL_ITEMS.map((option) => ({
+        key: option.id,
+        id: option.id,
+        name: option.id,
+        title: t(option.titleKey),
+        icon: option.icon,
+        selected: level === option.id,
+        sound: false,
+    }));
+    const current = SOUND_LEVEL_ITEMS.find((option) => option.id === level) ?? SOUND_LEVEL_ITEMS[0];
+    const label = t(current.labelKey);
+
+    return (
+        <DropdownMenu
+            items={items}
+            onSelect={(item) => setLevel(item.id)}
+            buttonProps={{
+                label,
+                image: current.icon,
+                accessibilityLabel: label,
+                style: visualProps.style,
+                controlSize: visualProps.controlSize,
+                className: visualProps.className,
+                textClassName: visualProps.textClassName,
+            }}
+        />
+    );
+}
+
 function FooterLanguageSwitcher({ visualProps }) {
     const { t } = useTranslation();
     const { lang, langCode, setLang } = useLayoutSettings();
@@ -158,8 +193,10 @@ function MenuFooterComponent({
     const { hydrated } = useLayoutSettings();
     const usesRemoteFooter = !menu_items && appSetting('layout', 'user_remote_config');
     const showThemeSwitcher = appSetting('dashboard', 'switch_theme');
+    const { available: soundsAvailable } = useSoundsLevel();
     const configuredLangs = appSetting('layout', AVAILABLE_LANGS_SETTING_KEY);
     const showLanguageSwitcher = hydrated && Array.isArray(configuredLangs) && configuredLangs.length > 1;
+    const showSoundsLevel = hydrated && soundsAvailable;
     const { menuData, isFetched, isLoading } = useMenuData(
         (menu_items || !hydrated) ? null : appSetting('menu_items', 'objects', 'footer')
     );
@@ -188,11 +225,12 @@ function MenuFooterComponent({
             <MenuFooterSkeleton cntClasses={cntClasses} role="contentinfo">
                 {showLanguageSwitcher ? <FooterLanguageSwitcher visualProps={visualProps} /> : null}
                 {showThemeSwitcher ? <FooterThemeSwitcher visualProps={visualProps} /> : null}
+                {showSoundsLevel ? <FooterSoundsLevel visualProps={visualProps} /> : null}
             </MenuFooterSkeleton>
         );
     }
 
-    if (menu_launcher_items.length === 0 && menuData && !showThemeSwitcher && !showLanguageSwitcher)
+    if (menu_launcher_items.length === 0 && menuData && !showThemeSwitcher && !showLanguageSwitcher && !showSoundsLevel)
         return null;
 
     return (
@@ -210,6 +248,7 @@ function MenuFooterComponent({
             ))}
             {showLanguageSwitcher ? <FooterLanguageSwitcher visualProps={visualProps} /> : null}
             {showThemeSwitcher ? <FooterThemeSwitcher visualProps={visualProps} /> : null}
+            {showSoundsLevel ? <FooterSoundsLevel visualProps={visualProps} /> : null}
         </View>
     );
 }

@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useCurrentUser } from 'app/context/user';
 import useDaemon from 'app/lib/hooks/use-daemon';
-import { useSound } from 'app/lib/hooks/use-sound';
+import { playCue } from 'app/lib/sound';
 import { useAppState } from 'app/lib/hooks/use-app-state';
 import { fetcher } from 'app/lib/fetcher';
 import { appSetting } from 'app/lib/util';
@@ -37,7 +37,6 @@ export default function CounterChecker({ }) {
     const isAppActive = useAppState();
     const isActive = (!!currentUser && currentUser?.membership != 2) && isAppActive;
     const prevNotRef = useRef(null);
-    const playSound = useSound('notif');
     const { daemonData } = useDaemon(PROFILE_URL, true, isActive, 60000);
 
     useEffect(() => {
@@ -55,7 +54,8 @@ export default function CounterChecker({ }) {
         const prevNot = prevNotRef.current;
 
         if (currentNot > prevNot) {
-            playSound();
+            // One cue per poll that finds new notifications, however many arrived.
+            playCue('ready');
             onNotificationsArrived();
         }
 
@@ -66,7 +66,6 @@ export default function CounterChecker({ }) {
 export function CounterCheckerSingle() {
     const { currentUser, setCurrentUser } = useCurrentUser();
     const prevNotRef = useRef(null);
-    const playSound = useSound('notif');
 
     useEffect(() => {
         if (!currentUser?.id || currentUser.membership === 2) return;
@@ -87,7 +86,8 @@ export function CounterCheckerSingle() {
         const prevNot = prevNotRef.current;
 
         if (currentNot > prevNot) {
-            playSound();
+            // One cue per poll that finds new notifications, however many arrived.
+            playCue('ready');
             onNotificationsArrived();
         }
 

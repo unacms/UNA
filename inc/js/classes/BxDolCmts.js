@@ -148,6 +148,10 @@ BxDolCmts.prototype.cmtAfterPostSubmit = function (oCmtForm, oData)
 
     this._loadingInButton($(oCmtForm).children().find(':submit'), false);
 
+    // Posted: a subtle success; turned down (the form comes back, or a message instead of the comment): error.
+    if(oData && typeof(bx_sound) == 'function')
+        bx_sound(oData.id != undefined ? 'success' : 'error', oData.id != undefined ? {emphasis: 'subtle'} : undefined);
+
     if(oData && oData.msg != undefined)
         bx_alert(oData.msg, fContinue);
     else 
@@ -198,6 +202,13 @@ BxDolCmts.prototype.cmtAfterEditSubmit = function (oCmtForm, oData, onComplete)
     };
 
     this._loadingInButton($(oCmtForm).children().find(':submit'), false);
+
+    // Saved: a subtle success; the form back with an error: error.
+    if(oData && typeof(bx_sound) == 'function')
+        if(oData.form != undefined && oData.form_id != undefined)
+            bx_sound('error');
+        else if(oData.id != undefined)
+            bx_sound('success', {emphasis: 'subtle'});
 
     if(oData && oData.msg != undefined)
         bx_alert(oData.msg, fContinue);

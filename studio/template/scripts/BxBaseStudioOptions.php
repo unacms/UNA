@@ -776,6 +776,13 @@ class BxBaseStudioOptions extends BxDolStudioOptions
                 break;
         }
 
+        // Settings > Sounds: the set, volume, level and each kind of action play as they are picked (bx_sound_preview).
+        if($aItem['type'] == 'select' && strpos($aItem['name'], 'sys_sounds_') === 0)
+            $aField['attrs'] = array_merge($aField['attrs'], [
+                'onchange' => 'bx_sound_preview(this)',
+                'data-bx-sound-option' => substr($aItem['name'], strlen('sys_sounds_')),
+            ]);
+
         return $aField;
     }
 }

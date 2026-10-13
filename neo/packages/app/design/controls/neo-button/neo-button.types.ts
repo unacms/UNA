@@ -1,6 +1,7 @@
 // Public props of NeoButton, shared by neo-button.tsx and the Expo UI renderers
 // (neo-button-expoui.{ios,android}.tsx + the web / fallback stubs).
 import type { ComponentType, ReactElement, ReactNode, Ref } from 'react'
+import type { PressCue } from 'app/lib/sound'
 
 export type NeoButtonStyle =
     | 'plain'
@@ -75,6 +76,13 @@ export type NeoButtonProps = {
     interactive?: boolean
     /** `FeedbackHaptics` type; `false` / `''` opts out. */
     haptics?: string | false
+    /**
+     * Web press sound (a Cuelume cue, `app/lib/sound`); `false` for none. By
+     * default a button with haptics taps (subtle unless prominent), a menu
+     * trigger opens / closes, `close` / `cancel` roles close. Native buttons
+     * answer with haptics only.
+     */
+    sound?: PressCue
     /** Fires on release; a scroll that starts on the button cancels it. */
     onPress?: (event?: any) => void
     /**

@@ -194,9 +194,13 @@
         margin-top: 0 !important;
     }
 
+    /* `.markdown-followed`: a text segment with an image / code segment after
+     * it keeps its last margin, so the gap matches paragraph spacing. */
     .u-vanilla-html
         div
-        > :where(:last-child):not(:where([class~='not-prose'] *)),
+        > :where(:last-child):not(
+            :where([class~='not-prose'] *, .markdown-followed *)
+        ),
     .u-vanilla-html > :where(:last-child):not(:where([class~='not-prose'] *)) {
         margin-bottom: 0 !important;
     }
@@ -213,7 +217,9 @@
 
     .u-vanilla-html-small
         div
-        > :where(:last-child):not(:where([class~='not-prose'] *)),
+        > :where(:last-child):not(
+            :where([class~='not-prose'] *, .markdown-followed *)
+        ),
     .u-vanilla-html-small
         > :where(:last-child):not(:where([class~='not-prose'] *)) {
         margin-bottom: 0 !important;
@@ -251,8 +257,62 @@
             sans-serif;
     }
 
+    /* Heading margins. `!important` beats the renderer's inline 8px; `:where()`
+     * keeps specificity low so the first/last-child rules still zero the outer edges. */
+    :where(.u-vanilla-html) h1 {
+        margin-block: 8px 24px !important;
+    }
+    :where(.u-vanilla-html) h2 {
+        margin-block: 24px 16px !important;
+    }
+    :where(.u-vanilla-html) h3 {
+        margin-block: 16px 8px !important;
+    }
+    :where(.u-vanilla-html) h4 {
+        margin-block: 8px 4px !important;
+    }
+    :where(.u-vanilla-html) h5 {
+        margin-block: 8px 4px !important;
+    }
+    :where(.u-vanilla-html) h6 {
+        margin-block: 8px 4px !important;
+    }
+    :where(.u-vanilla-html-small) h1 {
+        margin-block: 8px 20px !important;
+    }
+    :where(.u-vanilla-html-small) h2 {
+        margin-block: 20px 12px !important;
+    }
+    :where(.u-vanilla-html-small) h3 {
+        margin-block: 14px 6px !important;
+    }
+    :where(.u-vanilla-html-small) h4 {
+        margin-block: 8px 4px !important;
+    }
+    :where(.u-vanilla-html-small) h5 {
+        margin-block: 8px 4px !important;
+    }
+    :where(.u-vanilla-html-small) h6 {
+        margin-block: 8px 4px !important;
+    }
+
+    /* Markdown flows as blocks so paragraph / heading / image margins collapse into
+     * one gap (flex items never collapse: 16px + 16px became 32px). The renderer's
+     * `.enrm-text` is an inline flex column; segment wrappers are flex Views, and
+     * their `.neo-v` `align-content: flex-start` would make each one its own
+     * formatting context, which also stops margins collapsing across segments. */
+    .markdown-flow,
+    .markdown-flow > .markdown-text,
+    .markdown-flow .enrm-text {
+        display: block !important;
+        align-content: normal !important;
+    }
+
+    .markdown-flow > img {
+        display: block;
+    }
+
     .u-vanilla-html h1 {
-        margin-block: 8px 24px;
         font-size: 36px;
         font-weight: 700;
         line-height: 40px;
@@ -260,7 +320,6 @@
     }
 
     .u-vanilla-html h2 {
-        margin-block: 24px 16px;
         font-size: 24px;
         font-weight: 700;
         line-height: 32px;
@@ -268,7 +327,6 @@
     }
 
     .u-vanilla-html h3 {
-        margin-block: 16px 8px;
         font-size: 20px;
         font-weight: 700;
         line-height: 28px;
@@ -276,28 +334,24 @@
     }
 
     .u-vanilla-html h4 {
-        margin-block: 8px 4px;
         font-size: 18px;
         font-weight: 600;
         line-height: 28px;
     }
 
     .u-vanilla-html h5 {
-        margin-block: 8px 4px;
         font-size: 16px;
         font-weight: 600;
         line-height: 24px;
     }
 
     .u-vanilla-html h6 {
-        margin-block: 8px 4px;
         font-size: 14px;
         font-weight: 600;
         line-height: 20px;
     }
 
     .u-vanilla-html-small h1 {
-        margin-block: 8px 20px;
         font-size: 30px;
         font-weight: 700;
         line-height: 36px;
@@ -305,7 +359,6 @@
     }
 
     .u-vanilla-html-small h2 {
-        margin-block: 20px 12px;
         font-size: 22px;
         font-weight: 700;
         line-height: 28px;
@@ -313,28 +366,24 @@
     }
 
     .u-vanilla-html-small h3 {
-        margin-block: 14px 6px;
         font-size: 18px;
         font-weight: 700;
         line-height: 24px;
     }
 
     .u-vanilla-html-small h4 {
-        margin-block: 8px 4px;
         font-size: 16px;
         font-weight: 600;
         line-height: 22px;
     }
 
     .u-vanilla-html-small h5 {
-        margin-block: 8px 4px;
         font-size: 14px;
         font-weight: 600;
         line-height: 20px;
     }
 
     .u-vanilla-html-small h6 {
-        margin-block: 8px 4px;
         font-size: 12px;
         font-weight: 600;
         line-height: 18px;

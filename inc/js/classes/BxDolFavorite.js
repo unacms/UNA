@@ -109,6 +109,13 @@ BxDolFavorite.prototype.onEditFavoriteList = function (oData, oElement) {
 BxDolFavorite.prototype.onFavorite = function(oData, oElement)
 {
     var $this = this;
+
+    // A favorite is a toggle: on when added, off when taken back.
+    if(typeof(bx_sound) == 'function' && oData)
+        if(oData.code != undefined && parseInt(oData.code) != 0)
+            bx_sound('error');
+        else
+            bx_sound('toggle', {direction: oData.favorited ? 'forward' : 'back', group: 'reactions'});
     var fContinue = function() {
         if(oData && oData.code != 0)
             return;

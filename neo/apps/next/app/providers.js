@@ -10,6 +10,7 @@ import { I18nextProvider, initReactI18next } from 'react-i18next'
 import * as WebBrowser from 'expo-web-browser'
 import { useEffect, useState } from 'react'
 import Subscriber from 'app/ui/molecules/system/subscriber'
+import InterfaceSounds from 'app/ui/molecules/system/interface-sounds'
 import { useLayoutSettings } from 'app/context/layout-settings'
 import { addI18nResources, changeI18nLanguage } from 'app/lib/i18n-resources'
 import { AnalyticsTracker } from 'app/lib/analytics'
@@ -101,6 +102,8 @@ export function Providers({ children, initialLang = 'en', initialResources }) {
                     {children}
                     <Subscriber />
                     <AnalyticsTracker />
+                    <InterfaceSounds />
+
                 </QueryClientProvider>
             </JotaiProvider>
         </I18nextProvider>

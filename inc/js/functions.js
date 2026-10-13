@@ -45,6 +45,10 @@ function processJsonData(oData) {
 	        eval(oData.eval);
 	};
 
+	// A reply can name its interface sound: 'error', or {cue: 'success', emphasis: 'subtle'}. It plays now, before any alert.
+	if(oData && oData.cue != undefined)
+		bx_sound(typeof(oData.cue) == 'object' ? oData.cue.cue : oData.cue, typeof(oData.cue) == 'object' ? oData.cue : undefined);
+
 	if(oData && oData.object != undefined && oData.grid != undefined)
 		if(glGrids[oData.object] != undefined)
 			glGrids[oData.object].processJson(oData);
@@ -748,6 +752,9 @@ function bx_menu_slide_inline (sMenu, e, sPosition) {
         sPosition = 'block';
 
     if (eSlider.is(':visible')) {
+        if(typeof(bx_sound) == 'function')
+            bx_sound('close', {emphasis: 'subtle'});
+
         fClose();
         $(e).focus();
 
@@ -759,6 +766,10 @@ function bx_menu_slide_inline (sMenu, e, sPosition) {
 
         $(document).off('click.bx-sliding-menu touchend.bx-sliding-menu');
         $(window).off('resize.bx-sliding-menu');
+
+        // Some templates (Artificer) draw a sidebar instead and keep this call on the trigger: no menu, no sound.
+        if(eSlider.length && typeof(bx_sound) == 'function')
+            bx_sound('open', {emphasis: 'subtle'});
 
         fOpen();
         eSlider.find('.bx-popup-content a:first').focus();
@@ -804,6 +815,10 @@ function bx_menu_slide_close_all_opened () {
  */
 function bx_menu_show_live_update(oData) {
     var sSelectorAddon = '.bx-menu-item-addon';
+
+    // Something arrived (a notification, a message, a request): one ready, however many counters went up.
+    if(parseInt(oData.count_new) > parseInt(oData.count_old))
+        bx_sound('ready');
 
     //--- Update Child Menu Item
     if(oData.mi_child) {
@@ -1727,6 +1742,362 @@ function bx_set_color_scheme_html()
     else
         $('html').removeClass('dark')
 }
+
+/*
+ * Interface sounds are Cuelume's cues (plugins_public/cuelume, MIT): one cue per
+ * interface job, picked by the "Which cue?" table at https://cuelume.dev/agents.md.
+ * Controls carry data-cuelume-* attributes, which Cuelume's bind() plays as they
+ * are pressed; outcomes call bx_sound(). Nothing plays on hover, on page load, or
+ * per item of a burst.
+ *
+ * Settings > Global > Sounds (BxDolSounds, passed to bx_sound_init) picks where
+ * sounds play, the sound set, the volume, a set or silence for each kind of action,
+ * and the level people start at. Each visitor picks their own level for this
+ * browser: full, quiet or off (bx_sound_set_level). The module loads only once a
+ * sound can play.
+ */
+var glBxSounds = {url: '', config: null, module: null, cuelume: null, readyAt: 0, restore: null};
+
+/**
+ * The kind of action each cue belongs to (its set or silence in the settings). Likes, reactions, ratings, favorites
+ * and follows say so themselves: group 'reactions' in bx_sound(), or data-bx-sound-group on a control.
+ */
+var aBxSoundGroups = {tap: 'buttons', select: 'choices', toggle: 'choices', open: 'menus', close: 'menus', navigate: 'navigation', loading: 'navigation', success: 'results', warning: 'results', error: 'results', ready: 'notifications', attention: 'notifications'};
+
+/**
+ * The attributes bind() plays, and the cue each one plays when it doesn't name another.
+ */
+var aBxSoundAttributes = {'data-cuelume-tap': 'tap', 'data-cuelume-select': 'select', 'data-cuelume-toggle': 'toggle', 'data-cuelume-open': 'open', 'data-cuelume-close': 'close', 'data-cuelume-navigate': 'navigate'};
+
+/**
+ * The cue Settings > Sounds plays for each kind of action as it is changed.
+ */
+var aBxSoundSamples = {buttons: 'tap', choices: 'toggle', reactions: 'toggle', menus: 'open', navigation: 'navigate', results: 'success', notifications: 'ready'};
+
+/**
+ * Quiet plays at this share of the volume.
+ */
+var BX_SOUND_QUIET = 0.4;
+
+function bx_sound_init(sUrl, oConfig)
+{
+    glBxSounds.url = sUrl;
+    glBxSounds.config = oConfig;
+
+    // A module that fails to load leaves the page silent; nothing else depends on it.
+    if(bx_sound_is_on())
+        bx_sound_load().catch(function() {});
+
+    $(document).ready(function() {
+        bx_sound_mark_switches();
+    });
+}
+
+function bx_sound_load()
+{
+    if(!glBxSounds.url)
+        return Promise.reject(new Error('Interface sounds are not set up on this page.'));
+
+    if(!glBxSounds.module)
+        glBxSounds.module = import(glBxSounds.url).then(function(oCuelume) {
+            glBxSounds.cuelume = oCuelume;
+            bx_sound_apply();
+
+            // Ahead of bind(), which listens on document: the kind of action decides how this one press sounds.
+            ['pointerdown', 'click', 'keydown', 'keyup', 'change'].forEach(function(sEvent) {
+                window.addEventListener(sEvent, bx_sound_gate, true);
+            });
+            oCuelume.bind();
+
+            return oCuelume;
+        });
+
+    return glBxSounds.module;
+}
+
+/**
+ * The visitor's level: their own pick in this browser, or where the settings start everyone; off where sounds are off.
+ */
+function bx_sound_level()
+{
+    var oConfig = glBxSounds.config;
+    if(!oConfig || !oConfig.on)
+        return 'off';
+
+    try {
+        var sLevel = localStorage.getItem('bx-sounds');
+        if(sLevel == 'full' || sLevel == 'quiet' || sLevel == 'off')
+            return sLevel;
+    }
+    catch(e) {}
+
+    return oConfig.level;
+}
+
+function bx_sound_is_on()
+{
+    return bx_sound_level() != 'off';
+}
+
+function bx_sound_volume()
+{
+    return glBxSounds.config.volume * (bx_sound_level() == 'quiet' ? BX_SOUND_QUIET : 1);
+}
+
+/**
+ * The set a kind of action plays: its own, the main one, or 'off'.
+ */
+function bx_sound_set(sGroup)
+{
+    var oGroups = glBxSounds.config.groups || {};
+    return sGroup && oGroups[sGroup] ? oGroups[sGroup] : glBxSounds.config.set;
+}
+
+/**
+ * Cuelume's settings for this page. A press that needs other ones changes them for itself (bx_sound_gate).
+ */
+function bx_sound_apply()
+{
+    glBxSounds.restore = null;
+
+    if(!glBxSounds.cuelume)
+        return;
+
+    glBxSounds.cuelume.setTheme(glBxSounds.config.set);
+    glBxSounds.cuelume.setVolume(bx_sound_volume());
+}
+
+/**
+ * Runs before bind() for each event that can press a marked control: a kind of action with a set of its own plays in
+ * it, and one that is off, or a visitor who turned sounds off, plays nothing. Cuelume reads the set and volume as it
+ * plays, so they are back to the page's own on the next tick.
+ */
+function bx_sound_gate(oEvent)
+{
+    if(!glBxSounds.cuelume || !(oEvent.target instanceof Element))
+        return;
+
+    var oControl = oEvent.target.closest(Object.keys(aBxSoundAttributes).map(function(sAttribute) {
+        return '[' + sAttribute + ']';
+    }).join(','));
+    if(!oControl)
+        return;
+
+    var sSet = bx_sound_is_on() ? bx_sound_set(bx_sound_group(oControl)) : 'off';
+    if(sSet == glBxSounds.config.set)
+        return;
+
+    if(sSet == 'off')
+        glBxSounds.cuelume.setVolume(0);
+    else
+        glBxSounds.cuelume.setTheme(sSet);
+
+    if(!glBxSounds.restore)
+        glBxSounds.restore = setTimeout(bx_sound_apply, 0);
+}
+
+/**
+ * The kind of action of a marked control: data-bx-sound-group on it or around it, otherwise the one of its cue.
+ */
+function bx_sound_group(oControl)
+{
+    var oGroup = oControl.closest('[data-bx-sound-group]');
+    if(oGroup)
+        return oGroup.getAttribute('data-bx-sound-group');
+
+    for(var sAttribute in aBxSoundAttributes) {
+        if(!oControl.hasAttribute(sAttribute))
+            continue;
+
+        var sCue = oControl.getAttribute(sAttribute);
+        return aBxSoundGroups[aBxSoundGroups[sCue] ? sCue : aBxSoundAttributes[sAttribute]];
+    }
+
+    return '';
+}
+
+/**
+ * Play the cue for an outcome, e.g. bx_sound('success', {emphasis: 'subtle'}) once a form is saved. `group` names
+ * the kind of action when the cue alone doesn't ('reactions' for a like). Arrivals ('ready') that come together,
+ * like several live updates in one poll, play once.
+ */
+function bx_sound(sCue, oOptions)
+{
+    if(!bx_sound_is_on())
+        return;
+
+    var sSet = bx_sound_set(oOptions && oOptions.group ? oOptions.group : aBxSoundGroups[sCue]);
+    if(sSet == 'off')
+        return;
+
+    if(sCue == 'ready') {
+        var iNow = Date.now();
+        if(iNow - glBxSounds.readyAt < 2000)
+            return;
+
+        glBxSounds.readyAt = iNow;
+    }
+
+    bx_sound_load().then(function(oCuelume) {
+        oCuelume.play(sCue, $.extend({}, oOptions, {theme: sSet}));
+    }, function() {});
+}
+
+/**
+ * The reply to an AJAX form: error when UNA refuses it (a non-zero code, or the form or a popup back with a field
+ * error), a subtle success when it says the form went through (code 0, a redirect, a reload or a script to run).
+ * A reply that names its own sound (`cue`) gets only that one, from processJsonData; a reply that only carries a
+ * message plays nothing, since a message alone can say either.
+ */
+function bx_sound_form_reply(oData)
+{
+    if(!oData || oData.cue != undefined)
+        return;
+
+    var mixedPopup = oData.popup && typeof(oData.popup) == 'object' ? oData.popup.html : oData.popup;
+    if((oData.code != undefined && Number.parseInt(oData.code) != 0) || bx_sound_has_field_error(oData.form) || bx_sound_has_field_error(mixedPopup))
+        bx_sound('error');
+    else if(oData.code != undefined || oData.redirect != undefined || oData.reload != undefined || oData.eval != undefined)
+        bx_sound('success', {emphasis: 'subtle'});
+}
+
+/**
+ * Whether a form's HTML came back with a field error in it.
+ */
+function bx_sound_has_field_error(sHtml)
+{
+    return typeof(sHtml) == 'string' && $('<div>' + sHtml + '</div>').find('.bx-form-warn').toArray().some(function(oWarn) {
+        return oWarn.textContent.trim().length > 0;
+    });
+}
+
+/**
+ * The visitor's level of interface sounds in this browser: 'full', 'quiet' or 'off'. A new level that can be heard
+ * answers from the same click, which also lets the browser start audio; off is heard as silence.
+ */
+function bx_sound_set_level(sLevel)
+{
+    if(!glBxSounds.config || !glBxSounds.config.on)
+        return;
+
+    var aLevels = ['off', 'quiet', 'full'];
+    var iFrom = aLevels.indexOf(bx_sound_level());
+    try {
+        localStorage.setItem('bx-sounds', sLevel);
+    }
+    catch(e) {}
+
+    bx_sound_mark_switches();
+
+    if(sLevel == 'off') {
+        // Whatever still rings stops at once; the module stays ready for the next level.
+        if(glBxSounds.cuelume) {
+            glBxSounds.cuelume.setEnabled(false);
+            glBxSounds.cuelume.setEnabled(true);
+        }
+        return;
+    }
+
+    bx_sound_load().then(function() {
+        bx_sound_apply();
+        bx_sound('toggle', {direction: aLevels.indexOf(sLevel) > iFrom ? 'forward' : 'back'});
+    }, function() {});
+}
+
+/**
+ * The account menu's Sounds item steps through the levels: full, quiet, off.
+ */
+function bx_sound_toggle(oSwitch)
+{
+    bx_sound_set_level({full: 'quiet', quiet: 'off', off: 'full'}[bx_sound_level()]);
+}
+
+/**
+ * Show the visitor's level on every Sounds control: the account menu item's name and icon (volume-up, volume-down,
+ * volume-mute; the Lucide iconset redraws it from a new <i>), and the checked option of Studio's radio group. Where
+ * sounds are off for everyone, the item goes away.
+ */
+function bx_sound_mark_switches()
+{
+    var oConfig = glBxSounds.config;
+    var sLevel = bx_sound_level();
+    var sIcon = {full: 'volume-up', quiet: 'volume-down', off: 'volume-mute'}[sLevel];
+    var bRedraw = false;
+
+    $('[data-bx-sounds-switch]').each(function() {
+        if(!oConfig || !oConfig.on) {
+            $(this).closest('li').hide();
+            return;
+        }
+
+        $(this).attr({'aria-label': oConfig.labels[sLevel], title: oConfig.labels[sLevel]});
+
+        $(this).find('.sys-icon.volume-up, .sys-icon.volume-down, .sys-icon.volume-mute').each(function() {
+            if($(this).hasClass(sIcon))
+                return;
+
+            if(this.tagName.toLowerCase() == 'i')
+                $(this).removeClass('volume-up volume-down volume-mute').addClass(sIcon);
+            else {
+                $(this).replaceWith($('<i>').addClass('sys-icon ' + sIcon));
+                bRedraw = true;
+            }
+        });
+    });
+
+    $('[data-bx-sounds-level]').each(function() {
+        var bChecked = $(this).attr('data-bx-sounds-level') == sLevel;
+        $(this).attr('aria-checked', bChecked ? 'true' : 'false').attr('tabindex', bChecked ? '0' : '-1');
+    });
+
+    if(bRedraw && typeof(bx_iconset_init_lucide) == 'function')
+        bx_iconset_init_lucide();
+}
+
+/**
+ * Settings > Sounds: a choice plays as it is made, with the set and volume picked in the form, before it is saved and
+ * even while sounds are off here.
+ */
+function bx_sound_preview(oSelect)
+{
+    var oForm = $(oSelect).closest('form');
+    var fValue = function(sName) {
+        return oForm.find('[name="sys_sounds_' + sName + '"]').val();
+    };
+
+    var sOption = $(oSelect).attr('data-bx-sound-option');
+    var sValue = $(oSelect).val();
+    var sSet = fValue('set') || 'default';
+    var fVolume = (parseInt(fValue('volume')) || 100) / 100;
+    var sCue = 'toggle';
+
+    if(sOption == 'level') {
+        if(sValue == 'off')
+            return;
+        if(sValue == 'quiet')
+            fVolume *= BX_SOUND_QUIET;
+    }
+    else if(aBxSoundSamples[sOption]) {
+        if(sValue == 'off')
+            return;
+        if(sValue)
+            sSet = sValue;
+        sCue = aBxSoundSamples[sOption];
+    }
+
+    bx_sound_load().then(function(oCuelume) {
+        // play() takes the volume now; the page's own is back at once.
+        oCuelume.setVolume(fVolume);
+        oCuelume.play(sCue, {theme: sSet});
+        bx_sound_apply();
+    }, function() {});
+}
+
+$(document).ready(function() {
+    // A cached menu can still carry the Sounds item where sounds are off for everyone.
+    if(!glBxSounds.config)
+        $('[data-bx-sounds-switch]').closest('li').hide();
+});
 
 function bx_is_mouse()
 {

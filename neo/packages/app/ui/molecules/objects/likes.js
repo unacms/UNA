@@ -14,6 +14,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { appSetting, FeedbackHaptics } from 'app/lib/util';
+import { playCue } from 'app/lib/sound';
 import {
     objectKey,
     objectStateFromProps,
@@ -72,6 +73,7 @@ export default function ElementLikes(props) {
     const toggleLike = (event, withHaptics) => {
         event.preventDefault();
         if (withHaptics) FeedbackHaptics(params.haptics_type);
+        playCue('toggle', { direction: withHaptics ? 'forward' : 'back', group: 'reactions' });
         objectRequest(object_params, 'do', { value: 1 }, (data) =>
             setObjectData((prev) => mergeState(prev, data))
         );

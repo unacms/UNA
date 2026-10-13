@@ -845,6 +845,13 @@ BxTimelineView.prototype.afterFormEditSubmit = function (oForm, oData)
 
     this.loadingInButton($(oForm).children().find(':submit'), false);
 
+    // Saved: a subtle success; the form back with an error: error.
+    if(oData && typeof(bx_sound) == 'function')
+        if(oData.form != undefined && oData.form_id != undefined)
+            bx_sound('error');
+        else if(oData.id != undefined && parseInt(oData.id) > 0)
+            bx_sound('success', {emphasis: 'subtle'});
+
     if(oData && oData.message != undefined)
         bx_alert(oData.message, fContinue);
     else

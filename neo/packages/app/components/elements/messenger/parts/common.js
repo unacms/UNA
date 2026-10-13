@@ -5,6 +5,7 @@ import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { appSetting, isNativeTabsEnabled } from 'app/lib/util'
 import { Platform } from 'react-native'
 import useFetchForm from 'app/lib/hooks/use-fetch-form'
+import { playCue } from 'app/lib/sound'
 import { useCurrentUser } from 'app/context/user';
 import { subscribe } from 'app/ui/atoms/socket';
 import { KbStickyView } from 'app/ui/atoms/kb-avoiding-view';
@@ -119,6 +120,11 @@ export default function Messenger({ defaultConvoId, selectedMenu, convos, fetchC
         data.form.data.inputs.message.value = '';
         setReplyItem(false);
         setCommentForm(false);
+        // The reply to a sent message: subtle success, or error when UNA refuses it.
+        if (dynamicData?.data?.jot_id > 0)
+            playCue('success', { emphasis: 'subtle' });
+        else if (dynamicData?.data?.data?.data?.msg)
+            playCue('error');
         if (dynamicData?.data?.jot_id > 0)
             scrolTo();
 
@@ -282,6 +288,13 @@ export default function Messenger({ defaultConvoId, selectedMenu, convos, fetchC
 
     const onNewMessage = (data) => {
         if (data.id == convoId) {
+            // Someone else's message in the open conversation: one subtle ready per update.
+            const incoming = data.action == 'added' && Array.isArray(data.data?.jots) ? data.data.jots : [];
+            const fromOthers = incoming.some((jot) => {
+                const author = jot?.author_data?.id ?? jot?.author;
+                return author != null && author != currentUser?.id;
+            });
+            if (fromOthers) playCue('ready', { emphasis: 'subtle' });
             setJotUpdated(data);
         }
     }

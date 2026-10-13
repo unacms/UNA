@@ -370,6 +370,7 @@ class BxDolStudioOptions extends BxDol
                     $this->sCategory = $sCategory;
                     return bx_get_js_result([
                         'code' => 1,
+                        'cue' => 'error',
                         'message' => _t('_adm_stg_err_save_error_message', _t($aOption['caption']), _t($this->sErrorMessage)),
                         'translate' => false,
                         'eval' => $sEvalRenewToken
@@ -396,6 +397,7 @@ class BxDolStudioOptions extends BxDol
                         $this->sCategory = $sCategory;
                         return bx_get_js_result([
                             'code' => 2,
+                            'cue' => 'error',
                             'message' => _t('_adm_stg_err_save_error_message', _t($aOption['caption']), _t($aOption['check_error'])), 
                             'translate' => false, 
                             'eval' => $sEvalRenewToken
@@ -424,8 +426,10 @@ class BxDolStudioOptions extends BxDol
         }
 
         $this->clearCache();
+        // The interface sound of the reply (see processJsonData): saved, subtly.
         return bx_get_js_result([
             'code' => 0,
+            'cue' => ['cue' => 'success', 'emphasis' => 'subtle'],
             'message' => '_adm_stg_scs_save',
             'eval' => $sEvalRenewToken
         ]);

@@ -45,6 +45,7 @@
   ],
   "dependencies": {
     "@10play/react-native-web-webview": "^0.0.3",
+    "cuelume": "0.2.6",
     "dotenv-cli": "^11.0.0",
     "web-haptics": "^0.0.6"
   },

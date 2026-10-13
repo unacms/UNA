@@ -1899,6 +1899,17 @@
     <string name="_adm_stg_inf_option_sys_live_search_limit"><![CDATA[Set the maximum number of results displayed in Live Search suggestion box.]]></string>
     <string name="_adm_stg_cpt_option_sys_profiles_search_limit"><![CDATA[Profile Search Results]]></string>
     <string name="_adm_stg_inf_option_sys_profiles_search_limit"><![CDATA[Set the maximum number of results displayed per page in Profile Search.]]></string>
+    <string name="_adm_stg_inf_option_sys_sounds_buttons"><![CDATA[Submit and other buttons. In the apps, buttons answer with haptics only.]]></string>
+    <string name="_adm_stg_inf_option_sys_sounds_choices"><![CDATA[Tabs, menu items, switches, checkboxes, radio buttons.]]></string>
+    <string name="_adm_stg_inf_option_sys_sounds_level"><![CDATA[Everyone can pick Full, Quiet or Off for themselves: in the account menu on the site and in Studio, in the footer and the dashboard of the apps.]]></string>
+    <string name="_adm_stg_inf_option_sys_sounds_menus"><![CDATA[Menus, popups, drawers and sections opening and closing.]]></string>
+    <string name="_adm_stg_inf_option_sys_sounds_navigation"><![CDATA[The apps' tab bar and back buttons, opening Studio apps.]]></string>
+    <string name="_adm_stg_inf_option_sys_sounds_notifications"><![CDATA[New notifications, messages and requests.]]></string>
+    <string name="_adm_stg_inf_option_sys_sounds_platforms"><![CDATA[Short sounds when people press, open, save and get notified. Where a platform is off, nobody hears them there. The apps pick up changes with the next page they load.]]></string>
+    <string name="_adm_stg_inf_option_sys_sounds_reactions"><![CDATA[Likes, reactions, ratings, favorites, follows.]]></string>
+    <string name="_adm_stg_inf_option_sys_sounds_results"><![CDATA[Saved, posted or sent; refused with an error.]]></string>
+    <string name="_adm_stg_inf_option_sys_sounds_set"><![CDATA[Glass is warm and calm. Mechanical is dry and precise. Bubble is playful. Press feels like a trackpad and rings longer. Each choice plays as you pick it.]]></string>
+    <string name="_adm_stg_inf_option_sys_sounds_volume"><![CDATA[Quiet plays at 40% of it.]]></string>
     <string name="_adm_stg_inf_option_sys_vote_reactions_default"><![CDATA[Given with a single click or tap; other reactions are a hover or long press away. With none, the reaction button always opens the choice of reactions.]]></string>
     <string name="_adm_stg_inf_option_sys_vote_reactions_mode"><![CDATA[Solo: one reaction, the default one, given with a click. Few: a short list of reactions to choose from. Many: any emoji, chosen in an emoji picker.]]></string>
     <string name="_adm_stg_inf_option_sys_vote_reactions_per_user"><![CDATA[How many different reactions one person may give to the same content. Works in the Few and Many modes.]]></string>
@@ -2008,6 +2019,7 @@
     <string name="_adm_stg_cpt_option_sys_pwa_sw_offline"><![CDATA[Offline page]]></string>
 
     <string name="_adm_stg_cpt_category_sockets"><![CDATA[Sockets server]]></string>
+    <string name="_adm_stg_cpt_category_sounds"><![CDATA[Sounds]]></string>
     <string name="_adm_stg_cpt_option_sys_sockets_type"><![CDATA[Type]]></string>
     <string name="_adm_stg_cpt_option_sys_sockets_url"><![CDATA[Url]]></string>
     <string name="_adm_stg_cpt_option_sys_sockets_app_id"><![CDATA[App id]]></string>
@@ -2015,6 +2027,31 @@
     <string name="_adm_stg_cpt_option_sys_sockets_secret"><![CDATA[App secret]]></string>
     <string name="_adm_stg_cpt_option_sys_sockets_type_sys_sockets_disabled"><![CDATA[Disabled]]></string>
     <string name="_adm_stg_cpt_option_sys_sockets_type_sys_sockets_soketi"><![CDATA[Soketi]]></string>
+    <string name="_adm_stg_cpt_option_sys_sounds_buttons"><![CDATA[Sound for buttons]]></string>
+    <string name="_adm_stg_cpt_option_sys_sounds_choices"><![CDATA[Sound for choices]]></string>
+    <string name="_adm_stg_cpt_option_sys_sounds_group_main"><![CDATA[Main sound set]]></string>
+    <string name="_adm_stg_cpt_option_sys_sounds_group_off"><![CDATA[No sound]]></string>
+    <string name="_adm_stg_cpt_option_sys_sounds_level"><![CDATA[Level for people who haven't chosen]]></string>
+    <string name="_adm_stg_cpt_option_sys_sounds_level_full"><![CDATA[Full]]></string>
+    <string name="_adm_stg_cpt_option_sys_sounds_level_off"><![CDATA[Off]]></string>
+    <string name="_adm_stg_cpt_option_sys_sounds_level_quiet"><![CDATA[Quiet]]></string>
+    <string name="_adm_stg_cpt_option_sys_sounds_menus"><![CDATA[Sound for menus and popups]]></string>
+    <string name="_adm_stg_cpt_option_sys_sounds_navigation"><![CDATA[Sound for navigation]]></string>
+    <string name="_adm_stg_cpt_option_sys_sounds_notifications"><![CDATA[Sound for notifications]]></string>
+    <string name="_adm_stg_cpt_option_sys_sounds_platform_android"><![CDATA[Android app]]></string>
+    <string name="_adm_stg_cpt_option_sys_sounds_platform_ios"><![CDATA[iOS app]]></string>
+    <string name="_adm_stg_cpt_option_sys_sounds_platform_neo_web"><![CDATA[NEO web app]]></string>
+    <string name="_adm_stg_cpt_option_sys_sounds_platform_site"><![CDATA[Website]]></string>
+    <string name="_adm_stg_cpt_option_sys_sounds_platform_studio"><![CDATA[Studio]]></string>
+    <string name="_adm_stg_cpt_option_sys_sounds_platforms"><![CDATA[Play interface sounds on]]></string>
+    <string name="_adm_stg_cpt_option_sys_sounds_reactions"><![CDATA[Sound for likes and reactions]]></string>
+    <string name="_adm_stg_cpt_option_sys_sounds_results"><![CDATA[Sound for results]]></string>
+    <string name="_adm_stg_cpt_option_sys_sounds_set"><![CDATA[Sound set]]></string>
+    <string name="_adm_stg_cpt_option_sys_sounds_set_bubble"><![CDATA[Bubble]]></string>
+    <string name="_adm_stg_cpt_option_sys_sounds_set_default"><![CDATA[Glass]]></string>
+    <string name="_adm_stg_cpt_option_sys_sounds_set_mech"><![CDATA[Mechanical]]></string>
+    <string name="_adm_stg_cpt_option_sys_sounds_set_press"><![CDATA[Press]]></string>
+    <string name="_adm_stg_cpt_option_sys_sounds_volume"><![CDATA[Volume]]></string>
     
     <string name="_adm_stg_cpt_option_sys_std_show_header_left"><![CDATA[Studio: Show header left area (Breadcrumb)]]></string>
     <string name="_adm_stg_cpt_option_sys_std_show_header_left_search"><![CDATA[Studio: Show search in header left]]></string>
@@ -3508,7 +3545,9 @@
     <string name="_sys_menu_item_title_social_sharing_linked_in"><![CDATA[Share in LinkedIn]]></string>
     <string name="_sys_menu_item_title_system_social_sharing_linked_in"><![CDATA[Share in LinkedIn]]></string>
     <string name="_sys_menu_item_title_social_sharing_whatsapp"><![CDATA[Share in Whatsapp]]></string>
+    <string name="_sys_menu_item_title_sounds"><![CDATA[Sounds]]></string>
     <string name="_sys_menu_item_title_system_social_sharing_whatsapp"><![CDATA[Share in Whatsapp]]></string>
+    <string name="_sys_menu_item_title_system_sounds"><![CDATA[Sounds]]></string>
     
     <string name="_sys_menu_item_title_sm_in_reply_to"><![CDATA[In reply to]]></string>
     <string name="_sys_menu_item_title_sm_author"><![CDATA[Author]]></string>
@@ -3811,7 +3850,9 @@
     <string name="_sys_menu_item_title_system_sa_account"><![CDATA[Account]]></string>
     <string name="_sys_menu_item_title_sa_account"><![CDATA[{member_display_name}]]></string>
     <string name="_sys_menu_item_title_system_sa_site"><![CDATA[Visit Web App]]></string>
+    <string name="_sys_menu_item_title_system_sa_sounds"><![CDATA[Sounds]]></string>
     <string name="_sys_menu_item_title_sa_site"><![CDATA[Visit Web App]]></string>
+    <string name="_sys_menu_item_title_sa_sounds"><![CDATA[Sounds]]></string>
     <string name="_sys_menu_item_title_system_sa_edit"><![CDATA[Manage Apps]]></string>
     <string name="_sys_menu_item_title_sa_edit"><![CDATA[Manage Apps]]></string>
     <string name="_sys_menu_item_title_system_sa_tour"><![CDATA[Introduction Tour]]></string>
@@ -4434,6 +4475,9 @@
         <string name="_sys_txt_share_popup_url"><![CDATA[URL]]></string>
         <string name="_sys_txt_share_popup_copy_to_clipboard_text"><![CDATA[Click for copy to the clipboard]]></string>
         <string name="_sys_txt_share_popup_embeded_code"><![CDATA[Embeded code]]></string>
+        <string name="_sys_txt_sounds_level_full"><![CDATA[Sounds: Full]]></string>
+        <string name="_sys_txt_sounds_level_off"><![CDATA[Sounds: Off]]></string>
+        <string name="_sys_txt_sounds_level_quiet"><![CDATA[Sounds: Quiet]]></string>
     
         <string name="_sys_txt_search_sort_by"><![CDATA[Sort by]]></string>
         <string name="_sys_txt_search_sort_by_default"><![CDATA[Default]]></string>

@@ -62,9 +62,26 @@ class BxBaseMenuAccountNotifications extends BxTemplMenu
                 if(!$oPayments->isActive())
                     return false;
                 break;
+
+            case 'sounds':
+                if(!BxDolSounds::getInstance()->isOn('site'))
+                    return false;
+                break;
         }
 
         return true;
+    }
+
+    /**
+     * Sounds steps through the visitor's own level of interface sounds in this browser (full, quiet, off);
+     * bx_sound_mark_switches() shows the level on its icon and in its name.
+     */
+    protected function _getMenuItem ($a)
+    {
+        if($a['name'] == 'sounds')
+            $a['attrs_add'] = trim((!empty($a['attrs_add']) ? $a['attrs_add'] : '') . ' role="button" data-bx-sounds-switch="1"');
+
+        return parent::_getMenuItem($a);
     }
 
     protected function _getTmplVarsAddon($mixedAddon, $aMenuItem)

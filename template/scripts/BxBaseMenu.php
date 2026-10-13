@@ -22,6 +22,13 @@ class BxBaseMenu extends BxDolMenu
 
     protected $_aSelected; // Selected menu item.
 
+    /**
+     * Menus drawn as tabs, by template or by a menu's own flag: picking one of their items plays Cuelume's select
+     * (interface sounds, see bx_sound).
+     */
+    protected $_aTemplatesCueSelect = ['menu_main_submenu.html', 'menu_main_submenu_more_auto.html', 'menu_block_submenu_hor.html', 'menu_block_submenu_ver.html', 'menu_feeds.html'];
+    protected $_bCueSelect = false;
+
     public function __construct ($aObject, $oTemplate)
     {
         parent::__construct ($aObject);
@@ -368,6 +375,10 @@ class BxBaseMenu extends BxDolMenu
                 'info' => $a['info'],
             ],
         ];
+
+        // The More item of a tab row ('more-auto', BxBaseMenuMoreAuto) opens a popup, which plays its own cue.
+        if(($this->_bCueSelect || (isset($this->_aObject['template']) && in_array($this->_aObject['template'], $this->_aTemplatesCueSelect))) && $a['name'] != 'more-auto')
+            $a['attrs_add'] = trim((!empty($a['attrs_add']) ? $a['attrs_add'] : '') . ' data-cuelume-select');
 
         $a['attrs'] = $this->_getMenuAttrs($a);
         $a['attrs_wrp'] = '';

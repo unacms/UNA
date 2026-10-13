@@ -1,13 +1,13 @@
 import { FeedbackHaptics } from 'app/lib/util';
-import { playSound } from 'app/lib/hooks/use-sound';
+import { playCue } from 'app/lib/sound';
 
 let lastAt = 0;
 
-/** Tab press: impact haptic + `tab` click when `layout.sounds` is on. */
+/** Tab press: impact haptic + a subtle `navigate` (route change; tabs are pressed often). */
 export function playTabFeedback() {
     const now = Date.now();
     if (now - lastAt < 80) return;
     lastAt = now;
     FeedbackHaptics('Light');
-    playSound('tab');
+    playCue('navigate', { emphasis: 'subtle' });
 }

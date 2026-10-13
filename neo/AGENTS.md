@@ -60,7 +60,7 @@ Rules for forks:
 | `config/package.next.js`, `config/package.expo.js` | Extra npm dependencies. The root `preinstall` script merges them into `apps/next/package.json` and `apps/expo/package.json`; don't commit those rewritten files, and restore them before a sync. |
 | `resources/web/` | Flat files copied into `apps/next/public/static/` (gitignored) whenever the Next config loads: `favicon.svg`, `manifest.json` and every icon the manifest names. |
 | `resources/native/` | App icon, splash and other native assets. Reference them from `config/app.config.js` as `../../packages/app/customization/resources/native/...`. |
-| `resources/sounds/` | Default sounds. Point `sounds.js` at your own files. |
+| `resources/sounds/` | Native interface sounds: Cuelume cues rendered to WAV, in every sound set, by `scripts/render-sounds.mjs`. Point keys of `sounds.js` at your own files; see [Interface sounds](#interface-sounds). |
 
 ## Layout and stack
 
@@ -74,7 +74,7 @@ packages/app     shared code, imported as app/...
   context/, lib/ state, fetcher, hooks and helpers
   default/, settings/   defaults that customization/ re-exports
   customization/ fork overrides
-scripts/         typecheck.js, merge-package-customization.js, check-translations.js
+scripts/         typecheck.js, merge-package-customization.js, check-translations.js, render-sounds.mjs
 patches/         patch-package patches, applied on postinstall
 ```
 
@@ -215,6 +215,19 @@ Use `NeoButton`, `NeoButtonLink` or `NeoButtonRef` from `app/design/controls`. T
 - Code lives in `design/controls/neo-button/`: props in `neo-button.types.ts`, scope and style precedence in `neo-button-resolver.tsx`, the legacy variant mapping in `control-scale.ts`. The theme is `neo_button` in `settings/theme/buttons.js`.
 - On iOS and Android, `native.expo_ui_buttons` (`settings/configs.js`) renders buttons with native Expo UI (SwiftUI / Compose) views; the `expoUI` prop controls it per button.
 - `/pg` is a playground for every axis (`apps/next/app/pg/page.js`, `apps/expo/app/pg/`). It isn't gated, so production builds serve it too.
+
+### Interface sounds
+
+Sounds are [Cuelume](https://cuelume.dev/agents.md)'s cues, one per interface job. Pick a cue by its job from Cuelume's "Which cue?" table: subtle emphasis for frequent actions, strong only for rare ones that matter. Never play one on hover, on page load, per item of a burst, or for a number that updates constantly. Everything is in `app/lib/sound`.
+
+- Web synthesizes cues with the `cuelume` package. `InterfaceSounds` (`ui/molecules/system/interface-sounds.tsx`, mounted once in `apps/next/app/providers.js` and `components/nav/tabs/index.js`) calls `bind()` and applies the settings.
+- Native plays WAV files rendered from the same package version, in each of Cuelume's four sets (themes): `Sounds` in `default/sounds.js`, keyed `[<set>-]<cue>[-<emphasis>][-back]` (the default set has no prefix). A cue without its own key falls back to a plainer key, then to the default set's, then to the pre-Cuelume key for its job (`click`, `tab`, `success`, `notif`). After bumping `cuelume` (pinned in `package.json`), or to give native a new variant, add it to `CUES` in `scripts/render-sounds.mjs`, run `node scripts/render-sounds.mjs` (needs Chrome; mono 32 kHz, every set) and add the keys to `default/sounds.js`.
+- A press: `cueAttributes(cue)` on the pressed element (web; `bind()` plays it as the pointer goes down) plus `playPressCue(cue)` in the handler (native). NeoButton has a `sound` prop: by default a button with haptics taps (subtle unless prominent), a menu trigger opens or closes, `close` / `cancel` roles close. `PressCueContext` changes the cue for the buttons inside (menu items select). Native buttons answer with haptics only; native plays cues for toggles, disclosures, the tab bar and outcomes.
+- An outcome: `playCue('success', { emphasis: 'subtle' })` once UNA has saved, `playCue('error')` when it refuses. `Form` already does this for every submit with a reply (not for filters or save-on-change forms).
+- Kinds of action: UNA's settings can give buttons, choices, reactions, menus, navigation, results and notifications their own set, or no sound. A cue's kind comes from the cue (`cueGroup` in `lib/sound/cues.ts`); a like, reaction, rating, favorite or follow plays `toggle` with `group: 'reactions'` (`cueAttributes` turns that into `data-bx-sound-group`).
+- Settings: UNA's Studio > Settings > Global > Sounds (`BxDolSounds`) picks where sounds play (`neo_web`, `ios`, `android`), the set, the volume, the level people start at and the set per kind of action. They come with every page as `data.sounds`; `Layouts` passes them to `applySoundConfig` (`lib/sound/config.ts`), which keeps them in memory and storage. Sounds only read that copy, so nothing waits on a request, and changes apply from the next page. On web, a capture listener (`gatePress` in `sound.web.ts`) gives each press its kind's set or silence before `bind()` plays it.
+- Users pick their own level, full, quiet (40%) or off (`useSoundsLevel`, in the footer and the dashboard settings), stored as `layoutSettings.sounds`; unset follows UNA's starting level. `layout.sounds` turns sounds off for the whole build. Native interface sounds follow the iOS silent switch.
+- `useSound` / `playSound` with the old names still work; they play the cue for that job.
 
 ### Page header
 

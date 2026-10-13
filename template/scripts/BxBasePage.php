@@ -753,6 +753,8 @@ class BxBasePage extends BxDolPage
 
         return array_merge($a, [
             'version' => ($sVersion = bx_get_ver()) && $sVersion == BX_DOL_VERSION ? $sVersion : 'invalid',
+            // Interface sounds settings ride along with every page, so the apps never wait on them to play a sound.
+            'sounds' => BxDolSounds::getInstance()->getConfig(),
             'ts' => time()
         ]);
     }
