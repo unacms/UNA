@@ -45,7 +45,7 @@ class BxDolAiRetrievalUnaProxy implements NeuronAI\RAG\Retrieval\RetrievalInterf
             return [];
         }
 
-        if (!is_array($aResponse) || (int)($aResponse['code'] ?? -1) !== 0) {
+        if (!is_array($aResponse) || (int)($aResponse['code'] ?? -1) !== 200) {
             bx_log('sys_agents', 'Remote knowledge search failed, exit code: ' . ($aResponse['code'] ?? -1), BX_LOG_ERR);
             return [];
         }
@@ -62,7 +62,7 @@ class BxDolAiRetrievalUnaProxy implements NeuronAI\RAG\Retrieval\RetrievalInterf
         if ($this->fPost !== null)
             return ($this->fPost)($sBody, $aHeaders);
 
-        $sHttpCode = null;
+        $sHttpCode = 0;
         $sResult = bx_file_get_contents(self::URL, $sBody, 'post-raw', $aHeaders, $sHttpCode, [], 15);
         if ($sResult === false)
             $sResult = '';
