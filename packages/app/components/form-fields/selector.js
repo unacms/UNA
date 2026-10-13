@@ -70,7 +70,7 @@ export default function FormFieldSelector(props) {
     }, [field.value, valuesList]);
 
     const header = <Row className=' w-full justify-between items-center'>
-        <View><NeoButton onPress={() => { setIsModal(null) }} style="glass" controlSize="regular" borderShape="circle" image="X" accessibilityLabel={t('Close')} /></View>
+        <View><NeoButton onPress={() => { setIsModal(null) }} style="glass" controlSize="regular" borderShape="circle" image="X" accessibilityLabel={t('Close')} sound="close" /></View>
         <View className='w-full flex-auto items-center justify-center'><Text className="text-muted-foreground  text-xl font-bold">{'Choose ' + props.caption}</Text></View>
         <View >
             <NeoButton
@@ -111,6 +111,8 @@ export default function FormFieldSelector(props) {
             {...buttonProps}
             image={isMultiple ? 'Plus' : undefined}
             label={isMultiple ? t('Add') : selectedItems.length > 0 ? t('Change') : t('Select')}
+            // Opens the picker dialog.
+            sound="open"
             onPress={showSelect}
         />
     );

@@ -60,10 +60,9 @@ export const settingsLayout = {
         background_image: '', 
         background_image_dark: '', 
 
+        /** Interface sounds (Cuelume cues, `app/lib/sound`). Users can turn them off in their settings; false turns them off for everyone. */
         sounds: true,
         tab_sounds: false,
-        /** When `sounds` is true: enables [web-haptics](https://github.com/lochie/web-haptics) synthesized click audio on mobile web / desktop (same idea as [haptics.lochie.me](https://haptics.lochie.me/)). When false: vibration only, no synth sound. */
-        web_haptics_sounds: true,
 
         show_login_modal: 0,
         //redirect_on_forbidden: '/home',

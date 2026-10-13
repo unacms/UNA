@@ -24,6 +24,7 @@ import { useFetch } from 'app/lib/hooks/use-fetch'
 import DasbordStatOld from 'app/components/elements/dashboard-stat-old'
 import { useLayoutSettings } from 'app/context/layout-settings'
 import { BlockWrapper } from 'app/components/block-wrapper'
+import { SOUND_LEVEL_ITEMS, useSoundsLevel } from 'app/lib/hooks/use-sounds-level'
 
 const DASHBOARD_GRID =
     'grid w-full grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4'
@@ -342,7 +343,9 @@ function DashboardSettingsMenu() {
     const showTheme = !!appSetting('dashboard', 'switch_theme')
     const showLayouts = appSetting('layout', 'avaliable_layouts').length > 1
     const showFeedUnits = appSetting('layout', 'avaliable_feed_units').length > 1
-    if (!(showLangs || showTheme || showLayouts || showFeedUnits)) return null
+    const { available: showSounds, level: soundLevel, setLevel: setSoundLevel } = useSoundsLevel()
+    const currentSoundLevel = SOUND_LEVEL_ITEMS.find((option) => option.id === soundLevel) ?? SOUND_LEVEL_ITEMS[0]
+    if (!(showLangs || showTheme || showLayouts || showFeedUnits || showSounds)) return null
 
     return (
         <View className={DASHBOARD_GRID}>
@@ -443,6 +446,35 @@ function DashboardSettingsMenu() {
                             style="bordered"
                             controlSize="large"
                             image="Rows2"
+                            width="fill"
+                            align="start"
+                            interactive
+                        />
+                    </DropdownMenu>
+                </View>
+            ) : null}
+            {showSounds ? (
+                <View className="w-full min-w-0">
+                    <DropdownMenu
+                        triggerClassName="w-full"
+                        // The chosen level answers itself, at the new level: its option makes no sound of its own.
+                        items={SOUND_LEVEL_ITEMS.map((option) => ({
+                            key: option.id,
+                            id: option.id,
+                            name: option.id,
+                            title: t(option.titleKey),
+                            selected: soundLevel === option.id,
+                            sound: false,
+                        }))}
+                        onSelect={(oItem) => {
+                            setSoundLevel(oItem.id)
+                        }}
+                    >
+                        <NeoButton
+                            label={t(currentSoundLevel.labelKey)}
+                            style="bordered"
+                            controlSize="large"
+                            image={currentSoundLevel.icon}
                             width="fill"
                             align="start"
                             interactive

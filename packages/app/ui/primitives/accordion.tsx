@@ -168,3 +168,4 @@ export const Header = AccordionHeader;
 export const Trigger = AccordionTrigger;
 export const Content = AccordionContent;
 export const ContentInner = AccordionContentInner;
+export { useIsExpanded };

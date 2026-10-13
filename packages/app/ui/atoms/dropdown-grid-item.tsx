@@ -2,6 +2,7 @@ import { useState } from 'react';
 import type { GestureResponderEvent } from 'react-native';
 import { Platform } from 'react-native';
 import { Pressable, View } from 'app/design/view';
+import { cueAttributes } from 'app/lib/sound';
 import { Text } from 'app/design/typography';
 import { Icon } from 'app/ui/atoms/icon';
 import Image from 'app/ui/atoms/image';
@@ -93,6 +94,7 @@ export default function DropdownGridItem({ item, index, link, handleSelect, clas
             accessibilityLabel={title || undefined}
             {...pressProps}
             {...rowHoverProps}
+            {...(handleSelect || link ? cueAttributes('select') : {})}
         >
             {icon ? <View className={menuSettings.item_icon_grid}>{icon}</View> : null}
             {title ? (

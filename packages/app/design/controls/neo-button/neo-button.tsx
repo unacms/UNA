@@ -71,6 +71,7 @@ import {
 } from 'app/design/controls/neo-button/neo-button-resolver';
 import { NeoButtonExpoUI, getNativeIcon, hostsCustomContent } from 'app/design/controls/neo-button/neo-button-expoui';
 import type { NeoButtonAddon, NeoButtonClassNames, NeoButtonProps } from 'app/design/controls/neo-button/neo-button.types';
+import { cueAttributes, usePressCueOverride, type PressCue } from 'app/lib/sound';
 
 export type { NeoButtonProps } from 'app/design/controls/neo-button/neo-button.types';
 
@@ -454,6 +455,27 @@ export const NeoButton = (props: NeoButtonProps) => {
     return <NeoButtonStyled {...props} titleHidden={titleHidden} />;
 };
 
+/**
+ * A button's press cue when it sets none (Cuelume's "Which cue?"): a menu
+ * trigger opens or closes, a close / cancel button closes, a prominent or
+ * confirming button taps, other buttons tap subtly. Buttons without haptics
+ * (editor toolbars, object actions that play their own cue) stay quiet.
+ */
+function defaultPressCue({ role, style, haptics, menuTrigger, expanded }: {
+    role: string;
+    style: string;
+    haptics: boolean;
+    menuTrigger: boolean;
+    expanded: boolean;
+}): PressCue {
+    if (menuTrigger) return { cue: expanded ? 'close' : 'open', emphasis: 'subtle' };
+    if (!haptics) return false;
+    if (role === 'close') return 'close';
+    if (role === 'cancel') return { cue: 'close', emphasis: 'subtle' };
+    if (role === 'confirm' || style === 'borderedProminent' || style === 'glassProminent') return 'tap';
+    return { cue: 'tap', emphasis: 'subtle' };
+}
+
 /* ----------------------- JS-styled implementation ------------------------- */
 
 const NeoButtonStyled = (props: NeoButtonProps & { titleHidden?: boolean }) => {
@@ -472,6 +494,7 @@ const NeoButtonStyled = (props: NeoButtonProps & { titleHidden?: boolean }) => {
         addon = '',
         interactive = false,
         haptics,
+        sound,
         onPress,
         onPressIn,
         onPressOut,
@@ -536,6 +559,7 @@ const NeoButtonStyled = (props: NeoButtonProps & { titleHidden?: boolean }) => {
     const isInteractive = !disabled && (isPressable || interactive);
     const isActive = isPressable && !disabled;
     const isPressedToggle = !!selected;
+    const soundOverride = usePressCueOverride();
 
     const accessibleName =
         accessibilityLabel ?? alt ?? getAccessibleName(undefined, tooltip, effectiveLabel, effectiveImage);
@@ -586,6 +610,21 @@ const NeoButtonStyled = (props: NeoButtonProps & { titleHidden?: boolean }) => {
     // A menu trigger reports its state with `aria-expanded` (DropdownPopup);
     // `aria-pressed` next to it would announce a toggle instead.
     const isMenuTrigger = !!rest['aria-haspopup'];
+
+    // Web press sound (`bind()` plays it from the attributes). Native buttons
+    // answer with haptics only.
+    const pressCue: PressCue = sound !== undefined
+        ? sound
+        : soundOverride !== undefined
+            ? soundOverride
+            : defaultPressCue({
+                role: role ?? 'default',
+                style: resolved.style,
+                haptics: !!resolved.haptics,
+                menuTrigger: isMenuTrigger,
+                expanded: !!rest['aria-expanded'],
+            });
+    const soundAttributes = isWeb && isActive && !loading ? cueAttributes(pressCue) : {};
     const buttonAttributes = isPressable
         ? {
               ...(accessibleName ? { 'aria-label': accessibleName, alt: accessibleName } : {}),
@@ -733,6 +772,7 @@ const NeoButtonStyled = (props: NeoButtonProps & { titleHidden?: boolean }) => {
 
     const cntProps: Record<string, any> = {
         ...rest,
+        ...soundAttributes,
         className: cn(
             `neo-btn neo-btn-${resolved.style} neo-btn-${resolved.controlSize}`,
             resolved.glassFx && cn('neo-glass', resolved.style === 'glassProminent' && 'neo-glass-prominent'),

@@ -25,6 +25,7 @@ import {
     TABS_UNDERLINE_HEIGHT_PX,
     TABS_SELECTION_WEB_EASING,
 } from 'app/ui/molecules/tabs/tabs-selection-constants';
+import { cueAttributes } from 'app/lib/sound';
 
 /** Skip scrolling the active tab into view on the first paint only (tab changes after that scroll). */
 function useScrollActiveTabIntoView(
@@ -360,6 +361,7 @@ export default function Tabs({
                             key={tab.key}
                             value={tab.key}
                             onMouseDown={focusTriggerOnMouseDown}
+                            {...cueAttributes('select')}
                             {...(hasTabContent(tab) ? null : NO_PANEL_PROPS)}
                             style={{
                                 scrollMarginInline: scrollInset,
@@ -436,6 +438,7 @@ export default function Tabs({
                             key={tab.key}
                             value={tab.key}
                             onMouseDown={focusTriggerOnMouseDown}
+                            {...cueAttributes('select')}
                             {...(hasTabContent(tab) ? null : NO_PANEL_PROPS)}
                             className={cn(
                                 'relative z-[3]',

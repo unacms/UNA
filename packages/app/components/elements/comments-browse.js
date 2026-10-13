@@ -7,6 +7,8 @@ import { useState, useReducer, useRef, useEffect, useCallback } from 'react';
 import { components } from 'app/components/registry';;
 import { NeoButton } from 'app/design/controls'
 import useFetchForm from 'app/lib/hooks/use-fetch-form'
+import { formResponseHasFieldErrors } from 'app/lib/form/form-helpers'
+import { playCue } from 'app/lib/sound'
 import { fetcher } from 'app/lib/fetcher';
 import Loading from 'app/ui/atoms/loading'
 import Form from 'app/components/elements/form';
@@ -813,6 +815,9 @@ function CommentsFormInner ({ form: initialForm, requestUrl, module, objectId, i
 
 
     useEffect(() => {
+        // The reply to a posted comment: error when UNA rejects it, subtle success only once the new comment is in it.
+        if (formResponseHasFieldErrors(dynamicData?.data)) playCue('error');
+        else if (dynamicData?.data?.browse?.new?.[0]) playCue('success', { emphasis: 'subtle' });
         if (dynamicData?.data?.browse && dynamicData?.data?.browse?.new?.[0]) {
             emitter.emit(EVENTS.commentThread(module, objectId), { action: 'new_content', data: dynamicData.data.browse.data.data[0]['i' + dynamicData.data.browse.new[0]] });
             handleCancel() 

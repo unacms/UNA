@@ -8,6 +8,8 @@ import { Pressable, Row, View } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { Icon } from 'app/ui/atoms/icon'
 import { cn, FeedbackHaptics, isWeb } from 'app/lib/util'
+import { cueAttributes } from 'app/lib/sound'
+import type { SoundGroup } from 'app/lib/sound'
 
 const DEFAULT_MAX = 5
 const DEFAULT_STAR_SIZE = 22
@@ -66,6 +68,7 @@ function StarButton({
     onHover,
     onKeyDown,
     buttonRef,
+    soundGroup,
 }: {
     value: number
     filled: boolean
@@ -80,6 +83,7 @@ function StarButton({
     onHover?: (value: number) => void
     onKeyDown?: (event: { key?: string; preventDefault?: () => void }) => void
     buttonRef?: Ref<any>
+    soundGroup?: SoundGroup
 }) {
     return (
         <Pressable
@@ -89,6 +93,8 @@ function StarButton({
             accessibilityLabel={label}
             aria-checked={checked}
             disabled={disabled}
+            // Picking a rating is a select (web; it rises or falls with the stars).
+            {...(disabled ? {} : cueAttributes(soundGroup ? { cue: 'select', group: soundGroup } : 'select'))}
             onPress={() => onSelect(value)}
             onKeyDown={isWeb ? onKeyDown : undefined}
             onMouseEnter={isWeb && !disabled ? () => onHover?.(value) : undefined}
@@ -165,6 +171,8 @@ type StarsActionProps = {
     color?: string
     /** Legacy, ignored. */
     enableHalfStar?: boolean
+    /** The kind of action for UNA's sound settings: `reactions` for rating content; a form field stays a choice. */
+    soundGroup?: SoundGroup
 }
 
 export function StarsAction({
@@ -177,6 +185,7 @@ export function StarsAction({
     disabled,
     color: _color,
     enableHalfStar: _enableHalfStar,
+    soundGroup,
 }: StarsActionProps) {
     const { t } = useTranslation()
     const count = Math.max(1, Number(maxStars) || DEFAULT_MAX)
@@ -234,6 +243,7 @@ export function StarsAction({
                 onSelect={commit}
                 onHover={setHoverValue}
                 onKeyDown={onGroupKeyDown}
+                soundGroup={soundGroup}
                 buttonRef={(node) => {
                     buttonRefs.current[i - 1] = node
                 }}
