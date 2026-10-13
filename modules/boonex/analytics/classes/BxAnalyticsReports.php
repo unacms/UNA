@@ -2312,12 +2312,15 @@ class BxAnalyticsReports
     /**
      * The credits economy as the modules that keep credits report it: bought, spent, granted,
      * sent and withdrawn, the top spenders and the credits members hold; and from the ledger,
-     * what credits paid for, by module, valued in money.
+     * what credits paid for, by module, valued in money. Those modules don't know the
+     * platform, so the whole block is for every platform, the ledger's figures too.
      */
     public function getCredits(BxAnalyticsFilter $oFilter, $aParams = [])
     {
         $aMoney = $this->getMoney();
         $aFilter = $this->_getRevenueFilter($oFilter->get(), $aMoney);
+        $bPlatform = $aFilter['platform'] !== '';
+        $aFilter['platform'] = '';
 
         $aSources = $this->getRevenueSources([
             'from' => $aFilter['from'],
@@ -2333,6 +2336,7 @@ class BxAnalyticsReports
         if($aSource) {
             foreach($aSource['metrics'] as $sKey => $aMetric) {
                 $aTiles[] = [
+                    'key' => $sKey,
                     'title' => _t($aMetric['title']),
                     'value' => (float)$aMetric['value'],
                     'type' => 'credits',
@@ -2352,6 +2356,7 @@ class BxAnalyticsReports
             if(!empty($aSource['snapshot']['balance'])) {
                 $aBalance = $aSource['snapshot']['balance'];
                 $aTiles[] = [
+                    'key' => 'balance',
                     'title' => _t($aBalance['title']),
                     'value' => (float)$aBalance['value'],
                     'type' => 'credits',
@@ -2398,11 +2403,16 @@ class BxAnalyticsReports
                     $fBundles = (float)$aRow['net'];
 
         if($aSource)
-            $aTiles[] = ['title' => _t('_bx_analytics_metric_credits_bundles'), 'value' => round($fBundles, 2), 'type' => 'money'];
+            $aTiles[] = ['key' => 'bundles', 'title' => _t('_bx_analytics_metric_credits_bundles'), 'value' => round($fBundles, 2), 'type' => 'money'];
 
         $aNotes = [];
         if($aMoney['credits_only'])
             $aNotes[] = _t('_bx_analytics_txt_revenue_credits_only');
+        if($aSource && $bPlatform)
+            $aNotes[] = _t('_bx_analytics_txt_credits_all_platforms');
+        // checkouts the ledger doesn't have: paid before it started, or not imported yet
+        if(empty($aSpentRows) && !empty($aSource['metrics']['spent']['value']) && (float)$aSource['metrics']['spent']['value'] > 0)
+            $aNotes[] = _t('_bx_analytics_txt_credits_not_in_ledger');
 
         return [
             'money' => $aMoney,
@@ -2436,7 +2446,7 @@ class BxAnalyticsReports
                     ['key' => 'orders', 'type' => 'number', 'title' => _t('_bx_analytics_metric_revenue_orders')],
                 ],
                 'rows' => $aSpentRows,
-                'empty' => _t('_bx_analytics_txt_no_credits'),
+                'empty' => _t('_bx_analytics_txt_no_credit_orders'),
             ],
             'notes' => $aNotes,
         ];

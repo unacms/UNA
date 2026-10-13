@@ -60,6 +60,10 @@
     --color-chart-4: rgb(var(--chart-4));
     --color-chart-5: rgb(var(--chart-5));
     --color-chart-6: rgb(var(--chart-6));
+    --color-chart-good: rgb(var(--chart-good));
+    /* Text of a change for the better or the worse (analytics tiles). */
+    --color-trend-good: rgb(var(--trend-good));
+    --color-trend-bad: rgb(var(--trend-bad));
     --color-destructive-foreground: rgb(var(--destructive-foreground));
     --color-neutral: rgb(var(--neutral));
     --color-neutral-0: rgb(var(--neutral-0));

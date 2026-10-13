@@ -37,7 +37,7 @@ class BxAnalyticsStudioPage extends BxTemplStudioModule
         'configure' => ['setup' => 'plug', 'settings' => 'settings'],
     ];
 
-    function __construct($sModule, $mixedPageName, $sPage = "")
+    public function __construct($sModule, $mixedPageName, $sPage = "")
     {
         $this->_sModule = 'bx_analytics';
         $this->_oModule = BxDolModule::getInstance($this->_sModule);

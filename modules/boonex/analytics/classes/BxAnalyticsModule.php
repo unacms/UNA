@@ -364,7 +364,7 @@ class BxAnalyticsModule extends BxDolModule
      *        drops them too, so filtering on the client only saves requests
      *      - `vitals` (boolean): send `vitals` hits
      *      - `vitals_sample` (0 to 100): percent of page loads (app launches on native) that
-     *        measure vitals, decided once per load with Math.random() * 100 < vitals_sample
+     *        measure vitals, decided once per load with a random roll from 0 to 100 below vitals_sample
      *
      * @see BxAnalyticsModule::serviceGetTrackerConfig
      */
@@ -1235,8 +1235,10 @@ class BxAnalyticsModule extends BxDolModule
 
         try {
             $oRevenue = $this->getRevenue();
-            if($oRevenue->getBackfillStatus()['state'] == 'running')
+            if($oRevenue->getBackfillStatus()['state'] == 'running') {
                 $oRevenue->backfill(time() + $CNF['BACKFILL_SECONDS']);
+                $this->cleanReportCache();
+            }
         }
         catch(Throwable $e) {
             bx_log('sys_payments', 'bx_analytics: import of past payments failed: ' . $e->getMessage(), BX_LOG_ERR);
@@ -1396,7 +1398,13 @@ class BxAnalyticsModule extends BxDolModule
         if(!$iProfileId)
             return 0;
 
-        return $this->_oDb->forgetProfile($iProfileId, random_bytes(16)) + $this->_oDb->forgetRevenueProfile($iProfileId);
+        $iChanged = $this->_oDb->forgetProfile($iProfileId, random_bytes(16)) + $this->_oDb->forgetRevenueProfile($iProfileId);
+
+        // cached reports may still show the member's name and link
+        if($iChanged)
+            $this->cleanReportCache();
+
+        return $iChanged;
     }
 
     public function serviceGetOptionsPlatforms()
@@ -1611,7 +1619,7 @@ class BxAnalyticsModule extends BxDolModule
             $this->checkAllowedManage() === CHECK_ACTION_RESULT_ALLOWED,
         ];
 
-        return $this->_oConfig->CNF['REPORT_CACHE_PREFIX'] . md5(json_encode([$sReport, $aFilter, $aOwn, bx_lang_name(), $aViewer]));
+        return $this->_oConfig->CNF['REPORT_CACHE_PREFIX'] . hash('sha256', json_encode([$sReport, $aFilter, $aOwn, bx_lang_name(), $aViewer]));
     }
 
     /**
@@ -2288,7 +2296,12 @@ class BxAnalyticsModule extends BxDolModule
         if(bx_get('op', 'post') == 'restart' || $aStatus['state'] == 'done')
             $oRevenue->restartBackfill();
 
-        $this->_outputJson(['ok' => true] + $oRevenue->backfill(time() + $this->_oConfig->CNF['BACKFILL_SECONDS']));
+        $aResult = $oRevenue->backfill(time() + $this->_oConfig->CNF['BACKFILL_SECONDS']);
+
+        // cached revenue reports hold the old totals and the import's state
+        $this->cleanReportCache();
+
+        $this->_outputJson(['ok' => true] + $aResult);
     }
 
 	public function checkAllowed($isPerformAction = false)

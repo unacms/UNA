@@ -424,6 +424,7 @@
 	<string name="_bx_analytics_txt_next"><![CDATA[Next]]></string>
 	<string name="_bx_analytics_txt_no_bots"><![CDATA[No bots in this period]]></string>
 	<string name="_bx_analytics_txt_no_cancellations"><![CDATA[No cancellations in this period.]]></string>
+	<string name="_bx_analytics_txt_no_credit_orders"><![CDATA[No orders paid with credits in this period.]]></string>
 	<string name="_bx_analytics_txt_no_credits"><![CDATA[No credits spent in this period.]]></string>
 	<string name="_bx_analytics_txt_no_data"><![CDATA[No data for this period]]></string>
 	<string name="_bx_analytics_txt_no_data_yet"><![CDATA[No visits recorded yet]]></string>
@@ -576,8 +577,10 @@
 	<string name="_bx_analytics_txt_unknown"><![CDATA[(none)]]></string>
 	<string name="_bx_analytics_txt_count"><![CDATA[{0}]]></string>
 	<string name="_bx_analytics_txt_crash_free_apps"><![CDATA[iOS and Android apps]]></string>
+	<string name="_bx_analytics_txt_credits_all_platforms"><![CDATA[Credits figures are for all platforms: the modules that keep credits don't record where a member was.]]></string>
 	<string name="_bx_analytics_txt_credits_liability"><![CDATA[Worth {0}]]></string>
 	<string name="_bx_analytics_txt_credits_none"><![CDATA[No installed module keeps credits.]]></string>
+	<string name="_bx_analytics_txt_credits_not_in_ledger"><![CDATA[Credits were spent on checkouts the revenue ledger doesn't have yet, so they aren't listed by what they paid for. Importing past payments adds them.]]></string>
 	<string name="_bx_analytics_txt_credits_spenders"><![CDATA[Top spenders]]></string>
 	<string name="_bx_analytics_txt_credits_spent"><![CDATA[Credits spent]]></string>
 	<string name="_bx_analytics_txt_credits_spent_on"><![CDATA[What credits paid for]]></string>

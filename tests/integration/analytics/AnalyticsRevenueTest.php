@@ -706,6 +706,59 @@ class AnalyticsRevenueTest extends BxDolIntegrationTestCase
         $this->assertArrayNotHasKey('bx_credits', $this->_oModule->getReports()->getRevenueSources(['from' => $aFilter['from'], 'to' => $aFilter['to']], 'money'), 'credits are not money');
     }
 
+    /**
+     * One checkout paid with credits, on both sides as a real one is: the credits module's
+     * history and the ledger. The block's figures agree, with a platform selected too.
+     */
+    public function testCreditsBlockAgreesWithTheLedger()
+    {
+        if (!BxDolModuleQuery::getInstance()->isEnabledByName('bx_credits'))
+            $this->markTestSkipped('bx_credits is not installed');
+
+        $aPending = $this->_order('single', 'credits', 'USD', 12);
+        $this->_transaction($aPending, 12);
+        $this->_creditsHistory('checkout', 'out', 12, $aPending['order']);
+        $this->_buyer($this->_server())->onPaymentAlert($this->_alert('register_payment', ['pending' => $aPending]));
+        $this->assertNotSame('rn-ios', $this->_ledger($aPending)[0]['platform']);
+
+        $oReports = $this->_oModule->getReports();
+        $sAllPlatforms = _t('_bx_analytics_txt_credits_all_platforms');
+        $sNotInLedger = _t('_bx_analytics_txt_credits_not_in_ledger');
+
+        // a period no other test reads: service results are kept for the request (BxDolService)
+        $aCredits = $oReports->getCredits($this->_filter(['from' => '2001-09-07', 'to' => '2001-09-10']), []);
+        $aTiles = array_column($aCredits['tiles'], 'value', 'key');
+        $this->assertEquals(12.0, $aTiles['spent']);
+        $this->assertSame([[12.0, 1]], array_map(function ($a) { return array_values($a['values']); }, $aCredits['spent']['rows']));
+        $this->assertNotContains($sAllPlatforms, $aCredits['notes']);
+        $this->assertNotContains($sNotInLedger, $aCredits['notes']);
+
+        // another platform: the credits module can't tell, so the whole block is for all of them
+        $oFilter = new BxAnalyticsFilter($this->_oModule, ['range' => 'custom', 'from' => '2001-09-07', 'to' => '2001-09-10', 'platform' => 'rn-ios'], self::NOW + 86400);
+        $aCredits = $oReports->getCredits($oFilter, []);
+        $aTiles = array_column($aCredits['tiles'], 'value', 'key');
+        $this->assertEquals(12.0, $aTiles['spent']);
+        $this->assertCount(1, $aCredits['spent']['rows'], 'the ledger part is not filtered by platform either');
+        $this->assertContains($sAllPlatforms, $aCredits['notes']);
+    }
+
+    public function testCreditsSpentOutsideTheLedgerAreExplained()
+    {
+        if (!BxDolModuleQuery::getInstance()->isEnabledByName('bx_credits'))
+            $this->markTestSkipped('bx_credits is not installed');
+
+        // a checkout from before the ledger, not imported
+        $this->_creditsHistory('checkout', 'out', 25, 'test-rev-old');
+
+        // a period no other test reads: service results are kept for the request (BxDolService)
+        $aCredits = $this->_oModule->getReports()->getCredits($this->_filter(['from' => '2001-09-09', 'to' => '2001-09-10']), []);
+        $aTiles = array_column($aCredits['tiles'], 'value', 'key');
+        $this->assertEquals(25.0, $aTiles['spent']);
+        $this->assertSame([], $aCredits['spent']['rows']);
+        $this->assertSame(_t('_bx_analytics_txt_no_credit_orders'), $aCredits['spent']['empty']);
+        $this->assertContains(_t('_bx_analytics_txt_credits_not_in_ledger'), $aCredits['notes']);
+    }
+
     /*
      * Helpers
      */
@@ -773,6 +826,17 @@ class AnalyticsRevenueTest extends BxDolIntegrationTestCase
         $aRow['amount_default'] = $aRow['amount'];
 
         $this->assertSame(1, $this->_oModule->_oDb->insertRevenue($aRow));
+    }
+
+    /**
+     * A row of the credits module's history, for the test client; `$sOrder` must start with
+     * `test-rev-` for the cleanup.
+     */
+    protected function _creditsHistory($sType, $sDirection, $fAmount, $sOrder, $iDate = self::NOW)
+    {
+        BxDolDb::getInstance()->query("INSERT INTO `bx_credits_history` SET `first_pid` = :pid, `second_pid` = 0, `amount` = :amount, `type` = :type, `direction` = :direction, `order` = :order, `data` = '', `info` = '', `date` = :date", [
+            'pid' => self::CLIENT, 'amount' => $fAmount, 'type' => $sType, 'direction' => $sDirection, 'order' => $sOrder, 'date' => $iDate,
+        ]);
     }
 
     protected function _grant($iLevel, $sAction, $bAllowed)

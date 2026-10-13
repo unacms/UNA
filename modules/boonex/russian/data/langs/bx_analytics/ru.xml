@@ -424,6 +424,7 @@
 	<string name="_bx_analytics_txt_next"><![CDATA[Далее]]></string>
 	<string name="_bx_analytics_txt_no_bots"><![CDATA[За этот период ботов не было]]></string>
 	<string name="_bx_analytics_txt_no_cancellations"><![CDATA[За этот период отмен нет.]]></string>
+	<string name="_bx_analytics_txt_no_credit_orders"><![CDATA[За этот период нет заказов, оплаченных кредитами.]]></string>
 	<string name="_bx_analytics_txt_no_credits"><![CDATA[За этот период кредиты не тратили.]]></string>
 	<string name="_bx_analytics_txt_no_data"><![CDATA[Нет данных за этот период]]></string>
 	<string name="_bx_analytics_txt_no_data_yet"><![CDATA[Посещений пока нет]]></string>
@@ -576,8 +577,10 @@
 	<string name="_bx_analytics_txt_unknown"><![CDATA[(нет)]]></string>
 	<string name="_bx_analytics_txt_count"><![CDATA[{0} - количество]]></string>
 	<string name="_bx_analytics_txt_crash_free_apps"><![CDATA[Приложения iOS и Android]]></string>
+	<string name="_bx_analytics_txt_credits_all_platforms"><![CDATA[Данные о кредитах приведены по всем платформам: модули, которые ведут кредиты, не записывают, откуда пришёл участник.]]></string>
 	<string name="_bx_analytics_txt_credits_liability"><![CDATA[Стоимость: {0}]]></string>
 	<string name="_bx_analytics_txt_credits_none"><![CDATA[Ни один установленный модуль не ведёт кредиты.]]></string>
+	<string name="_bx_analytics_txt_credits_not_in_ledger"><![CDATA[Кредиты потрачены на заказы, которых ещё нет в журнале доходов, поэтому они не разбиты по тому, за что заплачено. Импорт прошлых платежей добавит их.]]></string>
 	<string name="_bx_analytics_txt_credits_spenders"><![CDATA[Больше всего потратили]]></string>
 	<string name="_bx_analytics_txt_credits_spent"><![CDATA[Потрачено кредитов]]></string>
 	<string name="_bx_analytics_txt_credits_spent_on"><![CDATA[Что оплачено кредитами]]></string>

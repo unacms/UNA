@@ -364,7 +364,10 @@
      * Web vitals
      */
 
-    var bVitals = !bDisabled && iVitalsSample > 0 && Math.random() * 100 < iVitalsSample && typeof window.PerformanceObserver === 'function' && !!oPerformance && typeof oPerformance.now === 'function';
+    // a roll in [0, 100) from the CSPRNG getVisitorId() uses; no vitals without one
+    var oCrypto = window.crypto || window.msCrypto;
+    var fVitalsRoll = oCrypto && oCrypto.getRandomValues ? oCrypto.getRandomValues(new Uint32Array(1))[0] / 4294967296 * 100 : 100;
+    var bVitals = !bDisabled && iVitalsSample > 0 && fVitalsRoll < iVitalsSample && typeof window.PerformanceObserver === 'function' && !!oPerformance && typeof oPerformance.now === 'function';
     var aSupported = bVitals && window.PerformanceObserver.supportedEntryTypes ? window.PerformanceObserver.supportedEntryTypes : [];
     var oView = null;
     var aObservers = [];

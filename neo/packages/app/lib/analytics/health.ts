@@ -255,6 +255,14 @@ export function setHealthSink(next: Sink): void {
     });
 }
 
+/** A roll in [0, 100) from the platform CSPRNG; 100 (never sampled) without one. */
+function sampleRoll(): number {
+    const cryptoApi = (globalThis as { crypto?: Crypto }).crypto;
+    if (!cryptoApi?.getRandomValues) return 100;
+    const values = cryptoApi.getRandomValues(new Uint32Array(1));
+    return ((values[0] ?? 0) / 4294967296) * 100;
+}
+
 /**
  * The site's settings, from the tracker's config; null when tracking is off. Vitals are
  * sampled here, once per app start or page load.
@@ -262,7 +270,7 @@ export function setHealthSink(next: Sink): void {
 export function configureHealth(settings: HealthSettings | null): void {
     errorsOn = !!settings?.errors;
     ignorePatterns = errorsOn ? (settings?.ignore ?? []).flatMap((pattern) => toPattern(pattern) ?? []) : [];
-    vitalsOn = !!settings?.vitals && Math.random() * 100 < (settings?.vitalsSample ?? 0);
+    vitalsOn = !!settings?.vitals && sampleRoll() < (settings?.vitalsSample ?? 0);
 
     if (errorsOn) {
         errors.forEach((item, key) => {

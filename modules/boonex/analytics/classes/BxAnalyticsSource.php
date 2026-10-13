@@ -108,7 +108,7 @@ class BxAnalyticsSource
         $bInternal = $sHost !== '' && self::_isInternal($sHost, $aInternalHosts);
         if($sHost !== '' && !$bInternal) {
             $aResult['referrer_host'] = $sHost;
-            $aResult['referrer'] = self::_clean(preg_replace('/^[a-z][a-z0-9+.-]*:\/\/(www\.)?|[?#].*$/i', '', $sReferrer), 255);
+            $aResult['referrer'] = self::_clean(preg_replace(['/^[a-z][a-z0-9+.-]*:\/\/(www\.)?/i', '/[?#].*$/'], '', $sReferrer), 255);
         }
 
         $aResult['channel'] = self::channel($aResult['referrer_host'], $aResult['utm_source'], $aResult['utm_medium'], array_keys($aQuery));
@@ -177,7 +177,7 @@ class BxAnalyticsSource
         if($sUrl === '')
             return '';
 
-        $sHost = parse_url(strpos($sUrl, '//') === false ? 'http://' . $sUrl : $sUrl, PHP_URL_HOST);
+        $sHost = parse_url(bx_mb_strpos($sUrl, '//') === false ? '//' . $sUrl : $sUrl, PHP_URL_HOST);
         if(!is_string($sHost) || $sHost === '')
             return '';
 

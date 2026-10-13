@@ -101,6 +101,11 @@
             --chart-4: 219 39 119;
             --chart-5: 22 163 74;
             --chart-6: 124 58 237;
+            /* Chart series that are good news (3:1 on cards); bad news uses --destructive */
+            --chart-good: 5 150 105;
+            /* Text of a change for the better or the worse (4.5:1 on cards) */
+            --trend-good: 4 120 87;
+            --trend-bad: 190 18 60;
         }
 
         /* Semantic — dark overrides */
@@ -146,6 +151,9 @@
             --chart-4: 249 168 212;
             --chart-5: 134 239 172;
             --chart-6: 196 181 253;
+            --chart-good: 52 211 153;
+            --trend-good: 110 231 183;
+            --trend-bad: 253 164 175;
         }
     }
 }

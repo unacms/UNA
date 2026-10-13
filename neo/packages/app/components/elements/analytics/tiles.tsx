@@ -5,8 +5,8 @@ import { cn, isWeb } from 'app/lib/util';
 import type { Trend } from './format';
 
 export const TREND_TEXT: Record<Trend, string> = {
-    good: 'text-emerald-700 dark:text-emerald-300',
-    bad: 'text-rose-700 dark:text-rose-300',
+    good: 'text-trend-good',
+    bad: 'text-trend-bad',
     flat: 'text-muted-foreground',
 };
 

@@ -301,7 +301,7 @@ class BxAnalyticsDb extends BxBaseModGeneralDb
             $this->query("INSERT INTO `" . $CNF['TABLE_BOT_PAGES'] . "` (`day`, `category`, `path_hash`, `path`, `hits`) VALUES (:day, :category, :hash, :path, 1) ON DUPLICATE KEY UPDATE `hits` = `hits` + 1", [
                 'day' => $sDay,
                 'category' => $sCategory,
-                'hash' => substr(sha1($sPath, true), 0, 8),
+                'hash' => substr(hash('sha256', $sPath, true), 0, 8),
                 'path' => $sPath,
             ]);
 

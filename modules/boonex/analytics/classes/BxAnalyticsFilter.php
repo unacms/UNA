@@ -41,6 +41,11 @@ class BxAnalyticsFilter
     protected $_aFilter;
 
     /**
+     * Start of the previous period, a calendar step back in the filter's timezone.
+     */
+    protected $_iPreviousFrom;
+
+    /**
      * @param object $oModule the Analytics module
      * @param array $aInput request parameters
      * @param int $iNow current time, for tests
@@ -65,14 +70,15 @@ class BxAnalyticsFilter
     }
 
     /**
-     * The same filter for the period of the same length just before, for comparisons.
+     * The same filter for the period just before, for comparisons: as many local days (or
+     * calendar months, or hours for 24h) as this one, so a daylight saving change or a leap
+     * year doesn't shift it by an hour or a day.
      */
     public function getPrevious()
     {
         $aFilter = $this->_aFilter;
-        $iLength = $aFilter['to'] - $aFilter['from'];
         $aFilter['to'] = $aFilter['from'];
-        $aFilter['from'] -= $iLength;
+        $aFilter['from'] = $this->_iPreviousFrom;
 
         return $aFilter;
     }
@@ -175,6 +181,10 @@ class BxAnalyticsFilter
                 $oTo = $oTomorrow;
                 break;
         }
+
+        $aBack = ['today' => '-1 day', 'yesterday' => '-1 day', '24h' => '-24 hours', '7d' => '-7 days', '30d' => '-30 days', '90d' => '-90 days', '12m' => '-12 months'];
+        $sBack = isset($aBack[$sRange]) ? $aBack[$sRange] : '-' . (int)round(($oTo->getTimestamp() - $oFrom->getTimestamp()) / 86400) . ' days';
+        $this->_iPreviousFrom = (clone $oFrom)->modify($sBack)->getTimestamp();
 
         // the bucket may be overridden to anything that keeps the chart readable
         if(isset($aInput['bucket']) && in_array($aInput['bucket'], ['hour', 'day', 'week', 'month'], true)) {

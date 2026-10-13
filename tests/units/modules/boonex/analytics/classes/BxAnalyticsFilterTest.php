@@ -139,6 +139,41 @@ class BxAnalyticsFilterTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($a['to'] - $a['from'], $aPrevious['to'] - $aPrevious['from']);
     }
 
+    public function testPreviousPeriodAcrossDaylightSavingIsCalendarDays()
+    {
+        // 2026-10-25 12:00 UTC: Europe/London fell back from BST to GMT at 01:00 UTC, so
+        // today is 25 hours long
+        $iNow = gmmktime(12, 0, 0, 10, 25, 2026);
+
+        $oFilter = new BxAnalyticsFilter($this->_oModule, ['range' => 'today', 'tz' => 'Europe/London'], $iNow);
+        $a = $oFilter->get();
+        $aPrevious = $oFilter->getPrevious();
+        $this->assertSame(25 * 3600, $a['to'] - $a['from']);
+        $this->assertSame($a['from'], $aPrevious['to']);
+        // yesterday's local midnight, 2026-10-24 00:00 BST
+        $this->assertSame(gmmktime(23, 0, 0, 10, 23, 2026), $aPrevious['from']);
+
+        $oFilter = new BxAnalyticsFilter($this->_oModule, ['range' => '7d', 'tz' => 'Europe/London'], $iNow);
+        $aPrevious = $oFilter->getPrevious();
+        // 2026-10-19 00:00 BST back to 2026-10-12 00:00 BST
+        $this->assertSame(gmmktime(23, 0, 0, 10, 18, 2026), $aPrevious['to']);
+        $this->assertSame(gmmktime(23, 0, 0, 10, 11, 2026), $aPrevious['from']);
+
+        $oFilter = new BxAnalyticsFilter($this->_oModule, ['range' => 'custom', 'from' => '2026-10-20', 'to' => '2026-10-26', 'tz' => 'Europe/London'], $iNow);
+        $aPrevious = $oFilter->getPrevious();
+        $this->assertSame(gmmktime(23, 0, 0, 10, 12, 2026), $aPrevious['from'], 'seven local days before 2026-10-20 00:00 BST');
+    }
+
+    public function testPreviousTwelveMonthsAcrossALeapYear()
+    {
+        // 12m on 2028-03-10 runs from 2027-04-01; the year before starts on 2026-04-01
+        $oFilter = new BxAnalyticsFilter($this->_oModule, ['range' => '12m'], gmmktime(12, 0, 0, 3, 10, 2028));
+        $aPrevious = $oFilter->getPrevious();
+
+        $this->assertSame(gmmktime(0, 0, 0, 4, 1, 2027), $aPrevious['to']);
+        $this->assertSame(gmmktime(0, 0, 0, 4, 1, 2026), $aPrevious['from']);
+    }
+
     public function testDaysAcrossDaylightSavingStartAtLocalMidnight()
     {
         // Sydney moved from UTC+10 to UTC+11 on 2026-10-04

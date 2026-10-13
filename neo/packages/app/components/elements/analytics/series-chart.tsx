@@ -5,7 +5,7 @@ import Svg, { Circle, Line, Path, Rect } from 'react-native-svg';
 import { useCSSVariable } from 'uniwind';
 import { View, Row } from 'app/design/view';
 import { Text } from 'app/design/typography';
-import { useTheme, useThemeValue } from 'app/design/theme';
+import { useTheme } from 'app/design/theme';
 import { cn, isWeb, useDateLocaleTag } from 'app/lib/util';
 import type { ReportChart, ReportDataset } from './analytics.types';
 import { formatCredits, formatReportAxis, formatReportValue, getDeviceTimezone } from './format';
@@ -27,13 +27,10 @@ const SWATCH: Record<string, string> = {
     'chart-4': 'bg-chart-4',
     'chart-5': 'bg-chart-5',
     'chart-6': 'bg-chart-6',
-    good: 'bg-emerald-600 dark:bg-emerald-400',
+    good: 'bg-chart-good',
     bad: 'bg-destructive',
 };
-/** Native, when Uniwind can't read a token: the palette.css values. */
-const FALLBACK_LIGHT = ['#2563eb', '#0891b2', '#d97706', '#db2777', '#16a34a', '#7c3aed'];
-const FALLBACK_DARK = ['#60a5fa', '#67e8f9', '#fcd34d', '#f9a8d4', '#86efac', '#c4b5fd'];
-const TOKENS = ['--color-chart-1', '--color-chart-2', '--color-chart-3', '--color-chart-4', '--color-chart-5', '--color-chart-6', '--color-border', '--color-muted-foreground', '--color-destructive'];
+const TOKENS = ['--color-chart-1', '--color-chart-2', '--color-chart-3', '--color-chart-4', '--color-chart-5', '--color-chart-6', '--color-border', '--color-muted-foreground', '--color-destructive', '--color-chart-good'];
 
 /** The colour name of a series: its tone, or the next one of the palette. */
 function seriesColor(dataset: ReportDataset, index: number): string {
@@ -44,23 +41,21 @@ function seriesColor(dataset: ReportDataset, index: number): string {
 function useSeriesColors() {
     const { colors } = useTheme();
     const values = useCSSVariable(TOKENS);
-    const fallback = useThemeValue(FALLBACK_LIGHT, FALLBACK_DARK);
-    const good = useThemeValue('#059669', '#34d399');
-    const bad = '#e11d48';
     if (isWeb) {
         return {
-            series: (name: string): ColorValue => (name === 'good' ? good : name === 'bad' ? 'rgb(var(--destructive))' : `rgb(var(--${name}))`),
+            series: (name: string): ColorValue => (name === 'bad' ? 'rgb(var(--destructive))' : name === 'good' ? 'rgb(var(--chart-good))' : `rgb(var(--${name}))`),
             grid: 'rgb(var(--border))',
             guide: 'rgb(var(--muted-foreground))',
         };
     }
+    // when Uniwind can't read a token: the theme's colours, as area-chart does
     const pick = (value: string | number | undefined, other: ColorValue): ColorValue => (typeof value === 'string' && value ? value : other);
     return {
         series: (name: string): ColorValue => {
-            if (name === 'good') return good;
-            if (name === 'bad') return pick(values[8], bad);
+            if (name === 'good') return pick(values[9], colors.primary);
+            if (name === 'bad') return pick(values[8], colors.notification);
             const i = Number(name.replace('chart-', '')) - 1;
-            return pick(values[i], fallback[i] ?? colors.primary);
+            return pick(values[i], colors.primary);
         },
         grid: pick(values[6], colors.border),
         guide: pick(values[7], colors.text),
