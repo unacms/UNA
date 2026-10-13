@@ -42,7 +42,6 @@ modules/boonex/app_sumo
 modules/boonex/ether
 modules/boonex/market_api
 modules/boonex/media
-modules/boonex/messenger
 modules/boonex/una_mods
 modules/boonex/projects
 modules/vendor

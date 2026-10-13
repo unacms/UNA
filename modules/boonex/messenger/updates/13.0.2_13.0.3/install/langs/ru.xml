@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="ru" flag="ru" title="Russian">
+	<string_upd name="_bx_messenger_broadcast_total_profiles"><![CDATA[Сообщение получат {0} участников]]></string_upd>	
+	<string_add name="_bx_messenger_no_server"><![CDATA[В настройках мессенджера не определен URL-адрес Jot Server. В настоящее время связь в режиме реального времени невозможна.]]></string_add>
+</resources>

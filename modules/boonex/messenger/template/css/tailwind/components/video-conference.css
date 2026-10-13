@@ -1,0 +1,152 @@
+#jitsi-public-window, #bx-messenger-jitsi {
+	@apply h-[480px] w-[640px] m-0 p-0 overflow-hidden;
+}
+
+#bx-messenger-vc-call {
+	@apply cursor-move min-w-[20rem];
+}
+
+#bx-messenger-vc-call .bx-popup-close-wrapper{
+	@apply hidden;
+}
+
+#bx-messenger-vc-call .bx-messenger-jitsi-public-window-buttons{
+	margin: 1rem 1rem 0rem;
+	overflow: hidden;
+	display: flex;
+	justify-content: flex-end;
+}
+
+#bx-messenger-vc-call .bx-messenger-conference-call-title div{
+	overflow: visible;
+	float: none;
+	text-align: center;
+}
+
+#bx-messenger-jitsi-video .bx-popup-content-indent{
+	margin: 0;
+	padding: 0;
+}
+
+#bx-messenger-jitsi-video .bx-popup-content-indent{
+	margin: 0;
+	padding: 0;
+}
+
+div.bx-messenger-jitsi-area {
+	padding: 1.5rem;
+	cursor: move;
+}
+
+div.bx-messenger-jitsi-area .bx-messenger-jitsi-buttons
+{
+	overflow: hidden;
+	display: flex;
+	justify-content: flex-end;
+	margin-top: 1rem;
+}
+
+div.bx-messenger-jitsi-area div[draggable] {
+	-moz-user-select: none;
+	-khtml-user-select: none;
+	-webkit-user-select: none;
+	user-select: none;
+	/* Required to make elements draggable in old WebKit */
+	-khtml-user-drag: element;
+	-webkit-user-drag: element;
+}
+
+.bx-messenger-jots-message-vc-participants{
+	@apply flex -space-x-1 xs:ml-2 ml-0 flex flex-stat;
+}
+
+.bx-messenger-jots-message-vc-participants img {
+	@apply w-4 h-4 rounded-lg;
+}
+
+.bx-btn.bx-messenger-jots-message-vc-join-button {
+	@apply max-h-[1.25rem] text-white bg-red-700 hover:bg-red-600 font-bold border border-white hover:border-white/10;
+}
+
+div.bx-messenger-jots-message-vc
+{
+	@apply max-w-full text-left flex relative bg-gray-300 dark:bg-gray-600 max-h-[1.5rem] overflow-hidden whitespace-normal rounded p-1 my-1
+	border-0 items-center justify-between space-x-0 xs:space-x-2;
+}
+
+div.bx-messenger-jots-message-vc span:first-child {
+	@apply whitespace-nowrap text-ellipsis overflow-hidden;
+}
+
+div.bx-messenger-conference-call {
+	@apply flex flex-col items-center content-center m-2;
+}
+
+div.bx-messenger-conference-call .bx-messenger-conference-call-buttons{
+	@apply flex w-full items-center justify-evenly;
+}
+
+div.bx-messenger-conference-call .bx-messenger-conference-call-buttons i {
+	@apply text-center p-2 rounded-[1.25rem] min-w-[2.5rem] text-xl;
+}
+
+div.bx-messenger-conference-call > div {
+	@apply m-4;
+}
+
+#bx-messenger-jitsi-video .resizers{
+	width: 100%;
+	height: 100%;
+	border: 3px solid #4286f4;
+	box-sizing: border-box;
+}
+
+#bx-messenger-jitsi-video .resizers .resizer{
+	width: 10px;
+	height: 10px;
+	border-radius: 50%; /*magic to turn square into circle*/
+	background: white;
+	border: 3px solid #4286f4;
+	position: absolute;
+}
+
+#bx-messenger-jitsi-video .resizers .resizer.top-left {
+	left: -5px;
+	top: -5px;
+	cursor: nwse-resize; /*resizer cursor*/
+}
+#bx-messenger-jitsi-video .resizers .resizer.top-right {
+	right: -5px;
+	top: -5px;
+	cursor: nesw-resize;
+}
+#bx-messenger-jitsi-video .resizers .resizer.bottom-left {
+	left: -5px;
+	bottom: -5px;
+	cursor: nesw-resize;
+}
+#bx-messenger-jitsi-video .resizers .resizer.bottom-right {
+	right: -5px;
+	bottom: -5px;
+	cursor: nwse-resize;
+}
+
+.bx-menu-item-public-vc-messenger .bx-menu-item-addon{
+	position: absolute;
+	margin: 0 !important;
+	padding: 0;
+	line-height: 1rem !important;
+	font-size: 0.8rem !important;
+	right: -1.1rem;
+}
+
+div.bx-messenger-conference-call .bx-messenger-conference-call-buttons i{
+	line-height: 1.5rem;
+}
+
+@media (max-width:480px){
+	#bx-messenger-jitsi,
+	#bx-messenger-jitsi-video{
+		width:100%;
+	}
+}

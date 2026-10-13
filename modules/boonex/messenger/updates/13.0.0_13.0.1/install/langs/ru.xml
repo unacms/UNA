@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="ru" flag="ru" title="Russian">		
+	<string_del name="_bx_messenger_neo_app_form"><![CDATA[Форма для отправки сообщений]]></string_del>	
+	
+	<string_add name="_bx_messenger_page_block_contacts_title"><![CDATA[Контакты]]></string_add>
+	<string_add name="_bx_messenger_profile_title_snippet_meta"><![CDATA[Мета Информация]]></string_add>
+	<string_add name="_bx_messenger_set_title_profile_snippet_meta"><![CDATA[Метаданные профиля для блока контактов]]></string_add>
+	<string_add name="_bx_messenger_item_title_sm_message"><![CDATA[Сообщение]]></string_add>
+</resources>

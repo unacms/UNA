@@ -1,0 +1,97 @@
+.bx-messenger-post-box {
+    @apply p-4 relative flex-stat;
+}
+
+.bx-messenger-post-box > div {
+    @apply border-none ring-1 ring-gray-300 dark:ring-gray-700
+           rounded-t-md text-gray-600 dark:text-gray-400 block w-full
+           border border-gray-200 dark:border-gray-800 rounded
+           leading-5 bg-white dark:bg-gray-900 placeholder-gray-500
+           focus:outline-none focus:placeholder-gray-400 dark:focus:bg-black focus:ring-2
+           focus:text-gray-900 dark:focus:text-gray-100 focus:ring-blue-500 focus:border-opacity-70
+           focus:ring-opacity-20 focus:border-blue-500 text-sm;
+}
+
+#bx-messenger-message-box .ql-editor.ql-blank:focus::before {
+    @apply hidden;
+}
+
+.bx-messenger-post-box .ql-container,
+.bx-messenger-post-box .ql-editor {
+    @apply min-h-[3rem];
+}
+
+.bx-messenger-post-box input {
+    @apply outline-none focus:placeholder-transparent;
+}
+
+.bx-messenger-talk-title {
+    @apply block w-full border-none shadow-none;
+}
+
+.bx-messenger-message-box-input-area {
+    @apply p-3 rounded-t-md text-gray-700 dark:text-gray-300 w-full bg-gray-50
+    dark:bg-gray-900/50 placeholder-gray-500 focus:outline-none focus:bg-white dark:focus:bg-gray-900
+    focus:placeholder-gray-300 dark:focus:placeholder-gray-700 focus:text-gray-900 dark:focus:text-gray-100
+    text-sm font-normal border-none;
+}
+
+.bx-messenger-post-box-send-actions {
+    @apply mt-px flex items-center p-2 bg-white dark:bg-gray-800 shadow ring-1 ring-gray-300 dark:ring-gray-700 rounded-b-md overflow-hidden;
+}
+
+.bx-messenger-post-box-send-actions i.sys-icon {
+    @apply text-2xl;
+}
+
+.bx-messenger-post-box-disabled {
+    @apply bg-opacity-[0.05] select-none cursor-text pointer-events-none top-0;
+}
+
+.bx-messenger-post-box-send-actions-items {
+    @apply flex w-full text-sm text-gray-400 dark:text-gray-600;
+}
+
+.bx-messenger-post-box-send-actions-items li.video {
+    @apply hidden;
+}
+
+.bx-messenger-post-box-send-actions-items > button {
+    @apply border border-transparent
+           hover:border-gray-200/50 text-gray-600 dark:text-gray-400
+           active:bg-gray-300 active:border-gray-300 dark:active:bg-black/50
+           hover:bg-gray-200/50 dark:hover:text-gray-200 dark:hover:bg-gray-700/50
+           dark:hover:border-gray-700/50 dark:active:border-gray-700
+           hover:text-gray-800 px-2.5 py-1.5
+           text-sm font-medium rounded-md;
+}
+
+.bx-messenger-post-box-send-actions-items > button > svg{
+    @apply h-6 w-6 opacity-70 group-hover:opacity-100;
+}
+
+.bx-messenger-post-box-send-button > button {
+    @apply inline-flex items-center px-3 py-2 border shadow-sm text-base font-medium rounded-md text-white bg-blue-600 border-blue-600
+    hover:shadow hover:bg-blue-500 hover:border-blue-500 hover:-translate-y-px
+    dark:hover:bg-blue-600 dark:bg-blue-700 dark:border-blue-600 dark:hover:border-blue-500 dark:active:border-blue-700 dark:active:bg-blue-800
+    active:bg-blue-700 active:border-blue-800 active:shadow-none active:translate-y-px
+    transition-all duration-150 transform-gpu;
+}
+
+.bx-messenger-block-messenger .bx-messenger-block-history-panel .bx-messenger-post-box-send-button > button span,
+.bx-messenger-block-history-panel.col-span-6 .bx-messenger-post-box-send-button > button span {
+    @apply hidden;
+}
+
+.bx-messenger-post-box .bx-messenger-post-box-send-area {
+    @apply w-auto content-center justify-center flex relative rounded-[0.7rem] box-border;
+}
+
+.bx-dir-rtl .bx-messenger-post-box .ql-editor {
+    direction: rtl;
+    text-align: right;
+}
+
+.ql-editor p {
+    direction: inherit;
+}

@@ -1,0 +1,24 @@
+.bx-messenger-block {
+    @apply max-w-full w-full h-full shadow-none divide-y divide-gray-200 dark:divide-gray-800 flex flex-col;
+}
+
+.bx-messenger-main-block
+{
+    @apply h-full w-full border-0 rounded-none relative;
+}
+
+.bx-messenger-main-block .bx-loading-ajax{
+    @apply mt-auto;
+}
+
+#bx-messenger-history-block .bx-messenger-table-wrapper {
+    @apply min-h-0;
+}
+
+.bx-messenger-table-wrapper {
+    @apply min-h-[30rem] flex h-full w-full relative flex-col bg-inherit;
+}
+
+#lot-settings .bx-popup-close-wrapper {
+    @apply hidden;
+}

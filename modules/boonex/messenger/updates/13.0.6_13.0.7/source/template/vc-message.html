@@ -1,0 +1,13 @@
+<div class="bx-messenger-jots-message-vc">
+	<span class="text-xs">
+		__info__
+	</span>
+	<bx_if:part>
+		<span class="bx-messenger-jots-message-vc-participants">__participants__</span>
+	</bx_if:part>
+	<bx_if:join>
+		<button class="bx-btn bx-btn-small ml-2 bx-messenger-jots-message-vc-join-button" onclick="oMessenger.onStartVideoCall(this, __id__, '__room__');">
+			<bx_text:_bx_messenger_jitsi_vc_join />
+		</button>
+	</bx_if:join>
+</div>

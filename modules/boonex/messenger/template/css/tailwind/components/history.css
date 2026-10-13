@@ -1,0 +1,87 @@
+.bx-messenger-conversation-block-wrapper {
+    @apply absolute w-full h-full;
+}
+
+.bx-messenger-conversation-block
+{
+    @apply overflow-y-auto relative h-full min-h-[50px] overflow-x-hidden; /* scroll-smooth snap-y touch-pan-y */
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width:none;
+}
+
+.bx-messenger-conversation-block-history {
+    @apply flex-dynamic overflow-hidden relative;
+    @apply w-full;
+}
+
+.bx-messenger-conversations
+{
+    @apply relative h-auto flex w-full mb-4 flex-col;
+}
+
+.panel .bx-messenger-history-block-header,
+.panel .bx-messenger-conversation-block-wrapper {
+    @apply hidden;
+}
+
+.bx-messenger-conversations .bx-messenger-jots-snip:hover
+{
+    @apply bg-transparent;
+}
+
+.bx-messenger-conversations-typing
+{
+    @apply inline-block opacity-80 relative;
+}
+
+.bx-messenger-conversations-typing span
+{
+    @apply mr-1 ml-1.5;
+}
+
+#bx-messenger-info-area
+{
+    @apply w-full overflow-hidden absolute bottom-0 hidden p-1 ml-4 text-sm;
+}
+
+#bx-messenger-info-area > div {
+  @apply font-light text-xs;
+}
+
+.bx-messenger-no-server {
+   @apply hidden;
+}
+
+#bx-messenger-info-area .bx-messenger-info-area-connecting
+{
+    @apply hidden;
+}
+
+#bx-messenger-info-area .bx-messenger-info-area-connecting span
+{
+    @apply ml-1;
+}
+
+#bx-messenger-info-area .bx-messenger-info-area-connect-failed
+{
+    @apply hidden;
+}
+
+#bx-messenger-info-area .bx-messenger-info-area-status-icon {
+    @apply mr-1 inline-block w-3.5 h-3.5 align-[-0.125em];
+}
+
+#bx-messenger-info-area .bx-messenger-info-area-status-icon-spin {
+    animation: bx-messenger-info-area-spin 1s linear infinite;
+}
+
+@keyframes bx-messenger-info-area-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.bx-messenger-block a
+{
+    @apply touch-manipulation;
+}

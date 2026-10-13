@@ -1,0 +1,61 @@
+.bx-messenger-uploading-placeholder .filepond--root,
+.bx-messenger-attachment-group .filepond--root {
+    max-height: 240px;
+    font-family:inherit !important;
+    overflow: hidden;
+    margin-bottom:0 !important;
+}
+
+.bx-messenger-uploading-placeholder .filepond--item,
+.bx-messenger-attachment-group .filepond--item {
+    width: calc(50% - .5em);
+    padding-left:0;
+}
+
+.bx-messenger-uploading-placeholder .filepond--drop-label,
+.bx-messenger-attachment-group .filepond--drop-label {
+    display: none !important;
+}
+
+.bx-messenger-uploading-placeholder .filepond--list,
+.bx-messenger-attachment-group .filepond--list{
+    left: 0;
+}
+
+.bx-messenger-uploading-placeholder .filepond--panel-root,
+.bx-messenger-attachment-group .filepond--panel-root {
+    background-color: rgba(0,0,0,0) !important;
+    border-radius: 0 !important;
+}
+
+.bx-messenger-uploading-placeholder .filepond--image-preview-overlay-success,
+.bx-messenger-attachment-group .filepond--image-preview-overlay-success{
+    color: rgba(68, 136, 255, 0.7) !important;
+}
+
+@media (min-width: 30em) {
+    .bx-messenger-uploading-placeholder .filepond--item,
+    .bx-messenger-attachment-group .filepond--item {
+        width: calc(50% - .5em);
+    }
+    .bx-messenger-uploading-placeholder .filepond--root,
+    .bx-messenger-attachment-group .filepond--root {
+        max-height: 120px;
+    }
+}
+.bx-messenger-uploading-placeholder .filepond--file-wrapper,
+.bx-messenger-attachment-group .filepond--file-wrapper {
+    overflow: hidden;
+}
+
+@media (min-width: 50em) {
+    .bx-messenger-uploading-placeholder .filepond--item,
+    .bx-messenger-attachment-group .filepond--item {
+        width: calc(33.33% - .5em);
+    }
+
+    .bx-messenger-uploading-placeholder .filepond--root,
+    .bx-messenger-attachment-group .filepond--root {
+        max-height: 240px;
+    }
+}

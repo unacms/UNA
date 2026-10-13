@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="en" flag="gb" title="English">
+	<string_upd name="_bx_messenger_jot_server_jwt"><![CDATA[Secret word for JWT Token Authentication with Jot Server. Set the same <b>secret</b> word in the config/config.json file of the Jot Server to enable this option. This allows connections to Jot Server only from authorized sites. Leave it empty if you don't want to use JWT tokens with Jot Server.]]></string_upd>
+	<string_add name="_bx_messenger_nav_menu_item_title_groups"><![CDATA[Groups]]></string_add>
+</resources>

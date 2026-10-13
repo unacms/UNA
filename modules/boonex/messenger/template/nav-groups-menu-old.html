@@ -1,0 +1,16 @@
+<div class="hidden md:block" id="bx-messenger-left-nav-menu" class="pl-2">
+    <ul class="pl-10">
+           <bx_repeat:groups>
+             <li class="pb-1" data-group-id="__id__">
+                <a href="javascript:void(0)" onclick="__js_code__.onSelectGroup(__id__)"># __title__</a>
+             </li>
+           </bx_repeat:groups>
+    </ul>
+    <div class="px-2 pl-6 space-y-1">
+        <bx_if:groups>
+            <a onclick="__js_code__.onCreateGroup()" href="javascript:void(0);">
+                Add groups<i class="sys-icon plus pl-2"></i>
+            </a>
+        </bx_if:groups>
+    </div>
+</div>

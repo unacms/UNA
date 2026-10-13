@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="en" flag="gb" title="English">
+	<string_add name="_bx_ntfs_alert_action_got_broadcast_ntfs_personal"><![CDATA[Broadcast message from Messenger]]></string_add>
+	<string_add name="_bx_messenger_broadcast_fields"><![CDATA[Broadcast filter fields]]></string_add>
+	<string_add name="_bx_messenger_broadcast_field_membership"><![CDATA[Membership level]]></string_add>
+	<string_add name="_bx_messenger_broadcast_profile_fields_title"><![CDATA[Select criteria to broadcast]]></string_add>
+	<string_add name="_bx_messenger_broadcast_field_calculate"><![CDATA[View profiles number involved to broadcast by criteria]]></string_add>
+	<string_add name="_bx_messenger_broadcast_total_profiles"><![CDATA[Total profiles to broadcast {0}]]></string_add>
+	<string_add name="_bx_messenger_lots_menu_info"><![CDATA[Info]]></string_add>
+	<string_add name="_bx_messenger_create_convo_menu_standard"><![CDATA[Profiles]]></string_add>
+	<string_add name="_bx_messenger_create_convo_menu_friends"><![CDATA[Friends]]></string_add>
+	<string_add name="_bx_messenger_create_convo_menu_followers"><![CDATA[Followers]]></string_add>
+	<string_add name="_bx_messenger_create_convo_menu_followers_system"><![CDATA[Followers]]></string_add>
+	<string_add name="_bx_messenger_create_convo_menu_broadcast"><![CDATA[Broadcast]]></string_add>
+	<string_add name="_bx_messenger_create_convo_menu_standard_system"><![CDATA[Group]]></string_add>
+	<string_add name="_bx_messenger_create_convo_menu_friends_system"><![CDATA[Friends]]></string_add>
+	<string_add name="_bx_messenger_create_convo_menu_broadcast_system"><![CDATA[Broadcast]]></string_add>
+	<string_add name="_bx_messenger_create_convo_menu_title"><![CDATA[Create Convos menu]]></string_add>
+	<string_add name="_bx_messenger_create_convo_menu_set_title"><![CDATA[Create Convos Menu set]]></string_add>
+	<string_add name="_bx_messenger_create_convo_template_title"><![CDATA[Create Convos menu template]]></string_add>
+	<string_add name="_bx_messenger_filter_criteria_membership"><![CDATA[Membership level]]></string_add>
+	<string_add name="_bx_messenger_broadcast_field_email"><![CDATA[Email]]></string_add>
+	<string_add name="_bx_messenger_broadcast_field_push"><![CDATA[Push]]></string_add>
+	<string_add name="_bx_messenger_broadcast_field_site"><![CDATA[Site]]></string_add>
+	<string_add name="_bx_messenger_broadcast_field_notify"><![CDATA[Notify user]]></string_add>
+	<string_add name="_bx_messenger_broadcast_field_notify_info"><![CDATA[Participants will be notified using selected methods]]></string_add>
+	<string_add name="_bx_messenger_broadcast_field_author"><![CDATA[Author of the broadcast]]></string_add>
+	<string_add name="_bx_messenger_broadcast_field_author_info"><![CDATA[If to leave it empty, creator will be used as author]]></string_add>
+	<string_add name="_bx_messenger_broadcast_message_title"><![CDATA[Broadcast message]]></string_add>
+	<string_add name="_bx_messenger_broadcast_message_body"><![CDATA[Broadcast]]></string_add>
+	<string_add name="_bx_messenger_txt_subobject_added_broadcast"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b> created broadcast {subentry_sample}]]></string_add>
+	<string_add name="_bx_messenger_notification_subject_broadcast"><![CDATA[Broadcast from {0}]]></string_add>
+	<string_add name="_bx_messenger_filter_criteria_additional_message"><![CDATA[Additional profiles involved to the broadcast]]></string_add>
+	<string_add name="_bx_messenger_filter_criteria_friends_message"><![CDATA[You have totally {0} friends to participate in this broadcast]]></string_add>
+	<string_add name="_bx_messenger_filter_criteria_followers_message"><![CDATA[You have totally {0} followers to participate in this broadcast]]></string_add>
+	<string_add name="_bx_messenger_filter_criteria_on_friends"><![CDATA[You have no friends to create broadcast]]></string_add>
+	<string_add name="_bx_messenger_filter_criteria_on_followers"><![CDATA[You have no followers to create broadcast]]></string_add>
+	<string_add name="_bx_messenger_acl_action_create_broadcast"><![CDATA[Create broadcasts]]></string_add>
+	<string_add name="_bx_messenger_convo_info_participants"><![CDATA[Participants]]></string_add>
+	<string_add name="_bx_messenger_convo_info_messages"><![CDATA[Messages]]></string_add>
+	<string_add name="_bx_messenger_convo_info_files"><![CDATA[Files]]></string_add>
+	<string_add name="_bx_messenger_filter_criteria_form"><![CDATA[Broadcast from with criteria]]></string_add>
+	<string_add name="_bx_messenger_filter_criteria_form_display"><![CDATA[Broadcast from with criteria]]></string_add>
+	<string_add name="_bx_messenger_no_criteria_available"><![CDATA[Sorry, no criteria for filtration found!]]></string_add>
+	<string_add name="_bx_messenger_create_talk_confirm"><![CDATA[You are sure, you would like to create the talk?]]></string_add>
+	<string_add name="_bx_messenger_neo_app_form_input_caption_id"><![CDATA[Convo Id]]></string_add>
+	<string_add name="_bx_messenger_neo_app_form_input_id"><![CDATA[Convo Id]]></string_add>
+	<string_add name="_bx_messenger_neo_app_form_input_caption_reply"><![CDATA[Parent message id]]></string_add>
+</resources>

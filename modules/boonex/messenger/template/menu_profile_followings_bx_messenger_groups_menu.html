@@ -1,0 +1,25 @@
+<ul class="bx-menu-profile-followings bx-menu-ver bx-menu-object-__object__ space-y-2">
+    <bx_repeat:menu_items>
+        <li class="bx-menu-item bx-menu-item-__name__ __class_add__">
+            <div class="bx-menu-item-cnt">
+                <a class="flex items-center" href="__link__" onclick="__onclick__"__attrs__>
+                    <div class="bx-menu-item-link bx-stl-mil justify-between w-full">
+                        <span class="bx-menu-item-title bx-stl-mit uppercase" sidebar-toggle-item>__title__</span>
+                        <span class="bx-menu-collapse bx-messenger-nav-menu-collapse" sidebar-toggle-item>
+                            <bx_if:addon>
+                              <div class="bx-menu-addon bx-stl-mia bx-messenger-nav-menu-addon hidden" sidebar-toggle-item>
+                                  <div class="bx-menu-addon-cnt"<bx_if:module> data-talks-type="__type__"</bx_if:module>>__addon__</div>
+                              </div>
+                            </bx_if:addon>
+                                <i class="sys-icon chevron-up bx-menu-hide"></i>
+                                <i class="sys-icon chevron-down bx-menu-show"></i>
+                        </span>
+                    </div>
+                 </a>
+                <bx_if:show_subitems>
+                    <div class="bx-menu-item-subitems pt-2">__subitems__</div>
+                </bx_if:show_subitems>
+            </div>
+        </li>
+    </bx_repeat:menu_items>
+</ul>

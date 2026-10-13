@@ -1,0 +1,53 @@
+.ql-mention-list-container {
+  overflow: auto;
+}
+
+.ql-mention-loading {
+  line-height: 1.5rem;
+  font-size: 0.9rem;
+  padding: 0 0.5rem;
+  background-color: rgba(0,0,0,0);
+}
+
+.ql-mention-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.ql-mention-list-item {
+  cursor: pointer;
+  line-height: 2rem;
+  font-size: 1rem;
+  padding: 0 0.5rem;
+  vertical-align: middle;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  white-space: nowrap;
+}
+
+.ql-mention-list-item img{
+  height: 1.1rem;
+  width: 1.1rem;
+  border-radius: 4px;
+}
+
+.ql-mention-list-item.disabled {
+  cursor: auto;
+}
+
+.ql-mention-list-item.selected {
+  background-color: rgba(0,0,0,0.04);
+  text-decoration: none;
+}
+
+.bx-mention {
+  padding: 1px 0;
+  user-select: all;
+}
+
+.bx-mention > span {
+  margin: 0 3px;
+}

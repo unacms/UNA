@@ -1,0 +1,235 @@
+.bx-messenger-jots {
+    @apply overflow-visible flex flex-row w-auto relative snap-end mt-1;
+}
+
+.bx-messenger-jots-message-container {
+    @apply relative w-full flex;
+}
+
+.bx-messenger-jots-message {
+    @apply relative whitespace-pre-line break-words flex-stat
+           w-full text-gray-600 dark:text-gray-400 font-normal text-sm;
+}
+
+.bx-messenger-jots-message svg {
+    @apply w-3.5 h-3.5;
+}
+
+.bx-messenger-jots-message-body {
+    @apply max-w-[60%] md:max-w-[80%];
+}
+
+.bx-messenger-jots-message-wrapper {
+    @apply flex;
+}
+
+.bx-messenger-jots-message-bg {
+    @apply bg-gray-500/10 p-2 -ml-1 rounded-md;
+}
+
+.bx-messenger-jots[data-my="1"] .bx-messenger-jots-message-bg {
+    @apply bg-blue-500/10;
+}
+
+.bx-messenger-jots[data-my="1"] .bx-messenger-jots-message-body.message-attachment,
+.bx-messenger-jots .bx-messenger-jots-message-body.message-attachment {
+    @apply bg-transparent;
+}
+
+.bx-messenger-jots-message p {
+    @apply m-0;
+}
+
+.bx-messenger-jots-title
+{
+    @apply w-full justify-start leading-6 font-bold text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white;
+}
+
+.bx-messenger-jots-title > div
+{
+    @apply items-center text-ellipsis whitespace-nowrap;
+}
+
+.bx-messenger-jots-title div.title
+{
+    @apply relative mr-2 overflow-hidden;
+}
+
+.bx-messenger-jots-avatars
+{
+    @apply h-auto overflow-hidden text-center relative flex-stat;
+}
+
+.bx-messenger-jots-info
+{
+    @apply align-top w-auto flex-dynamic min-w-0 pb-[0.125rem];
+}
+
+.bx-messenger-jots-message-vc-icon,
+.bx-messenger-jots-message-edit-time
+{
+   @apply right-[0.05rem] opacity-[0.4] whitespace-normal bottom-0;
+}
+
+.bx-messenger-jots-message-deleted
+{
+    @apply w-full text-left flex relative bg-transparent/[0.07] min-h-[1.5rem] overflow-hidden whitespace-normal
+    rounded-md p-1 mt-1 border-none items-center flex-col;
+}
+
+.bx-messenger-jots-message-deleted span
+{
+    @apply ml-4;
+}
+
+div.bx-messenger-hidden-jot
+{
+    @apply mt-4 ring-2 ring-white dark:ring-gray-900 whitespace-normal p-2 rounded-md overflow-hidden w-full;
+}
+.bx-messenger-jots-message > img {
+    @apply float-left mt-1 cursor-zoom-in rounded;
+}
+
+.bx-messenger-message-icons svg {
+    @apply w-3 h-3
+}
+
+.bx-messenger-message-icons {
+    @apply font-light text-xs items-center flex w-full relative justify-end;
+}
+
+.bx-messenger-message-icons-views {
+    @apply whitespace-normal flex w-full -space-x-[0.325rem] justify-end;
+}
+
+.bx-messenger-message-icons-views img{
+    @apply w-4 h-4 rounded-lg ring-[0.5px] ring-white dark:ring-gray-900;
+}
+
+.bx-messenger-reply-area {
+    @apply hidden;
+}
+
+.bx-messenger-jots .bx-messenger-reply-area {
+    @apply flex mb-[0.325rem] bg-transparent/20 w-full rounded-md;
+}
+
+.bx-messenger-reply-area a {
+    @apply m-2 flex;
+}
+
+.bx-messenger-reply-area-message {
+    @apply flex-auto p-1 overflow-hidden text-ellipsis cursor-pointer max-h-[2rem] flex justify-start;
+}
+
+.bx-messenger-reply-area-message img {
+    @apply max-w-[3rem] h-auto;
+}
+
+.bx-messenger-jot-reactions {
+    @apply flex flex-wrap relative leading-normal w-full -top-2 ml-1;
+}
+.bx-messenger-jot-reactions .bx-messenger-reaction span.count {
+    @apply mr-[0.325rem] ml-2 leading-5;
+}
+
+.bx-messenger-reaction.bx-def-label,
+.bx-messenger-reaction {
+    @apply rounded-xl cursor-pointer flex items-center justify-center mr-2 p-0 px-1;
+}
+
+.reactions.bx-def-label {
+    @apply p-0;
+}
+
+span.bx-messenger-reactions-menu-opened
+{
+    @apply flex items-center h-full;
+}
+
+div.bx-messenger-reactions-menu i {
+    @apply text-base;
+}
+div.bx-messenger-reactions-menu a {
+    @apply text-center
+}
+
+.bx-messenger-reply-area-message .bx-messenger-attachment-file {
+    @apply max-h-[1.5rem] max-w-[30%] w-[30%];
+}
+
+.bx-messenger-reply-area-message .bx-messenger-attachment-file .sys-icon {
+    @apply text-2xl;
+}
+
+.bx-messenger-reply-area-message .bx-messenger-attachment-file .bx-messenger-attachment-file-info span {
+    @apply text-sm m-0;
+}
+
+.bx-messenger-reply-area-message span.title {
+    @apply font-bold;
+}
+
+.bx-messenger-deleted-message-info {
+    @apply flex items-center max-w-full space-x-2;
+}
+
+div.bx-messenger-jots-message-deleted span:first-child
+{
+    @apply flex-auto m-2 text-ellipsis overflow-hidden whitespace-nowrap;
+}
+
+div.bx-messenger-jots-message-deleted span svg
+{
+    @apply h-5/6 align-middle;
+}
+
+#bx-messenger-big-img .bx-popup-content-wrapped
+{
+    @apply overflow-hidden align-middle text-center cursor-zoom-in w-full h-full;
+}
+
+div.bx-messenger-edit-jot
+{
+    @apply p-0 border-0 max-w-full hidden whitespace-normal leading-4 min-h-[2rem];
+}
+
+div.bx-messenger-edit-jot div.bx-messenger-post-box-send-area div.bx-messenger-text-box
+{
+    @apply max-h-[12rem] min-h-[2.3rem] p-0 border-0 overflow-auto;
+}
+
+.bx-messenger-jots-message .bx-messenger-post-box-send-area div
+{
+    @apply max-w-full m-0 p-1 rounded-md;
+}
+
+.bx-messenger-jots-message .embedly-card
+{
+    @apply max-w-lg;
+}
+
+.bx-messenger-view-thread, .bx-messenger-view-in-chat {
+    @apply text-base border-0 rounded-md bg-gray-600/10 dark:bg-gray-500/10 mb-6 w-fit p-1.5;
+}
+
+.bx-messenger-edit-jot-buttons {
+    @apply flex space-x-1 xs:space-x-2 py-2;
+}
+
+.bx-messenger-edit-jot-buttons .bx-btn {
+    @apply py-1 px-2 xs:py-2 xs:px-4;
+}
+
+.bx-messenger-jots-message-edit-time i{
+    @apply text-inherit;
+}
+
+div.bx-messenger-jots-icons.active
+{
+    @apply inline;
+}
+
+.bx-messenger-jots-message.bx-def-vanilla-html p {
+    @apply m-0 leading-5;
+}

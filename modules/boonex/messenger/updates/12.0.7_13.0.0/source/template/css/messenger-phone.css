@@ -1,0 +1,113 @@
+.bx-db-menu-popup .bx-messenger-lot-header-menu a{
+    padding: 0.3rem;
+}
+
+@media (max-width:480px)
+{
+    .bx-messenger-video
+    {
+        position:inherit;
+    }
+
+    .bx-messenger-video video
+    {
+        width:100%;
+        height:calc(100% - 4rem);
+        max-width:100%;
+        min-height:auto;
+        position:absolute;
+        top:0px;
+        left:0px;
+        z-index:-1;
+    }
+
+    .bx-messenger-upload-description-area
+    {
+        color:white;
+    }
+
+    div.bx-messenger-upload-area .bx-messenger-video-buttons
+    {
+        position: absolute;
+        bottom: 4.5rem;
+        left: 0;
+    }
+    .ui[class*="very wide"].right.sidebar
+    {
+        width:85%;
+    }
+
+    .bx-messenger-reply-area a {
+        font-size: 1.2rem;
+    }
+
+}
+
+@media (max-width:720px)
+{  
+    #bx-messenger-files-uploader .bx-popup-close-wrapper
+    {
+        display:none;
+    }
+
+    #bx-messenger-files-uploader
+    {
+        max-width:100%;
+        width:auto;
+    }
+
+    #bx-messenger-files-uploader .bx-messenger-video-block
+    {
+        margin:0px;
+    }
+
+    .bx-messenger-attachment-file
+    {
+        width:80%;
+    }
+
+    div.bx-messenger-attachment-file-videos > video,
+    div.bx-messenger-attachment-file-videos div.bx-player-plyr-wrapper
+    {
+        max-width: 80% !important;
+        width: 100%;
+    }
+
+    div.bx-messenger-upload-area
+    {
+        margin:0;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+    }
+
+
+    .jots .bx-db-header .bx-db-title
+    {
+        text-align: left;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        font-size:1rem;
+    }
+}
+
+@media (max-width:720px)
+{
+
+    .bx-messenger-participants-usernames div.status
+    {
+        display:none;
+    }
+
+    /* show back icon only on main messenger page*/
+    .bx-messenger-hide-mobile{
+        display:block !important;
+    }
+
+    .cd-main-content .cd-side-nav
+    {
+        display:block;
+    }
+
+}

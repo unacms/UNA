@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="en" flag="gb" title="English">
+	<string_upd name="_bx_messenger_server_url"><![CDATA[Jot Server URL]]></string_upd>
+	<string_upd name="_bx_messenger_show_emoji_preview"><![CDATA[Show emojis preview]]></string_upd>
+	<string_add name="_bx_messenger_no_server"><![CDATA[Messenger settings do not have the Jot Server Url defined, which means that real-time communication is not currently possible]]></string_add>	
+</resources>

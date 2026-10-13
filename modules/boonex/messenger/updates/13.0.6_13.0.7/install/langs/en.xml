@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="en" flag="gb" title="English">
+	<string_upd name="_bx_messenger_reply_audio_file"><![CDATA[Audio file - "{0}"]]></string_upd>	
+</resources>

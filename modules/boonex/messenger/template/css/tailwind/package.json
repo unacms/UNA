@@ -1,0 +1,28 @@
+{
+  "name": "messenger-tailwind-components",
+  "version": "1.0.0",
+  "description": "",  
+  "main": "tailwind.config.js",
+  "scripts": {
+    "tailwind": "npx tailwindcss -i ./components/tailwind-messenger.css -o ../tailwind-messenger.css --minify",
+    "build:file": "node compile.js",
+    "build": "node compile.js ./components",
+    "build:minify": "npm run build minify && npm run remove:config",
+    "remove:files": "npm run build remove && npm run remove:config",
+    "remove:config": "rm -rf ./node_modules package-lock.json parent.config.js",
+    "postinstall": "cp ../../../../../../tailwind.config.js ./parent.config.js && cp ../../../../../../tailwind.smooth-shadow.js ./",
+    "clear": "npm run remove:config && npm run remove:files"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@tailwindcss/typography": "^0.5.9",
+    "autoprefixer": "^10.4.14",
+    "postcss": "^8.4.23",
+    "postcss-cli": "^10.1.0",
+    "tailwindcss": "^3.3.2",
+    "@tailwindcss/aspect-ratio": "^0.4.2",
+    "@tailwindcss/container-queries": "^0.1.0"
+  }
+}

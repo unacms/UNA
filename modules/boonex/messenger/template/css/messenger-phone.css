@@ -1,0 +1,54 @@
+.bx-db-menu-popup .bx-messenger-lot-header-menu a{
+    padding: 0.3rem;
+}
+
+@media (max-width:480px)
+{
+    .bx-messenger-reply-area a {
+        font-size: 1.2rem;
+    }
+}
+
+@media (max-width:720px)
+{
+    .bx-messenger-attachment-file
+    {
+        width:80%;
+    }
+
+    div.bx-messenger-attachment-file-videos > video,
+    div.bx-messenger-attachment-file-videos div.bx-player-plyr-wrapper
+    {
+        max-width: 80% !important;
+        width: 100%;
+    }
+
+    .jots .bx-db-header .bx-db-title
+    {
+        text-align: left;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        font-size:1rem;
+    }
+}
+
+@media (max-width:720px)
+{
+
+    .bx-messenger-participants-usernames div.status
+    {
+        display:none;
+    }
+
+    /* show back icon only on main messenger page*/
+    .bx-messenger-hide-mobile{
+        display:block !important;
+    }
+
+    .cd-main-content .cd-side-nav
+    {
+        display:block;
+    }
+
+}

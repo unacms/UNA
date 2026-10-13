@@ -1,0 +1,25 @@
+<ul class="bx-menu-vertical-more-less bx-menu-ver bx-menu-object-__object__ space-y-2">
+    <bx_repeat:menu_items>
+        <li class="bx-menu-item-__name__ __class_add__ rounded-md group">
+            <a class="flex flex-2 items-center truncate" href="__link__" onclick="__onclick__"__attrs__>
+                <div class="bx-menu-item-cnt bx-stl-mil w-full">
+                        <span class="bx-menu-item-icon bx-stl-mii bx-messenger-nav-menu-icon">
+                            <bx_include_auto:menu_icon.html />
+                        </span>
+                        <span class="bx-menu-item-title bx-stl-mit flex-1" sidebar-toggle-item>__title__</span>
+                        <bx_if:addon>
+                            <div class="bx-menu-addon bx-stl-mia __hidden__">
+                                <div class="bx-menu-addon-cnt" data-talks-type="__type__">__addon__</div>
+                            </div>
+                        </bx_if:addon>
+                </div>
+            </a>
+        </li>
+    </bx_repeat:menu_items>
+</ul>
+<script language="javascript">
+    $(document).ready(function () {
+        // add default class to active menu items
+        $('.bx-menu-ver > li.bx-menu-tab-active').not('.bx-def-color-bg-active').addClass('bx-def-color-bg-active');
+    });
+</script>

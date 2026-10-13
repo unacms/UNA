@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="en" flag="gb" title="English">
+	<string_upd name="_sys_form_entry_input_sys_cf"><![CDATA[Content Filter]]></string_upd>
+	<string_upd name="_sys_form_entry_input_cf"><![CDATA[Select audience]]></string_upd>
+	<string_upd name="_sys_uploader_html5_title"><![CDATA[Multiple Upload]]></string_upd>
+	<string_upd name="_bx_messenger_jot_menu_save"><![CDATA[Bookmark]]></string_upd>
+	<string_upd name="_bx_messenger_use_unique_mode"><![CDATA[Switch to Two-Column View (Simple Mode)]]></string_upd>
+	<string_upd name="_bx_messenger_nav_menu_item_title_saved"><![CDATA[Bookmarked]]></string_upd>
+	<string_upd name="_bx_messenger_emoji_set"><![CDATA[Choose an emoji style to use for reactions and in-text messages]]></string_upd>
+	<string_upd name="_bx_messenger_reactions_size"><![CDATA[Size of the emoji in reactions in pixels]]></string_upd>
+	<string_upd name="_bx_messenger_show_emoji_preview"><![CDATA[Show emojis preview in Emoji popup block]]></string_upd>
+	<string_upd name="_bx_messenger_max_parts_views"><![CDATA[Display viewers icons on messages within Talks that have reached the maximum defined number of participants]]></string_upd>
+	<string_upd name="_bx_messenger_lots_message_type_broadcast"><![CDATA[Broadcast message]]></string_upd>
+
+	<string_add name="_bx_messenger_jot_menu_remove_save"><![CDATA[Remove bookmark]]></string_add>
+	<string_add name="_bx_messenger_cpt_category_settings"><![CDATA[Settings]]></string_add>
+	<string_add name="_bx_messenger_cpt_category_security"><![CDATA[Security]]></string_add>
+	<string_add name="_bx_messenger_cpt_category_moderation"><![CDATA[Moderation]]></string_add>
+	<string_add name="_bx_messenger_cpt_category_giphy"><![CDATA[Giphy]]></string_add>
+	<string_add name="_bx_messenger_cpt_category_emoji"><![CDATA[Emoji]]></string_add>
+	<string_add name="_bx_messenger_cpt_category_jitsi"><![CDATA[Jitsi]]></string_add>
+	<string_add name="_bx_messenger_cpt_category_privacy"><![CDATA[Privacy]]></string_add>
+	<string_add name="_bx_messenger_cpt_category_view"><![CDATA[View]]></string_add>
+	<string_add name="_bx_messenger_cpt_category_search"><![CDATA[Search]]></string_add>
+	<string_add name="_bx_messenger_hide_parts"><![CDATA[Hide last answered users in talks briefs]]></string_add>
+	<string_add name="_bx_messenger_show_search_box"><![CDATA[Enable search input in the talks list column is open by default]]></string_add>
+	<string_add name="_bx_messenger_giphy_powered_by"><![CDATA[Enabling 'Powered By' logo: required step for Giphy integration in Production]]></string_add>
+	<string_add name="_bx_messenger_video_record_is_not_supported"><![CDATA[Video recording is not supported: {0}]]></string_add>
+</resources>

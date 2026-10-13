@@ -1,0 +1,48 @@
+.bx-messenger-menu-block {
+    @apply overflow-y-auto snap-y;
+    scrollbar-width: none;
+}
+
+.bx-messenger-nav-menu-icon {
+    @apply group-hover:text-gray-700 dark:group-hover:text-gray-300;
+}
+
+.bx-messenger-nav-menu-submenu {
+    @apply max-h-60 overflow-hidden overflow-y-auto;
+    scrollbar-width: none;
+}
+
+.bx-messenger-nav-menu-submenu .bx-menu-item-cnt .bx-messenger-nav-menu-icon {
+    @apply flex-stat;
+}
+
+.bx-messenger-nav-menu-submenu .bx-menu-item-cnt .bx-menu-item-title {
+    @apply flex-1 truncate inline-block;
+}
+
+.bx-messenger-nav-menu-submenu li.bx-menu-subitem .bx-menu-addon{
+    @apply absolute right-[0.85rem];
+}
+
+.bx-messenger-nav-menu-addon {
+    @apply flex-none group-hover:text-gray-800 dark:group-hover:text-gray-100;
+}
+
+.bx-messenger-nav-menu-collapse {
+    @apply pr-[0.325rem];
+}
+
+.bx-messenger-menu-column-talks-list {
+    @apply h-full w-full relative;
+}
+
+.bx-messenger-mobile-menu-column {
+   @apply pt-4 h-7 flex items-center;
+}
+
+.bx-messenger-menu-block-main-menu {
+    @apply p-1 pt-4 md:space-y-1 space-y-2 relative mx-2 xl:mx-3;
+}
+.bx-messenger-menu-block-groups-menu {
+    @apply p-1 pt-4 mx-2 xl:mx-3;
+}

@@ -1,0 +1,27 @@
+<div class="p-4 md:space-y-1 space-y-2 relative bx-messenger-groups-menu">
+    <bx_repeat:groups>
+        <button onclick="oMUtils.toggleList(this)" id="__module_type___button" data-dropdown-toggle="__module_type___list" data-dropdown-placement="bottom"
+                class="text-base font-medium group h-12 w-full dark:bg-transparent justify-between text-gray-600
+                       dark:text-gray-300 bg-white hover:bg-gray-200 dark:hover:text-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 flex
+                       items-center p-2 text-sm font-normal rounded relative" type="button">
+                <span class="group-hover:text-blue-500 dark:group-hover:text-blue-400">__module__</span>
+                <p data-talks-type="__module_type__" class="hidden px-2 inline-flex bx-messenger-info-bubble text-xs leading-5 font-semibold rounded-full dark:bg-red-700 dark:text-gray-100 bg-red-400 text-gray-800"></p>
+                <svg class="ml-2 w-4 h-4 group-hover:text-blue-500 dark:group-hover:text-blue-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                </svg>
+        </button>
+        <!-- dropdown menu -->
+        <div id="__module_type___list" class="hidden z-10 w-44 w-full text-base list-none rounded divide-y divide-gray-100 bx-messenger-groups-menu max-h-44 overflow-y-auto">
+            <ul class="py-1 pl-2 list-none" aria-labelledby="dropdownBottomButton">
+                <bx_repeat:module_items>
+                    <li data-group-id="__id__">
+                        <a href="javascript:void(0)" onclick="oMUtils.onSelectGroup(this, __id__)" class="block relative rounded py-2 px-4 hover:bg-gray-200 dark:hover:text-gray-100 dark:hover:bg-gray-800 text-sm text-gray-700 dark:text-gray-200 dark:hover:text-white">
+                            __title__
+                            <p class="hidden px-2 inline-flex float-right bx-messenger-info-bubble text-xs leading-5 font-semibold rounded-full dark:bg-red-700 dark:text-gray-100 bg-red-400 text-gray-800">1</p>
+                        </a>
+                    </li>
+                </bx_repeat:module_items>
+            </ul>
+        </div>
+    </bx_repeat:groups>
+</div>

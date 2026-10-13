@@ -1,0 +1,42 @@
+<div class="bx-messenger-attachment-area bx-messenger-attachment-files">
+	<bx_repeat:files>
+		<div class="bx-messenger-attachment-file-wrapper group">
+			__file__
+			__file_menu__
+		</div>
+	</bx_repeat:files>
+	<bx_repeat:images>
+	<div class="bx-messenger-media-wrapper group">
+		<span class="flex">__media_accordion__ __file_menu__</span>
+		<div class="bx-messenger-attachment-file-images __hidden__" data-media-id="__id__">
+			<img title="__name__" src="__url__" onclick="oMessenger.zoomImage(__id__);"/>
+		</div>
+	</div>
+	</bx_repeat:images>
+	<bx_repeat:videos>
+		<div class="bx-messenger-media-wrapper group">
+			<span class="flex">__media_accordion__ __file_menu__</span>
+			<div class="bx-messenger-attachment-file-videos __hidden__" data-media-id="__id__">
+				__video__
+			</div>
+		</div>
+	</bx_repeat:videos>
+	<bx_repeat:audios>
+		<div class="bx-messenger-media-wrapper group">
+			<span class="flex">__media_accordion__ __file_menu__</span>
+			<div class="bx-messenger-attachment-file-audio __hidden__" data-media-id="__id__">
+				<div class="audio">
+					<span class="title">__title__</span>
+					<span class="file">
+						__mp3__
+					</span>
+				</div>
+			</div>
+		</div>
+	</bx_repeat:audios>
+	<bx_repeat:loading_placeholder>
+		<div class="bx-messenger-attachment-file-images">
+			<img title="__name__" src="__url__" />
+		</div>
+	</bx_repeat:loading_placeholder>
+</div>

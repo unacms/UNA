@@ -1,0 +1,86 @@
+.bx-messenger-giphy-panel {
+    @apply bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 rounded-t-md;
+}
+
+.bx-messenger-giphy-input {
+    @apply w-full flex items-center relative;
+}
+
+.bx-messenger-giphy {
+    @apply flex flex-col gap-2 px-4 pt-2 min-h-[100px] overflow-hidden items-center h-full;
+}
+
+.bx-messenger-giphy-scroll {
+    @apply snap-x w-full h-full relative m-auto overflow-x-auto overflow-y-hidden whitespace-nowrap;
+    -webkit-overflow-scrolling: touch;
+}
+
+.giphy {
+    @apply max-h-[250px] h-auto overflow-hidden hidden flex-col;
+}
+
+.bx-messenger-giphy-items {
+    @apply relative w-auto min-h-[8rem];
+}
+
+.bx-messenger-giphy-item {
+    @apply snap-center;
+}
+
+.bx-messenger-giphy-items img {
+    @apply max-w-[200px] cursor-pointer mb-2 inline-block;
+}
+
+.bx-messenger-attachment-giphy picture,
+.bx-messenger-static-giphy {
+    @apply max-w-[320px] overflow-hidden relative; /*w-[calc(100%_-_2.8rem)]*/
+}
+
+.bx-messenger-attachment-giphy i.sys-icon{
+    @apply absolute text-4xl text-white cursor-pointer left-[calc(50%_-_1rem)] top-[calc(50%_-_1rem)];
+}
+
+.bx-messenger-attachment-giphy
+{
+   @apply relative mt-2 w-auto whitespace-normal md:max-w-[70%];
+}
+
+.bx-messenger-attachment-giphy img{
+    @apply rounded-[0.2rem] w-full h-full;
+}
+
+.bx-messenger-send-area-attachments {
+    @apply flex items-center;
+}
+
+.bx-messenger-send-area-attachments .giphy-item{
+    @apply flex h-auto relative items-start;
+}
+
+.bx-messenger-send-area-attachments img{
+    @apply rounded-[0.45rem] mr-2;
+}
+
+.bx-messenger-giphy-logo {
+   @apply self-start py-2;
+}
+
+.bx-messenger-giphy-logo img {
+    filter: invert(1);
+}
+
+.dark .bx-messenger-giphy-logo img {
+    filter: none;
+}
+
+.bx-messenger-attachment-area.bx-messenger-attachment-giphy {
+    @apply sm:max-w-full max-w-[80%];
+}
+
+.giphy-item .sys-icon {
+    @apply bg-gray-100 dark:bg-gray-700/50 border
+    border-transparent hover:border-gray-200/50 active:border-gray-300 dark:hover:border-gray-700/50 dark:active:border-gray-700
+    text-gray-600 dark:text-gray-400 active:bg-gray-300 dark:active:bg-black/50
+    hover:bg-gray-200/50 dark:hover:text-gray-200 dark:hover:bg-gray-700/50
+    hover:text-gray-800 flex items-center p-1 text-base rounded-[1rem] w-6 h-6 justify-center cursor-pointer;
+}

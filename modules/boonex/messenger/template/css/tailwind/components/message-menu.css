@@ -1,0 +1,35 @@
+.bx-messenger-jot-menu {
+   @apply group-hover:opacity-100 opacity-0 text-sm flex-dynamic ml-4 whitespace-nowrap flex items-center;
+}
+.bx-messenger-jot-menu-line {
+   @apply flex;
+}
+.bx-messenger-jot-hover-menu .bx-messenger-jot-menu-line i,
+.bx-messenger-jot-hover-menu .bx-messenger-jot-menu-line svg{
+   @apply hover:text-gray-900 dark:text-gray-300 dark:hover:text-white cursor-pointer p-1 text-base;
+   @apply hover:border-gray-200/50 dark:hover:border-gray-700/50;
+   @apply hover:bg-gray-200/50 dark:hover:bg-gray-700/50;
+   @apply border border-transparent;
+   @apply rounded-md;
+}
+
+.bx-messenger-jots-actions-list {
+   @apply text-left flex justify-start flex-stat relative my-1 group-hover:opacity-100 opacity-0 ml-4;
+}
+
+.bx-messenger-jots-actions-list .bx-def-media-desktop-hide {
+   @apply text-right;
+}
+
+.bx-messenger-jots-actions-list .bx-messenger-mobile-menu .bx-popup-close-wrapper,
+.bx-messenger-jots-actions-list .bx-messenger-mobile-menu .bx-popup-footer-wrapper
+{
+   @apply hidden;
+}
+
+.bx-messenger-jot-menu .bx-popup-menu .bx-popup-content {
+   @apply w-fit;
+}
+
+
+

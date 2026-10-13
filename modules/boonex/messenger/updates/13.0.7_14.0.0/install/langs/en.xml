@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="en" flag="gb" title="English">
+	<string_add name="_bx_messenger_quill_toolbar_settings"><![CDATA[Quill Editor Toolbar Settings (JSON array)]]></string_add>
+</resources>

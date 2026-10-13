@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="ru" flag="ru" title="Russian">
+	<string_upd name="_bx_messenger_jot_server_jwt"><![CDATA[Секретное слово для включения JWT токена с Jot Server. Установите то же самое <b>secret</b> слово в файле config/config.json Jot Server, чтобы включить эту опцию. Это позволит подключаться к Jot Server только с авторизованных сайтов. Оставьте это поле пустым, если вы не хотите использовать JWT токены с Jot Server.]]></string_upd>
+	<string_upd name="_bx_messenger_video_record_is_not_supported"><![CDATA[Водео запись не поддерживается: {0}]]></string_upd>
+	<string_add name="_bx_messenger_nav_menu_item_title_groups"><![CDATA[Группы]]></string_add>
+</resources>
