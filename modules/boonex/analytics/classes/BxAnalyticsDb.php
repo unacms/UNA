@@ -244,6 +244,15 @@ class BxAnalyticsDb extends BxBaseModGeneralDb
     }
 
     /**
+     * Give every event of a visit a visitor id and a profile: the member's, when they sign in
+     * during a guest's visit. A visit has few events, found by the `session_id` key.
+     */
+    public function assignSessionEvents($iSessionId, $sVisitor, $iProfileId)
+    {
+        return (int)$this->query("UPDATE `" . $this->_oConfig->CNF['TABLE_EVENTS'] . "` SET `visitor` = :visitor, `profile_id` = :profile WHERE `session_id` = :id", ['visitor' => $sVisitor, 'profile' => (int)$iProfileId, 'id' => (int)$iSessionId]);
+    }
+
+    /**
      * Insert events in one query.
      *
      * @param array $aRows rows with the same keys
@@ -513,7 +522,27 @@ class BxAnalyticsDb extends BxBaseModGeneralDb
         $sWhere = $this->_getSessionsWhere($aFilter, $aBindings);
         $sBucketSql = $this->_getBucketSql('`s`.`started`', $sBucket, $iOffset, $aStarts, $aBindings);
 
-        return $this->getAllWithKey("SELECT " . $sBucketSql . " AS `bucket`, COUNT(DISTINCT `s`.`visitor`) AS `visitors`, COUNT(*) AS `sessions`, IFNULL(SUM(`s`.`pageviews`), 0) AS `pageviews`, IFNULL(SUM(`s`.`bounce`), 0) AS `bounces`, IFNULL(SUM(`s`.`duration`), 0) AS `duration` FROM " . $this->_getSessionsFrom() . " WHERE " . $sWhere . " GROUP BY `bucket` ORDER BY `bucket`", 'bucket', $aBindings);
+        $aRows = $this->getAllWithKey("SELECT " . $sBucketSql . " AS `bucket`, COUNT(DISTINCT `s`.`visitor`) AS `visitors`, COUNT(*) AS `sessions`, IFNULL(SUM(`s`.`pageviews`), 0) AS `pageviews`, IFNULL(SUM(`s`.`bounce`), 0) AS `bounces`, IFNULL(SUM(`s`.`duration`), 0) AS `duration` FROM " . $this->_getSessionsFrom() . " WHERE " . $sWhere . " GROUP BY `bucket` ORDER BY `bucket`", 'bucket', $aBindings);
+        if(!$this->_hasEventDimensions($aFilter))
+            return $aRows;
+
+        // filtered by a page: that page's views in each bucket, as getTotals counts them, not
+        // all views of the visits that saw it; a bucket may have views and no visit started in it
+        $aEventBindings = [];
+        $sEventWhere = $this->_getEventsWhere($aFilter, $aEventBindings);
+        $sEventBucketSql = $this->_getBucketSql('`e`.`ts`', $sBucket, $iOffset, $aStarts, $aEventBindings);
+        $aPageviews = $this->getPairs("SELECT " . $sEventBucketSql . " AS `bucket`, COUNT(*) AS `pageviews` FROM `" . $this->_oConfig->CNF['TABLE_EVENTS'] . "` AS `e` WHERE " . $sEventWhere . " GROUP BY `bucket`", 'bucket', 'pageviews', $aEventBindings);
+
+        foreach($aRows as $mixedBucket => $aRow)
+            $aRows[$mixedBucket]['pageviews'] = isset($aPageviews[$mixedBucket]) ? (int)$aPageviews[$mixedBucket] : 0;
+
+        foreach($aPageviews as $mixedBucket => $iPageviews)
+            if(!isset($aRows[$mixedBucket]))
+                $aRows[$mixedBucket] = ['bucket' => $mixedBucket, 'visitors' => 0, 'sessions' => 0, 'pageviews' => (int)$iPageviews, 'bounces' => 0, 'duration' => 0];
+
+        ksort($aRows);
+
+        return $aRows;
     }
 
     /**

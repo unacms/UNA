@@ -21,7 +21,9 @@
  * once per page view with a count of repeats, at most 10 different ones, without query strings.
  * Web vitals (TTFB, FCP, LCP, CLS, INP) are measured on a share of page loads and sent once,
  * with the time the page was visible; an htmx navigation sends its load time, CLS and INP.
- * Stores nothing in the browser unless the site uses persistent visitor ids. To stop counting
+ * Stores nothing in the browser unless the site uses persistent visitor ids: then a random id in
+ * localStorage, and in the bx_analytics_vid cookie for the site's own requests, so sign-ups and
+ * other actions join this browser's visit. To stop counting
  * your own visits in this browser: localStorage.setItem('bx_analytics_ignore', '1').
  */
 (function (window, document) {
@@ -82,6 +84,34 @@
 
     var bDisabled = isDisabled();
     var sVisitorId = bDisabled ? '' : getVisitorId();
+
+    /**
+     * The visitor id for the site's own requests (persistent mode), or none: a cookie left
+     * from persistent mode, or from before tracking was turned off here, is removed.
+     */
+    function setVisitorCookie(sId) {
+        var sCookie = 'bx_analytics_vid=' + sId + '; path=/; SameSite=Lax; max-age=' + (sId ? 34560000 : 0);
+        if (window.location.protocol === 'https:')
+            sCookie += '; Secure';
+        try {
+            document.cookie = sCookie;
+        } catch (e) {
+            // cookies blocked: site actions are counted outside the visit
+        }
+    }
+
+    function hasVisitorCookie() {
+        try {
+            return /(?:^|;\s*)bx_analytics_vid=/.test(document.cookie || '');
+        } catch (e) {
+            return false;
+        }
+    }
+
+    if (sVisitorId)
+        setVisitorCookie(sVisitorId);
+    else if (hasVisitorCookie())
+        setVisitorCookie('');
     var sReferrer = document.referrer;
     var sCurrentUrl = '';
     var iVisibleSince = 0;

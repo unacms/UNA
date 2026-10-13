@@ -51,6 +51,24 @@ function neoPlatformHeader(host: string): string | null {
     return host.startsWith(window.location.origin) ? 'web' : null;
 }
 
+let analyticsVisitorId = '';
+
+/**
+ * The analytics visitor id this device keeps when UNA's analytics uses persistent visitor
+ * ids ('' otherwise), set by the analytics tracker. Sent as `X-Analytics-Vid` where
+ * `X-Neo-Platform` is, so a sign-up or another site action joins this device's visit. Never
+ * from the web server: one module instance serves every viewer there.
+ */
+export function setAnalyticsVisitorId(id: string): void {
+    analyticsVisitorId = id;
+}
+
+function analyticsVisitorHeader(neoPlatform: string | null): string | null {
+    if (!analyticsVisitorId || !neoPlatform) return null;
+    if (Platform.OS === 'web' && typeof window === 'undefined') return null;
+    return analyticsVisitorId;
+}
+
 type AbortErrorLike = Error & { aborted?: boolean };
 
 /** Hears UNA requests that failed on the server (analytics: `http` errors). */
@@ -201,6 +219,9 @@ export async function fetcherRaw(host: string, mixed: FetcherRequest, fetchOptio
     const neoPlatform = neoPlatformHeader(host);
     if (neoPlatform && !headers['X-Neo-Platform'])
         headers['X-Neo-Platform'] = neoPlatform;
+    const analyticsVisitor = analyticsVisitorHeader(neoPlatform);
+    if (analyticsVisitor && !headers['X-Analytics-Vid'])
+        headers['X-Analytics-Vid'] = analyticsVisitor;
 
    // headers['Content-Type'] = "application/json";
     headers['Cache-Control'] = "no-cache";

@@ -63,6 +63,13 @@ class BxAnalyticsRequest
         ],
     ];
 
+    /**
+     * A visitor id kept by a client (persistent identity mode), and the cookie the classic
+     * tracker keeps it in for site requests.
+     */
+    const VISITOR_ID_PATTERN = '/^[a-zA-Z0-9_-]{16,64}$/';
+    const VISITOR_ID_COOKIE = 'bx_analytics_vid';
+
     protected $_aServer;
 
     public function __construct($aServer = null)
@@ -256,6 +263,28 @@ class BxAnalyticsRequest
         return BX_ANALYTICS_PLATFORM_API;
     }
 
+    /**
+     * The visitor id the client keeps (persistent identity mode), on a site request rather
+     * than in a tracker payload: the classic tracker's `bx_analytics_vid` cookie, or NEO's
+     * X-Analytics-Vid header. '' when there is none or it isn't one.
+     */
+    public function getVisitorId()
+    {
+        $sId = $this->_get('HTTP_X_ANALYTICS_VID');
+        if($sId === '')
+            $sId = $this->_getCookie(self::VISITOR_ID_COOKIE);
+
+        return self::isVisitorId($sId) ? $sId : '';
+    }
+
+    /**
+     * Whether a string has the form of a client's visitor id.
+     */
+    public static function isVisitorId($s)
+    {
+        return is_string($s) && preg_match(self::VISITOR_ID_PATTERN, $s) === 1;
+    }
+
     public function getUserAgent()
     {
         return $this->_clean($this->_get('HTTP_USER_AGENT'), 512);
@@ -344,6 +373,20 @@ class BxAnalyticsRequest
     protected function _get($sKey)
     {
         return isset($this->_aServer[$sKey]) && is_string($this->_aServer[$sKey]) ? trim($this->_aServer[$sKey]) : '';
+    }
+
+    /**
+     * A cookie's value from the request's Cookie header, or ''.
+     */
+    protected function _getCookie($sName)
+    {
+        foreach(explode(';', $this->_get('HTTP_COOKIE')) as $sPair) {
+            $aPair = explode('=', $sPair, 2);
+            if(count($aPair) == 2 && trim($aPair[0]) === $sName)
+                return trim(rawurldecode($aPair[1]));
+        }
+
+        return '';
     }
 
     /**

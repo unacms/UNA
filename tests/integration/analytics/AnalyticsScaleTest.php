@@ -203,7 +203,7 @@ class AnalyticsScaleTest extends BxDolIntegrationTestCase
         foreach ($aVisits as list($sVisitor, $iStarted, $sCountry, $aViews)) {
             $iSession = $this->_session($sVisitor, $iStarted, ['country' => $sCountry, 'last_seen' => max($aViews), 'pageviews' => count($aViews)]);
             foreach ($aViews as $sPath => $iTime)
-                $oDb->query("INSERT INTO `bx_analytics_events` SET `session_id` = :s, `visitor` = :v, `platform` = 'core-web', `ts` = :ts, `type` = 'pageview', `path` = :path, `props` = ''", ['s' => $iSession, 'v' => $this->_visitor($sVisitor), 'ts' => $iTime, 'path' => $sPath]);
+                $oDb->query("INSERT INTO `bx_analytics_events` SET `session_id` = :s, `visitor` = :v, `platform` = 'core-web', `ts` = :ts, `type` = 'pageview', `path` = :path, `title` = :title, `props` = ''", ['s' => $iSession, 'v' => $this->_visitor($sVisitor), 'ts' => $iTime, 'path' => $sPath, 'title' => 'Page ' . $sPath]);
         }
 
         $oData = $this->_oModule->_oDb;
@@ -237,6 +237,23 @@ class AnalyticsScaleTest extends BxDolIntegrationTestCase
         $this->assertSame([2, 2], [(int)$aTotals['sessions'], (int)$aTotals['pageviews']]);
         $this->assertSame(1, (int)$oData->getTotals($fFilter(['path' => '/z']))['sessions']);
         $this->assertSame(0, (int)$oData->getTotals($fFilter(['path' => '/y']))['sessions'], 'only in the visit that began the day before');
+
+        // the chart of a page counts that page's views, as the key figure does, in the hour
+        // they happened: b views /x again at 05:00, when no visit started
+        $oDb->query("INSERT INTO `bx_analytics_events` SET `session_id` = :s, `visitor` = :v, `platform` = 'core-web', `ts` = :ts, `type` = 'pageview', `path` = '/x', `title` = 'Page /x', `props` = ''", ['s' => $oDb->getOne("SELECT `id` FROM `bx_analytics_sessions` WHERE `visitor` = :v", ['v' => $this->_visitor('b')]), 'v' => $this->_visitor('b'), 'ts' => $iDay + 5 * 3600]);
+        foreach ([['path' => '/x'], ['title' => 'Page /x']] as $aDims) {
+            $aFilter = $fFilter($aDims);
+            $this->assertSame('hour', $aFilter['bucket']);
+            $aSeries = $oData->getSeries($aFilter, $aFilter['bucket'], $aFilter['offset'], $aFilter['starts']);
+            $this->assertSame(3, (int)$oData->getTotals($aFilter)['pageviews']);
+            $this->assertSame([$iDay + 3600, $iDay + 7200, $iDay + 5 * 3600], array_map('intval', array_keys($aSeries)), 'in time order');
+            $this->assertSame([1, 1, 1], array_map('intval', array_column($aSeries, 'pageviews')));
+            $this->assertSame([1, 1, 0], array_map('intval', array_column($aSeries, 'sessions')));
+
+            $aOverview = $this->_oModule->getReportData('overview', $this->_aDay + ['f' => $aDims]);
+            $this->assertSame(3, $aOverview['kpis']['pageviews']['value']);
+            $this->assertSame(3, (int)array_sum(array_column($aOverview['series'], 'pageviews')), 'the chart adds up to the key figure');
+        }
     }
 
     protected function _monday()

@@ -19,7 +19,9 @@
  *   referrer     document.referrer or the app's referrer, for a new session
  *   language     navigator.language
  *   screen       "1440x900"
- *   vid          random visitor id kept by the client, used in persistent identity mode only
+ *   vid          random visitor id kept by the client, used in persistent identity mode only;
+ *                site requests carry it in the bx_analytics_vid cookie or the X-Analytics-Vid
+ *                header, so the site's own actions join the device's visit
  *   os, os_version, device   sent by native apps, which have no browser user agent
  *   hits         list of {type: pageview|event|leave, url, title, name, value, props, engaged,
  *                module, object_id, context_id, age}; one hit may also be given at the top level
@@ -161,7 +163,7 @@ class BxAnalyticsCollector
         $aClient = $aAccept['client'];
         $iProfileId = $aAccept['profile_id'];
 
-        $sVid = isset($aPayload['vid']) && is_string($aPayload['vid']) && preg_match('/^[a-zA-Z0-9_-]{16,64}$/', $aPayload['vid']) ? $aPayload['vid'] : '';
+        $sVid = isset($aPayload['vid']) && is_string($aPayload['vid']) && BxAnalyticsRequest::isVisitorId($aPayload['vid']) ? $aPayload['vid'] : '';
         $aVisitor = $this->_getVisitor($sIp, $sUserAgent, $iProfileId, $sVid);
 
         // what an error hit outside a visit records about the client
@@ -385,6 +387,9 @@ class BxAnalyticsCollector
 
         $iLinkedProfileId = $this->_oConfig->isLinkMembers() ? $iProfileId : 0;
         list($aVisitor, $aSession) = $this->_getRequestVisit($sPlatform, $iLinkedProfileId, !empty($aContext['api_key']));
+        // signing in (`login`) is a member's action in the guest's visit: the visit is theirs now
+        if(!empty($aSession))
+            $aSession = $this->_takeOver($aSession, $aVisitor, $iLinkedProfileId);
 
         $aProps = isset($aContext['props']) && is_array($aContext['props']) ? $this->_getProps($aContext['props']) : [];
 
@@ -480,7 +485,8 @@ class BxAnalyticsCollector
         if($sPlatform == BX_ANALYTICS_PLATFORM_CORE)
             return [['id' => $iLinkedProfileId ? $this->_hash('p:' . $iLinkedProfileId, BX_DOL_SECRET) : str_repeat("\0", 16)], []];
 
-        $aVisitor = $this->_getVisitor($this->_oRequest->getIp($this->_oConfig->getTrustedProxies(), $bApiKey), $this->_oRequest->getUserAgent(), $iLinkedProfileId, '');
+        // the device's own id, in persistent mode: the classic tracker keeps it in a cookie, NEO sends it in a header
+        $aVisitor = $this->_getVisitor($this->_oRequest->getIp($this->_oConfig->getTrustedProxies(), $bApiKey), $this->_oRequest->getUserAgent(), $iLinkedProfileId, $this->_oRequest->getVisitorId());
 
         // a visit that started after the action (a clock given by a test or an import) isn't its visit
         return [$aVisitor, $this->_findSession($aVisitor, $sPlatform, $this->_iNow - $this->_oConfig->getSessionTimeout(), $this->_iNow, $this->_iNow)];
@@ -546,6 +552,28 @@ class BxAnalyticsCollector
     }
 
     /**
+     * A guest visit found for a member (see _findSession) becomes the member's: the visit and
+     * every event recorded in it so far get the member's visitor id and profile, so one visit
+     * isn't counted as two people and the member's actions include those before signing in.
+     * Error hits keep the guest's id.
+     *
+     * @return array the visit as it is now
+     */
+    protected function _takeOver($aSession, $aVisitor, $iProfileId)
+    {
+        if(!$iProfileId || (int)$aSession['profile_id'] || $aSession['visitor'] === $aVisitor['id'])
+            return $aSession;
+
+        $this->_oDb->updateSession($aSession['id'], ['profile_id' => $iProfileId, 'visitor' => $aVisitor['id']]);
+        $this->_oDb->assignSessionEvents($aSession['id'], $aVisitor['id'], $iProfileId);
+
+        $aSession['profile_id'] = $iProfileId;
+        $aSession['visitor'] = $aVisitor['id'];
+
+        return $aSession;
+    }
+
+    /**
      * The visitor's running session on this platform, or a new one. A guest session that
      * signs in continues as the member's (see _findSession). No new one past the address's
      * limit of visits an hour (`_bLimited` tells).
@@ -555,14 +583,8 @@ class BxAnalyticsCollector
     protected function _getSession($sPlatform, $aVisitor, $iProfileId, $aPayload, $aClient, $aHits, $sIp = '')
     {
         $aSession = $this->_findSession($aVisitor, $sPlatform, $this->_iNow - $this->_oConfig->getSessionTimeout());
-        if(!empty($aSession)) {
-            if($iProfileId && !(int)$aSession['profile_id'] && $aSession['visitor'] !== $aVisitor['id']) {
-                $this->_oDb->updateSession($aSession['id'], ['profile_id' => $iProfileId, 'visitor' => $aVisitor['id']]);
-                $aSession['profile_id'] = $iProfileId;
-                $aSession['visitor'] = $aVisitor['id'];
-            }
-            return $aSession;
-        }
+        if(!empty($aSession))
+            return $this->_takeOver($aSession, $aVisitor, $iProfileId);
 
         // a hit that only closes a page, reports an error or a page's timings doesn't start a visit
         $aFirst = null;

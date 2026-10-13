@@ -112,4 +112,27 @@ class BxAnalyticsRequestTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse((new BxAnalyticsRequest(['HTTP_SEC_FETCH_SITE' => 'same-origin']))->isCrossSite());
         $this->assertFalse((new BxAnalyticsRequest([]))->isCrossSite(), 'browsers without the header pass');
     }
+
+    public static function providerVisitorId()
+    {
+        $sId = '0123456789abcdef0123456789abcdef';
+
+        return [
+            'none' => [[], ''],
+            'classic tracker cookie' => [['HTTP_COOKIE' => 'memberSession=x; bx_analytics_vid=' . $sId . '; lang=en'], $sId],
+            'first cookie' => [['HTTP_COOKIE' => 'bx_analytics_vid=' . $sId], $sId],
+            'NEO header' => [['HTTP_X_ANALYTICS_VID' => $sId], $sId],
+            'the header before the cookie' => [['HTTP_X_ANALYTICS_VID' => $sId, 'HTTP_COOKIE' => 'bx_analytics_vid=phpunit-other-0001'], $sId],
+            'another cookie with that ending' => [['HTTP_COOKIE' => 'old_bx_analytics_vid=' . $sId], ''],
+            'too short' => [['HTTP_COOKIE' => 'bx_analytics_vid=abc'], ''],
+            'not an id' => [['HTTP_X_ANALYTICS_VID' => $sId . '; DROP'], ''],
+            'too long' => [['HTTP_X_ANALYTICS_VID' => str_repeat('a', 65)], ''],
+        ];
+    }
+
+    #[DataProvider('providerVisitorId')]
+    public function testVisitorId($aServer, $sExpected)
+    {
+        $this->assertSame($sExpected, (new BxAnalyticsRequest($aServer))->getVisitorId());
+    }
 }

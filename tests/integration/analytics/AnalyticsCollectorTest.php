@@ -165,17 +165,29 @@ class AnalyticsCollectorTest extends BxDolIntegrationTestCase
         $aServer = $this->_server('93.184.216.34');
         $aHit = ['platform' => 'next-web', 'hits' => [['type' => 'pageview', 'url' => 'https://neo.test/']]];
 
+        $oDb = BxDolDb::getInstance();
         $this->_collect($aServer, $aHit, self::NOW);
+        $this->_collect($aServer, ['platform' => 'next-web', 'hits' => [['type' => 'event', 'url' => 'https://neo.test/', 'name' => 'cta_click']]], self::NOW + 5);
+        $sGuestVisitor = $oDb->getOne("SELECT `visitor` FROM `bx_analytics_events` WHERE `ts` = :ts", ['ts' => self::NOW]);
         $this->_collect($aServer, $aHit, self::NOW + 30, ['profile_id' => $iProfileId]);
 
         $aSessions = $this->_sessions();
         $this->assertCount(1, $aSessions, 'signing in continues the visit');
         $this->assertSame($iProfileId, (int)$aSessions[0]['profile_id']);
         $sMemberVisitor = $aSessions[0]['visitor'];
+        $this->assertNotSame($sMemberVisitor, $sGuestVisitor);
 
-        $oDb = BxDolDb::getInstance();
-        $sGuestVisitor = $oDb->getOne("SELECT `visitor` FROM `bx_analytics_events` WHERE `ts` = :ts", ['ts' => self::NOW]);
-        $this->assertNotSame($sMemberVisitor, $sGuestVisitor, 'the page viewed before signing in keeps the guest\'s id');
+        $aBefore = $oDb->getAll("SELECT `visitor`, `profile_id` FROM `bx_analytics_events` WHERE `ts` < :ts ORDER BY `id`", ['ts' => self::NOW + 30]);
+        $this->assertCount(2, $aBefore);
+        foreach ($aBefore as $a)
+            $this->assertSame([$sMemberVisitor, $iProfileId], [$a['visitor'], (int)$a['profile_id']], 'what happened before signing in is the member\'s too');
+
+        // one visit is one person in the page and event reports, and the member's actions include those before signing in
+        $aFilter = $this->_filter(['range' => 'custom', 'from' => '2001-09-09', 'to' => '2001-09-09'])->get();
+        $aPages = $this->_oModule->_oDb->getPageStats($aFilter, 'path', 10);
+        $this->assertSame([['/', 1, 2]], array_map(function ($a) { return [$a['value'], (int)$a['visitors'], (int)$a['pageviews']]; }, $aPages));
+        $aActions = $this->_oModule->_oDb->getMemberActions($iProfileId, $aFilter);
+        $this->assertSame([['cta_click', 1]], array_map(function ($a) { return [$a['name'], (int)$a['count']]; }, $aActions));
 
         // site actions about the account and the profile, and another visit days later
         $oCollector = new BxAnalyticsCollector($this->_oModule, new BxAnalyticsRequest($aServer + ['REQUEST_METHOD' => 'POST']), self::NOW + 40);
@@ -193,7 +205,7 @@ class AnalyticsCollectorTest extends BxDolIntegrationTestCase
         $this->assertSame(0, (int)$oDb->getOne("SELECT COUNT(*) FROM `bx_analytics_events` WHERE `profile_id` = :p", ['p' => $iProfileId]));
 
         $aEvents = $oDb->getAll("SELECT `e`.`visitor`, `e`.`object_id`, `s`.`visitor` AS `session_visitor` FROM `bx_analytics_events` AS `e` INNER JOIN `bx_analytics_sessions` AS `s` ON `s`.`id` = `e`.`session_id` WHERE `e`.`ts` < :to ORDER BY `e`.`id`", ['to' => self::NOW + 30 * 86400]);
-        $this->assertCount(5, $aEvents);
+        $this->assertCount(6, $aEvents);
         foreach ($aEvents as $a) {
             $this->assertSame($a['session_visitor'], $a['visitor'], 'every event is its visit\'s, the one before signing in too');
             $this->assertNotContains($a['visitor'], [$sMemberVisitor, $sGuestVisitor]);
@@ -219,6 +231,8 @@ class AnalyticsCollectorTest extends BxDolIntegrationTestCase
         $this->_collect($aServer, $aHit, self::NOW);
         $this->_collect($aServer, $aHit, self::NOW + 600, ['profile_id' => 987654321]);
         $this->assertSame([0, 987654321], $fProfiles(), 'a member doesn\'t take over an older guest visit');
+        $aGuestEvents = BxDolDb::getInstance()->getAll("SELECT `visitor`, `profile_id` FROM `bx_analytics_events` WHERE `session_id` = :id", ['id' => $this->_sessions()[0]['id']]);
+        $this->assertSame([[$this->_sessions()[0]['visitor'], 0]], array_map(function ($a) { return [$a['visitor'], (int)$a['profile_id']]; }, $aGuestEvents), 'nor its events');
 
         // the member's own visit comes first, while the guest's goes on
         $this->_collect($aServer, $aHit, self::NOW + 700);
@@ -237,6 +251,65 @@ class AnalyticsCollectorTest extends BxDolIntegrationTestCase
         $this->_collect($this->_server('93.184.216.36'), $aDevice, self::NOW + 2000);
         $this->_collect($this->_server('93.184.216.36'), $aDevice, self::NOW + 2900, ['profile_id' => 987654323]);
         $this->assertSame([0, 987654321, 987654322, 987654323], $fProfiles());
+    }
+
+    public function testSignInActionTakesOverTheGuestVisit()
+    {
+        $iProfileId = 987654321;
+        $aServer = $this->_server('93.184.216.34');
+        $this->_collect($aServer, ['platform' => 'core-web', 'hits' => [['type' => 'pageview', 'url' => 'http://una.test/login']]], self::NOW);
+
+        // the sign-in request records the action before the member's first page
+        $oCollector = new BxAnalyticsCollector($this->_oModule, new BxAnalyticsRequest($aServer + ['REQUEST_METHOD' => 'POST']), self::NOW + 10);
+        $this->assertTrue($oCollector->collectAction('login', 'account', 4242, $iProfileId, ['platform' => 'core-web']));
+
+        $aSessions = $this->_sessions();
+        $this->assertCount(1, $aSessions);
+        $this->assertSame($iProfileId, (int)$aSessions[0]['profile_id']);
+        $this->assertSame(1, (int)$aSessions[0]['events']);
+
+        $aEvents = BxDolDb::getInstance()->getAll("SELECT `session_id`, `visitor`, `profile_id` FROM `bx_analytics_events` WHERE `ts` < :to ORDER BY `id`", ['to' => self::NOW + 86400]);
+        $this->assertCount(2, $aEvents);
+        foreach ($aEvents as $a)
+            $this->assertSame([(int)$aSessions[0]['id'], $aSessions[0]['visitor'], $iProfileId], [(int)$a['session_id'], $a['visitor'], (int)$a['profile_id']]);
+    }
+
+    public function testPersistentSiteActionsJoinTheDeviceVisit()
+    {
+        $this->_setOption('bx_analytics_identity', 'persistent');
+        $iProfileId = 987654321;
+        $sVid = 'phpunit-device-0002';
+        $aHit = ['platform' => 'core-web', 'hits' => [['type' => 'pageview', 'url' => 'http://una.test/']]];
+        $oDb = BxDolDb::getInstance();
+
+        $this->_collect($this->_server('93.184.216.40'), $aHit + ['vid' => $sVid], self::NOW);
+        // another guest behind the same address with the same browser, and no visitor id
+        $this->_collect($this->_server('93.184.216.40'), $aHit, self::NOW + 1);
+        $aSessions = $this->_sessions();
+        $this->assertCount(2, $aSessions);
+        $iDevice = (int)$aSessions[0]['id'];
+
+        // the site's own requests carry the id in the classic tracker's cookie; signing in
+        // comes later than a guest visit is taken over by address and browser
+        $aServer = $this->_server('93.184.216.40', ['REQUEST_METHOD' => 'POST', 'HTTP_COOKIE' => 'bx_analytics_vid=' . $sVid]);
+        $oCollector = new BxAnalyticsCollector($this->_oModule, new BxAnalyticsRequest($aServer), self::NOW + 10);
+        $this->assertTrue($oCollector->collectAction('signup', 'account', 1, 0, ['platform' => 'core-web']));
+        $oCollector = new BxAnalyticsCollector($this->_oModule, new BxAnalyticsRequest($aServer), self::NOW + 300);
+        $this->assertTrue($oCollector->collectAction('login', 'account', 1, $iProfileId, ['platform' => 'core-web']));
+
+        // without the cookie, from elsewhere: the device's visit isn't found
+        $oCollector = new BxAnalyticsCollector($this->_oModule, new BxAnalyticsRequest($this->_server('93.184.216.41', ['REQUEST_METHOD' => 'POST'])), self::NOW + 20);
+        $this->assertTrue($oCollector->collectAction('vote', 'bx_posts', 5, 0, ['platform' => 'core-web']));
+
+        $aEvents = $oDb->getPairs("SELECT `name`, `session_id` FROM `bx_analytics_events` WHERE `type` = 'una' AND `ts` < :to ORDER BY `ts`", 'name', 'session_id', ['to' => self::NOW + 86400]);
+        $this->assertSame(['signup' => $iDevice, 'vote' => 0, 'login' => $iDevice], array_map('intval', $aEvents));
+
+        $aSessions = $this->_sessions();
+        $this->assertSame([2, 0], array_map('intval', array_column($aSessions, 'events')), 'not the other guest\'s visit');
+        $this->assertSame([$iProfileId, 0], array_map('intval', array_column($aSessions, 'profile_id')), 'signing in on the device takes its visit over');
+
+        $aFunnel = $this->_oModule->_oDb->getFunnelCounts($this->_filter(['range' => 'custom', 'from' => '2001-09-09', 'to' => '2001-09-09'])->get(), [['type' => 'page', 'pattern' => '/'], ['type' => 'event', 'pattern' => 'signup']]);
+        $this->assertSame([2, 1], $aFunnel);
     }
 
     public function testSecretsAreNotStored()

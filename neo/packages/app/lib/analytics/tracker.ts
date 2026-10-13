@@ -1,4 +1,4 @@
-import { fetcher, setServerErrorListener } from 'app/lib/fetcher';
+import { fetcher, setAnalyticsVisitorId, setServerErrorListener } from 'app/lib/fetcher';
 import { persistedGet, persistedSet } from 'app/lib/util/storage';
 import { getClient, getFallbackUrl, getInitialReferrer, isClientAvailable, isTrackingBlocked } from './client';
 import {
@@ -81,6 +81,7 @@ function turnOff(): void {
     state = 'off';
     pending = [];
     configureHealth(null);
+    setAnalyticsVisitorId('');
 }
 
 function toNumber(value: unknown, min: number, max: number, fallback: number): number {
@@ -125,6 +126,8 @@ async function loadConfig(): Promise<void> {
             // storage blocked (web throws SecurityError): track without a visitor id
             visitorId = '';
         }
+        // UNA requests carry it too, so sign-ups and other site actions join this device's visit
+        setAnalyticsVisitorId(visitorId);
         state = 'on';
     } catch {
         // offline or timed out: keep the queued hits and try again later
