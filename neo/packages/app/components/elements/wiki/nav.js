@@ -169,6 +169,15 @@ export function MenuWiki({ onNavigate, block, url }) {
             // Parent-only nodes (no path) toggle expand/collapse; leaves navigate.
             const showChevron = !canNavigate && hasChildren;
             const menuIconEnd = showChevron ? (isExpanded ? 'ChevronDown' : 'ChevronRight') : null;
+            let handlePress;
+            if (canNavigate) {
+                handlePress = (event) => {
+                    onNavigate?.(itemPath)
+                    event?.preventDefault?.()
+                }
+            } else if (hasChildren) {
+                handlePress = () => toggleExpanded(itemId)
+            }
             return (
                 <View key={`lmenu-${itemId}`} className="w-full">
                     {/* Same item as the conductor sidebar (menu-item/sidebar_with_wrapper),
@@ -181,12 +190,7 @@ export function MenuWiki({ onNavigate, block, url }) {
                         icon={icon}
                         iconEnd={menuIconEnd}
                         isActive={menuIsActive}
-                        onPress={canNavigate
-                            ? (event) => {
-                                onNavigate?.(itemPath)
-                                event?.preventDefault?.()
-                            }
-                            : (hasChildren ? () => toggleExpanded(itemId) : undefined)}
+                        onPress={handlePress}
                     />
                     </View>
                     {hasChildren && isExpanded && (

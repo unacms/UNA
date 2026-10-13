@@ -44,6 +44,7 @@ const BREADCRUMB_ROW_PULL = {
     md: 'md:-mb-2',
     lg: 'lg:-mb-2',
     xl: 'xl:-mb-2',
+    '2xl': '2xl:-mb-2',
 }
 
 /**

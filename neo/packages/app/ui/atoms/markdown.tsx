@@ -199,11 +199,12 @@ function SizedMarkdownImage({ alt, height, src, width }: { alt?: string; height?
             style={{
                 borderRadius: 8,
                 height: resolvedHeight,
-                // Spaced like a paragraph (web `.u-vanilla-html p` margins; they
-                // collapse with neighbours in `.markdown-flow`). The outer edges are
-                // zeroed by the first/last-child rules.
+                // Web: spaced like a paragraph (`.u-vanilla-html p` margins; they
+                // collapse with neighbours in `.markdown-flow`, and the first/last-child
+                // rules zero the outer edges). Native collapses nothing, so it keeps
+                // the bottom margin only.
                 marginBottom: 16,
-                marginTop: 16,
+                marginTop: Platform.OS === 'web' ? 16 : 0,
                 maxWidth: '100%',
                 width: resolvedWidth,
             }}
