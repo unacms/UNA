@@ -1634,6 +1634,7 @@ html.dark .bx-analytics-tool {
 }
 .bx-analytics-fact {
     min-width: 0;
+    margin: 0;
 }
 .bx-analytics-fact dt {
     font-size: 0.75rem;

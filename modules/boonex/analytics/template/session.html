@@ -1,14 +1,14 @@
 <div class="bx-analytics-detail">
     <button type="button" class="bx-analytics-back" data-bx-analytics-open="session" data-bx-analytics-value="">__back__</button>
     __member__
-    <dl class="bx-analytics-facts">
+    <div class="bx-analytics-facts">
         <bx_repeat:facts>
-            <div class="bx-analytics-fact">
+            <dl class="bx-analytics-fact">
                 <dt>__title__</dt>
                 <dd>__value__</dd>
-            </div>
+            </dl>
         </bx_repeat:facts>
-    </dl>
+    </div>
     <h3 class="bx-analytics-subtitle">__timeline_title__</h3>
     <bx_if:timeline>
         <ol class="bx-analytics-timeline">
