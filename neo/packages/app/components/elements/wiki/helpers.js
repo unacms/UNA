@@ -77,9 +77,13 @@ export function findWikiBreadcrumbTrail(items, currentPathComparable, ancestors 
     return null
 }
 
+// Parents only: the current page's title is already the article heading.
+// The root crumb ("Docs") always leads, as a link to the docs home, so
+// top-level pages and the home itself show just the root.
 export function buildWikiBreadcrumbs(menuItems, currentPath) {
     const currentKey = normalizePathComparable(currentPath)
     const trail = findWikiBreadcrumbTrail(menuItems, currentKey) || []
+    const parents = trail.filter((crumb) => !crumb.isCurrent)
     const root = appSetting('wiki', 'breadcrumb') || {}
     const rootLabel = String(root.root_label || '').trim()
     const rootPath = root.root_path
@@ -87,28 +91,18 @@ export function buildWikiBreadcrumbs(menuItems, currentPath) {
         : null
     const rootKey = normalizePathComparable(rootPath)
 
-    if (!rootLabel) return trail
+    if (!rootLabel) return parents
 
-    const rootCrumb = {
+    if (parents[0] && rootKey && normalizePathComparable(parents[0].path) === rootKey) {
+        return parents
+    }
+
+    return [{
         key: 'wiki-breadcrumb-root',
         title: rootLabel,
         path: rootPath,
-        isCurrent: Boolean(rootKey && rootKey === currentKey),
-    }
-
-    if (trail[0] && normalizePathComparable(trail[0].path) === rootKey) {
-        return trail
-    }
-
-    if (rootCrumb.isCurrent && !trail.length) {
-        return [rootCrumb]
-    }
-
-    if (rootCrumb.isCurrent) {
-        return trail
-    }
-
-    return [rootCrumb, ...trail]
+        isCurrent: false,
+    }, ...parents]
 }
 
 export const stripMarkdownInline = (text) => String(text || '')

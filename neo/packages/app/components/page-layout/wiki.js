@@ -376,12 +376,12 @@ function PageContentWiki({ data, scrollRef, url }) {
                     <PanelHandler gap={`hidden ${leftBreakpoint}:block`} sizable={cellsCustomConfig.sizable} panelLine={cellsCustomConfig['panel-line']} />
                     <Panel id="wiki-center" order={2} className={`native:w-full   ${currentBreakpointName}:w-full`} {...centerPanelLayoutProps}>
                         <View ref={centerContentRef} className="sm:p-4 lg:px-6 lg:py-6 xl:px-8 2xl:px-12 gap-6 lg:gap-8">
-                            {(breadcrumbs.length >1 || showTocMenu) ? (
+                            {(breadcrumbs.length > 0 || showTocMenu) ? (
                                 <View className={`gap-3  hidden ${leftBreakpoint}:flex`}>
                                     {/* CSS visibility only — do not gate on useBreakpoint (SSR mismatch).
                                         Breadcrumb from left-nav bp; TOC trigger until right sidebar bp. */}
                                     <View className={`hidden ${leftBreakpoint}:flex flex-row items-center justify-between gap-2 min-w-0`}>
-                                        {breadcrumbs.length >1 ? (
+                                        {breadcrumbs.length > 0 ? (
                                             <View className="min-w-0 flex-1">
                                                 <WikiBreadcrumb
                                                     items={breadcrumbs}
