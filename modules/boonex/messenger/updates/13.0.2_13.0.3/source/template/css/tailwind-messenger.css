@@ -1,0 +1,271 @@
+.visible {
+  visibility: visible
+}
+
+.col-\[\^\\\\s\] {
+  grid-column: ^\\s
+}
+
+.col-span-10 {
+  grid-column: span 10 / span 10
+}
+
+.col-span-2 {
+  grid-column: span 2 / span 2
+}
+
+.col-span-3 {
+  grid-column: span 3 / span 3
+}
+
+.col-span-4 {
+  grid-column: span 4 / span 4
+}
+
+.col-span-5 {
+  grid-column: span 5 / span 5
+}
+
+.col-span-6 {
+  grid-column: span 6 / span 6
+}
+
+.col-span-8 {
+  grid-column: span 8 / span 8
+}
+
+.my-auto {
+  margin-top: auto;
+  margin-bottom: auto
+}
+
+.ml-0 {
+  margin-left: 0px
+}
+
+.block {
+  display: block
+}
+
+.inline-block {
+  display: inline-block
+}
+
+.flex {
+  display: flex
+}
+
+.hidden {
+  display: none
+}
+
+.h-4 {
+  height: 1rem
+}
+
+.h-6 {
+  height: 1.5rem
+}
+
+.h-8 {
+  height: 2rem
+}
+
+.h-min {
+  height: -moz-min-content;
+  height: min-content
+}
+
+.w-4 {
+  width: 1rem
+}
+
+.w-6 {
+  width: 1.5rem
+}
+
+.w-8 {
+  width: 2rem
+}
+
+.w-full {
+  width: 100%
+}
+
+.min-w-0 {
+  min-width: 0px
+}
+
+.min-w-max {
+  min-width: -moz-max-content;
+  min-width: max-content
+}
+
+.flex-grow {
+  flex-grow: 1
+}
+
+.resize {
+  resize: both
+}
+
+.flex-col {
+  flex-direction: column
+}
+
+.flex-nowrap {
+  flex-wrap: nowrap
+}
+
+.items-start {
+  align-items: flex-start
+}
+
+.items-center {
+  align-items: center
+}
+
+.justify-center {
+  justify-content: center
+}
+
+.justify-between {
+  justify-content: space-between
+}
+
+.gap-3 {
+  gap: 0.75rem
+}
+
+.-space-x-4 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-x-reverse: 0;
+  margin-right: calc(-1rem * var(--tw-space-x-reverse));
+  margin-left: calc(-1rem * calc(1 - var(--tw-space-x-reverse)))
+}
+
+.space-y-1 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-y-reverse: 0;
+  margin-top: calc(0.25rem * calc(1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(0.25rem * var(--tw-space-y-reverse))
+}
+
+.self-center {
+  align-self: center
+}
+
+.overflow-hidden {
+  overflow: hidden
+}
+
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap
+}
+
+.text-ellipsis {
+  text-overflow: ellipsis
+}
+
+.rounded-full {
+  border-radius: 9999px
+}
+
+.p-4 {
+  padding: 1rem
+}
+
+.align-top {
+  vertical-align: top
+}
+
+.align-middle {
+  vertical-align: middle
+}
+
+.font-semibold {
+  font-weight: 600
+}
+
+.text-white {
+  --tw-text-opacity: 1;
+  color: rgb(255 255 255 / var(--tw-text-opacity))
+}
+
+.ring-2 {
+  --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+  --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000)
+}
+
+.ring-white {
+  --tw-ring-opacity: 1;
+  --tw-ring-color: rgb(255 255 255 / var(--tw-ring-opacity))
+}
+
+:is(.dark .dark\:ring-gray-900) {
+  --tw-ring-opacity: 1;
+  --tw-ring-color: rgb(17 24 39 / var(--tw-ring-opacity))
+}
+
+@media (min-width: 640px) {
+  .sm\:justify-between {
+    justify-content: space-between
+  }
+}
+
+@media (min-width: 768px) {
+  .md\:col-span-3 {
+    grid-column: span 3 / span 3
+  }
+
+  .md\:col-span-4 {
+    grid-column: span 4 / span 4
+  }
+
+  .md\:col-span-6 {
+    grid-column: span 6 / span 6
+  }
+
+  .md\:block {
+    display: block
+  }
+
+  .md\:hidden {
+    display: none
+  }
+}
+
+@media (min-width: 1280px) {
+  .xl\:col-span-2 {
+    grid-column: span 2 / span 2
+  }
+
+  .xl\:col-span-3 {
+    grid-column: span 3 / span 3
+  }
+
+  .xl\:col-span-4 {
+    grid-column: span 4 / span 4
+  }
+
+  .xl\:col-span-5 {
+    grid-column: span 5 / span 5
+  }
+
+  .xl\:col-span-6 {
+    grid-column: span 6 / span 6
+  }
+
+  .xl\:col-span-7 {
+    grid-column: span 7 / span 7
+  }
+
+  .xl\:col-span-8 {
+    grid-column: span 8 / span 8
+  }
+
+  .xl\:block {
+    display: block
+  }
+}

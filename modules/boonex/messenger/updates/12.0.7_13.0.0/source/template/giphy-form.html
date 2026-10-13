@@ -1,0 +1,19 @@
+<div class="bx-messenger-upload-area">
+	<div class="bx-messenger-files-upload-description-area">
+		<div contenteditable="true" placeholder="<bx_text:_bx_messenger_upload_add_comment />" id="bx-messenger-files-upload-comment" class="bx-messenger-comment"></div>
+	</div>
+	<div class="bx-def-padding-top bx-clearfix giphy-upload">
+		<picture>
+			<source srcset="//media1.giphy.com/media/__id__/giphy.webp" type="image/webp" />
+			<img src="//media1.giphy.com/media/__id__/giphy.gif?time=__time__" />
+		</picture>
+    </div>
+	<div class="bx-messenger-uploading-form-buttons">
+		<button class="bx-btn" onclick="oMessenger.sendGiphy('__id__');">
+			<bx_text:_bx_messenger_upload_send_button />
+		</button>
+		<button class="bx-btn" onclick="$(this).closest('.bx-popup-applied:visible').dolPopupHide();">
+			<bx_text:_bx_messenger_upload_close />
+		</button>
+	</div>
+</div>

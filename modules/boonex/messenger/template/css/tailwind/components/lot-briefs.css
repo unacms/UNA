@@ -1,0 +1,131 @@
+.bx-messenger-jots-snip-title .title {
+    @apply w-full flex leading-tight text-base flex-wrap text-ellipsis overflow-hidden font-bold text-gray-800 group-hover:text-gray-900 dark:text-gray-100 dark:group-hover:text-white;
+}
+
+.bx-messenger-preview-lot {
+    @apply w-full space-x-1 space-x-reverse text-gray-600 dark:text-gray-400 flex items-center text-xs;
+}
+
+.bx-messenger-jots-snip {
+    @apply hover:bg-white dark:hover:bg-gray-700/20;
+}
+
+.bx-messenger-jots-snip-avatars-list {
+    @apply ring-2 ring-white dark:ring-gray-900 bg-gray-500/20 rounded-full overflow-hidden;
+}
+
+.bx-messenger-jots-snip-avatars-list p {
+    @apply rounded-full text-white flex items-center justify-center h-12 w-12;
+}
+
+.bx-messenger-jots-snip.active {
+    @apply bg-blue-600 hover:bg-blue-600;
+}
+
+.bx-messenger-jots-snip .bx-messenger-jots-snip-info {
+    @apply text-gray-600 dark:text-gray-400 w-full space-x-1 space-x-reverse flex items-center text-xs;
+}
+
+.bx-messenger-jots-snip.active .bx-messenger-jots-snip-title .title,
+.bx-messenger-jots-snip.active .bx-messenger-jots-snip-info{
+    @apply text-white;
+}
+
+.bx-messenger-jots-snip.active .bx-messenger-preview-lot {
+    @apply text-gray-200;
+}
+
+.bx-messenger-jots-snip.active .bx-messenger-jots-snip-info-bubble {
+    @apply bg-white/95;
+}
+
+.bx-messenger-jots-snip.unread-lot .bx-messenger-jots-snip-info {
+    @apply font-bold;
+}
+
+.bx-messenger-jots-snip .bx-messenger-jots-snip-info-bubble {
+    @apply bg-blue-600 h-3 w-3 self-center mr-1 rounded-full flex-stat;
+}
+
+.bx-messenger-jots-snip-avatars-list div:first-child:nth-last-child(2),
+.bx-messenger-jots-snip-avatars-list div:first-child:nth-last-child(2) ~ div
+{
+    @apply w-1/2;
+}
+
+.bx-messenger-jots-snip-avatars-list div:nth-child(1):nth-last-child(2) img,
+.bx-messenger-jots-snip-avatars-list div:nth-child(2):nth-last-child(1) img
+{
+    @apply rounded-none items-center; /*-ml-[12px]*/
+}
+
+.bx-messenger-jots-snip-avatars-list div:nth-child(1):nth-last-child(2) p,
+.bx-messenger-jots-snip-avatars-list div:nth-child(2):nth-last-child(1) p
+{
+    @apply -ml-[12px] rounded-none items-center text-3xl;
+}
+
+.bx-messenger-jots-snip-avatars-list div:first-child:nth-last-child(3) p
+{
+    @apply justify-start pl-[1px] text-3xl;
+}
+
+.bx-messenger-jots-snip-avatars-list div:first-child:nth-last-child(2) p
+{
+    @apply pl-[1px] text-3xl;
+}
+
+.bx-messenger-jots-snip-avatars-list div:first-child:nth-last-child(3)
+{
+    @apply w-1/2 pr-[1px];
+}
+
+.bx-messenger-jots-snip-avatars-list div:nth-child(1):nth-last-child(3) img
+{
+    @apply -ml-3;
+}
+
+.bx-messenger-jots-snip-avatars-list div:nth-child(2):nth-last-child(2),
+.bx-messenger-jots-snip-avatars-list div:nth-child(3):nth-last-child(1)
+{
+    @apply w-1/2 h-1/2;
+}
+
+.bx-messenger-jots-snip-avatars-list div:nth-child(2):nth-last-child(2) img,
+.bx-messenger-jots-snip-avatars-list div:nth-child(3):nth-last-child(1) img
+{
+    @apply h-full w-full mb-[10px];
+}
+
+.bx-messenger-jots-snip-avatars-list div:nth-child(2):nth-last-child(2) p,
+.bx-messenger-jots-snip-avatars-list div:nth-child(3):nth-last-child(1) p
+{
+    @apply h-full w-full mb-[10px];
+    font-size:initial;
+    border-radius: initial;
+}
+
+.bx-messenger-jots-snip-avatars {
+    @apply h-min text-center relative flex text-center;
+}
+
+.bx-messenger-jots-snip-avatars-list div
+{
+    @apply relative z-10 box-border float-left overflow-hidden p-0;
+}
+
+.bx-messenger-status.offline{
+   @apply hidden;
+}
+
+.bx-messenger-status.away{
+   @apply bg-bubble-away;
+}
+
+.bx-messenger-status.online{
+    @apply bg-green-600;
+}
+
+.bx-messenger-status {
+    @apply absolute bottom-0 right-0 block h-3 w-3 rounded-full ring-2 ring-white dark:ring-gray-900 z-20;
+}

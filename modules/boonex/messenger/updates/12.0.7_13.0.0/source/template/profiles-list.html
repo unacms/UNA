@@ -1,0 +1,24 @@
+<div class="bx-messenger-participants-list">
+     <bx_repeat:profiles>
+       <button type="button" data-id="__id__" onclick="oMessenger.onSelectUser(this)" class="bx-messenger-participants-list-item group">
+           <span class="bx-messenger-participants-info">
+                <span class="bx-messenger-participants-info-avatar avatar">
+                  <bx_if:avatars>
+                       <img title="__title__" src="__thumb__" class="bx-def-thumb-size rounded-full" />
+                  </bx_if:avatars>
+                  <bx_if:letters>
+                         <p class="bx-def-thumb-size bx-base-pofile-unit-thumb" style="background-color:rgba(__color__)">__letter__</p>
+                  </bx_if:letters>
+                </span>
+                <span class="bx-messenger-participants-info-meta">
+                   <span title="__name__" class="bx-messenger-participants-info-meta-name username">__name__</span>
+                </span>
+           </span>
+           <span class="bx-messenger-participants-info-plus bx-messenger-jot-hover-menu group">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+              </svg>
+           </span>
+       </button>
+     </bx_repeat:profiles>
+</div>

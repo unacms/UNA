@@ -1,0 +1,60 @@
+/* Popup scroll down arrow area begin */
+.bx-messenger-area-scroll
+{
+    @apply w-8 h-8 rounded-[1.5rem] absolute bottom-[0.5rem] right-4 hidden;
+}
+
+.bx-messenger-area-scroll .bx-messenger-history-arrow {
+    @apply flex items-center justify-center cursor-pointer h-full;
+}
+
+.bx-messenger-area-scroll i {
+    @apply text-2xl;
+}
+
+.bx-messenger-area-scroll .bx-def-unit-alert {
+    @apply -top-4 right-auto rounded-3xl;
+}
+
+.bx-messenger-area-scroll div
+{
+    @apply flex font-bold items-center text-center truncate mx-2 rounded h-6 text-white bg-blue-600;
+}
+
+.bx-messenger-area-scroll div > span
+{
+    @apply flex-1 relative;
+}
+/* Popup scroll down arrow area begin */
+
+/* Popup scroll element begin */
+.bx-messenger-area-scroll-item
+{
+    @apply w-8 h-8 rounded-3xl absolute right-[0.1rem];
+}
+
+.bx-messenger-area-scroll-item .bx-messenger-history-arrow {
+    @apply flex items-center justify-center cursor-pointer;
+}
+
+.bx-messenger-area-scroll-item i {
+    @apply text-2xl;
+}
+
+.bx-messenger-area-scroll-item .bx-def-unit-alert {
+    @apply -top-4 right-auto rounded-3xl p-0;
+}
+
+.bx-messenger-area-scroll-item .bx-messenger-history-arrow {
+    @apply w-full;
+}
+.bx-messenger-area-scroll-item span > span
+{
+    @apply flex-1 absolute;
+}
+/* Popup scroll element end */
+
+/* Popup scroll area search element */
+.bx-messenger-area-scroll-search {
+    @apply bottom-12 right-4 hidden border-gray-100;
+}

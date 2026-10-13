@@ -1,0 +1,135 @@
+.bx-messenger-create-talk-list {
+    @apply max-w-full h-full mt-1 flex flex-col relative;
+}
+
+.bx-messenger-create-talk-list-header {
+    @apply text-center p-4;
+}
+
+.bx-messenger-create-talk-list-header h2 {
+    @apply mt-2 text-lg sm:text-lg text-sm text-gray-900 dark:text-gray-100;
+}
+
+.bx-messenger-create-talk-list-header svg {
+    @apply mx-auto text-gray-400;
+}
+
+.bx-messenger-create-talk-list-header .bx-messenger-create-talk-list-main-logo svg {
+    @apply md:h-12 md:w-12;
+}
+
+.bx-messenger-create-list-users {
+    @apply md:mt-2 mt-1 text-center mx-4 overflow-y-auto snap-y mb-[2rem] flex-1;
+}
+
+.bx-messenger-create-list-search-area {
+    @apply flex w-full min-w-[8rem] flex-stat;
+}
+
+.bx-messenger-participants-list {
+    @apply text-base pb-4 grid grid-cols-1 gap-4 xs:grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 list-none p-1;
+}
+
+.bx-media-tablet .bx-messenger-participants-list {
+    @apply sm:grid-cols-2;
+}
+
+.bx-media-tablet2 .bx-messenger-participants-list {
+    @apply sm:grid-cols-3;
+}
+
+.bx-messenger-create-talk-list-back-button {
+    @apply absolute pl-4 pt-2 hidden;
+}
+
+.panel .bx-messenger-create-talk-list-back-button{
+    @apply block;
+}
+
+.bx-messenger-escape-button {
+    @apply absolute right-4 top-[0.75rem];
+}
+
+.bx-messenger-escape-button svg {
+    @apply w-8 h-8 text-inherit;
+}
+
+.bx-messenger-participants-list-item {
+    @apply p-2 flex items-center justify-between rounded-full border-gray-200
+           dark:border-gray-800 shadow-sm text-left hover:bg-gray-100 dark:hover:bg-gray-800 border;
+}
+
+.bx-messenger-participants-info {
+    @apply min-w-[3rem] flex-1 flex items-center space-x-3;
+}
+
+.bx-messenger-participants-info-avatar {
+    @apply block flex-shrink-0;
+}
+
+.bx-messenger-participants-info-avatar p {
+    @apply h-10 w-10 rounded-full text-white flex items-center justify-center;
+}
+
+.bx-messenger-participants-info-avatar img {
+    @apply h-10 w-10 rounded-full;
+}
+
+.bx-messenger-participants-info-meta {
+    @apply block flex-auto text-ellipsis overflow-hidden min-w-0 text-center;
+}
+
+.bx-messenger-participants-info-meta-name {
+    @apply font-medium text-gray-900 dark:text-gray-100 truncate;
+}
+
+.bx-messenger-participants-info-meta-mention {
+    @apply block text-gray-500 truncate;
+}
+
+.bx-messenger-participants-info-plus {
+    @apply flex-stat h-10 w-10 inline-flex items-center justify-center mx-0;
+}
+
+.bx-messenger-participants-info-plus svg {
+    @apply h-6 w-6 text-gray-400 group-hover:text-gray-500;
+}
+
+.bx-messenger-create-list-add-users-area {
+    @apply mt-5 mx-4 text-sm items-center gap-1;
+    @apply flex flex-col flex-stat;
+}
+
+.bx-messenger-existed-users-list {
+    @apply min-h-0 max-h-[12rem] w-full grid grid-cols-5 gap-2 overflow-y-auto snap-y touch-pan-y flex-stat items-center auto-rows-min;
+}
+
+.bx-messenger-create-list-add-users-area .bx-messenger-participants-list-item {
+    @apply p-1;
+}
+
+.bx-messenger-create-list-add-users-area img.bx-def-thumb-size,
+.bx-messenger-create-list-add-users-area .bx-def-thumb-size,
+.bx-messenger-create-list-add-users-area p.bx-base-pofile-unit-thumb.bx-def-thumb-size
+{
+    @apply w-6 h-6 font-normal m-0 text-sm;
+}
+.bx-messenger-create-list-add-users-area button.bx-messenger-participants-added-item {
+    @apply flex-[0_1_25%] max-h-[2rem] max-w-[10rem];
+}
+
+.bx-messenger-create-list-add-users-area .bx-messenger-participants-info-plus {
+    @apply h-auto w-8;
+}
+
+.bx-create-convo-criteria {
+    @apply flex-1 min-h-0 px-4 flex flex-col;
+}
+
+.bx-messenger-select-users-area {
+    @apply flex flex-col grow-0 shrink basis-0;
+}
+
+.bx-messenger-convo-filter-criteria {
+    @apply w-full px-4 flex-1 overflow-y-auto;
+}

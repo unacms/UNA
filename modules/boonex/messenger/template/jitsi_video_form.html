@@ -1,0 +1,142 @@
+<div class="bx-messenger-jitsi-area" draggable="true">
+    <div class="bx-def-padding-top bx-clearfix jitsi" id="bx-messenger-jitsi"></div>
+    <div class="bx-messenger-jitsi-buttons">
+       <button class="bx-btn close bx-def-margin-sec-right" onclick="oMessenger.onJitsiClose(this, __id__);">
+           <bx_text:_bx_messenger_upload_close />
+       </button>
+    </div>
+</div>
+<script>
+    // Make the DIV element draggable:
+
+    $(function($, oWindow) {
+        let iPos1 = 0, iPos2 = 0, iPos3 = 0, iPos4 = 0;
+        $(oWindow).on('mousedown', (oEvent) => {
+            oEvent.preventDefault();
+            // get the mouse cursor position at startup:
+            iPos3 = oEvent.clientX;
+            iPos4 = oEvent.clientY;
+            $(document).on('mouseup', function(){
+                $(this).unbind('mouseup, mousemove');
+            });
+
+            $(document).on('mousemove', (oEvent) => {
+                oEvent.preventDefault();
+                iPos1 = iPos3 - oEvent.clientX;
+                iPos2 = iPos4 - oEvent.clientY;
+                iPos3 = oEvent.clientX;
+                iPos4 = oEvent.clientY;
+
+                const { left, top } = $(oWindow).offset();
+                $(oWindow).css({ top: top - iPos2 + "px", left: left - iPos1 + "px" });
+            });
+        });
+
+    }($, "#bx-messenger-jitsi-video"));
+
+	bx_get_scripts(['__lib_link__'], () => {
+		const oInterfaceConfig = {
+            DEFAULT_BACKGROUND: '#3e468c',
+            filmStripOnly: false,
+            APP_NAME: '__jitsi_meet_title__',
+            NATIVE_APP_NAME: '__jitsi_meet_title__',
+            PROVIDER_NAME: '__site_title__',
+            DEFAULT_REMOTE_DISPLAY_NAME: '<bx_text:_bx_messenger_jitsi_remote_user />',
+            DEFAULT_LOCAL_DISPLAY_NAME: '__me__',
+
+            SHOW_CHROME_EXTENSION_BANNER: false,
+            SHOW_DEEP_LINKING_IMAGE: false,
+            SHOW_POWERED_BY: false,
+            SHOW_PROMOTIONAL_CLOSE_PAGE: false,
+            MOBILE_APP_PROMO: false,
+
+            SHOW_JITSI_WATERMARK: __show_watermark__,
+            SHOW_WATERMARK_FOR_GUESTS: __show_watermark__,
+            SHOW_BRAND_WATERMARK: __show_watermark__,
+            JITSI_WATERMARK_LINK: '__watermark_url__',
+            DISABLE_VIDEO_BACKGROUND: false,
+            SUPPORT_URL: '__support_link__',
+            HIDE_INVITE_MORE_HEADER: true,
+            TOOLBAR_BUTTONS: [
+                'microphone',
+                'camera',
+                'closedcaptions',
+                'desktop',
+                'fullscreen',
+                'fodeviceselection',
+                'hangup',
+                'recording',
+                'livestreaming',
+                'etherpad',
+                'sharedvideo',
+                'settings',
+                'raisehand',
+                'videoquality',
+                'filmstrip',
+                'tileview'
+            ]
+        };
+
+		if (__info_enabled__)
+            oInterfaceConfig['TOOLBAR_BUTTONS'].push('info');
+
+        if (__chat_enabled__)
+            oInterfaceConfig['TOOLBAR_BUTTONS'].push('chat');
+
+		const oOptions = {
+			roomName: '__name__',
+			width: '100%',
+			height: '100%',
+			parentNode: $('#bx-messenger-jitsi').get(0),
+			interfaceConfigOverwrite: oInterfaceConfig,
+            configOverwrite: {
+                enableClosePage: true,
+                defaultLanguage: '__lang__',
+                enableWelcomePage: false,
+                disableInviteFunctions: true,
+                prejoinPageEnabled: false
+            },
+            onload: function(oEvent){
+			    const { srcElement, target } = oEvent;
+                bx_loading('bx-messenger-jitsi', false);
+                if (!target || !srcElement)
+                    bx_alert(_t('_bx_messenger_jisti_connection_error'));
+            }
+		};
+
+        if ('__jwt_token__')
+            oOptions.jwt = '__jwt_token__';
+
+        bx_loading('bx-messenger-jitsi', true);
+        const oApi = new JitsiMeetExternalAPI('__domain__', oOptions);
+
+        oApi._lotId = '__id__';
+        oApi
+            .on('videoConferenceJoined', () => {
+                oApi.executeCommand('subject', '__title__');
+                oApi.executeCommand('displayName', '__user_name__');
+                oApi.executeCommand('avatarUrl', '__avatar__');
+
+                if (__audio_only__)
+                    oApi.executeCommand('toggleVideo');
+
+                $.get('modules/?r=messenger/create_jitsi_video_conference/', { lot_id: '__id__' }, function(oData){
+                     const { jot_id, parts, opened, code, message } = oData;
+
+                     if (+code === 1) {
+                        bx_alert(message);
+                        return;
+                    }
+
+                    oApi._jotId = jot_id;
+                    oApi._participantsNumber = parts;
+                    if ( typeof opened !== 'undefined' && Array.isArray(opened))
+                        oMessenger.updateJots(opened, 'vc');
+
+                  oMessenger.initJitsi(oApi, oData.new, __chat_sync__);
+                },
+                'json');
+            })
+          .on('participantJoined', () => oMessenger.stopActiveSound());
+	});
+</script>

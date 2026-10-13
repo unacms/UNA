@@ -1,0 +1,15 @@
+<button type="button" data-id="{id}" onclick="$(this).remove();" class="bx-messenger-participants-added-item bx-messenger-participants-list-item">
+    <span class="bx-messenger-participants-info">
+     <span class="bx-messenger-participants-info-avatar avatar">
+         {avatar}
+     </span>
+     <span class="bx-messenger-participants-info-meta">
+        <span title="{name}" class="bx-messenger-participants-info-meta-name">{name}</span>
+     </span>
+    </span>
+    <span class="bx-messenger-participants-info-plus bx-messenger-jot-hover-menu group" onclick="$(this).closest('button').remove();">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+    </span>
+</button>

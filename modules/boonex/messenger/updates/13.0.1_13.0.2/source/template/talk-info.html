@@ -1,0 +1,23 @@
+<section class="bx-messenger-talks-info-area">
+    <span class="bx-messenger-talks-info-owner-card">
+         <span class="bx-messenger-talks-info-owner-avatar">
+           <bx_if:avatars>
+                <img title="__title__" src="__thumb__" class="bx-def-ava-size rounded-full" />
+           </bx_if:avatars>
+           <bx_if:letters>
+                <p class="bx-def-ava-size" style="background-color:rgba(__color__)">__letter__</p>
+           </bx_if:letters>
+         </span>
+         <span class="bx-messenger-talks-info-owner-name">
+            <span title="__name__" class="bx-messenger-participants-info-meta-name username">
+                <a href="__profile_url__">__name__</a>
+            </span>
+         </span>
+    </span>
+    <div class="bx-messenger-talks-info-statistic-area">
+        <span><bx_text:_bx_messenger_convo_info_participants />: __parts__</span>
+        <span><bx_text:_bx_messenger_convo_info_messages />: __messages__</span>
+        <span><bx_text:_bx_messenger_convo_info_files />: __files__</span>
+    </div>
+    <div class="bx-messenger-talks-info-statistic-area">__content__</div>
+</section>

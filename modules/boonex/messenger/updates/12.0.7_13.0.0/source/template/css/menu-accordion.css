@@ -1,0 +1,22 @@
+.bx-messenger-menu-block .bx-db-content.bx-content-padding-block .bx-menu-profile-followings
+{
+    margin: -0.75rem;
+}
+
+.bx-messenger-menu-block .bx-menu-ver.bx-menu-object-bx_messenger_groups_menu li .bx-menu-hide,
+.bx-messenger-menu-block .bx-menu-ver.bx-menu-object-bx_messenger_groups_menu li.bx-mi-collapsed .bx-menu-show {
+    display: inline;
+}
+
+.bx-messenger-menu-block .bx-menu-ver.bx-menu-object-bx_messenger_groups_menu li .bx-menu-show,
+.bx-messenger-menu-block .bx-menu-ver.bx-menu-object-bx_messenger_groups_menu li.bx-mi-collapsed .bx-menu-hide {
+    display: none;
+}
+
+.bx-messenger-menu-block .bx-menu-ver.bx-menu-object-bx_messenger_groups_menu li.bx-mi-collapsed .bx-menu-item-subitems {
+    display: none;
+}
+
+.bx-messenger-menu-block ul.bx-menu-ver.bx-menu-vertical-more-less li {
+    border: 0 !important;
+}

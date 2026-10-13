@@ -1,0 +1,11 @@
+.bx-messenger-info-section-block {
+    @apply overflow-hidden h-full;
+}
+
+.bx-messenger-info-section-block-content {
+    @apply w-full relative top-6;
+    @apply divide-y divide-gray-200 dark:divide-gray-800 space-y-4;
+    @apply overflow-y-auto snap-y scroll-smooth;
+    @apply flex-dynamic;
+    scrollbar-width: none;
+}

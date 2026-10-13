@@ -1,0 +1,51 @@
+<li class="bx-messenger-jots-snip __class__" onclick="oMessenger.loadTalk(__id__);" data-lot="__id__">
+	<a href="javascript:void(0);" class="block w-full">
+		<div class="min-w-0 flex w-full gap-3 sm:items-top sm:justify-between align-top p-4">
+			<div class="bx-messenger-jots-snip-avatars">
+				<div class="bx-messenger-jots-snip-avatars-list bx-def-thumb-size">
+					<bx_repeat:avatars>
+						<bx_if:avatars>
+							<div>
+								<img title="__title__" src="__thumb__" class="bx-def-thumb-size" />
+							</div>
+						</bx_if:avatars>
+						<bx_if:letters>
+							<div>
+								<p class="bx-def-thumb-size bx-base-pofile-unit-thumb bx-def-ava bx-def-box-sizing" style="background-color:rgba(__color__)">__letter__</p>
+							</div>
+						</bx_if:letters>
+					</bx_repeat:avatars>
+				</div>
+				__status__
+			</div>
+			<div class="flex w-full space-y-1 flex-col items-start align-middle my-auto truncate flex-grow flex-nowrap">
+				<div class="bx-messenger-jots-snip-title flex items-center justify-between w-full">
+					<p class="title">
+						__title__
+					</p>
+				</div>
+				<div class="bx-messenger-jots-snip-info">
+					<div class="__bubble_class__ inline-block bx-messenger-jots-snip-info-bubble"></div>
+					<bx_if:timer>
+						<div class="ml-0">__time__</div>
+					</bx_if:timer>
+					<bx_if:user>
+						<img class="h-4 w-4 rounded-full" src="__icon__" />
+						<div class="font-semibold">__talk_type__:</div>
+						<div class="text-ellipsis overflow-hidden">__message__</div>
+					</bx_if:user>
+				</div>
+			</div>
+			<div class="flex min-w-max h-min inline-block self-center -space-x-4">
+				<bx_repeat:participants>
+					<bx_if:avatars>
+						<img title="__title__" src="__thumb__" class="inline-block h-8 w-8 max-w-fit rounded-full ring-2 ring-white dark:ring-gray-900" />
+					</bx_if:avatars>
+					<bx_if:letters>
+						<p class="flex items-center justify-center text-white bx-base-pofile-unit-thumb max-w-full bx-def-ava bx-def-box-sizing inline-block h-8 w-8 rounded-full ring-2 ring-white dark:ring-gray-900" style="background-color:rgba(__color__)">__letter__</p>
+					</bx_if:letters>
+				</bx_repeat:participants>
+			</div>
+		</div>
+	</a>
+</li>

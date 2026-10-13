@@ -1,0 +1,32 @@
+.bx-messenger-talks-info-area {
+    @apply flex flex-col mt-4 space-y-2 p-4;
+}
+
+.bx-messenger-talks-info-owner-card {
+    @apply flex flex-col;
+}
+
+.bx-messenger-talks-info-owner-avatar {
+    @apply flex justify-center;
+}
+
+.bx-messenger-talks-info-owner-avatar img,
+.bx-messenger-talks-info-owner-avatar p {
+    @apply rounded-full;
+}
+
+.bx-messenger-talks-info-owner-avatar p {
+    @apply flex items-center justify-center text-4xl text-gray-900 dark:text-gray-100;
+}
+
+.bx-messenger-talks-info-owner-name {
+    @apply text-center mt-1 text-2xl font-bold;
+}
+
+.bx-messenger-talks-info-statistic-area {
+    @apply flex flex-col space-y-2;
+}
+
+.bx-messenger-talks-info-statistic-area > span{
+    @apply mt-1 text-base text-left;
+}

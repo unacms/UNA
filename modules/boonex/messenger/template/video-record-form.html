@@ -1,0 +1,88 @@
+<div class="bx-messenger-upload-area hidden">
+	<div class="bx-messenger-upload-description-area">
+		<div contenteditable="true" placeholder="<bx_text:_bx_messenger_upload_add_comment />" id="bx-messenger-files-upload-comment" class="bx-messenger-comment"></div>
+	</div>
+	<div class="bx-messenger-video-block bx-clearfix">		
+		<div class="bx-messenger-video">
+			<video id="video" autoplay tabindex=-1 muted playsinline></video>
+			<div class="bx-messenger-video-recording blink">
+				<span><bx_text:_bx_messenger_video_rec /></span>
+				<i class="sys-icon circle icon"></i>
+			</div>
+		</div>		
+	</div>
+	<div class="bx-messenger-video-buttons">
+      <button class="bx-btn bx-btn-disabled bx-btn-primary bx-def-margin-sec-right" id="start-record" disabled="disabled">
+		 <i class="sys-icon circle"></i>
+	  </button> 
+      <button disabled="disabled" alt="<bx_text:_bx_messenger_play_record_button />" title="<bx_text:_bx_messenger_play_record_button />" class="bx-btn bx-btn-disabled bx-def-margin-sec-right" id="play-record">
+		 <i class="sys-icon play"></i>
+	  </button> 
+	  <button class="bx-btn bx-btn-disabled bx-def-margin-sec-right" id="send-record" disabled="disabled"><bx_text:_bx_messenger_send_record_button /></button> 
+	  <button class="bx-btn close" id="close-record"><bx_text:_bx_messenger_upload_close /></button>
+    </div>
+</div>
+<script>
+	$(function(){
+		 const oOptions =
+			{
+				start: function(oCamera){
+					const _this = this,
+                        mimeType = oJotRecorder.getMimeType(),
+						iMaxLength = parseInt('__max_video_length__');
+
+					this.oRecorder = RecordRTC(oCamera,
+					{
+						mimeType: mimeType,
+                        disableLogs: true
+					});
+					
+					this.oRecorder.clearRecordedData();
+					
+					this.oRecorder.setRecordingDuration(iMaxLength, function(){
+							_this.stopRecording(this.getBlob());
+							$(_this.bstart).click();
+							alert(_t('_bx_messenger_max_video_file_exceeds', iMaxLength/(1000*60)));
+						});
+					
+					this.oRecorder.startRecording();
+				},
+				stop: function(fCallback)
+				{					
+					if (this.oRecorder !== undefined)
+						this.oRecorder.stopRecording(fCallback);					
+				},
+				send: function(oFile, fCallback)
+				{
+					const _this = this;
+					oMessenger.sendVideoRecord(oFile, function()
+					{
+						_this.close();
+						if (typeof fCallback == 'function')	
+							fCallback();
+					});
+				},
+				close: function()
+				{
+					const _this = this;
+					if (this.oRecorder && (this.oRecorder.state == 'recording' || this.oRecorder.state == 'paused'))
+					{
+						_this.stop(function(){
+							_this.stopRecording();
+						});
+						
+						this.oRecorder = null;
+					}
+					else
+						_this.stopRecording();
+						
+					const oVideo = $(_this.video)[0];
+					if (oVideo.currentTime > 0 && !oVideo.paused && !oVideo.ended && oVideo.readyState > 2) /* check if the video playing, then to stop it before to close */
+						oVideo.pause();
+				}
+			}
+			
+			const oJotRecorder = new oJotVideoRecorder(oOptions);
+			oJotRecorder.init();
+	});
+</script>

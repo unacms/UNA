@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="ru" flag="ru" title="Russian">
+	<string_upd name="_sys_form_entry_input_sys_cf"><![CDATA[Фильтр контента]]></string_upd>
+	<string_upd name="_sys_form_entry_input_cf"><![CDATA[Выберите аудиторию]]></string_upd>
+	<string_upd name="_sys_uploader_html5_title"><![CDATA[Множественная загрузка]]></string_upd>
+
+	<string_add name="_bx_messenger_jot_menu_remove_save"><![CDATA[Удалить из сохранённых]]></string_add>
+	<string_add name="_bx_messenger_cpt_category_settings"><![CDATA[Настройки]]></string_add>
+	<string_add name="_bx_messenger_cpt_category_security"><![CDATA[Безопасность]]></string_add>
+	<string_add name="_bx_messenger_cpt_category_moderation"><![CDATA[Модерация]]></string_add>
+	<string_add name="_bx_messenger_cpt_category_giphy"><![CDATA[Giphy]]></string_add>
+	<string_add name="_bx_messenger_cpt_category_emoji"><![CDATA[Emoji]]></string_add>
+	<string_add name="_bx_messenger_cpt_category_jitsi"><![CDATA[Jitsi]]></string_add>
+	<string_add name="_bx_messenger_cpt_category_privacy"><![CDATA[Приватность]]></string_add>
+	<string_add name="_bx_messenger_cpt_category_view"><![CDATA[Вид]]></string_add>
+	<string_add name="_bx_messenger_cpt_category_search"><![CDATA[Поиск]]></string_add>
+	<string_add name="_bx_messenger_hide_parts"><![CDATA[Скрыть иконки последних ответивших участников в столбце разговора]]></string_add>
+	<string_add name="_bx_messenger_show_search_box"><![CDATA[Показывать окно поиска в столбце разговоров открытым, по умолчанию]]></string_add>
+	<string_add name="_bx_messenger_giphy_powered_by"><![CDATA[Включение логотипа 'Powered By': обязательный шаг для интеграции Giphy в производственной среде]]></string_add>
+	<string_add name="_bx_messenger_video_record_is_not_supported"><![CDATA[Video recording is not supported: {0}]]></string_add>
+</resources>

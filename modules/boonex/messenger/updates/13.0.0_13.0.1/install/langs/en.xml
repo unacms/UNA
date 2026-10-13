@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="en" flag="gb" title="English">	
+	<string_add name="_bx_messenger_page_block_contacts_title"><![CDATA[Contacts]]></string_add>
+	<string_add name="_bx_messenger_profile_title_snippet_meta"><![CDATA[Snippet Meta Info]]></string_add>
+	<string_add name="_bx_messenger_set_title_profile_snippet_meta"><![CDATA[Snippet Profile Meta for Contacts block]]></string_add>
+	<string_add name="_bx_messenger_item_title_sm_message"><![CDATA[Message]]></string_add>
+</resources>

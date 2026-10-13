@@ -1,0 +1,13 @@
+<div class="bx-messenger-talk-header-usernames">
+	<bx_repeat:usernames>
+		<span class="border border-transparent">
+			<bx_if:avatars>
+				<img class="bx-def-thumb-size bx-base-pofile-unit-thumb rounded-full" title="__title__" src="__thumb__" />
+			</bx_if:avatars>
+			<bx_if:letters>
+				<p class="bx-base-pofile-unit-thumb flex items-center justify-center bx-def-icon w-8 h-8 bx-def-icon-size-online rounded-full" title="__title__" style="background-color:rgba(__color__)">__letter__</p>
+			</bx_if:letters>
+			<span class="bx-def-unit-info bx-def-padding-left">__username__</span>
+		</span>
+	</bx_repeat:usernames>
+</div>

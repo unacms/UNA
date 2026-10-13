@@ -1,0 +1,35 @@
+/* ------ Quill integration -------------------- */
+#bx-messenger-message-box .ql-container{
+    font-size: inherit;
+    font-family: inherit;
+}
+
+#bx-messenger-message-box .ql-editor::before,
+#bx-messenger-message-box .ql-editor{
+    color: inherit;
+    font-family: inherit;
+    font-style: inherit;
+    padding:0;
+    background:inherit;
+}
+
+#bx-messenger-message-box .ql-editor.ql-blank::before{
+    color: inherit;
+    font-style: inherit;
+    left: unset;
+    right: unset;
+}
+
+#bx-messenger-message-box .ql-editor {
+    border: 0;
+    box-shadow: none;
+}
+
+/* ------ Filepond ------------------- */
+
+section .filepond--list-scroller {
+    margin: 0 !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

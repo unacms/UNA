@@ -1,0 +1,35 @@
+<!--<div class="accordion-item" id="bx-messenger-left-nav-menu">
+    <h2 class="accordion-header mb-0" id="groups">
+        <button
+                class="accordion-button relative items-center w-full p-5 pb-3 text-gray-600 dark:text-gray-200 dark: text-left border-0 rounded-none transition focus:outline-none"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#collapseOne"
+                aria-expanded="true"
+                aria-controls="collapseOne"
+        >
+           <span class="flex justify-between">
+               <i class="sys-icon chevron-down"></i>
+               <b>Groups</b>
+               <bx_if:groups><i onClick="__js_code__.onCreateGroup()" class="sys-icon plus"></i></bx_if:groups>
+           </span>
+        </button>
+    </h2>
+    <div
+            id="collapseOne"
+            class="accordion-collapse collapse show"
+            aria-labelledby="headingOne"
+            data-bs-parent="#accordionExample"
+    >-->
+    <ul class="pl-10">
+       <bx_repeat:groups>
+         <li class="pb-1" data-group-id="__id__">
+            <a href="javascript:void(0)" onclick="__js_code__.onSelectGroup(__id__)"># __title__</a>
+         </li>
+       </bx_repeat:groups>
+    </ul>
+    <div class="px-2 pl-6 space-y-1">
+        <bx_if:groups>Add groups<i onClick="__js_code__.onCreateGroup()" class="sys-icon plus pl-2"></i></bx_if:groups>
+    </div>
+    <!--</div>
+</div>-->

@@ -1,0 +1,265 @@
+.bx-page-wrapper,
+.bx-content-container,
+.bx-db-container,
+.bx-content-main,
+#bx-content-main,
+.bx-layout-wrapper,
+.bx-layout-row,
+.bx-layout-col,
+.bx-layout-cell,
+.bx-page-block-container,
+.bx-content-container.bx-def-padding-sec-leftright,
+.bx-db-content {
+	height: 100%;
+	max-height:100%;
+	margin: 0;
+	padding:0;
+}
+
+#bx-content-main {
+	position:relative;
+}
+
+#bx-content-with-cover-wrapper {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+}
+
+#bx-content-container {
+	overflow: hidden;
+	position: relative;
+	padding: 0;
+	height: 100%;
+	min-height: 100%;
+}
+
+.bx-main {
+  height:100vh;
+  display:flex;
+  flex-direction:column;
+  min-height: 100%;
+}
+
+.bx-media-phone body{
+	min-height: auto;
+}
+
+.bx-main  > div{
+	flex: 0 0 auto;
+}
+#bx-content-with-submenu-wrapper,
+#bx-content-wrapper {
+   flex: 1 1 0;
+   overflow:hidden;
+   max-height:100%;
+   height: 100%;
+   display: flex;
+   flex-direction: column;
+}
+
+.cd-main-content .content-wrapper
+{
+	margin-left:0 !important;
+}
+
+#bx-content-wrapper .bx-def-page-width
+{
+	width:100%;
+	padding:0;
+	max-width:100%;
+	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+}
+
+
+#bx-footer-wrapper {
+	display:none;
+}
+
+.bx-messenger-table-wrapper  .bx-messenger-table-wrapper-rows:first-child .cell{
+	height:100% !important;
+	min-height:50px;
+}
+
+.bx-messenger-block-lots
+{
+	border:0;
+}
+
+.bx-messenger-items-list ul > li.hidden + li:not(.hidden) {
+	border-top:0;
+}
+
+.bx-messenger-hide-mobile svg
+{
+	vertical-align:middle;
+}
+
+.bx-messenger-hide-mobile a
+{
+	font-size:1rem;
+	font-weight:700;
+	display:inline-flex;
+}
+
+div.bx-messenger-border.search .menu{
+	display: flex;
+	align-items: center;
+}
+
+div.bx-messenger-border.search span i {
+	font-size: 1.3rem;
+}
+
+div.bx-messenger-border.search span.star {
+	margin-right: 0.5rem;
+	margin-left: 0.5rem;
+}
+
+div.bx-messenger-border.search div:first-child 
+{
+	width:100%;
+	vertical-align:middle;
+	flex:0 1 auto;
+}
+
+div.bx-messenger-border.search span:first-child input
+{
+	padding:0;
+	background-color:rgba(0,0,0,0);
+}
+
+div.bx-messenger-border.search div:first-child input::placeholder
+{
+	color:inherit;
+}
+
+div.bx-messenger-border.search > span:first-child{
+	flex: 1 auto;
+}
+
+div.bx-messenger-border.search .star a
+{
+	opacity:0.5;
+}
+
+div.bx-messenger-border.search .star a.active
+{
+	opacity:1;
+}
+
+.bx-messenger-blink-jot
+{
+	animation:blink-jot 4s ease-in-out;
+}
+
+@keyframes blink-jot
+{ 
+	from {background-color:rgba(74,144,226,0.5);}
+	to {background-color:transparent;}
+}
+
+.bx-messenger-talk-header-usernames{
+	background-color: inherit;
+	border: 0;
+	padding:0;
+	height:auto;
+	line-height: normal;
+}
+
+.bx-messenger-talk-header-usernames > span{
+	display: flex;
+	align-items: center;
+}
+.bx-messenger-talk-header-usernames > span > span:first-child{
+	display: flex;
+	align-items: center;
+	border-radius: 1rem;
+	overflow: hidden;
+	margin-right: 0.5rem;
+}
+
+#bx-messenger-talk-title {
+	box-shadow: none;
+}
+
+.bx-messenger-block .bx-stl-mia.hidden {
+	display: none;
+}
+
+.bx-messenger-history-arrow #unread-jots-counter {
+	padding:0;
+}
+
+#bx-messenger-add-users .ui.search.category.focus .ui.input {
+	line-height: inherit !important;
+}
+
+.bx-messenger-jots-snip-title div.status {
+	line-height: .825rem;
+}
+
+.bx-messenger-groups-menu {
+	scrollbar-width: none;
+}
+
+.bx-messenger-info-bubble {
+	position:absolute;
+	top: -0.2rem;
+	right: -0.01rem;
+	font-size: 10px;
+	line-height: 1rem;
+	width: 1rem;
+	min-width: 1rem;
+	text-align: center;
+	justify-content: center;
+}
+
+.bx-messenger-menu-block .bx-menu-ver li span {
+	display: flex;
+}
+
+/* decorous, lucid templates corrections to make page adoptive - begin */
+
+.bx-decorous.bx-page-messenger #bx-content-wrapper #bx-content-container,
+.bx-lucid.bx-page-messenger #bx-content-wrapper #bx-content-container{
+	position: absolute;
+	width: 100%;
+}
+
+.bx-decorous.bx-page-messenger .cd-main-content-wrp,
+.bx-lucid.bx-page-messenger .cd-main-content-wrp {
+	flex: 1 1 auto;
+	height:100%;
+}
+
+.bx-decorous.bx-page-messenger .content-wrapper-wrp .content-wrapper,
+.bx-lucid.bx-page-messenger .content-wrapper-wrp .content-wrapper {
+	min-height: 100%;
+}
+
+.bx-decorous.bx-page-messenger .cd-main-content,
+.bx-lucid.bx-page-messenger .cd-main-content,
+.bx-decorous.bx-page-messenger .content-wrapper-wrp,
+.bx-lucid.bx-page-messenger .content-wrapper-wrp,
+.bx-decorous.bx-page-messenger .content-wrapper-wrp .content-wrapper {
+	height: 100%;
+}
+
+/* decorous, lucid templates corrections to make page adoptive - end */
+
+.bx-messenger-broadcast-filter-area label {
+	padding-left: 0.3rem;
+	padding-bottom: 0.3rem;
+}
+
+#bx-messenger-message-box {
+	max-height: 180px;
+	overflow-y: auto;
+}
+
+.bx-messenger-create-convo-menu {
+
+}

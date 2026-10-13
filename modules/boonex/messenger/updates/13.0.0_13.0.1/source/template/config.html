@@ -1,0 +1,49 @@
+<script type="text/javascript">
+   if (typeof oMessenger !== 'undefined') {
+       $(() => oMessenger.init({
+           oRTWSF: typeof window.oRTWSF !== 'undefined' && window.oRTWSF.init({
+               server: '__server_url__',
+               ip: '__ip__',
+               jwt: '__jot_jwt__',
+               ident: '__ident__'
+           }),
+           emoji: {
+               'set': '__emoji_set__',
+               'preview': __emoji_prev__,
+               'lang': sLang
+           },
+           user_id: __profile_id__,
+           unique_mode: __unqiue_mode__,
+           group_id: __group_id__,
+           name: '__username__',
+           type: __type__,
+           lot: __lot__,
+           muted: __muted__,
+           url: '__url__',
+           direction: '__direction__',
+           jot_id: __jot_id__,
+           last_unread_jot: __last_unread_jot__,
+           selected_profile: __selected_profile__,
+           by_url: __by_url__,
+           max: __message_length__,
+           jot_url: '__jot_url__',
+           block_version: __block_version__,
+           max_history_number: __max_history__,
+           unread_jots: __unread_jots__,
+           allow_attach: __allow_attach__,
+           jitsi_server: '__jitsi_server__',
+           files_uploader: __files_uploader__,
+           messages: __messages__,
+           welcome_message: '__welcome_message__',
+           templates: {
+               embed_template: `__embed_template__`,
+               reaction_template: `__reaction_template__`,
+               thumb_letter: `__thumb_letter__`,
+               thumb_icon: `__thumb_icon__`,
+               add_user_item: `__add_user_item__`,
+               jot_template: `__jot_template__`
+           },
+       }));
+   }
+
+</script>

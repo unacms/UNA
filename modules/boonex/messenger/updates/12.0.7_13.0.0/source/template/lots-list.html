@@ -1,0 +1,59 @@
+<div class="bx-messenger-talks-list-area">
+	<div class="bx-messenger-talks-list-header bx-db-header">
+		<a onclick="oNavMenu.toggleMenuPanel()" href="javascript:void(0);" class="xl:hidden bx-messenger-talks-list-header-menu bx-messenger-talks-list-header-menu-item">
+			<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+				<path d="M12 3C19.5829 3 22 3.48342 22 5C22 6.51658 19.5829 7 12 7C4.4171 7 2 6.51658 2 5C2 3.48342 4.4171 3 12 3Z"></path>
+				<path d="M10 10C16.0663 10 18 10.4834 18 12C18 13.5166 16.0663 14 10 14C3.93368 14 2 13.5166 2 12C2 10.4834 3.93368 10 10 10Z"></path>
+				<path d="M12 17C19.5829 17 22 17.4834 22 19C22 20.5166 19.5829 21 12 21C4.4171 21 2 20.5166 2 19C2 17.4834 4.4171 17 12 17Z"></path>
+			</svg>
+		</a>
+		<div class="group bx-messenger-talks-list-header-title-area">
+			<div id="bx-messenger-inbox-area-title" class="bx-messenger-talks-list-header-title">
+				<bx_text:_bx_messenger_list_area_inbox />
+			</div>
+			<div id="bx-messenger-search-block" class="bx-messenger-talks-list-header-search-area">
+				<input id="bx-messenger-filter-talks"
+					   name="filter-talks"
+					   onInput="oMessenger.searchByItems(this.value);"
+					   class="bx-def-font-inputs bx-form-input-text" placeholder="<bx_text:_bx_messenger_title_search />"
+					   type="search" />
+				<div class="bx-messenger-talks-list-header-search-area-icon">
+					<a href="javascript:void(0);" onclick="oMessenger.clearSearch()">
+						<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+							<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+						</svg>
+					</a>
+				</div>
+			</div>
+			<a href="javascript:void(0)" onclick="oMessenger.toggleFilterTalks()" class="bx-messenger-talks-list-header-menu-item">
+				<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+					<path fill-rule="evenodd" clip-rule="evenodd" d="M14.9718 17.9002C14.6237 17.3987 13.8873 17.139 13.3302 17.3886C12.3269 17.8382 11.2147 18.0882 10.0441 18.0882C5.60147 18.0882 2 14.4868 2 10.0441C2 5.60148 5.60147 2 10.0441 2C14.4868 2 18.0882 5.60148 18.0882 10.0441C18.0882 11.2147 17.8382 12.3269 17.3886 13.3302C17.139 13.8873 17.3987 14.6237 17.9002 14.9718C18.4306 15.3399 19.0389 15.8789 19.7606 16.6006C22.1568 18.9968 22.5387 20.1425 21.3406 21.3406C20.1425 22.5387 18.9968 22.1568 16.6006 19.7606C15.8789 19.0389 15.3399 18.4306 14.9718 17.9002ZM15.4069 10.0441C15.4069 13.0059 13.0059 15.4069 10.0441 15.4069C7.08236 15.4069 4.68137 13.0059 4.68137 10.0441C4.68137 7.08236 7.08236 4.68137 10.0441 4.68137C13.0059 4.68137 15.4069 7.08236 15.4069 10.0441Z"></path>
+				</svg>
+			</a>
+		</div>
+		<a href="javascript:void(0)" onclick="oMessenger.createList();" title="<bx_text:_bx_messenger_lots_menu_create_lot_title />" id="bx-messenger-create-post-button" class="bx-messenger-talks-list-header-menu-item">
+			<svg width="24" height="24" class="" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+				<path fill-rule="evenodd" clip-rule="evenodd" d="M22 12C22 4.4171 19.5829 2 12 2C4.4171 2 2 4.4171 2 12C2 19.5829 4.4171 22 12 22C19.5829 22 22 19.5829 22 12ZM12 18C11.1716 18 10.5 17.3284 10.5 16.5V14C10.5 13.7239 10.2761 13.5 10 13.5H7.5C6.67157 13.5 6 12.8284 6 12C6 11.1716 6.67157 10.5 7.5 10.5H10C10.2761 10.5 10.5 10.2761 10.5 10V7.5C10.5 6.67157 11.1716 6 12 6C12.8284 6 13.5 6.67157 13.5 7.5V10C13.5 10.2761 13.7239 10.5 14 10.5H16.5C17.3284 10.5 18 11.1716 18 12C18 12.8284 17.3284 13.5 16.5 13.5H14C13.7239 13.5 13.5 13.7239 13.5 14V16.5C13.5 17.3284 12.8284 18 12 18Z"></path>
+			</svg>
+		</a>
+	</div>
+	<nav class="bx-messenger-items-list">
+		<ul role="list">
+			<li class="bx-messenger-always-top hidden divide-y-0">
+				<a href="javascript:void(0);" onclick="oNavMenu.showHistoryPanel();" class="group">
+					<div class="bx-messenger-always-top-create-new">
+						<i class="sys-icon comments"></i>
+					</div>
+					<div class="w-full">
+						<div class="flex items-center justify-between">
+							<p class="text-base font-medium text-gray-900 dark:text-gray-100 truncate">
+								<bx_text:_bx_messenger_users_creation_new_message />
+							</p>
+						</div>
+					</div>
+				</a>
+			</li>
+			__items__
+		</ul>
+	</nav>
+</div>

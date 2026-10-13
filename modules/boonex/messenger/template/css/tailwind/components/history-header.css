@@ -1,0 +1,74 @@
+.bx-messenger-history-block-header {
+    @apply p-4 flex gap-3 items-center w-full;
+}
+
+.bx-messenger-history-block-header .bx-db-title{
+    @apply lg:text-xl font-semibold text-gray-800 dark:text-gray-100 align-middle min-w-[1.5rem] truncate;
+}
+
+.bx-messenger-history-block-header .bx-db-menu{
+    @apply justify-end overflow-visible max-w-full flex items-stretch; /*flex justify-end overflow-x-auto*/
+}
+
+.bx-messenger-block .bx-db-title {
+    @apply flex-[1_1_30%];
+}
+
+.bx-media-phone .bx-messenger-block .bx-db-title {
+    @apply flex-[1_1_30%];
+}
+
+.bx-messenger-participants-usernames {
+    @apply truncate;
+}
+
+.bx-messenger-block-menu-align-right i
+{
+    @apply text-[1.25rem] leading-6;
+}
+
+.bx-messenger-block-menu-align-right .bx-menu-item {
+    @apply flex justify-center items-center text-gray-500 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100;
+}
+
+.bx-messenger-block-menu-align-right .bx-menu-item a.star i.star.fill{
+    @apply text-amber-600;
+}
+
+.bx-messenger-block-menu-align-right .bx-menu-item a {
+    @apply bg-gray-100 dark:bg-gray-700/50 border border-transparent
+           hover:border-gray-200/50 active:border-gray-300 dark:hover:border-gray-700/50 dark:active:border-gray-700
+           text-gray-600 dark:text-gray-400 active:bg-gray-300 dark:active:bg-black/50
+           hover:bg-gray-200/50 dark:hover:text-gray-200 dark:hover:bg-gray-700/50
+           hover:text-gray-800 flex items-center p-2 leading-6
+           text-base font-medium rounded-full;
+}
+
+.bx-messenger-block-menu-align-right .bx-menu-item img,
+.bx-messenger-block-menu-align-right .bx-menu-item i {
+    @apply h-6 w-6;
+}
+
+/*.bx-messenger-lot-header-menu {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+}
+
+.bx-messenger-lot-header-menu a {
+    margin-right: 0.4rem;
+}
+
+.bx-messenger-lot-header-menu a:last-child {
+    margin-right: 0;
+}
+
+.bx-messenger-block .bx-db-menu {
+    max-width: 85%;
+    flex: 1 1 60%;
+}
+
+.bx-media-phone .bx-messenger-block .bx-db-title {
+    flex: 1 1 5%;
+}*/

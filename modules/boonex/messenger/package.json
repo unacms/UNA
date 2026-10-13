@@ -1,0 +1,41 @@
+{
+  "name": "messenger",
+  "version": "13.0.0",
+  "homepage": "./",
+  "description": "Messenger module, allow to communicate to members",
+  "scripts": {
+    "install:emoji": "cd ./js/emoji-mart && yarn install",
+    "install:tailwind": "cd ./template/css/tailwind && npm install",
+    "build:emoji": "cd ./js/emoji-mart && yarn build",
+    "build:tailwind": "cd ./template/css/tailwind && npm run build:minify",
+    "clear:emoji": "cd ./js/emoji-mart && npm run clear",
+    "clear:tailwind": "cd ./template/css/tailwind && npm run clear",
+    "clear:main": "rm -rf ./node_modules package-lock.json yarn.lock",
+    "postinstall": "npm run install:tailwind && npm run install:emoji",
+    "build": "npm run build:tailwind && npm run build:emoji && npm run clear:main",
+    "clear": "npm run clear:main && npm run clear:emoji && npm run clear:tailwind"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/unaio/jot-client-una.git"
+  },
+  "keywords": [
+    "UNA",
+    "Messenger",
+    "Tailwind",
+    "Emoji",
+    "Giphi",
+    "Jitsi",
+    "Threads",
+    "Conferances",
+    "Threads"
+  ],
+  "author": "UNA Team",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/unaio/jot-client-una/issues"
+  },
+  "devDependencies": {
+    "parcel-bundler": "^1.12.5"
+  }
+}

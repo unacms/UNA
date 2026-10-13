@@ -1,0 +1,17 @@
+<div class="bx-messenger-jots-message-deleted group" title="__info__">
+	<div class="bx-messenger-deleted-message-info">
+		<span><bx_text:_bx_messenger_was_deleted /></span>
+			<bx_if:allow_to_delete>
+				<span>
+					<a href="javascript:void(0);" onclick="if (confirm('__message__')) oMessenger.onDeleteJot(this, true);" title="<bx_text:_bx_messenger_delete_message />">
+						<i class="sys-icon trash-alt"></i>
+					</a>
+				</span>
+				<span>
+					<a href="javascript:void(0);" onclick="oMessenger.onViewDeletedJot(__id__);" title="<bx_text:_bx_messenger_view_message />">
+						<i class="sys-icon eye"></i>
+					</a>
+				</span>
+			</bx_if:allow_to_delete>
+	</div>
+</div>

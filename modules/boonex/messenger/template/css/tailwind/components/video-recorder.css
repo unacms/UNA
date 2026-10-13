@@ -1,0 +1,105 @@
+.bx-messenger-upload-area {
+    @apply min-h-12 flex flex-col items-center justify-center gap-1;
+}
+
+.bx-messenger-upload-area .bx-messenger-video-buttons
+{
+    @apply w-full flex justify-center;
+}
+
+#bx-messenger-files-uploader .bx-popup-close-wrapper {
+    @apply hidden;
+}
+
+.bx-messenger-video
+{
+    @apply relative text-center;
+}
+
+.bx-messenger-video video
+{
+    @apply w-full h-[calc(100%-4rem)] max-w-full top-0 left-0 -z-1;
+    @apply sm:min-w-[320px] sm:min-h-[240px] sm:w-[480px] sm:h-[360px] bg-white dark:bg-gray-900;
+}
+
+div.bx-messenger-video-block
+{
+    @apply m-4;
+}
+
+.bx-messenger-video-buttons button.bx-btn
+{
+    @apply align-middle min-w-[2.2rem];
+}
+
+.bx-messenger-video-buttons svg
+{
+    @apply absolute top-[50%] left-[50%] fill-white;
+    transform: translate(-50%, -50%);
+}
+
+.bx-messenger-video-buttons button.empty svg
+{
+    @apply fill-none;
+}
+
+.bx-messenger-video-buttons div.bx-btn.active svg
+{
+    @apply fill-orange-600;
+}
+
+.bx-messenger-video-recording
+{
+    @apply absolute right-2 top-2 uppercase text-base font-bold align-middle hidden text-white flex items-center;
+}
+
+.bx-messenger-video-recording span
+{
+    @apply uppercase text-xs font-bold align-middle mr-2;
+}
+
+.bx-messenger-video-recording .icon
+{
+    @apply text-orange-600;
+}
+
+.bx-messenger-upload-description-area
+{
+    @apply mx-4 w-full outline-none;
+}
+
+@-moz-keyframes blinker {
+    50% { opacity: 0; }
+}
+@-webkit-keyframes blinker {
+    50% { opacity: 0; }
+}
+@keyframes blinker {
+    50% { opacity: 0; }
+}
+
+.blink {
+    -moz-animation: blinker 2s linear infinite;
+    -webkit-animation: blinker 2s linear infinite;
+    animation: blinker 2s linear infinite;
+}
+
+#bx-messenger-uploaded-files-area
+{
+   @apply w-full;
+}
+
+.bx-messenger-upload-area div[contenteditable="true"],
+.bx-messenger-files-upload-area div[contenteditable="true"]{
+    @apply min-h-12 p-4;
+}
+
+.bx-messenger-upload-description-area .bx-messenger-comment {
+    @apply whitespace-pre-line outline-none;
+}
+
+.bx-messenger-comment:empty:before {
+    @apply text-gray-400;
+    content: attr(placeholder);
+}
+

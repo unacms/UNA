@@ -1,0 +1,19 @@
+<ul class="bx-messenger-nav-menu-submenu bx-menu-item-subitems bx-menu-pf-subitems bx-menu-ver space-y-2">
+    <bx_repeat:menu_items>
+        <li class="bx-menu-subitem bx-menu-subitem-__name__ __class_add__" data-group-id="__group-id__">
+            <a class="flex items-center truncate" href="__link__" onclick="__onclick__" __attrs__>
+                <div class="bx-menu-item-cnt bx-stl-mil w-full relative">
+                    <span class="bx-menu-item-icon bx-stl-mii bx-messenger-nav-menu-icon">
+                        <bx_include_auto:menu_icon.html />
+                    </span>
+                    <span class="bx-menu-item-title bx-stl-mit" sidebar-toggle-item>__title__</span>
+                    <bx_if:addon>
+                        <div class="bx-menu-addon bx-stl-mia __hidden__">
+                            <div class="bx-menu-addon-cnt">__addon__</div>
+                        </div>
+                    </bx_if:addon>
+                </div>
+            </a>
+        </li>
+    </bx_repeat:menu_items>
+</ul>

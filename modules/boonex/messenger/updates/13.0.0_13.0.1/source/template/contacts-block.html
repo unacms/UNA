@@ -1,0 +1,26 @@
+<ul class="list-none pl-0">
+   <bx_repeat:contacts>
+       <li class="hover:bg-white dark:hover:bg-gray-700/20">
+            <a href="__url__" class="block w-full">
+                <div class="min-w-0 flex w-full gap-3 sm:items-top justify-start justify-start align-top p-4 items-center">
+                    <div class="h-min text-center relative flex text-center">
+                        <div class="ring-2 ring-white dark:ring-gray-900 bg-gray-500/20 rounded-full overflow-hidden bx-def-thumb-size">
+                            <bx_if:avatars>
+                                <div>
+                                    <img title="__title__" src="__thumb__" class="bx-def-thumb-size max-w-fit" />
+                                </div>
+                            </bx_if:avatars>
+                            <bx_if:letters>
+                                <div>
+                                    <p class="bx-def-thumb-size bx-base-pofile-unit-thumb bx-def-ava bx-def-box-sizing" style="background-color:rgba(__color__)">__letter__</p>
+                                </div>
+                            </bx_if:letters>
+                        </div>
+                        __status__
+                    </div>
+                    __displyname__
+                </div>
+            </a>
+        </li>
+    </bx_repeat:contacts>
+</ul>

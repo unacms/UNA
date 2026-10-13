@@ -1,0 +1,22 @@
+<div class="bx-messenger-conversation-block-history">
+	<div class="bx-messenger-conversation-block-wrapper">
+				<div class="bx-messenger-conversation-block">
+					__content__
+				</div>
+		__info__
+	</div>
+	<bx_if:search>
+		<div class="bx-messenger-area-scroll-item bx-messenger-area-scroll-search bx-def-border bx-def-color-bg-box-active" onclick="oMessenger.onNextSearch();">
+			<span class="bx-messenger-history-arrow">
+				<span id="search-items" class="bx-menu-item-addon bx-def-unit-alert bg-col-red2"></span>
+				<i class="sys-icon search"></i>
+			</span>
+		</div>
+	</bx_if:search>
+	<div class="bx-messenger-area-scroll bx-def-border bx-def-color-bg-box-active " onclick="oMessenger.onScrollDown();">
+		<span class="bx-messenger-history-arrow text-gray-500 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100 rounded-full bg-gray-200 dark:bg-gray-700">
+			<span id="unread-jots-counter" class="bx-menu-item-addon bx-def-unit-alert bg-col-red2" style="display:__new_msg_active__">__unread_count__</span>
+			<i class="sys-icon chevron-down"></i>
+		</span>
+	</div>
+</div>

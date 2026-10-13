@@ -1,0 +1,12 @@
+.bx-messenger-jot-emoji.edit,
+.bx-messenger-jot-emoji {
+    @apply ring-1 ring-gray-200 dark:ring-gray-700 bg-white dark:bg-gray-800 rounded-md shadow z-10 right-4 md:right-0;
+}
+
+.bx-messenger-jot-emoji.edit {
+    @apply md:left-0;
+}
+
+.bx-messenger-jot-emoji.edit {
+    @apply left-4;
+}

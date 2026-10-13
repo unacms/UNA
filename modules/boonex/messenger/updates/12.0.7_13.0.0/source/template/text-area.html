@@ -1,0 +1,60 @@
+<div class="bx-messenger-post-box text-area">
+    <div class="flex items-center">
+      <bx_if:topics>
+        <input type="text" name="title" id="bx-messenger-talk-title" class="bx-messenger-talk-title bx-def-font-inputs bx-form-input-text" placeholder="<bx_text:_bx_messenger_text_area_topic_title />">
+      </bx_if:topics>
+      <div class="bx-messenger-reply-area pt-2 px-2">
+          <span class="bx-messenger-reply-area-message bx-def-font-small bx-def-border-left" onclick="oMessenger.jumpToParentMessage();"></span>
+          <a href="javascript:void(0);" onclick="oMessenger.onCleanReplayArea();" class="bx-def-font-medium">
+              <i class="sys-icon times"></i>
+          </a>
+      </div>
+      <div class="bx-messenger-attachment-group pt-2 px-2">
+          <div class="bx-messenger-send-area-attachments"></div>
+      </div>
+      __giphy__
+      <bx_if:text>
+          <div id="bx-messenger-message-box" placeholder="<bx_text:_bx_messenger_post_area_message />" class="bx-messenger-message-box-input-area"></div>
+      </bx_if:text>
+      <div class="bx-messenger-post-box-send-actions">
+        <div class="bx-messenger-post-box-send-actions-items">
+            <bx_if:smiles>
+                <button type="button" title="<bx_text:_bx_messenger_post_emoji />" class="smiles group" aria-haspopup="listbox" aria-expanded="true" aria-labelledby="listbox-label">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 100-2 1 1 0 000 2zm7-1a1 1 0 11-2 0 1 1 0 012 0zm-.464 5.535a1 1 0 10-1.415-1.414 3 3 0 01-4.242 0 1 1 0 00-1.415 1.414 5 5 0 007.072 0z" clip-rule="evenodd"></path>
+                  </svg>
+                </button>
+            </bx_if:smiles>
+            <bx_if:recording>
+                <button title="<bx_text:_bx_messenger_send_recorded_video />" type="button" onclick="oMessenger.getVideoRecording();" class="group" aria-haspopup="listbox" aria-expanded="true" aria-labelledby="listbox-label">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                      <path clip-rule="evenodd" stroke-linecap="round" d="M15.75 10.5l4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25h-9A2.25 2.25 0 002.25 7.5v9a2.25 2.25 0 002.25 2.25z" />
+                    </svg>
+                </button>
+            </bx_if:recording>
+            <bx_if:files>
+                 <button type="button" title="<bx_text:_bx_messenger_post_attache_files />" class="group attachefile" aria-haspopup="listbox" aria-expanded="true" aria-labelledby="listbox-label">
+                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                       <path fill-rule="evenodd" d="M8 4a3 3 0 00-3 3v4a5 5 0 0010 0V7a1 1 0 112 0v4a7 7 0 11-14 0V7a5 5 0 0110 0v4a3 3 0 11-6 0V7a1 1 0 012 0v4a1 1 0 102 0V7a3 3 0 00-3-3z" clip-rule="evenodd"></path>
+                   </svg>
+                 </button>
+            </bx_if:files>
+            <bx_if:giphy>
+              <button title="<bx_text:_bx_messenger_giphy_gifs_button />" type="button" id="bx-messenger-send-area-giphy" class="group" aria-haspopup="listbox" aria-expanded="true" aria-labelledby="listbox-label">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                      <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd" />
+                  </svg>
+              </button>
+            </bx_if:giphy>
+        </div>
+        <div class="bx-messenger-post-box-send-button">
+            <button id="send-button" title="<bx_text:_bx_messenger_post_button_title />">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 11l3-3m0 0l3 3m-3-3v8m0-13a9 9 0 110 18 9 9 0 010-18z"></path>
+                </svg>
+                <span class="ml-2 hidden md:block"><bx_text:_bx_messenger_post_button_title /></span>
+            </button>
+        </div>
+      </div>
+    </div>
+</div>

@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="ru" flag="ru" title="Russian">
+	<string_add name="_bx_messenger_quill_toolbar_settings"><![CDATA[Инструменты редактора Quill (JSON массив)]]></string_add>
+</resources>

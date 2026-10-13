@@ -1,0 +1,21 @@
+<button type="button" data-id="__id__" onclick="oMessenger.removeProfileItem(this);" class="bx-messenger-participants-list-item group">
+      <span class="bx-messenger-participants-info">
+           <span class="bx-messenger-participants-info-avatar avatar">
+             <bx_if:avatars>
+                  <img title="__title__" src="__thumb__" class="bx-def-thumb-size rounded-full" />
+             </bx_if:avatars>
+             <bx_if:letters>
+                    <p class="bx-def-thumb-size bx-base-pofile-unit-thumb" style="background-color:rgba(__color__)">__letter__</p>
+             </bx_if:letters>
+           </span>
+           <span class="bx-messenger-participants-info-meta">
+              <span title="__name__" class="bx-messenger-participants-info-meta-name username">__name__</span>
+           </span>
+      </span>
+    <span class="bx-messenger-participants-info-plus bx-messenger-jot-hover-menu group" onclick="$(this).closest('button').remove();">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+    </span>
+</button>
+<input type="hidden" name="users[]" value="__id__" />

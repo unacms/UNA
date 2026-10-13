@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="ru" flag="ru" title="Russian">
+	<string_add name="_bx_messenger_broadcast_fields"><![CDATA[Поля для фильтрации при создании массовых сообщений]]></string_add>
+	<string_add name="_bx_messenger_broadcast_field_membership"><![CDATA[Уровень участника]]></string_add>
+	<string_add name="_bx_messenger_broadcast_profile_fields_title"><![CDATA[Пожалуйста выбирите поля для фильтрации]]></string_add>
+	<string_add name="_bx_messenger_broadcast_field_calculate"><![CDATA[Расчитать]]></string_add>
+	<string_add name="_bx_messenger_broadcast_total_profiles"><![CDATA[Всего сообщение получат {0} провилей]]></string_add>
+	<string_add name="_bx_messenger_lots_menu_info"><![CDATA[Информация]]></string_add>
+	<string_add name="_bx_messenger_create_convo_menu_standard_system"><![CDATA[Группа]]></string_add>
+	<string_add name="_bx_messenger_create_convo_menu_friends_system"><![CDATA[Друзья]]></string_add>
+	<string_add name="_bx_messenger_create_convo_menu_broadcast_system"><![CDATA[Массовая рассылка]]></string_add>
+	<string_add name="_bx_messenger_create_convo_menu_standard"><![CDATA[Группа]]></string_add>
+	<string_add name="_bx_messenger_create_convo_menu_friends"><![CDATA[Друзья]]></string_add>
+	<string_add name="_bx_messenger_create_convo_menu_broadcast"><![CDATA[Массовая рассылка]]></string_add>
+	<string_add name="_bx_messenger_create_convo_menu_title"><![CDATA[Создать разговоры]]></string_add>
+	<string_add name="_bx_messenger_create_convo_menu_set_title"><![CDATA[Создать разговоры]]></string_add>
+	<string_add name="_bx_messenger_create_convo_template_title"><![CDATA[Шаблона для меню создания разговоров]]></string_add>
+	<string_add name="_bx_messenger_filter_criteria_membership"><![CDATA[Уровень членства]]></string_add>
+	<string_add name="_bx_messenger_broadcast_field_email"><![CDATA[Почта]]></string_add>
+	<string_add name="_bx_messenger_broadcast_field_push"><![CDATA[Пуш уведомление]]></string_add>
+	<string_add name="_bx_messenger_broadcast_field_site"><![CDATA[Сайт]]></string_add>
+	<string_add name="_bx_messenger_broadcast_field_notify"><![CDATA[Уведомлять участника]]></string_add>
+	<string_add name="_bx_messenger_broadcast_field_notify_info"><![CDATA[Участники будет уведомлены, используя выбранные методы]]></string_add>
+	<string_add name="_bx_messenger_broadcast_field_author"><![CDATA[Автор рассылки]]></string_add>
+	<string_add name="_bx_messenger_broadcast_field_author_info"><![CDATA[Если не указать автора, то будет текущий залогиненный пользователь]]></string_add>
+	<string_add name="_bx_messenger_broadcast_message_title"><![CDATA[Заголовок сообщения]]></string_add>
+	<string_add name="_bx_messenger_broadcast_message_body"><![CDATA[Тело сообщения]]></string_add>
+	<string_add name="_bx_messenger_txt_subobject_added_broadcast"><![CDATA[<b class="bx-ntfs-content-profile">{owner_name}</b> создал рассылку {subentry_sample}]]></string_add>
+	<string_add name="_bx_messenger_notification_subject_broadcast"><![CDATA[Рассылка от {0}]]></string_add>
+	<string_add name="_bx_messenger_filter_criteria_additional_message"><![CDATA[Дополнительные профайл вовлеченные в массовую рассылку]]></string_add>
+	<string_add name="_bx_messenger_filter_criteria_friends_message"><![CDATA[У вас {0} друзей для участия в рассылки]]></string_add>
+	<string_add name="_bx_messenger_filter_criteria_followers_message"><![CDATA[У вас {0} подписчиков для участия в рассылки]]></string_add>
+	<string_add name="_bx_messenger_filter_criteria_on_friends"><![CDATA[У вас нет друзей для участия в рассылке]]></string_add>
+	<string_add name="_bx_messenger_filter_criteria_on_followers"><![CDATA[У вас нет подписчиков для участия в рассылке]]></string_add>
+	<string_add name="_bx_messenger_acl_action_create_broadcast"><![CDATA[Создать рассылку]]></string_add>
+	<string_add name="_bx_messenger_convo_info_participants"><![CDATA[Участники]]></string_add>
+	<string_add name="_bx_messenger_convo_info_messages"><![CDATA[Сообщения]]></string_add>
+	<string_add name="_bx_messenger_convo_info_files"><![CDATA[Файлы]]></string_add>
+	<string_add name="_bx_messenger_filter_criteria_form"><![CDATA[Форма с критериями для массовых рассылок]]></string_add>
+	<string_add name="_bx_messenger_filter_criteria_form_display"><![CDATA[Форма с критериями для массовых рассылок]]></string_add>
+	<string_add name="_bx_messenger_no_criteria_available"><![CDATA[Критерии для фильтрации не найдены!]]></string_add>
+	<string_add name="_bx_messenger_create_talk_confirm"><![CDATA[Вы уверены, что хотите создать разговор?]]></string_add>
+	<string_add name="_bx_messenger_neo_app_form_input_caption_reply"><![CDATA[Номер родительского сообщения]]></string_add>
+</resources>

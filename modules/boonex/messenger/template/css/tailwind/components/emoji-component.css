@@ -1,0 +1,18 @@
+.bx-messenger-emoji-picker-search input {
+   @apply bg-gray-50 dark:bg-gray-900/50 focus:bg-white dark:focus:bg-gray-900;
+   @apply border border-gray-300 dark:border-gray-700 focus:border-blue-500 dark:focus:border-blue-500 border-solid;
+   @apply focus:border-opacity-70 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-20 focus:outline-none;
+   @apply leading-6 text-base text-gray-700 dark:text-gray-300 focus:text-gray-900 dark:focus:text-gray-100;
+   @apply placeholder:text-gray-500 dark:focus:placeholder:text-gray-700 focus:placeholder:text-gray-300;
+   @apply rounded-md w-full;
+   @apply py-1 pl-[2.2rem];
+}
+
+.bx-messenger-emoji-picker-scroll .sticky {
+   @apply bg-white dark:bg-gray-800 opacity-70;
+}
+
+.bx-messenger-emoji-picker-search,
+.bx-messenger-emoji-picker-scroll {
+    @apply px-2;
+}

@@ -1,0 +1,34 @@
+.bx-messenger-date-time {
+    @apply relative text-center border-none mt-2 mb-2 text-xs;
+}
+
+.bx-messenger-date-time-value {
+    position: relative;
+    top: -0.75rem;
+    height: 0;
+}
+
+.bx-messenger-date-time-value > span{
+    margin-right: auto;
+    margin-left: auto;
+    height: 2rem;
+    padding: 0.3rem 0.5rem;
+    line-height: 1rem;
+    border-radius:0.7rem;
+}
+
+.bx-messenger-date-time-navigator {
+    width: 100%;
+    position: absolute;
+    top: 0.2rem;
+    margin: 0;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    display: none;
+}
+
+.bx-messenger-date-time-navigator .bx-messenger-date-time-value {
+    top:0;
+}

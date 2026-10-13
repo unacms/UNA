@@ -1,0 +1,25 @@
+.bx-messenger-block-messenger {
+    @apply divide-y-0 overflow-hidden auto-rows-min;
+}
+
+.bx-messenger-block-messenger .bx-messenger-conversation-block-history,
+.bx-messenger-block-messenger .bx-messenger-post-box
+{
+    @apply min-w-[20rem];
+}
+
+.bx-messenger-block-groups-panel {
+    @apply relative overflow-x-hidden;
+}
+
+.bx-messenger-block-history-panel {
+    @apply overflow-hidden;
+}
+
+/*.bx-messenger-block-messenger.bx-messenger-columns {
+    @apply divide-x-0;
+}*/
+
+.bx-messenger-block-messenger .bx-messenger-info-section-block {
+    @apply border-l;
+}
