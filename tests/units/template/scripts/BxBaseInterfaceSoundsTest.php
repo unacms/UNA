@@ -41,7 +41,7 @@ class BxBaseInterfaceSoundsTest extends BxDolTestCase
         $this->assertSame($sOption, $this->callProtected($oFunctions, 'getSoundsOption'));
 
         $sOn = $this->withOption($sOption, 'on', fn() => $this->callProtected($oFunctions, 'getInjHeadSounds'));
-        $this->assertStringContainsString("bx_sound_init('" . BX_DOL_URL_PLUGINS_PUBLIC . "cuelume/index.js')", $sOn);
+        $this->assertStringContainsString("bx_sound_init('" . BX_DOL_URL_PLUGINS_PUBLIC . "cuelume/cuelume.min.js')", $sOn);
 
         $sOff = $this->withOption($sOption, '', fn() => $this->callProtected($oFunctions, 'getInjHeadSounds'));
         $this->assertSame('', $sOff);

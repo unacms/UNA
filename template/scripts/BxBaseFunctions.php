@@ -929,7 +929,7 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
             return '';
 
         return $this->_oTemplate->parseHtmlByName('sounds_init.html', [
-            'url' => bx_js_string(BX_DOL_URL_PLUGINS_PUBLIC . 'cuelume/index.js', BX_ESCAPE_STR_APOS)
+            'url' => bx_js_string(BX_DOL_URL_PLUGINS_PUBLIC . 'cuelume/cuelume.min.js', BX_ESCAPE_STR_APOS)
         ]);
     }
 
