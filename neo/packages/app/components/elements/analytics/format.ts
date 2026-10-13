@@ -68,7 +68,8 @@ export function formatAxis(metric: string, value: number, strings: DurationStrin
 export function formatChange(change: number | null | undefined): string {
     if (change === null || change === undefined) return '';
     const small = Math.abs(change) < 10;
-    const text = small ? change.toFixed(1) : groupThousands(Math.abs(Math.round(change)));
+    // halves away from zero, as PHP's round() in the classic UI: -15.5% is -16%, not -15%
+    const text = small ? change.toFixed(1) : groupThousands(Math.round(Math.abs(change)));
     const sign = change > 0 ? '+' : (!small && change < 0 ? '-' : '');
     return sign + text + '%';
 }
