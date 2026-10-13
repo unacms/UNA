@@ -268,7 +268,7 @@ function PageContentWiki({ data, scrollRef, url }) {
         }
 
         return (
-            <View className="w-full py-2 px-3 sm:px-4 ">
+            <View className="w-full py-2 px-4">
                 <View className="flex-row flex-auto items-center flex-wrap gap-2">
                     <View className={`flex-row items-center gap-1.5 min-w-0 ${showBothMobilePanels ? 'flex-auto' : 'flex-1'}`}>
                         <View className="shrink-0">
