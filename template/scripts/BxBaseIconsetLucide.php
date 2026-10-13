@@ -77,6 +77,7 @@ class BxBaseIconsetLucide extends BxBaseIconset
             'fire' => 'flame',
             'group' => 'users',
             'google' => 'log-in', //TODO: Brand icon. Update later.
+            'hand-holding' => 'hand-helping',
             'hand-holding-usd' => 'hand-coins',
             'hashtag' => 'hash',
             'helpcircle' => 'circle-question-mark',
@@ -91,7 +92,9 @@ class BxBaseIconsetLucide extends BxBaseIconset
             'map-marker' => 'map-pin',
             'map-marker-alt' => 'map-pin',
             'money-check-alt' => 'wallet-cards',
+            'money-bill-alt' => 'banknote',
             'object-group' => 'layout-dashboard',
+            'paint-brush' => 'paintbrush',
             'pencil-alt' => 'pencil-line',
             'pencil-ruler' => 'ruler',
             'photo-video' => 'image-play',
@@ -127,6 +130,7 @@ class BxBaseIconsetLucide extends BxBaseIconset
             'user-secret' => 'user-key',
             'user-slash' => 'user-x',
             'user-shield' => 'user-shield', // Lucide has it now; keep the entry so the name is not remapped by a later rule
+            'user-tag' => 'user-star',
             'user-check' => 'user-round-check',
             'user-times' => 'user-x',
             'users' => 'users-round',
