@@ -245,21 +245,81 @@ html.dark .bx-analytics-std {
     margin-top: 1rem;
 }
 
-/* tabbed top lists */
+/*
+ * Tabbed top lists. On a touch screen the tabs stay in one row, and a row wider than its card scrolls sideways, like the site's main
+ * menu bar, with the scrollbar hidden; where scroll-driven animations work, the clipped end fades out to show there is more. The
+ * fade stops at the ends, and the script scrolls the selected or focused tab clear of it (scroll-padding sets by how much). With a
+ * mouse, which can't swipe a row, the tabs wrap onto a second line instead.
+ */
+@property --bx-analytics-tabs-fade-start {
+    syntax: "<length>";
+    inherits: false;
+    initial-value: 0px;
+}
+@property --bx-analytics-tabs-fade-end {
+    syntax: "<length>";
+    inherits: false;
+    initial-value: 0px;
+}
 .bx-analytics-tabs {
     display: flex;
-    flex-wrap: wrap;
-    gap: 0 0.25rem;
+    flex-wrap: nowrap;
+    min-width: 0;
     margin-bottom: 0.75rem;
+    overflow-x: auto;
+    overflow-y: hidden;
+    overscroll-behavior-x: contain;
+    scroll-padding-inline: 2rem;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
     box-shadow: inset 0 -1px 0 var(--bx-analytics-border);
+}
+.bx-analytics-tabs::-webkit-scrollbar {
+    display: none;
+}
+@supports (animation-timeline: scroll()) {
+    .bx-analytics-tabs {
+        -webkit-mask-image: linear-gradient(to right, transparent, #000 var(--bx-analytics-tabs-fade-start), #000 calc(100% - var(--bx-analytics-tabs-fade-end)), transparent);
+        mask-image: linear-gradient(to right, transparent, #000 var(--bx-analytics-tabs-fade-start), #000 calc(100% - var(--bx-analytics-tabs-fade-end)), transparent);
+        animation: bx-analytics-tabs-fade linear both;
+        animation-timeline: scroll(self inline);
+    }
+}
+@keyframes bx-analytics-tabs-fade {
+    from {
+        --bx-analytics-tabs-fade-start: 0px;
+        --bx-analytics-tabs-fade-end: 2rem;
+    }
+    10%, 90% {
+        --bx-analytics-tabs-fade-start: 2rem;
+        --bx-analytics-tabs-fade-end: 2rem;
+    }
+    to {
+        --bx-analytics-tabs-fade-start: 2rem;
+        --bx-analytics-tabs-fade-end: 0px;
+    }
+}
+@media (hover: hover) and (pointer: fine) {
+    .bx-analytics-tabs {
+        flex-wrap: wrap;
+        column-gap: 0.25rem;
+        overflow: visible;
+        -webkit-mask-image: none;
+        mask-image: none;
+        animation: none;
+    }
 }
 .bx-analytics .bx-analytics-tab {
     flex: none;
     min-height: 2.75rem;
-    padding: 0 0.625rem;
+    padding: 0 0.5rem;
     font-size: 0.9375rem;
     color: var(--bx-analytics-muted);
     white-space: nowrap;
+}
+.bx-analytics .bx-analytics-tabs .bx-analytics-tab:focus-visible {
+    /* inside the tab, so the scrolling row does not clip it; outranks the site's body:not(.bx-std) [tabindex="0"]:focus-visible */
+    outline-offset: -2px;
 }
 .bx-analytics .bx-analytics-tab:hover {
     color: inherit;

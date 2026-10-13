@@ -1306,14 +1306,31 @@ class BxAnalyticsDb extends BxBaseModGeneralDb
     }
 
     /**
-     * Bot rows are per UTC day: the period's days, its platform (the pages table has none)
-     * and the categories.
+     * Bot rows are per UTC day (the collector's gmdate), so a period in another timezone
+     * reads every UTC day it touches: from the UTC day of its first second to the UTC day
+     * of its last one. East of UTC that starts a day before the local first day, west of
+     * UTC it ends a day after the local last one. Reports chart these same days.
+     */
+    public function getBotDays($aFilter)
+    {
+        $iFrom = (int)$aFilter['from'];
+
+        return [
+            'from' => gmdate('Y-m-d', $iFrom),
+            'to' => gmdate('Y-m-d', max($iFrom, (int)$aFilter['to'] - 1)),
+        ];
+    }
+
+    /**
+     * Bot rows are per UTC day: the period's UTC days (getBotDays), its platform (the pages
+     * table has none) and the categories.
      */
     protected function _getBotsWhere($aFilter, $aCategories, &$aBindings, $bPlatform = true)
     {
+        $aDays = $this->getBotDays($aFilter);
         $aSql = ['`day` >= :day_from', '`day` <= :day_to'];
-        $aBindings['day_from'] = gmdate('Y-m-d', (int)$aFilter['from']);
-        $aBindings['day_to'] = gmdate('Y-m-d', max((int)$aFilter['from'], (int)$aFilter['to'] - 1));
+        $aBindings['day_from'] = $aDays['from'];
+        $aBindings['day_to'] = $aDays['to'];
 
         if($bPlatform && $aFilter['platform'] !== '') {
             $aSql[] = '`platform` = :platform';

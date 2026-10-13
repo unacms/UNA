@@ -412,7 +412,7 @@
 	<string name="_bx_analytics_txt_location"><![CDATA[Местоположение]]></string>
 	<string name="_bx_analytics_txt_map_label"><![CDATA[Карта посетителей по местоположению]]></string>
 	<string name="_bx_analytics_txt_map_unknown"><![CDATA[{0} посетителей из неизвестных мест на карте не показаны.]]></string>
-	<string name="_bx_analytics_txt_match_hint"><![CDATA[Путь страницы начинается с / и может содержать * вместо любых символов, например /blogs/*. Действие задаётся названием события, например signup, или название@модуль для одного модуля, например added@bx_posts.]]></string>
+	<string name="_bx_analytics_txt_match_hint"><![CDATA[Путь страницы начинается с / или *, а * заменяет любые символы: *view-post* подходит для страницы записи на сайте и в приложениях. Действие задаётся названием события, например signup, или название@модуль для одного модуля, например content_add@bx_posts.]]></string>
 	<string name="_bx_analytics_txt_member"><![CDATA[участник]]></string>
 	<string name="_bx_analytics_txt_member_name"><![CDATA[Участник]]></string>
 	<string name="_bx_analytics_txt_metric"><![CDATA[Показатель]]></string>
@@ -681,7 +681,7 @@
 	<string name="_bx_analytics_txt_filter_by"><![CDATA[Показать только {0}]]></string>
 	<string name="_bx_analytics_txt_first_seen"><![CDATA[Впервые]]></string>
 	<string name="_bx_analytics_txt_funnel_delete_confirm"><![CDATA[Удалить воронку «{0}»?]]></string>
-	<string name="_bx_analytics_txt_funnel_hint"><![CDATA[Заполните от 2 до 6 шагов в том порядке, в котором их проходят посетители. Визит засчитывается для шага, если дошёл до него после предыдущего. Каждый шаг: путь страницы (/blogs/*) или действие (signup, added@bx_posts).]]></string>
+	<string name="_bx_analytics_txt_funnel_hint"><![CDATA[Заполните от 2 до 6 шагов в том порядке, в котором их проходят посетители. Визит засчитывается для шага, если дошёл до него после предыдущего. Каждый шаг: путь страницы (*view-post* для страницы записи на любой платформе) или действие (signup, content_add@bx_posts).]]></string>
 	<string name="_bx_analytics_txt_funnel_invalid"><![CDATA[Введите название и от 2 до 6 шагов. Пути страниц начинаются с / (или *); названия действий состоят из букв, цифр и символов _ . : / -]]></string>
 	<string name="_bx_analytics_txt_goal_badge_event"><![CDATA[Действие]]></string>
 	<string name="_bx_analytics_txt_goal_badge_page"><![CDATA[Страница]]></string>
