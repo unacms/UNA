@@ -15,6 +15,23 @@ class BxAiProxyDb extends BxDolModuleDb
     {
         parent::__construct($oConfig);
     }
+
+    /**
+     * Active knowledge stores the master can search. A una-proxy store would call this site again.
+     *
+     * @return array<int, string>
+     */
+    public function getActiveKnowledgeStores(): array
+    {
+        $aStores = $this->getPairs(
+            "SELECT `id`, `title` FROM `sys_agents_vector_store` WHERE `active` = 1 AND `type` <> :type ORDER BY `title` ASC",
+            'id',
+            'title',
+            ['type' => 'una-proxy']
+        );
+
+        return is_array($aStores) ? $aStores : [];
+    }
 }
 
 /** @} */

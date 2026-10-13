@@ -120,6 +120,9 @@ class BxDolAIVectorStoreFactory extends BxDolFactory
                     dimension: $aParameters['dimension'] ?? 1024
                 );
                 break;
+            case 'una-proxy':
+                bx_log('sys_agents', 'Remote knowledge is stored on the master', BX_LOG_ERR);
+                throw new Exception('Remote knowledge is stored on the master');
             default:
                 bx_log('sys_agents', "Vector store type {$a['type']} is not supported", BX_LOG_ERR);
                 throw new Exception("Vector store type {$a['type']} is not supported");

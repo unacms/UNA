@@ -68,17 +68,21 @@ class BxDolAi extends BxDolFactory implements iBxDolSingleton
             throw new Exception($s);
         }
 
+        $aVectorStore = false;
+        if ($a['vector_store_id']) {
+            $aVectorStore = BxDolAiQuery::getVectorStoreObject($a['vector_store_id']);
+            if (is_array($aVectorStore) && (string)($aVectorStore['type'] ?? '') === 'una-proxy')
+                $a['vector_store_type'] = 'una-proxy';
+        }
+
         $o = BxDolAiAgent::make($a, $aParams);
 
         if ((int)$a['tools_max_run'] > 0)
             $o->toolMaxRuns($a['tools_max_run']);
 
-        if ($a['vector_store_id']) {
-            $aVectorStore = BxDolAiQuery::getVectorStoreObject($a['vector_store_id']);
-            if ($aVectorStore && $aVectorStore['embedding_provider_id']) {
-                $oEmbedder = self::getAiEmbeddingsProviderInstance($aVectorStore['embedding_provider_id']);
-                $o->setEmbeddingsProvider($oEmbedder);
-            }
+        if (is_array($aVectorStore) && ($a['vector_store_type'] ?? '') !== 'una-proxy' && !empty($aVectorStore['embedding_provider_id'])) {
+            $oEmbedder = self::getAiEmbeddingsProviderInstance($aVectorStore['embedding_provider_id']);
+            $o->setEmbeddingsProvider($oEmbedder);
         }
 
         $GLOBALS['bxDolClasses'][__CLASS__ . '_Agent_' . $iId] = $o;

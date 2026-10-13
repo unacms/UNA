@@ -1,7 +1,8 @@
 <?php
 
 /**
- * The operator agent has no knowledge store, so chat must not read NeuronAI's embeddings provider.
+ * An agent with no knowledge store must not read NeuronAI's embeddings provider.
+ * A una-proxy store searches the master and does not need a local embedding model.
  */
 class BxDolAiAgentRetrievalTest extends \PHPUnit\Framework\TestCase
 {
@@ -12,6 +13,17 @@ class BxDolAiAgentRetrievalTest extends \PHPUnit\Framework\TestCase
 
         $this->assertInstanceOf(BxDolAiRetrievalNone::class, $oRetrieval);
         $this->assertSame([], $oRetrieval->retrieve(new NeuronAI\Chat\Messages\UserMessage('hello')));
+    }
+
+    public function testUnaProxyStoreSkipsEmbeddings()
+    {
+        $o = new BxDolAiAgent([
+            'id' => 1,
+            'vector_store_id' => 9,
+            'vector_store_type' => 'una-proxy',
+        ]);
+
+        $this->assertInstanceOf(BxDolAiRetrievalUnaProxy::class, $o->resolveRetrieval());
     }
 
     public function testStoreWithoutEmbeddingModelIsRejected()

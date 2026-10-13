@@ -113,12 +113,12 @@ class BxBaseStudioAgentsVectorStore extends BxDolStudioAgentsInstruments
     {
         $sJsObject = $this->getPageJsObject();
     
-        if (empty($aVectorStore['params_user'])) {
-            $aVectorStore['params_user'] = $aVectorStore['params'];
-        }
+        if (empty($aVectorStore['params_user']))
+            $aVectorStore['params_user'] = $aVectorStore['params'] ?? '';
 
-        $data = json_decode($aVectorStore['params_user'], true);
-        $aVectorStore['params_user'] = json_encode($data, JSON_PRETTY_PRINT);
+        $sParams = is_string($aVectorStore['params_user']) ? $aVectorStore['params_user'] : '';
+        $data = $sParams !== '' ? json_decode($sParams, true) : null;
+        $aVectorStore['params_user'] = is_array($data) ? json_encode($data, JSON_PRETTY_PRINT) : $sParams;
 
         $oParsedown = new Parsedown();
         $oParsedown->setSafeMode(false);
