@@ -758,6 +758,46 @@ class AnalyticsCollectorTest extends BxDolIntegrationTestCase
         $this->assertNull($oCollector->sLock);
     }
 
+    public function testFirstHitWithoutTheLockStillFindsTheVisit()
+    {
+        $aServer = $this->_server('93.184.216.22');
+        $aEvent = ['platform' => 'core-web', 'hits' => [['type' => 'event', 'url' => 'http://una.test/', 'name' => 'cta_click']]];
+
+        // the lock times out because another request holds it while it starts the visit
+        $oDb = new class($this->_oModule->_oConfig) extends BxAnalyticsDb {
+            public function lockVisit($sName, $iTimeout)
+            {
+                return false;
+            }
+        };
+        $oCollector = new class($this->_oModule, new BxAnalyticsRequest($aServer), self::NOW) extends BxAnalyticsCollector {
+            public $fConcurrent;
+            public function setDb($oDb)
+            {
+                $this->_oDb = $oDb;
+            }
+            protected function _findSession($aVisitor, $sPlatform, $iSince, $iUntil = 0, $iAt = 0)
+            {
+                if($this->fConcurrent) {
+                    $fConcurrent = $this->fConcurrent;
+                    $this->fConcurrent = null;
+                    $fConcurrent();
+                    return [];
+                }
+                return parent::_findSession($aVisitor, $sPlatform, $iSince, $iUntil, $iAt);
+            }
+        };
+        $oCollector->setDb($oDb);
+        $oCollector->fConcurrent = function () use ($aServer, $aEvent) {
+            $this->_collect($aServer, $aEvent, self::NOW);
+        };
+
+        $this->assertSame(1, $oCollector->collect(['platform' => 'core-web', 'hits' => [['type' => 'pageview', 'url' => 'http://una.test/']]], ['platform' => 'api']));
+        $aSessions = $this->_sessions();
+        $this->assertCount(1, $aSessions, 'one visit');
+        $this->assertSame([1, 1], [(int)$aSessions[0]['pageviews'], (int)$aSessions[0]['events']]);
+    }
+
     public function testHitsPerMinuteLimit()
     {
         $this->_setOption('bx_analytics_limit_hits', '5');

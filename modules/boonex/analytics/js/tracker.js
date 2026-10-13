@@ -701,8 +701,10 @@
 
     /**
      * A click on a link to another site (`outbound_link`) or to a file (`file_download`: a
-     * `download` attribute or a file extension), sent as a custom event with the link without
-     * its query string. The beacon survives the navigation the click starts.
+     * `download` attribute or a file extension, in the path or in UNA's `r` and `f` parameters
+     * when permalinks are off), sent as a custom event with the link without its query string
+     * and with a download route's token masked. The beacon survives the navigation the click
+     * starts.
      */
     function onLinkClick(oEvent) {
         if (oEvent.type === 'auxclick' && oEvent.button !== 1)
@@ -726,14 +728,16 @@
             return;
 
         var sName = '';
-        if (oLink.hasAttribute('download') || rDownload.test(oUrl.pathname))
+        if (oLink.hasAttribute('download') || rDownload.test(oUrl.pathname) || rDownload.test(oUrl.searchParams.get('r') || '') || rDownload.test(oUrl.searchParams.get('f') || ''))
             sName = 'file_download';
         else if (oUrl.origin !== window.location.origin)
             sName = 'outbound_link';
         if (!sName)
             return;
 
-        send([{type: 'event', name: sName, url: window.location.href, props: {link: cleanUrl(oUrl.href)}}]);
+        // files/download/<token>/<id>.<ext>: the token opens the file, keep it out of reports
+        var sLinkUrl = cleanUrl(oUrl.href).replace(/(\/download\/)[^\/?#&]+\//, '$1*/');
+        send([{type: 'event', name: sName, url: window.location.href, props: {link: sLinkUrl}}]);
     }
 
     // on the document, so links htmx swaps in later count too

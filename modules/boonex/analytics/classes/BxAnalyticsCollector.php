@@ -594,15 +594,14 @@ class BxAnalyticsCollector
 
         // two first requests of a visit at once (a pageview and an event, tabs opened together)
         // would both find nothing and start two visits: the second waits for the first and
-        // finds its visit. Without the lock (a timeout) it goes on as before rather than drop hits.
+        // finds its visit. Without the lock (a timeout, most likely while another request started
+        // this visit) it looks again and then goes on as before rather than drop hits.
         $sLock = $this->_getVisitLockName($sPlatform, $aVisitor);
         $bLocked = $this->_oDb->lockVisit($sLock, 2);
         try {
-            if($bLocked) {
-                $aSession = $this->_findSession($aVisitor, $sPlatform, $this->_iNow - $this->_oConfig->getSessionTimeout());
-                if(!empty($aSession))
-                    return $this->_takeOver($aSession, $aVisitor, $iProfileId);
-            }
+            $aSession = $this->_findSession($aVisitor, $sPlatform, $this->_iNow - $this->_oConfig->getSessionTimeout());
+            if(!empty($aSession))
+                return $this->_takeOver($aSession, $aVisitor, $iProfileId);
 
             return $this->_startSession($sPlatform, $aVisitor, $iProfileId, $aPayload, $aClient, $aFirst, $sIp);
         }
