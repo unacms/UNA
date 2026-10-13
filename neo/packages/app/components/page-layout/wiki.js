@@ -36,14 +36,14 @@ import { WikiArticleBlock } from 'app/components/elements/wiki/document'
 import { MenuWiki, WikiBreadcrumb } from 'app/components/elements/wiki/nav'
 import { useWikiNavigation } from 'app/components/elements/wiki/use-navigation'
 
-// Pulls the article up under the breadcrumb row so the column gap and the
-// article block's top padding don't stack into a wide gap. Static literals for
+// Pulls the article up under the breadcrumb row so the column gap doesn't
+// leave a wide space (row bottom to article title: 24px). Static literals for
 // Tailwind scanning; keyed by the left-nav breakpoint the row shows from.
 const BREADCRUMB_ROW_PULL = {
-    sm: 'sm:-mb-6',
-    md: 'md:-mb-6',
-    lg: 'lg:-mb-6',
-    xl: 'xl:-mb-6',
+    sm: 'sm:-mb-2',
+    md: 'md:-mb-2',
+    lg: 'lg:-mb-2',
+    xl: 'xl:-mb-2',
 }
 
 /**

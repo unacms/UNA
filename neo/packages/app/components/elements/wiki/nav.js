@@ -27,7 +27,8 @@ export function WikiBreadcrumb({ items, onNavigate, compact = false }) {
 
     return (
         <Row
-            className={`items-center flex-wrap min-w-0 ${compact ? 'gap-1 flex-1' : 'gap-1.5'}`}
+            // -ms-1 cancels the first link's px-1 so its text lines up with the article.
+            className={`items-center flex-wrap min-w-0 ${compact ? 'gap-1 flex-1' : 'gap-1.5 -ms-1'}`}
             role="navigation"
             accessibilityLabel={t('Breadcrumb')}
         >
