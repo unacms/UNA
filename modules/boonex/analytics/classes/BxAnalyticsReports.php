@@ -843,11 +843,14 @@ class BxAnalyticsReports
             ['title' => _t('_bx_analytics_metric_bot_share'), 'value' => $iAll + (int)$aHumans['pageviews'] ? round(100 * $iAll / ($iAll + (int)$aHumans['pageviews']), 1) : 0, 'type' => 'percent'],
         ];
 
-        // hits per day and category, every day of the period
+        // hits per day and category: rows are per UTC day, so the chart has every UTC day the
+        // query reads (the same days as the table) and labels them in UTC. Stepping from the
+        // local start instead dropped the last UTC day east of UTC, and with it today's hits.
+        $aBotDays = $this->_oDb->getBotDays($aFilter);
+        $iDayTo = strtotime($aBotDays['to'] . ' 00:00:00 UTC');
         $aDays = [];
-        for($i = (int)$aFilter['from']; $i < (int)$aFilter['to'] && count($aDays) < 800; $i += 86400)
-            $aDays[gmdate('Y-m-d', $i)] = true;
-        $aDays = array_keys($aDays);
+        for($i = strtotime($aBotDays['from'] . ' 00:00:00 UTC'); $i <= $iDayTo && count($aDays) < 800; $i += 86400)
+            $aDays[] = gmdate('Y-m-d', $i);
 
         $aSeries = [];
         foreach($this->_oDb->getBotSeries($aFilter) as $aRow)
