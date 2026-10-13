@@ -815,9 +815,9 @@ function CommentsFormInner ({ form: initialForm, requestUrl, module, objectId, i
 
 
     useEffect(() => {
-        // The reply to a posted or edited comment: subtle success, or error when UNA rejects it.
-        if (dynamicData?.data?.browse) playCue('success', { emphasis: 'subtle' });
-        else if (formResponseHasFieldErrors(dynamicData?.data)) playCue('error');
+        // The reply to a posted comment: error when UNA rejects it, subtle success only once the new comment is in it.
+        if (formResponseHasFieldErrors(dynamicData?.data)) playCue('error');
+        else if (dynamicData?.data?.browse?.new?.[0]) playCue('success', { emphasis: 'subtle' });
         if (dynamicData?.data?.browse && dynamicData?.data?.browse?.new?.[0]) {
             emitter.emit(EVENTS.commentThread(module, objectId), { action: 'new_content', data: dynamicData.data.browse.data.data[0]['i' + dynamicData.data.browse.new[0]] });
             handleCancel() 

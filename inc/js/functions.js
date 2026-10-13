@@ -1784,8 +1784,9 @@ function bx_sound_init(sUrl, oConfig)
     glBxSounds.url = sUrl;
     glBxSounds.config = oConfig;
 
+    // A module that fails to load leaves the page silent; nothing else depends on it.
     if(bx_sound_is_on())
-        bx_sound_load();
+        bx_sound_load().catch(function() {});
 
     $(document).ready(function() {
         bx_sound_mark_switches();
@@ -1944,25 +1945,30 @@ function bx_sound(sCue, oOptions)
 
 /**
  * The reply to an AJAX form: error when UNA refuses it (a non-zero code, or the form or a popup back with a field
- * error), a subtle success otherwise.
+ * error), a subtle success when it says the form went through (code 0, a redirect, a reload or a script to run).
+ * A reply that names its own sound (`cue`) gets only that one, from processJsonData; a reply that only carries a
+ * message plays nothing, since a message alone can say either.
  */
 function bx_sound_form_reply(oData)
 {
-    if(!oData)
+    if(!oData || oData.cue != undefined)
         return;
 
-    var fHasError = function(sHtml) {
-        return typeof(sHtml) == 'string' && $('<div>' + sHtml + '</div>').find('.bx-form-warn').filter(function() {
-            return $.trim($(this).text()).length > 0;
-        }).length > 0;
-    };
-
-    var bRejected = (oData.code != undefined && parseInt(oData.code) != 0) || fHasError(oData.form) || fHasError(oData.popup && typeof(oData.popup) == 'object' ? oData.popup.html : oData.popup);
-
-    if(bRejected)
+    var mixedPopup = oData.popup && typeof(oData.popup) == 'object' ? oData.popup.html : oData.popup;
+    if((oData.code != undefined && Number.parseInt(oData.code) != 0) || bx_sound_has_field_error(oData.form) || bx_sound_has_field_error(mixedPopup))
         bx_sound('error');
-    else
+    else if(oData.code != undefined || oData.redirect != undefined || oData.reload != undefined || oData.eval != undefined)
         bx_sound('success', {emphasis: 'subtle'});
+}
+
+/**
+ * Whether a form's HTML came back with a field error in it.
+ */
+function bx_sound_has_field_error(sHtml)
+{
+    return typeof(sHtml) == 'string' && $('<div>' + sHtml + '</div>').find('.bx-form-warn').toArray().some(function(oWarn) {
+        return oWarn.textContent.trim().length > 0;
+    });
 }
 
 /**

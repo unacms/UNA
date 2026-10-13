@@ -161,18 +161,25 @@ export default function Form({
     }, [submitError, name, formInstanceId]);
 
     // The result of a submit: subtle success once UNA takes it, error when it
-    // rejects it. The next step of a wizard is neither. Filter forms and forms
-    // that save every change stay quiet: their controls sound already.
+    // rejects it (field errors, or a message with a non-zero code). A message
+    // without a code can say either, so it plays nothing unless a redirect or
+    // reload says the form went through. The next step of a wizard is neither.
+    // Filter forms and forms that save every change stay quiet: their controls
+    // sound already.
     useEffect(() => {
         if (!dynamicData && !submitError) return;
         const quiet = quietResultRef.current || isAutoChange || saveOnChanges;
         quietResultRef.current = false;
         if (quiet) return;
-        if (submitError || formResponseHasFieldErrors(dynamicData?.data)) {
+        const items = normalizeFormResponseData(dynamicData?.data);
+        const message = items.find((item) => item?.type === 'msg');
+        const hasCode = message?.code !== undefined && message?.code !== null;
+        if (submitError || formResponseHasFieldErrors(dynamicData?.data) || (hasCode && Number(message.code) !== 0)) {
             playCue('error');
             return;
         }
-        const formItem = normalizeFormResponseData(dynamicData.data).find((item) => item?.type === 'form');
+        if (message && !hasCode && !items.some((item) => item?.type === 'redirect' || item?.reload)) return;
+        const formItem = items.find((item) => item?.type === 'form');
         const nextDisplay = formItem?.data?.params?.display || formItem?.name;
         const currentDisplay = formName || formBundle.form?.params?.display;
         if (nextDisplay && currentDisplay && nextDisplay !== currentDisplay) return;
