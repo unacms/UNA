@@ -227,7 +227,7 @@ export function WikiDocumentHeader({ markdownSource = '', metadata, pageUrl = ''
     })
 
     return (
-        <View className="w-full border-b border-border/60 gap-3 pb-2">
+        <View className="w-full border-b border-border/60 gap-3 pb-2 mb-4">
             <Row className="items-center gap-4">
                 {resolvedIconUrl ? (
                     <WikiDocumentIcon
@@ -332,8 +332,10 @@ export function WikiArticleBlock({
     const { menu, added, attributes, body, raw } = getWikiBlockPayload(block);
     const hasDocHeader = Boolean(attributes?.title);
 
+    // Padding on mobile only: from `sm` the wiki center column pads itself,
+    // and the block's px would push the article off the breadcrumb line.
     return (
-        <BlockWrapper block={block} config={block?.config_api} showTitle={!hasDocHeader}>
+        <BlockWrapper block={block} config={block?.config_api} showTitle={!hasDocHeader} showPadding={['mobile']}>
             {hasDocHeader ? (
                 <WikiDocumentHeader
                     markdownSource={raw}

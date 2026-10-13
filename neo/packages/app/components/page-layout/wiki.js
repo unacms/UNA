@@ -36,6 +36,17 @@ import { WikiArticleBlock } from 'app/components/elements/wiki/document'
 import { MenuWiki, WikiBreadcrumb } from 'app/components/elements/wiki/nav'
 import { useWikiNavigation } from 'app/components/elements/wiki/use-navigation'
 
+// Pulls the article up under the breadcrumb row so the column gap doesn't
+// leave a wide space (row bottom to article title: 24px). Static literals for
+// Tailwind scanning; keyed by the left-nav breakpoint the row shows from.
+const BREADCRUMB_ROW_PULL = {
+    sm: 'sm:-mb-2',
+    md: 'md:-mb-2',
+    lg: 'lg:-mb-2',
+    xl: 'xl:-mb-2',
+    '2xl': '2xl:-mb-2',
+}
+
 /**
  * Wiki page layout — 3-column docs chrome (nav / article / TOC).
  *
@@ -268,7 +279,7 @@ function PageContentWiki({ data, scrollRef, url }) {
         }
 
         return (
-            <View className="w-full py-2 px-3 sm:px-4 ">
+            <View className="w-full py-2 px-4">
                 <View className="flex-row flex-auto items-center flex-wrap gap-2">
                     <View className={`flex-row items-center gap-1.5 min-w-0 ${showBothMobilePanels ? 'flex-auto' : 'flex-1'}`}>
                         <View className="shrink-0">
@@ -279,7 +290,7 @@ function PageContentWiki({ data, scrollRef, url }) {
                                     style: 'borderless',
                                     controlSize: 'regular',
                                     image: 'Menu',
-                                    borderShape: 'capsule',
+                                    borderShape: 'circle',
                                 }}
                             >
                                 <View className="p-1">
@@ -305,6 +316,7 @@ function PageContentWiki({ data, scrollRef, url }) {
                                 focusedId={focusedTocId}
                                 onPress={handleTocPress}
                                 label={tocMenuLabel}
+                                compact
                             />
                         </View>
                     ) : null}
@@ -375,12 +387,12 @@ function PageContentWiki({ data, scrollRef, url }) {
                     <PanelHandler gap={`hidden ${leftBreakpoint}:block`} sizable={cellsCustomConfig.sizable} panelLine={cellsCustomConfig['panel-line']} />
                     <Panel id="wiki-center" order={2} className={`native:w-full   ${currentBreakpointName}:w-full`} {...centerPanelLayoutProps}>
                         <View ref={centerContentRef} className="sm:p-4 lg:px-6 lg:py-6 xl:px-8 2xl:px-12 gap-6 lg:gap-8">
-                            {(breadcrumbs.length >1 || showTocMenu) ? (
-                                <View className={`gap-3  hidden ${leftBreakpoint}:flex`}>
+                            {(breadcrumbs.length > 0 || showTocMenu) ? (
+                                <View className={`gap-3 hidden ${leftBreakpoint}:flex ${BREADCRUMB_ROW_PULL[leftBreakpoint] ?? ''}`}>
                                     {/* CSS visibility only — do not gate on useBreakpoint (SSR mismatch).
                                         Breadcrumb from left-nav bp; TOC trigger until right sidebar bp. */}
                                     <View className={`hidden ${leftBreakpoint}:flex flex-row items-center justify-between gap-2 min-w-0`}>
-                                        {breadcrumbs.length >1 ? (
+                                        {breadcrumbs.length > 0 ? (
                                             <View className="min-w-0 flex-1">
                                                 <WikiBreadcrumb
                                                     items={breadcrumbs}

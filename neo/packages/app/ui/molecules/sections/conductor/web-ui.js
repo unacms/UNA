@@ -811,6 +811,8 @@ export function SidebarNav({ routes, index, onSelect }) {
 
         return (
             <View key={`lmenu-${route.index}`} className="w-full">
+                {/* Indent on a wrapper: on the button it loses to the inline contentInsets padding. */}
+                <View className={getConductorDepthClassName(route.depth)}>
                 <MenuItemSidebarWithWrapper
                     link={canNavigate ? href : undefined}
                     title={route.title}
@@ -829,8 +831,8 @@ export function SidebarNav({ routes, index, onSelect }) {
                                 onSelect(route)
                             }
                     }
-                    className={getConductorDepthClassName(route.depth)}
                 />
+                </View>
                 {hasChildren && isExpanded ? (
                     <View className="gap-0.5">
                         {children.map((child) => renderRoute(child))}
