@@ -619,6 +619,16 @@ class AnalyticsCollectorTest extends BxDolIntegrationTestCase
         $this->assertSame(2, $aGoals[$iBuy]['conversions']);
         $this->assertEquals(66.67, $aGoals[$iBuy]['rate']);
 
+        // a purchase by webhook, outside any visit (session_id 0), is no visit that converted
+        $oWebhook = new BxAnalyticsCollector($this->_oModule, new BxAnalyticsRequest([]), self::NOW + 500);
+        $this->assertTrue($oWebhook->collectAction('buy', '', 0, 0, ['type' => 'event', 'platform' => 'core', 'request' => false]));
+        $this->_oModule->cleanReportCache();
+        $aGoals = array_column($oReports->getGoals($oFilter)['goals'], null, 'id');
+        $this->assertSame(2, $aGoals[$iBuy]['conversions'], 'an action outside a visit adds no visit');
+        $this->assertEquals(66.67, $aGoals[$iBuy]['rate']);
+        $aBuyTotals = $oDb->getGoalTotals($this->_filter(['range' => 'custom', 'from' => '2001-09-09', 'to' => '2001-09-09', 'platform' => 'core'])->get(), ['type' => 'event', 'pattern' => 'buy']);
+        $this->assertSame([0, 1], [(int)$aBuyTotals['sessions'], (int)$aBuyTotals['visitors']], 'but its visitor reached the goal');
+
         // goals are capped: the report counts each one in both periods
         $iMax = $this->_oModule->_oConfig->CNF['MAX_GOALS'];
         $this->assertSame($oDb->getGoalsCount() >= $iMax, $this->_oModule->isGoalLimitReached());
@@ -638,6 +648,114 @@ class AnalyticsCollectorTest extends BxDolIntegrationTestCase
         $this->assertFalse((bool)$oDb->getGoal($iBuy));
         $this->assertTrue($oDb->deleteFunnel($iFunnel));
         $this->assertNotContains($iFunnel, array_column($oReports->getFunnels($oFilter)['funnels'], 'id'), 'a deleted funnel is not listed');
+    }
+
+    public function testFunnelStepsFollowTheEventOrder()
+    {
+        $oDb = $this->_oModule->_oDb;
+        $fPage = function ($sPath) { return ['type' => 'pageview', 'url' => 'http://una.test' . $sPath]; };
+
+        // /pricing before / in the same second; one /shop page; two /shop pages in one second
+        $this->_collect($this->_server('93.184.216.1'), ['platform' => 'core-web', 'hits' => [$fPage('/pricing'), $fPage('/')]], self::NOW);
+        $this->_collect($this->_server('93.184.216.2'), ['platform' => 'core-web', 'hits' => [$fPage('/shop/1')]], self::NOW);
+        $this->_collect($this->_server('93.184.216.3'), ['platform' => 'core-web', 'hits' => [$fPage('/shop/2'), $fPage('/shop/3')]], self::NOW);
+        $this->_collect($this->_server('93.184.216.4'), ['platform' => 'core-web', 'hits' => [['type' => 'event', 'url' => 'http://una.test/', 'name' => 'buy']]], self::NOW);
+
+        $aFilter = $this->_filter(['range' => 'custom', 'from' => '2001-09-09', 'to' => '2001-09-09'])->get();
+        $this->assertSame([1, 0], $oDb->getFunnelCounts($aFilter, [['type' => 'page', 'pattern' => '/'], ['type' => 'page', 'pattern' => '/pricing']]), 'a step recorded before the one before it in the same second');
+        $this->assertSame([1, 1], $oDb->getFunnelCounts($aFilter, [['type' => 'page', 'pattern' => '/pricing'], ['type' => 'page', 'pattern' => '/']]), 'steps in the same second in order');
+        $this->assertSame([2, 1], $oDb->getFunnelCounts($aFilter, [['type' => 'page', 'pattern' => '/shop/*'], ['type' => 'page', 'pattern' => '/shop/*']]), 'one view counts for one step');
+        $this->assertSame([1, 0], $oDb->getFunnelCounts($aFilter, [['type' => 'event', 'pattern' => 'buy'], ['type' => 'event', 'pattern' => 'buy']]));
+    }
+
+    public function testConcurrentHitsOfAVisitAllCount()
+    {
+        $aServer = $this->_server('93.184.216.20');
+        $fPage = function ($sPath) { return ['type' => 'pageview', 'url' => 'http://una.test' . $sPath]; };
+
+        $this->_collect($aServer, ['platform' => 'core-web', 'hits' => [$fPage('/a')]], self::NOW);
+        $aStale = $this->_sessions()[0];
+        $this->_collect($aServer, ['platform' => 'core-web', 'hits' => [$fPage('/b')]], self::NOW + 30);
+
+        // requests that read the visit before /b was stored and are written after it
+        $fStale = function ($iNow) use ($aServer, $aStale) {
+            $oCollector = new class($this->_oModule, new BxAnalyticsRequest($aServer), $iNow) extends BxAnalyticsCollector {
+                public $aStale = [];
+                protected function _findSession($aVisitor, $sPlatform, $iSince, $iUntil = 0, $iAt = 0)
+                {
+                    return $this->aStale;
+                }
+                protected function _getRequestVisit($sPlatform, $iLinkedProfileId, $bApiKey)
+                {
+                    return [parent::_getRequestVisit($sPlatform, $iLinkedProfileId, $bApiKey)[0], $this->aStale];
+                }
+            };
+            $oCollector->aStale = $aStale;
+            return $oCollector;
+        };
+
+        $this->assertSame(1, $fStale(self::NOW + 20)->collect(['platform' => 'core-web', 'hits' => [['type' => 'leave', 'url' => 'http://una.test/a', 'engaged' => 1000]]], ['platform' => 'api']));
+        $a = $this->_sessions()[0];
+        $this->assertSame([2, 0, '/b', self::NOW + 30, 30], [(int)$a['pageviews'], (int)$a['bounce'], $a['exit_path'], (int)$a['last_seen'], (int)$a['duration']], 'a late leave keeps the pageview, the exit page and the time');
+
+        $this->assertSame(1, $fStale(self::NOW + 10)->collect(['platform' => 'core-web', 'hits' => [$fPage('/c')]], ['platform' => 'api']));
+        $a = $this->_sessions()[0];
+        $this->assertSame([3, '/b', self::NOW + 30], [(int)$a['pageviews'], $a['exit_path'], (int)$a['last_seen']], 'an older pageview written last is not the exit page');
+
+        $this->assertTrue($fStale(self::NOW + 25)->collectAction('content_add', 'bx_posts', 1, 0, ['platform' => 'core-web']));
+        $a = $this->_sessions()[0];
+        $this->assertCount(1, $this->_sessions());
+        $this->assertSame([3, 1, self::NOW + 30], [(int)$a['pageviews'], (int)$a['events'], (int)$a['last_seen']], 'a site action adds to the counters');
+    }
+
+    public function testConcurrentFirstHitsMakeOneVisit()
+    {
+        $aServer = $this->_server('93.184.216.21');
+        $aEvent = ['platform' => 'core-web', 'hits' => [['type' => 'event', 'url' => 'http://una.test/', 'name' => 'cta_click']]];
+
+        // the event's request starts the visit between this request's lookup and its insert
+        $oCollector = new class($this->_oModule, new BxAnalyticsRequest($aServer), self::NOW) extends BxAnalyticsCollector {
+            public $fConcurrent;
+            public $sLock;
+            protected function _findSession($aVisitor, $sPlatform, $iSince, $iUntil = 0, $iAt = 0)
+            {
+                if($this->fConcurrent) {
+                    $fConcurrent = $this->fConcurrent;
+                    $this->fConcurrent = null;
+                    $fConcurrent();
+                    return [];
+                }
+                return parent::_findSession($aVisitor, $sPlatform, $iSince, $iUntil, $iAt);
+            }
+            protected function _getVisitLockName($sPlatform, $aVisitor)
+            {
+                return $this->sLock = parent::_getVisitLockName($sPlatform, $aVisitor);
+            }
+        };
+        $oCollector->fConcurrent = function () use ($aServer, $aEvent) {
+            $this->_collect($aServer, $aEvent, self::NOW);
+        };
+
+        $this->assertSame(1, $oCollector->collect(['platform' => 'core-web', 'hits' => [['type' => 'pageview', 'url' => 'http://una.test/']]], ['platform' => 'api']));
+        $aSessions = $this->_sessions();
+        $this->assertCount(1, $aSessions, 'one visit');
+        $this->assertSame([1, 1, 0], [(int)$aSessions[0]['pageviews'], (int)$aSessions[0]['events'], (int)$aSessions[0]['bounce']]);
+
+        $this->assertLessThanOrEqual(64, strlen($oCollector->sLock));
+        $this->assertSame(1, (int)BxDolDb::getInstance()->getOne("SELECT IS_FREE_LOCK(:name)", ['name' => $oCollector->sLock]), 'the lock is released');
+
+        // a visit refused by the rate limit releases the lock too
+        $this->_setOption('bx_analytics_limit_visits', '1');
+        $oCollector->sLock = null;
+        $this->assertSame(0, $oCollector->collect(['platform' => 'next-web', 'hits' => [['type' => 'pageview', 'url' => 'http://una.test/']]], ['platform' => 'api']));
+        $this->assertTrue($oCollector->isLimited());
+        $this->assertNotNull($oCollector->sLock);
+        $this->assertSame(1, (int)BxDolDb::getInstance()->getOne("SELECT IS_FREE_LOCK(:name)", ['name' => $oCollector->sLock]));
+
+        // a request without a hit that starts a visit takes no lock
+        $oCollector->sLock = null;
+        $this->assertSame(0, $oCollector->collect(['platform' => 'next-web', 'hits' => [['type' => 'leave', 'url' => 'http://una.test/', 'engaged' => 1000]]], ['platform' => 'api']));
+        $this->assertNull($oCollector->sLock);
     }
 
     public function testHitsPerMinuteLimit()

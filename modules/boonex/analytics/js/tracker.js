@@ -14,6 +14,8 @@
  * Sends a pageview when a page loads and after every htmx navigation (not on preload), and the
  * time the page was visible when it is hidden or left. Custom events:
  *     bx_analytics.track('signup_click', {plan: 'pro'});
+ * Clicks on links to other sites and to files are sent as the custom events `outbound_link` and
+ * `file_download`, with the link (without its query string) in the `link` property.
  * Errors the page catches itself:
  *     bx_analytics.trackError(oError);
  * Uncaught errors, unhandled rejections, failed htmx requests (500 and up) and the site's own
@@ -690,6 +692,53 @@
             pageview('back_forward');
         }, 0);
     });
+
+    /*
+     * Outbound links and downloads
+     */
+
+    var rDownload = /\.(pdf|zip|rar|7z|gz|tgz|tar|dmg|exe|msi|pkg|apk|ipa|docx?|xlsx?|pptx?|odt|ods|csv|txt|rtf|mp3|wav|flac|mp4|mov|avi|mkv|webm|epub)$/i;
+
+    /**
+     * A click on a link to another site (`outbound_link`) or to a file (`file_download`: a
+     * `download` attribute or a file extension), sent as a custom event with the link without
+     * its query string. The beacon survives the navigation the click starts.
+     */
+    function onLinkClick(oEvent) {
+        if (oEvent.type === 'auxclick' && oEvent.button !== 1)
+            return;
+
+        var oLink = oEvent.target && oEvent.target.closest ? oEvent.target.closest('a[href]') : null;
+        if (!oLink)
+            return;
+
+        var sHref = oLink.getAttribute('href') || '';
+        if (!sHref || sHref.charAt(0) === '#' || /^(javascript|mailto|tel|sms|data|blob):/i.test(sHref))
+            return;
+
+        var oUrl;
+        try {
+            oUrl = new URL(oLink.href, window.location.href);
+        } catch (e) {
+            return;
+        }
+        if (oUrl.protocol !== 'http:' && oUrl.protocol !== 'https:')
+            return;
+
+        var sName = '';
+        if (oLink.hasAttribute('download') || rDownload.test(oUrl.pathname))
+            sName = 'file_download';
+        else if (oUrl.origin !== window.location.origin)
+            sName = 'outbound_link';
+        if (!sName)
+            return;
+
+        send([{type: 'event', name: sName, url: window.location.href, props: {link: cleanUrl(oUrl.href)}}]);
+    }
+
+    // on the document, so links htmx swaps in later count too
+    document.addEventListener('click', onLinkClick, true);
+    document.addEventListener('auxclick', onLinkClick, true);
 
     pageview();
 })(window, document);

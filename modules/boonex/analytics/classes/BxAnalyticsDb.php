@@ -244,6 +244,65 @@ class BxAnalyticsDb extends BxBaseModGeneralDb
     }
 
     /**
+     * Add a request's hits to a visit's counters in the database, not from a copy read before
+     * them: two requests of one visit at once (tabs opened together, an event and a pageview
+     * sent together) both count. The time only moves forward, and the exit page is the visit's
+     * latest pageview by time, whichever request is written last.
+     *
+     * Every expression reads only columns set after it in the statement, so the result is the
+     * same whether the server assigns left to right or all at once (MariaDB's
+     * SIMULTANEOUS_ASSIGNMENT).
+     *
+     * @param int $iPageviews pageviews in the request
+     * @param int $iEvents events in the request
+     * @param bool $bInteractive a hit that isn't a bounce on its own (an interactive event)
+     * @param int $iLastSeen the request's latest hit, 0 for none
+     * @param bool $bPageview the request has a pageview, so the exit page may change
+     */
+    public function addSessionHits($iId, $iPageviews, $iEvents, $bInteractive, $iLastSeen, $bPageview)
+    {
+        $sExit = '';
+        $aBindings = [
+            'id' => (int)$iId,
+            'interactive' => $bInteractive ? 1 : 0,
+            'pv' => (int)$iPageviews,
+            'pv2' => (int)$iPageviews,
+            'ev' => (int)$iEvents,
+            'ls' => (int)$iLastSeen,
+            'ls2' => (int)$iLastSeen,
+        ];
+        if($bPageview) {
+            // the `session_id` key, a visit has few rows
+            $sExit = ", `exit_path` = IFNULL((SELECT `path` FROM `" . $this->_oConfig->CNF['TABLE_EVENTS'] . "` WHERE `session_id` = :sid AND `type` = 'pageview' ORDER BY `ts` DESC, `id` DESC LIMIT 1), `exit_path`)";
+            $aBindings['sid'] = (int)$iId;
+        }
+
+        return (int)$this->query("UPDATE `" . $this->_oConfig->CNF['TABLE_SESSIONS'] . "` SET
+            `bounce` = IF(:interactive = 1 OR `pageviews` + :pv > 1, 0, `bounce`),
+            `duration` = GREATEST(`duration`, CAST(GREATEST(`last_seen`, :ls) AS SIGNED) - CAST(`started` AS SIGNED)),
+            `last_seen` = GREATEST(`last_seen`, :ls2),
+            `pageviews` = LEAST(`pageviews` + :pv2, 65535),
+            `events` = LEAST(`events` + :ev, 65535)" . $sExit . "
+            WHERE `id` = :id", $aBindings) > 0;
+    }
+
+    /**
+     * Take a named lock on the connection, waiting up to a number of seconds. MySQL releases it
+     * when the connection closes, so a request that dies can't keep it.
+     *
+     * @return bool the lock is held
+     */
+    public function lockVisit($sName, $iTimeout)
+    {
+        return (int)$this->getOne("SELECT GET_LOCK(:name, :timeout)", ['name' => $sName, 'timeout' => (int)$iTimeout]) === 1;
+    }
+
+    public function unlockVisit($sName)
+    {
+        return (int)$this->getOne("SELECT RELEASE_LOCK(:name)", ['name' => $sName]) === 1;
+    }
+
+    /**
      * Give every event of a visit a visitor id and a profile: the member's, when they sign in
      * during a guest's visit. A visit has few events, found by the `session_id` key.
      */
@@ -1058,7 +1117,9 @@ class BxAnalyticsDb extends BxBaseModGeneralDb
     }
 
     /**
-     * Visits and visitors that reached a goal (a page or an event) in the period.
+     * Visits and visitors that reached a goal (a page or an event) in the period. A site action
+     * outside a visit (session_id 0: a payment webhook, cron) is not a visit, but its visitor
+     * reached the goal.
      */
     public function getGoalTotals($aFilter, $aGoal)
     {
@@ -1067,18 +1128,20 @@ class BxAnalyticsDb extends BxBaseModGeneralDb
 
         // nothing but the columns of the `path` key (or `name` and the visit), so a page goal
         // reads no row
-        return $this->getRow("SELECT COUNT(DISTINCT `e`.`session_id`) AS `sessions`, COUNT(DISTINCT `e`.`visitor`) AS `visitors` FROM `" . $this->_oConfig->CNF['TABLE_EVENTS'] . "` AS `e` WHERE " . $sWhere, $aBindings);
+        return $this->getRow("SELECT COUNT(DISTINCT NULLIF(`e`.`session_id`, 0)) AS `sessions`, COUNT(DISTINCT `e`.`visitor`) AS `visitors` FROM `" . $this->_oConfig->CNF['TABLE_EVENTS'] . "` AS `e` WHERE " . $sWhere, $aBindings);
     }
 
     /**
      * Visits that reached each step of a funnel in order, counted in the database in one
      * query. A visit reaches the first step the first time it matches it in the period (and
-     * the filters), and each next step the first time it matches it at or after the time it
-     * reached the step before. One row per visit and step, never one per event, reaches the
-     * server's temporary tables, and none reaches PHP.
+     * the filters), and each next step the first time it matches it after the event that
+     * reached the step before; one event counts for one step. One row per visit and step,
+     * never one per event, reaches the server's temporary tables, and none reaches PHP.
      *
-     * Each step joins the visits of the step before: [session_id, t0, ..., t(n-1)] with tn,
-     * NULL when the visit didn't reach step n (and so no step after it).
+     * Each step joins the visits of the step before: [session_id, t0, k0, ..., t(n-1), k(n-1)]
+     * with tn and kn, NULL when the visit didn't reach step n (and so no step after it). kn
+     * orders the events: by the second they happened, then by the order they were stored
+     * (ids follow the client's order in a request), so two hits in one second keep their order.
      *
      * @param array $aSteps steps of type and pattern, see _getMatchSql
      * @return array visits per step, in step order
@@ -1093,17 +1156,20 @@ class BxAnalyticsDb extends BxBaseModGeneralDb
 
         $aBindings = [];
         $sWhere = $this->_getAnyEventsWhere($aFilter, [BX_ANALYTICS_HIT_PAGEVIEW, BX_ANALYTICS_HIT_EVENT, BX_ANALYTICS_HIT_UNA], $aBindings, null, $this->_isShortPeriod($aFilter)) . ' AND ' . $this->_getMatchSql($aSteps[0], $aBindings, 's0') . ' AND `e`.`session_id` > 0';
-        $sSql = "SELECT `e`.`session_id`, MIN(`e`.`ts`) AS `t0` FROM `" . $sTable . "` AS `e` WHERE " . $sWhere . " GROUP BY `e`.`session_id`";
+        // 1e20 is past the id range: the second first, then the id
+        $sKey = "MIN(CAST(`e`.`ts` AS DECIMAL(31,0)) * 100000000000000000000 + `e`.`id`)";
+        $sSql = "SELECT `e`.`session_id`, MIN(`e`.`ts`) AS `t0`, " . $sKey . " AS `k0` FROM `" . $sTable . "` AS `e` WHERE " . $sWhere . " GROUP BY `e`.`session_id`";
 
         // the filters hold for every event of a visit that matched them, but the period
         $aCounts = ['COUNT(*) AS `c0`'];
-        $aBefore = ['`p`.`t0`'];
+        $aBefore = ['`p`.`t0`', '`p`.`k0`'];
         for($i = 1; $i < count($aSteps); $i++) {
             $aBindings['to' . $i] = (int)$aFilter['to'];
-            $sSql = "SELECT `p`.`session_id`, " . implode(', ', $aBefore) . ", MIN(`e`.`ts`) AS `t" . $i . "` FROM (" . $sSql . ") AS `p` LEFT JOIN `" . $sTable . "` AS `e` ON `e`.`session_id` = `p`.`session_id` AND `e`.`ts` >= `p`.`t" . ($i - 1) . "` AND `e`.`ts` < :to" . $i . " AND " . $this->_getMatchSql($aSteps[$i], $aBindings, 's' . $i) . " GROUP BY `p`.`session_id`, " . implode(', ', $aBefore);
+            $sSql = "SELECT `p`.`session_id`, " . implode(', ', $aBefore) . ", MIN(`e`.`ts`) AS `t" . $i . "`, " . $sKey . " AS `k" . $i . "` FROM (" . $sSql . ") AS `p` LEFT JOIN `" . $sTable . "` AS `e` ON `e`.`session_id` = `p`.`session_id` AND `e`.`ts` >= `p`.`t" . ($i - 1) . "` AND `e`.`ts` < :to" . $i . " AND CAST(`e`.`ts` AS DECIMAL(31,0)) * 100000000000000000000 + `e`.`id` > `p`.`k" . ($i - 1) . "` AND " . $this->_getMatchSql($aSteps[$i], $aBindings, 's' . $i) . " GROUP BY `p`.`session_id`, " . implode(', ', $aBefore);
 
             $aCounts[] = 'COUNT(`f`.`t' . $i . '`) AS `c' . $i . '`';
             $aBefore[] = '`p`.`t' . $i . '`';
+            $aBefore[] = '`p`.`k' . $i . '`';
         }
 
         $aRow = $this->getRow("SELECT " . implode(', ', $aCounts) . " FROM (" . $sSql . ") AS `f`", $aBindings);

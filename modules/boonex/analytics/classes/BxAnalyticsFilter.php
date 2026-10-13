@@ -206,12 +206,14 @@ class BxAnalyticsFilter
         $iTo = $oTo->getTimestamp();
         $iOffset = $oFrom->getOffset();
 
-        // fixed-length buckets drift by an hour across a daylight saving change; then the exact
-        // local starts go to the database as a list, as months always do
+        // fixed-length buckets drift by an hour across a daylight saving change inside the period
+        // (two changes leave the ends at the same offset); then the exact local starts go to the
+        // database as a list, as months always do. getTransitions() gives the state at the
+        // start, then one entry per change.
         $aStarts = [];
         if($sBucket == 'month')
             $aStarts = $this->_months($oFrom, $oTo);
-        elseif(in_array($sBucket, ['day', 'week'], true) && $oFrom->getOffset() != (clone $oTo)->modify('-1 second')->getOffset())
+        elseif(in_array($sBucket, ['day', 'week'], true) && count($oTz->getTransitions($iFrom, $iTo - 1)) > 1)
             $aStarts = $this->_localStarts($oFrom, $oTo, $sBucket);
 
         return [

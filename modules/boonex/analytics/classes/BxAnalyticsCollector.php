@@ -413,11 +413,7 @@ class BxAnalyticsCollector
         ]]);
 
         if($iStored && !empty($aSession))
-            $this->_oDb->updateSession($aSession['id'], [
-                'events' => min((int)$aSession['events'] + 1, 65535),
-                'bounce' => 0,
-                'last_seen' => max((int)$aSession['last_seen'], $this->_iNow),
-            ]);
+            $this->_oDb->addSessionHits($aSession['id'], 0, 1, true, $this->_iNow, false);
 
         return $iStored > 0;
     }
@@ -596,6 +592,40 @@ class BxAnalyticsCollector
         if($aFirst === null)
             return [];
 
+        // two first requests of a visit at once (a pageview and an event, tabs opened together)
+        // would both find nothing and start two visits: the second waits for the first and
+        // finds its visit. Without the lock (a timeout) it goes on as before rather than drop hits.
+        $sLock = $this->_getVisitLockName($sPlatform, $aVisitor);
+        $bLocked = $this->_oDb->lockVisit($sLock, 2);
+        try {
+            if($bLocked) {
+                $aSession = $this->_findSession($aVisitor, $sPlatform, $this->_iNow - $this->_oConfig->getSessionTimeout());
+                if(!empty($aSession))
+                    return $this->_takeOver($aSession, $aVisitor, $iProfileId);
+            }
+
+            return $this->_startSession($sPlatform, $aVisitor, $iProfileId, $aPayload, $aClient, $aFirst, $sIp);
+        }
+        finally {
+            if($bLocked)
+                $this->_oDb->unlockVisit($sLock);
+        }
+    }
+
+    /**
+     * The name of the lock that starts a visit, one per visitor and platform; MySQL allows 64
+     * characters.
+     */
+    protected function _getVisitLockName($sPlatform, $aVisitor)
+    {
+        return 'bx_analytics_s_' . md5($sPlatform . '|' . $aVisitor['id']);
+    }
+
+    /**
+     * A new visit that starts with a hit.
+     */
+    protected function _startSession($sPlatform, $aVisitor, $iProfileId, $aPayload, $aClient, $aFirst, $sIp)
+    {
         // a script that changes its user agent or visitor id for every request would start a
         // visit with each
         if(!$this->_isWithinVisitLimit($sIp))
@@ -649,17 +679,18 @@ class BxAnalyticsCollector
     }
 
     /**
-     * Write the hits and update the session's counters in one query.
+     * Write the hits and add them to the session's counters in one query. The counters change
+     * in the database, not from `$aSession`, which another request of the visit may have
+     * changed since it was read.
      *
      * @param array $aClientRow the client's columns for errors that don't belong to the visit
      */
     protected function _store($aSession, $aHits, $aClientRow = [])
     {
-        $iPageviews = (int)$aSession['pageviews'];
-        $iEvents = (int)$aSession['events'];
-        $bBounce = (int)$aSession['bounce'] == 1;
-        $sExitPath = $aSession['exit_path'];
-        $iLastSeen = (int)$aSession['last_seen'];
+        $iPageviews = 0;
+        $iEvents = 0;
+        $bInteractive = false;
+        $iLastSeen = 0;
 
         $aRows = [];
         $aErrors = [];
@@ -695,16 +726,12 @@ class BxAnalyticsCollector
                 continue;
             }
 
-            if($aHit['type'] == BX_ANALYTICS_HIT_PAGEVIEW) {
+            if($aHit['type'] == BX_ANALYTICS_HIT_PAGEVIEW)
                 $iPageviews++;
-                $sExitPath = $aHit['path'];
-                if($iPageviews > 1)
-                    $bBounce = false;
-            }
             else {
                 $iEvents++;
                 if(empty($aHit['non_interactive']))
-                    $bBounce = false;
+                    $bInteractive = true;
             }
 
             $aRows[] = [
@@ -730,14 +757,8 @@ class BxAnalyticsCollector
         if(!empty($aRows))
             $iStored += $this->_oDb->insertEvents($aRows);
 
-        $this->_oDb->updateSession($aSession['id'], [
-            'last_seen' => $iLastSeen,
-            'duration' => max((int)$aSession['duration'], $iLastSeen - (int)$aSession['started']),
-            'pageviews' => min($iPageviews, 65535),
-            'events' => min($iEvents, 65535),
-            'bounce' => $bBounce ? 1 : 0,
-            'exit_path' => $sExitPath,
-        ]);
+        // after the events: the exit page is the visit's latest pageview among them
+        $this->_oDb->addSessionHits($aSession['id'], $iPageviews, $iEvents, $bInteractive, $iLastSeen, $iPageviews > 0);
 
         if(!empty($aErrors))
             $iStored += $this->_storeErrors($aSession, $aErrors, $aClientRow);

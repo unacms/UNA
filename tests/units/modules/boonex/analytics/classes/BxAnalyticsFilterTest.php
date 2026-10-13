@@ -186,6 +186,28 @@ class BxAnalyticsFilterTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($a['starts'], $a['buckets']);
     }
 
+    public function testTwoDaylightSavingChangesStartAtLocalMidnight()
+    {
+        // London is on GMT at both ends of the 12 months, on BST in between
+        $oTz = new DateTimeZone('Europe/London');
+        $a = $this->filter(['range' => '12m', 'bucket' => 'week', 'tz' => 'Europe/London'])->get();
+
+        $this->assertSame('week', $a['bucket']);
+        $this->assertNotEmpty($a['starts']);
+        $this->assertSame($a['starts'], $a['buckets']);
+        foreach(array_slice($a['starts'], 1) as $iStart)
+            $this->assertSame('1 00:00', (new DateTime('@' . $iStart))->setTimezone($oTz)->format('N H:i'));
+
+        // about 5 and a half months from autumn to spring: weeks by default, or days
+        foreach([[], ['bucket' => 'day']] as $aBucket) {
+            $a = $this->filter(['range' => 'custom', 'from' => '2025-10-20', 'to' => '2026-04-10', 'tz' => 'Europe/London'] + $aBucket)->get();
+            $this->assertSame(empty($aBucket) ? 'week' : 'day', $a['bucket']);
+            $this->assertNotEmpty($a['starts']);
+            foreach($a['starts'] as $iStart)
+                $this->assertSame('00:00', (new DateTime('@' . $iStart))->setTimezone($oTz)->format('H:i'));
+        }
+    }
+
     public function testNoDaylightSavingChangeUsesFixedDays()
     {
         $a = $this->filter(['range' => '7d', 'tz' => 'Asia/Tokyo'])->get();
