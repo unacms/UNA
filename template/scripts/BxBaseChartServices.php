@@ -157,11 +157,11 @@ class BxBaseChartServices extends BxDol
             $aTmplVarsDataLabels[] = $sTitleAttr . ' - ' . $iValue;
 
             $aTmplVarsDataSet['data'][] = $iValue;
-            $aTmplVarsDataSet['backgroundColor'][] = '#' . dechex(rand(0x000000, 0xFFFFFF));
+            $aTmplVarsDataSet['backgroundColor'][] = sprintf('#%06x', random_int(0x000000, 0xFFFFFF));
         }
 
         $oTemplate = BxDolTemplate::getInstance();
-        $oTemplate->addJs(array('chart.min.js'));
+        $oTemplate->addJs(array('chart.umd.min.js'));
         $oTemplate->addCss(array('chart.css'));
 
         return $oTemplate->parseHtmlByName('chart_stats.html', array(

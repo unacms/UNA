@@ -123,14 +123,14 @@ class BxAdsTemplate extends BxBaseModTextTemplate
 
             $aTmplVarsDataLabels[] = $sTitle . ' - ' . $iValue;
             $aTmplVarsDataSet['data'][] = $iValue;
-            $aTmplVarsDataSet['backgroundColor'][] = '#' . dechex(rand(0x000000, 0xFFFFFF));
+            $aTmplVarsDataSet['backgroundColor'][] = $this->_getChartColor();
         }
 
         if($this->_bIsApi){
             return [bx_api_get_block('chart', ['type' => 'pie', 'title' => 'Summary', 'labels' => $aTmplVarsDataLabels, 'data' => $aTmplVarsDataSet])];
         }
 
-        $this->addJs(['chart.min.js']);
+        $this->addJs(['chart.umd.min.js']);
         $this->addCss(['chart.css']);
         return $this->parseHtmlByName('chart_stats.html', [
             'chart_id' => $this->MODULE . '_chart_summary',
@@ -156,7 +156,7 @@ class BxAdsTemplate extends BxBaseModTextTemplate
 
         $aTmplVarsDataLabels[] = $sTitleLocal . ' - ' . $iValueLocal;
         $aTmplVarsDataSet['data'][] = $iValueLocal;
-        $aTmplVarsDataSet['backgroundColor'][] = '#' . dechex(rand(0x000000, 0xFFFFFF));
+        $aTmplVarsDataSet['backgroundColor'][] = $this->_getChartColor();
 
         //--- Get income external (from source)
         $iValueSource = 0;
@@ -175,7 +175,7 @@ class BxAdsTemplate extends BxBaseModTextTemplate
 
                 $aTmplVarsDataLabels[] = $sTitleSource . ' - ' . $iValueSource;
                 $aTmplVarsDataSet['data'][] = $iValueSource;
-                $aTmplVarsDataSet['backgroundColor'][] = '#' . dechex(rand(0x000000, 0xFFFFFF));
+                $aTmplVarsDataSet['backgroundColor'][] = $this->_getChartColor();
             }
         }
 
@@ -185,7 +185,7 @@ class BxAdsTemplate extends BxBaseModTextTemplate
 
         $aTmplVarsDataLabels[] = $sTitleInvestment . ' - ' . $iValueInvestment;
         $aTmplVarsDataSet['data'][] = $iValueInvestment;
-        $aTmplVarsDataSet['backgroundColor'][] = '#' . dechex(rand(0x000000, 0xFFFFFF));
+        $aTmplVarsDataSet['backgroundColor'][] = $this->_getChartColor();
 
         $fRoi = 0;
         if($iValueInvestment > 0)
@@ -195,7 +195,7 @@ class BxAdsTemplate extends BxBaseModTextTemplate
             return [bx_api_get_block('chart', ['type' => 'pie', 'title' => 'ROI', 'labels' => $aTmplVarsDataLabels, 'data' => $aTmplVarsDataSet, 'text' => 'ROI: ' . $fRoi . '%'])];
         }
 
-        $this->addJs(['chart.min.js']);
+        $this->addJs(['chart.umd.min.js']);
         $this->addCss(['chart.css']);
         return $this->parseHtmlByName('entry-roi.html', [
             'chart' => $this->parseHtmlByName('chart_stats.html', [
@@ -381,6 +381,14 @@ class BxAdsTemplate extends BxBaseModTextTemplate
         return $this->parseHtmlByName('categories.html', array(
             'bx_repeat:categories' => $aTmplVars
         ));
+    }
+
+    /**
+     * Random chart slice colour as #rrggbb.
+     */
+    protected function _getChartColor()
+    {
+        return sprintf('#%06x', random_int(0x000000, 0xFFFFFF));
     }
 
     protected function _entryBreadcrumb($iCategory, &$oPermalink, &$aTmplVarsItems)
