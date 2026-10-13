@@ -23,6 +23,9 @@ define('BX_ANALYTICS_IDENTITY_PERSISTENT', 'persistent');
 
 define('BX_ANALYTICS_GEO_NONE', 'none');
 define('BX_ANALYTICS_GEO_HEADERS', 'headers');
+define('BX_ANALYTICS_GEO_CLOUDFLARE', 'cloudflare');
+define('BX_ANALYTICS_GEO_VERCEL', 'vercel');
+define('BX_ANALYTICS_GEO_CLOUDFRONT', 'cloudfront');
 
 // hit and event types: pageviews, custom events, page leaves (engaged time), site actions
 define('BX_ANALYTICS_HIT_PAGEVIEW', 'pageview');
@@ -98,6 +101,7 @@ class BxAnalyticsConfig extends BxBaseModGeneralConfig
 
             // funnel steps at most
             'MAX_FUNNEL_STEPS' => 6,
+            'MAX_GOALS' => 20,
 
             // Query: values drawn on the chart, and rows in a CSV download at most
             'QUERY_SERIES_VALUES' => 5,
@@ -265,9 +269,31 @@ class BxAnalyticsConfig extends BxBaseModGeneralConfig
         return $this->_getList('bx_analytics_trusted_proxies');
     }
 
+    /**
+     * Where the visitor's location comes from: none, the headers of any CDN (the first one
+     * found), or the headers of one CDN only (the others can be sent by the client, since an
+     * edge sets its own headers and passes the rest through).
+     */
     public function getGeoSource()
     {
-        return getParam('bx_analytics_geo_source') == BX_ANALYTICS_GEO_HEADERS ? BX_ANALYTICS_GEO_HEADERS : BX_ANALYTICS_GEO_NONE;
+        $sSource = getParam('bx_analytics_geo_source');
+
+        return in_array($sSource, [BX_ANALYTICS_GEO_HEADERS, BX_ANALYTICS_GEO_CLOUDFLARE, BX_ANALYTICS_GEO_VERCEL, BX_ANALYTICS_GEO_CLOUDFRONT], true) ? $sSource : BX_ANALYTICS_GEO_NONE;
+    }
+
+    /**
+     * The CDN whose location headers are read ('' for any), or false when the location isn't
+     * read at all.
+     *
+     * @return string|false
+     */
+    public function getGeoEdge()
+    {
+        $sSource = $this->getGeoSource();
+        if($sSource == BX_ANALYTICS_GEO_NONE)
+            return false;
+
+        return $sSource == BX_ANALYTICS_GEO_HEADERS ? '' : $sSource;
     }
 
     public function getRetentionDays()

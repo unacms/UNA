@@ -59,6 +59,7 @@ APP_ORIGIN=neo://app
 | `EAS_PROJECT_ID` | Optional. EAS builds and updates. |
 | `REDIS_URL` | Multi-tenant mode only: the domain map. |
 | `PORT`, `HOST`, `PROTO`, `HTTPS` | Self-hosted web server (`apps/next/pm2.config.js`). |
+| `NEO_EDGE` | Optional. What sits in front of the web server, so the proxy passes UNA only the visitor address and location headers it set: `vercel` (the default on Vercel), `cloudflare`, `cloudfront`, `proxy` (the default: a reverse proxy or load balancer that appends to `X-Forwarded-For`, such as nginx with `$proxy_add_x_forwarded_for`, Caddy or Railway) or `none` (browsers reach `next start` directly). |
 | `NEO_IMAGES_ALLOW_LOCAL_IP` | Local development only. `1` lets `next/image` load images from a UNA on your machine or network; see below. |
 
 Next.js refuses to optimize an image whose host resolves to a private IP address (`127.0.0.1`, `::1`, `10.x`, `192.168.x`, ...). Against a local UNA (`UNA_URL=http://localhost:8088`), the dev server then logs "upstream image ... hostname resolved to private IP" and `/_next/image` answers 400 for every UNA image. Set `NEO_IMAGES_ALLOW_LOCAL_IP=1` in `.env.local` and restart the dev server; it turns on Next's `images.dangerouslyAllowLocalIP`.

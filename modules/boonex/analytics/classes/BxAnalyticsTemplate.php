@@ -1811,7 +1811,7 @@ class BxAnalyticsTemplate extends BxBaseModGeneralTemplate
             ];
 
         $sGeo = _t('_bx_analytics_txt_check_geo_none');
-        if($aCheck['geo_source'] != BX_ANALYTICS_GEO_HEADERS)
+        if($aCheck['geo_source'] == BX_ANALYTICS_GEO_NONE)
             $sGeo = _t('_bx_analytics_txt_check_geo_off');
         elseif($aCheck['country_header'] !== '')
             $sGeo = _t('_bx_analytics_txt_check_geo_header', $this->_esc(str_replace('_', '-', preg_replace('/^HTTP_/', '', $aCheck['country_header']))), $this->_esc($aCheck['country']));

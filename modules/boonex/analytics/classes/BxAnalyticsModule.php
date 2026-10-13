@@ -103,6 +103,15 @@ class BxAnalyticsModule extends BxDolModule
      * over HTTP shows nothing past it.
      */
     const REPORT_CACHE_GUARD = "<?php exit; ?>\n";
+
+    /**
+     * Cache name of the reports' generation (not under REPORT_CACHE_PREFIX, so pruning the
+     * expired reports keeps it) and how long it is kept: long past any report.
+     */
+    const REPORT_CACHE_GENERATION = 'bx_analytics_reports_generation';
+    const REPORT_CACHE_GENERATION_TTL = 2592000;
+
+    protected $_sReportCacheGeneration = null;
           
     function __construct(&$aModule)
     {
@@ -1429,6 +1438,9 @@ class BxAnalyticsModule extends BxDolModule
         return [
             BX_ANALYTICS_GEO_NONE => _t('_bx_analytics_geo_none'),
             BX_ANALYTICS_GEO_HEADERS => _t('_bx_analytics_geo_headers'),
+            BX_ANALYTICS_GEO_CLOUDFLARE => _t('_bx_analytics_geo_cloudflare'),
+            BX_ANALYTICS_GEO_VERCEL => _t('_bx_analytics_geo_vercel'),
+            BX_ANALYTICS_GEO_CLOUDFRONT => _t('_bx_analytics_geo_cloudfront'),
         ];
     }
 
@@ -1512,16 +1524,37 @@ class BxAnalyticsModule extends BxDolModule
 
     /**
      * Drop every cached report, after a change that reports show (goals, funnels, the status
-     * of an error). Keys of the database cache are `db_<name>_<site hash>.php` (see
-     * BxDolDb::genDbCacheKey), so the prefix is the name's start after `db_`.
+     * of an error, a deleted member). Report names carry a generation, and a new one leaves
+     * the old copies to expire: Memcache and Memcached delete by prefix by emptying the whole
+     * server, and Redis by a KEYS scan of every key, so nothing is deleted by prefix there.
+     * Files are deleted too (keys of the database cache are `db_<name>_<site hash>`, see
+     * BxDolDb::genDbCacheKey, so the prefix is the name's start after `db_`).
      */
     public function cleanReportCache()
     {
         $oCache = $this->_getReportCacheEngine();
         if(!$oCache)
-            $oCache = $this->_oDb->getDbCacheObject();
-        if($oCache)
+            return;
+
+        if($oCache instanceof BxDolCacheFileHtml)
             $oCache->removeAllByPrefix('db_' . $this->_oConfig->CNF['REPORT_CACHE_PREFIX']);
+
+        $this->_sReportCacheGeneration = sprintf('%.6F', microtime(true));
+        $oCache->setData($this->_oDb->genDbCacheKey(self::REPORT_CACHE_GENERATION), $this->_sReportCacheGeneration, self::REPORT_CACHE_GENERATION_TTL);
+    }
+
+    /**
+     * The generation of cached reports: changed by cleanReportCache(), '' before the first.
+     */
+    protected function _getReportCacheGeneration()
+    {
+        if($this->_sReportCacheGeneration !== null)
+            return $this->_sReportCacheGeneration;
+
+        $oCache = $this->_getReportCacheEngine();
+        $sGeneration = $oCache ? $oCache->getData($this->_oDb->genDbCacheKey(self::REPORT_CACHE_GENERATION)) : '';
+
+        return $this->_sReportCacheGeneration = is_string($sGeneration) ? $sGeneration : '';
     }
 
     /**
@@ -1598,8 +1631,9 @@ class BxAnalyticsModule extends BxDolModule
 
     /**
      * The cache name of a report: the report, the resolved filter (not the current second,
-     * so a cached copy serves the whole period), its parameters, the language and what the
-     * viewer may see (money, people, managing, administration), since reports differ by those.
+     * so a cached copy serves the whole period), the parameters the report reads, the
+     * language, what the viewer may see (money, people, managing, administration), since
+     * reports differ by those, and the generation (see cleanReportCache).
      */
     protected function _getReportCacheName($sReport, $oFilter, $aParams)
     {
@@ -1607,7 +1641,7 @@ class BxAnalyticsModule extends BxDolModule
         unset($aFilter['now'], $aFilter['buckets']);
 
         $aOwn = [];
-        foreach($aParams as $sKey => $mixedValue)
+        foreach($this->getReports()->getCacheParams($sReport, $aParams) as $sKey => $mixedValue)
             if(is_string($sKey) && $sKey !== '' && $sKey[0] != '_')
                 $aOwn[$sKey] = $mixedValue;
         ksort($aOwn);
@@ -1619,7 +1653,7 @@ class BxAnalyticsModule extends BxDolModule
             $this->checkAllowedManage() === CHECK_ACTION_RESULT_ALLOWED,
         ];
 
-        return $this->_oConfig->CNF['REPORT_CACHE_PREFIX'] . hash('sha256', json_encode([$sReport, $aFilter, $aOwn, bx_lang_name(), $aViewer]));
+        return $this->_oConfig->CNF['REPORT_CACHE_PREFIX'] . hash('sha256', json_encode([$sReport, $aFilter, $aOwn, bx_lang_name(), $aViewer, $this->_getReportCacheGeneration()]));
     }
 
     /**
@@ -2127,6 +2161,8 @@ class BxAnalyticsModule extends BxDolModule
                 $sName = trim((string)bx_get('name', 'post'));
                 if($aGoal === false || $sName === '' || get_mb_len($sName) > 128)
                     $aResult = ['error' => _t('_bx_analytics_txt_goal_invalid')];
+                else if(!$iId && $this->isGoalLimitReached())
+                    $aResult = ['error' => _t('_bx_analytics_txt_goal_limit', $this->_oConfig->CNF['MAX_GOALS'])];
                 else {
                     $iId = $this->_oDb->saveGoal($iId, ['name' => $sName] + $aGoal);
                     $aResult = ['ok' => (bool)$iId, 'id' => $iId];
@@ -2136,6 +2172,15 @@ class BxAnalyticsModule extends BxDolModule
         }
 
         $this->_outputJson($aResult);
+    }
+
+    /**
+     * Whether there are as many goals as there can be: the Goals report counts each one in
+     * both periods, a query per goal and period.
+     */
+    public function isGoalLimitReached()
+    {
+        return $this->_oDb->getGoalsCount() >= $this->_oConfig->CNF['MAX_GOALS'];
     }
 
     /**

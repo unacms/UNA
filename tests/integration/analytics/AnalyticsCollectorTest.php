@@ -199,6 +199,12 @@ class AnalyticsCollectorTest extends BxDolIntegrationTestCase
             $this->assertNotContains($a['visitor'], [$sMemberVisitor, $sGuestVisitor]);
         }
         $this->assertSame([0, 0], array_map('intval', $oDb->getColumn("SELECT `object_id` FROM `bx_analytics_events` WHERE `type` = 'una' AND `ts` < :to", ['to' => self::NOW + 30 * 86400])), 'the account and the profile the actions were about');
+
+        // the profile's creation is found by a key, not among every profile created
+        $aKey = $oDb->getAll("SHOW INDEX FROM `bx_analytics_events` WHERE `Key_name` = 'object'");
+        $this->assertSame(['type', 'name', 'object_id'], array_column($aKey, 'Column_name'));
+        $aPlan = $oDb->getRow("EXPLAIN SELECT `id` FROM `bx_analytics_events` WHERE `type` = 'una' AND `name` = 'profile_add' AND `object_id` = :profile", ['profile' => $iProfileId]);
+        $this->assertContains('object', explode(',', (string)$aPlan['possible_keys']));
     }
 
     public function testSignInTakesOverOnlyARecentGuestVisit()
@@ -242,6 +248,8 @@ class AnalyticsCollectorTest extends BxDolIntegrationTestCase
             'http://una.test/page.php?i=unsubscribe-notifications&id=42&code=5f4dcc3b5aa765d61d8327deb882cf99',
             'http://una.test/page/oauth-callback?code=4%2F0AX4XfWh&state=xyz&access_token=ya29.secret',
             'http://una.test/page/invite?Email=jane%40example.com&api_key=k1&_hsenc=p2ANqtz',
+            'http://una.test/create-account?icode=Ab3kP9xQ&lang=en',
+            'http://una.test/page.php?i=pricing&promocode=SPRING26&apikey=k2&user_sid=9',
             'http://una.test/page/search?q=jane%40example.com',
         ];
         foreach ($aUrls as $i => $sUrl)
@@ -254,6 +262,8 @@ class AnalyticsCollectorTest extends BxDolIntegrationTestCase
             '/page.php?i=unsubscribe-notifications&id=42',
             '/page/oauth-callback?state=xyz',
             '/page/invite',
+            '/create-account?lang=en',
+            '/page.php?i=pricing',
             '/page/search?q=<redacted>',
         ], $aPaths, 'keys, codes, tokens and addresses are dropped; what is left is redacted');
 
@@ -264,6 +274,21 @@ class AnalyticsCollectorTest extends BxDolIntegrationTestCase
         $oCollector = new BxAnalyticsCollector($this->_oModule, new BxAnalyticsRequest($this->_server('66.249.66.1')), self::NOW);
         $this->assertTrue($oCollector->collectBot('Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)', '/page.php?i=forgot-password&key=abcDEF1234567890xyz'));
         $this->assertSame(['/page.php?i=forgot-password'], BxDolDb::getInstance()->getColumn("SELECT `path` FROM `bx_analytics_bot_pages` WHERE `day` < '2002-01-01'"));
+    }
+
+    public function testLocationFromTheChosenEdge()
+    {
+        // behind Vercel, a visitor sends Cloudflare's country header too
+        $aHeaders = ['HTTP_CF_IPCOUNTRY' => 'KP', 'HTTP_X_VERCEL_IP_COUNTRY' => 'DE', 'HTTP_X_VERCEL_IP_CITY' => 'Berlin'];
+        $aHit = ['platform' => 'next-web', 'hits' => [['type' => 'pageview', 'url' => 'https://neo.test/']]];
+
+        foreach (['vercel', 'headers', 'none'] as $i => $sSource) {
+            $this->_setOption('bx_analytics_geo_source', $sSource);
+            $this->_collect($this->_server('81.2.69.' . (150 + $i), $aHeaders), $aHit, self::NOW + $i * 10);
+        }
+
+        $aSessions = $this->_sessions();
+        $this->assertSame([['DE', 'Berlin'], ['KP', 'Berlin'], ['', '']], array_map(function ($a) { return [$a['country'], $a['city']]; }, $aSessions));
     }
 
     public function testSiteActionsFollowTheVisitorsChoice()
@@ -520,6 +545,15 @@ class AnalyticsCollectorTest extends BxDolIntegrationTestCase
         $this->assertEquals(100, $aGoals[$iPricing]['rate']);
         $this->assertSame(2, $aGoals[$iBuy]['conversions']);
         $this->assertEquals(66.67, $aGoals[$iBuy]['rate']);
+
+        // goals are capped: the report counts each one in both periods
+        $iMax = $this->_oModule->_oConfig->CNF['MAX_GOALS'];
+        $this->assertSame($oDb->getGoalsCount() >= $iMax, $this->_oModule->isGoalLimitReached());
+        for ($i = $oDb->getGoalsCount(); $i < $iMax + 1; $i++)
+            $this->_aGoals[] = $oDb->saveGoal(0, ['name' => 'Test 2001 goal ' . $i, 'type' => 'page', 'pattern' => '/goal-' . $i]);
+        $this->assertTrue($this->_oModule->isGoalLimitReached());
+        $this->assertCount($iMax, $oDb->getGoals($iMax));
+        $this->assertCount($iMax, $oReports->getGoals($oFilter)['goals']);
 
         $aFunnel = $oReports->getFunnels($oFilter, ['funnel' => $iFunnel]);
         $this->assertSame($iFunnel, $aFunnel['funnel']['id']);

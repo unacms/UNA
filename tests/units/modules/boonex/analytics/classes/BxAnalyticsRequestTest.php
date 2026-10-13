@@ -60,6 +60,29 @@ class BxAnalyticsRequestTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('São Paulo', (new BxAnalyticsRequest(['HTTP_X_VERCEL_IP_CITY' => 'S%C3%A3o%20Paulo']))->getCity());
     }
 
+    public function testLocationFromOneEdgeOnly()
+    {
+        // behind Vercel, a client adds Cloudflare's headers, which Vercel passes through
+        $oRequest = new BxAnalyticsRequest([
+            'HTTP_CF_IPCOUNTRY' => 'KP',
+            'HTTP_CF_IPCITY' => 'Pyongyang',
+            'HTTP_CF_IPLATITUDE' => '39.03',
+            'HTTP_CF_IPLONGITUDE' => '125.75',
+            'HTTP_X_VERCEL_IP_COUNTRY' => 'DE',
+            'HTTP_X_VERCEL_IP_COUNTRY_REGION' => 'BE',
+            'HTTP_X_VERCEL_IP_CITY' => 'Berlin',
+        ]);
+        $this->assertSame('KP', $oRequest->getCountry(), 'any edge: the first header found');
+        $this->assertSame(['DE', 'BE', 'Berlin', null], [$oRequest->getCountry('vercel'), $oRequest->getRegion('vercel'), $oRequest->getCity('vercel'), $oRequest->getCoordinates('vercel')]);
+        $this->assertSame(['header' => 'HTTP_X_VERCEL_IP_COUNTRY', 'country' => 'DE'], $oRequest->getCountryHeader('vercel'));
+        $this->assertSame(['KP', '', 'Pyongyang', [39.0, 125.8]], [$oRequest->getCountry('cloudflare'), $oRequest->getRegion('cloudflare'), $oRequest->getCity('cloudflare'), $oRequest->getCoordinates('cloudflare')]);
+        $this->assertSame(['', '', '', null], [$oRequest->getCountry('cloudfront'), $oRequest->getRegion('cloudfront'), $oRequest->getCity('cloudfront'), $oRequest->getCoordinates('cloudfront')]);
+        $this->assertSame('', $oRequest->getCountry('unknown'), 'an unknown edge has no headers');
+
+        $oRequest = new BxAnalyticsRequest(['HTTP_CLOUDFRONT_VIEWER_COUNTRY' => 'fr', 'HTTP_CLOUDFRONT_VIEWER_CITY' => 'Lyon', 'HTTP_CLOUDFRONT_VIEWER_LATITUDE' => '45.76', 'HTTP_CLOUDFRONT_VIEWER_LONGITUDE' => '4.83']);
+        $this->assertSame(['FR', 'Lyon', [45.8, 4.8]], [$oRequest->getCountry('cloudfront'), $oRequest->getCity('cloudfront'), $oRequest->getCoordinates('cloudfront')]);
+    }
+
     public static function providerPlatform()
     {
         return [

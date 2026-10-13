@@ -81,6 +81,8 @@ CREATE TABLE IF NOT EXISTS `bx_analytics_events` (
   -- the same for page titles: the titles tab, a title filter
   KEY `title` (`type`, `title`, `ts`, `platform`, `session_id`, `visitor`, `engaged`),
   KEY `name` (`type`, `name`, `ts`),
+  -- a site action about something: forgetting a deleted profile finds its creation by it
+  KEY `object` (`type`, `name`, `object_id`),
   -- a member's events: forgetting a deleted profile, the member's actions in a period
   KEY `profile_id` (`profile_id`, `ts`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

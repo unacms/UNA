@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { UNA_URL, UNA_API_KEY, MULTITENANT, PREVIEW_DOMAIN, PREVIEW_API_KEY, joinUnaUrl } from 'app/config';
 import { getDomainByHostname } from './lib/domains/domains';
+import { dropForeignClientHeaders, resolveEdge } from './lib/client-headers';
 
 export const config = {
     // Skip /.well-known/* so Digital Asset Links / AASA hit App Router routes
@@ -8,6 +9,9 @@ export const config = {
     matcher: ["/((?!sw.js|logo192.png|loader.svg|favicon.ico|favicon.svg|manifest.json|static/|lucide/|_vercel|\\.well-known).*)"],
     //runtime: 'experimental-edge',
 };
+
+// The CDN or proxy in front of NEO, whose address and location headers UNA may read.
+const EDGE = resolveEdge(process.env);
 
 const TENANT_HEADERS = ['x-tenant-id', 'x-tenant-una-url', 'x-tenant-una-key', 'x-tenant-revision'];
 
@@ -82,7 +86,9 @@ function rewriteToUna(request, tenant, unaPath) {
         unaApiKey = tenant.unaApiKey;
     }
 
-    const tmpHeaders = new Headers(request.headers);
+    // UNA trusts the visitor's address and location headers on requests with the API key:
+    // pass only those the edge set, not ones the browser added.
+    const tmpHeaders = dropForeignClientHeaders(new Headers(request.headers), EDGE);
     tmpHeaders.set('authorization', `Bearer ${unaApiKey}`);
     tmpHeaders.set('cookie', cookieHeaderFromRequest(request));
 

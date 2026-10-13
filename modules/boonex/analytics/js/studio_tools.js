@@ -259,7 +259,8 @@ BxAnalyticsStudioTools.prototype.runApi = function (oForm) {
         })
         .then(function () {
             oSubmit.disabled = false;
-        });
+        })
+        .catch(function () {}); // nothing is left to fail: the catch above reports errors
 };
 
 BxAnalyticsStudioTools.prototype.formatBytes = function (iBytes) {
@@ -345,7 +346,8 @@ BxAnalyticsStudioTools.prototype.runSetup = function (oButton) {
         })
         .then(function () {
             oButton.disabled = false;
-        });
+        })
+        .catch(function () {}); // nothing is left to fail: the catch above reports errors
 };
 
 BxAnalyticsStudioTools.prototype.post = function (sAction, oData) {

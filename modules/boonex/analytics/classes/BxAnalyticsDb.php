@@ -964,9 +964,17 @@ class BxAnalyticsDb extends BxBaseModGeneralDb
      * Goals and funnels
      */
 
-    public function getGoals()
+    /**
+     * Goals in their order, the first `$iLimit` only when given.
+     */
+    public function getGoals($iLimit = 0)
     {
-        return $this->getAll("SELECT * FROM `" . $this->_oConfig->CNF['TABLE_GOALS'] . "` ORDER BY `order`, `id`");
+        return $this->getAll("SELECT * FROM `" . $this->_oConfig->CNF['TABLE_GOALS'] . "` ORDER BY `order`, `id`" . ((int)$iLimit > 0 ? " LIMIT " . (int)$iLimit : ''));
+    }
+
+    public function getGoalsCount()
+    {
+        return (int)$this->getOne("SELECT COUNT(*) FROM `" . $this->_oConfig->CNF['TABLE_GOALS'] . "`");
     }
 
     public function getGoal($iId)
@@ -1349,7 +1357,8 @@ class BxAnalyticsDb extends BxBaseModGeneralDb
 
     /**
      * A new page of the module, with copies of the blocks in some cells of another page.
-     * The copies are shown in NEO (active_api) and can't be copied again from the builder.
+     * The copies are shown in NEO when their source is (active_api: a block NEO has no
+     * element for shows as raw data there) and can't be copied again from the builder.
      *
      * @param array $aPage object, uri, title_system, title, module, layout_id, author
      * @param string $sFrom the page whose blocks are copied
@@ -1376,7 +1385,7 @@ class BxAnalyticsDb extends BxBaseModGeneralDb
         $sIn = $this->_getInSql(array_map('intval', $aCells), 'cell', $aBindings);
 
         return (int)$this->query("INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title_system`, `title`, `designbox_id`, `class`, `visible_for_levels`, `type`, `content`, `deletable`, `copyable`, `active`, `active_api`, `order`)
-            SELECT :object, `cell_id`, `module`, `title_system`, `title`, `designbox_id`, `class`, `visible_for_levels`, `type`, `content`, 1, 0, 1, 1, `order`
+            SELECT :object, `cell_id`, `module`, `title_system`, `title`, `designbox_id`, `class`, `visible_for_levels`, `type`, `content`, 1, 0, 1, `active_api`, `order`
             FROM `sys_pages_blocks` WHERE `object` = :from AND `active` = 1 AND `cell_id` IN (" . $sIn . ") ORDER BY `cell_id`, `order`", $aBindings);
     }
 
@@ -2450,9 +2459,12 @@ class BxAnalyticsDb extends BxBaseModGeneralDb
 
     /**
      * Subscriptions that were paying or in trial at some time in a period: paid or started
-     * with a trial before its end, and not cancelled before its start.
+     * with a trial before its end, and not cancelled or lapsed before its start.
+     *
+     * @param array $aEnd when an unpaid subscription stops paying: unit_seconds [period unit =>
+     *      seconds], unpaid (the status), grace (seconds); none to read lapsed ones too
      */
-    public function getSubscriptionRows($aFilter)
+    public function getSubscriptionRows($aFilter, $aEnd = [])
     {
         $aBindings = ['from' => (int)$aFilter['from'], 'to' => (int)$aFilter['to'], 'payment' => isset($aFilter['payment']) ? $aFilter['payment'] : ''];
         $sPlatform = '';
@@ -2461,7 +2473,23 @@ class BxAnalyticsDb extends BxBaseModGeneralDb
             $aBindings['platform'] = $aFilter['platform'];
         }
 
-        return $this->getAll("SELECT `pending_id`, `module`, `item_id`, `period`, `period_unit`, `trial`, `mrr_default`, `started`, `first_paid`, `last_paid`, `canceled`, `status` FROM `" . $this->_oConfig->CNF['TABLE_SUBSCRIPTIONS'] . "` WHERE `payment` = :payment" . $sPlatform . " AND (`canceled` = 0 OR `canceled` >= :from) AND ((`first_paid` > 0 AND `first_paid` < :to) OR ((`trial` > 0 OR `status` = 'trial') AND `started` < :to))", $aBindings);
+        // an unpaid subscription stopped paying when its last paid period and the grace time
+        // ended, without a cancellation: those that stopped before the period stay out, or
+        // every lapsed one would be read forever (see BxAnalyticsReports::_getSubscriptionEnd)
+        $sLapsed = '';
+        if(!empty($aEnd['unit_seconds'])) {
+            $aUnits = [];
+            foreach($aEnd['unit_seconds'] as $sUnit => $iSeconds) {
+                $sBinding = 'unit' . count($aUnits);
+                $aUnits[] = 'WHEN :' . $sBinding . ' THEN ' . (int)$iSeconds;
+                $aBindings[$sBinding] = $sUnit;
+            }
+            $sLapsed = " AND NOT (`canceled` = 0 AND `status` = :unpaid AND `last_paid` > 0 AND `last_paid` + :grace + GREATEST(1, `period`) * (CASE `period_unit` " . implode(' ', $aUnits) . " ELSE 0 END) < :from)";
+            $aBindings['unpaid'] = $aEnd['unpaid'];
+            $aBindings['grace'] = (int)$aEnd['grace'];
+        }
+
+        return $this->getAll("SELECT `pending_id`, `module`, `item_id`, `period`, `period_unit`, `trial`, `mrr_default`, `started`, `first_paid`, `last_paid`, `canceled`, `status` FROM `" . $this->_oConfig->CNF['TABLE_SUBSCRIPTIONS'] . "` WHERE `payment` = :payment" . $sPlatform . " AND (`canceled` = 0 OR `canceled` >= :from)" . $sLapsed . " AND ((`first_paid` > 0 AND `first_paid` < :to) OR ((`trial` > 0 OR `status` = 'trial') AND `started` < :to))", $aBindings);
     }
 
     /**

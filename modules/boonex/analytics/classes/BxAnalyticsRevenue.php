@@ -137,6 +137,14 @@ class BxAnalyticsRevenue
     }
 
     /**
+     * Seconds per subscription period unit: [unit => seconds].
+     */
+    public static function getUnitSeconds()
+    {
+        return self::$_aUnitSeconds;
+    }
+
+    /**
      * Length of a subscription period in seconds, or null for a unit the payment module doesn't use.
      */
     public static function getPeriodSeconds($iPeriod, $sUnit)

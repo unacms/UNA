@@ -99,14 +99,17 @@ class BxAnalyticsCollector
      */
     protected $_aSecretParams = [
         'key', 'code', 'token', 'hash', 'secret', 'password', 'pass', 'passwd', 'pwd', 'auth', 'sid', 'sk',
-        'otp', 'email', 'session', 'ticket', 'invite', 'confirm', 'signature', 'sig',
+        'otp', 'email', 'session', 'ticket', 'invite', 'icode', 'confirm', 'signature', 'sig',
         '_hsenc', '_hsmi', 'mkt_tok', '_ke',
     ];
 
     /**
-     * Compound names of such parameters: api_key, access_token, reset-code, user.email...
+     * Compound names of such parameters, with or without a separator: api_key, access_token,
+     * reset-code, user.email, apikey, icode (an invitation), promocode, passcode... A few
+     * harmless names that end the same way (zipcode) are dropped too. `sid` only after a
+     * separator, as too many words end in it.
      */
-    protected $_sSecretParamsPattern = '/[_.-](key|code|token|hash|secret|password|passwd|pwd|auth|sid|session|otp|email|signature)$/';
+    protected $_sSecretParamsPattern = '/(?:key|code|token|hash|secret|password|passwd|pwd|auth|session|otp|email|signature|[_.-]sid)$/';
 
     /**
      * Seconds between a guest visit's last hit and a member's hit for the visit to become the
@@ -171,7 +174,7 @@ class BxAnalyticsCollector
             'browser' => $aClient['browser'],
             'os' => $aClient['os'],
             'device' => $aClient['device'],
-            'country' => $this->_oConfig->getGeoSource() == BX_ANALYTICS_GEO_HEADERS ? $this->_oRequest->getCountry() : '',
+            'country' => ($sEdge = $this->_oConfig->getGeoEdge()) !== false ? $this->_oRequest->getCountry($sEdge) : '',
         ];
 
         $aSession = $this->_getSession($sPlatform, $aVisitor, $iProfileId, $aPayload, $aClient, $aHits, $sIp);
@@ -214,7 +217,8 @@ class BxAnalyticsCollector
         $aAccept = $this->_accept(is_array($aPayload) ? $aPayload : [], $aContext, true);
         if($this->_isOverLimit($aAccept['ip']))
             $aAccept['reasons'][] = 'rate_limited';
-        $aCountry = $this->_oRequest->getCountryHeader();
+        $sEdge = $this->_oConfig->getGeoEdge();
+        $aCountry = $this->_oRequest->getCountryHeader($sEdge !== false ? $sEdge : '');
 
         return [
             'reasons' => !empty($aAccept['reasons']) ? $aAccept['reasons'] : ['ok'],
@@ -582,12 +586,12 @@ class BxAnalyticsCollector
         $sScreen = isset($aPayload['screen']) && is_string($aPayload['screen']) && preg_match('/^\d{2,5}x\d{2,5}$/', $aPayload['screen']) ? $aPayload['screen'] : '';
 
         $aGeo = ['country' => '', 'region' => '', 'city' => '', 'lat' => null, 'lng' => null];
-        if($this->_oConfig->getGeoSource() == BX_ANALYTICS_GEO_HEADERS) {
-            $aCoordinates = $this->_oRequest->getCoordinates();
+        if(($sEdge = $this->_oConfig->getGeoEdge()) !== false) {
+            $aCoordinates = $this->_oRequest->getCoordinates($sEdge);
             $aGeo = [
-                'country' => $this->_oRequest->getCountry(),
-                'region' => $this->_oRequest->getRegion(),
-                'city' => $this->_oRequest->getCity(),
+                'country' => $this->_oRequest->getCountry($sEdge),
+                'region' => $this->_oRequest->getRegion($sEdge),
+                'city' => $this->_oRequest->getCity($sEdge),
                 'lat' => $aCoordinates ? $aCoordinates[0] : null,
                 'lng' => $aCoordinates ? $aCoordinates[1] : null,
             ];

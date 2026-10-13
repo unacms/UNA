@@ -32,14 +32,35 @@ class BxAnalyticsRequest
     protected static $_aInternalRanges = ['100.64.0.0/10'];
 
     /**
-     * Country headers set by CDNs and hosting edges.
+     * Location headers set by CDNs and hosting edges, per edge: country, region, city and
+     * coordinates. With no edge chosen, the first one found is read, in this order. An edge
+     * sets its own headers and passes the others through, so a client can add another CDN's.
      */
-    protected static $_aCountryHeaders = [
-        'HTTP_CF_IPCOUNTRY',
-        'HTTP_X_VERCEL_IP_COUNTRY',
-        'HTTP_CLOUDFRONT_VIEWER_COUNTRY',
-        'HTTP_X_COUNTRY_CODE',
-        'HTTP_X_APPENGINE_COUNTRY',
+    protected static $_aGeoHeaders = [
+        'cloudflare' => [
+            'country' => ['HTTP_CF_IPCOUNTRY'],
+            'region' => [],
+            'city' => ['HTTP_CF_IPCITY'],
+            'coordinates' => [['HTTP_CF_IPLATITUDE', 'HTTP_CF_IPLONGITUDE']],
+        ],
+        'vercel' => [
+            'country' => ['HTTP_X_VERCEL_IP_COUNTRY'],
+            'region' => ['HTTP_X_VERCEL_IP_COUNTRY_REGION'],
+            'city' => ['HTTP_X_VERCEL_IP_CITY'],
+            'coordinates' => [['HTTP_X_VERCEL_IP_LATITUDE', 'HTTP_X_VERCEL_IP_LONGITUDE']],
+        ],
+        'cloudfront' => [
+            'country' => ['HTTP_CLOUDFRONT_VIEWER_COUNTRY'],
+            'region' => ['HTTP_CLOUDFRONT_VIEWER_COUNTRY_REGION'],
+            'city' => ['HTTP_CLOUDFRONT_VIEWER_CITY'],
+            'coordinates' => [['HTTP_CLOUDFRONT_VIEWER_LATITUDE', 'HTTP_CLOUDFRONT_VIEWER_LONGITUDE']],
+        ],
+        '' => [
+            'country' => ['HTTP_CF_IPCOUNTRY', 'HTTP_X_VERCEL_IP_COUNTRY', 'HTTP_CLOUDFRONT_VIEWER_COUNTRY', 'HTTP_X_COUNTRY_CODE', 'HTTP_X_APPENGINE_COUNTRY'],
+            'region' => ['HTTP_X_VERCEL_IP_COUNTRY_REGION'],
+            'city' => ['HTTP_X_VERCEL_IP_CITY', 'HTTP_CF_IPCITY'],
+            'coordinates' => [['HTTP_X_VERCEL_IP_LATITUDE', 'HTTP_X_VERCEL_IP_LONGITUDE'], ['HTTP_CF_IPLATITUDE', 'HTTP_CF_IPLONGITUDE']],
+        ],
     ];
 
     protected $_aServer;
@@ -123,10 +144,12 @@ class BxAnalyticsRequest
 
     /**
      * ISO 3166-1 alpha-2 country from CDN headers, or ''. "XX" and "T1" (Tor) mean unknown.
+     *
+     * @param string $sEdge the CDN whose headers are read (cloudflare, vercel, cloudfront), '' for any
      */
-    public function getCountry()
+    public function getCountry($sEdge = '')
     {
-        $aCountry = $this->getCountryHeader();
+        $aCountry = $this->getCountryHeader($sEdge);
 
         return $aCountry ? $aCountry['country'] : '';
     }
@@ -134,11 +157,12 @@ class BxAnalyticsRequest
     /**
      * The CDN header the country comes from and its value, or null when there is none.
      *
+     * @param string $sEdge as for getCountry()
      * @return array|null header (as in $_SERVER) and country
      */
-    public function getCountryHeader()
+    public function getCountryHeader($sEdge = '')
     {
-        foreach(self::$_aCountryHeaders as $sHeader) {
+        foreach(self::_getGeoHeaders($sEdge, 'country') as $sHeader) {
             $sValue = mb_strtoupper(trim($this->_get($sHeader)));
             if(preg_match('/^[A-Z]{2}$/', $sValue) && !in_array($sValue, ['XX', 'T1', 'ZZ'], true))
                 return ['header' => $sHeader, 'country' => $sValue];
@@ -148,31 +172,30 @@ class BxAnalyticsRequest
     }
 
     /**
-     * Region and city where the edge provides them (Vercel), URL-decoded, or ''.
+     * Region and city where the edge provides them, URL-decoded, or ''.
+     *
+     * @param string $sEdge as for getCountry()
      */
-    public function getRegion()
+    public function getRegion($sEdge = '')
     {
-        return $this->_clean(rawurldecode($this->_get('HTTP_X_VERCEL_IP_COUNTRY_REGION')), 64);
+        return $this->_clean(rawurldecode($this->_getFirst(self::_getGeoHeaders($sEdge, 'region'))), 64);
     }
 
-    public function getCity()
+    public function getCity($sEdge = '')
     {
-        $sCity = $this->_get('HTTP_X_VERCEL_IP_CITY');
-        if($sCity === '')
-            $sCity = $this->_get('HTTP_CF_IPCITY');
-
-        return $this->_clean(rawurldecode($sCity), 64);
+        return $this->_clean(rawurldecode($this->_getFirst(self::_getGeoHeaders($sEdge, 'city'))), 64);
     }
 
     /**
-     * Visitor coordinates from the edge (Vercel, or Cloudflare's visitor location headers),
-     * rounded to one decimal (about 10 km), or null.
+     * Visitor coordinates from the edge (Vercel, CloudFront, or Cloudflare's visitor location
+     * headers), rounded to one decimal (about 10 km), or null.
      *
+     * @param string $sEdge as for getCountry()
      * @return array|null [lat, lng]
      */
-    public function getCoordinates()
+    public function getCoordinates($sEdge = '')
     {
-        foreach([['HTTP_X_VERCEL_IP_LATITUDE', 'HTTP_X_VERCEL_IP_LONGITUDE'], ['HTTP_CF_IPLATITUDE', 'HTTP_CF_IPLONGITUDE']] as list($sLat, $sLng)) {
+        foreach(self::_getGeoHeaders($sEdge, 'coordinates') as list($sLat, $sLng)) {
             $sLatValue = $this->_get($sLat);
             $sLngValue = $this->_get($sLng);
             if(!is_numeric($sLatValue) || !is_numeric($sLngValue))
@@ -321,6 +344,29 @@ class BxAnalyticsRequest
     protected function _get($sKey)
     {
         return isset($this->_aServer[$sKey]) && is_string($this->_aServer[$sKey]) ? trim($this->_aServer[$sKey]) : '';
+    }
+
+    /**
+     * The first of some headers that isn't empty, or ''.
+     */
+    protected function _getFirst($aKeys)
+    {
+        foreach($aKeys as $sKey)
+            if(($sValue = $this->_get($sKey)) !== '')
+                return $sValue;
+
+        return '';
+    }
+
+    /**
+     * Location headers of an edge ('' for any) of a kind: country, region, city, coordinates.
+     * An unknown edge has none.
+     */
+    protected static function _getGeoHeaders($sEdge, $sKind)
+    {
+        $sEdge = (string)$sEdge;
+
+        return isset(self::$_aGeoHeaders[$sEdge][$sKind]) ? self::$_aGeoHeaders[$sEdge][$sKind] : [];
     }
 
     protected function _valid($sIp)

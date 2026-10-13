@@ -96,6 +96,48 @@ class BxAnalyticsReports
         return $sReport == 'map' && $this->_getTab($aParams, 'map', $this->_aReportTabs['map']) == 'live';
     }
 
+    /**
+     * The parameters a report reads, past the filter: its cache name is made of them. Blocks
+     * send the whole page URL, which also holds other blocks' tabs and pages, the chart's
+     * metric and opened rows; those would make a copy per combination of things the report
+     * never shows. A report missing here keeps every parameter.
+     */
+    public function getCacheParams($sReport, $aParams)
+    {
+        $aKeys = [
+            'overview' => [],
+            'top' => ['group', 'tab'],
+            'table' => ['table', 'tab', 'page'],
+            'query' => ['q_dim', 'q_metric', 'q_dir', 'page', 'page_query'],
+            'map' => ['tab', 'tab_map'],
+            'bots' => ['tab', 'tab_bots', 'page_bot_list'],
+            'events' => ['event', 'tab', 'tab_events', 'page_events'],
+            'sessions' => ['session', 'page_sessions'],
+            'users' => ['user', 'session', 'page_users', 'page_sessions'],
+            'journeys' => ['jfrom', 'via'],
+            'retention' => ['tab', 'tab_retention'],
+            'goals' => ['edit_goal'],
+            'funnels' => ['funnel', 'edit_funnel'],
+            'revenue' => ['tab', 'tab_revenue'],
+            'subscriptions' => [],
+            'sales' => [],
+            'credits' => [],
+            'errors' => ['error', 'tab', 'tab_errors', 'page_errors'],
+            'performance' => ['vital', 'vital_device', 'tab', 'tab_performance', 'page_performance'],
+        ];
+        if(!isset($aKeys[$sReport]))
+            return $aParams;
+
+        // a top list's tab, and a table's tab and page, are named after the group or the table
+        $aOwn = array_merge($aKeys[$sReport], ['limit', 'meta']);
+        if($sReport == 'top' && ($sGroup = (string)$this->_param($aParams, 'group')) !== '')
+            $aOwn[] = 'tab_' . $sGroup;
+        if($sReport == 'table' && ($sTable = (string)$this->_param($aParams, 'table')) !== '')
+            array_push($aOwn, 'tab_' . $sTable, 'page_' . $sTable);
+
+        return array_intersect_key($aParams, array_flip($aOwn));
+    }
+
     public function getGroups()
     {
         return $this->_aGroups;
@@ -1418,7 +1460,7 @@ class BxAnalyticsReports
         $iSessionsPrevious = (int)$aTotalsPrevious['sessions'];
 
         $aGoals = [];
-        foreach($this->_oDb->getGoals() as $aGoal) {
+        foreach($this->_oDb->getGoals($this->_oConfig->CNF['MAX_GOALS']) as $aGoal) {
             $aCurrent = $this->_oDb->getGoalTotals($aFilter, $aGoal);
             $aBefore = $this->_oDb->getGoalTotals($aPrevious, $aGoal);
             $fRate = $iSessions ? round(100 * $aCurrent['sessions'] / $iSessions, 2) : 0;
@@ -2075,7 +2117,11 @@ class BxAnalyticsReports
         bx_import('Revenue', $this->_oModule->_aModule);
 
         // subscriptions alive in either period, read once
-        $aRows = $this->_oDb->getSubscriptionRows(array_merge($aFilter, ['from' => $aPrevious['from']]));
+        $aRows = $this->_oDb->getSubscriptionRows(array_merge($aFilter, ['from' => $aPrevious['from']]), [
+            'unit_seconds' => BxAnalyticsRevenue::getUnitSeconds(),
+            'unpaid' => BxAnalyticsRevenue::STATUS_UNPAID,
+            'grace' => BxAnalyticsRevenue::UNPAID_GRACE,
+        ]);
 
         list($aCurrent) = $this->_sweepSubscriptions($aRows, [[$aFilter['from'], min($aFilter['to'], $iNow)]]);
         list($aBefore) = $this->_sweepSubscriptions($aRows, [[$aPrevious['from'], min($aPrevious['to'], $iNow)]]);

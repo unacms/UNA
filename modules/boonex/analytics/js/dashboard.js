@@ -48,14 +48,14 @@ BxAnalyticsDashboard.prototype.init = function () {
             sName = $this.getBlockName(oBlock);
             $this.setUrlParam('tab_' + sName, oTarget.getAttribute('data-bx-analytics-tab'));
             $this.setUrlParam('page_' + sName, null);
-            $this.reload(oBlock, true);
+            $this.reload(oBlock, true).catch(function () {}); // reload() shows its own failure
             return;
         }
 
         if ((oTarget = oEvent.target.closest('[data-bx-analytics-pager]'))) {
             oBlock = oTarget.closest('[data-bx-analytics-block]');
             $this.setUrlParam('page_' + oTarget.getAttribute('data-bx-analytics-pager'), oTarget.getAttribute('data-bx-analytics-page'));
-            $this.reload(oBlock, false);
+            $this.reload(oBlock, false).catch(function () {}); // reload() shows its own failure
             return;
         }
 
@@ -66,7 +66,7 @@ BxAnalyticsDashboard.prototype.init = function () {
             $this.setUrlParam(sName, sValue);
             $this.reload(oBlock, false).then(function (oNew) {
                 $this.focusAfterOpen(oNew, sName, sValue);
-            });
+            }, function () {}); // reload() shows its own failure
             return;
         }
 
@@ -120,7 +120,7 @@ BxAnalyticsDashboard.prototype.init = function () {
             var oBlock = oRefresh.closest('[data-bx-analytics-block]');
             var iEvery = 1000 * parseInt(oRefresh.getAttribute('data-bx-analytics-refresh'), 10);
             if (oBlock && !oBlock._bxAnalyticsBusy && Date.now() - (oBlock._bxAnalyticsLoaded || $this._iStarted) >= iEvery)
-                $this.reload(oBlock, false, true);
+                $this.reload(oBlock, false, true).catch(function () {}); // a quiet refresh tries again later
         });
     }, 5000);
     this._iStarted = Date.now();
@@ -214,7 +214,7 @@ BxAnalyticsDashboard.prototype.setUrlParam = function (sName, sValue) {
 BxAnalyticsDashboard.prototype.reloadAll = function () {
     var $this = this;
     document.querySelectorAll('[data-bx-analytics-block]').forEach(function (oBlock) {
-        $this.reload(oBlock, false);
+        $this.reload(oBlock, false).catch(function () {}); // reload() shows its own failure
     });
 };
 

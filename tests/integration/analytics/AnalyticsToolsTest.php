@@ -189,18 +189,27 @@ class AnalyticsToolsTest extends BxDolIntegrationTestCase
         $this->assertSame(['bx_analytics', 12, 1, 'page.php?i=' . $a['uri']], [$aPage['module'], (int)$aPage['layout_id'], (int)$aPage['deletable'], $aPage['url']]);
         $this->assertSame('PHPUnit analytics', _t($aPage['title']));
 
-        // the analytics page's center and right bar, all shown in NEO
-        $aSource = $oDb->getAll("SELECT `cell_id`, `content` FROM `sys_pages_blocks` WHERE `object` = 'bx_analytics_page' AND `active` = 1 AND `cell_id` IN (2, 3) ORDER BY `cell_id`, `order`");
+        // the analytics page's center and right bar, shown in NEO as their sources are
+        $aSource = $oDb->getAll("SELECT `cell_id`, `content`, `active_api` FROM `sys_pages_blocks` WHERE `object` = 'bx_analytics_page' AND `active` = 1 AND `cell_id` IN (2, 3) ORDER BY `cell_id`, `order`");
         $aBlocks = $oDb->getAll("SELECT `cell_id`, `content`, `active_api`, `copyable`, `module` FROM `sys_pages_blocks` WHERE `object` = :object ORDER BY `cell_id`, `order`", ['object' => $a['object']]);
         $this->assertNotEmpty($aBlocks);
-        $this->assertSame($aSource, array_map(function ($aBlock) { return ['cell_id' => $aBlock['cell_id'], 'content' => $aBlock['content']]; }, $aBlocks));
+        $this->assertSame($aSource, array_map(function ($aBlock) { return ['cell_id' => $aBlock['cell_id'], 'content' => $aBlock['content'], 'active_api' => $aBlock['active_api']]; }, $aBlocks));
         foreach ($aBlocks as $aBlock)
-            $this->assertSame([1, 0, 'bx_analytics'], [(int)$aBlock['active_api'], (int)$aBlock['copyable'], $aBlock['module']]);
+            $this->assertSame([0, 'bx_analytics'], [(int)$aBlock['copyable'], $aBlock['module']]);
 
         // listed, with its blocks
         $aListed = array_column($this->_oModule->getDashboards(), null, 'object');
         $this->assertSame(count($aBlocks), $aListed[$a['object']]['blocks']);
-        $this->assertSame(count($aBlocks), $aListed[$a['object']]['api_blocks']);
+        $this->assertSame(count(array_filter(array_column($aBlocks, 'active_api'))), $aListed[$a['object']]['api_blocks']);
+
+        // a block NEO has no element for, added to the page in the builder, stays out of NEO
+        $oDb->query("INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title`, `designbox_id`, `visible_for_levels`, `type`, `content`, `deletable`, `copyable`, `active`, `active_api`, `order`) VALUES ('bx_analytics_page', 2, 'bx_analytics', 'PHPUnit realtime', 11, 2147483647, 'service', :content, 1, 1, 1, 0, 999)", ['content' => 'a:2:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:14:"get_block_test";}']);
+        $iAdded = (int)$oDb->lastId();
+        $e = $this->_oModule->createDashboard('PHPUnit analytics realtime');
+        $oDb->query("DELETE FROM `sys_pages_blocks` WHERE `id` = :id", ['id' => $iAdded]);
+        $this->assertIsArray($e);
+        $this->_aPages[] = $e['object'];
+        $this->assertSame(0, (int)$oDb->getOne("SELECT `active_api` FROM `sys_pages_blocks` WHERE `object` = :object AND `title` = 'PHPUnit realtime'", ['object' => $e['object']]));
         $this->assertSame('PHPUnit analytics', $aListed[$a['object']]['title']);
 
         // disabling the module removes the page rows but keeps the title keys: the same

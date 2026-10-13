@@ -133,6 +133,49 @@ class AnalyticsScaleTest extends BxDolIntegrationTestCase
             $this->assertSame([], array_values(array_intersect($aFiles, glob($sPattern))));
         }
 
+        // the cache name holds what the report reads: blocks send the whole page URL, with
+        // other blocks' tabs and pages, the chart's metric and opened rows
+        $oName = new ReflectionMethod($this->_oModule, '_getReportCacheName');
+        $fName = function ($sReport, $aParams) use ($oName) {
+            return $oName->invoke($this->_oModule, $sReport, $this->_oModule->getFilter($this->_aDay + $aParams), $this->_aDay + $aParams);
+        };
+        $aNoise = ['metric' => 'pageviews', 'tab_pages' => 'entry', 'page_sessions' => '2', 'session' => '7', 'i' => 'analytics', 'r' => 'analytics/report'];
+        $this->assertSame($fName('overview', []), $fName('overview', $aNoise));
+        $this->assertSame($fName('top', ['group' => 'sources']), $fName('top', ['group' => 'sources', 'page_sources' => '2'] + $aNoise));
+        $this->assertNotSame($fName('top', ['group' => 'sources']), $fName('top', ['group' => 'sources', 'tab_sources' => 'channels']));
+        $this->assertNotSame($fName('table', ['table' => 'sources']), $fName('table', ['table' => 'sources', 'page_sources' => '2']));
+        $this->assertNotSame($fName('sessions', []), $fName('sessions', ['session' => '7']));
+        $this->assertNotSame($fName('overview', []), $fName('overview', ['platform' => 'core-web']), 'filters count');
+
+        // dropping the cache starts a new generation instead of deleting by prefix, which
+        // empties a whole Memcache(d) server or scans every Redis key
+        $sBefore = $fName('overview', []);
+        $this->_oModule->cleanReportCache();
+        $this->assertNotSame($sBefore, $fName('overview', []));
+
+        $aModule = $this->_oModule->_aModule;
+        $oShared = new class extends BxDolCache {
+            public $aData = [];
+            public $iFlushes = 0;
+            public function getData($sKey, $iTTL = false) { return $this->aData[$sKey] ?? null; }
+            public function setData($sKey, $mixedData, $iTTL = false) { $this->aData[$sKey] = $mixedData; return true; }
+            public function delData($sKey) { unset($this->aData[$sKey]); return true; }
+            public function removeAllByPrefix($s) { $this->iFlushes++; $this->aData = []; return true; }
+        };
+        $oModule = new class($aModule, $oShared) extends BxAnalyticsModule {
+            protected $_oShared;
+            public function __construct(&$aModule, $oShared) { parent::__construct($aModule); $this->_oShared = $oShared; }
+            protected function _getReportCacheEngine() { return $this->_oShared; }
+        };
+        $oShared->aData['db_other_module_key'] = 'kept';
+        $this->assertSame(3, $oModule->getReportData('overview', $this->_aDay)['kpis']['sessions']['value']);
+        $this->_session('e', $iDay + 12600);
+        $this->assertSame(3, $oModule->getReportData('overview', $this->_aDay)['kpis']['sessions']['value'], 'from the shared cache');
+        $oModule->cleanReportCache();
+        $this->assertSame(4, $oModule->getReportData('overview', $this->_aDay)['kpis']['sessions']['value'], 'a new generation');
+        $this->assertSame(0, $oShared->iFlushes);
+        $this->assertSame('kept', $oShared->aData['db_other_module_key']);
+
         // live figures are never cached
         $oReports = $this->_oModule->getReports();
         foreach (['realtime' => [], 'filters' => [], 'map' => ['tab' => 'live']] as $sReport => $aParams)
@@ -143,7 +186,7 @@ class AnalyticsScaleTest extends BxDolIntegrationTestCase
         // nothing is cached with the database cache off
         $this->_setOption('sys_db_cache_enable', '');
         $this->_session('d', $iDay + 14400);
-        $this->assertSame(4, $this->_oModule->getReportData('overview', $this->_aDay)['kpis']['sessions']['value']);
+        $this->assertSame(5, $this->_oModule->getReportData('overview', $this->_aDay)['kpis']['sessions']['value']);
     }
 
     public function testFiltersAcrossVisitsAndPageviews()

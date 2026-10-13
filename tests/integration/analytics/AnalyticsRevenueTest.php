@@ -481,9 +481,9 @@ class AnalyticsRevenueTest extends BxDolIntegrationTestCase
 
     public function testUnpaidSubscriptionStopsPaying()
     {
-        // two monthly subscriptions whose charge failed: one paid 40 days ago, one 10 days ago
+        // monthly subscriptions whose charge failed: paid 200, 40 and 10 days ago
         $aIds = [];
-        foreach ([40, 10] as $i => $iDays) {
+        foreach ([200, 40, 10] as $i => $iDays) {
             $iPaid = self::NOW - $iDays * 86400;
             $aPending = $this->_order('recurring', 'credits', 'USD', 10);
             $aSubscription = ['subscription_id' => 'test-rev-sub-u' . $i, 'period' => 1, 'period_unit' => 'month', 'status' => 'active'];
@@ -503,6 +503,16 @@ class AnalyticsRevenueTest extends BxDolIntegrationTestCase
         $this->assertSame([1, 1], [$aTiles['active'], $aTiles['cancelled']]);
         $this->assertEquals([10.0, 50.0], [$aTiles['mrr'], $aTiles['churn']]);
         $this->assertSame(1, array_sum(array_filter($aReport['movement']['datasets'][2]['values'])));
+
+        // the one that stopped paying months before isn't read at all: lapsed subscriptions
+        // are never cancelled, and would otherwise be read by every report forever
+        $aEnd = ['unit_seconds' => BxAnalyticsRevenue::getUnitSeconds(), 'unpaid' => BxAnalyticsRevenue::STATUS_UNPAID, 'grace' => BxAnalyticsRevenue::UNPAID_GRACE];
+        $aRange = ['from' => self::NOW - 7 * 86400, 'to' => self::NOW, 'payment' => 'bx_payment', 'platform' => ''];
+        $fPending = function ($aRows) { return array_map('intval', array_column($aRows, 'pending_id')); };
+        $this->assertSame([(int)$aIds[1]['id'], (int)$aIds[2]['id']], $fPending($this->_oModule->_oDb->getSubscriptionRows($aRange, $aEnd)));
+        $this->assertSame(array_map('intval', array_column($aIds, 'id')), $fPending($this->_oModule->_oDb->getSubscriptionRows($aRange)), 'without the rule');
+        $aRange['from'] = self::NOW - 170 * 86400; // its paid month and grace time ended 162 days ago
+        $this->assertSame(array_map('intval', array_column($aIds, 'id')), $fPending($this->_oModule->_oDb->getSubscriptionRows($aRange, $aEnd)), 'still paying in a longer period');
     }
 
     public function testProfileDeletionKeepsTheMoney()

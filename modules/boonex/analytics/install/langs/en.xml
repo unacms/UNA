@@ -14,7 +14,7 @@
 	<string name="_bx_analytics_adm_stg_inf_exclude_ips"><![CDATA[Addresses or CIDR ranges, separated by commas or spaces.]]></string>
 	<string name="_bx_analytics_adm_stg_inf_exclude_levels"><![CDATA[For example, administrators, so your own visits don't count.]]></string>
 	<string name="_bx_analytics_adm_stg_inf_exclude_paths"><![CDATA[Path prefixes, or patterns with * (for example /page/*-admin), separated by commas or spaces.]]></string>
-	<string name="_bx_analytics_adm_stg_inf_geo_source"><![CDATA[CDN headers: the country that Cloudflare, Vercel or CloudFront add to each request, and the region and city on Vercel.]]></string>
+	<string name="_bx_analytics_adm_stg_inf_geo_source"><![CDATA[The country, region and city that Cloudflare, Vercel or CloudFront add to each request. A CDN sets its own headers and passes the others through, so a visitor could send another CDN's: choose the CDN your site and NEO run behind.]]></string>
 	<string name="_bx_analytics_adm_stg_inf_identity"><![CDATA[Cookieless: a hash of the address and browser that changes daily, with nothing stored on the device. A guest who comes back another day counts as a new visitor. Persistent: a random id kept in the browser or app, which allows guest retention but may need consent.]]></string>
 	<string name="_bx_analytics_adm_stg_inf_ignore_params"><![CDATA[Left out of stored page paths, so one page is not counted as many. Separate with commas; * matches any characters. Campaign tags and ad click ids are always left out.]]></string>
 	<string name="_bx_analytics_adm_stg_inf_limit_hits"><![CDATA[How many pageviews, events, errors and timings the trackers may send from one address in a minute (an IPv6 address counts by its /64 network). More are dropped until the next minute, and the tracker keeps sending. Raise it when many visitors share one address, as in an office or a school. 0: no limit. Site actions and payments are never limited.]]></string>
@@ -97,8 +97,11 @@
 	<string name="_bx_analytics_event_type_event"><![CDATA[Custom event]]></string>
 	<string name="_bx_analytics_event_type_pageview"><![CDATA[Pageview]]></string>
 	<string name="_bx_analytics_event_type_una"><![CDATA[Site action]]></string>
-	<string name="_bx_analytics_geo_headers"><![CDATA[CDN headers]]></string>
+	<string name="_bx_analytics_geo_cloudflare"><![CDATA[Cloudflare headers only]]></string>
+	<string name="_bx_analytics_geo_cloudfront"><![CDATA[CloudFront headers only]]></string>
+	<string name="_bx_analytics_geo_headers"><![CDATA[Any CDN's headers, the first one found]]></string>
 	<string name="_bx_analytics_geo_none"><![CDATA[Off]]></string>
+	<string name="_bx_analytics_geo_vercel"><![CDATA[Vercel headers only]]></string>
 	<string name="_bx_analytics_group_bots"><![CDATA[Bot categories]]></string>
 	<string name="_bx_analytics_group_devices"><![CDATA[Devices]]></string>
 	<string name="_bx_analytics_group_errors"><![CDATA[Errors by status]]></string>
@@ -687,6 +690,7 @@
 	<string name="_bx_analytics_txt_goal_badge_page"><![CDATA[Page]]></string>
 	<string name="_bx_analytics_txt_goal_delete_confirm"><![CDATA[Delete the goal "{0}"?]]></string>
 	<string name="_bx_analytics_txt_goal_invalid"><![CDATA[Enter a name and a page path that starts with / (or *), or an action name of letters, digits and _ . : / -]]></string>
+	<string name="_bx_analytics_txt_goal_limit"><![CDATA[There can be up to {0} goals. Delete one to add another.]]></string>
 	<string name="_bx_analytics_txt_goal_match"><![CDATA[Page path or action name]]></string>
 	<string name="_bx_analytics_txt_goal_type"><![CDATA[Completed when a visitor]]></string>
 	<string name="_bx_analytics_txt_goal_type_event"><![CDATA[Does an action]]></string>
