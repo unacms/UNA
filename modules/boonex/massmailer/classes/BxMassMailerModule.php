@@ -62,161 +62,174 @@ class BxMassMailerModule extends BxBaseModGeneralModule
             return '';
         
         header('Content-Type: application/json');
-        
-        $aColors = array('#3366CC', '#DC3912', '#FF9900', '#109618', '#990099');
+        echo json_encode($this->getReportsData($sReportName, $sReportType, $sDateFrom, $sDateTo, $sSegment));
+    }
+
+    /**
+     * Chart.js 4 config for a report: type, data and options.
+     */
+    public function getReportsData($sReportName, $sReportType, $sDateFrom, $sDateTo, $sSegment)
+    {
         $iDateFrom = strtotime($sDateFrom);
         $iDateTo = strtotime($sDateTo);
-        $sType = "bar";
         $bIsTimeX = false;
-        $iMinValueY = 0;
-        $iMaxValueY = 0;
-        $aValues = array('labels' => array(), 'values' => array(array('legend' => '', 'data' => array())), 'links' => array(), 'strings' => array(0 => _t('_bx_massmailer_txt_item'), 1 => _t('_bx_massmailer_txt_value')));
-        
+
         switch ($sReportName) {
             case "SUBSCRIBERS_INFO":
-                $sType = "line";
                 $bIsTimeX = true;
-                $aValues['strings'][0] = _t('_bx_massmailer_txt_date');
-                $aValues['strings'][1] = '';
-                $sSql = $this->getSqlBySegment($sSegment);
-                $aData = $this->_oDb->getAccountsByTermsStat($iDateFrom, $iDateTo, $sSql);
-                $aData2 = $this->_oDb->getAccountsByTermsStatUnsubscribe($iDateFrom, $iDateTo, $sSql);
-                $iValuePrev = $this->_oDb->getAccountsByTermsStatInitValue($iDateFrom, $sSql);
-                $iValuePrev2 = $this->_oDb->getAccountsByTermsStatInitValueUnsubscribe($iDateFrom, $sSql);
-                $aTmpDates = array();
-                $aTmpDates2 = array();
-                $aValues['values'][0]['legend'] = _t('_bx_massmailer_txt_subscribed');
-                $aValues['values'][1] = array('legend' => _t('_bx_massmailer_txt_unsubscribed') , 'data' => array());
-                foreach ($aData as $aValue) {
-                    $aTmpDates[$aValue['period']] = $aValue['count'];
-                }
-                foreach ($aData2 as $aValue) {
-                    $aTmpDates2[$aValue['period']] = $aValue['count'];
-                }
-                for ($i = $iDateFrom; $i < $iDateTo ; $i = $i + 86400 ){
-                    $sX = date('Y-m-d', $i);
-                    
-                    if (!array_key_exists($sX, $aTmpDates)){
-                        array_push($aValues['values'][0]['data'], array('x' => $sX, 'y' => $sReportType == 'content_total' ? $iValuePrev : 0));
-                        
-                    }
-                    else{
-                        array_push($aValues['values'][0]['data'], array('x' => $sX, 'y' => $sReportType == 'content_total' ? $iValuePrev : $aTmpDates[$sX]));
-                        $iValuePrev += $aTmpDates[$sX];
-                    }
-                    
-                    if (!array_key_exists($sX, $aTmpDates2)){
-                        array_push($aValues['values'][1]['data'], array('x' => $sX, 'y' => $sReportType == 'content_total' ? $iValuePrev2 : 0));
-                        
-                    }
-                    else{
-                        array_push($aValues['values'][1]['data'], array('x' => $sX, 'y' => $sReportType == 'content_total' ? $iValuePrev2 : $aTmpDates2[$sX]));
-                        $iValuePrev2 += $aTmpDates2[$sX];
-                    }
-                    
-                    if ($sReportType == 'content_total'){
-                        if ($iValuePrev > $iMaxValueY)
-                            $iMaxValueY = $iValuePrev;
-                        if ($iValuePrev2 > $iMaxValueY)
-                            $iMaxValueY = $iValuePrev2;
-                    }
-                    else{
-                        if (array_key_exists($sX, $aTmpDates) && $aTmpDates[$sX] > $iMaxValueY)
-                            $iMaxValueY = $aTmpDates[$sX];
-                        if (array_key_exists($sX, $aTmpDates2) && $aTmpDates2[$sX] > $iMaxValueY)
-                            $iMaxValueY = $aTmpDates2[$sX];
-                    }
-                }
+                $aReport = $this->getReportSubscribers($sReportType == 'content_total', $iDateFrom, $iDateTo, $sSegment);
                 break;
-            
+
             case "CAMPAIGN_REPORT":
-                $aDataStat = $this->_oDb->getStatByCampaignId($sReportType);
-                $aValues['values'][0]['legend'] = _t('_bx_massmailer_txt_sent_total_title', $aDataStat['total']);
-                array_push($aValues['values'][0]['data'], $aDataStat['total']);
-                $aValues['values'][1] = array('legend' => _t('_bx_massmailer_txt_opened_total_title', $aDataStat['seen']) , 'data' => array($aDataStat['seen']));
-                $aValues['values'][2] = array('legend' => _t('_bx_massmailer_txt_unopened_total_title', $aDataStat['total'] - $aDataStat['seen']), 'data' => array($aDataStat['total'] - $aDataStat['seen']));
-                $aValues['values'][3] = array('legend' => _t('_bx_massmailer_txt_clicked_total_title', $aDataStat['clicked']), 'data' => array($aDataStat['clicked']));
-                $aValues['values'][4] = array('legend' => _t('_bx_massmailer_txt_unsubscribed_total_title', $aDataStat['unsubscribed']), 'data' => array($aDataStat['unsubscribed']));
-                $iMaxValueY = $aDataStat['total'];
+                $aReport = $this->getReportCampaign($sReportType);
                 break;
+
+            default:
+                $aReport = array(
+                    'labels' => array(),
+                    'values' => array(array('legend' => '', 'data' => array())),
+                    'strings' => array(_t('_bx_massmailer_txt_item'), _t('_bx_massmailer_txt_value')),
+                    'max' => 0
+                );
         }
-        
-        $iMaxValueY = ceil($iMaxValueY * 1.1);
-        
-        $aDataForChartXAxes = array();
-        if ($bIsTimeX){
-            $sUnit = 'day';
-            $iInterval = ($iDateTo - $iDateFrom) / 86400;
-            if ($iInterval > 50)
-                $sUnit = 'week';
-            if ($iInterval > 100)
-                $sUnit = 'month';
-            
-            $aDataForChartXAxes = array(
-                'type' => 'time',
-                'time' => array(
-                    'tooltipFormat' => 'DD.MM.YYYY',
-                    'unit' => $sUnit,
-                 ),
-                'display' => true,
-                'distribution' => 'linear',
-                'ticks' => array(
-                    'display' => true,
-                    'autoSkip' => true,
-                )
-            );
-        }
-        else{
-            $aDataForChartXAxes = array(
-                'ticks' => array(
-                    'autoSkip' => false
+
+        $iMinValueY = 0;
+        $iMaxValueY = ceil($aReport['max'] * 1.1);
+
+        return array(
+            'type' => $bIsTimeX ? 'line' : 'bar',
+            'data' => array(
+                'labels' => $aReport['labels'],
+                'datasets' => $this->getReportDatasets($aReport['values'])
+            ),
+            'options' => array(
+                'plugins' => array(
+                    'legend' => array(
+                        'position' => 'bottom',
+                        'display' => count($aReport['values']) > 1
+                    )
                 ),
-                'display' => true
-            );
+                'scales' => array(
+                    'y' => array(
+                        'max' => $iMaxValueY,
+                        'min' => $iMinValueY,
+                        'ticks' => array(
+                            'stepSize' => $this->getReportStep($iMinValueY, $iMaxValueY),
+                            'autoSkip' => true
+                        )
+                    ),
+                    'x' => $bIsTimeX ? $this->getReportTimeAxis($iDateFrom, $iDateTo) : array('ticks' => array('autoSkip' => false), 'display' => true)
+                )
+            ),
+            'links' => array(),
+            'strings' => $aReport['strings'],
+        );
+    }
+
+    /**
+     * Subscribed and unsubscribed accounts of a segment, a point per day.
+     */
+    private function getReportSubscribers($bTotal, $iDateFrom, $iDateTo, $sSegment)
+    {
+        $sSql = $this->getSqlBySegment($sSegment);
+        $iMaxValueY = 0;
+
+        $aSubscribed = $this->getReportSeries($this->_oDb->getAccountsByTermsStat($iDateFrom, $iDateTo, $sSql), (int)$this->_oDb->getAccountsByTermsStatInitValue($iDateFrom, $sSql), $bTotal, $iDateFrom, $iDateTo, $iMaxValueY);
+        $aUnsubscribed = $this->getReportSeries($this->_oDb->getAccountsByTermsStatUnsubscribe($iDateFrom, $iDateTo, $sSql), (int)$this->_oDb->getAccountsByTermsStatInitValueUnsubscribe($iDateFrom, $sSql), $bTotal, $iDateFrom, $iDateTo, $iMaxValueY);
+
+        return array(
+            'labels' => array(),
+            'values' => array(
+                array('legend' => _t('_bx_massmailer_txt_subscribed'), 'data' => $aSubscribed),
+                array('legend' => _t('_bx_massmailer_txt_unsubscribed'), 'data' => $aUnsubscribed)
+            ),
+            'strings' => array(_t('_bx_massmailer_txt_date'), ''),
+            'max' => $iMaxValueY
+        );
+    }
+
+    /**
+     * Points from the per-day counts in $aRows: the running total before the day when $bTotal is set,
+     * the day's count otherwise. $iMaxValueY is raised to the largest total or count.
+     */
+    private function getReportSeries($aRows, $iTotal, $bTotal, $iDateFrom, $iDateTo, &$iMaxValueY)
+    {
+        $aCounts = array_column($aRows, 'count', 'period');
+
+        $aPoints = array();
+        for ($i = $iDateFrom; $i < $iDateTo; $i += 86400) {
+            $sX = date('Y-m-d', $i);
+            $iCount = isset($aCounts[$sX]) ? (int)$aCounts[$sX] : 0;
+
+            $aPoints[] = array('x' => $sX, 'y' => $bTotal ? $iTotal : $iCount);
+            $iTotal += $iCount;
+
+            $iMaxValueY = max($iMaxValueY, $bTotal ? $iTotal : $iCount);
         }
-        
-        $aDataForChartDatasets = array();
-        for($i = 0; $i < count($aValues['values']); $i++){
-            $aDataForChartDatasets[] = array(
-                'label' => $aValues['values'][$i]['legend'],
+
+        return $aPoints;
+    }
+
+    private function getReportCampaign($iCampaignId)
+    {
+        $aStat = $this->_oDb->getStatByCampaignId($iCampaignId);
+        $iUnopened = $aStat['total'] - $aStat['seen'];
+
+        return array(
+            // One category for all bars: a category axis without labels places no bars.
+            'labels' => array(''),
+            'values' => array(
+                array('legend' => _t('_bx_massmailer_txt_sent_total_title', $aStat['total']), 'data' => array($aStat['total'])),
+                array('legend' => _t('_bx_massmailer_txt_opened_total_title', $aStat['seen']), 'data' => array($aStat['seen'])),
+                array('legend' => _t('_bx_massmailer_txt_unopened_total_title', $iUnopened), 'data' => array($iUnopened)),
+                array('legend' => _t('_bx_massmailer_txt_clicked_total_title', $aStat['clicked']), 'data' => array($aStat['clicked'])),
+                array('legend' => _t('_bx_massmailer_txt_unsubscribed_total_title', $aStat['unsubscribed']), 'data' => array($aStat['unsubscribed']))
+            ),
+            'strings' => array(_t('_bx_massmailer_txt_item'), _t('_bx_massmailer_txt_value')),
+            'max' => $aStat['total']
+        );
+    }
+
+    private function getReportTimeAxis($iDateFrom, $iDateTo)
+    {
+        $iDays = ($iDateTo - $iDateFrom) / 86400;
+
+        $sUnit = 'day';
+        if ($iDays > 100)
+            $sUnit = 'month';
+        else if ($iDays > 50)
+            $sUnit = 'week';
+
+        return array(
+            'type' => 'time',
+            'time' => array(
+                'tooltipFormat' => 'DD.MM.YYYY',
+                'unit' => $sUnit,
+            ),
+            'display' => true,
+            'ticks' => array(
+                'display' => true,
+                'autoSkip' => true,
+            )
+        );
+    }
+
+    private function getReportDatasets($aValues)
+    {
+        $aColors = array('#3366CC', '#DC3912', '#FF9900', '#109618', '#990099');
+
+        $aDatasets = array();
+        foreach ($aValues as $i => $aValue)
+            $aDatasets[] = array(
+                'label' => $aValue['legend'],
                 'fill' => false,
                 'backgroundColor' => $aColors[$i],
                 'borderColor' => $aColors[$i],
                 'borderWidth' => 1,
-                'data' => $aValues['values'][$i]['data']
+                'data' => $aValue['data']
             );
-        }
-        
-        $aDataForChart = array(
-            'type' => $sType,
-            'data' => array(
-                'labels' => $aValues['labels'],
-                'datasets' => $aDataForChartDatasets
-            ),
-            'options' => array(
-                'legend' => array(
-                    'position' => 'bottom',
-                    'display' => count($aValues['values']) == 1 ? false : true
-                ),
-                'scales' => array(
-                    'yAxes' => array(
-                        array(
-                            'ticks' => array(
-                                'max' => $iMaxValueY,
-                                'min' => $iMinValueY,
-                                'stepSize' => $this->getReportStep($iMinValueY, $iMaxValueY),
-                                'autoSkip' => true
-                            )
-                        )
-                    ),
-                    'xAxes' => array($aDataForChartXAxes)
-                )
-            ),
-            'links' => $aValues['links'],
-            'strings' => $aValues['strings'],
-        );
-        
-        echo json_encode($aDataForChart);
+
+        return $aDatasets;
     }
   
     /**
@@ -608,6 +621,7 @@ class BxMassMailerModule extends BxBaseModGeneralModule
     {
         $sRv = '';
         $sJoin = ' INNER ';
+        $aMatches = array();
         if (strpos($sSegment, 'lvl:') !== false){
             $sLvl = str_replace('lvl:', '', $sSegment);
             switch ($sLvl) {
@@ -631,7 +645,12 @@ class BxMassMailerModule extends BxBaseModGeneralModule
                     $sRv = $this->_oDb->prepareAsString(" AND `tp`.`id` IN (SELECT `IDMember` FROM `sys_acl_levels_members` WHERE IDLevel = ?) ", $sLvl);
                     break;
             }
-            $sRv .= " AND `tp`.`type` IN (" . $this->_oDb->implode_escape($this->getProfileModules()) . ")";
+            $sRv .= $this->_oDb->getTermsByProfileTypes($this->getProfileModules());
+        }
+        else if (preg_match('/^cst:(\d+)$/', $sSegment, $aMatches)){
+            //--- A custom segment is a list of emails: only the accounts with one of them.
+            $sRv = $this->_oDb->getTermsByEmails($this->_oDb->getSegmentEmails((int)$aMatches[1]));
+            $sRv .= $this->_oDb->getTermsByProfileTypes($this->getProfileModules());
         }
         return $sJoin . " JOIN `sys_profiles` AS `tp` ON `tp`.`account_id`=`ta`.`id` " . $sRv;
     }

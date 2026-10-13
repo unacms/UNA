@@ -68,7 +68,41 @@ class BxMassMailerDb extends BxBaseModGeneralDb
         $sQuery = $this->prepare ("SELECT `" . $CNF['FIELD_ID'] . "`, `" . $CNF['FIELD_TITLE'] . "` FROM `" . $CNF['TABLE_SEGMENTS'] . "`");
         return $this->getPairs($sQuery, $CNF['FIELD_ID'], $CNF['FIELD_TITLE']);
     }
-    
+
+    /**
+     * Emails in a custom segment's list, separated by commas, semicolons or white space.
+     */
+    public function getSegmentEmails($iSegmentId)
+    {
+        $CNF = &$this->_oConfig->CNF;
+        $sEmails = $this->getOne("SELECT `" . $CNF['FIELD_EMAIL_LIST'] . "` FROM `" . $CNF['TABLE_SEGMENTS'] . "` WHERE `" . $CNF['FIELD_ID'] . "` = :id", array('id' => $iSegmentId));
+
+        $aEmails = $sEmails ? preg_split('/[\s,;]+/u', $sEmails, -1, PREG_SPLIT_NO_EMPTY) : false;
+        if (!$aEmails)
+            return array();
+
+        return array_values(array_unique(preg_grep('/@/', $aEmails)));
+    }
+
+    /**
+     * Account terms: only the accounts with one of these emails, none for an empty list.
+     */
+    public function getTermsByEmails($aEmails)
+    {
+        if (empty($aEmails))
+            return " AND 0 ";
+
+        return " AND `ta`.`email` IN (" . $this->implode_escape($aEmails) . ") ";
+    }
+
+    /**
+     * Account terms: only the profiles of these types.
+     */
+    public function getTermsByProfileTypes($aTypes)
+    {
+        return " AND `tp`.`type` IN (" . $this->implode_escape($aTypes) . ")";
+    }
+
     public function getAccountsByTerms($sTerms = "")
     {
         $sSql = "SELECT `ta`.`email`, `tp`.`id` AS `profile_id`, `ta`.`id` as `account_id` FROM `sys_accounts` AS `ta` " . $sTerms . "  WHERE `ta`.`receive_news` <> 0 AND `ta`.`email_confirmed` = 1";

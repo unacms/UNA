@@ -19,6 +19,17 @@ function BxMassMailerChart(oOptions) {
     this._sDatePickerSelector = '#' + this._sContainerId + " .bx_massmailer_date_picker";
     this._sActionsUri = oOptions.sActionUri;
     this._aStrings = oOptions.aStrings;
+    this._oChart = null;
+    this._oChartOptionsDefault = {
+        layout: {
+            padding: {
+                left: 40,
+                right: 40,
+                top: 40,
+                bottom: 20
+            }
+        }
+    };
     var $this = this;
     $(document).ready(function () {
         $this.init(); 
@@ -58,26 +69,9 @@ BxMassMailerChart.prototype.reloadData = function () {
     var sReport = $($this._sReportSelector).length > 0 ? $($this._sReportSelector).val() : $this._sReportName;
     var sSegment = $($this._sSegmentsSelector).length > 0 ? $($this._sSegmentsSelector).val() : '-';
     $.getJSON($this._sActionsUri + 'GetReportsData/' + $this._sChartName + '/' + sReport + '/' + sStartDate + '/' + sEndDate + '/' + sSegment + '/', function (oData) {
-
-        Chart.defaults.global.layout = {
-            padding: {
-                left: 40,
-                right: 40,
-                top: 40,
-                bottom: 20
-            }
-        }
-
-        Chart.defaults.scale.ticks.callback = function (label, index, labels) {
-            if (label.length > 10)
-                return label.slice(0, 10) + '...';
-            else
-                return label;
-        };
-        
         bx_loading($($this._sContainerDataSelector), false);
-        var oDataForChart = oData.data || false;
-        var oChartOptions = oData.options || oOptionsDefault;
+        var oDataForChart = oData.data || {};
+        var oChartOptions = oData.options || {};
         if ($this._oChart)
             $this._oChart.destroy();
         $this._oChart = new Chart($($this._sCanvasSelector), {
