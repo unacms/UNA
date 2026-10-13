@@ -53,6 +53,17 @@
     --color-accent-900: rgb(var(--accent-900));
     --color-accent-950: rgb(var(--accent-950));
     --color-destructive: rgb(var(--destructive));
+    /* Categorical series of charts (analytics), in order. */
+    --color-chart-1: rgb(var(--chart-1));
+    --color-chart-2: rgb(var(--chart-2));
+    --color-chart-3: rgb(var(--chart-3));
+    --color-chart-4: rgb(var(--chart-4));
+    --color-chart-5: rgb(var(--chart-5));
+    --color-chart-6: rgb(var(--chart-6));
+    --color-chart-good: rgb(var(--chart-good));
+    /* Text of a change for the better or the worse (analytics tiles). */
+    --color-trend-good: rgb(var(--trend-good));
+    --color-trend-bad: rgb(var(--trend-bad));
     --color-destructive-foreground: rgb(var(--destructive-foreground));
     --color-neutral: rgb(var(--neutral));
     --color-neutral-0: rgb(var(--neutral-0));

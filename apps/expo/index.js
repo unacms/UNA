@@ -21,8 +21,19 @@ import { useColorScheme } from 'react-native';
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import { SafeAreaProvider, initialWindowMetrics } from 'react-native-safe-area-context';
 import { applyNativeFonts } from 'app/design/fonts/native-fonts';
+import { installGlobalErrorCapture } from 'app/lib/analytics/global-errors';
+import { AnalyticsErrorBoundary } from 'app/lib/analytics/error-boundary';
+
+// UNA's analytics: JS errors from here on (a fatal one is kept and sent on the next start).
+installGlobalErrorCapture();
 
 applyNativeFonts();
+
+/**
+ * The whole app failed to render: report it as fatal, offer to start it again. Required here,
+ * not imported, so the static pages don't load before the app does.
+ */
+const renderRootError = (error, reset) => require('app/lib/app-static').appStatic('page_error', { error, reset });
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
 
@@ -59,7 +70,9 @@ export function App() {
 		<SafeAreaProvider initialMetrics={initialWindowMetrics}>
 			<KeyboardProvider>
 				<GestureHandlerRootView style={{ flex: 1, backgroundColor }}>
-					{expoRootComponent}
+					<AnalyticsErrorBoundary fatal fallback={renderRootError}>
+						{expoRootComponent}
+					</AnalyticsErrorBoundary>
 					{showSplashScreen && <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}><InitialScreen /></View>}
 				</GestureHandlerRootView>
 			</KeyboardProvider>

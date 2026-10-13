@@ -553,5 +553,11 @@
     "Activities": "Занятия",
     "Objects": "Предметы",
     "Symbols": "Символы",
-    "Flags": "Флаги"
+    "Flags": "Флаги",
+    "n/a": "н/д",
+    "Revenue over time": "Выручка по времени",
+    "Monthly recurring revenue over time": "Ежемесячная регулярная выручка по времени",
+    "New, renewed and cancelled": "Новые, продлённые и отменённые",
+    "Credits over time": "Кредиты по времени",
+    "Commission invoices issued in this period": "Счета за комиссию, выставленные за период"
 }

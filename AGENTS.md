@@ -97,12 +97,13 @@ patches/         patch-package patches, applied on postinstall
 ## Talking to UNA
 
 - Call UNA through `fetcher` from `app/lib/fetcher`:
-  - `fetcher(path)` does a GET; `fetcher([path, token, body])` POSTs `body`. The full signature is `fetcher(req, useProxy = false, { signal, timeoutMs, maxAttempts, silent, onUploadProgress })`.
+  - `fetcher(path)` does a GET; `fetcher([path, token, body])` POSTs `body`. The full signature is `fetcher(req, useProxy = false, { signal, timeoutMs, maxAttempts, silent, onUploadProgress, keepalive })`.
   - It appends `&lang=`, so the path must already contain `?r=`.
   - It returns UNA's envelope `{status, module, method, params, data, hash}`; read `.data`. A body that isn't JSON comes back as `{}`.
   - GETs are retried three times on network errors, never on a timeout (`config.fetch_timeout_ms`, 30 s).
   - On web it calls same-origin `/api/...`, and `proxy.js` forwards that to UNA with the API key and the viewer's cookies. Native calls `UNA_URL` directly with `Origin: APP_ORIGIN` and the session cookie.
 - Routes are `/api.php?r={module}/{method}/{class}` with `params[]=...` or `params=[...]`; the class defaults to `Module`, system services use `Templ*` classes. UNA only allows services marked safe or public. Many endpoints come from UNA data (`'/api.php?r=' + data.request_url`); fixed ones live in `appSetting('urls', ...)`.
+- `fetcher` sends `X-Neo-Platform` (`web`, `ios`, `android`; web only through the same-origin proxy), so UNA's analytics records site actions with the right client; when the site keeps persistent visitor ids it also sends `X-Analytics-Vid`, so those actions join the device's visit. Pageviews and screen views go to UNA's analytics module from `AnalyticsTracker` (`app/lib/analytics`, mounted in `apps/next/app/providers.js` and the Expo tabs layout); send custom events with `trackEvent(name, props)` from the same module.
 - Three places bypass `fetcher` on purpose: the web page shell above, AI chat streaming (`ui/molecules/ai-agent/helper.js`) and direct uploads (`lib/util/upload.ts`).
 - If the page JSON can't be parsed (a PHP fatal or an HTML error page), web shows the maintenance screen for the whole page and home falls back to a static splash. Fix the UNA service; the [`una-api` skill](.agents/skills/una-api/SKILL.md) lists the rules, the usual cause being a block that fails for guests.
 - Auth: `useCurrentUser()` from `app/context/user` returns `{ currentUser, setCurrentUser }`. `currentUser` is `null` until known, `false` for a guest and an object when signed in. `Root` and the layouts hold rendering until it is known, so components rarely need to wait themselves. The guest sign-in prompt is `layout.show_login_modal`.
