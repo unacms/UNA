@@ -11,7 +11,7 @@ const COMPACT: ReadonlyArray<readonly [number, string]> = [
     [1e3, 'K'],
 ];
 
-function groupThousands(value: number): string {
+function groupThousands(value: number | string): string {
     return String(value).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
 
@@ -75,12 +75,128 @@ export function formatChange(change: number | null | undefined): string {
 
 export type Trend = 'good' | 'bad' | 'flat';
 
-/** Down is good for the bounce rate and errors (BxAnalyticsTemplate::_trend). */
+/** Metrics where a rise is bad news (BxAnalyticsTemplate::_trend). */
+const DOWN_IS_GOOD = new Set(['bounce_rate', 'errors', 'refunds', 'cancelled', 'churn']);
+
+/** Down is good for the bounce rate, errors, refunds, cancellations and churn. */
 export function getTrend(metric: string, change: number | null | undefined): Trend {
     if (change === null || change === undefined || change === 0) return 'flat';
     const up = change > 0;
-    if (metric === 'bounce_rate' || metric === 'errors') return up ? 'bad' : 'good';
+    if (DOWN_IS_GOOD.has(metric)) return up ? 'bad' : 'good';
     return up ? 'good' : 'bad';
+}
+
+const moneyFormatters = new Map<string, Intl.NumberFormat | null>();
+
+/** How an amount is printed: with cents, whole, or compact ($12K). */
+type MoneyStyle = 'cents' | 'whole' | 'compact';
+
+function getMoneyFormatter(currency: string, locale: string, style: MoneyStyle): Intl.NumberFormat | null {
+    const key = `${locale}|${currency}|${style}`;
+    if (moneyFormatters.has(key)) return moneyFormatters.get(key) ?? null;
+    let formatter: Intl.NumberFormat | null = null;
+    const base: Intl.NumberFormatOptions = style === 'whole'
+        ? { style: 'currency', currency, maximumFractionDigits: 0, minimumFractionDigits: 0 }
+        : style === 'compact'
+            ? { style: 'currency', currency, notation: 'compact', maximumFractionDigits: 1, minimumFractionDigits: 0 }
+            : { style: 'currency', currency };
+    // $ rather than US$ in every locale, as UNA prints it: a report has one currency
+    const attempts: Array<[string | undefined, Intl.NumberFormatOptions]> = [
+        [locale || undefined, { ...base, currencyDisplay: 'narrowSymbol' }],
+        [locale || undefined, base],
+        [undefined, base],
+    ];
+    for (const [tag, options] of attempts) {
+        try {
+            formatter = new Intl.NumberFormat(tag, options);
+            break;
+        } catch {
+            // an unknown locale tag or display option; then an unknown currency code or no Intl
+        }
+    }
+    moneyFormatters.set(key, formatter);
+    return formatter;
+}
+
+/** Signs of common currencies, as UNA prints them. */
+const CURRENCY_SIGNS: Record<string, string> = {
+    USD: '$', EUR: '€', GBP: '£', JPY: '¥', CNY: '¥', RUB: '₽', INR: '₹', KRW: '₩', UAH: '₴', TRY: '₺', ILS: '₪', NGN: '₦', PHP: '₱', VND: '₫', PLN: 'zł', BRL: 'R$',
+};
+
+/**
+ * Hermes on iOS accepts currencyDisplay narrowSymbol but still prints the code (USD 183.15):
+ * put the sign in its place when we know it, so NEO matches UNA's own amounts.
+ */
+function withSign(text: string, code: string): string {
+    const sign = CURRENCY_SIGNS[code];
+    if (!sign || !text.includes(code)) return text;
+    return text
+        .replace(new RegExp(`${code}[\\s\\u00a0]?-`), `-${sign}`)
+        .replace(new RegExp(`${code}[\\s\\u00a0]?(?=\\d)`), sign)
+        .replace(new RegExp(`(\\d)[\\s\\u00a0]?${code}`), `$1 ${sign}`);
+}
+
+/**
+ * An amount in the report's currency: $1,234.50. `whole` drops the cents (axis ticks).
+ * Falls back to `1,234.50 USD` when the runtime can't format the currency.
+ */
+export function formatMoney(value: unknown, currency: string | undefined, locale: string, whole = false): string {
+    const n = Number(value) || 0;
+    const code = (currency || '').toUpperCase();
+    const formatter = /^[A-Z]{3}$/.test(code) ? getMoneyFormatter(code, locale, whole ? 'whole' : 'cents') : null;
+    if (formatter) return withSign(formatter.format(n), code);
+    const fixed = whole ? String(Math.round(Math.abs(n))) : Math.abs(n).toFixed(2);
+    const [int = '0', frac] = fixed.split('.');
+    const text = (n < 0 ? '-' : '') + groupThousands(int) + (frac ? '.' + frac : '');
+    return code ? `${text} ${code}` : text;
+}
+
+/** Credits: up to two decimals, no trailing zeros, thousands grouped. */
+export function formatCredits(value: unknown): string {
+    const [int = '0', frac] = (Number(value) || 0).toFixed(2).split('.');
+    return trimZeros(groupThousands(int) + '.' + (frac ?? '00'));
+}
+
+/** A typed report value (BxAnalyticsTemplate::formatValue), '' for no value. */
+export function formatReportValue(type: string | undefined, value: unknown, currency: string | undefined, locale: string): string {
+    if (value === null || value === undefined || value === '') return '';
+    switch (type) {
+        case 'money':
+            return formatMoney(value, currency, locale);
+        case 'credits':
+            return formatCredits(value);
+        case 'percent':
+        case 'rate':
+            return formatPercent(value);
+        case 'decimal':
+            return (Number(value) || 0).toFixed(1);
+        case 'text':
+        case 'label':
+            return String(value);
+        default:
+            return formatNumber(value);
+    }
+}
+
+/**
+ * A chart axis tick: compact numbers, money in the viewer's locale ($12K from 10,000).
+ * `decimals` is the tick step's: money ticks keep their cents when the step has them.
+ */
+export function formatReportAxis(type: string | undefined, value: number, currency: string | undefined, locale: string, decimals = 0): string {
+    if (type === 'money') {
+        // $12K rather than $12,000 once the gutter would get too wide
+        if (Math.abs(value) >= 10000) {
+            const code = (currency || '').toUpperCase();
+            const formatter = /^[A-Z]{3}$/.test(code) ? getMoneyFormatter(code, locale, 'compact') : null;
+            if (formatter) return withSign(formatter.format(value), code);
+            const compact = (value < 0 ? '-' : '') + formatNumber(Math.abs(value));
+            return code ? `${compact} ${code}` : compact;
+        }
+        return formatMoney(value, currency, locale, decimals <= 0);
+    }
+    if (type === 'credits') return (value < 0 ? '-' : '') + formatNumber(Math.abs(value));
+    if (type === 'number' || !type) return (value < 0 ? '-' : '') + formatNumber(Math.abs(value));
+    return formatReportValue(type, value, currency, locale);
 }
 
 /** Fill UNA's `{0}` placeholder (a replacer function, so `$&` in a page title stays as is). */

@@ -66,7 +66,8 @@ INSERT INTO `sys_options` (`category_id`, `name`, `caption`, `value`, `type`, `e
 
 -- PAGES & BLOCKS
 INSERT INTO `sys_objects_page`(`object`, `title_system`, `title`, `module`, `layout_id`, `visible_for_levels`, `visible_for_levels_editable`, `uri`, `url`, `meta_description`, `meta_keywords`, `meta_robots`, `cache_lifetime`, `cache_editable`, `deletable`, `override_class_name`, `override_class_file`) VALUES
-('bx_analytics_page', '_bx_analytics_page_title_sys_page', '_bx_analytics_page_title_page', @sName, 12, 2147483647, 1, 'analytics', '', '', '', 'noindex', 0, 1, 0, 'BxAnalyticsPage', 'modules/boonex/analytics/classes/BxAnalyticsPage.php');
+('bx_analytics_page', '_bx_analytics_page_title_sys_page', '_bx_analytics_page_title_page', @sName, 12, 2147483647, 1, 'analytics', '', '', '', 'noindex', 0, 1, 0, 'BxAnalyticsPage', 'modules/boonex/analytics/classes/BxAnalyticsPage.php'),
+('bx_analytics_revenue', '_bx_analytics_page_title_sys_revenue', '_bx_analytics_page_title_revenue', @sName, 5, 2147483647, 1, 'analytics-revenue', '', '', '', 'noindex', 0, 1, 0, 'BxAnalyticsPage', 'modules/boonex/analytics/classes/BxAnalyticsPage.php');
 
 INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title_system`, `title`, `designbox_id`, `visible_for_levels`, `type`, `content`, `deletable`, `copyable`, `active`, `order`) VALUES
 ('bx_analytics_page', 2, @sName, '_bx_analytics_page_block_title_system_filters', '_bx_analytics_page_block_title_filters', 11, 2147483647, 'service', 'a:2:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:17:"get_block_filters";}', 0, 1, 1, 1),
@@ -76,7 +77,12 @@ INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title_system`, `
 ('bx_analytics_page', 3, @sName, '_bx_analytics_page_block_title_system_top_locations', '_bx_analytics_page_block_title_top_locations', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:13:"get_block_top";s:6:"params";a:1:{i:0;s:9:"locations";}}', 0, 1, 1, 1),
 ('bx_analytics_page', 3, @sName, '_bx_analytics_page_block_title_system_top_devices', '_bx_analytics_page_block_title_top_devices', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:13:"get_block_top";s:6:"params";a:1:{i:0;s:7:"devices";}}', 0, 1, 1, 2),
 ('bx_analytics_page', 3, @sName, '_bx_analytics_page_block_title_system_top_platforms', '_bx_analytics_page_block_title_top_platforms', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:13:"get_block_top";s:6:"params";a:1:{i:0;s:9:"platforms";}}', 0, 1, 1, 3),
-('bx_analytics_page', 4, @sName, '_bx_analytics_page_block_title_system_canvas', '_bx_analytics_page_block_title_canvas', 11, 2147483647, 'service', 'a:2:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:10:"get_canvas";}', 0, 1, 1, 1);
+('bx_analytics_page', 4, @sName, '_bx_analytics_page_block_title_system_canvas', '_bx_analytics_page_block_title_canvas', 11, 2147483647, 'service', 'a:2:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:10:"get_canvas";}', 0, 1, 1, 1),
+('bx_analytics_revenue', 1, @sName, '_bx_analytics_page_block_title_system_filters', '_bx_analytics_page_block_title_filters', 11, 2147483647, 'service', 'a:2:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:17:"get_block_filters";}', 0, 1, 1, 1),
+('bx_analytics_revenue', 1, @sName, '_bx_analytics_page_block_title_system_revenue', '_bx_analytics_page_block_title_revenue', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:16:"get_block_report";s:6:"params";a:1:{i:0;s:7:"revenue";}}', 0, 1, 1, 2),
+('bx_analytics_revenue', 1, @sName, '_bx_analytics_page_block_title_system_subscriptions', '_bx_analytics_page_block_title_subscriptions', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:16:"get_block_report";s:6:"params";a:1:{i:0;s:13:"subscriptions";}}', 0, 1, 1, 3),
+('bx_analytics_revenue', 1, @sName, '_bx_analytics_page_block_title_system_sales', '_bx_analytics_page_block_title_sales', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:16:"get_block_report";s:6:"params";a:1:{i:0;s:5:"sales";}}', 0, 1, 1, 4),
+('bx_analytics_revenue', 1, @sName, '_bx_analytics_page_block_title_system_credits', '_bx_analytics_page_block_title_credits', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:16:"get_block_report";s:6:"params";a:1:{i:0;s:7:"credits";}}', 0, 1, 1, 5);
 
 -- BLOCKS: every report for the page builder
 INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title_system`, `title`, `designbox_id`, `visible_for_levels`, `type`, `content`, `deletable`, `copyable`, `active`, `order`) VALUES
@@ -116,7 +122,8 @@ INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title_system`, `
 -- MENU: account dashboard
 SET @iMoAccountDashboard = (SELECT IFNULL(MAX(`order`), 0) FROM `sys_menu_items` WHERE `set_name`='sys_account_dashboard' LIMIT 1);
 INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `addon`, `submenu_object`, `visible_for_levels`, `visibility_custom`, `active`, `copyable`, `editable`, `order`) VALUES
-('sys_account_dashboard', @sName, 'dashboard-analytics', '_bx_analytics_item_title_system_analytics', '_bx_analytics_item_title_analytics', 'page.php?i=analytics', '', '', 'chart-line', '', '', 2147483647, 'a:2:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:12:"is_avaliable";}', 1, 0, 1, @iMoAccountDashboard + 1);
+('sys_account_dashboard', @sName, 'dashboard-analytics', '_bx_analytics_item_title_system_analytics', '_bx_analytics_item_title_analytics', 'page.php?i=analytics', '', '', 'chart-line', '', '', 2147483647, 'a:2:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:12:"is_avaliable";}', 1, 0, 1, @iMoAccountDashboard + 1),
+('sys_account_dashboard', @sName, 'analytics-revenue', '_bx_analytics_item_title_system_revenue', '_bx_analytics_item_title_revenue', 'page.php?i=analytics-revenue', '', '', 'circle-dollar-sign', '', '', 2147483647, 'a:2:{s:6:"module";s:12:"bx_analytics";s:6:"method";s:20:"is_revenue_avaliable";}', 1, 0, 1, @iMoAccountDashboard + 2);
 
 -- ACL
 INSERT INTO `sys_acl_actions` (`Module`, `Name`, `AdditionalParamName`, `Title`, `Desc`, `Countable`, `DisabledForLevels`) VALUES

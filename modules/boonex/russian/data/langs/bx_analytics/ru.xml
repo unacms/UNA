@@ -193,7 +193,9 @@
 	<string name="_bx_analytics_adm_stg_cpt_identity"><![CDATA[Идентификаторы гостей]]></string>
 	<string name="_bx_analytics_adm_stg_cpt_ignore_params"><![CDATA[Игнорируемые параметры запроса]]></string>
 	<string name="_bx_analytics_page_title_sys_page"><![CDATA[Аналитика]]></string>
+	<string name="_bx_analytics_page_title_sys_revenue"><![CDATA[Аналитика: доходы]]></string>
 	<string name="_bx_analytics_page_title_page"><![CDATA[Аналитика]]></string>
+	<string name="_bx_analytics_page_title_revenue"><![CDATA[Доходы]]></string>
 	<string name="_bx_analytics_page_block_title_system_canvas"><![CDATA[Аналитика]]></string>
 	<string name="_bx_analytics_page_block_title_canvas"><![CDATA[Аналитика]]></string>
 	<string name="_bx_analytics_platform_api"><![CDATA[API]]></string>
@@ -242,7 +244,9 @@
 	<string name="_bx_analytics_section_revenue"><![CDATA[Доходы]]></string>
 	<string name="_bx_analytics_section_traffic"><![CDATA[Трафик]]></string>
 	<string name="_bx_analytics_item_title_system_analytics"><![CDATA[Аналитика]]></string>
+	<string name="_bx_analytics_item_title_system_revenue"><![CDATA[Доходы]]></string>
 	<string name="_bx_analytics_item_title_analytics"><![CDATA[Аналитика]]></string>
+	<string name="_bx_analytics_item_title_revenue"><![CDATA[Доходы]]></string>
 	<string name="_bx_analytics_lmi_cpt_api"><![CDATA[API]]></string>
 	<string name="_bx_analytics_lmi_cpt_audience"><![CDATA[Аудитория]]></string>
 	<string name="_bx_analytics_lmi_cpt_bots"><![CDATA[Боты и агенты]]></string>

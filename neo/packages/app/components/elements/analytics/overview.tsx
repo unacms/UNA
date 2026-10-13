@@ -5,27 +5,10 @@ import { BlockWrapper } from 'app/components/block-wrapper';
 import { cn, isWeb } from 'app/lib/util';
 import type { AnalyticsElementProps, AnalyticsKpi, AnalyticsStrings, OverviewReport } from './analytics.types';
 import { useAnalyticsReport, getStrings } from './use-analytics';
-import { fillPlaceholder, formatChange, formatMetric, getTrend, type Trend } from './format';
+import { fillPlaceholder, formatChange, formatMetric, getTrend } from './format';
 import { AreaChart } from './area-chart';
 import { AnalyticsEmpty, AnalyticsError, AnalyticsSkeleton } from './states';
-
-const TREND_TEXT: Record<Trend, string> = {
-    good: 'text-emerald-700 dark:text-emerald-300',
-    bad: 'text-rose-700 dark:text-rose-300',
-    flat: 'text-muted-foreground',
-};
-
-// Tiles per row by the block's own width: the block sits in a column, so the viewport
-// breakpoints (used until the first measurement) say little about its room.
-const TILE_WIDTH: Record<number, string> = { 2: 'w-1/2', 3: 'w-1/3', 6: 'w-1/6' };
-const TILE_WIDTH_BEFORE_LAYOUT = 'w-1/2 sm:w-1/3 lg:w-1/6';
-
-function getTileWidth(width: number): string {
-    if (width <= 0) return TILE_WIDTH_BEFORE_LAYOUT;
-    if (width >= 840) return TILE_WIDTH[6] ?? TILE_WIDTH_BEFORE_LAYOUT;
-    if (width >= 420) return TILE_WIDTH[3] ?? TILE_WIDTH_BEFORE_LAYOUT;
-    return TILE_WIDTH[2] ?? TILE_WIDTH_BEFORE_LAYOUT;
-}
+import { TREND_TEXT, getTileWidth } from './tiles';
 
 function KpiTile({ metric, title, kpi, selected, strings, widthClass, onPress }: {
     metric: string;

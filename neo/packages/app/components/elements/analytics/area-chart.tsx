@@ -21,7 +21,7 @@ const Y_TICKS = 4;
 /** Decimals an axis tick prints (formatAxis); every other metric prints whole numbers. */
 const AXIS_DECIMALS: Record<string, number> = { pages_per_session: 1 };
 
-type Point = { x: number; y: number };
+export type Point = { x: number; y: number };
 
 export type AreaChartProps = {
     series: AnalyticsPoint[];
@@ -38,7 +38,7 @@ export type AreaChartProps = {
  * (see useAnalyticsReport), or UTC when UNA doesn't know the zone the device sent (`utc`).
  * Then the date is shifted so local Date getters read the UTC wall time.
  */
-function formatBucket(t: number, bucket: AnalyticsBucket, utc: boolean, translate: TFunction, locale: string): string {
+export function formatBucket(t: number, bucket: AnalyticsBucket, utc: boolean, translate: TFunction, locale: string): string {
     const date = new Date(t * 1000);
     if (utc) date.setTime((t + date.getTimezoneOffset() * 60) * 1000);
     if (bucket === 'hour') return formatDate(date, translate, { showDate: false, showTime: true, locale });
@@ -47,7 +47,7 @@ function formatBucket(t: number, bucket: AnalyticsBucket, utc: boolean, translat
 }
 
 /** A 1/2/2.5/5 step that the axis prints exactly with `decimals` digits. */
-function niceStep(max: number, decimals: number): number {
+export function niceStep(max: number, decimals: number): number {
     if (max <= 0) return 1;
     const min = Math.pow(10, -decimals);
     const raw = max / Y_TICKS;
@@ -59,7 +59,7 @@ function niceStep(max: number, decimals: number): number {
 }
 
 /** Monotone cubic tangents (Fritsch-Carlson): a smooth line that never overshoots a value. */
-function tangents(points: Point[]): number[] {
+export function tangents(points: Point[]): number[] {
     const n = points.length;
     const slopes: number[] = [];
     for (let i = 0; i < n - 1; i++) {
@@ -93,7 +93,7 @@ function tangents(points: Point[]): number[] {
     return m;
 }
 
-function curve(a: Point, b: Point, ma: number, mb: number): string {
+export function curve(a: Point, b: Point, ma: number, mb: number): string {
     const dx = (b.x - a.x) / 3;
     return `C ${a.x + dx} ${a.y + ma * dx} ${b.x - dx} ${b.y - mb * dx} ${b.x} ${b.y}`;
 }

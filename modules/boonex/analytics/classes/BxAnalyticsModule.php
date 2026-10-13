@@ -153,7 +153,30 @@ class BxAnalyticsModule extends BxDolModule
     {
 		return $this->checkAllowed() === CHECK_ACTION_RESULT_ALLOWED ? true : false;
     }
-	
+
+    /**
+     * @page service Service Calls
+     * @section bx_analytics Analytics
+     * @subsection bx_analytics-other Other
+     * @subsubsection bx_analytics-is_revenue_avaliable is_revenue_avaliable
+     *
+     * @code bx_srv('bx_analytics', 'is_revenue_avaliable'); @endcode
+     *
+     * Whether the current profile may see the revenue reports ("view analytics revenue",
+     * administrators by default). Shows the Revenue item of the account dashboard menu.
+     *
+     * @return boolean
+     *
+     * @see BxAnalyticsModule::serviceIsRevenueAvaliable
+     */
+    /**
+     * @ref bx_analytics-is_revenue_avaliable "is_revenue_avaliable"
+     */
+    public function serviceIsRevenueAvaliable()
+    {
+        return $this->checkAllowedRevenue() === CHECK_ACTION_RESULT_ALLOWED;
+    }
+
           
     /**
     * @page service Service Calls

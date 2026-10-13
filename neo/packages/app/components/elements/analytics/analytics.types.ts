@@ -23,6 +23,13 @@ export type AnalyticsStrings = {
     duration_h: string;
     duration_m: string;
     duration_s: string;
+    /** Revenue reports, optional: NEO translates its own fallbacks. A tile without a value. */
+    not_available?: string;
+    chart_revenue?: string;
+    chart_mrr?: string;
+    chart_credits?: string;
+    sbs_movement?: string;
+    sales_invoices?: string;
 };
 
 /** `data` of an analytics_* element. */
@@ -104,4 +111,96 @@ export type TopReport = {
     dimension: string;
     column: string;
     items: TopItem[];
+};
+
+/*
+ * Revenue reports (revenue, subscriptions, sales, credits): BxAnalyticsReports getRevenue,
+ * getSubscriptions, getSales and getCredits. AnalyticsReport renders a report's parts by
+ * their shape: tiles, charts (kind + datasets), tables (columns + rows) and notes.
+ */
+
+/** How a value prints (BxAnalyticsTemplate::formatValue). */
+export type ReportValueType = 'label' | 'money' | 'number' | 'percent' | 'credits' | 'decimal' | 'text' | (string & {});
+
+export type ReportMoney = {
+    active?: boolean;
+    payment?: string;
+    /** ISO 4217 code of every amount of the report, e.g. `USD`. */
+    code?: string;
+    credits_only?: boolean;
+};
+
+export type ReportTile = {
+    key?: string;
+    title: string;
+    /** `null`: nothing to measure (a rate without a base). */
+    value: number | string | null;
+    previous?: number | null;
+    change?: number | null;
+    type?: ReportValueType;
+    /** Decides whether up is good (getTrend). */
+    metric?: string;
+    /** A note under the value, formatted by UNA. */
+    sub?: string;
+};
+
+export type ReportDataset = {
+    key?: string;
+    label: string;
+    values: Array<number | null>;
+    /** A meaning colour instead of the next one of the palette. */
+    tone?: 'good' | 'bad';
+    /** A reference line. */
+    dashed?: boolean;
+    /** Per value: the bucket is still in progress. */
+    partial?: boolean[];
+};
+
+export type ReportChart = {
+    /** `lines` or `stacked` (bars). */
+    kind: string;
+    /** How the values print: `money`, `number`, ... */
+    metric?: string;
+    currency?: string;
+    /** Bucket starts, unix seconds in `tz`. */
+    labels: number[];
+    bucket?: AnalyticsBucket;
+    tz?: string;
+    datasets: ReportDataset[];
+};
+
+export type ReportColumn = { key: string; type: ReportValueType; title: string };
+
+export type ReportRow = {
+    label: string;
+    /** Under the label, e.g. the module of an item. */
+    sub?: string;
+    /** Absolute UNA URL. */
+    link?: string;
+    /** Percent of the largest row, for the bar behind the row. */
+    bar?: number;
+    values: Record<string, number | string | null>;
+};
+
+export type ReportTable = {
+    name: string;
+    caption?: string;
+    /** Selected tab; switching asks for the report again with `tab_<name>`. */
+    tab?: string;
+    tabs?: TopTab[];
+    columns: ReportColumn[];
+    rows: ReportRow[];
+    /** Text when there are no rows. */
+    empty?: string;
+};
+
+/** A revenue report: `money`, `notes` and any number of named parts. */
+export type RevenueReport = {
+    money?: ReportMoney;
+    /** Credits: false when no installed module keeps credits. */
+    available?: boolean;
+    title?: string;
+    tiles?: ReportTile[];
+    notes?: string[];
+    [part: string]: unknown;
 };

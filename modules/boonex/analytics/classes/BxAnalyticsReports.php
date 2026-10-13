@@ -2760,7 +2760,9 @@ class BxAnalyticsReports
             $aNotes[] = _t('_bx_analytics_txt_revenue_credits_only');
         if($iUnconverted > 0)
             $aNotes[] = _t('_bx_analytics_txt_revenue_no_rate', $iUnconverted);
-        $aNotes[] = _t('_bx_analytics_txt_revenue_as_recorded', $aMoney['code'] !== '' ? $aMoney['code'] : '-');
+        // no currency without a payment module: the tab still shows, for other revenue sources to come
+        if($aMoney['code'] !== '')
+            $aNotes[] = _t('_bx_analytics_txt_revenue_as_recorded', $aMoney['code']);
 
         return $aNotes;
     }
