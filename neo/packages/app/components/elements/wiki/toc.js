@@ -614,7 +614,7 @@ export function WikiTocDropdown({ items, activeIds, focusedId = null, onPress, l
                 label: iconOnly ? undefined : label,
                 accessibilityLabel: label,
                 style: 'borderless',
-                controlSize: 'small',
+                controlSize: 'regular',
                 image: 'TextAlignStart',
                 borderShape: iconOnly ? 'circle' : 'capsule',
             }}
