@@ -1,9 +1,9 @@
-// Run with `node --test apps/next/lib/client-headers.test.mjs` from the NEO root.
+// Run with `node --test apps/next/lib/client-headers.test.ts` from the NEO root (Node 24 strips the types).
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { dropForeignClientHeaders, resolveEdge } from './client-headers.ts';
 
-const sent = () =>
+const sent = (): Headers =>
     new Headers({
         'x-forwarded-for': '203.0.113.77',
         'x-real-ip': '203.0.113.78',
@@ -18,7 +18,7 @@ const sent = () =>
         'accept-language': 'en',
     });
 
-const names = (headers) => [...headers.keys()].sort();
+const names = (headers: Headers): string[] => [...headers.keys()].sort();
 
 test('the edge comes from NEO_EDGE, then Vercel, then a proxy', () => {
     assert.equal(resolveEdge({ NEO_EDGE: 'Cloudflare' }), 'cloudflare');
