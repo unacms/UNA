@@ -65,6 +65,8 @@ BxDolVoteReactions.prototype.vote = function(oLink, iValue, sReaction, onComplet
     	this._sActionsUrl,
     	oParams,
     	function(oData) {
+            $this._cueOnVote(oData);
+
             if(oData && oData.message != undefined)
                 bx_alert(oData.message, function() {
                     $this.onVote(oLink, oData, onComplete);

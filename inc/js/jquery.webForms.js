@@ -135,6 +135,10 @@
             };
 
             $('.bx-form-section-title:first', eFormSection).click(function() {
+                // an accordion: a subtle open or close (interface sounds, see bx_sound)
+                if(typeof(bx_sound) == 'function')
+                    bx_sound(eFormSection.hasClass('bx-form-collapsed') ? 'open' : 'close', {emphasis: 'subtle'});
+
                 fCallback();
                 fSyncExpanded();
             });

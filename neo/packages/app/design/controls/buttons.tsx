@@ -9,6 +9,7 @@ import Loading from 'app/ui/atoms/loading'
 import { useIsDesktop } from 'app/context/measure';
 import { Platform, type Insets } from 'react-native';
 import { useThemeName } from 'app/design/theme';
+import { cueAttributes } from 'app/lib/sound';
 
 
 const BtnCls = appSetting('theme', 'button_styles');
@@ -415,6 +416,8 @@ export const Button = ({
 
     const cntProps = {
         className: `btn-${variant}-${size} ${flexClasses} ${hitareaClass}`,
+        // Web: a button with haptics taps (Cuelume `bind()`), as NeoButton does.
+        ...(isWeb && isActive && haptics ? cueAttributes({ cue: 'tap', emphasis: 'subtle' }) : {}),
 
         ...(isPressable ? {
             disabled: isPressable ? !isActive : disabled,

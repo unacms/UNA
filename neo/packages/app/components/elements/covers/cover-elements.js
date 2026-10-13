@@ -19,6 +19,7 @@ import { navigateBackInTab } from 'app/lib/navigation/tab-history'
 import { useCoverBackTabKey, useShowCoverBackButton } from 'app/components/elements/use-cover-back'
 import { useIsPushedScreen } from 'app/context/tab-chrome'
 import { useTranslation } from 'react-i18next'
+import { playCue } from 'app/lib/sound'
 
 // Matches `top-3` overlay spacing on the full cover.
 const COVER_CONTROL_TOP = 10
@@ -43,6 +44,7 @@ function BackButton() {
     const handleBackPress = () => {
         FeedbackHaptics('Medium')
         if (Platform.OS === 'web') {
+            playCue('navigate', { direction: 'back' })
             if (typeof window !== 'undefined' && window.history.length > 2) {
                 window.history.back()
             } else if (router?.replace) {
@@ -70,6 +72,7 @@ function BackButton() {
                 controlSize="regular"
                 borderShape="circle"
                 accessibilityLabel={t('Back')}
+                sound={false}
                 onPress={handleBackPress}
             />
         </View>

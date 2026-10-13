@@ -47,7 +47,7 @@ import {
 import { useCurrentUser } from 'app/context/user';
 import { objectTs, useObjectState } from 'app/lib/object-state';
 import { useWindowSize } from 'app/context/measure';
-import { useSound } from 'app/lib/hooks/use-sound';
+import { playCue } from 'app/lib/sound';
 import { lazyComponent } from 'app/lib/lazy-component';
 import {
     emojiFromReactionCode,
@@ -858,7 +858,6 @@ function ReactionPicker({
 export default function ElementReactions(props: ReactionsProps) {
     const { t } = useTranslation();
     const { currentUser } = useCurrentUser();
-    const playSound = useSound('success');
 
     const settings = appSetting('social_actions', 'reaction');
     const params = { ...settings, ...props.params };
@@ -976,6 +975,8 @@ export default function ElementReactions(props: ReactionsProps) {
         if (!had && atLimit) return;
 
         FeedbackHaptics(params.haptics_type);
+        // A reaction is a toggle: on when given, off when taken back.
+        playCue('toggle', { direction: had ? 'back' : 'forward', group: 'reactions' });
 
         // Optimistic: the viewer's reactions and the counts.
         const replaced = !had && config.perUser === 1 ? mine : [];
@@ -1030,7 +1031,6 @@ export default function ElementReactions(props: ReactionsProps) {
             // A timeout or a network error never reaches the callback: undo the optimistic change.
             undo();
         });
-        playSound();
     };
 
     /** An emoji from the picker: the list's reaction for it, else its e_… code. */

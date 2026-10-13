@@ -2,11 +2,11 @@
 
 import { useCallback, useEffect, useRef } from 'react';
 import { useAnimatedValue } from 'app/lib/hooks/use-animated-value';
-import { Animated, Platform } from 'react-native'
+import { Animated } from 'react-native'
 import { appSetting, FeedbackHaptics } from 'app/lib/util'
 import { Pressable, View } from 'app/design/view'
 import { nativeDriver } from 'app/lib/platform/animation'
-import { useSound } from 'app/lib/hooks/use-sound'
+import { cueAttributes, playPressCue } from 'app/lib/sound'
 
 const switcherTheme = appSetting('theme', 'switcher');
 
@@ -65,8 +65,6 @@ export default function Switch({
     const travel = resolveThumbTravel(resolvedSize);
     const nextValue = !value;
 
-    const isWeb = Platform.OS === 'web';
-    const playClick = useSound('click');
 
     const translateX = useAnimatedValue(value ? travel : 0);
     const scale = useAnimatedValue(1);
@@ -117,14 +115,12 @@ export default function Switch({
     const handlePress = useCallback(() => {
         if (disabled) return;
         if (feedback) {
-            // Native: click asset + expo haptic. Web: web-haptics preset (+ synth when sounds on).
-            if (!isWeb) {
-                playClick();
-            }
+            // Web plays the toggle through `cueAttributes` below (direction from aria-checked).
+            playPressCue({ cue: 'toggle', direction: nextValue ? 'forward' : 'back' });
             FeedbackHaptics('Select');
         }
         onValueChange?.(nextValue);
-    }, [disabled, feedback, isWeb, playClick, onValueChange, nextValue]);
+    }, [disabled, feedback, onValueChange, nextValue]);
 
     return (
         <Pressable
@@ -133,6 +129,7 @@ export default function Switch({
             aria-checked={!!value}
             aria-disabled={!!disabled}
             disabled={disabled}
+            {...(feedback && !disabled ? cueAttributes('toggle') : {})}
             onPress={handlePress}
             className={`${switcherTheme['u-controls-switcher-track']} ${trackSize} ${value ? switcherTheme['u-controls-switcher-track-active-col'] : switcherTheme['u-controls-switcher-track-col']} ${disabled ? switcherTheme['u-controls-switcher-track-disabled'] : ''}`}
         >

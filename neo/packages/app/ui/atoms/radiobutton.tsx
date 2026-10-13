@@ -1,6 +1,7 @@
 
 import { Text } from 'app/design/typography'
 import { View, Pressable } from 'app/design/view'
+import { cueAttributes } from 'app/lib/sound'
 import * as CheckboxPrimitive from '@rn-primitives/checkbox';
 import React, { isValidElement } from 'react';
 import { appSetting } from 'app/lib/util';
@@ -34,7 +35,7 @@ export default function RadioButton({ title, info, onPress, status, value, disab
             {selected ? <View className="h-2.5 w-2.5 rounded-full bg-primary" /> : null}
         </View>
     return (
-        <Pressable disabled={disabled} onPress={onPress} className={`flex-row gap-x-3 ${checkboxTheme['u-controls-checkbox-container']} ${checkboxTheme['u-controls-checkbox-container-bg']} ${disabled ? '' : ' web:hover:bg-background'} `}>
+        <Pressable disabled={disabled} onPress={onPress} aria-checked={selected} {...(disabled ? {} : cueAttributes('select'))} className={`flex-row gap-x-3 ${checkboxTheme['u-controls-checkbox-container']} ${checkboxTheme['u-controls-checkbox-container-bg']} ${disabled ? '' : ' web:hover:bg-background'} `}>
             {!!resolvedIcon && <View className={checkboxTheme['u-controls-checkbox-icon']}>{resolvedIcon}</View>}
             <View className='flex-auto '>
                 <Text className={checkboxTheme['u-controls-checkbox-text']}>{title}</Text>

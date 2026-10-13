@@ -3,6 +3,7 @@ import { View, type ViewProps } from 'react-native';
 import * as TabsPrimitive from 'app/ui/primitives/tabs';
 import { Text } from 'app/design/typography';
 import { appSetting, cn } from 'app/lib/util';
+import { cueAttributes } from 'app/lib/sound';
 
 const tabsTheme = appSetting('theme', 'tabs');
 const tabsSizes = appSetting('theme', 'tabs_sizes');
@@ -98,6 +99,7 @@ export function TabsTrigger({ className, rounded = false, hug = false, size, chi
         hug && 'flex-none shrink-0',
         className
       )}
+      {...cueAttributes('select')}
       {...props}
     >
       {({ isSelected }: { isSelected: boolean }) => (

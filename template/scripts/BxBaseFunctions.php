@@ -919,6 +919,44 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
         return $sContent;
     }
 
+    /**
+     * Interface sounds: Cuelume's cues (plugins_public/cuelume, MIT) with the settings of BxDolSounds. The module is
+     * loaded and bound only where sounds are on for this platform and the visitor hasn't turned them off.
+     * See bx_sound_init in inc/js/functions.js.
+     */
+    protected function getInjHeadSounds()
+    {
+        $oSounds = BxDolSounds::getInstance();
+        $bOn = $oSounds->isOn($this->getSoundsPlatform());
+        if(!$bOn && !$this->isSoundsPreview())
+            return '';
+
+        $aConfig = $oSounds->getConfig();
+        unset($aConfig['platforms']);
+
+        $aLabels = [];
+        foreach(BxDolSounds::LEVELS as $sLevel)
+            $aLabels[$sLevel] = _t('_sys_txt_sounds_level_' . $sLevel);
+
+        return $this->_oTemplate->parseHtmlByName('sounds_init.html', [
+            'url' => bx_js_string(BX_DOL_URL_PLUGINS_PUBLIC . 'cuelume/cuelume.min.js', BX_ESCAPE_STR_APOS),
+            'config' => json_encode(array_merge($aConfig, ['on' => $bOn, 'labels' => $aLabels]), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT)
+        ]);
+    }
+
+    protected function getSoundsPlatform()
+    {
+        return 'site';
+    }
+
+    /**
+     * Whether pages get the sounds setup while sounds are off here, to preview them (Studio's Settings > Sounds).
+     */
+    protected function isSoundsPreview()
+    {
+        return false;
+    }
+
     protected function getInjHeadLiveUpdates() 
     {
         $sContent = '';

@@ -1,5 +1,6 @@
 import { Text } from 'app/design/typography'
 import { View, Pressable } from 'app/design/view'
+import { cueAttributes } from 'app/lib/sound'
 import * as CheckboxPrimitive from '@rn-primitives/checkbox'
 import { isValidElement, type ReactNode } from 'react'
 import { appSetting, cn } from 'app/lib/util'
@@ -64,6 +65,8 @@ export default function Checkbox({
                 onPress={onPress}
                 accessibilityRole="checkbox"
                 accessibilityState={{ checked: selected }}
+                aria-checked={selected}
+                {...cueAttributes('toggle')}
                 className="items-center justify-center shrink-0 p-0.5"
             >
                 <CheckboxMark selected={selected} indicatorClass={indicatorClass} />
@@ -76,6 +79,8 @@ export default function Checkbox({
             onPress={onPress}
             accessibilityRole="checkbox"
             accessibilityState={{ checked: selected }}
+            aria-checked={selected}
+            {...cueAttributes('toggle')}
             className={`${resolvedIcon ? 'flex-row gap-x-3' : 'flex-row-reverse'} ${isBackground ? checkboxTheme['u-controls-checkbox-container-bg'] : ''} ${margin} ${checkboxTheme['u-controls-checkbox-container']}`}
         >
             {!!resolvedIcon && <View className="w-8">{resolvedIcon}</View>}

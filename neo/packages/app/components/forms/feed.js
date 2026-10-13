@@ -15,7 +15,6 @@ import { useIsDesktop, useWindowHeight } from 'app/context/measure';
 import emitter, { EVENTS } from 'app/context/emitter';
 import { Icon } from 'app/ui/atoms/icon'
 import { Text } from 'app/design/typography';
-import { useSound } from 'app/lib/hooks/use-sound';
 import { useTranslation } from 'react-i18next';
 
 const dropdownTheme = appSetting('theme', 'dropdown');
@@ -263,16 +262,14 @@ export default function FormFeed({ data, handleSubmit, exProps, name, response }
 
     const hasText = useMemo(() => stripTags(rawEditorText || '').trim().length > 0, [rawEditorText]);
 
-    const playSound = useSound('success');
-
     function onClose() {
         setShowImage(false)
         exProps?.onClose?.();
     }
 
     useEffect(() => {
+        // The success cue plays in `Form` when UNA takes the post.
         if (response?.id && response?.id != responseId) {
-            playSound();
             emitter.emit(EVENTS.feed, { action: 'new_content', data: response });
             onClose();
             setResponseId(response?.id)

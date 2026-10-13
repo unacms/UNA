@@ -15,6 +15,7 @@ import { Platform } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { appSetting, FeedbackHaptics } from 'app/lib/util';
+import { playCue } from 'app/lib/sound';
 import {
     objectKey,
     objectStateFromProps,
@@ -86,6 +87,7 @@ export default function ElementStars(props) {
 
     const undoStar = () => {
         FeedbackHaptics(params.haptics_type);
+        playCue('toggle', { direction: 'back', group: 'reactions' });
         const value =
             objectData?.value != undefined
                 ? objectData.value
@@ -197,6 +199,8 @@ export default function ElementStars(props) {
                     >
                         <StarsAction
                             rating={rate}
+                            // Rating content counts as a reaction in UNA's sound settings, like taking it back.
+                            soundGroup="reactions"
                             onChange={
                                 !isDisabled
                                     ? (number) => {

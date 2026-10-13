@@ -10,7 +10,7 @@ import { Icon } from 'app/ui/atoms/icon'
 import { useTranslation } from 'react-i18next';
 import { useFooter, useFooterHeight, useSetFooterHeight } from 'app/context/jotai/layout';
 import { useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import { useSound } from 'app/lib/hooks/use-sound';
+import { cueAttributes } from 'app/lib/sound';
 import { isTabBarLabelsEnabled } from 'app/lib/util';
 import DropdownMenu, { DropdownMenuOpenContext } from 'app/ui/atoms/dropdown-menu';
 import { NeoButton } from 'app/design/controls';
@@ -172,7 +172,6 @@ export default function () {
 
 function MenuBottomItem({ link, tabKey, rootUrl, title, badge, icon, isActive, iFrCounter, notifCount, animated, addClassName }) {
     const { currentUser } = useCurrentUser();
-    const playSound = useSound('click');
     const useAnimatedIcon = animated === true;
     const [groupHovered, setGroupHovered] = useState(false);
     const badgeObj = [
@@ -195,9 +194,8 @@ function MenuBottomItem({ link, tabKey, rootUrl, title, badge, icon, isActive, i
     ].find(item => item.condition)?.value || null;
 
     const handlePress = useCallback(() => {
-        playSound();
         rememberSelectedTab(tabKey, { fromPress: true });
-    }, [playSound, tabKey]);
+    }, [tabKey]);
     const baseIconClassName = isActive
         ? 'text-accent-foreground'
         : 'text-secondary-foreground web:group-hover:text-foreground';
@@ -212,6 +210,7 @@ function MenuBottomItem({ link, tabKey, rootUrl, title, badge, icon, isActive, i
                  onClick={handlePress}
             >
                 <View
+                    {...cueAttributes({ cue: 'navigate', emphasis: 'subtle' })}
                     className={` my-auto items-center rounded-full min-h-12 justify-center p-1.5 text-center gap-1.5 web:hover:bg-muted/50 ${isActive && 'bg-accent/60'}`}
                     onMouseEnter={useAnimatedIcon ? () => setGroupHovered(true) : undefined}
                     onMouseLeave={useAnimatedIcon ? () => setGroupHovered(false) : undefined}

@@ -17,6 +17,18 @@
                 </div>
             </li>
         </bx_if:show_theme>
+        <bx_if:show_sounds>
+            <li class="bx-mv-static bx-mv-theme __class_add__">
+                <div>
+                    <span id="bx-sounds-toggle-label">__title__</span>
+                    <div class="bx-theme-toggle" role="radiogroup" aria-labelledby="bx-sounds-toggle-label">
+                        <button type="button" class="bx-theme-option" role="radio" aria-checked="false" data-bx-sounds-level="off" title="__title_off__" aria-label="__title_off__" onclick="bx_sound_set_level('off')"><bx_icon_inline:ami-sounds-off.svg /></button>
+                        <button type="button" class="bx-theme-option" role="radio" aria-checked="false" data-bx-sounds-level="quiet" title="__title_quiet__" aria-label="__title_quiet__" onclick="bx_sound_set_level('quiet')"><bx_icon_inline:ami-sounds-quiet.svg /></button>
+                        <button type="button" class="bx-theme-option" role="radio" aria-checked="false" data-bx-sounds-level="full" title="__title_full__" aria-label="__title_full__" onclick="bx_sound_set_level('full')"><bx_icon_inline:ami-sounds-full.svg /></button>
+                    </div>
+                </div>
+            </li>
+        </bx_if:show_sounds>
         <bx_if:show_button>
             <li class="__class_add__">
                 <button type="button" aria-pressed="false" __onclick_attr__ __attrs__>__icon_html__<span>__title__</span></button>

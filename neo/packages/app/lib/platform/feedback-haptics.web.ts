@@ -1,9 +1,9 @@
 import { WebHaptics } from 'web-haptics';
-import { appSetting } from 'app/config';
 
 /**
- * Mobile web haptics via [web-haptics](https://github.com/lochie/web-haptics).
- * Synth “click” audio (like [haptics.lochie.me](https://haptics.lochie.me/)) uses the library’s `debug` audio path; gated by `layout.sounds` + `layout.web_haptics_sounds`.
+ * Mobile web haptics via [web-haptics](https://github.com/lochie/web-haptics):
+ * vibration only. Interface sounds are Cuelume's (`app/lib/sound`), so the
+ * library's synthesized "debug" click stays off.
  * Maps the same `type` strings as native `expo-haptics` in `feedback-haptics.ts`.
  */
 let singleton: WebHaptics | undefined;
@@ -28,33 +28,18 @@ const PRESET_BY_TYPE: Record<string, string> = {
     Nudge: 'nudge',
 };
 
-function shouldPlayWebHapticsSynthAudio() {
-    if (!Boolean(appSetting('layout', 'sounds'))) return false;
-    const raw = appSetting('layout', 'web_haptics_sounds');
-    if (raw === '' || raw === undefined) return true;
-    return Boolean(raw);
-}
-
 /**
- * web-haptics `trigger()` awaits `ensureAudio()` before `playClick()`. That async gap
- * runs after the browser’s user-gesture window, so the first synth click is often
- * silent until `AudioContext` is already running. Radix tabs fire `onValueChange` from
- * `onMouseDown`, which is *after* `pointerdown`, so we kick off `ensureAudio()` on
- * capture-phase `pointerdown` (still a user gesture) so resume + playback line up.
- * Keyboard tab activation uses keydown (Enter/Space) without a preceding pointerdown.
- *
- * Clicks/keys also stamp a recent-gesture flag. Tab auto-select and other mount
- * effects must not play audio — only a real pointer/key activation should.
+ * Clicks and Enter/Space stamp a recent-gesture flag: tab auto-select and
+ * other mount effects must not vibrate, only a real pointer/key activation.
  */
-let webHapticsAudioPrimed = false;
 let lastUserGestureAt = 0;
-const USER_GESTURE_AUDIO_MS = 1000;
+const USER_GESTURE_MS = 1000;
 
 function markUserGesture() {
     lastUserGestureAt = Date.now();
 }
 
-export function hasRecentUserGesture(maxAgeMs = USER_GESTURE_AUDIO_MS) {
+export function hasRecentUserGesture(maxAgeMs = USER_GESTURE_MS) {
     if (lastUserGestureAt <= 0) return false;
     if (typeof navigator !== 'undefined' && navigator.userActivation?.isActive) {
         return true;
@@ -62,40 +47,21 @@ export function hasRecentUserGesture(maxAgeMs = USER_GESTURE_AUDIO_MS) {
     return Date.now() - lastUserGestureAt < maxAgeMs;
 }
 
-function primeWebHapticsAudioFromUserGesture() {
-    markUserGesture();
-    if (webHapticsAudioPrimed) return;
-    if (!shouldPlayWebHapticsSynthAudio()) {
-        webHapticsAudioPrimed = true;
-        return;
-    }
-    const h = getHaptics();
-    if (!h) return;
-    h.setDebug(true);
-    // ensureAudio is private in web-haptics' typings; called on purpose to warm up audio.
-    void (h as any).ensureAudio?.();
-    webHapticsAudioPrimed = true;
-}
-
-function installWebHapticsAudioPriming() {
+function installUserGestureTracking() {
     if (typeof document === 'undefined') return;
-    document.addEventListener(
-        'pointerdown',
-        primeWebHapticsAudioFromUserGesture,
-        { capture: true, passive: true }
-    );
+    document.addEventListener('pointerdown', markUserGesture, { capture: true, passive: true });
     document.addEventListener(
         'keydown',
         (e) => {
             if (e.key === 'Enter' || e.key === ' ') {
-                primeWebHapticsAudioFromUserGesture();
+                markUserGesture();
             }
         },
         { capture: true }
     );
 }
 
-installWebHapticsAudioPriming();
+installUserGestureTracking();
 
 export function FeedbackHaptics(type?: string) {
     if (typeof type !== 'string') return;
@@ -104,8 +70,6 @@ export function FeedbackHaptics(type?: string) {
     if (!h) return;
     const preset = PRESET_BY_TYPE[type];
     if (!preset) return;
-
-    h.setDebug(shouldPlayWebHapticsSynthAudio());
 
     void h.trigger(preset).catch(() => {});
 }
