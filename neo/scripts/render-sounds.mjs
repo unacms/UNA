@@ -1,22 +1,26 @@
 #!/usr/bin/env node
 /*
- * Renders the Cuelume cues the native app plays into WAV files.
+ * Renders the Cuelume cues the native app plays into WAV files, in every sound set.
  *
- *   node scripts/render-sounds.mjs                  # every cue in CUES, into the default folder
+ *   node scripts/render-sounds.mjs                  # every cue in CUES and every set, into the default folder
  *   node scripts/render-sounds.mjs --out <dir>      # somewhere else
  *   node scripts/render-sounds.mjs --only toggle    # some cues only
+ *   node scripts/render-sounds.mjs --sets bubble    # some sets only
  *
  * Web plays Cuelume (npm `cuelume`, MIT) live with Web Audio. React Native has no
  * Web Audio, so the native app plays these files instead (`default/sounds.js`).
  * Each cue plays in headless Chrome with Cuelume's AudioContext replaced by an
- * OfflineAudioContext (48 kHz stereo), so the file is what a browser plays,
- * through Cuelume's own output bus, limiter and room. Trailing silence under
- * -70 dBFS is trimmed and the file is written as 16-bit stereo WAV.
+ * OfflineAudioContext, so the file is what a browser plays, through Cuelume's
+ * own output bus, limiter and room. The two channels are mixed to one (the room
+ * is the only thing that differs between them), trailing silence under -70 dBFS
+ * is trimmed and the file is written as 16-bit mono WAV at 32 kHz: every set has
+ * to ship in the app, and nothing a cue plays needs more.
  *
- * Files are named <cue>[-<emphasis>][-back].wav; normal emphasis adds nothing.
- * The same names are the keys of `Sounds` (see `lib/sound/cue-key.ts`).
- * Math.random in the page is seeded from the file name, so a rerun writes the
- * same bytes. Rerender after bumping `cuelume` in package.json.
+ * Files are named [<set>-]<cue>[-<emphasis>][-back].wav; the default set and
+ * normal emphasis add nothing. The same names are the keys of `Sounds` (see
+ * `cueKey` in `lib/sound/cues.ts`). Math.random in the page is seeded from the
+ * file name, so a rerun writes the same bytes. Rerender after bumping `cuelume`
+ * in package.json.
  *
  * Chrome: $CHROME, else Google Chrome from /Applications.
  */
@@ -29,10 +33,13 @@ import { fileURLToPath } from 'node:url';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const CUELUME_DIR = path.join(ROOT, 'node_modules', 'cuelume');
-const SAMPLE_RATE = 48000;
+const SAMPLE_RATE = 32000;
 const RENDER_SECONDS = 3; // longer than any cue's tail
 const FLOOR_DB = -70; // trailing samples under this are cut
 const KEEP_MS = 5; // kept after the last sample above the floor
+
+// Cuelume's themes; Studio > Settings > Sounds picks one, and one per kind of action.
+const SETS = ['default', 'mech', 'bubble', 'press'];
 
 // What the native app plays; keep in step with `default/sounds.js`.
 const CUES = [
@@ -54,11 +61,13 @@ const option = (name, fallback) => {
 };
 const OUT = path.resolve(ROOT, option('--out', 'packages/app/customization/resources/sounds'));
 const ONLY = option('--only', '').split(',').filter(Boolean);
+const ONLY_SETS = option('--sets', '').split(',').filter(Boolean);
 
-function fileName({ cue, emphasis, direction }) {
+function fileName({ set, cue, emphasis, direction }) {
+    const t = set && set !== 'default' ? `${set}-` : '';
     const e = emphasis && emphasis !== 'normal' ? `-${emphasis}` : '';
     const d = direction === 'back' ? '-back' : '';
-    return `${cue}${e}${d}`;
+    return `${t}${cue}${e}${d}`;
 }
 
 // ---- the page ---------------------------------------------------------------
@@ -86,6 +95,7 @@ const pageRender = async (seed, cue, options, sampleRate, seconds) => {
     // It stays silent until the page has had a user gesture.
     Object.defineProperty(navigator, 'userActivation', { value: { hasBeenActive: true, isActive: true }, configurable: true });
     const cuelume = await import('/cuelume/index.js');
+    if (!cuelume.themes.includes(options.theme)) throw new Error(`cuelume has no theme ${options.theme}`);
     // Its cleanup timers disconnect the cue's nodes; offline they would cut the tail.
     const realTimeout = window.setTimeout;
     window.setTimeout = () => 0;
@@ -206,26 +216,24 @@ function seedFor(name) {
 
 function toWav(left, right) {
     const floor = 10 ** (FLOOR_DB / 20);
+    const mono = left.map((v, i) => (v + right[i]) / 2);
     let last = 0;
     let peak = 0;
-    for (let i = left.length - 1; i >= 0; i--) {
-        if (Math.abs(left[i]) > floor || Math.abs(right[i]) > floor) {
+    for (let i = mono.length - 1; i >= 0; i--) {
+        if (Math.abs(mono[i]) > floor) {
             last = i;
             break;
         }
     }
-    const frames = Math.min(left.length, last + 1 + Math.round((KEEP_MS / 1000) * SAMPLE_RATE));
-    const data = Buffer.alloc(frames * 4);
+    const frames = Math.min(mono.length, last + 1 + Math.round((KEEP_MS / 1000) * SAMPLE_RATE));
+    const data = Buffer.alloc(frames * 2);
     let clipped = 0;
     const q = (v) => {
         peak = Math.max(peak, Math.abs(v));
         if (v > 1 || v < -1) clipped++;
         return Math.max(-32768, Math.min(32767, Math.round(v * 32768)));
     };
-    for (let i = 0; i < frames; i++) {
-        data.writeInt16LE(q(left[i]), i * 4);
-        data.writeInt16LE(q(right[i]), i * 4 + 2);
-    }
+    for (let i = 0; i < frames; i++) data.writeInt16LE(q(mono[i]), i * 2);
     const head = Buffer.alloc(44);
     head.write('RIFF', 0);
     head.writeUInt32LE(36 + data.length, 4);
@@ -233,10 +241,10 @@ function toWav(left, right) {
     head.write('fmt ', 12);
     head.writeUInt32LE(16, 16);
     head.writeUInt16LE(1, 20); // PCM
-    head.writeUInt16LE(2, 22); // stereo
+    head.writeUInt16LE(1, 22); // mono
     head.writeUInt32LE(SAMPLE_RATE, 24);
-    head.writeUInt32LE(SAMPLE_RATE * 4, 28);
-    head.writeUInt16LE(4, 32);
+    head.writeUInt32LE(SAMPLE_RATE * 2, 28);
+    head.writeUInt16LE(2, 32);
     head.writeUInt16LE(16, 34);
     head.write('data', 36);
     head.writeUInt32LE(data.length, 40);
@@ -255,7 +263,9 @@ if (!fs.existsSync(path.join(CUELUME_DIR, 'package.json'))) {
     process.exit(1);
 }
 const { version } = JSON.parse(fs.readFileSync(path.join(CUELUME_DIR, 'package.json'), 'utf8'));
-const jobs = CUES.filter((job) => !ONLY.length || ONLY.includes(job.cue));
+const jobs = SETS.filter((set) => !ONLY_SETS.length || ONLY_SETS.includes(set)).flatMap((set) =>
+    CUES.filter((job) => !ONLY.length || ONLY.includes(job.cue)).map((job) => ({ ...job, set })),
+);
 
 fs.mkdirSync(OUT, { recursive: true });
 const server = await serve();
@@ -265,7 +275,7 @@ const failed = [];
 try {
     for (const job of jobs) {
         const name = fileName(job);
-        const options = { emphasis: job.emphasis ?? 'normal', ...(job.direction ? { direction: job.direction } : {}) };
+        const options = { theme: job.set, emphasis: job.emphasis ?? 'normal', ...(job.direction ? { direction: job.direction } : {}) };
         const call = `(${pageRender})(${seedFor(name)}, ${JSON.stringify(job.cue)}, ${JSON.stringify(options)}, ${SAMPLE_RATE}, ${RENDER_SECONDS})`;
         try {
             const [l, r] = await chrome.evaluateInNewTab(pageUrl, call);

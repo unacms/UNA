@@ -71,7 +71,7 @@ export default function ElementReposts(props) {
     const doRepost = (event) => {
         event.preventDefault();
         FeedbackHaptics(params.haptics_type);
-        playCue('toggle', { direction: objectData?.is_performed === true ? 'back' : 'forward' });
+        playCue('toggle', { direction: objectData?.is_performed === true ? 'back' : 'forward', group: 'reactions' });
         repostRequest('repost', Object.values(action.data), (data) => {
             setObjectData((prev) => mergeState(prev, data));
         });

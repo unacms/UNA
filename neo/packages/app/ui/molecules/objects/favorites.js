@@ -76,7 +76,7 @@ export default function ElementFavorites(props) {
     const doFavorite = (event) => {
         if (event) event.preventDefault();
         FeedbackHaptics(params.haptics_type);
-        playCue('toggle', { direction: objectData?.is_favorited === true ? 'back' : 'forward' });
+        playCue('toggle', { direction: objectData?.is_favorited === true ? 'back' : 'forward', group: 'reactions' });
 
         if (typeof params?.on_do === 'function') params.on_do();
 

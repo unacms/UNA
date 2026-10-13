@@ -73,7 +73,7 @@ export default function ElementLikes(props) {
     const toggleLike = (event, withHaptics) => {
         event.preventDefault();
         if (withHaptics) FeedbackHaptics(params.haptics_type);
-        playCue('toggle', { direction: withHaptics ? 'forward' : 'back' });
+        playCue('toggle', { direction: withHaptics ? 'forward' : 'back', group: 'reactions' });
         objectRequest(object_params, 'do', { value: 1 }, (data) =>
             setObjectData((prev) => mergeState(prev, data))
         );

@@ -121,7 +121,7 @@ export default function ElementScore(props) {
     const doVote = (voteAction, event) => {
         event.preventDefault();
         FeedbackHaptics(params.haptics_type);
-        playCue('toggle', { direction: voteAction === 'down' ? 'back' : 'forward' });
+        playCue('toggle', { direction: voteAction === 'down' ? 'back' : 'forward', group: 'reactions' });
         objectRequest(object_params, 'do', { a: voteAction }, applyVoteResult);
     };
 

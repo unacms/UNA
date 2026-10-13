@@ -129,8 +129,9 @@ export default function DropdownMenuItem({ item, index, link, handleSelect, clas
             key={key}
             {...pressProps}
             {...rowHoverProps}
-            // A menu option (web; native menus are bottom sheets and stay quiet).
-            {...(handleSelect || link ? cueAttributes('select') : {})}
+            // A menu option (web; native menus are bottom sheets and stay quiet). `item.sound` changes it; false for
+            // an option whose choice answers itself (the Sounds level).
+            {...(handleSelect || link ? cueAttributes(item.sound ?? 'select') : {})}
         >
             <Row className={`${rowClassName} w-full min-w-0`}>
                 <View className={itemCntClass}>

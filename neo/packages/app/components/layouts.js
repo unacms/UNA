@@ -17,6 +17,7 @@ import { coerceVersion, isBelowRange, isAboveRange } from 'app/lib/server-versio
 import { FormModalHost } from 'app/ui/molecules/dialogs/form-modal';
 import { UnsavedFormConfirmHost } from 'app/ui/molecules/dialogs/unsaved-form-confirm-host';
 import { VersionIncompatible, VersionWarning } from 'app/ui/molecules/system/version-notice';
+import { applySoundConfig } from 'app/lib/sound';
 
 function WindowSizeSync() {
     const { width, height } = useWindowDimensions();
@@ -32,6 +33,12 @@ export default function Layouts({ path, data }) {
     useEffect(() => {
         urlRef.current = url;
     }, [url]);
+
+    // UNA's interface sounds settings come with every page; sounds read the last ones, never wait for them.
+    const sounds = data?.sounds;
+    useEffect(() => {
+        applySoundConfig(sounds);
+    }, [sounds]);
     const isWeb = Platform.OS === 'web';
     if (isWeb)
         registerAll();

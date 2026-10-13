@@ -59,7 +59,7 @@ export default function ElementFeatures(props) {
     const doFeature = (event) => {
         if (event) event.preventDefault();
         FeedbackHaptics(params.haptics_type);
-        playCue('toggle', { direction: objectData?.is_featured === true ? 'back' : 'forward' });
+        playCue('toggle', { direction: objectData?.is_featured === true ? 'back' : 'forward', group: 'reactions' });
 
         if (typeof params?.on_do === 'function') params.on_do();
 

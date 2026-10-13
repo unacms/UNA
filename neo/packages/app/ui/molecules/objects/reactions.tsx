@@ -976,7 +976,7 @@ export default function ElementReactions(props: ReactionsProps) {
 
         FeedbackHaptics(params.haptics_type);
         // A reaction is a toggle: on when given, off when taken back.
-        playCue('toggle', { direction: had ? 'back' : 'forward' });
+        playCue('toggle', { direction: had ? 'back' : 'forward', group: 'reactions' });
 
         // Optimistic: the viewer's reactions and the counts.
         const replaced = !had && config.perUser === 1 ? mine : [];

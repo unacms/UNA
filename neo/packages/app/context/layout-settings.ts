@@ -9,6 +9,7 @@ import { fetcher } from 'app/lib/fetcher'
 import { changeI18nLanguage } from 'app/lib/i18n-resources'
 import emitter, { EVENTS } from 'app/context/emitter';
 import { clearAllPageCache } from 'app/lib/cache/clear-page-cache';
+import type { SoundLevel } from 'app/lib/sound/config';
 
 const STORAGE_KEY = 'layout-settings';
 const LANG_MODE_COOKIE = 'neo_lang';
@@ -25,8 +26,8 @@ export type LayoutSettings = {
     density?: string;
     /** Language code or `auto` (device language). */
     lang?: string;
-    /** Interface sounds; `false` when the user turned them off. Needs `layout.sounds` on. */
-    sounds?: boolean;
+    /** The user's level of interface sounds; unset follows UNA's settings. `false` (older builds) is `off`. */
+    sounds?: SoundLevel | boolean;
     [key: string]: unknown;
 };
 
@@ -203,8 +204,8 @@ export const useLayoutSettings = () => {
         }, []
     );
 
-    const setSounds = useCallback(
-        async (value: boolean) => {
+    const setSoundLevel = useCallback(
+        async (value: SoundLevel) => {
             await useLayoutSettingsStore.getState().updateLayoutSettings({ sounds: value });
         }, []
     );
@@ -245,7 +246,8 @@ export const useLayoutSettings = () => {
 
     const { density, name: layoutName, theme: themeName, lang } = layoutSettings ?? {};
     const langCode = resolveLangCode(lang);
-    const sounds = !!appSetting('layout', 'sounds') && layoutSettings?.sounds !== false;
+    const storedSounds = layoutSettings?.sounds;
+    const ownSoundLevel: SoundLevel | undefined = storedSounds === false ? 'off' : typeof storedSounds === 'string' ? storedSounds : undefined;
 
-    return { layoutSettings, setLayoutSettings, updateLayoutSettings, hydrated, density, layoutName, themeName, setThemeName, setLayoutName, setDensity, setLang, lang, langCode, sounds, setSounds };
+    return { layoutSettings, setLayoutSettings, updateLayoutSettings, hydrated, density, layoutName, themeName, setThemeName, setLayoutName, setDensity, setLang, lang, langCode, ownSoundLevel, setSoundLevel };
 };

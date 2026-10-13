@@ -87,7 +87,7 @@ export default function ElementStars(props) {
 
     const undoStar = () => {
         FeedbackHaptics(params.haptics_type);
-        playCue('toggle', { direction: 'back' });
+        playCue('toggle', { direction: 'back', group: 'reactions' });
         const value =
             objectData?.value != undefined
                 ? objectData.value
