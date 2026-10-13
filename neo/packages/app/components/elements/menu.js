@@ -97,6 +97,8 @@ export default function ElementMenu({ data, blockWrapperProps, url }) {
 
             return (
                 <View key={`lmenu-${itemId}`} className="w-full">
+                    {/* Indent on a wrapper: on the button it loses to the inline contentInsets padding. */}
+                    <View className={getDepthClassName(depth)}>
                     <MenuItemSidebarWithWrapper
                         link={canNavigate ? itemPath : undefined}
                         title={title}
@@ -104,8 +106,8 @@ export default function ElementMenu({ data, blockWrapperProps, url }) {
                         iconEnd={!canNavigate && hasChildren ? (isExpanded ? 'ChevronDown' : 'ChevronRight') : undefined}
                         isActive={isActive}
                         onPress={!canNavigate && hasChildren ? () => toggleExpanded(itemId) : undefined}
-                        className={getDepthClassName(depth)}
                     />
+                    </View>
                     {hasChildren && isExpanded ? (
                         <View className="gap-0.5">
                             {renderItems(children, depth + 1, indexPath)}

@@ -170,10 +170,11 @@ export function MenuWiki({ onNavigate, block, url }) {
             const showChevron = !canNavigate && hasChildren;
             const menuIconEnd = showChevron ? (isExpanded ? 'ChevronDown' : 'ChevronRight') : null;
             return (
-                // Indent on the wrapper: on the button it loses to the inline contentInsets padding.
-                <View key={`lmenu-${itemId}`} className={`w-full ${getConductorDepthClassName(depth)}`}>
+                <View key={`lmenu-${itemId}`} className="w-full">
                     {/* Same item as the conductor sidebar (menu-item/sidebar_with_wrapper),
-                        so wiki and section menus look alike and forks style both at once. */}
+                        so wiki and section menus look alike and forks style both at once.
+                        Indent on a wrapper: on the button it loses to the inline contentInsets padding. */}
+                    <View className={getConductorDepthClassName(depth)}>
                     <MenuItemSidebarWithWrapper
                         link={canNavigate ? itemPath : undefined}
                         title={title}
@@ -187,6 +188,7 @@ export function MenuWiki({ onNavigate, block, url }) {
                             }
                             : (hasChildren ? () => toggleExpanded(itemId) : undefined)}
                     />
+                    </View>
                     {hasChildren && isExpanded && (
                         <View className="gap-0.5">
                             {renderItems(children, depth + 1, indexPath)}
