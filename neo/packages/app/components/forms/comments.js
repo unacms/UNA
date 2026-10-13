@@ -9,7 +9,6 @@ import Profile from 'app/ui/molecules/profile/profile'
 import { FileButton } from 'app/lib/form/form-helpers'
 import { useWindowHeight, useIsDesktop } from 'app/context/measure';
 import emitter, { EVENTS } from 'app/context/emitter';
-import { useSound } from 'app/lib/hooks/use-sound';
 import { useTranslation } from 'react-i18next'
 import { StarsAction } from 'app/ui/atoms/stars'
 
@@ -54,11 +53,9 @@ export default function FormComments(props) {
         // setIsExImage(false)
     }
 
-    const playSound = useSound('success');
-
     useEffect(() => {
+        // The success cue plays when UNA returns the new comment (comments-browse).
         if (formContext.formState.isSubmitted) {
-            playSound();
             formContext.setValue('cmt_text', '');
             if (props.data.inputs['cmt_mood']) {
                 formContext.setValue('cmt_mood', 0);

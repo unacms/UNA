@@ -8,6 +8,7 @@ import { Pressable, Row, View } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { Icon } from 'app/ui/atoms/icon'
 import { cn, FeedbackHaptics, isWeb } from 'app/lib/util'
+import { cueAttributes } from 'app/lib/sound'
 
 const DEFAULT_MAX = 5
 const DEFAULT_STAR_SIZE = 22
@@ -89,6 +90,8 @@ function StarButton({
             accessibilityLabel={label}
             aria-checked={checked}
             disabled={disabled}
+            // Picking a rating is a select (web; it rises or falls with the stars).
+            {...(disabled ? {} : cueAttributes('select'))}
             onPress={() => onSelect(value)}
             onKeyDown={isWeb ? onKeyDown : undefined}
             onMouseEnter={isWeb && !disabled ? () => onHover?.(value) : undefined}

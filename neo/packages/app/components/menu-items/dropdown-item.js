@@ -7,6 +7,7 @@ import { Icon } from 'app/ui/atoms/icon';
 import Image from 'app/ui/atoms/image';
 import { isEmoji, appSetting, resolveMenuItemDescription } from 'app/lib/util';
 import Link from 'app/ui/atoms/link'
+import { cueAttributes } from 'app/lib/sound';
 const menuSettings = appSetting('theme', 'dropdown_menu');
 
 const getIcon = (oItem, iconSize = 20, rowHovered) => {
@@ -128,6 +129,8 @@ export default function DropdownMenuItem({ item, index, link, handleSelect, clas
             key={key}
             {...pressProps}
             {...rowHoverProps}
+            // A menu option (web; native menus are bottom sheets and stay quiet).
+            {...(handleSelect || link ? cueAttributes('select') : {})}
         >
             <Row className={`${rowClassName} w-full min-w-0`}>
                 <View className={itemCntClass}>

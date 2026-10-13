@@ -25,6 +25,8 @@ export type LayoutSettings = {
     density?: string;
     /** Language code or `auto` (device language). */
     lang?: string;
+    /** Interface sounds; `false` when the user turned them off. Needs `layout.sounds` on. */
+    sounds?: boolean;
     [key: string]: unknown;
 };
 
@@ -201,6 +203,12 @@ export const useLayoutSettings = () => {
         }, []
     );
 
+    const setSounds = useCallback(
+        async (value: boolean) => {
+            await useLayoutSettingsStore.getState().updateLayoutSettings({ sounds: value });
+        }, []
+    );
+
     const setDensity = useCallback(
         async (value: any) => {
             await useLayoutSettingsStore.getState().updateLayoutSettings({ density: value });
@@ -237,6 +245,7 @@ export const useLayoutSettings = () => {
 
     const { density, name: layoutName, theme: themeName, lang } = layoutSettings ?? {};
     const langCode = resolveLangCode(lang);
+    const sounds = !!appSetting('layout', 'sounds') && layoutSettings?.sounds !== false;
 
-    return { layoutSettings, setLayoutSettings, updateLayoutSettings, hydrated, density, layoutName, themeName, setThemeName, setLayoutName, setDensity, setLang, lang, langCode };
+    return { layoutSettings, setLayoutSettings, updateLayoutSettings, hydrated, density, layoutName, themeName, setThemeName, setLayoutName, setDensity, setLang, lang, langCode, sounds, setSounds };
 };

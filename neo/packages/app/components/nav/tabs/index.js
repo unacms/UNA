@@ -9,6 +9,7 @@ import { scheduleOneSignalSubscription } from 'app/lib/platform/one-signal';
 import Suggestions from 'app/ui/molecules/misc/suggestions';
 import AsyncWorker from 'app/ui/molecules/system/async-worker';
 import Subscriber from 'app/ui/molecules/system/subscriber';
+import InterfaceSounds from 'app/ui/molecules/system/interface-sounds';
 import { useFonts } from 'expo-font';
 import { enableFreeze, enableScreens } from 'react-native-screens';
 import fonts from 'app/customization/design/fonts/fonts';
@@ -266,6 +267,7 @@ export default function Tabs() {
         <>
             <Suggestions />
             <Subscriber />
+            <InterfaceSounds />
             <View className="flex-1">
                 {nativeTabs ? null : (
                     <View className="w-full z-50"><AsyncWorker /></View>

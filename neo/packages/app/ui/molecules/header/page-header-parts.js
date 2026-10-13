@@ -5,6 +5,7 @@ import { nativeDriver } from 'app/lib/platform/animation';
 import { View, Row } from 'app/design/view';
 import { Text } from 'app/design/typography';
 import { FeedbackHaptics, appSetting, getBreakpoint, getMenuSettings } from 'app/lib/util';
+import { playCue } from 'app/lib/sound';
 import { useCurrentUser } from 'app/context/user';
 import { appStatic } from 'app/lib/app-static';
 import { usePathname, useRouter } from 'app/lib/hooks/router';
@@ -394,6 +395,8 @@ export const PageHeaderBody = memo(({
         : ((typeof isBackButton === 'function' || isPushedScreen)) && (appSetting('native', 'backbutton_in_header') ||  appSetting('native', 'backbutton_in_header_path')?.includes(pageData.uri));
     const onBackPress = () => {
         FeedbackHaptics('Medium');
+        // Web: going back sounds like a route change in reverse (native answers with haptics).
+        if (isWeb) playCue('navigate', { direction: 'back' });
         if (typeof isBackButton === 'function') {
             isBackButton();
         } else {
@@ -412,6 +415,7 @@ export const PageHeaderBody = memo(({
                 style="glass"
                 controlSize="regular"
                 accessibilityLabel={t('Back')}
+                sound={false}
                 onPress={onBackPress}
             />
         </View>

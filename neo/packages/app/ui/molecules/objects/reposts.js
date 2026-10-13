@@ -13,6 +13,7 @@
 
 
 import { appSetting, FeedbackHaptics } from 'app/lib/util';
+import { playCue } from 'app/lib/sound';
 import { fetcher } from 'app/lib/fetcher';
 import { useObjectState } from 'app/lib/object-state';
 import {
@@ -70,6 +71,7 @@ export default function ElementReposts(props) {
     const doRepost = (event) => {
         event.preventDefault();
         FeedbackHaptics(params.haptics_type);
+        playCue('toggle', { direction: objectData?.is_performed === true ? 'back' : 'forward' });
         repostRequest('repost', Object.values(action.data), (data) => {
             setObjectData((prev) => mergeState(prev, data));
         });

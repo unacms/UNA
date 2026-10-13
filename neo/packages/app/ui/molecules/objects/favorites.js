@@ -15,6 +15,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { appSetting, FeedbackHaptics } from 'app/lib/util';
+import { playCue } from 'app/lib/sound';
 import {
     objectKey,
     objectStateFromProps,
@@ -75,6 +76,7 @@ export default function ElementFavorites(props) {
     const doFavorite = (event) => {
         if (event) event.preventDefault();
         FeedbackHaptics(params.haptics_type);
+        playCue('toggle', { direction: objectData?.is_favorited === true ? 'back' : 'forward' });
 
         if (typeof params?.on_do === 'function') params.on_do();
 

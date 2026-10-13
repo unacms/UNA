@@ -15,6 +15,7 @@ import { NeoButtonRef, legacyToNeoButtonProps } from 'app/design/controls'
 import { isLegacyButtonProps, stripRoutingKeys } from 'app/design/controls/neo-button/legacy-button-map';
 import type { ComponentType } from 'react';
 import ElementLoading from 'app/ui/atoms/loading';
+import { cueAttributes, playCue, PressCueContext } from 'app/lib/sound';
 
 // Trigger component, loosely typed: the popup passes RN / ARIA props
 // (collapsable, aria-*, onFocusCapture) that NeoButton forwards to its surface.
@@ -284,6 +285,7 @@ export default function DropdownPopup({
         const onKeyDown = (e: KeyboardEvent) => {
             if (e.key === 'Escape') {
                 e.preventDefault();
+                playCue('close', { emphasis: 'subtle' });
                 handleToggle(false);
             }
         };
@@ -504,6 +506,8 @@ export default function DropdownPopup({
         'aria-haspopup': 'true',
         'aria-expanded': isRealOpen,
     };
+    // Menus open and close often: subtle (NeoTriggerButton derives the same from aria-expanded).
+    const triggerCue = { cue: isRealOpen ? 'close' : 'open', emphasis: 'subtle' } as const;
     const dialogLabel =
         triggerAccessibilityLabel ||
         buttonProps?.accessibilityLabel ||
@@ -530,11 +534,14 @@ export default function DropdownPopup({
                 />
             ) : (
                 <DropdownMenuOpenContext.Provider value={isRealOpen}>
+                    {/* A button inside the trigger plays the trigger's cue, not its own tap. */}
+                    <PressCueContext.Provider value={triggerCue}>
                     <Pressable
                         collapsable={false}
                         ref={buttonRef}
                         onPress={openTrigger}
                         {...triggerFocusProps}
+                        {...cueAttributes(triggerCue)}
                         accessibilityRole="button"
                         accessibilityLabel={triggerAccessibilityLabel}
                         aria-haspopup="true"
@@ -544,6 +551,7 @@ export default function DropdownPopup({
                     >
                         {trigger}
                     </Pressable>
+                    </PressCueContext.Provider>
                 </DropdownMenuOpenContext.Provider>
             )}
 
@@ -591,6 +599,7 @@ export default function DropdownPopup({
                                     bottom: 0,
                                     zIndex: 0,
                                 }}
+                                {...(hoverMode ? {} : cueAttributes({ cue: 'close', emphasis: 'subtle' }))}
                                 onPress={(event: any) => handleBackdropPress(event)}
                             />
                             {hoverMode ? (

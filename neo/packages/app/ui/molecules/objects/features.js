@@ -12,6 +12,7 @@
 
 
 import { appSetting, FeedbackHaptics } from 'app/lib/util';
+import { playCue } from 'app/lib/sound';
 import { useObjectState } from 'app/lib/object-state';
 import {
     mergeState,
@@ -58,6 +59,7 @@ export default function ElementFeatures(props) {
     const doFeature = (event) => {
         if (event) event.preventDefault();
         FeedbackHaptics(params.haptics_type);
+        playCue('toggle', { direction: objectData?.is_featured === true ? 'back' : 'forward' });
 
         if (typeof params?.on_do === 'function') params.on_do();
 

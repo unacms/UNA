@@ -8,6 +8,7 @@ import { BlockByName, BlockByData } from 'app/components/block'
 import { findElementById, hasNonEmptyContent } from 'app/lib/util'
 import { ItemRenderer } from 'app/components/item-renderer'
 import { NeoButton } from 'app/design/controls'
+import { cueAttributes, PressCueContext } from 'app/lib/sound'
 import { useTranslation } from 'react-i18next'
 import { getSkeletonForList } from 'app/lib/skeleton-helpers'
 import { layoutForList, paddingForList } from 'app/customization/functions'
@@ -313,6 +314,7 @@ export function TabItem({ item, selectedIndex, onPress }) {
                     accessibilityRole="link"
                     accessibilityLabel={item.title}
                     onPress={handlePress}
+                    {...cueAttributes('select')}
                 >
                     <Text className="text-base font-medium text-card-foreground">
                         {item.title}
@@ -324,17 +326,20 @@ export function TabItem({ item, selectedIndex, onPress }) {
 
     if (!MenuItemSubmenu) return null
 
+    // A top tab selects (Cuelume: tabs and segmented controls), not a plain tap.
     return (
         <View className={`${item?.menu_settings?.class || ''}`}>
-            <MenuItemSubmenu
-                title={item.title}
-                pressed={item.index == selectedIndex}
-                disabled={item?.item?.disabled}
-                addon={getAddon(item.addon)}
-                href={href}
-                onPress={handlePress}
-                item={item}
-            />
+            <PressCueContext.Provider value="select">
+                <MenuItemSubmenu
+                    title={item.title}
+                    pressed={item.index == selectedIndex}
+                    disabled={item?.item?.disabled}
+                    addon={getAddon(item.addon)}
+                    href={href}
+                    onPress={handlePress}
+                    item={item}
+                />
+            </PressCueContext.Provider>
         </View>
     )
 }

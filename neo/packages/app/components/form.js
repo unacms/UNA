@@ -7,6 +7,7 @@ import { getFormInitialValues } from 'app/lib/form/form-initial-values'
 import { View, Row } from 'app/design/view'
 import { components } from 'app/components/registry';
 import { FeedbackHaptics, appSetting, isNumeric, isObjectsEqual } from 'app/lib/util';
+import { playCue } from 'app/lib/sound';
 import { sessionCacheGet, sessionCacheSet } from 'app/lib/util/storage';
 import { Platform } from 'react-native';
 import emitter, { EVENTS } from 'app/context/emitter';
@@ -150,12 +151,34 @@ export default function Form({
     }, [name, formInstanceId]);
 
     const { data: dynamicData, error: submitError } = useFetchForm(request?.url, postData);
+    // A submit whose result makes no sound: the `isSubmit` auto-submit.
+    const quietResultRef = useRef(false);
 
     useEffect(() => {
         if (submitError) {
             emitter.emit(EVENTS.form(name), { action: 'received', formInstanceId });
         }
     }, [submitError, name, formInstanceId]);
+
+    // The result of a submit: subtle success once UNA takes it, error when it
+    // rejects it. The next step of a wizard is neither. Filter forms and forms
+    // that save every change stay quiet: their controls sound already.
+    useEffect(() => {
+        if (!dynamicData && !submitError) return;
+        const quiet = quietResultRef.current || isAutoChange || saveOnChanges;
+        quietResultRef.current = false;
+        if (quiet) return;
+        if (submitError || formResponseHasFieldErrors(dynamicData?.data)) {
+            playCue('error');
+            return;
+        }
+        const formItem = normalizeFormResponseData(dynamicData.data).find((item) => item?.type === 'form');
+        const nextDisplay = formItem?.data?.params?.display || formItem?.name;
+        const currentDisplay = formName || formBundle.form?.params?.display;
+        if (nextDisplay && currentDisplay && nextDisplay !== currentDisplay) return;
+        playCue('success', { emphasis: 'subtle' });
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- once per reply
+    }, [dynamicData, submitError]);
 
     // update state when form is submitted
     const onFormSubmit = onFormSubmitInternal ?? ((formData, d) => {
@@ -436,7 +459,8 @@ export default function Form({
     }
 
     const onError = async d => {
-        //TODO: handle error
+        // A field failed validation before the submit left the browser.
+        playCue('error', { emphasis: 'subtle' });
     }
 
 
@@ -497,6 +521,7 @@ export default function Form({
 
     useEffect(() => {
         if (isSubmit) {
+            quietResultRef.current = true;
             _handleSubmit();
         }
     }, [isSubmit, _handleSubmit]);

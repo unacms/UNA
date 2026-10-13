@@ -15,6 +15,7 @@ import { Platform } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { appSetting, FeedbackHaptics } from 'app/lib/util';
+import { playCue } from 'app/lib/sound';
 import {
     objectKey,
     objectStateFromProps,
@@ -120,6 +121,7 @@ export default function ElementScore(props) {
     const doVote = (voteAction, event) => {
         event.preventDefault();
         FeedbackHaptics(params.haptics_type);
+        playCue('toggle', { direction: voteAction === 'down' ? 'back' : 'forward' });
         objectRequest(object_params, 'do', { a: voteAction }, applyVoteResult);
     };
 

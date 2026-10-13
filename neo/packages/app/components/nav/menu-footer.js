@@ -2,11 +2,12 @@ import { View } from 'app/design/view'
 import { appSetting, menuItemsByName, menuItemsByNameNew } from 'app/lib/util'
 import { useTranslation } from 'react-i18next';
 import { useMemo, memo } from 'react';
-import { NeoButtonLink } from 'app/design/controls'
+import { NeoButton, NeoButtonLink } from 'app/design/controls'
 import { useCurrentUserNoCounters } from 'app/context/user';
 import { useMenuData } from 'app/context/menu-data';
 import { useLayoutSettings } from 'app/context/layout-settings';
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
+import { useSoundsToggle } from 'app/lib/hooks/use-sounds-toggle';
 
 export const MENU_FOOTER_CLASSES = 'flex w-full items-center border-t border-border/60 justify-center flex-row flex-wrap gap-1 p-4 min-h-16';
 // Settings use the historical misspelling; keep this key aligned with settings/layout.js.
@@ -105,6 +106,26 @@ function FooterThemeSwitcher({ visualProps }) {
     );
 }
 
+function FooterSoundsSwitch({ visualProps }) {
+    const { t } = useTranslation();
+    const { sounds, toggleSounds } = useSoundsToggle();
+
+    return (
+        <NeoButton
+            label={t('Sounds')}
+            image={sounds ? 'Volume2' : 'VolumeX'}
+            accessibilityRole="switch"
+            aria-checked={sounds}
+            sound={false}
+            onPress={toggleSounds}
+            style={visualProps.style}
+            controlSize={visualProps.controlSize}
+            className={visualProps.className}
+            textClassName={visualProps.textClassName}
+        />
+    );
+}
+
 function FooterLanguageSwitcher({ visualProps }) {
     const { t } = useTranslation();
     const { lang, langCode, setLang } = useLayoutSettings();
@@ -158,8 +179,10 @@ function MenuFooterComponent({
     const { hydrated } = useLayoutSettings();
     const usesRemoteFooter = !menu_items && appSetting('layout', 'user_remote_config');
     const showThemeSwitcher = appSetting('dashboard', 'switch_theme');
+    const { available: soundsAvailable } = useSoundsToggle();
     const configuredLangs = appSetting('layout', AVAILABLE_LANGS_SETTING_KEY);
     const showLanguageSwitcher = hydrated && Array.isArray(configuredLangs) && configuredLangs.length > 1;
+    const showSoundsSwitch = hydrated && soundsAvailable;
     const { menuData, isFetched, isLoading } = useMenuData(
         (menu_items || !hydrated) ? null : appSetting('menu_items', 'objects', 'footer')
     );
@@ -188,11 +211,12 @@ function MenuFooterComponent({
             <MenuFooterSkeleton cntClasses={cntClasses} role="contentinfo">
                 {showLanguageSwitcher ? <FooterLanguageSwitcher visualProps={visualProps} /> : null}
                 {showThemeSwitcher ? <FooterThemeSwitcher visualProps={visualProps} /> : null}
+                {showSoundsSwitch ? <FooterSoundsSwitch visualProps={visualProps} /> : null}
             </MenuFooterSkeleton>
         );
     }
 
-    if (menu_launcher_items.length === 0 && menuData && !showThemeSwitcher && !showLanguageSwitcher)
+    if (menu_launcher_items.length === 0 && menuData && !showThemeSwitcher && !showLanguageSwitcher && !showSoundsSwitch)
         return null;
 
     return (
@@ -210,6 +234,7 @@ function MenuFooterComponent({
             ))}
             {showLanguageSwitcher ? <FooterLanguageSwitcher visualProps={visualProps} /> : null}
             {showThemeSwitcher ? <FooterThemeSwitcher visualProps={visualProps} /> : null}
+            {showSoundsSwitch ? <FooterSoundsSwitch visualProps={visualProps} /> : null}
         </View>
     );
 }
