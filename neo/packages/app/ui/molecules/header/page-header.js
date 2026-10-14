@@ -5,6 +5,8 @@ import { nativeDriver } from 'app/lib/platform/animation';
 import { appSetting } from 'app/lib/util';
 import { isNativeTabsEnabled } from 'app/lib/util';
 import { EdgeBlur, edgeBlurConfig } from 'app/ui/atoms/edge-blur';
+import { useResolveClassNames } from 'uniwind';
+import { NeoButtonColorSchemeContext, colorSchemeForBackground } from 'app/design/controls/neo-button/color-scheme-context';
 import { useIsScrolled } from 'app/context/jotai/layout';
 import { getWindowSafeAreaInsets, useIsFocused } from 'app/lib/hooks/router';
 import {
@@ -14,6 +16,7 @@ import {
     getHeaderFadeClass,
     getHeaderFadeExtend,
     getHeaderRestingBackgroundClass,
+    getPageHeaderBandClass,
     resolveHeaderContainerClassName,
     resolveHeaderContentClassNames,
     stripHeaderSurfaceClasses,
@@ -21,6 +24,21 @@ import {
 } from 'app/ui/molecules/header/page-header-parts';
 
 export { PageHeaderSmall, TextHeader };
+
+/**
+ * `layout.header.band_scheme` while the header rests on the band (not scrolled); null once it
+ * floats over content, or without the setting. 'auto' resolves the band's own fill colour.
+ */
+function useHeaderBandScheme(isScrolled) {
+    const setting = appSetting('layout', 'header', 'band_scheme');
+    const bandFill = setting === 'auto'
+        ? (getPageHeaderBandClass().match(/(?:^|\s)(bg-[^\s]+)/)?.[1] || '')
+        : '';
+    const resolved = useResolveClassNames(bandFill);
+    if (!setting || isScrolled) return null;
+    if (setting === 'light' || setting === 'dark') return setting;
+    return setting === 'auto' ? colorSchemeForBackground(resolved?.backgroundColor) : null;
+}
 
 /** Matches web `duration-300` for the resting fill / fade. */
 const HEADER_BG_FADE_MS = 300;
@@ -38,6 +56,7 @@ export const PageHeader = ({ pageData }) => {
     const edgeToEdgeTop = isNativeTabsEnabled() ? (getWindowSafeAreaInsets().top || 0) : 0;
 
     const isScrolled = useIsScrolled();
+    const bandScheme = useHeaderBandScheme(isScrolled);
     const headerTranslateY = useAnimatedValue(0);
     const headerBgOpacity = useAnimatedValue(isScrolled ? 0 : 1);
     const headerFadeOpacity = useAnimatedValue(isScrolled ? 1 : 0);
@@ -140,11 +159,13 @@ export const PageHeader = ({ pageData }) => {
                 onLayout={onHeaderLayout}
                 style={edgeToEdgeTop > 0 ? { paddingTop: edgeToEdgeTop } : undefined}
             >
-                <PageHeaderBody
-                    {...headerState}
-                    contentClassName={`${appSetting('layout', 'page_content_width_default')} ${flowHeaderContentClassName}`}
-                    pageData={pageData}
-                />
+                <NeoButtonColorSchemeContext.Provider value={bandScheme}>
+                    <PageHeaderBody
+                        {...headerState}
+                        contentClassName={`${appSetting('layout', 'page_content_width_default')} ${flowHeaderContentClassName}`}
+                        pageData={pageData}
+                    />
+                </NeoButtonColorSchemeContext.Provider>
             </View>
         </HeaderContainer>
     );
