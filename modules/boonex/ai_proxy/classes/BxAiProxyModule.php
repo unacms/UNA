@@ -158,6 +158,12 @@ class BxAiProxyModule extends BxDolModule
         if (empty($aAuth['ok']))
             $this->jsonError(401, 'Unauthorized', 'authentication_error');
 
+        if(($sMl = 'bx_market_api') && ($sMd = 'is_operator_chat') && bx_is_srv($sMl, $sMd)) {
+            $sKey = getParam('sys_oauth_key');
+            if($sKey && !bx_srv($sMl, $sMd, [$sKey]))
+                $this->jsonError(402, 'Payment Required', 'payment_required');
+        }
+
         $aBody = json_decode($sBody, true);
         if (!is_array($aBody))
             $this->jsonError(400, 'Bad request', 'invalid_request_error');
