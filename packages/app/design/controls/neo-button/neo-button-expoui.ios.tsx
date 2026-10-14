@@ -35,6 +35,7 @@ import { useFrozenHostSize, useNativeButtonPress, wrapNativeButtonHost } from 'a
 import { FeedbackHaptics, appSetting, findIconFromRemote } from 'app/lib/util';
 import type { NeoButtonExpoUIConfig, NeoButtonExpoUIProps } from 'app/design/controls/neo-button/neo-button.types';
 import { NATIVE_BUTTON_FONT_FAMILY, fontSizeFromClass, fontWeightFromClass } from 'app/design/controls/neo-button/native-font';
+import { useNeoButtonColorScheme } from 'app/design/controls/neo-button/color-scheme-context';
 
 type SwiftUIModifier = ReturnType<typeof frame>;
 type FontParams = Parameters<typeof fontModifier>[0];
@@ -196,6 +197,8 @@ const HOSTED_CONTENT_STYLE = StyleSheet.create({
 }).box;
 
 export function NeoButtonExpoUI(props: NeoButtonExpoUIProps) {
+    // A surface with its own brightness (header on a coloured band): see color-scheme-context.
+    const colorScheme = useNeoButtonColorScheme();
     const {
         role, style, buttonStyle, controlSize, borderShape, tint,
         label, title, loadingLabel, image, systemImage, imagePlacement,
@@ -492,6 +495,7 @@ export function NeoButtonExpoUI(props: NeoButtonExpoUIProps) {
 
     const host = (
         <Host
+            colorScheme={colorScheme ?? undefined}
             matchContents={{
                 horizontal: !rnOwnsWidth && !frozen.pinnedWidth,
                 vertical: !rnOwnsHeight && !frozen.pinnedHeight,
