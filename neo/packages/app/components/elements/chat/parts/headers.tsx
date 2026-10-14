@@ -53,7 +53,8 @@ export function useDebouncedSearch(onSearch?: (term: string) => void) {
     return { value, setValue, reset };
 }
 
-export function SearchInput({ value, onChangeText }: { value: string; onChangeText: (text: string) => void }) {
+/** `autoFocus`: focus the field when it appears (search opened by a button). */
+export function SearchInput({ value, onChangeText, autoFocus = false }: { value: string; onChangeText: (text: string) => void; autoFocus?: boolean }) {
     const { t } = useTranslation();
     return (
         <Input
@@ -63,6 +64,7 @@ export function SearchInput({ value, onChangeText }: { value: string; onChangeTe
             placeholder={t('Search') + '...'}
             value={value}
             onChangeText={onChangeText}
+            autoFocus={autoFocus}
         />
     );
 }
@@ -134,7 +136,7 @@ export function ConvosListHeader({
             <Row className="min-h-16 items-center gap-2 px-4">
                 {showSearch ? (
                     <View className="flex-1 min-w-0">
-                        <SearchInput value={searchValue} onChangeText={onChangeSearch} />
+                        <SearchInput value={searchValue} onChangeText={onChangeSearch} autoFocus />
                     </View>
                 ) : (
                     <Text numberOfLines={1} className="flex-1 min-w-0 font-bold text-card-foreground text-2xl tracking-tight font-main">
@@ -181,13 +183,18 @@ export function ConvosListHeader({
 export const PANEL_HEADER_HEIGHT = 64;
 
 /** Desktop: title + optional actions row at the top of the content panel (conversation, agents). */
-export function PanelHeader({ title, actions }: { title: string; actions?: ReactNode }) {
+/** `search` (a search field) takes the title's place while set. */
+export function PanelHeader({ title, actions, search }: { title: string; actions?: ReactNode; search?: ReactNode }) {
     return (
         <Row className="h-16 items-center max-w-full">
             <Row className="flex-1 min-w-0 items-center gap-3 px-4 overflow-hidden">
-                <Text numberOfLines={1} className="flex-1 min-w-0 font-bold text-card-foreground text-lg sm:text-xl tracking-tight">
-                    {title}
-                </Text>
+                {search ? (
+                    <View className="flex-1 min-w-0">{search}</View>
+                ) : (
+                    <Text numberOfLines={1} className="flex-1 min-w-0 font-bold text-card-foreground text-lg sm:text-xl tracking-tight">
+                        {title}
+                    </Text>
+                )}
             </Row>
             {actions ? (
                 <View className="shrink-0 items-center justify-center pe-4">

@@ -13,3 +13,4 @@ UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_messenger_nav_me
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_messenger_nav_menu' AND `module`='bx_messenger' AND `name`='threads';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_messenger_nav_menu' AND `module`='bx_messenger' AND `name`='inbox';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_messenger_nav_menu' AND `module`='bx_messenger' AND `name`='direct';
+UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_messenger_nav_menu' AND `module`='bx_messenger' AND `name`='favorites';

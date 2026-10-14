@@ -75,6 +75,7 @@ define('BX_MSG_TALK_TYPE_FILES', 'files');
 define('BX_MSG_TALK_TYPE_MR', 'mr');
 define('BX_MSG_TALK_TYPE_REPLIES', 'replies');
 define('BX_MSG_TALK_TYPE_SAVED', 'saved');
+define('BX_MSG_TALK_TYPE_FAVORITES', 'favorites');
 define('BX_MSG_TALK_TYPE_BROADCAST', 'broadcast');
 
 // Pages types
@@ -3305,6 +3306,10 @@ class BxMessengerModule extends BxBaseModGeneralModule
             case BX_MSG_TALK_TYPE_SAVED:
                 $aLotsList = $this->_oDb->getSavedJotInLots($this->_iProfileId, $aParams);
                 break;
+            case BX_MSG_TALK_TYPE_FAVORITES:
+                // Talks marked with a star by the viewer, the same filter as the star toggle on the site.
+                $aLotsList = $this->_oDb->getMyLots($this->_iProfileId, array_merge($aParams, ['star' => true]));
+                break;
             case BX_MSG_TALK_TYPE_GROUPS:
                 $aParams['group'] = $iId;
                 $aLotsList = $this->_oDb->getMyLots($this->_iProfileId, $aParams);
@@ -4027,6 +4032,14 @@ class BxMessengerModule extends BxBaseModGeneralModule
             'FindConvo' => 'BxMessengerServices',
             'LeaveConvo' => 'BxMessengerServices',
             'DeleteConvo' => 'BxMessengerServices',
+            'ClearConvo' => 'BxMessengerServices',
+            'MuteConvo' => 'BxMessengerServices',
+            'StarConvo' => 'BxMessengerServices',
+            'SaveJot' => 'BxMessengerServices',
+            'SearchConvoMessages' => 'BxMessengerServices',
+            'GetConvoFiles' => 'BxMessengerServices',
+            'GetConvoSettings' => 'BxMessengerServices',
+            'SaveConvoSettings' => 'BxMessengerServices',
             'GetConvo' => 'BxMessengerServices',
             'GetConvoUrl' => 'BxMessengerServices',
             'GetConvosList' => 'BxMessengerServices',
