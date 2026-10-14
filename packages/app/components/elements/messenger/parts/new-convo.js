@@ -50,7 +50,7 @@ export default function CreateConvo({ onSave, initedData = [], convoId }) {
             <Row>
                 <FormError errorText={message} />
             </Row>
-            {!loading && <SelectUsers onlyOnce={false} onSave={handleSave} requestUrl={'/api.php?r=bx_messenger/search_users/Services&params='} initedData={initedData} extraSuggestions={agents} />}
+            {!loading && <SelectUsers autoFocus onlyOnce={false} onSave={handleSave} requestUrl={'/api.php?r=bx_messenger/search_users/Services&params='} initedData={initedData} extraSuggestions={agents} />}
             {loading && <View className='w-full pt-8 items-center'>
                 <Loading />
                 <Text className="pt-8 text-base text-muted-foreground  animate-pulse  font-medium">{t('messenger_creating')}</Text>

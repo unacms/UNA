@@ -12,6 +12,8 @@ type MessageItemProps = {
     children: ReactNode;
     /** Row under the card (Reply / reactions). */
     footer?: ReactNode;
+    /** Small marks before the time in the card header (e.g. saved). */
+    badges?: ReactNode;
 };
 
 /**
@@ -20,7 +22,7 @@ type MessageItemProps = {
  * (Reply / reactions). Shared by the messenger and the agent chat so both
  * transcripts look the same.
  */
-export default function MessageItem({ author, time, children, footer }: MessageItemProps) {
+export default function MessageItem({ author, time, children, footer, badges }: MessageItemProps) {
     return (
         <View className="w-full px-4 mt-3">
             <Row className="gap-2">
@@ -29,10 +31,11 @@ export default function MessageItem({ author, time, children, footer }: MessageI
                     <View className="bg-card/60 shadow-card-outline dark:shadow-card-outline-deep rounded-xl px-3">
                         <Row className="items-center w-full justify-between gap-1 mb-0.5 pt-2">
                             <Profile {...author} displayType="unit_wo_image" />
-                            {time ? (
-                                <View>
-                                    <Time className="text-muted-foreground text-sm" ts={time} />
-                                </View>
+                            {badges || time ? (
+                                <Row className="items-center gap-1.5">
+                                    {badges}
+                                    {time ? <Time className="text-muted-foreground text-sm" ts={time} /> : null}
+                                </Row>
                             ) : null}
                         </Row>
                         {children}
