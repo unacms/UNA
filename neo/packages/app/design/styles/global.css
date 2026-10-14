@@ -10,9 +10,16 @@
 
 /*
  * Light variant — counterpart to dark, needed by shared `@variant light` tokens.
+ *
+ * `.light` / `.dark` on an element is a colour-scheme scope for its subtree (see the
+ * scope tokens after the palette import). A scope wins over the page theme on <html>,
+ * so the page-theme branch skips scopes of the other scheme.
  */
 @custom-variant light {
-    &:where(.light, .light *, [theme='light'], [theme='light'] *, [data-theme='light'], [data-theme='light'] *) {
+    &:where(.light, .light *) { /* NOSONAR css:S8776: Tailwind @custom-variant rule, & is the variant's target */
+        @slot;
+    }
+    &:where([theme='light'], [theme='light'] *, [data-theme='light'], [data-theme='light'] *):where(:not(.dark, .dark *)) { /* NOSONAR css:S8776: Tailwind @custom-variant rule, & is the variant's target */
         @slot;
     }
     @media (prefers-color-scheme: light) {
@@ -35,7 +42,10 @@
  * (matches Uniwind's built-in `dark` variant on native — by design).
  */
 @custom-variant dark {
-    &:where(.dark, .dark *, [theme='dark'], [theme='dark'] *, [data-theme='dark'], [data-theme='dark'] *) {
+    &:where(.dark, .dark *) { /* NOSONAR css:S8776: Tailwind @custom-variant rule, & is the variant's target */
+        @slot;
+    }
+    &:where([theme='dark'], [theme='dark'] *, [data-theme='dark'], [data-theme='dark'] *):where(:not(.light, .light *)) { /* NOSONAR css:S8776: Tailwind @custom-variant rule, & is the variant's target */
         @slot;
     }
     @media (prefers-color-scheme: dark) {
@@ -55,6 +65,21 @@
 
 /* Shared palette + semantic tokens (also imported by apps/expo/global.combined.css). */
 @import './palette.css';
+
+/*
+ * Colour-scheme scopes (web). The palette declares its semantic tokens on <html> only, so
+ * an element with `.light` / `.dark` declares them again for its subtree: NeoButtons under
+ * `NeoButtonColorSchemeContext` (the header on a coloured band, `layout.header.band_scheme`)
+ * and Uniwind's `ScopedTheme`. Native scopes through Uniwind and Expo UI instead.
+ */
+@layer base {
+    .light {
+        @apply scheme-tokens-light;
+    }
+    .dark {
+        @apply scheme-tokens-dark;
+    }
+}
 
 @plugin 'tailwindcss-animate';
 

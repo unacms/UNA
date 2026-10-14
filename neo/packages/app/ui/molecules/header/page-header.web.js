@@ -1,5 +1,11 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 import { View } from 'app/design/view';
+import { appSetting } from 'app/lib/util';
+import {
+    NeoButtonColorSchemeContext,
+    colorSchemeForBackground,
+    isVisibleColor,
+} from 'app/design/controls/neo-button/color-scheme-context';
 import {
     useScrollValue,
     useSetScrollValue,
@@ -36,6 +42,80 @@ function clearEnterFrame(frameRef) {
     }
 }
 
+let colorCanvas = null;
+
+/**
+ * Any CSS colour as `rgba()`, or null. Computed styles can report `oklab()` or `color()`
+ * (Tailwind's `/80` opacity modifier is a `color-mix()`), which processColor doesn't parse.
+ */
+function cssColorToRgba(color) {
+    if (!color || !CSS.supports('color', color)) return null;
+    colorCanvas ??= document.createElement('canvas').getContext('2d', { willReadFrequently: true });
+    if (!colorCanvas) return null;
+    colorCanvas.clearRect(0, 0, 1, 1);
+    colorCanvas.fillStyle = color;
+    colorCanvas.fillRect(0, 0, 1, 1);
+    const [r, g, b, a] = colorCanvas.getImageData(0, 0, 1, 1).data;
+    return `rgba(${r}, ${g}, ${b}, ${a / 255})`;
+}
+
+/** `layout.header.band_scheme` for the band's current fill (see settings/layout.js). */
+function readBandScheme(band, setting) {
+    const fill = cssColorToRgba(getComputedStyle(band).backgroundColor);
+    if (!isVisibleColor(fill)) return null;
+    if (setting === 'light' || setting === 'dark') return setting;
+    if (setting !== 'auto') return null;
+    const page = getComputedStyle(document.documentElement).getPropertyValue('--background').trim();
+    return colorSchemeForBackground(fill, page ? cssColorToRgba(`rgb(${page})`) : undefined);
+}
+
+/**
+ * The band's scheme as an external store: read from its computed fill, so `sm:` / `lg:` /
+ * `dark:` classes count, and read again only after a resize or a theme change on <html>
+ * (the header re-renders on every scroll frame).
+ */
+function createBandSchemeStore(band, setting) {
+    let value = null;
+    let stale = true;
+    return {
+        getSnapshot() {
+            if (stale) {
+                value = band && setting ? readBandScheme(band, setting) : null;
+                stale = false;
+            }
+            return value;
+        },
+        subscribe(onChange) {
+            if (!band || !setting) return () => {};
+            const update = () => {
+                stale = true;
+                onChange();
+            };
+            window.addEventListener('resize', update);
+            const themeObserver = new MutationObserver(update);
+            themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['theme', 'data-theme', 'class'] });
+            return () => {
+                window.removeEventListener('resize', update);
+                themeObserver.disconnect();
+            };
+        },
+    };
+}
+
+const getServerBandScheme = () => null;
+
+/**
+ * Colour scheme for the header's buttons while they rest on the band (collapsible layout
+ * only; the band isn't rendered otherwise). The flow header scrolls away together with the
+ * band, so it always has it; the fixed layer has it at the top of the page, where it covers
+ * the band, and keeps the app's scheme once it floats over content.
+ */
+function useBandScheme(band, enabled) {
+    const setting = enabled ? appSetting('layout', 'header', 'band_scheme') : null;
+    const store = useMemo(() => createBandSchemeStore(band, setting), [band, setting]);
+    return useSyncExternalStore(store.subscribe, store.getSnapshot, getServerBandScheme);
+}
+
 function HeaderFade({ headerHeight, isScrolled }) {
     const fadeClass = getHeaderFadeClass();
     const fadeExtend = getHeaderFadeExtend();
@@ -69,6 +149,8 @@ export const PageHeader = ({ pageData }) => {
     const scrollY = useScrollValue();
     const setScrollValue = useSetScrollValue();
     const usesFixedOverlayHeader = isCollapsibleHeader;
+    const [band, setBand] = useState(null);
+    const bandScheme = useBandScheme(band, usesFixedOverlayHeader);
     const pastRevealThreshold =
         usesFixedOverlayHeader && headerHeight > 0 && scrollY >= headerHeight;
 
@@ -180,6 +262,7 @@ export const PageHeader = ({ pageData }) => {
                 layer that shows at the top keeps its gradient chrome. */}
             {usesFixedOverlayHeader && headerHeight > 0 ? (
                 <div
+                    ref={setBand}
                     aria-hidden
                     className={`pointer-events-none absolute left-0 right-0 top-0 ${getPageHeaderBandClass()}`}
                     style={{ height: headerHeight }}
@@ -194,11 +277,13 @@ export const PageHeader = ({ pageData }) => {
             >
                 <HeaderFade headerHeight={headerHeight} isScrolled={isScrolled} />
                 <View className="relative z-10">
-                    <PageHeaderBody
-                        {...headerState}
-                        contentClassName={flowHeaderContentClassName}
-                        pageData={pageData}
-                    />
+                    <NeoButtonColorSchemeContext.Provider value={bandScheme}>
+                        <PageHeaderBody
+                            {...headerState}
+                            contentClassName={flowHeaderContentClassName}
+                            pageData={pageData}
+                        />
+                    </NeoButtonColorSchemeContext.Provider>
                 </View>
             </View>
             {usesFixedOverlayHeader && shouldRenderFixedLayer && (
@@ -209,11 +294,13 @@ export const PageHeader = ({ pageData }) => {
                 >
                     <HeaderFade headerHeight={headerHeight} isScrolled={isScrolled} />
                     <View className="relative z-10">
-                        <PageHeaderBody
-                            {...headerState}
-                            contentClassName={fixedOverlayContentClassName}
-                            pageData={pageData}
-                        />
+                        <NeoButtonColorSchemeContext.Provider value={isScrolled ? null : bandScheme}>
+                            <PageHeaderBody
+                                {...headerState}
+                                contentClassName={fixedOverlayContentClassName}
+                                pageData={pageData}
+                            />
+                        </NeoButtonColorSchemeContext.Provider>
                     </View>
                 </View>
             )}
