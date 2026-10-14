@@ -69,6 +69,21 @@ function analyticsVisitorHeader(neoPlatform: string | null): string | null {
     return analyticsVisitorId;
 }
 
+/**
+ * Percent-encodes what a URL can't hold as it is (`[`, `]`, `{`, `"`, spaces, non-ASCII
+ * text) and a `%` that starts no escape, and leaves `%XX` escapes alone.
+ *
+ * Native `fetch` (expo/fetch) turns the string into a Swift `URL`. Since iOS 17 an
+ * invalid string is encoded as a whole, `%` included, so `params[]=%7B…` reaches UNA as
+ * `params%5B%5D=%257B…` and the JSON in it no longer decodes. Browsers and Android keep
+ * valid escapes; a URL that is already valid gets the same treatment on iOS.
+ */
+export function escapeUrl(url: string): string {
+    return url
+        .replace(/%(?![0-9A-Fa-f]{2})/g, '%25')
+        .replace(/[^A-Za-z0-9\-._~:/?#@!$&'()*+,;=%]/gu, (c) => encodeURIComponent(c));
+}
+
 type AbortErrorLike = Error & { aborted?: boolean };
 
 /** Hears UNA requests that failed on the server (analytics: `http` errors). */
@@ -230,7 +245,7 @@ export async function fetcherRaw(host: string, mixed: FetcherRequest, fetchOptio
     // perform fetch
     const lang = i18n.language;
 
-    const url = host + path + "&lang=" + lang;
+    const url = host + ('web' === Platform.OS ? path : escapeUrl(path)) + "&lang=" + lang;
     const {
         signal,
         timeoutMs,
