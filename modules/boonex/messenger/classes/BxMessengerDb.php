@@ -2538,7 +2538,7 @@ class BxMessengerDb extends BxBaseModGeneralDb
      * @param array $aJotIds jots ids
      * @return array jots ids
      */
-    function getSavedJotsByIds($iProfileId, $aJotIds)
+    public function getSavedJotsByIds($iProfileId, $aJotIds)
     {
         $aJotIds = array_filter(array_map('intval', (array)$aJotIds));
         if (!$iProfileId || empty($aJotIds)) {
