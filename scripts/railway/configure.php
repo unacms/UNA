@@ -58,6 +58,10 @@ $aOptions = [
     'sys_api_root_page_guest' => 'splash',
     'sys_api_root_page_member' => 'home',
     'sys_iconset_default' => 'sys_lucide',
+    // Deploys bring the code. UNA's nightly auto-update (a cron job, run by entrypoint.sh) would
+    // upgrade files and database to the latest release, and the next deploy would put this
+    // build's files back over the upgraded database.
+    'sys_autoupdate' => '',
 ];
 if ($sClientUrl !== '') {
     $aOptions['sys_api_url_root_email'] = $sClientUrl . '/';
