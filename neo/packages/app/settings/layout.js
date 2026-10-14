@@ -123,11 +123,12 @@ export const settingsLayout = {
              */
             band: 'bg-card sm:bg-card/80 lg:bg-transparent',
             /**
-             * Colour scheme of the header's native buttons while they rest on the band (iOS:
-             * SwiftUI glass chrome and labels). 'auto' picks by the band colour's contrast
-             * (white or dark labels, whichever reads better); 'light' | 'dark' set it; null
-             * keeps the app's scheme. The app's scheme also applies once the header floats over
-             * content, and at widths where `band` resolves to no fill (`lg:bg-transparent`).
+             * Colour scheme of the header's buttons while they rest on the band (iOS: SwiftUI
+             * glass chrome and labels; web: the buttons' colour tokens). 'auto' picks by the
+             * band colour's contrast (white or dark labels, whichever reads better); 'light' |
+             * 'dark' set it; null keeps the app's scheme. The app's scheme also applies once the
+             * header floats over content, and at widths where `band` resolves to no fill
+             * (`lg:bg-transparent`).
              */
             band_scheme: null,
         },
