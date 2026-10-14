@@ -41,11 +41,12 @@ export default function JotItem({ item, handleReply, unreadCount = 0, onSavedCha
     const { t } = useTranslation();
     const [postData, setPostData] = useState<FormData | null>(null)
     const [viewState, setViewState] = useState<ViewState>({ view: '' })
-    // Save / remove from saved: UNA returns the item title for the new state.
-    const [saveTitle, setSaveTitle] = useState<string | null>(null)
-    // Saved by the viewer: from UNA (item.saved), then from the last save / remove.
-    const [savedState, setSavedState] = useState<boolean | null>(null)
-    const isSaved = savedState ?? item.saved == 1
+    // Last save / remove from saved: the new state and UNA's item title for it. Kept with the
+    // message id, as a list can reuse this row for another message.
+    const [savedLocal, setSavedLocal] = useState<{ id: Jot['id']; saved: boolean; title?: string } | null>(null)
+    const savedForItem = savedLocal && savedLocal.id === item.id ? savedLocal : null
+    const isSaved = savedForItem ? savedForItem.saved : item.saved == 1
+    const saveTitle = savedForItem?.title || null
 
     const handleManageMenuSelect = useCallback(async (oItem: DropdownMenuItemData & { name?: string }) => {
         switch (oItem.name) {
@@ -64,8 +65,7 @@ export default function JotItem({ item, handleReply, unreadCount = 0, onSavedCha
                 if (result?.data?.code == 0) {
                     const saved = result.data.value == 1;
                     playCue('toggle', { emphasis: 'subtle' });
-                    if (result.data.title) setSaveTitle(result.data.title);
-                    setSavedState(saved);
+                    setSavedLocal({ id: item.id, saved, title: result.data.title || undefined });
                     onSavedChange?.(item, saved);
                 }
                 else

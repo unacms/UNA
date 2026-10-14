@@ -2533,6 +2533,23 @@ class BxMessengerDb extends BxBaseModGeneralDb
     }
 
     /**
+     * Talks where the member has saved messages
+     * @param int $iProfileId profile id
+     * @return array lots ids
+     */
+    public function getSavedLotIds($iProfileId)
+    {
+        if (!$iProfileId) {
+            return [];
+        }
+
+        return array_map('intval', $this->getColumn("SELECT DISTINCT `m`.`{$this->CNF['FIELD_MESSAGE_FK']}`
+                                    FROM `{$this->CNF['TABLE_SAVED_JOTS']}` AS `s`
+                                    INNER JOIN `{$this->CNF['TABLE_MESSAGES']}` AS `m` ON `m`.`{$this->CNF['FIELD_MESSAGE_ID']}` = `s`.`{$this->CNF['FSJ_ID']}`
+                                    WHERE `s`.`{$this->CNF['FSJ_PROFILE_ID']}` = :profile_id", ['profile_id' => (int)$iProfileId]));
+    }
+
+    /**
      * Messages from the list that the member saved
      * @param int $iProfileId profile id
      * @param array $aJotIds jots ids

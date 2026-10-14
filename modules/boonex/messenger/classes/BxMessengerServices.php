@@ -872,16 +872,36 @@ class BxMessengerServices extends BxDol
 
         $sTerm = isset($aOptions['term']) ? $aOptions['term'] : '';
         $iStarred = isset($aOptions['starred']) ? (int)$aOptions['starred'] : 0;
+        // The list section the search runs in: the results stay inside it.
+        $sGroup = isset($aOptions['group']) ? $aOptions['group'] : '';
 
-        $aJots = [];
-        $aLots = $this->_oModule->_oDb->getMyLots($this->_iProfileId, [
+        $aSearchParams = [
             'term' => $sTerm,
-            'star' => (bool)$iStarred,
+            'star' => (bool)$iStarred || $sGroup === BX_MSG_TALK_TYPE_FAVORITES,
             // The app searches talks by their titles and participants' names, not by messages.
             'search_criteria' => [BX_SEARCH_CRITERIA_TITLES, BX_SEARCH_CRITERIA_PARTS]
-        ], $aJots);
-        if(empty($aLots) || !is_array($aLots))
+        ];
+        if($sGroup === BX_MSG_TALK_TYPE_DIRECT) {
+            $aSearchParams['type'] = BX_IM_TYPE_PRIVATE;
+        }
+
+        $aJots = [];
+        $aLots = $this->_oModule->_oDb->getMyLots($this->_iProfileId, $aSearchParams, $aJots);
+        if(empty($aLots) || !is_array($aLots)) {
             return [];
+        }
+
+        // Saved messages section: only talks with messages saved by the viewer.
+        if($sGroup === BX_MSG_TALK_TYPE_SAVED) {
+            $CNF = &$this->_oModule->_oConfig->CNF;
+            $aSavedLotIds = array_flip($this->_oModule->_oDb->getSavedLotIds($this->_iProfileId));
+            $aLots = array_values(array_filter($aLots, function($aLot) use ($CNF, $aSavedLotIds) {
+                return isset($aSavedLotIds[(int)$aLot[$CNF['FIELD_ID']]]);
+            }));
+            if(empty($aLots)) {
+                return [];
+            }
+        }
 
         $aResult = [
             'lots' => [],

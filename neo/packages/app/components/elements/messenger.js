@@ -40,7 +40,7 @@ export default function MessengerEl(props) {
 
         const requestId = ++fetchRequestId.current;
         const request_url = term
-            ? '/api.php?r=bx_messenger/search_lots/Services&params=' + JSON.stringify({ term })
+            ? '/api.php?r=bx_messenger/search_lots/Services&params=' + JSON.stringify({ term, group: menuItem })
             : '/api.php?r=bx_messenger/get_convos_list/Services&params[]=' + JSON.stringify({ group: menuItem, count: 0 });
 
         try {

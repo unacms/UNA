@@ -119,6 +119,8 @@ export default function Messenger({ defaultConvoId, selectedMenu, convos, fetchC
     const isFetchingJots = useRef(false);
     const hasMoreJots = useRef(true);
     const jotsPaginationRef = useRef<LoosePayload | null>(null);
+    // Saved messages removed from the open list since the last page: UNA pages by offset.
+    const removedJotsRef = useRef(0);
     const [convosData, setConvosData] = useState<Convo[]>((convos && convos.data) || []);
     const selectedConvoIndex = convosData && convoId ? convosData.findIndex(item => item.id === convoId) : -1;
     const selectedConvo: Convo | undefined = selectedConvoIndex >= 0 ? convosData[selectedConvoIndex] : undefined;
@@ -212,7 +214,7 @@ export default function Messenger({ defaultConvoId, selectedMenu, convos, fetchC
         let start = 0;
 
         if (params?.limit && isAddJots)
-            start = (params.start ?? 0) + params.limit;
+            start = Math.max(0, (params.start ?? 0) + params.limit - removedJotsRef.current);
 
         isFetchingJots.current = true;
         try {
@@ -228,6 +230,7 @@ export default function Messenger({ defaultConvoId, selectedMenu, convos, fetchC
             }
 
             jotsPaginationRef.current = sResponse.data.params;
+            removedJotsRef.current = 0;
 
             setJots(prevJots => ({
                 ...(prevJots || {}),
@@ -343,6 +346,7 @@ export default function Messenger({ defaultConvoId, selectedMenu, convos, fetchC
         const sub1 = subscribe('bx_messenger', 'convo_' + selectedConvo.id, onNewMessage);
         hasMoreJots.current = true;
         jotsPaginationRef.current = null;
+        removedJotsRef.current = 0;
         setJots(false);
         fetchItems(selectedConvo.id, false);
 
@@ -689,6 +693,8 @@ export default function Messenger({ defaultConvoId, selectedMenu, convos, fetchC
         if (saved || selectedMenuRef.current !== 'saved') return;
 
         const rest = (jots ? jots.data.jots : []).filter(jot => jot.id !== item.id);
+        // UNA pages saved messages by offset: one less of them, one less to skip on the next page.
+        removedJotsRef.current += 1;
         setJots(prevJots => (prevJots ? { ...prevJots, data: { ...prevJots.data, jots: prevJots.data.jots.filter(jot => jot.id !== item.id) } } : prevJots));
         if (!rest.length) fetchConvos();
     }, [jots, fetchConvos]);
