@@ -12,6 +12,8 @@
  * AND a `@media (prefers-color-scheme: dark)` block (with `:not([data-theme='light'])`
  * guards so an explicit light attribute always wins over system dark).
  */
+@import './palette-schemes.css';
+
 @layer base {
     :root {
         /* Raw palette */
@@ -57,7 +59,12 @@
         --alert-warning: var(--yellow);
         --alert-caution: var(--red);
 
-        /* Semantic tokens, light and dark (also reused by web colour-scheme scopes). */
-        @import './palette-schemes.css';
+        /* Semantic tokens, light and dark (palette-schemes.css; web scopes reuse them). */
+        @variant light {
+            @apply scheme-tokens-light;
+        }
+        @variant dark {
+            @apply scheme-tokens-dark;
+        }
     }
 }

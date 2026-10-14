@@ -1,12 +1,12 @@
 /*
- * Semantic colour tokens per scheme. palette.css imports this inside `:root` (web and
- * native); on web, global.css imports it again for colour-scheme scopes (`.light` /
- * `.dark` on any element), so a subtree can take the other scheme's tokens.
- * Tailwind inlines the nested `@import`. Keep only `@variant light` / `@variant dark`
- * blocks here; the raw palette stays in palette.css.
+ * Semantic colour tokens per scheme, as Tailwind utilities so one definition serves two
+ * places: palette.css applies them inside `:root` (web and native), and on web global.css
+ * applies them to colour-scheme scopes (`.light` / `.dark` on any element), so a subtree
+ * can take the other scheme's tokens. Keep only these two utilities here; the raw palette
+ * stays in palette.css.
  */
-/* Semantic — explicit light/dark variants for Uniwind parity */
-@variant light {
+/* Semantic — light (explicit light/dark variants for Uniwind parity) */
+@utility scheme-tokens-light {
     --background: var(--neutral-100);
     --foreground: var(--neutral-950);
     --card: var(--white);
@@ -57,7 +57,7 @@
 }
 
 /* Semantic — dark overrides */
-@variant dark {
+@utility scheme-tokens-dark {
     --background: var(--neutral-950);
     --foreground: var(--neutral-50);
     --card: var(--neutral-900);

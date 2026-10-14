@@ -16,10 +16,10 @@
  * so the page-theme branch skips scopes of the other scheme.
  */
 @custom-variant light {
-    &:where(.light, .light *) {
+    &:where(.light, .light *) { /* NOSONAR css:S8776: Tailwind @custom-variant rule, & is the variant's target */
         @slot;
     }
-    &:where([theme='light'], [theme='light'] *, [data-theme='light'], [data-theme='light'] *):where(:not(.dark, .dark *)) {
+    &:where([theme='light'], [theme='light'] *, [data-theme='light'], [data-theme='light'] *):where(:not(.dark, .dark *)) { /* NOSONAR css:S8776: Tailwind @custom-variant rule, & is the variant's target */
         @slot;
     }
     @media (prefers-color-scheme: light) {
@@ -42,10 +42,10 @@
  * (matches Uniwind's built-in `dark` variant on native — by design).
  */
 @custom-variant dark {
-    &:where(.dark, .dark *) {
+    &:where(.dark, .dark *) { /* NOSONAR css:S8776: Tailwind @custom-variant rule, & is the variant's target */
         @slot;
     }
-    &:where([theme='dark'], [theme='dark'] *, [data-theme='dark'], [data-theme='dark'] *):where(:not(.light, .light *)) {
+    &:where([theme='dark'], [theme='dark'] *, [data-theme='dark'], [data-theme='dark'] *):where(:not(.light, .light *)) { /* NOSONAR css:S8776: Tailwind @custom-variant rule, & is the variant's target */
         @slot;
     }
     @media (prefers-color-scheme: dark) {
@@ -73,9 +73,11 @@
  * and Uniwind's `ScopedTheme`. Native scopes through Uniwind and Expo UI instead.
  */
 @layer base {
-    .light,
+    .light {
+        @apply scheme-tokens-light;
+    }
     .dark {
-        @import './palette-schemes.css';
+        @apply scheme-tokens-dark;
     }
 }
 
