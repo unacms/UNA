@@ -116,6 +116,12 @@ export const settingsLayout = {
             content_right: ' items-end flex-none 2xl:w-full 2xl:max-w-1/4 px-4 gap-3',
             active_item_indicator: 'absolute -bottom-2 left-0 h-0.5 rounded-full flex-none bg-ring',
             active_item_indicator_bg: 'absolute bottom-0 left-0 h-12 w-full overflow-hidden rounded-lg flex-none',
+            /**
+             * Band behind the header at rest on phones and tablets (below lg): part of the
+             * content, so it scrolls away with it while the header's glass buttons stay.
+             * A fork can give it a brand colour, e.g. 'bg-accent-500 lg:bg-transparent'.
+             */
+            band: 'bg-card sm:bg-card/80 lg:bg-transparent',
         },
         /**
          * iOS: native progressive blur behind bottom composers (post comments,
