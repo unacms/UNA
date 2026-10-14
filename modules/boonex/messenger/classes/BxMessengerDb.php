@@ -290,6 +290,23 @@ class BxMessengerDb extends BxBaseModGeneralDb
         return $iNew;
     }
 
+    /**
+     * Talks from the list that the member marked with a star
+     *@param int $iProfileId profile id
+     *@param array $aLotIds lots ids
+     *@return array lots ids
+     */
+    public function getStarredLots($iProfileId, $aLotIds)
+    {
+        $aLotIds = array_filter(array_map('intval', (array)$aLotIds));
+        if (!$iProfileId || empty($aLotIds))
+            return [];
+
+        return $this->getColumn("SELECT `{$this->CNF['FIELD_INFO_LOT_ID']}` FROM `{$this->CNF['TABLE_USERS_INFO']}`
+                                    WHERE `{$this->CNF['FIELD_INFO_USER_ID']}` = :profile AND `{$this->CNF['FIELD_INFO_STAR']}` = 1
+                                    AND `{$this->CNF['FIELD_INFO_LOT_ID']}` IN (" . implode(',', $aLotIds) . ")", ['profile' => (int)$iProfileId]);
+    }
+
     public function isStarred($iLotId, $iParticipant)
     {
         return $this->getParams($iLotId, $iParticipant, 'star', true);
@@ -826,7 +843,7 @@ class BxMessengerDb extends BxBaseModGeneralDb
             case BX_MSG_TALK_TYPE_THREADS:
                 break;
             case BX_MSG_TALK_TYPE_SAVED:
-                $sJoin = "INNER JOIN `{$CNF['TABLE_SAVED_JOTS']}` as `s` ON `s`.`{$CNF['FSJ_ID']}` = `m`.`{$CNF['FIELD_MESSAGE_ID']}`";
+                $sJoin = "INNER JOIN `{$CNF['TABLE_SAVED_JOTS']}` as `s` ON `s`.`{$CNF['FSJ_ID']}` = `m`.`{$CNF['FIELD_MESSAGE_ID']}` AND `s`.`{$CNF['FSJ_PROFILE_ID']}` = " . (int)$iProfileId;
                 $sWhere = "AND `s`.`{$CNF['FSJ_ID']}` IS NOT NULL";
                 break;
             case BX_MSG_TALK_TYPE_REPLIES:
@@ -1296,20 +1313,30 @@ class BxMessengerDb extends BxBaseModGeneralDb
         if (isset($aParams['threads']))
             $aSWhere[] = " `l`.`{$this->CNF['FIELD_PARENT_JOT']}` !=0 ";
 
+        // Search criteria: the caller's (API) or the ones selected in the module settings.
+        $aCriteria = isset($aParams['search_criteria']) && is_array($aParams['search_criteria']) ? $aParams['search_criteria'] : null;
+        $fIsCriteria = function($sCriteria) use ($aCriteria) {
+            return $aCriteria !== null ? in_array($sCriteria, $aCriteria) : $this->_oConfig->isSearchCriteria($sCriteria);
+        };
+
         $sParam = isset($aParams['term']) && $aParams['term'] ? $aParams['term'] : '';
         if ($sParam) {
             $aParamWhere = [];
-            if ($this->_oConfig->isSearchCriteria(BX_SEARCH_CRITERIA_TITLES)) {
+            if ($fIsCriteria(BX_SEARCH_CRITERIA_TITLES)) {
                 $aParamWhere[] = "`l`.`{$this->CNF['FIELD_TITLE']}` LIKE :title";
                 $aWhere['title'] = "%{$sParam}%";
             }
 
-            if ($this->_oConfig->isSearchCriteria(BX_SEARCH_CRITERIA_PARTS)) {
+            if ($fIsCriteria(BX_SEARCH_CRITERIA_PARTS)) {
                 $aProfiles = BxDolService::call('system', 'profiles_search', array($sParam), 'TemplServiceProfiles');
                 if (!empty($aProfiles)) {
                     $aRegexp = array();
-                    foreach ($aProfiles as &$aProfile)
-                        $aRegexp[] = "(^|,){$aProfile['value']}(,|$)";
+                    foreach ($aProfiles as &$aProfile) {
+                        // Site: 'value' holds the profile id; API: profiles come as unit data with 'id'.
+                        $iPartId = (int)(isset($aProfile['value']) ? $aProfile['value'] : (isset($aProfile['id']) ? $aProfile['id'] : 0));
+                        if ($iPartId)
+                            $aRegexp[] = "(^|,){$iPartId}(,|$)";
+                    }
 
                     if (!empty($aRegexp)) {
                         $aWhere['part_search'] = implode('|', $aRegexp);
@@ -1318,7 +1345,7 @@ class BxMessengerDb extends BxBaseModGeneralDb
                 }
             }
 
-            if ($this->_oConfig->isSearchCriteria(BX_SEARCH_CRITERIA_CONTENT)) {
+            if ($fIsCriteria(BX_SEARCH_CRITERIA_CONTENT)) {
                 $aSelectedLots = $this->searchMessage($sParam, $iProfileId);
                 if (!empty($aSelectedLots)) {
                     $aParamWhere[] = "`l`.`{$this->CNF['FIELD_ID']}` IN (" . implode(',', array_unique($aSelectedLots)) . ")";
@@ -2204,7 +2231,7 @@ class BxMessengerDb extends BxBaseModGeneralDb
                                         ORDER BY `{$CNF['FIELD_REACT_ADDED']}`", array('jot_id' => $iJotId));
     }
 
-    public function findInHistory($iLotId = 0, $sText = '', $iStart = 0, $iLimit = 10, $sOrder = 'DESC')
+    public function findInHistory($iLotId = 0, $sText = '', $iStart = 0, $iLimit = 10, $sOrder = 'DESC', $bSkipDeleted = false)
     {
         if (!$sText)
             return array();
@@ -2216,6 +2243,9 @@ class BxMessengerDb extends BxBaseModGeneralDb
             $aWhere[] = " `l`.`{$this->CNF['FIELD_ID']}`=:id ";
             $aParams['id'] = $iLotId;
         }
+
+        if ($bSkipDeleted)
+            $aWhere[] = " `j`.`{$this->CNF['FIELD_MESSAGE_TRASH']}` = 0 ";
 
         $sLimit = '';
         $sOrder = $sOrder === 'ASC' ? 'ASC' : 'DESC';
@@ -2497,6 +2527,22 @@ class BxMessengerDb extends BxBaseModGeneralDb
         return $this->query("REPLACE INTO `{$this->CNF['TABLE_SAVED_JOTS']}` 
                                                SET  `{$this->CNF['FSJ_ID']}`=:jot_id,
                                                     `{$this->CNF['FSJ_PROFILE_ID']}`=:profile_id", array('jot_id' => $iJotId, 'profile_id' => $iProfileId));
+    }
+
+    /**
+     * Messages from the list that the member saved
+     * @param int $iProfileId profile id
+     * @param array $aJotIds jots ids
+     * @return array jots ids
+     */
+    function getSavedJotsByIds($iProfileId, $aJotIds)
+    {
+        $aJotIds = array_filter(array_map('intval', (array)$aJotIds));
+        if (!$iProfileId || empty($aJotIds))
+            return [];
+
+        return $this->getColumn("SELECT `{$this->CNF['FSJ_ID']}` FROM `{$this->CNF['TABLE_SAVED_JOTS']}`
+                                    WHERE `{$this->CNF['FSJ_PROFILE_ID']}` = :profile_id AND `{$this->CNF['FSJ_ID']}` IN (" . implode(',', $aJotIds) . ")", ['profile_id' => (int)$iProfileId]);
     }
 
     function isJotSaved($iJotId, $iProfileId)

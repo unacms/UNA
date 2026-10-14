@@ -55,7 +55,7 @@ export const User = ({ data, onSelect, type }) => {
 
 const EMPTY_SUGGESTIONS = [];
 
-export function SelectUsers({ onSave, initedData = [], requestUrl, isSingle = false, extraSuggestions = EMPTY_SUGGESTIONS }) {
+export function SelectUsers({ onSave, initedData = [], requestUrl, isSingle = false, extraSuggestions = EMPTY_SUGGESTIONS, autoFocus = false }) {
 
     const { t } = useTranslation();
     const extraList = Array.isArray(extraSuggestions) ? extraSuggestions : EMPTY_SUGGESTIONS;
@@ -145,6 +145,7 @@ export function SelectUsers({ onSave, initedData = [], requestUrl, isSingle = fa
                     className="px-2 mr-2  w-full"
                     onChangeText={onChangeText}
                     role="textbox"
+                    autoFocus={autoFocus}
                 />
                 <NeoButton style="borderedProminent" controlSize="large" image="Check" accessibilityLabel={t('Save')} disabled={state.selectedUsers.length == 0} onPress={() => onSaveInt()} />
             </Row>

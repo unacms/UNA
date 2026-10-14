@@ -15,6 +15,9 @@ export default function ({ item, index, changeConvo, selectedIndex }) {
             unread={item.unread}
             extraCount={participants.length > 1 ? participants.length - 1 : 0}
             selected={selectedIndex == index}
+            starred={item.starred == 1}
+            // Online dot for one-to-one chats only.
+            online={participants.length === 1 && participants[0]?.online == 1}
             onPress={() => changeConvo(item)}
         />
     );

@@ -4,6 +4,7 @@ import { Text } from 'app/design/typography';
 import { View, Row, Pressable } from 'app/design/view';
 import Profile from 'app/ui/molecules/profile/profile';
 import Time from 'app/ui/atoms/time';
+import { Icon } from 'app/ui/atoms/icon';
 
 const isWeb = Platform.OS === 'web';
 
@@ -19,6 +20,10 @@ type ConvosListItemProps = {
     /** "+N" badge on the avatar. */
     extraCount?: number;
     selected?: boolean;
+    /** Star badge on the avatar (favorite conversation). */
+    starred?: boolean;
+    /** Green dot on the avatar: the other person is online. */
+    online?: boolean;
     onPress: () => void;
 };
 
@@ -39,6 +44,8 @@ export default function ConvosListItem({
     unread = 0,
     extraCount = 0,
     selected = false,
+    starred = false,
+    online = false,
     onPress,
 }: ConvosListItemProps) {
     // Native has no :active for the inner Row, so track the press to show the
@@ -64,6 +71,14 @@ export default function ConvosListItem({
                             {title}
                         </Text>
                         {time ? <Time className="text-sm text-muted-foreground whitespace-nowrap" ts={time} /> : null}
+                        {/* Unread count sits on the title line, after the time. */}
+                        {unread > 0 && !selected ? (
+                            <View className="flex-none bg-primary rounded-full min-w-5 h-5 items-center justify-center px-1.5">
+                                <Text className="text-xs leading-4 text-primary-foreground font-semibold">
+                                    {unread}
+                                </Text>
+                            </View>
+                        ) : null}
                     </Row>
                     <View>
                         <Text className="block text-sm text-secondary-foreground web:group-hover:text-foreground line-clamp-1 truncate overflow-hidden max-w-full" numberOfLines={1}>
@@ -71,11 +86,14 @@ export default function ConvosListItem({
                         </Text>
                     </View>
                 </View>
-                {unread > 0 && !selected ? (
-                    <View className="flex-none bg-primary rounded-full mb-auto mt-1 h-min min-w-5 min-h-5 items-center justify-center px-1.5">
-                        <Text className="text-xs text-primary-foreground font-semibold">
-                            {unread}
-                        </Text>
+
+                {online ? (
+                    <View className="absolute bottom-2 start-14 sm:start-12 w-3.5 h-3.5 rounded-full bg-green border-2 border-card" accessibilityLabel="online" />
+                ) : null}
+
+                {starred ? (
+                    <View className="absolute bottom-1 start-3 sm:start-1 bg-card rounded-full p-0.5">
+                        <Icon icon="Star" size={14} className="text-primary" />
                     </View>
                 ) : null}
 

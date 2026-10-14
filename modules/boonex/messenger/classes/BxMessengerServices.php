@@ -18,6 +18,9 @@ class BxMessengerServices extends BxDol
     protected $_oModule;
 
     protected $_iProfileId;
+    protected $_bAdministrator = null;
+    protected $_aLotMenuShort = null;
+    protected $_aStarredLots = null;
 
     public function __construct()
     {
@@ -45,7 +48,7 @@ class BxMessengerServices extends BxDol
                         'send_message' => $this->_oModule->_oConfig->isAllowedAction(BX_MSG_ACTION_SEND_MESSAGE, $this->_iProfileId) === true ? 1 : 0,
                     ]
                 ],
-                'menu' => $aMenuMain, 
+                'menu' => $aMenuMain,
                 'form' => ['data' => $this->serviceGetSendForm()],
             ], [
                 'ext' => [
@@ -141,7 +144,217 @@ class BxMessengerServices extends BxDol
 
         return ['code' => !$this->_oModule->_oDb->deleteLot($iLotId) ? 2 : 0];
     }
-    
+
+    /**
+     * Remove all messages from convo (lot) with defined ID
+     */
+    public function serviceClearConvo($sParams)
+    {
+        $aOptions = json_decode($sParams, true);
+
+        $iLotId = isset($aOptions['lot']) ? (int)$aOptions['lot'] : 0;
+
+        if(!$iLotId || !$this->_isAllowedToManage($iLotId))
+            return ['code' => 1, 'message' => _t('_bx_messenger_no_permissions')];
+
+        return ['code' => $this->_oModule->_oDb->clearLot($iLotId) === false ? 2 : 0];
+    }
+
+    /**
+     * Search messages of convo (lot) with defined ID by their text, newest first, by pages
+     */
+    public function serviceSearchConvoMessages($sParams)
+    {
+        $CNF = &$this->_oModule->_oConfig->CNF;
+
+        $aOptions = json_decode($sParams, true);
+
+        $iLotId = isset($aOptions['lot']) ? (int)$aOptions['lot'] : 0;
+        $sTerm = isset($aOptions['term']) ? trim((string)$aOptions['term']) : '';
+        $iStart = isset($aOptions['start']) ? max(0, (int)$aOptions['start']) : 0;
+        $iPerPage = 20;
+
+        if(!$iLotId || !$this->_iProfileId || !$this->_oModule->_oDb->getLotInfoById($iLotId))
+            return ['code' => 1, 'message' => _t('_bx_messenger_not_found')];
+
+        if(!$this->_oModule->_oDb->isParticipant($iLotId, $this->_iProfileId) && !$this->_isAdministrator())
+            return ['code' => 2, 'message' => _t('_bx_messenger_not_participant')];
+
+        $aResult = ['code' => 0, 'jots' => [], 'params' => ['start' => $iStart, 'per_page' => $iPerPage]];
+        if($sTerm === '')
+            return $aResult;
+
+        // LIKE wildcards in the term are searched as plain characters.
+        $sTerm = addcslashes($sTerm, '%_\\');
+
+        $aJots = $this->_oModule->_oDb->findInHistory($iLotId, $sTerm, $iStart, $iPerPage, 'DESC', true);
+        foreach($aJots as $aJot)
+            $aResult['jots'][] = [
+                'id' => (int)$aJot['message_id'],
+                'message' => $aJot[$CNF['FIELD_MESSAGE']],
+                'added' => (int)$aJot['message_added'],
+                'author_data' => BxDolProfile::getData($aJot['message_author']),
+            ];
+
+        return $aResult;
+    }
+
+    /**
+     * Save message (jot) with defined ID to the viewer's saved messages, or remove it from there
+     */
+    public function serviceSaveJot($sParams)
+    {
+        $CNF = &$this->_oModule->_oConfig->CNF;
+
+        $aOptions = json_decode($sParams, true);
+
+        $iJotId = isset($aOptions['jot']) ? (int)$aOptions['jot'] : 0;
+
+        if(!$iJotId || !$this->_iProfileId || !($aJotInfo = $this->_oModule->_oDb->getJotById($iJotId)))
+            return ['code' => 1, 'message' => _t('_bx_messenger_nothing_found')];
+
+        if(!$this->_isAvailable($aJotInfo[$CNF['FIELD_MESSAGE_FK']]))
+            return ['code' => 2, 'message' => _t('_bx_messenger_not_participant')];
+
+        $bSaved = $this->_oModule->_oDb->isJotSaved($iJotId, $this->_iProfileId);
+        $mixedResult = $bSaved ? $this->_oModule->_oDb->deleteSavedJotItems($iJotId, $this->_iProfileId) : $this->_oModule->_oDb->saveJotItem($iJotId, $this->_iProfileId);
+        if($mixedResult === false)
+            return ['code' => 3, 'message' => _t('_bx_messenger_nothing_has_been_saved')];
+
+        return ['code' => 0, 'value' => (int)!$bSaved, 'title' => _t($bSaved ? '_bx_messenger_jot_menu_save' : '_bx_messenger_jot_menu_remove_save')];
+    }
+
+    /**
+     * Turn notifications of convo (lot) with defined ID on / off for the viewer
+     */
+    public function serviceMuteConvo($sParams)
+    {
+        $aOptions = json_decode($sParams, true);
+
+        $iLotId = isset($aOptions['lot']) ? (int)$aOptions['lot'] : 0;
+
+        if(!$iLotId || !$this->_iProfileId || !$this->_oModule->_oDb->getLotInfoById($iLotId) || !$this->_isAvailable($iLotId))
+            return ['code' => 1, 'message' => _t('_bx_messenger_not_found')];
+
+        $bMuted = (bool)$this->_oModule->_oDb->muteLot($iLotId, $this->_iProfileId);
+
+        return ['code' => 0, 'value' => (int)$bMuted, 'title' => _t($bMuted ? '_bx_messenger_lots_menu_mute_info_on' : '_bx_messenger_lots_menu_mute_info_off')];
+    }
+
+    /**
+     * Mark convo (lot) with defined ID as important (star) / not important for the viewer
+     */
+    public function serviceStarConvo($sParams)
+    {
+        $aOptions = json_decode($sParams, true);
+
+        $iLotId = isset($aOptions['lot']) ? (int)$aOptions['lot'] : 0;
+
+        if(!$iLotId || !$this->_iProfileId || !$this->_oModule->_oDb->getLotInfoById($iLotId) || !$this->_isAvailable($iLotId))
+            return ['code' => 1, 'message' => _t('_bx_messenger_not_found')];
+
+        $bStarred = (bool)$this->_oModule->_oDb->starLot($iLotId, $this->_iProfileId);
+
+        return ['code' => 0, 'value' => (int)$bStarred, 'title' => _t(!$bStarred ? '_bx_messenger_lots_menu_star_on' : '_bx_messenger_lots_menu_star_off')];
+    }
+
+    /**
+     * Get files attached to messages of convo (lot) with defined ID, newest first, by pages
+     */
+    public function serviceGetConvoFiles($sParams)
+    {
+        $CNF = &$this->_oModule->_oConfig->CNF;
+
+        $aOptions = json_decode($sParams, true);
+
+        $iLotId = isset($aOptions['lot']) ? (int)$aOptions['lot'] : 0;
+        $iStart = isset($aOptions['start']) ? max(0, (int)$aOptions['start']) : 0;
+        $iPerPage = (int)$CNF['PARAM_DEFAULT_TALK_FILES_NUM'];
+
+        if(!$iLotId || !$this->_oModule->_oDb->getLotInfoById($iLotId))
+            return ['code' => 1, 'message' => _t('_bx_messenger_not_found')];
+
+        if(!$this->_iProfileId || !$this->_oModule->_oDb->isParticipant($iLotId, $this->_iProfileId))
+            return ['code' => 2, 'message' => _t('_bx_messenger_not_participant')];
+
+        $sStorage = $CNF['OBJECT_STORAGE'];
+        $oStorage = new BxMessengerStorage($sStorage);
+        // File URLs come from the storage engine object, BxMessengerStorage only checks types.
+        $oStorageEngine = BxDolStorage::getObjectInstance($sStorage);
+
+        $aFiles = [];
+        foreach($this->_oModule->_oDb->getLotFiles($iLotId, $iStart, $iPerPage) as $aFile) {
+            $iFileId = (int)$aFile[$CNF['FIELD_ST_ID']];
+            $bImage = $oStorage->isImageFile($aFile[$CNF['FIELD_ST_TYPE']]);
+
+            $aFiles[] = [
+                'id' => $iFileId,
+                'name' => $aFile[$CNF['FIELD_ST_NAME']],
+                'mime_type' => $aFile[$CNF['FIELD_ST_TYPE']],
+                'size' => isset($aFile['size']) ? (int)$aFile['size'] : 0,
+                'added' => (int)$aFile[$CNF['FIELD_ST_ADDED']],
+                'jot_id' => (int)$aFile[$CNF['FIELD_ST_JOT']],
+                'author_data' => BxDolProfile::getData($aFile[$CNF['FIELD_ST_AUTHOR']]),
+                'image' => $bImage ? bx_api_get_image($sStorage, $iFileId) : null,
+                'url' => $oStorageEngine ? $oStorageEngine->getFileUrlById($iFileId) : '',
+            ];
+        }
+
+        return [
+            'code' => 0,
+            'files' => $aFiles,
+            'params' => [
+                'start' => $iStart,
+                'per_page' => $iPerPage,
+                'total' => $this->_oModule->_oDb->getLotFilesCount($iLotId)
+            ]
+        ];
+    }
+
+    /**
+     * Get settings (allowed actions) of convo (lot) with defined ID
+     */
+    public function serviceGetConvoSettings($sParams)
+    {
+        $aOptions = json_decode($sParams, true);
+
+        $iLotId = isset($aOptions['lot']) ? (int)$aOptions['lot'] : 0;
+
+        if(!$iLotId || !$this->_oModule->_oDb->getLotInfoById($iLotId))
+            return ['code' => 1, 'message' => _t('_bx_messenger_not_found')];
+
+        if(!$this->_isAllowedToManage($iLotId))
+            return ['code' => 2, 'message' => _t('_bx_messenger_lot_can_change_settings')];
+
+        return array_merge(['code' => 0, 'title' => _t('_bx_messenger_lot_options_title')], $this->_oModule->_oTemplate->getLotSettingsOptions($iLotId));
+    }
+
+    /**
+     * Save settings (allowed actions) of convo (lot) with defined ID
+     */
+    public function serviceSaveConvoSettings($sParams)
+    {
+        $aOptions = json_decode($sParams, true);
+
+        $iLotId = isset($aOptions['lot']) ? (int)$aOptions['lot'] : 0;
+
+        if(!$iLotId || !$this->_oModule->_oDb->getLotInfoById($iLotId))
+            return ['code' => 1, 'message' => _t('_bx_messenger_not_found')];
+
+        if(!$this->_isAllowedToManage($iLotId))
+            return ['code' => 2, 'message' => _t('_bx_messenger_lot_can_change_settings')];
+
+        // Only known options can be saved.
+        $aSettings = $this->_oModule->_oTemplate->getLotSettingsOptions($iLotId);
+        $aValues = isset($aOptions['options']) && is_array($aOptions['options']) ? $aOptions['options'] : [];
+        $aValues = array_values(array_intersect(array_column($aSettings['options'], 'key'), $aValues));
+
+        if($this->_oModule->_oDb->saveLotSettings($iLotId, $aValues) === false)
+            return ['code' => 3, 'message' => _t('_bx_messenger_nothing_has_been_saved')];
+
+        return ['code' => 0, 'values' => $aValues];
+    }
+
     /**
      * Get convo (lot) info with defined ID
      */
@@ -216,6 +429,7 @@ class BxMessengerServices extends BxDol
         if(empty($aList))
             return $aResult;
 
+        $this->_prefetchStarredLots($aData['list']);
         foreach($aList as $iKey => $aItem)
             $aResult[] = $this->_unitLot($aData['list'][$iKey], $aItem);
 
@@ -320,6 +534,9 @@ class BxMessengerServices extends BxDol
             $sStorage = $CNF['OBJECT_STORAGE'];
             $oStorage = new BxMessengerStorage($sStorage);
 
+            // Messages of the page saved by the viewer, one query for the page.
+            $aSavedJots = array_map('intval', $this->_oModule->_oDb->getSavedJotsByIds($this->_iProfileId, array_column($mixedContent, $CNF['FIELD_MESSAGE_ID'])));
+
             foreach($mixedContent as &$aJot) {
                 $iJotId = $aJot[$CNF['FIELD_MESSAGE_ID']];
 
@@ -354,7 +571,8 @@ class BxMessengerServices extends BxDol
                     'reactions' => $aReactions,
                     'menu' => $oMenu->getCodeAPI(),
                     'files' => $aFiles,
-                    'reply_message' => $sReplyMessage
+                    'reply_message' => $sReplyMessage,
+                    'saved' => in_array((int)$iJotId, $aSavedJots) ? 1 : 0
                 ]);
             }
         }
@@ -555,6 +773,55 @@ class BxMessengerServices extends BxDol
     public function serviceSearchUsers($sParams)
     {
         $aOptions = json_decode($sParams, true);
+        if (!$sParams || !isset($aOptions['term']))
+            return ['code' => 1];
+
+        // Friends only mode: the module's own search among the viewer's friends.
+        if ($this->_oModule->_oConfig->CNF['USE-FRIENDS-ONLY-MODE'])
+            return $this->_searchUsersByModule($sParams);
+
+        $sTerm = trim((string)$aOptions['term']);
+        if ($sTerm === '')
+            return [];
+
+        $aExcept = isset($aOptions['except']) && is_array($aOptions['except']) ? array_map('intval', $aOptions['except']) : [];
+        $iLimit = 10;
+
+        // Names are searched in each profile module directly (its quick search fields),
+        // so the result doesn't depend on the site's global search settings.
+        $aProfileIds = [];
+        $aModules = BxDolService::call('system', 'get_profiles_modules', [], 'TemplServiceProfiles');
+        foreach ((array)$aModules as $aModule) {
+            if (!BxDolService::call($aModule['name'], 'act_as_profile') || !($oModule = BxDolModule::getInstance($aModule['name'])))
+                continue;
+
+            foreach ((array)$oModule->_oDb->searchByTerm($sTerm, $iLimit * 2) as $aRow)
+                if (!empty($aRow['profile_id']))
+                    $aProfileIds[] = (int)$aRow['profile_id'];
+        }
+
+        $aUsers = [];
+        foreach (array_unique($aProfileIds) as $iProfileId) {
+            if ($iProfileId == $this->_iProfileId || in_array($iProfileId, $aExcept))
+                continue;
+
+            if (!($oProfile = BxDolProfile::getInstance($iProfileId)) || $oProfile->checkAllowedProfileContact() !== CHECK_ACTION_RESULT_ALLOWED)
+                continue;
+
+            $aUsers[] = BxDolProfile::getData($iProfileId);
+            if (count($aUsers) >= $iLimit)
+                break;
+        }
+
+        return $aUsers;
+    }
+
+    /**
+     * Users search with the module's search (friends only mode).
+     */
+    protected function _searchUsersByModule($sParams)
+    {
+        $aOptions = json_decode($sParams, true);
         $aResult = ['code' => 1];
         $aUsers = [];
         if (!$sParams || !isset($aOptions['term']))
@@ -581,7 +848,12 @@ class BxMessengerServices extends BxDol
         $iStarred = isset($aOptions['starred']) ? (int)$aOptions['starred'] : 0;
 
         $aJots = [];
-        $aLots = $this->_oModule->_oDb->getMyLots($this->_iProfileId, ['term' => $sTerm, 'star' => (bool)$iStarred], $aJots);
+        $aLots = $this->_oModule->_oDb->getMyLots($this->_iProfileId, [
+            'term' => $sTerm,
+            'star' => (bool)$iStarred,
+            // The app searches talks by their titles and participants' names, not by messages.
+            'search_criteria' => [BX_SEARCH_CRITERIA_TITLES, BX_SEARCH_CRITERIA_PARTS]
+        ], $aJots);
         if(empty($aLots) || !is_array($aLots))
             return [];
 
@@ -591,6 +863,7 @@ class BxMessengerServices extends BxDol
         ];
 
         $aItems = $this->_oModule->_oTemplate->getLotsPreview($this->_iProfileId, $aLots);
+        $this->_prefetchStarredLots($aLots);
         foreach($aItems as $iKey => $aItem)
             $aResult['lots'][] = $this->_unitLot($aLots[$iKey], $aItem);
 
@@ -683,7 +956,7 @@ class BxMessengerServices extends BxDol
                 if(!$iPartId)
                     continue;
 
-                $aParticipants[] = BxDolProfile::getData($iPartId);
+                $aParticipants[] = BxDolProfile::getData($iPartId, ['with_online' => true]);
             }
         }
 
@@ -708,6 +981,10 @@ class BxMessengerServices extends BxDol
             'date' => $aItem['bx_if:timer']['content']['time'],
             'id' => $this->_normalizeConvoHash($aLot[$CNF['FIELD_HASH']]),
             'id2' => $aItem[$CNF['FIELD_ID']],
+            // Marked with a star (favorite) by the viewer.
+            'starred' => $this->_isStarredLot((int)$aItem[$CNF['FIELD_ID']]) ? 1 : 0,
+            // Conversation actions (gear menu): the app requests the items on demand with system/get_menu.
+            'menu' => $this->_getLotMenuShort((int)$aItem[$CNF['FIELD_ID']]),
             'unread' => $aItem['count'],
             'total_messages' => $this->_oModule->_oDb->getJotsNumber($aItem[$CNF['FIELD_ID']], 0)
         ];
@@ -723,6 +1000,66 @@ class BxMessengerServices extends BxDol
 
         if(($oSockets = BxDolSockets::getInstance()) && $oSockets->isEnabled() && $sAction && !empty($aData))
             $oSockets->sendEvent('bx', 'messenger', $sAction, $aData);
+    }
+
+    /**
+     * Talks of a list marked with a star by the viewer, loaded with one query for the whole list.
+     */
+    protected function _prefetchStarredLots($aLots)
+    {
+        $CNF = &$this->_oModule->_oConfig->CNF;
+
+        $aLotIds = [];
+        foreach((array)$aLots as $aLot)
+            if(!empty($aLot[$CNF['FIELD_ID']]))
+                $aLotIds[] = (int)$aLot[$CNF['FIELD_ID']];
+
+        $this->_aStarredLots = array_map('intval', $this->_oModule->_oDb->getStarredLots($this->_iProfileId, $aLotIds));
+    }
+
+    protected function _isStarredLot($iLotId)
+    {
+        if($this->_aStarredLots !== null)
+            return in_array((int)$iLotId, $this->_aStarredLots);
+
+        return (bool)$this->_oModule->_oDb->isStarred($iLotId, $this->_iProfileId);
+    }
+
+    /**
+     * Short code of the talk actions menu (object, title, params), items are loaded on demand.
+     */
+    protected function _getLotMenuShort($iLotId)
+    {
+        if($this->_aLotMenuShort === null) {
+            $CNF = &$this->_oModule->_oConfig->CNF;
+
+            $oMenu = BxTemplMenu::getObjectInstance($CNF['OBJECT_MENU_TALK_INFO_MENU']);
+            $this->_aLotMenuShort = $oMenu ? $oMenu->getShortCodeAPI() : [];
+        }
+
+        if(empty($this->_aLotMenuShort))
+            return [];
+
+        return array_merge($this->_aLotMenuShort, ['params' => ['lot' => (int)$iLotId]]);
+    }
+
+    /**
+     * Talk author or a member who can administrate talks.
+     */
+    protected function _isAllowedToManage($iLotId)
+    {
+        return $this->_iProfileId && ($this->_oModule->_oDb->isAuthor($iLotId, $this->_iProfileId) || $this->_isAdministrator());
+    }
+
+    /**
+     * Member can administrate talks. Checked once per request: the ACL check counts the action.
+     */
+    protected function _isAdministrator()
+    {
+        if($this->_bAdministrator === null)
+            $this->_bAdministrator = $this->_iProfileId && $this->_oModule->_oConfig->isAllowedAction(BX_MSG_ACTION_ADMINISTRATE_TALKS, $this->_iProfileId) === true;
+
+        return $this->_bAdministrator;
     }
 
     protected function _isAvailable($iLotId)

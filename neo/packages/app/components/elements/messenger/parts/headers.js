@@ -6,6 +6,7 @@ import { NeoButton } from 'app/design/controls';
 import { appSetting } from 'app/lib/util';
 import { getBackButtonWeb } from 'app/lib/common-helpers';
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
+import { getDataForMenu } from 'app/lib/util/menu';
 import { components } from 'app/components/registry';
 import { useTranslation } from 'react-i18next';
 import { MenuSwitcher, SearchInput, useDebouncedSearch } from 'app/components/elements/chat/parts/headers';
@@ -18,27 +19,119 @@ export function messengerHeaderContentClass() {
     return isWeb ? content : String(content || '').replace(/\bh-16\b/g, 'min-h-16');
 }
 
-const CONVO_MENU_ITEMS = [
-    { id: 'edit', title: 'Edit participants list', icon: 'Users' },
-    { id: 'info', title: 'Info', icon: 'Info' },
-    { id: 'leave', title: 'Leave chat', icon: 'LogOut' },
-    { id: 'delete', title: 'Delete chat', icon: 'Trash' },
-];
+// Actions NEO can handle, keyed by item name in UNA's `bx_messenger_lot_info_menu`.
+const CONVO_ACTIONS = {
+    // From the talk menu (`bx_messenger_lot_menu`), which UNA merges in for the app.
+    star: { id: 'star', title: 'Mark as important', icon: 'Star' },
+    mute: { id: 'mute', title: 'Mute', icon: 'Bell', iconOn: 'BellOff' },
+    add_participants: { id: 'edit', title: 'Edit participants list', icon: 'Users' },
+    info: { id: 'info', title: 'Info', icon: 'Info' },
+    leave: { id: 'leave', title: 'Leave chat', icon: 'LogOut' },
+    delete: { id: 'delete', title: 'Delete chat', icon: 'Trash' },
+    media: { id: 'files', title: 'Files', icon: 'Paperclip' },
+    clear: { id: 'clear', title: 'Clear history', icon: 'Eraser' },
+    settings: { id: 'settings', title: 'Settings', icon: 'Settings' },
+};
 
-/** Settings dropdown with the per-conversation actions (edit / info / leave / delete). */
-export function ConvoActionsMenu({ onAction, style = 'glass' }) {
+/**
+ * Conversation actions from UNA's `bx_messenger_lot_info_menu` (Studio order;
+ * UNA leaves out what the viewer may not run); items NEO can't handle are
+ * dropped. Without the menu (older UNA) the basic actions are shown.
+ */
+export function getConvoActions(menu) {
+    // Older UNA has no services for clear / settings.
+    if (!Array.isArray(menu?.items))
+        return ['add_participants', 'info', 'leave', 'delete'].map((name) => CONVO_ACTIONS[name]);
+
+    return menu.items
+        .filter((item) => CONVO_ACTIONS[item?.name])
+        .map((item) => {
+            const action = CONVO_ACTIONS[item.name];
+            // Toggles (mute, star) carry their current state in `value`.
+            const on = Number(item.value) === 1;
+            return { ...action, title: item.title || action.title, icon: on && action.iconOn ? action.iconOn : action.icon, value: on };
+        });
+}
+
+/**
+ * Gear dropdown with the per-conversation actions. `menu` is the short menu
+ * that comes with the conversation (`object` + `params`); its items depend on
+ * the viewer's rights in that conversation, so they are requested on the first
+ * press (like the comment manage menu). Mount with `key` per conversation.
+ */
+export function ConvoActionsMenu({ menu, onAction, style = 'glass' }) {
     const { t } = useTranslation();
+    const [actions, setActions] = useState(null);
+    const [loading, setLoading] = useState(false);
+
+    const gear = (props) => (
+        <NeoButton
+            style={style}
+            controlSize="regular"
+            borderShape="circle"
+            image="Settings"
+            accessibilityLabel={t('Settings')}
+            {...props}
+        />
+    );
+
+    // Older UNA: no menu with the conversation, fixed actions.
+    const lazy = !!menu?.object;
+    const items = lazy ? actions : getConvoActions(null);
+
+    if (!items) {
+        return gear({
+            loading,
+            onPress: async () => {
+                setLoading(true);
+                try {
+                    setActions(getConvoActions(await getDataForMenu(menu)));
+                } finally {
+                    setLoading(false);
+                }
+            },
+        });
+    }
+
+    if (!items.length)
+        return gear({ disabled: true });
+
     return (
-        <DropdownMenu onSelect={onAction} items={CONVO_MENU_ITEMS.map((item) => ({ ...item, title: t(item.title) }))}>
-            <NeoButton
-                style={style}
-                controlSize="regular"
-                borderShape="circle"
-                image="Settings"
-                accessibilityLabel={t('Settings')}
-            />
+        <DropdownMenu
+            defaultOpen={lazy}
+            onSelect={(item) => {
+                // Next press asks UNA again: toggles and rights may have changed.
+                if (lazy) setActions(null);
+                onAction(item);
+            }}
+            items={items.map((item) => ({ ...item, title: t(item.title) }))}
+        >
+            {gear()}
         </DropdownMenu>
     );
+}
+
+/** Toggles the search in the conversation's messages (pressed while open). */
+export function ConvoSearchButton({ open, onPress, style = 'glass' }) {
+    const { t } = useTranslation();
+    return (
+        <NeoButton
+            style={style}
+            selected={open}
+            selectedState="pressedToggle"
+            controlSize="regular"
+            borderShape="circle"
+            image="Search"
+            accessibilityLabel={t('Search')}
+            onPress={onPress}
+        />
+    );
+}
+
+/** Search field that replaces the chat title while the search is open; reports the debounced text. */
+export function ConvoSearchField({ onSearch }) {
+    const search = useDebouncedSearch(onSearch);
+    return <SearchInput value={search.value} onChangeText={search.setValue} autoFocus />;
 }
 
 /**
@@ -62,7 +155,7 @@ export function MobileListHeader({ pageData, onSearch, addButtons, menuItems, me
             <Row className={`${appSetting('layout', 'page_content_width_default')} ${messengerHeaderContentClass()} max-w-full`}>
                 {showSearch ? (
                     <View className="flex-1 min-w-0 px-4">
-                        <SearchInput value={search.value} onChangeText={search.setValue} />
+                        <SearchInput value={search.value} onChangeText={search.setValue} autoFocus />
                     </View>
                 ) : (
                     <Row className="flex-1 min-w-0 items-center gap-3 px-4 ">
@@ -109,7 +202,7 @@ export function MobileListHeader({ pageData, onSearch, addButtons, menuItems, me
 }
 
 /** Small screens, chat mode: injected page header (back + title + actions). */
-export function MobileChatHeader({ title, onBack, onAction }) {
+export function MobileChatHeader({ title, onBack, menu, menuKey, onAction, searchOpen, onSearchToggle, onSearch }) {
     const { t } = useTranslation();
     return (
         <Row className={`${appSetting('layout', 'page_content_width_default')} ${messengerHeaderContentClass()} max-w-full`}>
@@ -124,13 +217,20 @@ export function MobileChatHeader({ title, onBack, onAction }) {
                         onPress={onBack}
                     />
                 </View>
-                <Text numberOfLines={1} className="flex-1 min-w-0 font-bold text-card-foreground text-lg sm:text-xl tracking-tight">
-                    {title}
-                </Text>
+                {searchOpen ? (
+                    <View className="flex-1 min-w-0">
+                        <ConvoSearchField onSearch={onSearch} />
+                    </View>
+                ) : (
+                    <Text numberOfLines={1} className="flex-1 min-w-0 font-bold text-card-foreground text-lg sm:text-xl tracking-tight">
+                        {title}
+                    </Text>
+                )}
             </Row>
-            <View className="shrink-0 items-center justify-center pe-4">
-                <ConvoActionsMenu onAction={onAction} style="glass" />
-            </View>
+            <Row className="shrink-0 items-center justify-center gap-3 pe-4">
+                {onSearchToggle ? <ConvoSearchButton open={searchOpen} onPress={onSearchToggle} style="glass" /> : null}
+                <ConvoActionsMenu key={menuKey} menu={menu} onAction={onAction} style="glass" />
+            </Row>
         </Row>
     );
 }

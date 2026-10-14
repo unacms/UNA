@@ -2506,6 +2506,32 @@ class BxMessengerTemplate extends BxBaseModGeneralTemplate
         return BxTemplFunctions::getInstance()->transBox('bx-messenger-vc-call', $sContent);
     }
 
+    /**
+     * Talk settings: available options and the selected ones (all of them when nothing is saved yet).
+     * @param int $iLotId
+     * @return array ['options' => [['key' => ..., 'value' => ...], ...], 'values' => [...]]
+     */
+    public function getLotSettingsOptions($iLotId)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        $aSettingsOptions = [];
+        $aSelectedValues = [];
+        $aLotSettings = $this->_oDb->getLotSettings($iLotId);
+        foreach ($CNF['LOT_OPTIONS'] as $sValue) {
+            $aSettingsOptions[] = ['key' => $sValue, 'value' => _t("_bx_messenger_lot_options_item_{$sValue}")];
+            if ($aLotSettings === false || in_array($sValue, $aLotSettings))
+                $aSelectedValues[] = $sValue;
+        }
+
+        bx_alert($this->_oConfig->getObject('alert'), 'talk_settings_before', $iLotId, $iLotId, [
+            'options' => &$aSettingsOptions,
+            'values' => &$aSelectedValues
+        ]);
+
+        return ['options' => $aSettingsOptions, 'values' => $aSelectedValues];
+    }
+
     public function getLotSettingsForm($iLotId){
         $CNF = &$this->_oConfig->CNF;
         $aLotInfo = $this->_oDb->getLotInfoById($iLotId);
@@ -2514,19 +2540,7 @@ class BxMessengerTemplate extends BxBaseModGeneralTemplate
             $sContent = MsgBox(_t('_Empty'));
         else
         {
-            $aSettingsOptions = [];
-            $aSelectedValues = [];
-            $aLotSettings = $this->_oDb->getLotSettings($iLotId);
-            foreach ($CNF['LOT_OPTIONS'] as $sValue) {
-                $aSettingsOptions[] = ['key' => $sValue, 'value' => _t("_bx_messenger_lot_options_item_{$sValue}")];
-                if ($aLotSettings === false || in_array($sValue, $aLotSettings))
-                    $aSelectedValues[] = $sValue;
-            }
-
-            bx_alert($this->_oConfig->getObject('alert'), 'talk_settings_before', $iLotId, $iLotId, [
-                'options' => &$aSettingsOptions,
-                'values' => &$aSelectedValues
-            ]);
+            ['options' => $aSettingsOptions, 'values' => $aSelectedValues] = $this->getLotSettingsOptions($iLotId);
 
             $aForm = [
                 'form_attrs' => [

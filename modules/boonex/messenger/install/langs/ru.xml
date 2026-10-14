@@ -267,7 +267,8 @@
 	<string name="_bx_messenger_nav_menu_item_title_threads"><![CDATA[Обсуждения]]></string>
 	<string name="_bx_messenger_nav_menu_item_title_direct"><![CDATA[Прямые разговоры]]></string>
 	<string name="_bx_messenger_nav_menu_item_title_files"><![CDATA[Файлы]]></string>
-	<string name="_bx_messenger_nav_menu_item_title_saved"><![CDATA[Сохраненные]]></string>
+	<string name="_bx_messenger_nav_menu_item_title_saved"><![CDATA[Сохраненные сообщения]]></string>
+	<string name="_bx_messenger_nav_menu_item_title_favorites"><![CDATA[Избранные чаты]]></string>
 	<string name="_bx_messenger_nav_menu_item_title_reply"><![CDATA[Ответы]]></string>
 	<string name="_bx_messenger_nav_menu_item_title_mr"><![CDATA[Реакции и Упоминания]]></string>
 	<string name="_bx_messenger_menu_item_title_parent_lot"><![CDATA[Open original message]]></string>

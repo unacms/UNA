@@ -1,4 +1,5 @@
 import { View, Row } from 'app/design/view';
+import { Text } from 'app/design/typography';
 import { fetcher } from 'app/lib/fetcher';
 import React, { useState, useMemo, useCallback } from 'react';
 import MessageItem from 'app/components/elements/chat/parts/message-item'
@@ -9,6 +10,8 @@ import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import { components } from 'app/components/registry';
 import { useTranslation } from 'react-i18next';
 import { FeedbackHaptics } from 'app/lib/util';
+import { playCue } from 'app/lib/sound';
+import { Icon } from 'app/ui/atoms/icon';
 import { toUnaDisplayImageItem } from 'app/lib/image-helpers'
 import Carousel from 'app/ui/molecules/content/carousel'
 import { Modal } from 'app/design/controls'
@@ -16,11 +19,16 @@ import emitter, { EVENTS } from 'app/context/emitter';
 import { TouchableWithoutFeedback } from 'react-native';
 import { ContentMore } from 'app/ui/molecules/content/content-more'
 
-export default function JotItem({ item, index, handleReply }) {
+export default function JotItem({ item, index, handleReply, unreadCount = 0 }) {
     const Reactions = components['molecule']['reactions'];
     const { t } = useTranslation();
     const [postData, setPostData] = useState(null)
     const [viewState, setViewState] = useState({ view: '' })
+    // Save / remove from saved: UNA returns the item title for the new state.
+    const [saveTitle, setSaveTitle] = useState(null)
+    // Saved by the viewer: from UNA (item.saved), then from the last save / remove.
+    const [savedState, setSavedState] = useState(null)
+    const isSaved = savedState ?? item.saved == 1
 
     const handleManageMenuSelect = useCallback(async (oItem, event) => {
 
@@ -33,6 +41,18 @@ export default function JotItem({ item, index, handleReply }) {
             case 'remove':
                 const result1 = await fetcher('/api.php?r=bx_messenger/remove_jot/Services&params=' + JSON.stringify({ jot_id: item.id, lot_id: item.lot_id, lot_hash: item.lot_hash }));
                 break;
+
+            case 'save': {
+                const result2 = await fetcher('/api.php?r=bx_messenger/save_jot/Services&params=' + JSON.stringify({ jot: item.id }));
+                if (result2?.data?.code == 0) {
+                    playCue('toggle', { emphasis: 'subtle' });
+                    if (result2.data.title) setSaveTitle(result2.data.title);
+                    setSavedState(result2.data.value == 1);
+                }
+                else
+                    playCue('error');
+                break;
+            }
         }
     }, [item]);
 
@@ -49,7 +69,7 @@ export default function JotItem({ item, index, handleReply }) {
         setPostData(formData);
     }, []);
 
-    const aManageMenu = useMemo(() => item.menu?.items.filter(item => ['remove', 'edit'].includes(item.name)), [item]);
+    const aManageMenu = useMemo(() => item.menu?.items.filter(item => ['save', 'remove', 'edit'].includes(item.name)), [item]);
 
     const handleReplyInner = useCallback(async (item) => {
         FeedbackHaptics('Medium');
@@ -66,6 +86,11 @@ export default function JotItem({ item, index, handleReply }) {
         <MessageItem
             author={item.author_data}
             time={item.created}
+            badges={isSaved ? (
+                <View accessibilityLabel={t('Saved')}>
+                    <Icon icon="Bookmark" size={14} className="text-primary" />
+                </View>
+            ) : null}
             footer={
             <View className="flex-row justify-between items-center mt-0.5">
                 <View className="pl-12">
@@ -81,7 +106,7 @@ export default function JotItem({ item, index, handleReply }) {
                                 id: aItem.id + '-' + aItem.name,
                                 name: aItem.name,
                                 link: aItem.link,
-                                title: aItem.title
+                                title: aItem.name === 'save' && saveTitle ? saveTitle : aItem.title
                             };
                         })} onSelect={handleManageMenuSelect}
                             buttonProps={{ style: 'borderless', controlSize: 'mini', borderShape: 'circle', image: 'Ellipsis', accessibilityLabel: t('More options') }} />
@@ -137,5 +162,20 @@ export default function JotItem({ item, index, handleReply }) {
         </MessageItem>
     </View></TouchableWithoutFeedback>
 
-    return Jot
+    if (!unreadCount)
+        return Jot
+
+    // 'New messages' line above the first unread message of this visit.
+    return (
+        <View className='w-full'>
+            <Row className='w-full items-center gap-3 px-4 mt-4' accessibilityRole='header'>
+                <View className='flex-1 h-px bg-primary/60' />
+                <Text className='text-xs font-semibold text-primary'>
+                    {t('{{count}} new messages', { count: unreadCount })}
+                </Text>
+                <View className='flex-1 h-px bg-primary/60' />
+            </Row>
+            {Jot}
+        </View>
+    )
 }

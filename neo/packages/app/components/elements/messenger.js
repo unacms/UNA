@@ -21,7 +21,7 @@ export default function MessengerEl(props) {
         defaultConvoId = aUrl[2];
 
     const menuDefaultList = useMemo(() => {
-        return props.data.menu.items.filter(item => ['inbox', 'direct'].includes(item.name));
+        return props.data.menu.items.filter(item => ['inbox', 'direct', 'favorites', 'saved'].includes(item.name));
     }, [props]);
 
     const [menu, setMenu] = useState(() => {

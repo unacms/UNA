@@ -22,13 +22,17 @@ import { useTranslation } from 'react-i18next'
 import ChatPanels from 'app/components/elements/chat/parts/chat-panels'
 import { useIsDesktop } from 'app/context/measure';
 import { getNativeTabBarHeight } from 'app/components/nav/tabs/tab-menu';
-import { useFooterHeight, useSetPageBottomBlur } from 'app/context/jotai/layout';
+import { useFooterHeight, useHeaderHeight, useSetPageBottomBlur } from 'app/context/jotai/layout';
 import { PageHeaderOptions } from 'app/ui/molecules/header/options';
 import ConvosList from 'app/components/elements/chat/parts/convos-list';
 import ItemConvo from 'app/components/elements/messenger/parts/item-convo';
 import JotsPanel, { ChatEmptyState } from 'app/components/elements/messenger/parts/jots-panel';
 import Composer from 'app/components/elements/messenger/parts/composer';
-import { MobileListHeader, MobileChatHeader, ConvoActionsMenu } from 'app/components/elements/messenger/parts/headers';
+import { MobileListHeader, MobileChatHeader, ConvoActionsMenu, ConvoSearchButton, ConvoSearchField } from 'app/components/elements/messenger/parts/headers';
+import Confirm from 'app/ui/molecules/dialogs/confirm';
+import ConvoSettings from 'app/components/elements/messenger/parts/convo-settings';
+import ConvoFiles from 'app/components/elements/messenger/parts/convo-files';
+import ConvoSearchResults from 'app/components/elements/messenger/parts/convo-search';
 import {
     PanelHeader,
     PANEL_HEADER_HEIGHT,
@@ -53,8 +57,13 @@ export default function Messenger({ defaultConvoId, selectedMenu, convos, fetchC
     const { t } = useTranslation();
     const insets = useSafeAreaInsets();
     const footerHeight = useFooterHeight();
+    const headerHeight = useHeaderHeight();
     const { setBottomSheetData } = useBottomSheetData();
     const [convoId, setConvoId] = useState(defaultConvoId);
+    const selectedMenuRef = useRef(selectedMenu);
+    useEffect(() => {
+        selectedMenuRef.current = selectedMenu;
+    }, [selectedMenu]);
     const convoIdRef = useRef(convoId);
     convoIdRef.current = convoId;
     const [jots, setJots] = useState(false);
@@ -134,9 +143,33 @@ export default function Messenger({ defaultConvoId, selectedMenu, convos, fetchC
 
     }, [dynamicData]);
 
+    // Text of the list search; the list isn't refreshed by new messages while it is set.
+    const listSearchRef = useRef('');
     const handleSearch = useCallback((term) => {
+        listSearchRef.current = term;
         fetchConvos(term);
     }, [fetchConvos]);
+
+    // UNA sends 'profile_<id>' to every participant on a new message (broadcastNewJot).
+    // A message in another talk refreshes the list: unread counts, order and previews come
+    // from UNA. Bursts are merged; own messages and the open talk (fed by its own channel) are skipped.
+    useEffect(() => {
+        if (!currentUser?.id) return;
+
+        let timer = null;
+        const unsubscribe = subscribe('bx_messenger', 'profile_' + currentUser.id, (event) => {
+            if (event?.user_id == currentUser.id || listSearchRef.current) return;
+            if (event?.id && event.id == convoIdRef.current && panelsVisibleRef.current.jots) return;
+
+            clearTimeout(timer);
+            timer = setTimeout(() => fetchConvos(), 400);
+        });
+
+        return () => {
+            clearTimeout(timer);
+            unsubscribe();
+        };
+    }, [currentUser?.id, fetchConvos]);
 
     useEffect(() => {
         setConvosData(convos?.data || []);
@@ -153,7 +186,9 @@ export default function Messenger({ defaultConvoId, selectedMenu, convos, fetchC
 
         isFetchingJots.current = true;
         try {
-            let request_url = '/api.php?r=bx_messenger/get_convo_messages/Services&params=' + JSON.stringify({ lot: targetConvoId, jot: 0, start: start });
+            // Saved: only the messages the viewer saved in this talk, as on the site.
+            const area = selectedMenuRef.current === 'saved' ? { area_type: 'saved' } : {};
+            let request_url = '/api.php?r=bx_messenger/get_convo_messages/Services&params=' + JSON.stringify({ lot: targetConvoId, jot: 0, start: start, ...area });
             const sResponse = await fetcher(request_url);
 
             const newJots = sResponse.data?.jots ?? [];
@@ -170,7 +205,13 @@ export default function Messenger({ defaultConvoId, selectedMenu, convos, fetchC
                     params: sResponse.data.params,
                     jots: prevJots && isAddJots ? [...newJots, ...prevJots?.data?.jots] : newJots
                 },
-                index: prevJots && isAddJots ? prevJots.index : 0
+                index: prevJots && isAddJots ? prevJots.index : 0,
+                // Unread on opening the talk (UNA counts them before marking them read):
+                // the 'new messages' line stays where it was while the talk is open.
+                unread: prevJots && isAddJots ? prevJots.unread : {
+                    count: parseInt(sResponse.data?.unread_jots) || 0,
+                    firstId: parseInt(sResponse.data?.last_unread_jot) || 0,
+                },
             }));
         } finally {
             isFetchingJots.current = false;
@@ -270,7 +311,6 @@ export default function Messenger({ defaultConvoId, selectedMenu, convos, fetchC
         if (!selectedConvo) return;
 
         const sub1 = subscribe('bx_messenger', 'convo_' + selectedConvo.id, onNewMessage);
-        const sub2 = subscribe('bx_messenger', 'profile_' + currentUser.id, onCheckConvos);
         hasMoreJots.current = true;
         jotsPaginationRef.current = null;
         setJots(false);
@@ -278,7 +318,6 @@ export default function Messenger({ defaultConvoId, selectedMenu, convos, fetchC
 
         return () => {
             sub1();
-            sub2();
         };
     }, [convoId]);
 
@@ -297,13 +336,6 @@ export default function Messenger({ defaultConvoId, selectedMenu, convos, fetchC
             if (fromOthers) playCue('ready', { emphasis: 'subtle' });
             setJotUpdated(data);
         }
-    }
-
-    const onCheckConvos = (data) => {
-        /*if (convoId != data.id) {
-            fetchConvos();
-        }*/
-        //MAY BE NEED TO RETURN
     }
 
     const scrolTo = () => {
@@ -471,17 +503,28 @@ export default function Messenger({ defaultConvoId, selectedMenu, convos, fetchC
             setShowMsg(sResponse.data?.message)
         }
         else {
-            const content = (<View className='items-center justify-center'>
-                <Row className='mb-4 gap-x-4'>
-                    <Profile displaySize="base" displayType="unit_wo_info" {...sResponse.data.lot.author_data} />
-                    <View>
-                        <Text className="text-popover-foreground ">{t('Participants:')} {sResponse.data.lot.parts}</Text>
-                        <Text className="text-popover-foreground ">{t('Messages:')} {sResponse.data.lot.messages}</Text>
-                        <Text className="text-popover-foreground ">{t('Files:')} {sResponse.data.lot.files}</Text>
-                    </View>
-                </Row>
-            </View>)
-            setBottomSheetData({ title: 'Conversation info', content: content, showClose: true, snapPoints: ['25%', '50%'] });
+            const lot = sResponse.data.lot;
+            // Labels without a trailing colon: i18next reads "Participants:" as a namespace and renders nothing.
+            const stats = [
+                [t('Participants'), lot.parts],
+                [t('Messages'), lot.messages],
+                [t('Files'), lot.files],
+            ];
+            // Author (avatar + name) on the left, stats on the right.
+            const content = (<Row className='w-full items-center gap-x-8 pb-4'>
+                <View className='items-center gap-y-3 shrink-0 max-w-48'>
+                    <Profile displaySize="2xl" displayType="unit_wo_info" {...lot.author_data} />
+                    {lot.author_data?.display_name ? (
+                        <Text className="text-popover-foreground text-xl font-bold text-center" numberOfLines={2}>{lot.author_data.display_name}</Text>
+                    ) : null}
+                </View>
+                <View className='flex-1 min-w-0 gap-y-3'>
+                    {stats.map(([label, value]) => (
+                        <Text key={label} className="text-muted-foreground text-base">{label}: {value ?? 0}</Text>
+                    ))}
+                </View>
+            </Row>)
+            setBottomSheetData({ title: t('Conversation info'), content: content, showClose: true, snapPoints: ['50%', '50%'] });
         }
     }, [selectedConvo?.id2, convos.data]);
 
@@ -496,12 +539,106 @@ export default function Messenger({ defaultConvoId, selectedMenu, convos, fetchC
         setBottomSheetData({ title: t('messenger_add_users'), content: <CreateConvo onSave={onSaveHandler} initedData={sResponse.data} convoId={selectedConvo.id2} />, showClose: true, snapPoints: ['85%', '85%'] });
     }, [selectedConvo?.id2, convos.data]);
 
+    const clearConvo = useCallback(async () => {
+        const sResponse = await fetcher('/api.php?r=bx_messenger/clear_convo/Services&params=' + JSON.stringify({ lot: selectedConvo.id2 }));
+        if (sResponse.data?.message) {
+            setShowMsg(sResponse.data.message);
+            return;
+        }
+        hasMoreJots.current = false;
+        jotsPaginationRef.current = null;
+        setJots(prevJots => ({ ...(prevJots || {}), data: { ...(prevJots?.data || {}), jots: [] }, index: 0 }));
+        setConvosData(prevConvos => (prevConvos || []).map(convo => convo.id === selectedConvo.id ? { ...convo, message: '' } : convo));
+    }, [selectedConvo]);
+
+    const openSettings = useCallback(async () => {
+        const lotId = selectedConvo?.id2;
+        const sResponse = await fetcher('/api.php?r=bx_messenger/get_convo_settings/Services&params=' + JSON.stringify({ lot: lotId }));
+        if (sResponse.data?.message || !Array.isArray(sResponse.data?.options)) {
+            setShowMsg(sResponse.data?.message || t('Error'));
+            return;
+        }
+        setBottomSheetData({
+            title: t('Settings'),
+            content: (
+                <ConvoSettings
+                    lotId={lotId}
+                    settings={sResponse.data}
+                    onSaved={() => setBottomSheetData(false)}
+                    onError={(message) => {
+                        setBottomSheetData(false);
+                        setShowMsg(message);
+                    }}
+                />
+            ),
+            showClose: true,
+            snapPoints: ['50%', '50%'],
+        });
+    }, [selectedConvo?.id2]);
+
+    // Header search in the open conversation's messages; it closes when another conversation opens.
+    const [convoSearch, setConvoSearch] = useState({ convoId: null, term: '' });
+    const searchOpen = !!selectedConvo && convoSearch.convoId === convoId;
+    const toggleSearch = useCallback(() => {
+        setConvoSearch(prev => (prev.convoId === convoIdRef.current ? { convoId: null, term: '' } : { convoId: convoIdRef.current, term: '' }));
+    }, []);
+    const handleSearchTerm = useCallback((term) => {
+        setConvoSearch(prev => (prev.term === term ? prev : { ...prev, term }));
+    }, []);
+
+    const openFiles = useCallback(() => {
+        setBottomSheetData({
+            title: t('Files'),
+            content: <ConvoFiles lotId={selectedConvo?.id2} />,
+            showClose: true,
+            snapPoints: ['85%', '85%'],
+        });
+    }, [selectedConvo?.id2]);
+
+    // Delete / clear can be a single tap on the header button, so they ask first.
+    const [confirmAction, setConfirmAction] = useState(false);
+
+    // Mute / star: toggles for the viewer, UNA returns the new state.
+    const toggleConvo = useCallback(async (action) => {
+        const sResponse = await fetcher('/api.php?r=bx_messenger/' + action + '_convo/Services&params=' + JSON.stringify({ lot: selectedConvo?.id2 }));
+        if (sResponse.data?.code != 0) {
+            playCue('error');
+            setShowMsg(sResponse.data?.message || t('Error'));
+            return;
+        }
+        playCue('toggle', { emphasis: 'subtle' });
+        if (action === 'star') {
+            // Star badge in the list follows the new state right away.
+            const lotId = selectedConvo?.id2;
+            setConvosData(prevConvos => (prevConvos || []).map(convo => convo.id2 == lotId ? { ...convo, starred: sResponse.data.value } : convo));
+            // Favorites list shows starred talks only: refresh it after a star change.
+            if (selectedMenu === 'favorites') fetchConvos();
+        }
+    }, [selectedConvo?.id2, selectedMenu, fetchConvos]);
+
     const handleConvoAction = useCallback((item) => {
+        if (item.id === 'mute' || item.id === 'star') toggleConvo(item.id);
         if (item.id === 'edit') editConvo();
         if (item.id === 'leave') leaveConvo();
         if (item.id === 'info') getConvo();
-        if (item.id === 'delete') deleteConvo();
-    }, [editConvo, leaveConvo, getConvo, deleteConvo]);
+        if (item.id === 'settings') openSettings();
+        if (item.id === 'files') openFiles();
+        if (item.id === 'delete' || item.id === 'clear') setConfirmAction(item.id);
+    }, [editConvo, leaveConvo, getConvo, openSettings, openFiles, toggleConvo]);
+
+    const confirmDialog = (
+        <Confirm
+            onVisible={!!confirmAction}
+            title={t('Are you sure?')}
+            handleCancel={() => setConfirmAction(false)}
+            handleOk={() => {
+                const action = confirmAction;
+                setConfirmAction(false);
+                if (action === 'delete') deleteConvo();
+                if (action === 'clear') clearConvo();
+            }}
+        />
+    );
 
     const onFormSubmit = useCallback((formData) => {
         setCommentForm(formData);
@@ -538,7 +675,7 @@ export default function Messenger({ defaultConvoId, selectedMenu, convos, fetchC
     const injectedHeader = useMemo(() => {
         if (!isSmallScreen) return null;
         if (panelsVisible.jots && selectedConvo) {
-            return <MobileChatHeader title={selectedConvo.title} onBack={showConvo} onAction={handleConvoAction} />;
+            return <MobileChatHeader title={selectedConvo.title} onBack={showConvo} menu={selectedConvo.menu} menuKey={selectedConvo.id} onAction={handleConvoAction} searchOpen={searchOpen} onSearchToggle={toggleSearch} onSearch={handleSearchTerm} />;
         }
         return (
             <MobileListHeader
@@ -550,7 +687,7 @@ export default function Messenger({ defaultConvoId, selectedMenu, convos, fetchC
                 onMenuChange={onMenuChange}
             />
         );
-    }, [isSmallScreen, panelsVisible.jots, selectedConvo?.id, selectedConvo?.title, showConvo, handleConvoAction, pageData, handleSearch, addButtons, menuItems, menuIndex, onMenuChange]);
+    }, [isSmallScreen, panelsVisible.jots, selectedConvo?.id, selectedConvo?.title, showConvo, selectedConvo?.menu, handleConvoAction, searchOpen, toggleSearch, handleSearchTerm, pageData, handleSearch, addButtons, menuItems, menuIndex, onMenuChange]);
 
     // ---------------------------------------------------------------------
     // Render
@@ -598,9 +735,19 @@ export default function Messenger({ defaultConvoId, selectedMenu, convos, fetchC
                 {panelsVisible.jots && (
                     <View className="relative w-full">
                     <Msg onVisible={showMsg} title={showMsg} handleOk={() => { setShowMsg(false) }} />
-                    {jotsLoaded && (
+                    {confirmDialog}
+                    {searchOpen ? (
+                        <ConvoSearchResults
+                            lotId={selectedConvo.id2}
+                            term={convoSearch.term}
+                            headerInset={isWeb ? 0 : headerHeight}
+                            footerInset={composerInset + bottomBarInset}
+                        />
+                    ) : null}
+                    {jotsLoaded && !searchOpen && (
                         <JotsPanel
                             data={jots.data.jots}
+                            unread={jots.unread}
                             refListJots={refListJots}
                             startReached={handleStartReached}
                             handleReply={handleReply}
@@ -678,11 +825,21 @@ export default function Messenger({ defaultConvoId, selectedMenu, convos, fetchC
             center={
                     <View className='relative h-full min-h-0 overflow-hidden border-border/60 lg:border-l '>
                         <Msg onVisible={showMsg} title={showMsg} handleOk={() => { setShowMsg(false) }} />
+                        {confirmDialog}
                         {selectedConvo ? (
                             <>
-                                {jotsLoaded ? (
+                                {searchOpen ? (
+                                    <ConvoSearchResults
+                                        lotId={selectedConvo.id2}
+                                        term={convoSearch.term}
+                                        headerInset={PANEL_HEADER_HEIGHT}
+                                        footerInset={formHeight + errorOffset}
+                                    />
+                                ) : null}
+                                {jotsLoaded && !searchOpen ? (
                                     <JotsPanel
                                         data={jots.data.jots}
+                                        unread={jots.unread}
                                         listHeight={desktopJotsHeight}
                                         refListJots={refListJots}
                                         startReached={handleStartReached}
@@ -694,7 +851,7 @@ export default function Messenger({ defaultConvoId, selectedMenu, convos, fetchC
                                 ) : null}
                                 <EdgeBlurView edge="top" config={edgeBlurConfig('footer')} className={CHAT_OVERLAY_HEADER} washClassName={CHAT_OVERLAY_HEADER_FADE} pointerEvents="box-none">
                                     <View pointerEvents="auto">
-                                        <PanelHeader title={selectedConvo.title} actions={<ConvoActionsMenu onAction={handleConvoAction} style="glass" />} />
+                                        <PanelHeader title={selectedConvo.title} search={searchOpen ? <ConvoSearchField onSearch={handleSearchTerm} /> : null} actions={<Row className="items-center gap-3"><ConvoSearchButton open={searchOpen} onPress={toggleSearch} style="glass" /><ConvoActionsMenu key={selectedConvo.id} menu={selectedConvo.menu} onAction={handleConvoAction} style="glass" /></Row>} />
                                     </View>
                                 </EdgeBlurView>
                                 {listError ? (
