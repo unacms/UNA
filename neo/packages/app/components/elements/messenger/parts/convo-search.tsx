@@ -37,6 +37,8 @@ export default function ConvoSearchResults({ lotId, term, headerInset = 0, foote
     const [resultsFor, setResultsFor] = useState('');
     const requestId = useRef(0);
     const query = term.trim();
+    // Results and paging belong to one query: while the next one loads, the old page isn't shown or extended.
+    const current = resultsFor === query;
 
     // No state is set before the request: the first page loads from an effect.
     const load = useCallback(async (start: number) => {
@@ -69,8 +71,8 @@ export default function ConvoSearchResults({ lotId, term, headerInset = 0, foote
         content = <Text className="text-muted-foreground text-base text-center">{t('Search messages in this chat')}</Text>;
     else if (error)
         content = <Text className="text-muted-foreground text-base text-center">{error}</Text>;
-    else if (!jots.length && !hasMore)
-        content = resultsFor === query ? <Text className="text-muted-foreground text-base text-center">{t('Nothing found')}</Text> : null;
+    else if (current && !jots.length && !hasMore)
+        content = <Text className="text-muted-foreground text-base text-center">{t('Nothing found')}</Text>;
 
     return (
         <ScrollView
@@ -80,7 +82,7 @@ export default function ConvoSearchResults({ lotId, term, headerInset = 0, foote
         >
             {content ? <View className="px-4">{content}</View> : null}
             {/* Same look as the conversation: MessageItem with the body as in ItemJot. */}
-            {query ? jots.map((jot) => (
+            {query && current ? jots.map((jot) => (
                 <MessageItem key={jot.id} author={jot.author_data || {}} time={jot.added}>
                     <View className="pb-2">
                         <ContentMore
@@ -95,7 +97,7 @@ export default function ConvoSearchResults({ lotId, term, headerInset = 0, foote
                     </View>
                 </MessageItem>
             )) : null}
-            {query && hasMore ? (
+            {query && current && hasMore ? (
                 <Row className="justify-center pt-3">
                     <NeoButton
                         style="bordered"

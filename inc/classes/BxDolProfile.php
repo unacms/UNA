@@ -154,8 +154,9 @@ class BxDolProfile extends BxDolFactory implements iBxDolProfile
         ];
 
         // Online status (the online dot on the site), only on request: it costs a query per profile.
-        if(isset($aParams['with_online']) && (bool)$aParams['with_online'])
+        if(isset($aParams['with_online']) && (bool)$aParams['with_online']) {
             $aRv['online'] = $oProfile->isOnline() ? 1 : 0;
+        }
 
         if(isset($aParams['with_info']) && (bool)$aParams['with_info'])
             $aRv['info'] = bx_srv($oProfile->getModule(), 'get_info', [$oProfile->getContentId(), false]);

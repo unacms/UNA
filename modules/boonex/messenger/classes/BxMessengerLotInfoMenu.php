@@ -41,8 +41,9 @@ class BxMessengerLotInfoMenu extends BxBaseModTextMenu
      */
     public function setContentParams($aParams)
     {
-        if(empty($aParams['lot']))
+        if(empty($aParams['lot'])) {
             return false;
+        }
 
         $this->setContentId((int)$aParams['lot']);
 
@@ -56,19 +57,22 @@ class BxMessengerLotInfoMenu extends BxBaseModTextMenu
     public function getCodeAPI ()
     {
         $aResult = parent::getCodeAPI();
-        if(!$this->_iContentId)
+        if(!$this->_iContentId) {
             return $aResult;
+        }
 
         $CNF = &$this->_oModule->_oConfig->CNF;
 
         $oMenuLot = BxTemplMenu::getObjectInstance($CNF['OBJECT_MENU_ACTIONS_TALK_MENU']);
-        if(!$oMenuLot)
+        if(!$oMenuLot) {
             return $aResult;
+        }
 
         $oMenuLot->setContentId($this->_iContentId);
         $aMenuLot = $oMenuLot->getCodeAPI();
-        if(empty($aMenuLot['items']) || !is_array($aMenuLot['items']))
+        if(empty($aMenuLot['items']) || !is_array($aMenuLot['items'])) {
             return $aResult;
+        }
 
         $aItems = array_values(array_filter($aMenuLot['items'], function($aItem) {
             return $aItem['name'] != 'settings';

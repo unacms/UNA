@@ -154,8 +154,9 @@ class BxMessengerServices extends BxDol
 
         $iLotId = isset($aOptions['lot']) ? (int)$aOptions['lot'] : 0;
 
-        if(!$iLotId || !$this->_isAllowedToManage($iLotId))
+        if(!$iLotId || !$this->_isAllowedToManage($iLotId)) {
             return ['code' => 1, 'message' => _t('_bx_messenger_no_permissions')];
+        }
 
         return ['code' => $this->_oModule->_oDb->clearLot($iLotId) === false ? 2 : 0];
     }
@@ -174,27 +175,31 @@ class BxMessengerServices extends BxDol
         $iStart = isset($aOptions['start']) ? max(0, (int)$aOptions['start']) : 0;
         $iPerPage = 20;
 
-        if(!$iLotId || !$this->_iProfileId || !$this->_oModule->_oDb->getLotInfoById($iLotId))
+        if(!$iLotId || !$this->_iProfileId || !$this->_oModule->_oDb->getLotInfoById($iLotId)) {
             return ['code' => 1, 'message' => _t('_bx_messenger_not_found')];
+        }
 
-        if(!$this->_oModule->_oDb->isParticipant($iLotId, $this->_iProfileId) && !$this->_isAdministrator())
+        if(!$this->_oModule->_oDb->isParticipant($iLotId, $this->_iProfileId) && !$this->_isAdministrator()) {
             return ['code' => 2, 'message' => _t('_bx_messenger_not_participant')];
+        }
 
         $aResult = ['code' => 0, 'jots' => [], 'params' => ['start' => $iStart, 'per_page' => $iPerPage]];
-        if($sTerm === '')
+        if($sTerm === '') {
             return $aResult;
+        }
 
         // LIKE wildcards in the term are searched as plain characters.
         $sTerm = addcslashes($sTerm, '%_\\');
 
         $aJots = $this->_oModule->_oDb->findInHistory($iLotId, $sTerm, $iStart, $iPerPage, 'DESC', true);
-        foreach($aJots as $aJot)
+        foreach($aJots as $aJot) {
             $aResult['jots'][] = [
                 'id' => (int)$aJot['message_id'],
                 'message' => $aJot[$CNF['FIELD_MESSAGE']],
                 'added' => (int)$aJot['message_added'],
                 'author_data' => BxDolProfile::getData($aJot['message_author']),
             ];
+        }
 
         return $aResult;
     }
@@ -210,16 +215,19 @@ class BxMessengerServices extends BxDol
 
         $iJotId = isset($aOptions['jot']) ? (int)$aOptions['jot'] : 0;
 
-        if(!$iJotId || !$this->_iProfileId || !($aJotInfo = $this->_oModule->_oDb->getJotById($iJotId)))
+        if(!$iJotId || !$this->_iProfileId || !($aJotInfo = $this->_oModule->_oDb->getJotById($iJotId))) {
             return ['code' => 1, 'message' => _t('_bx_messenger_nothing_found')];
+        }
 
-        if(!$this->_isAvailable($aJotInfo[$CNF['FIELD_MESSAGE_FK']]))
+        if(!$this->_isAvailable($aJotInfo[$CNF['FIELD_MESSAGE_FK']])) {
             return ['code' => 2, 'message' => _t('_bx_messenger_not_participant')];
+        }
 
         $bSaved = $this->_oModule->_oDb->isJotSaved($iJotId, $this->_iProfileId);
         $mixedResult = $bSaved ? $this->_oModule->_oDb->deleteSavedJotItems($iJotId, $this->_iProfileId) : $this->_oModule->_oDb->saveJotItem($iJotId, $this->_iProfileId);
-        if($mixedResult === false)
+        if($mixedResult === false) {
             return ['code' => 3, 'message' => _t('_bx_messenger_nothing_has_been_saved')];
+        }
 
         return ['code' => 0, 'value' => (int)!$bSaved, 'title' => _t($bSaved ? '_bx_messenger_jot_menu_save' : '_bx_messenger_jot_menu_remove_save')];
     }
@@ -233,8 +241,9 @@ class BxMessengerServices extends BxDol
 
         $iLotId = isset($aOptions['lot']) ? (int)$aOptions['lot'] : 0;
 
-        if(!$iLotId || !$this->_iProfileId || !$this->_oModule->_oDb->getLotInfoById($iLotId) || !$this->_isAvailable($iLotId))
+        if(!$iLotId || !$this->_iProfileId || !$this->_oModule->_oDb->getLotInfoById($iLotId) || !$this->_isAvailable($iLotId)) {
             return ['code' => 1, 'message' => _t('_bx_messenger_not_found')];
+        }
 
         $bMuted = (bool)$this->_oModule->_oDb->muteLot($iLotId, $this->_iProfileId);
 
@@ -250,8 +259,9 @@ class BxMessengerServices extends BxDol
 
         $iLotId = isset($aOptions['lot']) ? (int)$aOptions['lot'] : 0;
 
-        if(!$iLotId || !$this->_iProfileId || !$this->_oModule->_oDb->getLotInfoById($iLotId) || !$this->_isAvailable($iLotId))
+        if(!$iLotId || !$this->_iProfileId || !$this->_oModule->_oDb->getLotInfoById($iLotId) || !$this->_isAvailable($iLotId)) {
             return ['code' => 1, 'message' => _t('_bx_messenger_not_found')];
+        }
 
         $bStarred = (bool)$this->_oModule->_oDb->starLot($iLotId, $this->_iProfileId);
 
@@ -271,11 +281,13 @@ class BxMessengerServices extends BxDol
         $iStart = isset($aOptions['start']) ? max(0, (int)$aOptions['start']) : 0;
         $iPerPage = (int)$CNF['PARAM_DEFAULT_TALK_FILES_NUM'];
 
-        if(!$iLotId || !$this->_oModule->_oDb->getLotInfoById($iLotId))
+        if(!$iLotId || !$this->_oModule->_oDb->getLotInfoById($iLotId)) {
             return ['code' => 1, 'message' => _t('_bx_messenger_not_found')];
+        }
 
-        if(!$this->_iProfileId || !$this->_oModule->_oDb->isParticipant($iLotId, $this->_iProfileId))
+        if(!$this->_iProfileId || !$this->_oModule->_oDb->isParticipant($iLotId, $this->_iProfileId)) {
             return ['code' => 2, 'message' => _t('_bx_messenger_not_participant')];
+        }
 
         $sStorage = $CNF['OBJECT_STORAGE'];
         $oStorage = new BxMessengerStorage($sStorage);
@@ -320,11 +332,13 @@ class BxMessengerServices extends BxDol
 
         $iLotId = isset($aOptions['lot']) ? (int)$aOptions['lot'] : 0;
 
-        if(!$iLotId || !$this->_oModule->_oDb->getLotInfoById($iLotId))
+        if(!$iLotId || !$this->_oModule->_oDb->getLotInfoById($iLotId)) {
             return ['code' => 1, 'message' => _t('_bx_messenger_not_found')];
+        }
 
-        if(!$this->_isAllowedToManage($iLotId))
+        if(!$this->_isAllowedToManage($iLotId)) {
             return ['code' => 2, 'message' => _t('_bx_messenger_lot_can_change_settings')];
+        }
 
         return array_merge(['code' => 0, 'title' => _t('_bx_messenger_lot_options_title')], $this->_oModule->_oTemplate->getLotSettingsOptions($iLotId));
     }
@@ -338,19 +352,22 @@ class BxMessengerServices extends BxDol
 
         $iLotId = isset($aOptions['lot']) ? (int)$aOptions['lot'] : 0;
 
-        if(!$iLotId || !$this->_oModule->_oDb->getLotInfoById($iLotId))
+        if(!$iLotId || !$this->_oModule->_oDb->getLotInfoById($iLotId)) {
             return ['code' => 1, 'message' => _t('_bx_messenger_not_found')];
+        }
 
-        if(!$this->_isAllowedToManage($iLotId))
+        if(!$this->_isAllowedToManage($iLotId)) {
             return ['code' => 2, 'message' => _t('_bx_messenger_lot_can_change_settings')];
+        }
 
         // Only known options can be saved.
         $aSettings = $this->_oModule->_oTemplate->getLotSettingsOptions($iLotId);
         $aValues = isset($aOptions['options']) && is_array($aOptions['options']) ? $aOptions['options'] : [];
         $aValues = array_values(array_intersect(array_column($aSettings['options'], 'key'), $aValues));
 
-        if($this->_oModule->_oDb->saveLotSettings($iLotId, $aValues) === false)
+        if($this->_oModule->_oDb->saveLotSettings($iLotId, $aValues) === false) {
             return ['code' => 3, 'message' => _t('_bx_messenger_nothing_has_been_saved')];
+        }
 
         return ['code' => 0, 'values' => $aValues];
     }
@@ -773,16 +790,19 @@ class BxMessengerServices extends BxDol
     public function serviceSearchUsers($sParams)
     {
         $aOptions = json_decode($sParams, true);
-        if (!$sParams || !isset($aOptions['term']))
+        if (!$sParams || !isset($aOptions['term'])) {
             return ['code' => 1];
+        }
 
         // Friends only mode: the module's own search among the viewer's friends.
-        if ($this->_oModule->_oConfig->CNF['USE-FRIENDS-ONLY-MODE'])
+        if ($this->_oModule->_oConfig->CNF['USE-FRIENDS-ONLY-MODE']) {
             return $this->_searchUsersByModule($sParams);
+        }
 
         $sTerm = trim((string)$aOptions['term']);
-        if ($sTerm === '')
+        if ($sTerm === '') {
             return [];
+        }
 
         $aExcept = isset($aOptions['except']) && is_array($aOptions['except']) ? array_map('intval', $aOptions['except']) : [];
         $iLimit = 10;
@@ -792,25 +812,31 @@ class BxMessengerServices extends BxDol
         $aProfileIds = [];
         $aModules = BxDolService::call('system', 'get_profiles_modules', [], 'TemplServiceProfiles');
         foreach ((array)$aModules as $aModule) {
-            if (!BxDolService::call($aModule['name'], 'act_as_profile') || !($oModule = BxDolModule::getInstance($aModule['name'])))
+            if (!BxDolService::call($aModule['name'], 'act_as_profile') || !($oModule = BxDolModule::getInstance($aModule['name']))) {
                 continue;
+            }
 
-            foreach ((array)$oModule->_oDb->searchByTerm($sTerm, $iLimit * 2) as $aRow)
-                if (!empty($aRow['profile_id']))
+            foreach ((array)$oModule->_oDb->searchByTerm($sTerm, $iLimit * 2) as $aRow) {
+                if (!empty($aRow['profile_id'])) {
                     $aProfileIds[] = (int)$aRow['profile_id'];
+                }
+            }
         }
 
         $aUsers = [];
         foreach (array_unique($aProfileIds) as $iProfileId) {
-            if ($iProfileId == $this->_iProfileId || in_array($iProfileId, $aExcept))
+            if ($iProfileId == $this->_iProfileId || in_array($iProfileId, $aExcept)) {
                 continue;
+            }
 
-            if (!($oProfile = BxDolProfile::getInstance($iProfileId)) || $oProfile->checkAllowedProfileContact() !== CHECK_ACTION_RESULT_ALLOWED)
+            if (!($oProfile = BxDolProfile::getInstance($iProfileId)) || $oProfile->checkAllowedProfileContact() !== CHECK_ACTION_RESULT_ALLOWED) {
                 continue;
+            }
 
             $aUsers[] = BxDolProfile::getData($iProfileId);
-            if (count($aUsers) >= $iLimit)
+            if (count($aUsers) >= $iLimit) {
                 break;
+            }
         }
 
         return $aUsers;
@@ -1010,17 +1036,20 @@ class BxMessengerServices extends BxDol
         $CNF = &$this->_oModule->_oConfig->CNF;
 
         $aLotIds = [];
-        foreach((array)$aLots as $aLot)
-            if(!empty($aLot[$CNF['FIELD_ID']]))
+        foreach((array)$aLots as $aLot) {
+            if(!empty($aLot[$CNF['FIELD_ID']])) {
                 $aLotIds[] = (int)$aLot[$CNF['FIELD_ID']];
+            }
+        }
 
         $this->_aStarredLots = array_map('intval', $this->_oModule->_oDb->getStarredLots($this->_iProfileId, $aLotIds));
     }
 
     protected function _isStarredLot($iLotId)
     {
-        if($this->_aStarredLots !== null)
+        if($this->_aStarredLots !== null) {
             return in_array((int)$iLotId, $this->_aStarredLots);
+        }
 
         return (bool)$this->_oModule->_oDb->isStarred($iLotId, $this->_iProfileId);
     }
@@ -1037,8 +1066,9 @@ class BxMessengerServices extends BxDol
             $this->_aLotMenuShort = $oMenu ? $oMenu->getShortCodeAPI() : [];
         }
 
-        if(empty($this->_aLotMenuShort))
+        if(empty($this->_aLotMenuShort)) {
             return [];
+        }
 
         return array_merge($this->_aLotMenuShort, ['params' => ['lot' => (int)$iLotId]]);
     }
@@ -1056,8 +1086,9 @@ class BxMessengerServices extends BxDol
      */
     protected function _isAdministrator()
     {
-        if($this->_bAdministrator === null)
+        if($this->_bAdministrator === null) {
             $this->_bAdministrator = $this->_iProfileId && $this->_oModule->_oConfig->isAllowedAction(BX_MSG_ACTION_ADMINISTRATE_TALKS, $this->_iProfileId) === true;
+        }
 
         return $this->_bAdministrator;
     }

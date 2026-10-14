@@ -299,8 +299,9 @@ class BxMessengerDb extends BxBaseModGeneralDb
     public function getStarredLots($iProfileId, $aLotIds)
     {
         $aLotIds = array_filter(array_map('intval', (array)$aLotIds));
-        if (!$iProfileId || empty($aLotIds))
+        if (!$iProfileId || empty($aLotIds)) {
             return [];
+        }
 
         return $this->getColumn("SELECT `{$this->CNF['FIELD_INFO_LOT_ID']}` FROM `{$this->CNF['TABLE_USERS_INFO']}`
                                     WHERE `{$this->CNF['FIELD_INFO_USER_ID']}` = :profile AND `{$this->CNF['FIELD_INFO_STAR']}` = 1
@@ -1334,8 +1335,9 @@ class BxMessengerDb extends BxBaseModGeneralDb
                     foreach ($aProfiles as &$aProfile) {
                         // Site: 'value' holds the profile id; API: profiles come as unit data with 'id'.
                         $iPartId = (int)(isset($aProfile['value']) ? $aProfile['value'] : (isset($aProfile['id']) ? $aProfile['id'] : 0));
-                        if ($iPartId)
+                        if ($iPartId) {
                             $aRegexp[] = "(^|,){$iPartId}(,|$)";
+                        }
                     }
 
                     if (!empty($aRegexp)) {
@@ -2244,8 +2246,9 @@ class BxMessengerDb extends BxBaseModGeneralDb
             $aParams['id'] = $iLotId;
         }
 
-        if ($bSkipDeleted)
+        if ($bSkipDeleted) {
             $aWhere[] = " `j`.`{$this->CNF['FIELD_MESSAGE_TRASH']}` = 0 ";
+        }
 
         $sLimit = '';
         $sOrder = $sOrder === 'ASC' ? 'ASC' : 'DESC';
@@ -2538,8 +2541,9 @@ class BxMessengerDb extends BxBaseModGeneralDb
     function getSavedJotsByIds($iProfileId, $aJotIds)
     {
         $aJotIds = array_filter(array_map('intval', (array)$aJotIds));
-        if (!$iProfileId || empty($aJotIds))
+        if (!$iProfileId || empty($aJotIds)) {
             return [];
+        }
 
         return $this->getColumn("SELECT `{$this->CNF['FSJ_ID']}` FROM `{$this->CNF['TABLE_SAVED_JOTS']}`
                                     WHERE `{$this->CNF['FSJ_PROFILE_ID']}` = :profile_id AND `{$this->CNF['FSJ_ID']}` IN (" . implode(',', $aJotIds) . ")", ['profile_id' => (int)$iProfileId]);

@@ -2520,8 +2520,9 @@ class BxMessengerTemplate extends BxBaseModGeneralTemplate
         $aLotSettings = $this->_oDb->getLotSettings($iLotId);
         foreach ($CNF['LOT_OPTIONS'] as $sValue) {
             $aSettingsOptions[] = ['key' => $sValue, 'value' => _t("_bx_messenger_lot_options_item_{$sValue}")];
-            if ($aLotSettings === false || in_array($sValue, $aLotSettings))
+            if ($aLotSettings === false || in_array($sValue, $aLotSettings)) {
                 $aSelectedValues[] = $sValue;
+            }
         }
 
         bx_alert($this->_oConfig->getObject('alert'), 'talk_settings_before', $iLotId, $iLotId, [

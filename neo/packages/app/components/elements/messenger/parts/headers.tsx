@@ -1,17 +1,19 @@
-import { cloneElement, useState } from 'react';
+import { cloneElement, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Platform } from 'react-native';
 import { Text } from 'app/design/typography';
 import { View, Row } from 'app/design/view';
 import { NeoButton } from 'app/design/controls';
 import { appSetting } from 'app/lib/util';
 import { getBackButtonWeb } from 'app/lib/common-helpers';
-import DropdownMenu from 'app/ui/atoms/dropdown-menu';
+import DropdownMenu, { type DropdownMenuItemData } from 'app/ui/atoms/dropdown-menu';
 import { getDataForMenu } from 'app/lib/util/menu';
 import { components } from 'app/components/registry';
 import { useTranslation } from 'react-i18next';
 import { MenuSwitcher, SearchInput, useDebouncedSearch } from 'app/components/elements/chat/parts/headers';
+import type { AddButtons, ApiMenu, ConvoAction, MessengerMenuItem, ShortMenu } from 'app/components/elements/messenger/parts/messenger.types';
 
 const isWeb = Platform.OS === 'web';
+const registry = components as Record<string, Record<string, any> | undefined>;
 
 /** Native: `header.content` uses fixed `h-16`; messenger title/actions can paint taller. */
 export function messengerHeaderContentClass() {
@@ -20,7 +22,7 @@ export function messengerHeaderContentClass() {
 }
 
 // Actions NEO can handle, keyed by item name in UNA's `bx_messenger_lot_info_menu`.
-const CONVO_ACTIONS = {
+const CONVO_ACTIONS: Record<string, ConvoAction> = {
     // From the talk menu (`bx_messenger_lot_menu`), which UNA merges in for the app.
     star: { id: 'star', title: 'Mark as important', icon: 'Star' },
     mute: { id: 'mute', title: 'Mute', icon: 'Bell', iconOn: 'BellOff' },
@@ -38,20 +40,25 @@ const CONVO_ACTIONS = {
  * UNA leaves out what the viewer may not run); items NEO can't handle are
  * dropped. Without the menu (older UNA) the basic actions are shown.
  */
-export function getConvoActions(menu) {
+export function getConvoActions(menu: ApiMenu | null | undefined): ConvoAction[] {
     // Older UNA has no services for clear / settings.
     if (!Array.isArray(menu?.items))
-        return ['add_participants', 'info', 'leave', 'delete'].map((name) => CONVO_ACTIONS[name]);
+        return ['add_participants', 'info', 'leave', 'delete'].flatMap((name) => CONVO_ACTIONS[name] ?? []);
 
-    return menu.items
-        .filter((item) => CONVO_ACTIONS[item?.name])
-        .map((item) => {
-            const action = CONVO_ACTIONS[item.name];
-            // Toggles (mute, star) carry their current state in `value`.
-            const on = Number(item.value) === 1;
-            return { ...action, title: item.title || action.title, icon: on && action.iconOn ? action.iconOn : action.icon, value: on };
-        });
+    return menu.items.flatMap((item) => {
+        const action = item?.name ? CONVO_ACTIONS[item.name] : undefined;
+        if (!action) return [];
+        // Toggles (mute, star) carry their current state in `value`.
+        const on = Number(item.value) === 1;
+        return [{ ...action, title: item.title || action.title, icon: on && action.iconOn ? action.iconOn : action.icon, value: on }];
+    });
 }
+
+type ConvoActionsMenuProps = {
+    menu?: ShortMenu;
+    onAction: (action: ConvoAction) => void;
+    style?: string;
+};
 
 /**
  * Gear dropdown with the per-conversation actions. `menu` is the short menu
@@ -59,12 +66,34 @@ export function getConvoActions(menu) {
  * the viewer's rights in that conversation, so they are requested on the first
  * press (like the comment manage menu). Mount with `key` per conversation.
  */
-export function ConvoActionsMenu({ menu, onAction, style = 'glass' }) {
+export function ConvoActionsMenu({ menu, onAction, style = 'glass' }: ConvoActionsMenuProps) {
     const { t } = useTranslation();
-    const [actions, setActions] = useState(null);
+    const [actions, setActions] = useState<ConvoAction[] | null>(null);
     const [loading, setLoading] = useState(false);
 
-    const gear = (props) => (
+    // Older UNA: no menu with the conversation, fixed actions.
+    const lazy = !!menu?.object;
+    const items = lazy ? actions : getConvoActions(null);
+
+    // The native menu opens from an effect keyed on `items` / `onSelect`: both stay
+    // stable across re-renders, or every header re-render would open it again.
+    const onActionRef = useRef(onAction);
+    useEffect(() => {
+        onActionRef.current = onAction;
+    }, [onAction]);
+
+    const menuItems = useMemo<DropdownMenuItemData[]>(
+        () => (items || []).map((item) => ({ ...item, title: t(item.title) })),
+        [items, t]
+    );
+
+    const handleSelect = useCallback((item: DropdownMenuItemData) => {
+        // Next press asks UNA again: toggles and rights may have changed.
+        if (lazy) setActions(null);
+        onActionRef.current(item as unknown as ConvoAction);
+    }, [lazy]);
+
+    const gear = (props: Record<string, unknown> = {}) => (
         <NeoButton
             style={style}
             controlSize="regular"
@@ -74,10 +103,6 @@ export function ConvoActionsMenu({ menu, onAction, style = 'glass' }) {
             {...props}
         />
     );
-
-    // Older UNA: no menu with the conversation, fixed actions.
-    const lazy = !!menu?.object;
-    const items = lazy ? actions : getConvoActions(null);
 
     if (!items) {
         return gear({
@@ -97,22 +122,20 @@ export function ConvoActionsMenu({ menu, onAction, style = 'glass' }) {
         return gear({ disabled: true });
 
     return (
-        <DropdownMenu
-            defaultOpen={lazy}
-            onSelect={(item) => {
-                // Next press asks UNA again: toggles and rights may have changed.
-                if (lazy) setActions(null);
-                onAction(item);
-            }}
-            items={items.map((item) => ({ ...item, title: t(item.title) }))}
-        >
+        <DropdownMenu defaultOpen={lazy} onSelect={handleSelect} items={menuItems}>
             {gear()}
         </DropdownMenu>
     );
 }
 
+type ConvoSearchButtonProps = {
+    open?: boolean;
+    onPress: () => void;
+    style?: string;
+};
+
 /** Toggles the search in the conversation's messages (pressed while open). */
-export function ConvoSearchButton({ open, onPress, style = 'glass' }) {
+export function ConvoSearchButton({ open = false, onPress, style = 'glass' }: ConvoSearchButtonProps) {
     const { t } = useTranslation();
     return (
         <NeoButton
@@ -129,10 +152,19 @@ export function ConvoSearchButton({ open, onPress, style = 'glass' }) {
 }
 
 /** Search field that replaces the chat title while the search is open; reports the debounced text. */
-export function ConvoSearchField({ onSearch }) {
+export function ConvoSearchField({ onSearch }: { onSearch: (term: string) => void }) {
     const search = useDebouncedSearch(onSearch);
     return <SearchInput value={search.value} onChangeText={search.setValue} autoFocus />;
 }
+
+type MobileListHeaderProps = {
+    pageData?: Record<string, any>;
+    onSearch: (term: string) => void;
+    addButtons?: AddButtons;
+    menuItems?: MessengerMenuItem[];
+    menuIndex: number;
+    onMenuChange: (index: number) => void;
+};
 
 /**
  * Small screens, list mode: injected page header (stable "Messages" title +
@@ -140,11 +172,11 @@ export function ConvoSearchField({ onSearch }) {
  * inside this component because PageHeader skips the `subHeader` slot when a
  * custom `header` is injected.
  */
-export function MobileListHeader({ pageData, onSearch, addButtons, menuItems, menuIndex, onMenuChange }) {
+export function MobileListHeader({ pageData, onSearch, addButtons, menuItems, menuIndex, onMenuChange }: MobileListHeaderProps) {
     const { t } = useTranslation();
     const [showSearch, setShowSearch] = useState(false);
     const search = useDebouncedSearch(onSearch);
-    const ContextSelector = components['molecule']['context_selector'];
+    const ContextSelector = registry['molecule']?.['context_selector'];
     const listTitle = t('Messages');
 
     // Header height comes from PageHeader's own onLayout, which also counts the
@@ -160,7 +192,7 @@ export function MobileListHeader({ pageData, onSearch, addButtons, menuItems, me
                 ) : (
                     <Row className="flex-1 min-w-0 items-center gap-3 px-4 ">
                         {appSetting('messenger', 'back_button') ? getBackButtonWeb() : null}
-                        {appSetting('context_selector', 'show_always') ? (
+                        {appSetting('context_selector', 'show_always') && ContextSelector ? (
                             <ContextSelector url={pageData?.url} uri={pageData?.uri} data={pageData?.context} />
                         ) : (
                             <Text className="font-bold truncate flex-1 min-w-0 text-card-foreground text-2xl tracking-tight font-main" numberOfLines={1}>
@@ -186,11 +218,11 @@ export function MobileListHeader({ pageData, onSearch, addButtons, menuItems, me
                         }}
                     />
                     {Array.isArray(addButtons)
-                        ? addButtons.map((button, i) => (button ? cloneElement(button, { key: button.key ?? i, style: 'glass' }) : null))
+                        ? addButtons.map((button, i) => (button ? cloneElement(button, { key: button.key ?? i, style: 'glass' } as Record<string, unknown>) : null))
                         : addButtons}
                 </Row>
             </Row>
-            {menuItems?.length > 1 ? (
+            {menuItems && menuItems.length > 1 ? (
                 // Same box as the conductor tab row (web `conductor.menu_cnt`,
                 // native-ui TabBar), so pills sit at the same height under the title.
                 <Row className="w-full items-center px-4 min-h-13 lg:min-h-14 mb-0.5 lg:mb-0">
@@ -201,8 +233,19 @@ export function MobileListHeader({ pageData, onSearch, addButtons, menuItems, me
     );
 }
 
+type MobileChatHeaderProps = {
+    title?: string;
+    onBack: () => void;
+    menu?: ShortMenu;
+    menuKey?: string;
+    onAction: (action: ConvoAction) => void;
+    searchOpen?: boolean;
+    onSearchToggle?: () => void;
+    onSearch: (term: string) => void;
+};
+
 /** Small screens, chat mode: injected page header (back + title + actions). */
-export function MobileChatHeader({ title, onBack, menu, menuKey, onAction, searchOpen, onSearchToggle, onSearch }) {
+export function MobileChatHeader({ title, onBack, menu, menuKey, onAction, searchOpen = false, onSearchToggle, onSearch }: MobileChatHeaderProps) {
     const { t } = useTranslation();
     return (
         <Row className={`${appSetting('layout', 'page_content_width_default')} ${messengerHeaderContentClass()} max-w-full`}>

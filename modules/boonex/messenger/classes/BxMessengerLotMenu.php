@@ -62,8 +62,9 @@ class BxMessengerLotMenu extends BxBaseModTextMenu
         $mixedResult = parent::_getMenuItem($aMenu);
 
         // API: current state of toggles (star, mute) for the app.
-        if($this->_bIsApi && is_array($mixedResult))
+        if($this->_bIsApi && is_array($mixedResult)) {
             $mixedResult['value'] = $aMenu['value'];
+        }
 
         return $mixedResult;
     }
@@ -104,8 +105,9 @@ class BxMessengerLotMenu extends BxBaseModTextMenu
         switch ($a['name']) {
             case 'settings':
                 // API: the app gets the talk info menu merged into one menu, no popup is needed.
-                if ($this->_bIsApi)
+                if ($this->_bIsApi) {
                     return false;
+                }
 
                 if ($this->_iContentId)
                     $this->addMarkers(array('lot_menu_id' => "lot-info-menu-{$this->_iContentId}"));
