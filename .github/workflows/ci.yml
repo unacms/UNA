@@ -19,15 +19,17 @@ concurrency:
 
 jobs:
   test:
-    # Units and Integration each get a runner. Deploy waits on every leg, and a failure in one
-    # does not cancel the other. The package is built only on the Units leg so it is uploaded once.
-    name: ${{ matrix.suite == 'Units' && 'Unit tests' || 'Integration tests' }}
+    # Units and Integration each get a runner per PHP version. Deploy waits on every leg, and a
+    # failure in one does not cancel the other. The package is built only on the PHP 8.3 Units
+    # leg so it is uploaded once.
+    name: ${{ matrix.suite == 'Units' && 'Unit tests' || 'Integration tests' }} (PHP ${{ matrix.php }})
     if: github.event_name == 'push' || github.event.action != 'closed'
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         suite: [Units, Integration]
+        php: ['8.3', '8.4', '8.5']
 
     services:
       mysql:
@@ -51,7 +53,7 @@ jobs:
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
       with:
-        php-version: '8.3'
+        php-version: ${{ matrix.php }}
         extensions: intl, curl, gd, mbstring, zip, exif, pdo_mysql
         ini-values: short_open_tag=On, memory_limit=256M
         tools: composer, phing, phpunit:12
@@ -90,11 +92,11 @@ jobs:
       run: phpunit -c tests/phpunit.xml --testsuite "${{ matrix.suite }}"
 
     - name: Build package
-      if: success() && matrix.suite == 'Units'
+      if: success() && matrix.suite == 'Units' && matrix.php == '8.3'
       run: phing package -Dbuild=${{ github.run_number }}
 
     - name: Upload package artifact
-      if: success() && matrix.suite == 'Units'
+      if: success() && matrix.suite == 'Units' && matrix.php == '8.3'
       uses: actions/upload-artifact@v4
       with:
         name: una-package
