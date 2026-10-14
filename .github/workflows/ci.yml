@@ -18,11 +18,54 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
+  dependencies:
+    # Composer (plugins/) and Yarn (plugins_public/, via the postinstall build) are the same
+    # tree for every PHP version, so they are installed once and the test legs download them.
+    name: Install dependencies
+    if: github.event_name == 'push' || github.event.action != 'closed'
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    # WARNING: after `composer update` or `composer upgrade`, replace this commit SHA
+    # with the current shivammathur/setup-php release. Both Setup PHP steps must match.
+    - name: Setup PHP
+      uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # 2.40.0
+      with:
+        php-version: '8.5'
+        extensions: intl, curl, gd, mbstring, zip, exif, pdo_mysql
+        ini-values: short_open_tag=On, memory_limit=256M
+        tools: composer
+
+    - name: Setup Node
+      uses: actions/setup-node@v4
+      with:
+        node-version: '24'
+        cache: yarn
+
+    - name: Install PHP dependencies
+      run: composer install --prefer-dist --no-progress --no-dev
+
+    - name: Install JS dependencies
+      run: yarn install --frozen-lockfile
+
+    - name: Upload dependencies
+      uses: actions/upload-artifact@v4
+      with:
+        name: una-dependencies
+        retention-days: 1
+        include-hidden-files: true
+        if-no-files-found: error
+        path: |
+          plugins
+          plugins_public
+
   test:
     # Units and Integration each get a runner per PHP version. Deploy waits on every leg, and a
-    # failure in one does not cancel the other. The package is built only on the PHP 8.3 Units
+    # failure in one does not cancel the other. The package is built only on the PHP 8.5 Units
     # leg so it is uploaded once.
     name: ${{ matrix.suite == 'Units' && 'Unit tests' || 'Integration tests' }} (PHP ${{ matrix.php }})
+    needs: dependencies
     if: github.event_name == 'push' || github.event.action != 'closed'
     runs-on: ubuntu-latest
     strategy:
@@ -50,25 +93,20 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    # WARNING: after `composer update` or `composer upgrade`, replace this commit SHA
+    # with the current shivammathur/setup-php release. Both Setup PHP steps must match.
     - name: Setup PHP
-      uses: shivammathur/setup-php@v2
+      uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # 2.40.0
       with:
         php-version: ${{ matrix.php }}
         extensions: intl, curl, gd, mbstring, zip, exif, pdo_mysql
         ini-values: short_open_tag=On, memory_limit=256M
-        tools: composer, phing, phpunit:12
+        tools: phing, phpunit:12
 
-    - name: Setup Node
-      uses: actions/setup-node@v4
+    - name: Download dependencies
+      uses: actions/download-artifact@v4
       with:
-        node-version: '24'
-        cache: yarn
-
-    - name: Install PHP dependencies
-      run: composer install --prefer-dist --no-progress --no-dev
-
-    - name: Install JS dependencies
-      run: yarn install --frozen-lockfile
+        name: una-dependencies
 
     - name: Prepare writable paths
       run: |
@@ -92,11 +130,11 @@ jobs:
       run: phpunit -c tests/phpunit.xml --testsuite "${{ matrix.suite }}"
 
     - name: Build package
-      if: success() && matrix.suite == 'Units' && matrix.php == '8.3'
+      if: success() && matrix.suite == 'Units' && matrix.php == '8.5'
       run: phing package -Dbuild=${{ github.run_number }}
 
     - name: Upload package artifact
-      if: success() && matrix.suite == 'Units' && matrix.php == '8.3'
+      if: success() && matrix.suite == 'Units' && matrix.php == '8.5'
       uses: actions/upload-artifact@v4
       with:
         name: una-package
