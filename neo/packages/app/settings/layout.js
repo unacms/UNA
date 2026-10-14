@@ -122,6 +122,14 @@ export const settingsLayout = {
              * A fork can give it a brand colour, e.g. 'bg-accent-500 lg:bg-transparent'.
              */
             band: 'bg-card sm:bg-card/80 lg:bg-transparent',
+            /**
+             * Colour scheme of the header's native buttons while they rest on the band (iOS:
+             * SwiftUI glass chrome and labels). 'auto' picks by the band colour's contrast
+             * (white or dark labels, whichever reads better); 'light' | 'dark' set it; null
+             * keeps the app's scheme. The app's scheme also applies once the header floats over
+             * content, and at widths where `band` resolves to no fill (`lg:bg-transparent`).
+             */
+            band_scheme: null,
         },
         /**
          * iOS: native progressive blur behind bottom composers (post comments,
