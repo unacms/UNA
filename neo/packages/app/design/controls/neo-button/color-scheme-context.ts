@@ -13,6 +13,18 @@ export const NeoButtonColorSchemeContext = createContext<NeoButtonColorScheme>(n
 
 export const useNeoButtonColorScheme = (): NeoButtonColorScheme => useContext(NeoButtonColorSchemeContext);
 
+/** Any RN colour as unsigned 0xAARRGGBB; null when it can't be parsed. */
+function toArgb(color: unknown): number | null {
+    const value = processColor(color as Parameters<typeof processColor>[0]);
+    return typeof value === 'number' ? value >>> 0 : null;
+}
+
+/** True for a colour that paints something: parsed, and not fully transparent. */
+export function isVisibleColor(color: unknown): boolean {
+    const argb = toArgb(color);
+    return argb !== null && argb >>> 24 > 0;
+}
+
 const channel = (c: number) => {
     const v = c / 255;
     return v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4;
@@ -20,15 +32,19 @@ const channel = (c: number) => {
 
 /**
  * The scheme whose label colour reads better on `color` (any RN colour): 'dark' (white labels)
- * when white has the higher WCAG contrast against it, else 'light'. null for an unknown colour.
+ * when white has the higher WCAG contrast against it, else 'light'. A translucent `color` is
+ * first composited over `backdrop`, the opaque colour showing through it. null for an unknown or
+ * fully transparent colour, or a translucent one without a backdrop.
  */
-export function colorSchemeForBackground(color: unknown): NeoButtonColorScheme {
-    const argb = processColor(color as Parameters<typeof processColor>[0]);
-    if (typeof argb !== 'number') return null;
-    const value = argb >>> 0;
-    const luminance = 0.2126 * channel((value >> 16) & 0xff)
-        + 0.7152 * channel((value >> 8) & 0xff)
-        + 0.0722 * channel(value & 0xff);
+export function colorSchemeForBackground(color: unknown, backdrop?: unknown): NeoButtonColorScheme {
+    const fg = toArgb(color);
+    if (fg === null) return null;
+    const alpha = (fg >>> 24) / 255;
+    if (alpha === 0) return null;
+    const bg = alpha < 1 ? toArgb(backdrop) : fg;
+    if (bg === null) return null;
+    const mix = (shift: number) => alpha * ((fg >> shift) & 0xff) + (1 - alpha) * ((bg >> shift) & 0xff);
+    const luminance = 0.2126 * channel(mix(16)) + 0.7152 * channel(mix(8)) + 0.0722 * channel(mix(0));
     const onWhite = 1.05 / (luminance + 0.05);
     const onBlack = (luminance + 0.05) / 0.05;
     return onWhite >= onBlack ? 'dark' : 'light';

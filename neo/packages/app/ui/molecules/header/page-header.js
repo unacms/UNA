@@ -6,7 +6,7 @@ import { appSetting } from 'app/lib/util';
 import { isNativeTabsEnabled } from 'app/lib/util';
 import { EdgeBlur, edgeBlurConfig } from 'app/ui/atoms/edge-blur';
 import { useResolveClassNames } from 'uniwind';
-import { NeoButtonColorSchemeContext, colorSchemeForBackground } from 'app/design/controls/neo-button/color-scheme-context';
+import { NeoButtonColorSchemeContext, colorSchemeForBackground, isVisibleColor } from 'app/design/controls/neo-button/color-scheme-context';
 import { useIsScrolled } from 'app/context/jotai/layout';
 import { getWindowSafeAreaInsets, useIsFocused } from 'app/lib/hooks/router';
 import {
@@ -26,18 +26,18 @@ import {
 export { PageHeaderSmall, TextHeader };
 
 /**
- * `layout.header.band_scheme` while the header rests on the band (not scrolled); null once it
- * floats over content, or without the setting. 'auto' resolves the band's own fill colour.
+ * `layout.header.band_scheme` while the header rests on a visible band; null once it floats over
+ * content, where the band has no fill at this width (`lg:bg-transparent`), or without the
+ * setting. The band classes resolve for the current width and theme, so `sm:` / `lg:` / `dark:`
+ * fills count; 'auto' composites a translucent fill over the page background.
  */
 function useHeaderBandScheme(isScrolled) {
     const setting = appSetting('layout', 'header', 'band_scheme');
-    const bandFill = setting === 'auto'
-        ? (getPageHeaderBandClass().match(/(?:^|\s)(bg-[^\s]+)/)?.[1] || '')
-        : '';
-    const resolved = useResolveClassNames(bandFill);
-    if (!setting || isScrolled) return null;
+    const band = useResolveClassNames(setting ? getPageHeaderBandClass() : '');
+    const page = useResolveClassNames(setting === 'auto' ? 'bg-background' : '');
+    if (!setting || isScrolled || !isVisibleColor(band?.backgroundColor)) return null;
     if (setting === 'light' || setting === 'dark') return setting;
-    return setting === 'auto' ? colorSchemeForBackground(resolved?.backgroundColor) : null;
+    return setting === 'auto' ? colorSchemeForBackground(band.backgroundColor, page?.backgroundColor) : null;
 }
 
 /** Matches web `duration-300` for the resting fill / fade. */

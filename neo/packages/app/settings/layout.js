@@ -126,7 +126,8 @@ export const settingsLayout = {
              * Colour scheme of the header's native buttons while they rest on the band (iOS:
              * SwiftUI glass chrome and labels). 'auto' picks by the band colour's contrast
              * (white or dark labels, whichever reads better); 'light' | 'dark' set it; null
-             * keeps the app's scheme. Once the header floats over content it uses the app's.
+             * keeps the app's scheme. The app's scheme also applies once the header floats over
+             * content, and at widths where `band` resolves to no fill (`lg:bg-transparent`).
              */
             band_scheme: null,
         },
