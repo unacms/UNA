@@ -27,8 +27,10 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    # WARNING: after `composer update` or `composer upgrade`, replace this commit SHA
+    # with the current shivammathur/setup-php release. Both Setup PHP steps must match.
     - name: Setup PHP
-      uses: shivammathur/setup-php@v2
+      uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # 2.40.0
       with:
         php-version: '8.5'
         extensions: intl, curl, gd, mbstring, zip, exif, pdo_mysql
@@ -91,8 +93,10 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    # WARNING: after `composer update` or `composer upgrade`, replace this commit SHA
+    # with the current shivammathur/setup-php release. Both Setup PHP steps must match.
     - name: Setup PHP
-      uses: shivammathur/setup-php@v2
+      uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # 2.40.0
       with:
         php-version: ${{ matrix.php }}
         extensions: intl, curl, gd, mbstring, zip, exif, pdo_mysql

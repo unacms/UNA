@@ -118,7 +118,8 @@
     },
     "scripts": {
         "post-update-cmd": [
-            "@relocate-ffmpeg"
+            "@relocate-ffmpeg",
+            "@warn-setup-php-sha"
         ],
         "post-install-cmd": [
             "@relocate-ffmpeg"
@@ -127,6 +128,9 @@
             "test -f ./plugins/ffmpeg/ffmpeg/ffmpeg-linux-x64 && mv ./plugins/ffmpeg/ffmpeg/ffmpeg-linux-x64 ./plugins/ffmpeg/ffmpeg.exe && rm -rf ./plugins/ffmpeg/ffmpeg || true",
             "test -f ./plugins/ffmpeg/ffmpeg.exe && chmod 0755 ./plugins/ffmpeg/ffmpeg.exe || true",
             "grep -Fq \"this->headers['Content-MD5']\" plugins/tpyo/amazon-s3-php-class/S3.php || patch -p1 --batch < patches/plugins_tpyo_amazon-s3-php-class.txt"
+        ],
+        "warn-setup-php-sha": [
+            "printf '\\n\\033[1;31m================================================================================\\nWARNING: composer update/upgrade was run. Replace the shivammathur/setup-php commit SHA in .github/workflows/ci.yml (both Setup PHP steps) with the current release commit.\\n================================================================================\\033[0m\\n\\n'"
         ],
         "test": "phpunit -c tests/phpunit.xml",
         "test-units": "phpunit -c tests/phpunit.xml --testsuite Units --log-junit logs/junit-units.xml",
