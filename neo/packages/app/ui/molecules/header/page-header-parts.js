@@ -84,6 +84,11 @@ function settingString(value) {
  */
 export const PAGE_HEADER_BAND_CLASS = 'bg-card sm:bg-card/80 lg:bg-transparent';
 
+/** The band's classes: `layout.header.band`, else PAGE_HEADER_BAND_CLASS (a fork's brand colour). */
+export function getPageHeaderBandClass() {
+    return appSetting('layout', 'header', 'band') || PAGE_HEADER_BAND_CLASS;
+}
+
 /** How far the band reaches above the content top: covers an iOS pull-down bounce. */
 const PAGE_HEADER_BAND_OVERSCROLL = 2000;
 
@@ -96,7 +101,7 @@ export function PageHeaderBand({ height }) {
     return (
         <View
             pointerEvents="none"
-            className={`absolute left-0 right-0 ${PAGE_HEADER_BAND_CLASS}`}
+            className={`absolute left-0 right-0 ${getPageHeaderBandClass()}`}
             style={{ top: -PAGE_HEADER_BAND_OVERSCROLL, height: height + PAGE_HEADER_BAND_OVERSCROLL }}
         />
     );

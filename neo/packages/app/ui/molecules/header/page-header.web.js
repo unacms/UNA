@@ -5,7 +5,7 @@ import {
     useSetScrollValue,
 } from 'app/context/jotai/layout';
 import {
-    PAGE_HEADER_BAND_CLASS,
+    getPageHeaderBandClass,
     PageHeaderBody,
     PageHeaderSmall,
     TextHeader,
@@ -181,7 +181,7 @@ export const PageHeader = ({ pageData }) => {
             {usesFixedOverlayHeader && headerHeight > 0 ? (
                 <div
                     aria-hidden
-                    className={`pointer-events-none absolute left-0 right-0 top-0 ${PAGE_HEADER_BAND_CLASS}`}
+                    className={`pointer-events-none absolute left-0 right-0 top-0 ${getPageHeaderBandClass()}`}
                     style={{ height: headerHeight }}
                 />
             ) : null}
