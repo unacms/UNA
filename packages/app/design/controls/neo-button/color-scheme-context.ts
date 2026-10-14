@@ -2,10 +2,12 @@ import { createContext, useContext } from 'react';
 import { processColor } from 'react-native';
 
 /**
- * Colour scheme for native NeoButtons on a surface whose brightness differs from the app's
- * theme, e.g. the header resting on a coloured band (`layout.header.band_scheme`). iOS passes it
- * to the Expo UI Host, so SwiftUI glass draws its chrome and label for that scheme. Free-standing
- * glass doesn't pick it from the backdrop the way system bars do. null = the app's own scheme.
+ * Colour scheme for NeoButtons on a surface whose brightness differs from the app's theme, e.g.
+ * the header resting on a coloured band (`layout.header.band_scheme`). iOS passes it to the Expo
+ * UI Host, so SwiftUI glass draws its chrome and label for that scheme: free-standing glass
+ * doesn't pick it from the backdrop the way system bars do. On web the button's root becomes a
+ * `.light` / `.dark` scope with that scheme's colour tokens (design/styles/global.css).
+ * null = the app's own scheme.
  */
 export type NeoButtonColorScheme = 'light' | 'dark' | null;
 

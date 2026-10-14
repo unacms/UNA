@@ -1,0 +1,105 @@
+/*
+ * Semantic colour tokens per scheme, as Tailwind utilities so one definition serves two
+ * places: palette.css applies them inside `:root` (web and native), and on web global.css
+ * applies them to colour-scheme scopes (`.light` / `.dark` on any element), so a subtree
+ * can take the other scheme's tokens. Keep only these two utilities here; the raw palette
+ * stays in palette.css.
+ */
+/* Semantic — light (explicit light/dark variants for Uniwind parity) */
+@utility scheme-tokens-light {
+    --background: var(--neutral-100);
+    --foreground: var(--neutral-950);
+    --card: var(--white);
+    --card-foreground: var(--neutral-800);
+    --popover: var(--white);
+    --popover-foreground: var(--neutral-900);
+    --primary: var(--accent-600);
+    --primary-hover: var(--accent-700);
+    --primary-foreground: var(--neutral-50);
+    --secondary: var(--neutral-200);
+    --secondary-foreground: var(--neutral-600);
+    --muted: var(--neutral-300);
+    --muted-foreground: var(--neutral-600);
+    --accent: var(--accent-100);
+    --accent-foreground: var(--accent-600);
+    --destructive: var(--red);
+    --destructive-foreground: var(--white);
+    --border: var(--neutral-300);
+    --input: var(--white);
+    --button: var(--neutral-200);
+    --button-foreground: var(--neutral-800);
+    --button-hover: var(--neutral-300);
+    --ring: var(--accent-600);
+    --segment: var(--neutral-200);
+    --segment-foreground: var(--neutral-700);
+    --link-primary: var(--primary);
+    --link-secondary: var(--secondary-foreground);
+    --link-tertiary: var(--muted-foreground);
+    --shadow: var(--neutral-950);
+    --shadow-xs: var(--neutral-950);
+    --shadow-sm: var(--neutral-950);
+    --shadow-md: var(--neutral-950);
+    --shadow-lg: var(--neutral-950);
+    --shadow-xl: var(--neutral-950);
+    --shadow-2xl: var(--neutral-950);
+    /* Chart series: the accent, then cyan, amber, pink, green, violet (3:1 on cards) */
+    --chart-1: var(--accent-600);
+    --chart-2: 8 145 178;
+    --chart-3: 217 119 6;
+    --chart-4: 219 39 119;
+    --chart-5: 22 163 74;
+    --chart-6: 124 58 237;
+    /* Chart series that are good news (3:1 on cards); bad news uses --destructive */
+    --chart-good: 5 150 105;
+    /* Text of a change for the better or the worse (4.5:1 on cards) */
+    --trend-good: 4 120 87;
+    --trend-bad: 190 18 60;
+}
+
+/* Semantic — dark overrides */
+@utility scheme-tokens-dark {
+    --background: var(--neutral-950);
+    --foreground: var(--neutral-50);
+    --card: var(--neutral-900);
+    --card-foreground: var(--neutral-200);
+    --popover: var(--neutral-800);
+    --popover-foreground: var(--neutral-100);
+    --primary: var(--accent-600);
+    --primary-hover: var(--accent-700);
+    --primary-foreground: var(--neutral-50);
+    --secondary: var(--neutral-800);
+    --secondary-foreground: var(--neutral-400);
+    --accent: var(--accent-950);
+    --accent-foreground: var(--accent-500);
+    --muted: var(--neutral-700);
+    --muted-foreground: var(--neutral-400);
+    --destructive: var(--red);
+    --destructive-foreground: var(--neutral-950);
+    --border: var(--neutral-800);
+    --input: var(--neutral-900);
+    --button: var(--neutral-800);
+    --button-foreground: var(--neutral-200);
+    --button-hover: var(--neutral-700);
+    --ring: var(--accent-600);
+    --segment: var(--neutral-800);
+    --segment-foreground: var(--neutral-200);
+    --link-primary: var(--primary);
+    --link-secondary: var(--secondary-foreground);
+    --link-tertiary: var(--muted-foreground);
+    --shadow: var(--black);
+    --shadow-xs: var(--black);
+    --shadow-sm: var(--black);
+    --shadow-md: var(--black);
+    --shadow-lg: var(--black);
+    --shadow-xl: var(--black);
+    --shadow-2xl: var(--black);
+    --chart-1: var(--accent-400);
+    --chart-2: 103 232 249;
+    --chart-3: 252 211 77;
+    --chart-4: 249 168 212;
+    --chart-5: 134 239 172;
+    --chart-6: 196 181 253;
+    --chart-good: 52 211 153;
+    --trend-good: 110 231 183;
+    --trend-bad: 253 164 175;
+}

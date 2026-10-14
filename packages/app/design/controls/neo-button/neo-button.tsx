@@ -70,6 +70,7 @@ import {
     resolveScoped,
 } from 'app/design/controls/neo-button/neo-button-resolver';
 import { NeoButtonExpoUI, getNativeIcon, hostsCustomContent } from 'app/design/controls/neo-button/neo-button-expoui';
+import { useNeoButtonColorScheme } from 'app/design/controls/neo-button/color-scheme-context';
 import type { NeoButtonAddon, NeoButtonClassNames, NeoButtonProps } from 'app/design/controls/neo-button/neo-button.types';
 import { cueAttributes, usePressCueOverride, type PressCue } from 'app/lib/sound';
 
@@ -879,6 +880,11 @@ const NeoButtonStyled = (props: NeoButtonProps & { titleHidden?: boolean }) => {
     // cannot paint over its ring (global.web.css). The layout classes go on
     // the outermost box: the Tooltip wrapper when there is one.
     const { isDesktop } = useNeoEnv();
+    // A surface with its own brightness (header on a coloured band): on web the
+    // root becomes a `.light` / `.dark` colour-scheme scope, so the button draws
+    // with that scheme's tokens (global.css). iOS: see color-scheme-context.
+    const colorScheme = useNeoButtonColorScheme();
+    const schemeClass = isWeb && colorScheme ? colorScheme : '';
     // Web only: native Tooltip renders no wrapper and drops `className`, so a
     // wide native screen (isDesktop) would lose the root layout classes.
     const tooltipWraps = isWeb && !!tooltip && isDesktop && !!appSetting('layout', 'tooltips');
@@ -888,7 +894,7 @@ const NeoButtonStyled = (props: NeoButtonProps & { titleHidden?: boolean }) => {
             : (pinIconOnlySquare ? 'self-start' : 'self-start max-w-full min-w-0'),
         classNames?.root,
     );
-    const wrapperClass = cn('u-neo-btn-root', tooltipWraps ? '' : rootLayoutClass);
+    const wrapperClass = cn('u-neo-btn-root', schemeClass, tooltipWraps ? '' : rootLayoutClass);
 
     // Glass effect: press/hover motion is CSS keyed off `data-neo-glass`,
     // so the JS PressTransition scale is skipped.
@@ -919,7 +925,7 @@ const NeoButtonStyled = (props: NeoButtonProps & { titleHidden?: boolean }) => {
 
     if (tooltipWraps) {
         return (
-            <Tooltip content={tooltip} side={tooltipSide} enabled className={cn('u-neo-btn-root', rootLayoutClass)}>
+            <Tooltip content={tooltip} side={tooltipSide} enabled className={cn('u-neo-btn-root', schemeClass, rootLayoutClass)}>
                 {wrapped}
             </Tooltip>
         );
