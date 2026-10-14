@@ -5,6 +5,9 @@
     <string name="_bx_tasks_cmts"><![CDATA[Tasks' Comments]]></string>
     <string name="_bx_tasks_reactions"><![CDATA[Tasks' Reactions]]></string>
 
+    <!-- Options -->
+    <string name="_bx_tasks_options_category_export"><![CDATA[Export]]></string>
+
     <string name="_bx_tasks_option_enable_auto_approve"><![CDATA[Auto approve a task after creation]]></string>
     <string name="_bx_tasks_option_summary_chars"><![CDATA[Number of characters in auto-cropped task summary]]></string>
     <string name="_bx_tasks_option_plain_summary_chars"><![CDATA[Number of characters in plain task description when task hasn't thumb]]></string>
@@ -13,6 +16,16 @@
     <string name="_bx_tasks_option_rss_num"><![CDATA[Number of items in RSS feed]]></string>
     <string name="_bx_tasks_option_searchable_fields"><![CDATA[Searchable fields for keyword search]]></string>
     <string name="_bx_tasks_option_auto_activation_for_categories"><![CDATA[Auto-Activation For Categories]]></string>
+    <string name="_bx_tasks_option_export_time_to"><![CDATA[Export reported time to]]></string>
+    <string name="_bx_tasks_option_export_time_to_csv"><![CDATA[CSV (Comma-Separated Values) file]]></string>
+    <string name="_bx_tasks_option_export_time_to_xml"><![CDATA[XML (Extensible Markup Language) file]]></string>
+    <string name="_bx_tasks_option_export_time_fields"><![CDATA[Fields to include in exporting time report]]></string>
+    <string name="_bx_tasks_option_export_time_field_author_id"><![CDATA[Profile]]></string>
+    <string name="_bx_tasks_option_export_time_field_object_id"><![CDATA[Task]]></string>
+    <string name="_bx_tasks_option_export_time_field_value"><![CDATA[Time]]></string>
+    <string name="_bx_tasks_option_export_time_field_value_date"><![CDATA[Date]]></string>
+    <string name="_bx_tasks_option_export_time_field_text"><![CDATA[Note]]></string>
+    <string name="_bx_tasks_option_export_time_field_date"><![CDATA[Date Added]]></string>
 
     <!-- Forms -->
     <string name="_bx_tasks_form_entry"><![CDATA[Tasks]]></string>
@@ -468,6 +481,7 @@
     <string name="_bx_tasks_grid_action_title_tm_edit"><![CDATA[Edit]]></string>
     <string name="_bx_tasks_grid_action_title_tm_delete"><![CDATA[Remove]]></string>
     <string name="_bx_tasks_grid_action_title_tm_calculate"><![CDATA[Calculate]]></string>
+    <string name="_bx_tasks_grid_action_title_tm_export"><![CDATA[Export]]></string>
     <string name="_bx_tasks_grid_filter_item_title_tm_select_one_author_id"><![CDATA[Any Assignee]]></string>
     <string name="_bx_tasks_grid_filter_item_title_tm_select_one_context_module"><![CDATA[Any Module]]></string>
     <string name="_bx_tasks_grid_filter_item_title_tm_select_one_object_id"><![CDATA[Any Task]]></string>

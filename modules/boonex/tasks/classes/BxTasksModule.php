@@ -190,6 +190,31 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
         ]);
     }
 
+    public function serviceGetOptionsExportTimeTo()
+    {
+        return [
+            'csv' => _t('_bx_tasks_option_export_time_to_csv'),
+            'xml' => _t('_bx_tasks_option_export_time_to_xml'),
+        ];
+    }
+    
+    public function serviceGetOptionsExportTimeFields()
+    {
+        $aResult = [];
+        $sLkPrefix = '_bx_tasks_option_export_time_field_';
+
+        $aFields = $this->_oDb->getExportTimeFields();
+        if($aFields && ($aOriginal = $aFields['original'] ?? false) && is_array($aOriginal)) {
+            foreach($aOriginal as $sField) {
+                if(($sLk = $sLkPrefix . $sField) && ($_sLk = _t($sLk)) && strcmp($sLk, $_sLk) != 0) {
+                    $aResult[] = ['key' => $sField, 'value' => $_sLk];
+                }
+            }
+        }
+
+        return $aResult;
+    }
+
     public function serviceGetInitialMembers($iContextPid, $sTerm)
     {
         if($this->_bIsApi) {

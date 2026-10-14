@@ -123,6 +123,8 @@ class BxTasksConfig extends BxBaseModTextConfig
             'PARAM_NUM_RSS' => 'bx_tasks_rss_num',
             'PARAM_SEARCHABLE_FIELDS' => 'bx_tasks_searchable_fields',
             'PARAM_PER_PAGE_BROWSE_SHOWCASE' => 'bx_tasks_per_page_browse_showcase',
+            'PARAM_EXPORT_TIME_TO' => 'bx_tasks_export_time_to',
+            'PARAM_EXPORT_TIME_FIELDS' => 'bx_tasks_export_time_fields',
 
             // objects
             'OBJECT_STORAGE' => 'bx_tasks_covers',
@@ -130,6 +132,7 @@ class BxTasksConfig extends BxBaseModTextConfig
             'OBJECT_STORAGE_PHOTOS' => 'bx_tasks_photos',
             'OBJECT_STORAGE_VIDEOS' => 'bx_tasks_videos',
             'OBJECT_STORAGE_CMTS' => 'bx_tasks_files_cmts', // for comments
+            'OBJECT_STORAGE_EXPORT_FILES' => 'sys_files',
             'OBJECT_IMAGES_TRANSCODER_PREVIEW' => 'bx_tasks_preview',
             'OBJECT_IMAGES_TRANSCODER_GALLERY' => 'bx_tasks_gallery',
             'OBJECT_IMAGES_TRANSCODER_COVER' => 'bx_tasks_cover',

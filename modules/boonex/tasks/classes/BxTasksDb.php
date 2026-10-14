@@ -24,6 +24,11 @@ class BxTasksDb extends BxBaseModTextDb
         ];
     }
 
+    public function getExportTimeFields()
+    {
+        return $this->getFields('bx_tasks_time_track');
+    }
+
     public function getContexts($aParams = []) 
     {
         $CNF = &$this->_oConfig->CNF;
