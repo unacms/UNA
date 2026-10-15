@@ -42,8 +42,10 @@ export function layoutForList(endpoint, unitMode = '') {
     if (!endpoint || requestUrl?.includes('bx_timeline') || paramsRequestUrl?.includes('bx_timeline') || unitName == "notifications")
         return 'w-full';
 
+    // Forum rows: 2px apart on phones; 16px apart in a narrow list on wider screens (a side
+    // column); from 40rem each card pads 8px instead.
     if (moduleName == 'bx_forum' || requestUrl?.includes('r=bx_forum'))
-         return 'w-full mb-0.5 sm:mb-0 @list-sm/list:p-2 @list-sm/list:m-0';
+         return 'w-full mb-0.5 sm:mb-4 @list-sm/list:p-2 @list-sm/list:m-0';
 
     if (moduleName == 'bx_groups' || requestUrl?.includes('r=bx_groups'))
         return 'w-full @list-sm/list:w-1/2 @list-md/list:w-1/3 @list-lg/list:w-1/4 p-1.5';

@@ -217,6 +217,12 @@ export default function Browse(props) {
     )
 
     const layout = layoutForList(data.module);
+    // The inside title lines up with the cards: its row takes the list items' spacing classes
+    // (container-query paddings and margins from `layoutForList`), without their widths.
+    const titleInset = useMemo(
+        () => layout.split(/\s+/).filter((c) => c && !/(^|:)w-/.test(c)).join(' '),
+        [layout]
+    );
     const Preload = useMemo(
         () => getSkeletonForList(sSkeleton, numColumns, true, layout, renderItem),
         [sSkeleton, numColumns, layout, renderItem]
@@ -434,14 +440,13 @@ export default function Browse(props) {
         <BlockWrapper {...props.blockWrapperProps}>
             <View className={`w-full ${isOneLine ? '  ' : 'web:h-full '}`}>
                 <View className="w-full" ></View>
-                <View className={`w-full ${props.showBg ? blockTheme['u-block-bg'] + ' ' + blockTheme['u-block-pad'] + ' ' + blockTheme['u-block-base'] : ''} ${responsiveClasses('rounded', props.blockWrapperProps?.config?.rounded)}`} style={isOneLine || !isWeb ? {} : styles}>
+                {/* `@container/list`: the title row's item classes query the list's width, like the items. */}
+                <View className={`w-full @container/list ${props.showBg ? blockTheme['u-block-bg'] + ' ' + blockTheme['u-block-pad'] + ' ' + blockTheme['u-block-base'] : ''} ${responsiveClasses('rounded', props.blockWrapperProps?.config?.rounded)}`} style={isOneLine || !isWeb ? {} : styles}>
                     {isShowTitleInside && (
-                        <Row className={`items-center justify-between gap-2 ${props.showBg ? '' : 'p-2 '}`}>
-                             <View className="p-2">
-                                <BlockTitle>
+                        <Row className={`items-center justify-between gap-2 ${titleInset}`}>
+                            <BlockTitle>
                                 {t(props.block.title)}
-                                </BlockTitle>
-                            </View>
+                            </BlockTitle>
                             {!!props.addLink && (
                                 <NeoButtonLink
                                     href={props.addLink.url}
