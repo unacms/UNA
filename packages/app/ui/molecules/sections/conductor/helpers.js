@@ -706,15 +706,19 @@ function processContent(acc, b) {
     return acc.content
 }
 
-/** Split parsed layout cells into content blocks vs browse endpoint. */
-function mapLayoutBlocks(items = []) {
+/**
+ * Split parsed layout cells into content blocks vs browse endpoint. With `browseAsBlocks` (the
+ * right column) a browse block is drawn as a block like any other, e.g. "Featured" next to the
+ * list, instead of becoming an endpoint that nothing there renders.
+ */
+function mapLayoutBlocks(items = [], { browseAsBlocks = false } = {}) {
     const list = Array.isArray(items) ? items : []
     const getFirstContentType = (item) => item?.content?.[0]?.type
 
     const content = list
         .filter(item => {
             const type = getFirstContentType(item)
-            return type && type !== 'browse' && type !== 'browse_list'
+            return type && (browseAsBlocks || (type !== 'browse' && type !== 'browse_list'))
         })
         .map(block => ({
             data: block,
@@ -722,6 +726,7 @@ function mapLayoutBlocks(items = []) {
             type: 'block',
             block: { name: block?.source },
         }))
+    if (browseAsBlocks) return { content, endpoint: undefined }
     const browseBlock = list.find(item => {
         const type = getFirstContentType(item)
         return type === 'browse' || type === 'browse_list'
@@ -751,16 +756,17 @@ function processParsedUrl(data) {
     const elements = data?.elements || {}
     // A profile page's cover comes from `cover_block` (the Conductor header);
     // an entity cover block in any cell would draw it a second time.
-    const cell = (name) => {
+    const cell = (name, options) => {
         const items = Array.isArray(elements[name]) ? elements[name] : []
         return mapLayoutBlocks(
-            data?.cover_block?.profile ? items.filter((item) => !isEntityCoverBlock(item)) : items
+            data?.cover_block?.profile ? items.filter((item) => !isEntityCoverBlock(item)) : items,
+            options
         )
     }
     const cellTop = cell('cell_top')
     const cellCenter = cell('cell_center')
     const cellBottom = cell('cell_bottom')
-    const cellRight = cell('cell_right')
+    const cellRight = cell('cell_right', { browseAsBlocks: true })
     const cellLeft = cell('cell_left')
     const browsePayload = cellCenter.endpoint ?? cellTop.endpoint ?? cellBottom.endpoint
     return {
