@@ -116,7 +116,7 @@
     <string name="_bx_events_form_session_display_edit"><![CDATA[Edit Session]]></string>
     <string name="_bx_events_form_session_input_sys_title"><![CDATA[Title]]></string>
     <string name="_bx_events_form_session_input_title"><![CDATA[Title]]></string>
-    <string name="_bx_events_form_session_input_title_err"><![CDATA[Session title is mandatory.]]></string>
+    <string name="_bx_events_form_session_input_title_err"><![CDATA[Session title is essential min 3 max 160.]]></string>
     <string name="_bx_events_form_session_input_sys_description"><![CDATA[Description]]></string>
     <string name="_bx_events_form_session_input_description"><![CDATA[Description]]></string>
     <string name="_bx_events_form_session_input_sys_date_start"><![CDATA[Date start]]></string>
