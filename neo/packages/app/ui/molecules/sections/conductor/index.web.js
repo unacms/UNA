@@ -233,20 +233,6 @@ export function Conductor({
         ensureRouteInited(routes, index, setRoutes)
     }, [index])
 
-    // UNA's left column carries two different things: dropdown menus (shown next
-    // to the tabs) and filter blocks (sidebar on desktop, sheet on mobile).
-    const leftColumnContent = activeRoute?.leftbar?.content ?? EMPTY_CONTENT
-
-    const {
-        leftColumnMenuBlocks,
-        leftColumnFilterBlocks,
-        leftColumnExcludedFromMainIds,
-    } = useLeftColumn({
-        leftColumnContent,
-        layoutName,
-        isDesktop,
-    })
-
     /**
      * Route the *columns* render from. While a newly selected tab is still
      * loading, keep the previous one so the side columns do not collapse and
@@ -265,6 +251,22 @@ export function Conductor({
     ) || {}
     const isLeftColumnShown = isConductorColumnShown(columnCells.left?.breakpoint, breakpointName)
     const isRightColumnShown = isConductorColumnShown(columnCells.right?.breakpoint, breakpointName)
+
+    // UNA's left column carries two different things: dropdown menus and filter blocks. While
+    // the left panel is on screen they stay in it; below its breakpoint (phones, tablets and
+    // narrow desktops alike) the menus become dropdowns at the end of the tab row, the filters a
+    // "Filters" trigger beside them, and neither repeats in the list.
+    const leftColumnContent = activeRoute?.leftbar?.content ?? EMPTY_CONTENT
+
+    const {
+        leftColumnMenuBlocks,
+        leftColumnFilterBlocks,
+        leftColumnExcludedFromMainIds,
+    } = useLeftColumn({
+        leftColumnContent,
+        layoutName,
+        isDesktop: isLeftColumnShown,
+    })
     // /tasks-home only: pin the shell to the leftover viewport and scroll the
     // list inside it so the site header + task toolbar stay put.
     const isTasksHome = isTasksHomeUri(activeRoute?.pageData?.uri) || isTasksHomeUri(activeRoute?.key)
@@ -280,9 +282,9 @@ export function Conductor({
         data?.cover_block?.profile?.id === data?.context?.current?.id &&
         isDesktop
 
-    // Mobile: Filters sheet for use_as_filter (any layout) + navigator non-menu left column.
-    // On desktop the same blocks live in the left column, so no button is needed.
-    const showFiltersBtn = !isDesktop && leftColumnFilterBlocks.length > 0
+    // Filters sheet for use_as_filter (any layout) + navigator non-menu left column, while the
+    // left panel that otherwise holds those blocks is off screen.
+    const showFiltersBtn = !isLeftColumnShown && leftColumnFilterBlocks.length > 0
     /** Profile chrome is rendered inline here instead of in the page header. */
     const isUseCurrentHeader = layoutName === 'profile' && (!isCoverDisabled || !isDesktop)
 
@@ -351,6 +353,7 @@ export function Conductor({
                 setIndex={setIndex}
                 onChangeRoute={onChangeRoute}
                 leftColumnMenus={leftColumnMenuBlocks}
+                showLeftColumnMenus={!isLeftColumnShown}
                 showFilters={showFiltersBtn}
                 onShowFilters={showFilters}
             />
@@ -373,6 +376,7 @@ export function Conductor({
             setIndex,
             onChangeRoute,
             leftColumnMenuBlocks,
+            isLeftColumnShown,
             showFiltersBtn,
             showFilters,
         ]

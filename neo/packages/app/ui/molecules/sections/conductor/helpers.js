@@ -976,7 +976,7 @@ export function partitionLeftColumn(leftColumnContent = [], layoutName) {
 
 /**
  * Ids that should not also render in the main list.
- * Desktop web: nothing excluded (right sidebar owns the left column).
+ * Left panel on screen (web, `isDesktop`): nothing excluded, the panel shows its blocks.
  * Navigator: all left-column ids. Else: menu + filter blocks only.
  */
 export function getLeftColumnExcludedFromMainIds({

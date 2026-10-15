@@ -10,6 +10,11 @@ UPDATE `sys_objects_page` SET `config_api`='{\r\n    layout: \'navigator\',\r\n 
 UPDATE `sys_objects_page` SET `config_api`='{\r\n    layout: \'navigator\',\r\n    blocks: {\r\n        browse: {\r\n            name: \'bx_forum:browse_new\',\r\n            showTitle: false,\r\n            showBg: false,\r\n            perLine: 1,\r\n        },\r\n        browse_sidebar: {\r\n            name: \'bx_forum:browse_popular\',\r\n            showTitle: true,\r\n            showBg: false,\r\n            sidebar: true,\r\n            unitType: \'small\',\r\n        },\r\n        categories: {\r\n            name: \'system:categories_list\',\r\n            showTitle: false,\r\n            showBg: true,\r\n            sidebar: false,\r\n            hidden: true,\r\n        },\r\n    },\r\n}' WHERE `object`='bx_forum_home';
 
 
+-- PAGES: blocks config_api
+-- Categories on the forum home: a dropdown next to the tabs while NEO's left panel is off screen.
+UPDATE `sys_pages_blocks` SET `config_api`='{"use_as_menu": true}' WHERE `object`='bx_forum_home' AND `module`='bx_forum' AND `title_system`='' AND `title`='_bx_forum_page_block_title_cats';
+
+
 -- PAGES: active_api
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_forum_create_entry' AND `module`='bx_forum' AND `title_system`='' AND `title`='_bx_forum_page_block_title_create_entry';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_forum_edit_entry' AND `module`='bx_forum' AND `title_system`='' AND `title`='_bx_forum_page_block_title_edit_entry';
