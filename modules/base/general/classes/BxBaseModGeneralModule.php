@@ -1288,7 +1288,31 @@ class BxBaseModGeneralModule extends BxDolModule
 
         $this->onUpdateImage($iContentId, $sFiledName, $sValue);
 
-        return $oImgStorage->getFileUrlById($sValue);
+        return $this->_bIsApi ? $this->_getUpdateImageUrlApi($sFiledName, $sValue, $oImgStorage) : $oImgStorage->getFileUrlById($sValue);
+    }
+
+    /**
+     * API: the changed image as the app shows it, a transcoded (display) size instead of the original upload.
+     */
+    protected function _getUpdateImageUrlApi($sFiledName, $iFileId, $oImgStorage)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        $aTranscoders = [];
+        if(!empty($CNF['FIELD_COVER']) && $sFiledName == $CNF['FIELD_COVER']) {
+            $aTranscoders = ['OBJECT_IMAGES_TRANSCODER_COVER', 'OBJECT_IMAGES_TRANSCODER_GALLERY'];
+        }
+        else if(!empty($CNF['FIELD_THUMB']) && $sFiledName == $CNF['FIELD_THUMB']) {
+            $aTranscoders = ['OBJECT_IMAGES_TRANSCODER_THUMB', 'OBJECT_IMAGES_TRANSCODER_GALLERY'];
+        }
+
+        foreach($aTranscoders as $sKey) {
+            if(!empty($CNF[$sKey]) && ($oTranscoder = BxDolTranscoderImage::getObjectInstance($CNF[$sKey])) && ($sUrl = $oTranscoder->getFileUrl($iFileId))) {
+                return $sUrl;
+            }
+        }
+
+        return $oImgStorage->getFileUrlById($iFileId);
     }
 
     /**

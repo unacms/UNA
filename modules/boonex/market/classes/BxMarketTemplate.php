@@ -558,11 +558,18 @@ class BxMarketTemplate extends BxBaseModTextTemplate
 
         $CNF = &$this->getModule()->_oConfig->CNF;
 
-        $oStorage = BxDolStorage::getObjectInstance($CNF['OBJECT_STORAGE']);
-        if(!$oStorage)
-            return $mixedResult;
+        /*
+         * The product page shows photos here. Product files (OBJECT_STORAGE_FILES, what the parent returns)
+         * stay out on purpose: they are downloads for buyers, the app gets them from entity_downloads
+         * (market_attachments) after checkAllowedDownload, as the site does.
+         */
         $mixedResult[0]['data'] = [];
-        
+
+        $oStorage = BxDolStorage::getObjectInstance($CNF['OBJECT_STORAGE']);
+        if(!$oStorage) {
+            return $mixedResult;
+        }
+
         $aPhotos = $this->_oDb->getPhoto(['type' => 'content_id', 'content_id' => $aData[$CNF['FIELD_ID']], 'except' => [$aData[$CNF['FIELD_THUMB']], $aData[$CNF['FIELD_COVER']]]]);
         if(empty($aPhotos) || !is_array($aPhotos))
             return $mixedResult;

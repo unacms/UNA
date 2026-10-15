@@ -155,7 +155,7 @@ class BxMarketFormEntry extends BxBaseModTextFormEntry
             $this->aInputs = array_merge(array_slice($this->aInputs, 0, $iPos, true), $aInputs, array_slice($this->aInputs, $iPos, null, true));
     }
 
-    function getCodeAPI()
+    public function getCodeAPI()
     {
         $aResult = parent::getCodeAPI();
         if(empty($this->_aImageFieldsApi) || empty($this->_aContentInfoApi) || empty($aResult['inputs']))
@@ -341,7 +341,8 @@ class BxMarketFormEntry extends BxBaseModTextFormEntry
 
         $this->processFiles($CNF['FIELD_FILE'], $iContentId, false, $CNF['OBJECT_STORAGE_FILES']);
 
-        if(!empty($aImagesApi)) {
+        // Images change only with the saved product: on a failed save the old files stay in use.
+        if($iResult !== false && !empty($aImagesApi)) {
             /*
              * API image fields have no content_id, so a file uploaded while editing is a ghost
              * with content_id = 0: associate it (only submitted ids are taken), otherwise

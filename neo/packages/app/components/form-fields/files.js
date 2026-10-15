@@ -201,9 +201,13 @@ export default function (props) {
         }
     }, [persistKey, props?.values_src]);
 
+    // `m=0` makes UNA delete the profile's other pending uploads of this uploader and content.
+    // Single image fields (`image_type`) can share the uploader with other fields of the form
+    // (Market cover, icon and photos), so they upload as `m=1` and keep the field's last file.
+    const uploadMultiple = bMultiple || !!props.image_type;
     const url = useMemo(() => {
-        return '/api.php?r=system/get_data_api/TemplUploaderServices/&params[]=&obfuscate_faces=' + obfuscateFaces + '&uo=' + (props.uploaders?.[0] ?? '') + '&so=' + props.storage_object + '&uid=' + genRnd(8) + '&img_trans=' + props.images_transcoder + '&m=' + (bMultiple ? 1 : 0) + '&c=' + props.content_id + '&p=' + (props.privacy ? 1 : 0);
-    }, [obfuscateFaces, props.uploaders, props.storage_object, props.images_transcoder, props.content_id, props.privacy, bMultiple]);
+        return '/api.php?r=system/get_data_api/TemplUploaderServices/&params[]=&obfuscate_faces=' + obfuscateFaces + '&uo=' + (props.uploaders?.[0] ?? '') + '&so=' + props.storage_object + '&uid=' + genRnd(8) + '&img_trans=' + props.images_transcoder + '&m=' + (uploadMultiple ? 1 : 0) + '&c=' + props.content_id + '&p=' + (props.privacy ? 1 : 0);
+    }, [obfuscateFaces, props.uploaders, props.storage_object, props.images_transcoder, props.content_id, props.privacy, uploadMultiple]);
 
     const getImageMergeKey = (img) => {
         // Preload items use hash; server ghosts often have no hash — use stable ids.
