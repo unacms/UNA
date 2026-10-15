@@ -7110,6 +7110,13 @@ SET @j = JSON_OBJECT(
 INSERT INTO sys_agents_vector_store (type, title, docs, topk, params, duplicate, changed, active)
 VALUES ('meilisearch', 'Meilisearch', 'https://www.meilisearch.com/', 5, CAST(@j AS CHAR), 0, 0, 0);
 
+-- 9. MariaDB
+SET @j = JSON_OBJECT(
+    'dimension', 1536
+);
+INSERT INTO sys_agents_vector_store (type, title, docs, topk, params, duplicate, changed, active)
+VALUES ('mariadb', 'MariaDB', 'Embeddings in the site database. Credentials come from header.inc.php. Supported on MariaDB 11.7 and newer. dimension is the embedding width (1536 for OpenAI text-embedding-3-small). Set it before the first file is processed.', 4, CAST(@j AS CHAR), 0, 0, 0);
+
 
 CREATE TABLE IF NOT EXISTS `sys_agents_tools` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
