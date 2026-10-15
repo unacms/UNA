@@ -26,8 +26,9 @@ export default function MenuTopItem({ link, title, index, icon, isTitle, isActiv
 
 
 function MenuTopItem_({ title, icon, isTitle, isActive, isPopup, chevron, animated, addClassName }) {
-    const isOpen = useContext(DropdownMenuOpenContext) ?? false;
-    const isActiveOrOpen = isActive || (isPopup && isOpen);
+    const isMenuOpen = useContext(DropdownMenuOpenContext) ?? false;
+    const isOpen = isPopup && isMenuOpen;
+    const isActiveOrOpen = isActive || isOpen;
     const useAnimatedIcon = animated === true;
     const [groupHovered, setGroupHovered] = useState(false);
     const rowHoverProps =
@@ -49,38 +50,44 @@ function MenuTopItem_({ title, icon, isTitle, isActive, isPopup, chevron, animat
     return (
 
         <Tooltip content={title} enabled={showTooltip}>
+            {/* The active link's highlight is MenuTop's sliding indicator, which never moves to a
+                dropdown, so an open dropdown draws its own fill behind the accent-foreground label. */}
             <Row
-                className={`items-center content-center justify-center px-2 h-12 min-w-16 flex-auto flex-wrap rounded-xl  ${isActiveOrOpen
+                className={`items-center content-center justify-center px-2 h-12 min-w-16 flex-auto flex-wrap rounded-xl  ${isOpen
+                    ? ' bg-accent text-accent-foreground'
+                    : isActive
                     ? '  text-accent-foreground'
                     : ' text-secondary-foreground web:group-hover:text-foreground web:hover:bg-muted/50 web:group-focus:bg-muted/50 web:active:bg-muted '
                     }`}
                 {...rowHoverProps}
             >
                 {[
-                    <Icon
-                        key="menu-icon"
-                        icon={icon}
-                        animated={useAnimatedIcon}
-                        active={useAnimatedIcon ? isActiveOrOpen : undefined}
-                        size={useAnimatedIcon ? 24 : undefined}
-                        className={menuIconClassName}
-                        hovered={useAnimatedIcon && Platform.OS === 'web' ? groupHovered : undefined}
-                    />,
+                    icon ? (
+                        <Icon
+                            key="menu-icon"
+                            icon={icon}
+                            animated={useAnimatedIcon}
+                            active={useAnimatedIcon ? isActiveOrOpen : undefined}
+                            size={useAnimatedIcon ? 24 : undefined}
+                            className={menuIconClassName}
+                            hovered={useAnimatedIcon && Platform.OS === 'web' ? groupHovered : undefined}
+                        />
+                    ) : null,
                     isTitle ? (
                         <Text key="menu-title" className={`whitespace-nowrap text-ellipsis overflow-hidden tracking-tight font-medium ${isActiveOrOpen ? 'text-accent-foreground' : 'text-secondary-foreground'} text-sm lg:text-base px-2 leading-5`}>{title}</Text>
                     ) : null,
                     chevron ? (
+                        // Sized explicitly: without width and height the SVG is 24 px tall and sits
+                        // 4 px below the label. A class turns it, because NEO's web View drops
+                        // React Native transform arrays.
                         <View
                             key="menu-chevron"
-                            className="h-4 w-4 items-center justify-center flex shrink-0 transition-transform duration-200"
-                            style={{
-                                transform: [
-                                    { rotate: isOpen ? '180deg' : '0deg' },
-                                ],
-                            }}
+                            className={`h-4 w-4 items-center justify-center flex shrink-0 web:transition-transform web:duration-200 ${isOpen ? 'rotate-180' : ''}`}
                         >
                             <Icon
                                 icon={chevron}
+                                width={16}
+                                height={16}
                                 className={`h-4 w-4 ${isActiveOrOpen ? 'text-accent-foreground' : 'text-secondary-foreground web:group-hover:text-foreground'}`}
                             />
                         </View>
