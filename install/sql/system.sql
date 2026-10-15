@@ -7110,12 +7110,24 @@ SET @j = JSON_OBJECT(
 INSERT INTO sys_agents_vector_store (type, title, docs, topk, params, duplicate, changed, active)
 VALUES ('meilisearch', 'Meilisearch', 'https://www.meilisearch.com/', 5, CAST(@j AS CHAR), 0, 0, 0);
 
--- 9. MariaDB
+-- 9. MariaDB. Requires MariaDB 11.7 or newer (VECTOR).
+CREATE TABLE IF NOT EXISTS `sys_agents_vector_mariadb` (
+  `id` uuid NOT NULL,
+  `content` text,
+  `sourceType` varchar(255),
+  `sourceName` varchar(255),
+  `metadata` json,
+  `embedding` vector(1536) NOT NULL,
+  PRIMARY KEY (`id`),
+  VECTOR INDEX (`embedding`)
+) ENGINE=InnoDB;
+
 SET @j = JSON_OBJECT(
+    'table', 'sys_agents_vector_mariadb',
     'dimension', 1536
 );
 INSERT INTO sys_agents_vector_store (type, title, docs, topk, params, duplicate, changed, active)
-VALUES ('mariadb', 'MariaDB', 'Embeddings in the site database. Credentials come from header.inc.php. Supported on MariaDB 11.7 and newer. dimension is the embedding width (1536 for OpenAI text-embedding-3-small). Set it before the first file is processed.', 4, CAST(@j AS CHAR), 0, 0, 0);
+VALUES ('mariadb', 'MariaDB', 'Embeddings in the site database. Supported on MariaDB 11.7 and newer. Rows are stored in sys_agents_vector_mariadb; dimension must stay 1536.', 4, CAST(@j AS CHAR), 0, 0, 0);
 
 
 CREATE TABLE IF NOT EXISTS `sys_agents_tools` (

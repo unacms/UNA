@@ -3,11 +3,8 @@
  * Copyright (c) UNA, Inc - https://una.io
  * MIT License - https://opensource.org/licenses/MIT
  *
- * MariaDB vector store on the site database from header.inc.php.
- *
- * The embeddings table is created on first use. Install SQL cannot create it:
- * MariaDB before 11.7 and MySQL before 9 reject the VECTOR type, and MySQL 9
- * uses different vector functions than this store.
+ * MariaDB vector store on the site database connection.
+ * The embeddings table is created in install SQL.
  *
  * @defgroup    UnaCore UNA Core
  * @{
@@ -16,8 +13,7 @@
 class BxDolAIVectorStoreMariaDb
 {
     public const MARIADB_MIN_VERSION = '11.7.0';
-
-    protected static ?PDO $oPdo = null;
+    public const TABLE = 'sys_agents_vector_mariadb';
 
     /**
      * @return array{engine:string, version:string, supported:bool}
@@ -56,25 +52,34 @@ class BxDolAIVectorStoreMariaDb
         return 'MariaDB vector store needs MariaDB ' . self::MARIADB_MIN_VERSION . ' or newer (connected: ' . $sEngine . ' ' . $sVersion . ')';
     }
 
-    public static function tableName(int $iId): string
+    public static function tableName(string $sTable): string
     {
-        if ($iId < 1)
-            throw new Exception('MariaDB vector store id is missing');
+        if (!preg_match('/^[A-Za-z0-9_]+$/', $sTable))
+            throw new Exception('MariaDB vector store table name is invalid');
 
-        return 'sys_agents_vs_' . $iId;
+        return $sTable;
     }
 
-    public static function open(int $iId, int $iTopK, int $iDimensions): NeuronAI\RAG\VectorStore\MariaDBVectorStore
+    public static function pdo(): PDO
+    {
+        BxDolDb::getInstance();
+        $oPdo = BxDolDb::getLink();
+        if (!$oPdo instanceof PDO)
+            throw new Exception('Database is not connected');
+
+        return $oPdo;
+    }
+
+    public static function open(string $sTable, int $iTopK, int $iDimensions): NeuronAI\RAG\VectorStore\MariaDBVectorStore
     {
         if ($iDimensions < 1 || $iDimensions > 16383)
             throw new Exception('MariaDB vector store dimension must be between 1 and 16383');
         if ($iTopK < 1)
             $iTopK = 4;
 
-        $sTable = self::tableName($iId);
-        $oPdo = self::connect();
-        $sVersion = $oPdo->query('SELECT VERSION()');
-        $sVersion = $sVersion ? (string)$sVersion->fetchColumn() : '';
+        $sTable = self::tableName($sTable);
+        $oDb = BxDolDb::getInstance();
+        $sVersion = $oDb ? (string)$oDb->getOne('SELECT VERSION()') : '';
         $aServer = self::describe($sVersion);
         if (empty($aServer['supported'])) {
             $sMessage = self::compatibilityMessage($aServer);
@@ -82,56 +87,13 @@ class BxDolAIVectorStoreMariaDb
             throw new Exception($sMessage);
         }
 
-        $iExisting = self::embeddingDimensions($oPdo, $sTable);
-        if ($iExisting === null) {
-            $oPdo->exec('SET default_storage_engine = InnoDB');
-            (new NeuronAI\RAG\VectorStore\MariaDBVectorStore($oPdo, $sTable, $iTopK))->setupTable($iDimensions);
-        }
-        elseif ($iExisting !== $iDimensions)
+        $iExisting = self::embeddingDimensions($sTable);
+        if ($iExisting === null)
+            throw new Exception('MariaDB vector store table ' . $sTable . ' is missing');
+        if ($iExisting !== $iDimensions)
             throw new Exception('MariaDB vector store ' . $sTable . ' has dimension ' . $iExisting . '; params ask for ' . $iDimensions);
 
-        return new NeuronAI\RAG\VectorStore\MariaDBVectorStore($oPdo, $sTable, $iTopK);
-    }
-
-    public static function connect(): PDO
-    {
-        if (self::$oPdo instanceof PDO)
-            return self::$oPdo;
-
-        $sHost = self::credential('BX_DATABASE_HOST');
-        $sUser = self::credential('BX_DATABASE_USER');
-        $sPassword = self::credential('BX_DATABASE_PASS');
-        $sName = self::credential('BX_DATABASE_NAME');
-        if ($sHost === '' || $sName === '')
-            throw new Exception('Database credentials are not configured');
-
-        $sPort = defined('BX_DATABASE_PORT') ? self::credential('BX_DATABASE_PORT') : '';
-        $sSocket = defined('BX_DATABASE_SOCK') ? self::credential('BX_DATABASE_SOCK') : '';
-        $sCollate = defined('BX_DATABASE_COLLATE') ? self::credential('BX_DATABASE_COLLATE') : 'utf8mb4_unicode_ci';
-        if (!preg_match('/^[A-Za-z0-9_]+$/', $sCollate))
-            $sCollate = 'utf8mb4_unicode_ci';
-
-        $sDsn = 'mysql:host=' . $sHost . ';';
-        $sDsn .= $sPort !== '' ? 'port=' . $sPort . ';' : '';
-        $sDsn .= $sSocket !== '' ? 'unix_socket=' . $sSocket . ';' : '';
-        $sDsn .= 'dbname=' . $sName . ';charset=utf8mb4';
-
-        try {
-            $oPdo = new PDO($sDsn, $sUser, $sPassword, [
-                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-                PDO::ATTR_PERSISTENT => false,
-            ]);
-            $oPdo->exec("SET NAMES 'utf8mb4' COLLATE '" . $sCollate . "'");
-            $oPdo->exec("SET sql_mode = ''");
-        }
-        catch (PDOException $oException) {
-            bx_log('sys_agents', 'MariaDB vector store connection failed: ' . $oException->getMessage(), BX_LOG_ERR);
-            throw new Exception('MariaDB vector store could not connect to the site database');
-        }
-
-        self::$oPdo = $oPdo;
-        return self::$oPdo;
+        return new NeuronAI\RAG\VectorStore\MariaDBVectorStore(self::pdo(), $sTable, $iTopK);
     }
 
     protected static function versionNumber(string $sVersion, bool $bMaria): string
@@ -156,25 +118,16 @@ class BxDolAIVectorStoreMariaDb
         return implode('.', $aParts);
     }
 
-    protected static function credential(string $sConstant): string
+    protected static function embeddingDimensions(string $sTable): ?int
     {
-        if (!defined($sConstant))
-            throw new Exception('Database credentials are not configured');
+        $oDb = BxDolDb::getInstance();
+        if (!$oDb)
+            return null;
 
-        $mValue = constant($sConstant);
-        if (is_array($mValue))
-            $mValue = reset($mValue);
-
-        return (string)$mValue;
-    }
-
-    protected static function embeddingDimensions(PDO $oPdo, string $sTable): ?int
-    {
-        $oStatement = $oPdo->prepare(
-            'SELECT COLUMN_TYPE FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ? AND COLUMN_NAME = ?'
+        $sType = $oDb->getOne(
+            'SELECT `COLUMN_TYPE` FROM `information_schema`.`COLUMNS` WHERE `TABLE_SCHEMA` = DATABASE() AND `TABLE_NAME` = ? AND `COLUMN_NAME` = ?',
+            [$sTable, 'embedding']
         );
-        $oStatement->execute([$sTable, 'embedding']);
-        $sType = $oStatement->fetchColumn();
         if (!is_string($sType) || !preg_match('/vector\((\d+)\)/i', $sType, $aMatch))
             return null;
 

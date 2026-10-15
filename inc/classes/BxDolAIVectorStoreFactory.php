@@ -122,7 +122,7 @@ class BxDolAIVectorStoreFactory extends BxDolFactory
                 break;
             case 'mariadb':
                 $o = BxDolAIVectorStoreMariaDb::open(
-                    $iId,
+                    (string)($aParameters['table'] ?? BxDolAIVectorStoreMariaDb::TABLE),
                     (int)($a['topk'] ?? 4),
                     (int)($aParameters['dimension'] ?? 1536)
                 );

@@ -50,15 +50,21 @@ class BxDolAIVectorStoreMariaDbTest extends BxDolTestCase
 
     public function testTableName()
     {
-        $this->assertSame('sys_agents_vs_3', BxDolAIVectorStoreMariaDb::tableName(3));
+        $this->assertSame('sys_agents_vector_mariadb', BxDolAIVectorStoreMariaDb::tableName(BxDolAIVectorStoreMariaDb::TABLE));
 
         try {
-            BxDolAIVectorStoreMariaDb::tableName(0);
-            $this->fail('A store id is required');
+            BxDolAIVectorStoreMariaDb::tableName('sys_agents_vs_1; DROP TABLE sys_accounts');
+            $this->fail('A table name must be an identifier');
         }
         catch (Exception $oException) {
-            $this->assertSame('MariaDB vector store id is missing', $oException->getMessage());
+            $this->assertSame('MariaDB vector store table name is invalid', $oException->getMessage());
         }
+    }
+
+    public function testPdoIsBxDolDbLink()
+    {
+        BxDolDb::getInstance();
+        $this->assertSame(BxDolDb::getLink(), BxDolAIVectorStoreMariaDb::pdo());
     }
 
     public function testInstalledServerVersionIsRecognized()
@@ -72,17 +78,6 @@ class BxDolAIVectorStoreMariaDbTest extends BxDolTestCase
         $bSupported = $a['engine'] === 'mariadb' && $a['version'] !== ''
             && version_compare(self::normalize($a['version']), BxDolAIVectorStoreMariaDb::MARIADB_MIN_VERSION, '>=');
         $this->assertSame($bSupported, $a['supported']);
-    }
-
-    public function testConnectUsesHeaderDatabase()
-    {
-        $oPdo = BxDolAIVectorStoreMariaDb::connect();
-        $sName = (string)$oPdo->query('SELECT DATABASE()')->fetchColumn();
-        $mExpected = BX_DATABASE_NAME;
-        if (is_array($mExpected))
-            $mExpected = reset($mExpected);
-
-        $this->assertSame((string)$mExpected, $sName);
     }
 
     protected static function normalize(string $sVersion): string
