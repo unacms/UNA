@@ -23,4 +23,13 @@ class SystemSqlDefaultsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, $bFound, 'system.sql adds the create-post block to the home page.');
         $this->assertSame(0, (int)$aMatch[1], 'It shows only its form: the content-only design box (BX_DB_CONTENT_ONLY).');
     }
+
+    public function testPoweredByBadgeFollowsTheFooterColour(): void
+    {
+        $bFound = preg_match("/\\('sys_footer', 'system', 'powered_by', [^\\n]*?'_blank', '(<svg.*?<\\/svg>)'/", self::systemSql(), $aMatch);
+
+        $this->assertSame(1, $bFound, 'system.sql adds the powered-by badge to the footer menu.');
+        $this->assertStringContainsString('fill="currentColor"', $aMatch[1], 'The badge draws in the footer link colour, so it reads in light and dark.');
+        $this->assertDoesNotMatchRegularExpression('/(fill|stroke)="#/', $aMatch[1], 'No fixed colour that would vanish on one of the two schemes.');
+    }
 }

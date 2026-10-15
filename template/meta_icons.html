@@ -1,0 +1,25 @@
+<bx_if:icon_fav><link rel="icon" href="__url__" sizes="any" /></bx_if:icon_fav>
+<bx_if:icon_svg><link rel="icon" href="__url__" type="image/svg+xml" /></bx_if:icon_svg>
+<bx_if:icon_dark>
+<link rel="icon" href="__url__" sizes="any" data-bx-icon-light="__url__" data-bx-icon-dark="__url_dark__" />
+<link rel="icon" href="__url__" type="image/svg+xml" data-bx-icon-light="__url__" data-bx-icon-dark="__url_dark__" />
+<script>
+    /* Browser tabs follow the browser/OS colour scheme, so the favicon does too, not the site's own colour scheme. */
+    (function () {
+        var oMedia = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)');
+        if (!oMedia)
+            return;
+
+        var fUpdate = function () {
+            document.querySelectorAll('link[data-bx-icon-dark]').forEach(function (oLink) {
+                oLink.href = oLink.getAttribute(oMedia.matches ? 'data-bx-icon-dark' : 'data-bx-icon-light');
+            });
+        };
+
+        fUpdate();
+        if (oMedia.addEventListener)
+            oMedia.addEventListener('change', fUpdate);
+    })();
+</script>
+</bx_if:icon_dark>
+<link rel="apple-touch-icon" href="__url_apple__" />

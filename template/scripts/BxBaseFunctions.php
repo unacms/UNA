@@ -750,8 +750,13 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
         if(($iId = (int)getParam('sys_site_icon_svg')) != 0)
             $sImageUrlSvg = BxDolStorage::getObjectInstance(BX_DOL_STORAGE_OBJ_IMAGES)->getFileUrlById($iId);
 
-        if(empty($sImageUrlFav) && empty($sImageUrlSvg))
+        // default icon, with a dark variant for a dark browser/OS colour scheme when the template has one
+        $sImageUrlDark = '';
+        if(empty($sImageUrlFav) && empty($sImageUrlSvg)) {
             $sImageUrlFav = $sImageUrlSvg = $this->_oTemplate->getIconUrl('favicon.svg');
+            $sImageUrlDark = $this->getMetaIconDarkUrl();
+        }
+        $bImageDark = !empty($sImageUrlDark);
 
         // apple device icon
         $sImageUrlApl = '';
@@ -773,18 +778,33 @@ class BxBaseFunctions extends BxDolFactory implements iBxDolSingleton
             $sImageUrlFcb = $this->_oTemplate->getIconUrl('facebook-icon.png');
 */
 
-        $sRet = '';
-        if($sImageUrlFav)
-            $sRet .= '<link rel="icon" href="' . $sImageUrlFav . '" sizes="any" />';
-        if($sImageUrlSvg)
-            $sRet .= '<link rel="icon" href="' . $sImageUrlSvg . '" type="image/svg+xml" />';
-        $sRet .= '<link rel="apple-touch-icon" href="' . $sImageUrlApl . '" />';
+        return $this->_oTemplate->parseHtmlByName('meta_icons.html', [
+            'bx_if:icon_fav' => [
+                'condition' => !$bImageDark && !empty($sImageUrlFav),
+                'content' => ['url' => bx_html_attribute($sImageUrlFav)]
+            ],
+            'bx_if:icon_svg' => [
+                'condition' => !$bImageDark && !empty($sImageUrlSvg),
+                'content' => ['url' => bx_html_attribute($sImageUrlSvg)]
+            ],
+            'bx_if:icon_dark' => [
+                'condition' => $bImageDark,
+                'content' => [
+                    'url' => bx_html_attribute($sImageUrlSvg),
+                    'url_dark' => bx_html_attribute($sImageUrlDark)
+                ]
+            ],
+            'url_apple' => bx_html_attribute($sImageUrlApl),
+        ]);
+    }
 
-/*
-        $sRet .= '<link rel="image_src" sizes="100x100" href="' . $sImageUrlFcb . '" />';
-*/
-
-        return $sRet;
+    /**
+     * Default favicon for a dark browser/OS colour scheme (browser tabs follow it, not the site's own colour scheme).
+     * @return string URL, or an empty string when the default favicon has no dark variant.
+     */
+    protected function getMetaIconDarkUrl()
+    {
+        return $this->_oTemplate->getIconUrl('favicon-dark.svg');
     }
 
     function getInjectionHead() 
