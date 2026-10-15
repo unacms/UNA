@@ -1075,7 +1075,8 @@ export const RightColumnContainer = ({ route, stickyColumnStyle }) => {
  * @param {Function} props.setIndex
  * @param {Function} [props.onChangeRoute]
  * @param {array}    [props.leftColumnMenus] Left-column blocks shown as dropdowns.
- * @param {boolean}  [props.showFilters]     Render the "Filters" button.
+ * @param {boolean}  [props.showLeftColumnMenus] Show them: the left panel is off screen.
+ * @param {boolean}  [props.showFilters]     Render the "Filters" button (in the tab row).
  * @param {Function} [props.onShowFilters]
  */
 export const HeaderContainer = ({
@@ -1092,6 +1093,7 @@ export const HeaderContainer = ({
     setIndex,
     onChangeRoute,
     leftColumnMenus = [],
+    showLeftColumnMenus,
     showFilters = false,
     onShowFilters,
 }) => {
@@ -1123,24 +1125,20 @@ export const HeaderContainer = ({
     }, [])
 
     const tabBarContent = (
-        <>
-            <TabBar
-                menu={menu}
-                routes={routes}
-                layoutName={layoutName}
-                index={index}
-                setIndex={setIndex}
-                onChangeRoute={onChangeRoute}
-                pageData={pageData}
-                leftColumnMenus={leftColumnMenus}
-                contentWidth={contentWidth}
-            />
-            <FiltersButton
-                visible={showFilters}
-                onPress={onShowFilters}
-                className="items-start px-3 lg:px-4 py-2"
-            />
-        </>
+        <TabBar
+            menu={menu}
+            routes={routes}
+            layoutName={layoutName}
+            index={index}
+            setIndex={setIndex}
+            onChangeRoute={onChangeRoute}
+            pageData={pageData}
+            leftColumnMenus={leftColumnMenus}
+            showLeftColumnMenus={showLeftColumnMenus}
+            showFilters={showFilters}
+            onShowFilters={onShowFilters}
+            contentWidth={contentWidth}
+        />
     )
 
     if (useMorph) {
@@ -1253,13 +1251,19 @@ export const TabBar = ({
     onChangeRoute,
     omitDefaultBackground = false,
     leftColumnMenus = [],
+    showLeftColumnMenus,
+    showFilters = false,
+    onShowFilters,
     contentWidth,
 }) => {
     const { t } = useTranslation()
     const { layoutName: layout } = useLayoutSettings()
     const menuSettings = getMenuSettings(menu.object, menu.config, menu)
     const isDesktop = useIsDesktop()
-    const hasLeftColumnMenus = !isDesktop && leftColumnMenus.length > 0
+    // Left-column menus and the Filters trigger sit at the end of the tab row while the left
+    // panel is off screen (below its breakpoint, which can be wider than `isDesktop`).
+    const hasLeftColumnMenus = (showLeftColumnMenus ?? !isDesktop) && leftColumnMenus.length > 0
+    const hasRowEnd = hasLeftColumnMenus || showFilters
 
     if (!routes.length) return null
 
@@ -1276,7 +1280,7 @@ export const TabBar = ({
     const isShowSecondLine = (
         routes.length > 1 ||
         !!pageData.cover_block?.actions_menu ||
-        hasLeftColumnMenus
+        hasRowEnd
     )
     return (
         <TopSidebar
@@ -1297,15 +1301,22 @@ export const TabBar = ({
                         onChangeRoute={onChangeRoute}
                     />}
                 </View>
-                    {hasLeftColumnMenus && (
-                        <Row className={`items-center gap-1 shrink-0 pl-1${showActionsInTabBar ? '' : ' pr-3 lg:pr-4'}`}>
-                            {leftColumnMenus.map((blockItem) => (
+                    {hasRowEnd && (
+                        <Row className={`items-center gap-2 shrink-0 pl-1${showActionsInTabBar ? '' : ' pr-3 lg:pr-4'}`}>
+                            {hasLeftColumnMenus && leftColumnMenus.map((blockItem) => (
                                 <LeftColumnMenuDropdown
                                     key={blockItem.id ?? blockItem.block?.name}
                                     blockItem={blockItem}
                                     t={t}
                                 />
                             ))}
+                            <FiltersButton
+                                visible={showFilters}
+                                onPress={onShowFilters}
+                                className=""
+                                style="glass"
+                                image="SlidersHorizontal"
+                            />
                         </Row>
                     )}
                     {!!pageData.cover_block?.actions_menu && showActionsInTabBar ? (
