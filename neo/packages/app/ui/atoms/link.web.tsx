@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { Pressable } from 'app/design/view'
 import { useRouter } from 'app/lib/hooks/router'
 import { useCallback, type CSSProperties } from 'react';
-import { appSetting, cn, sanitazeUrl, isExternalUrl } from 'app/lib/util'
+import { appSetting, cn, sanitazeUrl, isExternalUrl, decodeTextNode } from 'app/lib/util'
 import emitter, { EVENTS } from 'app/context/emitter';
 import type { LinkProps } from './link.types';
 
@@ -38,7 +38,7 @@ export default function ElementLink({
     const rel = resolvedTarget === '_blank' ? 'noopener noreferrer' : undefined;
 
     // Convert alt to aria-label (alt is not valid for <a> elements)
-    const accessibleLabel = alt || (typeof children === 'string' ? children : undefined);
+    const accessibleLabel = decodeTextNode(alt || (typeof children === 'string' ? children : undefined));
 
     const handlePress = useCallback((event?: { preventDefault?: () => void }) => {
         emitter.emit(EVENTS.link, { action: 'pressed', href });

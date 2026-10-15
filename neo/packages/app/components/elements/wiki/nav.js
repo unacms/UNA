@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { View, Row, Pressable } from 'app/design/view'
 import { Text } from 'app/design/typography'
+import { decodeTextNode } from 'app/lib/util'
 import { Icon } from 'app/ui/atoms/icon'
 import { components } from 'app/components/registry'
 import { getConductorDepthClassName } from 'app/ui/molecules/sections/conductor/helpers'
@@ -54,7 +55,7 @@ export function WikiBreadcrumb({ items, onNavigate, compact = false }) {
                             onPress={() => onNavigate(item.path)}
                             className="min-w-0 rounded-md px-1 py-0.5 web:hover:bg-muted/50"
                             accessibilityRole="link"
-                            accessibilityLabel={item.title}
+                            accessibilityLabel={decodeTextNode(item.title)}
                         >
                             <Text
                                 numberOfLines={1}

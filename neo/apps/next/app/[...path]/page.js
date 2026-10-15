@@ -1,4 +1,5 @@
 import { UNA_URL, UNA_API_KEY, MULTITENANT, PREVIEW_DOMAIN, appSetting } from 'app/config';
+import { decodeTextNode } from 'app/lib/util/html-text';
 import { cache } from 'react'
 import Root from 'app/root-client'
 import { Suspense } from 'react'
@@ -133,8 +134,9 @@ export const viewport = {
 export async function generateMetadata(props) {
     
     const data = await loadPage(props);
-    const description = data?.data?.description || SITE_TITLE;
-    const name = data?.data?.title || SITE_TITLE;
+    // UNA sends titles HTML-escaped; Next escapes metadata again, so the tab would read `&amp;`.
+    const description = decodeTextNode(data?.data?.description || SITE_TITLE);
+    const name = decodeTextNode(data?.data?.title || SITE_TITLE);
     const image = data?.data?.image;
     const isClientProject = UNA_URL != 'https://api.neo.so';
 
