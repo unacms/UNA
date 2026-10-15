@@ -48,6 +48,14 @@ class BxBaseStudioFunctions extends BxBaseFunctions implements iBxDolSingleton
         return $GLOBALS['bxDolClasses']['BxBaseStudioFunctions'];
     }
 
+    /**
+     * Studio's favicon is the UNA logo on a coloured plate, which reads on light and dark tabs alike.
+     */
+    protected function getMetaIconDarkUrl()
+    {
+        return '';
+    }
+
     public function getLogo()
     {
         return bx_idn_to_utf8(BX_DOL_URL_ROOT, true);
