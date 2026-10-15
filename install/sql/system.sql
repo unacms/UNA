@@ -7119,6 +7119,7 @@ CREATE TABLE IF NOT EXISTS `sys_agents_vector_mariadb` (
   `metadata` json,
   `embedding` vector(1536) NOT NULL,
   PRIMARY KEY (`id`),
+  KEY `sourceType` (`sourceType`),
   VECTOR INDEX (`embedding`)
 ) ENGINE=InnoDB;
 

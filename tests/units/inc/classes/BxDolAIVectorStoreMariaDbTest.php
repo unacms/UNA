@@ -67,6 +67,46 @@ class BxDolAIVectorStoreMariaDbTest extends BxDolTestCase
         $this->assertSame(BxDolDb::getLink(), BxDolAIVectorStoreMariaDb::pdo());
     }
 
+    public function testSearchIsLimitedToStore()
+    {
+        $sVersion = (string)BxDolDb::getInstance()->getOne('SELECT VERSION()');
+        if (!BxDolAIVectorStoreMariaDb::describe($sVersion)['supported'])
+            $this->markTestSkipped('MariaDB vector store is not supported on this server');
+
+        $aNearA = array_fill(0, BxDolAIVectorStoreMariaDb::DIMENSION, 0.0);
+        $aNearA[0] = 1.0;
+        $aNearB = array_fill(0, BxDolAIVectorStoreMariaDb::DIMENSION, 0.0);
+        $aNearB[1] = 1.0;
+
+        $oStoreA = BxDolAIVectorStoreMariaDb::open(901, BxDolAIVectorStoreMariaDb::TABLE, 4);
+        $oStoreB = BxDolAIVectorStoreMariaDb::open(902, BxDolAIVectorStoreMariaDb::TABLE, 4);
+        $oDocA = new NeuronAI\RAG\Document('store-a-only');
+        $oDocA->embedding = $aNearA;
+        $oDocA->sourceType = '901';
+        $oDocA->sourceName = 'search-filter';
+        $oDocB = new NeuronAI\RAG\Document('store-b-only');
+        $oDocB->embedding = $aNearB;
+        $oDocB->sourceType = '902';
+        $oDocB->sourceName = 'search-filter';
+
+        try {
+            $oStoreA->addDocument($oDocA);
+            $oStoreB->addDocument($oDocB);
+
+            $aFromA = iterator_to_array($oStoreA->similaritySearch($aNearB));
+            $aFromB = iterator_to_array($oStoreB->similaritySearch($aNearB));
+
+            $this->assertSame('store-a-only', $aFromA[0]->getContent());
+            $this->assertSame('901', (string)$aFromA[0]->getSourceType());
+            $this->assertSame('store-b-only', $aFromB[0]->getContent());
+            $this->assertSame('902', (string)$aFromB[0]->getSourceType());
+        }
+        finally {
+            $oStoreA->deleteBy('901', 'search-filter');
+            $oStoreB->deleteBy('902', 'search-filter');
+        }
+    }
+
     public function testInstalledServerVersionIsRecognized()
     {
         $sVersion = (string)BxDolDb::getInstance()->getOne('SELECT VERSION()');

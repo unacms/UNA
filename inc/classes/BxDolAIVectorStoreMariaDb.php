@@ -71,8 +71,10 @@ class BxDolAIVectorStoreMariaDb
         return $oPdo;
     }
 
-    public static function open(string $sTable, int $iTopK): NeuronAI\RAG\VectorStore\MariaDBVectorStore
+    public static function open(int $iStoreId, string $sTable, int $iTopK): NeuronAI\RAG\VectorStore\MariaDBVectorStore
     {
+        if ($iStoreId < 1)
+            throw new Exception('MariaDB vector store id is missing');
         if ($iTopK < 1)
             $iTopK = 4;
 
@@ -92,7 +94,7 @@ class BxDolAIVectorStoreMariaDb
         if ($iExisting !== self::DIMENSION)
             throw new Exception('MariaDB vector store ' . $sTable . ' must use dimension ' . self::DIMENSION);
 
-        return new NeuronAI\RAG\VectorStore\MariaDBVectorStore(self::pdo(), $sTable, $iTopK);
+        return new BxDolAIVectorStoreMariaDbStore(self::pdo(), $sTable, $iTopK, (string)$iStoreId);
     }
 
     protected static function versionNumber(string $sVersion, bool $bMaria): string
