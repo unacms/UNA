@@ -31,7 +31,9 @@ function MenuChoiceRow({ item, href }) {
     )
 }
 
-export default function ElementMenu({ data, blockWrapperProps, url }) {
+// `itemsClassName`: classes for the list of links in place of `w-full`, e.g. the Conductor's left
+// panel lines them up with its own links (`-mx-1`: a fixed `w-full` would cancel the right margin).
+export default function ElementMenu({ data, blockWrapperProps, url, itemsClassName = '' }) {
     const MenuItemSidebarWithWrapper = components['menu-item']['sidebar_with_wrapper'];
     const currentPath = String(url || '');
     const currentPathComparable = currentPath.replace(/^\/+/, '');
@@ -137,7 +139,7 @@ export default function ElementMenu({ data, blockWrapperProps, url }) {
 
     return (
         <BlockWrapper {...blockWrapperProps}>
-            <View className="w-full gap-0.5">
+            <View className={`gap-0.5 ${itemsClassName || 'w-full'}`}>
                 {renderItems(topLevelItems)}
             </View>
         </BlockWrapper>

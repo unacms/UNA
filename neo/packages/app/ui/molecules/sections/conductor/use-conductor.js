@@ -24,7 +24,8 @@ import {
  * @param {object} opts
  * @param {array}  opts.leftColumnContent
  * @param {string} opts.layoutName
- * @param {boolean} [opts.isDesktop=false] — web only; native always false
+ * @param {boolean} [opts.isDesktop=false] — web: the left panel is on screen (its blocks stay in it);
+ *   native always false
  */
 export function useLeftColumn({
     leftColumnContent = [],

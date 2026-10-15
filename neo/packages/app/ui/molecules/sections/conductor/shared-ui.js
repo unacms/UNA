@@ -5,7 +5,7 @@ import { Icon } from 'app/ui/atoms/icon'
 import DropdownMenu, { DropdownMenuOpenContext } from 'app/ui/atoms/dropdown-menu'
 import UniList from 'app/ui/atoms/unilist'
 import { BlockByName, BlockByData } from 'app/components/block'
-import { findElementById, hasNonEmptyContent } from 'app/lib/util'
+import { findElementById, hasNonEmptyContent, isWeb } from 'app/lib/util'
 import { ItemRenderer } from 'app/components/item-renderer'
 import { NeoButton } from 'app/design/controls'
 import { cueAttributes, PressCueContext } from 'app/lib/sound'
@@ -79,6 +79,7 @@ export const LeftColumnContent = memo(function LeftColumnContent({
     saveOnChanges = false,
     restoreFormValues = false,
     className = 'gap-y-4',
+    menuItemsClassName,
 }) {
     const items = itemsProp ?? route?.leftbar?.content ?? []
     if (!items.length) return null
@@ -90,7 +91,13 @@ export const LeftColumnContent = memo(function LeftColumnContent({
           )
         : (data ?? route?.pageData)
 
-    const blockProps = { onChange, onFormSubmit, saveOnChanges, sidebar: true }
+    const blockProps = {
+        onChange,
+        onFormSubmit,
+        saveOnChanges,
+        sidebar: true,
+        ...(menuItemsClassName ? { itemsClassName: menuItemsClassName } : null),
+    }
 
     return (
         <View className={className}>
@@ -153,11 +160,16 @@ export function openFiltersSheet(
     })
 }
 
-/** Filters trigger under the tab bar (native / mobile web). */
+/**
+ * Filters trigger: under the tab bar on native; in the tab row on the web, where it takes the
+ * tab pills' look (`style` / `image`, see TabBar in web-ui.js).
+ */
 export function FiltersButton({
     onPress,
     visible = true,
     className = 'items-start px-3 py-2',
+    style,
+    image,
 }) {
     const { t } = useTranslation()
     if (!visible) return null
@@ -167,6 +179,8 @@ export function FiltersButton({
                 label={t('Filters')}
                 controlSize="small"
                 borderShape="capsule"
+                {...(style ? { style } : null)}
+                {...(image ? { image } : null)}
                 onPress={onPress}
             />
         </View>
@@ -229,6 +243,25 @@ export function LeftColumnMenuDropdown({ blockItem, t }) {
 
     const title = t(blockItem?.data?.title || 'Menu')
     const icon = blockItem?.data?.config_api?.icon || 'LayoutGrid'
+
+    // Web: a NeoButton like the tab pills beside it (glass, small capsule), so it follows the
+    // header band's colour scheme too; the chevron says it opens a menu.
+    if (isWeb)
+        return (
+            <DropdownMenu
+                items={items}
+                mode="popup"
+                triggerAccessibilityLabel={title}
+                buttonProps={{
+                    label: title,
+                    image: 'ChevronDown',
+                    imagePlacement: 'trailing',
+                    style: 'glass',
+                    controlSize: 'small',
+                    borderShape: 'capsule',
+                }}
+            />
+        )
 
     return (
         <DropdownMenu
