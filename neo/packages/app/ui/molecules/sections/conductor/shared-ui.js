@@ -79,6 +79,7 @@ export const LeftColumnContent = memo(function LeftColumnContent({
     saveOnChanges = false,
     restoreFormValues = false,
     className = 'gap-y-4',
+    menuItemsClassName,
 }) {
     const items = itemsProp ?? route?.leftbar?.content ?? []
     if (!items.length) return null
@@ -90,7 +91,13 @@ export const LeftColumnContent = memo(function LeftColumnContent({
           )
         : (data ?? route?.pageData)
 
-    const blockProps = { onChange, onFormSubmit, saveOnChanges, sidebar: true }
+    const blockProps = {
+        onChange,
+        onFormSubmit,
+        saveOnChanges,
+        sidebar: true,
+        ...(menuItemsClassName ? { itemsClassName: menuItemsClassName } : null),
+    }
 
     return (
         <View className={className}>

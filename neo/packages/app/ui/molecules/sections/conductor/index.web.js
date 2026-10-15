@@ -397,7 +397,9 @@ export function Conductor({
             routes={routes}
             stickyColumnStyle={stickyColumnStyle}
         >
-            <LeftColumnContent route={tabRoute} onChange={onFormChangedValues} />
+            {/* Menu blocks' links line up with the panel's own (LeftColumnContainer pulls those
+                out with -mx-1, so their icons align with the section title's). */}
+            <LeftColumnContent route={tabRoute} onChange={onFormChangedValues} menuItemsClassName="-mx-1" />
         </LeftColumnContainer>
     ) : null
 
