@@ -15,6 +15,17 @@ export const NeoButtonColorSchemeContext = createContext<NeoButtonColorScheme>(n
 
 export const useNeoButtonColorScheme = (): NeoButtonColorScheme => useContext(NeoButtonColorSchemeContext);
 
+/**
+ * The scheme a web button draws with on that surface. A selected button takes the opposite one:
+ * in the surface's own scheme its toggled fill sinks into the band (a dark accent wash on a
+ * bright band), while the inverse stands out from its neighbours, as a selected segment does.
+ * iOS needs no flip: selected glass takes its fill and label from the app's own tokens.
+ */
+export function selectedColorScheme(scheme: NeoButtonColorScheme, selected: boolean): NeoButtonColorScheme {
+    if (!scheme || !selected) return scheme;
+    return scheme === 'dark' ? 'light' : 'dark';
+}
+
 /** Any RN colour as unsigned 0xAARRGGBB; null when it can't be parsed. */
 function toArgb(color: unknown): number | null {
     const value = processColor(color as Parameters<typeof processColor>[0]);

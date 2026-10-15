@@ -123,12 +123,13 @@ export const settingsLayout = {
              */
             band: 'bg-card sm:bg-card/80 lg:bg-transparent',
             /**
-             * Colour scheme of the header's buttons while they rest on the band (iOS: SwiftUI
-             * glass chrome and labels; web: the buttons' colour tokens). 'auto' picks by the
-             * band colour's contrast (white or dark labels, whichever reads better); 'light' |
-             * 'dark' set it; null keeps the app's scheme. The app's scheme also applies once the
-             * header floats over content, and at widths where `band` resolves to no fill
-             * (`lg:bg-transparent`).
+             * Colour scheme of the header's buttons and page title while they rest on the band
+             * (iOS: SwiftUI glass chrome and labels; web: the buttons' colour tokens; the title
+             * through Uniwind's ScopedTheme). On web a selected button (the active tab) takes the
+             * opposite scheme, so it stands out from the band. 'auto' picks by the band colour's
+             * contrast (white or dark labels, whichever reads better); 'light' | 'dark' set it;
+             * null keeps the app's scheme. The app's scheme also applies once the header floats
+             * over content, and at widths where `band` resolves to no fill (`lg:bg-transparent`).
              */
             band_scheme: null,
         },
