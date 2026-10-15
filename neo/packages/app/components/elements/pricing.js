@@ -58,8 +58,8 @@ function ElementPricingPeriod({ data, period, unit, settings }) {
     const filtered = data.filter(item => item?.period?.value.unit === period.unit);
     const [showModal, setShowModal] = useState(false);
 
-    const fetchData = async (ids) => {
-        let sUrl = '/api.php?r=system/perfom_action_api/TemplServiceGrid/&params[]=&o=' + settings.object + '&a=buy&ids[]=' + ids;
+    const fetchData = async (action, ids) => {
+        let sUrl = '/api.php?r=system/perfom_action_api/TemplServiceGrid/&params[]=&o=' + settings.object + '&a=' + action + '&ids[]=' + ids;
         if (settings?.query_append)
             Object.keys(settings.query_append).forEach((sKey) => {
                 sUrl += '&' + sKey + '=' + settings.query_append[sKey];
@@ -75,8 +75,10 @@ function ElementPricingPeriod({ data, period, unit, settings }) {
         }
 
         if (data.type == "callback") {
-            fetchData(data.items.join(''));
-            redirectRef.current.redirect(data.redirect_url);
+            // `choose` (free level) posts the grid row id; `buy` posts its cart item.
+            const ids = data.items?.length ? data.items.join('') : data.attr?.bx_grid_action_data;
+            await fetchData(data.name || 'buy', ids);
+            if (data.redirect_url) redirectRef.current.redirect(data.redirect_url);
         }
     }
 
