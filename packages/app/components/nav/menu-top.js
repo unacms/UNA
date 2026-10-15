@@ -27,8 +27,9 @@ export default function MenuTop({ url, uri }) {
             appSetting('menu_items', 'menu_navbar'),
             currentUser
         );
+        // The launcher's apps belong in More; other dropdowns keep their own items.
         return items.map((item) => {
-            if (!item?.items?.length) return item;
+            if (item?.name !== 'more' || !item?.items?.length) return item;
             return {
                 ...item,
                 items: mergeNavbarMoreWithLauncher(item.items, launcherItems),
