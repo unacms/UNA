@@ -146,6 +146,9 @@ export function CoverMorphBody({
         </Text>
     )
 
+    // The collapsed bar's second line; when empty, the title centres in the bar.
+    const hasCompactMeta = metaMenuItems.length > 0 || !!metaDate
+
     // Same source as Cover — do not gate on a separate flag (actions_menu is enough).
     let menu = data?.actions_menu ? cloneObject(data.actions_menu) : null
     if (menu && menu.persistent > 1) {
@@ -363,7 +366,7 @@ export function CoverMorphBody({
                             <Row
                                 className={cn(
                                     'items-center gap-2 flex-nowrap min-w-0 h-5',
-                                    !compactBar && 'hidden',
+                                    (!compactBar || !hasCompactMeta) && 'hidden',
                                 )}
                             >
                                 {!!metaMenuCompact && (
