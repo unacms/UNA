@@ -1390,7 +1390,7 @@ csstype@^3.2.2:
   resolved "https://registry.yarnpkg.com/csstype/-/csstype-3.2.3.tgz#ec48c0f3e993e50648c86da559e2610995cf989a"
   integrity sha512-z1HGKcYy2xA8AGQfwrn0PAy+PB7X/GSj3UVJW9qKyn43xWa+gl5nXmU4qqLMRzWVLFC8KusUX8T/0kCiOYpAIQ==
 
-cuelume@0.2.6:
+cuelume@^0.2.6:
   version "0.2.6"
   resolved "https://registry.yarnpkg.com/cuelume/-/cuelume-0.2.6.tgz#359a82fb008058ebfb587898894caa6e003da3a6"
   integrity sha512-ZApqE9PVLmn85YC4gnzySujI6+B4GMT4Q07lh1ji16czIGf7azBSd5KhHjXnNQ167QSadG6W8FdFdfe7SFQ6bw==
