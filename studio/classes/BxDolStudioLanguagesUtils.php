@@ -338,8 +338,9 @@ class BxDolStudioLanguagesUtils extends BxDolLanguages implements iBxDolSingleto
 
         $aCategory = array();
         $this->oDb->getCategoriesBy(array('type' => 'by_name', 'value' => $aModule['lang_category']), $aCategory, false);
+        // No category means its keys are already gone, e.g. an uninstall that stopped half way.
         if(empty($aCategory) || !is_array($aCategory))
-            return false;
+            return $bRecompile ? $this->compileLanguage() : true;
 
         $bResult = (int)$this->oDb->deleteKeysBy(array('type' => 'by_cat_id', 'value' => $aCategory['id'])) >= 0;
         return $bResult && ($bRecompile ? $this->compileLanguage() : true);

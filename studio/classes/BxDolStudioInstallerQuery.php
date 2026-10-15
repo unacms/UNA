@@ -96,10 +96,17 @@ class BxDolStudioInstallerQuery extends BxDolModuleQuery
 
     function deleteModule($aConfig)
     {
-        $sQuery = $this->prepare("SELECT `id` FROM `sys_modules` WHERE `vendor`=? AND `path`=? LIMIT 1", $aConfig['vendor'], $aConfig['home_dir']);
+        /*
+         * Match by path and uri, both unique per module. The vendor is left out:
+         * the row keeps the vendor it was installed with, and config.php may have
+         * renamed it since (BoonEx -> UNA INC, ticket #4577).
+         */
+        $sQuery = $this->prepare("SELECT `id` FROM `sys_modules` WHERE `path`=? AND `uri`=? LIMIT 1", $aConfig['home_dir'], $aConfig['home_uri']);
         $iId = (int)$this->getOne($sQuery);
+        if(!$iId)
+            return 0;
 
-        $sQuery = $this->prepare("DELETE FROM `sys_modules` WHERE `vendor`=? AND `path`=? LIMIT 1", $aConfig['vendor'], $aConfig['home_dir']);
+        $sQuery = $this->prepare("DELETE FROM `sys_modules` WHERE `id`=? LIMIT 1", $iId);
         $this->query($sQuery);
 
         $this->deleteModuleTrackFiles($iId);
