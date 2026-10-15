@@ -148,7 +148,7 @@
     <string name="_bx_events_form_session_display_edit"><![CDATA[Редактирование сессии]]></string>
     <string name="_bx_events_form_session_input_sys_title"><![CDATA[Заголовок]]></string>
     <string name="_bx_events_form_session_input_title"><![CDATA[Заголовок]]></string>
-    <string name="_bx_events_form_session_input_title_err"><![CDATA[Заголовок сессии обязателен.]]></string>
+    <string name="_bx_events_form_session_input_title_err"><![CDATA[Заголовок сессии обязателен, мин. 3 макс. 160.]]></string>
     <string name="_bx_events_form_session_input_sys_description"><![CDATA[Описание]]></string>
     <string name="_bx_events_form_session_input_description"><![CDATA[Описание]]></string>
     <string name="_bx_events_form_session_input_sys_date_start"><![CDATA[Начало]]></string>

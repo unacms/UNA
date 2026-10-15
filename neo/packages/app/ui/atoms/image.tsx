@@ -4,7 +4,7 @@ import type { ViewStyle } from 'react-native';
 import type { ImageInnerProps, ImageProps } from './image.types';
 import { Image as ExpoImage } from 'expo-image';
 import { View } from 'app/design/view';
-import { appSetting, cn } from 'app/lib/util';
+import { appSetting, cn, decodeText } from 'app/lib/util';
 import {
     getNativeOptimizedImageUrl,
     hasSizeClass,
@@ -84,7 +84,7 @@ function ElementImageInner(props: ImageInnerProps) {
                 cachePolicy="memory-disk"
                 recyclingKey={normalizedSrc}
                 priority={priority === true ? 'high' : (priority || undefined)}
-                alt={alt}
+                alt={decodeText(alt)}
                 onError={handleError}
                 onLoad={onLoad}
             />

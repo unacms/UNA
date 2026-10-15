@@ -39,7 +39,7 @@
     <string name="_bx_groups_form_profile_input_initial_members"><![CDATA[Пригласить участников]]></string>
     <string name="_bx_groups_form_profile_input_sys_group_name"><![CDATA[Название группы]]></string>
     <string name="_bx_groups_form_profile_input_group_name"><![CDATA[Название группы]]></string>
-    <string name="_bx_groups_form_profile_input_group_name_err"><![CDATA[Поле должно содержать от 1 до 80 символов.]]></string>
+    <string name="_bx_groups_form_profile_input_group_name_err"><![CDATA[Название обязательно, мин. 3 макс. 160.]]></string>
     <string name="_bx_groups_form_profile_input_sys_group_desc"><![CDATA[Описание]]></string>
     <string name="_bx_groups_form_profile_input_group_desc"><![CDATA[Описание]]></string>
     <string name="_bx_groups_form_profile_input_sys_group_cat"><![CDATA[Категория]]></string>

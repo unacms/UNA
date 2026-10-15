@@ -6,7 +6,7 @@ import { cueAttributes } from 'app/lib/sound';
 import { Text } from 'app/design/typography';
 import { Icon } from 'app/ui/atoms/icon';
 import Image from 'app/ui/atoms/image';
-import { isEmoji, appSetting } from 'app/lib/util';
+import { isEmoji, appSetting, decodeTextNode } from 'app/lib/util';
 import Link from 'app/ui/atoms/link';
 
 const menuSettings = appSetting('theme', 'dropdown_menu');
@@ -91,7 +91,7 @@ export default function DropdownGridItem({ item, index, link, handleSelect, clas
             className={`${className || ''} ${menuSettings.item_grid || ''}`}
             key={key}
             accessibilityRole={handleSelect ? 'button' : undefined}
-            accessibilityLabel={title || undefined}
+            accessibilityLabel={decodeTextNode(title) || undefined}
             {...pressProps}
             {...rowHoverProps}
             {...(handleSelect || link ? cueAttributes('select') : {})}

@@ -10,7 +10,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { PixelRatio, Platform, Pressable, useWindowDimensions } from 'react-native';
 import { Image } from 'expo-image';
 import { View } from 'app/design/view';
-import { androidTabBarHeight, appSetting, findIconFromRemote, isAndroid, isIos, IOS_TAB_BAR_MARGIN } from 'app/lib/util';
+import { androidTabBarHeight, appSetting, decodeTextNode, findIconFromRemote, isAndroid, isIos, IOS_TAB_BAR_MARGIN } from 'app/lib/util';
 import { useTranslation } from 'react-i18next';
 import { TabSlideHost } from 'app/components/nav/tab-slide';
 import { playTabFeedback } from 'app/components/nav/tab-feedback';
@@ -547,7 +547,8 @@ export default function ExpoUITabNavigator({
                     onSelect={handleOverflowSelect}
                     profile={sheetHeader ? {
                         item: sheetHeader,
-                        name: currentUser?.display_name,
+                        // SwiftUI / Compose text: decode UNA's escaped name here.
+                        name: decodeTextNode(currentUser?.display_name),
                         avatar: currentUser?.avatar ? avatarImageUri(currentUser.avatar, SHEET_AVATAR_PT) : null,
                     } : null}
                     onAgentPress={agentData ? toggleAgent : undefined}

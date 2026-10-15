@@ -1,5 +1,5 @@
 import { View } from 'app/design/view'
-import { useCallback, useMemo, useEffect, useRef, type ComponentType, type ReactElement } from 'react'
+import { createContext, useCallback, useContext, useMemo, useEffect, useRef, type ComponentType, type ReactElement } from 'react'
 import { Platform, RefreshControl } from 'react-native'
 import { AnimatedLegendList } from '@legendapp/list/reanimated'
 import { useSharedValue } from 'react-native-reanimated'
@@ -34,6 +34,13 @@ import { useListScrollPublisher } from './use-list-scroll-publisher'
  */
 
 const EMPTY_LIST_DATA: any[] = []
+
+/**
+ * True inside a UniList's rows and header. A list there is part of the page's list (a post's
+ * comments block drawn as one of its rows), so it adds no page-header spacer or band of its own:
+ * that would put a header-sized strip in the band colour between the blocks.
+ */
+const NestedUniListContext = createContext(false)
 
 /**
  * Stable header component. LegendList reconciles ListHeaderComponent by type;
@@ -221,6 +228,7 @@ export default function UniList(props: UniListProps) {
     // Page-header / cover offsets
     // ------------------------------------------------------------------
 
+    const isNested = useContext(NestedUniListContext)
     const headerHeightFromAtom = useHeaderHeight()
     const headerHeight = typeof headerHeightFromAtom === 'number'
         ? headerHeightFromAtom
@@ -230,15 +238,16 @@ export default function UniList(props: UniListProps) {
     const listHeaderOffset = useMemo(() => {
         if (headerHeight <= 0) return 0
         const fadeExtra =
-            Platform.OS !== 'web' && !skipHeaderOffset && !inverted && !isModal
+            Platform.OS !== 'web' && !skipHeaderOffset && !isNested && !inverted && !isModal
                 ? getHeaderFadeExtend()
                 : 0
         return headerHeight + fadeExtra
-    }, [headerHeight, skipHeaderOffset, inverted, isModal])
+    }, [headerHeight, skipHeaderOffset, isNested, inverted, isModal])
 
     // Normal list: spacer at the top for the page header. Inverted (chat):
     // the "top" of the content is at the bottom, so the spacer goes there.
-    const applyHeaderOffset = !inverted && !isModal && !skipHeaderOffset
+    // A nested list has none: the page's own list already carries it.
+    const applyHeaderOffset = !inverted && !isModal && !skipHeaderOffset && !isNested
     const applyFooterOffset = inverted && !isModal
 
     // Bottom padding applied while the profile cover is collapsed on a short
@@ -342,10 +351,12 @@ export default function UniList(props: UniListProps) {
     // lets the keyboard follow a drag that reaches it, like iOS.
     if (chatKeyboardEnabled && Platform.OS === 'android') {
         return (
-            <KeyboardGestureArea interpolator="ios" style={{ flex: 1 }}>
-                {list}
-            </KeyboardGestureArea>
+            <NestedUniListContext.Provider value={true}>
+                <KeyboardGestureArea interpolator="ios" style={{ flex: 1 }}>
+                    {list}
+                </KeyboardGestureArea>
+            </NestedUniListContext.Provider>
         )
     }
-    return list
+    return <NestedUniListContext.Provider value={true}>{list}</NestedUniListContext.Provider>
 }

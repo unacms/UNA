@@ -1,6 +1,6 @@
 import { Pressable } from 'app/design/view';
 import { useCurrentTabPath, Link } from 'app/lib/hooks/router'
-import { FeedbackHaptics, isExternalUrl, openExternalLink } from 'app/lib/util';
+import { FeedbackHaptics, isExternalUrl, openExternalLink, decodeTextNode } from 'app/lib/util';
 import { nativeTabPageHref } from 'app/lib/navigation/tab-history';
 import { findTabPathForUrl } from 'app/components/nav/tabs/tab-menu';
 import { useCurrentUser } from 'app/context/user';
@@ -96,7 +96,7 @@ export default function ElementLink({
         return false;
     };
 
-    const accessibleLabel = alt || (typeof children === 'string' ? children : undefined);
+    const accessibleLabel = decodeTextNode(alt || (typeof children === 'string' ? children : undefined));
     const isTextMode = mode === 'text';
     const isPlainMode = mode === 'plain';
     const isExternal = isExternalUrl(finalHref) || asExternal === true;

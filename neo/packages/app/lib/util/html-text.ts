@@ -80,6 +80,16 @@ export function decodeText(str: string): string {
 
 export const htmlDecode = decodeText; // Alias for backward compatibility
 
+/**
+ * `decodeText` for a value that may not be a string: React children, optional
+ * labels, `alt`. UNA sends titles and names HTML-escaped (`Rock &amp; Roll`),
+ * so every plain-text sink that shows one (headings, alt, accessible names,
+ * native buttons, document titles) decodes it. Anything but a string passes through.
+ */
+export function decodeTextNode<T>(value: T): T {
+    return (typeof value === 'string' ? decodeText(value) : value) as T;
+}
+
 export function truncateString(str: string, num: number): string {
     if (str.length <= num) {
         return str;
