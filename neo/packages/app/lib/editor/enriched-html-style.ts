@@ -18,7 +18,7 @@ const HEADINGS = {
  */
 export function useEnrichedHtmlStyle({ small = false }: { small?: boolean } = {}): HtmlStyle {
     const themeKey = useThemeValue('light', 'dark')
-    const mentionColorFallback = useThemeValue('rgba(37, 99, 235, 1)', 'rgba(59, 130, 246, 1)')
+    const mentionColorFallback = useThemeValue('rgba(29, 78, 216, 1)', 'rgba(96, 165, 250, 1)')
 
     return useMemo(() => {
         const mentionCfg = appSetting('editor', 'mention') || {}
