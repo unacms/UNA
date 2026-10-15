@@ -51,7 +51,7 @@ Rules for forks:
 | `functions.js` | Re-exports `app/default/functions`. Declare a local export with the same name to replace one function. |
 | `loading.js`, `sounds.js`, `covers/`, `splash-mockups/`, `nav/footer.web.js` | Replace the export. |
 | `<type>/_map.js` for elements, form-fields, forms, molecules, page-layout, menu-items, units, units/content-list, units/profile-list, skeletons, workers | Import `componentsMapDefault` from the core `_map.js`, add or replace keys, re-export it. Put new components under `customization/<type>/`. |
-| `design/styles/global.css`, `global.web.css` | CSS variable and `@theme` overrides (both platforms; the second is web only). |
+| `design/styles/global.css`, `global.web.css` | CSS variable and `@theme` overrides (both platforms; the second is web only). On web, `.light` / `.dark` colour-scheme scopes (the header on a band, `layout.header.band_scheme`) re-declare core's semantic tokens, so set a semantic token you override on `:root` (`--accent-foreground`, ...) on `.light` / `.dark` in `global.web.css` too. |
 | `design/fonts/fonts-web.js`, `design/fonts/fonts.js` | Web `next/font` variables and the native `useFonts` map. |
 | `config/fonts.js` | Font family per role and platform; see [Fonts](#fonts). |
 | `config/next.config.js` | Deep-merged into `apps/next/next.config.js`. Arrays are concatenated. Functions (`webpack`, `rewrites`, `headers`) replace upstream's, so define one only if you reimplement upstream's. This is the fork hook despite the "don't edit" comment at its top. |

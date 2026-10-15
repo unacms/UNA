@@ -1,6 +1,7 @@
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useAnimatedValue } from 'app/lib/hooks/use-animated-value';
 import { Animated, Platform, useWindowDimensions } from 'react-native';
+import { ScopedTheme } from 'uniwind';
 import { nativeDriver } from 'app/lib/platform/animation';
 import { View, Row } from 'app/design/view';
 import { Text } from 'app/design/typography';
@@ -12,6 +13,7 @@ import { usePathname, useRouter } from 'app/lib/hooks/router';
 import { components } from 'app/components/registry';
 import { useIsDesktop } from 'app/context/measure';
 import { NeoButton, NeoButtonLink } from 'app/design/controls';
+import { useNeoButtonColorScheme } from 'app/design/controls/neo-button/color-scheme-context';
 import Link from 'app/ui/atoms/link';
 import { getTabKeyFromPathname } from 'app/lib/navigation/tab-history';
 import { useIsPushedScreen } from 'app/context/tab-chrome';
@@ -202,11 +204,16 @@ export function resolveHeaderContainerClassName(isScrolled) {
 }
 
 export const TextHeader = memo(({ text }) => {
-    return (
+    // On a coloured band the title takes the band's scheme, as the header's buttons do
+    // (`layout.header.band_scheme`): white on a dark band, back to the app's own once the
+    // header floats over content.
+    const colorScheme = useNeoButtonColorScheme();
+    const title = (
         <Text className="font-bold truncate leading-12 text-card-foreground text-2xl tracking-tight">
             {text}
         </Text>
     );
+    return colorScheme ? <ScopedTheme theme={colorScheme}>{title}</ScopedTheme> : title;
 });
 
 export const PageHeaderSmall = ({ pageData }) => {

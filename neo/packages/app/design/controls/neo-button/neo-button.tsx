@@ -70,7 +70,7 @@ import {
     resolveScoped,
 } from 'app/design/controls/neo-button/neo-button-resolver';
 import { NeoButtonExpoUI, getNativeIcon, hostsCustomContent } from 'app/design/controls/neo-button/neo-button-expoui';
-import { useNeoButtonColorScheme } from 'app/design/controls/neo-button/color-scheme-context';
+import { selectedColorScheme, useNeoButtonColorScheme } from 'app/design/controls/neo-button/color-scheme-context';
 import type { NeoButtonAddon, NeoButtonClassNames, NeoButtonProps } from 'app/design/controls/neo-button/neo-button.types';
 import { cueAttributes, usePressCueOverride, type PressCue } from 'app/lib/sound';
 
@@ -882,8 +882,9 @@ const NeoButtonStyled = (props: NeoButtonProps & { titleHidden?: boolean }) => {
     const { isDesktop } = useNeoEnv();
     // A surface with its own brightness (header on a coloured band): on web the
     // root becomes a `.light` / `.dark` colour-scheme scope, so the button draws
-    // with that scheme's tokens (global.css). iOS: see color-scheme-context.
-    const colorScheme = useNeoButtonColorScheme();
+    // with that scheme's tokens (global.css), the opposite one when selected.
+    // iOS: see color-scheme-context.
+    const colorScheme = selectedColorScheme(useNeoButtonColorScheme(), !!selected);
     const schemeClass = isWeb && colorScheme ? colorScheme : '';
     // Web only: native Tooltip renders no wrapper and drops `className`, so a
     // wide native screen (isDesktop) would lose the root layout classes.
