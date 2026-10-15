@@ -8,7 +8,7 @@ import { NeoButton } from 'app/design/controls';
 import Loading from 'app/ui/atoms/loading';
 import Link from 'app/ui/atoms/link';
 import { Icon } from 'app/ui/atoms/icon';
-import { cn } from 'app/lib/util';
+import { cn, decodeTextNode } from 'app/lib/util';
 import { formatDate } from 'app/lib/util/datetime';
 import { ChatBubble } from 'app/ui/molecules/ai-agent/chat-bubble';
 import {
@@ -53,7 +53,7 @@ function ActivityRowImpl({ item, t }) {
                 <Row className="items-start justify-between gap-2">
                     <View className="flex-1 min-w-0">
                         {item.url ? (
-                            <Link href={item.url} target="_blank" accessibilityLabel={item.title || item.text}>
+                            <Link href={item.url} target="_blank" accessibilityLabel={decodeTextNode(item.title || item.text)}>
                                 {text}
                             </Link>
                         ) : text}

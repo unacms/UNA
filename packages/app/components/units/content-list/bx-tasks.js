@@ -5,7 +5,7 @@ import { Modal } from 'app/design/controls';
 import { Icon } from 'app/ui/atoms/icon';
 import Menu from 'app/components/menu';
 import { BlockByDataInt as BlockByData } from 'app/components/block';
-import { appSetting, cn } from 'app/lib/util';
+import { appSetting, cn, decodeTextNode } from 'app/lib/util';
 import { iconForTaskStatus, iconForTaskPriority, normalizeTaskLabel } from 'app/lib/tasks-meta';
 import { UnitTitle } from 'app/components/units/helpers';
 import { runTaskAction } from 'app/components/elements/tasks/actions';
@@ -171,7 +171,7 @@ export default function Unit({ data, module }) {
         <Pressable
             onPress={openTask}
             accessibilityRole="button"
-            accessibilityLabel={data.title}
+            accessibilityLabel={decodeTextNode(data.title)}
             className={cn(appSetting('tasks', 'item_wrapper'), 'w-full group/task')}
         >
             {formBlock ? (

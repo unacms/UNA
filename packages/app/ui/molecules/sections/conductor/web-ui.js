@@ -4,6 +4,7 @@ import { View, Row, Pressable } from 'app/design/view'
 import { Icon } from 'app/ui/atoms/icon'
 import {
     appSetting,
+    decodeTextNode,
     getMenuSettings,
     menuItemsFilter,
 } from 'app/lib/util'
@@ -657,7 +658,7 @@ const TabMenuItemEx = memo(function TabMenuItemEx({ item }) {
             <Pressable
                 className={itemClassName}
                 accessibilityRole="link"
-                accessibilityLabel={title}
+                accessibilityLabel={decodeTextNode(title)}
                 onPress={handlePress}
             >
                 <Row className="justify-between items-center min-w-200">

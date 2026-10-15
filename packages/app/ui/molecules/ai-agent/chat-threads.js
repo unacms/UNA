@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { View, Row, ScrollView, Pressable } from 'app/design/view';
 import { Text } from 'app/design/typography';
 import { Input, NeoButton } from 'app/design/controls';
-import { cn } from 'app/lib/util';
+import { cn, decodeTextNode } from 'app/lib/util';
 import { formatDate } from 'app/lib/util/datetime';
 import { fetchAgentChatThreads } from './helper';
 
@@ -81,7 +81,7 @@ function ThreadRowImpl({ thread, active, onSelect, t }) {
             onPress={() => onSelect(thread)}
             accessibilityRole="button"
             accessibilityState={{ selected: active }}
-            accessibilityLabel={title}
+            accessibilityLabel={decodeTextNode(title)}
             className={cn(
                 'rounded-lg px-2.5 py-2 gap-0.5 web:cursor-pointer web:hover:bg-muted/60 web:transition-colors',
                 active ? 'bg-muted' : ''

@@ -2,7 +2,7 @@ import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
 import Image from 'app/ui/atoms/image'
 import Link from 'app/ui/atoms/link'
-import { getRandomColor, appSetting, cn } from 'app/lib/util';
+import { getRandomColor, appSetting, cn, decodeText } from 'app/lib/util';
 import { memo } from 'react';
 import { components } from 'app/components/registry';
 import { useTranslation } from 'react-i18next';
@@ -67,7 +67,7 @@ function DisplayInfo(oProps) {
 }
 
 function UnitWoInfo({ oProps, sSize, sSizeFontLetter, iSizeWidth, bShowLinks, emulate, hoverCardWrapper }) {
-    let name = oProps.display_name ? oProps.display_name.substr(0, 1) : ''
+    let name = oProps.display_name ? decodeText(oProps.display_name).substr(0, 1) : ''
     const isLinked = !!(oProps.url && bShowLinks && !hoverCardWrapper)
     const avatarContent =
         <View className={cn(`${sSize} relative overflow-hidden bg-muted rounded-full`, oProps.avatarClassName, !isLinked && oProps.className)}>

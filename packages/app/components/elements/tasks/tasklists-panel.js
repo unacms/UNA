@@ -6,7 +6,7 @@ import { Text } from 'app/design/typography';
 import { Card } from 'app/ui/molecules/page/card';
 import { Icon } from 'app/ui/atoms/icon';
 import { useIconClassColor } from 'app/ui/atoms/icon-class-color';
-import { cn } from 'app/lib/util';
+import { cn, decodeTextNode } from 'app/lib/util';
 import { TaskActionsDropdown } from './actions';
 import { isSameListId, isTasklistGroup, listIdOrNull, tasklistProgress } from './helpers';
 
@@ -127,7 +127,7 @@ function TasklistGroup({ group, selectedId, selectedContextId, onSelect, actionH
                     onPress={() => onSelect(group)}
                     className="min-w-0 flex-1 flex-row items-center gap-2 py-2 px-2 web:hover:bg-muted/50 rounded-lg"
                     accessibilityRole="button"
-                    accessibilityLabel={group.title}
+                    accessibilityLabel={decodeTextNode(group.title)}
                 >
                     <Text className="min-w-0 flex-1 text-sm font-semibold text-foreground" numberOfLines={1}>
                         {group.title}
