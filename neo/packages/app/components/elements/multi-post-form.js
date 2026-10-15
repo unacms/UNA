@@ -41,7 +41,12 @@ const TRIGGER_CLASS = 'flex-1 min-w-0 h-11 justify-center rounded-full active:op
     + 'sm:px-4 sm:bg-button sm:hover:bg-button-hover web:transition-[background-color,opacity] web:duration-150';
 const TRIGGER_TEXT_CLASS = 'text-base font-medium tracking-tight text-muted-foreground';
 
-export default function MultiPostForm({ data, blockWrapperProps }) {
+/**
+ * `trigger_label` comes from the block's App config (Studio > Pages > block > "Config (for App
+ * in JSON format)"), e.g. `{"trigger_label": "Ask an expert"}`, and replaces "Create new <type>"
+ * on the trigger, which opens the first type of the `sys_create_post` menu.
+ */
+export default function MultiPostForm({ data, blockWrapperProps, trigger_label: triggerLabelSetting }) {
     const { currentUser } = useCurrentUser();
     const { t } = useTranslation()
     const { width: windowWidth } = useWindowDimensions();
@@ -93,7 +98,9 @@ export default function MultiPostForm({ data, blockWrapperProps }) {
 
 
 
-    const triggerLabel = t('Create new ') + firstForm.title.toLowerCase();
+    const triggerLabel = triggerLabelSetting
+        ? t(triggerLabelSetting)
+        : t('Create new ') + firstForm.title.toLowerCase();
 
     const handleTriggerPress = () => {
         // User clicked to create post - permanently dismiss tooltip
@@ -142,7 +149,16 @@ export default function MultiPostForm({ data, blockWrapperProps }) {
                 <FormModal key={pageData?.ts} pageData={pageData} setPageData={setPageData} />
                 {menu_add_items.length > 0 && showOtherTypes && <Row className="hidden sm:flex gap-3 flex-none">
                     {menu_add_items.map((item, index) => (
-                        <NeoButton key={item.name} style="bordered" borderShape="circle" controlSize="regular" onPress={() => handleFormModal(item, null, setPageData, data.params)} image={item.icon} />
+                        <NeoButton
+                            key={item.name}
+                            style="bordered"
+                            borderShape="circle"
+                            controlSize="regular"
+                            image={item.icon}
+                            tooltip={item.title}
+                            accessibilityLabel={item.title}
+                            onPress={() => handleFormModal(item, null, setPageData, data.params)}
+                        />
                     ))}
                 </Row>}
 
