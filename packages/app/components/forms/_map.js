@@ -17,12 +17,19 @@ export const componentsMapDefault = {
     feed: FormFeed,
     feed_edit: FormFeed,
     bx_posts: FormPost,
+    bx_forum: FormPost,
+
     bx_ads: FormContent,
+    bx_polls: FormContent,
     bx_albums: FormContent,
+    bx_market: FormContent,
     bx_tasks: FormContent,
     bx_tasks_entry_add: FormContent,
-    bx_forum: FormPost,
+    
     bx_messenger: Messenger,
     bx_payment: FormBxPayment,
     bx_payment_form_processed_add: FormBxPayment,
+
+    // Layout chosen by UNA's `form_type` when the form has no entry of its own above.
+    content: FormContent,
 };
