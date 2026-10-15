@@ -14,10 +14,16 @@ export const PICTURE_CROP_OUTPUT = 400
 export const COVER_CROP_MAX_WIDTH = 2000
 export const CROP_MAX_ZOOM = 4
 
+// For older UNA versions that don't send `image_type` on files inputs: guess the kind by field name.
 const PICTURE_FIELDS = new Set(['picture', 'avatar', 'badge'])
 const COVER_FIELDS = new Set(['covers', 'cover'])
 
-export function getImageCropKind(fieldName: string) {
+/**
+ * UNA's `image_type` on a files input ('picture' | 'cover') wins: field names mean
+ * different things in different modules (Market `thumb` is the icon, a post's is the cover).
+ */
+export function getImageCropKind(fieldName: string, imageType?: string) {
+    if (imageType === 'picture' || imageType === 'cover') return imageType
     if (PICTURE_FIELDS.has(fieldName)) return 'picture'
     if (COVER_FIELDS.has(fieldName)) return 'cover'
     return null

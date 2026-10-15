@@ -874,6 +874,7 @@ class BxBaseModGeneralFormsEntryHelper extends BxDolProfileForms
                 $aResult = bx_api_get_block('form', $mixedData, [
                     'ext' => [
                         'name' => $sModule, 
+                        'form_type' => $this->_oModule->_oConfig->getApiFormType(),
                         'request' => ['url' => $sRequestUrl, 'immutable' => true]
                     ]
                 ]);

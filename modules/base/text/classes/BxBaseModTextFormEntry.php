@@ -37,6 +37,8 @@ class BxBaseModTextFormEntry extends BxBaseModGeneralFormEntry
                 $this->aInputs[$CNF[$sKf]]['multiple'] = false;
                 $this->aInputs[$CNF[$sKf]]['content_id'] = 0;
                 $this->aInputs[$CNF[$sKf]]['ghost_template'] = '';
+                // Tells the app how to show and crop the image.
+                $this->aInputs[$CNF[$sKf]]['image_type'] = 'cover';
             }
             else
                 unset($this->aInputs[$CNF[$sKf]]);

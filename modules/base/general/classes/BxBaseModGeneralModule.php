@@ -1271,6 +1271,12 @@ class BxBaseModGeneralModule extends BxDolModule
         if($this->checkAllowedEdit($aData) !== CHECK_ACTION_RESULT_ALLOWED)
             return false;
 
+        // The field name comes from the request (the service is open in API): image fields only.
+        if(!in_array($sFiledName, $this->_getUpdateImageFields(), true))
+            return false;
+
+        $sValue = (int)$sValue;
+
         //TODO add transcoder settings
         $oImgStorage = BxDolStorage::getObjectInstance($CNF['OBJECT_STORAGE']);
         if(!$oImgStorage)
@@ -1283,6 +1289,21 @@ class BxBaseModGeneralModule extends BxDolModule
         $this->onUpdateImage($iContentId, $sFiledName, $sValue);
 
         return $oImgStorage->getFileUrlById($sValue);
+    }
+
+    /**
+     * Content fields holding a single image, which update_image may change.
+     */
+    protected function _getUpdateImageFields()
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        $aResult = [];
+        foreach(['FIELD_THUMB', 'FIELD_COVER', 'FIELD_PICTURE', 'FIELD_BADGE'] as $sKey)
+            if(!empty($CNF[$sKey]))
+                $aResult[] = $CNF[$sKey];
+
+        return $aResult;
     }
 
     public function serviceUpdateImagePosition($iContentId, $sFiledName, $sH, $sV)

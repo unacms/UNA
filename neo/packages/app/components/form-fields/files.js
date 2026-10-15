@@ -41,6 +41,8 @@ function resolvePickerSource(source, fallback = 'library') {
     return fallback;
 }
 
+// 'picture', 'covers', 'avatar' and 'badge' are here for older UNA versions; newer ones mark
+// single image fields with `image_type` (see isImageField).
 const IMAGE_FIELD_NAMES = new Set(['photo', 'cmt_image', 'pictures', 'picture', 'covers', 'avatar', 'badge']);
 const VIDEO_FIELD_NAMES = new Set(['video', 'videos']);
 const FILE_FIELD_NAMES = new Set(['file', 'files']);
@@ -49,7 +51,13 @@ const STORAGE_DRIVEN_FIELD_NAMES = new Set(['cmt_image']);
 const IMAGE_EXTS = ['jpg', 'jpeg', 'jpe', 'gif', 'png', 'svg', 'webp', 'heic', 'heif'];
 const VIDEO_EXTS = ['mp4', 'mov', 'm4v', 'avi', 'webm', '3gp'];
 
-function shouldUseMediaPicker(fieldName, extDeny, extAllow) {
+// UNA's `image_type` ('picture' | 'cover') marks a single image field whatever its name.
+function isImageField(fieldName, imageType) {
+    return !!imageType || IMAGE_FIELD_NAMES.has(fieldName);
+}
+
+function shouldUseMediaPicker(fieldName, extDeny, extAllow, imageType) {
+    if (imageType) return true;
     if (FILE_FIELD_NAMES.has(fieldName)) return false;
     if (IMAGE_FIELD_NAMES.has(fieldName) || VIDEO_FIELD_NAMES.has(fieldName)) return true;
     return isMediaField(extDeny, extAllow);
@@ -76,8 +84,8 @@ function allowListHasAny(extAllow, exts) {
  * Camera + videos requires NSMicrophoneUsageDescription on iOS; image-only
  * fields must not request video so photo capture works without mic permission.
  */
-function resolvePickerMediaTypes(fieldName, extAllow, source) {
-    if (IMAGE_FIELD_NAMES.has(fieldName)) {
+function resolvePickerMediaTypes(fieldName, extAllow, source, imageType) {
+    if (isImageField(fieldName, imageType)) {
         return ['images'];
     }
     if (VIDEO_FIELD_NAMES.has(fieldName)) {
@@ -472,7 +480,7 @@ export default function (props) {
 
     const finishPickedAssets = useCallback(async (assets) => {
         if (!assets?.length) return;
-        const kind = getImageCropKind(name);
+        const kind = getImageCropKind(name, props.image_type);
         const asset = assets[0];
 
         if (kind && !shouldSkipImageCrop(formName) && asset && !asset.cropped && !isSvgAsset(asset)) {
@@ -492,7 +500,7 @@ export default function (props) {
 
         const k = await uploadImages(assets);
         setImageSourceN(k, bMultiple);
-    }, [name, bMultiple, formName]);
+    }, [name, props.image_type, bMultiple, formName]);
 
     const handleCropCancel = useCallback(() => {
         setCropSession(null);
@@ -544,7 +552,7 @@ export default function (props) {
         if (bIsMedia) {
             const mediaTypes = mediaTypesOverride?.length
                 ? mediaTypesOverride
-                : resolvePickerMediaTypes(name, extAllow, type);
+                : resolvePickerMediaTypes(name, extAllow, type, props.image_type);
 
             let result = null;
 
@@ -607,14 +615,14 @@ export default function (props) {
                 console.error('Error picking document:', err);
             }
         }
-    }, [name, props.ext_allow, props.ext_deny, bMultiple, hasPermissionCamera, hasPermissionLibrary, requestPermissionCamera, requestPermissionLibrary, finishPickedAssets]);
+    }, [name, props.ext_allow, props.ext_deny, props.image_type, bMultiple, hasPermissionCamera, hasPermissionLibrary, requestPermissionCamera, requestPermissionLibrary, finishPickedAssets]);
 
     const selectImage = useCallback(async (source, mediaTypesOverride) => {
         try {
             const extAllow = props.ext_allow ?? '';
             const extDeny = props.ext_deny ?? '';
             const type = resolvePickerSource(source, props.source ?? 'library');
-            let bIsMedia = shouldUseMediaPicker(name, extDeny, extAllow);
+            let bIsMedia = shouldUseMediaPicker(name, extDeny, extAllow, props.image_type);
             // Camera always shoots photos; the library button follows the storage rules.
             if (STORAGE_DRIVEN_FIELD_NAMES.has(name) && type !== 'camera' && !mediaTypesOverride?.length) {
                 const kind = getStoragePickerKind(extAllow);
@@ -657,7 +665,7 @@ export default function (props) {
             console.error('[files] selectImage failed:', err);
             showPickerError(err);
         }
-    }, [name, props.ext_deny, props.ext_allow, props.source, hasPermissionCamera, hasPermissionLibrary, requestPermissionCamera, requestPermissionLibrary, selectImage1]);
+    }, [name, props.ext_deny, props.ext_allow, props.source, props.image_type, hasPermissionCamera, hasPermissionLibrary, requestPermissionCamera, requestPermissionLibrary, selectImage1]);
 
     useEffect(() => {
         const subscription = emitter.addListener(EVENTS.fieldFiles(name), (data) => {
@@ -896,11 +904,16 @@ function ActionButton({ imagesList, props, selectImage, handleDelete, bMultiple,
         }
         let w = 'web:w-full ' + getCoverAspectClass(props.form_name, !!props.is_profile);
 
+        // Round avatar / badge tiles stay keyed by name: `image_type` 'picture' is also a square
+        // content picture (Market product icon), so it can't tell them apart.
         const isPictureField = props.name == 'picture' || props.name == 'avatar' || props.name == 'badge';
         if (props.name == 'picture' || props.name == 'avatar')
             w = 'w-48 h-48 overflow-hidden rounded-full';
         if (props.name == 'badge')
             w = 'w-18 h-18 overflow-hidden rounded-full';
+        // A content picture (Market product icon): square tile, rounded below like other content images.
+        if (!isPictureField && props.image_type == 'picture')
+            w = 'w-48 h-48';
 
         if (!props.viewClasses) {
             w += isPictureField
@@ -952,7 +965,8 @@ function ActionButton({ imagesList, props, selectImage, handleDelete, bMultiple,
 
 function GhostsList(imagesList, bMultiple, handleDelete, props) {
     const visible = (imagesList || []).filter((img) => !img?.inlinePaste)
-    if (!visible.length || props.name === 'cover' || props.name === 'picture') {
+    // Single image fields show their own tile; the names are for older UNA without `image_type`.
+    if (!visible.length || props.image_type || props.name === 'cover' || props.name === 'picture') {
         return null;
     }
 

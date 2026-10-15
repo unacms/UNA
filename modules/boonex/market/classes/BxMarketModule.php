@@ -36,22 +36,33 @@ class BxMarketModule extends BxBaseModTextModule
         ));
     }
 
-    public function actionUpdateImage($sFiledName, $iContentId, $sValue)
+    /**
+     * Drops the replaced image file once the field is updated. Works for both
+     * the site (actionUpdateImage) and API (update_image).
+     */
+    public function serviceUpdateImage($sFiledName, $iContentId, $sValue)
     {
         $CNF = &$this->_oConfig->CNF;
 
         $aData = $this->_oDb->getContentInfoById($iContentId);
         if(empty($aData) || !is_array($aData))
-            return;
+            return false;
 
-        $mixedResult = parent::actionUpdateImage($sFiledName, $iContentId, $sValue);
+        $mixedResult = parent::serviceUpdateImage($sFiledName, $iContentId, $sValue);
         if($mixedResult === false)
-            return;
-        
-        if(!empty($aData[$sFiledName]) && ($oStorage = BxDolStorage::getObjectInstance($CNF['OBJECT_STORAGE'])) !== false)
-            $oStorage->deleteFile($aData[$sFiledName]);
+            return false;
 
-        echo $mixedResult;
+        // Keep the file if it's still used as the other image (Icon and Header Image may share one).
+        $iFileIdOld = (int)($aData[$sFiledName] ?? 0);
+        $bUsed = false;
+        foreach([$CNF['FIELD_THUMB'], $CNF['FIELD_COVER']] as $sField)
+            if($sField != $sFiledName && (int)$aData[$sField] == $iFileIdOld)
+                $bUsed = true;
+
+        if($iFileIdOld && $iFileIdOld != (int)$sValue && !$bUsed && ($oStorage = BxDolStorage::getObjectInstance($CNF['OBJECT_STORAGE'])) !== false)
+            $oStorage->deleteFile($iFileIdOld);
+
+        return $mixedResult;
     }
 
     public function actionPerform()

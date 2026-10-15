@@ -40,13 +40,14 @@ function FormProviders({ instanceId, methods, children }) {
     );
 }
 
-function getFormType(name) {
-    return components['form'][String(name)]
+// A form mapped by name wins; otherwise UNA's `form_type` (module entry forms) picks the layout.
+function getFormType(name, formType) {
+    return components['form'][String(name)] ?? (formType ? components['form'][String(formType)] : undefined)
 }
 
-function getFormFieldList(name, inputs, handleSubmit, isInitial = false, lastChangedField, saveOnChanges, formProps) {
+function getFormFieldList(name, inputs, handleSubmit, isInitial = false, lastChangedField, saveOnChanges, formProps, formType) {
 
-    const ElementForm = getFormType(name);
+    const ElementForm = getFormType(name, formType);
 
     if ('undefined' !== typeof ElementForm && isInitial) {
         return;
@@ -97,6 +98,7 @@ export default function Form({
     exProps,
     request,
     url,
+    form_type: formType,
 }) {
     const { t } = useTranslation();
     const router = useRouter();
@@ -589,7 +591,7 @@ export default function Form({
         return result;
     }, [processedInputs, isAutoChange]);
 
-    let inputs = getFormFieldList(name, filteredInputs, _handleSubmit, true, null, saveOnChanges, formProps);
+    let inputs = getFormFieldList(name, filteredInputs, _handleSubmit, true, null, saveOnChanges, formProps, formType);
 
     if (inputs?.length) {
         inputs = inputs.filter(
@@ -616,7 +618,7 @@ export default function Form({
             },
         }));
     }
-    const ElementForm = getFormType(name)
+    const ElementForm = getFormType(name, formType)
 
 
     const defaultFormValues = Object.keys(allFields).reduce((result, key) => {
