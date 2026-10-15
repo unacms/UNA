@@ -1,6 +1,6 @@
 import { Text as NativeText, Platform, StyleSheet, type TextProps as RNTextProps } from 'react-native'
 import type { ReactNode } from 'react'
-import { decodeText } from 'app/lib/util'
+import { decodeTextNode } from 'app/lib/util'
 import { appSetting } from 'app/lib/util'
 const isWeb = Platform.OS === 'web'
 // Use DOM element on web so Tailwind classes apply without NativeWind babel
@@ -132,7 +132,7 @@ export const Text = ({
     const baseClassName = className || '  '
     let finalClassName = `${baseClassName} ${fontFamily || 'font-main'}`.trim()
     const spreadProps = isWeb ? sanitizeWebTextProps(rest) : rest
-    const content = typeof children === "string" ? decodeText(children) : children;
+    const content = decodeTextNode(children);
 
     if (numberOfLines && isWeb)
         finalClassName += ' line-clamp-' + numberOfLines;
@@ -153,7 +153,7 @@ export const H1 = ({ children, className, fontFamily = '', isfirst, islast, ...r
 
     return (
         <HeadingComponent {...noScale} className={`pt-2 text-4xl xl:text-5xl  tracking-tight leading-tight font-bold text-foreground text-balance ${spacing} ${className || ''} ${fontFamily || 'font-title'}`} {...(isWeb ? sanitizeWebTextProps(rest) : rest)}>
-            {children}
+            {decodeTextNode(children)}
         </HeadingComponent>
     )
 }
@@ -164,7 +164,7 @@ export const H1C = ({ children, className, fontFamily = '', isfirst, islast, ...
 
     return (
         <HeadingComponent {...noScale} className={`text-2xl sm:text-3xl font-bold tracking-tight text-foreground ${spacing} ${className || ''} ${fontFamily || 'font-title'}`} {...(isWeb ? sanitizeWebTextProps(rest) : rest)}>
-            {children}
+            {decodeTextNode(children)}
         </HeadingComponent>
     )
 }
@@ -175,7 +175,7 @@ export const H2 = ({ children, className, fontFamily = '', isfirst, islast, ...r
 
     return (
         <HeadingComponent {...noScale} className={`text-2xl font-semibold tracking-tight text-foreground ${spacing} ${className || ''} ${fontFamily || 'font-title'}`} {...(isWeb ? sanitizeWebTextProps(rest) : rest)}>
-           {children}
+            {decodeTextNode(children)}
         </HeadingComponent>
     )
 }
@@ -186,7 +186,7 @@ export const H3 = ({ children, className, fontFamily = '', isfirst, islast, ...r
 
     return (
         <HeadingComponent {...noScale} className={`text-lg lg:text-xl font-bold tracking-tight text-foreground ${spacing} ${className || ''} ${fontFamily || 'font-title'}`} {...(isWeb ? sanitizeWebTextProps(rest) : rest)}>
-            {children}
+            {decodeTextNode(children)}
         </HeadingComponent>
     )
 }
@@ -197,7 +197,7 @@ export const H4 = ({ children, className, fontFamily = '', isfirst, islast, ...r
 
     return (
         <HeadingComponent {...noScale} className={`text-base lg:text-lg font-semibold tracking-tight text-foreground ${spacing} ${className || ''} ${fontFamily || 'font-title'}`} {...(isWeb ? sanitizeWebTextProps(rest) : rest)}>
-            {children}
+            {decodeTextNode(children)}
         </HeadingComponent>
     )
 }
@@ -208,7 +208,7 @@ export const H5 = ({ children, className, fontFamily = '', isfirst, islast, ...r
 
     return (
         <HeadingComponent {...noScale} className={`text-lg sm:text-xl font-semibold tracking-tight text-foreground ${spacing} ${className || ''} ${fontFamily || 'font-title'}`} {...(isWeb ? sanitizeWebTextProps(rest) : rest)}>
-            {children}
+            {decodeTextNode(children)}
         </HeadingComponent>
     )
 }
@@ -219,7 +219,7 @@ export const H6 = ({ children, className, fontFamily = '', isfirst, islast, ...r
 
     return (
         <HeadingComponent {...noScale} className={` text-base sm:text-lg font-semibold tracking-tight text-foreground ${spacing} ${className || ''} ${fontFamily || 'font-title'}`} {...(isWeb ? sanitizeWebTextProps(rest) : rest)}>
-            {children}
+            {decodeTextNode(children)}
         </HeadingComponent>
     )
 }

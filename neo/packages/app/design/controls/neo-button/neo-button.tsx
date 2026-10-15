@@ -56,6 +56,7 @@ import {
     sanitazeUrl,
     isExternalUrl,
     openExternalLink,
+    decodeTextNode,
 } from 'app/lib/util';
 import {
     useResolvedNeoButton,
@@ -430,7 +431,32 @@ function canRenderExpoUIButton(props: NeoButtonProps, native: { config: Record<s
 
 /* -------------------------- main Button component ------------------------- */
 
-export const NeoButton = (props: NeoButtonProps) => {
+const TEXT_PROPS = ['label', 'title', 'loadingLabel', 'accessibilityLabel', 'alt', 'tooltip'] as const;
+
+/**
+ * UNA sends titles HTML-escaped (`&amp;`). `Text` decodes the JS label, but the
+ * same strings also become accessible names, tooltips and SwiftUI / Compose
+ * labels, so decode them once here. Props without an entity come back as is.
+ */
+const decodeTextProps = (props: NeoButtonProps): NeoButtonProps => {
+    const hasEntity = TEXT_PROPS.some((key) => {
+        const value = props[key];
+        return typeof value === 'string' && value.includes('&');
+    });
+    if (!hasEntity) return props;
+    return {
+        ...props,
+        label: decodeTextNode(props.label),
+        title: decodeTextNode(props.title),
+        loadingLabel: decodeTextNode(props.loadingLabel),
+        accessibilityLabel: decodeTextNode(props.accessibilityLabel),
+        alt: decodeTextNode(props.alt),
+        tooltip: decodeTextNode(props.tooltip),
+    };
+};
+
+export const NeoButton = (rawProps: NeoButtonProps) => {
+    const props = decodeTextProps(rawProps);
     const native = useNeoButtonExpoUI(props);
     const titleHidden = useTitleHidden(props.showTitleFromSize);
 

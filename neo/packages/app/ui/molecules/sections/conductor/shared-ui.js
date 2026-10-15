@@ -5,7 +5,7 @@ import { Icon } from 'app/ui/atoms/icon'
 import DropdownMenu, { DropdownMenuOpenContext } from 'app/ui/atoms/dropdown-menu'
 import UniList from 'app/ui/atoms/unilist'
 import { BlockByName, BlockByData } from 'app/components/block'
-import { findElementById, hasNonEmptyContent, isWeb } from 'app/lib/util'
+import { decodeTextNode, findElementById, hasNonEmptyContent, isWeb } from 'app/lib/util'
 import { ItemRenderer } from 'app/components/item-renderer'
 import { NeoButton } from 'app/design/controls'
 import { cueAttributes, PressCueContext } from 'app/lib/sound'
@@ -345,7 +345,7 @@ export function TabItem({ item, selectedIndex, onPress }) {
             <View className={`${item?.menu_settings?.class || ''}`}>
                 <Pressable
                     accessibilityRole="link"
-                    accessibilityLabel={item.title}
+                    accessibilityLabel={decodeTextNode(item.title)}
                     onPress={handlePress}
                     {...cueAttributes('select')}
                 >

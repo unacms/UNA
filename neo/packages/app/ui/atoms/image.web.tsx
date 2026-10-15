@@ -3,7 +3,7 @@
 import type { CSSProperties } from 'react';
 import NextImage from 'next/image';
 import type { ImageInnerProps, ImageProps } from './image.types';
-import { cn } from 'app/lib/util';
+import { cn, decodeText } from 'app/lib/util';
 import {
     canOptimizeSrc,
     createOptimizedLoader,
@@ -57,7 +57,7 @@ function ElementImageInner(props: ImageInnerProps) {
         <NextImage
             key={imageKey}
             src={normalizedSrc}
-            alt={alt}
+            alt={decodeText(alt)}
             sizes={sizesAttr}
             className={className}
             onError={handleError}
