@@ -71,7 +71,7 @@ class BxDolAIVectorStoreMariaDb
         return $oPdo;
     }
 
-    public static function open(int $iStoreId, string $sTable, int $iTopK): NeuronAI\RAG\VectorStore\MariaDBVectorStore
+    public static function open(int $iStoreId, string $sTable, int $iTopK): BxDolAIVectorStoreMariaDbStore
     {
         if ($iStoreId < 1)
             throw new Exception('MariaDB vector store id is missing');
