@@ -439,7 +439,7 @@ INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `ex
 
 (@iCategoryId, 'sys_css_media_classes', '_adm_stg_cpt_option_sys_css_media_classes', '{"phone":"(max-width:720px)","phone2":"(min-width:533px) and (max-width:720px)","tablet":"(min-width:720px) and (max-width:1280px)","tablet2":"(min-width:1024px) and (max-width:1280px)","desktop":"(min-width:1280px)"}', 'digit', '', '', '', '', 180),
 (@iCategoryId, 'sys_css_tailwind_default', '_adm_stg_cpt_option_sys_css_tailwind_default', 'tailwind.min.css', 'select', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:27:"get_options_taiwind_default";s:5:"class";s:13:"TemplServices";}', '', '', '', 181),
-(@iCategoryId, 'sys_iconset_default', '_adm_stg_cpt_option_sys_iconset_default', 'sys_fontawesome', 'select', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:27:"get_options_iconset_default";s:5:"class";s:13:"TemplServices";}', '', '', '', 185),
+(@iCategoryId, 'sys_iconset_default', '_adm_stg_cpt_option_sys_iconset_default', 'sys_lucide', 'select', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:27:"get_options_iconset_default";s:5:"class";s:13:"TemplServices";}', '', '', '', 185),
 
 (@iCategoryId, 'sys_files_ext_images', '_adm_stg_cpt_option_sys_files_ext_images', 'jpg,jpeg,jpe,gif,png,webp,svg', 'digit', '', '', '', '', 200),
 (@iCategoryId, 'sys_files_ext_video', '_adm_stg_cpt_option_sys_files_ext_video', 'avi,flv,mpg,mpeg,wmv,mp4,m4v,mov,qt,divx,xvid,3gp,3g2,webm,mkv,ogv,ogg,rm,rmvb,asf,drc,ts', 'digit', '', '', '', '', 210),
