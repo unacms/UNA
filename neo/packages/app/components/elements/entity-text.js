@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Platform } from 'react-native';
 import { useForm, FormProvider } from 'react-hook-form';
-import { View, Pressable } from 'app/design/view';
+import { View, Row, Pressable } from 'app/design/view';
 import Image, { POST_ENTRY_COVER_SIZES, POST_ENTRY_COVER_WIDTH_CAP } from 'app/ui/atoms/image';
 import { getCoverAspectClass } from 'app/lib/image/upload-settings';
 import Html from 'app/ui/atoms/html';
@@ -20,6 +20,9 @@ import InlineEmbed from 'app/ui/molecules/content/inline-embed'
 import InlineTable from 'app/ui/molecules/content/inline-table'
 import { BlockWrapper } from 'app/components/block-wrapper'
 import RftText from 'app/components/form-fields/editor-rft-text'
+import { NeoButton } from 'app/design/controls'
+import Loading from 'app/ui/atoms/loading'
+import { useProfileImageUpload } from 'app/lib/image/use-profile-image-upload'
 
 const isWeb = Platform.OS === 'web'
 
@@ -244,6 +247,108 @@ const getImagesData = (data) => {
     return att;
 };
 
+/**
+ * Upload state for an entry image UNA lets the viewer change on the page (`images_edit[kind]`:
+ * field, storage, uploader). A changed image has no UNA sizes yet, so it comes back as `{ src }`.
+ */
+function useEntryImageEdit({ kind, edit, module, contentId, image }) {
+    const { imageUrl, isUploading, pick, modal } = useProfileImageUpload({
+        kind,
+        profileId: contentId,
+        moduleName: module || '',
+        storage: edit?.storage || '',
+        uploader: edit?.uploader,
+        field: edit?.field,
+        initialUrl: image?.src || '',
+    })
+    const shown = imageUrl && imageUrl !== image?.src ? { src: imageUrl } : (image || null)
+    return { image: shown, isUploading, pick, modal }
+}
+
+function EntryCover({ data, module, edit }) {
+    const { image, isUploading, pick, modal } = useEntryImageEdit({
+        kind: 'cover', edit, module, contentId: data?.id, image: data?.image,
+    })
+    if (!image?.src && !edit) return null
+
+    return (
+        <>
+            <View className={`w-full ${image?.src ? getCoverAspectClass(module) : 'h-24 bg-accent/50'} mb-4 sm:rounded-xl overflow-hidden`}>
+                {image?.src ? (
+                    <Image
+                        {...image}
+                        alt={data.title}
+                        className="u-cover"
+                        view="cover"
+                        sizes={POST_ENTRY_COVER_SIZES}
+                        optimizedWidthCap={POST_ENTRY_COVER_WIDTH_CAP}
+                    />
+                ) : null}
+                {isUploading ? (
+                    <View className="absolute inset-0 opacity-60 bg-card justify-center items-center">
+                        <Loading />
+                    </View>
+                ) : null}
+                {edit ? (
+                    <View className="absolute top-3 right-3">
+                        <NeoButton
+                            image="Camera"
+                            style="glass"
+                            controlSize="regular"
+                            borderShape="circle"
+                            disabled={isUploading}
+                            onPress={pick}
+                        />
+                    </View>
+                ) : null}
+            </View>
+            {modal}
+        </>
+    )
+}
+
+function EntryIcon({ data, module, edit }) {
+    const { image, isUploading, pick, modal } = useEntryImageEdit({
+        kind: 'picture', edit, module, contentId: data?.id, image: data?.icon,
+    })
+    if (!image?.src && !edit) return null
+
+    return (
+        <>
+            <View className="relative mr-3 shrink-0">
+                <View className="w-12 h-12 rounded-xl overflow-hidden bg-accent/50">
+                    {image?.src ? (
+                        <Image
+                            {...image}
+                            alt={data.title}
+                            className="u-cover"
+                            view="cover"
+                        />
+                    ) : null}
+                    {isUploading ? (
+                        <View className="absolute inset-0 bg-card/80 items-center justify-center">
+                            <Loading />
+                        </View>
+                    ) : null}
+                </View>
+                {edit ? (
+                    <View className="absolute -bottom-1 -right-1">
+                        <NeoButton
+                            image="Camera"
+                            style="glass"
+                            controlSize="mini"
+                            borderShape="circle"
+                            disabled={isUploading}
+                            onPress={pick}
+                        />
+                    </View>
+                ) : null}
+            </View>
+            {modal}
+        </>
+    )
+}
+
 /** Post body with editor videos, embeds (standalone link paragraphs) and tables rendered inline. */
 function HtmlWithMedia({ html }) {
     // Split the raw HTML: clearLinks would turn UNA hrefs into relative ones.
@@ -279,19 +384,14 @@ function Default({ data, showPad, sidebar, block, blockWrapperProps, editable, a
                 {(videoId) && <View className='w-full aspect-video rounded-xl overflow-hidden mb-3'>
                     <Youtube videoId={videoId} size={3} />
                 </View>}
-                {(!!data.image && !data.video) && (
-                    <View className={`w-full ${getCoverAspectClass(block?.module)} mb-4 sm:rounded-xl overflow-hidden`}>
-                        <Image
-                            {...data.image}
-                            alt={data.title}
-                            className="u-cover"
-                            view="cover"
-                            sizes={POST_ENTRY_COVER_SIZES}
-                            optimizedWidthCap={POST_ENTRY_COVER_WIDTH_CAP}
-                        />
-                    </View>
+                {!data.video && (
+                    <EntryCover data={data} module={block?.module} edit={data.images_edit?.cover} />
                 )}
                 <View className={`mx-auto w-full ${(showPad == false || sidebar ? '' : ' ')}`}>
+                <Row className="w-full items-center">
+                <EntryIcon data={data} module={block?.module} edit={data.images_edit?.picture} />{/* Market product icon */}
+                    {/* min-w-0: a long title wraps next to the icon instead of pushing out of the block. */}
+                    <View className="flex-1 min-w-0">
                     <EditableTitleField
                         editable={editable}
                         requestUrl={requestUrl}
@@ -304,6 +404,8 @@ function Default({ data, showPad, sidebar, block, blockWrapperProps, editable, a
                                 : <H1C>{title}</H1C>
                         )}
                     </EditableTitleField>
+                    </View>
+                    </Row>
                     {afterTitle}
                     <EditableTextField
                         editable={editable}

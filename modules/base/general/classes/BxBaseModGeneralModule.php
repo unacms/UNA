@@ -1271,6 +1271,12 @@ class BxBaseModGeneralModule extends BxDolModule
         if($this->checkAllowedEdit($aData) !== CHECK_ACTION_RESULT_ALLOWED)
             return false;
 
+        // The field name comes from the request (the service is open in API): image fields only.
+        if(!in_array($sFiledName, $this->_getUpdateImageFields(), true))
+            return false;
+
+        $sValue = (int)$sValue;
+
         //TODO add transcoder settings
         $oImgStorage = BxDolStorage::getObjectInstance($CNF['OBJECT_STORAGE']);
         if(!$oImgStorage)
@@ -1282,7 +1288,46 @@ class BxBaseModGeneralModule extends BxDolModule
 
         $this->onUpdateImage($iContentId, $sFiledName, $sValue);
 
-        return $oImgStorage->getFileUrlById($sValue);
+        return $this->_bIsApi ? $this->_getUpdateImageUrlApi($sFiledName, $sValue, $oImgStorage) : $oImgStorage->getFileUrlById($sValue);
+    }
+
+    /**
+     * API: the changed image as the app shows it, a transcoded (display) size instead of the original upload.
+     */
+    protected function _getUpdateImageUrlApi($sFiledName, $iFileId, $oImgStorage)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        $aTranscoders = [];
+        if(!empty($CNF['FIELD_COVER']) && $sFiledName == $CNF['FIELD_COVER']) {
+            $aTranscoders = ['OBJECT_IMAGES_TRANSCODER_COVER', 'OBJECT_IMAGES_TRANSCODER_GALLERY'];
+        }
+        else if(!empty($CNF['FIELD_THUMB']) && $sFiledName == $CNF['FIELD_THUMB']) {
+            $aTranscoders = ['OBJECT_IMAGES_TRANSCODER_THUMB', 'OBJECT_IMAGES_TRANSCODER_GALLERY'];
+        }
+
+        foreach($aTranscoders as $sKey) {
+            if(!empty($CNF[$sKey]) && ($oTranscoder = BxDolTranscoderImage::getObjectInstance($CNF[$sKey])) && ($sUrl = $oTranscoder->getFileUrl($iFileId))) {
+                return $sUrl;
+            }
+        }
+
+        return $oImgStorage->getFileUrlById($iFileId);
+    }
+
+    /**
+     * Content fields holding a single image, which update_image may change.
+     */
+    protected function _getUpdateImageFields()
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        $aResult = [];
+        foreach(['FIELD_THUMB', 'FIELD_COVER', 'FIELD_PICTURE', 'FIELD_BADGE'] as $sKey)
+            if(!empty($CNF[$sKey]))
+                $aResult[] = $CNF[$sKey];
+
+        return $aResult;
     }
 
     public function serviceUpdateImagePosition($iContentId, $sFiledName, $sH, $sV)

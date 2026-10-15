@@ -520,6 +520,25 @@ class BxMarketTemplate extends BxBaseModTextTemplate
     {
         return $this->getModule()->getEntryImageData($aData, 'FIELD_COVER');
     }
+
+    protected function _getImagesEditApi($aData)
+    {
+        $oModule = $this->getModule();
+        $CNF = &$oModule->_oConfig->CNF;
+
+        // The same rule as for Header Image and Icon uploaders on the site's view product page.
+        if($oModule->checkAllowedEdit($aData) !== CHECK_ACTION_RESULT_ALLOWED || $oModule->checkAllowedSetCover() !== CHECK_ACTION_RESULT_ALLOWED)
+            return [];
+
+        $aResult = [
+            'cover' => $this->_getImageEditApi($CNF['FIELD_COVER']),
+        ];
+
+        if(getParam($CNF['PARAM_USE_ICON']) == 'on')
+            $aResult['picture'] = $this->_getImageEditApi($CNF['FIELD_THUMB']);
+
+        return $aResult;
+    }
     
     function _prepareImage($aData, $sUniqId, $sUploader, $sStorage, $sField, $bAllowTweak, $bAllowMultiple = false)
     {
@@ -529,6 +548,52 @@ class BxMarketTemplate extends BxBaseModTextTemplate
             $bAllowMultiple = true;
 
         return parent::_prepareImage($aData, $sUniqId, $sUploader, $sStorage, $sField, $bAllowTweak, $bAllowMultiple);
+    }
+    
+    public function entryAttachments ($aData, $aParams = [])
+    {
+        $mixedResult = parent::entryAttachments($aData, $aParams);
+        if(!$this->_bIsApi || !is_array($mixedResult) || !isset($mixedResult[0]['data']))
+            return $mixedResult;
+
+        $CNF = &$this->getModule()->_oConfig->CNF;
+
+        /*
+         * The product page shows photos here. Product files (OBJECT_STORAGE_FILES, what the parent returns)
+         * stay out on purpose: they are downloads for buyers, the app gets them from entity_downloads
+         * (market_attachments) after checkAllowedDownload, as the site does.
+         */
+        $mixedResult[0]['data'] = [];
+
+        $oStorage = BxDolStorage::getObjectInstance($CNF['OBJECT_STORAGE']);
+        if(!$oStorage) {
+            return $mixedResult;
+        }
+
+        $aPhotos = $this->_oDb->getPhoto(['type' => 'content_id', 'content_id' => $aData[$CNF['FIELD_ID']], 'except' => [$aData[$CNF['FIELD_THUMB']], $aData[$CNF['FIELD_COVER']]]]);
+        if(empty($aPhotos) || !is_array($aPhotos))
+            return $mixedResult;
+
+        $aItems = [];
+        foreach($aPhotos as $aPhoto) {
+            $aFile = $oStorage->getFile($aPhoto['file_id']);
+            if(empty($aFile))
+                continue;
+
+            $aItems[] = [
+                'file_name' => $aFile['file_name'],
+                'mime_type' => $aFile['mime_type'],
+                'ext' => $aFile['ext'],
+                'type' => 'image',
+                'size' => $aFile['size'],
+                'url' => $oStorage->getFileUrlById($aPhoto['file_id']),
+                'data' => bx_api_get_image($CNF['OBJECT_STORAGE'], $aPhoto['file_id']),
+            ];
+        }
+
+        $mixedResult[0]['data'] = $aItems;
+
+        return $mixedResult;
     }
 }
 

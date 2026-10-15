@@ -35,6 +35,7 @@ class BxBaseModProfileFormEntry extends BxBaseModGeneralFormEntry
                 'storage_object' => $CNF['OBJECT_STORAGE'],
                 'images_transcoder' => $CNF['OBJECT_IMAGES_TRANSCODER_THUMB'],
                 'uploaders' => $CNF['OBJECT_UPLOADERS_PICTURE'],
+                'image_type' => 'picture',
             );
         }
 
@@ -55,7 +56,8 @@ class BxBaseModProfileFormEntry extends BxBaseModGeneralFormEntry
                 'storage_object' => $CNF['OBJECT_STORAGE_COVER'],
                 'images_transcoder' => $CNF['OBJECT_IMAGES_TRANSCODER_COVER_THUMB'],
                 'uploaders_id' => $sUploadersId,
-                'uploaders' => $aUploaders
+                'uploaders' => $aUploaders,
+                'image_type' => 'cover',
             );
 
             // Lets the app crop a profile cover in the profile aspect ratio.
@@ -67,6 +69,7 @@ class BxBaseModProfileFormEntry extends BxBaseModGeneralFormEntry
                 'storage_object' => $CNF['OBJECT_STORAGE_BADGE'],
                 'images_transcoder' => $CNF['OBJECT_IMAGES_TRANSCODER_BADGE'],
                 'uploaders' => $CNF['OBJECT_UPLOADERS_BADGE'],
+                'image_type' => 'picture',
             ];
         }
 
@@ -108,6 +111,8 @@ class BxBaseModProfileFormEntry extends BxBaseModGeneralFormEntry
             $this->aInputs[$sField]['multiple'] = false;
             $this->aInputs[$sField]['content_id'] = 0;
             $this->aInputs[$sField]['ghost_template'] = '';
+            // Tells the app how to show and crop the image ('picture' | 'cover').
+            $this->aInputs[$sField]['image_type'] = $aParams['image_type'] ?? '';
         }
 
         if(($sField = 'friends_count') && isset($this->aInputs[$sField]) && !$this->_oModule->_oConfig->isFriends())

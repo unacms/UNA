@@ -125,6 +125,11 @@ class BxBaseModGeneralConfig extends BxDolModuleConfig
 
         return isset($this->_aObjects[$sType]) ? $this->_aObjects[$sType] : '';
     }
+    
+    public function getApiFormType()
+    {
+        return 'content';
+    }
 
     public function getPrefix($sType = '')
     {

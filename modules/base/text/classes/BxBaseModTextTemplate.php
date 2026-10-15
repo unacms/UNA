@@ -279,6 +279,9 @@ class BxBaseModTextTemplate extends BxBaseModGeneralTemplate
             if($sImage)
                 $aVars['image'] = bx_api_get_image($aImageParams['storage'], $mixedImage['id']);
 
+            // Lets the app change the images right on the view page, like a profile cover.
+            $aVars['images_edit'] = $this->_getImagesEditApi($aData);
+
             return $aVars;
         }
 
@@ -675,6 +678,39 @@ class BxBaseModTextTemplate extends BxBaseModGeneralTemplate
     protected function _getHeaderImage($aData)
     {
         return $this->getModule()->getEntryImageData($aData);
+    }
+
+    /**
+     * Images the viewer may change on the view page, for API: [image_type => [field, storage, uploader]].
+     * Empty when it's not allowed. The app uploads to the storage and calls update_image with the field.
+     */
+    protected function _getImagesEditApi($aData)
+    {
+        $CNF = &$this->getModule()->_oConfig->CNF;
+
+        if(empty($CNF['FIELD_THUMB']) || empty($CNF['OBJECT_STORAGE']) || empty($CNF['OBJECT_UPLOADERS']))
+            return [];
+
+        // The same rule as for the header image editor on the site.
+        if($this->getModule()->checkAllowedEdit($aData) !== CHECK_ACTION_RESULT_ALLOWED)
+            return [];
+
+        return [
+            'cover' => $this->_getImageEditApi($CNF['FIELD_THUMB']),
+        ];
+    }
+
+    protected function _getImageEditApi($sField)
+    {
+        $CNF = &$this->getModule()->_oConfig->CNF;
+
+        $mixedUploaders = $CNF['OBJECT_UPLOADERS'];
+
+        return [
+            'field' => $sField,
+            'storage' => $CNF['OBJECT_STORAGE'],
+            'uploader' => is_array($mixedUploaders) ? reset($mixedUploaders) : $mixedUploaders,
+        ];
     }
     
     function mediaExif ($aMediaInfo, $iProfileId = false, $sFuncAuthorDesc = '', $sTemplateName = 'media-exif.html') 

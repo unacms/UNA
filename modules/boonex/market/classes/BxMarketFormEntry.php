@@ -16,6 +16,12 @@ class BxMarketFormEntry extends BxBaseModTextFormEntry
 {
     protected $_bPhotoGhostCheckboxes;
 
+    /*
+     * Header Image and Icon fields shown in API forms only, the site sets them on view product page.
+     */
+    protected $_aImageFieldsApi;
+    protected $_aContentInfoApi;
+
     public function __construct($aInfo, $oTemplate = false)
     {
         $this->MODULE = 'bx_market';
@@ -104,6 +110,106 @@ class BxMarketFormEntry extends BxBaseModTextFormEntry
 
         if(isset($this->aInputs[$CNF['FIELD_SUBENTRIES']]) && $this->_oModule->checkAllowedSetSubentries() !== CHECK_ACTION_RESULT_ALLOWED)
             unset($this->aInputs[$CNF['FIELD_SUBENTRIES']]);
+
+        $this->_aImageFieldsApi = [];
+        $this->_aContentInfoApi = [];
+        if($this->_bIsApi && $this->_oModule->checkAllowedSetCover() === CHECK_ACTION_RESULT_ALLOWED)
+            $this->_addImageFieldsApi();
+    }
+
+    protected function _addImageFieldsApi()
+    {
+        $CNF = &$this->_oModule->_oConfig->CNF;
+
+        if(getParam($CNF['PARAM_USE_ICON']) == 'on')
+            $this->_aImageFieldsApi[$CNF['FIELD_THUMB']] = '_bx_market_form_entry_input_pictures_use_as_thumb';
+        $this->_aImageFieldsApi[$CNF['FIELD_COVER']] = '_bx_market_form_entry_input_pictures_use_as_cover';
+
+        // Tells the app how to show and crop the image, field names differ between modules.
+        $aImageTypes = [
+            $CNF['FIELD_THUMB'] => 'picture',
+            $CNF['FIELD_COVER'] => 'cover',
+        ];
+
+        $aInputs = [];
+        foreach($this->_aImageFieldsApi as $sField => $sCaption)
+            $aInputs[$sField] = [
+                'type' => 'files',
+                'name' => $sField,
+                'caption' => _t($sCaption),
+                'image_type' => $aImageTypes[$sField],
+                'storage_object' => $CNF['OBJECT_STORAGE'],
+                'uploaders' => $CNF['OBJECT_UPLOADERS'],
+                'images_transcoder' => $CNF['OBJECT_IMAGES_TRANSCODER_PREVIEW'],
+                'storage_private' => 0,
+                'multiple' => false,
+                'content_id' => 0,
+                'ghost_template' => '',
+            ];
+
+        // Put them before product pictures.
+        $iPos = array_search('pictures', array_keys($this->aInputs));
+        if($iPos === false)
+            $this->aInputs = array_merge($this->aInputs, $aInputs);
+        else
+            $this->aInputs = array_merge(array_slice($this->aInputs, 0, $iPos, true), $aInputs, array_slice($this->aInputs, $iPos, null, true));
+    }
+
+    public function getCodeAPI()
+    {
+        $aResult = parent::getCodeAPI();
+        if(empty($this->_aImageFieldsApi) || empty($this->_aContentInfoApi) || empty($aResult['inputs']))
+            return $aResult;
+
+        $CNF = &$this->_oModule->_oConfig->CNF;
+
+        $oStorage = BxDolStorage::getObjectInstance($CNF['OBJECT_STORAGE']);
+        if(!$oStorage)
+            return $aResult;
+
+        $oTranscoder = BxDolTranscoderImage::getObjectInstance($CNF['OBJECT_IMAGES_TRANSCODER_PREVIEW']);
+
+        foreach($this->_aImageFieldsApi as $sField => $sCaption) {
+            if(!isset($aResult['inputs'][$sField]) || !($iFileId = (int)($this->_aContentInfoApi[$sField] ?? 0)))
+                continue;
+
+            $aFile = $oStorage->getFile($iFileId);
+            if(empty($aFile) || !is_array($aFile))
+                continue;
+
+            $sUrl = $oStorage->getFileUrlById($iFileId);
+            $aResult['inputs'][$sField]['values_src'] = [[
+                'storage_object' => $CNF['OBJECT_STORAGE'],
+                'file_id' => $iFileId,
+                'file_type' => $aFile['mime_type'],
+                'file_name' => $aFile['file_name'],
+                'file_icon' => $oTranscoder ? $oTranscoder->getFileUrl($iFileId) : $sUrl,
+                'file_url' => $sUrl,
+            ]];
+            $aResult['inputs'][$sField]['value'] = (string)$iFileId;
+        }
+
+        return $aResult;
+    }
+
+    /**
+     * Header Image and Icon ids submitted from API form: [field => file id], only for submitted fields.
+     */
+    protected function _getImageFieldsApiValues()
+    {
+        $aResult = [];
+        foreach($this->_aImageFieldsApi as $sField => $sCaption) {
+            $mixedValue = $this->getCleanValue($sField);
+            if($mixedValue === false || $mixedValue === null)
+                continue;
+
+            if(!is_array($mixedValue))
+                $mixedValue = $mixedValue !== '' ? explode(',', $mixedValue) : [];
+
+            $aResult[$sField] = (int)array_pop($mixedValue);
+        }
+
+        return $aResult;
     }
 
     function getCode($bDynamicMode = false)
@@ -133,6 +239,9 @@ class BxMarketFormEntry extends BxBaseModTextFormEntry
                 $this->aInputs[$CNF['FIELD_SUBENTRIES']]['value'] = $oConnection->getConnectedContent((int)$aValues[$CNF['FIELD_ID']]);
         }
 
+        if(!empty($this->_aImageFieldsApi) && !empty($aValues[$CNF['FIELD_ID']]))
+            $this->_aContentInfoApi = $aValues;
+
         return parent::initChecker($aValues, $aSpecificValues);
     }
 
@@ -158,14 +267,22 @@ class BxMarketFormEntry extends BxBaseModTextFormEntry
                 $aValsToAdd[$CNF['FIELD_COVER']] = $iFileCover;
         }
 
+        if(!empty($this->_aImageFieldsApi))
+            $aValsToAdd = array_merge($aValsToAdd, $this->_getImageFieldsApiValues());
+
         $aPackage = bx_process_input(bx_get($CNF['FIELD_PACKAGE']), BX_DATA_INT);
         $aValsToAdd[$CNF['FIELD_PACKAGE']] = 0;
         if(!empty($aPackage) && is_array($aPackage) && ($iFilePackage = array_pop($aPackage)))
             $aValsToAdd[$CNF['FIELD_PACKAGE']] = $iFilePackage;
 
         $iContentId = parent::insert ($aValsToAdd, $isIgnore);
-        if(!empty($iContentId))
+        if(!empty($iContentId)) {
             $this->processFiles($CNF['FIELD_FILE'], $iContentId, true, $CNF['OBJECT_STORAGE_FILES']);
+
+            // Cover is processed by parent.
+            if(isset($this->_aImageFieldsApi[$CNF['FIELD_THUMB']]))
+                $this->processFiles($CNF['FIELD_THUMB'], $iContentId, true);
+        }
 
         return $iContentId;
     }
@@ -196,24 +313,65 @@ class BxMarketFormEntry extends BxBaseModTextFormEntry
             }
         }
 
-        $bSetImage = $this->_oModule->checkAllowedSetCover() === CHECK_ACTION_RESULT_ALLOWED; //--- Allow to set both Thumb and Cover.
-        foreach(['FIELD_THUMB', 'FIELD_COVER'] as $sKey)
-            if($bSetImage && ($aImage = bx_get($CNF[$sKey])) !== false) {
-                $aImage = bx_process_input($aImage, BX_DATA_INT);
+        $aImagesApi = [];
+        if(!empty($this->_aImageFieldsApi)) {
+            $aImagesApi = $this->_getImageFieldsApiValues();
+            $aValsToAdd = array_merge($aValsToAdd, $aImagesApi);
+        }
+        else {
+            $bSetImage = $this->_oModule->checkAllowedSetCover() === CHECK_ACTION_RESULT_ALLOWED; //--- Allow to set both Thumb and Cover.
+            foreach(['FIELD_THUMB', 'FIELD_COVER'] as $sKey)
+                if($bSetImage && ($aImage = bx_get($CNF[$sKey])) !== false) {
+                    $aImage = bx_process_input($aImage, BX_DATA_INT);
 
-                $aValsToAdd[$CNF[$sKey]] = 0;
-                if(!empty($aImage) && is_array($aImage) && ($iFileImage = array_pop($aImage)))
-                    $aValsToAdd[$CNF[$sKey]] = $iFileImage;
-            }
+                    $aValsToAdd[$CNF[$sKey]] = 0;
+                    if(!empty($aImage) && is_array($aImage) && ($iFileImage = array_pop($aImage)))
+                        $aValsToAdd[$CNF[$sKey]] = $iFileImage;
+                }
+        }
 
         $aPackage = bx_process_input(bx_get($CNF['FIELD_PACKAGE']), BX_DATA_INT);
         $aValsToAdd[$CNF['FIELD_PACKAGE']] = 0;
         if(!empty($aPackage) && is_array($aPackage) && ($iFilePackage = array_pop($aPackage)))
             $aValsToAdd[$CNF['FIELD_PACKAGE']] = $iFilePackage;
 
+        $aContentInfoOld = !empty($aImagesApi) ? $this->_oModule->_oDb->getContentInfoById($iContentId) : [];
+
         $iResult = parent::update ($iContentId, $aValsToAdd, $aTrackTextFieldsChanges);
 
         $this->processFiles($CNF['FIELD_FILE'], $iContentId, false, $CNF['OBJECT_STORAGE_FILES']);
+
+        // Images change only with the saved product: on a failed save the old files stay in use.
+        if($iResult !== false && !empty($aImagesApi)) {
+            /*
+             * API image fields have no content_id, so a file uploaded while editing is a ghost
+             * with content_id = 0: associate it (only submitted ids are taken), otherwise
+             * the ghost gets cleaned up and the field points to a deleted file.
+             */
+            foreach($aImagesApi as $sField => $iFileId)
+                if($iFileId)
+                    $this->processFiles($sField, $iContentId, true);
+
+            // The same as BxMarketModule::actionUpdateImage does: drop the replaced file and the cover position.
+            $oStorage = BxDolStorage::getObjectInstance($CNF['OBJECT_STORAGE']);
+            foreach($aImagesApi as $sField => $iFileId) {
+                $iFileIdOld = (int)($aContentInfoOld[$sField] ?? 0);
+                if($iFileIdOld == $iFileId)
+                    continue;
+
+                if($sField == $CNF['FIELD_COVER'])
+                    $this->_oModule->serviceUpdateImagePosition($iContentId, $sField, '', '');
+
+                // Keep the file if it's still used as the other image.
+                $bUsed = false;
+                foreach(array_keys($this->_aImageFieldsApi) as $sFieldOther)
+                    if($sFieldOther != $sField && (int)($aImagesApi[$sFieldOther] ?? ($aContentInfoOld[$sFieldOther] ?? 0)) == $iFileIdOld)
+                        $bUsed = true;
+
+                if($iFileIdOld && !$bUsed && $oStorage)
+                    $oStorage->deleteFile($iFileIdOld);
+            }
+        }
 
         return $iResult;
     }
