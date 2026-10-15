@@ -123,8 +123,7 @@ class BxDolAIVectorStoreFactory extends BxDolFactory
             case 'mariadb':
                 $o = BxDolAIVectorStoreMariaDb::open(
                     (string)($aParameters['table'] ?? BxDolAIVectorStoreMariaDb::TABLE),
-                    (int)($a['topk'] ?? 4),
-                    (int)($aParameters['dimension'] ?? 1536)
+                    (int)($a['topk'] ?? 4)
                 );
                 break;
             case 'una-proxy':

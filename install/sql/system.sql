@@ -7123,11 +7123,10 @@ CREATE TABLE IF NOT EXISTS `sys_agents_vector_mariadb` (
 ) ENGINE=InnoDB;
 
 SET @j = JSON_OBJECT(
-    'table', 'sys_agents_vector_mariadb',
-    'dimension', 1536
+    'table', 'sys_agents_vector_mariadb'
 );
 INSERT INTO sys_agents_vector_store (type, title, docs, topk, params, duplicate, changed, active)
-VALUES ('mariadb', 'MariaDB', 'Embeddings in the site database. Supported on MariaDB 11.7 and newer. Rows are stored in sys_agents_vector_mariadb; dimension must stay 1536.', 4, CAST(@j AS CHAR), 0, 0, 0);
+VALUES ('mariadb', 'MariaDB', 'Embeddings in the site database. Supported on MariaDB 11.7 and newer. Rows are stored in sys_agents_vector_mariadb with embedding width 1536.', 4, CAST(@j AS CHAR), 0, 0, 0);
 
 
 CREATE TABLE IF NOT EXISTS `sys_agents_tools` (

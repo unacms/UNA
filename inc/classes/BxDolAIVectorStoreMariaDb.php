@@ -14,6 +14,7 @@ class BxDolAIVectorStoreMariaDb
 {
     public const MARIADB_MIN_VERSION = '11.7.0';
     public const TABLE = 'sys_agents_vector_mariadb';
+    public const DIMENSION = 1536;
 
     /**
      * @return array{engine:string, version:string, supported:bool}
@@ -70,10 +71,8 @@ class BxDolAIVectorStoreMariaDb
         return $oPdo;
     }
 
-    public static function open(string $sTable, int $iTopK, int $iDimensions): NeuronAI\RAG\VectorStore\MariaDBVectorStore
+    public static function open(string $sTable, int $iTopK): NeuronAI\RAG\VectorStore\MariaDBVectorStore
     {
-        if ($iDimensions < 1 || $iDimensions > 16383)
-            throw new Exception('MariaDB vector store dimension must be between 1 and 16383');
         if ($iTopK < 1)
             $iTopK = 4;
 
@@ -90,8 +89,8 @@ class BxDolAIVectorStoreMariaDb
         $iExisting = self::embeddingDimensions($sTable);
         if ($iExisting === null)
             throw new Exception('MariaDB vector store table ' . $sTable . ' is missing');
-        if ($iExisting !== $iDimensions)
-            throw new Exception('MariaDB vector store ' . $sTable . ' has dimension ' . $iExisting . '; params ask for ' . $iDimensions);
+        if ($iExisting !== self::DIMENSION)
+            throw new Exception('MariaDB vector store ' . $sTable . ' must use dimension ' . self::DIMENSION);
 
         return new NeuronAI\RAG\VectorStore\MariaDBVectorStore(self::pdo(), $sTable, $iTopK);
     }
