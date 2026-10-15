@@ -134,4 +134,24 @@ fi
 
 chown -R www-data:www-data inc cache cache_public logs tmp storage
 
+# UNA's scheduler. periodic/cron.php expects to be started every minute, like the crontab line
+# in UNA's install instructions (and scripts/docker-compose/Cron.Dockerfile). The image has no
+# cron daemon, so a background loop starts a run at the top of each minute. As under cron, runs
+# may overlap, so a long video transcode does not hold up the email and push queues. It starts
+# after install and seeding, so it never sees a half-installed site.
+# - It runs as www-data, so cache files it writes stay writable by Apache. setpriv keeps the
+#   environment (UNA_DB_*, UNA_ROOT_DIR...), which su would reset.
+# - A CLI run has no request to take a host from, so UNA_HTTP_HOST and HTTPS give it the public
+#   URL. They are set for the scheduler only: Apache keeps taking the host from each request.
+run_cron() {
+    env UNA_HTTP_HOST="${RAILWAY_PUBLIC_DOMAIN:-localhost}" HTTPS=on \
+        setpriv --reuid=www-data --regid=www-data --init-groups \
+        php /var/www/html/periodic/cron.php || echo "UNA cron failed (exit $?)" >&2
+}
+while true; do
+    sleep $((60 - $(date +%s) % 60))
+    jobs >/dev/null # dash keeps a record of every finished run until it is listed
+    run_cron &
+done &
+
 exec "$@"
