@@ -4,9 +4,10 @@
  * MIT License - https://opensource.org/licenses/MIT
  *
  * Railway: demo content for a fresh install, so production and previews are not empty.
- * Runs from entrypoint.sh when UNA_DEMO_SEED=1. Idempotent: skips everything once the
- * first demo account exists. Content goes through module services (not raw SQL), so
- * timeline events, counters and notifications are created the same way as by users.
+ * Runs from entrypoint.sh when UNA_DEMO_SEED=1. Idempotent: content is created once, and
+ * skipped once the first demo account exists; seedPeople() runs on every start and does only
+ * what is missing. Content goes through module services (not raw SQL), so timeline events,
+ * counters and notifications are created the same way as by users.
  *
  * Environment:
  *   UNA_DEMO_PASSWORD  password for the demo accounts (random if unset)
@@ -34,7 +35,58 @@ $aUsers = [
     ['name' => 'Ella Kim', 'email' => 'ella@example.com'],
 ];
 
+/**
+ * Confirm the demo accounts and connect them, so friend and follow suggestions have people to
+ * offer. Runs on every start, so sites seeded before this existed catch up.
+ * - createAccount() takes join form fields only, so it can't confirm an email, and
+ *   sys_account_hide_unconfirmed_accounts hides unconfirmed accounts from suggestions.
+ * - Friend suggestions come from mutual friends, follow suggestions from the accounts that the
+ *   people you follow follow. A chain of friends and a ring of follows give everyone both.
+ */
+function seedPeople(array $aUsers): void
+{
+    $aPersons = [];
+    $iConfirmed = 0;
+    foreach ($aUsers as $aUser) {
+        if (!($oAccount = BxDolAccount::getInstance($aUser['email'])))
+            continue;
+        if (!$oAccount->isConfirmedEmail() && $oAccount->updateEmailConfirmed(true, false))
+            $iConfirmed++;
+        foreach ($oAccount->getProfiles(false) as $iProfileId => $aProfile)
+            if ($aProfile['type'] == 'bx_persons')
+                $aPersons[] = (int)$iProfileId;
+    }
+
+    $iFriends = 0;
+    $oFriends = BxDolConnection::getObjectInstance('sys_profiles_friends');
+    for ($i = 1; $i < count($aPersons); $i++) {
+        [$iA, $iB] = [$aPersons[$i - 1], $aPersons[$i]];
+        if ($oFriends->isConnected($iA, $iB, true))
+            continue;
+        $oFriends->addConnection($iA, $iB); // request
+        $oFriends->addConnection($iB, $iA); // accept
+        $iFriends++;
+    }
+
+    $iFollows = 0;
+    $oFollows = BxDolConnection::getObjectInstance('sys_profiles_subscriptions');
+    foreach ($aPersons as $i => $iA) {
+        $iB = $aPersons[($i + 1) % count($aPersons)];
+        if ($iA != $iB && !$oFollows->isConnected($iA, $iB) && $oFollows->addConnection($iA, $iB))
+            $iFollows++;
+    }
+
+    // New connections queue a refresh themselves; a confirmation does not.
+    if ($iConfirmed)
+        foreach ($aPersons as $iProfileId)
+            BxDolRecommendation::updateData($iProfileId);
+
+    if ($iConfirmed || $iFriends || $iFollows)
+        seedLog("people: $iConfirmed confirmed, $iFriends friendships, $iFollows follows");
+}
+
 if (BxDolAccount::getInstance($aUsers[0]['email'])) {
+    seedPeople($aUsers);
     seedLog('demo content already present, skipping');
     exit(0);
 }
@@ -49,7 +101,6 @@ foreach ($aUsers as $aUser) {
         'name' => $aUser['name'],
         'email' => $aUser['email'],
         'password' => $sPassword,
-        'email_confirmed' => 1,
     ], BX_PROFILE_ACTION_AUTO, false);
     if (empty($a['account_id'])) {
         seedLog("account {$aUser['email']} failed: " . ($a['error'] ?? 'unknown'));
@@ -139,6 +190,8 @@ foreach ($aPosts as $i => [$sTitle, $sText]) {
         ]);
     }
 }
+
+seedPeople($aUsers);
 
 seedLog('done: ' . count($aProfiles) . ' people, ' . ($iGroupProfileId ? 1 : 0) . ' group, ' . count($aPosts) . ' posts');
 ob_end_clean();
