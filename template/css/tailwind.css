@@ -631,6 +631,10 @@
     .bx-layout-row{
         @apply w-full flex relative flex-wrap md:flex-nowrap gap-4 lg:gap-6;
     }
+    /* A row whose cells are all empty (say, only members-only blocks on a guest's page) would still take a row gap above and below it, doubling the space between its neighbours. Hide it; a block added later (async loading) brings it back. Studio's builder keeps its empty rows. */
+    body:not(.bx-std) .bx-layout-row:not(:has(.bx-layout-cell > *)) {
+        @apply hidden;
+    }
     .bx-layout-col{
         @apply max-w-full w-full min-w-0;
         flex-shrink: 2 !important;
@@ -1344,6 +1348,26 @@
     /* Header: the main menu's tabs are capsules at the header's control height (44px, NEO's regular button). */
     #bx-toolbar .bx-menu-main > .bx-menu-item {
         @apply rounded-full;
+    }
+    /*
+     * Header main menu: centered between the logo and the toolbar. BxDolMenuMoreAuto moves the items that don't fit
+     * into 'more' after it has measured them; until then (bx-mma-ready) the row stays invisible, so an overflowing
+     * first guess never shows. If the script never runs, the fallback animation reveals the row after 1.5s.
+     */
+    #bx-toolbar .bx-menu-main {
+        @apply justify-center;
+    }
+    #bx-toolbar .bx-menu-main.bx-menu-more-auto {
+        transition: opacity 150ms ease-out;
+    }
+    #bx-toolbar .bx-menu-main.bx-menu-more-auto:not(.bx-mma-ready) {
+        opacity: 0;
+        animation: bx-mma-reveal 0s linear 1.5s forwards;
+    }
+    @keyframes bx-mma-reveal {
+        to {
+            opacity: 1;
+        }
     }
     #bx-toolbar .bx-menu-main > .bx-menu-item > .bx-stl-mil {
         @apply h-11 py-0 ltr:pl-3 ltr:pr-4 rtl:pr-3 rtl:pl-4 rounded-full bx-stl-mil-hover-text; /* the icon's 24px box has ~3px of air, so its side gets 4px less padding to look even */
