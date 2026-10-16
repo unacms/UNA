@@ -54,6 +54,52 @@ class BxAiProxyTest extends BxDolTestCase
         $this->assertSame(401, $aResult['code']);
     }
 
+    public function testOperatorPromptIsPrependedToTheClientSystemPrompt()
+    {
+        $oProvider = new BxAiProxyTestProvider();
+        (new BxAiProxyCompletion('Follow the operator rules.'))->run([
+            'messages' => [
+                ['role' => 'system', 'content' => 'You are the client agent.'],
+                ['role' => 'developer', 'content' => 'Answer briefly.'],
+                ['role' => 'user', 'content' => 'hello'],
+            ],
+        ], 7, function () use ($oProvider) {
+            return $oProvider;
+        });
+
+        $this->assertSame("Follow the operator rules.\n\nYou are the client agent.\n\nAnswer briefly.", $oProvider->sSystem);
+        $this->assertSame('hello', (string)$oProvider->aMessages[0]->getContent());
+    }
+
+    public function testOperatorPromptIsUsedWhenTheClientSendsNoSystemPrompt()
+    {
+        $oProvider = new BxAiProxyTestProvider();
+        (new BxAiProxyCompletion('Follow the operator rules.'))->run([
+            'messages' => [
+                ['role' => 'user', 'content' => 'hello'],
+            ],
+        ], 7, function () use ($oProvider) {
+            return $oProvider;
+        });
+
+        $this->assertSame('Follow the operator rules.', $oProvider->sSystem);
+    }
+
+    public function testBlankOperatorPromptLeavesTheClientSystemPrompt()
+    {
+        $oProvider = new BxAiProxyTestProvider();
+        (new BxAiProxyCompletion('   '))->run([
+            'messages' => [
+                ['role' => 'system', 'content' => 'You are the client agent.'],
+                ['role' => 'user', 'content' => 'hello'],
+            ],
+        ], 7, function () use ($oProvider) {
+            return $oProvider;
+        });
+
+        $this->assertSame('You are the client agent.', $oProvider->sSystem);
+    }
+
     public function testRequestModelDoesNotSelectTheProvider()
     {
         $sBodyModel = 'gpt-not-the-studio-model';

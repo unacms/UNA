@@ -40,6 +40,81 @@ class BxDolAIProviderUnaProxyTest extends \PHPUnit\Framework\TestCase
         new BxDolAIProviderUnaProxy('', 'secret', 'una-proxy', $oHttp);
     }
 
+    public function testOperatorPromptIsPrependedToTheModelSystemPrompt()
+    {
+        $oProvider = new BxDolAIProviderUnaProxy(
+            'site-key',
+            'site-secret',
+            'una-proxy',
+            new BxDolAIProxyTestHttpClient(new BxDolAIProxyTestStream([])),
+            'Follow the operator rules.'
+        );
+        $oProvider->systemPrompt("You are the client agent.\nAnswer briefly.");
+
+        $oPrompt = new ReflectionProperty($oProvider, 'system');
+        $this->assertSame("Follow the operator rules.\n\nYou are the client agent.\nAnswer briefly.", $oPrompt->getValue($oProvider));
+    }
+
+    public function testBlankOperatorPromptLeavesTheModelSystemPrompt()
+    {
+        $oProvider = new BxDolAIProviderUnaProxy(
+            'site-key',
+            'site-secret',
+            'una-proxy',
+            new BxDolAIProxyTestHttpClient(new BxDolAIProxyTestStream([])),
+            '   '
+        );
+        $oProvider->systemPrompt('You are the client agent.');
+
+        $oPrompt = new ReflectionProperty($oProvider, 'system');
+        $this->assertSame('You are the client agent.', $oPrompt->getValue($oProvider));
+    }
+
+    public function testSavedOperatorPromptIsPrependedWhenTheArgumentIsOmitted()
+    {
+        $this->withOperatorPrompt('Follow the operator rules.', function () {
+            $oProvider = new BxDolAIProviderUnaProxy(
+                'site-key',
+                'site-secret',
+                'una-proxy',
+                new BxDolAIProxyTestHttpClient(new BxDolAIProxyTestStream([]))
+            );
+            $oProvider->systemPrompt("You are the client agent.\nAnswer briefly.");
+
+            $oPrompt = new ReflectionProperty($oProvider, 'system');
+            $this->assertSame("Follow the operator rules.\n\nYou are the client agent.\nAnswer briefly.", $oPrompt->getValue($oProvider));
+        });
+    }
+
+    public function testEmptyStringOverridesTheSavedOperatorPrompt()
+    {
+        $this->withOperatorPrompt('Follow the operator rules.', function () {
+            $oProvider = new BxDolAIProviderUnaProxy(
+                'site-key',
+                'site-secret',
+                'una-proxy',
+                new BxDolAIProxyTestHttpClient(new BxDolAIProxyTestStream([])),
+                ''
+            );
+            $oProvider->systemPrompt('You are the client agent.');
+
+            $oPrompt = new ReflectionProperty($oProvider, 'system');
+            $this->assertSame('You are the client agent.', $oPrompt->getValue($oProvider));
+        });
+    }
+
+    private function withOperatorPrompt(string $sPrompt, callable $fTest)
+    {
+        $sPrior = getParam('bx_ai_proxy_prompt');
+        setParam('bx_ai_proxy_prompt', $sPrompt);
+        try {
+            return $fTest();
+        }
+        finally {
+            setParam('bx_ai_proxy_prompt', $sPrior);
+        }
+    }
+
     public function testToolCallChunkBecomesNeuronToolMessage()
     {
         $aLines = [
