@@ -62,7 +62,7 @@ class BxAiProxyModule extends BxDolModule
             $fFactory = static function (int $iModelId) {
                 return BxDolAIModelFactory::getModelInstance($iModelId);
             };
-            $oCompletion = new BxAiProxyCompletion();
+            $oCompletion = new BxAiProxyCompletion((string)getParam('bx_ai_proxy_prompt'));
             if (!empty($aBody['stream'])) {
                 $oCompletion->run($aBody, $iId, $fFactory, function (string $sEvent) use (&$bStarted) {
                     if (!$bStarted) {
