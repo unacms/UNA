@@ -7,6 +7,8 @@
  */
 class BxBaseMenuCacheTest extends BxDolTestCase
 {
+    private const KEY = 'menu_sys_site_unit_test';
+
     protected function tearDown(): void
     {
         BxDolMenu::setSelectedGlobal('', '');
@@ -33,18 +35,34 @@ class BxBaseMenuCacheTest extends BxDolTestCase
         $oMenu = $this->getSiteMenu();
 
         BxDolMenu::setSelectedGlobal('system', 'about');
-        $sAbout = $this->callProtected($oMenu, '_getCacheKeySelected');
+        $sAbout = $this->callProtected($oMenu, '_getCacheKeySelected', [self::KEY]);
 
         BxDolMenu::setSelectedGlobal('system', 'home');
-        $sHome = $this->callProtected($oMenu, '_getCacheKeySelected');
+        $sHome = $this->callProtected($oMenu, '_getCacheKeySelected', [self::KEY]);
 
         BxDolMenu::setSelectedGlobal('system', 'no-such-item-in-this-menu');
-        $sNone = $this->callProtected($oMenu, '_getCacheKeySelected');
+        $sNone = $this->callProtected($oMenu, '_getCacheKeySelected', [self::KEY]);
 
         $this->assertNotSame('', $sAbout);
         $this->assertNotSame('', $sHome);
         $this->assertNotSame($sAbout, $sHome, 'Different selected items get different cache entries.');
         $this->assertSame('', $sNone, 'Pages that select nothing in this menu share one entry.');
+        $this->assertSame(strlen($sAbout), strlen($sHome), 'The suffix has a fixed length, whatever the name.');
+        $this->assertLessThanOrEqual(24, strlen($sAbout));
+    }
+
+    public function testItemNamesAreCachedWithTheMenu(): void
+    {
+        $oMenu = $this->getSiteMenu();
+        if (!getParam('sys_content_cache_enable'))
+            $this->markTestSkipped('Content cache is off.');
+
+        BxDolMenu::setSelectedGlobal('system', 'about');
+        $this->callProtected($oMenu, '_getCacheKeySelected', [self::KEY]);
+
+        $aItems = bx_content_cache_get(self::KEY . '_items');
+        $this->assertIsArray($aItems, 'The item list is kept next to the menu, so a cache hit needs no query.');
+        $this->assertContains(['module' => 'system', 'name' => 'about'], $aItems);
     }
 
     public function testCachedMenuMarksTheItemOfEachPage(): void
