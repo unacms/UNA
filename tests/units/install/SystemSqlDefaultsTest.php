@@ -54,4 +54,40 @@ class SystemSqlDefaultsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('browse_recommendations_friends', $aContent['method']);
         $this->assertTrue($aContent['params'][1]['empty_state'] ?? false, 'With nothing to suggest, the block explains why instead of leaving the column blank.');
     }
+
+    public function testSearchIsAnActiveMemberToolbarItem(): void
+    {
+        $sSql = self::systemSql();
+
+        // Member toolbar columns: ... icon, addon, submenu_object, submenu_popup, visible_for_levels, hidden_on_pt, active, copyable, order.
+        $bFound = preg_match("/\\('sys_toolbar_member', 'system', 'search', '_sys_menu_item_title_system_search', [^\\n]*?, '([^']*)', '', '', 0, (\\d+), (\\d+), (\\d+), \\d+, (\\d+)\\)/", $sSql, $aMatch);
+
+        $this->assertSame(1, $bFound, 'system.sql adds the search button to the member toolbar, where it can be edited in Studio like its neighbours.');
+        $this->assertSame('search', $aMatch[1], 'It is drawn with the Lucide search icon.');
+        $this->assertSame(2147483647, (int)$aMatch[2], 'Guests and members both see it.');
+        $this->assertSame(0, (int)$aMatch[3], 'It is not hidden on any page type.');
+        $this->assertSame(1, (int)$aMatch[4], 'It is active on a fresh install.');
+        $this->assertSame(0, (int)$aMatch[5], 'It comes first in the toolbar.');
+
+        $this->assertStringNotContainsString("('sys_toolbar_site', 'system', 'search'", $sSql, 'One search item only: the site toolbar no longer has its own.');
+    }
+
+    public function testSearchIsActiveInTheApi(): void
+    {
+        $sSql = file_get_contents(__DIR__ . '/../../../modules/system/install/sql/enable-app-menus.sql');
+
+        $this->assertStringContainsString("SET `active_api`=1 WHERE `set_name`='sys_toolbar_member' AND `module`='system' AND `name`='search';", $sSql, 'The app receives the same search item.');
+        $this->assertStringNotContainsString("`set_name`='sys_toolbar_site' AND `module`='system' AND `name`='search'", $sSql);
+    }
+
+    public function testToolbarHasNoHardcodedSearchButton(): void
+    {
+        $sRoot = __DIR__ . '/../../../';
+        foreach (['template/_page_toolbar.html', 'template/_page_toolbar_search.html', 'modules/boonex/artificer/template/header.html', 'modules/boonex/artificer/data/template/system/pt_application.html'] as $sFile) {
+            $sHtml = file_get_contents($sRoot . $sFile);
+
+            $this->assertStringNotContainsString('bx-ti-search-button', $sHtml, $sFile . ': the search button comes from the member toolbar menu, not from the template.');
+            $this->assertStringNotContainsString('bx_site_search_show', $sHtml, $sFile);
+        }
+    }
 }

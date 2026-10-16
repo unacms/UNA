@@ -5100,11 +5100,11 @@ INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `tit
 
 -- site toolbar menu
 INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES 
-('sys_toolbar_site', 'system', 'main-menu', '_sys_menu_item_title_system_main_menu', '', 'javascript:void(0);', 'bx_menu_slide_inline(\'#bx-sliding-menu-sys_site\', this, \'site\');', '', 'bars', '', 2147483647, 1, 1, 1),
-('sys_toolbar_site', 'system', 'search', '_sys_menu_item_title_system_search', '', 'javascript:void(0);', 'bx_menu_slide_inline(''#bx-sliding-menu-search'', this, ''site'');', '', 'search', '', 2147483647, 1, 1, 2);
+('sys_toolbar_site', 'system', 'main-menu', '_sys_menu_item_title_system_main_menu', '', 'javascript:void(0);', 'bx_menu_slide_inline(\'#bx-sliding-menu-sys_site\', this, \'site\');', '', 'bars', '', 2147483647, 1, 1, 1);
 
 -- member toolbar menu
-INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `addon`, `submenu_object`, `submenu_popup`, `visible_for_levels`, `hidden_on_pt`, `active`, `copyable`, `order`) VALUES 
+INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `addon`, `submenu_object`, `submenu_popup`, `visible_for_levels`, `hidden_on_pt`, `active`, `copyable`, `order`) VALUES
+('sys_toolbar_member', 'system', 'search', '_sys_menu_item_title_system_search', '', 'javascript:void(0);', 'bx_menu_slide_inline(''#bx-sliding-menu-search'', this, ''site'');', '', 'search', '', '', 0, 2147483647, 0, 1, 1, 0),
 ('sys_toolbar_member', 'system', 'add-content', '_sys_menu_item_title_system_add_content', '', 'javascript:void(0);', 'bx_menu_slide_inline(\'#bx-sliding-menu-sys_add_content\', this, \'site\');', '', 'plus', '', '', 0, 2147483646, 0, 1, 1, 0),
 ('sys_toolbar_member', 'system', 'apps', '_sys_menu_item_title_system_apps', '', 'javascript:void(0);', '', '', 'qrcode', '', '', 0, 2147483646, 3, 1, 1, 0),
 ('sys_toolbar_member', 'system', 'account', '_sys_menu_item_title_system_account_menu', '_sys_menu_item_title_account_menu', 'javascript:void(0);', 'bx_menu_slide_inline(''#bx-sliding-menu-account'', this, ''site'');', '', 'user',  'a:3:{s:6:"module";s:6:"system";s:6:"method";s:21:"profile_notifications";s:5:"class";s:20:"TemplServiceProfiles";}', 'sys_account_popup', 1, 2147483646, 0, 1, 0, 1),
