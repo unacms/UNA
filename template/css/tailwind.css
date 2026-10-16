@@ -1334,7 +1334,7 @@
 
     /* Common elements: Toolbar menu */
     .bx-artificer .bx-menu-toolbar .bx-menu-toolbar-item .bx-menu-toolbar-item-unit {
-        @apply border-[5px] border-transparent; /* 32px avatar + 2 x 5px + the item's 1px border = 44px, like the other header buttons */
+        @apply border-[6px] border-transparent; /* 32px avatar + 2 x 6px = 44px, like the other header buttons */
     }
     .bx-artificer .bx-menu-toolbar .bx-menu-toolbar-item .bx-menu-toolbar-item-unit .bx-def-icon-size {
         @apply h-8 w-8;
