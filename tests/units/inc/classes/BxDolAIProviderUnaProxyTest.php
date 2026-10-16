@@ -40,6 +40,36 @@ class BxDolAIProviderUnaProxyTest extends \PHPUnit\Framework\TestCase
         new BxDolAIProviderUnaProxy('', 'secret', 'una-proxy', $oHttp);
     }
 
+    public function testOperatorPromptIsPrependedToTheModelSystemPrompt()
+    {
+        $oProvider = new BxDolAIProviderUnaProxy(
+            'site-key',
+            'site-secret',
+            'una-proxy',
+            new BxDolAIProxyTestHttpClient(new BxDolAIProxyTestStream([])),
+            'Follow the operator rules.'
+        );
+        $oProvider->systemPrompt("You are the client agent.\nAnswer briefly.");
+
+        $oPrompt = new ReflectionProperty($oProvider, 'system');
+        $this->assertSame("Follow the operator rules.\n\nYou are the client agent.\nAnswer briefly.", $oPrompt->getValue($oProvider));
+    }
+
+    public function testBlankOperatorPromptLeavesTheModelSystemPrompt()
+    {
+        $oProvider = new BxDolAIProviderUnaProxy(
+            'site-key',
+            'site-secret',
+            'una-proxy',
+            new BxDolAIProxyTestHttpClient(new BxDolAIProxyTestStream([])),
+            '   '
+        );
+        $oProvider->systemPrompt('You are the client agent.');
+
+        $oPrompt = new ReflectionProperty($oProvider, 'system');
+        $this->assertSame('You are the client agent.', $oPrompt->getValue($oProvider));
+    }
+
     public function testToolCallChunkBecomesNeuronToolMessage()
     {
         $aLines = [
