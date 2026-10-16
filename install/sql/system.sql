@@ -7110,6 +7110,11 @@ SET @j = JSON_OBJECT(
 INSERT INTO sys_agents_vector_store (type, title, docs, topk, params, duplicate, changed, active)
 VALUES ('meilisearch', 'Meilisearch', 'https://www.meilisearch.com/', 5, CAST(@j AS CHAR), 0, 0, 0);
 
+SET @j = JSON_OBJECT();
+INSERT INTO sys_agents_vector_store (type, title, docs, topk, params, duplicate, changed, active)
+VALUES ('mariadb', 'MariaDB', 'Embeddings in the site database. Supported on MariaDB 11.7 and newer. Rows are stored in sys_agents_vector_mariadb_1024 or sys_agents_vector_mariadb_384, matching the embedding width.', 4, CAST(@j AS CHAR), 0, 0, 0);
+
+-- Vector tables are in mariadb.sql. The installer runs that file after this one, on MariaDB 11.7 and newer.
 
 CREATE TABLE IF NOT EXISTS `sys_agents_tools` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
