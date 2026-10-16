@@ -36,7 +36,6 @@ export function BlockItemRenderer({ route, item, sidebar }) {
     const block = BlockByName2({ 
         b: item.data, 
         name: item.block, 
-        contentOnly:item?.data?.source == "system:get_create_post_form",
         fill: fillViewport,
         extraProps: {
             pageTitle: route?.title,
