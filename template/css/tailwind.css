@@ -1368,7 +1368,7 @@
         max-height: calc(100dvh - 5.5rem);
         @apply overflow-y-auto overscroll-contain;
     }
-    /* More list: 36px rows (NEO's small size), inset 8px so each row's 8px radius sits inside the popup's 16px corner. */
+    /* More list: 44px rows like the tabs they continue (same icon and text size), inset 8px so each row's 8px radius sits inside the popup's 16px corner. */
     #bx-toolbar .bx-popup-menu ul.bx-menu-submenu-more-auto {
         @apply px-2;
     }
@@ -1377,7 +1377,7 @@
         @apply rounded-lg;
     }
     #bx-toolbar ul.bx-menu-submenu-more-auto > .bx-menu-item > .bx-stl-mil {
-        @apply h-9 py-0 ltr:pl-2 ltr:pr-3 rtl:pr-2 rtl:pl-3 bx-stl-mil-hover-text;
+        @apply h-11 py-0 ltr:pl-3 ltr:pr-4 rtl:pr-3 rtl:pl-4 bx-stl-mil-hover-text;
     }
 
     /* Common elements: Page Submenu */
