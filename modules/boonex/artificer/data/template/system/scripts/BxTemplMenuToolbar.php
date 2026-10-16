@@ -71,12 +71,33 @@ class BxTemplMenuToolbar extends BxBaseMenuToolbar
                 break;
 
             case 'add-content':
-                $a['class_add'] = str_replace('bx-def-media-phone-hide', '',  $a['class_add']);
+                if(isset($a['class_add']))
+                    $a['class_add'] = str_replace('bx-def-media-phone-hide', '',  $a['class_add']);
 
                 if(isset($a['bx_if:onclick']['content']['onclick']))
                     $a['bx_if:onclick']['content']['onclick'] = str_replace('bx_menu_slide_inline', 'bx_menu_popup_inline', $a['bx_if:onclick']['content']['onclick']);
 
                 $sAttrsAdd = 'aria-haspopup="true" aria-expanded="false" aria-controls="bx-sliding-menu-sys_add_content"';
+                break;
+
+            case 'search':
+                //--- The app gets the item as it is in the menu builder.
+                if($this->_bIsApi)
+                    break;
+
+                if(isset($a['class_add']))
+                    $a['class_add'] = str_replace('bx-def-media-phone-hide', '',  $a['class_add']);
+
+                //--- The floating search bar (see _page_toolbar_search.html) takes the button's place. Without it the button opens the search page.
+                if(getParam('bx_artificer_header_search') == 'on') {
+                    $a['link'] = 'javascript:void(0)';
+                    $a['bx_if:onclick'] = ['condition' => true, 'content' => ['onclick' => 'bx_site_search_show(this)']];
+                    $sAttrsAdd = 'aria-expanded="false" aria-controls="bx-ti-search-box"';
+                }
+                else {
+                    $a['link'] = BX_DOL_URL_ROOT . 'searchKeyword.php';
+                    $a['bx_if:onclick'] = ['condition' => false, 'content' => ['onclick' => '']];
+                }
                 break;
 
             case 'notifications-preview':

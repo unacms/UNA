@@ -89,7 +89,10 @@ class BxBaseMenu extends BxDolMenu
                 default:
                     trigger_error("Unknown cache mode for menu ({$this->_sObject}): {$this->_aObject['cache']}", E_USER_ERROR);
                     break;
-            }            
+            }
+            // The output marks the selected item (bx-menu-tab-active), so each selected item gets its own entry.
+            $sCacheKey .= $this->_getCacheKeySelected($sCacheKey);
+
             $mixedCache = bx_content_cache_get($sCacheKey);
         }
         if ($mixedCache !== null) {
@@ -286,6 +289,62 @@ class BxBaseMenu extends BxDolMenu
             return $this->_oQuery->getMenuItemsHierarchy();
         else 
             return $this->_oQuery->getMenuItems();
+    }
+
+    /**
+     * Cache key part for the item this menu shows as selected: empty when none of its items is,
+     * so pages that select nothing in this menu share one entry.
+     * The items' module and name pairs are kept in the content cache next to the menu, under the
+     * same key, so a cache hit needs no query and they go stale exactly when the cached menu does.
+     * @param $sCacheKey the menu's own cache key
+     */
+    protected function _getCacheKeySelected ($sCacheKey)
+    {
+        $sItemsKey = $sCacheKey . '_items';
+        $aItems = bx_content_cache_get($sItemsKey);
+        if (!is_array($aItems)) {
+            if (!isset($this->_aObject['menu_items'])) {
+                $this->_aObject['menu_items'] = $this->getMenuItemsRaw();
+            }
+
+            $aItems = $this->_getSelectableItems($this->_aObject['menu_items']);
+            bx_content_cache_set($sItemsKey, $aItems);
+        }
+
+        $sResult = '';
+        foreach ($aItems as $a) {
+            if ($this->_isSelected($a)) {
+                // A short fixed-length suffix whatever the name's length, so the cache file name stays valid.
+                $sResult = '_sel' . substr(hash('sha256', $a['module'] . ':' . $a['name']), 0, 16);
+                break;
+            }
+        }
+
+        return $sResult;
+    }
+
+    /**
+     * Module and name of every item, sub-items included, which is all _isSelected() looks at.
+     */
+    protected function _getSelectableItems ($aItems)
+    {
+        $aResult = [];
+        if (!is_array($aItems)) {
+            return $aResult;
+        }
+
+        foreach ($aItems as $a) {
+            if (!is_array($a) || !isset($a['name'])) {
+                continue;
+            }
+
+            $aResult[] = ['module' => isset($a['module']) ? $a['module'] : '', 'name' => $a['name']];
+            if (!empty($a['subitems'])) {
+                $aResult = array_merge($aResult, $this->_getSelectableItems($a['subitems']));
+            }
+        }
+
+        return $aResult;
     }
 
     protected function getMenuItemsRawProfileRelated ()

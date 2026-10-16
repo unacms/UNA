@@ -105,7 +105,18 @@ class BxBaseMenuToolbarTest extends BxDolTestCase
         }, E_WARNING | E_NOTICE);
 
         try {
-            $oMenu = $this->getMemberToolbar();
+            //--- Show every item, as a signed-in member sees 'add-content', 'account' and the rest.
+            $aObject = BxDolMenuQuery::getMenuObject('sys_toolbar_member');
+            if (empty($aObject))
+                $this->markTestSkipped('The member toolbar menu is not installed.');
+
+            $oMenu = new class($aObject, BxDolTemplate::getInstance()) extends BxTemplMenuToolbar {
+                protected function _isVisible($a)
+                {
+                    return true;
+                }
+            };
+
             $aItems = [];
             foreach ($this->getMemberToolbarRows($oMenu) as $sName => $aRow)
                 if (($a = $this->callProtected($oMenu, '_getMenuItem', [$aRow])) !== false)
@@ -121,6 +132,7 @@ class BxBaseMenuToolbarTest extends BxDolTestCase
 
         $this->assertSame([], $aWarnings, 'A PHP warning printed into api.php output breaks the JSON NEO reads.');
         $this->assertArrayHasKey('main-menu', $aItems);
+        $this->assertArrayHasKey('add-content', $aItems, 'Members-only items are rendered too.');
         $this->assertArrayNotHasKey('class_add', $aItems['main-menu'], 'HTML-only classes stay out of the API item.');
     }
 }
