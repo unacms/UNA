@@ -191,7 +191,7 @@ BxDolMenuMoreAuto.prototype._reveal = function(bTransition)
     var sTransition = eMenu.style.transition;
     eMenu.style.transition = 'none';
     this._oMenu.addClass(this._sClassReady);
-    window.getComputedStyle(eMenu).opacity; // Apply the change before the transition comes back.
+    this._fRevealOpacity = Number.parseFloat(window.getComputedStyle(eMenu).opacity); // Reading it applies the change before the transition comes back.
     eMenu.style.transition = sTransition;
 };
 
@@ -209,7 +209,7 @@ BxDolMenuMoreAuto.prototype._onResize = function()
 
 BxDolMenuMoreAuto.prototype._whenFontsReady = function(fCallback)
 {
-    if(!document.fonts || !document.fonts.ready || document.fonts.status == 'loaded') {
+    if(!document.fonts || typeof(document.fonts.ready) != 'object' || document.fonts.status == 'loaded') {
         fCallback();
         return;
     }
@@ -264,10 +264,10 @@ BxDolMenuMoreAuto.prototype._getAvailable = function()
     var oStyleMenu = window.getComputedStyle(this._oMenu.get(0));
 
     return eParent.getBoundingClientRect().width
-        - parseFloat(oStyleParent.paddingLeft) - parseFloat(oStyleParent.paddingRight)
-        - parseFloat(oStyleParent.borderLeftWidth) - parseFloat(oStyleParent.borderRightWidth)
-        - parseFloat(oStyleMenu.paddingLeft) - parseFloat(oStyleMenu.paddingRight)
-        - parseFloat(oStyleMenu.borderLeftWidth) - parseFloat(oStyleMenu.borderRightWidth);
+        - Number.parseFloat(oStyleParent.paddingLeft) - Number.parseFloat(oStyleParent.paddingRight)
+        - Number.parseFloat(oStyleParent.borderLeftWidth) - Number.parseFloat(oStyleParent.borderRightWidth)
+        - Number.parseFloat(oStyleMenu.paddingLeft) - Number.parseFloat(oStyleMenu.paddingRight)
+        - Number.parseFloat(oStyleMenu.borderLeftWidth) - Number.parseFloat(oStyleMenu.borderRightWidth);
 };
 
 /**
@@ -307,7 +307,7 @@ BxDolMenuMoreAuto.prototype._measure = function()
     var bRtl = window.getComputedStyle(eProbe).direction == 'rtl';
     var oProbe = eProbe.getBoundingClientRect();
     var oStyleProbe = window.getComputedStyle(eProbe);
-    var fStart = bRtl ? oProbe.right - parseFloat(oStyleProbe.paddingRight) - parseFloat(oStyleProbe.borderRightWidth) : oProbe.left + parseFloat(oStyleProbe.paddingLeft) + parseFloat(oStyleProbe.borderLeftWidth);
+    var fStart = bRtl ? oProbe.right - Number.parseFloat(oStyleProbe.paddingRight) - Number.parseFloat(oStyleProbe.borderRightWidth) : oProbe.left + Number.parseFloat(oStyleProbe.paddingLeft) + Number.parseFloat(oStyleProbe.borderLeftWidth);
     var fEdge = function(eElement) {
         var oRect = eElement.getBoundingClientRect();
         return bRtl ? fStart - oRect.left : oRect.right - fStart;
@@ -325,7 +325,7 @@ BxDolMenuMoreAuto.prototype._measure = function()
     });
     var fMore = eMoreClone && eMoreClone.getClientRects().length ? fEdge(eMoreClone) - fPrev : 0;
 
-    eProbe.parentNode.removeChild(eProbe);
+    eProbe.remove();
 
     return {items: aItems, more: fMore};
 };
@@ -386,7 +386,7 @@ BxDolMenuMoreAuto.prototype._apply = function(sLayout)
         if(sLayout.charAt(i) == '1' || !eSubmenu) {
             if(eItem.parentNode !== eMenu) {
                 this._styleForRow($(eItem));
-                eMenu.insertBefore(eItem, eRowNext);
+                eMenu.insertBefore(eItem, eRowNext); // eRowNext may be null (no 'more' item): append.
             }
             eRowNext = eItem;
         }
@@ -400,7 +400,7 @@ BxDolMenuMoreAuto.prototype._apply = function(sLayout)
     }
 
     // Shown and hidden at once: a jQuery show() animation would grow the item while the others move.
-    if(sLayout.indexOf('0') != -1)
+    if(sLayout.includes('0'))
         this._oItemMore.show();
     else
         this._oItemMore.hide();
@@ -428,7 +428,7 @@ BxDolMenuMoreAuto.prototype._styleForSubmenu = function(oItem)
 BxDolMenuMoreAuto.prototype._getSignature = function()
 {
     return $.map(this._aItems, function(eItem) {
-        return (eItem.className.match(/bx-menu-item-([\w-]+)/) || ['', ''])[1] + ':' + $.trim($(eItem).text()).length;
+        return (eItem.className.match(/bx-menu-item-([\w-]+)/) || ['', ''])[1] + ':' + $(eItem).text().trim().length;
     }).join(',');
 };
 
@@ -443,7 +443,7 @@ BxDolMenuMoreAuto.prototype._recall = function()
         return typeof(sLayout) == 'string' && sLayout.length == this._aItems.length ? sLayout : '';
     }
     catch(e) {
-        return '';
+        return ''; // Storage unavailable (private mode, blocked) or corrupt: lay out from scratch.
     }
 };
 
@@ -467,7 +467,9 @@ BxDolMenuMoreAuto.prototype._remember = function(sLayout)
 
         window.localStorage.setItem(this._sStorageKey, JSON.stringify(oStored));
     }
-    catch(e) {}
+    catch(e) {
+        // Storage unavailable or full: the row is only not remembered for the next page.
+    }
 };
 
 /**
@@ -492,20 +494,19 @@ BxDolMenuMoreAuto.prototype._animateFrom = function(aBefore)
 
     var oOptions = {duration: 200, easing: 'cubic-bezier(0.2, 0, 0, 1)'};
 
-    this._oMenu.children(this._sClassItem + ':visible').each(function() {
-        var oItem = this, fLeft = undefined;
-        for(var i = 0; i < aBefore.length; i++)
-            if(aBefore[i].item === oItem)
-                fLeft = aBefore[i].left;
+    this._oMenu.children(this._sClassItem + ':visible').each(function(iIndex, eItem) {
+        var oBefore = aBefore.find(function(o) {
+            return o.item === eItem;
+        });
 
-        if(fLeft === undefined) {
-            oItem.animate([{opacity: 0}, {opacity: 1}], oOptions);
+        if(!oBefore) {
+            eItem.animate([{opacity: 0}, {opacity: 1}], oOptions);
             return;
         }
 
-        var fShift = fLeft - oItem.getBoundingClientRect().left;
+        var fShift = oBefore.left - eItem.getBoundingClientRect().left;
         if(Math.abs(fShift) >= 1)
-            oItem.animate([{transform: 'translateX(' + fShift + 'px)'}, {transform: 'none'}], oOptions);
+            eItem.animate([{transform: 'translateX(' + fShift + 'px)'}, {transform: 'none'}], oOptions);
     });
 };
 
