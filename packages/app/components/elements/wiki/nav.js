@@ -138,7 +138,9 @@ export function ActiveBranchExpander({ currentPathComparable, items, setExpanded
     return null;
 }
 
-export function MenuWiki({ onNavigate, block, url }) {
+// `className`: the list's classes. The wiki sidebar passes `conductor.sidebar_nav`, so its
+// items line up with the sidebar title as in conductor sidebars.
+export function MenuWiki({ onNavigate, block, url, className = 'gap-0.5 lg:-mx-2' }) {
     const data = block.content[0].data;
     const routePathComparable = useCurrentPathComparable();
     // Prefer pageData.url so sidebar pushState (web) and in-layout swaps (native)
@@ -210,7 +212,7 @@ export function MenuWiki({ onNavigate, block, url }) {
                 items={topLevelItems}
                 setExpandedMap={setExpandedMap}
             />
-            <View className='gap-0.5 lg:-mx-2'>
+            <View className={className}>
                 {renderItems(topLevelItems)}
             </View>
         </>

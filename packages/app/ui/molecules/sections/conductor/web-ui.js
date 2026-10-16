@@ -2,6 +2,7 @@ import { useCallback, useState, useEffect, useLayoutEffect, useRef, useMemo, mem
 import { Text } from 'app/design/typography'
 import { View, Row, Pressable } from 'app/design/view'
 import { Icon } from 'app/ui/atoms/icon'
+import { SidebarTitle } from 'app/ui/molecules/sidebar-title'
 import {
     appSetting,
     decodeTextNode,
@@ -958,27 +959,12 @@ export const LeftColumnContainer = ({
                 style={stickyColumnStyle}
             >
                 <View className={layoutName == 'profile' ? '' : appSetting('conductor', 'sidebar_inner_container')}>
-                     {((!!title || addMenuItems.length > 0) && layoutName != 'profile') && (
-                        <Row className={appSetting('conductor', 'sidebar_title')}>
-                            <Row className="items-center mr-auto min-w-0 hidden lg:flex gap-2">
-                                {!!icon && (
-                                    <View className="h-8 w-8 items-center justify-center flex">
-                                    <Icon
-                                        icon={icon}
-                                        size={29}
-                                        className="text-card-foreground shrink-0"
-                                    /></View>
-                                )}
-                                <Text className="text-xl  tracking-tight truncate font-bold leading-9 text-card-foreground">
-                                    {t(title)}
-                                </Text>
-                            </Row>
-                            <Row>{addButtons}</Row>
-                        </Row>
+                    {((!!title || addMenuItems.length > 0) && layoutName != 'profile') && (
+                        <SidebarTitle title={title} icon={icon} actions={addButtons} />
                     )}
                     <View className="flex-1 gap-4">
                         {layoutName == 'navigator' && routes.length > 1 && (
-                            <View className=' gap-0.5 -mx-1 -mb-1'>
+                            <View className={appSetting('conductor', 'sidebar_nav')}>
                                 {hasConductorSubitems(routes) ? (
                                     <SidebarNav
                                         routes={routes}
