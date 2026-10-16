@@ -4,7 +4,7 @@
  * MIT License - https://opensource.org/licenses/MIT
  *
  * MariaDB vector search limited to one Studio store.
- * Rows from every store share sys_agents_vector_mariadb and are marked with sourceType.
+ * Rows from every store share one table per embedding width and are marked with sourceType.
  *
  * @defgroup    UnaCore UNA Core
  * @{
@@ -14,19 +14,49 @@ class BxDolAIVectorStoreMariaDbStore extends NeuronAI\RAG\VectorStore\MariaDBVec
 {
     public function __construct(
         PDO $oPdo,
-        string $sTable,
         int $iTopK,
         protected string $sStoreId,
     ) {
-        parent::__construct($oPdo, $sTable, $iTopK);
+        parent::__construct($oPdo, BxDolAIVectorStoreMariaDb::tableForDimension(1024), $iTopK);
+    }
+
+    public function addDocuments(array $documents): NeuronAI\RAG\VectorStore\VectorStoreInterface
+    {
+        $aGrouped = [];
+        foreach ($documents as $oDocument) {
+            if (!$oDocument instanceof NeuronAI\RAG\Document)
+                continue;
+
+            $sTable = BxDolAIVectorStoreMariaDb::tableForDimension(count($oDocument->getEmbedding()));
+            $aGrouped[$sTable][] = $oDocument;
+        }
+
+        foreach ($aGrouped as $sTable => $aDocuments) {
+            $this->tableName = $sTable;
+            parent::addDocuments($aDocuments);
+        }
+
+        return $this;
+    }
+
+    public function deleteBy(string $sourceType, ?string $sourceName = null): NeuronAI\RAG\VectorStore\VectorStoreInterface
+    {
+        foreach (BxDolAIVectorStoreMariaDb::DIMENSIONS as $iDimension) {
+            $this->tableName = BxDolAIVectorStoreMariaDb::tableForDimension($iDimension);
+            parent::deleteBy($sourceType, $sourceName);
+        }
+
+        return $this;
     }
 
     public function similaritySearch(array $embedding): iterable
     {
+        $this->tableName = BxDolAIVectorStoreMariaDb::tableForDimension(count($embedding));
+
         $oStatement = $this->pdo->prepare(sprintf(
             <<<'SQL'
                 SELECT id, content, sourceType, sourceName, metadata,
-                       VEC_DISTANCE_EUCLIDEAN(embedding, VEC_FromText(:embedding)) AS distance
+                       VEC_DISTANCE_COSINE(embedding, VEC_FromText(:embedding)) AS distance
                 FROM %s
                 WHERE sourceType = :storeId
                 ORDER BY distance ASC

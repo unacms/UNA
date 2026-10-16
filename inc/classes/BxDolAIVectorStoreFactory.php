@@ -121,11 +121,7 @@ class BxDolAIVectorStoreFactory extends BxDolFactory
                 );
                 break;
             case 'mariadb':
-                $o = BxDolAIVectorStoreMariaDb::open(
-                    $iId,
-                    (string)($aParameters['table'] ?? BxDolAIVectorStoreMariaDb::TABLE),
-                    (int)($a['topk'] ?? 4)
-                );
+                $o = BxDolAIVectorStoreMariaDb::open($iId, (int)($a['topk'] ?? 4));
                 break;
             case 'una-proxy':
                 bx_log('sys_agents', 'Remote knowledge is stored on the master', BX_LOG_ERR);

@@ -50,7 +50,16 @@ class BxDolAIVectorStoreMariaDbTest extends BxDolTestCase
 
     public function testTableName()
     {
-        $this->assertSame('sys_agents_vector_mariadb', BxDolAIVectorStoreMariaDb::tableName(BxDolAIVectorStoreMariaDb::TABLE));
+        $this->assertSame('sys_agents_vector_mariadb_1024', BxDolAIVectorStoreMariaDb::tableForDimension(1024));
+        $this->assertSame('sys_agents_vector_mariadb_384', BxDolAIVectorStoreMariaDb::tableForDimension(384));
+
+        try {
+            BxDolAIVectorStoreMariaDb::tableForDimension(1536);
+            $this->fail('An embedding width must be 1024 or 384');
+        }
+        catch (Exception $oException) {
+            $this->assertSame('MariaDB vector store expects embedding width 1024 or 384, got 1536', $oException->getMessage());
+        }
 
         try {
             BxDolAIVectorStoreMariaDb::tableName('sys_agents_vs_1; DROP TABLE sys_accounts');
@@ -67,19 +76,133 @@ class BxDolAIVectorStoreMariaDbTest extends BxDolTestCase
         $this->assertSame(BxDolDb::getLink(), BxDolAIVectorStoreMariaDb::pdo());
     }
 
-    public function testSearchIsLimitedToStore()
+    public function testWrongEmbeddingWidthIsRejected()
     {
-        $sVersion = (string)BxDolDb::getInstance()->getOne('SELECT VERSION()');
-        if (!BxDolAIVectorStoreMariaDb::describe($sVersion)['supported'])
-            $this->markTestSkipped('MariaDB vector store is not supported on this server');
+        $this->skipUnlessMariaDb();
 
-        $aNearA = array_fill(0, BxDolAIVectorStoreMariaDb::DIMENSION, 0.0);
+        $oStore = BxDolAIVectorStoreMariaDb::open(903, 4);
+        $oDocument = new NeuronAI\RAG\Document('width-mismatch');
+        $oDocument->embedding = [0.1, 0.2, 0.3];
+        $oDocument->sourceType = '903';
+        $oDocument->sourceName = 'width-mismatch';
+
+        try {
+            $oStore->addDocument($oDocument);
+            $this->fail('A short embedding must not be stored');
+        }
+        catch (Exception $oException) {
+            $this->assertSame(
+                'MariaDB vector store expects embedding width 1024 or 384, got 3',
+                $oException->getMessage()
+            );
+        }
+
+        foreach (BxDolAIVectorStoreMariaDb::DIMENSIONS as $iDimension) {
+            $sTable = BxDolAIVectorStoreMariaDb::tableForDimension($iDimension);
+            $iLeft = (int)BxDolDb::getInstance()->getOne(
+                "SELECT COUNT(*) FROM `{$sTable}` WHERE `sourceName` = 'width-mismatch'"
+            );
+            $this->assertSame(0, $iLeft, $sTable);
+        }
+    }
+
+    public static function providerForDimension(): array
+    {
+        return [
+            '1024' => [1024],
+            '384' => [384],
+        ];
+    }
+
+    #[DataProvider('providerForDimension')]
+    public function testClosestDocumentRanksFirst(int $iDimension)
+    {
+        $this->skipUnlessMariaDb();
+
+        $aNear = array_fill(0, $iDimension, 0.0);
+        $aNear[0] = 1.0;
+        $aFar = array_fill(0, $iDimension, 0.0);
+        $aFar[1] = 1.0;
+
+        $oStore = BxDolAIVectorStoreMariaDb::open(904, 4);
+        $oFar = new NeuronAI\RAG\Document('far-chunk');
+        $oFar->embedding = $aFar;
+        $oFar->sourceType = '904';
+        $oFar->sourceName = 'rank';
+        $oNear = new NeuronAI\RAG\Document('near-chunk');
+        $oNear->embedding = $aNear;
+        $oNear->sourceType = '904';
+        $oNear->sourceName = 'rank';
+
+        try {
+            $oStore->addDocument($oFar);
+            $oStore->addDocument($oNear);
+
+            $aFound = iterator_to_array($oStore->similaritySearch($aNear));
+
+            $this->assertSame('near-chunk', $aFound[0]->getContent());
+            $this->assertGreaterThan(0.9, $aFound[0]->getScore());
+            $this->assertGreaterThanOrEqual(0.0, $aFound[1]->getScore());
+            $this->assertGreaterThan($aFound[1]->getScore(), $aFound[0]->getScore());
+        }
+        finally {
+            $oStore->deleteBy('904', 'rank');
+        }
+    }
+
+    public function testSearchStaysOnTheMatchingDimensionTable()
+    {
+        $this->skipUnlessMariaDb();
+
+        $aWide = array_fill(0, 1024, 0.0);
+        $aWide[0] = 1.0;
+        $aNarrow = array_fill(0, 384, 0.0);
+        $aNarrow[0] = 1.0;
+
+        $oStore = BxDolAIVectorStoreMariaDb::open(905, 4);
+        $oWide = new NeuronAI\RAG\Document('wide-chunk');
+        $oWide->embedding = $aWide;
+        $oWide->sourceType = '905';
+        $oWide->sourceName = 'cross-dim';
+        $oNarrow = new NeuronAI\RAG\Document('narrow-chunk');
+        $oNarrow->embedding = $aNarrow;
+        $oNarrow->sourceType = '905';
+        $oNarrow->sourceName = 'cross-dim';
+
+        try {
+            $oStore->addDocument($oWide);
+            $oStore->addDocument($oNarrow);
+
+            $aFromWide = iterator_to_array($oStore->similaritySearch($aWide));
+            $aFromNarrow = iterator_to_array($oStore->similaritySearch($aNarrow));
+
+            $this->assertCount(1, $aFromWide);
+            $this->assertSame('wide-chunk', $aFromWide[0]->getContent());
+            $this->assertCount(1, $aFromNarrow);
+            $this->assertSame('narrow-chunk', $aFromNarrow[0]->getContent());
+            $this->assertSame(1, $this->countBySourceName(1024, 'cross-dim'));
+            $this->assertSame(1, $this->countBySourceName(384, 'cross-dim'));
+        }
+        finally {
+            $oStore->deleteBy('905', 'cross-dim');
+        }
+
+        $this->assertSame(0, $this->countBySourceName(1024, 'cross-dim'));
+        $this->assertSame(0, $this->countBySourceName(384, 'cross-dim'));
+    }
+
+    #[DataProvider('providerForDimension')]
+    public function testSearchIsLimitedToStore(int $iDimension)
+    {
+        $this->skipUnlessMariaDb();
+
+        $aNearA = array_fill(0, $iDimension, 0.0);
         $aNearA[0] = 1.0;
-        $aNearB = array_fill(0, BxDolAIVectorStoreMariaDb::DIMENSION, 0.0);
+        $aNearB = array_fill(0, $iDimension, 0.0);
         $aNearB[1] = 1.0;
 
-        $oStoreA = BxDolAIVectorStoreMariaDb::open(901, BxDolAIVectorStoreMariaDb::TABLE, 4);
-        $oStoreB = BxDolAIVectorStoreMariaDb::open(902, BxDolAIVectorStoreMariaDb::TABLE, 4);
+        $oStoreA = BxDolAIVectorStoreMariaDb::open(901, 4);
+        $oStoreB = BxDolAIVectorStoreMariaDb::open(902, 4);
         $oDocA = new NeuronAI\RAG\Document('store-a-only');
         $oDocA->embedding = $aNearA;
         $oDocA->sourceType = '901';
@@ -118,6 +241,22 @@ class BxDolAIVectorStoreMariaDbTest extends BxDolTestCase
         $bSupported = $a['engine'] === 'mariadb' && $a['version'] !== ''
             && version_compare(self::normalize($a['version']), BxDolAIVectorStoreMariaDb::MARIADB_MIN_VERSION, '>=');
         $this->assertSame($bSupported, $a['supported']);
+    }
+
+    protected function skipUnlessMariaDb(): void
+    {
+        $sVersion = (string)BxDolDb::getInstance()->getOne('SELECT VERSION()');
+        if (!BxDolAIVectorStoreMariaDb::describe($sVersion)['supported'])
+            $this->markTestSkipped('MariaDB vector store is not supported on this server');
+    }
+
+    protected function countBySourceName(int $iDimension, string $sSourceName): int
+    {
+        $sTable = BxDolAIVectorStoreMariaDb::tableForDimension($iDimension);
+        return (int)BxDolDb::getInstance()->getOne(
+            "SELECT COUNT(*) FROM `{$sTable}` WHERE `sourceName` = ?",
+            [$sSourceName]
+        );
     }
 
     protected static function normalize(string $sVersion): string

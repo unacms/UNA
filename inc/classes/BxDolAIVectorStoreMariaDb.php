@@ -4,7 +4,7 @@
  * MIT License - https://opensource.org/licenses/MIT
  *
  * MariaDB vector store on the site database connection.
- * The embeddings table is created in install SQL.
+ * Embeddings of width 1024 and 384 live in separate tables, created in install SQL.
  *
  * @defgroup    UnaCore UNA Core
  * @{
@@ -13,8 +13,7 @@
 class BxDolAIVectorStoreMariaDb
 {
     public const MARIADB_MIN_VERSION = '11.7.0';
-    public const TABLE = 'sys_agents_vector_mariadb';
-    public const DIMENSION = 1536;
+    public const DIMENSIONS = [1024, 384];
 
     /**
      * @return array{engine:string, version:string, supported:bool}
@@ -61,6 +60,14 @@ class BxDolAIVectorStoreMariaDb
         return $sTable;
     }
 
+    public static function tableForDimension(int $iDimension): string
+    {
+        if (!in_array($iDimension, self::DIMENSIONS, true))
+            throw new Exception('MariaDB vector store expects embedding width 1024 or 384, got ' . $iDimension);
+
+        return self::tableName('sys_agents_vector_mariadb_' . $iDimension);
+    }
+
     public static function pdo(): PDO
     {
         BxDolDb::getInstance();
@@ -71,14 +78,13 @@ class BxDolAIVectorStoreMariaDb
         return $oPdo;
     }
 
-    public static function open(int $iStoreId, string $sTable, int $iTopK): BxDolAIVectorStoreMariaDbStore
+    public static function open(int $iStoreId, int $iTopK): BxDolAIVectorStoreMariaDbStore
     {
         if ($iStoreId < 1)
             throw new Exception('MariaDB vector store id is missing');
         if ($iTopK < 1)
             $iTopK = 4;
 
-        $sTable = self::tableName($sTable);
         $oDb = BxDolDb::getInstance();
         $sVersion = $oDb ? (string)$oDb->getOne('SELECT VERSION()') : '';
         $aServer = self::describe($sVersion);
@@ -88,13 +94,10 @@ class BxDolAIVectorStoreMariaDb
             throw new Exception($sMessage);
         }
 
-        $iExisting = self::embeddingDimensions($sTable);
-        if ($iExisting === null)
-            throw new Exception('MariaDB vector store table ' . $sTable . ' is missing');
-        if ($iExisting !== self::DIMENSION)
-            throw new Exception('MariaDB vector store ' . $sTable . ' must use dimension ' . self::DIMENSION);
+        foreach (self::DIMENSIONS as $iDimension)
+            self::assertTable($iDimension);
 
-        return new BxDolAIVectorStoreMariaDbStore(self::pdo(), $sTable, $iTopK, (string)$iStoreId);
+        return new BxDolAIVectorStoreMariaDbStore(self::pdo(), $iTopK, (string)$iStoreId);
     }
 
     protected static function versionNumber(string $sVersion, bool $bMaria): string
@@ -117,6 +120,16 @@ class BxDolAIVectorStoreMariaDb
         $aParts = explode('.', $sVersion);
         $aParts = array_slice(array_pad($aParts, 3, '0'), 0, 3);
         return implode('.', $aParts);
+    }
+
+    protected static function assertTable(int $iDimension): void
+    {
+        $sTable = self::tableForDimension($iDimension);
+        $iExisting = self::embeddingDimensions($sTable);
+        if ($iExisting === null)
+            throw new Exception('MariaDB vector store table ' . $sTable . ' is missing');
+        if ($iExisting !== $iDimension)
+            throw new Exception('MariaDB vector store ' . $sTable . ' must use dimension ' . $iDimension);
     }
 
     protected static function embeddingDimensions(string $sTable): ?int
