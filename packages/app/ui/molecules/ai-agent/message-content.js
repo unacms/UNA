@@ -215,6 +215,7 @@ function readRawActions(message) {
 
 const SAFE_URL_SCHEME = /^(?:https?:|mailto:|tel:)/i;
 const HAS_SCHEME = /^[a-z][a-z\d+\-.]*:/i;
+const SAFE_FORM_URL = /^[a-z0-9_]+\/[a-z0-9_]+\/?(&params\[\]=[A-Za-z0-9_\-.]*)*$/;
 
 /**
  * Link targets are chosen by the model, so a prompt-injected `javascript:` or
@@ -230,7 +231,8 @@ function safeActionUrl(raw) {
 }
 
 /**
- * Normalize a message's actions into `{ type, label, url }` / `{ type, label, message }`.
+ * Normalize a message's actions into `{ type, label, url }` / `{ type, label, message }` /
+ * `{ type: 'form', label, formUrl, message }`.
  * `streamedActions` (from the live CUSTOM chunk) wins over whatever is on the
  * message, because the message copy may not have been persisted yet.
  */
@@ -243,6 +245,13 @@ export function messageActions(message, streamedActions) {
             if (!action || typeof action !== 'object') return null;
             const label = String(action.label || action.title || action.text || '').trim();
             if (!label) return null;
+            if (action.type === 'form') {
+                // A site form opened in a popup over the chat; same `module/method/&params[]=`
+                // API call the server already vetted, anything else is dropped.
+                const formUrl = String(action.form_url || '').trim();
+                if (!SAFE_FORM_URL.test(formUrl)) return null;
+                return { type: 'form', label, formUrl, message: String(action.message || '').trim() };
+            }
             const rawUrl = String(action.url || action.href || '').trim();
             const url = safeActionUrl(rawUrl);
             // An explicit `type` wins; otherwise the presence of a url means "link".
