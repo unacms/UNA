@@ -4,10 +4,11 @@ set -eu
 cd /var/www/html
 
 PORT="${PORT:-80}"
-if [ "$PORT" != "80" ]; then
-    sed -i "s/Listen 80/Listen ${PORT}/" /etc/apache2/ports.conf
-    sed -i "s/:80/:${PORT}/g" /etc/apache2/sites-available/000-default.conf
-fi
+# Whole-line patterns that take any port, not only the image's 80: a restart that keeps the
+# container's filesystem (docker restart, Railway's ON_FAILURE retries) finds the port an
+# earlier start wrote and sets it again, where a bare "Listen 80" would turn 8080 into 808080.
+sed -i "s/^Listen [0-9][0-9]*$/Listen ${PORT}/" /etc/apache2/ports.conf
+sed -i "s/^<VirtualHost \*:[0-9][0-9]*>$/<VirtualHost *:${PORT}>/" /etc/apache2/sites-available/000-default.conf
 a2dismod mpm_event mpm_worker >/dev/null 2>&1 || true
 a2enmod mpm_prefork rewrite >/dev/null 2>&1 || true
 
