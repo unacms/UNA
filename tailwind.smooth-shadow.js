@@ -14,6 +14,8 @@
  *  - `smooth-shadow-border` — a shadow in place of a border for surfaces that only need an edge (the
  *    header bar, page blocks): a 1px ring, a 1px lift and a 2px ambient layer in light mode, and a single
  *    white ring under `.dark`, where depth shadows don't show. Never pair it with `border`/`ring`.
+ *  - `smooth-shadow-popover` — the same edge for floating surfaces (popups, dropdown menus), plus a
+ *    soft drop shadow that lifts them off the page in both modes.
  */
 const plugin = require('tailwindcss/plugin');
 const flattenColorPalette = require('tailwindcss/lib/util/flattenColorPalette').default;
@@ -32,6 +34,8 @@ const RING = '0 0 0 var(--smooth-ring-width, 1px) var(--smooth-ring-color)';
 
 const BORDER_LIGHT = '0 0 0 1px oklch(0 0 0 / 0.06), 0 1px 2px -1px oklch(0 0 0 / 0.06), 0 2px 4px 0 oklch(0 0 0 / 0.04)';
 const BORDER_DARK = '0 0 0 1px oklch(1 0 0 / 0.08)';
+const POPOVER_LIGHT = '0 0 0 1px oklch(0 0 0 / 0.06), 0 4px 6px -2px oklch(0 0 0 / 0.05), 0 12px 24px -4px oklch(0 0 0 / 0.10)';
+const POPOVER_DARK = '0 0 0 1px oklch(1 0 0 / 0.10), 0 12px 24px -4px oklch(0 0 0 / 0.50)';
 
 function stack(size, withRing) {
     const layers = LAYERS[size].map(([y, blur, spread, alpha]) =>
@@ -50,14 +54,17 @@ module.exports = plugin(function ({ addBase, addUtilities, matchUtilities, theme
             '--smooth-ring-color': 'rgba(0, 0, 0, 0.05)',
             '--smooth-ring-width': '1px',
             '--smooth-shadow-border': BORDER_LIGHT,
+            '--smooth-shadow-popover': POPOVER_LIGHT,
         },
         '.light, [data-theme="light"]': {
             '--smooth-ring-color': 'rgba(0, 0, 0, 0.05)',
             '--smooth-shadow-border': BORDER_LIGHT,
+            '--smooth-shadow-popover': POPOVER_LIGHT,
         },
         '.dark, [data-theme="dark"]': {
             '--smooth-ring-color': 'rgba(255, 255, 255, 0.18)',
             '--smooth-shadow-border': BORDER_DARK,
+            '--smooth-shadow-popover': POPOVER_DARK,
         },
     });
 
@@ -85,6 +92,11 @@ module.exports = plugin(function ({ addBase, addUtilities, matchUtilities, theme
     utilities['.smooth-shadow-border'] = {
         '--tw-shadow': 'var(--smooth-shadow-border)',
         '--tw-shadow-colored': 'var(--smooth-shadow-border)',
+        boxShadow: BOX_SHADOW,
+    };
+    utilities['.smooth-shadow-popover'] = {
+        '--tw-shadow': 'var(--smooth-shadow-popover)',
+        '--tw-shadow-colored': 'var(--smooth-shadow-popover)',
         boxShadow: BOX_SHADOW,
     };
 
