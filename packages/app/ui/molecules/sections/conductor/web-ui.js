@@ -448,7 +448,7 @@ export const TabSceneColumns = ({
                 }`}
 
             direction="horizontal"
-            className={fillViewport ? 'h-full min-h-0' : 'h-full'}
+            className={fillViewport ? 'h-full min-h-0' : 'h-full flex-auto'}
             // Default panel-group overflow:hidden creates a scrollport and breaks
             // window-scroll sticky. clip still contains resize overflow without that.
             // Viewport-locked pages need a real hidden overflow so the list, not
