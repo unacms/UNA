@@ -77,6 +77,10 @@ class BxTemplMenuToolbar extends BxBaseMenuToolbar
                 break;
 
             case 'search':
+                //--- The app gets the item as it is in the menu builder.
+                if($this->_bIsApi)
+                    break;
+
                 $a['class_add'] = str_replace('bx-def-media-phone-hide', '',  $a['class_add']);
 
                 //--- The floating search bar (see _page_toolbar_search.html) takes the button's place. Without it the button opens the search page.

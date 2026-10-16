@@ -75,7 +75,7 @@ class BxBaseMenuToolbar extends BxTemplMenu
         	'content' => array()
         );
 
-        if ('add-content' == $a['name'] || 'search' == $a['name'])
+        if (isset($a['class_add']) && ('add-content' == $a['name'] || 'search' == $a['name']))
             $a['class_add'] .= ' bx-def-media-phone-hide';
 
         return $a;
