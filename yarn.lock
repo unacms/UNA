@@ -64,10 +64,10 @@
   resolved "https://registry.yarnpkg.com/@fullcalendar/core/-/core-7.1.2.tgz#11b7f4dcb67133f98d3f67d7264e17720e8e2ede"
   integrity sha512-mTvn5HytJUNl1HRXW5hBpHL0lA4sKRbBrkouIE+Sl2hBKorMaWDhshFVxwcBwCBCjO9gk1m7nTfmOzKLSJv9dw==
 
-"@fullcalendar/core@^6.1.20":
-  version "6.1.21"
-  resolved "https://registry.yarnpkg.com/@fullcalendar/core/-/core-6.1.21.tgz#e8b0ed592a60aba44499802fefdbb1fcc91b0a07"
-  integrity sha512-t3u/+sqh3Iq7TWtUnVLcGDUE6OWZh0UD3c04bI/l7lSLAgAKr3kngBmhHiQD1QXpwC8ZN5iNqG7a7gOVixhSKQ==
+"@fullcalendar/core@^6.1.22":
+  version "6.1.22"
+  resolved "https://registry.yarnpkg.com/@fullcalendar/core/-/core-6.1.22.tgz#446b9011d4f019b1e75c163bf1d2cae3b16e3098"
+  integrity sha512-ju5PJUE++zr8XXCGtlXlrodF6doUy9BDfzx+VmE0B+XDBM2A5cUi/aU3M1ANfw/StmKhwqew7Ps7bXMiv/JREg==
   dependencies:
     preact "~10.12.1"
 
