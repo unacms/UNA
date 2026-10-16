@@ -90,6 +90,7 @@ class BxPostsConfig extends BxBaseModTextConfig
             'PARAM_SEARCHABLE_FIELDS' => 'bx_posts_searchable_fields',
             'PARAM_PER_PAGE_BROWSE_SHOWCASE' => 'bx_posts_per_page_browse_showcase',
             'PARAM_PER_PAGE_FOR_FAVORITES_LISTS' => 'bx_posts_per_page_for_favorites_lists',
+            'PARAM_VISIBLE_CATEGORIES' => 'bx_posts_visible_categories',
 
             'PARAM_MULTICAT_ENABLED' => true,
             'PARAM_LINKS_ENABLED' => true,
@@ -214,6 +215,7 @@ class BxPostsConfig extends BxBaseModTextConfig
                 'txt_all_entries_in' => '_bx_posts_txt_all_entries_in',
                 'txt_all_entries_by_author' => '_bx_posts_page_title_browse_by_author',
                 'txt_all_entries_by_context' => '_bx_posts_page_title_browse_by_context',
+                'txt_all_categories' => '_bx_posts_txt_all_categories',
                 'txt_err_cannot_perform_action' => '_bx_posts_txt_err_cannot_perform_action',
                 'txt_poll_form_answers_add' => '_bx_posts_form_poll_input_answers_add',
                 'txt_poll_menu_view_answers' => '_bx_posts_txt_poll_view_answers',

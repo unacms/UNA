@@ -14,6 +14,7 @@
     <string name="_bx_posts_option_searchable_fields"><![CDATA[Поля для поиска по ключевому слову]]></string>
     <string name="_bx_posts_option_auto_activation_for_categories"><![CDATA[Автоактивация для категорий]]></string>
     <string name="_bx_posts_option_per_page_for_favorites_lists"><![CDATA[Количество списков избранного на странице]]></string>
+    <string name="_bx_posts_option_visible_categories"><![CDATA[Количество отображаемых категорий]]></string>
 
     <string name="_bx_posts_form_entry"><![CDATA[Публикации]]></string>
     <string name="_bx_posts_form_entry_display_add"><![CDATA[Добавить публикацию]]></string>
@@ -228,6 +229,7 @@
     <string name="_bx_posts_menu_set_title_view_entry"><![CDATA[Публикация - Действия]]></string>
     <string name="_bx_posts_menu_title_view_entry"><![CDATA[Публикация - Действия]]></string>
     <string name="_bx_posts_menu_title_submenu"><![CDATA[Публикации - Подменю]]></string>
+    <string name="_bx_posts_menu_title_categories"><![CDATA[Категории]]></string>
     <string name="_bx_posts_menu_title_public_submenu"><![CDATA[Публикации]]></string>
     <string name="_bx_posts_menu_set_title_submenu"><![CDATA[Публикации - Подменю]]></string>
     <string name="_bx_posts_menu_item_title_system_create_entry"><![CDATA[Публикация]]></string>
@@ -333,6 +335,7 @@
 
     <string name="_bx_posts_txt_all_entries_by"><![CDATA[{0} публикаций]]></string>
     <string name="_bx_posts_txt_all_entries_in"><![CDATA[<a href="{0}">Все публикации в {1} ({2})</a>]]></string>
+    <string name="_bx_posts_txt_all_categories"><![CDATA[Все категории]]></string>
     <string name="_bx_posts_txt_sample_single"><![CDATA[публикация]]></string>
     <string name="_bx_posts_txt_sample_single_with_article"><![CDATA[публикация]]></string>
     <string name="_bx_posts_txt_sample_comment_single"><![CDATA[комментарий к публикации]]></string>

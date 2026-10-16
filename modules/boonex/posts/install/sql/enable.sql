@@ -20,7 +20,8 @@ INSERT INTO `sys_options` (`name`, `value`, `category_id`, `caption`, `type`, `c
 ('bx_posts_per_page_for_favorites_lists', '5', @iCategId, '_bx_posts_option_per_page_for_favorites_lists', 'digit', '', '', '', 17),
 ('bx_posts_rss_num', '10', @iCategId, '_bx_posts_option_rss_num', 'digit', '', '', '', 20),
 ('bx_posts_searchable_fields', 'title,text', @iCategId, '_bx_posts_option_searchable_fields', 'list', '', '', 'a:2:{s:6:"module";s:8:"bx_posts";s:6:"method";s:21:"get_searchable_fields";}', 30),
-('bx_posts_auto_activation_for_categories', 'on', @iCategId, '_bx_posts_option_auto_activation_for_categories', 'checkbox', '', '', '', 35);
+('bx_posts_auto_activation_for_categories', 'on', @iCategId, '_bx_posts_option_auto_activation_for_categories', 'checkbox', '', '', '', 35),
+('bx_posts_visible_categories', '10', @iCategId, '_bx_posts_option_visible_categories', 'digit', '', '', '', 40);
 
 -- PAGE: create entry
 
@@ -146,7 +147,8 @@ INSERT INTO `sys_pages_blocks`(`object`, `cell_id`, `module`, `title_system`, `t
 ('bx_posts_home', 1, 'bx_posts', '', '_bx_posts_page_block_title_featured_entries_view_extended', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:8:"bx_posts";s:6:"method";s:15:"browse_featured";s:6:"params";a:1:{i:0;s:8:"extended";}}', 0, 1, 1, 0),
 ('bx_posts_home', 1, 'bx_posts', '', '_bx_posts_page_block_title_recent_entries_view_extended', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:8:"bx_posts";s:6:"method";s:13:"browse_public";s:6:"params";a:1:{i:0;s:8:"extended";}}', 0, 1, 1, 1),
 ('bx_posts_home', 2, 'bx_posts', '', '_bx_posts_page_block_title_popular_keywords', 11, 2147483647, 'service', 'a:4:{s:6:\"module\";s:6:\"system\";s:6:\"method\";s:14:\"keywords_cloud\";s:6:\"params\";a:2:{i:0;s:8:\"bx_posts\";i:1;s:8:\"bx_posts\";}s:5:\"class\";s:20:\"TemplServiceMetatags\";}', 0, 1, 1, 0),
-('bx_posts_home', 2, 'bx_posts', '', '_bx_posts_page_block_title_cats', 11, 2147483647, 'service', 'a:4:{s:6:\"module\";s:6:\"system\";s:6:\"method\";s:15:\"categories_list\";s:6:\"params\";a:2:{i:0;s:13:\"bx_posts_cats\";i:1;a:1:{s:10:\"show_empty\";b:1;}}s:5:\"class\";s:20:\"TemplServiceCategory\";}', 0, 1, 1, 1),
+('bx_posts_home', 2, 'bx_posts', '', '_bx_posts_page_block_title_cats', 11, 2147483647, 'menu', 'bx_posts_categories', 0, 1, 1, 1),
+('bx_posts_home', 2, 'bx_posts', '', '_bx_posts_page_block_title_cats', 11, 2147483647, 'service', 'a:4:{s:6:\"module\";s:6:\"system\";s:6:\"method\";s:15:\"categories_list\";s:6:\"params\";a:2:{i:0;s:13:\"bx_posts_cats\";i:1;a:1:{s:10:\"show_empty\";b:1;}}s:5:\"class\";s:20:\"TemplServiceCategory\";}', 0, 1, 0, 3),
 ('bx_posts_home', 2, 'bx_posts', '_bx_posts_page_block_title_sys_multicats', '_bx_posts_page_block_title_multicats', 11, 2147483647, 'service', 'a:2:{s:6:"module";s:8:"bx_posts";s:6:"method";s:21:"categories_multi_list";}', 0, 1, 0, 2);
 
 -- PAGE: search for entries
@@ -314,6 +316,10 @@ INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `titl
 ('bx_posts_submenu', 'bx_posts', 'posts-top', '_bx_posts_menu_item_title_system_entries_top', '_bx_posts_menu_item_title_entries_top', 'page.php?i=posts-top', '', '', '', '', 2147483647, 1, 1, 3),
 ('bx_posts_submenu', 'bx_posts', 'posts-search', '_bx_posts_menu_item_title_system_entries_search', '_bx_posts_menu_item_title_entries_search', 'page.php?i=posts-search', '', '', '', '', 2147483647, 1, 1, 4),
 ('bx_posts_submenu', 'bx_posts', 'posts-manage', '_bx_posts_menu_item_title_system_entries_manage', '_bx_posts_menu_item_title_entries_manage', 'page.php?i=posts-manage', '', '', '', '', 2147483646, 1, 1, 5);
+
+-- MENU: categories
+INSERT INTO `sys_objects_menu`(`object`, `title`, `set_name`, `module`, `template_id`, `deletable`, `active`, `override_class_name`, `override_class_file`) VALUES 
+('bx_posts_categories', '_bx_posts_menu_title_categories', '', 'bx_posts', 21, 0, 1, 'BxPostsMenuCategories', 'modules/boonex/posts/classes/BxPostsMenuCategories.php');
 
 -- MENU: sub-menu for view entry
 INSERT INTO `sys_objects_menu`(`object`, `title`, `set_name`, `module`, `template_id`, `deletable`, `active`, `override_class_name`, `override_class_file`) VALUES 

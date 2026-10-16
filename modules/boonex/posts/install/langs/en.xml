@@ -14,6 +14,7 @@
     <string name="_bx_posts_option_searchable_fields"><![CDATA[Searchable fields for keyword search]]></string>
     <string name="_bx_posts_option_auto_activation_for_categories"><![CDATA[Auto-Activation For Categories]]></string>
     <string name="_bx_posts_option_per_page_for_favorites_lists"><![CDATA[Number of favorite lists per page]]></string>
+    <string name="_bx_posts_option_visible_categories"><![CDATA[Number of visible categories]]></string>
 
     <string name="_bx_posts_form_entry"><![CDATA[Posts]]></string>
     <string name="_bx_posts_form_entry_display_add"><![CDATA[Add Post]]></string>
@@ -240,6 +241,7 @@
     <string name="_bx_posts_menu_set_title_view_entry"><![CDATA[Post Actions]]></string>
     <string name="_bx_posts_menu_title_view_entry"><![CDATA[Post Actions]]></string>
     <string name="_bx_posts_menu_title_submenu"><![CDATA[Posts Submenu]]></string>
+    <string name="_bx_posts_menu_title_categories"><![CDATA[Categories]]></string>
     <string name="_bx_posts_menu_title_public_submenu"><![CDATA[Posts]]></string>
     <string name="_bx_posts_menu_set_title_submenu"><![CDATA[Posts Submenu]]></string>
     <string name="_bx_posts_menu_item_title_system_create_entry"><![CDATA[Post]]></string>
@@ -343,6 +345,7 @@
     <string name="_bx_posts_cat_Womens_Fashion"><![CDATA[Women's Fashion]]></string>
 
     <string name="_bx_posts_txt_all_entries_in"><![CDATA[<a href="{0}">All Posts in {1} ({2})</a>]]></string>
+    <string name="_bx_posts_txt_all_categories"><![CDATA[All Categories]]></string>
     <string name="_bx_posts_txt_all_entries_by"><![CDATA[{0} posts]]></string>
     <string name="_bx_posts_txt_sample_single"><![CDATA[post]]></string>
     <string name="_bx_posts_txt_sample_single_with_article"><![CDATA[a post]]></string>

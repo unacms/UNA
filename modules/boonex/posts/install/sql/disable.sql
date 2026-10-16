@@ -13,7 +13,7 @@ DELETE FROM `sys_pages_blocks` WHERE `module` = 'bx_posts' OR `object` IN('bx_po
 -- MENU
 DELETE FROM `sys_objects_menu` WHERE `module` = 'bx_posts';
 DELETE FROM `sys_menu_sets` WHERE `module` = 'bx_posts';
-DELETE FROM `sys_menu_items` WHERE `module` = 'bx_posts' OR `set_name` IN('bx_posts_entry_attachments', 'bx_posts_view', 'bx_posts_view_actions', 'bx_posts_submenu', 'bx_posts_view_submenu', 'bx_posts_snippet_meta', 'bx_posts_my', 'bx_posts_menu_manage_tools');
+DELETE FROM `sys_menu_items` WHERE `module` = 'bx_posts' OR `set_name` IN('bx_posts_entry_attachments', 'bx_posts_view', 'bx_posts_view_actions', 'bx_posts_submenu', 'bx_posts_view_submenu', 'bx_posts_snippet_meta', 'bx_posts_my', 'bx_posts_menu_manage_tools', 'bx_posts_categories');
 
 -- PRIVACY 
 DELETE FROM `sys_objects_privacy` WHERE `object` IN ('bx_posts_allow_view_to', 'bx_posts_allow_view_favorite_list');
