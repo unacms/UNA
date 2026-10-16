@@ -427,7 +427,9 @@ export function Conductor({
                 : <PageHeaderOptions sub={headerComponent} mobileOnly />}
             {(isUseCurrentHeader || isDesktop) && headerComponent}
             <View
-                className={`ns--conductor-tab-content-- ${contentWidth} mx-auto ${tmplLayout == 'mixed' ? 'mt-12' : ''}${isTasksHome ? ' min-h-0 flex-1 h-full overflow-hidden' : ''}`}
+                // Grows to the wrapper's viewport min-height (flex-auto), so the columns and the
+                // column line reach the page bottom on a short or empty tab, as on wiki pages.
+                className={`ns--conductor-tab-content-- ${contentWidth} mx-auto ${tmplLayout == 'mixed' ? 'mt-12' : ''}${isTasksHome ? ' min-h-0 flex-1 h-full overflow-hidden' : ' flex-auto'}`}
             >
                 <TabSceneHeader
                     route={activeRoute}
