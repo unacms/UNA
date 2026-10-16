@@ -206,6 +206,8 @@ class BxDolAIToolAgentCreate extends BxDolAITool
         $aTools = [];
         $aToolRows = $oDb->getAll("SELECT `id`, `type`, `title`, `active` FROM `sys_agents_tools` ORDER BY `type` ASC");
         foreach ($aToolRows as $aRow) {
+            if (in_array($aRow['type'], BxDolAiAgentTools::hiddenTypes(), true))
+                continue;
             $sHay = mb_strtolower($aRow['id'] . ' ' . $aRow['type'] . ' ' . $aRow['title']);
             if ($sQ !== '' && strpos($sHay, $sQ) === false && $sPreset !== 'comment_reply')
                 continue;
@@ -965,7 +967,9 @@ class BxDolAIToolAgentCreate extends BxDolAITool
                 continue;
             }
             if (in_array($aRow['type'], self::FORBIDDEN_TOOL_TYPES, true))
-                return ['ok' => 0, 'error' => "Refusing stock mysql_write on a created agent. Use mysql_write_safe if you really need writes."];
+                return ['ok' => 0, 'error' => 'Refusing stock mysql_write on a created agent.'];
+            if (in_array($aRow['type'], BxDolAiAgentTools::hiddenTypes(), true))
+                continue;
             $aIds[(int)$aRow['id']] = (int)$aRow['id'];
         }
         if ($aMissing)

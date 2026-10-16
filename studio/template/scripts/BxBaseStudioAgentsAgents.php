@@ -139,7 +139,7 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
             $sTrigger = $oForm->getCleanValue('trigger');
 
             $sTools = is_array($oForm->getCleanValue('tools')) ? implode(',', $oForm->getCleanValue('tools')) : '';
-            $aValsToAdd['tools'] = $sTools;
+            $aValsToAdd['tools'] = BxDolAiAgentTools::stripCsv($sTools);
             $aValsToAdd['acl_levels'] = (int)$oForm->getCleanValue('acl_levels');
 
             $bIsValid = true;
@@ -208,7 +208,7 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
             $sTrigger = $oForm->getCleanValue('trigger');
 
             $sTools = is_array($oForm->getCleanValue('tools')) ? implode(',', $oForm->getCleanValue('tools')) : '';
-            $aValsToAdd['tools'] = $sTools;
+            $aValsToAdd['tools'] = BxDolAiAgentTools::stripCsv($sTools);
             $aValsToAdd['acl_levels'] = (int)$oForm->getCleanValue('acl_levels');
 
             $bIsValid = true;
@@ -1159,10 +1159,14 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
             $aValues[$k] = $v;
         }
 
+        $aHidden = $sField === 'tools' ? array_flip(BxDolAiAgentTools::hiddenIds()) : [];
+
         $aTmplVars = [];
         if(!empty($aAgent[$sField])) {
             $a = explode(',', $aAgent[$sField]);
             foreach($a as $v) {
+                if (isset($aHidden[(int)$v]))
+                    continue;
                 $aInputSelect = [
                     'type' => 'select',
                     'name' => $sField . '[]',
@@ -1184,7 +1188,7 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
                 $aTmplVars[] = ['js_object' => $sJsObject, 'input_select' => $sInput];
             }
         }
-        else  {
+        if (!$aTmplVars) {
             $aInputSelect = [
                 'type' => 'select',
                 'name' => $sField . '[]',
