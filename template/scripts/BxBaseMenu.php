@@ -299,26 +299,35 @@ class BxBaseMenu extends BxDolMenu
     {
         $sSelected = $this->_findSelectedName($this->getMenuItemsRaw());
 
-        return $sSelected === '' ? '' : '_sel' . md5($sSelected);
+        // Module and item names are identifiers; anything else is dropped so the key stays a safe file name.
+        return $sSelected === '' ? '' : '_sel_' . preg_replace('/[^A-Za-z0-9_-]/', '', $sSelected);
     }
 
     protected function _findSelectedName ($aItems)
     {
-        if (!is_array($aItems))
-            return '';
-
-        foreach ($aItems as $a) {
-            if (!is_array($a))
-                continue;
-
-            if ($this->_isSelected($a))
-                return isset($a['module']) ? $a['module'] . ':' . $a['name'] : $a['name'];
-
-            if (!empty($a['subitems']) && ($sSelected = $this->_findSelectedName($a['subitems'])) !== '')
-                return $sSelected;
+        $sResult = '';
+        if (!is_array($aItems)) {
+            return $sResult;
         }
 
-        return '';
+        foreach ($aItems as $a) {
+            if (!is_array($a)) {
+                continue;
+            }
+
+            if ($this->_isSelected($a)) {
+                $sResult = (isset($a['module']) ? $a['module'] . '-' : '') . $a['name'];
+            }
+            elseif (!empty($a['subitems'])) {
+                $sResult = $this->_findSelectedName($a['subitems']);
+            }
+
+            if ($sResult !== '') {
+                break;
+            }
+        }
+
+        return $sResult;
     }
 
     protected function getMenuItemsRawProfileRelated ()
