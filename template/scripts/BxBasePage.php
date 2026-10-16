@@ -591,19 +591,23 @@ class BxBasePage extends BxDolPage
                 $oMenuSubmenu->setObjectSubmenu($sSubmenu, []);
 
             $a['menu'] = $oMenuSubmenu->getCodeAPI();
-            if($sModule && $sModule != 'system' && (bx_srv('system', 'is_module_content', [$sModule]) || bx_srv('system', 'is_module_context', [$sModule])) && ($oModule = BxDolModule::getInstance($sModule))) {
+            $bModuleEntries = $sModule && $sModule != 'system' && (bx_srv('system', 'is_module_content', [$sModule]) || bx_srv('system', 'is_module_context', [$sModule]));
+            $bModuleProfiles = !$bModuleEntries && $sModule && $sModule != 'system' && bx_srv('system', 'is_module_profile', [$sModule]);
+            if(($bModuleEntries || $bModuleProfiles) && ($oModule = BxDolModule::getInstance($sModule))) {
                 $CNF = &$oModule->_oConfig->CNF;
 
+                // Section name and icon for NEO's sidebar title; profile modules (Persons) get them too.
                 $aMenuAdd = [
                     'name' => $oModule->getName(),
                     'title' => BxDolModule::getTitle($oModule->_oConfig->getUri()),
                     'icon' => !empty($CNF['ICON']) ? $CNF['ICON'] : '',
                 ];
 
+                // "Add" button: content and context entries only, a profile isn't added from its list.
                 $sUrlAdd = '';
-                if(($sKey = 'URI_ADD_ENTRY') && !empty($CNF[$sKey]))
+                if($bModuleEntries && ($sKey = 'URI_ADD_ENTRY') && !empty($CNF[$sKey]))
                     $sUrlAdd = $CNF[$sKey];
-                if(!$sUrlAdd && ($sKey = 'URI_EDIT_ENTRY') && !empty($CNF[$sKey]))
+                if($bModuleEntries && !$sUrlAdd && ($sKey = 'URI_EDIT_ENTRY') && !empty($CNF[$sKey]))
                     $sUrlAdd = str_replace('edit-', 'create-', $CNF[$sKey]);
                 if($sUrlAdd)
                     $aMenuAdd['add_url'] = $sUrlAdd;

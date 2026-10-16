@@ -73,6 +73,15 @@ export const settingsElements = {
         sidebar_container: ' ns--sidebar-container-- h-full ne--  ',
         sidebar_inner_container: ' xl:mx-4 p-3 gap-3 overflow-y-auto flex flex-col bg-card/80 shadow-card-outline dark:shadow-card-outline-deep rounded-2xl mt-4',
         sidebar_title: 'sticky justify-between items-center z-10 gap-2 h-11 px-1 ',
+        // Sidebar title (section icon + name) of conductor and wiki pages (ui/molecules/sidebar-title).
+        sidebar_title_name: 'items-center mr-auto min-w-0 hidden lg:flex gap-2',
+        sidebar_title_icon: 'h-8 w-8 items-center justify-center flex',
+        sidebar_title_icon_class: 'text-card-foreground shrink-0',
+        sidebar_title_icon_size: 29,
+        sidebar_title_text: 'text-xl tracking-tight truncate font-bold leading-9 text-card-foreground',
+        // Section nav under the title. The negative margin and the items' 8px inset put the
+        // icons 4px inside sidebar_inner_container's padding, in line with the title icon.
+        sidebar_nav: 'gap-0.5 -mx-1 -mb-1',
         sidebar_position: ' z-50  ',
         bgrDecorator: true, // Enable/disable decorator background globally for conductor buttons
         add_menu_native:false,
