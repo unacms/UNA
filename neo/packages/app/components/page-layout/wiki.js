@@ -12,6 +12,7 @@ import {
 } from 'app/ui/molecules/page/resizable-panels'
 import { useBreakpoint, useBreakpointName, useIsDesktop } from 'app/context/measure'
 import { BlockWrapper } from 'app/components/block-wrapper'
+import { SidebarTitle } from 'app/ui/molecules/sidebar-title'
 import { BlockByData } from 'app/components/block'
 import DropdownPopup from 'app/ui/atoms/dropdown-popup'
 import { useHeaderHeight, DEFAULT_HEADER_HEIGHT } from 'app/context/jotai/layout'
@@ -366,21 +367,25 @@ function PageContentWiki({ data, scrollRef, url }) {
                             matching negative margin cancels the in-flow header spacer so content
                             lines up with the center column at rest. Panel group is the sticky
                             bound — sidebars release above the footer with no footer measurement. */}
-                        <View className="h-full border-r border-border/60">
+                        {/* Same chrome as the conductor's left column (sidebar_inner_container,
+                            SidebarTitle, sidebar_nav); the column line is the layout's panel-line. */}
+                        <View className="h-full">
                             <View
                                 className={`web:sticky web:top-0 web:max-h-screen web:overflow-y-auto gap-3 ${appSetting('conductor', 'sidebar_container')}`}
                                 style={isWeb ? stickySidebarScrollStyle : undefined}
                             >
-                                <BlockWrapper
-                                    block={leftMenu}
-                                    config={leftMenu?.config_api}
-                                >
+                                <View className={appSetting('conductor', 'sidebar_inner_container')}>
+                                    <SidebarTitle
+                                        title={stripTags(leftMenu?.title)}
+                                        icon={leftMenu?.icon}
+                                    />
                                     <MenuWiki
                                         onNavigate={navigateToWikiPath}
                                         block={leftMenu}
                                         url={pageData.url}
+                                        className={appSetting('conductor', 'sidebar_nav')}
                                     />
-                                </BlockWrapper>
+                                </View>
                             </View>
                         </View>
                     </Panel>
