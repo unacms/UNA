@@ -43,6 +43,9 @@ const VIEWPORT_LOCK_CLASS = 'ns-viewport-lock'
 
 /** Stable fallback so `useLeftColumn` memos survive tabs without a left column. */
 const EMPTY_CONTENT = []
+// Side columns of a viewport-locked page (/tasks-home): the panel group is their scroll
+// container there, so they stick at its top and fill it instead of clearing the header.
+const LOCKED_COLUMN_STYLE = { top: 0, maxHeight: '100%' }
 
 /**
  * Conductor — web shell (native lives in `index.js`).
@@ -395,7 +398,7 @@ export function Conductor({
             setIndex={setIndex}
             menu={menu}
             routes={routes}
-            stickyColumnStyle={stickyColumnStyle}
+            stickyColumnStyle={isTasksHome ? LOCKED_COLUMN_STYLE : stickyColumnStyle}
         >
             {/* Menu blocks' links line up with the panel's own (LeftColumnContainer pulls those
                 out with -mx-1, so their icons align with the section title's). */}
@@ -406,7 +409,7 @@ export function Conductor({
     const rightColumn = hasRightColumn ? (
         <RightColumnContainer
             route={tabRoute}
-            stickyColumnStyle={stickyColumnStyle}
+            stickyColumnStyle={isTasksHome ? LOCKED_COLUMN_STYLE : stickyColumnStyle}
         />
     ) : null
 
@@ -427,7 +430,9 @@ export function Conductor({
                 : <PageHeaderOptions sub={headerComponent} mobileOnly />}
             {(isUseCurrentHeader || isDesktop) && headerComponent}
             <View
-                className={`ns--conductor-tab-content-- ${contentWidth} mx-auto ${tmplLayout == 'mixed' ? 'mt-12' : ''}${isTasksHome ? ' min-h-0 flex-1 h-full overflow-hidden' : ''}`}
+                // Grows to the wrapper's viewport min-height (flex-auto), so the columns and the
+                // column line reach the page bottom on a short or empty tab, as on wiki pages.
+                className={`ns--conductor-tab-content-- ${contentWidth} mx-auto ${tmplLayout == 'mixed' ? 'mt-12' : ''}${isTasksHome ? ' min-h-0 flex-1 h-full overflow-hidden' : ' flex-auto'}`}
             >
                 <TabSceneHeader
                     route={activeRoute}
