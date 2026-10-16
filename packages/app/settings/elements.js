@@ -71,7 +71,9 @@ export const settingsElements = {
         show_nav_titles: false, // OLD appSetting('layout', 'show_nav_titles')
         hide_browse_filter: true, // OLD appSetting('layout', 'hide_browse_filter')
         sidebar_container: ' ns--sidebar-container-- h-full ne--  ',
-        sidebar_inner_container: ' xl:mx-4 p-3 gap-3 overflow-y-auto flex flex-col bg-card/80 shadow-card-outline dark:shadow-card-outline-deep rounded-2xl mt-4',
+        // The card keeps its side margin wherever the column shows: from lg on wiki pages, so
+        // the panel doesn't clip its outline shadow (the conductor's column starts at xl).
+        sidebar_inner_container: ' mx-4 p-3 gap-3 overflow-y-auto flex flex-col bg-card/80 shadow-card-outline dark:shadow-card-outline-deep rounded-2xl mt-4',
         sidebar_title: 'sticky justify-between items-center z-10 gap-2 h-11 px-1 ',
         // Sidebar title (section icon + name) of conductor and wiki pages (ui/molecules/sidebar-title).
         sidebar_title_name: 'items-center mr-auto min-w-0 hidden lg:flex gap-2',
