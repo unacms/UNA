@@ -3,7 +3,12 @@ UPDATE `sys_objects_page` SET `config_api`='{\r\n    layout: \'post\',\r\n}' WHE
 
 UPDATE `sys_pages_blocks` SET `config_api`='{\r\n\"content_type\":\"browse_simple\",\r\n\"header_more_url\":\"/posts-home\",\r\n\"view\":\"row\"\r\n}' WHERE `object`='sys_explore' AND `module`='bx_posts' AND `title_system`='_bx_posts_page_block_title_sys_featured_entries_view_showcase';
 
+-- PAGES: blocks config_api
+-- Categories on the posts home: a dropdown next to the tabs while NEO's left panel is off screen.
+UPDATE `sys_pages_blocks` SET `config_api`='{"use_as_menu": true}' WHERE `object`='bx_posts_home' AND `module`='bx_posts' AND `type`='menu' AND `content`='bx_posts_categories';
+
 -- PAGES: active_api
+UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_posts_home' AND `module`='bx_posts' AND `type`='menu' AND `content`='bx_posts_categories';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_posts_create_entry' AND `module`='bx_posts' AND `title_system`='' AND `title`='_bx_posts_page_block_title_create_entry';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_posts_edit_entry' AND `module`='bx_posts' AND `title_system`='' AND `title`='_bx_posts_page_block_title_edit_entry';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_posts_delete_entry' AND `module`='bx_posts' AND `title_system`='' AND `title`='_bx_posts_page_block_title_delete_entry';
