@@ -15,21 +15,11 @@ function BxArtificerMenuMoreAuto(oOptions) {
 BxArtificerMenuMoreAuto.prototype = Object.create(BxDolMenuMoreAuto.prototype);
 BxArtificerMenuMoreAuto.prototype.constructor = BxArtificerMenuMoreAuto;
 
+/**
+ * Toolbar images (the logo) that load later change the space the menu has: BxDolMenuMoreAuto watches its
+ * container with a ResizeObserver, so it needs no extra update here.
+ */
 BxArtificerMenuMoreAuto.prototype.init = function(bForceInit)
 {
     BxDolMenuMoreAuto.prototype.init.call(this);
-
-    var $this = this;
-    var oImages = $('#bx-toolbar').find('img');
-
-    if(!oImages.length)
-        $(document).ready(function() {
-            $this.update(true);
-        });
-    else
-        oImages.bind('load', function() {
-            setTimeout(function() {
-                $this.update(true);
-            }, 100);
-        });
 };
