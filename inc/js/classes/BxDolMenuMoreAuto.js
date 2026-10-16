@@ -45,7 +45,61 @@ function BxDolMenuMoreAuto(options)
     this._sLayout = '';
     this._fLayoutWidth = -1;
     this._bSettled = false;
+    this._oResizeObserver = null;
 }
+
+/**
+ * Menus set up on this page. One web fonts listener (and, without ResizeObserver, one window resize handler) serves
+ * them all. A menu whose element has left the page, e.g. a submenu in content that htmx swapped out, is dropped and
+ * its observer disconnected, so nothing keeps it in memory.
+ */
+BxDolMenuMoreAuto._aInstances = [];
+BxDolMenuMoreAuto._bListening = false;
+
+BxDolMenuMoreAuto._register = function(oInstance)
+{
+    BxDolMenuMoreAuto._prune();
+    BxDolMenuMoreAuto._aInstances.push(oInstance);
+
+    if(BxDolMenuMoreAuto._bListening)
+        return;
+    BxDolMenuMoreAuto._bListening = true;
+
+    // Item labels change width when a web font finishes loading after a menu has settled.
+    if(document.fonts && document.fonts.addEventListener)
+        document.fonts.addEventListener('loadingdone', function() {
+            BxDolMenuMoreAuto._each(function(o) {
+                if(o._bSettled)
+                    o._layout(true);
+            });
+        });
+
+    if(typeof(window.ResizeObserver) == 'undefined')
+        $(window).on('resize', function() {
+            BxDolMenuMoreAuto._each(function(o) {
+                o._onResize();
+            });
+        });
+};
+
+BxDolMenuMoreAuto._each = function(fCallback)
+{
+    BxDolMenuMoreAuto._prune();
+    $.each(BxDolMenuMoreAuto._aInstances.slice(), function(i, oInstance) {
+        fCallback(oInstance);
+    });
+};
+
+BxDolMenuMoreAuto._prune = function()
+{
+    BxDolMenuMoreAuto._aInstances = $.grep(BxDolMenuMoreAuto._aInstances, function(oInstance) {
+        if(oInstance._isOnPage())
+            return true;
+
+        oInstance._release();
+        return false;
+    });
+};
 
 BxDolMenuMoreAuto.prototype.init = function()
 {
@@ -112,21 +166,32 @@ BxDolMenuMoreAuto.prototype.init = function()
         fSettle();
 
     //--- Track the space the row has: other header items appearing, a sidebar toggling, the window resizing ---//
-    if(typeof(window.ResizeObserver) != 'undefined')
-        new ResizeObserver(function() {
-            $this._onResize();
-        }).observe(oMenu.parent().get(0));
-    else
-        $(window).on('resize', function() {
-            $this._onResize();
+    if(typeof(window.ResizeObserver) != 'undefined') {
+        this._oResizeObserver = new ResizeObserver(function() {
+            // Removing the element reports a resize too: that is when a menu leaves the page.
+            if($this._isOnPage())
+                $this._onResize();
+            else
+                BxDolMenuMoreAuto._prune();
         });
+        this._oResizeObserver.observe(oMenu.parent().get(0));
+    }
 
-    // Item labels change width when a web font finishes loading after the menu has settled.
-    if(document.fonts && document.fonts.addEventListener)
-        document.fonts.addEventListener('loadingdone', function() {
-            if($this._bSettled)
-                $this._layout(true);
-        });
+    BxDolMenuMoreAuto._register(this);
+};
+
+BxDolMenuMoreAuto.prototype._isOnPage = function()
+{
+    return !!this._oMenu && this._oMenu.get(0).isConnected;
+};
+
+BxDolMenuMoreAuto.prototype._release = function()
+{
+    if(!this._oResizeObserver)
+        return;
+
+    this._oResizeObserver.disconnect();
+    this._oResizeObserver = null;
 };
 
 /**
