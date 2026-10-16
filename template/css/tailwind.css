@@ -631,6 +631,10 @@
     .bx-layout-row{
         @apply w-full flex relative flex-wrap md:flex-nowrap gap-4 lg:gap-6;
     }
+    /* A row whose cells are all empty (say, only members-only blocks on a guest's page) would still take a row gap above and below it, doubling the space between its neighbours. Hide it; a block added later (async loading) brings it back. Studio's builder keeps its empty rows. */
+    body:not(.bx-std) .bx-layout-row:not(:has(.bx-layout-cell > *)) {
+        @apply hidden;
+    }
     .bx-layout-col{
         @apply max-w-full w-full min-w-0;
         flex-shrink: 2 !important;
@@ -1120,8 +1124,9 @@
         @apply bg-white dark:bg-gray-800 shadow;
     }
 
+    /* Popups: a shadow edge and a soft lift (see tailwind.smooth-shadow.js), not a gray ring on top of a shadow. */
     .bx-artificer .bx-popup-border {
-        @apply m-px ring-1 ring-gray-300 dark:ring-gray-700 rounded-2xl;
+        @apply m-px ring-0 smooth-shadow-popover rounded-2xl;
     }
 
     .bx-artificer .bx-popup-width {
@@ -1344,8 +1349,35 @@
     #bx-toolbar .bx-menu-main > .bx-menu-item {
         @apply rounded-full;
     }
+    /* Header main menu: centered between the logo and the toolbar (BxDolMenuMoreAuto keeps it hidden until measured, see artificer menu.css). */
+    #bx-toolbar .bx-menu-main {
+        @apply justify-center;
+    }
     #bx-toolbar .bx-menu-main > .bx-menu-item > .bx-stl-mil {
-        @apply h-11 px-4 py-0 rounded-full;
+        @apply h-11 py-0 ltr:pl-3 ltr:pr-4 rtl:pr-3 rtl:pl-4 rounded-full bx-stl-mil-hover-text; /* the icon's 24px box has ~3px of air, so its side gets 4px less padding to look even */
+    }
+    #bx-toolbar .bx-menu-main > .bx-menu-item-more-auto > .bx-stl-mil {
+        @apply w-11 px-0 justify-center; /* icon-only: a 44px circle like the toolbar buttons */
+    }
+    #bx-toolbar .bx-menu-main .bx-stl-mii:not(:last-child) > * {
+        @apply ltr:mr-2 rtl:ml-2; /* 8px between icon and label in the tabs and the More list */
+    }
+    /* Header popups (More, account, add content) never run past the bottom of the window: the header is fixed, so the page can't scroll them into view. */
+    #bx-toolbar .bx-popup-menu .bx-popup-content {
+        max-height: calc(100vh - 5.5rem);
+        max-height: calc(100dvh - 5.5rem);
+        @apply overflow-y-auto overscroll-contain;
+    }
+    /* More list: 36px rows (NEO's small size), inset 8px so each row's 8px radius sits inside the popup's 16px corner. */
+    #bx-toolbar .bx-popup-menu ul.bx-menu-submenu-more-auto {
+        @apply px-2;
+    }
+    #bx-toolbar ul.bx-menu-submenu-more-auto > .bx-menu-item,
+    #bx-toolbar ul.bx-menu-submenu-more-auto > .bx-menu-item > .bx-stl-mil {
+        @apply rounded-lg;
+    }
+    #bx-toolbar ul.bx-menu-submenu-more-auto > .bx-menu-item > .bx-stl-mil {
+        @apply h-9 py-0 ltr:pl-2 ltr:pr-3 rtl:pr-2 rtl:pl-3 bx-stl-mil-hover-text;
     }
 
     /* Common elements: Page Submenu */
