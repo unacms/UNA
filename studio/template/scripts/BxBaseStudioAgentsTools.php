@@ -17,6 +17,8 @@ class BxBaseStudioAgentsTools extends BxDolStudioAgentsInstruments
         parent::__construct ($aOptions, $oTemplate);
 
         $this->_sUrlPage = BX_DOL_URL_STUDIO . 'agents.php?page=tools';
+        if (!empty($this->_aOptions['source']) && is_string($this->_aOptions['source']))
+            $this->_aOptions['source'] = BxDolAiAgentTools::excludeHiddenFromSource($this->_aOptions['source']);
     }
     
     public function performActionDuplicate()
