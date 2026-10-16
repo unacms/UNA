@@ -5,7 +5,8 @@
  *
  * Tools attached in code. They are not stored on the agent and are not offered
  * in the Studio tool picker, the tools grid, or agent_create.
- * mysql_schema and mysql_select stay visible. mysql_write_safe and mysql_undo do not.
+ * mysql_schema and mysql_select are mandatory on una_operator and stay visible.
+ * mysql_write_safe and mysql_undo do not.
  *
  * @defgroup    UnaCore UNA Core
  * @{
@@ -22,15 +23,16 @@ class BxDolAiAgentTools
         'mockup_upsert',
         'mysql_write_safe',
         'mysql_undo',
-        'mysql_schema',
-        'mysql_select',
     ];
+
+    /** una_operator, in addition to ALWAYS and OPERATOR. Visible, so other agents can keep them. */
+    public const OPERATOR_READ = ['mysql_schema', 'mysql_select'];
 
     public static function typesFor(array $aAgent): array
     {
         $a = self::ALWAYS;
         if (($aAgent['name'] ?? '') === 'una_operator')
-            $a = array_merge($a, self::OPERATOR);
+            $a = array_merge($a, self::OPERATOR, self::OPERATOR_READ);
 
         return $a;
     }

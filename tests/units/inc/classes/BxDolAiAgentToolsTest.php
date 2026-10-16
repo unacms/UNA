@@ -35,7 +35,7 @@ class BxDolAiAgentToolsTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testTypesForOperatorIncludeMockupAndWriteSafeButNotOtherMysql()
+    public function testTypesForOperatorIncludesReadToolsThatStayVisible()
     {
         $this->assertSame([
             'chat_buttons',
@@ -44,6 +44,8 @@ class BxDolAiAgentToolsTest extends \PHPUnit\Framework\TestCase
             'mockup_upsert',
             'mysql_write_safe',
             'mysql_undo',
+            'mysql_schema',
+            'mysql_select',
         ], BxDolAiAgentTools::typesFor(['name' => 'una_operator']));
     }
 
@@ -115,9 +117,10 @@ class BxDolAiAgentToolsTest extends \PHPUnit\Framework\TestCase
         $this->assertNotContains($iUndo, $aNormal);
         $this->assertContains($this->toolId('chat_buttons'), $aNormal);
         $this->assertContains($this->toolId('chat_title'), $aNormal);
+        $this->assertNotContains($this->toolId('mysql_schema'), $aNormal);
 
-        $aOperator = BxDolAiAgentTools::resolveIds(['name' => 'una_operator', 'tools' => (string)$iMysql]);
-        foreach (['chat_buttons', 'chat_title', 'agent_create', 'mockup_upsert', 'mysql_write_safe', 'mysql_undo'] as $sType)
+        $aOperator = BxDolAiAgentTools::resolveIds(['name' => 'una_operator', 'tools' => '']);
+        foreach (['chat_buttons', 'chat_title', 'agent_create', 'mockup_upsert', 'mysql_write_safe', 'mysql_undo', 'mysql_schema', 'mysql_select'] as $sType)
             $this->assertContains($this->toolId($sType), $aOperator);
         $this->assertContains($iMysql, $aOperator);
         if ($iWrite > 0)
