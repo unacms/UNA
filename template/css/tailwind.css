@@ -1362,8 +1362,13 @@
     #bx-toolbar .bx-menu-main .bx-stl-mii:not(:last-child) > * {
         @apply ltr:mr-2 rtl:ml-2; /* 8px between icon and label in the tabs and the More list */
     }
-    /* Header popups (More, account, add content) never run past the bottom of the window: the header is fixed, so the page can't scroll them into view. */
-    #bx-toolbar .bx-popup-menu .bx-popup-content {
+    /*
+     * Header popups (More, account, add content) never run past the bottom of the window: the header is fixed, so the page can't
+     * scroll them into view. The toolbar's own popups (bx-sliding-menu-*) are moved under body when they open, so they are matched
+     * by id rather than by #bx-toolbar.
+     */
+    #bx-toolbar .bx-popup-menu .bx-popup-content,
+    .bx-popup-menu[id^="bx-sliding-menu-"] .bx-popup-content {
         max-height: calc(100vh - 5.5rem);
         max-height: calc(100dvh - 5.5rem);
         @apply overflow-y-auto overscroll-contain;
