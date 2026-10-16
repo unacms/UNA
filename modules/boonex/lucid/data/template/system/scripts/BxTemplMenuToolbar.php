@@ -23,8 +23,8 @@ class BxTemplMenuToolbar extends BxBaseMenuToolbar
 
     protected function _getMenuItem ($a)
     {
-    	//--- Hide 'Main Menu' and 'Search' from Site Toolbar
-        if($this->_bSiteToolbar && in_array($a['name'], array('search')))
+    	//--- Hide system 'Search' from both toolbars, 'bx_lucid_search' replaces it
+        if(in_array($a['name'], array('search')))
             return false;
 
         //--- Hide 'Login' from Member Toolbar

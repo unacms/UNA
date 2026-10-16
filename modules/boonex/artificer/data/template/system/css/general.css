@@ -27,35 +27,37 @@ import url(../../../../../../../template/css/general.css);
     max-height: 100%;
     width: auto;
 }
-.bx-toolbar-item.bx-ti-search .bx-ti-search-button a {
-    text-decoration: none;
-}
-.bx-toolbar-item.bx-ti-search .bx-ti-search-button img {
-    width: 1.5rem;
-    height: 1.5rem;
-}
-.bx-toolbar-item.bx-ti-search .bx-tis-button-hidden {
+/*--- Floating search bar: takes the place of the member toolbar's 'search' item, at the end of the toolbar's items group (phones: the whole group) ---*/
+#bx-toolbar .bx-tis-button-hidden {
     display: none;
 }
-.bx-toolbar-item.bx-ti-search .bx-tis-box-shown {
+.bx-ti-search-box.bx-tis-box-shown {
     position: absolute;
     display: block;
+    top: 50%;
+    inset-inline-end: 0;
+    transform: translateY(-50%);
 }
-.bx-toolbar-item.bx-ti-search .bx-form-advanced .bx-loading-ajax {
+@media (max-width: 767px) {
+    .bx-ti-search-box.bx-tis-box-shown {
+        inset-inline-start: 0;
+    }
+}
+.bx-ti-search-box .bx-form-advanced .bx-loading-ajax {
     top: 0;
     max-height: 100%;
 }
-.bx-toolbar-item.bx-ti-search .bx-form-advanced-wrapper .bx-form-section-wrapper:first-child {
+.bx-ti-search-box .bx-form-advanced-wrapper .bx-form-section-wrapper:first-child {
     margin-top: 0;
 }
-.bx-toolbar-item.bx-ti-search .sys-search-results-quick {
+.bx-ti-search-box .sys-search-results-quick {
     position: absolute;
     z-index: 10;
 }
-.bx-toolbar-item.bx-ti-search .sys-search-results-quick .bx-btn.sys-agents-ask {
+.bx-ti-search-box .sys-search-results-quick .bx-btn.sys-agents-ask {
     margin-bottom: 0.5rem;
 }
-.bx-toolbar-item.bx-ti-search .sys-search-results-quick .bx-btn.sys-agents-ask:last-child {
+.bx-ti-search-box .sys-search-results-quick .bx-btn.sys-agents-ask:last-child {
     margin-bottom: 0;
 }
 
