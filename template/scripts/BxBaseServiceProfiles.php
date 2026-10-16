@@ -1208,24 +1208,32 @@ class BxBaseServiceProfiles extends BxDol
     }
 
     /**
-     * Home page of the default profile type (Settings > Accounts), or of the first active profile module.
+     * Home page of the first profile module in _getRecommendationsEmptyStateModules() that has one.
      */
     protected function _getRecommendationsEmptyStateUrl()
     {
-        $aModules = bx_srv('system', 'get_modules_by_type', ['profile', ['name_as_key' => true]]);
-        $aModules = is_array($aModules) ? array_keys($aModules) : [];
-
-        $sDefault = getParam('sys_account_default_profile_type');
-        if($sDefault && in_array($sDefault, $aModules))
-            array_unshift($aModules, $sDefault);
-
-        foreach($aModules as $sModule) {
+        foreach($this->_getRecommendationsEmptyStateModules() as $sModule) {
             $oModule = BxDolModule::getInstance($sModule);
             if($oModule && !empty($oModule->_oConfig->CNF['URL_HOME']))
                 return bx_absolute_url(BxDolPermalinks::getInstance()->permalink($oModule->_oConfig->CNF['URL_HOME']));
         }
 
         return '';
+    }
+
+    /**
+     * Active profile modules, with the default profile type (Settings > Accounts) first when it is one of them.
+     */
+    protected function _getRecommendationsEmptyStateModules()
+    {
+        $aModules = bx_srv('system', 'get_modules_by_type', ['profile', ['name_as_key' => true]]);
+        $aModules = is_array($aModules) ? array_keys($aModules) : [];
+
+        $sDefault = getParam('sys_account_default_profile_type');
+        if($sDefault && in_array($sDefault, $aModules))
+            $aModules = array_values(array_unique(array_merge([$sDefault], $aModules)));
+
+        return $aModules;
     }
     
     public function serviceSetMembership($mixedProfileId, $iAclLevelId, $iAclLevelDuration = 0)
