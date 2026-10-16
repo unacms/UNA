@@ -87,6 +87,20 @@ li.bx-mi-hidden {
 .bx-menu-main .bx-menu-item.bx-menu-item-more-auto {
     display: none;
 }
+/*
+ * BxDolMenuMoreAuto marks the main menu ready once it knows which items fit (at once when the row for this window
+ * width is remembered from an earlier page). Until then the row stays invisible, so a first guess never shows.
+ * If the script never runs, the animation reveals the row after 1.5s.
+ */
+#bx-toolbar .bx-menu-main.bx-menu-more-auto:not(.bx-mma-ready) {
+    opacity: 0;
+    animation: bx-mma-reveal 0s linear 1.5s forwards;
+}
+@keyframes bx-mma-reveal {
+    to {
+        opacity: 1;
+    }
+}
 .bx-menu-main .bx-menu-item.bx-menu-item-more-auto .bx-popup .bx-menu-custom .bx-menu-item,
 .bx-menu-main .bx-menu-item.bx-menu-item-more-auto .bx-popup .bx-menu-custom .bx-menu-item a {
     border-radius: 0;

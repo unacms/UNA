@@ -41,7 +41,11 @@ class BxBaseMenuMoreAuto extends BxTemplMenu
 
         $this->_sJsClassMoreAuto = 'BxDolMenuMoreAuto';
         $this->_sJsObjectMoreAuto = 'oMenuMoreAuto' . bx_gen_method_name($this->_sObject);
-        $this->_sJsCallMoreAuto = "if(!{js_object}) {var {js_object} = new {js_class}({js_params}); {js_object}.init();}";
+        /*
+         * Not guarded by 'if(!{js_object})': content loaded dynamically (htmx) brings a new menu element under the same
+         * object name, and init() itself skips an element that is already set up.
+         */
+        $this->_sJsCallMoreAuto = "var {js_object} = new {js_class}({js_params}); {js_object}.init();";
 
         $sPrefix = str_replace('_', '-', $this->_sObject);
         $this->_aHtmlIds = array(
