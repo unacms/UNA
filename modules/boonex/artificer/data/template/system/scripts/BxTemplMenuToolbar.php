@@ -32,8 +32,8 @@ class BxTemplMenuToolbar extends BxBaseMenuToolbar
         if(in_array($a['hidden_on'], [7, 15])) 
             return false;
 
-        //--- Update '[Main Menu]' from Site Toolbar
-        if($this->_bSiteToolbar && $a['name'] == 'main-menu')
+        //--- '[Main Menu]' opens the site sidebar (see the switch below) instead of the sliding menu
+        if($a['name'] == 'main-menu')
             $a['onclick'] = '';
 
     	//--- Hide '[Search]' from Site Toolbar
@@ -54,6 +54,9 @@ class BxTemplMenuToolbar extends BxBaseMenuToolbar
         $sAttrsAdd = '';
         switch ($a['name']) {
             case 'main-menu':
+                //--- The sidebar it opens is for small screens only, wider ones show the main menu inline.
+                if(isset($a['class_add']))
+                    $a['class_add'] .= ' lg:hidden';
                 $a['class_add_a'] = ' bx-sidebar-site-trigger';
                 $a['link'] = 'javascript:void(0)';
                 $a['onclick'] = '';

@@ -26,20 +26,8 @@
     -moz-transition: -moz-transform 0.5s 0s;
     transition: transform 0.5s 0s;
 }
-.bx-dir-ltr .bx-sidebar.bx-sidebar-site .bx-sidebar-cnt {
-    -webkit-transform: translateX(-100%);
-    -moz-transform: translateX(-100%);
-    -ms-transform: translateX(-100%);
-    -o-transform: translateX(-100%);
-    transform: translateX(-100%);
-}
-.bx-dir-rtl .bx-sidebar.bx-sidebar-site .bx-sidebar-cnt {
-    -webkit-transform: translateX(100%);
-    -moz-transform: translateX(100%);
-    -ms-transform: translateX(100%);
-    -o-transform: translateX(100%);
-    transform: translateX(100%);
-}
+/*--- Both sidebars slide in from the trailing edge, where their triggers are. ---*/
+.bx-dir-ltr .bx-sidebar.bx-sidebar-site .bx-sidebar-cnt,
 .bx-dir-ltr .bx-sidebar.bx-sidebar-account .bx-sidebar-cnt {
     -webkit-transform: translateX(100%);
     -moz-transform: translateX(100%);
@@ -47,6 +35,7 @@
     -o-transform: translateX(100%);
     transform: translateX(100%);
 }
+.bx-dir-rtl .bx-sidebar.bx-sidebar-site .bx-sidebar-cnt,
 .bx-dir-rtl .bx-sidebar.bx-sidebar-account .bx-sidebar-cnt {
     -webkit-transform: translateX(-100%);
     -moz-transform: translateX(-100%);
