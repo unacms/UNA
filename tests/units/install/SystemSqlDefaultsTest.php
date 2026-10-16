@@ -32,4 +32,14 @@ class SystemSqlDefaultsTest extends \PHPUnit\Framework\TestCase
         $this->assertStringContainsString('fill="currentColor"', $aMatch[1], 'The badge draws in the footer link colour, so it reads in light and dark.');
         $this->assertDoesNotMatchRegularExpression('/(fill|stroke)="#/', $aMatch[1], 'No fixed colour that would vanish on one of the two schemes.');
     }
+
+    public function testHomeRecommendedFriendsShowsAnEmptyState(): void
+    {
+        $bFound = preg_match("/\\('sys_home', 4, 'system', '_sys_page_block_title_sys_recom_friends', [^\\n]*?'service', '([^\\n]*?)', /", self::systemSql(), $aMatch);
+
+        $this->assertSame(1, $bFound, 'system.sql adds Recommended friends to the right column of the home page.');
+        $aContent = unserialize(stripslashes($aMatch[1]));
+        $this->assertSame('browse_recommendations_friends', $aContent['method']);
+        $this->assertTrue($aContent['params'][1]['empty_state'] ?? false, 'With nothing to suggest, the block explains why instead of leaving the column blank.');
+    }
 }

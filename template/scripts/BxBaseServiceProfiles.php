@@ -1142,6 +1142,7 @@ class BxBaseServiceProfiles extends BxDol
 
         $aParams = array_merge([
             'empty_message' => false,
+            'empty_state' => false,
             'start' => 0,
             'per_page' => 0
         ], $aParams);
@@ -1177,10 +1178,62 @@ class BxBaseServiceProfiles extends BxDol
         }
 
         $sCode = $oRecommendation->getCode($iProfileId, $aParams);
-        if(!$sCode && $aParams['empty_message'])
+        if(!$sCode && $aParams['empty_state'])
+            $sCode = $this->_getRecommendationsEmptyState();
+        else if(!$sCode && $aParams['empty_message'])
             $sCode = MsgBox(_t('_Empty'));
 
         return $sCode;
+    }
+
+    /**
+     * Empty state for a recommendations block that has nothing to suggest yet (a new or small site): it says why and
+     * links to a page where people can be found, so the block, and the page column it sits in, doesn't just vanish.
+     */
+    protected function _getRecommendationsEmptyState()
+    {
+        $sUrl = $this->_getRecommendationsEmptyStateUrl();
+
+        return BxDolTemplate::getInstance()->parseHtmlByName('recommendations_empty.html', [
+            'title' => _t('_sys_recom_friends_empty_title'),
+            'text' => _t('_sys_recom_friends_empty_text'),
+            'bx_if:show_action' => [
+                'condition' => !empty($sUrl),
+                'content' => [
+                    'url' => $sUrl,
+                    'action' => _t('_sys_recom_friends_empty_action')
+                ]
+            ]
+        ]);
+    }
+
+    /**
+     * Home page of the first profile module in _getRecommendationsEmptyStateModules() that has one.
+     */
+    protected function _getRecommendationsEmptyStateUrl()
+    {
+        foreach($this->_getRecommendationsEmptyStateModules() as $sModule) {
+            $oModule = BxDolModule::getInstance($sModule);
+            if($oModule && !empty($oModule->_oConfig->CNF['URL_HOME']))
+                return bx_absolute_url(BxDolPermalinks::getInstance()->permalink($oModule->_oConfig->CNF['URL_HOME']));
+        }
+
+        return '';
+    }
+
+    /**
+     * Active profile modules, with the default profile type (Settings > Accounts) first when it is one of them.
+     */
+    protected function _getRecommendationsEmptyStateModules()
+    {
+        $aModules = bx_srv('system', 'get_modules_by_type', ['profile', ['name_as_key' => true]]);
+        $aModules = is_array($aModules) ? array_keys($aModules) : [];
+
+        $sDefault = getParam('sys_account_default_profile_type');
+        if($sDefault && in_array($sDefault, $aModules))
+            $aModules = array_values(array_unique(array_merge([$sDefault], $aModules)));
+
+        return $aModules;
     }
     
     public function serviceSetMembership($mixedProfileId, $iAclLevelId, $iAclLevelDuration = 0)
