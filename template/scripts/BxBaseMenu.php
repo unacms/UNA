@@ -89,7 +89,10 @@ class BxBaseMenu extends BxDolMenu
                 default:
                     trigger_error("Unknown cache mode for menu ({$this->_sObject}): {$this->_aObject['cache']}", E_USER_ERROR);
                     break;
-            }            
+            }
+            // The output marks the selected item (bx-menu-tab-active), so each selected item gets its own entry.
+            $sCacheKey .= $this->_getCacheKeySelected();
+
             $mixedCache = bx_content_cache_get($sCacheKey);
         }
         if ($mixedCache !== null) {
@@ -286,6 +289,36 @@ class BxBaseMenu extends BxDolMenu
             return $this->_oQuery->getMenuItemsHierarchy();
         else 
             return $this->_oQuery->getMenuItems();
+    }
+
+    /**
+     * Cache key part for the item this menu shows as selected: empty when none of its items is,
+     * so pages that select nothing in this menu share one entry.
+     */
+    protected function _getCacheKeySelected ()
+    {
+        $sSelected = $this->_findSelectedName($this->getMenuItemsRaw());
+
+        return $sSelected === '' ? '' : '_sel' . md5($sSelected);
+    }
+
+    protected function _findSelectedName ($aItems)
+    {
+        if (!is_array($aItems))
+            return '';
+
+        foreach ($aItems as $a) {
+            if (!is_array($a))
+                continue;
+
+            if ($this->_isSelected($a))
+                return isset($a['module']) ? $a['module'] . ':' . $a['name'] : $a['name'];
+
+            if (!empty($a['subitems']) && ($sSelected = $this->_findSelectedName($a['subitems'])) !== '')
+                return $sSelected;
+        }
+
+        return '';
     }
 
     protected function getMenuItemsRawProfileRelated ()
