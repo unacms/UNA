@@ -32,8 +32,8 @@ class BxTemplMenuToolbar extends BxBaseMenuToolbar
         if(in_array($a['hidden_on'], [7, 15])) 
             return false;
 
-        //--- Update '[Main Menu]' from Site Toolbar
-        if($this->_bSiteToolbar && $a['name'] == 'main-menu')
+        //--- '[Main Menu]' opens the site sidebar (see the switch below) instead of the sliding menu
+        if($a['name'] == 'main-menu')
             $a['onclick'] = '';
 
     	//--- Hide '[Search]' from Site Toolbar
@@ -54,6 +54,9 @@ class BxTemplMenuToolbar extends BxBaseMenuToolbar
         $sAttrsAdd = '';
         switch ($a['name']) {
             case 'main-menu':
+                //--- The sidebar it opens is for small screens only, wider ones show the main menu inline.
+                if(isset($a['class_add']))
+                    $a['class_add'] .= ' lg:hidden';
                 $a['class_add_a'] = ' bx-sidebar-site-trigger';
                 $a['link'] = 'javascript:void(0)';
                 $a['onclick'] = '';
@@ -68,7 +71,8 @@ class BxTemplMenuToolbar extends BxBaseMenuToolbar
                 break;
 
             case 'add-content':
-                $a['class_add'] = str_replace('bx-def-media-phone-hide', '',  $a['class_add']);
+                if(isset($a['class_add']))
+                    $a['class_add'] = str_replace('bx-def-media-phone-hide', '',  $a['class_add']);
 
                 if(isset($a['bx_if:onclick']['content']['onclick']))
                     $a['bx_if:onclick']['content']['onclick'] = str_replace('bx_menu_slide_inline', 'bx_menu_popup_inline', $a['bx_if:onclick']['content']['onclick']);
@@ -81,7 +85,8 @@ class BxTemplMenuToolbar extends BxBaseMenuToolbar
                 if($this->_bIsApi)
                     break;
 
-                $a['class_add'] = str_replace('bx-def-media-phone-hide', '',  $a['class_add']);
+                if(isset($a['class_add']))
+                    $a['class_add'] = str_replace('bx-def-media-phone-hide', '',  $a['class_add']);
 
                 //--- The floating search bar (see _page_toolbar_search.html) takes the button's place. Without it the button opens the search page.
                 if(getParam('bx_artificer_header_search') == 'on') {

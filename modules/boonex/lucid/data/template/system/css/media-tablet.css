@@ -7,7 +7,7 @@
 }
 
 /*--- Header Toolbar ---*/ 
-.bx-media-tablet #bx-menu-toolbar-1-container .bx-menu-toolbar li.bx-menu-item-main-menu {
+.bx-media-tablet .bx-menu-toolbar li.bx-menu-item-main-menu {
     display: none;
 }
 
