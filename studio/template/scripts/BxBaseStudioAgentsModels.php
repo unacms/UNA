@@ -53,6 +53,10 @@ class BxBaseStudioAgentsModels extends BxTemplStudioGridAgents
 
         $aForm = $this->_getFormEdit($sAction, $aModel);
         $oForm = new BxTemplFormView($aForm);
+        if ($oForm->isSubmitted() && $this->_isUnaProxyModel($aModel)) {
+            BxDolForm::setSubmittedValue('model', $aModel['model'], $oForm->aFormAttrs['method']);
+            BxDolForm::setSubmittedValue('key', $aModel['key'], $oForm->aFormAttrs['method']);
+        }
         $oForm->initChecker();
 
         if($oForm->isSubmittedAndValid()) {
@@ -176,11 +180,24 @@ class BxBaseStudioAgentsModels extends BxTemplStudioGridAgents
             ),
         );
 
+        if ($sAction === 'edit' && $this->_isUnaProxyModel($aModel)) {
+            $aForm['inputs']['model']['attrs']['readonly'] = 'readonly';
+            $aForm['inputs']['key']['attrs']['readonly'] = 'readonly';
+        }
+
         return $aForm;
+    }
+
+    protected function _isUnaProxyModel($aModel)
+    {
+        return is_array($aModel) && ($aModel['type'] ?? '') === 'una-proxy';
     }
 
     protected function _getActionDelete ($sType, $sKey, $a, $isSmall = false, $isDisabled = false, $aRow = array())
     {
+        if ($this->_isUnaProxyModel($aRow))
+            return '';
+
         if ($sType == 'single' && $aRow['duplicate'] == 0)
             return '';
         return parent::_getActionDefault ($sType, $sKey, $a, $isSmall, $isDisabled, $aRow);
@@ -189,7 +206,7 @@ class BxBaseStudioAgentsModels extends BxTemplStudioGridAgents
     protected function _delete ($mixedId)
     {
         $aModel = $this->_oDb->getModelsBy(['sample' => 'id', 'id' => $mixedId]);
-        if (empty($aModel) || $aModel['duplicate'] == 0)
+        if (empty($aModel) || $this->_isUnaProxyModel($aModel) || $aModel['duplicate'] == 0)
             return false;
         return parent::_delete($mixedId);
     }

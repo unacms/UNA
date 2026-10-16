@@ -26,6 +26,10 @@ class BxBaseStudioAgentsVectorStore extends BxDolStudioAgentsInstruments
     
     public function performActionDuplicate()
     {
+        $aVectorStore = $this->_oDb->getVectorStoreById((int)$this->_getId());
+        if ($this->_isUnaProxyKnowledge($aVectorStore))
+            return echoJson(['msg' => _t('_sys_txt_error_occured')]);
+
         return parent::_performActionDuplicate('getVectorStoreById', 'insertVectorStore');
     }
 
@@ -35,6 +39,8 @@ class BxBaseStudioAgentsVectorStore extends BxDolStudioAgentsInstruments
 
         $iId = $this->_getId();
         $aVectorStore = $this->_oDb->getVectorStoreById($iId);
+        if ($this->_isUnaProxyKnowledge($aVectorStore))
+            return echoJson(['msg' => _t('_sys_txt_error_occured')]);
 
         $aForm = $this->_getFormAddData($sAction, $aVectorStore);
         $oForm = new BxTemplFormView($aForm);
@@ -89,6 +95,10 @@ class BxBaseStudioAgentsVectorStore extends BxDolStudioAgentsInstruments
 
     public function performActionEdit()
     {
+        $aVectorStore = $this->_oDb->getVectorStoreById((int)$this->_getId());
+        if ($this->_isUnaProxyKnowledge($aVectorStore))
+            return echoJson(['msg' => _t('_sys_txt_error_occured')]);
+
         return $this->_performActionEdit('getVectorStoreById', '_sys_agents_vector_store_popup_edit');
     }
 
@@ -130,7 +140,7 @@ class BxBaseStudioAgentsVectorStore extends BxDolStudioAgentsInstruments
             $aEmbeddingProviders[$k] = $v;
         }
 
-        return [
+        $aForm = [
             'form_attrs' => [
                 'id' => 'bx_std_agents_vector_store_' . $sAction,
                 'action' => BX_DOL_URL_ROOT . 'grid.php?o=sys_studio_agents_vector_store&a=' . $sAction,
@@ -201,6 +211,14 @@ class BxBaseStudioAgentsVectorStore extends BxDolStudioAgentsInstruments
                 'submit' => $this->_getFormControls(),
             ]
         ];
+
+        if ($sAction === 'edit' && $this->_isUnaProxyKnowledge($aVectorStore)) {
+            foreach (['title', 'topk', 'params_user'] as $sField)
+                $aForm['inputs'][$sField]['attrs']['readonly'] = 'readonly';
+            $aForm['inputs']['embedding_provider_id']['attrs']['disabled'] = 'disabled';
+        }
+
+        return $aForm;
     }
 
     protected function _getFormAddData(string $sAction, array $aVectorStore)
@@ -305,6 +323,9 @@ class BxBaseStudioAgentsVectorStore extends BxDolStudioAgentsInstruments
 
     protected function _getCellEmbeddingProviderId($mixedValue, $sKey, $aField, $aRow) 
     {
+        if ($this->_isUnaProxyKnowledge($aRow))
+            return parent::_getCellDefault('', $sKey, $aField, $aRow);
+
         $aProvider = $this->_oDb->getModelsBy(['sample' => 'id', 'id' => $mixedValue]);
         $s = !empty($aProvider) ? $aProvider['title'] : _t('_undefined');
         return parent::_getCellDefault($s, $sKey, $aField, $aRow);
@@ -312,6 +333,12 @@ class BxBaseStudioAgentsVectorStore extends BxDolStudioAgentsInstruments
     
     protected function _getCellFilesNum($mixedValue, $sKey, $aField, $aRow)
     {
+        if ($this->_isUnaProxyKnowledge($aRow)) {
+            $sLabel = _t('_sys_not_available');
+            $s = '<i class="sys-icon circle col-gray" role="img" aria-label="' . bx_html_attribute($sLabel) . '" title="' . bx_html_attribute($sLabel) . '"></i>';
+            return parent::_getCellDefault($s, $sKey, $aField, $aRow);
+        }
+
         $s = $this->_oDb->getVectorStoreDataNum($aRow['id']);
         if ((int)$s !== 0)
             $s = '<a href="javascript:void(0)" onclick="glGrids.' . $this->_sObject . '.actionWithId (' . $aRow['id'] . ', \'files\', {}, \'\', false, 0);">' . $s . '</a>';
@@ -321,12 +348,49 @@ class BxBaseStudioAgentsVectorStore extends BxDolStudioAgentsInstruments
     protected function _delete ($mixedId)
     {
         $aModel = $this->_oDb->getVectorStoreById($mixedId);
-        if (empty($aModel) || $aModel['duplicate'] == 0)
+        if (empty($aModel) || $this->_isUnaProxyKnowledge($aModel) || $aModel['duplicate'] == 0)
             return false;
 
         // TODO: delete actual vector store data if needed
 
         return parent::_delete($mixedId);
+    }
+
+    protected function _isUnaProxyKnowledge($aVectorStore)
+    {
+        return is_array($aVectorStore) && ($aVectorStore['type'] ?? '') === 'una-proxy';
+    }
+
+    protected function _getActionAddData($sType, $sKey, $a, $isSmall = false, $isDisabled = false, $aRow = [])
+    {
+        if ($this->_isUnaProxyKnowledge($aRow))
+            return '';
+
+        return parent::_getActionDefault($sType, $sKey, $a, $isSmall, $isDisabled, $aRow);
+    }
+
+    protected function _getActionDuplicate($sType, $sKey, $a, $isSmall = false, $isDisabled = false, $aRow = [])
+    {
+        if ($this->_isUnaProxyKnowledge($aRow))
+            return '';
+
+        return parent::_getActionDefault($sType, $sKey, $a, $isSmall, $isDisabled, $aRow);
+    }
+
+    protected function _getActionEdit($sType, $sKey, $a, $isSmall = false, $isDisabled = false, $aRow = [])
+    {
+        if ($this->_isUnaProxyKnowledge($aRow))
+            return '';
+
+        return parent::_getActionDefault($sType, $sKey, $a, $isSmall, $isDisabled, $aRow);
+    }
+
+    protected function _getActionDelete($sType, $sKey, $a, $isSmall = false, $isDisabled = false, $aRow = [])
+    {
+        if ($this->_isUnaProxyKnowledge($aRow))
+            return '';
+
+        return parent::_getActionDelete($sType, $sKey, $a, $isSmall, $isDisabled, $aRow);
     }
 }
 
