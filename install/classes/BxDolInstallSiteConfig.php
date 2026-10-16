@@ -12,6 +12,7 @@ define('BX_INSTALL_ERR_GENERAL', 'general');
 class BxDolInstallSiteConfig
 {
     protected $_sSqlDb;
+    protected $_sSqlMariaDb;
     protected $_sSqlAddon;
     protected $_sPatternHeader;
 
@@ -33,6 +34,7 @@ class BxDolInstallSiteConfig
         $this->_isAutologin = $isAutologin;
 
         $this->_sSqlDb = BX_INSTALL_DIR . 'sql/system.sql';
+        $this->_sSqlMariaDb = BX_INSTALL_DIR . 'sql/mariadb.sql';
         $this->_sSqlAddon = BX_INSTALL_DIR . 'sql/addon.sql';
         $this->_sPatternHeader = BX_INSTALL_DIR . 'patterns/header.inc.php';
 
@@ -349,6 +351,13 @@ EOF;
         if (true !== $mixedRes)
             return $this->dbErrors2ErrorFields($mixedRes);
 
+        // UUID and VECTOR. MariaDB 11.7 and newer only. MySQL and older MariaDB cannot create these tables.
+        if ($this->shouldRunMariaDbSql($oDb)) {
+            $mixedRes = $oDb->executeSQL($this->_sSqlMariaDb);
+            if (true !== $mixedRes)
+                return $this->dbErrors2ErrorFields($mixedRes);
+        }
+
         $mixedRes = $oDb->executeSQL($this->_sSqlAddon, $this->getMarkersForDb($a, $oDb));
         if (true !== $mixedRes)
             return $this->dbErrors2ErrorFields($mixedRes);
@@ -363,7 +372,7 @@ EOF;
 
             $aFiles = scandir($sSqlDir);
             foreach ($aFiles as $sFile) {
-                if ($sFile[0] === '.' || $sFile === 'system.sql' || $sFile === 'addon.sql') {
+                if ($sFile[0] === '.' || $sFile === 'system.sql' || $sFile === 'addon.sql' || $sFile === 'mariadb.sql') {
                     continue;
                 }
                 $sFilePath = $sSqlDir . $sFile;
@@ -377,6 +386,20 @@ EOF;
         }
         
         return array();
+    }
+
+    /**
+     * mariadb.sql uses UUID and VECTOR, available on MariaDB 11.7 and newer.
+     */
+    protected function shouldRunMariaDbSql($oDb)
+    {
+        if (!class_exists('BxDolAIVectorStoreMariaDb', false))
+            require_once(BX_INSTALL_DIR . '../inc/classes/BxDolAIVectorStoreMariaDb.php');
+
+        $sVersion = (string)$oDb->getOne('SELECT VERSION()');
+        $aServer = BxDolAIVectorStoreMariaDb::describe($sVersion);
+
+        return ($aServer['engine'] ?? '') === 'mariadb' && !empty($aServer['supported']);
     }
 
     public function processConfigDataHeader ($a)

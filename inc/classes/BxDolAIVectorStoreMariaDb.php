@@ -1,10 +1,10 @@
-<?php defined('BX_DOL') or die('hack attempt');
+<?php defined('BX_DOL') or defined('BX_DOL_INSTALL') or die('hack attempt');
 /**
  * Copyright (c) UNA, Inc - https://una.io
  * MIT License - https://opensource.org/licenses/MIT
  *
  * MariaDB vector store on the site database connection.
- * Embeddings of width 1024 and 384 live in separate tables, created in install SQL.
+ * Embeddings of width 1024 and 384 live in separate tables, created from install/sql/mariadb.sql.
  *
  * @defgroup    UnaCore UNA Core
  * @{
