@@ -664,9 +664,9 @@
     .bx-def-color-bg-box-overflow {
         @apply bg-gradient-to-b from-transparent to-white dark:to-gray-800;
     }
-    /* Elevated surfaces: hairline ring + stacked shadow in one box-shadow (see tailwind.smooth-shadow.js), never border + shadow. */
+    /* Blocks: a shadow in place of a border (see tailwind.smooth-shadow.js), never border + shadow. */
     .bx-def-border-block {
-        @apply smooth-shadow-ring-sm;
+        @apply smooth-shadow-border;
     }
     .bx-def-box,
     .bx-popup-border {
@@ -1334,10 +1334,18 @@
 
     /* Common elements: Toolbar menu */
     .bx-artificer .bx-menu-toolbar .bx-menu-toolbar-item .bx-menu-toolbar-item-unit {
-        @apply border-4 border-transparent;
+        @apply border-[5px] border-transparent; /* 32px avatar + 2 x 5px + the item's 1px border = 44px, like the other header buttons */
     }
     .bx-artificer .bx-menu-toolbar .bx-menu-toolbar-item .bx-menu-toolbar-item-unit .bx-def-icon-size {
         @apply h-8 w-8;
+    }
+
+    /* Header: the main menu's tabs are capsules at the header's control height (44px, NEO's regular button). */
+    #bx-toolbar .bx-menu-main > .bx-menu-item {
+        @apply rounded-full;
+    }
+    #bx-toolbar .bx-menu-main > .bx-menu-item > .bx-stl-mil {
+        @apply h-11 px-4 py-0 rounded-full;
     }
 
     /* Common elements: Page Submenu */

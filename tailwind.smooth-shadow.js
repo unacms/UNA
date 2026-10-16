@@ -11,6 +11,9 @@
  *    layer, for elevated surfaces (blocks, cards, popups, menus). Never pair it with `border`/`ring`.
  *  - `shadow-{color}` tints the shadow, `smooth-ring-{color}` tints the ring; both compose.
  *  - The ring is black 5% in light mode and white 18% under `.dark` / `[data-theme="dark"]`.
+ *  - `smooth-shadow-border` — a shadow in place of a border for surfaces that only need an edge (the
+ *    header bar, page blocks): a 1px ring, a 1px lift and a 2px ambient layer in light mode, and a single
+ *    white ring under `.dark`, where depth shadows don't show. Never pair it with `border`/`ring`.
  */
 const plugin = require('tailwindcss/plugin');
 const flattenColorPalette = require('tailwindcss/lib/util/flattenColorPalette').default;
@@ -26,6 +29,9 @@ const LAYERS = {
 };
 
 const RING = '0 0 0 var(--smooth-ring-width, 1px) var(--smooth-ring-color)';
+
+const BORDER_LIGHT = '0 0 0 1px oklch(0 0 0 / 0.06), 0 1px 2px -1px oklch(0 0 0 / 0.06), 0 2px 4px 0 oklch(0 0 0 / 0.04)';
+const BORDER_DARK = '0 0 0 1px oklch(1 0 0 / 0.08)';
 
 function stack(size, withRing) {
     const layers = LAYERS[size].map(([y, blur, spread, alpha]) =>
@@ -43,12 +49,15 @@ module.exports = plugin(function ({ addBase, addUtilities, matchUtilities, theme
         ':root': {
             '--smooth-ring-color': 'rgba(0, 0, 0, 0.05)',
             '--smooth-ring-width': '1px',
+            '--smooth-shadow-border': BORDER_LIGHT,
         },
         '.light, [data-theme="light"]': {
             '--smooth-ring-color': 'rgba(0, 0, 0, 0.05)',
+            '--smooth-shadow-border': BORDER_LIGHT,
         },
         '.dark, [data-theme="dark"]': {
             '--smooth-ring-color': 'rgba(255, 255, 255, 0.18)',
+            '--smooth-shadow-border': BORDER_DARK,
         },
     });
 
@@ -73,6 +82,11 @@ module.exports = plugin(function ({ addBase, addUtilities, matchUtilities, theme
     }
     utilities['.smooth-shadow'] = utilities['.smooth-shadow-md'];
     utilities['.smooth-shadow-ring'] = utilities['.smooth-shadow-ring-md'];
+    utilities['.smooth-shadow-border'] = {
+        '--tw-shadow': 'var(--smooth-shadow-border)',
+        '--tw-shadow-colored': 'var(--smooth-shadow-border)',
+        boxShadow: BOX_SHADOW,
+    };
 
     addUtilities(utilities);
 
