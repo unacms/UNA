@@ -297,7 +297,7 @@ class BxDolAiChatUi
         $aOut = [];
         $aSeen = [];
         foreach ($aAll as $aItem) {
-            $sKey = ($aItem['type'] ?? '') . '|' . ($aItem['label'] ?? '') . '|' . ($aItem['url'] ?? '');
+            $sKey = ($aItem['type'] ?? '') . '|' . ($aItem['label'] ?? '') . '|' . ($aItem['url'] ?? ($aItem['form_url'] ?? ''));
             if (isset($aSeen[$sKey]))
                 continue;
             $aSeen[$sKey] = true;
@@ -338,6 +338,16 @@ class BxDolAiChatUi
                 if (!$this->isAllowedChatActionUrl($sUrl))
                     continue;
                 $aOut[] = ['type' => 'link', 'label' => $sLabel, 'url' => $sUrl];
+            } elseif ($sType === 'form') {
+                // form opened in a popup over the chat: 'module/method/&params[]=..' API service call
+                $sFormUrl = trim((string)($aItem['form_url'] ?? ''));
+                if (!preg_match('/^[a-z0-9_]+\/[a-z0-9_]+\/?(&params\[\]=[A-Za-z0-9_\-\.]*)*$/', $sFormUrl))
+                    continue;
+                $aForm = ['type' => 'form', 'label' => $sLabel, 'form_url' => $sFormUrl];
+                $sMessage = trim(strip_tags((string)($aItem['message'] ?? '')));
+                if ($sMessage !== '')
+                    $aForm['message'] = function_exists('mb_substr') ? mb_substr($sMessage, 0, 200) : substr($sMessage, 0, 200);
+                $aOut[] = $aForm;
             }
 
             if (count($aOut) >= 8)

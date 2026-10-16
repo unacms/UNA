@@ -33,14 +33,16 @@ class BxDolAIToolChatButtons extends BxDolAITool
         return [
             new ArrayProperty(
                 name: 'buttons',
-                description: 'Buttons under this reply. reply = visitor tap sends that label as the next message; link = an https URL (site pages, help, registration). Yes/no labels are exactly "' . $sYes . '" and "' . $sNo . '" (site language). Example: [{"type":"reply","label":"' . $sYes . '"},{"type":"reply","label":"' . $sNo . '"}]',
+                description: 'Buttons under this reply. reply = visitor tap sends that label as the next message; link = an https URL (site pages, help, registration); form = opens a site form in a popup over the chat, form_url comes from a tool result only (never made up), after the form is saved the "message" text is sent as the visitor next message. Yes/no labels are exactly "' . $sYes . '" and "' . $sNo . '" (site language). Example: [{"type":"reply","label":"' . $sYes . '"},{"type":"reply","label":"' . $sNo . '"}]',
                 required: true,
                 items: new ObjectProperty(
                     name: 'button',
                     properties: [
-                        new ToolProperty('type', PropertyType::STRING, 'reply or link', true),
+                        new ToolProperty('type', PropertyType::STRING, 'reply, link or form', true),
                         new ToolProperty('label', PropertyType::STRING, 'Button text shown to the visitor', true),
                         new ToolProperty('url', PropertyType::STRING, 'Required for link. https URL.', false),
+                        new ToolProperty('form_url', PropertyType::STRING, 'Required for form. Exactly the form_url from a tool result, like "module/method/&params[]=1".', false),
+                        new ToolProperty('message', PropertyType::STRING, 'For form. Sent as the visitor message after the form is saved, in the site language, e.g. "DigitalOcean is connected".', false),
                     ]
                 ),
                 minItems: 1,
