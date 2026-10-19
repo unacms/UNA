@@ -272,7 +272,8 @@ export function blockBgClasses(bg: any, solid?: any) {
     const classes: string[] = [];
     let previous: string | null = null;
     for (const tier of TIER_ORDER) {
-        const value = inTiers(bgTiers, tier) ? (inTiers(solidTiers, tier) ? onSolid : on) : off;
+        let value = off;
+        if (inTiers(bgTiers, tier)) value = inTiers(solidTiers, tier) ? onSolid : on;
         if (value !== previous) {
             classes.push(...tokens(value).map((token) => withPrefix(TIER_PREFIX[tier], token)));
             previous = value;
