@@ -1,0 +1,23 @@
+__tabs__
+<div class="bx-analytics-panel" role="tabpanel" id="bx-analytics-panel-__group__">
+    <div class="bx-analytics-list-head" aria-hidden="true">
+        <span>__column__</span>
+        <span>__visitors__</span>
+    </div>
+    <bx_if:items>
+        <ul class="bx-analytics-rows">
+            <bx_repeat:items>
+                <li class="bx-analytics-row">
+                    <button type="button" class="bx-analytics-row-btn" data-bx-analytics-filter="__dimension__" data-bx-analytics-value="__value__" title="__filter_title__">
+                        <span class="bx-analytics-row-bar" style="width: __bar__%" aria-hidden="true"></span>
+                        <span class="bx-analytics-row-label">__label__</span>
+                        <span class="bx-analytics-row-value">__visitors__ <span class="bx-analytics-row-share">__share__%</span></span>
+                    </button>
+                </li>
+            </bx_repeat:items>
+        </ul>
+    </bx_if:items>
+    <bx_if:empty>
+        <div class="bx-analytics-empty">__empty__</div>
+    </bx_if:empty>
+</div>

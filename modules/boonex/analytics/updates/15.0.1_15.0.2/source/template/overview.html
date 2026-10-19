@@ -1,0 +1,15 @@
+<div class="bx-analytics-kpis" role="group" aria-label="__kpis_label__">
+    <bx_repeat:kpis>
+        <button type="button" class="bx-analytics-kpi" data-bx-analytics-metric="__metric__" aria-pressed="__pressed__">
+            <span class="bx-analytics-kpi-title">__title__</span>
+            <span class="bx-analytics-kpi-figures">
+                <span class="bx-analytics-kpi-value">__value__</span>
+                <span class="bx-analytics-kpi-change bx-analytics-trend-__trend__" title="__change_title__">__change__</span>
+            </span>
+        </button>
+    </bx_repeat:kpis>
+</div>
+<div class="bx-analytics-chart">
+    <canvas role="img" aria-label="__chart_label__"></canvas>
+</div>
+<script type="application/json" class="bx-analytics-chart-data">__chart_json__</script>

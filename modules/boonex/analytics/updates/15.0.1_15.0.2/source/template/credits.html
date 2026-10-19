@@ -1,0 +1,21 @@
+<bx_if:credits>
+    __tiles__
+    <div class="bx-analytics-chart bx-analytics-chart-sm">
+        <canvas role="img" aria-label="__chart_label__"></canvas>
+    </div>
+    <script type="application/json" class="bx-analytics-chart-data">__chart_json__</script>
+    <div class="bx-analytics-columns">
+        <div>
+            <h3 class="bx-analytics-subtitle">__spent_title__</h3>
+            __spent__
+        </div>
+        <div>
+            <h3 class="bx-analytics-subtitle">__spenders_title__</h3>
+            __spenders__
+        </div>
+    </div>
+</bx_if:credits>
+<bx_if:none>
+    <div class="bx-analytics-empty">__empty__</div>
+</bx_if:none>
+__notes__

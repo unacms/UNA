@@ -1,0 +1,43 @@
+<div class="bx-analytics-detail bx-analytics-error">
+    <button type="button" class="bx-analytics-back" data-bx-analytics-open="error" data-bx-analytics-value="">__back__</button>
+    <h3 class="bx-analytics-detail-title bx-analytics-error-title">__title__</h3>
+    <bx_if:actions>
+        <div class="bx-analytics-error-actions" role="group" aria-label="__actions_label__">
+            <bx_repeat:actions>
+                <button type="button" class="bx-analytics-action-btn" data-bx-analytics-action="error_status" data-bx-analytics-op="__action_op__" data-bx-analytics-id="__action_id__" data-bx-analytics-csrf="__action_csrf__">__action_title__</button>
+            </bx_repeat:actions>
+        </div>
+    </bx_if:actions>
+    <div class="bx-analytics-facts">
+        <bx_repeat:facts>
+            <dl class="bx-analytics-fact">
+                <dt>__fact_title__</dt>
+                <dd>__fact_value__</dd>
+            </dl>
+        </bx_repeat:facts>
+    </div>
+    __tiles__
+    <div class="bx-analytics-chart bx-analytics-chart-sm">
+        <canvas role="img" aria-label="__chart_label__"></canvas>
+    </div>
+    <script type="application/json" class="bx-analytics-chart-data">__chart_json__</script>
+    <h3 class="bx-analytics-subtitle">__stack_title__</h3>
+    <bx_if:stack>
+        <pre class="bx-analytics-stack" tabindex="0" role="region" aria-label="__stack_label__">__stack__</pre>
+    </bx_if:stack>
+    <bx_if:no_stack>
+        <div class="bx-analytics-empty">__no_stack__</div>
+    </bx_if:no_stack>
+    <bx_if:breakdowns>
+        <div class="bx-analytics-error-breakdowns">
+            <bx_repeat:breakdowns>
+                <div>
+                    <h3 class="bx-analytics-subtitle">__breakdown_title__</h3>
+                    __breakdown__
+                </div>
+            </bx_repeat:breakdowns>
+        </div>
+    </bx_if:breakdowns>
+    <h3 class="bx-analytics-subtitle">__latest_title__</h3>
+    __latest__
+</div>

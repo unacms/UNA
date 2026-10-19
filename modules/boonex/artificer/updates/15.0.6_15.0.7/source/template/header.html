@@ -1,0 +1,25 @@
+<div id="bx-toolbar" class="bx-header bx-def-z-index-nav bg-white dark:bg-gray-800 shadow-sm">
+    <div class="bx-header-cnt bx-def-page-width mx-auto px-3 md:px-4 lg:px-6 box-border">
+        <div class="bx-toolbar-content-wrapper">
+            <div id="bx-toolbar-content" class="bx-toolbar-content relative flex items-center justify-start h-16">
+                <!-- Logo -->
+                <div id="bx-logo-container" class="bx-toolbar-item bx-ti-left bx-ti-logo flex-none items-center">
+                    <bx_injection:injection_logo_before />
+                    __main_logo__
+                    <bx_injection:injection_logo_after />
+                </div>
+                <!-- Menu -->
+                <div class="bx-toolbar-item bx-ti-menu flex-1 hidden lg:block w-64 ml-6 overflow-hidden">
+                    <div id="bx-menu-toolbar-1-container" class="bx-toolbar-item bx-ti-menu w-full">
+                        <bx_menu:sys_site />
+                    </div>
+                </div>
+                <!-- Search box, opened by the 'search' item of the member toolbar; this cell also keeps the toolbar on the right on phones -->
+                <div class="relative flex-1 lg:flex-none h-16">
+                    __sys_toolbar_search__
+                </div>
+                <bx_menu:sys_toolbar_member />
+            </div>
+        </div>
+    </div>
+</div>
