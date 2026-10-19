@@ -184,6 +184,11 @@
 	-webkit-flex-grow: 3; 
     flex-grow: 3;
 }
+/* In the theme shells <main> starts before the cover and holds #bx-content-wrapper,
+   so it is the flex item now and has to grow for the footer to stay at the bottom. */
+#bx-content-main:has(> #bx-content-wrapper) {
+    flex-grow: 3;
+}
 
 /* --------------- footer */
 

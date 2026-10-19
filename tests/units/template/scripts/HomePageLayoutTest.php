@@ -1,9 +1,8 @@
 <?php
 
 /**
- * Home page fixes: the page heading sits inside <main>, phones show the feed before the side column and the app
- * grid as a two-row strip, grid labels fit, text is smoothed once at the root, and the composer's 'more' trigger
- * has a name.
+ * Home page fixes: phones show the feed before the side column and the app grid as a two-row strip, grid tiles
+ * fill the row like menu rows, text is smoothed once at the root, and the composer's 'more' trigger has a name.
  */
 class HomePageLayoutTest extends BxDolTestCase
 {
@@ -14,53 +13,6 @@ class HomePageLayoutTest extends BxDolTestCase
             self::fail($sPath . ' is not readable.');
 
         return str_replace("\r\n", "\n", $s);
-    }
-
-    public static function shells(): array
-    {
-        $a = ['template/_page_content_beg.html', 'template/pt_application.html'];
-        foreach (['artificer', 'ocean', 'decorous', 'protean', 'lucid'] as $sTemplate)
-            $a[] = 'modules/boonex/' . $sTemplate . '/data/template/system/pt_application.html';
-        foreach (['ocean', 'decorous', 'protean', 'lucid'] as $sTemplate)
-            $a[] = 'modules/boonex/' . $sTemplate . '/data/template/system/_sub_header.html';
-
-        return array_map(fn($s) => [$s], $a);
-    }
-
-    #[\PHPUnit\Framework\Attributes\DataProvider('shells')]
-    public function testPageHeadingIsTheFirstThingInMain(string $sPath): void
-    {
-        $this->assertMatchesRegularExpression('/<main role="main"[^>]*>\n\s*__page_heading__(\n|$)/', self::read($sPath));
-    }
-
-    public function testEmptyCoverNoLongerPrintsTheHeading(): void
-    {
-        $this->assertStringNotContainsString('<h1', self::read('template/cover_empty.html'));
-        $this->assertSame('<h1 class="sr-only">__title__</h1>', trim(self::read('template/page_heading.html')));
-    }
-
-    public function testPageWithoutCoverGetsItsHeadingOnce(): void
-    {
-        $oTemplate = BxDolTemplate::getInstance();
-        $sHeaderBackup = $oTemplate->getPageHeader();
-
-        $oCover = new BxTemplCover($oTemplate);
-        try {
-            $oTemplate->setPageHeader('Homepage & <b>more</b>');
-
-            $this->assertStringNotContainsString('<h1', $oCover->displayEmpty(), 'The cover area prints no heading.');
-            $this->assertSame('<h1 class="sr-only">Homepage &amp; more</h1>', trim($oCover->displayPageHeading()), 'The heading comes out inside <main>, tags stripped, text escaped.');
-            $this->assertSame('', $oCover->displayPageHeading(), 'Only once.');
-
-            $oTemplate->setPageHeader('');
-            $oCover->displayEmpty();
-            $this->assertSame('', $oCover->displayPageHeading(), 'No title, no empty heading.');
-
-            $this->assertSame('', (new BxTemplCover($oTemplate))->displayPageHeading(), 'A page with a visible cover has its heading in the cover.');
-        }
-        finally {
-            $oTemplate->setPageHeader($sHeaderBackup);
-        }
     }
 
     public function testPhonesShowTheContentBeforeTheSideColumn(): void

@@ -72,6 +72,7 @@ import {
 } from 'app/design/controls/neo-button/neo-button-resolver';
 import { NeoButtonExpoUI, getNativeIcon, hostsCustomContent } from 'app/design/controls/neo-button/neo-button-expoui';
 import { selectedColorScheme, useNeoButtonColorScheme } from 'app/design/controls/neo-button/color-scheme-context';
+import { useNeoButtonGroupItem } from 'app/design/controls/neo-button/neo-button-group';
 import type { NeoButtonAddon, NeoButtonClassNames, NeoButtonProps } from 'app/design/controls/neo-button/neo-button.types';
 import { cueAttributes, usePressCueOverride, type PressCue } from 'app/lib/sound';
 
@@ -459,8 +460,10 @@ export const NeoButton = (rawProps: NeoButtonProps) => {
     const props = decodeTextProps(rawProps);
     const native = useNeoButtonExpoUI(props);
     const titleHidden = useTitleHidden(props.showTitleFromSize);
+    // A group segment draws on the group's surface, so it stays JS.
+    const segment = useNeoButtonGroupItem();
 
-    if (native && NeoButtonExpoUI) {
+    if (native && NeoButtonExpoUI && !segment) {
         // `showTitleFromSize` below its breakpoint: the native button turns
         // icon-only and keeps the label as its accessible name.
         const label = props.label ?? props.title;
@@ -558,9 +561,19 @@ const NeoButtonStyled = (props: NeoButtonProps & { titleHidden?: boolean }) => {
         ...rest
     } = props;
 
+    // Inside a NeoButtonGroup: the group's role and tint unless the button sets
+    // its own (style and size come through the group's providers). No press
+    // scale, which would push the segment over its neighbours, and no web glass
+    // layers: the group draws the surface.
+    const segment = useNeoButtonGroupItem();
     const resolved = useResolvedNeoButton({
-        role, style, buttonStyle, controlSize, borderShape, tint, transition,
-        focusRing, pressAnimation, glassEffect,
+        role: role ?? segment?.role,
+        style, buttonStyle, controlSize, borderShape,
+        tint: tint ?? segment?.tint,
+        transition: segment ? false : transition,
+        focusRing,
+        pressAnimation: segment ? false : pressAnimation,
+        glassEffect: segment ? 'standard' : glassEffect,
         image: image ?? systemImage,
         systemImage,
         imagePlacement, align, width, disabled, haptics,
@@ -666,8 +679,16 @@ const NeoButtonStyled = (props: NeoButtonProps & { titleHidden?: boolean }) => {
     // Native applies it to the RN Pressable via this prop; web mirrors it with
     // the `hit-area-*` utility class (see `hitAreaClass` below) — RN has no
     // `::before`, so the two platforms diverge in mechanism but not in value.
-    const resolvedHitSlop = hitSlop !== undefined
-        ? hitSlop
+    // A segment's hit area extends only past the group's outer edges, so no
+    // segment covers its neighbour.
+    const effectiveHitSlop = hitSlop ?? (segment && hitarea !== false ? {
+        top: resolved.hitSlop,
+        bottom: resolved.hitSlop,
+        left: segment.outerStart ? resolved.hitSlop : 0,
+        right: segment.outerEnd ? resolved.hitSlop : 0,
+    } : undefined);
+    const resolvedHitSlop = effectiveHitSlop !== undefined
+        ? effectiveHitSlop
         : (hitarea === false ? undefined : {
             top: resolved.hitSlop, right: resolved.hitSlop,
             bottom: resolved.hitSlop, left: resolved.hitSlop,
@@ -702,23 +723,25 @@ const NeoButtonStyled = (props: NeoButtonProps & { titleHidden?: boolean }) => {
     // `hitSlop` prop (number or per-side insets) uses `hit-area-sides` with
     // `--neo-hit-*` variables.
     const webHitArea = hitarea !== false && isActive && isWeb;
-    const customHit = webHitArea && hitSlop !== undefined;
-    const hitInsets = typeof hitSlop === 'number'
-        ? { top: hitSlop, right: hitSlop, bottom: hitSlop, left: hitSlop }
-        : (hitSlop ?? {});
+    const customHit = webHitArea && effectiveHitSlop !== undefined;
+    const hitInsets = typeof effectiveHitSlop === 'number'
+        ? { top: effectiveHitSlop, right: effectiveHitSlop, bottom: effectiveHitSlop, left: effectiveHitSlop }
+        : (effectiveHitSlop ?? {});
     const hitAreaClass = !webHitArea ? '' : (customHit ? 'hit-area-sides' : (resolved.hitAreaCls ?? ''));
 
     /* ------------------- container / text classes ----------------------- */
 
+    // A segment's corners: the group's radius on its outer edges, square inside.
+    const roundedCls = segment ? segment.roundedCls : resolved.rounded;
     const containerCls = cn(
         'flex-row items-center web:transition-[background-color,box-shadow,opacity] web:duration-200 web:ease-out',
         isInteractive && 'web:cursor-pointer',
-        resolved.rounded,
+        roundedCls,
         (resolved.aspectSquare || pinIconOnlySquare) ? 'aspect-square' : '',
         sizeClass,
         paddingClass,
         `justify-${resolved.align}`,
-        resolved.containerCls(stateKey),
+        segment ? resolved.segmentCls(stateKey) : resolved.containerCls(stateKey),
         // `min-w-0` is for labelled ellipsis. On icon-only it tw-merges away
         // `min-w-*` from the size class and the box collapses to the glyph.
         resolved.width === 'fill'
@@ -739,8 +762,9 @@ const NeoButtonStyled = (props: NeoButtonProps & { titleHidden?: boolean }) => {
     // (and the text inherits the prominent foreground colour, not the tint).
     // Mirrors SwiftUI's simple split: prominent styles use tint as fill;
     // non-prominent styles use tint for the label/image accent.
-    const tintFillsSurface =
-        resolved.tint && (resolved.style === 'borderedProminent' || resolved.style === 'glassProminent');
+    const isProminent = resolved.style === 'borderedProminent' || resolved.style === 'glassProminent';
+    // A segment's fill is the group's (it paints the tint itself).
+    const tintFillsSurface = !segment && resolved.tint && isProminent;
 
     // Only the values that have no utility-class equivalent remain inline:
     // unmapped size/padding fallbacks, asymmetric contentInsets overrides, and
@@ -842,7 +866,7 @@ const NeoButtonStyled = (props: NeoButtonProps & { titleHidden?: boolean }) => {
         // When tint repaints the surface (borderedProminent / glassProminent),
         // the label/image keep the prominent foreground colour from the theme
         // so contrast stays correct on the freshly-tinted background.
-        if (tintFillsSurface) return undefined;
+        if (tintFillsSurface || (segment && isProminent)) return undefined;
         return resolved.tint;
     })();
 
@@ -895,7 +919,7 @@ const NeoButtonStyled = (props: NeoButtonProps & { titleHidden?: boolean }) => {
             ) : (resolved.style !== 'plain' && resolved.style !== 'link') ? (
                 <PressHighlight
                     active={isPressed}
-                    rounded={resolved.rounded}
+                    rounded={roundedCls}
                     color={resolved.highlightBg}
                 />
             ) : null}
@@ -916,7 +940,8 @@ const NeoButtonStyled = (props: NeoButtonProps & { titleHidden?: boolean }) => {
     // wide native screen (isDesktop) would lose the root layout classes.
     const tooltipWraps = isWeb && !!tooltip && isDesktop && !!appSetting('layout', 'tooltips');
     const rootLayoutClass = cn(
-        resolved.width === 'fill'
+        // Segments of a `width="fill"` group share its width.
+        resolved.width === 'fill' || segment?.fill
             ? FILL_WIDTH_CLASS
             : (pinIconOnlySquare ? 'self-start' : 'self-start max-w-full min-w-0'),
         classNames?.root,

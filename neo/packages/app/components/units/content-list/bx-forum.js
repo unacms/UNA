@@ -3,6 +3,10 @@ import { View, Row } from "app/design/view";
 import Menu from "app/components/menu";
 import Time from "app/ui/atoms/time";
 import { Skeleton } from 'app/ui/atoms/skeleton'
+import { Icon } from 'app/ui/atoms/icon'
+import Image from 'app/ui/atoms/image'
+import { isEmoji } from 'app/lib/util'
+import Profile from 'app/ui/molecules/profile/profile'
 import {
     UnitAuthor,
     UnitImage,
@@ -15,6 +19,17 @@ import {
 import { useTranslation } from 'react-i18next'
 
 const Units = {};
+
+// A Studio category icon is an emoji, an icon name, SVG markup or an uploaded image URL.
+function CategoryIcon({ icon }) {
+    if (!icon || typeof icon !== 'string')
+        return null
+    if (/^https?:\/\//.test(icon))
+        return <Image src={icon} alt="" width={16} height={16} contentFit="contain" nobg />
+    if (isEmoji(icon))
+        return <Text className="text-sm leading-none">{icon}</Text>
+    return <Icon icon={icon} size={16} className="text-muted-foreground" />
+}
 
 Units.Search = function Search({ data }) {
     const isSkeleton = data?.skeleton
@@ -92,42 +107,55 @@ Units.Base = function Base({ data }) {
     return (
         <UnitWrapper data={data} as="list" className="flex-row gap-x-3 px-4">
             <View className="flex-none pt-0.5">
-                <Skeleton className="h-10 w-10" rounded="rounded-lg" visible={isSkeleton}>
-                    <View className="h-10 w-10 border border-primary/10 bg-primary/10 rounded-lg items-center justify-center overflow-hidden">
-                        <Text className="text-xl leading-none">
-                            {categoryIcon}
-                        </Text>
-                    </View>
+                <Skeleton className="h-11 w-11" rounded="rounded-full" visible={isSkeleton}>
+                    <Profile {...data.author_data} displayType="unit_wo_info" displaySize="base" emulate />
                 </Skeleton>
             </View>
 
             <View className="gap-y-2 flex-auto min-w-0">
                 <View className="flex-row gap-x-3">
-                    <View className="gap-y-1.5 flex-auto min-w-0">
+                    <View className="gap-y-1 flex-auto min-w-0">
+                        <Skeleton preset="author" visible={isSkeleton}>
+                            <Profile
+                                {...data.author_data}
+                                displayType="unit_wo_image"
+                                displaySize="sm"
+                                showInfo={false}
+                                showInfo2={
+                                    // Shrinks beside the name: a long category name truncates
+                                    // instead of running over the thumbnail.
+                                    <Row className="flex-1 min-w-0 items-center gap-1">
+                                        {postedTs ? (
+                                            <>
+                                                <Text className="flex-none text-sm text-muted-foreground">·</Text>
+                                                <Time
+                                                    stylesName="flex-none text-sm text-muted-foreground"
+                                                    ts={postedTs}
+                                                />
+                                            </>
+                                        ) : null}
+                                        {categoryName ? (
+                                            <>
+                                                <Text className="flex-none text-sm text-muted-foreground">·</Text>
+                                                <Text className="flex-none text-sm text-muted-foreground">{t('in')}</Text>
+                                                <View className="flex-none">
+                                                    <CategoryIcon icon={categoryIcon} />
+                                                </View>
+                                                <Text numberOfLines={1} className="flex-1 min-w-0 text-sm font-semibold text-foreground">
+                                                    {categoryName}
+                                                </Text>
+                                            </>
+                                        ) : null}
+                                    </Row>
+                                }
+                                emulate
+                            />
+                        </Skeleton>
+
                         <UnitTitle
                             title={data.title}
                             skeleton={isSkeleton}
                         />
-
-                        <UnitAuthor authorData={data.author_data} skeleton={isSkeleton} displaySize="sm">
-                            <Row className="items-center gap-1">
-                                {postedTs ? (
-                                    <Time
-                                        stylesName="text-xs text-muted-foreground"
-                                        ts={postedTs}
-                                    />
-                                ) : null}
-                                {categoryName ? (
-                                    <>
-                                        {postedTs ? <Text className="text-xs text-muted-foreground">·</Text> : null}
-                                        <Text className="text-xs text-muted-foreground">{t('in')}</Text>
-                                        <Text numberOfLines={1} className="text-xs font-semibold text-foreground">
-                                            {categoryName}
-                                        </Text>
-                                    </>
-                                ) : null}
-                            </Row>
-                        </UnitAuthor>
 
                         {(data.summary_plain || isSkeleton) ? (
                             <UnitText
@@ -143,7 +171,7 @@ Units.Base = function Base({ data }) {
                         <View
                             className={
                                 (!data.image ? 'hidden sm:block ' : '')
-                                + 'aspect-video flex-none rounded-xl overflow-hidden w-1/4 sm:w-auto sm:h-20'
+                                + 'aspect-square sm:aspect-video self-start flex-none rounded-xl overflow-hidden w-20 sm:w-auto sm:h-20'
                             }
                         >
                             <UnitImage

@@ -210,7 +210,17 @@ export default function PageLayout({ data, blocks, isModal = false, url, pageCla
         }
     }, [])
 
-    const { leftBarBlocks, sideBarBlocks, centerBlocks } = defineCells(blocks, data);
+    const { leftBarBlocks, sideBarBlocks, topBlocks, centerBlocks: cellCenterBlocks } = defineCells(blocks, data);
+
+    // UNA puts some entities' action bars (Discussions) in the top cell, where the
+    // web site draws them above the content. Show them after the text, where Posts
+    // keep theirs. Other top blocks stay off this layout.
+    const topActionBlocks = topBlocks.filter((item) => blockHasContentType(item, data, 'entity_actions'));
+    const textIndex = cellCenterBlocks.findIndex((item) => blockHasContentType(item, data, 'entity_text'));
+    const actionsAt = textIndex < 0 ? 0 : textIndex + 1;
+    const centerBlocks = topActionBlocks.length
+        ? [...cellCenterBlocks.slice(0, actionsAt), ...topActionBlocks, ...cellCenterBlocks.slice(actionsAt)]
+        : cellCenterBlocks;
 
     // Desktop page keeps INFO in the right column. When that column folds
     // (mobile, or the post modal) those blocks used to append after the body.

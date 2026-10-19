@@ -21,17 +21,25 @@ class BxForumModule extends BxBaseModTextModule
         $CNF = $this->_oConfig->CNF;
         
         $aResult = parent::decodeDataApi($aData, $bExtended);
-        
-        $oCategory = BxDolCategory::getObjectInstance($CNF['OBJECT_CATEGORY']);
-        if(!$oCategory)
-            return false;
 
-        $aCategoryData = $this->_oDb->getCategories(['type' => 'by_category', 'category' => $aData[$CNF['FIELD_CATEGORY']]]);
-        if(!empty($aCategoryData) &&is_array($aCategoryData))
-            $aResult['category'] = [
-                'name' => $oCategory->getCategoryTitle($aData[$CNF['FIELD_CATEGORY']]), 
-                'icon' => $aCategoryData['icon']
-            ];
+        $iCategory = (int)($aData[$CNF['FIELD_CATEGORY']] ?? 0);
+        $oCategory = BxDolCategory::getObjectInstance($CNF['OBJECT_CATEGORY']);
+        if(!$iCategory || !$oCategory)
+            return $aResult;
+
+        /*
+         * A category has a row in the categories table only after its icon is set in Studio,
+         * so fall back to the icon the site's meta uses. An uploaded icon is a storage id.
+         */
+        $aCategoryData = $this->_oDb->getCategories(['type' => 'by_category', 'category' => $iCategory]);
+        $sIcon = !empty($aCategoryData['icon']) ? $aCategoryData['icon'] : 'folder';
+        if(is_numeric($sIcon))
+            $sIcon = (string)BxDolStorage::getObjectInstance(BX_DOL_STORAGE_OBJ_IMAGES)->getFileUrlById((int)$sIcon);
+
+        $aResult['category'] = [
+            'name' => $oCategory->getCategoryTitle($iCategory),
+            'icon' => $sIcon
+        ];
 
         return $aResult;
     }
