@@ -28,22 +28,29 @@ ul.bx-menu-btns-icon-hor {
 li.bx-mi-aux {}
 
 /* --- Home page app grid (sys_homepage) ---*/
+/* Tiles share the row: as many 6.5rem columns as fit, stretched to fill it. Empty tracks are kept (auto-fill),
+   so one or two apps don't grow wider than two columns' worth. 6.5rem is wider than a tile is tall, so a tile
+   is never narrower than tall. Like the menu rows, tiles sit 8px from the card's edges with 8px corners
+   (16px card corners less the 8px inset) and no gaps between them. */
+ul.bx-menu-floating-blocks {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(6.5rem, 1fr));
+    margin: -0.5rem;
+}
 /* On phones the grid of every app took a whole screen and more before the feed. There it is two rows that
    scroll sideways; the next column peeks past the edge to show there is more. */
 @media (max-width: 767.98px) {
     ul.bx-menu-floating-blocks {
-        display: grid;
         grid-auto-flow: column;
+        grid-template-columns: none;
         grid-template-rows: repeat(2, auto);
-        grid-auto-columns: 6rem;
-        justify-content: start;
+        grid-auto-columns: 6.5rem;
         overflow-x: auto;
         overscroll-behavior-x: contain;
         scroll-snap-type: x proximity;
         scrollbar-width: none;
     }
     ul.bx-menu-floating-blocks > li {
-        margin: 0.25rem 0;
         scroll-snap-align: start;
     }
 }
