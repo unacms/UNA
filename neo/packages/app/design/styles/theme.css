@@ -144,6 +144,8 @@
     --shadow-input-outline-deep: var(--neo-shadow-input-outline-deep);
     --shadow-btn-outline: var(--neo-shadow-btn-outline);
     --shadow-btn-outline-deep: var(--neo-shadow-btn-outline-deep);
+    --shadow-btn-ring: var(--neo-shadow-btn-ring);
+    --shadow-btn-ring-deep: var(--neo-shadow-btn-ring-deep);
     --shadow-btn-glass: var(--neo-shadow-btn-glass);
     --shadow-btn-glass-deep: var(--neo-shadow-btn-glass-deep);
     --shadow-btn-glass-pressed: var(--neo-shadow-btn-glass-pressed);
@@ -194,6 +196,10 @@
        
         --neo-shadow-btn-outline:        inset 0 0 0 1px rgb(0 0 0 / 0.04), inset 0 0 0 2px rgb(255 255 255 / 0.5), 0 1px 3px -1px rgb(0 0 0 / 0.05);
         --neo-shadow-btn-outline-deep:   inset 0 0 0 1px rgb(255 255 255 / 0.025), 0 4px 12px -4px rgb(0 0 0 / 0.5);
+
+        /* `outline` buttons and groups: a 1px ring outside the box, so it adds no size and segment fills can't cover it. */
+        --neo-shadow-btn-ring:           0 0 0 1px rgb(0 0 0 / 0.12), 0 1px 2px -1px rgb(0 0 0 / 0.06);
+        --neo-shadow-btn-ring-deep:      0 0 0 1px rgb(255 255 255 / 0.14);
        
         --neo-shadow-btn-glass:                        inset 0 0 0 1px rgb(255 255 255 / 0.50), inset 0 1px 0 0 rgb(255 255 255 / 0.50), 0 0 0 1px rgb(0 0 0 / 0.05), 0 2px 8px -2px rgb(0 0 0 / 0.05), 0 4px 16px -4px rgb(0 0 0 / 0.05);
         --neo-shadow-btn-glass-deep:                   inset 0 0 0 1px rgb(255 255 255 / 0.05), inset 0 1px 0 0 rgb(255 255 255 / 0.10), 0 0 0 1px rgb(0 0 0 / 0.2), 0 2px 8px -2px rgb(0 0 0 / 0.2), 0 4px 16px -4px rgb(0 0 0 / 0.2);

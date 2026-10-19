@@ -367,6 +367,10 @@ const STYLES_WITHOUT_HOVER = new Set(['plain']);
 
 const GLASS_STYLES = new Set(['glass', 'glassProminent']);
 
+// Styles with no native (Expo UI) rendering: `outline` is a shadow ring that
+// SwiftUI and Compose button styles don't draw.
+const JS_ONLY_STYLES = new Set(['outline']);
+
 const SWIFTUI_CONTROL_SIZE: Record<string, string> = {
     mini: 'mini',
     small: 'small',
@@ -417,7 +421,7 @@ function resolveSlot(slotMap: Record<string, any> | undefined, state: string, ct
  * `automatic`, etc.), we fall back to `bordered` so the button still
  * renders something usable instead of going completely unstyled.
  */
-function normalizeStyleProp(value: unknown): string | undefined {
+export function normalizeStyleProp(value: unknown): string | undefined {
     // React Native `Link`/`Pressable` also use a `style` prop (object/array).
     // When `NeoButtonLink` is rendered with `asChild`, that layout `style` can
     // overwrite the SwiftUI-style string — ignore non-strings here.
@@ -457,20 +461,18 @@ export function useNeoButtonExpoUI(props: NeoButtonProps = {}) {
 
     const allowedStyles = resolveScoped(config.styles, ctx);
     if (allowedStyles === false) return null;
-    if (Array.isArray(allowedStyles)) {
-        const defaults = tree?.defaults || {};
-        const stylesTree = tree?.styles || {};
-        const role = props.role ?? defaults.role ?? 'default';
-        const roleConfig = (tree?.roles || {})[role] || {};
-        const style = resolveStyle({
-            propStyle: normalizeStyleProp(props.buttonStyle) ?? normalizeStyleProp(props.style),
-            providerStyle,
-            defaultsStyle: defaults.style,
-            roleConfig,
-            stylesTree,
-        });
-        if (!allowedStyles.includes(style)) return null;
-    }
+    const defaults = tree?.defaults || {};
+    const role = props.role ?? defaults.role ?? 'default';
+    const style = resolveStyle({
+        propStyle: normalizeStyleProp(props.buttonStyle) ?? normalizeStyleProp(props.style),
+        providerStyle,
+        defaultsStyle: defaults.style,
+        roleConfig: (tree?.roles || {})[role] || {},
+        stylesTree: tree?.styles || {},
+    });
+    // No SwiftUI / Compose equivalent: these keep the JS surface.
+    if (JS_ONLY_STYLES.has(style)) return null;
+    if (Array.isArray(allowedStyles) && !allowedStyles.includes(style)) return null;
 
     return { platform, config };
 }
@@ -579,10 +581,19 @@ export function useResolvedNeoButton(props: NeoButtonProps = {}) {
         const containerSlot = styleDef.container || {};
         const textSlot = styleDef.text || {};
         const containerCls = (state: string) => resolveSlot(containerSlot, state, ctx);
+        // A button inside a NeoButtonGroup: the group paints the resting
+        // surface, so the segment only takes the style's state washes.
+        const segmentSlot = tree?.group?.styles?.[style]?.segment;
+        const segmentCls = (state: string) => segmentSlot ? resolveSlot(segmentSlot, state, ctx) : containerCls(state);
         const textCls = (state: string) => {
             const base = resolveSlot(textSlot, state, ctx);
-            // Role text override (string or per-style object).
-            let roleText = resolveScoped(roleConfig.textClass, ctx);
+            // Role text override (string or per-style object). The per-style
+            // key goes first: `default` is also a scope key, so resolveScoped
+            // would return it for every style.
+            const roleTextCfg = roleConfig.textClass;
+            let roleText = isPlainObject(roleTextCfg) && roleTextCfg[style] !== undefined
+                ? resolveScoped(roleTextCfg[style], ctx)
+                : resolveScoped(roleTextCfg, ctx);
             if (isPlainObject(roleText)) roleText = roleText[style] ?? roleText.default;
             return [base, roleText].filter(Boolean).join(' ');
         };
@@ -646,7 +657,7 @@ export function useResolvedNeoButton(props: NeoButtonProps = {}) {
             height, paddingX, fontCls, iconSize, hitSlop, labelGap, contentInsets, rounded, aspectSquare, iconOnlyPadded,
             heightCls, paddingXCls, labelGapCls, hitAreaCls,
             // Slot resolvers (call with current state)
-            containerCls, textCls,
+            containerCls, segmentCls, textCls,
             // Behaviour
             transition, behaviors, haptics, glassFx,
             // Visuals

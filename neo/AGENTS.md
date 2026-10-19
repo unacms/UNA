@@ -212,9 +212,10 @@ Text uses two roles, `font-main` (the default in `design/typography.tsx`) and `f
 
 Use `NeoButton`, `NeoButtonLink` or `NeoButtonRef` from `app/design/controls`. The legacy `Button`, `ButtonRef` and `ButtonLink` are deprecated.
 
-- Axes: `style` (`plain`, `bordered`, `borderedProminent`, `borderless`, `link`, `glass`, `glassProminent`), `role` (`default`, `cancel`, `close`, `confirm`, `destructive`), `controlSize` (`mini`, `small`, `regular`, `large`, `xlarge`), `borderShape` and `tint`.
+- Axes: `style` (`plain`, `bordered`, `borderedProminent`, `borderless`, `outline`, `link`, `glass`, `glassProminent`), `role` (`default`, `cancel`, `close`, `confirm`, `destructive`), `controlSize` (`mini`, `small`, `regular`, `large`, `xlarge`), `borderShape` and `tint`.
 - Code lives in `design/controls/neo-button/`: props in `neo-button.types.ts`, scope and style precedence in `neo-button-resolver.tsx`, the legacy variant mapping in `control-scale.ts`. The theme is `neo_button` in `settings/theme/buttons.js`.
 - On iOS and Android, `native.expo_ui_buttons` (`settings/configs.js`) renders buttons with native Expo UI (SwiftUI / Compose) views; the `expoUI` prop controls it per button.
+- `NeoButtonGroup` joins buttons into one control with the same `style`, `controlSize`, `borderShape`, `role` / `tint` and `width` axes. The group paints the style's surface once (no border: outline and glass are shadow rings); each NeoButton inside becomes a segment through context, with the group's style and size, only the state washes, square inner corners and no hit area over its neighbours. Segments always use the JS surface; a `glass` group on iOS 26+ draws native liquid glass behind them. Recipes are `neo_button.group` in `settings/theme/buttons.js`. Object menus (reactions, likes, scores) build theirs through `ButtonsGroupMenu`, which uses `group.defaultStyle`.
 - `/pg` is a playground for every axis (`apps/next/app/pg/page.js`, `apps/expo/app/pg/`). It isn't gated, so production builds serve it too.
 
 ### Interface sounds
