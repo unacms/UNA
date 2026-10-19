@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="ru" flag="ru" title="Russian">
+	<string_add name="_bx_messenger_nav_menu_item_title_favorites"><![CDATA[Избранные чаты]]></string_add>
+
+	<string_upd name="_bx_messenger_nav_menu_item_title_saved"><![CDATA[Сохраненные сообщения]]></string_upd>
+</resources>
