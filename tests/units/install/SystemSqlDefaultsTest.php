@@ -15,25 +15,25 @@ class SystemSqlDefaultsTest extends \PHPUnit\Framework\TestCase
         return $sSql;
     }
 
-    public function testHomeCreatePostBlockIsContentOnly(): void
+    public function testHomeCreatePostBlockIsACardWithTitle(): void
     {
         // The home page's create-post block: designbox_id follows object, cell, module, title_system and title.
         $bFound = preg_match("/\\('sys_home', \\d+, 'system', '_sys_page_block_title_sys_create_post', '_sys_page_block_title_create_post', (\\d+),/", self::systemSql(), $aMatch);
 
         $this->assertSame(1, $bFound, 'system.sql adds the create-post block to the home page.');
-        $this->assertSame(0, (int)$aMatch[1], 'It shows only its form: the content-only design box (BX_DB_CONTENT_ONLY).');
+        $this->assertSame(11, (int)$aMatch[1], 'On the site it is the "Add new..." card: content, title, background and padding (BX_DB_PADDING_DEF).');
     }
 
-    public function testHomeCreatePostBlockHasBackgroundInApp(): void
+    public function testHomeCreatePostBlockInAppHasNoTitleAndASolidPhoneBackground(): void
     {
-        // NEO draws the composer row straight in the block, so the block's App config gives it a background
-        // and padding there. The title is left to the design box (none with the content-only one).
+        // NEO draws the composer row straight in the block. Its App config keeps the background and padding,
+        // drops the design box's title, and makes the background opaque on phones, where the feed's cards are.
         $sSql = file_get_contents(__DIR__ . '/../../../modules/system/install/sql/enable-app-pages.sql');
         $bFound = preg_match("/UPDATE `sys_pages_blocks` SET `config_api`='([^']*)' WHERE `object`='sys_home' AND `module`='system' AND `title_system`='_sys_page_block_title_sys_create_post';/", (string)$sSql, $aMatch);
 
         $this->assertSame(1, $bFound, 'enable-app-pages.sql sets the App config of the home create-post block.');
         $aConfig = json_decode($aMatch[1], true);
-        $this->assertSame(['bg' => true, 'padding' => true], $aConfig['designbox'] ?? null, 'Background and padding on every tier, title from the design box.');
+        $this->assertSame(['bg' => true, 'padding' => true, 'title' => false, 'solid' => ['mobile']], $aConfig['designbox'] ?? null);
     }
 
     public function testPoweredByBadgeFollowsTheFooterColour(): void

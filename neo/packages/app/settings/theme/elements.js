@@ -125,6 +125,8 @@ export const settingsElements = {
             ' text-card-foreground gap-4 ',
         'u-block-bg':
             ' bg-card/60 shadow-block-outline dark:shadow-block-outline-deep ',
+        // The fill on tiers in a block's `designbox.solid` (replaces u-block-bg's bg- utility).
+        'u-block-bg-solid': 'bg-card',
         'u-block-pad':
             ' p-4 ',
         'u-block-pad-y':

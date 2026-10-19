@@ -37,7 +37,8 @@ const PLATFORMS = {
         extraSuffixes: ['.ios', '.android'],
         dirs: ['packages/app', 'apps/expo/app'],
         ambient: ['apps/expo'],
-        compilerOptions: { strict: true },
+        // Node tests import their module as `./name.ts` (Node runs them without a build), as apps/next allows.
+        compilerOptions: { strict: true, allowImportingTsExtensions: true },
     },
 };
 
