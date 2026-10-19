@@ -36,8 +36,19 @@ class ArtificerMenuRowsTest extends \PHPUnit\Framework\TestCase
     public function testPopupMenuRowsAreRoundedNotSquare(): void
     {
         $sCss = self::read('template/css/tailwind.css');
-        $this->assertStringContainsString('.bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"])', $sCss, 'One rule styles every vertical menu in a popup.');
-        $this->assertMatchesRegularExpression('/min-height: 2\.75rem;/', $sCss, 'Rows are 44px.');
+
+        // Only the popup section, so the side menus' rule (with the same height) can't satisfy these checks.
+        $iStart = strpos($sCss, 'Menus in popups (More');
+        $iEnd = strpos($sCss, '/* Side menus (profile stats');
+        $this->assertNotFalse($iStart, 'tailwind.css has the popup menu rows section.');
+        $this->assertNotFalse($iEnd, 'tailwind.css has the side menu rows section after it.');
+        $sPopup = substr($sCss, $iStart, $iEnd - $iStart);
+
+        $this->assertStringContainsString('.bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"])', $sPopup, 'One rule styles every vertical menu in a popup.');
+        $this->assertStringContainsString(':not(.bx-menu-floating-blocks-wide)', $sPopup, 'The account panel pads its own rows, so links there get no second padding.');
+        $this->assertMatchesRegularExpression('/min-height: 2\.75rem;/', $sPopup, 'Popup rows are 44px.');
+        $this->assertMatchesRegularExpression('/border-radius: 0\.5rem;/', $sPopup, 'Popup rows have 8px corners.');
+        $this->assertMatchesRegularExpression('/padding-inline-start: 0\.75rem;/', $sPopup, '12px on the icon side.');
 
         $sMenuCss = self::read('modules/boonex/artificer/data/template/system/css/menu.css');
         $this->assertDoesNotMatchRegularExpression('/more-auto \.bx-popup \.bx-menu-custom \.bx-menu-item[^{]*\{\s*border-radius: 0;/', $sMenuCss, 'No legacy rule squares the More rows again.');

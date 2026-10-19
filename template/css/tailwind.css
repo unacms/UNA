@@ -1377,32 +1377,33 @@
      * Menus in popups (More, add content, item menus, language and design switchers) all take the header More list's
      * look: 44px rows like the header tabs, 12px on the icon side and 16px on the other, 8px corners, 16px medium labels,
      * no gaps. The list is inset 8px, so each row's 8px corner sits inside the popup's 16px one. Horizontal menus
-     * (share icons and the like) keep their own layout. The rows are matched by structure and styled in plain CSS:
+     * (share icons and the like) keep their own layout, and the account panel's list pads its own rows (its template).
+     * The rows are matched by structure and styled in plain CSS:
      * naming the bx-stl-mil* classes here would make Tailwind's @apply of them circular.
      */
-    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor) {
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) {
         padding-left: 0.5rem;
         padding-right: 0.5rem;
     }
     /* The indent wrapper already gives these popups 8px above and below the list. */
-    .bx-artificer .bx-popup .bx-popup-content-indent ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor) {
+    .bx-artificer .bx-popup .bx-popup-content-indent ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) {
         margin-top: 0;
         margin-bottom: 0;
     }
-    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor) > li,
-    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor) > li > a,
-    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor) > li > span > a,
-    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor) > li .sys-action-element-holder > a {
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) > li,
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) > li > a,
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) > li > span > a,
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) > li .sys-action-element-holder > a {
         border-radius: 0.5rem;
         font-size: 1rem;
         line-height: 1.5rem;
     }
-    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor) > li {
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) > li {
         border-width: 0;
     }
-    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor) > li > a,
-    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor) > li > span > a,
-    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor) > li .sys-action-element-holder > a {
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) > li > a,
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) > li > span > a,
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor):not(.bx-menu-floating-blocks-wide) > li .sys-action-element-holder > a {
         display: flex;
         align-items: center;
         width: 100%;
