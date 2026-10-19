@@ -534,7 +534,7 @@ class BxDolAiChatUi
     protected function sanitizeChatActionMessage($mixed)
     {
         $s = trim(strip_tags((string)$mixed));
-        return function_exists('mb_substr') ? mb_substr($s, 0, 200) : substr($s, 0, 200);
+        return get_mb_substr($s, 0, 200);
     }
 
     protected function isAllowedChatActionUrl($sUrl)

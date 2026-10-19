@@ -2,9 +2,10 @@
 
 import { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { View } from 'app/design/view';
+import { Text } from 'app/design/typography';
 import { NeoButton, NeoButtonLink, Modal } from 'app/design/controls';
 import { fetcher } from 'app/lib/fetcher';
-import { t } from 'app/lib/i18n';
+import { useTranslation } from 'react-i18next';
 
 // A link the chat waits for (e.g. OAuth in another tab): poll every 3 s, give up after 10 min.
 const WATCH_INTERVAL = 3000;
@@ -48,7 +49,8 @@ type Watch = { checkUrl: string; message?: string; until: number };
  * A link with `checkUrl` opens as usual, then the chat polls `/api.php?r={checkUrl}`
  * and sends the link `message` itself once it answers `done`.
  */
-function ChatActionsImpl({ actions, onReply, repliesEnabled, chosenReply = '' }: ChatActionsProps) {
+function ChatActionsImpl({ actions, onReply, repliesEnabled, chosenReply = '' }: Readonly<ChatActionsProps>) {
+    const { t } = useTranslation();
     const [pending, setPending] = useState('');
     const [form, setForm] = useState<OpenForm | null>(null);
     const [opening, setOpening] = useState(false);
@@ -89,7 +91,7 @@ function ChatActionsImpl({ actions, onReply, repliesEnabled, chosenReply = '' }:
         } finally {
             setOpening(false);
         }
-    }, []);
+    }, [t]);
 
     const closeForm = useCallback(() => setForm(null), []);
 
@@ -201,7 +203,7 @@ function ChatActionsImpl({ actions, onReply, repliesEnabled, chosenReply = '' }:
                     />
                 );
             })}
-            {!!formError && <View className="w-full text-red-500 text-sm">{formError}</View>}
+            {!!formError && <Text className="w-full text-destructive text-sm">{formError}</Text>}
             {form && (
                 <Modal scrollable={true} title={form.block.title} onVisible={true} onClose={closeForm}>
                     <form.Block block={form.block} onFormEmpty={completeForm} />
