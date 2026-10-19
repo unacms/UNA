@@ -52,8 +52,10 @@ export const settingsExpoUi = {
                     tintedContainerColor: 'bg-accent',
                     tintedContentColor: 'text-accent-foreground',
                 },
+                // Opaque: the elevated button's shadow sits under the container
+                // and would show through the translucent `bg-button` ink.
                 elevated: {
-                    containerColor: 'bg-button',
+                    containerColor: 'bg-button-solid',
                     contentColor: 'text-button-foreground',
                     tintedContainerColor: 'bg-accent',
                     tintedContentColor: 'text-accent-foreground',

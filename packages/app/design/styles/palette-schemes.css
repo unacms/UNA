@@ -26,6 +26,14 @@
     --destructive-foreground: var(--white);
     --border: var(--neutral-300);
     --input: var(--white);
+    /*
+     * The ink of the neutral fills (`bg-bubble`, `bg-button`, `bg-button-hover`
+     * in theme.css): this colour at an alpha, so fills stack instead of
+     * blending (a button on a comment bubble on a card is a step darker than
+     * each layer below). A fork's palette tints it through --neutral-950.
+     */
+    --ink: var(--neutral-950);
+    /* Opaque fill for shadowed native buttons (`bg-button-solid`); bg-button is the ink. */
     --button: var(--neutral-200);
     --button-foreground: var(--neutral-800);
     --button-hover: var(--neutral-300);
@@ -77,6 +85,9 @@
     --destructive-foreground: var(--neutral-950);
     --border: var(--neutral-800);
     --input: var(--neutral-900);
+    /* Near-white ink in dark mode (see the light scheme). */
+    --ink: var(--neutral-50);
+    /* Opaque fill for shadowed native buttons (`bg-button-solid`); bg-button is the ink. */
     --button: var(--neutral-800);
     --button-foreground: var(--neutral-200);
     --button-hover: var(--neutral-700);
