@@ -4,51 +4,72 @@ import { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { View } from 'app/design/view';
 import { NeoButton, NeoButtonLink, Modal } from 'app/design/controls';
 import { fetcher } from 'app/lib/fetcher';
+import { t } from 'app/lib/i18n';
 
 // A link the chat waits for (e.g. OAuth in another tab): poll every 3 s, give up after 10 min.
 const WATCH_INTERVAL = 3000;
 const WATCH_TIMEOUT = 10 * 60 * 1000;
+
+export type ChatAction = {
+    type: 'reply' | 'link' | 'form';
+    label: string;
+    message?: string;
+    url?: string;
+    checkUrl?: string;
+    formUrl?: string;
+};
+
+type ChatActionsProps = {
+    actions: ChatAction[];
+    onReply?: (message: string) => Promise<boolean> | boolean;
+    repliesEnabled: boolean;
+    chosenReply?: string;
+};
+
+type OpenForm = {
+    Block: any;
+    block: { content: any; designbox_id: number; title: string };
+    message?: string;
+};
+
+type Watch = { checkUrl: string; message?: string; until: number };
 
 /**
  * The quick-reply / link / form buttons an assistant message can carry.
  *
  * Selection has one authority: `chosenReply`, derived by the parent from the user
  * message that actually followed this bubble. `pending` is only an optimistic bridge
- * covering the round-trip, and it is cleared as soon as the transcript confirms the
- * choice or the send reports failure — so a failed send can no longer leave a button
- * highlighted as if it had been answered.
+ * covering the round-trip, cleared once the transcript confirms the choice or the
+ * send reports failure.
  *
- * A form button opens the site form (`/api.php?r={formUrl}`) in a popup over the chat,
- * like the deploy block does; once the form is saved the popup closes and the action
- * `message` is sent as the user's answer, so the agent goes on by itself.
+ * A form button opens the site form (`/api.php?r={formUrl}`) in a popup over the chat;
+ * once the form is saved the popup closes and the action `message` is sent.
  *
- * A link with `checkUrl` (e.g. "Add using OAuth") opens as usual, then the chat polls
- * `/api.php?r={checkUrl}` and sends the link `message` itself once it answers `done`,
- * so the user does not have to come back and press "Done".
+ * A link with `checkUrl` opens as usual, then the chat polls `/api.php?r={checkUrl}`
+ * and sends the link `message` itself once it answers `done`.
  */
-function ChatActionsImpl({ actions, onReply, repliesEnabled, chosenReply = '' }) {
+function ChatActionsImpl({ actions, onReply, repliesEnabled, chosenReply = '' }: ChatActionsProps) {
     const [pending, setPending] = useState('');
-    const [form, setForm] = useState(null);
+    const [form, setForm] = useState<OpenForm | null>(null);
     const [opening, setOpening] = useState(false);
-    // Several buttons may send the same answer ("… is connected" by OAuth or by the form):
-    // only the pressed one reads as chosen, after a reload the first one.
-    const [pressedIndex, setPressedIndex] = useState(null);
+    const [formError, setFormError] = useState('');
+    // Several buttons may send the same answer: only the pressed one reads as chosen.
+    const [pressedIndex, setPressedIndex] = useState<number | null>(null);
     const selected = chosenReply || pending;
 
     useEffect(() => {
-        // The transcript now records the answer; the optimistic copy has no job left.
         if (chosenReply) setPending('');
     }, [chosenReply]);
 
-    const press = useCallback(async (message) => {
+    const press = useCallback(async (message: string) => {
         setPending(message);
-        // onReply resolves false when the message never made it into the transcript.
         const sent = await onReply?.(message);
         if (!sent) setPending('');
     }, [onReply]);
 
-    const openForm = useCallback(async (action) => {
+    const openForm = useCallback(async (action: ChatAction) => {
         setOpening(true);
+        setFormError('');
         try {
             // Loaded on demand: the block renderer imports the component registry,
             // which in turn imports this chat.
@@ -56,11 +77,15 @@ function ChatActionsImpl({ actions, onReply, repliesEnabled, chosenReply = '' })
                 import('app/components/block'),
                 fetcher(`/api.php?r=${action.formUrl}`),
             ]);
+            if (!response?.data) throw new Error('empty form');
             setForm({
                 Block: BlockByDataInt,
-                block: { content: response?.data, designbox_id: 0, title: action.label },
+                block: { content: response.data, designbox_id: 0, title: action.label },
                 message: action.message,
             });
+        } catch {
+            // The button stays enabled, so pressing it again retries.
+            setFormError(t('Something went wrong'));
         } finally {
             setOpening(false);
         }
@@ -76,33 +101,40 @@ function ChatActionsImpl({ actions, onReply, repliesEnabled, chosenReply = '' })
         repliesEnabledRef.current = repliesEnabled;
     }, [press, repliesEnabled]);
 
-    const [watch, setWatch] = useState(null);
+    const [watch, setWatch] = useState<Watch | null>(null);
 
     useEffect(() => {
         if (!watch) return undefined;
 
+        // Chained timeouts instead of an interval: the next check starts only after
+        // the previous one answered, so slow responses never overlap.
         let stopped = false;
-        const id = setInterval(async () => {
+        let timer: ReturnType<typeof setTimeout> | undefined;
+        const check = async () => {
             if (stopped) return;
             if (Date.now() > watch.until) {
-                stopped = true;
                 setWatch(null);
                 return;
             }
             try {
                 const response = await fetcher(`/api.php?r=${watch.checkUrl}`);
-                if (stopped || !response?.data?.done) return;
-                stopped = true;
-                setWatch(null);
-                if (repliesEnabledRef.current) void pressRef.current(watch.message);
+                if (stopped) return;
+                if (response?.data?.done) {
+                    stopped = true;
+                    setWatch(null);
+                    if (watch.message && repliesEnabledRef.current) void pressRef.current(watch.message);
+                    return;
+                }
             } catch {
                 // Network hiccup: keep waiting until the timeout.
             }
-        }, WATCH_INTERVAL);
+            if (!stopped) timer = setTimeout(check, WATCH_INTERVAL);
+        };
+        timer = setTimeout(check, WATCH_INTERVAL);
 
         return () => {
             stopped = true;
-            clearInterval(id);
+            if (timer) clearTimeout(timer);
         };
     }, [watch]);
 
@@ -121,13 +153,9 @@ function ChatActionsImpl({ actions, onReply, repliesEnabled, chosenReply = '' })
     return (
         <View className="flex-row flex-wrap gap-2 mt-2 max-w-full">
             {actions.map((action, index) => {
-                const isLink = action.type === 'link';
-                const isForm = action.type === 'form';
-                // Plain links carry no message; a waited-for link does, and reads as answered once sent.
                 const isSelected = !!action.message && action.message === selected
                     && (pressedIndex !== null && actions[pressedIndex]?.message === selected ? pressedIndex === index : firstSelectedIndex === index);
-                // Index is part of the key because an agent may legitimately repeat a
-                // label within one message ("Other", "Other").
+                // Index is part of the key: an agent may repeat a label ("Other", "Other").
                 const key = `${action.type}:${action.label}:${index}`;
                 const buttonProps = {
                     label: action.label,
@@ -135,21 +163,17 @@ function ChatActionsImpl({ actions, onReply, repliesEnabled, chosenReply = '' })
                     controlSize: 'small',
                     borderShape: 'rounded',
                 };
-                if (isLink) {
-                    // Target vetting happens in messageActions(); NeoButtonLink routes
-                    // internal hrefs through the SPA router and external ones to the
-                    // in-app browser.
-                    const startWatch = action.checkUrl
+                if (action.type === 'link') {
+                    const checkUrl = action.checkUrl;
+                    const startWatch = checkUrl
                         ? () => {
                             setPressedIndex(index);
-                            setWatch({ checkUrl: action.checkUrl, message: action.message, until: Date.now() + WATCH_TIMEOUT });
+                            setWatch({ checkUrl, message: action.message, until: Date.now() + WATCH_TIMEOUT });
                         }
                         : undefined;
                     return <NeoButtonLink key={key} {...buttonProps} href={action.url} target="_blank" onPress={startWatch} />;
                 }
-                if (isForm) {
-                    // Like a link, a form stays usable after the turn is over; only the
-                    // answer it sends on save needs the turn to be open.
+                if (action.type === 'form') {
                     return (
                         <NeoButton
                             key={key}
@@ -168,17 +192,16 @@ function ChatActionsImpl({ actions, onReply, repliesEnabled, chosenReply = '' })
                         key={key}
                         {...buttonProps}
                         selected={isSelected}
-                        // The answered option stays enabled so it keeps reading as the
-                        // choice that was made; the alternatives lock once the turn is over.
                         disabled={!isSelected && !repliesEnabled}
                         onPress={() => {
-                            if (!repliesEnabled || isSelected) return;
+                            if (!repliesEnabled || isSelected || !action.message) return;
                             setPressedIndex(index);
                             void press(action.message);
                         }}
                     />
                 );
             })}
+            {!!formError && <View className="w-full text-red-500 text-sm">{formError}</View>}
             {form && (
                 <Modal scrollable={true} title={form.block.title} onVisible={true} onClose={closeForm}>
                     <form.Block block={form.block} onFormEmpty={completeForm} />
