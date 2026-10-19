@@ -8,6 +8,7 @@ export type NeoButtonStyle =
     | 'bordered'
     | 'borderedProminent'
     | 'borderless'
+    | 'outline'
     | 'link'
     | 'glass'
     | 'glassProminent'

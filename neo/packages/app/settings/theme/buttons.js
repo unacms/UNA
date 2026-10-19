@@ -345,12 +345,115 @@ export const settingsButtons = {
             circle:    { rounded: 'rounded-full', aspectSquare: true },
         },
 
-        // Segmented group (`NeoButtonGroup`, `ButtonsGroupMenu`). Rounding comes
-        // from the group's controlSize (`roundedRectangle`). No `overflow-hidden`:
-        // it would clip the segments' focus rings.
+        // Button group (`NeoButtonGroup`, `ButtonsGroupMenu`). The group takes
+        // the same `style` as a button and paints that style's resting surface
+        // once: a fill, or a shadow ring for outline and glass, never a border,
+        // so the group is exactly as tall as its buttons. Each button inside is
+        // a segment: no surface of its own, only the state washes below, square
+        // inner corners and the group's outer corners (same radius: there is
+        // no padding between them). No `overflow-hidden`: it would clip the
+        // segments' focus rings.
         group: {
-            container: 'flex-row items-stretch border border-border',
-            separator: 'w-px self-stretch bg-border/60',
+            // When neither the group nor a parent `NeoButtonStyleProvider` sets one.
+            defaultStyle: 'bordered',
+            // Short centred divider between segments, by controlSize (static literals).
+            separatorHeight: { mini: 'h-3', small: 'h-4', regular: 'h-5', large: 'h-6', xlarge: 'h-7' },
+            styles: {
+                plain: {
+                    container: '',
+                    separator: 'bg-foreground/10',
+                    segment: { default: '', disabled: 'opacity-50' },
+                },
+                bordered: {
+                    container: 'bg-button',
+                    separator: 'bg-foreground/10',
+                    segment: {
+                        default: '',
+                        hovered: 'bg-button-hover',
+                        focused: 'bg-button-hover',
+                        pressed: 'bg-button-hover',
+                        active: 'bg-button-hover',
+                        pressedToggle: 'bg-accent',
+                        voted: 'bg-accent/60',
+                        disabled: 'opacity-50',
+                    },
+                },
+                outline: {
+                    container: 'shadow-btn-ring dark:shadow-btn-ring-deep',
+                    separator: 'bg-foreground/10',
+                    segment: {
+                        default: '',
+                        hovered: 'bg-muted/50',
+                        focused: 'bg-muted/50',
+                        pressed: 'bg-muted',
+                        active: 'bg-muted/50',
+                        pressedToggle: 'bg-accent',
+                        voted: 'bg-accent/60',
+                        disabled: 'opacity-50',
+                    },
+                },
+                borderless: {
+                    container: '',
+                    separator: 'bg-foreground/10',
+                    segment: {
+                        default: '',
+                        hovered: 'bg-muted/50',
+                        focused: 'bg-muted/50',
+                        pressed: 'bg-accent/80',
+                        active: 'bg-muted/50',
+                        pressedToggle: 'bg-muted',
+                        voted: 'bg-accent/60',
+                        disabled: 'opacity-50',
+                    },
+                },
+                // Prominent fills (primary, or a role / `tint` colour): states
+                // darken the fill, so they work on any tint.
+                borderedProminent: {
+                    container: 'bg-primary',
+                    separator: 'bg-primary-foreground/30',
+                    segment: {
+                        default: '',
+                        hovered: 'bg-black/10',
+                        focused: 'bg-black/10',
+                        pressed: 'bg-black/15',
+                        active: 'bg-black/10',
+                        pressedToggle: 'bg-black/20',
+                        voted: 'bg-black/15',
+                        disabled: 'opacity-50',
+                    },
+                },
+                // iOS 26 draws real liquid glass behind the segments instead
+                // (`liquidContainer` replaces `container` there).
+                glass: {
+                    container: 'web:backdrop-blur-md bg-popover/50 shadow-btn-glass dark:shadow-btn-glass-deep',
+                    liquidContainer: '',
+                    separator: 'bg-foreground/10',
+                    segment: {
+                        default: '',
+                        hovered: 'bg-foreground/5',
+                        focused: 'bg-foreground/5',
+                        pressed: 'bg-foreground/10',
+                        active: 'bg-foreground/5',
+                        pressedToggle: 'bg-accent',
+                        voted: 'bg-accent/60',
+                        disabled: 'opacity-50',
+                    },
+                },
+                glassProminent: {
+                    container: 'web:backdrop-blur-md bg-primary shadow-btn-glass-prominent dark:shadow-btn-glass-prominent-deep',
+                    separator: 'bg-primary-foreground/30',
+                    segment: {
+                        default: '',
+                        hovered: 'bg-black/10',
+                        focused: 'bg-black/10',
+                        pressed: 'bg-black/15',
+                        active: 'bg-black/10',
+                        pressedToggle: 'bg-black/20',
+                        voted: 'bg-black/15',
+                        disabled: 'opacity-50',
+                    },
+                },
+            },
         },
 
         // SwiftUI roles. `defaultStyle` is used when no `style` prop is
@@ -364,6 +467,8 @@ export const settingsButtons = {
             confirm:     { defaultStyle: 'borderedProminent' },
             destructive: {
                 tint: 'rgb(var(--destructive))',
+                // Prominent fill as a class: native can't read `var()` in an inline colour.
+                fillClass: 'bg-destructive',
                 // Prominent styles paint the tint as the fill, so their label stays on the foreground.
                 textClass: { default: 'text-destructive', borderedProminent: 'text-destructive-foreground', glassProminent: 'text-destructive-foreground' },
             },
@@ -475,6 +580,33 @@ export const settingsButtons = {
                     pressedToggle: 'text-accent-foreground',
                     voted: 'text-accent-foreground',
                     disabled: 'text-secondary-foreground',
+                },
+            },
+
+            // No SwiftUI equivalent: no fill, a 1px ring drawn with a shadow
+            // (it adds no size, unlike a border). Hover / press wash like borderless.
+            outline: {
+                container: {
+                    base: 'shadow-btn-ring dark:shadow-btn-ring-deep',
+                    default: '',
+                    hovered: 'bg-muted/50',
+                    focused: 'bg-muted/50',
+                    pressed: 'bg-muted',
+                    active: 'bg-muted/50',
+                    pressedToggle: 'bg-accent',
+                    voted: 'bg-accent/60',
+                    disabled: 'opacity-50',
+                },
+                text: {
+                    base: 'font-medium tracking-tight',
+                    default: 'text-card-foreground',
+                    hovered: 'text-foreground',
+                    focused: 'text-foreground',
+                    pressed: 'text-foreground',
+                    active: 'text-foreground',
+                    pressedToggle: 'text-accent-foreground',
+                    voted: 'text-accent-foreground',
+                    disabled: 'text-muted-foreground',
                 },
             },
 

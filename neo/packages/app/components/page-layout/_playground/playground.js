@@ -25,6 +25,7 @@ import {
     useResolvedNeoButton, usePointerCapability,
     resolveScoped,
 } from 'app/design/controls/neo-button/neo-button';
+import { NeoButtonGroup } from 'app/design/controls/neo-button/neo-button-group';
 import { Icon } from 'app/ui/atoms/icon';
 import Tabs from 'app/ui/molecules/tabs/tabs';
 import { appSetting } from 'app/lib/util';
@@ -43,6 +44,133 @@ function Section({ title, hint, children }) {
 
 function Stack({ children }) {
     return <View className="w-full gap-2">{children}</View>;
+}
+
+/* ------------------------- Button groups gallery ------------------------- */
+
+const GROUP_STYLES = ['bordered', 'borderedProminent', 'outline', 'borderless', 'glass', 'glassProminent'];
+const ALIGNMENTS = [
+    { key: 'left', icon: 'AlignLeft', label: 'Align left' },
+    { key: 'center', icon: 'AlignCenter', label: 'Align center' },
+    { key: 'right', icon: 'AlignRight', label: 'Align right' },
+    { key: 'justify', icon: 'AlignJustify', label: 'Justify' },
+];
+
+function GroupRow({ label, children }) {
+    return (
+        <View className="w-full flex-row flex-wrap items-center gap-3">
+            <Text className="w-36 text-xs text-muted-foreground">{label}</Text>
+            {children}
+        </View>
+    );
+}
+
+function ButtonGroupsGallery() {
+    const [align, setAlign] = React.useState('left');
+    const [liked, setLiked] = React.useState(true);
+    const noop = () => {};
+
+    return (
+        <Stack>
+            {GROUP_STYLES.map((style) => (
+                <GroupRow key={style} label={style}>
+                    <NeoButtonGroup style={style} accessibilityLabel={`${style} group`}>
+                        <NeoButton label="First" onPress={noop} />
+                        <NeoButton label="Second" onPress={noop} />
+                        <NeoButton label="Third" onPress={noop} />
+                    </NeoButtonGroup>
+                    <NeoButtonGroup style={style} accessibilityLabel="Text alignment">
+                        {ALIGNMENTS.map((item) => (
+                            <NeoButton
+                                key={item.key}
+                                image={item.icon}
+                                accessibilityLabel={item.label}
+                                selected={align === item.key}
+                                onPress={() => setAlign(item.key)}
+                            />
+                        ))}
+                    </NeoButtonGroup>
+                </GroupRow>
+            ))}
+
+            <GroupRow label="actions + counters">
+                <NeoButtonGroup accessibilityLabel="Fork">
+                    <NeoButton label="Fork" image="GitFork" addon="24" onPress={noop} />
+                    <NeoButton image="ChevronDown" accessibilityLabel="Fork options" onPress={noop} />
+                </NeoButtonGroup>
+                <NeoButtonGroup accessibilityLabel="Rate">
+                    <NeoButton
+                        label="2.4K"
+                        image="ThumbsUp"
+                        selected={liked}
+                        selectedState="voted"
+                        accessibilityLabel="Like, 2.4K"
+                        onPress={() => setLiked((v) => !v)}
+                    />
+                    <NeoButton image="ThumbsDown" accessibilityLabel="Dislike" onPress={noop} />
+                </NeoButtonGroup>
+                <NeoButtonGroup accessibilityLabel="Pages">
+                    <NeoButton label="Previous" image="ChevronLeft" onPress={noop} />
+                    <NeoButton label="Next" image="ChevronRight" imagePlacement="trailing" onPress={noop} />
+                </NeoButtonGroup>
+                <NeoButtonGroup accessibilityLabel="Media">
+                    <NeoButton label="Photos" image="Image" onPress={noop} />
+                    <NeoButton label="Videos" image="Video" onPress={noop} />
+                    <NeoButton image="Ellipsis" accessibilityLabel="More" onPress={noop} />
+                </NeoButtonGroup>
+            </GroupRow>
+
+            <GroupRow label="capsule">
+                <NeoButtonGroup borderShape="capsule" accessibilityLabel="Capsule group">
+                    <NeoButton label="Day" onPress={noop} />
+                    <NeoButton label="Week" onPress={noop} />
+                    <NeoButton label="Month" onPress={noop} />
+                </NeoButtonGroup>
+                <NeoButtonGroup style="glass" borderShape="capsule" accessibilityLabel="Capsule glass group">
+                    <NeoButton image="Heart" accessibilityLabel="Like" onPress={noop} />
+                    <NeoButton image="MessageCircle" accessibilityLabel="Comment" onPress={noop} />
+                    <NeoButton image="Share" accessibilityLabel="Share" onPress={noop} />
+                </NeoButtonGroup>
+            </GroupRow>
+
+            <GroupRow label="controlSize">
+                {['mini', 'small', 'regular', 'large'].map((size) => (
+                    <NeoButtonGroup key={size} controlSize={size} accessibilityLabel={`${size} group`}>
+                        <NeoButton label={size} onPress={noop} />
+                        <NeoButton image="ChevronDown" accessibilityLabel="Options" onPress={noop} />
+                    </NeoButtonGroup>
+                ))}
+            </GroupRow>
+
+            <GroupRow label="role destructive">
+                <NeoButtonGroup style="borderedProminent" role="destructive" accessibilityLabel="Delete">
+                    <NeoButton label="Delete" image="Trash2" onPress={noop} />
+                    <NeoButton image="ChevronDown" accessibilityLabel="Delete options" onPress={noop} />
+                </NeoButtonGroup>
+                <NeoButtonGroup style="bordered" role="destructive" accessibilityLabel="Remove">
+                    <NeoButton label="Remove" onPress={noop} />
+                    <NeoButton label="Block" onPress={noop} />
+                </NeoButtonGroup>
+            </GroupRow>
+
+            <GroupRow label="disabled segment">
+                <NeoButtonGroup accessibilityLabel="Undo and redo">
+                    <NeoButton label="Undo" image="Undo2" onPress={noop} />
+                    <NeoButton label="Redo" image="Redo2" disabled onPress={noop} />
+                </NeoButtonGroup>
+            </GroupRow>
+
+            <GroupRow label={'width="fill"'}>
+                <View className="flex-1 min-w-64">
+                    <NeoButtonGroup width="fill" accessibilityLabel="View">
+                        <NeoButton label="List" image="List" onPress={noop} />
+                        <NeoButton label="Grid" image="LayoutGrid" onPress={noop} />
+                        <NeoButton label="Map" image="Map" onPress={noop} />
+                    </NeoButtonGroup>
+                </View>
+            </GroupRow>
+        </Stack>
+    );
 }
 
 /* ---------------------------- Tabs gallery ---------------------------- */
@@ -314,9 +442,17 @@ export default function PageLayoutPlayground({ data, children }) {
                         <NeoButton style="bordered" label="Bordered" image="Settings" onPress={() => {}} />
                         <NeoButton style="borderedProminent" label="Prominent" image="Check" onPress={() => {}} />
                         <NeoButton style="borderless" label="Borderless" image="Sparkles" onPress={() => {}} />
+                        <NeoButton style="outline" label="Outline" image="Square" onPress={() => {}} />
                         <NeoButton style="link" label="Open details" image="ExternalLink" imagePlacement="trailing" onPress={() => {}} />
                         <NeoButton style="glass" label="Glass" image="Layers" onPress={() => {}} />
                         <NeoButton style="glassProminent" label="Glass CTA" image="Rocket" onPress={() => {}} />
+                    </Section>
+
+                    <Section
+                        title="Button Groups"
+                        hint="NeoButtonGroup takes a button style and paints its surface once; the buttons inside become segments (shared style and size, square inner corners, no hit area over neighbours). Selected segments, counters, capsule, sizes, destructive, disabled and fill."
+                    >
+                        <ButtonGroupsGallery />
                     </Section>
 
                     <Section
