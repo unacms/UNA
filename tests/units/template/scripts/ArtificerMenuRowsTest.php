@@ -44,6 +44,15 @@ class ArtificerMenuRowsTest extends \PHPUnit\Framework\TestCase
         $this->assertMatchesRegularExpression('/\.bx-profile-stats \.bx-profile-avatar-cnt,[^{]*\{\s*margin: -0\.5rem;/', self::read('modules/boonex/artificer/data/template/system/css/menu.css'), 'The stats card\'s rows, the profile one included, sit 8px from its edges (16px block padding less 8px).');
     }
 
+    public function testBlockTabsAreCapsulesInLineWithContent(): void
+    {
+        $s = self::read('modules/boonex/artificer/data/template/system/css/common.css');
+
+        $this->assertMatchesRegularExpression('/\.bx-db-menu ul\.bx-menu-custom\.bx-menu-custom-hor > li:not\(\.bx-stl-mil-sm\) \{[^}]*padding: 0;/', $s, 'Tabs have no side padding, so the first and last line up with the block content.');
+        $this->assertMatchesRegularExpression('/gap: 0\.5rem;/', $s, 'The tab list spaces its tabs with a gap.');
+        $this->assertMatchesRegularExpression('/\.bx-db-menu ul\.bx-menu-hor > li > a\.bx-stl-mil-sm,[^{]*\{\s*border-radius: 9999px;/', $s, 'Block tabs are capsules like the header tabs.');
+    }
+
     public function testPopupMenuRowsAreRoundedNotSquare(): void
     {
         $sCss = self::read('template/css/tailwind.css');
