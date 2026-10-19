@@ -335,10 +335,11 @@ INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `titl
 ('bx_forum_snippet_meta_main', 'bx_forum', 'author', '_sys_menu_item_title_system_sm_author', '_sys_menu_item_title_sm_author', '', '', '', '', '', 2147483647, 1, 0, 1, 1, 0),
 ('bx_forum_snippet_meta_main', 'bx_forum', 'date', '_sys_menu_item_title_system_sm_date', '_sys_menu_item_title_sm_date', '', '', '', 'clock', '', 2147483647, 1, 0, 1, 2, 0),
 ('bx_forum_snippet_meta_main', 'bx_forum', 'category', '_sys_menu_item_title_system_sm_category', '_sys_menu_item_title_sm_category', '', '', '', '', '', 2147483647, 1, 0, 1, 3, 3),
-('bx_forum_snippet_meta_main', 'bx_forum', 'comments', '_sys_menu_item_title_system_sm_comments', '_sys_menu_item_title_sm_comments', '', '', '', 'comments', '', 2147483647, 1, 0, 1, 4, 3),
-('bx_forum_snippet_meta_main', 'bx_forum', 'sticked', '_bx_forum_menu_item_title_system_sm_sticked', '_bx_forum_menu_item_title_sm_sticked', '', '', '', 'thumbtack', '', 2147483647, 1, 0, 1, 5, 3),
-('bx_forum_snippet_meta_main', 'bx_forum', 'locked', '_bx_forum_menu_item_title_system_sm_locked', '_bx_forum_menu_item_title_sm_locked', '', '', '', 'lock', '', 2147483647, 0, 0, 1, 6, 3),
-('bx_forum_snippet_meta_main', 'bx_forum', 'status', '_bx_forum_menu_item_title_system_sm_status', '_bx_forum_menu_item_title_sm_status', '', '', '', '', '', 2147483647, 1, 0, 1, 7, 3);
+('bx_forum_snippet_meta_main', 'bx_forum', 'reactions', '_sys_menu_item_title_system_sm_reactions', '_sys_menu_item_title_sm_reactions', '', '', '', '', '', 2147483647, 0, 0, 1, 4, 3),
+('bx_forum_snippet_meta_main', 'bx_forum', 'comments', '_sys_menu_item_title_system_sm_comments', '_sys_menu_item_title_sm_comments', '', '', '', 'comments', '', 2147483647, 1, 0, 1, 5, 3),
+('bx_forum_snippet_meta_main', 'bx_forum', 'sticked', '_bx_forum_menu_item_title_system_sm_sticked', '_bx_forum_menu_item_title_sm_sticked', '', '', '', 'thumbtack', '', 2147483647, 1, 0, 1, 6, 3),
+('bx_forum_snippet_meta_main', 'bx_forum', 'locked', '_bx_forum_menu_item_title_system_sm_locked', '_bx_forum_menu_item_title_sm_locked', '', '', '', 'lock', '', 2147483647, 0, 0, 1, 7, 3),
+('bx_forum_snippet_meta_main', 'bx_forum', 'status', '_bx_forum_menu_item_title_system_sm_status', '_bx_forum_menu_item_title_sm_status', '', '', '', '', '', 2147483647, 1, 0, 1, 8, 3);
 
 
 -- MENU: custom menu for 'counters' snippet meta info
