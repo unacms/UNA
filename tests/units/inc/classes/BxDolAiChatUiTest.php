@@ -66,6 +66,26 @@ class BxDolAiChatUiTest extends \PHPUnit\Framework\TestCase
         ]));
     }
 
+    public function testMergeFormActions()
+    {
+        $oChat = BxDolAiChatUi::getInstance();
+        $aKeys = ['type' => 'form', 'label' => 'Add keys', 'form_url' => 'bx_projects/get_block_sr_provider_add/&params[]=2'];
+        $aRole = ['type' => 'form', 'label' => 'Add keys', 'form_url' => 'bx_projects/get_block_sr_provider_add/&params[]=3'];
+        $aBad = ['type' => 'form', 'label' => 'Bad', 'form_url' => 'https://evil.test/a/b'];
+
+        // same label and form_url is one button, another form_url is another one
+        $this->assertSame([$aKeys, $aRole], $oChat->mergeChatActions([$aKeys, $aBad], [$aKeys, $aRole]));
+
+        // a form never merges with a link of the same label
+        $aLink = ['type' => 'link', 'label' => 'Add keys', 'url' => 'https://a.test/'];
+        $this->assertCount(2, $oChat->mergeChatActions([$aKeys], [$aLink]));
+
+        $this->assertCount(8, $oChat->mergeChatActions(
+            array_map(fn($i) => ['type' => 'form', 'label' => 'F' . $i, 'form_url' => 'a/b'], range(1, 6)),
+            array_map(fn($i) => ['type' => 'reply', 'label' => 'R' . $i], range(1, 6))
+        ));
+    }
+
     public function testLimits()
     {
         $aOut = $this->sanitize([
