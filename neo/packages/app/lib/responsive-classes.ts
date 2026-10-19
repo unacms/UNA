@@ -1,4 +1,5 @@
 import { appSetting } from 'app/lib/util';
+import { buildBlockBgClasses } from 'app/lib/block-bg-classes';
 
 /**
  * Build responsive class strings from theme utilities + breakpoint tiers.
@@ -241,46 +242,17 @@ export function normalizeTiers(value: any): boolean | Tier[] {
     return tiers.length ? tiers : false;
 }
 
-function inTiers(tiers: boolean | Tier[], tier: Tier) {
-    return tiers === true || (Array.isArray(tiers) && tiers.includes(tier));
-}
-
 /**
  * A block's background (theme `u-block-bg`) on the tiers in `bg`, with the opaque card fill
  * (`u-block-bg-solid`) instead of the translucent one on the tiers in `solid`: block config
  * `designbox.solid`, for a block that sits among solid cards, like the feed's on phones.
  */
 export function blockBgClasses(bg: any, solid?: any) {
-    const bgTiers = normalizeTiers(bg);
-    if (!bgTiers) return '';
-
-    const solidTiers = normalizeTiers(solid);
-    const on: string = appSetting('theme', 'blocks', 'u-block-bg') || '';
-    if (!solidTiers) return bgTiers === true ? on : responsiveClasses('bg', bgTiers);
-
-    const tokens = (value: string) => String(value || '').trim().split(/\s+/).filter(Boolean);
-    const solidFill: string = appSetting('theme', 'blocks', 'u-block-bg-solid') || 'bg-card';
-    // The fill is the theme's first bg- utility; outlines and the rest stay.
-    let swapped = false;
-    const onSolid = tokens(on).map((token) => {
-        if (swapped || !token.startsWith('bg-')) return token;
-        swapped = true;
-        return solidFill;
-    }).join(' ');
-    const off: string = PRESETS.bg?.off || '';
-
-    const classes: string[] = [];
-    let previous: string | null = null;
-    for (const tier of TIER_ORDER) {
-        let value = off;
-        if (inTiers(bgTiers, tier)) value = inTiers(solidTiers, tier) ? onSolid : on;
-        if (value !== previous) {
-            classes.push(...tokens(value).map((token) => withPrefix(TIER_PREFIX[tier], token)));
-            previous = value;
-        }
-    }
-
-    return classes.join(' ');
+    return buildBlockBgClasses(normalizeTiers(bg), normalizeTiers(solid), {
+        on: appSetting('theme', 'blocks', 'u-block-bg') || '',
+        solidFill: appSetting('theme', 'blocks', 'u-block-bg-solid') || 'bg-card',
+        off: PRESETS.bg?.off || '',
+    });
 }
 
 /**
