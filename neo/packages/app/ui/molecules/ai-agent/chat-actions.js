@@ -1,9 +1,13 @@
 'use client';
 
-import { memo, useCallback, useEffect, useState } from 'react';
+import { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { View } from 'app/design/view';
 import { NeoButton, NeoButtonLink, Modal } from 'app/design/controls';
 import { fetcher } from 'app/lib/fetcher';
+
+// A link the chat waits for (e.g. OAuth in another tab): poll every 3 s, give up after 10 min.
+const WATCH_INTERVAL = 3000;
+const WATCH_TIMEOUT = 10 * 60 * 1000;
 
 /**
  * The quick-reply / link / form buttons an assistant message can carry.
@@ -17,6 +21,10 @@ import { fetcher } from 'app/lib/fetcher';
  * A form button opens the site form (`/api.php?r={formUrl}`) in a popup over the chat,
  * like the deploy block does; once the form is saved the popup closes and the action
  * `message` is sent as the user's answer, so the agent goes on by itself.
+ *
+ * A link with `checkUrl` (e.g. "Add using OAuth") opens as usual, then the chat polls
+ * `/api.php?r={checkUrl}` and sends the link `message` itself once it answers `done`,
+ * so the user does not have to come back and press "Done".
  */
 function ChatActionsImpl({ actions, onReply, repliesEnabled, chosenReply = '' }) {
     const [pending, setPending] = useState('');
@@ -57,6 +65,44 @@ function ChatActionsImpl({ actions, onReply, repliesEnabled, chosenReply = '' })
 
     const closeForm = useCallback(() => setForm(null), []);
 
+    // Latest press / repliesEnabled for the polling loop, which outlives renders.
+    const pressRef = useRef(press);
+    const repliesEnabledRef = useRef(repliesEnabled);
+    useEffect(() => {
+        pressRef.current = press;
+        repliesEnabledRef.current = repliesEnabled;
+    }, [press, repliesEnabled]);
+
+    const [watch, setWatch] = useState(null);
+
+    useEffect(() => {
+        if (!watch) return undefined;
+
+        let stopped = false;
+        const id = setInterval(async () => {
+            if (stopped) return;
+            if (Date.now() > watch.until) {
+                stopped = true;
+                setWatch(null);
+                return;
+            }
+            try {
+                const response = await fetcher(`/api.php?r=${watch.checkUrl}`);
+                if (stopped || !response?.data?.done) return;
+                stopped = true;
+                setWatch(null);
+                if (repliesEnabledRef.current) void pressRef.current(watch.message);
+            } catch {
+                // Network hiccup: keep waiting until the timeout.
+            }
+        }, WATCH_INTERVAL);
+
+        return () => {
+            stopped = true;
+            clearInterval(id);
+        };
+    }, [watch]);
+
     // The form calls onFormEmpty once the server answered the submit with "done";
     // closing the popup with its X does not, so only a saved form sends the answer.
     const completeForm = useCallback(() => {
@@ -72,7 +118,8 @@ function ChatActionsImpl({ actions, onReply, repliesEnabled, chosenReply = '' })
             {actions.map((action, index) => {
                 const isLink = action.type === 'link';
                 const isForm = action.type === 'form';
-                const isSelected = !isLink && !!action.message && action.message === selected;
+                // Plain links carry no message; a waited-for link does, and reads as answered once sent.
+                const isSelected = !!action.message && action.message === selected;
                 // Index is part of the key because an agent may legitimately repeat a
                 // label within one message ("Other", "Other").
                 const key = `${action.type}:${action.label}:${index}`;
@@ -86,7 +133,10 @@ function ChatActionsImpl({ actions, onReply, repliesEnabled, chosenReply = '' })
                     // Target vetting happens in messageActions(); NeoButtonLink routes
                     // internal hrefs through the SPA router and external ones to the
                     // in-app browser.
-                    return <NeoButtonLink key={key} {...buttonProps} href={action.url} target="_blank" />;
+                    const startWatch = action.checkUrl
+                        ? () => setWatch({ checkUrl: action.checkUrl, message: action.message, until: Date.now() + WATCH_TIMEOUT })
+                        : undefined;
+                    return <NeoButtonLink key={key} {...buttonProps} href={action.url} target="_blank" onPress={startWatch} />;
                 }
                 if (isForm) {
                     // Like a link, a form stays usable after the turn is over; only the
