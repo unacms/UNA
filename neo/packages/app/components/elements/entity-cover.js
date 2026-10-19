@@ -2,21 +2,29 @@ import { View } from 'app/design/view';
 import Image from 'app/ui/atoms/image';
 import { Text } from 'app/design/typography';
 import { CoverMenuMeta, CoverMenu } from 'app/components/elements/covers/menu-cover';
-import { stripTags } from 'app/lib/util'
+import { appSetting, stripTags } from 'app/lib/util'
 import { BlockWrapper } from 'app/components/block-wrapper'
 
-export default function ({ data, blockWrapperProps, uri }) {
+export default function ({ data, block, blockWrapperProps, uri }) {
+    const moduleName = data?.profile?.module || block?.module
+    // Same rule as the page cover: a round picture is for persons and for
+    // modules that opt in via cover.show_pic_by_module. Contexts (groups, …) skip it.
+    const showPicture = moduleName === 'bx_persons'
+        || (!!moduleName && !!appSetting('cover', 'show_pic_by_module', moduleName))
+    // Page cover title: profile.display_name, then profile.title.
+    const profileTitle = data?.profile?.display_name || data?.profile?.title || ''
+
     return (
         <BlockWrapper {...blockWrapperProps}>
-            {!!data.cover && <View className="w-full h-28 ">
-                <Image alt={data.fullname} view="cover" src={data.cover.src} priority />
+            {!!data.cover && <View className="w-full h-28 overflow-hidden rounded-t-2xl">
+                <Image alt={profileTitle} view="cover" src={data.cover.src} priority />
             </View>}
             <View className="p-4 w-full mx-auto bg-card h-min overflow-hidden rounded-2xl shadow-sm">
-                {!!data.image && <View className="w-28 h-28 overflow-hidden bg-background   rounded-full  "><Image alt={data.fullname} className="rounded-full" view="cover" src={data.image.src} priority={!data.cover} /></View>}
+                {showPicture && !!data.image?.src && <View className="w-28 h-28 overflow-hidden bg-background   rounded-full  "><Image alt={profileTitle} className="rounded-full" view="cover" src={data.image.src} priority={!data.cover} /></View>}
                 <View className="flex-row flex-wrap ">
                     <View className=" flex-auto">
                         <Text className="text-2xl pt-4 font-bold text-secondary-foreground ">
-                            {data.fullname || data.space_name || data.name}
+                            {profileTitle}
                         </Text>
 
                     </View>
