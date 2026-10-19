@@ -45,7 +45,8 @@
 	min-height: auto;
 }
 
-.bx-main  > div{
+.bx-main  > div,
+.bx-main  > main{
 	flex: 0 0 auto;
 }
 #bx-content-with-submenu-wrapper,
@@ -56,6 +57,18 @@
    height: 100%;
    display: flex;
    flex-direction: column;
+}
+/* In the theme shells <main> starts before the cover and holds #bx-content-wrapper, so it takes the wrapper's place in the column. */
+#bx-content-main:has(> #bx-content-wrapper) {
+   flex: 1 1 0;
+   overflow:hidden;
+   max-height:100%;
+   height: 100%;
+   display: flex;
+   flex-direction: column;
+}
+#bx-content-main:has(> #bx-content-wrapper) > :not(#bx-content-wrapper) {
+   flex: 0 0 auto;
 }
 
 .cd-main-content .content-wrapper
