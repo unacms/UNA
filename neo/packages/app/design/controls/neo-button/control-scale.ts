@@ -55,7 +55,7 @@ export const LEGACY_VARIANT_TO_NEO: Readonly<Record<string, { style: NeoButtonSt
 };
 
 export const NEO_STYLES: ReadonlySet<string> = new Set([
-    'plain', 'bordered', 'borderedProminent', 'borderless', 'link', 'glass', 'glassProminent',
+    'plain', 'bordered', 'borderedProminent', 'borderless', 'outline', 'link', 'glass', 'glassProminent',
 ]);
 
 /**

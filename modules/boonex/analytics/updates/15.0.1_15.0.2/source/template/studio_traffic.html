@@ -1,0 +1,36 @@
+<div class="bx-analytics-std">
+    <div class="bx-analytics-online" title="__online_title__">
+        <span class="bx-analytics-online-dot" aria-hidden="true"></span>
+        <span class="bx-analytics-online-count">__online__</span>
+        <span class="bx-analytics-std-online-title">__online_title__</span>
+    </div>
+    <div class="bx-analytics-std-kpis">
+        <bx_repeat:kpis>
+            <div class="bx-analytics-std-kpi">
+                <span class="bx-analytics-kpi-title">__title__</span>
+                <span class="bx-analytics-kpi-figures">
+                    <span class="bx-analytics-kpi-value">__value__</span>
+                    <span class="bx-analytics-kpi-change bx-analytics-trend-__trend__">__change__</span>
+                </span>
+            </div>
+        </bx_repeat:kpis>
+    </div>
+    <svg class="bx-analytics-std-spark" viewBox="0 0 100 40" preserveAspectRatio="none" role="img" aria-label="__chart_label__">
+        <polyline points="__points__" vector-effect="non-scaling-stroke" />
+    </svg>
+    <bx_if:platforms>
+        <ul class="bx-analytics-rows bx-analytics-std-platforms">
+            <bx_repeat:platforms>
+                <li class="bx-analytics-row bx-analytics-std-platform">
+                    <span class="bx-analytics-row-bar" style="width: __bar__%" aria-hidden="true"></span>
+                    <span class="bx-analytics-row-label">__label__</span>
+                    <span class="bx-analytics-row-value">__share__%</span>
+                </li>
+            </bx_repeat:platforms>
+        </ul>
+    </bx_if:platforms>
+    <bx_if:empty>
+        <div class="bx-analytics-empty">__empty__</div>
+    </bx_if:empty>
+    <a class="bx-analytics-std-link" href="__link__">__link_title__</a>
+</div>

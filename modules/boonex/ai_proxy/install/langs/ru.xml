@@ -5,4 +5,6 @@
     <string name="_bx_ai_proxy_option_knowledge_info"><![CDATA[Активная база знаний для запросов прокси оператора. Сайт клиента не может выбрать другую базу.]]></string>
     <string name="_bx_ai_proxy_option_model"><![CDATA[Модель чата]]></string>
     <string name="_bx_ai_proxy_option_model_info"><![CDATA[Активная модель чата для запросов прокси оператора. Сайт клиента не может выбрать другую модель.]]></string>
+    <string name="_bx_ai_proxy_option_prompt"><![CDATA[Промпт]]></string>
+    <string name="_bx_ai_proxy_option_prompt_info"><![CDATA[Инструкции в начале каждого запроса прокси оператора, перед промптом клиента. Клиент не может их убрать.]]></string>
 </resources>

@@ -1,0 +1,59 @@
+<div class="bx-analytics-journeys">
+    <div class="bx-analytics-journey-start">
+        <h3 class="bx-analytics-subtitle">__entries_title__</h3>
+        <bx_if:entries>
+            <ul class="bx-analytics-rows">
+                <bx_repeat:entries>
+                    <li class="bx-analytics-row">
+                        <button type="button" class="bx-analytics-row-btn __active__" data-bx-analytics-open="jfrom" data-bx-analytics-value="__page__" aria-pressed="__pressed__">
+                            <span class="bx-analytics-row-label">__label__</span>
+                            <span class="bx-analytics-row-value">__sessions__</span>
+                        </button>
+                    </li>
+                </bx_repeat:entries>
+            </ul>
+        </bx_if:entries>
+        <bx_if:no_entries>
+            <div class="bx-analytics-empty">__empty__</div>
+        </bx_if:no_entries>
+    </div>
+    <bx_if:flow>
+        <div class="bx-analytics-flow" aria-label="__flow_label__" role="group">
+            <div class="bx-analytics-flow-step">
+                <div class="bx-analytics-flow-head">__step1__</div>
+                <div class="bx-analytics-flow-node bx-analytics-flow-node-main">
+                    <span class="bx-analytics-flow-page">__from__</span>
+                    <span class="bx-analytics-flow-count">__from_sessions__</span>
+                </div>
+            </div>
+            <div class="bx-analytics-flow-step">
+                <div class="bx-analytics-flow-head">__step2__</div>
+                <bx_repeat:next>
+                    <button type="button" class="bx-analytics-flow-node __class__" __attrs__>
+                        <span class="bx-analytics-row-bar" style="width: __share__%" aria-hidden="true"></span>
+                        <span class="bx-analytics-flow-page">__label__</span>
+                        <span class="bx-analytics-flow-count">__share__%</span>
+                    </button>
+                </bx_repeat:next>
+            </div>
+            <div class="bx-analytics-flow-step">
+                <div class="bx-analytics-flow-head">__step3__</div>
+                <bx_repeat:after>
+                    <div class="bx-analytics-flow-node __class__">
+                        <span class="bx-analytics-row-bar" style="width: __share__%" aria-hidden="true"></span>
+                        <span class="bx-analytics-flow-page">__label__</span>
+                        <span class="bx-analytics-flow-count">__share__%</span>
+                    </div>
+                </bx_repeat:after>
+                <bx_if:no_after>
+                    <p class="bx-analytics-note">__no_after__</p>
+                </bx_if:no_after>
+            </div>
+        </div>
+    </bx_if:flow>
+</div>
+<h3 class="bx-analytics-subtitle">__paths_title__</h3>
+__paths__
+<bx_if:truncated>
+    <p class="bx-analytics-note">__truncated__</p>
+</bx_if:truncated>

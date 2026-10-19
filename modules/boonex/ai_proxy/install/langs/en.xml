@@ -5,4 +5,6 @@
     <string name="_bx_ai_proxy_option_knowledge_info"><![CDATA[Active knowledge store searched for operator proxy requests. The client cannot choose a different store.]]></string>
     <string name="_bx_ai_proxy_option_model"><![CDATA[Chat model]]></string>
     <string name="_bx_ai_proxy_option_model_info"><![CDATA[Active chat model that answers operator proxy requests. The client cannot choose a different model.]]></string>
+    <string name="_bx_ai_proxy_option_prompt"><![CDATA[Prompt]]></string>
+    <string name="_bx_ai_proxy_option_prompt_info"><![CDATA[Instructions placed at the top of every operator proxy request, before the client's prompt. The client cannot remove them.]]></string>
 </resources>

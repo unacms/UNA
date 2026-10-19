@@ -51,7 +51,7 @@ Rules for forks:
 | `functions.js` | Re-exports `app/default/functions`. Declare a local export with the same name to replace one function. |
 | `loading.js`, `sounds.js`, `covers/`, `splash-mockups/`, `nav/footer.web.js` | Replace the export. |
 | `<type>/_map.js` for elements, form-fields, forms, molecules, page-layout, menu-items, units, units/content-list, units/profile-list, skeletons, workers | Import `componentsMapDefault` from the core `_map.js`, add or replace keys, re-export it. Put new components under `customization/<type>/`. |
-| `design/styles/global.css`, `global.web.css` | CSS variable and `@theme` overrides (both platforms; the second is web only). On web, `.light` / `.dark` colour-scheme scopes (the header on a band, `layout.header.band_scheme`) re-declare core's semantic tokens, so set a semantic token you override on `:root` (`--accent-foreground`, ...) on `.light` / `.dark` in `global.web.css` too. |
+| `design/styles/global.css`, `global.web.css` | CSS variable and `@theme` overrides (both platforms; the second is web only). Neutral fills follow your `--neutral-*` scale through `--ink`; set `--ink` in your `@variant light` / `@variant dark` blocks to tint them differently, or redefine `--color-bubble` / `--color-button` / `--color-button-hover` in an `@theme inline` block (as `color-mix()`, see Styling) to change the steps. `--button` / `--button-hover` keep their old opaque values; only `bg-button-solid` still reads `--button`. On web, `.light` / `.dark` colour-scheme scopes (the header on a band, `layout.header.band_scheme`) re-declare core's semantic tokens, so set a semantic token you override on `:root` (`--accent-foreground`, ...) on `.light` / `.dark` in `global.web.css` too. |
 | `design/fonts/fonts-web.js`, `design/fonts/fonts.js` | Web `next/font` variables and the native `useFonts` map. |
 | `config/fonts.js` | Font family per role and platform; see [Fonts](#fonts). |
 | `config/next.config.js` | Deep-merged into `apps/next/next.config.js`. Arrays are concatenated. Functions (`webpack`, `rewrites`, `headers`) replace upstream's, so define one only if you reimplement upstream's. This is the fork hook despite the "don't edit" comment at its top. |
@@ -148,6 +148,9 @@ Render icons with `<Icon icon="House" />` from `app/ui/atoms/icon`, using Lucide
 
 - Design tokens (colours, radii, shadows) are the Tailwind `@theme inline` map in `packages/app/design/styles/theme.css`, with light and dark values in `palette.css`. `apps/next/tailwind.config.js` and `design/tailwind/theme.js` are not loaded by any build; a token added there does nothing.
 - Settings hold class presets per component (`settings/theme/*.js`), read with `appSetting`. Use tokens and existing presets, not raw colours or arbitrary values.
+- Neutral fills are translucent "ink", so they stack instead of blending: `bg-bubble` (comment bubbles), `bg-button` and `bg-button-hover` are the scheme's `--ink` at 4.5%, 7% and 10%. A button on a bubble on a card is one even step darker than each layer below, and text keeps AA on every stack. `--ink` is `--neutral-950` in light and `--neutral-50` in dark (`palette-schemes.css`); the alphas are `color-mix()` in `theme.css`, one value for both schemes.
+- Write an alpha only as `color-mix()` or an opacity modifier (`bg-button/50`). Uniwind compiles `rgb(var(--x) / 0.07)` and a variable holding `r g b / a` into `NaN` on native, so the colour silently disappears there.
+- Native buttons read the same tokens through `theme.expo_ui.button` (`settings/theme/expo_ui.js`): iOS bordered (`tint`) and Android tonal take the translucent `bg-button`. Android's elevated button (the `glass` style) draws its shadow under the container, so it uses the opaque `bg-button-solid` (the legacy `--button`) instead.
 - Edit the style partials in `design/styles/` (`theme.css`, `palette.css`, `utilities.css`, `global.css`), not `apps/expo/global.combined.css`, which only imports them for Uniwind.
 - Variants: `web:`, `native:`, `ios:` and `android:` are defined in `design/styles/global.css`, as is `dark:`. Native switches themes with `Uniwind.setTheme`. For a JS value per theme, use `useThemeValue(light, dark)` from `app/design/theme`.
 - Breakpoint tiers are mobile (no prefix), tablet (`sm:`) and desktop (`lg:`), as in `lib/responsive-classes.ts`; there is also `3xl:`. Lists size by container queries (`@container/list`, `@list-sm/list:`).
@@ -190,6 +193,7 @@ A block's chrome (background, padding, title) comes from UNA's `designbox_id`, w
 ```
 
 - Each key lists the tiers where that part shows: `mobile` (no prefix), `tablet` (`sm:`), `desktop` (`lg:`). `true` and `false` mean every tier or none.
+- `solid` lists the tiers where the background is the opaque card fill (theme `u-block-bg-solid`) instead of the translucent `u-block-bg` one. Use it for a block among solid cards, such as the home "Add new..." block above the feed on phones (`"solid": ["mobile"]`). The classes come from `lib/block-bg-classes.ts`; run its tests with `node --test packages/app/lib/block-bg-classes.test.ts`.
 - A missing key keeps `designbox_id`. Props passed from code (`showBg`, `showPadding`, `showTitle`) win over both.
 - Keys sit under `designbox` because every `config_api` key is also spread into each element of the block as a prop.
 - `components/block-wrapper.js` reads them and `ui/molecules/page/page-block.js` turns tiers into classes through `responsiveClasses`. Prefixed classes must stay listed in `@source inline(...)` in `design/styles/utilities.css`; update that list if `theme.blocks` `u-block-bg` or the block padding changes.
@@ -211,9 +215,10 @@ Text uses two roles, `font-main` (the default in `design/typography.tsx`) and `f
 
 Use `NeoButton`, `NeoButtonLink` or `NeoButtonRef` from `app/design/controls`. The legacy `Button`, `ButtonRef` and `ButtonLink` are deprecated.
 
-- Axes: `style` (`plain`, `bordered`, `borderedProminent`, `borderless`, `link`, `glass`, `glassProminent`), `role` (`default`, `cancel`, `close`, `confirm`, `destructive`), `controlSize` (`mini`, `small`, `regular`, `large`, `xlarge`), `borderShape` and `tint`.
+- Axes: `style` (`plain`, `bordered`, `borderedProminent`, `borderless`, `outline`, `link`, `glass`, `glassProminent`), `role` (`default`, `cancel`, `close`, `confirm`, `destructive`), `controlSize` (`mini`, `small`, `regular`, `large`, `xlarge`), `borderShape` and `tint`.
 - Code lives in `design/controls/neo-button/`: props in `neo-button.types.ts`, scope and style precedence in `neo-button-resolver.tsx`, the legacy variant mapping in `control-scale.ts`. The theme is `neo_button` in `settings/theme/buttons.js`.
 - On iOS and Android, `native.expo_ui_buttons` (`settings/configs.js`) renders buttons with native Expo UI (SwiftUI / Compose) views; the `expoUI` prop controls it per button.
+- `NeoButtonGroup` joins buttons into one control with the same `style`, `controlSize`, `borderShape`, `role` / `tint` and `width` axes. The group paints the style's surface once (no border: outline and glass are shadow rings); each NeoButton inside becomes a segment through context, with the group's style and size, only the state washes, square inner corners and no hit area over its neighbours. Segments always use the JS surface; a `glass` group on iOS 26+ draws native liquid glass behind them. Recipes are `neo_button.group` in `settings/theme/buttons.js`. Object menus (reactions, likes, scores) build theirs through `ButtonsGroupMenu`, which uses `group.defaultStyle`.
 - `/pg` is a playground for every axis (`apps/next/app/pg/page.js`, `apps/expo/app/pg/`). It isn't gated, so production builds serve it too.
 
 ### Interface sounds

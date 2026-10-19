@@ -54,20 +54,20 @@
   resolved "https://registry.yarnpkg.com/@floating-ui/utils/-/utils-0.2.12.tgz#afefe785949f16ac4cdd1e695935a321572dd56a"
   integrity sha512-HpCo8tmWzLVad5s2d19EhAz5zqrrQ6s69qd6moPMQvkOuSwDT1YgRfWSVuc4ennqrgv3OHppiOGMQ7oC13yIww==
 
-"@full-ui/headless-calendar@7.1.2":
-  version "7.1.2"
-  resolved "https://registry.yarnpkg.com/@full-ui/headless-calendar/-/headless-calendar-7.1.2.tgz#29634eee93a7a7ec2a1e825ec64c173620e1834d"
-  integrity sha512-/0bOzBoPBZTfP/7dJJpvIHzVQiyXpwcFVIvmhuXdqTv2hPz9OpYMjAJHR9lEQQnHEAAarKwy2CvTx340dGPvew==
+"@full-ui/headless-calendar@7.1.3":
+  version "7.1.3"
+  resolved "https://registry.yarnpkg.com/@full-ui/headless-calendar/-/headless-calendar-7.1.3.tgz#24ce61197d649b5f85ea181b074041e0dbf89172"
+  integrity sha512-CFomIp87osqY65Hlu2c0e2ZnofBe9tKOO8IoPzIfSPVDK/+aGz4Itj6mLu4xPjIvzRDQiopcVzYlip6u1bvYxw==
 
-"@fullcalendar/core@7.1.2":
-  version "7.1.2"
-  resolved "https://registry.yarnpkg.com/@fullcalendar/core/-/core-7.1.2.tgz#11b7f4dcb67133f98d3f67d7264e17720e8e2ede"
-  integrity sha512-mTvn5HytJUNl1HRXW5hBpHL0lA4sKRbBrkouIE+Sl2hBKorMaWDhshFVxwcBwCBCjO9gk1m7nTfmOzKLSJv9dw==
+"@fullcalendar/core@7.1.3":
+  version "7.1.3"
+  resolved "https://registry.yarnpkg.com/@fullcalendar/core/-/core-7.1.3.tgz#b657c29f362018762611b7bfa232668b02aeb48f"
+  integrity sha512-DLGXqX7CnuUQHH679FgE6+jc927wa708ydIcnfVx372IOK/OiDZjqc+IBwuKnu2EyqleCooDoAnUAcvXBhHosA==
 
-"@fullcalendar/core@^6.1.20":
-  version "6.1.21"
-  resolved "https://registry.yarnpkg.com/@fullcalendar/core/-/core-6.1.21.tgz#e8b0ed592a60aba44499802fefdbb1fcc91b0a07"
-  integrity sha512-t3u/+sqh3Iq7TWtUnVLcGDUE6OWZh0UD3c04bI/l7lSLAgAKr3kngBmhHiQD1QXpwC8ZN5iNqG7a7gOVixhSKQ==
+"@fullcalendar/core@^6.1.22":
+  version "6.1.22"
+  resolved "https://registry.yarnpkg.com/@fullcalendar/core/-/core-6.1.22.tgz#446b9011d4f019b1e75c163bf1d2cae3b16e3098"
+  integrity sha512-ju5PJUE++zr8XXCGtlXlrodF6doUy9BDfzx+VmE0B+XDBM2A5cUi/aU3M1ANfw/StmKhwqew7Ps7bXMiv/JREg==
   dependencies:
     preact "~10.12.1"
 
@@ -1390,10 +1390,10 @@ csstype@^3.2.2:
   resolved "https://registry.yarnpkg.com/csstype/-/csstype-3.2.3.tgz#ec48c0f3e993e50648c86da559e2610995cf989a"
   integrity sha512-z1HGKcYy2xA8AGQfwrn0PAy+PB7X/GSj3UVJW9qKyn43xWa+gl5nXmU4qqLMRzWVLFC8KusUX8T/0kCiOYpAIQ==
 
-cuelume@^0.2.6:
-  version "0.2.6"
-  resolved "https://registry.yarnpkg.com/cuelume/-/cuelume-0.2.6.tgz#359a82fb008058ebfb587898894caa6e003da3a6"
-  integrity sha512-ZApqE9PVLmn85YC4gnzySujI6+B4GMT4Q07lh1ji16czIGf7azBSd5KhHjXnNQ167QSadG6W8FdFdfe7SFQ6bw==
+cuelume@^0.2.8:
+  version "0.2.8"
+  resolved "https://registry.yarnpkg.com/cuelume/-/cuelume-0.2.8.tgz#330434940de52571293c6204c702b456b364b855"
+  integrity sha512-jnwAdMMUK4emaUWRd9l2RjpfixAMFOFrVkjoVK59FIfk7D3Vuvt+vBBJvU/J+2EiXrDlduialwDKJZorS5Nxqg==
 
 dashjs@^5.2.1:
   version "5.2.1"
@@ -1833,10 +1833,10 @@ fizzy-ui-utils@^3.0.0:
   resolved "https://registry.yarnpkg.com/fizzy-ui-utils/-/fizzy-ui-utils-3.0.0.tgz#cc5e876eea263d3d92828a3144745dbd7b972fc8"
   integrity sha512-uJj38QFQiJ/KCio5tiZhwAjIbTXSIgzBCKdKVbaYfLS053F6z23Nb0o1ZoO9gnxOQWN7BCc35jsvrCtAq3gY9g==
 
-flag-icons@^7.2.3:
-  version "7.5.0"
-  resolved "https://registry.yarnpkg.com/flag-icons/-/flag-icons-7.5.0.tgz#66462df3e8bc5ef3a283322a46bb9dde1b290505"
-  integrity sha512-kd+MNXviFIg5hijH766tt+3x76ele1AXlo4zDdCxIvqWZhKt4T83bOtxUOOMlTx/EcFdUMH5yvQgYlFh1EqqFg==
+flag-icons@^7.6.0:
+  version "7.6.0"
+  resolved "https://registry.yarnpkg.com/flag-icons/-/flag-icons-7.6.0.tgz#79668a719f1ca591002ddda20dbe7e364bb96621"
+  integrity sha512-hir/PsXwr0EESyizKrXJzmkzpLIMf+1vlNKLqAfvdh+bsU94a7LYWTiubkHKqptGoCPzOUGcm6c4PfC9/BaGSQ==
 
 flatpickr@^4.6.13:
   version "4.6.13"
@@ -1873,13 +1873,13 @@ fsevents@~2.3.2:
   resolved "https://registry.yarnpkg.com/fsevents/-/fsevents-2.3.3.tgz#cac6407785d03675a2a5e1a5305c697b347d90d6"
   integrity sha512-5xoDfX+fL7faATnagmWPpbFtwh/R77WmMMqqHGS65C3vvB0YHrgF+B1YmZ3441tMj5n63k0212XNoJwzlhffQw==
 
-fullcalendar@^7.1.1:
-  version "7.1.2"
-  resolved "https://registry.yarnpkg.com/fullcalendar/-/fullcalendar-7.1.2.tgz#f3a0143ba82b462870b525939badebb299c4e186"
-  integrity sha512-QH07FZQJNd3aGxl86CAe48rjMpniky5bFTXGUVXdKh/LHfvfnN9IS5TlXFQ0YNqURbRC2b0u/a/PUJ59pwHp3g==
+fullcalendar@^7.1.3:
+  version "7.1.3"
+  resolved "https://registry.yarnpkg.com/fullcalendar/-/fullcalendar-7.1.3.tgz#f7a9986032a0efe7888320e3bee77c0486d827b7"
+  integrity sha512-Mn8VNqLX80C93UFh0s9aKqhHUSh0BwK8pczyQ+nNDKutJeM0/SVLkJoizTfX9sdmwGiS6+hkAHAg9YC10Us0gg==
   dependencies:
-    "@full-ui/headless-calendar" "7.1.2"
-    "@fullcalendar/core" "7.1.2"
+    "@full-ui/headless-calendar" "7.1.3"
+    "@fullcalendar/core" "7.1.3"
     preact "^10.29.8"
 
 function-bind@^1.1.2:

@@ -1,0 +1,55 @@
+<div class="bx-analytics bx-analytics-tool bx-analytics-api">
+    <bx_if:notices>
+        <div class="bx-analytics-notices">
+            <bx_repeat:notices>
+                <p class="bx-analytics-notice">__notice__</p>
+            </bx_repeat:notices>
+        </div>
+    </bx_if:notices>
+    <p class="bx-analytics-tool-intro">__intro__</p>
+    <form class="bx-analytics-api-form" data-bx-analytics-api-form novalidate>
+        <input type="hidden" name="csrf_token" value="__csrf__" />
+        <div class="bx-analytics-api-fields">
+            <label class="bx-analytics-field">
+                <span class="bx-analytics-control-label">__report_label__</span>
+                <select name="report" class="bx-def-font-inputs bx-form-input-select bx-analytics-select" data-bx-analytics-api-report>
+                    <bx_repeat:reports>
+                        <option value="__report_value__" __report_selected__>__report_title__</option>
+                    </bx_repeat:reports>
+                </select>
+            </label>
+            <label class="bx-analytics-field bx-analytics-field-grow">
+                <span class="bx-analytics-control-label">__params_label__</span>
+                <textarea name="params" rows="4" spellcheck="false" autocapitalize="off" autocomplete="off" class="bx-def-font-inputs bx-form-input-textarea bx-analytics-code-input" data-bx-analytics-api-params aria-describedby="bx-analytics-api-params-hint">__params_default__</textarea>
+                <span class="bx-analytics-hint" id="bx-analytics-api-params-hint">__params_hint__</span>
+            </label>
+        </div>
+        <details class="bx-analytics-api-docs">
+            <summary>__docs_label__</summary>
+            <bx_repeat:docs>
+                <div class="bx-analytics-api-doc" data-bx-analytics-api-doc="__doc_report__" __doc_hidden__>__doc_table__</div>
+            </bx_repeat:docs>
+            __common_table__
+        </details>
+        <div class="bx-analytics-api-calls">
+            __code_srv__
+            __code_url__
+            __code_neo__
+        </div>
+        <p class="bx-analytics-form-error" role="alert" hidden></p>
+        <div class="bx-analytics-form-actions">
+            <button type="submit" class="bx-analytics-tool-btn bx-analytics-tool-btn-primary">__run__</button>
+        </div>
+    </form>
+    <div class="bx-analytics-api-result" data-bx-analytics-api-result hidden>
+        <div class="bx-analytics-code-block">
+            <div class="bx-analytics-code-head">
+                <span class="bx-analytics-code-label" id="bx-analytics-api-output-label">__response_label__</span>
+                <span class="bx-analytics-api-meta" data-bx-analytics-api-meta role="status"></span>
+                <button type="button" class="bx-analytics-copy-btn" data-bx-analytics-copy="bx-analytics-api-output" data-bx-analytics-copied="__copied__" aria-describedby="bx-analytics-api-output-label">__copy__</button>
+            </div>
+            <pre class="bx-analytics-code bx-analytics-api-output" id="bx-analytics-api-output" tabindex="0" aria-labelledby="bx-analytics-api-output-label"><code data-bx-analytics-api-output></code></pre>
+        </div>
+    </div>
+    <script type="application/json" data-bx-analytics-api-catalog>__catalog_json__</script>
+</div>

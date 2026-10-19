@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="ru" flag="ru" title="Russian">
+	<string_add name="_bx_payment_txt_analytics_invoices_issued"><![CDATA[Выставлено]]></string_add>
+	<string_add name="_bx_payment_txt_analytics_invoices_overdue"><![CDATA[Просрочено]]></string_add>
+	<string_add name="_bx_payment_txt_analytics_invoices_paid"><![CDATA[Оплачено]]></string_add>
+	<string_add name="_bx_payment_txt_analytics_invoices_unpaid"><![CDATA[Не оплачено]]></string_add>
+</resources>

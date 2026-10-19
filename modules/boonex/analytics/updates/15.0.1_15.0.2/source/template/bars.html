@@ -1,0 +1,14 @@
+<bx_if:items>
+    <ul class="bx-analytics-rows">
+        <bx_repeat:items>
+            <li class="bx-analytics-row bx-analytics-std-platform">
+                <span class="bx-analytics-row-bar" style="width: __bar__%" aria-hidden="true"></span>
+                <span class="bx-analytics-row-label">__label__</span>
+                <span class="bx-analytics-row-value">__value__ <span class="bx-analytics-row-share">__share__%</span></span>
+            </li>
+        </bx_repeat:items>
+    </ul>
+</bx_if:items>
+<bx_if:empty>
+    <div class="bx-analytics-empty">__empty__</div>
+</bx_if:empty>

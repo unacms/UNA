@@ -77,20 +77,14 @@ class BxDolAiAgent extends RAG
      */
     protected function tools(): array
     {
-        if ($this->aAgent['tools']) {
-            $aTools = explode(',', $this->aAgent['tools']);
-            $aToolInstances = [];
-            foreach ($aTools as $sToolId) {
-                $iToolId = (int)trim($sToolId);
-                if ($iToolId <= 0)
-                    continue;
-                $aToolInstances[] = BxDolAIToolFactory::getToolInstance($iToolId);
-            }
-            return $aToolInstances;
+        $aToolInstances = [];
+        foreach (BxDolAiAgentTools::resolveIds($this->aAgent) as $iToolId) {
+            if (!BxDolAiQuery::getToolObject($iToolId))
+                continue;
+            $aToolInstances[] = BxDolAIToolFactory::getToolInstance($iToolId);
         }
-        else {
-            return [];
-        }
+
+        return $aToolInstances;
     }
     
     protected function vectorStore(): NeuronAI\RAG\VectorStore\VectorStoreInterface

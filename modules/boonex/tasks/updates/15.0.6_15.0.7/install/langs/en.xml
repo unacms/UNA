@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources name="en" flag="gb" title="English">
+	<string_add name="_bx_tasks_options_category_export"><![CDATA[Export]]></string_add>
+	<string_add name="_bx_tasks_option_export_time_to"><![CDATA[Export reported time to]]></string_add>
+	<string_add name="_bx_tasks_option_export_time_to_csv"><![CDATA[CSV (Comma-Separated Values) file]]></string_add>
+	<string_add name="_bx_tasks_option_export_time_to_xml"><![CDATA[XML (Extensible Markup Language) file]]></string_add>
+	<string_add name="_bx_tasks_option_export_time_fields"><![CDATA[Fields to include in exporting time report]]></string_add>
+	<string_add name="_bx_tasks_option_export_time_field_author_id"><![CDATA[Profile]]></string_add>
+	<string_add name="_bx_tasks_option_export_time_field_object_id"><![CDATA[Task]]></string_add>
+	<string_add name="_bx_tasks_option_export_time_field_value"><![CDATA[Time]]></string_add>
+	<string_add name="_bx_tasks_option_export_time_field_value_date"><![CDATA[Date]]></string_add>
+	<string_add name="_bx_tasks_option_export_time_field_text"><![CDATA[Note]]></string_add>
+	<string_add name="_bx_tasks_option_export_time_field_date"><![CDATA[Date Added]]></string_add>
+	<string_add name="_bx_tasks_grid_action_title_tm_export"><![CDATA[Export]]></string_add>
+
+	<string_upd name="_bx_tasks_form_entry_input_estimate"><![CDATA[Estimate]]></string_upd>
+</resources>

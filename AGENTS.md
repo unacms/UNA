@@ -36,7 +36,7 @@ These apply to UNA PHP (`inc/`, `modules/`, `studio/`, `template/`, and install 
 - Do not call module by a literal name (`BxDolModule::getInstance('bx_posts')`, `BxDolService::call('bx_posts', ...)`, `new BxPostsModule`) without checking if module is installed `BxDolModuleQuery::getInstance()->isEnabledByName('bx_posts')`.
 - Call `getParam` only with a name that exists in `sys_options`. Declare the option in that module's install SQL before reading it.
 - Do not add or edit anything under `upgrade/files/`. That folder records past releases. Do not put new migrations there.
-- Set `active_api` in `modules/system/install/sql/enable-app-pages.sql` (page blocks) and `modules/system/install/sql/enable-app-menus.sql` (menu items) for core, for modules use `modules/boonex/*/install/sql/enable-app.sql` files. Do not set it in `install.sql`, `enable.sql`, or other common install and enable scripts.
+- Set `active_api` in `modules/system/install/sql/enable-app-pages.sql` (page blocks, including their `config_api`) and `modules/system/install/sql/enable-app-menus.sql` (menu items) for core, for modules use `modules/boonex/*/install/sql/enable-app.sql` files. Do not set it in `install.sql`, `enable.sql`, or other common install and enable scripts.
 
 ## Studio app icons
 

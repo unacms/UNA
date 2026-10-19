@@ -238,7 +238,7 @@ function UnitCommentsDefault(props) {
                     )}
                 </View>
                 <View className=" flex-col mt-2 flex-1">
-                    <View className="bg-muted/50 rounded-xl py-2 px-3 gap-0.5 me-auto max-w-full">
+                    <View className="bg-bubble rounded-xl py-2 px-3 gap-0.5 me-auto max-w-full">
                         <View className="flex-row items-center gap-3 justify-between ">
                             <Row className="gap-3 items-center pr-8">
                                 <Profile

@@ -261,8 +261,49 @@ class BxDolAiQuery extends BxDolDb
 
     public function getTools()
     {
-        $sQuery = "SELECT `id`, `title` FROM `sys_agents_tools` WHERE `active` = 1 ORDER BY `title` ASC";
-        return $this->getPairs($sQuery, 'id', 'title'); 
+        $sHidden = $this->implode_escape(BxDolAiAgentTools::hiddenTypes());
+        $sQuery = "SELECT `id`, `title` FROM `sys_agents_tools` WHERE `active` = 1 AND `type` NOT IN (" . $sHidden . ") ORDER BY `title` ASC";
+        return $this->getPairs($sQuery, 'id', 'title');
+    }
+
+    /**
+     * Active tool rows for these types, lowest id first.
+     *
+     * @return array<int, array{id:int, type:string}>
+     */
+    public function getActiveToolsByTypes(array $aTypes): array
+    {
+        if (!$aTypes)
+            return [];
+
+        $aRows = $this->getAll("SELECT `id`, `type` FROM `sys_agents_tools` WHERE `active` = 1 AND `type` IN (" . $this->implode_escape($aTypes) . ") ORDER BY `id` ASC");
+        $aOut = [];
+        foreach ($aRows as $aRow) {
+            $aOut[] = [
+                'id' => (int)$aRow['id'],
+                'type' => (string)$aRow['type'],
+            ];
+        }
+
+        return $aOut;
+    }
+
+    /**
+     * Every tool id of these types, including inactive copies.
+     *
+     * @return int[]
+     */
+    public function getToolIdsByTypes(array $aTypes): array
+    {
+        if (!$aTypes)
+            return [];
+
+        $aRows = $this->getAll("SELECT `id` FROM `sys_agents_tools` WHERE `type` IN (" . $this->implode_escape($aTypes) . ")");
+        $aIds = [];
+        foreach ($aRows as $aRow)
+            $aIds[] = (int)$aRow['id'];
+
+        return $aIds;
     }
 
     public function wipeAgentChatHistory($aAgent) 

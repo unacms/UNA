@@ -455,8 +455,11 @@ div.bx-tl-item-content div.bx-tl-title {
        the box is a flex container. */
     overflow-wrap: anywhere;
 }
-div.bx-tl-item-content div.bx-tl-title div.bx-tl-title-cnt {
+div.bx-tl-item-content div.bx-tl-title .bx-tl-title-cnt {
     min-width: 0;
+    /* The title is an h3 under the block's h2; it keeps the size and weight its box sets. */
+    margin: 0;
+    font: inherit;
 }
 div.bx-tl-item-content div.bx-tl-content iframe[src*='video'] {
     width: 100%;

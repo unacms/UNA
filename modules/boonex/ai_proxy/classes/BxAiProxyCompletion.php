@@ -25,6 +25,14 @@ class BxAiProxyException extends Exception
 class BxAiProxyCompletion
 {
     /**
+     * Operator instructions. Placed ahead of the system prompt from the request.
+     */
+    public function __construct(protected string $sPrompt = '')
+    {
+        $this->sPrompt = trim($sPrompt);
+    }
+
+    /**
      * Studio model id for this turn. The request body model is ignored.
      */
     public function providerId(array $aBody, int $iConfiguredId): int
@@ -161,10 +169,23 @@ class BxAiProxyCompletion
         }
 
         return [
-            'system' => implode("\n\n", $aSystem),
+            'system' => $this->systemPrompt($aSystem),
             'messages' => $aMessages,
             'tools' => $this->definedTools($aBody),
         ];
+    }
+
+    /**
+     * Operator text is first so it outranks the system prompt sent by the client.
+     *
+     * @param list<string> $aSystem
+     */
+    protected function systemPrompt(array $aSystem): string
+    {
+        if ($this->sPrompt !== '')
+            array_unshift($aSystem, $this->sPrompt);
+
+        return implode("\n\n", $aSystem);
     }
 
     /**

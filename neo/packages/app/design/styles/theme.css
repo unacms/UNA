@@ -20,9 +20,23 @@
     --container-list-xl: 80rem;
     --color-border: rgb(var(--border));
     --color-input: rgb(var(--input));
-    --color-button: rgb(var(--button));
+    /*
+     * Neutral fills: the scheme's ink (palette-schemes.css) at an alpha, so they
+     * stack. color-mix, not `rgb(var(--ink) / a)`: Uniwind (native) only keeps
+     * the alpha of a color-mix. One alpha for both schemes; every step stays
+     * even on the page background, a card and a bubble, and text keeps AA.
+     */
+    --color-button: color-mix(in oklab, rgb(var(--ink)) 7%, transparent);
     --color-button-foreground: rgb(var(--button-foreground));
-    --color-button-hover: rgb(var(--button-hover));
+    --color-button-hover: color-mix(in oklab, rgb(var(--ink)) 10%, transparent);
+    /*
+     * Opaque neutral fill (the legacy --button) for native surfaces that cast a
+     * shadow: Android's elevated button draws its shadow under the container,
+     * and a translucent fill lets it show through.
+     */
+    --color-button-solid: rgb(var(--button));
+    /* Comment bubbles and other content grouped on a card. */
+    --color-bubble: color-mix(in oklab, rgb(var(--ink)) 4.5%, transparent);
     --color-ring: rgb(var(--ring));
     --color-background: rgb(var(--background));
     --color-foreground: rgb(var(--foreground));
@@ -144,6 +158,8 @@
     --shadow-input-outline-deep: var(--neo-shadow-input-outline-deep);
     --shadow-btn-outline: var(--neo-shadow-btn-outline);
     --shadow-btn-outline-deep: var(--neo-shadow-btn-outline-deep);
+    --shadow-btn-ring: var(--neo-shadow-btn-ring);
+    --shadow-btn-ring-deep: var(--neo-shadow-btn-ring-deep);
     --shadow-btn-glass: var(--neo-shadow-btn-glass);
     --shadow-btn-glass-deep: var(--neo-shadow-btn-glass-deep);
     --shadow-btn-glass-pressed: var(--neo-shadow-btn-glass-pressed);
@@ -194,6 +210,10 @@
        
         --neo-shadow-btn-outline:        inset 0 0 0 1px rgb(0 0 0 / 0.04), inset 0 0 0 2px rgb(255 255 255 / 0.5), 0 1px 3px -1px rgb(0 0 0 / 0.05);
         --neo-shadow-btn-outline-deep:   inset 0 0 0 1px rgb(255 255 255 / 0.025), 0 4px 12px -4px rgb(0 0 0 / 0.5);
+
+        /* `outline` buttons and groups: a 1px ring outside the box, so it adds no size and segment fills can't cover it. */
+        --neo-shadow-btn-ring:           0 0 0 1px rgb(0 0 0 / 0.12), 0 1px 2px -1px rgb(0 0 0 / 0.06);
+        --neo-shadow-btn-ring-deep:      0 0 0 1px rgb(255 255 255 / 0.14);
        
         --neo-shadow-btn-glass:                        inset 0 0 0 1px rgb(255 255 255 / 0.50), inset 0 1px 0 0 rgb(255 255 255 / 0.50), 0 0 0 1px rgb(0 0 0 / 0.05), 0 2px 8px -2px rgb(0 0 0 / 0.05), 0 4px 16px -4px rgb(0 0 0 / 0.05);
         --neo-shadow-btn-glass-deep:                   inset 0 0 0 1px rgb(255 255 255 / 0.05), inset 0 1px 0 0 rgb(255 255 255 / 0.10), 0 0 0 1px rgb(0 0 0 / 0.2), 0 2px 8px -2px rgb(0 0 0 / 0.2), 0 4px 16px -4px rgb(0 0 0 / 0.2);

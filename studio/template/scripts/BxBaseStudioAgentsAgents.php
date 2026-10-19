@@ -139,7 +139,7 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
             $sTrigger = $oForm->getCleanValue('trigger');
 
             $sTools = is_array($oForm->getCleanValue('tools')) ? implode(',', $oForm->getCleanValue('tools')) : '';
-            $aValsToAdd['tools'] = $sTools;
+            $aValsToAdd['tools'] = BxDolAiAgentTools::stripCsv($sTools);
             $aValsToAdd['acl_levels'] = (int)$oForm->getCleanValue('acl_levels');
 
             $bIsValid = true;
@@ -177,7 +177,26 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
         $aAgent = BxDolAiQuery::getAgentObject($iId);
 
         $aForm = $this->_getFormEdit($sAction, $aAgent);
+        if ($this->_isUnaOperator($aAgent)) {
+            foreach ([
+                'model_id' => $aAgent['model_id'],
+                'trigger' => $aAgent['trigger'],
+                'async' => $aAgent['async'],
+                'vector_store_id' => $aAgent['vector_store_id'],
+            ] as $sField => $mixedValue)
+                $aForm['inputs'][$sField]['attrs']['disabled'] = 'disabled';
+        }
+
         $oForm = new BxTemplFormView($aForm);
+        if ($oForm->isSubmitted() && $this->_isUnaOperator($aAgent)) {
+            foreach ([
+                'model_id' => $aAgent['model_id'],
+                'trigger' => $aAgent['trigger'],
+                'async' => $aAgent['async'],
+                'vector_store_id' => $aAgent['vector_store_id'],
+            ] as $sField => $mixedValue)
+                BxDolForm::setSubmittedValue($sField, $mixedValue, $oForm->aFormAttrs['method']);
+        }
         $oForm->initChecker();
 
         if ($oForm->isSubmitted() && $oForm->getCleanValue('trigger') == 'message') {
@@ -208,7 +227,7 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
             $sTrigger = $oForm->getCleanValue('trigger');
 
             $sTools = is_array($oForm->getCleanValue('tools')) ? implode(',', $oForm->getCleanValue('tools')) : '';
-            $aValsToAdd['tools'] = $sTools;
+            $aValsToAdd['tools'] = BxDolAiAgentTools::stripCsv($sTools);
             $aValsToAdd['acl_levels'] = (int)$oForm->getCleanValue('acl_levels');
 
             $bIsValid = true;
@@ -442,12 +461,34 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
     
     protected function _delete ($mixedId)
     {
+        $aAgent = $this->_getAgentObjectById((int)$mixedId);
+        if ($this->_isUnaOperator($aAgent))
+            return false;
+
         $mixedResult = parent::_delete($mixedId);
         $this->_oDb->cleanCache('sys_agents_with_alert');
         if ($mixedResult)
             BxDolAiActivity::deleteForAgent((int)$mixedId);
 
         return $mixedResult;
+    }
+
+    protected function _getAgentObjectById($iId)
+    {
+        return BxDolAiQuery::getAgentObject((int)$iId);
+    }
+
+    protected function _isUnaOperator($aAgent)
+    {
+        return is_array($aAgent) && ($aAgent['name'] ?? '') === 'una_operator';
+    }
+
+    protected function _getActionDelete($sType, $sKey, $a, $isSmall = false, $isDisabled = false, $aRow = [])
+    {
+        if ($this->_isUnaOperator($aRow))
+            return '';
+
+        return parent::_getActionDefault($sType, $sKey, $a, $isSmall, $isDisabled, $aRow);
     }
 
     protected function _getFormEdit($sAction, $aAgent = [])
@@ -1159,10 +1200,14 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
             $aValues[$k] = $v;
         }
 
+        $aHidden = $sField === 'tools' ? array_flip(BxDolAiAgentTools::hiddenIds()) : [];
+
         $aTmplVars = [];
         if(!empty($aAgent[$sField])) {
             $a = explode(',', $aAgent[$sField]);
             foreach($a as $v) {
+                if (isset($aHidden[(int)$v]))
+                    continue;
                 $aInputSelect = [
                     'type' => 'select',
                     'name' => $sField . '[]',
@@ -1184,7 +1229,7 @@ class BxBaseStudioAgentsAgents extends BxDolStudioAgentsAgents
                 $aTmplVars[] = ['js_object' => $sJsObject, 'input_select' => $sInput];
             }
         }
-        else  {
+        if (!$aTmplVars) {
             $aInputSelect = [
                 'type' => 'select',
                 'name' => $sField . '[]',
