@@ -1373,16 +1373,57 @@
         max-height: calc(100dvh - 5.5rem);
         @apply overflow-y-auto overscroll-contain;
     }
-    /* More list: 44px rows like the tabs they continue (same icon and text size), inset 8px so each row's 8px radius sits inside the popup's 16px corner. */
-    #bx-toolbar .bx-popup-menu ul.bx-menu-submenu-more-auto {
-        @apply px-2;
+    /*
+     * Menus in popups (More, add content, item menus, language and design switchers) all take the header More list's
+     * look: 44px rows like the header tabs, 12px on the icon side and 16px on the other, 8px corners, 16px medium labels,
+     * no gaps. The list is inset 8px, so each row's 8px corner sits inside the popup's 16px one. Horizontal menus
+     * (share icons and the like) keep their own layout. The rows are matched by structure and styled in plain CSS:
+     * naming the bx-stl-mil* classes here would make Tailwind's @apply of them circular.
+     */
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor) {
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
     }
-    #bx-toolbar ul.bx-menu-submenu-more-auto > .bx-menu-item,
-    #bx-toolbar ul.bx-menu-submenu-more-auto > .bx-menu-item > .bx-stl-mil {
-        @apply rounded-lg;
+    /* The indent wrapper already gives these popups 8px above and below the list. */
+    .bx-artificer .bx-popup .bx-popup-content-indent ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor) {
+        margin-top: 0;
+        margin-bottom: 0;
     }
-    #bx-toolbar ul.bx-menu-submenu-more-auto > .bx-menu-item > .bx-stl-mil {
-        @apply h-11 py-0 ltr:pl-3 ltr:pr-4 rtl:pr-3 rtl:pl-4 bx-stl-mil-hover-text;
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor) > li,
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor) > li > a,
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor) > li > span > a,
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor) > li .sys-action-element-holder > a {
+        border-radius: 0.5rem;
+        font-size: 1rem;
+        line-height: 1.5rem;
+    }
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor) > li {
+        border-width: 0;
+    }
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor) > li > a,
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor) > li > span > a,
+    .bx-artificer .bx-popup ul:is(.bx-menu-ver, .bx-menu-custom-ver, [class*="bx-menu-object-"]):not(.bx-menu-hor):not(.bx-menu-custom-hor) > li .sys-action-element-holder > a {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        min-height: 2.75rem; /* 44px */
+        padding-top: 0;
+        padding-bottom: 0;
+        padding-inline-start: 0.75rem; /* 12px on the icon side */
+        padding-inline-end: 1rem;
+    }
+    /* Side menus (profile stats, categories, tags): the same rows, on the block's own padding. */
+    .bx-artificer ul.bx-menu-vertical-more-less > li,
+    .bx-artificer ul.bx-menu-vertical-more-less > li > div {
+        border-radius: 0.5rem;
+        border-width: 0;
+    }
+    .bx-artificer ul.bx-menu-vertical-more-less > li > div > a {
+        min-height: 2.75rem; /* 44px */
+        padding-top: 0;
+        padding-bottom: 0;
+        padding-inline-start: 0.75rem; /* 12px on the icon side */
+        padding-inline-end: 1rem;
     }
 
     /* Common elements: Page Submenu */
