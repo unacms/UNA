@@ -20,9 +20,23 @@
     --container-list-xl: 80rem;
     --color-border: rgb(var(--border));
     --color-input: rgb(var(--input));
-    --color-button: rgb(var(--button));
+    /*
+     * Neutral fills: the scheme's ink (palette-schemes.css) at an alpha, so they
+     * stack. color-mix, not `rgb(var(--ink) / a)`: Uniwind (native) only keeps
+     * the alpha of a color-mix. One alpha for both schemes; every step stays
+     * even on the page background, a card and a bubble, and text keeps AA.
+     */
+    --color-button: color-mix(in oklab, rgb(var(--ink)) 7%, transparent);
     --color-button-foreground: rgb(var(--button-foreground));
-    --color-button-hover: rgb(var(--button-hover));
+    --color-button-hover: color-mix(in oklab, rgb(var(--ink)) 10%, transparent);
+    /*
+     * Opaque neutral fill (the legacy --button) for native surfaces that cast a
+     * shadow: Android's elevated button draws its shadow under the container,
+     * and a translucent fill lets it show through.
+     */
+    --color-button-solid: rgb(var(--button));
+    /* Comment bubbles and other content grouped on a card. */
+    --color-bubble: color-mix(in oklab, rgb(var(--ink)) 4.5%, transparent);
     --color-ring: rgb(var(--ring));
     --color-background: rgb(var(--background));
     --color-foreground: rgb(var(--foreground));
