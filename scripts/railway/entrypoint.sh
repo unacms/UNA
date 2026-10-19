@@ -127,6 +127,10 @@ fi
 # API key, origins and client URL for the NEO front end (idempotent, every start).
 php /usr/local/lib/una-railway/configure.php
 
+# Language strings that modules gained since this database was installed: a deploy brings new
+# code, and new keys would otherwise show as their raw names. Adds only what is missing.
+php /usr/local/lib/una-railway/languages.php || echo "Language update failed (exit $?)" >&2
+
 if [ "${UNA_DEMO_SEED:-0}" = "1" ]; then
     echo "Seeding demo content..."
     # A failed seed must not keep the site down; the log says what went wrong.

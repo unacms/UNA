@@ -31,6 +31,18 @@ class BxTimelineTemplateImagesTest extends BxDolTestCase
         return array_map(fn($aItem) => $aItem['item'], $a['items']);
     }
 
+    /**
+     * The translated text. Fails when the key has no translation: `_t()` returns a missing key
+     * unchanged, so comparing the output with another `_t()` call alone would accept it.
+     */
+    private function translated(string $sKey, ...$aArgs): string
+    {
+        $s = _t($sKey, ...$aArgs);
+        $this->assertStringNotContainsString($sKey, $s, $sKey . ' has no translation in the site\'s language.');
+
+        return $s;
+    }
+
     private function image(int $i): array
     {
         return [
@@ -54,17 +66,17 @@ class BxTimelineTemplateImagesTest extends BxDolTestCase
     {
         [$s] = $this->images([$this->image(1)]);
 
-        $this->assertStringContainsString('alt="' . _t('_bx_timeline_txt_image_alt') . '"', $s);
+        $this->assertStringContainsString('alt="' . $this->translated('_bx_timeline_txt_image_alt') . '"', $s);
     }
 
     public function testSeveralImagesAreNumbered(): void
     {
         $a = $this->images([$this->image(1), $this->image(2), $this->image(3)], 'Trip');
 
-        $this->assertStringContainsString('alt="' . _t('_bx_timeline_txt_image_alt_title_n', 'Trip', 2, 3) . '"', $a[1]);
+        $this->assertStringContainsString('alt="' . $this->translated('_bx_timeline_txt_image_alt_title_n', 'Trip', 2, 3) . '"', $a[1]);
 
         $a = $this->images([$this->image(1), $this->image(2)]);
-        $this->assertStringContainsString('alt="' . _t('_bx_timeline_txt_image_alt_n', 2, 2) . '"', $a[1]);
+        $this->assertStringContainsString('alt="' . $this->translated('_bx_timeline_txt_image_alt_n', 2, 2) . '"', $a[1]);
     }
 
     public function testSizesIsAValidSourceSizeList(): void
