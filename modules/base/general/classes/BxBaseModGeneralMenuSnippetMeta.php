@@ -237,9 +237,6 @@ class BxBaseModGeneralMenuSnippetMeta extends BxTemplMenuUnitMeta
     
     protected function _getMenuItemReactions($aItem)
     {
-        if($this->_bIsApi) //--- API: Isn't supported
-            return false;
-
         $CNF = &$this->_oModule->_oConfig->CNF;
 
         $sKo = 'OBJECT_REACTIONS';
@@ -249,6 +246,13 @@ class BxBaseModGeneralMenuSnippetMeta extends BxTemplMenuUnitMeta
         $oObject = BxDolVote::getObjectInstance($CNF[$sKo], $this->_aContentInfo[$CNF['FIELD_ID']]);
         if(!$oObject || !$oObject->isEnabled())
             return false;
+
+        //--- API: the reaction button with its counter, as the timeline sends it.
+        if($this->_bIsApi)
+            return $this->_getMenuItemElementAPI($aItem, $oObject->getElementApi([
+                'show_counter' => true,
+                'show_counter_style' => 'compound'
+            ]));
 
         return $this->getUnitMetaItemCustom($oObject->getCounter([
             'show_counter_style' => 'compound',
