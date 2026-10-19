@@ -6,6 +6,9 @@ use PHPUnit\Framework\Attributes\Group;
  * Discussions for the app: every discussion names its category (with the
  * icon the site uses when Studio sets none), and the unit meta sends the
  * reactions element.
+ *
+ * The test makes its own discussion and image, and restores the category
+ * icon row it changes, so it runs on any site with Discussions installed.
  */
 #[Group('integration')]
 class ForumApiTest extends BxDolIntegrationTestCase
@@ -13,6 +16,7 @@ class ForumApiTest extends BxDolIntegrationTestCase
     protected $_aGetBackup;
     protected $_aContent;
     protected $_aCategoryRow;
+    protected $_iImageId = 0;
 
     protected function setUp(): void
     {
@@ -23,27 +27,39 @@ class ForumApiTest extends BxDolIntegrationTestCase
             $this->markTestSkipped('Discussions are not installed.');
 
         $oDb = BxDolDb::getInstance();
-        $this->_aContent = $oDb->getRow("SELECT * FROM `bx_forum_discussions` WHERE `cat` > 0 ORDER BY `id` DESC LIMIT 1");
-        if (empty($this->_aContent))
-            $this->markTestSkipped('There are no discussions with a category.');
+        $iCategory = (int)$oDb->getOne("SELECT `Value` FROM `sys_form_pre_values` WHERE `Key` = 'bx_forum_cats' AND `Value` <> '' ORDER BY `Order` LIMIT 1");
+        $this->assertGreaterThan(0, $iCategory, 'Discussions install at least one category.');
 
-        // The test changes the category's icon row; keep the original to restore it.
-        $this->_aCategoryRow = $oDb->getRow("SELECT * FROM `bx_forum_categories` WHERE `category` = :category", ['category' => (int)$this->_aContent['cat']]);
+        $iAuthor = (int)BxDolProfile::getInstanceAccountProfile($this->bxAccount('admin')->id())->id();
+        $iNow = time();
+        $oDb->query("INSERT INTO `bx_forum_discussions` SET `author` = :author, `added` = :now, `changed` = :now, `lr_timestamp` = :now, `thumb` = 0, `thumb_data` = '', `title` = 'ForumApiTest discussion', `cat` = :cat, `multicat` = '', `text` = '<p>Fixture</p>', `text_comments` = '', `lr_profile_id` = :author, `lr_comment_id` = 0, `labels` = ''", [
+            'author' => $iAuthor,
+            'now' => $iNow,
+            'cat' => $iCategory,
+        ]);
+        $this->_aContent = $oDb->getRow("SELECT * FROM `bx_forum_discussions` WHERE `id` = :id", ['id' => (int)$oDb->lastId()]);
+
+        // The tests change the category's icon row; keep the original to restore it.
+        $this->_aCategoryRow = $oDb->getRow("SELECT * FROM `bx_forum_categories` WHERE `category` = :category", ['category' => $iCategory]);
     }
 
     protected function tearDown(): void
     {
+        $oDb = BxDolDb::getInstance();
         if (!empty($this->_aContent)) {
-            $oDb = BxDolDb::getInstance();
-            $oDb->query("DELETE FROM `bx_forum_categories` WHERE `category` = :category", ['category' => (int)$this->_aContent['cat']]);
+            $iCategory = (int)$this->_aContent['cat'];
+            $oDb->query("DELETE FROM `bx_forum_categories` WHERE `category` = :category", ['category' => $iCategory]);
             if (!empty($this->_aCategoryRow))
                 $oDb->query("INSERT INTO `bx_forum_categories` SET `category` = :category, `visible_for_levels` = :levels, `icon` = :icon", [
-                    'category' => (int)$this->_aCategoryRow['category'],
+                    'category' => $iCategory,
                     'levels' => (int)$this->_aCategoryRow['visible_for_levels'],
                     'icon' => $this->_aCategoryRow['icon'],
                 ]);
-            $oDb->cleanMemoryAll();
+            $oDb->query("DELETE FROM `bx_forum_discussions` WHERE `id` = :id", ['id' => (int)$this->_aContent['id']]);
         }
+        if ($this->_iImageId)
+            BxDolStorage::getObjectInstance(BX_DOL_STORAGE_OBJ_IMAGES)->deleteFile($this->_iImageId, 0);
+        $oDb->cleanMemoryAll();
 
         $_GET = $this->_aGetBackup ?? [];
         parent::tearDown();
@@ -85,15 +101,29 @@ class ForumApiTest extends BxDolIntegrationTestCase
         $this->assertSame('💬', $this->decode($this->_aContent)['category']['icon']);
     }
 
-    public function testUploadedIconIsSentAsUrl(): void
+    public function testUploadedIconIsSentAsItsUrl(): void
     {
-        // A storage id with no file behind it: no URL, and never the bare id.
+        $sPath = tempnam(sys_get_temp_dir(), 'bxforum') . '.png';
+        copy(BX_DIRECTORY_PATH_ROOT . 'template/images/acl-account.png', $sPath);
+        $oStorage = BxDolStorage::getObjectInstance(BX_DOL_STORAGE_OBJ_IMAGES);
+        $this->_iImageId = (int)$oStorage->storeFileFromPath($sPath, false, 0);
+        @unlink($sPath);
+        if (!$this->_iImageId)
+            $this->fail('Store the icon image: ' . $oStorage->getErrorString());
+
+        $this->setCategoryIcon((string)$this->_iImageId);
+
+        $sUrl = $oStorage->getFileUrlById($this->_iImageId);
+        $this->assertNotEmpty($sUrl);
+        $this->assertSame($sUrl, $this->decode($this->_aContent)['category']['icon']);
+    }
+
+    public function testMissingUploadedIconIsNeverTheBareId(): void
+    {
+        // A storage id with no file behind it: no URL, and never the id.
         $this->setCategoryIcon('2147483000');
 
-        $sIcon = $this->decode($this->_aContent)['category']['icon'];
-
-        $this->assertIsString($sIcon);
-        $this->assertFalse(is_numeric($sIcon));
+        $this->assertSame('', $this->decode($this->_aContent)['category']['icon']);
     }
 
     public function testNoCategoryNoKey(): void
@@ -108,17 +138,31 @@ class ForumApiTest extends BxDolIntegrationTestCase
         $this->bxLoginAsAdmin();
         $_GET['api'] = 1;
 
-        $oVote = BxDolVote::getObjectInstance('bx_forum_reactions', (int)$this->_aContent['id']);
-        if (!$oVote || !$oVote->isEnabled())
-            $this->markTestSkipped('Discussion reactions are off.');
+        // Reactions on for this test only (in memory, the site setting is untouched).
+        $aSystems = &BxDolVote::getSystems();
+        $iIsOn = $aSystems['bx_forum_reactions']['is_on'] ?? null;
+        $this->assertNotNull($iIsOn, 'Discussions install the bx_forum_reactions object.');
+        $aSystems['bx_forum_reactions']['is_on'] = 1;
+        $sVoteKey = 'BxDolVote!bx_forum_reactions' . (int)$this->_aContent['id'];
+        unset($GLOBALS['bxDolClasses'][$sVoteKey]);
 
         $oMenu = BxDolMenu::getObjectInstance('bx_forum_snippet_meta_main');
         $this->assertInstanceOf(BxBaseModGeneralMenuSnippetMeta::class, $oMenu);
         $oIsApi = new ReflectionProperty($oMenu, '_bIsApi');
-        $oIsApi->setValue($oMenu, true);
-        $oMenu->setContentId((int)$this->_aContent['id']);
+        $bIsApi = $oIsApi->getValue($oMenu);
 
-        $aItem = $this->bxCallProtected($oMenu, '_getMenuItemReactions', ['id' => 1, 'name' => 'reactions']);
+        try {
+            $oIsApi->setValue($oMenu, true);
+            $oMenu->setContentId((int)$this->_aContent['id']);
+
+            $aItem = $this->bxCallProtected($oMenu, '_getMenuItemReactions', ['id' => 1, 'name' => 'reactions']);
+        }
+        finally {
+            // The menu and vote instances are shared: put them back as they were.
+            $oIsApi->setValue($oMenu, $bIsApi);
+            $aSystems['bx_forum_reactions']['is_on'] = $iIsOn;
+            unset($GLOBALS['bxDolClasses'][$sVoteKey]);
+        }
 
         $this->assertIsArray($aItem);
         $this->assertSame('element', $aItem['display_type']);

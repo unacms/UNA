@@ -122,22 +122,26 @@ Units.Base = function Base({ data }) {
                                 displaySize="sm"
                                 showInfo={false}
                                 showInfo2={
-                                    <Row className="flex-none items-center gap-1">
+                                    // Shrinks beside the name: a long category name truncates
+                                    // instead of running over the thumbnail.
+                                    <Row className="flex-1 min-w-0 items-center gap-1">
                                         {postedTs ? (
                                             <>
-                                                <Text className="text-sm text-muted-foreground">·</Text>
+                                                <Text className="flex-none text-sm text-muted-foreground">·</Text>
                                                 <Time
-                                                    stylesName="text-sm text-muted-foreground"
+                                                    stylesName="flex-none text-sm text-muted-foreground"
                                                     ts={postedTs}
                                                 />
                                             </>
                                         ) : null}
                                         {categoryName ? (
                                             <>
-                                                <Text className="text-sm text-muted-foreground">·</Text>
-                                                <Text className="text-sm text-muted-foreground">{t('in')}</Text>
-                                                <CategoryIcon icon={categoryIcon} />
-                                                <Text numberOfLines={1} className="text-sm font-semibold text-foreground">
+                                                <Text className="flex-none text-sm text-muted-foreground">·</Text>
+                                                <Text className="flex-none text-sm text-muted-foreground">{t('in')}</Text>
+                                                <View className="flex-none">
+                                                    <CategoryIcon icon={categoryIcon} />
+                                                </View>
+                                                <Text numberOfLines={1} className="flex-1 min-w-0 text-sm font-semibold text-foreground">
                                                     {categoryName}
                                                 </Text>
                                             </>
