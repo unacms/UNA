@@ -179,7 +179,7 @@ div.bx-popup-menu-main.sys-add-content ul {
 .bx-db-content .bx-profile-stats .bx-menu-vertical-more-less,
 .bx-db-container:not(.bx-dbc-nopadding) .bx-menu-vertical-more-less,
 .bx-db-container:not(.bx-dbc-nopadding) .bx-menu-profile-followings {
-    margin: -0.75rem;
+    margin: -0.5rem; /* rows 8px from the block's edge, like menu rows in popups */
 }
 .bx-db-container:not(.bx-dbc-notitle) .bx-menu-vertical-more-less,
 .bx-db-container:not(.bx-dbc-notitle) .bx-menu-profile-followings {

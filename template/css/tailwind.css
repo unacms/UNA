@@ -1413,6 +1413,23 @@
         padding-inline-start: 0.75rem; /* 12px on the icon side */
         padding-inline-end: 1rem;
     }
+    /* Account panel: its list is inset 8px like the popups (Artificer's menu.css zeroes list padding, so not a class). */
+    .bx-artificer ul.bx-menu-floating-blocks-wide {
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+    }
+    /* Main menu sidebar (sidebar_site): the same rows, inset 8px by its nav, no gaps. */
+    .bx-artificer .bx-sidebar-item > a,
+    .bx-artificer .bx-sidebar-dropdown-content > li > a {
+        min-height: 2.75rem; /* 44px */
+        padding-top: 0;
+        padding-bottom: 0;
+        padding-inline-start: 0.75rem;
+        padding-inline-end: 1rem;
+        border-radius: 0.5rem;
+        font-size: 1rem;
+        line-height: 1.5rem;
+    }
     /* Side menus (profile stats, categories, tags): the same rows, on the block's own padding. */
     .bx-artificer ul.bx-menu-vertical-more-less > li,
     .bx-artificer ul.bx-menu-vertical-more-less > li > div {
